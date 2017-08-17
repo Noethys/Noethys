@@ -3,8 +3,8 @@
 #------------------------------------------------------------------------
 # Application :    Noethys, gestion multi-activités
 # Site internet :  www.noethys.com
-# Auteur:           Ivan LUCAS
-# Copyright:       (c) 2010-11 Ivan LUCAS
+# Auteur:          Ivan LUCAS
+# Copyright:       (c) 2010-17 Ivan LUCAS
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
@@ -19,12 +19,208 @@ import wx.lib.mixins.gridlabelrenderer as glr
 import datetime
 import calendar
 import traceback
+import copy
 import GestionDB
 from Ctrl import CTRL_Bandeau
-import wx.lib.agw.pybusyinfo as PBI
+from Utils import UTILS_Dates
+import wx.lib.agw.supertooltip as STT
 
-try: import psyco; psyco.full()
-except: pass
+if 'phoenix' in wx.PlatformInfo:
+    from wx.grid import GridCellRenderer
+    CURSOR = wx.Cursor
+else :
+    from wx.grid import PyGridCellRenderer as GridCellRenderer
+    CURSOR = wx.StockCursor
+
+from Ctrl.CTRL_Tarification_calcul import CHAMPS_TABLE_LIGNES
+
+
+
+class Track():
+    def __init__(self):
+        self.liste_variables = []
+        self.champ_cle = ""
+        self.dirty = False
+
+    def Importer_variables(self, dictDonnees, liste_variables):
+        for attribut in liste_variables:
+            if dictDonnees.has_key(attribut):
+                valeur = dictDonnees[attribut]
+            else:
+                valeur = None
+            setattr(self, attribut, valeur)
+
+    def GetValeurCle(self):
+        return getattr(self, self.champ_cle)
+
+    def GetVariables(self, avecCle=False):
+        return [variable for variable in self.liste_variables if variable != self.champ_cle or avecCle == True]
+
+    def Get_variables_pour_db(self):
+        return [getattr(self, variable) for variable in self.GetVariables()]
+
+    def Get_champs_pour_db(self):
+        return ", ".join(self.GetVariables())
+
+    def Get_interrogations_pour_db(self):
+        return ", ".join(["?" for variable in self.GetVariables()])
+
+    def Get_interrogations_et_variables_pour_db(self):
+        return ", ".join(["%s=?" % variable for variable in self.GetVariables()])
+
+    def Get_listedonnees_pour_db(self):
+        return [(variable, getattr(self, variable)) for variable in self.GetVariables()]
+
+    def MAJ(self, donnees=None):
+        # Si on reçoit un dict
+        if type(donnees) == dict :
+            for key, valeur in donnees.iteritems() :
+                setattr(self, key, valeur)
+        # Si on reçoit une liste
+        if type(donnees) == list :
+            for key, valeur in donnees :
+                setattr(self, key, valeur)
+
+
+
+# --------------------------------------------------------------------------------------
+
+class Track_ligne(Track):
+    def __init__(self, dictDonnees={}):
+        Track.__init__(self)
+        self.liste_variables = CHAMPS_TABLE_LIGNES
+        self.champ_cle = "IDligne"
+        self.nom_table = "tarifs_lignes"
+        self.Importer_variables(dictDonnees, self.liste_variables)
+
+    def GetLigne(self):
+        listeLignes = []
+        for variable in self.liste_variables :
+            listeLignes.append(getattr(self, variable))
+        return listeLignes
+
+# --------------------------------------------------------------------------------------
+
+class Track_filtre(Track):
+    def __init__(self, dictDonnees={}):
+        Track.__init__(self)
+        self.liste_variables = ["IDfiltre", "IDquestion", "categorie", "choix", "criteres", "IDtarif"]
+        self.champ_cle = "IDfiltre"
+        self.nom_table = "questionnaire_filtres"
+        self.Importer_variables(dictDonnees, self.liste_variables)
+
+    def GetFiltre(self):
+        listeFiltres = []
+        for variable in self.liste_variables:
+            listeFiltres.append(getattr(self, variable))
+        return listeFiltres
+
+
+# --------------------------------------------------------------------------------------
+
+class Track_tarif(Track):
+    def __init__(self, dictDonnees={}):
+        Track.__init__(self)
+        self.liste_variables = ["IDtarif", "IDactivite", "date_debut", "date_fin", "methode", "type", "categories_tarifs", "groupes",
+                           "etiquettes", "cotisations", "caisses", "description", "jours_scolaires",
+                           "jours_vacances", "observations", "tva", "code_compta", "IDtype_quotient",
+                           "label_prestation", "IDevenement"]
+        self.Importer_variables(dictDonnees, self.liste_variables)
+        self.champ_cle = "IDtarif"
+        self.nom_table = "tarifs"
+
+        # Autres données
+        self.filtres = []
+        if dictDonnees.has_key("filtres"):
+            for dictFiltre in dictDonnees["filtres"] :
+                self.filtres.append(Track_filtre(dictFiltre))
+
+        self.lignes = []
+        if dictDonnees.has_key("lignes"):
+            for dictLigne in dictDonnees["lignes"] :
+                self.lignes.append(Track_ligne(dictLigne))
+
+
+    def GetDictTarif(self):
+        dictTarif = {}
+        for variable in self.liste_variables :
+            dictTarif[variable] = getattr(self, variable)
+        return dictTarif
+
+    def GetFiltres(self):
+        listeFiltres = []
+        for filtre in self.filtres:
+            listeFiltres.append(filtre.GetFiltre())
+        return listeFiltres
+
+    def SetFiltres(self, listeDonnees=[]):
+        self.filtres = []
+        for ligne in listeDonnees :
+            dictDonnees = {}
+            for key, valeur in ligne:
+                dictDonnees[key] = valeur
+            track_filtre = Track_filtre(dictDonnees)
+            track_filtre.dirty = True
+            self.filtres.append(track_filtre)
+
+    def GetLignes(self):
+        liste_lignes = []
+        for track_ligne in self.lignes :
+            liste_lignes.append(track_ligne.GetLigne())
+        return liste_lignes
+
+    def SetLignes(self, listeDonnees=[]):
+        self.lignes = []
+        for ligne in listeDonnees :
+            dictDonnees = {}
+            for key, valeur in ligne:
+                dictDonnees[key] = valeur
+            track_ligne = Track_ligne(dictDonnees)
+            track_ligne.dirty = True
+            self.lignes.append(track_ligne)
+
+
+# --------------------------------------------------------------------------------------
+
+class Track_evenement(Track):
+    def __init__(self, dictDonnees={}):
+        Track.__init__(self)
+        self.liste_variables = ["IDevenement", "IDactivite", "IDunite", "IDgroupe", "date", "nom",
+                           "description", "capacite_max", "heure_debut", "heure_fin", "montant"]
+        self.Importer_variables(dictDonnees, self.liste_variables)
+        self.champ_cle = "IDevenement"
+        self.nom_table = "evenements"
+
+        # Stockage des tarifs au format track
+        self.tarifs = []
+        for dictTarif in dictDonnees["tarifs"] :
+            self.tarifs.append(Track_tarif(dictTarif))
+
+    def Reinit(self, date=None):
+        """ Réinitialise l'évènement, les tarifs, lignes, filtres avec une nouvelle date (sert pour le copier/coller) """
+        # Evènement
+        self.IDevenement = None
+        self.date = date
+
+        # Tarifs
+        for track_tarif in self.tarifs :
+            track_tarif.IDtarif = None
+            track_tarif.date_debut = date
+            track_tarif.date_fin = date
+
+            # Lignes
+            for track_ligne in track_tarif.lignes :
+                track_ligne.IDligne = None
+
+            # Filtres
+            for track_filtre in track_tarif.filtres :
+                track_filtre.IDfiltre = None
+
+
+
+
+
+
 
 COULEUR_DATE = "#C0C0C0"
 COULEUR_OUVERTURE = "#FFE900" #(0, 230, 0)
@@ -56,6 +252,243 @@ def CreationImage(largeur, hauteur, couleur=None):
     bmp.SetRGBRect((0, 0, largeur, hauteur), r, v, b)
     return bmp.ConvertToBitmap()
 
+def DrawBorder(grid, dc, rect):
+    top = rect.top
+    bottom = rect.bottom
+    left = rect.left
+    right = rect.right
+    dc.SetPen(wx.Pen(wx.SystemSettings.GetColour(wx.SYS_COLOUR_3DSHADOW)))
+    dc.DrawLine(right, top, right, bottom)
+    dc.DrawLine(left, top, left, bottom)
+    dc.DrawLine(left, bottom, right, bottom)
+    dc.SetPen(wx.WHITE_PEN)
+    dc.DrawLine(left+1, top, left+1, bottom)
+    dc.DrawLine(left+1, top, right, top)
+
+
+
+
+
+
+
+
+
+class CaseOuverture():
+    def __init__(self, grid=None, numLigne=None, numColonne=None, typeCase="ouverture", date=None, typeUnite="", actif=False, IDgroupe=None, nomGroupe=None, IDunite=None, nbre_conso=0, liste_evenements=[]):
+        self.grid = grid
+        self.numLigne = numLigne
+        self.numColonne = numColonne
+        self.date = date
+        self.typeUnite = typeUnite
+        self.typeCase = typeCase
+        self.IDgroupe = IDgroupe
+        self.nomGroupe = nomGroupe
+        self.IDunite = IDunite
+        self.actif = actif
+        self.nbre_conso = nbre_conso
+        self.liste_evenements = liste_evenements
+        self.survol = False
+        self.survolEvenement = False
+
+        # Dessin de la case
+        self.renderer = CaseOuvertureRenderer(self)
+        self.grid.SetCellValue(self.numLigne, self.numColonne, u"")
+        self.grid.SetCellAlignment(self.numLigne, self.numColonne, wx.ALIGN_RIGHT, wx.ALIGN_CENTRE)
+        self.grid.SetCellRenderer(self.numLigne, self.numColonne, self.renderer)
+        self.grid.SetReadOnly(self.numLigne, self.numColonne, True)
+
+    def GetRect(self):
+        return self.grid.CellToRect(self.numLigne, self.numColonne)
+
+    def Refresh(self):
+        rect = self.GetRect()
+        x, y = self.grid.CalcScrolledPosition(rect.GetX(), rect.GetY())
+        rect = wx.Rect(x, y, rect.GetWidth(), rect.GetHeight())
+        self.grid.GetGridWindow().Refresh(False, rect)
+
+    def GetCoordsBoutonEvenements(self):
+        return self.renderer.coordsBoutonEvenements
+
+    def SetSurvol(self, x=None, y=None, etat=False):
+        etat = False
+        survolEvenement = False
+
+        # Vérifie si case survolée
+        if x != None and y != None :
+            numLigne, numColonne = self.grid.YToRow(y), self.grid.XToCol(x)
+            if numLigne == self.numLigne and numColonne == self.numColonne :
+                etat = True
+
+            # Vérifie si bouton Evènement survolé
+            rect = self.renderer.coordsBoutonEvenements
+            if rect != None and rect.ContainsXY(x, y):
+                survolEvenement = True
+
+        if self.survol != etat or self.survolEvenement != survolEvenement :
+            self.survol = etat
+            self.survolEvenement = survolEvenement
+            self.Refresh()
+
+        return etat
+
+    def GetTexteInfobulle(self):
+        if self.ouvert == False :
+            pied = _(u"Cliquez pour ouvrir cette unité")
+            texte = _(u"Cette unité est fermée.\n")
+        else :
+            texte = _(u"Cette unité est ouverte.\n")
+            pied = _(u"Cliquez pour fermer cette unité")
+
+            # Conso associées
+            if self.nbre_conso > 0 :
+                texte += _(u"Vous ne pouvez pas la fermer car %d consommations y ont déjà été associées\n") % self.nbre_conso
+
+            # Evènements
+            if self.typeUnite == "Evenement" :
+                if len(self.liste_evenements) > 0 :
+                    texte += _(u"\nEvènements associés :\n")
+                    for track in self.liste_evenements :
+                        texte += u"  - %s\n" % track.nom
+                else :
+                    texte += _(u"\nAucun évènement associé.\n\nCliquez sur le + pour ajouter des évènements.")
+
+        dictDonnees = {
+            "couleur" : self.renderer.GetCouleur(),
+            "titre" : u"%s - %s" % (DateComplete(self.date), self.nomGroupe),
+            "texte" : texte + "\n",
+            "pied" : pied,
+            }
+        return dictDonnees
+
+
+
+class CaseOuvertureRenderer(GridCellRenderer):
+    def __init__(self, case=None):
+        GridCellRenderer.__init__(self)
+        self.case = case
+        self.grid = None
+        self.coordsBoutonEvenements = None
+
+    def GetCouleur(self):
+        if self.case.actif == False :
+            return COULEUR_DATE
+        if self.case.ouvert == True :
+            return COULEUR_OUVERTURE
+        if self.case.ouvert == False :
+            return COULEUR_FERMETURE
+
+    def Draw(self, grid, attr, dc, rect, row, col, isSelected):
+        self.grid = grid
+
+        # Dessine le fond
+        couleur_fond = self.GetCouleur()
+        dc.SetBackgroundMode(wx.SOLID)
+        dc.SetBrush(wx.Brush(couleur_fond, wx.SOLID))
+        dc.SetPen(wx.TRANSPARENT_PEN)
+        if 'phoenix' in wx.PlatformInfo:
+            dc.DrawRectangle(rect)
+        else:
+            dc.DrawRectangleRect(rect)
+
+        dc.SetBackgroundMode(wx.TRANSPARENT)
+        dc.SetFont(attr.GetFont())
+
+        # Ecrit le nombre de conso
+        if self.case.nbre_conso > 0 :
+            dc.SetTextForeground(wx.Colour(100, 100, 100))
+            dc.SetFont(wx.Font(6, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, 'Arial'))
+            quantite = str(self.case.nbre_conso)
+            dc.DrawText(quantite, rect[0] + 5, rect[1] + 2)
+
+        # Dessine les évènements
+        if self.case.typeUnite == "Evenement" and self.case.ouvert == True :
+            taille = (20, 16)
+            x = rect.x + rect.width -2 - taille[0]
+            y = rect.y + 2
+            if len(self.case.liste_evenements) > 0 :
+                texte = str(len(self.case.liste_evenements))
+            else :
+                texte = "+"
+
+            if self.case.survol == True and self.case.survolEvenement == True :
+                if len(self.case.liste_evenements) > 0 :
+                    couleur_texte = wx.RED
+                    couleur_rond = wx.WHITE
+                else :
+                    couleur_texte = wx.WHITE
+                    couleur_rond = wx.RED
+            else :
+                if len(self.case.liste_evenements) > 0:
+                    couleur_texte = wx.WHITE
+                    couleur_rond = wx.RED
+                else :
+                    couleur_texte = couleur_fond
+                    couleur_rond = wx.WHITE
+
+            image = self.GetImageEvement(texte=texte, taille=taille, couleur_texte=couleur_texte, couleur_fond=couleur_fond, couleur_rond=couleur_rond)
+            dc.DrawBitmap(image, x, y)
+
+            self.coordsBoutonEvenements = wx.Rect(x, y, taille[0], taille[1])
+
+        else :
+            self.coordsBoutonEvenements = None
+
+    def GetImageEvement(self, texte="", taille=(16, 16), couleur_texte=wx.BLACK, couleur_fond=wx.Colour(0, 0, 0), couleur_rond=wx.RED, alignement="droite-bas", padding=0, taille_police=9):
+        """ Ajoute un texte sur une image bitmap """
+        # Création du bitmap
+        bmp = wx.EmptyBitmap(taille[0], taille[1])
+        mdc = wx.MemoryDC(bmp)
+        dc = wx.GCDC(mdc)
+        mdc.SetBackground(wx.Brush(couleur_fond))
+        mdc.Clear()
+
+        # Paramètres
+        dc.SetBrush(wx.Brush(couleur_rond))
+        dc.SetPen(wx.TRANSPARENT_PEN)
+        dc.SetFont(wx.Font(taille_police, wx.DEFAULT, wx.NORMAL, wx.BOLD, 0, ""))
+        dc.SetTextForeground(couleur_texte)
+
+        # Calculs
+        largeurTexte, hauteurTexte = dc.GetTextExtent(texte)
+
+        # Rond rouge
+        hauteurRond = hauteurTexte + padding * 2
+        largeurRond = largeurTexte + padding * 2 + hauteurRond / 2.0
+        if largeurRond < hauteurRond:
+            largeurRond = hauteurRond
+
+        if "gauche" in alignement: xRond = 1
+        if "droite" in alignement: xRond = taille[0] - largeurRond - 1
+        if "haut" in alignement: yRond = 1
+        if "bas" in alignement: yRond = taille[1] - hauteurRond - 1
+
+        dc.DrawRoundedRectangleRect(wx.Rect(xRond, yRond, largeurRond, hauteurRond), hauteurRond / 2.0)
+
+        # Texte
+        xTexte = xRond + largeurRond / 2.0 - largeurTexte / 2.0
+        yTexte = yRond + hauteurRond / 2.0 - hauteurTexte / 2.0 - 1
+        dc.DrawText(texte, xTexte, yTexte)
+
+        mdc.SelectObject(wx.NullBitmap)
+        bmp.SetMaskColour("black")
+        return bmp
+
+
+
+
+    def GetBestSize(self, grid, attr, dc, row, col):
+        text = grid.GetCellValue(row, col)
+        dc.SetFont(attr.GetFont())
+        w, h = dc.GetTextExtent(text)
+        return wx.Size(w, h)
+
+    def Clone(self):
+        return RendererCase()
+
+
+
+
+# ----------------------------------------------------------------------------------------------------------------------
 
 class MyRowLabelRenderer(glr.GridLabelRenderer):
     def __init__(self, bgcolor):
@@ -103,19 +536,34 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         self.DisableDragColSize()
         self.DisableDragRowSize()
         
-        self.listeVacances = self.GetListeVacances()
-        self.listeFeries = self.GetListeFeries() 
         self.dictOuvertures = {}
         self.dictRemplissage = {}
         self.dictConso = {}
-        self.datesValiditeActivite = self.GetValiditeActivite() 
-        self.dictUnitesGroupes = self.GetDictUnitesGroupes() 
+        self.dict_donnees_initiales = {"ouvertures" : [], "evenements" : [], "tarifs" : [], "questionnaire_filtres" : [], "tarifs_lignes" : []}
+
+        DB = GestionDB.DB()
+        self.listeVacances = self.GetListeVacances(DB)
+        self.listeFeries = self.GetListeFeries(DB)
+        self.datesValiditeActivite = self.GetValiditeActivite(DB)
+        self.dictUnitesGroupes = self.GetDictUnitesGroupes(DB)
+        DB.Close()
+
         self.clipboard = None # Date à copier pour  la fonction copier-coller
         self.annee = None
         self.mois = None
         self.afficherTousGroupes = None
 
-        self.Bind(gridlib.EVT_GRID_CELL_LEFT_CLICK, self.OnCellLeftClick)
+        # Init Tooltip
+        self.tip = STT.SuperToolTip(u"")
+        self.tip.SetEndDelay(10000) # Fermeture auto du tooltip après 10 secs
+
+        self.GetGridWindow().SetToolTip(wx.ToolTip(""))
+        self.caseSurvolee = None
+
+        self.GetGridWindow().Bind(wx.EVT_LEAVE_WINDOW, self.OnLeaveWindow)
+        self.GetGridWindow().Bind(wx.EVT_MOTION, self.OnMouseOver)
+        self.GetGridWindow().Bind(wx.EVT_LEFT_DOWN, self.OnCellLeftClick)
+        #self.Bind(gridlib.EVT_GRID_CELL_LEFT_CLICK, self.OnCellLeftClick)
         if 'phoenix' in wx.PlatformInfo:
             self.Bind(gridlib.EVT_GRID_CELL_CHANGED, self.OnCellChange)
         else :
@@ -128,37 +576,192 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         DB = GestionDB.DB()
         
         # Ouvertures
-        listeAjouts = []
-        listeSuppressions = []
+        listeAjoutsOuvertures = []
+        listeSuppressionsOuvertures = []
+        listeFinaleEvenements = []
+
         for dateDD, dictGroupes in self.dictOuvertures.iteritems() :
             for IDgroupe, dictUnites in dictGroupes.iteritems() :
                 for IDunite, dictValeurs in dictUnites.iteritems() :
                     etat = dictValeurs["etat"]
                     initial = dictValeurs["initial"]
                     IDouverture = dictValeurs["IDouverture"]
-                    
+                    liste_evenements = dictValeurs["liste_evenements"]
+
+                    # Ouverture
                     if etat != initial :
                         # Si la valeur a été modifiée :
                         if IDouverture == None and etat == True :
-                            listeAjouts.append((self.IDactivite, IDunite, IDgroupe, str(dateDD)))
+                            listeAjoutsOuvertures.append((self.IDactivite, IDunite, IDgroupe, str(dateDD)))
                         elif IDouverture != None and etat == False :
-                            listeSuppressions.append(IDouverture)
+                            listeSuppressionsOuvertures.append(IDouverture)
                         else:
                             pass
-        
-        # Ajouts
-        if len(listeAjouts) > 0 :
-            DB.Executermany("INSERT INTO ouvertures (IDactivite, IDunite, IDgroupe, date) VALUES (?, ?, ?, ?)", listeAjouts, commit=False)
-        # Suppression
-        if len(listeSuppressions) > 0 :
-            if len(listeSuppressions) == 1 : 
-                conditionSuppression = "(%d)" % listeSuppressions[0]
+
+                    # Evenements
+                    for track_evenement in liste_evenements :
+                        if etat == True :
+                            if track_evenement.IDevenement == None :
+                                listeFinaleEvenements.append(("ajout", track_evenement))
+                            else :
+                                listeFinaleEvenements.append(("modification", track_evenement))
+
+        # Ajouts ouverture
+        if len(listeAjoutsOuvertures) > 0 :
+            DB.Executermany("INSERT INTO ouvertures (IDactivite, IDunite, IDgroupe, date) VALUES (?, ?, ?, ?)", listeAjoutsOuvertures, commit=False)
+        # Suppression ouverture
+        if len(listeSuppressionsOuvertures) > 0 :
+            if len(listeSuppressionsOuvertures) == 1 :
+                conditionSuppression = "(%d)" % listeSuppressionsOuvertures[0]
             else : 
-                conditionSuppression = str(tuple(listeSuppressions))
+                conditionSuppression = str(tuple(listeSuppressionsOuvertures))
             DB.ExecuterReq("DELETE FROM ouvertures WHERE IDouverture IN %s" % conditionSuppression)
         # Confirmation
-        DB.Commit() 
-        
+        DB.Commit()
+
+        # Récupération des prochains ID
+        prochainIDevenement = DB.GetProchainID("evenements")
+        prochainIDtarif = DB.GetProchainID("tarifs")
+
+        # Pour contrer bug sur table tarifs_lignes
+        if DB.isNetwork == False:
+            req = """SELECT max(IDligne) FROM tarifs_lignes;"""
+            DB.ExecuterReq(req)
+            listeTemp = DB.ResultatReq()
+            if listeTemp[0][0] == None:
+                prochainIDligne = 1
+            else:
+                prochainIDligne = listeTemp[0][0] + 1
+
+
+        # ------------- Evenements ---------------
+        dict_suppressions = {
+            "evenements" : {"champ_cle" : "IDevenement", "listeID" : []},
+            "tarifs" : {"champ_cle" : "IDtarif", "listeID" : []},
+            "questionnaire_filtres" : {"champ_cle" : "IDfiltre", "listeID" : []},
+            "tarifs_lignes" : {"champ_cle" : "IDligne", "listeID" : []},
+            }
+
+        dict_requetes = {
+            "evenements": {"ajout" : [], "modification" : []},
+            "tarifs": {"ajout" : [], "modification" : []},
+            "questionnaire_filtres": {"ajout" : [], "modification" : []},
+            "tarifs_lignes": {"ajout" : [], "modification" : []},
+            }
+
+        for mode, track_evenement in listeFinaleEvenements :
+            dict_suppressions["evenements"]["listeID"].append(track_evenement.IDevenement)
+
+            # Ajout
+            if mode == "ajout" :
+                track_evenement.MAJ({"IDevenement" : int(prochainIDevenement)})
+                prochainIDevenement += 1
+                dict_requetes[track_evenement.nom_table]["ajout"].append(track_evenement)
+                #print "ajouter", track_evenement, "avec ID", track_evenement.IDevenement
+
+            # Modification
+            if mode == "modification" :
+                if track_evenement.dirty == True:
+                    dict_requetes[track_evenement.nom_table]["modification"].append(track_evenement)
+                    #print "modifier", track_evenement
+
+            # ---------------- Tarifs --------------------
+            for track_tarif in track_evenement.tarifs :
+                dict_suppressions["tarifs"]["listeID"].append(track_tarif.IDtarif)
+
+                # Ajout
+                if track_tarif.IDtarif == None :
+                    track_tarif.MAJ({"IDevenement": track_evenement.IDevenement, "IDtarif" : int(prochainIDtarif)})
+                    prochainIDtarif += 1
+                    dict_requetes[track_tarif.nom_table]["ajout"].append(track_tarif)
+                    #print "ajouter", track_tarif, "avec ID", track_tarif.IDtarif
+
+                # Modification
+                else :
+                    if track_tarif.dirty == True:
+                        dict_requetes[track_tarif.nom_table]["modification"].append(track_tarif)
+                        #print "modifier", track_tarif
+
+                # ---------------- Lignes --------------------
+                for track_ligne in track_tarif.lignes :
+                    dict_suppressions["tarifs_lignes"]["listeID"].append(track_ligne.IDligne)
+
+                    # Ajout
+                    if track_ligne.IDligne == None:
+                        track_ligne.MAJ({"IDtarif" : track_tarif.IDtarif})
+                        if DB.isNetwork == False:
+                            track_ligne.MAJ({"IDligne": int(prochainIDligne)})
+                            prochainIDligne += 1
+                        dict_requetes[track_ligne.nom_table]["ajout"].append(track_ligne)
+                        #print "ajouter", track_ligne
+
+                    # Modification
+                    else:
+                        if track_ligne.dirty == True:
+                            track_ligne.MAJ({"IDtarif": track_tarif.IDtarif})
+                            dict_requetes[track_ligne.nom_table]["modification"].append(track_ligne)
+                            #print "modifier", track_ligne
+
+                # ---------------- Filtres --------------------
+                for track_filtre in track_tarif.filtres :
+                    dict_suppressions["questionnaire_filtres"]["listeID"].append(track_filtre.IDfiltre)
+
+                    # Ajout
+                    if track_filtre.IDfiltre == None:
+                        track_filtre.MAJ({"IDtarif" : track_tarif.IDtarif})
+                        dict_requetes[track_filtre.nom_table]["ajout"].append(track_filtre)
+                        #print "ajouter", track_filtre
+
+                    # Modification
+                    else:
+                        if track_filtre.dirty == True:
+                            track_filtre.MAJ({"IDtarif": track_tarif.IDtarif})
+                            dict_requetes[track_filtre.nom_table]["modification"].append(track_filtre)
+                            #print "modifier", track_filtre
+
+        for nom_table in ("evenements", "tarifs", "questionnaire_filtres", "tarifs_lignes") :
+
+            # Ajout
+            if len(dict_requetes[nom_table]["ajout"]) > 0 :
+                listeDonnees = []
+                for track in dict_requetes[nom_table]["ajout"] :
+                    ligne = track.Get_variables_pour_db()
+                    if DB.isNetwork == False and nom_table == "tarifs_lignes":
+                        ligne.append(("IDligne", track.IDligne))
+                    listeDonnees.append(ligne)
+                #print "INSERT INTO %s (%s) VALUES (%s)" % (track.nom_table, track.Get_champs_pour_db(), track.Get_interrogations_pour_db())
+                #print "  > listeDonnees=", listeDonnees
+                DB.Executermany("INSERT INTO %s (%s) VALUES (%s)" % (track.nom_table, track.Get_champs_pour_db(), track.Get_interrogations_pour_db()), listeDonnees, commit=False)
+
+            # Modification
+            if len(dict_requetes[nom_table]["modification"]) > 0 :
+                listeDonnees = []
+                for track in dict_requetes[nom_table]["modification"] :
+                    listeTemp = track.Get_variables_pour_db()
+                    listeTemp.append(track.GetValeurCle())
+                    listeDonnees.append(listeTemp)
+                #print "UPDATE %s SET %s WHERE %s=?" % (track.nom_table, track.Get_interrogations_et_variables_pour_db(), track.champ_cle)
+                #print "  > listeDonnees=", listeDonnees
+                DB.Executermany("UPDATE %s SET %s WHERE %s=?" % (track.nom_table, track.Get_interrogations_et_variables_pour_db(), track.champ_cle), listeDonnees, commit=False)
+
+        # Recherche les suppressions à effectuer
+        for nom_table, dictTemp in dict_suppressions.iteritems() :
+            liste_suppressions = []
+            for ID in self.dict_donnees_initiales[nom_table] :
+                if ID not in dictTemp["listeID"] :
+                    liste_suppressions.append(ID)
+                    #print "Suppression ID", ID, "de la table", nom_table
+            if len(liste_suppressions) > 0 :
+                if len(liste_suppressions) == 1 :
+                    condition = "(%d)" % liste_suppressions[0]
+                else :
+                    condition = str(tuple(liste_suppressions))
+                #print "DELETE FROM %s WHERE %s IN %s" % (nom_table, dictTemp["champ_cle"], condition)
+                DB.ExecuterReq("DELETE FROM %s WHERE %s IN %s" % (nom_table, dictTemp["champ_cle"], condition))
+
+        DB.Commit()
+
+
         # Remplissage
         listeAjouts = []
         listeModifications = []
@@ -211,14 +814,16 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         self.Refresh()
         
     def InitGrid(self, annee, mois):
+        DB = GestionDB.DB()
         self.listeDates = self.GetListeDates(annee, mois)
-        self.listeUnites = self.GetListeUnites(self.listeDates[0], self.listeDates[-1])
-        self.listeUnitesRemplissage = self.GetListeUnitesRemplissage(self.listeDates[0], self.listeDates[-1])
-        self.GetDictOuvertures(self.listeDates[0], self.listeDates[-1])
-        self.GetDictRemplissage(self.listeDates[0], self.listeDates[-1])
-        self.GetDictConso(self.listeDates[0], self.listeDates[-1])
-        self.listeGroupes = self.GetListeGroupes() 
-        
+        self.listeUnites = self.GetListeUnites(DB, self.listeDates[0], self.listeDates[-1])
+        self.listeUnitesRemplissage = self.GetListeUnitesRemplissage(DB, self.listeDates[0], self.listeDates[-1])
+        self.GetDictOuvertures(DB, self.listeDates[0], self.listeDates[-1])
+        self.GetDictRemplissage(DB, self.listeDates[0], self.listeDates[-1])
+        self.GetDictConso(DB, self.listeDates[0], self.listeDates[-1])
+        self.listeGroupes = self.GetListeGroupes(DB)
+        DB.Close()
+
         nbreColonnes = len(self.listeUnites) + len(self.listeUnitesRemplissage) + 1
         self.AppendCols(nbreColonnes)
         
@@ -226,13 +831,17 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         
         # ----------------- Création des colonnes -------------------------------------------------------
         largeurColonneOuverture = 50
+        largeurColonneEvenement = 70
         largeurColonneRemplissage = 60
         numColonne = 0
         
         # Colonnes Unités
         for dictUnite in self.listeUnites :
             self.SetColLabelValue(numColonne, dictUnite["abrege"])
-            self.SetColSize(numColonne, largeurColonneOuverture)
+            largeur = largeurColonneOuverture
+            if dictUnite["type"] == "Evenement" :
+                largeur = largeurColonneEvenement
+            self.SetColSize(numColonne, largeur)
             numColonne += 1
         # Colonne de séparation
         self.SetColLabelValue(numColonne, "")
@@ -293,43 +902,46 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 
                 numColonne = 0
                 for dictUnite in self.listeUnites :
-                    self.SetReadOnly(numLigne, numColonne, True)
-                    self.SetCellFont(numLigne, numColonne, wx.Font(7, wx.SWISS, wx.NORMAL, wx.NORMAL)) 
-                    self.SetCellTextColour(numLigne, numColonne, (100, 100, 100) )
-                    self.SetCellAlignment(numLigne, numColonne, wx.ALIGN_RIGHT, wx.ALIGN_TOP)
-                    
+
                     # Recherche une ouverture
                     IDunite = dictUnite["IDunite"]
                     date_debut = dictUnite["date_debut"]
                     date_fin = dictUnite["date_fin"]
+                    typeUnite = dictUnite["type"]
                     if self.dictUnitesGroupes.has_key(IDunite) == False :
                         self.dictUnitesGroupes[IDunite] = []
+
+                    liste_evenements = []
                     if (IDgroupe in self.dictUnitesGroupes[IDunite] or len(self.dictUnitesGroupes[IDunite]) == 0) and(str(dateDD) >= date_debut and str(dateDD) <= date_fin) and (str(dateDD) >= self.datesValiditeActivite[0] and str(dateDD) <= self.datesValiditeActivite[1]) :
-                        # Si date valide pour cette unité 
-                        ouverture = self.RechercheOuverture(dateDD, IDgroupe, IDunite)
-                        if ouverture == True :
-                            self.SetCellBackgroundColour(numLigne, numColonne, COULEUR_OUVERTURE)
-                        else:
-                            self.SetCellBackgroundColour(numLigne, numColonne, COULEUR_FERMETURE)
                         actif = True
+
+                        dictOuverture = self.RechercheOuverture(dateDD, IDgroupe, IDunite)
+                        if dictOuverture != None and dictOuverture["etat"] == True :
+                            ouvert = True
+                            liste_evenements = dictOuverture["liste_evenements"]
+                        else :
+                            ouvert = False
+
                     else:
-                        # Hors période de validité
-                        self.SetCellBackgroundColour(numLigne, numColonne, COULEUR_DATE)
                         actif = False
-                    
+
                     # Si c'est une ligne 'Tous les groupes'
                     if IDgroupe == None :
-                        self.SetCellBackgroundColour(numLigne, numColonne, COULEUR_DATE)
                         actif = False
-                        
-                    dictCases[(numLigne, numColonne)] = { "type" : "ouverture", "date" : dateDD, "actif" : actif, "IDgroupe" : IDgroupe, "IDunite" : IDunite }
 
                     # Ecrit le nombre de consommations dans la case
+                    nbreConso = 0
                     if self.dictConso.has_key(dateDD) :
                         if self.dictConso[dateDD].has_key(IDgroupe) :
                             if self.dictConso[dateDD][IDgroupe].has_key(IDunite) :
                                 nbreConso = self.dictConso[dateDD][IDgroupe][IDunite]
-                                self.SetCellValue(numLigne, numColonne, str(nbreConso))
+
+                    # Création de la case
+                    case = CaseOuverture(self, numLigne=numLigne, numColonne=numColonne, date=dateDD, typeUnite=typeUnite, actif=actif, IDgroupe=IDgroupe, nomGroupe=dictGroupe["nom"], IDunite=IDunite, nbre_conso=nbreConso, liste_evenements=liste_evenements)
+                    case.ouvert = ouvert
+                    case.Refresh()
+
+                    dictCases[(numLigne, numColonne)] = { "type" : "ouverture", "case" : case, "actif" : actif, "date" : dateDD, "IDgroupe" : IDgroupe, "IDunite" : IDunite }
 
                     numColonne += 1
                     
@@ -456,7 +1068,17 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                     etat = self.dictOuvertures[self.clipboard][IDgroupe][IDunite]["etat"]
                 except :
                     etat = False
-                self.OnChangeOuverture(numLigne, numColonne, etat)
+
+                try :
+                    liste_temp = self.dictOuvertures[self.clipboard][IDgroupe][IDunite]["liste_evenements"]
+                    liste_evenements = []
+                    for track in liste_temp :
+                        track = copy.deepcopy(track)
+                        track.Reinit(date=dateDD)
+                        liste_evenements.append(track)
+                except :
+                    liste_evenements = []
+                self.OnChangeOuverture(numLigne, numColonne, etat, liste_evenements)
                 numColonne += 1
             
             # Parcours les unités de remplissage
@@ -486,7 +1108,7 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             jours_scolaires, jours_vacances = dlg.GetJours() 
             feries = dlg.GetFeries()
             try :
-                dlgAttente = PBI.PyBusyInfo(_(u"Veuillez patienter durant l'opération..."), parent=None, title=_(u"Patientez..."), icon=wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Logo.png"), wx.BITMAP_TYPE_ANY))
+                dlgAttente = wx.BusyInfo(_(u"Veuillez patienter durant l'opération..."), None)
                 wx.Yield() 
                 self.TraitementLot(mode, date, elements, date_debut, date_fin, jours_scolaires, jours_vacances, feries)
                 del dlgAttente
@@ -510,10 +1132,13 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 date_debut_temp = date
             if date > date_fin_temp :
                 date_fin_temp = date
-        self.GetDictOuvertures(date_debut_temp, date_fin_temp)
-        self.GetDictRemplissage(date_debut_temp, date_fin_temp)
-        self.GetDictConso(date_debut_temp, date_fin_temp)
-        
+
+        DB = GestionDB.DB()
+        self.GetDictOuvertures(DB, date_debut_temp, date_fin_temp)
+        self.GetDictRemplissage(DB, date_debut_temp, date_fin_temp)
+        self.GetDictConso(DB, date_debut_temp, date_fin_temp)
+        DB.Close()
+
         # Liste dates
         listeDates = [date_debut,]
         tmp = date_debut
@@ -553,27 +1178,65 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                                 except :
                                     etat = False
                             else :
+                                # Mode réinit
                                 etat = False
                             
                             # Vérifie si pas de conso
-                            if etat == False :
-                                try :
-                                    nbreConso = self.dictConso[date][IDgroupe][IDunite]
-                                except :
-                                    nbreConso = 0
-                                if nbreConso > 0 :
-                                    etat = True
-                            
-                            # Mémorise ouverture
-                            dictTemp = self.GetOuverture(date, IDgroupe, IDunite)
-                            if dictTemp == None :
-                                IDouverture = None
-                                initial = None
-                            else :
-                                IDouverture = dictTemp["IDouverture"]
-                                initial = dictTemp["initial"]
-                            self.MemoriseOuverture(date, IDouverture, IDunite, IDgroupe, etat, initial, True)
-                
+                            try :
+                                nbreConso = self.dictConso[date][IDgroupe][IDunite]
+                            except :
+                                nbreConso = 0
+
+                            # Vérifie si pas d'évènements
+                            # if etat == False:
+                            #     try:
+                            #         liste_evenements = self.dictOuvertures[date][IDgroupe][IDunite]["liste_evenements"]
+                            #     except:
+                            #         liste_evenements = []
+                            #     if len(liste_evenements) > 0:
+                            #         etat = True
+
+                            if nbreConso == 0 :
+                                # Mémorise ouverture
+                                dictTemp = self.GetOuverture(date, IDgroupe, IDunite)
+                                if dictTemp == None :
+                                    IDouverture = None
+                                    initial = None
+                                else :
+                                    IDouverture = dictTemp["IDouverture"]
+                                    initial = dictTemp["initial"]
+                                self.MemoriseOuverture(date, IDouverture, IDunite, IDgroupe, etat, initial, forcer=True)
+
+                    # Evènements
+                    if "evenements" in elements:
+
+                        for dictUnite in self.listeUnites:
+                            IDunite = dictUnite["IDunite"]
+
+                            try:
+                                nbreConso = self.dictConso[date][IDgroupe][IDunite]
+                            except:
+                                nbreConso = 0
+
+                            if nbreConso == 0 :
+
+                                if mode == "date":
+                                    try:
+                                        liste_temp = self.dictOuvertures[dateModele][IDgroupe][IDunite]["liste_evenements"]
+                                        liste_evenements = []
+                                        for track in liste_temp:
+                                            track = copy.deepcopy(track)
+                                            track.Reinit(date=date)
+                                            liste_evenements.append(track)
+                                    except:
+                                        liste_evenements = []
+                                else :
+                                    # Mode réinit
+                                    liste_evenements = []
+
+                                self.dictOuvertures[date][IDgroupe][IDunite]["liste_evenements"] = liste_evenements
+
+
                     # Remplissage
                     if "places" in elements :
 
@@ -585,6 +1248,7 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                                 except : 
                                     nbrePlaces = 0
                             else :
+                                # Mode réinit
                                 nbrePlaces = 0
                             
                             # Mémorise remplissage
@@ -604,11 +1268,11 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         numLigne = event.GetId() - 4000
         dateDD = self.listeLignesDates[numLigne]
         # Demande de confirmation
-        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment réinitialiser les paramètres de la date du %s ?") % DateComplete(dateDD), _(u"Réinitialisation"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
-        if dlg.ShowModal() != wx.ID_YES :
-            dlg.Destroy()
-            return
-        dlg.Destroy()
+        # dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment réinitialiser les paramètres de la date du %s ?") % DateComplete(dateDD), _(u"Réinitialisation"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+        # if dlg.ShowModal() != wx.ID_YES :
+        #     dlg.Destroy()
+        #     return
+        # dlg.Destroy()
 
         numLigne += 1
         
@@ -661,64 +1325,137 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         else:
             self.dictRemplissage[dateDD][IDgroupe][IDunite_remplissage]["places"] = nbrePlaces
 
+    def OnLeaveWindow(self, event):
+        self.SetCursor(CURSOR(wx.CURSOR_DEFAULT))
+        # Annule Tooltip
+        self.ActiveTooltip(False)
+
+    def OnMouseOver(self, event):
+        x, y = self.CalcUnscrolledPosition(event.GetPosition())
+        numLigne = self.YToRow(y)
+        numColonne = self.XToCol(x)
+
+        caseSurvolee = None
+        for coords, infoCase in self.dictCases.iteritems() :
+            if infoCase["type"] == "ouverture" and infoCase["actif"] == True :
+                case = infoCase["case"]
+                if case.SetSurvol(x, y) == True :
+                    caseSurvolee = case
+
+        if caseSurvolee != None :
+            if caseSurvolee != self.caseSurvolee :
+                self.ActiveTooltip(actif=False)
+                self.ActiveTooltip(actif=True, case=caseSurvolee)
+                self.caseSurvolee = caseSurvolee
+                self.SetCursor(CURSOR(wx.CURSOR_HAND))
+        else:
+            self.caseSurvolee = None
+            self.ActiveTooltip(actif=False)
+            self.SetCursor(CURSOR(wx.CURSOR_DEFAULT))
+
+
+
     def OnCellLeftClick(self, event):
-        numLigne = event.GetRow()
-        numColonne = event.GetCol()
-        self.OnChangeOuverture(numLigne, numColonne)
+        x, y = self.CalcUnscrolledPosition(event.GetPosition())
+        numLigne = self.YToRow(y)
+        numColonne = self.XToCol(x)
+        self.ActiveTooltip(actif=False)
+        case = self.RechercheCaseOuverture(numLigne, numColonne)
+        if case != None :
+            if case.survolEvenement == True :
+                case.SetSurvol(etat=False)
+                self.OuvrirEvenements(case)
+            else :
+                self.OnChangeOuverture(numLigne, numColonne)
         event.Skip()
-        
-    def OnChangeOuverture(self, numLigne, numColonne, etat=None):
-        nbreConso = self.GetCellValue(numLigne, numColonne) 
+
+    def OuvrirEvenements(self, case=None):
+        liste_evenements = self.dictOuvertures[case.date][case.IDgroupe][case.IDunite]["liste_evenements"]
+        from Dlg import DLG_Evenements
+        dlg = DLG_Evenements.Dialog(self, grid=self, IDactivite=self.IDactivite, date=case.date, IDunite=case.IDunite, IDgroupe=case.IDgroupe, nomGroupe=case.nomGroupe, liste_evenements=liste_evenements)
+        if dlg.ShowModal() == wx.ID_OK:
+            liste_evenements = dlg.GetListeEvenements()
+            # self.liste_evenements_supprimes.extend(dlg.GetListeEvenementsSupprimes())
+            # Mémorisation
+            self.dictOuvertures[case.date][case.IDgroupe][case.IDunite]["liste_evenements"] = liste_evenements
+            case.liste_evenements = liste_evenements
+            case.Refresh()
+        dlg.Destroy()
+
+
+    def RechercheCaseOuverture(self, numLigne, numColonne):
         if self.dictCases.has_key((numLigne, numColonne)) :
             infoCase = self.dictCases[(numLigne, numColonne)]
             if infoCase["type"] == "ouverture" and infoCase["actif"] == True :
-                dateDD = infoCase["date"]
-                IDgroupe = infoCase["IDgroupe"]
-                IDunite = infoCase["IDunite"]
+                case = infoCase["case"]
+                return case
+        return None
+
+    def OnChangeOuverture(self, numLigne, numColonne, etat=None, liste_evenements=[], silencieux=False):
+        if self.dictCases.has_key((numLigne, numColonne)) :
+            infoCase = self.dictCases[(numLigne, numColonne)]
+            if infoCase["type"] == "ouverture" and infoCase["actif"] == True :
+                case = infoCase["case"]
                 # Recherche la valeur actuelle
                 if etat == None :
-                    etat = self.RechercheOuverture(dateDD, IDgroupe, IDunite)
-                    if etat == True :
+                    dictOuverture = self.RechercheOuverture(case.date, case.IDgroupe, case.IDunite)
+                    if dictOuverture != None and dictOuverture["etat"] == True :
                         etat = False
                     else:
                         etat = True
-                if etat == False and nbreConso != "" :
+
+                if etat == False and case.nbre_conso > 0 and silencieux == False :
                     # Interdit la modification si des conso existent
-                    dlg = wx.MessageDialog(self, _(u"Impossible de supprimer cette ouverture !\n\n%s consommation(s) existent déjà...") % nbreConso, "Erreur", wx.OK | wx.ICON_EXCLAMATION)
+                    dlg = wx.MessageDialog(self, _(u"Impossible de supprimer cette ouverture !\n\n%s consommation(s) existent déjà...") % case.nbre_conso, "Erreur", wx.OK | wx.ICON_EXCLAMATION)
                     dlg.ShowModal()
                     dlg.Destroy()
-                    return
+                    return False
+
+                if etat == False and len(case.liste_evenements) > 0 and silencieux == False :
+                    dlg = wx.MessageDialog(None, _(u"%s évènement(s) sont déjà associé(s) à cette unité de consommation.\n\nConfirmez-vous leur suppression ?") % len(case.liste_evenements), _(u"Avertissement"), wx.YES_NO | wx.NO_DEFAULT | wx.CANCEL | wx.ICON_QUESTION)
+                    reponse = dlg.ShowModal()
+                    dlg.Destroy()
+                    if reponse != wx.ID_YES:
+                        return False
+
+
+                    # # Interdit la modification si des évènements existent
+                    # dlg = wx.MessageDialog(self, _(u"Impossible de supprimer cette ouverture !\n\n%s évènements(s) y sont déjà associés...") % len(case.liste_evenements), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
+                    # dlg.ShowModal()
+                    # dlg.Destroy()
+                    # return False
+
                 # Modification
-                self.ModifieOuverture(numLigne, numColonne, dateDD, IDgroupe, IDunite, etat)
+                self.ModifieOuverture(case=case, ouvert=etat, liste_evenements=liste_evenements)
                 self.ClearSelection()
                 self.Refresh() 
-                return
+                return False
     
-    def ModifieOuverture(self, numLigne, numColonne, dateDD, IDgroupe, IDunite, etat):
+    def ModifieOuverture(self, case=None, ouvert=False, liste_evenements=[]):
         # Modifie le dictionnaire de données
-        if self.dictOuvertures.has_key(dateDD) == False :
-            self.dictOuvertures[dateDD] = {}
-        if self.dictOuvertures[dateDD].has_key(IDgroupe) == False :
-            self.dictOuvertures[dateDD][IDgroupe] = {}
-        if self.dictOuvertures[dateDD][IDgroupe].has_key(IDunite) == False :
-            self.dictOuvertures[dateDD][IDgroupe][IDunite] = {}
-        if self.dictOuvertures[dateDD][IDgroupe][IDunite].has_key("etat") == False :
-            self.dictOuvertures[dateDD][IDgroupe][IDunite] = { "IDouverture" : None, "etat" : etat, "initial" : None}
+        if self.dictOuvertures.has_key(case.date) == False :
+            self.dictOuvertures[case.date] = {}
+        if self.dictOuvertures[case.date].has_key(case.IDgroupe) == False :
+            self.dictOuvertures[case.date][case.IDgroupe] = {}
+        if self.dictOuvertures[case.date][case.IDgroupe].has_key(case.IDunite) == False :
+            self.dictOuvertures[case.date][case.IDgroupe][case.IDunite] = {}
+        if self.dictOuvertures[case.date][case.IDgroupe][case.IDunite].has_key("etat") == False :
+            self.dictOuvertures[case.date][case.IDgroupe][case.IDunite] = { "IDouverture" : None, "etat" : ouvert, "initial" : None, "liste_evenements" : liste_evenements}
         else:
-            self.dictOuvertures[dateDD][IDgroupe][IDunite]["etat"] = etat
+            self.dictOuvertures[case.date][case.IDgroupe][case.IDunite]["etat"] = ouvert
+            self.dictOuvertures[case.date][case.IDgroupe][case.IDunite]["liste_evenements"] = liste_evenements
+
         # Modifie case du tableau
-        if etat == True :
-            self.SetCellBackgroundColour(numLigne, numColonne, COULEUR_OUVERTURE)
-        else:
-            self.SetCellBackgroundColour(numLigne, numColonne, COULEUR_FERMETURE)
-            
+        case.ouvert = ouvert
+        case.liste_evenements = liste_evenements
+        case.Refresh()
+
     def RechercheOuverture(self, dateDD, IDgroupe, IDunite):
         if self.dictOuvertures.has_key(dateDD) :
             if self.dictOuvertures[dateDD].has_key(IDgroupe) :
                 if self.dictOuvertures[dateDD][IDgroupe].has_key(IDunite) :
-                    if self.dictOuvertures[dateDD][IDgroupe][IDunite]["etat"] == True :
-                        return True
-        return False
+                    return self.dictOuvertures[dateDD][IDgroupe][IDunite]
+        return None
 
     def GetOuverture(self, dateDD, IDgroupe, IDunite):
         if self.dictOuvertures.has_key(dateDD) :
@@ -750,28 +1487,24 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             listeDates.append(date)
         return listeDates
         
-    def GetListeUnites(self, date_debut, date_fin):
-        db = GestionDB.DB()
+    def GetListeUnites(self, DB, date_debut, date_fin):
         req = """SELECT IDunite, nom, abrege, type, date_debut, date_fin, ordre
         FROM unites 
         WHERE IDactivite=%d
         ORDER BY ordre; """ % self.IDactivite
-        db.ExecuterReq(req)
-        listeDonnees = db.ResultatReq()
-        db.Close()
+        DB.ExecuterReq(req)
+        listeDonnees = DB.ResultatReq()
         listeUnites = []
         for IDunite, nom, abrege, type, date_debut, date_fin, ordre in listeDonnees :
             dictTemp = { "IDunite" : IDunite, "nom" : nom, "abrege" : abrege, "type" : type, "date_debut" : date_debut, "date_fin" : date_fin, "ordre" : ordre }
             listeUnites.append(dictTemp)
         return listeUnites
 
-    def GetDictUnitesGroupes(self):
-        db = GestionDB.DB()
+    def GetDictUnitesGroupes(self, DB):
         req = """SELECT IDunite_groupe, IDunite, IDgroupe
         FROM unites_groupes; """
-        db.ExecuterReq(req)
-        listeDonnees = db.ResultatReq()
-        db.Close()
+        DB.ExecuterReq(req)
+        listeDonnees = DB.ResultatReq()
         dictDonnees = {}
         for IDunite_groupe, IDunite, IDgroupe in listeDonnees :
             if dictDonnees.has_key(IDunite) == False :
@@ -780,30 +1513,26 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 dictDonnees[IDunite].append(IDgroupe)
         return dictDonnees
 
-    def GetListeUnitesRemplissage(self, date_debut, date_fin):
-        db = GestionDB.DB()
+    def GetListeUnitesRemplissage(self, DB, date_debut, date_fin):
         req = """SELECT IDunite_remplissage, nom, abrege, date_debut, date_fin, seuil_alerte
         FROM unites_remplissage
         WHERE IDactivite=%d
         ORDER BY ordre; """ % self.IDactivite
-        db.ExecuterReq(req)
-        listeDonnees = db.ResultatReq()
-        db.Close()
+        DB.ExecuterReq(req)
+        listeDonnees = DB.ResultatReq()
         listeUnites = []
         for IDunite_remplissage, nom, abrege, date_debut, date_fin, seuil_alerte in listeDonnees :
             dictTemp = { "IDunite_remplissage" : IDunite_remplissage, "nom" : nom, "abrege" : abrege, "date_debut" : date_debut, "date_fin" : date_fin, "seuil_alerte" : seuil_alerte }
             listeUnites.append(dictTemp)
         return listeUnites
     
-    def GetListeGroupes(self):
-        db = GestionDB.DB()
+    def GetListeGroupes(self, DB):
         req = """SELECT IDgroupe, nom
         FROM groupes 
         WHERE IDactivite=%d
         ORDER BY ordre; """ % self.IDactivite
-        db.ExecuterReq(req)
-        listeDonnees = db.ResultatReq()
-        db.Close()
+        DB.ExecuterReq(req)
+        listeDonnees = DB.ResultatReq()
         listeGroupes = []
         for IDgroupe, nom in listeDonnees :
             listeGroupes.append({ "IDgroupe" : IDgroupe, "nom" : nom })
@@ -815,41 +1544,160 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             listeGroupes.append({ "IDgroupe" : None, "nom" : _(u"Total max.") })
         return listeGroupes
     
-    def GetListeVacances(self):
-        db = GestionDB.DB()
+    def GetListeVacances(self, DB):
         req = """SELECT date_debut, date_fin, nom, annee
         FROM vacances 
         ORDER BY date_debut; """
-        db.ExecuterReq(req)
-        listeDonnees = db.ResultatReq()
-        db.Close()
+        DB.ExecuterReq(req)
+        listeDonnees = DB.ResultatReq()
         return listeDonnees
 
-    def GetListeFeries(self):
-        db = GestionDB.DB()
+    def GetListeFeries(self, DB):
         req = """SELECT type, nom, jour, mois, annee
         FROM jours_feries 
         ; """
-        db.ExecuterReq(req)
-        listeDonnees = db.ResultatReq()
-        db.Close()
+        DB.ExecuterReq(req)
+        listeDonnees = DB.ResultatReq()
         return listeDonnees
 
-    def GetDictOuvertures(self, date_debut, date_fin):
-        db = GestionDB.DB()
+    def GetDictOuvertures(self, DB, date_debut, date_fin):
+        # Importation des ouvertures
         req = """SELECT IDouverture, IDunite, IDgroupe, date
         FROM ouvertures 
         WHERE IDactivite=%d AND date>='%s' AND date<='%s'
         ORDER BY date; """ % (self.IDactivite, date_debut, date_fin)
-        db.ExecuterReq(req)
-        listeDonnees = db.ResultatReq()
-        db.Close()
-        for IDouverture, IDunite, IDgroupe, date in listeDonnees :
-            dateDD = DateEngEnDateDD(date)
-            self.MemoriseOuverture(dateDD, IDouverture, IDunite, IDgroupe, True, True)
+        DB.ExecuterReq(req)
+        listeOuvertures = DB.ResultatReq()
+
+        # Importation des évènements
+        req = """SELECT IDevenement, IDactivite, IDunite, IDgroupe, date, nom, description, capacite_max, heure_debut, heure_fin, montant
+        FROM evenements 
+        WHERE IDactivite=%d AND date>='%s' AND date<='%s'
+        ORDER BY date, heure_debut; """ % (self.IDactivite, date_debut, date_fin)
+        DB.ExecuterReq(req)
+        listeTemp = DB.ResultatReq()
+        liste_evenements = []
+        listeIDevenements = []
+        for IDevenement, IDactivite, IDunite, IDgroupe, date, nom, description, capacite_max, heure_debut, heure_fin, montant in listeTemp :
+            date = UTILS_Dates.DateEngEnDateDD(date)
+            dict_evenement = {"IDevenement" : IDevenement, "IDactivite" : IDactivite, "IDunite" : IDunite, "IDgroupe" : IDgroupe,
+                              "date": date, "nom" : nom, "description" : description, "capacite_max" : capacite_max,
+                              "heure_debut": heure_debut, "heure_fin" : heure_fin, "montant" : montant, "tarifs" : []}
+            liste_evenements.append(dict_evenement)
+            listeIDevenements.append(IDevenement)
+            self.dict_donnees_initiales["evenements"].append(IDevenement)
+
+        # Importation des tarifs des évènements
+        dict_tarifs = {}
+        if len(listeIDevenements) > 0 :
+
+            # Importation des tarifs
+            if len(listeIDevenements) == 0 : condition = "()"
+            elif len(listeIDevenements) == 1: condition = "(%d)" % listeIDevenements[0]
+            else: condition = str(tuple(listeIDevenements))
+
+            req = """SELECT IDtarif, IDactivite, date_debut, date_fin, methode, type, categories_tarifs, groupes, etiquettes, cotisations, 
+            caisses, description, jours_scolaires, jours_vacances, observations, tva, code_compta, 
+            IDtype_quotient, label_prestation, IDevenement
+            FROM tarifs WHERE IDevenement IN %s;""" % condition
+            DB.ExecuterReq(req)
+            listeDonneesTarifs = DB.ResultatReq()
+            listeIDtarif = []
+            for temp in listeDonneesTarifs :
+                listeIDtarif.append(temp[0])
+                self.dict_donnees_initiales["tarifs"].append(temp[0])
+
+            # Importation des filtres de questionnaire
+            if len(listeIDtarif) == 0 : condition = "()"
+            elif len(listeIDtarif) == 1: condition = "(%d)" % listeIDtarif[0]
+            else: condition = str(tuple(listeIDtarif))
+
+            req = """SELECT IDtarif, IDfiltre, IDquestion, categorie, choix, criteres FROM questionnaire_filtres WHERE IDtarif IN %s;""" % condition
+            DB.ExecuterReq(req)
+            listeDonneesFiltres = DB.ResultatReq()
+            dictFiltres = {}
+            for IDtarif, IDfiltre, IDquestion, categorie, choix, criteres in listeDonneesFiltres :
+                if dictFiltres.has_key(IDtarif) == False :
+                    dictFiltres[IDtarif] = []
+                dictTemp = {"IDfiltre" : IDfiltre, "IDquestion" : IDquestion, "categorie" : categorie, "choix" : choix, "criteres" : criteres, "IDtarif" : IDtarif}
+                dictFiltres[IDtarif].append(dictTemp)
+                self.dict_donnees_initiales["questionnaire_filtres"].append(IDfiltre)
+
+            # Importation des lignes de tarifs
+            req = """SELECT %s FROM tarifs_lignes WHERE IDtarif IN %s ORDER BY num_ligne;""" % (", ".join(CHAMPS_TABLE_LIGNES), condition)
+            DB.ExecuterReq(req)
+            listeDonneesLignes = DB.ResultatReq()
+            dictLignes = {}
+            for ligne in listeDonneesLignes :
+                index = 0
+                dictLigne = {}
+                for valeur in ligne :
+                    dictLigne[CHAMPS_TABLE_LIGNES[index]] = valeur
+                    index += 1
+                if dictLignes.has_key(dictLigne["IDtarif"]) == False :
+                    dictLignes[dictLigne["IDtarif"]] = []
+                dictLignes[dictLigne["IDtarif"]].append(dictLigne)
+                self.dict_donnees_initiales["tarifs_lignes"].append(dictLigne["IDligne"])
+
+            # Mémorisation des tarifs
+            for IDtarif, IDactivite, date_debut, date_fin, methode, type, categories_tarifs, groupes, etiquettes, cotisations, caisses, description, jours_scolaires, jours_vacances, observations, tva, code_compta, IDtype_quotient, label_prestation, IDevenement in listeDonneesTarifs :
+
+                # Récupération des filtres du tarif
+                if dictFiltres.has_key(IDtarif):
+                    liste_filtres = dictFiltres[IDtarif]
+                else :
+                    liste_filtres = []
+
+                # Récupération des lignes du tarif
+                if dictLignes.has_key(IDtarif):
+                    liste_lignes = dictLignes[IDtarif]
+                else :
+                    liste_lignes = []
+
+                dictTemp = {
+                    "IDtarif": IDtarif, "IDactivite":IDactivite, "date_debut" : date_debut, "date_fin" : date_fin, "methode" : methode, "type" : type, "categories_tarifs" : categories_tarifs,
+                    "groupes": groupes,"etiquettes" : etiquettes, "cotisations" : cotisations, "caisses" : caisses, "description" : description,
+                    "jours_scolaires": jours_scolaires, "jours_vacances" : jours_vacances, "observations" : observations, "tva" : tva,
+                    "code_compta" : code_compta, "IDtype_quotient": IDtype_quotient,"label_prestation" : label_prestation, "IDevenement" : IDevenement,
+                    "filtres" : liste_filtres, "lignes" : liste_lignes,
+                    }
+
+                if dict_tarifs.has_key(IDevenement) == False :
+                    dict_tarifs[IDevenement] = []
+                dict_tarifs[IDevenement].append(dictTemp)
+
+        # Mémorise les évènements sous forme de tracks
+        dictEvenements = {}
+        for dictEvenement in liste_evenements :
+
+            # Récupération des tarifs associé à l'évènement
+            if dict_tarifs.has_key(dictEvenement["IDevenement"]) :
+                dictEvenement["tarifs"] = dict_tarifs[dictEvenement["IDevenement"]]
+
+            # Stockage des l'évènement
+            track_evenement = Track_evenement(dictEvenement)
+            key = (dictEvenement["IDunite"], dictEvenement["IDgroupe"], dictEvenement["date"])
+            if dictEvenements.has_key(key) == False :
+                dictEvenements[key] = []
+            dictEvenements[key].append(track_evenement)
+
+        # Mémorisation des données
+        for IDouverture, IDunite, IDgroupe, date in listeOuvertures :
+            date = DateEngEnDateDD(date)
+
+            # Recherche des évènements associés
+            key = (IDunite, IDgroupe, date)
+
+            if dictEvenements.has_key(key):
+                liste_evenements = dictEvenements[key]
+            else :
+                liste_evenements = []
+
+            self.MemoriseOuverture(date, IDouverture, IDunite, IDgroupe, True, True, liste_evenements)
+            self.dict_donnees_initiales["ouvertures"].append(IDouverture)
             
-    def MemoriseOuverture(self, dateDD=None, IDouverture=None, IDunite=None, IDgroupe=None, etat=True, initial=True, forcer=False) :
-            dictValeurs = { "IDouverture" : IDouverture, "etat" : etat, "initial" : initial}
+    def MemoriseOuverture(self, dateDD=None, IDouverture=None, IDunite=None, IDgroupe=None, etat=True, initial=True, liste_evenements=[], forcer=False) :
+            dictValeurs = { "IDouverture" : IDouverture, "etat" : etat, "initial" : initial, "liste_evenements" : liste_evenements}
             if self.dictOuvertures.has_key(dateDD) == False :
                 self.dictOuvertures[dateDD] = {}
             if self.dictOuvertures[dateDD].has_key(IDgroupe) == False :
@@ -859,15 +1707,13 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             if self.dictOuvertures[dateDD][IDgroupe][IDunite] == {} or forcer == True :
                 self.dictOuvertures[dateDD][IDgroupe][IDunite] = dictValeurs
 
-    def GetDictRemplissage(self, date_debut, date_fin):
-        db = GestionDB.DB()
+    def GetDictRemplissage(self, DB, date_debut, date_fin):
         req = """SELECT IDremplissage, IDunite_remplissage, IDgroupe, date, places
         FROM remplissage 
         WHERE IDactivite=%d AND date>='%s' AND date<='%s'
         ORDER BY date; """ % (self.IDactivite, date_debut, date_fin)
-        db.ExecuterReq(req)
-        listeDonnees = db.ResultatReq()
-        db.Close()
+        DB.ExecuterReq(req)
+        listeDonnees = DB.ResultatReq()
         for IDremplissage, IDunite_remplissage, IDgroupe, date, places in listeDonnees :
             dateDD = DateEngEnDateDD(date)
             self.MemoriseRemplissage(dateDD, IDremplissage, IDunite_remplissage, IDgroupe, places, places)
@@ -885,16 +1731,14 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         if self.dictRemplissage[dateDD][IDgroupe][IDunite_remplissage] == {} or forcer == True :
             self.dictRemplissage[dateDD][IDgroupe][IDunite_remplissage] = dictValeurs
         
-    def GetDictConso(self, date_debut, date_fin):
-        db = GestionDB.DB()
+    def GetDictConso(self, DB, date_debut, date_fin):
         req = """SELECT date, IDgroupe, IDunite, COUNT(IDconso)
         FROM consommations 
         WHERE IDactivite=%d AND date>='%s' AND date<='%s'
         GROUP BY date, IDgroupe, IDunite
         ORDER BY date; """ % (self.IDactivite, date_debut, date_fin)
-        db.ExecuterReq(req)
-        listeDonnees = db.ResultatReq()
-        db.Close()
+        DB.ExecuterReq(req)
+        listeDonnees = DB.ResultatReq()
         for date, IDgroupe, IDunite, nbreConso in listeDonnees :
             date = DateEngEnDateDD(date)
             if self.dictConso.has_key(date) == False :
@@ -905,24 +1749,102 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 self.dictConso[date][IDgroupe][IDunite] = {}
             self.dictConso[date][IDgroupe][IDunite] = nbreConso
 
-    def GetValiditeActivite(self):
-        db = GestionDB.DB()
+    def GetValiditeActivite(self, DB):
         req = """SELECT date_debut, date_fin
         FROM activites 
         WHERE IDactivite=%d;""" % self.IDactivite
-        db.ExecuterReq(req)
-        listeDonnees = db.ResultatReq()
-        db.Close()
+        DB.ExecuterReq(req)
+        listeDonnees = DB.ResultatReq()
         if len(listeDonnees) == 0 : return (None, None)
         return (listeDonnees[0][0], listeDonnees[0][1])
 
+    def AfficheTooltip(self):
+        """ Création du supertooltip """
+        case = self.tip.case
 
+        # Récupération des données du tooltip
+        dictDonnees = case.GetTexteInfobulle()
+        if dictDonnees == None or type(dictDonnees) != dict:
+            self.ActiveTooltip(actif=False)
+            return
 
+        # Paramétrage du tooltip
+        font = self.GetFont()
+        self.tip.SetHyperlinkFont(wx.Font(8, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, 'Arial'))
 
+        if dictDonnees.has_key("couleur"):
+            couleur = dictDonnees["couleur"]
+            self.tip.SetTopGradientColour(couleur)
+            self.tip.SetMiddleGradientColour(wx.Colour(255, 255, 255))
+            self.tip.SetBottomGradientColour(wx.Colour(255, 255, 255))
+            self.tip.SetTextColor(wx.Colour(76, 76, 76))
+        else:
+            styleTooltip = "Office 2007 Blue"
+            self.tip.ApplyStyle(styleTooltip)
 
+        # Titre du tooltip
+        bmp = None
+        if dictDonnees.has_key("bmp"):
+            bmp = dictDonnees["bmp"]
+        self.tip.SetHeaderBitmap(bmp)
 
+        titre = None
+        if dictDonnees.has_key("titre"):
+            titre = dictDonnees["titre"]
+            self.tip.SetHeaderFont(wx.Font(10, font.GetFamily(), font.GetStyle(), wx.BOLD, font.GetUnderlined(), font.GetFaceName()))
+            self.tip.SetHeader(titre)
+            self.tip.SetDrawHeaderLine(True)
 
+        # Corps du message
+        texte = dictDonnees["texte"]
+        self.tip.SetMessage(texte)
 
+        # Pied du tooltip
+        pied = None
+        if dictDonnees.has_key("pied") and dictDonnees["pied"] != None :
+            pied = dictDonnees["pied"]
+            self.tip.SetDrawFooterLine(True)
+            self.tip.SetFooterBitmap(wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Aide.png"), wx.BITMAP_TYPE_ANY))
+            self.tip.SetFooterFont(wx.Font(7, font.GetFamily(), font.GetStyle(), wx.LIGHT, font.GetUnderlined(), font.GetFaceName()))
+            self.tip.SetFooter(pied)
+
+        # Affichage du Frame tooltip
+        self.tipFrame = STT.ToolTipWindow(self, self.tip)
+        self.tipFrame.CalculateBestSize()
+        x, y = wx.GetMousePosition()
+        self.tipFrame.SetPosition((x + 15, y + 17))
+        self.tipFrame.DropShadow(True)
+        self.tipFrame.StartAlpha(True)  # ou .Show() pour un affichage immédiat
+
+        # Arrêt du timer
+        self.timerTip.Stop()
+        del self.timerTip
+
+    def CacheTooltip(self):
+        # Fermeture du tooltip
+        if hasattr(self, "tipFrame"):
+            try:
+                self.tipFrame.Destroy()
+                del self.tipFrame
+            except:
+                pass
+
+    def ActiveTooltip(self, actif=True, case=None):
+        if actif == True:
+            # Active le tooltip
+            if hasattr(self, "tipFrame") == False and hasattr(self, "timerTip") == False:
+                self.timerTip = wx.PyTimer(self.AfficheTooltip)
+                self.timerTip.Start(1500)
+                self.tip.case = case
+        else:
+            # Désactive le tooltip
+            if hasattr(self, "timerTip"):
+                if self.timerTip.IsRunning():
+                    self.timerTip.Stop()
+                    del self.timerTip
+                    self.tip.case = None
+            self.CacheTooltip()
+            self.caseSurvolee = None
 
 
 class Dialog(wx.Dialog):
@@ -932,7 +1854,7 @@ class Dialog(wx.Dialog):
         self.IDactivite = IDactivite
         
         intro = _(u"Ce calendrier vous permet de définir les jours d'ouverture de l'activité et le nombre maximal de places. Cliquez sur les cases pour indiquer que l'unité est fonctionnelle et saisissez directement les effectifs maximals en double-cliquant sur les cases blanches. <U>Important :</U> Cliquez avec le bouton droit de la souris sur les cases Dates pour utiliser le Copier-Coller.")
-        titre = _(u"Calendrier des ouvertures")
+        titre = _(u"Calendrier des ouvertures et des évènements")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Calendrier.png")
         
         # Selection Mois
@@ -975,7 +1897,7 @@ class Dialog(wx.Dialog):
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
         self.bouton_saisie_lot = CTRL_Bouton_image.CTRL(self, texte=_(u"Saisie et suppression par lot"), cheminImage="Images/32x32/Magique.png")
         self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
-        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Fermer.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -1090,10 +2012,29 @@ class Dialog(wx.Dialog):
     def SetAfficherTousGroupes(self, etat=True):
         self.check_tous_groupes.SetValue(etat) 
         self.ctrl_calendrier.afficherTousGroupes = etat
-        
+
+    def OnBoutonCancel(self, event):
+        # Suppression des évènements créés
+        # listeSuppressions = []
+        # for track in self.ctrl_calendrier.liste_evenements_crees :
+        #     if track.IDevenement != None :
+        #         listeSuppressions.append(track.IDevenement)
+        #
+        # if len(listeSuppressions) > 0 :
+        #     DB = GestionDB.DB()
+        #     if len(listeSuppressions) == 1 :
+        #         condition = "(%d)" % listeSuppressions[0]
+        #     else :
+        #         condition = str(tuple(listeSuppressions))
+        #     DB.ExecuterReq("DELETE FROM evenements WHERE IDevenement IN %s" % condition)
+        #     DB.ExecuterReq("DELETE FROM tarifs WHERE IDevenement IN %s" % condition)
+        #     DB.Close()
+
+        self.EndModal(wx.ID_CANCEL)
+
     def OnBoutonOk(self, event):
         try :
-            dlgAttente = PBI.PyBusyInfo(_(u"Veuillez patienter durant la sauvegarde des données..."), parent=None, title=_(u"Enregistrement"), icon=wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Logo.png"), wx.BITMAP_TYPE_ANY))
+            dlgAttente = wx.BusyInfo(_(u"Veuillez patienter durant la sauvegarde des données..."), None) # .PyBusyInfo(_(u"Veuillez patienter durant la sauvegarde des données..."), parent=None, title=_(u"Enregistrement"), icon=wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Logo.png"), wx.BITMAP_TYPE_ANY))
             wx.Yield() 
             self.ctrl_calendrier.Sauvegarde()
             del dlgAttente
@@ -1118,7 +2059,7 @@ class Dialog(wx.Dialog):
 if __name__ == "__main__":
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    dialog_1 = Dialog(None, IDactivite=27)
+    dialog_1 = Dialog(None, IDactivite=1)
     app.SetTopWindow(dialog_1)
     dialog_1.ShowModal()
     app.MainLoop()

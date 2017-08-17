@@ -978,6 +978,8 @@ class Dialog(wx.Dialog):
             if typeUnite == "Unitaire" or self.action not in ("saisie", "modification") :
                 # Si unité sans options (Standard)
                 listeUnites.append({"IDunite":IDunite, "nom":nom, "type":typeUnite, "options":{}})
+            elif typeUnite == "Evenement" :
+                listeUnites.append({"IDunite":IDunite, "nom":nom, "type":typeUnite, "options":{}})
             else :
                 # Si unité avec Options (Quantité, Horaire, multihoraires...)
                 for ctrl in dictItem["controles"] :

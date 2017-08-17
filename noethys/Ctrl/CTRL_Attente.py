@@ -50,16 +50,17 @@ def PeriodeComplete(mois, annee):
 
             
 class CTRL(HTL.HyperTreeList):
-    def __init__(self, parent, dictDonnees={}, dictEtatPlaces={}, dictUnitesRemplissage={}): 
+    def __init__(self, parent, dictDonnees={}, dictEtatPlaces={}, dictUnitesRemplissage={}, mode="attente"):
         HTL.HyperTreeList.__init__(self, parent, -1)
         self.parent = parent
+        self.mode = mode
 
         # Adapte taille Police pour Linux
         from Utils import UTILS_Linux
         UTILS_Linux.AdaptePolice(self)
 
         self.dictDonnees = dictDonnees
-        self.dictEtatPlaces = copy.deepcopy(dictEtatPlaces)
+        self.dictEtatPlaces = dictEtatPlaces # copy.deepcopy(dictEtatPlaces)
         self.dictUnitesRemplissage = dictUnitesRemplissage
         self.listeTracks = []
         self.listePeriodes = []
@@ -116,6 +117,8 @@ class CTRL(HTL.HyperTreeList):
     def Importation(self):
         # Conditions Périodes
         conditionsDates = self.GetSQLdates(self.listePeriodes)
+        conditionsDates = conditionsDates.replace("date", "consommations.date")
+
         # Conditions Activités
         if len(self.listeActivites) == 0 : conditionActivites = "()"
         elif len(self.listeActivites) == 1 : conditionActivites = "(%d)" % self.listeActivites[0]
@@ -124,7 +127,8 @@ class CTRL(HTL.HyperTreeList):
         # Importation des consommations en attente
         DB = GestionDB.DB()
         req = """
-        SELECT IDconso, consommations.IDindividu, consommations.IDactivite, date, consommations.IDunite, consommations.IDgroupe, etat, date_saisie,
+        SELECT IDconso, consommations.IDindividu, consommations.IDactivite, consommations.date, consommations.IDunite, consommations.IDgroupe, consommations.IDevenement, etat, date_saisie,
+        evenements.nom,
         individus.nom, individus.prenom,
         unites.nom, unites.ordre,
         activites.nom, groupes.nom,
@@ -132,12 +136,13 @@ class CTRL(HTL.HyperTreeList):
         FROM consommations
         LEFT JOIN individus ON individus.IDindividu = consommations.IDindividu
         LEFT JOIN unites ON unites.IDunite = consommations.IDunite
+        LEFT JOIN evenements ON evenements.IDevenement = consommations.IDevenement
         LEFT JOIN activites ON activites.IDactivite = consommations.IDactivite
         LEFT JOIN groupes ON groupes.IDgroupe = consommations.IDgroupe
         LEFT JOIN comptes_payeurs ON comptes_payeurs.IDcompte_payeur = consommations.IDcompte_payeur
-        WHERE etat = 'attente' AND consommations.IDactivite IN %s AND %s
+        WHERE etat = '%s' AND consommations.IDactivite IN %s AND %s
         ORDER BY IDconso
-        ;""" % (conditionActivites, conditionsDates)
+        ;""" % (self.mode, conditionActivites, conditionsDates)
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()     
         DB.Close() 
@@ -145,7 +150,8 @@ class CTRL(HTL.HyperTreeList):
         dictActivites = {}
         dictGroupes = {}
         dictIndividus = {}
-        for IDconso, IDindividu, IDactivite, date, IDunite, IDgroupe, etat, date_saisie, nomIndividu, prenomIndividu, nomUnite, ordreUnite, nomActivite, nomGroupe, IDcompte_payeur, IDfamille in listeDonnees :
+        dictEvenements = {}
+        for IDconso, IDindividu, IDactivite, date, IDunite, IDgroupe, IDevenement, etat, date_saisie, nomEvenement, nomIndividu, prenomIndividu, nomUnite, ordreUnite, nomActivite, nomGroupe, IDcompte_payeur, IDfamille in listeDonnees :
             date = DateEngEnDateDD(date)
             date_saisie = DateEngEnDateDD(date_saisie)
             
@@ -158,17 +164,20 @@ class CTRL(HTL.HyperTreeList):
             # Groupe
             if dictConso[date][IDactivite].has_key(IDgroupe) == False :
                 dictConso[date][IDactivite][IDgroupe] = {}
+            # Evènement
+            if dictConso[date][IDactivite][IDgroupe].has_key(IDevenement) == False :
+                dictConso[date][IDactivite][IDgroupe][IDevenement] = {}
             # Individu
-            if dictConso[date][IDactivite][IDgroupe].has_key(IDindividu) == False :
-                dictConso[date][IDactivite][IDgroupe][IDindividu] = []
+            if dictConso[date][IDactivite][IDgroupe][IDevenement].has_key(IDindividu) == False :
+                dictConso[date][IDactivite][IDgroupe][IDevenement][IDindividu] = []
                 
             dictTemp = {
                 "IDconso" : IDconso, "IDindividu" : IDindividu, "IDactivite" : IDactivite, "date" : date,
                 "IDunite" : IDunite, "IDgroupe" : IDgroupe, "etat" : etat, "date_saisie" : date_saisie, 
                 "nomUnite" : nomUnite, "ordreUnite" : ordreUnite, "IDcompte_payeur" : IDcompte_payeur,
-                "IDfamille" : IDfamille,
+                "IDfamille" : IDfamille, "IDevenement" : IDevenement, "nomEvenement" : nomEvenement,
                 }
-            dictConso[date][IDactivite][IDgroupe][IDindividu].append(dictTemp)
+            dictConso[date][IDactivite][IDgroupe][IDevenement][IDindividu].append(dictTemp)
             
             if dictActivites.has_key(IDactivite) == False :
                 dictActivites[IDactivite] = nomActivite
@@ -176,8 +185,11 @@ class CTRL(HTL.HyperTreeList):
                 dictGroupes[IDgroupe] = nomGroupe
             if dictIndividus.has_key(IDindividu) == False :
                 dictIndividus[IDindividu] = {"nomIndividu" : u"%s %s" % (nomIndividu, prenomIndividu), "IDfamille" : IDfamille }
-        
-        return dictConso, dictActivites, dictGroupes, dictIndividus
+
+            if dictEvenements.has_key(IDevenement) == False and IDevenement != None :
+                dictEvenements[IDevenement] = nomEvenement
+
+        return dictConso, dictActivites, dictGroupes, dictIndividus, dictEvenements
     
     def MAJ(self):
         """ Met à jour (redessine) tout le contrôle """
@@ -189,7 +201,9 @@ class CTRL(HTL.HyperTreeList):
 ##        self.Thaw() 
 
     def Remplissage(self):
-        dictConso, dictActivites, dictGroupes, dictIndividus = self.Importation() 
+        dictConso, dictActivites, dictGroupes, dictIndividus, dictEvenements = self.Importation()
+
+        dictPlacesRestantes = {}
         
         # Mémorisation pour impression
         self.listeImpression = []
@@ -228,79 +242,101 @@ class CTRL(HTL.HyperTreeList):
                     self.SetPyData(niveauGroupe, {"type" : "groupe", "valeur" : IDgroupe})
                     self.SetItemBold(niveauGroupe, True)
 
-                    # Branches Individus
-                    listeImpressionIndividus = []
-                    listeIndividus = []
-                    for IDindividu, listeConso in dictConso[date][IDactivite][IDgroupe].iteritems() :
-                        listeIDconso = []
-                        for dictConsoIndividu in listeConso :
-                            listeIDconso.append(dictConsoIndividu["IDconso"])
-                        IDconsoMin = min(listeIDconso)
-                        listeIndividus.append((IDconsoMin, IDindividu))
-                    listeIndividus.sort() 
-                    
-                    num = 1
-                    for ordreIndividu, IDindividu in listeIndividus :
-                        nomIndividu = dictIndividus[IDindividu]["nomIndividu"]
-                        texteIndividu = u"%d. %s" % (num, nomIndividu)
-                        IDfamille = dictIndividus[IDindividu]["IDfamille"]
-                        niveauIndividu = self.AppendItem(niveauGroupe, texteIndividu)
-                        self.SetPyData(niveauIndividu, {"type" : "individu", "nomIndividu" : nomIndividu, "IDindividu" : IDindividu, "IDfamille" : IDfamille})
-                        
-                        # Détail pour l'individu
-                        texteUnites = u""
-                        dateSaisie = None
-                        placeDispo = True
-                        listePlaces = []
-                        for dictUnite in dictConso[date][IDactivite][IDgroupe][IDindividu] :
-                            IDunite = dictUnite["IDunite"]
-                            date_saisie = dictUnite["date_saisie"]
-                            nomUnite = dictUnite["nomUnite"]
-                            texteUnites += nomUnite + " + "
-                            if dateSaisie == None or date_saisie < dateSaisie :
-                                dateSaisie = date_saisie
-                                
-                            # Etat des places
-                            if self.dictUnitesRemplissage.has_key(IDunite) :
-                                listePlacesRestantes = []
-                                for IDuniteRemplissage in self.dictUnitesRemplissage[IDunite] :
-                                    key = (date, IDactivite, IDgroupe, IDuniteRemplissage)
-                                    if self.dictEtatPlaces.has_key(key) :
-                                        nbrePlacesRestantes = self.dictEtatPlaces[key]["nbrePlacesRestantes"]
-                                    else :
-                                        nbrePlacesRestantes = 0
-                                    listePlacesRestantes.append(nbrePlacesRestantes)
-                                nbrePlacesRestantes = min(listePlacesRestantes)
-                                if nbrePlacesRestantes <= 0 :
-                                    placeDispo = False
-                        
-                        # S'il reste finalement une place dispo, on change le nbre de places restantes
-                        if placeDispo == True :
-                            for dictUnite in dictConso[date][IDactivite][IDgroupe][IDindividu] :
-                                IDunite = dictUnite["IDunite"]
-                                if self.dictUnitesRemplissage.has_key(IDunite) :
-                                    for IDuniteRemplissage in self.dictUnitesRemplissage[IDunite] :
-                                        key = (date, IDactivite, IDgroupe, IDuniteRemplissage)
-                                        self.dictEtatPlaces[key]["nbrePlacesRestantes"] -= 1
-                        
-                        texteUnites = texteUnites[:-3]
-                        texteDateSaisie = DateComplete(dateSaisie)
-                        
-                        # Autres colonnes
-                        self.SetItemText(niveauIndividu, texteUnites, 1)
-                        self.SetItemText(niveauIndividu, texteDateSaisie, 2)
-                        
-                        # Image
-                        if placeDispo == True :                      
-                            img = self.img_ok
+                    # Parcourt les évènements
+                    for IDevenement, dictTemp in dictConso[date][IDactivite][IDgroupe].iteritems() :
+
+                        if IDevenement != None :
+                            parent = self.AppendItem(niveauGroupe, dictEvenements[IDevenement])
+                            self.SetPyData(parent, {"type": "groupe", "valeur": IDgroupe})
+                            # self.SetItemBold(parent, True)
                         else :
-                            img = self.img_pasok
-                        self.SetItemImage(niveauIndividu, img, which=wx.TreeItemIcon_Normal)
-                        
-                        # Mémorisation pour impression
-                        listeImpressionIndividus.append({"placeDispo" : placeDispo, "nomIndividu" : nomIndividu, "num" : num, "texteIndividu" : texteIndividu, "texteUnites" : texteUnites, "texteDateSaisie" : texteDateSaisie} )
-                        
-                        num += 1
+                            parent = niveauGroupe
+
+                        # Branches Individus
+                        listeImpressionIndividus = []
+                        listeIndividus = []
+                        for IDindividu, listeConso in dictTemp.iteritems() :
+                            listeIDconso = []
+                            for dictConsoIndividu in listeConso :
+                                listeIDconso.append(dictConsoIndividu["IDconso"])
+                            IDconsoMin = min(listeIDconso)
+                            listeIndividus.append((IDconsoMin, IDindividu))
+                        listeIndividus.sort()
+
+                        num = 1
+                        for ordreIndividu, IDindividu in listeIndividus :
+                            nomIndividu = dictIndividus[IDindividu]["nomIndividu"]
+                            texteIndividu = u"%d. %s" % (num, nomIndividu)
+                            IDfamille = dictIndividus[IDindividu]["IDfamille"]
+                            niveauIndividu = self.AppendItem(parent, texteIndividu)
+                            self.SetPyData(niveauIndividu, {"type" : "individu", "nomIndividu" : nomIndividu, "IDindividu" : IDindividu, "IDfamille" : IDfamille})
+
+                            # Détail pour l'individu
+                            texteUnites = u""
+                            dateSaisie = None
+                            placeDispo = True
+                            listePlaces = []
+                            for dictUnite in dictConso[date][IDactivite][IDgroupe][IDevenement][IDindividu] :
+
+                                IDunite = dictUnite["IDunite"]
+                                date_saisie = dictUnite["date_saisie"]
+                                nomUnite = dictUnite["nomUnite"]
+                                if IDevenement != None :
+                                    nomUnite += u" (%s)" % dictEvenements[IDevenement]
+                                texteUnites += nomUnite + " + "
+                                if dateSaisie == None or date_saisie < dateSaisie :
+                                    dateSaisie = date_saisie
+
+                                # Etat des places
+                                if self.dictUnitesRemplissage.has_key(IDunite) :
+                                    listePlacesRestantes = []
+                                    for IDuniteRemplissage in self.dictUnitesRemplissage[IDunite] :
+                                        key = (date, IDactivite, IDgroupe, IDuniteRemplissage, IDevenement)
+                                        if dictPlacesRestantes.has_key(key) :
+                                            nbrePlacesRestantes = dictPlacesRestantes[key]
+                                        elif self.dictEtatPlaces.has_key(key) :
+                                            if IDevenement == None :
+                                                nbrePlacesRestantes = self.dictEtatPlaces[key]["remplissage"]["nbrePlacesRestantes"]
+                                            else :
+                                                nbrePlacesRestantes = self.dictEtatPlaces[key]["evenement"].GetPlacesEvenement()["nbrePlacesRestantes"]
+                                            if nbrePlacesRestantes == None :
+                                                nbrePlacesRestantes = 99999
+                                            dictPlacesRestantes[key] = nbrePlacesRestantes
+                                        else :
+                                            nbrePlacesRestantes = 0
+                                        listePlacesRestantes.append(nbrePlacesRestantes)
+                                    nbrePlacesRestantes = min(listePlacesRestantes)
+                                    if nbrePlacesRestantes <= 0 :
+                                        placeDispo = False
+
+                            # S'il reste finalement une place dispo, on change le nbre de places restantes
+                            if placeDispo == True :
+                                for dictUnite in dictConso[date][IDactivite][IDgroupe][IDevenement][IDindividu] :
+                                    IDunite = dictUnite["IDunite"]
+                                    if self.dictUnitesRemplissage.has_key(IDunite) :
+                                        for IDuniteRemplissage in self.dictUnitesRemplissage[IDunite] :
+                                            key = (date, IDactivite, IDgroupe, IDuniteRemplissage, IDevenement)
+                                            #self.dictEtatPlaces[key]["remplissage"]["nbrePlacesRestantes"] -= 1
+                                            dictPlacesRestantes[key] -= 1
+
+                            texteUnites = texteUnites[:-3]
+                            texteDateSaisie = DateComplete(dateSaisie)
+
+                            # Autres colonnes
+                            self.SetItemText(niveauIndividu, texteUnites, 1)
+                            self.SetItemText(niveauIndividu, texteDateSaisie, 2)
+
+                            # Image
+                            if placeDispo == True :
+                                img = self.img_ok
+                            else :
+                                img = self.img_pasok
+                            self.SetItemImage(niveauIndividu, img, which=wx.TreeItemIcon_Normal)
+
+                            # Mémorisation pour impression
+                            listeImpressionIndividus.append({"placeDispo" : placeDispo, "nomIndividu" : nomIndividu, "num" : num, "texteIndividu" : texteIndividu, "texteUnites" : texteUnites, "texteDateSaisie" : texteDateSaisie} )
+
+                            num += 1
                     
                     # Mémorisation pour impression
                     listeImpressionGroupes.append( (nomGroupe, listeImpressionIndividus) )
@@ -389,7 +425,7 @@ class CTRL(HTL.HyperTreeList):
             # Mise à jour des chiffres du remplissage
             panel_remplissage.MAJ() 
             # Récupération des nouveau chiffres
-            self.dictEtatPlaces = copy.deepcopy(panel_remplissage.ctrl_remplissage.GetEtatPlaces())
+            self.dictEtatPlaces = panel_remplissage.ctrl_remplissage.GetEtatPlaces() # copy.deepcopy(panel_remplissage.ctrl_remplissage.GetEtatPlaces())
             # MAJ du contrôle liste d'attente
             self.MAJ() 
             

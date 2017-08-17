@@ -97,7 +97,10 @@ class CaseStandard(GridCellRenderer):
         dc.DrawText(text, rect[0], rect[1])
         
         conso = self.case.conso
-        
+
+        # Affiche provisoirement l'IDfamille dans la case
+        #dc.DrawText(str(self.case.IDfamille), rect[0]+4, rect[1] + 5)
+
         # Dessin du cadenas VERROUILLAGE
         if self.case.etat == None and self.case.verrouillage == 1 :
             dc.SetBrush(wx.Brush( (100, 100, 100), wx.SOLID))
@@ -523,7 +526,7 @@ class CaseMultihoraires(GridCellRenderer):
             else :
                 gc.SetPen(wx.Pen(couleur, 1, wx.SOLID)) # 128 = demi-transparence
             gc.DrawRoundedRectangle(rectBarre.x, rectBarre.y, rectBarre.width, rectBarre.height, 5)
-            
+
             # Dessin des horaires
             heure_debut_x, heure_debut_y, heure_debut_largeur, heure_debut_hauteur = self.DrawTexte(gc, rectBarre, barre.heure_debut.strftime("%Hh%M"), couleur=couleurTexte, position="gauche")
             heure_fin_x, heure_fin_y, heure_fin_largeur, heure_fin_hauteur = self.DrawTexte(gc, rectBarre, barre.heure_fin.strftime("%Hh%M"), couleur=couleurTexte, position="droite")
@@ -597,11 +600,22 @@ class CaseMultihoraires(GridCellRenderer):
                         gc.SetPen(wx.TRANSPARENT_PEN)
                         gc.DrawEllipse(rectBarre.x + rectBarre.width - 7 - (5 * index), rectBarre.y + rectBarre.height - 7, 4, 4) # En haut à droite
                         index += 1
-                
+
+        # Dessin du cadenas VERROUILLAGE
+        if self.case.verrouillage == 1:
+            gc.SetBrush(wx.Brush((100, 100, 100), wx.SOLID))
+            gc.SetPen(wx.TRANSPARENT_PEN)
+            gc.DrawRectangle(*rectCase)
+            tailleImage = 8
+            paddingImage = 3
+            bmp = wx.Bitmap(Chemins.GetStaticPath("Images/Special/Cadenas_ferme.png"), wx.BITMAP_TYPE_ANY)
+            largeurBmp, hauteurBmp = bmp.GetSize()
+            gc.DrawBitmap(bmp, rectCase[0] + tailleImage - paddingImage, rectCase[1] + paddingImage, largeurBmp, hauteurBmp)
+
         gc.PopState() 
         
         # Envoi du buffer au DC
-        dcGrid.Blit(rect.x, rect.y, bmp.GetWidth(), bmp.GetHeight(), image, 0, 0)
+        dcGrid.Blit(rect.x, rect.y, rect.GetWidth(), rect.GetHeight(), image, 0, 0)
         
     def DrawTexte(self, gc, rectBarre, texte="07h30", couleur=(0, 0, 0), position="gauche"):
         largeurTexte, hauteurTexte = gc.GetTextExtent(texte)
@@ -650,9 +664,207 @@ class CaseMultihoraires(GridCellRenderer):
             return CTRL_Grille.COULEUR_ATTENTE
         if conso.etat == "refus" : 
             return CTRL_Grille.COULEUR_REFUS
+        return wx.WHITE
     
     def GetCouleur(self, conso):
         return self.GetCouleurBarre(conso)
+
+
+
+
+# -------------------------------------------------------------------------------------------
+
+class CaseEvenement(GridCellRenderer):
+    def __init__(self, case):
+        GridCellRenderer.__init__(self)
+        self.case = case
+        self.dict_boutons = {}
+
+    def Draw(self, grid, attr, dc, rect, row, col, isSelected):
+        self.grid = grid
+
+        # Préparation du buffer Image
+        dcGrid = dc
+        bmp = wx.EmptyBitmap(rect.GetWidth(), rect.GetHeight())
+        image = wx.MemoryDC()
+        image.SelectObject(bmp)
+        gc = wx.GraphicsContext.Create(image)
+        gc.PushState()
+        gc.SetFont(attr.GetFont())
+
+        rectCase = wx.Rect(0, 0, rect.GetWidth(), rect.GetHeight())
+        x, y, largeur, hauteur = rectCase.x, rectCase.y, rectCase.width, rectCase.height
+
+        if self.case.ouvert == True:
+            self.couleurFond = self.grid.GetBackgroundColour() #CTRL_Grille.COULEUR_FERME
+        else :
+            self.couleurFond = CTRL_Grille.COULEUR_FERME
+        gc.SetBrush(wx.Brush(self.couleurFond, wx.SOLID))
+        gc.SetPen(wx.TRANSPARENT_PEN)
+        gc.DrawRectangle(x, y, largeur, hauteur)
+
+        # Calcul de la largeur d'un bouton
+        nbre_evenements = len(self.case.liste_evenements)
+        marge = 2
+        if len(self.case.liste_evenements) :
+            largeur_bouton = (1.0 * (rectCase.width - marge -1) / nbre_evenements) - marge*2
+
+        # Dessin de boutons
+        self.dict_boutons = {}
+        x = 1
+        for evenement in self.case.liste_evenements :
+
+            # Calcul de la taille du rectangle
+            rectEvenement = wx.Rect(x + marge, rectCase.y + marge, largeur_bouton, rectCase.height - marge*2 -marge)
+
+            # Dessin du rectangle
+            couleur = evenement.GetCouleur()
+            gc.SetBrush(wx.Brush(couleur, wx.SOLID))
+            gc.SetPen(wx.Pen(wx.SystemSettings.GetColour(wx.SYS_COLOUR_3DSHADOW)))
+            gc.DrawRoundedRectangle(rectEvenement.x, rectEvenement.y, rectEvenement.width, rectEvenement.height, 5)
+
+            # Dessin du nom de l'évènement
+            couleur_nom = wx.Colour(150, 150, 150)
+            rect_texte = self.DrawTexte(gc, rectEvenement, evenement.nom, couleur=couleur_nom, position=(4, 2), font=wx.Font(8, wx.SWISS, wx.NORMAL, wx.NORMAL))
+
+            # Dessin des horaires
+            if evenement.heure_debut != None and evenement.heure_fin != None :
+                heure_debut = UTILS_Dates.DatetimeTimeEnStr(evenement.heure_debut, "h")
+                heure_fin = UTILS_Dates.DatetimeTimeEnStr(evenement.heure_fin, "h")
+                if heure_debut != "00h00" and heure_fin != "00h00":
+                    texte = u"%s - %s" % (heure_debut, heure_fin)
+                    couleur_horaires = wx.Colour(200, 200, 200)
+                    rect_texte = self.DrawTexte(gc, rectEvenement, texte, couleur=couleur_horaires, position=(4, rect_texte.height + 5), font=wx.Font(6, wx.SWISS, wx.NORMAL, wx.NORMAL))
+
+            if evenement.conso != None :
+                conso = evenement.conso
+
+                # Dessin du cadenas VERROUILLAGE
+                if conso.verrouillage == 1:
+                    imageTemp = wx.Bitmap(Chemins.GetStaticPath("Images/Special/Cadenas_ferme.png"), wx.BITMAP_TYPE_ANY)
+                    largeurBmp, hauteurBmp = imageTemp.GetSize()
+                    gc.DrawBitmap(imageTemp, 2, rectEvenement.height - 10, largeurBmp, hauteurBmp)
+
+                # Dessin de l'image FORFAIT CREDIT
+                if conso.etat in ("reservation", "present", "absenti", "absentj") and conso.IDprestation in grid.dictForfaits.keys():
+                    couleurForfait = grid.dictForfaits[conso.IDprestation]["couleur"]
+                    gc.SetBrush(wx.Brush(couleurForfait, wx.SOLID))
+                    gc.SetPen(wx.TRANSPARENT_PEN)
+                    path = gc.CreatePath()
+                    path.AddLineToPoint(8, 0)
+                    path.AddLineToPoint(1, 8)
+                    path.AddLineToPoint(1, 0)
+                    gc.DrawPath(path)
+
+                # Dessin des images
+                listeImages = []
+
+                # Dessin de l'image PRESENT (Coche verte)
+                if conso.etat == "present":
+                    listeImages.append(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Ok5.png"), wx.BITMAP_TYPE_ANY))
+
+                # Dessin de l'image ABSENT JUSTIFIEE (Croix rouge)
+                if conso.etat == "absentj":
+                    listeImages.append(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/absentj.png"), wx.BITMAP_TYPE_ANY))
+
+                # Dessin de l'image ABSENT INJUSTIFIEE (Croix rouge)
+                if conso.etat == "absenti":
+                    listeImages.append(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/absenti.png"), wx.BITMAP_TYPE_ANY))
+
+                # Dessin de l'image SANS PRESTATION (Alerte)
+                if conso.etat in ("reservation", "present", "absenti", "absentj") and conso.IDprestation == None and grid.afficheSansPrestation == True:
+                    listeImages.append(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Gratuit.png"), wx.BITMAP_TYPE_ANY))
+
+                paddingImage = 3
+                xImage = rectEvenement.x + rectEvenement.width - paddingImage
+                if rectEvenement.height > 12 and rectEvenement.width > len(listeImages) * 19:
+                    for imageTemp in listeImages:
+                        largeurBmp, hauteurBmp = imageTemp.GetSize()
+                        gc.DrawBitmap(imageTemp, xImage - largeurBmp, rectEvenement.y + 1, largeurBmp, hauteurBmp)
+                        xImage -= largeurBmp + paddingImage
+
+                # Ecrit les étiquettes
+                nbreEtiquettes = len(conso.etiquettes)
+                if conso.etat != None and nbreEtiquettes > 0:
+                    index = 0
+                    for IDetiquette in conso.etiquettes:
+                        if grid.dictEtiquettes.has_key(IDetiquette):
+                            dictEtiquette = grid.dictEtiquettes[IDetiquette]
+                            # Dessine l'étiquette
+                            gc.SetBrush(wx.Brush(dictEtiquette["couleur"], wx.SOLID))
+                            gc.SetPen(wx.TRANSPARENT_PEN)
+                            if rectEvenement.height > 10 and (len(listeImages) == 0 or rectEvenement.height > 25) :
+                                gc.DrawEllipse(rectEvenement.x + rectEvenement.width - 7 - (5 * index), rectEvenement.y + rectEvenement.height - 7, 4, 4)  # En haut à droite
+                            index += 1
+
+            # Mémorisation des coordonnées du bouton
+            self.dict_boutons[evenement] = rectEvenement
+
+            # Calcul de la position x suivante
+            x += rectEvenement.width + marge*2
+
+        # Dessin du cadenas VERROUILLAGE
+        if self.case.verrouillage == 1:
+            gc.SetBrush(wx.Brush((100, 100, 100), wx.SOLID))
+            gc.SetPen(wx.TRANSPARENT_PEN)
+            gc.DrawRectangle(*rectCase)
+            tailleImage = 8
+            paddingImage = 3
+            bmp = wx.Bitmap(Chemins.GetStaticPath("Images/Special/Cadenas_ferme.png"), wx.BITMAP_TYPE_ANY)
+            largeurBmp, hauteurBmp = bmp.GetSize()
+            gc.DrawBitmap(bmp, rectCase[0] + tailleImage - paddingImage, rectCase[1] + paddingImage, largeurBmp, hauteurBmp)
+
+        gc.PopState()
+
+        # Envoi du buffer au DC
+        dcGrid.Blit(rect.x, rect.y, rect.GetWidth(), rect.GetHeight(), image, 0, 0)
+
+    def DrawTexte(self, gc, rect, texte="Texte", couleur=wx.Colour(0, 0, 0), position=(0, 0), font=None):
+        # Ajuste la font
+        if font == None :
+            font = wx.Font(7, wx.SWISS, wx.NORMAL, wx.NORMAL)
+        gc.SetFont(font, couleur)
+
+        # Calcul la largeur du texte
+        largeurTexte, hauteurTexte = gc.GetTextExtent(texte)
+
+        # Raccourci le texte si besoin
+        if largeurTexte > (rect.width - position[0] -2) :
+            texte = wordwrap.wordwrap(texte, rect.width-10, gc).split("\n")[0] + "..."
+            largeurTexte, hauteurTexte = gc.GetTextExtent(texte)
+
+        # Calcul le rect du texte
+        rect_texte = wx.Rect(rect.x + position[0], rect.y + position[1], largeurTexte, hauteurTexte)
+
+        # Dessin du texte
+        if rect.ContainsRect(rect_texte) :
+            gc.DrawText(texte, rect_texte.x, rect_texte.y)
+
+        return rect_texte
+
+    def GetBestSize(self, grid, attr, dc, row, col):
+        text = grid.GetCellValue(row, col)
+        dc.SetFont(attr.GetFont())
+        w, h = dc.GetTextExtent(text)
+        return wx.Size(w, h)
+
+    def Clone(self):
+        return RendererCase()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 # -------------------------------------------------------------------------------------------

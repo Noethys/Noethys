@@ -290,6 +290,8 @@ class Panel(wx.Panel):
         """ Retourne le code de la page sélectionnée """
         return self.ctrl_type.GetType()        
     
+    def MAJ(self):
+        pass
 
 
 

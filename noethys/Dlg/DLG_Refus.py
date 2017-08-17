@@ -19,10 +19,7 @@ import sys
 import operator
 
 from Ctrl import CTRL_Bandeau
-from Ctrl import CTRL_Refus
-
-try: import psyco; psyco.full()
-except: pass
+from Ctrl import CTRL_Attente
 
 
 class Dialog(wx.Dialog):
@@ -34,7 +31,7 @@ class Dialog(wx.Dialog):
         titre = _(u"Liste des places refusées")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Places_refus.png")
         
-        self.ctrl_refus = CTRL_Refus.CTRL(self, dictDonnees=dictDonnees, dictEtatPlaces=dictEtatPlaces, dictUnitesRemplissage=dictUnitesRemplissage)
+        self.ctrl_refus = CTRL_Attente.CTRL(self, dictDonnees=dictDonnees, dictEtatPlaces=dictEtatPlaces, dictUnitesRemplissage=dictUnitesRemplissage, mode="refus")
         
         self.bouton_ouvrir_fiche = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Famille.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_imprimer = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Imprimante.png"), wx.BITMAP_TYPE_ANY))

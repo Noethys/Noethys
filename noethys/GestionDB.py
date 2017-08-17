@@ -2084,6 +2084,22 @@ class DB:
             except Exception, err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
+        # =============================================================
+
+        versionFiltre = (1, 2, 0, 9)
+        if versionFichier < versionFiltre :
+            try :
+                if self.IsTableExists("evenements") == False: self.CreationTable("evenements", Tables.DB_DATA)
+                if self.IsTableExists("modeles_prestations") == False: self.CreationTable("modeles_prestations", Tables.DB_DATA)
+                self.AjoutChamp("consommations", "IDevenement", "INTEGER")
+                self.AjoutChamp("unites_remplissage", "largeur", "INTEGER")
+                self.AjoutChamp("tarifs", "IDevenement", "INTEGER")
+                self.AjoutChamp("tarifs_lignes", "IDmodele", "INTEGER")
+            except Exception, err :
+                return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
+
+
+
 
 
 
@@ -2337,7 +2353,7 @@ if __name__ == "__main__":
                 
     # Création d'une table données
     # db = DB(suffixe="DATA")
-    # listeTables = ("profils_parametres",)
+    # listeTables = ("modeles_prestations",)
     # for nomTable in listeTables :
     #     db.CreationTable(nomTable, Tables.DB_DATA)
     # db.Close()
@@ -2347,18 +2363,18 @@ if __name__ == "__main__":
 ## ----------------------------------------------------------------------
 
 ##    # Création de toutes les tables
-##    db = DB(suffixe="DATA", modeCreation=True)
-##    import Tables
-##    dicoDB = Tables.DB_DATA
-##    db.CreationTables(dicoDB)
-##    db.Close()
-##    print "creation des tables DATA ok."
-##    db = DB(suffixe="PHOTOS", modeCreation=True)
-##    import Tables
-##    dicoDB = Tables.DB_PHOTOS
-##    db.CreationTables(dicoDB)
-##    db.Close()
-##    print "creation des tables PHOTOS ok."
+    # db = DB(suffixe="DATA", modeCreation=True)
+    # import Tables
+    # dicoDB = Tables.DB_DATA
+    # db.CreationTables(dicoDB)
+    # db.Close()
+    # print "creation des tables DATA ok."
+    # db = DB(suffixe="PHOTOS", modeCreation=True)
+    # import Tables
+    # dicoDB = Tables.DB_PHOTOS
+    # db.CreationTables(dicoDB)
+    # db.Close()
+    # print "creation des tables PHOTOS ok."
     
 ##    db = DB(nomFichier="Prenoms.dat", suffixe=None)
 ##    for IDprenom in range(1, 12555):
@@ -2371,9 +2387,9 @@ if __name__ == "__main__":
 ##            db.ReqMAJ("prenoms", listeDonnees, "IDprenom", IDprenom)
 ##    db.Close()
         
-    # Ajouter un champ
+    # # Ajouter un champ
     # db = DB(suffixe="DATA")
-    # db.AjoutChamp("portail_messages", "affichage_date_debut", "DATETIME")
+    # db.AjoutChamp("tarifs_lignes", "IDmodele", "INTEGER")
     # db.Close()
 
     # Exportation d'une table dans la base DEFAUT

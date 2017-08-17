@@ -16,6 +16,7 @@ from Ctrl import CTRL_Bouton_image
 import wx.lib.agw.aui as aui
 
 import DLG_Remplissage
+import DLG_Recap_evenements
 import DLG_Nbre_inscrits_2 as DLG_Nbre_inscrits
 
 
@@ -32,7 +33,7 @@ class CTRL(aui.AuiNotebook):
             self.SetPageTooltip(0, _(u"Affiche l'état des consommations. \nVous pouvez glisser-déposer cet onglet pour déplacer la page."))
         except :
             pass
-            
+
         # CTRL Inscriptions
         self.ctrl_nbre_inscrits = DLG_Nbre_inscrits.Panel(self)
         self.AddPage(self.ctrl_nbre_inscrits, _(u"Inscriptions"))
@@ -40,7 +41,15 @@ class CTRL(aui.AuiNotebook):
             self.SetPageTooltip(1, _(u"Affiche l'état des inscriptions. \nVous pouvez glisser-déposer cet onglet pour déplacer la page."))
         except :
             pass
-        
+
+        # CTRL Evènements
+        self.ctrl_evenements = DLG_Recap_evenements.Panel(self)
+        self.AddPage(self.ctrl_evenements, _(u"Evènements"))
+        try :
+            self.SetPageTooltip(2, _(u"Affiche l'état des évènements. \nVous pouvez glisser-déposer cet onglet pour déplacer la page."))
+        except :
+            pass
+
         # Bind
         self.Bind(aui.EVT_AUINOTEBOOK_PAGE_CHANGED, self.OnPageChanged)
 
@@ -53,7 +62,9 @@ class CTRL(aui.AuiNotebook):
             self.ctrl_remplissage.MAJ()
         if self.GetPageActive() == 1 :
             self.ctrl_nbre_inscrits.MAJ()
-    
+        if self.GetPageActive() == 2 :
+            self.ctrl_evenements.MAJ()
+
     def SetPageActive(self, index=0):
         self.SetSelection(index)
     

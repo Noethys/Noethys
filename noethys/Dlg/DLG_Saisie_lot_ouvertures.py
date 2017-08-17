@@ -86,11 +86,13 @@ class Dialog(wx.Dialog):
         self.label_elements = wx.StaticText(self, -1, _(u"Eléments :"))
         self.check_ouvertures = wx.CheckBox(self, -1, _(u"Ouvertures"))
         self.check_places = wx.CheckBox(self, -1, _(u"Nbre de places max."))
-        
+        self.check_evenements = wx.CheckBox(self, -1, _(u"Evènements"))
+
         if self.afficheElements == False :
             self.label_elements.Show(False)
             self.check_ouvertures.Show(False)
             self.check_places.Show(False)
+            self.check_evenements.Show(False)
         
         # Période
         self.box_periode_staticbox = wx.StaticBox(self, -1, _(u"Période d'application"))
@@ -126,6 +128,7 @@ class Dialog(wx.Dialog):
         # Init
         self.check_ouvertures.SetValue(True)
         self.check_places.SetValue(True)
+        self.check_evenements.SetValue(True)
 ##        self.ctrl_scolaires.SetJours("0;1;2;3;4")
 ##        self.ctrl_vacances.SetJours("0;1;2;3;4")
         self.ctrl_date.SetFocus()
@@ -137,6 +140,7 @@ class Dialog(wx.Dialog):
         self.radio_renitialisation.SetToolTip(wx.ToolTip(_(u"Sélectionnez ce mode pour réinitialiser les éléments des dates cibles")))
         self.check_ouvertures.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour modifier les ouvertures")))
         self.check_places.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour modifier les nbres de places max. (remplissage)")))
+        self.check_evenements.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour modifier les évènements (uniquement pour les unités de type évènementielles")))
         self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Sélectionnez une date de début de période cible")))
         self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Sélectionnez une date de fin de période cible")))
         self.ctrl_feries.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour modifier également les jours fériés")))
@@ -150,7 +154,7 @@ class Dialog(wx.Dialog):
         # Action
         box_action = wx.StaticBoxSizer(self.box_action_staticbox, wx.VERTICAL)
         grid_sizer_action = wx.FlexGridSizer(rows=2, cols=2, vgap=15, hgap=15)
-        grid_sizer_elements = wx.FlexGridSizer(rows=2, cols=1, vgap=5, hgap=5)
+        grid_sizer_elements = wx.FlexGridSizer(rows=3, cols=1, vgap=5, hgap=5)
         grid_sizer_action2 = wx.FlexGridSizer(rows=2, cols=1, vgap=5, hgap=5)
         grid_sizer_date = wx.FlexGridSizer(rows=1, cols=4, vgap=5, hgap=5)
         grid_sizer_action.Add(self.label_action, 0, wx.ALIGN_RIGHT, 0)
@@ -163,6 +167,7 @@ class Dialog(wx.Dialog):
         grid_sizer_action.Add(self.label_elements, 0, wx.ALIGN_RIGHT, 0)
         grid_sizer_elements.Add(self.check_ouvertures, 0, 0, 0)
         grid_sizer_elements.Add(self.check_places, 0, 0, 0)
+        grid_sizer_elements.Add(self.check_evenements, 0, 0, 0)
         grid_sizer_elements.AddGrowableCol(0)
         grid_sizer_action.Add(grid_sizer_elements, 1, wx.EXPAND, 0)
         grid_sizer_action.AddGrowableCol(1)
@@ -233,6 +238,7 @@ class Dialog(wx.Dialog):
         elements = []
         if self.check_ouvertures.GetValue() == True : elements.append("ouvertures")
         if self.check_places.GetValue() == True : elements.append("places")
+        if self.check_evenements.GetValue() == True: elements.append("evenements")
         if len(elements) == 0 :
             dlg = wx.MessageDialog(self, _(u"Vous devez cocher au moins un élément à modifier (ouvertures/places) !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
@@ -295,6 +301,7 @@ class Dialog(wx.Dialog):
         elements = []
         if self.check_ouvertures.GetValue() == True : elements.append("ouvertures")
         if self.check_places.GetValue() == True : elements.append("places")
+        if self.check_evenements.GetValue() == True: elements.append("evenements")
         return elements
 
     def GetPeriode(self):

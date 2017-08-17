@@ -103,6 +103,7 @@ class CTRL_Type(CTRL_Ultrachoice.CTRL):
             {"label" : _(u"Standard"), "description" : _(u"Pour saisir une conso simple par case"), "image" : wx.Bitmap(Chemins.GetStaticPath(u"Images/Special/Unite_standard.png"), wx.BITMAP_TYPE_ANY)},
             {"label" : _(u"Horaire"), "description" : _(u"Pour saisir un horaire dans chaque case"), "image" : wx.Bitmap(Chemins.GetStaticPath(u"Images/Special/Unite_horaire.png"), wx.BITMAP_TYPE_ANY)},
             {"label" : _(u"Multi-horaires"), "description" : _(u"Pour saisir plusieurs conso horaires par case"), "image" : wx.Bitmap(Chemins.GetStaticPath(u"Images/Special/Unite_multihoraires.png"), wx.BITMAP_TYPE_ANY)},
+            {"label" : _(u"Evènementiel"), "description": _(u"Pour associer des évènements à une case"), "image": wx.Bitmap(Chemins.GetStaticPath(u"Images/Special/Unite_evenement.png"), wx.BITMAP_TYPE_ANY)},
             {"label" : _(u"Quantité"), "description" : _(u"Pour attribuer une quantité à une conso"), "image" : wx.Bitmap(Chemins.GetStaticPath(u"Images/Special/Unite_quantite.png"), wx.BITMAP_TYPE_ANY)},
             ]
         CTRL_Ultrachoice.CTRL.__init__(self, parent, donnees=donnees) 
@@ -113,14 +114,16 @@ class CTRL_Type(CTRL_Ultrachoice.CTRL):
     def SetType(self, code=None):
         if code == "Unitaire" : self.SetSelection2(0) 
         if code == "Horaire" : self.SetSelection2(1) 
-        if code == "Multihoraires" : self.SetSelection2(2) 
-        if code == "Quantite" : self.SetSelection2(3) 
+        if code == "Multihoraires" : self.SetSelection2(2)
+        if code == "Evenement": self.SetSelection2(3)
+        if code == "Quantite" : self.SetSelection2(4)
 
     def GetType(self):
         if self.GetSelection2() == 0 : return "Unitaire"
         if self.GetSelection2() == 1 : return "Horaire"
         if self.GetSelection2() == 2 : return "Multihoraires"
-        if self.GetSelection2() == 3 : return "Quantite"
+        if self.GetSelection2() == 3 : return "Evenement"
+        if self.GetSelection2() == 4 : return "Quantite"
 
 
 # -----------------------------------------------------------------------------------------

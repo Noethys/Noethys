@@ -56,7 +56,7 @@ class CTRL(HTL.HyperTreeList):
         UTILS_Linux.AdaptePolice(self)
 
         self.dictDonnees = dictDonnees
-        self.dictEtatPlaces = copy.deepcopy(dictEtatPlaces)
+        self.dictEtatPlaces = dictEtatPlaces # copy.deepcopy(dictEtatPlaces)
         self.dictUnitesRemplissage = dictUnitesRemplissage
         self.listeTracks = []
         self.listePeriodes = []
@@ -186,8 +186,10 @@ class CTRL(HTL.HyperTreeList):
 ##        self.Thaw() 
 
     def Remplissage(self):
-        dictConso, dictActivites, dictGroupes, dictIndividus = self.Importation() 
-        
+        dictConso, dictActivites, dictGroupes, dictIndividus = self.Importation()
+
+        dictPlacesRestantes = {}
+
         # Mémorisation pour impression
         self.listeImpression = []
         
@@ -262,7 +264,11 @@ class CTRL(HTL.HyperTreeList):
                                 listePlacesRestantes = []
                                 for IDuniteRemplissage in self.dictUnitesRemplissage[IDunite] :
                                     key = (date, IDactivite, IDgroupe, IDuniteRemplissage)
-                                    nbrePlacesRestantes = self.dictEtatPlaces[key]["nbrePlacesRestantes"]
+                                    if dictPlacesRestantes.has_key(key) :
+                                        nbrePlacesRestantes = dictPlacesRestantes[key]
+                                    else :
+                                        nbrePlacesRestantes = self.dictEtatPlaces[key]["remplissage"]["nbrePlacesRestantes"]
+                                        dictPlacesRestantes[key] = nbrePlacesRestantes
                                     listePlacesRestantes.append(nbrePlacesRestantes)
                                 nbrePlacesRestantes = min(listePlacesRestantes)
                                 if nbrePlacesRestantes <= 0 :
@@ -275,7 +281,8 @@ class CTRL(HTL.HyperTreeList):
                                 if self.dictUnitesRemplissage.has_key(IDunite) :
                                     for IDuniteRemplissage in self.dictUnitesRemplissage[IDunite] :
                                         key = (date, IDactivite, IDgroupe, IDuniteRemplissage)
-                                        self.dictEtatPlaces[key]["nbrePlacesRestantes"] -= 1
+                                        # self.dictEtatPlaces[key]["nbrePlacesRestantes"] -= 1
+                                        dictPlacesRestantes[key] -= 1
                         
                         texteUnites = texteUnites[:-3]
                         texteDateSaisie = DateComplete(dateSaisie)
@@ -371,7 +378,7 @@ class CTRL(HTL.HyperTreeList):
             # Mise à jour des chiffres du remplissage
             panel_remplissage.MAJ() 
             # Récupération des nouveau chiffres
-            self.dictEtatPlaces = copy.deepcopy(panel_remplissage.ctrl_remplissage.GetEtatPlaces())
+            self.dictEtatPlaces = panel_remplissage.ctrl_remplissage.GetEtatPlaces() # copy.deepcopy(panel_remplissage.ctrl_remplissage.GetEtatPlaces())
             # MAJ du contrôle liste d'attente
             self.MAJ() 
             

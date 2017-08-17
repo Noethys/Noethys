@@ -566,7 +566,7 @@ class Page_Questionnaires(wx.Panel):
         if len(listeFiltres) > 0 :
             self.check_filtres.SetValue(True)
         listeDonnees = []
-        for IDfiltre, IDquestion, choix, criteres in listeFiltres :
+        for IDfiltre, IDquestion, categorie, choix, criteres, IDtarif in listeFiltres :
             listeDonnees.append( {"IDfiltre":IDfiltre, "IDquestion":IDquestion, "choix":choix, "criteres":criteres} )
         self.ctrl_filtres.SetDonnees(listeDonnees)
         self.listeInitialeFiltres = copy.deepcopy(listeDonnees)
@@ -830,6 +830,11 @@ class Panel(wx.Panel):
 
     def GetPeriodes(self):
         return self.dictPages["periodes"].GetPeriodes()
+
+    def MAJ(self):
+        pass
+
+
 
 
 class MyFrame(wx.Frame):

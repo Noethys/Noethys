@@ -94,7 +94,7 @@ class CTRL_activites(wx.CheckListBox):
             
 
 class Dialog(wx.Dialog):
-    def __init__(self, parent, dictDonnees = {}, largeurColonneUnite=60, afficheLargeurColonneUnite=True, afficheAbregeGroupes=True, abregeGroupes=False, affichePresents=1):
+    def __init__(self, parent, dictDonnees = {}, afficheLargeurColonneUnite=True, afficheAbregeGroupes=True, abregeGroupes=False, affichePresents=1):
         wx.Dialog.__init__(self, parent, -1, name="parametres_remplissage", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         self.afficheLargeurColonneUnite = afficheLargeurColonneUnite
@@ -116,10 +116,6 @@ class Dialog(wx.Dialog):
         # Options d'affichage
         self.staticbox_options_staticbox = wx.StaticBox(self, -1, _(u"Options"))
         
-        self.label_largeurUnite = wx.StaticText(self, -1, _(u"Largeur des colonnes unités (60 par défaut) :"))
-        self.ctrl_largeurUnite = wx.SpinCtrl(self, -1, str(largeurColonneUnite), size=(60, -1))
-        self.ctrl_largeurUnite.SetRange(30, 300)
-
         self.label_abregeGroupes = wx.StaticText(self, -1, _(u"Utiliser le nom abrégé des groupes :"))
         self.ctrl_abregeGroupes_oui = wx.RadioButton(self, -1, _(u"Oui"), style = wx.RB_GROUP)
         self.ctrl_abregeGroupes_non = wx.RadioButton(self, -1, _(u"Non"))
@@ -136,17 +132,15 @@ class Dialog(wx.Dialog):
         else:
             self.ctrl_affichePresents_non.SetValue(True)
 
-
-        if self.afficheLargeurColonneUnite == False :
-            self.label_largeurUnite.Show(False)
-            self.ctrl_largeurUnite.Show(False)
-        
         if afficheAbregeGroupes == False :
             self.label_abregeGroupes.Show(False)
             self.ctrl_abregeGroupes_oui.Show(False)
             self.ctrl_abregeGroupes_non.Show(False)
         
         if self.afficheLargeurColonneUnite == False and afficheAbregeGroupes == False :
+            self.label_affichePresents.Show(False)
+            self.ctrl_affichePresents_oui.Show(False)
+            self.ctrl_affichePresents_non.Show(False)
             self.staticbox_options_staticbox.Show(False)
             
         # Boutons de commandes 
@@ -197,11 +191,6 @@ class Dialog(wx.Dialog):
 
         # Options
         staticbox_options = wx.StaticBoxSizer(self.staticbox_options_staticbox, wx.VERTICAL)
-        
-        grid_sizer_largeurUnite = wx.FlexGridSizer(rows=1, cols=3, vgap=10, hgap=10)
-        grid_sizer_largeurUnite.Add(self.label_largeurUnite, 0, wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_largeurUnite.Add(self.ctrl_largeurUnite, 0, wx.ALIGN_CENTER_VERTICAL, 0)
-        staticbox_options.Add(grid_sizer_largeurUnite, 0, wx.EXPAND|wx.TOP|wx.LEFT|wx.RIGHT|wx.BOTTOM, 10)
 
         grid_sizer_abregeGroupes = wx.FlexGridSizer(rows=1, cols=3, vgap=10, hgap=10)
         grid_sizer_abregeGroupes.Add(self.label_abregeGroupes, 0, wx.ALIGN_CENTER_VERTICAL, 0)
@@ -254,9 +243,6 @@ class Dialog(wx.Dialog):
         dictDonnees = self.ctrl_periodes.GetDictDonnees()
         dictDonnees["listeActivites"] = self.ctrl_activites.GetIDcoches()
         return dictDonnees
-    
-    def GetLargeurColonneUnite(self):
-        return int(self.ctrl_largeurUnite.GetValue())
 
     def GetAbregeGroupes(self):
         return int(self.ctrl_abregeGroupes_oui.GetValue())
@@ -265,22 +251,6 @@ class Dialog(wx.Dialog):
         return int(self.ctrl_affichePresents_oui.GetValue())
 
     def OnBoutonOk(self, event):
-        # Largeur Colonnes Unités
-        newLargeur = self.ctrl_largeurUnite.GetValue()
-        try :
-            newLargeur = int(newLargeur)
-        except :
-            dlg2 = wx.MessageDialog(self, _(u"La largeur des colonnes unités semble incorrecte !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_INFORMATION)
-            dlg2.ShowModal()
-            dlg2.Destroy()
-            dlg.Destroy() 
-            return
-        if newLargeur < 30 or newLargeur > 300 :
-            dlg2 = wx.MessageDialog(self, _(u"La largeur des colonnes unités doit être comprise entre 30 et 300 !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_INFORMATION)
-            dlg2.ShowModal()
-            dlg2.Destroy()
-            return
-        
         # Mémorisation paramètres
         UTILS_Parametres.Parametres(mode="set", categorie="parametres_remplissage", nom="masquer_anciennes_activites", valeur=int(self.ctrl_masquer_activites.GetValue()))
         

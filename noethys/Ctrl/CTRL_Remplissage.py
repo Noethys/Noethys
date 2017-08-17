@@ -34,7 +34,7 @@ else :
 import GestionDB
 from Utils import UTILS_Config
 from Utils import UTILS_Texte
-
+from Utils import UTILS_Dates
 
 # Colonnes unités
 LARGEUR_COLONNE_UNITE = 60
@@ -103,6 +103,118 @@ class CaseSeparationActivite():
 
 
 
+class Evenement():
+    def __init__(self, case=None, dict_evenement=None):
+        self.case = case
+
+        # Caractéristiques de l'évènement
+        self.IDevenement = dict_evenement["IDevenement"]
+        self.IDactivite = dict_evenement["IDactivite"]
+        self.IDunite = dict_evenement["IDunite"]
+        self.IDgroupe = dict_evenement["IDgroupe"]
+        self.date = dict_evenement["date"]
+        self.nom = dict_evenement["nom"]
+        self.capacite_max = dict_evenement["capacite_max"]
+        self.heure_debut = dict_evenement["heure_debut"]
+        self.heure_fin = dict_evenement["heure_fin"]
+
+        # Rattachement d'une conso
+        self.conso = None
+
+    def SetConso(self, conso=None):
+        self.conso = conso
+        if self.conso != None :
+            self.conso.IDevenement = self.IDevenement
+            self.conso.evenement = self
+            self.conso.case = self.case
+
+    def GetTexteInfobulle(self):
+        return self.case.GetTexteInfobulleConso(self.conso, evenement=self)
+
+    def GetStatutTexte(self, x=None, y=None):
+        heure_debut = UTILS_Dates.DatetimeTimeEnStr(self.heure_debut)
+        heure_fin = UTILS_Dates.DatetimeTimeEnStr(self.heure_fin)
+        if heure_debut != "00h00" and heure_fin != "00h00" :
+            texte = _(u"%s : %s > %s") % (self.nom, heure_debut, heure_fin)
+        else:
+            texte = _(u"%s") % self.nom
+        return texte
+
+    def Refresh(self):
+        self.case.Refresh()
+
+    def MemoriseValeurs(self):
+        if self.case.grid.dictConsoIndividus.has_key(self.case.IDindividu) == False:
+            self.case.grid.dictConsoIndividus[self.case.IDindividu] = {}
+        if self.case.grid.dictConsoIndividus[self.case.IDindividu].has_key(self.case.date) == False:
+            self.case.grid.dictConsoIndividus[self.case.IDindividu][self.case.date] = {}
+        if self.case.grid.dictConsoIndividus[self.case.IDindividu][self.case.date].has_key(self.case.IDunite) == False:
+            self.case.grid.dictConsoIndividus[self.case.IDindividu][self.case.date][self.case.IDunite] = []
+
+        listeConso = self.case.grid.dictConsoIndividus[self.case.IDindividu][self.case.date][self.case.IDunite]
+        position = None
+        index = 0
+        for conso in listeConso:
+            if self.conso == conso:
+                position = index
+            index += 1
+
+        if position == None:
+            self.case.grid.dictConsoIndividus[self.case.IDindividu][self.case.date][self.case.IDunite].append(self.conso)
+        else:
+            if self.conso.statut not in ("ajout", "suppression"):
+                self.conso.statut = "modification"
+            self.case.grid.dictConsoIndividus[self.case.IDindividu][self.case.date][self.case.IDunite][position] = self.conso
+
+    def MAJ_facturation(self):
+        self.case.MAJ_facturation(evenement=self)
+
+    def GetCouleur(self):
+        """ Retourn la couleur de fond du bouton """
+        # Recherche nbre places évènements
+        dictPlacesEvenement = self.GetPlacesEvenement()
+        if dictPlacesEvenement["nbrePlacesInitial"] != None :
+            if dictPlacesEvenement["nbrePlacesRestantes"] == None or dictPlacesEvenement["nbrePlacesRestantes"] > 0 :
+                return COULEUR_DISPONIBLE
+            else :
+                return COULEUR_COMPLET
+
+        # Sinon on retourne la couleur de remplissage
+        if self.case.dictInfosPlaces["nbrePlacesInitial"] != None:
+            nbrePlacesRestantes = self.case.dictInfosPlaces["nbrePlacesRestantes"]
+            seuil_alerte = self.case.dictInfosPlaces["seuil_alerte"]
+            if nbrePlacesRestantes > seuil_alerte: return COULEUR_DISPONIBLE
+            if nbrePlacesRestantes > 0 and nbrePlacesRestantes <= seuil_alerte: return COULEUR_ALERTE
+            if nbrePlacesRestantes <= 0: return COULEUR_COMPLET
+
+        # Si aucun remplissage, on retourne du blanc
+        return wx.WHITE
+
+    def GetPlacesEvenement(self):
+        nbrePlacesRestantes, nbrePlacesPrises = None, None
+
+        if self.capacite_max != None:
+            if self.case.grid.dictRemplissageEvenements.has_key(self.IDevenement) :
+                nbrePlacesPrises = self.case.grid.dictRemplissageEvenements[self.IDevenement]["reservation"] + self.case.grid.dictRemplissageEvenements[self.IDevenement]["present"]
+                nbrePlacesRestantes = self.capacite_max - nbrePlacesPrises
+
+        if self.case.grid.dictRemplissageEvenements.has_key(self.IDevenement) :
+            nbrePlacesAttente = self.case.grid.dictRemplissageEvenements[self.IDevenement]["attente"]
+        else :
+            nbrePlacesAttente = 0
+
+        return {"nbrePlacesPrises" : nbrePlacesPrises, "nbrePlacesInitial" : self.capacite_max, "nbrePlacesRestantes" : nbrePlacesRestantes, "nbreAttente" : nbrePlacesAttente}
+
+    def GetValeur(self):
+        dictPlacesEvenement = self.GetPlacesEvenement()
+        if dictPlacesEvenement != None :
+            valeur = dictPlacesEvenement[self.case.ligne.modeAffichage]
+            if valeur not in (None, 0) :
+                return str(valeur)
+        return ""
+
+
+
 class Case():
     def __init__(self, ligne, grid, numLigne=None, numColonne=None, date=None, IDunite=None, IDactivite=None, IDgroupe=None, estTotal=False, total=None):
         self.typeCase = "consommation"
@@ -116,7 +228,10 @@ class Case():
         self.IDactivite = IDactivite
         self.estTotal = estTotal
         self.total = total
-                
+
+        # Création des évènements
+        self.liste_evenements = self.CreationEvenements()
+
         # Recherche si l'activité est ouverte
         self.ouvert = self.EstOuvert()
 
@@ -127,7 +242,12 @@ class Case():
         self.couleurFond = self.GetCouleur()
 
         # Dessin de la case
-        self.renderer = RendererCase(self)
+        modeEvenement = self.GetNbreEvenements() # Todo : Provisoire !!!
+        if modeEvenement :
+            self.renderer = RendererCaseEvenement(self)
+        else :
+            self.renderer = RendererCase(self)
+
         self.valeurCase = self.dictInfosPlaces[self.ligne.modeAffichage] 
         # "nbrePlacesInitial" , "nbrePlacesPrises", "nbrePlacesRestantes", "seuil_alerte", "nbreAttente"
         
@@ -144,7 +264,27 @@ class Case():
         self.grid.SetCellAlignment(self.numLigne, self.numColonne, wx.ALIGN_CENTRE, wx.ALIGN_CENTRE)
         self.grid.SetCellRenderer(self.numLigne, self.numColonne, self.renderer)
         self.grid.SetReadOnly(self.numLigne, self.numColonne, True)
-    
+
+    def GetNbreEvenements(self):
+        return len(self.liste_evenements)
+
+    def CreationEvenements(self):
+        """ Génère les évènements """
+        # Recherche les évènements dans toutes les unités de conso associées à l'unité de remplissage
+        liste_donnees = []
+        for IDunite, listeUnitesRemplissage in self.grid.dictUnitesRemplissage.iteritems() :
+            if self.IDunite in listeUnitesRemplissage :
+                try :
+                    liste_donnees.extend(self.grid.dictOuvertures[self.date][self.IDgroupe][IDunite]["liste_evenements"])
+                except :
+                    pass
+
+        liste_evenements = []
+        for dict_evenement in liste_donnees :
+            evenement = Evenement(case=self, dict_evenement=dict_evenement)
+            liste_evenements.append(evenement)
+        return liste_evenements
+
     def GetInfosPlaces(self):
         IDunite_remplissage = self.IDunite
         
@@ -401,9 +541,7 @@ class Ligne():
         couleurVacances = "#F3FD89"
         
         # Création du label de ligne
-        hauteurLigne = 30
         self.grid.SetRowLabelValue(numLigne, self.labelLigne)
-        self.grid.SetRowSize(numLigne, hauteurLigne)
         if self.EstEnVacances(self.date) == True :
             couleurCase = couleurVacances
         else:
@@ -415,6 +553,8 @@ class Ligne():
         # Création des cases
         self.dictCases = {}
         self.dictTotaux = {}
+        nbre_evenements = 0
+
         numColonne = 0
         for IDactivite in self.grid.listeActivites :
             
@@ -430,6 +570,7 @@ class Ligne():
                     if dictListeRemplissage.has_key(IDactivite) :
                         for ordre, IDunite_remplissage in dictListeRemplissage[IDactivite] :
                             case = Case(self, self.grid, self.numLigne, numColonne, self.date, IDunite_remplissage, IDactivite, IDgroupe)
+                            nbre_evenements += case.GetNbreEvenements()
                             if self.dictTotaux.has_key(IDunite_remplissage) == False :
                                 self.dictTotaux[IDunite_remplissage] = 0
                             if case.valeurCase != u"" and case.valeurCase != None :
@@ -448,7 +589,14 @@ class Ligne():
                         case = Case(self, self.grid, self.numLigne, numColonne, self.date, IDunite_remplissage, IDactivite, None, True, total)
                         self.dictCases[numColonne] = case
                         numColonne += 1
-        
+
+        # Ajustement de la hauteur de la ligne
+        if nbre_evenements > 0 :
+            hauteurLigne = 36
+        else :
+            hauteurLigne = 30
+        self.grid.SetRowSize(numLigne, hauteurLigne)
+
     def EstEnVacances(self, dateDD):
         date = str(dateDD)
         for valeurs in self.grid.listeVacances :
@@ -582,6 +730,130 @@ class RendererCase(GridCellRenderer):
                 return texteTemp2 + "..." 
 
 
+# ----------------------------------------------------------------------------------------------
+
+class RendererCaseEvenement(GridCellRenderer):
+    def __init__(self, case):
+        GridCellRenderer.__init__(self)
+        self.case = case
+
+    def Draw(self, grid, attr, dc, rect, row, col, isSelected):
+        self.grid = grid
+
+        # Préparation du buffer Image
+        dcGrid = dc
+        bmp = wx.EmptyBitmap(rect.GetWidth(), rect.GetHeight())
+        image = wx.MemoryDC()
+        image.SelectObject(bmp)
+        gc = wx.GraphicsContext.Create(image)
+        gc.PushState()
+        gc.SetFont(attr.GetFont())
+
+        rectCase = wx.Rect(0, 0, rect.GetWidth(), rect.GetHeight())
+        x, y, largeur, hauteur = rectCase.x, rectCase.y, rectCase.width, rectCase.height
+
+        if self.case.ouvert == True :
+            self.couleurFond = self.grid.GetBackgroundColour()
+        else :
+            self.couleurFond = COULEUR_FERME
+        gc.SetBrush(wx.Brush(self.couleurFond, wx.SOLID))
+        gc.SetPen(wx.TRANSPARENT_PEN)
+        gc.DrawRectangle(x, y, largeur, hauteur)
+
+        # Calcul de la largeur d'un bouton
+        nbre_evenements = len(self.case.liste_evenements)
+        marge = 2
+        if len(self.case.liste_evenements) :
+            largeur_bouton = (1.0 * (rectCase.width - marge -1) / nbre_evenements) - marge*2
+
+        # Dessin de boutons
+        x = 1
+        for evenement in self.case.liste_evenements :
+
+            # Calcul de la taille du rectangle
+            rectEvenement = wx.Rect(x + marge, rectCase.y + marge, largeur_bouton, rectCase.height - marge*2 - marge)
+
+            # Dessin du rectangle
+            couleur = evenement.GetCouleur()
+            gc.SetBrush(wx.Brush(couleur, wx.SOLID))
+            gc.SetPen(wx.Pen(wx.SystemSettings.GetColour(wx.SYS_COLOUR_3DSHADOW)))
+            gc.DrawRoundedRectangle(rectEvenement.x, rectEvenement.y, rectEvenement.width, rectEvenement.height, 5)
+
+            # Dessin de la valeur
+            couleur_nom = wx.Colour(0, 0, 0)
+            texte = evenement.GetValeur()
+            font = wx.Font(9, wx.SWISS, wx.NORMAL, wx.NORMAL)
+            gc.SetFont(font, couleur_nom)
+            largeurTexte, hauteurTexte = gc.GetTextExtent(texte)
+            rect_texte = self.DrawTexte(gc, rectEvenement, texte, couleur=couleur_nom, position=(rectEvenement.width - largeurTexte -4, 2), font=font)
+
+            # Dessin du nom de l'évènement
+            couleur_nom = wx.Colour(150, 150, 150)
+            rectTemp = wx.Rect(rectEvenement.x, rectEvenement.y, rectEvenement.width - largeurTexte, rectEvenement.height)
+            rect_texte = self.DrawTexte(gc, rectTemp, evenement.nom, couleur=couleur_nom, position=(4, 2), font=wx.Font(8, wx.SWISS, wx.NORMAL, wx.NORMAL))
+
+            # Dessin des horaires
+            if evenement.heure_debut != None and evenement.heure_fin != None :
+                heure_debut = UTILS_Dates.DatetimeTimeEnStr(evenement.heure_debut, "h")
+                heure_fin = UTILS_Dates.DatetimeTimeEnStr(evenement.heure_fin, "h")
+                if heure_debut != "00h00" and heure_fin != "00h00":
+                    texte = u"%s - %s" % (heure_debut, heure_fin)
+                    couleur_horaires = wx.Colour(200, 200, 200)
+                    rect_texte = self.DrawTexte(gc, rectEvenement, texte, couleur=couleur_horaires, position=(4, rect_texte.height + 5), font=wx.Font(6, wx.SWISS, wx.NORMAL, wx.NORMAL))
+
+            # Calcul de la position x suivante
+            x += rectEvenement.width + marge*2
+
+        gc.PopState()
+
+        # Envoi du buffer au DC
+        dcGrid.Blit(rect.x, rect.y, bmp.GetWidth(), bmp.GetHeight(), image, 0, 0)
+
+    def DrawTexte(self, gc, rect, texte="Texte", couleur=wx.Colour(0, 0, 0), position=(0, 0), font=None):
+        # Ajuste la font
+        if font == None :
+            font = wx.Font(7, wx.SWISS, wx.NORMAL, wx.NORMAL)
+        gc.SetFont(font, couleur)
+
+        # Calcul la largeur du texte
+        largeurTexte, hauteurTexte = gc.GetTextExtent(texte)
+
+        # Raccourci le texte si besoin
+        if largeurTexte > (rect.width - position[0] -2) :
+            texte = wordwrap.wordwrap(texte, rect.width-10, gc).split("\n")[0] + "..."
+            largeurTexte, hauteurTexte = gc.GetTextExtent(texte)
+
+        # Calcul le rect du texte
+        rect_texte = wx.Rect(rect.x + position[0], rect.y + position[1], largeurTexte, hauteurTexte)
+
+        # Dessin du texte
+        if rect.ContainsRect(rect_texte) :
+            gc.DrawText(texte, rect_texte.x, rect_texte.y)
+
+        return rect_texte
+
+    def GetBestSize(self, grid, attr, dc, row, col):
+        text = grid.GetCellValue(row, col)
+        dc.SetFont(attr.GetFont())
+        w, h = dc.GetTextExtent(text)
+        return wx.Size(w, h)
+
+    def Clone(self):
+        return RendererCase()
+
+
+
+
+
+
+
+
+
+
+
+
+# ------------------------------------------------------------------------------------------------
+
 class RendererCaseActivite(GridCellRenderer):
     def __init__(self, case):
         GridCellRenderer.__init__(self)
@@ -701,12 +973,14 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         self.CreateGrid(0, 0)
         self.SetRowLabelSize(180)
         self.EnableGridLines(False)
-        self.DisableDragColSize()
+        #self.DisableDragColSize()
         self.DisableDragRowSize()
         
         self.SetDefaultCellBackgroundColour(self.GetBackgroundColour())
         
         # Binds
+        self.Bind(gridlib.EVT_GRID_COL_SIZE, self.OnChangeColSize)
+
 ##        self.Bind(gridlib.EVT_GRID_CELL_LEFT_CLICK, self.OnCellLeftClick)
 ##        self.Bind(gridlib.EVT_GRID_CELL_RIGHT_CLICK, self.OnCellRightClick)
 ##        self.Bind(gridlib.EVT_GRID_LABEL_RIGHT_CLICK, self.OnLabelRightClick)
@@ -769,7 +1043,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         self.dictActivites = self.Importation_activites()
         self.dictOuvertures, listeUnitesUtilisees, self.listeGroupesUtilises = self.GetDictOuvertures(self.listeActivites, self.listePeriodes)
         self.listeVacances = self.GetListeVacances() 
-        self.dictRemplissage, self.dictUnitesRemplissage, self.dictConsoAttente = self.GetDictRemplissage(self.listeActivites, self.listePeriodes)
+        self.dictRemplissage, self.dictUnitesRemplissage, self.dictConsoAttente, self.dictRemplissageEvenements = self.GetDictRemplissage(self.listeActivites, self.listePeriodes)
         self.dictGroupes = self.GetDictGroupes()
         self.DB.Close()
 
@@ -830,10 +1104,10 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         
         # Colonnes
         self.SetColLabelSize(45)
-        largeurColonne= LARGEUR_COLONNE_UNITE
         numColonne = 0
         listeColonnesActivites = []
         for IDactivite in self.listeActivites :
+
             # Création de la colonne activité
             if len(self.listeActivites) > 1 and dictGroupeTemp.has_key(IDactivite) :
                 renderer = MyColLabelRenderer("activite", COULEUR_COLONNE_ACTIVITE)
@@ -842,8 +1116,10 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 self.SetColLabelValue(numColonne, "")
                 listeColonnesActivites.append(numColonne)
                 numColonne += 1
+
             # Création des colonnes unités
             if dictGroupeTemp.has_key(IDactivite):
+
                 # Parcours des groupes
                 if dictListeRemplissage.has_key(IDactivite) :
                     for IDgroupe in dictGroupeTemp[IDactivite] :
@@ -856,10 +1132,14 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                                 nomGroupe = self.dictGroupes[IDgroupe]["abrege"]
                             if nomGroupe != "" : nomGroupe += u"\n"
                             nomUniteRemplissage = self.dictRemplissage[IDunite_remplissage]["abrege"]
+                            largeurColonne = self.dictRemplissage[IDunite_remplissage]["largeur"]
+                            if largeurColonne == None :
+                                largeurColonne = LARGEUR_COLONNE_UNITE
                             labelColonne = u"%s%s" % (nomGroupe, nomUniteRemplissage)
                             self.SetColSize(numColonne, largeurColonne)
                             self.SetColLabelValue(numColonne, labelColonne)
                             numColonne += 1
+
                     # Création des colonnes totaux
                     if len(dictListeRemplissage[IDactivite]) > 0 and len(dictGroupeTemp[IDactivite]) > 0 :
                         for ordre, IDunite_remplissage in dictListeRemplissage[IDactivite] :
@@ -867,12 +1147,11 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                             self.SetColLabelRenderer(numColonne, renderer)
                             nomUniteRemplissage = self.dictRemplissage[IDunite_remplissage]["abrege"]
                             labelColonne = _(u"Total\n%s") % nomUniteRemplissage
-                            self.SetColSize(numColonne, largeurColonne)
+                            self.SetColSize(numColonne, LARGEUR_COLONNE_UNITE)
                             self.SetColLabelValue(numColonne, labelColonne)
                             numColonne += 1
         
         # ------------------ Création des lignes -----------------------------
-        
         
         # Tri des dates
         listeDatesTmp = self.dictOuvertures.keys()
@@ -1002,6 +1281,29 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         if len(listeActivites) == 0 : conditionActivites = "()"
         elif len(listeActivites) == 1 : conditionActivites = "(%d)" % listeActivites[0]
         else : conditionActivites = str(tuple(listeActivites))
+
+        # Importation des évènements
+        req = """SELECT IDevenement, IDactivite, IDunite, IDgroupe, date, nom, description, capacite_max, heure_debut, heure_fin
+        FROM evenements 
+        WHERE IDactivite IN %s %s
+        ORDER BY date, heure_debut;""" % (conditionActivites, conditionDates)
+        self.DB.ExecuterReq(req)
+        listeTemp = self.DB.ResultatReq()
+        dictEvenements = {}
+        for IDevenement, IDactivite, IDunite, IDgroupe, date, nom, description, capacite_max, heure_debut, heure_fin in listeTemp :
+            date = UTILS_Dates.DateEngEnDateDD(date)
+            heure_debut = UTILS_Dates.HeureStrEnTime(heure_debut)
+            heure_fin = UTILS_Dates.HeureStrEnTime(heure_fin)
+            dict_evenement = {"IDevenement" : IDevenement, "IDactivite" : IDactivite, "IDunite" : IDunite, "IDgroupe" : IDgroupe,
+                              "date": date, "nom" : nom, "description" : description, "capacite_max" : capacite_max,
+                              "heure_debut": heure_debut, "heure_fin" : heure_fin}
+
+            key = (IDunite, IDgroupe, date)
+            if dictEvenements.has_key(key) == False:
+                dictEvenements[key] = []
+            dictEvenements[key].append(dict_evenement)
+
+        # Importation des ouvertures
         req = """SELECT IDouverture, IDunite, IDgroupe, date
         FROM ouvertures 
         WHERE IDactivite IN %s %s
@@ -1013,20 +1315,29 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 listeUnitesUtilisees.append(IDunite)
             if IDgroupe not in listeGroupesUtilises :
                 listeGroupesUtilises.append(IDgroupe)
-            dateDD = DateEngEnDateDD(date)
-            dictValeurs = { "IDouverture" : IDouverture, "etat" : True, "initial" : True}
-            if dictOuvertures.has_key(dateDD) == False :
-                dictOuvertures[dateDD] = {}
-            if dictOuvertures[dateDD].has_key(IDgroupe) == False :
-                dictOuvertures[dateDD][IDgroupe] = {}
-            if dictOuvertures[dateDD][IDgroupe].has_key(IDunite) == False :
-                dictOuvertures[dateDD][IDgroupe][IDunite] = {}
+            date = UTILS_Dates.DateEngEnDateDD(date)
+
+            key = (IDunite, IDgroupe, date)
+            if dictEvenements.has_key(key):
+                liste_evenements = dictEvenements[key]
+            else :
+                liste_evenements = []
+
+            dictValeurs = {"IDouverture": IDouverture, "etat": True, "initial": True, "liste_evenements": liste_evenements}
+            if dictOuvertures.has_key(date) == False :
+                dictOuvertures[date] = {}
+            if dictOuvertures[date].has_key(IDgroupe) == False :
+                dictOuvertures[date][IDgroupe] = {}
+            if dictOuvertures[date][IDgroupe].has_key(IDunite) == False :
+                dictOuvertures[date][IDgroupe][IDunite] = dictValeurs
+
         return dictOuvertures, listeUnitesUtilisees, listeGroupesUtilises
 
     def GetDictRemplissage(self, listeActivites=[], listePeriodes=[]):
         dictRemplissage = {}
         dictUnitesRemplissage = {}
         dictConsoAttente = {}
+        dictRemplissageEvenements = {}
         
         # Get Conditions
         conditions = self.GetSQLdates(listePeriodes)
@@ -1057,15 +1368,17 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 dictUnitesRemplissage[IDunite].append(IDunite_remplissage)
                                 
         # Récupération des unités de remplissage
-        req = """SELECT IDunite_remplissage, IDactivite, ordre, nom, abrege, date_debut, date_fin, seuil_alerte, heure_min, heure_max, etiquettes
+        req = """SELECT IDunite_remplissage, IDactivite, ordre, nom, abrege, date_debut, date_fin, seuil_alerte, heure_min, heure_max, etiquettes, largeur
         FROM unites_remplissage 
         WHERE IDactivite IN %s %s
         AND (afficher_page_accueil IS NULL OR afficher_page_accueil=1)
         ;""" % (conditionActivites, conditionDates2)
         self.DB.ExecuterReq(req)
         listeUnitesRemplissage = self.DB.ResultatReq()
-        for IDunite_remplissage, IDactivite, ordre, nom, abrege, date_debut, date_fin, seuil_alerte, heure_min, heure_max, etiquettes in listeUnitesRemplissage :
+        for IDunite_remplissage, IDactivite, ordre, nom, abrege, date_debut, date_fin, seuil_alerte, heure_min, heure_max, etiquettes, largeur in listeUnitesRemplissage :
             etiquettes = UTILS_Texte.ConvertStrToListe(etiquettes)
+
+            # Mémorise l'unité de remplissage
             dictRemplissage[IDunite_remplissage] = {"IDactivite" : IDactivite,
                                                                         "ordre" : ordre,
                                                                         "nom" : nom,
@@ -1076,6 +1389,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                                                                         "heure_min" : heure_min,
                                                                         "heure_max" : heure_max,
                                                                         "etiquettes" : etiquettes,
+                                                                        "largeur" : largeur,
                                                                         }
                                                                         
         # Récupération des paramètres de remplissage
@@ -1097,15 +1411,21 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 dictRemplissage[IDunite_remplissage][dateDD][IDgroupe] = dictValeursTemp
 
         # Récupération des consommations existantes 
-        req = """SELECT IDactivite, date, IDunite, IDgroupe, heure_debut, heure_fin, etat, quantite, etiquettes
+        req = """SELECT IDactivite, date, IDunite, IDgroupe, heure_debut, heure_fin, etat, quantite, etiquettes, IDevenement
         FROM consommations 
         WHERE IDactivite IN %s %s; """ % (conditionActivites, conditionDates)
         self.DB.ExecuterReq(req)
         listeConso = self.DB.ResultatReq()
-        for IDactivite, date, IDunite, IDgroupe, heure_debut, heure_fin, etat, quantite, etiquettesConso in listeConso :
+        for IDactivite, date, IDunite, IDgroupe, heure_debut, heure_fin, etat, quantite, etiquettesConso, IDevenement in listeConso :
             dateDD = DateEngEnDateDD(date)
             etiquettesConso = UTILS_Texte.ConvertStrToListe(etiquettesConso)
-            
+
+            # Mémorisation spéciale si c'est un évènement
+            if IDevenement != None and etat in ["reservation", "present", "attente"] :
+                if dictRemplissageEvenements.has_key(IDevenement) == False:
+                    dictRemplissageEvenements[IDevenement] = {"reservation": 0, "present": 0, "attente": 0}
+                dictRemplissageEvenements[IDevenement][etat] += 1
+
             # Quantité
             if quantite == None :
                 quantite = 1
@@ -1166,8 +1486,8 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                         else:
                             dictConsoAttente[dateDD][IDgroupe][IDunite_remplissage] += quantite
 
-        # Cloture de la BD
-        return dictRemplissage, dictUnitesRemplissage, dictConsoAttente
+        # Renvoie les données
+        return dictRemplissage, dictUnitesRemplissage, dictConsoAttente, dictRemplissageEvenements
     
 
 
@@ -1233,21 +1553,27 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             for numColonne, case in ligne.dictCases.iteritems() :
                 if case.typeCase == "consommation" :
                     dictInfosPlaces = case.dictInfosPlaces
+                    liste_evenements = case.liste_evenements
                     date = case.date
                     IDgroupe = case.IDgroupe
                     IDuniteRemplissage = case.IDunite
                     IDactivite = case.IDactivite
                     # Mémorisation dans un dict
-                    dictEtatPlaces[(date, IDactivite, IDgroupe, IDuniteRemplissage)] = dictInfosPlaces
+                    if len(liste_evenements) > 0 :
+                        listeTemp = [(evenement.IDevenement, evenement) for evenement in liste_evenements]
+                    else :
+                        listeTemp = [(None, None),]
+                    for IDevenement, evenement in listeTemp :
+                        dictEtatPlaces[(date, IDactivite, IDgroupe, IDuniteRemplissage, IDevenement)] = {"remplissage" : dictInfosPlaces, "evenement" : evenement}
         return dictEtatPlaces
     
-    def GetLargeurColonneUnite(self):
-        return LARGEUR_COLONNE_UNITE
-    
-    def SetLargeurColonneUnite(self, largeur=60):
-        global LARGEUR_COLONNE_UNITE
-        LARGEUR_COLONNE_UNITE = largeur
-        UTILS_Config.SetParametre("largeur_colonne_unite_remplissage", largeur)
+    # def GetLargeurColonneUnite(self):
+    #     return LARGEUR_COLONNE_UNITE
+    #
+    # def SetLargeurColonneUnite(self, largeur=60):
+    #     global LARGEUR_COLONNE_UNITE
+    #     LARGEUR_COLONNE_UNITE = largeur
+    #     UTILS_Config.SetParametre("largeur_colonne_unite_remplissage", largeur)
 
     def GetAbregeGroupes(self):
         return ABREGE_GROUPES
@@ -1356,6 +1682,25 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
     def ExportExcel(self, event=None):
         from Utils import UTILS_Export
         UTILS_Export.ExportExcel(grid=self, titre=_(u"Remplissage"))
+
+    def OnChangeColSize(self, event):
+        numColonne = event.GetRowOrCol()
+        largeur = self.GetColSize(numColonne)
+        if len(self.dictLignes) == 0: return
+        ligne = self.dictLignes[0]
+        case = ligne.dictCases[numColonne]
+
+        if case.typeCase == "activite":
+            self.SetColSize(numColonne, LARGEUR_COLONNE_ACTIVITE)
+
+        if case.typeCase == "consommation" and case.estTotal == True :
+            self.SetColSize(numColonne, LARGEUR_COLONNE_UNITE)
+
+        if case.typeCase == "consommation" and case.estTotal == False :
+            DB = GestionDB.DB()
+            DB.ReqMAJ("unites_remplissage", [("largeur", int(largeur)),], "IDunite_remplissage", case.IDunite)
+            DB.Close()
+
 
 
 # -------------------------------------------------------------------------------------------------------------------------------------------

@@ -355,6 +355,7 @@ DB_DATA = {
                                     ("afficher_page_accueil", "INTEGER", u"Afficher dans le cadre Effectifs de la page d'accueil"),
                                     ("afficher_grille_conso", "INTEGER", u"Afficher dans la grille des conso"),
                                     ("etiquettes", "VARCHAR(450)", u"Etiquettes associées"),
+                                    ("largeur", "INTEGER", u"Largeur de colonne en pixels"),
                                     ], # Unités de remplissage
 
     "unites_remplissage_unites":[("IDunite_remplissage_unite", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID Unité_remplissage_unite"),
@@ -428,6 +429,7 @@ DB_DATA = {
                                     ("etats", "VARCHAR(150)", u"Etats de consommations rattachés à ce tarif"),
                                     ("IDtype_quotient", "INTEGER", u"ID du type de quotient"),
                                     ("label_prestation", "VARCHAR(300)", u"Label de la prestation"),
+                                    ("IDevenement", "INTEGER", u"ID de l'évènement associé"),
                                     ], # Tarifs
 
     "combi_tarifs":          [("IDcombi_tarif", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID combinaison de tarif"),
@@ -480,6 +482,7 @@ DB_DATA = {
                                     ("montant_questionnaire", "INTEGER", u"IDquestion de la table questionnaires"),
                                     ("revenu_min", "FLOAT", u"Montant revenu min"),
                                     ("revenu_max", "FLOAT", u"Montant revenu max"),
+                                    ("IDmodele", "INTEGER", u"IDmodele de prestation"),
                                     ], # Lignes du tableau de calcul de tarifs
                                     
     "inscriptions":[           ("IDinscription", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID inscription"),
@@ -513,6 +516,7 @@ DB_DATA = {
                                     ("forfait", "INTEGER", u"Type de forfait : 0 : Aucun | 1 : Suppr possible | 2 : Suppr impossible"),
                                     ("quantite", "INTEGER", u"Quantité de consommations"),
                                     ("etiquettes", "VARCHAR(50)", u"Etiquettes"),
+                                    ("IDevenement", "INTEGER", u"ID de l'évènement"),
                                     ], # Consommations
 
     "memo_journee":[      ("IDmemo", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID memo"),
@@ -1579,6 +1583,32 @@ DB_DATA = {
                                     ("parametre", "VARCHAR(30000)", u"Parametre"),
                                     ("type_donnee", "VARCHAR(200)", u"Type de données"),
                                     ],  # Paramètres des profils
+
+    "evenements":                  [("IDevenement", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID évènement"),
+                                    ("IDactivite", "INTEGER", u"ID de l'activité associée"),
+                                    ("IDunite", "INTEGER", u"ID de l'unité de conso associée"),
+                                    ("IDgroupe", "INTEGER", u"ID du groupe associé"),
+                                    ("date", "DATE", u"Date de l'évènement"),
+                                    ("nom", "VARCHAR(200)", u"Nom de l'évènement"),
+                                    ("description", "VARCHAR(1000)", u"Description de l'évènement"),
+                                    ("capacite_max", "INTEGER", u"Nombre d'inscrits max sur l'évènement"),
+                                    ("heure_debut", "DATE", u"Heure de début de l'évènement"),
+                                    ("heure_fin", "DATE", u"Heure de fin de l'évènement"),
+                                    ("montant", "FLOAT", u"Montant fixe de la prestation"),
+                                    ],  # Evènements
+
+      "modeles_prestations":        [("IDmodele", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID prestation"),
+                                    ("categorie", "VARCHAR(50)", u"Catégorie de la prestation"),
+                                    ("label", "VARCHAR(200)", u"Label de la prestation"),
+                                    ("IDactivite", "INTEGER", u"ID de l'activité"),
+                                    ("IDtarif", "INTEGER", u"ID du tarif"),
+                                    ("IDcategorie_tarif", "INTEGER", u"ID de la catégorie de tarif"),
+                                    ("tva", "FLOAT", u"Taux TVA"),
+                                    ("code_compta", "VARCHAR(200)", u"Code comptable pour export vers logiciels de compta"),
+                                    ("public", "VARCHAR(50)", u"Type de public : famille ou individu"),
+                                    ("IDtype_quotient", "INTEGER", u"ID du type de quotient"),
+                                     ],  # Modèles de prestations
+
 
 }
 

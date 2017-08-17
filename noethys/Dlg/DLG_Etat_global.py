@@ -403,6 +403,18 @@ class Dialog(wx.Dialog):
 
         DB = GestionDB.DB()
 
+        # Evènements
+        dictEvenements = {}
+        req = """SELECT IDevenement, nom, date
+        FROM evenements
+        WHERE date>='%s' AND date<='%s'
+        ;""" % (date_debut, date_fin)
+        DB.ExecuterReq(req)
+        listeDonnees = DB.ResultatReq()
+        for IDevenement, nom, date in listeDonnees :
+            date = UTILS_Dates.DateEngEnDateDD(date)
+            dictEvenements[IDevenement] = {"nom" : nom, "date" : date}
+
         # Etiquettes
         dictEtiquettes = {}
         req = """SELECT IDetiquette, label, IDactivite, parent, ordre, couleur
@@ -555,7 +567,7 @@ class Dialog(wx.Dialog):
         else : conditionSQL = "AND consommations.IDunite IN %s" % str(tuple(listeUnitesUtilisees))
 
         req = """SELECT IDconso, consommations.date, consommations.IDindividu, consommations.IDunite, consommations.IDgroupe, consommations.IDactivite, consommations.etiquettes,
-        heure_debut, heure_fin, etat, quantite, consommations.IDprestation, prestations.temps_facture,
+        heure_debut, heure_fin, etat, quantite, consommations.IDevenement, consommations.IDprestation, prestations.temps_facture,
         comptes_payeurs.IDfamille, activites.nom, groupes.nom, categories_tarifs.nom, 
         familles.IDcaisse, caisses.IDregime, individus.date_naiss
         FROM consommations
@@ -577,7 +589,7 @@ class Dialog(wx.Dialog):
         dict_resultats = {}
 
         listePrestationsTraitees = []
-        for IDconso, date, IDindividu, IDunite, IDgroupe, IDactivite, etiquettes, heure_debut, heure_fin, etat, quantite, IDprestation, temps_facture, IDfamille, nomActivite, nomGroupe, nomCategorie, IDcaisse, IDregime, date_naiss in listeDonnees:
+        for IDconso, date, IDindividu, IDunite, IDgroupe, IDactivite, etiquettes, heure_debut, heure_fin, etat, quantite, IDevenement, IDprestation, temps_facture, IDfamille, nomActivite, nomGroupe, nomCategorie, IDcaisse, IDregime, date_naiss in listeDonnees:
             date = UTILS_Dates.DateEngEnDateDD(date)
             mois = date.month
             annee = date.year
@@ -597,6 +609,8 @@ class Dialog(wx.Dialog):
                 if regroupement_principal == "annee": regroupement = annee
                 if regroupement_principal == "activite": regroupement = nomActivite
                 if regroupement_principal == "groupe": regroupement = nomGroupe
+                if regroupement_principal == "evenement" : regroupement = IDevenement
+                if regroupement_principal == "evenement_date": regroupement = IDevenement
                 if regroupement_principal == "categorie_tarif": regroupement = nomCategorie
                 if regroupement_principal == "unite_conso": regroupement = nom_unite_conso
                 if regroupement_principal == "ville_residence": regroupement = self.dictInfosIndividus[IDindividu]["INDIVIDU_VILLE"]
@@ -654,7 +668,7 @@ class Dialog(wx.Dialog):
                 if type(regroupement) == datetime.date :
                     regroupement = str(regroupement)
 
-            except:
+            except :
                 regroupement = None
 
             # ------------------------------------ ANALYSE DONNEES -----------------------------------
@@ -880,7 +894,7 @@ class Dialog(wx.Dialog):
         # Tri du niveau de regroupement principal
         regroupements = dict_resultats.keys()
         regroupements.sort()
-        
+
         listeRegimesUtilises.sort() 
         
         for regroupement in regroupements :
@@ -924,6 +938,10 @@ class Dialog(wx.Dialog):
                 label_regroupement = UTILS_Dates.FormateMois(regroupement)
             elif regroupement_principal == "annee" :
                 label_regroupement = str(regroupement)
+            elif regroupement_principal == "evenement" and dictEvenements.has_key(regroupement) :
+                label_regroupement = dictEvenements[regroupement]["nom"]
+            elif regroupement_principal == "evenement_date" and dictEvenements.has_key(regroupement) :
+                label_regroupement = u"%s (%s)" % (dictEvenements[regroupement]["nom"], UTILS_Dates.DateDDEnFr(dictEvenements[regroupement]["date"]))
             elif regroupement_principal.startswith("qf") and type(regroupement) == tuple :
                 label_regroupement = u"%d-%d" % regroupement
             elif regroupement_principal == "age" :

@@ -38,6 +38,7 @@ class Track(object):
         
         if self.type == "Unitaire" : self.type = _(u"Standard")
         if self.type == "Quantite" : self.type = _(u"Quantité")
+        if self.type == "Evenement": self.type = _(u"Evènementiel")
         
         self.date_debut = donnees[4]
         self.date_fin = donnees[5]
@@ -115,9 +116,9 @@ class ListView(FastObjectListView):
             ColumnDefn(_(u"ID"), "left", 0, "IDunite", typeDonnee="entier"),
             ColumnDefn(_(u"Ordre"), "left", 70, "ordre", typeDonnee="entier"),
             ColumnDefn(_(u"Nom"), 'left', 190, "nom", typeDonnee="texte"),
-            ColumnDefn(_(u"Abrégé"), "left", 60, "abrege", typeDonnee="texte"), 
-            ColumnDefn(_(u"Type"), "left", 60, "type", typeDonnee="texte"), 
-            ColumnDefn(_(u"Période de validité"), "left", 200, "periode_validite", typeDonnee="texte"),
+            ColumnDefn(_(u"Abrégé"), "left", 80, "abrege", typeDonnee="texte"),
+            ColumnDefn(_(u"Type"), "left", 120, "type", typeDonnee="texte"),
+            ColumnDefn(_(u"Période de validité"), "left", 210, "periode_validite", typeDonnee="texte"),
             ColumnDefn(_(u"Auto-gen."), "left", 70, "autogen_active_str", typeDonnee="texte"),
             ]
         

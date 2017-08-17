@@ -744,10 +744,10 @@ class Dialog(wx.Dialog):
         
         import DLG_Appliquer_forfait
         dlg = DLG_Appliquer_forfait.Dialog(self, IDfamille=self.IDfamille, listeActivites=listeActivites, listeIndividus=listeIndividus)
-        if dlg.ShowModal() == wx.ID_OK :
-            self.panel_grille.MAJ_grille() 
+        dlg.ShowModal()
         dlg.Destroy()
-    
+        self.panel_grille.MAJ_grille()
+
     def On_outils_recalculer(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("consommations_conso", "modifier") == False : return
         dlg = wx.MessageDialog(self, _(u"Confirmez-vous le recalcul des prestations de toutes les consommations affichées ?"), _(u"Recalcul des prestations"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)

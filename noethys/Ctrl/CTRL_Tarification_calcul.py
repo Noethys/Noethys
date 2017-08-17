@@ -45,13 +45,15 @@ LISTE_METHODES = [
     { "code" : "qf_date", "label" : _(u"En fonction de la date et du quotient familial"), "type" : "unitaire", "nbre_lignes_max" : None, "entete" : None, "champs" : ("date", "qf_min", "qf_max", "montant_unique", "label"), "champs_obligatoires" : ("date", "qf_min", "qf_max", "montant_unique"), "tarifs_compatibles" : ("JOURN",) },
     
     { "code" : "variable", "label" : _(u"Tarif libre (Saisi par l'utilisateur)"), "type" : "unitaire", "nbre_lignes_max" : 0, "entete" : None, "champs" : (), "champs_obligatoires" : (), "tarifs_compatibles" : ("JOURN",) },
-    { "code" : "choix", "label" : _(u"Tarif au choix (Sélectionné par l'utilisateur)"), "type" : "unitaire", "nbre_lignes_max" : None, "entete" : None, "champs" : ("montant_unique", "label"), "champs_obligatoires" : ("montant_unique",), "tarifs_compatibles" : ("JOURN", "FORFAIT", "CREDIT") },
-    
+    { "code" : "choix", "label" : _(u"Tarif au choix (Sélectionné par l'utilisateur)"), "type" : "unitaire", "nbre_lignes_max" : None, "entete" : None, "champs" : ("montant_unique", "label"), "champs_obligatoires" : ("montant_unique",), "tarifs_compatibles" : ("JOURN", "FORFAIT",) },
+
+    { "code" : "montant_evenement", "label" : _(u"Montant de l'évènement"), "type" : "unitaire", "nbre_lignes_max" : 0, "entete" : None, "champs" : (), "champs_obligatoires" : (), "tarifs_compatibles" : ("JOURN",) },
+
     { "code" : "montant_unique_nbre_ind", "label" : _(u"Montant unique en fonction du nombre d'individus de la famille présents"), "type" : "unitaire", "nbre_lignes_max" : 1, "entete" : "tranche", "champs" : ("montant_enfant_1", "montant_enfant_2", "montant_enfant_3", "montant_enfant_4", "montant_enfant_5", "montant_enfant_6", ), "champs_obligatoires" : ("montant_enfant_1"), "tarifs_compatibles" : ("JOURN",) },
     { "code" : "qf_nbre_ind", "label" : _(u"En fonction du quotient familial et du nombre d'individus de la famille présents"), "type" : "unitaire", "nbre_lignes_max" : None, "entete" : "tranche", "champs" : ("qf_min", "qf_max", "montant_enfant_1", "montant_enfant_2", "montant_enfant_3", "montant_enfant_4", "montant_enfant_5", "montant_enfant_6", ), "champs_obligatoires" : ("qf_min", "qf_max", "montant_enfant_1"), "tarifs_compatibles" : ("JOURN",) },
     { "code" : "horaire_montant_unique_nbre_ind", "label" : _(u"Montant unique en fonction du nombre d'individus de la famille présents et de la tranche horaire"), "type" : "unitaire", "nbre_lignes_max" : None, "entete" : "tranche", "champs" : ("heure_debut_min", "heure_debut_max", "heure_fin_min", "heure_fin_max", "temps_facture", "montant_enfant_1", "montant_enfant_2", "montant_enfant_3", "montant_enfant_4", "montant_enfant_5", "montant_enfant_6", "label"), "champs_obligatoires" : ("heure_debut_min", "heure_debut_max", "heure_fin_min", "heure_fin_max", "montant_enfant_1"), "tarifs_compatibles" : ("JOURN",) },
     { "code" : "montant_unique_nbre_ind_degr", "label" : _(u"Montant dégressif en fonction du nombre d'individus de la famille présents"), "type" : "unitaire", "nbre_lignes_max" : 1, "entete" : "tranche", "champs" : ("montant_enfant_1", "montant_enfant_2", "montant_enfant_3", "montant_enfant_4", "montant_enfant_5", "montant_enfant_6", ), "champs_obligatoires" : ("montant_enfant_1"), "tarifs_compatibles" : ("JOURN",) },
-    { "code" : "qf_nbre_ind_degr", "label" : _(u"Montant dégressif en fonction du quotient familial et du nombre d'individus de la famille présents"), "type" : "unitaire", "nbre_lignes_max" : None, "entete" : "tranche", "champs" : ("qf_min", "qf_max", "montant_enfant_1", "montant_enfant_2", "montant_enfant_3", "montant_enfant_4", "montant_enfant_5", "montant_enfant_6", ), "champs_obligatoires" : ("qf_min", "qf_max", "montant_enfant_1"), "tarifs_compatibles" : ("JOURN", "FORFAIT", "CREDIT") },
+    { "code" : "qf_nbre_ind_degr", "label" : _(u"Montant dégressif en fonction du quotient familial et du nombre d'individus de la famille présents"), "type" : "unitaire", "nbre_lignes_max" : None, "entete" : "tranche", "champs" : ("qf_min", "qf_max", "montant_enfant_1", "montant_enfant_2", "montant_enfant_3", "montant_enfant_4", "montant_enfant_5", "montant_enfant_6", ), "champs_obligatoires" : ("qf_min", "qf_max", "montant_enfant_1"), "tarifs_compatibles" : ("JOURN",) },
     { "code" : "horaire_montant_unique_nbre_ind_degr", "label" : _(u"Montant dégressif en fonction du nombre d'individus de la famille présents et de la tranche horaire"), "type" : "unitaire", "nbre_lignes_max" : None, "entete" : "tranche", "champs" : ("heure_debut_min", "heure_debut_max", "heure_fin_min", "heure_fin_max", "temps_facture", "montant_enfant_1", "montant_enfant_2", "montant_enfant_3", "montant_enfant_4", "montant_enfant_5", "montant_enfant_6", "label"), "champs_obligatoires" : ("heure_debut_min", "heure_debut_max", "heure_fin_min", "heure_fin_max", "montant_enfant_1"), "tarifs_compatibles" : ("JOURN",) },
     
     { "code" : "duree_coeff_montant_unique", "label" : _(u"Montant au prorata d'une durée"), "type" : "horaire", "nbre_lignes_max" : None, "entete" : None, "champs" : ("duree_min", "duree_max", "duree_seuil", "duree_plafond", "unite_horaire", "montant_unique", "montant_min", "montant_max", "montant_questionnaire", "ajustement", "label"), "champs_obligatoires" : ("unite_horaire", "montant_unique"), "tarifs_compatibles" : ("JOURN",) },
@@ -107,7 +109,7 @@ CHAMPS_TABLE_LIGNES = [
     "IDligne", "IDactivite", "IDtarif", "code", "num_ligne", "tranche", "qf_min", "qf_max", "montant_unique", "montant_questionnaire",
     "montant_enfant_1", "montant_enfant_2", "montant_enfant_3", "montant_enfant_4", "montant_enfant_5", "montant_enfant_6", 
     "nbre_enfants", "coefficient", "montant_min", "montant_max", "heure_debut_min", "heure_debut_max", "heure_fin_min", "heure_fin_max", "duree_min", "duree_max",
-    "date", "label", "temps_facture", "unite_horaire", "duree_seuil", "duree_plafond", "taux", "ajustement", "revenu_min", "revenu_max",
+    "date", "label", "temps_facture", "unite_horaire", "duree_seuil", "duree_plafond", "taux", "ajustement", "revenu_min", "revenu_max", "IDmodele",
     ]
 
 ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -359,13 +361,15 @@ class RendererChoix(GridCellRenderer):
 
 
 class Tableau(gridlib.Grid): 
-    def __init__(self, parent):
+    def __init__(self, parent, track_tarif=None):
         gridlib.Grid.__init__(self, parent, -1, style=wx.WANTS_CHARS)
+        self.track_tarif = track_tarif
+
         self.moveTo = None
         self.parent = parent
         self.CreateGrid(0, 0)
         self.SetRowLabelSize(40)
-        
+
         self.SetLabelBackgroundColour((255, 255, 255))
         
         self.caseSurvolee = None
@@ -741,23 +745,32 @@ class Tableau(gridlib.Grid):
         return valeur
 
     def Importation(self, IDtarif=None):
-        if IDtarif == None : return
-        db = GestionDB.DB()
-        champsTable = ", ".join(CHAMPS_TABLE_LIGNES)
-        req = """SELECT %s
-        FROM tarifs_lignes
-        WHERE IDtarif=%d
-        ORDER BY num_ligne;""" % (champsTable, IDtarif)
-        db.ExecuterReq(req)
-        listeDonnees = db.ResultatReq()
-        db.Close()
+        if IDtarif == None and self.track_tarif == None :
+            return
+
+        # Importation de données virtuelles
+        if self.track_tarif != None :
+            listeDonnees = self.track_tarif.GetLignes()
+
+        # Importation depuis la base de données
+        else :
+            db = GestionDB.DB()
+            champsTable = ", ".join(CHAMPS_TABLE_LIGNES)
+            req = """SELECT %s
+            FROM tarifs_lignes
+            WHERE IDtarif=%d
+            ORDER BY num_ligne;""" % (champsTable, IDtarif)
+            db.ExecuterReq(req)
+            listeDonnees = db.ResultatReq()
+            db.Close()
+
         if len(listeDonnees) == 0 : return
         # Sélection de la méthode
         code = listeDonnees[0][3]
         index = 0
         for dictMethode in LISTE_METHODES :
             if dictMethode["code"] == code :
-                self.parent.ctrl_methode.SetSelection(index)
+                self.parent.ctrl_methode.SetCode(code)
                 self.parent.OnChoiceMethode(None)
                 champs = dictMethode["champs"]
             index += 1
@@ -824,10 +837,15 @@ class Tableau(gridlib.Grid):
         for dictMethode in LISTE_METHODES :
             if dictMethode["code"] == self.code :
                 champs = dictMethode["champs"]
+
         # Attribution des champs aux valeurs
-        DB = GestionDB.DB()
+        if self.track_tarif == None :
+            DB = GestionDB.DB()
+
         listeFinaleID = []
         if self.dictDonnees.has_key(self.code) == False : return False
+
+        liste_lignes = []
         for numLigne, dictColonnes in self.dictDonnees[self.code].iteritems() :
             dictValeurs = {
                 "IDactivite" : self.parent.IDactivite,
@@ -846,7 +864,6 @@ class Tableau(gridlib.Grid):
                 if valeur == "" : valeur = None
                 if codeChamp == "date" and valeur != None :
                     valeur = DateFrEnDateDD(valeur)
-                #print numLigne, numColonne, codeChamp, valeur
                 dictValeurs[codeChamp] = valeur
                 numColonne += 1
             
@@ -859,41 +876,57 @@ class Tableau(gridlib.Grid):
                     valeur = None
                 champ = (codeChamp, valeur)
                 listeDonnees.append(champ)
-            
+
             # Sauvegarde
             if dictColonnes.has_key("IDligne") :
                 IDligne = dictColonnes["IDligne"]
                 listeFinaleID.append(IDligne)
             else:
                 IDligne = None
-            
-            if IDligne == None :
-                # Nouvelle ligne
-                
-                # Ci-dessous pour parer bug de Last_row_id de Sqlite
-                if DB.isNetwork == False :
-                    req = """SELECT max(IDligne) FROM tarifs_lignes;"""
-                    DB.ExecuterReq(req)
-                    listeTemp = DB.ResultatReq()
-                    if listeTemp[0][0] == None : 
-                        newID = 1
+
+            # Envoi des lignes au track_tarif
+            listeTemp = copy.deepcopy(listeDonnees)
+            listeTemp.append(("IDligne", IDligne))
+            liste_lignes.append(listeTemp)
+
+            # Sauvegarde de la ligne
+            if self.track_tarif == None :
+
+                if IDligne == None :
+                    # Nouvelle ligne
+
+                    # Ci-dessous pour parer bug de Last_row_id de Sqlite
+                    if DB.isNetwork == False :
+                        req = """SELECT max(IDligne) FROM tarifs_lignes;"""
+                        DB.ExecuterReq(req)
+                        listeTemp = DB.ResultatReq()
+                        if listeTemp[0][0] == None :
+                            newID = 1
+                        else:
+                            newID = listeTemp[0][0] + 1
+                        listeDonnees.append(("IDligne", newID))
+                        DB.ReqInsert("tarifs_lignes", listeDonnees)
                     else:
-                        newID = listeTemp[0][0] + 1
-                    listeDonnees.append(("IDligne", newID))
-                    DB.ReqInsert("tarifs_lignes", listeDonnees)
+                        # Version MySQL
+                        newID = DB.ReqInsert("tarifs_lignes", listeDonnees)
                 else:
-                    # Version MySQL
-                    newID = DB.ReqInsert("tarifs_lignes", listeDonnees)
-            else:
-                # Modification
-                DB.ReqMAJ("tarifs_lignes", listeDonnees, "IDligne", IDligne)
-        
+                    # Modification
+                    DB.ReqMAJ("tarifs_lignes", listeDonnees, "IDligne", IDligne)
+
+        # Envoi des lignes au track_tarif
+        if self.track_tarif != None :
+            self.track_tarif.SetLignes(liste_lignes)
+
         # Suppressions
         for IDligne in self.listeInitialeID :
             if IDligne not in listeFinaleID :
-                DB.ReqDEL("tarifs_lignes", "IDligne", IDligne)
-                
-        DB.Close()
+                if self.track_tarif == None :
+                    DB.ReqDEL("tarifs_lignes", "IDligne", IDligne)
+
+        if self.track_tarif == None :
+            DB.Close()
+
+
 
     def GetSelectionUtilisateur(self):
         if len(self.GetSelectedRows()) > 0 :
@@ -1130,6 +1163,64 @@ class Tableau(gridlib.Grid):
 
 # -----------------------------------------------------------------------------------------------------------------------------
 
+class CTRL_Methode(wx.Choice):
+    def __init__(self, parent, filtre=None):
+        wx.Choice.__init__(self, parent, -1, size=(150, -1))
+        self.parent = parent
+        self.filtre = filtre
+        self.typeTarif = None
+        self.MAJ()
+
+    def SetFiltre(self, filtre=[]):
+        code = self.GetCode()
+        self.filtre = filtre
+        self.MAJ()
+        self.SetCode(code)
+        if self.GetCode() != code :
+            self.Select(0)
+
+    def SetFiltreTypeTarif(self, typeTarif=None):
+        # typeTarif = JOURN, FORFAIT, CREDIT, BAREME ou None
+        code = self.GetCode()
+        self.typeTarif = typeTarif
+        self.MAJ()
+        self.SetCode(code)
+        if self.GetCode() != code :
+            self.Select(0)
+
+    def MAJ(self):
+        self.dictDonnees = {}
+        listeLabels = []
+        index = 0
+        for dictValeurs in LISTE_METHODES :
+            # Création du label
+            label = dictValeurs["label"]
+
+            if (self.typeTarif == None or self.typeTarif in dictValeurs["tarifs_compatibles"]) and (self.filtre == None or dictValeurs["code"] in self.filtre) :
+                listeLabels.append(label)
+                self.dictDonnees[index] = dictValeurs
+                index += 1
+
+        self.SetItems(listeLabels)
+
+
+    def SetCode(self, code=None):
+        for index, dictValeurs in self.dictDonnees.iteritems() :
+            if dictValeurs["code"] == code :
+                self.SetSelection(index)
+
+    def GetCode(self):
+        index = self.GetSelection()
+        if index == -1 : return None
+        return self.dictDonnees[index]["code"]
+
+    def GetDictValeurs(self):
+        index = self.GetSelection()
+        if index == -1 : return None
+        return self.dictDonnees[index]
+
+
+# ----------------------------------------------------------------------------
 class CTRL_Type_quotient(wx.Choice):
     def __init__(self, parent):
         wx.Choice.__init__(self, parent, -1, size=(150, -1))
@@ -1139,9 +1230,9 @@ class CTRL_Type_quotient(wx.Choice):
 
     def MAJ(self):
         listeItems = self.GetListeDonnees()
-        if len(listeItems) == 0 :
+        if len(listeItems) == 0:
             self.Enable(False)
-        else :
+        else:
             self.Enable(True)
         self.SetItems(listeItems)
 
@@ -1154,50 +1245,44 @@ class CTRL_Type_quotient(wx.Choice):
         listeDonnees = db.ResultatReq()
         db.Close()
         listeItems = [_(u"Indifférent")]
-        self.dictDonnees = {0 : {"ID" : None, "nom" : _(u"Indifférent")}}
+        self.dictDonnees = {0: {"ID": None, "nom": _(u"Indifférent")}}
         index = 1
-        for IDtype_quotient, nom in listeDonnees :
-            self.dictDonnees[index] = { "ID" : IDtype_quotient, "nom " : nom}
+        for IDtype_quotient, nom in listeDonnees:
+            self.dictDonnees[index] = {"ID": IDtype_quotient, "nom ": nom}
             listeItems.append(nom)
             index += 1
         return listeItems
 
     def SetID(self, ID=0):
-        if ID == None :
+        if ID == None:
             self.SetSelection(0)
         for index, values in self.dictDonnees.iteritems():
-            if values["ID"] == ID :
-                 self.SetSelection(index)
+            if values["ID"] == ID:
+                self.SetSelection(index)
 
     def GetID(self):
         index = self.GetSelection()
-        if index == -1 or index == 0 : return None
+        if index == -1 or index == 0: return None
         return self.dictDonnees[index]["ID"]
-
 
 
 # -----------------------------------------------------------------------------------------------------------------------------
 
 class Panel(wx.Panel):
-    def __init__(self, parent, IDactivite=None, IDtarif=None):
+    def __init__(self, parent, IDactivite=None, IDtarif=None, track_tarif=None, filtre_methodes=None):
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
         self.parent = parent
         self.IDactivite = IDactivite
         self.IDtarif = IDtarif
+        self.track_tarif = track_tarif
         
         self.nbre_lignes_max = None
 
         self.label_methode = wx.StaticText(self, -1, _(u"Méthode :"))
-        listeLabels = []
-        for dictValeurs in LISTE_METHODES :
-            label = dictValeurs["label"]
-            if len(dictValeurs["tarifs_compatibles"]) > 1 :
-                label += u"*"
-            listeLabels.append(label)
-        self.ctrl_methode = wx.Choice(self, -1, choices=listeLabels)
+        self.ctrl_methode = CTRL_Methode(self, filtre=filtre_methodes)
 
         self.label_parametres = wx.StaticText(self, -1, _(u"Paramètres :"))
-        self.ctrl_parametres = Tableau(self)
+        self.ctrl_parametres = Tableau(self, track_tarif=track_tarif)
         
         self.bouton_ajouter_ligne = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Ajouter_ligne.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_supprimer_ligne = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Supprimer_ligne.png"), wx.BITMAP_TYPE_ANY))
@@ -1205,8 +1290,8 @@ class Panel(wx.Panel):
         self.bouton_copier = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Copier.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_coller = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Coller.png"), wx.BITMAP_TYPE_ANY))
 
-        self.label_info = wx.StaticText(self, -1, _(u"L'astérisque (*) indique les méthodes de calcul compatibles avec les tarifs de type forfait."))
-        self.label_info.SetFont(wx.Font(7, wx.SWISS, wx.NORMAL, wx.NORMAL, False))
+        # self.label_info = wx.StaticText(self, -1, _(u"L'astérisque (*) indique les méthodes de calcul compatibles avec les tarifs de type forfait."))
+        # self.label_info.SetFont(wx.Font(7, wx.SWISS, wx.NORMAL, wx.NORMAL, False))
 
         self.label_type_quotient = wx.StaticText(self, -1, _(u"Type de QF :"))
         self.ctrl_type_quotient = CTRL_Type_quotient(self)
@@ -1221,6 +1306,10 @@ class Panel(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.ctrl_parametres.Coller, self.bouton_coller)
 
         self.ctrl_parametres.Importation(IDtarif)
+
+        if self.ctrl_methode.GetCode() == None :
+            self.ctrl_methode.SetCode("montant_unique")
+            self.OnChoiceMethode(None)
 
     def __set_properties(self):
         self.ctrl_methode.SetToolTip(wx.ToolTip(_(u"Sélectionnez une méthode de calcul dans la liste")))
@@ -1253,8 +1342,8 @@ class Panel(wx.Panel):
         grid_sizer_parametres.AddGrowableCol(0)
         grid_sizer_contenu.Add(grid_sizer_parametres, 1, wx.EXPAND, 0)
         
-        grid_sizer_contenu.Add( (5, 5), 0, 0, 0)
-        grid_sizer_contenu.Add(self.label_info, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        # grid_sizer_contenu.Add( (5, 5), 0, 0, 0)
+        # grid_sizer_contenu.Add(self.label_info, 0, wx.ALIGN_CENTER_VERTICAL, 0)
 
         grid_sizer_contenu.Add(self.label_type_quotient, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_contenu.Add(self.ctrl_type_quotient, 0, wx.EXPAND, 0)
@@ -1271,22 +1360,19 @@ class Panel(wx.Panel):
         return self.ctrl_parametres.Validation()
     
     def Sauvegarde(self):
-        self.ctrl_parametres.Sauvegarde()
+        return self.ctrl_parametres.Sauvegarde()
         
-    def OnChoiceMethode(self, event): 
-        indexSelection = self.ctrl_methode.GetSelection()
-        code = LISTE_METHODES[indexSelection]["code"]
-        entete = LISTE_METHODES[indexSelection]["entete"]
-        champs = LISTE_METHODES[indexSelection]["champs"]
-        champs_obligatoires = LISTE_METHODES[indexSelection]["champs_obligatoires"]
-        self.ctrl_parametres.nbre_lignes_max = LISTE_METHODES[indexSelection]["nbre_lignes_max"]
+    def OnChoiceMethode(self, event=None):
+        dictValeurs = self.ctrl_methode.GetDictValeurs()
+        code = dictValeurs["code"]
+        entete = dictValeurs["entete"]
+        champs = dictValeurs["champs"]
+        champs_obligatoires = dictValeurs["champs_obligatoires"]
+        self.ctrl_parametres.nbre_lignes_max = dictValeurs["nbre_lignes_max"]
         self.ctrl_parametres.MAJ(code, entete, champs, champs_obligatoires)
     
     def GetCodeMethode(self):
-        indexSelection = self.ctrl_methode.GetSelection()
-        if indexSelection == -1 : return None
-        code = LISTE_METHODES[indexSelection]["code"]
-        return code
+        return self.ctrl_methode.GetCode()
 
     def GetTypeQuotient(self):
         return self.ctrl_type_quotient.GetID()
@@ -1295,13 +1381,11 @@ class Panel(wx.Panel):
         self.ctrl_type_quotient.SetID(IDtype_quotient)
 
     def GetTarifsCompatibles(self):
-        indexSelection = self.ctrl_methode.GetSelection()
-        if indexSelection == -1 : return None
-        tarifs_compatibles = LISTE_METHODES[indexSelection]["tarifs_compatibles"]
-        return tarifs_compatibles
+        dictValeurs = self.ctrl_methode.GetDictValeurs()
+        return dictValeurs["tarifs_compatibles"]
 
     def OnBoutonAjouter(self, event):
-        if self.ctrl_methode.GetSelection() == -1 :
+        if self.ctrl_methode.GetCode() == None :
             dlg = wx.MessageDialog(self, _(u"Vous devez d'abord sélectionner une méthode de calcul !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
@@ -1310,12 +1394,23 @@ class Panel(wx.Panel):
 
 
     def OnBoutonSupprimer(self, event): 
-        if self.ctrl_methode.GetSelection() == -1 :
+        if self.ctrl_methode.GetCode() == None :
             dlg = wx.MessageDialog(self, _(u"Vous devez d'abord sélectionner une méthode de calcul !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         self.ctrl_parametres.Supprimer()
+
+    def SetFiltreTypeTarif(self, typeTarif=None):
+        self.ctrl_methode.SetFiltreTypeTarif(typeTarif)
+        self.OnChoiceMethode()
+
+    def MAJ(self):
+        try :
+            typeTarif = self.parent.GetPage("type").GetType()
+            self.SetFiltreTypeTarif(typeTarif)
+        except :
+            pass
 
 
 

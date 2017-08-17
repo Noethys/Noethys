@@ -155,16 +155,23 @@ class CTRL_Label_prestation(wx.Panel):
 # --------------------------------------------------------------------------------------------------------
 
 class Panel(wx.Panel):
-    def __init__(self, parent, IDactivite=None, IDtarif=None):
+    def __init__(self, parent, IDactivite=None, IDtarif=None, cacher_dates=False):
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
         self.parent = parent
+        self.cacher_dates = cacher_dates
 
         # Validité
         self.label_date_debut = wx.StaticText(self, -1, _(u"A partir du :"))
         self.ctrl_date_debut = CTRL_Saisie_date.Date2(self)
         self.check_date_fin = wx.CheckBox(self, -1, _(u"Jusqu'au"))
         self.ctrl_date_fin = CTRL_Saisie_date.Date2(self)
-        
+
+        if cacher_dates :
+            self.label_date_debut.Show(False)
+            self.ctrl_date_debut.Show(False)
+            self.check_date_fin.Show(False)
+            self.ctrl_date_fin.Show(False)
+
         # Description
         self.label_description = wx.StaticText(self, -1, _(u"Description :"))
         self.ctrl_description = wx.TextCtrl(self, -1, u"") 
@@ -201,13 +208,13 @@ class Panel(wx.Panel):
         sizer_base = wx.BoxSizer(wx.VERTICAL)
         grid_sizer_base = wx.FlexGridSizer(rows=7, cols=2, vgap=10, hgap=10)
         grid_sizer_base.Add(self.label_date_debut, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
-        
+
         grid_sizer_validite = wx.FlexGridSizer(rows=1, cols=5, vgap=5, hgap=5)
         grid_sizer_validite.Add(self.ctrl_date_debut, 0, 0, 0)
         grid_sizer_validite.Add( (5, 5), 0, 0, 0)
         grid_sizer_validite.Add(self.check_date_fin, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_validite.Add(self.ctrl_date_fin, 0, 0, 0)   
-             
+        grid_sizer_validite.Add(self.ctrl_date_fin, 0, 0, 0)
+
         grid_sizer_base.Add(grid_sizer_validite, 1, wx.EXPAND, 0)
         
         grid_sizer_base.Add(self.label_description, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
@@ -322,33 +329,35 @@ class Panel(wx.Panel):
     
     def Validation(self):
         # Vérification des dates de validité
-        validation = self.ctrl_date_debut.FonctionValiderDate() 
-        if validation == False : 
-            return False
-        if self.ctrl_date_debut.GetDate() == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez saisir une date de début de validité !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
-            dlg.ShowModal()
-            dlg.Destroy()
-            self.ctrl_date_debut.SetFocus()
-            return False
-        
-        if self.check_date_fin.GetValue() == True :
-            validation = self.ctrl_date_fin.FonctionValiderDate() 
-            if validation == False : 
+        if not self.cacher_dates :
+
+            validation = self.ctrl_date_debut.FonctionValiderDate()
+            if validation == False :
                 return False
-            if self.ctrl_date_fin.GetDate() == None :
-                dlg = wx.MessageDialog(self, _(u"Vous devez saisir une date de fin de validité !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            if self.ctrl_date_debut.GetDate() == None :
+                dlg = wx.MessageDialog(self, _(u"Vous devez saisir une date de début de validité !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
-                self.ctrl_date_fin.SetFocus()
+                self.ctrl_date_debut.SetFocus()
                 return False
-            if self.ctrl_date_fin.GetDate() < self.ctrl_date_debut.GetDate() :
-                dlg = wx.MessageDialog(self, _(u"Vous devez saisir une date de fin supérieure à la date de début !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
-                dlg.ShowModal()
-                dlg.Destroy()
-                self.ctrl_date_fin.SetFocus()
-                return False
-        
+
+            if self.check_date_fin.GetValue() == True :
+                validation = self.ctrl_date_fin.FonctionValiderDate()
+                if validation == False :
+                    return False
+                if self.ctrl_date_fin.GetDate() == None :
+                    dlg = wx.MessageDialog(self, _(u"Vous devez saisir une date de fin de validité !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
+                    dlg.ShowModal()
+                    dlg.Destroy()
+                    self.ctrl_date_fin.SetFocus()
+                    return False
+                if self.ctrl_date_fin.GetDate() < self.ctrl_date_debut.GetDate() :
+                    dlg = wx.MessageDialog(self, _(u"Vous devez saisir une date de fin supérieure à la date de début !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
+                    dlg.ShowModal()
+                    dlg.Destroy()
+                    self.ctrl_date_fin.SetFocus()
+                    return False
+
         # Vérifie que des catégories de tarifs ont été cochées
         listeCategories = self.ctrl_categories.GetIDcoches()
         if len(listeCategories) == 0 :
@@ -374,6 +383,8 @@ class Panel(wx.Panel):
     def Sauvegarde(self):
         pass
 
+    def MAJ(self):
+        pass
 
 
 

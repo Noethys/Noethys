@@ -117,21 +117,18 @@ class ToolBar(wx.ToolBar):
             modeAffichage = dictDonnees["modeAffichage"]
         else:
             modeAffichage = "nbrePlacesPrises"
-        largeurColonneUnites = self.GetParent().ctrl_remplissage.GetLargeurColonneUnite()
         abregeGroupes = self.GetParent().ctrl_remplissage.GetAbregeGroupes()
         affichePresents = AFFICHE_PRESENTS
-        dlg = DLG_Parametres_remplissage.Dialog(None, dictDonnees, largeurColonneUnites, abregeGroupes=abregeGroupes, affichePresents=affichePresents)
+        dlg = DLG_Parametres_remplissage.Dialog(None, dictDonnees, abregeGroupes=abregeGroupes, affichePresents=affichePresents)
         if dlg.ShowModal() == wx.ID_OK:
             # Mise à jour des paramètres du tableau
             listeActivites = dlg.GetListeActivites()
             listePeriodes = dlg.GetListePeriodes()
             dictDonnees = dlg.GetDictDonnees() 
-            largeurColonnesUnites = dlg.GetLargeurColonneUnite()
             abregeGroupes = dlg.GetAbregeGroupes()
             # Mise à jour du tableau de remplissage
             self.GetParent().ctrl_remplissage.SetListeActivites(listeActivites)
             self.GetParent().ctrl_remplissage.SetListePeriodes(listePeriodes)
-            self.GetParent().ctrl_remplissage.SetLargeurColonneUnite(largeurColonnesUnites)
             self.GetParent().ctrl_remplissage.SetAbregeGroupes(abregeGroupes)
             self.GetParent().ctrl_remplissage.MAJ()
             dictDonnees["modeAffichage"] = modeAffichage
@@ -206,7 +203,7 @@ class Panel(wx.Panel):
         
         # Récupération des paramètres d'affichage
         self.dictDonnees = self.GetParametres() 
-        
+
         # Création des contrôles
         self.toolBar = ToolBar(self)
         self.ctrl_remplissage = CTRL_Remplissage.CTRL(self, self.dictDonnees)
@@ -247,7 +244,7 @@ class Panel(wx.Panel):
             'modeAffichage': 'nbrePlacesPrises', 
             'dateDebut': None, 
             'dateFin': None, 
-            'annee': 2010, 
+            'annee': datetime.date.today().year,
             'page': 0,
             }
         dictDonnees = UTILS_Config.GetParametre("dict_selection_periodes_activites", defaut)

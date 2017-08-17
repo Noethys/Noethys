@@ -40,6 +40,7 @@ from Utils import UTILS_Cotisations_manquantes
 from Utils import UTILS_Pieces_manquantes
 from Data import DATA_Civilites as Civilites
 from Ctrl import CTRL_Etiquettes
+from Ctrl import CTRL_Evenements
 from Utils import UTILS_Texte
 from Utils import UTILS_Fichiers
 from Utils import UTILS_Dates
@@ -734,6 +735,76 @@ class Page_Scolarite(wx.Panel):
             if dictParametres.has_key("saut_ecoles") : self.checkbox_saut_ecoles.SetValue(dictParametres["saut_ecoles"])
             if dictParametres.has_key("saut_classes") : self.checkbox_saut_classes.SetValue(dictParametres["saut_classes"])
 
+# -----------------------------------------------------------------------------------------------------------------------------------------------
+
+class Page_Evenements(wx.Panel):
+    def __init__(self, parent):
+        wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
+        self.parent = parent
+
+        self.checkbox_evenements = wx.CheckBox(self, -1, _(u"Regrouper par évènement"))
+        self.ctrl_evenements = CTRL_Evenements.CTRL(self, activeMenu=False, activeCheck=True, onCheck=None)
+        self.ctrl_evenements.SetMinSize((250, 50))
+        self.label_saut_evenements = wx.StaticText(self, -1, _(u"Sauts de page :"))
+        self.checkbox_saut_evenements = wx.CheckBox(self, -1, _(u"Après l'évènement"))
+        self.ctrl_cocher = CTRL_Cocher(self, ctrl_liste=self.ctrl_evenements)
+
+        # Binds
+        self.Bind(wx.EVT_CHECKBOX, self.OnCheckEvenements, self.checkbox_evenements)
+
+        # Propriétés
+        self.checkbox_evenements.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour regrouper les consommations par évènement")))
+        self.checkbox_saut_evenements.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour insérer un saut de page après chaque évènement")))
+
+        # Layout
+        sizer_base = wx.BoxSizer(wx.VERTICAL)
+        grid_sizer_base = wx.FlexGridSizer(rows=5, cols=1, vgap=5, hgap=10)
+
+        grid_sizer_base.Add(self.checkbox_evenements, 0, 0, 0)
+        grid_sizer_base.Add(self.ctrl_evenements, 1, wx.EXPAND, 0)
+
+        grid_sizer_options = wx.FlexGridSizer(rows=1, cols=4, vgap=2, hgap=5)
+        grid_sizer_options.Add(self.label_saut_evenements, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_options.Add(self.checkbox_saut_evenements, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_options.Add((5, 5), 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_options.Add(self.ctrl_cocher, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_options.AddGrowableCol(2)
+        grid_sizer_base.Add(grid_sizer_options, 1, wx.EXPAND, 0)
+
+        grid_sizer_base.AddGrowableRow(1)
+        grid_sizer_base.AddGrowableCol(0)
+        sizer_base.Add(grid_sizer_base, 1, wx.EXPAND | wx.ALL, 5)
+        self.SetSizer(sizer_base)
+        self.Layout()
+
+        self.OnCheckEvenements(None)
+
+    def OnCheckEvenements(self, event=None):
+        if self.checkbox_evenements.GetValue() == True:
+            etat = True
+        else:
+            etat = False
+        self.ctrl_evenements.Activation(etat)
+        self.label_saut_evenements.Enable(etat)
+        self.checkbox_saut_evenements.Enable(etat)
+        self.ctrl_cocher.Enable(etat)
+
+    def GetParametres(self):
+        dictParametres = {}
+        dictParametres["regroupement_evenements"] = int(self.checkbox_evenements.GetValue())
+        dictParametres["saut_evenements"] = int(self.checkbox_saut_evenements.GetValue())
+        return dictParametres
+
+    def SetParametres(self, dictParametres={}):
+        if dictParametres == None:
+            self.checkbox_evenements.SetValue(False)
+            self.checkbox_saut_evenements.SetValue(True)
+        else:
+            if dictParametres.has_key("regroupement_evenements"): self.checkbox_evenements.SetValue(dictParametres["regroupement_evenements"])
+            if dictParametres.has_key("saut_evenements"): self.checkbox_saut_evenements.SetValue(dictParametres["saut_evenements"])
+        self.OnCheckEvenements()
+
+        # -----------------------------------------------------------------------------------------------------------------------------------------------
 
 
 # -----------------------------------------------------------------------------------------------------------------------------------------------
@@ -971,6 +1042,7 @@ class CTRL_Parametres(wx.Notebook):
         self.listePages = [
             {"code" : "activites", "ctrl" : Page_Activites(self), "label" : _(u"Activités"), "image" : "Activite.png"},
             {"code" : "scolarite", "ctrl" : Page_Scolarite(self), "label" : _(u"Scolarité"), "image" : "Classe.png"},
+            {"code" : "evenements", "ctrl": Page_Evenements(self), "label": _(u"Evènements"), "image": "Evenement.png"},
             {"code" : "etiquettes", "ctrl" : Page_Etiquettes(self), "label" : _(u"Etiquettes"), "image" : "Etiquette.png"},
             {"code" : "unites", "ctrl" : Page_Unites(self), "label" : _(u"Unités"), "image" : "Tableau_colonne.png"},
             {"code" : "colonnes", "ctrl": Page_Colonnes(self), "label": _(u"Colonnes perso."), "image": "Tableau_colonne.png"},
@@ -1079,6 +1151,8 @@ class Dialog(wx.Dialog):
         
         self.__do_layout()
 
+        wx.CallLater(1, self.ctrl_parametres.Refresh)
+
     def __set_properties(self):
         self.SetTitle(_(u"Impression d'une liste de consommations"))
         self.radio_journ.SetToolTip(wx.ToolTip(_(u"Cochez ici pour sélectionner une liste journalière")))
@@ -1171,12 +1245,16 @@ class Dialog(wx.Dialog):
         self.GetPage("activites").ctrl_activites.SetDates(listeDates)
         self.SetUnites(self.GetPage("activites").ctrl_activites.GetListeActivites())
         self.GetPage("scolarite").ctrl_ecoles.SetDates(listeDates)
+        self.GetPage("evenements").ctrl_evenements.SetDates(listeDates=listeDates)
+        self.GetPage("evenements").ctrl_evenements.SetCoches(tout=True)
 
     def SetUnites(self, listeActivites=[]):
         self.GetPage("unites").ctrl_unites.SetActivites(listeActivites)
         self.GetPage("etiquettes").ctrl_etiquettes.SetActivites(listeActivites)
         self.GetPage("etiquettes").ctrl_etiquettes.SetCoches(tout=True)
-        
+        self.GetPage("evenements").ctrl_evenements.SetActivites(listeActivites)
+        self.GetPage("evenements").ctrl_evenements.SetCoches(tout=True)
+
     def GetAge(self, date_naiss=None):
         if date_naiss == None : return None
         datedujour = datetime.date.today()
@@ -1266,6 +1344,7 @@ class Dialog(wx.Dialog):
             groupe = dictFeuille["groupe"]
             ecole = dictFeuille["ecole"]
             classe = dictFeuille["classe"]
+            evenement = dictFeuille["evenement"]
             etiquette = dictFeuille["etiquette"]
             lignes = dictFeuille["lignes"]
             
@@ -1279,7 +1358,8 @@ class Dialog(wx.Dialog):
             if groupe != None : listeLabels.append(groupe)
             if ecole != None : listeLabels.append(ecole)
             if classe != None : listeLabels.append(classe)
-            if etiquette != None : listeLabels.append(etiquette)
+            if evenement != None : listeLabels.append(evenement)
+            if etiquette != None: listeLabels.append(etiquette)
             titre = " - ".join(listeLabels)
             feuille.write(0, 0, titre)
             
@@ -1378,8 +1458,15 @@ class Dialog(wx.Dialog):
                 dlg.Destroy()
                 return False
 
-        if self.GetPage("etiquettes").checkbox_etiquettes.GetValue() == True :
+        if self.GetPage("evenements").checkbox_evenements.GetValue() == True :
+            listeEvenements = self.GetPage("evenements").ctrl_evenements.GetCoches()
+            if len(listeEvenements) == 0 :
+                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement cocher au moins un évènement !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg.ShowModal()
+                dlg.Destroy()
+                return False
 
+        if self.GetPage("etiquettes").checkbox_etiquettes.GetValue() == True :
             listeEtiquettes = self.GetPage("etiquettes").ctrl_etiquettes.GetCoches()
             if len(listeEtiquettes) == 0 :
                 dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement cocher au moins une étiquette !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
@@ -1449,6 +1536,11 @@ class Dialog(wx.Dialog):
         else:
             conditionsScolarite = ""
 
+        if self.GetPage("evenements").checkbox_evenements.GetValue() == True :
+            conditionsEvenements = " AND consommations.IDevenement IN %s" % FormateCondition(listeEvenements)
+        else :
+            conditionsEvenements = ""
+
         # Récupération de la liste des unités ouvertes ce jour
         DB = GestionDB.DB()
         req = """SELECT IDouverture, ouvertures.IDactivite, ouvertures.IDunite, IDgroupe, date
@@ -1480,16 +1572,6 @@ class Dialog(wx.Dialog):
         for IDunite, IDactivite, nom, abrege, typeTemp, heure_debut, heure_fin, date_debut, date_fin, ordre in listeUnites :
             dictUnites[IDunite] = {"IDactivite" : IDactivite, "nom" : nom, "abrege" : abrege, "type" : typeTemp, "heure_debut" : heure_debut, "heure_fin" : heure_fin, "date_debut" : date_debut, "date_fin" : date_fin, "ordre" : ordre}
 
-        # Récupération des infos sur les unités de remplissage
-        # req = """SELECT
-        # unites_remplissage_unites.IDunite_remplissage_unite,
-        # unites_remplissage_unites.IDunite_remplissage,
-        # unites_remplissage_unites.IDunite,
-        # nom, abrege, etiquettes
-        # FROM unites_remplissage_unites
-        # LEFT JOIN unites_remplissage ON unites_remplissage.IDunite_remplissage = unites_remplissage_unites.IDunite_remplissage
-        # ;"""
-
         req = """SELECT
         unites_remplissage.IDunite_remplissage, nom, abrege, etiquettes,
         unites_remplissage_unites.IDunite_remplissage_unite,
@@ -1518,11 +1600,14 @@ class Dialog(wx.Dialog):
         # Récupération des noms des classes
         dictClasses = self.GetPage("scolarite").ctrl_ecoles.GetDictClasses()
 
+        # Récupération des évènements
+        dictEvenements = self.GetPage("evenements").ctrl_evenements.GetDictEvenements()
+
         # Récupération des étiquettes
         dictEtiquettes = self.GetPage("etiquettes").ctrl_etiquettes.GetDictEtiquettes()
 
         # Récupération des consommations
-        req = """SELECT IDconso, consommations.IDindividu, IDcivilite, consommations.IDactivite, IDunite, consommations.IDgroupe, heure_debut, heure_fin, etat, quantite, etiquettes,
+        req = """SELECT IDconso, consommations.IDindividu, IDcivilite, consommations.IDactivite, IDunite, consommations.IDgroupe, heure_debut, heure_fin, etat, quantite, etiquettes, IDevenement,
         IDcivilite, individus.nom, prenom, date_naiss, types_sieste.nom, inscriptions.IDfamille, consommations.date, scolarite.IDecole, scolarite.IDclasse
         FROM consommations 
         LEFT JOIN individus ON individus.IDindividu = consommations.IDindividu
@@ -1530,16 +1615,17 @@ class Dialog(wx.Dialog):
         LEFT JOIN inscriptions ON inscriptions.IDinscription = consommations.IDinscription
         LEFT JOIN scolarite ON scolarite.IDindividu = consommations.IDindividu AND scolarite.date_debut <= consommations.date AND scolarite.date_fin >= consommations.date
         WHERE etat IN ("reservation", "present")
-        AND consommations.IDactivite IN %s AND consommations.date IN %s %s
-        ;""" % (conditionActivites, conditionDates, conditionsScolarite)
+        AND consommations.IDactivite IN %s AND consommations.date IN %s %s %s
+        ;""" % (conditionActivites, conditionDates, conditionsScolarite, conditionsEvenements)
         DB.ExecuterReq(req)
         listeConso = DB.ResultatReq()
         dictConso = {}
         dictIndividus = {}
         listeIDindividus = []
-        for IDconso, IDindividu, IDcivilite, IDactivite, IDunite, IDgroupe, heure_debut, heure_fin, etat, quantite, etiquettes, IDcivilite, nom, prenom, date_naiss, nomSieste, IDfamille, date, IDecole, IDclasse in listeConso :
+        for IDconso, IDindividu, IDcivilite, IDactivite, IDunite, IDgroupe, heure_debut, heure_fin, etat, quantite, etiquettes, IDevenement, IDcivilite, nom, prenom, date_naiss, nomSieste, IDfamille, date, IDecole, IDclasse in listeConso :
             date = UTILS_Dates.DateEngEnDateDD(date)
             etiquettes = UTILS_Texte.ConvertStrToListe(etiquettes)
+            conso_IDevenement = IDevenement
 
             # Calcul de l'âge
             if date_naiss != None : date_naiss = UTILS_Dates.DateEngEnDateDD(date_naiss)
@@ -1565,6 +1651,13 @@ class Dialog(wx.Dialog):
             if dictConso[IDactivite][IDgroupe].has_key(scolarite) == False :
                 dictConso[IDactivite][IDgroupe][scolarite] = {}
 
+            # Mémorisation de l'évènement
+            if self.GetPage("evenements").checkbox_evenements.GetValue() == False :
+                IDevenement = None
+
+            if dictConso[IDactivite][IDgroupe][scolarite].has_key(IDevenement) == False :
+                dictConso[IDactivite][IDgroupe][scolarite][IDevenement] = {}
+
             # Mémorisation de l'étiquette
             if self.GetPage("etiquettes").checkbox_etiquettes.GetValue() == False :
                 listeEtiquettes = [None,]
@@ -1573,22 +1666,22 @@ class Dialog(wx.Dialog):
 
             for IDetiquette in listeEtiquettes :
 
-                if dictConso[IDactivite][IDgroupe][scolarite].has_key(IDetiquette) == False :
-                    dictConso[IDactivite][IDgroupe][scolarite][IDetiquette] = {}
+                if dictConso[IDactivite][IDgroupe][scolarite][IDevenement].has_key(IDetiquette) == False :
+                    dictConso[IDactivite][IDgroupe][scolarite][IDevenement][IDetiquette] = {}
 
                 # Mémorisation de l'individu
-                if dictConso[IDactivite][IDgroupe][scolarite][IDetiquette].has_key(IDindividu) == False :
-                    dictConso[IDactivite][IDgroupe][scolarite][IDetiquette][IDindividu] = { "IDcivilite" : IDcivilite, "nom" : nom, "prenom" : prenom, "date_naiss" : date_naiss, "age" : age, "nomSieste" : nomSieste, "listeConso" : {} }
+                if dictConso[IDactivite][IDgroupe][scolarite][IDevenement][IDetiquette].has_key(IDindividu) == False :
+                    dictConso[IDactivite][IDgroupe][scolarite][IDevenement][IDetiquette][IDindividu] = { "IDcivilite" : IDcivilite, "nom" : nom, "prenom" : prenom, "date_naiss" : date_naiss, "age" : age, "nomSieste" : nomSieste, "listeConso" : {} }
 
                 # Mémorisation de la date
-                if dictConso[IDactivite][IDgroupe][scolarite][IDetiquette][IDindividu]["listeConso"].has_key(date) == False :
-                    dictConso[IDactivite][IDgroupe][scolarite][IDetiquette][IDindividu]["listeConso"][date] = {}
+                if dictConso[IDactivite][IDgroupe][scolarite][IDevenement][IDetiquette][IDindividu]["listeConso"].has_key(date) == False :
+                    dictConso[IDactivite][IDgroupe][scolarite][IDevenement][IDetiquette][IDindividu]["listeConso"][date] = {}
 
                 # Mémorisation de la consommation
-                if dictConso[IDactivite][IDgroupe][scolarite][IDetiquette][IDindividu]["listeConso"][date].has_key(IDunite) == False :
-                    dictConso[IDactivite][IDgroupe][scolarite][IDetiquette][IDindividu]["listeConso"][date][IDunite] = []
+                if dictConso[IDactivite][IDgroupe][scolarite][IDevenement][IDetiquette][IDindividu]["listeConso"][date].has_key(IDunite) == False :
+                    dictConso[IDactivite][IDgroupe][scolarite][IDevenement][IDetiquette][IDindividu]["listeConso"][date][IDunite] = []
 
-                dictConso[IDactivite][IDgroupe][scolarite][IDetiquette][IDindividu]["listeConso"][date][IDunite].append( { "heure_debut" : heure_debut, "heure_fin" : heure_fin, "etat" : etat, "quantite" : quantite, "IDfamille" : IDfamille, "etiquettes" : etiquettes } )
+                dictConso[IDactivite][IDgroupe][scolarite][IDevenement][IDetiquette][IDindividu]["listeConso"][date][IDunite].append( { "heure_debut" : heure_debut, "heure_fin" : heure_fin, "etat" : etat, "quantite" : quantite, "IDfamille" : IDfamille, "IDevenement" : conso_IDevenement, "etiquettes" : etiquettes } )
 
                 # Mémorisation du IDindividu
                 if IDindividu not in listeIDindividus :
@@ -1636,13 +1729,17 @@ class Dialog(wx.Dialog):
                 if dictConso[IDactivite][IDgroupe].has_key(scolarite) == False :
                     dictConso[IDactivite][IDgroupe][scolarite] = {}
 
+                IDevenement = None
+                if dictConso[IDactivite][IDgroupe][scolarite].has_key(IDevenement) == False :
+                    dictConso[IDactivite][IDgroupe][scolarite][IDevenement] = {}
+
                 IDetiquette = None
-                if dictConso[IDactivite][IDgroupe][scolarite].has_key(IDetiquette) == False :
-                    dictConso[IDactivite][IDgroupe][scolarite][IDetiquette] = {}
+                if dictConso[IDactivite][IDgroupe][scolarite][IDevenement].has_key(IDetiquette) == False :
+                    dictConso[IDactivite][IDgroupe][scolarite][IDevenement][IDetiquette] = {}
 
                 # Mémorisation de l'individu
-                if dictConso[IDactivite][IDgroupe][scolarite][IDetiquette].has_key(IDindividu) == False :
-                    dictConso[IDactivite][IDgroupe][scolarite][IDetiquette][IDindividu] = { "IDcivilite" : IDcivilite, "nom" : nom, "prenom" : prenom, "date_naiss" : date_naiss, "age" : age, "nomSieste" : nomSieste, "listeConso" : {} }
+                if dictConso[IDactivite][IDgroupe][scolarite][IDevenement][IDetiquette].has_key(IDindividu) == False :
+                    dictConso[IDactivite][IDgroupe][scolarite][IDevenement][IDetiquette][IDindividu] = { "IDcivilite" : IDcivilite, "nom" : nom, "prenom" : prenom, "date_naiss" : date_naiss, "age" : age, "nomSieste" : nomSieste, "listeConso" : {} }
 
                 # Mémorisation du IDindividu
                 if IDindividu not in listeIDindividus :
@@ -1788,12 +1885,12 @@ class Dialog(wx.Dialog):
             story.append(Spacer(0,20))
 
         # Création du titre des tableaux
-        def CreationTitreTableau(nomActivite="", nomGroupe="", nomEcole="", nomClasse="", couleurFond=couleur_fond_titre, couleurTexte=colors.black):
+        def CreationTitreTableau(nomActivite="", nomGroupe="", nomEcole="", nomClasse="", couleurFond=couleur_fond_titre, couleurTexte=colors.black, tailleGroupe=14):
             dataTableau = []
             largeursColonnes = ( (largeurContenu * 1.0 / 3, largeurContenu * 2.0 / 3) )
 
             styleActivite = ParagraphStyle(name="activite", fontName="Helvetica", fontSize=5, leading=3, spaceAfter=0, textColor=couleurTexte)
-            styleGroupe = ParagraphStyle(name="groupe", fontName="Helvetica-Bold", fontSize=14, leading=16, spaceBefore=0, spaceAfter=2, textColor=couleurTexte)
+            styleGroupe = ParagraphStyle(name="groupe", fontName="Helvetica-Bold", fontSize=tailleGroupe, leading=tailleGroupe+2, spaceBefore=0, spaceAfter=2, textColor=couleurTexte)
             styleEcole = ParagraphStyle(name="ecole", fontName="Helvetica", alignment=2, fontSize=5, leading=3, spaceAfter=0, textColor=couleurTexte)
             styleClasse = ParagraphStyle(name="classe", fontName="Helvetica-Bold", alignment=2, fontSize=14, leading=16, spaceBefore=0, spaceAfter=2, textColor=couleurTexte)
 
@@ -1903,604 +2000,654 @@ class Dialog(wx.Dialog):
                         else:
                             scolarite = None
 
-                        # -------------------------------------------------------------------------------
-                        listeIDetiquette = []
-                        if dictConso.has_key(IDactivite) :
-                            if dictConso[IDactivite].has_key(IDgroupe) :
-                                if dictConso[IDactivite][IDgroupe].has_key(scolarite) :
-                                    for IDetiquette, temp in dictConso[IDactivite][IDgroupe][scolarite].iteritems() :
-                                        listeIDetiquette.append(IDetiquette)
-                        if len(listeIDetiquette) == 0 :
-                            listeIDetiquette = [None,]
+                        # Recherche des évènements
+                        listeEvenements = []
+                        if dictConso.has_key(IDactivite):
+                            if dictConso[IDactivite].has_key(IDgroupe):
+                                if dictConso[IDactivite][IDgroupe].has_key(scolarite):
+                                    listeEvenements = dictConso[IDactivite][IDgroupe][scolarite].keys()
 
-                        for IDetiquette in listeIDetiquette :
+                        # tri des évènements
+                        #listeInfosScolarite = self.TriClasses(listeScolarite, dictEcoles) #todo ?
 
-                            # Initialisation du tableau
-                            dataTableau = []
-                            largeursColonnes = []
-                            labelsColonnes = []
+                        # Si regroupement par évènement
+                        if self.GetPage("evenements").checkbox_evenements.GetValue() == False :
+                            listeEvenements = [None, ]
 
-                            # Recherche des entêtes de colonnes :
-                            if dictParametres["afficher_photos"] != "non" :
-                                labelsColonnes.append(Paragraph(_(u"Photo"), styleEntetes))
-                                largeursColonnes.append(tailleImageFinal+6)
+                        for IDevenement in listeEvenements :
 
-                            labelsColonnes.append(Paragraph(_(u"Nom - prénom"), styleEntetes))
-                            if dictParametres["largeur_colonne_nom"] == "automatique" :
-                                largeurColonneNom = 120
-                            else :
-                                largeurColonneNom = int(dictParametres["largeur_colonne_nom"])
-                            largeursColonnes.append(largeurColonneNom)
+                            # # Recherche nom évènement
+                            # if dictEvenements.has_key(IDevenement) :
+                            #     nomEvenement = dictEvenements[IDevenement]
+                            # else :
+                            #     nomEvenement = None
 
-                            if dictParametres["afficher_age"] == True :
-                                labelsColonnes.append(Paragraph(_(u"Age"), styleEntetes))
-                                if dictParametres["largeur_colonne_age"] == "automatique":
-                                    largeurColonneAge = 20
-                                else:
-                                    largeurColonneAge = int(dictParametres["largeur_colonne_age"])
-                                largeursColonnes.append(largeurColonneAge)
-
-                            # Recherche des entetes de colonnes UNITES
-                            if dictParametres["largeur_colonne_unite"] == "automatique" :
-                                largeurColonneUnite = 30
-                            else :
-                                largeurColonneUnite = int(dictParametres["largeur_colonne_unite"])
-
-                            listePositionsDates = []
-                            positionCol1 = len(labelsColonnes)
-                            indexCol = len(labelsColonnes)
-                            for date in listeDates :
-                                if dictDatesUnites.has_key(date) :
-                                    listeUnites = dictDatesUnites[date]
-                                    positionG = indexCol
-                                    for typeTemp, IDunite, affichage in dictChoixUnites[IDactivite] :
-                                        if (affichage == "utilise" and IDunite in listeUnites) or affichage == "toujours" :
-                                            if typeTemp == "conso" :
-                                                abregeUnite = dictUnites[IDunite]["abrege"]
-                                            else:
-                                                if dictUnitesRemplissage.has_key(IDunite) :
-                                                    abregeUnite = dictUnitesRemplissage[IDunite]["abrege"]
-                                                else :
-                                                    abregeUnite = "?"
-                                            labelsColonnes.append(Paragraph(abregeUnite, styleEntetes))
-                                            largeur = largeurColonneUnite
-
-                                            # Agrandit si unité de type multihoraires
-                                            if typeTemp == "conso" and dictUnites[IDunite]["type"] == "Multihoraires" and dictParametres["largeur_colonne_unite"] != "automatique" :
-                                                largeur = 55
-
-                                            # Agrandit si étiquettes à afficher
-                                            if dictParametres["afficher_etiquettes"] == True and dictParametres["largeur_colonne_unite"] != "automatique" :
-                                                largeur += 10
-
-                                            largeursColonnes.append(largeur)
-                                            indexCol += 1
-                                    positionD = indexCol-1
-                                    listePositionsDates.append((date, positionG, positionD))
-
-                            # Colonnes personnalisées
-                            for dictColonnePerso in dictParametres["colonnes"]:
-                                labelsColonnes.append(Paragraph(dictColonnePerso["nom"], styleEntetes))
-                                if dictColonnePerso["largeur"] == "automatique" :
-                                    largeurColonnePerso = int(dictParametres["largeur_colonne_perso"])
-                                    if dictColonnePerso["donnee_code"].startswith("codebarres"):
-                                        largeurColonnePerso = 85
-                                else :
-                                    largeurColonnePerso = int(dictColonnePerso["largeur"])
-                                largeursColonnes.append(largeurColonnePerso)
-
-                            # Colonne Informations
-                            if dictParametres["afficher_informations"] == True :
-                                labelsColonnes.append(Paragraph(_(u"Informations"), styleEntetes))
-                                if dictParametres["largeur_colonne_informations"] == "automatique" :
-                                    largeurColonneInformations = largeurContenu - sum(largeursColonnes)
-                                else :
-                                    largeurColonneInformations = int(dictParametres["largeur_colonne_informations"])
-                                largeursColonnes.append(largeurColonneInformations)
-
-                            # ------ Création de l'entete de groupe ------
-                            CreationTitreTableau(nomActivite, nomGroupe, nomEcole, nomClasse)
-
-                            if IDetiquette != None :
-                                nomEtiquette = dictEtiquettes[IDetiquette]["label"]
-                                couleurEtiquette = colors.grey #ConvertCouleurWXpourPDF(dictEtiquettes[IDetiquette]["couleurRVB"])
-                                CreationTitreTableau(nomGroupe=nomEtiquette, couleurTexte=couleurEtiquette)
-                            else :
-                                nomEtiquette = None
-
-                            listeLignesExport = []
-
-                            # Création de l'entete des DATES
-                            if typeListe == "period" :
-                                ligneTempExport = []
-                                styleDate = ParagraphStyle(name="date", fontName="Helvetica-Bold", fontSize=8, spaceAfter=0, leading=9)
-                                ligne = []
-                                for index in range(0, len(labelsColonnes)-1):
-                                    ligne.append("")
-                                    ligneTempExport.append("")
-
-                                index = 0
-                                for date, positionG, positionD in listePositionsDates :
-                                    listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
-                                    listeJoursAbrege = (_(u"Lun."), _(u"Mar."), _(u"Mer."), _(u"Jeu."), _(u"Ven."), _(u"Sam."), _(u"Dim."))
-                                    listeMoisAbrege = (_(u"janv."), _(u"fév."), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juil."), _(u"août"), _(u"sept."), _(u"oct"), _(u"nov."), _(u"déc."))
-                                    try :
-                                        if (positionD-positionG) < 1 :
-                                            jourStr = listeJoursAbrege[date.weekday()]
-                                            ligne[positionG] = u"%s\n%d\n%s\n%d" % (jourStr, date.day, listeMoisAbrege[date.month-1], date.year)
-                                        else:
-                                            jourStr = listeJours[date.weekday()]
-                                            dateStr = u"<para align='center'>%s %d %s %d</para>" % (jourStr, date.day, listeMoisAbrege[date.month-1], date.year)
-                                            ligne[positionG] = Paragraph(dateStr, styleDate)
-                                        ligneTempExport[positionG] = UTILS_Dates.DateEngFr(str(date))
-                                    except:
-                                        pass
-                                    index += 1
-                                dataTableau.append(ligne)
-                                listeLignesExport.append(ligneTempExport)
-
-                            # Création des entêtes
-                            ligne = []
-                            for label in labelsColonnes :
-                                ligne.append(label)
-                            dataTableau.append(ligne)
-                            listeLignesExport.append(ligne)
-
-                            # --------- Création des lignes -----------
-
-                            # Création d'une liste temporaire pour le tri
-                            listeIndividus = []
+                            # Parcours les étiquettes
+                            listeIDetiquette = []
                             if dictConso.has_key(IDactivite) :
                                 if dictConso[IDactivite].has_key(IDgroupe) :
                                     if dictConso[IDactivite][IDgroupe].has_key(scolarite) :
-                                        if dictConso[IDactivite][IDgroupe][scolarite].has_key(IDetiquette) :
-                                            for IDindividu, dictIndividu in dictConso[IDactivite][IDgroupe][scolarite][IDetiquette].iteritems() :
-                                                valeursTri = (IDindividu, dictIndividu["nom"], dictIndividu["prenom"], dictIndividu["age"])
-                                                listeIndividus.append(valeursTri)
+                                        if dictConso[IDactivite][IDgroupe][scolarite].has_key(IDevenement):
+                                            for IDetiquette, temp in dictConso[IDactivite][IDgroupe][scolarite][IDevenement].iteritems() :
+                                                listeIDetiquette.append(IDetiquette)
+                            if len(listeIDetiquette) == 0 :
+                                listeIDetiquette = [None,]
 
-                            if dictParametres["tri"] == "nom" : paramTri = 1 # Nom
-                            if dictParametres["tri"] == "prenom" : paramTri = 2 # Prénom
-                            if dictParametres["tri"] == "age" : paramTri = 3 # Age
-                            if dictParametres["ordre"] == "croissant" :
-                                ordreDecroissant = False
-                            else:
-                                ordreDecroissant = True
-                            listeIndividus = sorted(listeIndividus, key=operator.itemgetter(paramTri), reverse=ordreDecroissant)
+                            for IDetiquette in listeIDetiquette :
 
-                            # Récupération des lignes individus
-                            dictTotauxColonnes = {}
-                            indexLigne = 0
-                            for IDindividu, nom, prenom, age in listeIndividus :
+                                # Initialisation du tableau
+                                dataTableau = []
+                                largeursColonnes = []
+                                labelsColonnes = []
 
-                                dictIndividu = dictConso[IDactivite][IDgroupe][scolarite][IDetiquette][IDindividu]
-                                ligne = []
-                                indexColonne = 0
-                                ligneVide = True
+                                # Recherche des entêtes de colonnes :
+                                if dictParametres["afficher_photos"] != "non" :
+                                    labelsColonnes.append(Paragraph(_(u"Photo"), styleEntetes))
+                                    largeursColonnes.append(tailleImageFinal+6)
 
-                                # Photo
-                                if dictParametres["afficher_photos"] != "non" and IDindividu in dictPhotos :
-                                    img = dictPhotos[IDindividu]
-                                    ligne.append(img)
-                                    indexColonne += 1
+                                labelsColonnes.append(Paragraph(_(u"Nom - prénom"), styleEntetes))
+                                if dictParametres["largeur_colonne_nom"] == "automatique" :
+                                    largeurColonneNom = 120
+                                else :
+                                    largeurColonneNom = int(dictParametres["largeur_colonne_nom"])
+                                largeursColonnes.append(largeurColonneNom)
 
-                                # Nom
-                                ligne.append(Paragraph(u"%s %s" % (nom, prenom), styleNormal))
-                                indexColonne += 1
-
-                                # Age
                                 if dictParametres["afficher_age"] == True :
-                                    if age != None :
-                                        ligne.append(Paragraph(str(age), styleNormal))
+                                    labelsColonnes.append(Paragraph(_(u"Age"), styleEntetes))
+                                    if dictParametres["largeur_colonne_age"] == "automatique":
+                                        largeurColonneAge = 20
                                     else:
-                                        ligne.append("")
-                                    indexColonne += 1
+                                        largeurColonneAge = int(dictParametres["largeur_colonne_age"])
+                                    largeursColonnes.append(largeurColonneAge)
 
-                                # Unites
+                                # Recherche des entetes de colonnes UNITES
+                                if dictParametres["largeur_colonne_unite"] == "automatique" :
+                                    largeurColonneUnite = 30
+                                else :
+                                    largeurColonneUnite = int(dictParametres["largeur_colonne_unite"])
+
+                                listePositionsDates = []
+                                positionCol1 = len(labelsColonnes)
+                                indexCol = len(labelsColonnes)
                                 for date in listeDates :
                                     if dictDatesUnites.has_key(date) :
                                         listeUnites = dictDatesUnites[date]
-
+                                        positionG = indexCol
                                         for typeTemp, IDunite, affichage in dictChoixUnites[IDactivite] :
                                             if (affichage == "utilise" and IDunite in listeUnites) or affichage == "toujours" :
-                                                listeLabels = []
-                                                quantite = None
-
-                                                styleConso = ParagraphStyle(name="label_conso", fontName="Helvetica", alignment=1, fontSize=6, leading=6, spaceBefore=0, spaceAfter=0, textColor=colors.black)
-                                                styleEtiquette = ParagraphStyle(name="label_etiquette", fontName="Helvetica", alignment=1, fontSize=5, leading=5, spaceBefore=2, spaceAfter=0, textColor=colors.grey)
-
                                                 if typeTemp == "conso" :
-                                                    # Unité de Conso
-                                                    if dictIndividu["listeConso"].has_key(date) :
-                                                        if dictIndividu["listeConso"][date].has_key(IDunite) :
-                                                            typeUnite = dictUnites[IDunite]["type"]
-
-                                                            label = u""
-                                                            for dictConsoTemp in dictIndividu["listeConso"][date][IDunite] :
-
-                                                                etat = dictConsoTemp["etat"]
-                                                                heure_debut = dictConsoTemp["heure_debut"]
-                                                                heure_fin = dictConsoTemp["heure_fin"]
-                                                                quantite = dictConsoTemp["quantite"]
-                                                                etiquettes = dictConsoTemp["etiquettes"]
-
-                                                                if typeUnite == "Unitaire" :
-                                                                     label = u"X"
-                                                                if typeUnite == "Horaire" :
-                                                                    if heure_debut == None : heure_debut = "?"
-                                                                    if heure_fin == None : heure_fin = "?"
-                                                                    heure_debut = heure_debut.replace(":", "h")
-                                                                    heure_fin = heure_fin.replace(":", "h")
-                                                                    label = u"%s\n%s" % (heure_debut, heure_fin)
-                                                                if typeUnite == "Multihoraires" :
-                                                                    if heure_debut == None : heure_debut = "?"
-                                                                    if heure_fin == None : heure_fin = "?"
-                                                                    heure_debut = heure_debut.replace(":", "h")
-                                                                    heure_fin = heure_fin.replace(":", "h")
-                                                                    if len(label) > 0 : label += "\n"
-                                                                    label += u"%s > %s" % (heure_debut, heure_fin)
-                                                                if typeUnite == "Quantite" :
-                                                                     label = str(quantite)
-
-                                                                if dictParametres["masquer_consommations"] == True :
-                                                                    label = ""
-
-                                                                listeLabels.append(Paragraph(label, styleConso))
-
-                                                                # Affichage de l'étiquette
-                                                                if dictParametres["afficher_etiquettes"] == True and len(etiquettes) > 0 :
-                                                                    texteEtiquette = []
-                                                                    for IDetiquetteTemp in etiquettes :
-                                                                        texteEtiquette.append(dictEtiquettes[IDetiquetteTemp]["label"])
-                                                                    etiquette = "\n\n" + ", ".join(texteEtiquette)
-                                                                    listeLabels.append(Paragraph(etiquette, styleEtiquette))
-
+                                                    abregeUnite = dictUnites[IDunite]["abrege"]
                                                 else:
-                                                    # Unité de Remplissage
                                                     if dictUnitesRemplissage.has_key(IDunite) :
-                                                        unitesLiees = dictUnitesRemplissage[IDunite]["unites"]
-                                                        etiquettesUnitesRemplissage = dictUnitesRemplissage[IDunite]["etiquettes"]
+                                                        abregeUnite = dictUnitesRemplissage[IDunite]["abrege"]
                                                     else :
-                                                        unitesLiees = []
-                                                        etiquettesUnitesRemplissage = []
+                                                        abregeUnite = "?"
+                                                labelsColonnes.append(Paragraph(abregeUnite, styleEntetes))
+                                                largeur = largeurColonneUnite
 
-                                                    for IDuniteLiee in unitesLiees :
-                                                        if dictIndividu["listeConso"].has_key(date) :
-                                                            if dictIndividu["listeConso"][date].has_key(IDuniteLiee) :
-                                                                typeUnite = dictUnites[IDuniteLiee]["type"]
+                                                # Agrandit si unité de type multihoraires
+                                                if typeTemp == "conso" and dictUnites[IDunite]["type"] == "Multihoraires" and dictParametres["largeur_colonne_unite"] == "automatique" :
+                                                    largeur = 55
 
-                                                                for dictConsoTemp in dictIndividu["listeConso"][date][IDuniteLiee] :
-                                                                    etat = dictConsoTemp["etat"]
-                                                                    quantite = dictConsoTemp["quantite"]
-                                                                    etiquettes = dictConsoTemp["etiquettes"]
+                                                # Agrandit si évènements à afficher
+                                                if dictParametres["afficher_evenements"] == True and dictParametres["largeur_colonne_unite"] == "automatique" :
+                                                    largeur += 30
 
-                                                                    valide = True
-                                                                    if len(etiquettesUnitesRemplissage) > 0 :
-                                                                        valide = False
-                                                                        for IDetiquetteTemp in etiquettesUnitesRemplissage :
-                                                                            if IDetiquetteTemp in etiquettes :
-                                                                                valide = True
+                                                # Agrandit si étiquettes à afficher
+                                                if dictParametres["afficher_etiquettes"] == True and dictParametres["largeur_colonne_unite"] == "automatique" :
+                                                    largeur += 10
 
-                                                                    if valide == True :
-
-                                                                        if quantite != None :
-                                                                            label = str(quantite)
-                                                                        else :
-                                                                            label = u"X"
-
-                                                                        if dictParametres["masquer_consommations"] == True :
-                                                                            label = ""
-
-                                                                        listeLabels.append(Paragraph(label, styleConso))
-
-                                                                        # Affichage de l'étiquette
-                                                                        if dictParametres["afficher_etiquettes"] == True and len(etiquettes) > 0 :
-                                                                            texteEtiquette = []
-                                                                            for IDetiquetteTemp in etiquettes :
-                                                                                texteEtiquette.append(dictEtiquettes[IDetiquetteTemp]["label"])
-                                                                                etiquette = "\n\n" + ", ".join(texteEtiquette)
-                                                                            listeLabels.append(Paragraph(etiquette, styleEtiquette))
-
-
-                                                if quantite == None :
-                                                    quantite = 1
-
-                                                if len(listeLabels) > 0 :
-                                                    ligneVide = False
-                                                    if dictTotauxColonnes.has_key(indexColonne) == True :
-                                                        dictTotauxColonnes[indexColonne] += quantite
-                                                    else:
-                                                        dictTotauxColonnes[indexColonne] = quantite
-                                                ligne.append(listeLabels)
-                                                indexColonne += 1
+                                                largeursColonnes.append(largeur)
+                                                indexCol += 1
+                                        positionD = indexCol-1
+                                        listePositionsDates.append((date, positionG, positionD))
 
                                 # Colonnes personnalisées
                                 for dictColonnePerso in dictParametres["colonnes"]:
-                                    IDfamille = dictIndividus[IDindividu]["IDfamille"]
-                                    type_donnee = "unicode"
-                                    if dictColonnePerso["donnee_code"] == None :
-                                        donnee = ""
+                                    labelsColonnes.append(Paragraph(dictColonnePerso["nom"], styleEntetes))
+                                    if dictColonnePerso["largeur"] == "automatique" :
+                                        largeurColonnePerso = int(dictParametres["largeur_colonne_perso"])
+                                        if dictColonnePerso["donnee_code"].startswith("codebarres"):
+                                            largeurColonnePerso = 85
                                     else :
+                                        largeurColonnePerso = int(dictColonnePerso["largeur"])
+                                    largeursColonnes.append(largeurColonnePerso)
+
+                                # Colonne Informations
+                                if dictParametres["afficher_informations"] == True :
+                                    labelsColonnes.append(Paragraph(_(u"Informations"), styleEntetes))
+                                    if dictParametres["largeur_colonne_informations"] == "automatique" :
+                                        largeurColonneInformations = largeurContenu - sum(largeursColonnes)
+                                    else :
+                                        largeurColonneInformations = int(dictParametres["largeur_colonne_informations"])
+                                    largeursColonnes.append(largeurColonneInformations)
+
+                                # ------ Création de l'entete de groupe ------
+                                CreationTitreTableau(nomActivite, nomGroupe, nomEcole, nomClasse)
+
+                                if IDevenement != None :
+                                    nomEvenement = dictEvenements[IDevenement]["nom"]
+                                    CreationTitreTableau(nomGroupe=nomEvenement, couleurTexte=colors.black, tailleGroupe=10)
+                                else :
+                                    nomEvenement = None
+
+                                if IDetiquette != None :
+                                    nomEtiquette = dictEtiquettes[IDetiquette]["label"]
+                                    couleurEtiquette = colors.grey #ConvertCouleurWXpourPDF(dictEtiquettes[IDetiquette]["couleurRVB"])
+                                    CreationTitreTableau(nomGroupe=nomEtiquette, couleurTexte=couleurEtiquette, tailleGroupe=10)
+                                else :
+                                    nomEtiquette = None
+
+                                listeLignesExport = []
+
+                                # Création de l'entete des DATES
+                                if typeListe == "period" :
+                                    ligneTempExport = []
+                                    styleDate = ParagraphStyle(name="date", fontName="Helvetica-Bold", fontSize=8, spaceAfter=0, leading=9)
+                                    ligne = []
+                                    for index in range(0, len(labelsColonnes)-1):
+                                        ligne.append("")
+                                        ligneTempExport.append("")
+
+                                    index = 0
+                                    for date, positionG, positionD in listePositionsDates :
+                                        listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
+                                        listeJoursAbrege = (_(u"Lun."), _(u"Mar."), _(u"Mer."), _(u"Jeu."), _(u"Ven."), _(u"Sam."), _(u"Dim."))
+                                        listeMoisAbrege = (_(u"janv."), _(u"fév."), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juil."), _(u"août"), _(u"sept."), _(u"oct"), _(u"nov."), _(u"déc."))
                                         try :
-                                            if dictColonnePerso["donnee_code"] == "aucun": donnee = ""
-                                            if dictColonnePerso["donnee_code"] == "ville_residence": donnee = dictInfosIndividus[IDindividu]["INDIVIDU_VILLE"]
-                                            if dictColonnePerso["donnee_code"] == "secteur": donnee = dictInfosIndividus[IDindividu]["INDIVIDU_SECTEUR"]
-                                            if dictColonnePerso["donnee_code"] == "genre": donnee = dictInfosIndividus[IDindividu]["INDIVIDU_SEXE"]
-                                            if dictColonnePerso["donnee_code"] == "ville_naissance": donnee = dictInfosIndividus[IDindividu]["INDIVIDU_VILLE_NAISS"]
-                                            if dictColonnePerso["donnee_code"] == "nom_ecole": donnee = dictInfosIndividus[IDindividu]["SCOLARITE_NOM_ECOLE"]
-                                            if dictColonnePerso["donnee_code"] == "nom_classe": donnee = dictInfosIndividus[IDindividu]["SCOLARITE_NOM_CLASSE"]
-                                            if dictColonnePerso["donnee_code"] == "nom_niveau_scolaire": donnee = dictInfosIndividus[IDindividu]["SCOLARITE_NOM_NIVEAU"]
-                                            if dictColonnePerso["donnee_code"] == "famille": donnee = dictInfosFamilles[IDfamille]["FAMILLE_NOM"]
-                                            if dictColonnePerso["donnee_code"] == "regime": donnee = dictInfosFamilles[IDfamille]["FAMILLE_NOM_REGIME"]
-                                            if dictColonnePerso["donnee_code"] == "caisse": donnee = dictInfosFamilles[IDfamille]["FAMILLE_NOM_CAISSE"]
-                                            if dictColonnePerso["donnee_code"] == "date_naiss": donnee = dictInfosIndividus[IDindividu]["INDIVIDU_DATE_NAISS"]
-                                            if dictColonnePerso["donnee_code"] == "medecin_nom": donnee = dictInfosIndividus[IDindividu]["MEDECIN_NOM"]
-                                            if dictColonnePerso["donnee_code"] == "tel_mobile": donnee = dictInfosIndividus[IDindividu]["INDIVIDU_TEL_MOBILE"]
-                                            if dictColonnePerso["donnee_code"] == "tel_domicile": donnee = dictInfosIndividus[IDindividu]["INDIVIDU_TEL_DOMICILE"]
-                                            if dictColonnePerso["donnee_code"] == "mail": donnee = dictInfosIndividus[IDindividu]["INDIVIDU_MAIL"]
+                                            if (positionD-positionG) < 1 :
+                                                jourStr = listeJoursAbrege[date.weekday()]
+                                                ligne[positionG] = u"%s\n%d\n%s\n%d" % (jourStr, date.day, listeMoisAbrege[date.month-1], date.year)
+                                            else:
+                                                jourStr = listeJours[date.weekday()]
+                                                dateStr = u"<para align='center'>%s %d %s %d</para>" % (jourStr, date.day, listeMoisAbrege[date.month-1], date.year)
+                                                ligne[positionG] = Paragraph(dateStr, styleDate)
+                                            ligneTempExport[positionG] = UTILS_Dates.DateEngFr(str(date))
+                                        except:
+                                            pass
+                                        index += 1
+                                    dataTableau.append(ligne)
+                                    listeLignesExport.append(ligneTempExport)
 
-                                            if dictColonnePerso["donnee_code"] == "adresse_residence":
-                                                rue = dictInfosIndividus[IDindividu]["INDIVIDU_RUE"]
-                                                if rue == None : rue = ""
-                                                cp = dictInfosIndividus[IDindividu]["INDIVIDU_CP"]
-                                                if cp == None : cp = ""
-                                                ville = dictInfosIndividus[IDindividu]["INDIVIDU_VILLE"]
-                                                if ville == None : ville = ""
-                                                donnee = u"%s %s %s" % (rue, cp, ville)
+                                # Création des entêtes
+                                ligne = []
+                                for label in labelsColonnes :
+                                    ligne.append(label)
+                                dataTableau.append(ligne)
+                                listeLignesExport.append(ligne)
 
-                                            # Questionnaires
-                                            if dictColonnePerso["donnee_code"].startswith("question_") and "famille" in \
-                                                    dictColonnePerso["donnee_code"]:
-                                                donnee = dictInfosFamilles[IDfamille][
-                                                    "QUESTION_%s" % dictColonnePerso["donnee_code"][17:]]
-                                            if dictColonnePerso["donnee_code"].startswith("question_") and "individu" in \
-                                                    dictColonnePerso["donnee_code"]:
-                                                donnee = dictInfosIndividus[IDindividu][
-                                                    "QUESTION_%s" % dictColonnePerso["donnee_code"][18:]]
+                                # --------- Création des lignes -----------
 
-                                            # Code-barre individu
-                                            if dictColonnePerso["donnee_code"] == "codebarres_individu":
-                                                type_donnee = "code-barres"
-                                                donnee = code39.Extended39("I%06d" % IDindividu, humanReadable=False)
+                                # Création d'une liste temporaire pour le tri
+                                listeIndividus = []
+                                if dictConso.has_key(IDactivite) :
+                                    if dictConso[IDactivite].has_key(IDgroupe) :
+                                        if dictConso[IDactivite][IDgroupe].has_key(scolarite) :
+                                            if dictConso[IDactivite][IDgroupe][scolarite].has_key(IDevenement) :
+                                                if dictConso[IDactivite][IDgroupe][scolarite][IDevenement].has_key(IDetiquette):
+                                                    for IDindividu, dictIndividu in dictConso[IDactivite][IDgroupe][scolarite][IDevenement][IDetiquette].iteritems() :
+                                                        valeursTri = (IDindividu, dictIndividu["nom"], dictIndividu["prenom"], dictIndividu["age"])
+                                                        listeIndividus.append(valeursTri)
 
-                                        except :
-                                            donnee = ""
+                                if dictParametres["tri"] == "nom" : paramTri = 1 # Nom
+                                if dictParametres["tri"] == "prenom" : paramTri = 2 # Prénom
+                                if dictParametres["tri"] == "age" : paramTri = 3 # Age
+                                if dictParametres["ordre"] == "croissant" :
+                                    ordreDecroissant = False
+                                else:
+                                    ordreDecroissant = True
+                                listeIndividus = sorted(listeIndividus, key=operator.itemgetter(paramTri), reverse=ordreDecroissant)
 
-                                    if type_donnee == "unicode" :
-                                        ligne.append(Paragraph(unicode(donnee), styleNormal))
-                                    else :
-                                        ligne.append(donnee)
+                                # Récupération des lignes individus
+                                dictTotauxColonnes = {}
+                                indexLigne = 0
+                                for IDindividu, nom, prenom, age in listeIndividus :
 
+                                    dictIndividu = dictConso[IDactivite][IDgroupe][scolarite][IDevenement][IDetiquette][IDindividu]
+                                    ligne = []
+                                    indexColonne = 0
+                                    ligneVide = True
 
-                                # Infos médicales
-                                texteInfos = u""
-                                listeInfos = []
-                                paraStyle = ParagraphStyle(name="infos", fontName="Helvetica", fontSize=7, leading=8, spaceAfter=2,)
+                                    # Photo
+                                    if dictParametres["afficher_photos"] != "non" and IDindividu in dictPhotos :
+                                        img = dictPhotos[IDindividu]
+                                        ligne.append(img)
+                                        indexColonne += 1
 
-                                # Mémo-journée
-                                if dictMemos.has_key(IDindividu) :
+                                    # Nom
+                                    ligne.append(Paragraph(u"%s %s" % (nom, prenom), styleNormal))
+                                    indexColonne += 1
+
+                                    # Age
+                                    if dictParametres["afficher_age"] == True :
+                                        if age != None :
+                                            ligne.append(Paragraph(str(age), styleNormal))
+                                        else:
+                                            ligne.append("")
+                                        indexColonne += 1
+
+                                    # Unites
                                     for date in listeDates :
-                                        if dictMemos[IDindividu].has_key(date) :
-                                            memo_journee = dictMemos[IDindividu][date]
-                                            if typeListe == "period" :
-                                                memo_journee = u"%02d/%02d/%04d : %s" % (date.day, date.month, date.year, memo_journee)
-                                            if len(memo_journee) > 0 and memo_journee[-1] != "." : memo_journee += u"."
-                                            listeInfos.append(ParagraphAndImage(Paragraph(memo_journee, paraStyle), Image(Chemins.GetStaticPath("Images/16x16/Information.png"),width=8, height=8), xpad=1, ypad=0, side="left"))
+                                        if dictDatesUnites.has_key(date) :
+                                            listeUnites = dictDatesUnites[date]
 
-                                # Messages individuels
-                                if dictMessagesIndividus.has_key(IDindividu):
-                                    for dictMessage in dictMessagesIndividus[IDindividu] :
-                                        texteMessage = dictMessage["texte"]
-                                        listeInfos.append(ParagraphAndImage(Paragraph(texteMessage, paraStyle), Image(Chemins.GetStaticPath("Images/16x16/Mail.png"),width=8, height=8), xpad=1, ypad=0, side="left"))
+                                            for typeTemp, IDunite, affichage in dictChoixUnites[IDactivite] :
+                                                if (affichage == "utilise" and IDunite in listeUnites) or affichage == "toujours" :
+                                                    listeLabels = []
+                                                    quantite = None
 
-                                # Récupère la liste des familles rattachées à cet individu
-                                listeIDfamille = []
-                                for date, dictUnitesTemps in dictIndividu["listeConso"].iteritems() :
-                                    for temp, listeConso in dictUnitesTemps.iteritems() :
-                                        for dictConsoTemp in listeConso :
-                                            if dictConsoTemp["IDfamille"] not in listeIDfamille :
-                                                listeIDfamille.append(dictConsoTemp["IDfamille"])
+                                                    styleConso = ParagraphStyle(name="label_conso", fontName="Helvetica", alignment=1, fontSize=6, leading=6, spaceBefore=0, spaceAfter=0, textColor=colors.black)
+                                                    styleEvenement = ParagraphStyle(name="label_evenement", fontName="Helvetica", alignment=1, fontSize=5, leading=5, spaceBefore=2, spaceAfter=0, textColor=colors.black)
+                                                    styleEtiquette = ParagraphStyle(name="label_etiquette", fontName="Helvetica", alignment=1, fontSize=5, leading=5, spaceBefore=2, spaceAfter=0, textColor=colors.grey)
 
-                                # Messages familiaux
-                                for IDfamille in listeIDfamille :
-                                    if dictMessagesFamilles.has_key(IDfamille):
-                                        for dictMessage in dictMessagesFamilles[IDfamille] :
+                                                    if typeTemp == "conso" :
+                                                        # Unité de Conso
+                                                        if dictIndividu["listeConso"].has_key(date) :
+                                                            if dictIndividu["listeConso"][date].has_key(IDunite) :
+                                                                typeUnite = dictUnites[IDunite]["type"]
+
+                                                                label = u""
+                                                                for dictConsoTemp in dictIndividu["listeConso"][date][IDunite] :
+
+                                                                    etat = dictConsoTemp["etat"]
+                                                                    heure_debut = dictConsoTemp["heure_debut"]
+                                                                    heure_fin = dictConsoTemp["heure_fin"]
+                                                                    quantite = dictConsoTemp["quantite"]
+                                                                    etiquettes = dictConsoTemp["etiquettes"]
+
+                                                                    if typeUnite == "Unitaire" :
+                                                                         label = u"X"
+                                                                    if typeUnite == "Horaire" :
+                                                                        if heure_debut == None : heure_debut = "?"
+                                                                        if heure_fin == None : heure_fin = "?"
+                                                                        heure_debut = heure_debut.replace(":", "h")
+                                                                        heure_fin = heure_fin.replace(":", "h")
+                                                                        label = u"%s\n%s" % (heure_debut, heure_fin)
+                                                                    if typeUnite == "Multihoraires" :
+                                                                        if heure_debut == None : heure_debut = "?"
+                                                                        if heure_fin == None : heure_fin = "?"
+                                                                        heure_debut = heure_debut.replace(":", "h")
+                                                                        heure_fin = heure_fin.replace(":", "h")
+                                                                        if len(label) > 0 : label += "\n"
+                                                                        label += u"%s > %s" % (heure_debut, heure_fin)
+                                                                    if typeUnite == "Evenement" :
+                                                                         label = u"X"
+                                                                    if typeUnite == "Quantite" :
+                                                                         label = str(quantite)
+
+                                                                    if dictParametres["masquer_consommations"] == True :
+                                                                        label = ""
+
+                                                                    listeLabels.append(Paragraph(label, styleConso))
+
+                                                                    # Affichage de l'évènement
+                                                                    if dictParametres["afficher_evenements"] == True and dictConsoTemp["IDevenement"] != None :
+                                                                        texteEvenement = dictEvenements[dictConsoTemp["IDevenement"]]["nom"]
+                                                                        listeLabels.append(Paragraph(texteEvenement, styleEvenement))
+
+                                                                    # Affichage de l'étiquette
+                                                                    if dictParametres["afficher_etiquettes"] == True and len(etiquettes) > 0 :
+                                                                        texteEtiquette = []
+                                                                        for IDetiquetteTemp in etiquettes :
+                                                                            texteEtiquette.append(dictEtiquettes[IDetiquetteTemp]["label"])
+                                                                        etiquette = "\n\n" + ", ".join(texteEtiquette)
+                                                                        listeLabels.append(Paragraph(etiquette, styleEtiquette))
+
+                                                    else:
+                                                        # Unité de Remplissage
+                                                        if dictUnitesRemplissage.has_key(IDunite) :
+                                                            unitesLiees = dictUnitesRemplissage[IDunite]["unites"]
+                                                            etiquettesUnitesRemplissage = dictUnitesRemplissage[IDunite]["etiquettes"]
+                                                        else :
+                                                            unitesLiees = []
+                                                            etiquettesUnitesRemplissage = []
+
+                                                        for IDuniteLiee in unitesLiees :
+                                                            if dictIndividu["listeConso"].has_key(date) :
+                                                                if dictIndividu["listeConso"][date].has_key(IDuniteLiee) :
+                                                                    typeUnite = dictUnites[IDuniteLiee]["type"]
+
+                                                                    for dictConsoTemp in dictIndividu["listeConso"][date][IDuniteLiee] :
+                                                                        etat = dictConsoTemp["etat"]
+                                                                        quantite = dictConsoTemp["quantite"]
+                                                                        etiquettes = dictConsoTemp["etiquettes"]
+
+                                                                        valide = True
+                                                                        if len(etiquettesUnitesRemplissage) > 0 :
+                                                                            valide = False
+                                                                            for IDetiquetteTemp in etiquettesUnitesRemplissage :
+                                                                                if IDetiquetteTemp in etiquettes :
+                                                                                    valide = True
+
+                                                                        if valide == True :
+
+                                                                            if quantite != None :
+                                                                                label = str(quantite)
+                                                                            else :
+                                                                                label = u"X"
+
+                                                                            if dictParametres["masquer_consommations"] == True :
+                                                                                label = ""
+
+                                                                            listeLabels.append(Paragraph(label, styleConso))
+
+                                                                            # Affichage de l'évènement
+                                                                            if dictParametres["afficher_evenements"] == True and dictConsoTemp["IDevenement"] != None:
+                                                                                texteEvenement = dictEvenements[dictConsoTemp["IDevenement"]]["nom"]
+                                                                                listeLabels.append(Paragraph(texteEvenement, styleEvenement))
+
+                                                                            # Affichage de l'étiquette
+                                                                            if dictParametres["afficher_etiquettes"] == True and len(etiquettes) > 0 :
+                                                                                texteEtiquette = []
+                                                                                for IDetiquetteTemp in etiquettes :
+                                                                                    texteEtiquette.append(dictEtiquettes[IDetiquetteTemp]["label"])
+                                                                                    etiquette = "\n\n" + ", ".join(texteEtiquette)
+                                                                                listeLabels.append(Paragraph(etiquette, styleEtiquette))
+
+
+                                                    if quantite == None :
+                                                        quantite = 1
+
+                                                    if len(listeLabels) > 0 :
+                                                        ligneVide = False
+                                                        if dictTotauxColonnes.has_key(indexColonne) == True :
+                                                            dictTotauxColonnes[indexColonne] += quantite
+                                                        else:
+                                                            dictTotauxColonnes[indexColonne] = quantite
+                                                    ligne.append(listeLabels)
+                                                    indexColonne += 1
+
+                                    # Colonnes personnalisées
+                                    for dictColonnePerso in dictParametres["colonnes"]:
+                                        IDfamille = dictIndividus[IDindividu]["IDfamille"]
+                                        type_donnee = "unicode"
+                                        if dictColonnePerso["donnee_code"] == None :
+                                            donnee = ""
+                                        else :
+                                            try :
+                                                if dictColonnePerso["donnee_code"] == "aucun": donnee = ""
+                                                if dictColonnePerso["donnee_code"] == "ville_residence": donnee = dictInfosIndividus[IDindividu]["INDIVIDU_VILLE"]
+                                                if dictColonnePerso["donnee_code"] == "secteur": donnee = dictInfosIndividus[IDindividu]["INDIVIDU_SECTEUR"]
+                                                if dictColonnePerso["donnee_code"] == "genre": donnee = dictInfosIndividus[IDindividu]["INDIVIDU_SEXE"]
+                                                if dictColonnePerso["donnee_code"] == "ville_naissance": donnee = dictInfosIndividus[IDindividu]["INDIVIDU_VILLE_NAISS"]
+                                                if dictColonnePerso["donnee_code"] == "nom_ecole": donnee = dictInfosIndividus[IDindividu]["SCOLARITE_NOM_ECOLE"]
+                                                if dictColonnePerso["donnee_code"] == "nom_classe": donnee = dictInfosIndividus[IDindividu]["SCOLARITE_NOM_CLASSE"]
+                                                if dictColonnePerso["donnee_code"] == "nom_niveau_scolaire": donnee = dictInfosIndividus[IDindividu]["SCOLARITE_NOM_NIVEAU"]
+                                                if dictColonnePerso["donnee_code"] == "famille": donnee = dictInfosFamilles[IDfamille]["FAMILLE_NOM"]
+                                                if dictColonnePerso["donnee_code"] == "regime": donnee = dictInfosFamilles[IDfamille]["FAMILLE_NOM_REGIME"]
+                                                if dictColonnePerso["donnee_code"] == "caisse": donnee = dictInfosFamilles[IDfamille]["FAMILLE_NOM_CAISSE"]
+                                                if dictColonnePerso["donnee_code"] == "date_naiss": donnee = dictInfosIndividus[IDindividu]["INDIVIDU_DATE_NAISS"]
+                                                if dictColonnePerso["donnee_code"] == "medecin_nom": donnee = dictInfosIndividus[IDindividu]["MEDECIN_NOM"]
+                                                if dictColonnePerso["donnee_code"] == "tel_mobile": donnee = dictInfosIndividus[IDindividu]["INDIVIDU_TEL_MOBILE"]
+                                                if dictColonnePerso["donnee_code"] == "tel_domicile": donnee = dictInfosIndividus[IDindividu]["INDIVIDU_TEL_DOMICILE"]
+                                                if dictColonnePerso["donnee_code"] == "mail": donnee = dictInfosIndividus[IDindividu]["INDIVIDU_MAIL"]
+
+                                                if dictColonnePerso["donnee_code"] == "adresse_residence":
+                                                    rue = dictInfosIndividus[IDindividu]["INDIVIDU_RUE"]
+                                                    if rue == None : rue = ""
+                                                    cp = dictInfosIndividus[IDindividu]["INDIVIDU_CP"]
+                                                    if cp == None : cp = ""
+                                                    ville = dictInfosIndividus[IDindividu]["INDIVIDU_VILLE"]
+                                                    if ville == None : ville = ""
+                                                    donnee = u"%s %s %s" % (rue, cp, ville)
+
+                                                # Questionnaires
+                                                if dictColonnePerso["donnee_code"].startswith("question_") and "famille" in \
+                                                        dictColonnePerso["donnee_code"]:
+                                                    donnee = dictInfosFamilles[IDfamille][
+                                                        "QUESTION_%s" % dictColonnePerso["donnee_code"][17:]]
+                                                if dictColonnePerso["donnee_code"].startswith("question_") and "individu" in \
+                                                        dictColonnePerso["donnee_code"]:
+                                                    donnee = dictInfosIndividus[IDindividu][
+                                                        "QUESTION_%s" % dictColonnePerso["donnee_code"][18:]]
+
+                                                # Code-barre individu
+                                                if dictColonnePerso["donnee_code"] == "codebarres_individu":
+                                                    type_donnee = "code-barres"
+                                                    donnee = code39.Extended39("I%06d" % IDindividu, humanReadable=False)
+
+                                            except :
+                                                donnee = ""
+
+                                        if type_donnee == "unicode" :
+                                            ligne.append(Paragraph(unicode(donnee), styleNormal))
+                                        else :
+                                            ligne.append(donnee)
+
+
+                                    # Infos médicales
+                                    texteInfos = u""
+                                    listeInfos = []
+                                    paraStyle = ParagraphStyle(name="infos", fontName="Helvetica", fontSize=7, leading=8, spaceAfter=2,)
+
+                                    # Mémo-journée
+                                    if dictMemos.has_key(IDindividu) :
+                                        for date in listeDates :
+                                            if dictMemos[IDindividu].has_key(date) :
+                                                memo_journee = dictMemos[IDindividu][date]
+                                                if typeListe == "period" :
+                                                    memo_journee = u"%02d/%02d/%04d : %s" % (date.day, date.month, date.year, memo_journee)
+                                                if len(memo_journee) > 0 and memo_journee[-1] != "." : memo_journee += u"."
+                                                listeInfos.append(ParagraphAndImage(Paragraph(memo_journee, paraStyle), Image(Chemins.GetStaticPath("Images/16x16/Information.png"),width=8, height=8), xpad=1, ypad=0, side="left"))
+
+                                    # Messages individuels
+                                    if dictMessagesIndividus.has_key(IDindividu):
+                                        for dictMessage in dictMessagesIndividus[IDindividu] :
                                             texteMessage = dictMessage["texte"]
                                             listeInfos.append(ParagraphAndImage(Paragraph(texteMessage, paraStyle), Image(Chemins.GetStaticPath("Images/16x16/Mail.png"),width=8, height=8), xpad=1, ypad=0, side="left"))
 
-                                # Cotisations manquantes
-                                if dictParametres["afficher_cotisations_manquantes"] == True :
+                                    # Récupère la liste des familles rattachées à cet individu
+                                    listeIDfamille = []
+                                    for date, dictUnitesTemps in dictIndividu["listeConso"].iteritems() :
+                                        for temp, listeConso in dictUnitesTemps.iteritems() :
+                                            for dictConsoTemp in listeConso :
+                                                if dictConsoTemp["IDfamille"] not in listeIDfamille :
+                                                    listeIDfamille.append(dictConsoTemp["IDfamille"])
+
+                                    # Messages familiaux
                                     for IDfamille in listeIDfamille :
-                                        if dictCotisations.has_key(IDfamille):
-                                            if dictCotisations[IDfamille]["nbre"] == 1 :
-                                                texteCotisation = _(u"1 cotisation manquante : %s") % dictCotisations[IDfamille]["cotisations"]
+                                        if dictMessagesFamilles.has_key(IDfamille):
+                                            for dictMessage in dictMessagesFamilles[IDfamille] :
+                                                texteMessage = dictMessage["texte"]
+                                                listeInfos.append(ParagraphAndImage(Paragraph(texteMessage, paraStyle), Image(Chemins.GetStaticPath("Images/16x16/Mail.png"),width=8, height=8), xpad=1, ypad=0, side="left"))
+
+                                    # Cotisations manquantes
+                                    if dictParametres["afficher_cotisations_manquantes"] == True :
+                                        for IDfamille in listeIDfamille :
+                                            if dictCotisations.has_key(IDfamille):
+                                                if dictCotisations[IDfamille]["nbre"] == 1 :
+                                                    texteCotisation = _(u"1 cotisation manquante : %s") % dictCotisations[IDfamille]["cotisations"]
+                                                else:
+                                                    texteCotisation = _(u"%d cotisations manquantes : %s") % (dictCotisations[IDfamille]["nbre"], dictCotisations[IDfamille]["cotisations"])
+                                                listeInfos.append(ParagraphAndImage(Paragraph(texteCotisation, paraStyle), Image(Chemins.GetStaticPath("Images/16x16/Cotisation.png"),width=8, height=8), xpad=1, ypad=0, side="left"))
+
+                                    # Pièces manquantes
+                                    if dictParametres["afficher_pieces_manquantes"] == True :
+                                        for IDfamille in listeIDfamille :
+                                            if dictPieces.has_key(IDfamille):
+                                                if dictPieces[IDfamille]["nbre"] == 1 :
+                                                    textePiece = _(u"1 pièce manquante : %s") % dictPieces[IDfamille]["pieces"]
+                                                else:
+                                                    textePiece = _(u"%d pièces manquantes : %s") % (dictPieces[IDfamille]["nbre"], dictPieces[IDfamille]["pieces"])
+                                                listeInfos.append(ParagraphAndImage(Paragraph(textePiece, paraStyle), Image(Chemins.GetStaticPath("Images/16x16/Piece.png"),width=8, height=8), xpad=1, ypad=0, side="left"))
+
+                                    # Sieste
+                                    texte_sieste = dictIndividu["nomSieste"]
+                                    if texte_sieste != None and texte_sieste != "" :
+                                        if len(texte_sieste) > 0 and texte_sieste[-1] != "." : texte_sieste += u"."
+                                        listeInfos.append(ParagraphAndImage(Paragraph(texte_sieste, paraStyle), Image(Chemins.GetStaticPath("Images/16x16/Reveil.png"),width=8, height=8), xpad=1, ypad=0, side="left"))
+
+                                    # Informations médicales
+                                    if dictInfosMedicales.has_key(IDindividu) :
+                                        for infoMedicale in dictInfosMedicales[IDindividu] :
+                                            intitule = infoMedicale["intitule"]
+                                            description = infoMedicale["description"]
+                                            traitement = infoMedicale["traitement_medical"]
+                                            description_traitement = infoMedicale["description_traitement"]
+                                            date_debut_traitement = infoMedicale["date_debut_traitement"]
+                                            date_fin_traitement = infoMedicale["date_fin_traitement"]
+                                            IDtype = infoMedicale["IDtype"]
+                                            # Intitulé et description
+                                            if description != None and description != "" :
+                                                texte = u"<b>%s</b> : %s" % (intitule, description) # >
                                             else:
-                                                texteCotisation = _(u"%d cotisations manquantes : %s") % (dictCotisations[IDfamille]["nbre"], dictCotisations[IDfamille]["cotisations"])
-                                            listeInfos.append(ParagraphAndImage(Paragraph(texteCotisation, paraStyle), Image(Chemins.GetStaticPath("Images/16x16/Cotisation.png"),width=8, height=8), xpad=1, ypad=0, side="left"))
+                                                texte = u"%s" % intitule # >
+                                            if len(texte) > 0 and texte[-1] != "." : texte += u"."
+                                            # Traitement médical
+                                            if traitement == 1 and description_traitement != None and description_traitement != "" :
+                                                texteDatesTraitement = u""
+                                                if date_debut_traitement != None and date_fin_traitement != None :
+                                                    texteDatesTraitement = _(u" du %s au %s") % (UTILS_Dates.DateEngFr(date_debut_traitement), UTILS_Dates.DateEngFr(date_fin_traitement))
+                                                if date_debut_traitement != None and date_fin_traitement == None :
+                                                    texteDatesTraitement = _(u" à partir du %s") % UTILS_Dates.DateEngFr(date_debut_traitement)
+                                                if date_debut_traitement == None and date_fin_traitement != None :
+                                                    texteDatesTraitement = _(u" jusqu'au %s") % UTILS_Dates.DateEngFr(date_fin_traitement)
+                                                texte += _(u"Traitement%s : %s.") % (texteDatesTraitement, description_traitement)
 
-                                # Pièces manquantes
-                                if dictParametres["afficher_pieces_manquantes"] == True :
-                                    for IDfamille in listeIDfamille :
-                                        if dictPieces.has_key(IDfamille):
-                                            if dictPieces[IDfamille]["nbre"] == 1 :
-                                                textePiece = _(u"1 pièce manquante : %s") % dictPieces[IDfamille]["pieces"]
-                                            else:
-                                                textePiece = _(u"%d pièces manquantes : %s") % (dictPieces[IDfamille]["nbre"], dictPieces[IDfamille]["pieces"])
-                                            listeInfos.append(ParagraphAndImage(Paragraph(textePiece, paraStyle), Image(Chemins.GetStaticPath("Images/16x16/Piece.png"),width=8, height=8), xpad=1, ypad=0, side="left"))
+                                            img = DICT_TYPES_INFOS[IDtype]["img"]
+                                            listeInfos.append(ParagraphAndImage(Paragraph(texte, paraStyle), Image(Chemins.GetStaticPath("Images/16x16/%s" % img),width=8, height=8), xpad=1, ypad=0, side="left"))
 
-                                # Sieste
-                                texte_sieste = dictIndividu["nomSieste"]
-                                if texte_sieste != None and texte_sieste != "" :
-                                    if len(texte_sieste) > 0 and texte_sieste[-1] != "." : texte_sieste += u"."
-                                    listeInfos.append(ParagraphAndImage(Paragraph(texte_sieste, paraStyle), Image(Chemins.GetStaticPath("Images/16x16/Reveil.png"),width=8, height=8), xpad=1, ypad=0, side="left"))
-
-                                # Informations médicales
-                                if dictInfosMedicales.has_key(IDindividu) :
-                                    for infoMedicale in dictInfosMedicales[IDindividu] :
-                                        intitule = infoMedicale["intitule"]
-                                        description = infoMedicale["description"]
-                                        traitement = infoMedicale["traitement_medical"]
-                                        description_traitement = infoMedicale["description_traitement"]
-                                        date_debut_traitement = infoMedicale["date_debut_traitement"]
-                                        date_fin_traitement = infoMedicale["date_fin_traitement"]
-                                        IDtype = infoMedicale["IDtype"]
-                                        # Intitulé et description
-                                        if description != None and description != "" :
-                                            texte = u"<b>%s</b> : %s" % (intitule, description) # >
+                                    if dictParametres["afficher_informations"] == True:
+                                        if dictParametres["masquer_informations"] == False :
+                                            ligne.append(listeInfos)
                                         else:
-                                            texte = u"%s" % intitule # >
-                                        if len(texte) > 0 and texte[-1] != "." : texte += u"."
-                                        # Traitement médical
-                                        if traitement == 1 and description_traitement != None and description_traitement != "" :
-                                            texteDatesTraitement = u""
-                                            if date_debut_traitement != None and date_fin_traitement != None :
-                                                texteDatesTraitement = _(u" du %s au %s") % (UTILS_Dates.DateEngFr(date_debut_traitement), UTILS_Dates.DateEngFr(date_fin_traitement))
-                                            if date_debut_traitement != None and date_fin_traitement == None :
-                                                texteDatesTraitement = _(u" à partir du %s") % UTILS_Dates.DateEngFr(date_debut_traitement)
-                                            if date_debut_traitement == None and date_fin_traitement != None :
-                                                texteDatesTraitement = _(u" jusqu'au %s") % UTILS_Dates.DateEngFr(date_fin_traitement)
-                                            texte += _(u"Traitement%s : %s.") % (texteDatesTraitement, description_traitement)
+                                            ligne.append(u"")
 
-                                        img = DICT_TYPES_INFOS[IDtype]["img"]
-                                        listeInfos.append(ParagraphAndImage(Paragraph(texte, paraStyle), Image(Chemins.GetStaticPath("Images/16x16/%s" % img),width=8, height=8), xpad=1, ypad=0, side="left"))
+                                    if not ligneVide or dictParametres["afficher_inscrits"] == True :
+                                        # Ajout de la ligne individuelle dans le tableau
+                                        dataTableau.append(ligne)
+                                        # Mémorise les lignes pour export Excel
+                                        listeLignesExport.append(ligne)
+                                        indexLigne += 1
 
-                                if dictParametres["afficher_informations"] == True:
-                                    if dictParametres["masquer_informations"] == False :
-                                        ligne.append(listeInfos)
-                                    else:
-                                        ligne.append(u"")
-
-                                if not ligneVide or dictParametres["afficher_inscrits"] == True :
-                                    # Ajout de la ligne individuelle dans le tableau
+                                # Création des lignes vierges
+                                for x in range(0, dictParametres["nbre_lignes_vierges"]):
+                                    ligne = []
+                                    for col in labelsColonnes :
+                                        ligne.append("")
                                     dataTableau.append(ligne)
-                                    # Mémorise les lignes pour export Excel
-                                    listeLignesExport.append(ligne)
-                                    indexLigne += 1
 
-                            # Création des lignes vierges
-                            for x in range(0, dictParametres["nbre_lignes_vierges"]):
-                                ligne = []
-                                for col in labelsColonnes :
-                                    ligne.append("")
-                                dataTableau.append(ligne)
-
-                            # Style du tableau
-                            colPremiereUnite = 1
-                            if dictParametres["afficher_photos"] != "non" :
-                                colPremiereUnite += 1
-                            if dictParametres["afficher_age"] == True :
-                                colPremiereUnite += 1
+                                # Style du tableau
+                                colPremiereUnite = 1
+                                if dictParametres["afficher_photos"] != "non" :
+                                    colPremiereUnite += 1
+                                if dictParametres["afficher_age"] == True :
+                                    colPremiereUnite += 1
 
 
-                            style = [
-                                    ('VALIGN', (0,0), (-1,-1), 'MIDDLE'), # Centre verticalement toutes les cases
-                                    ('FONT',(0,0),(-1,-1), "Helvetica", 7), # Donne la police de caract. + taille de police
-                                    ('ALIGN', (0,0), (-2,-1), 'CENTRE'), # Centre les cases
-                                    ('ALIGN', (0,0), (-1,0), 'CENTRE'), # Ligne de labels colonne alignée au centre
-                                    ('FONT',(0,0),(-1,0), "Helvetica", 6), # Donne la police de caract. + taille de police des labels
-                                    ('LEFTPADDING', (0, 0), (-1, 0), 0), # Entetes de colonnes
-                                    ('RIGHTPADDING', (0, 0), (-1, 0), 0), # Entetes de colonnes
-                                    ('LEFTPADDING', (1, 1), (-2, -1), 1), # Colonnes unités et perso uniquement
-                                    ('RIGHTPADDING', (1, 1), (-2, -1), 1), # Colonnes unités et perso uniquement
-                                    # Donne la police de caract. + taille de police des labels
-                                    ]
+                                style = [
+                                        ('VALIGN', (0,0), (-1,-1), 'MIDDLE'), # Centre verticalement toutes les cases
+                                        ('FONT',(0,0),(-1,-1), "Helvetica", 7), # Donne la police de caract. + taille de police
+                                        ('ALIGN', (0,0), (-2,-1), 'CENTRE'), # Centre les cases
+                                        ('ALIGN', (0,0), (-1,0), 'CENTRE'), # Ligne de labels colonne alignée au centre
+                                        ('FONT',(0,0),(-1,0), "Helvetica", 6), # Donne la police de caract. + taille de police des labels
+                                        ('LEFTPADDING', (0, 0), (-1, 0), 0), # Entetes de colonnes
+                                        ('RIGHTPADDING', (0, 0), (-1, 0), 0), # Entetes de colonnes
+                                        ('LEFTPADDING', (1, 1), (-2, -1), 1), # Colonnes unités et perso uniquement
+                                        ('RIGHTPADDING', (1, 1), (-2, -1), 1), # Colonnes unités et perso uniquement
+                                        # Donne la police de caract. + taille de police des labels
+                                        ]
 
-                            # Formatage de la ligne DATES
-                            if typeListe == "period" :
-                                style.append( ('BACKGROUND', (0, 0), (-1, 0), couleur_fond_titre) )
-                                style.append( ('BACKGROUND', (0, 1), (-1, 1), couleur_fond_entetes) )
-                                style.append( ('GRID', (0, 1), (-1,-1), 0.25, colors.black) )
-                                style.append( ('LINEBEFORE', (0,0), (0,0), 0.25, colors.black) )
-                                style.append( ('LINEAFTER', (-1,0), (-1,0), 0.25, colors.black) )
-                                style.append( ('ALIGN', (0, 1), (-1, 1), 'CENTRE') )
-                                style.append( ('FONT',(0,0),(-1,0), "Helvetica-Bold", 8) )
-                                for date, positionG, positionD in listePositionsDates :
-                                    style.append( ('SPAN', (positionG, 0), (positionD, 0) ) )
-                                    style.append( ('BACKGROUND', (positionG, 0), (positionD, 0), (1, 1, 1)) )
-                                    style.append( ('BOX', (positionG, 0), (positionD, -1), 1, colors.black) ) # Entoure toutes les colonnes Dates
-                            else:
-                                style.append( ('GRID', (0,0), (-1,-1), 0.25, colors.black) )
-                                style.append(('BACKGROUND', (0, 0), (-1, 0), couleur_fond_entetes))
-
-                            # Vérifie si la largeur du tableau est inférieure à la largeur de la page
-                            if modeExport == False :
-                                largeurTableau = 0
-                                for largeur in largeursColonnes :
-                                    if largeur < 0 :
-                                        dlg = wx.MessageDialog(self, _(u"Il y a trop de colonnes dans le tableau ! \n\nVeuillez sélectionner moins de jours dans le calendrier..."), _(u"Erreur"), wx.OK | wx.ICON_ERROR)
-                                        dlg.ShowModal()
-                                        dlg.Destroy()
-                                        DlgAttente.Destroy()
-                                        return False
-
-                            # Création du tableau
-                            if typeListe == "period" :
-                                repeatRows = 2
-                            else :
-                                repeatRows = 1
-
-                            # Hauteur de ligne individus
-                            if dictParametres["hauteur_ligne_individu"] == "automatique":
-                                hauteursLignes = None
-                            else :
-                                hauteursLignes = [int(dictParametres["hauteur_ligne_individu"]) for x in range(len(dataTableau))]
-                                hauteursLignes[0] = 12
-                                hauteursLignes[-1] = 10
-
-                            tableau = Table(dataTableau, largeursColonnes, rowHeights=hauteursLignes, repeatRows=repeatRows)
-                            tableau.setStyle(TableStyle(style))
-                            story.append(tableau)
-
-                            # Création du tableau des totaux
-                            if dictParametres["afficher_photos"] != "non" :
-                                colNomsIndividus = 1
-                            else:
-                                colNomsIndividus = 0
-
-                            ligne = []
-                            indexCol = 0
-                            for indexCol in range(0, len(labelsColonnes)) :
-                                if dictTotauxColonnes.has_key(indexCol) :
-                                    valeur = dictTotauxColonnes[indexCol]
+                                # Formatage de la ligne DATES
+                                if typeListe == "period" :
+                                    style.append( ('BACKGROUND', (0, 0), (-1, 0), couleur_fond_titre) )
+                                    style.append( ('BACKGROUND', (0, 1), (-1, 1), couleur_fond_entetes) )
+                                    style.append( ('GRID', (0, 1), (-1,-1), 0.25, colors.black) )
+                                    style.append( ('LINEBEFORE', (0,0), (0,0), 0.25, colors.black) )
+                                    style.append( ('LINEAFTER', (-1,0), (-1,0), 0.25, colors.black) )
+                                    style.append( ('ALIGN', (0, 1), (-1, 1), 'CENTRE') )
+                                    style.append( ('FONT',(0,0),(-1,0), "Helvetica-Bold", 8) )
+                                    for date, positionG, positionD in listePositionsDates :
+                                        style.append( ('SPAN', (positionG, 0), (positionD, 0) ) )
+                                        style.append( ('BACKGROUND', (positionG, 0), (positionD, 0), (1, 1, 1)) )
+                                        style.append( ('BOX', (positionG, 0), (positionD, -1), 1, colors.black) ) # Entoure toutes les colonnes Dates
                                 else:
-                                    valeur = ""
-                                if indexCol == colNomsIndividus :
-                                    if indexLigne == 1 :
-                                        valeur = _(u"1 individu")
+                                    style.append( ('GRID', (0,0), (-1,-1), 0.25, colors.black) )
+                                    style.append(('BACKGROUND', (0, 0), (-1, 0), couleur_fond_entetes))
+
+                                # Vérifie si la largeur du tableau est inférieure à la largeur de la page
+                                if modeExport == False :
+                                    largeurTableau = 0
+                                    for largeur in largeursColonnes :
+                                        if largeur < 0 :
+                                            dlg = wx.MessageDialog(self, _(u"Il y a trop de colonnes dans le tableau ! \n\nVeuillez sélectionner moins de jours dans le calendrier..."), _(u"Erreur"), wx.OK | wx.ICON_ERROR)
+                                            dlg.ShowModal()
+                                            dlg.Destroy()
+                                            DlgAttente.Destroy()
+                                            return False
+
+                                # Création du tableau
+                                if typeListe == "period" :
+                                    repeatRows = 2
+                                else :
+                                    repeatRows = 1
+
+                                # Hauteur de ligne individus
+                                if dictParametres["hauteur_ligne_individu"] == "automatique":
+                                    hauteursLignes = None
+                                else :
+                                    hauteursLignes = [int(dictParametres["hauteur_ligne_individu"]) for x in range(len(dataTableau))]
+                                    hauteursLignes[0] = 12
+                                    hauteursLignes[-1] = 10
+
+                                tableau = Table(dataTableau, largeursColonnes, rowHeights=hauteursLignes, repeatRows=repeatRows)
+                                tableau.setStyle(TableStyle(style))
+                                story.append(tableau)
+
+                                # Création du tableau des totaux
+                                if dictParametres["afficher_photos"] != "non" :
+                                    colNomsIndividus = 1
+                                else:
+                                    colNomsIndividus = 0
+
+                                ligne = []
+                                indexCol = 0
+                                for indexCol in range(0, len(labelsColonnes)) :
+                                    if dictTotauxColonnes.has_key(indexCol) :
+                                        valeur = dictTotauxColonnes[indexCol]
                                     else:
-                                        valeur = _(u"%d individus") % indexLigne
-                                ligne.append(valeur)
-                            listeLignesExport.append(ligne)
+                                        valeur = ""
+                                    if indexCol == colNomsIndividus :
+                                        if indexLigne == 1 :
+                                            valeur = _(u"1 individu")
+                                        else:
+                                            valeur = _(u"%d individus") % indexLigne
+                                    ligne.append(valeur)
+                                listeLignesExport.append(ligne)
 
-                            if dictParametres["afficher_informations"] == True :
-                                colDerniereUnite = -2
-                            else :
-                                colDerniereUnite = -1
+                                if dictParametres["afficher_informations"] == True :
+                                    colDerniereUnite = -2
+                                else :
+                                    colDerniereUnite = -1
 
-                            style = [
-                                    ('VALIGN', (0,0), (-1,-1), 'MIDDLE'), # Centre verticalement toutes les cases
-                                    ('FONT',(0,0),(-1,-1), "Helvetica", 7), # Donne la police de caract. + taille de police
-                                    ('ALIGN', (0,0), (-1,-1), 'CENTRE'), # Centre les cases
-                                    ('GRID', (colPremiereUnite,-1), (colDerniereUnite,-1), 0.25, colors.black),
-                                    ('BACKGROUND', (colPremiereUnite, -1), (colDerniereUnite, -1), couleur_fond_total)
-                                    ]
+                                style = [
+                                        ('VALIGN', (0,0), (-1,-1), 'MIDDLE'), # Centre verticalement toutes les cases
+                                        ('FONT',(0,0),(-1,-1), "Helvetica", 7), # Donne la police de caract. + taille de police
+                                        ('ALIGN', (0,0), (-1,-1), 'CENTRE'), # Centre les cases
+                                        ('GRID', (colPremiereUnite,-1), (colDerniereUnite,-1), 0.25, colors.black),
+                                        ('BACKGROUND', (colPremiereUnite, -1), (colDerniereUnite, -1), couleur_fond_total)
+                                        ]
 
-                            if typeListe == "period" :
-                                for date, positionG, positionD in listePositionsDates :
-                                    style.append( ('BOX', (positionG, 0), (positionD, 0), 1, colors.black) ) # Entoure toutes les colonnes Dates
+                                if typeListe == "period" :
+                                    for date, positionG, positionD in listePositionsDates :
+                                        style.append( ('BOX', (positionG, 0), (positionD, 0), 1, colors.black) ) # Entoure toutes les colonnes Dates
 
-                            tableau = Table([ligne,], largeursColonnes)
-                            tableau.setStyle(TableStyle(style))
-                            story.append(tableau)
+                                tableau = Table([ligne,], largeursColonnes)
+                                tableau.setStyle(TableStyle(style))
+                                story.append(tableau)
 
-                            story.append(Spacer(0,20))
+                                story.append(Spacer(0,20))
 
-                            # Export
-                            listeExport.append({"activite":nomActivite, "groupe":nomGroupe, "ecole":nomEcole, "classe":nomClasse, "etiquette":nomEtiquette, "lignes":listeLignesExport})
+                                # Export
+                                listeExport.append({"activite":nomActivite, "groupe":nomGroupe, "ecole":nomEcole, "classe":nomClasse, "evenement":nomEvenement, "etiquette":nomEtiquette, "lignes":listeLignesExport})
 
-                            # Saut de page après une étiquette
-                            if self.GetPage("etiquettes").checkbox_etiquettes.GetValue() == True and self.GetPage("etiquettes").checkbox_saut_etiquettes.GetValue() == True :
+                                # Saut de page après une étiquette
+                                if self.GetPage("etiquettes").checkbox_etiquettes.GetValue() == True and self.GetPage("etiquettes").checkbox_saut_etiquettes.GetValue() == True :
+                                    CreationSautPage()
+
+                            # Saut de page après un évènement
+                            if self.GetPage("evenements").checkbox_evenements.GetValue() == True and self.GetPage("evenements").checkbox_saut_evenements.GetValue() == True :
                                 CreationSautPage()
-
 
                         # Saut de page après une classe
                         if self.GetPage("scolarite").GetRegroupement() == "classe" and self.GetPage("scolarite").checkbox_saut_classes.GetValue() == True and indexClasse <= nbreClasses :
@@ -2638,6 +2785,7 @@ class Dialog(wx.Dialog):
         dictParametres.update(self.GetPage("activites").GetParametres())
         dictParametres.update(self.GetPage("scolarite").GetParametres())
         dictParametres.update(self.GetPage("etiquettes").GetParametres())
+        dictParametres.update(self.GetPage("evenements").GetParametres())
         dictParametres.update(self.GetPage("unites").GetParametres())
         dictParametres.update(self.GetPage("colonnes").GetParametres())
         dictParametres.update(self.GetPage("options").GetParametres())
@@ -2656,6 +2804,7 @@ class Dialog(wx.Dialog):
         self.GetPage("activites").SetParametres(dictParametres)
         self.GetPage("scolarite").SetParametres(dictParametres)
         self.GetPage("etiquettes").SetParametres(dictParametres)
+        self.GetPage("evenements").SetParametres(dictParametres)
         self.GetPage("unites").SetParametres(dictParametres)
         self.GetPage("colonnes").SetParametres(dictParametres)
         self.GetPage("options").SetParametres(dictParametres)
@@ -2668,7 +2817,7 @@ class Dialog(wx.Dialog):
 if __name__ == u"__main__":
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    dialog_1 = Dialog(None, date=datetime.date(2015, 10, 5))
+    dialog_1 = Dialog(None, date=datetime.date(2017, 7, 2))
     app.SetTopWindow(dialog_1)
     dialog_1.ShowModal()
     app.MainLoop()

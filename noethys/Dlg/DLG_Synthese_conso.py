@@ -3,8 +3,8 @@
 #------------------------------------------------------------------------
 # Application :    Noethys, gestion multi-activités
 # Site internet :  www.noethys.com
-# Auteur:           Ivan LUCAS
-# Copyright:       (c) 2010-12 Ivan LUCAS
+# Auteur:          Ivan LUCAS
+# Copyright:       (c) 2010-17 Ivan LUCAS
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
@@ -179,7 +179,9 @@ class CTRL_Choix_regroupement(wx.Choice):
             {"label" : _(u"Année"), "code" : "annee"},
             {"label" : _(u"Activité"), "code" : "activite"},
             {"label" : _(u"Groupe"), "code" : "groupe"},
-            {"label" : _(u"Etiquette"), "code" : "etiquette"},
+            {"label" : _(u"Evènement"), "code": "evenement"},
+            {"label" : _(u"Evènement (avec date)"), "code": "evenement_date"},
+            {"label" : _(u"Etiquette"), "code": "etiquette"},
             {"label" : _(u"Catégorie de tarif"), "code" : "categorie_tarif"},
             {"label" : _(u"Ville de résidence"), "code" : "ville_residence"},
             {"label" : _(u"Secteur géographique"), "code" : "secteur"},

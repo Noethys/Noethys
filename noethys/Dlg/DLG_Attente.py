@@ -44,7 +44,7 @@ class Dialog(wx.Dialog):
 
         # Résultats
         self.staticbox_resultats_staticbox = wx.StaticBox(self, -1, _(u"Liste d'attente"))
-        self.ctrl_attente = CTRL_Attente.CTRL(self, dictDonnees=dictDonnees, dictEtatPlaces=dictEtatPlaces, dictUnitesRemplissage=dictUnitesRemplissage)
+        self.ctrl_attente = CTRL_Attente.CTRL(self, dictDonnees=dictDonnees, dictEtatPlaces=dictEtatPlaces, dictUnitesRemplissage=dictUnitesRemplissage, mode="attente")
         self.ctrl_attente.SetMinSize((100, 100))
 
         self.bouton_ouvrir_fiche = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Famille.png"), wx.BITMAP_TYPE_ANY))

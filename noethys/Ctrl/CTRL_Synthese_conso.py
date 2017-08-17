@@ -3,8 +3,8 @@
 #-----------------------------------------------------------
 # Application :    Noethys, gestion multi-activités
 # Site internet :  www.noethys.com
-# Auteur:           Ivan LUCAS
-# Copyright:       (c) 2010-12 Ivan LUCAS
+# Auteur:          Ivan LUCAS
+# Copyright:       (c) 2010-17 Ivan LUCAS
 # Licence:         Licence GNU GPL
 #-----------------------------------------------------------
 
@@ -33,6 +33,7 @@ from Utils import UTILS_Config
 from Utils import UTILS_Organisateur
 from Utils import UTILS_Infos_individus
 from Utils import UTILS_Texte
+from Utils import UTILS_Dates
 import wx.lib.agw.pybusyinfo as PBI
 
 LISTE_MOIS = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
@@ -224,7 +225,20 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         ORDER BY ordre;""" % self.IDactivite
         DB.ExecuterReq(req)
         listeGroupes = DB.ResultatReq()
-        
+
+        # Evènements
+        self.dictEvenements = {}
+        req = """SELECT IDevenement, nom, date
+        FROM evenements
+        WHERE IDactivite=%d
+        AND date>='%s' AND date<='%s'
+        ;""" % (self.IDactivite, self.date_debut, self.date_fin)
+        DB.ExecuterReq(req)
+        listeDonnees = DB.ResultatReq()
+        for IDevenement, nom, date in listeDonnees :
+            date = UTILS_Dates.DateEngEnDateDD(date)
+            self.dictEvenements[IDevenement] = {"nom" : nom, "date" : date}
+
         # Etiquettes
         self.dictEtiquettes = {}
         req = """SELECT IDetiquette, label, IDactivite, parent, ordre, couleur
@@ -238,7 +252,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 
         # Consommations
         req = """SELECT IDconso, consommations.date, consommations.IDindividu, consommations.IDunite, consommations.IDgroupe, consommations.IDactivite, consommations.etiquettes,
-        heure_debut, heure_fin, etat, quantite, consommations.IDprestation, prestations.temps_facture,
+        heure_debut, heure_fin, etat, quantite, IDevenement, consommations.IDprestation, prestations.temps_facture,
         comptes_payeurs.IDfamille,  
         activites.nom,
         groupes.nom,
@@ -260,7 +274,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         # Calcul des données
         dictResultats = {}
         listePrestationsTraitees = []
-        for IDconso, date, IDindividu, IDunite, IDgroupe, IDactivite, etiquettes, heure_debut, heure_fin, etat, quantite, IDprestation, tempsFacture, IDfamille, nomActivite, nomGroupe, nomCategorie in listeConsommations :
+        for IDconso, date, IDindividu, IDunite, IDgroupe, IDactivite, etiquettes, heure_debut, heure_fin, etat, quantite, IDevenement, IDprestation, tempsFacture, IDfamille, nomActivite, nomGroupe, nomCategorie in listeConsommations :
             date = DateEngEnDateDD(date)
             mois = date.month
             annee = date.year           
@@ -272,6 +286,8 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 if self.affichage_regroupement == "annee" : regroupement = annee
                 if self.affichage_regroupement == "activite" : regroupement = nomActivite
                 if self.affichage_regroupement == "groupe" : regroupement = nomGroupe
+                if self.affichage_regroupement == "evenement" : regroupement = IDevenement
+                if self.affichage_regroupement == "evenement_date": regroupement = IDevenement
                 if self.affichage_regroupement == "categorie_tarif" : regroupement = nomCategorie
                 if self.affichage_regroupement == "ville_residence" : regroupement = self.dictInfosIndividus[IDindividu]["INDIVIDU_VILLE"]
                 if self.affichage_regroupement == "secteur" : regroupement = self.dictInfosIndividus[IDindividu]["INDIVIDU_SECTEUR"]
@@ -461,6 +477,10 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 label = FormateMois(regroupement)
             elif self.affichage_regroupement == "annee" : 
                 label = str(regroupement)
+            elif self.affichage_regroupement == "evenement" and self.dictEvenements.has_key(regroupement) :
+                label = self.dictEvenements[regroupement]["nom"]
+            elif self.affichage_regroupement == "evenement_date" and self.dictEvenements.has_key(regroupement) :
+                label = u"%s (%s)" % (self.dictEvenements[regroupement]["nom"], UTILS_Dates.DateDDEnFr(self.dictEvenements[regroupement]["date"]))
             elif self.affichage_regroupement == "qf" and type(regroupement) == tuple : 
                 label = u"%d-%d" % regroupement
             else :

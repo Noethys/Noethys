@@ -39,6 +39,8 @@ class CTRL(CTRL_Propertygrid.CTRL):
             ("annee", _(u"Année")),
             ("activite", _(u"Activité")),
             ("groupe", _(u"Groupe")),
+            ("evenement", _(u"Evènement")),
+            ("evenement_date", _(u"Evènement (avec date)")),
             ("etiquette", _(u"Etiquette")),
             ("unite_conso", _(u"Unité de consommation")),
             ("categorie_tarif", _(u"Catégorie de tarif")),

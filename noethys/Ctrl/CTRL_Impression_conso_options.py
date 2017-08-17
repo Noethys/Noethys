@@ -143,6 +143,12 @@ class CTRL(CTRL_Propertygrid.CTRL):
         # Catégorie
         self.Append(wxpg.PropertyCategory(_(u"Colonnes des unités")))
 
+        # Afficher les évènements
+        propriete = wxpg.BoolProperty(label=_(u"Afficher les évènements"), name="afficher_evenements", value=False)
+        propriete.SetHelpString(_(u"Cochez cette case pour afficher les évènements"))
+        propriete.SetAttribute("UseCheckbox", True)
+        self.Append(propriete)
+
         # Afficher les étiquettes
         propriete = wxpg.BoolProperty(label=_(u"Afficher les étiquettes"), name="afficher_etiquettes", value=False)
         propriete.SetHelpString(_(u"Cochez cette case pour afficher les étiquettes"))

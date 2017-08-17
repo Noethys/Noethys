@@ -720,7 +720,6 @@ class Dialog(wx.Dialog):
         self.panel_totaux.MAJ_contenu()
 
     def SetDate(self, date):
-#        heure_debut = time.time()
         self.panel_activites.SetDate(date)
         self.panel_grille.SetDate(date)
         self.panel_ecoles.SetDate(date)
@@ -734,7 +733,6 @@ class Dialog(wx.Dialog):
         self.panel_grille.SetGroupes(listeGroupes)
         self.panel_grille.MAJ_grille()
         self.panel_totaux.MAJ(date)
-#        print "Temps de chargement =", time.time() - heure_debut
 
     def GetDate(self):
         return self.panel_calendrier.GetDate()
