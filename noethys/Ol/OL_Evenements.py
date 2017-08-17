@@ -207,6 +207,15 @@ class ListView(FastObjectListView):
             dlg.Destroy()
             return
         track_evenement = self.Selection()[0]
+
+        nbre_conso = self.GetNbreConsoAssociees(track_evenement)
+        if nbre_conso > 0 :
+            dlg = wx.MessageDialog(self, _(u"Cet évènement est déjà associé à %d consommations.\n\nSouhaitez-vous tout de même le modifier ?") % nbre_conso, _(u"Modification"), wx.YES_NO | wx.NO_DEFAULT | wx.CANCEL | wx.ICON_INFORMATION)
+            reponse = dlg.ShowModal()
+            dlg.Destroy()
+            if reponse != wx.ID_YES:
+                return False
+
         from Dlg import DLG_Saisie_evenement
         dlg = DLG_Saisie_evenement.Dialog(self, mode="modification", track_evenement=track_evenement)
         if dlg.ShowModal() == wx.ID_OK:
@@ -221,11 +230,33 @@ class ListView(FastObjectListView):
             dlg.Destroy()
             return
         track_evenement = self.Selection()[0]
+
+        # Vérifie qu'une conso n'est pas déjà associée à cet évènement
+        nbre_conso = self.GetNbreConsoAssociees(track_evenement)
+        if nbre_conso > 0 :
+            dlg = wx.MessageDialog(self, _(u"Suppression interdite.\n\nVous ne pouvez pas supprimer cet évènement car %d consommations y sont déjà associées !") % nbre_conso, _(u"Suppression"), wx.OK | wx.ICON_ERROR)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return
+
         dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer cet évènement ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         if dlg.ShowModal() == wx.ID_YES :
             self.donnees.remove(track_evenement)
             self.MAJ()
         dlg.Destroy()
+
+    def GetNbreConsoAssociees(self, track_evenement=None):
+        if track_evenement.IDevenement != None :
+            DB = GestionDB.DB()
+            req = """SELECT IDconso, IDevenement
+            FROM consommations 
+            WHERE IDevenement=%d
+            ;""" % track_evenement.IDevenement
+            DB.ExecuterReq(req)
+            listeConso = DB.ResultatReq()
+            DB.Close()
+            return len(listeConso)
+        return 0
 
     def GetListeEvenements(self):
         return self.GetObjects()

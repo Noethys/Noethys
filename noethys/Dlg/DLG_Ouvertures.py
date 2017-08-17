@@ -1366,7 +1366,7 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 case.SetSurvol(etat=False)
                 self.OuvrirEvenements(case)
             else :
-                self.OnChangeOuverture(numLigne, numColonne)
+                self.OnChangeOuverture(numLigne, numColonne, etat=None, liste_evenements=[])
         event.Skip()
 
     def OuvrirEvenements(self, case=None):
@@ -1404,19 +1404,21 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                     else:
                         etat = True
 
-                if etat == False and case.nbre_conso > 0 and silencieux == False :
+                if case.nbre_conso > 0 :
                     # Interdit la modification si des conso existent
-                    dlg = wx.MessageDialog(self, _(u"Impossible de supprimer cette ouverture !\n\n%s consommation(s) existent déjà...") % case.nbre_conso, "Erreur", wx.OK | wx.ICON_EXCLAMATION)
-                    dlg.ShowModal()
-                    dlg.Destroy()
+                    if silencieux == False :
+                        dlg = wx.MessageDialog(self, _(u"Impossible de supprimer cette ouverture !\n\n%s consommation(s) existent déjà...") % case.nbre_conso, "Erreur", wx.OK | wx.ICON_EXCLAMATION)
+                        dlg.ShowModal()
+                        dlg.Destroy()
                     return False
 
-                if etat == False and len(case.liste_evenements) > 0 and silencieux == False :
-                    dlg = wx.MessageDialog(None, _(u"%s évènement(s) sont déjà associé(s) à cette unité de consommation.\n\nConfirmez-vous leur suppression ?") % len(case.liste_evenements), _(u"Avertissement"), wx.YES_NO | wx.NO_DEFAULT | wx.CANCEL | wx.ICON_QUESTION)
-                    reponse = dlg.ShowModal()
-                    dlg.Destroy()
-                    if reponse != wx.ID_YES:
-                        return False
+                if len(case.liste_evenements) > 0 :
+                    if silencieux == False :
+                        dlg = wx.MessageDialog(None, _(u"%s évènement(s) sont déjà associé(s) à cette unité de consommation.\n\nConfirmez-vous leur suppression ?") % len(case.liste_evenements), _(u"Avertissement"), wx.YES_NO | wx.NO_DEFAULT | wx.CANCEL | wx.ICON_QUESTION)
+                        reponse = dlg.ShowModal()
+                        dlg.Destroy()
+                        if reponse != wx.ID_YES:
+                            return False
 
 
                     # # Interdit la modification si des évènements existent
