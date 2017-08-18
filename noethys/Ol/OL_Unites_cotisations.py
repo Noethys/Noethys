@@ -67,7 +67,7 @@ class Track(object):
             if date_jour >= self.date_debut and date_jour <= self.date_fin :
                 self.estActuel = True
 
-            self.validite = ("periode", self.date_fin, self.date_fin)
+            self.validite = ("periode", self.date_debut, self.date_fin)
 
         # Durée
         if self.duree != None :
@@ -171,7 +171,8 @@ class ListView(FastObjectListView):
 
         liste_Colonnes = [
             ColumnDefn(u"", "left", 22, "IDunite_cotisation", typeDonnee="entier", imageGetter=GetImageDefaut),
-            ColumnDefn(_(u"Validité"), 'left', 290, "validite", typeDonnee="texte", stringConverter=FormateValidite),
+            ColumnDefn(_(u"Nom"), 'left', 120, "nom", typeDonnee="texte"),
+            ColumnDefn(_(u"Validité"), 'left', 175, "validite", typeDonnee="texte", stringConverter=FormateValidite),
             ColumnDefn(_(u"Montant"), 'right', 70, "montant", typeDonnee="montant", stringConverter=FormateMontant),
             ]
         
@@ -179,7 +180,7 @@ class ListView(FastObjectListView):
         self.SetColumns(liste_Colonnes)
         self.SetEmptyListMsg(_(u"Aucune unité de cotisation"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
-        self.SetSortColumn(self.columns[1])
+        self.SetSortColumn(self.columns[2])
         self.SetObjects(self.donnees)
        
     def MAJ(self):
