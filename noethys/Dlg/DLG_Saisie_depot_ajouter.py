@@ -288,14 +288,12 @@ class Dialog(wx.Dialog):
     def DeplacerTout(self, inclus=True):
         listeTracks = []
         for track in self.tracks :
-            # if inclus :
-            #     ctrl = self.ctrl_reglements_disponibles
-            # else :
-            #     ctrl = self.ctrl_reglements_depot
-            # if track.IDreglement in ctrl.GetListeIDreglement():
-            #     track.inclus = inclus
-
-            track.inclus = inclus
+            if inclus :
+                ctrl = self.ctrl_reglements_disponibles
+            else :
+                ctrl = self.ctrl_reglements_depot
+            if track.IDreglement in ctrl.GetListeIDreglement():
+                track.inclus = inclus
             listeTracks.append(track)
         self.MAJListes(listeTracks)
         

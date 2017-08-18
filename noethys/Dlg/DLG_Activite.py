@@ -291,7 +291,7 @@ class Assistant(wx.Dialog, ClsCommune):
             self.CreateIDactivite()
             self.nouvelleActivite = True
         
-        intro = _(u"Vous pouvez ici renseigner tous les paramètres d'une activité. Attention, ce paramétrage est encore complexe pour un utilisateur n'ayant reçu aucune formation spécifique. Vous pouvez faire appel à l'auteur de Noethys pour bénéficier d'une aide gratuite et personnalisée au paramétrage.")
+        intro = _(u"Vous pouvez ici renseigner tous les paramètres d'une activité. Attention, ce paramétrage est encore complexe pour un utilisateur n'ayant reçu aucune formation spécifique. Vous pouvez notamment trouver de l'aide sur le forum d'entraide ou dans les ressources disponibles depuis la rubrique Assistance du site.")
         titre = _(u"Paramétrage d'une activité")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Activite.png")
         

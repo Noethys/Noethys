@@ -549,7 +549,7 @@ class Dialog(wx.Dialog):
         # Init
         self.OnChoixProfil(None)
         
-        wx.CallAfter(self.AfficheAvertissement)
+        #wx.CallAfter(self.AfficheAvertissement)
 
     def __set_properties(self):
         self.ctrl_profil.SetToolTip(wx.ToolTip(_(u"Selectionnez un profil de liste")))

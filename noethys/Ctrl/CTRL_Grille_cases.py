@@ -625,7 +625,10 @@ class Case():
         if conso == None and self.CategorieCase == "multihoraires" :
             dictDonnees["couleur"] = wx.Colour(255, 255, 255)
         elif self.CategorieCase == "evenement" :
-            dictDonnees["couleur"] = evenement.GetCouleur()
+            if evenement != None :
+                dictDonnees["couleur"] = evenement.GetCouleur()
+            else :
+                dictDonnees["couleur"] = wx.Colour(255, 255, 255)
         else :
             dictDonnees["couleur"] = self.renderer.GetCouleur(conso)
             
