@@ -779,12 +779,14 @@ class ListView(FastObjectListView):
 
     def Apercu(self, event):
         from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Etat nominatif des consommations"), format="A", orientation=wx.PORTRAIT)
+        txtTotal = self.GetParent().ctrl_totaux.GetValue()
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Etat nominatif des consommations"), total=txtTotal, format="A", orientation=wx.PORTRAIT)
         prt.Preview()
 
     def Imprimer(self, event):
         from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Etat nominatif des consommations"), format="A", orientation=wx.PORTRAIT)
+        txtTotal = self.GetParent().ctrl_totaux.GetValue()
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Etat nominatif des consommations", total=txtTotal), format="A", orientation=wx.PORTRAIT)
         prt.Print()
 
     def ExportTexte(self, event):
