@@ -196,11 +196,15 @@ class Track_evenement(Track):
         for dictTarif in dictDonnees["tarifs"] :
             self.tarifs.append(Track_tarif(dictTarif))
 
-    def Reinit(self, date=None):
+    def Reinit(self, date=None, IDunite=None, IDgroupe=None):
         """ Réinitialise l'évènement, les tarifs, lignes, filtres avec une nouvelle date (sert pour le copier/coller) """
         # Evènement
         self.IDevenement = None
         self.date = date
+        if IDunite != None :
+            self.IDunite = IDunite
+        if IDgroupe != None :
+            self.IDgroupe = IDgroupe
 
         # Tarifs
         for track_tarif in self.tarifs :
@@ -352,9 +356,20 @@ class CaseOuverture():
                 else :
                     texte += _(u"\nAucun évènement associé.\n\nCliquez sur le + pour ajouter des évènements.")
 
+        # Titre
+        if self.date == datetime.date(2998, 12, 1) :
+            label_date = _(u"Modèle de schéma")
+        else :
+            label_date = DateComplete(self.date)
+
+        try :
+            couleur = self.renderer.GetCouleur()
+        except :
+            couleur = wx.Colour(255, 255, 255)
+
         dictDonnees = {
-            "couleur" : self.renderer.GetCouleur(),
-            "titre" : u"%s - %s" % (DateComplete(self.date), self.nomGroupe),
+            "couleur" : couleur,
+            "titre" : u"%s - %s" % (label_date, self.nomGroupe),
             "texte" : texte + "\n",
             "pied" : pied,
             }
@@ -802,7 +817,7 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         DB.Close() 
 
         
-    def MAJ(self, annee=None, mois=None):
+    def MAJ(self, annee=None, mois=None, modele=False):
         self.annee = annee
         self.mois = mois
         if self.GetNumberRows() > 0 : 
@@ -810,18 +825,29 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         if self.GetNumberCols() > 0 : 
             self.DeleteCols(0, self.GetNumberCols())
         self.ClearGrid()
-        self.InitGrid(annee, mois)
+        self.InitGrid(annee=annee, mois=mois, modele=modele)
         self.Refresh()
         
-    def InitGrid(self, annee, mois):
+    def InitGrid(self, annee=None, mois=None, modele=False):
         DB = GestionDB.DB()
-        self.listeDates = self.GetListeDates(annee, mois)
-        self.listeUnites = self.GetListeUnites(DB, self.listeDates[0], self.listeDates[-1])
-        self.listeUnitesRemplissage = self.GetListeUnitesRemplissage(DB, self.listeDates[0], self.listeDates[-1])
-        self.GetDictOuvertures(DB, self.listeDates[0], self.listeDates[-1])
-        self.GetDictRemplissage(DB, self.listeDates[0], self.listeDates[-1])
-        self.GetDictConso(DB, self.listeDates[0], self.listeDates[-1])
+        if modele == True :
+            listeDates = [datetime.date.today(),]
+        else :
+            listeDates = self.GetListeDates(annee, mois)
+
+        self.listeUnites = self.GetListeUnites(DB, listeDates[0], listeDates[-1])
+        self.listeUnitesRemplissage = self.GetListeUnitesRemplissage(DB, listeDates[0], listeDates[-1])
         self.listeGroupes = self.GetListeGroupes(DB)
+
+        if modele == True :
+            listeDates = [datetime.date(2998, 12, 1),]
+        else :
+            listeDates = self.GetListeDates(annee, mois)
+
+        self.GetDictOuvertures(DB, listeDates[0], listeDates[-1])
+        self.GetDictRemplissage(DB, listeDates[0], listeDates[-1])
+        self.GetDictConso(DB, listeDates[0], listeDates[-1])
+
         DB.Close()
 
         nbreColonnes = len(self.listeUnites) + len(self.listeUnitesRemplissage) + 1
@@ -856,16 +882,20 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         
         # ------------------ Création des lignes -------------------------------------------------------
         
-        nbreLignes = (len(self.listeGroupes)+1) * len(self.listeDates)
+        nbreLignes = (len(self.listeGroupes)+1) * len(listeDates)
         self.AppendRows(nbreLignes)
         
         self.listeLignesDates = {}
         numLigne = 0
-        for dateDD in self.listeDates :
+        for dateDD in listeDates :
             
             # Ligne DATE
             hauteurLigne = 20
-            self.SetRowLabelValue(numLigne, DateComplete(dateDD))
+            if dateDD == datetime.date(2998, 12, 1) :
+                label = _(u"Modèle de schéma")
+            else :
+                label = DateComplete(dateDD)
+            self.SetRowLabelValue(numLigne, label)
             self.SetRowSize(numLigne, hauteurLigne)
             self.SetRowLabelRenderer(numLigne, MyRowLabelRenderer(COULEUR_DATE))
             self.listeLignesDates[numLigne] = dateDD
@@ -924,6 +954,7 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 
                     else:
                         actif = False
+                        ouvert = False
 
                     # Si c'est une ligne 'Tous les groupes'
                     if IDgroupe == None :
@@ -1096,38 +1127,42 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             numLigne += 1
     
     def SaisieLot(self):
-        import DLG_Saisie_lot_ouvertures
-        dlg = DLG_Saisie_lot_ouvertures.Dialog(self)
+        import DLG_Saisie_lot_ouvertures2
+        dlg = DLG_Saisie_lot_ouvertures2.Dialog(self, IDactivite=self.IDactivite, ctrl_calendrier=self)
         if self.clipboard != None :
             dlg.SetDate(self.clipboard)
         if dlg.ShowModal() == wx.ID_OK:
-            mode = dlg.GetMode() 
-            date = dlg.GetDate() 
-            elements = dlg.GetElements() 
-            date_debut, date_fin = dlg.GetPeriode() 
-            jours_scolaires, jours_vacances = dlg.GetJours() 
-            feries = dlg.GetFeries()
+            dictDonnees = dlg.GetDonnees()
             try :
                 dlgAttente = wx.BusyInfo(_(u"Veuillez patienter durant l'opération..."), None)
                 wx.Yield() 
-                self.TraitementLot(mode, date, elements, date_debut, date_fin, jours_scolaires, jours_vacances, feries)
+                self.TraitementLot(dictDonnees)
                 del dlgAttente
             except Exception, err:
                 del dlgAttente
                 traceback.print_exc(file=sys.stdout)
-                dlg2 = wx.MessageDialog(self, _(u"Désolé, le problème suivant a été rencontré dans le traitement par lot des ouvertures : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
+                dlg2 = wx.MessageDialog(self, _(u"Désolé, le problème suivant a été rencontré dans le traitement par lot : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
                 dlg2.ShowModal()
                 dlg2.Destroy()
         dlg.Destroy()
     
-    def TraitementLot(self, mode="date", date=None, elements=[], date_debut=None, date_fin=None, jours_scolaires=[], jours_vacances=[], feries=False):
+    def TraitementLot(self, dictDonnees={}):
         """ Test de duplication """
-        dateModele = date
-    
+        mode = dictDonnees["mode"]
+        action = dictDonnees["action"]
+        date_debut = dictDonnees["date_debut"]
+        date_fin = dictDonnees["date_fin"]
+        jours_vacances = dictDonnees["jours_vacances"]
+        jours_scolaires = dictDonnees["jours_scolaires"]
+        semaines = dictDonnees["semaines"]
+        feries = dictDonnees["feries"]
+
         # Init calendrier
         date_debut_temp = date_debut
         date_fin_temp = date_fin
-        if date != None :
+
+        if dictDonnees.has_key("date") :
+            date = dictDonnees["date"]
             if date < date_debut_temp :
                 date_debut_temp = date
             if date > date_fin_temp :
@@ -1145,7 +1180,10 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         while tmp < date_fin:
             tmp += datetime.timedelta(days=1)
             listeDates.append(tmp)
-            
+
+        date = date_debut
+        numSemaine = copy.copy(semaines)
+        dateTemp = date
         for date in listeDates :
             
             # Vérifie période et jour
@@ -1156,7 +1194,25 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             else :
                 if date.weekday() in jours_scolaires :
                     valide = True
-            
+
+            # Calcul le numéro de semaine
+            if len(listeDates) > 0:
+                if date.weekday() < dateTemp.weekday():
+                    numSemaine += 1
+
+            # Fréquence semaines
+            if semaines in (2, 3, 4):
+                if numSemaine % semaines != 0:
+                    valide = False
+
+            # Semaines paires et impaires
+            if valide == True and semaines in (5, 6):
+                numSemaineAnnee = date.isocalendar()[1]
+                if numSemaineAnnee % 2 == 0 and semaines == 6:
+                    valide = False
+                if numSemaineAnnee % 2 != 0 and semaines == 5:
+                    valide = False
+
             # Vérifie si férié
             if feries == False and self.EstFerie(date) == True :
                 valide = False
@@ -1168,13 +1224,16 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                     IDgroupe = dictGroupe["IDgroupe"]
                     
                     # Ouvertures
-                    if "ouvertures" in elements :
+                    if action in ("date", "schema", "reinit") and (action != "date" or "ouvertures" in dictDonnees["elements"]) :
                         
                         for dictUnite in self.listeUnites :
                             IDunite = dictUnite["IDunite"]
-                            if mode == "date" :
+                            if action in ("date", "schema") :
                                 try :
-                                    etat = self.dictOuvertures[dateModele][IDgroupe][IDunite]["etat"]
+                                    if action == "date" :
+                                        etat = self.dictOuvertures[dictDonnees["date"]][IDgroupe][IDunite]["etat"]
+                                    if action == "schema":
+                                        etat = dictDonnees["dictOuvertures"][IDgroupe][IDunite]["etat"]
                                 except :
                                     etat = False
                             else :
@@ -1186,15 +1245,6 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                                 nbreConso = self.dictConso[date][IDgroupe][IDunite]
                             except :
                                 nbreConso = 0
-
-                            # Vérifie si pas d'évènements
-                            # if etat == False:
-                            #     try:
-                            #         liste_evenements = self.dictOuvertures[date][IDgroupe][IDunite]["liste_evenements"]
-                            #     except:
-                            #         liste_evenements = []
-                            #     if len(liste_evenements) > 0:
-                            #         etat = True
 
                             if nbreConso == 0 :
                                 # Mémorise ouverture
@@ -1208,7 +1258,7 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                                 self.MemoriseOuverture(date, IDouverture, IDunite, IDgroupe, etat, initial, forcer=True)
 
                     # Evènements
-                    if "evenements" in elements:
+                    if action in ("date", "schema", "reinit", "ajouter", "supprimer") and (action != "date" or "evenements" in dictDonnees["elements"]):
 
                         for dictUnite in self.listeUnites:
                             IDunite = dictUnite["IDunite"]
@@ -1218,33 +1268,81 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                             except:
                                 nbreConso = 0
 
-                            if nbreConso == 0 :
+                            liste_evenements = None
 
-                                if mode == "date":
-                                    try:
-                                        liste_temp = self.dictOuvertures[dateModele][IDgroupe][IDunite]["liste_evenements"]
-                                        liste_evenements = []
-                                        for track in liste_temp:
-                                            track = copy.deepcopy(track)
-                                            track.Reinit(date=date)
-                                            liste_evenements.append(track)
-                                    except:
-                                        liste_evenements = []
-                                else :
-                                    # Mode réinit
+                            if action in ("date", "schema") and nbreConso == 0 :
+                                try:
+                                    if action == "date":
+                                        liste_temp = self.dictOuvertures[dictDonnees["date"]][IDgroupe][IDunite]["liste_evenements"]
+                                    if action == "schema":
+                                        liste_temp = dictDonnees["dictOuvertures"][IDgroupe][IDunite]["liste_evenements"]
+                                    if action == "ajouter":
+                                        liste_temp = dictDonnees["liste_evenements"]
+                                    if action == "supprimer":
+                                        liste_temp = []
+                                    liste_evenements = []
+                                    for track in liste_temp:
+                                        track = copy.deepcopy(track)
+                                        track.Reinit(date=date)
+                                        liste_evenements.append(track)
+                                except:
                                     liste_evenements = []
 
-                                self.dictOuvertures[date][IDgroupe][IDunite]["liste_evenements"] = liste_evenements
+                            if action == "reinit" and nbreConso == 0 :
+                                # Mode réinit
+                                liste_evenements = []
+
+                            # Mémorisation des évènements
+                            if liste_evenements != None:
+                                try:
+                                    self.dictOuvertures[date][IDgroupe][IDunite]["liste_evenements"] = liste_evenements
+                                except:
+                                    self.MemoriseOuverture(date, IDouverture=None, IDunite=IDunite, IDgroupe=IDgroupe, etat=True, initial=False, liste_evenements=liste_evenements, forcer=True)
+
+                            # Ajout des évènements
+                            if (action == "ajouter" and IDunite== dictDonnees["IDunite"] and IDgroupe == dictDonnees["IDgroupe"]) or action == "supprimer" :
+                                try:
+                                    liste_evenements = self.dictOuvertures[date][IDgroupe][IDunite]["liste_evenements"]
+                                except:
+                                    liste_evenements = []
+
+                                if action == "ajouter" :
+                                    liste_temp = dictDonnees["liste_evenements"]
+                                    for track in liste_temp:
+                                        track = copy.deepcopy(track)
+                                        track.Reinit(date=date, IDunite=dictDonnees["IDunite"], IDgroupe=dictDonnees["IDgroupe"])
+                                        liste_evenements.append(track)
+
+                                        # Mémorisation des évènements
+                                        if liste_evenements != None:
+                                            try:
+                                                self.dictOuvertures[date][IDgroupe][IDunite]["liste_evenements"] = liste_evenements
+                                            except:
+                                                self.MemoriseOuverture(date, IDouverture=None, IDunite=IDunite, IDgroupe=IDgroupe, etat=True, initial=False, liste_evenements=liste_evenements, forcer=True)
+
+                                if action == "supprimer" :
+                                    liste_temp = []
+                                    for track in liste_evenements :
+                                        if track not in dictDonnees["tracks_a_supprimer"] :
+                                            liste_temp.append(track)
+                                    liste_evenements = liste_temp
+                                    try :
+                                        self.dictOuvertures[date][IDgroupe][IDunite]["liste_evenements"] = liste_evenements
+                                    except :
+                                        pass
 
 
                     # Remplissage
-                    if "places" in elements :
+                    if action in ("date", "schema", "reinit") and (action != "date" or "places" in dictDonnees["elements"]) :
 
                         for dictUniteRemplissage in self.listeUnitesRemplissage :
                             IDunite_remplissage = dictUniteRemplissage["IDunite_remplissage"]
-                            if mode == "date" :
+                            if action in ("date", "schema") :
                                 try :
-                                    nbrePlaces = self.dictRemplissage[dateModele][IDgroupe][IDunite_remplissage]["places"]
+                                    if action == "date" :
+                                        nbrePlaces = self.dictRemplissage[dictDonnees["date"]][IDgroupe][IDunite_remplissage]["places"]
+                                    if action == "schema" :
+                                        nbrePlaces = dictDonnees["dictRemplissage"][IDgroupe][IDunite_remplissage]["places"]
                                 except : 
                                     nbrePlaces = 0
                             else :
@@ -1260,6 +1358,8 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                                 IDremplissage = dictTemp["IDremplissage"]
                                 initial = dictTemp["initial"]
                             self.MemoriseRemplissage(date, IDremplissage, IDunite_remplissage, IDgroupe, nbrePlaces, initial, True)
+
+            dateTemp = date
 
         # MAJ grille
         self.MAJ(self.annee, self.mois)

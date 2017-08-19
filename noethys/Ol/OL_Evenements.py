@@ -27,6 +27,7 @@ class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
         # Récupération des paramètres perso
         self.grid = kwds.pop("grid", None)
+        self.liste_colonnes = kwds.pop("liste_colonnes", None)
         self.IDactivite = kwds.pop("IDactivite", None)
         self.date = kwds.pop("date", None)
         self.IDunite = kwds.pop("IDunite", None)
@@ -65,17 +66,23 @@ class ListView(FastObjectListView):
             if montant == None : return u""
             return u"%.2f %s" % (montant, SYMBOLE)
 
-        liste_Colonnes = [
-            ColumnDefn(_(u"ID"), "left", 0, "IDvenement", typeDonnee="entier"),
-            ColumnDefn(_(u"Date"), 'left', 80, "date", typeDonnee="date", stringConverter=FormateDateCourt),
-            ColumnDefn(_(u"Nom"), "left", 200, "nom", typeDonnee="texte"),
-            ColumnDefn(_(u"Début"), 'center', 60, "heure_debut", typeDonnee="texte", stringConverter=FormateHeure),
-            ColumnDefn(_(u"Fin"), 'center', 60, "heure_fin", typeDonnee="texte", stringConverter=FormateHeure),
-            ColumnDefn(_(u"Montant"), 'center', 80, "montant", typeDonnee="montant", stringConverter=FormateMontant),
-            ColumnDefn(_(u"Capacité max."), 'center', 100, "capacite_max", typeDonnee="entier"),
-        ]
-        
-        self.SetColumns(liste_Colonnes)
+        if self.liste_colonnes == None :
+            self.liste_colonnes = ["ID", "date", "nom", "heure_debut", "heure_fin", "montant", "capacite_max"]
+
+        dict_colonnes = {
+            "ID": ColumnDefn(_(u"ID"), "left", 0, "IDvenement", typeDonnee="entier"),
+            "date": ColumnDefn(_(u"Date"), 'left', 80, "date", typeDonnee="date", stringConverter=FormateDateCourt),
+            "nom": ColumnDefn(_(u"Nom"), "left", 200, "nom", typeDonnee="texte"),
+            "heure_debut": ColumnDefn(_(u"Début"), 'center', 60, "heure_debut", typeDonnee="texte", stringConverter=FormateHeure),
+            "heure_fin": ColumnDefn(_(u"Fin"), 'center', 60, "heure_fin", typeDonnee="texte", stringConverter=FormateHeure),
+            "montant": ColumnDefn(_(u"Montant"), 'center', 80, "montant", typeDonnee="montant", stringConverter=FormateMontant),
+            "capacite_max": ColumnDefn(_(u"Capacité max."), 'center', 100, "capacite_max", typeDonnee="entier"),
+            }
+
+        liste_temp = []
+        for code in self.liste_colonnes :
+            liste_temp.append(dict_colonnes[code])
+        self.SetColumns(liste_temp)
         self.SetEmptyListMsg(_(u"Aucun évènement"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
         self.SetSortColumn(self.columns[1])
