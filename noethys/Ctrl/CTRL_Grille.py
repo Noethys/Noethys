@@ -4945,12 +4945,13 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 
                                             elif dictUnite["type"] == "Evenement":
                                                 for evenement in case.liste_evenements :
-                                                    if case.IsCaseDisponible(evenement) :
-                                                        if case.HasPlaceDisponible(evenement) :
-                                                            case.Ajouter_evenement(evenement=evenement, etiquettes=resultats["etiquettes"])
-                                                            # Modifie état
-                                                            if resultats["etat"] != None and evenement.conso.etat != resultats["etat"]:
-                                                                case.ModifieEtat(evenement.conso, resultats["etat"])
+                                                    if resultats["expression"] == None or resultats["expression"].lower() in evenement.nom.lower():
+                                                        if case.IsCaseDisponible(evenement) :
+                                                            if case.HasPlaceDisponible(evenement) :
+                                                                case.Ajouter_evenement(evenement=evenement, etiquettes=resultats["etiquettes"])
+                                                                # Modifie état
+                                                                if resultats["etat"] != None and evenement.conso.etat != resultats["etat"]:
+                                                                    case.ModifieEtat(evenement.conso, resultats["etat"])
 
                                             else :
                                                 case.OnClick(saisieHeureDebut=heure_debut, saisieHeureFin=heure_fin, saisieQuantite=quantite, modeSilencieux=True, etiquettes=resultats["etiquettes"])
@@ -5021,7 +5022,8 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                                                     if dictUnite["type"] == "Multihoraires" :
                                                         case.SupprimerBarre(conso.barre)
                                                     elif dictUnite["type"] == "Evenement" :
-                                                        case.Supprimer_evenement(conso.evenement)
+                                                        if resultats["expression"] == None or resultats["expression"].lower() in conso.evenement.nom.lower():
+                                                            case.Supprimer_evenement(conso.evenement)
                                                     else :
                                                         if conso.etat != None :
                                                             case.OnClick(modeSilencieux=True, ForcerSuppr=True)
@@ -5039,7 +5041,8 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                                                         if conso.IDfacture != None :
                                                             journal[case.IDindividu].append((case.date, dictUnite["nom"], _(u"Impossible de supprimer une consommation déjà facturée")))
                                                         else :
-                                                            case.ModifieEtat(conso, resultats["etat"])
+                                                            if dictUnite["type"] != "Evenement" or resultats["expression"] == None or resultats["expression"].lower() in conso.evenement.nom.lower() :
+                                                                case.ModifieEtat(conso, resultats["etat"])
         
         # Renvoie le journal
         return journal

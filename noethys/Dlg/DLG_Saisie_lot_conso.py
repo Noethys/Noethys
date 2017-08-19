@@ -176,6 +176,8 @@ class CTRL_Semaines(wx.Choice):
             (2, _(u"Une semaine sur deux")),
             (3, _(u"Une semaine sur trois")),
             (4, _(u"Une semaine sur quatre")),
+            (5, _(u"Les semaines paires")),
+            (6, _(u"Les semaines impaires")),
             ]
         self.MAJ() 
     
@@ -683,18 +685,26 @@ class Dialog(wx.Dialog):
 
         # Unites
         self.box_unites_staticbox = wx.StaticBox(self, -1, _(u"Unités"))
+
         self.label_activite = wx.StaticText(self, -1, _(u"Activité :"))
         self.ctrl_activite = CTRL_Activite(self)
         self.bouton_activite = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Loupe.png"), wx.BITMAP_TYPE_ANY))
         if self.mode_parametres == True :
             self.ctrl_activite.Enable(False)
             self.bouton_activite.Enable(False)
+
         self.label_unites = wx.StaticText(self, -1, _(u"Unités :"))
         self.ctrl_unites = CTRL_Unites(self)
         self.ctrl_unites.SetMinSize((310, 50))
+
+        self.label_evenement = wx.StaticText(self, -1, _(u"Evènements :"))
+        self.check_evenement = wx.CheckBox(self, -1, _(u"Uniquement les évènements dont le nom contient :"))
+        self.ctrl_evenement = wx.TextCtrl(self, -1, "")
+
         self.label_etiquettes = wx.StaticText(self, -1, _(u"Etiquettes :"))
         self.ctrl_etiquettes = CTRL_Etiquettes.CTRL(self, listeActivites=[], activeMenu=False)
         self.ctrl_etiquettes.SetMinSize((50, 50))
+
         self.label_etat = wx.StaticText(self, -1, _(u"Etat :"))
         self.ctrl_etat = CTRL_Etat(self)
 
@@ -706,6 +716,7 @@ class Dialog(wx.Dialog):
         self.__set_properties()
         self.__do_layout()
 
+        self.Bind(wx.EVT_CHECKBOX, self.OnCheckEvenement, self.check_evenement)
         self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioAction, self.radio_saisie)
         self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioAction, self.radio_modification)
         self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioAction, self.radio_suppression)
@@ -733,6 +744,7 @@ class Dialog(wx.Dialog):
                 pass
         self.OnRadioAction(None)
         self.OnChoixActivite(None)
+        self.OnCheckEvenement(None)
 
     def __set_properties(self):
         self.bouton_activite.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour rechercher une activité")))
@@ -747,6 +759,8 @@ class Dialog(wx.Dialog):
         self.ctrl_feries.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour inclure les jours fériés dans le processus")))
         self.ctrl_activite.SetToolTip(wx.ToolTip(_(u"Sélectionnez une activité")))
         self.ctrl_etat.SetToolTip(wx.ToolTip(_(u"Sélectionnez une état pour les consommations")))
+        self.check_evenement.SetToolTip(wx.ToolTip(_(u"Cocher cette case pour sélectionner uniquement les évènements dont le nom contient l'expression saisie")))
+        self.ctrl_evenement.SetToolTip(wx.ToolTip(_(u"Saisissez un mot ou une expression présente dans le nom des évènements souhaités")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
@@ -821,7 +835,7 @@ class Dialog(wx.Dialog):
 
         # Unités
         box_unites = wx.StaticBoxSizer(self.box_unites_staticbox, wx.VERTICAL)
-        grid_sizer_unites = wx.FlexGridSizer(rows=4, cols=2, vgap=10, hgap=10)
+        grid_sizer_unites = wx.FlexGridSizer(rows=5, cols=2, vgap=10, hgap=10)
         grid_sizer_unites.Add(self.label_activite, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
 
         grid_sizer_activite = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
@@ -832,12 +846,23 @@ class Dialog(wx.Dialog):
 
         grid_sizer_unites.Add(self.label_unites, 0, wx.ALIGN_RIGHT, 0)
         grid_sizer_unites.Add(self.ctrl_unites, 1, wx.EXPAND, 0)
+
+        grid_sizer_unites.Add(self.label_evenement, 0, wx.ALIGN_RIGHT, 0)
+
+        grid_sizer_evenement = wx.FlexGridSizer(rows=2, cols=1, vgap=5, hgap=5)
+        grid_sizer_evenement.Add(self.check_evenement, 1, wx.EXPAND, 0)
+        grid_sizer_evenement.Add(self.ctrl_evenement, 1, wx.EXPAND | wx.LEFT, 0)
+        grid_sizer_evenement.AddGrowableCol(0)
+        grid_sizer_unites.Add(grid_sizer_evenement, 1, wx.EXPAND, 0)
+
         grid_sizer_unites.Add(self.label_etiquettes, 0, wx.ALIGN_RIGHT, 0)
         grid_sizer_unites.Add(self.ctrl_etiquettes, 1, wx.EXPAND, 0)
+
         grid_sizer_unites.Add(self.label_etat, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_unites.Add(self.ctrl_etat, 0, wx.EXPAND, 0)
+
         grid_sizer_unites.AddGrowableRow(1)
-        grid_sizer_unites.AddGrowableRow(2)
+        grid_sizer_unites.AddGrowableRow(3)
         grid_sizer_unites.AddGrowableCol(1)
         box_unites.Add(grid_sizer_unites, 1, wx.ALL|wx.EXPAND, 10)
         grid_sizer_droite.Add(box_unites, 1, wx.EXPAND, 0)
@@ -874,7 +899,11 @@ class Dialog(wx.Dialog):
         
         self.ctrl_unites.MAJ() 
         self.ctrl_etat.MAJ() 
-        
+
+    def OnCheckEvenement(self, event=None):
+        self.ctrl_evenement.Enable(self.check_evenement.GetValue())
+        self.ctrl_evenement.SetFocus()
+
     def OnChoixActivite(self, event=None):
         self.ctrl_unites.SetActivite(self.ctrl_activite.GetActivite())
         self.ctrl_etiquettes.SetActivites([self.ctrl_activite.GetActivite(),])
@@ -994,7 +1023,18 @@ class Dialog(wx.Dialog):
                         dictOptions[key] = valeur
 
                     listeUnites.append({"IDunite":IDunite, "nom":nom, "type":typeUnite, "options":dictOptions})
-        
+
+        # Evènements
+        expression = None
+        if self.check_evenement.GetValue() == True :
+            expression = self.ctrl_evenement.GetValue()
+            if len(expression) == 0 :
+                dlg = wx.MessageDialog(self, _(u"Vous devez saisir une expression pour sélectionner les évènements !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg.ShowModal()
+                dlg.Destroy()
+                self.ctrl_evenement.SetFocus()
+                return
+
         # Etiquettes
         etiquettes = self.ctrl_etiquettes.GetCoches() 
         
@@ -1069,6 +1109,7 @@ class Dialog(wx.Dialog):
         self.resultats["unites"] = listeUnites
         self.resultats["etat"] = etat
         self.resultats["dates"] = listeDates
+        self.resultats["expression"] = expression
         self.resultats["etiquettes"] = etiquettes
         self.resultats["description"] = description
         
