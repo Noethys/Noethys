@@ -3,8 +3,8 @@
 #------------------------------------------------------------------------
 # Application :    Noethys, gestion multi-activités
 # Site internet :  www.noethys.com
-# Auteur:           Ivan LUCAS
-# Copyright:       (c) 2010-13 Ivan LUCAS
+# Auteur:          Ivan LUCAS
+# Copyright:       (c) 2010-17 Ivan LUCAS
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
@@ -20,15 +20,22 @@ from dateutil.easter import easter
 
 
 class MyDialog(wx.Dialog):
-    def __init__(self, parent, fichierOuvert=None):
+    def __init__(self, parent):
         wx.Dialog.__init__(self, parent, id=-1, style=wx.DEFAULT_DIALOG_STYLE)
 
-        self.label_intro = wx.StaticText(self, -1, _(u"Cette fonctionnalité vous permet de laisser Noethys créer les jours fériés variables \nd'une ou plusieurs années selon des algorithmes de calcul intégrés. Saisissez une \nou plusieurs années séparées d'un point-virgule, cochez les jours à créer puis \ncliquez sur le bouton OK."))
-        self.label_annees = wx.StaticText(self, -1, _(u"Années :"))
-        self.ctrl_annees = wx.TextCtrl(self, -1, u"")
-        self.label_jours = wx.StaticText(self, -1, _(u"Jours fériés :"))
+        self.label_intro = wx.StaticText(self, -1, _(u"""Cette fonctionnalité vous permet de générer automatiquement les jours fériés variables\nd'une ou plusieurs années selon des algorithmes de calcul intégrés. Saisissez une\nannée de départ, renseignez le nombre d'années à générer puis cochez les fériés à créer."""))
+
+        self.label_nbre = wx.StaticText(self, -1, _(u"Nombre d'années à générer :"))
+        self.ctrl_nbre = wx.SpinCtrl(self, -1, u"", min=1, max=50)
+
+        self.label_annee = wx.StaticText(self, -1, _(u"Depuis l'année :"))
+        self.ctrl_annee = wx.SpinCtrl(self, -1, u"", min=1970, max=2999)
+        self.ctrl_annee.SetValue(datetime.date.today().year)
+
+        self.label_jours = wx.StaticText(self, -1, _(u"Cochez les fériés à générer :"))
         listeJours = [_(u"Lundi de Pâques"), _(u"Jeudi de l'ascension"), _(u"Lundi de Pentecôte")]
         self.ctrl_jours = wx.CheckListBox(self, -1, (-1, -1), wx.DefaultSize, listeJours)
+        self.ctrl_jours.SetChecked((0, 1, 2))
         self.ctrl_jours.SetMinSize((-1, 80))
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
         self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
@@ -43,7 +50,8 @@ class MyDialog(wx.Dialog):
 
     def __set_properties(self):
         self.SetTitle(_(u"Saisie automatique des jours fériés variables"))
-        self.ctrl_annees.SetToolTip(wx.ToolTip(_(u"Saisissez une année ou plusieurs années séparées de points-virgules (;). Exemple : '2011;2012;2013' ")))
+        self.ctrl_nbre.SetToolTip(wx.ToolTip(_(u"Saisissez le nombre d'années à générer")))
+        self.ctrl_annee.SetToolTip(wx.ToolTip(_(u"Saisissez l'année de départ")))
         self.ctrl_jours.SetToolTip(wx.ToolTip(_(u"Cochez les jours fériés à créer")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour créer les jours fériés")))
@@ -51,15 +59,23 @@ class MyDialog(wx.Dialog):
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(3, 1, 10, 0)
-        grid_sizer_boutons = wx.FlexGridSizer(1, 4, 10, 10)
-        grid_sizer_contenu = wx.FlexGridSizer(2, 2, 10, 10)
         grid_sizer_base.Add(self.label_intro, 0, wx.ALL, 10)
-        grid_sizer_contenu.Add(self.label_annees, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_contenu.Add(self.ctrl_annees, 0, wx.EXPAND, 0)
-        grid_sizer_contenu.Add(self.label_jours, 0, wx.ALIGN_RIGHT, 0)
+
+        grid_sizer_contenu = wx.FlexGridSizer(6, 1, 10, 10)
+
+        grid_sizer_contenu.Add(self.label_nbre, 0, 0, 0)
+        grid_sizer_contenu.Add(self.ctrl_nbre, 0, wx.EXPAND, 0)
+
+        grid_sizer_contenu.Add(self.label_annee, 0, 0, 0)
+        grid_sizer_contenu.Add(self.ctrl_annee, 0, wx.EXPAND, 0)
+
+        grid_sizer_contenu.Add(self.label_jours, 0, 0, 0)
         grid_sizer_contenu.Add(self.ctrl_jours, 0, wx.EXPAND, 0)
-        grid_sizer_contenu.AddGrowableCol(1)
+        grid_sizer_contenu.AddGrowableCol(0)
         grid_sizer_base.Add(grid_sizer_contenu, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
+
+        # Boutons
+        grid_sizer_boutons = wx.FlexGridSizer(1, 4, 10, 10)
         grid_sizer_boutons.Add(self.bouton_aide, 0, 0, 0)
         grid_sizer_boutons.Add((20, 20), 0, wx.EXPAND, 0)
         grid_sizer_boutons.Add(self.bouton_ok, 0, 0, 0)
@@ -81,23 +97,11 @@ class MyDialog(wx.Dialog):
 
     def OnBoutonOk(self, event): 
         # Récupération des années
-        if self.ctrl_annees.GetValue() == "" :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une année !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
-            dlg.ShowModal()
-            dlg.Destroy()
-            return False
+        annee_depart = self.ctrl_annee.GetValue()
+        nbre_annees = self.ctrl_nbre.GetValue()
 
-        listeAnnees = []
-        for annee in self.ctrl_annees.GetValue().split(";") :
-            try :
-                listeAnnees.append(int(annee))
-                if int(annee) < 1900 or int(annee) > 3000 :
-                    raise Exception()
-            except :
-                dlg = wx.MessageDialog(self, _(u"Les années saisies ne semblent pas valides !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
-                dlg.ShowModal()
-                dlg.Destroy()
-                return False
+        # Génération de la liste des années :
+        listeAnnees = range(annee_depart, annee_depart+nbre_annees)
 
         # Récupération jours fériés à créer
         listeCoches = []
