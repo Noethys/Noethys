@@ -2662,7 +2662,6 @@ class CaseEvenement(Case):
         """ Modifier la consommation sélectionnée """
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("consommations_conso", "modifier", IDactivite=self.IDactivite) == False : return
         # Todo : Modifier evenement
-        print "MODIFIER EVENEMENT"
         # self.ModifierBarre(self.barreContextMenu)
 
     def Supprimer(self, event=None):

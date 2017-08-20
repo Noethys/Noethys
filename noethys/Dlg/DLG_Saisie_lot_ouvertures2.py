@@ -46,7 +46,7 @@ class CTRL_Unite(wx.Choice):
         db = GestionDB.DB()
         req = """SELECT IDunite, nom, type
         FROM unites
-        WHERE IDactivite=%d AND type='EVENEMENT'
+        WHERE IDactivite=%d AND type='Evenement'
         ORDER BY ordre;""" % self.IDactivite
         db.ExecuterReq(req)
         listeDonnees = db.ResultatReq()
