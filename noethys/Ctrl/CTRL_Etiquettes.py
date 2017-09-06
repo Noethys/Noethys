@@ -315,7 +315,7 @@ class CTRL(CT.CustomTreeCtrl):
         """ Modifier une étiquette """
         item = self.GetSelection()
         dictData = self.GetPyData(item)
-        if dictData == None :
+        if dictData == None or dictData.has_key("label") == False :
             dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner une étiquette à modifier !"), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()

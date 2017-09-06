@@ -63,7 +63,10 @@ class ListBoxCombinaisons(wx.ListBox):
             for dictUnite in listeUnites :
                 IDaide_combi_unite = dictUnite["IDaide_combi_unite"]
                 IDunite = dictUnite["IDunite"]
-                label += self.dictUnites[IDunite]["nom"] + " + "
+                if self.dictUnites.has_key(IDunite) :
+                    label += self.dictUnites[IDunite]["nom"] + " + "
+                else :
+                    label += _(u"[Unité ID%d inconnue]") % IDunite + " + "
             if len(label) > 0 : label = label[:-2]
             self.Insert(label, self.GetCount(), index) 
             index += 1
