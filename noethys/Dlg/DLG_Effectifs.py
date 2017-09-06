@@ -18,6 +18,7 @@ import wx.lib.agw.aui as aui
 import DLG_Remplissage
 import DLG_Recap_evenements
 import DLG_Nbre_inscrits_2 as DLG_Nbre_inscrits
+import DLG_Categories_produits_images
 
 
 
@@ -50,6 +51,14 @@ class CTRL(aui.AuiNotebook):
         except :
             pass
 
+        # CTRL Locations
+        self.ctrl_locations = DLG_Categories_produits_images.CTRL(self)
+        self.AddPage(self.ctrl_locations, _(u"Locations"))
+        try :
+            self.SetPageTooltip(3, _(u"Affiche l'état des locations. \nVous pouvez glisser-déposer cet onglet pour déplacer la page."))
+        except :
+            pass
+
         # Bind
         self.Bind(aui.EVT_AUINOTEBOOK_PAGE_CHANGED, self.OnPageChanged)
 
@@ -64,6 +73,8 @@ class CTRL(aui.AuiNotebook):
             self.ctrl_nbre_inscrits.MAJ()
         if self.GetPageActive() == 2 :
             self.ctrl_evenements.MAJ()
+        if self.GetPageActive() == 3 :
+            self.ctrl_locations.MAJ()
 
     def SetPageActive(self, index=0):
         self.SetSelection(index)

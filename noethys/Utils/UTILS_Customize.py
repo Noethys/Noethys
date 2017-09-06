@@ -78,7 +78,7 @@ class Customize():
     def GetCfg(self):
         return self.cfg
 
-    def GetValeur(self, section="", cle="", defaut="", type_valeur=str):
+    def GetValeur(self, section="", cle="", defaut="", type_valeur=str, ajouter_si_manquant=True):
         if self.cfg.has_section(section) and self.cfg.has_option(section, cle) :
             # Si la clé existe
             if type_valeur == int :
@@ -91,9 +91,12 @@ class Customize():
                 return self.cfg.get(section, cle)
         else:
             # Si la clé n'existe pas
-            self.cfg.SetValeur(section, cle, defaut)
-            self.Enregistrement()
-            return defaut
+            if ajouter_si_manquant == True :
+                self.cfg.set(section, cle, defaut)
+                self.Enregistrement()
+                return defaut
+            else :
+                return None
 
     def SetValeur(self, section="", cle="", valeur=""):
         if self.cfg.has_section(section) == False :
@@ -119,9 +122,9 @@ def GetCustomize():
         return Customize()
 
 
-def GetValeur(section="", cle="", defaut="", type_valeur=str):
+def GetValeur(section="", cle="", defaut="", type_valeur=str, ajouter_si_manquant=True):
     customize = GetCustomize()
-    return customize.GetValeur(section, cle, defaut, type_valeur)
+    return customize.GetValeur(section, cle, defaut, type_valeur, ajouter_si_manquant)
 
 def SetValeur(section="", cle="", valeur=""):
     customize = GetCustomize()

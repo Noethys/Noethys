@@ -2577,6 +2577,12 @@ class ObjectListView(wx.ListCtrl):
 
 ########################################################################
 
+
+
+
+
+
+
 class Track():
     def __init__(self, dictTotaux):
         for nomColonne, total in dictTotaux.iteritems() :
@@ -2622,11 +2628,59 @@ class BarreRecherche(wx.SearchCtrl):
         self.ShowCancelButton(len(txtSearch))
         self.listview.Filtrer(txtSearch)
 
+
+
+
+class CTRL_Regroupement(wx.Choice):
+    def __init__(self, parent):
+        wx.Choice.__init__(self, parent, -1)
+        self.parent = parent
+        self.listview = None
+        self.listeLabels = []
+        self.dictDonnees = {}
+
+    def MAJ(self, listview=None):
+        if self.listview == None :
+            self.listview = listview
+            self.Bind(wx.EVT_CHOICE, self.OnChoix, self)
+            self.listview = listview
+
+        if self.listeLabels == [] :
+            self.dictDonnees = {}
+            self.listeLabels = [_(u"Aucun"), ]
+            indexColonne = 0
+            indexLigne = 1
+            for titre in self.GetTitresColonnes(listview):
+                if titre not in ("ID", "") :
+                    self.listeLabels.append(titre)
+                    self.dictDonnees[indexLigne] = indexColonne
+                    indexLigne += 1
+                indexColonne += 1
+            self.SetItems(self.listeLabels)
+            self.Select(0)
+
+    def GetTitresColonnes(self, listview=None):
+        listeColonnes = []
+        for index in range(0, listview.GetColumnCount()) :
+            listeColonnes.append(listview.columns[index].title)
+        return listeColonnes
+
+    def GetRegroupement(self):
+        index = self.GetSelection()
+        if index == -1 or index == 0: return None
+        indexColonne = self.dictDonnees[index]
+        return indexColonne
+
+    def OnChoix(self, event=None):
+        self.listview.regroupement = self.GetRegroupement()
+        self.listview.MAJ()
+
         
 class CTRL_Outils(wx.Panel):
-    def __init__(self, parent, listview=None, texteDefaut=u"Rechercher...", afficherCocher=False, style=wx.NO_BORDER | wx.TAB_TRAVERSAL):
+    def __init__(self, parent, listview=None, texteDefaut=u"Rechercher...", afficherCocher=False, afficherRegroupement=False, style=wx.NO_BORDER | wx.TAB_TRAVERSAL):
         wx.Panel.__init__(self, parent, id=-1, style=style)
         self.listview = listview
+        self.afficherRegroupement = afficherRegroupement
         
         # Contrôles
         self.barreRecherche = BarreRecherche(self, listview=listview, texteDefaut=texteDefaut)
@@ -2667,6 +2721,12 @@ class CTRL_Outils(wx.Panel):
 
         self.Bind(wx.EVT_MENU, self.OnMenu)
         self.Bind(wx.EVT_SIZE, self.OnSize)
+
+        # Regroupement
+        if self.afficherRegroupement == True :
+            self.label_regroupement = wx.StaticText(self, -1, _(u"Regroupement :"))
+            self.ctrl_regroupement = CTRL_Regroupement(self)
+            listview.ctrl_regroupement = self.ctrl_regroupement
         
         # Layout
         sizerbase = wx.BoxSizer(wx.HORIZONTAL)
@@ -2674,6 +2734,10 @@ class CTRL_Outils(wx.Panel):
         sizerbase.Add(self.bouton_filtrer, 0, wx.LEFT|wx.EXPAND, 5)
         if afficherCocher == True :
             sizerbase.Add(self.bouton_cocher, 0, wx.LEFT|wx.EXPAND, 5)
+        if self.afficherRegroupement == True :
+            sizerbase.Add( (20, 5), 0, wx.EXPAND)
+            sizerbase.Add(self.label_regroupement, 0, wx.LEFT| wx.ALIGN_CENTER_VERTICAL, 5)
+            sizerbase.Add(self.ctrl_regroupement, 0, wx.LEFT | wx.EXPAND, 5)
         self.SetSizer(sizerbase)
         self.Layout()
     

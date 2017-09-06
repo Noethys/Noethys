@@ -909,6 +909,7 @@ DB_DATA = {
                                     ("observations", "VARCHAR(400)", u"Observations"),
                                     ("IDfond", "INTEGER", u"IDfond du modèle"),
                                     ("defaut", "INTEGER", u"Modèle utilisé par défaut (1/0)"),
+                                    ("IDdonnee", "INTEGER", u"Donnée associée au document"),
                                     ], # Modèles de documents
 
     "documents_objets":[ ("IDobjet", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID"),
@@ -960,6 +961,7 @@ DB_DATA = {
                                     ("largeurTexte", "INTEGER", u"Largeur du bloc de texte"),
                                     ("norme", "VARCHAR(100)", u"Norme code-barres"),
                                     ("afficheNumero", "INTEGER", u"Affiche numéro code-barres"),
+                                    ("IDdonnee", "INTEGER", u"Donnée associée pour zone interactive"),
                                     ], # Objets des modèles de documents
 
     "questionnaire_categories": [("IDcategorie", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID"),
@@ -992,6 +994,8 @@ DB_DATA = {
                                     ("IDindividu", "INTEGER", u"ID de l'individu rattaché"),
                                     ("IDfamille", "INTEGER", u"ID de la famille rattachée"),
                                     ("reponse", "VARCHAR(400)", u"Réponse"),
+                                    ("type", "VARCHAR(100)", u"Type : Individu ou Famille, etc..."),
+                                    ("IDdonnee", "INTEGER", u"ID de la donnée rattachée (IDindividu, IDfamille, etc...)"),
                                     ], # Réponses des questionnaires
 
     "questionnaire_filtres": [("IDfiltre", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID"),
@@ -1000,6 +1004,7 @@ DB_DATA = {
                                     ("choix", "VARCHAR(400)", u"Choix (ex : 'EGAL'"),
                                     ("criteres", "VARCHAR(600)", u"Criteres (ex : '4;5')"),
                                     ("IDtarif", "INTEGER", u"IDtarif rattaché"),
+                                    ("IDdonnee", "INTEGER", u"ID de la donnée rattachée)"),
                                     ], # Filtres des questionnaires
 
     "niveaux_scolaires":  [("IDniveau", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID"),
@@ -1609,6 +1614,40 @@ DB_DATA = {
                                     ("IDtype_quotient", "INTEGER", u"ID du type de quotient"),
                                      ],  # Modèles de prestations
 
+
+        "produits_categories":     [("IDcategorie", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID Catégorie de produits"),
+                                    ("nom", "VARCHAR(200)", u"Nom de la catégorie"),
+                                    ("observations", "VARCHAR(1000)", u"Observations sur la catégorie"),
+                                    ("image", "LONGBLOB", u"Image de la catégorie en binaire"),
+                                    ],  # Catégories de produits
+
+        "produits":                 [("IDproduit", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID Produit"),
+                                    ("IDcategorie", "INTEGER", u"ID de la catégorie associée"),
+                                    ("nom", "VARCHAR(200)", u"Nom du produit"),
+                                    ("observations", "VARCHAR(1000)", u"Observations sur le produit"),
+                                    ("image", "LONGBLOB", u"Image du produit en binaire"),
+                                    ],  # Produits
+
+        "locations":                [("IDlocation", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID location"),
+                                    ("IDfamille", "INTEGER", u"ID de la famille"),
+                                    ("IDproduit", "INTEGER", u"ID du produit"),
+                                    ("observations", "VARCHAR(1000)", u"Observations sur la location"),
+                                    ("date_saisie", "DATE", u"Date de saisie de la location"),
+                                    ("date_debut", "DATETIME", u"Date et heure de début de location"),
+                                    ("date_fin", "DATETIME", u"Date et heure de fin de location"),
+                                    ],  # Locations
+
+
+        "locations_demandes":       [("IDdemande", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID Demande"),
+                                    ("date", "DATETIME", u"Date et heure de la demande"),
+                                    ("IDfamille", "INTEGER", u"ID de la famille"),
+                                    ("observations", "VARCHAR(1000)", u"Observations sur la location"),
+                                    ("categories", "VARCHAR(1000)", u"liste ID categories souhaitées"),
+                                    ("produits", "VARCHAR(1000)", u"liste ID produits souhaités"),
+                                    ("statut", "VARCHAR(100)", u"Statut de la demande"),
+                                    ("motif_refus", "VARCHAR(1000)", u"Motif du refus"),
+                                    ("IDlocation", "INTEGER", u"ID de la location attribuée"),
+                                    ],  # Demandes de locations
 
 }
 

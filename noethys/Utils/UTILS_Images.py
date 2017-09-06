@@ -11,8 +11,24 @@
 from PIL import Image
 import Chemins
 import wx
-from Ctrl import CTRL_Bouton_image
 import os
+
+
+def RecadreImg(img=None, taille_image=None):
+    tailleMaxi = max(taille_image)
+    largeur, hauteur = img.GetSize()
+    if max(largeur, hauteur) > tailleMaxi:
+        if largeur > hauteur:
+            hauteur = hauteur * tailleMaxi / largeur
+            largeur = tailleMaxi
+        else:
+            largeur = largeur * tailleMaxi / hauteur
+            hauteur = tailleMaxi
+    img.Rescale(width=largeur, height=hauteur, quality=wx.IMAGE_QUALITY_HIGH)
+    position = (((taille_image[0] / 2.0) - (largeur / 2.0)), ((taille_image[1] / 2.0) - (hauteur / 2.0)))
+    img.Resize(taille_image, position, 255, 255, 255)
+    return img
+
 
 
 def ConvertirImagePNG(fichier="") :

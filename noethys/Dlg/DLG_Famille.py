@@ -34,6 +34,7 @@ import DLG_Famille_cotisations
 import DLG_Famille_divers
 import DLG_Famille_factures
 import DLG_Famille_questionnaire
+import DLG_Famille_locations
 
 
 
@@ -71,6 +72,7 @@ class Notebook(wx.Notebook):
             ("informations", _(u"Informations"), u"DLG_Famille_informations.Panel(self, IDfamille=IDfamille)", "Information.png"),
             ("questionnaire", _(u"Questionnaire"), u"DLG_Famille_questionnaire.Panel(self, IDfamille=IDfamille)", "Questionnaire.png"),
             ("pieces", _(u"Pièces"), u"DLG_Famille_pieces.Panel(self, IDfamille=IDfamille)", "Dupliquer.png"),
+            ("locations", _(u"Locations"), u"DLG_Famille_locations.Panel(self, IDfamille=IDfamille)", "Location.png"),
             ("cotisations", _(u"Cotisations"), u"DLG_Famille_cotisations.Panel(self, IDfamille=IDfamille)", "Cotisation.png"),
             ("caisse", _(u"Caisse"), u"DLG_Famille_caisse.Panel(self, IDfamille=IDfamille)", "Mecanisme.png"),
             ("quotients", _(u"QF/Revenus"), u"DLG_Famille_quotients.Panel(self, IDfamille=IDfamille)", "Calculatrice.png"),
@@ -655,6 +657,8 @@ class Dialog(wx.Dialog):
         DB.ReqDEL("attestations", "IDfamille", self.IDfamille)
         DB.ReqDEL("messages", "IDfamille", self.IDfamille)
         DB.ReqDEL("pieces", "IDfamille", self.IDfamille)
+        DB.ReqDEL("locations", "IDfamille", self.IDfamille)
+        DB.ReqDEL("locations_demandes", "IDfamille", self.IDfamille)
         DB.ReqDEL("historique", "IDfamille", self.IDfamille)
         DB.ReqDEL("comptes_payeurs", "IDfamille", self.IDfamille)
         DB.ReqDEL("familles", "IDfamille", self.IDfamille)
@@ -799,7 +803,7 @@ if __name__ == "__main__":
     #wx.InitAllImageHandlers()
     import time
     heure_debut = time.time()
-    dialog_1 = Dialog(None, IDfamille=14)
+    dialog_1 = Dialog(None, IDfamille=1)
     print "Temps de chargement fiche famille =", time.time() - heure_debut
     app.SetTopWindow(dialog_1)
     dialog_1.ShowModal()

@@ -22,20 +22,21 @@ else :
     from wx.combo import OwnerDrawnComboBox, ODCB_PAINTING_CONTROL, ODCB_PAINTING_SELECTED
 import wx.grid
 import wx.lib.agw.floatspin as FloatSpin
-import wx.lib.agw.pybusyinfo as PBI
+import wx.lib.agw.supertooltip as STT
+from wx.lib.wordwrap import wordwrap
 
-from PIL import Image
+from Utils import UTILS_Couleurs
 import numpy
 import sys
 import os
-import copy
 import cStringIO
 import StringIO
 import random
-import traceback
 import GestionDB
 import datetime
 import re
+
+from Utils import UTILS_Dialogs
 
 import DLG_Saisie_formule
 from Utils import UTILS_Questionnaires
@@ -851,9 +852,126 @@ class Attestation_fiscale():
         self.champs.extend(GetQuestions("famille"))
         self.codesbarres.extend(GetCodesBarresQuestionnaires("famille"))
 
+# ---------------------------------------------------------------------------------------------------------------------------------------
+
+class Location():
+    def __init__(self):
+        self.nom = _(u"Location")
+        self.code = "location"
+        self.photosIndividuelles = False
+
+        self.champs = [
+            (_(u"Numéro ID de la location"), u"13215", "{IDLOCATION}"),
+            (_(u"Numéro ID du produit"), u"034", "{IDPRODUIT}"),
+            (_(u"Date de début de la location"), u"01/01/2017", "{DATE_DEBUT}"),
+            (_(u"Date de fin de la location"), u"31/12/2017", "{DATE_FIN}"),
+            (_(u"Heure de début de la location"), u"01/01/2014", "{HEURE_DEBUT}"),
+            (_(u"Heure de fin de la location"), u"10/01/2014", "{HEURE_FIN}"),
+            (_(u"Nom du produit"), u"0123321", "{NOM_PRODUIT}"),
+            (_(u"Nom de la catégorie"), u"064", "{NOM_CATEGORIE}"),
+            (_(u"Notes sur la location"), u"01/01/2014", "{NOTES}"),
+
+            (_(u"Numéro ID de la famille"), u"2582", "{IDFAMILLE}"),
+            (_(u"Noms des titulaires"), _(u"DUPOND Gérard et Lucie"), "{FAMILLE_NOM}"),
+            (_(u"Rue de l'adresse de la famille"), _(u"10 rue des oiseaux"), "{FAMILLE_RUE}"),
+            (_(u"Code postal de l'adresse de la famille"), u"29200", "{FAMILLE_CP}"),
+            (_(u"Ville de l'adresse de la famille"), _(u"BREST"), "{FAMILLE_VILLE}"),
+            (_(u"Régime social de la famille"), _(u"Régime général"), "{FAMILLE_REGIME}"),
+            (_(u"Caisse de la famille"), _(u"C.A.F."), "{FAMILLE_CAISSE}"),
+            (_(u"Numéro d'allocataire de la famille"), u"0123456X", "{FAMILLE_NUMALLOC}"),
+
+            (_(u"Nom de l'organisateur"), _(u"Association Noethys"), "{ORGANISATEUR_NOM}"),
+            (_(u"Rue de l'organisateur"), _(u"Avenue des Lilas"), "{ORGANISATEUR_RUE}"),
+            (_(u"Code postal de l'organisateur"), u"29870", "{ORGANISATEUR_CP}"),
+            (_(u"Ville de l'organisateur"), _(u"LANNILIS"), "{ORGANISATEUR_VILLE}"),
+            (_(u"Téléphone de l'organisateur"), u"01.98.01.02.03", "{ORGANISATEUR_TEL}"),
+            (_(u"Fax de l'organisateur"), u"01.04.05.06.", "{ORGANISATEUR_FAX}"),
+            (_(u"Mail de l'organisateur"), _(u"noethys") + u"@gmail.com", "{ORGANISATEUR_MAIL}"),
+            (_(u"Site internet de l'organisateur"), u"www.noethys.com", "{ORGANISATEUR_SITE}"),
+            (_(u"Numéro d'agrément de l'organisateur"), u"0256ORG234", "{ORGANISATEUR_AGREMENT}"),
+            (_(u"Numéro SIRET de l'organisateur"), u"123456789123", "{ORGANISATEUR_SIRET}"),
+            (_(u"Code APE de l'organisateur"), _(u"NO123"), "{ORGANISATEUR_APE}"),
+
+            (_(u"Date d'édition (long)"), _(u"Lundi 9 septembre 2017"), "{DATE_EDITION_LONG}"),
+            (_(u"Date d'édition (court)"), u"19/09/2017", "{DATE_EDITION_COURT}"),
+        ]
+
+        self.champs.extend(UTILS_Infos_individus.GetNomsChampsPossibles(mode="famille"))
+
+        self.codesbarres = [
+            (_(u"ID de la famille"), u"1234567", "{CODEBARRES_ID_FAMILLE}"),
+        ]
+
+        self.speciaux = []
+
+        # Questionnaires
+        self.champs.extend(GetQuestions("famille"))
+        self.codesbarres.extend(GetCodesBarresQuestionnaires("famille"))
+
+        self.champs.extend(GetQuestions("location"))
+        self.codesbarres.extend(GetCodesBarresQuestionnaires("location"))
+
+        self.champs.extend(GetQuestions("produit"))
+        self.codesbarres.extend(GetCodesBarresQuestionnaires("produit"))
+
 
 # ----------------------------------------------------------------------------------------------------------------------------------
 
+
+class Location_demande():
+    def __init__(self):
+        self.nom = _(u"Demande de location")
+        self.code = "location_demande"
+        self.photosIndividuelles = False
+
+        self.champs = [
+            (_(u"Numéro ID de la demande"), u"13215", "{IDDEMANDE}"),
+            (_(u"Date de la demande"), u"01/01/2017", "{DATE}"),
+            (_(u"Heure de la demande"), u"01/01/2014", "{HEURE}"),
+            (_(u"Notes sur la demande"), u"01/01/2014", "{NOTES}"),
+
+            (_(u"Numéro ID de la famille"), u"2582", "{IDFAMILLE}"),
+            (_(u"Noms des titulaires"), _(u"DUPOND Gérard et Lucie"), "{FAMILLE_NOM}"),
+            (_(u"Rue de l'adresse de la famille"), _(u"10 rue des oiseaux"), "{FAMILLE_RUE}"),
+            (_(u"Code postal de l'adresse de la famille"), u"29200", "{FAMILLE_CP}"),
+            (_(u"Ville de l'adresse de la famille"), _(u"BREST"), "{FAMILLE_VILLE}"),
+            (_(u"Régime social de la famille"), _(u"Régime général"), "{FAMILLE_REGIME}"),
+            (_(u"Caisse de la famille"), _(u"C.A.F."), "{FAMILLE_CAISSE}"),
+            (_(u"Numéro d'allocataire de la famille"), u"0123456X", "{FAMILLE_NUMALLOC}"),
+
+            (_(u"Nom de l'organisateur"), _(u"Association Noethys"), "{ORGANISATEUR_NOM}"),
+            (_(u"Rue de l'organisateur"), _(u"Avenue des Lilas"), "{ORGANISATEUR_RUE}"),
+            (_(u"Code postal de l'organisateur"), u"29870", "{ORGANISATEUR_CP}"),
+            (_(u"Ville de l'organisateur"), _(u"LANNILIS"), "{ORGANISATEUR_VILLE}"),
+            (_(u"Téléphone de l'organisateur"), u"01.98.01.02.03", "{ORGANISATEUR_TEL}"),
+            (_(u"Fax de l'organisateur"), u"01.04.05.06.", "{ORGANISATEUR_FAX}"),
+            (_(u"Mail de l'organisateur"), _(u"noethys") + u"@gmail.com", "{ORGANISATEUR_MAIL}"),
+            (_(u"Site internet de l'organisateur"), u"www.noethys.com", "{ORGANISATEUR_SITE}"),
+            (_(u"Numéro d'agrément de l'organisateur"), u"0256ORG234", "{ORGANISATEUR_AGREMENT}"),
+            (_(u"Numéro SIRET de l'organisateur"), u"123456789123", "{ORGANISATEUR_SIRET}"),
+            (_(u"Code APE de l'organisateur"), _(u"NO123"), "{ORGANISATEUR_APE}"),
+
+            (_(u"Date d'édition (long)"), _(u"Lundi 9 septembre 2017"), "{DATE_EDITION_LONG}"),
+            (_(u"Date d'édition (court)"), u"19/09/2017", "{DATE_EDITION_COURT}"),
+        ]
+
+        self.champs.extend(UTILS_Infos_individus.GetNomsChampsPossibles(mode="famille"))
+
+        self.codesbarres = [
+            (_(u"ID de la famille"), u"1234567", "{CODEBARRES_ID_FAMILLE}"),
+        ]
+
+        self.speciaux = []
+
+        # Questionnaires
+        self.champs.extend(GetQuestions("famille"))
+        self.codesbarres.extend(GetCodesBarresQuestionnaires("famille"))
+
+        self.champs.extend(GetQuestions("location_demande"))
+        self.codesbarres.extend(GetCodesBarresQuestionnaires("location_demande"))
+
+
+# ----------------------------------------------------------------------------------------------------------------------------------
 
 
 
@@ -916,31 +1034,6 @@ ID_MENU_SUPPRIMER_POINT = wx.NewId()
 # Menu contextuel Ligne
 ID_MENU_AJOUTER_POINT = wx.NewId()
 
-# Barre d'outils 1
-ID_OUTIL_CURSEUR = wx.NewId()
-ID_OUTIL_DEPLACER = wx.NewId()
-ID_OUTIL_ZOOM_IN = wx.NewId()
-ID_OUTIL_ZOOM_OUT = wx.NewId()
-ID_OUTIL_ZOOM_AJUSTER = wx.NewId()
-
-# Barre d'outils 2
-ID_OUTIL_OBJET_RECTANGLE = wx.NewId()
-ID_OUTIL_OBJET_LIGNE = wx.NewId()
-ID_OUTIL_OBJET_CERCLE = wx.NewId()
-ID_OUTIL_OBJET_POLYGONE = wx.NewId()
-ID_OUTIL_OBJET_ELLIPSE = wx.NewId()
-ID_OUTIL_OBJET_IMAGE = wx.NewId()
-ID_OUTIL_OBJET_IMAGE_DROPDOWN = wx.NewId()
-ID_OUTIL_OBJET_CODEBARRES = wx.NewId()
-ID_OUTIL_OBJET_BARCODE_DROPDOWN = wx.NewId()
-ID_OUTIL_OBJET_SPECIAL = wx.NewId()
-ID_OUTIL_OBJET_SPECIAL_DROPDOWN = wx.NewId()
-ID_OUTIL_OBJET_TEXTE_LIGNE = wx.NewId()
-ID_OUTIL_OBJET_TEXTE_BLOC = wx.NewId()
-
-# Barre d'outils 3
-ID_OUTIL_AFFICHAGE_GRILLE = wx.NewId()
-ID_OUTIL_AFFICHAGE_APERCU = wx.NewId()
 
 # Astuces
 ASTUCES = [
@@ -956,54 +1049,64 @@ ASTUCES = [
 
 # -----------------------------------------------------------------------------------------------------------------------------
 
+def Arrondir(valeur=0):
+    valeur = round(float(valeur), 2)
+    return valeur
+
+
+
 def AjouterRectangle(xy, taille, nom=_(u"Rectangle"), champ=None,
                                         couleurTrait=(0, 0, 0), styleTrait="Solid", epaissTrait=1, 
                                         coulRemplis=None, styleRemplis="Solid", IDobjet=None, 
-                                        InForeground=True):
+                                        InForeground=True, IDdonnee=None):
     """ Création d'un rectangle """
     objet = MovingRectangle(xy, taille, couleurTrait, styleTrait, epaissTrait, coulRemplis, styleRemplis, InForeground=InForeground)
     objet.nom = nom
     objet.champ = champ
     objet.categorie = "rectangle"
     objet.IDobjet = IDobjet
+    objet.IDdonnee = IDdonnee
     return objet
 
 def AjouterLigne(points=[], nom=_(u"Ligne"), champ=None,
                                     couleurTrait=(0, 0, 0), styleTrait="Solid", epaissTrait=1, IDobjet=None,
-                                    InForeground=True):
+                                    InForeground=True, IDdonnee=None):
     """ Création d'une ligne """
     objet = MovingLine(points, couleurTrait, styleTrait, epaissTrait, InForeground=InForeground)
     objet.nom = nom
     objet.champ = champ
     objet.categorie = "ligne"
     objet.IDobjet = IDobjet
+    objet.IDdonnee = IDdonnee
     return objet
 
 def AjouterEllipse(xy, taille, nom=_(u"Ellipse"), champ=None,
                                         couleurTrait=(0, 0, 0), styleTrait="Solid", epaissTrait=1, 
                                         coulRemplis=None, styleRemplis="Solid", IDobjet=None,
-                                        InForeground=True):
+                                        InForeground=True, IDdonnee=None):
     """ Création d'une ellipse """
     objet = MovingEllipse(xy, taille, couleurTrait, styleTrait, epaissTrait, coulRemplis, styleRemplis, InForeground=InForeground)
     objet.nom = nom
     objet.champ = champ
     objet.categorie = "ellipse"
     objet.IDobjet = IDobjet
+    objet.IDdonnee = IDdonnee
     return objet
 
 def AjouterPolygone( points=[], nom=_(u"Polygone"), champ=None,
                                         couleurTrait=(0, 0, 0), styleTrait="Solid", epaissTrait=1, 
                                         coulRemplis=None, styleRemplis="Solid", IDobjet=None,
-                                        InForeground=True):
+                                        InForeground=True, IDdonnee=None):
     """ Création d'un polygone """
     objet = MovingPolygon(points, couleurTrait, styleTrait, epaissTrait, coulRemplis, styleRemplis, InForeground=InForeground)
     objet.nom = nom
     objet.champ = champ
     objet.categorie = "polygone"
     objet.IDobjet = IDobjet
+    objet.IDdonnee = IDdonnee
     return objet
 
-def AjouterImage(bmp, xy, hauteur=None, nom=_(u"Image"), champ=None, typeImage="fichier", IDobjet=None, InForeground=True):
+def AjouterImage(bmp, xy, hauteur=None, nom=_(u"Image"), champ=None, typeImage="fichier", IDobjet=None, InForeground=True, IDdonnee=None):
     """ Création d'une image """
     objet = MovingScaledBitmap(bmp, xy, Height=hauteur, Position="bl", InForeground=InForeground)
     objet.nom = nom
@@ -1011,13 +1114,14 @@ def AjouterImage(bmp, xy, hauteur=None, nom=_(u"Image"), champ=None, typeImage="
     objet.categorie = "image"
     objet.IDobjet = IDobjet
     objet.typeImage = typeImage
+    objet.IDdonnee = IDdonnee
     return objet
 
 def AjouterLigneTexte(texte, xy, tailleFont=10, taillePolicePDF=8, nom=_(u"Ligne de texte"), champ=None,
                                         couleurTexte=(0, 0, 0), couleurFond=None, 
                                         family = wx.MODERN, style=wx.NORMAL,
                                         weight=wx.NORMAL, underlined=False,
-                                        font=None, IDobjet=None, InForeground=True):
+                                        font=None, IDobjet=None, InForeground=True, IDdonnee=None):
     """ Création d'une ligne de texte """
     if font != None :
         tailleFont = font.GetPointSize()
@@ -1027,25 +1131,28 @@ def AjouterLigneTexte(texte, xy, tailleFont=10, taillePolicePDF=8, nom=_(u"Ligne
     objet.champ = champ
     objet.categorie = "ligne_texte"
     objet.IDobjet = IDobjet
+    objet.IDdonnee = IDdonnee
     objet.SetTaillePolicePDF(taillePolicePDF)
     return objet
 
 def AjouterBlocTexte(texte, xy, tailleFont=10, taillePolicePDF=8, nom=_(u"Bloc de texte"), champ=None,
                                         couleurTexte=(0, 0, 0), couleurFond=None, 
-                                        couleurTrait=None, styleTrait="Solid", epaissTrait=1, 
-                                        largeur=None, padding=0,
+                                        couleurTrait=None, styleTrait="Solid", epaissTrait=1,
+                                        largeurTexte=None, padding=0,
                                         family = wx.MODERN, style=wx.NORMAL,
                                         weight=wx.NORMAL, souligne=False, alignement="left",
-                                        font=None, interligne = 1.0, IDobjet=None, InForeground=True):
+                                        font=None, interligne = 1.0, IDobjet=None, InForeground=True, IDdonnee=None):
     """ Création d'un bloc de texte """
     objet = MovingScaledTextBox(texte, xy, tailleFont, couleurTexte, couleurFond, 
-                        couleurTrait, styleTrait, epaissTrait, largeur, padding,
+                        couleurTrait, styleTrait, epaissTrait, largeurTexte, padding,
                         family, style, weight, souligne, "tl", alignement, font, interligne, InForeground=InForeground)
     objet.nom = nom
     objet.champ = champ
     objet.categorie = "bloc_texte"
     objet.IDobjet = IDobjet
+    objet.IDdonnee = IDdonnee
     objet.SetTaillePolicePDF(taillePolicePDF)
+    objet.largeurTexte = largeurTexte
     return objet
 
 def AjouterBarcode(xy, largeur=None, hauteur=None, nom=_(u"Code-barres"), champ=None, norme="Extended39", afficheNumero=False, IDobjet=None, InForeground=True):
@@ -1068,7 +1175,7 @@ def AjouterBarcode(xy, largeur=None, hauteur=None, nom=_(u"Code-barres"), champ=
     objet.proprietes.append("barcode")
     return objet
 
-def AjouterSpecial(xy, largeur, hauteur, nom=_(u"Special"), champ=None, couleurFond=(170, 250, 50), IDobjet=None, InForeground=True):
+def AjouterSpecial(xy, largeur, hauteur, nom=_(u"Special"), champ=None, couleurFond=(170, 250, 50), IDobjet=None, InForeground=True, IDdonnee=None):
     position = numpy.array([xy[0], xy[1]])
     taille = numpy.array([largeur, hauteur])
     positionCentre = position+(taille/2.0)
@@ -1083,6 +1190,7 @@ def AjouterSpecial(xy, largeur, hauteur, nom=_(u"Special"), champ=None, couleurF
     objet.champ = champ
     objet.categorie = "special"
     objet.IDobjet = IDobjet
+    objet.IDdonnee = IDdonnee
     return objet
 
 # ----------------------------------------------------------------------------------------------------------------------------------
@@ -1121,21 +1229,27 @@ class Panel_commandes(wx.Panel):
 
     def OnBoutonOk(self, event):
         # Sauvegarde
-        etat = self.parent.Sauvegarde()
+        if hasattr(self.parent, "ctrl_proprietes_doc"):
+            nom = self.parent.ctrl_proprietes_doc.GetNom()
+            if nom == "":
+                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un nom pour ce modèle !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg.ShowModal()
+                dlg.Destroy()
+                return False
+
+        etat = self.parent.ctrl_canvas.Sauvegarde()
         if etat == False : 
             return
         # Fermeture de la fenêtre
-        self.parent.EndModal(wx.ID_OK)        
+        self.parent.OnBoutonOk()
 
     def OnBoutonAnnuler(self, event):
-        self.parent.EndModal(wx.ID_CANCEL)        
+        self.parent.OnBoutonAnnuler()
         
     def OnBoutonAide(self, event):
         from Utils import UTILS_Aide
         UTILS_Aide.Aide("Lditeurdedocuments")
     
-    def OnBoutonOutils(self, event):
-        self.parent.MenuOutils() 
 
 
 # ------------------------------------------------------------------------------------------------------------------
@@ -1147,11 +1261,11 @@ class Panel_infos(wx.Panel):
         self.parent = parent
         self.SetBackgroundColour((213, 252, 186))
         self.ctrl_coords = wx.StaticText(self, -1, u"", (10, 1))
-        self.ctrl_info = wx.StaticText(self, -1, u"", (120, 1))
+        self.ctrl_info = wx.StaticText(self, -1, u"", (140, 1))
         
     def SetCoords(self, x, y):
         if x != None and y != None : 
-            texte = u"x = %d   y = %d" % (x, y)
+            texte = u"x = %s   y = %s" % (x, y)
             self.ctrl_coords.SetLabel(texte)
     
     def EffaceCoords(self):
@@ -1501,7 +1615,7 @@ class Panel_proprietes_doc(wx.Panel):
         self.ctrl_hauteur.SetValue(taille[1])
     
     def GetTaille(self):
-        return (int(self.ctrl_largeur.GetValue()), int(self.ctrl_hauteur.GetValue())) 
+        return (Arrondir(self.ctrl_largeur.GetValue()), Arrondir(self.ctrl_hauteur.GetValue()))
     
     def ChangeTaille(self):
         taille = self.GetTaille()
@@ -1509,7 +1623,10 @@ class Panel_proprietes_doc(wx.Panel):
     
     def OnChangeNom(self, event): 
         nom = self.ctrl_nom.GetValue()
-        self.parent.SetNomDoc(nom)
+        try :
+            self.parent.SetNomDoc(nom)
+        except :
+            pass
 
     def OnChangeLargeur(self, event): 
         self.ChangeTaille() 
@@ -1520,6 +1637,59 @@ class Panel_proprietes_doc(wx.Panel):
     def OnChangeFond(self, event): 
         IDmodele = self.GetFond()
         self.parent.ctrl_canvas.SetFond(IDmodele)
+
+# -------------------------------------------------------------------------------------------------------------------------------------------
+
+class Panel_proprietes_image_interactive(wx.Panel):
+    def __init__(self, parent, canvas, categorie=""):
+        wx.Panel.__init__(self, parent, id=-1, name="panel_proprietes_doc", style=wx.TAB_TRAVERSAL)
+        self.parent = parent
+        self.categorie = categorie
+
+        self.label_nom = wx.StaticText(self, -1, _(u"Nom :"))
+        self.ctrl_nom = wx.TextCtrl(self, -1, u"")
+        self.label_observations = wx.StaticText(self, -1, _(u"Obs. :"))
+        self.ctrl_observations = wx.TextCtrl(self, -1, u"", style=wx.TE_MULTILINE)
+
+        self.__set_properties()
+        self.__do_layout()
+
+        self.Bind(wx.EVT_TEXT, self.OnChangeNom, self.ctrl_nom)
+
+    def __set_properties(self):
+        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez le nom de l'image interactive")))
+        self.ctrl_observations.SetToolTip(wx.ToolTip(_(u"Saisissez ici d'éventuelles observations")))
+
+    def __do_layout(self):
+        grid_sizer_base = wx.FlexGridSizer(rows=4, cols=2, vgap=5, hgap=5)
+        grid_sizer_base.Add(self.label_nom, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL | wx.TOP | wx.LEFT, 10)
+        grid_sizer_base.Add(self.ctrl_nom, 0, wx.EXPAND | wx.RIGHT | wx.TOP, 10)
+        grid_sizer_base.Add(self.label_observations, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL | wx.LEFT, 10)
+        grid_sizer_base.Add(self.ctrl_observations, 0, wx.EXPAND | wx.RIGHT | wx.BOTTOM, 10)
+        self.SetSizer(grid_sizer_base)
+        grid_sizer_base.Fit(self)
+        grid_sizer_base.AddGrowableCol(1)
+
+    def SetNom(self, nom=u""):
+        if nom == None or nom == u"":
+            nom = _(u"Sans nom")
+        self.ctrl_nom.SetValue(nom)
+
+    def GetNom(self):
+        return self.ctrl_nom.GetValue()
+
+    def SetObservations(self, observations=u""):
+        self.ctrl_observations.SetValue(observations)
+
+    def GetObservations(self):
+        return self.ctrl_observations.GetValue()
+
+    def OnChangeNom(self, event):
+        nom = self.ctrl_nom.GetValue()
+        try:
+            self.parent.SetNomDoc(nom)
+        except:
+            pass
 
 # -------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -1535,20 +1705,24 @@ class Panel_proprietes_objet(wx.Panel):
         self.ctrl_points = Proprietes_points(self, canvas)
         self.ctrl_position = Proprietes_position(self, canvas)
         self.ctrl_taille = Proprietes_taille(self, canvas)
+        self.ctrl_largeur = Proprietes_largeur(self, canvas)
         self.ctrl_trait = Proprietes_trait(self, canvas)
         self.ctrl_remplissage = Proprietes_remplissage(self, canvas)
+        self.ctrl_interactive = Proprietes_interactive(self, canvas)
         self.ctrl_texte = Proprietes_texte(self, canvas)
         self.ctrl_codebarres = Proprietes_codebarres(self, canvas)
         
         # Layout
-        grid_sizer_base = wx.FlexGridSizer(rows=10, cols=1, vgap=5, hgap=5)
+        grid_sizer_base = wx.FlexGridSizer(rows=11, cols=1, vgap=5, hgap=5)
         grid_sizer_base.Add( (1, 1), 0, wx.EXPAND|wx.LEFT|wx.RIGHT, 5)
         grid_sizer_base.Add(self.ctrl_nom, 0, wx.EXPAND|wx.LEFT|wx.RIGHT, 5)
         grid_sizer_base.Add(self.ctrl_points, 0, wx.EXPAND|wx.LEFT|wx.RIGHT, 5)
         grid_sizer_base.Add(self.ctrl_position, 0, wx.EXPAND|wx.LEFT|wx.RIGHT, 5)
         grid_sizer_base.Add(self.ctrl_taille, 0, wx.EXPAND|wx.LEFT|wx.RIGHT, 5)
+        grid_sizer_base.Add(self.ctrl_largeur, 0, wx.EXPAND | wx.LEFT | wx.RIGHT, 5)
         grid_sizer_base.Add(self.ctrl_trait, 0, wx.EXPAND|wx.LEFT|wx.RIGHT, 5)
         grid_sizer_base.Add(self.ctrl_remplissage, 0, wx.EXPAND|wx.LEFT|wx.RIGHT, 5)
+        grid_sizer_base.Add(self.ctrl_interactive, 0, wx.EXPAND | wx.LEFT | wx.RIGHT, 5)
         grid_sizer_base.Add(self.ctrl_texte, 0, wx.EXPAND|wx.LEFT|wx.RIGHT, 5)
         grid_sizer_base.Add(self.ctrl_codebarres, 0, wx.EXPAND|wx.LEFT|wx.RIGHT, 5)
         grid_sizer_base.AddGrowableCol(0)
@@ -1586,6 +1760,11 @@ class Panel_proprietes_objet(wx.Panel):
             self.ctrl_taille.SetObjet(objet)
         else:
             self.ctrl_taille.Show(False)
+        if objet != None and "largeur" in objet.proprietes:
+            self.ctrl_largeur.Show(True)
+            self.ctrl_largeur.SetObjet(objet)
+        else:
+            self.ctrl_largeur.Show(False)
         if objet != None and "trait" in objet.proprietes :
             self.ctrl_trait.Show(True)
             self.ctrl_trait.SetObjet(objet)
@@ -1596,6 +1775,11 @@ class Panel_proprietes_objet(wx.Panel):
             self.ctrl_remplissage.SetObjet(objet)
         else:
             self.ctrl_remplissage.Show(False)
+        if objet != None and "interactive" in objet.proprietes and self.canvas.champs_interactifs != None :
+            self.ctrl_interactive.Show(True)
+            self.ctrl_interactive.SetObjet(objet)
+        else:
+            self.ctrl_interactive.Show(False)
         if objet != None and "texte" in objet.proprietes :
             self.ctrl_texte.Show(True)
             self.ctrl_texte.SetObjet(objet)
@@ -1707,29 +1891,29 @@ class Proprietes_position(wx.Panel):
     
     def SetX(self, x):
         self.stopEvent = True
-        self.ctrl_x.SetValue(str(int(x)))
+        self.ctrl_x.SetValue(str(Arrondir(x)))
         self.ctrl_x.Update() 
         self.stopEvent = False
         
     def SetY(self, y):
         self.stopEvent = True
-        self.ctrl_y.SetValue(str(int(y)))
+        self.ctrl_y.SetValue(str(Arrondir(y)))
         self.ctrl_y.Update() 
         self.stopEvent = False
     
     def GetX(self):
         valeur = self.ctrl_x.GetValue()
         if valeur == "" : valeur = 0
-        try : valeur = int(valeur)
+        try : valeur = Arrondir(valeur)
         except : valeur = 0
-        return int(valeur)
+        return Arrondir(valeur)
     
     def GetY(self):
         valeur = self.ctrl_y.GetValue()
         if valeur == "" : valeur = 0
-        try : valeur = int(valeur)
+        try : valeur = Arrondir(valeur)
         except : valeur = 0
-        return int(valeur) 
+        return Arrondir(valeur)
 
     def VerrouX(self, etat=False):
         self.ctrl_verr_x.SetEtat(etat)
@@ -1807,7 +1991,7 @@ class Proprietes_taille(wx.Panel):
             largeur, hauteur = self.GetLargeur(), self.GetHauteur()
             if self.objet.verrouillageProportions == True :
                 largeurInit, hauteurInit = self.objet.GetTaille()
-                hauteur = int(1.0 * hauteurInit / largeurInit * largeur)
+                hauteur = Arrondir(1.0 * hauteurInit / largeurInit * largeur)
             self.MAJtailleObjet(largeur, hauteur)
             self.objet.dirty = True
 
@@ -1816,7 +2000,7 @@ class Proprietes_taille(wx.Panel):
             largeur, hauteur = self.GetLargeur(), self.GetHauteur()
             if self.objet.verrouillageProportions == True :
                 largeurInit, hauteurInit = self.objet.GetTaille()
-                largeur = int(1.0 * largeurInit / hauteurInit * hauteur)
+                largeur = Arrondir(1.0 * largeurInit / hauteurInit * hauteur)
             self.MAJtailleObjet(largeur, hauteur)
             self.objet.dirty = True
             
@@ -1832,31 +2016,31 @@ class Proprietes_taille(wx.Panel):
         
     def SetLargeur(self, largeur):
         self.stopEvent = True
-        self.ctrl_largeur.SetValue(str(int(largeur)))
+        self.ctrl_largeur.SetValue(str(Arrondir(largeur)))
         self.ctrl_largeur.Update() 
         self.stopEvent = False
         
     def SetHauteur(self, hauteur):
         self.stopEvent = True
-        self.ctrl_hauteur.SetValue(str(int(hauteur)))
+        self.ctrl_hauteur.SetValue(str(Arrondir(hauteur)))
         self.ctrl_hauteur.Update() 
         self.stopEvent = False
     
     def GetLargeur(self):
         valeur = self.ctrl_largeur.GetValue()
         if valeur == "" : valeur = self.objet.largeurMin
-        try : valeur = int(valeur)
+        try : valeur = Arrondir(valeur)
         except : valeur = self.objet.largeurMin
         if valeur < self.objet.largeurMin : valeur = self.objet.largeurMin
-        return int(valeur)
+        return Arrondir(valeur)
     
     def GetHauteur(self):
         valeur = self.ctrl_hauteur.GetValue()
         if valeur == "" : valeur = self.objet.hauteurMin
-        try : valeur = int(valeur)
+        try : valeur = Arrondir(valeur)
         except : valeur = self.objet.hauteurMin
         if valeur < self.objet.hauteurMin : valeur = self.objet.hauteurMin
-        return int(valeur) 
+        return Arrondir(valeur)
 
     def VerrouLargeur(self, etat=False):
         self.ctrl_verr_largeur.SetEtat(etat)
@@ -1877,6 +2061,99 @@ class Proprietes_taille(wx.Panel):
         self.ctrl_proportions.Enable(not objet.interditModifProportions)
         self.ctrl_verr_largeur.Enable(objet.largeurModifiable)
         self.ctrl_verr_hauteur.Enable(objet.hauteurModifiable)
+
+# -------------------------------------------------------------------------------------------------------------------------------
+
+class Proprietes_largeur(wx.Panel):
+    def __init__(self, parent, canvas):
+        wx.Panel.__init__(self, parent, id=-1, name="panel_largeur", style=wx.TAB_TRAVERSAL)
+        self.parent = parent
+        self.canvas = canvas
+        self.objet = None
+        self.stopEvent = False
+
+        self.staticbox_staticbox = wx.StaticBox(self, -1, _(u"Largeur"))
+        self.check_largeur = wx.CheckBox(self, -1, _(u"Largeur fixe :"))
+        self.ctrl_largeur = wx.TextCtrl(self, -1, u"100")  # wx.SpinCtrl(self, -1, "", min=-10000, max=10000)
+
+        self.__set_properties()
+        self.__do_layout()
+
+        self.Bind(wx.EVT_CHECKBOX, self.OnCheck, self.check_largeur)
+        self.Bind(wx.EVT_TEXT, self.OnChoixLargeur, self.ctrl_largeur)
+
+        # Init
+        self.check_largeur.SetValue(False)
+        self.ctrl_largeur.Enable(self.check_largeur.GetValue())
+
+    def __set_properties(self):
+        self.ctrl_largeur.SetMinSize((60, -1))
+
+    def __do_layout(self):
+        staticbox = wx.StaticBoxSizer(self.staticbox_staticbox, wx.VERTICAL)
+        grid_sizer_base = wx.FlexGridSizer(rows=2, cols=1, vgap=5, hgap=5)
+
+        grid_sizer_taille = wx.FlexGridSizer(rows=1, cols=7, vgap=0, hgap=5)
+        grid_sizer_taille.Add(self.check_largeur, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_taille.Add(self.ctrl_largeur, 0, 0, 0)
+        grid_sizer_base.Add(grid_sizer_taille, 1, wx.EXPAND, 5)
+
+        staticbox.Add(grid_sizer_base, 1, wx.ALL | wx.EXPAND, 5)
+        self.SetSizer(staticbox)
+        staticbox.Fit(self)
+
+    def OnCheck(self, event):
+        if self.stopEvent == False:
+            self.ctrl_largeur.Enable(self.check_largeur.GetValue())
+            self.OnChoixLargeur(None)
+
+    def OnChoixLargeur(self, event):
+        if self.stopEvent == False :
+            largeur = self.GetLargeur()
+            self.MAJtailleObjet(largeur)
+            self.objet.dirty = True
+
+    def MAJtailleObjet(self, largeur):
+        self.objet.SetTaille(largeur, None)
+        self.objet.largeurTexte = largeur
+        self.objet.CalcBoundingBox()
+        self.canvas.Selection(self.objet, forceDraw=False)
+        self.canvas.canvas.Draw(True)
+
+    def SetLargeur(self, largeur):
+        self.stopEvent = True
+        if largeur != None :
+            self.check_largeur.SetValue(True)
+            self.ctrl_largeur.SetValue(str(Arrondir(largeur)))
+            self.ctrl_largeur.Update()
+        else :
+            self.check_largeur.SetValue(False)
+            self.ctrl_largeur.SetValue("100")
+        self.ctrl_largeur.Enable(self.check_largeur.GetValue())
+        self.stopEvent = False
+
+    def GetLargeur(self):
+        if self.check_largeur.GetValue() == True:
+            valeur = self.ctrl_largeur.GetValue()
+            if valeur == "":
+                valeur = self.objet.largeurMin
+            try:
+                valeur = Arrondir(valeur)
+            except:
+                valeur = self.objet.largeurMin
+            if valeur < self.objet.largeurMin:
+                valeur = self.objet.largeurMin
+            return Arrondir(valeur)
+        else :
+            return None
+
+    def SetObjet(self, objet):
+        self.objet = objet
+        if objet == None:
+            return
+        #largeur, hauteur = objet.GetTaille()
+        largeurTexte = objet.largeurTexte
+        self.SetLargeur(largeurTexte)
 
 # -------------------------------------------------------------------------------------------------------------------------------
 
@@ -2014,7 +2291,7 @@ class Proprietes_remplissage(wx.Panel):
         self.canvas = canvas
         self.objet = None
         self.stopEvent = False
-        
+
         self.staticbox_staticbox = wx.StaticBox(self, -1, _(u"Remplissage"))
         self.label_afficher = wx.StaticText(self, -1, _(u"Afficher :"))
         self.ctrl_afficher = wx.CheckBox(self, -1, u"")
@@ -2022,77 +2299,77 @@ class Proprietes_remplissage(wx.Panel):
         self.ctrl_couleur = csel.ColourSelect(self, -1, u"", (0, 0, 0), size=(60, 18))
         self.label_style = wx.StaticText(self, -1, _(u"Style :"))
         self.ctrl_style = CTRL_Style(self, categorie="remplissage", style=wx.CB_READONLY)
-        
+
         # Binds
         self.Bind(wx.EVT_CHECKBOX, self.OnCheckAfficher, self.ctrl_afficher)
         self.Bind(csel.EVT_COLOURSELECT, self.OnSelectCouleur, self.ctrl_couleur)
         self.Bind(wx.EVT_COMBOBOX, self.OnSelectStyle, self.ctrl_style)
-        
+
         # Layout
         staticbox = wx.StaticBoxSizer(self.staticbox_staticbox, wx.VERTICAL)
         grid_sizer_base = wx.FlexGridSizer(rows=3, cols=2, vgap=5, hgap=5)
-        
+
         grid_sizer_base.Add(self.label_afficher, 1, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
-        
+
         grid_sizer_L1 = wx.FlexGridSizer(rows=1, cols=5, vgap=5, hgap=5)
         grid_sizer_L1.Add(self.ctrl_afficher, 0, wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_L1.Add( (5, 5), 0, 0, 0)
         grid_sizer_L1.Add(self.label_couleur, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_L1.Add(self.ctrl_couleur, 0, 0, 0)
         grid_sizer_base.Add(grid_sizer_L1, 1, wx.EXPAND, 5)
-        
+
         grid_sizer_base.Add(self.label_style, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_base.Add(self.ctrl_style, 1, wx.EXPAND, 0)
-        
+
         grid_sizer_base.AddGrowableCol(1)
         staticbox.Add(grid_sizer_base, 1, wx.ALL|wx.EXPAND, 5)
         self.SetSizer(staticbox)
         staticbox.Fit(self)
-            
+
     def OnCheckAfficher(self, event):
-        etat = self.ctrl_afficher.GetValue() 
+        etat = self.ctrl_afficher.GetValue()
         if etat == True :
-            self.SetAfficher(True) 
+            self.SetAfficher(True)
             self.objet.FillColor = self.GetCouleur()
             self.SetStyle("Solid")
             self.objet.FillStyle = "Solid"
         else:
             self.SetAfficher(False)
             self.objet.FillColor = None
-        self.MAJremplissage() 
-        
+        self.MAJremplissage()
+
     def SetAfficher(self, etat=True):
         self.ctrl_afficher.SetValue(etat)
         self.ctrl_couleur.Enable(etat)
         self.ctrl_style.Enable(etat)
-        
+
     def OnSelectCouleur(self, event):
-        couleur  = self.ctrl_couleur.GetColour() 
+        couleur  = self.ctrl_couleur.GetColour()
         self.couleurActive = couleur
         self.objet.FillColor = couleur
-        self.MAJremplissage() 
-    
+        self.MAJremplissage()
+
     def GetCouleur(self):
         return self.ctrl_couleur.GetColour()
-    
+
     def SetCouleur(self, couleur):
         self.ctrl_couleur.SetColour(couleur)
-    
+
     def OnSelectStyle(self, event):
-        style  = self.ctrl_style.GetValeur() 
+        style  = self.ctrl_style.GetValeur()
         self.objet.FillStyle = style
-        self.MAJremplissage() 
-    
+        self.MAJremplissage()
+
     def GetStyle(self):
-        return self.ctrl_style.GetValeur() 
-    
+        return self.ctrl_style.GetValeur()
+
     def SetStyle(self, style="Solid"):
-        self.ctrl_style.SetValeur(style) 
-            
+        self.ctrl_style.SetValeur(style)
+
     def MAJremplissage(self):
         self.objet.SetBrush(self.objet.FillColor, self.objet.FillStyle)
         self.canvas.canvas.Draw(True)
-    
+
     def SetObjet(self, objet):
         self.objet = objet
         if objet == None :
@@ -2103,6 +2380,85 @@ class Proprietes_remplissage(wx.Panel):
             self.SetAfficher(etat=True)
             self.SetCouleur(objet.FillColor)
             self.SetStyle(objet.FillStyle)
+
+# -------------------------------------------------------------------------------------------------------------------------------
+
+class CTRL_Champs_interactifs(wx.Choice):
+    def __init__(self, parent, canvas=None):
+        wx.Choice.__init__(self, parent, -1)
+        self.parent = parent
+
+        # Tri par ordre alpha
+        liste_temp = []
+        if canvas.champs_interactifs != None :
+            for IDdonnee, label in canvas.champs_interactifs.iteritems() :
+                liste_temp.append((label, IDdonnee))
+            liste_temp.sort()
+
+        # Insertion de 'Aucune'
+        liste_temp.insert(0, (_(u"Aucune"), None))
+
+        # Remplissage
+        index = 0
+        listeItems = []
+        self.dictDonnees = {}
+        for label, IDdonnee in liste_temp :
+            self.dictDonnees[index] = IDdonnee
+            listeItems.append(label)
+            index += 1
+        self.SetItems(listeItems)
+
+    def SetID(self, ID=None):
+        for index, IDdonnee in self.dictDonnees.iteritems():
+            if ID == IDdonnee :
+                self.SetSelection(index)
+
+    def GetID(self):
+        index = self.GetSelection()
+        if index == -1 : return None
+        return self.dictDonnees[index]
+
+# ------------------------------------------------------------------------------------
+
+class Proprietes_interactive(wx.Panel):
+    def __init__(self, parent, canvas):
+        wx.Panel.__init__(self, parent, id=-1, name="panel_interactive", style=wx.TAB_TRAVERSAL)
+        self.parent = parent
+        self.canvas = canvas
+        self.objet = None
+        self.stopEvent = False
+
+        self.staticbox_staticbox = wx.StaticBox(self, -1, _(u"Zone interactive"))
+        self.label_donnee = wx.StaticText(self, -1, _(u"Donnée :"))
+        self.ctrl_donnee = CTRL_Champs_interactifs(self, canvas=canvas)
+
+        # Layout
+        staticbox = wx.StaticBoxSizer(self.staticbox_staticbox, wx.VERTICAL)
+        grid_sizer_base = wx.FlexGridSizer(rows=3, cols=2, vgap=5, hgap=5)
+
+        grid_sizer_base.Add(self.label_donnee, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_base.Add(self.ctrl_donnee, 1, wx.EXPAND, 0)
+
+        grid_sizer_base.AddGrowableCol(1)
+        staticbox.Add(grid_sizer_base, 1, wx.ALL | wx.EXPAND, 5)
+        self.SetSizer(staticbox)
+        staticbox.Fit(self)
+
+        # Binds
+        self.Bind(wx.EVT_CHOICE, self.OnSetID, self.ctrl_donnee)
+
+    def OnSetID(self, event=None):
+        self.objet.IDdonnee = self.ctrl_donnee.GetID()
+
+    def GetDonnee(self):
+        return self.ctrl_donnee.GetID()
+
+    def SetObjet(self, objet):
+        self.objet = objet
+        if objet == None:
+            return
+        self.ctrl_donnee.SetID(objet.IDdonnee)
+
 
 # -------------------------------------------------------------------------------------------------------------------------------
 
@@ -2139,7 +2495,7 @@ class CTRL_Points(wx.grid.Grid):
         x = self.GetCellValue(indexPoint, 0)
         y = self.GetCellValue(indexPoint, 1)
         if self.stopEvent == False :
-            point = numpy.array((int(x), int(y)))
+            point = numpy.array((Arrondir(x), Arrondir(y)))
             self.objet.Points[indexPoint] = point
             self.objet.CalcBoundingBox()
             self.canvas.Selection(self.objet, forceDraw=False, MAJpanel_proprietes=False)
@@ -2168,10 +2524,10 @@ class CTRL_Points(wx.grid.Grid):
             self.SetRowSize(numLigne, 21)
             self.SetCellEditor(numLigne, 0, wx.grid.GridCellNumberEditor(-1000, 1000))
             self.SetCellAlignment(numLigne, 0, wx.ALIGN_CENTRE, wx.ALIGN_CENTRE)
-            self.SetCellValue(numLigne, 0, str(int(point[0])))
+            self.SetCellValue(numLigne, 0, str(Arrondir(point[0])))
             self.SetCellEditor(numLigne, 1, wx.grid.GridCellNumberEditor(-1000, 1000))
             self.SetCellAlignment(numLigne, 1, wx.ALIGN_CENTRE, wx.ALIGN_CENTRE)
-            self.SetCellValue(numLigne, 1, str(int(point[1])))
+            self.SetCellValue(numLigne, 1, str(Arrondir(point[1])))
             numLigne += 1
     
     def RemplissageSimple(self):
@@ -2186,15 +2542,15 @@ class CTRL_Points(wx.grid.Grid):
         if diff < 0 : self.DeleteRows(0, -diff)
         # Modifie uniquement le contenu des lignes
         for point in self.objet.Points :
-            self.SetCellValue(numLigne, 0, str(int(point[0])))
-            self.SetCellValue(numLigne, 1, str(int(point[1])))
+            self.SetCellValue(numLigne, 0, str(Arrondir(point[0])))
+            self.SetCellValue(numLigne, 1, str(Arrondir(point[1])))
             numLigne += 1
         
     def SetXY(self, indexPoint=None, point=None):
         self.stopEvent = True
         if point != None : 
-            self.SetCellValue(indexPoint, 0, str(int(point[0])))
-            self.SetCellValue(indexPoint, 1, str(int(point[1])))
+            self.SetCellValue(indexPoint, 0, str(Arrondir(point[0])))
+            self.SetCellValue(indexPoint, 1, str(Arrondir(point[1])))
         self.stopEvent = False
 
 
@@ -2514,7 +2870,12 @@ class MovingObjectMixin:
         BB = self.BoundingBox
         OutlinePoints = numpy.array( ( (BB[0,0], BB[0,1]), (BB[0,0], BB[1,1]), (BB[1,0], BB[1,1]), (BB[1,0], BB[0,1]),) )
         return OutlinePoints
-    
+
+    def GetCentre(self):
+        box = self.GetOutlinePoints()
+        centre = box[0] + (box[2] - box[0]) / 2.0
+        return centre
+
     def GetTaille2(self):
         """ Récupère la taille pour la sauvegarde uniquement """
         if self.categorie in ("bloc_texte", "ligne") :
@@ -2657,7 +3018,7 @@ class MovingObjectMixin:
 
     def GetLargeurTexte(self):
         if self.categorie == "bloc_texte" and hasattr(self, "Width"): 
-            return self.Width
+            return self.largeurTexte#self.Width
         else:
             return None
     
@@ -2665,7 +3026,7 @@ class MovingObjectMixin:
         if hasattr(self, "Points") and "texte" not in self.categorie : 
             str = ""
             for x, y in self.Points :
-                str += "%d,%d;" % (x, y)
+                str += "%s,%s;" % (Arrondir(x), Arrondir(y))
             return str
         else:
             return None
@@ -2691,6 +3052,12 @@ class MovingObjectMixin:
         else:
             return None
 
+    def GetIDdonnee(self):
+        if hasattr(self, "IDdonnee"):
+            return self.IDdonnee
+        else:
+            return None
+
 
 
 class MovingScaledBitmap(FloatCanvas.ScaledBitmap, MovingObjectMixin):
@@ -2700,7 +3067,7 @@ class MovingScaledBitmap(FloatCanvas.ScaledBitmap, MovingObjectMixin):
         MovingObjectMixin.__init__(self, *args, **kwds)
         self.verrouillageProportions = True
         self.interditModifProportions = True
-        self.proprietes = ["nom", "position", "taille"]
+        self.proprietes = ["nom", "position", "taille", "interactive"]
     
     def GetXY(self):
         return self.XY
@@ -2733,7 +3100,7 @@ class MovingCircle(FloatCanvas.Circle, MovingObjectMixin):
         MovingObjectMixin.__init__(self, *args, **kwds)
         self.verrouillageProportions = True
         self.interditModifProportions = True
-        self.proprietes = ["nom", "position", "taille", "trait", "remplissage"]
+        self.proprietes = ["nom", "position", "taille", "trait", "remplissage", "interactive"]
     
     def GetXY(self):
         return self.XY
@@ -2752,7 +3119,7 @@ class MovingEllipse(FloatCanvas.Ellipse, MovingObjectMixin):
     def __init__(self, *args, **kwds):
         FloatCanvas.Ellipse.__init__(self, *args, **kwds)
         MovingObjectMixin.__init__(self, *args, **kwds)
-        self.proprietes = ["nom", "position", "taille", "trait", "remplissage"]
+        self.proprietes = ["nom", "position", "taille", "trait", "remplissage", "interactive"]
     
     def GetXY(self):
         return self.XY
@@ -2781,7 +3148,7 @@ class MovingScaledText(FloatCanvas.ScaledText, MovingObjectMixin):
         MovingObjectMixin.__init__(self, *args, **kwds)
         self.verrouillageProportions = True
         self.interditModifProportions = True
-        self.proprietes = ["nom", "position", "taille", "texte"]
+        self.proprietes = ["nom", "position", "taille", "texte", "interactive"]
 
     def GetTexte(self):
         return self.String
@@ -2812,7 +3179,7 @@ class MovingScaledTextBox(FloatCanvas.ScaledTextBox, MovingObjectMixin):
     def __init__(self, *args, **kwds):
         FloatCanvas.ScaledTextBox.__init__(self, *args, **kwds)
         MovingObjectMixin.__init__(self, *args, **kwds)
-        self.proprietes = ["nom", "position","trait", "texte"]
+        self.proprietes = ["nom", "position", "largeur", "trait", "texte", "interactive"]
         self.SetTexte(self.String)
         
     def GetTexte(self):
@@ -2837,6 +3204,9 @@ class MovingScaledTextBox(FloatCanvas.ScaledTextBox, MovingObjectMixin):
     def GetTaille(self) :
         return self.BoundingBox[1] - self.BoundingBox[0]
 
+    def SetLargeurTexte(self, largeur):
+        self.largeurTexte = largeur
+
     def SetTaille(self, largeur, hauteur):
         self.Width = largeur
         self.LayoutText()
@@ -2856,7 +3226,7 @@ class MovingPolygon(FloatCanvas.Polygon, MovingObjectMixin):
     def __init__(self, *args, **kwds):
         FloatCanvas.Polygon.__init__(self, *args, **kwds)
         MovingObjectMixin.__init__(self, *args, **kwds)
-        self.proprietes = ["nom", "points", "trait", "remplissage"]
+        self.proprietes = ["nom", "points", "trait", "remplissage", "interactive"]
     
     def GetXY(self):
         return self.Points[0]
@@ -2870,7 +3240,7 @@ class MovingRectangle(FloatCanvas.Rectangle, MovingObjectMixin):
     def __init__(self, *args, **kwds):
         FloatCanvas.Rectangle.__init__(self, *args, **kwds)
         MovingObjectMixin.__init__(self, *args, **kwds)
-        self.proprietes = ["nom", "position", "taille", "trait", "remplissage"]
+        self.proprietes = ["nom", "position", "taille", "trait", "remplissage", "interactive"]
     
     def GetXY(self):
         return self.XY
@@ -2889,7 +3259,7 @@ class MovingLine(FloatCanvas.Line, MovingObjectMixin):
     def __init__(self, *args, **kwds):
         FloatCanvas.Line.__init__(self, *args, **kwds)
         MovingObjectMixin.__init__(self, *args, **kwds)
-        self.proprietes = ["nom", "points", "trait"]
+        self.proprietes = ["nom", "points", "trait", "interactive"]
     
     def GetXY(self):
         return self.Points[0]
@@ -2908,7 +3278,7 @@ class MovingGroup(FloatCanvas.Group, MovingObjectMixin):
     def __init__(self, *args, **kwds):
         FloatCanvas.Group.__init__(self, *args, **kwds)
         MovingObjectMixin.__init__(self, *args, **kwds)
-        self.proprietes = ["nom", "position", "taille"]
+        self.proprietes = ["nom", "position", "taille", "interactive"]
     
     def GetXY(self):
         objetRect = self.ObjectList[0]
@@ -2962,20 +3332,45 @@ class MovingGroup(FloatCanvas.Group, MovingObjectMixin):
 
 # --------------------------------------------------------------------------------------------------------------------------------------
 
+class MyGUIMouse(GUIMode.ZoomWithMouseWheel, GUIMode.GUIMouse):
+    """ Permet d'ajouter la prise en charge du souris avec la molette de la souris """
+    def __init__(self, canvas=None):
+        GUIMode.GUIMouse.__init__(self, canvas)
+
+
+
 class Panel_canvas(wx.Panel):
-    def __init__(self, parent, infosCategorie=None, taille_page=None):
+    def __init__(self, parent, IDmodele=None, categorie=None, infosCategorie=None,
+                 taille_page=None, couleur_zone_travail=COULEUR_ZONE_TRAVAIL,
+                 mode="edition", champs_interactifs=None, IDdonnee=None, interactive_data=None,
+                 afficher_couleurs_donnees=True, afficher_labels_donnees=True,
+                 afficher_remplissage_donnees=True, afficher_bords_donnees=True,
+                 ):
         wx.Panel.__init__(self, parent, id=-1, name="panel_canvas")
         self.parent = parent
         self.ctrl_proprietes = None
         self.listeObjetsFond = []
         self.IDfond = None
-        
+        self.listeInitialeObjets = []
+        self.IDmodele = IDmodele
+        self.categorie = categorie
         self.infosCategorie = infosCategorie
         self.taille_page = taille_page
+        self.afficher_couleurs_donnees = afficher_couleurs_donnees
+        self.afficher_labels_donnees = afficher_labels_donnees
+        self.afficher_remplissage_donnees = afficher_remplissage_donnees
+        self.afficher_bords_donnees = afficher_bords_donnees
+        self.champs_interactifs = champs_interactifs
+        self.interactive_data = interactive_data
+        self.IDdonnee = IDdonnee
+        self.mode = mode # edition ou visualisation
         
         # FloatCanvas
-        self.canvas = FloatCanvas.FloatCanvas(self, Debug=0, BackgroundColor=COULEUR_ZONE_TRAVAIL, style=wx.WANTS_CHARS)
-        
+        self.canvas = FloatCanvas.FloatCanvas(self, Debug=0, BackgroundColor=couleur_zone_travail, style=wx.WANTS_CHARS)
+
+        # AJout le zoom avec la molette de la souris
+        self.canvas.SetMode(MyGUIMouse())
+
         # Propriétés
         self.SetMinSize((800, 700)) 
         
@@ -2995,8 +3390,16 @@ class Panel_canvas(wx.Panel):
         self.lastPosition = None
         self.grille = None
         self.affichageGrille = True
-        
+        self.drawing_polyline = None
+
+        # Init Tooltip
+        if self.mode == "visualisation" :
+            self.tip = STT.SuperToolTip(u"")
+            self.tip.SetEndDelay(10000) # Fermeture auto du tooltip après 10 secs
+            self.SetToolTip(wx.ToolTip(""))
+
         # Binds
+        self.canvas.Bind(FloatCanvas.EVT_LEFT_DCLICK, self.OnDClick)
         self.canvas.Bind(FloatCanvas.EVT_MOTION, self.OnMove ) 
         self.canvas.Bind(FloatCanvas.EVT_LEFT_UP, self.OnLeftUp ) 
         self.canvas.Bind(FloatCanvas.EVT_LEFT_DOWN, self.OnLeftDownCanvas ) 
@@ -3005,10 +3408,11 @@ class Panel_canvas(wx.Panel):
         self.canvas.Bind(wx.EVT_LEAVE_WINDOW, self.OnLeaveWindow ) 
     
     def Init_canvas(self):
-        self.Init_page() 
-        self.Init_fond() 
-        self.Init_grille() 
-        self.canvas.ZoomToBB()
+        if self.taille_page != None :
+            self.Init_page()
+            self.Init_fond()
+            self.Init_grille()
+            self.canvas.ZoomToBB()
     
     def Reinit_canvas(self):
         self.canvas.RemoveObject(self.page)
@@ -3052,29 +3456,176 @@ class Panel_canvas(wx.Panel):
     def AjouterObjet(self, objet):
         """ Ajoute un objet dans le canvas """
         objet.dirty = True
-        self.canvas.AddObject(objet)
+
+        # Insertion des objets de fond
+        if objet.InForeground == False:
+            self.canvas.AddObject(objet)
+
         if objet.InForeground == True :
-            objet.Bind(FloatCanvas.EVT_FC_LEFT_DOWN, self.OnClicGaucheObjet)
-            objet.Bind(FloatCanvas.EVT_FC_RIGHT_DOWN, self.OnClicDroitObjet)
-            if "texte" in objet.categorie :
-                objet.Bind(FloatCanvas.EVT_FC_LEFT_DCLICK, self.OnModifierTexte)
-        
-    def OnModifierTexte(self, objet):
+
+            # Insertion normale de l'objet
+            if self.mode == "edition" or objet.IDdonnee == None :
+                self.canvas.AddObject(objet)
+                objet.Bind(FloatCanvas.EVT_FC_LEFT_DOWN, self.OnClicGaucheObjet)
+                objet.Bind(FloatCanvas.EVT_FC_RIGHT_DOWN, self.OnClicDroitObjet)
+                if "texte" in objet.categorie :
+                    objet.Bind(FloatCanvas.EVT_FC_LEFT_DCLICK, self.OnDClickObjet)
+
+            # Création d'un groupe d'objets pour pouvoir ajouter un label par-dessus l'objet
+            if self.mode == "visualisation" and objet.IDdonnee != None:
+
+                # Insertion des données interactives
+                objet.data = self.interactive_data.GetTrack(objet.IDdonnee)
+
+                # Modifie couleur si souhaité
+                if self.afficher_couleurs_donnees == True :
+                    couleur = self.interactive_data.GetCouleur(objet.IDdonnee)
+                    if couleur != None :
+                        objet.FillColor = couleur
+                        objet.SetBrush(objet.FillColor, objet.FillStyle)
+
+                # Si remplissage caché
+                if self.afficher_remplissage_donnees == False :
+                    objet.SetFillStyle("Transparent")
+
+                # Si bords cachés
+                if self.afficher_bords_donnees == False :
+                    objet.SetLineStyle("Transparent")
+
+                # Création d'un label pour l'objet
+                if self.afficher_labels_donnees == True:
+                    label = objet.data.GetLabel()
+                else :
+                    label = ""
+                tailleFont = 15
+                font = wx.Font(tailleFont, family=wx.SWISS, style=wx.NORMAL, weight=wx.NORMAL, underline=False, face="Arial")
+                objet_label = AjouterBlocTexte(label, objet.GetXY(), taillePolicePDF=tailleFont, font=font)
+
+                # Insertion de l'objet et du label dans un groupe
+                groupe = MovingGroup(InForeground=objet.InForeground)
+                listeObjets = [objet, objet_label]
+                groupe.AddObjects(listeObjets)
+                groupe.IDdonnee = objet.IDdonnee
+
+                self.canvas.AddObject(groupe)
+
+                # Centrer
+                centre_texte = numpy.array([objet.GetCentre()[0] - objet_label.BoxWidth / 2, objet.GetCentre()[1] + objet_label.BoxHeight / 2])
+                objet_label.SetXY(centre_texte)
+
+                # Binds visualisation
+                groupe.Bind(FloatCanvas.EVT_FC_LEFT_DCLICK, self.OnDClickObjet)
+                groupe.Bind(FloatCanvas.EVT_FC_ENTER_OBJECT, self.OnEnterObjet)
+                groupe.Bind(FloatCanvas.EVT_FC_LEAVE_OBJECT, self.OnLeaveObject)
+                groupe.Bind(FloatCanvas.EVT_FC_LEFT_DOWN, self.OnClicGaucheObjet)
+                groupe.Bind(FloatCanvas.EVT_FC_RIGHT_DOWN, self.OnClicDroitObjet)
+
+            # Binds
+            # objet.Bind(FloatCanvas.EVT_FC_LEFT_DOWN, self.OnClicGaucheObjet)
+            # objet.Bind(FloatCanvas.EVT_FC_RIGHT_DOWN, self.OnClicDroitObjet)
+            # if "texte" in objet.categorie :
+            #     objet.Bind(FloatCanvas.EVT_FC_LEFT_DCLICK, self.OnDClick)
+
+            # Pour les images interactives
+            # if False and self.mode == "visualisation" and objet.IDdonnee != None :
+            #
+            #     # Ajoute les données
+            #     objet.data = self.interactive_data.GetTrack(objet.IDdonnee)
+            #
+            #     # Modifie couleur si souhaité
+            #     couleur = self.interactive_data.GetCouleur(objet.IDdonnee)
+            #     if couleur != None :
+            #         objet.FillColor = couleur
+            #         objet.SetBrush(objet.FillColor, objet.FillStyle)
+            #
+            #     # Binds visualisation
+            #     objet.Bind(FloatCanvas.EVT_FC_ENTER_OBJECT, self.OnEnterObjet)
+            #     objet.Bind(FloatCanvas.EVT_FC_LEAVE_OBJECT, self.OnLeaveObject)
+            #
+            #     # Ajoute un texte
+            #     tailleFont = 15
+            #     font = wx.Font(tailleFont, family=wx.SWISS, style=wx.NORMAL, weight=wx.NORMAL, underline=False, face="Arial")
+            #     xy = objet.GetXY()
+            #     objet_label = AjouterBlocTexte(objet.data.nom, xy, taillePolicePDF=tailleFont, font=font)
+            #     self.AjouterObjet(objet_label)
+            #
+            #     # Centrer
+            #     centre_objet = objet.GetCentre()
+            #     centre_texte = numpy.array([centre_objet[0] - objet_label.BoxWidth / 2, centre_objet[1] + objet_label.BoxHeight / 2])
+            #     objet_label.SetXY(centre_texte)
+
+
+    def OnEnterObjet(self, objet):
+        if "Group" in str(objet) :
+            objet = objet.ObjectList[0]
+
+        # Assombrit le remplissage de l'objet
+        objet.SetBrush(UTILS_Couleurs.ModifierLuminosite(objet.FillColor, -20), objet.FillStyle)
+        objet.SetPen(wx.WHITE, "Solid", objet.LineWidth)
+        self.canvas.Draw(True)
+
+        # Tooltip
+        self.ActiveTooltip(actif=True, objet=objet)
+
+    def OnLeaveObject(self, objet):
+        if "Group" in str(objet) :
+            objet = objet.ObjectList[0]
+
+        # Rend sa couleur d'originie à l'objet
+        objet.SetBrush(objet.FillColor, objet.FillStyle)
+        objet.SetPen(objet.LineColor, objet.LineStyle, objet.LineWidth)
+        self.canvas.Draw(True)
+
+        # Tooltip
+        self.ActiveTooltip(actif=False)
+
+    def OnDClickObjet(self, objet):
         """ Modifier texte sur double-clic """
-        dlg = DLG_Saisie_texte_doc.Dialog(self, texte=objet.GetTexte(), listeChamps=self.infosCategorie.champs)
-        if dlg.ShowModal() == wx.ID_OK:
-            texte = dlg.GetTexte()
-            dlg.Destroy()
-        else:
-            dlg.Destroy()
-            return
-        if texte == "" :
-            return
-        objet.SetTexte(texte)
-        objet.dirty = True
-        self.Selection(objet, forceDraw=True)
+        if self.mode == "edition":
+            dlg = DLG_Saisie_texte_doc.Dialog(self, texte=objet.GetTexte(), listeChamps=self.infosCategorie.champs)
+            if dlg.ShowModal() == wx.ID_OK:
+                texte = dlg.GetTexte()
+                dlg.Destroy()
+            else:
+                dlg.Destroy()
+                return
+            if texte == "" :
+                return
+            objet.SetTexte(texte)
+            objet.dirty = True
+            self.Selection(objet, forceDraw=True)
+
+        if self.mode == "visualisation":
+            self.ActiveTooltip(actif=False)
+            objet = objet.ObjectList[0]
+            dirty = objet.data.OnDClickObjet()
+            if dirty :
+                self.MAJ()
+
+    def OnDClick(self, event):
+        # Fin du dessin d'un polyline
+        if self.drawing_polyline != None :
+            # Si le nombre de points du polylin est inférieur à 2, on le supprimer
+            if self.drawing_polyline != True :
+                objet = self.drawing_polyline
+                if len(objet.Points) < 2 :
+                    self.Deselection(forceDraw=False)
+                    self.canvas.RemoveObject(objet)
+                    self.canvas.Draw(True)
+
+            self.SetCursor(wx.StockCursor(wx.CURSOR_DEFAULT))
+            self.drawing_polyline = None
+            self.afficheStatusBarPerso(info=u"")
 
     def OnLeftDownCanvas(self, event):
+        if self.drawing_polyline != None :
+            if hasattr(event, "Coords"):
+                coords = event.Coords
+            else :
+                coords = self.canvas.PixelToWorld(event.HitCoordsPixel)
+            self.Ajouter_point_polyline(coords=coords)
+            return
+
         self.Deselection() 
     
     def OnRightDownCanvas(self, event):
@@ -3082,52 +3633,71 @@ class Panel_canvas(wx.Panel):
 
     def OnClicGaucheObjet(self, objet):
         """ Clic gauche sur un objet """
-        # Activation du déplacement
-        if not self.Moving:
-            self.Moving = True
-            self.decalage = objet.HitCoordsPixel - self.canvas.WorldToPixel(objet.GetXY())
-            self.MovingObject = objet
-        
-        # Désélection si autre objet déjà sélectionné
-        if self.dictSelection != None :
-            if self.dictSelection["objet"] != objet :
-                self.Deselection() 
-        
-        # Sélection de l'objet
-        if self.dictSelection == None :
-            self.Selection(objet) 
-        else:
-            if self.dictSelection["objet"] != objet :
+        if self.drawing_polyline != None :
+            self.OnLeftDownCanvas(objet)
+            return
+
+        if self.mode == "edition" :
+
+            # Activation du déplacement
+            if not self.Moving:
+                self.Moving = True
+                self.decalage = objet.HitCoordsPixel - self.canvas.WorldToPixel(objet.GetXY())
+                self.MovingObject = objet
+
+            # Désélection si autre objet déjà sélectionné
+            if self.dictSelection != None :
+                if self.dictSelection["objet"] != objet :
+                    self.Deselection()
+
+            # Sélection de l'objet
+            if self.dictSelection == None :
                 self.Selection(objet)
+            else:
+                if self.dictSelection["objet"] != objet :
+                    self.Selection(objet)
 
     def OnClicDroitObjet(self, objet):
         """ Clic droit sur objet """
-        if self.dictSelection == None :
-            self.Selection(objet) 
-        else:
-            if self.dictSelection["objet"] != objet :
-                self.Selection(objet) 
-        self.MenuContextuel(objet)
+        if self.drawing_polyline != None :
+            return
+
+        if self.mode == "edition":
+
+            if self.dictSelection == None :
+                self.Selection(objet)
+            else:
+                if self.dictSelection["objet"] != objet :
+                    self.Selection(objet)
+            self.MenuContextuel(objet)
 
     def OnClicPoignee(self, objet):
-        if not self.resizing :
+        if self.drawing_polyline != None :
+            self.OnLeftDownCanvas(objet)
+            return
+
+        if self.mode == "edition" and not self.resizing :
             self.resizing = objet.nom
             self.startResizing = objet.HitCoordsPixel
             self.decalage = objet.HitCoordsPixel - self.canvas.WorldToPixel(self.dictSelection["objet"].GetXY())
     
     def OnClicDroitPoignee(self, objet):
         """ Création du menu contextuel - Poignée"""
-        menu = wx.Menu()
-        self.point = objet
-        # Supprimer la poignée
-        item = wx.MenuItem(menu, ID_MENU_SUPPRIMER_POINT, _(u"Supprimer ce point"), _(u"Supprimer ce point"), wx.ITEM_NORMAL)
-##        item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Supprimer.png"), wx.BITMAP_TYPE_PNG))
-        item.SetMarginWidth(16)
-        menu.AppendItem(item)
-        self.Bind(wx.EVT_MENU, self.OnMenu_supprimer_point, id=ID_MENU_SUPPRIMER_POINT)
-        # Finalisation du menu
-        self.PopupMenu(menu)           
-        menu.Destroy()
+        if self.drawing_polyline != None :
+            return
+
+        if self.mode == "edition":
+
+            menu = wx.Menu()
+            self.point = objet
+            # Supprimer la poignée
+            item = wx.MenuItem(menu, ID_MENU_SUPPRIMER_POINT, _(u"Supprimer ce point"), _(u"Supprimer ce point"), wx.ITEM_NORMAL)
+            item.SetMarginWidth(16)
+            menu.AppendItem(item)
+            self.Bind(wx.EVT_MENU, self.OnMenu_supprimer_point, id=ID_MENU_SUPPRIMER_POINT)
+            # Finalisation du menu
+            self.PopupMenu(menu)
+            menu.Destroy()
 
     def OnMenu_supprimer_point(self, event):
         """ Supprimer le point sélectionné """
@@ -3145,6 +3715,10 @@ class Panel_canvas(wx.Panel):
         self.canvas.Draw(True)
     
     def OnClicLignePolygone(self, objet):
+        if self.drawing_polyline != None :
+            self.OnLeftDownCanvas(objet)
+            return
+
         menu = wx.Menu()
         self.coords = objet.HitCoords
         # Supprimer la poignée
@@ -3183,7 +3757,7 @@ class Panel_canvas(wx.Panel):
         """ Déplacement """
         # Magnétisme
         coordsCurseur = event.Coords
-        coordsCurseur = (round(coordsCurseur[0]), round(coordsCurseur[1]))
+        coordsCurseur = (Arrondir(coordsCurseur[0]), Arrondir(coordsCurseur[1]))
         
 ##        dc = wx.ScreenDC()
 ##        x, y = event.GetPosition()
@@ -3198,7 +3772,7 @@ class Panel_canvas(wx.Panel):
             objet = self.MovingObject
             objet.dirty = True
             nouvellePos = coordsCurseur - self.canvas.ScalePixelToWorld(self.decalage)
-            nouvellePos = numpy.array([int(nouvellePos[0]), int(nouvellePos[1])])
+            nouvellePos = numpy.array([Arrondir(nouvellePos[0]), Arrondir(nouvellePos[1])])
             self.DeplacerObjet(objet, newPosition=nouvellePos)
             
         # Redimensionnement
@@ -3258,6 +3832,9 @@ class Panel_canvas(wx.Panel):
                 objet.SetXY(numpy.array((x, y)))
                 objet.SetTaille(largeur, hauteur)
                 objet.CalcBoundingBox()
+
+                if objet.categorie in ("bloc_texte"):
+                    objet.SetLargeurTexte(largeur)
             
             self.ResizeCadreSelection(objet)
 ##            self.Selection(objet, forceDraw=False)
@@ -3268,6 +3845,9 @@ class Panel_canvas(wx.Panel):
         self.lastPosition = coordsCurseur
 
     def OnLeftUp(self, event):
+        if self.drawing_polyline != None :
+            return
+
         if self.Moving:
             self.Moving = False
         if self.resizing :
@@ -3276,6 +3856,9 @@ class Panel_canvas(wx.Panel):
             self.Selection(self.dictSelection["objet"], forceDraw=True)
     
     def OnKeyUp(self, event):
+        if self.drawing_polyline != None :
+            return
+
         if self.dictSelection != None :
             objet = self.dictSelection["objet"]
             codeTouche = event.GetKeyCode()
@@ -3325,7 +3908,7 @@ class Panel_canvas(wx.Panel):
         """ Redimensionnement du cadre de sélection """
         cadre = self.dictSelection["cadre"]
         poignees = self.dictSelection["poignees"]
-                
+        
         if objet.categorie in ("ligne", "polygone") :
             # ----- ligne ou d'un polygone -----
             index = 0
@@ -3336,8 +3919,24 @@ class Panel_canvas(wx.Panel):
                 index += 1
             cadre.Points[index] = poignees[0].XY
 
+        elif objet.categorie in ("bloc_texte") :
+            # ----- Sélection rectangulaire des blocs texte -----
+
+            if objet.largeurTexte != None :
+
+                points = objet.GetOutlinePoints()
+                index = 0
+                for point in points:
+                    cadre.Points[index] = point
+                    index += 1
+
+                # Poignées du milieu
+                if objet.verrouillageProportions != True:
+                    poignees[0].XY = numpy.array((points[0][0], points[0][1] + ((points[1][1] - points[0][1]) / 2.0)))
+                    poignees[1].XY = numpy.array((points[2][0], points[0][1] + ((points[1][1] - points[0][1]) / 2.0)))
+
         else:
-            # ----- Sélection rectangulaire -----
+            # ----- Sélection rectangulaire hors texte -----
             points = objet.GetOutlinePoints()
             index = 0
             for point in points :
@@ -3389,6 +3988,35 @@ class Panel_canvas(wx.Panel):
                 self.dictSelection["poignees"].append(poignee)
                 index += 1
 
+
+        elif objet.categorie in ("bloc_texte") :
+
+            # ----- Sélection rectangulaire -----
+
+            points = objet.GetOutlinePoints()
+            cadre = MovingPolygon(points, LineWidth=1, LineColor=COULEUR_CADRE_SELECTION, LineStyle="Dot", FillStyle="Transparent", InForeground=True)
+            self.canvas.AddObject(cadre)
+            self.dictSelection["cadre"] = cadre
+            # Dessin des poignées d'agrandissement
+            listeNoms = ["BG", "HG", "HD", "BD"]
+
+            # Création des poignées du milieu
+            points = numpy.append(points, [numpy.array((points[0][0], points[0][1] + ((points[1][1] - points[0][1]) / 2.0)))], axis=0)  # MG
+            points = numpy.append(points, [numpy.array((points[2][0], points[0][1] + ((points[1][1] - points[0][1]) / 2.0)))], axis=0)  # MD
+            listeNoms.extend(["MG", "MD"])
+
+            # Création des poignées des coins
+            index = 0
+            for point in points:
+                nom = listeNoms[index]
+                if objet.largeurTexte != None and nom in ("MG", "MD"):
+                    poignee = self.canvas.AddSquarePoint(point, Color=COULEUR_CADRE_SELECTION, Size=6, InForeground=True)
+                    poignee.nom = nom
+                    poignee.Bind(FloatCanvas.EVT_FC_LEFT_DOWN, self.OnClicPoignee)
+                    self.dictSelection["poignees"].append(poignee)
+                index += 1
+
+
         else:
             
             # ----- Sélection rectangulaire -----
@@ -3409,7 +4037,7 @@ class Panel_canvas(wx.Panel):
             
             # Création des poignées des coins
             index = 0
-            if objet.categorie not in ["ligne_texte", "bloc_texte"] :
+            if objet.categorie not in ["ligne_texte", "bloc_texte1"] :
                 for point in points :
                     nom = listeNoms[index]
                     poignee = self.canvas.AddSquarePoint(point, Color=COULEUR_CADRE_SELECTION, Size=6, InForeground=True)
@@ -3425,7 +4053,8 @@ class Panel_canvas(wx.Panel):
             
         # MAJ du panel Propriétés
         if MAJpanel_proprietes == True :
-            self.ctrl_proprietes.SetObjet(objet)
+            if self.ctrl_proprietes != None :
+                self.ctrl_proprietes.SetObjet(objet)
 
     def Deselection(self, forceDraw=True, MAJpanel_proprietes=True):
         """ Désélection d'un objet """
@@ -3442,9 +4071,11 @@ class Panel_canvas(wx.Panel):
             self.canvas.Draw(False)
         
         if MAJpanel_proprietes == True :
-            self.ctrl_proprietes.SetObjet(None)
+            try :
+                self.ctrl_proprietes.SetObjet(None)
+            except :
+                pass
         
-##        self.parent.SetStatusText(u"", 1) 
         self.afficheStatusBarPerso(info=u"")
 
     def AfficheAstuce(self):
@@ -3541,7 +4172,7 @@ class Panel_canvas(wx.Panel):
 
     def OnMenu_modifier_texte(self, event):
         objet = self.dictSelection["objet"]
-        self.OnModifierTexte(objet)
+        self.OnDClickObjet(objet)
         
     def OnMenu_arriereplan(self, event):
         """ Mettre objet à l'arrière-plan """
@@ -3611,12 +4242,14 @@ class Panel_canvas(wx.Panel):
         Impression(taille_page=self.taille_page, listeObjets=listeObjets, listeObjetsFond=listeObjetsFond)
     
     def OnLeaveWindow(self, event):
-        self.parent.ctrl_infos.EffaceCoords()
+        if hasattr(self.parent, "ctrl_infos"):
+            self.parent.ctrl_infos.EffaceCoords()
         
     def afficheStatusBarPerso(self, x=None, y=None, info=None):
         # Affichage des coordonnées de la souris
-        self.parent.ctrl_infos.SetCoords(x, y)
-        self.parent.ctrl_infos.SetInfo(info)
+        if hasattr(self.parent, "ctrl_infos"):
+            self.parent.ctrl_infos.SetCoords(x, y)
+            self.parent.ctrl_infos.SetInfo(info)
     
     def GetObjets(self):
         self.Deselection(forceDraw=True)
@@ -3636,7 +4269,7 @@ class Panel_canvas(wx.Panel):
         bmp = self.canvas._ForegroundBuffer
         bmp = bmp.GetSubBitmap(wx.Rect(x, y, largeur, -hauteur))
         return bmp
-    
+
     def SupprimerFond(self):
         # Suppression du fond actuel
         for objet in self.listeObjetsFond :
@@ -3650,325 +4283,136 @@ class Panel_canvas(wx.Panel):
     
     def Init_fond(self):
         if self.IDfond != None :
-            self.listeObjetsFond = self.parent.Importation(self.IDfond, InForeground=False)
+            self.listeObjetsFond = self.Importation(self.IDfond, InForeground=False)
         self.canvas.Draw(True)
 
-##class MyFrame(wx.Frame):
-##    def __init__(self, parent, nom="", observations=u"", IDfond=None, categorie=None, taille_page=(210, 297), size=(800, 600)):
-##        wx.Frame.__init__(self, parent, -1, title=_(u"designer"), name="designer", size=size, style=wx.DEFAULT_FRAME_STYLE|wx.CLIP_CHILDREN)
 
-class Dialog(wx.Dialog):
-    def __init__(self, parent, IDmodele=None, nom="", observations=u"", IDfond=None, categorie=None, taille_page=(210, 297), size=(800, 600)):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
-        self.parent = parent     
-        self.IDmodele = IDmodele
-        self.categorie = categorie
-        self.taille_page = taille_page
-        
+    def MAJ(self):
+        if self.interactive_data != None :
+            self.interactive_data.MAJ()
+        self.canvas.ClearAll(ResetBB=False)
         self.listeInitialeObjets = []
-        
-        # DLG Attente
-        dlgAttente = PBI.PyBusyInfo(_(u"Veuillez patienter durant l'initialisation de Noedoc..."), parent=None, title=_(u"Initialisation de Noedoc"), icon=wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Logo.png"), wx.BITMAP_TYPE_ANY))
-        wx.Yield() 
-
-        # Recherche des données de la catégorie
-        if self.categorie == "fond" : self.infosCategorie = Fond()
-        if self.categorie == "facture" : self.infosCategorie = Facture()
-        if self.categorie == "rappel" : self.infosCategorie = Rappel()
-        if self.categorie == "attestation" : self.infosCategorie = Attestation()
-        if self.categorie == "reglement" : self.infosCategorie = Reglement()
-        if self.categorie == "individu" : self.infosCategorie = Individu()
-        if self.categorie == "famille" : self.infosCategorie = Famille()
-        if self.categorie == "inscription" : self.infosCategorie = Inscription()
-        if self.categorie == "cotisation" : self.infosCategorie = Cotisation()
-        if self.categorie == "attestation_fiscale" : self.infosCategorie = Attestation_fiscale()
-
-        self._mgr = aui.AuiManager()
-        self._mgr.SetManagedWindow(self)
-        
-        # Propriétés
-        self.SetMinSize((920, 740))
-
-        # Barres d'outils
-        self.toolbar1 = self.MakeToolBar1()
-        self.toolbar2 = self.MakeToolBar2()
-        self.toolbar3 = self.MakeToolBar3()
-            
-        # Création des widgets
-        self.ctrl_canvas = Panel_canvas(self, infosCategorie=self.infosCategorie, taille_page=taille_page)
-                
-        # Création des panels détachables
-        self.ctrl_infos = Panel_infos(self)
-        self.ctrl_commandes = Panel_commandes(self)
-        self.ctrl_proprietes_doc = Panel_proprietes_doc(self, self.ctrl_canvas, categorie=categorie)
-        self.ctrl_proprietes_objet = Panel_proprietes_objet(self, self.ctrl_canvas)
-        self.ctrl_canvas.ctrl_proprietes = self.ctrl_proprietes_objet
-        
-        # Création des panels amovibles
-        self._mgr.AddPane(self.ctrl_infos, aui.AuiPaneInfo().
-                          Name("infos").Caption(_(u"Infos")).
-                          Bottom().Layer(0).Position(1).CaptionVisible(False).CloseButton(False).MaximizeButton(False).MinSize((-1, 10)))
-
-        self._mgr.AddPane(self.ctrl_commandes, aui.AuiPaneInfo().
-                          Name("commandes").Caption(_(u"Commandes")).
-                          Bottom().Layer(1).Position(2).CaptionVisible(False).CloseButton(False).MaximizeButton(False).MinSize((-1, 50)))
-
-        self._mgr.AddPane(self.ctrl_proprietes_doc, aui.AuiPaneInfo().
-                          Name("proprietes_doc").Caption(_(u"Propriétés du modèle")).
-                          Right().Layer(1).Position(1).Fixed().CloseButton(False).MaximizeButton(False))
-                        
-        self._mgr.AddPane(self.ctrl_proprietes_objet, aui.AuiPaneInfo().
-                          Name("proprietes_objet").Caption(_(u"Propriétés de l'objet")).
-                          Right().Layer(1).Position(2).CloseButton(False).MaximizeButton(False).MinSize((160, -1)))
-        
-        # Création du panel central
-        self._mgr.AddPane(self.ctrl_canvas, aui.AuiPaneInfo().Name("canvas").
-                          CenterPane())
-        
-        # Création des barres d'outils
-        self._mgr.AddPane(self.toolbar1, aui.AuiPaneInfo().
-                          Name("barreOutil_modes").Caption("Modes").
-                          ToolbarPane().Top().
-                          LeftDockable(True).RightDockable(True))
-        
-        self._mgr.AddPane(self.toolbar2, aui.AuiPaneInfo().
-                          Name("barreOutils_objets").Caption("Objets").
-                          ToolbarPane().Top().
-                          LeftDockable(True).RightDockable(True))
-        
-        self._mgr.AddPane(self.toolbar3, aui.AuiPaneInfo().
-                          Name("barreOutils_options").Caption("Options").
-                          ToolbarPane().Top().
-                          LeftDockable(True).RightDockable(True))
-
-        self._mgr.Update()
-        
-        self.Bind(wx.EVT_CLOSE, self.OnClose)
-        
-        # Logo
-        _icon = wx.EmptyIcon()
-        _icon.CopyFromBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Logo.png"), wx.BITMAP_TYPE_ANY))
-        self.SetIcon(_icon)
-        
-        # Remplit propriétés doc
-        self.ctrl_proprietes_doc.SetNom(nom)
-        self.ctrl_proprietes_doc.SetObservations(observations)
-        self.ctrl_proprietes_doc.SetFond(IDfond)
-        self.ctrl_proprietes_doc.SetTaille(taille_page)
-                
-        # Init Canvas
-        self.ctrl_canvas.IDfond = IDfond
-        self.CenterOnScreen()
-        self.ctrl_canvas.Init_canvas()
-        
-        del dlgAttente
-        
-        # Importation
-        if self.IDmodele != None :
-            self.Importation(self.IDmodele)
-        else:
-            self.CreationObjetsObligatoires()
-            # Demande le nom du nouveau modèle
-            dlg = wx.TextEntryDialog(self, _(u"Veuillez saisir un nom pour ce nouveau modèle :"), _(u"Nouveau modèle"))
-            if dlg.ShowModal() == wx.ID_OK:
-                self.ctrl_proprietes_doc.SetNom(dlg.GetValue())
-            dlg.Destroy()
-        
-        self.CenterOnScreen()
-        
-
-    def CreationObjetsObligatoires(self):
-        for objet in self.infosCategorie.speciaux :
-            if objet["obligatoire"] == True :
-                self.AjouterSpecial(objet)
-        
-    def MakeToolBar1(self):
-        tbar = aui.AuiToolBar(self, -1, wx.DefaultPosition, wx.DefaultSize, agwStyle=aui.AUI_TB_DEFAULT_STYLE | aui.AUI_TB_OVERFLOW)
-        tbar.SetToolBitmapSize(wx.Size(32, 32))
-        
-        tbar.AddSimpleTool(ID_OUTIL_CURSEUR, _(u"Curseur"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Curseur.png"), wx.BITMAP_TYPE_ANY), _(u"Curseur"), aui.ITEM_RADIO)
-        self.Bind(wx.EVT_TOOL, self.OnOutil_curseur, id=ID_OUTIL_CURSEUR)
-        tbar.ToggleTool(ID_OUTIL_CURSEUR, True)
-        
-        tbar.AddSimpleTool(ID_OUTIL_DEPLACER, _(u"Déplacer"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Main.png"), wx.BITMAP_TYPE_ANY), _(u"Déplacer"), aui.ITEM_RADIO)
-        self.Bind(wx.EVT_TOOL, self.OnOutil_deplacer, id=ID_OUTIL_DEPLACER)
-        
-        tbar.AddSimpleTool(ID_OUTIL_ZOOM_OUT, _(u"Zoom arrière"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/zoom_moins.png"), wx.BITMAP_TYPE_ANY), _(u"Zoom arrière"), aui.ITEM_RADIO)
-        self.Bind(wx.EVT_TOOL, self.OnOutil_zoom_moins, id=ID_OUTIL_ZOOM_OUT)
-
-        tbar.AddSimpleTool(ID_OUTIL_ZOOM_IN, _(u"Zoom avant"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/zoom_plus.png"), wx.BITMAP_TYPE_ANY), _(u"Zoom avant"), aui.ITEM_RADIO)
-        self.Bind(wx.EVT_TOOL, self.OnOutil_zoom_plus, id=ID_OUTIL_ZOOM_IN)
-
-        tbar.AddSeparator()
-        
-        tbar.AddSimpleTool(ID_OUTIL_ZOOM_AJUSTER, _(u"Ajuster et centrer l'affichage"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Ajuster.png"), wx.BITMAP_TYPE_ANY), _(u"Ajuster et centrer l'affichage"))
-        self.Bind(wx.EVT_TOOL, self.OnOutil_ajuster, id=ID_OUTIL_ZOOM_AJUSTER)
-        
-        tbar.AddSeparator()
-        
-        tbar.AddSimpleTool(ID_OUTIL_AFFICHAGE_APERCU, _(u"Afficher un aperçu PDF"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Apercu.png"), wx.BITMAP_TYPE_ANY), _(u"Afficher un aperçu PDF"))
-        self.Bind(wx.EVT_TOOL, self.OnAffichage_apercu, id=ID_OUTIL_AFFICHAGE_APERCU)
-
-        tbar.Realize()
-        return tbar
-
-    def MakeToolBar2(self):
-        tbar = aui.AuiToolBar(self, -1, wx.DefaultPosition, wx.DefaultSize, agwStyle=aui.AUI_TB_DEFAULT_STYLE | aui.AUI_TB_OVERFLOW)
-        tbar.SetToolBitmapSize(wx.Size(32, 32))
-        
-##        tbar.AddSimpleTool(ID_OUTIL_OBJET_TEXTE_LIGNE, _(u"Insérer une ligne de texte"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Texte_ligne.png"), wx.BITMAP_TYPE_ANY), _(u"Insérer une ligne de texte"))
-##        self.Bind(wx.EVT_TOOL, self.OnOutil_texteLigne, id=ID_OUTIL_OBJET_TEXTE_LIGNE)
-
-        tbar.AddSimpleTool(ID_OUTIL_OBJET_TEXTE_BLOC, _(u"Insérer un bloc de texte multi-lignes"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Texte_ligne.png"), wx.BITMAP_TYPE_ANY), _(u"Insérer un bloc de texte multi-lignes"))
-        self.Bind(wx.EVT_TOOL, self.OnOutil_texteBloc, id=ID_OUTIL_OBJET_TEXTE_BLOC)
-
-        tbar.AddSimpleTool(ID_OUTIL_OBJET_RECTANGLE, _(u"Insérer un rectangle"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Rectangle.png"), wx.BITMAP_TYPE_ANY), _(u"Insérer un rectangle"))
-        self.Bind(wx.EVT_TOOL, self.OnOutil_rectangle, id=ID_OUTIL_OBJET_RECTANGLE)
-        
-        tbar.AddSimpleTool(ID_OUTIL_OBJET_LIGNE, _(u"Insérer une ligne"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Ligne.png"), wx.BITMAP_TYPE_ANY), _(u"Insérer une ligne"))
-        self.Bind(wx.EVT_TOOL, self.OnOutil_ligne, id=ID_OUTIL_OBJET_LIGNE)
-        
-        tbar.AddSimpleTool(ID_OUTIL_OBJET_CERCLE, _(u"Insérer une ellipse"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Cercle.png"), wx.BITMAP_TYPE_ANY), _(u"Insérer une ellipse"))
-        self.Bind(wx.EVT_TOOL, self.OnOutil_cercle, id=ID_OUTIL_OBJET_CERCLE)
-        
-        tbar.AddSimpleTool(ID_OUTIL_OBJET_POLYGONE, _(u"Insérer un polygone"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Polygone.png"), wx.BITMAP_TYPE_ANY), _(u"Insérer un polygone"))
-        self.Bind(wx.EVT_TOOL, self.OnOutil_polygone, id=ID_OUTIL_OBJET_POLYGONE)
-
-        tbar.AddSimpleTool(ID_OUTIL_OBJET_IMAGE_DROPDOWN, _(u"Insérer une image"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Image.png"), wx.BITMAP_TYPE_ANY), _(u"Insérer une image"))
-        self.Bind(wx.EVT_TOOL, self.OnOutil_image, id=ID_OUTIL_OBJET_IMAGE)
-        self.Bind(aui.EVT_AUITOOLBAR_TOOL_DROPDOWN, self.OnDropDownImage, id=ID_OUTIL_OBJET_IMAGE_DROPDOWN)
-        tbar.SetToolDropDown(ID_OUTIL_OBJET_IMAGE_DROPDOWN, True)
-        
-        if len(self.infosCategorie.codesbarres) > 0 :
-            tbar.AddSimpleTool(ID_OUTIL_OBJET_BARCODE_DROPDOWN, _(u"Insérer un code-barres"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Codebarres.png"), wx.BITMAP_TYPE_ANY), _(u"Insérer un code-barres"))
-            self.Bind(wx.EVT_TOOL, self.OnOutil_codebarres, id=ID_OUTIL_OBJET_CODEBARRES)
-            self.Bind(aui.EVT_AUITOOLBAR_TOOL_DROPDOWN, self.OnDropDownBarcode, id=ID_OUTIL_OBJET_BARCODE_DROPDOWN)
-            tbar.SetToolDropDown(ID_OUTIL_OBJET_BARCODE_DROPDOWN, True)
-
-        if len(self.infosCategorie.speciaux) > 0 :
-            tbar.AddSimpleTool(ID_OUTIL_OBJET_SPECIAL_DROPDOWN, _(u"Insérer un objet spécial"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Special.png"), wx.BITMAP_TYPE_ANY), _(u"Insérer un objet spécial"))
-            self.Bind(wx.EVT_TOOL, self.OnOutil_special, id=ID_OUTIL_OBJET_SPECIAL)
-            self.Bind(aui.EVT_AUITOOLBAR_TOOL_DROPDOWN, self.OnDropDownSpecial, id=ID_OUTIL_OBJET_SPECIAL_DROPDOWN)
-            tbar.SetToolDropDown(ID_OUTIL_OBJET_SPECIAL_DROPDOWN, True)
-                
-        tbar.Realize()
-        return tbar
-
-    def MakeToolBar3(self):
-        tbar = aui.AuiToolBar(self, -1, wx.DefaultPosition, wx.DefaultSize, agwStyle=aui.AUI_TB_DEFAULT_STYLE | aui.AUI_TB_OVERFLOW)
-        tbar.SetToolBitmapSize(wx.Size(32, 32))
-
-        tbar.AddSimpleTool(ID_OUTIL_AFFICHAGE_GRILLE, _(u"Afficher la grille"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Grille.png"), wx.BITMAP_TYPE_ANY), _(u"Afficher la grille"), aui.ITEM_CHECK)
-        self.Bind(wx.EVT_TOOL, self.OnAffichage_grille, id=ID_OUTIL_AFFICHAGE_GRILLE)
-        tbar.ToggleTool(ID_OUTIL_AFFICHAGE_GRILLE, True)
-        
-        tbar.Realize()
-        return tbar
-
-    def MenuOutils(self):
-        # Création du menu Outils
-        menuPop = wx.Menu()
-            
-        item = wx.MenuItem(menuPop, 10, _(u"Insérer un texte"), _(u"Insérer un texte"))
-        item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Forfait.png"), wx.BITMAP_TYPE_PNG))
-        menuPop.AppendItem(item)
-        self.Bind(wx.EVT_MENU, self.OnOutil_texteBloc, id=10)
-                
-        menuPop.AppendSeparator()
-        
-        self.PopupMenu(menuPop)
-        menuPop.Destroy()
+        self.Importation(self.IDmodele, ResetBB=False)
+        self.canvas.Draw(True)
 
     def OnOutil_curseur(self, event):
-        self.ctrl_canvas.canvas.SetMode(GUIMode.GUIMouse())
-    
+        self.canvas.SetMode(MyGUIMouse())
+        #self.canvas.SetMode(GUIMode.GUIMouse())
+
     def OnOutil_deplacer(self, event):
-        self.ctrl_canvas.canvas.SetMode(GUIMode.GUIMove())
+        self.canvas.SetMode(GUIMode.GUIMove())
 
     def OnOutil_zoom_moins(self, event):
-        self.ctrl_canvas.canvas.SetMode(GUIMode.GUIZoomOut())
+        self.canvas.SetMode(GUIMode.GUIZoomOut())
 
     def OnOutil_zoom_plus(self, event):
-        self.ctrl_canvas.canvas.SetMode(GUIMode.GUIZoomIn())
-        
-    def OnOutil_ajuster(self,Event):
-        self.ctrl_canvas.canvas.ZoomToBB()
-        self.ctrl_canvas.canvas.SetFocus() 
+        self.canvas.SetMode(GUIMode.GUIZoomIn())
+
+    def OnOutil_ajuster(self, Event):
+        self.canvas.ZoomToBB()
+        self.canvas.SetFocus()
 
     def OnOutil_rectangle(self, event):
         """ Insertion d'un rectangle """
         taille = (100, 60)
-        
+
         # Recherche le centre de l'objet
-        tailleDC = wx.ClientDC(self.ctrl_canvas.canvas).GetSize() 
-        x, y = self.ctrl_canvas.canvas.PixelToWorld((tailleDC[0]/2, tailleDC[1]/2))
-        x, y = int(x - taille[0]/2), int(y - taille[1]/2)
-        
+        tailleDC = wx.ClientDC(self.canvas).GetSize()
+        x, y = self.canvas.PixelToWorld((tailleDC[0] / 2, tailleDC[1] / 2))
+        x, y = Arrondir(x - taille[0] / 2), Arrondir(y - taille[1] / 2)
+
         # Insertion
-        objet = AjouterRectangle(xy=(x, y), taille=taille, 
-                    couleurTrait=(0, 0, 0), epaissTrait=0.25, 
-                    coulRemplis=COULEUR_DEFAUT_OBJET)
-        self.ctrl_canvas.AjouterObjet(objet)
-        self.ctrl_canvas.Selection(objet, forceDraw=True)
-        self.ctrl_canvas.canvas.SetFocus() 
+        objet = AjouterRectangle(xy=(x, y), taille=taille,
+                                 couleurTrait=(0, 0, 0), epaissTrait=0.25,
+                                 coulRemplis=COULEUR_DEFAUT_OBJET)
+        self.AjouterObjet(objet)
+        self.Selection(objet, forceDraw=True)
+        self.canvas.SetFocus()
 
     def OnOutil_ligne(self, event):
         """ Insertion d'une ligne """
         longueurLigne = 100
         # Recherche le centre de l'objet
-        tailleDC = wx.ClientDC(self.ctrl_canvas.canvas).GetSize() 
-        x, y = self.ctrl_canvas.canvas.PixelToWorld((tailleDC[0]/2, tailleDC[1]/2))
-        x = x - longueurLigne/2
-        x, y = int(x), int(y)
-        points = [(x, y), (x+longueurLigne, y)]
+        tailleDC = wx.ClientDC(self.canvas).GetSize()
+        x, y = self.canvas.PixelToWorld((tailleDC[0] / 2, tailleDC[1] / 2))
+        x = x - longueurLigne / 2
+        x, y = Arrondir(x), Arrondir(y)
+        points = [(x, y), (x + longueurLigne, y)]
         # Insertion
         objet = AjouterLigne(points, couleurTrait=(0, 0, 0), epaissTrait=0.25)
-        self.ctrl_canvas.AjouterObjet(objet)
-        self.ctrl_canvas.Selection(objet, forceDraw=True)
-        self.ctrl_canvas.canvas.SetFocus() 
+        self.AjouterObjet(objet)
+        self.Selection(objet, forceDraw=True)
+        self.canvas.SetFocus()
 
     def OnOutil_cercle(self, event):
         """ Insertion d'une ellipse """
         taille = (80, 80)
         # Recherche le centre de l'objet
-        tailleDC = wx.ClientDC(self.ctrl_canvas.canvas).GetSize() 
-        x, y = self.ctrl_canvas.canvas.PixelToWorld((tailleDC[0]/2, tailleDC[1]/2))
-        x, y = int(x - taille[0]/2), int(y - taille[1]/2)
+        tailleDC = wx.ClientDC(self.canvas).GetSize()
+        x, y = self.canvas.PixelToWorld((tailleDC[0] / 2, tailleDC[1] / 2))
+        x, y = Arrondir(x - taille[0] / 2), Arrondir(y - taille[1] / 2)
         # Insertion
-        objet = AjouterEllipse(xy=(x, y), taille=taille, 
-                    couleurTrait=(0, 0, 0), epaissTrait=0.25, 
-                    coulRemplis=COULEUR_DEFAUT_OBJET)
-        self.ctrl_canvas.AjouterObjet(objet)
-        self.ctrl_canvas.Selection(objet, forceDraw=True)
-        self.ctrl_canvas.canvas.SetFocus() 
+        objet = AjouterEllipse(xy=(x, y), taille=taille,
+                               couleurTrait=(0, 0, 0), epaissTrait=0.25,
+                               coulRemplis=COULEUR_DEFAUT_OBJET)
+        self.AjouterObjet(objet)
+        self.Selection(objet, forceDraw=True)
+        self.canvas.SetFocus()
 
     def OnOutil_polygone(self, event):
         """ Insertion d'un polygone """
         taille = (90, 80)
         # Recherche le centre de l'objet
-        tailleDC = wx.ClientDC(self.ctrl_canvas.canvas).GetSize() 
-        x, y = self.ctrl_canvas.canvas.PixelToWorld((tailleDC[0]/2, tailleDC[1]/2))
-        x, y = int(x - taille[0]/2), int(y + 12)
-        points = [(x, y), (x+45, y+30), (x+90, y), (x+70, y-50), (x+20, y-50)]
+        tailleDC = wx.ClientDC(self.canvas).GetSize()
+        x, y = self.canvas.PixelToWorld((tailleDC[0] / 2, tailleDC[1] / 2))
+        x, y = Arrondir(x - taille[0] / 2), Arrondir(y + 12)
+        points = [(x, y), (x + 45, y + 30), (x + 90, y), (x + 70, y - 50), (x + 20, y - 50)]
         # Insertion
-        objet = AjouterPolygone(points, 
-                    couleurTrait=(0, 0, 0), epaissTrait=0.25, 
-                    coulRemplis=COULEUR_DEFAUT_OBJET)
-        self.ctrl_canvas.AjouterObjet(objet)
-        self.ctrl_canvas.Selection(objet, forceDraw=True)
-        self.ctrl_canvas.canvas.SetFocus() 
-    
+        objet = AjouterPolygone(points,
+                                couleurTrait=(0, 0, 0), epaissTrait=0.25,
+                                coulRemplis=COULEUR_DEFAUT_OBJET)
+        self.AjouterObjet(objet)
+        self.Selection(objet, forceDraw=True)
+        self.canvas.SetFocus()
+
+    def OnOutil_polyline(self, event):
+        """ Insertion d'un polyline """
+        # Prépare la saisie des points
+        self.afficheStatusBarPerso(info=_(u"Cliquez pour ajouter des points puis double-cliquez pour finaliser le polygone"))
+        self.drawing_polyline = True
+        self.canvas.SetFocus()
+        self.SetCursor(wx.StockCursor(wx.CURSOR_PENCIL))
+
+    def Ajouter_point_polyline(self, coords=None):
+        """ Ajouter un point sur le polyline """
+        objet = self.drawing_polyline
+        if objet == True :
+            # Création de l'objet si on saisit le premier point
+            points = [[coords[0], coords[1]],]
+            objet = AjouterPolygone(points,
+                                    couleurTrait=(0, 0, 0), epaissTrait=0.25,
+                                    coulRemplis=COULEUR_DEFAUT_OBJET)
+            self.AjouterObjet(objet)
+            self.drawing_polyline = objet
+        else :
+            # On ajouter un point
+            objet.Points = numpy.append(objet.Points, [numpy.array([coords[0], coords[1]]),], axis=0 )
+        objet.CalcBoundingBox()
+        objet.dirty = True
+        self.Selection(objet, forceDraw=False)
+        self.canvas.Draw(True)
+
     def OnOutil_image(self, event):
         self.OnDropDownImage(None)
 
     def OnDropDownImage(self, event):
-        if 1 == 1 :#event.IsDropDownClicked():
+        if 1 == 1:  # event.IsDropDownClicked():
             tb = event.GetEventObject()
             tb.SetToolSticky(event.GetId(), True)
 
             # create the popup menu
             menuPopup = wx.Menu()
-            
+
             # Importation d'une image
             item = wx.MenuItem(menuPopup, 10001, _(u"Importer une image"), _(u"Importer une image"), wx.ITEM_NORMAL)
             item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Image_charger.png"), wx.BITMAP_TYPE_PNG))
@@ -3977,12 +4421,12 @@ class Dialog(wx.Dialog):
             self.Bind(wx.EVT_MENU, self.OnOutil_image_charger, id=10001)
 
             # Importation du logo de l'organisateur
-            img, exists = GetLogo_organisateur() 
-            if img != None :
+            img, exists = GetLogo_organisateur()
+            if img != None:
                 tailleMaxi = 32
                 largeur, hauteur = img.GetSize()
-                if max(largeur, hauteur) > tailleMaxi :
-                    if largeur > hauteur :
+                if max(largeur, hauteur) > tailleMaxi:
+                    if largeur > hauteur:
                         hauteur = hauteur * tailleMaxi / largeur
                         largeur = tailleMaxi
                     else:
@@ -3998,7 +4442,7 @@ class Dialog(wx.Dialog):
             self.Bind(wx.EVT_MENU, self.OnOutil_image_logo, id=10002)
 
             # Importation d'une photo individuelle
-            if self.infosCategorie.photosIndividuelles == True :
+            if self.infosCategorie != None and self.infosCategorie.photosIndividuelles == True:
                 item = wx.MenuItem(menuPopup, 10003, _(u"Insérer une photo individuelle"), _(u"Insérer une photo individuelle"), wx.ITEM_NORMAL)
                 item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Personnes.png"), wx.BITMAP_TYPE_PNG))
                 menuPopup.AppendItem(item)
@@ -4011,7 +4455,7 @@ class Dialog(wx.Dialog):
 
             self.PopupMenu(menuPopup, pt)
 
-            # Pour éviter que les menus suivants soient déformés 
+            # Pour éviter que les menus suivants soient déformés
             item.SetMarginWidth(16)
 
             # make sure the button is "un-stuck"
@@ -4028,11 +4472,11 @@ class Dialog(wx.Dialog):
         # Ouverture de la fenêtre de dialogue
         dlg = wx.FileDialog(
             self, message=_(u"Choisissez une image"),
-            defaultDir=cheminDefaut, 
+            defaultDir=cheminDefaut,
             defaultFile="",
             wildcard=wildcard,
             style=wx.OPEN
-            )
+        )
         if dlg.ShowModal() == wx.ID_OK:
             nomFichierCourt = dlg.GetFilename()
             nomFichierLong = dlg.GetPath()
@@ -4040,119 +4484,104 @@ class Dialog(wx.Dialog):
         else:
             dlg.Destroy()
             return
-        
-##        # Recadre la photo
-##        import DLG_Editeur_photo_2
-##        dlg = DLG_Editeur_photo_2.MyDialog(self, image=nomFichierLong, titre=_(u"Redimensionnez l'image si vous le souhaitez"))
-##        if dlg.ShowModal() == wx.ID_OK:
-##            bmp = dlg.GetBmp()
-##            dlg.Destroy()
-##        else:
-##            dlg.Destroy()
-##            return 
-        
+
         # Détermine la taille de l'image
         taille = os.path.getsize(nomFichierLong)
-        if taille > 999999 :
+        if taille > 999999:
             dlg = wx.MessageDialog(self, _(u"La taille de cette image est supérieure à 1 Mo !\nVous devez donc la compresser avant de l'importer..."), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
-        
+
         # Charge l'image
         img = wx.Image(nomFichierLong)
-        
+
         # Détermine le type d'image
         if nomFichierLong.endswith("png"):
             typeImage = "fichier-png"
         else:
             typeImage = "fichier-jpg"
-            
-##        # Test de calcul de la taille de l'image
-##        buffer = cStringIO.StringIO()
-##        img.SaveStream(buffer, wx.BITMAP_TYPE_ANY) 
-##        print "Taille de l'image =", FonctionsPerso.Formate_taille_octets(buffer.tell())
-        
+
         # Conversion de la taille px en mm
         largeur, hauteur = img.GetSize()
-        largeur, hauteur = int(largeur * 0.264583333), int(hauteur * 0.264583333)
-        
+        largeur, hauteur = Arrondir(largeur * 0.264583333), Arrondir(hauteur * 0.264583333)
+
         # Recadre l'image
-        tailleMaxi = max(self.taille_page)
-        if max(largeur, hauteur) > tailleMaxi :
-            if largeur > hauteur :
-                hauteur = hauteur * tailleMaxi / largeur
-                largeur = tailleMaxi
-            else:
-                largeur = largeur * tailleMaxi / hauteur
-                hauteur = tailleMaxi
-##            img.Rescale(width=largeur, height=hauteur, quality=wx.IMAGE_QUALITY_HIGH)        
-        
+        if self.taille_page != None :
+            tailleMaxi = max(self.taille_page)
+            if max(largeur, hauteur) > tailleMaxi:
+                if largeur > hauteur:
+                    hauteur = hauteur * tailleMaxi / largeur
+                    largeur = tailleMaxi
+                else:
+                    largeur = largeur * tailleMaxi / hauteur
+                    hauteur = tailleMaxi
+
         bmp = wx.BitmapFromImage(img)
-        
+
         # Recherche le centre de l'objet
-        tailleDC = wx.ClientDC(self.ctrl_canvas.canvas).GetSize() 
-        x, y = self.ctrl_canvas.canvas.PixelToWorld((tailleDC[0]/2, tailleDC[1]/2))
-        x, y = int(x - largeur/2), int(y - hauteur/2)
-        
+        tailleDC = wx.ClientDC(self.canvas).GetSize()
+        x, y = self.canvas.PixelToWorld((tailleDC[0] / 2, tailleDC[1] / 2))
+        x, y = Arrondir(x - largeur / 2), Arrondir(y - hauteur / 2)
+
         # Insertion
         objet = AjouterImage(bmp, (x, y), hauteur, typeImage=typeImage)
-        self.ctrl_canvas.AjouterObjet(objet)
-        self.ctrl_canvas.Selection(objet, forceDraw=True)
-        self.ctrl_canvas.canvas.SetFocus() 
-    
+        self.AjouterObjet(objet)
+        self.Selection(objet, forceDraw=True)
+        self.canvas.SetFocus()
+
     def OnOutil_image_logo(self, event):
         """ Importer le logo de l'organisateur """
-        img, exists = GetLogo_organisateur() 
+        img, exists = GetLogo_organisateur()
         bmp = wx.BitmapFromImage(img)
-        
+
         # Conversion de la taille px en mm
         largeur, hauteur = bmp.GetSize()
-        largeur, hauteur = int(largeur * 0.264583333), int(hauteur * 0.264583333)
-        
-        # Recherche le centre de l'objet
-        tailleDC = wx.ClientDC(self.ctrl_canvas.canvas).GetSize() 
-        x, y = self.ctrl_canvas.canvas.PixelToWorld((tailleDC[0]/2, tailleDC[1]/2))
-        x, y = int(x - largeur/2), int(y - hauteur/2)
+        largeur, hauteur = Arrondir(largeur * 0.264583333), Arrondir(hauteur * 0.264583333)
 
-         # Insertion
+        # Recherche le centre de l'objet
+        tailleDC = wx.ClientDC(self.canvas).GetSize()
+        x, y = self.canvas.PixelToWorld((tailleDC[0] / 2, tailleDC[1] / 2))
+        x, y = Arrondir(x - largeur / 2), Arrondir(y - hauteur / 2)
+
+        # Insertion
         objet = AjouterImage(bmp, (x, y), hauteur, nom=_(u"Logo de l'organisateur"), typeImage="logo")
         objet.exists = exists
-        self.ctrl_canvas.AjouterObjet(objet)
-        self.ctrl_canvas.Selection(objet, forceDraw=True)
-        self.ctrl_canvas.canvas.SetFocus() 
-    
+        self.AjouterObjet(objet)
+        self.Selection(objet, forceDraw=True)
+        self.canvas.SetFocus()
+
     def OnOutil_image_photo(self, event):
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/128x128/Femme.png"), wx.BITMAP_TYPE_ANY)
-        
+
         # Conversion de la taille px en mm
         largeur, hauteur = bmp.GetSize()
-        largeur, hauteur = int(largeur * 0.264583333), int(hauteur * 0.264583333)
-        
+        largeur, hauteur = Arrondir(largeur * 0.264583333), Arrondir(hauteur * 0.264583333)
+
         # Recherche le centre de l'objet
-        tailleDC = wx.ClientDC(self.ctrl_canvas.canvas).GetSize() 
-        x, y = self.ctrl_canvas.canvas.PixelToWorld((tailleDC[0]/2, tailleDC[1]/2))
-        x, y = int(x - largeur/2), int(y - hauteur/2)
+        tailleDC = wx.ClientDC(self.canvas).GetSize()
+        x, y = self.canvas.PixelToWorld((tailleDC[0] / 2, tailleDC[1] / 2))
+        x, y = Arrondir(x - largeur / 2), Arrondir(y - hauteur / 2)
 
         objet = AjouterImage(bmp, (x, y), hauteur, nom=_(u"Photo individuelle"), typeImage="photo")
-        self.ctrl_canvas.AjouterObjet(objet)
-        self.ctrl_canvas.Selection(objet, forceDraw=True)
-        self.ctrl_canvas.canvas.SetFocus() 
+        self.AjouterObjet(objet)
+        self.Selection(objet, forceDraw=True)
+        self.canvas.SetFocus()
 
     def OnOutil_codebarres(self, event):
         self.OnDropDownBarcode(None)
 
     def OnDropDownBarcode(self, event):
-        if 1 == 1 :#event.IsDropDownClicked():
+        if 1 == 1:  # event.IsDropDownClicked():
             tb = event.GetEventObject()
             tb.SetToolSticky(event.GetId(), True)
 
             # create the popup menu
             menuPopup = wx.Menu()
-            
+
             # Importation d'une image
             index = 0
-            for nom, exemple, code in self.infosCategorie.codesbarres :
+            for nom, exemple, code in self.infosCategorie.codesbarres:
                 id = 10000 + index
                 item = wx.MenuItem(menuPopup, id, _(u"Insérer le code-barres '%s'") % nom, _(u"Insérer le code-barres '%s'") % nom, wx.ITEM_NORMAL)
                 item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Codebarres.png"), wx.BITMAP_TYPE_PNG))
@@ -4167,8 +4596,8 @@ class Dialog(wx.Dialog):
             pt = self.ScreenToClient(pt)
 
             self.PopupMenu(menuPopup, pt)
-            
-            # Pour éviter que les menus suivants soient déformés 
+
+            # Pour éviter que les menus suivants soient déformés
             item.SetMarginWidth(16)
 
             # make sure the button is "un-stuck"
@@ -4178,21 +4607,21 @@ class Dialog(wx.Dialog):
         index = event.GetId() - 10000
         nom, exemple, champ = self.infosCategorie.codesbarres[index]
         nom = _(u"Code-barres - %s") % nom
-        
+
         # Conversion de la taille px en mm
         largeur, hauteur = (109, 60)
-        largeur, hauteur = int(largeur * 0.264583333), int(hauteur * 0.264583333)
-        
+        largeur, hauteur = Arrondir(largeur * 0.264583333), Arrondir(hauteur * 0.264583333)
+
         # Recherche le centre de l'objet
-        tailleDC = wx.ClientDC(self.ctrl_canvas.canvas).GetSize() 
-        x, y = self.ctrl_canvas.canvas.PixelToWorld((tailleDC[0]/2, tailleDC[1]/2))
-        x, y = int(x - largeur/2), int(y - hauteur/2)
-        
+        tailleDC = wx.ClientDC(self.canvas).GetSize()
+        x, y = self.canvas.PixelToWorld((tailleDC[0] / 2, tailleDC[1] / 2))
+        x, y = Arrondir(x - largeur / 2), Arrondir(y - hauteur / 2)
+
         objet = AjouterBarcode((x, y), largeur, hauteur, nom=nom, champ=champ, afficheNumero=False)
-        self.ctrl_canvas.AjouterObjet(objet)
-        self.ctrl_canvas.Selection(objet, forceDraw=True)
-        self.ctrl_canvas.canvas.SetFocus() 
-    
+        self.AjouterObjet(objet)
+        self.Selection(objet, forceDraw=True)
+        self.canvas.SetFocus()
+
     def OnOutil_texteLigne(self, event):
         """ Insertion d'une ligne de texte """
         dlg = DLG_Saisie_texte_doc.Dialog(self, texte=u"", listeChamps=self.infosCategorie.champs)
@@ -4202,74 +4631,78 @@ class Dialog(wx.Dialog):
         else:
             dlg.Destroy()
             return
-        if texte == "" :
+        if texte == "":
             return
-        
+
         # Police
         tailleFont = 12
         font = wx.Font(tailleFont, family=wx.SWISS, style=wx.NORMAL, weight=wx.NORMAL, underline=False, face="Arial")
-        
+
         # Recherche le centre de l'objet
-        dc = wx.ClientDC(self.ctrl_canvas.canvas)
-        tailleDC = dc.GetSize() 
+        dc = wx.ClientDC(self.canvas)
+        tailleDC = dc.GetSize()
         dc.SetFont(font)
         tailleTexte = dc.GetTextExtent(texte)
-        x, y = self.ctrl_canvas.canvas.PixelToWorld((tailleDC[0]/2, tailleDC[1]/2))
-        x, y = x - tailleTexte[0]/2, y - tailleTexte[1]/2
-                    
+        x, y = self.canvas.PixelToWorld((tailleDC[0] / 2, tailleDC[1] / 2))
+        x, y = x - tailleTexte[0] / 2, y - tailleTexte[1] / 2
+
         # Insertion
         objet = AjouterLigneTexte(texte, (x, y), taillePolicePDF=tailleFont, font=font)
-        self.ctrl_canvas.AjouterObjet(objet)
-        self.ctrl_canvas.Selection(objet, forceDraw=True)
-        self.ctrl_canvas.canvas.SetFocus() 
+        self.AjouterObjet(objet)
+        self.Selection(objet, forceDraw=True)
+        self.canvas.SetFocus()
 
     def OnOutil_texteBloc(self, event):
         """ Insertion d'un bloc de texte """
-        dlg = DLG_Saisie_texte_doc.Dialog(self, texte=u"", listeChamps=self.infosCategorie.champs)
+        if self.infosCategorie != None :
+            listeChamps = self.infosCategorie.champs
+        else :
+            listeChamps = []
+        dlg = DLG_Saisie_texte_doc.Dialog(self, texte=u"", listeChamps=listeChamps)
         if dlg.ShowModal() == wx.ID_OK:
             texte = dlg.GetTexte()
             dlg.Destroy()
         else:
             dlg.Destroy()
             return
-        if texte == "" :
+        if texte == "":
             return
-        
+
         # Police
         tailleFont = 12
         font = wx.Font(tailleFont, family=wx.SWISS, style=wx.NORMAL, weight=wx.NORMAL, underline=False, face="Arial")
 
         # Insertion
         objet = AjouterBlocTexte(texte, (0, 0), taillePolicePDF=tailleFont, font=font)
-        self.ctrl_canvas.AjouterObjet(objet)
-        
+        self.AjouterObjet(objet)
+
         # Centrer
-        dc = wx.ClientDC(self.ctrl_canvas.canvas)
+        dc = wx.ClientDC(self.canvas)
         dc.SetFont(font)
-        tailleDC = dc.GetSize() 
+        tailleDC = dc.GetSize()
         largeurTexte = objet.BoxWidth
-        x, y = self.ctrl_canvas.canvas.PixelToWorld((tailleDC[0]/2, tailleDC[1]/2))
-        x, y = int(x - objet.BoxWidth/2), int(y - objet.BoxHeight/2)
+        x, y = self.canvas.PixelToWorld((tailleDC[0] / 2, tailleDC[1] / 2))
+        x, y = Arrondir(x - objet.BoxWidth / 2), Arrondir(y - objet.BoxHeight / 2)
         objet.SetXY(numpy.array([x, y]))
-        
+
         # MAJ Affichage
-        self.ctrl_canvas.Selection(objet, forceDraw=True)
-        self.ctrl_canvas.canvas.SetFocus() 
+        self.Selection(objet, forceDraw=True)
+        self.canvas.SetFocus()
 
     def OnOutil_special(self, event):
         self.OnDropDownSpecial(None)
 
     def OnDropDownSpecial(self, event):
-        if 1 == 1 :#event.IsDropDownClicked():
+        if 1 == 1:  # event.IsDropDownClicked():
             tb = event.GetEventObject()
             tb.SetToolSticky(event.GetId(), True)
 
             # create the popup menu
             menuPopup = wx.Menu()
-            
+
             # Importation d'une image
             index = 0
-            for dictSpecial in self.infosCategorie.speciaux :
+            for dictSpecial in self.infosCategorie.speciaux:
                 id = 20000 + index
                 label = _(u"Insérer l'objet '%s'") % dictSpecial["nom"]
                 item = wx.MenuItem(menuPopup, id, label, label, wx.ITEM_NORMAL)
@@ -4278,17 +4711,17 @@ class Dialog(wx.Dialog):
                 menuPopup.AppendItem(item)
                 self.Bind(wx.EVT_MENU, self.OnOutil_inserer_special, id=id)
                 index += 1
-                
+
                 # Disable si nbre max d'objets de ce type atteint
-                if dictSpecial.has_key("nbreMax") :
-                    if dictSpecial["nbreMax"] != None :
-                        listeObjets = self.ctrl_canvas.canvas._ForeDrawList
+                if dictSpecial.has_key("nbreMax"):
+                    if dictSpecial["nbreMax"] != None:
+                        listeObjets = self.canvas._ForeDrawList
                         nbre = 0
-                        for objetTemp in listeObjets :
+                        for objetTemp in listeObjets:
                             if hasattr(objetTemp, 'champ'):
-                                if objetTemp.champ == dictSpecial["champ"] :
+                                if objetTemp.champ == dictSpecial["champ"]:
                                     nbre += 1
-                        if nbre >= dictSpecial["nbreMax"] :
+                        if nbre >= dictSpecial["nbreMax"]:
                             item.Enable(False)
 
             # line up our menu with the button
@@ -4297,10 +4730,10 @@ class Dialog(wx.Dialog):
             pt = self.ScreenToClient(pt)
 
             self.PopupMenu(menuPopup, pt)
-            
-            # Pour éviter que les menus suivants soient déformés 
+
+            # Pour éviter que les menus suivants soient déformés
             item.SetMarginWidth(16)
-            
+
             # make sure the button is "un-stuck"
             tb.SetToolSticky(event.GetId(), False)
 
@@ -4316,133 +4749,111 @@ class Dialog(wx.Dialog):
         y = dictSpecial["y"]
         largeur = dictSpecial["largeur"]
         hauteur = dictSpecial["hauteur"]
-        
+
         # Place l'objet au centre si la position est None
-        if largeur == None : largeur = dictSpecial["largeurMin"] + 100
-        if hauteur == None : hauteur = dictSpecial["hauteurMin"] + 100
-        if x == None or y == None :
+        if largeur == None: largeur = dictSpecial["largeurMin"] + 100
+        if hauteur == None: hauteur = dictSpecial["hauteurMin"] + 100
+        if x == None or y == None:
             try:
-                tailleDC = wx.ClientDC(self.ctrl_canvas.canvas).GetSize()
+                tailleDC = wx.ClientDC(self.canvas).GetSize()
             except:
-                tailleDC = (self.ctrl_canvas.Size.x, self.ctrl_canvas.Size.y)
-            x, y = self.ctrl_canvas.canvas.PixelToWorld((tailleDC[0]/2, tailleDC[1]/2))
-            x, y = int(x - largeur/2), int(y - hauteur/2)
-        
+                tailleDC = (self.Size.x, self.Size.y)
+            x, y = self.canvas.PixelToWorld((tailleDC[0] / 2, tailleDC[1] / 2))
+            x, y = Arrondir(x - largeur / 2), Arrondir(y - hauteur / 2)
+
         # Insertion
         objet = AjouterSpecial(numpy.array([x, y]), largeur, hauteur, dictSpecial["nom"], dictSpecial["champ"], couleurFond=(250, 250, 50))
-        if dictSpecial.has_key("obligatoire") : objet.obligatoire = dictSpecial["obligatoire"]
-        if dictSpecial.has_key("nbreMax") : objet.nbreMaxe = dictSpecial["nbreMax"]
-        if dictSpecial.has_key("Xmodifiable") : objet.Xmodifiable = dictSpecial["Xmodifiable"]
-        if dictSpecial.has_key("Ymodifiable") : objet.Ymodifiable = dictSpecial["Ymodifiable"]
-        if dictSpecial.has_key("verrouillageX") : objet.verrouillageX = dictSpecial["verrouillageX"]
-        if dictSpecial.has_key("verrouillageY") : objet.verrouillageY = dictSpecial["verrouillageY"]
-        if dictSpecial.has_key("largeurModifiable") : objet.largeurModifiable = dictSpecial["largeurModifiable"]
-        if dictSpecial.has_key("hauteurModifiable") : objet.hauteurModifiable = dictSpecial["hauteurModifiable"]
-        if dictSpecial.has_key("largeurMin") : objet.largeurMin = dictSpecial["largeurMin"]
-        if dictSpecial.has_key("largeurMax") : objet.largeurMax = dictSpecial["largeurMax"]
-        if dictSpecial.has_key("hauteurMin") : objet.hauteurMin = dictSpecial["hauteurMin"]
-        if dictSpecial.has_key("hauteurMax") : objet.hauteurMax = dictSpecial["hauteurMax"]
-        if dictSpecial.has_key("verrouillageLargeur") : objet.verrouillageLargeur = dictSpecial["verrouillageLargeur"]
-        if dictSpecial.has_key("verrouillageHauteur") : objet.verrouillageHauteur = dictSpecial["verrouillageHauteur"]
-        if dictSpecial.has_key("verrouillageProportions") : objet.verrouillageProportions = dictSpecial["verrouillageProportions"]
-        if dictSpecial.has_key("interditModifProportions") : objet.interditModifProportions = dictSpecial["interditModifProportions"]
-        self.ctrl_canvas.AjouterObjet(objet)
-        
+        if dictSpecial.has_key("obligatoire"): objet.obligatoire = dictSpecial["obligatoire"]
+        if dictSpecial.has_key("nbreMax"): objet.nbreMaxe = dictSpecial["nbreMax"]
+        if dictSpecial.has_key("Xmodifiable"): objet.Xmodifiable = dictSpecial["Xmodifiable"]
+        if dictSpecial.has_key("Ymodifiable"): objet.Ymodifiable = dictSpecial["Ymodifiable"]
+        if dictSpecial.has_key("verrouillageX"): objet.verrouillageX = dictSpecial["verrouillageX"]
+        if dictSpecial.has_key("verrouillageY"): objet.verrouillageY = dictSpecial["verrouillageY"]
+        if dictSpecial.has_key("largeurModifiable"): objet.largeurModifiable = dictSpecial["largeurModifiable"]
+        if dictSpecial.has_key("hauteurModifiable"): objet.hauteurModifiable = dictSpecial["hauteurModifiable"]
+        if dictSpecial.has_key("largeurMin"): objet.largeurMin = dictSpecial["largeurMin"]
+        if dictSpecial.has_key("largeurMax"): objet.largeurMax = dictSpecial["largeurMax"]
+        if dictSpecial.has_key("hauteurMin"): objet.hauteurMin = dictSpecial["hauteurMin"]
+        if dictSpecial.has_key("hauteurMax"): objet.hauteurMax = dictSpecial["hauteurMax"]
+        if dictSpecial.has_key("verrouillageLargeur"): objet.verrouillageLargeur = dictSpecial["verrouillageLargeur"]
+        if dictSpecial.has_key("verrouillageHauteur"): objet.verrouillageHauteur = dictSpecial["verrouillageHauteur"]
+        if dictSpecial.has_key("verrouillageProportions"): objet.verrouillageProportions = dictSpecial["verrouillageProportions"]
+        if dictSpecial.has_key("interditModifProportions"): objet.interditModifProportions = dictSpecial["interditModifProportions"]
+        self.AjouterObjet(objet)
+
         # MAJ Canvas
-        self.ctrl_canvas.Selection(objet, forceDraw=True)
-        self.ctrl_canvas.canvas.SetFocus() 
+        self.Selection(objet, forceDraw=True)
+        self.canvas.SetFocus()
 
     def OnAffichage_grille(self, event):
-        if self.ctrl_canvas.affichageGrille == False :
-            self.ctrl_canvas.Affiche_grille() 
+        if self.affichageGrille == False:
+            self.Affiche_grille()
         else:
-            self.ctrl_canvas.Cache_grille()
+            self.Cache_grille()
 
     def OnAffichage_apercu(self, event):
-        self.ctrl_canvas.Imprimer() 
+        self.Imprimer()
 
-    def OnClose(self, event):
-        self.Quitter()
-    
-    def Quitter(self, enregistrer=True):
-##        # Ferme tous les fichiers ouverts
-##        for index in range(0, self.nb.GetPageCount()) :
-##            rtc = self.nb.GetPage(index)
-##            if enregistrer == True :
-##                self.CloseFile(rtc)
-        # Quitter
-        self._mgr.UnInit()
-        del self._mgr
-        self.Destroy()
-        
-    def OnAide(self, event):
-        from Utils import UTILS_Aide
-        UTILS_Aide.Aide("Lditeurdedocuments")
-    
-    def SetNomDoc(self, nom=u""):
-        if nom == None or nom == u"" :
-            nom = _(u"Sans nom")
-        self.nom = nom
-        titre = u"%s - %s" % (NOM_APPLICATION, nom)
-        self.SetTitle(titre)
-    
-    def ChangeTaillePage(self, taille=(210, 297)):
-        self.taille_page = taille
-        self.ctrl_canvas.taille_page = taille
-        self.ctrl_canvas.Reinit_canvas()
-    
-    def GetBufferPhotoPage(self):
-        bmp = self.ctrl_canvas.GetPhotoPage()
-        img = bmp.ConvertToImage()
-        buffer = cStringIO.StringIO()
-        img.SaveStream(buffer, wx.BITMAP_TYPE_PNG)
-        buffer.seek(0)
-        blob = buffer.read()
-        return blob
-        
-    def GetIDmodele(self, IDmodele=None):
-        return self.IDmodele
-    
-    def Importation(self, IDmodele=None, InForeground=True):
+    def OnAffichage_couleurs(self, event):
+        self.afficher_couleurs_donnees = not self.afficher_couleurs_donnees
+        self.MAJ()
+
+    def OnAffichage_labels(self, event):
+        self.afficher_labels_donnees = not self.afficher_labels_donnees
+        self.MAJ()
+
+    def OnAffichage_remplissage(self, event):
+        self.afficher_remplissage_donnees = not self.afficher_remplissage_donnees
+        self.MAJ()
+
+    def OnAffichage_bords(self, event):
+        self.afficher_bords_donnees = not self.afficher_bords_donnees
+        self.MAJ()
+
+    def CreationObjetsObligatoires(self):
+        for objet in self.infosCategorie.speciaux :
+            if objet["obligatoire"] == True :
+                self.AjouterSpecial(objet)
+
+    def Importation(self, IDmodele=None, InForeground=True, ResetBB=True):
         """ Importation des objets d'un modèle """
         listeObjets = ImportationObjets(IDmodele=IDmodele, InForeground=InForeground)
-        for objet in listeObjets :
-            self.ctrl_canvas.AjouterObjet(objet)
-            if InForeground==True :
+        for objet in listeObjets:
+            self.AjouterObjet(objet)
+            if InForeground == True:
                 self.listeInitialeObjets.append(objet.IDobjet)
         # Si c'est un fond
-        if InForeground == False :
+        if InForeground == False:
             return listeObjets
-        
-        self.ctrl_canvas.SetFocus() 
-    
+
+        if ResetBB == True :
+            self.canvas.ZoomToBB()
+        self.SetFocus()
+
     def Sauvegarde(self):
         """ Sauvegarde des données """
         # Sauvegarde des propriétés du document
-        nom = self.ctrl_proprietes_doc.GetNom()
-        observations = self.ctrl_proprietes_doc.GetObservations()
-        taille = self.ctrl_proprietes_doc.GetTaille()
-        IDfond = self.ctrl_proprietes_doc.GetFond()
-        
-        if nom == "" :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un nom pour ce modèle !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
-            dlg.ShowModal()
-            dlg.Destroy()
-            self.ctrl_proprietes_doc.ctrl_nom.SetFocus()
-            return False
-                                            
+        nom = self.parent.ctrl_proprietes_doc.GetNom()
+        observations = self.parent.ctrl_proprietes_doc.GetObservations()
+        IDdonnee = self.IDdonnee
+        taille = self.taille_page #self.ctrl_proprietes_doc.GetTaille()
+        if taille == None :
+            taille = (None, None)
+        IDfond = self.IDfond #self.ctrl_proprietes_doc.GetFond()
+
         DB = GestionDB.DB()
-        listeDonnees = [    
-                ("nom", nom),
-                ("categorie", self.categorie),
-                ("supprimable", 1),
-                ("largeur", taille[0]),
-                ("hauteur", taille[1]),
-                ("observations", observations),
-                ("IDfond", IDfond),
-                ]
-                
-        if self.IDmodele == None :
+        listeDonnees = [
+            ("nom", nom),
+            ("categorie", self.categorie),
+            ("supprimable", 1),
+            ("largeur", taille[0]),
+            ("hauteur", taille[1]),
+            ("observations", observations),
+            ("IDfond", IDfond),
+            ("IDdonnee", IDdonnee),
+        ]
+
+        if self.IDmodele == None:
             # Recherche s'il faut mettre defaut
             req = """SELECT IDmodele, defaut
             FROM documents_modeles
@@ -4450,27 +4861,27 @@ class Dialog(wx.Dialog):
             ;""" % self.categorie
             DB.ExecuterReq(req)
             listeTemp = DB.ResultatReq()
-            if len(listeTemp) == 0 :
+            if len(listeTemp) == 0:
                 listeDonnees.append(("defaut", 1))
             # Insert
             self.IDmodele = DB.ReqInsert("documents_modeles", listeDonnees)
         else:
             # MAJ
             DB.ReqMAJ("documents_modeles", listeDonnees, "IDmodele", self.IDmodele)
-        
-##        # Sauvegarde de la photo de la page
-##        bmp = self.GetBufferPhotoPage()
-##        DB.MAJimage(table="documents_modeles", key="IDmodele", IDkey=self.IDmodele, blobImage=bmp, nomChampBlob="image")
-                
+
+        ##        # Sauvegarde de la photo de la page
+        ##        bmp = self.GetBufferPhotoPage()
+        ##        DB.MAJimage(table="documents_modeles", key="IDmodele", IDkey=self.IDmodele, blobImage=bmp, nomChampBlob="image")
+
         # Sauvegarde des objets
         listeObjetsSauves = []
-        listeObjets = self.ctrl_canvas.GetObjets()
+        listeObjets = self.GetObjets()
         index = 0
-        for objet in listeObjets :
+        for objet in listeObjets:
             IDobjet = objet.IDobjet
-            listeObjetsSauves.append(IDobjet) 
-            
-            listeDonnees = [    
+            listeObjetsSauves.append(IDobjet)
+
+            listeDonnees = [
                 ("IDmodele", self.IDmodele),
                 ("nom", objet.nom),
                 ("categorie", objet.categorie),
@@ -4518,10 +4929,11 @@ class Dialog(wx.Dialog):
                 ("largeurTexte", objet.GetLargeurTexte()),
                 ("norme", objet.GetNorme()),
                 ("afficheNumero", objet.GetAfficheNumero()),
-                ]
-            
+                ("IDdonnee", objet.GetIDdonnee()),
+            ]
+
             # Sauvegarde de l'objet
-            if IDobjet == None :
+            if IDobjet == None:
                 nouvelObjet = True
                 IDobjet = DB.ReqInsert("documents_objets", listeDonnees)
             else:
@@ -4529,18 +4941,387 @@ class Dialog(wx.Dialog):
                 DB.ReqMAJ("documents_objets", listeDonnees, "IDobjet", IDobjet)
 
             # Sauvegarde de l'image
-            bmp = objet.GetImageBuffer() 
-            if bmp != None :
+            bmp = objet.GetImageBuffer()
+            if bmp != None:
                 DB.MAJimage(table="documents_objets", key="IDobjet", IDkey=IDobjet, blobImage=bmp, nomChampBlob="image")
-            
+
             index += 1
-        
+
         # Effacement des objets supprimés
-        for IDobjet in self.listeInitialeObjets :
-            if IDobjet not in listeObjetsSauves :
+        for IDobjet in self.listeInitialeObjets:
+            if IDobjet not in listeObjetsSauves:
                 DB.ReqDEL("documents_objets", "IDobjet", IDobjet)
-        
+
         DB.Close()
+
+
+    def AfficheTooltip(self):
+        """ Création du supertooltip """
+        objet = self.tip.objet
+
+        # Récupération des données du tooltip
+        dictDonnees = self.interactive_data.GetTexteInfoBulle(objet.IDdonnee)
+        if dictDonnees == None or type(dictDonnees) != dict:
+            self.ActiveTooltip(actif=False)
+            return
+
+        # Paramétrage du tooltip
+        font = self.GetFont()
+        self.tip.SetHyperlinkFont(wx.Font(8, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, 'Arial'))
+
+        dictDonnees["couleur"] = objet.FillColor
+        if dictDonnees.has_key("couleur"):
+            couleur = dictDonnees["couleur"]
+            self.tip.SetTopGradientColour(couleur)
+            self.tip.SetMiddleGradientColour(wx.Colour(255, 255, 255))
+            self.tip.SetBottomGradientColour(wx.Colour(255, 255, 255))
+            self.tip.SetTextColor(wx.Colour(76, 76, 76))
+        else:
+            styleTooltip = "Office 2007 Blue"
+            self.tip.ApplyStyle(styleTooltip)
+
+        # Titre du tooltip
+        bmp = None
+        if dictDonnees.has_key("bmp"):
+            bmp = dictDonnees["bmp"]
+        self.tip.SetHeaderBitmap(bmp)
+
+        titre = None
+        if dictDonnees.has_key("titre"):
+            titre = dictDonnees["titre"]
+            self.tip.SetHeaderFont(wx.Font(10, font.GetFamily(), font.GetStyle(), wx.BOLD, font.GetUnderlined(), font.GetFaceName()))
+            self.tip.SetHeader(titre)
+            self.tip.SetDrawHeaderLine(True)
+
+        # Corps du message
+        if dictDonnees.has_key("texte"):
+            texte = dictDonnees["texte"]
+            self.tip.SetMessage(texte)
+
+        # Pied du tooltip
+        pied = None
+        if dictDonnees.has_key("pied") and dictDonnees["pied"] != None :
+            pied = dictDonnees["pied"]
+            self.tip.SetDrawFooterLine(True)
+            self.tip.SetFooterBitmap(wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Aide.png"), wx.BITMAP_TYPE_ANY))
+            self.tip.SetFooterFont(wx.Font(7, font.GetFamily(), font.GetStyle(), wx.LIGHT, font.GetUnderlined(), font.GetFaceName()))
+            self.tip.SetFooter(pied)
+
+        # Affichage du Frame tooltip
+        self.tipFrame = STT.ToolTipWindow(self, self.tip)
+        self.tipFrame.CalculateBestSize()
+        x, y = wx.GetMousePosition()
+        self.tipFrame.SetPosition((x + 15, y + 17))
+        self.tipFrame.DropShadow(True)
+        self.tipFrame.StartAlpha(True)  # ou .Show() pour un affichage immédiat
+
+        # Arrêt du timer
+        self.timerTip.Stop()
+        del self.timerTip
+
+    def CacheTooltip(self):
+        # Fermeture du tooltip
+        if hasattr(self, "tipFrame"):
+            try:
+                self.tipFrame.Destroy()
+                del self.tipFrame
+            except:
+                pass
+
+    def ActiveTooltip(self, actif=True, objet=None):
+        if actif == True:
+            # Active le tooltip
+            if hasattr(self, "tipFrame") == False and hasattr(self, "timerTip") == False:
+                self.timerTip = wx.PyTimer(self.AfficheTooltip)
+                self.timerTip.Start(1500)
+                self.tip.objet = objet
+        else:
+            # Désactive le tooltip
+            if hasattr(self, "timerTip"):
+                if self.timerTip.IsRunning():
+                    self.timerTip.Stop()
+                    del self.timerTip
+                    self.tip.objet = None
+            self.CacheTooltip()
+
+# ---------------------------------------------------------------------------------------------------------------------------------
+
+class Dialog(wx.Dialog):
+    def __init__(self, parent, IDmodele=None, nom="", observations=u"", IDfond=None, categorie=None, taille_page=(210, 297), size=(800, 600)):
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
+        self.parent = parent     
+        self.IDmodele = IDmodele
+        self.taille_page = taille_page
+
+        # DLG Attente
+        dlgAttente = wx.BusyInfo(_(u"Veuillez patienter durant l'initialisation de Noedoc..."), self.parent)
+        #dlgAttente = PBI.PyBusyInfo(_(u"Veuillez patienter durant l'initialisation de Noedoc..."), parent=None, title=_(u"Initialisation de Noedoc"), icon=wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Logo.png"), wx.BITMAP_TYPE_ANY))
+        #wx.Yield()
+
+        # Recherche des données de la catégorie
+        if categorie == "fond" : self.infosCategorie = Fond()
+        if categorie == "facture" : self.infosCategorie = Facture()
+        if categorie == "rappel" : self.infosCategorie = Rappel()
+        if categorie == "attestation" : self.infosCategorie = Attestation()
+        if categorie == "reglement" : self.infosCategorie = Reglement()
+        if categorie == "individu" : self.infosCategorie = Individu()
+        if categorie == "famille" : self.infosCategorie = Famille()
+        if categorie == "inscription" : self.infosCategorie = Inscription()
+        if categorie == "cotisation" : self.infosCategorie = Cotisation()
+        if categorie == "attestation_fiscale" : self.infosCategorie = Attestation_fiscale()
+        if categorie == "location" : self.infosCategorie = Location()
+        if categorie == "location_demande" : self.infosCategorie = Location_demande()
+
+        self._mgr = aui.AuiManager()
+        self._mgr.SetManagedWindow(self)
+        
+        # Propriétés
+        self.SetMinSize((920, 740))
+
+        # Création des widgets
+        self.ctrl_canvas = Panel_canvas(self, IDmodele=IDmodele, categorie=categorie, infosCategorie=self.infosCategorie, taille_page=taille_page)
+
+        # Barres d'outils
+        self.toolbar1 = self.MakeToolBar1()
+        self.toolbar2 = self.MakeToolBar2()
+        self.toolbar3 = self.MakeToolBar3()
+
+        # Création des panels détachables
+        self.ctrl_infos = Panel_infos(self)
+        self.ctrl_commandes = Panel_commandes(self)
+        self.ctrl_proprietes_doc = Panel_proprietes_doc(self, self.ctrl_canvas, categorie=categorie)
+        self.ctrl_proprietes_objet = Panel_proprietes_objet(self, self.ctrl_canvas)
+        self.ctrl_canvas.ctrl_proprietes = self.ctrl_proprietes_objet
+        
+        # Création des panels amovibles
+        self._mgr.AddPane(self.ctrl_infos, aui.AuiPaneInfo().
+                          Name("infos").Caption(_(u"Infos")).
+                          Bottom().Layer(0).Position(1).CaptionVisible(False).CloseButton(False).MaximizeButton(False).MinSize((-1, 18)))
+
+        self._mgr.AddPane(self.ctrl_commandes, aui.AuiPaneInfo().
+                          Name("commandes").Caption(_(u"Commandes")).
+                          Bottom().Layer(1).Position(2).CaptionVisible(False).CloseButton(False).MaximizeButton(False).MinSize((-1, 50)))
+
+        self._mgr.AddPane(self.ctrl_proprietes_doc, aui.AuiPaneInfo().
+                          Name("proprietes_doc").Caption(_(u"Propriétés du modèle")).
+                          Right().Layer(1).Position(1).Fixed().CloseButton(False).MaximizeButton(False))
+                        
+        self._mgr.AddPane(self.ctrl_proprietes_objet, aui.AuiPaneInfo().
+                          Name("proprietes_objet").Caption(_(u"Propriétés de l'objet")).
+                          Right().Layer(1).Position(2).CloseButton(False).MaximizeButton(False).MinSize((160, -1)))
+        
+        # Création du panel central
+        self._mgr.AddPane(self.ctrl_canvas, aui.AuiPaneInfo().Name("canvas").
+                          CenterPane())
+        
+        # Création des barres d'outils
+        self._mgr.AddPane(self.toolbar1, aui.AuiPaneInfo().
+                          Name("barreOutil_modes").Caption("Modes").
+                          ToolbarPane().Top().
+                          LeftDockable(True).RightDockable(True))
+        
+        self._mgr.AddPane(self.toolbar2, aui.AuiPaneInfo().
+                          Name("barreOutils_objets").Caption("Objets").
+                          ToolbarPane().Top().
+                          LeftDockable(True).RightDockable(True))
+        
+        self._mgr.AddPane(self.toolbar3, aui.AuiPaneInfo().
+                          Name("barreOutils_options").Caption("Options").
+                          ToolbarPane().Top().
+                          LeftDockable(True).RightDockable(True))
+
+        self._mgr.Update()
+        
+        self.Bind(wx.EVT_CLOSE, self.OnClose)
+        
+        # Logo
+        _icon = wx.EmptyIcon()
+        _icon.CopyFromBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Logo.png"), wx.BITMAP_TYPE_ANY))
+        self.SetIcon(_icon)
+        
+        # Remplit propriétés doc
+        self.ctrl_proprietes_doc.SetNom(nom)
+        self.ctrl_proprietes_doc.SetObservations(observations)
+        self.ctrl_proprietes_doc.SetFond(IDfond)
+        self.ctrl_proprietes_doc.SetTaille(taille_page)
+
+        # Init Canvas
+        self.ctrl_canvas.IDfond = IDfond
+        self.CenterOnScreen()
+        self.ctrl_canvas.Init_canvas()
+        
+        del dlgAttente
+
+        # Importation
+        if self.IDmodele != None :
+            self.ctrl_canvas.Importation(self.IDmodele)
+        else:
+            self.ctrl_canvas.CreationObjetsObligatoires()
+            # Demande le nom du nouveau modèle
+            dlg = wx.TextEntryDialog(self, _(u"Veuillez saisir un nom pour ce nouveau modèle :"), _(u"Nouveau modèle"))
+            if dlg.ShowModal() == wx.ID_OK:
+                self.ctrl_proprietes_doc.SetNom(dlg.GetValue())
+            dlg.Destroy()
+
+        UTILS_Dialogs.AjusteSizePerso(self, __file__)
+        self.CenterOnScreen()
+        self.ctrl_canvas.OnOutil_ajuster(None)
+
+
+    def MakeToolBar1(self):
+        tbar = aui.AuiToolBar(self, -1, wx.DefaultPosition, wx.DefaultSize, agwStyle=aui.AUI_TB_DEFAULT_STYLE | aui.AUI_TB_OVERFLOW)
+        tbar.SetToolBitmapSize(wx.Size(32, 32))
+
+        ID_OUTIL_CURSEUR = wx.NewId()
+        tbar.AddSimpleTool(ID_OUTIL_CURSEUR, _(u"Curseur"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Curseur.png"), wx.BITMAP_TYPE_ANY), _(u"Curseur"), aui.ITEM_RADIO)
+        self.Bind(wx.EVT_TOOL, self.ctrl_canvas.OnOutil_curseur, id=ID_OUTIL_CURSEUR)
+        tbar.ToggleTool(ID_OUTIL_CURSEUR, True)
+
+        ID_OUTIL_DEPLACER = wx.NewId()
+        tbar.AddSimpleTool(ID_OUTIL_DEPLACER, _(u"Déplacer"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Main.png"), wx.BITMAP_TYPE_ANY), _(u"Déplacer"), aui.ITEM_RADIO)
+        self.Bind(wx.EVT_TOOL, self.ctrl_canvas.OnOutil_deplacer, id=ID_OUTIL_DEPLACER)
+
+        ID_OUTIL_ZOOM_OUT = wx.NewId()
+        tbar.AddSimpleTool(ID_OUTIL_ZOOM_OUT, _(u"Zoom arrière"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/zoom_moins.png"), wx.BITMAP_TYPE_ANY), _(u"Zoom arrière"), aui.ITEM_RADIO)
+        self.Bind(wx.EVT_TOOL, self.ctrl_canvas.OnOutil_zoom_moins, id=ID_OUTIL_ZOOM_OUT)
+
+        ID_OUTIL_ZOOM_IN = wx.NewId()
+        tbar.AddSimpleTool(ID_OUTIL_ZOOM_IN, _(u"Zoom avant"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/zoom_plus.png"), wx.BITMAP_TYPE_ANY), _(u"Zoom avant"), aui.ITEM_RADIO)
+        self.Bind(wx.EVT_TOOL, self.ctrl_canvas.OnOutil_zoom_plus, id=ID_OUTIL_ZOOM_IN)
+
+        tbar.AddSeparator()
+
+        ID_OUTIL_ZOOM_AJUSTER = wx.NewId()
+        tbar.AddSimpleTool(ID_OUTIL_ZOOM_AJUSTER, _(u"Ajuster et centrer l'affichage"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Ajuster.png"), wx.BITMAP_TYPE_ANY), _(u"Ajuster et centrer l'affichage"))
+        self.Bind(wx.EVT_TOOL, self.ctrl_canvas.OnOutil_ajuster, id=ID_OUTIL_ZOOM_AJUSTER)
+        
+        tbar.AddSeparator()
+
+        ID_OUTIL_AFFICHAGE_APERCU = wx.NewId()
+        tbar.AddSimpleTool(ID_OUTIL_AFFICHAGE_APERCU, _(u"Afficher un aperçu PDF"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Pdf.png"), wx.BITMAP_TYPE_ANY), _(u"Afficher un aperçu PDF"))
+        self.Bind(wx.EVT_TOOL, self.ctrl_canvas.OnAffichage_apercu, id=ID_OUTIL_AFFICHAGE_APERCU)
+
+        tbar.Realize()
+        return tbar
+
+    def MakeToolBar2(self):
+        tbar = aui.AuiToolBar(self, -1, wx.DefaultPosition, wx.DefaultSize, agwStyle=aui.AUI_TB_DEFAULT_STYLE | aui.AUI_TB_OVERFLOW)
+        tbar.SetToolBitmapSize(wx.Size(32, 32))
+
+        ID_OUTIL_OBJET_TEXTE_BLOC = wx.NewId()
+        tbar.AddSimpleTool(ID_OUTIL_OBJET_TEXTE_BLOC, _(u"Insérer un bloc de texte multi-lignes"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Texte_ligne.png"), wx.BITMAP_TYPE_ANY), _(u"Insérer un bloc de texte multi-lignes"))
+        self.Bind(wx.EVT_TOOL, self.ctrl_canvas.OnOutil_texteBloc, id=ID_OUTIL_OBJET_TEXTE_BLOC)
+
+        ID_OUTIL_OBJET_RECTANGLE = wx.NewId()
+        tbar.AddSimpleTool(ID_OUTIL_OBJET_RECTANGLE, _(u"Insérer un rectangle"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Rectangle.png"), wx.BITMAP_TYPE_ANY), _(u"Insérer un rectangle"))
+        self.Bind(wx.EVT_TOOL, self.ctrl_canvas.OnOutil_rectangle, id=ID_OUTIL_OBJET_RECTANGLE)
+
+        ID_OUTIL_OBJET_LIGNE = wx.NewId()
+        tbar.AddSimpleTool(ID_OUTIL_OBJET_LIGNE, _(u"Insérer une ligne"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Ligne.png"), wx.BITMAP_TYPE_ANY), _(u"Insérer une ligne"))
+        self.Bind(wx.EVT_TOOL, self.ctrl_canvas.OnOutil_ligne, id=ID_OUTIL_OBJET_LIGNE)
+
+        ID_OUTIL_OBJET_CERCLE = wx.NewId()
+        tbar.AddSimpleTool(ID_OUTIL_OBJET_CERCLE, _(u"Insérer une ellipse"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Cercle.png"), wx.BITMAP_TYPE_ANY), _(u"Insérer une ellipse"))
+        self.Bind(wx.EVT_TOOL, self.ctrl_canvas.OnOutil_cercle, id=ID_OUTIL_OBJET_CERCLE)
+
+        ID_OUTIL_OBJET_POLYGONE = wx.NewId()
+        tbar.AddSimpleTool(ID_OUTIL_OBJET_POLYGONE, _(u"Insérer un polygone"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Polygone.png"), wx.BITMAP_TYPE_ANY), _(u"Insérer un polygone"))
+        self.Bind(wx.EVT_TOOL, self.ctrl_canvas.OnOutil_polygone, id=ID_OUTIL_OBJET_POLYGONE)
+
+        ID_OUTIL_OBJET_POLYLINE = wx.NewId()
+        tbar.AddSimpleTool(ID_OUTIL_OBJET_POLYLINE, _(u"Dessiner un polygone à main levée"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Polyline.png"), wx.BITMAP_TYPE_ANY), _(u"Dessiner un polygone à main levée"))
+        self.Bind(wx.EVT_TOOL, self.ctrl_canvas.OnOutil_polyline, id=ID_OUTIL_OBJET_POLYLINE)
+
+        ID_OUTIL_OBJET_IMAGE_DROPDOWN = wx.NewId()
+        ID_OUTIL_OBJET_IMAGE = wx.NewId()
+        tbar.AddSimpleTool(ID_OUTIL_OBJET_IMAGE_DROPDOWN, _(u"Insérer une image"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Image.png"), wx.BITMAP_TYPE_ANY), _(u"Insérer une image"))
+        self.Bind(wx.EVT_TOOL, self.ctrl_canvas.OnOutil_image, id=ID_OUTIL_OBJET_IMAGE)
+        self.Bind(aui.EVT_AUITOOLBAR_TOOL_DROPDOWN, self.ctrl_canvas.OnDropDownImage, id=ID_OUTIL_OBJET_IMAGE_DROPDOWN)
+        tbar.SetToolDropDown(ID_OUTIL_OBJET_IMAGE_DROPDOWN, True)
+        
+        if len(self.infosCategorie.codesbarres) > 0 :
+            ID_OUTIL_OBJET_BARCODE_DROPDOWN = wx.NewId()
+            ID_OUTIL_OBJET_CODEBARRES = wx.NewId()
+            tbar.AddSimpleTool(ID_OUTIL_OBJET_BARCODE_DROPDOWN, _(u"Insérer un code-barres"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Codebarres.png"), wx.BITMAP_TYPE_ANY), _(u"Insérer un code-barres"))
+            self.Bind(wx.EVT_TOOL, self.ctrl_canvas.OnOutil_codebarres, id=ID_OUTIL_OBJET_CODEBARRES)
+            self.Bind(aui.EVT_AUITOOLBAR_TOOL_DROPDOWN, self.ctrl_canvas.OnDropDownBarcode, id=ID_OUTIL_OBJET_BARCODE_DROPDOWN)
+            tbar.SetToolDropDown(ID_OUTIL_OBJET_BARCODE_DROPDOWN, True)
+
+        if len(self.infosCategorie.speciaux) > 0 :
+            ID_OUTIL_OBJET_SPECIAL_DROPDOWN = wx.NewId()
+            ID_OUTIL_OBJET_SPECIAL = wx.NewId()
+            tbar.AddSimpleTool(ID_OUTIL_OBJET_SPECIAL_DROPDOWN, _(u"Insérer un objet spécial"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Special.png"), wx.BITMAP_TYPE_ANY), _(u"Insérer un objet spécial"))
+            self.Bind(wx.EVT_TOOL, self.ctrl_canvas.OnOutil_special, id=ID_OUTIL_OBJET_SPECIAL)
+            self.Bind(aui.EVT_AUITOOLBAR_TOOL_DROPDOWN, self.ctrl_canvas.OnDropDownSpecial, id=ID_OUTIL_OBJET_SPECIAL_DROPDOWN)
+            tbar.SetToolDropDown(ID_OUTIL_OBJET_SPECIAL_DROPDOWN, True)
+                
+        tbar.Realize()
+        return tbar
+
+    def MakeToolBar3(self):
+        tbar = aui.AuiToolBar(self, -1, wx.DefaultPosition, wx.DefaultSize, agwStyle=aui.AUI_TB_DEFAULT_STYLE | aui.AUI_TB_OVERFLOW)
+        tbar.SetToolBitmapSize(wx.Size(32, 32))
+
+        ID_OUTIL_AFFICHAGE_GRILLE = wx.NewId()
+        tbar.AddSimpleTool(ID_OUTIL_AFFICHAGE_GRILLE, _(u"Afficher la grille"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Grille.png"), wx.BITMAP_TYPE_ANY), _(u"Afficher la grille"), aui.ITEM_CHECK)
+        self.Bind(wx.EVT_TOOL, self.ctrl_canvas.OnAffichage_grille, id=ID_OUTIL_AFFICHAGE_GRILLE)
+        tbar.ToggleTool(ID_OUTIL_AFFICHAGE_GRILLE, True)
+        
+        tbar.Realize()
+        return tbar
+
+    def OnBoutonOk(self, event=None):
+        UTILS_Dialogs.SaveSizePerso(self, __file__)
+        self.EndModal(wx.ID_OK)
+
+    def OnBoutonAnnuler(self, event=None):
+        UTILS_Dialogs.SaveSizePerso(self, __file__)
+        self.EndModal(wx.ID_CANCEL)
+
+    def OnClose(self, event):
+        self.Quitter()
+
+    def Quitter(self, enregistrer=True):
+        UTILS_Dialogs.SaveSizePerso(self, __file__)
+        # Quitter
+        self._mgr.UnInit()
+        del self._mgr
+        self.Destroy()
+
+    def OnAide(self, event):
+        from Utils import UTILS_Aide
+        UTILS_Aide.Aide("Lditeurdedocuments")
+
+    def SetNomDoc(self, nom=u""):
+        if nom == None or nom == u"":
+            nom = _(u"Sans nom")
+        self.nom = nom
+        titre = u"%s - %s" % (NOM_APPLICATION, nom)
+        self.SetTitle(titre)
+
+    def ChangeTaillePage(self, taille=(210, 297)):
+        self.taille_page = taille
+        self.ctrl_canvas.taille_page = taille
+        self.ctrl_canvas.Reinit_canvas()
+
+    def GetBufferPhotoPage(self):
+        bmp = self.ctrl_canvas.GetPhotoPage()
+        img = bmp.ConvertToImage()
+        buffer = cStringIO.StringIO()
+        img.SaveStream(buffer, wx.BITMAP_TYPE_PNG)
+        buffer.seek(0)
+        blob = buffer.read()
+        return blob
+
+    def GetIDmodele(self, IDmodele=None):
+        return self.ctrl_canvas.IDmodele
+
+
+
+
+
+
+
 
 def GetLogo_organisateur():
     # Charge le logo
@@ -4577,10 +5358,13 @@ def ImportationObjets(IDmodele=None, InForeground=True):
     listeChamps = []
     for nom, type, info in dictChamps["documents_objets"] :
         listeChamps.append(nom)
-        
+
+    if IDmodele == None :
+        return []
+
     # Importation des données
     DB = GestionDB.DB()
-    req = "SELECT * FROM documents_objets WHERE IDmodele=%d ORDER BY ordre;" % IDmodele 
+    req = "SELECT * FROM documents_objets WHERE IDmodele=%d ORDER BY ordre;" % IDmodele
     DB.ExecuterReq(req)
     listeDonnees = DB.ResultatReq()
     DB.Close()
@@ -4604,7 +5388,7 @@ def ImportationObjets(IDmodele=None, InForeground=True):
         for point in listeTemp :
             if len(point) > 0 :
                 x, y = point.split(",")
-                listePoints.append(numpy.array([int(x), int(y)]))
+                listePoints.append(numpy.array([Arrondir(x), Arrondir(y)]))
         return listePoints
     
     listeObjetsCanvas = []
@@ -4626,6 +5410,7 @@ def ImportationObjets(IDmodele=None, InForeground=True):
                     styleRemplis=objet["styleRemplis"], 
                     IDobjet=objet["IDobjet"],
                     InForeground=InForeground,
+                    IDdonnee=objet["IDdonnee"],
                     )
 
         # Ligne
@@ -4639,6 +5424,7 @@ def ImportationObjets(IDmodele=None, InForeground=True):
                     epaissTrait=objet["epaissTrait"], 
                     IDobjet=objet["IDobjet"],
                     InForeground=InForeground,
+                    IDdonnee=objet["IDdonnee"],
                     )
 
         # Ligne
@@ -4655,6 +5441,7 @@ def ImportationObjets(IDmodele=None, InForeground=True):
                     styleRemplis=objet["styleRemplis"], 
                     IDobjet=objet["IDobjet"],
                     InForeground=InForeground,
+                    IDdonnee=objet["IDdonnee"],
                     )
 
         # Polygone
@@ -4670,6 +5457,7 @@ def ImportationObjets(IDmodele=None, InForeground=True):
                     styleRemplis=objet["styleRemplis"], 
                     IDobjet=objet["IDobjet"],
                     InForeground=InForeground,
+                    IDdonnee=objet["IDdonnee"],
                     )
 
         # Image
@@ -4699,6 +5487,7 @@ def ImportationObjets(IDmodele=None, InForeground=True):
                         typeImage=objet["typeImage"], 
                         IDobjet=objet["IDobjet"],
                         InForeground=InForeground,
+                        IDdonnee=objet["IDdonnee"],
                         )
                 
                 if objet["typeImage"] == "logo" :
@@ -4729,6 +5518,7 @@ def ImportationObjets(IDmodele=None, InForeground=True):
                     couleurFond=ConvertCouleur(objet["coulRemplis"]),
                     IDobjet=objet["IDobjet"],
                     InForeground=InForeground,
+                    IDdonnee=objet["IDdonnee"],
                     )
         
         # Ligne de texte
@@ -4762,8 +5552,8 @@ def ImportationObjets(IDmodele=None, InForeground=True):
                     couleurFond=ConvertCouleur(objet["couleurFond"]),
                     couleurTrait=ConvertCouleur(objet["couleurTrait"]),
                     styleTrait=objet["styleTrait"], 
-                    epaissTrait=objet["epaissTrait"], 
-                    largeur=objet["largeurTexte"], 
+                    epaissTrait=objet["epaissTrait"],
+                    largeurTexte=objet["largeurTexte"],
                     padding=objet["padding"], 
                     family = objet["familyPolice"],
                     style=objet["stylePolice"],
@@ -4774,6 +5564,7 @@ def ImportationObjets(IDmodele=None, InForeground=True):
                     interligne = objet["interligne"],
                     IDobjet=objet["IDobjet"],
                     InForeground=InForeground,
+                    IDdonnee=objet["IDdonnee"],
                     )
         
         listeObjetsCanvas.append(objetCanvas) 
@@ -5062,6 +5853,13 @@ def DessineObjetPDF(objet, canvas, valeur=None):
         textObject.setFont(GetPolice(objet), taillePolice)
         textObject.setTextOrigin(x, y - taillePolice + (taillePolice*0.1) )#textObject._leading * 0.5)
         GetCouleurPolice(objet)
+
+        # Si largeur fixe, on wrap le texte
+        if objet.largeurTexte != None :
+            dc = wx.MemoryDC()
+            dc.SetFont(wx.Font(taillePolice, wx.FONTFAMILY_DEFAULT, wx.NORMAL, wx.NORMAL))
+            valeur = wordwrap(valeur, objet.largeurTexte*3.7, dc, breakLongWords=True)
+
         textObject.textLines(valeur)
         canvas.drawText(textObject)
         
@@ -5134,7 +5932,13 @@ class Impression():
         # -------- Initialisation du document ----------
         nomDoc = FonctionsPerso.GenerationNomDoc("documentPDF", "pdf")
         if sys.platform.startswith("win") : nomDoc = nomDoc.replace("/", "\\")
-        canvas = CanvasPDF(nomDoc, pagesize=(self.taille_page[0]*mmPDF, self.taille_page[1]*mmPDF) )
+        if self.taille_page == None :
+            # Impression des images interactives
+            taille_page = A4
+        else :
+            # Impression normale
+            taille_page = (self.taille_page[0]*mmPDF, self.taille_page[1]*mmPDF)
+        canvas = CanvasPDF(nomDoc, pagesize=taille_page)
         
         # Création des objets du fond
         for objet in self.listeObjetsFond :

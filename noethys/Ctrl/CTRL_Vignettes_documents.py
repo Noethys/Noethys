@@ -138,12 +138,13 @@ class CTRL(TC.ThumbnailCtrl):
     def __init__(self, parent, type_donnee="piece", IDpiece=None, IDreponse=None, IDtype_piece=None,
                                          afficheLabels=True, tailleVignette=128,
                                          style=0):
-        TC.ThumbnailCtrl.__init__(self, parent, style=style)
+        TC.ThumbnailCtrl.__init__(self, parent, style=style, afficheLabels=afficheLabels)
         self.SetThumbOutline(TC.THUMB_OUTLINE_IMAGE)
         self.type_donnee = type_donnee
         self.IDpiece = IDpiece
         self.IDreponse = IDreponse
         self.IDtype_piece = IDtype_piece
+        self.afficheLabels = afficheLabels
         
         self.listePages = []
         self.listePagesInitiale = []
@@ -295,8 +296,8 @@ Tous les fichiers (*.*)|*.*"
             else:
                 largeur = largeur * tailleMaxi / hauteur
                 hauteur = tailleMaxi
-            imgPIL = imgPIL.resize((largeur, hauteur), Image.ANTIALIAS) #.Rescale(width=largeur, height=hauteur, quality=qualite) 
-        
+            imgPIL = imgPIL.resize((largeur, hauteur), Image.ANTIALIAS) #.Rescale(width=largeur, height=hauteur, quality=qualite)
+
         # Met l'image dans un buffer
         buffer = cStringIO.StringIO()
         imgPIL.save(buffer, format="JPEG", quality=85)
@@ -509,9 +510,9 @@ class MyFrame(wx.Frame):
         sizer_1 = wx.BoxSizer(wx.VERTICAL)
         sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
         self.SetSizer(sizer_1)
-        self.ctrl = CTRL(panel, IDpiece=18)
-        self.bouton_1 = CTRL_Bouton_image.CTRL(panel, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
-        self.bouton_2 = CTRL_Bouton_image.CTRL(panel, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.ctrl = CTRL(panel, IDpiece=18, afficheLabels=True, tailleVignette=64)
+        self.bouton_1 = CTRL_Bouton_image.CTRL(panel, texte=_(u"Ajouter"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_2 = CTRL_Bouton_image.CTRL(panel, texte=_(u"Bouton 2"), cheminImage="Images/32x32/Valider.png")
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.ctrl, 1, wx.EXPAND|wx.ALL, 10)
         sizer_2.Add(self.bouton_1, 0, wx.EXPAND|wx.ALL, 10)

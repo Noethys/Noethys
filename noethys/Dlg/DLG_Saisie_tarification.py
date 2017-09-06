@@ -392,6 +392,8 @@ class Dialog(wx.Dialog):
                 ("choix", dictFiltre["choix"]),
                 ("criteres", dictFiltre["criteres"]),
                 ("IDtarif", self.IDtarif),
+                ("type", "tarif"),
+                ("IDdonnee", self.IDtarif),
                 ]
 
             # Envoi des filtres au track_tarif

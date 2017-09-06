@@ -1,11 +1,18 @@
-Version 1.2.0.9 (17/08/2017) :
+Version 1.2.1.0 (06/09/2017) :
 
+- Ajout des locations
+- Ajout de la largeur fixe des textes dans l'éditeur PDF
+- Ajout des images interactives
 - Ajout des évènements
 - Ajout des modèles de prestations
+- Ajout du fichier exemple Secteur jeunes
 - Amélioration sélection méthode de calcul dans paramétrage du tarif
+- Amélioration du traitement par lot des ouvertures
+- Amélioration de la saisie auto des jours fériés variables
 - Accélération de l'ouverture de la grille des conso
 - Correction bug sur couleur dans état global
 - Correction bug saisie conso dans gestionnaire des conso
+- Correction de divers petits bugs
 
 Version 1.2.0.8 (28/07/2017) :
 

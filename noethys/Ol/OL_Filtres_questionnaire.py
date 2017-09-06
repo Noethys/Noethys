@@ -12,8 +12,6 @@
 import Chemins
 from Utils.UTILS_Traduction import _
 import wx
-from Ctrl import CTRL_Bouton_image
-import datetime
 import GestionDB
 
 
@@ -84,7 +82,8 @@ def GetCondition(filtre="", choix="", criteres=""):
 
 
 class Track(object):
-    def __init__(self, parent, donnees):
+    def __init__(self, parent, donnees, index=None):
+        self.index = index
         self.IDfiltre = donnees["IDfiltre"]
         self.IDquestion = donnees["IDquestion"]
         self.choix = donnees["choix"]
@@ -105,13 +104,13 @@ class ListView(FastObjectListView):
         # Récupération des paramètres perso
         self.listeDonnees = kwds.pop("listeDonnees", [])
         self.listeTypes = kwds.pop("listeTypes", ("famille", "individu"))
+        self.CallFonctionOnMAJ = kwds.pop("CallFonctionOnMAJ", None)
         self.selectionID = None
         self.selectionTrack = None
         self.criteres = ""
         self.itemSelected = False
         self.popupIndex = -1
         self.listeFiltres = []
-        self.dictTracks = {}
         # Initialisation du listCtrl
         self.nom_fichier_liste = __file__
         FastObjectListView.__init__(self, *args, **kwds)
@@ -168,12 +167,10 @@ class ListView(FastObjectListView):
         listeID = None
         listeListeView = []
         
-        self.dictTracks = {}
         index = 0
         for dictTemp in self.listeDonnees :
-            track = Track(self, dictTemp)
+            track = Track(self, dictTemp, index=index)
             listeListeView.append(track)
-            self.dictTracks[track] = index
             if self.selectionID == dictTemp["IDfiltre"] :
                 self.selectionTrack = track
             index += 1
@@ -211,7 +208,9 @@ class ListView(FastObjectListView):
             self.SelectObject(self.selectionTrack, deselectOthers=True, ensureVisible=True)
         self.selectionID = None
         self.selectionTrack = None
-        self._ResizeSpaceFillingColumns() 
+        self._ResizeSpaceFillingColumns()
+        if self.CallFonctionOnMAJ != None :
+            self.CallFonctionOnMAJ()
 
     def Selection(self):
         return self.GetSelectedObjects()
@@ -304,7 +303,7 @@ class ListView(FastObjectListView):
         from Utils import UTILS_Export
         UTILS_Export.ExportExcel(self, titre=_(u"Liste des filtres"))
 
-    def Ajouter(self, event):
+    def Ajouter(self, event=None):
         # Ouverture de la fenêtre de saisie
         from Dlg import DLG_Saisie_filtre_questionnaire
         dlg = DLG_Saisie_filtre_questionnaire.Dialog(self, listeTypes=self.listeTypes)
@@ -316,7 +315,7 @@ class ListView(FastObjectListView):
             self.MAJ()
         dlg.Destroy()
 
-    def Modifier(self, event):
+    def Modifier(self, event=None):
         if len(self.Selection()) == 0 :
             dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun filtre à modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
@@ -331,11 +330,11 @@ class ListView(FastObjectListView):
             IDquestion = dlg.GetQuestion() 
             choix, criteres = dlg.GetValeur() 
             dictTemp = {"IDfiltre":track.IDfiltre, "IDquestion":IDquestion, "choix":choix, "criteres":criteres}
-            self.listeDonnees[self.dictTracks[track]] = dictTemp
+            self.listeDonnees[track.index] = dictTemp
             self.MAJ()
         dlg.Destroy()
 
-    def Supprimer(self, event):
+    def Supprimer(self, event=None):
         if len(self.Selection()) == 0 :
             dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun filtre à supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
@@ -344,7 +343,7 @@ class ListView(FastObjectListView):
         track = self.Selection()[0]
         dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer ce filtre ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         if dlg.ShowModal() == wx.ID_YES :
-            self.listeDonnees.pop(self.dictTracks[track])
+            self.listeDonnees.pop(track.index)
             self.MAJ()
         dlg.Destroy()
     

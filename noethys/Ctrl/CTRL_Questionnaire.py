@@ -722,7 +722,7 @@ class CTRL_documents(wx.Panel):
         if hauteur < 30 : 
             hauteur = 30
         self.ctrl_vignettes = CTRL_Vignettes_documents.CTRL(self, type_donnee="reponse", IDreponse=None, afficheLabels=False, tailleVignette=hauteur-20, style=wx.BORDER_SUNKEN)
-        
+
         self.bouton_outils = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Outils.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_outils.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder aux commandes disponibles")))
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOutils, self.bouton_outils)
@@ -897,9 +897,8 @@ class Track(object):
 # --------------------------------------------------------------------------------------------------------------------------------
 
 class CTRL(HTL.HyperTreeList):
-    def __init__(self, parent, type="individu", mode="normal", 
+    def __init__(self, parent, type="individu", IDdonnee=None, mode="normal",
                                         menuActif=False, afficherInvisibles=False, 
-                                        IDindividu=None, IDfamille=None,
                                         largeurQuestion=290, largeurReponse=300,
                                         ): 
         HTL.HyperTreeList.__init__(self, parent, -1)
@@ -908,8 +907,7 @@ class CTRL(HTL.HyperTreeList):
         self.mode = mode
         self.menuActif = menuActif
         self.afficherInvisibles = afficherInvisibles
-        self.IDindividu = IDindividu
-        self.IDfamille = IDfamille
+        self.IDdonnee = IDdonnee
         self.largeurQuestion = largeurQuestion
         self.largeurReponse = largeurReponse
 
@@ -1035,16 +1033,20 @@ class CTRL(HTL.HyperTreeList):
             self.dictCategories[track.IDcategorie]["questions"].append(track)
 
         # Importation des réponses
-        if self.IDindividu != None or self.IDfamille != None :
-            if self.IDindividu != None : conditionReponses = "IDindividu=%d" % self.IDindividu
-            if self.IDfamille != None : conditionReponses = "IDfamille=%d" % self.IDfamille
-            req = """SELECT IDreponse, IDquestion, IDindividu, IDfamille, reponse
+        if self.IDdonnee != None :
+            if self.type == "individu":
+                conditionReponses = "IDindividu=%d" % self.IDdonnee
+            elif self.type == "famille":
+                conditionReponses = "IDfamille=%d" % self.IDdonnee
+            else:
+                conditionReponses = "IDdonnee=%d AND type='%s'" % (self.IDdonnee, self.type)
+            req = """SELECT IDreponse, IDquestion, IDindividu, IDfamille, reponse, type, IDdonnee
             FROM questionnaire_reponses
             WHERE %s
             ;""" % conditionReponses
             DB.ExecuterReq(req)
             listeReponses = DB.ResultatReq()     
-            for IDreponse, IDquestion, IDindividu, IDfamille, reponse in listeReponses :
+            for IDreponse, IDquestion, IDindividu, IDfamille, reponse, typeDonnee, IDdonnee in listeReponses :
                 self.dictReponses[IDquestion] = {"IDreponse":IDreponse, "reponse":reponse} 
 
         DB.Close() 
@@ -1435,9 +1437,77 @@ class CTRL(HTL.HyperTreeList):
                 if track.controle == "documents" and track.IDquestion == IDquestion :
                     nbreDocuments = track.ctrl.GetNbreDocuments() 
         return nbreDocuments
-        
-        
-            
+
+    def Sauvegarde(self, DB=None, IDdonnee=None):
+        if IDdonnee != None :
+            self.IDdonnee = IDdonnee
+
+        valeurs = self.GetValeurs()
+        dictReponses = self.GetDictReponses()
+        dictValeursInitiales = self.GetDictValeursInitiales()
+        dirty = False
+
+        if DB == None :
+            DBT = GestionDB.DB()
+        else :
+            DBT = DB
+
+        # Sauvegarde du questionnaire
+        for IDquestion, reponse in valeurs.iteritems():
+            # Si la réponse est différente de la réponse initiale
+            if reponse != dictValeursInitiales[IDquestion] or reponse == "##DOCUMENTS##":
+                dirty = True
+
+                if dictReponses.has_key(IDquestion):
+                    IDreponse = dictReponses[IDquestion]["IDreponse"]
+                else:
+                    IDreponse = None
+
+                # Si c'est un document, on regarde s'il y a des docs à sauver
+                sauvegarder = True
+                if reponse == "##DOCUMENTS##":
+                    nbreDocuments = self.GetNbreDocuments(IDquestion)
+                    if nbreDocuments == 0:
+                        sauvegarder = False
+
+                # Sauvegarde la réponse
+                if sauvegarder == True:
+                    if self.type == "famille" :
+                        IDfamille = self.IDdonnee
+                    else :
+                        IDfamille = None
+                    if self.type == "individu" :
+                        IDindividu = self.IDdonnee
+                    else :
+                        IDindividu = None
+
+                    listeDonnees = [
+                        ("IDquestion", IDquestion),
+                        ("IDfamille", IDfamille),
+                        ("IDindividu", IDindividu),
+                        ("reponse", reponse),
+                        ("type", self.type),
+                        ("IDdonnee", self.IDdonnee),
+                    ]
+                    if IDreponse == None:
+                        IDreponse = DBT.ReqInsert("questionnaire_reponses", listeDonnees)
+                    else:
+                        DBT.ReqMAJ("questionnaire_reponses", listeDonnees, "IDreponse", IDreponse)
+
+                # Sauvegarde du contrôle Porte-documents
+                if reponse == "##DOCUMENTS##":
+                    nbreDocuments = self.SauvegardeDocuments(IDquestion, IDreponse)
+                    if nbreDocuments == 0 and IDreponse != None:
+                        DBT.ReqDEL("questionnaire_reponses", "IDreponse", IDreponse)
+
+        if DB == None :
+            DBT.Close()
+
+        # Sauvegarde les données si nouveautés
+        # if dirty == True:
+        #     self.MAJ(importation=True)
+
+
 # -------------------------------------------------------------------------------------------------------------------------------------------
 
 class MyFrame(wx.Frame):

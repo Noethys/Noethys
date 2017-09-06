@@ -413,7 +413,10 @@ class Thumb(object):
     
     def __init__(self, parent, track=None):
         self._id = 0
-        self._caption = track.label
+        if parent.afficheLabels == True :
+            self._caption = track.label
+        else :
+            self._caption = ""
         self._filesize = None
         self._parent = parent
         self._captionbreaks = []
@@ -655,7 +658,7 @@ class ThumbnailCtrl(wx.Panel):
 
     def __init__(self, parent, id=wx.ID_ANY, pos=wx.DefaultPosition,
                  size=wx.DefaultSize, thumboutline=THUMB_OUTLINE_IMAGE,
-                 thumbfilter=THUMB_FILTER_IMAGES, imagehandler=PILImageHandler, style=0):
+                 thumbfilter=THUMB_FILTER_IMAGES, imagehandler=PILImageHandler, style=0, afficheLabels=True):
         """
         Default class constructor.
 
@@ -688,7 +691,7 @@ class ThumbnailCtrl(wx.Panel):
 
         self._combo = wx.ComboBox(self, -1, style=wx.CB_DROPDOWN | wx.CB_READONLY)
         self._scrolled = ScrolledThumbnail(self, -1, thumboutline=thumboutline,
-                                           thumbfilter=thumbfilter, imagehandler = imagehandler)
+                                           thumbfilter=thumbfilter, imagehandler = imagehandler, afficheLabels=afficheLabels)
 
         subsizer = wx.BoxSizer(wx.HORIZONTAL)
         subsizer.Add((3, 0), 0)
@@ -818,7 +821,7 @@ class ScrolledThumbnail(wx.ScrolledWindow):
 
     def __init__(self, parent, id=wx.ID_ANY, pos=wx.DefaultPosition,
                  size=wx.DefaultSize, thumboutline=THUMB_OUTLINE_IMAGE,
-                 thumbfilter=THUMB_FILTER_IMAGES, imagehandler=PILImageHandler):
+                 thumbfilter=THUMB_FILTER_IMAGES, imagehandler=PILImageHandler, afficheLabels=True):
         """
         Default class constructor.
 
@@ -870,6 +873,8 @@ class ScrolledThumbnail(wx.ScrolledWindow):
         self._zoomfactor = 1.4
         self.SetCaptionFont()
         self._items = []
+
+        self.afficheLabels = afficheLabels
 
         self._enabletooltip = False
         

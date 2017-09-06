@@ -2098,8 +2098,22 @@ class DB:
             except Exception, err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
+        # =============================================================
 
-
+        versionFiltre = (1, 2, 1, 0)
+        if versionFichier < versionFiltre :
+            try :
+                if self.IsTableExists("produits_categories") == False: self.CreationTable("produits_categories", Tables.DB_DATA)
+                if self.IsTableExists("produits") == False: self.CreationTable("produits", Tables.DB_DATA)
+                if self.IsTableExists("locations") == False: self.CreationTable("locations", Tables.DB_DATA)
+                if self.IsTableExists("locations_demandes") == False: self.CreationTable("locations_demandes", Tables.DB_DATA)
+                self.AjoutChamp("questionnaire_reponses", "type", "VARCHAR(100)")
+                self.AjoutChamp("questionnaire_reponses", "IDdonnee", "INTEGER")
+                self.AjoutChamp("questionnaire_filtres", "IDdonnee", "INTEGER")
+                self.AjoutChamp("documents_objets", "IDdonnee", "INTEGER")
+                self.AjoutChamp("documents_modeles", "IDdonnee", "INTEGER")
+            except Exception, err :
+                return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
 
 
@@ -2353,7 +2367,7 @@ if __name__ == "__main__":
                 
     # Création d'une table données
     # db = DB(suffixe="DATA")
-    # listeTables = ("modeles_prestations",)
+    # listeTables = ("locations_demandes",)
     # for nomTable in listeTables :
     #     db.CreationTable(nomTable, Tables.DB_DATA)
     # db.Close()
@@ -2389,7 +2403,7 @@ if __name__ == "__main__":
         
     # # Ajouter un champ
     # db = DB(suffixe="DATA")
-    # db.AjoutChamp("tarifs_lignes", "IDmodele", "INTEGER")
+    # db.AjoutChamp("documents_modeles", "IDdonnee", "INTEGER")
     # db.Close()
 
     # Exportation d'une table dans la base DEFAUT

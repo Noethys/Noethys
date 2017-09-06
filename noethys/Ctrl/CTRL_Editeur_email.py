@@ -45,6 +45,8 @@ CATEGORIES = [
     ("portail_demande_reservation", _(u"Portail - Demande d'une réservation")),
     ("portail_demande_facture", _(u"Portail - Demande d'une facture")),
     ("portail_demande_recu_reglement", _(u"Portail - Demande d'un reçu de règlement")),
+    ("location", _(u"Location")),
+    ("location_demande", _(u"Demande de location")),
     ]
 
 
@@ -217,8 +219,27 @@ MOTSCLES = {
                 ( "{DEMANDE_REPONSE}", _(u"Réponse à la demande") ),
                 ],
 
-    }
+    "location": [
+                ("{IDLOCATION}", _(u"ID de la location")),
+                ("{IDPRODUIT}", _(u"ID du produit")),
+                ("{DATE_DEBUT}", _(u"Date de début")),
+                ("{DATE_FIN}", _(u"Date de fin")),
+                ("{HEURE_DEBUT}", _(u"Heure de début")),
+                ("{HEURE_FIN}", _(u"Heure de fin")),
+                ("{NOM_PRODUIT}", _(u"Nom du produit")),
+                ("{NOM_CATEGORIE}", _(u"Nom de la catégorie")),
+                ("{NOTES}", _(u"Observations")),
+                ],
 
+    "location_demande": [
+                ("{IDDEMANDE}", _(u"ID de la demande")),
+                ("{DATE}", _(u"Date de la demande")),
+                ("{HEURE}", _(u"Heure de la demande")),
+                ("{NOTES}", _(u"Observations")),
+                ],
+
+
+}
 
 
 

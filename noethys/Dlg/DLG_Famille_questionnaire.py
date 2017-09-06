@@ -28,7 +28,7 @@ class Panel(wx.Panel):
         
         # Questionnaire
         self.staticbox_questionnaire = wx.StaticBox(self, -1, _(u"Questionnaire"))
-        self.ctrl_questionnaire = CTRL_Questionnaire.CTRL(self, type="famille", IDfamille=IDfamille)
+        self.ctrl_questionnaire = CTRL_Questionnaire.CTRL(self, type="famille", IDdonnee=IDfamille)
         self.ctrl_questionnaire.SetMinSize((620, -1))
 
         # Mémo
@@ -91,7 +91,6 @@ class Panel(wx.Panel):
         dictReponses = self.ctrl_questionnaire.GetDictReponses() 
         dictValeursInitiales = self.ctrl_questionnaire.GetDictValeursInitiales()
         dirty = False
-        
         DB = GestionDB.DB()
         
         # Sauvegarde du questionnaire

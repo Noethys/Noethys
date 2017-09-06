@@ -73,7 +73,7 @@ class MyFrame(wx.Frame):
         _icon = wx.EmptyIcon()
         _icon.CopyFromBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Logo.png"), wx.BITMAP_TYPE_ANY))
         self.SetIcon(_icon)
-        self.SetTitle(_(u"Visualisateur d'image"))
+        self.SetTitle(_(u"Aperçu d'image"))
         
         self.imgORIG = None
         self.imgORIX = 0
@@ -108,8 +108,8 @@ class MyFrame(wx.Frame):
         outils = wx.ToolBar(self, -1, style = wx.TB_HORIZONTAL | wx.NO_BORDER)
         outils.AddSimpleTool(wx.ID_EXIT,
                     wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Fermer.png"), wx.BITMAP_TYPE_PNG),
-                    shortHelpString = _(u"Fermer le visualiseur"),
-                    longHelpString = _(u"Fermer le visualiseur"))
+                    shortHelpString = _(u"Fermer l'aperçu"),
+                    longHelpString = _(u"Fermer l'aperçu"))
         
         outils.AddSeparator()
         
@@ -194,7 +194,7 @@ class MyFrame(wx.Frame):
                 self.imgORIY = self.imgORIG.GetHeight()
                 self.bmpRESU = self.imgORIG.ConvertToBitmap()
                 self.panneau.Affiche(self.bmpRESU, self.ratio)
-                self.SetTitle(_(u"Visualiseur d'images [%s]")% fichier)
+                self.SetTitle(_(u"Aperçu d'image [%s]")% fichier)
                 self.barre.SetStatusText("(%s, %s) %s %%"%(self.imgORIX, self.imgORIY, self.ratio), 1)
     
     def ChargeImagePIL(self, imgPIL=None):
@@ -222,7 +222,7 @@ class MyFrame(wx.Frame):
             self.imgORIY = 0
             self.bmpRESU = None
             self.ratio = 100
-            self.SetTitle(_(u"Visualiseur d'images"))
+            self.SetTitle(_(u"Aperçu d'images"))
             self.barre.SetStatusText("", 1)
 
     def OnExit(self, evt):

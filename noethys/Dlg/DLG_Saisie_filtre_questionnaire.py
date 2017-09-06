@@ -19,6 +19,7 @@ from Ctrl import CTRL_Saisie_date
 from Ctrl import CTRL_Saisie_euros
 
 from Ctrl.CTRL_Questionnaire import LISTE_CONTROLES
+from Dlg.DLG_Questionnaires import LISTE_CATEGORIES
 
 
 
@@ -788,8 +789,10 @@ class CTRL_Filtres(wx.Treebook):
         self.il = wx.ImageList(32, 32)
         for controle in LISTE_CONTROLES :
             self.dictImages[controle["code"]] = {"ID":self.il.Add(wx.Bitmap(Chemins.GetStaticPath("Images/32x32/%s" % controle["image"]), wx.BITMAP_TYPE_ANY)), "nom":controle["image"]}
-        self.dictImages["famille"] = {"ID":self.il.Add(wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Famille.png"), wx.BITMAP_TYPE_ANY)), "nom":"Famille.png"}
-        self.dictImages["individu"] = {"ID":self.il.Add(wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Personnes.png"), wx.BITMAP_TYPE_ANY)), "nom":"Personnes.png"}
+
+        for code, label, fichier_image in LISTE_CATEGORIES :
+            self.dictImages[code] = {"ID":self.il.Add(wx.Bitmap(Chemins.GetStaticPath("Images/32x32/%s" % fichier_image), wx.BITMAP_TYPE_ANY)), "nom":fichier_image}
+
         self.AssignImageList(self.il)
         
         # Binds
@@ -806,18 +809,21 @@ class CTRL_Filtres(wx.Treebook):
     def MAJ(self):
         self.dictQuestions = self.Importation() 
         self.dictItems = {}
-        
+
         # Remplissage
         index = 0
         for type in self.listeTypes :
-            if len(self.dictQuestions[type]) > 0 :
+
+            if self.dictQuestions.has_key(type) == True :
                 
-                # Création de la page TYPE (famille ou individu)
+                # Création de la page TYPE
                 panel = CTRL_Page_vide(self, texte=_(u"Veuillez sélectionner une question dans la liste !"))
-                if type == "famille" :
-                    label = _(u"Questions familiales")
-                else :
-                    label = _(u"Questions individuelles")
+
+                label = ""
+                for code, labelTemp, fichier_image in LISTE_CATEGORIES:
+                    if code == type :
+                        label = labelTemp
+
                 self.AddPage(panel, label, imageId=self.dictImages[type]["ID"])
                 indexType = int(index)
                 index += 1
@@ -849,9 +855,11 @@ class CTRL_Filtres(wx.Treebook):
         listeQuestions = DB.ResultatReq()     
         DB.Close() 
         
-        dictQuestions = { "famille" : [], "individu" : []}
+        dictQuestions = {}
         for IDquestion, IDcategorie, type, visible, label, controle in listeQuestions :
             dictTemp = {"IDquestion":IDquestion, "IDcategorie":IDcategorie, "type":type, "visible":visible, "label":label, "controle":controle}
+            if dictQuestions.has_key(type) == False :
+                dictQuestions[type] = []
             dictQuestions[type].append(dictTemp)
             
         return dictQuestions
@@ -967,8 +975,8 @@ if __name__ == "__main__":
     #wx.InitAllImageHandlers()
     dialog_1 = Dialog(None)
     # Test d'importation
-    dialog_1.SetQuestion(2)
-    dialog_1.SetValeur("CONTIENT", _(u"Ceci est un test  !"))
+    #dialog_1.SetQuestion(2)
+    #dialog_1.SetValeur("CONTIENT", _(u"Ceci est un test  !"))
     
     app.SetTopWindow(dialog_1)
     dialog_1.ShowModal()

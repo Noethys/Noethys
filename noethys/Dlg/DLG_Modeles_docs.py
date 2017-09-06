@@ -28,6 +28,8 @@ LISTE_CATEGORIES = [
     ("famille", _(u"Famille")),
     ("inscription", _(u"Inscription")),
     ("cotisation", _(u"Cotisation")),
+    ("location", _(u"Location")),
+    ("location_demande", _(u"Demande de location")),
     ]
 
 

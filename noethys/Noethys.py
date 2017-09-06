@@ -463,7 +463,7 @@ class MainFrame(wx.Frame):
 
         # Panneau Effectifs
         self.ctrl_remplissage = DLG_Effectifs.CTRL(self)
-        self._mgr.AddPane(self.ctrl_remplissage, aui.AuiPaneInfo().Name("effectifs").Caption(_(u"Effectifs")).
+        self._mgr.AddPane(self.ctrl_remplissage, aui.AuiPaneInfo().Name("effectifs").Caption(_(u"Tableau de bord")).
                           Left().Layer(1).Position(0).CloseButton(True).MaximizeButton(True).MinimizeButton(True).MinSize((200, 200)).BestSize((630, 600)) )
         
 ##        if self.userConfig.has_key("perspective_ctrl_effectifs") == True :
@@ -651,6 +651,9 @@ class MainFrame(wx.Frame):
                     {"code": "procedures_badgeage", "label": _(u"Procédures de badgeage"), "infobulle": _(u"Paramétrage des procédures de badgeage"), "image": "Images/16x16/Badgeage.png", "action": self.On_param_badgeage},
                     {"code": "synthese_vocale", "label": _(u"Synthèse vocale"), "infobulle": _(u"Paramétrage de la synthèse vocale"), "image": "Images/16x16/Vocal.png", "action": self.On_param_vocal},
                     "-",
+                    {"code": "questionnaires", "label": _(u"Questionnaires"), "infobulle": _(u"Paramétrage des questionnaires"), "image": "Images/16x16/Questionnaire.png", "action": self.On_param_questionnaires},
+                    {"code": "images_interactives", "label": _(u"Images interactives"), "infobulle": _(u"Paramétrage des images interactives"), "image": "Images/16x16/Image_interactive.png", "action": self.On_param_images_interactives},
+                    "-",
                     {"code": "menu_parametrage_modeles", "label": _(u"Modèles"), "items": [
                         {"code" : "modeles_documents", "label" : _(u"Modèles de documents"), "infobulle" : _(u"Paramétrage des modèles de documents"), "image" : "Images/16x16/Document.png", "action" : self.On_param_documents},
                         {"code" : "modeles_emails", "label" : _(u"Modèles d'Emails"), "infobulle" : _(u"Paramétrage des modèles d'Emails"), "image" : "Images/16x16/Emails_modele.png", "action" : self.On_param_modeles_emails},
@@ -688,9 +691,13 @@ class MainFrame(wx.Frame):
                             {"code" : "etablissements_bancaires", "label" : _(u"Etablissements bancaires"), "infobulle" : _(u"Paramétrage des établissements bancaires"), "image" : "Images/16x16/Banque.png", "action" : self.On_param_banques},
                             ],
                     },
+                    {"code": "menu_parametrage_locations", "label": _(u"Locations"), "items": [
+                        {"code": "categories_produits", "label": _(u"Catégories de produits"), "infobulle": _(u"Paramétrage des catégories de produits"), "image": "Images/16x16/Categorie_produits.png", "action": self.On_param_categories_produits},
+                        {"code": "produits", "label": _(u"Produits"), "infobulle": _(u"Paramétrage des produits"), "image": "Images/16x16/Produit.png", "action": self.On_param_produits},
+                        ],
+                    },
                     "-",
                     {"code" : "menu_parametrage_renseignements", "label" : _(u"Renseignements"), "items" : [
-                            {"code" : "questionnaires", "label" : _(u"Questionnaires"), "infobulle" : _(u"Paramétrage des questionnaires"), "image" : "Images/16x16/Questionnaire.png", "action" : self.On_param_questionnaires},
                             {"code" : "types_pieces", "label" : _(u"Types de pièces"), "infobulle" : _(u"Paramétrage des types de pièces"), "image" : "Images/16x16/Piece.png", "action" : self.On_param_pieces},
                             {"code" : "regimes_sociaux", "label" : _(u"Régimes sociaux"), "infobulle" : _(u"Paramétrage des régimes sociaux"), "image" : "Images/16x16/Mecanisme.png", "action" : self.On_param_regimes},
                             {"code" : "caisses", "label" : _(u"Caisses"), "infobulle" : _(u"Paramétrage des caisses"), "image" : "Images/16x16/Mecanisme.png", "action" : self.On_param_caisses},
@@ -883,7 +890,35 @@ class MainFrame(wx.Frame):
                     {"code" : "individus_edition_etiquettes", "label" : _(u"Edition d'étiquettes et de badges"), "infobulle" : _(u"Edition d'étiquettes et de badges au format PDF"), "image" : "Images/16x16/Etiquette2.png", "action" : self.On_individus_edition_etiquettes},
                     ],
             },
-                    
+
+            # Cotisations
+            {"code": "menu_cotisations", "label": _(u"Cotisations"), "items": [
+                {"code": "liste_cotisations", "label": _(u"Liste des cotisations"), "infobulle": _(u"Liste des cotisations"), "image": "Images/16x16/Cotisation.png", "action": self.On_cotisations_recherche},
+                {"code": "liste_cotisations_manquantes", "label": _(u"Liste des cotisations manquantes"), "infobulle": _(u"Liste des cotisations manquantes"), "image": "Images/16x16/Cotisation.png", "action": self.On_cotisations_manquantes},
+                "-",
+                {"code": "cotisations_email", "label": _(u"Transmettre des cotisations par Email"), "infobulle": _(u"Transmettre des cotisations par Email"), "image": "Images/16x16/Emails_exp.png", "action": self.On_cotisations_email},
+                {"code": "cotisations_imprimer", "label": _(u"Imprimer des cotisations"), "infobulle": _(u"Imprimer une ou plusieurs cotisations"), "image": "Images/16x16/Imprimante.png", "action": self.On_cotisations_imprimer},
+                "-",
+                {"code": "cotisations_depots", "label": _(u"Gestion des dépôts de cotisations"), "infobulle": _(u"Gestion des dépôts de cotisations"), "image": "Images/16x16/Depot_cotisations.png", "action": self.On_cotisations_depots},
+                ],
+             },
+
+            # Locations
+            {"code": "menu_locations", "label": _(u"Locations"), "items": [
+                {"code": "locations_produits", "label": _(u"Liste des produits"), "infobulle": _(u"Liste des produits"), "image": "Images/16x16/Produit.png", "action": self.On_locations_produits},
+                "-",
+                {"code": "locations_locations", "label": _(u"Liste des locations"), "infobulle": _(u"Liste des locations"), "image": "Images/16x16/Location.png", "action": self.On_locations_locations},
+                {"code": "locations_email", "label": _(u"Transmettre des locations par Email"), "infobulle": _(u"Transmettre des locations par Email"), "image": "Images/16x16/Emails_exp.png", "action": self.On_locations_email},
+                {"code": "locations_imprimer", "label": _(u"Imprimer des locations"), "infobulle": _(u"Imprimer une ou plusieurs locations"), "image": "Images/16x16/Imprimante.png", "action": self.On_locations_imprimer},
+                "-",
+                {"code": "locations_demandes", "label": _(u"Liste des demandes"), "infobulle": _(u"Liste des demandes de locations"), "image": "Images/16x16/Location_demande.png", "action": self.On_locations_demandes},
+                {"code": "locations_demandes_email", "label": _(u"Transmettre des demandes par Email"), "infobulle": _(u"Transmettre des demandes par Email"), "image": "Images/16x16/Emails_exp.png", "action": self.On_locations_demandes_email},
+                {"code": "locations_demandes_imprimer", "label": _(u"Imprimer des demandes"), "infobulle": _(u"Imprimer une ou plusieurs demandes"), "image": "Images/16x16/Imprimante.png", "action": self.On_locations_demandes_imprimer},
+                "-",
+                {"code": "locations_images", "label": _(u"Images interactives"), "infobulle": _(u"Consultation des images interactives"), "image": "Images/16x16/Image_interactive.png", "action": self.On_locations_images},
+                ],
+             },
+
             # Consommations
             {"code" : "menu_consommations", "label" : _(u"Consommations"), "items" : [
                     {"code" : "liste_consommations", "label" : _(u"Liste des consommations"), "infobulle" : _(u"Editer une liste des consommations"), "image" : "Images/16x16/Imprimante.png", "action" : self.On_imprim_conso_journ},
@@ -961,19 +996,7 @@ class MainFrame(wx.Frame):
                     {"code" : "export_compta", "label" : _(u"Export des écritures comptables"), "infobulle" : _(u"Exporter les écritures comptables"), "image" : "Images/16x16/Export_comptable.png", "action" : self.On_facturation_export_compta},
                     ],
             },
-            
-            # Cotisations
-            {"code" : "menu_cotisations", "label" : _(u"Cotisations"), "items" : [
-                    {"code" : "liste_cotisations", "label" : _(u"Liste des cotisations"), "infobulle" : _(u"Liste des cotisations"), "image" : "Images/16x16/Cotisation.png", "action" : self.On_cotisations_recherche},
-                    {"code" : "liste_cotisations_manquantes", "label" : _(u"Liste des cotisations manquantes"), "infobulle" : _(u"Liste des cotisations manquantes"), "image" : "Images/16x16/Cotisation.png", "action" : self.On_cotisations_manquantes},
-                    "-",
-                    {"code" : "cotisations_email", "label" : _(u"Transmettre des cotisations par Email"), "infobulle" : _(u"Transmettre des cotisations par Email"), "image" : "Images/16x16/Emails_exp.png", "action" : self.On_cotisations_email},
-                    {"code" : "cotisations_imprimer", "label" : _(u"Imprimer des cotisations"), "infobulle" : _(u"Imprimer une ou plusieurs cotisations"), "image" : "Images/16x16/Imprimante.png", "action" : self.On_cotisations_imprimer},
-                    "-",
-                    {"code" : "cotisations_depots", "label" : _(u"Gestion des dépôts de cotisations"), "infobulle" : _(u"Gestion des dépôts de cotisations"), "image" : "Images/16x16/Depot_cotisations.png", "action" : self.On_cotisations_depots},
-                    ],
-            },
-            
+
             # Règlements
             {"code" : "menu_reglements", "label" : _(u"Règlements"), "items" : [
                     {"code" : "regler_facture", "label" : _(u"Régler une facture\tF4"), "infobulle" : _(u"Régler une facture à partir de son numéro"), "image" : "Images/16x16/Codebarre.png", "action" : self.On_reglements_regler_facture},
@@ -1145,7 +1168,7 @@ class MainFrame(wx.Frame):
 
         # -------------------------- AJOUT DES ELEMENTS A AFFICHER OU CACHER dans le menu AFFICHAGE -----------------------------
         self.listePanneaux = [
-            { "label" : _(u"Effectifs"), "code" : "effectifs", "IDmenu" : None },
+            { "label" : _(u"Tableau de bord"), "code" : "effectifs", "IDmenu" : None },
             { "label" : _(u"Messages"), "code" : "messages", "IDmenu" : None }, 
             { "label" : _(u"Ephéméride"), "code" : "ephemeride", "IDmenu" : None }, 
             { "label" : _(u"Barre de raccourcis"), "code" : "barre_raccourcis", "IDmenu" : None },
@@ -1929,8 +1952,24 @@ class MainFrame(wx.Frame):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_banques", "consulter") == False : return
         from Dlg import DLG_Banques
         dlg = DLG_Banques.Dialog(self)
-        dlg.ShowModal() 
+        dlg.ShowModal()
         dlg.Destroy()
+
+    def On_param_categories_produits(self, event):
+        if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_categories_produits", "consulter") == False : return
+        from Dlg import DLG_Categories_produits
+        dlg = DLG_Categories_produits.Dialog(self)
+        dlg.ShowModal()
+        dlg.Destroy()
+        self.ctrl_remplissage.MAJ()
+
+    def On_param_produits(self, event):
+        if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_produits", "consulter") == False : return
+        from Dlg import DLG_Produits
+        dlg = DLG_Produits.Dialog(self)
+        dlg.ShowModal()
+        dlg.Destroy()
+        self.ctrl_remplissage.MAJ()
 
     def On_param_regies_factures(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_regies_factures", "consulter") == False : return
@@ -2022,6 +2061,14 @@ class MainFrame(wx.Frame):
         dlg = DLG_Questionnaires.Dialog(self)
         dlg.ShowModal() 
         dlg.Destroy()
+
+    def On_param_images_interactives(self, event):
+        if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_images_interactives", "consulter") == False : return
+        from Dlg import DLG_Images_interactives
+        dlg = DLG_Images_interactives.Dialog(self)
+        dlg.ShowModal()
+        dlg.Destroy()
+        self.ctrl_remplissage.MAJ()
 
     def On_param_niveaux_scolaires(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_niveaux_scolaires", "consulter") == False : return
@@ -2952,6 +2999,58 @@ class MainFrame(wx.Frame):
         from Dlg import DLG_Depots_cotisations
         dlg = DLG_Depots_cotisations.Dialog(self)
         dlg.ShowModal() 
+        dlg.Destroy()
+
+    def On_locations_produits(self, event):
+        if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("locations_produits", "consulter") == False : return
+        from Dlg import DLG_Produits_liste
+        dlg = DLG_Produits_liste.Dialog(self)
+        dlg.ShowModal()
+        dlg.Destroy()
+
+    def On_locations_locations(self, event):
+        if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("locations_locations", "consulter") == False : return
+        from Dlg import DLG_Locations
+        dlg = DLG_Locations.Dialog(self)
+        dlg.ShowModal()
+        dlg.Destroy()
+
+    def On_locations_imprimer(self, event):
+        from Dlg import DLG_Locations_impression
+        dlg = DLG_Locations_impression.Dialog(self)
+        dlg.ShowModal()
+        dlg.Destroy()
+
+    def On_locations_email(self, event):
+        from Dlg import DLG_Locations_email
+        dlg = DLG_Locations_email.Dialog(self)
+        dlg.ShowModal()
+        dlg.Destroy()
+
+    def On_locations_demandes(self, event):
+        if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("locations_demandes", "consulter") == False : return
+        from Dlg import DLG_Locations_demandes
+        dlg = DLG_Locations_demandes.Dialog(self)
+        dlg.ShowModal()
+        dlg.Destroy()
+
+    def On_locations_demandes_imprimer(self, event):
+        from Dlg import DLG_Locations_demandes_impression
+        dlg = DLG_Locations_demandes_impression.Dialog(self)
+        dlg.ShowModal()
+        dlg.Destroy()
+
+    def On_locations_demandes_email(self, event):
+        from Dlg import DLG_Locations_demandes_email
+        dlg = DLG_Locations_demandes_email.Dialog(self)
+        dlg.ShowModal()
+        dlg.Destroy()
+
+    def On_locations_images(self, event):
+        if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("locations_images", "consulter") == False : return
+        from Dlg import DLG_Categories_produits_images
+        dlg = DLG_Categories_produits_images.Dialog(self)
+        dlg.ShowModal()
         dlg.Destroy()
 
     def On_imprim_conso_journ(self, event):

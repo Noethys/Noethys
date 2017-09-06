@@ -721,9 +721,10 @@ class Dialog(wx.Dialog):
             ordre = listeTemp[0][0]
             if ordre == None :
                 ordre = 0
+            ordre += 1
         else:
             ordre = self.ordre
-        
+
         # Sauvegarde des questions
         listeDonnees = [    
             ("IDcategorie", IDcategorie),

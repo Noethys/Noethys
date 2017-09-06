@@ -95,7 +95,7 @@ class Questionnaires():
         return texteReponse
 
 
-    def GetQuestions(self, type="individu"):
+    def GetQuestions(self, type="individu", avec_filtre=True):
         """ Type = None (tout) ou 'individu' ou 'famille' """
         if type == None :
             condition = ""
@@ -114,9 +114,8 @@ class Questionnaires():
         DB.Close()
         listeResultats = []
         for IDquestion, label, type, controle, defaut in listeQuestions :
-            if self.GetFiltre(controle) != None :
+            if avec_filtre == False or self.GetFiltre(controle) != None :
                 listeResultats.append({"IDquestion":IDquestion, "label":label, "type":type, "controle":controle, "defaut":defaut, "filtre":self.GetFiltre(controle)})
-            
         return listeResultats
 
 
@@ -124,7 +123,8 @@ class Questionnaires():
         """ Récupération des réponses des questionnaires """
         # Importation des questions
         DB = GestionDB.DB()        
-        req = """SELECT IDreponse, questionnaire_reponses.IDquestion, IDindividu, IDfamille, reponse, controle
+        req = """SELECT IDreponse, questionnaire_reponses.IDquestion, IDindividu, IDfamille, reponse, 
+        questionnaire_reponses.type, questionnaire_reponses.IDdonnee, controle
         FROM questionnaire_reponses
         LEFT JOIN questionnaire_questions ON questionnaire_questions.IDquestion = questionnaire_reponses.IDquestion
         LEFT JOIN questionnaire_categories ON questionnaire_categories.IDcategorie = questionnaire_questions.IDcategorie
@@ -135,7 +135,7 @@ class Questionnaires():
         DB.Close() 
         
         dictReponses = {}
-        for IDreponse, IDquestion, IDindividu, IDfamille, reponse, controle in listeReponses :
+        for IDreponse, IDquestion, IDindividu, IDfamille, reponse, typeDonnee, IDdonnee, controle in listeReponses :
             filtre = self.GetFiltre(controle)
             if filtre != None :
                 
@@ -148,8 +148,10 @@ class Questionnaires():
                 # Mémorisation
                 if IDindividu != None :
                     ID = IDindividu
-                else :
+                elif IDfamille != None :
                     ID = IDfamille
+                else :
+                    ID = IDdonnee
                 if dictReponses.has_key(IDquestion) == False :
                     dictReponses[IDquestion] = {}
                 if dictReponses[IDquestion].has_key(ID) == False :

@@ -51,13 +51,14 @@ def piltowx(image):
         
         
 class CTRL(wx.StaticBitmap):
-    def __init__(self, parent, qualite=100, couleurFond=(255, 255, 255), tailleMaxi=1000, size=(83, 83), style=wx.SUNKEN_BORDER):
+    def __init__(self, parent, qualite=100, couleurFond=(255, 255, 255), tailleMaxi=1000, size=(83, 83), mode="ecriture", style=wx.SUNKEN_BORDER):
         wx.StaticBitmap.__init__(self, parent, id=-1, size=size, style=style)
         self.parent = parent
         self.qualite = qualite
         self.couleurFond = couleurFond
         self.tailleMaxi = tailleMaxi
         self.estModifie = False
+        self.mode = mode
         
         self.imagewx = None
         
@@ -78,19 +79,32 @@ class CTRL(wx.StaticBitmap):
         """Ouverture du menu contextuel"""
         # Création du menu contextuel
         menuPop = wx.Menu()
-        # Item Ajouter
-        item = wx.MenuItem(menuPop, 10, _(u"Importer une image"))
-        bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Ajouter.png"), wx.BITMAP_TYPE_PNG)
+
+        if self.mode == "ecriture" :
+
+            # Item Ajouter
+            item = wx.MenuItem(menuPop, 10, _(u"Importer une image"))
+            bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Ajouter.png"), wx.BITMAP_TYPE_PNG)
+            item.SetBitmap(bmp)
+            menuPop.AppendItem(item)
+            self.Bind(wx.EVT_MENU, self.Menu_Ajouter, id=10)
+
+            # Item Supprimer
+            item = wx.MenuItem(menuPop, 30, _(u"Supprimer"))
+            bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Supprimer.png"), wx.BITMAP_TYPE_PNG)
+            item.SetBitmap(bmp)
+            menuPop.AppendItem(item)
+            self.Bind(wx.EVT_MENU, self.Menu_Supprimer, id=30)
+            if self.imagewx == None : item.Enable(False)
+
+        # Item Visualiser
+        item = wx.MenuItem(menuPop, 40, _(u"Visualiser"))
+        bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Loupe.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
-        self.Bind(wx.EVT_MENU, self.Menu_Ajouter, id=10)
-        # Item Supprimer
-        item = wx.MenuItem(menuPop, 30, _(u"Supprimer"))
-        bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Supprimer.png"), wx.BITMAP_TYPE_PNG)
-        item.SetBitmap(bmp)
-        menuPop.AppendItem(item)
-        self.Bind(wx.EVT_MENU, self.Menu_Supprimer, id=30)
+        self.Bind(wx.EVT_MENU, self.Visualiser, id=40)
         if self.imagewx == None : item.Enable(False)
+
         self.PopupMenu(menuPop)
         menuPop.Destroy()
             
@@ -100,7 +114,7 @@ class CTRL(wx.StaticBitmap):
     def Menu_Supprimer(self, event):
         self.Supprimer()
     
-    def Ajouter(self):
+    def Ajouter(self, event=None):
         """ Importer Image """
         wildcard = "Toutes les images (*.bmp; *.gif; *.jpg; *.png)|*.bmp; *.gif; *.jpg; *.png|Image JPEG (*.jpg)|*.jpg|Image PNG (*.png)|*.png|Image GIF (*.gif)|*.gif|Tous les fichiers (*.*)|*.*"
                 
@@ -144,7 +158,7 @@ class CTRL(wx.StaticBitmap):
         self.MAJ() 
         self.estModifie = True
     
-    def MAJ(self):
+    def MAJ(self, event=None):
         if self.imagewx == None :
             self.SetBitmap(wx.NullBitmap)
             return
@@ -173,7 +187,7 @@ class CTRL(wx.StaticBitmap):
             bmp = wx.BitmapFromImage(img)
         self.SetBitmap(bmp)
     
-    def Supprimer(self):
+    def Supprimer(self, event=None):
         if self.imagewx == None :
             dlg = wx.MessageDialog(self, _(u"Il n'y a aucune image à supprimer !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
@@ -192,12 +206,14 @@ class CTRL(wx.StaticBitmap):
     
     def ChargeFromBuffer(self, buffer=None):
         """ Charge l'image à partir d'un buffer """
-        if buffer == None : return
-        io = cStringIO.StringIO(buffer)
-        if 'phoenix' in wx.PlatformInfo:
-            self.imagewx = wx.Image(io, wx.BITMAP_TYPE_PNG)
+        if buffer == None :
+            self.imagewx = None
         else :
-            self.imagewx = wx.ImageFromStream(io, wx.BITMAP_TYPE_PNG)
+            io = cStringIO.StringIO(buffer)
+            if 'phoenix' in wx.PlatformInfo:
+                self.imagewx = wx.Image(io, wx.BITMAP_TYPE_PNG)
+            else :
+                self.imagewx = wx.ImageFromStream(io, wx.BITMAP_TYPE_PNG)
         self.MAJ() 
 
     def GetBuffer(self):
@@ -209,7 +225,7 @@ class CTRL(wx.StaticBitmap):
         blob = buffer.read()
         return blob
     
-    def Visualiser(self):
+    def Visualiser(self, event=None):
         if self.imagewx == None :
             dlg = wx.MessageDialog(self, _(u"Il n'y a aucune image à visualiser !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()

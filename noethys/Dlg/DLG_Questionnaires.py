@@ -20,6 +20,41 @@ from Ctrl import CTRL_Bandeau
 from Ctrl import CTRL_Questionnaire
 
 
+LISTE_CATEGORIES = [
+    ("individu", _(u"Individu"), "Personnes.png"),
+    ("famille", _(u"Famille"), "Famille.png"),
+    ("categorie_produit", _(u"Catégorie de produits"), "Categorie_produits.png"),
+    ("produit", _(u"Produit"), "Produit.png"),
+    ("location", _(u"Location"), "Location.png"),
+    ("location_demande", _(u"Demande de location"), "Location_demande.png"),
+    ]
+
+
+class CTRL_Type(wx.Choice):
+    def __init__(self, parent, listeData=[]):
+        wx.Choice.__init__(self, parent, -1)
+        self.parent = parent
+        self.listeCategories = LISTE_CATEGORIES
+        self.SetListe()
+
+    def SetListe(self):
+        self.Clear()
+        for code, label, image in self.listeCategories:
+            self.Append(label)
+        self.SetSelection(0)
+
+    def SetID(self, code=None):
+        index = 0
+        for codeTemp, label, image in self.listeCategories:
+            if codeTemp == code:
+                self.SetSelection(index)
+            index += 1
+
+    def GetID(self):
+        index = self.GetSelection()
+        if index == -1: return None
+        return self.listeCategories[index][0]
+
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, type="individu"):
@@ -36,9 +71,8 @@ class Dialog(wx.Dialog):
         self.box_questionnaire_staticbox = wx.StaticBox(self, -1, _(u"Questionnaire"))
         self.box_type_staticbox = wx.StaticBox(self, -1, _(u"Type de fiche"))
         self.label_type = wx.StaticText(self, -1, _(u"Type de fiche :"))
-        self.ctrl_type = wx.Choice(self, -1, choices=[_(u"Individu"), _(u"Famille")])
-        if type == "individu" : self.ctrl_type.Select(0)
-        if type == "famille" : self.ctrl_type.Select(1)
+        self.ctrl_type = CTRL_Type(self)
+        self.ctrl_type.SetID(self.type)
 
         # Questionnaire
         self.ctrl_questionnaire = CTRL_Questionnaire.CTRL(self, type=type, menuActif=True, afficherInvisibles=True)
@@ -119,7 +153,7 @@ class Dialog(wx.Dialog):
         self.CenterOnScreen() 
 
     def OnChoixType(self, event): 
-        self.type = self.ctrl_type.GetStringSelection().lower()
+        self.type = self.ctrl_type.GetID()
         self.ctrl_questionnaire.SetType(self.type)
 
     def OnBoutonAjouter(self, event): 
