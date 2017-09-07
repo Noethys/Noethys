@@ -1,10 +1,10 @@
-Version 1.2.1.0 (06/09/2017) :
+Version 1.2.1.1 (07/09/2017) :
 
+- Ajout des évènements
+- Ajout des modèles de prestations
 - Ajout des locations
 - Ajout de la largeur fixe des textes dans l'éditeur PDF
 - Ajout des images interactives
-- Ajout des évènements
-- Ajout des modèles de prestations
 - Ajout du fichier exemple Secteur jeunes
 - Amélioration sélection méthode de calcul dans paramétrage du tarif
 - Amélioration du traitement par lot des ouvertures
