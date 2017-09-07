@@ -3493,7 +3493,7 @@ class Panel_canvas(wx.Panel):
                     objet.SetLineStyle("Transparent")
 
                 # Création d'un label pour l'objet
-                if self.afficher_labels_donnees == True:
+                if self.afficher_labels_donnees == True and objet.data != None :
                     label = objet.data.GetLabel()
                 else :
                     label = ""

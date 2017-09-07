@@ -786,7 +786,7 @@ class ListView(FastObjectListView):
     def Imprimer(self, event):
         from Utils import UTILS_Printer
         txtTotal = self.GetParent().ctrl_totaux.GetValue()
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Etat nominatif des consommations", total=txtTotal), format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Etat nominatif des consommations"), total=txtTotal, format="A", orientation=wx.PORTRAIT)
         prt.Print()
 
     def ExportTexte(self, event):

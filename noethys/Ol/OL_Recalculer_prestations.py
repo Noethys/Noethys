@@ -36,9 +36,10 @@ class Track(object):
         self.IDcompte_payeur = donnees["IDcompte_payeur"]    
         if self.IDfamille != None :
             self.titulaires = parent.dictTitulaires[self.IDfamille]["titulairesSansCivilite"]
+            self.listeTitulaires = parent.dictTitulaires[self.IDfamille]["listeTitulaires"]
         else :
             self.titulaires = _(u"Aucun titulaire")
-        self.listeTitulaires = parent.dictTitulaires[self.IDfamille]["listeTitulaires"]
+            self.listeTitulaires = []
         self.montant = donnees["montant"]
         self.nbre_conso = donnees["nbre_conso"]
         self.nbre_prestations = donnees["nbre_prestations"]
