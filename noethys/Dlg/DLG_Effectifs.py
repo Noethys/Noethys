@@ -77,7 +77,10 @@ class CTRL(aui.AuiNotebook):
             self.ctrl_locations.MAJ()
 
     def SetPageActive(self, index=0):
-        self.SetSelection(index)
+        try :
+            self.SetSelection(index)
+        except :
+            pass
     
     def GetPageActive(self):
         return self.GetSelection()

@@ -5405,8 +5405,9 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                                 abregeUnite = u"---"
 
                             # Interception erreur conso corrompue
-                            if conso.IDinscription == None :
-                                raise Exception("Erreur : IDinscription a 0")
+                            # if conso.IDinscription == None :
+                            #     print conso.__dict__
+                            #     raise Exception("Erreur : IDinscription a 0")
 
                             # Ajout
                             if conso.statut == "ajout" :
@@ -6040,7 +6041,7 @@ if __name__ == '__main__':
     app = wx.App(0)
     heure_debut = time.time()
     from Dlg import DLG_Grille
-    frame_1 = DLG_Grille.Dialog(None, IDfamille=209, selectionIndividus=[564, 1593])
+    frame_1 = DLG_Grille.Dialog(None, IDfamille=151, selectionIndividus=[326,])
     app.SetTopWindow(frame_1)
     print "Temps de chargement CTRL_Grille =", time.time() - heure_debut
     frame_1.ShowModal()

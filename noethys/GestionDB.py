@@ -2115,6 +2115,28 @@ class DB:
             except Exception, err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
+        # =============================================================
+
+        versionFiltre = (1, 2, 1, 1)
+        if versionFichier < versionFiltre :
+            try :
+                from Utils import UTILS_Procedures
+                UTILS_Procedures.A9078()
+            except Exception, err :
+                return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
         return True

@@ -315,22 +315,26 @@ class CTRL(HTL.HyperTreeList):
         listeDonnees = DB.ResultatReq()
         DB.Close()
         for IDactivite, nom, abrege, date_debut, date_fin, IDgroupe, nomGroupe in listeDonnees:
-            if date_debut is not None:
-                date_debut = DateEngEnDateDD(date_debut)
-            if date_fin is not None:
-                date_fin = DateEngEnDateDD(date_fin)
 
-            # Mémorisation de l'activité
-            if IDactivite not in dictActivites:
-                dictActivites[IDactivite] = {
-                    "nom": nom, "abrege": abrege,
-                    "date_debut": date_debut, "date_fin": date_fin,
-                    "groupes": [],
-                }
-            # Mémorisation du groupe
-            dictActivites[IDactivite]["groupes"].append({
-                "IDgroupe": IDgroupe, "nom": nomGroupe,
-            })
+            if IDgroupe != None :
+
+                if date_debut is not None:
+                    date_debut = DateEngEnDateDD(date_debut)
+                if date_fin is not None:
+                    date_fin = DateEngEnDateDD(date_fin)
+
+                # Mémorisation de l'activité
+                if IDactivite not in dictActivites:
+                    dictActivites[IDactivite] = {
+                        "nom": nom, "abrege": abrege,
+                        "date_debut": date_debut, "date_fin": date_fin,
+                        "groupes": [],
+                    }
+                # Mémorisation du groupe
+                dictActivites[IDactivite]["groupes"].append({
+                    "IDgroupe": IDgroupe, "nom": nomGroupe,
+                })
+
         return dictActivites
 
 

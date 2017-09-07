@@ -19,8 +19,6 @@ import os
 from Utils import UTILS_Questionnaires
 from Utils import UTILS_Identification
 from Utils import UTILS_Config
-from Dlg import DLG_Filtres_locations
-
 
 
 

@@ -53,6 +53,7 @@ DICT_PROCEDURES = {
     "A9073" : _(u"Cryptage des mots de passe utilisateurs"),
     "A9074" : _(u"Cryptage des mots de passe utilisateurs dans nouveau champ mdpcrypt"),
     "A9075" : _(u"Suppression des mots de passe utilisateurs en clair"),
+    "A9078": _(u"Suppression des suppressions des consommations avec IDinscription null"),
 }
 
 
@@ -938,7 +939,12 @@ def A9075():
     DB.Executermany("UPDATE utilisateurs SET mdp=NULL WHERE IDutilisateur<>?", [(9999999,),], commit=True)
     DB.Close()
 
-
+def A9078():
+    """ Suppression des consommations avec IDinscription null """
+    DB = GestionDB.DB()
+    DB.ExecuterReq("DELETE FROM consommations WHERE IDinscription IS NULL;")
+    DB.Commit()
+    DB.Close()
 
 
 
@@ -1028,5 +1034,5 @@ def A9075():
 if __name__ == u"__main__":
     app = wx.App(0)
     # TEST D'UNE PROCEDURE :
-    A9054()
+    A9078()
     app.MainLoop()
