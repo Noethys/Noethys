@@ -556,7 +556,11 @@ class ListView(FastObjectListView):
         # Ouverture de la fiche famille
         if IDfamille != None and IDfamille != -1 :
             from Dlg import DLG_Famille
-            dlg = DLG_Famille.Dialog(self, IDfamille)
+            if ouvrirGrille == True or ouvrirFicheInd == True :
+                AfficherMessagesOuverture = False
+            else :
+                AfficherMessagesOuverture = True
+            dlg = DLG_Famille.Dialog(self, IDfamille=IDfamille, AfficherMessagesOuverture=AfficherMessagesOuverture)
             # Ouverture grille de l'individ
             if ouvrirGrille == True :
                 dlg.OuvrirGrilleIndividu(IDindividu)
