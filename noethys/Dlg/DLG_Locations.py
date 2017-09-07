@@ -32,7 +32,11 @@ class Dialog(wx.Dialog):
         self.ctrl_listview.SetMinSize((50, 50))
         self.ctrl_listview.MAJ()
         self.ctrl_recherche = OL_Locations.CTRL_Outils(self, listview=self.ctrl_listview)
-        
+
+        self.check_locations_actives = wx.CheckBox(self, -1, _(u"Afficher uniquement les locations en cours"))
+        self.check_locations_actives.SetFont(wx.Font(8, wx.FONTFAMILY_DEFAULT, wx.NORMAL, wx.NORMAL))
+        self.check_locations_actives.SetValue(True)
+
         self.bouton_ajouter = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Ajouter.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_modifier = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Modifier.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_supprimer = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Supprimer.png"), wx.BITMAP_TYPE_ANY))
@@ -42,7 +46,8 @@ class Dialog(wx.Dialog):
 
         self.__set_properties()
         self.__do_layout()
-        
+
+        self.Bind(wx.EVT_CHECKBOX, self.OnCheckActives, self.check_locations_actives)
         self.Bind(wx.EVT_BUTTON, self.ctrl_listview.Ajouter, self.bouton_ajouter)
         self.Bind(wx.EVT_BUTTON, self.ctrl_listview.Modifier, self.bouton_modifier)
         self.Bind(wx.EVT_BUTTON, self.ctrl_listview.Supprimer, self.bouton_supprimer)
@@ -50,11 +55,15 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonFermer, self.bouton_fermer)
         self.Bind(wx.EVT_CLOSE, self.OnBoutonFermer)
 
+        # Init contrôles
+        self.ctrl_listview.afficher_uniquement_actives = self.check_locations_actives.GetValue()
+
 
     def __set_properties(self):
         self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter une location")))
         self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la location sélectionnée dans la liste")))
         self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la location sélectionnée dans la liste")))
+        self.check_locations_actives.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher uniquement les locations actives")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         self.SetMinSize((940, 700))
@@ -67,7 +76,13 @@ class Dialog(wx.Dialog):
         grid_sizer_gauche = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
         grid_sizer_base.Add(self.ctrl_bandeau, 0, wx.EXPAND, 0)
         grid_sizer_gauche.Add(self.ctrl_listview, 0, wx.EXPAND, 0)
-        grid_sizer_gauche.Add(self.ctrl_recherche, 0, wx.EXPAND, 0)
+
+        grid_sizer_outils = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=30)
+        grid_sizer_outils.Add(self.ctrl_recherche, 1, wx.EXPAND, 0)
+        grid_sizer_outils.Add(self.check_locations_actives, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_outils.AddGrowableCol(0)
+        grid_sizer_gauche.Add(grid_sizer_outils, 1, wx.EXPAND, 0)
+
         grid_sizer_gauche.AddGrowableRow(0)
         grid_sizer_gauche.AddGrowableCol(0)
         grid_sizer_contenu.Add(grid_sizer_gauche, 1, wx.EXPAND, 0)
@@ -98,7 +113,11 @@ class Dialog(wx.Dialog):
         self.Layout()
         UTILS_Dialogs.AjusteSizePerso(self, __file__)
         self.CenterOnScreen()
-        
+
+    def OnCheckActives(self, event):
+        self.ctrl_listview.afficher_uniquement_actives = self.check_locations_actives.GetValue()
+        self.ctrl_listview.MAJ()
+
     def OnBoutonAide(self, event): 
         from Utils import UTILS_Aide
         UTILS_Aide.Aide("")
