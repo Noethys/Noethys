@@ -142,7 +142,7 @@ class Notebook(wx.Notebook):
 
 
 class Dialog(wx.Dialog):
-    def __init__(self, parent, IDfamille=None):
+    def __init__(self, parent, IDfamille=None, AfficherMessagesOuverture=True):
         wx.Dialog.__init__(self, parent, id=-1, name="fiche_famille", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         self.IDfamille = IDfamille
@@ -208,7 +208,8 @@ class Dialog(wx.Dialog):
         self.ctrl_composition.MAJ()
 
         # Affiche les messages à l'ouverture de la fiche famille
-        self.AfficheMessagesOuverture()
+        if AfficherMessagesOuverture == True :
+            self.AfficheMessagesOuverture()
         
 
     def __set_properties(self):

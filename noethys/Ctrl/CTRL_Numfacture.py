@@ -166,7 +166,7 @@ class CTRL(wx.SearchCtrl):
             self.GetGrandParent().ReglerFacture() 
         else:
             from Dlg import DLG_Famille
-            dlg = DLG_Famille.Dialog(self, IDfamille)
+            dlg = DLG_Famille.Dialog(self, IDfamille=IDfamille, AfficherMessagesOuverture=False)
             dlg.ReglerFacture(IDfacture)
             dlg.ShowModal() 
             dlg.Destroy()
