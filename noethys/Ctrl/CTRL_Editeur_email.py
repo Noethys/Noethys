@@ -235,6 +235,8 @@ MOTSCLES = {
                 ("{IDDEMANDE}", _(u"ID de la demande")),
                 ("{DATE}", _(u"Date de la demande")),
                 ("{HEURE}", _(u"Heure de la demande")),
+                ("{CATEGORIES}", _(u"Catégories demandées")),
+                ("{PRODUITS}", _(u"Produits demandés")),
                 ("{NOTES}", _(u"Observations")),
                 ],
 

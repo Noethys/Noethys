@@ -115,6 +115,47 @@ class Demande():
 
         DB = GestionDB.DB()
 
+        # Importation des catégories de produits
+        req = """SELECT IDcategorie, nom
+        FROM produits_categories;"""
+        DB.ExecuterReq(req)
+        listeCategories = DB.ResultatReq()
+        self.dictCategories = {}
+        for IDcategorie, nom in listeCategories :
+            self.dictCategories[IDcategorie] = nom
+
+        # Importation des produits
+        req = """SELECT IDproduit, nom
+        FROM produits;"""
+        DB.ExecuterReq(req)
+        listeProduits = DB.ResultatReq()
+        self.dictProduits = {}
+        for IDproduit, nom in listeProduits :
+            self.dictProduits[IDproduit] = nom
+
+        # # Importation des critères
+        # req = """SELECT IDfiltre, IDquestion, categorie, choix, criteres FROM questionnaire_filtres WHERE categorie='location_demande' AND IDdonnee IN %s;""" % conditions
+        # DB.ExecuterReq(req)
+        # listeFiltres = DB.ResultatReq()
+        #
+        # req = """SELECT IDquestion, label, controle
+        # FROM questionnaire_questions;"""
+        # DB.ExecuterReq(req)
+        # listeQuestions = DB.ResultatReq()
+        # DICT_QUESTIONS = {}
+        # for IDquestion, label, controle in listeQuestions:
+        #     DICT_QUESTIONS[IDquestion] = {"label": label, "controle": controle}
+        #
+        # # Importation des choix
+        # req = """SELECT IDchoix, IDquestion, label
+        # FROM questionnaire_choix
+        # ORDER BY ordre;"""
+        # DB.ExecuterReq(req)
+        # listeChoix = DB.ResultatReq()
+        # DICT_CHOIX = {}
+        # for IDchoix, IDquestion, label in listeChoix:
+        #     DICT_CHOIX[IDchoix] = {"label": label, "IDquestion": IDquestion, }
+
         # Recherche les locations
         req = """SELECT IDdemande, date, IDfamille, observations, categories, produits, statut, motif_refus, IDlocation
         FROM locations_demandes
@@ -140,10 +181,27 @@ class Demande():
             motif_refus = item[7]
             IDlocation = item[8]
 
+            # Date de la demande
             if isinstance(date, str) or isinstance(date, unicode):
                 date = datetime.datetime.strptime(date, "%Y-%m-%d %H:%M:%S")
             date_texte = datetime.datetime.strftime(date, "%d/%m/%Y")
             heure_texte = datetime.datetime.strftime(date, "%Hh%M")
+
+            # Catégories
+            categories = UTILS_Texte.ConvertStrToListe(categories, siVide=[])
+            liste_labels = []
+            for IDcategorie in categories:
+                if self.dictCategories.has_key(IDcategorie):
+                    liste_labels.append(self.dictCategories[IDcategorie])
+            texte_categories = ", ".join(liste_labels)
+
+            # Produits
+            produits = UTILS_Texte.ConvertStrToListe(produits, siVide=[])
+            liste_labels = []
+            for IDproduit in produits:
+                if self.dictProduits.has_key(IDproduit):
+                    liste_labels.append(self.dictProduits[IDproduit])
+            texte_produits = ", ".join(liste_labels)
 
             # if IDindividu != None and self.dictIndividus.has_key(IDindividu):
             #     beneficiaires = self.dictIndividus[IDindividu]["nom_complet"]
@@ -169,6 +227,8 @@ class Demande():
                 "{IDDEMANDE}": str(IDdemande),
                 "{DATE}": date_texte,
                 "{HEURE}": heure_texte,
+                "{CATEGORIES}": texte_categories,
+                "{PRODUITS}": texte_produits,
                 "{NOTES}": observations,
 
                 "{ORGANISATEUR_NOM}": self.dictOrganisme["nom"],

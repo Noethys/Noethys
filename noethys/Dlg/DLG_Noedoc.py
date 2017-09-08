@@ -928,6 +928,8 @@ class Location_demande():
             (_(u"Numéro ID de la demande"), u"13215", "{IDDEMANDE}"),
             (_(u"Date de la demande"), u"01/01/2017", "{DATE}"),
             (_(u"Heure de la demande"), u"01/01/2014", "{HEURE}"),
+            (_(u"Catégories demandées"), u"Catégorie 1, catégorie 2", "{CATEGORIES}"),
+            (_(u"Produits demandés"), u"Produit 1, produit 2", "{PRODUITS}"),
             (_(u"Notes sur la demande"), u"01/01/2014", "{NOTES}"),
 
             (_(u"Numéro ID de la famille"), u"2582", "{IDFAMILLE}"),
