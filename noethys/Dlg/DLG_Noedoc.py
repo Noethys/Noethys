@@ -3419,7 +3419,10 @@ class Panel_canvas(wx.Panel):
     def Reinit_canvas(self):
         self.canvas.RemoveObject(self.page)
         self.SupprimerFond()
-        self.canvas.RemoveObject(self.grille)
+        try :
+            self.canvas.RemoveObject(self.grille)
+        except :
+            pass
         self.Init_canvas() 
 
     def Init_page(self):
@@ -3435,11 +3438,11 @@ class Panel_canvas(wx.Panel):
         """ Dessine une grille de fond de page """
         listeLignes = []
         # Dessin des lignes
-        for y in range(espace, self.taille_page[1], espace) :
+        for y in range(espace, int(self.taille_page[1]), espace) :
             L = FloatCanvas.Line([(2, y), (self.taille_page[0]-2, y)], LineWidth=1, LineColor=couleur, InForeground=False)
             listeLignes.append(L)
         # Dessin des colonnes
-        for x in range(espace, self.taille_page[0], espace) :
+        for x in range(espace, int(self.taille_page[0]), espace) :
             L = FloatCanvas.Line([(x, 2), (x, self.taille_page[1]-2)], LineWidth=1, LineColor=couleur, InForeground=False)
             listeLignes.append(L)
         self.grille = self.canvas.AddGroup(listeLignes, InForeground=False)
