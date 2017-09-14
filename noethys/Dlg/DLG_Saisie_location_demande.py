@@ -236,15 +236,15 @@ class PAGE_Criteres(wx.Panel):
 
     def Ajouter_filtre(self, event=None):
         self.ctrl_filtres.Ajouter()
-        self.MAJListePropositions()
+        #self.MAJListePropositions()
 
     def Modifier_filtre(self, event=None):
         self.ctrl_filtres.Modifier()
-        self.MAJListePropositions()
+        #self.MAJListePropositions()
 
     def Supprimer_filtre(self, event=None):
         self.ctrl_filtres.Supprimer()
-        self.MAJListePropositions()
+        #self.MAJListePropositions()
 
     def MAJListePropositions(self):
         # Récupération de la liste des filtres actuelle
@@ -256,7 +256,7 @@ class PAGE_Criteres(wx.Panel):
         dictDemande = {"IDdemande": self.IDdemande, "categories": self.ctrl_categories.GetListeCategories(), "produits": self.ctrl_produits.GetListeProduits()}
 
         # Recherche les produits disponibles à proposer
-        dictPropositions = UTILS_Locations.GetPropositionsLocations(dictFiltres=dictFiltres, dictDemande=dictDemande, uniquement_disponibles=False)
+        dictPropositions = UTILS_Locations.GetPropositionsLocations(dictFiltresSelection=dictFiltres, dictDemandeSelection=dictDemande, uniquement_disponibles=False)
         texte = self.GetGrandParent().ctrl_statut.GetPageByCode("attente").ctrl_propositions.SetDictPropositions(dictPropositions, IDdemande=self.IDdemande)
         self.GetGrandParent().ctrl_statut.GetPageByCode("attente").label_propositions.SetLabel(texte)
 

@@ -61,7 +61,7 @@ class Track(object):
         if self.statut == "refusee" :
             self.texte_statut = _(u"Refusée")
         elif self.statut == "attribuee" :
-            self.texte_statut = _(u"Déjà attribuée")
+            self.texte_statut = _(u"Demande satisfaite")
         elif self.statut == "attente" :
             if listview.dictPropositions.has_key(self.IDdemande) :
 
@@ -88,7 +88,7 @@ class Track(object):
         # Récupération des réponses des questionnaires
         for dictQuestion in listview.liste_questions :
             setattr(self, "question_%d" % dictQuestion["IDquestion"], listview.GetReponse(dictQuestion["IDquestion"], self.IDdemande))
-
+        
         # Famille
         if listview.IDfamille == None :
             self.nomTitulaires = listview.dict_titulaires[self.IDfamille]["titulairesSansCivilite"]

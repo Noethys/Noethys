@@ -439,7 +439,7 @@ def GetProduitsLoues(DB=None, date_reference=datetime.datetime.now()):
 
 
 
-def GetPropositionsLocations(dictFiltres={}, dictDemande=None, uniquement_disponibles=True):
+def GetPropositionsLocations(dictFiltresSelection={}, dictDemandeSelection=None, uniquement_disponibles=True):
     DB = GestionDB.DB()
 
     # Importation des questionnaires des produits
@@ -491,10 +491,17 @@ def GetPropositionsLocations(dictFiltres={}, dictDemande=None, uniquement_dispon
     WHERE categorie='location_demande';"""
     DB.ExecuterReq(req)
     listeFiltres = DB.ResultatReq()
+    dictFiltres = {}
     for IDfiltre, IDquestion, choix, criteres, IDdemande, type, controle in listeFiltres :
         if dictFiltres.has_key(IDdemande) == False :
             dictFiltres[IDdemande] = []
         dictFiltres[IDdemande].append({"IDfiltre":IDfiltre, "IDquestion":IDquestion, "choix":choix, "criteres":criteres, "type":type, "controle":controle})
+
+    # Ajoute ou remplace avec le dictDemandeSelection
+    if dictFiltresSelection != None :
+        for IDdemande, listeFiltres in dictFiltresSelection.iteritems() :
+            dictFiltres[IDdemande] = listeFiltres
+
 
     # Importation des demandes de locations
     # if dictDemande == None :
@@ -509,13 +516,13 @@ def GetPropositionsLocations(dictFiltres={}, dictDemande=None, uniquement_dispon
 
     req = """SELECT IDdemande, date, IDfamille, categories, produits
     FROM locations_demandes
-    WHERE statut='attente'
+    WHERE statut='attente' 
     ORDER BY IDdemande;"""
     DB.ExecuterReq(req)
     listeDemandes = DB.ResultatReq()
 
-    if dictDemande != None and dictDemande["IDdemande"] == None :
-        listeDemandes.append(dictDemande)
+    if dictDemandeSelection != None and dictDemandeSelection["IDdemande"] == None :
+        listeDemandes.append(dictDemandeSelection)
 
     DB.Close()
 
@@ -532,8 +539,8 @@ def GetPropositionsLocations(dictFiltres={}, dictDemande=None, uniquement_dispon
         else :
             dictDemandeTemp = demande
 
-        if dictDemande != None and dictDemande["IDdemande"] == dictDemandeTemp["IDdemande"]:
-            dictDemandeTemp = dictDemande
+        if dictDemandeSelection != None and dictDemandeSelection["IDdemande"] == dictDemandeTemp["IDdemande"]:
+            dictDemandeTemp = dictDemandeSelection
 
         IDdemande = dictDemandeTemp["IDdemande"]
 
