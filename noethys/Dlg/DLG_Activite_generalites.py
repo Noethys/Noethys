@@ -217,14 +217,12 @@ class Panel(wx.Panel):
         # Groupes d'activités
         self.staticbox_groupes_staticbox = wx.StaticBox(self, -1, _(u"Regroupement d'activités"))
         self.ctrl_groupes = CTRL_Groupes_activite(self)
-        self.ctrl_groupes.SetMinSize((-1, 40))
+        self.ctrl_groupes.SetMinSize((320, 80))
         
         # Logo
         self.staticbox_logo_staticbox = wx.StaticBox(self, -1, _(u"Logo"))
-        self.radio_logo_org = wx.RadioButton(self, -1, u"", style=wx.RB_GROUP)
-        self.label_logo_org = wx.StaticText(self, -1, _(u"Identique a l'organisateur"))
-        self.radio_logo_autre = wx.RadioButton(self, -1, u"")
-        self.label_logo_autre = wx.StaticText(self, -1, _(u"Autre logo :"))
+        self.radio_logo_org = wx.RadioButton(self, -1, u"Identique à l'organisateur", style=wx.RB_GROUP)
+        self.radio_logo_autre = wx.RadioButton(self, -1, u"Autre logo :")
         self.bouton_modifier_logo = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Modifier.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_supprimer_logo = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Supprimer.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_visualiser_logo = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Loupe.png"), wx.BITMAP_TYPE_ANY))
@@ -246,6 +244,8 @@ class Panel(wx.Panel):
         listePublic = [(1, _(u"Représentants"), False), (2, _(u"Enfants"), False),]
         self.ctrl_public.SetData(listePublic)
         self.ctrl_public.SetMinSize((-1, 40))
+        self.staticbox_public_staticbox.Show(False)
+        self.ctrl_public.Show(False)
 
         # Nombre max d'inscrits
         self.staticbox_limitation_inscrits_staticbox = wx.StaticBox(self, -1, _(u"Limitation du nombre d'inscrits"))
@@ -342,6 +342,11 @@ class Panel(wx.Panel):
         staticbox_validite.Add(grid_sizer_validite, 1, wx.ALL|wx.EXPAND, 5)
         grid_sizer_gauche.Add(staticbox_validite, 1, wx.EXPAND, 0)
 
+        # Regroupement d'activités
+        staticbox_groupes = wx.StaticBoxSizer(self.staticbox_groupes_staticbox, wx.VERTICAL)
+        staticbox_groupes.Add(self.ctrl_groupes, 1, wx.ALL|wx.EXPAND, 5)
+        grid_sizer_gauche.Add(staticbox_groupes, 1, wx.EXPAND, 0)
+
         # Limitation nombre inscrits
         staticbox_limitation_inscrits = wx.StaticBoxSizer(self.staticbox_limitation_inscrits_staticbox, wx.HORIZONTAL)
         staticbox_limitation_inscrits.Add(self.check_limitation_inscrits, 0, wx.ALL|wx.EXPAND, 5)
@@ -358,6 +363,14 @@ class Panel(wx.Panel):
         staticbox_code_comptable.Add(self.ctrl_code_comptable, 1, wx.ALL|wx.EXPAND, 5)
         grid_sizer_gauche.Add(staticbox_code_comptable, 1, wx.EXPAND, 0)
 
+        grid_sizer_gauche.AddGrowableRow(2)
+        
+        grid_sizer_base.Add(grid_sizer_gauche, 1, wx.LEFT|wx.TOP|wx.BOTTOM|wx.EXPAND, 10)
+        
+        # ----------- Sizer droit ----------------
+
+        grid_sizer_droit = wx.FlexGridSizer(rows=5, cols=1, vgap=10, hgap=10)
+
         # Responsables
         staticbox_responsables = wx.StaticBoxSizer(self.staticbox_responsables_staticbox, wx.VERTICAL)
         grid_sizer_responsables = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
@@ -371,21 +384,8 @@ class Panel(wx.Panel):
         grid_sizer_responsables.AddGrowableRow(0)
         grid_sizer_responsables.AddGrowableCol(0)
         staticbox_responsables.Add(grid_sizer_responsables, 1, wx.ALL|wx.EXPAND, 5)
+        grid_sizer_droit.Add(staticbox_responsables, 1, wx.EXPAND, 0)
 
-
-        grid_sizer_gauche.Add(staticbox_responsables, 1, wx.EXPAND, 0)
-        grid_sizer_gauche.AddGrowableRow(5)
-        
-        grid_sizer_base.Add(grid_sizer_gauche, 1, wx.LEFT|wx.TOP|wx.BOTTOM|wx.EXPAND, 10)
-        
-        # ----------- Sizer droit ----------------
-
-        grid_sizer_droit = wx.FlexGridSizer(rows=5, cols=1, vgap=10, hgap=10)
-
-        # Regroupement d'activités
-        staticbox_groupes = wx.StaticBoxSizer(self.staticbox_groupes_staticbox, wx.VERTICAL)
-        staticbox_groupes.Add(self.ctrl_groupes, 1, wx.ALL|wx.EXPAND, 5)
-        grid_sizer_droit.Add(staticbox_groupes, 1, wx.EXPAND, 0)
 
         # Public
         staticbox_public = wx.StaticBoxSizer(self.staticbox_public_staticbox, wx.VERTICAL)
@@ -394,18 +394,14 @@ class Panel(wx.Panel):
 
         # Logo
         staticbox_logo = wx.StaticBoxSizer(self.staticbox_logo_staticbox, wx.VERTICAL)
-        grid_sizer_logo = wx.FlexGridSizer(rows=3, cols=2, vgap=5, hgap=5)
+        grid_sizer_logo = wx.FlexGridSizer(rows=1, cols=8, vgap=5, hgap=5)
         grid_sizer_logo.Add(self.radio_logo_org, 0, wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_logo.Add(self.label_logo_org, 0, wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_logo.Add(self.radio_logo_autre, 0, wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_logo.Add(self.label_logo_autre, 0, wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_logo.Add((10, 10), 0, wx.EXPAND, 0)
-        grid_sizer_logo_autre = wx.FlexGridSizer(rows=1, cols=4, vgap=5, hgap=5)
-        grid_sizer_logo_autre.Add(self.ctrl_logo, 0, wx.EXPAND, 0)
-        grid_sizer_logo_autre.Add(self.bouton_modifier_logo, 0, 0, 0)
-        grid_sizer_logo_autre.Add(self.bouton_supprimer_logo, 0, 0, 0)
-        grid_sizer_logo_autre.Add(self.bouton_visualiser_logo, 0, 0, 0)
-        grid_sizer_logo.Add(grid_sizer_logo_autre, 0, 0, 0)
+        grid_sizer_logo.Add(self.radio_logo_autre, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_logo.Add(self.ctrl_logo, 0, wx.EXPAND, 0)
+        grid_sizer_logo.Add(self.bouton_modifier_logo, 0, 0, 0)
+        grid_sizer_logo.Add(self.bouton_supprimer_logo, 0, 0, 0)
+        grid_sizer_logo.Add(self.bouton_visualiser_logo, 0, 0, 0)
         staticbox_logo.Add(grid_sizer_logo, 1, wx.ALL|wx.EXPAND, 5)
         grid_sizer_droit.Add(staticbox_logo, 1, wx.EXPAND, 0)
 

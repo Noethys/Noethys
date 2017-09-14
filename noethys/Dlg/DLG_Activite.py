@@ -598,7 +598,7 @@ class Dialog(wx.Dialog):
         grid_sizer_base.AddGrowableRow(1)
         grid_sizer_base.AddGrowableCol(0)
         self.Layout()
-        self.SetMinSize((890, 740))
+        self.SetMinSize(self.GetSize()) #((890, 740))
         self.CenterOnScreen()
     
     def CreateIDactivite(self):
@@ -619,7 +619,7 @@ class Dialog(wx.Dialog):
         """ Annulation des modifications """
         self.EndModal(wx.ID_CANCEL) 
 
-    def OnBoutonAide(self, event): 
+    def OnBoutonAide(self, event):
         from Utils import UTILS_Aide
         UTILS_Aide.Aide("Paramtreruneactivit")
 
@@ -645,7 +645,7 @@ class Dialog(wx.Dialog):
 if __name__ == "__main__":
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    IDactivite = None #1  <<<<<<<<<<<<<<<< pour les tests
+    IDactivite = 1 #1 ou None  <<<<<<<<<<<<<<<< pour les tests
     if IDactivite == None :
         frame_1 = Assistant(None, IDactivite=None)
     else:

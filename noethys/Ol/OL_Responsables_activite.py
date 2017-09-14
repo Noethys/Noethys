@@ -19,8 +19,6 @@ import GestionDB
 from Utils import UTILS_Interface
 from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
-try: import psyco; psyco.full()
-except: pass
 
 
 class Track(object):
@@ -104,8 +102,8 @@ class ListView(FastObjectListView):
 
         liste_Colonnes = [
             ColumnDefn(u"", "left", 21, "IDresponsable", imageGetter=GetImageDefaut),
-            ColumnDefn(_(u"Nom du responsable"), 'left', 158, "nom", imageGetter=GetImageSexe),
-            ColumnDefn(_(u"Fonction"), "left", 120, "fonction"),
+            ColumnDefn(_(u"Nom du responsable"), 'left', 190, "nom", imageGetter=GetImageSexe),
+            ColumnDefn(_(u"Fonction"), "left", 130, "fonction"),
             ]
         
         self.SetColumns(liste_Colonnes)
