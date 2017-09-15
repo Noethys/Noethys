@@ -263,12 +263,17 @@ class ObjectListView(wx.ListCtrl):
         self.whenLastTypingEvent = 0
         self.filter = None
         self.objectToIndexMap = None
-        
+
+        # Variables spéciales
         self.listeColonnes = [] 
         self.listeFiltresColonnes = []
         self.nomListe = None
         self.ctrl_footer = None
         self.barreRecherche = None
+        self.titre = ""
+        self.intro = ""
+        self.total = ""
+        self.orientation = wx.PORTRAIT
 
         self.rowFormatter = kwargs.pop("rowFormatter", None)
         self.useAlternateBackColors = kwargs.pop("useAlternateBackColors", True)
@@ -2563,17 +2568,103 @@ class ObjectListView(wx.ListCtrl):
             return nom_module
         return None
 
+    def GenerationContextMenu(self, menu=None, intro="", total="", titre=None, orientation=wx.PORTRAIT):
+        # Met à jour le titre de la liste si besoin
+        if titre != None :
+            self.titre = titre
 
+        # Intro et total
+        self.intro = intro
+        self.total = total
+        self.orientation = orientation
 
+        if self.checkStateColumn != None:
 
+            # Item Tout cocher
+            id = wx.NewId()
+            item = wx.MenuItem(menu, id, _(u"Tout cocher"))
+            item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Cocher.png"), wx.BITMAP_TYPE_PNG))
+            menu.AppendItem(item)
+            self.Bind(wx.EVT_MENU, self.CocheListeTout, id=id)
 
+            # Item Tout décocher
+            id = wx.NewId()
+            item = wx.MenuItem(menu, id, _(u"Tout décocher"))
+            item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Decocher.png"), wx.BITMAP_TYPE_PNG))
+            menu.AppendItem(item)
+            self.Bind(wx.EVT_MENU, self.CocheListeRien, id=id)
 
+            menu.AppendSeparator()
 
+        # Apercu avant impression
+        id = wx.NewId()
+        item = wx.MenuItem(menu, id, _(u"Aperçu avant impression"))
+        item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG))
+        menu.AppendItem(item)
+        self.Bind(wx.EVT_MENU, self.Apercu, id=id)
 
+        # Item Imprimer
+        id = wx.NewId()
+        item = wx.MenuItem(menu, id, _(u"Imprimer"))
+        item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Imprimante.png"), wx.BITMAP_TYPE_PNG))
+        menu.AppendItem(item)
+        self.Bind(wx.EVT_MENU, self.Imprimer, id=id)
 
+        menu.AppendSeparator()
 
+        # Item Export Texte
+        id = wx.NewId()
+        item = wx.MenuItem(menu, id, _(u"Exporter au format Texte"))
+        item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Texte2.png"), wx.BITMAP_TYPE_PNG))
+        menu.AppendItem(item)
+        self.Bind(wx.EVT_MENU, self.ExportTexte, id=id)
 
+        # Item Export Excel
+        id = wx.NewId()
+        item = wx.MenuItem(menu, id, _(u"Exporter au format Excel"))
+        item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Excel.png"), wx.BITMAP_TYPE_PNG))
+        menu.AppendItem(item)
+        self.Bind(wx.EVT_MENU, self.ExportExcel, id=id)
 
+        # Recherche s'il y a un IDfamille ou un IDindividu
+        if len(self.GetObjects()) > 0 :
+            track = self.GetObjects()[0]
+            famille = hasattr(track, "IDfamille")
+            individu = hasattr(track, "IDindividu")
+            if famille == True or individu == True :
+
+                menu.AppendSeparator()
+
+                # Envoyer des emails
+                id = wx.NewId()
+                item = wx.MenuItem(menu, id, _(u"Envoyer un Email"))
+                item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Editeur_email.png"), wx.BITMAP_TYPE_PNG))
+                menu.AppendItem(item)
+                self.Bind(wx.EVT_MENU, self.EnvoyerMail, id=id)
+
+    def Apercu(self, event):
+        from Utils import UTILS_Printer
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=self.titre, intro=self.intro, total=self.total, format="A", orientation=self.orientation)
+        prt.Preview()
+
+    def Imprimer(self, event):
+        from Utils import UTILS_Printer
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=self.titre, intro=self.intro, total=self.total, format="A", orientation=self.orientation)
+        prt.Print()
+
+    def ExportTexte(self, event):
+        from Utils import UTILS_Export
+        UTILS_Export.ExportTexte(self, titre=self.titre)
+
+    def ExportExcel(self, event):
+        from Utils import UTILS_Export
+        UTILS_Export.ExportExcel(self, titre=self.titre)
+
+    def EnvoyerMail(self, event):
+        from Dlg import DLG_Liste_envoi_email
+        dlg = DLG_Liste_envoi_email.Dialog(self, listview=self)
+        dlg.ShowModal()
+        dlg.Destroy()
 
 ########################################################################
 

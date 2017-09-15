@@ -234,35 +234,8 @@ class ListView(FastObjectListView):
 ##        
 ##        menuPop.AppendSeparator()
     
-        # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
-        bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
-        item.SetBitmap(bmp)
-        menuPop.AppendItem(item)
-        self.Bind(wx.EVT_MENU, self.Apercu, id=40)
-        
-        # Item Imprimer
-        item = wx.MenuItem(menuPop, 50, _(u"Imprimer"))
-        bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Imprimante.png"), wx.BITMAP_TYPE_PNG)
-        item.SetBitmap(bmp)
-        menuPop.AppendItem(item)
-        self.Bind(wx.EVT_MENU, self.Imprimer, id=50)
-        
-        menuPop.AppendSeparator()
-    
-        # Item Export Texte
-        item = wx.MenuItem(menuPop, 600, _(u"Exporter au format Texte"))
-        bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Texte2.png"), wx.BITMAP_TYPE_PNG)
-        item.SetBitmap(bmp)
-        menuPop.AppendItem(item)
-        self.Bind(wx.EVT_MENU, self.ExportTexte, id=600)
-        
-        # Item Export Excel
-        item = wx.MenuItem(menuPop, 700, _(u"Exporter au format Excel"))
-        bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Excel.png"), wx.BITMAP_TYPE_PNG)
-        item.SetBitmap(bmp)
-        menuPop.AppendItem(item)
-        self.Bind(wx.EVT_MENU, self.ExportExcel, id=700)
+        # Génération automatique des fonctions standards
+        self.GenerationContextMenu(menuPop, titre=_(u"Liste des reçus de règlements"))
 
         self.PopupMenu(menuPop)
         menuPop.Destroy()
@@ -276,24 +249,6 @@ class ListView(FastObjectListView):
 ##        IDfacture = self.Selection()[0].IDfacture
 ##        from Ctrl import CTRL_Facturation_factures
 ##        CTRL_Facturation_factures.Reedition(IDfacture)
-
-    def Apercu(self, event):
-        from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des reçus de règlements"), format="A", orientation=wx.PORTRAIT)
-        prt.Preview()
-
-    def Imprimer(self, event):
-        from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des reçus de règlements"), format="A", orientation=wx.PORTRAIT)
-        prt.Print()
-
-    def ExportTexte(self, event):
-        from Utils import UTILS_Export
-        UTILS_Export.ExportTexte(self, titre=_(u"Liste des reçus de règlements"))
-        
-    def ExportExcel(self, event):
-        from Utils import UTILS_Export
-        UTILS_Export.ExportExcel(self, titre=_(u"Liste des reçus de règlements"))
 
     def Supprimer(self, event):
         if len(self.Selection()) == 0 :

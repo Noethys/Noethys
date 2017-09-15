@@ -724,51 +724,9 @@ class ListView(FastObjectListView):
             
         menuPop.AppendSeparator()
         
-        if self.checkColonne == True :
-            
-            # Item Tout cocher
-            item = wx.MenuItem(menuPop, 70, _(u"Tout cocher"))
-            item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Cocher.png"), wx.BITMAP_TYPE_PNG))
-            menuPop.AppendItem(item)
-            self.Bind(wx.EVT_MENU, self.CocheTout, id=70)
-
-            # Item Tout décocher
-            item = wx.MenuItem(menuPop, 80, _(u"Tout décocher"))
-            item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Decocher.png"), wx.BITMAP_TYPE_PNG))
-            menuPop.AppendItem(item)
-            self.Bind(wx.EVT_MENU, self.CocheRien, id=80)
-
-            menuPop.AppendSeparator()
-    
-        # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression de la liste"))
-        bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
-        item.SetBitmap(bmp)
-        menuPop.AppendItem(item)
-        self.Bind(wx.EVT_MENU, self.Apercu, id=40)
-        
-        # Item Imprimer
-        item = wx.MenuItem(menuPop, 50, _(u"Imprimer la liste"))
-        bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Imprimante.png"), wx.BITMAP_TYPE_PNG)
-        item.SetBitmap(bmp)
-        menuPop.AppendItem(item)
-        self.Bind(wx.EVT_MENU, self.Imprimer, id=50)
-        
-        menuPop.AppendSeparator()
-    
-        # Item Export Texte
-        item = wx.MenuItem(menuPop, 600, _(u"Exporter au format Texte"))
-        bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Texte2.png"), wx.BITMAP_TYPE_PNG)
-        item.SetBitmap(bmp)
-        menuPop.AppendItem(item)
-        self.Bind(wx.EVT_MENU, self.ExportTexte, id=600)
-        
-        # Item Export Excel
-        item = wx.MenuItem(menuPop, 700, _(u"Exporter au format Excel"))
-        bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Excel.png"), wx.BITMAP_TYPE_PNG)
-        item.SetBitmap(bmp)
-        menuPop.AppendItem(item)
-        self.Bind(wx.EVT_MENU, self.ExportExcel, id=700)
+        # Génération automatique des fonctions standards
+        intro, total = self.GetTextesImpression()
+        self.GenerationContextMenu(menuPop, titre=_(u"Liste des cotisations"), intro=intro, total=total)
 
         self.PopupMenu(menuPop)
         menuPop.Destroy()
@@ -829,40 +787,6 @@ class ListView(FastObjectListView):
         else :
             intro = None
         return intro, total
-
-    def Apercu(self, event=None):
-        from Utils import UTILS_Printer
-        txtIntro, txtTotal = self.GetTextesImpression()
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des cotisations"), intro=txtIntro, total=txtTotal, format="A", orientation=wx.LANDSCAPE)
-        prt.Preview()
-
-    def Imprimer(self, event=None):
-        from Utils import UTILS_Printer
-        txtIntro, txtTotal = self.GetTextesImpression()
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des cotisations"), intro=txtIntro, total=txtTotal, format="A", orientation=wx.LANDSCAPE)
-        prt.Print()
-
-    def ExportTexte(self, event):
-        from Utils import UTILS_Export
-        UTILS_Export.ExportTexte(self, titre=_(u"Liste des cotisations"))
-        
-    def ExportExcel(self, event):
-        from Utils import UTILS_Export
-        UTILS_Export.ExportExcel(self, titre=_(u"Liste des cotisations"))
-
-    def CocheTout(self, event=None):
-        if self.GetFilter() != None :
-            listeObjets = self.GetFilteredObjects()
-        else :
-            listeObjets = self.GetObjects()
-        for track in listeObjets :
-            self.Check(track)
-            self.RefreshObject(track)
-        
-    def CocheRien(self, event=None):
-        for track in self.donnees :
-            self.Uncheck(track)
-            self.RefreshObject(track)
 
     def GetTracksCoches(self):
         return self.GetCheckedObjects()

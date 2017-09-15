@@ -146,83 +146,11 @@ class ListView(FastObjectListView):
         # Création du menu contextuel
         menuPop = wx.Menu()
 
-        # Item Modifier
-        item = wx.MenuItem(menuPop, 10, _(u"Ajouter"))
-        bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Ajouter.png"), wx.BITMAP_TYPE_PNG)
-        item.SetBitmap(bmp)
-        menuPop.AppendItem(item)
-        self.Bind(wx.EVT_MENU, self.Ajouter, id=10)
-        
-        menuPop.AppendSeparator()
-
-        # Item Ajouter
-        item = wx.MenuItem(menuPop, 20, _(u"Modifier"))
-        bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Modifier.png"), wx.BITMAP_TYPE_PNG)
-        item.SetBitmap(bmp)
-        menuPop.AppendItem(item)
-        self.Bind(wx.EVT_MENU, self.Modifier, id=20)
-        if noSelection == True : item.Enable(False)
-        
-        # Item Supprimer
-        item = wx.MenuItem(menuPop, 30, _(u"Supprimer"))
-        bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Supprimer.png"), wx.BITMAP_TYPE_PNG)
-        item.SetBitmap(bmp)
-        menuPop.AppendItem(item)
-        self.Bind(wx.EVT_MENU, self.Supprimer, id=30)
-        if noSelection == True : item.Enable(False)
-
-        menuPop.AppendSeparator()
-    
-        # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
-        bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
-        item.SetBitmap(bmp)
-        menuPop.AppendItem(item)
-        self.Bind(wx.EVT_MENU, self.Apercu, id=40)
-        
-        # Item Imprimer
-        item = wx.MenuItem(menuPop, 50, _(u"Imprimer"))
-        bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Imprimante.png"), wx.BITMAP_TYPE_PNG)
-        item.SetBitmap(bmp)
-        menuPop.AppendItem(item)
-        self.Bind(wx.EVT_MENU, self.Imprimer, id=50)
-
-        menuPop.AppendSeparator()
-
-        # Item Export Texte
-        item = wx.MenuItem(menuPop, 600, _(u"Exporter au format Texte"))
-        bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Texte2.png"), wx.BITMAP_TYPE_PNG)
-        item.SetBitmap(bmp)
-        menuPop.AppendItem(item)
-        self.Bind(wx.EVT_MENU, self.ExportTexte, id=600)
-
-        # Item Export Excel
-        item = wx.MenuItem(menuPop, 700, _(u"Exporter au format Excel"))
-        bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Excel.png"), wx.BITMAP_TYPE_PNG)
-        item.SetBitmap(bmp)
-        menuPop.AppendItem(item)
-        self.Bind(wx.EVT_MENU, self.ExportExcel, id=700)
+        # Génération automatique des fonctions standards
+        self.GenerationContextMenu(menuPop, titre=_(u"Liste des familles"))
 
         self.PopupMenu(menuPop)
         menuPop.Destroy()
-
-    def Apercu(self, event):
-        from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des produits"), format="A", orientation=wx.PORTRAIT)
-        prt.Preview()
-
-    def Imprimer(self, event):
-        from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des produits"), format="A", orientation=wx.PORTRAIT)
-        prt.Print()
-
-    def ExportTexte(self, event):
-        from Utils import UTILS_Export
-        UTILS_Export.ExportTexte(self, titre=_(u"Liste des produits"))
-
-    def ExportExcel(self, event):
-        from Utils import UTILS_Export
-        UTILS_Export.ExportExcel(self, titre=_(u"Liste des produits"))
 
     def GetID(self):
         track = self.Selection()[0]

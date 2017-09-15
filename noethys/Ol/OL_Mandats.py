@@ -261,66 +261,11 @@ class ListView(FastObjectListView):
         
         menuPop.AppendSeparator()
             
-        # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
-        bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
-        item.SetBitmap(bmp)
-        menuPop.AppendItem(item)
-        self.Bind(wx.EVT_MENU, self.Apercu, id=40)
-        
-        # Item Imprimer
-        item = wx.MenuItem(menuPop, 50, _(u"Imprimer"))
-        bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Imprimante.png"), wx.BITMAP_TYPE_PNG)
-        item.SetBitmap(bmp)
-        menuPop.AppendItem(item)
-        self.Bind(wx.EVT_MENU, self.Imprimer, id=50)
-        
-        menuPop.AppendSeparator()
-    
-        # Item Export Texte
-        item = wx.MenuItem(menuPop, 600, _(u"Exporter au format Texte"))
-        bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Texte2.png"), wx.BITMAP_TYPE_PNG)
-        item.SetBitmap(bmp)
-        menuPop.AppendItem(item)
-        self.Bind(wx.EVT_MENU, self.ExportTexte, id=600)
-        
-        # Item Export Excel
-        item = wx.MenuItem(menuPop, 700, _(u"Exporter au format Excel"))
-        bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Excel.png"), wx.BITMAP_TYPE_PNG)
-        item.SetBitmap(bmp)
-        menuPop.AppendItem(item)
-        self.Bind(wx.EVT_MENU, self.ExportExcel, id=700)
+        # Génération automatique des fonctions standards
+        self.GenerationContextMenu(menuPop, titre=_(u"Liste des mandats"), orientation=wx.LANDSCAPE)
 
         self.PopupMenu(menuPop)
         menuPop.Destroy()
-    
-
-    def Impression(self, mode="preview"):
-        if self.donnees == None or len(self.donnees) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Il n'y a aucune donnée à imprimer !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
-            dlg.ShowModal()
-            dlg.Destroy()
-            return
-        from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des mandats"), format="A", orientation=wx.LANDSCAPE)
-        if mode == "preview" :
-            prt.Preview()
-        else:
-            prt.Print()
-        
-    def Apercu(self, event):
-        self.Impression("preview")
-
-    def Imprimer(self, event):
-        self.Impression("print")
-
-    def ExportTexte(self, event):
-        from Utils import UTILS_Export
-        UTILS_Export.ExportTexte(self, titre=_(u"Liste des mandats"))
-        
-    def ExportExcel(self, event):
-        from Utils import UTILS_Export
-        UTILS_Export.ExportExcel(self, titre=_(u"Liste des mandats"))
 
     def Ajouter(self, event):
         if self.IDfamille != None and UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_mandats", "creer") == False : return

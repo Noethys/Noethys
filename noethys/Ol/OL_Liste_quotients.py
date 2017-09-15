@@ -93,8 +93,8 @@ class ListView(FastObjectListView):
 
     def GetTracks(self):
         """ Récupération des données """
-        if self.dateReference == None : return
-        if self.IDtype_quotient == None : return
+        if self.dateReference == None : return []
+        if self.IDtype_quotient == None : return []
         
         # Conditions Activites
         if self.listeActivites == None or self.listeActivites == [] :
@@ -246,53 +246,13 @@ class ListView(FastObjectListView):
         
         menuPop.AppendSeparator()
         
-        # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
-        bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
-        item.SetBitmap(bmp)
-        menuPop.AppendItem(item)
-        self.Bind(wx.EVT_MENU, self.Apercu, id=40)
-        
-        # Item Imprimer
-        item = wx.MenuItem(menuPop, 50, _(u"Imprimer"))
-        bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Imprimante.png"), wx.BITMAP_TYPE_PNG)
-        item.SetBitmap(bmp)
-        menuPop.AppendItem(item)
-        self.Bind(wx.EVT_MENU, self.Imprimer, id=50)
-        
-        menuPop.AppendSeparator()
-    
-        # Item Export Texte
-        item = wx.MenuItem(menuPop, 600, _(u"Exporter au format Texte"))
-        bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Texte2.png"), wx.BITMAP_TYPE_PNG)
-        item.SetBitmap(bmp)
-        menuPop.AppendItem(item)
-        self.Bind(wx.EVT_MENU, self.ExportTexte, id=600)
-        
-        # Item Export Excel
-        item = wx.MenuItem(menuPop, 700, _(u"Exporter au format Excel"))
-        bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Excel.png"), wx.BITMAP_TYPE_PNG)
-        item.SetBitmap(bmp)
-        menuPop.AppendItem(item)
-        self.Bind(wx.EVT_MENU, self.ExportExcel, id=700)
+        # Génération automatique des fonctions standards
+        intro = self.labelParametres
+        total = _(u"> %s familles") % len(self.donnees)
+        self.GenerationContextMenu(menuPop, titre=_(u"Liste des quotients familiaux/revenus"), intro=intro, total=total)
 
         self.PopupMenu(menuPop)
         menuPop.Destroy()
-
-    def Impression(self, mode="preview"):
-        if self.donnees == None or len(self.donnees) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Il n'y a aucune donnée à imprimer !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
-            dlg.ShowModal()
-            dlg.Destroy()
-            return
-        intro = self.labelParametres
-        total = _(u"> %s familles") % len(self.donnees)
-        from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des quotients familiaux/revenus"), intro=intro, total=total, format="A", orientation=wx.PORTRAIT)
-        if mode == "preview" :
-            prt.Preview()
-        else:
-            prt.Print()
 
     def OuvrirFicheFamille(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_fiche", "consulter") == False : return
@@ -307,21 +267,6 @@ class ListView(FastObjectListView):
         if dlg.ShowModal() == wx.ID_OK:
             self.MAJ(self.dateReference, self.listeActivites, self.presents, self.familles)
         dlg.Destroy()
-
-    def Apercu(self, event):
-        self.Impression("preview")
-
-    def Imprimer(self, event):
-        self.Impression("print")
-
-    def ExportTexte(self, event):
-        from Utils import UTILS_Export
-        UTILS_Export.ExportTexte(self, titre=_(u"Liste des quotients familiaux/revenus"))
-        
-    def ExportExcel(self, event):
-        from Utils import UTILS_Export
-        UTILS_Export.ExportExcel(self, titre=_(u"Liste des quotients familiaux/revenus"))
-
 
 # -------------------------------------------------------------------------------------------------------------------------------------
 
@@ -378,8 +323,8 @@ class MyFrame(wx.Frame):
         import time
         t = time.time()
         self.myOlv.MAJ(date_reference=datetime.date(2015, 8, 13), listeActivites=[1, 2, 3, 4], presents=(datetime.date(2015, 1, 1), datetime.date(2015, 12, 31)), familles="TOUTES")
-        print len(self.myOlv.donnees)
-        print "Temps d'execution =", time.time() - t
+        #print len(self.myOlv.donnees)
+        #print "Temps d'execution =", time.time() - t
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.myOlv, 1, wx.ALL|wx.EXPAND, 4)
         panel.SetSizer(sizer_2)

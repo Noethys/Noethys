@@ -183,68 +183,16 @@ class ListView(FastObjectListView):
         # Création du menu contextuel
         menuPop = wx.Menu()
     
-        # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
-        bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
-        item.SetBitmap(bmp)
-        menuPop.AppendItem(item)
-        self.Bind(wx.EVT_MENU, self.Apercu, id=40)
-        
-        # Item Imprimer
-        item = wx.MenuItem(menuPop, 50, _(u"Imprimer"))
-        bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Imprimante.png"), wx.BITMAP_TYPE_PNG)
-        item.SetBitmap(bmp)
-        menuPop.AppendItem(item)
-        self.Bind(wx.EVT_MENU, self.Imprimer, id=50)
-
-        menuPop.AppendSeparator()
-    
-        # Item Export Texte
-        item = wx.MenuItem(menuPop, 600, _(u"Exporter au format Texte"))
-        bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Texte2.png"), wx.BITMAP_TYPE_PNG)
-        item.SetBitmap(bmp)
-        menuPop.AppendItem(item)
-        self.Bind(wx.EVT_MENU, self.ExportTexte, id=600)
-        
-        # Item Export Excel
-        item = wx.MenuItem(menuPop, 700, _(u"Exporter au format Excel"))
-        bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Excel.png"), wx.BITMAP_TYPE_PNG)
-        item.SetBitmap(bmp)
-        menuPop.AppendItem(item)
-        self.Bind(wx.EVT_MENU, self.ExportExcel, id=700)
-
+        # Génération automatique des fonctions standards
+        if len(self.donnees) > 0 :
+            intro = _(u"Pièce sélectionnée : %s") % self.donnees[0].nomPiece
+        else :
+            intro = ""
+        total = _(u"Un total de %d pièces") % len(self.donnees)
+        self.GenerationContextMenu(menuPop, titre=_(u"Liste des pièces fournies"), intro=intro, total=total)
 
         self.PopupMenu(menuPop)
         menuPop.Destroy()
-
-    def Impression(self, mode="preview"):
-        from Utils import UTILS_Printer
-        if len(self.donnees) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Il n'y a aucune donnée dans la liste !"), _(u"Erreur"), wx.OK | wx.ICON_ERROR)
-            dlg.ShowModal()
-            dlg.Destroy()
-            return
-        txtIntro = _(u"Pièce sélectionnée : %s") % self.donnees[0].nomPiece
-        txtTotal = _(u"Un total de %d pièces") % len(self.donnees)
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des pièces fournies"), intro=txtIntro, total=txtTotal, format="A", orientation=wx.PORTRAIT)
-        if mode == "preview" :
-            prt.Preview()
-        else :
-            prt.Print()
-
-    def Apercu(self, event=None):
-        self.Impression("preview")
-
-    def Imprimer(self, event=None):
-        self.Impression("print")
-
-    def ExportTexte(self, event=None):
-        from Utils import UTILS_Export
-        UTILS_Export.ExportTexte(self, titre=_(u"Liste des pièces fournies"))
-        
-    def ExportExcel(self, event=None):
-        from Utils import UTILS_Export
-        UTILS_Export.ExportExcel(self, titre=_(u"Liste des pièces fournies"))
 
 
 # -------------------------------------------------------------------------------------------------------------------------------------

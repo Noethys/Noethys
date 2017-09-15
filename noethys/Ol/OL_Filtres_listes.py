@@ -72,7 +72,11 @@ def GetCondition(titre="", typeDonnee="", choix="", criteres=""):
     if typeDonnee == "inscrits" :
         if choix == "INSCRITS" : description = _(u"L'individu est inscrit sur les activités sélectionnées")
         if choix == "PRESENTS" : description = _(u"L'individu est inscrit sur les activités sélectionnées et présent entre le %s et le %s") % (UTILS_Dates.DateDDEnFr(criteres["date_debut"]), UTILS_Dates.DateDDEnFr(criteres["date_fin"]))
-        
+
+    # COTISATIONS
+    if typeDonnee == "cotisations" :
+        if choix == "AJOUR" : description = _(u"Les cotisations sélectionnées sont à jour")
+
     return description
 
 

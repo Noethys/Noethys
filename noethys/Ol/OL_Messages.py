@@ -155,7 +155,7 @@ class ListView(FastObjectListView):
         liste_Colonnes = [
             ColumnDefn(u"", "left", 0, "IDmessage", typeDonnee="entier"),
             ColumnDefn(_(u"Date"), 'centre', 75, "date_parution", typeDonnee="date", stringConverter=FormateDateCourt),
-            ColumnDefn(_(u"Texte"), 'left', 420, "texte", typeDonnee="texte", imageGetter=GetImagePriorite, isSpaceFilling=True),
+            ColumnDefn(_(u"Texte"), 'left', 950, "texte", typeDonnee="texte", imageGetter=GetImagePriorite),#, isSpaceFilling=True),
             ]
         
         self.SetColumns(liste_Colonnes)
@@ -178,7 +178,7 @@ class ListView(FastObjectListView):
             self.SelectObject(self.selectionTrack, deselectOthers=True, ensureVisible=True)
         self.selectionID = None
         self.selectionTrack = None
-        self._ResizeSpaceFillingColumns() 
+        #self._ResizeSpaceFillingColumns()
         if ID == None :
             wx.CallAfter(self.DefileDernier)
 
@@ -223,32 +223,11 @@ class ListView(FastObjectListView):
 
         menuPop.AppendSeparator()
     
-        # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
-        bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
-        item.SetBitmap(bmp)
-        menuPop.AppendItem(item)
-        self.Bind(wx.EVT_MENU, self.Apercu, id=40)
-        
-        # Item Imprimer
-        item = wx.MenuItem(menuPop, 50, _(u"Imprimer"))
-        bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Imprimante.png"), wx.BITMAP_TYPE_PNG)
-        item.SetBitmap(bmp)
-        menuPop.AppendItem(item)
-        self.Bind(wx.EVT_MENU, self.Imprimer, id=50)
+        # Génération automatique des fonctions standards
+        self.GenerationContextMenu(menuPop, titre=_(u"Liste des messages"))
         
         self.PopupMenu(menuPop)
         menuPop.Destroy()
-
-    def Apercu(self, event):
-        from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des messages"), format="A", orientation=wx.PORTRAIT)
-        prt.Preview()
-
-    def Imprimer(self, event):
-        from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des messages"), format="A", orientation=wx.PORTRAIT)
-        prt.Print()
 
     def Ajouter(self, event):
         if MODE in ("accueil", "liste") and UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("outils_messages", "creer") == False : return

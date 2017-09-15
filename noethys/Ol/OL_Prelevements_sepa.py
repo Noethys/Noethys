@@ -357,65 +357,19 @@ class ListView(FastObjectListView):
                 
         menuPop.AppendSeparator()
     
-        # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
-        bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
-        item.SetBitmap(bmp)
-        menuPop.AppendItem(item)
-        self.Bind(wx.EVT_MENU, self.Apercu, id=40)
-        
-        # Item Imprimer
-        item = wx.MenuItem(menuPop, 50, _(u"Imprimer"))
-        bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Imprimante.png"), wx.BITMAP_TYPE_PNG)
-        item.SetBitmap(bmp)
-        menuPop.AppendItem(item)
-        self.Bind(wx.EVT_MENU, self.Imprimer, id=50)
-        
-        menuPop.AppendSeparator()
-    
-        # Item Export Texte
-        item = wx.MenuItem(menuPop, 600, _(u"Exporter au format Texte"))
-        bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Texte2.png"), wx.BITMAP_TYPE_PNG)
-        item.SetBitmap(bmp)
-        menuPop.AppendItem(item)
-        self.Bind(wx.EVT_MENU, self.ExportTexte, id=600)
-        
-        # Item Export Excel
-        item = wx.MenuItem(menuPop, 700, _(u"Exporter au format Excel"))
-        bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Excel.png"), wx.BITMAP_TYPE_PNG)
-        item.SetBitmap(bmp)
-        menuPop.AppendItem(item)
-        self.Bind(wx.EVT_MENU, self.ExportExcel, id=700)
-
-        self.PopupMenu(menuPop)
-        menuPop.Destroy()
-
-    def Impression(self):
-        # Récupère l'intitulé du compte
-        txtIntro = self.GetParent().GetLabelParametres()
+        # Génération automatique des fonctions standards
+        intro = self.GetParent().GetLabelParametres()
         # Récupère le total
         total = 0.0
         for track in self.donnees :
             total += track.montant
-        txtTotal = self.GetTexteTotaux().replace("<B>", "").replace("</B>", "")
-        from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des prélèvements"), intro=txtIntro, total=txtTotal, format="A", orientation=wx.LANDSCAPE)
-        return prt
-        
-    def Apercu(self, event=None):
-        self.Impression().Preview()
+        total = self.GetTexteTotaux().replace("<B>", "").replace("</B>", "")
 
-    def Imprimer(self, event=None):
-        self.Impression().Print()
+        self.GenerationContextMenu(menuPop, titre=_(u"Liste des prélèvements"), intro=intro, total=total, orientation=wx.LANDSCAPE)
 
-    def ExportTexte(self, event=None):
-        from Utils import UTILS_Export
-        UTILS_Export.ExportTexte(self, titre=_(u"Liste des prélèvements"))
-        
-    def ExportExcel(self, event=None):
-        from Utils import UTILS_Export
-        UTILS_Export.ExportExcel(self, titre=_(u"Liste des prélèvements"))
-        
+        self.PopupMenu(menuPop)
+        menuPop.Destroy()
+
     def Saisie_factures(self, event=None):
         """ Saisie de factures """
         if self.GetParent().GetVerrouillage() == True :
