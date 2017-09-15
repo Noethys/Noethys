@@ -278,6 +278,52 @@ class Monnaie(wx.Panel):
 
 # ------------------------------------------------------------------------------------------------------------------------
 
+class Dates(wx.Panel):
+    def __init__(self, parent):
+        wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
+
+        self.staticbox_staticbox = wx.StaticBox(self, -1, _(u"Dates"))
+        self.radio_france = wx.RadioButton(self, -1, _(u"Format français"), style=wx.RB_GROUP)
+        self.radio_libre = wx.RadioButton(self, -1, _(u"Format libre"))
+
+        self.__set_properties()
+        self.__do_layout()
+
+        self.Importation()
+
+    def __set_properties(self):
+        self.radio_france.SetToolTip(wx.ToolTip(_(u"Format français (JJ/MM/AAAA)")))
+        self.radio_libre.SetToolTip(wx.ToolTip(_(u"Format libre")))
+
+    def __do_layout(self):
+        staticbox = wx.StaticBoxSizer(self.staticbox_staticbox, wx.VERTICAL)
+        grid_sizer_base = wx.FlexGridSizer(rows=2, cols=5, vgap=10, hgap=10)
+        grid_sizer_base.Add(self.radio_france, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_base.Add(self.radio_libre, 0, wx.EXPAND, 0)
+        staticbox.Add(grid_sizer_base, 1, wx.ALL | wx.EXPAND, 5)
+        self.SetSizer(staticbox)
+        staticbox.Fit(self)
+
+    def Importation(self):
+        mask = UTILS_Config.GetParametre("mask_date", "##/##/####")
+        if mask == "":
+            self.radio_libre.SetValue(True)
+        else:
+            self.radio_france.SetValue(True)
+
+    def Validation(self):
+        return True
+
+    def Sauvegarde(self):
+        if self.radio_france.GetValue() == True:
+            mask = "##/##/####"
+        else:
+            mask = u""
+        UTILS_Config.SetParametre("mask_date", mask)
+
+
+# ---------------------------------------------------------------------------------------------------------------------------
+
 class Telephones(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
@@ -687,6 +733,7 @@ class Dialog(wx.Dialog):
         # Contenu
         self.ctrl_interface = Interface(self)
         self.ctrl_monnaie = Monnaie(self)
+        self.ctrl_dates = Dates(self)
         self.ctrl_telephones = Telephones(self)
         self.ctrl_codesPostaux = Codes_postaux(self)
         self.ctrl_adresses = Adresses(self)
@@ -736,12 +783,13 @@ class Dialog(wx.Dialog):
 ##        grid_sizer_contenu.Add(self.ctrl_autodeconnect, 1, wx.EXPAND, 0)
         
         
-        grid_sizer_gauche = wx.FlexGridSizer(rows=6, cols=1, vgap=10, hgap=10)
+        grid_sizer_gauche = wx.FlexGridSizer(rows=7, cols=1, vgap=10, hgap=10)
         grid_sizer_gauche.Add(self.ctrl_interface, 1, wx.EXPAND, 0)
         grid_sizer_gauche.Add(self.ctrl_interface_mysql, 1, wx.EXPAND, 0)
+        grid_sizer_gauche.Add(self.ctrl_dates, 1, wx.EXPAND, 0)
         grid_sizer_gauche.Add(self.ctrl_telephones, 1, wx.EXPAND, 0)
-        grid_sizer_gauche.Add(self.ctrl_adresses, 1, wx.EXPAND, 0)
         grid_sizer_gauche.Add(self.ctrl_codesPostaux, 1, wx.EXPAND, 0)
+        grid_sizer_gauche.Add(self.ctrl_adresses, 1, wx.EXPAND, 0)
         grid_sizer_gauche.Add(self.label_redemarrage, 1, wx.EXPAND, 0)
 
         grid_sizer_droit = wx.FlexGridSizer(rows=6, cols=1, vgap=10, hgap=10)
@@ -790,6 +838,7 @@ class Dialog(wx.Dialog):
         # Validation des données
         if self.ctrl_interface.Validation() == False : return
         if self.ctrl_monnaie.Validation() == False : return
+        if self.ctrl_dates.Validation() == False : return
         if self.ctrl_telephones.Validation() == False : return
         if self.ctrl_codesPostaux.Validation() == False : return
         if self.ctrl_adresses.Validation() == False : return
@@ -803,6 +852,7 @@ class Dialog(wx.Dialog):
         # Sauvegarde
         self.ctrl_interface.Sauvegarde()
         self.ctrl_monnaie.Sauvegarde()
+        self.ctrl_dates.Sauvegarde()
         self.ctrl_telephones.Sauvegarde()
         self.ctrl_codesPostaux.Sauvegarde()
         self.ctrl_adresses.Sauvegarde()

@@ -8,19 +8,16 @@
 # Licence:         Licence GNU GPL
 #-----------------------------------------------------------
 
-
+import Chemins
+import wx
+import wx.lib.masked as masked
 import re
 import sys
 import datetime
 import calendar
-
-import wx
-import wx.lib.masked as masked
-import dateutil
+from Utils import UTILS_Config
+from dateutil.parser import parse, parserinfo
 from dateutil import relativedelta
-
-import CTRL_Bouton_image
-import Chemins
 from Utils.UTILS_Traduction import _
 
 ID_AIDE = 5
@@ -43,10 +40,50 @@ datePattern = re.compile(
 )
 
 
+
+class myparserinfo(parserinfo):
+    JUMP = [" ", ".", ",", ";", "-", "/", "'",
+            "at", "on", "and", "ad", "m", "t", "of",
+            "st", "nd", "rd", "th"]
+
+    WEEKDAYS = [(_(u"Lun"), _(u"Lundi")),
+                (_(u"Mar"), _(u"Mardi")),
+                (_(u"Mer"), _(u"Mercredi")),
+                (_(u"Jeu"), _(u"Jeudi")),
+                (_(u"Ven"), _(u"Vendredi")),
+                (_(u"Sam"), _(u"Samedi")),
+                (_(u"Dim"), _(u"Dimanche"))]
+    MONTHS = [(_(u"Jan"), _(u"Janvier")),
+              (_(u"Fév"), _(u"Février")),
+              (_(u"Mar"), _(u"Mars")),
+              (_(u"Avr"), _(u"Avril")),
+              (_(u"Mai"), _(u"Mai")),
+              (_(u"Juin"), _(u"Juin")),
+              (_(u"Juil"), _(u"Juillet")),
+              (_(u"Aoû"), _(u"Août")),
+              (_(u"Sept"), _(u"Septembre")),
+              (_(u"Oct"), _(u"Octobre")),
+              (_(u"Nov"), _(u"Novembre")),
+              (_(u"Déc"), _(u"Décembre")),]
+    HMS = [("h", "hour", "hours"),
+           ("m", "minute", "minutes"),
+           ("s", "second", "seconds")]
+    AMPM = [("am", "a"),
+            ("pm", "p")]
+    UTCZONE = ["UTC", "GMT", "Z"]
+    PERTAIN = ["of"]
+    TZOFFSET = {}
+
+    def __init__(self) :
+        parserinfo.__init__(self, dayfirst=True, yearfirst=False)
+
+
+
 class Date(masked.TextCtrl):
     """ Contrôle Date simple """
     def __init__(self, parent, date_min="01/01/1900", date_max="01/01/2999"):
-        masked.TextCtrl.__init__(self, parent, -1, "", style=wx.TE_CENTRE, mask = "##/##/####") 
+        self.mask_date = UTILS_Config.GetParametre("mask_date", "##/##/####")
+        masked.TextCtrl.__init__(self, parent, -1, "", style=wx.TE_CENTRE, mask=self.mask_date)
         self.parent = parent
         self.date_min = date_min
         self.date_max = date_max
@@ -58,7 +95,12 @@ class Date(masked.TextCtrl):
         self.SetMinSize((largeur, -1))
         self.Bind(wx.EVT_KILL_FOCUS, self.OnKillFocus)
         self.Bind(wx.EVT_RIGHT_DOWN, self.OnContextMenu)
-    
+        if self.mask_date == "" :
+            self.Bind(wx.EVT_LEFT_DCLICK, self.OnDoubleClick)
+
+    def OnDoubleClick(self, event):
+        pass
+
     def SetDate(self, date):
         """ Importe une date string ou datetime """
         if date == None or date == "" : 
@@ -84,9 +126,9 @@ class Date(masked.TextCtrl):
     def GetDate(self, FR=False):
         """ Récupère une date au format Datetime ou francaise"""
         dateFR = self.GetValue()
-        if dateFR == "  /  /    ":
+        if dateFR == "  /  /    " or dateFR == "" :
             return None
-        validation = ValideDate(dateFR, self.date_min, self.date_max, avecMessages=False)
+        validation = ValideDate(dateFR, self.date_min, self.date_max, avecMessages=False, mask=self.mask_date)
         if validation == False : 
             return None
         dateDD = datetime.date(year=int(dateFR[6:10]), month=int(dateFR[3:5]), day=int(dateFR[:2]))
@@ -121,14 +163,18 @@ class Date(masked.TextCtrl):
             if self.lienCtrlAge == True :
                 self.parent.ctrl_age.SetValue("")
             return
-##        validation = ValideDate(self.GetValue(), self.date_min, self.date_max)
-##        if validation == False:
-##            self.SetFocus()
-##            return
-            
+
     def FonctionValiderDate(self):
+        # Parser de la date en cas de format libre
+        if self.GetValue() != "" and self.mask_date == "":
+            try :
+                date = parse(self.GetValue(), myparserinfo())
+                self.SetDate(datetime.date(year=date.year, month=date.month, day=date.day))
+            except :
+                pass
+
         # Verifie la validite de la date
-        validation = ValideDate(self.GetValue(), self.date_min, self.date_max)
+        validation = ValideDate(self.GetValue(), self.date_min, self.date_max, mask=self.mask_date)
         return validation
     
     def Validation(self):
@@ -285,9 +331,9 @@ class Date(masked.TextCtrl):
             UTILS_Aide.Aide("Slectionnerunedate")
 
 
-def ValideDate(texte, date_min="01/01/1900", date_max="01/01/2999", avecMessages=True):
+def ValideDate(texte, date_min="01/01/1900", date_max="01/01/2999", avecMessages=True, mask=""):
     """ Verificateur de validite de date """
-    if texte == "  /  /    ":
+    if texte == "  /  /    " or texte == "" :
         return True
 
     listeErreurs = []
@@ -429,12 +475,20 @@ class MyFrame(wx.Frame):
         self.SetSizer(sizer_1)
         self.ctrl1 = Date2(panel)
         self.ctrl2 = Date2(panel)
+        self.bouton1 = wx.Button(panel, -1, u"Tester la validité du ctrl 1")
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
-        sizer_2.Add(self.ctrl1, 1, wx.ALL|wx.EXPAND, 4)
-        sizer_2.Add(self.ctrl2, 1, wx.ALL|wx.EXPAND, 4)
+        sizer_2.Add(self.ctrl1, 0, wx.ALL|wx.EXPAND, 4)
+        sizer_2.Add(self.ctrl2, 0, wx.ALL|wx.EXPAND, 4)
+        sizer_2.Add(self.bouton1, 0, wx.ALL | wx.EXPAND, 4)
         panel.SetSizer(sizer_2)
         self.Layout()
         self.CentreOnScreen()
+        self.Bind(wx.EVT_BUTTON, self.OnBouton1, self.bouton1)
+
+    def OnBouton1(self, event):
+        print self.ctrl1.Validation()
+
+
 
 if __name__ == '__main__':
     app = wx.App(0)
