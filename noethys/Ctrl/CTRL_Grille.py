@@ -3858,18 +3858,6 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                         if QFfamille >= qf_min and QFfamille <= qf_max :
                             break
 
-                    # if self.dictQuotientsFamiliaux.has_key(IDfamille) :
-                    #     listeQuotientsFamiliaux = self.dictQuotientsFamiliaux[IDfamille]
-                    # else:
-                    #     listeQuotientsFamiliaux = []
-                    # for date_debut, date_fin, quotient in listeQuotientsFamiliaux :
-                    #     if date >= date_debut and date <= date_fin and quotient >= qf_min and quotient <= qf_max :
-                    #         tarifFound = True
-                    #     if tarifFound == True :
-                    #         break
-                    # if tarifFound == True :
-                    #     break
-
             if "horaire" in methode_calcul  :
                 tarifFound = False
 

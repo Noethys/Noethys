@@ -707,6 +707,120 @@ class CTRL_Page_inscrits(wx.Panel):
         
 # -------------------------------------------------------------------------------------------------------------------------------
 
+class CTRL_Cotisations(wx.CheckListBox):
+    def __init__(self, parent):
+        wx.CheckListBox.__init__(self, parent, -1)
+        self.parent = parent
+        self.data = []
+        self.Importation()
+
+    def Importation(self):
+        DB = GestionDB.DB()
+        req = """SELECT IDtype_cotisation, nom, type, carte, defaut 
+        FROM types_cotisations ORDER BY nom;"""
+        DB.ExecuterReq(req)
+        listeDonnees = DB.ResultatReq()
+        DB.Close()
+        listeValeurs = []
+        for IDtype_cotisation, nom, type, carte, defaut in listeDonnees:
+            listeValeurs.append((IDtype_cotisation, nom, False))
+        self.SetData(listeValeurs)
+
+    def SetData(self, listeValeurs=[]):
+        """ items = (ID, label, checked) """
+        self.data = []
+        index = 0
+        for ID, label, checked in listeValeurs:
+            self.data.append((ID, label))
+            self.Append(label)
+            if checked == True:
+                self.Check(index)
+            index += 1
+
+    def GetIDcoches(self):
+        listeIDcoches = []
+        NbreItems = len(self.data)
+        for index in range(0, NbreItems):
+            if self.IsChecked(index):
+                listeIDcoches.append(self.data[index][0])
+        return listeIDcoches
+
+    def GetTexteCoches(self):
+        listeIDcoches = []
+        listeTemp = self.GetIDcoches()
+        if len(listeTemp) == 0: return None
+        for ID in listeTemp:
+            listeIDcoches.append(str(ID))
+        texte = ";".join(listeIDcoches)
+        return texte
+
+    def SetIDcoches(self, listeIDcoches=[]):
+        index = 0
+        for index in range(0, len(self.data)):
+            ID = self.data[index][0]
+            if ID in listeIDcoches:
+                self.Check(index)
+            index += 1
+
+
+
+class CTRL_Page_cotisations(wx.Panel):
+    def __init__(self, parent):
+        wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
+
+        # Cotisations
+        self.check_cotisations = wx.CheckBox(self, -1, _(u"Uniquement si au moins une des cotisations cochées est à jour :"))
+        self.ctrl_cotisations = CTRL_Cotisations(self)
+        self.ctrl_cotisations.SetMinSize((150, 50))
+
+        self.__do_layout()
+
+        # Binds
+        self.Bind(wx.EVT_CHECKBOX, self.OnCheckCotisations, self.check_cotisations)
+
+        # Init
+        self.OnCheckCotisations(None)
+
+    def __do_layout(self):
+        grid_sizer_base = wx.FlexGridSizer(rows=2, cols=1, vgap=5, hgap=5)
+        grid_sizer_base.Add(self.check_cotisations, 0, wx.ALL, 0)
+        grid_sizer_base.Add(self.ctrl_cotisations, 1, wx.BOTTOM|wx.LEFT|wx.RIGHT|wx.EXPAND, 0)
+        grid_sizer_base.AddGrowableRow(1)
+        grid_sizer_base.AddGrowableCol(0)
+        self.SetSizer(grid_sizer_base)
+        grid_sizer_base.Fit(self)
+        self.Layout()
+
+    def OnCheckCotisations(self, event):
+        if self.check_cotisations.GetValue() == True :
+            self.ctrl_cotisations.Enable(True)
+        else:
+            self.ctrl_cotisations.Enable(False)
+
+    def SetValeur(self, choix=None, criteres=None):
+        if choix == "AJOUR":
+            self.ctrl_cotisations.SetIDcoches(criteres["listeCotisations"])
+            self.check_cotisations.SetValue(True)
+        else:
+            self.check_cotisations.SetValue(False)
+        self.OnCheckCotisations(None)
+
+    def GetValeur(self):
+        if self.check_cotisations.GetValue() == True:
+            choix = "AJOUR"
+            listeCotisations = self.ctrl_cotisations.GetTexteCoches()
+            criteres = {"listeCotisations": listeCotisations}
+        return choix, criteres
+
+    def Validation(self):
+        return True
+
+    def Reinit(self):
+        pass
+
+
+# -------------------------------------------------------------------------------------------------------------------------------
+
 class CTRL_Page_vide(wx.Panel):
     def __init__(self, parent, texte=u""):
         wx.Panel.__init__(self, parent, id=-1) 
@@ -764,6 +878,7 @@ class CTRL_Page(wx.Panel):
         elif typeDonnee == "montant" : image = "Euro.png"
         elif typeDonnee == "date" : image = "Jour.png"
         elif typeDonnee == "inscrits" : image = "Calendrier.png"
+        elif typeDonnee == "cotisations" : image = "Cotisation.png"
         else : image = None
         
         if typeDonnee != "vide" :
@@ -783,6 +898,8 @@ class CTRL_Page(wx.Panel):
             self.ctrl_contenu = CTRL_Page_date(self)
         elif typeDonnee == "inscrits" : 
             self.ctrl_contenu = CTRL_Page_inscrits(self)
+        elif typeDonnee == "cotisations" :
+            self.ctrl_contenu = CTRL_Page_cotisations(self)
         else :
             self.ctrl_contenu = CTRL_Page_vide(self, texte=_(u"Veuillez sélectionner un champ disponible dans la liste !"))
 
@@ -836,6 +953,7 @@ class CTRL_Filtres_archive(wx.Treebook):
             ("montant", "Euro.png"),
             ("date", "Jour.png"),
             ("inscrits", "Calendrier.png"),
+            ("cotisations", "Cotisation.png"),
             ]
         self.dictImages = {}
         self.il = wx.ImageList(32, 32)
@@ -1026,6 +1144,7 @@ class CTRL_Champs(wx.TreeCtrl):
             ("montant", "Euro.png"),
             ("date", "Jour.png"),
             ("inscrits", "Calendrier.png"),
+            ("cotisations", "Cotisation.png"),
             ]
         self.dictImages = {}
         self.il = wx.ImageList(32, 32)
@@ -1060,8 +1179,22 @@ class CTRL_Champs(wx.TreeCtrl):
                     break
         if code != None :
             titre = _(u"Inscrits/Présents")
-            self.dictChamps["speciaux"].append({"code" : code, "typeDonnee" : "inscrits", "titre" : _(u"Inscrits/Présents")})
-        
+            self.dictChamps["speciaux"].append({"code" : code, "typeDonnee" : "inscrits", "titre" : titre})
+
+        # Champ Cotisations
+        # code = None
+        # if self.ctrl_listview != None:
+        #     for colonne in self.ctrl_listview.listeColonnes:
+        #         if colonne.valueGetter == "IDfamille":
+        #             code = "famille"
+        #             break
+        #         if colonne.valueGetter == "IDindividu":
+        #             code = "individu"
+        #             break
+        # if code != None:
+        #     titre = _(u"Cotisations")
+        #     self.dictChamps["speciaux"].append({"code": code, "typeDonnee": "cotisations", "titre": titre})
+
         # --------------- Champs des colonnes --------------
         if self.ctrl_listview != None :
             for colonne in self.ctrl_listview.listeColonnes :
@@ -1122,67 +1255,11 @@ class CTRL_Champs(wx.TreeCtrl):
 
 # ----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-class CTRL_Champs_archive(wx.ListBox):
-    def __init__(self, parent, ctrl_listview=None):
-        wx.ListBox.__init__(self, parent, id=-1, choices=[]) 
-        self.ctrl_listview = ctrl_listview
-        self.SetMinSize((230, 50))
-        
-        self.listeChamps = []
-        self.listeLabels = []
-        
-        # Champs spéciaux
-        code = ""
-        if self.ctrl_listview != None :
-            for colonne in self.ctrl_listview.listeColonnes :
-                if colonne.valueGetter == "IDfamille" :
-                    code = "famille"
-                    break
-                if colonne.valueGetter == "IDindividu" :
-                    code = "individu"
-                    break
-
-        if code != None :
-            titre = _(u"Inscrits/Présents")
-            self.listeChamps.append({"code" : code, "typeDonnee" : "inscrits", "titre" : titre})
-            self.listeLabels.append(titre)
-        
-        # Champs des colonnes
-        if self.ctrl_listview != None :
-            for colonne in self.ctrl_listview.listeColonnes :
-                codeColonne = colonne.valueGetter
-                typeDonnee = colonne.typeDonnee
-                titre = colonne.title
-                if titre == "" :
-                    titre = codeColonne
-                if type(titre) in (str, unicode) :
-                    self.listeChamps.append({"code" : codeColonne, "typeDonnee" : typeDonnee, "titre" : titre})
-                    self.listeLabels.append(titre)
-        
-        self.SetItems(self.listeLabels)
-    
-    def GetDonnees(self):
-        index = self.GetSelection() 
-        return self.listeChamps[index]
-    
-    def GetCode(self):
-        index = self.GetSelection() 
-        return self.listeChamps[index]["code"]
-        
-    def SetCode(self, code=""):
-        index = 0
-        for dictChamp in self.listeChamps :
-            if dictChamp["code"] == code :
-                self.SetSelection(index)
-            index += 1
-            
-# ----------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
 class CTRL_Filtres(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent, id=-1) 
         
-        self.listeTypesDonnees = ["vide", "texte", "entier", "montant", "date", "inscrits"]
+        self.listeTypesDonnees = ["vide", "texte", "entier", "montant", "date", "inscrits", "cotisations"]
         
         # Création des pages
         sizer = wx.BoxSizer(wx.VERTICAL)
@@ -1339,9 +1416,9 @@ if __name__ == "__main__":
     dlg = Dialog(None)
     app.SetTopWindow(dlg)
     # Test d'importation
-##    dialog_1.SetCode("nom")
-##    dialog_1.SetValeur("CONTIENT", _(u"Ceci est un test  !"))
-    
+    dlg.SetCode("famille")
+    #dlg.SetValeur("CONTIENT", _(u"Ceci est un test  !"))
+
     if dlg.ShowModal() == wx.ID_OK :
         print "Code =", dlg.GetCode()
         print "Valeur =", dlg.GetValeur()

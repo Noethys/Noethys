@@ -140,8 +140,6 @@ class Panel(wx.Panel):
         self.ctrl_labelbook = LB.FlatImageBook(self, -1, agwStyle=LB.INB_LEFT)
         self.InitLabelbook()
 
-        #self.notebook = Notebook(self, IDfamille)
-
         # --- Layout ---
         sizer_base = wx.BoxSizer(wx.VERTICAL)
         sizer_base.Add(self.ctrl_labelbook, 1, wx.EXPAND | wx.ALL, 10)

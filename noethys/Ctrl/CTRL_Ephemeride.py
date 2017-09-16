@@ -158,8 +158,8 @@ class CTRL(wx.Panel):
             
             # Envoi des textes au ticker
             self.ctrl_ticker.SetPages(listePages, restart=True)
-        
-        except :
+
+        except:
             pass
         
     def StartTicker(self):

@@ -344,7 +344,7 @@ class Assistant(wx.Dialog, ClsCommune):
         self.bouton_retour.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour revenir à la page précédente")))
         self.bouton_suite.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour passer à l'étape suivante")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez pour annuler")))
-        self.SetMinSize((890, 740))
+        self.SetMinSize((840, 710))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=4, cols=1, vgap=0, hgap=0)
@@ -374,7 +374,6 @@ class Assistant(wx.Dialog, ClsCommune):
         grid_sizer_base.Fit(self)
         self.Layout()
         self.CenterOnScreen()
-        
         self.sizer_pages = sizer_pages
     
     def CreateIDactivite(self):
