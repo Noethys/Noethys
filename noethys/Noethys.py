@@ -464,7 +464,7 @@ class MainFrame(wx.Frame):
         # Panneau Effectifs
         self.ctrl_remplissage = DLG_Effectifs.CTRL(self)
         self._mgr.AddPane(self.ctrl_remplissage, aui.AuiPaneInfo().Name("effectifs").Caption(_(u"Tableau de bord")).
-                          Left().Layer(1).Position(0).CloseButton(True).MaximizeButton(True).MinimizeButton(True).MinSize((200, 200)).BestSize((630, 600)) )
+                          Left().Layer(1).Position(0).CloseButton(True).MaximizeButton(True).MinimizeButton(True).MinSize((580, 200)).BestSize((630, 600)) )
         
 ##        if self.userConfig.has_key("perspective_ctrl_effectifs") == True :
 ##            self.ctrl_remplissage.LoadPerspective(self.userConfig["perspective_ctrl_effectifs"])
@@ -3007,6 +3007,7 @@ class MainFrame(wx.Frame):
         dlg = DLG_Produits_liste.Dialog(self)
         dlg.ShowModal()
         dlg.Destroy()
+        self.ctrl_remplissage.MAJ()
 
     def On_locations_locations(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("locations_locations", "consulter") == False : return
@@ -3014,6 +3015,7 @@ class MainFrame(wx.Frame):
         dlg = DLG_Locations.Dialog(self)
         dlg.ShowModal()
         dlg.Destroy()
+        self.ctrl_remplissage.MAJ()
 
     def On_locations_imprimer(self, event):
         from Dlg import DLG_Locations_impression
@@ -3033,6 +3035,7 @@ class MainFrame(wx.Frame):
         dlg = DLG_Locations_demandes.Dialog(self)
         dlg.ShowModal()
         dlg.Destroy()
+        self.ctrl_remplissage.MAJ()
 
     def On_locations_demandes_imprimer(self, event):
         from Dlg import DLG_Locations_demandes_impression
@@ -3052,6 +3055,7 @@ class MainFrame(wx.Frame):
         dlg = DLG_Categories_produits_images.Dialog(self)
         dlg.ShowModal()
         dlg.Destroy()
+        self.ctrl_remplissage.MAJ()
 
     def On_imprim_conso_journ(self, event):
         from Dlg import DLG_Impression_conso

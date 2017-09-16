@@ -18,6 +18,27 @@ from wx.lib.agw import ultimatelistctrl as ULC
 from Ctrl import CTRL_Bouton_image
 
 
+class Panel(wx.Panel):
+    def __init__(self, parent, bordure=0):
+        wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
+        self.parent = parent
+        self.bordure = bordure
+
+        self.ctrl_image = CTRL(self)
+
+        # Layout
+        sizer_base = wx.BoxSizer(wx.VERTICAL)
+        sizer_base.Add(self.ctrl_image, 1, wx.EXPAND | wx.ALL, self.bordure)
+        self.SetSizer(sizer_base)
+        self.Layout()
+
+    def MAJ(self):
+        self.ctrl_image.MAJ()
+
+
+
+
+
 
 class CTRL(ULC.UltimateListCtrl):
     def __init__(self, parent):

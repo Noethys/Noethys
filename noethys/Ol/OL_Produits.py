@@ -65,10 +65,6 @@ class ListView(FastObjectListView):
         self.filtreListeID = None
         self.dictPositions = None
 
-        # Importation des titulaires
-        if self.afficher_locations == True :
-            self.dict_titulaires = UTILS_Titulaires.GetTitulaires()
-
         # Initialisation du listCtrl
         self.nom_fichier_liste = __file__
         FastObjectListView.__init__(self, *args, **kwds)
@@ -91,6 +87,10 @@ class ListView(FastObjectListView):
     def GetTracks(self):
         """ Récupération des données """
         listeID = None
+
+        # Importation des titulaires
+        if self.afficher_locations == True :
+            self.dict_titulaires = UTILS_Titulaires.GetTitulaires()
 
         # Initialisation des questionnaires
         categorie = "produit"

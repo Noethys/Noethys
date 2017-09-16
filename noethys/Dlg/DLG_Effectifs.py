@@ -18,7 +18,7 @@ import wx.lib.agw.aui as aui
 import DLG_Remplissage
 import DLG_Recap_evenements
 import DLG_Nbre_inscrits_2 as DLG_Nbre_inscrits
-import DLG_Categories_produits_images
+import DLG_Tableau_bord_locations
 
 
 
@@ -52,7 +52,7 @@ class CTRL(aui.AuiNotebook):
             pass
 
         # CTRL Locations
-        self.ctrl_locations = DLG_Categories_produits_images.CTRL(self)
+        self.ctrl_locations = DLG_Tableau_bord_locations.Panel(self)
         self.AddPage(self.ctrl_locations, _(u"Locations"))
         try :
             self.SetPageTooltip(3, _(u"Affiche l'état des locations. \nVous pouvez glisser-déposer cet onglet pour déplacer la page."))
