@@ -1,11 +1,13 @@
-Version 1.2.1.1 (07/09/2017) :
+Version 1.2.1.2 (16/09/2017) :
 
 - Ajout des évènements
 - Ajout des modèles de prestations
-- Ajout des locations
+- Ajout du module locations
 - Ajout de la largeur fixe des textes dans l'éditeur PDF
 - Ajout des images interactives
 - Ajout du fichier exemple Secteur jeunes
+- Ajout du format libre pour les dates dans les préférences
+- Intégration de l'envoi d'emails depuis les listes
 - Amélioration sélection méthode de calcul dans paramétrage du tarif
 - Amélioration du traitement par lot des ouvertures
 - Amélioration de la saisie auto des jours fériés variables
