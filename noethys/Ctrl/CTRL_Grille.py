@@ -3875,7 +3875,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                                 
                             if heure_fin == None or heure_fin_temp > heure_fin : 
                                 heure_fin = heure_fin_temp
-                
+
                 for ligneCalcul in lignes_calcul :
                     heure_debut_min = HeureStrEnTime(ligneCalcul["heure_debut_min"])
                     heure_debut_max = HeureStrEnTime(ligneCalcul["heure_debut_max"])
@@ -3888,13 +3888,19 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                         montant_tarif_ligne = montant_questionnaire
 
                     if heure_debut_min <= heure_debut <= heure_debut_max and heure_fin_min <= heure_fin <= heure_fin_max :
-                        montant_tarif = montant_tarif_ligne
+                        montant_enfant_1 = ligneCalcul["montant_enfant_1"]
+                        montant_enfant_2 = ligneCalcul["montant_enfant_2"]
+                        montant_enfant_3 = ligneCalcul["montant_enfant_3"]
+                        montant_enfant_4 = ligneCalcul["montant_enfant_4"]
+                        montant_enfant_5 = ligneCalcul["montant_enfant_5"]
+                        montant_enfant_6 = ligneCalcul["montant_enfant_6"]
+
                         if ligneCalcul["temps_facture"] != None and ligneCalcul["temps_facture"] != "" :
                             temps_facture = HeureStrEnTime(ligneCalcul["temps_facture"]) 
                             temps_facture = datetime.timedelta(hours=temps_facture.hour, minutes=temps_facture.minute)
                         else :
                             temps_facture = SoustractionHeures(heure_fin_max, heure_debut_min)
-                            
+
                         heure_debut_delta = datetime.timedelta(hours=heure_debut.hour, minutes=heure_debut.minute)
                         heure_fin_delta = datetime.timedelta(hours=heure_fin.hour, minutes=heure_fin.minute)
                         duree_delta = heure_fin_delta - heure_debut_delta
