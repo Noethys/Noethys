@@ -21,12 +21,6 @@ from Utils import UTILS_Dates
 from Utils import UTILS_Texte
 from Utils import UTILS_Filtres_questionnaires
 
-
-import UTILS_Config
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
-MONNAIE_SINGULIER = UTILS_Config.GetParametre("monnaie_singulier", _(u"Euro"))
-MONNAIE_DIVISION = UTILS_Config.GetParametre("monnaie_division", _(u"Centime"))
-
 from UTILS_Decimal import FloatToDecimal as FloatToDecimal
 
 from Data import DATA_Civilites as Civilites
@@ -36,7 +30,6 @@ import GestionDB
 import FonctionsPerso
 import UTILS_Titulaires
 import UTILS_Questionnaires
-import UTILS_Impression_location
 import UTILS_Dates
 from Dlg import DLG_Apercu_location_demande
 import UTILS_Conversion
@@ -277,6 +270,8 @@ class Demande():
 
     def Impression(self, listeDemandes=[], nomDoc=None, afficherDoc=True, dictOptions=None, repertoire=None, repertoireTemp=False):
         """ Impression des demandes """
+        import UTILS_Impression_location
+
         # Récupération des données à partir des IDdemande
         resultat = self.GetDonneesImpression(listeDemandes)
         if resultat == False:
