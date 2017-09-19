@@ -37,9 +37,9 @@ class Hyperlien(Hyperlink.HyperLinkCtrl):
     
     def OnLeftLink(self, event):
         if self.URL == "tout" :
-            self.parent.ctrl_factures.CocheTout()
+            self.parent.ctrl_factures.CocheListeTout()
         if self.URL == "rien" :
-            self.parent.ctrl_factures.CocheRien()
+            self.parent.ctrl_factures.CocheListeRien()
         self.UpdateLink()
         
 # ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

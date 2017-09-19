@@ -369,24 +369,6 @@ class ListView(FastObjectListView):
         # Création du menu contextuel
         menuPop = wx.Menu()
 
-##        # Item Modifier
-##        item = wx.MenuItem(menuPop, 10, _(u"Modifier"))
-##        bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Modifier.png"), wx.BITMAP_TYPE_PNG)
-##        item.SetBitmap(bmp)
-##        menuPop.AppendItem(item)
-##        self.Bind(wx.EVT_MENU, self.Modifier, id=10)
-##        if noSelection == True : item.Enable(False)
-##                
-##        # Item Supprimer
-##        item = wx.MenuItem(menuPop, 20, _(u"Supprimer"))
-##        bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Supprimer.png"), wx.BITMAP_TYPE_PNG)
-##        item.SetBitmap(bmp)
-##        menuPop.AppendItem(item)
-##        self.Bind(wx.EVT_MENU, self.Supprimer, id=30)
-##        if noSelection == True : item.Enable(False)
-##                
-##        menuPop.AppendSeparator()
-    
         # Génération automatique des fonctions standards
         # Récupère l'intitulé du compte
         if self.GetGrandParent().GetName() == "DLG_Saisie_depot" :

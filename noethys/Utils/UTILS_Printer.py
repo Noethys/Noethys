@@ -207,7 +207,7 @@ class ObjectListViewPrinter():
             "conclusion" : self.total,
             "orientation" : self.orientation,
             }
-        dlg = DLG_Options_impression_listes.Dialog(None, dictOptions=dictOptions)      
+        dlg = DLG_Options_impression_listes.Dialog(None, dictOptions=dictOptions)
         if dlg.ShowModal() == wx.ID_OK:
             dictOptions = dlg.GetOptions()
             dlg.Destroy() 

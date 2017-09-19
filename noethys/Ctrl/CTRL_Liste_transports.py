@@ -391,7 +391,7 @@ class CTRL(HTL.HyperTreeList):
             brancheCategorie = self.AppendItem(self.root, label)
             self.SetPyData(brancheCategorie, {"type":"categories", "code":categorie})
             self.SetItemBold(brancheCategorie)
-            self.SetItemBackgroundColour(brancheCategorie, wx.Colour(COULEUR_FOND_REGROUPEMENT))
+            self.SetItemBackgroundColour(brancheCategorie, wx.Colour(*COULEUR_FOND_REGROUPEMENT))
             self.SetItemImage(brancheCategorie, self.dictImages[categorie]["index"])
             
             dictImpressionTemp = {"texte":label, "img":self.dictImages[categorie]["nomFichier"], "elements":[]}

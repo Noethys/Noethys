@@ -189,6 +189,9 @@ class CTRL(HTL.HyperTreeList):
             annee = date.year
             mois = date.month
 
+            if montant == None :
+                montant = 0.0
+
             regroupement = None
 
             if self.mode_regroupement == "jour":

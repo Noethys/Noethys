@@ -164,6 +164,7 @@ class ListView(FastObjectListView):
         self.itemSelected = False
         self.popupIndex = -1
         self.labelParametres = ""
+        self.titre = _(u"Liste des cotisations")
         
         # Importation des activités
         DB = GestionDB.DB()

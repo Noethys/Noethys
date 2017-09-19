@@ -588,4 +588,4 @@ def GetMeilleurePosition(dictPropositions={}, IDdemande=None):
 
 
 if __name__=='__main__':
-    print GetPropositionsLocations()
+    print len(GetPropositionsLocations(uniquement_disponibles=False))

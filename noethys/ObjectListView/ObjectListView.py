@@ -271,8 +271,8 @@ class ObjectListView(wx.ListCtrl):
         self.ctrl_footer = None
         self.barreRecherche = None
         self.titre = ""
-        self.intro = ""
-        self.total = ""
+        self.impression_intro = ""
+        self.impression_total = ""
         self.orientation = wx.PORTRAIT
 
         self.rowFormatter = kwargs.pop("rowFormatter", None)
@@ -2574,8 +2574,8 @@ class ObjectListView(wx.ListCtrl):
             self.titre = titre
 
         # Intro et total
-        self.intro = intro
-        self.total = total
+        self.impression_intro = intro
+        self.impression_total = total
         self.orientation = orientation
 
         if self.checkStateColumn != None:
@@ -2644,12 +2644,12 @@ class ObjectListView(wx.ListCtrl):
 
     def Apercu(self, event):
         from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=self.titre, intro=self.intro, total=self.total, format="A", orientation=self.orientation)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=self.titre, intro=self.impression_intro, total=self.impression_total, format="A", orientation=self.orientation)
         prt.Preview()
 
     def Imprimer(self, event):
         from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=self.titre, intro=self.intro, total=self.total, format="A", orientation=self.orientation)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=self.titre, intro=self.impression_intro, total=self.impression_total, format="A", orientation=self.orientation)
         prt.Print()
 
     def ExportTexte(self, event):

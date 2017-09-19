@@ -145,10 +145,13 @@ class CTRL_Jours(wx.Panel):
         return ";".join(listeTemp)
         
     def SetJoursStr(self, texteJours=""):
-        if texteJours == None or len(texteJours) == 0 :
+        if texteJours == None :
             return
 
-        listeJoursTemp = texteJours.split(";")
+        if len(texteJours) > 0 :
+            listeJoursTemp = texteJours.split(";")
+        else :
+            listeJoursTemp = []
         listeJours = []
         for jour in listeJoursTemp :
             listeJours.append(int(jour))

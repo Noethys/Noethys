@@ -190,7 +190,7 @@ class Dialog(wx.Dialog):
         
         # Boutons
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
-        self.bouton_imprimer = CTRL_Bouton_image.CTRL(self, texte=_(u"Imprimer"), cheminImage="Images/32x32/Imprimante.png")
+        self.bouton_imprimer = CTRL_Bouton_image.CTRL(self, texte=_(u"Outils"), cheminImage="Images/32x32/Configuration.png")
         self.bouton_avis_depots = CTRL_Bouton_image.CTRL(self, texte=_(u"Envoyer les avis de dépôt"), cheminImage="Images/32x32/Emails_exp.png")
         self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
         self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
@@ -537,33 +537,9 @@ class Dialog(wx.Dialog):
         # Label de staticbox
         self.staticbox_reglements_staticbox.SetLabel(self.ctrl_reglements.GetLabelListe(_(u"règlements")))
     
-    def OnBoutonImprimer(self, event):               
-        # Création du menu contextuel
-        menuPop = wx.Menu()
-        
-        # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 20, _(u"Aperçu avant impression"))
-        bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
-        item.SetBitmap(bmp)
-        menuPop.AppendItem(item)
-        self.Bind(wx.EVT_MENU, self.Apercu, id=20)
-        
-        # Item Imprimer
-        item = wx.MenuItem(menuPop, 30, _(u"Imprimer"))
-        bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Imprimante.png"), wx.BITMAP_TYPE_PNG)
-        item.SetBitmap(bmp)
-        menuPop.AppendItem(item)
-        self.Bind(wx.EVT_MENU, self.Imprimer, id=30)
-        
-        self.PopupMenu(menuPop)
-        menuPop.Destroy()
+    def OnBoutonImprimer(self, event):
+        self.ctrl_reglements.OnContextMenu(None)
 
-    def Apercu(self, event):
-        self.ctrl_reglements.Apercu(None)
-
-    def Imprimer(self, event):
-        self.ctrl_reglements.Imprimer(None)
-    
     def GetInfosDepot(self):
         nom = self.ctrl_nom.GetValue() 
         date = self.ctrl_date.GetDate() 

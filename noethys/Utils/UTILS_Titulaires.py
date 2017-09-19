@@ -23,7 +23,11 @@ def GetTitulaires(listeIDfamille=[], mode_adresse_facturation=False):
     
     # Condition
     if len(listeIDfamille) == 0 : conditionFamilles = ""
-    elif len(listeIDfamille) == 1 : conditionFamilles = "WHERE IDfamille=%d" % listeIDfamille[0]
+    elif len(listeIDfamille) == 1 :
+        if listeIDfamille[0] != None :
+            conditionFamilles = "WHERE IDfamille=%d" % listeIDfamille[0]
+        else :
+            conditionFamilles = "WHERE IDfamille=0"
     else : conditionFamilles = "WHERE IDfamille IN %s" % str(tuple(listeIDfamille))
     
     DB = GestionDB.DB()

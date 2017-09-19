@@ -19,9 +19,7 @@ from Utils import UTILS_Titulaires
 from Utils import UTILS_Interface
 from Utils import UTILS_Questionnaires
 from Utils import UTILS_Texte
-from Utils import UTILS_Dates
 from Utils import UTILS_Locations
-from Utils import UTILS_Locations_demandes
 from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils, PanelAvecFooter
 import FonctionsPerso
 
@@ -77,9 +75,8 @@ class Track(object):
 
                 # Recherche meilleure position
                 self.position = UTILS_Locations.GetMeilleurePosition(dictPropositions=listview.dictPropositions, IDdemande=self.IDdemande)
-
-        else :
-            self.texte_statut = _(u"En attente")
+            else :
+                self.texte_statut = _(u"En attente")
 
         # Formatage date
         if isinstance(self.date, str) or isinstance(self.date, unicode) :
@@ -262,7 +259,7 @@ class ListView(FastObjectListView):
             ColumnDefn(_(u"Statut de la demande"), 'left', 170, "texte_statut", typeDonnee="texte", imageGetter=GetImageStatut),
             ColumnDefn(_(u"Position"), 'left', 80, "position", typeDonnee="entier", stringConverter=FormatePosition),
             ColumnDefn(_(u"Catégories demandées"), 'left', 200, "texte_categories", typeDonnee="texte"),
-            ColumnDefn(_(u"Produits demandées"), 'left', 200, "texte_produits", typeDonnee="texte"),
+            ColumnDefn(_(u"Produits demandés"), 'left', 200, "texte_produits", typeDonnee="texte"),
             ColumnDefn(_(u"Notes"), 'left', 200, "observations", typeDonnee="texte"),
             ])
 

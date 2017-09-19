@@ -102,6 +102,7 @@ class ListView(GroupListView):
         self.listeIndividus = []
         self.listeActivites = []
         self.listeFactures = []
+        self.titre = _(u"Liste des prestations")
         self.total = 0.0
         self.dictFiltres = {}
 ##        self.InitModel()
