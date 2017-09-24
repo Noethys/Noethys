@@ -2560,6 +2560,12 @@ class ObjectListView(wx.ListCtrl):
         self.Refresh()
         self.OnCheck(None)
 
+    def CocheTout(self, event=None):
+        self.CocheListeTout()
+
+    def CocheRien(self, event=None):
+        self.CocheListeRien()
+
     def GetNomModule(self):
         if hasattr(self, "nom_fichier_liste") :
             nom_module = os.path.basename(self.nom_fichier_liste)
