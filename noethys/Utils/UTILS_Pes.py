@@ -14,11 +14,15 @@ from UTILS_Traduction import _
 import datetime
 import string
 from xml.dom.minidom import Document
-
+from lxml import etree
+import StringIO
 import wx
 from Ctrl import CTRL_Bouton_image
 import UTILS_Utilisateurs
 import FonctionsPerso
+import urllib
+from Utils import UTILS_Fichiers
+import zipfile
 
 
 
@@ -518,16 +522,55 @@ def GetCle_modulo23(elements=[]):
     cle = alphabet[K-1]
     return cle
 
+def ValidationXSD(xml=""):
+    try :
+
+        # Téléchargement du fichier XSD
+        url = "http://www.noethys.com/fichiers/pes/schemas_pes.zip"
+        fichier_dest = UTILS_Fichiers.GetRepTemp(fichier="schemas_pes.zip")
+        urllib.urlretrieve(url, fichier_dest)
+
+        # Décompression du zip XSD
+        z = zipfile.ZipFile(fichier_dest, 'r')
+        rep_dest = UTILS_Fichiers.GetRepTemp() + "/schemas_pes"
+        z.extractall(rep_dest)
+        z.close()
+
+        # Lecture du XSD
+        fichier_pes = rep_dest + "/Schemas_PES/PES_V2/Rev0/PES_Aller.xsd"
+        xmlschema_doc = etree.parse(fichier_pes)
+        xsd = etree.XMLSchema(xmlschema_doc)
+
+        # Lecture du XML
+        doc = etree.parse(StringIO.StringIO(xml))
+
+        # Validation du XML avec le XSD
+        if xsd.validate(doc) == True :
+            return True
+
+        # Affichage des erreurs
+        liste_erreurs = []
+        for error in xsd.error_log :
+            liste_erreurs.append(u"Ligne %d : %s" % (error.line, error.message))
+        return liste_erreurs
+
+    except Exception, err:
+        print "Erreur dans validation XSD :"
+        print err
+        return True
+
+
+
     
 if __name__ == "__main__":
 
     dictDonnees = {
         "nom_fichier" : _(u"fichier.xml"),
         "date_emission" : u"2014-01-06",
-        "id_poste" : _(u"IDPOSTE"),
-        "id_collectivite" : _(u"IDCOLLECTIVITE"),
+        "id_poste" : _(u"123456"),
+        "id_collectivite" : _(u"1"),
         "code_collectivite" : u"2",
-        "code_budget" : u"CODEBUDGET",
+        "code_budget" : u"1",
         "exercice" : u"2013",
         "mois" : u"9",
         "id_bordereau" : u"5",
@@ -536,6 +579,7 @@ if __name__ == "__main__":
         "objet_dette" : _(u"Centre de Loisirs"),
         "code_prodloc" : "CODEPRODLOC",
         "date_prelevement" : "2014-01-08",
+        "pieces_jointes": False,
         "pieces" : [
             {
             "id_piece" : "1",
@@ -546,18 +590,29 @@ if __name__ == "__main__":
             "prelevement" : 1,
             "prelevement_date_mandat" : "2013-12-01",
             "prelevement_rum" : "123",
-            "prelevement_bic" : "123456",
-            "prelevement_iban" : "45665465423456",
+            "prelevement_bic" : "TESTFR2B",
+            "prelevement_iban" : "AB0030001007941234567890100",
             "prelevement_titulaire" : _(u"DUPOND Gérard"),
+            "prelevement_libelle" : "prelevement_libelle",
             "titulaire_civilite" : "Mr.",
             "titulaire_nom" : _(u"DUPOND"),
             "titulaire_prenom" : _(u"Gérard"),
             "titulaire_rue" : _(u"10 rue des oiseaux"),
             "titulaire_cp" : u"29870",
             "titulaire_ville" : _(u"LANNILIS"),
+            "objet_piece" : "objet",
+            "idtiers_helios" : "000000001",
+            "natidtiers_helios" : "01",
+            "reftiers_helios" : "01",
+            "cattiers_helios" : "01",
+            "natjur_helios" : "01",
             }
             ],
         }
 
     doc = GetXML(dictDonnees) 
-    print doc.toprettyxml(indent="  ", encoding="ISO-8859-1")
+    xml = doc.toprettyxml(indent="  ", encoding="ISO-8859-1")
+    print xml
+
+    # Test de validation XSD
+    print ValidationXSD(xml)

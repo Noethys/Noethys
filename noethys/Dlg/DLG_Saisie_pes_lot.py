@@ -31,7 +31,7 @@ from Utils import UTILS_Pes
 import FonctionsPerso
 import wx.lib.dialogs as dialogs
 import wx.lib.agw.hyperlink as Hyperlink
-
+from Dlg import DLG_Messagebox
 from Utils.UTILS_Decimal import FloatToDecimal as FloatToDecimal
 from Utils import UTILS_Facturation
 from Utils import UTILS_Organisateur
@@ -165,7 +165,7 @@ class CTRL_Parametres(wxpg.PropertyGrid) :
         # Libellés
         self.Append( wxpg.PropertyCategory(_(u"Libellés")) )
 
-        propriete = wxpg.StringProperty(label=_(u"Objet de la pièce"), name="objet_piece", value=_(u"FACTURE_NUM{NUM_FACTURE}_{MOIS_LETTRES}_{ANNEE}"))
+        propriete = wxpg.StringProperty(label=_(u"Objet de la pièce"), name="objet_piece", value=_(u"FACTURE NUM{NUM_FACTURE} {MOIS_LETTRES} {ANNEE}"))
         propriete.SetHelpString(_(u"Saisissez l'objet de la pièce (en majuscules et sans accents). Vous pouvez personnaliser ce libellé grâce aux mots-clés suivants : {NOM_ORGANISATEUR} {NUM_FACTURE} {LIBELLE_FACTURE} {MOIS} {MOIS_LETTRES} {ANNEE}.")) 
         self.Append(propriete)
 
@@ -625,7 +625,7 @@ class Dialog(wx.Dialog):
         if prelevement_libelle in ("", None):
             prelevement_libelle = u"{NOM_ORGANISATEUR} - {LIBELLE_FACTURE}"
         if objet_piece in ("", None):
-            objet_piece = _(u"FACTURE_NUM{NUM_FACTURE}_{MOIS_LETTRES}_{ANNEE}")
+            objet_piece = _(u"FACTURE NUM{NUM_FACTURE} {MOIS_LETTRES} {ANNEE}")
             
             
         listeValeurs = [
@@ -1025,6 +1025,18 @@ class Dialog(wx.Dialog):
         doc = UTILS_Pes.GetXML(dictDonnees)
         xml = doc.toprettyxml(encoding="utf-8")
 
+        # Validation XSD
+        valide = UTILS_Pes.ValidationXSD(xml)
+        if valide != True :
+            liste_erreurs = valide
+            dlg = DLG_Messagebox.Dialog(self, titre=_(u"Validation XSD"), introduction=_(u"Les %d anomalies suivantes ont été détectées :") % len(liste_erreurs),
+                                        detail=u"\n".join(liste_erreurs), conclusion=_(u"Le fichier ne semble pas valide. Souhaitez-vous continuer quand même ?"),
+                                        icone=wx.ICON_EXCLAMATION, boutons=[_(u"Oui"), _(u"Non"), _(u"Annuler")])
+            reponse = dlg.ShowModal()
+            dlg.Destroy()
+            if reponse in (1, 2):
+                return False
+
         # Demande à l'utilisateur le nom de fichier et le répertoire de destination
         wildcard = "Fichier XML (*.xml)|*.xml| All files (*.*)|*.*"
         sp = wx.StandardPaths.Get()
@@ -1046,7 +1058,7 @@ class Dialog(wx.Dialog):
 
         # Le fichier de destination existe déjà :
         if os.path.isfile(cheminFichier) == True:
-            dlg = wx.MessageDialog(None, _(u"Un fichier portant ce nom existe déjà. \n\nVoulez-vous le remplacer ?"), "Attention !", wx.YES_NO | wx.NO_DEFAULT | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(None, _(u"Un fichier portant ce nom existe déjà. \n\nVoulez-vous le remplacer ?"), _(u"Attention !"), wx.YES_NO | wx.NO_DEFAULT | wx.ICON_EXCLAMATION)
             if dlg.ShowModal() == wx.ID_NO:
                 return False
                 dlg.Destroy()
