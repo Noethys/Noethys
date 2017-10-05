@@ -571,12 +571,20 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
         
         # Génération automatique des fonctions standards
-        intro, total = self.GetTextesImpression()
-        self.GenerationContextMenu(menuPop, titre=_(u"Liste des factures"), intro=intro, total=total)
+        self.GenerationContextMenu(menuPop, dictParametres=self.GetParametresImpression())
 
         self.PopupMenu(menuPop)
         menuPop.Destroy()
-    
+
+    def GetParametresImpression(self):
+        dictParametres = {
+            "titre" : _(u"Liste des factures"),
+            "intro" : self.GetTextesImpression()[0],
+            "total" : self.GetTextesImpression()[1],
+            "orientation" : wx.PORTRAIT,
+            }
+        return dictParametres
+
     def Reedition(self, event):
         if len(self.Selection()) == 0 :
             dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune facture à imprimer !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)

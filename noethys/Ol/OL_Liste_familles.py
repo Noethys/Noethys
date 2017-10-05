@@ -248,15 +248,22 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
         
         # Génération automatique des fonctions standards
-        intro = self.labelParametres
-        total = _(u"> %d famillles") % len(self.donnees)
-        self.GenerationContextMenu(menuPop, titre=_(u"Liste des familles"), intro=intro, total=total)
+        self.GenerationContextMenu(menuPop, dictParametres=self.GetParametresImpression())
 
         # Commandes standards
         self.AjouterCommandesMenuContext(menuPop)
 
         self.PopupMenu(menuPop)
         menuPop.Destroy()
+
+    def GetParametresImpression(self):
+        dictParametres = {
+            "titre" : _(u"Liste des familles"),
+            "intro" : self.labelParametres,
+            "total" : _(u"> %s familles") % len(self.donnees),
+            "orientation" : wx.PORTRAIT,
+            }
+        return dictParametres
 
     def OuvrirFicheFamille(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_fiche", "consulter") == False : return

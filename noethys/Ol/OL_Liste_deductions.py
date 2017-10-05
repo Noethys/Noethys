@@ -277,14 +277,21 @@ class ListView(FastObjectListView):
         if noSelection == True : item.Enable(False)
                 
         menuPop.AppendSeparator()
-    
+
         # Génération automatique des fonctions standards
-        intro = self.labelParametres
-        total = _(u"%d déductions") % len(self.donnees)
-        self.GenerationContextMenu(menuPop, titre=_(u"Liste des déductions"), intro=intro, total=total, orientation=wx.LANDSCAPE)
+        self.GenerationContextMenu(menuPop, dictParametres=self.GetParametresImpression())
 
         self.PopupMenu(menuPop)
         menuPop.Destroy()
+
+    def GetParametresImpression(self):
+        dictParametres = {
+            "titre" : _(u"Liste des déductions"),
+            "intro" : self.labelParametres,
+            "total" : _(u"%s déductions") % len(self.donnees),
+            "orientation" : wx.LANDSCAPE,
+            }
+        return dictParametres
 
     def Modifier(self, event):
         if len(self.Selection()) == 0 :

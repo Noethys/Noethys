@@ -184,15 +184,25 @@ class ListView(FastObjectListView):
         menuPop = wx.Menu()
     
         # Génération automatique des fonctions standards
+        self.GenerationContextMenu(menuPop, dictParametres=self.GetParametresImpression())
+
+        self.PopupMenu(menuPop)
+        menuPop.Destroy()
+
+    def GetParametresImpression(self):
         if len(self.donnees) > 0 :
             intro = _(u"Pièce sélectionnée : %s") % self.donnees[0].nomPiece
         else :
             intro = ""
         total = _(u"Un total de %d pièces") % len(self.donnees)
-        self.GenerationContextMenu(menuPop, titre=_(u"Liste des pièces fournies"), intro=intro, total=total)
 
-        self.PopupMenu(menuPop)
-        menuPop.Destroy()
+        dictParametres = {
+            "titre" : _(u"Liste des pièces fournies"),
+            "intro" : intro,
+            "total" : total,
+            "orientation" : wx.PORTRAIT,
+            }
+        return dictParametres
 
 
 # -------------------------------------------------------------------------------------------------------------------------------------

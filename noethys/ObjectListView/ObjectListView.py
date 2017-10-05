@@ -2574,7 +2574,13 @@ class ObjectListView(wx.ListCtrl):
             return nom_module
         return None
 
-    def GenerationContextMenu(self, menu=None, intro="", total="", titre=None, orientation=wx.PORTRAIT):
+    def GenerationContextMenu(self, menu=None, intro="", total="", titre=None, orientation=wx.PORTRAIT, dictParametres=None):
+        if dictParametres != None :
+            if dictParametres.has_key("titre") : titre = dictParametres["titre"]
+            if dictParametres.has_key("intro"): intro = dictParametres["intro"]
+            if dictParametres.has_key("total"): total = dictParametres["total"]
+            if dictParametres.has_key("orientation"): orientation = dictParametres["orientation"]
+
         # Met à jour le titre de la liste si besoin
         if titre != None :
             self.titre = titre
@@ -2649,11 +2655,25 @@ class ObjectListView(wx.ListCtrl):
                 self.Bind(wx.EVT_MENU, self.EnvoyerMail, id=id)
 
     def Apercu(self, event):
+        if hasattr(self, "GetParametresImpression") :
+            dictParametres = self.GetParametresImpression()
+            if dictParametres.has_key("titre"): self.titre = dictParametres["titre"]
+            if dictParametres.has_key("intro"): self.impression_intro = dictParametres["intro"]
+            if dictParametres.has_key("total"): self.impression_total = dictParametres["total"]
+            if dictParametres.has_key("orientation"): self.orientation = dictParametres["orientation"]
+
         from Utils import UTILS_Printer
         prt = UTILS_Printer.ObjectListViewPrinter(self, titre=self.titre, intro=self.impression_intro, total=self.impression_total, format="A", orientation=self.orientation)
         prt.Preview()
 
     def Imprimer(self, event):
+        if hasattr(self, "GetParametresImpression") :
+            dictParametres = self.GetParametresImpression()
+            if dictParametres.has_key("titre"): self.titre = dictParametres["titre"]
+            if dictParametres.has_key("intro"): self.impression_intro = dictParametres["intro"]
+            if dictParametres.has_key("total"): self.impression_total = dictParametres["total"]
+            if dictParametres.has_key("orientation"): self.orientation = dictParametres["orientation"]
+
         from Utils import UTILS_Printer
         prt = UTILS_Printer.ObjectListViewPrinter(self, titre=self.titre, intro=self.impression_intro, total=self.impression_total, format="A", orientation=self.orientation)
         prt.Print()

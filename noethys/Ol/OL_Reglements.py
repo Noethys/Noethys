@@ -338,16 +338,26 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Génération automatique des fonctions standards
+        self.GenerationContextMenu(menuPop, dictParametres=self.GetParametresImpression())
+
+        self.PopupMenu(menuPop)
+        menuPop.Destroy()
+
+    def GetParametresImpression(self):
         intro = u""
         total = 0.0
         for track in self.donnees :
             total += track.montant
         total = self.GetDetailReglements()
-        self.GenerationContextMenu(menuPop, titre=_(u"Liste des règlements"), intro=intro, total=total, orientation=wx.LANDSCAPE)
 
-        self.PopupMenu(menuPop)
-        menuPop.Destroy()
-    
+        dictParametres = {
+            "titre" : _(u"Liste des règlements"),
+            "intro" : intro,
+            "total" : total,
+            "orientation" : wx.LANDSCAPE,
+            }
+        return dictParametres
+
     def EditerRecu(self, event):
         if len(self.Selection()) == 0 :
             dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun règlement dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)

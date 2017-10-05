@@ -276,16 +276,26 @@ class ListView(FastObjectListView):
         menuPop = wx.Menu()
     
         # Génération automatique des fonctions standards
-        intro = _(u"Liste des prélèvements")
+        self.GenerationContextMenu(menuPop, dictParametres=self.GetParametresImpression())
+
+        self.PopupMenu(menuPop)
+        menuPop.Destroy()
+
+    def GetParametresImpression(self):
+        intro = ""
         # Récupère le total
         total = 0.0
         for track in self.donnees :
             total += track.montant
         total = self.GetTexteTotaux().replace("<B>", "").replace("</B>", "")
-        self.GenerationContextMenu(menuPop, titre=_(u"Liste des prélèvements"), intro=intro, total=total, orientation=wx.LANDSCAPE)
 
-        self.PopupMenu(menuPop)
-        menuPop.Destroy()
+        dictParametres = {
+            "titre" : _(u"Liste des prélèvements"),
+            "intro" : intro,
+            "total" : total,
+            "orientation" : wx.LANDSCAPE,
+            }
+        return dictParametres
 
     def GetLabelListe(self):
         """ Récupère le nombre de prélèvements et le montant total de la liste """

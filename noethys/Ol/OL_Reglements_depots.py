@@ -370,7 +370,12 @@ class ListView(FastObjectListView):
         menuPop = wx.Menu()
 
         # Génération automatique des fonctions standards
-        # Récupère l'intitulé du compte
+        self.GenerationContextMenu(menuPop, dictParametres=self.GetParametresImpression())
+
+        self.PopupMenu(menuPop)
+        menuPop.Destroy()
+
+    def GetParametresImpression(self):
         if self.GetGrandParent().GetName() == "DLG_Saisie_depot" :
             intro = self.GetGrandParent().GetLabelParametres()
         else :
@@ -380,10 +385,14 @@ class ListView(FastObjectListView):
         for track in self.donnees :
             total += track.montant
         total = self.GetDetailReglements()
-        self.GenerationContextMenu(menuPop, titre=_(u"Liste des règlements"), intro=intro, total=total, orientation=wx.LANDSCAPE)
 
-        self.PopupMenu(menuPop)
-        menuPop.Destroy()
+        dictParametres = {
+            "titre" : _(u"Liste des règlements"),
+            "intro" : intro,
+            "total" : total,
+            "orientation" : wx.LANDSCAPE,
+            }
+        return dictParametres
 
     def GetDetailReglements(self):
         # Récupération des chiffres
@@ -402,14 +411,14 @@ class ListView(FastObjectListView):
                 dictDetails[track.IDmode]["nbre"] += 1
                 dictDetails[track.IDmode]["montant"] += track.montant
         # Création du texte
-        texte = _(u"%d règlements (%.2f ¤) : ") % (nbreTotal, montantTotal)
+        listeDetails = []
+        texte = _(u"%d règlements (%.2f ¤)") % (nbreTotal, montantTotal)
         for IDmode, dictDetail in dictDetails.iteritems() :
-            texteDetail = u"%d %s (%.2f ¤), " % (dictDetail["nbre"], dictDetail["label"], dictDetail["montant"])
-            texte += texteDetail
-        if len(dictDetails) > 0 :
-            texte = texte[:-2] + u"."
-        else:
-            texte = texte[:-7] 
+            texteDetail = u"%d %s (%.2f ¤)" % (dictDetail["nbre"], dictDetail["label"], dictDetail["montant"])
+            listeDetails.append(texteDetail)
+        if len(listeDetails) > 0 :
+            texte += " : "
+            texte += ", ".join(listeDetails) + "."
         return texte
 
     def Modifier(self, event):

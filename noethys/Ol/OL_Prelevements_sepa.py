@@ -358,6 +358,12 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Génération automatique des fonctions standards
+        self.GenerationContextMenu(menuPop, dictParametres=self.GetParametresImpression())
+
+        self.PopupMenu(menuPop)
+        menuPop.Destroy()
+
+    def GetParametresImpression(self):
         intro = self.GetParent().GetLabelParametres()
         # Récupère le total
         total = 0.0
@@ -365,10 +371,13 @@ class ListView(FastObjectListView):
             total += track.montant
         total = self.GetTexteTotaux().replace("<B>", "").replace("</B>", "")
 
-        self.GenerationContextMenu(menuPop, titre=_(u"Liste des prélèvements"), intro=intro, total=total, orientation=wx.LANDSCAPE)
-
-        self.PopupMenu(menuPop)
-        menuPop.Destroy()
+        dictParametres = {
+            "titre" : _(u"Liste des prélèvements"),
+            "intro" : intro,
+            "total" : total,
+            "orientation" : wx.LANDSCAPE,
+            }
+        return dictParametres
 
     def Saisie_factures(self, event=None):
         """ Saisie de factures """

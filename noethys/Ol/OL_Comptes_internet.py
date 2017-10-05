@@ -159,16 +159,18 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
 
         # Génération automatique des fonctions standards
-        self.GenerationContextMenu(menuPop, titre=_(u"Liste des comptes internet"), total=_(u"> %s familles") % len(self.donnees))
+        self.GenerationContextMenu(menuPop, dictParametres=self.GetParametresImpression())
 
         self.PopupMenu(menuPop)
         menuPop.Destroy()
 
-    def Apercu(self, event):
-        self.Impression("preview")
-
-    def Imprimer(self, event):
-        self.Impression("print")
+    def GetParametresImpression(self):
+        dictParametres = {
+            "titre": _(u"Liste des comptes internet"),
+            "total": _(u"> %s familles") % len(self.donnees),
+            "orientation": wx.PORTRAIT,
+        }
+        return dictParametres
 
     def ExportTexte(self, event):
         from Utils import UTILS_Export

@@ -229,12 +229,19 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
         
         # Génération automatique des fonctions standards
-        intro = self.labelParametres
-        total = _(u"> %d familles") % len(self.donnees)
-        self.GenerationContextMenu(menuPop, titre=_(u"Liste des régimes et caisses"), intro=intro, total=total)
+        self.GenerationContextMenu(menuPop, dictParametres=self.GetParametresImpression())
 
         self.PopupMenu(menuPop)
         menuPop.Destroy()
+
+    def GetParametresImpression(self):
+        dictParametres = {
+            "titre" : _(u"Liste des régimes et caisses"),
+            "intro" : self.labelParametres,
+            "total" : _(u"> %s familles") % len(self.donnees),
+            "orientation" : wx.PORTRAIT,
+            }
+        return dictParametres
 
     def OuvrirFicheFamille(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_fiche", "consulter") == False : return

@@ -724,13 +724,21 @@ class ListView(FastObjectListView):
             if noSelection == True : item.Enable(False)
             
         menuPop.AppendSeparator()
-        
+
         # Génération automatique des fonctions standards
-        intro, total = self.GetTextesImpression()
-        self.GenerationContextMenu(menuPop, titre=_(u"Liste des cotisations"), intro=intro, total=total)
+        self.GenerationContextMenu(menuPop, dictParametres=self.GetParametresImpression())
 
         self.PopupMenu(menuPop)
         menuPop.Destroy()
+
+    def GetParametresImpression(self):
+        dictParametres = {
+            "titre" : _(u"Liste des cotisations"),
+            "intro" : self.GetTextesImpression()[0],
+            "total" : self.GetTextesImpression()[1],
+            "orientation" : wx.PORTRAIT,
+            }
+        return dictParametres
 
     def Reedition(self, event):
         if len(self.Selection()) == 0 :

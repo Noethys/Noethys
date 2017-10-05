@@ -304,15 +304,23 @@ class ListView(FastObjectListView):
         menuPop = wx.Menu()
                 
         # Génération automatique des fonctions standards
-        intro = self.labelParametres
-        total = _(u"> %d individus") % len(self.donnees)
-        self.GenerationContextMenu(menuPop, titre=_(u"Liste des individus"), intro=intro, total=total)
+        self.GenerationContextMenu(menuPop, dictParametres=self.GetParametresImpression())
         
         # Commandes standards
         self.AjouterCommandesMenuContext(menuPop)
 
         self.PopupMenu(menuPop)
         menuPop.Destroy()
+
+    def GetParametresImpression(self):
+        dictParametres = {
+            "titre" : _(u"Liste des individus"),
+            "intro" : self.labelParametres,
+            "total" : _(u"> %s individus") % len(self.donnees),
+            "orientation" : wx.PORTRAIT,
+            }
+        return dictParametres
+
 
 # -------------------------------------------------------------------------------------------------------------------------------------
 

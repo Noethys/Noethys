@@ -455,13 +455,20 @@ class ListView(GroupListView):
         menuPop.AppendSeparator()
         
         # Génération automatique des fonctions standards
-        intro = self.labelParametres
-        total = _(u"> %d individus") % len(self.donnees)
-        self.GenerationContextMenu(menuPop, titre=_(u"Liste des inscriptions"), intro=intro, total=total, orientation=wx.LANDSCAPE)
+        self.GenerationContextMenu(menuPop, dictParametres=self.GetParametresImpression())
 
         self.PopupMenu(menuPop)
         menuPop.Destroy()
-    
+
+    def GetParametresImpression(self):
+        dictParametres = {
+            "titre" : _(u"Liste des inscriptions"),
+            "intro" : self.labelParametres,
+            "total" : _(u"> %s individus") % len(self.donnees),
+            "orientation" : wx.PORTRAIT,
+            }
+        return dictParametres
+
     def OuvrirFicheFamille(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_fiche", "consulter") == False : return
         if len(self.Selection()) == 0 :
