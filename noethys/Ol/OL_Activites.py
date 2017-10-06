@@ -81,6 +81,8 @@ class Exporter(UTILS_Export_tables.Exporter):
         # Portail
         self.ExporterTable("portail_periodes", "IDactivite=%d" % ID)
         self.ExporterTable("portail_unites", "IDactivite=%d" % ID)
+        # Evènements
+        self.ExporterTable("evenements", "IDactivite=%d" % ID)
 
         # Correspondances spéciales
         self.correspondances_speciales.append({"table" : "etiquettes", "champ" : "parent", "champ_reference" : "IDetiquette"})

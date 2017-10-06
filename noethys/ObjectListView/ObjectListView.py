@@ -2654,7 +2654,7 @@ class ObjectListView(wx.ListCtrl):
                 menu.AppendItem(item)
                 self.Bind(wx.EVT_MENU, self.EnvoyerMail, id=id)
 
-    def Apercu(self, event):
+    def Apercu(self, event=None):
         if hasattr(self, "GetParametresImpression") :
             dictParametres = self.GetParametresImpression()
             if dictParametres.has_key("titre"): self.titre = dictParametres["titre"]
@@ -2666,7 +2666,7 @@ class ObjectListView(wx.ListCtrl):
         prt = UTILS_Printer.ObjectListViewPrinter(self, titre=self.titre, intro=self.impression_intro, total=self.impression_total, format="A", orientation=self.orientation)
         prt.Preview()
 
-    def Imprimer(self, event):
+    def Imprimer(self, event=None):
         if hasattr(self, "GetParametresImpression") :
             dictParametres = self.GetParametresImpression()
             if dictParametres.has_key("titre"): self.titre = dictParametres["titre"]
@@ -2678,15 +2678,15 @@ class ObjectListView(wx.ListCtrl):
         prt = UTILS_Printer.ObjectListViewPrinter(self, titre=self.titre, intro=self.impression_intro, total=self.impression_total, format="A", orientation=self.orientation)
         prt.Print()
 
-    def ExportTexte(self, event):
+    def ExportTexte(self, event=None):
         from Utils import UTILS_Export
         UTILS_Export.ExportTexte(self, titre=self.titre)
 
-    def ExportExcel(self, event):
+    def ExportExcel(self, event=None):
         from Utils import UTILS_Export
         UTILS_Export.ExportExcel(self, titre=self.titre)
 
-    def EnvoyerMail(self, event):
+    def EnvoyerMail(self, event=None):
         from Dlg import DLG_Liste_envoi_email
         dlg = DLG_Liste_envoi_email.Dialog(self, listview=self)
         dlg.ShowModal()

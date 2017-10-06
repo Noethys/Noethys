@@ -362,15 +362,14 @@ class Page_dates(wx.Panel):
 
         if self.radio_calendrier.GetValue() == True :
             self.dictDonnees["action"] = "schema"
-            date = self.ctrl_calendrier.dictOuvertures.keys()[0]
-            if self.ctrl_calendrier.dictOuvertures.has_key(date) :
-                self.dictDonnees["dictOuvertures"] = self.ctrl_calendrier.dictOuvertures[date]
-            else :
-                self.dictDonnees["dictOuvertures"] = {}
-            if self.ctrl_calendrier.dictRemplissage.has_key(date) :
-                self.dictDonnees["dictRemplissage"] = self.ctrl_calendrier.dictRemplissage[date]
-            else :
-                self.dictDonnees["dictRemplissage"] = {}
+            self.dictDonnees["dictOuvertures"] = {}
+            self.dictDonnees["dictRemplissage"] = {}
+            if len(self.ctrl_calendrier.dictOuvertures.keys()) > 0 :
+                date = self.ctrl_calendrier.dictOuvertures.keys()[0]
+                if self.ctrl_calendrier.dictOuvertures.has_key(date) :
+                    self.dictDonnees["dictOuvertures"] = self.ctrl_calendrier.dictOuvertures[date]
+                if self.ctrl_calendrier.dictRemplissage.has_key(date) :
+                    self.dictDonnees["dictRemplissage"] = self.ctrl_calendrier.dictRemplissage[date]
 
         if self.radio_renitialisation.GetValue() == True :
             self.dictDonnees["action"] = "reinit"

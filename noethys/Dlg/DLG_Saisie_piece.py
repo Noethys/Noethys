@@ -426,7 +426,10 @@ class Dialog(wx.Dialog):
 
         # Recherche de la durée de validité par défaut de la pièce
         IDtype_piece = selection["IDtype_piece"]
-        validite = self.dictTypesPieces[IDtype_piece]["duree_validite"]
+        if self.dictTypesPieces.has_key(IDtype_piece) :
+            validite = self.dictTypesPieces[IDtype_piece]["duree_validite"]
+        else :
+            validite = None
         
         # Si illimité
         if validite == None or validite == "j0-m0-a0" : 
@@ -447,36 +450,6 @@ class Dialog(wx.Dialog):
             dateMois = int(dateDebut[3:5])
             dateAnnee = int(dateDebut[6:10])
             dateDebut = datetime.date(dateAnnee, dateMois, dateJour)
-
-##            # Calcul des jours
-##            if jours != 0:
-##                dateFin = dateDebut + (datetime.timedelta(days = jours))
-##                dateJour = dateFin.day
-##                dateMois = dateFin.month
-##                dateAnnee = dateFin.year
-##
-##            # Calcul des mois
-##            if mois != 0:
-##                dateMois = dateMois + mois
-##                if dateMois > 12:
-##                    division = divmod(dateMois, 12)
-##                    dateAnnee = dateAnnee + division[0]
-##                    dateMois = division[1]
-##                nbreJoursMois = calendar.monthrange(dateAnnee, dateMois)[1]
-##                if dateJour > nbreJoursMois :
-##                    dateJour = nbreJoursMois
-##                dateFin = datetime.date(dateAnnee, dateMois, dateJour)
-##                dateJour = dateFin.day
-##                dateMois = dateFin.month
-##                dateAnnee = dateFin.year
-##
-##            # Calcul des années
-##            if annees != 0:
-##                dateAnnee = dateAnnee + annees
-##                nbreJoursMois = calendar.monthrange(dateAnnee, dateMois)[1]
-##                if dateJour > nbreJoursMois :
-##                    dateJour = nbreJoursMois
-##                dateFin = datetime.date(dateAnnee, dateMois, dateJour)
 
             # Calcul de la date de fin de validité
             dateFin = dateDebut
