@@ -106,7 +106,7 @@ class ListView(FastObjectListView):
         FROM inscriptions
         LEFT JOIN individus ON individus.IDindividu = inscriptions.IDindividu
         LEFT JOIN categories_tarifs ON categories_tarifs.IDcategorie_tarif = inscriptions.IDcategorie_tarif
-        WHERE inscriptions.IDactivite=%d AND %s
+        WHERE inscriptions.IDactivite=%d AND inscriptions.date_desinscription IS NULL AND %s
         ;""" % (self.IDactivite, conditionCategorie)
         DB.ExecuterReq(req)
         listeInscrits = DB.ResultatReq() 
