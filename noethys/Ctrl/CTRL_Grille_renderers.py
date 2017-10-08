@@ -1053,12 +1053,12 @@ class LabelColonneMultihoraires(glr.GridLabelRenderer):
                     hauteurTrait = hautTraitHeures
                     texte = "%dh" % htime.hour
                     largTexte, hautTexte = dc.GetTextExtent(texte)
-                    dc.DrawText(texte, x-(largTexte/2) , posY+2)
+                    dc.DrawText(texte, x-(largTexte/2)+rect.x , posY+2)
                 elif htime.minute in (15, 45) :
                     hauteurTrait = 1
                 elif htime.minute == 30 :
                     hauteurTrait = 2.5
-                dc.DrawLine(x, posY+hautTexte+hautTraitHeures-hauteurTrait, x, posY+hautTexte+hautTraitHeures)
+                dc.DrawLine(x+rect.x, posY+hautTexte+hautTraitHeures-hauteurTrait, x+rect.x, posY+hautTexte+hautTraitHeures)
 
             h += datetime.timedelta(minutes=15)
 
