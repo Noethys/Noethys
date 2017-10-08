@@ -1629,9 +1629,72 @@ def CreerDonneesVirtuelles(nbreFamilles=0):
             IDconso = DB.ReqInsert("consommations", [("IDindividu", IDenfant), ("IDinscription", IDinscription), ("IDactivite", 1), ("date", date), ("IDunite", IDunite), ("IDgroupe", 1), ("etat", "reservation"), ("verrouillage", 0), ("date_saisie", datetime.date.today()), ("IDutilisateur", 1), ("IDcategorie_tarif", 1), ("IDcompte_payeur", IDcompte_payeur), ("IDprestation", IDprestation)])
         
         
-    DB.Close() 
+    DB.Close()
 
 
+def CreerDonneesVirtuellesLocations(nbreFamilles=0):
+    """ Pour remplir la base artificiellement avec des données familles virtuelles """
+    DB = GestionDB.DB()
+
+    # Lecture des produits
+    req = """SELECT IDproduit, nom, IDcategorie FROM produits;"""
+    DB.ExecuterReq(req)
+    listeDonnees = DB.ResultatReq()
+    listeProduits = []
+    for IDproduit, nom, IDcategorie in listeDonnees :
+        listeProduits.append({"IDproduit" : IDproduit, "nom" : nom, "IDcategorie" : IDcategorie})
+
+    # Saisie des données
+    for x in range(0, nbreFamilles):
+
+        print "-----  Creation de la famille %d/%d... -----" % (x + 1, nbreFamilles)
+
+        # Famille
+        IDfamille = DB.ReqInsert("familles", [("date_creation", datetime.date.today()), ("IDcompte_payeur", None)])
+        print "IDfamille = %d" % IDfamille
+
+        # Compte payeur
+        IDcompte_payeur = DB.ReqInsert("comptes_payeurs", [("IDfamille", IDfamille), ])
+        DB.ReqMAJ("familles", [("IDcompte_payeur", IDcompte_payeur), ], "IDfamille", IDfamille)
+
+        # Individus
+        IDindividu = DB.ReqInsert("individus", [("IDcivilite", 1), ("nom", u"NOM%d" % IDfamille), ("prenom", u"Prenom%d" % IDfamille), ("rue_resid", u"10 rue des oiseaux"), ("cp_resid", "29200"), ("ville_resid", u"BREST"), ("date_creation", datetime.date.today())])
+
+        # Rattachements
+        IDrattachement = DB.ReqInsert("rattachements", [("IDindividu", IDindividu), ("IDfamille", IDfamille), ("IDcategorie", 1), ("titulaire", 1)])
+
+        # Saisie de locations ou de demandes
+        d = datetime.datetime.now()
+        aujourdhui = datetime.datetime(year=d.year, month=d.month, day=d.day, hour=d.hour, minute=d.minute)
+
+        if x < len(listeProduits) :
+            # Création d'une location
+            IDproduit = listeProduits[x]["IDproduit"]
+            IDlocation = DB.ReqInsert("locations", [("IDfamille", IDfamille), ("IDproduit", IDproduit), ("observations", ""), ("date_saisie", datetime.date.today()), ("date_debut", aujourdhui)])
+            print "Location ID%d du produit ID%d" % (IDlocation, IDproduit)
+        else :
+
+            # Création d'une demande de location
+            dictProduit = random.choice(listeProduits)
+            categories = str(dictProduit["IDcategorie"])
+            produits = None #str(dictProduit["IDproduit"])
+            statut = "attente"
+            motif_refus = ""
+            IDdemande = DB.ReqInsert("locations_demandes", [("date", aujourdhui),("IDfamille", IDfamille), ("observations", ""), ("categories", categories), ("produits", produits), ("statut", statut), ("motif_refus", motif_refus)])
+            print "Demande ID%d" % IDdemande
+
+            # Création d'un filtre pour la demande
+            liste_choix = ["6", "12", "18", "24", "30", "36", "48"]
+            listeDonnees = [
+                ("IDquestion", 5),
+                ("categorie", "location_demande"),
+                ("choix", "EGAL"),
+                ("criteres", random.choice(liste_choix)),
+                ("IDdonnee", IDdemande),
+                ]
+            IDfiltre = DB.ReqInsert("questionnaire_filtres", listeDonnees)
+
+    DB.Close()
 
 
 def InsertCode():
@@ -1798,6 +1861,6 @@ if __name__ == "__main__":
     #VideRepertoireUpdates(forcer=True)
 
     #InsertCodeToolTip()
-    InsertCode()
+    CreerDonneesVirtuellesLocations(1000)
 
     pass
