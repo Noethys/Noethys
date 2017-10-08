@@ -78,6 +78,7 @@ MOTSCLES = {
                 ( "{NOM_PAYEUR}", _(u"Nom du payeur") ),
                 ( "{NUM_QUITTANCIER}", _(u"Numéro de quittancier") ),
                 ( "{DATE_SAISIE}", _(u"Date de saisie du règlement") ),
+                ( "{DATE_DIFFERE}", _(u"Date d'encaissement différé") ),
                 ],
 
     "recu_reglement" : [
@@ -92,6 +93,7 @@ MOTSCLES = {
                 ( "{NOM_PAYEUR}", _(u"Nom du payeur") ),
                 ( "{NUM_QUITTANCIER}", _(u"Numéro de quittancier") ),
                 ( "{DATE_SAISIE}", _(u"Date de saisie du règlement") ),
+                ("{DATE_DIFFERE}", _(u"Date d'encaissement différé")),
                 ],
 
     "recu_don_oeuvres" : [

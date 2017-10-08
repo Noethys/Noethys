@@ -167,6 +167,7 @@ class Impression():
         dataTableau.append( (_(u"Nom du payeur :"), Paragraph(DICT_VALEURS["nomPayeur"], paraStyle) ) )
         if DICT_VALEURS["nomEmetteur"] != None : dataTableau.append( (_(u"Nom de l'émetteur :"), Paragraph(DICT_VALEURS["nomEmetteur"], paraStyle) ) )
         if DICT_VALEURS["numPiece"] not in ("", None) : dataTableau.append( (_(u"Numéro de pièce :"), Paragraph(DICT_VALEURS["numPiece"], paraStyle) ) )
+        if DICT_VALEURS["date_differe"] not in ("", None): dataTableau.append((_(u"Encaissement différé :"), Paragraph(_(u"A partir du %s") % DICT_VALEURS["{DATE_DIFFERE}"], paraStyle)))
         
         style = TableStyle([
                 ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'), 

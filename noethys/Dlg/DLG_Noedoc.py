@@ -440,6 +440,7 @@ class Reglement():
             (_(u"Nom du payeur"), _(u"DUPOND Gérard"), "{NOM_PAYEUR}"),
             (_(u"Numéro de quittancier"), u"246", "{NUM_QUITTANCIER}"),
             (_(u"Date de saisie du règlement"), u"23/03/2011", "{DATE_SAISIE}"),
+            (_(u"Date d'encaissement différé"), u"24/04/2011", "{DATE_DIFFERE}"),
             (_(u"Observations"), _(u"Observations"), "{OBSERVATIONS}"),
             ]
         

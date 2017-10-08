@@ -765,7 +765,12 @@ class Dialog(wx.Dialog):
         dictValeurs["{NUM_QUITTANCIER}"] = str(dictValeurs["numQuittancier"])
         dictValeurs["{DATE_SAISIE}"] = DateEngFr(dictValeurs["date_saisie"])
         dictValeurs["{OBSERVATIONS}"] = u"%s" % dictValeurs["observations"]
-        
+
+        if dictValeurs["date_differe"] != None :
+            dictValeurs["{DATE_DIFFERE}"] = DateEngFr(dictValeurs["date_differe"])
+        else:
+            dictValeurs["{DATE_DIFFERE}"] = ""
+
         # Récupération liste des prestations
         if self.ctrl_prestations.GetValue() == True :
             dictValeurs["prestations"] = self.GetPrestations() 
@@ -799,7 +804,8 @@ class Dialog(wx.Dialog):
         dictChampsFusion["{NOM_PAYEUR}"] = dictValeurs["{NOM_PAYEUR}"]
         dictChampsFusion["{NUM_QUITTANCIER}"] = dictValeurs["{NUM_QUITTANCIER}"]
         dictChampsFusion["{DATE_SAISIE}"] = dictValeurs["{DATE_SAISIE}"]
-        
+        dictChampsFusion["{DATE_DIFFERE}"] = dictValeurs["{DATE_DIFFERE}"]
+
         # Fabrication du PDF
         from Utils import UTILS_Impression_recu
         UTILS_Impression_recu.Impression(dictValeurs, IDmodele=IDmodele, nomDoc=nomDoc, afficherDoc=afficherDoc)
