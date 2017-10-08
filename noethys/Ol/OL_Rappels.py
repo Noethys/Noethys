@@ -198,8 +198,11 @@ class ListView(FastObjectListView):
             date_edition = UTILS_Dates.DateEngEnDateDD(date_edition) 
             date_min = UTILS_Dates.DateEngEnDateDD(date_min)
             date_max = UTILS_Dates.DateEngEnDateDD(date_max)
-            date_reference = UTILS_Dates.DateEngEnDateDD(date_reference)       
-            titulaires = dictTitulaires[IDfamille]["titulairesSansCivilite"]
+            date_reference = UTILS_Dates.DateEngEnDateDD(date_reference)
+            if dictTitulaires.has_key(IDfamille):
+                titulaires = dictTitulaires[IDfamille]["titulairesSansCivilite"]
+            else :
+                titulaires = _(u"Titulaires inconnus")
 
             dictTemp = {
                 "IDrappel" : IDrappel, "numero" : numero, "IDcompte_payeur" : IDcompte_payeur, "date_edition" : date_edition, "date_reference" : date_reference,
