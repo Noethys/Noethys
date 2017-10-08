@@ -392,7 +392,7 @@ class Dialog(wx.Dialog):
                 ("choix", dictFiltre["choix"]),
                 ("criteres", dictFiltre["criteres"]),
                 ("IDtarif", self.IDtarif),
-                ("type", "tarif"),
+                #("type", "tarif"),
                 ("IDdonnee", self.IDtarif),
                 ]
 

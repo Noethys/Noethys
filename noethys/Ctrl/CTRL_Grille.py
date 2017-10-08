@@ -1619,7 +1619,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 
         # Recherche les filtres de questionnaires
         req = """SELECT IDfiltre, questionnaire_filtres.IDquestion, choix, criteres, IDtarif, 
-        questionnaire_categories.type, controle
+        questionnaire_categories.type, controle, questionnaire_questions.defaut
         FROM questionnaire_filtres
         LEFT JOIN questionnaire_questions ON questionnaire_questions.IDquestion = questionnaire_filtres.IDquestion
         LEFT JOIN questionnaire_categories ON questionnaire_categories.IDcategorie = questionnaire_questions.IDcategorie
@@ -1627,10 +1627,10 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         self.DB.ExecuterReq(req)
         listeFiltres = self.DB.ResultatReq()
         dictFiltres = {}
-        for IDfiltre, IDquestion, choix, criteres, IDtarif, type, controle in listeFiltres :
+        for IDfiltre, IDquestion, choix, criteres, IDtarif, type, controle, defaut in listeFiltres :
             if dictFiltres.has_key(IDtarif) == False :
                 dictFiltres[IDtarif] = []
-            dictFiltres[IDtarif].append({"IDfiltre":IDfiltre, "IDquestion":IDquestion, "choix":choix, "criteres":criteres, "type":type, "controle":controle})
+            dictFiltres[IDtarif].append({"IDfiltre":IDfiltre, "IDquestion":IDquestion, "choix":choix, "criteres":criteres, "type":type, "controle":controle, "defaut":defaut})
         
         # Recherche des tarifs pour chaque activité
         req = """SELECT 
@@ -4706,7 +4706,8 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         validation = True
         for dictFiltre in listeFiltres :
             IDquestion = dictFiltre["IDquestion"]
-            
+            defaut = dictFiltre["defaut"]
+
             # Recherche les réponses
             if dictFiltre["type"] == "individu" :
                 req = """SELECT IDreponse, reponse
@@ -4721,13 +4722,17 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 WHERE IDquestion=%d AND IDfamille=%d;""" % (IDquestion, IDfamille)
                 DB.ExecuterReq(req)
                 listeReponses = DB.ResultatReq()     
-                
+
+            # Si aucune réponse enregistrée, on récupère la valeur par défaut
+            if len(listeReponses) == 0 :
+                listeReponses = [(None, defaut)]
+
             # Compare le filtre avec les réponses
             for IDreponse, reponse in listeReponses :
                 resultat = UTILS_Filtres_questionnaires.Filtre(controle=dictFiltre["controle"], choix=dictFiltre["choix"], criteres=dictFiltre["criteres"], reponse=reponse)
                 if resultat == False :
                     validation = False
-        
+
         DB.Close() 
 
         return validation
