@@ -14,3 +14,4 @@ zope.interface>=4.1.2
 py-dateutil>=2.2
 psutil>=4.3.1
 paramiko>=2.0.2
+lxml>=3.3.5
