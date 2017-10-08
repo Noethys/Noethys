@@ -617,6 +617,7 @@ class Dialog(wx.Dialog):
         self.ctrl_montant = CTRL_Saisie_euros.CTRL(self, font)
         self.label_payeur = wx.StaticText(self, -1, _(u"Payeur :"))
         self.ctrl_payeur = CTRL_Payeurs(self, self.IDcompte_payeur, IDreglement=self.IDreglement)
+        self.ctrl_payeur.SetMinSize((50, 50))
         self.bouton_ajouter_payeur = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Ajouter.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_modifier_payeur = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Modifier.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_supprimer_payeur = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Supprimer.png"), wx.BITMAP_TYPE_ANY))
