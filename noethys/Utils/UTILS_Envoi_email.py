@@ -17,8 +17,8 @@ import os
 import GestionDB
 import FonctionsPerso
 import re
-
-import UTILS_Titulaires
+from Utils import UTILS_Html2text
+from Utils import UTILS_Titulaires
 
 
 def EnvoiEmailFamille(parent=None, IDfamille=None, nomDoc="", categorie="", listeAdresses=[], visible=True, log=None, CreationPDF=None, IDmodele=None):
@@ -186,6 +186,7 @@ def Envoi_mail(adresseExpediteur="", listeDestinataires=[], listeDestinatairesCC
     from email.MIMEAudio import MIMEAudio
     from email.Utils import COMMASPACE, formatdate
     from email import Encoders
+    from email.utils import make_msgid
     import mimetypes
     
     assert type(listeDestinataires)==list
@@ -198,18 +199,23 @@ def Envoi_mail(adresseExpediteur="", listeDestinataires=[], listeDestinatairesCC
         img = img.replace(u":", u"%3a")
         texteMail = texteMail.replace(_(u"file:/%s") % img, u"cid:image%d" % index)
         index += 1
-    
+
     # Création du message
-    msg = MIMEMultipart()
+    msg = MIMEMultipart('alternative')
     msg['From'] = adresseExpediteur
     msg['To'] = ";".join(listeDestinataires)
     msg['Bcc'] = ";".join(listeDestinatairesCCI)
     msg['Date'] = formatdate(localtime=True)
     msg['Subject'] = sujetMail
-    
+    #msg['Message-ID'] = make_msgid()
+
     if accuseReception == True :
         msg['Disposition-Notification-To'] = adresseExpediteur
-        
+
+    # Conversion du HTML en plain text
+    textePlain = UTILS_Html2text.html2text(texteMail)
+
+    msg.attach( MIMEText(textePlain.encode('utf-8'), 'plain', 'utf-8') )
     msg.attach( MIMEText(texteMail.encode('utf-8'), 'html', 'utf-8') )
     
     # Attache des pièces jointes
