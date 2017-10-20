@@ -144,8 +144,8 @@ def Sauvegarde(listeFichiersLocaux=[], listeFichiersReseau=[], nom="", repertoir
             #         fichierSave,
             #         ]
 
-            args = u""""%sbin/mysqldump" --defaults-extra-file=%s --single-transaction --opt --databases %s > %s""" % (repMySQL, nomFichierLoginTemp, nomFichier, fichierSave)
-
+            args = u""""%sbin/mysqldump" --defaults-extra-file="%s" --single-transaction --opt --databases %s > "%s" """ % (repMySQL, nomFichierLoginTemp, nomFichier, fichierSave)
+            print ("Chemin mysqldump =", args)
             proc = subprocess.Popen(args.encode('utf8'), shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, stdin=subprocess.PIPE)
             out, temp = proc.communicate()
             
@@ -394,7 +394,8 @@ def Restauration(parent=None, fichier="", listeFichiersLocaux=[], listeFichiersR
             #         fichierRestore,
             #         ]
 
-            args = u""""%sbin/mysql" --defaults-extra-file=%s %s < %s""" % (repMySQL, nomFichierLoginTemp, fichier, fichierRestore)
+            args = u""""%sbin/mysql" --defaults-extra-file="%s" %s < "%s" """ % (repMySQL, nomFichierLoginTemp, fichier, fichierRestore)
+            print ("Chemin mysql =", args)
             proc = subprocess.Popen(args.encode("iso-8859-15"), shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, stdin=subprocess.PIPE)
             out, temp = proc.communicate()
 
