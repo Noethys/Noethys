@@ -19,7 +19,7 @@ import decimal
 
 from Utils import UTILS_Dates
 from Utils import UTILS_Utilisateurs
-from Utils import UTILS_Titulaires
+from Utils import UTILS_Infos_individus
 from Data import DATA_Civilites as Civilites
 DICT_CIVILITES = Civilites.GetDictCivilites()
 
@@ -50,11 +50,11 @@ LISTE_CHAMPS = [
     {"label":_(u"IDcivilite"), "code":"IDcivilite", "champ":"IDcivilite", "typeDonnee":"entier", "align":"left", "largeur":65, "stringConverter":None, "actif":False, "afficher":False},
     {"label":_(u"Nom"), "code":"nomIndividu", "champ":"individus.nom", "typeDonnee":"texte", "align":"left", "largeur":65, "stringConverter":None, "actif":True, "afficher":False},
     {"label":_(u"Prénom"), "code":"prenomIndividu", "champ":"prenom", "typeDonnee":"texte", "align":"left", "largeur":65, "stringConverter":None, "actif":True, "afficher":False},
-    
+
     {"label":_(u"Rue"), "code":"rue_resid", "champ":"rue_resid", "typeDonnee":"texte", "align":"left", "largeur":125, "stringConverter":None, "actif":True, "afficher":True},
     {"label":_(u"CP"), "code":"cp_resid", "champ":"cp_resid", "typeDonnee":"texte", "align":"left", "largeur":45, "stringConverter":None, "actif":True, "afficher":True},
     {"label":_(u"Ville"), "code":"ville_resid", "champ":"ville_resid", "typeDonnee":"texte", "align":"left", "largeur":110, "stringConverter":None, "actif":True, "afficher":True},
-    
+
     {"label":_(u"Num. Sécu."), "code":"num_secu", "champ":"num_secu", "typeDonnee":"texte", "align":"left", "largeur":90, "stringConverter":None, "actif":True, "afficher":False},
     {"label":_(u"Date naiss."), "code":"date_naiss", "champ":"date_naiss", "typeDonnee":"date", "align":"left", "largeur":75, "stringConverter":"date", "actif":True, "afficher":True},
     {"label":_(u"Age"), "code":"age", "champ":None, "typeDonnee":"entier", "align":"left", "largeur":45, "stringConverter":"age", "actif":True, "afficher":True},
@@ -62,7 +62,7 @@ LISTE_CHAMPS = [
     {"label":_(u"Ville naiss."), "code":"ville_naiss", "champ":"ville_naiss", "typeDonnee":"texte", "align":"left", "largeur":85, "stringConverter":None, "actif":True, "afficher":True},
     {"label":_(u"adresse_auto"), "code":"adresse_auto", "champ":"adresse_auto", "typeDonnee":"texte", "align":"left", "largeur":75, "stringConverter":None, "actif":False, "afficher":False},
     {"label":_(u"Catégorie socio."), "code":"categorie_socio", "champ":"categories_travail.nom", "typeDonnee":"texte", "align":"left", "largeur":95, "stringConverter":None, "actif":True, "afficher":True},
-    
+
     {"label":_(u"Profession"), "code":"profession", "champ":"profession", "typeDonnee":"texte", "align":"left", "largeur":75, "stringConverter":None, "actif":True, "afficher":True},
     {"label":_(u"Employeur"), "code":"employeur", "champ":"employeur", "typeDonnee":"texte", "align":"left", "largeur":75, "stringConverter":None, "actif":True, "afficher":True},
     {"label":_(u"Tél pro."), "code":"travail_tel", "champ":"travail_tel", "typeDonnee":"texte", "align":"left", "largeur":75, "stringConverter":None, "actif":True, "afficher":False},
@@ -72,30 +72,16 @@ LISTE_CHAMPS = [
     {"label":_(u"Tél mobile"), "code":"tel_mobile", "champ":"tel_mobile", "typeDonnee":"texte", "align":"left", "largeur":75, "stringConverter":None, "actif":True, "afficher":True},
     {"label":_(u"Fax dom."), "code":"tel_fax", "champ":"tel_fax", "typeDonnee":"texte", "align":"left", "largeur":75, "stringConverter":None, "actif":True, "afficher":False},
     {"label":_(u"Email"), "code":"mail", "champ":"mail", "typeDonnee":"texte", "align":"left", "largeur":75, "stringConverter":None, "actif":True, "afficher":True},
-    
+
     {"label":_(u"Genre"), "code":"genre", "champ":None, "typeDonnee":"texte", "align":"left", "largeur":45, "stringConverter":None, "actif":True, "afficher":False},
     {"label":_(u"Civilité court"), "code":"civiliteLong", "champ":None, "typeDonnee":"texte", "align":"left", "largeur":65, "stringConverter":None, "actif":True, "afficher":False},
     {"label":_(u"Civilité long"), "code":"civiliteAbrege", "champ":None, "typeDonnee":"texte", "align":"left", "largeur":75, "stringConverter":None, "actif":True, "afficher":False},
     {"label":_(u"nomImage"), "code":"nomImage", "champ":None, "typeDonnee":"texte", "align":"left", "largeur":45, "stringConverter":None, "actif":False, "afficher":False},
-    
+
     {"label":_(u"IDfamille"), "code":"IDfamille", "champ":"inscriptions.IDfamille", "typeDonnee":"entier", "align":"left", "largeur":45, "stringConverter":None, "actif":False, "afficher":False},
-    
+
     ]
 
-
-def DateEngFr(textDate):
-    text = str(textDate[8:10]) + u"/" + str(textDate[5:7]) + u"/" + str(textDate[:4])
-    return text
-
-def DateComplete(dateDD):
-    """ Transforme une date DD en date complète : Ex : lundi 15 janvier 2008 """
-    listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
-    listeMois = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
-    dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
-    return dateComplete
-
-def DateEngEnDateDD(dateEng):
-    return datetime.date(int(dateEng[:4]), int(dateEng[5:7]), int(dateEng[8:10]))
 
 def GetDictInfosIndividus():
     global DICT_INFOS_INDIVIDUS
@@ -121,7 +107,6 @@ class Track(object):
         
 class ListView(GroupListView):
     def __init__(self, *args, **kwds):
-        GroupListView.__init__(self, *args, **kwds)
         self.selectionID = None
         self.selectionTrack = None
         self.IDactivite = None
@@ -129,8 +114,10 @@ class ListView(GroupListView):
         self.listeGroupes = []
         self.listeCategories = []
         self.regroupement = None
-        self.listeColonnes = []
         self.labelParametres = ""
+        # Initialisation du listCtrl
+        self.nom_fichier_liste = __file__
+        GroupListView.__init__(self, *args, **kwds)
         # Binds perso
         self.Bind(wx.EVT_LIST_ITEM_ACTIVATED, self.OnActivated)
         self.Bind(wx.EVT_CONTEXT_MENU, self.OnContextMenu)
@@ -140,7 +127,11 @@ class ListView(GroupListView):
 
     def InitModel(self):
         self.donnees = self.GetTracks()
-    
+        # Récupération des infos de base individus et familles
+        # self.infosIndividus = UTILS_Infos_individus.Informations()
+        # for track in self.donnees :
+        #     self.infosIndividus.SetAsAttributs(parent=track, mode="individu", ID=track.IDindividu)
+
     def GetTracks(self):
         listeListeView = []
         if self.IDactivite == None :
@@ -308,7 +299,7 @@ class ListView(GroupListView):
 
         def FormateDate(dateDD):
             if dateDD == None : return ""
-            return DateEngFr(str(dateDD))
+            return UTILS_Dates.DateEngFr(str(dateDD))
 
         def FormateMontant(montant):
             if montant == None or montant == "" : return ""
@@ -334,10 +325,7 @@ class ListView(GroupListView):
         # Couleur en alternance des lignes
         self.oddRowsBackColor = UTILS_Interface.GetValeur("couleur_tres_claire", wx.Colour(240, 251, 237))
         self.evenRowsBackColor = "#FFFFFF" # Vert
-        
-        # Filtre des colonnes
-        self.SetChampsAffiches(self.listeColonnes)
-        
+
         # Création des colonnes
         listeColonnes = []
         for dictChamp in LISTE_CHAMPS :
@@ -363,8 +351,16 @@ class ListView(GroupListView):
                 # Création de la colonne
                 colonne = ColumnDefn(dictChamp["label"], dictChamp["align"], dictChamp["largeur"], dictChamp["code"], typeDonnee=dictChamp["typeDonnee"], stringConverter=stringConverter, imageGetter=imageGetter)
                 listeColonnes.append(colonne)
-        self.SetColumns(listeColonnes)
-        
+
+        # Insertion des champs infos de base individus
+        # listeChamps = self.infosIndividus.GetNomsChampsPresents(mode="individu")
+        # for nomChamp in listeChamps :
+        #     typeDonnee = UTILS_Infos_individus.GetTypeChamp(nomChamp)
+        #     listeColonnes.append(ColumnDefn(nomChamp, "left", 100, nomChamp, typeDonnee=typeDonnee, visible=False))
+
+        #self.SetColumns(listeColonnes)
+        self.SetColumns2(colonnes=listeColonnes, nomListe="OL_Liste_inscriptions")
+
         # Regroupement
         if self.regroupement != None :
             self.SetColonneTri(self.regroupement)
@@ -373,7 +369,7 @@ class ListView(GroupListView):
         else:
             self.SetShowGroups(False)
             self.useExpansionColumn = False
-            
+
         self.SetShowItemCounts(True)
         if len(self.columns) > 0 :
             self.SetSortColumn(self.columns[0])
@@ -402,7 +398,6 @@ class ListView(GroupListView):
         self.listeGroupes = listeGroupes
         self.listeCategories = listeCategories
         self.regroupement = regroupement
-        self.listeColonnes = listeColonnes
         self.labelParametres = labelParametres
         if IDindividu != None :
             self.selectionID = IDindividu
@@ -457,6 +452,9 @@ class ListView(GroupListView):
         # Génération automatique des fonctions standards
         self.GenerationContextMenu(menuPop, dictParametres=self.GetParametresImpression())
 
+        # Commandes standards
+        self.AjouterCommandesMenuContext(menuPop)
+
         self.PopupMenu(menuPop)
         menuPop.Destroy()
 
@@ -481,50 +479,8 @@ class ListView(GroupListView):
         from Dlg import DLG_Famille
         dlg = DLG_Famille.Dialog(self, IDfamille)
         if dlg.ShowModal() == wx.ID_OK:
-            self.MAJ(IDindividu=IDindividu, IDactivite=self.IDactivite, listeGroupes=self.listeGroupes, listeCategories=self.listeCategories, regroupement=self.regroupement, listeColonnes=self.listeColonnes)
+            self.MAJ(IDindividu=IDindividu, IDactivite=self.IDactivite, listeGroupes=self.listeGroupes, listeCategories=self.listeCategories, regroupement=self.regroupement)
         dlg.Destroy()
-
-
-# -------------------------------------------------------------------------------------------------------------------------------------------
-
-
-class BarreRecherche(wx.SearchCtrl):
-    def __init__(self, parent):
-        wx.SearchCtrl.__init__(self, parent, size=(-1, -1), style=wx.TE_PROCESS_ENTER)
-        self.parent = parent
-        self.rechercheEnCours = False
-        
-        self.SetDescriptiveText(_(u"Rechercher..."))
-        self.ShowSearchButton(True)
-        
-        self.listView = self.parent.ctrl_listview
-        nbreColonnes = self.listView.GetColumnCount()
-        self.listView.SetFilter(Filter.TextSearch(self.listView, self.listView.columns[0:nbreColonnes]))
-        
-        self.SetCancelBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Interdit.png"), wx.BITMAP_TYPE_PNG))
-        self.SetSearchBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Loupe.png"), wx.BITMAP_TYPE_PNG))
-        
-        self.Bind(wx.EVT_SEARCHCTRL_SEARCH_BTN, self.OnSearch)
-        self.Bind(wx.EVT_SEARCHCTRL_CANCEL_BTN, self.OnCancel)
-        self.Bind(wx.EVT_TEXT_ENTER, self.OnDoSearch)
-        self.Bind(wx.EVT_TEXT, self.OnDoSearch)
-
-    def OnSearch(self, evt):
-        self.Recherche()
-            
-    def OnCancel(self, evt):
-        self.SetValue("")
-        self.Recherche()
-
-    def OnDoSearch(self, evt):
-        self.Recherche()
-        
-    def Recherche(self):
-        txtSearch = self.GetValue()
-        self.ShowCancelButton(len(txtSearch))
-        self.listView.GetFilter().SetText(txtSearch)
-        self.listView.RepopulateList()
-        self.Refresh() 
 
 
 # -------------------------------------------------------------------------------------------------------------------------------------------
@@ -558,36 +514,37 @@ class MyFrame(wx.Frame):
 
 
 
-def GetDictFacturation():
-    DB = GestionDB.DB()
-    
-    # Récupère les prestations
-    req = """SELECT IDfamille, IDindividu, SUM(montant)
-    FROM prestations
-    WHERE IDactivite=%d
-    GROUP BY IDindividu, IDfamille
-    ;""" % 1
-    DB.ExecuterReq(req)
-    listePrestations = DB.ResultatReq()
-    dictPrestations = {}
-    for IDfamille, IDindividu, total_prestations in listePrestations :
-        dictPrestations[(IDfamille, IDindividu)] = {"prestations":total_prestations, "ventilation":0.0}
-    
+# def GetDictFacturation():
+#     DB = GestionDB.DB()
+#
+#     # Récupère les prestations
+#     req = """SELECT IDfamille, IDindividu, SUM(montant)
+#     FROM prestations
+#     WHERE IDactivite=%d
+#     GROUP BY IDindividu, IDfamille
+#     ;""" % 1
+#     DB.ExecuterReq(req)
+#     listePrestations = DB.ResultatReq()
+#     dictPrestations = {}
+#     for IDfamille, IDindividu, total_prestations in listePrestations :
+#         dictPrestations[(IDfamille, IDindividu)] = {"prestations":total_prestations, "ventilation":0.0}
+#
+#
+#     # Récupère la ventilation
+#     req = """SELECT IDfamille, IDindividu, SUM(ventilation.montant)
+#     FROM ventilation
+#     LEFT JOIN prestations ON prestations.IDprestation = ventilation.IDprestation
+#     WHERE prestations.IDactivite=%d
+#     GROUP BY IDfamille, IDindividu
+#     ;""" % 1
+#     DB.ExecuterReq(req)
+#     listeVentilations = DB.ResultatReq()
+#     dictVentilations = {}
+#     for IDfamille, IDindividu, total_ventilation in listeVentilations :
+#         dictPrestations[(IDfamille, IDindividu)]["ventilation"] = total_ventilation
+#
+#     DB.Close()
 
-    # Récupère la ventilation
-    req = """SELECT IDfamille, IDindividu, SUM(ventilation.montant)
-    FROM ventilation
-    LEFT JOIN prestations ON prestations.IDprestation = ventilation.IDprestation
-    WHERE prestations.IDactivite=%d
-    GROUP BY IDfamille, IDindividu
-    ;""" % 1
-    DB.ExecuterReq(req)
-    listeVentilations = DB.ResultatReq()
-    dictVentilations = {}
-    for IDfamille, IDindividu, total_ventilation in listeVentilations :
-        dictPrestations[(IDfamille, IDindividu)]["ventilation"] = total_ventilation
-    
-    DB.Close()
 
 if __name__ == '__main__':
 ##    GetDictFacturation() 

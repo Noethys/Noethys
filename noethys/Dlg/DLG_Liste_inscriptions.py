@@ -17,214 +17,43 @@ import datetime
 
 import GestionDB
 from Ctrl import CTRL_Bandeau
+from Ctrl import CTRL_CheckListBox
 from Ol import OL_Liste_inscriptions
+from Utils import UTILS_Interface
 
 
 
-
-class CTRL_Activite(wx.Choice):
+class CTRL_Activite(wx.Panel):
     def __init__(self, parent):
-        wx.Choice.__init__(self, parent, -1) 
+        wx.Panel.__init__(self, parent, id=-1, style=wx.BORDER_THEME|wx.TAB_TRAVERSAL)
         self.parent = parent
-        self.dictDonnees = {}
-        self.MAJ() 
-    
-    def MAJ(self):
-        self.dictDonnees = {}
-        DB = GestionDB.DB()
-        req = """SELECT IDactivite, nom
-        FROM activites
-        ORDER BY nom
-        ;"""
-        DB.ExecuterReq(req)
-        listeActivites = DB.ResultatReq()      
-        DB.Close() 
-        if len(listeActivites) == 0 :
-            self.Enable(False)
-        listeLabels = []
-        index = 0
-        for IDactivite, nom in listeActivites :
-            self.dictDonnees[index] = IDactivite
-            if nom == None : nom = u"Activité inconnue"
-            listeLabels.append(nom)
-            index += 1
-        self.SetItems(listeLabels)
+        self.IDactivite = None
+        couleur_fond = UTILS_Interface.GetValeur("couleur_tres_claire", wx.Colour(240, 251, 237))
+        self.SetBackgroundColour(couleur_fond)
 
-    def SetActivite(self, IDactivite=None):
-        for index, IDactiviteTmp in self.dictDonnees.iteritems() :
-            if IDactiviteTmp == IDactivite :
-                self.SetSelection(index)
+        self.ctrl_activite = wx.StaticText(self, -1, "")
+        self.ctrl_activite.SetFont(wx.Font(8, wx.SWISS, wx.NORMAL, wx.BOLD))
 
-    def GetActivite(self):
-        index = self.GetSelection()
-        if index == -1 : return None
-        return self.dictDonnees[index]
-    
-    def GetLabelActivite(self):
-        if self.GetActivite() == None :
-            return _(u"Aucune")
-        else :
-            return self.GetStringSelection()
+        # Layout
+        grid_sizer_base = wx.FlexGridSizer(rows=1, cols=1, vgap=10, hgap=10)
+        grid_sizer_base.Add(self.ctrl_activite, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALIGN_CENTER, 0)
+        grid_sizer_base.AddGrowableRow(0)
+        grid_sizer_base.AddGrowableCol(0)
+        self.SetSizer(grid_sizer_base)
+        self.Layout()
 
-# -------------------------------------------------------------------------------------------------------------------------------------------------
-
-class CTRL_Groupes(wx.CheckListBox):
-    def __init__(self, parent):
-        wx.CheckListBox.__init__(self, parent, -1)
-        self.parent = parent
-        self.listeGroupes = []
-        self.dictGroupes = {}
-        
-    def SetActivite(self, IDactivite=None):
+    def MAJ(self, IDactivite=None, nomActivite=""):
         self.IDactivite = IDactivite
-        self.MAJ() 
-        self.CocheTout()
+        self.ctrl_activite.SetLabel(nomActivite)
+        self.Layout()
 
-    def MAJ(self):
-        self.listeGroupes, self.dictGroupes = self.Importation()
-        self.SetListeChoix()
-    
-    def Importation(self):
-        listeGroupes = []
-        dictGroupes = {}
-        if self.IDactivite == None :
-            return listeGroupes, dictGroupes 
-        DB = GestionDB.DB()
-        req = """SELECT IDgroupe, IDactivite, nom
-        FROM groupes
-        WHERE IDactivite=%d
-        ORDER BY nom;""" % self.IDactivite
-        DB.ExecuterReq(req)
-        listeDonnees = DB.ResultatReq()   
-        DB.Close() 
-        for IDgroupe, IDactivite, nom in listeDonnees :
-            dictTemp = { "nom" : nom, "IDactivite" : IDactivite}
-            dictGroupes[IDgroupe] = dictTemp
-            listeGroupes.append((nom, IDgroupe))
-        listeGroupes.sort()
-        return listeGroupes, dictGroupes
+    def GetID(self):
+        return self.IDactivite
 
-    def SetListeChoix(self):
-        self.Clear()
-        listeItems = []
-        index = 0
-        for nom, IDgroupe in self.listeGroupes :
-            self.Append(nom)
-            index += 1
-                            
-    def GetIDcoches(self):
-        listeIDcoches = []
-        NbreItems = len(self.listeGroupes)
-        for index in range(0, NbreItems):
-            if self.IsChecked(index):
-                listeIDcoches.append(self.listeGroupes[index][1])
-        return listeIDcoches
-    
-    def CocheTout(self):
-        index = 0
-        for index in range(0, len(self.listeGroupes)):
-            self.Check(index)
-            index += 1
+    def GetNomActivite(self):
+        return self.ctrl_activite.GetLabel()
 
-    def SetIDcoches(self, listeIDcoches=[]):
-        index = 0
-        for index in range(0, len(self.listeGroupes)):
-            ID = self.listeGroupes[index][1]
-            if ID in listeIDcoches :
-                self.Check(index)
-            index += 1
-    
-    def GetListeGroupes(self):
-        return self.GetIDcoches() 
-    
-    def GetDictGroupes(self):
-        return self.dictGroupes
-    
-    def GetLabelsGroupes(self):
-        listeLabels = []
-        for IDgroupe in self.GetListeGroupes() :
-            listeLabels.append(self.dictGroupes[IDgroupe]["nom"])
-        return ", ".join(listeLabels)
-    
-# ----------------------------------------------------------------------------------------------------------------------------------
 
-class CTRL_Categories(wx.CheckListBox):
-    def __init__(self, parent):
-        wx.CheckListBox.__init__(self, parent, -1)
-        self.parent = parent
-        self.listeCategories = []
-        self.dictCategories = {}
-        
-    def SetActivite(self, IDactivite=None):
-        self.IDactivite = IDactivite
-        self.MAJ() 
-        self.CocheTout()
-
-    def MAJ(self):
-        self.listeCategories, self.dictCategories = self.Importation()
-        self.SetListeChoix()
-    
-    def Importation(self):
-        listeCategories = []
-        dictCategories = {}
-        if self.IDactivite == None :
-            return listeCategories, dictCategories 
-        DB = GestionDB.DB()
-        req = """SELECT IDcategorie_tarif, IDactivite, nom
-        FROM categories_tarifs
-        WHERE IDactivite=%d
-        ORDER BY nom;""" % self.IDactivite
-        DB.ExecuterReq(req)
-        listeDonnees = DB.ResultatReq()   
-        DB.Close() 
-        for IDcategorie_tarif, IDactivite, nom in listeDonnees :
-            dictTemp = { "nom" : nom, "IDactivite" : IDactivite}
-            dictCategories[IDcategorie_tarif] = dictTemp
-            listeCategories.append((nom, IDcategorie_tarif))
-        listeCategories.sort()
-        return listeCategories, dictCategories
-
-    def SetListeChoix(self):
-        self.Clear()
-        listeItems = []
-        index = 0
-        for nom, IDcategorie_tarif in self.listeCategories :
-            self.Append(nom)
-            index += 1
-                            
-    def GetIDcoches(self):
-        listeIDcoches = []
-        NbreItems = len(self.listeCategories)
-        for index in range(0, NbreItems):
-            if self.IsChecked(index):
-                listeIDcoches.append(self.listeCategories[index][1])
-        return listeIDcoches
-    
-    def CocheTout(self):
-        index = 0
-        for index in range(0, len(self.listeCategories)):
-            self.Check(index)
-            index += 1
-
-    def SetIDcoches(self, listeIDcoches=[]):
-        index = 0
-        for index in range(0, len(self.listeCategories)):
-            ID = self.listeCategories[index][1]
-            if ID in listeIDcoches :
-                self.Check(index)
-            index += 1
-    
-    def GetListeCategories(self):
-        return self.GetIDcoches() 
-    
-    def GetDictCategories(self):
-        return self.dictCategories
-
-    def GetLabelsCategories(self):
-        listeLabels = []
-        for IDcategorie in self.GetListeCategories() :
-            listeLabels.append(self.dictCategories[IDcategorie]["nom"])
-        return ", ".join(listeLabels)
 
 # ----------------------------------------------------------------------------------------------------------------------------------
 
@@ -250,119 +79,9 @@ class CTRL_Regroupement(wx.Choice):
         if index == -1 or index == 0 : return None
         return self.GetStringSelection() 
 
+
+
 # -------------------------------------------------------------------------------------------------------------------------------------------------
-
-class CTRL_Colonnes(wx.CheckListBox):
-    def __init__(self, parent, listview=None):
-        wx.CheckListBox.__init__(self, parent, -1)
-        self.parent = parent
-        self.listview = listview
-        self.listeCodes = []
-        self.SetMinSize((-1, 50))
-        self.MAJ() 
-
-    def MAJ(self, selectCode=None):
-        self.listeCodes = []
-        self.Clear()
-        listeChamps = self.listview.GetListeChamps() 
-        index = 0
-        selection = None
-        for dictTemp in listeChamps :
-            if dictTemp["actif"] == True :
-                self.listeCodes.append(dictTemp["code"])
-                self.Append(dictTemp["label"])
-                if dictTemp["afficher"] == True :
-                    self.Check(index)
-                if selectCode == dictTemp["code"] :
-                    selection = index
-                index += 1
-                
-        # Sélection
-        if selection != None :
-            self.Select(selection)
-            self.EnsureVisible(selection)
-    
-    def GetListeColonnes(self):
-        listeLabels = []
-        nbreItems = self.GetCount() 
-        for index in range(0, nbreItems):
-            if self.IsChecked(index):
-                label = self.GetString(index) 
-                listeLabels.append(label)
-        return listeLabels
-        
-    def GetIDcoches(self):
-        listeIDcoches = []
-        NbreItems = len(self.listeCategories)
-        for index in range(0, NbreItems):
-            if self.IsChecked(index):
-                listeIDcoches.append(self.listeCategories[index][1])
-        return listeIDcoches
-    
-    def CocheTout(self):
-        index = 0
-        for index in range(0, len(self.listeCategories)):
-            self.Check(index)
-            index += 1
-
-    def SetIDcoches(self, listeIDcoches=[]):
-        index = 0
-        for index in range(0, len(self.listeCategories)):
-            ID = self.listeCategories[index][1]
-            if ID in listeIDcoches :
-                self.Check(index)
-            index += 1
-    
-    def Monter(self):
-        index = self.GetSelection() 
-        if index == -1 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune colonne à déplacer !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
-            dlg.ShowModal()
-            dlg.Destroy()
-            return False
-        if index == 0 :
-            dlg = wx.MessageDialog(self, _(u"Cette colonne est déjà la première de la liste !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
-            dlg.ShowModal()
-            dlg.Destroy()
-            return False
-        self.DeplacerColonne(index, -1) 
-            
-    def Descendre(self):
-        index = self.GetSelection() 
-        if index == -1 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune colonne à déplacer !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
-            dlg.ShowModal()
-            dlg.Destroy()
-            return False
-        if index == len(self.listeCodes)-1 :
-            dlg = wx.MessageDialog(self, _(u"Cette colonne est déjà la dernière de la liste !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
-            dlg.ShowModal()
-            dlg.Destroy()
-            return False
-        self.DeplacerColonne(index, 1) 
-
-    def DeplacerColonne(self, index=None, sens=1):
-        code = self.listeCodes[index]
-        code2 = self.listeCodes[index + sens]
-        
-        # Récupération des colonnes
-        listeChamps = self.listview.GetListeChamps() 
-        index = 0
-        for dictTemp in listeChamps :
-            if dictTemp["code"] == code : 
-                indexCode = index
-                dictCode = dictTemp
-            if dictTemp["code"] == code2 : 
-                indexCode2 = index
-                dictCode2 = dictTemp
-            index += 1
-        
-        # Déplacement des colonnes
-        listeChamps[indexCode] = dictCode2
-        listeChamps[indexCode2] = dictCode
-        self.MAJ(selectCode=dictCode["code"]) 
-        
-# ----------------------------------------------------------------------------------------------------------------------------------
 
 class Parametres(wx.Panel):
     def __init__(self, parent, listview=None):
@@ -373,120 +92,143 @@ class Parametres(wx.Panel):
         # Activité
         self.box_activite_staticbox = wx.StaticBox(self, -1, _(u"Activité"))
         self.ctrl_activite = CTRL_Activite(self)
-        self.ctrl_activite.SetMinSize((200, -1))
+        self.bouton_activites = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Loupe.png"), wx.BITMAP_TYPE_ANY))
+        self.ctrl_activite.SetMinSize((-1, self.bouton_activites.GetSize()[1]))
+
         self.check_partis = wx.CheckBox(self, -1, _(u"Afficher les individus partis"))
-        self.check_partis.SetValue(True) 
-        
+        self.check_partis.SetFont(wx.Font(8, wx.SWISS, wx.NORMAL, wx.NORMAL))
+
         # Groupes
         self.box_groupes_staticbox = wx.StaticBox(self, -1, _(u"Groupes"))
-        self.ctrl_groupes = CTRL_Groupes(self)
+        self.ctrl_groupes = CTRL_CheckListBox.Panel(self)
         
         # Catégories
         self.box_categories_staticbox = wx.StaticBox(self, -1, _(u"Catégories"))
-        self.ctrl_categories = CTRL_Categories(self)
+        self.ctrl_categories = CTRL_CheckListBox.Panel(self)
         
         # Regroupement
         self.box_regroupement_staticbox = wx.StaticBox(self, -1, _(u"Regroupement"))
         self.ctrl_regroupement = CTRL_Regroupement(self, listview=listview)
-        
-        # Colonnes
-        self.box_colonnes_staticbox = wx.StaticBox(self, -1, _(u"Colonnes"))
-        self.ctrl_colonnes = CTRL_Colonnes(self, listview=listview)
-        self.bouton_haut = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Fleche_haut.png"), wx.BITMAP_TYPE_ANY))
-        self.bouton_bas = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Fleche_bas.png"), wx.BITMAP_TYPE_ANY))
-        
+
         # Actualiser
         self.bouton_actualiser = CTRL_Bouton_image.CTRL(self, texte=_(u"Rafraîchir la liste"), cheminImage="Images/32x32/Actualiser.png")
+        self.bouton_actualiser.SetMinSize((250, 40))
 
         self.__set_properties()
         self.__do_layout()
 
-        self.Bind(wx.EVT_CHOICE, self.OnChoixActivite, self.ctrl_activite)
+        self.Bind(wx.EVT_BUTTON, self.OnBoutonActivite, self.bouton_activites)
         self.Bind(wx.EVT_CHOICE, self.OnChoixRegroupement, self.ctrl_regroupement)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonActualiser, self.bouton_actualiser)
-        self.Bind(wx.EVT_BUTTON, self.OnBoutonHaut, self.bouton_haut)
-        self.Bind(wx.EVT_BUTTON, self.OnBoutonBas, self.bouton_bas)
 
     def __set_properties(self):
-        self.ctrl_activite.SetToolTip(wx.ToolTip(_(u"Sélectionnez une activité")))
+        self.ctrl_activite.SetToolTip(wx.ToolTip(_(u"Activité sélectionnée")))
+        self.bouton_activites.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sélectionner une activité")))
         self.check_partis.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour inclure dans la liste des individus partis")))
         self.ctrl_groupes.SetToolTip(wx.ToolTip(_(u"Cochez les groupes à afficher")))
         self.ctrl_categories.SetToolTip(wx.ToolTip(_(u"Cochez les catégories à afficher")))
         self.ctrl_regroupement.SetToolTip(wx.ToolTip(_(u"Sélectionnez un regroupement")))
-        self.ctrl_colonnes.SetToolTip(wx.ToolTip(_(u"Cochez les colonnes souhaitées")))
         self.bouton_actualiser.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour actualiser la liste")))
-        self.bouton_haut.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour monter la colonne")))
-        self.bouton_bas.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour descendre la colonne")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=6, cols=1, vgap=5, hgap=5)
         
         # Activité
         box_activite = wx.StaticBoxSizer(self.box_activite_staticbox, wx.VERTICAL)
-        box_activite.Add(self.ctrl_activite, 0, wx.ALL|wx.EXPAND, 5)
+
+        grid_sizer_activite = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
+        grid_sizer_activite.Add(self.ctrl_activite, 1, wx.EXPAND, 0)
+        grid_sizer_activite.Add(self.bouton_activites, 1, wx.EXPAND, 0)
+        grid_sizer_activite.AddGrowableCol(0)
+        box_activite.Add(grid_sizer_activite, 1, wx.ALL|wx.EXPAND, 5)
+
         box_activite.Add(self.check_partis, 0, wx.LEFT|wx.RIGHT|wx.BOTTOM|wx.EXPAND, 5)
         grid_sizer_base.Add(box_activite, 1, wx.EXPAND, 0)
         
         # Groupes
         box_groupes = wx.StaticBoxSizer(self.box_groupes_staticbox, wx.VERTICAL)
-        box_groupes.Add(self.ctrl_groupes, 0, wx.ALL|wx.EXPAND, 5)
+        box_groupes.Add(self.ctrl_groupes, 1, wx.ALL|wx.EXPAND, 5)
         grid_sizer_base.Add(box_groupes, 1, wx.EXPAND, 0)
         
         # Catégories
         box_categories = wx.StaticBoxSizer(self.box_categories_staticbox, wx.VERTICAL)
-        box_categories.Add(self.ctrl_categories, 0, wx.ALL|wx.EXPAND, 5)
+        box_categories.Add(self.ctrl_categories, 1, wx.ALL|wx.EXPAND, 5)
         grid_sizer_base.Add(box_categories, 1, wx.EXPAND, 0)
         
         # Regroupement
         box_regroupement = wx.StaticBoxSizer(self.box_regroupement_staticbox, wx.VERTICAL)
         box_regroupement.Add(self.ctrl_regroupement, 0, wx.ALL|wx.EXPAND, 5)
         grid_sizer_base.Add(box_regroupement, 1, wx.EXPAND, 0)
-        
-        # Colonnes
-        box_colonnes = wx.StaticBoxSizer(self.box_colonnes_staticbox, wx.VERTICAL)
-        grid_sizer_colonnes = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
-        grid_sizer_colonnes.Add(self.ctrl_colonnes, 0, wx.EXPAND, 0)
-        
-        grid_sizer_boutons_colonnes = wx.FlexGridSizer(rows=2, cols=1, vgap= 5, hgap=5)
-        grid_sizer_boutons_colonnes.Add(self.bouton_haut, 0, 0, 0)
-        grid_sizer_boutons_colonnes.Add(self.bouton_bas, 0, 0, 0)
-        grid_sizer_colonnes.Add(grid_sizer_boutons_colonnes, 0, wx.EXPAND, 0)
-        
-        grid_sizer_colonnes.AddGrowableRow(0)
-        grid_sizer_colonnes.AddGrowableCol(0)
-        box_colonnes.Add(grid_sizer_colonnes, 1, wx.ALL|wx.EXPAND, 5)
-        grid_sizer_base.Add(box_colonnes, 1, wx.EXPAND, 0)
-        
+
         grid_sizer_base.Add(self.bouton_actualiser, 0, wx.EXPAND, 0)
         
         self.SetSizer(grid_sizer_base)
         grid_sizer_base.Fit(self)
-        grid_sizer_base.AddGrowableRow(4)
+        grid_sizer_base.AddGrowableRow(1)
+        grid_sizer_base.AddGrowableRow(2)
         grid_sizer_base.AddGrowableCol(0)
 
-    def OnChoixActivite(self, event):
-        IDactivite = self.ctrl_activite.GetActivite()
-        self.ctrl_groupes.SetActivite(IDactivite)
-        self.ctrl_categories.SetActivite(IDactivite)
+    def OnBoutonActivite(self, event):
+        from Dlg import DLG_Selection_activite
+        dlg = DLG_Selection_activite.Dialog(self)
+        dlg.SetIDactivite(self.ctrl_activite.GetID())
+        if dlg.ShowModal() == wx.ID_OK:
+            IDactivite = dlg.GetIDactivite()
+            nomActivite = dlg.GetNomActivite()
+            self.ctrl_activite.MAJ(IDactivite, nomActivite)
+            self.MAJ_Groupes()
+            self.MAJ_Categories()
+        dlg.Destroy()
+
+    def MAJ_Groupes(self):
+        DB = GestionDB.DB()
+        req = """SELECT IDgroupe, IDactivite, nom
+        FROM groupes
+        WHERE IDactivite=%d
+        ORDER BY ordre;""" % self.ctrl_activite.GetID()
+        DB.ExecuterReq(req)
+        listeGroupes = DB.ResultatReq()
+        DB.Close()
+
+        # Formatage des données
+        listeDonnees = []
+        for IDgroupe, IDactivite, nom in listeGroupes:
+            dictTemp = {"ID": IDgroupe, "label": nom, "IDactivite": IDactivite}
+            listeDonnees.append(dictTemp)
+
+        # Envoi des données à la liste
+        self.ctrl_groupes.SetDonnees(listeDonnees, cocher=True)
+
+    def MAJ_Categories(self):
+        DB = GestionDB.DB()
+        req = """SELECT IDcategorie_tarif, IDactivite, nom
+        FROM categories_tarifs
+        WHERE IDactivite=%d
+        ORDER BY nom;""" % self.ctrl_activite.GetID()
+        DB.ExecuterReq(req)
+        listeCategories = DB.ResultatReq()
+        DB.Close()
+
+        # Formatage des données
+        listeDonnees = []
+        for IDcategorie_tarif, IDactivite, nom in listeCategories:
+            dictTemp = {"ID": IDcategorie_tarif, "label": nom, "IDactivite": IDactivite}
+            listeDonnees.append(dictTemp)
+
+        # Envoi des données à la liste
+        self.ctrl_categories.SetDonnees(listeDonnees, cocher=True)
 
     def OnChoixRegroupement(self, event): 
         pass
-    
-    def OnBoutonHaut(self, event):
-        self.ctrl_colonnes.Monter()
-        
-    def OnBoutonBas(self, event):
-        self.ctrl_colonnes.Descendre()
-        
+
     def OnBoutonActualiser(self, event): 
         # Récupération des paramètres
-        IDactivite = self.ctrl_activite.GetActivite()
+        IDactivite = self.ctrl_activite.GetID()
         partis = self.check_partis.GetValue() 
-        listeGroupes = self.ctrl_groupes.GetListeGroupes()
-        listeCategories = self.ctrl_categories.GetListeCategories()
+        listeGroupes = self.ctrl_groupes.GetIDcoches()
+        listeCategories = self.ctrl_categories.GetIDcoches()
         regroupement = self.ctrl_regroupement.GetRegroupement()
-        listeColonnes = self.ctrl_colonnes.GetListeColonnes() 
-        
+
         # Vérifications
         if IDactivite == None :
             dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune activité !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
@@ -506,28 +248,22 @@ class Parametres(wx.Panel):
             dlg.Destroy()
             return False
 
-        if len(listeColonnes) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous devez cocher au moins une colonne !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
-            dlg.ShowModal()
-            dlg.Destroy()
-            return False
-        
         labelParametres = self.GetLabelParametres() 
         
         # MAJ du listview
         self.parent.ctrl_listview.MAJ(IDactivite=IDactivite, partis=partis, listeGroupes=listeGroupes, listeCategories=listeCategories, 
-                                                    regroupement=regroupement, listeColonnes=listeColonnes, labelParametres=labelParametres)
+                                                    regroupement=regroupement, labelParametres=labelParametres)
 
     def GetLabelParametres(self):
         listeParametres = []
         
-        activite = self.ctrl_activite.GetLabelActivite()
+        activite = self.ctrl_activite.GetNomActivite()
         listeParametres.append(_(u"Activité : %s") % activite)
 
-        groupes = self.ctrl_groupes.GetLabelsGroupes()
+        groupes = self.ctrl_groupes.GetLabelsCoches()
         listeParametres.append(_(u"Groupes : %s") % groupes)
 
-        categories = self.ctrl_categories.GetLabelsCategories()
+        categories = self.ctrl_categories.GetLabelsCoches()
         listeParametres.append(_(u"Catégories : %s") % categories)
 
         labelParametres = " | ".join(listeParametres)
@@ -556,7 +292,8 @@ class Dialog(wx.Dialog):
         self.bouton_imprimer = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Imprimante.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_texte = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Texte2.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_excel = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Excel.png"), wx.BITMAP_TYPE_ANY))
-        
+        self.bouton_configuration = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Mecanisme.png"), wx.BITMAP_TYPE_ANY))
+
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
         self.bouton_fermer = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
@@ -564,15 +301,15 @@ class Dialog(wx.Dialog):
         self.__do_layout()
         
         self.Bind(wx.EVT_BUTTON, self.OuvrirFiche, self.bouton_ouvrir_fiche)
-        self.Bind(wx.EVT_BUTTON, self.Apercu, self.bouton_apercu)
-        self.Bind(wx.EVT_BUTTON, self.Imprimer, self.bouton_imprimer)
-        self.Bind(wx.EVT_BUTTON, self.ExportTexte, self.bouton_texte)
-        self.Bind(wx.EVT_BUTTON, self.ExportExcel, self.bouton_excel)
+        self.Bind(wx.EVT_BUTTON, self.ctrl_listview.Apercu, self.bouton_apercu)
+        self.Bind(wx.EVT_BUTTON, self.ctrl_listview.Imprimer, self.bouton_imprimer)
+        self.Bind(wx.EVT_BUTTON, self.ctrl_listview.ExportTexte, self.bouton_texte)
+        self.Bind(wx.EVT_BUTTON, self.ctrl_listview.ExportExcel, self.bouton_excel)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
+        self.Bind(wx.EVT_BUTTON, self.ctrl_listview.MenuConfigurerListe, self.bouton_configuration)
 
         # Init contrôles
-        listeColonnes = self.ctrl_parametres.ctrl_colonnes.GetListeColonnes() 
-        self.ctrl_listview.MAJ(listeColonnes=listeColonnes) 
+        self.ctrl_listview.MAJ()
 
     def __set_properties(self):
         self.bouton_ouvrir_fiche.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ouvrir la fiche de la famille sélectionnée dans la liste")))
@@ -582,6 +319,7 @@ class Dialog(wx.Dialog):
         self.bouton_excel.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter la liste au format Excel")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
+        self.bouton_configuration.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour configurer la liste")))
         self.SetMinSize((980, 700))
 
     def __do_layout(self):
@@ -602,7 +340,7 @@ class Dialog(wx.Dialog):
         grid_sizer_contenu.Add(grid_sizer_gauche, 1, wx.EXPAND | wx.LEFT, 5)
         
         # Commandes
-        grid_sizer_droit = wx.FlexGridSizer(rows=7, cols=1, vgap=5, hgap=5)
+        grid_sizer_droit = wx.FlexGridSizer(rows=10, cols=1, vgap=5, hgap=5)
         grid_sizer_droit.Add(self.bouton_ouvrir_fiche, 0, 0, 0)
         grid_sizer_droit.Add( (5, 5), 0, 0, 0)
         grid_sizer_droit.Add(self.bouton_apercu, 0, 0, 0)
@@ -610,6 +348,8 @@ class Dialog(wx.Dialog):
         grid_sizer_droit.Add( (5, 5), 0, 0, 0)
         grid_sizer_droit.Add(self.bouton_texte, 0, 0, 0)
         grid_sizer_droit.Add(self.bouton_excel, 0, 0, 0)
+        grid_sizer_droit.Add( (5, 5), 0, 0, 0)
+        grid_sizer_droit.Add(self.bouton_configuration, 0, 0, 0)
         grid_sizer_contenu.Add(grid_sizer_droit, 1, wx.EXPAND, 0)
         
         grid_sizer_contenu.AddGrowableRow(0)
@@ -633,21 +373,11 @@ class Dialog(wx.Dialog):
     def OuvrirFiche(self, event):
         self.ctrl_listview.OuvrirFicheFamille(None)
 
-    def Apercu(self, event):
-        self.ctrl_listview.Apercu(None)
-        
-    def Imprimer(self, event):
-        self.ctrl_listview.Imprimer(None)
-
-    def ExportTexte(self, event):
-        self.ctrl_listview.ExportTexte(None)
-
-    def ExportExcel(self, event):
-        self.ctrl_listview.ExportExcel(None)
-
     def OnBoutonAide(self, event): 
         from Utils import UTILS_Aide
         UTILS_Aide.Aide("Listedesinscriptions")
+
+
 
 
 if __name__ == "__main__":

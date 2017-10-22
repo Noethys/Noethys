@@ -221,6 +221,13 @@ class ListView(FastObjectListView):
         else :
             return None
 
+    def GetNom(self):
+        track = self.Selection()
+        if track != None :
+            return track.nom
+        else :
+            return ""
+
     def GetTrack(self):
         return self.Selection()
 

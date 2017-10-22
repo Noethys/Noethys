@@ -1211,8 +1211,8 @@ class Dialog(wx.Dialog):
         return listeDonnees
 
     def OnBoutonActivite(self, event):
-        from Dlg import DLG_Inscription_activite
-        dlg = DLG_Inscription_activite.Dialog(self)
+        from Dlg import DLG_Selection_activite
+        dlg = DLG_Selection_activite.Dialog(self)
         dlg.SetIDactivite(self.ctrl_activite.GetActivite())
         if dlg.ShowModal() == wx.ID_OK:
             IDactivite = dlg.GetIDactivite()

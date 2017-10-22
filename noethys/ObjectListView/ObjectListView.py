@@ -2300,7 +2300,7 @@ class ObjectListView(wx.ListCtrl):
         for col in self.listeColonnes :
             listeDonnees.append((col.valueGetter, col.visible))
             dictColonnes[col.valueGetter] = col
-            
+
         listeDonneesDefaut = []
         for col in self.listeColonnesDefaut :
             listeDonneesDefaut.append((col.valueGetter, col.visible))

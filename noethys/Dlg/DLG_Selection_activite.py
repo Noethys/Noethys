@@ -116,6 +116,8 @@ class Dialog(wx.Dialog):
     def GetIDactivite(self):
         return self.ctrl_activites.GetID()
 
+    def GetNomActivite(self):
+        return self.ctrl_activites.GetNom()
 
 
 if __name__ == "__main__":

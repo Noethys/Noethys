@@ -23,7 +23,7 @@ from Utils import UTILS_Utilisateurs
 from Utils import UTILS_Historique
 from Utils import UTILS_Titulaires
 from Utils import UTILS_Dates
-from Dlg import DLG_Inscription_activite
+from Dlg import DLG_Selection_activite
 from Dlg import DLG_Inscription_desinscription
 from Dlg import DLG_Appliquer_forfait
 
@@ -533,7 +533,7 @@ class Dialog(wx.Dialog):
         return self.IDinscription
 
     def OnBoutonActivites(self, event):
-        dlg = DLG_Inscription_activite.Dialog(self)
+        dlg = DLG_Selection_activite.Dialog(self)
         dlg.SetIDactivite(self.GetIDactivite())
         if dlg.ShowModal() == wx.ID_OK:
             IDactivite = dlg.GetIDactivite()
