@@ -20,7 +20,9 @@ import sys
 import decimal
 from Dlg import DLG_Selection_liste
 import FonctionsPerso
+from Ctrl import CTRL_Bandeau
 
+from Utils import UTILS_Fichiers
 import UTILS_Dates
 import UTILS_Config
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
@@ -202,36 +204,57 @@ def ExportExcel(listview=None, grid=None, titre=_(u"Liste"), listeColonnes=None,
         else:
             dlg.Destroy()
             return False
-    
-    # Demande à l'utilisateur le nom de fichier et le répertoire de destination
-    nomFichier = "ExportExcel_%s.xls" % datetime.datetime.now().strftime("%Y%m%d%H%M%S")
-    wildcard = "Fichier Excel (*.xls)|*.xls|" \
-                    "All files (*.*)|*.*"
-    sp = wx.StandardPaths.Get()
-    cheminDefaut = sp.GetDocumentsDir()
-    dlg = wx.FileDialog(
-        None, message = _(u"Veuillez sélectionner le répertoire de destination et le nom du fichier"), defaultDir=cheminDefaut, 
-        defaultFile = nomFichier, 
-        wildcard = wildcard, 
-        style = wx.SAVE
-        )
-    dlg.SetFilterIndex(0)
-    if dlg.ShowModal() == wx.ID_OK:
-        cheminFichier = dlg.GetPath()
-        dlg.Destroy()
-    else:
-        dlg.Destroy()
+
+    # Choix Action
+    dlg = DLG_Choix_action(None)
+    reponse = dlg.ShowModal()
+    dlg.Destroy()
+    if reponse == 100 :
+        mode = "enregistrer"
+    elif reponse == 200 :
+        mode = "email"
+    else :
         return
-    
-    # Le fichier de destination existe déjà :
-    if os.path.isfile(cheminFichier) == True :
-        dlg = wx.MessageDialog(None, _(u"Un fichier portant ce nom existe déjà. \n\nVoulez-vous le remplacer ?"), "Attention !", wx.YES_NO | wx.NO_DEFAULT | wx.ICON_EXCLAMATION)
-        if dlg.ShowModal() == wx.ID_NO :
-            return False
+
+    # Définit le nom et le chemin du fichier
+    nomFichier = "ExportExcel_%s.xls" % datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+
+    # Mode Enregistrer
+    if mode == "enregistrer" :
+
+        # Demande à l'utilisateur le nom de fichier et le répertoire de destination
+        wildcard = "Fichier Excel (*.xls)|*.xls|" \
+                        "All files (*.*)|*.*"
+        sp = wx.StandardPaths.Get()
+        cheminDefaut = sp.GetDocumentsDir()
+        dlg = wx.FileDialog(
+            None, message = _(u"Veuillez sélectionner le répertoire de destination et le nom du fichier"), defaultDir=cheminDefaut,
+            defaultFile = nomFichier,
+            wildcard = wildcard,
+            style = wx.SAVE
+            )
+        dlg.SetFilterIndex(0)
+        if dlg.ShowModal() == wx.ID_OK:
+            cheminFichier = dlg.GetPath()
             dlg.Destroy()
         else:
             dlg.Destroy()
-            
+            return
+
+        # Le fichier de destination existe déjà :
+        if os.path.isfile(cheminFichier) == True :
+            dlg = wx.MessageDialog(None, _(u"Un fichier portant ce nom existe déjà. \n\nVoulez-vous le remplacer ?"), "Attention !", wx.YES_NO | wx.NO_DEFAULT | wx.ICON_EXCLAMATION)
+            if dlg.ShowModal() == wx.ID_NO :
+                return False
+                dlg.Destroy()
+            else:
+                dlg.Destroy()
+
+    # Mode Envoyer par Email
+    if mode == "email" :
+        cheminFichier = UTILS_Fichiers.GetRepTemp(fichier=nomFichier)
+
+
     # Export
     import pyExcelerator
     # Création d'un classeur
@@ -411,16 +434,95 @@ def ExportExcel(listview=None, grid=None, titre=_(u"Liste"), listeColonnes=None,
         dlg.ShowModal()
         dlg.Destroy()
         return
-    
+
     # Confirmation de création du fichier et demande d'ouverture directe dans Excel
-    txtMessage = _(u"Le fichier Excel a été créé avec succès. Souhaitez-vous l'ouvrir dès maintenant ?")
-    dlgConfirm = wx.MessageDialog(None, txtMessage, _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.ICON_QUESTION)
-    reponse = dlgConfirm.ShowModal()
-    dlgConfirm.Destroy()
-    if reponse == wx.ID_NO:
-        return
-    else:
-        FonctionsPerso.LanceFichierExterne(cheminFichier)
+    if mode == "enregistrer" :
+        txtMessage = _(u"Le fichier Excel a été créé avec succès. Souhaitez-vous l'ouvrir dès maintenant ?")
+        dlgConfirm = wx.MessageDialog(None, txtMessage, _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.ICON_QUESTION)
+        reponse = dlgConfirm.ShowModal()
+        dlgConfirm.Destroy()
+        if reponse == wx.ID_NO:
+            return
+        else:
+            FonctionsPerso.LanceFichierExterne(cheminFichier)
+
+    # Envoyer par Email
+    if mode == "email" :
+        import DLG_Mailer
+        dlg = DLG_Mailer.Dialog(None)
+        dlg.ChargerModeleDefaut()
+        dlg.SetPiecesJointes([cheminFichier,])
+        dlg.ShowModal()
+        dlg.Destroy()
+
+
+# -------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+class DLG_Choix_action(wx.Dialog):
+    def __init__(self, parent):
+        wx.Dialog.__init__(self, parent, -1, name="DLG_Choix_action", style=wx.DEFAULT_DIALOG_STYLE | wx.RESIZE_BORDER | wx.MAXIMIZE_BOX | wx.MINIMIZE_BOX)
+        self.parent = parent
+
+        # Bandeau
+        intro = _(u"Sélectionnez l'action à effectuer. Vous pouvez enregistrer le fichier généré dans le répertoire souhaité ou l'envoyer par email.")
+        titre = _(u"Exporter vers Excel")
+        self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Excel.png")
+
+        self.bouton_enregistrer = CTRL_Bouton_image.CTRL(self, texte=_(u"Enregistrer sous"), cheminImage="Images/48x48/Sauvegarder.png", tailleImage=(48, 48), margesImage=(40, 20, 40, 0), positionImage=wx.TOP, margesTexte=(10, 10))
+        self.bouton_enregistrer.SetToolTip(wx.ToolTip(_(u"Enregistrer le fichier Excel")))
+
+        self.bouton_email = CTRL_Bouton_image.CTRL(self, texte=_(u"Envoyer par Email"), cheminImage="Images/48x48/Email.png", tailleImage=(48, 48), margesImage=(40, 20, 40, 0), positionImage=wx.TOP, margesTexte=(10, 10))
+        self.bouton_email.SetToolTip(wx.ToolTip(_(u"Envoyer le fichier Excel par Email")))
+
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
+
+        self.__set_properties()
+        self.__do_layout()
+
+        self.Bind(wx.EVT_BUTTON, self.OnBoutonEnregistrer, self.bouton_enregistrer)
+        self.Bind(wx.EVT_BUTTON, self.OnBoutonEmail, self.bouton_email)
+        self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
+
+    def __set_properties(self):
+        self.SetTitle(_(u"Exporter vers Excel"))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Obtenir de l'aide")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Annuler")))
+        self.SetMinSize((370, 300))
+
+    def __do_layout(self):
+        grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
+        grid_sizer_boutons = wx.FlexGridSizer(rows=1, cols=3, vgap=10, hgap=10)
+        grid_sizer_contenu = wx.FlexGridSizer(rows=1, cols=2, vgap=10, hgap=10)
+        grid_sizer_base.Add(self.ctrl_bandeau, 0, wx.EXPAND, 0)
+        grid_sizer_contenu.Add(self.bouton_enregistrer, 0, wx.ALIGN_CENTER_HORIZONTAL | wx.ALIGN_CENTER_VERTICAL, 10)
+        grid_sizer_contenu.Add(self.bouton_email, 0, wx.ALIGN_CENTER_HORIZONTAL | wx.ALIGN_CENTER_VERTICAL, 10)
+        grid_sizer_contenu.AddGrowableRow(0)
+        grid_sizer_contenu.AddGrowableCol(0)
+        grid_sizer_contenu.AddGrowableCol(1)
+        grid_sizer_base.Add(grid_sizer_contenu, 1, wx.LEFT | wx.RIGHT | wx.EXPAND, 10)
+        grid_sizer_boutons.Add(self.bouton_aide, 0, 0, 0)
+        grid_sizer_boutons.Add((20, 20), 0, wx.EXPAND, 0)
+        grid_sizer_boutons.Add(self.bouton_annuler, 0, 0, 0)
+        grid_sizer_boutons.AddGrowableCol(1)
+        grid_sizer_base.Add(grid_sizer_boutons, 1, wx.LEFT | wx.RIGHT | wx.BOTTOM | wx.EXPAND, 10)
+        self.SetSizer(grid_sizer_base)
+        grid_sizer_base.Fit(self)
+        grid_sizer_base.AddGrowableRow(1)
+        grid_sizer_base.AddGrowableCol(0)
+        self.Layout()
+        self.CenterOnScreen()
+
+    def OnBoutonEnregistrer(self, event):
+        self.EndModal(100)
+
+    def OnBoutonEmail(self, event):
+        self.EndModal(200)
+
+    def OnBoutonAide(self, event):
+        from Utils import UTILS_Aide
+        UTILS_Aide.Aide("")
+
 
 
 

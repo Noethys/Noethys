@@ -645,6 +645,12 @@ class Dialog(wx.Dialog):
         else :
             return True
 
+    def SetPiecesJointes(self, listeFichiers=[]):
+        self.ctrl_pieces.SetFichiers(listeFichiers)
+
+
+
+
 
 if __name__ == u"__main__":
     app = wx.App(0)

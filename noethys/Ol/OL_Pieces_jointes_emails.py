@@ -178,7 +178,13 @@ class ListView(FastObjectListView):
 
         self.PopupMenu(menuPop)
         menuPop.Destroy()
-        
+
+    def SetFichiers(self, listeFichiers=[]):
+        """ Pour une saisie manuelle directe """
+        for cheminFichier in listeFichiers :
+            self.listeDonnees.append(cheminFichier)
+        self.MAJ()
+
     def Ajouter(self, event):
         """ Demande l'emplacement du fichier à joindre """
         standardPath = wx.StandardPaths.Get()
