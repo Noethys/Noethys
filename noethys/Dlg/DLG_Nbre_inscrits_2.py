@@ -170,21 +170,38 @@ class CTRL(HTL.HyperTreeList):
             else :
                 condition_partis = "AND (inscriptions.date_desinscription IS NULL OR inscriptions.date_desinscription>='%s')" % datetime.date.today()
 
-        req = """SELECT groupes.IDgroupe, groupes.IDactivite, groupes.nom, groupes.abrege, groupes.nbre_inscrits_max,
-        COUNT(inscriptions.IDinscription) as nbre_inscriptions
+        # Récupère les inscrits
+        req = """SELECT inscriptions.IDgroupe, COUNT(inscriptions.IDinscription) as nbre_inscriptions
+        FROM inscriptions
+        LEFT JOIN activites ON activites.IDactivite = inscriptions.IDactivite
+        %s %s
+        GROUP BY inscriptions.IDgroupe
+        ;""" % (condition, condition_partis)
+        DB.ExecuterReq(req)
+        listeInscrits = DB.ResultatReq()
+        dictInscrits = {}
+        for IDgroupe, nbre_inscriptions in listeInscrits :
+            if dictInscrits.has_key(IDgroupe) == False :
+                dictInscrits[IDgroupe] = 0
+            dictInscrits[IDgroupe] += nbre_inscriptions
+
+        # Récupère la liste des groupes
+        req = """SELECT groupes.IDgroupe, groupes.IDactivite, groupes.nom, groupes.abrege, groupes.nbre_inscrits_max
         FROM groupes
         LEFT JOIN activites ON activites.IDactivite = groupes.IDactivite
-        LEFT JOIN inscriptions ON inscriptions.IDgroupe = groupes.IDgroupe
-        %s %s
-        GROUP BY groupes.IDgroupe
+        %s
         ORDER BY groupes.ordre
-        ;""" % (condition, condition_partis)
+        ;""" % condition
         DB.ExecuterReq(req)
         listeGroupes = DB.ResultatReq()
 
         dictGroupes = {}
-        for IDgroupe, IDactivite, nom, abrege, nbre_inscrits_max, nbre_inscrits in listeGroupes :
-            if nbre_inscrits == None : nbre_inscrits = 0
+        for IDgroupe, IDactivite, nom, abrege, nbre_inscrits_max in listeGroupes :
+            if dictInscrits.has_key(IDgroupe) :
+                nbre_inscrits = dictInscrits[IDgroupe]
+            else :
+                nbre_inscrits = 0
+
             if nom == None : nom = _(u"Sans nom !")
             if abrege == None : abrege = ""
 
