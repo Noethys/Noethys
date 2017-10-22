@@ -2484,17 +2484,24 @@ class ObjectListView(wx.ListCtrl):
             # Inscrits
             if typeDonnee == "inscrits" :
                 if choix == "INSCRITS" :
-                    filtre = "track.ID%s in %s" % (code, self.GetInscrits(mode=code, listeActivites=criteres["listeActivites"], listeGroupes=criteres["listeGroupes"]))
+                    filtre = "track.ID%s in %s" % (code, self.GetInscrits(mode=code, choix=choix, criteres=criteres))
                 if choix == "PRESENTS" :
-                    filtre = "track.ID%s in %s" % (code, self.GetInscrits(mode=code, listeActivites=criteres["listeActivites"], listeGroupes=criteres["listeGroupes"], periode=(criteres["date_debut"], criteres["date_fin"])))
+                    filtre = "track.ID%s in %s" % (code, self.GetInscrits(mode=code, choix=choix, criteres=criteres))
                     
             # Mémorisation
             listeFiltresFinale.append(filtre) 
         
         return listeFiltresFinale
 
-    def GetInscrits(self, mode="individu", listeActivites=[], listeGroupes=[], periode=None):
-        """ Récupération de la liste des individus inscrits et présents """        
+    def GetInscrits(self, mode="individu", choix="", criteres={}):
+        """ Récupération de la liste des individus inscrits et présents """
+        listeActivites = criteres["listeActivites"]
+        listeGroupes = criteres["listeGroupes"]
+        if choix == "PRESENTS":
+            periode = (criteres["date_debut"], criteres["date_fin"])
+        else :
+            periode = None
+
         # Conditions Activites
         if listeActivites == None or listeActivites == [] :
             conditionActivites = ""
@@ -2521,7 +2528,12 @@ class ObjectListView(wx.ListCtrl):
         if periode != None :
             conditionPresents = " AND (consommations.date>='%s' AND consommations.date<='%s')" % (str(periode[0]), str(periode[1]))
             jointurePresents = "LEFT JOIN consommations ON consommations.IDindividu = inscriptions.IDindividu"
-        
+
+        # Condition Date inscription
+        conditionDateInscription = ""
+        if criteres.has_key("date_debut_inscription"):
+            conditionDateInscription = " AND (inscriptions.date_inscription>='%s' AND inscriptions.date_inscription<='%s')" % (str(criteres["date_debut_inscription"]), str(criteres["date_fin_inscription"]))
+
         # Choix de la key
         if mode == "individu" :
             key = "inscriptions.IDindividu"
@@ -2533,9 +2545,9 @@ class ObjectListView(wx.ListCtrl):
         req = """SELECT %s
         FROM inscriptions 
         %s
-        WHERE (inscriptions.date_desinscription IS NULL OR inscriptions.date_desinscription>='%s')  %s %s %s
+        WHERE (inscriptions.date_desinscription IS NULL OR inscriptions.date_desinscription>='%s')  %s %s %s %s
         GROUP BY %s
-        ;""" % (key, jointurePresents, datetime.date.today(), conditionActivites, conditionGroupes, conditionPresents, key)
+        ;""" % (key, jointurePresents, datetime.date.today(), conditionActivites, conditionGroupes, conditionPresents, conditionDateInscription, key)
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         DB.Close() 

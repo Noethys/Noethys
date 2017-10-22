@@ -599,37 +599,59 @@ class CTRL_Page_inscrits(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL) 
 
+        # Activités
         self.label_intro = wx.StaticText(self, -1, _(u"Uniquement les individus inscrits aux activités suivantes :"))
         self.ctrl_activites = CTRL_Selection_activites.CTRL(self, modeGroupes=True)
-        
+
+        # Présents
         self.check_presents = wx.CheckBox(self, -1, _(u"Et présents du"))
         self.ctrl_date_debut = CTRL_Saisie_date.Date2(self)
         self.label_au = wx.StaticText(self, -1, _(u"au"))
         self.ctrl_date_fin = CTRL_Saisie_date.Date2(self)
 
         self.check_presents.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour saisir une période de présence")))
-        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez la date de début de période")))
+        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de début de période")))
         self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de fin de période")))
+
+        # Date d'inscription
+        self.check_inscription = wx.CheckBox(self, -1, _(u"Et inscrits entre le"))
+        self.ctrl_date_debut_inscription = CTRL_Saisie_date.Date2(self)
+        self.label_au_inscription = wx.StaticText(self, -1, _(u" et le"))
+        self.ctrl_date_fin_inscription = CTRL_Saisie_date.Date2(self)
+
+        self.check_inscription.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour sélectionner les individus suivant leur date d'inscription à l'activité")))
+        self.ctrl_date_debut_inscription.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de début d'inscription")))
+        self.ctrl_date_fin_inscription.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de fin d'inscription")))
 
         self.__do_layout()
 
         self.Bind(wx.EVT_CHECKBOX, self.OnCheckPresents, self.check_presents)
         self.OnCheckPresents(None)
-        
+
+        self.Bind(wx.EVT_CHECKBOX, self.OnCheckInscription, self.check_inscription)
+        self.OnCheckInscription(None)
+
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=5, cols=1, vgap=10, hgap=10)
         grid_sizer_base.Add(self.label_intro, 0, wx.EXPAND, 0)
 
-        grid_sizer_activites = wx.FlexGridSizer(rows=2, cols=1, vgap=10, hgap=10)
+        grid_sizer_activites = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
         grid_sizer_activites.Add(self.ctrl_activites, 0, wx.EXPAND, 0)
         
-        grid_sizer_presents = wx.FlexGridSizer(rows=1, cols=9, vgap=2, hgap=2)
+        grid_sizer_presents = wx.FlexGridSizer(rows=1, cols=5, vgap=2, hgap=2)
         grid_sizer_presents.Add(self.check_presents, 0, wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_presents.Add(self.ctrl_date_debut, 0, 0, 0)
         grid_sizer_presents.Add(self.label_au, 0, wx.ALIGN_CENTER_VERTICAL|wx.LEFT|wx.RIGHT, 5)
         grid_sizer_presents.Add(self.ctrl_date_fin, 0, 0, 0)
         grid_sizer_activites.Add(grid_sizer_presents, 1, wx.EXPAND, 0)
-        
+
+        grid_sizer_inscription = wx.FlexGridSizer(rows=1, cols=5, vgap=2, hgap=2)
+        grid_sizer_inscription.Add(self.check_inscription, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_inscription.Add(self.ctrl_date_debut_inscription, 0, 0, 0)
+        grid_sizer_inscription.Add(self.label_au_inscription, 0, wx.ALIGN_CENTER_VERTICAL|wx.LEFT|wx.RIGHT, 5)
+        grid_sizer_inscription.Add(self.ctrl_date_fin_inscription, 0, 0, 0)
+        grid_sizer_activites.Add(grid_sizer_inscription, 1, wx.EXPAND, 0)
+
         grid_sizer_activites.AddGrowableRow(0)
         grid_sizer_activites.AddGrowableCol(0)
         grid_sizer_base.Add(grid_sizer_activites, 1, wx.EXPAND, 0)
@@ -644,7 +666,12 @@ class CTRL_Page_inscrits(wx.Panel):
         etat = self.check_presents.GetValue() 
         self.ctrl_date_debut.Enable(etat)
         self.ctrl_date_fin.Enable(etat)
-    
+
+    def OnCheckInscription(self, event):
+        etat = self.check_inscription.GetValue()
+        self.ctrl_date_debut_inscription.Enable(etat)
+        self.ctrl_date_fin_inscription.Enable(etat)
+
     def SetValeur(self, choix=None, criteres=None):
         if choix == "INSCRITS" : 
             if len(criteres["listeActivites"]) > 0 :
@@ -660,9 +687,15 @@ class CTRL_Page_inscrits(wx.Panel):
             self.check_presents.SetValue(True)
             self.ctrl_date_debut.SetDate(criteres["date_debut"]) 
             self.ctrl_date_fin.SetDate(criteres["date_fin"])
-            
+
+        if criteres.has_key("date_debut_inscription") :
+            self.check_inscription.SetValue(True)
+            self.ctrl_date_debut_inscription.SetDate(criteres["date_debut_inscription"])
+            self.ctrl_date_fin_inscription.SetDate(criteres["date_fin_inscription"])
+
         self.OnCheckPresents(None) 
-    
+        self.OnCheckInscription(None)
+
     def GetValeur(self):
         choix, criteres = "", ""
         listeActivites = self.ctrl_activites.GetActivites() 
@@ -673,6 +706,11 @@ class CTRL_Page_inscrits(wx.Panel):
         else :
             choix = "PRESENTS"
             criteres = {"listeActivites" : listeActivites, "listeGroupes" : listeGroupes, "date_debut" : self.ctrl_date_debut.GetDate(), "date_fin" : self.ctrl_date_fin.GetDate()} #"%s;%s;%s" % (listeActivites, self.ctrl_date_debut.GetDate(), self.ctrl_date_fin.GetDate())
+
+        if self.check_inscription.GetValue() == True :
+            criteres["date_debut_inscription"] = self.ctrl_date_debut_inscription.GetDate()
+            criteres["date_fin_inscription"] = self.ctrl_date_fin_inscription.GetDate()
+
         return choix, criteres
 
     def Validation(self):
@@ -699,7 +737,27 @@ class CTRL_Page_inscrits(wx.Panel):
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
-            
+
+        # Date d'inscription
+        if self.check_inscription.GetValue() == True:
+            if self.ctrl_date_debut_inscription.GetDate() == None or self.ctrl_date_debut_inscription.Validation() == False:
+                dlg = wx.MessageDialog(self, _(u"Vous n'avez saisi aucune date de début d'inscription !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg.ShowModal()
+                dlg.Destroy()
+                return False
+
+            if self.ctrl_date_fin_inscription.GetDate() == None or self.ctrl_date_fin_inscription.Validation() == False:
+                dlg = wx.MessageDialog(self, _(u"Vous n'avez saisi aucune date de fin d'inscription !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg.ShowModal()
+                dlg.Destroy()
+                return False
+
+            if self.ctrl_date_debut_inscription.GetDate() > self.ctrl_date_fin_inscription.GetDate():
+                dlg = wx.MessageDialog(self, _(u"La date de début est supérieure à la date de fin d'inscription!"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg.ShowModal()
+                dlg.Destroy()
+                return False
+
         return True
 
     def Reinit(self):
