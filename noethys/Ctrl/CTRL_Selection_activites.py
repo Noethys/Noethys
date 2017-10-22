@@ -365,14 +365,14 @@ class CTRL(wx.Panel):
             style = 0
         self.radio_groupes_activites = wx.RadioButton(self, -1, _(u"Les groupes d'activités suivants :"), style=style)
         self.ctrl_groupes_activites = CTRL_Groupes_activites(self)
-        self.ctrl_groupes_activites.SetMinSize((200, 50))
+        self.ctrl_groupes_activites.SetMinSize((200, 40))
         self.radio_activites = wx.RadioButton(self, -1, _(u"Les activités suivantes :"))
         
         self.ctrl_activites = CTRL_Activites(self)
-        self.ctrl_activites.SetMinSize((200, 50))
+        self.ctrl_activites.SetMinSize((200, 40))
         
         self.ctrl_groupes = CTRL_Groupes(self)
-        self.ctrl_groupes.SetMinSize((200, 50))
+        self.ctrl_groupes.SetMinSize((200, 40))
         
         if self.modeGroupes == False :
             self.ctrl_activites.MAJ() 

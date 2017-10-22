@@ -28,6 +28,7 @@ from Utils import UTILS_Config
 from Utils import UTILS_Organisateur
 from Utils import UTILS_Fichiers
 from Data import DATA_Civilites as Civilites
+from Ctrl import CTRL_Selection_activites
 
 from DLG_Saisie_pb_sante import LISTE_TYPES
 
@@ -150,11 +151,10 @@ class CTRL_Activites(wx.CheckListBox):
 
     def OnCheck(self, event):
         """ Quand une sélection d'activités est effectuée... """
-        listeSelections = self.GetIDcoches()
         try :
-            self.parent.SetGroupes(listeSelections)
+            self.parent.OnCheckActivites()
         except :
-            print listeSelections
+            pass
     
     def GetListeActivites(self):
         return self.GetIDcoches() 
@@ -197,17 +197,18 @@ class CTRL_Groupes(wx.CheckListBox):
         elif len(self.listeActivites) == 1 : conditionActivites = "(%d)" % self.listeActivites[0]
         else : conditionActivites = str(tuple(self.listeActivites))
         DB = GestionDB.DB()
-        req = """SELECT IDgroupe, IDactivite, nom
+        req = """SELECT IDgroupe, groupes.IDactivite, groupes.nom, activites.nom
         FROM groupes
-        WHERE IDactivite IN %s
-        ORDER BY nom;""" % conditionActivites
+        LEFT JOIN activites ON activites.IDactivite = groupes.IDactivite
+        WHERE groupes.IDactivite IN %s
+        ORDER BY groupes.nom;""" % conditionActivites
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()   
         DB.Close() 
-        for IDgroupe, IDactivite, nom in listeDonnees :
-            dictTemp = { "nom" : nom, "IDactivite" : IDactivite}
+        for IDgroupe, IDactivite, nom, nomActivite in listeDonnees :
+            dictTemp = { "nom" : nom, "IDactivite" : IDactivite, "nomActivite" : nomActivite}
             dictGroupes[IDgroupe] = dictTemp
-            listeGroupes.append((nom, IDgroupe))
+            listeGroupes.append((nom, IDgroupe, nomActivite))
         listeGroupes.sort()
         return listeGroupes, dictGroupes
 
@@ -215,7 +216,8 @@ class CTRL_Groupes(wx.CheckListBox):
         self.Clear()
         listeItems = []
         index = 0
-        for nom, IDgroupe in self.listeGroupes :
+        for nom, IDgroupe, nomActivite in self.listeGroupes :
+            nom = u"%s (%s)" % (nom, nomActivite)
             self.Append(nom)
             index += 1
                             
@@ -268,7 +270,12 @@ class Dialog(wx.Dialog):
         intro = _(u"Vous pouvez ici imprimer une liste au format PDF des informations médicales des individus présents sur la période de votre choix. Pour une liste standard, sélectionnez simplement une période puis cliquez sur 'Aperçu'.")
         titre = _(u"Impression de la liste des informations médicales")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Imprimante.png")
-        
+
+        # Mode
+        self.staticbox_mode_staticbox = wx.StaticBox(self, -1, _(u"Mode de sélection"))
+        self.radio_inscrits = wx.RadioButton(self, -1, _(u"Inscrits"), style=wx.RB_GROUP)
+        self.radio_presents = wx.RadioButton(self, -1, _(u"Présents sur une période"))
+
         # Calendrier
         self.staticbox_date_staticbox = wx.StaticBox(self, -1, _(u"Période"))
         self.ctrl_calendrier = CTRL_Grille_periode.CTRL(self)
@@ -276,13 +283,16 @@ class Dialog(wx.Dialog):
         
         # Activités
         self.staticbox_activites_staticbox = wx.StaticBox(self, -1, _(u"Activités"))
-        self.ctrl_activites = CTRL_Activites(self)
-        self.ctrl_activites.SetMinSize((10, 50))
-        
+        self.ctrl_activites_presents = CTRL_Activites(self)
+        self.ctrl_activites_inscrits = CTRL_Selection_activites.CTRL(self)
+        self.ctrl_activites_presents.SetMinSize((10, 10))
+        self.ctrl_activites_inscrits.SetMinSize((10, 10))
+
         # Groupes
         self.staticbox_groupes_staticbox = wx.StaticBox(self, -1, _(u"Groupes"))
         self.ctrl_groupes = CTRL_Groupes(self)
-        
+        self.ctrl_groupes.SetMinSize((10, 50))
+
         # Options
         self.staticbox_options_staticbox = wx.StaticBox(self, -1, _(u"Options"))
         self.label_modele = wx.StaticText(self, -1, _(u"Modèle :"))
@@ -323,12 +333,17 @@ class Dialog(wx.Dialog):
         self.__set_properties()
         self.__do_layout()
 
+        self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioMode, self.radio_inscrits)
+        self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioMode, self.radio_presents)
         self.Bind(wx.EVT_CHECKBOX, self.OnCheckLignesVierges, self.checkbox_lignes_vierges)
         self.Bind(wx.EVT_CHECKBOX, self.OnCheckPhotos, self.checkbox_photos)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
         
         # Récupération des paramètres dans le CONFIG
+        param_mode = UTILS_Config.GetParametre("impression_infos_med_mode_presents", defaut=0)
+        self.radio_presents.SetValue(param_mode)
+
         param_tri = UTILS_Config.GetParametre("impression_infos_med_tri", defaut=0)
         self.ctrl_tri.Select(param_tri)
         
@@ -363,16 +378,19 @@ class Dialog(wx.Dialog):
         # Init Contrôles
         self.OnCheckLignesVierges(None)
         self.OnCheckPhotos(None) 
-        self.bouton_ok.SetFocus() 
-        
+        self.bouton_ok.SetFocus()
+
         self.ctrl_calendrier.SetVisibleSelection()
         self.SetListesPeriodes(self.ctrl_calendrier.GetDatesSelections())
-        
+
         self.grid_sizer_base.Fit(self)
-        
+        self.OnRadioMode()
+
 
     def __set_properties(self):
         self.SetTitle(_(u"Impression de la liste des informations médicales"))
+        self.radio_inscrits.SetToolTip(wx.ToolTip(_(u"Sélectionnez le mode de sélection des individus")))
+        self.radio_presents.SetToolTip(wx.ToolTip(_(u"Sélectionnez le mode de sélection des individus")))
         self.checkbox_lignes_vierges.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher des lignes vierges à la fin de la liste")))
         self.checkbox_page_groupe.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher une page par groupe")))
         self.checkbox_age.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher l'âge des individus dans la liste")))
@@ -386,27 +404,49 @@ class Dialog(wx.Dialog):
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=4, cols=1, vgap=10, hgap=10)
-        grid_sizer_boutons = wx.FlexGridSizer(rows=1, cols=4, vgap=10, hgap=10)
-        grid_sizer_contenu = wx.FlexGridSizer(rows=1, cols=2, vgap=10, hgap=10)
-        grid_sizer_droit = wx.FlexGridSizer(rows=2, cols=1, vgap=10, hgap=10)
-        staticbox_options = wx.StaticBoxSizer(self.staticbox_options_staticbox, wx.VERTICAL)
-        grid_sizer_options_lignes = wx.FlexGridSizer(rows=6, cols=1, vgap=5, hgap=10)
-        grid_sizer_lignes_vierges = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
-        grid_sizer_options_grille = wx.FlexGridSizer(rows=3, cols=2, vgap=5, hgap=10)
-        staticbox_groupes = wx.StaticBoxSizer(self.staticbox_groupes_staticbox, wx.VERTICAL)
-        grid_sizer_gauche = wx.FlexGridSizer(rows=2, cols=1, vgap=10, hgap=10)
-        staticbox_activites = wx.StaticBoxSizer(self.staticbox_activites_staticbox, wx.VERTICAL)
-        staticbox_date = wx.StaticBoxSizer(self.staticbox_date_staticbox, wx.VERTICAL)
         grid_sizer_base.Add(self.ctrl_bandeau, 0, wx.EXPAND, 0)
+
+        grid_sizer_contenu = wx.FlexGridSizer(rows=1, cols=2, vgap=10, hgap=10)
+
+        # Sizer GAUCHE
+        grid_sizer_gauche = wx.FlexGridSizer(rows=4, cols=1, vgap=10, hgap=10)
+
+        # Mode
+        staticbox_mode = wx.StaticBoxSizer(self.staticbox_mode_staticbox, wx.VERTICAL)
+        grid_sizer_mode = wx.FlexGridSizer(rows=3, cols=2, vgap=5, hgap=10)
+        grid_sizer_mode.Add(self.radio_inscrits, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_mode.Add(self.radio_presents, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        staticbox_mode.Add(grid_sizer_mode, 0, wx.ALL|wx.EXPAND, 10)
+        grid_sizer_gauche.Add(staticbox_mode, 1, wx.EXPAND, 0)
+
+        # Période
+        staticbox_date = wx.StaticBoxSizer(self.staticbox_date_staticbox, wx.VERTICAL)
         staticbox_date.Add(self.ctrl_calendrier, 0, wx.ALL|wx.EXPAND, 10)
         grid_sizer_gauche.Add(staticbox_date, 1, wx.EXPAND, 0)
-        staticbox_activites.Add(self.ctrl_activites, 1, wx.ALL|wx.EXPAND, 10)
+
+        # Activités
+        staticbox_activites = wx.StaticBoxSizer(self.staticbox_activites_staticbox, wx.VERTICAL)
+
+        staticbox_activites.Add(self.ctrl_activites_presents, 1, wx.ALL|wx.EXPAND, 10)
+        staticbox_activites.Add(self.ctrl_activites_inscrits, 1, wx.ALL|wx.EXPAND, 10)
         grid_sizer_gauche.Add(staticbox_activites, 1, wx.EXPAND, 0)
-        grid_sizer_gauche.AddGrowableRow(1)
+        grid_sizer_gauche.AddGrowableRow(2)
         grid_sizer_gauche.AddGrowableCol(0)
         grid_sizer_contenu.Add(grid_sizer_gauche, 1, wx.EXPAND, 0)
+
+        # Sizer DROIT
+        grid_sizer_droit = wx.FlexGridSizer(rows=2, cols=1, vgap=10, hgap=10)
+
+        # Groupes
+        staticbox_groupes = wx.StaticBoxSizer(self.staticbox_groupes_staticbox, wx.VERTICAL)
         staticbox_groupes.Add(self.ctrl_groupes, 1, wx.ALL|wx.EXPAND, 10)
         grid_sizer_droit.Add(staticbox_groupes, 1, wx.EXPAND, 0)
+
+        # Options
+        staticbox_options = wx.StaticBoxSizer(self.staticbox_options_staticbox, wx.VERTICAL)
+
+        # Modèle
+        grid_sizer_options_grille = wx.FlexGridSizer(rows=3, cols=2, vgap=5, hgap=10)
         grid_sizer_options_grille.Add(self.label_modele, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_options_grille.Add(self.ctrl_modele, 0, wx.EXPAND, 0)
         grid_sizer_options_grille.Add(self.label_tri, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
@@ -418,7 +458,11 @@ class Dialog(wx.Dialog):
         grid_sizer_options_grille.Add(grid_sizer_tri, 0, wx.EXPAND, 0)
         
         grid_sizer_options_grille.AddGrowableCol(1)
+
+        grid_sizer_options_lignes = wx.FlexGridSizer(rows=6, cols=1, vgap=5, hgap=10)
         grid_sizer_options_lignes.Add(grid_sizer_options_grille, 1, wx.EXPAND, 0)
+
+        grid_sizer_lignes_vierges = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
         grid_sizer_lignes_vierges.Add(self.checkbox_lignes_vierges, 0, wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_lignes_vierges.Add(self.ctrl_nbre_lignes, 0, 0, 0)
         grid_sizer_options_lignes.Add(grid_sizer_lignes_vierges, 1, wx.EXPAND, 0)
@@ -442,7 +486,8 @@ class Dialog(wx.Dialog):
         grid_sizer_base.Add(grid_sizer_contenu, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
         
         grid_sizer_base.Add(self.ctrl_memoriser, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
-        
+
+        grid_sizer_boutons = wx.FlexGridSizer(rows=1, cols=4, vgap=10, hgap=10)
         grid_sizer_boutons.Add(self.bouton_aide, 0, 0, 0)
         grid_sizer_boutons.Add((20, 20), 0, wx.EXPAND, 0)
         grid_sizer_boutons.Add(self.bouton_ok, 0, 0, 0)
@@ -454,10 +499,28 @@ class Dialog(wx.Dialog):
         grid_sizer_base.AddGrowableRow(1)
         grid_sizer_base.AddGrowableCol(0)
         self.Layout()
-        self.SetMinSize(self.GetSize())
-        self.CenterOnScreen() 
-        
+
+        self.SetMinSize((self.GetSize()[0], 590))
+        self.CenterOnScreen()
+
         self.grid_sizer_base = grid_sizer_base
+        self.grid_sizer_gauche = grid_sizer_gauche
+
+    def OnRadioMode(self, event=None):
+        self.ctrl_activites_inscrits.Show(self.radio_inscrits.GetValue())
+        self.ctrl_activites_presents.Show(self.radio_presents.GetValue())
+        self.staticbox_date_staticbox.Show(self.radio_presents.GetValue())
+        self.ctrl_calendrier.Show(self.radio_presents.GetValue())
+        self.grid_sizer_gauche.Layout()
+        self.OnCheckActivites()
+
+    def OnCheckActivites(self):
+        if self.radio_inscrits.GetValue() == True :
+            listeSelections = self.ctrl_activites_inscrits.GetActivites()
+            self.SetGroupes(listeSelections)
+        if self.radio_presents.GetValue() == True :
+            listeSelections = self.ctrl_activites_presents.GetIDcoches()
+            self.SetGroupes(listeSelections)
 
     def OnCheckLignesVierges(self, event): 
         if self.checkbox_lignes_vierges.GetValue() == True :
@@ -476,11 +539,11 @@ class Dialog(wx.Dialog):
         UTILS_Aide.Aide("Listedesinformationsmdicales")
     
     def SetListesPeriodes(self, listePeriodes=[]):
-        self.ctrl_activites.SetPeriodes(listePeriodes)
-        self.SetGroupes(self.ctrl_activites.GetListeActivites())
+        self.ctrl_activites_presents.SetPeriodes(listePeriodes)
+        self.SetGroupes(self.ctrl_activites_presents.GetListeActivites())
 
     def SetGroupes(self, listeActivites=[]):
-        self.ctrl_groupes.SetActivites(self.ctrl_activites.GetListeActivites())
+        self.ctrl_groupes.SetActivites(listeActivites)
 
     def GetAge(self, date_naiss=None):
         if date_naiss == None : return None
@@ -491,14 +554,21 @@ class Dialog(wx.Dialog):
     def OnBoutonOk(self, event):
         # Récupération et vérification des données
         listePeriodes = self.ctrl_calendrier.GetDatesSelections() 
-        
-        listeActivites = self.ctrl_activites.GetListeActivites() 
+
+        if self.radio_inscrits.GetValue() == True :
+            mode = "inscrits"
+            listeActivites = self.ctrl_activites_inscrits.GetActivites()
+
+        if self.radio_presents.GetValue() == True :
+            mode = "presents"
+            listeActivites = self.ctrl_activites_presents.GetListeActivites()
+
         if len(listeActivites) == 0 :
             dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement cocher au moins une activité !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
-        
+
         listeGroupes = self.ctrl_groupes.GetListeGroupes() 
         if len(listeGroupes) == 0 :
             dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement cocher au moins un groupe !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
@@ -538,56 +608,87 @@ class Dialog(wx.Dialog):
                 
         # Récupération des noms des groupes
         dictGroupes = self.ctrl_groupes.GetDictGroupes()
-        
-        # Récupération des noms d'activités
-        dictActivites = self.ctrl_activites.GetDictActivites()
-        
-        # Récupération de la liste des groupes ouverts sur cette période
-        DB = GestionDB.DB()
-        req = """SELECT IDouverture, IDactivite, IDunite, IDgroupe
-        FROM ouvertures 
-        WHERE ouvertures.IDactivite IN %s AND %s
-        AND IDgroupe IN %s
-        ; """ % (conditionActivites, conditionsPeriodes, conditionGroupes)
-        DB.ExecuterReq(req)
-        listeOuvertures = DB.ResultatReq()
-        dictOuvertures = {}
-        for IDouverture, IDactivite, IDunite, IDgroupe in listeOuvertures :
-            if dictOuvertures.has_key(IDactivite) == False : 
-                dictOuvertures[IDactivite] = []
-            if IDgroupe not in dictOuvertures[IDactivite] :
-                dictOuvertures[IDactivite].append(IDgroupe)
-    
-        # Récupération des individus grâce à leurs consommations
-        DB = GestionDB.DB() 
-        req = """SELECT individus.IDindividu, IDactivite, IDgroupe, etat,
-        IDcivilite, nom, prenom, date_naiss
-        FROM consommations 
-        LEFT JOIN individus ON individus.IDindividu = consommations.IDindividu
-        WHERE etat IN ("reservation", "present")
-        AND IDactivite IN %s AND %s
-        GROUP BY individus.IDindividu
-        ORDER BY nom, prenom
-        ;""" % (conditionActivites, conditionsPeriodes)
-        DB.ExecuterReq(req)
-        listeIndividus = DB.ResultatReq()
+
+        # ------------ MODE PRESENTS ---------------------------------
+
+        if mode == "presents" :
+
+            # Récupération de la liste des groupes ouverts sur cette période
+            DB = GestionDB.DB()
+            req = """SELECT IDouverture, IDactivite, IDunite, IDgroupe
+            FROM ouvertures 
+            WHERE ouvertures.IDactivite IN %s AND %s
+            AND IDgroupe IN %s
+            ; """ % (conditionActivites, conditionsPeriodes, conditionGroupes)
+            DB.ExecuterReq(req)
+            listeOuvertures = DB.ResultatReq()
+            dictOuvertures = {}
+            for IDouverture, IDactivite, IDunite, IDgroupe in listeOuvertures :
+                if dictOuvertures.has_key(IDactivite) == False :
+                    dictOuvertures[IDactivite] = []
+                if IDgroupe not in dictOuvertures[IDactivite] :
+                    dictOuvertures[IDactivite].append(IDgroupe)
+
+            # Récupération des individus grâce à leurs consommations
+            DB = GestionDB.DB()
+            req = """SELECT individus.IDindividu, IDactivite, IDgroupe,
+            IDcivilite, nom, prenom, date_naiss
+            FROM consommations 
+            LEFT JOIN individus ON individus.IDindividu = consommations.IDindividu
+            WHERE etat IN ("reservation", "present")
+            AND IDactivite IN %s AND %s
+            GROUP BY individus.IDindividu
+            ORDER BY nom, prenom
+            ;""" % (conditionActivites, conditionsPeriodes)
+            DB.ExecuterReq(req)
+            listeIndividus = DB.ResultatReq()
+
+
+        # ------------ MODE INSCRITS ---------------------------------
+
+        if mode == "inscrits" :
+
+            dictOuvertures = {}
+            for IDgroupe, dictGroupe in dictGroupes.iteritems() :
+                IDactivite = dictGroupe["IDactivite"]
+                if dictOuvertures.has_key(IDactivite) == False :
+                    dictOuvertures[IDactivite] = []
+                if IDgroupe not in dictOuvertures[IDactivite] :
+                    dictOuvertures[IDactivite].append(IDgroupe)
+
+            # Récupération des individus grâce à leurs consommations
+            DB = GestionDB.DB()
+            req = """SELECT individus.IDindividu, IDactivite, IDgroupe,
+            IDcivilite, nom, prenom, date_naiss
+            FROM individus 
+            LEFT JOIN inscriptions ON inscriptions.IDindividu = individus.IDindividu
+            WHERE IDactivite IN %s
+            GROUP BY individus.IDindividu
+            ORDER BY nom, prenom
+            ;""" % conditionActivites
+            DB.ExecuterReq(req)
+            listeIndividus = DB.ResultatReq()
+
+
+
+        # Analyse des individus
         dictIndividus = {}
         listeIDindividus = []
-        
-        for IDindividu, IDactivite, IDgroupe, etat, IDcivilite, nom, prenom, date_naiss in listeIndividus :
-            if date_naiss != None : date_naiss = DateEngEnDateDD(date_naiss)
+        for IDindividu, IDactivite, IDgroupe, IDcivilite, nom, prenom, date_naiss in listeIndividus:
+            if date_naiss != None: date_naiss = DateEngEnDateDD(date_naiss)
             age = self.GetAge(date_naiss)
-            
+
             # Mémorisation de l'individu
-            dictIndividus[IDindividu] = { 
-                "IDcivilite" : IDcivilite, "nom" : nom, "prenom" : prenom, 
-                "age" : age, "date_naiss" : date_naiss, "IDgroupe" : IDgroupe, "IDactivite" : IDactivite,
-                }
-            
+            dictIndividus[IDindividu] = {
+                "IDcivilite": IDcivilite, "nom": nom, "prenom": prenom,
+                "age": age, "date_naiss": date_naiss, "IDgroupe": IDgroupe, "IDactivite": IDactivite,
+            }
+
             # Mémorisation du IDindividu
-            if IDindividu not in listeIDindividus :
-                listeIDindividus.append(IDindividu) 
-            
+            if IDindividu not in listeIDindividus:
+                listeIDindividus.append(IDindividu)
+
+
         # Dict Informations médicales
         req = """SELECT IDprobleme, IDindividu, IDtype, intitule, date_debut, date_fin, description, traitement_medical,
         description_traitement, date_debut_traitement, date_fin_traitement, eviction, date_debut_eviction, date_fin_eviction
@@ -661,7 +762,7 @@ class Dialog(wx.Dialog):
         
         # Activités
         for IDactivite in listeActivites :
-            nomActivite = dictActivites[IDactivite]["nom"]
+
             # Groupes
             if dictOuvertures.has_key(IDactivite) :
                 nbreGroupes = len(dictOuvertures[IDactivite])
@@ -871,8 +972,9 @@ class Dialog(wx.Dialog):
             UTILS_Config.SetParametre("impression_infos_med_age", int(self.checkbox_age.GetValue()))
             UTILS_Config.SetParametre("impression_infos_med_nonvides", int(self.checkbox_nonvides.GetValue()))
             UTILS_Config.SetParametre("impression_infos_med_photos", int(self.checkbox_photos.GetValue()))
-            UTILS_Config.SetParametre("impression_infos_med_taille_photos", int(self.ctrl_taille_photos.GetSelection()))   
-        
+            UTILS_Config.SetParametre("impression_infos_med_taille_photos", int(self.ctrl_taille_photos.GetSelection()))
+            UTILS_Config.SetParametre("impression_infos_med_mode_presents", int(self.radio_presents.GetValue()))
+
         UTILS_Config.SetParametre("impression_infos_med_memoriser", int(self.ctrl_memoriser.GetValue()))
         
 
