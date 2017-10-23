@@ -202,11 +202,6 @@ def Envoi_mail(adresseExpediteur="", listeDestinataires=[], listeDestinatairesCC
 
     # Création du message
     msg = MIMEMultipart('alternative')
-    msg['From'] = adresseExpediteur
-    msg['To'] = ";".join(listeDestinataires)
-    msg['Bcc'] = ";".join(listeDestinatairesCCI)
-    msg['Date'] = formatdate(localtime=True)
-    msg['Subject'] = sujetMail
     #msg['Message-ID'] = make_msgid()
 
     if accuseReception == True :
@@ -217,7 +212,20 @@ def Envoi_mail(adresseExpediteur="", listeDestinataires=[], listeDestinatairesCC
 
     msg.attach( MIMEText(textePlain.encode('utf-8'), 'plain', 'utf-8') )
     msg.attach( MIMEText(texteMail.encode('utf-8'), 'html', 'utf-8') )
-    
+
+    # on encapsule dans un Multipart en mixed suplÃ©mentaire pour palier Ã  la mauvaise detection de la piece jointe
+    # par certains lecteurs mails
+    tmpmsg = msg
+    msg = MIMEMultipart('mixed')
+    msg.attach(tmpmsg)
+
+    # Ajout des headers Ã  ce Multipart
+    msg['From'] = adresseExpediteur
+    msg['To'] = ";".join(listeDestinataires)
+    msg['Bcc'] = ";".join(listeDestinatairesCCI)
+    msg['Date'] = formatdate(localtime=True)
+    msg['Subject'] = sujetMail
+
     # Attache des pièces jointes
     for fichier in listeFichiersJoints:
         """Guess the content type based on the file's extension. Encoding
@@ -253,9 +261,10 @@ def Envoi_mail(adresseExpediteur="", listeDestinataires=[], listeDestinatairesCC
         nomFichier= os.path.basename(fichier)
         if type(nomFichier) == unicode :
             nomFichier = FonctionsPerso.Supprime_accent(nomFichier)
-        part.add_header('Content-Disposition', 'attachment', filename=nomFichier)
+        # changement cosmetique pour ajouter les guillements autour du filename
+        part.add_header('Content-Disposition', "attachment; filename=\"%s\"" % nomFichier)
         msg.attach(part)
-    
+
     # Images incluses
     index = 0
     for img in listeImages :
@@ -266,6 +275,7 @@ def Envoi_mail(adresseExpediteur="", listeDestinataires=[], listeDestinatairesCC
         msgImage.add_header('Content-Disposition', 'inline', filename=img)
         msg.attach(msgImage)
         index += 1
+
 
 ## Certains SMTP (exemple Orange Pro) demandent une authentifcation (en général user : boite mail et pwd : mot de passe associÃ© au smtp sÃ©curisÃ© )
 ## mais ne supportent pas le mode starttls
