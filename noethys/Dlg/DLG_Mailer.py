@@ -391,6 +391,7 @@ class Dialog(wx.Dialog):
             if self.IsShown() == False : self.ShowModal()
             return
         exp = dictExp["adresse"]
+        nomexp = dictExp["nom_adresse"]
         serveur = dictExp["smtp"]
         port = dictExp["port"]
         connexionAuthentifiee = dictExp["auth"]
@@ -499,6 +500,7 @@ class Dialog(wx.Dialog):
             try :
                 etat = UTILS_Envoi_email.Envoi_mail( 
                     adresseExpediteur=exp, 
+                    nomadresseExpediteur=nomexp, 
                     listeDestinataires=[adresse,], 
                     listeDestinatairesCCI=[], 
                     sujetMail=sujet, 

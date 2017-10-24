@@ -178,12 +178,12 @@ class Panel(wx.Panel):
         ID = int(self.listCtrl.GetItem(index, 0).GetText())
         
         DB = GestionDB.DB()        
-        req = """SELECT IDadresse, adresse, smtp, port, defaut, connexionAuthentifiee, startTLS
+        req = """SELECT IDadresse, adresse, nom_adresse, smtp, port, defaut, connexionAuthentifiee, startTLS
         FROM adresses_mail ORDER BY adresse; """
         DB.ExecuterReq(req)
         listeServeurs = DB.ResultatReq()
         
-        for IDadresse, adresse, smtp, port, defaut, connexionAuthentifiee, startTLS in listeServeurs :
+        for IDadresse, adresse, nom_adresse, smtp, port, defaut, connexionAuthentifiee, startTLS in listeServeurs :
             if IDadresse == ID :
                 etat = True
             else:
@@ -236,19 +236,21 @@ class ListCtrl(wx.ListCtrl, listmix.ListCtrlAutoWidthMixin, listmix.ColumnSorter
         self.Importation()
         
         # Création des colonnes
-        self.nbreColonnes = 6
+        self.nbreColonnes = 7
         self.InsertColumn(0, u"")
-        self.SetColumnWidth(0, 20)
+        self.SetColumnWidth(0, 30)
         self.InsertColumn(1, _(u"Adresse"))
         self.SetColumnWidth(1, 150)
-        self.InsertColumn(2, _(u"Serveur SMTP"))
-        self.SetColumnWidth(2, 150) 
-        self.InsertColumn(3, _(u"Port"))
-        self.SetColumnWidth(3, 50) 
-        self.InsertColumn(4, _(u"Defaut"))
-        self.SetColumnWidth(4, 0) 
-        self.InsertColumn(5, _(u"Connexion authentifiée"))
-        self.SetColumnWidth(5, 100) 
+        self.InsertColumn(2, _(u"Nom"))
+        self.SetColumnWidth(2, 150)
+        self.InsertColumn(3, _(u"Serveur SMTP"))
+        self.SetColumnWidth(3, 150) 
+        self.InsertColumn(4, _(u"Port"))
+        self.SetColumnWidth(4, 50) 
+        self.InsertColumn(5, _(u"Defaut"))
+        self.SetColumnWidth(5, 0) 
+        self.InsertColumn(6, _(u"Connexion authentifiée"))
+        self.SetColumnWidth(6, 150) 
         
 
         #These two should probably be passed to init more cleanly
@@ -275,7 +277,7 @@ class ListCtrl(wx.ListCtrl, listmix.ListCtrlAutoWidthMixin, listmix.ColumnSorter
     def Importation(self):
         # Récupération des données
         DB = GestionDB.DB()        
-        req = """SELECT IDadresse, adresse, smtp, port, defaut, connexionAuthentifiee, startTLS
+        req = """SELECT IDadresse, adresse, nom_adresse, smtp, port, defaut, connexionAuthentifiee, startTLS
         FROM adresses_mail ORDER BY adresse; """
         DB.ExecuterReq(req)
         liste = DB.ResultatReq()
@@ -322,20 +324,20 @@ class ListCtrl(wx.ListCtrl, listmix.ListCtrlAutoWidthMixin, listmix.ColumnSorter
         valeur = unicode(self.itemDataMap[index][col])
         
         # Port
-        if col == 3 : 
+        if col == 4 : 
             if valeur == "None" : 
                 valeur = ""
         
         # SSL
-        if col == 5 : 
+        if col == 6 : 
             if valeur == "1" : 
                 valeur = _(u"Oui")
             else:
                 valeur = _(u"Non")
     
         # Adresse par défaut
-        if col == 4 : 
-            if valeur == 1 : 
+        if col == 5 : 
+            if valeur == "1" : 
                 valeur = _(u"Oui")
             else:
                 valeur = _(u"Non")
@@ -345,7 +347,7 @@ class ListCtrl(wx.ListCtrl, listmix.ListCtrlAutoWidthMixin, listmix.ColumnSorter
     def OnGetItemImage(self, item):
         """ Affichage des images en début de ligne """
         index=self.itemIndexMap[item]
-        defaut =self.itemDataMap[index][4]
+        defaut =self.itemDataMap[index][5]
         if defaut == 1 :
             return self.imgActuel
         else:

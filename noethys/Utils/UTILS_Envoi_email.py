@@ -98,14 +98,14 @@ def GetAdresseExpDefaut():
     dictAdresse = {}
     # Récupération des données
     DB = GestionDB.DB()        
-    req = """SELECT IDadresse, adresse, motdepasse, smtp, port, defaut, connexionAuthentifiee, startTLS, utilisateur
+    req = """SELECT IDadresse, adresse, nom_adresse, motdepasse, smtp, port, defaut, connexionAuthentifiee, startTLS, utilisateur
     FROM adresses_mail WHERE defaut=1 ORDER BY adresse; """
     DB.ExecuterReq(req)
     listeDonnees = DB.ResultatReq()
     DB.Close()
     if len(listeDonnees) == 0 : return None
-    IDadresse, adresse, motdepasse, smtp, port, defaut, auth, startTLS, utilisateur = listeDonnees[0]
-    dictAdresse = {"adresse":adresse, "motdepasse":motdepasse, "smtp":smtp, "port":port, "auth" : auth, "startTLS":startTLS, "utilisateur" : utilisateur}
+    IDadresse, adresse, nom_adresse, motdepasse, smtp, port, defaut, auth, startTLS, utilisateur = listeDonnees[0]
+    dictAdresse = {"adresse":adresse, "nom_adresse":nom_adresse, "motdepasse":motdepasse, "smtp":smtp, "port":port, "auth" : auth, "startTLS":startTLS, "utilisateur" : utilisateur}
     return dictAdresse
 
 def GetAdresseFamille(IDfamille=None, choixMultiple=True, muet=False, nomTitulaires=None):
@@ -175,7 +175,7 @@ def GetAdresseFamille(IDfamille=None, choixMultiple=True, muet=False, nomTitulai
         return listeMails[0]
 
 
-def Envoi_mail(adresseExpediteur="", listeDestinataires=[], listeDestinatairesCCI=[], sujetMail="", texteMail="", listeFichiersJoints=[], serveur="localhost", port=None, avecAuthentification=False, avecStartTLS=False, listeImages=[], motdepasse=None, accuseReception=False, utilisateur=""):
+def Envoi_mail(adresseExpediteur="", nomadresseExpediteur="", listeDestinataires=[], listeDestinatairesCCI=[], sujetMail="", texteMail="", listeFichiersJoints=[], serveur="localhost", port=None, avecAuthentification=False, avecStartTLS=False, listeImages=[], motdepasse=None, accuseReception=False, utilisateur=""):
     """ Envoi d'un mail avec pièce jointe """
     import smtplib
     import poplib
@@ -220,7 +220,10 @@ def Envoi_mail(adresseExpediteur="", listeDestinataires=[], listeDestinatairesCC
     msg.attach(tmpmsg)
 
     # Ajout des headers Ã  ce Multipart
-    msg['From'] = adresseExpediteur
+    if nomadresseExpediteur == "" :
+        msg['From'] = adresseExpediteur
+    else:
+        msg['From'] = "\"%s\" <%s>" % (nomadresseExpediteur, adresseExpediteur)
     msg['To'] = ";".join(listeDestinataires)
     msg['Bcc'] = ";".join(listeDestinatairesCCI)
     msg['Date'] = formatdate(localtime=True)
@@ -315,6 +318,7 @@ def Envoi_mail(adresseExpediteur="", listeDestinataires=[], listeDestinatairesCC
 if __name__ == u"__main__":
     print Envoi_mail( 
         adresseExpediteur="XXX", 
+        nomadresseExpediteur="My name is Bond", 
         listeDestinataires=["XXX",], 
         listeDestinatairesCCI=[], 
         sujetMail=_(u"Sujet du Mail"), 
