@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: iso-8859-15 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-12 Ivan LUCAS
@@ -25,13 +25,14 @@ import CTRL_Saisie_heure
 
 DICT_LABELS_ACTIONS = {
     "enregistrer" : _(u"Enregistrer une consommation"),
-    "reserver" : _(u"Réserver des consommations"),
+    "reserver" : _(u"RÃ©server des consommations"),
     "message" : _(u"Afficher des messages"),
+    "quitter" : _(u"Quitter l'interface de badgeage"),
     }
 
 
 def GetDetailAction(dictDonnees):
-    """ Crée un texte de détail de l'action pour l'OL_Badgeage_actions """
+    """ CrÃ©e un texte de dÃ©tail de l'action pour l'OL_Badgeage_actions """
     texte = u""
     action = dictDonnees["action"]
     
@@ -50,9 +51,9 @@ def GetDetailAction(dictDonnees):
             nomUnite, nomActivite = listeDonnees[0]
             texte = u"%s (%s)" % (nomUnite, nomActivite)
         else :
-            texte = _(u"Unité inconnue")
+            texte = _(u"UnitÃ© inconnue")
         
-    # Réserver
+    # RÃ©server
     if action == "reserver" :
         listeUnites = []
         for IDunite in dictDonnees["action_unite"].split(";") :
@@ -83,9 +84,9 @@ def GetDetailAction(dictDonnees):
             for IDmessage, message in dictDonnees["action_messages"] :
                 listeMessages.append("'%s'" % message)
             if len(listeMessages) == 1 :
-                texte = _(u"1 message aléatoire : %s") % listeMessages[0]
+                texte = _(u"1 message alÃ©atoire : %s") % listeMessages[0]
             else :
-                texte = _(u"%d messages aléatoires : %s") % (len(listeMessages), ", ".join(listeMessages))
+                texte = _(u"%d messages alÃ©atoires : %s") % (len(listeMessages), ", ".join(listeMessages))
         
     return texte
 
@@ -95,9 +96,9 @@ def DateEngFr(textDate):
     return text
 
 def DateComplete(dateDD):
-    """ Transforme une date DD en date complète : Ex : lundi 15 janvier 2008 """
+    """ Transforme une date DD en date complÃ¨te : Ex : lundi 15 janvier 2008 """
     listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
-    listeMois = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
+    listeMois = (_(u"janvier"), _(u"fÃ©vrier"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"aoÃ»t"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"dÃ©cembre"))
     dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
     return dateComplete
 
@@ -181,7 +182,7 @@ class CTRL_Liste_messages(wx.ListBox):
         valeur = self.GetStringSelection()
         index = self.GetSelection()
         if index == -1 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun message à modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucun message Ã  modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -202,7 +203,7 @@ class CTRL_Liste_messages(wx.ListBox):
         valeur = self.GetStringSelection()
         index = self.GetSelection()
         if index == -1 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun message à supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucun message Ã  supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -212,9 +213,26 @@ class CTRL_Liste_messages(wx.ListBox):
                 self.MAJ()
         dlg.Destroy()
 
-        
 # ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+class CTRL_Quitter(wx.Panel):
+    def __init__(self, parent):
+        wx.Panel.__init__(self, parent, -1)
+        self.parent = parent
+
+    def SetValeur(self, valeur=None):
+        # Valeur = None ou valeur = dict{"activite":"12...}
+        if valeur == None :
+            return
+
+    def GetValeur(self):
+        dictValeurs = {}
+        return dictValeurs
+
+    def Validation(self):
+        return True
+      
+# ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 class CTRL_Message(wx.Panel):
     def __init__(self, parent):
@@ -226,26 +244,26 @@ class CTRL_Message(wx.Panel):
         self.radio_unique = wx.RadioButton(self, -1, _(u"Message unique :"), style=wx.RB_GROUP)
         self.ctrl_unique = wx.TextCtrl(self, -1, "")
         
-        self.radio_aleatoires = wx.RadioButton(self, -1, _(u"Messages aléatoires :"))
+        self.radio_aleatoires = wx.RadioButton(self, -1, _(u"Messages alÃ©atoires :"))
         self.ctrl_aleatoires = CTRL_Liste_messages(self)
         
         self.bouton_ajouter = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Ajouter.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_modifier = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Modifier.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_supprimer = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Supprimer.png"), wx.BITMAP_TYPE_ANY))
         
-        self.label_icone = wx.StaticText(self, -1, _(u"Icône :"))
+        self.label_icone = wx.StaticText(self, -1, _(u"IcÃ´ne :"))
         self.ctrl_icone = CTRL_Icone(self)
 
-        self.label_duree = wx.StaticText(self, -1, _(u"Durée :"))
+        self.label_duree = wx.StaticText(self, -1, _(u"DurÃ©e :"))
         self.ctrl_duree = wx.SpinCtrl(self, -1, "", min=1, max=60, initial=2, size=(80, -1))
         
-        self.label_frequence = wx.StaticText(self, -1, _(u"Fréquence :"))
+        self.label_frequence = wx.StaticText(self, -1, _(u"FrÃ©quence :"))
         self.label_pourcentage = wx.StaticText(self, -1, u"100 %")
         
         self.label_pourcentage.SetMinSize((40, -1))
         self.ctrl_frequence = wx.Slider(self, -1, 100, 1, 100, size=(-1, 28), style=wx.SL_HORIZONTAL)
         self.label_audio = wx.StaticText(self, -1, _(u"Audio :"))
-        self.ctrl_vocal = wx.CheckBox(self, -1, _(u"Activer la synthèse vocale"))
+        self.ctrl_vocal = wx.CheckBox(self, -1, _(u"Activer la synthÃ¨se vocale"))
         
         self.label_audio.Show(False)
         self.ctrl_vocal.Show(False)
@@ -265,12 +283,12 @@ class CTRL_Message(wx.Panel):
 
     def __set_properties(self):
         self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter un message")))
-        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le message sélectionné")))
-        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le message sélectionné")))
-        self.ctrl_icone.SetToolTip(wx.ToolTip(_(u"Sélectionnez l'icône à afficher dans la boîte de dialogue")))
-        self.ctrl_duree.SetToolTip(wx.ToolTip(_(u"Sélectionnez la durée d'affichage du message (en secondes)")))
-        self.ctrl_frequence.SetToolTip(wx.ToolTip(_(u"Sélectionnez la fréquence de diffusion (en %)")))
-        self.ctrl_vocal.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour activer la synthèse vocale")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le message sÃ©lectionnÃ©")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le message sÃ©lectionnÃ©")))
+        self.ctrl_icone.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez l'icÃ´ne Ã  afficher dans la boÃ®te de dialogue")))
+        self.ctrl_duree.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez la durÃ©e d'affichage du message (en secondes)")))
+        self.ctrl_frequence.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez la frÃ©quence de diffusion (en %)")))
+        self.ctrl_vocal.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour activer la synthÃ¨se vocale")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=7, cols=2, vgap=5, hgap=5)
@@ -306,11 +324,11 @@ class CTRL_Message(wx.Panel):
         grid_sizer_base.Add(self.label_icone, 0, wx.LEFT|wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 10)
         grid_sizer_base.Add(self.ctrl_icone, 0, wx.RIGHT, 10)
 
-        # Durée
+        # DurÃ©e
         grid_sizer_base.Add(self.label_duree, 0, wx.LEFT|wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 10)
         grid_sizer_base.Add(self.ctrl_duree, 0, wx.RIGHT, 10)
 
-        # Fréquence
+        # FrÃ©quence
         grid_sizer_base.Add(self.label_frequence, 0, wx.LEFT|wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 10)
         
         grid_sizer_frequence = wx.FlexGridSizer(rows=1, cols=2, vgap=2, hgap=2)
@@ -379,10 +397,10 @@ class CTRL_Message(wx.Panel):
             self.radio_aleatoires.SetValue(True)
         # Icone
         self.ctrl_icone.SetID(valeur["icone"])
-        # Durée
+        # DurÃ©e
         if valeur["duree"] != None :
             self.ctrl_duree.SetValue(int(valeur["duree"]))
-        # Fréquence
+        # FrÃ©quence
         self.ctrl_frequence.SetValue(int(valeur["frequence"]))
         self.OnChoixFrequence(None)
         # Vocal
@@ -401,9 +419,9 @@ class CTRL_Message(wx.Panel):
             dictValeurs["messages"] = self.ctrl_aleatoires.GetValeur()
         # Icone
         dictValeurs["icone"] = self.ctrl_icone.GetID()
-        # Durée
+        # DurÃ©e
         dictValeurs["duree"] = str(self.ctrl_duree.GetValue())
-        # Fréquence
+        # FrÃ©quence
         dictValeurs["frequence"] = str(self.ctrl_frequence.GetValue())
         # Vocal
         dictValeurs["vocal"] = int(self.ctrl_vocal.GetValue())
@@ -439,7 +457,7 @@ class CTRL_Choix_activite(wx.Choice):
         self.dictDonnees = {}
         index = 0
         for IDactivite, nom in listeDonnees :
-            if nom == None : nom = _(u"Activité inconnue")
+            if nom == None : nom = _(u"ActivitÃ© inconnue")
             self.dictDonnees[index] = { "ID" : IDactivite, "nom " : nom}
             listeItems.append(nom)
             index += 1
@@ -510,9 +528,9 @@ class CTRL_Choix_etat(wx.Choice):
         self.listeEtats = [
             #(None, _(u"Ne pas modifier")),
             ("reservation", _(u"Pointage en attente")),
-            ("present", _(u"Présence")),
-            ("absentj", _(u"Absence justifiée")),
-            ("absenti", _(u"Absence injustifiée")),
+            ("present", _(u"PrÃ©sence")),
+            ("absentj", _(u"Absence justifiÃ©e")),
+            ("absenti", _(u"Absence injustifiÃ©e")),
             ]
         self.MAJ() 
     
@@ -584,46 +602,46 @@ class CTRL_Enregistrer(wx.Panel):
         wx.Panel.__init__(self, parent, -1)
         self.parent = parent
         
-        # Unité
-        self.box_unite_staticbox = wx.StaticBox(self, -1, _(u"Unité de consommation"))
-        self.label_activite = wx.StaticText(self, -1, _(u"Activité :"))
+        # UnitÃ©
+        self.box_unite_staticbox = wx.StaticBox(self, -1, _(u"UnitÃ© de consommation"))
+        self.label_activite = wx.StaticText(self, -1, _(u"ActivitÃ© :"))
         self.ctrl_activite = CTRL_Choix_activite(self)
-        self.label_unite = wx.StaticText(self, -1, _(u"Unité :"))
+        self.label_unite = wx.StaticText(self, -1, _(u"UnitÃ© :"))
         self.ctrl_unite = CTRL_Choix_unite(self)
         self.label_etat = wx.StaticText(self, -1, _(u"Etat :"))
         self.ctrl_etat = CTRL_Choix_etat(self)
 
         # Demander
-        self.check_demander = wx.CheckBox(self, -1, _(u"Demander s'il s'agit du début ou de la fin"))
+        self.check_demander = wx.CheckBox(self, -1, _(u"Demander s'il s'agit du dÃ©but ou de la fin"))
 
-        # Début
-        self.box_debut_staticbox = wx.StaticBox(self, -1, _(u"Heure de début"))
-        self.radio_debut_defaut = wx.RadioButton(self, -1, _(u"Heure par défaut"), style=wx.RB_GROUP)
+        # DÃ©but
+        self.box_debut_staticbox = wx.StaticBox(self, -1, _(u"Heure de dÃ©but"))
+        self.radio_debut_defaut = wx.RadioButton(self, -1, _(u"Heure par dÃ©faut"), style=wx.RB_GROUP)
         self.radio_debut_pointee = wx.RadioButton(self, -1, _(u"Heure du badgeage"))
         self.radio_debut_autre = wx.RadioButton(self, -1, _(u"Autre heure :"))
         self.ctrl_debut_autre = CTRL_Saisie_heure.Heure(self)
 
         # Fin
         self.box_fin_staticbox = wx.StaticBox(self, -1, _(u"Heure de fin"))
-        self.radio_fin_defaut = wx.RadioButton(self, -1, _(u"Heure par défaut"), style=wx.RB_GROUP)
+        self.radio_fin_defaut = wx.RadioButton(self, -1, _(u"Heure par dÃ©faut"), style=wx.RB_GROUP)
         self.radio_fin_pointee = wx.RadioButton(self, -1, _(u"Heure du badgeage"))
         self.radio_fin_autre = wx.RadioButton(self, -1, _(u"Autre heure :"))
         self.ctrl_fin_autre = CTRL_Saisie_heure.Heure(self)
         
         # Message de confirmation
         self.box_message_staticbox = wx.StaticBox(self, -1, _(u"Message de confirmation"))
-        self.label_message_actif = wx.StaticText(self, -1, _(u"Activé :"))
+        self.label_message_actif = wx.StaticText(self, -1, _(u"ActivÃ© :"))
         self.check_message_actif = wx.CheckBox(self, -1, u"")
         self.label_message_texte = wx.StaticText(self, -1, _(u"Texte :"))
         self.ctrl_message_texte = wx.TextCtrl(self, -1, u"")
         self.label_audio = wx.StaticText(self, -1, _(u"Audio :"))
-        self.ctrl_vocal = wx.CheckBox(self, -1, _(u"Activer la synthèse vocale"))
+        self.ctrl_vocal = wx.CheckBox(self, -1, _(u"Activer la synthÃ¨se vocale"))
 
         # Impression de ticket
         self.box_ticket_staticbox = wx.StaticBox(self, -1, _(u"Impression d'un ticket"))
-        self.label_ticket_actif = wx.StaticText(self, -1, _(u"Activé :"))
+        self.label_ticket_actif = wx.StaticText(self, -1, _(u"ActivÃ© :"))
         self.check_ticket_actif = wx.CheckBox(self, -1, u"")
-        self.label_ticket_modele = wx.StaticText(self, -1, _(u"Modèle :"))
+        self.label_ticket_modele = wx.StaticText(self, -1, _(u"ModÃ¨le :"))
         self.ctrl_ticket_modele = CTRL_Choix_ticket(self)
 
         self.label_audio.Show(False)
@@ -652,30 +670,30 @@ class CTRL_Enregistrer(wx.Panel):
         self.OnCheckTicket(None)
 
     def __set_properties(self):
-        self.ctrl_activite.SetToolTip(wx.ToolTip(_(u"Sélectionnez une activité")))
-        self.ctrl_unite.SetToolTip(wx.ToolTip(_(u"Sélectionnez une unité de consommation")))
-        self.ctrl_etat.SetToolTip(wx.ToolTip(_(u"Sélectionnez un état")))
-        self.check_demander.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour que Noethys demande s'il s'agit du début ou de la fin de la consommation. Utile quand l'unité de consommation n'a pas d'heure fixe de début ou de fin (ex : crèche, accueil de loisirs)")))
-        self.radio_debut_defaut.SetToolTip(wx.ToolTip(_(u"Heure par défaut définie dans le paramétrage de l'unité")))
-        self.radio_debut_pointee.SetToolTip(wx.ToolTip(_(u"Heure pointée")))
+        self.ctrl_activite.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez une activitÃ©")))
+        self.ctrl_unite.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez une unitÃ© de consommation")))
+        self.ctrl_etat.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez un Ã©tat")))
+        self.check_demander.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour que Noethys demande s'il s'agit du dÃ©but ou de la fin de la consommation. Utile quand l'unitÃ© de consommation n'a pas d'heure fixe de dÃ©but ou de fin (ex : crÃ¨che, accueil de loisirs)")))
+        self.radio_debut_defaut.SetToolTip(wx.ToolTip(_(u"Heure par dÃ©faut dÃ©finie dans le paramÃ©trage de l'unitÃ©")))
+        self.radio_debut_pointee.SetToolTip(wx.ToolTip(_(u"Heure pointÃ©e")))
         self.radio_debut_autre.SetToolTip(wx.ToolTip(_(u"Autre heure")))
         self.ctrl_debut_autre.SetToolTip(wx.ToolTip(_(u"Saisissez une heure")))
-        self.radio_fin_defaut.SetToolTip(wx.ToolTip(_(u"Heure par défaut définie dans le paramétrage de l'unité")))
-        self.radio_fin_pointee.SetToolTip(wx.ToolTip(_(u"Heure pointée")))
+        self.radio_fin_defaut.SetToolTip(wx.ToolTip(_(u"Heure par dÃ©faut dÃ©finie dans le paramÃ©trage de l'unitÃ©")))
+        self.radio_fin_pointee.SetToolTip(wx.ToolTip(_(u"Heure pointÃ©e")))
         self.radio_fin_autre.SetToolTip(wx.ToolTip(_(u"Autre heure")))
         self.ctrl_fin_autre.SetToolTip(wx.ToolTip(_(u"Saisissez une heure")))
         self.check_message_actif.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour activer l'affichage d'un message de confirmation")))
         self.ctrl_message_texte.SetToolTip(wx.ToolTip(_(u"Saisissez un message de confirmation")))
-        self.ctrl_vocal.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour activer la synthèse vocale")))
+        self.ctrl_vocal.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour activer la synthÃ¨se vocale")))
         self.check_ticket_actif.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour activer l'impression d'un ticket")))
-        self.ctrl_ticket_modele.SetToolTip(wx.ToolTip(_(u"Sélectionnez le modèle de ticket à utiliser")))
+        self.ctrl_ticket_modele.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez le modÃ¨le de ticket Ã  utiliser")))
         self.ctrl_debut_autre.SetFont(wx.Font(7, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, 'Arial'))
         self.ctrl_fin_autre.SetFont(wx.Font(7, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, 'Arial'))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=6, cols=1, vgap=5, hgap=5)
         
-        # Unité
+        # UnitÃ©
         box_unite = wx.StaticBoxSizer(self.box_unite_staticbox, wx.VERTICAL)
         grid_sizer_unite = wx.FlexGridSizer(rows=3, cols=2, vgap=5, hgap=5)
         grid_sizer_unite.Add(self.label_activite, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
@@ -693,7 +711,7 @@ class CTRL_Enregistrer(wx.Panel):
         
         grid_sizer_heures = wx.FlexGridSizer(rows=1, cols=2, vgap=10, hgap=10)
         
-        # Début
+        # DÃ©but
         box_debut = wx.StaticBoxSizer(self.box_debut_staticbox, wx.VERTICAL)
         grid_sizer_debut = wx.FlexGridSizer(rows=3, cols=1, vgap=5, hgap=5)
         grid_sizer_debut.Add(self.radio_debut_defaut, 0, 0, 0)
@@ -757,10 +775,10 @@ class CTRL_Enregistrer(wx.Panel):
     def OnCheckDemander(self, event): 
         etat = self.check_demander.GetValue()
         if etat == True :
-            self.box_debut_staticbox.SetLabel(_(u"Heure de début par défaut"))
-            self.box_fin_staticbox.SetLabel(_(u"Heure de fin par défaut"))
+            self.box_debut_staticbox.SetLabel(_(u"Heure de dÃ©but par dÃ©faut"))
+            self.box_fin_staticbox.SetLabel(_(u"Heure de fin par dÃ©faut"))
         else :
-            self.box_debut_staticbox.SetLabel(_(u"Heure de début "))
+            self.box_debut_staticbox.SetLabel(_(u"Heure de dÃ©but "))
             self.box_fin_staticbox.SetLabel(_(u"Heure de fin"))
             
         self.radio_debut_pointee.Enable(not etat)
@@ -785,19 +803,19 @@ class CTRL_Enregistrer(wx.Panel):
 
     def Validation(self):
         if self.ctrl_activite.GetID() == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner une activité !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sÃ©lectionner une activitÃ© !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
         
         if self.ctrl_unite.GetID() == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner une unité de consommation !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sÃ©lectionner une unitÃ© de consommation !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
 
         if self.radio_debut_autre.GetValue() == True and self.ctrl_debut_autre.GetHeure() == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une heure de début !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une heure de dÃ©but !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_debut_autre.SetFocus()
@@ -818,7 +836,7 @@ class CTRL_Enregistrer(wx.Panel):
             return False
 
         if self.check_ticket_actif.GetValue() and self.ctrl_ticket_modele.GetID() == None :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun modèle de ticket dans la liste !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucun modÃ¨le de ticket dans la liste !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_ticket_modele.SetFocus()
@@ -830,10 +848,10 @@ class CTRL_Enregistrer(wx.Panel):
         # Valeur = None ou valeur = dict{"activite":"12...}
         if valeur == None :
             return
-        # Activité
+        # ActivitÃ©
         self.ctrl_activite.SetID(int(valeur["activite"]))
         self.OnChoixActivite(None)
-        # Unité
+        # UnitÃ©
         self.ctrl_unite.SetID(int(valeur["unite"]))
         # Etat
         self.ctrl_etat.SetValeur(valeur["etat"])
@@ -873,9 +891,9 @@ class CTRL_Enregistrer(wx.Panel):
         
     def GetValeur(self):
         dictValeurs = {}
-        # Activité
+        # ActivitÃ©
         dictValeurs["activite"] = str(self.ctrl_activite.GetID())
-        # Unité
+        # UnitÃ©
         dictValeurs["unite"] = str(self.ctrl_unite.GetID())
         # Etat
         dictValeurs["etat"] = self.ctrl_etat.GetValeur()
@@ -969,8 +987,8 @@ class CTRL_Choix_date(wx.Choice):
         wx.Choice.__init__(self, parent, -1, size=(-1, -1)) 
         self.parent = parent
         self.listeEtats = [
-            ("date_actuelle", _(u"Le jour-même")),
-            ("prochaine_ouverture", _(u"La prochaine date d'ouverture de l'activité")),
+            ("date_actuelle", _(u"Le jour-mÃªme")),
+            ("prochaine_ouverture", _(u"La prochaine date d'ouverture de l'activitÃ©")),
             ]
         self.MAJ() 
     
@@ -999,11 +1017,11 @@ class CTRL_Reserver(wx.Panel):
         wx.Panel.__init__(self, parent, -1)
         self.parent = parent
         
-        # Unité
-        self.box_unite_staticbox = wx.StaticBox(self, -1, _(u"Unités de consommation à proposer"))
-        self.label_activite = wx.StaticText(self, -1, _(u"Activité :"))
+        # UnitÃ©
+        self.box_unite_staticbox = wx.StaticBox(self, -1, _(u"UnitÃ©s de consommation Ã  proposer"))
+        self.label_activite = wx.StaticText(self, -1, _(u"ActivitÃ© :"))
         self.ctrl_activite = CTRL_Choix_activite(self)
-        self.label_unite = wx.StaticText(self, -1, _(u"Unités :"))
+        self.label_unite = wx.StaticText(self, -1, _(u"UnitÃ©s :"))
         self.ctrl_unite = CTRL_Liste_unites(self)
         self.label_etat = wx.StaticText(self, -1, _(u"Etat :"))
         self.ctrl_etat = CTRL_Choix_etat(self)
@@ -1014,7 +1032,7 @@ class CTRL_Reserver(wx.Panel):
         self.check_attente.Show(False)
         
         # Date
-        self.box_date_staticbox = wx.StaticBox(self, -1, _(u"Date à proposer"))
+        self.box_date_staticbox = wx.StaticBox(self, -1, _(u"Date Ã  proposer"))
         self.label_date = wx.StaticText(self, -1, _(u"Date :"))
         self.ctrl_date = CTRL_Choix_date(self)
 
@@ -1026,7 +1044,7 @@ class CTRL_Reserver(wx.Panel):
         self.check_confirmation_actif = wx.CheckBox(self, -1, u"")
         self.ctrl_confirmation = wx.TextCtrl(self, -1, u"")
         self.label_audio = wx.StaticText(self, -1, _(u"Audio :"))
-        self.ctrl_vocal = wx.CheckBox(self, -1, _(u"Activer la synthèse vocale"))
+        self.ctrl_vocal = wx.CheckBox(self, -1, _(u"Activer la synthÃ¨se vocale"))
 
         self.label_audio.Show(False)
         self.ctrl_vocal.Show(False)
@@ -1042,20 +1060,20 @@ class CTRL_Reserver(wx.Panel):
         self.OnCheckConfirmation(None)
 
     def __set_properties(self):
-        self.ctrl_activite.SetToolTip(wx.ToolTip(_(u"Sélectionnez une activité")))
-        self.ctrl_unite.SetToolTip(wx.ToolTip(_(u"Sélectionnez les unités de consommation à proposer")))
-        self.ctrl_etat.SetToolTip(wx.ToolTip(_(u"Sélectionnez un état")))
+        self.ctrl_activite.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez une activitÃ©")))
+        self.ctrl_unite.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez les unitÃ©s de consommation Ã  proposer")))
+        self.ctrl_etat.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez un Ã©tat")))
         self.check_attente.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour que Noethys propose une place sur liste d'attente sur il n'y a plus de places")))
-        self.ctrl_date.SetToolTip(wx.ToolTip(_(u"Sélectionnez la date à proposer")))
+        self.ctrl_date.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez la date Ã  proposer")))
         self.ctrl_question.SetToolTip(wx.ToolTip(_(u"Saisissez le texte de la question")))
         self.check_confirmation_actif.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour activer l'affichage d'un message de confirmation")))
         self.ctrl_confirmation.SetToolTip(wx.ToolTip(_(u"Saisissez un message de confirmation")))
-        self.ctrl_vocal.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour activer la synthèse vocale")))
+        self.ctrl_vocal.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour activer la synthÃ¨se vocale")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=5, cols=1, vgap=5, hgap=5)
         
-        # Unités
+        # UnitÃ©s
         box_unite = wx.StaticBoxSizer(self.box_unite_staticbox, wx.VERTICAL)
         grid_sizer_unite = wx.FlexGridSizer(rows=4, cols=2, vgap=5, hgap=5)
         grid_sizer_unite.Add(self.label_activite, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
@@ -1112,19 +1130,19 @@ class CTRL_Reserver(wx.Panel):
         
     def Validation(self):
         if self.ctrl_activite.GetID() == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner une activité !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sÃ©lectionner une activitÃ© !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
         
         if len(self.ctrl_unite.GetIDcoches()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous devez cocher au moins une unité de consommation !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez cocher au moins une unitÃ© de consommation !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
 
         if len(self.ctrl_unite.GetIDcoches()) > 9 :
-            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas proposer plus de 9 unités de consommation !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas proposer plus de 9 unitÃ©s de consommation !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -1149,10 +1167,10 @@ class CTRL_Reserver(wx.Panel):
         # Valeur = None ou valeur = dict{"activite":"12...}
         if valeur == None :
             return
-        # Activité
+        # ActivitÃ©
         self.ctrl_activite.SetID(int(valeur["activite"]))
         self.OnChoixActivite(None)
-        # Unités
+        # UnitÃ©s
         listeUnites = []
         for IDunite in valeur["unite"].split(";") :
             listeUnites.append(int(IDunite))
@@ -1173,9 +1191,9 @@ class CTRL_Reserver(wx.Panel):
         
     def GetValeur(self):
         dictValeurs = {}
-        # Activité
+        # ActivitÃ©
         dictValeurs["activite"] = str(self.ctrl_activite.GetID())
-        # Unités
+        # UnitÃ©s
         listeUnites = []
         for IDunite in self.ctrl_unite.GetIDcoches() :
             listeUnites.append(str(IDunite))
@@ -1215,7 +1233,7 @@ class Panel(wx.Panel):
         self.SetSizer(box)
         box.Fit(self)
         
-        # Init contrôles
+        # Init contrÃ´les
         self.CreationPages() 
 
     def CreationPages(self):
@@ -1233,12 +1251,12 @@ class Panel(wx.Panel):
             index += 1
     
     def SelectPage(self, code=""):
-        """ Sélection d'une page d'après son code """
+        """ SÃ©lection d'une page d'aprÃ¨s son code """
         if self.dictPages.has_key(code):
             self.ctrl.SetSelection(self.dictPages[code]["index"])
     
     def GetCodePage(self):
-        """ Retourne le code de la page sélectionnée """
+        """ Retourne le code de la page sÃ©lectionnÃ©e """
         selection = self.ctrl.GetSelection()
         for code, dictTemp in self.dictPages.iteritems() :
             if dictTemp["index"] == selection :
@@ -1252,17 +1270,17 @@ class Panel(wx.Panel):
         return ctrl        
         
     def Validation(self):
-        # Validation des paramètres du type
+        # Validation des paramÃ¨tres du type
         validation = self.GetPage().Validation()
         return validation
         
     def SetValeur(self, codePage="", valeur=None):
-        """ Attribue la valeur à la page donnée """
+        """ Attribue la valeur Ã  la page donnÃ©e """
         self.SelectPage(codePage)
         self.GetPage().SetValeur(valeur)
         
     def GetValeur(self):
-        """ Récupère la valeur de la page actuellement sélectionnée """
+        """ RÃ©cupÃ¨re la valeur de la page actuellement sÃ©lectionnÃ©e """
         return self.GetPage().GetValeur()
     
     def GetDonnees(self):
