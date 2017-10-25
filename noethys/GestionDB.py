@@ -2125,6 +2125,22 @@ class DB:
             except Exception, err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
+        # =============================================================
+
+        versionFiltre = (1, 2, 1, 5)
+        if versionFichier < versionFiltre :
+            try :
+                self.AjoutChamp("adresses_mail", "nom_adresse", "VARCHAR(200)")
+                self.AjoutChamp("individus", "travail_tel_sms", "INTEGER")
+                self.AjoutChamp("individus", "tel_domicile_sms", "INTEGER")
+                self.AjoutChamp("individus", "tel_mobile_sms", "INTEGER")
+            except Exception, err :
+                return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
+
+
+
+
+
 
 
 
