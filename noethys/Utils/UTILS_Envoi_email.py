@@ -98,14 +98,14 @@ def GetAdresseExpDefaut():
     dictAdresse = {}
     # Récupération des données
     DB = GestionDB.DB()        
-    req = """SELECT IDadresse, adresse, motdepasse, smtp, port, defaut, connexionAuthentifiee, startTLS, utilisateur
+    req = """SELECT IDadresse, adresse, nom_adresse, motdepasse, smtp, port, defaut, connexionAuthentifiee, startTLS, utilisateur
     FROM adresses_mail WHERE defaut=1 ORDER BY adresse; """
     DB.ExecuterReq(req)
     listeDonnees = DB.ResultatReq()
     DB.Close()
     if len(listeDonnees) == 0 : return None
-    IDadresse, adresse, motdepasse, smtp, port, defaut, auth, startTLS, utilisateur = listeDonnees[0]
-    dictAdresse = {"adresse":adresse, "motdepasse":motdepasse, "smtp":smtp, "port":port, "auth" : auth, "startTLS":startTLS, "utilisateur" : utilisateur}
+    IDadresse, adresse, nom_adresse, motdepasse, smtp, port, defaut, auth, startTLS, utilisateur = listeDonnees[0]
+    dictAdresse = {"adresse":adresse, "nom_adresse":nom_adresse, "motdepasse":motdepasse, "smtp":smtp, "port":port, "auth" : auth, "startTLS":startTLS, "utilisateur" : utilisateur}
     return dictAdresse
 
 def GetAdresseFamille(IDfamille=None, choixMultiple=True, muet=False, nomTitulaires=None):
@@ -175,7 +175,7 @@ def GetAdresseFamille(IDfamille=None, choixMultiple=True, muet=False, nomTitulai
         return listeMails[0]
 
 
-def Envoi_mail(adresseExpediteur="", listeDestinataires=[], listeDestinatairesCCI=[], sujetMail="", texteMail="", listeFichiersJoints=[], serveur="localhost", port=None, avecAuthentification=False, avecStartTLS=False, listeImages=[], motdepasse=None, accuseReception=False, utilisateur=""):
+def Envoi_mail(adresseExpediteur="", nomadresseExpediteur="", listeDestinataires=[], listeDestinatairesCCI=[], sujetMail="", texteMail="", listeFichiersJoints=[], serveur="localhost", port=None, avecAuthentification=False, avecStartTLS=False, listeImages=[], motdepasse=None, accuseReception=False, utilisateur=""):
     """ Envoi d'un mail avec pièce jointe """
     import smtplib
     import poplib
@@ -202,11 +202,6 @@ def Envoi_mail(adresseExpediteur="", listeDestinataires=[], listeDestinatairesCC
 
     # Création du message
     msg = MIMEMultipart('alternative')
-    msg['From'] = adresseExpediteur
-    msg['To'] = ";".join(listeDestinataires)
-    msg['Bcc'] = ";".join(listeDestinatairesCCI)
-    msg['Date'] = formatdate(localtime=True)
-    msg['Subject'] = sujetMail
     #msg['Message-ID'] = make_msgid()
 
     if accuseReception == True :
@@ -217,7 +212,23 @@ def Envoi_mail(adresseExpediteur="", listeDestinataires=[], listeDestinatairesCC
 
     msg.attach( MIMEText(textePlain.encode('utf-8'), 'plain', 'utf-8') )
     msg.attach( MIMEText(texteMail.encode('utf-8'), 'html', 'utf-8') )
-    
+
+    # on encapsule dans un Multipart en mixed suplÃ©mentaire pour palier Ã  la mauvaise detection de la piece jointe
+    # par certains lecteurs mails
+    tmpmsg = msg
+    msg = MIMEMultipart('mixed')
+    msg.attach(tmpmsg)
+
+    # Ajout des headers Ã  ce Multipart
+    if nomadresseExpediteur == "" :
+        msg['From'] = adresseExpediteur
+    else:
+        msg['From'] = "\"%s\" <%s>" % (nomadresseExpediteur, adresseExpediteur)
+    msg['To'] = ";".join(listeDestinataires)
+    msg['Bcc'] = ";".join(listeDestinatairesCCI)
+    msg['Date'] = formatdate(localtime=True)
+    msg['Subject'] = sujetMail
+
     # Attache des pièces jointes
     for fichier in listeFichiersJoints:
         """Guess the content type based on the file's extension. Encoding
@@ -253,9 +264,10 @@ def Envoi_mail(adresseExpediteur="", listeDestinataires=[], listeDestinatairesCC
         nomFichier= os.path.basename(fichier)
         if type(nomFichier) == unicode :
             nomFichier = FonctionsPerso.Supprime_accent(nomFichier)
-        part.add_header('Content-Disposition', 'attachment', filename=nomFichier)
+        # changement cosmetique pour ajouter les guillements autour du filename
+        part.add_header('Content-Disposition', "attachment; filename=\"%s\"" % nomFichier)
         msg.attach(part)
-    
+
     # Images incluses
     index = 0
     for img in listeImages :
@@ -266,6 +278,7 @@ def Envoi_mail(adresseExpediteur="", listeDestinataires=[], listeDestinatairesCC
         msgImage.add_header('Content-Disposition', 'inline', filename=img)
         msg.attach(msgImage)
         index += 1
+
 
 ## Certains SMTP (exemple Orange Pro) demandent une authentifcation (en général user : boite mail et pwd : mot de passe associÃ© au smtp sÃ©curisÃ© )
 ## mais ne supportent pas le mode starttls
@@ -305,6 +318,7 @@ def Envoi_mail(adresseExpediteur="", listeDestinataires=[], listeDestinatairesCC
 if __name__ == u"__main__":
     print Envoi_mail( 
         adresseExpediteur="XXX", 
+        nomadresseExpediteur="My name is Bond", 
         listeDestinataires=["XXX",], 
         listeDestinatairesCCI=[], 
         sujetMail=_(u"Sujet du Mail"), 

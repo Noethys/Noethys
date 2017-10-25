@@ -2137,8 +2137,6 @@ class DB:
 
 
 
-
-
         return True
 
 def GetChampsTable(nomTable=""):

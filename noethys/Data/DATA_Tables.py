@@ -881,6 +881,7 @@ DB_DATA = {
 
     "adresses_mail":  [    ("IDadresse", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID"),
                                     ("adresse", "VARCHAR(200)", u"Adresse de messagerie"),
+                                    ("nom_adresse", "VARCHAR(200)", u"Nom d'affichage de l'adresse de messagerie"),
                                     ("motdepasse", "VARCHAR(200)", u"Mot de passe si SSL"),
                                     ("smtp", "VARCHAR(200)", u"Adresse SMTP"),
                                     ("port", "INTEGER", u"Numéro du port"),

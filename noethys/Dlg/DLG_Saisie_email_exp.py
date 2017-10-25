@@ -47,6 +47,8 @@ class Dialog(wx.Dialog):
         self.ctrl_startTLS   = wx.CheckBox(self, -1, "")
         self.label_adresse = wx.StaticText(self, -1, _(u"Adresse d'envoi :"))
         self.ctrl_adresse = wx.TextCtrl(self, -1, "")
+        self.label_nom_adresse = wx.StaticText(self, -1, _(u"Nom affiché pour l'adresse d'envoi :"))
+        self.ctrl_nom_adresse = wx.TextCtrl(self, -1, "")
         self.label_utilisateur = wx.StaticText(self, -1, _(u"Nom d'utilisateur :"))
         self.ctrl_utilisateur = wx.TextCtrl(self, -1, "")
         self.label_mdp = wx.StaticText(self, -1, _(u"Mot de passe :"))
@@ -82,6 +84,7 @@ class Dialog(wx.Dialog):
         self.ctrl_port.SetToolTip(wx.ToolTip(_(u"Saisissez ici le numero de port (laissez la case vide pour utiliser le numéro de port par défaut)")))
         self.ctrl_authentification.SetToolTip(wx.ToolTip(_(u"Cliquez ici sur le serveur de messagerie nécessite une authentification")))
         self.ctrl_adresse.SetToolTip(wx.ToolTip(_(u"Saisissez ici votre adresse mail d'envoi")))
+        self.ctrl_nom_adresse.SetToolTip(wx.ToolTip(_(u"Saisissez ici le nom qui sera affiché pour l'adrese mail d'envoi")))
         self.ctrl_utilisateur.SetToolTip(wx.ToolTip(_(u"Saisissez ici votre nom d'utilisateur (il s'agit parfois de l'adresse d'envoi)")))
         self.ctrl_mdp.SetToolTip(wx.ToolTip(_(u"Saisissez ici le mot de passe s'il s'agit d'une connexion SSL")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à l'aide")))
@@ -124,9 +127,11 @@ class Dialog(wx.Dialog):
         grid_sizer_base.Add(static_sizer_serveur, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
 
         # Saisie adresse
-        grid_sizer_adresse = wx.FlexGridSizer(rows=3, cols=2, vgap=10, hgap=10)
+        grid_sizer_adresse = wx.FlexGridSizer(rows=4, cols=2, vgap=10, hgap=10)
         grid_sizer_adresse.Add(self.label_adresse, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_adresse.Add(self.ctrl_adresse, 0, wx.EXPAND, 0)
+        grid_sizer_adresse.Add(self.label_nom_adresse, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_adresse.Add(self.ctrl_nom_adresse, 0, wx.EXPAND, 0)
         grid_sizer_adresse.Add(self.label_utilisateur, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_adresse.Add(self.ctrl_utilisateur, 0, wx.EXPAND, 0)
         grid_sizer_adresse.Add(self.label_mdp, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
@@ -196,17 +201,19 @@ class Dialog(wx.Dialog):
 
     def Importation(self):
         DB = GestionDB.DB()        
-        req = """SELECT IDadresse, adresse, motdepasse, smtp, port, defaut, connexionAuthentifiee, startTLS, utilisateur
+        req = """SELECT IDadresse, adresse, nom_adresse, motdepasse, smtp, port, defaut, connexionAuthentifiee, startTLS, utilisateur
         FROM adresses_mail WHERE IDadresse=%d; """ % self.IDadresse
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         DB.Close()
         if len(listeDonnees) == 0 : return
-        IDadresse, adresse, motdepasse, smtp, port, defaut, auth, startTLS, utilisateur = listeDonnees[0]
+        IDadresse, adresse, nom_adresse, motdepasse, smtp, port, defaut, auth, startTLS, utilisateur = listeDonnees[0]
         
         self.defaut = bool(defaut)
         
         self.ctrl_adresse.SetValue(adresse)
+        if nom_adresse != None :
+            self.ctrl_nom_adresse.SetValue(nom_adresse)
         if motdepasse != None :
             self.ctrl_mdp.SetValue(motdepasse)
 
@@ -244,7 +251,7 @@ class Dialog(wx.Dialog):
     def GetNbreAdresses(self):
         """ Récupère le nbre d'adresses déjà saisies """
         DB = GestionDB.DB()        
-        req = """SELECT IDadresse, adresse, motdepasse, smtp, port, defaut, connexionAuthentifiee, startTLS, utilisateur
+        req = """SELECT IDadresse, adresse, nom_adresse, motdepasse, smtp, port, defaut, connexionAuthentifiee, startTLS, utilisateur
         FROM adresses_mail ORDER BY adresse; """
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
@@ -276,13 +283,13 @@ class Dialog(wx.Dialog):
             # Validation du mot de passe
             if self.listeServeurs[self.ctrl_predefinis.GetSelection()][3] == True :
                 if self.ctrl_mdp.GetValue() == "" :
-                    dlg = wx.MessageDialog(self, _(u"Vous n'avez omis de saisir le mot de passe de votre messagerie"), _(u"Erreur de saisie"), wx.OK | wx.ICON_ERROR)
+                    dlg = wx.MessageDialog(self, _(u"Vous avez omis de saisir le mot de passe de votre messagerie"), _(u"Erreur de saisie"), wx.OK | wx.ICON_ERROR)
                     dlg.ShowModal()
                     dlg.Destroy()
                     return
 
                 if self.ctrl_utilisateur.GetValue() == "" :
-                    dlg = wx.MessageDialog(self, _(u"Vous n'avez omis de saisir le nom d'utilisateur de votre messagerie"), _(u"Erreur de saisie"), wx.OK | wx.ICON_ERROR)
+                    dlg = wx.MessageDialog(self, _(u"Vous avez omis de saisir le nom d'utilisateur de votre messagerie"), _(u"Erreur de saisie"), wx.OK | wx.ICON_ERROR)
                     dlg.ShowModal()
                     dlg.Destroy()
                     return
@@ -290,7 +297,7 @@ class Dialog(wx.Dialog):
         else:
             
             if self.ctrl_smtp.GetValue() == "" :
-                dlg = wx.MessageDialog(self, _(u"Vous n'avez omis de saisir le nom du serveur SMTP"), _(u"Erreur de saisie"), wx.OK | wx.ICON_ERROR)
+                dlg = wx.MessageDialog(self, _(u"Vous avez omis de saisir le nom du serveur SMTP"), _(u"Erreur de saisie"), wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return
@@ -307,13 +314,13 @@ class Dialog(wx.Dialog):
             # Validation du mot de passe
             if self.ctrl_authentification.GetValue() == True :
                 if self.ctrl_mdp.GetValue() == "" :
-                    dlg = wx.MessageDialog(self, _(u"Vous n'avez omis de saisir le mot de passe de votre messagerie"), _(u"Erreur de saisie"), wx.OK | wx.ICON_ERROR)
+                    dlg = wx.MessageDialog(self, _(u"Vous avez omis de saisir le mot de passe de votre messagerie"), _(u"Erreur de saisie"), wx.OK | wx.ICON_ERROR)
                     dlg.ShowModal()
                     dlg.Destroy()
                     return
 
                 if self.ctrl_utilisateur.GetValue() == "" :
-                    dlg = wx.MessageDialog(self, _(u"Vous n'avez omis de saisir le nom d'utilisateur de votre messagerie"), _(u"Erreur de saisie"), wx.OK | wx.ICON_ERROR)
+                    dlg = wx.MessageDialog(self, _(u"Vous avez omis de saisir le nom d'utilisateur de votre messagerie"), _(u"Erreur de saisie"), wx.OK | wx.ICON_ERROR)
                     dlg.ShowModal()
                     dlg.Destroy()
                     return
@@ -330,6 +337,10 @@ class Dialog(wx.Dialog):
         if self.radio_predefini.GetValue() == True :
             
             adresse = self.ctrl_adresse.GetValue()
+            if self.ctrl_nom_adresse.GetValue() == "" :
+                nom_adresse = None
+            else:
+                nom_adresse = self.ctrl_nom_adresse.GetValue()
             selection = self.ctrl_predefinis.GetSelection()
             smtp = self.listeServeurs[selection][1]
             port = self.listeServeurs[selection][2]
@@ -345,6 +356,10 @@ class Dialog(wx.Dialog):
         else:
             
             adresse = self.ctrl_adresse.GetValue()
+            if self.ctrl_nom_adresse.GetValue() == "" :
+                nom_adresse = None
+            else:
+                nom_adresse = self.ctrl_nom_adresse.GetValue()
             if self.ctrl_mdp.GetValue() == "" :
                 motdepasse = None
                 utilisateur = None
@@ -378,6 +393,7 @@ class Dialog(wx.Dialog):
         # Enregistrement des données
         DB = GestionDB.DB()
         listeDonnees = [    ("adresse",   adresse),  
+                                    ("nom_adresse",    nom_adresse),
                                     ("motdepasse",    motdepasse),
                                     ("smtp",    smtp),
                                     ("port",    port), 
