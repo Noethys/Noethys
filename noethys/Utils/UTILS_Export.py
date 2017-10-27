@@ -448,7 +448,7 @@ def ExportExcel(listview=None, grid=None, titre=_(u"Liste"), listeColonnes=None,
 
     # Envoyer par Email
     if mode == "email" :
-        import DLG_Mailer
+        from Dlg import DLG_Mailer
         dlg = DLG_Mailer.Dialog(None)
         dlg.ChargerModeleDefaut()
         dlg.SetPiecesJointes([cheminFichier,])

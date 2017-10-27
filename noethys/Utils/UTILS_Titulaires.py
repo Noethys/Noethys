@@ -17,7 +17,7 @@ from Data import DATA_Civilites as Civilites
 DICT_CIVILITES = Civilites.GetDictCivilites()
 
 
-def GetTitulaires(listeIDfamille=[], mode_adresse_facturation=False):
+def GetTitulaires(listeIDfamille=[], mode_adresse_facturation=False, inclure_telephones=False):
     """ si listeIDfamille == [] alors renvoie toutes les familles """
     dictFamilles = {}
     
@@ -41,19 +41,34 @@ def GetTitulaires(listeIDfamille=[], mode_adresse_facturation=False):
     listeFamilles = DB.ResultatReq()  
     for IDfamille, IDcompte_payeur, autre_adresse_facturation in listeFamilles :
         dictFamilles[IDfamille] = {"IDcompte_payeur":IDcompte_payeur, "autre_adresse_facturation":autre_adresse_facturation}
-    
+
+    if inclure_telephones == True :
+        champs_telephones = ", travail_tel, travail_tel_sms, tel_domicile, tel_domicile_sms, tel_mobile, tel_mobile_sms"
+    else :
+        champs_telephones = ""
+
     # Récupération de tous les individus de la base
     req = """
-    SELECT IDindividu, IDcivilite, individus.nom, prenom, date_naiss, adresse_auto, rue_resid, cp_resid, ville_resid, mail, individus.IDsecteur, secteurs.nom
+    SELECT IDindividu, IDcivilite, individus.nom, prenom, date_naiss, adresse_auto, rue_resid, cp_resid, ville_resid, mail, individus.IDsecteur, secteurs.nom %s
     FROM individus
     LEFT JOIN secteurs ON secteurs.IDsecteur = individus.IDsecteur
-    ;""" 
+    ;""" % champs_telephones
     DB.ExecuterReq(req)
     listeIndividus = DB.ResultatReq()  
     dictIndividus = {}
-    for IDindividu, IDcivilite, nom, prenom, date_naiss, adresse_auto, rue_resid, cp_resid, ville_resid, mail, IDsecteur, nomSecteur in listeIndividus :
-        dictIndividus[IDindividu] = {"IDcivilite":IDcivilite, "nom":nom, "prenom":prenom, "date_naiss":date_naiss, "adresse_auto":adresse_auto, "rue_resid":rue_resid, "cp_resid":cp_resid, "ville_resid":ville_resid, "mail":mail, "IDsecteur":IDsecteur, "nomSecteur":nomSecteur}
-    
+    for valeurs in listeIndividus :
+        dictIndividus[valeurs[0]] = {"IDcivilite":valeurs[1], "nom":valeurs[2], "prenom":valeurs[3], "date_naiss":valeurs[4], "adresse_auto":valeurs[5], "rue_resid":valeurs[6], "cp_resid":valeurs[7], "ville_resid":valeurs[8], "mail":valeurs[9], "IDsecteur":valeurs[10], "nomSecteur":valeurs[11]}
+
+        if inclure_telephones == True :
+            dictIndividus[valeurs[0]]["telephones"] = {
+                "travail_tel" : valeurs[12],
+                "travail_tel_sms" : bool(valeurs[13]),
+                "tel_domicile" : valeurs[14],
+                "tel_domicile_sms" : bool(valeurs[15]),
+                "tel_mobile" : valeurs[16],
+                "tel_mobile_sms" : bool(valeurs[17]),
+                }
+
     # Récupération des rattachements
     req = """SELECT IDrattachement, IDindividu, IDfamille, IDcategorie, titulaire
     FROM rattachements
@@ -91,6 +106,8 @@ def GetTitulaires(listeIDfamille=[], mode_adresse_facturation=False):
                         "nomSansCivilite": u"%s %s" % (nom, prenom),
                         "nomAvecCivilite": u"%s%s %s" % (nomCivilite, nom, prenom),
                         }
+                        if inclure_telephones == True:
+                            dictTemp["telephones"] = dictIndividus[IDindividuTmp]["telephones"]
                         listeTitulaires.append(dictTemp)
                         nbreTitulaires += 1
                     

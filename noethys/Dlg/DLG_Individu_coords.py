@@ -24,6 +24,33 @@ from Utils import UTILS_Utilisateurs
 
 
 
+class BoutonSMS(wx.BitmapButton):
+    def __init__(self, parent):
+        wx.BitmapButton.__init__(self, parent, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Sms_nb.png"), wx.BITMAP_TYPE_ANY), style=wx.NO_BORDER)
+        self.parent = parent
+        self.etat = False
+        self.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour autoriser l'envoi de SMS vers ce numéro téléphonique")))
+        self.Bind(wx.EVT_BUTTON, self.OnBouton)
+
+    def OnBouton(self, event=None):
+        self.SetEtat(etat=not self.etat)
+
+    def SetEtat(self, etat=False):
+        self.etat = etat
+        if self.etat == True :
+            bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Sms.png"))
+        else :
+            bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Sms_nb.png"))
+        self.SetBitmap(bmp)
+
+    def GetEtat(self):
+        if self.etat in (True, 1) :
+            return True
+        else :
+            return False
+
+
+
 
 class Adresse_auto(wx.Choice):
     def __init__(self, parent):
@@ -271,8 +298,12 @@ class Panel_coords(wx.Panel):
         self.staticbox_coords = wx.StaticBox(self, -1, _(u"Coordonnées"))
         self.label_tel_domicile = wx.StaticText(self, -1, _(u"Domicile :"))
         self.ctrl_tel_domicile = CTRL_Saisie_tel.Tel(self, intitule=_(u"Domicile"))
+
+        self.bouton_tel_domicile_sms = BoutonSMS(self)
         self.label_tel_mobile = wx.StaticText(self, -1, _(u"Mobile :"))
         self.ctrl_tel_mobile = CTRL_Saisie_tel.Tel(self, intitule=_(u"mobile"))
+        self.bouton_tel_mobile_sms = BoutonSMS(self)
+
         self.label_tel_fax = wx.StaticText(self, -1, _(u"Fax :"))
         self.ctrl_tel_fax = CTRL_Saisie_tel.Tel(self, intitule=_(u"fax"))
         self.label_mail = wx.StaticText(self, -1, _(u"Email :"))
@@ -285,6 +316,7 @@ class Panel_coords(wx.Panel):
         self.ctrl_categorie = Categorie(self)
         self.label_travail_tel = wx.StaticText(self, -1, _(u"Tél :"))
         self.ctrl_travail_tel = CTRL_Saisie_tel.Tel(self, intitule=_(u"travail"))
+        self.bouton_tel_travail_sms = BoutonSMS(self)
         self.label_profession = wx.StaticText(self, -1, _(u"Profession :"))
         self.ctrl_profession = wx.TextCtrl(self, -1, "")
         self.label_travail_fax = wx.StaticText(self, -1, _(u"Fax :"))
@@ -318,6 +350,13 @@ class Panel_coords(wx.Panel):
                 
 
     def __set_properties(self):
+        self.ctrl_rue.SetMinSize((10, -1))
+        self.ctrl_ville.SetMinSize((10, -1))
+        self.ctrl_secteur.SetMinSize((10, -1))
+        self.ctrl_categorie.SetMinSize((10, -1))
+        self.ctrl_profession.SetMinSize((10, -1))
+        self.ctrl_employeur.SetMinSize((10, -1))
+
         self.radio_adresse_auto.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour utiliser l'adresse d'un autre membre de la famille")))
         self.radio_adresse_manuelle.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour saisir manuellement une adresse")))
         self.ctrl_rue.SetToolTip(wx.ToolTip(_(u"Saisissez la rue de l'adresse")))
@@ -333,11 +372,7 @@ class Panel_coords(wx.Panel):
         grid_sizer_droit = wx.FlexGridSizer(rows=2, cols=1, vgap=5, hgap=5)
         staticbox_listesdiff = wx.StaticBoxSizer(self.staticbox_listesdiff, wx.VERTICAL)
         grid_sizer_listesdiff = wx.FlexGridSizer(rows=2, cols=1, vgap=5, hgap=5)
-        staticbox_coords = wx.StaticBoxSizer(self.staticbox_coords, wx.VERTICAL)
-        grid_sizer_coords = wx.FlexGridSizer(rows=4, cols=2, vgap=5, hgap=5)
         grid_sizer_gauche = wx.FlexGridSizer(rows=2, cols=1, vgap=5, hgap=5)
-        staticbox_travail = wx.StaticBoxSizer(self.staticbox_travail, wx.VERTICAL)
-        grid_sizer_travail = wx.FlexGridSizer(rows=3, cols=4, vgap=5, hgap=5)
         staticbox_adresse = wx.StaticBoxSizer(self.staticbox_adresse, wx.VERTICAL)
         grid_sizer_adresse = wx.FlexGridSizer(rows=2, cols=2, vgap=5, hgap=5)
         grid_sizer_adresse_manuelle = wx.FlexGridSizer(rows=2, cols=1, vgap=5, hgap=5)
@@ -369,41 +404,58 @@ class Panel_coords(wx.Panel):
         grid_sizer_adresse.AddGrowableCol(1)
         staticbox_adresse.Add(grid_sizer_adresse, 1, wx.ALL|wx.EXPAND, 5)
         grid_sizer_gauche.Add(staticbox_adresse, 1, wx.EXPAND, 0)
-        grid_sizer_travail.Add(self.label_categorie, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_travail.Add(self.ctrl_categorie, 0, wx.EXPAND, 0)
-        grid_sizer_travail.Add(self.label_travail_tel, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_travail.Add(self.ctrl_travail_tel, 0, 0, 0)
-        grid_sizer_travail.Add(self.label_profession, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_travail.Add(self.ctrl_profession, 0, wx.EXPAND, 0)
-        grid_sizer_travail.Add(self.label_travail_fax, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_travail.Add(self.ctrl_travail_fax, 0, 0, 0)
-        grid_sizer_travail.Add(self.label_employeur, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_travail.Add(self.ctrl_employeur, 0, wx.EXPAND, 0)
-        grid_sizer_travail.Add(self.label_travail_mail, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
-        
-        # GridSizer Email Travail
-        grid_sizer_mail_travail = wx.FlexGridSizer(rows=1, cols=2, vgap=2, hgap=2)
-        grid_sizer_mail_travail.Add(self.ctrl_travail_mail, 0, wx.EXPAND, 0)
-        grid_sizer_mail_travail.Add(self.bouton_mail_travail, 0, wx.EXPAND, 0)
-        grid_sizer_travail.Add(grid_sizer_mail_travail, 0, wx.EXPAND, 0)
+
+        staticbox_travail = wx.StaticBoxSizer(self.staticbox_travail, wx.VERTICAL)
+        grid_sizer_travail = wx.FlexGridSizer(rows=3, cols=5, vgap=5, hgap=3)
+        grid_sizer_travail.Add(self.label_categorie, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL| wx.LEFT, 3)
+        grid_sizer_travail.Add(self.ctrl_categorie, 0, wx.EXPAND| wx.LEFT, 3)
+
+        grid_sizer_travail.Add(self.label_travail_tel, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL| wx.LEFT, 3)
+        grid_sizer_travail.Add(self.ctrl_travail_tel, 0, wx.LEFT, 3)
+        grid_sizer_travail.Add(self.bouton_tel_travail_sms, 0, wx.ALIGN_CENTER_VERTICAL | wx.ALIGN_CENTER_HORIZONTAL, 0)
+
+        grid_sizer_travail.Add(self.label_profession, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL| wx.LEFT, 3)
+        grid_sizer_travail.Add(self.ctrl_profession, 0, wx.EXPAND| wx.LEFT, 3)
+
+        grid_sizer_travail.Add(self.label_travail_fax, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL| wx.LEFT, 3)
+        grid_sizer_travail.Add(self.ctrl_travail_fax, 0, wx.LEFT, 3)
+        grid_sizer_travail.Add((5, 5), 0, 0, 0)
+
+        grid_sizer_travail.Add(self.label_employeur, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL| wx.LEFT, 3)
+        grid_sizer_travail.Add(self.ctrl_employeur, 0, wx.EXPAND| wx.LEFT, 3)
+
+        grid_sizer_travail.Add(self.label_travail_mail, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL| wx.LEFT, 3)
+        grid_sizer_travail.Add(self.ctrl_travail_mail, 0, wx.EXPAND| wx.LEFT, 3)
+        grid_sizer_travail.Add(self.bouton_mail_travail, 0, wx.EXPAND, 0)
 
         grid_sizer_travail.AddGrowableCol(1)
         staticbox_travail.Add(grid_sizer_travail, 1, wx.ALL|wx.EXPAND, 5)
         grid_sizer_gauche.Add(staticbox_travail, 1, wx.EXPAND, 0)
         grid_sizer_base.Add(grid_sizer_gauche, 1, wx.EXPAND, 0)
+
+        staticbox_coords = wx.StaticBoxSizer(self.staticbox_coords, wx.VERTICAL)
+        grid_sizer_coords = wx.FlexGridSizer(rows=4, cols=3, vgap=5, hgap=2)
         grid_sizer_coords.Add(self.label_tel_domicile, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_coords.Add(self.ctrl_tel_domicile, 0, 0, 0)
+        grid_sizer_coords.Add(self.ctrl_tel_domicile, 0, wx.LEFT, 3)
+        grid_sizer_coords.Add(self.bouton_tel_domicile_sms, 0, wx.ALIGN_CENTER_VERTICAL | wx.ALIGN_CENTER_HORIZONTAL, 0)
+
         grid_sizer_coords.Add(self.label_tel_mobile, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_coords.Add(self.ctrl_tel_mobile, 0, 0, 0)
+        grid_sizer_coords.Add(self.ctrl_tel_mobile, 0, wx.LEFT, 3)
+        grid_sizer_coords.Add(self.bouton_tel_mobile_sms, 0, wx.ALIGN_CENTER_VERTICAL | wx.ALIGN_CENTER_HORIZONTAL, 0)
+
         grid_sizer_coords.Add(self.label_tel_fax, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_coords.Add(self.ctrl_tel_fax, 0, 0, 0)
+        grid_sizer_coords.Add(self.ctrl_tel_fax, 0, wx.LEFT, 3)
+        grid_sizer_coords.Add( (5,5), 0, 0, 0)
+
         grid_sizer_coords.Add(self.label_mail, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
-        
-        # GridSizer Email perso
-        grid_sizer_mail_perso = wx.FlexGridSizer(rows=1, cols=2, vgap=2, hgap=2)
-        grid_sizer_mail_perso.Add(self.ctrl_mail, 0, wx.EXPAND, 0)
-        grid_sizer_mail_perso.Add(self.bouton_mail_perso, 0, wx.EXPAND, 0)
-        grid_sizer_coords.Add(grid_sizer_mail_perso, 0, wx.EXPAND, 0)
+        grid_sizer_coords.Add(self.ctrl_mail, 0, wx.EXPAND | wx.LEFT, 3)
+        grid_sizer_coords.Add(self.bouton_mail_perso, 0, 0, 0)
+
+        # # GridSizer Email perso
+        # grid_sizer_mail_perso = wx.FlexGridSizer(rows=1, cols=2, vgap=2, hgap=2)
+        # grid_sizer_mail_perso.Add(self.ctrl_mail, 0, wx.EXPAND, 0)
+        # grid_sizer_mail_perso.Add(self.bouton_mail_perso, 0, wx.EXPAND, 0)
+        # grid_sizer_coords.Add(grid_sizer_mail_perso, 0, wx.EXPAND, 0)
         
         staticbox_coords.Add(grid_sizer_coords, 1, wx.ALL|wx.EXPAND, 5)
         grid_sizer_droit.Add(staticbox_coords, 1, wx.EXPAND, 0)
@@ -610,7 +662,9 @@ class Panel_coords(wx.Panel):
 
             # Adresse
             req = """SELECT adresse_auto, rue_resid, cp_resid, ville_resid, IDcategorie_travail, profession, employeur, 
-            travail_tel, travail_fax, travail_mail, tel_domicile, tel_mobile, tel_fax, mail, IDsecteur FROM individus WHERE IDindividu=%d;""" % self.IDindividu
+            travail_tel, travail_fax, travail_mail, tel_domicile, tel_mobile, tel_fax, mail, IDsecteur,
+            travail_tel_sms, tel_domicile_sms, tel_mobile_sms
+            FROM individus WHERE IDindividu=%d;""" % self.IDindividu
             DB.ExecuterReq(req)
             listeDonnees = DB.ResultatReq()
             if len(listeDonnees) > 0 : 
@@ -642,7 +696,10 @@ class Panel_coords(wx.Panel):
                 self.ctrl_tel_mobile.SetNumero(individu[11])
                 self.ctrl_tel_fax.SetNumero(individu[12])
                 self.ctrl_mail.SetMail(individu[13])
-                    
+
+                self.bouton_tel_travail_sms.SetEtat(individu[15])
+                self.bouton_tel_domicile_sms.SetEtat(individu[16])
+                self.bouton_tel_mobile_sms.SetEtat(individu[17])
 
             # Verrouillage utilisateurs
             if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("individus_coordonnees", "modifier", afficheMessage=False) == False : 
@@ -673,7 +730,25 @@ class Panel_coords(wx.Panel):
             dlg.ShowModal()
             dlg.Destroy()
             return False
-        
+
+        if self.ctrl_travail_tel.GetNumero() == None and self.bouton_tel_travail_sms.GetEtat() == True :
+            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas activer l'envoi de SMS sur le numéro de téléphone professionnel car celui-ci n'est pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return False
+
+        if self.ctrl_tel_domicile.GetNumero() == None and self.bouton_tel_domicile_sms.GetEtat() == True :
+            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas activer l'envoi de SMS sur le numéro de téléphone du domicile car celui-ci n'est pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return False
+
+        if self.ctrl_tel_mobile.GetNumero() == None and self.bouton_tel_mobile_sms.GetEtat() == True :
+            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas activer l'envoi de SMS sur le numéro de téléphone mobile car celui-ci n'est pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return False
+
         return True
 
     def GetData(self):
@@ -695,7 +770,11 @@ class Panel_coords(wx.Panel):
             "tel_mobile" : self.ctrl_tel_mobile.GetNumero(),
             "tel_fax" : self.ctrl_tel_fax.GetNumero(),
             "mail" : self.ctrl_mail.GetMail(),
-            }
+
+            "travail_tel_sms": int(self.bouton_tel_travail_sms.GetEtat()),
+            "tel_domicile_sms": int(self.bouton_tel_domicile_sms.GetEtat()),
+            "tel_mobile_sms": int(self.bouton_tel_mobile_sms.GetEtat()),
+        }
 
         return dictDonnees
 
@@ -719,6 +798,9 @@ class Panel_coords(wx.Panel):
                             ("tel_mobile", dictDonnees["tel_mobile"]),
                             ("tel_fax", dictDonnees["tel_fax"]),
                             ("mail", dictDonnees["mail"]),
+                            ("travail_tel_sms", dictDonnees["travail_tel_sms"]),
+                            ("tel_domicile_sms", dictDonnees["tel_domicile_sms"]),
+                            ("tel_mobile_sms", dictDonnees["tel_mobile_sms"]),
                         ]
         DB.ReqMAJ("individus", listeDonnees, "IDindividu", self.IDindividu)
         

@@ -805,6 +805,8 @@ class MainFrame(wx.Frame):
                     {"code" : "connecthys_synchro", "label" : _(u"Connecthys - Le portail internet"), "infobulle" : _(u"Synchroniser et configurer Connecthys, le portail internet de Noethys"), "image" : "Images/16x16/Connecthys.png", "action" : self.On_outils_connecthys_synchro},
                     "-",
                     {"code" : "editeur_emails", "label" : _(u"Editeur d'Emails"), "infobulle" : _(u"Editeur d'Emails"), "image" : "Images/16x16/Editeur_email.png", "action" : self.On_outils_emails},
+                    {"code" : "envoi_sms", "label": _(u"Envoi de SMS"), "infobulle": _(u"Envoi de SMS"), "image": "Images/16x16/Sms.png", "action": self.On_outils_sms},
+                    "-",
                     {"code" : "calculatrice", "label" : _(u"Calculatrice\tF12"), "infobulle" : _(u"Calculatrice"), "image" : "Images/16x16/Calculatrice.png", "action" : self.On_outils_calculatrice},
                     {"code" : "calendrier", "label" : _(u"Calendrier"), "infobulle" : _(u"Calendrier"), "image" : "Images/16x16/Calendrier.png", "action" : self.On_outils_calendrier},
                     "-",
@@ -2491,7 +2493,14 @@ class MainFrame(wx.Frame):
         dlg = DLG_Mailer.Dialog(self)
         dlg.ShowModal() 
         dlg.Destroy()
-        
+
+    def On_outils_sms(self, event):
+        if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("outils_envoi_sms", "consulter") == False: return
+        from Dlg import DLG_Envoi_sms
+        dlg = DLG_Envoi_sms.Dialog(self)
+        dlg.ShowModal()
+        dlg.Destroy()
+
     def On_outils_connexions(self, event):
         """ Connexions réseau """
         if "[RESEAU]" not in self.userConfig["nomFichier"] :

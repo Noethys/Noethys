@@ -260,7 +260,7 @@ class Dialog(wx.Dialog):
         grid_sizer_base.AddGrowableCol(0)
         self.Layout()
         grid_sizer_base.Fit(self)
-        self.SetMinSize(self.GetSize())
+        self.SetMinSize((710, self.GetSize()[1]))
         self.CentreOnScreen()
 
     def Set_Header(self, nomLigne="", texte=""):

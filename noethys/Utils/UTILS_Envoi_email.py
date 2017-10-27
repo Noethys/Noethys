@@ -95,11 +95,18 @@ def ValidationEmail(email):
 
 def GetAdresseExpDefaut():
     """ Retourne les paramètres de l'adresse d'expéditeur par défaut """
-    dictAdresse = {}
+    return GetAdresseExp(IDadresse=None)
+
+def GetAdresseExp(IDadresse=None):
+    """ Si IDadresse = None, retourne l'adresse par défaut"""
+    if IDadresse == None :
+        condition = "defaut=1"
+    else :
+        condition = "IDadresse=%d" % IDadresse
     # Récupération des données
     DB = GestionDB.DB()        
     req = """SELECT IDadresse, adresse, nom_adresse, motdepasse, smtp, port, defaut, connexionAuthentifiee, startTLS, utilisateur
-    FROM adresses_mail WHERE defaut=1 ORDER BY adresse; """
+    FROM adresses_mail WHERE %s ORDER BY adresse;""" % condition
     DB.ExecuterReq(req)
     listeDonnees = DB.ResultatReq()
     DB.Close()
