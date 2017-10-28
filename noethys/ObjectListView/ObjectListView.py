@@ -2723,8 +2723,7 @@ class BarreRecherche(wx.SearchCtrl):
         wx.SearchCtrl.__init__(self, parent, size=(-1, -1), style=wx.TE_PROCESS_ENTER)
         self.parent = parent
         self.listview = listview
-        self.rechercheEnCours = False
-        
+
         # Assigne cette barre de recherche au listview
         self.listview.SetBarreRecherche(self)
         
@@ -2733,7 +2732,10 @@ class BarreRecherche(wx.SearchCtrl):
         
         self.SetCancelBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Interdit.png"), wx.BITMAP_TYPE_PNG))
         self.SetSearchBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Loupe.png"), wx.BITMAP_TYPE_PNG))
-        
+
+        self.timer = wx.Timer(self)
+        self.Bind(wx.EVT_TIMER, self.Recherche, self.timer)
+
         self.Bind(wx.EVT_SEARCHCTRL_SEARCH_BTN, self.OnSearch)
         self.Bind(wx.EVT_SEARCHCTRL_CANCEL_BTN, self.OnCancel)
         self.Bind(wx.EVT_TEXT_ENTER, self.OnDoSearch)
@@ -2747,16 +2749,27 @@ class BarreRecherche(wx.SearchCtrl):
         self.Recherche()
 
     def OnDoSearch(self, evt):
-        self.Recherche()
-    
+        if self.timer.IsRunning():
+            self.timer.Stop()
+        if len(self.listview.donnees) < 500 :
+            duree = 10
+        elif len(self.listview.donnees) < 1000 :
+            duree = 200
+        elif len(self.listview.donnees) < 5000 :
+            duree = 500
+        else :
+            duree = 1000
+        self.timer.Start(duree)
+
     def Cancel(self):
         self.OnCancel(None)
         
-    def Recherche(self):
+    def Recherche(self, event=None):
+        if self.timer.IsRunning():
+            self.timer.Stop()
         txtSearch = self.GetValue()
         self.ShowCancelButton(len(txtSearch))
         self.listview.Filtrer(txtSearch)
-
 
 
 

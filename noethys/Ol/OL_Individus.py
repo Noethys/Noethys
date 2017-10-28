@@ -629,6 +629,7 @@ class BarreRecherche(wx.SearchCtrl):
         wx.SearchCtrl.__init__(self, parent, size=(-1, -1), style=wx.TE_PROCESS_ENTER)
         self.parent = parent
         self.historique = historique
+        self.ouvrir_fiche = False
         
         self.SetDescriptiveText(_(u"Rechercher un individu..."))
         self.ShowSearchButton(True)
@@ -643,7 +644,10 @@ class BarreRecherche(wx.SearchCtrl):
         self.SetCancelBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Interdit.png"), wx.BITMAP_TYPE_PNG))
         self.SetSearchBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Loupe.png"), wx.BITMAP_TYPE_PNG))
         self.SetSearchMenuBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Loupe_et_menu.png"), wx.BITMAP_TYPE_PNG))
-        
+
+        self.timer = wx.Timer(self)
+        self.Bind(wx.EVT_TIMER, self.Recherche, self.timer)
+
         self.Bind(wx.EVT_KEY_DOWN, self.OnKeyDown)
         self.Bind(wx.EVT_SEARCHCTRL_SEARCH_BTN, self.OnSearch)
         self.Bind(wx.EVT_SEARCHCTRL_CANCEL_BTN, self.OnCancel)
@@ -664,20 +668,22 @@ class BarreRecherche(wx.SearchCtrl):
         event.Skip()
 
     def OnEnter(self, evt):
+        self.ouvrir_fiche = True
+
+    def OuvrirFiche(self):
         listeObjets = self.listView.GetFilteredObjects()
         if len(listeObjets) == 0 : return
         track = listeObjets[0]
         self.listView.SelectObject(track)
         self.listView.OuvrirFicheFamille(track)
-        
+        self.ouvrir_fiche = False
+
     def OnSearch(self, evt):
         if self.historique == True :
             self.SetMenu(self.MakeMenu())
-        #self.Recherche(self.GetValue())
-            
+
     def OnCancel(self, evt):
         self.SetValue("")
-        #self.Recherche(self.GetValue())
 
     def OnText(self, evt):
         txtSearch = self.GetValue()
@@ -724,15 +730,32 @@ class BarreRecherche(wx.SearchCtrl):
                         self.MAJ() 
                     self.OnCancel(None)
                     return
-                       
-        # Filtre la liste normalement
-        self.Recherche(self.GetValue())
+
+        if self.timer.IsRunning():
+            self.timer.Stop()
+
+        if len(self.listView.donnees) < 500 :
+            duree = 10
+        elif len(self.listView.donnees) < 1000 :
+            duree = 200
+        elif len(self.listView.donnees) < 5000 :
+            duree = 500
+        else :
+            duree = 1000
+        self.timer.Start(duree)
+
+    def Recherche(self, event=None):
+        if self.timer.IsRunning():
+            self.timer.Stop()
+        txtSearch = self.GetValue()
         
-    def Recherche(self, txtSearch):
         self.ShowCancelButton(len(txtSearch))
         self.listView.GetFilter().SetText(txtSearch)
         self.listView.RepopulateList()
-        self.listView.Refresh() 
+        self.listView.Refresh()
+
+        if self.ouvrir_fiche == True :
+            self.OuvrirFiche()
     
     def MakeMenu(self):
         menu = wx.Menu()
