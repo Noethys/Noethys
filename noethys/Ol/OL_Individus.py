@@ -668,7 +668,10 @@ class BarreRecherche(wx.SearchCtrl):
         event.Skip()
 
     def OnEnter(self, evt):
-        self.ouvrir_fiche = True
+        if self.timer.IsRunning():
+            self.ouvrir_fiche = True
+        else :
+            self.OuvrirFiche()
 
     def OuvrirFiche(self):
         listeObjets = self.listView.GetFilteredObjects()
@@ -748,7 +751,7 @@ class BarreRecherche(wx.SearchCtrl):
         if self.timer.IsRunning():
             self.timer.Stop()
         txtSearch = self.GetValue()
-        
+
         self.ShowCancelButton(len(txtSearch))
         self.listView.GetFilter().SetText(txtSearch)
         self.listView.RepopulateList()
