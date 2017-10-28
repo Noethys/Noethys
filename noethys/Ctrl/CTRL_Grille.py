@@ -2574,7 +2574,16 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 
 
                             # Si max conso atteint
-                            if case.IDprestation != IDprestationForfait and case.IDunite in combiRetenue and nbre + 1 > quantite_max :
+                            if case.CategorieCase == "standard":
+                                IDprestationTemp = case.IDprestation
+                            elif case.CategorieCase == "multihoraires":
+                                barre = conso.barre
+                                IDprestationTemp = barre.conso.IDprestation
+                            elif case.CategorieCase == "evenement":
+                                evenement = conso.evenement
+                                IDprestationTemp = evenement.conso.IDprestation
+
+                            if IDprestationTemp != IDprestationForfait and case.IDunite in combiRetenue and nbre + 1 > quantite_max :
                                 IDprestationForfait = None
                                 #print "PLAFOND ATTEINT !"
 
