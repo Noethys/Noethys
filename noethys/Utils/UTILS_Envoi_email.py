@@ -227,7 +227,7 @@ def Envoi_mail(adresseExpediteur="", nomadresseExpediteur="", listeDestinataires
     msg.attach(tmpmsg)
 
     # Ajout des headers à ce Multipart
-    if nomadresseExpediteur == "" :
+    if nomadresseExpediteur == "" or nomadresseExpediteur == None :
         msg['From'] = adresseExpediteur
     else:
         msg['From'] = "\"%s\" <%s>" % (nomadresseExpediteur, adresseExpediteur)
