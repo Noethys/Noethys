@@ -13,11 +13,94 @@ import Chemins
 from Utils.UTILS_Traduction import _
 import wx
 from Ctrl import CTRL_Bouton_image
-import datetime
 from Ol import OL_Inscriptions_activite
+from Utils import UTILS_Interface
 
 import GestionDB
 
+
+
+
+class CTRL_Activite(wx.Panel):
+    def __init__(self, parent):
+        wx.Panel.__init__(self, parent, id=-1, style=wx.BORDER_THEME|wx.TAB_TRAVERSAL)
+        self.parent = parent
+        self.IDactivite = None
+        couleur_fond = UTILS_Interface.GetValeur("couleur_tres_claire", wx.Colour(240, 251, 237))
+        self.SetBackgroundColour(couleur_fond)
+
+        self.ctrl_activite = wx.StaticText(self, -1, "")
+        self.ctrl_activite.SetFont(wx.Font(8, wx.SWISS, wx.NORMAL, wx.BOLD))
+
+        # Layout
+        grid_sizer_base = wx.FlexGridSizer(rows=1, cols=1, vgap=10, hgap=10)
+        grid_sizer_base.Add(self.ctrl_activite, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALIGN_CENTER, 0)
+        grid_sizer_base.AddGrowableRow(0)
+        grid_sizer_base.AddGrowableCol(0)
+        self.SetSizer(grid_sizer_base)
+        self.Layout()
+
+    def MAJ(self, IDactivite=None, nomActivite=""):
+        self.IDactivite = IDactivite
+        self.ctrl_activite.SetLabel(nomActivite)
+        self.Layout()
+
+    def GetID(self):
+        return self.IDactivite
+
+    def GetNomActivite(self):
+        return self.ctrl_activite.GetLabel()
+
+
+
+class Panel_Activite(wx.Panel):
+    def __init__(self, parent, callback=None):
+        wx.Panel.__init__(self, parent, id=-1, name="CTRL_Activite", style=wx.TAB_TRAVERSAL)
+        self.parent = parent
+        self.callback = callback
+
+        self.ctrl_activite = CTRL_Activite(self)
+        self.bouton_activites = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Loupe.png"), wx.BITMAP_TYPE_ANY))
+        self.ctrl_activite.SetMinSize((-1, self.bouton_activites.GetSize()[1]))
+
+        self.__set_properties()
+        self.__do_layout()
+
+        self.Bind(wx.EVT_BUTTON, self.OnBoutonActivite, self.bouton_activites)
+
+    def __set_properties(self):
+        self.ctrl_activite.SetToolTip(wx.ToolTip(_(u"Activité sélectionnée")))
+        self.bouton_activites.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sélectionner une activité")))
+
+    def __do_layout(self):
+        grid_sizer_base = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
+        grid_sizer_base.Add(self.ctrl_activite, 1, wx.EXPAND, 0)
+        grid_sizer_base.Add(self.bouton_activites, 1, wx.EXPAND, 0)
+
+        self.SetSizer(grid_sizer_base)
+        grid_sizer_base.Fit(self)
+        grid_sizer_base.AddGrowableRow(0)
+        grid_sizer_base.AddGrowableCol(0)
+
+    def OnBoutonActivite(self, event):
+        dlg = Dialog(self)
+        dlg.SetIDactivite(self.ctrl_activite.GetID())
+        if dlg.ShowModal() == wx.ID_OK:
+            IDactivite = dlg.GetIDactivite()
+            nomActivite = dlg.GetNomActivite()
+            self.ctrl_activite.MAJ(IDactivite, nomActivite)
+            if self.callback != None :
+                self.callback()
+        dlg.Destroy()
+
+    def GetID(self):
+        return self.ctrl_activite.GetID()
+
+    def GetNomActivite(self):
+        return self.ctrl_activite.GetNomActivite()
+
+
+# ----------------------------------------------------------------------------------------------------------------------------------
 
 class Dialog(wx.Dialog):
     def __init__(self, parent):
@@ -118,6 +201,8 @@ class Dialog(wx.Dialog):
 
     def GetNomActivite(self):
         return self.ctrl_activites.GetNom()
+
+
 
 
 if __name__ == "__main__":

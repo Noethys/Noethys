@@ -20,6 +20,8 @@ from Ctrl import CTRL_Bandeau
 from Ctrl import CTRL_Saisie_date
 from Ctrl import CTRL_Synthese_conso
 from Utils import UTILS_Questionnaires
+from Dlg import DLG_Selection_activite
+
 
 
 def DateEngFr(textDate):
@@ -27,48 +29,6 @@ def DateEngFr(textDate):
     return text
 
 
-class CTRL_Activite(wx.Choice):
-    def __init__(self, parent):
-        wx.Choice.__init__(self, parent, -1) 
-        self.parent = parent
-        self.dictDonnees = {}
-        self.MAJ() 
-    
-    def MAJ(self):
-        self.dictDonnees = {}
-        DB = GestionDB.DB()
-        req = """SELECT IDactivite, nom
-        FROM activites
-        ORDER BY date_fin DESC
-        ;"""
-        DB.ExecuterReq(req)
-        listeActivites = DB.ResultatReq()      
-        DB.Close() 
-        if len(listeActivites) == 0 :
-            self.Enable(False)
-        listeLabels = []
-        index = 0
-        for IDactivite, nom in listeActivites :
-            if nom == None : nom = u"Activité inconnue"
-            self.dictDonnees[index] = IDactivite
-            listeLabels.append(nom)
-            index += 1
-        self.SetItems(listeLabels)
-
-    def SetActivite(self, IDactivite=None):
-        for index, IDactiviteTmp in self.dictDonnees.iteritems() :
-            if IDactiviteTmp == IDactivite :
-                self.SetSelection(index)
-
-    def GetActivite(self):
-        index = self.GetSelection()
-        if index == -1 : return None
-        return self.dictDonnees[index]
-    
-    def GetNomActivite(self):
-        return self.GetStringSelection()
-
-# -------------------------------------------------------------------------------------------------------------------------------------------------
 
 class CTRL_Groupes(wx.CheckListBox):
     def __init__(self, parent):
@@ -295,7 +255,7 @@ class Parametres(wx.Panel):
         
         # Activité
         self.box_activite_staticbox = wx.StaticBox(self, -1, _(u"Activité"))
-        self.ctrl_activite = CTRL_Activite(self)
+        self.ctrl_activite = DLG_Selection_activite.Panel_Activite(self, callback=self.OnSelectionActivite)
         self.ctrl_activite.SetMinSize((200, -1))
         
         # Groupes
@@ -320,7 +280,6 @@ class Parametres(wx.Panel):
         self.__set_properties()
         self.__do_layout()
 
-        self.Bind(wx.EVT_CHOICE, self.OnChoixActivite, self.ctrl_activite) 
         self.Bind(wx.EVT_CHECKLISTBOX, self.Actualiser, self.ctrl_groupes)
         self.Bind(wx.EVT_CHECKBOX, self.Actualiser, self.check_detail_groupes)
         self.Bind(wx.EVT_CHOICE, self.Actualiser, self.ctrl_donnees) 
@@ -388,8 +347,8 @@ class Parametres(wx.Panel):
     def OnChoixDate(self):
         self.Actualiser() 
 
-    def OnChoixActivite(self, event):
-        IDactivite = self.ctrl_activite.GetActivite()
+    def OnSelectionActivite(self):
+        IDactivite = self.ctrl_activite.GetID()
         self.ctrl_groupes.SetActivite(IDactivite)
         self.Actualiser() 
         
@@ -414,7 +373,7 @@ class Parametres(wx.Panel):
             dlg.Destroy()
             return False
 
-        if self.ctrl_activite.GetActivite() == None :
+        if self.ctrl_activite.GetID() == None :
             dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune activité !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
@@ -439,7 +398,7 @@ class Parametres(wx.Panel):
         """ MAJ du tableau """
         date_debut = self.ctrl_date_debut.GetDate() 
         date_fin = self.ctrl_date_fin.GetDate() 
-        IDactivite = self.ctrl_activite.GetActivite()
+        IDactivite = self.ctrl_activite.GetID()
         listeGroupes = self.ctrl_groupes.GetListeGroupes()
         detail_groupes = self.check_detail_groupes.GetValue() 
         affichage_donnees = self.ctrl_donnees.GetValeur() 

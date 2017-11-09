@@ -19,43 +19,9 @@ import GestionDB
 from Ctrl import CTRL_Bandeau
 from Ctrl import CTRL_CheckListBox
 from Ol import OL_Liste_inscriptions
-from Utils import UTILS_Interface
+from Dlg import DLG_Selection_activite
 
 
-
-class CTRL_Activite(wx.Panel):
-    def __init__(self, parent):
-        wx.Panel.__init__(self, parent, id=-1, style=wx.BORDER_THEME|wx.TAB_TRAVERSAL)
-        self.parent = parent
-        self.IDactivite = None
-        couleur_fond = UTILS_Interface.GetValeur("couleur_tres_claire", wx.Colour(240, 251, 237))
-        self.SetBackgroundColour(couleur_fond)
-
-        self.ctrl_activite = wx.StaticText(self, -1, "")
-        self.ctrl_activite.SetFont(wx.Font(8, wx.SWISS, wx.NORMAL, wx.BOLD))
-
-        # Layout
-        grid_sizer_base = wx.FlexGridSizer(rows=1, cols=1, vgap=10, hgap=10)
-        grid_sizer_base.Add(self.ctrl_activite, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALIGN_CENTER, 0)
-        grid_sizer_base.AddGrowableRow(0)
-        grid_sizer_base.AddGrowableCol(0)
-        self.SetSizer(grid_sizer_base)
-        self.Layout()
-
-    def MAJ(self, IDactivite=None, nomActivite=""):
-        self.IDactivite = IDactivite
-        self.ctrl_activite.SetLabel(nomActivite)
-        self.Layout()
-
-    def GetID(self):
-        return self.IDactivite
-
-    def GetNomActivite(self):
-        return self.ctrl_activite.GetLabel()
-
-
-
-# ----------------------------------------------------------------------------------------------------------------------------------
 
 class CTRL_Regroupement(wx.Choice):
     def __init__(self, parent, listview=None):
@@ -91,9 +57,7 @@ class Parametres(wx.Panel):
         
         # Activité
         self.box_activite_staticbox = wx.StaticBox(self, -1, _(u"Activité"))
-        self.ctrl_activite = CTRL_Activite(self)
-        self.bouton_activites = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Loupe.png"), wx.BITMAP_TYPE_ANY))
-        self.ctrl_activite.SetMinSize((-1, self.bouton_activites.GetSize()[1]))
+        self.ctrl_activite = DLG_Selection_activite.Panel_Activite(self, callback=self.OnSelectionActivite)
 
         self.check_partis = wx.CheckBox(self, -1, _(u"Afficher les individus partis"))
         self.check_partis.SetFont(wx.Font(8, wx.SWISS, wx.NORMAL, wx.NORMAL))
@@ -117,13 +81,10 @@ class Parametres(wx.Panel):
         self.__set_properties()
         self.__do_layout()
 
-        self.Bind(wx.EVT_BUTTON, self.OnBoutonActivite, self.bouton_activites)
         self.Bind(wx.EVT_CHOICE, self.OnChoixRegroupement, self.ctrl_regroupement)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonActualiser, self.bouton_actualiser)
 
     def __set_properties(self):
-        self.ctrl_activite.SetToolTip(wx.ToolTip(_(u"Activité sélectionnée")))
-        self.bouton_activites.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sélectionner une activité")))
         self.check_partis.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour inclure dans la liste des individus partis")))
         self.ctrl_groupes.SetToolTip(wx.ToolTip(_(u"Cochez les groupes à afficher")))
         self.ctrl_categories.SetToolTip(wx.ToolTip(_(u"Cochez les catégories à afficher")))
@@ -135,13 +96,7 @@ class Parametres(wx.Panel):
         
         # Activité
         box_activite = wx.StaticBoxSizer(self.box_activite_staticbox, wx.VERTICAL)
-
-        grid_sizer_activite = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
-        grid_sizer_activite.Add(self.ctrl_activite, 1, wx.EXPAND, 0)
-        grid_sizer_activite.Add(self.bouton_activites, 1, wx.EXPAND, 0)
-        grid_sizer_activite.AddGrowableCol(0)
-        box_activite.Add(grid_sizer_activite, 1, wx.ALL|wx.EXPAND, 5)
-
+        box_activite.Add(self.ctrl_activite, 1, wx.ALL|wx.EXPAND, 5)
         box_activite.Add(self.check_partis, 0, wx.LEFT|wx.RIGHT|wx.BOTTOM|wx.EXPAND, 5)
         grid_sizer_base.Add(box_activite, 1, wx.EXPAND, 0)
         
@@ -168,17 +123,9 @@ class Parametres(wx.Panel):
         grid_sizer_base.AddGrowableRow(2)
         grid_sizer_base.AddGrowableCol(0)
 
-    def OnBoutonActivite(self, event):
-        from Dlg import DLG_Selection_activite
-        dlg = DLG_Selection_activite.Dialog(self)
-        dlg.SetIDactivite(self.ctrl_activite.GetID())
-        if dlg.ShowModal() == wx.ID_OK:
-            IDactivite = dlg.GetIDactivite()
-            nomActivite = dlg.GetNomActivite()
-            self.ctrl_activite.MAJ(IDactivite, nomActivite)
-            self.MAJ_Groupes()
-            self.MAJ_Categories()
-        dlg.Destroy()
+    def OnSelectionActivite(self):
+        self.MAJ_Groupes()
+        self.MAJ_Categories()
 
     def MAJ_Groupes(self):
         DB = GestionDB.DB()
