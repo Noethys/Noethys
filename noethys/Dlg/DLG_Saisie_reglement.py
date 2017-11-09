@@ -653,7 +653,7 @@ class Dialog(wx.Dialog):
         # Ventilation
         self.staticbox_ventilation_staticbox = wx.StaticBox(self, -1, _(u"Ventilation"))
         self.ctrl_ventilation = CTRL_Ventilation.CTRL(self, IDcompte_payeur=self.IDcompte_payeur, IDreglement=self.IDreglement)
-        
+
         # Commandes
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
         self.bouton_options = CTRL_Bouton_image.CTRL(self, texte=_(u"Options"), cheminImage="Images/32x32/Configuration2.png")
@@ -1571,13 +1571,16 @@ class Dialog(wx.Dialog):
         self.ctrl_ventilation.SetMontantReglement(montant)
         self.ctrl_montant.SetMontant(montant)
 
+
+
+
 if __name__ == u"__main__":
     app = wx.App(0)
     #wx.InitAllImageHandlers()
     import time
     heure_debut = time.time()
-    dialog_1 = Dialog(None, IDcompte_payeur=61, IDreglement=None)
-    print "Temps de chargement Saisie d'un reglement =", time.time() - heure_debut
+    dialog_1 = Dialog(None, IDcompte_payeur=71, IDreglement=None)
+    print "Temps de chargement =", time.time() - heure_debut
     app.SetTopWindow(dialog_1)
     dialog_1.ShowModal()
     app.MainLoop()

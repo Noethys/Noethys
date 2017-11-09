@@ -562,7 +562,7 @@ class CTRL_Ventilation(gridlib.Grid):
             IDreglement = 0
         else:
             IDreglement = self.IDreglement
-        
+
         # Importation des ventilations de ce règlement
         DB = GestionDB.DB()
         req = """SELECT IDventilation, IDprestation, montant
@@ -572,11 +572,23 @@ class CTRL_Ventilation(gridlib.Grid):
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()     
         self.dictVentilation = {}
-        self.dictVentilationInitiale
+        #self.dictVentilationInitiale = {}
         for IDventilation, IDprestation, montant in listeDonnees :
             self.dictVentilation[IDprestation] = FloatToDecimal(montant)
             self.dictVentilationInitiale[IDprestation] = IDventilation
-        
+
+        # Importation de la ventilation passée
+        req = """SELECT IDprestation, SUM(montant)
+        FROM ventilation
+        WHERE IDcompte_payeur=%d
+        GROUP BY IDprestation
+        ;""" % self.IDcompte_payeur
+        DB.ExecuterReq(req)
+        listeDonnees = DB.ResultatReq()
+        dictVentilationPassee = {}
+        for IDprestation, montant in listeDonnees :
+            dictVentilationPassee[IDprestation] = montant
+
         # Importation des données
         req = """
         SELECT prestations.IDprestation, prestations.IDcompte_payeur, date, categorie, label, prestations.montant, 
@@ -584,10 +596,8 @@ class CTRL_Ventilation(gridlib.Grid):
         prestations.IDtarif, noms_tarifs.nom, categories_tarifs.nom, 
         prestations.IDfacture, factures.IDprefixe, factures_prefixes.prefixe, factures.numero, factures.date_edition,
         IDfamille, prestations.IDindividu, 
-        individus.nom, individus.prenom,
-        SUM(ventilation.montant) AS montant_ventilation
+        individus.nom, individus.prenom
         FROM prestations
-        LEFT JOIN ventilation ON prestations.IDprestation = ventilation.IDprestation
         LEFT JOIN activites ON prestations.IDactivite = activites.IDactivite
         LEFT JOIN individus ON prestations.IDindividu = individus.IDindividu
         LEFT JOIN tarifs ON prestations.IDtarif = tarifs.IDtarif
@@ -603,9 +613,14 @@ class CTRL_Ventilation(gridlib.Grid):
         listeDonnees = DB.ResultatReq()     
         DB.Close() 
         listeLignesPrestations = []
-        for IDprestation, IDcompte_payeur, date, categorie, label, montant, IDactivite, nomActivite, IDtarif, nomTarif, nomCategorieTarif, IDfacture, IDprefixe, prefixe, num_facture, date_facture, IDfamille, IDindividu, nomIndividu, prenomIndividu, montantVentilation in listeDonnees :
+        for IDprestation, IDcompte_payeur, date, categorie, label, montant, IDactivite, nomActivite, IDtarif, nomTarif, nomCategorieTarif, IDfacture, IDprefixe, prefixe, num_facture, date_facture, IDfamille, IDindividu, nomIndividu, prenomIndividu in listeDonnees :
             montant = FloatToDecimal(montant)
-            montantVentilation = FloatToDecimal(montantVentilation)
+
+            if dictVentilationPassee.has_key(IDprestation) :
+                montantVentilation = FloatToDecimal(dictVentilationPassee[IDprestation])
+            else :
+                montantVentilation = FloatToDecimal(0.0)
+
             if num_facture == None : num_facture = 0
             if (montant >= FloatToDecimal(0.0) and montantVentilation < montant) or (montant < FloatToDecimal(0.0) and montantVentilation > montant) or IDprestation in self.dictVentilation.keys() :
                 date = DateEngEnDateDD(date)
@@ -1054,7 +1069,7 @@ class MyFrame(wx.Frame):
         sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
         self.SetSizer(sizer_1)
         
-        self.ctrl = CTRL(panel, IDcompte_payeur=23, IDreglement=None)
+        self.ctrl = CTRL(panel, IDcompte_payeur=71, IDreglement=None)
         self.ctrl.SetMontantReglement(10.00)
     
         self.bouton_test = wx.Button(panel, -1, _(u"Bouton de test"))
@@ -1077,7 +1092,10 @@ class MyFrame(wx.Frame):
 if __name__ == '__main__':
     app = wx.App(0)
     #wx.InitAllImageHandlers()
+    import time
+    heure_debut = time.time()
     frame_1 = MyFrame(None, -1, "OL TEST")
+    print "Temps de chargement =", time.time() - heure_debut
     app.SetTopWindow(frame_1)
     frame_1.Show()
     app.MainLoop()
