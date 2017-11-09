@@ -34,11 +34,15 @@ class CTRL_Categories(wx.CheckListBox):
         self.Importation() 
     
     def Importation(self):
+        if self.IDactivite != None :
+            IDactivite = self.IDactivite
+        else :
+            IDactivite = 0
         DB = GestionDB.DB()
         req = """SELECT IDcategorie_tarif, nom
         FROM categories_tarifs
         WHERE IDactivite=%d
-        ORDER BY nom;""" % self.IDactivite
+        ORDER BY nom;""" % IDactivite
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         DB.Close()
@@ -240,6 +244,8 @@ class Panel(wx.Panel):
         sizer_base.Add(grid_sizer_base, 1, wx.EXPAND|wx.ALL, 10)
         self.SetSizer(sizer_base)
         sizer_base.Fit(self)
+
+        self.grid_sizer_base = grid_sizer_base
                 
         # Tooltips
         self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de début de validité")))
@@ -262,6 +268,11 @@ class Panel(wx.Panel):
             self.ctrl_date_fin.SetFocus()
         else:
             self.ctrl_date_fin.Enable(False)
+
+    def MasqueCategories(self):
+        self.label_categories.Show(False)
+        self.ctrl_categories.Show(False)
+        self.grid_sizer_base.Layout()
 
     def SetDateDebut(self, date):
         self.ctrl_date_debut.SetDate(date)
@@ -360,7 +371,7 @@ class Panel(wx.Panel):
 
         # Vérifie que des catégories de tarifs ont été cochées
         listeCategories = self.ctrl_categories.GetIDcoches()
-        if len(listeCategories) == 0 :
+        if self.ctrl_categories.IsShown() and len(listeCategories) == 0 :
             dlg = wx.MessageDialog(self, _(u"Vous n'avez coché aucune catégorie de tarifs.\nCe tarif sera donc inactif pour le moment...\n\nVoulez-vous quand-même continuer ?") , _(u"Erreur"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
             reponse = dlg.ShowModal() 
             dlg.Destroy()
@@ -397,7 +408,8 @@ class MyFrame(wx.Frame):
         sizer_1 = wx.BoxSizer(wx.VERTICAL)
         sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
         self.SetSizer(sizer_1)
-        self.ctrl= Panel(panel, IDactivite=9, IDtarif=29)
+        self.ctrl = Panel(panel, IDactivite=9, IDtarif=29)
+        #self.ctrl.MasqueCategories()
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.ctrl, 1, wx.ALL|wx.EXPAND, 4)
         panel.SetSizer(sizer_2)

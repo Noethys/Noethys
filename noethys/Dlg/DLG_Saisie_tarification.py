@@ -260,25 +260,29 @@ class Dialog(wx.Dialog):
         # Code Comptable
         self.toolbook.GetPage("generalites").SetCodeComptable(dictTarif["code_compta"])
 
-        # Groupes rattachés
-        self.toolbook.GetPage("conditions").SetGroupes(dictTarif["groupes"])
+        # CONDITIONS
+        page = self.toolbook.GetPage("conditions")
+        if page != None:
 
-        # Etiquettes rattachées
-        self.toolbook.GetPage("conditions").SetEtiquettes(dictTarif["etiquettes"])
+            # Groupes rattachés
+            self.toolbook.GetPage("conditions").SetGroupes(dictTarif["groupes"])
 
-        # Cotisations rattachées
-        self.toolbook.GetPage("conditions").SetCotisations(dictTarif["cotisations"])
+            # Etiquettes rattachées
+            self.toolbook.GetPage("conditions").SetEtiquettes(dictTarif["etiquettes"])
 
-        # Caisses rattachées
-        self.toolbook.GetPage("conditions").SetCaisses(dictTarif["caisses"])
-        
-        # Filtres de questionnaires
-        self.toolbook.GetPage("conditions").SetFiltres(listeFiltres)
+            # Cotisations rattachées
+            self.toolbook.GetPage("conditions").SetCotisations(dictTarif["cotisations"])
 
-        # Périodes rattachées
-        self.toolbook.GetPage("conditions").SetPeriodes(dictTarif["jours_scolaires"], dictTarif["jours_vacances"])
+            # Caisses rattachées
+            self.toolbook.GetPage("conditions").SetCaisses(dictTarif["caisses"])
 
-        # Type
+            # Filtres de questionnaires
+            self.toolbook.GetPage("conditions").SetFiltres(listeFiltres)
+
+            # Périodes rattachées
+            self.toolbook.GetPage("conditions").SetPeriodes(dictTarif["jours_scolaires"], dictTarif["jours_vacances"])
+
+        # TYPE DE TARIF
         page = self.toolbook.GetPage("type")
         if page != None :
             page.SetType(dictTarif["type"])
@@ -321,13 +325,22 @@ class Dialog(wx.Dialog):
         label_prestation = self.toolbook.GetPage("generalites").GetLabelPrestation()
         
         # Conditions
-        texteGroupes = self.toolbook.GetPage("conditions").GetGroupes()
-        texteEtiquettes = self.toolbook.GetPage("conditions").GetEtiquettes()
-        texteCotisations = self.toolbook.GetPage("conditions").GetCotisations()
-        texteCaisses = self.toolbook.GetPage("conditions").GetCaisses()
-        listefiltres = self.toolbook.GetPage("conditions").GetFiltres() 
-        jours_scolaires, jours_vacances = self.toolbook.GetPage("conditions").GetPeriodes()
-        
+        page = self.toolbook.GetPage("conditions")
+        if page != None :
+            texteGroupes = page.GetGroupes()
+            texteEtiquettes = page.GetEtiquettes()
+            texteCotisations = page.GetCotisations()
+            texteCaisses = page.GetCaisses()
+            listefiltres = page.GetFiltres()
+            jours_scolaires, jours_vacances = page.GetPeriodes()
+        else :
+            texteGroupes = None
+            texteEtiquettes = None
+            texteCotisations = None
+            texteCaisses = None
+            listefiltres = []
+            jours_scolaires, jours_vacances = None, None
+
         # Type
         page = self.toolbook.GetPage("type")
         if page != None :
@@ -412,9 +425,10 @@ class Dialog(wx.Dialog):
         if self.track_tarif != None :
             self.track_tarif.SetFiltres(liste_filtres)
 
-        for dictInitialFiltre in self.toolbook.GetPage("conditions").GetListeInitialeFiltres() :
-            if dictInitialFiltre["IDfiltre"] not in listeID :
-                DB.ReqDEL("questionnaire_filtres", "IDfiltre", dictInitialFiltre["IDfiltre"])
+        if self.toolbook.GetPage("conditions") != None :
+            for dictInitialFiltre in self.toolbook.GetPage("conditions").GetListeInitialeFiltres() :
+                if dictInitialFiltre["IDfiltre"] not in listeID :
+                    DB.ReqDEL("questionnaire_filtres", "IDfiltre", dictInitialFiltre["IDfiltre"])
 
         # Fermeture DB
         if self.track_tarif == None :

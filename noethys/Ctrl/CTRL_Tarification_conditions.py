@@ -33,11 +33,16 @@ class CTRL_Groupes(wx.CheckListBox):
         self.Importation() 
     
     def Importation(self):
+        if self.IDactivite != None :
+            IDactivite = self.IDactivite
+        else :
+            IDactivite = 0
+
         DB = GestionDB.DB()
         req = """SELECT IDgroupe, nom
         FROM groupes
         WHERE IDactivite=%d
-        ORDER BY ordre;""" % self.IDactivite
+        ORDER BY ordre;""" % IDactivite
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         DB.Close()

@@ -224,6 +224,7 @@ class Panel(wx.Panel):
         self.box_elements_staticbox = wx.StaticBox(self, -1, _(u"Prestations à facturer"))
         self.check_consommations = wx.CheckBox(self, -1, _(u"Consommations"))
         self.check_cotisations = wx.CheckBox(self, -1, _(u"Cotisations"))
+        self.check_locations = wx.CheckBox(self, -1, _(u"Locations"))
         self.check_autres = wx.CheckBox(self, -1, _(u"Autres"))
         
         # Familles
@@ -257,6 +258,7 @@ class Panel(wx.Panel):
         self.ctrl_date_emission.SetDate(datetime.date.today())
         self.check_consommations.SetValue(True)
         self.check_cotisations.SetValue(True)
+        self.check_locations.SetValue(True)
         self.check_autres.SetValue(True)
         self.OnRadioFamilles(None)
         self.OnCheckAnterieures(None)
@@ -279,6 +281,7 @@ class Panel(wx.Panel):
         self.ctrl_date_echeance.SetToolTip(wx.ToolTip(_(u"Saisissez la date d'échéance de paiement qui apparaîtra sur la facture [Optionnel]")))
         self.check_consommations.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour inclure les prestations de consommations")))
         self.check_cotisations.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour inclure les prestations de cotisations")))
+        self.check_locations.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour inclure les prestations de locations")))
         self.check_autres.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour inclure les autres types de prestations")))
         self.radio_familles_toutes.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour rechercher les factures de toutes les familles (par défaut)")))
         self.radio_familles_unique.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour rechercher les factures d'une seule famille")))
@@ -341,9 +344,10 @@ class Panel(wx.Panel):
 
         # Elements
         box_elements = wx.StaticBoxSizer(self.box_elements_staticbox, wx.VERTICAL)
-        grid_sizer_elements = wx.FlexGridSizer(rows=1, cols=3, vgap=5, hgap=5)
+        grid_sizer_elements = wx.FlexGridSizer(rows=1, cols=4, vgap=5, hgap=5)
         grid_sizer_elements.Add(self.check_consommations, 0, 0, 0)
         grid_sizer_elements.Add(self.check_cotisations, 0, 0, 0)
+        grid_sizer_elements.Add(self.check_locations, 0, 0, 0)
         grid_sizer_elements.Add(self.check_autres, 0, 0, 0)
         grid_sizer_gauche.Add(box_elements, 1, wx.EXPAND, 0)
         box_elements.Add(grid_sizer_elements, 1, wx.ALL|wx.EXPAND, 10)
@@ -512,6 +516,7 @@ class Panel(wx.Panel):
         prestations = []
         if self.check_consommations.GetValue() == True : prestations.append("consommation")
         if self.check_cotisations.GetValue() == True : prestations.append("cotisation")
+        if self.check_locations.GetValue() == True: prestations.append("location")
         if self.check_autres.GetValue() == True : prestations.append("autre")
         if len(prestations) == 0 :
             dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement cocher au moins un type de prestation à facturer !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)

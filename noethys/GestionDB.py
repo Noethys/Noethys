@@ -2137,7 +2137,18 @@ class DB:
             except Exception, err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
+        # =============================================================
 
+        versionFiltre = (1, 2, 1, 6)
+        if versionFichier < versionFiltre :
+            try :
+                self.AjoutChamp("produits", "quantite", "INTEGER")
+                self.AjoutChamp("produits", "montant", "FLOAT")
+                self.AjoutChamp("tarifs", "IDproduit", "INTEGER")
+                self.AjoutChamp("locations", "quantite", "INTEGER")
+                self.AjoutChamp("prestations", "IDdonnee", "INTEGER")
+            except Exception, err :
+                return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
 
 
@@ -2438,9 +2449,9 @@ if __name__ == "__main__":
 ##    db.Close()
         
     # # Ajouter un champ
-    # db = DB(suffixe="DATA")
-    # db.AjoutChamp("documents_modeles", "IDdonnee", "INTEGER")
-    # db.Close()
+    db = DB(suffixe="DATA")
+    db.AjoutChamp("prestations", "IDdonnee", "INTEGER")
+    db.Close()
 
     # Exportation d'une table dans la base DEFAUT
     # db = DB(suffixe="DATA")

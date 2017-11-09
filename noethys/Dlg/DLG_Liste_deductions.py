@@ -213,9 +213,11 @@ class Parametres(wx.Panel):
         self.staticbox_affichage_staticbox = wx.StaticBox(self, -1, _(u"Affichage"))
         self.radio_cotisations = wx.CheckBox(self, -1, _(u"Cotisations"))
         self.radio_consommations = wx.CheckBox(self, -1, _(u"Consommations"))
+        self.radio_locations = wx.CheckBox(self, -1, _(u"Locations"))
         self.radio_autres = wx.CheckBox(self, -1, _(u"Autres"))
         self.radio_cotisations.SetValue(True)
         self.radio_consommations.SetValue(True)
+        self.radio_locations.SetValue(True)
         self.radio_autres.SetValue(True)
 
         # Activités
@@ -237,6 +239,7 @@ class Parametres(wx.Panel):
 
         self.Bind(wx.EVT_CHECKBOX, self.OnCheckFiltres, self.radio_cotisations)
         self.Bind(wx.EVT_CHECKBOX, self.OnCheckFiltres, self.radio_consommations)
+        self.Bind(wx.EVT_CHECKBOX, self.OnCheckFiltres, self.radio_locations)
         self.Bind(wx.EVT_CHECKBOX, self.OnCheckFiltres, self.radio_autres)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonActualiser, self.bouton_actualiser)
         self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioActivites, self.radio_toutes)
@@ -253,6 +256,7 @@ class Parametres(wx.Panel):
         self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez la date de fin de période")))
         self.radio_cotisations.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher les cotisations dans la synthèse")))
         self.radio_consommations.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher les consommations dans la synthèse")))
+        self.radio_locations.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher les locations dans la synthèse")))
         self.radio_autres.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher les autres types de prestations dans la synthèse")))
         self.bouton_actualiser.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour actualiser les résultats en fonction des paramètres sélectionnés")))
         
@@ -274,7 +278,8 @@ class Parametres(wx.Panel):
         grid_sizer_affichage = wx.FlexGridSizer(rows=2, cols=2, vgap=5, hgap=5)
         grid_sizer_affichage.Add(self.radio_cotisations, 0, wx.LEFT|wx.ALIGN_CENTER_VERTICAL, 10)
         grid_sizer_affichage.Add(self.radio_consommations, 0, wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_affichage.Add(self.radio_autres, 0, wx.LEFT|wx.ALIGN_CENTER_VERTICAL, 10)
+        grid_sizer_affichage.Add(self.radio_locations, 0, wx.LEFT|wx.ALIGN_CENTER_VERTICAL, 10)
+        grid_sizer_affichage.Add(self.radio_autres, 0, wx.ALIGN_CENTER_VERTICAL, 0)
         staticbox_affichage.Add(grid_sizer_affichage, 1, wx.ALL|wx.EXPAND, 5)
         grid_sizer_base.Add(staticbox_affichage, 1, wx.RIGHT|wx.EXPAND, 5)
 
@@ -350,6 +355,7 @@ class Parametres(wx.Panel):
         listeFiltres = []
         if self.radio_cotisations.GetValue() == True : listeFiltres.append("cotisation")
         if self.radio_consommations.GetValue() == True : listeFiltres.append("consommation")
+        if self.radio_locations.GetValue() == True: listeFiltres.append("location")
         if self.radio_autres.GetValue() == True : listeFiltres.append("autre")
         return listeFiltres
 
@@ -508,6 +514,7 @@ class Dialog(wx.Dialog):
         for filtre in self.ctrl_parametres.GetFiltres() :
             if filtre == "consommation" : listeAffichage.append("Consommations")
             if filtre == "cotisation" : listeAffichage.append("Cotisations")
+            if filtre == "location": listeAffichage.append("Locations")
             if filtre == "autre" : listeAffichage.append("Autres")
             if filtre == "avoir" : listeAffichage.append("Avoirs")
         affichage = ", ".join(listeAffichage)

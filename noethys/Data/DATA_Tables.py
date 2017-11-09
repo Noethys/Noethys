@@ -434,6 +434,7 @@ DB_DATA = {
                                     ("IDtype_quotient", "INTEGER", u"ID du type de quotient"),
                                     ("label_prestation", "VARCHAR(300)", u"Label de la prestation"),
                                     ("IDevenement", "INTEGER", u"ID de l'évènement associé"),
+                                    ("IDproduit", "INTEGER", u"ID du produit associé"),
                                     ], # Tarifs
 
     "combi_tarifs":          [("IDcombi_tarif", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID combinaison de tarif"),
@@ -551,6 +552,7 @@ DB_DATA = {
                                     ("code_compta", "VARCHAR(200)", u"Code comptable pour export vers logiciels de compta"),
                                     ("IDcontrat", "INTEGER", u"ID du contrat associé"),
                                     ("date_valeur", "DATE", u"Date de valeur comptable de la prestation"),
+                                    ("IDdonnee", "INTEGER", u"ID d'une donnée associée"),
                                     ], # Prestations
 
     "comptes_payeurs":[  ("IDcompte_payeur", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID compte_payeur"),
@@ -1631,6 +1633,8 @@ DB_DATA = {
                                     ("nom", "VARCHAR(200)", u"Nom du produit"),
                                     ("observations", "VARCHAR(1000)", u"Observations sur le produit"),
                                     ("image", "LONGBLOB", u"Image du produit en binaire"),
+                                    ("quantite", "INTEGER", u"Quantité du produit"),
+                                    ("montant", "FLOAT", u"Montant fixe de la prestation"),
                                     ],  # Produits
 
         "locations":                [("IDlocation", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID location"),
@@ -1640,6 +1644,7 @@ DB_DATA = {
                                     ("date_saisie", "DATE", u"Date de saisie de la location"),
                                     ("date_debut", "DATETIME", u"Date et heure de début de location"),
                                     ("date_fin", "DATETIME", u"Date et heure de fin de location"),
+                                    ("quantite", "INTEGER", u"Quantité du produit"),
                                     ],  # Locations
 
 

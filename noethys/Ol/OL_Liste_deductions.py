@@ -121,6 +121,8 @@ class ListView(FastObjectListView):
             listeFiltres.append("(prestations.categorie='consommation' %s)" % conditionActivites)
         if "cotisation" in self.filtres : 
             listeFiltres.append("(prestations.categorie='cotisation')")
+        if "location" in self.filtres :
+            listeFiltres.append("(prestations.categorie='location')")
         if "autre" in self.filtres : 
             listeFiltres.append("(prestations.categorie='autre')")
         if len(listeFiltres) > 0 :

@@ -108,7 +108,7 @@ class Facturation():
 
 
 
-    def GetDonnees(self, listeRappels=[], liste_activites=[], listeExceptionsComptes=[], date_reference=None, date_edition=None, prestations=["consommation", "cotisation", "autre"]):
+    def GetDonnees(self, listeRappels=[], liste_activites=[], listeExceptionsComptes=[], date_reference=None, date_edition=None, prestations=["consommation", "cotisation", "location", "autre"]):
         """ Recherche des rappels à créer """   
        
         # Création des conditions SQL

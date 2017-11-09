@@ -65,9 +65,14 @@ LISTE_METHODES = [
     { "code" : "duree_taux_montant_unique", "label" : _(u"Par taux d'effort et en fonction d'une durée"), "type" : "horaire", "nbre_lignes_max" : None, "entete" : None, "champs" : ("duree_min", "duree_max", "temps_facture", "taux", "montant_min", "montant_max", "ajustement", "label"), "champs_obligatoires" : ("duree_min", "duree_max", "taux"), "tarifs_compatibles" : ("JOURN",) },
     { "code" : "duree_taux_qf", "label" : _(u"Par taux d'effort et par tranches de QF en fonction d'une durée"), "type" : "horaire", "nbre_lignes_max" : None, "entete" : None, "champs" : ("qf_min", "qf_max", "duree_min", "duree_max", "temps_facture", "taux", "montant_min", "montant_max", "ajustement", "label"), "champs_obligatoires" : ("qf_min", "qf_max", "duree_min", "duree_max", "taux"), "tarifs_compatibles" : ("JOURN",) },
 
+    # Lignes PSU
     { "code" : "forfait_contrat", "label" : _(u"Forfait contrat"), "type" : "unitaire", "nbre_lignes_max" : 0, "entete" : None, "champs" : (), "champs_obligatoires" : (), "tarifs_compatibles" : ("CREDIT",) },
     { "code" : "psu_revenu", "label" : _(u"Barême PSU selon revenus"), "type" : "unitaire", "nbre_lignes_max" : None, "entete" : None, "champs" : ("revenu_min", "revenu_max", "taux", "montant_min", "montant_max", "ajustement"), "champs_obligatoires" : ("revenu_min", "revenu_max", "taux"), "tarifs_compatibles" : ("BAREME",) },
     { "code" : "psu_qf", "label" : _(u"Barême PSU selon QF"), "type" : "unitaire", "nbre_lignes_max" : None, "entete" : None, "champs" : ("qf_min", "qf_max", "taux", "montant_min", "montant_max", "ajustement"), "champs_obligatoires" : ("qf_min", "qf_max", "taux"), "tarifs_compatibles" : ("BAREME",) },
+
+    # Lignes PRODUITS
+    {"code" : "produit_montant_unique", "label": _(u"Montant unique"), "type": "unitaire", "nbre_lignes_max": 1, "entete": None, "champs": ("montant_unique",), "champs_obligatoires": ("montant_unique",), "tarifs_compatibles": ("PRODUIT",)},
+    {"code" : "produit_proportionnel_quantite", "label": _(u"Montant proportionnel à la quantité"), "type": "unitaire", "nbre_lignes_max": 1, "entete": None, "champs": ("montant_unique",), "champs_obligatoires": ("montant_unique",), "tarifs_compatibles": ("PRODUIT",)},
 
 ]
 

@@ -27,6 +27,7 @@ except: pass
 DICT_LABELS_CATEGORIES = {
     "consommation" : (_(u"Consommation"), _(u"Consommations")),
     "cotisation" : (_(u"Cotisation"), _(u"Cotisations")),
+    "location" : (_(u"Location"), _(u"Locations")),
     "autre" : (_(u"Autre"), _(u"Autres")),
     } # Code : (Singulier, Pluriel)
             

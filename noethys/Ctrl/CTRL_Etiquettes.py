@@ -186,9 +186,15 @@ class CTRL(CT.CustomTreeCtrl):
 
     def Importation(self):
         """ Importation de la liste des étiquettes """
-        if len(self.listeActivites) == 0 : conditionActivites = "()"
-        elif len(self.listeActivites) == 1 : conditionActivites = "(%d)" % self.listeActivites[0]
-        else : conditionActivites = str(tuple(self.listeActivites))
+        if len(self.listeActivites) == 0 :
+            conditionActivites = "()"
+        elif len(self.listeActivites) == 1 :
+            if self.listeActivites == [None,] :
+                conditionActivites = "()"
+            else :
+                conditionActivites = "(%d)" % self.listeActivites[0]
+        else :
+            conditionActivites = str(tuple(self.listeActivites))
         
         DB = GestionDB.DB()
         req = """SELECT IDetiquette, label, IDactivite, parent, ordre, couleur, active

@@ -305,6 +305,24 @@ class ListView(FastObjectListView):
             return
         track = self.Selection()[0]
 
+        # Vérifie si les prestations de cette location sont déjà facturées
+        DB = GestionDB.DB()
+        req = """SELECT
+        IDprestation, IDfacture
+        FROM prestations 
+        WHERE categorie="location" and IDdonnee=%d AND IDfacture IS NOT NULL;""" % track.IDlocation
+        DB.ExecuterReq(req)
+        listePrestations = DB.ResultatReq()
+        DB.Close()
+        listeIDprestations = []
+        for IDprestation, IDfacture in listePrestations :
+            listeIDprestations.append(IDprestation)
+        if len(listePrestations) > 0 :
+            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas supprimer cette location car elle est déjà associée à %d prestations facturées !") % len(listePrestations), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return
+
         # Suppression
         dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer cette location ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         if dlg.ShowModal() == wx.ID_YES :
@@ -313,6 +331,9 @@ class ListView(FastObjectListView):
             DB.ExecuterReq("DELETE FROM questionnaire_reponses WHERE type='location' AND IDdonnee=%d;" % track.IDlocation)
             DB.ReqMAJ("locations_demandes", [("statut", "attente"),], "IDlocation", track.IDlocation)
             DB.ReqMAJ("locations_demandes", [("IDlocation", None),], "IDlocation", track.IDlocation)
+            DB.ExecuterReq("DELETE FROM prestations WHERE categorie='location' AND IDdonnee=%d;" % track.IDlocation)
+            for IDprestation in listeIDprestations :
+                DB.ReqDEL("ventilation", "IDprestation", IDprestation)
             DB.Close()
             self.MAJ()
             self.dirty = True

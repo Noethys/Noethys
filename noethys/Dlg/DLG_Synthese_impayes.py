@@ -117,9 +117,11 @@ class Parametres(wx.Panel):
         self.staticbox_affichage_staticbox = wx.StaticBox(self, -1, _(u"Affichage"))
         self.radio_cotisations = wx.CheckBox(self, -1, _(u"Cotisations"))
         self.radio_consommations = wx.CheckBox(self, -1, _(u"Consommations"))
+        self.radio_locations = wx.CheckBox(self, -1, _(u"Locations"))
         self.radio_autres = wx.CheckBox(self, -1, _(u"Autres"))
         self.radio_cotisations.SetValue(True)
         self.radio_consommations.SetValue(True)
+        self.radio_locations.SetValue(True)
         self.radio_autres.SetValue(True)
         
         # Activités
@@ -144,6 +146,7 @@ class Parametres(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonDateFin, self.bouton_date_fin)
         self.Bind(wx.EVT_CHECKBOX, self.OnCheckCotisations, self.radio_cotisations)
         self.Bind(wx.EVT_CHECKBOX, self.OnCheckConsommations, self.radio_consommations)
+        self.Bind(wx.EVT_CHECKBOX, self.OnCheckLocations, self.radio_locations)
         self.Bind(wx.EVT_CHECKBOX, self.OnCheckAutres, self.radio_autres)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonActualiser, self.bouton_actualiser)
         
@@ -154,6 +157,7 @@ class Parametres(wx.Panel):
         self.bouton_date_fin.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sélectionner la date de fin dans un calendrier")))
         self.radio_cotisations.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher les cotisations dans la synthèse")))
         self.radio_consommations.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher les consommations dans la synthèse")))
+        self.radio_locations.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher les locations dans la synthèse")))
         self.radio_autres.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher les autres types de prestations dans la synthèse")))
         self.bouton_actualiser.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour actualiser les résultats en fonction des paramètres sélectionnés")))
         
@@ -177,7 +181,8 @@ class Parametres(wx.Panel):
         grid_sizer_affichage = wx.FlexGridSizer(rows=2, cols=2, vgap=5, hgap=5)
         grid_sizer_affichage.Add(self.radio_cotisations, 0, wx.LEFT|wx.ALIGN_CENTER_VERTICAL, 18)
         grid_sizer_affichage.Add(self.radio_consommations, 0, wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_affichage.Add(self.radio_autres, 0, wx.LEFT|wx.ALIGN_CENTER_VERTICAL, 18)
+        grid_sizer_affichage.Add(self.radio_locations, 0, wx.LEFT|wx.ALIGN_CENTER_VERTICAL, 18)
+        grid_sizer_affichage.Add(self.radio_autres, 0, wx.ALIGN_CENTER_VERTICAL, 0)
         staticbox_affichage.Add(grid_sizer_affichage, 1, wx.ALL|wx.EXPAND, 5)
         grid_sizer_base.Add(staticbox_affichage, 1, wx.RIGHT|wx.EXPAND, 5)
         
@@ -225,6 +230,9 @@ class Parametres(wx.Panel):
         self.parent.MAJ()
         
     def OnCheckConsommations(self, event):
+        self.parent.MAJ()
+
+    def OnCheckLocations(self, event):
         self.parent.MAJ()
 
     def OnCheckAutres(self, event):
@@ -461,6 +469,7 @@ class Dialog(wx.Dialog):
         self.ctrl_stats.date_debut = self.ctrl_parametres.ctrl_date_debut.GetDate()
         self.ctrl_stats.date_fin = self.ctrl_parametres.ctrl_date_fin.GetDate()
         self.ctrl_stats.afficher_consommations = self.ctrl_parametres.radio_consommations.GetValue()
+        self.ctrl_stats.afficher_locations = self.ctrl_parametres.radio_locations.GetValue()
         self.ctrl_stats.afficher_cotisations = self.ctrl_parametres.radio_cotisations.GetValue()
         self.ctrl_stats.afficher_autres = self.ctrl_parametres.radio_autres.GetValue()
         self.ctrl_stats.listeActivites = self.ctrl_parametres.ctrl_activites.GetActivites() 
@@ -499,6 +508,7 @@ class Dialog(wx.Dialog):
         # Affichage
         listeAffichage = []
         if self.ctrl_parametres.radio_consommations.GetValue() : listeAffichage.append("Consommations")
+        if self.ctrl_parametres.radio_locations.GetValue() : listeAffichage.append("Locations")
         if self.ctrl_parametres.radio_cotisations.GetValue() : listeAffichage.append("Cotisations")
         if self.ctrl_parametres.radio_autres.GetValue() : listeAffichage.append("Autres")
         affichage = ", ".join(listeAffichage)

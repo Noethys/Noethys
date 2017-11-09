@@ -124,7 +124,7 @@ class Track_tarif(Track):
         self.liste_variables = ["IDtarif", "IDactivite", "date_debut", "date_fin", "methode", "type", "categories_tarifs", "groupes",
                            "etiquettes", "cotisations", "caisses", "description", "jours_scolaires",
                            "jours_vacances", "observations", "tva", "code_compta", "IDtype_quotient",
-                           "label_prestation", "IDevenement"]
+                           "label_prestation", "IDevenement", "IDproduit"]
         self.Importer_variables(dictDonnees, self.liste_variables)
         self.champ_cle = "IDtarif"
         self.nom_table = "tarifs"

@@ -39,6 +39,7 @@ class Choix_categorie(wx.Choice):
         self.listeCategories = [
             ("consommation", _(u"Consommation")),
             ("cotisation", _(u"Cotisation")),
+            ("location", _(u"Location")),
             ("autre", _(u"Autre")),
             ]
 

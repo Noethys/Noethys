@@ -163,6 +163,7 @@ class CTRL(HTL.HyperTreeList):
         listeAffichage = []
         if self.afficher_cotisations == True : listeAffichage.append("cotisation")
         if self.afficher_consommations == True : listeAffichage.append("consommation")
+        if self.afficher_locations == True: listeAffichage.append("locations")
         if self.afficher_autres == True : listeAffichage.append("autre")
         
         if len(listeAffichage) == 0 : conditionAfficher = "categorie='xxxxxxx' "
@@ -198,7 +199,9 @@ class CTRL(HTL.HyperTreeList):
             
             if periode not in listePeriodes :
                 listePeriodes.append(periode)
-            
+
+            if categorie == "location" :
+                IDactivite = 777777
             if categorie == "cotisation" : 
                 IDactivite = 888888
             if IDactivite == None : 
@@ -296,6 +299,7 @@ class CTRL(HTL.HyperTreeList):
         # Création des branches
         def GetNomActivite(IDactivite=None):
             if dictActivites.has_key(IDactivite) : return dictActivites[IDactivite]["nom"]
+            if IDactivite == 777777: return _(u"Locations")
             if IDactivite == 888888 : return _(u"Cotisations")
             if IDactivite == 999999 : return _(u"Autres")
             return _(u"Activité inconnue")

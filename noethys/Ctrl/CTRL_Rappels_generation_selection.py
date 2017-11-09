@@ -399,7 +399,7 @@ class MyFrame(wx.Frame):
             "date_reference" : datetime.date.today(),
             "IDlot" : None,
             "date_edition" : datetime.date.today(),
-            "prestations" : ["consommation", "cotisation", "autre"],
+            "prestations" : ["consommation", "cotisation", "location", "autre"],
             "IDcompte_payeur" : None,
             "listeActivites" : [1, 2, 3],
             "listeExceptionsComptes" : [],

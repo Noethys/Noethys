@@ -147,7 +147,7 @@ class Facturation():
                 texte = texte.replace(key, valeur)
         return texte
 
-    def GetDonnees(self, listeFactures=[], liste_activites=[], date_debut=None, date_fin=None, date_edition=None, date_echeance=None, prestations=["consommation", "cotisation", "autre"], typeLabel=0, date_anterieure=None):
+    def GetDonnees(self, listeFactures=[], liste_activites=[], date_debut=None, date_fin=None, date_edition=None, date_echeance=None, prestations=["consommation", "cotisation", "location", "autre"], typeLabel=0, date_anterieure=None):
         """ Recherche des factures à créer """      
         
         dictFactures = {}
@@ -837,7 +837,7 @@ class Facturation():
             if typesPrestations != None :
                 prestations = typesPrestations.split(";")
             else :
-                prestations = ["consommation", "cotisation", "autre"]
+                prestations = ["consommation", "cotisation", "location", "autre"]
 
             liste_activites = []
             for IDactivite in activites.split(";") :
