@@ -413,19 +413,21 @@ def GetProduitsLoues(DB=None, date_reference=datetime.datetime.now()):
         DBT = DB
 
     # Recherche les locations à la date de référence
-    req = """SELECT IDlocation, IDproduit, IDfamille, date_debut, date_fin
+    req = """SELECT IDlocation, IDproduit, IDfamille, date_debut, date_fin, quantite
     FROM locations
     WHERE date_debut<='%s' AND (date_fin IS NULL OR date_fin>='%s')
     ;""" % (date_reference, date_reference)
     DBT.ExecuterReq(req)
     listeLocations = DBT.ResultatReq()
     dictLocations = {}
-    for IDlocation, IDproduit, IDfamille, date_debut, date_fin in listeLocations:
+    for IDlocation, IDproduit, IDfamille, date_debut, date_fin, quantite in listeLocations:
         date_debut = UTILS_Dates.DateEngEnDateDDT(date_debut)
         date_fin = UTILS_Dates.DateEngEnDateDDT(date_fin)
+        if quantite == None :
+            quantite = 1
         if dictLocations.has_key(IDproduit) == False:
             dictLocations[IDproduit] = []
-            dictLocations[IDproduit] = {"IDlocation": IDlocation, "IDfamille": IDfamille, "date_debut": date_debut, "date_fin": date_fin}
+        dictLocations[IDproduit].append({"IDlocation": IDlocation, "IDfamille": IDfamille, "date_debut": date_debut, "date_fin": date_fin, "quantite" : quantite})
 
     if DB == None:
         DBT.Close()
@@ -454,12 +456,16 @@ def GetPropositionsLocations(dictFiltresSelection={}, dictDemandeSelection=None,
     dictLocations = GetProduitsLoues(DB=DB)
 
     # Importation des produits
-    req = """SELECT IDproduit, IDcategorie, nom
+    req = """SELECT IDproduit, IDcategorie, nom, quantite
     FROM produits;"""
     DB.ExecuterReq(req)
     listeProduitsTemp = DB.ResultatReq()
     listeProduits = []
-    for IDproduit, IDcategorie, nom in listeProduitsTemp :
+    dictProduits = {}
+    dictProduitsByCategories = {}
+    for IDproduit, IDcategorie, nom, quantite in listeProduitsTemp :
+        if quantite == None :
+            quantite = 1
 
         # Recherche les réponses au questionnaire du produit
         if dictReponses.has_key(IDproduit) :
@@ -469,13 +475,20 @@ def GetPropositionsLocations(dictFiltresSelection={}, dictDemandeSelection=None,
 
         # Recherche les locations en cours du produit
         if dictLocations.has_key(IDproduit):
-            disponible = False
+            disponible = quantite
+            for dictLocation in dictLocations[IDproduit] :
+                disponible -= dictLocation["quantite"]
         else :
-            disponible = True
+            disponible = quantite
 
-        if uniquement_disponibles == False or disponible == True :
+        if uniquement_disponibles == False or disponible > 0 :
             dictTemp = {"IDproduit" : IDproduit, "IDcategorie" : IDcategorie, "disponible" : disponible, "nom" : nom, "reponses" : reponses}
             listeProduits.append(dictTemp)
+            dictProduits[IDproduit] = dictTemp
+
+            if dictProduitsByCategories.has_key(IDcategorie) == False :
+                dictProduitsByCategories[IDcategorie] = []
+            dictProduitsByCategories[IDcategorie].append(dictTemp)
 
     # Recherche les filtres de questionnaires
     req = """SELECT IDfiltre, questionnaire_filtres.IDquestion, choix, criteres, IDdonnee, 
@@ -496,7 +509,6 @@ def GetPropositionsLocations(dictFiltresSelection={}, dictDemandeSelection=None,
     if dictFiltresSelection != None :
         for IDdemande, listeFiltres in dictFiltresSelection.iteritems() :
             dictFiltres[IDdemande] = listeFiltres
-
 
     # Importation des demandes de locations
     # if dictDemande == None :
@@ -522,6 +534,8 @@ def GetPropositionsLocations(dictFiltresSelection={}, dictDemandeSelection=None,
     DB.Close()
 
     # Parcours les demandes
+    dictControles = UTILS_Filtres_questionnaires.GetDictControles()
+
     dictPropositions = {}
     dictPositions = {}
     for demande in listeDemandes :
@@ -539,23 +553,41 @@ def GetPropositionsLocations(dictFiltresSelection={}, dictDemandeSelection=None,
 
         IDdemande = dictDemandeTemp["IDdemande"]
 
+        # Pré-sélection des produits à étudier
+        listeProduitsTemp = []
+
+        if dictDemandeTemp["categories"] != [] :
+            for IDcategorie in dictDemandeTemp["categories"] :
+                if dictProduitsByCategories.has_key(IDcategorie) :
+                    listeProduitsTemp.extend(dictProduitsByCategories[IDcategorie])
+
+        if dictDemandeTemp["produits"] != []:
+            for IDproduit in dictDemandeTemp["produits"]:
+                dictProduit = dictProduits[IDproduit]
+                if dictProduits.has_key(IDproduit) and dictProduit not in listeProduitsTemp :
+                    if dictDemandeTemp["categories"] == [] or dictProduit["IDcategorie"] in dictDemandeTemp["categories"] :
+                        listeProduitsTemp.append(dictProduit)
+
+        if len(listeProduitsTemp) == 0 :
+            listeProduitsTemp = listeProduits
+
         # Parcours les produits
-        for dictProduit in listeProduits :
+        for dictProduit in listeProduitsTemp :
             valide = True
 
-            # Vérifie si le produit est dans la liste des catégories souhaitées
-            if dictDemandeTemp["categories"] != [] and dictProduit["IDcategorie"] not in dictDemandeTemp["categories"] :
-                valide = False
-
-            # Vérifie si le produit est dans la liste des produits souhaités
-            if dictDemandeTemp["produits"] != [] and dictProduit["IDproduit"] not in dictDemandeTemp["produits"] :
-                valide = False
+            # # Vérifie si le produit est dans la liste des catégories souhaitées
+            # if valide == True and dictDemandeTemp["categories"] != [] and dictProduit["IDcategorie"] not in dictDemandeTemp["categories"] :
+            #     valide = False
+            #
+            # # Vérifie si le produit est dans la liste des produits souhaités
+            # if valide == True and dictDemandeTemp["produits"] != [] and dictProduit["IDproduit"] not in dictDemandeTemp["produits"] :
+            #     valide = False
 
             # Vérifie si le produit répond aux filtres de la demande
-            if dictFiltres.has_key(IDdemande):
+            if valide == True and dictFiltres.has_key(IDdemande):
                 for dictFiltre in dictFiltres[IDdemande]:
                     for dictReponse in dictProduit["reponses"]:
-                        resultat = UTILS_Filtres_questionnaires.Filtre(controle=dictFiltre["controle"], choix=dictFiltre["choix"], criteres=dictFiltre["criteres"], reponse=dictReponse["reponse"])
+                        resultat = UTILS_Filtres_questionnaires.Filtre(controle=dictFiltre["controle"], choix=dictFiltre["choix"], criteres=dictFiltre["criteres"], reponse=dictReponse["reponse"], dictControles=dictControles)
                         if resultat == False:
                             valide = False
 
@@ -569,7 +601,7 @@ def GetPropositionsLocations(dictFiltresSelection={}, dictDemandeSelection=None,
                 position = dictPositions[dictProduit["IDproduit"]]
 
                 # Proposition
-                dictProduit = copy.deepcopy(dictProduit)
+                dictProduit = dict(dictProduit)
                 if dictPropositions.has_key(IDdemande) == False :
                     dictPropositions[IDdemande] = []
                 dictProduit["position"] = position
@@ -588,4 +620,11 @@ def GetMeilleurePosition(dictPropositions={}, IDdemande=None):
 
 
 if __name__=='__main__':
-    print len(GetPropositionsLocations(uniquement_disponibles=False))
+    import time
+    heure_debut = time.time()
+
+    #print "produits loues :", len(GetProduitsLoues())
+    dictPropositions = GetPropositionsLocations(uniquement_disponibles=False)
+    print "dictPropositions =", len(dictPropositions)
+
+    print "Temps execution =", time.time() - heure_debut

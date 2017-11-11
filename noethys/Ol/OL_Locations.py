@@ -29,8 +29,9 @@ class Track(object):
         self.observations = donnees[3]
         self.date_debut = donnees[4]
         self.date_fin = donnees[5]
-        self.nomProduit = donnees[6]
-        self.nomCategorie = donnees[7]
+        self.quantite = donnees[6]
+        self.nomProduit = donnees[7]
+        self.nomCategorie = donnees[8]
 
         # Période
         if isinstance(self.date_debut, str) or isinstance(self.date_debut, unicode) :
@@ -106,8 +107,8 @@ class ListView(FastObjectListView):
         listeID = None
         db = GestionDB.DB()
         req = """SELECT locations.IDlocation, locations.IDfamille, locations.IDproduit, 
-        locations.observations, locations.date_debut, locations.date_fin,
-        produits.nom,
+        locations.observations, locations.date_debut, locations.date_fin, locations.quantite,
+        produits.nom, 
         produits_categories.nom
         FROM locations
         LEFT JOIN produits ON produits.IDproduit = locations.IDproduit
@@ -147,19 +148,20 @@ class ListView(FastObjectListView):
             "date_fin" : ColumnDefn(_(u"Fin"), "left", 130, "date_fin", typeDonnee="date", stringConverter=FormateDate),
             "nomProduit" : ColumnDefn(_(u"Nom du produit"), 'left', 200, "nomProduit", typeDonnee="texte"),
             "nomCategorie" : ColumnDefn(_(u"Catégorie du produit"), 'left', 200, "nomCategorie", typeDonnee="texte"),
+            "quantite": ColumnDefn(u"Qté", "left", 60, "quantite", typeDonnee="entier"),
             "nomTitulaires" : ColumnDefn(_(u"Nom"), 'left', 270, "nomTitulaires", typeDonnee="texte"),
             "rue" : ColumnDefn(_(u"Rue"), 'left', 200, "rue", typeDonnee="texte"),
             "cp" : ColumnDefn(_(u"C.P."), 'left', 70, "cp", typeDonnee="texte"),
             "ville" : ColumnDefn(_(u"Ville"), 'left', 150, "ville", typeDonnee="texte"),
             }
 
-        liste_temp = ["IDlocation", "date_debut", "date_fin", "nomProduit", "nomCategorie", "nomTitulaires", "rue", "cp", "ville"]
+        liste_temp = ["IDlocation", "date_debut", "date_fin", "nomProduit", "nomCategorie", "quantite", "nomTitulaires", "rue", "cp", "ville"]
 
         if self.IDfamille != None :
-            liste_temp = ["IDlocation", "date_debut", "date_fin", "nomProduit", "nomCategorie"]
+            liste_temp = ["IDlocation", "date_debut", "date_fin", "nomProduit", "nomCategorie", "quantite"]
 
         if self.IDproduit != None :
-            liste_temp = ["IDlocation", "date_debut", "date_fin", "nomTitulaires", "rue", "cp", "ville"]
+            liste_temp = ["IDlocation", "date_debut", "date_fin", "quantite", "nomTitulaires", "rue", "cp", "ville"]
 
         liste_Colonnes = []
         for code in liste_temp :

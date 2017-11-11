@@ -379,6 +379,7 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.ctrl_logo.Visualiser, self.bouton_visualiser)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonCategories, self.bouton_categories)
 
+        self.dict_donnees_initiales = {"tarifs": [], "tarifs_lignes": []}
         if self.IDproduit != None :
             self.Importation()
         else :
@@ -662,7 +663,6 @@ class Dialog(wx.Dialog):
 
         # Importation des tarifs
         liste_tarifs = []
-        self.dict_donnees_initiales = {"tarifs" : [], "tarifs_lignes" : []}
 
         req = """SELECT IDtarif, IDactivite, date_debut, date_fin, methode, type, categories_tarifs, groupes, etiquettes, cotisations, 
         caisses, description, jours_scolaires, jours_vacances, observations, tva, code_compta, 

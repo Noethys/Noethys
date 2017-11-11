@@ -28,19 +28,26 @@ class Track(object):
         self.nom = donnees[1]
         self.observations = donnees[2]
         self.nomCategorie = donnees[3]
+        self.quantite = donnees[4]
+        if self.quantite == None :
+            self.quantite = 1
         self.position = None
+        self.disponible = int(self.quantite)
 
         # Recherche si le produit est en cours de location
-        if parent.afficher_locations == True :
-            if parent.dictLocations.has_key(self.IDproduit):
-                self.statut = "indisponible"
-                dictLocation = parent.dictLocations[self.IDproduit]
-                self.IDfamille = dictLocation["IDfamille"]
-                self.nomTitulaires = parent.dict_titulaires[self.IDfamille]["titulairesSansCivilite"]
-                self.date_debut = dictLocation["date_debut"]
-                self.date_fin = dictLocation["date_fin"]
-            else :
-                self.statut = "disponible"
+        if parent.dictLocations.has_key(self.IDproduit):
+            liste_locations = parent.dictLocations[self.IDproduit]
+            for dictLocation in liste_locations :
+                self.disponible -= dictLocation["quantite"]
+
+                if len(liste_locations) == 1 :
+                    self.IDfamille = dictLocation["IDfamille"]
+                    if parent.dict_titulaires.has_key(self.IDfamille):
+                        self.nomTitulaires = parent.dict_titulaires[self.IDfamille]["titulairesSansCivilite"]
+                    self.date_debut = dictLocation["date_debut"]
+                    self.date_fin = dictLocation["date_fin"]
+                else :
+                    self.nomTitulaires = _(u"%d loueurs") % len(liste_locations)
 
         # Récupération des réponses des questionnaires
         for dictQuestion in parent.liste_questions :
@@ -101,8 +108,7 @@ class ListView(FastObjectListView):
         DB = GestionDB.DB()
 
         # Importation des locations en cours
-        if self.afficher_locations == True :
-            self.dictLocations = UTILS_Locations.GetProduitsLoues(DB=DB)
+        self.dictLocations = UTILS_Locations.GetProduitsLoues(DB=DB)
 
         # Importation des produits
         if self.filtreListeID == None :
@@ -112,7 +118,7 @@ class ListView(FastObjectListView):
             elif len(self.filtreListeID) == 1: condition = "WHERE produits.IDproduit IN (%d)" % self.filtreListeID[0]
             else: condition = "WHERE produits.IDproduit IN %s" % str(tuple(self.filtreListeID))
 
-        req = """SELECT IDproduit, produits.nom, produits.observations, produits_categories.nom
+        req = """SELECT IDproduit, produits.nom, produits.observations, produits_categories.nom, quantite
         FROM produits
         LEFT JOIN produits_categories ON produits_categories.IDcategorie = produits.IDcategorie
         %s;""" % condition
@@ -133,7 +139,7 @@ class ListView(FastObjectListView):
                 track.position = self.dictPositions[track.IDproduit]
 
             # Coche afficher uniquement les disponibles
-            if self.coche_uniquement_disponibles == True and track.statut != "disponible":
+            if self.coche_uniquement_disponibles == True and track.disponible == 0 :
                 valide = False
 
             if valide == True :
@@ -152,13 +158,11 @@ class ListView(FastObjectListView):
         self.AddNamedImages("indisponible", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Interdit.png"), wx.BITMAP_TYPE_PNG))
         self.AddNamedImages("disponible", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Ok4.png"), wx.BITMAP_TYPE_PNG))
 
-        def GetImageStatut(track):
-            if track.statut == "disponible" :
+        def GetImageDisponible(track):
+            if track.disponible > 0 :
                 return "disponible"
-            elif track.statut == "indisponible" :
+            else:
                 return "indisponible"
-            else :
-                return None
 
         def FormateDate(date):
             if date == None :
@@ -174,18 +178,19 @@ class ListView(FastObjectListView):
             else :
                 return _(u"%dème") % position
 
-        def FormateStatut(statut):
-            if statut == "disponible" :
-                return _(u"Disponible")
-            if statut == "indisponible" :
-                return _(u"Indisponible")
-
+        def FormateDisponible(disponible):
+            if disponible == 1 :
+                return _(u"1 disponible")
+            if disponible > 1 :
+                return _(u"%d disponibles") % disponible
+            return _("Non")
+        
 
         dict_colonnes = {
             "IDproduit" : ColumnDefn(u"", "left", 0, "IDproduit", typeDonnee="entier"),
             "nom": ColumnDefn(_(u"Nom"), 'left', 170, "nom", typeDonnee="texte"),
             "nomCategorie": ColumnDefn(_(u"Catégorie"), 'left', 170, "nomCategorie", typeDonnee="texte"),
-            "statut": ColumnDefn(_(u"Statut"), "left", 100, "statut", typeDonnee="texte", stringConverter=FormateStatut, imageGetter=GetImageStatut),
+            "disponible": ColumnDefn(_(u"Disponibilité"), "left", 110, "disponible", typeDonnee="texte", stringConverter=FormateDisponible, imageGetter=GetImageDisponible),
             "nomTitulaires": ColumnDefn(_(u"Loueur"), "left", 200, "nomTitulaires", typeDonnee="texte"),
             "date_debut": ColumnDefn(_(u"Début"), "left", 120, "date_debut", typeDonnee="texte", stringConverter=FormateDate),
             "date_fin": ColumnDefn(_(u"Fin"), "left", 120, "date_fin", typeDonnee="texte", stringConverter=FormateDate),
@@ -194,9 +199,9 @@ class ListView(FastObjectListView):
 
         if self.afficher_locations == True:
             if self.afficher_detail_location == True :
-                liste_temp = ["IDproduit", "nom", "nomCategorie", "statut", "nomTitulaires", "date_debut", "date_fin"]
+                liste_temp = ["IDproduit", "nom", "nomCategorie", "disponible", "nomTitulaires", "date_debut", "date_fin"]
             else :
-                liste_temp = ["IDproduit", "nom", "nomCategorie", "statut"]
+                liste_temp = ["IDproduit", "nom", "nomCategorie", "disponible"]
         else :
             liste_temp = ["IDproduit", "nom", "nomCategorie"]
 
@@ -397,7 +402,7 @@ class ListView(FastObjectListView):
         for IDdemandeTemp, liste_produits in dictPropositions.iteritems():
             if IDdemande == False or IDdemande == IDdemandeTemp :
                 for dictProduit in liste_produits:
-                    if dictProduit["disponible"] == True or self.afficher_uniquement_disponibles == False :
+                    if dictProduit["disponible"] > 0 or self.afficher_uniquement_disponibles == False :
                         listeID.append(dictProduit["IDproduit"])
                         self.dictPositions[dictProduit["IDproduit"]] = dictProduit["position"]
 

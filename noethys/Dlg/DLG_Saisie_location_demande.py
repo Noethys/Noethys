@@ -954,7 +954,8 @@ class Dialog(wx.Dialog):
         if IDfamille != None :
             self.ctrl_loueur.SetIDfamille(IDfamille)
 
-        self.ctrl_observations.SetValue(observations)
+        if observations != None :
+            self.ctrl_observations.SetValue(observations)
 
         # Critères
         self.notebook.GetPage("criteres").ctrl_categories.SetListeCategories(UTILS_Texte.ConvertStrToListe(categories))

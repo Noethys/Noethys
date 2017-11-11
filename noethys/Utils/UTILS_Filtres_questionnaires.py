@@ -19,11 +19,14 @@ def GetDictControles():
         dictControles[dictControle["code"]] = dictControle
     return dictControles
 
-def Filtre(controle=None, choix="", criteres="", reponse=""):
+
+def Filtre(controle=None, choix="", criteres="", reponse="", dictControles=None):
     """ Compare un filtre avec une réponse """
     # Recherche le type de filtre
-    filtre = GetDictControles()[controle]["filtre"]
-    
+    if dictControles == None :
+        dictControles = GetDictControles()
+    filtre = dictControles[controle]["filtre"]
+
     # TEXTE
     if filtre == "texte" :
         if choix == "EGAL" : 
