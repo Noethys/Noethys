@@ -397,10 +397,71 @@ class Location():
 
         return dictChampsFusion, dictPieces
 
+# -------------------------------------------------------------------------------------------------------------------------------------------
 
+def GetStockDisponible(DB=None, IDproduit=None, date_debut=None, date_fin=None, IDlocation_exception=None):
+    """ Recherche si un produit est disponible sur une période donnée """
+    if DB == None:
+        DBT = GestionDB.DB()
+    else:
+        DBT = DB
 
+    if IDlocation_exception == None :
+        IDlocation_exception = 0
 
+    if date_debut == None :
+        date_debut = datetime.datetime(1900, 1, 1)
 
+    if date_fin == None :
+        date_fin = datetime.datetime(2999, 1, 1)
+
+    # Recherche le stock initial
+    req = """SELECT IDproduit, quantite
+    FROM produits
+    WHERE IDproduit=%d;""" % IDproduit
+    DBT.ExecuterReq(req)
+    listeDonnees = DBT.ResultatReq()
+    stock_initial = listeDonnees[0][1]
+
+    # Recherche les locations du produit sur la période
+    req = """SELECT IDlocation, IDfamille, date_debut, date_fin, quantite
+    FROM locations
+    WHERE locations.IDproduit=%d AND date_debut<='%s' AND (date_fin IS NULL OR date_fin>='%s') AND IDlocation<>%d
+    ;""" % (IDproduit, date_fin, date_debut, IDlocation_exception)
+    DBT.ExecuterReq(req)
+    listeDonnees = DBT.ResultatReq()
+    listeLocations = []
+    listeDates = [date_debut, date_fin]
+    for IDlocation, IDfamille, debut, fin, quantite in listeDonnees:
+        debut = UTILS_Dates.DateEngEnDateDDT(debut)
+        fin = UTILS_Dates.DateEngEnDateDDT(fin)
+        if quantite == None:
+            quantite = 1
+        listeLocations.append({"IDlocation": IDlocation, "IDfamille": IDfamille, "date_debut": debut, "date_fin": fin, "quantite": quantite})
+        if debut not in listeDates and debut > date_debut :
+            listeDates.append(debut)
+        if fin not in listeDates and fin != None and fin < date_fin :
+            listeDates.append(fin)
+
+    if DB == None:
+        DBT.Close()
+
+    # Analyse des périodes de disponibilités
+    listeDates.sort()
+    dictPeriodes = {}
+    for index in range(0, len(listeDates)-1) :
+        debut, fin = (listeDates[index], listeDates[index+1])
+        disponible = int(stock_initial)
+        loue = 0
+
+        for dictLocation in listeLocations :
+            if dictLocation["date_debut"] < fin and (dictLocation["date_fin"] == None or dictLocation["date_fin"] > debut) :
+                disponible -= dictLocation["quantite"]
+                loue += dictLocation["quantite"]
+
+        dictPeriodes[(debut, fin)] = {"loue": loue, "disponible" : disponible}
+
+    return dictPeriodes
 
 
 # -------------------------------------------------------------------------------------------------------------------------------------------
@@ -624,7 +685,9 @@ if __name__=='__main__':
     heure_debut = time.time()
 
     #print "produits loues :", len(GetProduitsLoues())
-    dictPropositions = GetPropositionsLocations(uniquement_disponibles=False)
-    print "dictPropositions =", len(dictPropositions)
+    #dictPropositions = GetPropositionsLocations(uniquement_disponibles=False)
+    #print "dictPropositions =", len(dictPropositions)
+
+    print GetStockDisponible(IDproduit=2, date_debut=datetime.datetime(2017, 1, 1), date_fin=datetime.datetime(2017, 12, 31), IDlocation_exception=0)
 
     print "Temps execution =", time.time() - heure_debut

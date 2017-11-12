@@ -20,6 +20,8 @@ from Ctrl import CTRL_Saisie_heure
 from Utils import UTILS_Titulaires
 from Utils import UTILS_Dates
 from Utils import UTILS_Customize
+from Utils import UTILS_Locations
+from Dlg import DLG_Messagebox
 import GestionDB
 from Ol import OL_Locations_prestations
 
@@ -602,6 +604,25 @@ class Dialog(wx.Dialog):
 
         # Quantité
         quantite = int(self.ctrl_quantite.GetValue())
+
+        # Vérifie que la quantité demandée est disponible
+        dictPeriodes = UTILS_Locations.GetStockDisponible(IDproduit=IDproduit, date_debut=date_debut, date_fin=date_fin, IDlocation_exception=self.IDlocation)
+        liste_periode_non_dispo = []
+        for periode, valeurs in dictPeriodes.iteritems() :
+            if valeurs["disponible"] < quantite :
+                debut = datetime.datetime.strftime(periode[0], "%d/%m/%Y-%Hh%M")
+                if periode[1].year == 2999 :
+                    fin = _(u"Illimité")
+                else :
+                    fin = datetime.datetime.strftime(periode[1], "%d/%m/%Y-%Hh%M")
+                liste_periode_non_dispo.append(_(u"Stock disponible du %s au %s : %d produits") % (debut, fin, valeurs["disponible"]))
+        if len(liste_periode_non_dispo) > 0 :
+            introduction = _(u"La quantité souhaitée n'est pas disponible sur les périodes suivantes :")
+            conclusion = _(u"Vous ne pouvez pas valider la location.")
+            dlg = DLG_Messagebox.Dialog(None, titre=_(u"Information"), introduction=introduction, detail=u"\n".join(liste_periode_non_dispo), conclusion=conclusion, icone=wx.ICON_EXCLAMATION, boutons=[_(u"Ok"), ])
+            dlg.ShowModal()
+            dlg.Destroy()
+            return
 
         # Sauvegarde
         DB = GestionDB.DB()
