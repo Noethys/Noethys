@@ -330,7 +330,7 @@ class PAGE_Statut_attente(wx.Panel):
 
         # Propositions
         self.label_propositions = wx.StaticText(self, -1, _(u"Produits proposés :"))
-        self.ctrl_propositions = OL_Produits.ListView(self, id=-1, afficher_detail_location=False, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
+        self.ctrl_propositions = OL_Produits.ListView(self, id=-1, afficher_detail_location=False, on_double_click="consultation", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.ctrl_propositions.SetMinSize((100, 50))
         self.ctrl_propositions.afficher_uniquement_disponibles = True
 

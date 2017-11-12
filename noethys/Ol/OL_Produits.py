@@ -184,7 +184,7 @@ class ListView(FastObjectListView):
             if disponible > 1 :
                 return _(u"%d disponibles") % disponible
             return _("Non")
-        
+
 
         dict_colonnes = {
             "IDproduit" : ColumnDefn(u"", "left", 0, "IDproduit", typeDonnee="entier"),

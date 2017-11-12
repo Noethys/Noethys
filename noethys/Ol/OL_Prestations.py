@@ -152,7 +152,7 @@ class ListView(GroupListView):
         
         # Filtres de l'utilisateur
         filtreSQL = self.GetFiltres() 
-        
+
         req = """
         SELECT prestations.IDprestation, prestations.IDcompte_payeur, prestations.date, categorie, 
         prestations.label, prestations.montant, 
@@ -200,7 +200,7 @@ class ListView(GroupListView):
         for IDprestation, montantVentilation in listeVentilation :
             dictVentilation[IDprestation] = montantVentilation
         DB.Close() 
-        
+
         listePrestations = []
         listeIndividus = []
         listeActivites = []
@@ -239,7 +239,7 @@ class ListView(GroupListView):
             
             # Mémorisation du total des prestations affichées
             total += montant
-        
+
         return listePrestations, listeIndividus, listeActivites, listeFactures, total
 
 
@@ -726,7 +726,7 @@ class MyFrame(wx.Frame):
         sizer_1 = wx.BoxSizer(wx.VERTICAL)
         sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
         self.SetSizer(sizer_1)
-        self.myOlv = ListView(panel, -1, IDfamille=1, style=wx.LC_REPORT|wx.SUNKEN_BORDER)
+        self.myOlv = ListView(panel, -1, IDfamille=None, style=wx.LC_REPORT|wx.SUNKEN_BORDER)
         import time
         t = time.time()
         self.myOlv.MAJ() 

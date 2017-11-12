@@ -1,3 +1,18 @@
+Version 1.2.1.6 (12/11/2017) :
+
+- Ajout de l'envoi de SMS avec Orange Business
+- Ajout de la facturation des locations
+- Ajout des quantités et du stock des locations
+- Ajout de la chronologie dans la fiche produit
+- Optimisation de l'ouverture de la fenêtre de saisie d'un règlement
+- Amélioration de la liste des inscriptions
+- Optimisation des barres de recherche rapide
+- Ajout du nom d'adresse d'expédition [Mairie de Billy-Berclau]
+- Ajout de l'envoi par Email des exports Excel
+- Ajout du plain text aux emails
+- Ajout du mode inscrits dans l'édition des infos médicales
+- Ajout du filtre de liste basé sur la date d'inscription
+
 Version 1.2.1.3 (07/10/2017) :
 
 - Ajout de la validation XSD des bordereaux PES
