@@ -190,6 +190,7 @@ class ListView(FastObjectListView):
             "IDproduit" : ColumnDefn(u"", "left", 0, "IDproduit", typeDonnee="entier"),
             "nom": ColumnDefn(_(u"Nom"), 'left', 170, "nom", typeDonnee="texte"),
             "nomCategorie": ColumnDefn(_(u"Catégorie"), 'left', 170, "nomCategorie", typeDonnee="texte"),
+            "quantite": ColumnDefn(_(u"Stock initial"), "left", 70, "quantite", typeDonnee="entier"),
             "disponible": ColumnDefn(_(u"Disponibilité"), "left", 110, "disponible", typeDonnee="texte", stringConverter=FormateDisponible, imageGetter=GetImageDisponible),
             "nomTitulaires": ColumnDefn(_(u"Loueur"), "left", 200, "nomTitulaires", typeDonnee="texte"),
             "date_debut": ColumnDefn(_(u"Début"), "left", 120, "date_debut", typeDonnee="texte", stringConverter=FormateDate),
@@ -199,11 +200,11 @@ class ListView(FastObjectListView):
 
         if self.afficher_locations == True:
             if self.afficher_detail_location == True :
-                liste_temp = ["IDproduit", "nom", "nomCategorie", "disponible", "nomTitulaires", "date_debut", "date_fin"]
+                liste_temp = ["IDproduit", "nom", "nomCategorie", "quantite", "disponible", "nomTitulaires", "date_debut", "date_fin"]
             else :
-                liste_temp = ["IDproduit", "nom", "nomCategorie", "disponible"]
+                liste_temp = ["IDproduit", "nom", "nomCategorie", "quantite", "disponible"]
         else :
-            liste_temp = ["IDproduit", "nom", "nomCategorie"]
+            liste_temp = ["IDproduit", "nom", "nomCategorie", "quantite"]
 
         if self.dictPositions != None :
             liste_temp.append("position")

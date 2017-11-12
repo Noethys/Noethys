@@ -422,6 +422,8 @@ def GetStockDisponible(DB=None, IDproduit=None, date_debut=None, date_fin=None, 
     DBT.ExecuterReq(req)
     listeDonnees = DBT.ResultatReq()
     stock_initial = listeDonnees[0][1]
+    if stock_initial == None :
+        stock_initial = 1
 
     # Recherche les locations du produit sur la période
     req = """SELECT IDlocation, IDfamille, date_debut, date_fin, quantite

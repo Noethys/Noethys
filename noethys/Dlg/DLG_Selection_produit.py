@@ -17,7 +17,7 @@ from Ol import OL_Produits
 
 
 class Dialog(wx.Dialog):
-    def __init__(self, parent, IDproduit=None, liste_produits=[], selection_multiple=False, selection_obligatoire=True):
+    def __init__(self, parent, IDproduit=None, liste_produits=[], selection_multiple=False, selection_obligatoire=True, coche_uniquement_disponibles=True):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         self.selection_multiple = selection_multiple
@@ -29,7 +29,8 @@ class Dialog(wx.Dialog):
 
         self.check_disponibles = wx.CheckBox(self, -1, _(u"Afficher uniquement les produits disponibles"))
         self.check_disponibles.SetFont(wx.Font(8, wx.FONTFAMILY_DEFAULT, wx.NORMAL, wx.NORMAL))
-        self.check_disponibles.SetValue(True)
+        if coche_uniquement_disponibles == True :
+            self.check_disponibles.SetValue(True)
 
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
         self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
