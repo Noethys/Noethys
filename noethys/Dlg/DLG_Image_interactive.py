@@ -26,18 +26,28 @@ class Track(object):
         self.nom = donnees[1]
         self.observations = donnees[2]
         self.nomCategorie = donnees[3]
+        self.quantite = donnees[4]
+        if self.quantite == None :
+            self.quantite = 1
+        self.disponible = int(self.quantite)
 
         # Recherche si le produit est en cours de location
-        if parent.afficher_locations == True :
-            if parent.dictLocations.has_key(self.IDproduit):
-                self.statut = "indisponible"
-                dictLocation = parent.dictLocations[self.IDproduit]
-                self.IDfamille = dictLocation["IDfamille"]
-                self.nomTitulaires = parent.dict_titulaires[self.IDfamille]["titulairesSansCivilite"]
-                self.date_debut = dictLocation["date_debut"]
-                self.date_fin = dictLocation["date_fin"]
-            else :
-                self.statut = "disponible"
+        # if parent.afficher_locations == True :
+        #     if parent.dictLocations.has_key(self.IDproduit):
+        #         self.statut = "indisponible"
+        #         dictLocation = parent.dictLocations[self.IDproduit]
+        #         self.IDfamille = dictLocation["IDfamille"]
+        #         self.nomTitulaires = parent.dict_titulaires[self.IDfamille]["titulairesSansCivilite"]
+        #         self.date_debut = dictLocation["date_debut"]
+        #         self.date_fin = dictLocation["date_fin"]
+        #     else :
+        #         self.statut = "disponible"
+
+        # Recherche si le produit est en cours de location
+        if parent.dictLocations.has_key(self.IDproduit):
+            self.liste_locations = parent.dictLocations[self.IDproduit]
+            for dictLocation in self.liste_locations:
+                self.disponible -= dictLocation["quantite"]
 
         # Récupération des réponses des questionnaires
         for dictQuestion in parent.liste_questions :
@@ -48,16 +58,33 @@ class Track(object):
         texte = u""
 
         # Location en cours
-        if self.statut == "disponible" :
-            texte += u"Etat : Produit disponible\n"
+        if self.disponible > 0 :
+            texte += u"Produit disponible (Stock : %d)\n" % self.disponible
         else :
-            texte += u"Etat : Location en cours\n\n"
-            texte += u"Loueur : %s\n" % self.nomTitulaires
-            texte += u"Début : %s\n" % datetime.datetime.strftime(self.date_debut, "%d/%m/%Y - %Hh%M")
-            if self.date_fin == None :
-                texte += u"Fin : Non définie\n"
+            if len(self.liste_locations) == 1 :
+                texte_location = _(u"1 location")
             else :
-                texte += u"Fin : %s\n" % datetime.datetime.strftime(self.date_fin, "%d/%m/%Y - %Hh%M")
+                texte_location = _(u"%d locations") % len(self.liste_locations)
+            texte += u"%s en cours (Quantité louée : %d / Stock : %d) :\n\n" % (texte_location, self.quantite-self.disponible, self.quantite)
+
+            for dictLocation in self.liste_locations:
+                IDfamille = dictLocation["IDfamille"]
+                if self.parent.dict_titulaires.has_key(IDfamille):
+                    nomTitulaires = self.parent.dict_titulaires[IDfamille]["titulairesSansCivilite"]
+                else :
+                    nomTitulaires = _("Titulaires inconnus")
+                date_debut = dictLocation["date_debut"]
+                date_fin = dictLocation["date_fin"]
+                quantite = dictLocation["quantite"]
+                if quantite == None :
+                    quantite = 1
+                date_debut_str = datetime.datetime.strftime(date_debut, "%d/%m/%Y-%Hh%M")
+                if date_fin == None:
+                    date_fin_str = u"[Illimité]"
+                else:
+                    date_fin_str = datetime.datetime.strftime(date_fin, "%d/%m/%Y-%Hh%M")
+
+                texte += u"- %s (Du %s au %s, quantité : %d)\n" % (nomTitulaires, date_debut_str, date_fin_str, quantite)
 
         texte += "\n"
 
@@ -81,7 +108,7 @@ class Track(object):
         return dictDonnees
 
     def GetCouleur(self):
-        if self.statut == "disponible" :
+        if self.disponible > 0 :
             return wx.Colour(211, 255, 136)
         else :
             return wx.Colour(255, 135, 125)
@@ -141,7 +168,7 @@ class Data():
         self.categorie, self.IDdonnee = listeDonnees[0]
 
         # Importation des produits
-        req = """SELECT IDproduit, produits.nom, produits.observations, produits_categories.nom
+        req = """SELECT IDproduit, produits.nom, produits.observations, produits_categories.nom, produits.quantite
         FROM produits
         LEFT JOIN produits_categories ON produits_categories.IDcategorie = produits.IDcategorie
         WHERE produits.IDcategorie=%d;""" % self.IDdonnee
