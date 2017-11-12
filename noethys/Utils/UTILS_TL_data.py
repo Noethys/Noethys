@@ -714,8 +714,10 @@ def time_period_center(time, length):
     return TimePeriod(start_time, end_time)
 
 
-def get_timeline(modele=None):
+def get_timeline(modele=None, reimporterdata=False):
     if modele != None :
+        if reimporterdata == True :
+            modele._load_data()
         return modele
     
     from UTILS_TL_db import TimelinePerso

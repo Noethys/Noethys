@@ -22,9 +22,6 @@ from Utils import UTILS_TL_db as TL
 
 import datetime
 
-try: import psyco; psyco.full()
-except: pass
-
 
 class Track(object):
     def __init__(self, donnees):

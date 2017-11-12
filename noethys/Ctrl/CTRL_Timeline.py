@@ -189,8 +189,8 @@ class CTRL(wx.Panel):
         self.hide_sidebar = self.timeline_panel.hide_sidebar
         self.get_sidebar_width = self.timeline_panel.get_sidebar_width
     
-    def MAJ(self):
-        self.timeline = data.get_timeline(self.modele)
+    def MAJ(self, reimporterdata=False):
+        self.timeline = data.get_timeline(self.modele, reimporterdata)
         self.catbox.set_timeline(self.timeline)
         self.drawing_area.set_timeline(self.timeline)
     
