@@ -917,6 +917,8 @@ class MainFrame(wx.Frame):
                 {"code": "locations_demandes_email", "label": _(u"Transmettre des demandes par Email"), "infobulle": _(u"Transmettre des demandes par Email"), "image": "Images/16x16/Emails_exp.png", "action": self.On_locations_demandes_email},
                 {"code": "locations_demandes_imprimer", "label": _(u"Imprimer des demandes"), "infobulle": _(u"Imprimer une ou plusieurs demandes"), "image": "Images/16x16/Imprimante.png", "action": self.On_locations_demandes_imprimer},
                 "-",
+                {"code": "locations_planning", "label": _(u"Planning des locations"), "infobulle": _(u"Consultation du planning des locations"), "image": "Images/16x16/Calendrier.png", "action": self.On_locations_planning},
+                "-",
                 {"code": "locations_images", "label": _(u"Images interactives"), "infobulle": _(u"Consultation des images interactives"), "image": "Images/16x16/Image_interactive.png", "action": self.On_locations_images},
                 ],
              },
@@ -3057,6 +3059,14 @@ class MainFrame(wx.Frame):
         dlg = DLG_Locations_demandes_email.Dialog(self)
         dlg.ShowModal()
         dlg.Destroy()
+
+    def On_locations_planning(self, event):
+        if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("locations_planning", "consulter") == False : return
+        from Dlg import DLG_Locations_planning
+        dlg = DLG_Locations_planning.Dialog(self)
+        dlg.ShowModal()
+        dlg.Destroy()
+        self.ctrl_remplissage.MAJ()
 
     def On_locations_images(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("locations_images", "consulter") == False : return

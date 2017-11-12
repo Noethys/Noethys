@@ -20,6 +20,42 @@ from Utils import UTILS_Interface
 from Utils import UTILS_Questionnaires
 from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils, PanelAvecFooter
 
+def Supprimer_location(parent, IDlocation=None):
+    # Vérifie si les prestations de cette location sont déjà facturées
+    DB = GestionDB.DB()
+    req = """SELECT
+    IDprestation, IDfacture
+    FROM prestations 
+    WHERE categorie="location" and IDdonnee=%d AND IDfacture IS NOT NULL;""" % IDlocation
+    DB.ExecuterReq(req)
+    listePrestations = DB.ResultatReq()
+    DB.Close()
+    listeIDprestations = []
+    for IDprestation, IDfacture in listePrestations:
+        listeIDprestations.append(IDprestation)
+    if len(listePrestations) > 0:
+        dlg = wx.MessageDialog(parent, _(u"Vous ne pouvez pas supprimer cette location car elle est déjà associée à %d prestations facturées !") % len(listePrestations), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+        dlg.ShowModal()
+        dlg.Destroy()
+        return False
+
+    # Suppression
+    dlg = wx.MessageDialog(parent, _(u"Souhaitez-vous vraiment supprimer cette location ?"), _(u"Suppression"), wx.YES_NO | wx.NO_DEFAULT | wx.CANCEL | wx.ICON_INFORMATION)
+    if dlg.ShowModal() == wx.ID_YES:
+        DB = GestionDB.DB()
+        DB.ReqDEL("locations", "IDlocation", IDlocation)
+        DB.ExecuterReq("DELETE FROM questionnaire_reponses WHERE type='location' AND IDdonnee=%d;" % IDlocation)
+        DB.ReqMAJ("locations_demandes", [("statut", "attente"), ], "IDlocation", IDlocation)
+        DB.ReqMAJ("locations_demandes", [("IDlocation", None), ], "IDlocation", IDlocation)
+        DB.ExecuterReq("DELETE FROM prestations WHERE categorie='location' AND IDdonnee=%d;" % IDlocation)
+        for IDprestation in listeIDprestations:
+            DB.ReqDEL("ventilation", "IDprestation", IDprestation)
+        DB.Close()
+    dlg.Destroy()
+
+    return True
+
+
 
 class Track(object):
     def __init__(self, listview=None, donnees=None):
@@ -32,6 +68,9 @@ class Track(object):
         self.quantite = donnees[6]
         self.nomProduit = donnees[7]
         self.nomCategorie = donnees[8]
+
+        if self.quantite == None :
+            self.quantite = 1
 
         # Période
         if isinstance(self.date_debut, str) or isinstance(self.date_debut, unicode) :
@@ -58,6 +97,7 @@ class ListView(FastObjectListView):
         self.IDfamille = kwds.pop("IDfamille", None)
         self.IDproduit = kwds.pop("IDproduit", None)
         self.checkColonne = kwds.pop("checkColonne", False)
+        self.afficher_uniquement_actives = kwds.pop("afficher_uniquement_actives", False)
         self.selectionID = None
         self.selectionTrack = None
         self.criteres = ""
@@ -65,7 +105,6 @@ class ListView(FastObjectListView):
         self.popupIndex = -1
         self.listeFiltres = []
         self.dirty = False
-        self.afficher_uniquement_actives = False
 
         # Initialisation du listCtrl
         self.nom_fichier_liste = __file__
@@ -96,7 +135,7 @@ class ListView(FastObjectListView):
         if self.IDproduit != None :
             liste_conditions.append("locations.IDproduit=%d" % self.IDproduit)
         if self.afficher_uniquement_actives == True :
-            today = datetime.date.today()
+            today = datetime.datetime.now()
             liste_conditions.append("locations.date_debut<='%s' AND (locations.date_fin IS NULL OR locations.date_fin>='%s')" % (today, today))
 
         if len(liste_conditions) > 0 :
@@ -306,40 +345,10 @@ class ListView(FastObjectListView):
             dlg.Destroy()
             return
         track = self.Selection()[0]
-
-        # Vérifie si les prestations de cette location sont déjà facturées
-        DB = GestionDB.DB()
-        req = """SELECT
-        IDprestation, IDfacture
-        FROM prestations 
-        WHERE categorie="location" and IDdonnee=%d AND IDfacture IS NOT NULL;""" % track.IDlocation
-        DB.ExecuterReq(req)
-        listePrestations = DB.ResultatReq()
-        DB.Close()
-        listeIDprestations = []
-        for IDprestation, IDfacture in listePrestations :
-            listeIDprestations.append(IDprestation)
-        if len(listePrestations) > 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas supprimer cette location car elle est déjà associée à %d prestations facturées !") % len(listePrestations), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
-            dlg.ShowModal()
-            dlg.Destroy()
-            return
-
-        # Suppression
-        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer cette location ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
-        if dlg.ShowModal() == wx.ID_YES :
-            DB = GestionDB.DB()
-            DB.ReqDEL("locations", "IDlocation", track.IDlocation)
-            DB.ExecuterReq("DELETE FROM questionnaire_reponses WHERE type='location' AND IDdonnee=%d;" % track.IDlocation)
-            DB.ReqMAJ("locations_demandes", [("statut", "attente"),], "IDlocation", track.IDlocation)
-            DB.ReqMAJ("locations_demandes", [("IDlocation", None),], "IDlocation", track.IDlocation)
-            DB.ExecuterReq("DELETE FROM prestations WHERE categorie='location' AND IDdonnee=%d;" % track.IDlocation)
-            for IDprestation in listeIDprestations :
-                DB.ReqDEL("ventilation", "IDprestation", IDprestation)
-            DB.Close()
+        resultat = Supprimer_location(self, IDlocation=track.IDlocation)
+        if resultat == True :
             self.MAJ()
             self.dirty = True
-        dlg.Destroy()
 
     def ImprimerPDF(self, event):
         if len(self.Selection()) == 0 :
@@ -409,7 +418,7 @@ class MyFrame(wx.Frame):
         sizer_1 = wx.BoxSizer(wx.VERTICAL)
         sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
         self.SetSizer(sizer_1)
-        self.myOlv = ListView(panel, id=-1, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
+        self.myOlv = ListView(panel, id=-1, afficher_uniquement_actives=True, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.myOlv.MAJ() 
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.myOlv, 1, wx.ALL|wx.EXPAND, 4)

@@ -583,7 +583,7 @@ class HeaderDrawerMixin(object):
 	"""
 
 	def DrawDayHeader(self, day, x, y, width, height, highlight=False):
-		return self._DrawHeader('%s %s %s' % ( LISTE_JOURS[day.GetWeekDay()].capitalize(),
+		return self._DrawHeader('%s %s %s' % ( LISTE_JOURS[day.GetWeekDay()-1].capitalize(),
 						       day.GetDay(), LISTE_MOIS[day.GetMonth()] ),
 					x, y, width, height, highlight=highlight)
 

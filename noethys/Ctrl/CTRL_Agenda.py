@@ -3,8 +3,8 @@
 #------------------------------------------------------------------------
 # Application :    Noethys, gestion multi-activités
 # Site internet :  www.noethys.com
-# Auteur:           Ivan LUCAS
-# Copyright:       (c) 2010-14 Ivan LUCAS
+# Auteur:          Ivan LUCAS
+# Copyright:       (c) 2010-17 Ivan LUCAS
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
@@ -14,16 +14,9 @@ from Utils.UTILS_Traduction import _
 import wx
 import CTRL_Bouton_image
 import CTRL_Bandeau
-
 import GestionDB
 import datetime
-
-from CTRL_Saisie_transport import DICT_CATEGORIES
-from Data.DATA_Tables import DB_DATA as DICT_TABLES
-from Dlg import DLG_Saisie_transport
 from Utils import UTILS_Schedule
-from Utils import UTILS_Transports
-
 from Outils import wxScheduler
 from Outils import wxReportScheduler
 
@@ -62,6 +55,14 @@ def ConvertDateDTenWX(date=None, heure=None):
         mn = int(mn)
     datewx = wx.DateTime()
     datewx.Set(date.day, month=date.month-1, year=date.year, hour=hr, minute=mn)
+    return datewx
+
+def ConvertDateDTenWX2(datedt=None):
+    """ Convertit une date datetime en WX.datetime """
+    if datedt == None :
+        datedt = datetime.datetime(2999, 1, 1)
+    datewx = wx.DateTime()
+    datewx.Set(datedt.day, month=datedt.month-1, year=datedt.year, hour=datedt.hour, minute=datedt.minute)
     return datewx
 
 
@@ -232,6 +233,11 @@ class ToolBar(wx.ToolBar):
         preview_window.SetSize(frame.GetSize())
         preview_window.Show(True)
 
+    def SetPeriode(self, periode="semaine"):
+        if periode == "semaine" :
+            self.ToggleTool(ID_OUTIL_SEMAINE, True)
+            self.OnAffichageSemaine(None)
+
 
 # --------------------------------------------------------------------------------------------------------------------------
 
@@ -267,10 +273,9 @@ class DLG_Recherche_date(wx.Dialog):
 
 class CTRL_Planning(wx.Panel):
     """ Contrôle Scheduler """
-    def __init__(self, parent, IDindividu=None):
+    def __init__(self, parent):
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
         self.parent = parent
-        self.IDindividu = IDindividu
         self.scheduleMove = None
         
         # Barre d'outils
@@ -311,9 +316,6 @@ class CTRL_Planning(wx.Panel):
         self.ctrl_planning.Bind(wxScheduler.EVT_SCHEDULE_ACTIVATED, self.OnLeftClick)
         self.ctrl_planning.Bind(wx.EVT_LEFT_UP, self.OnLeftUp)
 
-        # Importation
-        self.Importation() 
-    
     def OnLeftClick(self, event):
         schedule = event.schedule
         date = event.date
@@ -327,7 +329,6 @@ class CTRL_Planning(wx.Panel):
         date = event.date
         dateExacte = event.dateExacte
         
-####print heurePrecise
         if self.scheduleMove != None :
             self.scheduleMove.end = dateExacte
             self.scheduleMove.description = "%s - %s" % (self.scheduleMove.start.Format("%H:%M"), self.scheduleMove.end.Format("%H:%M"))
@@ -378,117 +379,38 @@ class CTRL_Planning(wx.Panel):
             self.Modifier(schedule=schedule)
     
     def Ajouter(self, date=None):
-        """ Création d'un transport """
-        datedt = ConvertDateWXenDT(date)
-        dlg = DLG_Saisie_transport.Dialog(self, IDtransport=None, IDindividu=self.IDindividu)
-        dlg.SetDateHeure(datedt)
-        if dlg.ShowModal() == wx.ID_OK:
-##            dictTransport = dlg.GetDictDonnees()
-##            dictTransport = self.AnalyseTransport(dictTransport)
-##            self.CreationSchedule(dictTransport) 
-            self.MAJ() 
-        dlg.Destroy()
+        """ Création d'un évènement """
+        pass
+        # datedt = ConvertDateWXenDT(date)
+        # Ajout ici
+        # self.MAJ()
 
-    def AjouterLot(self):
-        """ Création d'un lot de transports """
-        dlg = DLG_Saisie_transport.Dialog_multiple(self, IDindividu=self.IDindividu)
-        if dlg.ShowModal() == wx.ID_OK:
-##            listeDictDonnees = dlg.GetListeDictDonnees()
-##            for dictTransport in listeDictDonnees :
-##                dictTransport = self.AnalyseTransport(dictTransport)
-##                self.CreationSchedule(dictTransport) 
-            self.MAJ() 
-        dlg.Destroy()
-
-##        print date
-##        schedule = wxScheduler.wxSchedule()
-##        schedule.description = _(u"Ceci est un test sur 3 jours")
-##        schedule.start = wx.DateTimeFromHMS(15, 0, 0)
-##        end = wx.DateTimeFromHMS(16, 0, 0)
-##        end.AddDS(wx.DateSpan(days=2))
-##        schedule.end = end
-##        schedule.complete = 0.50
-##        schedule.foreground = wx.Color(255, 0, 0)
-##        # schedule.foreground.font = wx.Font()
-##        # schedule.color = wx.Color(200, 200, 200)
-##        schedule.icons = [wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Avion.png"), wx.BITMAP_TYPE_ANY),]
-##        self.ctrl_planning.Add(schedule)
-        
     def Modifier(self, schedule=None):
         """ Modification d'un schedule """
-        self.ctrl_planning.Freeze()
-        dlg = DLG_Saisie_transport.Dialog(self, IDtransport=schedule.IDtransport, IDindividu=self.IDindividu)
-        if dlg.ShowModal() == wx.ID_OK:
-##            dictTransport = dlg.GetDictDonnees()
-##            dictTransport = self.AnalyseTransport(dictTransport)
-##            self.ModificationSchedule(dictTransport, schedule)
-            self.MAJ() 
-        dlg.Destroy()
-        self.ctrl_planning.Thaw()
+        pass
+        # self.ctrl_planning.Freeze()
+        # Modification ici
+        # self.MAJ()
+        # self.ctrl_planning.Thaw()
         
     def Supprimer(self, schedule=None):
         """ Suppression d'un schedule """
-        DB = GestionDB.DB()
-        DB.ReqDEL("transports", "IDtransport", schedule.IDtransport)
-        DB.Close() 
-        self.ctrl_planning.Delete(schedule)
-    
+        pass
+        # Suppression ici
+        # self.ctrl_planning.Delete(schedule)
+
     def MAJ(self):
         self.ctrl_planning.DeleteAll()
         self.Importation()
-        
+
     def Importation(self):
-        """ Importation des transports depuis la base de données """
-        # Récupération des champs de la table
-        listeChamps = []
-        for nom, type, info in DICT_TABLES["transports"] :
-            listeChamps.append(nom)
-        
-        # Importation
-        DB = GestionDB.DB()
-        req = """SELECT %s
-        FROM transports 
-        WHERE mode="TRANSP" AND IDindividu=%d;""" % (", ".join(listeChamps), self.IDindividu)
-        DB.ExecuterReq(req)
-        listeDonnees = DB.ResultatReq()
-        DB.Close()
-        
-        # Stockage des données sous forme de dictionnaires dans une liste
-        listeTransports = []
-        for donnees in listeDonnees :
-            dictTemp = {}
-            index = 0
-            for valeur in donnees :
-                dictTemp[listeChamps[index]] = valeur
-                index += 1
-            listeTransports.append(dictTemp)
-        
-        # Récupération des données tierces
-        modLocalisation = UTILS_Transports.AnalyseLocalisation() 
-        
-        # Création des schedules
-        for dictTransport in listeTransports :
-            dictTransport = self.AnalyseTransport(dictTransport, modLocalisation)
-            self.CreationSchedule(dictTransport) 
-    
-    def AnalyseTransport(self, dictTransport={}, modLocalisation=None):
-        """ Analyse les données et les convertit en donnée texte pour le futur schedule """        
-        # catégorie
-        categorie = dictTransport["categorie"]
-        dictTransport["labelCategorie"] = DICT_CATEGORIES[categorie]["label"]
-        
-        # Image
-        dictTransport["image"] = DICT_CATEGORIES[categorie]["image"]
-        
-        # Analyse des localisations
-        depart_nom = modLocalisation.Analyse(dictTransport["depart_IDarret"], dictTransport["depart_IDlieu"], dictTransport["depart_localisation"])
-        arrivee_nom = modLocalisation.Analyse(dictTransport["arrivee_IDarret"], dictTransport["arrivee_IDlieu"], dictTransport["arrivee_localisation"])
-        
-        # Création du label du schedule
-        dictTransport["label"] = u"%s > %s" % (depart_nom, arrivee_nom)
-        
-        return dictTransport
-        
+        """ Importation des events depuis la base de données """
+        pass
+        # # Création des schedules
+        # for dictTransport in listeTransports :
+        #     dictTransport = self.AnalyseTransport(dictTransport, modLocalisation)
+        #     self.CreationSchedule(dictTransport)
+
     def CreationSchedule(self, dictDonnees={}):
         """ Création d'un schedule """
         schedule = wxScheduler.wxSchedule()
@@ -529,23 +451,21 @@ class CTRL_Planning(wx.Panel):
 # --------------------------------------------------------------------------------------------------------------------------
 
 class Dialog(wx.Dialog):
-    def __init__(self, parent, IDindividu=None):
-        """ Affiche un planning des transports pour un individu"""
+    def __init__(self, parent,):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         
         # Bandeau
-        intro = _(u"Vous pouvez consulter ici le planning complet des transports enregistrés pour un individu. Pour saisir un transport, double-cliquez sur le jour et l'heure souhaités dans ce planning. Double-cliquez sur un transport pour le modifier ou utilisez le bouton droit de la souris pour accéder au menu contextuel.")
-        titre = _(u"Planning des transports")
+        intro = _(u"DLG Test")
+        titre = _(u"DLG test de l'agenda")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Transport.png")
         
         # Planning
-        self.ctrl_planning = CTRL_Planning(self, IDindividu=IDindividu)
+        self.ctrl_planning = CTRL_Planning(self)
         
         # Boutons
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
-        self.bouton_saisie_lot = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/BoutonsImages/Saisie_lot_transports.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 ##        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
@@ -553,15 +473,12 @@ class Dialog(wx.Dialog):
         self.__do_layout()
         
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
-        self.Bind(wx.EVT_BUTTON, self.OnBoutonSaisieLot, self.bouton_saisie_lot)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
 
     def __set_properties(self):
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
-        self.bouton_saisie_lot.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour saisir un lot de transports")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
-##        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler et fermer")))
-        self.SetMinSize((400, 300))
+        self.SetMinSize((800, 600))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
@@ -573,11 +490,9 @@ class Dialog(wx.Dialog):
         # Boutons
         grid_sizer_boutons = wx.FlexGridSizer(rows=1, cols=4, vgap=10, hgap=10)
         grid_sizer_boutons.Add(self.bouton_aide, 0, 0, 0)
-        grid_sizer_boutons.Add(self.bouton_saisie_lot, 0, 0, 0)
         grid_sizer_boutons.Add((20, 20), 0, wx.EXPAND, 0)
         grid_sizer_boutons.Add(self.bouton_ok, 0, 0, 0)
-##        grid_sizer_boutons.Add(self.bouton_annuler, 0, 0, 0)
-        grid_sizer_boutons.AddGrowableCol(2)
+        grid_sizer_boutons.AddGrowableCol(1)
         grid_sizer_base.Add(grid_sizer_boutons, 1, wx.LEFT|wx.RIGHT|wx.BOTTOM|wx.EXPAND, 10)
         self.SetSizer(grid_sizer_base)
         grid_sizer_base.Fit(self)
@@ -589,20 +504,17 @@ class Dialog(wx.Dialog):
     def OnBoutonOk(self, event):
         self.ctrl_planning.AjouteScheduleTest() 
 ##        self.EndModal(wx.ID_OK)
-    
-    def OnBoutonSaisieLot(self, event):
-        self.ctrl_planning.AjouterLot() 
-        
+
     def OnBoutonAide(self, event): 
         from Utils import UTILS_Aide
-        UTILS_Aide.Aide("Transports1")
+        UTILS_Aide.Aide("")
 
 
         
 if __name__ == "__main__":
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    dialog_1 = Dialog(None, IDindividu=46)
+    dialog_1 = Dialog(None)
     app.SetTopWindow(dialog_1)
     dialog_1.ShowModal()
     app.MainLoop()
