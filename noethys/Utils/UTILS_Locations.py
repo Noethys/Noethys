@@ -468,12 +468,15 @@ def GetStockDisponible(DB=None, IDproduit=None, date_debut=None, date_fin=None, 
 
 # -------------------------------------------------------------------------------------------------------------------------------------------
 
-def GetProduitsLoues(DB=None, date_reference=datetime.datetime.now()):
+def GetProduitsLoues(DB=None, date_reference=None):
     """ Recherche les produits loués à la date de référence """
     if DB == None:
         DBT = GestionDB.DB()
     else:
         DBT = DB
+
+    if date_reference == None :
+        date_reference = datetime.datetime.now()
 
     # Recherche les locations à la date de référence
     req = """SELECT IDlocation, IDproduit, IDfamille, date_debut, date_fin, quantite
