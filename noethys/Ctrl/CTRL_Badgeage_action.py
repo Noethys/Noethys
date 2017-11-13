@@ -1241,6 +1241,7 @@ class Panel(wx.Panel):
             ("enregistrer", CTRL_Enregistrer(self.ctrl) ),
             ("reserver", CTRL_Reserver(self.ctrl) ),
             ("message", CTRL_Message(self.ctrl) ),
+            ("quitter", CTRL_Quitter(self.ctrl) ),
             ]
         self.dictPages = {}
         index = 0
