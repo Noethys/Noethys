@@ -1,9 +1,10 @@
-Version 1.2.1.6 (12/11/2017) :
+Version 1.2.1.7 (18/11/2017) :
 
 - Ajout de l'envoi de SMS avec Orange Business
 - Ajout de la facturation des locations
 - Ajout des quantités et du stock des locations
 - Ajout de la chronologie dans la fiche produit
+- Ajout du calendrier des locations dans le menu Locations
 - Optimisation de l'ouverture de la fenêtre de saisie d'un règlement
 - Amélioration de la liste des inscriptions
 - Optimisation des barres de recherche rapide
