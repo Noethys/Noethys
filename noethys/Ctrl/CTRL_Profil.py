@@ -83,6 +83,7 @@ class CTRL(wx.Panel):
         self.categorie = categorie
 
         self.ctrl_choix_profil = CTRL_Choix_profil(self, categorie=categorie)
+        self.ctrl_choix_profil.SetMinSize((50, -1))
         self.bouton_gestion = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Mecanisme.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_enregistrer = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Sauvegarder.png"), wx.BITMAP_TYPE_ANY))
 
