@@ -742,7 +742,6 @@ class Synchro():
             m = models.Groupe(IDgroupe=IDgroupe, nom=nom, IDactivite=IDactivite, ordre=ordre)
             session.add(m)
 
-
         # Création des individus
         self.Pulse_gauge()
 
@@ -766,21 +765,21 @@ class Synchro():
                     valeur = UTILS_Dates.DateEngEnDateDD(valeur)
 
                 # Renseignements à masquer
-                if champ == "nom" and dictTemp["IDcategorie"] == 1 and self.dict_parametres["renseignements_adulte_nom"] == "masquer" :
+                if champ == "nom" and dictTemp["IDcategorie"] == 1 and (self.dict_parametres["renseignements_adulte_nom"] == "masquer" or self.dict_parametres["renseignements_afficher"] == False) :
                     valeur = None
-                if champ == "nom" and dictTemp["IDcategorie"] == 2 and self.dict_parametres["renseignements_enfant_nom"] == "masquer" :
+                if champ == "nom" and dictTemp["IDcategorie"] == 2 and (self.dict_parametres["renseignements_enfant_nom"] == "masquer" or self.dict_parametres["renseignements_afficher"] == False) :
                     valeur = None
-                if champ in ("cp_naiss", "ville_naiss") and dictTemp["IDcategorie"] == 1 and self.dict_parametres["renseignements_adulte_naissance"] == "masquer" :
+                if champ in ("cp_naiss", "ville_naiss") and dictTemp["IDcategorie"] == 1 and (self.dict_parametres["renseignements_adulte_naissance"] == "masquer" or self.dict_parametres["renseignements_afficher"] == False) :
                     valeur = None
-                if champ in ("cp_naiss", "ville_naiss") and dictTemp["IDcategorie"] == 2 and self.dict_parametres["renseignements_enfant_naissance"] == "masquer" :
+                if champ in ("cp_naiss", "ville_naiss") and dictTemp["IDcategorie"] == 2 and (self.dict_parametres["renseignements_enfant_naissance"] == "masquer" or self.dict_parametres["renseignements_afficher"] == False) :
                     valeur = None
-                if champ in ("tel_domicile", "tel_mobile", "mail") and dictTemp["IDcategorie"] == 1 and self.dict_parametres["renseignements_adulte_coords"] == "masquer" :
+                if champ in ("tel_domicile", "tel_mobile", "mail") and dictTemp["IDcategorie"] == 1 and (self.dict_parametres["renseignements_adulte_coords"] == "masquer" or self.dict_parametres["renseignements_afficher"] == False) :
                     valeur = None
-                if champ in ("tel_domicile", "tel_mobile", "mail") and dictTemp["IDcategorie"] == 2 and self.dict_parametres["renseignements_enfant_coords"] == "masquer" :
+                if champ in ("tel_domicile", "tel_mobile", "mail") and dictTemp["IDcategorie"] == 2 and (self.dict_parametres["renseignements_enfant_coords"] == "masquer" or self.dict_parametres["renseignements_afficher"] == False) :
                     valeur = None
-                if champ in ("adresse_auto", "rue_resid", "cp_resid", "ville_resid") and self.dict_parametres["renseignements_adresse"] == "masquer" :
+                if champ in ("adresse_auto", "rue_resid", "cp_resid", "ville_resid") and (self.dict_parametres["renseignements_adresse"] == "masquer" or self.dict_parametres["renseignements_afficher"] == False) :
                     valeur = None
-                if champ in ("profession", "employeur", "travail_tel", "travail_mail") and self.dict_parametres["renseignements_adulte_profession"] == "masquer":
+                if champ in ("profession", "employeur", "travail_tel", "travail_mail") and (self.dict_parametres["renseignements_adulte_profession"] == "masquer" or self.dict_parametres["renseignements_afficher"] == False):
                     valeur = None
 
                 dictTemp[champ] = valeur
