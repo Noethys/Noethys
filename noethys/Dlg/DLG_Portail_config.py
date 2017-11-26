@@ -44,6 +44,8 @@ LISTE_DELAIS_SYNCHRO = [(30, u"Toutes les 30 minutes"), (60, u"Toutes les heures
 LISTE_AFFICHAGE_HISTORIQUE = [(30, u"1 mois"), (60, u"2 mois"), (90, u"3 mois"), (120, u"4 mois"), (150, u"5 mois"), (180, u"6 mois")]
 LISTE_SELECTION_FACTURES = [(0, u"Toutes les factures"), (3, u"Datant de moins de 3 mois"), (6, u"Datant de moins de 6 mois"), (12, u"Datant de moins de 1 an"), (24, u"Datant de moins de 2 ans"), (36, u"Datant de moins de 3 ans"), (60, u"Datant de moins de 5 ans")]
 LISTE_SELECTION_REGLEMENTS = [(0, u"Tous les règlements"), (3, u"Datant de moins de 3 mois"), (6, u"Datant de moins de 6 mois"), (12, u"Datant de moins de 1 an"), (24, u"Datant de moins de 2 ans"), (36, u"Datant de moins de 3 ans"), (60, u"Datant de moins de 5 ans")]
+LISTE_SELECTION_RENSEIGNEMENTS = [("masquer", u"Ne pas afficher"), ("consultation", u"Consultation uniquement"), ("modification", u"Consultation et modification autorisées")]
+
 
 
 VALEURS_DEFAUT = {
@@ -95,6 +97,17 @@ VALEURS_DEFAUT = {
     "accueil_bienvenue" : _(u"Bienvenue sur le portail Famille"),
     "accueil_messages_afficher" : True,
     "accueil_etat_dossier_afficher" : True,
+    "renseignements_afficher": True,
+    "renseignements_intro": _(u"Vous pouvez consulter et modifier ici les renseignements sur votre famille."),
+    "renseignements_modifier": True,
+    "renseignements_adulte_nom": "modification",
+    "renseignements_enfant_nom": "modification",
+    "renseignements_adulte_naissance": "modification",
+    "renseignements_enfant_naissance": "modification",
+    "renseignements_adresse": "modification",
+    "renseignements_adulte_coords": "modification",
+    "renseignements_enfant_coords": "modification",
+    "renseignements_adulte_profession": "modification",
     "activites_afficher" : True,
     "activites_intro" : _(u"Vous pouvez consulter ici la liste des inscriptions et demander des inscriptions à d'autres activités."),
     "activites_autoriser_inscription" : True,
@@ -123,6 +136,15 @@ VALEURS_DEFAUT = {
     "mentions_afficher" : True,
     "aide_afficher" : True,
     }
+
+
+def GetDefaut(nom="", defaut=None):
+    if VALEURS_DEFAUT.has_key(nom) :
+        return VALEURS_DEFAUT[nom]
+    else :
+        return defaut
+
+
 
 
 
@@ -601,6 +623,94 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         propriete.SetHelpString(_(u"Cochez cette case pour afficher l'état du dossier sur la page d'accueil"))
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
+
+        # Catégorie
+        self.Append( wxpg.PropertyCategory(_(u"Page 'Renseignements'")) )
+
+        # Afficher
+        nom = "renseignements_afficher"
+        propriete = wxpg.BoolProperty(label=_(u"Afficher la page"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Cochez cette case pour afficher cette page"))
+        propriete.SetAttribute("UseCheckbox", True)
+        self.Append(propriete)
+
+        # Intro de la page renseignements
+        nom = "renseignements_intro"
+        propriete = wxpg.LongStringProperty(label=_(u"Texte d'introduction"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Saisissez un texte d'introduction"))
+        self.Append(propriete)
+
+        # Modifier
+        nom = "renseignements_modifier"
+        propriete = wxpg.BoolProperty(label=_(u"Autoriser la modification"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Cochez cette case pour afficher le bouton Modifier"))
+        propriete.SetAttribute("UseCheckbox", True)
+        self.Append(propriete)
+
+        # Noms
+        nom = "renseignements_adulte_nom"
+        propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Nom et prénom des adultes"), name=nom, liste_choix=LISTE_SELECTION_RENSEIGNEMENTS, valeur=VALEURS_DEFAUT[nom])
+        propriete.SetEditor("EditeurChoix")
+        propriete.SetHelpString(_(u"Sélectionnez le mode d'affichage de ce champ (ne pas afficher ou modification ou suppression)"))
+        propriete.SetAttribute("obligatoire", True)
+        self.Append(propriete)
+
+        nom = "renseignements_enfant_nom"
+        propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Nom et prénom des enfants"), name=nom, liste_choix=LISTE_SELECTION_RENSEIGNEMENTS, valeur=VALEURS_DEFAUT[nom])
+        propriete.SetEditor("EditeurChoix")
+        propriete.SetHelpString(_(u"Sélectionnez le mode d'affichage de ce champ (ne pas afficher ou modification ou suppression)"))
+        propriete.SetAttribute("obligatoire", True)
+        self.Append(propriete)
+
+        # Naissance
+        nom = "renseignements_adulte_naissance"
+        propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Date et lieu de naissance des adultes"), name=nom, liste_choix=LISTE_SELECTION_RENSEIGNEMENTS, valeur=VALEURS_DEFAUT[nom])
+        propriete.SetEditor("EditeurChoix")
+        propriete.SetHelpString(_(u"Sélectionnez le mode d'affichage de ce champ (ne pas afficher ou modification ou suppression)"))
+        propriete.SetAttribute("obligatoire", True)
+        self.Append(propriete)
+
+        nom = "renseignements_enfant_naissance"
+        propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Date et lieu de naissance des enfants"), name=nom, liste_choix=LISTE_SELECTION_RENSEIGNEMENTS, valeur=VALEURS_DEFAUT[nom])
+        propriete.SetEditor("EditeurChoix")
+        propriete.SetHelpString(_(u"Sélectionnez le mode d'affichage de ce champ (ne pas afficher ou modification ou suppression)"))
+        propriete.SetAttribute("obligatoire", True)
+        self.Append(propriete)
+
+        # Adresse
+        nom = "renseignements_adresse"
+        propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Adresse des adultes et enfants"), name=nom, liste_choix=LISTE_SELECTION_RENSEIGNEMENTS, valeur=VALEURS_DEFAUT[nom])
+        propriete.SetEditor("EditeurChoix")
+        propriete.SetHelpString(_(u"Sélectionnez le mode d'affichage de ce champ (ne pas afficher ou modification ou suppression)"))
+        propriete.SetAttribute("obligatoire", True)
+        self.Append(propriete)
+
+        # Coordonnées
+        nom = "renseignements_adulte_coords"
+        propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Téléphones et Email des adultes"), name=nom, liste_choix=LISTE_SELECTION_RENSEIGNEMENTS, valeur=VALEURS_DEFAUT[nom])
+        propriete.SetEditor("EditeurChoix")
+        propriete.SetHelpString(_(u"Sélectionnez le mode d'affichage de ce champ (ne pas afficher ou modification ou suppression)"))
+        propriete.SetAttribute("obligatoire", True)
+        self.Append(propriete)
+
+        nom = "renseignements_enfant_coords"
+        propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Téléphones et Email des enfants"), name=nom, liste_choix=LISTE_SELECTION_RENSEIGNEMENTS, valeur=VALEURS_DEFAUT[nom])
+        propriete.SetEditor("EditeurChoix")
+        propriete.SetHelpString(_(u"Sélectionnez le mode d'affichage de ce champ (ne pas afficher ou modification ou suppression)"))
+        propriete.SetAttribute("obligatoire", True)
+        self.Append(propriete)
+
+        # Profession
+        nom = "renseignements_adulte_profession"
+        propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Profession des adultes"), name=nom, liste_choix=LISTE_SELECTION_RENSEIGNEMENTS, valeur=VALEURS_DEFAUT[nom])
+        propriete.SetEditor("EditeurChoix")
+        propriete.SetHelpString(_(u"Sélectionnez le mode d'affichage de ce champ (ne pas afficher ou modification ou suppression)"))
+        propriete.SetAttribute("obligatoire", True)
+        self.Append(propriete)
+
+
+
+
 
         # Catégorie
         self.Append( wxpg.PropertyCategory(_(u"Page 'Activités'")) )

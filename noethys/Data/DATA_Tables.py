@@ -1576,6 +1576,13 @@ DB_DATA = {
                                     ("etat", "INTEGER", u"Ajout ou suppression de la réservation (1/0)"),
                                     ], # Réservations enregistrées sur le portail
 
+    "portail_renseignements":       [("IDrenseignement", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID renseignement"),
+                                     ("champ", "VARCHAR(255)", u"Nom du champ"),
+                                     ("valeur", "VARCHAR(255)", u"Valeur du renseignement"),
+                                     ("IDaction", "INTEGER", u"ID de l'action"),
+                                     ],  # Renseignements enregistrés sur le portail
+
+
     "portail_messages":             [("IDmessage", "INTEGER PRIMARY KEY AUTOINCREMENT", u"IDmessage"),
                                     ("titre", "VARCHAR(255)", u"Titre du message"),
                                     ("texte", "VARCHAR(1000)", u"Contenu du message"),

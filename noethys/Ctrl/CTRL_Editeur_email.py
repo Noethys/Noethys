@@ -43,6 +43,7 @@ CATEGORIES = [
     ("portail", _(u"Rappel des données du compte internet")),
     ("portail_demande_inscription", _(u"Portail - Demande d'une inscription")),
     ("portail_demande_reservation", _(u"Portail - Demande d'une réservation")),
+    ("portail_demande_renseignement", _(u"Portail - Demande de modification d'un renseignement")),
     ("portail_demande_facture", _(u"Portail - Demande d'une facture")),
     ("portail_demande_recu_reglement", _(u"Portail - Demande d'un reçu de règlement")),
     ("location", _(u"Location")),
@@ -192,6 +193,14 @@ MOTSCLES = {
                 ( "{DEMANDE_TRAITEMENT_DATE}", _(u"Date de traitement") ),
                 ( "{DEMANDE_REPONSE}", _(u"Réponse à la demande") ),
                 ],
+
+    "portail_demande_renseignement": [
+        ("{DEMANDE_HORODATAGE}", _(u"Date et heure de la demande")),
+        ("{DEMANDE_DESCRIPTION}", _(u"Description de la demande")),
+        ("{DEMANDE_COMMENTAIRE}", _(u"Commentaire de la demande")),
+        ("{DEMANDE_TRAITEMENT_DATE}", _(u"Date de traitement")),
+        ("{DEMANDE_REPONSE}", _(u"Réponse à la demande")),
+    ],
 
     "portail_demande_reservation" : [
                 ( "{DEMANDE_HORODATAGE}", _(u"Date et heure de la demande") ),

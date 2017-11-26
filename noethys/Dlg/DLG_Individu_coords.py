@@ -53,8 +53,8 @@ class BoutonSMS(wx.BitmapButton):
 
 
 class Adresse_auto(wx.Choice):
-    def __init__(self, parent):
-        wx.Choice.__init__(self, parent, -1) 
+    def __init__(self, parent, size=(-1, -1)):
+        wx.Choice.__init__(self, parent, -1, size=size)
         self.parent = parent
         self.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici un représentant de la famille.\n(Les individus sans adresse n'apparaissent pas)")))
     
@@ -62,8 +62,8 @@ class Adresse_auto(wx.Choice):
         if self.parent.IDindividu != None :
             listeItems = self.GetListeDonnees(DB)
             self.SetItems(listeItems)
-        if len(listeItems) > 0 :
-            self.Select(0)
+            if len(listeItems) > 0 :
+                self.Select(0)
     
     def GetNbreItems(self):
         return self.GetCount()

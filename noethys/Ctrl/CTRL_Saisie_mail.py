@@ -16,8 +16,8 @@ import CTRL_Bouton_image
 
     
 class Mail(wx.TextCtrl):
-    def __init__(self, parent):
-        wx.TextCtrl.__init__(self, parent, -1, "")
+    def __init__(self, parent, size=(-1, -1)):
+        wx.TextCtrl.__init__(self, parent, -1, "", size=size)
         self.parent = parent
         self.SetToolTip(wx.ToolTip(_(u"Saisissez une adresse mail")))   
         self.Bind(wx.EVT_KILL_FOCUS, self.OnKillFocus)

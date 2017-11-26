@@ -62,6 +62,7 @@ class Track(object):
         if self.categorie == "reglements" : self.categorie_label = _(u"Règlements")
         if self.categorie == "inscriptions" : self.categorie_label = _(u"Inscriptions")
         if self.categorie == "reservations" : self.categorie_label = _(u"Réservations")
+        if self.categorie == "renseignements": self.categorie_label = _(u"Renseignements")
 
     def FormateEtat(self):
         if self.etat == "attente" : self.etat_label = _(u"En attente")
@@ -155,6 +156,7 @@ class ListView(GroupListView):
         self.image_facture = self.AddNamedImages("factures", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Facture.png"), wx.BITMAP_TYPE_PNG))
         self.image_inscription = self.AddNamedImages("inscriptions", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Activite.png"), wx.BITMAP_TYPE_PNG))
         self.image_reservation = self.AddNamedImages("reservations", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Calendrier_modification.png"), wx.BITMAP_TYPE_PNG))
+        self.image_renseignement = self.AddNamedImages("renseignements", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Etiquette2.png"), wx.BITMAP_TYPE_PNG))
         self.image_email = self.AddNamedImages("email", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Emails_exp.png"), wx.BITMAP_TYPE_PNG))
 
         self.useExpansionColumn = True

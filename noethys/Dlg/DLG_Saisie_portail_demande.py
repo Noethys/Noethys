@@ -34,6 +34,11 @@ else :
     from wx import DatePickerCtrl, DP_DROPDOWN, EVT_DATE_CHANGED
 
 
+DICT_RENSEIGNEMENTS = {"nom" : u"Nom", "prenom" : u"Prénom", "date_naiss" : u"Date de naissance", "cp_naiss" : u"CP de naissance", "ville_naiss" : u"Ville de naissance", "rue_resid" : u"Adresse - Rue", "cp_resid" : u"Adresse - CP", "ville_resid" : u"Adresse - Ville",
+                    "tel_domicile" : u"Tél. Domicile", "tel_mobile" : u"Tél. Mobile", "mail" : u"Email", "profession" : u"Profession", "employeur" : u"Employeur", "travail_tel" : u"Tél. Pro.", "travail_mail" : u"Email Pro."}
+
+
+
 class CTRL_Html(html.HtmlWindow):
     def __init__(self, parent, texte="", couleurFond=(255, 255, 255), style=wx.SIMPLE_BORDER):
         html.HtmlWindow.__init__(self, parent, -1, style=style)  # , style=wx.html.HW_NO_SELECTION | wx.html.HW_SCROLLBAR_NEVER | wx.NO_FULL_REPAINT_ON_RESIZE)
@@ -607,6 +612,7 @@ class Dialog(wx.Dialog):
             "factures" : "Facture.png",
             "inscriptions" : "Activite.png",
             "reservations" : "Calendrier_modifier.png",
+            "renseignements": "Cotisation.png",
             }
         self.ctrl_image.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/32x32/%s" % dict_images[self.track.categorie]), wx.BITMAP_TYPE_PNG))
 
@@ -681,6 +687,45 @@ class Dialog(wx.Dialog):
             description += u"<p><ul>%s</ul></p>" % "".join(liste_lignes)
 
 
+        if self.track.categorie == "renseignements" :
+
+            # Recherche le détail des renseignements associés
+            DB = GestionDB.DB()
+            req = """SELECT champ, valeur
+            FROM portail_renseignements
+            WHERE IDaction=%d;""" % self.track.IDaction
+            DB.ExecuterReq(req)
+            listeDonnees = DB.ResultatReq()
+            DB.Close()
+            liste_lignes = []
+            for champ, valeur in listeDonnees :
+
+                label = None
+                if DICT_RENSEIGNEMENTS.has_key(champ):
+                    label = _(u"<li>%s : %s</li>") % (DICT_RENSEIGNEMENTS[champ], valeur)
+
+                if champ == "adresse_auto" and valeur != None:
+                    IDindividuTemp = int(valeur)
+                    DB = GestionDB.DB()
+                    req = """SELECT nom, prenom FROM individus WHERE IDindividu=%d;""" % IDindividuTemp
+                    DB.ExecuterReq(req)
+                    listeIndividus = DB.ResultatReq()
+                    DB.Close()
+                    if len(listeIndividus) > 0 :
+                        prenom = listeIndividus[0][1]
+                    else :
+                        prenom = "?"
+                    label = _(u"<li>Adresse associée à celle de %s</li>") % prenom
+
+                if label != None:
+                    liste_lignes.append(label)
+
+            description += u" :"
+
+            # Rajout du détail des renseignements
+            description += u"<p><ul>%s</ul></p>" % "".join(liste_lignes)
+
+
         self.ctrl_description.SetTexte(description)
 
         # Commentaire
@@ -702,6 +747,7 @@ class Dialog(wx.Dialog):
         if self.track.categorie == "reglements" : self.categorie_email = "portail_demande_recu_reglement"
         if self.track.categorie == "factures" : self.categorie_email = "portail_demande_facture"
         if self.track.categorie == "inscriptions" : self.categorie_email = "portail_demande_inscription"
+        if self.track.categorie == "renseignements": self.categorie_email = "portail_demande_renseignement"
         self.ctrl_modele_email.SetCategorie(self.categorie_email)
 
         self.MAJ_email_date()
@@ -908,6 +954,10 @@ class Traitement():
         # Traitement des réservations
         if self.track.categorie == "reservations" :
             resultat = self.Traitement_reservations()
+
+        # Traitement des renseignements
+        if self.track.categorie == "renseignements" :
+            resultat = self.Traitement_renseignements()
 
         self.EcritLog(_(u"Fin du traitement."))
 
@@ -1183,6 +1233,45 @@ class Traitement():
                 return {"etat" : False, "reponse" : reponse}
             else :
                 return {"etat" : True, "reponse" : reponse}
+
+    def Traitement_renseignements(self):
+        if self.mode == "manuel" :
+            from Dlg import DLG_Portail_renseignements
+            dlg = DLG_Portail_renseignements.Dialog(self, track=self.track)
+            reponse_modal = dlg.ShowModal()
+            reponse = dlg.GetReponse()
+            dlg.Destroy()
+            if reponse_modal == wx.ID_OK :
+                self.EcritLog(_(u"Enregistrement des renseignements"))
+                if reponse == "" :
+                    return {"etat" : False, "reponse" : reponse}
+                else :
+                    return {"etat" : True, "reponse" : reponse}
+            else :
+                self.EcritLog(_(u"Traitement annulé par l'utilisateur"))
+                return {"etat" : False}
+
+        if self.mode == "automatique" :
+            from Dlg import DLG_Portail_renseignements
+            dlg = DLG_Portail_renseignements.Dialog(self, track=self.track)
+            dlg.OnBoutonTraiter()
+            dlg.OnBoutonOk()
+            reponse = dlg.GetReponse()
+            if reponse == "" :
+                if dlg.ShowModal() == wx.ID_OK :
+                    dlg.Destroy()
+                    self.EcritLog(_(u"Enregistrement des renseignements"))
+                    if reponse == "" :
+                        return {"etat" : False, "reponse" : reponse}
+                    else :
+                        return {"etat" : True, "reponse" : reponse}
+                else :
+                    self.EcritLog(_(u"Traitement annulé par l'utilisateur"))
+                    return {"etat" : False}
+
+            else :
+                dlg.Destroy()
+                return {"etat": True, "reponse": reponse}
 
     def Init_grille(self, ctrl_grille=None):
         # Récupération des paramètres

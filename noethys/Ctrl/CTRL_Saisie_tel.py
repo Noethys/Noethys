@@ -18,10 +18,10 @@ from Utils import UTILS_Config
 
     
 class Tel(masked.TextCtrl):
-    def __init__(self, parent, intitule="", mask = "##.##.##.##.##."):
+    def __init__(self, parent, intitule="", mask = "##.##.##.##.##.", size=(-1, -1)):
         """ intitule = domicile | mobile | fax | travail """
         self.mask = UTILS_Config.GetParametre("mask_telephone", "##.##.##.##.##.")
-        masked.TextCtrl.__init__(self, parent, -1, "", style=wx.TE_CENTRE, mask=self.mask)
+        masked.TextCtrl.__init__(self, parent, -1, "", size=size, style=wx.TE_CENTRE, mask=self.mask)
         self.parent = parent
         self.SetMinSize((125, -1))
         self.SetToolTip(wx.ToolTip(_(u"Saisissez un numéro de %s") % intitule))

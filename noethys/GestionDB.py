@@ -2150,12 +2150,14 @@ class DB:
             except Exception, err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
+        # =============================================================
 
-
-
-
-
-
+        versionFiltre = (1, 2, 1, 8)
+        if versionFichier < versionFiltre :
+            try :
+                if self.IsTableExists("portail_renseignements") == False: self.CreationTable("portail_renseignements", Tables.DB_DATA)
+            except Exception, err :
+                return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
 
 
@@ -2414,7 +2416,7 @@ if __name__ == "__main__":
                 
     # Création d'une table données
     # db = DB(suffixe="DATA")
-    # listeTables = ("locations_demandes",)
+    # listeTables = ("portail_renseignements",)
     # for nomTable in listeTables :
     #     db.CreationTable(nomTable, Tables.DB_DATA)
     # db.Close()
@@ -2449,9 +2451,9 @@ if __name__ == "__main__":
 ##    db.Close()
         
     # # Ajouter un champ
-    db = DB(suffixe="DATA")
-    db.AjoutChamp("prestations", "IDdonnee", "INTEGER")
-    db.Close()
+    # db = DB(suffixe="DATA")
+    # db.AjoutChamp("prestations", "IDdonnee", "INTEGER")
+    # db.Close()
 
     # Exportation d'une table dans la base DEFAUT
     # db = DB(suffixe="DATA")

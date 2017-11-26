@@ -435,6 +435,17 @@ class Synchro():
         session.add(models.Parametre(nom="ACCUEIL_BIENVENUE", parametre=self.dict_parametres["accueil_bienvenue"]))
         session.add(models.Parametre(nom="ACCUEIL_MESSAGES_AFFICHER", parametre=str(self.dict_parametres["accueil_messages_afficher"])))
         session.add(models.Parametre(nom="ACCUEIL_ETAT_DOSSIER_AFFICHER", parametre=str(self.dict_parametres["accueil_etat_dossier_afficher"])))
+        session.add(models.Parametre(nom="RENSEIGNEMENTS_AFFICHER", parametre=str(self.dict_parametres["renseignements_afficher"])))
+        session.add(models.Parametre(nom="RENSEIGNEMENTS_INTRO", parametre=self.dict_parametres["renseignements_intro"]))
+        session.add(models.Parametre(nom="RENSEIGNEMENTS_MODIFIER", parametre=str(self.dict_parametres["renseignements_modifier"])))
+        session.add(models.Parametre(nom="RENSEIGNEMENTS_ADULTE_NOM", parametre=self.dict_parametres["renseignements_adulte_nom"]))
+        session.add(models.Parametre(nom="RENSEIGNEMENTS_ENFANT_NOM", parametre=self.dict_parametres["renseignements_enfant_nom"]))
+        session.add(models.Parametre(nom="RENSEIGNEMENTS_ADULTE_NAISSANCE", parametre=self.dict_parametres["renseignements_adulte_naissance"]))
+        session.add(models.Parametre(nom="RENSEIGNEMENTS_ENFANT_NAISSANCE", parametre=self.dict_parametres["renseignements_enfant_naissance"]))
+        session.add(models.Parametre(nom="RENSEIGNEMENTS_ADRESSE", parametre=self.dict_parametres["renseignements_adresse"]))
+        session.add(models.Parametre(nom="RENSEIGNEMENTS_ADULTE_COORDS", parametre=self.dict_parametres["renseignements_adulte_coords"]))
+        session.add(models.Parametre(nom="RENSEIGNEMENTS_ENFANT_COORDS", parametre=self.dict_parametres["renseignements_enfant_coords"]))
+        session.add(models.Parametre(nom="RENSEIGNEMENTS_ADULTE_PROFESSION", parametre=self.dict_parametres["renseignements_adulte_profession"]))
         session.add(models.Parametre(nom="ACTIVITES_AFFICHER", parametre=str(self.dict_parametres["activites_afficher"])))
         session.add(models.Parametre(nom="ACTIVITES_INTRO", parametre=self.dict_parametres["activites_intro"]))
         session.add(models.Parametre(nom="ACTIVITES_AUTORISER_INSCRIPTION", parametre=str(self.dict_parametres["activites_autoriser_inscription"])))
@@ -735,19 +746,55 @@ class Synchro():
         # Création des individus
         self.Pulse_gauge()
 
-        req = """SELECT IDrattachement, rattachements.IDindividu, rattachements.IDfamille, titulaire,
-        IDcivilite, nom, prenom, date_naiss
+        champs_individus = ["IDrattachement", "rattachements.IDindividu", "rattachements.IDfamille", "titulaire", "IDcategorie",
+                            "IDcivilite", "nom", "prenom", "date_naiss", "cp_naiss", "ville_naiss", "adresse_auto", "rue_resid", "cp_resid", "ville_resid",
+                            "tel_domicile", "tel_mobile", "mail", "profession", "employeur", "travail_tel", "travail_mail"]
+        req = """SELECT %s
         FROM rattachements
         LEFT JOIN individus ON individus.IDindividu = rattachements.IDindividu
-        WHERE IDcategorie=2 OR (IDcategorie=1 AND titulaire=1);"""
+        WHERE IDcategorie=2 OR (IDcategorie=1 AND titulaire=1);""" % ", ".join(champs_individus)
         DB.ExecuterReq(req)
         listeRattachements = DB.ResultatReq()
-        for IDrattachement, IDindividu, IDfamille, titulaire, IDcivilite, nom, prenom, date_naiss in listeRattachements :
-            if IDfamille in listeIDfamille :
-                date_naiss = UTILS_Dates.DateEngEnDateDD(date_naiss)
-                m = models.Individu(IDindividu=IDindividu, IDfamille=IDfamille, prenom=prenom, date_naiss=date_naiss, IDcivilite=IDcivilite)
-                session.add(m)
+        for donnees in listeRattachements :
+            dictTemp = {}
+            for index in range(0, len(champs_individus)) :
+                champ = champs_individus[index]
+                valeur = donnees[index]
 
+                # Formatage date de naissance
+                if champ == "date_naiss" :
+                    valeur = UTILS_Dates.DateEngEnDateDD(valeur)
+
+                # Renseignements à masquer
+                if champ == "nom" and dictTemp["IDcategorie"] == 1 and self.dict_parametres["renseignements_adulte_nom"] == "masquer" :
+                    valeur = None
+                if champ == "nom" and dictTemp["IDcategorie"] == 2 and self.dict_parametres["renseignements_enfant_nom"] == "masquer" :
+                    valeur = None
+                if champ in ("cp_naiss", "ville_naiss") and dictTemp["IDcategorie"] == 1 and self.dict_parametres["renseignements_adulte_naissance"] == "masquer" :
+                    valeur = None
+                if champ in ("cp_naiss", "ville_naiss") and dictTemp["IDcategorie"] == 2 and self.dict_parametres["renseignements_enfant_naissance"] == "masquer" :
+                    valeur = None
+                if champ in ("tel_domicile", "tel_mobile", "mail") and dictTemp["IDcategorie"] == 1 and self.dict_parametres["renseignements_adulte_coords"] == "masquer" :
+                    valeur = None
+                if champ in ("tel_domicile", "tel_mobile", "mail") and dictTemp["IDcategorie"] == 2 and self.dict_parametres["renseignements_enfant_coords"] == "masquer" :
+                    valeur = None
+                if champ in ("adresse_auto", "rue_resid", "cp_resid", "ville_resid") and self.dict_parametres["renseignements_adresse"] == "masquer" :
+                    valeur = None
+                if champ in ("profession", "employeur", "travail_tel", "travail_mail") and self.dict_parametres["renseignements_adulte_profession"] == "masquer":
+                    valeur = None
+
+                dictTemp[champ] = valeur
+
+            if dictTemp["rattachements.IDfamille"] in listeIDfamille :
+                m = models.Individu(IDindividu=dictTemp["rattachements.IDindividu"], IDfamille=dictTemp["rattachements.IDfamille"], IDcategorie=dictTemp["IDcategorie"],
+                                    nom=dictTemp["nom"], prenom=dictTemp["prenom"], IDcivilite=dictTemp["IDcivilite"],
+                                    date_naiss=dictTemp["date_naiss"], cp_naiss=dictTemp["cp_naiss"], ville_naiss=dictTemp["ville_naiss"],
+                                    adresse_auto=dictTemp["adresse_auto"], rue_resid=dictTemp["rue_resid"], cp_resid=dictTemp["cp_resid"], ville_resid=dictTemp["ville_resid"],
+                                    tel_domicile=dictTemp["tel_domicile"], tel_mobile=dictTemp["tel_mobile"], mail=dictTemp["mail"],
+                                    profession=dictTemp["profession"], employeur=dictTemp["employeur"],
+                                    travail_tel=dictTemp["travail_tel"], travail_mail=dictTemp["travail_mail"],
+                                    )
+                session.add(m)
 
         # Création des inscriptions
         self.Pulse_gauge()
@@ -1058,6 +1105,7 @@ class Synchro():
 
             listeActions = []
             listeReservations = []
+            listeRenseignements = []
 
             for action in liste_actions :
 
@@ -1071,12 +1119,16 @@ class Synchro():
 
                 # Mémorisation des réservations
                 if len(action["reservations"]) > 0 :
-
                     for reservation in action["reservations"] :
                         listeReservations.append([
                                 reservation["date"], reservation["IDinscription"],
                                 reservation["IDunite"], prochainIDaction, reservation["etat"],
                                 ])
+
+                # Mémorisation des renseignements
+                if len(action["renseignements"]) > 0 :
+                    for renseignement in action["renseignements"] :
+                        listeRenseignements.append([renseignement["champ"], renseignement["valeur"], prochainIDaction])
 
                 prochainIDaction += 1
 
@@ -1085,6 +1137,8 @@ class Synchro():
                 DB.Executermany("INSERT INTO portail_actions (IDaction, horodatage, IDfamille, IDindividu, categorie, action, description, commentaire, parametres, etat, traitement_date, IDperiode, ref_unique, reponse) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", listeActions, commit=False)
             if len(listeReservations) > 0 :
                 DB.Executermany("INSERT INTO portail_reservations (date, IDinscription, IDunite, IDaction, etat) VALUES (?, ?, ?, ?, ?)", listeReservations, commit=False)
+            if len(listeRenseignements) > 0 :
+                DB.Executermany("INSERT INTO portail_renseignements (champ, valeur, IDaction) VALUES (?, ?, ?)", listeRenseignements, commit=False)
             DB.Commit()
             DB.Close()
 

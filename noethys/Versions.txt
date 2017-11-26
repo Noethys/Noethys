@@ -1,3 +1,7 @@
+Version 1.2.1.8 (26/11/2017) :
+
+- Ajout de la gestion des renseignements dans Connecthys
+
 Version 1.2.1.7 (18/11/2017) :
 
 - Ajout de l'envoi de SMS avec Orange Business

@@ -263,10 +263,10 @@ class TextCtrlVille(wx.TextCtrl):
 # -----------------------------------------------------------------------------------------------------
     
 class Adresse(wx.Panel):
-    def __init__(self, parent):
-        wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)        
+    def __init__(self, parent, size=(-1, -1)):
+        wx.Panel.__init__(self, parent, id=-1, size=size, style=wx.TAB_TRAVERSAL)
         self.listeNomsVilles, self.listeVilles, self.dictRegions, self.dictDepartements = Importation_donnees()
-        
+
         activeAutoComplete = UTILS_Config.GetParametre("adresse_autocomplete", True)
         mask_cp = UTILS_Config.GetParametre("mask_cp", "#####")
         
@@ -299,7 +299,6 @@ class Adresse(wx.Panel):
         grid_sizer_base.Add(self.bouton_options, 1, wx.EXPAND|wx.ALL, 0)
         grid_sizer_base.AddGrowableCol(2)
         self.SetSizer(grid_sizer_base)
-        grid_sizer_base.Fit(self)
         self.Layout()
         
     def GetValueCP(self):
@@ -318,8 +317,9 @@ class Adresse(wx.Panel):
         if cp != None :
             try :
                 self.ctrl_cp.SetValue(cp)
+                return True
             except : 
-                pass
+                return False
     
     def SetValueVille(self, ville=""):
         if ville != None :
