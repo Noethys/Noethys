@@ -1,4 +1,4 @@
-Version 1.2.1.8 (26/11/2017) :
+Version 1.2.1.8 (30/11/2017) :
 
 - Ajout de la gestion des renseignements dans Connecthys
 
