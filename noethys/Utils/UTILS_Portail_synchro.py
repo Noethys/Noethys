@@ -449,6 +449,7 @@ class Synchro():
         session.add(models.Parametre(nom="ACTIVITES_AFFICHER", parametre=str(self.dict_parametres["activites_afficher"])))
         session.add(models.Parametre(nom="ACTIVITES_INTRO", parametre=self.dict_parametres["activites_intro"]))
         session.add(models.Parametre(nom="ACTIVITES_AUTORISER_INSCRIPTION", parametre=str(self.dict_parametres["activites_autoriser_inscription"])))
+        session.add(models.Parametre(nom="ACTIVITES_BLOQUER_COMPLET", parametre=str(self.dict_parametres["activites_bloquer_complet"])))
         session.add(models.Parametre(nom="RESERVATIONS_AFFICHER", parametre=str(self.dict_parametres["reservations_afficher"])))
         session.add(models.Parametre(nom="RESERVATIONS_INTRO", parametre=self.dict_parametres["reservations_intro"]))
         session.add(models.Parametre(nom="PLANNING_INTRO", parametre=self.dict_parametres["planning_intro"]))
@@ -706,12 +707,12 @@ class Synchro():
         req = """
         SELECT IDactivite, nom, portail_inscriptions_affichage, portail_inscriptions_date_debut,
         portail_inscriptions_date_fin, portail_reservations_affichage, portail_unites_multiples,
-        portail_reservations_limite, portail_reservations_absenti
+        portail_reservations_limite, portail_reservations_absenti, nbre_inscrits_max
         FROM activites;"""
         DB.ExecuterReq(req)
         listeActivites = DB.ResultatReq()
         dict_activites = {}
-        for IDactivite, nom, inscriptions_affichage, inscriptions_date_debut, inscriptions_date_fin, reservations_affichage, unites_multiples, portail_reservations_limite, portail_reservations_absenti in listeActivites :
+        for IDactivite, nom, inscriptions_affichage, inscriptions_date_debut, inscriptions_date_fin, reservations_affichage, unites_multiples, portail_reservations_limite, portail_reservations_absenti, nbre_inscrits_max in listeActivites :
             inscriptions_date_debut = UTILS_Dates.DateEngEnDateDDT(inscriptions_date_debut)
             inscriptions_date_fin = UTILS_Dates.DateEngEnDateDDT(inscriptions_date_fin)
 
@@ -719,6 +720,7 @@ class Synchro():
                          inscriptions_date_debut=inscriptions_date_debut, inscriptions_date_fin=inscriptions_date_fin, \
                          reservations_affichage=reservations_affichage, unites_multiples=unites_multiples, \
                          reservations_limite=portail_reservations_limite, reservations_absenti=portail_reservations_absenti,
+                         nbre_inscrits_max=nbre_inscrits_max,
                          )
             session.add(m)
 
@@ -727,19 +729,20 @@ class Synchro():
                  "inscriptions_date_debut" : inscriptions_date_debut, "inscriptions_date_fin" : inscriptions_date_fin, \
                  "reservations_affichage" : reservations_affichage, "unites_multiples" : unites_multiples, \
                  "reservations_limite" : portail_reservations_limite, "reservations_absenti" : portail_reservations_absenti,
+                 "nbre_inscrits_max" : nbre_inscrits_max,
                 }
 
         # Création des groupes
         self.Pulse_gauge()
 
         req = """
-        SELECT IDgroupe, IDactivite, nom, ordre
+        SELECT IDgroupe, IDactivite, nom, ordre, nbre_inscrits_max
         FROM groupes;"""
         DB.ExecuterReq(req)
         listeGroupes = DB.ResultatReq()
 
-        for IDgroupe, IDactivite, nom, ordre in listeGroupes :
-            m = models.Groupe(IDgroupe=IDgroupe, nom=nom, IDactivite=IDactivite, ordre=ordre)
+        for IDgroupe, IDactivite, nom, ordre, nbre_inscrits_max in listeGroupes :
+            m = models.Groupe(IDgroupe=IDgroupe, nom=nom, IDactivite=IDactivite, ordre=ordre, nbre_inscrits_max=nbre_inscrits_max)
             session.add(m)
 
         # Création des individus
@@ -798,13 +801,14 @@ class Synchro():
         # Création des inscriptions
         self.Pulse_gauge()
 
-        req = """SELECT IDinscription, IDindividu, IDfamille, IDactivite, IDgroupe
+        req = """SELECT IDinscription, IDindividu, IDfamille, IDactivite, IDgroupe, date_desinscription
         FROM inscriptions;"""
         DB.ExecuterReq(req)
         listeInscriptions = DB.ResultatReq()
-        for IDinscription, IDindividu, IDfamille, IDactivite, IDgroupe in listeInscriptions :
-            if IDfamille in listeIDfamille :
-                m = models.Inscription(IDinscription=IDinscription, IDindividu=IDindividu, IDfamille=IDfamille, IDactivite=IDactivite, IDgroupe=IDgroupe)
+        for IDinscription, IDindividu, IDfamille, IDactivite, IDgroupe, date_desinscription in listeInscriptions :
+            if True :#IDfamille in listeIDfamille : Modifié pour connaître le nombre d'inscrits par activité
+                date_desinscription = UTILS_Dates.DateEngEnDateDD(date_desinscription)
+                m = models.Inscription(IDinscription=IDinscription, IDindividu=IDindividu, IDfamille=IDfamille, IDactivite=IDactivite, IDgroupe=IDgroupe, date_desinscription=date_desinscription)
                 session.add(m)
 
         # Création des unités

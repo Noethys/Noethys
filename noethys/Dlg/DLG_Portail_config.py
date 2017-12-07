@@ -111,6 +111,7 @@ VALEURS_DEFAUT = {
     "activites_afficher" : True,
     "activites_intro" : _(u"Vous pouvez consulter ici la liste des inscriptions et demander des inscriptions à d'autres activités."),
     "activites_autoriser_inscription" : True,
+    "activites_bloquer_complet" : True,
     "reservations_afficher" : True,
     "reservations_intro" : _(u"Sélectionnez une activité puis cliquez sur une des périodes disponibles pour accéder au calendrier des réservations correspondant."),
     "planning_intro" : _(u"Cliquez dans les cases pour ajouter ou supprimer des consommations avant de valider l'envoi des données."),
@@ -732,6 +733,13 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         nom = "activites_autoriser_inscription"
         propriete = wxpg.BoolProperty(label=_(u"Autoriser l'inscription à des activités"), name=nom, value=VALEURS_DEFAUT[nom])
         propriete.SetHelpString(_(u"Cochez cette case pour autoriser l'inscription à des activités"))
+        propriete.SetAttribute("UseCheckbox", True)
+        self.Append(propriete)
+
+        # Bloquer l'incription à une activité si complet
+        nom = "activites_bloquer_complet"
+        propriete = wxpg.BoolProperty(label=_(u"Bloquer l'inscription si activité complète"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Cochez cette case pour bloquer l'inscription si l'activité est complète"))
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
