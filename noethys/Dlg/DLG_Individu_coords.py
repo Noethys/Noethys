@@ -131,14 +131,15 @@ class Categorie(wx.Choice):
     def MAJ(self, DB=None):
         choices = self.GetListeDonnees(DB)
         self.SetItems(choices)
+        self.SetSelection(0)
         
     def GetListeDonnees(self, DB=None):
         req = """SELECT IDcategorie, nom FROM categories_travail ORDER BY nom;"""
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
-        self.dictDonnees = {}
-        listeNoms = []
-        index = 0
+        self.dictDonnees = {0 : (None, _(u"Aucune"))}
+        listeNoms = [_(u"Aucune"),]
+        index = 1
         for IDcategorie, nom in listeDonnees :
             listeNoms.append(nom)
             self.dictDonnees[index] = (IDcategorie, nom)
@@ -152,7 +153,7 @@ class Categorie(wx.Choice):
 
     def GetID(self):
         index = self.GetSelection()
-        if index == -1 : return None
+        if index in (-1, 0) : return None
         return self.dictDonnees[index][0]
     
 # ---------------------------------------------------------------------------------------------------------------------------
