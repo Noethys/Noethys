@@ -61,9 +61,6 @@ class Choix_type(wx.Choice):
         listeItems = []
         self.dictDonnees = {}
         DB = GestionDB.DB()
-        conditionType = ""
-##        if self.parent.IDfamille != None : conditionType = "famille"
-##        if self.parent.IDindividu != None : conditionType = "individu"
         req = """
         SELECT IDtype_cotisation, nom, type, carte, defaut
         FROM types_cotisations
@@ -186,14 +183,14 @@ class Choix_beneficiaire(wx.Choice):
         # Si c'est une cotisation individuelle :
         if type == "individu" :
             
-            if self.parent.IDfamille != None :
+            if self.GetGrandParent().IDfamille != None :
                 # Si on vient d'une fiche familiale : on affiche tous les membres de la famille
                 DB = GestionDB.DB()
                 req = """SELECT IDrattachement, rattachements.IDindividu, rattachements.IDfamille, IDcategorie, titulaire, nom, prenom
                 FROM rattachements 
                 LEFT JOIN individus ON individus.IDindividu = rattachements.IDindividu
                 WHERE IDfamille=%d and IDcategorie IN (1, 2)
-                ORDER BY nom, prenom;""" % self.parent.IDfamille
+                ORDER BY nom, prenom;""" % self.GetGrandParent().IDfamille
                 DB.ExecuterReq(req)
                 listeTitulaires = DB.ResultatReq()
                 DB.Close()
@@ -207,7 +204,7 @@ class Choix_beneficiaire(wx.Choice):
                 req = """SELECT nom, prenom
                 FROM individus 
                 WHERE IDindividu=%d
-                ;""" % self.parent.IDindividu
+                ;""" % self.GetGrandParent().IDindividu
                 DB.ExecuterReq(req)
                 listeIndividus = DB.ResultatReq()
                 DB.Close()
@@ -217,19 +214,19 @@ class Choix_beneficiaire(wx.Choice):
                 nom, prenom = listeIndividus[0]
                 nomIndividu = u"%s %s" % (nom, prenom)
                 self.listeNoms.append(nomIndividu)
-                self.listeDonnees.append(self.parent.IDindividu)
+                self.listeDonnees.append(self.GetGrandParent().IDindividu)
         
         # Si c'est une cotisation familiale :
         if type == "famille" :
             
-            if self.parent.IDfamille != None :
+            if self.GetGrandParent().IDfamille != None :
                 # Si on vient d'une fiche familiale : On affiche uniquement la famille en cours
                 DB = GestionDB.DB()
                 req = """SELECT IDrattachement, rattachements.IDindividu, rattachements.IDfamille, IDcategorie, titulaire, nom, prenom
                 FROM rattachements 
                 LEFT JOIN individus ON individus.IDindividu = rattachements.IDindividu
                 WHERE IDfamille=%d and titulaire=1 and IDcategorie=1
-                ORDER BY IDrattachement;""" % self.parent.IDfamille
+                ORDER BY IDrattachement;""" % self.GetGrandParent().IDfamille
                 DB.ExecuterReq(req)
                 listeDonnees = DB.ResultatReq()
                 DB.Close()
@@ -250,13 +247,13 @@ class Choix_beneficiaire(wx.Choice):
                         nomTitulaires += u"%s, " % nomTitulaire
                     nomTitulaires = _(u"%s et %s") % (nomTitulaires[:-2], listeTitulaires[-1])
                 self.listeNoms.append(_(u"Famille de %s") % nomTitulaires)
-                self.listeDonnees.append(self.parent.IDfamille)
+                self.listeDonnees.append(self.GetGrandParent().IDfamille)
                 
             else:
                 # Si on vient d'une fiche individuelle : on affiche les familles rattachées
-                IDindividu = self.parent.IDindividu
-                if self.parent.dictFamillesRattachees != None :
-                    for IDfamille, dictFamille in self.parent.dictFamillesRattachees.iteritems() :
+                IDindividu = self.GetGrandParent().IDindividu
+                if self.GetGrandParent().dictFamillesRattachees != None :
+                    for IDfamille, dictFamille in self.GetGrandParent().dictFamillesRattachees.iteritems() :
                         if dictFamille["IDcategorie"] in (1, 2) :
                             nomTitulaires = dictFamille["nomsTitulaires"]
                             self.listeNoms.append(_(u"Famille de %s") % nomTitulaires)
@@ -294,30 +291,29 @@ class Choix_payeur(wx.Choice):
         self.parent = parent
         self.listeNoms = []
         self.listeDonnees = []
-        self.SetListeDonnees() 
-    
-    def SetListeDonnees(self):
+
+    def MAJ(self):
         self.listeNoms = []
         self.listeDonnees = []
 
         # Si on vient d'une fiche INDIVIDU :
-        if self.parent.IDindividu != None :
+        if self.GetGrandParent().IDindividu != None :
                         
-            for IDfamille, dictFamille in self.parent.dictFamillesRattachees.iteritems() :
+            for IDfamille, dictFamille in self.GetGrandParent().dictFamillesRattachees.iteritems() :
                 nomTitulaires = dictFamille["nomsTitulaires"]
                 IDcompte_payeur = dictFamille["IDcompte_payeur"]
                 self.listeNoms.append(nomTitulaires)
                 self.listeDonnees.append((IDcompte_payeur, IDfamille))
         
         # Si on vient d'une fiche familiale :
-        if self.parent.IDfamille != None :
+        if self.GetGrandParent().IDfamille != None :
             DB = GestionDB.DB()
             req = """SELECT IDrattachement, rattachements.IDindividu, rattachements.IDfamille, IDcategorie, titulaire, nom, prenom, IDcompte_payeur
             FROM rattachements 
             LEFT JOIN individus ON individus.IDindividu = rattachements.IDindividu
             LEFT JOIN comptes_payeurs ON comptes_payeurs.IDfamille = rattachements.IDfamille
             WHERE rattachements.IDfamille=%d and titulaire=1 and IDcategorie=1
-            ORDER BY IDrattachement;""" % self.parent.IDfamille
+            ORDER BY IDrattachement;""" % self.GetGrandParent().IDfamille
             DB.ExecuterReq(req)
             listeDonnees = DB.ResultatReq()
             DB.Close()
@@ -339,7 +335,7 @@ class Choix_payeur(wx.Choice):
                     nomTitulaires += u"%s, " % nomTitulaire
                 nomTitulaires = _(u"%s et %s") % (nomTitulaires[:-2], listeTitulaires[-1])
             self.listeNoms.append(nomTitulaires)
-            self.listeDonnees.append((IDcompte_payeur, self.parent.IDfamille))
+            self.listeDonnees.append((IDcompte_payeur, self.GetGrandParent().IDfamille))
                 
         # Remplissage du contrôle
         self.SetItems(self.listeNoms)
@@ -445,24 +441,20 @@ class CTRL_Activites(wx.TextCtrl):
         dlg.Destroy()
         
         
-        
-# ------------------------------------------------------------------------------------------------------------------------------------------
 
 
-class Dialog(wx.Dialog):
-    def __init__(self, parent, IDcotisation=None, IDfamille=None, IDindividu=None, dictFamillesRattachees={}):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
+class CTRL_Parametres(wx.Panel):
+    def __init__(self, parent, IDcotisation=None, mode_lot=False):
+        wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
         self.parent = parent
         self.IDcotisation = IDcotisation
-        self.IDfamille = IDfamille
-        self.IDindividu = IDindividu
-        self.dictFamillesRattachees = dictFamillesRattachees
-        
+        self.mode_lot = mode_lot
+
         # Variables pour importation
         self.IDprestation = None
-        self.date_saisie = datetime.date.today() 
+        self.date_saisie = datetime.date.today()
         self.IDutilisateur = UTILS_Identification.GetIDutilisateur()
-        
+
         # Cotisation
         self.staticbox_cotisation_staticbox = wx.StaticBox(self, -1, _(u"Cotisation"))
         self.label_type = wx.StaticText(self, -1, _(u"Type :"))
@@ -476,26 +468,31 @@ class Dialog(wx.Dialog):
         self.ctrl_date_debut = CTRL_Saisie_date.Date(self)
         self.label_au = wx.StaticText(self, -1, _(u"au"))
         self.ctrl_date_fin = CTRL_Saisie_date.Date(self)
-        
+
         self.label_activites = wx.StaticText(self, -1, _(u"Activités :"))
         self.ctrl_activites = CTRL_Activites(self)
         self.bouton_activites = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Modifier.png"), wx.BITMAP_TYPE_ANY))
-        
+
         self.label_observations = wx.StaticText(self, -1, _(u"Notes :"))
-        self.ctrl_observations = wx.TextCtrl(self, -1, "")
+        self.ctrl_observations = wx.TextCtrl(self, -1, "", style=wx.TE_MULTILINE)
 
         # Carte
         self.staticbox_carte_staticbox = wx.StaticBox(self, -1, _(u"Carte d'adhérent"))
         self.label_creation = wx.StaticText(self, -1, _(u"Création :"))
         self.ctrl_creation = wx.CheckBox(self, -1, "")
         self.label_numero = wx.StaticText(self, -1, _(u"Numéro :"))
+
+        if self.mode_lot == True :
+            self.radio_numero_auto = wx.RadioButton(self, -1, _(u"Automatique à partir de"), style=wx.RB_GROUP)
+            self.radio_numero_manuel = wx.RadioButton(self, -1, _(u"Manuel (saisie directe dans la liste)"))
+
         self.ctrl_numero = wx.TextCtrl(self, -1, u"")
         self.label_date = wx.StaticText(self, -1, _(u"Date :"))
         self.ctrl_date_creation = CTRL_Saisie_date.Date2(self)
         self.ctrl_date_creation.SetDate(datetime.date.today())
         self.label_depot = wx.StaticText(self, -1, _(u"Dépôt :"))
         self.ctrl_depot = wx.TextCtrl(self, -1, u"")
-        
+
         # Prestation
         self.staticbox_prestation_staticbox = wx.StaticBox(self, -1, _(u"Facturation"))
         self.label_facturer = wx.StaticText(self, -1, _(u"Facturer :"))
@@ -509,39 +506,44 @@ class Dialog(wx.Dialog):
         self.ctrl_payeur = Choix_payeur(self)
         self.label_montant = wx.StaticText(self, -1, _(u"Montant :"))
         self.ctrl_montant = CTRL_Saisie_euros.CTRL(self)
-        
-        # Commandes
-        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
-        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
-        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
-        self.__set_properties()
-        self.__do_layout()
-
+        # Bind
         self.Bind(wx.EVT_CHOICE, self.OnChoixType, self.ctrl_type)
         self.Bind(wx.EVT_CHOICE, self.OnChoixUnite, self.ctrl_unite)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonActivites, self.bouton_activites)
         self.Bind(wx.EVT_CHECKBOX, self.OnChoixCreation, self.ctrl_creation)
         self.Bind(wx.EVT_CHECKBOX, self.OnChoixFacturer, self.ctrl_facturer)
-        self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
-        self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
-        
+
+        if self.mode_lot == True :
+            self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioNumero, self.radio_numero_auto)
+            self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioNumero, self.radio_numero_manuel)
+
+        self.__set_properties()
+        self.__do_layout()
+
+        # Init contrôles
+        self.ctrl_depot.Enable(False)
+
+    def Init(self):
+        if self.mode_lot == True :
+            self.label_beneficiaire.Show(False)
+            self.ctrl_beneficiaire.Show(False)
+            self.label_depot.Show(False)
+            self.ctrl_depot.Show(False)
+            self.label_payeur.Show(False)
+            self.ctrl_payeur.Show(False)
+        else:
+            self.ctrl_payeur.MAJ()
+
         if self.IDcotisation == None :
-            self.SetTitle(_(u"Saisie d'une cotisation"))
-            self.SetProchainIDcotisation() 
+            self.SetProchainIDcotisation()
             self.OnChoixCreation(None)
-            self.OnChoixFacturer(None) 
+            self.OnChoixFacturer(None)
             self.OnChoixType(None)
             self.OnChoixUnite(None)
         else:
-            self.SetTitle(_(u"Modification d'une cotisation"))
-            self.Importation() 
-        
-        # Init contrôles
-        self.ctrl_depot.Enable(False)
-        
-        self.bouton_ok.SetFocus() 
-        
+            self.Importation()
+
     def __set_properties(self):
         self.ctrl_type.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici le type de cotisation")))
         self.ctrl_unite.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici l'unité de cotisation")))
@@ -562,6 +564,578 @@ class Dialog(wx.Dialog):
         self.ctrl_montant.SetToolTip(wx.ToolTip(_(u"Saisissez ici le montant a facturer")))
         self.ctrl_label.SetToolTip(wx.ToolTip(_(u"Saisissez ici le label de la prestation a créer")))
         self.ctrl_payeur.SetToolTip(wx.ToolTip(_(u"Sélectionnez la famille à facturer")))
+
+    def __do_layout(self):
+        grid_sizer_base = wx.FlexGridSizer(rows=4, cols=1, vgap=10, hgap=10)
+
+        # Cotisation
+        staticbox_cotisation = wx.StaticBoxSizer(self.staticbox_cotisation_staticbox, wx.VERTICAL)
+        grid_sizer_cotisation = wx.FlexGridSizer(rows=6, cols=2, vgap=5, hgap=5)
+        grid_sizer_validite = wx.FlexGridSizer(rows=1, cols=5, vgap=5, hgap=5)
+        grid_sizer_cotisation.Add(self.label_type, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_cotisation.Add(self.ctrl_type, 0, wx.EXPAND, 0)
+        grid_sizer_cotisation.Add(self.label_unite, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_cotisation.Add(self.ctrl_unite, 0, wx.EXPAND, 0)
+        grid_sizer_cotisation.Add(self.label_beneficiaire, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_cotisation.Add(self.ctrl_beneficiaire, 0, wx.EXPAND, 0)
+        grid_sizer_cotisation.Add(self.label_validite, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_validite.Add(self.label_du, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_validite.Add(self.ctrl_date_debut, 0, 0, 0)
+        grid_sizer_validite.Add(self.label_au, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_validite.Add(self.ctrl_date_fin, 0, 0, 0)
+        grid_sizer_cotisation.Add(grid_sizer_validite, 1, wx.EXPAND, 0)
+
+        grid_sizer_cotisation.Add(self.label_activites, 0, wx.ALIGN_RIGHT | wx.TOP, 3)
+
+        grid_sizer_activites = wx.FlexGridSizer(rows=1, cols=5, vgap=5, hgap=5)
+        grid_sizer_activites.Add(self.ctrl_activites, 1, wx.EXPAND, 0)
+        grid_sizer_activites.Add(self.bouton_activites, 0, wx.EXPAND, 0)
+        grid_sizer_activites.AddGrowableCol(0)
+        grid_sizer_cotisation.Add(grid_sizer_activites, 0, wx.EXPAND, 0)
+
+        grid_sizer_cotisation.Add(self.label_observations, 0, wx.ALIGN_RIGHT | wx.TOP, 3)
+        grid_sizer_cotisation.Add(self.ctrl_observations, 0, wx.EXPAND, 0)
+        grid_sizer_cotisation.AddGrowableCol(1)
+        grid_sizer_cotisation.AddGrowableRow(5)
+        staticbox_cotisation.Add(grid_sizer_cotisation, 1, wx.ALL | wx.EXPAND, 10)
+        grid_sizer_base.Add(staticbox_cotisation, 1, wx.LEFT | wx.RIGHT | wx.TOP | wx.EXPAND, 0)
+
+        # Carte
+        staticbox_carte = wx.StaticBoxSizer(self.staticbox_carte_staticbox, wx.VERTICAL)
+        grid_sizer_carte = wx.FlexGridSizer(rows=4, cols=2, vgap=5, hgap=5)
+
+        # Création
+        grid_sizer_carte.Add(self.label_creation, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_creation = wx.FlexGridSizer(rows=1, cols=4, vgap=5, hgap=5)
+        grid_sizer_creation.Add(self.ctrl_creation, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_creation.Add((20, 10), 0, wx.EXPAND, 0)
+        grid_sizer_creation.Add(self.label_date, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_creation.Add(self.ctrl_date_creation, 0, 0, 0)
+        grid_sizer_creation.AddGrowableCol(3)
+        grid_sizer_carte.Add(grid_sizer_creation, 1, wx.EXPAND, 0)
+
+        grid_sizer_carte.Add(self.label_numero, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL, 0)
+
+        if self.mode_lot == True:
+            grid_sizer_numero = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
+            grid_sizer_numero.Add(self.radio_numero_auto, 0, wx.EXPAND, 0)
+            grid_sizer_numero.Add(self.ctrl_numero, 0, wx.EXPAND, 0)
+            grid_sizer_numero.AddGrowableCol(1)
+            grid_sizer_carte.Add(grid_sizer_numero, 0, wx.EXPAND, 0)
+            grid_sizer_carte.Add( (5, 5), 0, wx.EXPAND, 0)
+            grid_sizer_carte.Add(self.radio_numero_manuel, 0, wx.EXPAND, 0)
+        else :
+            grid_sizer_carte.Add(self.ctrl_numero, 0, wx.EXPAND, 0)
+
+        grid_sizer_carte.Add(self.label_depot, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_carte.Add(self.ctrl_depot, 0, wx.EXPAND, 0)
+
+        grid_sizer_carte.AddGrowableCol(1)
+        staticbox_carte.Add(grid_sizer_carte, 1, wx.ALL | wx.EXPAND, 10)
+        grid_sizer_base.Add(staticbox_carte, 1, wx.LEFT | wx.RIGHT | wx.EXPAND, 0)
+
+        # Prestation
+        staticbox_prestation = wx.StaticBoxSizer(self.staticbox_prestation_staticbox, wx.VERTICAL)
+        grid_sizer_prestation = wx.FlexGridSizer(rows=4, cols=2, vgap=5, hgap=5)
+        grid_sizer_facturer = wx.FlexGridSizer(rows=1, cols=4, vgap=5, hgap=5)
+        grid_sizer_prestation.Add(self.label_facturer, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_facturer.Add(self.ctrl_facturer, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_facturer.Add((20, 10), 0, wx.EXPAND, 0)
+        grid_sizer_facturer.Add(self.label_date_prestation, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_facturer.Add(self.ctrl_date_prestation, 0, 0, 0)
+        grid_sizer_facturer.AddGrowableCol(3)
+        grid_sizer_prestation.Add(grid_sizer_facturer, 1, wx.EXPAND, 0)
+        grid_sizer_prestation.Add(self.label_label, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_prestation.Add(self.ctrl_label, 0, wx.EXPAND, 0)
+        grid_sizer_prestation.Add(self.label_payeur, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_prestation.Add(self.ctrl_payeur, 0, wx.EXPAND, 0)
+        grid_sizer_prestation.Add(self.label_montant, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_prestation.Add(self.ctrl_montant, 0, wx.EXPAND, 0)
+        grid_sizer_prestation.AddGrowableCol(1)
+        staticbox_prestation.Add(grid_sizer_prestation, 1, wx.ALL | wx.EXPAND, 10)
+        grid_sizer_base.Add(staticbox_prestation, 1, wx.LEFT | wx.RIGHT | wx.EXPAND, 0)
+
+        self.SetSizer(grid_sizer_base)
+        grid_sizer_base.Fit(self)
+        grid_sizer_base.AddGrowableCol(0)
+        grid_sizer_base.AddGrowableRow(0)
+        self.Layout()
+
+    def SetProchainIDcotisation(self):
+        DB = GestionDB.DB()
+        req = """SELECT MAX(numero) FROM cotisations;"""
+        DB.ExecuterReq(req)
+        listeDonnees = DB.ResultatReq()
+        DB.Close()
+        if len(listeDonnees) > 0:
+            if listeDonnees[0][0] == None:
+                prochainID = 1
+            else:
+                try:
+                    prochainID = int(listeDonnees[0][0]) + 1
+                except:
+                    return
+        else:
+            prochainID = 1
+        numero = u"%06d" % prochainID
+        self.ctrl_numero.SetValue(numero)
+
+    def OnRadioNumero(self, event=None):
+        if self.ctrl_creation.GetValue() == True :
+            etat_manuel = self.radio_numero_manuel.GetValue()
+            self.ctrl_numero.Enable(self.radio_numero_auto.GetValue())
+        else :
+            etat_manuel = False
+            self.ctrl_numero.Enable(False)
+        self.GetParent().ctrl_listview.SetAfficherColonneNumero(etat_manuel)
+        self.GetParent().ShowLabelInfo(etat_manuel)
+
+    def OnChoixType(self, event):
+        IDtype_cotisation = self.ctrl_type.GetID()
+        self.ctrl_unite.MAJ(IDtype_cotisation)
+        self.OnChoixUnite(None)
+
+    def OnChoixUnite(self, event):
+        # Récupère les données sur le type
+        dictDonneesType = self.ctrl_type.GetDetailDonnees()
+        if dictDonneesType != None:
+            carte = dictDonneesType["carte"]
+            nomType = dictDonneesType["nom"]
+            type = dictDonneesType["type"]
+            if carte == 1:
+                self.ctrl_creation.SetValue(True)
+
+            if self.mode_lot == True :
+                if self.GetParent().ctrl_listview.categorie != type :
+                    self.GetParent().ctrl_listview.MAJ(categorie=type)
+
+        # Récupère les données sur l'unité
+        dictDonneesUnite = self.ctrl_unite.GetDetailDonnees()
+        if dictDonneesUnite != None:
+            nomUnite = dictDonneesUnite["nom"]
+            date_debut = dictDonneesUnite["date_debut"]
+            date_fin = dictDonneesUnite["date_fin"]
+            montant = dictDonneesUnite["montant"]
+            label_prestation = dictDonneesUnite["label_prestation"]
+            duree = dictDonneesUnite["duree"]
+
+            # Validité
+            if date_debut != None and date_fin != None:
+                self.ctrl_date_debut.SetDate(date_debut)
+                self.ctrl_date_fin.SetDate(date_fin)
+            if duree != None:
+                posM = duree.find("m")
+                posA = duree.find("a")
+                jours = int(duree[1:posM - 1])
+                mois = int(duree[posM + 1:posA - 1])
+                annees = int(duree[posA + 1:])
+
+                date_debut = datetime.date.today()
+                self.ctrl_date_debut.SetDate(date_debut)
+                if jours != 0: date_debut = date_debut + relativedelta.relativedelta(days=+jours)
+                if mois != 0: date_debut = date_debut + relativedelta.relativedelta(months=+mois)
+                if annees != 0: date_debut = date_debut + relativedelta.relativedelta(years=+annees)
+                self.ctrl_date_fin.SetDate(date_debut)
+
+            # Montant
+            self.ctrl_montant.SetMontant(montant)
+            if label_prestation != None:
+                # Label personnalisé
+                self.ctrl_label.SetValue(label_prestation)
+            else:
+                # Label automatique
+                label = u"%s - %s" % (nomType, nomUnite)
+                self.ctrl_label.SetValue(label)
+            self.ctrl_facturer.SetValue(True)
+
+            # MAJ ctrl bénéficiaires
+            if dictDonneesType != None and self.mode_lot == False :
+                self.ctrl_beneficiaire.SetListeDonnees(type)
+
+        # MAJ contrôles
+        self.OnChoixCreation(None)
+        self.OnChoixFacturer(None)
+
+    def OnBoutonActivites(self, event):
+        self.ctrl_activites.Modifier()
+
+    def OnChoixCreation(self, event):
+        if self.ctrl_creation.GetValue() == 1:
+            self.ctrl_numero.Enable(True)
+            self.ctrl_date_creation.Enable(True)
+            self.ctrl_date_creation.SetFocus()
+            if self.mode_lot == True :
+                self.radio_numero_auto.Enable(True)
+                self.radio_numero_manuel.Enable(True)
+            wx.CallAfter(self.ctrl_date_creation.SetInsertionPoint, 0)
+        else:
+            self.ctrl_numero.Enable(False)
+            self.ctrl_date_creation.Enable(False)
+            if self.mode_lot == True :
+                self.radio_numero_auto.Enable(False)
+                self.radio_numero_manuel.Enable(False)
+
+        # Affichage de la colonne numéro
+        if self.mode_lot == True :
+            self.OnRadioNumero(None)
+
+    def OnChoixFacturer(self, event):
+        if self.ctrl_facturer.GetValue() == 1 and self.ctrl_facturer.IsEnabled() == True:
+            self.ctrl_date_prestation.Enable(True)
+            self.ctrl_montant.Enable(True)
+            self.ctrl_label.Enable(True)
+            if self.ctrl_payeur.GetCount() > 1:
+                self.ctrl_payeur.Enable(True)
+        else:
+            self.ctrl_date_prestation.Enable(False)
+            self.ctrl_montant.Enable(False)
+            self.ctrl_label.Enable(False)
+            self.ctrl_payeur.Enable(False)
+
+    def Validation(self):
+        # Type
+        if self.ctrl_type.GetID() == None:
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner un type de cotisation !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return False
+
+        # Unité
+        if self.ctrl_unite.GetID() == None:
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner une unité de cotisation !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return False
+
+        # Validation de la date de début
+        if self.ctrl_date_debut.FonctionValiderDate() == False or self.ctrl_date_debut.GetDate() == None:
+            dlg = wx.MessageDialog(self, _(u"Vous devez saisir une date de début valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            self.ctrl_date_debut.SetFocus()
+            return False
+
+        # Validation de la date de fin
+        if self.ctrl_date_fin.FonctionValiderDate() == False or self.ctrl_date_fin.GetDate() == None:
+            dlg = wx.MessageDialog(self, _(u"Vous devez saisir une date de fin valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            self.ctrl_date_fin.SetFocus()
+            return False
+
+        # Si la case CREATION est cochée
+        if self.ctrl_creation.GetValue() == True:
+
+            # Vérifie la date de création
+            if self.ctrl_date_creation.FonctionValiderDate() == False or self.ctrl_date_creation.GetDate() == None:
+                dlg = wx.MessageDialog(self, _(u"Vous devez saisir une date de création de carte valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg.ShowModal()
+                dlg.Destroy()
+                self.ctrl_date_creation.SetFocus()
+                return False
+
+            # Vérifie qu'un numéro de carte a été saisi
+            if self.ctrl_numero.GetValue() == "" and (self.mode_lot == False or self.radio_numero_manuel.GetValue() == True) :
+                dlg = wx.MessageDialog(self, _(u"Etes-vous sûr de ne pas vouloir saisir de numéro d'adhérent ?"), _(u"Confirmation"), wx.YES_NO | wx.NO_DEFAULT | wx.CANCEL | wx.ICON_INFORMATION)
+                reponse = dlg.ShowModal()
+                dlg.Destroy()
+                if reponse != wx.ID_YES:
+                    return False
+
+        # Si la case PRESTATION est cochée
+        if self.ctrl_facturer.GetValue() == True:
+
+            # Vérifie la date de facturation
+            if self.ctrl_date_prestation.FonctionValiderDate() == False or self.ctrl_date_prestation.GetDate() == None:
+                dlg = wx.MessageDialog(self, _(u"Vous devez saisir une date de facturation valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg.ShowModal()
+                dlg.Destroy()
+                self.ctrl_date_prestation.SetFocus()
+                return False
+
+            # Vérifie le montant
+            if self.ctrl_montant.GetMontant() == 0.00:
+                dlg = wx.MessageDialog(self, _(u"Etes-vous sûr de ne pas vouloir saisir de montant ?"), _(u"Confirmation"), wx.YES_NO | wx.NO_DEFAULT | wx.CANCEL | wx.ICON_EXCLAMATION)
+                reponse = dlg.ShowModal()
+                dlg.Destroy()
+                if reponse != wx.ID_YES:
+                    return False
+
+            # Vérifie le label de prestation
+            if self.ctrl_label.GetValue() == "":
+                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un label pour la facturation !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg.ShowModal()
+                dlg.Destroy()
+                self.ctrl_label.SetFocus()
+                return False
+
+        else:
+
+            # Demande la confirmation de la suppression de la prestation
+            if self.IDprestation != None:
+                dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer la prestation qui a déjà été créée pour cette cotisation ?"), _(u"Suppression"), wx.YES_NO | wx.NO_DEFAULT | wx.CANCEL | wx.ICON_INFORMATION)
+                if dlg.ShowModal() != wx.ID_YES:
+                    return False
+                dlg.Destroy()
+
+        return True
+
+    def Sauvegarde(self):
+        """ Sauvegarde """
+
+        # Récupération des données
+        donneesType = self.ctrl_type.GetDetailDonnees()
+        if donneesType["type"] == "famille":
+            # Si c'est une cotisation famille
+            IDfamille = self.ctrl_beneficiaire.GetID()
+            IDindividu = None
+        else:
+            # Si c'est une cotisation individuelle
+            IDfamille = None
+            IDindividu = self.ctrl_beneficiaire.GetID()
+        IDtype_cotisation = self.ctrl_type.GetID()
+        IDunite_cotisation = self.ctrl_unite.GetID()
+        date_saisie = self.date_saisie
+        IDutilisateur = self.IDutilisateur
+        date_debut = self.ctrl_date_debut.GetDate()
+        date_fin = self.ctrl_date_fin.GetDate()
+        activites = self.ctrl_activites.GetDonnees(format="texte")
+        observations = self.ctrl_observations.GetValue()
+
+        # Création de la carte
+        if self.ctrl_creation.GetValue() == True:
+            date_creation_carte = self.ctrl_date_creation.GetDate()
+            numero = self.ctrl_numero.GetValue()
+        else:
+            date_creation_carte = None
+            numero = None
+
+        # Sauvegarde
+        DB = GestionDB.DB()
+        listeDonnees = [
+            ("IDfamille", IDfamille),
+            ("IDindividu", IDindividu),
+            ("IDtype_cotisation", IDtype_cotisation),
+            ("IDunite_cotisation", IDunite_cotisation),
+            ("date_saisie", date_saisie),
+            ("IDutilisateur", IDutilisateur),
+            ("date_creation_carte", date_creation_carte),
+            ("numero", numero),
+            ("date_debut", date_debut),
+            ("date_fin", date_fin),
+            ("observations", observations),
+            ("activites", activites),
+        ]
+        if self.IDcotisation == None:
+            nouvelleCotisation = True
+            self.IDcotisation = DB.ReqInsert("cotisations", listeDonnees)
+        else:
+            nouvelleCotisation = False
+            DB.ReqMAJ("cotisations", listeDonnees, "IDcotisation", self.IDcotisation)
+
+        # Sauvegarde de la prestation
+        facturer = self.ctrl_facturer.GetValue()
+        date_facturation = self.ctrl_date_prestation.GetDate()
+        montant = self.ctrl_montant.GetMontant()
+        label_prestation = self.ctrl_label.GetValue()
+        IDcompte_payeur = self.ctrl_payeur.GetIDcompte_payeur()
+        IDfamille_payeur = self.ctrl_payeur.GetIDfamille()
+        IDprestation = self.IDprestation
+
+        if facturer == True:
+
+            # Création d'une prestation
+            listeDonnees = [
+                ("IDcompte_payeur", IDcompte_payeur),
+                ("date", date_facturation),
+                ("categorie", "cotisation"),
+                ("label", label_prestation),
+                ("montant_initial", montant),
+                ("montant", montant),
+                ("IDfamille", IDfamille_payeur),
+                ("IDindividu", IDindividu),
+            ]
+            if IDprestation == None:
+                listeDonnees.append(("date_valeur", str(datetime.date.today())))
+                IDprestation = DB.ReqInsert("prestations", listeDonnees)
+            else:
+                DB.ReqMAJ("prestations", listeDonnees, "IDprestation", IDprestation)
+
+                # Recherche si cette prestation a déjà été ventilée sur un règlement
+                req = """SELECT IDventilation, ventilation.montant
+                FROM ventilation
+                LEFT JOIN reglements ON reglements.IDreglement = ventilation.IDreglement
+                WHERE IDprestation=%d
+                ORDER BY reglements.date;""" % IDprestation
+                DB.ExecuterReq(req)
+                listeVentilations = DB.ResultatReq()
+                montantVentilation = 0.0
+                for IDventilation, montantTmp in listeVentilations:
+                    montantVentilation += montantTmp
+                if montantVentilation > montant:
+                    # Si le montant total ventilé est supérieur au montant de la prestation :
+                    montantVentilationTmp = 0.0
+                    for IDventilation, montantTmp in listeVentilations:
+                        montantVentilationTmp += montantTmp
+                        if montantVentilationTmp > montant:
+                            nouveauMontant = montantTmp - (montantVentilationTmp - montant)
+                            if nouveauMontant > 0.0:
+                                DB.ReqMAJ("ventilation", [("montant", nouveauMontant), ], "IDventilation", IDventilation)
+                                montantVentilationTmp = (montantVentilationTmp - montantTmp) + nouveauMontant
+                            else:
+                                DB.ReqDEL("ventilation", "IDventilation", IDventilation)
+
+
+        else:
+
+            # Suppression d'une prestation précédemment créée
+            if IDprestation != None:
+                DB.ReqDEL("prestations", "IDprestation", IDprestation)
+                DB.ReqDEL("ventilation", "IDprestation", IDprestation)
+                IDprestation = None
+
+        # Insertion du IDprestation dans la cotisation
+        DB.ReqMAJ("cotisations", [("IDprestation", IDprestation), ], "IDcotisation", self.IDcotisation)
+
+        DB.Close()
+
+        # Mémorise l'action dans l'historique
+        date_debut_periode = DateEngFr(str(date_debut))
+        date_fin_periode = DateEngFr(str(date_fin))
+        if nouvelleCotisation == True:
+            type = "Saisie"
+            IDcategorie = 21
+        else:
+            type = "Modification"
+            IDcategorie = 22
+        UTILS_Historique.InsertActions([{
+            "IDindividu": IDindividu,
+            "IDfamille": IDfamille,
+            "IDcategorie": IDcategorie,
+            "action": _(u"%s de la cotisation ID%d '%s' pour la période du %s au %s") % (type, self.IDcotisation, label_prestation, date_debut_periode, date_fin_periode),
+        }, ])
+
+    def Importation(self):
+        """ Importation des donnees de la base """
+        DB = GestionDB.DB()
+        req = """SELECT
+        IDfamille, IDindividu, IDtype_cotisation, IDunite_cotisation,
+        date_saisie, IDutilisateur, date_creation_carte, numero,
+        IDdepot_cotisation, date_debut, date_fin, IDprestation, observations, activites
+        FROM cotisations 
+        WHERE IDcotisation=%d;""" % self.IDcotisation
+        DB.ExecuterReq(req)
+        listeDonnees = DB.ResultatReq()
+        DB.Close()
+        if len(listeDonnees) == 0: return
+
+        IDfamille, IDindividu, IDtype_cotisation, IDunite_cotisation, date_saisie, IDutilisateur, date_creation_carte, numero, IDdepot_cotisation, date_debut, date_fin, IDprestation, observations, activites = listeDonnees[0]
+
+        self.date_saisie = date_saisie
+        self.IDutilisateur = IDutilisateur
+        self.IDprestation = IDprestation
+
+        # Cotisation
+        self.ctrl_type.SetID(IDtype_cotisation)
+        self.OnChoixType(None)
+        self.ctrl_unite.SetID(IDunite_cotisation)
+        self.OnChoixUnite(None)
+        if IDfamille != None: self.ctrl_beneficiaire.SetID(IDfamille)
+        if IDindividu != None: self.ctrl_beneficiaire.SetID(IDindividu)
+        self.ctrl_date_debut.SetDate(date_debut)
+        self.ctrl_date_fin.SetDate(date_fin)
+
+        if activites != None:
+            self.ctrl_activites.SetDonnees(activites, format="texte")
+
+        if observations != None:
+            self.ctrl_observations.SetValue(observations)
+
+            # Carte
+        if date_creation_carte == None:
+            self.ctrl_creation.SetValue(False)
+            self.SetProchainIDcotisation()
+        else:
+            self.ctrl_creation.SetValue(True)
+            self.ctrl_date_creation.SetDate(date_creation_carte)
+            self.ctrl_numero.SetValue(numero)
+
+        if IDdepot_cotisation == None:
+            self.ctrl_depot.SetValue(_(u"Non déposée"))
+        else:
+            self.ctrl_depot.SetValue(_(u"Déposée sur le dépôt n°%d") % IDdepot_cotisation)
+            self.ctrl_creation.Enable(False)
+            self.ctrl_date_creation.Enable(False)
+            self.ctrl_numero.Enable(False)
+
+        # Facturation
+        if IDprestation == None:
+            self.ctrl_facturer.SetValue(False)
+        else:
+            self.ctrl_facturer.SetValue(True)
+
+            # Importation des données de la prestation
+            DB = GestionDB.DB()
+            req = """SELECT
+            IDcompte_payeur, label, montant, date, IDfacture
+            FROM prestations 
+            WHERE IDprestation=%d;""" % IDprestation
+            DB.ExecuterReq(req)
+            listePrestations = DB.ResultatReq()
+            DB.Close()
+            if len(listePrestations) > 0:
+                IDcompte_payeur, label, montant, date_facturation, IDfacture = listePrestations[0]
+                self.ctrl_date_prestation.SetDate(date_facturation)
+                self.ctrl_montant.SetMontant(montant)
+                self.ctrl_label.SetLabel(label)
+                self.ctrl_payeur.SetID(IDcompte_payeur)
+
+                if IDfacture != None:
+                    self.ctrl_facturer.Enable(False)
+
+            else:
+                self.IDprestation = None
+                self.ctrl_facturer.SetValue(False)
+
+        # Init contrôles
+        self.OnChoixCreation(None)
+        self.OnChoixFacturer(None)
+
+# ------------------------------------------------------------------------------------------------------------------------------------------
+
+class Dialog(wx.Dialog):
+    def __init__(self, parent, IDcotisation=None, IDfamille=None, IDindividu=None, dictFamillesRattachees={}):
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
+        self.parent = parent
+        self.IDcotisation = IDcotisation
+        self.IDfamille = IDfamille
+        self.IDindividu = IDindividu
+        self.dictFamillesRattachees = dictFamillesRattachees
+
+        # Panel
+        self.ctrl_parametres = CTRL_Parametres(self, IDcotisation=IDcotisation)
+        self.ctrl_parametres.Init()
+
+        # Commandes
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
+
+        self.__set_properties()
+        self.__do_layout()
+
+        self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
+        self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
+
+        # Init contrôles
+        self.bouton_ok.SetFocus()
+
+        if self.IDcotisation == None :
+            self.SetTitle(_(u"Saisie d'une cotisation"))
+        else:
+            self.SetTitle(_(u"Modification d'une cotisation"))
+
+    def __set_properties(self):
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
@@ -569,84 +1143,10 @@ class Dialog(wx.Dialog):
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=4, cols=1, vgap=10, hgap=10)
-        
-        # Cotisation
-        staticbox_cotisation = wx.StaticBoxSizer(self.staticbox_cotisation_staticbox, wx.VERTICAL)
-        grid_sizer_cotisation = wx.FlexGridSizer(rows=6, cols=2, vgap=5, hgap=5)
-        grid_sizer_validite = wx.FlexGridSizer(rows=1, cols=5, vgap=5, hgap=5)
-        grid_sizer_cotisation.Add(self.label_type, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_cotisation.Add(self.ctrl_type, 0, wx.EXPAND, 0)
-        grid_sizer_cotisation.Add(self.label_unite, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_cotisation.Add(self.ctrl_unite, 0, wx.EXPAND, 0)
-        grid_sizer_cotisation.Add(self.label_beneficiaire, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_cotisation.Add(self.ctrl_beneficiaire, 0, wx.EXPAND, 0)
-        grid_sizer_cotisation.Add(self.label_validite, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_validite.Add(self.label_du, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_validite.Add(self.ctrl_date_debut, 0, 0, 0)
-        grid_sizer_validite.Add(self.label_au, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_validite.Add(self.ctrl_date_fin, 0, 0, 0)
-        grid_sizer_cotisation.Add(grid_sizer_validite, 1, wx.EXPAND, 0)
-        
-        grid_sizer_cotisation.Add(self.label_activites, 0, wx.ALIGN_RIGHT|wx.TOP, 3)
-        
-        grid_sizer_activites = wx.FlexGridSizer(rows=1, cols=5, vgap=5, hgap=5)
-        grid_sizer_activites.Add(self.ctrl_activites, 1, wx.EXPAND, 0)
-        grid_sizer_activites.Add(self.bouton_activites, 0, wx.EXPAND, 0)
-        grid_sizer_activites.AddGrowableCol(0)
-        grid_sizer_cotisation.Add(grid_sizer_activites, 0, wx.EXPAND, 0)
-        
-        grid_sizer_cotisation.Add(self.label_observations, 0, wx.ALIGN_RIGHT|wx.TOP, 3)
-        grid_sizer_cotisation.Add(self.ctrl_observations, 0, wx.EXPAND, 0)
-        grid_sizer_cotisation.AddGrowableCol(1)
-        grid_sizer_cotisation.AddGrowableRow(5)
-        staticbox_cotisation.Add(grid_sizer_cotisation, 1, wx.ALL|wx.EXPAND, 10)
-        grid_sizer_base.Add(staticbox_cotisation, 1, wx.LEFT|wx.RIGHT|wx.TOP|wx.EXPAND, 10)
-        
-        # Carte
-        staticbox_carte = wx.StaticBoxSizer(self.staticbox_carte_staticbox, wx.VERTICAL)
-        grid_sizer_carte = wx.FlexGridSizer(rows=3, cols=2, vgap=5, hgap=5)
-        
-        # Création
-        grid_sizer_carte.Add(self.label_creation, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_creation = wx.FlexGridSizer(rows=1, cols=4, vgap=5, hgap=5)
-        grid_sizer_creation.Add(self.ctrl_creation, 0, wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_creation.Add((20, 10), 0, wx.EXPAND, 0)
-        grid_sizer_creation.Add(self.label_date, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_creation.Add(self.ctrl_date_creation, 0, 0, 0)
-        grid_sizer_creation.AddGrowableCol(3)
-        grid_sizer_carte.Add(grid_sizer_creation, 1, wx.EXPAND, 0)
-        
-        grid_sizer_carte.Add(self.label_numero, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_carte.Add(self.ctrl_numero, 0, wx.EXPAND, 0)
 
-        grid_sizer_carte.Add(self.label_depot, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_carte.Add(self.ctrl_depot, 0, wx.EXPAND, 0)
-        
-        grid_sizer_carte.AddGrowableCol(1)
-        staticbox_carte.Add(grid_sizer_carte, 1, wx.ALL|wx.EXPAND, 10)
-        grid_sizer_base.Add(staticbox_carte, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
-        
-        # Prestation
-        staticbox_prestation = wx.StaticBoxSizer(self.staticbox_prestation_staticbox, wx.VERTICAL)
-        grid_sizer_prestation = wx.FlexGridSizer(rows=4, cols=2, vgap=5, hgap=5)
-        grid_sizer_facturer = wx.FlexGridSizer(rows=1, cols=4, vgap=5, hgap=5)
-        grid_sizer_prestation.Add(self.label_facturer, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_facturer.Add(self.ctrl_facturer, 0, wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_facturer.Add((20, 10), 0, wx.EXPAND, 0)
-        grid_sizer_facturer.Add(self.label_date_prestation, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_facturer.Add(self.ctrl_date_prestation, 0, 0, 0)
-        grid_sizer_facturer.AddGrowableCol(3)
-        grid_sizer_prestation.Add(grid_sizer_facturer, 1, wx.EXPAND, 0)
-        grid_sizer_prestation.Add(self.label_label, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_prestation.Add(self.ctrl_label, 0, wx.EXPAND, 0)
-        grid_sizer_prestation.Add(self.label_payeur, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_prestation.Add(self.ctrl_payeur, 0, wx.EXPAND, 0)
-        grid_sizer_prestation.Add(self.label_montant, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_prestation.Add(self.ctrl_montant, 0, wx.EXPAND, 0)
-        grid_sizer_prestation.AddGrowableCol(1)
-        staticbox_prestation.Add(grid_sizer_prestation, 1, wx.ALL|wx.EXPAND, 10)
-        grid_sizer_base.Add(staticbox_prestation, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
-        
+        # Paramètres
+        grid_sizer_base.Add(self.ctrl_parametres, 1, wx.LEFT|wx.RIGHT|wx.TOP|wx.EXPAND, 10)
+
         # Boutons
         grid_sizer_boutons = wx.FlexGridSizer(rows=1, cols=4, vgap=10, hgap=10)
         grid_sizer_boutons.Add(self.bouton_aide, 0, 0, 0)
@@ -663,123 +1163,6 @@ class Dialog(wx.Dialog):
         self.Layout()
         self.SetMinSize(self.GetSize())
         self.CenterOnScreen() 
-    
-    def SetProchainIDcotisation(self):
-        # Méthode 1
-##        DB = GestionDB.DB()
-##        prochainID = DB.GetProchainID("cotisations")
-##        DB.Close()
-##        if prochainID == None : 
-##            prochainID = 1
-##        numero = u"%06d" % prochainID
-##        self.ctrl_numero.SetValue(numero)
-        # Méthode 2 :
-        DB = GestionDB.DB()
-        req = """SELECT MAX(numero) FROM cotisations;""" 
-        DB.ExecuterReq(req)
-        listeDonnees = DB.ResultatReq()
-        DB.Close()
-        if len(listeDonnees) > 0 :
-            if listeDonnees[0][0] == None :
-                prochainID = 1
-            else:
-                try :
-                    prochainID = int(listeDonnees[0][0]) + 1
-                except :
-                    return
-        else:
-            prochainID = 1
-        numero = u"%06d" % prochainID
-        self.ctrl_numero.SetValue(numero)
-        
-    def OnChoixType(self, event):
-        IDtype_cotisation = self.ctrl_type.GetID() 
-        self.ctrl_unite.MAJ(IDtype_cotisation)
-        self.OnChoixUnite(None)
-        
-
-    def OnChoixUnite(self, event): 
-        # Récupère les données sur le type
-        dictDonneesType = self.ctrl_type.GetDetailDonnees()
-        if dictDonneesType != None :
-            carte = dictDonneesType["carte"]
-            nomType = dictDonneesType["nom"]
-            type = dictDonneesType["type"]
-            if carte == 1 : 
-                self.ctrl_creation.SetValue(True)
-                
-        # Récupère les données sur l'unité
-        dictDonneesUnite = self.ctrl_unite.GetDetailDonnees()
-        if dictDonneesUnite != None :
-            nomUnite = dictDonneesUnite["nom"]
-            date_debut = dictDonneesUnite["date_debut"]
-            date_fin = dictDonneesUnite["date_fin"]
-            montant = dictDonneesUnite["montant"]
-            label_prestation = dictDonneesUnite["label_prestation"]
-            duree = dictDonneesUnite["duree"]
-
-            # Validité
-            if date_debut != None and date_fin != None :
-                self.ctrl_date_debut.SetDate(date_debut)
-                self.ctrl_date_fin.SetDate(date_fin)
-            if duree != None :
-                posM = duree.find("m")
-                posA = duree.find("a")
-                jours = int(duree[1:posM - 1])
-                mois = int(duree[posM + 1:posA - 1])
-                annees = int(duree[posA + 1:])
-
-                date_debut = datetime.date.today()
-                self.ctrl_date_debut.SetDate(date_debut)
-                if jours != 0 : date_debut = date_debut + relativedelta.relativedelta(days=+jours)
-                if mois != 0 : date_debut = date_debut + relativedelta.relativedelta(months=+mois)
-                if annees != 0 : date_debut = date_debut + relativedelta.relativedelta(years=+annees)
-                self.ctrl_date_fin.SetDate(date_debut)
-
-            # Montant
-            self.ctrl_montant.SetMontant(montant)
-            if label_prestation != None :
-                # Label personnalisé
-                self.ctrl_label.SetValue(label_prestation)
-            else:
-                # Label automatique
-                label = u"%s - %s" % (nomType, nomUnite)
-                self.ctrl_label.SetValue(label)
-            self.ctrl_facturer.SetValue(True)
-        
-            # MAJ ctrl bénéficiaires
-            if dictDonneesType != None :
-                self.ctrl_beneficiaire.SetListeDonnees(type)
-            
-        # MAJ contrôles
-        self.OnChoixCreation(None)
-        self.OnChoixFacturer(None) 
-    
-    def OnBoutonActivites(self, event):
-        self.ctrl_activites.Modifier()
-        
-    def OnChoixCreation(self, event):
-        if self.ctrl_creation.GetValue() == 1 :
-            self.ctrl_numero.Enable(True)
-            self.ctrl_date_creation.Enable(True)
-            self.ctrl_date_creation.SetFocus() 
-            wx.CallAfter(self.ctrl_date_creation.SetInsertionPoint, 0)
-        else:
-            self.ctrl_numero.Enable(False)
-            self.ctrl_date_creation.Enable(False)
-
-    def OnChoixFacturer(self, event): 
-        if self.ctrl_facturer.GetValue() == 1 and self.ctrl_facturer.IsEnabled() == True :
-            self.ctrl_date_prestation.Enable(True)
-            self.ctrl_montant.Enable(True)
-            self.ctrl_label.Enable(True)
-            if self.ctrl_payeur.GetCount() > 1 :
-                self.ctrl_payeur.Enable(True)
-        else:
-            self.ctrl_date_prestation.Enable(False)
-            self.ctrl_montant.Enable(False)
-            self.ctrl_label.Enable(False)
-            self.ctrl_payeur.Enable(False)
 
     def OnBoutonAide(self, event):
         from Utils import UTILS_Aide
@@ -787,323 +1170,19 @@ class Dialog(wx.Dialog):
 
     def OnBoutonOk(self, event): 
         # Vérification des données saisies
-        
-        # Type
-        if self.ctrl_type.GetID() == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner un type de cotisation !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
-            dlg.ShowModal()
-            dlg.Destroy()
-            return False
-        
-        # Unité
-        if self.ctrl_unite.GetID() == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner une unité de cotisation !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
-            dlg.ShowModal()
-            dlg.Destroy()
-            return False
-        
-        # Validation de la date de début
-        if self.ctrl_date_debut.FonctionValiderDate() == False or self.ctrl_date_debut.GetDate() == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez saisir une date de début valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
-            dlg.ShowModal()
-            dlg.Destroy()
-            self.ctrl_date_debut.SetFocus()
+        if self.ctrl_parametres.Validation() == False :
             return False
 
-        # Validation de la date de fin
-        if self.ctrl_date_fin.FonctionValiderDate() == False or self.ctrl_date_fin.GetDate() == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez saisir une date de fin valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
-            dlg.ShowModal()
-            dlg.Destroy()
-            self.ctrl_date_fin.SetFocus()
-            return False
-        
-        # Si la case CREATION est cochée
-        if self.ctrl_creation.GetValue() == True :
-            
-            # Vérifie la date de création
-            if self.ctrl_date_creation.FonctionValiderDate() == False or self.ctrl_date_creation.GetDate() == None :
-                dlg = wx.MessageDialog(self, _(u"Vous devez saisir une date de création de carte valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
-                dlg.ShowModal()
-                dlg.Destroy()
-                self.ctrl_date_creation.SetFocus()
-                return False
-
-            # Vérifie qu'un numéro de carte a été saisi
-            if self.ctrl_numero.GetValue() == "" :
-                dlg = wx.MessageDialog(self, _(u"Etes-vous sûr de ne pas saisir de numéro d'adhérent ?"), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
-                reponse = dlg.ShowModal()
-                dlg.Destroy()
-                if reponse !=  wx.ID_YES :
-                    return False
-        
-        # Si la case PRESTATION est cochée
-        if self.ctrl_facturer.GetValue() == True :
-
-            # Vérifie la date de facturation
-            if self.ctrl_date_prestation.FonctionValiderDate() == False or self.ctrl_date_prestation.GetDate() == None :
-                dlg = wx.MessageDialog(self, _(u"Vous devez saisir une date de facturation valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
-                dlg.ShowModal()
-                dlg.Destroy()
-                self.ctrl_date_prestation.SetFocus()
-                return False
-
-            # Vérifie le montant
-            if self.ctrl_montant.GetMontant() == 0.00 :
-                dlg = wx.MessageDialog(self, _(u"Etes-vous sûr de ne pas vouloir saisir de montant ?"), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
-                reponse = dlg.ShowModal()
-                dlg.Destroy()
-                if reponse !=  wx.ID_YES :
-                    return False
-
-            # Vérifie le label de prestation
-            if self.ctrl_label.GetValue() == "" :
-                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un label pour la facturation !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
-                dlg.ShowModal()
-                dlg.Destroy()
-                self.ctrl_label.SetFocus()
-                return False
-        
-        else:
-            
-            # Demande la confirmation de la suppression de la prestation
-            if self.IDprestation != None :
-                dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer la prestation qui a déjà été créée pour cette cotisation ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
-                if dlg.ShowModal() != wx.ID_YES :
-                    return False
-                dlg.Destroy()
-        
         # Sauvegarde
-        self.Sauvegarde()
-        
+        self.ctrl_parametres.Sauvegarde()
+
         # Fermeture de la fenêtre
         self.EndModal(wx.ID_OK)
     
     def GetIDcotisation(self):
-        return self.IDcotisation 
+        return self.ctrl_parametres.IDcotisation
     
-    def Sauvegarde(self):
-        """ Sauvegarde """
-        
-        # Récupération des données
-        donneesType = self.ctrl_type.GetDetailDonnees()
-        if donneesType["type"] == "famille" :
-            # Si c'est une cotisation famille
-            IDfamille = self.ctrl_beneficiaire.GetID() 
-            IDindividu = None
-        else:
-            # Si c'est une cotisation individuelle
-            IDfamille = None
-            IDindividu = self.ctrl_beneficiaire.GetID() 
-        IDtype_cotisation = self.ctrl_type.GetID() 
-        IDunite_cotisation = self.ctrl_unite.GetID() 
-        date_saisie = self.date_saisie
-        IDutilisateur = self.IDutilisateur
-        date_debut = self.ctrl_date_debut.GetDate() 
-        date_fin = self.ctrl_date_fin.GetDate() 
-        activites = self.ctrl_activites.GetDonnees(format="texte")
-        observations = self.ctrl_observations.GetValue() 
-        
-        # Création de la carte
-        if self.ctrl_creation.GetValue() == True :
-            date_creation_carte = self.ctrl_date_creation.GetDate() 
-            numero = self.ctrl_numero.GetValue() 
-        else:
-            date_creation_carte = None
-            numero = None
-        
-        # Sauvegarde
-        DB = GestionDB.DB()
-        listeDonnees = [    
-                ("IDfamille", IDfamille),
-                ("IDindividu", IDindividu),
-                ("IDtype_cotisation", IDtype_cotisation),
-                ("IDunite_cotisation", IDunite_cotisation),
-                ("date_saisie", date_saisie),
-                ("IDutilisateur", IDutilisateur),
-                ("date_creation_carte", date_creation_carte),
-                ("numero", numero),
-                ("date_debut", date_debut),
-                ("date_fin", date_fin),
-                ("observations", observations),
-                ("activites", activites),
-            ]
-        if self.IDcotisation == None :
-            nouvelleCotisation = True
-            self.IDcotisation = DB.ReqInsert("cotisations", listeDonnees)
-        else:
-            nouvelleCotisation = False
-            DB.ReqMAJ("cotisations", listeDonnees, "IDcotisation", self.IDcotisation)
-        
-        # Sauvegarde de la prestation
-        facturer = self.ctrl_facturer.GetValue() 
-        date_facturation = self.ctrl_date_prestation.GetDate()
-        montant = self.ctrl_montant.GetMontant() 
-        label_prestation = self.ctrl_label.GetValue()
-        IDcompte_payeur = self.ctrl_payeur.GetIDcompte_payeur()
-        IDfamille_payeur = self.ctrl_payeur.GetIDfamille() 
-        IDprestation = self.IDprestation
-        
-        if facturer == True :
-            
-            # Création d'une prestation
-            listeDonnees = [    
-                    ("IDcompte_payeur", IDcompte_payeur),
-                    ("date", date_facturation),
-                    ("categorie", "cotisation"),
-                    ("label", label_prestation),
-                    ("montant_initial", montant),
-                    ("montant", montant),
-                    ("IDfamille", IDfamille_payeur),
-                    ("IDindividu", IDindividu),
-                ]
-            if IDprestation == None :
-                listeDonnees.append(("date_valeur", str(datetime.date.today())))
-                IDprestation = DB.ReqInsert("prestations", listeDonnees)
-            else:
-                DB.ReqMAJ("prestations", listeDonnees, "IDprestation", IDprestation)
-                
-                # Recherche si cette prestation a déjà été ventilée sur un règlement
-                req = """SELECT IDventilation, ventilation.montant
-                FROM ventilation
-                LEFT JOIN reglements ON reglements.IDreglement = ventilation.IDreglement
-                WHERE IDprestation=%d
-                ORDER BY reglements.date;""" % IDprestation
-                DB.ExecuterReq(req)
-                listeVentilations = DB.ResultatReq()
-                montantVentilation = 0.0
-                for IDventilation, montantTmp in listeVentilations :
-                    montantVentilation += montantTmp
-                if montantVentilation > montant :
-                    # Si le montant total ventilé est supérieur au montant de la prestation :
-                    montantVentilationTmp = 0.0
-                    for IDventilation, montantTmp in listeVentilations :
-                        montantVentilationTmp += montantTmp
-                        if montantVentilationTmp > montant :
-                            nouveauMontant = montantTmp - (montantVentilationTmp - montant)
-                            if nouveauMontant > 0.0 :
-                                DB.ReqMAJ("ventilation", [("montant", nouveauMontant),], "IDventilation", IDventilation)
-                                montantVentilationTmp =  (montantVentilationTmp - montantTmp) + nouveauMontant
-                            else:
-                                DB.ReqDEL("ventilation", "IDventilation", IDventilation)
 
-        
-        else:
-            
-            # Suppression d'une prestation précédemment créée
-            if IDprestation != None :
-                DB.ReqDEL("prestations", "IDprestation", IDprestation)
-                DB.ReqDEL("ventilation", "IDprestation", IDprestation)
-                IDprestation = None
-        
-        # Insertion du IDprestation dans la cotisation
-        DB.ReqMAJ("cotisations", [("IDprestation", IDprestation),], "IDcotisation", self.IDcotisation)
-        
-        DB.Close()
-        
-        # Mémorise l'action dans l'historique
-        date_debut_periode = DateEngFr(str(date_debut))
-        date_fin_periode = DateEngFr(str(date_fin))
-        if nouvelleCotisation == True :
-            type = "Saisie"
-            IDcategorie = 21
-        else:
-            type = "Modification"
-            IDcategorie = 22
-        UTILS_Historique.InsertActions([{
-                "IDindividu" : IDindividu,
-                "IDfamille" : IDfamille,
-                "IDcategorie" : IDcategorie, 
-                "action" : _(u"%s de la cotisation ID%d '%s' pour la période du %s au %s") % (type, self.IDcotisation, label_prestation, date_debut_periode, date_fin_periode),
-                },])
-        
-
-    def Importation(self):
-        """ Importation des donnees de la base """
-        DB = GestionDB.DB()
-        req = """SELECT
-        IDfamille, IDindividu, IDtype_cotisation, IDunite_cotisation,
-        date_saisie, IDutilisateur, date_creation_carte, numero,
-        IDdepot_cotisation, date_debut, date_fin, IDprestation, observations, activites
-        FROM cotisations 
-        WHERE IDcotisation=%d;""" % self.IDcotisation
-        DB.ExecuterReq(req)
-        listeDonnees = DB.ResultatReq()
-        DB.Close()
-        if len(listeDonnees) == 0 : return
-        
-        IDfamille, IDindividu, IDtype_cotisation, IDunite_cotisation, date_saisie, IDutilisateur, date_creation_carte, numero, IDdepot_cotisation, date_debut, date_fin, IDprestation, observations, activites = listeDonnees[0]
-        
-        self.date_saisie = date_saisie
-        self.IDutilisateur = IDutilisateur
-        self.IDprestation = IDprestation
-        
-        # Cotisation
-        self.ctrl_type.SetID(IDtype_cotisation)
-        self.OnChoixType(None)
-        self.ctrl_unite.SetID(IDunite_cotisation)
-        self.OnChoixUnite(None)
-        if IDfamille != None : self.ctrl_beneficiaire.SetID(IDfamille)
-        if IDindividu != None : self.ctrl_beneficiaire.SetID(IDindividu)
-        self.ctrl_date_debut.SetDate(date_debut)
-        self.ctrl_date_fin.SetDate(date_fin)
-        
-        if activites != None :
-            self.ctrl_activites.SetDonnees(activites, format="texte")
-            
-        if observations != None :
-            self.ctrl_observations.SetValue(observations) 
-            
-        # Carte
-        if date_creation_carte == None :
-            self.ctrl_creation.SetValue(False) 
-            self.SetProchainIDcotisation() 
-        else:
-            self.ctrl_creation.SetValue(True) 
-            self.ctrl_date_creation.SetDate(date_creation_carte)
-            self.ctrl_numero.SetValue(numero)
-            
-        if IDdepot_cotisation == None :
-            self.ctrl_depot.SetValue(_(u"Non déposée"))
-        else:
-            self.ctrl_depot.SetValue(_(u"Déposée sur le dépôt n°%d") % IDdepot_cotisation)
-            self.ctrl_creation.Enable(False)
-            self.ctrl_date_creation.Enable(False)
-            self.ctrl_numero.Enable(False)
-            
-        # Facturation
-        if IDprestation == None :
-            self.ctrl_facturer.SetValue(False)
-        else:
-            self.ctrl_facturer.SetValue(True)
-            
-            # Importation des données de la prestation
-            DB = GestionDB.DB()
-            req = """SELECT
-            IDcompte_payeur, label, montant, date, IDfacture
-            FROM prestations 
-            WHERE IDprestation=%d;""" % IDprestation
-            DB.ExecuterReq(req)
-            listePrestations = DB.ResultatReq()
-            DB.Close()
-            if len(listePrestations) > 0 :
-                IDcompte_payeur, label, montant, date_facturation, IDfacture = listePrestations[0]
-                self.ctrl_date_prestation.SetDate(date_facturation)
-                self.ctrl_montant.SetMontant(montant)
-                self.ctrl_label.SetLabel(label)
-                self.ctrl_payeur.SetID(IDcompte_payeur)
-                
-                if IDfacture != None :
-                    self.ctrl_facturer.Enable(False)
-                
-            else:
-                self.IDprestation = None
-                self.ctrl_facturer.SetValue(False)
-        
-        # Init contrôles
-        self.OnChoixCreation(None)
-        self.OnChoixFacturer(None) 
-        
         
 
 

@@ -898,6 +898,8 @@ class MainFrame(wx.Frame):
                 {"code": "liste_cotisations", "label": _(u"Liste des cotisations"), "infobulle": _(u"Liste des cotisations"), "image": "Images/16x16/Cotisation.png", "action": self.On_cotisations_recherche},
                 {"code": "liste_cotisations_manquantes", "label": _(u"Liste des cotisations manquantes"), "infobulle": _(u"Liste des cotisations manquantes"), "image": "Images/16x16/Cotisation.png", "action": self.On_cotisations_manquantes},
                 "-",
+                {"code": "saisir_lot_cotisations", "label": _(u"Saisir un lot de cotisations"), "infobulle": _(u"Saisir un lot de cotisations"), "image": "Images/16x16/Cotisation.png", "action": self.On_cotisations_saisir_lot_cotisations},
+                "-",
                 {"code": "cotisations_email", "label": _(u"Transmettre des cotisations par Email"), "infobulle": _(u"Transmettre des cotisations par Email"), "image": "Images/16x16/Emails_exp.png", "action": self.On_cotisations_email},
                 {"code": "cotisations_imprimer", "label": _(u"Imprimer des cotisations"), "infobulle": _(u"Imprimer une ou plusieurs cotisations"), "image": "Images/16x16/Imprimante.png", "action": self.On_cotisations_imprimer},
                 "-",
@@ -2989,6 +2991,12 @@ class MainFrame(wx.Frame):
         from Dlg import DLG_Cotisations_manquantes
         dlg = DLG_Cotisations_manquantes.Dialog(self)
         dlg.ShowModal() 
+        dlg.Destroy()
+
+    def On_cotisations_saisir_lot_cotisations(self, event):
+        from Dlg import DLG_Saisie_lot_cotisations
+        dlg = DLG_Saisie_lot_cotisations.Dialog(self)
+        dlg.ShowModal()
         dlg.Destroy()
 
     def On_cotisations_imprimer(self, event):
