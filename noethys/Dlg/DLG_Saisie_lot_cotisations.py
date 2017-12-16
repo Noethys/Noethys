@@ -39,7 +39,7 @@ class Dialog(wx.Dialog):
 
         self.label_info = wx.StaticText(self, -1, _(u"Double-cliquez sur une ligne pour modifier le numéro de cotisation à générer."))
         self.label_info.SetFont(wx.Font(7, wx.SWISS, wx.NORMAL, wx.NORMAL))
-        self.ctrl_listview = OL_Saisie_lot_cotisations.ListView(self, id=-1, categorie="individus", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
+        self.ctrl_listview = OL_Saisie_lot_cotisations.ListView(self, id=-1, categorie="individu", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.ctrl_listview.SetMinSize((10, 10))
         self.ctrl_recherche = OL_Saisie_lot_cotisations.CTRL_Outils(self, listview=self.ctrl_listview, afficherCocher=True)
 
@@ -60,6 +60,9 @@ class Dialog(wx.Dialog):
         # Init
         self.ShowLabelInfo(False)
         self.ctrl_parametres.Init()
+
+        if len(self.ctrl_listview.donnees) == 0 :
+            self.ctrl_listview.MAJ()
 
     def __set_properties(self):
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))

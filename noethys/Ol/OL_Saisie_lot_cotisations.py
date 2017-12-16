@@ -268,6 +268,7 @@ class ListView(FastObjectListView):
         self.categorie = kwds.pop("categorie", "individu")
         self.afficher_colonne_numero = False
         self.dictNumeros = {"famille" : {}, "individu" : {}}
+        self.donnees = []
         # Infos organisme
         self.UtilsQuestionnaires = UTILS_Questionnaires.Questionnaires()
         # Initialisation du listCtrl
