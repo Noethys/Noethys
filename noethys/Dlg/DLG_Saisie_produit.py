@@ -171,7 +171,7 @@ class Page_Stock(wx.Panel):
         self.IDproduit = IDproduit
 
         self.label_quantite = wx.StaticText(self, -1, _(u"Quantité fixe :"))
-        self.ctrl_quantite = wx.SpinCtrl(self, -1)
+        self.ctrl_quantite = wx.SpinCtrl(self, -1, min=0, max=99999)
         self.ctrl_quantite.SetToolTip(wx.ToolTip(_(u"Saisissez une quantité")))
         self.ctrl_quantite.SetValue(1)
 

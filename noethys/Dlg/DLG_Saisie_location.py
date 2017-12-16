@@ -304,7 +304,7 @@ class Dialog(wx.Dialog):
 
         # Quantité
         self.staticbox_quantite_staticbox = wx.StaticBox(self, -1, _(u"Quantité"))
-        self.ctrl_quantite = wx.SpinCtrl(self, -1, min=1)
+        self.ctrl_quantite = wx.SpinCtrl(self, -1, min=1, max=99999)
         self.ctrl_quantite.SetMinSize((80, -1))
         self.ctrl_quantite.SetValue(1)
 
