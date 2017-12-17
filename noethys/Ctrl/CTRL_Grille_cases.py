@@ -69,7 +69,10 @@ class CaseSeparationActivite():
         self.renderer = CTRL_Grille_renderers.CaseActivite(self)
         if self.IDactivite != None :
             if grid.dictActivites != None :
-                labelActivite = grid.dictActivites[IDactivite]["nom"]
+                if grid.dictActivites.has_key(IDactivite) :
+                    labelActivite = grid.dictActivites[IDactivite]["nom"]
+                else :
+                    labelActivite = _(u"Activité inconnue")
             else:
                 labelActivite = _(u"Activité ID%d") % IDactivite
         if estMemo == True :

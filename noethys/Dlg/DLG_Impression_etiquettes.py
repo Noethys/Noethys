@@ -254,7 +254,10 @@ class Dialog(wx.Dialog):
 
         # DLG Attente
         dlgAttente = PBI.PyBusyInfo(_(u"Veuillez patienter durant l'initialisation de l'éditeur..."), parent=None, title=_(u"Patientez"), icon=wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Logo.png"), wx.BITMAP_TYPE_ANY))
-        wx.Yield() 
+        try :
+            wx.Yield()
+        except :
+            pass
 
         # Si on vient d'une fiche famille ou d'une fiche individuelle
         if IDindividu != None : self.categorie="individu"

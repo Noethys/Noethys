@@ -236,7 +236,10 @@ class Facturation():
     def GetDonneesImpression(self, listeRappels=[]):
         """ Impression des factures """
         dlgAttente = PBI.PyBusyInfo(_(u"Recherche des données de facturation..."), parent=None, title=_(u"Veuillez patienter..."), icon=wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Logo.png"), wx.BITMAP_TYPE_ANY))
-        wx.Yield() 
+        try :
+            wx.Yield()
+        except :
+            pass
         
         # Récupère les données de la facture
         if len(listeRappels) == 0 : conditions = "()"

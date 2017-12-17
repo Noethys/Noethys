@@ -212,6 +212,9 @@ class CTRL(HTL.HyperTreeList):
             else :
                 solde = montant
 
+            if solde == None :
+                solde = FloatToDecimal(0.0)
+
             # Regroupement par activités
             if dictResultats["activites"].has_key(IDactivite) == False :
                 dictResultats["activites"][IDactivite] = {"total":0, "periodes":{}}

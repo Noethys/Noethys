@@ -283,6 +283,7 @@ class Forfaits():
                 dictTarifs = dictActivite["tarifs"]
                 
                 # Récupération des informations sur l'inscription
+                IDcategorie_tarif_temp = None
                 for dictInscription in dictInscriptions[IDindividu]["inscriptions"] :
                     if dictInscription["IDactivite"] == IDactivite :
                         IDinscription = dictInscription["IDinscription"] 
@@ -290,287 +291,289 @@ class Forfaits():
                         IDcategorie_tarif_temp = dictInscription["IDcategorie_tarif"] 
                         break
 
-                if selectionIDcategorie_tarif == None :
-                    IDcategorie_tarif = IDcategorie_tarif_temp
-                else :
-                    IDcategorie_tarif = selectionIDcategorie_tarif
-                
-                dictUnitesPrestations = {}     
-                listeNouvellesPrestations = []   
-                
-                for dictTarif in dictActivite["tarifs"] :
-                    if True :
-                        IDtarif = dictTarif["IDtarif"]
-                        
-                        # Sélectionne les combinaisons données ou les ouvertures de l'activités
-                        options = dictTarif["options"]
-                        if options != None and "calendrier" in options :
-                            combinaisons = []
-                            if dictActivites[IDactivite]["ouvertures"].has_key(IDgroupe) :
-                                for dateTemp, listeCombis in dictActivites[IDactivite]["ouvertures"][IDgroupe].iteritems() :
-                                    if dateTemp >= dictTarif["date_debut"] and (dictTarif["date_fin"] == None or dateTemp <= dictTarif["date_fin"]) :
-                                        combinaisons.append(tuple(listeCombis))
-                                combinaisons.sort() 
-                        else :
-                            combinaisons = dictTarif["combinaisons"]
-                        
-                        # Vérifie si groupe ok ?
-                        listeGroupes = dictTarif["groupes"]
-                        if listeGroupes == None :
-                            groupeValide = True
-                        else:
-                            if IDgroupe in listeGroupes :
+                if IDcategorie_tarif_temp != None :
+
+                    if selectionIDcategorie_tarif == None :
+                        IDcategorie_tarif = IDcategorie_tarif_temp
+                    else :
+                        IDcategorie_tarif = selectionIDcategorie_tarif
+
+                    dictUnitesPrestations = {}
+                    listeNouvellesPrestations = []
+
+                    for dictTarif in dictActivite["tarifs"] :
+                        if True :
+                            IDtarif = dictTarif["IDtarif"]
+
+                            # Sélectionne les combinaisons données ou les ouvertures de l'activités
+                            options = dictTarif["options"]
+                            if options != None and "calendrier" in options :
+                                combinaisons = []
+                                if dictActivites[IDactivite]["ouvertures"].has_key(IDgroupe) :
+                                    for dateTemp, listeCombis in dictActivites[IDactivite]["ouvertures"][IDgroupe].iteritems() :
+                                        if dateTemp >= dictTarif["date_debut"] and (dictTarif["date_fin"] == None or dateTemp <= dictTarif["date_fin"]) :
+                                            combinaisons.append(tuple(listeCombis))
+                                    combinaisons.sort()
+                            else :
+                                combinaisons = dictTarif["combinaisons"]
+
+                            # Vérifie si groupe ok ?
+                            listeGroupes = dictTarif["groupes"]
+                            if listeGroupes == None :
                                 groupeValide = True
                             else:
-                                groupeValide = False
-                        
-                        # Ne sélectionne que ceux qui doivent être saisis automatiquement à l'inscription
-                        if groupeValide == True and IDcategorie_tarif in dictTarif["categories_tarifs"] :
-                            if (inscription == False and selectionIDtarif == IDtarif) or (inscription == True and selectionIDactivite == IDactivite and dictTarif["forfait_saisie_auto"] == 1) :
-                                
-                                nom_tarif = dictTarif["nom_tarif"]
-                                methode_calcul = dictTarif["methode"]
-                                montant_tarif = 0.0
-                                
-                                # Recherche de la date de facturation
-                                if len(combinaisons) > 0 :
-                                    date_debut_forfait = combinaisons[0][0][0]
+                                if IDgroupe in listeGroupes :
+                                    groupeValide = True
                                 else:
-                                    date_debut_forfait = date_debut_activite #datetime.date.today()
+                                    groupeValide = False
 
-                                date_facturation_tarif = dictTarif["date_facturation"]
-                                if date_facturation_tarif == "date_debut_forfait" : 
-                                    date_facturation = date_debut_forfait
-                                elif date_facturation_tarif == "date_saisie" : 
-                                    date_facturation = datetime.date.today()
-                                elif date_facturation_tarif == "date_debut_activite" : 
-                                    date_facturation = date_debut_activite
-                                elif date_facturation_tarif != None and date_facturation_tarif.startswith("date:") : 
-                                    date_facturation = DateEngEnDateDD(date_facturation_tarif[5:])
-                                else :
-                                    date_facturation = date_debut_forfait
-                                
-                                # Suppression autorisée ?
-                                if dictTarif["forfait_suppression_auto"] == 1 :
-                                    type_forfait = 2
-                                else:
-                                    type_forfait = 1
+                            # Ne sélectionne que ceux qui doivent être saisis automatiquement à l'inscription
+                            if groupeValide == True and IDcategorie_tarif in dictTarif["categories_tarifs"] :
+                                if (inscription == False and selectionIDtarif == IDtarif) or (inscription == True and selectionIDactivite == IDactivite and dictTarif["forfait_saisie_auto"] == 1) :
 
-                                # Récupération des consommations à créer
-                                listeConsommations = []
-                                listeDatesStr = []
-                                for combi in combinaisons :
-                                    for date, IDunite, IDgroupeTemp in combi :
-                                        if IDgroupeTemp == IDgroupe or IDgroupeTemp == None :
-                                            listeConsommations.append( {"date" : date, "IDunite" : IDunite} )
-                                            if date not in listeDatesStr : listeDatesStr.append(str(date))
-                                
-                                # Vérifie que les dates ne sont pas déjà prises
-                                DB = GestionDB.DB()
-                                if len(listeDatesStr) == 0 : conditionDates = "()"
-                                elif len(listeDatesStr) == 1 : conditionDates = "('%s')" % listeDatesStr[0]
-                                else : conditionDates = str(tuple(listeDatesStr))
-                                req = """SELECT IDconso, date, IDunite
-                                FROM consommations 
-                                WHERE IDindividu=%d AND date IN %s
-                                ; """ % (IDindividu, conditionDates)
-                                DB.ExecuterReq(req)
-                                listeConsoExistantes = DB.ResultatReq()
-                                DB.Close()
-                                listeDatesPrises = []
-                                for IDconso, dateConso, IDuniteConso in listeConsoExistantes :
-                                    dateConso = DateEngEnDateDD(dateConso)
-                                    if {"date" : dateConso, "IDunite" : IDuniteConso} in listeConsommations :
-                                        if dateConso not in listeDatesPrises :
-                                            listeDatesPrises.append(dateConso)
-                                
-                                if len(listeDatesPrises) > 0 :
-                                    texteDatesPrises = u""
-                                    for datePrise in listeDatesPrises :
-                                        texteDatesPrises += u"   > %s\n" % DateComplete(datePrise)
-                                    if labelTarif == None :
-                                        label = ""
-                                    else :
-                                        label = labelTarif + " "
-                                    dlg = wx.MessageDialog(None, _(u"Il est impossible de saisir le forfait %s! \n\nDes consommations existent déjà sur les dates suivantes :\n\n%s") % (label, texteDatesPrises), "Erreur", wx.OK | wx.ICON_ERROR)
-                                    dlg.ShowModal()
-                                    dlg.Destroy()
-                                    return False
-                                
-                                # ------------ Recherche du montant du tarif : MONTANT UNIQUE
-                                if methode_calcul == "montant_unique" :
-                                    lignes_calcul = dictTarif["lignes_calcul"]
-                                    montant_tarif = lignes_calcul[0]["montant_unique"]
-                                
-                                # ------------ Recherche du montant à appliquer : QUOTIENT FAMILIAL
-                                if methode_calcul == "qf" :
+                                    nom_tarif = dictTarif["nom_tarif"]
+                                    methode_calcul = dictTarif["methode"]
                                     montant_tarif = 0.0
-                                    tarifFound = False
-                                    lignes_calcul = dictTarif["lignes_calcul"]
-                                    for ligneCalcul in lignes_calcul :
-                                        qf_min = ligneCalcul["qf_min"]
-                                        qf_max = ligneCalcul["qf_max"]
-                                        montant_tarif = ligneCalcul["montant_unique"]
 
-                                        QFfamille = self.RechercheQF(dictQuotientsFamiliaux, dictTarif, self.IDfamille, date_facturation)
-                                        if QFfamille != None :
-                                            if QFfamille >= qf_min and QFfamille <= qf_max :
-                                                break
-
-                                        # if dictQuotientsFamiliaux.has_key(self.IDfamille) :
-                                        #     listeQuotientsFamiliaux = dictQuotientsFamiliaux[self.IDfamille]
-                                        # else:
-                                        #     listeQuotientsFamiliaux = []
-                                        # for date_debut, date_fin, quotient in listeQuotientsFamiliaux :
-                                        #     if date_facturation >= date_debut and date_facturation <= date_fin and quotient >= qf_min and quotient <= qf_max :
-                                        #         tarifFound = True
-                                        #     if tarifFound == True :
-                                        #         break
-                                        # if tarifFound == True :
-                                        #     break
-
-                                # -------------- Recherche du montant du tarif : CHOIX (MONTANT ET LABEL SELECTIONNES PAR L'UTILISATEUR)
-                                if methode_calcul == "choix" :
-                                    # Nouvelle saisie si clic sur la case
-                                    lignes_calcul = dictTarif["lignes_calcul"]
-                                    import DLG_Selection_montant_prestation
-                                    dlg = DLG_Selection_montant_prestation.Dialog(None, lignes_calcul=lignes_calcul, label=nom_tarif, montant=0.0, titre=labelTarif)
-                                    if dlg.ShowModal() == wx.ID_OK:
-                                        nom_tarif = dlg.GetLabel()
-                                        montant_tarif = dlg.GetMontant()
-                                        dlg.Destroy()
+                                    # Recherche de la date de facturation
+                                    if len(combinaisons) > 0 :
+                                        date_debut_forfait = combinaisons[0][0][0]
                                     else:
+                                        date_debut_forfait = date_debut_activite #datetime.date.today()
+
+                                    date_facturation_tarif = dictTarif["date_facturation"]
+                                    if date_facturation_tarif == "date_debut_forfait" :
+                                        date_facturation = date_debut_forfait
+                                    elif date_facturation_tarif == "date_saisie" :
+                                        date_facturation = datetime.date.today()
+                                    elif date_facturation_tarif == "date_debut_activite" :
+                                        date_facturation = date_debut_activite
+                                    elif date_facturation_tarif != None and date_facturation_tarif.startswith("date:") :
+                                        date_facturation = DateEngEnDateDD(date_facturation_tarif[5:])
+                                    else :
+                                        date_facturation = date_debut_forfait
+
+                                    # Suppression autorisée ?
+                                    if dictTarif["forfait_suppression_auto"] == 1 :
+                                        type_forfait = 2
+                                    else:
+                                        type_forfait = 1
+
+                                    # Récupération des consommations à créer
+                                    listeConsommations = []
+                                    listeDatesStr = []
+                                    for combi in combinaisons :
+                                        for date, IDunite, IDgroupeTemp in combi :
+                                            if IDgroupeTemp == IDgroupe or IDgroupeTemp == None :
+                                                listeConsommations.append( {"date" : date, "IDunite" : IDunite} )
+                                                if date not in listeDatesStr : listeDatesStr.append(str(date))
+
+                                    # Vérifie que les dates ne sont pas déjà prises
+                                    DB = GestionDB.DB()
+                                    if len(listeDatesStr) == 0 : conditionDates = "()"
+                                    elif len(listeDatesStr) == 1 : conditionDates = "('%s')" % listeDatesStr[0]
+                                    else : conditionDates = str(tuple(listeDatesStr))
+                                    req = """SELECT IDconso, date, IDunite
+                                    FROM consommations 
+                                    WHERE IDindividu=%d AND date IN %s
+                                    ; """ % (IDindividu, conditionDates)
+                                    DB.ExecuterReq(req)
+                                    listeConsoExistantes = DB.ResultatReq()
+                                    DB.Close()
+                                    listeDatesPrises = []
+                                    for IDconso, dateConso, IDuniteConso in listeConsoExistantes :
+                                        dateConso = DateEngEnDateDD(dateConso)
+                                        if {"date" : dateConso, "IDunite" : IDuniteConso} in listeConsommations :
+                                            if dateConso not in listeDatesPrises :
+                                                listeDatesPrises.append(dateConso)
+
+                                    if len(listeDatesPrises) > 0 :
+                                        texteDatesPrises = u""
+                                        for datePrise in listeDatesPrises :
+                                            texteDatesPrises += u"   > %s\n" % DateComplete(datePrise)
+                                        if labelTarif == None :
+                                            label = ""
+                                        else :
+                                            label = labelTarif + " "
+                                        dlg = wx.MessageDialog(None, _(u"Il est impossible de saisir le forfait %s! \n\nDes consommations existent déjà sur les dates suivantes :\n\n%s") % (label, texteDatesPrises), "Erreur", wx.OK | wx.ICON_ERROR)
+                                        dlg.ShowModal()
                                         dlg.Destroy()
                                         return False
 
+                                    # ------------ Recherche du montant du tarif : MONTANT UNIQUE
+                                    if methode_calcul == "montant_unique" :
+                                        lignes_calcul = dictTarif["lignes_calcul"]
+                                        montant_tarif = lignes_calcul[0]["montant_unique"]
+
+                                    # ------------ Recherche du montant à appliquer : QUOTIENT FAMILIAL
+                                    if methode_calcul == "qf" :
+                                        montant_tarif = 0.0
+                                        tarifFound = False
+                                        lignes_calcul = dictTarif["lignes_calcul"]
+                                        for ligneCalcul in lignes_calcul :
+                                            qf_min = ligneCalcul["qf_min"]
+                                            qf_max = ligneCalcul["qf_max"]
+                                            montant_tarif = ligneCalcul["montant_unique"]
+
+                                            QFfamille = self.RechercheQF(dictQuotientsFamiliaux, dictTarif, self.IDfamille, date_facturation)
+                                            if QFfamille != None :
+                                                if QFfamille >= qf_min and QFfamille <= qf_max :
+                                                    break
+
+                                            # if dictQuotientsFamiliaux.has_key(self.IDfamille) :
+                                            #     listeQuotientsFamiliaux = dictQuotientsFamiliaux[self.IDfamille]
+                                            # else:
+                                            #     listeQuotientsFamiliaux = []
+                                            # for date_debut, date_fin, quotient in listeQuotientsFamiliaux :
+                                            #     if date_facturation >= date_debut and date_facturation <= date_fin and quotient >= qf_min and quotient <= qf_max :
+                                            #         tarifFound = True
+                                            #     if tarifFound == True :
+                                            #         break
+                                            # if tarifFound == True :
+                                            #     break
+
+                                    # -------------- Recherche du montant du tarif : CHOIX (MONTANT ET LABEL SELECTIONNES PAR L'UTILISATEUR)
+                                    if methode_calcul == "choix" :
+                                        # Nouvelle saisie si clic sur la case
+                                        lignes_calcul = dictTarif["lignes_calcul"]
+                                        import DLG_Selection_montant_prestation
+                                        dlg = DLG_Selection_montant_prestation.Dialog(None, lignes_calcul=lignes_calcul, label=nom_tarif, montant=0.0, titre=labelTarif)
+                                        if dlg.ShowModal() == wx.ID_OK:
+                                            nom_tarif = dlg.GetLabel()
+                                            montant_tarif = dlg.GetMontant()
+                                            dlg.Destroy()
+                                        else:
+                                            dlg.Destroy()
+                                            return False
 
 
 
 
-                                # ------------ Déduction d'une aide journalière --------------
-                                
-                                # Recherche si une aide est valable à cette date et pour cet individu et pour cette activité
-                                listeAidesRetenues = []
-                                for IDaide, dictAide in dictAides.iteritems() :
-                                    IDfamilleTemp = dictAide["IDfamille"]
-                                    listeBeneficiaires = dictAide["beneficiaires"]
-                                    IDactiviteTemp = dictAide["IDactivite"]
-                                    dateDebutTemp = dictAide["date_debut"]
-                                    dateFinTemp = dictAide["date_fin"]
-                                    
-                                    for combi in combinaisons :
-                                        date = combi[0][0]
-                                        
-                                        # Regroupement des unités de la date
-                                        listeUnitesUtilisees = []
-                                        for date, IDunite, IDgroupe in combi :
-                                            listeUnitesUtilisees.append(IDunite)
 
-                                        # Vérifie si date est dans jours scolaires ou de vacances
-                                        date_ok = True
-                                        if dictAide["jours_scolaires"] != None and dictAide["jours_scolaires"] != None:
-                                            date_ok = self.VerificationPeriodes(dictAide["jours_scolaires"], dictAide["jours_vacances"], date)
+                                    # ------------ Déduction d'une aide journalière --------------
 
-                                        if date_ok == True and self.IDfamille == IDfamilleTemp and date >= dateDebutTemp and date <= dateFinTemp and IDindividu in listeBeneficiaires and IDactiviteTemp == IDactivite :
-                                            # Une aide valide a été trouvée...
-                                            listeCombiValides = []
-                                            
-                                            # On recherche si des combinaisons sont présentes sur cette ligne
-                                            dictMontants = dictAide["montants"]
-                                            for IDaide_montant, dictMontant in dictMontants.iteritems() :
-                                                montant = dictMontant["montant"]
-                                                for IDaide_combi, combinaison in dictMontant["combinaisons"].iteritems() :
-                                                    resultat = self.RechercheCombinaison(listeUnitesUtilisees, combinaison)
-                                                    if resultat == True :
-                                                        dictTmp = {
-                                                            "nbre_max_unites_combi": len(combinaison),
-                                                            "combi_retenue" : combinaison,
-                                                            "montant" : montant,
-                                                            "IDaide" : IDaide,
-                                                            "date" : date,
-                                                            }
-                                                        listeCombiValides.append(dictTmp)
-                                                        
-                                                # Tri des combinaisons par nombre d'unités max dans les combinaisons
-                                                listeCombiValides.sort(cmp=self.TriTarifs)
-                                                
-                                                # On conserve le combi qui a le plus grand nombre d'unités dedans
-                                                if len(listeCombiValides) > 0 :
-                                                    listeAidesRetenues.append( listeCombiValides[0] )
-                            
-                                
-                                # Application de la déduction
-                                montant_initial = montant_tarif
-                                montant_final = montant_initial
-                                for aideRetenue in listeAidesRetenues :
-                                    montant_final = montant_final - aideRetenue["montant"]
-                                
-                                # Récupère l'IDcompte_payeur
-                                IDcompte_payeur = dictComptesPayeurs[self.IDfamille]
-                                                            
-                                # Sauvegarde de la prestation
-                                DB = GestionDB.DB()
-                                listeDonnees = [
-                                    ("IDcompte_payeur", IDcompte_payeur), 
-                                    ("date", date_facturation),
-                                    ("categorie", "consommation"),
-                                    ("label", nom_tarif),
-                                    ("montant_initial", montant_initial), 
-                                    ("montant", montant_final), 
-                                    ("IDactivite", IDactivite), 
-                                    ("IDtarif", IDtarif), 
-                                    ("IDfacture", None), 
-                                    ("IDfamille", self.IDfamille),
-                                    ("IDindividu", IDindividu),
-                                    ("forfait", type_forfait), 
-                                    ("IDcategorie_tarif", IDcategorie_tarif),
-                                    ("date_valeur", str(datetime.date.today())),
-                                    ]
-                                IDprestation = DB.ReqInsert("prestations", listeDonnees)
-                    
-                                # Sauvegarde des déductions
-                                for deduction in listeAidesRetenues :
+                                    # Recherche si une aide est valable à cette date et pour cet individu et pour cette activité
+                                    listeAidesRetenues = []
+                                    for IDaide, dictAide in dictAides.iteritems() :
+                                        IDfamilleTemp = dictAide["IDfamille"]
+                                        listeBeneficiaires = dictAide["beneficiaires"]
+                                        IDactiviteTemp = dictAide["IDactivite"]
+                                        dateDebutTemp = dictAide["date_debut"]
+                                        dateFinTemp = dictAide["date_fin"]
+
+                                        for combi in combinaisons :
+                                            date = combi[0][0]
+
+                                            # Regroupement des unités de la date
+                                            listeUnitesUtilisees = []
+                                            for date, IDunite, IDgroupe in combi :
+                                                listeUnitesUtilisees.append(IDunite)
+
+                                            # Vérifie si date est dans jours scolaires ou de vacances
+                                            date_ok = True
+                                            if dictAide["jours_scolaires"] != None and dictAide["jours_scolaires"] != None:
+                                                date_ok = self.VerificationPeriodes(dictAide["jours_scolaires"], dictAide["jours_vacances"], date)
+
+                                            if date_ok == True and self.IDfamille == IDfamilleTemp and date >= dateDebutTemp and date <= dateFinTemp and IDindividu in listeBeneficiaires and IDactiviteTemp == IDactivite :
+                                                # Une aide valide a été trouvée...
+                                                listeCombiValides = []
+
+                                                # On recherche si des combinaisons sont présentes sur cette ligne
+                                                dictMontants = dictAide["montants"]
+                                                for IDaide_montant, dictMontant in dictMontants.iteritems() :
+                                                    montant = dictMontant["montant"]
+                                                    for IDaide_combi, combinaison in dictMontant["combinaisons"].iteritems() :
+                                                        resultat = self.RechercheCombinaison(listeUnitesUtilisees, combinaison)
+                                                        if resultat == True :
+                                                            dictTmp = {
+                                                                "nbre_max_unites_combi": len(combinaison),
+                                                                "combi_retenue" : combinaison,
+                                                                "montant" : montant,
+                                                                "IDaide" : IDaide,
+                                                                "date" : date,
+                                                                }
+                                                            listeCombiValides.append(dictTmp)
+
+                                                    # Tri des combinaisons par nombre d'unités max dans les combinaisons
+                                                    listeCombiValides.sort(cmp=self.TriTarifs)
+
+                                                    # On conserve le combi qui a le plus grand nombre d'unités dedans
+                                                    if len(listeCombiValides) > 0 :
+                                                        listeAidesRetenues.append( listeCombiValides[0] )
+
+
+                                    # Application de la déduction
+                                    montant_initial = montant_tarif
+                                    montant_final = montant_initial
+                                    for aideRetenue in listeAidesRetenues :
+                                        montant_final = montant_final - aideRetenue["montant"]
+
+                                    # Récupère l'IDcompte_payeur
+                                    IDcompte_payeur = dictComptesPayeurs[self.IDfamille]
+
+                                    # Sauvegarde de la prestation
+                                    DB = GestionDB.DB()
                                     listeDonnees = [
-                                        ("IDprestation", IDprestation),
-                                        ("IDcompte_payeur", IDcompte_payeur), 
-                                        ("date", deduction["date"]),
-                                        ("montant", deduction["montant"]),
-                                        ("label", dictAides[IDaide]["nomAide"]),
-                                        ("IDaide", deduction["IDaide"]), 
-                                        ]
-                                    newIDdeduction = DB.ReqInsert("deductions", listeDonnees)
-                                                    
-                                # Sauvegarde des consommations
-                                for conso in listeConsommations :
-                                    date = conso["date"]
-                                    IDunite = conso["IDunite"]
-                                                                    
-                                    # Récupération des données
-                                    listeDonnees = [
-                                        ("IDindividu", IDindividu), 
-                                        ("IDinscription", IDinscription),
-                                        ("IDactivite", IDactivite),
-                                        ("date", str(date)),
-                                        ("IDunite", IDunite), 
-                                        ("IDgroupe", IDgroupe), 
-                                        ("heure_debut", dictUnites[IDunite]["heure_debut"]), 
-                                        ("heure_fin", dictUnites[IDunite]["heure_fin"]), 
-                                        ("etat", "reservation"),
-                                        ("verrouillage", False), 
-                                        ("date_saisie", str(datetime.date.today())), 
-                                        ("IDutilisateur", UTILS_Identification.GetIDutilisateur()),
-                                        ("IDcategorie_tarif", IDcategorie_tarif),
                                         ("IDcompte_payeur", IDcompte_payeur),
-                                        ("IDprestation", IDprestation),
-                                        ("forfait", type_forfait), 
+                                        ("date", date_facturation),
+                                        ("categorie", "consommation"),
+                                        ("label", nom_tarif),
+                                        ("montant_initial", montant_initial),
+                                        ("montant", montant_final),
+                                        ("IDactivite", IDactivite),
+                                        ("IDtarif", IDtarif),
+                                        ("IDfacture", None),
+                                        ("IDfamille", self.IDfamille),
+                                        ("IDindividu", IDindividu),
+                                        ("forfait", type_forfait),
+                                        ("IDcategorie_tarif", IDcategorie_tarif),
+                                        ("date_valeur", str(datetime.date.today())),
                                         ]
-                                    IDconso = DB.ReqInsert("consommations", listeDonnees)
-                                    
-                                # Cloture de la DB
-                                DB.Close()
-                                
-                                nbre_forfaits_saisis += 1
-        
+                                    IDprestation = DB.ReqInsert("prestations", listeDonnees)
+
+                                    # Sauvegarde des déductions
+                                    for deduction in listeAidesRetenues :
+                                        listeDonnees = [
+                                            ("IDprestation", IDprestation),
+                                            ("IDcompte_payeur", IDcompte_payeur),
+                                            ("date", deduction["date"]),
+                                            ("montant", deduction["montant"]),
+                                            ("label", dictAides[IDaide]["nomAide"]),
+                                            ("IDaide", deduction["IDaide"]),
+                                            ]
+                                        newIDdeduction = DB.ReqInsert("deductions", listeDonnees)
+
+                                    # Sauvegarde des consommations
+                                    for conso in listeConsommations :
+                                        date = conso["date"]
+                                        IDunite = conso["IDunite"]
+
+                                        # Récupération des données
+                                        listeDonnees = [
+                                            ("IDindividu", IDindividu),
+                                            ("IDinscription", IDinscription),
+                                            ("IDactivite", IDactivite),
+                                            ("date", str(date)),
+                                            ("IDunite", IDunite),
+                                            ("IDgroupe", IDgroupe),
+                                            ("heure_debut", dictUnites[IDunite]["heure_debut"]),
+                                            ("heure_fin", dictUnites[IDunite]["heure_fin"]),
+                                            ("etat", "reservation"),
+                                            ("verrouillage", False),
+                                            ("date_saisie", str(datetime.date.today())),
+                                            ("IDutilisateur", UTILS_Identification.GetIDutilisateur()),
+                                            ("IDcategorie_tarif", IDcategorie_tarif),
+                                            ("IDcompte_payeur", IDcompte_payeur),
+                                            ("IDprestation", IDprestation),
+                                            ("forfait", type_forfait),
+                                            ]
+                                        IDconso = DB.ReqInsert("consommations", listeDonnees)
+
+                                    # Cloture de la DB
+                                    DB.Close()
+
+                                    nbre_forfaits_saisis += 1
+
         return True
 
 

@@ -316,7 +316,6 @@ def Restauration(parent=None, fichier="", listeFichiersLocaux=[], listeFichiersR
             dlgErreur = wx.MessageDialog(None, _(u"Noethys n'a pas réussi à localiser MySQL sur votre ordinateur.\nNotez bien que MySQL doit être installé obligatoirement pour créer une restauration réseau."), _(u"Erreur"), wx.OK | wx.ICON_ERROR)
             dlgErreur.ShowModal() 
             dlgErreur.Destroy()
-            dlgprogress.Destroy()
             return False
 
         # Vérifie qu'on les remplace bien

@@ -141,13 +141,12 @@ class Location():
             date_debut_texte = datetime.datetime.strftime(date_debut, "%d/%m/%Y")
             heure_debut_texte = datetime.datetime.strftime(date_debut, "%Hh%M")
 
+            date_fin_texte = ""
+            heure_fin_texte = ""
             if isinstance(date_fin, str) or isinstance(date_fin, unicode):
                 date_fin = datetime.datetime.strptime(date_fin, "%Y-%m-%d %H:%M:%S")
                 date_fin_texte = datetime.datetime.strftime(date_fin, "%d/%m/%Y")
                 heure_fin_texte = datetime.datetime.strftime(date_fin, "%Hh%M")
-            if date_fin == None :
-                date_fin_texte = ""
-                heure_fin_texte = ""
 
             nomProduit = item[6]
             nomCategorie = item[7]

@@ -159,7 +159,7 @@ class Dialog(wx.Dialog):
                     if prenom == None : prenom = ""
                     nomIndividu = u"%s %s" % (nom, prenom)
                     if adresse not in ("", None) :
-                        dictTemp = {"adresse": adresse, "pieces": [], "champs": []}
+                        dictTemp = {"adresse": adresse, "pieces": [], "champs": {}}
                         if dictTemp not in listeDonnees:
                             listeDonnees.append(dictTemp)
                     else :
@@ -178,7 +178,7 @@ class Dialog(wx.Dialog):
 
                     # Mémorisation des données
                     if adresse != None :
-                        dictTemp = {"adresse": adresse, "pieces": [], "champs": []}
+                        dictTemp = {"adresse": adresse, "pieces": [], "champs": {}}
                         if dictTemp not in listeDonnees :
                             listeDonnees.append(dictTemp)
                     else:

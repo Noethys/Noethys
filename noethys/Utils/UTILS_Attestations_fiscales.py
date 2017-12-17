@@ -104,7 +104,10 @@ class Attestations_fiscales():
     def GetDonneesImpression(self, tracks=[], dictOptions={}):
         """ Impression des factures """
         dlgAttente = PBI.PyBusyInfo(_(u"Recherche des données..."), parent=None, title=_(u"Veuillez patienter..."), icon=wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Logo.png"), wx.BITMAP_TYPE_ANY))
-        wx.Yield() 
+        try :
+            wx.Yield()
+        except :
+            pass
         
         dictDonnees = {}
         dictChampsFusion = {}
