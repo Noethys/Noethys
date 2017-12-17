@@ -4130,6 +4130,19 @@ class MyApp(wx.App):
 
 
 
+class Redirect(object):
+    def __init__(self, nomJournal=""):
+        self.filename = open(nomJournal, "a")
+
+    def write(self, text):
+        if self.filename.closed:
+            pass
+        else:
+            self.filename.write(text)
+            self.filename.flush()
+
+
+
 if __name__ == "__main__":
 
     # Vérifie l'existence des répertoires dans le répertoire Utilisateur
@@ -4157,9 +4170,19 @@ if __name__ == "__main__":
             os.remove(nomJournal)
 
     # Lancement de l'application
+    # nomFichier = sys.executable
+    # if nomFichier.endswith("python.exe") or CUSTOMIZE.GetValeur("journal", "actif", "1") == "0" or os.path.isfile("nolog.txt") :
+    #     app = MyApp(redirect=False)
+    # else :
+    #     app = MyApp(redirect=True, filename=nomJournal)
+
+    # Redirection vers un fichier
     nomFichier = sys.executable
-    if nomFichier.endswith("python.exe") or CUSTOMIZE.GetValeur("journal", "actif", "1") == "0" or os.path.isfile("nolog.txt") :
-        app = MyApp(redirect=False)
-    else :
-        app = MyApp(redirect=True, filename=nomJournal)
+    if nomFichier.endswith("python.exe") == False and CUSTOMIZE.GetValeur("journal", "actif", "1") != "0" and os.path.isfile("nolog.txt") == False :
+        sys.stdout = Redirect(nomJournal)
+
+    # Lancement de l'application
+    app = MyApp(redirect=False)
+
+
     app.MainLoop()

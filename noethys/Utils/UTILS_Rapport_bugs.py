@@ -14,6 +14,7 @@ from UTILS_Traduction import _
 import wx
 from Ctrl import CTRL_Bouton_image
 import sys
+import os
 import platform
 import traceback
 import datetime
@@ -21,6 +22,8 @@ import GestionDB
 import webbrowser
 import wx.lib.dialogs
 import UTILS_Config
+import UTILS_Customize
+import UTILS_Fichiers
 
 
 
@@ -130,11 +133,12 @@ class DLG_Rapport(wx.Dialog):
         texteRapport = self.ctrl_rapport.GetValue()
         dlg = DLG_Envoi(self, texteRapport)
         reponse = dlg.ShowModal()     
-        commentaires = dlg.GetCommentaires()        
+        commentaires = dlg.GetCommentaires()
+        joindre_journal = dlg.GetJoindreJournal()
         dlg.Destroy() 
         
         if reponse == wx.ID_OK :
-            resultat = self.Envoi_mail(commentaires) 
+            resultat = self.Envoi_mail(commentaires, joindre_journal)
 ##            if resultat == True :
 ##                self.EndModal(wx.ID_CANCEL)
 
@@ -159,7 +163,7 @@ class DLG_Rapport(wx.Dialog):
         dictAdresse = {"adresse":adresse, "motdepasse":motdepasse, "smtp":smtp, "port":port, "auth":connexionAuthentifiee, "startTLS":startTLS, "utilisateur" : utilisateur}
         return dictAdresse
 
-    def Envoi_mail(self, commentaires=""):
+    def Envoi_mail(self, commentaires="", joindre_journal=False):
         """ Envoi d'un mail avec pièce jointe """
         import smtplib
         from email.MIMEMultipart import MIMEMultipart
@@ -223,7 +227,26 @@ class DLG_Rapport(wx.Dialog):
         msg['Subject'] = _(u"Rapport de bug Noethys n°%s") % IDrapport
             
         msg.attach( MIMEText(texteMail.encode('utf-8'), 'html', 'utf-8') )
-        
+
+        # Attacher le journal d'erreurs
+        if joindre_journal == True :
+            customize = UTILS_Customize.Customize()
+            nomJournal = UTILS_Fichiers.GetRepUtilisateur(customize.GetValeur("journal", "nom", "journal.log"))
+            # Recherche le type
+            ctype, encoding = mimetypes.guess_type(nomJournal)
+            if ctype is None or encoding is not None:
+                ctype = 'application/octet-stream'
+            maintype, subtype = ctype.split('/', 1)
+            # Lecture du fichier
+            fp = open(nomJournal)
+            part = MIMEText(fp.read(), _subtype=subtype)
+            fp.close()
+            # Header
+            nomFichier = os.path.basename(nomJournal)
+            part.add_header('Content-Disposition', "attachment; filename=\"%s\"" % nomFichier)
+            msg.attach(part)
+
+        # Envoi
         if auth == False :
             # Envoi standard
             smtp = smtplib.SMTP(serveur)
@@ -262,9 +285,12 @@ class DLG_Envoi(wx.Dialog):
         self.texteRapport = texteRapport
 
         self.label_ligne_1 = wx.StaticText(self, wx.ID_ANY, _(u"Le rapport est prêt à être envoyé..."))
-        self.label_ligne_2 = wx.StaticText(self, wx.ID_ANY, _(u"Vous pouvez ajouter ci-dessous des commentaires, remarques ou \ncompléments d'informations avant de l'envoyer à l'auteur."))
+        self.label_ligne_2 = wx.StaticText(self, wx.ID_ANY, _(u"Vous pouvez ajouter ci-dessous des commentaires, remarques ou compléments d'informations\navant de l'envoyer à l'auteur. Il est également possible de joindre le rapport complet."))
         
         self.ctrl_commentaires = wx.TextCtrl(self, wx.ID_ANY, "", style=wx.TE_MULTILINE)
+
+        self.check_journal = wx.CheckBox(self, -1, _(u"Joindre le journal des erreurs (Recommandé)"))
+
         self.bouton_apercu = CTRL_Bouton_image.CTRL(self, texte=_(u"Aperçu"), cheminImage="Images/32x32/Apercu.png")
         self.bouton_envoyer = CTRL_Bouton_image.CTRL(self, texte=_(u"Envoyer l'Email"), cheminImage="Images/32x32/Emails_exp.png")
         self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
@@ -280,17 +306,19 @@ class DLG_Envoi(wx.Dialog):
         self.SetTitle(_(u"Envoyer le rapport à l'auteur"))
         self.label_ligne_1.SetFont(wx.Font(9, wx.DEFAULT, wx.NORMAL, wx.BOLD, 0, ""))
         self.ctrl_commentaires.SetToolTip(wx.ToolTip(_(u"Vous pouvez saisir des commentaires ici")))
+        self.check_journal.SetToolTip(wx.ToolTip(_(u"Pour faciliter la résolution du bug, vous pouvez joindre votre rapport d'erreurs")))
         self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour visualiser le contenu du message qui sera envoyé à l'auteur")))
         self.bouton_envoyer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour envoyer le rapport et les commentaires à l'auteur")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
-        self.SetMinSize((400, 300))
+        self.SetMinSize((550, 350))
 
     def __do_layout(self):
-        grid_sizer_base = wx.FlexGridSizer(4, 1, 10, 10)
+        grid_sizer_base = wx.FlexGridSizer(5, 1, 10, 10)
         grid_sizer_boutons = wx.FlexGridSizer(1, 4, 10, 10)
         grid_sizer_base.Add(self.label_ligne_1, 0, wx.LEFT | wx.RIGHT | wx.TOP, 10)
         grid_sizer_base.Add(self.label_ligne_2, 0, wx.LEFT | wx.RIGHT, 10)
         grid_sizer_base.Add(self.ctrl_commentaires, 0, wx.LEFT | wx.RIGHT | wx.EXPAND, 10)
+        grid_sizer_base.Add(self.check_journal, 0, wx.LEFT | wx.RIGHT | wx.EXPAND, 10)
         grid_sizer_boutons.Add(self.bouton_apercu, 0, 0, 0)
         grid_sizer_boutons.Add((20, 20), 0, wx.EXPAND, 0)
         grid_sizer_boutons.Add(self.bouton_envoyer, 0, 0, 0)
@@ -322,7 +350,9 @@ class DLG_Envoi(wx.Dialog):
     
     def GetCommentaires(self):
         return self.ctrl_commentaires.GetValue()
-    
+
+    def GetJoindreJournal(self):
+        return self.check_journal.GetValue()
     
 
 if __name__ == u"__main__":
