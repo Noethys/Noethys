@@ -1,6 +1,10 @@
-Version 1.2.1.8 (30/11/2017) :
+Version 1.2.1.9 (17/12/2017) :
 
 - Ajout de la gestion des renseignements dans Connecthys
+- Ajout du blocage des activités complètes dans Connecthys
+- Ajout de la saisie par lot des cotisations dans le menu Cotisations
+- Ajout du journal d'évènements au rapport de bugs
+- Correction de divers petits bugs
 
 Version 1.2.1.7 (18/11/2017) :
 
