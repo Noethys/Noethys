@@ -196,7 +196,7 @@ class CTRL_Photo(wx.StaticBitmap):
         # Sélection d'une image
         self.repCourant = os.getcwd()
 
-        wildcard = "Toutes les images|*.bmp; *.gif; *.jpg; *.png|Image JPEG (*.jpg)|*.jpg|Image PNG (*.png)|*.png|Image GIF (*.gif)|*.gif|Tous les fichiers (*.*)|*.*"
+        wildcard = "Toutes les images|*.bmp;*.gif;*.jpg;*.png|Image JPEG (*.jpg)|*.jpg|Image PNG (*.png)|*.png|Image GIF (*.gif)|*.gif|Tous les fichiers (*.*)|*.*"
                 
         # Récupération du chemin des documents
         sp = wx.StandardPaths.Get()

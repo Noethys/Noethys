@@ -116,7 +116,7 @@ class CTRL(wx.StaticBitmap):
     
     def Ajouter(self, event=None):
         """ Importer Image """
-        wildcard = "Toutes les images (*.bmp; *.gif; *.jpg; *.png)|*.bmp; *.gif; *.jpg; *.png|Image JPEG (*.jpg)|*.jpg|Image PNG (*.png)|*.png|Image GIF (*.gif)|*.gif|Tous les fichiers (*.*)|*.*"
+        wildcard = "Toutes les images (*.bmp; *.gif; *.jpg; *.png)|*.bmp;*.gif;*.jpg;*.png|Image JPEG (*.jpg)|*.jpg|Image PNG (*.png)|*.png|Image GIF (*.gif)|*.gif|Tous les fichiers (*.*)|*.*"
                 
         # Récupération du chemin des documents
         sp = wx.StandardPaths.Get()

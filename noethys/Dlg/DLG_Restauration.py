@@ -36,7 +36,7 @@ LISTE_CATEGORIES = UTILS_Sauvegarde.LISTE_CATEGORIES
 def SelectionFichier():
     """ Sélectionner le fichier à restaurer """
     # Demande l'emplacement du fichier
-    wildcard = _(u"Sauvegarde Noethys (*.nod; *.noc)|*.nod; *.noc")
+    wildcard = _(u"Sauvegarde Noethys (*.nod; *.noc)|*.nod;*.noc")
     standardPath = wx.StandardPaths.Get()
     rep = standardPath.GetDocumentsDir()
     dlg = wx.FileDialog(None, message=_(u"Veuillez sélectionner le fichier de sauvegarde à restaurer"), defaultDir=rep, defaultFile="", wildcard=wildcard, style=wx.OPEN)
