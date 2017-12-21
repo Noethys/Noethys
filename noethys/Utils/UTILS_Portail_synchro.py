@@ -1129,9 +1129,10 @@ class Synchro():
                                 ])
 
                 # Mémorisation des renseignements
-                if len(action["renseignements"]) > 0 :
-                    for renseignement in action["renseignements"] :
-                        listeRenseignements.append([renseignement["champ"], renseignement["valeur"], prochainIDaction])
+                if action.has_key("renseignements"):
+                    if len(action["renseignements"]) > 0 :
+                        for renseignement in action["renseignements"] :
+                            listeRenseignements.append([renseignement["champ"], renseignement["valeur"], prochainIDaction])
 
                 prochainIDaction += 1
 
