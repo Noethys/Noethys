@@ -260,6 +260,7 @@ class Panel(wx.Panel):
 
         # Init
         self.OnCheckDateFin(None)
+        self.ctrl_date_debut.SetDate(datetime.date.today())
 
     
     def OnCheckDateFin(self, event):
