@@ -1,4 +1,4 @@
-Version 1.2.1.9 (17/12/2017) :
+Version 1.2.2.0 (21/12/2017) :
 
 - Ajout de la gestion des renseignements dans Connecthys
 - Ajout du blocage des activités complètes dans Connecthys
