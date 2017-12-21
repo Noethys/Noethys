@@ -225,13 +225,13 @@ class CTRL(TC.ThumbnailCtrl):
     def ImportationDossier(self):
         # Sélection des documents
         self.repCourant = os.getcwd()
-        wildcard = "Tous les documents|*.bmp; *.gif; *.jpg; *.png; *.pdf; *.zip, *.txt; *.doc; *.docx; *.xls; *.xlsx| \
+        wildcard = "Tous les documents|*.bmp;*.gif;*.jpg;*.png;*.pdf;*.zip,*.txt;*.doc;*.docx;*.xls;*.xlsx| \
 Images JPEG (*.jpg)|*.jpg| \
 Images PNG (*.png)|*.png| \
 Images GIF (*.gif)|*.gif| \
 Documents PDF (*.pdf)|*.pdf| \
-Documents MS Word (*.doc, *.docx)|*.doc; *.docx| \
-Documents MS Excel (*.xls, *.xlsx)|*.xls; *.xlsx| \
+Documents MS Word (*.doc, *.docx)|*.doc;*.docx| \
+Documents MS Excel (*.xls, *.xlsx)|*.xls;*.xlsx| \
 Archives ZIP (*.zip)|*.zip| \
 Fichiers Texte (*.txt)|*.txt| \
 Tous les fichiers (*.*)|*.*"
