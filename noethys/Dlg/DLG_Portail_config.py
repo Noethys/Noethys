@@ -97,7 +97,7 @@ VALEURS_DEFAUT = {
     "accueil_bienvenue" : _(u"Bienvenue sur le portail Famille"),
     "accueil_messages_afficher" : True,
     "accueil_etat_dossier_afficher" : True,
-    "renseignements_afficher": False,
+    "renseignements_afficher": True,
     "renseignements_intro": _(u"Vous pouvez consulter et modifier ici les renseignements sur votre famille."),
     "renseignements_modifier": True,
     "renseignements_adulte_nom": "modification",
