@@ -27,6 +27,7 @@ from Utils import UTILS_Dates
 from Dlg import DLG_Selection_activite
 from Dlg import DLG_Inscription_desinscription
 from Dlg import DLG_Appliquer_forfait
+from Dlg import DLG_Messagebox
 
 
 
@@ -387,6 +388,8 @@ class Dialog(wx.Dialog):
 
         DB = GestionDB.DB()
 
+        action_consommation = None
+
         # Date départ
         if self.ctrl_check_depart.IsChecked():
             if self.ctrl_date_depart.GetDate() == None or self.ctrl_date_depart.Validation() == False :
@@ -412,12 +415,31 @@ class Dialog(wx.Dialog):
                 WHERE IDinscription=%d AND date>'%s';""" % (self.IDinscription, date_desinscription)
                 DB.ExecuterReq(req)
                 listeConso = DB.ResultatReq()
+                titre = _(u"Consommations existantes")
+                introduction = _(u"Il existe %d consommations enregistrées après la date de départ. ") % len(listeConso)
+                introduction += _(u"Si vous les conservez elles seront considérées comme gratuites. ")
+                introduction += _(u"Voulez-vous les supprimer définitivement.")
+                conclusion = _(u"Oui pour les supprimer.\n")
+                conclusion += _(u"Non pour les conserver.")
                 if len(listeConso) > 0 :
-                    DB.Close()
-                    dlg = wx.MessageDialog(self, _(u"La date de départ est erronée car il existe %d consommations enregistrées après cette date !") % len(listeConso), _(u"Erreur de saisie"), wx.OK | wx.ICON_ERROR)
-                    dlg.ShowModal()
+                    dlg = DLG_Messagebox.Dialog(
+                        self,
+                        titre=titre,
+                        introduction=introduction,
+                        conclusion=conclusion,
+                        icone=wx.ICON_QUESTION,
+                        boutons=[_(u"Oui"), _(u"Non"), _(u"Annuler")])
+                    reponse = dlg.ShowModal()
                     dlg.Destroy()
-                    return
+                    if reponse == 0:
+                        # Il faudra supprimer les consommations existantes
+                        action_consommation = self.SupprimerConsommations
+                    elif reponse == 1:
+                        # Il faudra garder les consommations existantes
+                        action_consommation = self.PreserverConsommations
+                    else:
+                        DB.Close()
+                        return
 
         else :
             date_desinscription = None
@@ -506,6 +528,11 @@ class Dialog(wx.Dialog):
             ]
             DB.ReqInsert("prestations", listeDonnees)
 
+        # Si une action consommation est nécessaire, on l'exécute
+        if action_consommation != None:
+            action_consommation(DB, date_desinscription)
+
+        DB.Commit()
         DB.Close()
 
         # Mémorise l'action dans l'historique
@@ -534,6 +561,14 @@ class Dialog(wx.Dialog):
 
         # Fermeture de la fenêtre
         self.EndModal(wx.ID_OK)
+
+    def SupprimerConsommations(self, db, date_desinscription):
+        req = "DELETE FROM consommations WHERE IDinscription=%d AND date>'%s';" % (self.IDinscription, date_desinscription)
+        db.ExecuterReq(req)
+
+    def PreserverConsommations(self, db, date_desinscription):
+        req = "UPDATE consommations SET IDinscription=NULL WHERE IDinscription=%d AND date>'%s';" % (self.IDinscription, date_desinscription)
+        db.ExecuterReq(req)
 
     def GetIDinscription(self):
         return self.IDinscription
