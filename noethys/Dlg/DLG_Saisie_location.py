@@ -21,6 +21,7 @@ from Utils import UTILS_Titulaires
 from Utils import UTILS_Dates
 from Utils import UTILS_Customize
 from Utils import UTILS_Locations
+from Utils import UTILS_Gestion
 from Dlg import DLG_Messagebox
 import GestionDB
 from Ol import OL_Locations_prestations
@@ -624,6 +625,13 @@ class Dialog(wx.Dialog):
             dlg.Destroy()
             return
 
+        # Périodes de gestion
+        liste_prestations = self.ctrl_parametres.GetPageAvecCode("facturation").GetDonnees()["prestations"]
+
+        gestion = UTILS_Gestion.Gestion(None)
+        for track_prestation in liste_prestations:
+            if gestion.Verification("prestations", track_prestation.date) == False: return False
+
         # Sauvegarde
         DB = GestionDB.DB()
 
@@ -644,8 +652,6 @@ class Dialog(wx.Dialog):
             DB.ReqMAJ("locations", listeDonnees, "IDlocation", self.IDlocation)
 
         # Sauvegarde des prestations
-        liste_prestations = self.ctrl_parametres.GetPageAvecCode("facturation").GetDonnees()["prestations"]
-
         listeID = []
         for track_prestation in liste_prestations :
             IDprestation = track_prestation.IDprestation

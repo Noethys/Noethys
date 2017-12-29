@@ -726,7 +726,6 @@ class Dialog(wx.Dialog):
         
     def On_outils_saisie_forfait(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("consommations_conso", "creer") == False : return
-        
         listeActivites = self.panel_grille.listeSelectionActivites
         listeIndividus = self.panel_grille.listeSelectionIndividus
         

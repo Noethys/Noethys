@@ -18,6 +18,9 @@ import wx.lib.agw.hypertreelist as HTL
 
 from Ctrl import CTRL_Bandeau
 from Utils import UTILS_Identification
+from Utils import UTILS_Gestion
+from Utils import UTILS_Dates
+from Ctrl import CTRL_Saisie_date
 import GestionDB
 from Ctrl.CTRL_Tarification_calcul import CHAMPS_TABLE_LIGNES
 
@@ -57,6 +60,9 @@ class Forfaits():
         self.saisieManuelle = saisieManuelle
         self.saisieAuto = saisieAuto
         self.listeVacances = self.GetListeVacances()
+
+        # Périodes de gestion
+        self.gestion = UTILS_Gestion.Gestion(None)
 
     def GetListeVacances(self):
         DB = GestionDB.DB()
@@ -367,6 +373,27 @@ class Forfaits():
                                             if IDgroupeTemp == IDgroupe or IDgroupeTemp == None :
                                                 listeConsommations.append( {"date" : date, "IDunite" : IDunite} )
                                                 if date not in listeDatesStr : listeDatesStr.append(str(date))
+
+                                    # Périodes de gestion
+                                    if self.gestion.Verification("consommations", listeConsommations) == False: return False
+
+                                    if self.gestion.Verification("prestations", date_facturation, silencieux=True) == False:
+                                        # Demande une nouvelle date de facturation
+                                        dlg = DLG_Verrouillage(None)
+                                        if dlg.ShowModal() == wx.ID_OK:
+                                            date_facturation = dlg.GetDateFacturation()
+                                            dlg.Destroy()
+                                        else :
+                                            dlg.Destroy()
+                                            return False
+                                    else :
+                                        # Vérifie que la date de facturation n'est pas trop ancienne
+                                        nbreJours = (datetime.date.today() - date_facturation).days
+                                        if nbreJours > 28 :
+                                            dlg = DLG_Date_facturation(None, date_facturation=date_facturation)
+                                            if dlg.ShowModal() == wx.ID_OK:
+                                                date_facturation = dlg.GetDateFacturation()
+                                            dlg.Destroy()
 
                                     # Vérifie que les dates ne sont pas déjà prises
                                     DB = GestionDB.DB()
@@ -1007,12 +1034,199 @@ class Dialog(wx.Dialog):
         
 
 
+class DLG_Verrouillage(wx.Dialog):
+    def __init__(self, parent):
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
+        self.parent = parent
+
+        titre = _(u"Période verrouillée")
+        self.SetTitle(titre)
+        self.ctrl_image = wx.StaticBitmap(self, wx.ID_ANY, wx.Bitmap(Chemins.GetStaticPath(u"Images/48x48/Cadenas_ferme.png"), wx.BITMAP_TYPE_ANY))
+        self.label_ligne_1 = wx.StaticText(self, wx.ID_ANY, titre)
+        intro = _(u"La date de facturation du forfait que vous souhaitez créer se trouve dans une période de gestion verrouillée.\n\nSouhaitez-vous appliquer une autre date de facturation ?")
+        self.label_ligne_2 = wx.StaticText(self, wx.ID_ANY, intro)
+        self.ctrl_date = CTRL_Saisie_date.Date2(self)
+        self.ctrl_date.SetDate(datetime.date.today())
+
+        self.bouton_oui = CTRL_Bouton_image.CTRL(self, texte=_(u"Créer le forfait avec la date sélectionnée"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_non = CTRL_Bouton_image.CTRL(self, texte=_(u"Ne pas créer le forfait"), cheminImage="Images/32x32/Annuler.png")
+
+        self.__set_properties()
+        self.__do_layout()
+
+        self.Bind(wx.EVT_BUTTON, self.OnBoutonOui, self.bouton_oui)
+        self.Bind(wx.EVT_BUTTON, self.OnBoutonNon, self.bouton_non)
+
+
+    def __set_properties(self):
+        self.label_ligne_1.SetFont(wx.Font(9, wx.DEFAULT, wx.NORMAL, wx.BOLD, 0, ""))
+        self.bouton_oui.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour appliquer la date de facturation sélectionnée")))
+        self.bouton_non.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer et ne pas créer de forfait")))
+
+    def __do_layout(self):
+        grid_sizer_base = wx.FlexGridSizer(2, 1, 10, 10)
+        grid_sizer_bas = wx.FlexGridSizer(1, 5, 10, 10)
+        grid_sizer_haut = wx.FlexGridSizer(1, 2, 10, 10)
+        grid_sizer_droit = wx.FlexGridSizer(3, 1, 10, 10)
+        grid_sizer_haut.Add(self.ctrl_image, 0, wx.ALL, 10)
+        grid_sizer_droit.Add(self.label_ligne_1, 0, 0, 0)
+        grid_sizer_droit.Add(self.label_ligne_2, 0, 0, 0)
+        grid_sizer_droit.Add(self.ctrl_date, 0, wx.EXPAND | wx.BOTTOM, 10)
+        grid_sizer_droit.AddGrowableRow(2)
+        grid_sizer_droit.AddGrowableCol(0)
+        grid_sizer_haut.Add(grid_sizer_droit, 1, wx.RIGHT | wx.TOP | wx.EXPAND, 10)
+        grid_sizer_haut.AddGrowableRow(0)
+        grid_sizer_haut.AddGrowableCol(1)
+        grid_sizer_base.Add(grid_sizer_haut, 1, wx.EXPAND, 0)
+        grid_sizer_bas.Add((20, 20), 0, wx.EXPAND, 0)
+        grid_sizer_bas.Add(self.bouton_oui, 0, 0, 0)
+        grid_sizer_bas.Add(self.bouton_non, 0, 0, 0)
+        grid_sizer_bas.AddGrowableCol(0)
+        grid_sizer_base.Add(grid_sizer_bas, 1, wx.LEFT | wx.RIGHT | wx.BOTTOM | wx.EXPAND, 10)
+        self.SetSizer(grid_sizer_base)
+        grid_sizer_base.Fit(self)
+        grid_sizer_base.AddGrowableRow(0)
+        grid_sizer_base.AddGrowableCol(0)
+        self.Layout()
+        self.SetMinSize(self.GetSize())
+        self.CenterOnScreen()
+
+    def OnBoutonNon(self, event):
+        self.EndModal(wx.ID_CANCEL)
+
+    def OnBoutonOui(self, event):
+        date_facturation = self.ctrl_date.GetDate()
+        if self.ctrl_date.FonctionValiderDate() == False or date_facturation == None:
+            dlg = wx.MessageDialog(self, _(u"La date de facturation ne semble pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            self.ctrl_date.SetFocus()
+            return False
+
+        # Périodes de gestion
+        self.gestion = UTILS_Gestion.Gestion(self)
+        if self.gestion.Verification("prestations", date_facturation, silencieux=True) == False:
+            dlg = wx.MessageDialog(self, _(u"La date de facturation qaue vous avez sélectionné se trouve dans une période de gestion verrouillée !"), _(u"Verrouillage"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return False
+
+        self.EndModal(wx.ID_OK)
+
+    def GetDateFacturation(self):
+        return self.ctrl_date.GetDate()
+
+
+# -----------------------------------------------------------------------------------------------------------------------------------
+
+class DLG_Date_facturation(wx.Dialog):
+    def __init__(self, parent, date_facturation=None):
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE)
+        self.parent = parent
+        self.date_facturation = date_facturation
+
+        self.SetTitle(_(u"Avertissement"))
+        self.label_intro = wx.StaticText(self, wx.ID_ANY, _(u"La date de facturation du forfait à appliquer est ancienne. \n\nQue souhaitez-vous faire ?"))
+
+        self.radio_conserver = wx.RadioButton(self, -1, _(u"Conserver la date (%s)") % UTILS_Dates.DateDDEnFr(self.date_facturation), style=wx.RB_GROUP)
+        self.radio_modifier = wx.RadioButton(self, -1, _(u"Modifier la date :"))
+
+        self.ctrl_date = CTRL_Saisie_date.Date2(self)
+        self.ctrl_date.SetDate(datetime.date.today())
+
+        self.label_conclusion = wx.StaticText(self, wx.ID_ANY, _(u"Notez que vous pouvez modifier la date de facturation par défaut depuis le paramétrage\ndu tarif du forfait, onglet type de tarif."))
+        self.label_conclusion.SetFont(wx.Font(7, wx.SWISS, wx.NORMAL, wx.NORMAL))
+
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Fermer"), cheminImage="Images/32x32/Annuler.png")
+
+        self.__set_properties()
+        self.__do_layout()
+
+        self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
+        self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
+        self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioDate, self.radio_conserver)
+        self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioDate, self.radio_modifier)
+
+        # Init
+        self.OnRadioDate()
+
+    def __set_properties(self):
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
+
+    def __do_layout(self):
+        grid_sizer_base = wx.FlexGridSizer(rows=4, cols=1, vgap=10, hgap=10)
+        grid_sizer_base.Add(self.label_intro, 1, wx.EXPAND | wx.LEFT | wx.RIGHT | wx.TOP, 10)
+
+        grid_sizer_radio = wx.FlexGridSizer(rows=4, cols=1, vgap=5, hgap=5)
+        grid_sizer_radio.Add(self.radio_conserver, 1, wx.EXPAND | wx.LEFT, 10)
+
+        grid_sizer_date = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
+        grid_sizer_date.Add(self.radio_modifier, 1, wx.EXPAND, 0)
+        grid_sizer_date.Add(self.ctrl_date, 1, wx.EXPAND, 0)
+        grid_sizer_radio.Add(grid_sizer_date, 1, wx.EXPAND | wx.LEFT, 10)
+
+        grid_sizer_base.Add(grid_sizer_radio, 1, wx.EXPAND | wx.LEFT | wx.RIGHT, 10)
+
+        grid_sizer_base.Add(self.label_conclusion, 1, wx.EXPAND | wx.LEFT | wx.RIGHT, 10)
+
+        grid_sizer_boutons = wx.FlexGridSizer(rows=1, cols=4, vgap=10, hgap=10)
+        grid_sizer_boutons.Add(self.bouton_aide, 0, 0, 0)
+        grid_sizer_boutons.Add((20, 20), 0, wx.EXPAND, 0)
+        grid_sizer_boutons.Add(self.bouton_ok, 0, 0, 0)
+        grid_sizer_boutons.Add(self.bouton_annuler, 0, 0, 0)
+        grid_sizer_boutons.AddGrowableCol(1)
+        grid_sizer_base.Add(grid_sizer_boutons, 1, wx.ALL | wx.EXPAND, 10)
+
+        self.SetSizer(grid_sizer_base)
+        grid_sizer_base.Fit(self)
+        grid_sizer_base.AddGrowableRow(1)
+        grid_sizer_base.AddGrowableCol(0)
+        self.Layout()
+        self.SetMinSize(self.GetSize())
+        self.CenterOnScreen()
+
+    def OnRadioDate(self, event=None):
+        self.ctrl_date.Enable(self.radio_modifier.GetValue())
+        if self.radio_modifier.GetValue() :
+            self.ctrl_date.SetFocus()
+
+    def OnBoutonAide(self, event):
+        from Utils import UTILS_Aide
+        UTILS_Aide.Aide("Activits1")
+
+    def OnBoutonOk(self, event):
+        date_facturation = self.ctrl_date.GetDate()
+        if self.ctrl_date.FonctionValiderDate() == False or date_facturation == None:
+            dlg = wx.MessageDialog(self, _(u"La date de facturation saisie ne semble pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            self.ctrl_date.SetFocus()
+            return False
+
+        # Fermeture de la fenêtre
+        self.EndModal(wx.ID_OK)
+
+    def GetDateFacturation(self):
+        if self.radio_modifier.GetValue() == True :
+            return self.ctrl_date.GetDate()
+        else :
+            return self.date_facturation
+
+
+
+
+
 if __name__ == "__main__":
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    dialog_1 = Dialog(None, IDfamille=14, listeActivites=[1,], listeIndividus=[46,])
-    app.SetTopWindow(dialog_1)
-    dialog_1.ShowModal()
+    #dlg = Dialog(None, IDfamille=14, listeActivites=[1,], listeIndividus=[46,])
+    dlg = DLG_Date_facturation(None)
+    app.SetTopWindow(dlg)
+    dlg.ShowModal()
     app.MainLoop()
     
     

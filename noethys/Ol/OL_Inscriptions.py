@@ -20,6 +20,7 @@ import GestionDB
 from Utils import UTILS_Historique
 from Utils import UTILS_Dates
 from Utils import UTILS_Interface
+from Utils import UTILS_Gestion
 from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils, ListCtrlPrinter
 
 from Utils import UTILS_Utilisateurs
@@ -394,11 +395,15 @@ class ListView(FastObjectListView):
         DB = GestionDB.DB()
         
         # Recherche si des consommations existent
-        req = """SELECT IDconso, forfait
+        req = """SELECT IDconso, date, forfait
         FROM consommations
         WHERE IDinscription=%d AND (forfait IS NULL OR forfait=1);""" % IDinscription
         DB.ExecuterReq(req)
-        listeConso = DB.ResultatReq()     
+        listeDonnees = DB.ResultatReq()
+        listeConso = []
+        for IDconso, date, forfait in listeDonnees :
+            date = UTILS_Dates.DateEngEnDateDD(date)
+            listeConso.append({"IDconso" : IDconso, "date" : date, "forfait" : forfait})
         if len(listeConso) > 0 :
             dlg = wx.MessageDialog(self, _(u"Il existe déjà %d consommations enregistrées sur cette inscription. \n\nIl est donc impossible de la supprimer !") % len(listeConso), _(u"Annulation impossible"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
@@ -407,7 +412,7 @@ class ListView(FastObjectListView):
             return
         
         # Recherche si des prestations existent
-        req = """SELECT IDprestation, prestations.forfait
+        req = """SELECT IDprestation, prestations.date, prestations.forfait
         FROM prestations
         WHERE IDactivite=%d AND IDindividu=%d
         ;""" % (IDactivite, IDindividu)
@@ -415,7 +420,9 @@ class ListView(FastObjectListView):
         listePrestations = DB.ResultatReq()
         listePrestationsForfait = []
         listePrestationsNormales = []
-        for IDprestation, forfait in listePrestations :
+        listeDatesPrestations = []
+        for IDprestation, date, forfait in listePrestations :
+            listeDatesPrestations.append(UTILS_Dates.DateEngEnDateDD(date))
             if forfait == 2 : 
                 if IDprestation not in listePrestationsForfait : 
                     listePrestationsForfait.append(IDprestation)
@@ -430,6 +437,11 @@ class ListView(FastObjectListView):
             return
         
         DB.Close() 
+
+        # Périodes de gestion
+        self.gestion = UTILS_Gestion.Gestion(self)
+        if self.gestion.Verification("consommations", listeConso) == False: return False
+        if self.gestion.Verification("prestations", listeDatesPrestations) == False: return False
 
         # Demande de confirmation
         if len(listePrestationsForfait) == 0 : texteForfait = u""

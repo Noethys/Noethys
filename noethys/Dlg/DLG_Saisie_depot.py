@@ -20,6 +20,8 @@ from Ctrl import CTRL_Saisie_date
 from Ol import OL_Reglements_depots
 import DLG_Saisie_depot_ajouter
 from Utils import UTILS_Titulaires
+from Utils import UTILS_Gestion
+from Utils import UTILS_Dates
 
 import GestionDB
 
@@ -205,7 +207,10 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
         self.Bind(wx.EVT_CHECKBOX, self.OnCheckVerrouillage, self.ctrl_verrouillage)
-        
+
+        # Périodes de gestion
+        self.gestion = UTILS_Gestion.Gestion(None)
+
         # Importation lors d'une modification
         if self.IDdepot != None :
             self.SetTitle(_(u"Modification d'un dépôt"))
@@ -356,7 +361,8 @@ class Dialog(wx.Dialog):
         DB.Close()
         if len(listeDonnees) == 0 : return
         IDdepot, date, nom, verrouillage, IDcompte, observations, code_compta = listeDonnees[0]
-        
+        date = UTILS_Dates.DateEngEnDateDD(date)
+
         # Date
         self.ctrl_date.SetDate(date)
         # Nom
@@ -373,6 +379,13 @@ class Dialog(wx.Dialog):
         # Code compta
         if code_compta != None :
             self.ctrl_code_compta.SetValue(code_compta)
+
+        # Vérifie que le dépôt n'est pas dans une période de gestion verrouillée
+        if self.gestion.Verification("depots", date) == False:
+            self.ctrl_verrouillage.Enable(False)
+            self.bouton_ajouter.Enable(False)
+            self.ctrl_date.Enable(False)
+            self.ctrl_nom.Enable(False)
 
     def OnBoutonAjouter(self, event): 
         # Vérifier si compte sélectionné

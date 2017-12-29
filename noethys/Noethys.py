@@ -770,6 +770,8 @@ class MainFrame(wx.Frame):
                             ],
                     },
                     "-",
+                    {"code" : "periodes_gestion", "label": _(u"Périodes de gestion"), "infobulle": _(u"Paramétrage des périodes de gestion"), "image": "Images/16x16/Mecanisme.png", "action": self.On_param_periodes_gestion},
+                    "-",
                     {"code" : "categories_messages", "label" : _(u"Catégories de messages"), "infobulle" : _(u"Paramétrage des catégories de messages"), "image" : "Images/16x16/Mail.png", "action" : self.On_param_categories_messages},
                     {"code" : "restaurateurs", "label" : _(u"Restaurateurs"), "infobulle" : _(u"Paramétrage des restaurateurs"), "image" : "Images/16x16/Restaurateur.png", "action" : self.On_param_restaurateurs},
                     {"code" : "adresses_exp_mails", "label" : _(u"Adresses d'expédition d'Emails"), "infobulle" : _(u"Paramétrage des adresses d'expédition d'Emails"), "image" : "Images/16x16/Emails_exp.png", "action" : self.On_param_emails_exp},
@@ -984,6 +986,7 @@ class MainFrame(wx.Frame):
                     "-",
                     {"code" : "liste_prestations", "label" : _(u"Liste des prestations"), "infobulle" : _(u"Liste des prestations"), "image" : "Images/16x16/Euro.png", "action" : self.On_facturation_liste_prestations},
                     {"code" : "recalcul_prestations", "label" : _(u"Recalculer des prestations"), "infobulle" : _(u"Recalculer des prestations"), "image" : "Images/16x16/Euro.png", "action" : self.On_facturation_recalculer_prestations},
+                    {"code" : "verrou_prestations", "label": _(u"Verrouiller les prestations"), "infobulle": _(u"Verrouillage des prestations grâce aux périodes de gestion"), "image": "Images/16x16/Cadenas.png", "action": self.On_param_periodes_gestion},
                     "-",
                     {"code" : "liste_deductions", "label" : _(u"Liste des déductions"), "infobulle" : _(u"Liste des déductions"), "image" : "Images/16x16/Euro.png", "action" : self.On_facturation_liste_deductions},
                     {"code" : "saisir_lot_deductions", "label" : _(u"Saisir un lot de déductions"), "infobulle" : _(u"Saisir un lot de déductions"), "image" : "Images/16x16/Impayes.png", "action" : self.On_facturation_saisir_deductions},
@@ -1796,6 +1799,13 @@ class MainFrame(wx.Frame):
         from Dlg import DLG_Vocal
         dlg = DLG_Vocal.Dialog(self)
         dlg.ShowModal() 
+        dlg.Destroy()
+
+    def On_param_periodes_gestion(self, event):
+        if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_periodes_gestion", "consulter") == False : return
+        from Dlg import DLG_Periodes_gestion
+        dlg = DLG_Periodes_gestion.Dialog(self)
+        dlg.ShowModal()
         dlg.Destroy()
 
     def On_param_categories_messages(self, event):

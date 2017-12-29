@@ -22,7 +22,7 @@ from Ctrl import CTRL_Saisie_date
 import GestionDB
 from Ol import OL_Recalculer_prestations
 from Utils import UTILS_Identification
-
+from Utils import UTILS_Gestion
 from Utils import UTILS_Config
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 
@@ -204,6 +204,9 @@ class Dialog(wx.Dialog):
         
         self.ctrl_individus.MAJ() 
         wx.CallLater(0, self.Layout)
+
+        # Périodes de gestion
+        self.gestion = UTILS_Gestion.Gestion(None)
 
     def __set_properties(self):
         self.ctrl_activite.SetToolTip(wx.ToolTip(_(u"Sélectionnez l'activité pour laquelle vous souhaitez recalculer les prestations")))
@@ -400,6 +403,9 @@ class Dialog(wx.Dialog):
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
+
+            # Vérifie que la période sélectionnée n'est pas dans une période de gestion
+            if self.gestion.IsPeriodeinPeriodes("prestations", date_debut, date_fin) == False: return False
 
             # Demande confirmation de lancement
             dlgConfirm = wx.MessageDialog(self, _(u"Souhaitez-vous lancer le recalcul des prestations pour les %d individus sélectionnés ?\n\nLe traitement peut prendre quelques minutes...") % len(tracks), _(u"Confirmation"), wx.YES_NO|wx.CANCEL|wx.YES_DEFAULT|wx.ICON_QUESTION)

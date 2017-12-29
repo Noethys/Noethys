@@ -22,6 +22,7 @@ from Ctrl import CTRL_Saisie_date
 from Ctrl import CTRL_Saisie_euros
 from Utils import UTILS_Titulaires
 from Utils import UTILS_Dates
+from Utils import UTILS_Gestion
 from dateutil import relativedelta
 
 from Utils import UTILS_Config
@@ -524,6 +525,16 @@ class Dialog(wx.Dialog):
             dlg.Destroy()
             self.ctrl_montant.SetFocus()
             return False
+
+        # Périodes de gestion
+        self.gestion = UTILS_Gestion.Gestion(self)
+
+        date_debut = self.ctrl_date_debut.GetDate()
+        date_fin = self.ctrl_date_fin.GetDate()
+        if self.gestion.IsPeriodeinPeriodes("consommations", date_debut, date_fin) == False: return False
+
+        date_prestation = self.ctrl_date_prestation.GetDate()
+        if self.gestion.Verification("prestations", date_prestation) == False: return False
 
         # Ferme la fenêtre
         self.EndModal(wx.ID_OK)

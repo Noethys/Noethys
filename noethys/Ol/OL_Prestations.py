@@ -20,7 +20,7 @@ import locale
 from Utils import UTILS_Config
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 from Utils import UTILS_Utilisateurs
-
+from Utils import UTILS_Gestion
 from Utils.UTILS_Decimal import FloatToDecimal as FloatToDecimal
 
 
@@ -112,6 +112,10 @@ class ListView(GroupListView):
         self.Bind(wx.EVT_CONTEXT_MENU, self.OnContextMenu)
         
         self.SetShowGroups(False)
+
+        # Périodes de gestion
+        self.gestion = UTILS_Gestion.Gestion(None)
+
         
     def OnActivated(self,event):
         self.Modifier(None)
@@ -473,13 +477,21 @@ class ListView(GroupListView):
             dlg.Destroy()
             if reponse != wx.ID_YES :
                 return
-        
+
+        else :
+            if self.gestion.Verification("prestations", track.date, silencieux=True) == False:
+                dlg = wx.MessageDialog(self, _(u"Cette prestation est dans une période de gestion verrouillée. Il est donc impossible de la modifier. \n\nSouhaitez-vous tout de même consulter le détail de cette prestation en mode lecture seule ?"), _(u"Modification impossible"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+                reponse = dlg.ShowModal()
+                dlg.Destroy()
+                if reponse != wx.ID_YES :
+                    return
+
         if track.categorie == "cotisation" :
             dlg = wx.MessageDialog(self, _(u"Pour modifier la prestation d'une cotisation, allez directement dans la liste des cotisations !"), _(u"Information"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
-        
+
         from Dlg import DLG_Saisie_prestation
         dlg = DLG_Saisie_prestation.Dialog(self, IDprestation=track.IDprestation, IDfamille=track.IDfamille)
         if dlg.ShowModal() == wx.ID_OK:
@@ -518,6 +530,8 @@ class ListView(GroupListView):
         for track in listeSelections :
             
             valide = True
+
+            if self.gestion.Verification("prestations", track.date) == False: return False
             
             # Vérifie si ce n'est pas un forfait non supprimable
             if track.forfait == 2 :
@@ -532,7 +546,7 @@ class ListView(GroupListView):
                 dlg.ShowModal()
                 dlg.Destroy()
                 valide = False
-                    
+
             # Recherche si des consommations y sont attachées
             req = """
             SELECT IDconso, date, etat, consommations.IDunite, unites.nom, 
@@ -588,7 +602,9 @@ class ListView(GroupListView):
                     ligneTexte = _(u"   - Le %s : %s %s\n") % (dateFr, nomUnite, individu)
                     #message += ligneTexte
                     lignesConso.append(ligneTexte)
-                
+
+                    if self.gestion.Verification("consommations", dateDD) == False: return False
+
                 detail = ""
                 maxAffichage = 20
                 if len(lignesConso) > maxAffichage :

@@ -23,6 +23,7 @@ from Utils.UTILS_Decimal import FloatToDecimal as FloatToDecimal
 from Utils import UTILS_Titulaires
 from Utils import UTILS_Dates
 from Utils import UTILS_Utilisateurs
+from Utils import UTILS_Gestion
 from Utils import UTILS_Config
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 
@@ -133,7 +134,9 @@ class ListView(FastObjectListView):
         # Binds perso
         self.Bind(wx.EVT_LIST_ITEM_ACTIVATED, self.OnActivated)
         self.Bind(wx.EVT_CONTEXT_MENU, self.OnContextMenu)
-    
+        # Périodes de gestion
+        self.gestion = UTILS_Gestion.Gestion(None)
+
     def SetIDcompte_payeur(self, IDcompte_payeur=None):
         self.IDcompte_payeur = IDcompte_payeur
         
@@ -689,6 +692,10 @@ class ListView(FastObjectListView):
         # Suppression de la facture
         listeIDfactures = []
         for track in listeSelections:
+            # Vérifie que la facture n'est pas dans une période de gestion verrouillée
+            if self.gestion.IsPeriodeinPeriodes("factures", track.date_debut, track.date_fin) == False: return False
+
+            # Mémorisation de la facture
             listeIDfactures.append(track.IDfacture)
 
         from Utils import UTILS_Facturation
@@ -745,6 +752,10 @@ class ListView(FastObjectListView):
         # Suppression de la facture
         listeIDfactures = []
         for track in listeSelections :
+            # Vérifie que la facture n'est pas dans une période de gestion verrouillée
+            if self.gestion.IsPeriodeinPeriodes("factures", track.date_debut, track.date_fin) == False: return False
+
+            # Mémorisation de la facture
             listeIDfactures.append(track.IDfacture)
         
         from Utils import UTILS_Facturation

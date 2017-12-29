@@ -47,6 +47,7 @@ from Utils import UTILS_Questionnaires
 from Utils import UTILS_Divers
 from Utils import UTILS_Parametres
 from Utils import UTILS_Utilisateurs
+from Utils import UTILS_Gestion
 import FonctionsPerso
 
 from Data import DATA_Civilites as Civilites
@@ -619,6 +620,9 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         
         # Utilisateur en cours
         self.IDutilisateur = UTILS_Identification.GetIDutilisateur()
+
+        # Périodes de gestion
+        self.gestion = UTILS_Gestion.Gestion(self)
         
         # Init Tooltip
         self.tip = STT.SuperToolTip(u"")
@@ -3816,7 +3820,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 
         # Recherche du montant du tarif : CHOIX (MONTANT ET LABEL SELECTIONNES PAR L'UTILISATEUR)
         if methode_calcul == "choix" :
-            if case.IDunite in combinaisons_unites and modeSilencieux == False :
+            if case != None and case.IDunite in combinaisons_unites and modeSilencieux == False :
                 # Nouvelle saisie si clic sur la case
                 lignes_calcul = dictTarif["lignes_calcul"]
                 from Dlg import DLG_Selection_montant_prestation
@@ -4469,6 +4473,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 
         # Recherche les cases concernées
         listeConso = []
+        listeDates = []
         for numLigne, ligne in self.dictLignes.iteritems() :
             if dictDonnees["option_lignes"] == "lignes_affichees" or (dictDonnees["option_lignes"] == "lignes_selectionnees" and ligne.coche == True):
                 for numColonne, case in ligne.dictCases.iteritems() :
@@ -4476,6 +4481,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                         for conso in case.GetListeConso() :
                             if conso.etat == dictDonnees["code_etat_avant"] :
                                 listeConso.append((case, conso))
+                                listeDates.append(case.date)
 
         if len(listeConso) == 0 :
             dlg = wx.MessageDialog(self, _(u"Il n'y a aucune consommation ayant cet état !"), _(u"Annulation"), wx.OK | wx.ICON_EXCLAMATION)
@@ -4483,6 +4489,10 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             dlg.Destroy()
             return
 
+        # Vérifie que des dates ne sont pas dans une période de gestion
+        if self.gestion.Verification("consommations", listeDates) == False: return False
+
+        # Confirmation
         dlg = wx.MessageDialog(self, _(u"Confirmez-vous le changement d'état '%s' en '%s' pour %d consommations ?") % (dictDonnees["label_etat_avant"], dictDonnees["label_etat_apres"], len(listeConso)), _(u"Changement d'état"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
         reponse = dlg.ShowModal()
         dlg.Destroy()
@@ -4509,6 +4519,10 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
     
     def RecalculerToutesPrestations(self, modeSilencieux=True):
         """ Recalcule les prestations de toutes les cases """
+        # Vérifie que la période sélectionnée n'est pas dans une période de gestion
+        date_debut, date_fin = self.GetDatesExtremes(self.listePeriodes)
+        if self.gestion.IsPeriodeinPeriodes("consommations", date_debut, date_fin) == False: return False
+
         listeDejaFactures = []
         for numLigne, ligne in self.dictLignes.iteritems() :
             for numColonne, case in ligne.dictCases.iteritems() :
@@ -4781,7 +4795,10 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         dlg.Destroy()
         if resultats == None :
             return
-        
+
+        # Vérifie que la période sélectionnée n'est pas dans une période de gestion
+        if self.gestion.IsPeriodeinPeriodes("consommations", resultats["date_debut"], resultats["date_fin"]) == False: return False
+
         # ------ Processus du traitement par lot -----
         dlg_grille = self.GetGrandParent()
         
@@ -6049,7 +6066,7 @@ if __name__ == '__main__':
     app = wx.App(0)
     heure_debut = time.time()
     from Dlg import DLG_Grille
-    frame_1 = DLG_Grille.Dialog(None, IDfamille=151, selectionIndividus=[326,])
+    frame_1 = DLG_Grille.Dialog(None, IDfamille=465, selectionIndividus=[1289,])
     app.SetTopWindow(frame_1)
     print "Temps de chargement CTRL_Grille =", time.time() - heure_debut
     frame_1.ShowModal()

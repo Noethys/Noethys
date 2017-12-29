@@ -23,6 +23,7 @@ import GestionDB
 from Ol import OL_Saisie_lot_forfaits_credits
 from Utils import UTILS_Identification
 from Utils import UTILS_Dates
+from Utils import UTILS_Gestion
 from Utils import UTILS_Config
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 
@@ -596,7 +597,11 @@ class Dialog(wx.Dialog):
             dictTarif = self.ctrl_forfait.GetDictTarif() 
             date_debut = self.ctrl_date_debut.GetDate()
             date_fin = self.ctrl_date_fin.GetDate()
-            tracks = self.ctrl_individus.GetTracksCoches() 
+            tracks = self.ctrl_individus.GetTracksCoches()
+
+            # Périodes de gestion
+            gestion = UTILS_Gestion.Gestion(None)
+            if gestion.IsPeriodeinPeriodes("prestations", date_debut, date_fin) == False: return False
 
             if len(tracks) == 0 :
                 dlg = wx.MessageDialog(self, _(u"Vous devez cocher au moins un individu dans la liste !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)

@@ -27,6 +27,7 @@ from Ol import OL_Consommations
 from Ol import OL_Deductions
 from Ctrl import CTRL_Saisie_duree
 from Utils import UTILS_Dates
+from Utils import UTILS_Gestion
 
 
 def DateEngEnDateDD(dateEng):
@@ -605,7 +606,8 @@ class Dialog(wx.Dialog):
         if len(listeDonnees) == 0 : return
         prestation = listeDonnees[0]
         IDprestation, IDcompte_payeur, date, categorie, label, montant_initial, montant, IDactivite, IDtarif, IDfacture, IDfamille, IDindividu, temps_facture, categories_tarifs, IDcategorie_tarif, code_compta, tva, IDprefixe, prefixe, numFacture = prestation
-        
+        date = UTILS_Dates.DateEngEnDateDD(date)
+
         # Date
         self.ctrl_date.SetDate(date)
         # Label
@@ -640,14 +642,24 @@ class Dialog(wx.Dialog):
         self.ancienMontant = montant
         # Facture
         self.IDfacture = IDfacture
-        if numFacture != None :
 
+        verrouillage = False
+
+        if numFacture != None :
             if IDprefixe != None :
                 numFacture = u"%s-%06d" % (prefixe, numFacture)
             else :
                 numFacture = u"%06d" % numFacture
             self.ctrl_facture.SetLabel(_(u"Facture n°%s") % numFacture)
 
+            verrouillage = True
+
+        # Périodes de gestion
+        self.gestion = UTILS_Gestion.Gestion(None)
+        if self.gestion.Verification("prestations", date, silencieux=True) == False:
+            verrouillage = True
+
+        if verrouillage == True :
             self.ctrl_deductions.Enable(False)
             self.bouton_ajouter.Enable(False)
             self.bouton_modifier.Enable(False)
@@ -798,7 +810,11 @@ class Dialog(wx.Dialog):
                 dlg.Destroy()
                 self.ctrl_temps.SetFocus()
                 return
-        
+
+        # Périodes de gestion
+        gestion = UTILS_Gestion.Gestion(None)
+        if gestion.Verification("prestations", date) == False: return False
+
         # Récupération du IDcompte_payeur
         DB = GestionDB.DB()
         req = "SELECT IDcompte_payeur FROM familles WHERE IDfamille=%d" % self.IDfamille

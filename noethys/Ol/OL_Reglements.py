@@ -18,7 +18,7 @@ import decimal
 import GestionDB
 from Utils import UTILS_Historique
 from Utils import UTILS_Utilisateurs
-
+from Utils import UTILS_Gestion
 from Utils import UTILS_Config
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 
@@ -448,6 +448,7 @@ class ListView(FastObjectListView):
             dlg.ShowModal()
             dlg.Destroy()
             return
+        track = self.Selection()[0]
         IDreglement = self.Selection()[0].IDreglement
         IDdepot = self.Selection()[0].IDdepot
         
@@ -465,7 +466,11 @@ class ListView(FastObjectListView):
             dlg.Destroy()
             if reponse != wx.ID_YES :
                 return
-        
+
+        # Vérifie que le règlement n'est pas dans une période de gestion
+        gestion = UTILS_Gestion.Gestion(None)
+        if gestion.Verification("reglements", track.date) == False: return False
+
         # Recherche si frais de gestion existant pour ce règlement
         DB = GestionDB.DB()
         req = """SELECT IDprestation, montant_initial, label

@@ -24,8 +24,9 @@ from Ctrl import CTRL_Saisie_euros
 import GestionDB
 from Ol import OL_Saisie_lot_deductions
 from Utils import UTILS_Identification
-import DLG_Messagebox
+from Dlg import DLG_Messagebox
 
+from Utils import UTILS_Gestion
 from Utils import UTILS_Config
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 
@@ -230,7 +231,7 @@ class Dialog(wx.Dialog):
                 dlg.Destroy()
                 self.ctrl_montant_pourcent.SetFocus()
                 return False
-        
+
         # Tracks
         tracks = self.ctrl_prestations.GetTracksCoches() 
         if len(tracks) == 0 :
@@ -238,7 +239,13 @@ class Dialog(wx.Dialog):
             dlg.ShowModal()
             dlg.Destroy()
             return False
-        
+
+        # Périodes de gestion
+        gestion = UTILS_Gestion.Gestion(None)
+        date_debut = self.ctrl_date_debut.GetDate()
+        date_fin = self.ctrl_date_fin.GetDate()
+        if gestion.IsPeriodeinPeriodes("prestations", date_debut, date_fin) == False: return False
+
         listePrestations = self.ctrl_prestations.GetListePrestations() 
         
         # Demande les prestations concernées

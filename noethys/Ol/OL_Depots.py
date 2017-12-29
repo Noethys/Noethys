@@ -19,7 +19,7 @@ import GestionDB
 from Utils import UTILS_Config
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 
-
+from Utils import UTILS_Gestion
 from Utils import UTILS_Interface
 from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils, PanelAvecFooter
 from Utils import UTILS_Utilisateurs
@@ -347,6 +347,7 @@ class ListView(FastObjectListView):
             dlg.ShowModal()
             dlg.Destroy()
             return
+        track = self.Selection()[0]
         IDdepot = self.Selection()[0].IDdepot
         nbre_reglements = self.Selection()[0].nbre
         if nbre_reglements > 0 :
@@ -354,6 +355,12 @@ class ListView(FastObjectListView):
             dlg.ShowModal()
             dlg.Destroy()
             return
+
+        # Périodes de gestion
+        gestion = UTILS_Gestion.Gestion(None)
+        if gestion.Verification("depots", track.date) == False: return False
+
+        # Confirmation
         dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer ce dépôt ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         if dlg.ShowModal() == wx.ID_YES :
             DB = GestionDB.DB()

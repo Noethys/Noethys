@@ -22,6 +22,7 @@ from Utils import UTILS_Titulaires
 from Utils import UTILS_Utilisateurs
 from Utils import UTILS_Config
 from Utils import UTILS_Dates
+from Utils import UTILS_Gestion
 from Utils import UTILS_Divers
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 
@@ -165,7 +166,10 @@ class ListView(FastObjectListView):
         self.popupIndex = -1
         self.labelParametres = ""
         self.titre = _(u"Liste des cotisations")
-        
+
+        # Périodes de gestion
+        self.gestion = UTILS_Gestion.Gestion(None)
+
         # Importation des activités
         DB = GestionDB.DB()
         req = """SELECT IDactivite, nom, abrege
@@ -838,11 +842,14 @@ class ListView(FastObjectListView):
             dlg.ShowModal()
             dlg.Destroy()
             return
-        IDcotisation = self.Selection()[0].IDcotisation
+        track = self.Selection()[0]
+
+        if self.gestion.Verification("cotisations", track.date_creation_carte) == False: return False
+
         from Dlg import DLG_Saisie_cotisation
-        dlg = DLG_Saisie_cotisation.Dialog(self, IDcotisation=IDcotisation, IDfamille=self.IDfamille, IDindividu=self.IDindividu, dictFamillesRattachees=self.dictFamillesRattachees)
+        dlg = DLG_Saisie_cotisation.Dialog(self, IDcotisation=track.IDcotisation, IDfamille=self.IDfamille, IDindividu=self.IDindividu, dictFamillesRattachees=self.dictFamillesRattachees)
         if dlg.ShowModal() == wx.ID_OK:
-            self.MAJ(IDcotisation)
+            self.MAJ(track.IDcotisation)
         dlg.Destroy()
 
     def Supprimer(self, event):
@@ -869,11 +876,13 @@ class ListView(FastObjectListView):
             dlg.Destroy()
             if reponse != wx.ID_YES :
                 return
-        
-        # Vérifie les droits utilisateur
+
         for track in listeSelections :
+            # Vérifie les droits utilisateur
             if track.IDfamille != None and UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_cotisations", "supprimer") == False : return
             if track.IDindividu != None and UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("individus_cotisations", "supprimer") == False : return
+            # Vérifie les périodes gestion verrouillées
+            if self.gestion.Verification("cotisations", track.date_creation_carte) == False: return False
 
         # Recherche si prestation déjà présente sur facture
         listeID = []
@@ -884,7 +893,7 @@ class ListView(FastObjectListView):
         else : conditionIDcotisation = str(tuple(listeID))
         
         DB = GestionDB.DB()
-        req = """SELECT IDcotisation, MIN(IDfacture)
+        req = """SELECT IDcotisation, prestations.date, MIN(IDfacture)
         FROM prestations
         LEFT JOIN cotisations ON cotisations.IDprestation = prestations.IDprestation
         WHERE IDcotisation IN %s
@@ -894,9 +903,12 @@ class ListView(FastObjectListView):
         DB.Close() 
         if len(listeFactures) > 0 :
             nbreCotisations = 0
-            for IDcotisation, IDfacture in listeFactures :
+            for IDcotisation, date, IDfacture in listeFactures :
+                if self.gestion.Verification("prestations", date) == False: return False
+
                 if IDfacture != None :
                     nbreCotisations += 1
+
             if nbreCotisations > 0 :
                 if nbreCotisations == 1 :
                     message = _(u"Cette cotisation apparaît déjà sur une facture. Il est donc impossible de la supprimer.")

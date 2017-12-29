@@ -1666,6 +1666,19 @@ DB_DATA = {
                                     ("IDlocation", "INTEGER", u"ID de la location attribuée"),
                                     ],  # Demandes de locations
 
+    "periodes_gestion":             [("IDperiode", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID Période"),
+                                    ("date_debut", "DATE", u"Date de début de la période"),
+                                    ("date_fin", "DATE", u"Date de fin de la période"),
+                                    ("observations", "VARCHAR(1000)", u"Observations"),
+                                    ("verrou_consommations", "INTEGER", u"Verrouillage"),
+                                    ("verrou_prestations", "INTEGER", u"Verrouillage"),
+                                    ("verrou_factures", "INTEGER", u"Verrouillage"),
+                                    ("verrou_reglements", "INTEGER", u"Verrouillage"),
+                                    ("verrou_depots", "INTEGER", u"Verrouillage"),
+                                    ("verrou_cotisations", "INTEGER", u"Verrouillage"),
+                                    ],  # Périodes de gestion
+
+
 }
 
 # ----------------------------------------------------------------------------------------------------------------------------------------------------------

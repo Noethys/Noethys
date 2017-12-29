@@ -395,6 +395,9 @@ class Case():
         return dictInfosInscriptions
 
     def MAJ_facturation(self, modeSilencieux=False, evenement=None):
+        # Vérifie la période de gestion
+        if self.grid.gestion.Verification("consommations", self.date) == False : return False
+
         listeEtiquettes = []
         for conso in self.GetListeConso() :
             if evenement == None or conso.IDevenement == evenement.IDevenement :
@@ -1082,7 +1085,10 @@ class CaseStandard(Case):
     def OnClick(self, TouchesRaccourciActives=True, saisieHeureDebut=None, saisieHeureFin=None, saisieQuantite=None, modeSilencieux=False, ForcerSuppr=False, etiquettes=None):
         """ Lors d'un clic sur la case """
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("consommations_conso", "modifier", IDactivite=self.IDactivite) == False : return
-        
+
+        # Vérifie la période de gestion
+        if self.grid.gestion.Verification("consommations", self.date) == False : return False
+
         # Récupération du mode de saisie
         mode = self.grid.GetGrandParent().panel_grille.GetMode()
         
@@ -1539,9 +1545,13 @@ class CaseStandard(Case):
     
     def OnContextMenu(self):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("consommations_conso", "modifier", IDactivite=self.IDactivite) == False : return
+        if self.grid.gestion.Verification("consommations", self.date) == False : return False
         return self.ContextMenu(self.conso)
         
     def SetGroupe(self, event):
+        # Vérifie la période de gestion
+        if self.grid.gestion.Verification("consommations", self.date) == False : return False
+
         IDgroupe = event.GetId() - 10000
         self.IDgroupe = IDgroupe
         self.MemoriseValeurs()
@@ -1565,7 +1575,10 @@ class CaseStandard(Case):
 
     def ModifieEtat(self, conso=None, etat="reservation"):
         ancienEtat = self.etat
-        
+
+        # Vérifie la période de gestion
+        if self.grid.gestion.Verification("consommations", self.date) == False : return False
+
         # Vérifie si prestation correspondante déjà facturée
         if self.grid.dictPrestations.has_key(self.IDprestation) :
             IDfacture = self.grid.dictPrestations[self.IDprestation]["IDfacture"]
@@ -1686,6 +1699,9 @@ class CaseStandard(Case):
         return texte
 
     def SelectionnerEtiquettes(self, event):
+        # Vérifie la période de gestion
+        if self.grid.gestion.Verification("consommations", self.date) == False : return False
+
         listeCoches = self.conso.etiquettes
         import CTRL_Etiquettes
         dlg = CTRL_Etiquettes.DialogSelection(self.grid, listeActivites=[self.IDactivite,])
@@ -1896,6 +1912,9 @@ class CaseMultihoraires(Case):
         return None
 
     def SetGroupe(self, event):
+        # Vérifie la période de gestion
+        if self.grid.gestion.Verification("consommations", self.date) == False : return False
+
         barre = self.barreContextMenu
         barre.conso.IDgroupe = event.GetId() - 10000
         barre.MemoriseValeurs()
@@ -1922,6 +1941,9 @@ class CaseMultihoraires(Case):
 
     def ModifieEtat(self, conso=None, etat="reservation"):
         ancienEtat = conso.etat
+
+        # Vérifie la période de gestion
+        if self.grid.gestion.Verification("consommations", self.date) == False : return False
 
         # Vérifie si prestation correspondante déjà facturée
         if self.grid.dictPrestations.has_key(conso.IDprestation) :
@@ -2083,7 +2105,8 @@ class CaseMultihoraires(Case):
     def AjouterBarre(self, position=None):
         """ Ajouter une barre """
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("consommations_conso", "creer", IDactivite=self.IDactivite) == False : return
-        
+        if self.grid.gestion.Verification("consommations", self.date) == False: return False
+
         # Recherche des horaires à appliquer
         heure_cliquee = self.PosEnHeure(position[0], arrondir=True)
         
@@ -2108,6 +2131,8 @@ class CaseMultihoraires(Case):
     def Ajouter(self, event=None):
         """ Ajouter une barre avec dialog de saisie des heures """
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("consommations_conso", "creer", IDactivite=self.IDactivite) == False : return
+        if self.grid.gestion.Verification("consommations", self.date) == False: return False
+
         heure_debut = self.grid.dictUnites[self.IDunite]["heure_debut"]
         heure_fin = self.grid.dictUnites[self.IDunite]["heure_fin"]
         
@@ -2129,11 +2154,13 @@ class CaseMultihoraires(Case):
     def Modifier(self, event=None):
         """ Modifier la consommation sélectionnée """
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("consommations_conso", "modifier", IDactivite=self.IDactivite) == False : return
+        if self.grid.gestion.Verification("consommations", self.date) == False: return False
         self.ModifierBarre(self.barreContextMenu)     
     
     def Supprimer(self, event=None):
         """ Supprimer la consommation sélectionnée """
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("consommations_conso", "supprimer", IDactivite=self.IDactivite) == False : return
+        if self.grid.gestion.Verification("consommations", self.date) == False: return False
         self.SupprimerBarre(self.barreContextMenu)
         
     def ModifierBarre(self, barre=None, horaires=None, etiquettes=None):
@@ -2189,7 +2216,8 @@ class CaseMultihoraires(Case):
     def SupprimerBarre(self, barre=None):
         # Protections anti modification et suppression
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("consommations_conso", "supprimer", IDactivite=self.IDactivite) == False : return
-        
+        if self.grid.gestion.Verification("consommations", self.date) == False: return False
+
         if self.ProtectionsModifSuppr(barre.conso) == False :
             return
 
@@ -2228,26 +2256,31 @@ class CaseMultihoraires(Case):
         """ Applique une touche raccourci à une barre """
         if wx.GetKeyState(97) == True : # Touche "a" pour Pointage en attente...
             if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("consommations_conso", "modifier", IDactivite=self.IDactivite) == False : return
+            if self.grid.gestion.Verification("consommations", self.date) == False: return False
             if barre.conso.etat in ("present", "absenti", "absentj") :
                 self.ModifieEtat(barre.conso, "reservation")
                 
         if wx.GetKeyState(112) == True : # Touche "p" pour Présent
             if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("consommations_conso", "modifier", IDactivite=self.IDactivite) == False : return
+            if self.grid.gestion.Verification("consommations", self.date) == False: return False
             if barre.conso.etat in ("reservation", "absenti", "absentj") :
                 self.ModifieEtat(barre.conso, "present")
                 
         if wx.GetKeyState(105) == True : # Touche "i" pour Absence injustifée
             if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("consommations_conso", "modifier", IDactivite=self.IDactivite) == False : return
+            if self.grid.gestion.Verification("consommations", self.date) == False: return False
             if barre.conso.etat in ("reservation", "present", "absentj") :
                 self.ModifieEtat(barre.conso, "absenti")
                 
         if wx.GetKeyState(106) == True : # Touche "j" pour Absence justifiée
             if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("consommations_conso", "modifier", IDactivite=self.IDactivite) == False : return
+            if self.grid.gestion.Verification("consommations", self.date) == False: return False
             if barre.conso.etat in ("reservation", "present", "absenti") :
                 self.ModifieEtat(barre.conso, "absentj")
 
         if wx.GetKeyState(115) == True : # Suppression de la conso
             if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("consommations_conso", "supprimer", IDactivite=self.IDactivite) == False : return
+            if self.grid.gestion.Verification("consommations", self.date) == False: return False
             self.SupprimerBarre(barre)
             
 
@@ -2290,6 +2323,9 @@ class CaseMultihoraires(Case):
         return texte
 
     def SelectionnerEtiquettes(self, event):
+        # Vérifie la période de gestion
+        if self.grid.gestion.Verification("consommations", self.date) == False : return False
+
         barre = self.barreContextMenu
         listeCoches = barre.conso.etiquettes
         import CTRL_Etiquettes
@@ -2499,6 +2535,9 @@ class CaseEvenement(Case):
     def OnClick(self):
         evenement = self.RechercheEvenementPositionSouris()
 
+        # Vérifie la période de gestion
+        if self.grid.gestion.Verification("consommations", self.date) == False : return False
+
         if evenement != None :
 
             # Recherche si des touches raccourcis sont enfoncées
@@ -2518,6 +2557,8 @@ class CaseEvenement(Case):
     def Ajouter_evenement(self, evenement=None, modeSilencieux=False, TouchesRaccourciActives=True, etiquettes=None):
         """ Création d'une conso """
         mode = self.grid.GetGrandParent().panel_grille.GetMode()
+
+        if self.grid.gestion.Verification("consommations", self.date) == False: return False
 
         # Vérifie d'abord qu'il n'y a aucune incompatibilités entre unités
         incompatibilite = self.VerifieCompatibilitesUnites()
@@ -2604,6 +2645,7 @@ class CaseEvenement(Case):
     def Supprimer_evenement(self, evenement=None, TouchesRaccourciActives=True):
         # Protections anti modification et suppression
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("consommations_conso", "supprimer", IDactivite=self.IDactivite) == False: return
+        if self.grid.gestion.Verification("consommations", self.date) == False: return False
 
         if self.ProtectionsModifSuppr(evenement.conso) == False:
             return
@@ -2659,17 +2701,20 @@ class CaseEvenement(Case):
     def Ajouter(self, event=None):
         """ Modifier la consommation sélectionnée """
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("consommations_conso", "creer", IDactivite=self.IDactivite) == False: return
+        if self.grid.gestion.Verification("consommations", self.date) == False: return False
         self.Ajouter_evenement(self.evenementContextMenu)
 
     def Modifier(self, event=None):
         """ Modifier la consommation sélectionnée """
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("consommations_conso", "modifier", IDactivite=self.IDactivite) == False : return
+        if self.grid.gestion.Verification("consommations", self.date) == False: return False
         # Todo : Modifier evenement
         # self.ModifierBarre(self.barreContextMenu)
 
     def Supprimer(self, event=None):
         """ Supprimer la consommation sélectionnée """
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("consommations_conso", "supprimer", IDactivite=self.IDactivite) == False: return
+        if self.grid.gestion.Verification("consommations", self.date) == False: return False
         self.Supprimer_evenement(self.evenementContextMenu)
 
 
@@ -2677,30 +2722,38 @@ class CaseEvenement(Case):
         """ Applique une touche raccourci à un évènement """
         if wx.GetKeyState(97) == True:  # Touche "a" pour Pointage en attente...
             if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("consommations_conso", "modifier", IDactivite=self.IDactivite) == False: return
+            if self.grid.gestion.Verification("consommations", self.date) == False: return False
             if evenement.conso.etat in ("present", "absenti", "absentj"):
                 self.ModifieEtat(evenement.conso, "reservation")
 
         if wx.GetKeyState(112) == True:  # Touche "p" pour Présent
             if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("consommations_conso", "modifier", IDactivite=self.IDactivite) == False: return
+            if self.grid.gestion.Verification("consommations", self.date) == False: return False
             if evenement.conso.etat in ("reservation", "absenti", "absentj"):
                 self.ModifieEtat(evenement.conso, "present")
 
         if wx.GetKeyState(105) == True:  # Touche "i" pour Absence injustifée
             if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("consommations_conso", "modifier", IDactivite=self.IDactivite) == False: return
+            if self.grid.gestion.Verification("consommations", self.date) == False: return False
             if evenement.conso.etat in ("reservation", "present", "absentj"):
                 self.ModifieEtat(evenement.conso, "absenti")
 
         if wx.GetKeyState(106) == True:  # Touche "j" pour Absence justifiée
             if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("consommations_conso", "modifier", IDactivite=self.IDactivite) == False: return
+            if self.grid.gestion.Verification("consommations", self.date) == False: return False
             if evenement.conso.etat in ("reservation", "present", "absenti"):
                 self.ModifieEtat(evenement.conso, "absentj")
 
         if wx.GetKeyState(115) == True:  # Suppression de la conso
             if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("consommations_conso", "supprimer", IDactivite=self.IDactivite) == False: return
+            if self.grid.gestion.Verification("consommations", self.date) == False: return False
             self.Supprimer(evenement)
 
     def ModifieEtat(self, conso=None, etat="reservation"):
         ancienEtat = conso.etat
+
+        # Vérifie la période de gestion
+        if self.grid.gestion.Verification("consommations", self.date) == False : return False
 
         # Vérifie si prestation correspondante déjà facturée
         if self.grid.dictPrestations.has_key(conso.IDprestation):
@@ -2739,6 +2792,9 @@ class CaseEvenement(Case):
             return self.ContextMenu()
 
     def SelectionnerEtiquettes(self, event):
+        # Vérifie la période de gestion
+        if self.grid.gestion.Verification("consommations", self.date) == False : return False
+
         evenement = self.evenementContextMenu
         listeCoches = evenement.conso.etiquettes
         import CTRL_Etiquettes

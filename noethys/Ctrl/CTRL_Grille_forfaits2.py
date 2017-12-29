@@ -16,7 +16,7 @@ import CTRL_Bouton_image
 import wx.lib.agw.hypertreelist as HTL
 import datetime
 import GestionDB
-
+from Utils import UTILS_Gestion
 from Utils import UTILS_Titulaires
             
 
@@ -46,7 +46,10 @@ class CTRL_Forfait(HTL.HyperTreeList):
         # Adapte taille Police pour Linux
         from Utils import UTILS_Linux
         UTILS_Linux.AdaptePolice(self)
-        
+
+        # Périodes de gestion
+        self.gestion = UTILS_Gestion.Gestion(self)
+
         # Binds
         self.Bind(wx.EVT_TREE_ITEM_ACTIVATED, self.Modifier)
         self.GetMainWindow().Bind(wx.EVT_RIGHT_UP, self.OnContextMenu) 
@@ -301,6 +304,10 @@ class CTRL_Forfait(HTL.HyperTreeList):
             dlg.Destroy()
             return
 
+        # Périodes de gestion
+        if self.gestion.IsPeriodeinPeriodes("consommations", donnees["forfait_date_debut"], donnees["forfait_date_fin"]) == False: return False
+        if self.gestion.Verification("prestations", donnees["date"]) == False: return False
+
         from Dlg import DLG_Saisie_forfait_credit
         dlg = DLG_Saisie_forfait_credit.Dialog(self, grille=self.grille, listeFamilles=self.grille.GetFamillesAffichees())
         dlg.SetFamille(donnees["IDfamille"]) 
@@ -390,6 +397,10 @@ class CTRL_Forfait(HTL.HyperTreeList):
             dlg.ShowModal()
             dlg.Destroy()
             return
+
+        # Périodes de gestion
+        if self.gestion.IsPeriodeinPeriodes("consommations", donnees["forfait_date_debut"], donnees["forfait_date_fin"]) == False: return False
+        if self.gestion.Verification("prestations", donnees["date"]) == False: return False
 
         # Vérifie si des consommations du forfait existent déjà sur d'autres périodes non affichées
         listeConso = []

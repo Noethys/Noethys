@@ -26,6 +26,7 @@ from Utils import UTILS_Historique
 from Utils import UTILS_Identification
 from Utils import UTILS_Config
 from Utils import UTILS_Titulaires
+from Utils import UTILS_Gestion
 import GestionDB
 
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
@@ -701,7 +702,10 @@ class Dialog(wx.Dialog):
             self.SetTitle(_(u"Saisie d'un règlement %s") % titreFamille)
         else:
             self.SetTitle(_(u"Modification d'un règlement %s") % titreFamille)
-            
+
+        # Périodes de gestion
+        self.gestion = UTILS_Gestion.Gestion(None)
+
         # Initialisation des contrôles
         self.OnCheckDiffere(None)
         self.MAJinfos() 
@@ -712,8 +716,8 @@ class Dialog(wx.Dialog):
             # Importe les dernières valeurs
             self.ImportationDernierReglement() 
 
-        # Verrouillage Depot
-        self.VerrouillageDepot()
+        # Verrouillage
+        self.Verrouillage()
         
         # Paramètres
         self.ctrl_ventilation.ctrl_ventilation.bloquer_ventilation = UTILS_Config.GetParametre("ventilation_bloquer", True)
@@ -905,8 +909,18 @@ class Dialog(wx.Dialog):
         
         wx.CallLater(0, self.Layout) # Contre pb d'affichage du wx.Choice
     
-    def VerrouillageDepot(self):
+    def Verrouillage(self):
+        verrou = False
+
+        # Verrou si période de gestion verrouillée
+        if self.IDreglement != None and self.gestion.Verification("reglements", self.ctrl_date.GetDate()) == False:
+            verrou = True
+
+        # Verrou si règlement dans dépôt
         if self.IDdepot != None :
+            verrou = True
+
+        if verrou == True :
             self.ctrl_date.Enable(False)
             self.ctrl_mode.Enable(False)
             #self.ctrl_emetteur.Enable(False)
@@ -1333,7 +1347,10 @@ class Dialog(wx.Dialog):
             dlg.Destroy()
             self.ctrl_date.SetFocus()
             return False
-        
+
+        # Vérifie que le règlement n'est pas dans une période de gestion
+        if self.gestion.Verification("reglements", date) == False: return False
+
         # Mode
         IDmode = self.ctrl_mode.GetID()
         if IDmode == None :

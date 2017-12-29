@@ -25,6 +25,7 @@ import DLG_Saisie_lot_conso
 from Utils import UTILS_Identification
 from Utils import UTILS_Dates
 from Utils import UTILS_Config
+from Utils import UTILS_Gestion
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 
 import DLG_Badgeage_grille
@@ -428,6 +429,10 @@ class Dialog(wx.Dialog):
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
+
+            # Périodes de gestion
+            gestion = UTILS_Gestion.Gestion(self)
+            if gestion.IsPeriodeinPeriodes("consommations", self.dictAction["date_debut"], self.dictAction["date_fin"]) == False: return False
 
             # Demande confirmation de lancement
             dlgConfirm = wx.MessageDialog(self, _(u"Souhaitez-vous appliquer le traitement par lot pour les %d individus cochés ?\n\nLe processus peut prendre quelques minutes...") % len(tracks), _(u"Confirmation"), wx.YES_NO|wx.CANCEL|wx.YES_DEFAULT|wx.ICON_QUESTION)

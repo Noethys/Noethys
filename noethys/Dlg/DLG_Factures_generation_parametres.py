@@ -19,6 +19,7 @@ from Ctrl import CTRL_Saisie_date
 from Ctrl import CTRL_Selection_activites
 from Utils import UTILS_Titulaires
 from Utils import UTILS_Utilisateurs
+from Utils import UTILS_Gestion
 
 import GestionDB
 
@@ -254,6 +255,7 @@ class Panel(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.AfficheProchainNumeroDefaut, self.bouton_prochain_numero)
         self.Bind(wx.EVT_CHECKBOX, self.OnCheckAnterieures, self.check_prestations_anterieures)
 
+
         # Init contrôles
         self.ctrl_date_emission.SetDate(datetime.date.today())
         self.check_consommations.SetValue(True)
@@ -455,6 +457,10 @@ class Panel(wx.Panel):
             dlg.Destroy()
             self.ctrl_date_fin.SetFocus()
             return False
+
+        # Vérifie que la période sélectionnée n'est pas dans une période de gestion
+        gestion = UTILS_Gestion.Gestion(None)
+        if gestion.IsPeriodeinPeriodes("factures", date_debut, date_fin) == False: return False
 
         # Vérifier si lot de factures
         IDlot = self.ctrl_lot.GetID()

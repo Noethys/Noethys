@@ -16,6 +16,7 @@ import GestionDB
 from Utils import UTILS_Interface
 from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils, PanelAvecFooter
 from Utils import UTILS_Dates
+from Utils import UTILS_Gestion
 from Utils import UTILS_Config
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 
@@ -178,6 +179,9 @@ class ListView(FastObjectListView):
             dlg.Destroy()
             return
 
+        gestion = UTILS_Gestion.Gestion(None)
+        if gestion.Verification("prestations", track_prestation.date) == False: return False
+
         from Dlg import DLG_Saisie_location_prestation
         dlg = DLG_Saisie_location_prestation.Dialog(self, track=track_prestation, dictInfosLocation=self.GetDictInfosLocation())
         if dlg.ShowModal() == wx.ID_OK:
@@ -199,6 +203,9 @@ class ListView(FastObjectListView):
             dlg.ShowModal()
             dlg.Destroy()
             return
+
+        gestion = UTILS_Gestion.Gestion(None)
+        if gestion.Verification("prestations", track_prestation.date) == False: return False
 
         dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer cette prestation ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         if dlg.ShowModal() == wx.ID_YES :

@@ -23,6 +23,7 @@ import GestionDB
 from Utils import UTILS_Historique
 from Utils import UTILS_Identification
 from Utils import UTILS_Divers
+from Utils import UTILS_Gestion
 
 
 def DateEngFr(textDate):
@@ -521,6 +522,9 @@ class CTRL_Parametres(wx.Panel):
         self.__set_properties()
         self.__do_layout()
 
+        # Périodes de gestion
+        self.gestion = UTILS_Gestion.Gestion(None)
+
         # Init contrôles
         self.ctrl_depot.Enable(False)
 
@@ -827,12 +831,15 @@ class CTRL_Parametres(wx.Panel):
         if self.ctrl_creation.GetValue() == True:
 
             # Vérifie la date de création
-            if self.ctrl_date_creation.FonctionValiderDate() == False or self.ctrl_date_creation.GetDate() == None:
+            date_creation = self.ctrl_date_creation.GetDate()
+            if self.ctrl_date_creation.FonctionValiderDate() == False or date_creation == None:
                 dlg = wx.MessageDialog(self, _(u"Vous devez saisir une date de création de carte valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_date_creation.SetFocus()
                 return False
+
+            if self.gestion.Verification("cotisations", date_creation) == False: return False
 
             # Vérifie qu'un numéro de carte a été saisi
             if self.ctrl_numero.GetValue() == "" and (self.mode_lot == False or self.radio_numero_manuel.GetValue() == True) :
@@ -846,12 +853,15 @@ class CTRL_Parametres(wx.Panel):
         if self.ctrl_facturer.GetValue() == True:
 
             # Vérifie la date de facturation
-            if self.ctrl_date_prestation.FonctionValiderDate() == False or self.ctrl_date_prestation.GetDate() == None:
+            date_prestation = self.ctrl_date_prestation.GetDate()
+            if self.ctrl_date_prestation.FonctionValiderDate() == False or date_prestation == None:
                 dlg = wx.MessageDialog(self, _(u"Vous devez saisir une date de facturation valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_date_prestation.SetFocus()
                 return False
+
+            if self.gestion.Verification("prestations", date_prestation) == False: return False
 
             # Vérifie le montant
             if self.ctrl_montant.GetMontant() == 0.00:
@@ -1089,6 +1099,9 @@ class CTRL_Parametres(wx.Panel):
                 self.ctrl_montant.SetMontant(montant)
                 self.ctrl_label.SetLabel(label)
                 self.ctrl_payeur.SetID(IDcompte_payeur)
+
+                if self.gestion.Verification("prestations", date_facturation) == False:
+                    self.ctrl_facturer.Enable(False)
 
                 if IDfacture != None:
                     self.ctrl_facturer.Enable(False)

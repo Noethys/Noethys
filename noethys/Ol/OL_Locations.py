@@ -18,23 +18,40 @@ import FonctionsPerso
 from Utils import UTILS_Titulaires
 from Utils import UTILS_Interface
 from Utils import UTILS_Questionnaires
+from Utils import UTILS_Dates
+from Utils import UTILS_Gestion
 from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils, PanelAvecFooter
 
+
+
 def Supprimer_location(parent, IDlocation=None):
+    gestion = UTILS_Gestion.Gestion(None)
+
     # Vérifie si les prestations de cette location sont déjà facturées
     DB = GestionDB.DB()
     req = """SELECT
-    IDprestation, IDfacture
+    IDprestation, date, IDfacture
     FROM prestations 
-    WHERE categorie="location" and IDdonnee=%d AND IDfacture IS NOT NULL;""" % IDlocation
+    WHERE categorie="location" and IDdonnee=%d;""" % IDlocation
     DB.ExecuterReq(req)
-    listePrestations = DB.ResultatReq()
+    listeDonnees = DB.ResultatReq()
     DB.Close()
     listeIDprestations = []
-    for IDprestation, IDfacture in listePrestations:
+    listePrestations = []
+    nbrePrestationsFacturees = 0
+    for IDprestation, date, IDfacture in listeDonnees:
+        date = UTILS_Dates.DateEngEnDateDD(date)
+        listePrestations.append({"IDprestation" : IDprestation, "date" : date, "IDfacture" : IDfacture})
         listeIDprestations.append(IDprestation)
-    if len(listePrestations) > 0:
-        dlg = wx.MessageDialog(parent, _(u"Vous ne pouvez pas supprimer cette location car elle est déjà associée à %d prestations facturées !") % len(listePrestations), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+
+        # Vérifie la période de gestion
+        if gestion.Verification("prestations", date) == False: return False
+
+        if IDfacture != None :
+            nbrePrestationsFacturees += 1
+
+    if nbrePrestationsFacturees > 0:
+        dlg = wx.MessageDialog(parent, _(u"Vous ne pouvez pas supprimer cette location car elle est déjà associée à %d prestations facturées !") % nbrePrestationsFacturees, _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
         dlg.ShowModal()
         dlg.Destroy()
         return False
