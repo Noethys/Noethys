@@ -500,6 +500,7 @@ class Dialog(wx.Dialog):
                 ("IDactivite", IDactivite),
                 ("IDfamille", IDfamille),
                 ("IDindividu", self.IDindividu),
+                ("categorie", "autre"),
                 ("date_valeur", str(datetime.date.today())),
             ]
             DB.ReqInsert("prestations", listeDonnees)
