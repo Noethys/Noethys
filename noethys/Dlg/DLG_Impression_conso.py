@@ -10,6 +10,7 @@
 
 
 import Chemins
+from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
 from Ctrl import CTRL_Bouton_image
@@ -103,7 +104,7 @@ class CTRL_Cocher(platebtn.PlateButton):
         self.ctrl_liste = ctrl_liste
         self.SetBackgroundColour(wx.WHITE)
 
-        menu = wx.Menu()
+        menu = UTILS_Adaptations.Menu()
         item = wx.MenuItem(menu, 10, u"Tout cocher", u"Cliquez ici pour cocher tous les éléments de la liste")
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Cocher.png"), wx.BITMAP_TYPE_ANY))
         menu.AppendItem(item)

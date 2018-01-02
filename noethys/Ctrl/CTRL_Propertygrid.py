@@ -10,6 +10,7 @@
 
 
 import Chemins
+from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
 import CTRL_Bouton_image
@@ -47,12 +48,14 @@ class EditeurChoix(ChoiceEditor):
 
 
 
-class Propriete_choix(wxpg.PyProperty):
+class Propriete_choix(wxpg.PGProperty):
     """ Simple liste de choix """
     def __init__(self, label, name=NAME, liste_choix=[], valeur=None):
         self.liste_choix = liste_choix
-        wxpg.PyProperty.__init__(self, label, name)
-        self.SetChoices([x[1] for x in self.liste_choix])
+        wxpg.PGProperty.__init__(self, label, name)
+        #self.SetChoices([x[1] for x in self.liste_choix])
+        choix = wxpg.PGChoices([x[1] for x in self.liste_choix])
+        self.SetChoices(choix)
         if valeur != None:
             self.SetValue(valeur)
 

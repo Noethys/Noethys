@@ -10,6 +10,7 @@
 
 
 import Chemins
+from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
 from Ctrl import CTRL_Bouton_image
@@ -207,11 +208,11 @@ class Dialog(wx.Dialog):
 
     def OnBoutonOutils(self, event):
         # Création du menu contextuel
-        menuPop = wx.Menu()
+        menuPop = UTILS_Adaptations.Menu()
 
         # Insérer un mot-clé
         listeMotscles = CTRL_Editeur_email.GetMotscles(self.categorie)
-        sousMenuMotscles = wx.Menu()
+        sousMenuMotscles = UTILS_Adaptations.Menu()
         index = 0
         for motcle, label in listeMotscles :
             id = 10000 + index
@@ -237,7 +238,7 @@ class Dialog(wx.Dialog):
         menuPop.AppendSeparator()
         
         # Modèles d'Emails
-        sousMenuModeles = wx.Menu()
+        sousMenuModeles = UTILS_Adaptations.Menu()
         DB = GestionDB.DB()
         req = """SELECT IDmodele, nom, description
         FROM modeles_emails

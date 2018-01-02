@@ -10,6 +10,7 @@
 
 
 import Chemins
+from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
 from Ctrl import CTRL_Bouton_image
@@ -119,7 +120,10 @@ class CTRL_elements_dispo(CTRL_elements):
             for dictItem in dictCategorie["elements"] :
                 dictItem["categorie"] = dictCategorie["code"]
                 item = self.AppendItem(categorie, dictItem["infobulle"])
-                self.SetPyData(item, dictItem)
+                if 'phoenix' in wx.PlatformInfo:
+                    self.SetItemData(item, dictItem)
+                else :
+                    self.SetPyData(item, dictItem)
                 if dictItem.has_key("image") :
                     self.SetItemImage(item, self.dictImages[dictItem["code"]], which=wx.TreeItemIcon_Normal)
                 self.dictItems[dictItem["code"]] = item
@@ -189,7 +193,10 @@ class CTRL_elements_barre(CTRL_elements):
         dictItem = self.GetInfosItem(code)
         if dictItem != None :
             item = self.AppendItem(self.root, dictItem["infobulle"])
-            self.SetPyData(item, dictItem)
+            if 'phoenix' in wx.PlatformInfo:
+                self.SetItemData(item, dictItem)
+            else:
+                self.SetPyData(item, dictItem)
             if dictItem.has_key("image") :
                 self.SetItemImage(item, self.dictImages[dictItem["code"]], which=wx.TreeItemIcon_Normal)
             self.dictItems[dictItem["code"]] = item
@@ -404,13 +411,19 @@ class Dialog(wx.Dialog):
 
     def OnBoutonDroite(self, event):  
         if self.ctrl_elements_dispo.GetFocusedItem().IsOk() :
-            dictItem = self.ctrl_elements_dispo.GetPyData(self.ctrl_elements_dispo.GetFocusedItem())
+            if 'phoenix' in wx.PlatformInfo:
+                dictItem = self.ctrl_elements_dispo.GetItemData(self.ctrl_elements_dispo.GetFocusedItem())
+            else:
+                dictItem = self.ctrl_elements_dispo.GetPyData(self.ctrl_elements_dispo.GetFocusedItem())
             if dictItem != None :
                 self.ctrl_elements_dispo.Ajouter(dictItem["code"])
         
     def OnBoutonGauche(self, event):  
         if self.ctrl_elements_barre.GetFocusedItem().IsOk() :
-            dictItem = self.ctrl_elements_barre.GetPyData(self.ctrl_elements_barre.GetFocusedItem())
+            if 'phoenix' in wx.PlatformInfo:
+                dictItem = self.ctrl_elements_barre.GetItemData(self.ctrl_elements_barre.GetFocusedItem())
+            else:
+                dictItem = self.ctrl_elements_barre.GetPyData(self.ctrl_elements_barre.GetFocusedItem())
             if dictItem != None :
                 self.ctrl_elements_barre.Retirer(dictItem["code"])
 

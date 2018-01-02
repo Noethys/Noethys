@@ -10,6 +10,7 @@
 
 
 import Chemins
+from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
 from Ctrl import CTRL_Bouton_image
@@ -132,7 +133,7 @@ class ListView(FastObjectListView):
     def OnContextMenu(self, event):
         """Ouverture du menu contextuel """            
         # Création du menu contextuel
-        menuPop = wx.Menu()
+        menuPop = UTILS_Adaptations.Menu()
 
         item = wx.MenuItem(menuPop, 70, _(u"Ajouter"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Ajouter.png"), wx.BITMAP_TYPE_PNG)

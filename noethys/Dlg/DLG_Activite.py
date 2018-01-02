@@ -10,6 +10,7 @@
 
 
 import Chemins
+from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
 from Ctrl import CTRL_Bouton_image
@@ -263,7 +264,7 @@ class ClsCommune():
 
     def MenuOptions(self, event=None):
         # Création du menu Options
-        menuPop = wx.Menu()
+        menuPop = UTILS_Adaptations.Menu()
 
         id = wx.NewId()
         item = wx.MenuItem(menuPop, id, _(u"Paramètres P.S.U."), _(u"Renseigner les paramètres P.S.U."))

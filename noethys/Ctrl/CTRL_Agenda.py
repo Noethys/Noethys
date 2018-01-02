@@ -10,6 +10,7 @@
 
 
 import Chemins
+from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
 import CTRL_Bouton_image
@@ -67,9 +68,9 @@ def ConvertDateDTenWX2(datedt=None):
 
 
 
-class ToolBar(wx.ToolBar):
+class ToolBar(UTILS_Adaptations.ToolBar):
     def __init__(self, parent):
-        wx.ToolBar.__init__(self, parent, style=wx.TB_FLAT|wx.TB_TEXT)
+        UTILS_Adaptations.ToolBar.__init__(self, parent, style=wx.TB_FLAT|wx.TB_TEXT)
         self.parent = parent
         self.periodCount = 1
         
@@ -349,7 +350,7 @@ class CTRL_Planning(wx.Panel):
         def Supprimer(evt):
             self.Supprimer(schedule)
         
-        menuPop = wx.Menu()
+        menuPop = UTILS_Adaptations.Menu()
         
         if schedule == None :
             item = wx.MenuItem(menuPop, 10, _(u"Ajouter"))

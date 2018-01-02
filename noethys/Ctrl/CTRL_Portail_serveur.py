@@ -10,6 +10,7 @@
 
 
 import Chemins
+from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
 import os
@@ -303,7 +304,7 @@ class Panel(wx.Panel):
 
     def OnBoutonOutils(self, event=None):
         """ Création du menu Outils """
-        menuPop = wx.Menu()
+        menuPop = UTILS_Adaptations.Menu()
 
         # Afficher heure prochaine synchro
         id = wx.NewId()

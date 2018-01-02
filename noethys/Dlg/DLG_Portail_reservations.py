@@ -10,6 +10,7 @@
 
 
 import Chemins
+from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
 import wx.html as html
@@ -193,7 +194,7 @@ class Dialog(wx.Dialog):
 
     def OnBoutonOutils(self, event):
         # Création du menu Outils
-        menuPop = wx.Menu()
+        menuPop = UTILS_Adaptations.Menu()
 
         item = wx.MenuItem(menuPop, 10, _(u"Recalculer toutes les prestations"), _(u"Recalculer toutes les prestations"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Euro.png"), wx.BITMAP_TYPE_PNG))

@@ -10,6 +10,7 @@
 
 
 import Chemins
+from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
 from Ctrl import CTRL_Bouton_image
@@ -419,7 +420,7 @@ class ListView(FastObjectListView):
             noSelection = False
 
         # Création du menu contextuel
-        menuPop = wx.Menu()
+        menuPop = UTILS_Adaptations.Menu()
 
         # Item Ouverture fiche famille
         item = wx.MenuItem(menuPop, 10, _(u"Ouvrir la fiche famille"))
@@ -430,7 +431,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
         
         # Item Ventilation Automatique
-        sousMenuVentilation = wx.Menu()
+        sousMenuVentilation = UTILS_Adaptations.Menu()
         
         item = wx.MenuItem(sousMenuVentilation, 201, _(u"Uniquement la ligne sélectionnée"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Magique.png"), wx.BITMAP_TYPE_PNG))

@@ -10,6 +10,7 @@
 
 
 import Chemins
+from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
 from Ctrl import CTRL_Bouton_image
@@ -122,7 +123,7 @@ class CTRL_Image(wx.StaticBitmap):
 
     def ContextMenu(self, event=None):
         # Création du menu contextuel
-        menuPop = wx.Menu()
+        menuPop = UTILS_Adaptations.Menu()
         
         # Automatique
         item = wx.MenuItem(menuPop, 999, _(u"Automatique (Défaut)"))
@@ -136,7 +137,7 @@ class CTRL_Image(wx.StaticBitmap):
         numCategorie = 1000
         for labelSousMenu, listeItems in LISTE_IMAGES :
             
-            sousMenu = wx.Menu()
+            sousMenu = UTILS_Adaptations.Menu()
             numItem = 0
             for label, nomImage in listeItems :
                 id = numCategorie + numItem

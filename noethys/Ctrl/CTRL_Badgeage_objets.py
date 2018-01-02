@@ -10,6 +10,7 @@
 
 import wx
 import Chemins
+from Utils import UTILS_Adaptations
 import CTRL_Bouton_image
 
 def RedimensionneImage(bmp, largeur, hauteur):

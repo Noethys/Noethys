@@ -10,6 +10,7 @@
 
 
 import Chemins
+from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
 from Ctrl import CTRL_Bouton_image
@@ -132,7 +133,7 @@ class CTRL_Planning(CTRL_Agenda.CTRL_Planning):
         def Supprimer(evt):
             self.Supprimer(schedule)
         
-        menuPop = wx.Menu()
+        menuPop = UTILS_Adaptations.Menu()
         
         item = wx.MenuItem(menuPop, 10, _(u"Ajouter"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Ajouter.png"), wx.BITMAP_TYPE_PNG))

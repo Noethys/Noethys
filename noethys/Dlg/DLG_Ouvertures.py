@@ -10,6 +10,7 @@
 
 
 import Chemins
+from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
 from Ctrl import CTRL_Bouton_image
@@ -252,8 +253,12 @@ def CreationImage(largeur, hauteur, couleur=None):
     """ couleur peut être RGB ou HEXA """
     if type(couleur) == str : r, v, b = hex_to_rgb(couleur)
     if type(couleur) == tuple : r, v, b = couleur
-    bmp = wx.EmptyImage(largeur, hauteur, True)
-    bmp.SetRGBRect((0, 0, largeur, hauteur), r, v, b)
+    if 'phoenix' in wx.PlatformInfo:
+        bmp = wx.Image(largeur, hauteur, True)
+        bmp.SetRGB((0, 0, largeur, hauteur), r, v, b)
+    else :
+        bmp = wx.EmptyImage(largeur, hauteur, True)
+        bmp.SetRGBRect((0, 0, largeur, hauteur), r, v, b)
     return bmp.ConvertToBitmap()
 
 def DrawBorder(grid, dc, rect):
@@ -325,7 +330,11 @@ class CaseOuverture():
 
             # Vérifie si bouton Evènement survolé
             rect = self.renderer.coordsBoutonEvenements
-            if rect != None and rect.ContainsXY(x, y):
+            if 'phoenix' in wx.PlatformInfo:
+                contains = rect.Contains(x, y)
+            else:
+                contains = rect.ContainsXY(x, y)
+            if rect != None and contains == True :
                 survolEvenement = True
 
         if self.survol != etat or self.survolEvenement != survolEvenement :
@@ -1041,7 +1050,7 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         dateDD = self.listeLignesDates[numLigne]
         
         # Création du menu contextuel
-        menuPop = wx.Menu()
+        menuPop = UTILS_Adaptations.Menu()
         
         item = wx.MenuItem(menuPop, 10, self.GetRowLabelValue(numLigne))
         menuPop.AppendItem(item)

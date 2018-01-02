@@ -10,6 +10,7 @@
 
 
 import Chemins
+from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
 from Ctrl import CTRL_Bouton_image
@@ -152,7 +153,10 @@ class ListView(FastObjectListView):
         # Recherche de l'image
         if buffer != None :
             io = cStringIO.StringIO(buffer)
-            img = wx.ImageFromStream(io, wx.BITMAP_TYPE_JPEG)
+            if 'phoenix' in wx.PlatformInfo:
+                img = wx.Image(io, wx.BITMAP_TYPE_JPEG)
+            else :
+                img = wx.ImageFromStream(io, wx.BITMAP_TYPE_JPEG)
             bmp = img.Rescale(width=taille[0], height=taille[1], quality=wx.IMAGE_QUALITY_HIGH) 
             bmp = bmp.ConvertToBitmap()
             return bmp
@@ -168,8 +172,12 @@ class ListView(FastObjectListView):
     
     def ConvertTailleImage(self, bitmap=None, taille=None):
         """ Convertit la taille d'une image """
-        img = wx.EmptyImage(taille[0], taille[1], True)
-        img.SetRGBRect((0, 0, taille[0], taille[1]), 255, 255, 255)
+        if 'phoenix' in wx.PlatformInfo:
+            img = wx.Image(taille[0], taille[1], True)
+            img.SetRGB((0, 0, taille[0], taille[1]), 255, 255, 255)
+        else :
+            img = wx.EmptyImage(taille[0], taille[1], True)
+            img.SetRGBRect((0, 0, taille[0], taille[1]), 255, 255, 255)
         bmp = img.ConvertToBitmap()
         dc = wx.MemoryDC()
         dc.SelectObject(bmp)
@@ -367,7 +375,7 @@ class ListView(FastObjectListView):
             ID = self.Selection()[0].IDreglement
                 
         # Création du menu contextuel
-        menuPop = wx.Menu()
+        menuPop = UTILS_Adaptations.Menu()
 
         # Génération automatique des fonctions standards
         self.GenerationContextMenu(menuPop, dictParametres=self.GetParametresImpression())

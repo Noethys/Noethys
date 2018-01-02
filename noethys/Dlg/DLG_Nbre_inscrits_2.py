@@ -10,6 +10,7 @@
 
 
 import Chemins
+from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
 import sys, os
@@ -77,7 +78,7 @@ class CTRL(HTL.HyperTreeList):
 
     def OnContextMenu(self, event):
         # Création du menu contextuel
-        menuPop = wx.Menu()
+        menuPop = UTILS_Adaptations.Menu()
 
         # Item Actualiser
         item = wx.MenuItem(menuPop, 10, _(u"Consulter les tarifs de l'activité"))
@@ -766,7 +767,7 @@ class Panel(wx.Panel):
         
     def OnBoutonOutils(self, event):
         # Création du menu contextuel
-        menuPop = wx.Menu()
+        menuPop = UTILS_Adaptations.Menu()
 
         # Item Actualiser
         item = wx.MenuItem(menuPop, 10, _(u"Actualiser"))

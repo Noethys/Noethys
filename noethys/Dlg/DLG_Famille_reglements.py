@@ -10,6 +10,7 @@
 
 
 import Chemins
+from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
 from Ctrl import CTRL_Bouton_image
@@ -276,7 +277,7 @@ class Panel(wx.Panel):
             ID = self.ctrl_reglements.Selection()[0].IDreglement
                 
         # Création du menu contextuel
-        menuPop = wx.Menu()
+        menuPop = UTILS_Adaptations.Menu()
         
         # Item Recu 
         item = wx.MenuItem(menuPop, 10, _(u"Editer un reçu (PDF)"))
@@ -328,7 +329,7 @@ class Panel(wx.Panel):
             noSelection = False
 
         # Création du menu contextuel
-        menuPop = wx.Menu()
+        menuPop = UTILS_Adaptations.Menu()
         
         item = wx.MenuItem(menuPop, 201, _(u"Ventiler automatiquement le règlement sélectionné"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Magique.png"), wx.BITMAP_TYPE_PNG))

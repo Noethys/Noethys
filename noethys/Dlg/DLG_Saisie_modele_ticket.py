@@ -10,10 +10,15 @@
 
 
 import Chemins
+from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
 from Ctrl import CTRL_Bouton_image
-import wx.gizmos as gizmos
+
+if 'phoenix' in wx.PlatformInfo:
+    import wx.adv as adv
+else :
+    import wx.gizmos as adv
 
 import FonctionsPerso
 import GestionDB
@@ -98,7 +103,7 @@ class Dialog(wx.Dialog):
                 
         # texte
         self.staticbox_texte_staticbox = wx.StaticBox(self, -1, _(u"Ticket"))
-        self.ctrl_editeur = gizmos.EditableListBox(self, -1, _(u"Saisissez ci-dessous les lignes à imprimer sur le ticket"))
+        self.ctrl_editeur = adv.EditableListBox(self, -1, _(u"Saisissez ci-dessous les lignes à imprimer sur le ticket"))
         self.ctrl_editeur.GetDelButton().SetToolTip(wx.ToolTip(_(u"Supprimer la ligne sélectionnée")))
         self.ctrl_editeur.GetDownButton().SetToolTip(wx.ToolTip(_(u"Descendre la ligne sélectionnée")))
         self.ctrl_editeur.GetUpButton().SetToolTip(wx.ToolTip(_(u"Monter la ligne sélectionnée")))

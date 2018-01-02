@@ -10,6 +10,7 @@
 
 
 import Chemins
+from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
 from Ctrl import CTRL_Bouton_image
@@ -275,7 +276,7 @@ class ListView(FastObjectListView):
             ID = self.Selection()[0].IDreglement
                 
         # Création du menu contextuel
-        menuPop = wx.Menu()
+        menuPop = UTILS_Adaptations.Menu()
 
         if self.mode != "liste" :
 
@@ -311,7 +312,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
 
         # Item Ventilation Automatique
-        sousMenuVentilation = wx.Menu()
+        sousMenuVentilation = UTILS_Adaptations.Menu()
         
         item = wx.MenuItem(sousMenuVentilation, 201, _(u"Uniquement le règlement sélectionné"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Magique.png"), wx.BITMAP_TYPE_PNG))

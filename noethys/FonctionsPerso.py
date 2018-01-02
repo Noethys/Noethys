@@ -1723,8 +1723,13 @@ def InsertCode():
                 for ligne in fichier :
 
                     # Insertion de l'import Chemins
-                    if "FastObjectListView.__init__(self, *args, **kwds)" in ligne :
-                        listeLignes.append("        self.nom_fichier_liste = __file__\n")
+                    if "import Chemins" in ligne :
+                        ligne = "import Chemins\nfrom Utils import UTILS_Adaptations\n"
+                        dirty = True
+
+                    # Remplacement de wx.Menu
+                    if "wx.Menu()" in ligne :
+                        ligne = ligne.replace("wx.Menu()", "UTILS_Adaptations.Menu()")
                         dirty = True
 
                     # # Modification de UTILS_Traduction
@@ -1861,6 +1866,8 @@ if __name__ == "__main__":
     #VideRepertoireUpdates(forcer=True)
 
     #InsertCodeToolTip()
-    CreerDonneesVirtuellesLocations(1000)
+    #CreerDonneesVirtuellesLocations(1000)
+
+    InsertCode()
 
     pass

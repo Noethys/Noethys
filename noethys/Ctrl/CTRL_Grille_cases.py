@@ -10,6 +10,7 @@
 
 
 import Chemins
+from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 """
 IMPORTANT :
@@ -645,7 +646,7 @@ class Case():
             return
         
         # Création du menu contextuel
-        menuPop = wx.Menu()
+        menuPop = UTILS_Adaptations.Menu()
 
         # Item IDENTIFICATION DE LA CASE
         nomUnite = self.grid.dictUnites[self.IDunite]["nom"]
@@ -1897,7 +1898,11 @@ class CaseMultihoraires(Case):
         for barre in self.listeBarres :
             if readOnlyInclus == True or (readOnlyInclus == False and barre.readOnly == False) :
                 rectBarre = barre.GetRect("grid")
-                if rectBarre != None and rectBarre.ContainsXY(x, y) :
+                if 'phoenix' in wx.PlatformInfo:
+                    contains = rectBarre.Contains(x, y)
+                else:
+                    contains = rectBarre.ContainsXY(x, y)
+                if rectBarre != None and contains == True :
                     # Région
                     if x < rectBarre.width / 4.0 + rectBarre.x : 
                         region = "gauche"
@@ -2521,7 +2526,11 @@ class CaseEvenement(Case):
         """ Recherche un évènement à la position x, y """
         for evenement, rect in self.renderer.dict_boutons.iteritems():
             rect = wx.Rect(rect.x + self.GetRect().x, rect.y + self.GetRect().y, rect.GetWidth(), rect.GetHeight())
-            if rect.ContainsXY(x, y) == True :
+            if 'phoenix' in wx.PlatformInfo:
+                contains = rect.Contains(x, y)
+            else :
+                contains = rect.ContainsXY(x, y)
+            if contains == True :
                 return evenement
         return None
 

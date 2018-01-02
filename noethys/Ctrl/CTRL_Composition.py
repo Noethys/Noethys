@@ -10,6 +10,7 @@
 
 
 import Chemins
+from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 
 import wx
@@ -1108,7 +1109,7 @@ class CTRL_Graphique(wx.ScrolledWindow):
         self.DeselectionneTout() 
         
         # Création du menu
-        menu = wx.Menu()
+        menu = UTILS_Adaptations.Menu()
                         
         # Ajouter
         id = wx.NewId()
@@ -1138,7 +1139,7 @@ class CTRL_Graphique(wx.ScrolledWindow):
             menu.AppendSeparator()
             
             # Changer de catégorie
-            sousMenuCategorie = wx.Menu()
+            sousMenuCategorie = UTILS_Adaptations.Menu()
             
             item = wx.MenuItem(sousMenuCategorie, 601, _(u"Représentant"), kind=wx.ITEM_RADIO)
             sousMenuCategorie.AppendItem(item)
@@ -1495,7 +1496,7 @@ class CTRL_Liste(HTL.HyperTreeList):
         IDindividu = self.GetSelectionIndividu(event) 
         
         # Création du menu contextuel
-        menu = wx.Menu()
+        menu = UTILS_Adaptations.Menu()
 
         # Ajouter
         id = wx.NewId()
@@ -1525,7 +1526,7 @@ class CTRL_Liste(HTL.HyperTreeList):
             menu.AppendSeparator()
             
             # Changer de catégorie
-            sousMenuCategorie = wx.Menu()
+            sousMenuCategorie = UTILS_Adaptations.Menu()
             
             item = wx.MenuItem(sousMenuCategorie, 601, _(u"Représentant"), kind=wx.ITEM_RADIO)
             sousMenuCategorie.AppendItem(item)

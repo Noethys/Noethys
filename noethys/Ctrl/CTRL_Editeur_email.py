@@ -10,6 +10,7 @@
 
 
 import Chemins
+from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
 import CTRL_Bouton_image
@@ -311,7 +312,7 @@ class Hyperlien_inserer_motcle(Hyperlien):
         self.editeur = editeur
 
     def OnLeftLink(self, event):
-        menuPop = wx.Menu()
+        menuPop = UTILS_Adaptations.Menu()
         id = 10000
         for motcle in self.listeMotscles :
             menuPop.AppendItem(wx.MenuItem(menuPop, id, motcle))
@@ -344,7 +345,7 @@ class Hyperlien_inserer_modele(Hyperlien):
         listeDonnees = DB.ResultatReq()
         DB.Close()
         # Création du menu contextuel
-        menuPop = wx.Menu()
+        menuPop = UTILS_Adaptations.Menu()
         id = 10000
         for IDmodele, categorie, nom, description, objet, texte_xml, IDadresse, defaut in self.listeMotscles :
             menuPop.AppendItem(wx.MenuItem(menuPop, id, nom))

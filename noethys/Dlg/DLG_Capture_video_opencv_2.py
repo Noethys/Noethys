@@ -10,6 +10,7 @@
 
 
 import Chemins
+from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 
 import wx
@@ -335,9 +336,9 @@ class Dialog(wx.Dialog):
 
     def OnBoutonOptions(self, event): 
         # Création du menu contextuel
-        menuPop = wx.Menu()
+        menuPop = UTILS_Adaptations.Menu()
         
-        sousMenuPort = wx.Menu()
+        sousMenuPort = UTILS_Adaptations.Menu()
         for index in range(0, 10) :
             id = 10000 + index
             item = wx.MenuItem(sousMenuPort, id, _(u"Port n°%d") % index, _(u"Port n°%d") % index, wx.ITEM_CHECK)
@@ -346,7 +347,7 @@ class Dialog(wx.Dialog):
             if self.port == index : item.Check(True)
         menuPop.AppendMenu(10, _(u"Port de connexion"), sousMenuPort)
 
-        sousMenuFPS = wx.Menu()
+        sousMenuFPS = UTILS_Adaptations.Menu()
         for index in (5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 90, 100) :
             id = 20000 + index
             item = wx.MenuItem(sousMenuFPS, id, u"%d" % index, _(u"%d images par secondes") % index, wx.ITEM_CHECK)

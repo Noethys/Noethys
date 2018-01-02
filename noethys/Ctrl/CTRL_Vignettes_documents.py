@@ -10,6 +10,7 @@
 
 
 import Chemins
+from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
 import CTRL_Bouton_image
@@ -19,7 +20,6 @@ import cStringIO
 import FonctionsPerso
 import datetime
 from Utils import UTILS_Fichiers
-
 from Outils import thumbnailctrl as TC
 
 import GestionDB
@@ -361,7 +361,7 @@ Tous les fichiers (*.*)|*.*"
         self.MAJ() 
         
     def ContextMenu(self):
-        menu = wx.Menu()
+        menu = UTILS_Adaptations.Menu()
 
         item = wx.MenuItem(menu, ID_AJOUTER, _(u"Ajouter des documents"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Ajouter.png"), wx.BITMAP_TYPE_PNG))

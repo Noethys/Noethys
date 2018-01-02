@@ -10,6 +10,7 @@
 
 
 import Chemins
+from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
 from Ctrl import CTRL_Bouton_image
@@ -332,8 +333,13 @@ class Dialog(wx.Dialog):
     def AnalysePhoto(self, nom_fichier=None):
         if nom_fichier == None :
             self.ctrl_listview.MAJ()
-            img = wx.EmptyImage(TAILLE_IMAGE_ORIGINALE[0], TAILLE_IMAGE_ORIGINALE[1])
-            img.SetRGBRect((0, 0, TAILLE_IMAGE_ORIGINALE[0], TAILLE_IMAGE_ORIGINALE[1]), 0, 0, 0)
+            if 'phoenix' in wx.PlatformInfo:
+                img = wx.Image(TAILLE_IMAGE_ORIGINALE[0], TAILLE_IMAGE_ORIGINALE[1])
+                img.SetRGB((0, 0, TAILLE_IMAGE_ORIGINALE[0], TAILLE_IMAGE_ORIGINALE[1]), 0, 0, 0)
+            else :
+                img = wx.EmptyImage(TAILLE_IMAGE_ORIGINALE[0], TAILLE_IMAGE_ORIGINALE[1])
+                img.SetRGBRect((0, 0, TAILLE_IMAGE_ORIGINALE[0], TAILLE_IMAGE_ORIGINALE[1]), 0, 0, 0)
+
             self.AfficheImageOriginale(img.ConvertToBitmap())
             return False
         
@@ -397,8 +403,10 @@ class Dialog(wx.Dialog):
         img.Rescale(width=largeur, height=hauteur, quality=wx.IMAGE_QUALITY_HIGH)
         position = (((TAILLE_IMAGE_ORIGINALE[0]/2.0) - (largeur/2.0)), ((TAILLE_IMAGE_ORIGINALE[1]/2.0) - (hauteur/2.0)))
         img.Resize(TAILLE_IMAGE_ORIGINALE, position, 0, 0, 0)
-        bmp = wx.BitmapFromImage(img)
-        
+        if 'phoenix' in wx.PlatformInfo:
+            bmp = wx.Bitmap(img)
+        else :
+            bmp = wx.BitmapFromImage(img)
         # Affichage de l'image
         self.ctrl_image.SetBitmap(bmp)
 

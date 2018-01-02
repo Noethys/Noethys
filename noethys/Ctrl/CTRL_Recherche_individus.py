@@ -10,6 +10,7 @@
 
 
 import Chemins
+from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
 import CTRL_Bouton_image
@@ -137,7 +138,7 @@ class ToolBar(wx.ToolBar):
         
     def MenuOutils(self, event):
         # Création du menu Outils
-        menuPop = wx.Menu()
+        menuPop = UTILS_Adaptations.Menu()
             
         item = wx.MenuItem(menuPop, ID_APERCU, _(u"Aperçu avant impression"), _(u"Imprimer la liste des effectifs affichée"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG))

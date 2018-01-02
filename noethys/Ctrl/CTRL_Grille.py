@@ -10,6 +10,7 @@
 
 
 import Chemins
+from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 """
 IMPORTANT :
@@ -490,7 +491,7 @@ class Ligne():
         return
     
         # Création du menu contextuel
-        menuPop = wx.Menu()
+        menuPop = UTILS_Adaptations.Menu()
 
         # Item IDENTIFICATION DE LA LIGNE
         item = wx.MenuItem(menuPop, 10, self.labelLigne)

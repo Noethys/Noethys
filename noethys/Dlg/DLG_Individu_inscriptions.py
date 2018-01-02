@@ -10,6 +10,7 @@
 
 
 import Chemins
+from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
 from Ctrl import CTRL_Bouton_image
@@ -117,7 +118,7 @@ class Panel(wx.Panel):
             ID = self.ctrl_inscriptions.Selection()[0].IDinscription
                 
         # Création du menu contextuel
-        menuPop = wx.Menu()
+        menuPop = UTILS_Adaptations.Menu()
         
         # Item Recu 
         item = wx.MenuItem(menuPop, 10, _(u"Editer une confirmation d'inscription (PDF)"))

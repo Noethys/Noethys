@@ -10,6 +10,7 @@
 
 
 import Chemins
+from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
 import CTRL_Bouton_image
@@ -89,8 +90,10 @@ class CTRL(CT.CustomTreeCtrl):
 ##        bmp.SetRGBRect((0, 0, 16, 16), 255, 255, 255)
 ##        bmp.SetRGBRect((6, 4, 8, 8), r, v, b)
 ##        return bmp.ConvertToBitmap()
-        
-        bmp = wx.EmptyBitmap(tailleImages[0], tailleImages[1])
+        if 'phoenix' in wx.PlatformInfo:
+            bmp = wx.Bitmap(tailleImages[0], tailleImages[1])
+        else :
+            bmp = wx.EmptyBitmap(tailleImages[0], tailleImages[1])
         dc = wx.MemoryDC()
         dc.SelectObject(bmp)
         gc = wx.GraphicsContext.Create(dc)
@@ -228,7 +231,7 @@ class CTRL(CT.CustomTreeCtrl):
         dictData = self.GetPyData(item)
         
         # Création du menu contextuel
-        menuPop = wx.Menu()
+        menuPop = UTILS_Adaptations.Menu()
 
         # Item Ajouter
         itemx = wx.MenuItem(menuPop, 10, _(u"Ajouter"))

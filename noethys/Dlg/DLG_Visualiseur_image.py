@@ -10,6 +10,7 @@
 
 
 import Chemins
+from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
 from Ctrl import CTRL_Bouton_image
@@ -82,7 +83,7 @@ class MyFrame(wx.Frame):
         self.ratio = 100
         self.inc = 5
 
-##        menuFichier = wx.Menu()
+##        menuFichier = UTILS_Adaptations.Menu()
 ##        menuFichier.Append(wx.ID_OPEN, "&Ouvrir\tCTRL+o", "Ouvrir un fichier image")
 ##        menuFichier.Append(wx.ID_CLOSE, "&Fermer\tCTRL+f", "Fermer le fichier ouvert")
 ##        menuFichier.AppendSeparator()

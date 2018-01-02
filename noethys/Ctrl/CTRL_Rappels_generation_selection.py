@@ -10,6 +10,7 @@
 
 
 import Chemins
+from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
 import CTRL_Bouton_image
@@ -310,7 +311,7 @@ class CTRL(HTL.HyperTreeList):
         nomIndividu = dictItem["nom"]
         
         # Création du menu contextuel
-        menuPop = wx.Menu()
+        menuPop = UTILS_Adaptations.Menu()
 
         # Item Ouvrir fiche famille
         item = wx.MenuItem(menuPop, 10, _(u"Afficher un aperçu PDF"))

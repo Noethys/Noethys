@@ -10,6 +10,7 @@
 
 
 import Chemins
+from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
 from Ctrl import CTRL_Bouton_image
@@ -901,10 +902,11 @@ class Dialog(wx.Dialog):
         taille_fenetre = UTILS_Config.GetParametre("taille_fenetre_reglement")
         if taille_fenetre == None :
             self.SetSize((840, 700))
-        if taille_fenetre == (0, 0) :
-            self.Maximize(True)
-        else:
-            self.SetSize(taille_fenetre)        
+        else :
+            if taille_fenetre == (0, 0) :
+                self.Maximize(True)
+            else:
+                self.SetSize(taille_fenetre)
         self.CenterOnScreen() 
         
         wx.CallLater(0, self.Layout) # Contre pb d'affichage du wx.Choice
@@ -1124,7 +1126,7 @@ class Dialog(wx.Dialog):
 
     def OnBoutonOptions(self, event):
         # Création du menu Options
-        menuPop = wx.Menu()
+        menuPop = UTILS_Adaptations.Menu()
     
         item = wx.MenuItem(menuPop, ID_OPTION_BLOQUER_VENTILATION, _(u"Bloquer la ventilation lorsque le crédit est épuisé"), _(u"Bloquer la ventilation lorsque le crédit est épuisé"), wx.ITEM_CHECK)
         menuPop.AppendItem(item)

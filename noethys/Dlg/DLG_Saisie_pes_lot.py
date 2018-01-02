@@ -10,6 +10,7 @@
 
 
 import Chemins
+from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
 from Ctrl import CTRL_Bouton_image
@@ -542,7 +543,7 @@ class Dialog(wx.Dialog):
         self.ctrl_pieces.Saisie_factures()
         
         # Création du menu contextuel
-##        menuPop = wx.Menu()
+##        menuPop = UTILS_Adaptations.Menu()
 ##
 ##        # Item Ajouter
 ##        item = wx.MenuItem(menuPop, 10, _(u"Ajouter un prélèvement manuel"))

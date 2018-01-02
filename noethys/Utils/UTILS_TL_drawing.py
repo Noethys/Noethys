@@ -109,7 +109,10 @@ class Metrics(object):
     """Helper class that can calculate coordinates."""
 
     def __init__(self, dc, time_period, divider_line_slider):
-        self.width, self.height = dc.GetSizeTuple()
+        if 'phoenix' in wx.PlatformInfo:
+            self.width, self.height = dc.GetSize()
+        else :
+            self.width, self.height = dc.GetSizeTuple()
         self.half_width = self.width / 2
         self.half_height = self.height / 2
         self.half_height = divider_line_slider.GetValue() * self.height / 100

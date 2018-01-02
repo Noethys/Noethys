@@ -10,6 +10,7 @@
 
 
 import Chemins
+from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 
 import wx
@@ -360,7 +361,7 @@ class ListView(FastObjectListView):
             ID = self.Selection()[0].IDindividu
                 
         # Création du menu contextuel
-        menuPop = wx.Menu()
+        menuPop = UTILS_Adaptations.Menu()
 
         # Item Modifier
         item = wx.MenuItem(menuPop, 10, _(u"Ajouter une fiche famille"))
@@ -761,7 +762,7 @@ class BarreRecherche(wx.SearchCtrl):
             self.OuvrirFiche()
     
     def MakeMenu(self):
-        menu = wx.Menu()
+        menu = UTILS_Adaptations.Menu()
         if len(self.listView.historique) == 0 :
             label = _(u"L'historique des fiches ouvertes est vide")
         else:

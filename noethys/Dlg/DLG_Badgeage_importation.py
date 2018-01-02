@@ -10,6 +10,7 @@
 
 
 import Chemins
+from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
 from Ctrl import CTRL_Bouton_image
@@ -178,7 +179,7 @@ class CTRL_Donnees(FastObjectListView):
     def OnContextMenu(self, event):
         """Ouverture du menu contextuel """
         # Création du menu contextuel
-        menuPop = wx.Menu()
+        menuPop = UTILS_Adaptations.Menu()
     
         # Item Apercu avant impression
         item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
@@ -378,7 +379,7 @@ class Page_scanner(wx.Panel):
 
     def OnBoutonOutils(self, event): 
         # Création du menu Outils
-        menuPop = wx.Menu()
+        menuPop = UTILS_Adaptations.Menu()
         
         menuPop.AppendItem(wx.MenuItem(menuPop, ID_VIDER_MEMOIRE, _(u"Vider la mémoire"), _(u"Vider la mémoire du scanner")))
         self.Bind(wx.EVT_MENU, self.OnOutil, id=ID_VIDER_MEMOIRE)

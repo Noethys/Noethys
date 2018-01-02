@@ -10,6 +10,7 @@
 
 
 import Chemins
+from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
 from Ctrl import CTRL_Bouton_image
@@ -37,7 +38,7 @@ class Dialog(wx.Dialog):
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Operations.png")
         
         # Barre d'outils
-        self.barreOutils = wx.ToolBar(self, -1, style = 
+        self.barreOutils = UTILS_Adaptations.ToolBar(self, -1, style =
             wx.TB_HORIZONTAL 
             | wx.NO_BORDER
             | wx.TB_FLAT
@@ -173,7 +174,7 @@ class Dialog(wx.Dialog):
         
     def Ajouter(self, event=None):
         # Création du menu contextuel
-        menuPop = wx.Menu()
+        menuPop = UTILS_Adaptations.Menu()
         
         item = wx.MenuItem(menuPop, 10, _(u"Ajouter une opération au débit"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Addition.png"), wx.BITMAP_TYPE_PNG))

@@ -9,6 +9,7 @@
 #------------------------------------------------------------------------
 
 import Chemins
+from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
 import datetime
@@ -488,7 +489,7 @@ class Dialog(wx.Dialog):
 
     def OnBoutonOutils(self, event):
         # Création du menu contextuel
-        menuPop = wx.Menu()
+        menuPop = UTILS_Adaptations.Menu()
 
         # Item Mesurer
         item = wx.MenuItem(menuPop, 10, _(u"Mesurer une distance"))

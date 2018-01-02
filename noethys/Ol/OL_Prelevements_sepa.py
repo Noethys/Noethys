@@ -10,6 +10,7 @@
 
 
 import Chemins
+from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
 from Ctrl import CTRL_Bouton_image
@@ -322,7 +323,7 @@ class ListView(FastObjectListView):
             ID = self.Selection()[0].IDprelevement
                 
         # Création du menu contextuel
-        menuPop = wx.Menu()
+        menuPop = UTILS_Adaptations.Menu()
 
         # Item Saisie de factures
         item = wx.MenuItem(menuPop, 11, _(u"Ajouter une ou plusieurs factures"))

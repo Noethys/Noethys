@@ -10,6 +10,7 @@
 
 
 import Chemins
+from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
 from Ctrl import CTRL_Bouton_image
@@ -265,7 +266,7 @@ class Dialog(wx.Dialog):
         
     def OnBoutonImprimer(self, event):               
         # Création du menu contextuel
-        menuPop = wx.Menu()
+        menuPop = UTILS_Adaptations.Menu()
         
         # Item Apercu avant impression
         item = wx.MenuItem(menuPop, 20, _(u"Aperçu avant impression"))

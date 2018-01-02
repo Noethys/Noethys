@@ -19,6 +19,7 @@
 # along with Timeline.  If not, see <http://www.gnu.org/licenses/>.
 
 import Chemins
+from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 
 import calendar
@@ -41,6 +42,11 @@ from Utils.UTILS_TL_data import TimePeriod
 from Utils.UTILS_TL_data import has_nonzero_time
 from Utils import UTILS_TL_data as data
 from Utils import UTILS_TL_drawing as drawing
+
+if 'phoenix' in wx.PlatformInfo:
+    import wx.lib.agw.hyperlink as HL
+else :
+    import wx.lib.hyperlink as HL
 
 
 # Border, in pixels, between controls in a window (should always be used when
@@ -65,9 +71,9 @@ ID_AFFICHE_MOIS = wx.NewId()
 ID_AFFICHE_JOUR = wx.NewId()
 
 
-class ToolBar(wx.ToolBar):
+class ToolBar(UTILS_Adaptations.ToolBar):
     def __init__(self, *args, **kwds):
-        wx.ToolBar.__init__(self, *args, **kwds)
+        UTILS_Adaptations.ToolBar.__init__(self, *args, **kwds)
         self.parent = self.GetParent() 
         
         # Boutons
@@ -768,9 +774,14 @@ class DrawingArea(wx.Panel):
         Here we create a new background buffer with the new size and draw the
         timeline onto it.
         """
-        logging.debug("Resize event in DrawingArea: %s", self.GetSizeTuple())
-        width, height = self.GetSizeTuple()
-        self.bgbuf = wx.EmptyBitmap(width, height)
+        if 'phoenix' in wx.PlatformInfo:
+            logging.debug("Resize event in DrawingArea: %s", self.GetSize())
+            width, height = self.GetSize()
+            self.bgbuf = wx.Bitmap(width, height)
+        else :
+            logging.debug("Resize event in DrawingArea: %s", self.GetSizeTuple())
+            width, height = self.GetSizeTuple()
+            self.bgbuf = wx.EmptyBitmap(width, height)
         self._redraw_timeline()
 
     def _window_on_erase_background(self, event):
@@ -790,9 +801,11 @@ class DrawingArea(wx.Panel):
         """
         logging.debug("Paint event in DrawingArea")
         dc = wx.AutoBufferedPaintDC(self)
-        dc.BeginDrawing()
+        if 'phoenix' not in wx.PlatformInfo:
+            dc.BeginDrawing()
         dc.DrawBitmap(self.bgbuf, 0, 0, True)
-        dc.EndDrawing()
+        if 'phoenix' not in wx.PlatformInfo:
+            dc.EndDrawing()
 
     def _window_on_left_down(self, evt):
         """
@@ -839,7 +852,7 @@ class DrawingArea(wx.Panel):
             (_(u"Modifier"), self._context_menu_on_edit_event),
             (_(u"Supprimer"), self._context_menu_on_delete_event),
         )
-        menu = wx.Menu()
+        menu = UTILS_Adaptations.Menu()
         for menu_definition in menu_definitions:
             text, method = menu_definition
             menu_item = wx.MenuItem(menu, wx.NewId(), text)
@@ -992,7 +1005,7 @@ class DrawingArea(wx.Panel):
 
     def _slider_on_context_menu(self, evt):
         """A right click has occured in the divider-line slider."""
-        menu = wx.Menu()
+        menu = UTILS_Adaptations.Menu()
         menu_item = wx.MenuItem(menu, wx.NewId(), "Center")
         self.Bind(wx.EVT_MENU, self._context_menu_on_menu_center,
                   id=menu_item.GetId())
@@ -1060,7 +1073,8 @@ class DrawingArea(wx.Panel):
         memdc = wx.MemoryDC()
         memdc.SelectObject(self.bgbuf)
         try:
-            memdc.BeginDrawing()
+            if 'phoenix' not in wx.PlatformInfo:
+                memdc.BeginDrawing()
             memdc.SetBackground(wx.Brush(wx.WHITE, wx.SOLID))
             memdc.Clear()
             if self.timeline:
@@ -1074,7 +1088,8 @@ class DrawingArea(wx.Panel):
                                                 period_selection,
                                                 self.show_legend,
                                                 self.divider_line_slider)
-            memdc.EndDrawing()
+            if 'phoenix' not in wx.PlatformInfo:
+                memdc.EndDrawing()
             del memdc
             self.Refresh()
             self.Update()
@@ -1220,7 +1235,10 @@ class DrawingArea(wx.Panel):
         Set the cursor to it's default shape when it is in the timeline
         drawing area.
         """
-        self.SetCursor(wx.StockCursor(wx.CURSOR_ARROW))
+        if 'phoenix' in wx.PlatformInfo:
+            self.SetCursor(wx.Cursor(wx.CURSOR_ARROW))
+        else :
+            self.SetCursor(wx.StockCursor(wx.CURSOR_ARROW))
 
     def balloon_visibility_changed(self, visible):
         self.show_balloons_on_hover = visible
@@ -1827,10 +1845,9 @@ class DateTimePicker(wx.Panel):
                                   py_date.second)
 
 
-class HyperlinkButton(wx.HyperlinkCtrl):
-
+class HyperlinkButton(HL.HyperLinkCtrl):
     def __init__(self, parent, label, url=""):
-        wx.HyperlinkCtrl.__init__(self, parent, wx.ID_ANY, label=label,
+        HL.HyperLinkCtrl.__init__(self, parent, wx.ID_ANY, label=label,
                                   url=url,
                                   style=wx.HL_ALIGN_CENTRE|wx.NO_BORDER)
         self.SetVisitedColour(self.GetNormalColour())

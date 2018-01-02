@@ -10,6 +10,7 @@
 
 
 import Chemins
+from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
 from Ctrl import CTRL_Bouton_image
@@ -345,7 +346,7 @@ class Dialog(wx.Dialog):
 if __name__ == "__main__":
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    dlg = Dialog(None)
+    dlg = Dialog(None, IDtype_piece=3)
     app.SetTopWindow(dlg)
     dlg.ShowModal()
     app.MainLoop()

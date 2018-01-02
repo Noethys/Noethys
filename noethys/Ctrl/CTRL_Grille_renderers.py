@@ -15,6 +15,7 @@ if rows == [-1] : return
 """
 
 import Chemins
+from Utils import UTILS_Adaptations
 import wx
 import CTRL_Bouton_image
 import wx.grid as gridlib
@@ -428,7 +429,10 @@ class CaseMultihoraires(GridCellRenderer):
     def Draw(self, grid, attr, dc, rect, row, col, isSelected):
         # Préparation du buffer Image
         dcGrid = dc
-        bmp = wx.EmptyBitmap(rect.GetWidth(), rect.GetHeight())
+        if 'phoenix' in wx.PlatformInfo:
+            bmp = wx.Bitmap(rect.GetWidth(), rect.GetHeight())
+        else :
+            bmp = wx.EmptyBitmap(rect.GetWidth(), rect.GetHeight())
         image = wx.MemoryDC()
         image.SelectObject(bmp)
         gc = wx.GraphicsContext.Create(image)
@@ -516,7 +520,10 @@ class CaseMultihoraires(GridCellRenderer):
             couleurBarre = self.GetCouleurBarre(conso)
             
             # Dessin du cadre
-            gc.SetFont(attr.GetFont())
+            if 'phoenix' in wx.PlatformInfo:
+                gc.SetFont(attr.GetFont(), wx.Colour(0, 0, 0))
+            else:
+                gc.SetFont(attr.GetFont())
             gc.SetBrush(wx.Brush( (couleurBarre.Red(), couleurBarre.Green(), couleurBarre.Blue(), 180), wx.SOLID)) # 128 = demi-transparence
             
             couleurTexte = UTILS_Couleurs.ModifierLuminosite(couleurBarre, -50)
@@ -685,12 +692,18 @@ class CaseEvenement(GridCellRenderer):
 
         # Préparation du buffer Image
         dcGrid = dc
-        bmp = wx.EmptyBitmap(rect.GetWidth(), rect.GetHeight())
+        if 'phoenix' in wx.PlatformInfo:
+            bmp = wx.Bitmap(rect.GetWidth(), rect.GetHeight())
+        else :
+            bmp = wx.EmptyBitmap(rect.GetWidth(), rect.GetHeight())
         image = wx.MemoryDC()
         image.SelectObject(bmp)
         gc = wx.GraphicsContext.Create(image)
         gc.PushState()
-        gc.SetFont(attr.GetFont())
+        if 'phoenix' in wx.PlatformInfo:
+            gc.SetFont(attr.GetFont(), wx.Colour(0, 0, 0))
+        else :
+            gc.SetFont(attr.GetFont())
 
         rectCase = wx.Rect(0, 0, rect.GetWidth(), rect.GetHeight())
         x, y, largeur, hauteur = rectCase.x, rectCase.y, rectCase.width, rectCase.height
@@ -837,8 +850,12 @@ class CaseEvenement(GridCellRenderer):
         rect_texte = wx.Rect(rect.x + position[0], rect.y + position[1], largeurTexte, hauteurTexte)
 
         # Dessin du texte
-        if rect.ContainsRect(rect_texte) :
-            gc.DrawText(texte, rect_texte.x, rect_texte.y)
+        if 'phoenix' in wx.PlatformInfo:
+            if rect.Contains(rect_texte):
+                gc.DrawText(texte, rect_texte.x, rect_texte.y)
+        else :
+            if rect.ContainsRect(rect_texte):
+                gc.DrawText(texte, rect_texte.x, rect_texte.y)
 
         return rect_texte
 

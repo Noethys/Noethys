@@ -10,6 +10,7 @@
 
 
 import Chemins
+from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
 import cPickle
@@ -1127,7 +1128,7 @@ class Tableau(gridlib.Grid):
         #    self.SelectBlock(topRow=numLigne, leftCol=numColonne, bottomRow=numLigne, rightCol=numColonne)
 
         # Création du menu contextuel
-        menuPop = wx.Menu()
+        menuPop = UTILS_Adaptations.Menu()
 
         id = wx.NewId()
         item = wx.MenuItem(menuPop, id, _(u"Insérer des lignes"))

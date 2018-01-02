@@ -10,6 +10,7 @@
 
 
 import Chemins
+from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
 import CTRL_Bouton_image
@@ -118,7 +119,7 @@ class CTRL(wx.TreeCtrl):
                 noSelection = False
 
         # Création du menu contextuel
-        menuPop = wx.Menu()
+        menuPop = UTILS_Adaptations.Menu()
 
         item = wx.MenuItem(menuPop, 10, _(u"Ajouter un message"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Ajouter.png"), wx.BITMAP_TYPE_PNG))
@@ -227,7 +228,10 @@ class CTRL(wx.TreeCtrl):
             else:
                 labelBranche = _(u"%d cotisations à faire") % nbreCotisations
             niveauCategorie = self.AppendItem(niveauParent, labelBranche)
-            self.SetPyData(niveauCategorie, {"type":"categorie"} )
+            if 'phoenix' in wx.PlatformInfo:
+                self.SetItemData(niveauCategorie, {"type":"categorie"} )
+            else :
+                self.SetPyData(niveauCategorie, {"type": "categorie"})
             self.SetItemBold(niveauCategorie, True)
             self.SetItemImage(niveauCategorie, self.img_pieces, which=wx.TreeItemIcon_Normal)
             niveauParent = niveauCategorie
@@ -256,7 +260,11 @@ class CTRL(wx.TreeCtrl):
                     else:
                         label = _(u"%s de %s") % (nomCotisation, prenom)
                     niveau2 = self.AppendItem(niveau1, label)
-                    self.SetPyData(niveau2, {"type":"cotisation", "IDtype_cotisation":IDtype_cotisation, "IDindividu":IDindividu, "IDfamille":IDfamille, "valide":valide} )
+                    data = {"type":"cotisation", "IDtype_cotisation":IDtype_cotisation, "IDindividu":IDindividu, "IDfamille":IDfamille, "valide":valide}
+                    if 'phoenix' in wx.PlatformInfo:
+                        self.SetItemData(niveau2, data)
+                    else :
+                        self.SetPyData(niveau2, data)
                     self.dictItems[(IDfamille, IDtype_cotisation, IDindividu)] = niveau2
                     if valide == "ok" : self.SetItemImage(niveau2, self.img_ok, which=wx.TreeItemIcon_Normal)
                     if valide == "attention" : self.SetItemImage(niveau2, self.img_attention, which=wx.TreeItemIcon_Normal)
@@ -308,7 +316,11 @@ class CTRL(wx.TreeCtrl):
             else:
                 labelBranche = _(u"%d renseignements manquants") % nbreRenseignementsManquants
             niveauCategorie = self.AppendItem(niveauParent, labelBranche)
-            self.SetPyData(niveauCategorie, {"type":"categorie"} )
+            data = {"type":"categorie"}
+            if 'phoenix' in wx.PlatformInfo:
+                self.SetItemData(niveauCategorie, data)
+            else :
+                self.SetPyData(niveauCategorie, data)
             self.SetItemBold(niveauCategorie, True)
             self.SetItemImage(niveauCategorie, self.img_renseignements, which=wx.TreeItemIcon_Normal)
             niveauParent = niveauCategorie
@@ -326,8 +338,11 @@ class CTRL(wx.TreeCtrl):
                     labelRenseignement = _(u"%s de %s") % (labelRenseignement, prenom)
                 niveau1 = self.AppendItem(niveauParent, labelRenseignement)
                 self.SetItemImage(niveau1, self.img_pasok, which=wx.TreeItemIcon_Normal)
-                self.SetPyData(niveau1, {"type":"renseignement", "IDfamille":IDfamille, "IDindividu":IDindividu, "IDtype_renseignement":IDtype_renseignement} )
-                
+                data = {"type":"renseignement", "IDfamille":IDfamille, "IDindividu":IDindividu, "IDtype_renseignement":IDtype_renseignement}
+                if 'phoenix' in wx.PlatformInfo:
+                    self.SetItemData(niveau1, data)
+                else :
+                    self.SetPyData(niveau1, data)
 
 
 
@@ -343,7 +358,11 @@ class CTRL(wx.TreeCtrl):
             else:
                 labelBranche = _(u"%d pièces à fournir") % nbrePieces
             niveauCategorie = self.AppendItem(niveauParent, labelBranche)
-            self.SetPyData(niveauCategorie, {"type":"categorie"} )
+            data = {"type":"categorie"}
+            if 'phoenix' in wx.PlatformInfo:
+                self.SetItemData(niveauCategorie, data)
+            else :
+                self.SetPyData(niveauCategorie, data)
             self.SetItemBold(niveauCategorie, True)
             self.SetItemImage(niveauCategorie, self.img_pieces, which=wx.TreeItemIcon_Normal)
             niveauParent = niveauCategorie
@@ -374,7 +393,11 @@ class CTRL(wx.TreeCtrl):
                     else:
                         label = _(u"%s de %s") % (nomPiece, prenom)
                     niveau2 = self.AppendItem(niveau1, label)
-                    self.SetPyData(niveau2, {"type":"piece", "IDtype_piece":IDtype_piece, "IDindividu":IDindividu, "IDfamille":IDfamille, "valide":valide} )
+                    data = {"type":"piece", "IDtype_piece":IDtype_piece, "IDindividu":IDindividu, "IDfamille":IDfamille, "valide":valide}
+                    if 'phoenix' in wx.PlatformInfo:
+                        self.SetItemData(niveau2, data)
+                    else :
+                        self.SetPyData(niveau2, data)
                     self.dictItems[(IDfamille, IDtype_piece, IDindividu)] = niveau2
                     if valide == "ok" : self.SetItemImage(niveau2, self.img_ok, which=wx.TreeItemIcon_Normal)
                     if valide == "attention" : self.SetItemImage(niveau2, self.img_attention, which=wx.TreeItemIcon_Normal)

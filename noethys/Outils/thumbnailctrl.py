@@ -208,9 +208,13 @@ def getDataTR():
 \xce)\xa1\t\x00"\xf9$\x83' )
 
 def getShadow():
-    sh_tr = wx.ImageFromStream(cStringIO.StringIO(getDataTR())).ConvertToBitmap()
-    sh_bl = wx.ImageFromStream(cStringIO.StringIO(getDataBL())).ConvertToBitmap()
-    sh_sh = wx.ImageFromStream(cStringIO.StringIO(getDataSH())).Rescale(500, 500, wx.IMAGE_QUALITY_HIGH)
+    if 'phoenix' in wx.PlatformInfo:
+        fonction = wx.Image
+    else :
+        fonction = wx.ImageFromStream
+    sh_tr = fonction(cStringIO.StringIO(getDataTR())).ConvertToBitmap()
+    sh_bl = fonction(cStringIO.StringIO(getDataBL())).ConvertToBitmap()
+    sh_sh = fonction(cStringIO.StringIO(getDataSH())).Rescale(500, 500, wx.IMAGE_QUALITY_HIGH)
     return (sh_tr, sh_bl, sh_sh.ConvertToBitmap())
 
 
@@ -364,13 +368,19 @@ class PILImageHandler(object):
         originalsize = pil.size
         
         pil.thumbnail(thumbnailsize)
-        img = wx.EmptyImage(pil.size[0], pil.size[1])
+        if 'phoenix' in wx.PlatformInfo:
+            img = wx.Image(pil.size[0], pil.size[1])
+        else :
+            img = wx.EmptyImage(pil.size[0], pil.size[1])
 
         img.SetData(pil.convert("RGB").tobytes())
 
         alpha = False
         if "A" in pil.getbands():
-            img.SetAlphaData(pil.convert("RGBA").tobytes()[3::4])
+            if 'phoenix' in wx.PlatformInfo:
+                img.SetAlpha(pil.convert("RGBA").tobytes()[3::4])
+            else :
+                img.SetAlphaData(pil.convert("RGBA").tobytes()[3::4])
             alpha = True
 
         return img, originalsize, alpha
@@ -420,8 +430,12 @@ class Thumb(object):
         self._filesize = None
         self._parent = parent
         self._captionbreaks = []
-        self._bitmap = wx.EmptyBitmap(1,1)
-        self._image = wx.EmptyImage(1,1)
+        if 'phoenix' in wx.PlatformInfo:
+            self._bitmap = wx.Bitmap(1,1)
+            self._image = wx.Image(1,1)
+        else :
+            self._bitmap = wx.EmptyBitmap(1,1)
+            self._image = wx.EmptyImage(1,1)
         self._rotation = 0
         self._alpha = None
         
@@ -496,7 +510,11 @@ class Thumb(object):
         """
         
         if self.GetRotation() % (2*pi) < 1e-6:
-            if not self._bitmap.Ok():
+            if 'phoenix' in wx.PlatformInfo:
+                isOk = self._bitmap.IsOk()
+            else :
+                isOk = self._bitmap.Ok()
+            if not isOk:
                 if not hasattr(self, "_threadedimage"):
                     img = GetMondrianImage()
                 else:
@@ -593,7 +611,10 @@ class Thumb(object):
         end = 0
 
         dc = wx.MemoryDC()
-        bmp = wx.EmptyBitmap(10,10)
+        if 'phoenix' in wx.PlatformInfo:
+            bmp = wx.Bitmap(10,10)
+        else :
+            bmp = wx.EmptyBitmap(10, 10)
         dc.SelectObject(bmp)
         
         while 1:
@@ -1675,7 +1696,8 @@ class ScrolledThumbnail(wx.ScrolledWindow):
 
         dc = wx.MemoryDC()
         dc.SelectObject(bmp)
-        dc.BeginDrawing()
+        if 'phoenix' not in wx.PlatformInfo:
+            dc.BeginDrawing()
         
         x = self._tBorder/2
         y = self._tBorder/2
@@ -1762,7 +1784,11 @@ class ScrolledThumbnail(wx.ScrolledWindow):
             if selected:
 
                 dc.SetPen(self.grayPen)
-                dc.DrawRoundedRectangleRect(dotrect, 2)
+
+                if 'phoenix' in wx.PlatformInfo:
+                    dc.DrawRoundedRectangle(dotrect, 2)
+                else :
+                    dc.DrawRoundedRectangleRect(dotrect, 2)
                 
                 dc.SetPen(wx.Pen(wx.WHITE))
                 dc.DrawRectangle(imgRect.x, imgRect.y,
@@ -1782,9 +1808,9 @@ class ScrolledThumbnail(wx.ScrolledWindow):
 
                 dc.DrawRectangle(imgRect.x - 1, imgRect.y - 1,
                                  imgRect.width + 2, imgRect.height + 2)
-            
-  
-        dc.EndDrawing()
+
+        if 'phoenix' not in wx.PlatformInfo:
+            dc.EndDrawing()
         dc.SelectObject(wx.NullBitmap)
 
 
@@ -1825,8 +1851,12 @@ class ScrolledThumbnail(wx.ScrolledWindow):
             # visible?
             if not paintRect.Intersects(wx.Rect(tx, ty, tw, th)):
                 continue
-          
-            thmb = wx.EmptyBitmap(tw, th)
+
+            if 'phoenix' in wx.PlatformInfo:
+                thmb = wx.Bitmap(tw, th)
+            else :
+                thmb = wx.EmptyBitmap(tw, th)
+
             self.DrawThumbnail(thmb, self._items[ii], ii)
             dc.DrawBitmap(thmb, tx, ty)
   

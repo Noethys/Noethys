@@ -10,6 +10,7 @@
 
 
 import Chemins
+from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
 from Ctrl import CTRL_Bouton_image
@@ -514,7 +515,7 @@ class Dialog(wx.Dialog):
 
     def MenuOptions(self):
         # Création du menu Options
-        menuPop = wx.Menu()
+        menuPop = UTILS_Adaptations.Menu()
     
         item = wx.MenuItem(menuPop, ID_AFFICHAGE_PERSPECTIVE_DEFAUT, _(u"Disposition par défaut"), _(u"Afficher la disposition par défaut"), wx.ITEM_CHECK)
         menuPop.AppendItem(item)
@@ -598,7 +599,7 @@ class Dialog(wx.Dialog):
 
     def MenuOutils(self):
         # Création du menu Outils
-        menuPop = wx.Menu()
+        menuPop = UTILS_Adaptations.Menu()
             
         item = wx.MenuItem(menuPop, ID_OUTILS_SAISIE_FORFAIT, _(u"Appliquer des forfaits datés"), _(u"Appliquer des forfaits datés"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Forfait.png"), wx.BITMAP_TYPE_PNG))

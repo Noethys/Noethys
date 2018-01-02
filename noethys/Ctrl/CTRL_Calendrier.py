@@ -10,6 +10,7 @@
 
 
 import Chemins
+from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
 import CTRL_Bouton_image
@@ -757,7 +758,7 @@ class Calendrier(wx.ScrolledWindow):
             return
         
         # Création du menu
-        menu = wx.Menu()
+        menu = UTILS_Adaptations.Menu()
         
         if self.multiSelections == True :
             
@@ -794,7 +795,7 @@ class Calendrier(wx.ScrolledWindow):
             # Choisir une période de vacances
             self.popupID3 = wx.NewId()
             if len(self.listePeriodesVacs) != 0 :
-                sm = wx.Menu()
+                sm = UTILS_Adaptations.Menu()
                 index = 0
                 self.listePeriodesVacs.reverse()
                 # Seules les 20 dernières périodes sont retenues
@@ -825,7 +826,7 @@ class Calendrier(wx.ScrolledWindow):
         self.Bind(wx.EVT_MENU, self.OnPopup2, id=self.popupID2)
 
         # make a submenu
-        #sm = wx.Menu()
+        #sm = UTILS_Adaptations.Menu()
         #sm.Append(self.popupID8, "sub item 1")
         #sm.Append(self.popupID9, "sub item 1")
         #menu.AppendMenu(self.popupID7, "Test Submenu", sm)

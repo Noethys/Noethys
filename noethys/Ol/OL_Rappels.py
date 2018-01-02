@@ -10,6 +10,7 @@
 
 
 import Chemins
+from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
 from Ctrl import CTRL_Bouton_image
@@ -372,7 +373,7 @@ class ListView(FastObjectListView):
             ID = self.Selection()[0].IDrappel
         
         # Création du menu contextuel
-        menuPop = wx.Menu()
+        menuPop = UTILS_Adaptations.Menu()
 
         # Item Rééditer la lettre
         item = wx.MenuItem(menuPop, 60, _(u"Aperçu PDF de la lettre de rappel"))

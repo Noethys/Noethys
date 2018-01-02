@@ -17,7 +17,8 @@ from wx.lib.agw.customtreectrl import (
     EVT_TREE_ITEM_CHECKED, EVT_TREE_ITEM_RIGHT_CLICK
 )
 
-import Chemins # noqa
+import Chemins
+from Utils import UTILS_Adaptations
 import GestionDB
 from Utils import UTILS_Dates
 from Utils.UTILS_Traduction import _
@@ -87,7 +88,7 @@ class CTRL(HTL.HyperTreeList):
                 self.parent.MAJecoles()
 
     def OnContextMenu(self, event):
-        menu = wx.Menu()
+        menu = UTILS_Adaptations.Menu()
 
         # Ajouter les éléments au menu
         item = wx.MenuItem(

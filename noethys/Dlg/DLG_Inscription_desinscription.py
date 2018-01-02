@@ -9,6 +9,7 @@
 # ------------------------------------------------------------------------
 
 import Chemins
+from Utils import UTILS_Adaptations
 import datetime
 import wx
 

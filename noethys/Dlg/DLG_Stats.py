@@ -10,6 +10,7 @@
 
 
 import Chemins
+from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
 from Ctrl import CTRL_Bouton_image
@@ -353,7 +354,7 @@ class Dialog(wx.Dialog):
 
     def OnBoutonImprimer(self, event): 
         # Demande le type d'impression
-        menuPop = wx.Menu()
+        menuPop = UTILS_Adaptations.Menu()
 
         item = wx.MenuItem(menuPop, 10, _(u"Tout"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Imprimante.png"), wx.BITMAP_TYPE_PNG))

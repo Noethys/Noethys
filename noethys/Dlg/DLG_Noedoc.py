@@ -10,6 +10,7 @@
 
 
 import Chemins
+from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
 from Ctrl import CTRL_Bouton_image
@@ -3694,7 +3695,7 @@ class Panel_canvas(wx.Panel):
 
         if self.mode == "edition":
 
-            menu = wx.Menu()
+            menu = UTILS_Adaptations.Menu()
             self.point = objet
             # Supprimer la poignée
             item = wx.MenuItem(menu, ID_MENU_SUPPRIMER_POINT, _(u"Supprimer ce point"), _(u"Supprimer ce point"), wx.ITEM_NORMAL)
@@ -3725,7 +3726,7 @@ class Panel_canvas(wx.Panel):
             self.OnLeftDownCanvas(objet)
             return
 
-        menu = wx.Menu()
+        menu = UTILS_Adaptations.Menu()
         self.coords = objet.HitCoords
         # Supprimer la poignée
         item = wx.MenuItem(menu, ID_MENU_AJOUTER_POINT, _(u"Ajouter un point ici"), _(u"Ajouter un point ici"), wx.ITEM_NORMAL)
@@ -4092,7 +4093,7 @@ class Panel_canvas(wx.Panel):
         
     def MenuContextuel(self, objet=None):
         """ Création du menu contextuel """
-        menu = wx.Menu()
+        menu = UTILS_Adaptations.Menu()
         
         if "texte" in objet.categorie :
             # Modifier le texte
@@ -4417,7 +4418,7 @@ class Panel_canvas(wx.Panel):
             tb.SetToolSticky(event.GetId(), True)
 
             # create the popup menu
-            menuPopup = wx.Menu()
+            menuPopup = UTILS_Adaptations.Menu()
 
             # Importation d'une image
             item = wx.MenuItem(menuPopup, 10001, _(u"Importer une image"), _(u"Importer une image"), wx.ITEM_NORMAL)
@@ -4583,7 +4584,7 @@ class Panel_canvas(wx.Panel):
             tb.SetToolSticky(event.GetId(), True)
 
             # create the popup menu
-            menuPopup = wx.Menu()
+            menuPopup = UTILS_Adaptations.Menu()
 
             # Importation d'une image
             index = 0
@@ -4704,7 +4705,7 @@ class Panel_canvas(wx.Panel):
             tb.SetToolSticky(event.GetId(), True)
 
             # create the popup menu
-            menuPopup = wx.Menu()
+            menuPopup = UTILS_Adaptations.Menu()
 
             # Importation d'une image
             index = 0

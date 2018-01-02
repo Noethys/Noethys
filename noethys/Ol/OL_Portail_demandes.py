@@ -10,6 +10,7 @@
 
 
 import Chemins
+from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
 import GestionDB
@@ -239,7 +240,7 @@ class ListView(GroupListView):
     def OnContextMenu(self, event):
         """Ouverture du menu contextuel """
         # Création du menu contextuel
-        menuPop = wx.Menu()
+        menuPop = UTILS_Adaptations.Menu()
 
         # Item Traiter
         item = wx.MenuItem(menuPop, 10, _(u"Traiter la demande"))

@@ -10,6 +10,7 @@
 
 
 import Chemins
+from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
 import wx.propgrid as wxpg
@@ -971,6 +972,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         # Envoie les paramètres dans le contrôle
         for nom, valeur in dictParametres.iteritems() :
             propriete = self.GetPropertyByName(nom)
+            #type_propriete = type(VALEURS_DEFAUT[nom])
             propriete.SetValue(valeur)
 
         # MAJ affichage grille
@@ -1239,7 +1241,7 @@ class Dialog(wx.Dialog):
         # Création du menu contextuel
         dict_parametres = self.ctrl_parametres.GetValeurs()
 
-        menu = wx.Menu()
+        menu = UTILS_Adaptations.Menu()
 
         server_is_running = False
         if dict_parametres["serveur_type"] == 0:

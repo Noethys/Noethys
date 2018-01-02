@@ -531,7 +531,10 @@ class DefaultDrawingAlgorithm(DrawingAlgorithm):
         box_rect = (OUTER_PADDING,
                     self.metrics.height - height - OUTER_PADDING,
                     width, height)
-        self.dc.DrawRectangleRect(box_rect)
+        if 'phoenix' in wx.PlatformInfo:
+            self.dc.DrawRectangle(box_rect)
+        else :
+            self.dc.DrawRectangleRect(box_rect)
         # Draw text and color boxes
         cur_y = self.metrics.height - height - OUTER_PADDING + INNER_PADDING
         for cat in categories:
@@ -542,7 +545,10 @@ class DefaultDrawingAlgorithm(DrawingAlgorithm):
             color_box_rect = (OUTER_PADDING + width - item_height -
                               INNER_PADDING,
                               cur_y, item_height, item_height)
-            self.dc.DrawRectangleRect(color_box_rect)
+            if 'phoenix' in wx.PlatformInfo:
+                self.dc.DrawRectangle(color_box_rect)
+            else :
+                self.dc.DrawRectangleRect(color_box_rect)
             self.dc.DrawText(cat.name, OUTER_PADDING + INNER_PADDING, cur_y)
             cur_y = cur_y + item_height + INNER_PADDING
 
@@ -553,16 +559,27 @@ class DefaultDrawingAlgorithm(DrawingAlgorithm):
         for (event, rect) in self.event_data:
             # Ensure that we can't draw outside rectangle
             self.dc.DestroyClippingRegion()
-            self.dc.SetClippingRect(rect)
+            if 'phoenix' in wx.PlatformInfo:
+                self.dc.SetClippingRegion(rect)
+            else :
+                self.dc.SetClippingRect(rect)
             # Draw the box
             self.dc.SetBrush(self._get_box_brush(event))
             self.dc.SetPen(self._get_box_pen(event))
-            self.dc.DrawRectangleRect(rect)
+            if 'phoenix' in wx.PlatformInfo:
+                self.dc.DrawRectangle(rect)
+            else :
+                self.dc.DrawRectangleRect(rect)
             # Ensure that we can't draw content outside inner rectangle
             self.dc.DestroyClippingRegion()
             rect_copy = wx.Rect(*rect)
             rect_copy.Deflate(INNER_PADDING, INNER_PADDING)
-            self.dc.SetClippingRect(rect_copy)
+
+            if 'phoenix' in wx.PlatformInfo:
+                self.dc.SetClippingRegion(rect_copy)
+            else :
+                self.dc.SetClippingRect(rect_copy)
+
             if rect_copy.Width > 0:
                 # Draw the text (if there is room for it)
                 text_x = rect.X + INNER_PADDING
@@ -572,7 +589,10 @@ class DefaultDrawingAlgorithm(DrawingAlgorithm):
                 self.dc.DrawText(event.text, text_x, text_y)
             # Draw data contents indicator
             self.dc.DestroyClippingRegion()
-            self.dc.SetClippingRect(rect)
+            if 'phoenix' in wx.PlatformInfo:
+                self.dc.SetClippingRegion(rect)
+            else :
+                self.dc.SetClippingRect(rect)
             if event.has_data():
                 self._draw_contents_indicator(event, rect)
             # Draw selection and handles
@@ -584,7 +604,12 @@ class DefaultDrawingAlgorithm(DrawingAlgorithm):
                 pen = wx.Pen(border_color, 1, wx.SOLID)
                 self.dc.SetBrush(wx.TRANSPARENT_BRUSH)
                 self.dc.SetPen(pen)
-                self.dc.DrawRectangleRect(small_rect)
+
+                if 'phoenix' in wx.PlatformInfo:
+                    self.dc.DrawRectangle(small_rect)
+                else:
+                    self.dc.DrawRectangleRect(small_rect)
+
                 self._draw_handles(rect)
         # Reset this when we are done
         self.dc.DestroyClippingRegion()
@@ -593,7 +618,10 @@ class DefaultDrawingAlgorithm(DrawingAlgorithm):
         SIZE = 4
         big_rect = wx.Rect(rect.X - SIZE, rect.Y - SIZE, rect.Width + 2 * SIZE, rect.Height + 2 * SIZE)
         self.dc.DestroyClippingRegion()
-        self.dc.SetClippingRect(big_rect)
+        if 'phoenix' in wx.PlatformInfo:
+            self.dc.SetClippingRegion(big_rect)
+        else:
+            self.dc.SetClippingRect(big_rect)
         y = rect.Y + rect.Height/2 - SIZE/2
         x = rect.X - SIZE / 2
         west_rect   = wx.Rect(x + 1             , y, SIZE, SIZE)
@@ -601,10 +629,15 @@ class DefaultDrawingAlgorithm(DrawingAlgorithm):
         east_rect   = wx.Rect(x + rect.Width - 1, y, SIZE, SIZE)
         self.dc.SetBrush(wx.Brush("BLACK", wx.SOLID))
         self.dc.SetPen(wx.Pen("BLACK", 1, wx.SOLID))
-        self.dc.DrawRectangleRect(east_rect)
-        self.dc.DrawRectangleRect(west_rect)
-        self.dc.DrawRectangleRect(center_rect)
-        
+        if 'phoenix' in wx.PlatformInfo:
+            self.dc.DrawRectangle(east_rect)
+            self.dc.DrawRectangle(west_rect)
+            self.dc.DrawRectangle(center_rect)
+        else :
+            self.dc.DrawRectangleRect(east_rect)
+            self.dc.DrawRectangleRect(west_rect)
+            self.dc.DrawRectangleRect(center_rect)
+
     def _draw_contents_indicator(self, event, rect):
         """
         The data contents indicator is a small icon added to the end of

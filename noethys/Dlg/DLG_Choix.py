@@ -10,11 +10,17 @@
 
 
 import Chemins
+from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
 from Ctrl import CTRL_Bouton_image
 from Ctrl import CTRL_Bandeau
 import textwrap
+
+if 'phoenix' in wx.PlatformInfo:
+    from wx.adv import CommandLinkButton
+else :
+    from wx import CommandLinkButton
 
 
 class Dialog(wx.Dialog):
@@ -30,7 +36,7 @@ class Dialog(wx.Dialog):
         self.listeControles = []
         index = 0
         for label, description in listeBoutons :
-            ctrl = wx.CommandLinkButton(self, index, label, textwrap.fill(description, 80))
+            ctrl = CommandLinkButton(self, index, label, textwrap.fill(description, 80))
             self.listeControles.append(ctrl)
             self.Bind(wx.EVT_BUTTON, self.OnBouton, ctrl)
             index += 1

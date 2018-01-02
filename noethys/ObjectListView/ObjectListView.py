@@ -111,6 +111,7 @@ import sys
 sys.path.append("..")
 
 from Utils import UTILS_Dates
+from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 
 
@@ -2835,7 +2836,7 @@ class CTRL_Outils(wx.Panel):
         self.bouton_filtrer = platebtn.PlateButton(self, -1, u" Filtrer", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Filtre.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_filtrer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour filtrer cette liste")))
         
-        menu = wx.Menu()
+        menu = UTILS_Adaptations.Menu()
         item = wx.MenuItem(menu, 10, u"Ajouter, modifier ou supprimer des filtres", u"Cliquez ici pour accéder à la gestion des filtres de listes")
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Filtre.png"), wx.BITMAP_TYPE_ANY))
         menu.AppendItem(item)
@@ -2851,7 +2852,7 @@ class CTRL_Outils(wx.Panel):
             self.bouton_cocher = platebtn.PlateButton(self, -1, u" Cocher", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Cocher.png"), wx.BITMAP_TYPE_ANY))
             self.bouton_cocher.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour cocher ou décocher rapidement tous les éléments de cette liste")))
             
-            menu = wx.Menu()
+            menu = UTILS_Adaptations.Menu()
             item = wx.MenuItem(menu, 20, u"Tout cocher", u"Cliquez ici pour cocher tous les éléments de la liste")
             item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Cocher.png"), wx.BITMAP_TYPE_ANY))
             menu.AppendItem(item)

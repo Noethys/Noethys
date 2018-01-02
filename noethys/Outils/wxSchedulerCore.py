@@ -104,10 +104,16 @@ class wxSchedulerCore( wxSchedulerPaint ):
 			offset = wx.DateSpan(months=1)
 
 		if side == wxSCHEDULER_NEXT:
-			self._currentDate.AddDS( offset )
+			if 'phoenix' in wx.PlatformInfo:
+				self._currentDate.Add( offset )
+			else :
+				self._currentDate.AddDS(offset)
 		elif side == wxSCHEDULER_PREV:
-			self._currentDate.SubtractDS( offset )
-			
+			if 'phoenix' in wx.PlatformInfo:
+				self._currentDate.Subtract( offset )
+			else :
+				self._currentDate.SubtractDS(offset)
+
 	#-----------------------
 	#  External methods
 	#-----------------------

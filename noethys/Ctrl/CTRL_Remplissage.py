@@ -10,6 +10,7 @@
 
 
 import Chemins
+from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 """
 IMPORTANT :
@@ -439,7 +440,7 @@ class Case():
             return
         
         # Création du menu contextuel
-        menuPop = wx.Menu()
+        menuPop = UTILS_Adaptations.Menu()
 
         # Item IDENTIFICATION DE LA CASE
         nomUnite = self.grid.dictUnites[self.IDunite]["nom"]
@@ -608,7 +609,7 @@ class Ligne():
 
     def OnContextMenu(self):
         # Création du menu contextuel
-        menuPop = wx.Menu()
+        menuPop = UTILS_Adaptations.Menu()
 
         # Item IDENTIFICATION DE LA LIGNE
         item = wx.MenuItem(menuPop, 10, self.labelLigne)
@@ -742,12 +743,18 @@ class RendererCaseEvenement(GridCellRenderer):
 
         # Préparation du buffer Image
         dcGrid = dc
-        bmp = wx.EmptyBitmap(rect.GetWidth(), rect.GetHeight())
+        if 'phoenix' in wx.PlatformInfo:
+            bmp = wx.Bitmap(rect.GetWidth(), rect.GetHeight())
+        else :
+            bmp = wx.EmptyBitmap(rect.GetWidth(), rect.GetHeight())
         image = wx.MemoryDC()
         image.SelectObject(bmp)
         gc = wx.GraphicsContext.Create(image)
         gc.PushState()
-        gc.SetFont(attr.GetFont())
+        if 'phoenix' in wx.PlatformInfo:
+            gc.SetFont(attr.GetFont(), wx.Colour(0, 0, 0))
+        else :
+            gc.SetFont(attr.GetFont())
 
         rectCase = wx.Rect(0, 0, rect.GetWidth(), rect.GetHeight())
         x, y, largeur, hauteur = rectCase.x, rectCase.y, rectCase.width, rectCase.height
@@ -827,8 +834,12 @@ class RendererCaseEvenement(GridCellRenderer):
         rect_texte = wx.Rect(rect.x + position[0], rect.y + position[1], largeurTexte, hauteurTexte)
 
         # Dessin du texte
-        if rect.ContainsRect(rect_texte) :
-            gc.DrawText(texte, rect_texte.x, rect_texte.y)
+        if 'phoenix' in wx.PlatformInfo:
+            if rect.Contains(rect_texte):
+                gc.DrawText(texte, rect_texte.x, rect_texte.y)
+        else :
+            if rect.ContainsRect(rect_texte):
+                gc.DrawText(texte, rect_texte.x, rect_texte.y)
 
         return rect_texte
 

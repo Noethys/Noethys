@@ -10,6 +10,7 @@
 
 
 import Chemins
+from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
 import GestionDB
@@ -186,7 +187,7 @@ class CTRL(CT.CustomTreeCtrl):
         dictData = self.GetPyData(item)
         
         # Création du menu contextuel
-        menuPop = wx.Menu()
+        menuPop = UTILS_Adaptations.Menu()
 
         # Item Ajouter
         itemx = wx.MenuItem(menuPop, 10, _(u"Ajouter"))

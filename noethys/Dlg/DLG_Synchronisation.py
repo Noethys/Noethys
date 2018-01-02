@@ -10,6 +10,7 @@
 
 
 import Chemins
+from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
 from Ctrl import CTRL_Bouton_image
@@ -563,7 +564,7 @@ class Dialog(wx.Dialog):
         webbrowser.open("http://play.google.com/store/apps/details?id=org.nomadhys.nomadhys&hl=fr")
         
     def OnBoutonOutils(self, event):
-        menuPop = wx.Menu()
+        menuPop = UTILS_Adaptations.Menu()
         
         item = wx.MenuItem(menuPop, 10, _(u"Purger le répertoire FTP"), _(u"Supprimer uniquement les fichiers liés à ce fichier de données du répertoire FTP"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Gomme.png"), wx.BITMAP_TYPE_PNG))

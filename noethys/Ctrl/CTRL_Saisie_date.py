@@ -9,6 +9,7 @@
 #-----------------------------------------------------------
 
 import Chemins
+from Utils import UTILS_Adaptations
 import wx
 import wx.lib.masked as masked
 import re
@@ -195,7 +196,7 @@ class Date(masked.TextCtrl):
 
     def OnContextMenu(self, event):
         """Ouverture du menu contextuel """
-        menuPop = wx.Menu()
+        menuPop = UTILS_Adaptations.Menu()
         
         item = wx.MenuItem(menuPop, ID_AUJOURDHUI, _(u"Aujourd'hui"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Date_actuelle.png"), wx.BITMAP_TYPE_PNG))
@@ -231,7 +232,7 @@ class Date(masked.TextCtrl):
             if id == None :
                 menuPop.AppendSeparator()
             else :
-                sousMenu = wx.Menu()
+                sousMenu = UTILS_Adaptations.Menu()
                 sousMenu.AppendItem(wx.MenuItem(menuPop, id+1, _(u"Date de début")))
                 self.Bind(wx.EVT_MENU, self.OnActionMenu, id=id+1)
                 sousMenu.AppendItem(wx.MenuItem(menuPop, id+2, _(u"Date de fin")))

@@ -10,6 +10,7 @@
 
 
 import Chemins
+from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
 import CTRL_Bouton_image
@@ -723,7 +724,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             return
         
         # Création du menu contextuel
-        menuPop = wx.Menu()
+        menuPop = UTILS_Adaptations.Menu()
         
         nomCategorie = self.GetRowLabelValue(numLigne)
         nomAction = self.GetColLabelValue(numColonne)
@@ -753,7 +754,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             ]           
 
         for IDitem, labelItem in listeItems :
-            sousMenu = wx.Menu()
+            sousMenu = UTILS_Adaptations.Menu()
             for IDsousItem, labelSousItem, tip, bmp in listeSousItems :
                 ID = IDitem+IDsousItem
                 item = wx.MenuItem(menuPop, ID, labelSousItem, tip)

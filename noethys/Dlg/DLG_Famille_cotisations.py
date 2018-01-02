@@ -10,6 +10,7 @@
 
 
 import Chemins
+from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
 from Ctrl import CTRL_Bouton_image
@@ -99,7 +100,7 @@ class Panel(wx.Panel):
             ID = self.ctrl_listview.Selection()[0].IDcotisation
                 
         # Création du menu contextuel
-        menuPop = wx.Menu()
+        menuPop = UTILS_Adaptations.Menu()
 
         # Item Imprimer cotisation
         item = wx.MenuItem(menuPop, 40, _(u"Imprimer la cotisation"))

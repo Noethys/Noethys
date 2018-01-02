@@ -10,6 +10,7 @@
 
 
 import Chemins
+from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
 from Ctrl import CTRL_Bouton_image
@@ -328,7 +329,7 @@ class Dialog(wx.Dialog):
     
     def OnBoutonOutils(self, event):
         # Création du menu contextuel
-        menuPop = wx.Menu()
+        menuPop = UTILS_Adaptations.Menu()
         
         # Item Régler une facture
         item = wx.MenuItem(menuPop, 40, _(u"Régler une facture"))
@@ -419,7 +420,7 @@ class Dialog(wx.Dialog):
 
 
         # Item Envoyer un email
-        sousMenuEmail = wx.Menu()
+        sousMenuEmail = UTILS_Adaptations.Menu()
         
         item = wx.MenuItem(menuPop, 200, _(u"Depuis l'éditeur d'Emails de Noethys"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Editeur_email.png"), wx.BITMAP_TYPE_PNG))
@@ -438,7 +439,7 @@ class Dialog(wx.Dialog):
 
 ##    def OnBoutonDocuments(self, event):
 ##        # Création du menu contextuel
-##        menuPop = wx.Menu()
+##        menuPop = UTILS_Adaptations.Menu()
 ##        
 ##        # Item Apercu avant impression
 ##        item = wx.MenuItem(menuPop, 10, _(u"Editer une Attestation de présence"))

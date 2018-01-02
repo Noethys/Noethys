@@ -10,6 +10,7 @@
 
 
 import Chemins
+from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
 import GestionDB
@@ -207,7 +208,7 @@ class ListView(FastObjectListView):
     def OnContextMenu(self, event):
         """Ouverture du menu contextuel """        
         # Création du menu contextuel
-        menuPop = wx.Menu()
+        menuPop = UTILS_Adaptations.Menu()
 
         if len(self.Selection()) == 0:
             noSelection = True
@@ -215,7 +216,7 @@ class ListView(FastObjectListView):
             noSelection = False
                 
         # Création du menu contextuel
-        menuPop = wx.Menu()
+        menuPop = UTILS_Adaptations.Menu()
 
         # Item Ajouter
         item = wx.MenuItem(menuPop, 10, _(u"Ajouter"))
