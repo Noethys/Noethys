@@ -19,13 +19,13 @@ class Menu(wx.Menu):
         if 'phoenix' in wx.PlatformInfo:
             super(Menu, self).Append(item)
         else :
-            self.AppendItem(item)
+            super(Menu, self).AppendItem(item)
 
     def AppendMenu(self, *args, **kwds):
         if 'phoenix' in wx.PlatformInfo:
             super(Menu, self).Append(*args, **kwds)
         else :
-            self.AppendMenu(*args, **kwds)
+            super(Menu, self).AppendMenu(*args, **kwds)
 
 
 class ToolBar(wx.ToolBar):
@@ -38,7 +38,7 @@ class ToolBar(wx.ToolBar):
                 kw.pop("longHelp")
             super(ToolBar, self).AddTool(*args, **kw)
         else :
-            self.AddLabelTool(*args, **kw)
+            super(ToolBar, self).AddLabelTool(*args, **kw)
 
 
 
