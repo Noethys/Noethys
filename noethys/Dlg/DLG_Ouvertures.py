@@ -752,11 +752,16 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 for track in dict_requetes[nom_table]["ajout"] :
                     ligne = track.Get_variables_pour_db()
                     if DB.isNetwork == False and nom_table == "tarifs_lignes":
-                        ligne.append(("IDligne", track.IDligne))
+                        ligne.append(track.IDligne)
                     listeDonnees.append(ligne)
-                #print "INSERT INTO %s (%s) VALUES (%s)" % (track.nom_table, track.Get_champs_pour_db(), track.Get_interrogations_pour_db())
-                #print "  > listeDonnees=", listeDonnees
-                DB.Executermany("INSERT INTO %s (%s) VALUES (%s)" % (track.nom_table, track.Get_champs_pour_db(), track.Get_interrogations_pour_db()), listeDonnees, commit=False)
+
+                liste_champs = track.Get_champs_pour_db()
+                liste_interro = track.Get_interrogations_pour_db()
+                if DB.isNetwork == False and nom_table == "tarifs_lignes":
+                    liste_champs += ", IDligne"
+                    liste_interro += ", ?"
+
+                DB.Executermany("INSERT INTO %s (%s) VALUES (%s)" % (track.nom_table, liste_champs, liste_interro), listeDonnees, commit=False)
 
             # Modification
             if len(dict_requetes[nom_table]["modification"]) > 0 :
@@ -765,8 +770,6 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                     listeTemp = track.Get_variables_pour_db()
                     listeTemp.append(track.GetValeurCle())
                     listeDonnees.append(listeTemp)
-                #print "UPDATE %s SET %s WHERE %s=?" % (track.nom_table, track.Get_interrogations_et_variables_pour_db(), track.champ_cle)
-                #print "  > listeDonnees=", listeDonnees
                 DB.Executermany("UPDATE %s SET %s WHERE %s=?" % (track.nom_table, track.Get_interrogations_et_variables_pour_db(), track.champ_cle), listeDonnees, commit=False)
 
         # Recherche les suppressions à effectuer
@@ -781,7 +784,6 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                     condition = "(%d)" % liste_suppressions[0]
                 else :
                     condition = str(tuple(liste_suppressions))
-                #print "DELETE FROM %s WHERE %s IN %s" % (nom_table, dictTemp["champ_cle"], condition)
                 DB.ExecuterReq("DELETE FROM %s WHERE %s IN %s" % (nom_table, dictTemp["champ_cle"], condition))
 
         DB.Commit()
