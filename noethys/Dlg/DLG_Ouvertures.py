@@ -330,12 +330,13 @@ class CaseOuverture():
 
             # Vérifie si bouton Evènement survolé
             rect = self.renderer.coordsBoutonEvenements
-            if 'phoenix' in wx.PlatformInfo:
-                contains = rect.Contains(x, y)
-            else:
-                contains = rect.ContainsXY(x, y)
-            if rect != None and contains == True :
-                survolEvenement = True
+            if rect != None :
+                if 'phoenix' in wx.PlatformInfo:
+                    contains = rect.Contains(x, y)
+                else:
+                    contains = rect.ContainsXY(x, y)
+                if contains == True :
+                    survolEvenement = True
 
         if self.survol != etat or self.survolEvenement != survolEvenement :
             self.survol = etat

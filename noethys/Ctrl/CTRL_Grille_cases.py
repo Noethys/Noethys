@@ -1898,22 +1898,23 @@ class CaseMultihoraires(Case):
         for barre in self.listeBarres :
             if readOnlyInclus == True or (readOnlyInclus == False and barre.readOnly == False) :
                 rectBarre = barre.GetRect("grid")
-                if 'phoenix' in wx.PlatformInfo:
-                    contains = rectBarre.Contains(x, y)
-                else:
-                    contains = rectBarre.ContainsXY(x, y)
-                if rectBarre != None and contains == True :
-                    # Région
-                    if x < rectBarre.width / 4.0 + rectBarre.x : 
-                        region = "gauche"
-                        ecart = x - rectBarre.x
-                    elif x > rectBarre.width / 4.0 * 3 + rectBarre.x : 
-                        region = "droite"
-                        ecart = rectBarre.width + rectBarre.x - x
-                    else : 
-                        region = "milieu"
-                        ecart = x - rectBarre.x
-                    return barre, region, x, y, ecart
+                if rectBarre != None :
+                    if 'phoenix' in wx.PlatformInfo:
+                        contains = rectBarre.Contains(x, y)
+                    else:
+                        contains = rectBarre.ContainsXY(x, y)
+                    if contains == True :
+                        # Région
+                        if x < rectBarre.width / 4.0 + rectBarre.x :
+                            region = "gauche"
+                            ecart = x - rectBarre.x
+                        elif x > rectBarre.width / 4.0 * 3 + rectBarre.x :
+                            region = "droite"
+                            ecart = rectBarre.width + rectBarre.x - x
+                        else :
+                            region = "milieu"
+                            ecart = x - rectBarre.x
+                        return barre, region, x, y, ecart
         return None
 
     def SetGroupe(self, event):
