@@ -28,10 +28,12 @@ if 'phoenix' in wx.PlatformInfo:
     from wx.propgrid import PG_LABEL as NAME
     from wx.propgrid import PGChoiceEditor as ChoiceEditor
     from wx.propgrid import PGEditor as Editor
+    from wx.propgrid import PGProperty as Property
 else:
     from wx.propgrid import LABEL_AS_NAME as NAME
     from wx.propgrid import PyChoiceEditor as ChoiceEditor
     from wx.propgrid import PyEditor as Editor
+    from wx.propgrid import PyProperty as Property
 
 
 class EditeurChoix(ChoiceEditor):
@@ -48,13 +50,15 @@ class EditeurChoix(ChoiceEditor):
 
 
 
-class Propriete_choix(wxpg.PGProperty):
+class Propriete_choix(Property):
     """ Simple liste de choix """
     def __init__(self, label, name=NAME, liste_choix=[], valeur=None):
         self.liste_choix = liste_choix
-        wxpg.PGProperty.__init__(self, label, name)
-        #self.SetChoices([x[1] for x in self.liste_choix])
-        choix = wxpg.PGChoices([x[1] for x in self.liste_choix])
+        Property.__init__(self, label, name)
+        if 'phoenix' in wx.PlatformInfo:
+            choix = wxpg.PGChoices([x[1] for x in self.liste_choix])
+        else :
+            choix = [x[1] for x in self.liste_choix]
         self.SetChoices(choix)
         if valeur != None:
             self.SetValue(valeur)
