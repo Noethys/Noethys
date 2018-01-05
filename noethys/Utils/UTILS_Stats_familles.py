@@ -411,7 +411,7 @@ class Graphe_nombre_familles(MODELES.Graphe):
         indexPeriodeReference = dictResultats["indexPeriodeReference"]
         
         # Création du graph
-        ind = arange(len(listeLabels)) + 0.25  # the x locations for the groups
+        ind = arange(len(listeLabels)) + 0.5  # the x locations for the groups
         width = 0.5
         for x in range(len(listeLabels)) :
             if x == indexPeriodeReference :
@@ -441,7 +441,7 @@ class Graphe_nombre_familles(MODELES.Graphe):
         figure.subplots_adjust(left=None, bottom=0.4, right=None, wspace=None, hspace=None)
         
         # Affiche les grilles
-        ax.grid(True)
+        ax.grid(False)
         
         return figure
 
@@ -855,7 +855,7 @@ class Graphe_qf_defaut(MODELES.Graphe):
                 index += 1
                         
         # Création du graph
-        ind = arange(len(listeLabels)) + 0.25  # the x locations for the groups
+        ind = arange(len(listeLabels)) + 0.5  # the x locations for the groups
         width = 0.5
         barres = ax.bar(ind, listeValeurs, width, color=MODELES.ConvertitCouleur2(MODELES.COULEUR_VERT_POMME))
         
@@ -880,7 +880,7 @@ class Graphe_qf_defaut(MODELES.Graphe):
         figure.subplots_adjust(left=None, bottom=0.28, right=None, wspace=None, hspace=None)
         
         # Affiche les grilles
-        ax.grid(True)
+        ax.grid(False)
         
         return figure
 
