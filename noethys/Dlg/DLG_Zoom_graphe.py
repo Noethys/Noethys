@@ -119,8 +119,6 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonImprimerImage, self.bouton_imprimer_image)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonFermer, self.bouton_fermer)
 
-        wx.CallLater(1, self.SendSizeEvent)
-
     def __set_properties(self):
         self.SetTitle(_(u"Visualisateur de graphe"))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))

@@ -642,7 +642,7 @@ class Graphe_nombre_individus(MODELES.Graphe):
         indexPeriodeReference = dictResultats["indexPeriodeReference"]
         
         # Création du graph
-        ind = arange(len(listeLabels)) + 0.5  # the x locations for the groups
+        ind = arange(len(listeLabels)) + 0.25  # the x locations for the groups
         width = 0.5
         for x in range(len(listeLabels)) :
             if x == indexPeriodeReference :
@@ -672,7 +672,7 @@ class Graphe_nombre_individus(MODELES.Graphe):
         figure.subplots_adjust(left=None, bottom=0.4, right=None, wspace=None, hspace=None)
         
         # Affiche les grilles
-        ax.grid(False)
+        ax.grid(True)
         
         return figure
 
@@ -800,7 +800,7 @@ class Graphe_repartition_ages(MODELES.Graphe):
             listeValeurs.append(nbreIndividus)
         
         # Création du graph
-        ind = arange(len(listeLabels)) + 0.5  # the x locations for the groups
+        ind = arange(len(listeLabels)) + 0.25  # the x locations for the groups
         width = 0.5
         barres = ax.bar(ind, listeValeurs, width, color=MODELES.ConvertitCouleur2(MODELES.COULEUR_VERT_POMME))
         
@@ -825,7 +825,7 @@ class Graphe_repartition_ages(MODELES.Graphe):
         figure.subplots_adjust(left=None, bottom=0.12, right=None, wspace=None, hspace=None)
         
         # Affiche les grilles
-        ax.grid(False)
+        ax.grid(True)
         
         return figure
 
@@ -892,7 +892,7 @@ class Graphe_repartition_annees_naiss(MODELES.Graphe):
             listeValeurs.append(nbreIndividus)
         
         # Création du graph
-        ind = arange(len(listeLabels)) + 0.5  # the x locations for the groups
+        ind = arange(len(listeLabels)) + 0.25  # the x locations for the groups
         width = 0.5
         barres = ax.bar(ind, listeValeurs, width, color=MODELES.ConvertitCouleur2(MODELES.COULEUR_BLEU_CIEL))
         
@@ -919,7 +919,7 @@ class Graphe_repartition_annees_naiss(MODELES.Graphe):
         figure.subplots_adjust(left=None, bottom=0.2, right=None, wspace=None, hspace=None)
         
         # Affiche les grilles
-        ax.grid(False)
+        ax.grid(True)
         
         return figure
     
@@ -1218,7 +1218,7 @@ class Graphe_nouveaux_individus(MODELES.Graphe):
             listeValeurs.append(nbreIndividus)
         
         # Création du graph
-        ind = arange(len(listeLabels)) + 0.5  # the x locations for the groups
+        ind = arange(len(listeLabels)) + 0.25  # the x locations for the groups
         width = 0.5
         barres = ax.bar(ind, listeValeurs, width, color=MODELES.ConvertitCouleur2(MODELES.COULEUR_VERT_POMME))
         
@@ -1243,7 +1243,7 @@ class Graphe_nouveaux_individus(MODELES.Graphe):
         figure.subplots_adjust(left=None, bottom=0.3, right=None, wspace=None, hspace=None)
         
         # Affiche les grilles
-        ax.grid(False)
+        ax.grid(True)
         
         return figure
 
@@ -1280,7 +1280,7 @@ class Graphe_arrivee_individus(MODELES.Graphe):
         ax.plot(listeX, listeY)
         
         # Affiche les grilles
-        ax.grid(False)
+        ax.grid(True)
 
         # Axe horizontal
         datemin = datetime.date(date_debut.year, 1, 1)

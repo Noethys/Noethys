@@ -25,7 +25,7 @@ import UTILS_Fichiers
 from numpy import arange, sqrt, array, asarray, ones, exp, convolve, linspace
 
 import matplotlib
-matplotlib.use('wxagg')
+matplotlib.use('Agg')
 import matplotlib.pyplot
 
 try: import psyco; psyco.full()
@@ -307,8 +307,7 @@ class HTML():
                                 figure = matplotlib.pyplot.figure()
                                 figure = objet.MAJ(figure=figure, DB=DB, dictParametres=self.dictParametres)
                                 #figure.clear()
-                                objet.MemoriseImage(figure)
-                                figure.clf()
+                                objet.MemoriseImage(figure) 
                             else:
                                 objet.MAJ(DB=DB, dictParametres=self.dictParametres)
                             
