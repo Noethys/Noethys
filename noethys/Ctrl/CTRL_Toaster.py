@@ -23,7 +23,10 @@ def ToasterUtilisateur(parent, titre=u"", prenom=_(u"Philippe"), nomImage="Femme
     tb = Toaster.ToasterBox(parent, Toaster.TB_COMPLEX, Toaster.TB_DEFAULT_STYLE, Toaster.TB_ONTIME) # TB_CAPTION
     tb.SetTitle(titre)
     tb.SetPopupSize((largeur, hauteur))
-    largeurEcran, hauteurEcran = wx.ScreenDC().GetSizeTuple()
+    if 'phoenix' in wx.PlatformInfo:
+        largeurEcran, hauteurEcran = wx.ScreenDC().GetSize()
+    else :
+        largeurEcran, hauteurEcran = wx.ScreenDC().GetSizeTuple()
     tb.SetPopupPosition((largeurEcran-largeur-10, hauteurEcran-hauteur-50))
     tb.SetPopupPauseTime(3000)
     tb.SetPopupScrollSpeed(4)
