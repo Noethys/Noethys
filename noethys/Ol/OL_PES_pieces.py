@@ -983,6 +983,7 @@ class ListView(FastObjectListView):
         listeDonnees = DB.ResultatReq()
         
         dictFactures = {}
+        dictAventiler = {}
         for IDprestation, IDcompte_payeur, montant, IDfacture, ventilation in listeDonnees :
             if ventilation == None : 
                 ventilation = 0.0
@@ -990,9 +991,16 @@ class ListView(FastObjectListView):
             ventilation = decimal.Decimal(ventilation)
             aventiler = montant - ventilation
             if aventiler > decimal.Decimal(0.0) :
+
+                # Mémorisation des prestations à ventiler
                 if dictFactures.has_key(IDfacture) == False :
                     dictFactures[IDfacture] = []
                 dictFactures[IDfacture].append({"IDprestation" : IDprestation, "IDcompte_payeur" : IDcompte_payeur, "montant" : montant, "ventilation" : ventilation, "aventiler" : aventiler})
+
+                # Mémorisation des montants à ventiler pour chaque facture
+                if dictAventiler.has_key(IDfacture) == False :
+                    dictAventiler[IDfacture] = decimal.Decimal(0.0)
+                dictAventiler[IDfacture] += aventiler
                         
         # Sauvegarde des règlements + ventilation
         listeSuppressionReglements = []
@@ -1000,57 +1008,61 @@ class ListView(FastObjectListView):
 
             # Ajouts et modifications
             if track.reglement == True :
-                
-                # Recherche du payeur
-                IDpayeur = None
-                if dictPayeurs.has_key(track.IDcompte_payeur) :
-                    for dictPayeur in dictPayeurs[track.IDcompte_payeur] :
-                        if dictPayeur["nom"] == track.prelevement_titulaire :
-                            IDpayeur = dictPayeur["IDpayeur"]
-                
-                # Si pas de payeur correspond au titulaire du compte trouvé :
-                if IDpayeur == None :
-                    IDpayeur = DB.ReqInsert("payeurs", [("IDcompte_payeur", track.IDcompte_payeur), ("nom", track.prelevement_titulaire)])
-                    
-                # Création des données à sauvegarder
-                listeDonnees = [
-                    ("IDcompte_payeur", track.IDcompte_payeur),
-                    ("date", date),
-                    ("IDmode", IDmode),
-                    ("IDemetteur", None),
-                    ("numero_piece", None),
-                    ("montant", track.montant),
-                    ("IDpayeur", IDpayeur),
-                    ("observations", None),
-                    ("numero_quittancier", None),
-                    ("IDcompte", IDcompte),
-                    ("date_differe", None),
-                    ("encaissement_attente", 0),
-                    ("date_saisie", datetime.date.today()),
-                    ("IDutilisateur", UTILS_Identification.GetIDutilisateur() ),
-                    ("IDpiece", track.IDpiece),
-                    ]
-                
 
-                # Ajout
-                if track.IDreglement == None :
-                    track.IDreglement = DB.ReqInsert("reglements", listeDonnees)
-                    
-                # Modification
-                else:
-                    DB.ReqMAJ("reglements", listeDonnees, "IDreglement", track.IDreglement)
-                track.dateReglement = date
-                
-                # ----------- Sauvegarde de la ventilation ---------
-                if dictFactures.has_key(track.IDfacture) :
-                    for dictFacture in dictFactures[track.IDfacture] :
-                        listeDonnees = [    
-                                ("IDreglement", track.IDreglement),
-                                ("IDcompte_payeur", track.IDcompte_payeur),
-                                ("IDprestation", dictFacture["IDprestation"]),
-                                ("montant", float(dictFacture["aventiler"])),
-                            ]
-                        IDventilation = DB.ReqInsert("ventilation", listeDonnees)        
+                if dictAventiler.has_key(IDfacture) :
+
+                    # Recherche du payeur
+                    IDpayeur = None
+                    if dictPayeurs.has_key(track.IDcompte_payeur) :
+                        for dictPayeur in dictPayeurs[track.IDcompte_payeur] :
+                            if dictPayeur["nom"] == track.prelevement_titulaire :
+                                IDpayeur = dictPayeur["IDpayeur"]
+
+                    # Si pas de payeur correspond au titulaire du compte trouvé :
+                    if IDpayeur == None :
+                        IDpayeur = DB.ReqInsert("payeurs", [("IDcompte_payeur", track.IDcompte_payeur), ("nom", track.prelevement_titulaire)])
+
+                    # Recherche du montant du règlement
+                    montant = dictAventiler[track.IDfacture] # track.montant
+
+                    # Création des données à sauvegarder
+                    listeDonnees = [
+                        ("IDcompte_payeur", track.IDcompte_payeur),
+                        ("date", date),
+                        ("IDmode", IDmode),
+                        ("IDemetteur", None),
+                        ("numero_piece", None),
+                        ("montant", montant),
+                        ("IDpayeur", IDpayeur),
+                        ("observations", None),
+                        ("numero_quittancier", None),
+                        ("IDcompte", IDcompte),
+                        ("date_differe", None),
+                        ("encaissement_attente", 0),
+                        ("date_saisie", datetime.date.today()),
+                        ("IDutilisateur", UTILS_Identification.GetIDutilisateur() ),
+                        ("IDpiece", track.IDpiece),
+                        ]
+
+                    # Ajout
+                    if track.IDreglement == None :
+                        track.IDreglement = DB.ReqInsert("reglements", listeDonnees)
+
+                    # Modification
+                    else:
+                        DB.ReqMAJ("reglements", listeDonnees, "IDreglement", track.IDreglement)
+                    track.dateReglement = date
+
+                    # ----------- Sauvegarde de la ventilation ---------
+                    if dictFactures.has_key(track.IDfacture) :
+                        for dictFacture in dictFactures[track.IDfacture] :
+                            listeDonnees = [
+                                    ("IDreglement", track.IDreglement),
+                                    ("IDcompte_payeur", track.IDcompte_payeur),
+                                    ("IDprestation", dictFacture["IDprestation"]),
+                                    ("montant", float(dictFacture["aventiler"])),
+                                ]
+                            IDventilation = DB.ReqInsert("ventilation", listeDonnees)
             
             # Suppression de règlements et ventilation
             else :
