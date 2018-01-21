@@ -973,7 +973,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         for nom, valeur in dictParametres.iteritems() :
             propriete = self.GetPropertyByName(nom)
             type_propriete = type(VALEURS_DEFAUT[nom])
-            if type_propriete == int :
+            if type_propriete == int and valeur != None :
                 valeur = int(valeur)
             propriete.SetValue(valeur)
 
