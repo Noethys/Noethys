@@ -32,8 +32,8 @@ class Track(object):
         self.nom_appareil = dictParametres["nom_appareil"]
         self.ID_appareil = dictParametres["ID_appareil"]
         self.statut = None
-        self.appareil = u"%s (%s)" % (self.nom_appareil, self.ID_appareil) 
-        
+        self.appareil = u"%s (%s)" % (self.nom_appareil, self.ID_appareil)
+
         # Consommations
         if self.categorie == "consommation" :
             self.IDconso = donnees["IDconso"]
@@ -55,7 +55,10 @@ class Track(object):
             self.quantite = donnees["quantite"]
             self.IDfamille = donnees["IDfamille"]
             self.nomUnite = dictUnites[self.IDunite]
-            self.nomIndividu = dictIndividus[self.IDindividu]
+            if dictIndividus.has_key(self.IDindividu) :
+                self.nomIndividu = dictIndividus[self.IDindividu]
+            else :
+                self.nomIndividu = _(u"Individu ID%d inexistant") % self.IDindividu
             self.detail = _(u"%s %s le %s pour %s") % (self.action.capitalize(), self.nomUnite, UTILS_Dates.DateDDEnFr(self.date), self.nomIndividu)
 
         # Consommations
@@ -66,10 +69,17 @@ class Track(object):
             self.IDindividu = donnees["IDindividu"]
             self.date = donnees["date"]
             self.texte = donnees["texte"]
-            self.nomIndividu = dictIndividus[self.IDindividu]
+            if dictIndividus.has_key(self.IDindividu) :
+                self.nomIndividu = dictIndividus[self.IDindividu]
+            else :
+                self.nomIndividu = _(u"Individu ID%d inexistant") % self.IDindividu
             self.detail = _(u"%s le %s pour %s le texte '%s'") % (self.action.capitalize(), UTILS_Dates.DateDDEnFr(self.date), self.nomIndividu, self.texte)
     
-    
+        # Recherche anomalie
+        self.anomalie = False
+        if dictIndividus.has_key(self.IDindividu) == False :
+            self.anomalie = _(u"Individu ID%d inexistant dans le fichier") % donnees["IDindividu"]
+
     
 class ListView(GroupListView):
     def __init__(self, *args, **kwds):
