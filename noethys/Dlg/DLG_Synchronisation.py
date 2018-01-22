@@ -114,39 +114,72 @@ class Page_serveur(wx.Panel):
         self.label_info.SetFont(wx.Font(8, wx.SWISS, wx.NORMAL, wx.NORMAL, False))
         self.label_info.SetForegroundColour(wx.Colour(150, 150, 150))
         self.label_port = wx.StaticText(self, -1, _(u"Port :"))
-        self.ctrl_port = wx.TextCtrl(self, -1, u"8000")
-        
+        self.ctrl_port = wx.TextCtrl(self, -1, u"8000", size=(50, -1))
+        self.label_ip_autorisees = wx.StaticText(self, -1, _(u"IP autorisées :"))
+        self.ctrl_ip_autorisees = wx.TextCtrl(self, -1, u"")
+        self.label_ip_interdites = wx.StaticText(self, -1, _(u"IP interdites :"))
+        self.ctrl_ip_interdites = wx.TextCtrl(self, -1, u"")
+
         # Propriétés
         self.check_activer.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour activer/désactiver le serveur WIFI/Direct au prochain démarrage de Noethys")))
         self.ctrl_port.SetToolTip(wx.ToolTip(_(u"Sélectionnez le port de communication")))
+        legende_texte_ip = _(u"""
         
+Vous pouvez utiliser le symbole * comme caractère de substitution.
+
+Exemples de saisies possibles : 
+'192.168.1.1;192.128.1.2'
+'192.168.1.12'
+'192.168.1.*;192.*;192.168.*.*;192.*.1'     
+        """)
+        self.ctrl_ip_autorisees.SetToolTip(wx.ToolTip(_(u"Saisissez une suite d'adresses IP autorisées à se connecter (séparées par des points-virgules). Laissez vide pour tout autoriser.  %s") % legende_texte_ip))
+        self.ctrl_ip_interdites.SetToolTip(wx.ToolTip(_(u"Saisissez une suite d'adresses IP interdites de se connecter (séparées par des points-virgules). Laissez vide pour tout autoriser.  %s") % legende_texte_ip))
+
         # Layout
         sizer = wx.BoxSizer(wx.VERTICAL)
-        grid_sizer_base = wx.FlexGridSizer(rows=2, cols=2, vgap=10, hgap=10)
-        grid_sizer_base.Add(self.label_activer, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
-        
+        grid_sizer_base = wx.FlexGridSizer(rows=2, cols=1, vgap=10, hgap=10)
+
         sizer2 = wx.BoxSizer(wx.HORIZONTAL)
-        sizer2.Add(self.check_activer, 0, 0, 0)
+        sizer2.Add(self.label_activer, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
+        sizer2.Add(self.check_activer, 0, wx.LEFT, 10)
         sizer2.Add(self.label_info, 0, wx.EXPAND|wx.ALIGN_CENTER_VERTICAL|wx.LEFT, 10)
         grid_sizer_base.Add(sizer2, 0, wx.EXPAND, 0)
-        
-        grid_sizer_base.Add(self.label_port, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_base.Add(self.ctrl_port, 0, 0, 0)
-        
-        grid_sizer_base.AddGrowableCol(1)
+
+        grid_sizer_bas = wx.FlexGridSizer(rows=1, cols=8, vgap=5, hgap=5)
+
+        grid_sizer_bas.Add(self.label_port, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_bas.Add(self.ctrl_port, 0, 0, 0)
+        grid_sizer_bas.Add( (1, 1), 0, 0, 0)
+        grid_sizer_bas.Add(self.label_ip_autorisees, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_bas.Add(self.ctrl_ip_autorisees, 0, wx.EXPAND, 0)
+        grid_sizer_bas.Add( (1, 1), 0, 0, 0)
+        grid_sizer_bas.Add(self.label_ip_interdites, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_bas.Add(self.ctrl_ip_interdites, 0, wx.EXPAND, 0)
+
+        grid_sizer_bas.AddGrowableCol(4)
+        grid_sizer_bas.AddGrowableCol(7)
+
+        grid_sizer_base.Add(grid_sizer_bas, 0, wx.EXPAND, 0)
+
+        grid_sizer_base.AddGrowableCol(0)
         sizer.Add(grid_sizer_base, 1, wx.ALL|wx.EXPAND, 10)
         self.SetSizer(sizer)
         sizer.Fit(self)
         
     def GetParametres(self):
-        return {"synchro_serveur_activer" : self.check_activer.GetValue(), "synchro_serveur_port" : self.ctrl_port.GetValue()}
+        return {"synchro_serveur_activer" : self.check_activer.GetValue(), "synchro_serveur_port" : self.ctrl_port.GetValue(),
+                "synchro_serveur_ip_autorisees" : self.ctrl_ip_autorisees.GetValue(), "synchro_serveur_ip_interdites" : self.ctrl_ip_interdites.GetValue()}
     
     def SetParametres(self, dictDonnees={}):
         if dictDonnees.has_key("synchro_serveur_activer") : 
             self.check_activer.SetValue(dictDonnees["synchro_serveur_activer"])
         if dictDonnees.has_key("synchro_serveur_port") : 
             self.ctrl_port.SetValue(dictDonnees["synchro_serveur_port"])
-    
+        if dictDonnees.has_key("synchro_serveur_ip_autorisees") :
+            self.ctrl_ip_autorisees.SetValue(dictDonnees["synchro_serveur_ip_autorisees"])
+        if dictDonnees.has_key("synchro_serveur_ip_interdites") :
+            self.ctrl_ip_interdites.SetValue(dictDonnees["synchro_serveur_ip_interdites"])
+
     def Validation(self):
         if self.check_activer.GetValue() == True and self.ctrl_port.GetValue() == "" :
             dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un numéro de port !"), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)

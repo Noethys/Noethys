@@ -15,6 +15,7 @@ from Utils.UTILS_Traduction import _
 import wx
 import CTRL_Bouton_image
 import os
+import re
 import json
 import socket 
 import time
@@ -30,6 +31,9 @@ from Dlg.DLG_Synchronisation import AnalyserFichier
 
 
 PORT_DEFAUT = 8000
+IP_AUTORISEES = None
+IP_INTERDITES = None
+
 
 class Erreur:
     pass
@@ -84,8 +88,29 @@ class Echo(Protocol):
             self.log.EcritLog(texte)
             
     def connectionMade(self):
-        self.EcritLog("Connexion depuis le client " + self.transport.getPeer().host)
-    
+        ip = self.transport.getPeer().host
+        self.EcritLog("Connexion depuis le client " + ip)
+
+        # Validation de l'IP
+        if IP_AUTORISEES not in (None, "") :
+            if self.IsIPinListe(IP_AUTORISEES, ip) == False :
+                self.EcritLog(_(u"Adresse IP non autorisée"))
+                self.transport.loseConnection()
+
+        if IP_INTERDITES not in (None, "") :
+            if self.IsIPinListe(IP_INTERDITES, ip) == True :
+                self.EcritLog(_(u"Adresse IP interdite"))
+                self.transport.loseConnection()
+
+    def IsIPinListe(self, listeStr="", ip=""):
+        liste_ip = listeStr.split(";")
+        for ipTemp in liste_ip :
+            ipTemp = ipTemp.replace(".", "\.")
+            ipTemp = ipTemp.replace("*", ".*")
+            if re.match(ipTemp, ip) != None :
+                return True
+        return False
+
     def GenerationFichierAEnvoyer(self):
         self.generateur = GenerationFichier(self) 
         self.generateur.start()
@@ -148,7 +173,11 @@ class Echo(Protocol):
             pourcentage = int(100.0 * self.dictFichierReception["taille_actuelle"] / self.dictFichierReception["taille_totale"])
             #self.EcritLog(_(u"Réception en cours...  ") + str(pourcentage) + u" %")
             self.log.SetGauge(pourcentage)
-        
+            return
+
+        # Si aucune data valide, on déconnecte
+        self.EcritLog(_(u"Aucune donnée valide reçue"))
+        self.transport.loseConnection()
     
     def IdentificationJSON(self, data):
         try :
@@ -218,7 +247,7 @@ def StartServer(log=None):
 
     try :
         # IP internet
-        ip_internet = json.loads(urlopen("https://jsonip.com").read())["ip"]
+        ip_internet = json.loads(urlopen("https://jsonip.com", timeout=1).read())["ip"]
         log.EcritLog(_(u"IP internet : %s") % ip_internet)
     except Exception, err:
         print ("Erreur lancement serveur Nomadhys :", err)
@@ -296,6 +325,11 @@ class Panel(wx.Panel):
     
     def MAJ(self):
         """ MAJ du bouton Analyser """
+        # Paramètres liste blanche et liste noire d'IP
+        global IP_AUTORISEES, IP_INTERDITES
+        IP_AUTORISEES = UTILS_Config.GetParametre("synchro_serveur_ip_autorisees", defaut=None)
+        IP_INTERDITES = UTILS_Config.GetParametre("synchro_serveur_ip_interdites", defaut=None)
+
         # Lecture des fichiers du répertoire SYNC
         IDfichier = FonctionsPerso.GetIDfichier()
         listeFichiers = os.listdir(UTILS_Fichiers.GetRepSync())
@@ -303,7 +337,7 @@ class Panel(wx.Panel):
         for nomFichier in listeFichiers :
             if nomFichier.startswith("actions_%s" % IDfichier) and nomFichier.endswith(".dat") :
                 nbreFichiers += 1
-        
+
         # MAJ du bouton Analyser
         if nbreFichiers == 0 :
             self.bouton_analyse.SetToolTip(wx.ToolTip(_(u"Aucun fichier à importer")))
