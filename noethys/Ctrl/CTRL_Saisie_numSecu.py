@@ -32,15 +32,19 @@ class NumSecu(wx.Panel):
 
     def __set_properties(self):
         texteNumSecu = u"""
-        Numéro de sécurité sociale : A BB CC DD EEE FFF GG
-        
-        A : Sexe (1=homme | 2=femme)
-        BB : Année de naissance
-        CC : Mois de naissance
-        DD : Département de naissance (99 si né à l'étranger)
-        EEE : Code INSEE de la commune de naissance ou du pays si né à l'étranger
-        FFF : Numéro d'ordre INSEE
-        GG : Clé
+Attention, le numéro de sécurité sociale est considéré comme une donnée 
+sensible par la CNIL. Assurez-vous que vous êtes autorisé à saisir cette 
+information dans votre fichier de données.
+
+Numéro de sécurité sociale : A BB CC DD EEE FFF GG
+
+A : Sexe (1=homme | 2=femme)
+BB : Année de naissance
+CC : Mois de naissance
+DD : Département de naissance (99 si né à l'étranger)
+EEE : Code INSEE de la commune de naissance ou du pays si né à l'étranger
+FFF : Numéro d'ordre INSEE
+GG : Clé
         """
         self.ctrl_numsecu.SetToolTip(wx.ToolTip(texteNumSecu))
         self.ctrl_numsecu.SetMinSize((170, -1))

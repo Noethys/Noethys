@@ -972,7 +972,9 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         # Envoie les paramètres dans le contrôle
         for nom, valeur in dictParametres.iteritems() :
             propriete = self.GetPropertyByName(nom)
-            #type_propriete = type(VALEURS_DEFAUT[nom])
+            type_propriete = type(VALEURS_DEFAUT[nom])
+            if type_propriete == int and valeur != None :
+                valeur = int(valeur)
             propriete.SetValue(valeur)
 
         # MAJ affichage grille

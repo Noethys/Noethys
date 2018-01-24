@@ -316,6 +316,22 @@ class Traitement(Thread):
         self.stop = False 
         self.index = 0
 
+    def ConvertitHeure(self, heure=""):
+        if heure in (None, "") :
+            return heure
+        if "h" in heure :
+            h, m = heure.split("h")
+            if h == "" :
+                h = 0
+            else :
+                h = int(h)
+            if m == "" :
+                m = 0
+            else :
+                m = int(m)
+            heure = "%02d:%02d" % (h, m)
+        return heure
+
     def run(self):
         nbre_tracks = len(self.parent.listeTracks)
 
@@ -328,64 +344,75 @@ class Traitement(Thread):
                 texteIntro = u"[%d/%d] %s" % (self.index+1, len(self.parent.listeTracks), track.detail)
                 self.parent.label_intro.SetLabel(texteIntro) 
                 self.parent.ctrl_gauge.SetValue(self.index+1)
-                
-                # ------------------- Traitement d'une consommation -------------------
-                if track.categorie == "consommation" : 
-                    
-                    # Initialisation de la grille
-                    self.parent.ctrl_grille.InitGrille(IDindividu=track.IDindividu, IDfamille=track.IDfamille, IDactivite=track.IDactivite, date=track.date)
-                    wx.Yield()
-                    
-                    if track.etat == "reservation" : mode, etat = "reservation", "reservation"
-                    if track.etat == "attente" : mode, etat = "attente", "reservation"
-                    if track.etat == "refus" : mode, etat = "refus", "reservation"
-                    if track.etat == "present" : mode, etat = "reservation", "present"
-                    if track.etat == "absenti" : mode, etat = "reservation", "absenti"
-                    if track.etat == "absentj" : mode, etat = "reservation", "absentj"
-                    
-                    if track.action == "ajouter" or track.action == "modifier" :
-                        resultat = self.parent.ctrl_grille.SaisieConso(IDunite=track.IDunite, mode=mode, etat=etat, heure_debut=track.heure_debut, heure_fin=track.heure_fin, quantite=track.quantite)
-                    if track.action == "supprimer" :
-                        resultat = self.parent.ctrl_grille.SupprimeConso(IDunite=track.IDunite, date=track.date)
-                    
-                    # Sauvegarde de la grille des conso + Ecrit log
-                    if resultat == True :
-                        self.parent.ctrl_grille.Sauvegarde()
-                        self.parent.parent.EcritLog(track.detail + u" -> ok") 
-                        self.parent.parent.SetStatut(track, "ok")
-                    else :
-                        texte = track.detail + u" -> " + resultat
-                        self.parent.parent.EcritLog(texte) 
-                        self.parent.parent.SetStatut(track, "erreur")
-                        listeAnomalies.append(texte)
-                    
-                            
-                # ------------------- Traitement d'un mémo journalier -------------------
-                if track.categorie == "memo_journee" : 
-                    
-                    DB = GestionDB.DB() 
-                    req = """SELECT IDmemo, IDindividu, date, texte FROM memo_journee WHERE IDindividu=%d AND date='%s';""" % (track.IDindividu, track.date)
-                    DB.ExecuterReq(req)
-                    listeMemos = DB.ResultatReq()
-                    if len(listeMemos) > 1 :
-                        IDmemo = listeMemos[0][0]
-                    else :
-                        IDmemo = None
-                    
-                    listeDonnees = [("IDindividu", track.IDindividu), ("date", str(track.date)), ("texte", track.texte),]
-                    
-                    if track.action == "ajouter" or track.action == "modifier" :
-                        if IDmemo != None :
-                            DB.ReqMAJ("memo_journee", listeDonnees, "IDmemo", IDmemo)
+
+                if track.anomalie != False :
+                    texte = track.detail + u" -> " + resultat
+                    self.parent.parent.EcritLog(track.anomalie)
+                    self.parent.parent.SetStatut(track, "erreur")
+                    listeAnomalies.append(track.anomalie)
+
+                else :
+
+                    # ------------------- Traitement d'une consommation -------------------
+                    if track.categorie == "consommation" :
+
+                        # Initialisation de la grille
+                        self.parent.ctrl_grille.InitGrille(IDindividu=track.IDindividu, IDfamille=track.IDfamille, IDactivite=track.IDactivite, date=track.date)
+                        wx.Yield()
+
+                        if track.etat == "reservation" : mode, etat = "reservation", "reservation"
+                        if track.etat == "attente" : mode, etat = "attente", "reservation"
+                        if track.etat == "refus" : mode, etat = "refus", "reservation"
+                        if track.etat == "present" : mode, etat = "reservation", "present"
+                        if track.etat == "absenti" : mode, etat = "reservation", "absenti"
+                        if track.etat == "absentj" : mode, etat = "reservation", "absentj"
+
+                        heure_debut = self.ConvertitHeure(track.heure_debut)
+                        heure_fin = self.ConvertitHeure(track.heure_fin)
+
+                        if track.action == "ajouter" or track.action == "modifier" :
+                            resultat = self.parent.ctrl_grille.SaisieConso(IDunite=track.IDunite, mode=mode, etat=etat, heure_debut=heure_debut, heure_fin=heure_fin, quantite=track.quantite)
+                        if track.action == "supprimer" :
+                            resultat = self.parent.ctrl_grille.SupprimeConso(IDunite=track.IDunite, date=track.date)
+
+                        # Sauvegarde de la grille des conso + Ecrit log
+                        if resultat == True :
+                            self.parent.ctrl_grille.Sauvegarde()
+                            self.parent.parent.EcritLog(track.detail + u" -> ok")
+                            self.parent.parent.SetStatut(track, "ok")
                         else :
-                            DB.ReqInsert("memo_journee", listeDonnees)
-                    if track.action == "supprimer" and IDmemo != None :
-                        DB.ReqDEL("memo_journee", "IDmemo", IDmemo)
-                    
-                    DB.Close() 
-                    
-                    self.parent.parent.EcritLog(track.detail + u" -> ok") 
-                    self.parent.parent.SetStatut(track, "ok")
+                            texte = track.detail + u" -> " + resultat
+                            self.parent.parent.EcritLog(texte)
+                            self.parent.parent.SetStatut(track, "erreur")
+                            listeAnomalies.append(texte)
+
+
+                    # ------------------- Traitement d'un mémo journalier -------------------
+                    if track.categorie == "memo_journee" :
+
+                        DB = GestionDB.DB()
+                        req = """SELECT IDmemo, IDindividu, date, texte FROM memo_journee WHERE IDindividu=%d AND date='%s';""" % (track.IDindividu, track.date)
+                        DB.ExecuterReq(req)
+                        listeMemos = DB.ResultatReq()
+                        if len(listeMemos) > 1 :
+                            IDmemo = listeMemos[0][0]
+                        else :
+                            IDmemo = None
+
+                        listeDonnees = [("IDindividu", track.IDindividu), ("date", str(track.date)), ("texte", track.texte),]
+
+                        if track.action == "ajouter" or track.action == "modifier" :
+                            if IDmemo != None :
+                                DB.ReqMAJ("memo_journee", listeDonnees, "IDmemo", IDmemo)
+                            else :
+                                DB.ReqInsert("memo_journee", listeDonnees)
+                        if track.action == "supprimer" and IDmemo != None :
+                            DB.ReqDEL("memo_journee", "IDmemo", IDmemo)
+
+                        DB.Close()
+
+                        self.parent.parent.EcritLog(track.detail + u" -> ok")
+                        self.parent.parent.SetStatut(track, "ok")
                         
                 # Arrête le traitement si bouton arrêter enfoncé
                 if self.stop: 

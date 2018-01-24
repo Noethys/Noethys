@@ -134,7 +134,7 @@ class Facturation():
         SUM(prestations.montant)
         FROM prestations
         WHERE (prestations.IDactivite IN %s OR prestations.IDactivite IS NULL)
-        AND prestations.date < '%s' AND prestations.IDcompte_payeur NOT IN %s AND %s
+        AND prestations.date <= '%s' AND prestations.IDcompte_payeur NOT IN %s AND %s
         GROUP BY prestations.IDcompte_payeur
         ;""" % (conditionActivites, str(date_reference), conditionComptes, conditionPrestations)
         DB.ExecuterReq(req)
@@ -145,7 +145,7 @@ class Facturation():
         FROM ventilation
         LEFT JOIN prestations ON prestations.IDprestation = ventilation.IDprestation
         WHERE (prestations.IDactivite IN %s OR prestations.IDactivite IS NULL)
-        AND prestations.date < '%s' AND prestations.IDcompte_payeur NOT IN %s
+        AND prestations.date <= '%s' AND prestations.IDcompte_payeur NOT IN %s
         GROUP BY prestations.IDcompte_payeur
         ;""" % (conditionActivites, str(date_reference), conditionComptes)
         DB.ExecuterReq(req)

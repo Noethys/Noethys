@@ -1574,7 +1574,7 @@ class Dialog(wx.Dialog):
             dictUnites[IDunite] = {"IDactivite" : IDactivite, "nom" : nom, "abrege" : abrege, "type" : typeTemp, "heure_debut" : heure_debut, "heure_fin" : heure_fin, "date_debut" : date_debut, "date_fin" : date_fin, "ordre" : ordre}
 
         req = """SELECT
-        unites_remplissage.IDunite_remplissage, nom, abrege, etiquettes,
+        unites_remplissage.IDunite_remplissage, nom, abrege, etiquettes, heure_min, heure_max,
         unites_remplissage_unites.IDunite_remplissage_unite,
         unites_remplissage_unites.IDunite
         FROM unites_remplissage
@@ -1583,10 +1583,10 @@ class Dialog(wx.Dialog):
         DB.ExecuterReq(req)
         listeUnitesRemplissage = DB.ResultatReq()
         dictUnitesRemplissage = {}
-        for IDunite_remplissage, nom, abrege, etiquettes, IDunite_remplissage_unite, IDunite in listeUnitesRemplissage :
+        for IDunite_remplissage, nom, abrege, etiquettes, heure_min, heure_max, IDunite_remplissage_unite, IDunite in listeUnitesRemplissage :
             etiquettes = UTILS_Texte.ConvertStrToListe(etiquettes)
             if dictUnitesRemplissage.has_key(IDunite_remplissage) == False :
-                dictUnitesRemplissage[IDunite_remplissage] = {"nom" : nom, "abrege" : abrege, "etiquettes" : etiquettes, "unites" : [] }
+                dictUnitesRemplissage[IDunite_remplissage] = {"nom" : nom, "abrege" : abrege, "etiquettes" : etiquettes, "heure_min" : heure_min, "heure_max" : heure_max, "unites" : [] }
             dictUnitesRemplissage[IDunite_remplissage]["unites"].append(IDunite)
 
         # Récupération des noms des groupes
@@ -1617,6 +1617,7 @@ class Dialog(wx.Dialog):
         LEFT JOIN scolarite ON scolarite.IDindividu = consommations.IDindividu AND scolarite.date_debut <= consommations.date AND scolarite.date_fin >= consommations.date
         WHERE etat IN ("reservation", "present")
         AND consommations.IDactivite IN %s AND consommations.date IN %s %s %s
+        ORDER BY consommations.date, consommations.heure_debut
         ;""" % (conditionActivites, conditionDates, conditionsScolarite, conditionsEvenements)
         DB.ExecuterReq(req)
         listeConso = DB.ResultatReq()
@@ -2249,7 +2250,6 @@ class Dialog(wx.Dialog):
 
                                                                 label = u""
                                                                 for dictConsoTemp in dictIndividu["listeConso"][date][IDunite] :
-
                                                                     etat = dictConsoTemp["etat"]
                                                                     heure_debut = dictConsoTemp["heure_debut"]
                                                                     heure_fin = dictConsoTemp["heure_fin"]
@@ -2269,8 +2269,8 @@ class Dialog(wx.Dialog):
                                                                         if heure_fin == None : heure_fin = "?"
                                                                         heure_debut = heure_debut.replace(":", "h")
                                                                         heure_fin = heure_fin.replace(":", "h")
-                                                                        if len(label) > 0 : label += "\n"
-                                                                        label += u"%s > %s" % (heure_debut, heure_fin)
+                                                                        #if len(label) > 0 : label += "\n"
+                                                                        label = u"%s > %s" % (heure_debut, heure_fin)
                                                                     if typeUnite == "Evenement" :
                                                                          label = u"X"
                                                                     if typeUnite == "Quantite" :
@@ -2312,13 +2312,34 @@ class Dialog(wx.Dialog):
                                                                         etat = dictConsoTemp["etat"]
                                                                         quantite = dictConsoTemp["quantite"]
                                                                         etiquettes = dictConsoTemp["etiquettes"]
+                                                                        heure_debut = dictConsoTemp["heure_debut"]
+                                                                        heure_fin = dictConsoTemp["heure_fin"]
 
                                                                         valide = True
+
+                                                                        # Validation de la condition étiquettes
                                                                         if len(etiquettesUnitesRemplissage) > 0 :
                                                                             valide = False
                                                                             for IDetiquetteTemp in etiquettesUnitesRemplissage :
                                                                                 if IDetiquetteTemp in etiquettes :
                                                                                     valide = True
+
+                                                                        # Validation de la condition tranche horaire
+                                                                        try:
+                                                                            heure_min = dictUnitesRemplissage[IDunite]["heure_min"]
+                                                                            heure_max = dictUnitesRemplissage[IDunite]["heure_max"]
+                                                                            if heure_min != None and heure_max != None and heure_debut != None and heure_fin != None:
+                                                                                heure_min_TM = UTILS_Dates.HeureStrEnTime(heure_min)
+                                                                                heure_max_TM = UTILS_Dates.HeureStrEnTime(heure_max)
+                                                                                heure_debut_TM = UTILS_Dates.HeureStrEnTime(heure_debut)
+                                                                                heure_fin_TM = UTILS_Dates.HeureStrEnTime(heure_fin)
+
+                                                                                if heure_debut_TM <= heure_max_TM and heure_fin_TM >= heure_min_TM:
+                                                                                    valide = True
+                                                                                else:
+                                                                                    valide = False
+                                                                        except:
+                                                                            pass
 
                                                                         if valide == True :
 
@@ -2818,7 +2839,7 @@ class Dialog(wx.Dialog):
 if __name__ == u"__main__":
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    dialog_1 = Dialog(None, date=datetime.date(2017, 7, 2))
+    dialog_1 = Dialog(None, date=datetime.date(2018, 2, 12))
     app.SetTopWindow(dialog_1)
     dialog_1.ShowModal()
     app.MainLoop()
