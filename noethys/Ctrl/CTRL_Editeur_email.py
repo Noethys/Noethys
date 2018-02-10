@@ -435,6 +435,8 @@ class CTRL_Expediteur(wx.Choice):
             self.SetSelection(selectionActuelle)
         if len(self.listeAdresses) == 0 :
             self.Enable(False)
+        else :
+            self.Enable(True)
 
     def SetID(self, ID=0):
         for index, values in self.dictAdresses.iteritems():
