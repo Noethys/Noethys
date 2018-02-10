@@ -46,7 +46,8 @@ class Objet():
             
     def Afficher(self):
         if self.id == None :
-            self.dc.BeginDrawing()
+            if 'phoenix' not in wx.PlatformInfo:
+                self.dc.BeginDrawing()
             # Init objet pseudoDC
             self.id = wx.NewId()
             self.dc.SetId(self.id)
@@ -55,7 +56,8 @@ class Objet():
             # Mémorise l'objet
             self.dc.SetIdBounds(self.id, wx.Rect(self.position[0], self.position[1], self.taille[0], self.taille[1]))
             self.interface.dictObjets[self.id] = self
-            self.dc.EndDrawing()
+            if 'phoenix' not in wx.PlatformInfo:
+                self.dc.EndDrawing()
             self.interface.Refresh() 
     
     def Cacher(self):
