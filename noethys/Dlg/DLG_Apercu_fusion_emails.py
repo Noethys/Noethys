@@ -158,6 +158,8 @@ class Dialog(wx.Dialog):
         for motcle, valeur in dictDonnee["champs"].iteritems() :
             if valeur == None or valeur == "//None" :
                 valeur = ""
+            if type(valeur) == int :
+                valeur = str(valeur)
             xml = xml.replace(motcle, valeur)
         # MAJ éditeur
         self.ctrl_editeur.SetXML(xml)
