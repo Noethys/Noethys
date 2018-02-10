@@ -1,7 +1,10 @@
-Version 1.2.2.2 (03/01/2018) :
+Version 1.2.2.5 (10/02/2018) :
 
-- Ajout des périodes de gestion
+- Ajout des périodes de gestion dans le menu Paramétrage
+- Ajout des filtres IP dans le serveur Nomadhys
 - Adaptations pour wxPython Phoenix
+- Mise à jour de Reportlab et Twisted
+- Corrections de divers bugs
 
 Version 1.2.2.0 (21/12/2017) :
 
