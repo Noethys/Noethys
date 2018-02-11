@@ -632,7 +632,7 @@ class CTRL(wx.Panel):
     def OnFileOpen(self, evt):
         """ Ouvrir un texte """
         wildcard, types = rt.RichTextBuffer.GetExtWildcard(save=False)
-        dlg = wx.FileDialog(self, _(u"Choisissez un fichier à ouvrir"), wildcard=wildcard, style=wx.OPEN)
+        dlg = wx.FileDialog(self, _(u"Choisissez un fichier à ouvrir"), wildcard=wildcard, style=wx.FD_OPEN)
         dlg.SetFilterIndex(2)
         if dlg.ShowModal() == wx.ID_OK:
             path = dlg.GetPath()
@@ -645,7 +645,7 @@ class CTRL(wx.Panel):
     def OnFileSave(self, evt):
         """ Sauvegarder dans un fichier """
         wildcard, types = rt.RichTextBuffer.GetExtWildcard(save=True)
-        dlg = wx.FileDialog(self, _(u"Sauvegardez le texte"), wildcard=wildcard, style=wx.SAVE)
+        dlg = wx.FileDialog(self, _(u"Sauvegardez le texte"), wildcard=wildcard, style=wx.FD_SAVE)
         dlg.SetFilterIndex(3)
         if dlg.ShowModal() == wx.ID_OK:
             cheminFichier = dlg.GetPath()
@@ -927,7 +927,7 @@ class CTRL(wx.Panel):
             defaultDir=cheminDefaut, 
             defaultFile="",
             wildcard=wildcard,
-            style=wx.OPEN
+            style=wx.FD_OPEN
             )
         if dlg.ShowModal() == wx.ID_OK:
             nomFichierCourt = dlg.GetFilename()

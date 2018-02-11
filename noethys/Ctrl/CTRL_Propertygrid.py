@@ -29,11 +29,14 @@ if 'phoenix' in wx.PlatformInfo:
     from wx.propgrid import PGChoiceEditor as ChoiceEditor
     from wx.propgrid import PGEditor as Editor
     from wx.propgrid import PGProperty as Property
+    from wx.propgrid import ArrayStringProperty as ArrayStringProperty
 else:
     from wx.propgrid import LABEL_AS_NAME as NAME
     from wx.propgrid import PyChoiceEditor as ChoiceEditor
     from wx.propgrid import PyEditor as Editor
     from wx.propgrid import PyProperty as Property
+    from wx.propgrid import PyArrayStringProperty as ArrayStringProperty
+
 
 
 class EditeurChoix(ChoiceEditor):
@@ -85,14 +88,14 @@ class Propriete_choix(Property):
 
 # ---------------------------------------------------------------------------------------------------------------
 
-class Propriete_multichoix(wxpg.PyArrayStringProperty):
+class Propriete_multichoix(ArrayStringProperty):
     """ Propriété Multichoix """
     def __init__(self, label, name = NAME, liste_choix=[], liste_selections=[]):
         self.liste_choix = liste_choix
         self.liste_selections = liste_selections
 
         # Initialisation
-        wxpg.PyArrayStringProperty.__init__(self, label, name)
+        ArrayStringProperty.__init__(self, label, name)
 
         # Set default delimiter
         self.SetAttribute("Delimiter", ',')
@@ -110,6 +113,9 @@ class Propriete_multichoix(wxpg.PyArrayStringProperty):
         self.GenerateValueAsString()
 
     def DoSetAttribute(self, name, value):
+        if 'phoenix' in wx.PlatformInfo:
+            return False
+
         # Proper way to call same method from super class
         retval = self.CallSuperMethod("DoSetAttribute", name, value)
 
@@ -179,14 +185,14 @@ class Propriete_multichoix(wxpg.PyArrayStringProperty):
 
 # -------------------------------------------------------------------------------------------------
 
-class Propriete_liste(wxpg.PyArrayStringProperty):
+class Propriete_liste(ArrayStringProperty):
     """ Propriété Multichoix """
     def __init__(self, label, name = NAME, type_donnees=int, liste_selections=[]):
         self.type_donnees = type_donnees
         self.liste_selections = liste_selections
 
         # Initialisation
-        wxpg.PyArrayStringProperty.__init__(self, label, name)
+        ArrayStringProperty.__init__(self, label, name)
 
         # Set default delimiter
         self.SetAttribute("Delimiter", ',')
@@ -204,6 +210,9 @@ class Propriete_liste(wxpg.PyArrayStringProperty):
         self.GenerateValueAsString()
 
     def DoSetAttribute(self, name, value):
+        if 'phoenix' in wx.PlatformInfo:
+            return False
+
         # Proper way to call same method from super class
         retval = self.CallSuperMethod("DoSetAttribute", name, value)
 

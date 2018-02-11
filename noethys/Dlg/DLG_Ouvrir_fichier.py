@@ -232,7 +232,7 @@ class MyDialog(wx.Dialog):
             defaultDir=sp.GetDocumentsDir(),
             defaultFile="",
             wildcard=wildcard,
-            style=wx.OPEN
+            style=wx.FD_OPEN
         )
         if dlg.ShowModal() == wx.ID_OK:
             nomFichierCourt = dlg.GetFilename()

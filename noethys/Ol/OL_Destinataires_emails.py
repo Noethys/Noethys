@@ -330,7 +330,7 @@ class ListView(FastObjectListView):
 
         standardPath = wx.StandardPaths.Get()
         rep = standardPath.GetDocumentsDir()
-        dlg = wx.FileDialog(self, message=_(u"Veuillez sélectionner le ou les fichiers à joindre"), defaultDir=rep, defaultFile="", style=wx.OPEN|wx.FD_MULTIPLE)
+        dlg = wx.FileDialog(self, message=_(u"Veuillez sélectionner le ou les fichiers à joindre"), defaultDir=rep, defaultFile="", style=wx.FD_OPEN|wx.FD_MULTIPLE)
         if dlg.ShowModal() == wx.ID_OK:
             chemins = dlg.GetPaths()
         else:
@@ -427,7 +427,7 @@ class ListView(FastObjectListView):
             None, message = _(u"Veuillez sélectionner le répertoire de destination et le nom du fichier"), defaultDir=cheminDefaut, 
             defaultFile = nomFichier, 
             wildcard = wildcard, 
-            style = wx.SAVE
+            style = wx.FD_SAVE
             )
         dlg.SetFilterIndex(0)
         if dlg.ShowModal() == wx.ID_OK:
@@ -483,7 +483,7 @@ class ListView(FastObjectListView):
             None, message = _(u"Veuillez sélectionner le répertoire de destination et le nom du fichier"), defaultDir=cheminDefaut, 
             defaultFile = nomFichier, 
             wildcard = wildcard, 
-            style = wx.SAVE
+            style = wx.FD_SAVE
             )
         dlg.SetFilterIndex(0)
         if dlg.ShowModal() == wx.ID_OK:

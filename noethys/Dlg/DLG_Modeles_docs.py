@@ -262,8 +262,8 @@ class Dialog(wx.Dialog):
         dlg.Destroy()
         self.ctrl_modeles.MAJ() 
 
-    def OnBoutonFermer(self, event): 
-        self.EndModal(wx.ID_CANCEL)        
+    def OnBoutonFermer(self, event):
+        self.EndModal(wx.ID_CANCEL)
 
 
 

@@ -25,7 +25,7 @@ from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 
 import ObjectListView as OLV
-from ObjectListView import EVT_CELL_EDIT_STARTING, EVT_CELL_EDIT_FINISHING
+from ObjectListView import EVT_CELL_EDIT_STARTING, EVT_CELL_EDIT_FINISHING, CellEditorRegistry
 from ObjectListView.ObjectListView import AbstractVirtualObjectListView as Abstract
 
 

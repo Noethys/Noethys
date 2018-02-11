@@ -40,7 +40,13 @@ class ToolBar(wx.ToolBar):
         else :
             super(ToolBar, self).AddLabelTool(*args, **kw)
 
-
+    def AddSimpleTool(self, *args, **kw):
+        if 'phoenix' in wx.PlatformInfo:
+            if kw.has_key("longHelp"):
+                kw.pop("longHelp")
+            super(ToolBar, self).AddTool(*args, **kw)
+        else :
+            super(ToolBar, self).AddSimpleTool(*args, **kw)
 
 
 if __name__ == "__main__":

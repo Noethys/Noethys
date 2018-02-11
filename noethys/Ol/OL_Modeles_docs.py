@@ -406,7 +406,7 @@ class ListView(FastObjectListView):
             defaultDir=sp.GetDocumentsDir(), 
             defaultFile="",
             wildcard=wildcard,
-            style=wx.OPEN
+            style=wx.FD_OPEN
             )
         if dlg.ShowModal() == wx.ID_OK:
             nomFichierCourt = dlg.GetFilename()
@@ -467,7 +467,7 @@ class ListView(FastObjectListView):
         standardPath = wx.StandardPaths.Get()
         dlg = wx.FileDialog(self, message=_(u"Enregistrer le modèle sous..."),
                             defaultDir = standardPath.GetDocumentsDir(), defaultFile="modele.ndc",
-                            wildcard=u"Modèle Noedoc (*.ndc)|*.ndc", style=wx.SAVE)
+                            wildcard=u"Modèle Noedoc (*.ndc)|*.ndc", style=wx.FD_SAVE)
 
         if dlg.ShowModal() == wx.ID_OK:
             path = dlg.GetPath()

@@ -211,7 +211,7 @@ class Dialog(wx.Dialog):
     def OnBoutonEnregistrer(self, event):
         standardPath = wx.StandardPaths.Get()
         wildcard = _(u"Tous les fichiers (*.*)|*.*")
-        dlg = wx.FileDialog(None, message=_(u"Sélectionnez un répertoire et un nom de fichier"), defaultDir=standardPath.GetDocumentsDir(),  defaultFile="journal.txt", wildcard=wildcard, style=wx.SAVE)
+        dlg = wx.FileDialog(None, message=_(u"Sélectionnez un répertoire et un nom de fichier"), defaultDir=standardPath.GetDocumentsDir(),  defaultFile="journal.txt", wildcard=wildcard, style=wx.FD_SAVE)
         nomFichier = None
         if dlg.ShowModal() == wx.ID_OK:
             nomFichier = dlg.GetPath()

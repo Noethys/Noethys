@@ -108,7 +108,7 @@ class CTRL(wx.StaticBitmap):
             defaultDir=cheminDefaut, 
             defaultFile="", 
             wildcard=wildcard,
-            style=wx.OPEN
+            style=wx.FD_OPEN
             )
         if dlg.ShowModal() == wx.ID_OK:
             nomFichierCourt = dlg.GetFilename()

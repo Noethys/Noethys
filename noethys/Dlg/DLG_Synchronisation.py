@@ -677,7 +677,7 @@ class Dialog(wx.Dialog):
         """ Réception des fichiers manuels """
         standardPath = wx.StandardPaths.Get()
         wildcard = _(u"Fichiers de synchronisation (*%s, *%s)|*%s;*%s|Tous les fichiers (*.*)|*.*") % (UTILS_Export_nomade.EXTENSION_CRYPTE, UTILS_Export_nomade.EXTENSION_DECRYPTE, UTILS_Export_nomade.EXTENSION_CRYPTE, UTILS_Export_nomade.EXTENSION_DECRYPTE)
-        dlg = wx.FileDialog(None, message=_(u"Sélectionnez un fichier de synchronisation"), defaultDir=standardPath.GetDocumentsDir(),  wildcard=wildcard, style=wx.OPEN)
+        dlg = wx.FileDialog(None, message=_(u"Sélectionnez un fichier de synchronisation"), defaultDir=standardPath.GetDocumentsDir(),  wildcard=wildcard, style=wx.FD_OPEN)
         chemin = None
         if dlg.ShowModal() == wx.ID_OK:
             chemin = dlg.GetPath()

@@ -250,7 +250,7 @@ class ListView(FastObjectListView):
             defaultDir=sp.GetDocumentsDir(), 
             defaultFile="",
             wildcard=wildcard,
-            style=wx.OPEN
+            style=wx.FD_OPEN
             )
         if dlg.ShowModal() == wx.ID_OK:
             nomFichierCourt = dlg.GetFilename()
@@ -343,7 +343,7 @@ class ListView(FastObjectListView):
         standardPath = wx.StandardPaths.Get()
         dlg = wx.FileDialog(self, message=_(u"Envoyer le fichier de traduction personnalisé vers..."),
                             defaultDir = standardPath.GetDocumentsDir(), defaultFile=nomFichier,
-                            wildcard="Fichier de traduction (*.xlang)|*.xlang", style=wx.SAVE)
+                            wildcard="Fichier de traduction (*.xlang)|*.xlang", style=wx.FD_SAVE)
         if dlg.ShowModal() == wx.ID_OK:
             path = dlg.GetPath()
         else :

@@ -59,7 +59,7 @@ class PanelGraph(wx.Panel):
 
         dlg = wx.FileDialog(self, message=_(u"Enregistrer le graphe sous..."),
                             defaultDir = save_destination, defaultFile="graphe.png",
-                            wildcard=file_choices, style=wx.SAVE)
+                            wildcard=file_choices, style=wx.FD_SAVE)
 
         if dlg.ShowModal() == wx.ID_OK:
             path = dlg.GetPath()

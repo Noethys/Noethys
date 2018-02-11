@@ -418,7 +418,7 @@ class ListView(FastObjectListView):
             defaultDir=sp.GetDocumentsDir(), 
             defaultFile="",
             wildcard=wildcard,
-            style=wx.OPEN
+            style=wx.FD_OPEN
             )
         if dlg.ShowModal() == wx.ID_OK:
             nomFichierCourt = dlg.GetFilename()
@@ -473,7 +473,7 @@ class ListView(FastObjectListView):
         standardPath = wx.StandardPaths.Get()
         dlg = wx.FileDialog(self, message=_(u"Enregistrer le fichier sous..."),
                             defaultDir = standardPath.GetDocumentsDir(), defaultFile="activites.nxa",
-                            wildcard=_(u"Activité Noethys (*.nxa)|*.nxa"), style=wx.SAVE)
+                            wildcard=_(u"Activité Noethys (*.nxa)|*.nxa"), style=wx.FD_SAVE)
 
         if dlg.ShowModal() == wx.ID_OK:
             path = dlg.GetPath()

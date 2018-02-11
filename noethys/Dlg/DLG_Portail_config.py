@@ -1002,7 +1002,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         wildcard = u"Fichier de configuration (*.cfg)|*.cfg|Tous les fichiers (*.*)|*.*"
         standardPath = wx.StandardPaths.Get()
         rep = standardPath.GetDocumentsDir()
-        dlg = wx.FileDialog(None, message=_(u"Veuillez sélectionner le fichier de configuration à restaurer"), defaultDir=rep, defaultFile="", wildcard=wildcard, style=wx.OPEN)
+        dlg = wx.FileDialog(None, message=_(u"Veuillez sélectionner le fichier de configuration à restaurer"), defaultDir=rep, defaultFile="", wildcard=wildcard, style=wx.FD_OPEN)
         if dlg.ShowModal() == wx.ID_OK:
             cheminFichier = dlg.GetPath()
             dlg.Destroy()
@@ -1053,7 +1053,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
             None, message = _(u"Veuillez sélectionner le répertoire de destination et le nom du fichier"), defaultDir=cheminDefaut,
             defaultFile = nomFichier,
             wildcard = wildcard,
-            style = wx.SAVE
+            style = wx.FD_SAVE
             )
         dlg.SetFilterIndex(0)
         if dlg.ShowModal() == wx.ID_OK:

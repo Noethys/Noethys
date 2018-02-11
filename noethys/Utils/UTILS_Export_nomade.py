@@ -268,7 +268,7 @@ class Export():
     def EnvoyerVersRepertoire(self, nomFichier=""):
         standardPath = wx.StandardPaths.Get()
         wildcard = _(u"Fichiers de synchronisation Noethys (*%s, *%s)|*%s;*%s|Tous les fichiers (*.*)|*.*") % (EXTENSION_CRYPTE, EXTENSION_DECRYPTE, EXTENSION_CRYPTE, EXTENSION_DECRYPTE)
-        dlg = wx.FileDialog(None, message=_(u"Choisissez un emplacement"), defaultDir=standardPath.GetDocumentsDir(),  defaultFile=os.path.basename(nomFichier), wildcard=wildcard, style=wx.SAVE)
+        dlg = wx.FileDialog(None, message=_(u"Choisissez un emplacement"), defaultDir=standardPath.GetDocumentsDir(),  defaultFile=os.path.basename(nomFichier), wildcard=wildcard, style=wx.FD_SAVE)
         chemin = None
         if dlg.ShowModal() == wx.ID_OK:
             chemin = dlg.GetPath()

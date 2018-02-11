@@ -1153,8 +1153,14 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL):#(wxpg.PropertyGrid) :
         # Envoie les paramètres dans le contrôle
         for nom, valeur in dictParametres.iteritems() :
             propriete = self.GetPropertyByName(nom)
-            ancienneValeur = propriete.GetValue() 
-            propriete.SetValue(valeur)
+            ancienneValeur = propriete.GetValue()
+            if "EnumProperty" in str(propriete) :
+                if valeur in ("", None):
+                    valeur = None
+                else :
+                    valeur = int(valeur)
+            if valeur != None :
+                propriete.SetValue(valeur)
     
     def Sauvegarde(self, forcer=False):
         """ Mémorisation des valeurs du contrôle """
@@ -1202,7 +1208,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL):#(wxpg.PropertyGrid) :
             None, message = _(u"Veuillez sélectionner le répertoire de destination et le nom du fichier"), defaultDir=cheminDefaut, 
             defaultFile = nomFichier, 
             wildcard = wildcard, 
-            style = wx.SAVE
+            style = wx.FD_SAVE
             )
         dlg.SetFilterIndex(0)
         if dlg.ShowModal() == wx.ID_OK:

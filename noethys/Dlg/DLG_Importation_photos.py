@@ -82,9 +82,9 @@ class ListView(FastObjectListView):
         dictImages = {}
         imageList = wx.ImageList(TAILLE_IMAGE[0], TAILLE_IMAGE[1])
         for track in self.donnees :
-            indexImg = imageList.Add(track.bmp)            
+            indexImg = imageList.Add(track.bmp)
         self.SetImageLists(imageList, imageList)
-        
+
         def GetImage(track):
             return track.index 
         
@@ -312,7 +312,7 @@ class Dialog(wx.Dialog):
             defaultDir=cheminDefaut, 
             defaultFile="", 
             wildcard=wildcard,
-            style=wx.OPEN
+            style=wx.FD_OPEN
             )
         nomFichier = None
         if dlg.ShowModal() == wx.ID_OK:
@@ -355,16 +355,21 @@ class Dialog(wx.Dialog):
         
         frame = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         height, width = frame.shape[:2]
-        bmp = wx.BitmapFromBuffer(width, height, frame)
-##        print "Photo originale =", bmp, bmp.GetSize() 
-        
+        if 'phoenix' in wx.PlatformInfo:
+            bmp = wx.Bitmap.FromBuffer(width, height, frame)
+        else :
+            bmp = wx.BitmapFromBuffer(width, height, frame)
+
         listePhotos = []
         faces = cascade.detectMultiScale(gray, 1.3, 5)
         for (x, y, w, h) in faces:
             bmpVisage = bmp.GetSubBitmap((x, y, w, h))
             
             # Ajuste taille de l'image
-            imgVisage = wx.ImageFromBitmap(bmpVisage)
+            if 'phoenix' in wx.PlatformInfo:
+                imgVisage = bmpVisage.ConvertToImage()
+            else :
+                imgVisage = wx.ImageFromBitmap(bmpVisage)
             imgVisage.Rescale(width=TAILLE_IMAGE[0], height=TAILLE_IMAGE[1], quality=wx.IMAGE_QUALITY_HIGH)
             bmpVisage = imgVisage.ConvertToBitmap()
             
@@ -378,7 +383,10 @@ class Dialog(wx.Dialog):
         self.ctrl_listview.MAJ(listePhotos)
         
         # Envoie l'image originale vers le staticbitmap
-        bmp = wx.BitmapFromBuffer(width, height, frame)
+        if 'phoenix' in wx.PlatformInfo:
+            bmp = wx.Bitmap.FromBuffer(width, height, frame)
+        else :
+            bmp = wx.BitmapFromBuffer(width, height, frame)
         self.AfficheImageOriginale(bmp)
         
         # MAJ Label_infos
@@ -392,7 +400,10 @@ class Dialog(wx.Dialog):
     def AfficheImageOriginale(self, bmp=None):
         """ Affiche l'image originale dans le staticbitmap """
         # Ajuste la taille
-        img = wx.ImageFromBitmap(bmp)
+        if 'phoenix' in wx.PlatformInfo:
+            img = bmp.ConvertToImage()
+        else :
+            img = wx.ImageFromBitmap(bmp)
         largeur1, hauteur1 = img.GetSize()
         if largeur1 > hauteur1 :
             largeur = TAILLE_IMAGE_ORIGINALE[0]
