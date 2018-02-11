@@ -18,7 +18,7 @@ from Ctrl import CTRL_Bandeau
 import GestionDB
 
 from Utils import UTILS_Interface
-from ObjectListView import FastObjectListView, ColumnDefn, Filter, ListCtrlPrinter
+from Ctrl.CTRL_ObjectListView import FastObjectListView, ColumnDefn, Filter
 
 from PIL import Image
 import cStringIO

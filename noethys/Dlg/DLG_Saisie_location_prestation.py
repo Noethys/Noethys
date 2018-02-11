@@ -23,7 +23,7 @@ from Utils import UTILS_Interface
 from Utils import UTILS_Config
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 
-from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
+from Ctrl.CTRL_ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
 from Ctrl.CTRL_Tarification_calcul import CHAMPS_TABLE_LIGNES
 from Dlg.DLG_Ouvertures import Track_tarif

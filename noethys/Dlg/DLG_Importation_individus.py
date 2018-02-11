@@ -37,7 +37,7 @@ from Utils import UTILS_Parametres
 
 
 from Utils import UTILS_Interface
-from ObjectListView import ObjectListView, FastObjectListView, ColumnDefn, Filter, CTRL_Outils
+from Ctrl.CTRL_ObjectListView import ObjectListView, FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
 TYPES_IMPORTATION = [
     {"code":"familles", "label":_(u"Familles"), "infos":_(u"Sélectionnez ce type d'importation si votre fichier de données comporte une famille par ligne.\nNoethys créera alors une fiche famille pour chaque ligne ainsi que les fiches individuelles correspondantes.")},
