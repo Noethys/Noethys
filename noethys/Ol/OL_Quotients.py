@@ -249,27 +249,9 @@ class ListView(FastObjectListView):
 
     def Ajouter(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_quotients", "creer") == False : return
-        dlg = DLG_Saisie_quotient.Dialog(self)
-        dlg.SetTitle(_(u"Saisie d'un quotient familial/revenu"))
+        dlg = DLG_Saisie_quotient.Dialog(self, IDfamille=self.IDfamille, IDquotient=None)
         if dlg.ShowModal() == wx.ID_OK:
-            date_debut = dlg.GetDateDebut()
-            date_fin = dlg.GetDateFin()
-            quotient = dlg.GetQuotient()
-            revenu = dlg.GetRevenu()
-            IDtype_quotient = dlg.GetTypeQuotient()
-            observations = dlg.GetObservations()
-            DB = GestionDB.DB()
-            listeDonnees = [
-                ("IDfamille", self.IDfamille ),
-                ("date_debut", date_debut ),
-                ("date_fin", date_fin ),
-                ("quotient", quotient),
-                ("revenu", revenu),
-                ("observations", observations),
-                ("IDtype_quotient", IDtype_quotient),
-                ]
-            IDquotient = DB.ReqInsert("quotients", listeDonnees)
-            DB.Close()
+            IDquotient = dlg.GetIDquotient()
             self.MAJ(IDquotient)
         dlg.Destroy()
 
@@ -281,38 +263,8 @@ class ListView(FastObjectListView):
             dlg.Destroy()
             return
         IDquotient = self.Selection()[0].IDquotient
-        dlg = DLG_Saisie_quotient.Dialog(self)
-        date_debut = self.Selection()[0].date_debut
-        date_fin = self.Selection()[0].date_fin
-        quotient = self.Selection()[0].quotient
-        revenu = self.Selection()[0].revenu
-        observations = self.Selection()[0].observations
-        IDtype_quotient = self.Selection()[0].IDtype_quotient
-        dlg.SetDateDebut(date_debut)
-        dlg.SetDateFin(date_fin)
-        dlg.SetQuotient(quotient)
-        dlg.SetRevenu(revenu)
-        dlg.SetObservations(observations)
-        dlg.SetTypeQuotient(IDtype_quotient)
-        dlg.SetTitle(_(u"Modification d'un quotient familial/revenu"))
+        dlg = DLG_Saisie_quotient.Dialog(self, IDfamille=self.IDfamille, IDquotient=IDquotient)
         if dlg.ShowModal() == wx.ID_OK:
-            date_debut = dlg.GetDateDebut()
-            date_fin = dlg.GetDateFin() 
-            quotient = dlg.GetQuotient()
-            revenu = dlg.GetRevenu()
-            observations = dlg.GetObservations()
-            IDtype_quotient = dlg.GetTypeQuotient()
-            DB = GestionDB.DB()
-            listeDonnees = [
-                ("date_debut", date_debut ),
-                ("date_fin", date_fin ),
-                ("quotient", quotient),
-                ("revenu", revenu),
-                ("observations", observations),
-                ("IDtype_quotient", IDtype_quotient),
-                ]
-            DB.ReqMAJ("quotients", listeDonnees, "IDquotient", IDquotient)
-            DB.Close()
             self.MAJ(IDquotient)
         dlg.Destroy()
 

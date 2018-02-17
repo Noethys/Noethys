@@ -16,6 +16,7 @@ import wx
 from Ctrl import CTRL_Bouton_image
 from Ctrl import CTRL_Saisie_date
 from Ctrl import CTRL_Saisie_euros
+from Utils import UTILS_Dates
 
 import GestionDB
 
@@ -69,9 +70,11 @@ class CTRL_Type_quotient(wx.Choice):
 # -----------------------------------------------------------------------------------------------------------------------
 
 class Dialog(wx.Dialog):
-    def __init__(self, parent):
+    def __init__(self, parent, IDfamille=None, IDquotient=None):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
-        self.parent = parent   
+        self.parent = parent
+        self.IDfamille = IDfamille
+        self.IDquotient = IDquotient
         
         # Dates
         self.staticbox_dates_staticbox = wx.StaticBox(self, -1, _(u"Dates de validité"))
@@ -108,6 +111,9 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonTypesQuotients, self.bouton_types_quotients)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
+
+        # Init
+        self.Importation()
 
     def __set_properties(self):
         self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de début de validité")))
@@ -229,14 +235,16 @@ class Dialog(wx.Dialog):
 
     def OnBoutonOk(self, event):
         # Période
-        if self.ctrl_date_debut.FonctionValiderDate() == False or self.GetDateDebut() == None :
+        date_debut = self.GetDateDebut()
+        if self.ctrl_date_debut.FonctionValiderDate() == False or date_debut == None :
             dlg = wx.MessageDialog(self, _(u"La date de début de validité n'est pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_debut.SetFocus()
             return False
 
-        if self.ctrl_date_fin.FonctionValiderDate() == False or self.GetDateFin() == None :
+        date_fin = self.GetDateFin()
+        if self.ctrl_date_fin.FonctionValiderDate() == False or date_fin == None :
             dlg = wx.MessageDialog(self, _(u"La date de fin de validité n'est pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
@@ -272,8 +280,102 @@ class Dialog(wx.Dialog):
             dlg.Destroy()
             return False
 
+        # Vérifie que ce quotient ne se superpose pas sur un autre
+        if self.IDquotient == None :
+            IDquotient = 0
+        else :
+            IDquotient = self.IDquotient
+        DB = GestionDB.DB()
+        req = """
+        SELECT date_debut, date_fin
+        FROM quotients
+        WHERE IDfamille=%d AND IDquotient<>%d AND date_debut<='%s' AND date_fin>='%s';""" % (self.IDfamille, IDquotient, date_fin, date_debut)
+        DB.ExecuterReq(req)
+        listeDonnees = DB.ResultatReq()
+        DB.Close()
+        if len(listeDonnees) > 0 :
+            dlg = wx.MessageDialog(self, _(u"Il existe déjà %d quotient/revenu saisi sur cette période.\n\nSouhaitez-vous tout de même l'enregistrer ?") % len(listeDonnees), _(u"Anomalie"), wx.YES_NO | wx.NO_DEFAULT | wx.CANCEL | wx.ICON_EXCLAMATION)
+            reponse = dlg.ShowModal()
+            dlg.Destroy()
+            if reponse != wx.ID_YES :
+                return False
+
+        # Sauvegarde
+        self.Sauvegarde()
+
+        # Fermeture
         self.EndModal(wx.ID_OK)
 
+    def Sauvegarde(self):
+        date_debut = self.GetDateDebut()
+        date_fin = self.GetDateFin()
+        quotient = self.GetQuotient()
+        revenu = self.GetRevenu()
+        IDtype_quotient = self.GetTypeQuotient()
+        observations = self.GetObservations()
+        DB = GestionDB.DB()
+        listeDonnees = [
+            ("IDfamille", self.IDfamille),
+            ("date_debut", date_debut),
+            ("date_fin", date_fin),
+            ("quotient", quotient),
+            ("revenu", revenu),
+            ("observations", observations),
+            ("IDtype_quotient", IDtype_quotient),
+        ]
+        if self.IDquotient == None :
+            self.IDquotient = DB.ReqInsert("quotients", listeDonnees)
+        else:
+            DB.ReqMAJ("quotients", listeDonnees, "IDquotient", self.IDquotient)
+        DB.Close()
+
+    def GetIDquotient(self):
+        return self.IDquotient
+
+    def Importation(self):
+        if self.IDquotient == None :
+
+            self.SetTitle(_(u"Saisie d'un quotient familial/revenu"))
+            # Recherche des dates à appliquer
+            DB = GestionDB.DB()
+            req = """
+            SELECT date_debut, date_fin
+            FROM quotients
+            ORDER BY IDquotient DESC LIMIT 1;"""
+            DB.ExecuterReq(req)
+            listeDonnees = DB.ResultatReq()
+            DB.Close()
+            if len(listeDonnees) > 0 :
+                date_debut, date_fin = listeDonnees[0]
+                date_debut = UTILS_Dates.DateEngEnDateDD(date_debut)
+                date_fin = UTILS_Dates.DateEngEnDateDD(date_fin)
+            else :
+                date_debut, date_fin = None, None
+
+            self.SetDateDebut(date_debut)
+            self.SetDateFin(date_fin)
+
+        else :
+            self.SetTitle(_(u"Modification d'un quotient familial/revenu"))
+            DB = GestionDB.DB()
+            req = """
+            SELECT date_debut, date_fin, quotient, observations, revenu, IDtype_quotient
+            FROM quotients
+            WHERE IDquotient=%d
+            """ % self.IDquotient
+            DB.ExecuterReq(req)
+            listeDonnees = DB.ResultatReq()
+            DB.Close()
+            if len(listeDonnees) > 0 :
+                date_debut, date_fin, quotient, observations, revenu, IDtype_quotient = listeDonnees[0]
+                date_debut = UTILS_Dates.DateEngEnDateDD(date_debut)
+                date_fin = UTILS_Dates.DateEngEnDateDD(date_fin)
+                self.SetDateDebut(date_debut)
+                self.SetDateFin(date_fin)
+                self.SetQuotient(quotient)
+                self.SetRevenu(revenu)
+                self.SetObservations(observations)
+                self.SetTypeQuotient(IDtype_quotient)
 
 
 
