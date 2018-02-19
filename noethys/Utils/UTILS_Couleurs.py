@@ -19,7 +19,9 @@ def ModifierLuminosite(couleurRGB, coeff=-50) :
     
 def HSVToRGB(couleurHSV):
     """ Converts a HSV triplet into a RGB triplet. """
-    h, s, v = couleurHSV
+    h = couleurHSV[0]
+    s = couleurHSV[1]
+    v = couleurHSV[2]
     maxVal = v
     delta = (maxVal*s)/255.0
     minVal = maxVal - delta
@@ -61,7 +63,9 @@ def HSVToRGB(couleurHSV):
 
 def RGBToHSV(couleurRGB=(255, 255, 255)):
     """ Converts a RGB triplet into a HSV triplet. """
-    r, g, b = couleurRGB
+    r = couleurRGB[0]
+    g = couleurRGB[1]
+    b = couleurRGB[2]
     minVal = float(min(r, min(g, b)))
     maxVal = float(max(r, max(g, b)))
     delta = maxVal - minVal

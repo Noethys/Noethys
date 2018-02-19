@@ -19,7 +19,7 @@ import datetime
 
 
 from Utils import UTILS_Interface
-from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils, ListCtrlPrinter
+from Ctrl.CTRL_ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
 try: import psyco; psyco.full()
 except: pass

@@ -18,7 +18,7 @@ import GestionDB
 from Dlg import DLG_Saisie_regie_facture
 
 from Utils import UTILS_Interface
-from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
+from Ctrl.CTRL_ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
 from Utils import UTILS_Utilisateurs
 

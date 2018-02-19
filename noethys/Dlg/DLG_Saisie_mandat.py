@@ -777,16 +777,15 @@ class Dialog(wx.Dialog):
         # ICS
         DB = GestionDB.DB()
         req = """SELECT IDcompte, nom, numero, code_ics
-        FROM comptes_bancaires;"""
+        FROM comptes_bancaires
+        WHERE code_ics IS NOT NULL AND code_ics <> '';"""
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         DB.Close()       
         ics = ""
         if len(listeDonnees) > 0 :
             IDcompte, nomCompte, numeroCompte, ics = listeDonnees[0]
-            if ics == None :
-                ics = ""
-         
+
         # Récupère données du mandat        
         titulaire_nom = ""
         titulaire_rue = ""

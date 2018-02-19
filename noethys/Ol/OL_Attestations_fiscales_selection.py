@@ -20,7 +20,7 @@ import copy
 
 
 from Utils import UTILS_Interface
-from ObjectListView import ObjectListView, FastObjectListView, ColumnDefn, Filter, CTRL_Outils
+from Ctrl.CTRL_ObjectListView import ObjectListView, FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
 from Utils import UTILS_Config
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")

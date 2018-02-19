@@ -29,7 +29,7 @@ SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 
 
 import UTILS_Interface
-from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
+from Ctrl.CTRL_ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
 
 def GetValeursListview(listview=None, format="texte"):
@@ -114,7 +114,7 @@ def ExportTexte(listview=None, grid=None, titre=u"", listeColonnes=None, listeVa
         None, message = _(u"Veuillez sélectionner le répertoire de destination et le nom du fichier"), defaultDir=cheminDefaut, 
         defaultFile = nomFichier, 
         wildcard = wildcard, 
-        style = wx.SAVE
+        style = wx.FD_SAVE
         )
     dlg.SetFilterIndex(0)
     if dlg.ShowModal() == wx.ID_OK:
@@ -231,7 +231,7 @@ def ExportExcel(listview=None, grid=None, titre=_(u"Liste"), listeColonnes=None,
             None, message = _(u"Veuillez sélectionner le répertoire de destination et le nom du fichier"), defaultDir=cheminDefaut,
             defaultFile = nomFichier,
             wildcard = wildcard,
-            style = wx.SAVE
+            style = wx.FD_SAVE
             )
         dlg.SetFilterIndex(0)
         if dlg.ShowModal() == wx.ID_OK:

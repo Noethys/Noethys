@@ -64,7 +64,10 @@ def GetDonnees(tailleLogo=(40, 40)) :
     if code_ape == None : code_ape = u""
     if logo != None :
         io = cStringIO.StringIO(logo)
-        img = wx.ImageFromStream(io, wx.BITMAP_TYPE_ANY)
+        if 'phoenix' in wx.PlatformInfo:
+            img = wx.Image(io, wx.BITMAP_TYPE_ANY)
+        else :
+            img = wx.ImageFromStream(io, wx.BITMAP_TYPE_ANY)
         img = RecadreImg(img, tailleLogo)
         logo = img.ConvertToBitmap()
     dictDonnees = {

@@ -57,7 +57,12 @@ def FormateValeur(valeur, mode="decimal"):
     if mode == "horaire" :
         return "%dh%02d" % (heures, minutes)
 
-
+def GetQF(dictQuotientsFamiliaux={}, IDfamille=None, date=None):
+    if dictQuotientsFamiliaux.has_key(IDfamille) :
+        for date_debut, date_fin, quotient in dictQuotientsFamiliaux[IDfamille] :
+            if date >= date_debut and date <= date_fin :
+                return quotient
+    return None
 
 
 # ---------------------------------------------------------------------------------------
@@ -547,19 +552,20 @@ class Dialog(wx.Dialog):
 
 
         # Récupère le QF de la famille
-        # dictQuotientsFamiliaux = {}
-        # if qf != None :
-        #     req = """SELECT IDquotient, IDfamille, date_debut, date_fin, quotient
-        #     FROM quotients
-        #     ORDER BY date_debut;"""
-        #     DB.ExecuterReq(req)
-        #     listeDonnees = DB.ResultatReq()
-        #     for IDquotient, IDfamille, date_debut_temp, date_fin_temp, quotient in listeDonnees :
-        #         date_debut_temp = UTILS_Dates.DateEngEnDateDD(date_debut_temp)
-        #         date_fin_temp = UTILS_Dates.DateEngEnDateDD(date_fin_temp)
-        #         if dictQuotientsFamiliaux.has_key(IDfamille) == False :
-        #             dictQuotientsFamiliaux[IDfamille] = []
-        #         dictQuotientsFamiliaux[IDfamille].append((date_debut_temp, date_fin_temp, quotient))
+        dictQuotientsFamiliaux = {}
+        if "qf" in regroupement_principal :
+            req = """SELECT IDquotient, IDfamille, date_debut, date_fin, quotient
+            FROM quotients
+            WHERE date_debut<='%s' AND date_fin>='%s'
+            ORDER BY date_debut;""" % (date_fin, date_debut)
+            DB.ExecuterReq(req)
+            listeDonnees = DB.ResultatReq()
+            for IDquotient, IDfamille, date_debut_temp, date_fin_temp, quotient in listeDonnees :
+                date_debut_temp = UTILS_Dates.DateEngEnDateDD(date_debut_temp)
+                date_fin_temp = UTILS_Dates.DateEngEnDateDD(date_fin_temp)
+                if dictQuotientsFamiliaux.has_key(IDfamille) == False :
+                    dictQuotientsFamiliaux[IDfamille] = []
+                dictQuotientsFamiliaux[IDfamille].append((date_debut_temp, date_fin_temp, quotient))
 
         # Récupération des consommations
         listeUnitesUtilisees = dictUnites.keys()
@@ -633,7 +639,8 @@ class Dialog(wx.Dialog):
                 # QF par tranche de 100
                 if regroupement_principal == "qf_100":
                     regroupement = None
-                    qf = self.dictInfosFamilles[IDfamille]["FAMILLE_QF_ACTUEL_INT"]
+                    qf = GetQF(dictQuotientsFamiliaux, IDfamille, date)
+                    #qf = self.dictInfosFamilles[IDfamille]["FAMILLE_QF_ACTUEL_INT"]
                     for x in range(0, 10000, 100):
                         min, max = x, x + 99
                         if qf >= min and qf <= max:
@@ -642,7 +649,8 @@ class Dialog(wx.Dialog):
                 # QF par tranches
                 if regroupement_principal in ("qf_tarifs", "qf_perso") :
                     regroupement = None
-                    qf = self.dictInfosFamilles[IDfamille]["FAMILLE_QF_ACTUEL_INT"]
+                    qf = GetQF(dictQuotientsFamiliaux, IDfamille, date)
+                    #qf = self.dictInfosFamilles[IDfamille]["FAMILLE_QF_ACTUEL_INT"]
                     for min, max in liste_tranches_qf:
                         if qf >= min and qf <= max:
                             regroupement = (min, max)

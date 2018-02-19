@@ -256,7 +256,8 @@ class Dialog(wx.Dialog):
                         
         item = menuPop.AppendMenu(20, _(u"Charger un modèle d'Email"), sousMenuModeles)
         if len(listeDonnees) == 0 :
-            item.Enable(False)
+            if item != None :
+                item.Enable(False)
             
         # Gestion des modèles d'Email
         item = wx.MenuItem(menuPop, 30, _(u"Gestion des modèles"))

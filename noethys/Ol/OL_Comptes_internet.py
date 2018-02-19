@@ -21,7 +21,7 @@ from Utils import UTILS_Titulaires
 from Utils import UTILS_Interface
 from Utils import UTILS_Internet
 from Utils import UTILS_Parametres
-from ObjectListView import FastObjectListView, ColumnDefn, Filter,  CTRL_Outils, PanelAvecFooter
+from Ctrl.CTRL_ObjectListView import FastObjectListView, ColumnDefn, Filter,  CTRL_Outils, PanelAvecFooter
 
 
 

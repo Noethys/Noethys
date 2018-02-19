@@ -40,7 +40,7 @@ def SelectionFichier():
     wildcard = _(u"Sauvegarde Noethys (*.nod; *.noc)|*.nod;*.noc")
     standardPath = wx.StandardPaths.Get()
     rep = standardPath.GetDocumentsDir()
-    dlg = wx.FileDialog(None, message=_(u"Veuillez sélectionner le fichier de sauvegarde à restaurer"), defaultDir=rep, defaultFile="", wildcard=wildcard, style=wx.OPEN)
+    dlg = wx.FileDialog(None, message=_(u"Veuillez sélectionner le fichier de sauvegarde à restaurer"), defaultDir=rep, defaultFile="", wildcard=wildcard, style=wx.FD_OPEN)
     if dlg.ShowModal() == wx.ID_OK:
         fichier = dlg.GetPath()
     else:

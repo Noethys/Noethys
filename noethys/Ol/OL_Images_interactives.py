@@ -25,7 +25,7 @@ except :
     pass
 
 from Utils import UTILS_Interface
-from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
+from Ctrl.CTRL_ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
 
 
@@ -374,7 +374,7 @@ class ListView(FastObjectListView):
             defaultDir=sp.GetDocumentsDir(), 
             defaultFile="",
             wildcard=wildcard,
-            style=wx.OPEN
+            style=wx.FD_OPEN
             )
         if dlg.ShowModal() == wx.ID_OK:
             nomFichierCourt = dlg.GetFilename()
@@ -425,7 +425,7 @@ class ListView(FastObjectListView):
         standardPath = wx.StandardPaths.Get()
         dlg = wx.FileDialog(self, message=_(u"Enregistrer l'image interactive sous..."),
                             defaultDir = standardPath.GetDocumentsDir(), defaultFile="image.ndi",
-                            wildcard=u"Image interactive Noethys (*.ndi)|*.ndi", style=wx.SAVE)
+                            wildcard=u"Image interactive Noethys (*.ndi)|*.ndi", style=wx.FD_SAVE)
 
         if dlg.ShowModal() == wx.ID_OK:
             path = dlg.GetPath()

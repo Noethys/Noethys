@@ -281,11 +281,11 @@ class Informations() :
                 ("individu_adresse_auto" , "adresse_auto"), ("INDIVIDU_RUE" , "individus.rue_resid"), ("INDIVIDU_CP" , "individus.cp_resid"), ("INDIVIDU_VILLE" , "individus.ville_resid"), ("INDIVIDU_SECTEUR" , "secteurs.nom"), 
                 ("INDIVIDU_CATEGORIE_TRAVAIL" , "categories_travail.nom"), ("INDIVIDU_PROFESSION" , "profession"), ("INDIVIDU_EMPLOYEUR" , "employeur"),
                 ("INDIVIDU_TEL_PRO" , "travail_tel"), ("INDIVIDU_FAX_PRO" , "travail_fax"), ("INDIVIDU_MAIL_PRO" , "travail_mail"), ("INDIVIDU_TEL_DOMICILE" , "tel_domicile"),
-                ("INDIVIDU_TEL_MOBILE" , "individus.tel_mobile"), ("INDIVIDU_FAX" , "tel_fax"), ("INDIVIDU_MAIL" , "mail"), 
+                ("INDIVIDU_TEL_MOBILE" , "individus.tel_mobile"), ("INDIVIDU_TEL_PORTABLE" , "individus.tel_mobile"),("INDIVIDU_FAX" , "tel_fax"), ("INDIVIDU_MAIL" , "mail"),
                 ("MEDECIN_NOM" , "medecins.nom"), ("MEDECIN_PRENOM" , "medecins.prenom"), ("MEDECIN_RUE" , "medecins.rue_resid"), ("MEDECIN_CP" , "medecins.cp_resid"), 
                 ("MEDECIN_VILLE" , "medecins.ville_resid"), ("MEDECIN_TEL_CABINET" , "medecins.tel_cabinet"), ("MEDECIN_TEL_MOBILE" , "medecins.tel_mobile"), 
                 ("INDIVIDU_MEMO" , "individus.memo"), ("INDIVIDU_DATE_CREATION" , "individus.date_creation"), 
-                ]
+                ] # ("INDIVIDU_TEL_PORTABLE" , "individus.tel_mobile") a été ajouté pour le bug Nomadhys sur les téléphones portables
 
     def GetDictIndividus(self):
         """ Récupère toutes les infos de base sur les individus """

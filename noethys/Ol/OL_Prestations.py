@@ -26,7 +26,7 @@ from Utils.UTILS_Decimal import FloatToDecimal as FloatToDecimal
 
 
 from Utils import UTILS_Interface
-from ObjectListView import GroupListView, ColumnDefn, Filter, CTRL_Outils, PanelAvecFooter
+from Ctrl.CTRL_ObjectListView import GroupListView, ColumnDefn, Filter, CTRL_Outils, PanelAvecFooter
 
 def DateEngFr(textDate):
     text = str(textDate[8:10]) + u"/" + str(textDate[5:7]) + u"/" + str(textDate[:4])
@@ -392,7 +392,7 @@ class ListView(GroupListView):
         self.selectionID = None
         self.selectionTrack = None
         if ID == None :
-            self.DefileDernier() 
+            self.DefileDernier()
         # MAJ du total du panel
         try :
             if self.GetParent().GetName() == "panel_prestations" :

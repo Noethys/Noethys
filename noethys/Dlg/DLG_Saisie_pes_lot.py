@@ -41,6 +41,15 @@ from Utils import UTILS_Config
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 
 
+if 'phoenix' in wx.PlatformInfo:
+    from wx.propgrid import PGChoiceEditor as ChoiceEditor
+    from wx.adv import DP_DROPDOWN as DP_DROPDOWN
+    from wx.adv import DP_SHOWCENTURY as DP_SHOWCENTURY
+else :
+    from wx.propgrid import PyChoiceEditor as ChoiceEditor
+    from wx import DP_DROPDOWN as DP_DROPDOWN
+    from wx import DP_SHOWCENTURY as DP_SHOWCENTURY
+
 
 def Supprime_accent(texte):
     liste = [ (u"é", u"e"), (u"è", u"e"), (u"ê", u"e"), (u"ë", u"e"), (u"à", u"a"), (u"û", u"u"), (u"ô", u"o"), (u"ç", u"c"), (u"î", u"i"), (u"ï", u"i"),]
@@ -59,9 +68,9 @@ def GetMoisStr(numMois, majuscules=False, sansAccents=False) :
     return nom    
 
 
-class EditeurComboBoxAvecBoutons(wxpg.PyChoiceEditor):
+class EditeurComboBoxAvecBoutons(ChoiceEditor):
     def __init__(self):
-        wxpg.PyChoiceEditor.__init__(self)
+        ChoiceEditor.__init__(self)
 
     def CreateControls(self, propGrid, property, pos, sz):
         # Create and populate buttons-subwindow
@@ -123,17 +132,22 @@ class CTRL_Parametres(wxpg.PropertyGrid) :
 
         # Dates
         self.Append( wxpg.PropertyCategory(_(u"Dates")) )
+
+        if 'phoenix' in wx.PlatformInfo:
+            now = wx.DateTime.Now()
+        else :
+            now = wx.DateTime_Now()
         
-        propriete = wxpg.DateProperty(label=_(u"Date d'émission"), name="date_emission", value=wx.DateTime_Now())
-        propriete.SetAttribute(wxpg.PG_DATE_PICKER_STYLE, wx.DP_DROPDOWN|wx.DP_SHOWCENTURY )
+        propriete = wxpg.DateProperty(label=_(u"Date d'émission"), name="date_emission", value=now)
+        propriete.SetAttribute(wxpg.PG_DATE_PICKER_STYLE, DP_DROPDOWN|DP_SHOWCENTURY )
         self.Append(propriete)
         
-        propriete = wxpg.DateProperty(label=_(u"Date du prélèvement"), name="date_prelevement", value=wx.DateTime_Now())
-        propriete.SetAttribute(wxpg.PG_DATE_PICKER_STYLE, wx.DP_DROPDOWN|wx.DP_SHOWCENTURY )
+        propriete = wxpg.DateProperty(label=_(u"Date du prélèvement"), name="date_prelevement", value=now)
+        propriete.SetAttribute(wxpg.PG_DATE_PICKER_STYLE, DP_DROPDOWN|DP_SHOWCENTURY )
         self.Append(propriete)
         
-        propriete = wxpg.DateProperty(label=_(u"Avis d'envoi"), name="date_envoi", value=wx.DateTime_Now())
-        propriete.SetAttribute(wxpg.PG_DATE_PICKER_STYLE, wx.DP_DROPDOWN|wx.DP_SHOWCENTURY )
+        propriete = wxpg.DateProperty(label=_(u"Avis d'envoi"), name="date_envoi", value=now)
+        propriete.SetAttribute(wxpg.PG_DATE_PICKER_STYLE, DP_DROPDOWN|DP_SHOWCENTURY )
         self.Append(propriete)
 
         # Collectivité
@@ -1047,7 +1061,7 @@ class Dialog(wx.Dialog):
             defaultDir=cheminDefaut,
             defaultFile=nom_fichier,
             wildcard=wildcard,
-            style=wx.SAVE
+            style=wx.FD_SAVE
         )
         dlg.SetFilterIndex(0)
         if dlg.ShowModal() == wx.ID_OK:

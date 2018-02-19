@@ -35,6 +35,12 @@ from Utils import UTILS_Ticket
 
 from Data.DATA_Tables import DB_DATA as DICT_TABLES
 
+try :
+    from wx.adv import PseudoDC
+except :
+    from wx import PseudoDC
+
+
 DICT_CIVILITES = DATA_Civilites.GetDictCivilites()
 
 
@@ -281,7 +287,7 @@ class CTRL_Interface(wx.Panel):
             self.bmp_fond = wx.Bitmap(Chemins.GetStaticPath("Images/Badgeage/Theme_defaut.png"))
 
         # Initialisation du PseudoDC
-        self.pdc = wx.PseudoDC()
+        self.pdc = PseudoDC()
         self.dictObjets = {}
         self.DoDrawing(self.pdc)
 

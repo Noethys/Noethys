@@ -22,7 +22,7 @@ from Utils import UTILS_Historique
 from Utils import UTILS_Dates
 from Utils import UTILS_Interface
 from Utils import UTILS_Gestion
-from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils, ListCtrlPrinter
+from Ctrl.CTRL_ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
 from Utils import UTILS_Utilisateurs
 

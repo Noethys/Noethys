@@ -134,12 +134,12 @@ class CTRL_Allocataire(wx.Choice):
         # Remplissage du contrôle
         listeItems = [u"",]
         self.dictDonnees = {}
-        self.dictDonnees[0] = { "ID" : 0, "nom" : _(u"Inconnue")}
+        self.dictDonnees[0] = { "ID" : 0, "nom" : _(u"Inconnu")}
         index = 1
         for donnees in listeRepresentants :
-            label = u"%s %s" % (donnees["prenom"], donnees["nom"])
-            self.dictDonnees[index] = { "ID" : donnees["IDindividu"], "nom " : label}
-            listeItems.append(label)
+            nom_complet = u"%s %s" % (donnees["prenom"], donnees["nom"])
+            self.dictDonnees[index] = { "ID" : donnees["IDindividu"], "nom_complet" : nom_complet, "prenom" : donnees["prenom"], "nom" : donnees["nom"]}
+            listeItems.append(nom_complet)
             index += 1
         return listeItems
 
@@ -154,7 +154,13 @@ class CTRL_Allocataire(wx.Choice):
         index = self.GetSelection()
         if index == -1 or index == 0 : return None
         return self.dictDonnees[index]["ID"]
-            
+
+    def GetDonneesSelection(self):
+        index = self.GetSelection()
+        if index == -1 or index == 0: return None
+        return self.dictDonnees[index]
+
+
 
 # -----------------------------------------------------------------------------------------------------------------------
 
@@ -170,14 +176,14 @@ class Panel(wx.Panel):
         self.staticbox_caisse_staticbox = wx.StaticBox(self, -1, _(u"Caisse"))
         self.label_caisse = wx.StaticText(self, -1, _(u"Caisse d'allocation :"))
         self.ctrl_caisse = CTRL_Caisse(self)
-        self.ctrl_caisse.SetMinSize((140, -1))
+        self.ctrl_caisse.SetMinSize((120, -1))
         self.bouton_caisses = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Mecanisme.png"), wx.BITMAP_TYPE_ANY))
         self.label_numero = wx.StaticText(self, -1, _(u"N° allocataire :"))
         self.ctrl_numero = wx.TextCtrl(self, -1, u"")
         self.label_allocataire = wx.StaticText(self, -1, _(u"Titulaire :"))
         self.ctrl_allocataire = CTRL_Allocataire(self)
         self.ctrl_allocataire.SetMinSize((140, -1))
-        self.check_autorisation_cafpro = wx.CheckBox(self, -1, u"Accès CAFPRO")
+        self.check_autorisation_cafpro = wx.CheckBox(self, -1, u"Accès CAF-CDAP")
         self.bouton_cafpro = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Cafpro.png"), wx.BITMAP_TYPE_ANY))
 
         # Aides
@@ -211,8 +217,8 @@ class Panel(wx.Panel):
         self.bouton_caisses.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à la gestion des caisses")))
         self.ctrl_numero.SetToolTip(wx.ToolTip(_(u"Saisissez le numéro d'allocataire")))
         self.ctrl_allocataire.SetToolTip(wx.ToolTip(_(u"Sélectionnez l'individu titulaire du dossier d'allocataire")))
-        self.check_autorisation_cafpro.SetToolTip(wx.ToolTip(_(u"Cochez cette case si la famille a donné une autorisation de consultation CAFPRO")))
-        self.bouton_cafpro.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder au site CAFPRO")))
+        self.check_autorisation_cafpro.SetToolTip(wx.ToolTip(_(u"Cochez cette case si la famille a donné une autorisation de consultation CDAP")))
+        self.bouton_cafpro.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder au site CAF-CDAP")))
         self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter une aide journalière")))
         self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier l'aide sélectionnée dans la liste")))
         self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer l'aide sélectionnée dans la liste")))
@@ -279,37 +285,57 @@ class Panel(wx.Panel):
 
     def OnBoutonCafpro(self, event):
         # Mémorisation du numéro allocataire dans le presse-papiers
-        num_allocataire = self.ctrl_numero.GetValue()
-        clipdata = wx.TextDataObject()
-        clipdata.SetText(num_allocataire)
-        wx.TheClipboard.Open()
-        wx.TheClipboard.SetData(clipdata)
-        wx.TheClipboard.Close()
+#         num_allocataire = self.ctrl_numero.GetValue()
+#         clipdata = wx.TextDataObject()
+#         clipdata.SetText(num_allocataire)
+#         wx.TheClipboard.Open()
+#         wx.TheClipboard.SetData(clipdata)
+#         wx.TheClipboard.Close()
+#
+#         # Vérifie si case Ne plus Afficher cochée ou non
+#         if UTILS_Parametres.Parametres(mode="get", categorie="ne_plus_afficher", nom="acces_cafpro", valeur=False) == False :
+#             texte = u"""
+# <CENTER><IMG SRC="Static/Images/32x32/Astuce.png">
+# <FONT SIZE=3>
+# <BR>
+# <B>Astuce</B>
+# <BR><BR>
+# Le numéro d'allocataire de la famille a été copié dans le presse-papiers.
+# <BR><BR>
+# Collez tout simplement ce numéro dans le champ de recherche du site CAFPRO grâce à la combinaison de touches <B>CTRL+V</B> de votre clavier !
+# </FONT>
+# </CENTER>
+# """
+#             dlg = DLG_Message_html.Dialog(self, texte=texte, titre=_(u"Astuce"), nePlusAfficher=True, size=(200, 300))
+#             dlg.ShowModal()
+#             nePlusAfficher = dlg.GetEtatNePlusAfficher()
+#             dlg.Destroy()
+#             if nePlusAfficher == True :
+#                 UTILS_Parametres.Parametres(mode="set", categorie="ne_plus_afficher", nom="acces_cafpro", valeur=nePlusAfficher)
 
-        # Vérifie si case Ne plus Afficher cochée ou non
-        if UTILS_Parametres.Parametres(mode="get", categorie="ne_plus_afficher", nom="acces_cafpro", valeur=False) == False :
-            texte = u"""
-<CENTER><IMG SRC="Static/Images/32x32/Astuce.png">
-<FONT SIZE=3>
-<BR>
-<B>Astuce</B>
-<BR><BR>
-Le numéro d'allocataire de la famille a été copié dans le presse-papiers.
-<BR><BR>
-Collez tout simplement ce numéro dans le champ de recherche du site CAFPRO grâce à la combinaison de touches <B>CTRL+V</B> de votre clavier !
-</FONT>
-</CENTER>
-"""
-            dlg = DLG_Message_html.Dialog(self, texte=texte, titre=_(u"Astuce"), nePlusAfficher=True, size=(200, 300))
-            dlg.ShowModal()
-            nePlusAfficher = dlg.GetEtatNePlusAfficher()
-            dlg.Destroy()
-            if nePlusAfficher == True :
-                UTILS_Parametres.Parametres(mode="set", categorie="ne_plus_afficher", nom="acces_cafpro", valeur=nePlusAfficher)
+        # Récupération des données
+        dictDonnees = {}
+
+        # Recherche nom allocataire
+        dictDonnees["nom_allocataire"] = ""
+        allocataire = self.ctrl_allocataire.GetDonneesSelection()
+        if allocataire != None :
+            dictDonnees["nom_allocataire"] = allocataire["nom"]
+        else :
+            if len(self.ctrl_allocataire.dictDonnees) > 1 :
+                dictDonnees["nom_allocataire"] = self.ctrl_allocataire.dictDonnees[1]["nom"]
+
+        # Recherche numéro allocataire
+        dictDonnees["numero_allocataire"] = self.ctrl_numero.GetValue()
+
+        # Ouverture de la frame d'aide
+        from Dlg import DLG_Consultation_cafpro
+        frm = DLG_Consultation_cafpro.Frame(None, IDfamille=self.IDfamille, dictDonnees=dictDonnees)
+        frm.Show()
 
         # Ouverture du navigateur
         import webbrowser
-        webbrowser.open("http://www.caf.fr/cafpro/Ident.jsp")
+        webbrowser.open("https://partenaires.caf.fr/portal/auth/login")
 
     def OnBoutonCaisse(self, event): 
         IDcaisse = self.ctrl_caisse.GetID()
@@ -425,7 +451,7 @@ class MyFrame(wx.Frame):
 if __name__ == '__main__':
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    frame_1 = MyFrame(None, -1, _(u"TEST"), size=(800, 400))
+    frame_1 = MyFrame(None, -1, _(u"TEST"), size=(900, 400))
     app.SetTopWindow(frame_1)
     frame_1.Show()
     app.MainLoop()

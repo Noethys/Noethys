@@ -451,13 +451,19 @@ class DLG_Question(wx.Dialog):
         
         # Création de la forme de la fenêtre
         size = self.GetSize()
-        bmp = wx.EmptyBitmap(size.x, size.y)
+        if 'phoenix' in wx.PlatformInfo:
+            bmp = wx.Bitmap(size.x, size.y)
+        else :
+            bmp = wx.EmptyBitmap(size.x, size.y)
         dc = wx.BufferedDC(None, bmp)
         dc.SetBackground(wx.Brush(wx.Colour(0, 0, 0), wx.SOLID))
         dc.Clear()
         dc.SetPen(wx.Pen(wx.Colour(0, 0, 0), 1))
-        dc.DrawRoundedRectangle(0, 0, size.x, size.y, 20)                
-        r = wx.RegionFromBitmapColour(bmp, wx.Colour(0, 0, 0))
+        dc.DrawRoundedRectangle(0, 0, size.x, size.y, 20)
+        if 'phoenix' in wx.PlatformInfo:
+            r = wx.Region(bmp, wx.Colour(0, 0, 0))
+        else :
+            r = wx.RegionFromBitmapColour(bmp, wx.Colour(0, 0, 0))
         self.reg = r
         if wx.Platform == "__WXGTK__":
             self.Bind(wx.EVT_WINDOW_CREATE, self.SetBusyShape)

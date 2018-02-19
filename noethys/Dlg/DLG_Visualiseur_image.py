@@ -15,16 +15,20 @@ from Utils.UTILS_Traduction import _
 import wx
 from Ctrl import CTRL_Bouton_image
 
+ID_EXIT = 98
+ID_UNDO = 99
 ID_PLUS = 100
 ID_MOINS = 101
 
 phrase1 = _(u"Ramener l'image à sa taille d'origine")
 phrase2 = _(u"Opération interdite")
 
-if not wx.USE_UNICODE:
-    phrase1 = phrase1.encode("iso8859-15", "replace")
-    phrase1 = phrase1.encode("iso8859-15", "replace")
-
+try :
+    if not wx.USE_UNICODE:
+        phrase1 = phrase1.encode("iso8859-15", "replace")
+        phrase1 = phrase1.encode("iso8859-15", "replace")
+except :
+    pass
 
 def pil2wx(image):
     """Convert a PIL image to wx image format"""
@@ -71,7 +75,10 @@ class MyFrame(wx.Frame):
     def __init__(self, parent, imgPIL=None, imgWX=None):
         wx.Frame.__init__(self, parent, -1, size = (800, 600))
         
-        _icon = wx.EmptyIcon()
+        if 'phoenix' in wx.PlatformInfo:
+            _icon = wx.Icon()
+        else :
+            _icon = wx.EmptyIcon()
         _icon.CopyFromBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Logo.png"), wx.BITMAP_TYPE_ANY))
         self.SetIcon(_icon)
         self.SetTitle(_(u"Aperçu d'image"))
@@ -106,29 +113,11 @@ class MyFrame(wx.Frame):
         self.barre.SetStatusWidths([-1, -1])
         self.SetStatusBar(self.barre)
 
-        outils = wx.ToolBar(self, -1, style = wx.TB_HORIZONTAL | wx.NO_BORDER)
-        outils.AddSimpleTool(wx.ID_EXIT,
-                    wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Fermer.png"), wx.BITMAP_TYPE_PNG),
-                    shortHelpString = _(u"Fermer l'aperçu"),
-                    longHelpString = _(u"Fermer l'aperçu"))
-        
-        outils.AddSeparator()
-        
-        outils.AddSimpleTool(ID_PLUS,
-                    wx.Bitmap(Chemins.GetStaticPath("Images/32x32/zoom_plus.png"), wx.BITMAP_TYPE_PNG),
-                    shortHelpString = _(u"Agrandir"), 
-                    longHelpString = _(u"Agrandir l'image"))
-                    
-        outils.AddSimpleTool(wx.ID_UNDO, 
-                    wx.Bitmap(Chemins.GetStaticPath("Images/32x32/zoom_init.png"), wx.BITMAP_TYPE_PNG),
-                    shortHelpString = _(u"Taille originale"),
-                    longHelpString = phrase1)
-
-        outils.AddSimpleTool(ID_MOINS,
-                    wx.Bitmap(Chemins.GetStaticPath("Images/32x32/zoom_moins.png"), wx.BITMAP_TYPE_PNG),
-                    shortHelpString = _(u"Diminuer"),
-                    longHelpString = _(u"Diminuer l'image"))
-        
+        outils = UTILS_Adaptations.ToolBar(self, -1, style = wx.TB_HORIZONTAL | wx.NO_BORDER)
+        outils.AddLabelTool(ID_EXIT, _(u"Fermer l'aperçu"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Fermer.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Fermer"), "")
+        outils.AddLabelTool(ID_PLUS, _(u"Agrandir"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/zoom_plus.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Agrandir"), "")
+        outils.AddLabelTool(ID_UNDO, _(u"Taille originale"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/zoom_init.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Taille originale"), "")
+        outils.AddLabelTool(ID_MOINS, _(u"Diminuer"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/zoom_moins.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Diminuer"), "")
         outils.Realize()
         self.SetToolBar(outils)
 
@@ -137,10 +126,10 @@ class MyFrame(wx.Frame):
         sizer.Add(self.panneau, 1, wx.EXPAND|wx.ALL, 2)
         self.SetSizer(sizer)
 
-        wx.EVT_MENU(self, wx.ID_EXIT, self.OnExit)
-        wx.EVT_MENU(self, wx.ID_UNDO, self.Retour)
-        wx.EVT_MENU(self, ID_PLUS, self.Plus)
-        wx.EVT_MENU(self, ID_MOINS, self.Moins)
+        self.Bind(wx.EVT_MENU, self.OnExit, id=ID_EXIT)
+        self.Bind(wx.EVT_MENU, self.Retour, id=ID_UNDO)
+        self.Bind(wx.EVT_MENU, self.Plus, id=ID_PLUS)
+        self.Bind(wx.EVT_MENU, self.Moins, id=ID_MOINS)
         
         self.CenterOnScreen() 
         
@@ -184,7 +173,7 @@ class MyFrame(wx.Frame):
         else:
             dlg = wx.FileDialog(self, _(u"Choisissez un fichier"),
                     wildcard = "*.*",
-                    style = wx.OPEN)
+                    style = wx.FD_OPEN)
             retour = dlg.ShowModal()
             chemin = dlg.GetPath()
             fichier = dlg.GetFilename()

@@ -15,7 +15,7 @@ from Utils.UTILS_Traduction import _
 import wx
 import GestionDB
 from Utils import UTILS_Interface
-from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils, PanelAvecFooter
+from Ctrl.CTRL_ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils, PanelAvecFooter
 from Utils import UTILS_Dates
 from Utils import UTILS_Gestion
 from Utils import UTILS_Config

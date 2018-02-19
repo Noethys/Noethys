@@ -3,7 +3,6 @@
 # Name:         ObjectListView module initialization
 # Author:       Phillip Piper
 # Created:      29 February 2008
-# SVN-ID:       $Id$
 # Copyright:    (c) 2008 by Phillip Piper
 # License:      wxWindows license
 #----------------------------------------------------------------------------
@@ -17,17 +16,18 @@
 An ObjectListView provides a more convienent and powerful interface to a ListCtrl.
 """
 
-__version__ = '1.2'
+__version__ = '1.3.2'
 __copyright__ = "Copyright (c) 2008 Phillip Piper (phillip_piper@bigfoot.com)"
 
-from ObjectListView import ObjectListView, VirtualObjectListView, ColumnDefn, FastObjectListView, GroupListView, ListGroup, BatchedUpdate, PanelAvecFooter, BarreRecherche, CTRL_Outils
-from OLVEvent import CellEditFinishedEvent, CellEditFinishingEvent, CellEditStartedEvent, CellEditStartingEvent, SortEvent
-from OLVEvent import EVT_CELL_EDIT_STARTING, EVT_CELL_EDIT_STARTED, EVT_CELL_EDIT_FINISHING, EVT_CELL_EDIT_FINISHED, EVT_SORT
-from OLVEvent import EVT_COLLAPSING, EVT_COLLAPSED, EVT_EXPANDING, EVT_EXPANDED, EVT_GROUP_CREATING, EVT_GROUP_SORT
-from CellEditor import CellEditorRegistry, MakeAutoCompleteTextBox, MakeAutoCompleteComboBox
-from ListCtrlPrinter import ListCtrlPrinter, ReportFormat, BlockFormat, LineDecoration, RectangleDecoration, ImageDecoration
+from . ObjectListView import ObjectListView, VirtualObjectListView, ColumnDefn, FastObjectListView, GroupListView, ListGroup, BatchedUpdate, NamedImageList
+from . OLVEvent import CellEditFinishedEvent, CellEditFinishingEvent, CellEditStartedEvent, CellEditStartingEvent, SortEvent
+from . OLVEvent import EVT_CELL_EDIT_STARTING, EVT_CELL_EDIT_STARTED, EVT_CELL_EDIT_FINISHING, EVT_CELL_EDIT_FINISHED, EVT_SORT
+from . OLVEvent import EVT_COLLAPSING, EVT_COLLAPSED, EVT_EXPANDING, EVT_EXPANDED, EVT_GROUP_CREATING, EVT_GROUP_SORT, EVT_ITEM_CHECKED
+from . CellEditor import CellEditorRegistry, MakeAutoCompleteTextBox, MakeAutoCompleteComboBox
+from . ListCtrlPrinter import ListCtrlPrinter, ReportFormat, BlockFormat, LineDecoration, RectangleDecoration, ImageDecoration
 
-import Filter
+from . import Filter
+
 __all__ = [
     "BatchedUpdate",
     "BlockFormat",
@@ -62,7 +62,4 @@ __all__ = [
     "ReportFormat",
     "SortEvent",
     "VirtualObjectListView",
-    "PanelAvecFooter",
-    "BarreRecherche",
-    "CTRL_Outils",
 ]

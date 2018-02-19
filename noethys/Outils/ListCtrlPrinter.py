@@ -794,38 +794,38 @@ class ReportFormat(object):
         fmt = ReportFormat()
         fmt.IsShrinkToFit = True
 
-        fmt.PageHeader.Font = wx.FFont(12, wx.FONTFAMILY_DEFAULT, face=headerFontName)
+        fmt.PageHeader.Font = wx.FFont(12, wx.FONTFAMILY_DEFAULT, faceName=headerFontName)
         fmt.PageHeader.Line(wx.BOTTOM, wx.BLUE, 2, space=5)
         fmt.PageHeader.Padding = (0, 0, 0, 12)
 
-        fmt.ListHeader.Font = wx.FFont(26, wx.FONTFAMILY_SWISS, wx.FONTFLAG_BOLD, face=headerFontName)
+        fmt.ListHeader.Font = wx.FFont(26, wx.FONTFAMILY_SWISS, wx.FONTFLAG_BOLD, faceName=headerFontName)
         fmt.ListHeader.TextColor = wx.WHITE
         fmt.ListHeader.Padding = (0, 12, 0, 12)
         fmt.ListHeader.TextAlignment = wx.ALIGN_LEFT
         fmt.ListHeader.Background(wx.BLUE, wx.WHITE, space=(16, 4, 0, 4))
 
-        fmt.GroupTitle.Font = wx.FFont(14, wx.FONTFAMILY_DEFAULT, face=headerFontName)
+        fmt.GroupTitle.Font = wx.FFont(14, wx.FONTFAMILY_DEFAULT, faceName=headerFontName)
         fmt.GroupTitle.Line(wx.BOTTOM, wx.BLUE, 4, toColor=wx.WHITE, space=5)
         fmt.GroupTitle.Padding = (0, 12, 0, 12)
 
-        fmt.PageFooter.Font = wx.FFont(10, wx.FONTFAMILY_DEFAULT, face=headerFontName)
+        fmt.PageFooter.Font = wx.FFont(10, wx.FONTFAMILY_DEFAULT, faceName=headerFontName)
         fmt.PageFooter.Background(wx.WHITE, wx.BLUE, space=(0, 4, 0, 4))
 
-        fmt.ColumnHeader.Font = wx.FFont(14, wx.FONTFAMILY_DEFAULT, wx.FONTFLAG_BOLD, face=headerFontName)
+        fmt.ColumnHeader.Font = wx.FFont(14, wx.FONTFAMILY_DEFAULT, wx.FONTFLAG_BOLD, faceName=headerFontName)
         fmt.ColumnHeader.CellPadding = 2
         fmt.ColumnHeader.Background(wx.Colour(192, 192, 192))
         fmt.ColumnHeader.GridPen = wx.Pen(wx.WHITE, 1)
         fmt.ColumnHeader.Padding = (0, 0, 0, 12)
         fmt.ColumnHeader.AlwaysCenter = True
 
-        fmt.ColumnFooter.Font = wx.FFont(14, wx.FONTFAMILY_DEFAULT, wx.FONTFLAG_BOLD, face=headerFontName)
+        fmt.ColumnFooter.Font = wx.FFont(14, wx.FONTFAMILY_DEFAULT, wx.FONTFLAG_BOLD, faceName=headerFontName)
         fmt.ColumnFooter.CellPadding = 2
         fmt.ColumnFooter.Background(wx.Colour(192, 192, 192))
         fmt.ColumnFooter.GridPen = wx.Pen(wx.WHITE, 1)
         fmt.ColumnFooter.Padding = (0, 0, 0, 12)
         fmt.ColumnFooter.AlwaysCenter = True
 
-        fmt.Row.Font = wx.FFont(12, wx.FONTFAMILY_DEFAULT, face=rowFontName)
+        fmt.Row.Font = wx.FFont(12, wx.FONTFAMILY_DEFAULT, faceName=rowFontName)
         fmt.Row.Line(wx.BOTTOM, pen=wx.Pen(wx.BLUE, 1, wx.DOT), space=3)
         fmt.Row.CellPadding = 2
         fmt.Row.CanWrap = True
@@ -936,7 +936,7 @@ class BlockFormat(object):
         """
         self.padding = None
         self.decorations = list()
-        self.font = wx.FFont(11, wx.FONTFAMILY_SWISS, face="Gill Sans")
+        self.font = wx.FFont(11, wx.FONTFAMILY_SWISS, faceName="Gill Sans")
         self.textColor = None
         self.textAlignment = wx.ALIGN_LEFT
         self.alwaysCenter = False

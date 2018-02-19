@@ -253,7 +253,7 @@ class CTRL_Interface(wx.Panel):
             defaultDir=cheminDefaut, 
             defaultFile="",
             wildcard=wildcard,
-            style=wx.OPEN
+            style=wx.FD_OPEN
             )
         if dlg.ShowModal() == wx.ID_OK:
             chemin = dlg.GetPath()

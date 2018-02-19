@@ -22,7 +22,7 @@ else :
     from wx import DatePickerCtrl, DP_DROPDOWN
 
 from Utils import UTILS_Interface
-from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
+from Ctrl.CTRL_ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
 from Utils import UTILS_Utilisateurs
 

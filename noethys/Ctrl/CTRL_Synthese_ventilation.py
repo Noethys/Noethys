@@ -657,7 +657,7 @@ class CTRL(HTL.HyperTreeList):
             None, message = _(u"Veuillez sélectionner le répertoire de destination et le nom du fichier"), defaultDir=cheminDefaut, 
             defaultFile = nomFichier, 
             wildcard = wildcard, 
-            style = wx.SAVE
+            style = wx.FD_SAVE
             )
         dlg.SetFilterIndex(0)
         if dlg.ShowModal() == wx.ID_OK:

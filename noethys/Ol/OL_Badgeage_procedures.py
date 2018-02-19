@@ -23,7 +23,7 @@ from Dlg.DLG_Badgeage_interface import LISTE_STYLES, LISTE_THEMES
 
 
 from Utils import UTILS_Interface
-from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
+from Ctrl.CTRL_ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
 
 class Exporter(UTILS_Export_tables.Exporter):

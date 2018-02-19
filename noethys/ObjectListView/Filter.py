@@ -1,10 +1,9 @@
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf-8 -*-
 #----------------------------------------------------------------------------
 # Name:         Filter.py
 # Author:       Phillip Piper
 # Created:      26 August 2008
 # Copyright:    (c) 2008 Phillip Piper
-# SVN-ID:       $Id$
 # License:      wxWindows license
 #----------------------------------------------------------------------------
 # Change log:
@@ -12,9 +11,6 @@
 #----------------------------------------------------------------------------
 # To do:
 #
-
-import unicodedata
-
 
 """
 Filters provide a structured mechanism to display only some of the model objects
@@ -32,6 +28,7 @@ The penalty is normally O(n) since the filter normally examines each model
 object to see if it should be included. Head() and Tail() are exceptions
 to this observation.
 """
+
 
 def Predicate(predicate):
     """
@@ -64,6 +61,7 @@ def Tail(num):
 
 
 class TextSearch(object):
+
     """
     Return only model objects that match a given string. If columns is not empty,
     only those columns will be considered when searching for the string. Otherwise,
@@ -88,33 +86,22 @@ class TextSearch(object):
         """
         if not self.text:
             return modelObjects
-        
+
         # In non-report views, we can only search the primary column
         if self.objectListView.InReportView():
             cols = self.columns or self.objectListView.columns
         else:
             cols = [self.objectListView.columns[0]]
 
-        textToFind = self.EnleveAccents(self.text).lower()
+        textToFind = self.text.lower()
 
         def _containsText(modelObject):
             for col in cols:
-                valeur = col.GetStringValue(modelObject)
-                if valeur == None : valeur = u""
-                textInListe = self.EnleveAccents(valeur).lower()
-                # Recherche de la chaine
-                if textToFind in textInListe :
+                if textToFind in col.GetStringValue(modelObject).lower():
                     return True
             return False
 
         return [x for x in modelObjects if _containsText(x)]
-    
-    def EnleveAccents(self, texte):
-        try :
-            return texte.decode("iso-8859-15")
-        except : return texte
-        
-
 
     def SetText(self, text):
         """
@@ -124,6 +111,7 @@ class TextSearch(object):
 
 
 class Chain(object):
+
     """
     Return only model objects that match all of the given filters.
 
@@ -141,7 +129,6 @@ class Chain(object):
         The order of the filters is important.
         """
         self.filters = filters
-
 
     def __call__(self, modelObjects):
         """
