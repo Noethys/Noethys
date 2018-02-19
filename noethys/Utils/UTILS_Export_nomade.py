@@ -228,6 +228,7 @@ class Export():
             listeTables = [
                 "vacances", "jours_feries", "activites", "groupes", "unites", "unites_groupes", "unites_incompat", "unites_remplissage", "unites_remplissage_unites", "ouvertures", "remplissage",
                 "inscriptions", "consommations", "memo_journee", "comptes_payeurs", "familles", "utilisateurs", "nomade_archivage",
+                "niveaux_scolaires", "ecoles", "classes", "scolarite",
                 ]
             self.CopieTables(dbdest, listeTables)
             
