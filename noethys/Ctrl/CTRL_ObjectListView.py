@@ -16,7 +16,6 @@ import copy
 import os
 
 from Ctrl import CTRL_Footer
-import Filter
 
 import sys
 sys.path.append("..")
@@ -25,7 +24,7 @@ from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 
 import ObjectListView as OLV
-from ObjectListView import EVT_CELL_EDIT_STARTING, EVT_CELL_EDIT_FINISHING, CellEditorRegistry
+from ObjectListView import EVT_CELL_EDIT_STARTING, EVT_CELL_EDIT_FINISHING, CellEditorRegistry, Filter
 from ObjectListView.ObjectListView import AbstractVirtualObjectListView as Abstract
 
 
