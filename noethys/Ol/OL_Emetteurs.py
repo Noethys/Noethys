@@ -282,16 +282,19 @@ class ListView(FastObjectListView):
         nbreReglements = int(DB.ResultatReq()[0][0])
         DB.Close()
         if nbreReglements > 0 :
-            dlg = wx.MessageDialog(self, _(u"Cet émetteur a déjà été attribué à %d règlement(s).\n\nVous ne pouvez donc pas le supprimer !") % nbreReglements, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
-            dlg.ShowModal()
+            message = _(u"Attention, cet émetteur a déjà été attribué à %d règlement(s). Si vous le supprimez, il sera également dissocié des règlements associés !\n\nSouhaitez-vous tout de même le supprimer ?") % nbreReglements
+            dlg = wx.MessageDialog(self, message, _(u"Suppression"), wx.YES_NO | wx.NO_DEFAULT | wx.CANCEL | wx.ICON_EXCLAMATION)
+            reponse = dlg.ShowModal()
             dlg.Destroy()
-            return
-        
+            if reponse != wx.ID_YES:
+                return False
+
         # Suppression
-        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer cet émetteur ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Confirmez-vous vraiment la suppression de cet émetteur ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         if dlg.ShowModal() == wx.ID_YES :
             DB = GestionDB.DB()
             DB.ReqDEL("emetteurs", "IDemetteur", IDemetteur)
+            DB.ReqMAJ("reglements", [("IDemetteur", None),], "IDemetteur", IDemetteur)
             DB.Close() 
             self.MAJ()
         dlg.Destroy()
