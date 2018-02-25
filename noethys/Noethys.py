@@ -870,8 +870,10 @@ class MainFrame(wx.Frame):
                     {"code" : "liste_familles", "label" : _(u"Liste des familles"), "infobulle" : _(u"Liste des familles"), "image" : "Images/16x16/Famille.png", "action" : self.On_individus_familles},
                     "-",
                     {"code" : "menu_individus_transports", "label" : _(u"Liste des transports"), "items" : [
-                            {"code" : "liste_detail_transports", "label" : _(u"Liste récapitulative"), "infobulle" : _(u"Editer une liste récapitulative des transports"), "image" : "Images/16x16/Transport.png", "action" : self.On_individus_transports_recap},
-                            {"code" : "liste_recap_transports", "label" : _(u"Liste détaillée"), "infobulle" : _(u"Editer une liste détaillée des transports"), "image" : "Images/16x16/Transport.png", "action" : self.On_individus_transports_detail},
+                            {"code" : "liste_detail_transports", "label" : _(u"Liste récapitulative des transports"), "infobulle" : _(u"Editer une liste récapitulative des transports"), "image" : "Images/16x16/Transport.png", "action" : self.On_individus_transports_recap},
+                            {"code" : "liste_recap_transports", "label" : _(u"Liste détaillée des transports"), "infobulle" : _(u"Editer une liste détaillée des transports"), "image" : "Images/16x16/Transport.png", "action" : self.On_individus_transports_detail},
+                            "-",
+                            {"code": "liste_prog_transports", "label": _(u"Liste des programmations de transports"), "infobulle": _(u"Editer une liste des programmations de transports"), "image": "Images/16x16/Transport.png", "action": self.On_individus_transports_prog},
                             ],
                     },
                     "-",
@@ -3200,6 +3202,12 @@ class MainFrame(wx.Frame):
         from Dlg import DLG_Liste_transports_detail
         dlg = DLG_Liste_transports_detail.Dialog(self)
         dlg.ShowModal() 
+        dlg.Destroy()
+
+    def On_individus_transports_prog(self, event):
+        from Dlg import DLG_Liste_transports_prog
+        dlg = DLG_Liste_transports_prog.Dialog(self)
+        dlg.ShowModal()
         dlg.Destroy()
 
     def On_individus_anniversaires(self, event):
