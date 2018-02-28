@@ -706,6 +706,7 @@ class MainFrame(wx.Frame):
                             {"code" : "villes", "label" : _(u"Villes et codes postaux"), "infobulle" : _(u"Paramétrage des villes et codes postaux"), "image" : "Images/16x16/Carte.png", "action" : self.On_param_villes},
                             {"code" : "secteurs", "label" : _(u"Secteurs géographiques"), "infobulle" : _(u"Paramétrage des secteurs géographiques"), "image" : "Images/16x16/Secteur.png", "action" : self.On_param_secteurs},
                             {"code" : "types_sieste", "label" : _(u"Types de sieste"), "infobulle" : _(u"Paramétrage des types de sieste"), "image" : "Images/16x16/Reveil.png", "action" : self.On_param_types_sieste},
+                            {"code" : "categories_medicales", "label": _(u"Catégories médicales"), "infobulle": _(u"Paramétrage des catégories médicales"), "image": "Images/16x16/Medical.png", "action": self.On_param_categories_medicales},
                             {"code" : "maladies", "label" : _(u"Maladies"), "infobulle" : _(u"Paramétrage des maladies"), "image" : "Images/16x16/Medical.png", "action" : self.On_param_maladies},
                             {"code" : "vaccins", "label" : _(u"Vaccins"), "infobulle" : _(u"Paramétrage des vaccins"), "image" : "Images/16x16/Seringue.png", "action" : self.On_param_vaccins},
                             {"code" : "medecins", "label" : _(u"Médecins"), "infobulle" : _(u"Paramétrage des médecins"), "image" : "Images/16x16/Medecin.png", "action" : self.On_param_medecins},
@@ -1502,6 +1503,10 @@ class MainFrame(wx.Frame):
         IDutilisateur = DB.ReqInsert("utilisateurs", listeDonnees)
         DB.Close()
 
+        # Procédures
+        from Utils import UTILS_Procedures
+        UTILS_Procedures.A9081() # Création du profil de configuration de la liste des infos médicales
+
         message = _(u"Création terminée...")
         self.SetStatusText(message)
         dlgprogress.Update(numEtape, message);numEtape += 1
@@ -1850,7 +1855,14 @@ class MainFrame(wx.Frame):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_types_siestes", "consulter") == False : return
         from Dlg import DLG_Types_sieste
         dlg = DLG_Types_sieste.Dialog(self)
-        dlg.ShowModal() 
+        dlg.ShowModal()
+        dlg.Destroy()
+
+    def On_param_categories_medicales(self, event):
+        if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_categories_medicales", "consulter") == False : return
+        from Dlg import DLG_Categories_medicales
+        dlg = DLG_Categories_medicales.Dialog(self)
+        dlg.ShowModal()
         dlg.Destroy()
 
     def On_param_vacances(self, event):

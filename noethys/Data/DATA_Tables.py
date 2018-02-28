@@ -21,6 +21,7 @@ TABLES_IMPORTATION_OPTIONNELLES = [
         [u"Niveaux scolaires", ("niveaux_scolaires",), True],
         [u"Comptes comptables", ("compta_comptes_comptables",), True],
         [u"Types de quotients", ("types_quotients",), True],
+        [u"Catégories médicales", ("categories_medicales",), True],
         ] # [Nom Categorie, (liste des tables...,), Selectionné]
 
 TABLES_IMPORTATION_OBLIGATOIRES = []
@@ -1678,6 +1679,9 @@ DB_DATA = {
                                     ("verrou_cotisations", "INTEGER", u"Verrouillage"),
                                     ],  # Périodes de gestion
 
+    "categories_medicales":          [("IDcategorie", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID Catégorie"),
+                                     ("nom", "VARCHAR(300)", u"Nom de la catégorie"),
+                                     ],  # Catégories médicales
 
 }
 

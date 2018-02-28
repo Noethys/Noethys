@@ -14,56 +14,101 @@ from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
 from Ctrl import CTRL_Bouton_image
-if 'phoenix' in wx.PlatformInfo:
-    from wx.adv import BitmapComboBox
-else :
-    from wx.combo import BitmapComboBox
+# if 'phoenix' in wx.PlatformInfo:
+#     from wx.adv import BitmapComboBox
+# else :
+#     from wx.combo import BitmapComboBox
 from Ctrl import CTRL_Saisie_date
 import GestionDB
 
 
-LISTE_TYPES = [
-    (1, _(u"Maladie"), "Medical.png"),
-    (2, _(u"Allergie alimentaire"), "Medical.png"),
-    (3, _(u"Allergie médicamenteuse"), "Medicament.png"),
-    (4, _(u"Autre type d'allergie"), "Medical.png"),
-    (5, _(u"Accident"), "Pansement.png"),
-    (6, _(u"Hospitalisation"), "Hopital.png"),
-    (7, _(u"Opération"), "Stethoscope.png"),
-    (8, _(u"Autre"), "Medical.png"),
-    ]
+# LISTE_TYPES = [
+#     (1, _(u"Maladie"), "Medical.png"),
+#     (2, _(u"Alimentation"), "Medical.png"),
+#     (3, _(u"Médicamentation"), "Medicament.png"),
+#     (4, _(u"Allergie"), "Medical.png"),
+#     (5, _(u"Accident"), "Pansement.png"),
+#     (6, _(u"Hospitalisation"), "Hopital.png"),
+#     (7, _(u"Opération"), "Stethoscope.png"),
+#     (8, _(u"Autre"), "Medical.png"),
+#     ]
 
 
 
-class MyBitmapComboBox(BitmapComboBox):
-    def __init__(self, parent, listeImages=[], size=(-1,  -1) ):
-        BitmapComboBox.__init__(self, parent, size=size, style=wx.CB_READONLY)
-        self.dictID = {}
-        
-    def Remplissage(self, listeDonnees=[]):
-        # listeDonnees = [ ID, texte, CheminImage]
-        self.dictID = {}
-        index = 0
-        for ID, texte, nomImage in listeDonnees :
-            img = wx.Bitmap(Chemins.GetStaticPath("Images/32x32/%s" % nomImage), wx.BITMAP_TYPE_ANY)
-            self.Append(texte, img, texte)
-            self.dictID[index] = ID
-            index += 1
-        # Sélection par défaut
+# class MyBitmapComboBox(BitmapComboBox):
+#     def __init__(self, parent, listeImages=[], size=(-1,  -1) ):
+#         BitmapComboBox.__init__(self, parent, size=size, style=wx.CB_READONLY)
+#         self.dictID = {}
+#
+#     def Remplissage(self, listeDonnees=[]):
+#         # listeDonnees = [ ID, texte, CheminImage]
+#         self.dictID = {}
+#         index = 0
+#         for ID, texte, nomImage in listeDonnees :
+#             img = wx.Bitmap(Chemins.GetStaticPath("Images/32x32/%s" % nomImage), wx.BITMAP_TYPE_ANY)
+#             self.Append(texte, img, texte)
+#             self.dictID[index] = ID
+#             index += 1
+#         # Sélection par défaut
+#         self.Select(0)
+#
+#     def GetIDselection(self):
+#         index = self.GetSelection()
+#         return self.dictID[index]
+#
+#     def SetIDselection(self, ID):
+#         for index, IDtmp, in self.dictID.iteritems():
+#             if ID == IDtmp :
+#                 self.Select(index)
+#                 return
+
+
+class CTRL_Categorie(wx.Choice):
+    def __init__(self, parent):
+        wx.Choice.__init__(self, parent, -1, size=(170, -1))
+        self.parent = parent
+        self.MAJ()
         self.Select(0)
-    
-    def GetIDselection(self):
+
+    def MAJ(self):
+        listeItems = self.GetListeDonnees()
+        if len(listeItems) == 1:
+            self.Enable(False)
+        else:
+            self.Enable(True)
+        self.SetItems(listeItems)
+
+    def GetListeDonnees(self):
+        db = GestionDB.DB()
+        req = """SELECT IDcategorie, nom
+        FROM categories_medicales
+        ORDER BY nom;"""
+        db.ExecuterReq(req)
+        listeDonnees = db.ResultatReq()
+        db.Close()
+        listeItems = []
+        self.dictDonnees = {}
+        index = 0
+        for IDcategorie, nom in listeDonnees:
+            self.dictDonnees[index] = {"ID": IDcategorie, "nom ": nom}
+            listeItems.append(nom)
+            index += 1
+        return listeItems
+
+    def SetID(self, ID=0):
+        if ID == None:
+            self.SetSelection(0)
+        for index, values in self.dictDonnees.iteritems():
+            if values["ID"] == ID:
+                self.SetSelection(index)
+
+    def GetID(self):
         index = self.GetSelection()
-        return self.dictID[index]
-    
-    def SetIDselection(self, ID):
-        for index, IDtmp, in self.dictID.iteritems():
-            if ID == IDtmp :
-                self.Select(index)
-                return
-            
-            
-            
+        if index == -1 or index == 0: return None
+        return self.dictDonnees[index]["ID"]
+
+
+# ---------------------------------------------------------------------------------------------------------
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, IDindividu=None, IDprobleme=None):
@@ -74,9 +119,13 @@ class Dialog(wx.Dialog):
                 
         # Caractéristiques
         self.staticbox_gauche_staticbox = wx.StaticBox(self, -1, _(u"Caractéristiques"))
-        self.label_type = wx.StaticText(self, -1, _(u"Type :"))
-        self.ctrl_type = MyBitmapComboBox(self)
-        self.ctrl_type.Remplissage(LISTE_TYPES)
+        self.label_categorie = wx.StaticText(self, -1, _(u"Catégorie :"))
+        self.ctrl_categorie = CTRL_Categorie(self)
+        self.bouton_categories = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Mecanisme.png"), wx.BITMAP_TYPE_ANY))
+
+        #self.ctrl_categorie = MyBitmapComboBox(self)
+        #self.ctrl_categorie.Remplissage(LISTE_TYPES)
+
         self.label_intitule = wx.StaticText(self, -1, _(u"Intitulé :"))
         self.ctrl_intitule = wx.TextCtrl(self, -1, u"")
         self.label_periode = wx.StaticText(self, -1, _(u"Période :"))
@@ -128,7 +177,8 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_CHECKBOX, self.OnCheck_eviction, self.ctrl_coche_eviction)
         self.Bind(wx.EVT_BUTTON, self.OnBouton_ok, self.bouton_ok)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
-        
+        self.Bind(wx.EVT_BUTTON, self.OnBoutonCategories, self.bouton_categories)
+
         # Importation des données
         if self.IDprobleme != None :
             self.Importation() 
@@ -142,7 +192,8 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.SetTitle(_(u"Saisie d'une information médicale"))
-        self.ctrl_type.SetToolTip(wx.ToolTip(_(u"Selectionnez un type d'information")))
+        self.ctrl_categorie.SetToolTip(wx.ToolTip(_(u"Selectionnez une catégorie médicale")))
+        self.bouton_categories.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder au paramétrage des catégories médicales")))
         self.ctrl_intitule.SetFont(wx.Font(10, wx.DEFAULT, wx.NORMAL, wx.BOLD, 0, u""))
         self.ctrl_intitule.SetToolTip(wx.ToolTip(_(u"Saisissez l'intitule de l'information")))
         self.radio_indefinie.SetToolTip(wx.ToolTip(_(u"Sans période définie")))
@@ -163,11 +214,10 @@ class Dialog(wx.Dialog):
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider la saisie")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler et fermer")))
-        self.SetMinSize((686, 418))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=2, cols=1, vgap=10, hgap=10)
-        grid_sizer_boutons = wx.FlexGridSizer(rows=1, cols=4, vgap=10, hgap=10)
+
         grid_sizer_contenu = wx.FlexGridSizer(rows=1, cols=2, vgap=10, hgap=10)
         grid_sizer_droit = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
         staticbox_diffusion = wx.StaticBoxSizer(self.staticbox_diffusion_staticbox, wx.VERTICAL)
@@ -180,8 +230,15 @@ class Dialog(wx.Dialog):
         staticbox_gauche = wx.StaticBoxSizer(self.staticbox_gauche_staticbox, wx.VERTICAL)
         grid_sizer_caract = wx.FlexGridSizer(rows=5, cols=2, vgap=5, hgap=5)
         grid_sizer_periode = wx.FlexGridSizer(rows=1, cols=5, vgap=5, hgap=5)
-        grid_sizer_caract.Add(self.label_type, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_caract.Add(self.ctrl_type, 0, wx.EXPAND|wx.BOTTOM, 5)
+        grid_sizer_caract.Add(self.label_categorie, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
+
+        grid_sizer_type = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
+        grid_sizer_type.Add(self.ctrl_categorie, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALL|wx.EXPAND, 0)
+        grid_sizer_type.Add(self.bouton_categories, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALL, 0)
+        grid_sizer_type.AddGrowableCol(0)
+
+        grid_sizer_caract.Add(grid_sizer_type, 0, wx.EXPAND|wx.BOTTOM, 5)
+
         grid_sizer_caract.Add(self.label_intitule, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_caract.Add(self.ctrl_intitule, 0, wx.EXPAND|wx.BOTTOM, 10)
         grid_sizer_caract.Add(self.label_periode, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
@@ -224,6 +281,9 @@ class Dialog(wx.Dialog):
         grid_sizer_contenu.AddGrowableRow(0)
         grid_sizer_contenu.AddGrowableCol(0)
         grid_sizer_base.Add(grid_sizer_contenu, 1, wx.LEFT|wx.RIGHT|wx.TOP|wx.EXPAND, 10)
+
+        # Boutons
+        grid_sizer_boutons = wx.FlexGridSizer(rows=1, cols=4, vgap=10, hgap=10)
         grid_sizer_boutons.Add(self.bouton_aide, 0, 0, 0)
         grid_sizer_boutons.Add((20, 20), 0, wx.EXPAND, 0)
         grid_sizer_boutons.Add(self.bouton_ok, 0, 0, 0)
@@ -235,6 +295,7 @@ class Dialog(wx.Dialog):
         grid_sizer_base.AddGrowableRow(0)
         grid_sizer_base.AddGrowableCol(0)
         self.Layout()
+        self.SetMinSize(self.GetSize())
         self.CenterOnScreen()
     
     def OnRadio_periode(self, event):
@@ -261,6 +322,15 @@ class Dialog(wx.Dialog):
         self.label_eviction_au.Enable(etat)
         self.ctrl_eviction_debut.Enable(etat)
         self.ctrl_eviction_fin.Enable(etat)
+
+    def OnBoutonCategories(self, event):
+        IDcategorie = self.ctrl_categorie.GetID()
+        from Dlg import DLG_Categories_medicales
+        dlg = DLG_Categories_medicales.Dialog(self)
+        dlg.ShowModal()
+        dlg.Destroy()
+        self.ctrl_categorie.MAJ()
+        self.ctrl_categorie.SetID(IDcategorie)
 
     def OnBoutonAide(self, event): 
         from Utils import UTILS_Aide
@@ -301,7 +371,7 @@ class Dialog(wx.Dialog):
                 index += 1
         
         # Caractéristiques
-        self.ctrl_type.SetIDselection(dictDonnees["IDtype"])
+        self.ctrl_categorie.SetID(dictDonnees["IDtype"])
         self.ctrl_intitule.SetValue(dictDonnees["intitule"])
         if dictDonnees["date_debut"] == "1900-01-01" and dictDonnees["date_fin"] == "2999-01-01" :
             self.radio_indefinie.SetValue(True)
@@ -333,7 +403,7 @@ class Dialog(wx.Dialog):
         
     def Sauvegarde(self):
         # Caractéristiques
-        IDtype = self.ctrl_type.GetIDselection()
+        IDtype = self.ctrl_categorie.GetID()
         intitule = self.ctrl_intitule.GetValue()
         if self.radio_indefinie.GetValue() == True :
             date_debut = "1900-01-01"

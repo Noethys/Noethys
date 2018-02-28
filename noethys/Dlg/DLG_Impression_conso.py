@@ -48,8 +48,6 @@ from Utils import UTILS_Dates
 from Utils import UTILS_Divers
 from Utils import UTILS_Infos_individus
 
-from DLG_Saisie_pb_sante import LISTE_TYPES
-
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, PageBreak
 from reportlab.platypus.flowables import ParagraphAndImage, Image
 from reportlab.rl_config import defaultPageSize
@@ -60,12 +58,7 @@ from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.graphics.barcode import code39
 
-
 COULEUR_FOND_TITRE = (204, 204, 255) # version PDF : (0.8, 0.8, 1) # Vert -> (0.5, 1, 0.2)
-
-DICT_TYPES_INFOS = {}
-for IDtype, nom, img in LISTE_TYPES :
-    DICT_TYPES_INFOS[IDtype] = { "nom" : nom, "img" : img }
 
 DICT_CIVILITES = Civilites.GetDictCivilites()
 
@@ -2526,8 +2519,7 @@ class Dialog(wx.Dialog):
                                                     texteDatesTraitement = _(u" jusqu'au %s") % UTILS_Dates.DateEngFr(date_fin_traitement)
                                                 texte += _(u"Traitement%s : %s.") % (texteDatesTraitement, description_traitement)
 
-                                            img = DICT_TYPES_INFOS[IDtype]["img"]
-                                            listeInfos.append(ParagraphAndImage(Paragraph(texte, paraStyle), Image(Chemins.GetStaticPath("Images/16x16/%s" % img),width=8, height=8), xpad=1, ypad=0, side="left"))
+                                            listeInfos.append(ParagraphAndImage(Paragraph(texte, paraStyle), Image(Chemins.GetStaticPath("Images/16x16/Medical.png"),width=8, height=8), xpad=1, ypad=0, side="left"))
 
                                     if dictParametres["afficher_informations"] == True:
                                         if dictParametres["masquer_informations"] == False :

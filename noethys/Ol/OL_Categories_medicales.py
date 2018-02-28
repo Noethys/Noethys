@@ -3,8 +3,8 @@
 #------------------------------------------------------------------------
 # Application :    Noethys, gestion multi-activités
 # Site internet :  www.noethys.com
-# Auteur:           Ivan LUCAS
-# Copyright:       (c) 2010-11 Ivan LUCAS
+# Auteur:          Ivan LUCAS
+# Copyright:       (c) 2010-18 Ivan LUCAS
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
@@ -13,62 +13,23 @@ import Chemins
 from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
-from Ctrl import CTRL_Bouton_image
-import datetime
-from Ctrl import CTRL_Saisie_date
 import GestionDB
 
 from Utils import UTILS_Interface
 from Ctrl.CTRL_ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
-
 from Utils import UTILS_Utilisateurs
-
-
-def DateEngFr(textDate):
-    text = str(textDate[8:10]) + "/" + str(textDate[5:7]) + "/" + str(textDate[:4])
-    return text
 
 
 class Track(object):
     def __init__(self, donnees):
-        self.IDprobleme = donnees[0]
-        self.IDtype = donnees[1]
-        self.intitule = donnees[2]
-        self.date_debut = donnees[3]
-        self.date_fin = donnees[4]
-        self.description = donnees[5]
-        self.traitement_medical = donnees[6]
-        self.description_traitement = donnees[7]
-        self.date_debut_traitement = donnees[8]
-        self.date_fin_traitement = donnees[9]
-        self.eviction = donnees[10]
-        self.date_debut_eviction = donnees[11]
-        self.date_fin_eviction = donnees[12]
-        self.diffusion_listing_enfants = donnees[13]
-        self.diffusion_listing_conso = donnees[14]
-        self.diffusion_listing_repas = donnees[15]
-        
-        self.texteComplet = self.intitule
-        if self.description != "" and self.description != None :
-            self.texteComplet += u" : " + self.description
-        
-        if self.date_fin != None and self.date_fin != "2999-01-01" :
-            dateDD_fin = datetime.date(int(self.date_fin[:4]), int(self.date_fin[5:7]), int(self.date_fin[8:10]))
-            date_jour = datetime.date.today()
-            self.nbreJoursRestants = (dateDD_fin - date_jour).days
-            if self.nbreJoursRestants > 0 :
-                self.valide = True
-            else:
-                self.valide = False
-        else:
-            self.nbreJoursRestants = 99999
-            self.valide = True
-
+        self.IDcategorie = donnees[0]
+        self.nom = donnees[1]
+        self.nbreInformations = donnees[2]
+    
     
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
         # Récupération des paramètres perso
-        self.IDindividu = kwds.pop("IDindividu", None)
         self.selectionID = None
         self.selectionTrack = None
         self.criteres = ""
@@ -91,17 +52,11 @@ class ListView(FastObjectListView):
     def GetTracks(self):
         """ Récupération des données """
         listeID = None
-        listeChamps = [
-        "IDprobleme", "IDtype", "intitule", "date_debut", "date_fin", "description",
-        "traitement_medical", "description_traitement", "date_debut_traitement", "date_fin_traitement",
-        "eviction", "date_debut_eviction", "date_fin_eviction", 
-        "diffusion_listing_enfants", "diffusion_listing_conso", "diffusion_listing_repas"]
         db = GestionDB.DB()
-        req = """
-        SELECT %s
-        FROM problemes_sante
-        WHERE IDindividu=%d
-        """ % (", ".join(listeChamps), self.IDindividu)
+        req = """SELECT categories_medicales.IDcategorie, categories_medicales.nom, Count(problemes_sante.IDprobleme) AS nbreInformations
+        FROM categories_medicales
+        LEFT JOIN problemes_sante ON problemes_sante.IDtype = categories_medicales.IDcategorie
+        GROUP BY categories_medicales.IDcategorie;"""
         db.ExecuterReq(req)
         listeDonnees = db.ResultatReq()
         db.Close()
@@ -124,27 +79,15 @@ class ListView(FastObjectListView):
         self.oddRowsBackColor = UTILS_Interface.GetValeur("couleur_tres_claire", wx.Colour(240, 251, 237))
         self.evenRowsBackColor = wx.Colour(255, 255, 255)
         self.useExpansionColumn = True
-
-        # ListImages
-        # for IDtype, nom, nomImage in DLG_Saisie_pb_sante.LISTE_TYPES :
-        #     self.AddNamedImages(str(IDtype), wx.Bitmap(Chemins.GetStaticPath("Images/16x16/%s" % nomImage), wx.BITMAP_TYPE_PNG))
-        #
-        # def GetImage(track):
-        #     return str(track.IDtype)
-        
-        def rowFormatter(listItem, track):
-            if track.valide == False :
-                listItem.SetTextColour((180, 180, 180))
-            
+                    
         liste_Colonnes = [
-            ColumnDefn(u"", "left", 0, "IDprobleme", typeDonnee="entier"),
-            ColumnDefn(_(u"Intitulé"), 'left', 360, "texteComplet", typeDonnee="texte", isSpaceFilling=True),
-##            ColumnDefn(_(u"Nbre de jours restants"), 'left', 0, "nbreJoursRestants"),
+            ColumnDefn(_(u"ID"), "left", 0, "IDcategorie", typeDonnee="entier"),
+            ColumnDefn(_(u"Nom"), "left", 290, "nom", typeDonnee="texte"), 
+            ColumnDefn(_(u"Nbre d'informations"), "left", 110, "nbreInformations", typeDonnee="entier"),
             ]
         
-        self.rowFormatter = rowFormatter
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(_(u"Aucune information médicale"))
+        self.SetEmptyListMsg(_(u"Aucune catégorie médicale"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
         self.SetSortColumn(self.columns[1])
         self.SetObjects(self.donnees)
@@ -163,7 +106,6 @@ class ListView(FastObjectListView):
             self.SelectObject(self.selectionTrack, deselectOthers=True, ensureVisible=True)
         self.selectionID = None
         self.selectionTrack = None
-        self._ResizeSpaceFillingColumns() 
     
     def Selection(self):
         return self.GetSelectedObjects()
@@ -174,7 +116,7 @@ class ListView(FastObjectListView):
             noSelection = True
         else:
             noSelection = False
-            ID = self.Selection()[0].IDprobleme
+            ID = self.Selection()[0].IDtype_sieste
                 
         # Création du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
@@ -225,57 +167,82 @@ class ListView(FastObjectListView):
 
     def Apercu(self, event):
         from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des informations médicales"), format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des catégories médicales"), format="A", orientation=wx.PORTRAIT)
         prt.Preview()
 
     def Imprimer(self, event):
         from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des informations médicales"), format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des catégories médicales"), format="A", orientation=wx.PORTRAIT)
         prt.Print()
 
 
     def Ajouter(self, event):
-        if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("individus_pb_sante", "creer") == False : return
-        from Dlg import DLG_Saisie_pb_sante
-        dlg = DLG_Saisie_pb_sante.Dialog(self, IDindividu=self.IDindividu, IDprobleme=None)
+        if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_categories_medicales", "creer") == False : return
+        dlg = wx.TextEntryDialog(self, _(u"Saisissez le nom de la nouvelle catégorie :"), _(u"Saisie d'une catégorie médicale"), u"")
         if dlg.ShowModal() == wx.ID_OK:
-            IDprobleme = dlg.GetIDprobleme()
-            self.MAJ(IDprobleme)
+            nom = dlg.GetValue()
+            if nom == "":
+                dlg = wx.MessageDialog(self, _(u"Le nom que vous avez saisi n'est pas valide."), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg.ShowModal()
+                dlg.Destroy()
+                return
+            else:
+                DB = GestionDB.DB()
+                listeDonnees = [ ("nom", nom ), ]
+                IDcategorie = DB.ReqInsert("categories_medicales", listeDonnees)
+                DB.Close()
+                self.MAJ(IDcategorie)
         dlg.Destroy()
 
     def Modifier(self, event):
-        if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("individus_pb_sante", "modifier") == False : return
+        if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_categories_medicales", "modifier") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune information médicale à modifier dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune catégorie à modifier dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
-        IDprobleme = self.Selection()[0].IDprobleme
-        from Dlg import DLG_Saisie_pb_sante
-        dlg = DLG_Saisie_pb_sante.Dialog(self, IDindividu=self.IDindividu, IDprobleme=IDprobleme)
+        IDcategorie = self.Selection()[0].IDcategorie
+        nom = self.Selection()[0].nom
+        dlg = wx.TextEntryDialog(self, _(u"Modifiez le nom de la catégorie :"), _(u"Modification d'une catégorie"), nom)
         if dlg.ShowModal() == wx.ID_OK:
-            self.MAJ(IDprobleme)
+            nom = dlg.GetValue()
+            if nom == "":
+                dlg = wx.MessageDialog(self, _(u"Le nom que vous avez saisi n'est pas valide."), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg.ShowModal()
+                dlg.Destroy()
+                return
+            else:
+                DB = GestionDB.DB()
+                listeDonnees = [ ("nom", nom ), ]
+                DB.ReqMAJ("categories_medicales", listeDonnees, "IDcategorie", IDcategorie)
+                DB.Close()
+                self.MAJ(IDcategorie)
         dlg.Destroy()
 
     def Supprimer(self, event):
-        if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("individus_pb_sante", "supprimer") == False : return
+        if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_categories_medicales", "supprimer") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune information médicale à supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune catégorie à supprimer dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
-        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer cette information médicale ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+        if self.Selection()[0].nbreInformations > 0 :
+            dlg = wx.MessageDialog(self, _(u"Il est impossible de supprimer une catégorie déjà assigné à une ou plusieurs informations médicales !"), _(u"Suppression impossible"), wx.OK | wx.ICON_INFORMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer cette catégorie ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         if dlg.ShowModal() == wx.ID_YES :
-            IDprobleme = self.Selection()[0].IDprobleme
+            IDcategorie = self.Selection()[0].IDcategorie
             DB = GestionDB.DB()
-            DB.ReqDEL("problemes_sante", "IDprobleme", IDprobleme)
+            DB.ReqDEL("categories_medicales", "IDcategorie", IDcategorie)
             DB.Close() 
             self.MAJ()
         dlg.Destroy()
+    
 
 
-
-
+# -------------------------------------------------------------------------------------------------------------------------------------------
 
 class MyFrame(wx.Frame):
     def __init__(self, *args, **kwds):
@@ -284,7 +251,7 @@ class MyFrame(wx.Frame):
         sizer_1 = wx.BoxSizer(wx.VERTICAL)
         sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
         self.SetSizer(sizer_1)
-        self.myOlv = ListView(panel, IDindividu=27, id=-1, name="OL_test", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
+        self.myOlv = ListView(panel, id=-1, name="OL_test", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.myOlv.MAJ() 
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.myOlv, 1, wx.ALL|wx.EXPAND, 4)

@@ -53,7 +53,9 @@ DICT_PROCEDURES = {
     "A9073" : _(u"Cryptage des mots de passe utilisateurs"),
     "A9074" : _(u"Cryptage des mots de passe utilisateurs dans nouveau champ mdpcrypt"),
     "A9075" : _(u"Suppression des mots de passe utilisateurs en clair"),
-    "A9078": _(u"Suppression des suppressions des consommations avec IDinscription null"),
+    "A9078" : _(u"Suppression des suppressions des consommations avec IDinscription null"),
+    "A9081" : _(u"Création du profil de configuration par défaut pour la liste des infos médicales"),
+
 }
 
 
@@ -946,8 +948,12 @@ def A9078():
     DB.Commit()
     DB.Close()
 
-
-
+def A9081():
+    """ Création du profil de configuration par défaut pour la liste des infos médicales """
+    DB = GestionDB.DB()
+    IDprofil = DB.ReqInsert("profils", [("label", u"Liste par défaut"), ("categorie", "impression_infos_medicales"), ("defaut", 1)])
+    DB.ReqInsert("profils_parametres", [("IDprofil", IDprofil), ("nom", "colonnes"), ("type_donnee", "autre"), ("parametre", "[(u'Informations alimentaires', '2'), (u'Autres informations', '0')]")])
+    DB.Close()
 
 
 
@@ -1034,5 +1040,5 @@ def A9078():
 if __name__ == u"__main__":
     app = wx.App(0)
     # TEST D'UNE PROCEDURE :
-    A9078()
+    A9081()
     app.MainLoop()

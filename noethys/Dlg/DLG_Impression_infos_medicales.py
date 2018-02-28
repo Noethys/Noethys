@@ -16,6 +16,7 @@ import wx
 from Ctrl import CTRL_Bouton_image
 import datetime
 from Ctrl import CTRL_Grille_periode
+from Ctrl import CTRL_Profil
 
 import FonctionsPerso
 import sys
@@ -28,19 +29,14 @@ import GestionDB
 from Utils import UTILS_Config
 from Utils import UTILS_Organisateur
 from Utils import UTILS_Fichiers
+from Utils import UTILS_Texte
+from Utils import UTILS_Divers
 from Data import DATA_Civilites as Civilites
 from Ctrl import CTRL_Selection_activites
-
-from DLG_Saisie_pb_sante import LISTE_TYPES
-
-DICT_TYPES_INFOS = {}
-for IDtype, nom, img in LISTE_TYPES :
-    DICT_TYPES_INFOS[IDtype] = { "nom" : nom, "img" : img }
-
-
-
-try: import psyco; psyco.full()
-except: pass
+from Ctrl import CTRL_Propertygrid
+from Ol import OL_Impression_infos_medicales_colonnes
+import wx.propgrid as wxpg
+import copy
 
 DICT_CIVILITES = Civilites.GetDictCivilites()
 
@@ -68,6 +64,170 @@ def GetSQLdates(listePeriodes=[]):
     else:
         texteSQL = "date=0"
     return texteSQL
+
+
+
+
+class CTRL_profil_perso(CTRL_Profil.CTRL):
+    def __init__(self, parent, categorie="", dlg=None):
+        CTRL_Profil.CTRL.__init__(self, parent, categorie=categorie)
+        self.dlg = dlg
+
+    def Envoyer_parametres(self, dictParametres={}):
+        """ Envoi des paramètres du profil sélectionné à la fenêtre """
+        self.dlg.SetParametres(dictParametres)
+
+    def Recevoir_parametres(self):
+        """ Récupération des paramètres pour la sauvegarde du profil """
+        dictParametres = self.dlg.GetParametres()
+        self.Enregistrer(dictParametres)
+
+
+
+
+class CTRL_Options(CTRL_Propertygrid.CTRL):
+    def __init__(self, parent):
+        CTRL_Propertygrid.CTRL.__init__(self, parent)
+
+    def Remplissage(self):
+
+        # Catégorie
+        self.Append(wxpg.PropertyCategory(_(u"Données")))
+
+        # Afficher uniquement les individus avec infos
+        propriete = wxpg.BoolProperty(label=_(u"Afficher uniquement individus avec infos"), name="individus_avec_infos", value=False)
+        propriete.SetHelpString(_(u"Cochez cette case pour afficher uniquement les individus avec infos"))
+        propriete.SetAttribute("UseCheckbox", True)
+        self.Append(propriete)
+
+        # Catégorie
+        self.Append(wxpg.PropertyCategory(_(u"Page")))
+
+        # Orientation page
+        propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Orientation de la page"), name="orientation", liste_choix=[("automatique", _(u"Automatique")), ("portrait", _(u"Portrait")), ("paysage", _(u"Paysage"))], valeur="automatique")
+        propriete.SetEditor("EditeurChoix")
+        propriete.SetHelpString(_(u"Sélectionnez l'orientation de la page"))
+        propriete.SetAttribute("obligatoire", True)
+        self.Append(propriete)
+
+        # Catégorie
+        self.Append(wxpg.PropertyCategory(_(u"Lignes")))
+
+        # Tri
+        liste_choix = [("nom", _(u"Nom")), ("prenom", _(u"Prénom")), ("age", _(u"Âge"))]
+        propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Tri"), name="tri", liste_choix=liste_choix, valeur="nom")
+        propriete.SetEditor("EditeurChoix")
+        propriete.SetHelpString(_(u"Sélectionnez le tri"))
+        propriete.SetAttribute("obligatoire", True)
+        self.Append(propriete)
+
+        # Ordre
+        liste_choix = [("croissant", _(u"Croissant")), ("decroissant", _(u"Décroissant"))]
+        propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Ordre"), name="ordre", liste_choix=liste_choix, valeur="croissant")
+        propriete.SetEditor("EditeurChoix")
+        propriete.SetHelpString(_(u"Sélectionnez l'ordre"))
+        propriete.SetAttribute("obligatoire", True)
+        self.Append(propriete)
+
+        # Afficher lignes vierges
+        propriete = wxpg.IntProperty(label=_(u"Lignes vierges"), name="nbre_lignes_vierges", value=3)
+        propriete.SetEditor("SpinCtrl")
+        propriete.SetHelpString(_(u"Nombre de lignes vierges à afficher en fin de liste"))
+        propriete.SetAttribute("obligatoire", True)
+        propriete.SetAttribute("Min", 0)
+        self.Append(propriete)
+
+        # Insérer saut de page après groupe
+        propriete = wxpg.BoolProperty(label=_(u"Insérer saut de page après groupe"), name="saut_page_groupe", value=True)
+        propriete.SetHelpString(_(u"Cochez cette case pour insérer un saut de page après chaque groupe"))
+        propriete.SetAttribute("UseCheckbox", True)
+        self.Append(propriete)
+
+        # Couleur du fond d'entête de colonne
+        propriete = wxpg.ColourProperty(label=_(u"Couleur ligne des entêtes"), name="couleur_fond_entetes", value=wx.Colour(208, 208, 208) )
+        propriete.SetHelpString(_(u"Sélectionnez la couleur de fond de la ligne des entêtes"))
+        propriete.SetAttribute("obligatoire", True)
+        self.Append(propriete)
+
+        # Catégorie
+        self.Append(wxpg.PropertyCategory(_(u"Colonne Photo")))
+
+        # Afficher les photos
+        liste_choix = [("non", _(u"Non")), ("petite", _(u"Petite taille")), ("moyenne", _(u"Moyenne taille")), ("grande", _(u"Grande taille"))]
+        propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Afficher les photos"), name="afficher_photos", liste_choix=liste_choix, valeur="non")
+        propriete.SetEditor("EditeurChoix")
+        propriete.SetHelpString(_(u"Afficher les photos individuelles"))
+        propriete.SetAttribute("obligatoire", True)
+        self.Append(propriete)
+
+        # Catégorie
+        self.Append(wxpg.PropertyCategory(_(u"Colonne Individu")))
+
+        # Largeur colonne nom
+        liste_choix = [("automatique", _(u"Automatique")),]
+        for x in range(5, 305, 5):
+            liste_choix.append((str(x), "%d pixels" % x))
+        propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Largeur de la colonne"), name="largeur_colonne_nom", liste_choix=liste_choix, valeur="automatique")
+        propriete.SetEditor("EditeurChoix")
+        propriete.SetHelpString(_(u"Sélectionnez la largeur de la colonne Nom de l'individu (en pixels)"))
+        propriete.SetAttribute("obligatoire", True)
+        self.Append(propriete)
+
+        # Catégorie
+        self.Append(wxpg.PropertyCategory(_(u"Colonne Âge")))
+
+        # Afficher l'âge des individus
+        propriete = wxpg.BoolProperty(label=_(u"Afficher la colonne"), name="afficher_age", value=True)
+        propriete.SetHelpString(_(u"Cochez cette case pour afficher de la colonne de l'âge des individus"))
+        propriete.SetAttribute("UseCheckbox", True)
+        self.Append(propriete)
+
+        # Largeur colonne âge
+        liste_choix = [("automatique", _(u"Automatique")),]
+        for x in range(5, 305, 5):
+            liste_choix.append((str(x), "%d pixels" % x))
+        propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Largeur de la colonne"), name="largeur_colonne_age", liste_choix=liste_choix, valeur="automatique")
+        propriete.SetEditor("EditeurChoix")
+        propriete.SetHelpString(_(u"Sélectionnez la largeur de la colonne Âge de l'individu (en pixels)"))
+        propriete.SetAttribute("obligatoire", True)
+        self.Append(propriete)
+
+    def Validation(self):
+        """ Validation des données saisies """
+        # Vérifie que les données obligatoires ont été saisies
+        for nom, valeur in self.GetPropertyValues().iteritems():
+            propriete = self.GetPropertyByName(nom)
+            if self.GetPropertyAttribute(propriete, "obligatoire") == True:
+                if valeur == "" or valeur == None:
+                    dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement renseigner le paramètre '%s' !") % self.GetPropertyLabel(nom), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                    dlg.ShowModal()
+                    dlg.Destroy()
+                    return False
+
+        return True
+
+    def Importation(self):
+        """ Importation des valeurs dans le contrôle """
+        return False
+
+    def GetParametres(self):
+        return copy.deepcopy(self.GetPropertyValues())
+
+    def SetParametres(self, dictParametres={}):
+        # Réinitialisation
+        if dictParametres == None :
+            self.Reinitialisation(afficher_dlg=False)
+            return
+
+        # Envoi des paramètres au Ctrl
+        for nom, valeur in dictParametres.iteritems():
+            try :
+                propriete = self.GetPropertyByName(nom)
+                propriete.SetValue(valeur)
+            except :
+                pass
+
+
 
 
 class CTRL_Activites(wx.CheckListBox):
@@ -152,11 +312,8 @@ class CTRL_Activites(wx.CheckListBox):
 
     def OnCheck(self, event):
         """ Quand une sélection d'activités est effectuée... """
-        try :
-            self.parent.OnCheckActivites()
-        except :
-            pass
-    
+        self.parent.OnCheckActivites()
+
     def GetListeActivites(self):
         return self.GetIDcoches() 
     
@@ -257,20 +414,13 @@ class CTRL_Groupes(wx.CheckListBox):
     
     def GetDictGroupes(self):
         return self.dictGroupes
-    
-# ----------------------------------------------------------------------------------------------------------------------------------
 
 
 
-
-class Dialog(wx.Dialog):
+class Page_Generalites(wx.Panel):
     def __init__(self, parent):
-        wx.Dialog.__init__(self, parent, -1, name="DLG_Impression_infos_medicales", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
+        wx.Panel.__init__(self, parent, id=-1, name="informations_medicales", style=wx.TAB_TRAVERSAL)
         self.parent = parent
-        
-        intro = _(u"Vous pouvez ici imprimer une liste au format PDF des informations médicales des individus présents sur la période de votre choix. Pour une liste standard, sélectionnez simplement une période puis cliquez sur 'Aperçu'.")
-        titre = _(u"Impression de la liste des informations médicales")
-        self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Imprimante.png")
 
         # Mode
         self.staticbox_mode_staticbox = wx.StaticBox(self, -1, _(u"Mode de sélection"))
@@ -281,7 +431,7 @@ class Dialog(wx.Dialog):
         self.staticbox_date_staticbox = wx.StaticBox(self, -1, _(u"Période"))
         self.ctrl_calendrier = CTRL_Grille_periode.CTRL(self)
         self.ctrl_calendrier.SetMinSize((230, 150))
-        
+
         # Activités
         self.staticbox_activites_staticbox = wx.StaticBox(self, -1, _(u"Activités"))
         self.ctrl_activites_presents = CTRL_Activites(self)
@@ -292,122 +442,18 @@ class Dialog(wx.Dialog):
         # Groupes
         self.staticbox_groupes_staticbox = wx.StaticBox(self, -1, _(u"Groupes"))
         self.ctrl_groupes = CTRL_Groupes(self)
-        self.ctrl_groupes.SetMinSize((10, 50))
+        self.ctrl_groupes.SetMinSize((10, 100))
 
-        # Options
-        self.staticbox_options_staticbox = wx.StaticBox(self, -1, _(u"Options"))
-        self.label_modele = wx.StaticText(self, -1, _(u"Modèle :"))
-        self.ctrl_modele = wx.Choice(self, -1, choices=[_(u"Modèle par défaut"),])
-        self.ctrl_modele.Select(0)
-        self.label_tri = wx.StaticText(self, -1, _(u"Tri :"))
-        self.ctrl_tri = wx.Choice(self, -1, choices=["Nom", _(u"Prénom"), _(u"Age")])
-        self.ctrl_tri.Select(0)
-        self.ctrl_ordre = wx.Choice(self, -1, choices=["Croissant", _(u"Décroissant")])
-        self.ctrl_ordre.Select(0)
-        self.checkbox_lignes_vierges = wx.CheckBox(self, -1, _(u"Afficher des lignes vierges :"))
-        self.checkbox_lignes_vierges.SetValue(True)
-        self.ctrl_nbre_lignes = wx.Choice(self, -1, choices=["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15"])
-        self.ctrl_nbre_lignes.Select(2)
-        self.checkbox_page_groupe = wx.CheckBox(self, -1, _(u"Insérer un saut de page après chaque groupe"))
-        self.checkbox_page_groupe.SetValue(True)
-        self.checkbox_nonvides = wx.CheckBox(self, -1, _(u"Afficher uniquement les individus avec infos"))
-        self.checkbox_nonvides.SetValue(False)
-        self.checkbox_age = wx.CheckBox(self, -1, _(u"Afficher l'âge des individus"))
-        self.checkbox_age.SetValue(True)
-        self.checkbox_photos = wx.CheckBox(self, -1, _(u"Afficher les photos :"))
-        self.checkbox_photos.SetValue(False)
-        self.ctrl_taille_photos = wx.Choice(self, -1, choices=[_(u"Petite taille"), _(u"Moyenne taille"), _(u"Grande taille")])
-        self.ctrl_taille_photos.SetSelection(1)
-        
-        # Mémorisation des paramètres
-        self.ctrl_memoriser = wx.CheckBox(self, -1, _(u"Mémoriser les paramètres"))
-        font = self.GetFont() 
-        font.SetPointSize(7)
-        self.ctrl_memoriser.SetFont(font)
-        self.ctrl_memoriser.SetValue(True) 
-        
-        # Boutons
-        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
-        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Aperçu"), cheminImage="Images/32x32/Apercu.png")
-        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
-
-        self.__set_properties()
-        self.__do_layout()
-
-        self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioMode, self.radio_inscrits)
-        self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioMode, self.radio_presents)
-        self.Bind(wx.EVT_CHECKBOX, self.OnCheckLignesVierges, self.checkbox_lignes_vierges)
-        self.Bind(wx.EVT_CHECKBOX, self.OnCheckPhotos, self.checkbox_photos)
-        self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
-        self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
-        
-        # Récupération des paramètres dans le CONFIG
-        param_mode = UTILS_Config.GetParametre("impression_infos_med_mode_presents", defaut=0)
-        self.radio_presents.SetValue(param_mode)
-
-        param_tri = UTILS_Config.GetParametre("impression_infos_med_tri", defaut=0)
-        self.ctrl_tri.Select(param_tri)
-        
-        param_ordre = UTILS_Config.GetParametre("impression_infos_med_ordre", defaut=0)
-        self.ctrl_ordre.Select(param_ordre)
-        
-        param_lignes_vierges = UTILS_Config.GetParametre("impression_infos_med_lignes_vierges", defaut=1)
-        self.checkbox_lignes_vierges.SetValue(param_lignes_vierges)
-        
-        if param_lignes_vierges == 1 :
-            param_nbre_lignes_vierges = UTILS_Config.GetParametre("impression_infos_med_nbre_lignes_vierges", defaut=2)
-            self.ctrl_nbre_lignes.Select(param_nbre_lignes_vierges)
-        
-        param_page_groupe = UTILS_Config.GetParametre("impression_infos_med_page_groupe", defaut=1)
-        self.checkbox_page_groupe.SetValue(param_page_groupe)
-        
-        param_nonvides = UTILS_Config.GetParametre("impression_infos_med_nonvides", defaut=0)
-        self.checkbox_nonvides.SetValue(param_nonvides)
-        
-        param_age = UTILS_Config.GetParametre("impression_infos_med_age", defaut=1)
-        self.checkbox_age.SetValue(param_age)
-        
-        param_photos = UTILS_Config.GetParametre("impression_infos_med_photos", defaut=1)
-        self.checkbox_photos.SetValue(param_photos)
-        
-        param_taille_photos = UTILS_Config.GetParametre("impression_infos_med_taille_photos", defaut=1)
-        self.ctrl_taille_photos.SetSelection(param_taille_photos)
-        
-        param_memoriser = UTILS_Config.GetParametre("impression_infos_med_memoriser", defaut=1)
-        self.ctrl_memoriser.SetValue(param_memoriser)
-        
-        # Init Contrôles
-        self.OnCheckLignesVierges(None)
-        self.OnCheckPhotos(None) 
-        self.bouton_ok.SetFocus()
-
-        self.ctrl_calendrier.SetVisibleSelection()
-        self.SetListesPeriodes(self.ctrl_calendrier.GetDatesSelections())
-
-        self.grid_sizer_base.Fit(self)
-        self.OnRadioMode()
-
-
-    def __set_properties(self):
-        self.SetTitle(_(u"Impression de la liste des informations médicales"))
+        # Propriétés
         self.radio_inscrits.SetToolTip(wx.ToolTip(_(u"Sélectionnez le mode de sélection des individus")))
         self.radio_presents.SetToolTip(wx.ToolTip(_(u"Sélectionnez le mode de sélection des individus")))
-        self.checkbox_lignes_vierges.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher des lignes vierges à la fin de la liste")))
-        self.checkbox_page_groupe.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher une page par groupe")))
-        self.checkbox_age.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher l'âge des individus dans la liste")))
-        self.checkbox_photos.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher les photos individuelles")))
-        self.ctrl_nbre_lignes.SetToolTip(wx.ToolTip(_(u"Sélectionnez le nombre de lignes à afficher")))
-        self.checkbox_nonvides.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher uniquement les individus qui ont au moins une information médicale")))
-        self.ctrl_memoriser.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour mémoriser les paramètres pour la prochaine édition")))
-        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
-        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
-        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
 
-    def __do_layout(self):
-        grid_sizer_base = wx.FlexGridSizer(rows=4, cols=1, vgap=10, hgap=10)
-        grid_sizer_base.Add(self.ctrl_bandeau, 0, wx.EXPAND, 0)
+        # Binds
+        self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioMode, self.radio_inscrits)
+        self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioMode, self.radio_presents)
 
-        grid_sizer_contenu = wx.FlexGridSizer(rows=1, cols=2, vgap=10, hgap=10)
+        # Layout
+        grid_sizer_base = wx.FlexGridSizer(rows=1, cols=2, vgap=10, hgap=10)
 
         # Sizer GAUCHE
         grid_sizer_gauche = wx.FlexGridSizer(rows=4, cols=1, vgap=10, hgap=10)
@@ -422,97 +468,52 @@ class Dialog(wx.Dialog):
 
         # Période
         staticbox_date = wx.StaticBoxSizer(self.staticbox_date_staticbox, wx.VERTICAL)
-        staticbox_date.Add(self.ctrl_calendrier, 0, wx.ALL|wx.EXPAND, 10)
+        staticbox_date.Add(self.ctrl_calendrier, 1, wx.ALL|wx.EXPAND, 10)
         grid_sizer_gauche.Add(staticbox_date, 1, wx.EXPAND, 0)
+
+        grid_sizer_gauche.AddGrowableRow(1)
+        grid_sizer_base.Add(grid_sizer_gauche, 1, wx.EXPAND|wx.TOP|wx.LEFT|wx.BOTTOM, 10)
+
+        # Sizer DROIT
+        grid_sizer_droit = wx.FlexGridSizer(rows=2, cols=1, vgap=10, hgap=10)
 
         # Activités
         staticbox_activites = wx.StaticBoxSizer(self.staticbox_activites_staticbox, wx.VERTICAL)
 
         staticbox_activites.Add(self.ctrl_activites_presents, 1, wx.ALL|wx.EXPAND, 10)
         staticbox_activites.Add(self.ctrl_activites_inscrits, 1, wx.ALL|wx.EXPAND, 10)
-        grid_sizer_gauche.Add(staticbox_activites, 1, wx.EXPAND, 0)
-        grid_sizer_gauche.AddGrowableRow(2)
-        grid_sizer_gauche.AddGrowableCol(0)
-        grid_sizer_contenu.Add(grid_sizer_gauche, 1, wx.EXPAND, 0)
-
-        # Sizer DROIT
-        grid_sizer_droit = wx.FlexGridSizer(rows=2, cols=1, vgap=10, hgap=10)
+        grid_sizer_droit.Add(staticbox_activites, 1, wx.EXPAND, 0)
 
         # Groupes
         staticbox_groupes = wx.StaticBoxSizer(self.staticbox_groupes_staticbox, wx.VERTICAL)
         staticbox_groupes.Add(self.ctrl_groupes, 1, wx.ALL|wx.EXPAND, 10)
         grid_sizer_droit.Add(staticbox_groupes, 1, wx.EXPAND, 0)
 
-        # Options
-        staticbox_options = wx.StaticBoxSizer(self.staticbox_options_staticbox, wx.VERTICAL)
-
-        # Modèle
-        grid_sizer_options_grille = wx.FlexGridSizer(rows=3, cols=2, vgap=5, hgap=10)
-        grid_sizer_options_grille.Add(self.label_modele, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_options_grille.Add(self.ctrl_modele, 0, wx.EXPAND, 0)
-        grid_sizer_options_grille.Add(self.label_tri, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
-        
-        # Tri
-        grid_sizer_tri = wx.FlexGridSizer(rows=1, cols=2, vgap=10, hgap=10)
-        grid_sizer_tri.Add(self.ctrl_tri, 0, wx.EXPAND, 0)
-        grid_sizer_tri.Add(self.ctrl_ordre, 0, wx.EXPAND, 0)
-        grid_sizer_options_grille.Add(grid_sizer_tri, 0, wx.EXPAND, 0)
-        
-        grid_sizer_options_grille.AddGrowableCol(1)
-
-        grid_sizer_options_lignes = wx.FlexGridSizer(rows=6, cols=1, vgap=5, hgap=10)
-        grid_sizer_options_lignes.Add(grid_sizer_options_grille, 1, wx.EXPAND, 0)
-
-        grid_sizer_lignes_vierges = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
-        grid_sizer_lignes_vierges.Add(self.checkbox_lignes_vierges, 0, wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_lignes_vierges.Add(self.ctrl_nbre_lignes, 0, 0, 0)
-        grid_sizer_options_lignes.Add(grid_sizer_lignes_vierges, 1, wx.EXPAND, 0)
-        grid_sizer_options_lignes.Add(self.checkbox_page_groupe, 0, wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_options_lignes.Add(self.checkbox_nonvides, 0, wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_options_lignes.Add(self.checkbox_age, 0, wx.ALIGN_CENTER_VERTICAL, 0)
-        
-        grid_sizer_photos = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
-        grid_sizer_photos.Add(self.checkbox_photos, 0, wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_photos.Add(self.ctrl_taille_photos, 0, 0, 0)
-        grid_sizer_options_lignes.Add(grid_sizer_photos, 1, wx.EXPAND, 0)
-        
-        grid_sizer_options_lignes.AddGrowableCol(0)
-        staticbox_options.Add(grid_sizer_options_lignes, 1, wx.ALL|wx.EXPAND, 10)
-        grid_sizer_droit.Add(staticbox_options, 1, wx.EXPAND, 0)
         grid_sizer_droit.AddGrowableRow(0)
         grid_sizer_droit.AddGrowableCol(0)
-        grid_sizer_contenu.Add(grid_sizer_droit, 1, wx.EXPAND, 0)
-        grid_sizer_contenu.AddGrowableRow(0)
-        grid_sizer_contenu.AddGrowableCol(1)
-        grid_sizer_base.Add(grid_sizer_contenu, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
-        
-        grid_sizer_base.Add(self.ctrl_memoriser, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
+        grid_sizer_base.Add(grid_sizer_droit, 1, wx.EXPAND|wx.TOP|wx.RIGHT|wx.BOTTOM, 10)
 
-        grid_sizer_boutons = wx.FlexGridSizer(rows=1, cols=4, vgap=10, hgap=10)
-        grid_sizer_boutons.Add(self.bouton_aide, 0, 0, 0)
-        grid_sizer_boutons.Add((20, 20), 0, wx.EXPAND, 0)
-        grid_sizer_boutons.Add(self.bouton_ok, 0, 0, 0)
-        grid_sizer_boutons.Add(self.bouton_annuler, 0, 0, 0)
-        grid_sizer_boutons.AddGrowableCol(1)
-        grid_sizer_base.Add(grid_sizer_boutons, 1, wx.LEFT|wx.RIGHT|wx.BOTTOM|wx.EXPAND, 10)
+        grid_sizer_base.AddGrowableRow(0)
+        grid_sizer_base.AddGrowableCol(1)
         self.SetSizer(grid_sizer_base)
-        grid_sizer_base.Fit(self)
-        grid_sizer_base.AddGrowableRow(1)
-        grid_sizer_base.AddGrowableCol(0)
         self.Layout()
-
-        self.SetMinSize((self.GetSize()[0], 590))
-        self.CenterOnScreen()
-
         self.grid_sizer_base = grid_sizer_base
-        self.grid_sizer_gauche = grid_sizer_gauche
+
+        # Paramètres
+        param_mode = UTILS_Config.GetParametre("impression_infos_med_mode_presents", defaut=0)
+        self.radio_presents.SetValue(param_mode)
+
+        # Init
+        self.ctrl_calendrier.SetVisibleSelection()
+        self.SetListesPeriodes(self.ctrl_calendrier.GetDatesSelections())
+        self.OnRadioMode()
 
     def OnRadioMode(self, event=None):
         self.ctrl_activites_inscrits.Show(self.radio_inscrits.GetValue())
         self.ctrl_activites_presents.Show(self.radio_presents.GetValue())
-        self.staticbox_date_staticbox.Show(self.radio_presents.GetValue())
-        self.ctrl_calendrier.Show(self.radio_presents.GetValue())
-        self.grid_sizer_gauche.Layout()
+        self.staticbox_date_staticbox.Enable(self.radio_presents.GetValue())
+        self.ctrl_calendrier.Enable(self.radio_presents.GetValue())
+        self.grid_sizer_base.Layout()
         self.OnCheckActivites()
 
     def OnCheckActivites(self):
@@ -523,22 +524,6 @@ class Dialog(wx.Dialog):
             listeSelections = self.ctrl_activites_presents.GetIDcoches()
             self.SetGroupes(listeSelections)
 
-    def OnCheckLignesVierges(self, event): 
-        if self.checkbox_lignes_vierges.GetValue() == True :
-            self.ctrl_nbre_lignes.Enable(True)
-        else:
-            self.ctrl_nbre_lignes.Enable(False)
-
-    def OnCheckPhotos(self, event): 
-        if self.checkbox_photos.GetValue() == True :
-            self.ctrl_taille_photos.Enable(True)
-        else:
-            self.ctrl_taille_photos.Enable(False)
-
-    def OnBoutonAide(self, event): 
-        from Utils import UTILS_Aide
-        UTILS_Aide.Aide("Listedesinformationsmdicales")
-    
     def SetListesPeriodes(self, listePeriodes=[]):
         self.ctrl_activites_presents.SetPeriodes(listePeriodes)
         self.SetGroupes(self.ctrl_activites_presents.GetListeActivites())
@@ -546,50 +531,308 @@ class Dialog(wx.Dialog):
     def SetGroupes(self, listeActivites=[]):
         self.ctrl_groupes.SetActivites(listeActivites)
 
+    def GetParametres(self):
+        dictParametres = {}
+
+        dictParametres["liste_periodes"] = self.ctrl_calendrier.GetDatesSelections()
+        dictParametres["impression_infos_med_mode_presents"] = self.radio_presents.GetValue()
+
+        if self.radio_inscrits.GetValue() == True :
+            dictParametres["mode"] = "inscrits"
+            dictParametres["liste_activites"] = self.ctrl_activites_inscrits.GetActivites()
+
+        if self.radio_presents.GetValue() == True :
+            dictParametres["mode"] = "presents"
+            dictParametres["liste_activites"] = self.ctrl_activites_presents.GetListeActivites()
+
+        dictParametres["liste_groupes"] = self.ctrl_groupes.GetListeGroupes()
+        dictParametres["dict_groupes"] = self.ctrl_groupes.GetDictGroupes()
+
+        return dictParametres
+
+    def SetParametres(self, dictParametres={}):
+        pass
+
+
+
+class Page_Colonnes(wx.Panel):
+    def __init__(self, parent):
+        wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
+        self.parent = parent
+
+        self.ctrl_colonnes = OL_Impression_infos_medicales_colonnes.ListView(self, id=-1, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
+        self.ctrl_colonnes.SetMinSize((150, 100))
+        self.ctrl_colonnes.MAJ()
+
+        self.bouton_ajouter = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Ajouter.png"), wx.BITMAP_TYPE_ANY))
+        self.bouton_modifier = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Modifier.png"), wx.BITMAP_TYPE_ANY))
+        self.bouton_supprimer = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Supprimer.png"), wx.BITMAP_TYPE_ANY))
+        self.bouton_monter = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Fleche_haut.png"), wx.BITMAP_TYPE_ANY))
+        self.bouton_descendre = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Fleche_bas.png"), wx.BITMAP_TYPE_ANY))
+
+        # Binds
+        self.Bind(wx.EVT_BUTTON, self.ctrl_colonnes.Ajouter, self.bouton_ajouter)
+        self.Bind(wx.EVT_BUTTON, self.ctrl_colonnes.Modifier, self.bouton_modifier)
+        self.Bind(wx.EVT_BUTTON, self.ctrl_colonnes.Supprimer, self.bouton_supprimer)
+        self.Bind(wx.EVT_BUTTON, self.ctrl_colonnes.Monter, self.bouton_monter)
+        self.Bind(wx.EVT_BUTTON, self.ctrl_colonnes.Descendre, self.bouton_descendre)
+
+        # Propriétés
+        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter une colonne")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la colonne sélectionnée dans la liste")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la colonne sélectionnée dans la liste")))
+        self.bouton_monter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour monter la colonne sélectionnée dans la liste")))
+        self.bouton_descendre.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour descendre la colonne sélectionnée dans la liste")))
+
+        # Layout
+        sizer_base = wx.BoxSizer(wx.VERTICAL)
+        grid_sizer_base = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
+
+        grid_sizer_base.Add(self.ctrl_colonnes, 1, wx.EXPAND, 0)
+
+        grid_sizer_droit = wx.FlexGridSizer(rows=6, cols=1, vgap=5, hgap=5)
+        grid_sizer_droit.Add(self.bouton_ajouter, 0, 0, 0)
+        grid_sizer_droit.Add(self.bouton_modifier, 0, 0, 0)
+        grid_sizer_droit.Add(self.bouton_supprimer, 0, 0, 0)
+        grid_sizer_droit.Add( (5, 5), 0, 0, 0)
+        grid_sizer_droit.Add(self.bouton_monter, 0, 0, 0)
+        grid_sizer_droit.Add(self.bouton_descendre, 0, 0, 0)
+        grid_sizer_base.Add(grid_sizer_droit, 1, wx.EXPAND, 0)
+
+        grid_sizer_base.AddGrowableRow(0)
+        grid_sizer_base.AddGrowableCol(0)
+        sizer_base.Add(grid_sizer_base, 1, wx.EXPAND | wx.ALL, 10)
+        self.SetSizer(sizer_base)
+        self.Layout()
+
+    def GetParametres(self):
+        return {"colonnes" : self.ctrl_colonnes.GetParametres()}
+
+    def SetParametres(self, dictParametres={}):
+        if dictParametres.has_key("colonnes"):
+            self.ctrl_colonnes.SetParametres(dictParametres["colonnes"])
+
+
+class Page_Options(wx.Panel):
+    def __init__(self, parent):
+        wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
+        self.parent = parent
+
+        self.ctrl_options = CTRL_Options(self)
+        self.ctrl_options.SetMinSize((100, 50))
+
+        self.bouton_reinit = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Actualiser.png"), wx.BITMAP_TYPE_ANY))
+
+        # Binds
+        self.Bind(wx.EVT_BUTTON, self.Reinitialisation, self.bouton_reinit)
+
+        # Propriétés
+        self.bouton_reinit.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour réinitialiser les options")))
+
+        # Layout
+        sizer_base = wx.BoxSizer(wx.VERTICAL)
+        grid_sizer_base = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
+
+        grid_sizer_base.Add(self.ctrl_options, 1, wx.EXPAND, 0)
+
+        grid_sizer_boutons = wx.FlexGridSizer(rows=5, cols=1, vgap=5, hgap=5)
+        grid_sizer_boutons.Add(self.bouton_reinit, 0, 0, 0)
+        grid_sizer_base.Add(grid_sizer_boutons, 1, wx.EXPAND, 0)
+
+        grid_sizer_base.AddGrowableRow(0)
+        grid_sizer_base.AddGrowableCol(0)
+        sizer_base.Add(grid_sizer_base, 1, wx.EXPAND | wx.ALL, 10)
+        self.SetSizer(sizer_base)
+        self.Layout()
+
+    def Reinitialisation(self, event=None):
+        self.ctrl_options.Reinitialisation()
+
+    def GetParametres(self):
+        return self.ctrl_options.GetParametres()
+
+    def SetParametres(self, dictParametres={}):
+        self.ctrl_options.SetParametres(dictParametres)
+
+
+
+
+# ----------------------------------------------------------------------------------------------------------------------------------------------
+
+class CTRL_Parametres(wx.Notebook):
+    def __init__(self, parent):
+        wx.Notebook.__init__(self, parent, id=-1, style=wx.BK_DEFAULT | wx.NB_MULTILINE)
+        self.dictPages = {}
+
+        self.listePages = [
+            {"code": "generalites", "ctrl": Page_Generalites(self), "label": _(u"Paramètres"), "image": "Calendrier.png"},
+            {"code": "colonnes", "ctrl": Page_Colonnes(self), "label": _(u"Colonnes"), "image": "Tableau_colonne.png"},
+            {"code": "options", "ctrl": Page_Options(self), "label": _(u"Options"), "image": "Options.png"},
+        ]
+
+        # ImageList pour le NoteBook
+        il = wx.ImageList(16, 16)
+        self.dictImages = {}
+        for dictPage in self.listePages:
+            self.dictImages[dictPage["code"]] = il.Add(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/%s" % dictPage["image"]), wx.BITMAP_TYPE_PNG))
+        self.AssignImageList(il)
+
+        # Création des pages
+        self.dictPages = {}
+        index = 0
+        for dictPage in self.listePages:
+            self.AddPage(dictPage["ctrl"], dictPage["label"])
+            self.SetPageImage(index, self.dictImages[dictPage["code"]])
+            self.dictPages[dictPage["code"]] = dictPage["ctrl"]
+            index += 1
+
+    def GetPageAvecCode(self, codePage=""):
+        return self.dictPages[codePage]
+
+    def AffichePage(self, codePage=""):
+        index = 0
+        for dictPage in self.listePages:
+            if dictPage["code"] == codePage:
+                self.SetSelection(index)
+            index += 1
+
+    def GetParametres(self):
+        dictParametres = {}
+        for dictPage in self.listePages:
+            dictParametres.update(dictPage["ctrl"].GetParametres())
+        return dictParametres
+
+    def SetParametres(self, dictParametres={}):
+        for dictPage in self.listePages:
+            dictPage["ctrl"].SetParametres(dictParametres)
+
+
+# ----------------------------------------------------------------------------------------------------------------------------------
+
+class Dialog(wx.Dialog):
+    def __init__(self, parent):
+        wx.Dialog.__init__(self, parent, -1, name="DLG_Impression_infos_medicales", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
+        self.parent = parent
+        
+        intro = _(u"Vous pouvez ici imprimer une liste au format PDF des informations médicales des individus présents sur la période de votre choix. Pour une liste standard, sélectionnez simplement une période puis cliquez sur 'Aperçu'.")
+        titre = _(u"Impression de la liste des informations médicales")
+        self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Imprimante.png")
+
+        # Profil de configuration
+        self.staticbox_profil_staticbox = wx.StaticBox(self, -1, _(u"Profil de configuration"))
+        self.ctrl_profil = CTRL_profil_perso(self, categorie="impression_infos_medicales", dlg=self)
+
+        # Notebook
+        self.ctrl_notebook = CTRL_Parametres(self)
+
+        # Boutons
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Aperçu"), cheminImage="Images/32x32/Apercu.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
+
+        self.__set_properties()
+        self.__do_layout()
+
+        self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
+        self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
+
+        # Init Contrôles
+        self.ctrl_profil.SetOnDefaut()
+        self.bouton_ok.SetFocus()
+
+
+    def __set_properties(self):
+        self.SetTitle(_(u"Impression de la liste des informations médicales"))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
+        self.SetMinSize((650, 650))
+
+    def __do_layout(self):
+        grid_sizer_base = wx.FlexGridSizer(rows=4, cols=1, vgap=10, hgap=10)
+        grid_sizer_base.Add(self.ctrl_bandeau, 0, wx.EXPAND, 0)
+
+        # Profil
+        staticbox_profil = wx.StaticBoxSizer(self.staticbox_profil_staticbox, wx.VERTICAL)
+        staticbox_profil.Add(self.ctrl_profil, 1, wx.EXPAND | wx.ALL, 5)
+        grid_sizer_base.Add(staticbox_profil, 1, wx.EXPAND | wx.LEFT | wx.RIGHT, 10)
+
+        grid_sizer_base.Add(self.ctrl_notebook, 0, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
+
+        grid_sizer_boutons = wx.FlexGridSizer(rows=1, cols=4, vgap=10, hgap=10)
+        grid_sizer_boutons.Add(self.bouton_aide, 0, 0, 0)
+        grid_sizer_boutons.Add((20, 20), 0, wx.EXPAND, 0)
+        grid_sizer_boutons.Add(self.bouton_ok, 0, 0, 0)
+        grid_sizer_boutons.Add(self.bouton_annuler, 0, 0, 0)
+        grid_sizer_boutons.AddGrowableCol(1)
+        grid_sizer_base.Add(grid_sizer_boutons, 1, wx.LEFT|wx.RIGHT|wx.BOTTOM|wx.EXPAND, 10)
+        self.SetSizer(grid_sizer_base)
+        grid_sizer_base.Fit(self)
+        grid_sizer_base.AddGrowableRow(2)
+        grid_sizer_base.AddGrowableCol(0)
+        self.Layout()
+        self.CenterOnScreen()
+
+    def OnBoutonAide(self, event): 
+        from Utils import UTILS_Aide
+        UTILS_Aide.Aide("Listedesinformationsmdicales")
+
     def GetAge(self, date_naiss=None):
         if date_naiss == None : return None
         datedujour = datetime.date.today()
         age = (datedujour.year - date_naiss.year) - int((datedujour.month, datedujour.day) < (date_naiss.month, date_naiss.day))
         return age
 
+    def GetPage(self, code=""):
+        """ Retourne le ctrl page du notebook selon le code page """
+        return self.ctrl_notebook.GetPageAvecCode(code)
+
+    def GetParametres(self):
+        """ Récupération des paramètres """
+        return self.ctrl_notebook.GetParametres()
+
+    def SetParametres(self, dictParametres={}):
+        """ Importation des paramètres """
+        if dictParametres != None :
+            self.ctrl_notebook.SetParametres(dictParametres)
+
     def OnBoutonOk(self, event):
+        dictParametres = self.ctrl_notebook.GetParametres()
+
         # Récupération et vérification des données
-        listePeriodes = self.ctrl_calendrier.GetDatesSelections() 
-
-        if self.radio_inscrits.GetValue() == True :
-            mode = "inscrits"
-            listeActivites = self.ctrl_activites_inscrits.GetActivites()
-
-        if self.radio_presents.GetValue() == True :
-            mode = "presents"
-            listeActivites = self.ctrl_activites_presents.GetListeActivites()
-
+        listeActivites = dictParametres["liste_activites"]
         if len(listeActivites) == 0 :
+            self.ctrl_notebook.AffichePage("generalites")
             dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement cocher au moins une activité !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
 
-        listeGroupes = self.ctrl_groupes.GetListeGroupes() 
-        if len(listeGroupes) == 0 :
+        # Récupération et vérification des données
+        listeGroupes = dictParametres["liste_groupes"]
+        if len(dictParametres["liste_groupes"]) == 0 :
+            self.ctrl_notebook.AffichePage("generalites")
             dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement cocher au moins un groupe !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
-        
+
+        # Recherche les catégories utilisées
+        liste_categories_utilisees = []
+        for nom_categorie, categories in dictParametres["colonnes"]:
+            for IDcategorie in UTILS_Texte.ConvertStrToListe(categories):
+                if IDcategorie not in liste_categories_utilisees :
+                    liste_categories_utilisees.append(IDcategorie)
+
         # Création du PDF
         from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, PageBreak
         from reportlab.platypus.flowables import ParagraphAndImage, Image
-        from reportlab.rl_config import defaultPageSize
         from reportlab.lib.pagesizes import A4
-        from reportlab.lib.units import inch, cm
-        from reportlab.lib.utils import ImageReader
         from reportlab.lib import colors
-        from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+        from reportlab.lib.styles import ParagraphStyle
         
         self.taille_page = A4
-        self.orientation = "PAYSAGE"
-        if self.orientation == "PORTRAIT" :
+        if dictParametres["orientation"] == "portrait" :
             self.hauteur_page = self.taille_page[1]
             self.largeur_page = self.taille_page[0]
         else:
@@ -597,7 +840,7 @@ class Dialog(wx.Dialog):
             self.largeur_page = self.taille_page[1]
         
         # Création des conditions pour les requêtes SQL
-        conditionsPeriodes = GetSQLdates(listePeriodes)
+        conditionsPeriodes = GetSQLdates(dictParametres["liste_periodes"])
         
         if len(listeActivites) == 0 : conditionActivites = "()"
         elif len(listeActivites) == 1 : conditionActivites = "(%d)" % listeActivites[0]
@@ -608,14 +851,15 @@ class Dialog(wx.Dialog):
         else : conditionGroupes = str(tuple(listeGroupes))
                 
         # Récupération des noms des groupes
-        dictGroupes = self.ctrl_groupes.GetDictGroupes()
+        dictGroupes = dictParametres["dict_groupes"]
+
+        DB = GestionDB.DB()
 
         # ------------ MODE PRESENTS ---------------------------------
 
-        if mode == "presents" :
+        if dictParametres["mode"] == "presents" :
 
             # Récupération de la liste des groupes ouverts sur cette période
-            DB = GestionDB.DB()
             req = """SELECT IDouverture, IDactivite, IDunite, IDgroupe
             FROM ouvertures 
             WHERE ouvertures.IDactivite IN %s AND %s
@@ -647,7 +891,7 @@ class Dialog(wx.Dialog):
 
         # ------------ MODE INSCRITS ---------------------------------
 
-        if mode == "inscrits" :
+        if dictParametres["mode"] == "inscrits" :
 
             dictOuvertures = {}
             for IDgroupe, dictGroupe in dictGroupes.iteritems() :
@@ -658,7 +902,6 @@ class Dialog(wx.Dialog):
                     dictOuvertures[IDactivite].append(IDgroupe)
 
             # Récupération des individus grâce à leurs consommations
-            DB = GestionDB.DB()
             req = """SELECT individus.IDindividu, IDactivite, IDgroupe,
             IDcivilite, nom, prenom, date_naiss
             FROM individus 
@@ -669,7 +912,6 @@ class Dialog(wx.Dialog):
             ;""" % conditionActivites
             DB.ExecuterReq(req)
             listeIndividus = DB.ResultatReq()
-
 
 
         # Analyse des individus
@@ -704,7 +946,7 @@ class Dialog(wx.Dialog):
             if dictInfosMedicales.has_key(IDindividu) == False :
                 dictInfosMedicales[IDindividu] = []
             dictTemp = {
-                "IDprobleme" : IDprobleme, "IDtype" : IDtype, "intitule" : intitule, "date_debut" : date_debut, 
+                "IDprobleme" : IDprobleme, "IDcategorie" : IDtype, "intitule" : intitule, "date_debut" : date_debut,
                 "date_fin" : date_fin, "description" : description, "traitement_medical" : traitement_medical, "description_traitement" : description_traitement, 
                 "date_debut_traitement" : date_debut_traitement, "date_fin_traitement" : date_fin_traitement, "eviction" : eviction, 
                 "date_debut_eviction" : date_debut_eviction, "date_fin_eviction" : date_fin_eviction, 
@@ -714,10 +956,10 @@ class Dialog(wx.Dialog):
         # Récupération des photos individuelles
         dictPhotos = {}
         taillePhoto = 128
-        if self.ctrl_taille_photos.GetSelection() == 0 : tailleImageFinal = 16
-        if self.ctrl_taille_photos.GetSelection() == 1 : tailleImageFinal = 32
-        if self.ctrl_taille_photos.GetSelection() == 2 : tailleImageFinal = 64
-        if self.checkbox_photos.GetValue() == True :
+        if dictParametres["afficher_photos"] == "petite" : tailleImageFinal = 16
+        if dictParametres["afficher_photos"] == "moyenne" : tailleImageFinal = 32
+        if dictParametres["afficher_photos"] == "grande" : tailleImageFinal = 64
+        if dictParametres["afficher_photos"] != "non" :
             for IDindividu in listeIDindividus :
                 IDcivilite = dictIndividus[IDindividu]["IDcivilite"]
                 nomFichier = Chemins.GetStaticPath("Images/128x128/%s" % DICT_CIVILITES[IDcivilite]["nomImage"])
@@ -737,7 +979,7 @@ class Dialog(wx.Dialog):
         doc = SimpleDocTemplate(nomDoc, pagesize=(self.largeur_page, self.hauteur_page), topMargin=30, bottomMargin=30)
         story = []
         
-        largeurContenu = self.largeur_page - 75 #520
+        largeurContenu = self.largeur_page - 75
         
         # Création du titre du document
         def Header():
@@ -777,26 +1019,32 @@ class Dialog(wx.Dialog):
                     labelsColonnes = []
                                         
                     # Recherche des entêtes de colonnes :
-                    if self.checkbox_photos.GetValue() == True :
+                    if dictParametres["afficher_photos"] != "non" :
                         labelsColonnes.append(_(u"Photo"))
                         largeursColonnes.append(tailleImageFinal+6)
                         
                     labelsColonnes.append(_(u"Nom - prénom"))
-                    largeursColonnes.append(120)
-                    
-                    if self.checkbox_age.GetValue() == True :
+                    if dictParametres["largeur_colonne_nom"] == "automatique" :
+                        largeursColonnes.append(120)
+                    else :
+                        largeursColonnes.append(int(dictParametres["largeur_colonne_nom"]))
+
+                    if dictParametres["afficher_age"] == True :
                         labelsColonnes.append(_(u"Âge"))
-                        largeursColonnes.append(20)
-                    
+                        if dictParametres["largeur_colonne_age"] == "automatique":
+                            largeursColonnes.append(20)
+                        else:
+                            largeursColonnes.append(int(dictParametres["largeur_colonne_age"]))
+
                     # Calcule la largeur restante
                     largeurRestante = largeurContenu - sum(largeursColonnes)
-                                        
-                    labelsColonnes.append(_(u"Informations alimentaires"))
-                    largeursColonnes.append(largeurRestante/2.0)
-                    
-                    labelsColonnes.append(_(u"Informations diverses"))
-                    largeursColonnes.append(largeurRestante/2.0)
-                    
+
+                    # Calcul des largeurs de colonnes
+                    largeurColonnes = largeurRestante * 1.0 / len(dictParametres["colonnes"])
+                    for nom_categorie, categories in dictParametres["colonnes"]:
+                        labelsColonnes.append(nom_categorie)
+                        largeursColonnes.append(largeurColonnes)
+
                     # Création de l'entete de groupe
                     ligne = [nomGroupe,]
                     for x in range(0, len(labelsColonnes)-1):
@@ -821,13 +1069,13 @@ class Dialog(wx.Dialog):
                                     valeursTri = (IDindividu, dictIndividu["nom"], dictIndividu["prenom"], dictIndividu["age"])
                                     
                                     # + Sélection uniquement des individus avec infos
-                                    if self.checkbox_nonvides.GetValue() == False or (self.checkbox_nonvides.GetValue() == True and dictInfosMedicales.has_key(IDindividu) ) :
+                                    if dictParametres["individus_avec_infos"] == False or (dictParametres["individus_avec_infos"] == True and dictInfosMedicales.has_key(IDindividu) ) :
                                         listeIndividus.append(valeursTri)
                     
-                    if self.ctrl_tri.GetSelection() == 0 : paramTri = 1 # Nom
-                    if self.ctrl_tri.GetSelection() == 1 : paramTri = 2 # Prénom
-                    if self.ctrl_tri.GetSelection() == 2 : paramTri = 3 # Age
-                    if self.ctrl_ordre.GetSelection() == 0 :
+                    if dictParametres["tri"] == "nom" : paramTri = 1 # Nom
+                    if dictParametres["tri"] == "prenom" : paramTri = 2 # Prénom
+                    if dictParametres["tri"] == "age" : paramTri = 3 # Age
+                    if dictParametres["ordre"] == "croissant" :
                         ordreDecroissant = False
                     else:
                         ordreDecroissant = True
@@ -840,7 +1088,7 @@ class Dialog(wx.Dialog):
                         ligne = []
                         
                         # Photo
-                        if self.checkbox_photos.GetValue() == True and IDindividu in dictPhotos :
+                        if dictParametres["afficher_photos"] != "non" and IDindividu in dictPhotos :
                             img = dictPhotos[IDindividu]
                             ligne.append(img)
                         
@@ -848,7 +1096,7 @@ class Dialog(wx.Dialog):
                         ligne.append(u"%s %s" % (nom, prenom))
                         
                         # Age
-                        if self.checkbox_age.GetValue() == True :
+                        if dictParametres["afficher_age"] == True :
                             if age != None :
                                 ligne.append(age)
                             else:
@@ -856,71 +1104,66 @@ class Dialog(wx.Dialog):
                         
                         # Informations médicales
                         paraStyle = ParagraphStyle(name="infos",
-                                  fontName="Helvetica",
-                                  fontSize=7,
-                                  leading=8,
-                                  spaceAfter=2,
-                                )
-                                
-                        listeInfosAlim = []
-                        listeInfosDivers = []
-                        if dictInfosMedicales.has_key(IDindividu) :
-                            for infoMedicale in dictInfosMedicales[IDindividu] :
-                                intitule = infoMedicale["intitule"]
-                                description = infoMedicale["description"]
-                                traitement = infoMedicale["traitement_medical"]
-                                description_traitement = infoMedicale["description_traitement"]
-                                date_debut_traitement = infoMedicale["date_debut_traitement"]
-                                date_fin_traitement = infoMedicale["date_fin_traitement"]
-                                IDtype = infoMedicale["IDtype"]
-                                # Intitulé et description
-                                if description != None and description != "" :
-                                    texteInfos = u"<b>%s</b> : %s" % (intitule, description)
-                                else:
-                                    texteInfos = u"%s" % intitule
-                                if len(texteInfos) > 0 and texteInfos[-1] != "." : texteInfos += u"."
-                                # Traitement médical
-                                if traitement == 1 and description_traitement != None and description_traitement != "" :
-                                    texteDatesTraitement = u""
-                                    if date_debut_traitement != None and date_fin_traitement != None : 
-                                        texteDatesTraitement = _(u" du %s au %s") % (DateEngFr(date_debut_traitement), DateEngFr(date_fin_traitement))
-                                    if date_debut_traitement != None and date_fin_traitement == None : 
-                                        texteDatesTraitement = _(u" à partir du %s") % DateEngFr(date_debut_traitement)
-                                    if date_debut_traitement == None and date_fin_traitement != None : 
-                                        texteDatesTraitement = _(u" jusqu'au %s") % DateEngFr(date_fin_traitement)
-                                    texteInfos += _(u"Traitement%s : %s.") % (texteDatesTraitement, description_traitement)
-                                
-                                # Création du paragraphe
-                                img = DICT_TYPES_INFOS[IDtype]["img"]
-                                p = ParagraphAndImage(Paragraph(texteInfos, paraStyle), Image(Chemins.GetStaticPath("Images/16x16/%s" % img),width=8, height=8), xpad=1, ypad=0, side="left")
-                                if infoMedicale["IDtype"] == 2 :
-                                    listeInfosAlim.append(p)
-                                else:
-                                    listeInfosDivers.append(p)
-                            
-                            ligne.append(listeInfosAlim)
-                            ligne.append(listeInfosDivers)
-                            
-                        
+                                    fontName="Helvetica",
+                                    fontSize=7,
+                                    leading=8,
+                                    spaceAfter=2,
+                                    )
+
+                        # Création des colonnes
+                        for nom_categorie, categories in dictParametres["colonnes"]:
+                            liste_categories = UTILS_Texte.ConvertStrToListe(categories)
+
+                            case = []
+                            # Recherche s'il y a une info médicale dans cette case
+                            if dictInfosMedicales.has_key(IDindividu):
+                                for infoMedicale in dictInfosMedicales[IDindividu] :
+                                    IDcategorie = infoMedicale["IDcategorie"]
+
+                                    if IDcategorie in liste_categories or (0 in liste_categories and IDcategorie not in liste_categories_utilisees) :
+
+                                        intitule = infoMedicale["intitule"]
+                                        description = infoMedicale["description"]
+                                        traitement = infoMedicale["traitement_medical"]
+                                        description_traitement = infoMedicale["description_traitement"]
+                                        date_debut_traitement = infoMedicale["date_debut_traitement"]
+                                        date_fin_traitement = infoMedicale["date_fin_traitement"]
+
+                                        # Intitulé et description
+                                        if description != None and description != "":
+                                            texteInfos = u"<b>%s</b> : %s" % (intitule, description)
+                                        else:
+                                            texteInfos = u"%s" % intitule
+                                        if len(texteInfos) > 0 and texteInfos[-1] != ".": texteInfos += u"."
+                                        # Traitement médical
+                                        if traitement == 1 and description_traitement != None and description_traitement != "":
+                                            texteDatesTraitement = u""
+                                            if date_debut_traitement != None and date_fin_traitement != None:
+                                                texteDatesTraitement = _(u" du %s au %s") % (DateEngFr(date_debut_traitement), DateEngFr(date_fin_traitement))
+                                            if date_debut_traitement != None and date_fin_traitement == None:
+                                                texteDatesTraitement = _(u" à partir du %s") % DateEngFr(date_debut_traitement)
+                                            if date_debut_traitement == None and date_fin_traitement != None:
+                                                texteDatesTraitement = _(u" jusqu'au %s") % DateEngFr(date_fin_traitement)
+                                            texteInfos += _(u"Traitement%s : %s.") % (texteDatesTraitement, description_traitement)
+
+                                        # Création du paragraphe
+                                        case.append(Paragraph(texteInfos, paraStyle))
+
+                            # Ajoute la case à la ligne
+                            ligne.append(case)
+
                         # Ajout de la ligne individuelle dans le tableau
                         dataTableau.append(ligne)
                     
                     # Création des lignes vierges
-                    if self.checkbox_lignes_vierges.GetValue() == True :
-                        for x in range(0, self.ctrl_nbre_lignes.GetSelection()+1):
-                            ligne = []
-                            for col in labelsColonnes :
-                                ligne.append("") 
-                            dataTableau.append(ligne)
+                    for x in range(0, dictParametres["nbre_lignes_vierges"]):
+                        ligne = []
+                        for col in labelsColonnes :
+                            ligne.append("")
+                        dataTableau.append(ligne)
                                                 
                     # Style du tableau
-                    colPremiere = 1
-                    if self.checkbox_photos.GetValue() == True :
-                        colPremiere += 1
-                    if self.checkbox_age.GetValue() == True :
-                        colPremiere += 1
-                    
-                    couleurFond = (0.8, 0.8, 1) # Vert -> (0.5, 1, 0.2)
+                    couleur_fond_entetes = UTILS_Divers.ConvertCouleurWXpourPDF(dictParametres["couleur_fond_entetes"])
                     
                     style = TableStyle([
                             ('VALIGN', (0,0), (-1,-1), 'MIDDLE'), # Centre verticalement toutes les cases
@@ -934,7 +1177,7 @@ class Dialog(wx.Dialog):
                             
                             ('SPAN',(0,0),(-1,0)), # Fusionne les lignes du haut pour faire le titre du groupe
                             ('FONT',(0,0),(0,0), "Helvetica-Bold", 10), # Donne la police de caract. + taille de police du titre de groupe
-                            ('BACKGROUND', (0,0), (-1,0), couleurFond), # Donne la couleur de fond du titre de groupe
+                            ('BACKGROUND', (0,0), (-1,0), couleur_fond_entetes), # Donne la couleur de fond du titre de groupe
                             
                             ])
                         
@@ -946,7 +1189,7 @@ class Dialog(wx.Dialog):
                     story.append(Spacer(0,20))
                     
                     # Saut de page après un groupe
-                    if self.checkbox_page_groupe.GetValue() == True :
+                    if dictParametres["saut_page_groupe"] == True :
                         story.append(PageBreak())
                         # Insère un header
                         if indexGroupe < nbreGroupes :
@@ -960,24 +1203,10 @@ class Dialog(wx.Dialog):
         # Affichage du PDF
         FonctionsPerso.LanceFichierExterne(nomDoc)
         
-        self.MemoriserParametres() 
-        
 
-    def MemoriserParametres(self):
-        if self.ctrl_memoriser.GetValue() == True :
-            UTILS_Config.SetParametre("impression_infos_med_tri", self.ctrl_tri.GetSelection())
-            UTILS_Config.SetParametre("impression_infos_med_ordre", self.ctrl_ordre.GetSelection())
-            UTILS_Config.SetParametre("impression_infos_med_lignes_vierges", int(self.checkbox_lignes_vierges.GetValue()))
-            UTILS_Config.SetParametre("impression_infos_med_nbre_lignes_vierges", self.ctrl_nbre_lignes.GetSelection())
-            UTILS_Config.SetParametre("impression_infos_med_page_groupe", int(self.checkbox_page_groupe.GetValue()))
-            UTILS_Config.SetParametre("impression_infos_med_age", int(self.checkbox_age.GetValue()))
-            UTILS_Config.SetParametre("impression_infos_med_nonvides", int(self.checkbox_nonvides.GetValue()))
-            UTILS_Config.SetParametre("impression_infos_med_photos", int(self.checkbox_photos.GetValue()))
-            UTILS_Config.SetParametre("impression_infos_med_taille_photos", int(self.ctrl_taille_photos.GetSelection()))
-            UTILS_Config.SetParametre("impression_infos_med_mode_presents", int(self.radio_presents.GetValue()))
 
-        UTILS_Config.SetParametre("impression_infos_med_memoriser", int(self.ctrl_memoriser.GetValue()))
-        
+
+
 
 if __name__ == u"__main__":
     app = wx.App(0)
