@@ -5377,100 +5377,96 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         listeSuppressions = []
         listeChamps = []
         dictHistorique = {}
-        try :
-            for IDindividu, dictDates in self.dictConsoIndividus.iteritems() :
-                for date, dictUnites in dictDates.iteritems() :
-                    for IDunite, listeConso in dictUnites.iteritems() :
-                        for conso in listeConso :
+        for IDindividu, dictDates in self.dictConsoIndividus.iteritems() :
+            for date, dictUnites in dictDates.iteritems() :
+                for IDunite, listeConso in dictUnites.iteritems() :
+                    for conso in listeConso :
 
-                            # Recherche s'il y a une prestation
-                            IDprestation = conso.IDprestation
-                            if IDprestation < 0 and dictNewIDprestation.has_key(IDprestation) == True :
-                                IDprestation = dictNewIDprestation[IDprestation]
+                        # Recherche s'il y a une prestation
+                        IDprestation = conso.IDprestation
+                        if IDprestation < 0 and dictNewIDprestation.has_key(IDprestation) == True :
+                            IDprestation = dictNewIDprestation[IDprestation]
 
-                            # Récupération des données
-                            listeDonnees = [
-                                ("IDindividu", IDindividu), 
-                                ("IDinscription", conso.IDinscription),
-                                ("IDactivite", conso.IDactivite),
-                                ("date", str(date)),
-                                ("IDunite", IDunite), 
-                                ("IDgroupe", conso.IDgroupe), 
-                                ("heure_debut", conso.heure_debut), 
-                                ("heure_fin", conso.heure_fin), 
-                                ("etat", conso.etat),
-                                ("verrouillage", 0), #dictValeurs["verrouillage"]), 
-                                ("date_saisie", str(conso.date_saisie)), 
-                                ("IDutilisateur", conso.IDutilisateur), 
-                                ("IDcategorie_tarif", conso.IDcategorie_tarif),
-                                ("IDcompte_payeur", conso.IDcompte_payeur),
-                                ("IDprestation", IDprestation),
-                                ("quantite", conso.quantite),
-                                ("etiquettes", ConvertListeToStr(conso.etiquettes)),
-                                ("IDevenement", conso.IDevenement),
-                                ]
-                            
-                            # Pour version optimisée :
-                            listeValeurs = []
-                            for key, valeur in listeDonnees :
-                                if key not in listeChamps :
-                                    listeChamps.append(key)
-                                listeValeurs.append(valeur)
-                                
-                            # Préparation pour historique
-                            IDfamille = conso.IDfamille
-                            if dictHistorique.has_key(IDfamille) == False :
-                                dictHistorique[IDfamille] = {}
-                            if dictHistorique[IDfamille].has_key(IDindividu) == False :
-                                dictHistorique[IDfamille][IDindividu] = { "suppr" : {}, "modif" : {}, "ajout" : {} }
+                        # Récupération des données
+                        listeDonnees = [
+                            ("IDindividu", IDindividu),
+                            ("IDinscription", conso.IDinscription),
+                            ("IDactivite", conso.IDactivite),
+                            ("date", str(date)),
+                            ("IDunite", IDunite),
+                            ("IDgroupe", conso.IDgroupe),
+                            ("heure_debut", conso.heure_debut),
+                            ("heure_fin", conso.heure_fin),
+                            ("etat", conso.etat),
+                            ("verrouillage", 0), #dictValeurs["verrouillage"]),
+                            ("date_saisie", str(conso.date_saisie)),
+                            ("IDutilisateur", conso.IDutilisateur),
+                            ("IDcategorie_tarif", conso.IDcategorie_tarif),
+                            ("IDcompte_payeur", conso.IDcompte_payeur),
+                            ("IDprestation", IDprestation),
+                            ("quantite", conso.quantite),
+                            ("etiquettes", ConvertListeToStr(conso.etiquettes)),
+                            ("IDevenement", conso.IDevenement),
+                            ]
 
-                            # Recherche de l'abrégé de l'unité
-                            if self.dictUnites.has_key(IDunite) :
-                                abregeUnite = self.dictUnites[IDunite]["abrege"]
-                            else :
-                                abregeUnite = u"---"
+                        # Pour version optimisée :
+                        listeValeurs = []
+                        for key, valeur in listeDonnees :
+                            if key not in listeChamps :
+                                listeChamps.append(key)
+                            listeValeurs.append(valeur)
 
-                            # Interception erreur conso corrompue
-                            # if conso.IDinscription == None :
-                            #     print conso.__dict__
-                            #     raise Exception("Erreur : IDinscription a 0")
+                        # Préparation pour historique
+                        IDfamille = conso.IDfamille
+                        if dictHistorique.has_key(IDfamille) == False :
+                            dictHistorique[IDfamille] = {}
+                        if dictHistorique[IDfamille].has_key(IDindividu) == False :
+                            dictHistorique[IDfamille][IDindividu] = { "suppr" : {}, "modif" : {}, "ajout" : {} }
 
-                            # Ajout
-                            if conso.statut == "ajout" :
-                                # Version optimisée
-                                listeAjouts.append(listeValeurs)
-                                
-                                if dictHistorique[IDfamille][IDindividu]["ajout"].has_key(date) == False :
-                                    dictHistorique[IDfamille][IDindividu]["ajout"][date] = []
-                                dictHistorique[IDfamille][IDindividu]["ajout"][date].append(abregeUnite)                                
-                            
-                            # Modification
-                            if conso.statut == "modification" :
-                                
-                                # Version optimisée
-                                listeValeursTemp = listeValeurs
-                                listeValeursTemp.append(conso.IDconso)
-                                listeModifications.append(listeValeursTemp)
-                                
-                                if dictHistorique[IDfamille][IDindividu]["modif"].has_key(date) == False :
-                                    dictHistorique[IDfamille][IDindividu]["modif"][date] = []
-                                dictHistorique[IDfamille][IDindividu]["modif"][date].append(abregeUnite)
-                            
-                            # Suppression
-                            if conso.statut == "suppression" or (conso.etat == None and conso.IDconso != None) :
-                                
-                                # Version optimisée
-                                listeSuppressions.append(conso.IDconso) 
-                                
-                                if dictHistorique[IDfamille][IDindividu]["suppr"].has_key(date) == False :
-                                    dictHistorique[IDfamille][IDindividu]["suppr"][date] = []
-                                dictHistorique[IDfamille][IDindividu]["suppr"][date].append(abregeUnite)
-                                    
-        except :
-            type, value, tb = sys.exc_info() 
-            print (type, value, tb)
-            traceback.print_exc() 
-        
+                        # Recherche de l'abrégé de l'unité
+                        if self.dictUnites.has_key(IDunite) :
+                            abregeUnite = self.dictUnites[IDunite]["abrege"]
+                        else :
+                            abregeUnite = u"---"
+
+                        # Interception erreur conso corrompue
+                        # if conso.IDinscription == None :
+                        #     print conso.__dict__
+                        #     raise Exception("Erreur : IDinscription a 0")
+
+                        # Ajout
+                        if conso.statut == "ajout" :
+                            # Version optimisée
+                            listeAjouts.append(listeValeurs)
+
+                            if dictHistorique[IDfamille][IDindividu]["ajout"].has_key(date) == False :
+                                dictHistorique[IDfamille][IDindividu]["ajout"][date] = []
+                            dictHistorique[IDfamille][IDindividu]["ajout"][date].append(abregeUnite)
+
+                        # Modification
+                        if conso.statut == "modification" :
+
+                            # Version optimisée
+                            listeValeursTemp = listeValeurs
+                            listeValeursTemp.append(conso.IDconso)
+                            listeModifications.append(listeValeursTemp)
+
+                            if dictHistorique[IDfamille][IDindividu]["modif"].has_key(date) == False :
+                                dictHistorique[IDfamille][IDindividu]["modif"][date] = []
+                            dictHistorique[IDfamille][IDindividu]["modif"][date].append(abregeUnite)
+
+                        # Suppression
+                        if conso.statut == "suppression" or (conso.etat == None and conso.IDconso != None) :
+
+                            # Version optimisée
+                            listeSuppressions.append(conso.IDconso)
+
+                            if dictHistorique[IDfamille][IDindividu]["suppr"].has_key(date) == False :
+                                dictHistorique[IDfamille][IDindividu]["suppr"][date] = []
+                            dictHistorique[IDfamille][IDindividu]["suppr"][date].append(abregeUnite)
+
+
+
         # Suppression des consommations multihoraires
         for conso in self.listeConsoSupprimees :
             listeSuppressions.append(conso.IDconso) 
