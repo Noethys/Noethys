@@ -875,7 +875,6 @@ class Dialog(wx.Dialog):
                     dictOuvertures[IDactivite].append(IDgroupe)
 
             # Récupération des individus grâce à leurs consommations
-            DB = GestionDB.DB()
             req = """SELECT individus.IDindividu, IDactivite, IDgroupe,
             IDcivilite, nom, prenom, date_naiss
             FROM consommations 
@@ -1111,6 +1110,7 @@ class Dialog(wx.Dialog):
                                     )
 
                         # Création des colonnes
+                        has_infos = False
                         for nom_categorie, categories in dictParametres["colonnes"]:
                             liste_categories = UTILS_Texte.ConvertStrToListe(categories)
 
@@ -1148,12 +1148,14 @@ class Dialog(wx.Dialog):
 
                                         # Création du paragraphe
                                         case.append(Paragraph(texteInfos, paraStyle))
+                                        has_infos = True
 
                             # Ajoute la case à la ligne
                             ligne.append(case)
 
                         # Ajout de la ligne individuelle dans le tableau
-                        dataTableau.append(ligne)
+                        if dictParametres["individus_avec_infos"] == False or (dictParametres["individus_avec_infos"] == True and has_infos == True):
+                            dataTableau.append(ligne)
                     
                     # Création des lignes vierges
                     for x in range(0, dictParametres["nbre_lignes_vierges"]):
