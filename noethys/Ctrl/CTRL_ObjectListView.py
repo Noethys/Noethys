@@ -654,11 +654,11 @@ class BarreRecherche(wx.SearchCtrl):
     def OnDoSearch(self, evt):
         if self.timer.IsRunning():
             self.timer.Stop()
-        if len(self.listview.donnees) < 500 :
+        if len(self.listview.GetObjects()) < 500 :
             duree = 10
-        elif len(self.listview.donnees) < 1000 :
+        elif len(self.listview.GetObjects()) < 1000 :
             duree = 200
-        elif len(self.listview.donnees) < 5000 :
+        elif len(self.listview.GetObjects()) < 5000 :
             duree = 500
         else :
             duree = 1000
