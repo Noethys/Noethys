@@ -1032,7 +1032,7 @@ class ListView(FastObjectListView):
                         ("IDmode", IDmode),
                         ("IDemetteur", None),
                         ("numero_piece", None),
-                        ("montant", montant),
+                        ("montant", float(montant)),
                         ("IDpayeur", IDpayeur),
                         ("observations", None),
                         ("numero_quittancier", None),
@@ -1043,7 +1043,7 @@ class ListView(FastObjectListView):
                         ("IDutilisateur", UTILS_Identification.GetIDutilisateur() ),
                         ("IDpiece", track.IDpiece),
                         ]
-
+                    
                     # Ajout
                     if track.IDreglement == None :
                         track.IDreglement = DB.ReqInsert("reglements", listeDonnees)
