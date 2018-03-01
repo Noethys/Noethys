@@ -162,7 +162,7 @@ class ListView(FastObjectListView):
         
         # Condition dates de présences
         if self.presents != None :
-            conditionPresents = "AND prestations.date>='%s' AND prestations.date <='%s' " % (self.presents[0], self.presents[1])
+            conditionPresents = "AND prestations.date>='%s' AND prestations.date <='%s'" % (self.presents[0], self.presents[1])
         else :
             conditionPresents = ""
             

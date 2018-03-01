@@ -144,7 +144,8 @@ class Page_Saisie_manuelle(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
         self.parent = parent
-        
+        self.maj_done = True
+
         # Contrôles
         self.ctrl = wx.TextCtrl(self, -1, style=wx.TE_MULTILINE)
         self.ctrl.SetMinSize((10, 10))
@@ -156,7 +157,10 @@ class Page_Saisie_manuelle(wx.Panel):
         sizer.Add(self.ctrl, 1, wx.EXPAND | wx.ALL, 10)
         self.SetSizer(sizer)
         self.Layout()
-    
+
+    def MAJ(self):
+        pass
+
     def OnCheck(self, event):
         self.parent.SetInfos("saisie_manuelle", self.GetDonnees())
     
@@ -197,11 +201,14 @@ class CTRL_Listes_diffusion(wx.CheckListBox):
         self.listeDiff = []
         self.dictDiff = {}
         self.dictAbonnements = {}
+        self.maj_done = False
         
     def MAJ(self):
-        self.listeDiff, self.dictDiff, self.dictAbonnements = self.Importation()
-        self.SetListeChoix()
-    
+        if self.maj_done == False :
+            self.listeDiff, self.dictDiff, self.dictAbonnements = self.Importation()
+            self.SetListeChoix()
+            self.maj_done = True
+
     def Importation(self):
         listeDiff = []
         dictDiff = {}
@@ -291,11 +298,11 @@ class Page_Listes_diffusion(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
         self.parent = parent
+        self.maj_done = False
         
         # Contrôles
         self.liste = CTRL_Listes_diffusion(self)
         self.liste.SetMinSize((10, 10))
-        self.liste.MAJ() 
         self.Bind(wx.EVT_CHECKLISTBOX, self.OnCheck, self.liste)
         
         # Layout
@@ -303,7 +310,12 @@ class Page_Listes_diffusion(wx.Panel):
         sizer.Add(self.liste, 1, wx.EXPAND | wx.ALL, 10)
         self.SetSizer(sizer)
         self.Layout()
-    
+
+    def MAJ(self):
+        if self.maj_done == False :
+            self.liste.MAJ()
+            self.maj_done = True
+
     def OnCheck(self, event):
         self.parent.SetInfos("listes_diffusion", self.GetDonnees())
         
@@ -331,14 +343,14 @@ class Page_Familles_individus(wx.Panel):
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
         self.parent = parent
         self.categorie = categorie
+        self.maj_done = False
         
         # Contrôles
         self.listview = OL_Etiquettes.ListView(self, id=-1, categorie=categorie, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.listview.SetMinSize((10, 10))
         self.barre_recherche = OL_Etiquettes.CTRL_Outils(self, listview=self.listview, afficherCocher=True)
         self.barre_recherche.SetBackgroundColour((255, 255, 255))
-        self.listview.MAJ() 
-        
+
         # Layout
         grid_sizer_base = wx.FlexGridSizer(rows=2, cols=1, vgap=5, hgap=5)
         grid_sizer_base.Add(self.listview, 1, wx.LEFT|wx.RIGHT|wx.TOP|wx.EXPAND, 10)
@@ -347,7 +359,12 @@ class Page_Familles_individus(wx.Panel):
         grid_sizer_base.AddGrowableCol(0)
         self.SetSizer(grid_sizer_base)
         self.Layout()
-    
+
+    def MAJ(self):
+        if self.maj_done == False :
+            self.listview.MAJ()
+            self.maj_done = True
+
     def OnCheck(self, track):
         self.parent.SetInfos(self.categorie, self.GetDonnees())
         
@@ -471,7 +488,21 @@ class CTRL_Pages(wx.Notebook):
         for dictPage in self.listePages :
             self.AddPage(dictPage["page"], dictPage["label"], imageId=index)
             index += 1
-    
+
+        self.Bind(wx.EVT_NOTEBOOK_PAGE_CHANGED, self.OnPageChanged)
+
+    def OnPageChanged(self, event):
+        indexPage = event.GetSelection()
+        page = self.GetPage(indexPage)
+        if page.maj_done == False :
+            self.MAJ_page(page)
+        event.Skip()
+
+    def MAJ_page(self, page=None):
+        dlgAttente = wx.BusyInfo(_(u"Veuillez patienter..."), self.parent)
+        page.MAJ()
+        del dlgAttente
+
     def GetIndexPageByCode(self, code=""):
         index = 0
         for dictPage in self.listePages :
@@ -556,7 +587,11 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonDetail, self.bouton_detail)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
-                
+
+        # MAJ la première page
+        page = self.ctrl_pages.GetPage(0)
+        self.ctrl_pages.MAJ_page(page)
+
     def __set_properties(self):
         self.SetTitle(_(u"Sélection des destinataires"))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))

@@ -335,7 +335,7 @@ class CTRL(wx.Panel):
             self.parent.SetListesPeriodes(listeSelections)
             self.parent.MAJ_grille()
         
-        if self.nomParent == "DLG_Impression_infos_medicales" :
+        if self.nomParent == "informations_medicales" :
             listeSelections = self.GetDatesSelections()
             self.parent.SetListesPeriodes(listeSelections) 
         

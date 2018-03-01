@@ -1258,7 +1258,10 @@ class CTRL_Champs(wx.TreeCtrl):
         if self.ctrl_listview != None :
             for colonne in self.ctrl_listview.listeColonnes :
                 codeColonne = colonne.valueGetter
-                typeDonnee = colonne.typeDonnee
+                if hasattr(colonne, "typeDonnee"):
+                    typeDonnee = colonne.typeDonnee
+                else :
+                    typeDonnee = None
                 titre = colonne.title
                 if titre == "" :
                     titre = codeColonne

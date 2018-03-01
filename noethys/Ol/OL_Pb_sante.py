@@ -18,9 +18,6 @@ import datetime
 from Ctrl import CTRL_Saisie_date
 import GestionDB
 
-from Dlg import DLG_Saisie_pb_sante
-
-
 from Utils import UTILS_Interface
 from Ctrl.CTRL_ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
@@ -129,11 +126,11 @@ class ListView(FastObjectListView):
         self.useExpansionColumn = True
 
         # ListImages
-        for IDtype, nom, nomImage in DLG_Saisie_pb_sante.LISTE_TYPES :
-            self.AddNamedImages(str(IDtype), wx.Bitmap(Chemins.GetStaticPath("Images/16x16/%s" % nomImage), wx.BITMAP_TYPE_PNG))
-            
-        def GetImage(track):
-            return str(track.IDtype)
+        # for IDtype, nom, nomImage in DLG_Saisie_pb_sante.LISTE_TYPES :
+        #     self.AddNamedImages(str(IDtype), wx.Bitmap(Chemins.GetStaticPath("Images/16x16/%s" % nomImage), wx.BITMAP_TYPE_PNG))
+        #
+        # def GetImage(track):
+        #     return str(track.IDtype)
         
         def rowFormatter(listItem, track):
             if track.valide == False :
@@ -141,7 +138,7 @@ class ListView(FastObjectListView):
             
         liste_Colonnes = [
             ColumnDefn(u"", "left", 0, "IDprobleme", typeDonnee="entier"),
-            ColumnDefn(_(u"Intitulé"), 'left', 360, "texteComplet", typeDonnee="texte", imageGetter=GetImage, isSpaceFilling=True),
+            ColumnDefn(_(u"Intitulé"), 'left', 360, "texteComplet", typeDonnee="texte", isSpaceFilling=True),
 ##            ColumnDefn(_(u"Nbre de jours restants"), 'left', 0, "nbreJoursRestants"),
             ]
         
@@ -239,6 +236,7 @@ class ListView(FastObjectListView):
 
     def Ajouter(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("individus_pb_sante", "creer") == False : return
+        from Dlg import DLG_Saisie_pb_sante
         dlg = DLG_Saisie_pb_sante.Dialog(self, IDindividu=self.IDindividu, IDprobleme=None)
         if dlg.ShowModal() == wx.ID_OK:
             IDprobleme = dlg.GetIDprobleme()
@@ -253,6 +251,7 @@ class ListView(FastObjectListView):
             dlg.Destroy()
             return
         IDprobleme = self.Selection()[0].IDprobleme
+        from Dlg import DLG_Saisie_pb_sante
         dlg = DLG_Saisie_pb_sante.Dialog(self, IDindividu=self.IDindividu, IDprobleme=IDprobleme)
         if dlg.ShowModal() == wx.ID_OK:
             self.MAJ(IDprobleme)

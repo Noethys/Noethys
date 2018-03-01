@@ -2179,6 +2179,26 @@ class DB:
             except Exception, err:
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
+        # =============================================================
+
+        versionFiltre = (1, 2, 2, 7)
+        if versionFichier < versionFiltre:
+            try:
+                if self.IsTableExists("categories_medicales") == False: self.CreationTable("categories_medicales", Tables.DB_DATA)
+                self.Importation_valeurs_defaut([[u"", ("categories_medicales",), True], ])
+                from Utils import UTILS_Procedures
+                UTILS_Procedures.A9081()
+            except Exception, err:
+                return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2434,7 +2454,7 @@ if __name__ == "__main__":
                 
     # Création d'une table données
     # db = DB(suffixe="DATA")
-    # listeTables = ("periodes_gestion",)
+    # listeTables = ("categories_medicales",)
     # for nomTable in listeTables :
     #     db.CreationTable(nomTable, Tables.DB_DATA)
     # db.Close()
@@ -2475,7 +2495,7 @@ if __name__ == "__main__":
 
     # Exportation d'une table dans la base DEFAUT
     # db = DB(suffixe="DATA")
-    # db.Exportation_vers_base_defaut(nomTable="types_quotients")
+    # db.Exportation_vers_base_defaut(nomTable="categories_medicales")
     # db.Close()
     
     # Réparation d'une table

@@ -155,6 +155,7 @@ class CTRL(wx.Panel):
     def Sauvegarde(self):
         """ Sauvegarde de la grille """
         self.grille.Sauvegarde()
+        self.grille.SauvegardeTransports()
     
     def GetCase(self, IDunite=None, date=None, memo=False):
         """ Récupère une case d'après un IDunite """

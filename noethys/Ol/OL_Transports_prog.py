@@ -67,7 +67,14 @@ class Track(object):
         self.date_debut = DateEngEnDateDD(donnees[11])
         self.date_fin = DateEngEnDateDD(donnees[12])
         self.actif = donnees[13]
-        
+
+        # Nom de l'individu
+        self.individu_nom = donnees[14]
+        self.individu_prenom = donnees[15]
+        if self.individu_prenom == None :
+            self.individu_prenom = u""
+        self.individu_nom_complet = u"%s %s" % (self.individu_nom, self.individu_prenom)
+
         # Analyse du départ
         self.depart_nom = u""
         if self.depart_IDarret != None and DICT_ARRETS.has_key(self.depart_IDarret) :
@@ -108,7 +115,7 @@ class Track(object):
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
         # Récupération des paramètres perso
-        self.IDindividu = kwds.pop("IDindividu", "IDindividu")
+        self.IDindividu = kwds.pop("IDindividu", None)
         self.selectionID = None
         self.selectionTrack = None
         self.criteres = ""
@@ -169,15 +176,21 @@ class ListView(FastObjectListView):
 
     def GetTracks(self):
         """ Récupération des données """
+        if self.IDindividu != None :
+            condition = "AND individus.IDindividu=%d" % self.IDindividu
+        else :
+            condition = ""
+
         listeID = None
         DB = GestionDB.DB()
-        req = """SELECT IDtransport, IDindividu, categorie, 
+        req = """SELECT IDtransport, transports.IDindividu, categorie, 
         depart_heure, depart_IDarret, depart_IDlieu, depart_localisation,
         arrivee_heure, arrivee_IDarret, arrivee_IDlieu, arrivee_localisation,
-        date_debut, date_fin, actif
+        date_debut, date_fin, actif, individus.nom, individus.prenom
         FROM transports
-        WHERE mode='PROG' AND IDindividu=%d
-        ;""" % self.IDindividu
+        LEFT JOIN individus ON individus.IDindividu = transports.IDindividu
+        WHERE mode='PROG' %s
+        ;""" % condition
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         DB.Close()
@@ -236,6 +249,9 @@ class ListView(FastObjectListView):
             ColumnDefn(_(u"Destination"), 'left', 110, "arrivee_nom", typeDonnee="texte"),
             ]
 
+        if self.IDindividu == None :
+            liste_Colonnes.insert(1, ColumnDefn(_(u"Individu"), "left", 150, "individu_nom_complet", typeDonnee="texte") )
+
         self.rowFormatter = rowFormatter
         self.SetColumns(liste_Colonnes)
         self.SetEmptyListMsg(_(u"Aucun transport programmé"))
@@ -276,13 +292,14 @@ class ListView(FastObjectListView):
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Ajouter
-        item = wx.MenuItem(menuPop, 10, _(u"Ajouter"))
-        bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Ajouter.png"), wx.BITMAP_TYPE_PNG)
-        item.SetBitmap(bmp)
-        menuPop.AppendItem(item)
-        self.Bind(wx.EVT_MENU, self.Ajouter, id=10)
-            
-        menuPop.AppendSeparator()
+        if self.IDindividu != None:
+            item = wx.MenuItem(menuPop, 10, _(u"Ajouter"))
+            bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Ajouter.png"), wx.BITMAP_TYPE_PNG)
+            item.SetBitmap(bmp)
+            menuPop.AppendItem(item)
+            self.Bind(wx.EVT_MENU, self.Ajouter, id=10)
+
+            menuPop.AppendSeparator()
 
         # Item Modifier
         item = wx.MenuItem(menuPop, 20, _(u"Modifier"))
@@ -377,11 +394,11 @@ class ListView(FastObjectListView):
             dlg.ShowModal()
             dlg.Destroy()
             return
-        IDtransport = self.Selection()[0].IDtransport
+        track = self.Selection()[0]
         from Dlg import DLG_Saisie_transport
-        dlg = DLG_Saisie_transport.Dialog_prog(self, IDtransport=IDtransport, IDindividu=self.IDindividu)      
+        dlg = DLG_Saisie_transport.Dialog_prog(self, IDtransport=track.IDtransport, IDindividu=track.IDindividu)
         if dlg.ShowModal() == wx.ID_OK:
-            self.MAJ(IDtransport)
+            self.MAJ(track.IDtransport)
         dlg.Destroy() 
 
     def Supprimer(self, event):
@@ -391,11 +408,11 @@ class ListView(FastObjectListView):
             dlg.ShowModal()
             dlg.Destroy()
             return
-        IDtransport = self.Selection()[0].IDtransport
+        track = self.Selection()[0]
         dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer ce transport programmé ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         if dlg.ShowModal() == wx.ID_YES :
             DB = GestionDB.DB()
-            DB.ReqDEL("transports", "IDtransport", IDtransport)
+            DB.ReqDEL("transports", "IDtransport", track.IDtransport)
             DB.Close()
             self.MAJ()
         dlg.Destroy()
@@ -450,7 +467,7 @@ class MyFrame(wx.Frame):
         sizer_1 = wx.BoxSizer(wx.VERTICAL)
         sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
         self.SetSizer(sizer_1)
-        self.myOlv = ListView(panel, id=-1, IDindividu=46, name="OL_test", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
+        self.myOlv = ListView(panel, id=-1, IDindividu=None, name="OL_test", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.myOlv.MAJ() 
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.myOlv, 1, wx.ALL|wx.EXPAND, 4)

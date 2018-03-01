@@ -135,7 +135,11 @@ class ListView(FastObjectListView):
         dictColonnes = {}
         if self.ctrl_listview != None :
             for colonne in self.ctrl_listview.listeColonnes :
-                dictColonnes[colonne.valueGetter] = {"typeDonnee" : colonne.typeDonnee, "titre" : colonne.title}
+                if hasattr(colonne, "typeDonnee"):
+                    typeDonnee = colonne.typeDonnee
+                else :
+                    typeDonnee = None
+                dictColonnes[colonne.valueGetter] = {"typeDonnee" : typeDonnee, "titre" : colonne.title}
             
         # Lecture de la liste des filtres
         self.dictTracks = {}

@@ -3,8 +3,8 @@
 #------------------------------------------------------------------------
 # Application :    Noethys, gestion multi-activités
 # Site internet :  www.noethys.com
-# Auteur:           Ivan LUCAS
-# Copyright:       (c) 2010-11 Ivan LUCAS
+# Auteur:          Ivan LUCAS
+# Copyright:       (c) 2010-18 Ivan LUCAS
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
@@ -13,72 +13,29 @@ import Chemins
 from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
-from Ctrl import CTRL_Bouton_image
-import datetime
-import os
-import cStringIO
-
 import GestionDB
-
-from Dlg import DLG_Saisie_emetteur
-
 
 from Utils import UTILS_Interface
 from Ctrl.CTRL_ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
-
 from Utils import UTILS_Utilisateurs
-
-
-TAILLE_IMAGE = (132/2.0, 72/2.0)
-IMAGE_DEFAUT = Chemins.GetStaticPath("Images/Special/Image_non_disponible.png")
-
 
 
 class Track(object):
     def __init__(self, donnees):
-        self.IDemetteur = donnees[0]
-        self.IDmode = donnees[1]
-        self.nom = donnees[2]
-        self.bufferImage = donnees[3]
-        self.label_mode = donnees[4]
-        self.bmp = self.GetImage()
-
-    def GetImage(self):
-        """ Récupère une image """            
-        # Recherche de l'image
-        if self.bufferImage != None :
-            io = cStringIO.StringIO(self.bufferImage)
-            if 'phoenix' in wx.PlatformInfo:
-                img = wx.Image(io, wx.BITMAP_TYPE_JPEG)
-            else :
-                img = wx.ImageFromStream(io, wx.BITMAP_TYPE_JPEG)
-            bmp = img.Rescale(width=TAILLE_IMAGE[0], height=TAILLE_IMAGE[1], quality=wx.IMAGE_QUALITY_HIGH) 
-            bmp = bmp.ConvertToBitmap()
-            return bmp
-        else:
-            # Si aucune image est trouvée, on prend l'image par défaut
-            bmp = self.GetImageDefaut() 
-            return bmp
+        self.IDcategorie = donnees[0]
+        self.nom = donnees[1]
+        self.nbreInformations = donnees[2]
     
-    def GetImageDefaut(self):
-        if os.path.isfile(IMAGE_DEFAUT):
-            bmp = wx.Bitmap(IMAGE_DEFAUT, wx.BITMAP_TYPE_ANY)
-            bmp = bmp.ConvertToImage()
-            bmp = bmp.Rescale(width=TAILLE_IMAGE[0], height=TAILLE_IMAGE[1], quality=wx.IMAGE_QUALITY_HIGH) 
-            bmp = bmp.ConvertToBitmap()
-            return bmp
-        return None
-
-
-
+    
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        self.IDmode = None
+        # Récupération des paramètres perso
         self.selectionID = None
         self.selectionTrack = None
         self.criteres = ""
         self.itemSelected = False
         self.popupIndex = -1
+        self.listeFiltres = []
         # Initialisation du listCtrl
         self.nom_fichier_liste = __file__
         FastObjectListView.__init__(self, *args, **kwds)
@@ -96,11 +53,10 @@ class ListView(FastObjectListView):
         """ Récupération des données """
         listeID = None
         db = GestionDB.DB()
-        req = """SELECT IDemetteur, emetteurs.IDmode, nom, emetteurs.image, modes_reglements.label
-        FROM emetteurs
-        LEFT JOIN modes_reglements ON emetteurs.IDmode = modes_reglements.IDmode
-        %s
-        """ % self.criteres
+        req = """SELECT categories_medicales.IDcategorie, categories_medicales.nom, Count(problemes_sante.IDprobleme) AS nbreInformations
+        FROM categories_medicales
+        LEFT JOIN problemes_sante ON problemes_sante.IDtype = categories_medicales.IDcategorie
+        GROUP BY categories_medicales.IDcategorie;"""
         db.ExecuterReq(req)
         listeDonnees = db.ResultatReq()
         db.Close()
@@ -123,37 +79,20 @@ class ListView(FastObjectListView):
         self.oddRowsBackColor = UTILS_Interface.GetValeur("couleur_tres_claire", wx.Colour(240, 251, 237))
         self.evenRowsBackColor = wx.Colour(255, 255, 255)
         self.useExpansionColumn = True
-        
-        # Création du imageList avec une taille personnalisée
-        dictImages = {}
-        imageList = wx.ImageList(TAILLE_IMAGE[0], TAILLE_IMAGE[1])
-        for track in self.donnees :
-            indexImg = imageList.Add(track.bmp)            
-            dictImages[track.IDemetteur] = indexImg
-        self.SetImageLists(imageList, imageList)
-                    
-        def GetImage(track):
-            return dictImages[track.IDemetteur]
                     
         liste_Colonnes = [
-            ColumnDefn(_(u"IDemetteur"), "left", 0, "IDemetteur", typeDonnee="entier"),
-            ColumnDefn(_(u"Image"), 'left', TAILLE_IMAGE[0]+1, "", imageGetter=GetImage),
-            ColumnDefn(_(u"Mode de règlement"), 'left', 0, "label_mode", typeDonnee="texte"),
-            ColumnDefn(_(u"Nom de l'émetteur"), 'left', 410, "nom", typeDonnee="texte"),
+            ColumnDefn(_(u"ID"), "left", 0, "IDcategorie", typeDonnee="entier"),
+            ColumnDefn(_(u"Nom"), "left", 290, "nom", typeDonnee="texte"), 
+            ColumnDefn(_(u"Nbre d'informations"), "left", 110, "nbreInformations", typeDonnee="entier"),
             ]
         
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(_(u"Aucun émetteur"))
+        self.SetEmptyListMsg(_(u"Aucune catégorie médicale"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
-        self.SetSortColumn(self.columns[2])
+        self.SetSortColumn(self.columns[1])
         self.SetObjects(self.donnees)
        
-    def MAJ(self, ID=None, IDmode=None):
-        if IDmode != None :
-            self.IDmode = IDmode
-        if self.IDmode != None :
-            self.criteres = "WHERE emetteurs.IDmode=%d" % self.IDmode
-
+    def MAJ(self, ID=None):
         if ID != None :
             self.selectionID = ID
             self.selectionTrack = None
@@ -177,7 +116,7 @@ class ListView(FastObjectListView):
             noSelection = True
         else:
             noSelection = False
-            ID = self.Selection()[0].IDemetteur
+            ID = self.Selection()[0].IDtype_sieste
                 
         # Création du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
@@ -228,80 +167,82 @@ class ListView(FastObjectListView):
 
     def Apercu(self, event):
         from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des émetteurs"), format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des catégories médicales"), format="A", orientation=wx.PORTRAIT)
         prt.Preview()
 
     def Imprimer(self, event):
         from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des émetteurs"), format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des catégories médicales"), format="A", orientation=wx.PORTRAIT)
         prt.Print()
 
+
     def Ajouter(self, event):
-        if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_emetteurs", "creer") == False : return
-        if self.IDmode == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez d'abord sélectionner un mode de règlement !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
-            dlg.ShowModal()
-            dlg.Destroy()
-            return
-        
-        dlg = DLG_Saisie_emetteur.Dialog(self, IDmode=self.IDmode, IDemetteur=None)
+        if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_categories_medicales", "creer") == False : return
+        dlg = wx.TextEntryDialog(self, _(u"Saisissez le nom de la nouvelle catégorie :"), _(u"Saisie d'une catégorie médicale"), u"")
         if dlg.ShowModal() == wx.ID_OK:
-            IDemetteur = dlg.GetIDemetteur()
-            self.MAJ(IDemetteur)
+            nom = dlg.GetValue()
+            if nom == "":
+                dlg = wx.MessageDialog(self, _(u"Le nom que vous avez saisi n'est pas valide."), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg.ShowModal()
+                dlg.Destroy()
+                return
+            else:
+                DB = GestionDB.DB()
+                listeDonnees = [ ("nom", nom ), ]
+                IDcategorie = DB.ReqInsert("categories_medicales", listeDonnees)
+                DB.Close()
+                self.MAJ(IDcategorie)
         dlg.Destroy()
 
     def Modifier(self, event):
-        if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_emetteurs", "modifier") == False : return
+        if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_categories_medicales", "modifier") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun émetteur à modifier dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune catégorie à modifier dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
-        IDemetteur = self.Selection()[0].IDemetteur
-        dlg = DLG_Saisie_emetteur.Dialog(self, IDmode=self.IDmode, IDemetteur=IDemetteur)
+        IDcategorie = self.Selection()[0].IDcategorie
+        nom = self.Selection()[0].nom
+        dlg = wx.TextEntryDialog(self, _(u"Modifiez le nom de la catégorie :"), _(u"Modification d'une catégorie"), nom)
         if dlg.ShowModal() == wx.ID_OK:
-            self.MAJ(IDemetteur)
+            nom = dlg.GetValue()
+            if nom == "":
+                dlg = wx.MessageDialog(self, _(u"Le nom que vous avez saisi n'est pas valide."), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg.ShowModal()
+                dlg.Destroy()
+                return
+            else:
+                DB = GestionDB.DB()
+                listeDonnees = [ ("nom", nom ), ]
+                DB.ReqMAJ("categories_medicales", listeDonnees, "IDcategorie", IDcategorie)
+                DB.Close()
+                self.MAJ(IDcategorie)
         dlg.Destroy()
 
     def Supprimer(self, event):
-        if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_emetteurs", "supprimer") == False : return
+        if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_categories_medicales", "supprimer") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun émetteur à supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune catégorie à supprimer dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
-        IDemetteur = self.Selection()[0].IDemetteur
-        
-        # Vérifie que l'émetteur n'a pas déjà été attribué à un règlement
-        DB = GestionDB.DB()
-        req = """SELECT COUNT(IDreglement)
-        FROM reglements 
-        WHERE IDemetteur=%d
-        ;""" % IDemetteur
-        DB.ExecuterReq(req)
-        nbreReglements = int(DB.ResultatReq()[0][0])
-        DB.Close()
-        if nbreReglements > 0 :
-            message = _(u"Attention, cet émetteur a déjà été attribué à %d règlement(s). Si vous le supprimez, il sera également dissocié des règlements associés !\n\nSouhaitez-vous tout de même le supprimer ?") % nbreReglements
-            dlg = wx.MessageDialog(self, message, _(u"Suppression"), wx.YES_NO | wx.NO_DEFAULT | wx.CANCEL | wx.ICON_EXCLAMATION)
-            reponse = dlg.ShowModal()
+        if self.Selection()[0].nbreInformations > 0 :
+            dlg = wx.MessageDialog(self, _(u"Il est impossible de supprimer une catégorie déjà assigné à une ou plusieurs informations médicales !"), _(u"Suppression impossible"), wx.OK | wx.ICON_INFORMATION)
+            dlg.ShowModal()
             dlg.Destroy()
-            if reponse != wx.ID_YES:
-                return False
-
-        # Suppression
-        dlg = wx.MessageDialog(self, _(u"Confirmez-vous vraiment la suppression de cet émetteur ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+            return
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer cette catégorie ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         if dlg.ShowModal() == wx.ID_YES :
+            IDcategorie = self.Selection()[0].IDcategorie
             DB = GestionDB.DB()
-            DB.ReqDEL("emetteurs", "IDemetteur", IDemetteur)
-            DB.ReqMAJ("reglements", [("IDemetteur", None),], "IDemetteur", IDemetteur)
+            DB.ReqDEL("categories_medicales", "IDcategorie", IDcategorie)
             DB.Close() 
             self.MAJ()
         dlg.Destroy()
+    
 
 
-
-# -----------------------------------------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------------------------------------------------------------------
 
 class MyFrame(wx.Frame):
     def __init__(self, *args, **kwds):

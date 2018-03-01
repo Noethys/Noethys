@@ -13,10 +13,10 @@ import Chemins
 from UTILS_Traduction import _
 import wx
 from Ctrl import CTRL_Bouton_image
+import datetime
 import GestionDB
 import UTILS_Dates
 from UTILS_Decimal import FloatToDecimal as FloatToDecimal
-import wx.lib.agw.pybusyinfo as PBI
 
 
 def EcritStatusbar(texte=u""):
@@ -208,6 +208,16 @@ class VentilationsExcessives(Anomalie):
         DB.ReqDEL("ventilation", "IDventilation", IDventilation)
         self.corrige = True
 
+class PrestationsFantomes(Anomalie):
+    def Correction(self, DB=None):
+        IDprestation = self.kwds["IDprestation"]
+        DB.ReqDEL("prestations", "IDprestation", IDprestation)
+        self.corrige = True
+
+
+
+
+
 
 # --------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -245,10 +255,9 @@ class Depannage():
 
     def RechercheDonnees(self):        
         self.listeResultats = []
-        EcritStatusbar(_(u"Recherche d'anomalies en cours...   Veuillez patientez..."))
+        EcritStatusbar(_(u"Recherche d'anomalies en cours...   Veuillez patienter..."))
         try :
-            #dlgAttente = PBI.PyBusyInfo(_(u"Recherche d'anomalies en cours..."), parent=self.parent, title=_(u"Merci de patienter"), icon=wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Logo.png"), wx.BITMAP_TYPE_ANY))
-            dlgAttente = wx.BusyInfo(_(u"Recherche d'anomalies en cours. Veuillez patientez..."), self.parent)
+            dlgAttente = wx.BusyInfo(_(u"Recherche d'anomalies en cours. Veuillez patienter..."), self.parent)
             wx.Yield()
         except :
             dlgAttente = None
@@ -272,6 +281,7 @@ class Depannage():
         self.RattachementsTronques() 
         self.LiensErrones() 
         self.VentilationExcessive()
+        self.PrestationsFantomes()
                 
         # Fermeture DB
         self.DB.Close()
@@ -615,6 +625,48 @@ class Depannage():
                 listeTemp.append(VentilationsExcessives(label=label, IDventilation=IDventilation, IDprestation=IDprestation, IDreglement=IDreglement, IDfamille=IDfamille))
             else :
                 dictTemp[key] = IDventilation
+        self.listeResultats.append((labelProbleme, labelCorrection, listeTemp))
+
+    def PrestationsFantomes(self):
+        labelProbleme = _(u"Prestations fantômes")
+        labelCorrection = _(u"Supprimer la prestation fantôme")
+
+        # Récupération des prestations
+        from dateutil import relativedelta
+        date_limite = datetime.date.today() + relativedelta.relativedelta(months=-2)
+        req = """SELECT IDprestation, label, date, IDfamille, prestations.IDindividu,
+        individus.nom, individus.prenom
+        FROM prestations
+        LEFT JOIN individus ON individus.IDindividu = prestations.IDindividu
+        WHERE categorie='consommation' AND forfait IS NULL AND IDfacture IS NULL AND date>='%s'
+        ORDER BY date, prestations.IDfamille, prestations.IDindividu
+        ;""" % date_limite
+        self.DB.ExecuterReq(req)
+        listePrestations = self.DB.ResultatReq()
+
+        # Récupération des consommations
+        req = """SELECT IDconso, IDprestation FROM consommations;"""
+        self.DB.ExecuterReq(req)
+        listeConsommations = self.DB.ResultatReq()
+
+        # Analyse
+        dictPrestations = {}
+        for IDconso, IDprestation in listeConsommations:
+            if dictPrestations.has_key(IDprestation) == False:
+                dictPrestations[IDprestation] = []
+            dictPrestations[IDprestation].append(IDconso)
+
+        listeTemp = []
+        for IDprestation, label, date, IDfamille, IDindividu, nom, prenom in listePrestations:
+            date = UTILS_Dates.DateEngEnDateDD(date)
+            if dictPrestations.has_key(IDprestation) == False:
+                if nom != None and prenom != None:
+                    nomIndividu = u"%s %s" % (nom, prenom)
+                else:
+                    nomIndividu = u""
+                label = u"Prestation ID%d du %s pour %s : %s" % (IDprestation, UTILS_Dates.DateDDEnFr(date), nomIndividu, label)
+                listeTemp.append(PrestationsFantomes(label=label, IDprestation=IDprestation))
+
         self.listeResultats.append((labelProbleme, labelCorrection, listeTemp))
 
 

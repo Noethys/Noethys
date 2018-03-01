@@ -1068,7 +1068,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 
     def Importation_individus(self):
         dictIndividus = {}
-        
+
         if self.mode == "individu" :
             
             # -------------------------- MODE INDIVIDU --------------------------
@@ -1111,7 +1111,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                     }
                 if dictIndividus.has_key(IDindividu):
                     dictIndividus[IDindividu]["inscriptions"].append(dictTemp)
-        
+
         else:
             
             # -------------------------- MODE DATE --------------------------

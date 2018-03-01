@@ -45,7 +45,7 @@ def GetListeCotisationsManquantes(dateReference=None, listeActivites=None, prese
         conditionPresents = ""
         jonctionPresents = ""
     else:
-        conditionPresents = " AND (consommations.date>='%s' AND consommations.date<='%s')" % (str(presents[0]), str(presents[1]))
+        conditionPresents = " AND (consommations.date>='%s' AND consommations.date<='%s' AND consommations.etat IN ('reservation', 'present'))" % (str(presents[0]), str(presents[1]))
         jonctionPresents = "LEFT JOIN consommations ON consommations.IDindividu = individus.IDindividu"
     
     # Récupération des cotisations à fournir pour la famille ou l'individu
