@@ -54,13 +54,10 @@ DICT_PROCEDURES = {
     "A9074" : _(u"Cryptage des mots de passe utilisateurs dans nouveau champ mdpcrypt"),
     "A9075" : _(u"Suppression des mots de passe utilisateurs en clair"),
     "A9078" : _(u"Suppression des suppressions des consommations avec IDinscription null"),
-<<<<<<< HEAD
-    "A9081" : _(u"Création de la table PHOTOS"),
-    "A9082" : _(u"Création de la table DOCUMENTS"),
-=======
+    "A9079" : _(u"Création de la table PHOTOS"),
+    "A9080" : _(u"Création de la table DOCUMENTS"),
     "A9081" : _(u"Création du profil de configuration par défaut pour la liste des infos médicales"),
 
->>>>>>> 9d6e52d31a20335611c2be8ba63a50158ef57878
 }
 
 
@@ -953,8 +950,7 @@ def A9078():
     DB.Commit()
     DB.Close()
 
-def A9081():
-<<<<<<< HEAD
+def A9079():
     """ Création de la table PHOTOS """
     from Data import DATA_Tables as Tables
     DB = GestionDB.DB(suffixe="PHOTOS", modeCreation=True)
@@ -966,7 +962,7 @@ def A9081():
     DB.CreationTables(Tables.DB_PHOTOS)
     DB.Close()
 
-def A9082():
+def A9080():
     """ Création de la table DOCUMENTS """
     from Data import DATA_Tables as Tables
     DB = GestionDB.DB(suffixe="DOCUMENTS", modeCreation=True)
@@ -978,14 +974,12 @@ def A9082():
     DB.CreationTables(Tables.DB_DOCUMENTS)
     DB.Close()
 
-
-=======
+def A9081():
     """ Création du profil de configuration par défaut pour la liste des infos médicales """
     DB = GestionDB.DB()
     IDprofil = DB.ReqInsert("profils", [("label", u"Liste par défaut"), ("categorie", "impression_infos_medicales"), ("defaut", 1)])
     DB.ReqInsert("profils_parametres", [("IDprofil", IDprofil), ("nom", "colonnes"), ("type_donnee", "autre"), ("parametre", "[(u'Informations alimentaires', '2'), (u'Autres informations', '0')]")])
     DB.Close()
->>>>>>> 9d6e52d31a20335611c2be8ba63a50158ef57878
 
 
 
