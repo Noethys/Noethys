@@ -192,7 +192,7 @@ def GetListeIndividus(listview=None, listeActivites=None, presents=None, IDindiv
     conditionPresents = ""
     jointurePresents = ""
     if presents != None :
-        conditionPresents = " AND (consommations.date>='%s' AND consommations.date<='%s')" % (str(presents[0]), str(presents[1]))
+        conditionPresents = " AND (consommations.date>='%s' AND consommations.date<='%s' AND consommations.etat IN ('reservation', 'present'))" % (str(presents[0]), str(presents[1]))
         jointurePresents = "LEFT JOIN consommations ON consommations.IDindividu = individus.IDindividu"
     
     # Condition Individu donné
@@ -327,7 +327,7 @@ def GetListeFamilles(listview=None, listeActivites=None, presents=None, IDfamill
     conditionPresents = ""
     jointurePresents = ""
     if presents != None :
-        conditionPresents = " AND (consommations.date>='%s' AND consommations.date<='%s')" % (str(presents[0]), str(presents[1]))
+        conditionPresents = " AND (consommations.date>='%s' AND consommations.date<='%s' AND consommations.etat IN ('reservation', 'present'))" % (str(presents[0]), str(presents[1]))
         jointurePresents = "LEFT JOIN consommations ON consommations.IDindividu = individus.IDindividu"
 
     # Condition Famille donnée

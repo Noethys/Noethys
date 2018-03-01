@@ -433,7 +433,7 @@ class ObjectListView(OLV.ObjectListView):
         conditionPresents = ""
         jointurePresents = ""
         if periode != None :
-            conditionPresents = " AND (consommations.date>='%s' AND consommations.date<='%s')" % (str(periode[0]), str(periode[1]))
+            conditionPresents = " AND (consommations.date>='%s' AND consommations.date<='%s' AND consommations.etat IN ('reservation', 'present'))" % (str(periode[0]), str(periode[1]))
             jointurePresents = "LEFT JOIN consommations ON consommations.IDindividu = inscriptions.IDindividu"
 
         # Condition Date inscription
