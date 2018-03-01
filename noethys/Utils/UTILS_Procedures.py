@@ -53,7 +53,14 @@ DICT_PROCEDURES = {
     "A9073" : _(u"Cryptage des mots de passe utilisateurs"),
     "A9074" : _(u"Cryptage des mots de passe utilisateurs dans nouveau champ mdpcrypt"),
     "A9075" : _(u"Suppression des mots de passe utilisateurs en clair"),
-    "A9078": _(u"Suppression des suppressions des consommations avec IDinscription null"),
+    "A9078" : _(u"Suppression des suppressions des consommations avec IDinscription null"),
+<<<<<<< HEAD
+    "A9081" : _(u"Création de la table PHOTOS"),
+    "A9082" : _(u"Création de la table DOCUMENTS"),
+=======
+    "A9081" : _(u"Création du profil de configuration par défaut pour la liste des infos médicales"),
+
+>>>>>>> 9d6e52d31a20335611c2be8ba63a50158ef57878
 }
 
 
@@ -946,8 +953,39 @@ def A9078():
     DB.Commit()
     DB.Close()
 
+def A9081():
+<<<<<<< HEAD
+    """ Création de la table PHOTOS """
+    from Data import DATA_Tables as Tables
+    DB = GestionDB.DB(suffixe="PHOTOS", modeCreation=True)
+    if DB.echec == 1:
+        dlg = wx.MessageDialog(None, _(u"Erreur dans la création du fichier de photos.\n\nErreur : %s") % DB.erreur, _(u"Erreur de création de fichier"), wx.OK | wx.ICON_ERROR)
+        dlg.ShowModal()
+        dlg.Destroy()
+        return False
+    DB.CreationTables(Tables.DB_PHOTOS)
+    DB.Close()
+
+def A9082():
+    """ Création de la table DOCUMENTS """
+    from Data import DATA_Tables as Tables
+    DB = GestionDB.DB(suffixe="DOCUMENTS", modeCreation=True)
+    if DB.echec == 1:
+        dlg = wx.MessageDialog(None, _(u"Erreur dans la création du fichier de documents.\n\nErreur : %s") % DB.erreur, _(u"Erreur de création de fichier"), wx.OK | wx.ICON_ERROR)
+        dlg.ShowModal()
+        dlg.Destroy()
+        return False
+    DB.CreationTables(Tables.DB_DOCUMENTS)
+    DB.Close()
 
 
+=======
+    """ Création du profil de configuration par défaut pour la liste des infos médicales """
+    DB = GestionDB.DB()
+    IDprofil = DB.ReqInsert("profils", [("label", u"Liste par défaut"), ("categorie", "impression_infos_medicales"), ("defaut", 1)])
+    DB.ReqInsert("profils_parametres", [("IDprofil", IDprofil), ("nom", "colonnes"), ("type_donnee", "autre"), ("parametre", "[(u'Informations alimentaires', '2'), (u'Autres informations', '0')]")])
+    DB.Close()
+>>>>>>> 9d6e52d31a20335611c2be8ba63a50158ef57878
 
 
 
@@ -1034,5 +1072,5 @@ def A9078():
 if __name__ == u"__main__":
     app = wx.App(0)
     # TEST D'UNE PROCEDURE :
-    A9078()
+    A9081()
     app.MainLoop()
