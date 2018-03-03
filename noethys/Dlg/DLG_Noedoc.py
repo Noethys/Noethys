@@ -3095,7 +3095,26 @@ class MovingScaledBitmap(FloatCanvas.ScaledBitmap, MovingObjectMixin):
         self.bmpWidth = bmpHeight
         self.bmpHeight = bmpWidth
         self.CalcBoundingBox()
-        
+
+    def _Draw(self, dc , WorldToPixel, ScaleWorldToPixel, HTdc=None):
+        """ Surcharge pour contrer le bug des images trop petites """
+        XY = WorldToPixel(self.XY)
+        H = ScaleWorldToPixel(self.Height)[0]
+        W = H * (self.bmpWidth / self.bmpHeight)
+        if (self.ScaledBitmap is None) or (H <> self.ScaledHeight) :
+            self.ScaledHeight = H
+            if W < 1 : W = 1
+            if H < 1 : H = 1
+            Img = self.Image.Scale(W, H)
+            self.ScaledBitmap = wx.BitmapFromImage(Img)
+
+        XY = self.ShiftFun(XY[0], XY[1], W, H)
+        dc.DrawBitmapPoint(self.ScaledBitmap, XY, True)
+        if HTdc and self.HitAble:
+            HTdc.SetPen(self.HitPen)
+            HTdc.SetBrush(self.HitBrush)
+            HTdc.DrawRectanglePointSize(XY, (W, H) )
+
                 
 class MovingCircle(FloatCanvas.Circle, MovingObjectMixin):
     """ ScaledCircle Object that can be moved """
@@ -5965,7 +5984,7 @@ class Impression():
 if __name__ == u"__main__":
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    dialog_1 = Dialog(None, IDmodele=1,
+    dialog_1 = Dialog(None, IDmodele=15,
             nom="test", observations=u"", 
             IDfond=None, categorie="fond", taille_page=(210, 297))
     app.SetTopWindow(dialog_1)

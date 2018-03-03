@@ -218,10 +218,10 @@ class Frame(wx.Frame):
 
         # Informations
         self.box_informations = wx.StaticBox(self.panel, -1, _(u"Informations"))
-        self.label_numero = wx.StaticText(self.panel, -1, _(u"Numéro d'allocataire :"))
-        self.ctrl_numero = CTRL_Drag(self.panel, texte="")
         self.label_nom = wx.StaticText(self.panel, -1, _(u"Nom de famille :"))
         self.ctrl_nom = CTRL_Drag(self.panel, texte="")
+        self.label_numero = wx.StaticText(self.panel, -1, _(u"Numéro d'allocataire :"))
+        self.ctrl_numero = CTRL_Drag(self.panel, texte="")
 
         # Informations
         self.box_quotient = wx.StaticBox(self.panel, -1, _(u"Quotient familial/Revenu"))
@@ -277,10 +277,10 @@ class Frame(wx.Frame):
         # Informations
         box_informations = wx.StaticBoxSizer(self.box_informations, wx.VERTICAL)
         grid_sizer_informations = wx.FlexGridSizer(rows=3, cols=2, vgap=10, hgap=10)
-        grid_sizer_informations.Add(self.label_numero, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_informations.Add(self.ctrl_numero, 0, wx.EXPAND, 0)
         grid_sizer_informations.Add(self.label_nom, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_informations.Add(self.ctrl_nom, 0, wx.EXPAND, 0)
+        grid_sizer_informations.Add(self.label_numero, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_informations.Add(self.ctrl_numero, 0, wx.EXPAND, 0)
         grid_sizer_informations.AddGrowableCol(1)
         box_informations.Add(grid_sizer_informations, 1, wx.ALL | wx.EXPAND, 10)
         grid_sizer_contenu.Add(box_informations, 1, wx.ALL|wx.EXPAND, 0)

@@ -339,7 +339,10 @@ class CTRL_Liste_individus(ULC.UltimateListCtrl):
     def Effacer(self, event=None):
         for index, IDindividu in self.GetSelections() :
             self.Select(index, False)
-        self.EnsureVisible(0)
+        try :
+            self.EnsureVisible(0)
+        except :
+            pass
         self._mainWin.RecalculatePositions(True)
     
     def Reset(self):

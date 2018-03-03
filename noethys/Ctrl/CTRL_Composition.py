@@ -1311,7 +1311,10 @@ class CTRL_Graphique(wx.ScrolledWindow):
         dlg = DLG_Individu.Dialog(None, IDindividu=IDindividu)
         if dlg.ShowModal() == wx.ID_OK:
             pass
-        dlg.Destroy()
+        try :
+            dlg.Destroy()
+        except:
+            pass
         self.MAJ() 
         self.MAJnotebook() 
     
