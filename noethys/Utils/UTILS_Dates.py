@@ -13,6 +13,7 @@ import Chemins
 from UTILS_Traduction import _
 import datetime
 import time
+import wx
 
 LISTE_MOIS = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
 
@@ -245,7 +246,25 @@ def CalculerArrondi(arrondi_type="duree", arrondi_delta=15, heure_debut=None, he
 def FormateMois((annee, mois)):
     return u"%s %d" % (LISTE_MOIS[mois-1].capitalize(), annee)
 
+def ConvertDateWXenDT(datewx=None):
+    """ Convertit une date WX.datetime en datetime """
+    if datewx == None :
+        return None
+    jour = datewx.GetDay()
+    mois = datewx.GetMonth()+1
+    annee = datewx.GetYear()
+    heures = datewx.GetHour()
+    minutes = datewx.GetMinute()
+    dt = datetime.datetime(annee, mois, jour, heures, minutes)
+    return dt
 
+def ConvertDateDTenWX(date=None):
+    """ Convertit une date datetime en WX.datetime """
+    if date == None :
+        return None
+    datewx = wx.DateTime()
+    datewx.Set(date.day, month=date.month-1, year=date.year)
+    return datewx
 
 
 

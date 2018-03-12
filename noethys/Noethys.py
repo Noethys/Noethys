@@ -662,7 +662,8 @@ class MainFrame(wx.Frame):
                         {"code" : "modeles_plannings", "label" : _(u"Modèles de plannings"), "infobulle" : _(u"Paramétrage des modèles de plannings"), "image" : "Images/16x16/Calendrier.png", "action" : self.On_param_modeles_plannings},
                         {"code" : "modeles_aides", "label" : _(u"Modèles d'aides journalières"), "infobulle" : _(u"Paramétrage des modèles d'aides journalières"), "image" : "Images/16x16/Mecanisme.png", "action" : self.On_param_modeles_aides},
                         {"code" : "modeles_prestations", "label": _(u"Modèles de prestations"), "infobulle": _(u"Paramétrage des modèles de prestations"), "image": "Images/16x16/Euro.png", "action": self.On_param_modeles_prestations},
-                        ],
+                        {"code" : "modeles_commandes", "label": _(u"Modèles de commandes de repas"), "infobulle": _(u"Paramétrage des modèles de commandes de repas"), "image": "Images/16x16/Repas.png", "action": self.On_param_modeles_commandes},
+                    ],
                      },
                     "-",
                     {"code" : "menu_parametrage_factures", "label" : _(u"Facturation"), "items" : [
@@ -937,6 +938,8 @@ class MainFrame(wx.Frame):
                     "-",
                     {"code" : "traitement_lot_conso", "label" : _(u"Traitement par lot"), "infobulle" : _(u"Traitement par lot"), "image" : "Images/16x16/Calendrier_modification.png", "action" : self.On_conso_traitement_lot},
                     "-",
+                    {"code": "commandes_repas", "label": _(u"Commandes de repas"), "infobulle": _(u"Commandes de repas"), "image": "Images/16x16/Repas.png", "action": self.On_conso_commandes},
+                    "-",
                     {"code" : "liste_attente", "label" : _(u"Liste d'attente"), "infobulle" : _(u"Liste d'attente"), "image" : "Images/16x16/Liste_attente.png", "action" : self.On_conso_attente},
                     {"code" : "liste_refus", "label" : _(u"Liste des places refusées"), "infobulle" : _(u"Liste des places refusées"), "image" : "Images/16x16/Places_refus.png", "action" : self.On_conso_refus},
                     {"code" : "liste_absences", "label" : _(u"Liste des absences"), "infobulle" : _(u"Liste des absences"), "image" : "Images/16x16/absenti.png", "action" : self.On_conso_absences},
@@ -946,7 +949,7 @@ class MainFrame(wx.Frame):
                     {"code" : "etat_nominatif", "label" : _(u"Etat nominatif"), "infobulle" : _(u"Etat nominatif"), "image" : "Images/16x16/Tableaux.png", "action" : self.On_conso_etat_nominatif},
                     "-",
                     {"code" : "badgeage", "label" : _(u"Badgeage"), "infobulle" : _(u"Badgeage"), "image" : "Images/16x16/Badgeage.png", "action" : self.On_conso_badgeage},
-                    ],
+            ],
             },
 
             # Facturation
@@ -2064,6 +2067,13 @@ class MainFrame(wx.Frame):
         dlg.ShowModal()
         dlg.Destroy()
 
+    def On_param_modeles_commandes(self, event):
+        if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_modeles_commandes", "consulter") == False : return
+        from Dlg import DLG_Modeles_commandes
+        dlg = DLG_Modeles_commandes.Dialog(self)
+        dlg.ShowModal()
+        dlg.Destroy()
+
     def On_param_types_cotisations(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_types_cotisations", "consulter") == False : return
         from Dlg import DLG_Types_cotisations
@@ -3166,6 +3176,12 @@ class MainFrame(wx.Frame):
         dlg.ShowModal() 
         dlg.Destroy()
         self.ctrl_remplissage.MAJ()
+
+    def On_conso_commandes(self, event):
+        from Dlg import DLG_Commandes
+        dlg = DLG_Commandes.Dialog(self)
+        dlg.ShowModal()
+        dlg.Destroy()
 
     def On_individus_scolarite(self, event):
         from Dlg import DLG_Inscriptions_scolaires

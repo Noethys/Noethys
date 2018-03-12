@@ -838,6 +838,7 @@ DB_DATA = {
                                     ("priorite", "VARCHAR(30)", u"Priorité"),
                                     ("afficher_accueil", "INTEGER", u"Afficher sur la page d'accueil"),
                                     ("afficher_liste", "INTEGER", u"Afficher sur la liste des conso"),
+                                    ("afficher_commande", "INTEGER", u"Afficher sur la commande des repas"),
                                     ("rappel", "INTEGER", u"Rappel à l'ouverture du fichier"),
                                     ("IDfamille", "INTEGER", u"IDfamille"),
                                     ("IDindividu", "INTEGER", u"IDindividu"),
@@ -1679,9 +1680,40 @@ DB_DATA = {
                                     ("verrou_cotisations", "INTEGER", u"Verrouillage"),
                                     ],  # Périodes de gestion
 
-    "categories_medicales":          [("IDcategorie", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID Catégorie"),
-                                     ("nom", "VARCHAR(300)", u"Nom de la catégorie"),
-                                     ],  # Catégories médicales
+    "categories_medicales":         [("IDcategorie", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID Catégorie"),
+                                    ("nom", "VARCHAR(300)", u"Nom de la catégorie"),
+                                    ],  # Catégories médicales
+
+    "modeles_commandes":            [("IDmodele", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID modèle"),
+                                    ("nom", "VARCHAR(300)", u"Nom du modèle"),
+                                    ("IDrestaurateur", "INTEGER", u"ID du restaurateur"),
+                                    ("parametres", "VARCHAR(8000)", u"Parametres"),
+                                    ("defaut", "INTEGER", u"(0/1) Modèle par défaut"),
+                                    ],  # Modèles de commandes de repas
+
+    "modeles_commandes_colonnes":   [("IDcolonne", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID colonne"),
+                                    ("IDmodele", "INTEGER", u"ID du modèle de commande"),
+                                    ("ordre", "INTEGER", u"Ordre de la colonne"),
+                                    ("nom", "VARCHAR(300)", u"Nom de la colonne"),
+                                    ("largeur", "INTEGER", u"Largeur de la colonne en pixels"),
+                                    ("categorie", "VARCHAR(100)", u"Catégorie de la colonne"),
+                                    ("parametres", "VARCHAR(8000)", u"Parametres"),
+                                    ],  # Colonnes des modèles de commandes de repas
+
+    "commandes":                    [("IDcommande", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID commande"),
+                                    ("IDmodele", "INTEGER", u"ID du modèle de commande"),
+                                    ("nom", "VARCHAR(300)", u"Nom de la commande"),
+                                    ("date_debut", "DATE", u"Date de début de la période"),
+                                    ("date_fin", "DATE", u"Date de fin de la période"),
+                                    ("observations", "VARCHAR(1000)", u"Observations"),
+                                    ],  # Commandes de repas
+
+    "commandes_valeurs":           [("IDvaleur", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID valeur"),
+                                    ("IDcommande", "INTEGER", u"ID de la commande"),
+                                    ("date", "DATE", u"Date"),
+                                    ("IDcolonne", "INTEGER", u"ID de la colonne"),
+                                    ("valeur", "VARCHAR(1000)", u"Valeur"),
+                                    ],  # Valeurs des commandes de repas
 
 }
 

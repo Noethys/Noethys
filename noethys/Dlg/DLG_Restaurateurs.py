@@ -32,7 +32,7 @@ class Dialog(wx.Dialog):
             titre = _(u"Sélection d'un restaurateur")
             self.SetTitle(_(u"Sélection d'un restaurateur"))
         else:
-            intro = _(u"Vous pouvez ici saisir, modifier ou supprimer des restaurateurs. Ces données vous permettent de créer des commandes de repas.")
+            intro = _(u"Vous pouvez ici saisir, modifier ou supprimer des restaurateurs. Ceux-ci pourront ensuite être associés à des modèles de commande de repas.")
             titre = _(u"Gestion des restaurateurs")
             self.SetTitle(_(u"Gestion des restaurateurs"))
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Restaurateur.png")

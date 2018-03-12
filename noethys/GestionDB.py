@@ -2191,12 +2191,21 @@ class DB:
             except Exception, err:
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
+        # =============================================================
 
-
-
-
-
-
+        versionFiltre = (1, 2, 2, 8)
+        if versionFichier < versionFiltre:
+            try:
+                if self.IsTableExists("modeles_commandes") == False: self.CreationTable("modeles_commandes", Tables.DB_DATA)
+                if self.IsTableExists("modeles_commandes_colonnes") == False: self.CreationTable("modeles_commandes_colonnes", Tables.DB_DATA)
+                if self.IsTableExists("commandes") == False: self.CreationTable("commandes", Tables.DB_DATA)
+                if self.IsTableExists("commandes_valeurs") == False: self.CreationTable("commandes_valeurs", Tables.DB_DATA)
+                self.AjoutChamp("messages", "afficher_commande", "INTEGER")
+                # Importation du modèle d'emails 'Commande de repas'
+                from Utils import UTILS_Procedures
+                UTILS_Procedures.A9054()
+            except Exception, err:
+                return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
 
 
@@ -2454,14 +2463,13 @@ if __name__ == "__main__":
                 
     # Création d'une table données
     # db = DB(suffixe="DATA")
-    # listeTables = ("categories_medicales",)
+    # listeTables = ("modeles_commandes",)
     # for nomTable in listeTables :
     #     db.CreationTable(nomTable, Tables.DB_DATA)
     # db.Close()
     # print "creation tables ok."
 
-
-## ----------------------------------------------------------------------
+    ## ----------------------------------------------------------------------
 
 ##    # Création de toutes les tables
     # db = DB(suffixe="DATA", modeCreation=True)
@@ -2490,7 +2498,7 @@ if __name__ == "__main__":
         
     # # Ajouter un champ
     # db = DB(suffixe="DATA")
-    # db.AjoutChamp("prestations", "IDdonnee", "INTEGER")
+    # db.AjoutChamp("commandes_valeurs", "IDcommande", "INTEGER")
     # db.Close()
 
     # Exportation d'une table dans la base DEFAUT

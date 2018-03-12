@@ -49,6 +49,7 @@ CATEGORIES = [
     ("portail_demande_recu_reglement", _(u"Portail - Demande d'un reçu de règlement")),
     ("location", _(u"Location")),
     ("location_demande", _(u"Demande de location")),
+    ("commande_repas", _(u"Commande de repas")),
     ]
 
 
@@ -252,6 +253,11 @@ MOTSCLES = {
                 ("{NOTES}", _(u"Observations")),
                 ],
 
+    "commande_repas": [
+                ("{NOM_COMMANDE}", _(u"Nom de la commande")),
+                ("{DATE_DEBUT}", _(u"Date de début de la période")),
+                ("{DATE_FIN}", _(u"Date de fin de la période")),
+    ],
 
 }
 
