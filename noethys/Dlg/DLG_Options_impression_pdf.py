@@ -201,7 +201,7 @@ class CTRL(wx.Panel):
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
         self.parent = parent
         self.categorie = categorie
-        
+
         # Paramètres généraux
         self.box_options_staticbox = wx.StaticBox(self, -1, _(u"Options d'impression"))
         if ctrl == None :

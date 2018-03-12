@@ -225,7 +225,7 @@ class ListView(FastObjectListView):
         
     def Modifier(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune colonne à modifier dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune colonne à modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return

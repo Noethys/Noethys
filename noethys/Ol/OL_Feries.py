@@ -238,7 +238,7 @@ class ListView(FastObjectListView):
     def Modifier(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_feries", "modifier") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun jour férié à modifier dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun jour férié à modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return

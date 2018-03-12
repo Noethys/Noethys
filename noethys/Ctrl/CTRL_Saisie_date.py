@@ -84,7 +84,7 @@ class Date(masked.TextCtrl):
     """ Contrôle Date simple """
     def __init__(self, parent, date_min="01/01/1900", date_max="01/01/2999", size=(-1, -1)):
         self.mask_date = UTILS_Config.GetParametre("mask_date", "##/##/####")
-        masked.TextCtrl.__init__(self, parent, -1, "", style=wx.TE_CENTRE, size=size, mask=self.mask_date)
+        masked.TextCtrl.__init__(self, parent, -1, "", style=wx.TE_CENTRE |wx.TE_PROCESS_ENTER, size=size, mask=self.mask_date)
         self.parent = parent
         self.date_min = date_min
         self.date_max = date_max
@@ -94,6 +94,7 @@ class Date(masked.TextCtrl):
         if "linux" in sys.platform :
             largeur = 110
         self.SetMinSize((largeur, -1))
+        self.Bind(wx.EVT_TEXT_ENTER, self.OnKillFocus)
         self.Bind(wx.EVT_KILL_FOCUS, self.OnKillFocus)
         self.Bind(wx.EVT_RIGHT_DOWN, self.OnContextMenu)
         if self.mask_date == "" :

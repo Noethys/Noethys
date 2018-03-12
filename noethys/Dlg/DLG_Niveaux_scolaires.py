@@ -65,11 +65,12 @@ class Dialog(wx.Dialog):
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
-        grid_sizer_boutons = wx.FlexGridSizer(rows=1, cols=3, vgap=10, hgap=10)
+        grid_sizer_base.Add(self.ctrl_bandeau, 0, wx.EXPAND, 0)
+
         grid_sizer_contenu = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
         grid_sizer_droit = wx.FlexGridSizer(rows=6, cols=1, vgap=5, hgap=5)
         grid_sizer_gauche = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
-        grid_sizer_base.Add(self.ctrl_bandeau, 0, wx.EXPAND, 0)
+
         grid_sizer_gauche.Add(self.ctrl_listview, 0, wx.EXPAND, 0)
         grid_sizer_gauche.Add(self.ctrl_recherche, 0, wx.EXPAND, 0)
         grid_sizer_gauche.AddGrowableRow(0)
@@ -85,6 +86,8 @@ class Dialog(wx.Dialog):
         grid_sizer_contenu.AddGrowableRow(0)
         grid_sizer_contenu.AddGrowableCol(0)
         grid_sizer_base.Add(grid_sizer_contenu, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
+
+        grid_sizer_boutons = wx.FlexGridSizer(rows=1, cols=3, vgap=10, hgap=10)
         grid_sizer_boutons.Add(self.bouton_aide, 0, 0, 0)
         grid_sizer_boutons.Add((20, 20), 0, wx.EXPAND, 0)
         grid_sizer_boutons.Add(self.bouton_fermer, 0, 0, 0)
