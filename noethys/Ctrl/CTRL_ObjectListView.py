@@ -50,6 +50,7 @@ class ObjectListView(OLV.ObjectListView):
 
         OLV.ObjectListView.__init__(self, *args, **kwargs)
 
+
         self.Bind(wx.EVT_LIST_COL_DRAGGING, self._HandleColumnDragging)
         self.Bind(wx.EVT_SCROLL, self.OnScroll)
 
@@ -60,7 +61,8 @@ class ObjectListView(OLV.ObjectListView):
             self.stEmptyListMsg.SetBackgroundColour(self.GetBackgroundColour())
         else :
             self.Enable(False)
-            self.stEmptyListMsg.SetBackgroundColour(self.couleurBackgroundDefaut)
+            couleur = wx.SystemSettings.GetColour(wx.SYS_COLOUR_FRAMEBK)# self.stEmptyListMsg.GetBackgroundColour()
+            self.stEmptyListMsg.SetBackgroundColour(couleur)
         self.stEmptyListMsg.Refresh() 
 
     def SetColumns(self, columns, repopulate=True):
