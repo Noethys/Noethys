@@ -1,3 +1,16 @@
+Version 1.2.2.8 (12/03/2018) :
+
+- Ajout de la commande des repas dans le menu Consommations
+- Ajout de l'accès au site CDAP de la CAF
+- Ajout de la liste des programmations de transports dans le menu Individus
+- Nouvelle version de la liste des informations médicales dans le menu Individus
+- Ajout des catégories médicales dans le menu Paramétrage > Renseignements
+- Mise à jour du module Objectlistview
+- Adaptations pour wxPython Phoenix
+- Autorise la suppression des émetteurs de règlements déjà associés
+- Enregistrement des transports dans les demandes Connecthys
+- Corrections de divers bugs
+
 Version 1.2.2.5 (10/02/2018) :
 
 - Ajout des périodes de gestion dans le menu Paramétrage
