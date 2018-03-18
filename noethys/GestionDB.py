@@ -54,7 +54,21 @@ def SetInterfaceMySQL(nom="mysqldb"):
         INTERFACE_MYSQL = "mysqldb"
     if nom == "mysql.connector" and IMPORT_MYSQLCONNECTOR_OK == True :
         INTERFACE_MYSQL = "mysql.connector"
-    
+
+# Vérifie si les certificats SSL sont présents dans le répertoire utilisateur
+def GetCertificatsSSL():
+    dict_certificats = {}
+    liste_fichiers = [("ca", "ca-cert.pem"), ("key", "client-key.pem"), ("cert", "client-cert.pem"),]
+    for nom, fichier in liste_fichiers :
+        chemin_fichier = UTILS_Fichiers.GetRepUtilisateur(fichier)
+        if os.path.isfile(chemin_fichier):
+            dict_certificats[nom] = chemin_fichier
+    return dict_certificats
+
+CERTIFICATS_SSL = GetCertificatsSSL()
+
+
+
 
 class DB:
     def __init__(self, suffixe="DATA", nomFichier="", modeCreation=False, IDconnexion=None):
@@ -126,47 +140,12 @@ class DB:
         dictDonnees = {"port":int(port), "hote":host, "host":host, "user":user, "utilisateur":user, "mdp":passwd, "password":passwd, "fichier":nomFichier}
         return dictDonnees
 
-
     def OuvertureFichierReseau(self, nomFichier, suffixe):
         """ Version RESEAU avec MYSQL """
         try :
-            # Récupération des paramètres de connexion
-            pos = nomFichier.index("[RESEAU]")
-            paramConnexions = nomFichier[:pos]
-            port, host, user, passwd = paramConnexions.split(";")
-            nomFichier = nomFichier[pos:].replace("[RESEAU]", "")
-            nomFichier = nomFichier.lower() 
-            
-            # Info sur connexion MySQL
-            #print "IDconnexion=", self.IDconnexion, "Interface MySQL =", INTERFACE_MYSQL
-            
-            # Connexion MySQL
-            if INTERFACE_MYSQL == "mysqldb" :
-                my_conv = conversions
-                my_conv[FIELD_TYPE.LONG] = int
-                self.connexion = MySQLdb.connect(host=host,user=user, passwd=passwd, port=int(port), use_unicode=True, conv=my_conv) # db=dbParam, 
-                self.connexion.set_character_set('utf8')
-                
-            if INTERFACE_MYSQL == "mysql.connector" :
-                self.connexion = mysql.connector.connect(host=host, user=user, passwd=passwd, port=int(port), use_unicode=True, pool_name="mypool2%s" % suffixe, pool_size=3)
-    
+            self.connexion, nomFichier = GetConnexionReseau(nomFichier)
             self.cursor = self.connexion.cursor()
-            
-            # Ouverture ou création de la base MySQL
-##            listeDatabases = self.GetListeDatabasesMySQL()
-##            if nomFichier in listeDatabases :
-##                # Ouverture Database
-##                self.cursor.execute("USE %s;" % nomFichier)
-##            else:
-##                # Création Database
-##                if self.modeCreation == True :
-##                    self.cursor.execute("CREATE DATABASE IF NOT EXISTS %s CHARSET utf8 COLLATE utf8_unicode_ci;" % nomFichier)
-##                    self.cursor.execute("USE %s;" % nomFichier)
-##                else :
-##                    #print "La base de donnees '%s' n'existe pas." % nomFichier
-##                    self.echec = 1
-##                    return
-            
+
             # Création
             if self.modeCreation == True :
                 self.cursor.execute("CREATE DATABASE IF NOT EXISTS %s CHARSET utf8 COLLATE utf8_unicode_ci;" % nomFichier)
@@ -752,23 +731,7 @@ class DB:
         else :
             
             try :
-                # Récupération des paramètres de connexion
-                pos = nomFichierdefault.index("[RESEAU]")
-                paramConnexions = nomFichierdefault[:pos]
-                port, host, user, passwd = paramConnexions.split(";")
-                nomFichier = nomFichierdefault[pos:].replace("[RESEAU]", "")
-                nomFichier = nomFichier.lower() 
-                
-                # Connexion MySQL
-                if INTERFACE_MYSQL == "mysqldb" :
-                    my_conv = conversions
-                    my_conv[FIELD_TYPE.LONG] = int
-                    connexionDefaut = MySQLdb.connect(host=host,user=user, passwd=passwd, port=int(port), use_unicode=True, conv=my_conv) # db=dbParam, 
-                    connexionDefaut.set_character_set('utf8')
-                    
-                if INTERFACE_MYSQL == "mysql.connector" :
-                    connexionDefaut = mysql.connector.connect(host=host, user=user, passwd=passwd, port=int(port), use_unicode=True, pool_name="mypool3%s" % suffixe, pool_size=3)
-
+                connexionDefaut, nomFichier = GetConnexionReseau(nomFichierdefault)
                 cursor = connexionDefaut.cursor()
                 
                 # Ouverture Database
@@ -823,23 +786,7 @@ class DB:
         
         # Ouverture de la base réseau
         try :
-            # Récupération des paramètres de connexion
-            pos = nomFichier.index("[RESEAU]")
-            paramConnexions = nomFichier[:pos]
-            port, host, user, passwd = paramConnexions.split(";")
-            nomFichier = nomFichier[pos:].replace("[RESEAU]", "")
-            nomFichier = nomFichier.lower() 
-            
-            # Connexion MySQL
-            if INTERFACE_MYSQL == "mysqldb" :
-                my_conv = conversions
-                my_conv[FIELD_TYPE.LONG] = int
-                connexionDefaut = MySQLdb.connect(host=host,user=user, passwd=passwd, port=int(port), use_unicode=True, conv=my_conv) # db=dbParam, 
-                connexionDefaut.set_character_set('utf8')
-                
-            if INTERFACE_MYSQL == "mysql.connector" :
-                connexionDefaut = mysql.connector.connect(host=host, user=user, passwd=passwd, port=int(port), use_unicode=True, pool_name="mypool4%s" % self.suffixe, pool_size=3)
-                
+            connexionDefaut, nomFichier = GetConnexionReseau(nomFichier)
             cursor = connexionDefaut.cursor()
 
             # Ouverture Database
@@ -2215,6 +2162,32 @@ class DB:
 
         return True
 
+def GetConnexionReseau(nomFichier=""):
+    pos = nomFichier.index("[RESEAU]")
+    paramConnexions = nomFichier[:pos]
+    port, host, user, passwd = paramConnexions.split(";")
+    nomFichier = nomFichier[pos:].replace("[RESEAU]", "")
+    nomFichier = nomFichier.lower()
+
+    if INTERFACE_MYSQL == "mysqldb":
+        my_conv = conversions
+        my_conv[FIELD_TYPE.LONG] = int
+        connexion = MySQLdb.connect(host=host, user=user, passwd=passwd, port=int(port), use_unicode=True, conv=my_conv, ssl=CERTIFICATS_SSL)
+        connexion.set_character_set('utf8')
+
+    if INTERFACE_MYSQL == "mysql.connector":
+        if CERTIFICATS_SSL.has_key("ca"):
+            ssl_ca = CERTIFICATS_SSL["ca"]
+        else :
+            ssl_ca = None
+        if "_" in nomFichier :
+            suffixe = nomFichier.split("_")[-1]
+        else :
+            suffixe = ""
+        connexion = mysql.connector.connect(host=host, user=user, passwd=passwd, port=int(port), use_unicode=True, ssl_ca=ssl_ca, pool_name="mypool2%s" % suffixe, pool_size=3)
+
+    return connexion, nomFichier
+
 def GetChampsTable(nomTable=""):
     for dictTables in (Tables.DB_DATA, Tables.DB_PHOTOS, Tables.DB_DOCUMENTS) :
         if dictTables.has_key(nomTable) :
@@ -2340,30 +2313,19 @@ def ConversionReseauLocal(nomFichier="", nouveauFichier="", fenetreParente=None)
 def TestConnexionMySQL(typeTest="fichier", nomFichier=""):
     """ typeTest=fichier ou reseau """
     dictResultats = {}
-    
-    pos = nomFichier.index("[RESEAU]")
-    paramConnexions = nomFichier[:pos]
-    port, host, user, passwd = paramConnexions.split(";")
-    nomFichier = nomFichier[pos+8:]
-    nomFichier = nomFichier.lower() 
-    
     cursor = None
     connexion = None
-    
+
     # Test de connexion au réseau MySQL
     try :
-        if INTERFACE_MYSQL == "mysqldb" :
-            connexion = MySQLdb.connect(host=host,user=user, passwd=passwd, port=int(port), use_unicode=True) # db=dbParam, 
-            connexion.set_character_set('utf8')
-        if INTERFACE_MYSQL == "mysql.connector" :
-            connexion = mysql.connector.connect(host=host,user=user, passwd=passwd, port=int(port), use_unicode=True, pool_name="mypool", pool_size=1) 
+        connexion, nomFichier = GetConnexionReseau(nomFichier)
         cursor = connexion.cursor()
         dictResultats["connexion"] =  (True, None)
         connexion_ok = True
     except Exception, err :
         dictResultats["connexion"] =  (False, err)
         connexion_ok = False
-    
+
     # Test de connexion à une base de données
     if typeTest == "fichier" and connexion_ok == True :
         try :
@@ -2536,4 +2498,3 @@ if __name__ == "__main__":
 ##    DB.Close()
 
     pass
-    
