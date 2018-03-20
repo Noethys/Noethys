@@ -332,6 +332,8 @@ class Page_Listes_diffusion(wx.Panel):
         return dictDonnees
     
     def SetDonnees(self, dictDonnees={}):
+        if self.maj_done == False :
+            self.MAJ()
         self.liste.SetIDcoches(dictDonnees["liste_ID"])
         self.OnCheck(None)
 
@@ -412,6 +414,8 @@ class Page_Familles_individus(wx.Panel):
         return dictDonnees
     
     def SetDonnees(self, dictDonnees={}):
+        if self.maj_done == False :
+            self.MAJ()
         self.barre_recherche.SetFiltres(dictDonnees["liste_filtres"])
         self.listview.SetIDcoches(dictDonnees["liste_ID"])
         self.OnCheck(None)
