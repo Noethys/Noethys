@@ -302,7 +302,8 @@ class Dialog(wx.Dialog):
         if priorite == "HAUTE" : self.ctrl_priorite.Select(1)
         self.ctrl_afficher_accueil.SetValue(afficher_accueil)
         self.ctrl_afficher_liste.SetValue(afficher_liste)
-        self.ctrl_afficher_commande.SetValue(afficher_commande)
+        if afficher_commande != None :
+            self.ctrl_afficher_commande.SetValue(afficher_commande)
         if afficher_facture != None :
             self.ctrl_afficher_factures.SetValue(afficher_facture)
         self.ctrl_rappel_accueil.SetValue(rappel_accueil)
