@@ -195,14 +195,14 @@ class Dialog(wx.Dialog):
         listeAutorisations = DB.ResultatReq()
 
         # Recherche des Hotes
-        req = "SELECT Host, User, Password FROM `mysql`.`user` WHERE User='%s' ORDER BY Host;" % self.nomUtilisateur
+        req = "SELECT Host, User FROM `mysql`.`user` WHERE User='%s' ORDER BY Host;" % self.nomUtilisateur
         DB.ExecuterReq(req)
         listeHotesTmp = DB.ResultatReq()
         DB.Close()
         
         listeHotesLabels = []
         listeHotesData = []
-        for host, user, password in listeHotesTmp :
+        for host, user in listeHotesTmp :
             # Recherche s'il y a une autorisation pour la base en cours
             if (host,) in listeAutorisations :
                 autorisation = True
@@ -300,7 +300,7 @@ class Dialog(wx.Dialog):
         if self.radio_3.GetValue() == True : hote = self.ctrl_hote.GetValue()
                 
         # Création de l'hôte :
-        req = "SELECT host, user, password FROM user WHERE user='%s' and host='%s';" % (nom, hote)
+        req = "SELECT host, user FROM user WHERE user='%s' and host='%s';" % (nom, hote)
         DB.ExecuterReq(req)
         donnees = DB.ResultatReq()
         if len(donnees) == 0 :

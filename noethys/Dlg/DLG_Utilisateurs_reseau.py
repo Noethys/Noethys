@@ -21,6 +21,7 @@ import DLG_Saisie_utilisateur_reseau
 from Ctrl import CTRL_Bandeau
 from Utils import UTILS_Utilisateurs
 
+
 LISTE_SUFFIXES = ("data", "photos", "documents")
 
 
@@ -142,8 +143,7 @@ class Panel(wx.Panel):
         # Suppression de l'hôte :
         req = "DELETE FROM user WHERE user='%s' and host='%s';" % (nom, hote)
         DB.ExecuterReq(req)
-##        print "L'utilisateur a ete supprime."
-        
+
         req = u"FLUSH PRIVILEGES;"
         DB.ExecuterReq(req)
         DB.Close()
@@ -186,16 +186,14 @@ class ListCtrl(wx.ListCtrl, CheckListCtrlMixin):
         self.InsertColumn(0, _(u"Accès"))
         self.SetColumnWidth(0, 55)
         self.InsertColumn(1, _(u"Nom de l'utilisateur"))
-        self.SetColumnWidth(1, 130)
+        self.SetColumnWidth(1, 200)
         self.InsertColumn(2, _(u"Hôte de connexion"))
         self.SetColumnWidth(2, 300)
-        self.InsertColumn(3, _(u"Mot de passe"))
-        self.SetColumnWidth(3, 90)
-        
+
         # Remplissage avec les valeurs
         self.remplissage = True
         indexListe = 0
-        for user, host, password, autorisation in self.listeDonnees :
+        for user, host, autorisation in self.listeDonnees :
             if user == "root" : 
                 autorisation = True
                 
@@ -213,13 +211,7 @@ class ListCtrl(wx.ListCtrl, CheckListCtrlMixin):
             elif host == "localhost" : host = _(u"Connexion uniquement depuis le serveur principal")
             else : host = _(u"Connexion uniquement depuis l'hôte %s") % host.decode("iso-8859-15")
             self.SetStringItem(index, 2, host)
-            
-            if password != "" and password != None : 
-                password = "Oui"
-            else:
-                password = "Non"
-            self.SetStringItem(index, 3, password)
-            
+
             self.SetItemData(index, indexListe)
                 
             # Check
@@ -293,7 +285,10 @@ class ListCtrl(wx.ListCtrl, CheckListCtrlMixin):
         DB = GestionDB.DB()
         
         # Recherche des utilisateurs MySQL
-        req = "SELECT Host, User, Password FROM `mysql`.`user` ORDER BY User, Host;"
+        req = """SELECT Host, User 
+        FROM `mysql`.`user` 
+        WHERE User NOT LIKE 'mysql%'
+        ORDER BY User, Host;"""
         DB.ExecuterReq(req)
         listeUtilisateurs = DB.ResultatReq()
                 
@@ -305,13 +300,13 @@ class ListCtrl(wx.ListCtrl, CheckListCtrlMixin):
         
         # Création de la liste de données
         listeDonnees = []
-        for host, user, password in listeUtilisateurs :
+        for host, user in listeUtilisateurs :
             # Recherche s'il y a une autorisation pour la base en cours
             autorisation = False
             for hostTmp, userTmp in listeAutorisations :
-                if host==hostTmp and user==userTmp :
+                if host == hostTmp and user == userTmp :
                     autorisation = True
-            listeDonnees.append([user, host, password, autorisation])
+            listeDonnees.append([user, host, autorisation])
         return listeDonnees
 
 
