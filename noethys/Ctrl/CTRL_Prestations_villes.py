@@ -249,7 +249,7 @@ class CTRL(HTL.HyperTreeList):
                 if dictIndividu["nom"] != None :
                     labelIndividu = u"%s (%s)" % (nomIndividu, datenaiss_str)
                 else :
-                    labelIndividu = _(u"Prestations familiales")
+                    labelIndividu = _(u"Prestations diverses")
                 niveauIndividu = self.AppendItem(niveauFamille, labelIndividu)
                 self.SetPyData(niveauIndividu, {"type" : "individu", "valeur" : IDindividu})
                 

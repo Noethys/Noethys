@@ -682,7 +682,7 @@ class Dialog(wx.Dialog):
         for IDactivite, dictLabels in dictTotaux.iteritems() :
             
             if IDactivite == None :
-                nomActivite = _(u"Prestations familiales")
+                nomActivite = _(u"Prestations diverses")
             else :
                 nomActivite = dictActivites[IDactivite]
                 

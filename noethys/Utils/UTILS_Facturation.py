@@ -591,7 +591,7 @@ class Facturation():
                     
                 else:
                     # Si c'est pour une prestation familiale on créé un individu ID 0 :
-                    nom = _(u"Prestations familiales")
+                    nom = _(u"Prestations diverses")
                     texteIndividu = u"<b>%s</b>" % nom
                     
                 dictComptes[ID]["individus"][IDindividu] = { "texte" : texteIndividu, "activites" : {}, "total" : FloatToDecimal(0.0), "ventilation" : FloatToDecimal(0.0), "total_reports" : FloatToDecimal(0.0), "nom" : nom, "select" : True }

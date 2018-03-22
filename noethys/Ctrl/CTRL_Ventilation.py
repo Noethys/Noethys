@@ -676,7 +676,7 @@ class CTRL_Ventilation(gridlib.Grid):
             if self.KeyRegroupement == "individu" : 
                 key = ligne_prestation.IDindividu
                 if key == 0 or key == None :
-                    label = _(u"Prestations familiales")
+                    label = _(u"Prestations diverses")
                 else:
                     label = ligne_prestation.nomCompletIndividu
             if self.KeyRegroupement == "facture" : 
