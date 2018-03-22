@@ -189,7 +189,7 @@ class Dialog(wx.Dialog):
         # Récupération du contenu du ZIP
         self.listeFichiers = UTILS_Sauvegarde.GetListeFichiersZIP(fichier)
         
-        intro = _(u"Vous pouvez ici restaurer une sauvegarde. Vous devez sélectionner dans la liste des données présentes dans la sauvegarde celles que vous souhaiter restaurer.")
+        intro = _(u"Vous pouvez ici restaurer une sauvegarde. Vous devez sélectionner dans la liste des données présentes dans la sauvegarde celles que vous souhaitez restaurer.")
         titre = _(u"Restauration")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Restaurer.png")

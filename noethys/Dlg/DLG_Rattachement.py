@@ -275,13 +275,14 @@ class Dialog(wx.Dialog):
             return
         
         prenom = self.ctrl_prenom.GetValue()
-        if prenom == "" :
-            dlg = wx.MessageDialog(self, _(u"Vous devez saisir le prénom du nouvel individu à créer !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
-            dlg.ShowModal()
+        if prenom == "":
+            dlg = wx.MessageDialog(self, _(u"Etes-vous sûr de ne pas vouloir saisir de prénom ?"), _(u"Confirmation"), wx.YES_NO | wx.NO_DEFAULT | wx.CANCEL | wx.ICON_EXCLAMATION)
+            reponse = dlg.ShowModal()
             dlg.Destroy()
-            self.ctrl_prenom.SetFocus()
-            return
-        
+            if reponse != wx.ID_YES:
+                self.ctrl_prenom.SetFocus()
+                return
+
         # Vérifie que l'individu n'existe pas déjà dans la liste
         if self.ctrl_propositions.donnees != None :
             for individu in self.ctrl_propositions.donnees :

@@ -293,7 +293,12 @@ class Dialog(wx.Dialog):
 if __name__ == "__main__":
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    dialog_1 = Dialog(None)
-    app.SetTopWindow(dialog_1)
-    dialog_1.ShowModal()
+    import time
+    heure_debut = time.time()
+    dlg = Dialog(None)
+    dlg.ctrl_annee.SetSelection(0)
+    dlg.MAJ()
+    print "Temps de chargement =", time.time() - heure_debut
+    app.SetTopWindow(dlg)
+    dlg.ShowModal()
     app.MainLoop()
