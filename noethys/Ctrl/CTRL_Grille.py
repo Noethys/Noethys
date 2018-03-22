@@ -5048,7 +5048,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                                                     if dictUnite["type"] == "Multihoraires" :
                                                         case.SupprimerBarre(conso.barre)
                                                     elif dictUnite["type"] == "Evenement" :
-                                                        if resultats["expression"] == None or resultats["expression"].lower() in conso.evenement.nom.lower():
+                                                        if resultats.has_key("expression") and (resultats["expression"] == None or resultats["expression"].lower() in conso.evenement.nom.lower()):
                                                             case.Supprimer_evenement(conso.evenement)
                                                     else :
                                                         if conso.etat != None :
@@ -5067,7 +5067,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                                                         if conso.IDfacture != None :
                                                             journal[case.IDindividu].append((case.date, dictUnite["nom"], _(u"Impossible de supprimer une consommation déjà facturée")))
                                                         else :
-                                                            if dictUnite["type"] != "Evenement" or resultats["expression"] == None or resultats["expression"].lower() in conso.evenement.nom.lower() :
+                                                            if dictUnite["type"] != "Evenement" or (resultats.has_key("expression") and (resultats["expression"] == None or resultats["expression"].lower())) in conso.evenement.nom.lower() :
                                                                 case.ModifieEtat(conso, resultats["etat"])
         
         # Renvoie le journal
