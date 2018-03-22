@@ -42,6 +42,7 @@ EXTENSIONS = {
 
 
 
+
 def Sauvegarde(listeFichiersLocaux=[], listeFichiersReseau=[], nom="", repertoire=None, motdepasse=None, listeEmails=None, dictConnexion=None):
     """ Processus de de création du ZIP """
     # Si aucun fichier à sauvegarder
@@ -261,7 +262,8 @@ def Restauration(parent=None, fichier="", listeFichiersLocaux=[], listeFichiersR
     
     # Initialisation de la barre de progression
     fichierZip = zipfile.ZipFile(fichier, "r")
-    
+    #fichierZip = MyZipFile(fichier, "r")
+
     # Restauration des fichiers locaux Sqlite --------------------------------------------------------------------------------------------------------------------------------------
     if len(listeFichiersLocaux) > 0 :
 
@@ -290,10 +292,11 @@ def Restauration(parent=None, fichier="", listeFichiersLocaux=[], listeFichiersR
         for fichier in listeFichiersLocaux :
             dlgprogress.Update(numEtape, _(u"Restauration du fichier %s...") % fichier);numEtape += 1
             try :
-                buffer = fichierZip.read(fichier)
-                f = open(UTILS_Fichiers.GetRepData(fichier), "wb")
-                f.write(buffer)
-                f.close()
+                # buffer = fichierZip.read(fichier)
+                # f = open(UTILS_Fichiers.GetRepData(fichier), "wb")
+                # f.write(buffer)
+                # f.close()
+                fichierZip.extract(fichier, UTILS_Fichiers.GetRepData())
             except Exception, err:
                 dlgprogress.Destroy()
                 print err
@@ -359,39 +362,17 @@ def Restauration(parent=None, fichier="", listeFichiersLocaux=[], listeFichiersR
                 nomFichier = u"%s;%s;%s;%s[RESEAU]%s" % (dictConnexion["port"], dictConnexion["host"], dictConnexion["user"], dictConnexion["password"], fichier)
                 DB = GestionDB.DB(suffixe=None, nomFichier=nomFichier, modeCreation=True)
                 DB.Close()
-            
-            fichierRestore = u"%s/%s.sql" % (repTemp, fichier)
-            
+
             # Copie du fichier SQL dans le répertoire Temp / restoretemp
-            buffer = fichierZip.read(u"%s.sql" % fichier)
-            f = open(fichierRestore, "wb")
-            f.write(buffer)
-            f.close()
-            
+            # buffer = fichierZip.read(u"%s.sql" % fichier)
+            # f = open(fichierRestore, "wb")
+            # f.write(buffer)
+            # f.close()
+            fichierZip.extract(u"%s.sql" % fichier, repTemp)
+            fichierRestore = u"%s/%s.sql" % (repTemp, fichier)
+
             # Importation du fichier SQL dans MySQL
             dlgprogress.Update(numEtape, _(u"Restauration du fichier %s...") % fichier);numEtape += 1
-                        
-##            args = [
-##                "%sbin/mysql" % repMySQL,
-##                "--host=%s" % dictConnexion["host"],
-##                "--port=%s" % dictConnexion["port"],
-##                "--user=%s" % dictConnexion["user"],
-##                "--password=%s" % dictConnexion["password"],
-##                fichier,
-##                "<",
-##                fichierRestore,
-##                ]
-            
-            # if "linux" in sys.platform :
-            #     args = "%sbin/mysql --defaults-extra-file=%s %s < %s" % (repMySQL, nomFichierLoginTemp, fichier, fichierRestore)
-            # else :
-            #     args = [
-            #         "%sbin/mysql" % repMySQL,
-            #         "--defaults-extra-file=%s" % nomFichierLoginTemp,
-            #         fichier,
-            #         "<",
-            #         fichierRestore,
-            #         ]
 
             args = u""""%sbin/mysql" --defaults-extra-file="%s" %s < "%s" """ % (repMySQL, nomFichierLoginTemp, fichier, fichierRestore)
             print ("Chemin mysql =", args)
