@@ -305,8 +305,8 @@ class ListView(FastObjectListView):
                 
         liste_Colonnes = [
             ColumnDefn(u"", "left", 22, "IDindividu", typeDonnee="entier", imageGetter=GetImageCivilite),
-            ColumnDefn(_(u"Nom"), 'left', 100, "nom", typeDonnee="texte"),
-            ColumnDefn(_(u"Prénom"), "left", 100, "prenom", typeDonnee="texte"),
+            ColumnDefn(_(u"Nom"), 'left', 120, "nom", typeDonnee="texte"),
+            ColumnDefn(_(u"Prénom"), "left", 110, "prenom", typeDonnee="texte"),
             ColumnDefn(_(u"Date naiss."), "left", 72, "date_naiss", typeDonnee="date", stringConverter=FormateDate),
             ColumnDefn(_(u"Age"), "left", 50, "age", typeDonnee="entier", stringConverter=FormateAge),
             ColumnDefn(_(u"Rue"), "left", 150, "rue_resid", typeDonnee="texte"),
