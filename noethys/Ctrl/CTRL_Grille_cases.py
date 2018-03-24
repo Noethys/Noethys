@@ -2877,7 +2877,6 @@ class CaseEvenement(Case):
 
 
 
-
 if __name__ == '__main__':
     app = wx.App(0)
     from Dlg import DLG_Grille

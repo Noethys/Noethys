@@ -685,6 +685,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 
         # Binds
         self.barreMoving = None
+        self.casesSurvolees = None
 
         self.Bind(gridlib.EVT_GRID_CELL_RIGHT_CLICK, self.OnCellRightClick)
         self.Bind(gridlib.EVT_GRID_LABEL_RIGHT_CLICK, self.OnLabelRightClick)
@@ -2188,16 +2189,20 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                     # Sinon déclenche le moving de la barre
                     self.barreMoving = {"barre" : barre, "region" : region, "x" : x, "y" : y, "ecart" : ecart, "heure_debut" : barre.heure_debut, "heure_fin" : barre.heure_fin}
                     self.SetCurseur(region)
+
         # Si case standard
         else :
             case.OnClick()
+
+            # Mémorise la case enfoncée
+            if self.casesSurvolees == None:
+                self.casesSurvolees = [case,]
+
         try :
             wx.CallAfter(self.ClearSelection)
         except :
             pass
-##        if case.typeCase != "consommation" :
-##            event.Skip()
-        
+
 
 
     def OnLeftDoubleClick(self, event):
@@ -2274,7 +2279,14 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             if self.dictLignes.has_key(numLigne) :
                 ligne = self.dictLignes[numLigne]
                 if ligne.dictCases.has_key(numColonne) :
-                    case = ligne.dictCases[numColonne]            
+                    case = ligne.dictCases[numColonne]
+
+        # Click gauche souris enfoncé
+        if self.casesSurvolees != None and case != None:
+            if case not in self.casesSurvolees and case.GetTypeUnite() in ("Unitaire", "Horaire"):
+                self.casesSurvolees.append(case)
+                if wx.GetMouseState().LeftIsDown():
+                    self.OnLeftClick(event)
 
         # Recherche si c'est une case évènementielle : si oui, considère l'évènement au lieu de la case
         if case != None and hasattr(case, "CategorieCase") and case.CategorieCase == "evenement":
@@ -2324,7 +2336,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             else:
                 self.caseSurvolee = None
                 self.ActiveTooltip(actif=False)
-        
+
         # StatusBar
         self.EcritStatusbar(case, x, y)
         
@@ -2339,6 +2351,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             self.Autogeneration(ligne=barre.case.ligne, IDactivite=barre.case.IDactivite, IDunite=barre.case.IDunite)
 
         self.barreMoving = None
+        self.casesSurvolees = None
         self.SetCurseur(None)
         
     def OnLeaveWindow(self, event):
@@ -6063,7 +6076,7 @@ if __name__ == '__main__':
     app = wx.App(0)
     heure_debut = time.time()
     from Dlg import DLG_Grille
-    frame_1 = DLG_Grille.Dialog(None, IDfamille=465, selectionIndividus=[1289,])
+    frame_1 = DLG_Grille.Dialog(None, IDfamille=1, selectionIndividus=[3,])
     app.SetTopWindow(frame_1)
     print "Temps de chargement CTRL_Grille =", time.time() - heure_debut
     frame_1.ShowModal()
