@@ -2283,7 +2283,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 
         # Click gauche souris enfoncé
         if self.casesSurvolees != None and case != None:
-            if case not in self.casesSurvolees and case.GetTypeUnite() in ("Unitaire", "Horaire"):
+            if case not in self.casesSurvolees and case.GetTypeUnite() in ("Unitaire", "Horaire", "Quantite"):
                 self.casesSurvolees.append(case)
                 if wx.GetMouseState().LeftIsDown():
                     self.OnLeftClick(event)
