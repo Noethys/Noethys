@@ -57,7 +57,7 @@ DICT_PROCEDURES = {
     "A9079" : _(u"Création de la table PHOTOS"),
     "A9080" : _(u"Création de la table DOCUMENTS"),
     "A9081" : _(u"Création du profil de configuration par défaut pour la liste des infos médicales"),
-
+    "A9102" : _(u"Suppression des données personnelles"),
 }
 
 
@@ -981,6 +981,69 @@ def A9081():
     DB.ReqInsert("profils_parametres", [("IDprofil", IDprofil), ("nom", "colonnes"), ("type_donnee", "autre"), ("parametre", "[(u'Informations alimentaires', '2'), (u'Autres informations', '0')]")])
     DB.Close()
 
+def A9102():
+    """ Suppression des données personnelles """
+    import random
+
+    DB = GestionDB.DB()
+
+    # Tables diverses
+    DB.ExecuterReq("DELETE FROM messages;")
+    DB.ExecuterReq("DELETE FROM problemes_sante;")
+    DB.ExecuterReq("DELETE FROM memo_journee;")
+    DB.ExecuterReq("UPDATE familles SET num_allocataire='', internet_actif=0, internet_identifiant='', internet_mdp='';")
+    DB.ExecuterReq("UPDATE payeurs SET nom='XXX';")
+    DB.ExecuterReq("UPDATE comptes_bancaires SET numero='XXX';")
+    DB.ExecuterReq("DELETE FROM rappels;")
+    DB.ExecuterReq("DELETE FROM historique;")
+    DB.ExecuterReq("DELETE FROM adresses_mail;")
+    DB.ExecuterReq("DELETE FROM sauvegardes_auto;")
+    DB.ExecuterReq("DELETE FROM portail_actions;")
+    DB.ExecuterReq("DELETE FROM portail_reservations;")
+    DB.ExecuterReq("DELETE FROM portail_renseignements;")
+    DB.ExecuterReq("DELETE FROM portail_messages;")
+
+    # Modification des individus
+    req = """SELECT IDindividu, nom, prenom FROM individus;"""
+    DB.ExecuterReq(req)
+    listeDonnees = DB.ResultatReq()
+    liste_modifications = []
+    for IDindividu, nom, prenom in listeDonnees :
+        nom += u"AEIOU"
+        prenom += u"aeiou"
+        nom = ''.join(random.sample(nom, len(nom)))
+        prenom = ''.join(random.sample(prenom, len(prenom))).capitalize()
+        num_secu = None
+        date_naiss = None
+        rue_resid = "10 rue des oiseaux"
+        cp_resid = "29200"
+        ville_resid = "BREST"
+        employeur = None
+        travail_tel = "01.02.03.04.05."
+        travail_mail = None
+        tel_domicile = None
+        tel_mobile = None
+        mail = None
+
+        liste_modifications.append((nom, prenom, num_secu, date_naiss, rue_resid, cp_resid, ville_resid, employeur, travail_tel, travail_mail, tel_domicile, tel_mobile, mail, IDindividu))
+
+    DB.Executermany("UPDATE individus SET nom=?, prenom=?, num_secu=?, date_naiss=?, rue_resid=?, cp_resid=?, ville_resid=?, employeur=?, travail_tel=?, travail_mail=?, tel_domicile=?, tel_mobile=?, mail=? WHERE IDindividu=?", liste_modifications, commit=True)
+
+    DB.Close()
+
+    DB = GestionDB.DB(suffixe="PHOTOS")
+    DB.ExecuterReq("DELETE FROM photos;")
+    DB.Commit()
+    DB.Close()
+
+    DB = GestionDB.DB(suffixe="DOCUMENTS")
+    DB.ExecuterReq("DELETE FROM documents;")
+    DB.Commit()
+    DB.Close()
+
+
+
+
 
 
 ##def A8360():
@@ -1066,5 +1129,5 @@ def A9081():
 if __name__ == u"__main__":
     app = wx.App(0)
     # TEST D'UNE PROCEDURE :
-    A9081()
+    A9102()
     app.MainLoop()
