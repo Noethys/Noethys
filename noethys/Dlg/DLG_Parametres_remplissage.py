@@ -95,7 +95,7 @@ class CTRL_activites(wx.CheckListBox):
             
 
 class Dialog(wx.Dialog):
-    def __init__(self, parent, dictDonnees = {}, afficheLargeurColonneUnite=True, afficheAbregeGroupes=True, abregeGroupes=False, affichePresents=1):
+    def __init__(self, parent, dictDonnees = {}, afficheLargeurColonneUnite=True, afficheAbregeGroupes=True, totaux=True, abregeGroupes=False, affichePresents=1, afficheTotaux=True):
         wx.Dialog.__init__(self, parent, -1, name="parametres_remplissage", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         self.afficheLargeurColonneUnite = afficheLargeurColonneUnite
@@ -133,17 +133,32 @@ class Dialog(wx.Dialog):
         else:
             self.ctrl_affichePresents_non.SetValue(True)
 
+        self.label_afficheTotaux = wx.StaticText(self, -1, _(u"Afficher les colonnes des totaux :"))
+        self.ctrl_afficheTotaux_oui = wx.RadioButton(self, -1, _(u"Oui"), style = wx.RB_GROUP)
+        self.ctrl_afficheTotaux_non = wx.RadioButton(self, -1, _(u"Non"))
+        if totaux == True :
+            self.ctrl_afficheTotaux_oui.SetValue(True)
+        else:
+            self.ctrl_afficheTotaux_non.SetValue(True)
+
         if afficheAbregeGroupes == False :
             self.label_abregeGroupes.Show(False)
             self.ctrl_abregeGroupes_oui.Show(False)
             self.ctrl_abregeGroupes_non.Show(False)
-        
-        if self.afficheLargeurColonneUnite == False and afficheAbregeGroupes == False :
+
+        if afficheTotaux == False :
+            self.label_afficheTotaux.Show(False)
+            self.ctrl_afficheTotaux_oui.Show(False)
+            self.ctrl_afficheTotaux_non.Show(False)
+
+        if self.afficheLargeurColonneUnite == False and afficheAbregeGroupes == False and afficheTotaux == False :
             self.label_affichePresents.Show(False)
             self.ctrl_affichePresents_oui.Show(False)
             self.ctrl_affichePresents_non.Show(False)
             self.staticbox_options_staticbox.Show(False)
-            
+
+
+
         # Boutons de commandes 
         self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
         self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
@@ -205,6 +220,12 @@ class Dialog(wx.Dialog):
         grid_sizer_affichePresents.Add(self.ctrl_affichePresents_non, 0, wx.ALIGN_CENTER_VERTICAL, 0)
         staticbox_options.Add(grid_sizer_affichePresents, 0, wx.EXPAND|wx.LEFT|wx.RIGHT|wx.BOTTOM, 10)
 
+        grid_sizer_afficheTotaux = wx.FlexGridSizer(rows=1, cols=3, vgap=10, hgap=10)
+        grid_sizer_afficheTotaux.Add(self.label_afficheTotaux, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_afficheTotaux.Add(self.ctrl_afficheTotaux_oui, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_afficheTotaux.Add(self.ctrl_afficheTotaux_non, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        staticbox_options.Add(grid_sizer_afficheTotaux, 0, wx.EXPAND|wx.LEFT|wx.RIGHT|wx.BOTTOM, 10)
+
         grid_sizer_droit.Add(staticbox_options, 1, wx.EXPAND, 0)
         
         grid_sizer_contenu.Add(grid_sizer_droit, 1, wx.EXPAND, 0)
@@ -250,6 +271,9 @@ class Dialog(wx.Dialog):
 
     def GetAffichePresents(self):
         return int(self.ctrl_affichePresents_oui.GetValue())
+
+    def GetAfficheTotaux(self):
+        return int(self.ctrl_afficheTotaux_oui.GetValue())
 
     def OnBoutonOk(self, event):
         # Mémorisation paramètres

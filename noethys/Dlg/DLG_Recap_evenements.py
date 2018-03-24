@@ -582,7 +582,7 @@ class Panel(wx.Panel):
     def OnBoutonParametres(self, event):
         import DLG_Parametres_remplissage
         dictDonnees = self.GetParent().ctrl_remplissage.dictDonnees
-        dlg = DLG_Parametres_remplissage.Dialog(None, dictDonnees, afficheAbregeGroupes=False, afficheLargeurColonneUnite=False)
+        dlg = DLG_Parametres_remplissage.Dialog(None, dictDonnees, afficheAbregeGroupes=False, afficheLargeurColonneUnite=False, afficheTotaux=False)
         if dlg.ShowModal() == wx.ID_OK:
             newDictDonnees = dlg.GetDictDonnees()
             # Envoi les données au ctrl remplissage

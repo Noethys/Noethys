@@ -119,18 +119,22 @@ class ToolBar(wx.ToolBar):
         else:
             modeAffichage = "nbrePlacesPrises"
         abregeGroupes = self.GetParent().ctrl_remplissage.GetAbregeGroupes()
+        totaux = self.GetParent().ctrl_remplissage.GetAfficheTotaux()
+        print totaux
         affichePresents = AFFICHE_PRESENTS
-        dlg = DLG_Parametres_remplissage.Dialog(None, dictDonnees, abregeGroupes=abregeGroupes, affichePresents=affichePresents)
+        dlg = DLG_Parametres_remplissage.Dialog(None, dictDonnees, abregeGroupes=abregeGroupes, affichePresents=affichePresents, totaux=totaux)
         if dlg.ShowModal() == wx.ID_OK:
             # Mise à jour des paramètres du tableau
             listeActivites = dlg.GetListeActivites()
             listePeriodes = dlg.GetListePeriodes()
             dictDonnees = dlg.GetDictDonnees() 
             abregeGroupes = dlg.GetAbregeGroupes()
+            afficheTotaux = dlg.GetAfficheTotaux()
             # Mise à jour du tableau de remplissage
             self.GetParent().ctrl_remplissage.SetListeActivites(listeActivites)
             self.GetParent().ctrl_remplissage.SetListePeriodes(listePeriodes)
             self.GetParent().ctrl_remplissage.SetAbregeGroupes(abregeGroupes)
+            self.GetParent().ctrl_remplissage.SetAfficheTotaux(afficheTotaux)
             self.GetParent().ctrl_remplissage.MAJ()
             dictDonnees["modeAffichage"] = modeAffichage
             self.GetParent().SetDictDonnees(dictDonnees)

@@ -40,6 +40,7 @@ from Utils import UTILS_Dates
 # Colonnes unités
 LARGEUR_COLONNE_UNITE = 60
 ABREGE_GROUPES = 0
+AFFICHE_TOTAUX = 1
 
 # Colonnes Activités
 LARGEUR_COLONNE_ACTIVITE = 18
@@ -580,7 +581,7 @@ class Ligne():
                             numColonne += 1
                         
             # Création des colonnes totaux
-            if dictListeRemplissage.has_key(IDactivite) and dictGroupeTemp.has_key(IDactivite) :
+            if AFFICHE_TOTAUX == 1 and dictListeRemplissage.has_key(IDactivite) and dictGroupeTemp.has_key(IDactivite) :
                 if len(dictListeRemplissage[IDactivite]) > 0 and len(dictGroupeTemp[IDactivite]) > 0 :
                     for ordre, IDunite_remplissage in dictListeRemplissage[IDactivite] :
                         if self.dictTotaux.has_key(IDunite_remplissage) :
@@ -980,6 +981,9 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         global ABREGE_GROUPES
         ABREGE_GROUPES = UTILS_Config.GetParametre("remplissage_abrege_groupes", 0)
 
+        global AFFICHE_TOTAUX
+        AFFICHE_TOTAUX = UTILS_Config.GetParametre("remplissage_affiche_totaux", 1)
+
         # Création initiale de la grille
         self.CreateGrid(0, 0)
         self.SetRowLabelSize(180)
@@ -1109,7 +1113,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                     if dictListeRemplissage.has_key(IDactivite) :
                         for ordre, IDunite_remplissage in dictListeRemplissage[IDactivite] :
                             nbreColonnes += 1
-                if dictListeRemplissage.has_key(IDactivite) and len(dictListeRemplissage[IDactivite]) > 0 and len(dictGroupeTemp[IDactivite]) > 0 :
+                if AFFICHE_TOTAUX == 1 and dictListeRemplissage.has_key(IDactivite) and len(dictListeRemplissage[IDactivite]) > 0 and len(dictGroupeTemp[IDactivite]) > 0 :
                     nbreColonnes += len(dictListeRemplissage[IDactivite])
         self.AppendCols(nbreColonnes)
         
@@ -1152,7 +1156,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                             numColonne += 1
 
                     # Création des colonnes totaux
-                    if len(dictListeRemplissage[IDactivite]) > 0 and len(dictGroupeTemp[IDactivite]) > 0 :
+                    if AFFICHE_TOTAUX == 1 and len(dictListeRemplissage[IDactivite]) > 0 and len(dictGroupeTemp[IDactivite]) > 0 :
                         for ordre, IDunite_remplissage in dictListeRemplissage[IDactivite] :
                             renderer = MyColLabelRenderer("unite", None)
                             self.SetColLabelRenderer(numColonne, renderer)
@@ -1593,6 +1597,14 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         global ABREGE_GROUPES
         ABREGE_GROUPES = int(etat)
         UTILS_Config.SetParametre("remplissage_abrege_groupes", etat)
+
+    def GetAfficheTotaux(self):
+        return AFFICHE_TOTAUX
+
+    def SetAfficheTotaux(self, etat=0):
+        global AFFICHE_TOTAUX
+        AFFICHE_TOTAUX = int(etat)
+        UTILS_Config.SetParametre("remplissage_affiche_totaux", etat)
 
     def GetDataImpression(self):
         from Outils import printout
