@@ -23,7 +23,7 @@ sys.path.append("..")
 from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 
-import ObjectListView as OLV
+import ObjectListView as OLV, OLVEvent
 from ObjectListView import EVT_CELL_EDIT_STARTING, EVT_CELL_EDIT_FINISHING, CellEditorRegistry, Filter
 from ObjectListView.ObjectListView import AbstractVirtualObjectListView as Abstract
 
@@ -166,6 +166,66 @@ class ObjectListView(OLV.ObjectListView):
         except :
             self.stEmptyListMsg.SetDimensions(0, sz.GetHeight() / proportion, sz.GetWidth(), sz.GetHeight())  # J'ai mis 2 a la place de 3
         #self.stEmptyListMsg.Wrap(sz.GetWidth())
+
+    def _SortObjects(
+            self,
+            modelObjects=None,
+            sortColumn=None,
+            secondarySortColumn=None):
+        """
+        Sort the given modelObjects in place.
+
+        This does not change the information shown in the control itself.
+        """
+        if modelObjects is None:
+            modelObjects = self.modelObjects
+        if sortColumn is None:
+            sortColumn = self.GetSortColumn()
+        if secondarySortColumn == sortColumn:
+            secondarySortColumn = None
+
+        # If we don't have a sort column, we can't sort -- duhh
+        if sortColumn is None:
+            return
+
+        # Let the world have a chance to sort the model objects
+        evt = OLVEvent.SortEvent(
+            self,
+            self.sortColumnIndex,
+            self.sortAscending,
+            True)
+        self.GetEventHandler().ProcessEvent(evt)
+        if evt.IsVetoed() or evt.wasHandled:
+            return
+
+        # When sorting large groups, this is called a lot. Make it efficent.
+        # It is more efficient (by about 30%) to try to call lower() and catch the
+        # exception than it is to test for the class
+        def _getSortValue(x):
+            primary = sortColumn.GetValue(x)
+
+            # Pour contrer bug sur comparaison datetime et NoneType
+            if type(primary) == datetime.date :
+                primary = str(primary)
+                
+            try:
+                primary = primary.lower()
+            except AttributeError:
+                pass
+            if secondarySortColumn:
+                secondary = secondarySortColumn.GetValue(x)
+                try:
+                    secondary = secondary.lower()
+                except AttributeError:
+                    pass
+                return (primary, secondary)
+            else:
+                return primary
+
+        modelObjects.sort(key=_getSortValue, reverse=(not self.sortAscending))
+
+        # Sorting invalidates our object map
+        self.objectToIndexMap = None
 
     def SetColumns2(self, colonnes=[], nomListe=None):
         """ Pour une liste avec possibilités de configuration """
