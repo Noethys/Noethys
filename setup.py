@@ -9,6 +9,7 @@ import os
 import glob
 import os.path
 import zipfile
+import shutil
 
 
 # Chemins
@@ -133,6 +134,8 @@ options = {
                 "api-ms-win-core-io-l1-1-1.dll", "api-ms-win-core-com-l1-1-1.dll",
                 "api-ms-win-core-memory-l1-1-2.dll", "api-ms-win-core-version-l1-1-1.dll",
                 "api-ms-win-core-version-l1-1-0.dll",
+
+                "numpy-atlas.dll",
 
                 ],
 
@@ -265,5 +268,13 @@ if "py2exe" in sys.argv :
     z.write("noethys/Outils/%s" % nom, "win32com/gen_py/%s" % nom)
 
     z.close()
+
+    # Supprime le répertoire des données exemples de Matplotlib
+    print "Supprime les donnees exemples de Matplotlib si besoin..."
+    try :
+        shutil.rmtree("dist/mpl-data/sample_data")
+    except :
+        pass
+
 
 print "Fini !"

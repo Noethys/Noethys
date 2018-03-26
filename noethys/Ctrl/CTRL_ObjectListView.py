@@ -23,8 +23,8 @@ sys.path.append("..")
 from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 
-import ObjectListView as OLV, OLVEvent
-from ObjectListView import EVT_CELL_EDIT_STARTING, EVT_CELL_EDIT_FINISHING, CellEditorRegistry, Filter
+import ObjectListView as OLV
+from ObjectListView import EVT_CELL_EDIT_STARTING, EVT_CELL_EDIT_FINISHING, CellEditorRegistry, Filter, OLVEvent
 from ObjectListView.ObjectListView import AbstractVirtualObjectListView as Abstract
 
 
@@ -207,7 +207,7 @@ class ObjectListView(OLV.ObjectListView):
             # Pour contrer bug sur comparaison datetime et NoneType
             if type(primary) == datetime.date :
                 primary = str(primary)
-                
+
             try:
                 primary = primary.lower()
             except AttributeError:

@@ -1,4 +1,15 @@
-Version 1.2.2.8 (12/03/2018) :
+Version 1.2.3.0 (26/03/2018) :
+
+- Ajout de la saisie des conso par glissement
+- Ajout de la prise en charge des certificats SSL pour les connexions réseau distantes
+- Ajout de l'option de masquage des colonnes totaux dans le tableau de bord
+- Correction de la restauration MySQL sur les très gros fichiers de sauvegarde
+- Correction d'un bug sur la modification de la liste des destinataires des emails
+- Correction d'un bug sur l'affichage des accès réseau
+- Correction d'un bug sur la modification des messages
+- Correction de divers petits bugs
+
+Version 1.2.2.8 (16/03/2018) :
 
 - Ajout de la commande des repas dans le menu Consommations
 - Ajout de l'accès au site CDAP de la CAF
