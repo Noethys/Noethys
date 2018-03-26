@@ -32,7 +32,7 @@ from Utils.UTILS_Decimal import FloatToDecimal as FloatToDecimal
 
 from Utils import UTILS_Interface
 from Ctrl.CTRL_ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils, PanelAvecFooter
-
+from Utils import UTILS_Prestations
 
 class Track(object):
     def __init__(self, parent, donnees, dictFacturation):
@@ -925,7 +925,8 @@ class ListView(FastObjectListView):
         for track in listeSelections :
             DB.ReqDEL("cotisations", "IDcotisation", track.IDcotisation)
             if track.IDprestation != None :
-                DB.ReqDEL("prestations", "IDprestation", track.IDprestation)
+                # Si une prestation existe, créer une prestation d'annulation
+                UTILS_Prestations.annuler(track.IDprestation, DB)
             
             # Mémorise l'action dans l'historique
             UTILS_Historique.InsertActions([{
