@@ -51,9 +51,8 @@ class ObjectListView(OLV.ObjectListView):
 
         OLV.ObjectListView.__init__(self, *args, **kwargs)
 
-
         self.Bind(wx.EVT_LIST_COL_DRAGGING, self._HandleColumnDragging)
-        self.Bind(wx.EVT_SCROLL, self.OnScroll)
+        self.GetMainWindow().Bind(wx.EVT_SCROLLWIN, self.OnScroll)
 
     def Activation(self, etat=True):
         """ Active ou desactive l'etat du controle """
@@ -147,9 +146,10 @@ class ObjectListView(OLV.ObjectListView):
         """ Fonction perso a surcharger """
         pass
 
-    def OnScroll(self, evt):
-        self.MAJ_footer()
-        evt.Skip()
+    def OnScroll(self, event):
+        if event.GetOrientation() == wx.HORIZONTAL :
+            self.MAJ_footer()
+        event.Skip()
 
 
     def _HandleSize(self, evt):
