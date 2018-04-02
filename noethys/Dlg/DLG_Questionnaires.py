@@ -28,6 +28,7 @@ LISTE_CATEGORIES = [
     ("produit", _(u"Produit"), "Produit.png"),
     ("location", _(u"Location"), "Location.png"),
     ("location_demande", _(u"Demande de location"), "Location_demande.png"),
+    ("inscription", _(u"Inscription"), "Activite.png"),
     ]
 
 

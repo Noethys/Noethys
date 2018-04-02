@@ -3,8 +3,8 @@
 #------------------------------------------------------------------------
 # Application :    Noethys, gestion multi-activités
 # Site internet :  www.noethys.com
-# Auteur:           Ivan LUCAS
-# Copyright:       (c) 2010-11 Ivan LUCAS
+# Auteur:          Ivan LUCAS
+# Copyright:       (c) 2010-18 Ivan LUCAS
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
@@ -17,10 +17,12 @@ from Ctrl import CTRL_Bouton_image
 import GestionDB
 import datetime
 import decimal
+import FonctionsPerso
 
+from Utils import UTILS_Titulaires
 from Utils import UTILS_Dates
 from Utils import UTILS_Utilisateurs
-from Utils import UTILS_Infos_individus
+from Utils import UTILS_Questionnaires
 from Data import DATA_Civilites as Civilites
 DICT_CIVILITES = Civilites.GetDictCivilites()
 
@@ -36,9 +38,11 @@ from Ctrl.CTRL_ObjectListView import GroupListView, ColumnDefn, Filter, CTRL_Out
 
 
 LISTE_CHAMPS = [
+    {"label":_(u"IDinscription"), "code":"IDinscription", "champ":"inscriptions.IDinscription", "typeDonnee":"entier", "align":"left", "largeur":65, "stringConverter":None, "actif":False, "afficher":False},
     {"label":_(u"IDindividu"), "code":"IDindividu", "champ":"inscriptions.IDindividu", "typeDonnee":"entier", "align":"left", "largeur":65, "stringConverter":None, "actif":False, "afficher":False},
     {"label":_(u"Nom complet"), "code":"nomComplet", "champ":None, "typeDonnee":"texte", "align":"left", "largeur":200, "stringConverter":None, "imageGetter":"civilite", "actif":True, "afficher":True},
 
+    {"label":_(u"Activité"), "code": "nomActivite", "champ": "activites.nom", "typeDonnee": "texte", "align": "left", "largeur": 100, "stringConverter": None, "actif": True, "afficher": True},
     {"label":_(u"Groupe"), "code":"nomGroupe", "champ":"groupes.nom", "typeDonnee":"texte", "align":"left", "largeur":75, "stringConverter":None, "actif":True, "afficher":True},
     {"label":_(u"Catégorie"), "code":"nomCategorie", "champ":"categories_tarifs.nom", "typeDonnee":"texte", "align":"left", "largeur":95, "stringConverter":None, "actif":True, "afficher":True},
     {"label":_(u"Date inscrip."), "code":"dateInscription", "champ":"inscriptions.date_inscription", "typeDonnee":"date", "align":"left", "largeur":75, "stringConverter":"date", "actif":True, "afficher":False},
@@ -72,7 +76,7 @@ LISTE_CHAMPS = [
     {"label":_(u"Tél dom."), "code":"tel_domicile", "champ":"tel_domicile", "typeDonnee":"texte", "align":"left", "largeur":75, "stringConverter":None, "actif":True, "afficher":True},
     {"label":_(u"Tél mobile"), "code":"tel_mobile", "champ":"tel_mobile", "typeDonnee":"texte", "align":"left", "largeur":75, "stringConverter":None, "actif":True, "afficher":True},
     {"label":_(u"Fax dom."), "code":"tel_fax", "champ":"tel_fax", "typeDonnee":"texte", "align":"left", "largeur":75, "stringConverter":None, "actif":True, "afficher":False},
-    {"label":_(u"Email"), "code":"mail", "champ":"mail", "typeDonnee":"texte", "align":"left", "largeur":75, "stringConverter":None, "actif":True, "afficher":True},
+    {"label":_(u"Email"), "code":"mail", "champ":"individus.mail", "typeDonnee":"texte", "align":"left", "largeur":75, "stringConverter":None, "actif":True, "afficher":True},
 
     {"label":_(u"Genre"), "code":"genre", "champ":None, "typeDonnee":"texte", "align":"left", "largeur":45, "stringConverter":None, "actif":True, "afficher":False},
     {"label":_(u"Civilité court"), "code":"civiliteLong", "champ":None, "typeDonnee":"texte", "align":"left", "largeur":65, "stringConverter":None, "actif":True, "afficher":False},
@@ -80,8 +84,8 @@ LISTE_CHAMPS = [
     {"label":_(u"nomImage"), "code":"nomImage", "champ":None, "typeDonnee":"texte", "align":"left", "largeur":45, "stringConverter":None, "actif":False, "afficher":False},
 
     {"label":_(u"IDfamille"), "code":"IDfamille", "champ":"inscriptions.IDfamille", "typeDonnee":"entier", "align":"left", "largeur":45, "stringConverter":None, "actif":False, "afficher":False},
-
-    ]
+    {"label":_(u"Famille"), "code": "nomTitulaires", "champ": None, "typeDonnee": "texte", "align": "left", "largeur": 100, "stringConverter": None, "actif": True, "afficher": True},
+]
 
 
 def GetDictInfosIndividus():
@@ -100,12 +104,16 @@ def GetDictInfosIndividus():
 # ---------------------------------------- LISTVIEW  -----------------------------------------------------------------------
 
 class Track(object):
-    def __init__(self, donnees):
+    def __init__(self, listview, donnees):
         for dictChamp in LISTE_CHAMPS :
-##            exec("""self.%s = donnees["%s"]""" % (dictChamp["code"], dictChamp["code"]))
             setattr(self, dictChamp["code"], donnees[dictChamp["code"]])
-            
-        
+
+        # Récupération des réponses des questionnaires
+        for dictQuestion in listview.liste_questions:
+            setattr(self, "question_%d" % dictQuestion["IDquestion"], listview.GetReponse(dictQuestion["IDquestion"], self.IDinscription))
+
+
+
 class ListView(GroupListView):
     def __init__(self, *args, **kwds):
         self.selectionID = None
@@ -116,6 +124,8 @@ class ListView(GroupListView):
         self.listeCategories = []
         self.regroupement = None
         self.labelParametres = ""
+        self.ctrl_regroupement = kwds.pop("ctrl_regroupement", None)
+        self.checkColonne = kwds.pop("checkColonne", False)
         # Initialisation du listCtrl
         self.nom_fichier_liste = __file__
         GroupListView.__init__(self, *args, **kwds)
@@ -127,34 +137,45 @@ class ListView(GroupListView):
         pass
 
     def InitModel(self):
+        # Initialisation des questionnaires
+        categorie = "inscription"
+        self.UtilsQuestionnaires = UTILS_Questionnaires.Questionnaires()
+        self.liste_questions = self.UtilsQuestionnaires.GetQuestions(type=categorie)
+        self.dict_questionnaires = self.UtilsQuestionnaires.GetReponses(type=categorie)
+
+        # Importation des données
         self.donnees = self.GetTracks()
-        # Récupération des infos de base individus et familles
-        # self.infosIndividus = UTILS_Infos_individus.Informations()
-        # for track in self.donnees :
-        #     self.infosIndividus.SetAsAttributs(parent=track, mode="individu", ID=track.IDindividu)
 
     def GetTracks(self):
         listeListeView = []
         if self.IDactivite == None :
             return listeListeView
-        
+
         DB = GestionDB.DB()
-                
+
+        conditions = []
+
+        # Condition Activité
+        if self.IDactivite != 0 :
+            conditions.append("inscriptions.IDactivite=%d" % self.IDactivite)
+
         # Condition Groupes
-        if len(self.listeGroupes) == 0 : conditionGroupes = "()"
-        elif len(self.listeGroupes) == 1 : conditionGroupes = "(%d)" % self.listeGroupes[0]
-        else : conditionGroupes = str(tuple(self.listeGroupes))
+        if self.listeGroupes != None :
+            if len(self.listeGroupes) == 0 : conditionGroupes = "()"
+            elif len(self.listeGroupes) == 1 : conditionGroupes = "(%d)" % self.listeGroupes[0]
+            else : conditionGroupes = str(tuple(self.listeGroupes))
+            conditions.append("inscriptions.IDgroupe IN %s" % conditionGroupes)
 
         # Condition Catégories
-        if len(self.listeCategories) == 0 : conditionCategories = "()"
-        elif len(self.listeCategories) == 1 : conditionCategories = "(%d)" % self.listeCategories[0]
-        else : conditionCategories = str(tuple(self.listeCategories))
-        
+        if self.listeCategories != None:
+            if len(self.listeCategories) == 0 : conditionCategories = "()"
+            elif len(self.listeCategories) == 1 : conditionCategories = "(%d)" % self.listeCategories[0]
+            else : conditionCategories = str(tuple(self.listeCategories))
+            conditions.append("inscriptions.IDcategorie_tarif IN %s" % conditionCategories)
+
         # Condition Partis
-        if self.partis == True : 
-            conditionPartis = ""
-        else : 
-            conditionPartis = "AND (inscriptions.date_desinscription IS NULL OR inscriptions.date_desinscription>='%s')" % datetime.date.today()
+        if self.partis != True :
+            conditions.append("(inscriptions.date_desinscription IS NULL OR inscriptions.date_desinscription>='%s')" % datetime.date.today())
         
         # Infos sur tous les individus
         GetDictInfosIndividus()
@@ -191,25 +212,27 @@ class ListView(GroupListView):
             champ = dictChamp["champ"]
             if champ != None :
                 listeChamps2.append(champ)
-        
+
+        if len(conditions) > 0 :
+            conditions = "WHERE " + " AND ".join(conditions)
+        else :
+            conditions = ""
+
         req = """
         SELECT %s
         FROM inscriptions 
         LEFT JOIN individus ON individus.IDindividu = inscriptions.IDindividu
+        LEFT JOIN activites ON activites.IDactivite = inscriptions.IDactivite
         LEFT JOIN groupes ON groupes.IDgroupe = inscriptions.IDgroupe
         LEFT JOIN categories_tarifs ON categories_tarifs.IDcategorie_tarif = inscriptions.IDcategorie_tarif
         LEFT JOIN categories_travail ON categories_travail.IDcategorie = individus.IDcategorie_travail
-        WHERE inscriptions.IDactivite=%d
-        AND inscriptions.IDgroupe IN %s
-        AND inscriptions.IDcategorie_tarif IN %s
         %s
         GROUP BY individus.IDindividu
-        ;""" % (",".join(listeChamps2), self.IDactivite, conditionGroupes, conditionCategories, conditionPartis)
+        ;""" % (",".join(listeChamps2), conditions)
         # LEFT JOIN prestations ON prestations.IDactivite = inscriptions.IDactivite a été supprimé pour accélérer le traitement
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         DB.Close() 
-        
         for valeurs in listeDonnees :
             dictTemp = {}
             dictTemp["IDindividu"] = valeurs[0]
@@ -269,9 +292,15 @@ class ListView(GroupListView):
             dictTemp["totalFacture"] = totalFacture
             dictTemp["totalRegle"] = totalRegle
             dictTemp["totalSolde"] = totalSolde
-            
+
+            # Famille
+            dictTemp["nomTitulaires"] = self.dict_titulaires[dictTemp["IDfamille"]]["titulairesSansCivilite"]
+            # self.rue = listview.dict_titulaires[self.IDfamille]["adresse"]["rue"]
+            # self.cp = listview.dict_titulaires[self.IDfamille]["adresse"]["cp"]
+            # self.ville = listview.dict_titulaires[self.IDfamille]["adresse"]["ville"]
+
             # Formatage sous forme de TRACK
-            track = Track(dictTemp)
+            track = Track(self, dictTemp)
             listeListeView.append(track)
 
         return listeListeView
@@ -353,31 +382,42 @@ class ListView(GroupListView):
                 colonne = ColumnDefn(dictChamp["label"], dictChamp["align"], dictChamp["largeur"], dictChamp["code"], typeDonnee=dictChamp["typeDonnee"], stringConverter=stringConverter, imageGetter=imageGetter)
                 listeColonnes.append(colonne)
 
-        # Insertion des champs infos de base individus
-        # listeChamps = self.infosIndividus.GetNomsChampsPresents(mode="individu")
-        # for nomChamp in listeChamps :
-        #     typeDonnee = UTILS_Infos_individus.GetTypeChamp(nomChamp)
-        #     listeColonnes.append(ColumnDefn(nomChamp, "left", 100, nomChamp, typeDonnee=typeDonnee, visible=False))
+        # Ajout des questions des questionnaires
+        listeColonnes.extend(UTILS_Questionnaires.GetColonnesForOL(self.liste_questions))
 
         #self.SetColumns(listeColonnes)
         self.SetColumns2(colonnes=listeColonnes, nomListe="OL_Liste_inscriptions")
 
         # Regroupement
         if self.regroupement != None :
-            self.SetColonneTri(self.regroupement)
+            #self.SetColonneTri(self.regroupement)
+            self.SetAlwaysGroupByColumn(self.regroupement)
             self.SetShowGroups(True)
             self.useExpansionColumn = False
         else:
             self.SetShowGroups(False)
             self.useExpansionColumn = False
 
+        # Case à cocher
+        if self.checkColonne == True :
+            self.CreateCheckStateColumn(0)
+            if len(self.columns) > 0:
+                self.SetSortColumn(self.columns[1])
+        else :
+            if len(self.columns) > 0:
+                self.SetSortColumn(self.columns[0])
+
         self.SetShowItemCounts(True)
-        if len(self.columns) > 0 :
-            self.SetSortColumn(self.columns[0])
         self.SetEmptyListMsg(_(u"Aucune inscription"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
         self.SetObjects(self.donnees)
-        
+
+    def GetReponse(self, IDquestion=None, ID=None):
+        if self.dict_questionnaires.has_key(IDquestion):
+            if self.dict_questionnaires[IDquestion].has_key(ID):
+                return self.dict_questionnaires[IDquestion][ID]
+        return u""
+
     def GetTitresColonnes(self):
         listeColonnes = []
         for index in range(0, self.GetColumnCount()) :
@@ -407,6 +447,7 @@ class ListView(GroupListView):
             self.selectionID = None
             self.selectionTrack = None
         attente = wx.BusyInfo(_(u"Recherche des données..."), self)
+        self.dict_titulaires = UTILS_Titulaires.GetTitulaires()
         self.InitModel()
         self.InitObjectListView()
         del attente
@@ -449,7 +490,25 @@ class ListView(GroupListView):
         self.Bind(wx.EVT_MENU, self.OuvrirFicheFamille, id=10)
         
         menuPop.AppendSeparator()
-        
+
+        # Item Imprimer
+        item = wx.MenuItem(menuPop, 91, _(u"Imprimer l'inscription"))
+        bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
+        item.SetBitmap(bmp)
+        menuPop.AppendItem(item)
+        self.Bind(wx.EVT_MENU, self.ImprimerPDF, id=91)
+        if self.Selection() == None : item.Enable(False)
+
+        # Item Envoyer par Email
+        item = wx.MenuItem(menuPop, 92, _(u"Envoyer l'inscription par Email"))
+        bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Emails_exp.png"), wx.BITMAP_TYPE_PNG)
+        item.SetBitmap(bmp)
+        menuPop.AppendItem(item)
+        self.Bind(wx.EVT_MENU, self.EnvoyerEmail, id=92)
+        if self.Selection() == None : item.Enable(False)
+
+        menuPop.AppendSeparator()
+
         # Génération automatique des fonctions standards
         self.GenerationContextMenu(menuPop, dictParametres=self.GetParametresImpression())
 
@@ -483,13 +542,56 @@ class ListView(GroupListView):
             self.MAJ(IDindividu=IDindividu, IDactivite=self.IDactivite, listeGroupes=self.listeGroupes, listeCategories=self.listeCategories, regroupement=self.regroupement)
         dlg.Destroy()
 
+    def OnConfigurationListe(self):
+        if self.ctrl_regroupement != None :
+            self.ctrl_regroupement.MAJ()
+            self.regroupement = None
+
+    def GetTracksCoches(self):
+        return self.GetCheckedObjects()
+
+    def ImprimerPDF(self, event):
+        if len(self.Selection()) == 0 :
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune inscription à imprimer !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return
+        IDinscription = self.Selection()[0].IDinscription
+        from Utils import UTILS_Inscriptions
+        inscription = UTILS_Inscriptions.Inscription()
+        inscription.Impression(listeInscriptions=[IDinscription,])
+
+    def EnvoyerEmail(self, event):
+        """ Envoyer l'inscription par Email """
+        if len(self.Selection()) == 0 :
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune inscription à envoyer par Email !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return
+        track = self.Selection()[0]
+        # Envoi du mail
+        from Utils import UTILS_Envoi_email
+        UTILS_Envoi_email.EnvoiEmailFamille(parent=self, IDfamille=track.IDfamille, nomDoc=FonctionsPerso.GenerationNomDoc("INSCRIPTION", "pdf") , categorie="inscription")
+
+    def CreationPDF(self, nomDoc="", afficherDoc=True):
+        """ Création du PDF pour Email """
+        IDinscription = self.Selection()[0].IDinscription
+        from Utils import UTILS_Inscriptions
+        inscription = UTILS_Inscriptions.Inscription()
+        resultat = inscription.Impression(listeInscriptions=[IDinscription,], nomDoc=nomDoc, afficherDoc=False)
+        if resultat == False :
+            return False
+        dictChampsFusion, dictPieces = resultat
+        return dictChampsFusion[IDinscription]
+
+
 
 # -------------------------------------------------------------------------------------------------------------------------------------------
 
 class ListviewAvecFooter(PanelAvecFooter):
     def __init__(self, parent, kwargs={}):
         dictColonnes = {
-            "nomComplet" : {"mode" : "nombre", "singulier" : _(u"individu"), "pluriel" : _(u"individus"), "alignement" : wx.ALIGN_CENTER},
+            "nomComplet" : {"mode" : "nombre", "singulier" : _(u"inscription"), "pluriel" : _(u"inscriptions"), "alignement" : wx.ALIGN_CENTER},
             "totalFacture" : {"mode" : "total"},
             "totalRegle" : {"mode" : "total"},
             "totalSolde" : {"mode" : "total"},
@@ -514,37 +616,6 @@ class MyFrame(wx.Frame):
         self.Layout()
 
 
-
-# def GetDictFacturation():
-#     DB = GestionDB.DB()
-#
-#     # Récupère les prestations
-#     req = """SELECT IDfamille, IDindividu, SUM(montant)
-#     FROM prestations
-#     WHERE IDactivite=%d
-#     GROUP BY IDindividu, IDfamille
-#     ;""" % 1
-#     DB.ExecuterReq(req)
-#     listePrestations = DB.ResultatReq()
-#     dictPrestations = {}
-#     for IDfamille, IDindividu, total_prestations in listePrestations :
-#         dictPrestations[(IDfamille, IDindividu)] = {"prestations":total_prestations, "ventilation":0.0}
-#
-#
-#     # Récupère la ventilation
-#     req = """SELECT IDfamille, IDindividu, SUM(ventilation.montant)
-#     FROM ventilation
-#     LEFT JOIN prestations ON prestations.IDprestation = ventilation.IDprestation
-#     WHERE prestations.IDactivite=%d
-#     GROUP BY IDfamille, IDindividu
-#     ;""" % 1
-#     DB.ExecuterReq(req)
-#     listeVentilations = DB.ResultatReq()
-#     dictVentilations = {}
-#     for IDfamille, IDindividu, total_ventilation in listeVentilations :
-#         dictPrestations[(IDfamille, IDindividu)]["ventilation"] = total_ventilation
-#
-#     DB.Close()
 
 
 if __name__ == '__main__':

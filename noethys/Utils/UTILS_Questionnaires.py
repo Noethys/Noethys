@@ -13,13 +13,17 @@ import Chemins
 from UTILS_Traduction import _
 import GestionDB
 import datetime
-
+from Utils import UTILS_Dates
 from Ctrl.CTRL_Questionnaire import LISTE_CONTROLES
+from Ctrl.CTRL_ObjectListView import ColumnDefn
 
 
-def DateEngEnDateDD(dateEng):
-    if dateEng == None : return None
-    return datetime.date(int(dateEng[:4]), int(dateEng[5:7]), int(dateEng[8:10]))
+
+def DateEngEnDateDD(date):
+    if date in (None, "") : return None
+    if type(date) == datetime.date :
+        return UTILS_Dates.DateDDEnFr(date)
+    return datetime.date(int(date[:4]), int(date[5:7]), int(date[8:10]))
 
 def FormateStr(valeur=u""):
     try :
@@ -35,9 +39,40 @@ def GetReponse(dictReponses={}, IDquestion=None, ID=None):
         if dictReponses[IDquestion].has_key(ID) :
             return dictReponses[IDquestion][ID]
     return u""
-    
-    
-    
+
+def FormateDate(date):
+    if date in (None, "") : return ""
+    if type(date) == datetime.date :
+        return UTILS_Dates.DateDDEnFr(date)
+    return datetime.date(int(date[:4]), int(date[5:7]), int(date[8:10]))
+
+def GetColonnesForOL(liste_questions=[]):
+    """ Ajout des questions des questionnaires aux colonnes d'un OL """
+    liste_colonnes = []
+    for dictQuestion in liste_questions:
+        Formatter = None
+        filtre = dictQuestion["filtre"]
+        if filtre == "texte":
+            typeDonnee = "texte"
+        elif filtre == "entier":
+            typeDonnee = "entier"
+        elif filtre == "montant":
+            typeDonnee = "montant"
+        elif filtre == "choix":
+            typeDonnee = "texte"
+        elif filtre == "coche":
+            typeDonnee = "texte"
+        elif filtre == "date":
+            typeDonnee = "date"
+            Formatter = FormateDate
+        else:
+            typeDonnee = "texte"
+        liste_colonnes.append(ColumnDefn(dictQuestion["label"], "left", 150, "question_%d" % dictQuestion["IDquestion"], stringConverter=Formatter, typeDonnee=typeDonnee))
+    return liste_colonnes
+
+
+
+
 class Questionnaires():
     def __init__(self):
         self.dictControles = self.GetControles() 

@@ -30,21 +30,25 @@ class CTRL_Regroupement(wx.Choice):
         self.parent = parent
         self.listview = listview
         self.listeLabels = []
-        self.MAJ() 
-        self.Select(0)
-    
+
     def MAJ(self):
         self.listeLabels = [_(u"Aucun"),]
-        listeChamps = self.listview.GetListeChamps() 
-        for dictTemp in listeChamps :
-            if dictTemp["afficher"] == True :
-                self.listeLabels.append(dictTemp["label"])
+        for colonne in self.listview.columns :
+            if colonne.visible == True :
+                self.listeLabels.append(colonne.title)
+
+        # listeChamps = self.listview.GetListeChamps()
+        # for dictTemp in listeChamps :
+        #     if dictTemp["afficher"] == True :
+        #         self.listeLabels.append(dictTemp["label"])
+
         self.SetItems(self.listeLabels)
+        self.Select(0)
 
     def GetRegroupement(self):
         index = self.GetSelection()
         if index == -1 or index == 0 : return None
-        return self.GetStringSelection() 
+        return self.GetSelection()-1
 
 
 
@@ -230,11 +234,12 @@ class Dialog(wx.Dialog):
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Activite.png")
 
-        self.listviewAvecFooter = OL_Liste_inscriptions.ListviewAvecFooter(self, kwargs={}) 
+        self.listviewAvecFooter = OL_Liste_inscriptions.ListviewAvecFooter(self, kwargs={})
         self.ctrl_listview = self.listviewAvecFooter.GetListview()
         self.ctrl_recherche = OL_Liste_inscriptions.CTRL_Outils(self, listview=self.ctrl_listview)
         self.ctrl_parametres = Parametres(self, listview=self.ctrl_listview)
-        
+        self.ctrl_listview.ctrl_regroupement = self.ctrl_parametres.ctrl_regroupement
+
         self.bouton_ouvrir_fiche = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Famille.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_apercu = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_imprimer = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Imprimante.png"), wx.BITMAP_TYPE_ANY))
@@ -258,6 +263,7 @@ class Dialog(wx.Dialog):
 
         # Init contrôles
         self.ctrl_listview.MAJ()
+        self.ctrl_parametres.ctrl_regroupement.MAJ()
 
     def __set_properties(self):
         self.bouton_ouvrir_fiche.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ouvrir la fiche de la famille sélectionnée dans la liste")))

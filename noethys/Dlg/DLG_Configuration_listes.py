@@ -80,7 +80,7 @@ class Dialog(wx.Dialog):
         self.parent = parent
         self.listeDonnees = listeDonnees
         self.listeDonneesDefaut = listeDonneesDefaut
-        
+
         intro = _(u"Vous pouvez configurer ici les colonnes de la liste. Utilisez les flèches pour modifier l'ordre des colonnes et décochez les colonnes à masquer.")
         titre = _(u"Configuration de la liste")
         self.SetTitle(titre)
@@ -110,7 +110,7 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonReinit, self.bouton_reinitialiser)
 
         # Init contrôle
-        self.Remplissage(listeDonnees) 
+        self.Remplissage(listeDonnees)
 
     def __set_properties(self):
         self.bouton_premier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour déplacer la colonne sélectionnée au début de la liste")))
@@ -163,10 +163,17 @@ class Dialog(wx.Dialog):
         self.CenterOnScreen()
     
     def Remplissage(self, liste=[]):
+        listeTemp = []
         for nom, visible in liste :
             index = self.ctrl_colonnes.Append(nom)
             self.ctrl_colonnes.Check(index, visible)
-    
+            listeTemp.append(nom)
+
+        for nom, visible in self.listeDonneesDefaut :
+            if nom not in listeTemp :
+                index = self.ctrl_colonnes.Append(nom)
+                self.ctrl_colonnes.Check(index, False)
+
     def Premier(self, event):
         self.Deplacer("premier")
         
@@ -185,7 +192,7 @@ class Dialog(wx.Dialog):
             return
         if deplacement == -1 and index == 0 :
             return
-        if deplacement == +1 and index == len(self.listeDonnees) - 1 :
+        if deplacement == +1 and index == self.ctrl_colonnes.GetCount() - 1 :
             return
         nom = self.ctrl_colonnes.GetString(index)
         visible = self.ctrl_colonnes.IsChecked(index)
@@ -193,7 +200,7 @@ class Dialog(wx.Dialog):
         if deplacement == "premier" :
             newIndex = 0
         elif deplacement == "dernier" :
-            newIndex = len(self.listeDonnees) - 1
+            newIndex = self.ctrl_colonnes.GetCount()
         else :
             newIndex = index + deplacement
         self.ctrl_colonnes.Insert(nom, newIndex)
@@ -212,7 +219,7 @@ class Dialog(wx.Dialog):
     
     def OnBoutonReinit(self, event=None):
         self.ctrl_colonnes.Clear() 
-        self.Remplissage(self.listeDonneesDefaut) 
+        self.Remplissage(self.listeDonneesDefaut)
         
     def OnBoutonAide(self, event): 
         from Utils import UTILS_Aide
