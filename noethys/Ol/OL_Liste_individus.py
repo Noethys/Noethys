@@ -70,7 +70,7 @@ def GetListe(listeActivites=None, presents=None):
     if presents != None :
         req = """SELECT IDindividu, IDinscription
         FROM consommations
-        WHERE date>='%s' AND date<='%s' %s
+        WHERE date>='%s' AND date<='%s' AND etat IN ('reservation', 'present') %s
         GROUP BY IDindividu
         ;"""  % (str(presents[0]), str(presents[1]), conditionActivites.replace("inscriptions", "consommations"))
         DB.ExecuterReq(req)

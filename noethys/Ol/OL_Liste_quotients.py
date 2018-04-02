@@ -122,7 +122,7 @@ class ListView(FastObjectListView):
             req = """SELECT IDfamille, inscriptions.IDinscription
             FROM consommations
             LEFT JOIN inscriptions ON inscriptions.IDinscription = consommations.IDinscription
-            WHERE date>='%s' AND date<='%s' %s
+            WHERE date>='%s' AND date<='%s' AND consommations.etat IN ('reservation', 'present') %s
             GROUP BY IDfamille
             ;"""  % (str(self.presents[0]), str(self.presents[1]), conditionActivites.replace("inscriptions", "consommations"))
             DB.ExecuterReq(req)

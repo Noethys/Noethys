@@ -70,7 +70,7 @@ def GetListePiecesManquantes(dateReference=None, listeActivites=None, presents=N
         req = """
         SELECT IDindividu, IDinscription
         FROM consommations
-        WHERE date>='%s' AND date<='%s' %s
+        WHERE date>='%s' AND date<='%s' AND consommations.etat IN ('reservation', 'present') %s
         GROUP BY IDindividu
         ;"""  % (str(presents[0]), str(presents[1]), conditionActivites)
         DB.ExecuterReq(req)
