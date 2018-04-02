@@ -23,9 +23,6 @@ from Ctrl import CTRL_Bandeau
 from Ctrl import CTRL_Saisie_date
 from Ol import OL_Liste_deductions
 
-try: import psyco; psyco.full()
-except: pass
-
 
 def DateEngEnDateDD(dateEng):
     if dateEng == None or dateEng == "" : return None
@@ -394,9 +391,10 @@ class Dialog(wx.Dialog):
         self.ctrl_parametres = Parametres(self)
         
         # ListView
-        self.ctrl_listview = OL_Liste_deductions.ListView(self, id=-1, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
-        self.ctrl_listview.SetMinSize((100, 100))
-        self.ctrl_recherche = OL_Liste_deductions.CTRL_Outils(self, listview=self.ctrl_listview, afficherCocher=True)
+        self.listviewAvecFooter = OL_Liste_deductions.ListviewAvecFooter(self, kwargs={})
+        self.ctrl_deductions = self.listviewAvecFooter.GetListview()
+        self.ctrl_deductions.SetMinSize((100, 100))
+        self.ctrl_recherche = OL_Liste_deductions.CTRL_Outils(self, listview=self.ctrl_deductions, afficherCocher=True)
         
         # Commandes de liste
         self.bouton_modifier = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Modifier.png"), wx.BITMAP_TYPE_ANY))
@@ -410,12 +408,12 @@ class Dialog(wx.Dialog):
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
         self.bouton_fermer = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
-        self.Bind(wx.EVT_BUTTON, self.ctrl_listview.Modifier, self.bouton_modifier)
-        self.Bind(wx.EVT_BUTTON, self.ctrl_listview.Supprimer, self.bouton_supprimer)
-        self.Bind(wx.EVT_BUTTON, self.ctrl_listview.Apercu, self.bouton_apercu)
-        self.Bind(wx.EVT_BUTTON, self.ctrl_listview.Imprimer, self.bouton_imprimer)
-        self.Bind(wx.EVT_BUTTON, self.ctrl_listview.ExportTexte, self.bouton_export_texte)
-        self.Bind(wx.EVT_BUTTON, self.ctrl_listview.ExportExcel, self.bouton_export_excel)
+        self.Bind(wx.EVT_BUTTON, self.ctrl_deductions.Modifier, self.bouton_modifier)
+        self.Bind(wx.EVT_BUTTON, self.ctrl_deductions.Supprimer, self.bouton_supprimer)
+        self.Bind(wx.EVT_BUTTON, self.ctrl_deductions.Apercu, self.bouton_apercu)
+        self.Bind(wx.EVT_BUTTON, self.ctrl_deductions.Imprimer, self.bouton_imprimer)
+        self.Bind(wx.EVT_BUTTON, self.ctrl_deductions.ExportTexte, self.bouton_export_texte)
+        self.Bind(wx.EVT_BUTTON, self.ctrl_deductions.ExportExcel, self.bouton_export_excel)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
 
         self.__set_properties()
@@ -451,7 +449,7 @@ class Dialog(wx.Dialog):
         # CTRL
         grid_sizer_contenu2 = wx.FlexGridSizer(rows=2, cols=2, vgap=5, hgap=5)
         
-        grid_sizer_contenu2.Add(self.ctrl_listview, 1, wx.EXPAND, 0)
+        grid_sizer_contenu2.Add(self.listviewAvecFooter, 1, wx.EXPAND, 0)
         
         # Boutons de liste
         grid_sizer_droit = wx.FlexGridSizer(rows=8, cols=1, vgap=5, hgap=5)
@@ -498,7 +496,7 @@ class Dialog(wx.Dialog):
         listeActivites = self.ctrl_parametres.GetActivites() 
         filtres = self.ctrl_parametres.GetFiltres()
         labelParametres = self.GetLabelParametres() 
-        self.ctrl_listview.MAJ(date_debut=date_debut, date_fin=date_fin, listeActivites=listeActivites, filtres=filtres, labelParametres=labelParametres) 
+        self.ctrl_deductions.MAJ(date_debut=date_debut, date_fin=date_fin, listeActivites=listeActivites, filtres=filtres, labelParametres=labelParametres)
 
     def GetLabelParametres(self):
         listeParametres = []

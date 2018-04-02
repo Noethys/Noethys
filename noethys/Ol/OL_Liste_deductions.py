@@ -3,8 +3,8 @@
 #------------------------------------------------------------------------
 # Application :    Noethys, gestion multi-activités
 # Site internet :  www.noethys.com
-# Auteur:           Ivan LUCAS
-# Copyright:       (c) 2010-11 Ivan LUCAS
+# Auteur:          Ivan LUCAS
+# Copyright:       (c) 2010-18 Ivan LUCAS
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
@@ -22,9 +22,8 @@ from Utils import UTILS_Titulaires
 from Utils import UTILS_Config
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 
-
 from Utils import UTILS_Interface
-from Ctrl.CTRL_ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
+from Ctrl.CTRL_ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils, PanelAvecFooter
 
 
 
@@ -407,43 +406,16 @@ class ListView(FastObjectListView):
 
 # -------------------------------------------------------------------------------------------------------------------------------------------
 
-class BarreRecherche(wx.SearchCtrl):
-    def __init__(self, parent):
-        wx.SearchCtrl.__init__(self, parent, size=(-1, -1), style=wx.TE_PROCESS_ENTER)
-        self.parent = parent
-        self.rechercheEnCours = False
-        
-        self.SetDescriptiveText(_(u"Rechercher..."))
-        self.ShowSearchButton(True)
-        
-        self.listView = self.parent.ctrl_listview
-        nbreColonnes = self.listView.GetColumnCount()
-        self.listView.SetFilter(Filter.TextSearch(self.listView, self.listView.columns[0:nbreColonnes]))
-        
-        self.SetCancelBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Interdit.png"), wx.BITMAP_TYPE_PNG))
-        self.SetSearchBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Loupe.png"), wx.BITMAP_TYPE_PNG))
-        
-        self.Bind(wx.EVT_SEARCHCTRL_SEARCH_BTN, self.OnSearch)
-        self.Bind(wx.EVT_SEARCHCTRL_CANCEL_BTN, self.OnCancel)
-        self.Bind(wx.EVT_TEXT_ENTER, self.OnDoSearch)
-        self.Bind(wx.EVT_TEXT, self.OnDoSearch)
 
-    def OnSearch(self, evt):
-        self.Recherche()
-            
-    def OnCancel(self, evt):
-        self.SetValue("")
-        self.Recherche()
-
-    def OnDoSearch(self, evt):
-        self.Recherche()
-        
-    def Recherche(self):
-        txtSearch = self.GetValue()
-        self.ShowCancelButton(len(txtSearch))
-        self.listView.GetFilter().SetText(txtSearch)
-        self.listView.RepopulateList()
-        self.Refresh() 
+class ListviewAvecFooter(PanelAvecFooter):
+    def __init__(self, parent, kwargs={}):
+        dictColonnes = {
+            "nomTitulaires" : {"mode" : "nombre", "singulier" : _(u"déduction"), "pluriel" : _(u"déductions"), "alignement" : wx.ALIGN_CENTER},
+            "montant" : {"mode" : "total"},
+            "montantInitialPrestation" : {"mode" : "total"},
+            "montantPrestation" : {"mode" : "total"},
+            }
+        PanelAvecFooter.__init__(self, parent, ListView, kwargs, dictColonnes)
 
 
 # -------------------------------------------------------------------------------------------------------------------------------------------
