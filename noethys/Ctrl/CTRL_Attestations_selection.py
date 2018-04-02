@@ -101,7 +101,7 @@ def Importation(liste_activites=[], date_debut=None, date_fin=None, date_edition
     label, prestations.montant_initial, prestations.montant, prestations.tva,
     prestations.IDactivite, activites.nom, activites.abrege,
     prestations.IDtarif, noms_tarifs.nom, categories_tarifs.nom, IDfacture, 
-    prestations.IDindividu, prestations.IDfamille
+    prestations.IDindividu, prestations.IDfamille, prestations.temps_facture
     FROM prestations
     LEFT JOIN activites ON prestations.IDactivite = activites.IDactivite
     LEFT JOIN tarifs ON prestations.IDtarif = tarifs.IDtarif
@@ -214,9 +214,16 @@ def Importation(liste_activites=[], date_debut=None, date_fin=None, date_edition
     infosIndividus = UTILS_Infos_individus.Informations() 
 
     dictComptes = {}
-    for IDprestation, IDcompte_payeur, date, categorie, label, montant_initial, montant, tva, IDactivite, nomActivite, abregeActivite, IDtarif, nomTarif, nomCategorieTarif, IDfacture, IDindividu, IDfamille in listePrestationsTemp :
+    for IDprestation, IDcompte_payeur, date, categorie, label, montant_initial, montant, tva, IDactivite, nomActivite, abregeActivite, IDtarif, nomTarif, nomCategorieTarif, IDfacture, IDindividu, IDfamille, temps_facture in listePrestationsTemp :
         montant_initial = FloatToDecimal(montant_initial) 
         montant = FloatToDecimal(montant)
+        
+        #conversion du temps facturé en minutes
+        if temps_facture :
+            (h,m) = temps_facture.split(':') 
+            temps_facture = int(h)*60 + int(m)
+            temps_facture = FloatToDecimal(temps_facture)
+            temps_facture = temps_facture / 60
         
         if isPrestationSelection(label, IDactivite) == True :
             
@@ -331,7 +338,7 @@ def Importation(liste_activites=[], date_debut=None, date_fin=None, date_edition
                     nom = _(u"Prestations diverses")
                     texteIndividu = u"<b>%s</b>" % nom
                     
-                dictComptes[IDcompte_payeur]["individus"][IDindividu] = { "texte" : texteIndividu, "activites" : {}, "total" : FloatToDecimal(0.0), "ventilation" : FloatToDecimal(0.0), "total_reports" : FloatToDecimal(0.0), "nom" : nom, "select" : True }
+                dictComptes[IDcompte_payeur]["individus"][IDindividu] = { "texte" : texteIndividu, "activites" : {}, "temps_facture" : FloatToDecimal(0.0), "total" : FloatToDecimal(0.0), "ventilation" : FloatToDecimal(0.0), "total_reports" : FloatToDecimal(0.0), "nom" : nom, "select" : True }
             
             # Ajout de l'activité
             if dictComptes[IDcompte_payeur]["individus"][IDindividu]["activites"].has_key(IDactivite) == False :
@@ -375,6 +382,20 @@ def Importation(liste_activites=[], date_debut=None, date_fin=None, date_edition
             dictComptes[IDcompte_payeur]["individus"][IDindividu]["activites"][IDactivite]["presences"][date]["unites"].append(dictPrestation)
             
             # Ajout des totaux
+            
+            if dictComptes[IDcompte_payeur]["individus"][IDindividu]["temps_facture"] :
+                (h,m) = dictComptes[IDcompte_payeur]["individus"][IDindividu]["temps_facture"].split(':')
+                dictComptes[IDcompte_payeur]["individus"][IDindividu]["temps_facture"] = int(h)*60 + int(m)
+                dictComptes[IDcompte_payeur]["individus"][IDindividu]["temps_facture"] = FloatToDecimal(dictComptes[IDcompte_payeur]["individus"][IDindividu]["temps_facture"])
+                dictComptes[IDcompte_payeur]["individus"][IDindividu]["temps_facture"] = dictComptes[IDcompte_payeur]["individus"][IDindividu]["temps_facture"] / 60
+                        
+            dictComptes[IDcompte_payeur]["individus"][IDindividu]["temps_facture"] += temps_facture
+            (h,m) = str(dictComptes[IDcompte_payeur]["individus"][IDindividu]["temps_facture"]).split('.')
+            minutes = int(int(m)*0.60)
+            if minutes == 0 :
+                minutes = "00"
+            dictComptes[IDcompte_payeur]["individus"][IDindividu]["temps_facture"] = str(int(h)) + ':' + str(minutes)
+            
             if montant != None : 
                 dictComptes[IDcompte_payeur]["individus"][IDindividu]["total"] += montant
                 dictComptes[IDcompte_payeur]["individus"][IDindividu]["activites"][IDactivite]["presences"][date]["total"] += montant

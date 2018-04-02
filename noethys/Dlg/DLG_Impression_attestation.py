@@ -967,7 +967,7 @@ class Dialog(wx.Dialog):
         prestations.IDtarif, noms_tarifs.nom, categories_tarifs.nom, IDfacture, 
         prestations.IDindividu, 
         individus.IDcivilite, individus.nom, individus.prenom, individus.date_naiss, 
-        SUM(ventilation.montant) AS montant_ventilation
+        SUM(ventilation.montant) AS montant_ventilation, prestations.temps_facture
         FROM prestations
         LEFT JOIN ventilation ON prestations.IDprestation = ventilation.IDprestation
         LEFT JOIN activites ON prestations.IDactivite = activites.IDactivite
@@ -1080,11 +1080,17 @@ class Dialog(wx.Dialog):
         # Analyse et regroupement des données
         dictValeurs = {}
         listeActivitesUtilisees = []
-        for IDprestation, IDcompte_payeur, IDfamille, date, categorie, label, montant_initial, montant, tva, IDactivite, nomActivite, abregeActivite, IDtarif, nomTarif, nomCategorieTarif, IDfacture, IDindividu, IDcivilite, nomIndividu, prenomIndividu, dateNaiss, montant_ventilation in listePrestations :
+        for IDprestation, IDcompte_payeur, IDfamille, date, categorie, label, montant_initial, montant, tva, IDactivite, nomActivite, abregeActivite, IDtarif, nomTarif, nomCategorieTarif, IDfacture, IDindividu, IDcivilite, nomIndividu, prenomIndividu, dateNaiss, montant_ventilation, temps_facture in listePrestations :
             montant_initial = FloatToDecimal(montant_initial) 
             montant = FloatToDecimal(montant) 
-            montant_ventilation = FloatToDecimal(montant_ventilation) 
+            montant_ventilation = FloatToDecimal(montant_ventilation)
             
+            #conversion du temps facturé en minutes
+            (h,m) = temps_facture.split(':') 
+            temps_facture = int(h)*60 + int(m)
+            temps_facture = FloatToDecimal(temps_facture)
+            temps_facture = temps_facture / 60
+                       
             # Regroupement par compte payeur
             if dictValeurs.has_key(IDcompte_payeur) == False :
                     
@@ -1210,7 +1216,7 @@ class Dialog(wx.Dialog):
                     nom = _(u"Prestations diverses")
                     texteIndividu = u"<b>%s</b>" % nom
                     
-                dictValeurs[IDcompte_payeur]["individus"][IDindividu] = { "texte" : texteIndividu, "activites" : {}, "total" : FloatToDecimal(0.0), "ventilation" : FloatToDecimal(0.0), "total_reports" : FloatToDecimal(0.0), "nom" : nom, "select" : True }
+                dictValeurs[IDcompte_payeur]["individus"][IDindividu] = { "texte" : texteIndividu, "activites" : {}, "temps_facture" : FloatToDecimal(0.0), "total" : FloatToDecimal(0.0), "ventilation" : FloatToDecimal(0.0), "total_reports" : FloatToDecimal(0.0), "nom" : nom, "select" : True }
             
             # Ajout de l'activité
             if dictValeurs[IDcompte_payeur]["individus"][IDindividu]["activites"].has_key(IDactivite) == False :
@@ -1254,6 +1260,20 @@ class Dialog(wx.Dialog):
             dictValeurs[IDcompte_payeur]["individus"][IDindividu]["activites"][IDactivite]["presences"][date]["unites"].append(dictPrestation)
             
             # Ajout des totaux
+            
+            if dictValeurs[IDcompte_payeur]["individus"][IDindividu]["temps_facture"] :
+                (h,m) = dictValeurs[IDcompte_payeur]["individus"][IDindividu]["temps_facture"].split(':')
+                dictValeurs[IDcompte_payeur]["individus"][IDindividu]["temps_facture"] = int(h)*60 + int(m)
+                dictValeurs[IDcompte_payeur]["individus"][IDindividu]["temps_facture"] = FloatToDecimal(dictValeurs[IDcompte_payeur]["individus"][IDindividu]["temps_facture"])
+                dictValeurs[IDcompte_payeur]["individus"][IDindividu]["temps_facture"] = dictValeurs[IDcompte_payeur]["individus"][IDindividu]["temps_facture"] / 60
+                        
+            dictValeurs[IDcompte_payeur]["individus"][IDindividu]["temps_facture"] += temps_facture
+            (h,m) = str(dictValeurs[IDcompte_payeur]["individus"][IDindividu]["temps_facture"]).split('.')
+            minutes = int(int(m)*0.60)
+            if minutes == 0 :
+                minutes = "00"
+            dictValeurs[IDcompte_payeur]["individus"][IDindividu]["temps_facture"] = str(int(h)) + ':' + str(minutes)
+
             if montant != None : 
                 dictValeurs[IDcompte_payeur]["individus"][IDindividu]["total"] += montant
                 dictValeurs[IDcompte_payeur]["individus"][IDindividu]["activites"][IDactivite]["presences"][date]["total"] += montant
@@ -1266,6 +1286,7 @@ class Dialog(wx.Dialog):
             # Mémorisation des activités concernées
             if IDactivite != None :
                 listeActivitesUtilisees.append(IDactivite) 
+        
         
         # --------------------------------------------------------------------------------------------------------------------
         

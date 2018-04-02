@@ -662,17 +662,27 @@ class Impression():
                             texte_prestations_anterieures = _(u"* 1 prestation antérieure reportée")
                         else :
                             texte_prestations_anterieures = _(u"* %d prestations antérieures reportées") % nbre_prestations_anterieures
-
+                        
                         # Insertion des totaux
                         dataTableau = []
+                        
+                        if mode == "attestation" :
+                            (h,m) = dictIndividus["temps_facture"].split(':')
+                            
+                            dictIndividus["temps_facture"]= h + 'h' + m
+                            texteTemps = Paragraph("<para align='center'>Nombre d'heures : %s</para>" % dictIndividus["temps_facture"], paraStyle)
+                        
                         if activeTVA == True and detail == 0 :
                             dataTableau.append([texte_prestations_anterieures, "", "", "", Paragraph("<para align='center'>%.02f %s</para>" % (dictIndividus["total"], SYMBOLE) , paraStyle)])
                         else :
                             if detail != 0 :
                                 dataTableau.append([texte_prestations_anterieures, "", "", Paragraph("<para align='center'>%.02f %s</para>" % (dictIndividus["total"], SYMBOLE) , paraStyle)])
                             else :
-                                dataTableau.append([texte_prestations_anterieures, "", Paragraph("<para align='center'>%.02f %s</para>" % (dictIndividus["total"], SYMBOLE) , paraStyle)])
-                        
+                                if mode == "attestation" :
+                                    dataTableau.append([texteTemps, texte_prestations_anterieures, Paragraph("<para align='center'>%.02f %s</para>" % (dictIndividus["total"], SYMBOLE) , paraStyle)])
+                                else :
+                                    dataTableau.append([texte_prestations_anterieures, "", Paragraph("<para align='center'>%.02f %s</para>" % (dictIndividus["total"], SYMBOLE) , paraStyle)])
+                                       
                         listeStyles = [
                                 ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
                                 ('FONT', (0, 0), (-1, -1), "Helvetica", dictOptions["taille_texte_prestation"]), 
@@ -684,7 +694,7 @@ class Impression():
                                 ('SPAN', (0, -1), (-2, -1)), # Fusion de la dernière ligne pour le texte_prestations_anterieures
                                 ('FONT', (0, -1), (0, -1), "Helvetica", dictOptions["taille_texte_prestations_anterieures"]),
                             ]
-                            
+                        
                         # Création du tableau
                         tableau = Table(dataTableau, largeursColonnes)
                         tableau.setStyle(TableStyle(listeStyles))
