@@ -371,18 +371,7 @@ class ListView(FastObjectListView):
             liste_Colonnes.insert(1, ColumnDefn(_(u"Numéro"), "left", 90, "numero", typeDonnee="texte"))
 
         # Ajout des questions des questionnaires
-        for dictQuestion in self.LISTE_QUESTIONS :
-            nomChamp = "question_%d" % dictQuestion["IDquestion"]
-            #typeDonnee = UTILS_Infos_individus.GetTypeChamp(nomChamp)
-            filtre = dictQuestion["filtre"]
-            if filtre == "texte" : typeDonnee = "texte"
-            elif filtre == "entier" : typeDonnee = "entier"
-            elif filtre == "montant" : typeDonnee = "montant"
-            elif filtre == "choix" : typeDonnee = "texte"
-            elif filtre == "coche" : typeDonnee = "texte"
-            elif filtre == "date" : typeDonnee = "date"
-            else : typeDonnee = "texte"
-            liste_Colonnes.append(ColumnDefn(dictQuestion["label"], "left", 150, "question_%d" % dictQuestion["IDquestion"], typeDonnee=typeDonnee))
+        liste_Colonnes.extend(UTILS_Questionnaires.GetColonnesForOL(self.LISTE_QUESTIONS))
 
         self.SetColumns(liste_Colonnes)
         self.CreateCheckStateColumn(0)
