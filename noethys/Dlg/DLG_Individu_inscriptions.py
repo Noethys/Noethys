@@ -115,18 +115,33 @@ class Panel(wx.Panel):
             noSelection = True
         else:
             noSelection = False
-            ID = self.ctrl_inscriptions.Selection()[0].IDinscription
-                
+
         # Création du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
-        
-        # Item Recu 
-        item = wx.MenuItem(menuPop, 10, _(u"Editer une confirmation d'inscription (PDF)"))
+
+        # Item Imprimer
+        item = wx.MenuItem(menuPop, 91, _(u"Imprimer l'inscription"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
-        self.Bind(wx.EVT_MENU, self.ctrl_inscriptions.EditerConfirmation, id=10)
+        self.Bind(wx.EVT_MENU, self.ctrl_inscriptions.ImprimerPDF, id=91)
         if noSelection == True : item.Enable(False)
+
+        # Item Envoyer par Email
+        item = wx.MenuItem(menuPop, 92, _(u"Envoyer l'inscription par Email"))
+        bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Emails_exp.png"), wx.BITMAP_TYPE_PNG)
+        item.SetBitmap(bmp)
+        menuPop.AppendItem(item)
+        self.Bind(wx.EVT_MENU, self.ctrl_inscriptions.EnvoyerEmail, id=92)
+        if noSelection == True : item.Enable(False)
+
+        # Item Recu 
+        # item = wx.MenuItem(menuPop, 10, _(u"Editer une confirmation d'inscription (PDF)"))
+        # bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
+        # item.SetBitmap(bmp)
+        # menuPop.AppendItem(item)
+        # self.Bind(wx.EVT_MENU, self.ctrl_inscriptions.EditerConfirmation, id=10)
+        # if noSelection == True : item.Enable(False)
         
         menuPop.AppendSeparator()
         

@@ -18,6 +18,7 @@ import os
 import cStringIO
 import datetime
 import GestionDB
+import FonctionsPerso
 from Utils import UTILS_Historique
 from Utils import UTILS_Dates
 from Utils import UTILS_Interface
@@ -290,13 +291,29 @@ class ListView(FastObjectListView):
                 
         menuPop.AppendSeparator()
 
-        # Item Editer Confirmation d'inscription
-        item = wx.MenuItem(menuPop, 60, _(u"Editer une confirmation d'inscription (PDF)"))
+        # Item Imprimer
+        item = wx.MenuItem(menuPop, 91, _(u"Imprimer l'inscription"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
-        self.Bind(wx.EVT_MENU, self.EditerConfirmation, id=60)
+        self.Bind(wx.EVT_MENU, self.ImprimerPDF, id=91)
         if noSelection == True : item.Enable(False)
+
+        # Item Envoyer par Email
+        item = wx.MenuItem(menuPop, 92, _(u"Envoyer l'inscription par Email"))
+        bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Emails_exp.png"), wx.BITMAP_TYPE_PNG)
+        item.SetBitmap(bmp)
+        menuPop.AppendItem(item)
+        self.Bind(wx.EVT_MENU, self.EnvoyerEmail, id=92)
+        if noSelection == True : item.Enable(False)
+
+        # Item Editer Confirmation d'inscription
+        # item = wx.MenuItem(menuPop, 60, _(u"Editer une confirmation d'inscription (PDF)"))
+        # bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
+        # item.SetBitmap(bmp)
+        # menuPop.AppendItem(item)
+        # self.Bind(wx.EVT_MENU, self.EditerConfirmation, id=60)
+        # if noSelection == True : item.Enable(False)
         
         menuPop.AppendSeparator()
 
@@ -494,6 +511,40 @@ class ListView(FastObjectListView):
         dlg = DLG_Impression_inscription.Dialog(self, IDinscription=IDinscription) 
         dlg.ShowModal()
         dlg.Destroy()
+
+    def ImprimerPDF(self, event):
+        if len(self.Selection()) == 0 :
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune inscription à imprimer !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return
+        IDinscription = self.Selection()[0].IDinscription
+        from Utils import UTILS_Inscriptions
+        inscription = UTILS_Inscriptions.Inscription()
+        inscription.Impression(listeInscriptions=[IDinscription,])
+
+    def EnvoyerEmail(self, event):
+        """ Envoyer l'inscription par Email """
+        if len(self.Selection()) == 0 :
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune inscription à envoyer par Email !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return
+        track = self.Selection()[0]
+        # Envoi du mail
+        from Utils import UTILS_Envoi_email
+        UTILS_Envoi_email.EnvoiEmailFamille(parent=self, IDfamille=track.IDfamille, nomDoc=FonctionsPerso.GenerationNomDoc("INSCRIPTION", "pdf") , categorie="inscription")
+
+    def CreationPDF(self, nomDoc="", afficherDoc=True):
+        """ Création du PDF pour Email """
+        IDinscription = self.Selection()[0].IDinscription
+        from Utils import UTILS_Inscriptions
+        inscription = UTILS_Inscriptions.Inscription()
+        resultat = inscription.Impression(listeInscriptions=[IDinscription,], nomDoc=nomDoc, afficherDoc=False)
+        if resultat == False :
+            return False
+        dictChampsFusion, dictPieces = resultat
+        return dictChampsFusion[IDinscription]
 
         
         

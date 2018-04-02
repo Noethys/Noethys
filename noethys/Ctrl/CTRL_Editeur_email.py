@@ -50,7 +50,8 @@ CATEGORIES = [
     ("location", _(u"Location")),
     ("location_demande", _(u"Demande de location")),
     ("commande_repas", _(u"Commande de repas")),
-    ]
+    ("inscription", _(u"Inscription")),
+]
 
 
 MOTSCLES_STANDARDS = [
@@ -257,10 +258,23 @@ MOTSCLES = {
                 ("{NOM_COMMANDE}", _(u"Nom de la commande")),
                 ("{DATE_DEBUT}", _(u"Date de début de la période")),
                 ("{DATE_FIN}", _(u"Date de fin de la période")),
-    ],
+                ],
+
+    "inscription": [
+                ("{IDINSCRIPTION}", _(u"ID de l'inscription")),
+                ("{DATE_INSCRIPTION}", _(u"Date de l'inscription")),
+                ("{EST_PARTI}", _(u"L'individu est parti")),
+                ("{ACTIVITE_NOM_LONG}", _(u"Nom de l'activité long")),
+                ("{ACTIVITE_NOM_COURT}", _(u"Nom de l'activité abrégé")),
+                ("{GROUPE_NOM_LONG}", _(u"Nom du groupe long")),
+                ("{GROUPE_NOM_COURT}", _(u"Nom du groupe abrégé")),
+                ("{NOM_CATEGORIE_TARIF}", _(u"Nom de la catégorie de tarif")),
+                ("{INDIVIDU_NOM}", _(u"Nom de famille de l'individu")),
+                ("{INDIVIDU_PRENOM}", _(u"Prénom de l'individu")),
+                ("{INDIVIDU_DATE_NAISS}", _(u"Date de naissance de l'individu")),
+                ],
 
 }
-
 
 
 def GetMotscles(categorie=""):

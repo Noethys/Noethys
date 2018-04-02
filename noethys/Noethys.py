@@ -866,6 +866,8 @@ class MainFrame(wx.Frame):
                     "-",
                     {"code" : "liste_inscriptions", "label" : _(u"Liste des inscriptions"), "infobulle" : _(u"Editer une liste des inscriptions"), "image" : "Images/16x16/Activite.png", "action" : self.On_individus_inscriptions},
                     {"code" : "saisir_lot_inscriptions", "label" : _(u"Saisir un lot d'inscriptions"), "infobulle" : _(u"Saisir un lot d'inscriptions"), "image" : "Images/16x16/Activite.png", "action" : self.On_individus_saisir_lot_inscriptions},
+                    {"code" : "inscriptions_email", "label": _(u"Transmettre des inscriptions par Email"), "infobulle": _(u"Transmettre des inscriptions par Email"), "image": "Images/16x16/Emails_exp.png", "action": self.On_inscriptions_email},
+                    {"code" : "inscription_imprimer", "label": _(u"Imprimer des inscriptions"), "infobulle": _(u"Imprimer une ou plusieurs inscriptions"), "image": "Images/16x16/Imprimante.png", "action": self.On_inscriptions_imprimer},
                     "-",
                     {"code" : "liste_contrats", "label" : _(u"Liste des contrats"), "infobulle" : _(u"Editer une liste des contrats"), "image" : "Images/16x16/Contrat.png", "action" : self.On_individus_contrats},
                     {"code" : "liste_individus", "label" : _(u"Liste des individus"), "infobulle" : _(u"Editer une liste des individus"), "image" : "Images/16x16/Personnes.png", "action" : self.On_individus_individus},
@@ -3199,6 +3201,18 @@ class MainFrame(wx.Frame):
         from Dlg import DLG_Saisie_lot_inscriptions
         dlg = DLG_Saisie_lot_inscriptions.Dialog(self)
         dlg.ShowModal() 
+        dlg.Destroy()
+
+    def On_inscriptions_imprimer(self, event):
+        from Dlg import DLG_Inscriptions_impression
+        dlg = DLG_Inscriptions_impression.Dialog(self)
+        dlg.ShowModal()
+        dlg.Destroy()
+
+    def On_inscriptions_email(self, event):
+        from Dlg import DLG_Inscriptions_email
+        dlg = DLG_Inscriptions_email.Dialog(self)
+        dlg.ShowModal()
         dlg.Destroy()
 
     def On_individus_contrats(self, event):

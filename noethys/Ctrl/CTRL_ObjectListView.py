@@ -19,6 +19,7 @@ from Ctrl import CTRL_Footer
 
 import sys
 sys.path.append("..")
+import six
 
 from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
@@ -267,8 +268,9 @@ class ObjectListView(OLV.ObjectListView):
         listeDonnees = []
         dictColonnes = {}
         for col in self.listeColonnes :
-            listeDonnees.append((col.valueGetter, col.visible))
-            dictColonnes[col.valueGetter] = col
+            if hasattr(col, "visible"):
+                listeDonnees.append((col.valueGetter, col.visible))
+                dictColonnes[col.valueGetter] = col
 
         listeDonneesDefaut = []
         for col in self.listeColonnesDefaut :
@@ -293,13 +295,22 @@ class ObjectListView(OLV.ObjectListView):
 
         # Sauvegarde
         self.SauvegardeConfiguration()
-        
+
+        # Annule le regroupement éventuel
+        self.SetShowGroups(False)
+        self.useExpansionColumn = False
+
         # Mise à jour de la liste
         attente = wx.BusyInfo(u"Configuration de la liste en cours...", self)
+        self.OnConfigurationListe()
         self.InitModel()
         self.InitObjectListView()
         del attente
-    
+
+    def OnConfigurationListe(self):
+        """ A surcharger """
+        pass
+
     def SauvegardeConfiguration(self, event=None):
         """ Sauvegarde de la configuration """
         if self.nomListe != None :
@@ -993,7 +1004,60 @@ class GroupListView(OLV.GroupListView, FastObjectListView):
 
         self._InitializeImages()
 
+    def SetColumns(self, columns, repopulate=True):
+        newColumns = columns[:]
+        # Insert the column used for expansion and contraction (if one isn't already there)
+        if self.showGroups and self.useExpansionColumn and len(newColumns) > 0:
+            if not isinstance(newColumns[0], ColumnDefn) or not newColumns[0].isInternal:
+                newColumns.insert(0, ColumnDefn("", fixedWidth=24, isEditable=False))
+                newColumns[0].isInternal = True
+        FastObjectListView.SetColumns(self, newColumns, repopulate)
 
+    def SortGroups(self, groups=None, ascending=None):
+        """
+        Sort the given collection of groups in the given direction (defaults to ascending).
+
+        The model objects within each group will be sorted as well
+        """
+        if groups is None:
+            groups = self.groups
+        if ascending is None:
+            ascending = self.sortAscending
+
+        # If the groups are locked, we sort by the sort column, otherwise by the grouping column.
+        # The primary column is always used as a secondary sort key.
+        if self.GetAlwaysGroupByColumn():
+            sortCol = self.GetSortColumn()
+        else:
+            sortCol = self.GetGroupByColumn()
+
+        # Let the world have a change to sort the items
+        evt = OLVEvent.SortGroupsEvent(self, groups, sortCol, ascending)
+        self.GetEventHandler().ProcessEvent(evt)
+        if evt.wasHandled:
+            return
+
+        # Sorting event wasn't handled, so we do the default sorting
+        def _getLowerCaseKey(group):
+            key = group.key
+            if type(key) == datetime.date :
+                key = str(key)
+            try:
+                return key.lower()
+            except:
+                return key
+
+        if six.PY2:
+            groups.sort(key=_getLowerCaseKey, reverse=(not ascending))
+        else:
+            groups = sorted(groups, key=_getLowerCaseKey,
+                            reverse=(not ascending))
+            # update self.groups which is used e.g. in _SetGroups
+            self.groups = groups
+
+        # Sort the model objects within each group.
+        for x in groups:
+            self._SortObjects(x.modelObjects, sortCol, self.GetPrimaryColumn())
 
 # -----------------------------------------------------------------------------------------------
 

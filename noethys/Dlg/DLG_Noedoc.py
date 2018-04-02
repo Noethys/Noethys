@@ -687,6 +687,13 @@ class Inscription():
         self.champs.extend(GetQuestions("individu"))
         self.codesbarres.extend(GetCodesBarresQuestionnaires("individu"))
 
+        self.champs.extend(GetQuestions("famille"))
+        self.codesbarres.extend(GetCodesBarresQuestionnaires("famille"))
+
+        self.champs.extend(GetQuestions("inscription"))
+        self.codesbarres.extend(GetCodesBarresQuestionnaires("inscription"))
+
+
 # ---------------------------------------------------------------------------------------------------------------------------------------
 
 class Cotisation():
