@@ -667,16 +667,20 @@ class Impression():
                         dataTableau = []
                         
                         if mode == "attestation" :
-                            (h,m) = dictIndividus["temps_facture"].split(':')
-                            
-                            dictIndividus["temps_facture"]= h + 'h' + m
+                            dictIndividus["temps_facture"] = dictIndividus["temps_facture"].replace(":", "h")
                             texteTemps = Paragraph("<para align='center'>Nombre d'heures : %s</para>" % dictIndividus["temps_facture"], paraStyle)
                         
                         if activeTVA == True and detail == 0 :
-                            dataTableau.append([texte_prestations_anterieures, "", "", "", Paragraph("<para align='center'>%.02f %s</para>" % (dictIndividus["total"], SYMBOLE) , paraStyle)])
+                            if mode == "attestation" :
+                                dataTableau.append([texteTemps, texte_prestations_anterieures, "", "", Paragraph("<para align='center'>%.02f %s</para>" % (dictIndividus["total"], SYMBOLE) , paraStyle)])
+                            else :
+                                dataTableau.append([texte_prestations_anterieures, "", "", "", Paragraph("<para align='center'>%.02f %s</para>" % (dictIndividus["total"], SYMBOLE) , paraStyle)])
                         else :
                             if detail != 0 :
-                                dataTableau.append([texte_prestations_anterieures, "", "", Paragraph("<para align='center'>%.02f %s</para>" % (dictIndividus["total"], SYMBOLE) , paraStyle)])
+                                if mode == "attestation" :
+                                    dataTableau.append([texteTemps, texte_prestations_anterieures, "", Paragraph("<para align='center'>%.02f %s</para>" % (dictIndividus["total"], SYMBOLE) , paraStyle)])
+                                else :
+                                    dataTableau.append([texte_prestations_anterieures, "", "", Paragraph("<para align='center'>%.02f %s</para>" % (dictIndividus["total"], SYMBOLE) , paraStyle)])
                             else :
                                 if mode == "attestation" :
                                     dataTableau.append([texteTemps, texte_prestations_anterieures, Paragraph("<para align='center'>%.02f %s</para>" % (dictIndividus["total"], SYMBOLE) , paraStyle)])
@@ -805,15 +809,17 @@ class Impression():
                 largeursColonnes = [ CADRE_CONTENU[2] - largeurColonneMontantTTC - largeurColonneLabel, largeurColonneLabel, largeurColonneMontantTTC]
 
                 dataTableau.append((listeMessages, _(u"Total période :"), u"%.02f %s" % (dictValeur["total"], SYMBOLE)))
-                dataTableau.append(("", _(u"Montant déjà réglé :"), u"%.02f %s" % (dictValeur["ventilation"], SYMBOLE)))
                 
-                if mode == "facture" and dictOptions["integrer_impayes"] == True and dictValeur["total_reports"] > 0.0 :
-                    dataTableau.append(("", _(u"Report impayés :"), u"%.02f %s" % (dictValeur["total_reports"], SYMBOLE) ))
-                    dataTableau.append(("", _(u"Reste à régler :"), u"%.02f %s" % (dictValeur["solde"] + dictValeur["total_reports"], SYMBOLE) ))
-                    rowHeights=[10, 10, 10, None]
-                else :
-                    dataTableau.append(("", _(u"Reste à régler :"), u"%.02f %s" % (dictValeur["solde"], SYMBOLE) ))
-                    rowHeights=[18, 18, None]
+                if mode =="facture" :
+                    dataTableau.append(("", _(u"Montant déjà réglé :"), u"%.02f %s" % (dictValeur["ventilation"], SYMBOLE)))
+                
+                    if dictOptions["integrer_impayes"] == True and dictValeur["total_reports"] > 0.0 :
+                        dataTableau.append(("", _(u"Report impayés :"), u"%.02f %s" % (dictValeur["total_reports"], SYMBOLE) ))
+                        dataTableau.append(("", _(u"Reste à régler :"), u"%.02f %s" % (dictValeur["solde"] + dictValeur["total_reports"], SYMBOLE) ))
+                        rowHeights=[10, 10, 10, None]
+                    else :
+                        dataTableau.append(("", _(u"Reste à régler :"), u"%.02f %s" % (dictValeur["solde"], SYMBOLE) ))
+                        rowHeights=[18, 18, None]
                     
                 style = [
                         ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'), 
