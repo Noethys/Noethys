@@ -1174,25 +1174,29 @@ class Dialog(wx.Dialog):
         # Saisie du titre du lot
         if nomLot != None :
             self.ctrl_nom.SetValue(nomLot)       
-        
+
         # Saisie des factures
         from Ctrl import CTRL_Liste_factures
         ctrl_factures = CTRL_Liste_factures.CTRL(self, filtres=filtres)
         ctrl_factures.ctrl_factures.CocheTout()
         tracksFactures = ctrl_factures.GetTracksCoches()
-        ctrl_factures.Destroy()
-        del ctrl_factures
         self.ctrl_prelevements.AjoutFactures(tracksFactures)
-        
         # Coche tous les prélèvements
         self.ctrl_prelevements.CocheTout()
-        
+        ctrl_factures.Destroy()
+        del ctrl_factures
         
         
 if __name__ == u"__main__":
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    dialog_1 = Dialog(None, IDlot=1, typePrelevement="sepa")
-    app.SetTopWindow(dialog_1)
-    dialog_1.ShowModal()
+    dlg = Dialog(None, IDlot=None, typePrelevement="sepa")
+    filtres = [
+        #{"type": "numero_intervalle", "numero_min": 6862, "numero_max": 7022},
+        {"type": "solde_actuel", "operateur": "<", "montant": 0.0},
+        {"type": "prelevement", "choix": True},
+    ]
+    dlg.Assistant(filtres=filtres, nomLot="Nom de lot exemple")
+    app.SetTopWindow(dlg)
+    dlg.ShowModal()
     app.MainLoop()
