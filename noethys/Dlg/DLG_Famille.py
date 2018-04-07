@@ -784,7 +784,7 @@ class Dialog(wx.Dialog):
     def AfficheToaster(self, titre=u"", texte=u"", taille=(200, 100), couleurFond="#F0FBED"):
         """ Affiche une boîte de dialogue temporaire """
         largeur, hauteur = taille
-        tb = Toaster.ToasterBox(self, Toaster.TB_SIMPLE, Toaster.TB_DEFAULT_STYLE, Toaster.TB_ONTIME)  # TB_CAPTION
+        tb = Toaster.ToasterBox(wx.GetApp().GetTopWindow(), Toaster.TB_SIMPLE, Toaster.TB_DEFAULT_STYLE, Toaster.TB_ONTIME)  # TB_CAPTION
         tb.SetTitle(titre)
         tb.SetPopupSize((largeur, hauteur))
         largeurEcran, hauteurEcran = wx.ScreenDC().GetSizeTuple()
