@@ -3374,26 +3374,6 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
     
     def CalculeDuree(self, IDindividu=None, datePrestation=None, combinaisons_unites=[]):
         """ Pour Facturation """
-##        # Recherche des heures debut et fin des unités cochées
-##        heure_debut = None
-##        heure_fin = None
-##        for IDunite, listeConso in self.dictConsoIndividus[IDindividu][datePrestation].iteritems() :
-##            if IDunite in combinaisons_unites :
-##                for conso in listeConso :
-##                    heure_debut_temp = HeureStrEnTime(conso.heure_debut)
-##                    heure_fin_temp = HeureStrEnTime(conso.heure_fin)
-##                    
-##                    if heure_debut == None or heure_debut_temp < heure_debut : 
-##                        heure_debut = heure_debut_temp
-##                    if heure_fin == None or heure_fin_temp > heure_fin : 
-##                        heure_fin = heure_fin_temp
-##        
-##        # Calcul de la durée
-##        heure_debut_delta = datetime.timedelta(hours=heure_debut.hour, minutes=heure_debut.minute)
-##        heure_fin_delta = datetime.timedelta(hours=heure_fin.hour, minutes=heure_fin.minute)
-##        duree = DeltaEnTime(heure_fin_delta - heure_debut_delta)
-##        return duree, heure_debut_delta, heure_fin_delta
-
         liste_temps = []
         heure_min = None
         heure_max = None
@@ -3409,6 +3389,12 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                                 heure_min = HeureStrEnDelta(heure_debut)
                             if heure_max == None or HeureStrEnDelta(heure_fin)  > heure_max :
                                 heure_max = HeureStrEnDelta(heure_fin)
+
+        if heure_min == None :
+            heure_min = datetime.timedelta(hours=0, minutes=0)
+        if heure_max == None :
+            heure_max = datetime.timedelta(hours=0, minutes=0)
+
         if len(liste_temps) > 0 :
             duree = Additionne_intervalles_temps(liste_temps)
         else :
@@ -3637,7 +3623,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             # Recherche des heures debut et fin des unités cochées
             duree, heure_debut_delta, heure_fin_delta = self.CalculeDuree(IDindividu, date, combinaisons_unites)
             duree_delta = heure_fin_delta - heure_debut_delta
-            
+
             for ligneCalcul in lignes_calcul :
                 duree_min = HeureStrEnDelta(ligneCalcul["duree_min"])
                 duree_max = HeureStrEnDelta(ligneCalcul["duree_max"])
