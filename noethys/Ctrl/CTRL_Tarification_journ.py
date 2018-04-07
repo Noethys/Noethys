@@ -326,7 +326,7 @@ class CTRL_Etats(wx.CheckListBox):
     def GetTexteCoches(self):
         listeIDcoches = []
         listeTemp = self.GetIDcoches() 
-        if len(listeTemp) == 0 : return []
+        if len(listeTemp) == 0 : return ""
         for code in listeTemp :
             listeIDcoches.append(code)
         texte = ";".join(listeIDcoches)
@@ -445,7 +445,7 @@ class Panel(wx.Panel):
         
         # Récupération des autres données
         etats = self.ctrl_etats.GetTexteCoches() 
-        
+
         # Sauvegarde
         DB = GestionDB.DB()
         listeDonnees = [
