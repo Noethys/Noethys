@@ -1871,6 +1871,8 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         for IDconso, date, IDunite, IDprestation in listeDonnees :
             if self.dictForfaits.has_key(IDprestation) :
                 date = DateEngEnDateDD(date)
+                if self.dictForfaits[IDprestation].has_key("dict_conso") == False:
+                    self.dictForfaits[IDprestation]["dict_conso"] = {}
                 if self.dictForfaits[IDprestation]["dict_conso"].has_key(date) == False :
                     self.dictForfaits[IDprestation]["dict_conso"][date] = []
                 self.dictForfaits[IDprestation]["dict_conso"][date].append(IDunite)
