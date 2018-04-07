@@ -21,34 +21,10 @@ from Ctrl import CTRL_Bandeau
 from Utils import UTILS_Identification
 from Utils import UTILS_Gestion
 from Utils import UTILS_Dates
+from Utils import UTILS_Texte
 from Ctrl import CTRL_Saisie_date
 import GestionDB
 from Ctrl.CTRL_Tarification_calcul import CHAMPS_TABLE_LIGNES
-
-
-def DateEngFr(textDate):
-    text = str(textDate[8:10]) + "/" + str(textDate[5:7]) + "/" + str(textDate[:4])
-    return text
-
-def DateComplete(dateDD):
-    """ Transforme une date DD en date complète : Ex : lundi 15 janvier 2008 """
-    listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
-    listeMois = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
-    dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
-    return dateComplete
-
-def DateEngEnDateDD(dateEng):
-    return datetime.date(int(dateEng[:4]), int(dateEng[5:7]), int(dateEng[8:10]))
-
-def ConvertStrToListe(texte=None):
-    """ Convertit un texte "1;2;3;4" en [1, 2, 3, 4] """
-    if texte == None :
-        return None
-    listeResultats = []
-    temp = texte.split(";")
-    for ID in temp :
-        listeResultats.append(int(ID))
-    return listeResultats
 
 
 
@@ -116,8 +92,8 @@ class Forfaits():
         DB.ExecuterReq(req)
         listeActivites = DB.ResultatReq()      
         for IDactivite, nom, abrege, date_debut, date_fin in listeActivites :
-            if date_debut != None : date_debut = DateEngEnDateDD(date_debut)
-            if date_fin != None : date_fin = DateEngEnDateDD(date_fin)
+            if date_debut != None : date_debut = UTILS_Dates.DateEngEnDateDD(date_debut)
+            if date_fin != None : date_fin = UTILS_Dates.DateEngEnDateDD(date_fin)
             dictTemp = { "nom" : nom, "abrege" : abrege, "date_debut" : date_debut, "date_fin" : date_fin, "tarifs" : [], "ouvertures" : {} }
             dictActivites[IDactivite] = dictTemp
         
@@ -130,7 +106,7 @@ class Forfaits():
         listeOuvertures = DB.ResultatReq()      
         dictOuvertures = {}
         for IDouverture, IDactivite, IDunite, IDgroupe, date in listeOuvertures :
-            date = DateEngEnDateDD(date)
+            date = UTILS_Dates.DateEngEnDateDD(date)
             if dictActivites.has_key(IDactivite) :
                 if dictActivites[IDactivite]["ouvertures"].has_key(IDgroupe) == False :
                     dictActivites[IDactivite]["ouvertures"][IDgroupe] = {}
@@ -148,7 +124,7 @@ class Forfaits():
         listeUnites = DB.ResultatReq()
         dictCombiUnites = {}
         for IDcombi_tarif_unite, IDcombi_tarif, IDtarif, IDunite, date, type, IDgroupe in listeUnites :
-            date = DateEngEnDateDD(date)
+            date = UTILS_Dates.DateEngEnDateDD(date)
             if dictCombiUnites.has_key(IDtarif) == False :
                 dictCombiUnites[IDtarif] = {}
             if dictCombiUnites[IDtarif].has_key(IDcombi_tarif) == False :
@@ -191,10 +167,10 @@ class Forfaits():
         DB.ExecuterReq(req)
         listeTarifs = DB.ResultatReq()      
         for IDtarif, IDactivite, IDnom_tarif, nom, date_debut, date_fin, forfait_saisie_manuelle, forfait_saisie_auto, forfait_suppression_auto, methode, categories_tarifs, groupes, options, date_facturation, IDtype_quotient in listeTarifs :
-            if date_debut != None : date_debut = DateEngEnDateDD(date_debut)
-            if date_fin != None : date_fin = DateEngEnDateDD(date_fin)
-            listeCategoriesTarifs = ConvertStrToListe(categories_tarifs)
-            listeGroupes = ConvertStrToListe(groupes)
+            if date_debut != None : date_debut = UTILS_Dates.DateEngEnDateDD(date_debut)
+            if date_fin != None : date_fin = UTILS_Dates.DateEngEnDateDD(date_fin)
+            listeCategoriesTarifs = UTILS_Texte.ConvertStrToListe(categories_tarifs, siVide=None)
+            listeGroupes = UTILS_Texte.ConvertStrToListe(groupes, siVide=None)
             inclure = True
 
             dictTemp = {
@@ -356,7 +332,7 @@ class Forfaits():
                                     elif date_facturation_tarif == "date_debut_activite" :
                                         date_facturation = date_debut_activite
                                     elif date_facturation_tarif != None and date_facturation_tarif.startswith("date:") :
-                                        date_facturation = DateEngEnDateDD(date_facturation_tarif[5:])
+                                        date_facturation = UTILS_Dates.DateEngEnDateDD(date_facturation_tarif[5:])
                                     else :
                                         date_facturation = date_debut_forfait
 
@@ -410,7 +386,7 @@ class Forfaits():
                                     DB.Close()
                                     listeDatesPrises = []
                                     for IDconso, dateConso, IDuniteConso in listeConsoExistantes :
-                                        dateConso = DateEngEnDateDD(dateConso)
+                                        dateConso = UTILS_Dates.DateEngEnDateDD(dateConso)
                                         if {"date" : dateConso, "IDunite" : IDuniteConso} in listeConsommations :
                                             if dateConso not in listeDatesPrises :
                                                 listeDatesPrises.append(dateConso)
@@ -418,7 +394,7 @@ class Forfaits():
                                     if len(listeDatesPrises) > 0 :
                                         texteDatesPrises = u""
                                         for datePrise in listeDatesPrises :
-                                            texteDatesPrises += u"   > %s\n" % DateComplete(datePrise)
+                                            texteDatesPrises += u"   > %s\n" % UTILS_Dates.DateComplete(datePrise)
                                         if labelTarif == None :
                                             label = ""
                                         else :
@@ -702,8 +678,8 @@ class Forfaits():
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         for IDquotient, IDfamille, date_debut, date_fin, quotient, IDtype_quotient in listeDonnees :
-            date_debut = DateEngEnDateDD(date_debut)
-            date_fin = DateEngEnDateDD(date_fin)
+            date_debut = UTILS_Dates.DateEngEnDateDD(date_debut)
+            date_fin = UTILS_Dates.DateEngEnDateDD(date_fin)
             if dictQuotientsFamiliaux.has_key(IDfamille) == False :
                 dictQuotientsFamiliaux[IDfamille] = []
             dictQuotientsFamiliaux[IDfamille].append((date_debut, date_fin, quotient, IDtype_quotient))
@@ -728,10 +704,10 @@ class Forfaits():
             return dictAides
         listeIDaides = []
         for IDaide, IDfamille, IDactivite, nomAide, date_debut, date_fin, IDcaisse, nomCaisse, montant_max, nbre_dates_max, jours_scolaires, jours_vacances in listeAides :
-            date_debut = DateEngEnDateDD(date_debut)
-            date_fin = DateEngEnDateDD(date_fin)
-            jours_scolaires = ConvertStrToListe(jours_scolaires)
-            jours_vacances = ConvertStrToListe(jours_vacances)
+            date_debut = UTILS_Dates.DateEngEnDateDD(date_debut)
+            date_fin = UTILS_Dates.DateEngEnDateDD(date_fin)
+            jours_scolaires = UTILS_Texte.ConvertStrToListe(jours_scolaires, siVide=None)
+            jours_vacances = UTILS_Texte.ConvertStrToListe(jours_vacances, siVide=None)
             dictTemp = {
                 "IDaide" : IDaide, "IDfamille" : IDfamille, "IDactivite" : IDactivite, "nomAide" : nomAide, "date_debut" : date_debut, "date_fin" : date_fin, 
                 "IDcaisse" : IDcaisse, "nomCaisse" : nomCaisse, "montant_max" : montant_max, "nbre_dates_max" : nbre_dates_max, "jours_scolaires" : jours_scolaires,
@@ -904,7 +880,7 @@ class CTRL(HTL.HyperTreeList):
                             # Affiche les dates extrêmes du forfait
                             if len(combinaisons) > 0 :
                                 # Combinaisons perso
-                                date_debut_forfait, date_fin_forfait = DateComplete(combinaisons[0][0][0]), DateComplete(combinaisons[-1][0][0])
+                                date_debut_forfait, date_fin_forfait = UTILS_Dates.DateComplete(combinaisons[0][0][0]), UTILS_Dates.DateComplete(combinaisons[-1][0][0])
                             elif options != None and "calendrier" in options :
                                 # Selon le calendrier des ouvertures
                                 date_debut_forfait, date_fin_forfait = "?", "?"
@@ -912,7 +888,7 @@ class CTRL(HTL.HyperTreeList):
                                     dates = dictActivite["ouvertures"][IDgroupe].keys()
                                     dates.sort()
                                     if len(dates) > 0 :
-                                        date_debut_forfait, date_fin_forfait = DateComplete(dates[0]), DateComplete(dates[-1])
+                                        date_debut_forfait, date_fin_forfait = UTILS_Dates.DateComplete(dates[0]), UTILS_Dates.DateComplete(dates[-1])
                             else :
                                 date_debut_forfait, date_fin_forfait = "?", "?"
                                 
