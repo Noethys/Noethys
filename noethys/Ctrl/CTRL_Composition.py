@@ -133,21 +133,30 @@ class GetValeurs() :
         # Recherche des infos détaillées sur chaque individu
         dictCivilites = Civilites.GetDictCivilites()
         listeChamps = (
-            "IDcivilite", "nom", "prenom", "num_secu","IDnationalite", 
+            "IDindividu", "IDcivilite", "nom", "prenom", "num_secu","IDnationalite",
             "date_naiss", "IDpays_naiss", "cp_naiss", "ville_naiss",
             "adresse_auto", "rue_resid", "cp_resid", "ville_resid", 
             "IDcategorie_travail", "profession", "employeur", "travail_tel", "travail_fax", "travail_mail", 
             "tel_domicile", "tel_mobile", "tel_fax", "mail"
             )
-        for IDindividu in listeIDindividus :
+
+        if len(listeIDindividus) == 0 : conditionIndividus = "()"
+        elif len(listeIDindividus) == 1 : conditionIndividus = "(%d)" % listeIDindividus[0]
+        else : conditionIndividus = str(tuple(listeIDindividus))
+
+        req = """SELECT %s
+        FROM individus WHERE IDindividu IN %s;""" % (",".join(listeChamps), conditionIndividus)
+        DB.ExecuterReq(req)
+        listeIndividus = DB.ResultatReq()
+
+        for temp in listeIndividus :
+            IDindividu = temp[0]
+
             # Infos de la table Individus
-            req = """SELECT %s
-            FROM individus WHERE IDindividu=%d;""" % (",".join(listeChamps), IDindividu)
-            DB.ExecuterReq(req)
-            listeIndividus = DB.ResultatReq()
             for index in range(0, len(listeChamps)) :
                 nomChamp = listeChamps[index]
-                dictInfos[IDindividu][nomChamp] = listeIndividus[0][index]
+                dictInfos[IDindividu][nomChamp] = temp[index]
+
             # Infos sur la civilité
             if dictInfos[IDindividu]["IDcivilite"] != None and dictInfos[IDindividu]["IDcivilite"] != "" :
                 dictInfos[IDindividu]["genre"] = dictCivilites[dictInfos[IDindividu]["IDcivilite"]]["sexe"]
