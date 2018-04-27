@@ -267,12 +267,13 @@ class Forfaits():
                 
                 # Récupération des informations sur l'inscription
                 IDcategorie_tarif_temp = None
-                for dictInscription in dictInscriptions[IDindividu]["inscriptions"] :
-                    if dictInscription["IDactivite"] == IDactivite :
-                        IDinscription = dictInscription["IDinscription"] 
-                        IDgroupe = dictInscription["IDgroupe"] 
-                        IDcategorie_tarif_temp = dictInscription["IDcategorie_tarif"] 
-                        break
+                if dictInscriptions.has_key(IDindividu):
+                    for dictInscription in dictInscriptions[IDindividu]["inscriptions"] :
+                        if dictInscription["IDactivite"] == IDactivite :
+                            IDinscription = dictInscription["IDinscription"]
+                            IDgroupe = dictInscription["IDgroupe"]
+                            IDcategorie_tarif_temp = dictInscription["IDcategorie_tarif"]
+                            break
 
                 if IDcategorie_tarif_temp != None :
 

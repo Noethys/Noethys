@@ -831,9 +831,11 @@ class Dialog(wx.Dialog):
         self.ctrl_incompat.Importation() 
         
         self.ctrl_raccourci.SetCode(touche_raccourci)
-        
-        self.ctrl_heure_debut_fixe.SetValue(heure_debut_fixe)
-        self.ctrl_heure_fin_fixe.SetValue(heure_fin_fixe)
+
+        if heure_debut_fixe != None :
+            self.ctrl_heure_debut_fixe.SetValue(heure_debut_fixe)
+        if heure_fin_fixe != None :
+            self.ctrl_heure_fin_fixe.SetValue(heure_fin_fixe)
 
         if autogen_active not in (None, 0) :
             self.check_autogen.SetValue(True)
