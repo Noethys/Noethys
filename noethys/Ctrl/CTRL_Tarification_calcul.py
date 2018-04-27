@@ -919,9 +919,11 @@ class Tableau(gridlib.Grid):
                     # Modification
                     DB.ReqMAJ("tarifs_lignes", listeDonnees, "IDligne", IDligne)
 
-        # Envoi des lignes au track_tarif
+        # Envoi des infos au track_tarif
         if self.track_tarif != None :
             self.track_tarif.SetLignes(liste_lignes)
+            self.track_tarif.methode = self.parent.GetCodeMethode()
+            self.track_tarif.IDtype_quotient = self.parent.GetTypeQuotient()
 
         # Suppressions
         for IDligne in self.listeInitialeID :
@@ -1376,6 +1378,7 @@ class Panel(wx.Panel):
         champs_obligatoires = dictValeurs["champs_obligatoires"]
         self.ctrl_parametres.nbre_lignes_max = dictValeurs["nbre_lignes_max"]
         self.ctrl_parametres.MAJ(code, entete, champs, champs_obligatoires)
+        self.ctrl_type_quotient.Enable("qf" in code)
     
     def GetCodeMethode(self):
         return self.ctrl_methode.GetCode()

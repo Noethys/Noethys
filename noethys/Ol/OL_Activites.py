@@ -13,10 +13,10 @@ import Chemins
 from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
-from Ctrl import CTRL_Bouton_image
 import os
 import GestionDB
 from Utils import UTILS_Export_tables
+import importlib
 
 
 from Utils import UTILS_Interface
@@ -342,13 +342,32 @@ class ListView(FastObjectListView):
 
     def Ajouter(self, event):        
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_activites", "creer") == False : return
-        # Création de l'activité
-        from Dlg import DLG_Activite
-        dlg = DLG_Activite.Assistant(self, IDactivite=None)
+
+        # Propose assistants de génération d'activités
+        from Dlg import DLG_Nouvelle_activite
+        dlg = DLG_Nouvelle_activite.Dialog(self)
+        if dlg.ShowModal() == wx.ID_OK:
+            code = dlg.GetCode()
+            dlg.Destroy()
+        else :
+            dlg.Destroy()
+            return
+
+        if code == "nouveau" :
+            # Création manuelle de l'activité
+            from Dlg import DLG_Activite
+            dlg = DLG_Activite.Assistant(self, IDactivite=None)
+        else :
+            # Création avec assistant de l'activité
+            module = importlib.import_module("Ctrl.CTRL_Assistant_%s" % code)
+            dlg = module.Dialog(self)
+
         if dlg.ShowModal() == wx.ID_OK:
             IDactivite = dlg.GetIDactivite()
             self.MAJ(IDactivite)
         dlg.Destroy()
+
+
 
     def Modifier(self, event):
         if len(self.Selection()) == 0 :
