@@ -19,6 +19,14 @@ if wx.VERSION < (2, 9, 0, 0) :
 else :
     from wx.lib.agw import ultimatelistctrl as ULC
 
+# Import des assistants pour pouvoir les inclure dans la compilation windows
+from Ctrl import CTRL_Assistant_annuelle
+from Ctrl import CTRL_Assistant_sejour
+from Ctrl import CTRL_Assistant_stage
+from Ctrl import CTRL_Assistant_cantine
+from Ctrl import CTRL_Assistant_sorties
+
+
 LISTE_ASSISTANTS = [
     {"code": "nouveau", "image": "Generation.png", "nom": _(u"Créer une nouvelle activité"),
      "description": _(u"Personnalisez votre nouvelle activité de A à Z")},
@@ -37,7 +45,6 @@ LISTE_ASSISTANTS = [
 
     {"code": "sorties", "image": "Bus.png", "nom": _(u"Des sorties familiales"),
      "description": _(u"Assistant pour créer une activité de gestion de sorties familiales...")},
-
 
 ]
 
