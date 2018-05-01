@@ -92,6 +92,8 @@ class CTRL_Activite(wx.Choice):
         if len(listeDonnees) == 0 : return
         dictActivites = {}
         for IDactivite, nom, abrege in listeDonnees :
+            if nom == None :
+                nom = _(u"Activité inconnue")
             self.listeLabels.append(nom)
             self.listeID.append(IDactivite)
         self.SetItems(self.listeLabels)
