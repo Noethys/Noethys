@@ -26,6 +26,11 @@ from Ctrl import CTRL_Tarification_calcul
 from Dlg.DLG_Ouvertures import Track_tarif
 
 
+def CreationAbrege(nom=""):
+    for i in " 0123456789/*-+.,;:_'()" :
+        nom = nom.replace(i, "")
+    return nom[:5].upper()
+
 
 class CTRL(object):
     def __init__(self, parent, *args, **kwds):
@@ -609,7 +614,7 @@ class Dialog(wx.Dialog):
     def Sauvegarde_standard(self, DB=None):
         """ Sauvegarde des données """
         nom = self.dict_valeurs["nom"]
-        abrege = self.dict_valeurs["nom"][:6].upper()
+        abrege = CreationAbrege(self.dict_valeurs["nom"])
         if self.dict_valeurs.has_key("date_debut"):
             date_debut = self.dict_valeurs["date_debut"]
         else :
@@ -682,7 +687,7 @@ class Dialog(wx.Dialog):
                 nbreGroupes = self.dict_valeurs["nbre_groupes"]
                 for index in range(1, nbreGroupes+1):
                     nom_groupe = self.dict_valeurs["nom_groupe#%d" % index]
-                    abrege_groupe = nom_groupe[:5].upper()
+                    abrege_groupe = CreationAbrege(nom_groupe)
                     if self.dict_valeurs.has_key("capacite_max_groupe#%d" % index):
                         nbre_inscrits_max_groupe = self.dict_valeurs["capacite_max_groupe#%d" % index]
                     else :
