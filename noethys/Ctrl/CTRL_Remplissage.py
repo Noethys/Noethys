@@ -963,16 +963,16 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
     def __init__(self, parent, dictDonnees=None):
         gridlib.Grid.__init__(self, parent, -1, size=(1, 1), style=wx.WANTS_CHARS)
         glr.GridWithLabelRenderersMixin.__init__(self)
-##        self.dictActivites = self.Importation_activites()
         self.listePeriodes = []
         self.listeActivites = []
         self.dictLignes = {}
         self.SetModeAffichage("nbrePlacesPrises")
         self.moveTo = None
+        tip = _(u"Double-cliquez sur une case contenant des valeurs pour consulter la liste des consommations associées")
         try :
-            self.GetGridWindow().SetToolTip("")
+            self.GetGridWindow().SetToolTip(tip)
         except :
-            self.GetGridWindow().SetToolTip(wx.ToolTip(""))
+            self.GetGridWindow().SetToolTip(wx.ToolTip(tip))
         self.caseSurvolee = None
         
         global LARGEUR_COLONNE_UNITE
@@ -995,6 +995,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         
         # Binds
         self.Bind(gridlib.EVT_GRID_COL_SIZE, self.OnChangeColSize)
+        self.Bind(gridlib.EVT_GRID_CELL_LEFT_DCLICK, self.OnCellLeftDClick)
 
 ##        self.Bind(gridlib.EVT_GRID_CELL_LEFT_CLICK, self.OnCellLeftClick)
 ##        self.Bind(gridlib.EVT_GRID_CELL_RIGHT_CLICK, self.OnCellRightClick)
@@ -1003,20 +1004,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 
         # Dict de données de sélection
         self.dictDonnees = dictDonnees
-##        if self.dictDonnees != None :
-##            self.SetDictDonnees(self.dictDonnees)
-        
-##        self.dictDonnees = {
-##            "page" : 0,
-##            "listeSelections" : [2, 3, 5],
-##            "annee" : 2009,
-##            "dateDebut" : None,
-##            "dateFin" : None,
-##            "listePeriodes" : [],
-##            "listeActivites" : [1, 17],
-##            "modeAffichage" : "nbrePlacesPrises",
-##            }
-    
+
     def SetDictDonnees(self, dictDonnees=None):
         self.dictDonnees = dictDonnees
         self.listeActivites = self.dictDonnees["listeActivites"]
@@ -1191,10 +1179,28 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             ligne = Ligne(self, numLigne, dateDD, dictGroupeTemp, dictListeRemplissage, self.modeAffichage)
             self.dictLignes[numLigne] = ligne
             numLigne += 1
-                        
-            
-            
 
+    def OnCellLeftDClick(self, event):
+        numLigne = event.GetRow()
+        numColonne = event.GetCol()
+        ligne = self.dictLignes[numLigne]
+        #if ligne.estSeparation == True:
+        #    return
+        case = ligne.dictCases[numColonne]
+
+        # Recherche des conso
+        try :
+            listeConsoPresents = self.dictRemplissage[case.IDunite][case.date][case.IDgroupe]["listeConsoPresents"]
+        except :
+            listeConsoPresents = []
+
+        if len(listeConsoPresents) > 0 :
+            from Dlg import DLG_Liste_presents
+            dlg = DLG_Liste_presents.Dialog(self, listeIDconso=listeConsoPresents)
+            dlg.ShowModal()
+            dlg.Destroy()
+
+        event.Skip()
 
     def OnCellLeftClick(self, event):
         numLigne = event.GetRow()
@@ -1426,12 +1432,12 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 dictRemplissage[IDunite_remplissage][dateDD][IDgroupe] = dictValeursTemp
 
         # Récupération des consommations existantes 
-        req = """SELECT IDactivite, date, IDunite, IDgroupe, heure_debut, heure_fin, etat, quantite, etiquettes, IDevenement
+        req = """SELECT IDconso, IDactivite, date, IDunite, IDgroupe, heure_debut, heure_fin, etat, quantite, etiquettes, IDevenement
         FROM consommations 
         WHERE IDactivite IN %s %s; """ % (conditionActivites, conditionDates)
         self.DB.ExecuterReq(req)
         listeConso = self.DB.ResultatReq()
-        for IDactivite, date, IDunite, IDgroupe, heure_debut, heure_fin, etat, quantite, etiquettesConso, IDevenement in listeConso :
+        for IDconso, IDactivite, date, IDunite, IDgroupe, heure_debut, heure_fin, etat, quantite, etiquettesConso, IDevenement in listeConso :
             dateDD = DateEngEnDateDD(date)
             etiquettesConso = UTILS_Texte.ConvertStrToListe(etiquettesConso)
 
@@ -1456,7 +1462,8 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                         dictRemplissage[IDunite_remplissage][dateDD][IDgroupe] = {}
                     if dictRemplissage[IDunite_remplissage][dateDD][IDgroupe].has_key("nbrePlacesPrises") == False :
                         dictRemplissage[IDunite_remplissage][dateDD][IDgroupe]["nbrePlacesPrises"] = 0
-                        
+                        dictRemplissage[IDunite_remplissage][dateDD][IDgroupe]["listeConsoPresents"] = []
+
                     # Réservations
                     if etat in ["reservation", "present"] :
                         valide = True
@@ -1489,7 +1496,8 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                         # Mémorisation de la place prise
                         if valide == True :
                             dictRemplissage[IDunite_remplissage][dateDD][IDgroupe]["nbrePlacesPrises"] += quantite
-            
+                            dictRemplissage[IDunite_remplissage][dateDD][IDgroupe]["listeConsoPresents"].append(IDconso)
+
                     # Mémorisation des places sur liste d'attente
                     if etat == "attente" :
                         if dictConsoAttente.has_key(dateDD) == False :
