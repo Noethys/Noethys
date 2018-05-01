@@ -447,24 +447,25 @@ class CTRL_Page_montant(wx.Panel):
 
 
 class CTRL_Page_date(wx.Panel):
-    def __init__(self, parent):
-        wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL) 
+    def __init__(self, parent, heure=False):
+        wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
+        self.heure = heure
         self.radio_egal = wx.RadioButton(self, -1, _(u"Est égal à"), style=wx.RB_GROUP)
-        self.ctrl_egal = CTRL_Saisie_date.Date2(self)
+        self.ctrl_egal = CTRL_Saisie_date.Date2(self, heure=heure)
         self.radio_different = wx.RadioButton(self, -1, _(u"Est différent de"))
-        self.ctrl_different = CTRL_Saisie_date.Date2(self)
+        self.ctrl_different = CTRL_Saisie_date.Date2(self, heure=heure)
         self.radio_sup = wx.RadioButton(self, -1, _(u"Est supérieur à"))
-        self.ctrl_sup = CTRL_Saisie_date.Date2(self)
+        self.ctrl_sup = CTRL_Saisie_date.Date2(self, heure=heure)
         self.radio_supegal = wx.RadioButton(self, -1, _(u"Est supérieur ou égal à"))
-        self.ctrl_supegal = CTRL_Saisie_date.Date2(self)
+        self.ctrl_supegal = CTRL_Saisie_date.Date2(self, heure=heure)
         self.radio_inf = wx.RadioButton(self, -1, _(u"Est inférieur à"))
-        self.ctrl_inf = CTRL_Saisie_date.Date2(self)
+        self.ctrl_inf = CTRL_Saisie_date.Date2(self, heure=heure)
         self.radio_infegal = wx.RadioButton(self, -1, _(u"Est inférieur ou égal à"))
-        self.ctrl_infegal = CTRL_Saisie_date.Date2(self)
+        self.ctrl_infegal = CTRL_Saisie_date.Date2(self, heure=heure)
         self.radio_compris = wx.RadioButton(self, -1, _(u"Est compris entre"))
-        self.ctrl_min = CTRL_Saisie_date.Date2(self)
+        self.ctrl_min = CTRL_Saisie_date.Date2(self, heure=heure)
         self.label_et = wx.StaticText(self, -1, _(u"et"))
-        self.ctrl_max = CTRL_Saisie_date.Date2(self)
+        self.ctrl_max = CTRL_Saisie_date.Date2(self, heure=heure)
 
         self.__do_layout()
 
@@ -577,7 +578,11 @@ class CTRL_Page_date(wx.Panel):
     def Validation(self):
         choix, criteres = self.GetValeur() 
         if criteres == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            if self.heure == False :
+                message = _(u"Vous devez obligatoirement saisir une date !")
+            else :
+                message = _(u"Vous devez obligatoirement saisir une date et une heure !")
+            dlg = wx.MessageDialog(self, message, _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -936,6 +941,7 @@ class CTRL_Page(wx.Panel):
         elif typeDonnee == "entier" : image = "Ctrl_nombre.png"
         elif typeDonnee == "montant" : image = "Euro.png"
         elif typeDonnee == "date" : image = "Jour.png"
+        elif typeDonnee == "dateheure" : image = "Jour.png"
         elif typeDonnee == "inscrits" : image = "Calendrier.png"
         elif typeDonnee == "cotisations" : image = "Cotisation.png"
         else : image = None
@@ -955,6 +961,8 @@ class CTRL_Page(wx.Panel):
             self.ctrl_contenu = CTRL_Page_montant(self)
         elif typeDonnee == "date" : 
             self.ctrl_contenu = CTRL_Page_date(self)
+        elif typeDonnee == "dateheure" :
+            self.ctrl_contenu = CTRL_Page_date(self, heure=True)
         elif typeDonnee == "inscrits" : 
             self.ctrl_contenu = CTRL_Page_inscrits(self)
         elif typeDonnee == "cotisations" :
@@ -1011,6 +1019,7 @@ class CTRL_Filtres_archive(wx.Treebook):
             ("entier", "Ctrl_nombre.png"),
             ("montant", "Euro.png"),
             ("date", "Jour.png"),
+            ("dateheure", "Jour.png"),
             ("inscrits", "Calendrier.png"),
             ("cotisations", "Cotisation.png"),
             ]
@@ -1202,6 +1211,7 @@ class CTRL_Champs(wx.TreeCtrl):
             ("entier", "Ctrl_nombre.png"),
             ("montant", "Euro.png"),
             ("date", "Jour.png"),
+            ("dateheure", "Jour.png"),
             ("inscrits", "Calendrier.png"),
             ("cotisations", "Cotisation.png"),
             ]
@@ -1321,7 +1331,7 @@ class CTRL_Filtres(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent, id=-1) 
         
-        self.listeTypesDonnees = ["vide", "texte", "entier", "montant", "date", "inscrits", "cotisations"]
+        self.listeTypesDonnees = ["vide", "texte", "entier", "montant", "date", "dateheure", "inscrits", "cotisations"]
         
         # Création des pages
         sizer = wx.BoxSizer(wx.VERTICAL)

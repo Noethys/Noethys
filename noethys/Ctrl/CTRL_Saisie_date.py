@@ -20,6 +20,9 @@ from Utils import UTILS_Config
 from dateutil.parser import parse, parserinfo
 from dateutil import relativedelta
 from Utils.UTILS_Traduction import _
+from Utils import UTILS_Dates
+from Ctrl import CTRL_Saisie_heure
+
 
 ID_AIDE = 5
 ID_AUJOURDHUI = 10
@@ -404,20 +407,26 @@ def ValideDate(texte, date_min="01/01/1900", date_max="01/01/2999", avecMessages
 
 class Date2(wx.Panel):
     """ Contrôle Date avec Bouton Calendrier inclus """
-    def __init__(self, parent, date_min="01/01/1910", date_max="01/01/2030", activeCallback=True, size=(-1, -1)):
+    def __init__(self, parent, date_min="01/01/1910", date_max="01/01/2030", activeCallback=True, size=(-1, -1), heure=False):
         wx.Panel.__init__(self, parent, id=-1, name="panel_date2", size=size, style=wx.TAB_TRAVERSAL)
         self.parent = parent
         self.activeCallback = activeCallback
+        self.heure = heure
         
         self.ctrl_date = Date(self, date_min, date_max)
         self.bouton_calendrier = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Calendrier.png"), wx.BITMAP_TYPE_ANY))
-        
         self.Bind(wx.EVT_BUTTON, self.OnBoutonCalendrier, self.bouton_calendrier)
         self.bouton_calendrier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sélectionner la date dans le calendrier")))
 
-        grid_sizer_base = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
+        if heure == True :
+            self.ctrl_heure = CTRL_Saisie_heure.Heure(self)
+
+        grid_sizer_base = wx.FlexGridSizer(rows=1, cols=3, vgap=5, hgap=5)
         grid_sizer_base.Add(self.ctrl_date, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALL, 0)
         grid_sizer_base.Add(self.bouton_calendrier, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALL, 0)
+        if heure == True :
+            grid_sizer_base.Add(self.ctrl_heure, 0, wx.ALIGN_CENTER_VERTICAL | wx.ALL, 0)
+
         self.SetSizer(grid_sizer_base)
         grid_sizer_base.Fit(self)
         self.Layout()
@@ -446,16 +455,44 @@ class Date2(wx.Panel):
                 pass
 
     def SetDate(self, date):
-        self.ctrl_date.SetDate(date)
+        if type(date) == datetime.datetime or (type(date) == str and ":" in date):
+            self.ctrl_date.SetDate(datetime.datetime.strftime(UTILS_Dates.DateEngEnDateDDT(date), "%Y-%m-%d"))
+            if self.heure == True :
+                self.ctrl_heure.SetHeure(datetime.datetime.strftime(UTILS_Dates.DateEngEnDateDDT(date), "%H:%M"))
+        else :
+            self.ctrl_date.SetDate(date)
     
     def GetDate(self, FR=False):
-        return self.ctrl_date.GetDate(FR=FR)
-                    
+        if self.heure == False :
+            return self.ctrl_date.GetDate(FR=FR)
+        else :
+            date = self.ctrl_date.GetDate()
+            heure = self.ctrl_heure.GetHeure()
+            if date == None or heure == None or heure == "  :  ":
+                return None
+            date_heure = datetime.datetime(year=date.year, month=date.month, day=date.day, hour=int(heure[:2]), minute=int(heure[3:]))
+            return date_heure
+
     def FonctionValiderDate(self):
-        return self.ctrl_date.FonctionValiderDate()
+        return self.Validation()
     
     def Validation(self):
-        return self.ctrl_date.FonctionValiderDate()
+        if self.heure == False:
+            return self.ctrl_date.FonctionValiderDate()
+        else :
+            date_valide = self.ctrl_date.FonctionValiderDate()
+            if date_valide == False :
+                return False
+
+            heure = self.ctrl_heure.GetHeure()
+            if heure == None or self.ctrl_heure.Validation() == False :
+                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une heure valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg.ShowModal()
+                dlg.Destroy()
+                self.ctrl_heure.SetFocus()
+                return False
+
+            return True
         
     def GetAge(self):
         return self.ctrl_date.GetAge() 
@@ -475,7 +512,7 @@ class MyFrame(wx.Frame):
         sizer_1 = wx.BoxSizer(wx.VERTICAL)
         sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
         self.SetSizer(sizer_1)
-        self.ctrl1 = Date2(panel)
+        self.ctrl1 = Date2(panel, heure=True)
         self.ctrl2 = Date2(panel)
         self.bouton1 = wx.Button(panel, -1, u"Tester la validité du ctrl 1")
         sizer_2 = wx.BoxSizer(wx.VERTICAL)

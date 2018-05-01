@@ -193,7 +193,7 @@ class ListView(GroupListView):
 
         dictColonnes = {
             "IDaction" : ColumnDefn(_(u""), "left", 0, "", typeDonnee="texte"),
-            "horodatage" : ColumnDefn(_(u"Horodatage"), "left", 140, "horodatage", typeDonnee="texte", stringConverter=FormateHorodatage),
+            "horodatage" : ColumnDefn(_(u"Horodatage"), "left", 140, "horodatage", typeDonnee="dateheure", stringConverter=FormateHorodatage),
             "etat" : ColumnDefn(_(u"Etat"), "left", 90, "etat_label", typeDonnee="texte", imageGetter=GetImageEtat),
             "traitement_date" : ColumnDefn(_(u"Traitée le"), "left", 80, "traitement_date", typeDonnee="date", stringConverter=FormateDate),
             "categorie" : ColumnDefn(_(u"Catégorie"), "left", 120, "categorie_label", typeDonnee="texte", imageGetter=GetImageCategorie),

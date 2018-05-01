@@ -266,6 +266,11 @@ def ConvertDateDTenWX(date=None):
     datewx.Set(date.day, month=date.month-1, year=date.year)
     return datewx
 
+def DatetimeEnFr(date=None):
+    if type(date) == str :
+        date = datetime.datetime.strptime(date, "%Y-%m-%d %H:%M:%S")
+    return date.strftime("%d/%m/%Y  %H:%M:%S")
+
 
 
 if __name__ == "__main__":

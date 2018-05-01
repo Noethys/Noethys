@@ -238,7 +238,7 @@ class ListView(GroupListView):
             return "?"
         
         liste_Colonnes = [
-            ColumnDefn(_(u"Horodatage"), "left", 130, "horodatage", typeDonnee="texte", stringConverter=FormateHorodatage),
+            ColumnDefn(_(u"Horodatage"), "left", 130, "horodatage", typeDonnee="dateheure", stringConverter=FormateHorodatage),
             ColumnDefn(_(u"Statut"), "left", 50, "statut", typeDonnee="texte", imageGetter=GetImageStatut),
             ColumnDefn(_(u"Catégorie"), "left", 120, "categorie", typeDonnee="texte", stringConverter=FormateCategorie),
             ColumnDefn(_(u"Action"), "left", 100, "action", typeDonnee="texte", stringConverter=Capitalize),

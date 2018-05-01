@@ -442,7 +442,7 @@ class ObjectListView(OLV.ObjectListView):
                     filtre = "track.%s >= %s and track.%s <= %s" % (code, min, code, max)
 
             # Date
-            if typeDonnee == "date" :
+            if typeDonnee in ("date", "dateheure") :
                         
                 if choix == "EGAL" :
                     filtre = "track.%s != None and str(track.%s) == '%s'" % (code, code, criteres)

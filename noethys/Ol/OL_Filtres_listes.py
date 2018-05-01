@@ -69,6 +69,16 @@ def GetCondition(titre="", typeDonnee="", choix="", criteres=""):
         if choix == "INFEGAL" : description = _(u"'%s' est inférieur ou égal au '%s'") % (titre, UTILS_Dates.DateEngFr(criteres))
         if choix == "COMPRIS" : description = _(u"'%s' est compris entre le '%s' et le '%s'") % (titre, UTILS_Dates.DateEngFr(criteres.split(";")[0]), UTILS_Dates.DateEngFr(criteres.split(";")[1]))
 
+    # DATE ET HEURE
+    if typeDonnee == "dateheure" :
+        if choix == "EGAL" : description = _(u"'%s' est égal au '%s'") % (titre, UTILS_Dates.DatetimeEnFr(criteres))
+        if choix == "DIFFERENT" : description = _(u"'%s' est différent du '%s'") % (titre, UTILS_Dates.DatetimeEnFr(criteres))
+        if choix == "SUP" : description = _(u"'%s' est supérieur au '%s'") % (titre, UTILS_Dates.DatetimeEnFr(criteres))
+        if choix == "SUPEGAL" : description = _(u"'%s' est supérieur ou égal au '%s'") % (titre, UTILS_Dates.DatetimeEnFr(criteres))
+        if choix == "INF" : description = _(u"'%s' est inférieur au '%s'") % (titre, UTILS_Dates.DatetimeEnFr(criteres))
+        if choix == "INFEGAL" : description = _(u"'%s' est inférieur ou égal au '%s'") % (titre, UTILS_Dates.DatetimeEnFr(criteres))
+        if choix == "COMPRIS" : description = _(u"'%s' est compris entre le '%s' et le '%s'") % (titre, UTILS_Dates.DatetimeEnFr(criteres.split(";")[0]), UTILS_Dates.DatetimeEnFr(criteres.split(";")[1]))
+
     # INSCRITS
     if typeDonnee == "inscrits" :
         if choix == "INSCRITS" : description = _(u"L'individu est inscrit sur les activités sélectionnées")

@@ -134,7 +134,7 @@ class ListView(FastObjectListView):
             return FonctionsPerso.Formate_taille_octets(taille)
             
         liste_Colonnes = [
-            ColumnDefn(_(u"Date génération"), "left", 130, "horodatage", typeDonnee="texte", stringConverter=FormateHorodatage),
+            ColumnDefn(_(u"Date génération"), "left", 130, "horodatage", typeDonnee="dateheure", stringConverter=FormateHorodatage),
             ColumnDefn(_(u"Appareil (ID)"), "left", 130, "appareil", typeDonnee="texte"),
             ColumnDefn(_(u"Contenu du fichier"), "left", 285, "detail_actions", typeDonnee="texte"),
             ColumnDefn(_(u"Nom du fichier"), "left", 285, "nom_fichier", typeDonnee="texte"),
