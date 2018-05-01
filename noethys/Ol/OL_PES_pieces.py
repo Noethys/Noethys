@@ -1009,7 +1009,7 @@ class ListView(FastObjectListView):
             # Ajouts et modifications
             if track.reglement == True :
 
-                if dictAventiler.has_key(IDfacture) :
+                if dictAventiler.has_key(track.IDfacture) :
 
                     # Recherche du payeur
                     IDpayeur = None
