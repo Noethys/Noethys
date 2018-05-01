@@ -729,10 +729,16 @@ class DefaultDrawingAlgorithm(DrawingAlgorithm):
             inner_rect_w += min(tw, MAX_TEXT_WIDTH)
             inner_rect_h = max(inner_rect_h, th)
         inner_rect_w = max(MIN_WIDTH, inner_rect_w)
+
+        # Calcule la position X du balloon
+        x_balloon = event_rect.X + 20
+        if event_rect.X < 40 :
+            x_balloon = 40
+
         x, y = self._draw_balloon_bg(self.dc, (inner_rect_w, inner_rect_h),
-                              (event_rect.X + event_rect.Width / 2,
-                               event_rect.Y),
-                              True)
+                                #(event_rect.X + event_rect.Width / 2, event_rect.Y),
+                                 (x_balloon, event_rect.Y),
+                                True)
         if icon != None:
             self.dc.DrawBitmap(icon, x, y, False)
             x += iw + BALLOON_RADIUS
