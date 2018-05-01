@@ -289,7 +289,10 @@ class Attestations_fiscales():
         # Fabrication du PDF global
         if repertoireTemp == False :
             dlgAttente = PBI.PyBusyInfo(_(u"Création du PDF des attestations fiscales..."), parent=None, title=_(u"Veuillez patienter..."), icon=wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Logo.png"), wx.BITMAP_TYPE_ANY))
-            wx.Yield() 
+            try :
+                wx.Yield()
+            except :
+                pass
             self.EcritStatusbar(_(u"Création du PDF des attestations fiscales en cours... veuillez patienter..."))
             try :
                 UTILS_Impression_attestation_fiscale.Impression(dictDonnees, dictOptions, IDmodele=dictOptions["IDmodele"], ouverture=afficherDoc, nomFichier=nomDoc)

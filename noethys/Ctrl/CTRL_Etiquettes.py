@@ -492,7 +492,7 @@ class CTRL(CT.CustomTreeCtrl):
             itemRemplace = self.GetPrevSibling(item)
         else :
             itemRemplace = self.GetNextSibling(item)
-        if itemRemplace.IsOk() == False :
+        if itemRemplace == None or itemRemplace.IsOk() == False :
             return
         
         dictData = self.GetPyData(item)
