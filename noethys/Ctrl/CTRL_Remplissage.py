@@ -1423,7 +1423,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         for IDremplissage, IDactivite, IDunite_remplissage, IDgroupe, date, places in listeRemplissage :
             if places == 0 : places = None
             dateDD = DateEngEnDateDD(date)
-            dictValeursTemp = { "nbrePlacesInitial" : places, "nbrePlacesPrises" : 0, "nbrePlacesAttente" : 0 }
+            dictValeursTemp = { "nbrePlacesInitial" : places, "nbrePlacesPrises" : 0, "nbrePlacesAttente" : 0, "listeConsoPresents" : []}
             if dictRemplissage.has_key(IDunite_remplissage) == False:
                 dictRemplissage[IDunite_remplissage] = {}
             if dictRemplissage[IDunite_remplissage].has_key(dateDD) == False:
