@@ -853,8 +853,11 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                                         valide = True
                                         
                                         # Vérifie s'il y a une plage horaire conditionnelle :
-                                        heure_min = self.dictRemplissage[IDunite_remplissage]["heure_min"]
-                                        heure_max = self.dictRemplissage[IDunite_remplissage]["heure_max"]
+                                        if self.dictRemplissage[IDunite_remplissage].has_key("heure_min") :
+                                            heure_min = self.dictRemplissage[IDunite_remplissage]["heure_min"]
+                                            heure_max = self.dictRemplissage[IDunite_remplissage]["heure_max"]
+                                        else :
+                                            heure_min, heure_max = None, None
                                         if heure_min != None and heure_max != None and conso.heure_debut != None and conso.heure_fin != None :
                                             try :
                                                 if UTILS_Dates.HeureStrEnTime(conso.heure_debut) <= UTILS_Dates.HeureStrEnTime(heure_max) and UTILS_Dates.HeureStrEnTime(conso.heure_fin) >= UTILS_Dates.HeureStrEnTime(heure_min) :
@@ -865,7 +868,10 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                                                  valide = True
 
                                         # Vérifie si condition étiquettes
-                                        etiquettes = self.dictRemplissage[IDunite_remplissage]["etiquettes"]
+                                        if self.dictRemplissage[IDunite_remplissage].has_key("etiquettes"):
+                                            etiquettes = self.dictRemplissage[IDunite_remplissage]["etiquettes"]
+                                        else :
+                                            etiquettes = []
                                         if len(etiquettes) > 0 :
                                             etiquettesCommunes = set(etiquettes) & set(conso.etiquettes)
                                             if len(etiquettesCommunes) == 0 :
