@@ -15,45 +15,27 @@ from Utils.UTILS_Traduction import _
 import wx
 from Ctrl import CTRL_Bouton_image
 import datetime
-from Ctrl import CTRL_Grille_periode
 from Ctrl import CTRL_Profil
-
 import FonctionsPerso
 import sys
 import operator
-
 from Ctrl import CTRL_Photo
 from Ctrl import CTRL_Bandeau
-
 import GestionDB
-from Utils import UTILS_Config
 from Utils import UTILS_Organisateur
 from Utils import UTILS_Fichiers
 from Utils import UTILS_Texte
 from Utils import UTILS_Divers
+from Utils import UTILS_Dates
 from Data import DATA_Civilites as Civilites
-from Ctrl import CTRL_Selection_activites
 from Ctrl import CTRL_Propertygrid
+from Ctrl import CTRL_Selection_inscrits_presents
 from Ol import OL_Impression_infos_medicales_colonnes
 import wx.propgrid as wxpg
 import copy
 
 DICT_CIVILITES = Civilites.GetDictCivilites()
 
-
-def DateComplete(dateDD):
-    """ Transforme une date DD en date complète : Ex : lundi 15 janvier 2008 """
-    listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
-    listeMois = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
-    dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
-    return dateComplete
-
-def DateEngEnDateDD(dateEng):
-    return datetime.date(int(dateEng[:4]), int(dateEng[5:7]), int(dateEng[8:10]))
-
-def DateEngFr(textDate):
-    text = str(textDate[8:10]) + "/" + str(textDate[5:7]) + "/" + str(textDate[:4])
-    return text
 
 def GetSQLdates(listePeriodes=[]):
     texteSQL = ""
@@ -230,329 +212,26 @@ class CTRL_Options(CTRL_Propertygrid.CTRL):
 
 
 
-class CTRL_Activites(wx.CheckListBox):
-    def __init__(self, parent):
-        wx.CheckListBox.__init__(self, parent, -1)
-        self.parent = parent
-        self.data = []
-        self.listePeriodes = []
-        self.SetToolTip(wx.ToolTip(_(u"Cochez les activités à afficher")))
-        self.listeActivites = []
-        self.dictActivites = {}
-        self.SetMinSize((-1, 100))
-        # Binds
-        self.Bind(wx.EVT_CHECKLISTBOX, self.OnCheck)
-        
-    def SetPeriodes(self, listePeriodes=[]):
-        self.listePeriodes = listePeriodes
-        self.MAJ() 
-        self.CocheTout()
-
-    def MAJ(self):
-        self.listeActivites, self.dictActivites = self.Importation()
-        self.SetListeChoix()
-    
-    def Importation(self):
-        listeActivites = []
-        dictActivites = {}
-        if len(self.listePeriodes) == 0 :
-            return listeActivites, dictActivites 
-        # Condition Périodes
-        conditionsPeriodes = GetSQLdates(self.listePeriodes)
-        
-        # Récupération des activités disponibles la période sélectionnée
-        DB = GestionDB.DB()
-        req = """SELECT activites.IDactivite, nom, abrege, date_debut, date_fin
-        FROM activites
-        LEFT JOIN ouvertures ON ouvertures.IDactivite = activites.IDactivite
-        WHERE %s
-        GROUP BY activites.IDactivite
-        ORDER BY date_fin DESC;""" % conditionsPeriodes
-        DB.ExecuterReq(req)
-        listeDonnees = DB.ResultatReq()      
-        DB.Close() 
-        for IDactivite, nom, abrege, date_debut, date_fin in listeDonnees :
-            if date_debut != None : date_debut = DateEngEnDateDD(date_debut)
-            if date_fin != None : date_fin = DateEngEnDateDD(date_fin)
-            dictTemp = { "nom" : nom, "abrege" : abrege, "date_debut" : date_debut, "date_fin" : date_fin, "tarifs" : {} }
-            dictActivites[IDactivite] = dictTemp
-            listeActivites.append((nom, IDactivite))
-        listeActivites.sort()
-        return listeActivites, dictActivites
-
-    def SetListeChoix(self):
-        self.Clear()
-        listeItems = []
-        index = 0
-        for nom, IDactivite in self.listeActivites :
-            self.Append(nom)
-            index += 1
-                            
-    def GetIDcoches(self):
-        listeIDcoches = []
-        NbreItems = len(self.listeActivites)
-        for index in range(0, NbreItems):
-            if self.IsChecked(index):
-                listeIDcoches.append(self.listeActivites[index][1])
-        return listeIDcoches
-    
-    def CocheTout(self):
-        index = 0
-        for index in range(0, len(self.listeActivites)):
-            self.Check(index)
-            index += 1
-
-    def SetIDcoches(self, listeIDcoches=[]):
-        index = 0
-        for index in range(0, len(self.listeActivites)):
-            ID = self.listeActivites[index][1]
-            if ID in listeIDcoches :
-                self.Check(index)
-            index += 1
-
-    def OnCheck(self, event):
-        """ Quand une sélection d'activités est effectuée... """
-        self.parent.OnCheckActivites()
-
-    def GetListeActivites(self):
-        return self.GetIDcoches() 
-    
-    def GetDictActivites(self):
-        return self.dictActivites
-    
-# ----------------------------------------------------------------------------------------------------------------------------------
-
-
-class CTRL_Groupes(wx.CheckListBox):
-    def __init__(self, parent):
-        wx.CheckListBox.__init__(self, parent, -1)
-        self.parent = parent
-        self.data = []
-        self.date = None
-        self.SetToolTip(wx.ToolTip(_(u"Cochez les groupes à afficher")))
-        self.listeGroupes = []
-        self.dictGroupes = {}
-        self.SetMinSize((-1, 100))
-        # Binds
-##        self.Bind(wx.EVT_CHECKLISTBOX, self.OnCheck)
-        
-    def SetActivites(self, listeActivites=[]):
-        self.listeActivites = listeActivites
-        self.MAJ() 
-        self.CocheTout()
-
-    def MAJ(self):
-        self.listeGroupes, self.dictGroupes = self.Importation()
-        self.SetListeChoix()
-    
-    def Importation(self):
-        listeGroupes = []
-        dictGroupes = {}
-        if len(self.listeActivites) == 0 :
-            return listeGroupes, dictGroupes 
-        # Récupération des groupes des activités sélectionnées
-        if len(self.listeActivites) == 0 : conditionActivites = "()"
-        elif len(self.listeActivites) == 1 : conditionActivites = "(%d)" % self.listeActivites[0]
-        else : conditionActivites = str(tuple(self.listeActivites))
-        DB = GestionDB.DB()
-        req = """SELECT IDgroupe, groupes.IDactivite, groupes.nom, activites.nom
-        FROM groupes
-        LEFT JOIN activites ON activites.IDactivite = groupes.IDactivite
-        WHERE groupes.IDactivite IN %s
-        ORDER BY groupes.nom;""" % conditionActivites
-        DB.ExecuterReq(req)
-        listeDonnees = DB.ResultatReq()   
-        DB.Close() 
-        for IDgroupe, IDactivite, nom, nomActivite in listeDonnees :
-            dictTemp = { "nom" : nom, "IDactivite" : IDactivite, "nomActivite" : nomActivite}
-            dictGroupes[IDgroupe] = dictTemp
-            listeGroupes.append((nom, IDgroupe, nomActivite))
-        listeGroupes.sort()
-        return listeGroupes, dictGroupes
-
-    def SetListeChoix(self):
-        self.Clear()
-        listeItems = []
-        index = 0
-        for nom, IDgroupe, nomActivite in self.listeGroupes :
-            nom = u"%s (%s)" % (nom, nomActivite)
-            self.Append(nom)
-            index += 1
-                            
-    def GetIDcoches(self):
-        listeIDcoches = []
-        NbreItems = len(self.listeGroupes)
-        for index in range(0, NbreItems):
-            if self.IsChecked(index):
-                listeIDcoches.append(self.listeGroupes[index][1])
-        return listeIDcoches
-    
-    def CocheTout(self):
-        index = 0
-        for index in range(0, len(self.listeGroupes)):
-            self.Check(index)
-            index += 1
-
-    def SetIDcoches(self, listeIDcoches=[]):
-        index = 0
-        for index in range(0, len(self.listeGroupes)):
-            ID = self.listeGroupes[index][1]
-            if ID in listeIDcoches :
-                self.Check(index)
-            index += 1
-
-##    def OnCheck(self, event):
-##        """ Quand une sélection de groupes est effectuée... """
-##        listeSelections = self.GetIDcoches()
-##        try :
-##            self.parent.SetActivites(listeSelections)
-##        except :
-##            print listeSelections
-    
-    def GetListeGroupes(self):
-        return self.GetIDcoches() 
-    
-    def GetDictGroupes(self):
-        return self.dictGroupes
-
-
-
 class Page_Generalites(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent, id=-1, name="informations_medicales", style=wx.TAB_TRAVERSAL)
         self.parent = parent
 
-        # Mode
-        self.staticbox_mode_staticbox = wx.StaticBox(self, -1, _(u"Mode de sélection"))
-        self.radio_inscrits = wx.RadioButton(self, -1, _(u"Inscrits"), style=wx.RB_GROUP)
-        self.radio_presents = wx.RadioButton(self, -1, _(u"Présents sur une période"))
-
-        # Calendrier
-        self.staticbox_date_staticbox = wx.StaticBox(self, -1, _(u"Période"))
-        self.ctrl_calendrier = CTRL_Grille_periode.CTRL(self)
-        self.ctrl_calendrier.SetMinSize((230, 150))
-
-        # Activités
-        self.staticbox_activites_staticbox = wx.StaticBox(self, -1, _(u"Activités"))
-        self.ctrl_activites_presents = CTRL_Activites(self)
-        self.ctrl_activites_inscrits = CTRL_Selection_activites.CTRL(self)
-        self.ctrl_activites_presents.SetMinSize((10, 10))
-        self.ctrl_activites_inscrits.SetMinSize((10, 10))
-
-        # Groupes
-        self.staticbox_groupes_staticbox = wx.StaticBox(self, -1, _(u"Groupes"))
-        self.ctrl_groupes = CTRL_Groupes(self)
-        self.ctrl_groupes.SetMinSize((10, 100))
-
-        # Propriétés
-        self.radio_inscrits.SetToolTip(wx.ToolTip(_(u"Sélectionnez le mode de sélection des individus")))
-        self.radio_presents.SetToolTip(wx.ToolTip(_(u"Sélectionnez le mode de sélection des individus")))
-
-        # Binds
-        self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioMode, self.radio_inscrits)
-        self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioMode, self.radio_presents)
+        self.ctrl_parametres = CTRL_Selection_inscrits_presents.CTRL(self)
 
         # Layout
-        grid_sizer_base = wx.FlexGridSizer(rows=1, cols=2, vgap=10, hgap=10)
-
-        # Sizer GAUCHE
-        grid_sizer_gauche = wx.FlexGridSizer(rows=4, cols=1, vgap=10, hgap=10)
-
-        # Mode
-        staticbox_mode = wx.StaticBoxSizer(self.staticbox_mode_staticbox, wx.VERTICAL)
-        grid_sizer_mode = wx.FlexGridSizer(rows=3, cols=2, vgap=5, hgap=10)
-        grid_sizer_mode.Add(self.radio_inscrits, 0, wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_mode.Add(self.radio_presents, 0, wx.ALIGN_CENTER_VERTICAL, 0)
-        staticbox_mode.Add(grid_sizer_mode, 0, wx.ALL|wx.EXPAND, 10)
-        grid_sizer_gauche.Add(staticbox_mode, 1, wx.EXPAND, 0)
-
-        # Période
-        staticbox_date = wx.StaticBoxSizer(self.staticbox_date_staticbox, wx.VERTICAL)
-        staticbox_date.Add(self.ctrl_calendrier, 1, wx.ALL|wx.EXPAND, 10)
-        grid_sizer_gauche.Add(staticbox_date, 1, wx.EXPAND, 0)
-
-        grid_sizer_gauche.AddGrowableRow(1)
-        grid_sizer_base.Add(grid_sizer_gauche, 1, wx.EXPAND|wx.TOP|wx.LEFT|wx.BOTTOM, 10)
-
-        # Sizer DROIT
-        grid_sizer_droit = wx.FlexGridSizer(rows=2, cols=1, vgap=10, hgap=10)
-
-        # Activités
-        staticbox_activites = wx.StaticBoxSizer(self.staticbox_activites_staticbox, wx.VERTICAL)
-
-        staticbox_activites.Add(self.ctrl_activites_presents, 1, wx.ALL|wx.EXPAND, 10)
-        staticbox_activites.Add(self.ctrl_activites_inscrits, 1, wx.ALL|wx.EXPAND, 10)
-        grid_sizer_droit.Add(staticbox_activites, 1, wx.EXPAND, 0)
-
-        # Groupes
-        staticbox_groupes = wx.StaticBoxSizer(self.staticbox_groupes_staticbox, wx.VERTICAL)
-        staticbox_groupes.Add(self.ctrl_groupes, 1, wx.ALL|wx.EXPAND, 10)
-        grid_sizer_droit.Add(staticbox_groupes, 1, wx.EXPAND, 0)
-
-        grid_sizer_droit.AddGrowableRow(0)
-        grid_sizer_droit.AddGrowableCol(0)
-        grid_sizer_base.Add(grid_sizer_droit, 1, wx.EXPAND|wx.TOP|wx.RIGHT|wx.BOTTOM, 10)
-
-        grid_sizer_base.AddGrowableRow(0)
-        grid_sizer_base.AddGrowableCol(1)
-        self.SetSizer(grid_sizer_base)
+        sizer_base = wx.BoxSizer()
+        sizer_base.Add(self.ctrl_parametres, 1, wx.EXPAND, 0)
+        self.SetSizer(sizer_base)
         self.Layout()
-        self.grid_sizer_base = grid_sizer_base
-
-        # Paramètres
-        param_mode = UTILS_Config.GetParametre("impression_infos_med_mode_presents", defaut=0)
-        self.radio_presents.SetValue(param_mode)
-
-        # Init
-        self.ctrl_calendrier.SetVisibleSelection()
-        self.SetListesPeriodes(self.ctrl_calendrier.GetDatesSelections())
-        self.OnRadioMode()
-
-    def OnRadioMode(self, event=None):
-        self.ctrl_activites_inscrits.Show(self.radio_inscrits.GetValue())
-        self.ctrl_activites_presents.Show(self.radio_presents.GetValue())
-        self.staticbox_date_staticbox.Enable(self.radio_presents.GetValue())
-        self.ctrl_calendrier.Enable(self.radio_presents.GetValue())
-        self.grid_sizer_base.Layout()
-        self.OnCheckActivites()
-
-    def OnCheckActivites(self):
-        if self.radio_inscrits.GetValue() == True :
-            listeSelections = self.ctrl_activites_inscrits.GetActivites()
-            self.SetGroupes(listeSelections)
-        if self.radio_presents.GetValue() == True :
-            listeSelections = self.ctrl_activites_presents.GetIDcoches()
-            self.SetGroupes(listeSelections)
-
-    def SetListesPeriodes(self, listePeriodes=[]):
-        self.ctrl_activites_presents.SetPeriodes(listePeriodes)
-        self.SetGroupes(self.ctrl_activites_presents.GetListeActivites())
-
-    def SetGroupes(self, listeActivites=[]):
-        self.ctrl_groupes.SetActivites(listeActivites)
+        self.sizer_base = sizer_base
 
     def GetParametres(self):
-        dictParametres = {}
-
-        dictParametres["liste_periodes"] = self.ctrl_calendrier.GetDatesSelections()
-        dictParametres["impression_infos_med_mode_presents"] = self.radio_presents.GetValue()
-
-        if self.radio_inscrits.GetValue() == True :
-            dictParametres["mode"] = "inscrits"
-            dictParametres["liste_activites"] = self.ctrl_activites_inscrits.GetActivites()
-
-        if self.radio_presents.GetValue() == True :
-            dictParametres["mode"] = "presents"
-            dictParametres["liste_activites"] = self.ctrl_activites_presents.GetListeActivites()
-
-        dictParametres["liste_groupes"] = self.ctrl_groupes.GetListeGroupes()
-        dictParametres["dict_groupes"] = self.ctrl_groupes.GetDictGroupes()
-
-        return dictParametres
+        return self.ctrl_parametres.GetParametres()
 
     def SetParametres(self, dictParametres={}):
-        pass
-
+        if dictParametres.has_key("mode"):
+            self.ctrl_parametres.SetModePresents(dictParametres["mode"] == "presents")
 
 
 class Page_Colonnes(wx.Panel):
@@ -917,7 +596,7 @@ class Dialog(wx.Dialog):
         dictIndividus = {}
         listeIDindividus = []
         for IDindividu, IDactivite, IDgroupe, IDcivilite, nom, prenom, date_naiss in listeIndividus:
-            if date_naiss != None: date_naiss = DateEngEnDateDD(date_naiss)
+            if date_naiss != None: date_naiss = UTILS_Dates.DateEngEnDateDD(date_naiss)
             age = self.GetAge(date_naiss)
 
             # Mémorisation de l'individu
@@ -984,7 +663,7 @@ class Dialog(wx.Dialog):
         def Header():
             dataTableau = []
             largeursColonnes = ( (largeurContenu-100, 100) )
-            dateDuJour = DateEngFr(str(datetime.date.today()))
+            dateDuJour = UTILS_Dates.DateEngFr(str(datetime.date.today()))
             dataTableau.append( (_(u"Informations médicales"), _(u"%s\nEdité le %s") % (UTILS_Organisateur.GetNom(), dateDuJour)) )
             style = TableStyle([
                     ('BOX', (0,0), (-1,-1), 0.25, colors.black), 
@@ -1139,11 +818,11 @@ class Dialog(wx.Dialog):
                                         if traitement == 1 and description_traitement != None and description_traitement != "":
                                             texteDatesTraitement = u""
                                             if date_debut_traitement != None and date_fin_traitement != None:
-                                                texteDatesTraitement = _(u" du %s au %s") % (DateEngFr(date_debut_traitement), DateEngFr(date_fin_traitement))
+                                                texteDatesTraitement = _(u" du %s au %s") % (UTILS_Dates.DateEngFr(date_debut_traitement), UTILS_Dates.DateEngFr(date_fin_traitement))
                                             if date_debut_traitement != None and date_fin_traitement == None:
-                                                texteDatesTraitement = _(u" à partir du %s") % DateEngFr(date_debut_traitement)
+                                                texteDatesTraitement = _(u" à partir du %s") % UTILS_Dates.DateEngFr(date_debut_traitement)
                                             if date_debut_traitement == None and date_fin_traitement != None:
-                                                texteDatesTraitement = _(u" jusqu'au %s") % DateEngFr(date_fin_traitement)
+                                                texteDatesTraitement = _(u" jusqu'au %s") % UTILS_Dates.DateEngFr(date_fin_traitement)
                                             texteInfos += _(u"Traitement%s : %s.") % (texteDatesTraitement, description_traitement)
 
                                         # Création du paragraphe
