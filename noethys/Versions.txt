@@ -1,3 +1,17 @@
+Version 1.2.3.2 (03/05/2018) :
+
+- Ajout des assistants de génération d'activités
+- Ajout des questionnaires aux inscriptions
+- Ajout de l'impression et de l'envoi par email des inscriptions
+- Ajout de la chronologie des locations dans le menu Locations
+- Ajout du détail des conso par unité de remplissage depuis le tableau de bord
+- Ajout de la barre des totaux à la liste des déductions
+- Amélioration de l'impression des anniversaires depuis le menu Individus
+- Correction dans l'assistant de génération des lots de prélèvements
+- Correction de l'affichage des présents dans certaines listes
+- Correction du défilement de la barre de totaux des listes
+- Correction de divers petits bugs
+
 Version 1.2.3.0 (26/03/2018) :
 
 - Ajout de la saisie des conso par glissement
