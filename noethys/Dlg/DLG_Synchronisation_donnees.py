@@ -318,7 +318,7 @@ class Traitement(Thread):
 
     def ConvertitHeure(self, heure=""):
         if heure in (None, "") :
-            return heure
+            return None
         if "h" in heure :
             h, m = heure.split("h")
             if h == "" :
