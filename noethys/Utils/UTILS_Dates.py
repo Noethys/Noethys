@@ -15,8 +15,10 @@ import datetime
 import time
 import wx
 
+LISTE_JOURS = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
 LISTE_MOIS = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
-
+LISTE_JOURS_ABREGES = (_(u"Lun."), _(u"Mar."), _(u"Mer."), _(u"Jeu."), _(u"Ven."), _(u"Sam."), _(u"Dim."))
+LISTE_MOIS_ABREGES = (_(u"janv."), _(u"fév."), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juil."), _(u"août"), _(u"sept."), _(u"oct"), _(u"nov."), _(u"déc."))
 
 
 def DateEngFr(textDate):
@@ -29,11 +31,13 @@ def DateDDEnFr(date):
     if date == None : return ""
     return DateEngFr(str(date))
     
-def DateComplete(dateDD):
+def DateComplete(dateDD, abrege=False):
     """ Transforme une date DD en date complète : Ex : lundi 15 janvier 2008 """
     if dateDD == None : return u""
-    listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
-    listeMois = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
+    if abrege == False :
+        listeJours, listeMois = LISTE_JOURS, LISTE_MOIS
+    else :
+        listeJours, listeMois = LISTE_JOURS_ABREGES, LISTE_MOIS_ABREGES
     dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
     return dateComplete
 
@@ -269,7 +273,7 @@ def ConvertDateDTenWX(date=None):
 def DatetimeEnFr(date=None):
     if type(date) == str :
         date = datetime.datetime.strptime(date, "%Y-%m-%d %H:%M:%S")
-    return date.strftime("%d/%m/%Y  %H:%M:%S")
+    return date.strftime("%d/%m/%Y %H:%M:%S")
 
 
 

@@ -928,7 +928,8 @@ class MainFrame(wx.Frame):
                 {"code": "locations_demandes_imprimer", "label": _(u"Imprimer des demandes"), "infobulle": _(u"Imprimer une ou plusieurs demandes"), "image": "Images/16x16/Imprimante.png", "action": self.On_locations_demandes_imprimer},
                 "-",
                 {"code": "locations_planning", "label": _(u"Planning des locations"), "infobulle": _(u"Consultation du planning des locations"), "image": "Images/16x16/Calendrier.png", "action": self.On_locations_planning},
-                {"code": "chronologie_planning", "label": _(u"Chronologie des locations"), "infobulle": _(u"Consultation de la chronologie des locations"), "image": "Images/16x16/Timeline.png", "action": self.On_locations_chronologie},
+                {"code": "locations_chronologie", "label": _(u"Chronologie des locations"), "infobulle": _(u"Consultation de la chronologie des locations"), "image": "Images/16x16/Timeline.png", "action": self.On_locations_chronologie},
+                {"code": "locations_tableau", "label": _(u"Tableau des locations"), "infobulle": _(u"Consultation du tableau des locations"), "image": "Images/16x16/Tableau_ligne.png", "action": self.On_locations_tableau},
                 "-",
                 {"code": "locations_images", "label": _(u"Images interactives"), "infobulle": _(u"Consultation des images interactives"), "image": "Images/16x16/Image_interactive.png", "action": self.On_locations_images},
                 ],
@@ -3117,6 +3118,14 @@ class MainFrame(wx.Frame):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("locations_chronologie", "consulter") == False : return
         from Dlg import DLG_Locations_chronologie
         dlg = DLG_Locations_chronologie.Dialog(self)
+        dlg.ShowModal()
+        dlg.Destroy()
+        self.ctrl_remplissage.MAJ()
+
+    def On_locations_tableau(self, event):
+        if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("locations_tableau", "consulter") == False : return
+        from Dlg import DLG_Locations_tableau
+        dlg = DLG_Locations_tableau.Dialog(self)
         dlg.ShowModal()
         dlg.Destroy()
         self.ctrl_remplissage.MAJ()
