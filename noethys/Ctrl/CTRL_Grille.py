@@ -635,7 +635,11 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         self.EnableGridLines(False)
 ##        self.DisableDragColSize()
 ##        self.DisableDragRowSize()
-        
+
+        # Pour cacher le curseur
+        self.SetCellHighlightPenWidth(0)
+        self.SetCellHighlightROPenWidth(0)
+
         self.SetDefaultCellBackgroundColour(self.GetBackgroundColour())
         
         # Récupération des paramètres
