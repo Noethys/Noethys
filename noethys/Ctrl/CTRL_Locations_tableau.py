@@ -64,8 +64,8 @@ class Track_location(object):
             self.date_fin = datetime.datetime.strptime(self.date_fin, "%Y-%m-%d %H:%M:%S")
 
         # Récupération des réponses des questionnaires
-        for dictQuestion in grid.liste_questions :
-            setattr(self, "question_%d" % dictQuestion["IDquestion"], grid.GetReponse(dictQuestion["IDquestion"], self.IDproduit))
+        # for dictQuestion in grid.liste_questions :
+        #     setattr(self, "question_%d" % dictQuestion["IDquestion"], grid.GetReponse(dictQuestion["IDquestion"], self.IDproduit))
 
         # Famille
         self.nomTitulaires = grid.dict_titulaires[self.IDfamille]["titulairesSansCivilite"]
@@ -552,6 +552,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         x, y = self.CalcUnscrolledPosition(event.GetPosition())
         numLigne = self.YToRow(y)
         numColonne = self.XToCol(x)
+        self.ActiveTooltip(actif=False)
 
         if self.dictCases.has_key((numLigne, numColonne)):
             case = self.dictCases[(numLigne, numColonne)]
@@ -591,6 +592,8 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         x, y = self.CalcUnscrolledPosition(event.GetPosition())
         numLigne = self.YToRow(y)
         numColonne = self.XToCol(x)
+        self.ActiveTooltip(actif=False)
+
         if self.dictCases.has_key((numLigne, numColonne)) :
             case = self.dictCases[(numLigne, numColonne)]
             track_location = case.FindLocation(x, y)
@@ -669,6 +672,10 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 texte += u"\nFin : %s" % UTILS_Dates.DatetimeEnFr(track_location.date_fin)
             texte += u"\n"
             texte += u"\nQuantité : %s" % track_location.quantite
+            if len(self.liste_questions) > 0 :
+                texte += u"\n"
+                for dictQuestion in self.liste_questions :
+                    texte += u"\n%s : %s" % (dictQuestion["label"], self.GetReponse(dictQuestion["IDquestion"], track_location.IDlocation))
         else :
             texte = _(u"Aucune location n'est enregistrée à cette date.\n\n")
         self.tip.SetMessage(texte)
@@ -694,6 +701,12 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         # Arrêt du timer
         self.timerTip.Stop()
         del self.timerTip
+
+    def GetReponse(self, IDquestion=None, ID=None):
+        if self.dict_questionnaires.has_key(IDquestion) :
+            if self.dict_questionnaires[IDquestion].has_key(ID) :
+                return self.dict_questionnaires[IDquestion][ID]
+        return u""
 
     def Importation(self):
         """ Importation des données """
@@ -731,6 +744,12 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             numLigne += 1
 
         # Importation des locations
+        date_debut = self.ctrl_options.GetDateDebut()
+        date_fin = self.ctrl_options.GetDateFin()
+        if date_debut == None or date_fin == None :
+            date_debut = ""
+            date_fin = ""
+
         req = """SELECT locations.IDlocation, locations.IDfamille, locations.IDproduit, 
         locations.observations, locations.date_debut, locations.date_fin, locations.quantite,
         produits.nom, 
@@ -738,8 +757,8 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         FROM locations
         LEFT JOIN produits ON produits.IDproduit = locations.IDproduit
         LEFT JOIN produits_categories ON produits_categories.IDcategorie = produits.IDcategorie
-        WHERE produits.IDcategorie IN %s
-        ORDER BY locations.date_debut;""" % conditionCategories
+        WHERE produits.IDcategorie IN %s AND locations.date_debut <= '%s' AND (locations.date_fin >= '%s' OR locations.date_fin IS NULL)
+        ORDER BY locations.date_debut;""" % (conditionCategories, date_fin, date_debut)
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         DB.Close()
@@ -834,6 +853,7 @@ class CTRL_Categories(wx.CheckListBox):
     def __init__(self, parent):
         wx.CheckListBox.__init__(self, parent, -1)
         self.parent = parent
+        self.SetMinSize((80, 80))
         self.MAJ()
 
     def MAJ(self):
