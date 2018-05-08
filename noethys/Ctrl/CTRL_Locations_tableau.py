@@ -746,25 +746,22 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         # Importation des locations
         date_debut = self.ctrl_options.GetDateDebut()
         date_fin = self.ctrl_options.GetDateFin()
-        if date_debut == None or date_fin == None :
-            date_debut = ""
-            date_fin = ""
-
-        req = """SELECT locations.IDlocation, locations.IDfamille, locations.IDproduit, 
-        locations.observations, locations.date_debut, locations.date_fin, locations.quantite,
-        produits.nom, 
-        produits_categories.nom
-        FROM locations
-        LEFT JOIN produits ON produits.IDproduit = locations.IDproduit
-        LEFT JOIN produits_categories ON produits_categories.IDcategorie = produits.IDcategorie
-        WHERE produits.IDcategorie IN %s AND locations.date_debut <= '%s' AND (locations.date_fin >= '%s' OR locations.date_fin IS NULL)
-        ORDER BY locations.date_debut;""" % (conditionCategories, date_fin, date_debut)
-        DB.ExecuterReq(req)
-        listeDonnees = DB.ResultatReq()
-        DB.Close()
-        for item in listeDonnees :
-            track_location = Track_location(grid=self, donnees=item)
-            dictTracksProduitsByIDproduit[track_location.IDproduit].locations.append(track_location)
+        if date_debut != None and date_fin != None :
+            req = """SELECT locations.IDlocation, locations.IDfamille, locations.IDproduit, 
+            locations.observations, locations.date_debut, locations.date_fin, locations.quantite,
+            produits.nom, 
+            produits_categories.nom
+            FROM locations
+            LEFT JOIN produits ON produits.IDproduit = locations.IDproduit
+            LEFT JOIN produits_categories ON produits_categories.IDcategorie = produits.IDcategorie
+            WHERE produits.IDcategorie IN %s AND locations.date_debut <= '%s' AND (locations.date_fin >= '%s' OR locations.date_fin IS NULL)
+            ORDER BY locations.date_debut;""" % (conditionCategories, date_fin, date_debut)
+            DB.ExecuterReq(req)
+            listeDonnees = DB.ResultatReq()
+            DB.Close()
+            for item in listeDonnees :
+                track_location = Track_location(grid=self, donnees=item)
+                dictTracksProduitsByIDproduit[track_location.IDproduit].locations.append(track_location)
 
         return listeTracksProduits
 
@@ -1027,12 +1024,14 @@ class CTRL_Options(wx.Panel):
 
     def GetHeureMin(self):
         heure = self.ctrl_heure_min.GetHeure()
-        if " " in heure : return None
+        if heure == None or " " in heure :
+            return None
         return heure
 
     def GetHeureMax(self):
         heure = self.ctrl_heure_max.GetHeure()
-        if " " in heure : return None
+        if heure == None or " " in heure :
+            return None
         return heure
 
     def GetLargeur(self):
