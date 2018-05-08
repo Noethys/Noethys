@@ -1192,10 +1192,10 @@ class Traitement():
 
             from Dlg import DLG_Inscription
             dlg = DLG_Inscription.Dialog(self.parent, mode="saisie", IDindividu=self.track.IDindividu, IDfamille=self.track.IDfamille, intro=intro)
-            dlg.bouton_activites.Show(False)
             dlg.ctrl_famille.Enable(False)
-            dlg.SetIDactivite(IDactivite)
-            dlg.SetIDgroupe(IDgroupe)
+            dlg.GetPageActivite().CacheBoutonActivite()
+            dlg.GetPageActivite().SetIDactivite(IDactivite)
+            dlg.GetPageActivite().SetIDgroupe(IDgroupe)
             reponse = dlg.ShowModal()
             dlg.Destroy()
             if reponse == wx.ID_OK :

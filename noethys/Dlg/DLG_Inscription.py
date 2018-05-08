@@ -340,6 +340,7 @@ class Page_Activite(wx.Panel):
         grid_sizer_activite.AddGrowableCol(0)
         staticbox_activite.Add(grid_sizer_activite, 1, wx.ALL | wx.EXPAND, 5)
         grid_sizer_base.Add(staticbox_activite, 1, wx.LEFT | wx.RIGHT | wx.EXPAND, 0)
+        self.grid_sizer_activite = grid_sizer_activite
 
         # Groupes
         staticbox_groupe = wx.StaticBoxSizer(self.staticbox_groupe_staticbox, wx.VERTICAL)
@@ -664,6 +665,10 @@ class Page_Activite(wx.Panel):
         if self.parent.mode == "saisie" :
             self.ctrl_categories.SelectCategorieSelonVille(self.parent.cp, self.parent.ville)
 
+    def CacheBoutonActivite(self):
+        self.bouton_activites.Show(False)
+        self.grid_sizer_activite.Layout()
+
     def SetIDgroupe(self, IDgroupe=None):
         self.ctrl_groupes.SetID(IDgroupe)
 
@@ -865,6 +870,9 @@ class Dialog(wx.Dialog):
         # Fermeture de la fenêtre
         self.EndModal(wx.ID_OK)
 
+    def GetPageActivite(self):
+        return self.ctrl_parametres.GetPageAvecCode("activite")
+
     def GetIDinscription(self):
         return self.IDinscription
 
@@ -873,7 +881,7 @@ class Dialog(wx.Dialog):
 if __name__ == "__main__":
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    frame_1 = Dialog(None)
-    app.SetTopWindow(frame_1)
-    frame_1.ShowModal()
+    dlg = Dialog(None)
+    app.SetTopWindow(dlg)
+    dlg.ShowModal()
     app.MainLoop()
