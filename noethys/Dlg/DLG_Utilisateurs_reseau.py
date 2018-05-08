@@ -206,10 +206,10 @@ class ListCtrl(wx.ListCtrl, CheckListCtrlMixin):
             if user == "root" :
                 user = _(u"root (Administrateur)")
             self.SetStringItem(index, 1, user)
-            
+
             if host == "%" : host = _(u"Connexion depuis n'importe quel hôte")
             elif host == "localhost" : host = _(u"Connexion uniquement depuis le serveur principal")
-            else : host = _(u"Connexion uniquement depuis l'hôte %s") % host.decode("iso-8859-15")
+            else : host = _(u"Connexion uniquement depuis l'hôte %s") % host
             self.SetStringItem(index, 2, host)
 
             self.SetItemData(index, indexListe)
@@ -245,11 +245,11 @@ class ListCtrl(wx.ListCtrl, CheckListCtrlMixin):
             # Enregistre le changement d'autorisation
             if self.IsChecked(index) == False :
                 self.SetAutorisation(False, nom, hote)
-                self.listeDonnees[index][3] = False
+                self.listeDonnees[index][2] = False
                 self.SetStringItem(index, 0, "Non")
             else:
                 etat = self.SetAutorisation(True, nom, hote)
-                self.listeDonnees[index][3] = True
+                self.listeDonnees[index][2] = True
                 self.SetStringItem(index, 0, "Oui")
 
         else:
@@ -268,7 +268,7 @@ class ListCtrl(wx.ListCtrl, CheckListCtrlMixin):
         else:
             # Si l'autorisation existe déjà mais est décochée : on efface cette autorisation
             for suffixe in LISTE_SUFFIXES :
-                req = "SELECT host, db, user FROM db WHERE user='%s' and db='%s' and host='%s';" % (nom, u"%s_%s" % (self.nomBase, suffixe), hote)
+                req = u"SELECT host, db, user FROM db WHERE user='%s' and db='%s' and host='%s';" % (nom, u"%s_%s" % (self.nomBase, suffixe), hote)
                 DB.ExecuterReq(req)
                 donnees = DB.ResultatReq()
                 if len(donnees) > 0 :
@@ -291,7 +291,7 @@ class ListCtrl(wx.ListCtrl, CheckListCtrlMixin):
         ORDER BY User, Host;"""
         DB.ExecuterReq(req)
         listeUtilisateurs = DB.ResultatReq()
-                
+
         # Recherche des autorisations pour la base en cours
         req = "SELECT host, user FROM `mysql`.`db` WHERE Db='%s';" % u"%s_data" % self.nomBase
         DB.ExecuterReq(req)
@@ -306,6 +306,8 @@ class ListCtrl(wx.ListCtrl, CheckListCtrlMixin):
             for hostTmp, userTmp in listeAutorisations :
                 if host == hostTmp and user == userTmp :
                     autorisation = True
+
+            host = host.decode("utf8")
             listeDonnees.append([user, host, autorisation])
         return listeDonnees
 
