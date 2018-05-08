@@ -1,3 +1,10 @@
+Version 1.2.3.3 (08/05/2018) :
+
+- Ajout du tableau des locations dans le menu Locations
+- Correction d'un bug sur le traitement d'une inscription Connecthys
+- Correction d'un bug d'unicode dans la gestion des accès réseau
+- Correction de divers petits bugs
+
 Version 1.2.3.2 (03/05/2018) :
 
 - Ajout des assistants de génération d'activités
