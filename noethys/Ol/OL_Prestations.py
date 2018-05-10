@@ -10,7 +10,7 @@
 
 
 import Chemins
-from Utils import UTILS_Adaptations
+from Utils import UTILS_Adaptations, UTILS_Prestations
 from Utils.UTILS_Traduction import _
 import wx
 from Ctrl import CTRL_Bouton_image
@@ -657,14 +657,23 @@ class ListView(GroupListView):
                 dlg.Destroy()
                 if reponse != wx.ID_YES :
                     valide = False
-            
-            # Suppression de la prestation
-            if valide == True :
-                DB.ReqDEL("prestations", "IDprestation", track.IDprestation)
-                DB.ReqDEL("ventilation", "IDprestation", track.IDprestation)
-                DB.ReqDEL("deductions", "IDprestation", track.IDprestation)
-                listeSuppressions.append(track)
-            
+                    
+            # Annuler la prestation
+            if valide:
+                # Avertir l'utilisateur qu'il s'agit d'une annulation, et demander son accord
+                msg = u"Pour préserver l'intégrité des états comptables, " \
+                      u"cette modification engendrerait une nouvelle prestation d'annulation. " \
+                      u"La prestation d'origine reste intacte.\n" \
+                      u"Voulez-vous continuer ?"
+                dlg = wx.MessageDialog(self, _(msg), _(u"Confirmation"), wx.YES_NO | wx.ICON_QUESTION)
+                reponse = dlg.ShowModal()
+                dlg.Destroy()
+                if reponse == wx.ID_YES:
+                    UTILS_Prestations.annuler(track.IDprestation, DB)
+                    DB.ReqDEL("ventilation", "IDprestation", track.IDprestation)
+                    DB.ReqDEL("deductions", "IDprestation", track.IDprestation)
+                    listeSuppressions.append(track)
+
             # MAJ du listeView
             self.MAJ() 
             
