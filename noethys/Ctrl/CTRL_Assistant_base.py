@@ -23,6 +23,7 @@ import wx.lib.scrolledpanel as scrolled
 from Dlg import DLG_Activite_generalites
 from Dlg import DLG_Activite_obligations
 from Ctrl import CTRL_Tarification_calcul
+from Ctrl import CTRL_Selection_jours
 from Dlg.DLG_Ouvertures import Track_tarif
 
 
@@ -213,6 +214,18 @@ class CTRL_Groupes_activite(CTRL, DLG_Activite_generalites.CTRL_Groupes_activite
             self.SetIDcoches(valeur)
 
 
+class CTRL_Jours(CTRL, CTRL_Selection_jours.CTRL):
+    def __init__(self, parent, *args, **kwds):
+        CTRL.__init__(self, parent, *args, **kwds)
+        CTRL_Selection_jours.CTRL.__init__(self, parent)
+
+    def GetValeur(self):
+        return self.GetDonnees()
+
+    def SetValeur(self, valeur=None):
+        if valeur != None :
+            self.SetDonnees(valeur)
+
 
 class CTRL_Pieces(CTRL, DLG_Activite_obligations.CheckListBoxPieces):
     def __init__(self, parent, *args, **kwds):
@@ -257,6 +270,40 @@ class CTRL_Renseignements(CTRL, DLG_Activite_obligations.CheckListBoxRenseigneme
     def SetValeur(self, valeur=None):
         if valeur != None :
             self.SetIDcoches(valeur)
+
+
+class CTRL_Choix(CTRL, wx.Choice):
+    def __init__(self, parent, *args, **kwds):
+        CTRL.__init__(self, parent, *args, **kwds)
+        if kwds.has_key("choix"):
+            self.liste_choix = kwds["choix"]
+        else :
+            self.liste_choix = []
+        if kwds.has_key("on_reponse"):
+            on_reponse = kwds["on_reponse"]
+        else :
+            on_reponse = None
+        liste_labels = []
+        for code, label in self.liste_choix :
+            liste_labels.append(label)
+        wx.Choice.__init__(self, parent, id=-1, choices=liste_labels, style=wx.TAB_TRAVERSAL)
+
+        # Binds
+        if on_reponse != None :
+            self.Bind(wx.EVT_CHOICE, on_reponse, self)
+
+        self.SetValeur(self.defaut)
+
+    def GetValeur(self):
+        index = self.GetSelection()
+        return self.liste_choix[index][0]
+
+    def SetValeur(self, valeur=None):
+        index = 0
+        for code, label in self.liste_choix :
+            if code == valeur :
+                self.SetSelection(index)
+            index += 1
 
 
 class CTRL_Tarif(CTRL, CTRL_Tarification_calcul.Panel):
@@ -472,6 +519,16 @@ class Page_renseignements(Page):
     def Suite(self):
         pass
 
+
+class Page_recopier_tarifs(Page):
+    def __init__(self, parent):
+        Page.__init__(self, parent)
+        self.Ajouter_rubrique(titre=_(u"Tarifs"))
+        liste_choix = self.parent.dict_valeurs["activites_ressemblantes"]
+        self.Ajouter_question(code="recopier_tarifs", titre=_(u"Souhaitez-vous recopier la tarification d'une activité existante ?"), commentaire=_(u"Sélectionnez une activité du même type dans la liste déroulante, sa tarification sera récupérée pour votre nouvelle activité."), choix=liste_choix, ctrl=CTRL_Choix, defaut=None)
+
+    def Suite(self):
+        pass
 
 
 # --------------------------------------------------------------------------------------------------------------------------------
