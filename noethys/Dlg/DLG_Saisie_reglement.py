@@ -10,7 +10,7 @@
 
 
 import Chemins
-from Utils import UTILS_Adaptations
+from Utils import UTILS_Adaptations, UTILS_Prestations
 from Utils.UTILS_Traduction import _
 import wx
 from Ctrl import CTRL_Bouton_image
@@ -1495,32 +1495,40 @@ class Dialog(wx.Dialog):
         
         # --- Sauvegarde les frais de gestion ---
         montantFrais, labelFrais, IDprestationFrais = donneesFrais
-        
-        # Si ajout d'un frais
-        if montantFrais != None and montantFrais != 0.0 :
-            listeDonnees = [    
-                    ("IDcompte_payeur", self.IDcompte_payeur),
-                    ("date", date),
-                    ("categorie", "autre"),
-                    ("label", labelFrais),
-                    ("montant_initial", montantFrais),
-                    ("montant", montantFrais),
-                    ("IDfamille", IDfamille),
-                    ("reglement_frais", self.IDreglement),
-                ]
-            if IDprestationFrais == None :
-                listeDonnees.append(("date_valeur", str(datetime.date.today())))
-                IDprestationFrais = DB.ReqInsert("prestations", listeDonnees)
-            else:
-                DB.ReqMAJ("prestations", listeDonnees, "IDprestation", IDprestationFrais)
+        montant = label = None
+        if IDprestationFrais:
+            req = """
+            SELECT montant, label
+            FROM prestations
+            WHERE IDprestation = %d
+            """ % IDprestationFrais
+            DB.ExecuterReq(req)
+            resultat = DB.ResultatReq()
+            if resultat:
+                montant, label = resultat[0]
+
+        # Si modifications des frais
+        if montantFrais != montant or labelFrais != label:
+            # Annuler l'ancienne prestation, s'il y en a
+            if IDprestationFrais:
+                UTILS_Prestations.annuler(IDprestationFrais, DB)
                 DB.ReqDEL("ventilation", "IDprestation", IDprestationFrais)
-        
-        # Si suppression d'un frais
-        if montantFrais == None and IDprestationFrais != None :
-            DB.ReqDEL("prestations", "IDprestation", IDprestationFrais)
-            DB.ReqDEL("ventilation", "IDprestation", IDprestationFrais)
-        
-        DB.Close() 
+            # Si le nouveau montant n'est pas vide ni zéro
+            if montantFrais and montantFrais != 0:
+                # Ajouter nouvelle prestation
+                listeDonnees = [
+                        ("IDcompte_payeur", self.IDcompte_payeur),
+                        ("date", date),
+                        ("categorie", "autre"),
+                        ("label", labelFrais),
+                        ("montant_initial", montantFrais),
+                        ("montant", montantFrais),
+                        ("IDfamille", IDfamille),
+                        ("reglement_frais", self.IDreglement),
+                        ("date_valeur", str(datetime.date.today())),
+                    ]
+                DB.ReqInsert("prestations", listeDonnees)
+        DB.Close()
         
         # --- Mémorise l'action dans l'historique ---
         if self.nouveauReglement == True :
