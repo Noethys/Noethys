@@ -556,7 +556,8 @@ class Informations() :
     def RechercheQF(self):
         """ Recherche les QF des familles """
         req = """SELECT IDquotient, IDfamille, date_debut, date_fin, quotient, observations
-        FROM quotients;""" 
+        FROM quotients
+        ORDER BY date_debut;"""
         listeDonnees = self.ReadDB(req)
         for IDquotient, IDfamille, date_debut, date_fin, quotient, observations in listeDonnees :
             date_debut = UTILS_Dates.DateEngEnDateDD(date_debut)
@@ -723,23 +724,33 @@ class Informations() :
         LEFT JOIN ecoles ON ecoles.IDecole = scolarite.IDecole
         LEFT JOIN classes ON classes.IDclasse = scolarite.IDclasse
         LEFT JOIN niveaux_scolaires ON niveaux_scolaires.IDniveau = scolarite.IDniveau
-        WHERE scolarite.date_debut<='%s' AND scolarite.date_fin>='%s'
-        ;""" % (self.date_reference, self.date_reference)
+        ORDER BY scolarite.date_debut
+        ;"""
         listeDonnees = self.ReadDB(req)
-        for IDscolarite, IDindividu, date_debut, date_fin, ecole_nom, classes_nom, niveau_nom, niveau_abrege in listeDonnees :
+        for IDscolarite, IDindividu, date_debut, date_fin, ecole_nom, classe_nom, niveau_nom, niveau_abrege in listeDonnees :
             if ecole_nom == None : ecole_nom = u""
-            if classes_nom == None : classes_nom = u""
+            if classe_nom == None : classe_nom = u""
             if niveau_nom == None : niveau_nom = u""
             if niveau_abrege == None : niveau_abrege = u""
             if self.dictIndividus.has_key(IDindividu) :
-                self.dictIndividus[IDindividu]["SCOLARITE_DATE_DEBUT"] = UTILS_Dates.DateEngFr(date_debut)
-                self.dictIndividus[IDindividu]["SCOLARITE_DATE_FIN"] = UTILS_Dates.DateEngFr(date_fin)
-                self.dictIndividus[IDindividu]["SCOLARITE_NOM_ECOLE"] = ecole_nom
-                self.dictIndividus[IDindividu]["SCOLARITE_NOM_CLASSE"] = classes_nom
-                self.dictIndividus[IDindividu]["SCOLARITE_NOM_NIVEAU"] = niveau_nom
-                self.dictIndividus[IDindividu]["SCOLARITE_ABREGE_NIVEAU"] = niveau_abrege
-                
-# ---------------------------------------------------------------------------------------------------------------------------------
+                if date_debut < str(self.date_reference) and date_fin > str(self.date_reference) :
+                    self.dictIndividus[IDindividu]["SCOLARITE_DATE_DEBUT"] = UTILS_Dates.DateEngFr(date_debut)
+                    self.dictIndividus[IDindividu]["SCOLARITE_DATE_FIN"] = UTILS_Dates.DateEngFr(date_fin)
+                    self.dictIndividus[IDindividu]["SCOLARITE_NOM_ECOLE"] = ecole_nom
+                    self.dictIndividus[IDindividu]["SCOLARITE_NOM_CLASSE"] = classe_nom
+                    self.dictIndividus[IDindividu]["SCOLARITE_NOM_NIVEAU"] = niveau_nom
+                    self.dictIndividus[IDindividu]["SCOLARITE_ABREGE_NIVEAU"] = niveau_abrege
+
+            if self.dictIndividus[IDindividu].has_key("scolarite") == False:
+                self.dictIndividus[IDindividu]["scolarite"] = {"nombre": 0, "liste": []}
+            self.dictIndividus[IDindividu]["scolarite"]["nombre"] += 1
+
+            # Mémorise l'étape de scolarité au format liste
+            self.dictIndividus[IDindividu]["scolarite"]["liste"].append(
+                {"date_debut": UTILS_Dates.DateEngFr(date_debut), "date_fin": UTILS_Dates.DateEngFr(date_fin),
+                 "ecole_nom": ecole_nom, "classe_nom": classe_nom, "niveau_nom": niveau_nom, "niveau_abrege":niveau_abrege})
+
+    # ---------------------------------------------------------------------------------------------------------------------------------
         
     def GetNomsChampsPresents(self, mode="individu+famille", listeID=None):
         """ Renvoie les noms des champs disponibles après calcul des données. """

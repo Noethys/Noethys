@@ -416,24 +416,25 @@ class Dialog(wx.Dialog):
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.MenuChronologie, id=70)
         
-        menuPop.AppendSeparator() 
+        menuPop.AppendSeparator()
 
+        item = wx.MenuItem(menuPop, 80, _(u"Exporter les données de la famille au format XML"))
+        item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Document_export.png"), wx.BITMAP_TYPE_PNG))
+        menuPop.AppendItem(item)
+        self.Bind(wx.EVT_MENU, self.MenuExporter, id=80)
 
-        # Item Envoyer un email
-        sousMenuEmail = UTILS_Adaptations.Menu()
-        
-        item = wx.MenuItem(menuPop, 200, _(u"Depuis l'éditeur d'Emails de Noethys"))
+        menuPop.AppendSeparator()
+
+        item = wx.MenuItem(menuPop, 200, _(u"Envoyer un Email avec l'éditeur d'Emails de Noethys"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Editeur_email.png"), wx.BITMAP_TYPE_PNG))
-        sousMenuEmail.AppendItem(item)
+        menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.MenuEnvoyerMail, id=200)
         
-        item = wx.MenuItem(menuPop, 210, _(u"Depuis le client de messagerie par défaut"))
-        item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Terminal.png"), wx.BITMAP_TYPE_PNG))
-        sousMenuEmail.AppendItem(item)
+        item = wx.MenuItem(menuPop, 210, _(u"Envoyer un Email avec le client de messagerie par défaut"))
+        item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Editeur_email.png"), wx.BITMAP_TYPE_PNG))
+        menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.MenuEnvoyerMail, id=210)
-                    
-        item = menuPop.AppendMenu(500, _(u"Envoyer un Email"), sousMenuEmail)
-        
+
         self.PopupMenu(menuPop)
         menuPop.Destroy()
 
@@ -745,7 +746,14 @@ class Dialog(wx.Dialog):
         dlg = DLG_Chronologie.Dialog(self, IDfamille=self.IDfamille)
         dlg.ShowModal() 
         dlg.Destroy()
-    
+
+    def MenuExporter(self, event):
+        if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_export", "creer") == False: return
+        import DLG_Export_familles
+        dlg = DLG_Export_familles.Dialog(self, IDfamille=self.IDfamille)
+        dlg.ShowModal()
+        dlg.Destroy()
+
     def MenuEnvoyerMail(self, event):
         """ Envoyer un Email """
         from Utils import UTILS_Envoi_email

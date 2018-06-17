@@ -895,7 +895,8 @@ class MainFrame(wx.Frame):
                             {"code" : "importation_individus_csv", "label" : _(u"Importer des individus ou des familles depuis un fichier Excel ou CSV"), "infobulle" : _(u"Importer des individus ou des familles"), "image" : "Images/16x16/Document_import.png", "action" : self.On_individus_importer_csv},
                             {"code" : "importation_individus_fichier", "label" : _(u"Importer des familles depuis un fichier Noethys"), "infobulle" : _(u"Importer des familles depuis un fichier Noethys"), "image" : "Images/16x16/Document_import.png", "action" : self.On_individus_importer_fichier},
                             ],
-                    },
+                     },
+                    {"code": "exporter_familles", "label": _(u"Exporter les familles au format XML"), "infobulle": _(u"Exporter les familles au format XML"), "image": "Images/16x16/Document_export.png", "action": self.On_individus_exporter_familles},
                     "-",
                     {"code" : "individus_edition_etiquettes", "label" : _(u"Edition d'étiquettes et de badges"), "infobulle" : _(u"Edition d'étiquettes et de badges au format PDF"), "image" : "Images/16x16/Etiquette2.png", "action" : self.On_individus_edition_etiquettes},
                     ],
@@ -3340,6 +3341,13 @@ class MainFrame(wx.Frame):
         dlg.ShowModal() 
         dlg.Destroy()
         self.ctrl_individus.MAJ()
+
+    def On_individus_exporter_familles(self, event):
+        if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_export", "creer") == False: return
+        from Dlg import DLG_Export_familles
+        dlg = DLG_Export_familles.Dialog(self, IDfamille=None)
+        dlg.ShowModal()
+        dlg.Destroy()
 
     def On_individus_edition_etiquettes(self, event):
         from Dlg import DLG_Impression_etiquettes
