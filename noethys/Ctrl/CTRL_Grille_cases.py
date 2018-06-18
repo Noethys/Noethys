@@ -1290,19 +1290,22 @@ class CaseStandard(Case):
         else:
             
             # Réservation
-            if self.etat == None and mode == "reservation" :
+            #if self.etat == None and mode == "reservation" :
+            if self.etat == None and mode in ("reservation", "attente", "refus"):
+                self.etat = mode
                 
                 if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("consommations_conso", "creer", IDactivite=self.IDactivite) == False : return
                 
                 # Vérifie d'abord qu'il n'y a aucune incompatibilités entre unités
-                incompatibilite = self.VerifieCompatibilitesUnites()
-                if incompatibilite != None :
-                    nomUniteCase = self.grid.dictUnites[self.IDunite]["nom"]
-                    nomUniteIncompatible = self.grid.dictUnites[incompatibilite]["nom"]
-                    dlg = wx.MessageDialog(self.grid, _(u"L'unité %s est incompatible avec l'unité %s déjà sélectionnée !") % (nomUniteCase, nomUniteIncompatible), _(u"Incompatibilités d'unités"), wx.OK | wx.ICON_EXCLAMATION)
-                    dlg.ShowModal()
-                    dlg.Destroy()
-                    return
+                if mode == "reservation" :
+                    incompatibilite = self.VerifieCompatibilitesUnites()
+                    if incompatibilite != None :
+                        nomUniteCase = self.grid.dictUnites[self.IDunite]["nom"]
+                        nomUniteIncompatible = self.grid.dictUnites[incompatibilite]["nom"]
+                        dlg = wx.MessageDialog(self.grid, _(u"L'unité %s est incompatible avec l'unité %s déjà sélectionnée !") % (nomUniteCase, nomUniteIncompatible), _(u"Incompatibilités d'unités"), wx.OK | wx.ICON_EXCLAMATION)
+                        dlg.ShowModal()
+                        dlg.Destroy()
+                        return
                 
                 # Demande les heures de début et de fin si c'est une unité horaire
                 self.heure_debut = self.grid.dictUnites[self.IDunite]["heure_debut"]
@@ -1396,23 +1399,23 @@ class CaseStandard(Case):
                         return
                 
                 # Vérifie qu'il y a de la place
-                if self.grid.blocageSiComplet == True and self.HasPlaceDisponible() == False :
-                    if modeSilencieux == True : 
-                        return False
-                    dlg = wx.MessageDialog(None, _(u"Il n'y a plus de places disponibles.\n\nSouhaitez-vous quand même saisir une consommation ?"), _(u"Complet !"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
-                    reponse = dlg.ShowModal() 
-                    dlg.Destroy()
-                    if reponse != wx.ID_YES : 
-                        return 
+                if mode == "reservation":
+                    if self.grid.blocageSiComplet == True and self.HasPlaceDisponible() == False :
+                        if modeSilencieux == True :
+                            return False
+                        dlg = wx.MessageDialog(None, _(u"Il n'y a plus de places disponibles.\n\nSouhaitez-vous quand même saisir une consommation ?"), _(u"Complet !"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+                        reponse = dlg.ShowModal()
+                        dlg.Destroy()
+                        if reponse != wx.ID_YES :
+                            return
                     
                 # Modifie l'état de la case
-                self.etat = "reservation"
+                #self.etat = "reservation"
                 self.date_saisie = datetime.date.today()
                 self.IDcategorie_tarif = self.dictInfosInscriptions["IDcategorie_tarif"] 
                 self.IDcompte_payeur = self.dictInfosInscriptions["IDcompte_payeur"]
                 self.IDinscription = self.dictInfosInscriptions["IDinscription"]
                 self.IDutilisateur = self.grid.IDutilisateur
-                
                 if self.grid.dictInfosInscriptions[self.IDindividu].has_key(self.IDactivite) :
                     if self.grid.mode == "individu" :
                         self.IDgroupe = self.grid.GetGrandParent().panel_activites.ctrl_activites.GetIDgroupe(self.IDactivite, self.IDindividu)
@@ -1420,48 +1423,54 @@ class CaseStandard(Case):
                         self.IDgroupe = self.grid.dictInfosInscriptions[self.IDindividu][self.IDactivite]["IDgroupe"]
                 else:
                     self.IDgroupe = None
-                
-                self.grid.listeHistorique.append((self.IDindividu, self.date, self.IDunite, _(u"Saisie d'une réservation de consommation")))
+
+                if mode == "reservation" :
+                    texte = _(u"Saisie d'une réservation de consommation")
+                elif mode == "attente" :
+                    texte = _(u"Saisie d'une consommation en attente")
+                else :
+                    texte = _(u"Saisie d'une consommation refusée")
+                self.grid.listeHistorique.append((self.IDindividu, self.date, self.IDunite, texte))
                                 
             # Attente
-            if self.etat == None and mode == "attente" :
-                self.etat = "attente"
-                self.heure_debut = self.grid.dictUnites[self.IDunite]["heure_debut"]
-                self.heure_fin = self.grid.dictUnites[self.IDunite]["heure_fin"]
-                self.date_saisie = datetime.date.today()
-                self.IDcategorie_tarif = self.dictInfosInscriptions["IDcategorie_tarif"] 
-                self.IDcompte_payeur = self.dictInfosInscriptions["IDcompte_payeur"]
-                self.IDinscription = self.dictInfosInscriptions["IDinscription"]
-                self.IDutilisateur = self.grid.IDutilisateur
-                if self.grid.dictInfosInscriptions[self.IDindividu].has_key(self.IDactivite) :
-                    if self.grid.mode == "individu" :
-                        self.IDgroupe = self.grid.GetGrandParent().panel_activites.ctrl_activites.GetIDgroupe(self.IDactivite, self.IDindividu)
-                    if self.IDgroupe == None :
-                        self.IDgroupe = self.grid.dictInfosInscriptions[self.IDindividu][self.IDactivite]["IDgroupe"]
-                else:
-                    self.IDgroupe = None
-                
-                self.grid.listeHistorique.append((self.IDindividu, self.date, self.IDunite, _(u"Saisie d'une consommation en attente")))
+            # if self.etat == None and mode == "attente" :
+            #     self.etat = "attente"
+            #     self.heure_debut = self.grid.dictUnites[self.IDunite]["heure_debut"]
+            #     self.heure_fin = self.grid.dictUnites[self.IDunite]["heure_fin"]
+            #     self.date_saisie = datetime.date.today()
+            #     self.IDcategorie_tarif = self.dictInfosInscriptions["IDcategorie_tarif"]
+            #     self.IDcompte_payeur = self.dictInfosInscriptions["IDcompte_payeur"]
+            #     self.IDinscription = self.dictInfosInscriptions["IDinscription"]
+            #     self.IDutilisateur = self.grid.IDutilisateur
+            #     if self.grid.dictInfosInscriptions[self.IDindividu].has_key(self.IDactivite) :
+            #         if self.grid.mode == "individu" :
+            #             self.IDgroupe = self.grid.GetGrandParent().panel_activites.ctrl_activites.GetIDgroupe(self.IDactivite, self.IDindividu)
+            #         if self.IDgroupe == None :
+            #             self.IDgroupe = self.grid.dictInfosInscriptions[self.IDindividu][self.IDactivite]["IDgroupe"]
+            #     else:
+            #         self.IDgroupe = None
+            #
+            #     self.grid.listeHistorique.append((self.IDindividu, self.date, self.IDunite, _(u"Saisie d'une consommation en attente")))
                     
             # Refus
-            if self.etat == None and mode == "refus" :
-                self.etat = "refus"
-                self.heure_debut = self.grid.dictUnites[self.IDunite]["heure_debut"]
-                self.heure_fin = self.grid.dictUnites[self.IDunite]["heure_fin"]
-                self.date_saisie = datetime.date.today()
-                self.IDcategorie_tarif = self.dictInfosInscriptions["IDcategorie_tarif"] 
-                self.IDcompte_payeur = self.dictInfosInscriptions["IDcompte_payeur"]
-                self.IDinscription = self.dictInfosInscriptions["IDinscription"]
-                self.IDutilisateur = self.grid.IDutilisateur
-                if self.grid.dictInfosInscriptions[self.IDindividu].has_key(self.IDactivite) :
-                    if self.grid.mode == "individu" :
-                        self.IDgroupe = self.grid.GetGrandParent().panel_activites.ctrl_activites.GetIDgroupe(self.IDactivite, self.IDindividu)
-                    if self.IDgroupe == None :
-                        self.IDgroupe = self.grid.dictInfosInscriptions[self.IDindividu][self.IDactivite]["IDgroupe"]
-                else:
-                    self.IDgroupe = None
-                
-                self.grid.listeHistorique.append((self.IDindividu, self.date, self.IDunite, _(u"Saisie d'une consommation refusée")))
+            # if self.etat == None and mode == "refus" :
+            #     self.etat = "refus"
+            #     self.heure_debut = self.grid.dictUnites[self.IDunite]["heure_debut"]
+            #     self.heure_fin = self.grid.dictUnites[self.IDunite]["heure_fin"]
+            #     self.date_saisie = datetime.date.today()
+            #     self.IDcategorie_tarif = self.dictInfosInscriptions["IDcategorie_tarif"]
+            #     self.IDcompte_payeur = self.dictInfosInscriptions["IDcompte_payeur"]
+            #     self.IDinscription = self.dictInfosInscriptions["IDinscription"]
+            #     self.IDutilisateur = self.grid.IDutilisateur
+            #     if self.grid.dictInfosInscriptions[self.IDindividu].has_key(self.IDactivite) :
+            #         if self.grid.mode == "individu" :
+            #             self.IDgroupe = self.grid.GetGrandParent().panel_activites.ctrl_activites.GetIDgroupe(self.IDactivite, self.IDindividu)
+            #         if self.IDgroupe == None :
+            #             self.IDgroupe = self.grid.dictInfosInscriptions[self.IDindividu][self.IDactivite]["IDgroupe"]
+            #     else:
+            #         self.IDgroupe = None
+            #
+            #     self.grid.listeHistorique.append((self.IDindividu, self.date, self.IDunite, _(u"Saisie d'une consommation refusée")))
             
             # Modifie le statut de la case
             if self.IDconso == None : self.statut = "ajout"
