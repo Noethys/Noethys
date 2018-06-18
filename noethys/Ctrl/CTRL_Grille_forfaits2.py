@@ -141,7 +141,10 @@ class CTRL_Forfait(HTL.HyperTreeList):
         
     def CreationImage(self, couleur=(0, 0, 0)):
         """ Création des images pour le TreeCtrl """
-        bmp = wx.EmptyBitmap(9, 16)
+        if 'phoenix' in wx.PlatformInfo:
+            bmp = wx.Bitmap(9, 16)
+        else :
+            bmp = wx.EmptyBitmap(9, 16)
         dc = wx.MemoryDC()
         dc.SelectObject(bmp)
         dc.SetBackground(wx.Brush("WHITE"))

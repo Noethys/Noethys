@@ -1087,7 +1087,10 @@ class CTRL_Graphique(wx.ScrolledWindow):
         dlg = DLG_Grille.Dialog(self, IDfamille=self.IDfamille, selectionIndividus=[IDindividu,])
         if dlg.ShowModal() == wx.ID_OK:
             self.MAJnotebook()
-        dlg.Destroy()
+        try :
+            dlg.Destroy()
+        except :
+            pass
     
     def Calendrier_selection(self):
         IDindividu = self.selectionCadre

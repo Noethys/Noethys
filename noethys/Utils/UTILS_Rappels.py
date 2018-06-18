@@ -171,6 +171,8 @@ class Facturation():
                 montant_ventilation = 0.0
             
             # conversion en decimal
+            if montant == None :
+                montant = 0.0
             montant = decimal.Decimal(str(montant))
             montant_ventilation = decimal.Decimal(str(montant_ventilation))
             

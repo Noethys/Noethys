@@ -921,12 +921,17 @@ class Dialog(wx.Dialog):
         ctrl_factures = CTRL_Liste_factures.CTRL(self, filtres=filtres)
         ctrl_factures.ctrl_factures.CocheTout()
         tracksFactures = ctrl_factures.GetTracksCoches()
-        ctrl_factures.Destroy()
-        del ctrl_factures
         self.ctrl_pieces.AjoutFactures(tracksFactures)
         
         # Coche tous les prélèvements
         self.ctrl_pieces.CocheTout()
+
+        # Ferme ctrl_factures (utilise CallAfter pour éviter bug)
+        wx.CallAfter(self.FermeAssistant, ctrl_factures)
+
+    def FermeAssistant(self, ctrl_factures=None):
+        ctrl_factures.Destroy()
+        del ctrl_factures
 
     def OnBoutonFichier(self, event):
         """ Génération d'un fichier normalisé """
@@ -1153,7 +1158,11 @@ class Dialog(wx.Dialog):
 if __name__ == u"__main__":
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    dialog_1 = Dialog(None, IDlot=6)
-    app.SetTopWindow(dialog_1)
-    dialog_1.ShowModal()
+    dlg = Dialog(None, IDlot=None)
+    filtres = [
+        {"type": "numero_intervalle", "numero_min": 1983, "numero_max": 2051},
+    ]
+    dlg.Assistant(filtres=filtres, nomLot="Nom de lot exemple")
+    app.SetTopWindow(dlg)
+    dlg.ShowModal()
     app.MainLoop()
