@@ -160,6 +160,7 @@ class Page_renseignements(Assistant.Page_renseignements):
             self.parent.dict_valeurs["activites_ressemblantes"] = liste_activites
             return Page_recopier_tarifs
 
+        self.parent.dict_valeurs["recopier_tarifs"] = None
         return Page_categories_tarifs
 
 
