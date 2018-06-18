@@ -296,6 +296,7 @@ class Synchro():
 
     def Upload_data(self, full_synchro=False) :
         self.log.EcritLog(_(u"Lancement de la synchronisation des données..."))
+        t1 = time.time()
 
         last_synchro = UTILS_Parametres.Parametres(mode="get", categorie="portail", nom="last_synchro", valeur="")
 
@@ -353,6 +354,9 @@ class Synchro():
 
         self.log.EcritLog(_(u"Récupération des données à exporter..."))
         self.Pulse_gauge()
+
+        # Préparation du cryptage des valeurs
+        cryptage = UTILS_Cryptage_fichier.AESCipher(self.dict_parametres["secret_key"][10:20], bs=16, prefixe=u"#@#")
 
         # Création des paramètres
 
@@ -484,7 +488,8 @@ class Synchro():
 
         listeIDfamille = []
         for IDfamille, internet_actif, internet_identifiant, internet_mdp, email_recus in listeDonnees :
-            nomsTitulaires = dictTitulaires[IDfamille]["titulairesSansCivilite"]
+            nomsTitulaires = cryptage.encrypt(dictTitulaires[IDfamille]["titulairesSansCivilite"])
+
             # Cryptage du mot de passe
             internet_mdp = SHA256.new(internet_mdp).hexdigest()
 
@@ -501,7 +506,7 @@ class Synchro():
                     dictA = {}
                     for IDindividu, mail, travail_mail in listeA :
                         dictA[IDindividu] = {"perso":mail, "travail":travail_mail}
-                    email = dictA[IDindividu][categorie]
+                    email = cryptage.encrypt(dictA[IDindividu][categorie])
             else :
                 email = ""
 
@@ -643,7 +648,7 @@ class Synchro():
         dictPieces = UTILS_Pieces_manquantes.GetListePiecesManquantes(dateReference=datetime.date.today(), concernes=True)
         for IDfamille, dictValeurs in dictPieces.iteritems() :
             for IDfamille, IDtype_piece, nomPiece, publicPiece, prenom, IDindividu, valide, label in dictValeurs["liste"] :
-                m = models.Piece_manquante(IDfamille=IDfamille, IDtype_piece=IDtype_piece, IDindividu=IDindividu, nom=label)
+                m = models.Piece_manquante(IDfamille=IDfamille, IDtype_piece=IDtype_piece, IDindividu=IDindividu, nom=cryptage.encrypt(label))
                 session.add(m)
 
         # Création des types de pièces
@@ -766,6 +771,8 @@ class Synchro():
                 # Formatage date de naissance
                 if champ == "date_naiss" :
                     valeur = UTILS_Dates.DateEngEnDateDD(valeur)
+                    if valeur != None :
+                        valeur = str(valeur)
 
                 # Renseignements à masquer
                 if champ == "nom" and dictTemp["IDcategorie"] == 1 and (self.dict_parametres["renseignements_adulte_nom"] == "masquer" or self.dict_parametres["renseignements_afficher"] == False) :
@@ -784,6 +791,10 @@ class Synchro():
                     valeur = None
                 if champ in ("profession", "employeur", "travail_tel", "travail_mail") and (self.dict_parametres["renseignements_adulte_profession"] == "masquer" or self.dict_parametres["renseignements_afficher"] == False):
                     valeur = None
+
+                # Cryptage des données
+                if champ in ("nom", "prenom", "date_naiss", "cp_naiss", "ville_naiss", "tel_domicile", "tel_mobile", "mail", "rue_resid","cp_resid", "ville_resid", "profession", "employeur", "travail_tel", "travail_mail"):
+                    valeur = cryptage.encrypt(valeur)
 
                 dictTemp[champ] = valeur
 
@@ -872,6 +883,17 @@ class Synchro():
                 m = models.Ouverture(date=date, IDunite=IDunite, IDgroupe=IDgroupe)
                 session.add(m)
 
+            req = """SELECT IDevenement, IDactivite, IDunite, IDgroupe, date, nom, description, heure_debut, heure_fin
+            FROM evenements
+            WHERE %s;""" % texteConditions
+            DB.ExecuterReq(req)
+            listeEvenements = DB.ResultatReq()
+            for IDevenement, IDactivite, IDunite, IDgroupe, date, nom, description, heure_debut, heure_fin in listeEvenements :
+                date = UTILS_Dates.DateEngEnDateDD(date)
+                m = models.Evenement(IDevenement=IDevenement, IDactivite=IDactivite, date=date, IDunite=IDunite, IDgroupe=IDgroupe, nom=nom,
+                                     description=description, heure_debut=heure_debut, heure_fin=heure_fin)
+                session.add(m)
+
             req = """SELECT type, nom, jour, mois, annee
             FROM jours_feries ;"""
             DB.ExecuterReq(req)
@@ -885,14 +907,14 @@ class Synchro():
 
         if len(listeConditions) > 0 :
 
-            req = """SELECT IDconso, date, IDunite, IDinscription, etat
+            req = """SELECT IDconso, date, IDunite, IDinscription, etat, IDevenement
             FROM consommations
             WHERE %s;""" % texteConditions
             DB.ExecuterReq(req)
             listeConsommations = DB.ResultatReq()
-            for IDconso, date, IDunite, IDinscription, etat in listeConsommations :
+            for IDconso, date, IDunite, IDinscription, etat, IDevenement in listeConsommations :
                 date = UTILS_Dates.DateEngEnDateDD(date)
-                m = models.Consommation(date=date, IDunite=IDunite, IDinscription=IDinscription, etat=etat)
+                m = models.Consommation(date=date, IDunite=IDunite, IDinscription=IDinscription, etat=etat)#, IDevenement=IDevenement)
                 session.add(m)
 
         # Création des actions
@@ -1024,6 +1046,7 @@ class Synchro():
             # Mémorisation horodatage synchro
             UTILS_Parametres.Parametres(mode="set", categorie="portail", nom="last_synchro", valeur=str(datetime.datetime.now()))
 
+        print "Temps upload_data = ", time.time() - t1
         self.Pulse_gauge(0)
         time.sleep(0.5)
 
@@ -1041,6 +1064,9 @@ class Synchro():
 
         # Codage de la clé de sécurité
         secret = self.GetSecretInteger()
+
+        # Préparation du décryptage des valeurs
+        cryptage = UTILS_Cryptage_fichier.AESCipher(self.dict_parametres["secret_key"][10:20], bs=16, prefixe=u"#@#")
 
         # Recherche la dernière demande téléchargée
         DB = GestionDB.DB()
@@ -1104,7 +1130,14 @@ class Synchro():
 
             # Recherche le prochain IDaction
             DB = GestionDB.DB()
-            prochainIDaction = DB.GetProchainID("portail_actions")
+            #prochainIDaction = DB.GetProchainID("portail_actions")
+            req = """SELECT max(IDaction) FROM portail_actions;"""
+            DB.ExecuterReq(req)
+            listeTemp = DB.ResultatReq()
+            if listeTemp[0][0] == None:
+                prochainIDaction = 1
+            else:
+                prochainIDaction = listeTemp[0][0] + 1
 
             listeActions = []
             listeReservations = []
@@ -1132,7 +1165,8 @@ class Synchro():
                 if action.has_key("renseignements"):
                     if len(action["renseignements"]) > 0 :
                         for renseignement in action["renseignements"] :
-                            listeRenseignements.append([renseignement["champ"], renseignement["valeur"], prochainIDaction])
+                            valeur = cryptage.decrypt(renseignement["valeur"])
+                            listeRenseignements.append([renseignement["champ"], valeur, prochainIDaction])
 
                 prochainIDaction += 1
 

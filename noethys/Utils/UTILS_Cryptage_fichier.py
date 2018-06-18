@@ -10,6 +10,7 @@
 
 try :
     from Crypto.Cipher import AES
+    from Crypto import Random
     CRYPTO_IMPORT = True
 except :
     CRYPTO_IMPORT = False
@@ -18,7 +19,8 @@ import hashlib
 import pickle
 import sys, getopt
 import getpass
-import os
+import base64
+
 
 class CypherText:
 
@@ -225,13 +227,69 @@ def checkProgArgs(method, filename_in, filename_out, password):
 	return 0
 
 def CrypterFichier(fichierDecrypte="", fichierCrypte="", motdepasse=""):
-    cryptFile(fichierDecrypte, fichierCrypte, hashPassword_MD5(motdepasse))
+	cryptFile(fichierDecrypte, fichierCrypte, hashPassword_MD5(motdepasse))
 
 def DecrypterFichier(fichierCrypte="", fichierDecrypte="", motdepasse=""):
-    decryptFile(fichierCrypte, fichierDecrypte, hashPassword_MD5(motdepasse))
+	decryptFile(fichierCrypte, fichierDecrypte, hashPassword_MD5(motdepasse))
+
+def CrypterTexte(texte, motdepasse=""):
+	return encrypt(texte, hashPassword_MD5(motdepasse)).getCypherText()
+
+def DecrypterTexte(texte, motdepasse=""):
+	texte = pickle.load(texte)
+	return decrypt(texte, hashPassword_MD5(motdepasse))
 
 
 
+# ----------- Cryptage d'un simple texte unicode ------------
+
+class AESCipher(object):
+    """
+    A classical AES Cipher. Can use any size of data and any size of password thanks to padding.
+    Also ensure the coherence and the type of the data with a unicode to byte converter.
+    """
+    def __init__(self, key, bs=32, prefixe=None):
+        self.bs = bs
+        self.key = hashlib.sha256(AESCipher.str_to_bytes(key)).digest()
+        self.prefixe = prefixe
+
+    @staticmethod
+    def str_to_bytes(data):
+        u_type = type(b''.decode('utf8'))
+        if isinstance(data, u_type):
+            return data.encode('utf8')
+        return data
+
+    def _pad(self, s):
+        return s + (self.bs - len(s) % self.bs) * AESCipher.str_to_bytes(chr(self.bs - len(s) % self.bs))
+
+    @staticmethod
+    def _unpad(s):
+        return s[:-ord(s[len(s)-1:])]
+
+    def encrypt(self, raw):
+        if raw == None :
+            return None
+        raw = self._pad(AESCipher.str_to_bytes(raw))
+        iv = Random.new().read(AES.block_size)
+        cipher = AES.new(self.key, AES.MODE_CBC, iv)
+        texte = base64.b64encode(iv + cipher.encrypt(raw)).decode('utf-8')
+        if self.prefixe != None :
+            texte = self.prefixe + texte
+        return texte
+
+    def decrypt(self, enc):
+        if enc == None :
+            return None
+        if self.prefixe != None :
+            if enc.startswith(self.prefixe) == False :
+                return enc
+            else :
+                enc = enc[len(self.prefixe):]
+        enc = base64.b64decode(enc)
+        iv = enc[:AES.block_size]
+        cipher = AES.new(self.key, AES.MODE_CBC, iv)
+        return self._unpad(cipher.decrypt(enc[AES.block_size:])).decode('utf-8')
 
 if (__name__ == '__main__'):
 ##	#Parse command line options
@@ -250,4 +308,8 @@ if (__name__ == '__main__'):
     #PublicKey = read_keys_from_file()
     #cyphertext = encrypt( 'truc!', PublicKey )
     #print decrypt( cyphertext, PublicKey )
-    pass
+
+    cryptage = AESCipher("motdepasse", bs=32, prefixe="#x#")
+    data = cryptage.encrypt(u"Ceci est le texte codé")
+    print len(data), data
+    print cryptage.decrypt(data)
