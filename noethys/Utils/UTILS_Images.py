@@ -79,9 +79,13 @@ def hex_to_rgb(value):
     return tuple(int(value[i:i+lv/3], 16) for i in range(0, lv, lv/3))
 
 def ConvertToRVB(couleur=None):
-    if type(couleur) == str : r, v, b = hex_to_rgb(couleur)
-    if type(couleur) == tuple : r, v, b = couleur
-    if type(couleur) == wx.Colour : r, v, b = couleur.Get()
+    if type(couleur) == str :
+        r, v, b = hex_to_rgb(couleur)
+    if type(couleur) == tuple :
+        r, v, b = couleur[0], couleur[1], couleur[2]
+    if type(couleur) == wx.Colour :
+        col = couleur.Get()
+        r, v, b = col[0], col[1], col[2]
     return (r, v, b)
 
 def CreationCarreCouleur(largeur, hauteur, couleur=None, contour=False):

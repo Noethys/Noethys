@@ -197,7 +197,7 @@ class ListView(FastObjectListView):
             taille = self.tailleImagesMaxi
         else :
             taille = self.tailleImagesMini
-        
+
         # Image list
         dictImages = {"standard":{}, "modes":{}, "emetteurs":{} }
         imageList = wx.ImageList(taille[0], taille[1])

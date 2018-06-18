@@ -224,7 +224,10 @@ class CaseRenderer(GridCellRenderer):
             if largeurRond < hauteurRond:
                 largeurRond = hauteurRond
 
-            dc.DrawRoundedRectangleRect(wx.Rect(xRond, yRond, largeurRond, hauteurRond), hauteurRond / 2.0)
+            if 'phoenix' in wx.PlatformInfo:
+                dc.DrawRoundedRectangle(wx.Rect(xRond, yRond, largeurRond, hauteurRond), hauteurRond / 2.0)
+            else :
+                dc.DrawRoundedRectangleRect(wx.Rect(xRond, yRond, largeurRond, hauteurRond), hauteurRond / 2.0)
 
             # Texte
             xTexte = xRond + largeurRond / 2.0 - largeurTexte / 2.0

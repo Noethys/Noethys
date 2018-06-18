@@ -160,10 +160,9 @@ def get_default_font(size, bold=False):
 
 
 def darken_color(color, factor=0.7):
-    r, g, b = color
-    new_r = int(r * factor)
-    new_g = int(g * factor)
-    new_b = int(b * factor)
+    new_r = int(color[0] * factor)
+    new_g = int(color[1] * factor)
+    new_b = int(color[2] * factor)
     return (new_r, new_g, new_b)
 
 

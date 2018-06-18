@@ -13,6 +13,10 @@ import wxScheduleUtils as utils
 if sys.version.startswith( "2.3" ):
 	from sets import Set as set
 
+if 'phoenix' in wx.PlatformInfo:
+	Sizer = wx.Sizer
+else :
+	Sizer = wx.PySizer
 
 # Events 
 wxEVT_COMMAND_SCHEDULE_ACTIVATED = wx.NewEventType()
@@ -27,7 +31,7 @@ EVT_SCHEDULE_DCLICK = wx.PyEventBinder( wxEVT_COMMAND_SCHEDULE_DCLICK )
 wxEVT_COMMAND_SCHEDULE_MOTION = wx.NewEventType()
 EVT_SCHEDULE_MOTION = wx.PyEventBinder( wxEVT_COMMAND_SCHEDULE_MOTION)
 
-class wxSchedulerSizer(wx.PySizer):
+class wxSchedulerSizer(Sizer):
 	def __init__(self, minSizeCallback):
 		super(wxSchedulerSizer, self).__init__()
 
@@ -35,6 +39,10 @@ class wxSchedulerSizer(wx.PySizer):
 
 	def CalcMin(self):
 		return self._minSizeCallback()
+
+	def RecalcSizes(self, *args, **kwds):
+		""" J'ai rajoute cette fonction pour contrer bug avec phoenix """
+		pass
 
 
 # Main class

@@ -463,7 +463,10 @@ class CaseOuvertureRenderer(GridCellRenderer):
     def GetImageEvement(self, texte="", taille=(16, 16), couleur_texte=wx.BLACK, couleur_fond=wx.Colour(0, 0, 0), couleur_rond=wx.RED, alignement="droite-bas", padding=0, taille_police=9):
         """ Ajoute un texte sur une image bitmap """
         # Création du bitmap
-        bmp = wx.EmptyBitmap(taille[0], taille[1])
+        if 'phoenix' in wx.PlatformInfo:
+            bmp = wx.Bitmap(taille[0], taille[1])
+        else :
+            bmp = wx.EmptyBitmap(taille[0], taille[1])
         mdc = wx.MemoryDC(bmp)
         dc = wx.GCDC(mdc)
         mdc.SetBackground(wx.Brush(couleur_fond))
@@ -489,7 +492,10 @@ class CaseOuvertureRenderer(GridCellRenderer):
         if "haut" in alignement: yRond = 1
         if "bas" in alignement: yRond = taille[1] - hauteurRond - 1
 
-        dc.DrawRoundedRectangleRect(wx.Rect(xRond, yRond, largeurRond, hauteurRond), hauteurRond / 2.0)
+        if 'phoenix' in wx.PlatformInfo:
+            dc.DrawRoundedRectangle(wx.Rect(xRond, yRond, largeurRond, hauteurRond), hauteurRond / 2.0)
+        else :
+            dc.DrawRoundedRectangleRect(wx.Rect(xRond, yRond, largeurRond, hauteurRond), hauteurRond / 2.0)
 
         # Texte
         xTexte = xRond + largeurRond / 2.0 - largeurTexte / 2.0
