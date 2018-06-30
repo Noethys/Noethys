@@ -136,13 +136,13 @@ class ListView(FastObjectListView):
             ColumnDefn(_(u"Au"), "left", 80, "date_fin", typeDonnee="date", stringConverter=FormateDateCourt),
             ColumnDefn(_(u"Type de pièce"), "left", 100, "nomPublic", typeDonnee="texte"),
             ]
-        
-##        # Test pour intégrer le filtre inscrits/Présents
-##        if len(self.donnees) > 0 :
-##            if self.donnees[0].public == "famille" :
-##                liste_Colonnes.append(ColumnDefn(_(u"IDfamille"), "left", 0, "IDfamille", typeDonnee="entier"))
-##            else :
-##                liste_Colonnes.append(ColumnDefn(_(u"IDindividu"), "left", 0, "IDindividu", typeDonnee="entier"))
+
+        # Intégration le filtre inscrits/Présents
+        if len(self.donnees) > 0 :
+            if self.donnees[0].public == "famille" :
+                liste_Colonnes.append(ColumnDefn(_(u"IDfamille"), "left", 40, "IDfamille", typeDonnee="entier"))
+            else :
+                liste_Colonnes.append(ColumnDefn(_(u"IDindividu"), "left", 40, "IDindividu", typeDonnee="entier"))
 
         self.SetColumns(liste_Colonnes)
         self.SetEmptyListMsg(_(u"Aucune pièce"))
