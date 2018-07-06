@@ -4199,6 +4199,7 @@ class MyApp(wx.App):
             if temoignages == False :
                 financement = frame.AnnonceFinancement()
 
+
                 # Détection d'anomalies
                 if financement == False and CUSTOMIZE.GetValeur("correction_anomalies", "actif", "1") == "1" :
                     frame.AutodetectionAnomalies()

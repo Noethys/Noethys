@@ -741,14 +741,14 @@ class Informations() :
                     self.dictIndividus[IDindividu]["SCOLARITE_NOM_NIVEAU"] = niveau_nom
                     self.dictIndividus[IDindividu]["SCOLARITE_ABREGE_NIVEAU"] = niveau_abrege
 
-            if self.dictIndividus[IDindividu].has_key("scolarite") == False:
-                self.dictIndividus[IDindividu]["scolarite"] = {"nombre": 0, "liste": []}
-            self.dictIndividus[IDindividu]["scolarite"]["nombre"] += 1
+                if self.dictIndividus[IDindividu].has_key("scolarite") == False:
+                    self.dictIndividus[IDindividu]["scolarite"] = {"nombre": 0, "liste": []}
+                self.dictIndividus[IDindividu]["scolarite"]["nombre"] += 1
 
-            # Mémorise l'étape de scolarité au format liste
-            self.dictIndividus[IDindividu]["scolarite"]["liste"].append(
-                {"date_debut": UTILS_Dates.DateEngFr(date_debut), "date_fin": UTILS_Dates.DateEngFr(date_fin),
-                 "ecole_nom": ecole_nom, "classe_nom": classe_nom, "niveau_nom": niveau_nom, "niveau_abrege":niveau_abrege})
+                # Mémorise l'étape de scolarité au format liste
+                self.dictIndividus[IDindividu]["scolarite"]["liste"].append(
+                    {"date_debut": UTILS_Dates.DateEngFr(date_debut), "date_fin": UTILS_Dates.DateEngFr(date_fin),
+                     "ecole_nom": ecole_nom, "classe_nom": classe_nom, "niveau_nom": niveau_nom, "niveau_abrege":niveau_abrege})
 
     # ---------------------------------------------------------------------------------------------------------------------------------
         

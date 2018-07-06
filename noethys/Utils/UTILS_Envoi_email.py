@@ -135,11 +135,14 @@ def GetAdresseFamille(IDfamille=None, choixMultiple=True, muet=False, nomTitulai
     listeDonnees = DB.ResultatReq()
     DB.Close() 
     listeAdresses = []
+    listeTemp = []
     for IDindividu,  IDcategorie, nom, prenom, mailPerso, mailTravail in listeDonnees :
-        if mailPerso != None and mailPerso != "" :
+        if mailPerso != None and mailPerso != "" and mailPerso not in listeTemp :
             listeAdresses.append((_(u"%s (Adresse perso de %s)") % (mailPerso, prenom), mailPerso))
-        if mailTravail != None and mailTravail != "" :
+            listeTemp.append(mailPerso)
+        if mailTravail != None and mailTravail != "" and mailTravail not in listeTemp :
             listeAdresses.append((_(u"%s (Adresse pro de %s)") % (mailTravail, prenom), mailTravail))
+            listeTemp.append(mailTravail)
     if len(listeAdresses) == 0 :
         if muet == False :
             dlg = wx.MessageDialog(None, _(u"Aucun membre de la famille de %s ne dispose d'adresse mail !") % nomTitulaires, "Erreur", wx.OK | wx.ICON_EXCLAMATION)

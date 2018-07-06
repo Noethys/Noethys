@@ -418,10 +418,10 @@ class Dialog(wx.Dialog):
         
         menuPop.AppendSeparator()
 
-        item = wx.MenuItem(menuPop, 80, _(u"Exporter les données de la famille au format XML"))
+        item = wx.MenuItem(menuPop, 85, _(u"Exporter les données de la famille au format XML"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Document_export.png"), wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
-        self.Bind(wx.EVT_MENU, self.MenuExporter, id=80)
+        self.Bind(wx.EVT_MENU, self.MenuExporter, id=85)
 
         menuPop.AppendSeparator()
 
