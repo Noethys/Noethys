@@ -17,6 +17,7 @@ import datetime
 import GestionDB
 import UTILS_Dates
 from UTILS_Decimal import FloatToDecimal as FloatToDecimal
+from Utils import UTILS_Prestations
 
 
 def EcritStatusbar(texte=u""):
@@ -55,8 +56,7 @@ class CotisationsSansIndividus(Anomalie):
         IDprestation = self.kwds["IDprestation"]
         DB.ReqDEL("cotisations", "IDcotisation", IDcotisation)
         if IDprestation != None :
-            DB.ReqDEL("prestations", "IDprestation", IDprestation)
-            DB.ReqDEL("ventilation", "IDprestation", IDprestation)
+            UTILS_Prestations.supprimerSiNul(IDprestation, DB)
         self.corrige = True
 
 class CotisationsSansFamilles(Anomalie):
@@ -66,17 +66,13 @@ class CotisationsSansFamilles(Anomalie):
         IDprestation = self.kwds["IDprestation"]
         DB.ReqDEL("cotisations", "IDcotisation", IDcotisation)
         if IDprestation != None :
-            DB.ReqDEL("prestations", "IDprestation", IDprestation)
-            DB.ReqDEL("ventilation", "IDprestation", IDprestation)
+            UTILS_Prestations.supprimerSiNul(IDprestation, DB)
         self.corrige = True
 
 class PrestationsSansFamilles(Anomalie):
     def Correction(self, DB=None):
         IDprestation = self.kwds["IDprestation"]
-        IDfamille = self.kwds["IDfamille"]
-        DB.ReqDEL("prestations", "IDprestation", IDprestation)
-        DB.ReqDEL("ventilation", "IDprestation", IDprestation)
-        self.corrige = True
+        self.corrige = UTILS_Prestations.supprimerSiNul(IDprestation, DB)
 
 class VentilationsSansPrestations(Anomalie):
     def Correction(self, DB=None):
@@ -211,8 +207,7 @@ class VentilationsExcessives(Anomalie):
 class PrestationsFantomes(Anomalie):
     def Correction(self, DB=None):
         IDprestation = self.kwds["IDprestation"]
-        DB.ReqDEL("prestations", "IDprestation", IDprestation)
-        self.corrige = True
+        self.corrige = UTILS_Prestations.supprimerSiNul(IDprestation, DB)
 
 
 

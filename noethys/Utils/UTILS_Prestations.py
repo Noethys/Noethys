@@ -57,3 +57,29 @@ def annuler(prestation_id, db=None):
     if db is None:
         connexion.Close()
     return liste_donnees
+
+def supprimerSiNul(prestation_id, db=None):
+    """
+    Supprimer une prestation seulement si le montant est nul.
+
+    :param prestation_id:   identifiant de prestation
+    :param db: GestionDB    connexion à la base de données, si aucune connexion n'est passée, une nouvelle connexion
+    sera créée (et clôturée)
+    :return:                si la suppression a eu lieu ou non
+    """
+    connexion = db or DB()
+    req = """
+    SELECT montant
+    FROM prestations WHERE IDprestation = %d
+    """ % prestation_id
+    connexion.ExecuterReq(req)
+    prestation_donnees = connexion.ResultatReq()
+    supprime = False
+    if prestation_donnees:
+        montant = prestation_donnees[0][0]
+        if montant is None or montant == 0:
+            connexion.ReqDEL("prestations", "IDprestation", prestation_id)
+            connexion.ReqDEL("ventilation", "IDprestation", prestation_id)
+            supprime = True
+    db or connexion.Close()
+    return supprime

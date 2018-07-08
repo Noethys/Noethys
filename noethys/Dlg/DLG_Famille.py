@@ -652,6 +652,22 @@ class Dialog(wx.Dialog):
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         IDcompte_payeur = listeDonnees[0][0]
+        # Vérifier s'il y a des prestation rattachées
+        req = """SELECT COUNT(*) FROM prestations WHERE IDcompte_payeur=%d""" % IDcompte_payeur
+        DB.ExecuterReq(req)
+        listeDonnees = DB.ResultatReq()
+        compte_prestations = listeDonnees[0][0]
+        if compte_prestations != 0:
+            dlg = wx.MessageDialog(
+                self,
+                _(u"Vous ne pouvez pas supprimer cette fiche car elle est rattachée à au moins une prestation."),
+                _(u"Suppression impossible"),
+                wx.OK | wx.ICON_ERROR
+            )
+            dlg.ShowModal()
+            dlg.Destroy()
+            DB.Close()
+            return False
         # Suppression des tables rattachées
         DB.ReqDEL("payeurs", "IDcompte_payeur", IDcompte_payeur)
         DB.ReqDEL("deductions", "IDcompte_payeur", IDcompte_payeur)
@@ -666,14 +682,14 @@ class Dialog(wx.Dialog):
         DB.ReqDEL("comptes_payeurs", "IDfamille", self.IDfamille)
         DB.ReqDEL("familles", "IDfamille", self.IDfamille)
         DB.ReqDEL("factures", "IDcompte_payeur", IDcompte_payeur)
-        DB.ReqDEL("prestations", "IDcompte_payeur", IDcompte_payeur)
         DB.ReqDEL("mandats", "IDfamille", self.IDfamille)
         DB.Commit() 
         DB.Close()
+        return True
     
     def SupprimerFicheFamille(self):
-        self.SupprimerFamille()
-        self.Destroy()
+        if self.SupprimerFamille():
+            self.Destroy()
         
         dlg = wx.MessageDialog(self, _(u"La fiche famille a été supprimée."), _(u"Suppression"), wx.OK | wx.ICON_INFORMATION)
         dlg.ShowModal()

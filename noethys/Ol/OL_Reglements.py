@@ -10,7 +10,7 @@
 
 
 import Chemins
-from Utils import UTILS_Adaptations
+from Utils import UTILS_Adaptations, UTILS_Prestations
 from Utils.UTILS_Traduction import _
 import wx
 from Ctrl import CTRL_Bouton_image
@@ -483,7 +483,7 @@ class ListView(FastObjectListView):
         DB.Close()
         if len(listeFrais) > 0 :
             IDprestationFrais, montantFrais, labelFrais = listeFrais[0]
-            dlg = wx.MessageDialog(self, _(u"Une prestation d'un montant de %.2f %s pour frais de gestion est associée à ce règlement. Cette prestation sera automatiquement supprimée en même temps que le règlement.\n\nConfirmez-vous tout de même la suppression de ce règlement ?") % (montantFrais, SYMBOLE), _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Une prestation d'un montant de %.2f %s pour frais de gestion est associée à ce règlement. Cette prestation sera automatiquement annulée en même temps que le règlement.\n\nConfirmez-vous tout de même la suppression de ce règlement ?") % (montantFrais, SYMBOLE), _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
             if dlg.ShowModal() != wx.ID_YES :
                 return
         else :
@@ -514,8 +514,7 @@ class ListView(FastObjectListView):
             
             # Suppression des frais de gestion
             if IDprestationFrais != None :
-                DB.ReqDEL("prestations", "IDprestation", IDprestationFrais)
-                DB.ReqDEL("ventilation", "IDprestation", IDprestationFrais)
+                UTILS_Prestations.annuler(IDprestationFrais)
             
             DB.Close()
             
