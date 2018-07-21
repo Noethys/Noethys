@@ -1121,6 +1121,13 @@ class Page_Parametres(wx.Panel):
         self.SetSizer(sizer_base)
         self.Layout()
 
+    def Validation(self):
+        return self.ctrl_parametres.Validation()
+
+    def Sauvegarde(self):
+        return self.ctrl_parametres.Sauvegarde()
+
+
 
 class Page_Conditions(wx.Panel):
     def __init__(self, parent):
