@@ -1009,7 +1009,7 @@ class CTRL(wx.Panel):
         """
         source = source.replace("<head></head>", head)
         source = source.decode("utf-8")
-        print source
+        #print source
         
         import wx.html
         dlg = wx.Dialog(self, title="HTML", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER)
@@ -1026,12 +1026,14 @@ class CTRL(wx.Panel):
 
         handler.DeleteTemporaryImages()
 
-    def GetHTML(self, imagesIncluses=True):
+    def GetHTML(self, imagesIncluses=True, base64=False):
         # Récupération de la source HTML
         handler = rt.RichTextHTMLHandler()
-        if imagesIncluses == True : 
-##            handler.SetFlags(rt.RICHTEXT_HANDLER_SAVE_IMAGES_TO_BASE64)
-            handler.SetFlags(rt.RICHTEXT_HANDLER_SAVE_IMAGES_TO_FILES)
+        if imagesIncluses == True :
+            if base64 == True :
+                handler.SetFlags(rt.RICHTEXT_HANDLER_SAVE_IMAGES_TO_BASE64)
+            else :
+                handler.SetFlags(rt.RICHTEXT_HANDLER_SAVE_IMAGES_TO_FILES)
         else:
             handler.SetFlags(rt.RICHTEXT_HANDLER_SAVE_IMAGES_TO_MEMORY)
         handler.SetFontSizeMapping([7,9,11,12,14,22,100])
@@ -1044,7 +1046,22 @@ class CTRL(wx.Panel):
         source = source.decode("utf-8")
         listeImages = handler.GetTemporaryImageLocations()
         return source, listeImages, handler
-    
+
+    def GetHTML_base64(self):
+        # Récupération de la source HTML
+        handler = rt.RichTextHTMLHandler()
+        handler.SetFlags(rt.RICHTEXT_HANDLER_SAVE_IMAGES_TO_BASE64)
+        handler.SetFontSizeMapping([7, 9, 11, 12, 14, 22, 100])
+        import cStringIO
+        stream = cStringIO.StringIO()
+        if not handler.SaveStream(self.ctrl_editeur.GetBuffer(), stream):
+            return False
+        source = stream.getvalue()
+        source = source.decode("utf-8")
+        for balise in ("<html>", "</html>", "<head>", "</head>", "<body>", "</body>"):
+            source = source.replace(balise, "")
+        return source
+
     def GetValue(self):
         return self.ctrl_editeur.GetValue() 
     
@@ -1071,10 +1088,19 @@ class MyFrame(wx.Frame):
         sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
         self.SetSizer(sizer_1)
         self.ctrl = CTRL(panel)
+        self.bouton_test = wx.Button(panel, -1, "Test")
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.ctrl, 1, wx.ALL|wx.EXPAND, 4)
+        sizer_2.Add(self.bouton_test, 0, wx.ALL | wx.EXPAND, 4)
         panel.SetSizer(sizer_2)
         self.Layout()
+        self.Bind(wx.EVT_BUTTON, self.OnBoutonTest, self.bouton_test)
+
+    def OnBoutonTest(self, event):
+        print self.ctrl.GetHTML(base64=True)[0]
+        self.ctrl.OnFileViewHTML()
+
+
 
 if __name__ == '__main__':
     app = wx.App(0)

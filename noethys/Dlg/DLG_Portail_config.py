@@ -17,10 +17,13 @@ import wx.propgrid as wxpg
 import copy
 import random
 import time
+import datetime
 import codecs
 import os.path
 import webbrowser
 import GestionDB
+import wx.richtext as rt
+import cStringIO
 
 from Dlg import DLG_Message_html
 
@@ -28,6 +31,7 @@ from Ctrl import CTRL_Bouton_image
 from Ctrl import CTRL_Bandeau
 from Ctrl import CTRL_Propertygrid
 from Ctrl import CTRL_Portail_messages
+from Ctrl import CTRL_Portail_pages
 
 from Utils import UTILS_Parametres
 from Utils import UTILS_Config
@@ -90,6 +94,8 @@ VALEURS_DEFAUT = {
     "recevoir_document_courrier" : True,
     "recevoir_document_site" : True,
     "recevoir_document_site_lieu" : _(u"à l'accueil de la structure"),
+    "mdp_forcer_modification": True,
+    "mdp_autoriser_modification": True,
     "paiement_ligne_actif" : False,
     "paiement_ligne_systeme" : 0,
     "paiement_ligne_mode_reglement" : 0,
@@ -492,6 +498,20 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         nom = "crypter_transferts"
         propriete = wxpg.BoolProperty(label=_(u"Crypter les données lors des transferts"), name=nom, value=VALEURS_DEFAUT[nom])
         propriete.SetHelpString(_(u"Cochez cette case pour crypter les données lors des transferts"))
+        propriete.SetAttribute("UseCheckbox", True)
+        self.Append(propriete)
+
+        # Forcer modification mot de passe
+        nom = "mdp_forcer_modification"
+        propriete = wxpg.BoolProperty(label=_(u"Forcer la modification du mot de passe"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Cochez cette case pour obliger l'utilisateur à modifier son mot de passe lors de sa première utilisation du portail"))
+        propriete.SetAttribute("UseCheckbox", True)
+        self.Append(propriete)
+
+        # Autoriser modification mot de passe
+        nom = "mdp_autoriser_modification"
+        propriete = wxpg.BoolProperty(label=_(u"Autoriser la modification du mot de passe par l'utilisateur"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Cochez cette case pour permettre à l'utilisateur de modifier lui-même son mot de passe quand il le souhaite"))
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
@@ -1083,6 +1103,224 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         fichier.close()
 
 
+
+
+
+# -------------------------------------------------------------------------------------------------------------------------
+
+
+class Page_Parametres(wx.Panel):
+    def __init__(self, parent):
+        wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
+        self.parent = parent
+        self.ctrl_parametres = CTRL_Parametres(self)
+
+        # Layout
+        sizer_base = wx.BoxSizer(wx.VERTICAL)
+        sizer_base.Add(self.ctrl_parametres, 1, wx.EXPAND | wx.ALL, 10)
+        self.SetSizer(sizer_base)
+        self.Layout()
+
+
+class Page_Conditions(wx.Panel):
+    def __init__(self, parent):
+        wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
+        self.parent = parent
+        self.categorie = "conditions_utilisation"
+
+        self.ctrl_html = rt.RichTextCtrl(self, id=-1, style=wx.VSCROLL | wx.HSCROLL | wx.WANTS_CHARS)#wx.html.HtmlWindow(self, style=wx.BORDER_SUNKEN)
+        self.ctrl_html.SetEditable(False)
+
+        self.bouton_modifier = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Modifier.png"), wx.BITMAP_TYPE_ANY))
+
+        self.ctrl_infos = wx.html.HtmlWindow(self, style=wx.BORDER_THEME)
+        self.ctrl_infos.SetMinSize((-1, 50))
+        self.ctrl_infos.SetBorders(4)
+        self.ctrl_infos.SetPage(u"""
+        <FONT SIZE=2><IMG SRC="%s"><B>Astuce</B> : Vous pouvez utiliser les mots-clés suivants pour intégrer les données de l'organisateur dans le texte : {ORGANISATEUR_NOM}, 
+        {ORGANISATEUR_RUE}, {ORGANISATEUR_CP}, {ORGANISATEUR_VILLE}, {ORGANISATEUR_TEL}, {ORGANISATEUR_FAX}, {ORGANISATEUR_EMAIL}.</FONT>
+        """ % Chemins.GetStaticPath(u"Images/16x16/Astuce.png"))
+        self.ctrl_infos.SetBackgroundColour(wx.SystemSettings.GetColour(30))
+
+        self.Bind(wx.EVT_BUTTON, self.OnModifier, self.bouton_modifier)
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour éditer le texte")))
+
+        # Layout
+        sizer_base = wx.BoxSizer(wx.VERTICAL)
+        grid_sizer_base = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
+        grid_sizer_base.Add(self.ctrl_html, 1, wx.EXPAND, 0)
+        grid_sizer_base.Add(self.bouton_modifier, 0, 0, 0)
+        grid_sizer_base.AddGrowableRow(0)
+        grid_sizer_base.AddGrowableCol(0)
+        sizer_base.Add(grid_sizer_base, 1, wx.EXPAND | wx.ALL, 10)
+        sizer_base.Add(self.ctrl_infos, 0, wx.EXPAND | wx.LEFT | wx.RIGHT | wx.BOTTOM, 10)
+        self.SetSizer(sizer_base)
+        self.Layout()
+
+        # Init
+        self.MAJ()
+        self.bouton_modifier.SetFocus()
+
+    def MAJ(self):
+        # Importation du texte
+        DB = GestionDB.DB()
+        req = """SELECT IDelement, texte_xml
+        FROM portail_elements
+        WHERE categorie='%s';""" % self.categorie
+        DB.ExecuterReq(req)
+        listeDonnees = DB.ResultatReq()
+        DB.Close()
+        if len(listeDonnees) == 0 : return
+        IDelement, texte_xml = listeDonnees[0]
+
+        # Insertion du texte
+        out = cStringIO.StringIO()
+        handler = wx.richtext.RichTextXMLHandler()
+        buffer = self.ctrl_html.GetBuffer()
+        buffer.AddHandler(handler)
+        out.write(texte_xml.encode("utf8"))
+        out.seek(0)
+        if 'phoenix' in wx.PlatformInfo:
+            handler.LoadFile(buffer, out)
+        else:
+            handler.LoadStream(buffer, out)
+        self.ctrl_html.Refresh()
+
+    def OnModifier(self, event):
+        from Dlg import DLG_Saisie_texte_html
+        dlg = DLG_Saisie_texte_html.Dialog(self, categorie=self.categorie)
+        if dlg.ShowModal() == wx.ID_OK:
+            self.MAJ()
+            UTILS_Parametres.Parametres(mode="set", categorie="portail", nom="last_update_pages", valeur=str(datetime.datetime.now()))
+        dlg.Destroy()
+
+
+
+
+
+class Page_Pages(wx.Panel):
+    def __init__(self, parent):
+        wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
+        self.parent = parent
+
+        self.ctrl_pages = CTRL_Portail_pages.CTRL(self)
+
+        self.bouton_ajouter = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Ajouter.png"), wx.BITMAP_TYPE_ANY))
+        self.bouton_modifier = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Modifier.png"), wx.BITMAP_TYPE_ANY))
+        self.bouton_supprimer = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Supprimer.png"), wx.BITMAP_TYPE_ANY))
+        self.bouton_monter = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Fleche_haut.png"), wx.BITMAP_TYPE_ANY))
+        self.bouton_descendre = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Fleche_bas.png"), wx.BITMAP_TYPE_ANY))
+
+        self.Bind(wx.EVT_BUTTON, self.ctrl_pages.Ajouter, self.bouton_ajouter)
+        self.Bind(wx.EVT_BUTTON, self.ctrl_pages.Modifier, self.bouton_modifier)
+        self.Bind(wx.EVT_BUTTON, self.ctrl_pages.Supprimer, self.bouton_supprimer)
+        self.Bind(wx.EVT_BUTTON, self.ctrl_pages.Monter, self.bouton_monter)
+        self.Bind(wx.EVT_BUTTON, self.ctrl_pages.Descendre, self.bouton_descendre)
+
+        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter une page ou un bloc")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier l'élément sélectionné dans la liste")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer l'élément sélectionné dans la liste")))
+        self.bouton_monter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour monter l'élément sélectionné dans la liste")))
+        self.bouton_descendre.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour descendre l'élément sélectionné dans la liste")))
+
+        # Layout
+        sizer_base = wx.BoxSizer(wx.VERTICAL)
+        grid_sizer_base = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
+        grid_sizer_base.Add(self.ctrl_pages, 1, wx.EXPAND, 0)
+
+        grid_sizer_boutons = wx.FlexGridSizer(rows=8, cols=1, vgap=5, hgap=5)
+        grid_sizer_boutons.Add(self.bouton_ajouter, 0, 0, 0)
+        grid_sizer_boutons.Add(self.bouton_modifier, 0, 0, 0)
+        grid_sizer_boutons.Add(self.bouton_supprimer, 0, 0, 0)
+        grid_sizer_boutons.Add((5, 5), 0, 0, 0)
+        grid_sizer_boutons.Add(self.bouton_monter, 0, 0, 0)
+        grid_sizer_boutons.Add(self.bouton_descendre, 0, 0, 0)
+        grid_sizer_base.Add(grid_sizer_boutons, 1, wx.EXPAND, 0)
+
+        grid_sizer_base.AddGrowableRow(0)
+        grid_sizer_base.AddGrowableCol(0)
+        sizer_base.Add(grid_sizer_base, 1, wx.EXPAND | wx.ALL, 10)
+        self.SetSizer(sizer_base)
+        self.Layout()
+
+        # Init
+        self.ctrl_pages.MAJ()
+
+
+
+
+
+class CTRL_Notebook(wx.Notebook):
+    def __init__(self, parent):
+        wx.Notebook.__init__(self, parent, id=-1, style=wx.BK_DEFAULT | wx.NB_MULTILINE)
+        self.dictPages = {}
+
+        self.listePages = [
+            {"code": "parametres", "ctrl": Page_Parametres(self), "label": _(u"Paramètres généraux"), "image": "Mecanisme.png"},
+            {"code": "conditions", "ctrl": Page_Conditions(self), "label": _(u"Conditions d'utilisation"), "image": "Questionnaire.png"},
+            {"code": "pages", "ctrl": Page_Pages(self), "label": _(u"Pages personnalisées"), "image": "Copier.png"},
+        ]
+
+        # ImageList pour le NoteBook
+        il = wx.ImageList(16, 16)
+        self.dictImages = {}
+        for dictPage in self.listePages:
+            self.dictImages[dictPage["code"]] = il.Add(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/%s" % dictPage["image"]), wx.BITMAP_TYPE_PNG))
+        self.AssignImageList(il)
+
+        # Création des pages
+        self.dictPages = {}
+        index = 0
+        for dictPage in self.listePages:
+            self.AddPage(dictPage["ctrl"], dictPage["label"])
+            self.SetPageImage(index, self.dictImages[dictPage["code"]])
+            self.dictPages[dictPage["code"]] = dictPage["ctrl"]
+            index += 1
+
+        #self.Bind(wx.EVT_NOTEBOOK_PAGE_CHANGED, self.OnPageChanged)
+
+    def GetPageAvecCode(self, codePage=""):
+        return self.dictPages[codePage]
+
+    def GetCtrl(self, codePage=""):
+        return self.dictPages[codePage]
+
+    def GetCtrlParametres(self):
+        return self.dictPages["parametres"].ctrl_parametres
+
+    def AffichePage(self, codePage=""):
+        index = 0
+        for dictPage in self.listePages:
+            if dictPage["code"] == codePage:
+                self.SetSelection(index)
+            index += 1
+
+    # def OnPageChanged(self, event):
+    #     """ Quand une page du notebook est sélectionnée """
+    #     if event.GetOldSelection() == -1: return
+    #     indexPage = event.GetSelection()
+    #     page = self.GetPage(indexPage)
+    #     self.Freeze()
+    #     wx.CallLater(1, page.Refresh)
+    #     self.Thaw()
+    #     event.Skip()
+
+    def Validation(self):
+        for dictPage in self.listePages :
+            if hasattr(dictPage["ctrl"], "Validation"):
+                if dictPage["ctrl"].Validation() == False :
+                    return False
+        return True
+    
+    def Sauvegarde(self):
+        for dictPage in self.listePages :
+            if hasattr(dictPage["ctrl"], "Sauvegarde"):
+                dictPage["ctrl"].Sauvegarde()
+
+
+
+# -------------------------------------------------------------------------------------------------------------------------
+
 class Dialog(wx.Dialog):
     def __init__(self, parent):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
@@ -1096,7 +1334,7 @@ class Dialog(wx.Dialog):
 
         # Paramètres
         self.box_parametres = wx.StaticBox(self, -1, _(u"Paramètres"))
-        self.ctrl_parametres = CTRL_Parametres(self)
+        self.ctrl_notebook = CTRL_Notebook(self)
 
         # Log
         self.box_log = wx.StaticBox(self, -1, _(u"Journal"))
@@ -1146,7 +1384,7 @@ class Dialog(wx.Dialog):
 
         # Paramètres
         box_parametres = wx.StaticBoxSizer(self.box_parametres, wx.VERTICAL)
-        box_parametres.Add(self.ctrl_parametres, 1, wx.ALL|wx.EXPAND, 10)
+        box_parametres.Add(self.ctrl_notebook, 1, wx.ALL|wx.EXPAND, 5)
         grid_sizer_base.Add(box_parametres, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
 
         grid_sizer_bas = wx.FlexGridSizer(rows=1, cols=2, vgap=10, hgap=10)
@@ -1156,12 +1394,12 @@ class Dialog(wx.Dialog):
         grid_sizer_actions = wx.BoxSizer(wx.VERTICAL)
         grid_sizer_actions.Add(self.log, 1, wx.EXPAND, 0)
         grid_sizer_actions.Add(self.gauge, 0, wx.EXPAND, 0)
-        staticbox_actions.Add(grid_sizer_actions, 1, wx.ALL|wx.EXPAND, 10)
+        staticbox_actions.Add(grid_sizer_actions, 1, wx.ALL|wx.EXPAND, 5)
         grid_sizer_bas.Add(staticbox_actions, 1, wx.EXPAND, 0)
 
         # Messages
         staticbox_messages = wx.StaticBoxSizer(self.box_messages, wx.VERTICAL)
-        staticbox_messages.Add(self.ctrl_messages, 1, wx.ALL|wx.EXPAND, 10)
+        staticbox_messages.Add(self.ctrl_messages, 1, wx.ALL|wx.EXPAND, 5)
         grid_sizer_bas.Add(staticbox_messages, 1, wx.EXPAND, 0)
 
         grid_sizer_bas.AddGrowableCol(0)
@@ -1191,19 +1429,19 @@ class Dialog(wx.Dialog):
         UTILS_Aide.Aide("")
 
     def OnBoutonFermer(self, event):
-        if self.ctrl_parametres.Validation() == False :
+        if self.ctrl_notebook.Validation() == False :
             return False
         self.MemoriseParametres()
         self.EndModal(wx.ID_CANCEL)
 
     def OnClose(self, event):
-        if self.ctrl_parametres.Validation() == False :
+        if self.ctrl_notebook.Validation() == False :
             return False
         self.MemoriseParametres()
         event.Skip()
 
     def MemoriseParametres(self):
-        self.ctrl_parametres.Sauvegarde()
+        self.ctrl_notebook.Sauvegarde()
 
     def EcritLog(self, message=""):
         horodatage = time.strftime("%d/%m/%y %H:%M:%S", time.localtime())
@@ -1241,7 +1479,7 @@ class Dialog(wx.Dialog):
 
     def OnBoutonOutils(self, event):
         # Création du menu contextuel
-        dict_parametres = self.ctrl_parametres.GetValeurs()
+        dict_parametres = self.ctrl_notebook.GetCtrlParametres().GetValeurs()
 
         menu = UTILS_Adaptations.Menu()
 
@@ -1250,7 +1488,7 @@ class Dialog(wx.Dialog):
             if self.server_ctrl != None :
                 server_is_running = self.server_ctrl.GetServerStatus()
             else :
-                if self.ctrl_parametres.Validation() == True :
+                if self.ctrl_notebook.Validation() == True :
                     self.server_ctrl = UTILS_Portail_controle.ServeurConnecthys(self)
                     server_is_running = self.server_ctrl.GetServerStatus()
 
@@ -1299,14 +1537,14 @@ class Dialog(wx.Dialog):
         item = wx.MenuItem(menu, id, _(u"Importer la configuration"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Document_import.png"), wx.BITMAP_TYPE_PNG))
         menu.AppendItem(item)
-        self.Bind(wx.EVT_MENU, self.ctrl_parametres.Importation_config, id=id)
+        self.Bind(wx.EVT_MENU, self.ctrl_notebook.GetCtrlParametres().Importation_config, id=id)
 
         # Exporter config
         id = wx.NewId()
         item = wx.MenuItem(menu, id, _(u"Exporter la configuration"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Document_export.png"), wx.BITMAP_TYPE_PNG))
         menu.AppendItem(item)
-        self.Bind(wx.EVT_MENU, self.ctrl_parametres.Exportation_config, id=id)
+        self.Bind(wx.EVT_MENU, self.ctrl_notebook.GetCtrlParametres().Exportation_config, id=id)
 
         menu.AppendSeparator()
 
@@ -1388,9 +1626,9 @@ class Dialog(wx.Dialog):
 
     def Installer(self, event):
         # Récupération des paramètres de l'installation
-        if self.ctrl_parametres.Validation() == False :
+        if self.ctrl_notebook.Validation() == False :
             return False
-        dict_parametres = self.ctrl_parametres.GetValeurs()
+        dict_parametres = self.ctrl_notebook.GetCtrlParametres().GetValeurs()
         server_ctrl = self.server_ctrl
 
         if dict_parametres["hebergement_type"] == 1 :
@@ -1476,40 +1714,29 @@ class Dialog(wx.Dialog):
             dlg.Destroy()
             return False
 
-        #if dict_parametres["paiement_ligne_actif"] == True :
-        #    dlg = wx.MessageDialog(self, _(u"Paiement en ligne actif"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
-        #    dlg.ShowModal()
-        #    dlg.Destroy()
-        #    return True
-        #else :
-        #    dlg = wx.MessageDialog(self, _(u"Paiement en ligne non actif"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
-        #    dlg.ShowModal()
-        #    dlg.Destroy()
-        #    return False
-
         # Procédure d'installation
         from Utils import UTILS_Portail_installation
         install = UTILS_Portail_installation.Installer(self, dict_parametres, server_ctrl)
         resultat = install.Installer()
 
     def Update(self, event):
-        if self.ctrl_parametres.Validation() == False :
+        if self.ctrl_notebook.Validation() == False :
             return False
-        dict_parametres = self.ctrl_parametres.GetValeurs()
+        dict_parametres = self.ctrl_notebook.GetCtrlParametres().GetValeurs()
         synchro = Synchro(self, dict_parametres)
         synchro.Update()
 
     def AutoReloadWSGI(self, event):
-        if self.ctrl_parametres.Validation() == False :
+        if self.ctrl_notebook.Validation() == False :
             return False
-        dict_parametres = self.ctrl_parametres.GetValeurs()
+        dict_parametres = self.ctrl_notebook.GetCtrlParametres().GetValeurs()
         synchro = Synchro(self, dict_parametres)
         synchro.AutoReloadWSGI()
 
     def LireJournal(self, event):
-        if self.ctrl_parametres.Validation() == False :
+        if self.ctrl_notebook.Validation() == False :
             return False
-        dict_parametres = self.ctrl_parametres.GetValeurs()
+        dict_parametres = self.ctrl_notebook.GetCtrlParametres().GetValeurs()
         self.EcritLog(_(u"Téléchargement du log..."))
         synchro = Synchro(self, dict_parametres)
         contenu_fichier = synchro.ConnectEtTelechargeFichier("debug.log")
@@ -1523,16 +1750,16 @@ class Dialog(wx.Dialog):
         dlg.Destroy()
 
     def DemandeUpgradeDB(self, event):
-        if self.ctrl_parametres.Validation() == False:
+        if self.ctrl_notebook.Validation() == False:
             return False
-        dict_parametres = self.ctrl_parametres.GetValeurs()
+        dict_parametres = self.ctrl_notebook.GetCtrlParametres().GetValeurs()
         self.EcritLog(_(u"Demande d'upgrade de la base de données..."))
         synchro = Synchro(self, dict_parametres)
         if synchro.Upgrade_application() == True :
             self.EcritLog(_(u"Upgrade effectué."))
 
     def OuvrirNavigateur(self, event):
-        dict_parametres = self.ctrl_parametres.GetValeurs()
+        dict_parametres = self.ctrl_notebook.GetCtrlParametres().GetValeurs()
         url = dict_parametres["url_connecthys"]
         if url == "" :
             dlg = wx.MessageDialog(None, _(u"Vous devez renseigner l'URL d'accès à Connecthys !"), _(u"Accès impossible"), wx.OK | wx.ICON_INFORMATION)
@@ -1548,7 +1775,7 @@ class Dialog(wx.Dialog):
         webbrowser.open(url)
 
     def OuvrirStats(self, event):
-        dict_parametres = self.ctrl_parametres.GetValeurs()
+        dict_parametres = self.ctrl_notebook.GetCtrlParametres().GetValeurs()
         url = dict_parametres["url_connecthys"]
         if url == "" :
             dlg = wx.MessageDialog(None, _(u"Vous devez renseigner l'URL d'accès à Connecthys !"), _(u"Accès impossible"), wx.OK | wx.ICON_INFORMATION)
@@ -1610,16 +1837,16 @@ class Dialog(wx.Dialog):
         webbrowser.open(url)
 
     def Synchroniser(self, event):
-        if self.ctrl_parametres.Validation() == False :
+        if self.ctrl_notebook.Validation() == False :
             return False
-        dict_parametres = self.ctrl_parametres.GetValeurs()
+        dict_parametres = self.ctrl_notebook.GetCtrlParametres().GetValeurs()
         synchro = Synchro(self, dict_parametres)
         synchro.Start()
 
     def Synchroniser_full(self, event):
-        if self.ctrl_parametres.Validation() == False :
+        if self.ctrl_notebook.Validation() == False :
             return False
-        dict_parametres = self.ctrl_parametres.GetValeurs()
+        dict_parametres = self.ctrl_notebook.GetCtrlParametres().GetValeurs()
         synchro = Synchro(self, dict_parametres)
         synchro.Start(full_synchro=True)
 

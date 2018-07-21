@@ -22,6 +22,7 @@ TABLES_IMPORTATION_OPTIONNELLES = [
         [u"Comptes comptables", ("compta_comptes_comptables",), True],
         [u"Types de quotients", ("types_quotients",), True],
         [u"Catégories médicales", ("categories_medicales",), True],
+        [u"Eléments de pages du portail", ("portail_elements",), True],
         ] # [Nom Categorie, (liste des tables...,), Selectionné]
 
 TABLES_IMPORTATION_OBLIGATOIRES = []
@@ -1714,6 +1715,34 @@ DB_DATA = {
                                     ("IDcolonne", "INTEGER", u"ID de la colonne"),
                                     ("valeur", "VARCHAR(1000)", u"Valeur"),
                                     ],  # Valeurs des commandes de repas
+
+    "portail_pages":               [("IDpage", "INTEGER PRIMARY KEY AUTOINCREMENT", u"IDpage"),
+                                   ("titre", "VARCHAR(300)", u"Titre de la page"),
+                                   ("couleur", "VARCHAR(100)", u"Couleur"),
+                                   ("ordre", "INTEGER", u"Ordre de la page"),
+                                   ],  # Pages personnalisées pour le portail
+
+    "portail_blocs":              [("IDbloc", "INTEGER PRIMARY KEY AUTOINCREMENT", u"IDbloc"),
+                                    ("IDpage", "INTEGER", u"ID de la page parente"),
+                                    ("titre", "VARCHAR(300)", u"Titre de la page"),
+                                    ("couleur", "VARCHAR(100)", u"Couleur"),
+                                    ("categorie", "VARCHAR(200)", u"Type de contrôle"),
+                                    ("ordre", "INTEGER", u"Ordre de la page"),
+                                    ("parametres", "VARCHAR(5000)", u"Paramètres divers"),
+                                    ],  # Blocs pour les pages personnalisées du portail
+
+    "portail_elements":            [("IDelement", "INTEGER PRIMARY KEY AUTOINCREMENT", u"IDelement"),
+                                    ("IDbloc", "INTEGER", u"ID du bloc parent"),
+                                    ("ordre", "INTEGER", u"Ordre de l'élément"),
+                                    ("titre", "VARCHAR(300)", u"Titre de l'élément"),
+                                    ("categorie", "VARCHAR(200)", u"Catégorie de l'élément"),
+                                    ("date_debut", "DATETIME", u"Date et heure de début"),
+                                    ("date_fin", "DATETIME", u"Date et heure de fin"),
+                                    ("parametres", "VARCHAR(5000)", u"Paramètres divers"),
+                                    ("texte_xml", "VARCHAR(5000)", u"Contenu du texte version XML"),
+                                    ("texte_html", "VARCHAR(5000)", u"Contenu du texte version HTML"),
+                                    ],  # Elements pour les pages du portail
+
 
 }
 

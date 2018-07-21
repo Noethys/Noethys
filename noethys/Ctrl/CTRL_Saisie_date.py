@@ -455,7 +455,7 @@ class Date2(wx.Panel):
                 pass
 
     def SetDate(self, date):
-        if type(date) == datetime.datetime or (type(date) == str and ":" in date):
+        if type(date) == datetime.datetime or (type(date) in (str, unicode) and ":" in date):
             self.ctrl_date.SetDate(datetime.datetime.strftime(UTILS_Dates.DateEngEnDateDDT(date), "%Y-%m-%d"))
             if self.heure == True :
                 self.ctrl_heure.SetHeure(datetime.datetime.strftime(UTILS_Dates.DateEngEnDateDDT(date), "%H:%M"))

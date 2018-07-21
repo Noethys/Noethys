@@ -17,7 +17,7 @@ import CTRL_Bouton_image
 from PIL import Image
 import os
 import cStringIO
-
+import base64
 import GestionDB
 from Utils import UTILS_Utilisateurs
 from Utils import UTILS_Fichiers
@@ -120,11 +120,13 @@ def GetPhotos(listeIndividus=[], taillePhoto=None, qualite=wx.IMAGE_QUALITY_HIGH
     
     
 class CTRL_Photo(wx.StaticBitmap):
-    def __init__(self, parent, IDindividu=None, style=0):
+    def __init__(self, parent, IDindividu=None, style=0, modeBase64=False):
         wx.StaticBitmap.__init__(self, parent, id=-1, style=style)
         self.parent = parent
         self.IDphoto = None
         self.IDindividu = IDindividu
+        self.modeBase64 = modeBase64
+        self.image_base64 = None
         
         self.SetBackgroundColour(wx.Colour(0, 0, 0))
         self.SetToolTip(wx.ToolTip(_(u"Cliquez sur le bouton droit de votre souris\npour accéder aux fonctions photo")))
@@ -134,8 +136,23 @@ class CTRL_Photo(wx.StaticBitmap):
         
 ##        self.SetPhoto(IDindividu=1)
 
-    
-    def SetPhoto(self, IDindividu=None, nomFichier=None, taillePhoto=(128, 128), qualite=wx.IMAGE_QUALITY_HIGH) :
+    def GetImageBase64(self):
+        return self.image_base64
+
+    def SetPhoto(self, IDindividu=None, nomFichier=None, taillePhoto=(128, 128), qualite=wx.IMAGE_QUALITY_HIGH, imgbase64=None) :
+        # Affiche une photo base64
+        if imgbase64 != None :
+            self.image_base64 = imgbase64
+            io = cStringIO.StringIO(base64.b64decode(imgbase64))
+            if 'phoenix' in wx.PlatformInfo:
+                img = wx.Image(io, wx.BITMAP_TYPE_JPEG)
+            else:
+                img = wx.ImageFromStream(io, wx.BITMAP_TYPE_JPEG)
+            bmp = img.ConvertToBitmap()
+            self.SetBitmap(bmp)
+            return
+
+        # Affiche une photo fichier
         self.IDindividu = IDindividu
         IDphoto, bmp = GetPhoto(IDindividu, nomFichier, taillePhoto, qualite)
         if bmp != None :
@@ -174,7 +191,7 @@ class CTRL_Photo(wx.StaticBitmap):
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Menu_Supprimer, id=30)
-        if self.IDphoto == None : item.Enable(False)
+        if self.IDphoto == None and self.modeBase64 == False : item.Enable(False)
         
 ##        menuPop.AppendSeparator()
 ##        
@@ -228,19 +245,26 @@ class CTRL_Photo(wx.StaticBitmap):
             bmp = buffer.read()
             tailleBmp = len(buffer.getvalue())
             dlg.Destroy()
-            # Recherche si une photo existe déjà pour cet individu
-            DB = GestionDB.DB(suffixe="PHOTOS")
-            if DB.echec != 1 : 
-                req = "SELECT IDphoto, photo FROM photos WHERE IDindividu=%d;" % self.IDindividu 
-                DB.ExecuterReq(req)
-                listePhotos = DB.ResultatReq()
-                if len(listePhotos) == 0 :
-                    IDphoto = DB.InsertPhoto(IDindividu=self.IDindividu, blobPhoto=bmp)
-                else:
-                    IDphoto = DB.MAJPhoto(IDphoto=listePhotos[0][0], IDindividu=self.IDindividu, blobPhoto=bmp)
-                DB.Close()
-            # Applique la photo
-            self.SetPhoto(self.IDindividu)
+
+            if self.modeBase64 == True :
+                #with open(Chemins.GetStaticPath("Images/128x128/Femme.png"), "rb") as image_file:
+                #    base64img = base64.b64encode(image_file.read())
+                imgbase64 = base64.b64encode(bmp)
+                self.SetPhoto(imgbase64=imgbase64)
+            else :
+                # Recherche si une photo existe déjà pour cet individu
+                DB = GestionDB.DB(suffixe="PHOTOS")
+                if DB.echec != 1 :
+                    req = "SELECT IDphoto, photo FROM photos WHERE IDindividu=%d;" % self.IDindividu
+                    DB.ExecuterReq(req)
+                    listePhotos = DB.ResultatReq()
+                    if len(listePhotos) == 0 :
+                        IDphoto = DB.InsertPhoto(IDindividu=self.IDindividu, blobPhoto=bmp)
+                    else:
+                        IDphoto = DB.MAJPhoto(IDphoto=listePhotos[0][0], IDindividu=self.IDindividu, blobPhoto=bmp)
+                    DB.Close()
+                # Applique la photo
+                self.SetPhoto(self.IDindividu)
         else:
             dlg.Destroy()
             return
@@ -270,27 +294,36 @@ class CTRL_Photo(wx.StaticBitmap):
         dlgConfirm.Destroy()
         if reponse == wx.ID_NO:
             return
-        # Suppression de la photo 
-        DB = GestionDB.DB(suffixe="PHOTOS")
-        DB.ReqDEL("photos", "IDindividu", self.IDindividu)
-        DB.Close()
-        # Recherche la civilité de l'individu
-        DB = GestionDB.DB()
-        req = "SELECT IDcivilite FROM individus WHERE IDindividu=%d;" % self.IDindividu 
-        DB.ExecuterReq(req)
-        IDcivilite = DB.ResultatReq()[0][0]
-        if IDcivilite == None : return
-        DB.Close()
-        from Data import DATA_Civilites as Civilites
-        listeCivilites = Civilites.LISTE_CIVILITES
-        for rubrique, civilites in listeCivilites :
-            for civilite in civilites :
-                if civilite[0] == IDcivilite :
-                    nomFichier = civilite[3]
-                    break
-        nomFichier = Chemins.GetStaticPath("Images/128x128/%s" % nomFichier)
-        # Applique l'image par défaut
-        self.SetPhoto(self.IDindividu, nomFichier)
+        # Suppression de la photo
+        if self.modeBase64 == True :
+            self.image_base64 = None
+            if 'phoenix' in wx.PlatformInfo:
+                bmp = wx.Bitmap(128, 128)
+            else:
+                bmp = wx.EmptyBitmap(128, 128)
+            self.SetBitmap(bmp)
+        else :
+            # Photo standard
+            DB = GestionDB.DB(suffixe="PHOTOS")
+            DB.ReqDEL("photos", "IDindividu", self.IDindividu)
+            DB.Close()
+            # Recherche la civilité de l'individu
+            DB = GestionDB.DB()
+            req = "SELECT IDcivilite FROM individus WHERE IDindividu=%d;" % self.IDindividu
+            DB.ExecuterReq(req)
+            IDcivilite = DB.ResultatReq()[0][0]
+            if IDcivilite == None : return
+            DB.Close()
+            from Data import DATA_Civilites as Civilites
+            listeCivilites = Civilites.LISTE_CIVILITES
+            for rubrique, civilites in listeCivilites :
+                for civilite in civilites :
+                    if civilite[0] == IDcivilite :
+                        nomFichier = civilite[3]
+                        break
+            nomFichier = Chemins.GetStaticPath("Images/128x128/%s" % nomFichier)
+            # Applique l'image par défaut
+            self.SetPhoto(self.IDindividu, nomFichier)
         
     def Menu_Imprimer(self, event):
         """ Impression de la photo de la personne """
@@ -321,7 +354,7 @@ class MyFrame(wx.Frame):
         sizer_1 = wx.BoxSizer(wx.VERTICAL)
         sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
         self.SetSizer(sizer_1)
-        self.ctrl= CTRL_Photo(panel)
+        self.ctrl= CTRL_Photo(panel, modeBase64=True)
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.ctrl, 1, wx.ALL|wx.EXPAND, 4)
         panel.SetSizer(sizer_2)

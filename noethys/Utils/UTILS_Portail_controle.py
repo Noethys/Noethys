@@ -32,7 +32,7 @@ class ServeurConnecthys():
         self.parent = parent
         self.pid = ""
         self.isrunning = False
-        self.dict_parametres = self.parent.ctrl_parametres.GetValeurs()
+        self.dict_parametres = self.parent.ctrl_notebook.GetCtrlParametres().GetValeurs()
         if self.dict_parametres["hebergement_type"] == 2 :
             if self.dict_parametres["ssh_utilisateur"] == "root" :
                 dlg = wx.MessageDialog(None, _(u"L utilisation de l utilisateur root pour l accès SSH/SFTP est dangereuse !!!"), _(u"SSH/SFTP Warning"), wx.OK | wx.ICON_ERROR)

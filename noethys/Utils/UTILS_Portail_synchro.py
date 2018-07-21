@@ -349,6 +349,9 @@ class Synchro():
         Session = models.sessionmaker(bind=engine)
         session = Session()
 
+        # Liste des tables modifiées à importer dans Connecthys
+        liste_tables_modifiees =[]
+
         # Ouverture de la base Noethys
         DB = GestionDB.DB()
 
@@ -430,6 +433,8 @@ class Synchro():
         session.add(models.Parametre(nom="RECEVOIR_DOCUMENT_RETIRER", parametre=str(self.dict_parametres["recevoir_document_site"])))
         session.add(models.Parametre(nom="RECEVOIR_DOCUMENT_RETIRER_LIEU", parametre=self.dict_parametres["recevoir_document_site_lieu"]))
         session.add(models.Parametre(nom="PAIEMENT_EN_LIGNE_ACTIF", parametre=str(self.dict_parametres["paiement_ligne_actif"])))
+        session.add(models.Parametre(nom="MDP_FORCER_MODIFICATION", parametre=str(self.dict_parametres["mdp_forcer_modification"])))
+        session.add(models.Parametre(nom="MDP_AUTORISER_MODIFICATION", parametre=str(self.dict_parametres["mdp_autoriser_modification"])))
 
         if self.dict_parametres["paiement_ligne_actif"] == 1 :
             session.add(models.Parametre(nom="PAIEMENT_EN_LIGNE_SYSTEME", parametre=str(self.dict_parametres["paiement_ligne_systeme"])))
@@ -488,34 +493,42 @@ class Synchro():
 
         listeIDfamille = []
         for IDfamille, internet_actif, internet_identifiant, internet_mdp, email_recus in listeDonnees :
-            nomsTitulaires = cryptage.encrypt(dictTitulaires[IDfamille]["titulairesSansCivilite"])
 
-            # Cryptage du mot de passe
-            internet_mdp = SHA256.new(internet_mdp).hexdigest()
+            if internet_identifiant not in ("", None) and internet_mdp not in ("", None) :
+                nomsTitulaires = cryptage.encrypt(dictTitulaires[IDfamille]["titulairesSansCivilite"])
 
-            # Génération du session_token
-            session_token = "famille-%d-%s-%s-%d" % (IDfamille, internet_identifiant, internet_mdp[:20], internet_actif)
+                # Cryptage du mot de passe
+                if "custom" not in internet_mdp :
+                    internet_mdp = SHA256.new(internet_mdp.encode('utf-8')).hexdigest()
 
-            # Récupération de l email de recu
-            if email_recus != None :
-                IDindividu, categorie, adresse = email_recus.split(";")
-                if IDindividu != "" :
-                    req = """SELECT IDindividu, mail, travail_mail FROM individus WHERE IDindividu=%d;""" % int(IDindividu)
-                    DB.ExecuterReq(req)
-                    listeA = DB.ResultatReq()
-                    dictA = {}
-                    for IDindividu, mail, travail_mail in listeA :
-                        dictA[IDindividu] = {"perso":mail, "travail":travail_mail}
-                    email = cryptage.encrypt(dictA[IDindividu][categorie])
-            else :
-                email = ""
+                # Génération du session_token
+                session_token = "famille-%d-%s-%s-%d" % (IDfamille, internet_identifiant, internet_mdp[:20], internet_actif)
 
-            # Création du user
-            m = models.User(IDuser=None, identifiant=internet_identifiant, cryptpassword=internet_mdp, nom=nomsTitulaires, email=email, role="famille", IDfamille=IDfamille, actif=internet_actif, session_token=session_token)
-            session.add(m)
+                # Récupération de l email de recu
+                if email_recus != None :
+                    IDindividu, categorie, adresse = email_recus.split(";")
+                    if IDindividu != "" :
+                        req = """SELECT IDindividu, mail, travail_mail FROM individus WHERE IDindividu=%d;""" % int(IDindividu)
+                        DB.ExecuterReq(req)
+                        listeA = DB.ResultatReq()
+                        dictA = {}
+                        for IDindividu, mail, travail_mail in listeA :
+                            dictA[IDindividu] = {"perso":mail, "travail":travail_mail}
+                        email = cryptage.encrypt(dictA[IDindividu][categorie])
+                else :
+                    email = ""
 
-            if internet_actif == 1 :
-                listeIDfamille.append(IDfamille)
+                if internet_actif == 1 :
+                    listeIDfamille.append(IDfamille)
+                else :
+                    # Anonymise les infos des comptes désactivés
+                    nomsTitulaires = "XXX"
+                    email = ""
+
+                # Création du user
+                m = models.User(IDuser=None, identifiant=internet_identifiant, cryptpassword=internet_mdp, nom=nomsTitulaires, email=email, role="famille", IDfamille=IDfamille, actif=internet_actif, session_token=session_token)
+                session.add(m)
+
 
         # Création des factures
         self.Pulse_gauge()
@@ -607,6 +620,7 @@ class Synchro():
                             date_fin=date_fin, montant=float(totalPrestations), montant_regle=float(totalVentilation), montant_solde=float(solde_actuel), IDregie=IDregie)
                 session.add(m)
 
+        liste_tables_modifiees.append("factures")
 
         # Création des règlements
         self.Pulse_gauge()
@@ -642,6 +656,8 @@ class Synchro():
                                 numero=numero, montant=montant, date_encaissement=date_encaissement)
                 session.add(m)
 
+        liste_tables_modifiees.append("reglements")
+
         # Création des pièces manquantes
         self.Pulse_gauge()
 
@@ -650,6 +666,8 @@ class Synchro():
             for IDfamille, IDtype_piece, nomPiece, publicPiece, prenom, IDindividu, valide, label in dictValeurs["liste"] :
                 m = models.Piece_manquante(IDfamille=IDfamille, IDtype_piece=IDtype_piece, IDindividu=IDindividu, nom=cryptage.encrypt(label))
                 session.add(m)
+
+        liste_tables_modifiees.append("pieces_manquantes")
 
         # Création des types de pièces
         self.Pulse_gauge()
@@ -696,6 +714,7 @@ class Synchro():
             m = models.Type_piece(IDtype_piece=IDtype_piece, nom=nom, public=public, fichiers=u"##".join(fichiers))
             session.add(m)
 
+        liste_tables_modifiees.append("types_pieces")
 
         # Création des cotisations manquantes
         self.Pulse_gauge()
@@ -705,6 +724,8 @@ class Synchro():
             for IDfamille, IDtype_cotisation, nomCotisation, typeCotisation, prenom, IDindividu, valide, label in dictValeurs["liste"] :
                 m = models.Cotisation_manquante(IDfamille=IDfamille, IDindividu=IDindividu, IDtype_cotisation=IDtype_cotisation, nom=label)
                 session.add(m)
+
+        liste_tables_modifiees.append("cotisations_manquantes")
 
         # Création des activités
         self.Pulse_gauge()
@@ -737,6 +758,8 @@ class Synchro():
                  "nbre_inscrits_max" : nbre_inscrits_max,
                 }
 
+        liste_tables_modifiees.append("activites")
+
         # Création des groupes
         self.Pulse_gauge()
 
@@ -749,6 +772,8 @@ class Synchro():
         for IDgroupe, IDactivite, nom, ordre, nbre_inscrits_max in listeGroupes :
             m = models.Groupe(IDgroupe=IDgroupe, nom=nom, IDactivite=IDactivite, ordre=ordre, nbre_inscrits_max=nbre_inscrits_max)
             session.add(m)
+
+        liste_tables_modifiees.append("groupes")
 
         # Création des individus
         self.Pulse_gauge()
@@ -809,6 +834,8 @@ class Synchro():
                                     )
                 session.add(m)
 
+        liste_tables_modifiees.append("individus")
+
         # Création des inscriptions
         self.Pulse_gauge()
 
@@ -822,6 +849,8 @@ class Synchro():
                 m = models.Inscription(IDinscription=IDinscription, IDindividu=IDindividu, IDfamille=IDfamille, IDactivite=IDactivite, IDgroupe=IDgroupe, date_desinscription=date_desinscription)
                 session.add(m)
 
+        liste_tables_modifiees.append("inscriptions")
+
         # Création des unités
         self.Pulse_gauge()
 
@@ -834,6 +863,8 @@ class Synchro():
             m = models.Unite(IDunite=IDunite, nom=nom, IDactivite=IDactivite, unites_principales=unites_principales, \
                       unites_secondaires=unites_secondaires, ordre=ordre)
             session.add(m)
+
+        liste_tables_modifiees.append("unites")
 
         # Création des périodes
         self.Pulse_gauge()
@@ -862,6 +893,8 @@ class Synchro():
             if dict_dates_activites[IDactivite]["date_max"] == None or dict_dates_activites[IDactivite]["date_max"] < date_fin :
                 dict_dates_activites[IDactivite]["date_max"] = date_fin
 
+        liste_tables_modifiees.append("periodes")
+
         # Création de la condition pour les ouvertures et les consommations
         listeConditions = []
         for IDactivite, periode in dict_dates_activites.iteritems() :
@@ -883,16 +916,21 @@ class Synchro():
                 m = models.Ouverture(date=date, IDunite=IDunite, IDgroupe=IDgroupe)
                 session.add(m)
 
-            req = """SELECT IDevenement, IDactivite, IDunite, IDgroupe, date, nom, description, heure_debut, heure_fin
-            FROM evenements
-            WHERE %s;""" % texteConditions
-            DB.ExecuterReq(req)
-            listeEvenements = DB.ResultatReq()
-            for IDevenement, IDactivite, IDunite, IDgroupe, date, nom, description, heure_debut, heure_fin in listeEvenements :
-                date = UTILS_Dates.DateEngEnDateDD(date)
-                m = models.Evenement(IDevenement=IDevenement, IDactivite=IDactivite, date=date, IDunite=IDunite, IDgroupe=IDgroupe, nom=nom,
-                                     description=description, heure_debut=heure_debut, heure_fin=heure_fin)
-                session.add(m)
+            liste_tables_modifiees.append("ouvertures")
+
+            # req = """SELECT IDevenement, IDactivite, IDunite, IDgroupe, date, nom, description, heure_debut, heure_fin
+            # FROM evenements
+            # WHERE %s;""" % texteConditions
+            # DB.ExecuterReq(req)
+            # listeEvenements = DB.ResultatReq()
+            # for IDevenement, IDactivite, IDunite, IDgroupe, date, nom, description, heure_debut, heure_fin in listeEvenements :
+            #     date = UTILS_Dates.DateEngEnDateDD(date)
+            #     try :
+            #         m = models.Evenement(IDevenement=IDevenement, IDactivite=IDactivite, date=date, IDunite=IDunite, IDgroupe=IDgroupe, nom=nom,
+            #                              description=description, heure_debut=heure_debut, heure_fin=heure_fin)
+            #         session.add(m)
+            #     except Exception, err:
+            #         print (err,)
 
             req = """SELECT type, nom, jour, mois, annee
             FROM jours_feries ;"""
@@ -901,6 +939,8 @@ class Synchro():
             for typeFerie, nom, jour, mois, annee in listeFeries:
                 m = models.Ferie(type=typeFerie, nom=nom, jour=jour, mois=mois, annee=annee)
                 session.add(m)
+
+            liste_tables_modifiees.append("feries")
 
         # Création des consommations
         self.Pulse_gauge()
@@ -914,8 +954,14 @@ class Synchro():
             listeConsommations = DB.ResultatReq()
             for IDconso, date, IDunite, IDinscription, etat, IDevenement in listeConsommations :
                 date = UTILS_Dates.DateEngEnDateDD(date)
-                m = models.Consommation(date=date, IDunite=IDunite, IDinscription=IDinscription, etat=etat)#, IDevenement=IDevenement)
+                try :
+                    m = models.Consommation(date=date, IDunite=IDunite, IDinscription=IDinscription, etat=etat, IDevenement=IDevenement)
+                except Exception, err:
+                    print (err,)
+                    m = models.Consommation(date=date, IDunite=IDunite, IDinscription=IDinscription, etat=etat)
                 session.add(m)
+
+            liste_tables_modifiees.append("consommations")
 
         # Création des actions
         self.Pulse_gauge()
@@ -932,6 +978,8 @@ class Synchro():
                 m = models.Action(horodatage=horodatage, IDfamille=IDfamille, IDindividu=IDindividu, categorie=categorie, action=action, description=description, commentaire=commentaire, parametres=parametres, etat=etat, traitement_date=traitement_date, IDperiode=IDperiode, ref_unique=ref_unique, reponse=reponse)
                 session.add(m)
 
+        liste_tables_modifiees.append("actions")
+
         # Création des messages
         req = """SELECT IDmessage, titre, texte, affichage_date_debut, affichage_date_fin
         FROM portail_messages
@@ -946,6 +994,8 @@ class Synchro():
                                affichage_date_debut=affichage_date_debut, affichage_date_fin=affichage_date_fin)
             session.add(m)
 
+        liste_tables_modifiees.append("messages")
+
         # Création des régies
         req = """SELECT IDregie, nom, numclitipi, email_regisseur
         FROM factures_regies;"""
@@ -954,6 +1004,54 @@ class Synchro():
         for IDregie, nom, numclitipi, email_regisseur in listeRegies :
             m = models.Regie(IDregie=IDregie, nom=nom, numclitipi=numclitipi, email_regisseur=email_regisseur)
             session.add(m)
+
+        liste_tables_modifiees.append("regies")
+
+        # Recherche des pages
+        last_update_pages = UTILS_Parametres.Parametres(mode="get", categorie="portail", nom="last_update_pages")
+        if last_update_pages > last_synchro or full_synchro == True:
+
+            req = """SELECT IDpage, titre, couleur, ordre
+            FROM portail_pages;"""
+            DB.ExecuterReq(req)
+            listePages = DB.ResultatReq()
+            for IDpage, titre, couleur, ordre in listePages :
+                m = models.Page(IDpage=IDpage, titre=titre, couleur=couleur, ordre=ordre)
+                session.add(m)
+
+            liste_tables_modifiees.append("pages")
+
+            req = """SELECT IDbloc, IDpage, titre, couleur, categorie, ordre, parametres
+            FROM portail_blocs;"""
+            DB.ExecuterReq(req)
+            listeBlocs = DB.ResultatReq()
+            for IDbloc, IDpage, titre, couleur, categorie, ordre, parametres in listeBlocs :
+                m = models.Bloc(IDbloc=IDbloc, IDpage=IDpage, titre=titre, couleur=couleur, categorie=categorie, ordre=ordre, parametres=parametres)
+                session.add(m)
+
+            liste_tables_modifiees.append("blocs")
+
+            req = """SELECT IDelement, IDbloc, ordre, titre, categorie, date_debut, date_fin, parametres, texte_html
+            FROM portail_elements;"""
+            DB.ExecuterReq(req)
+            listeElements = DB.ResultatReq()
+            for IDelement, IDbloc, ordre, titre, categorie, date_debut, date_fin, parametres, texte_html in listeElements :
+                date_debut = UTILS_Dates.DateEngEnDateDDT(date_debut)
+                date_fin = UTILS_Dates.DateEngEnDateDDT(date_fin)
+                if texte_html != None :
+                    texte_html = texte_html.replace("<img ", "<img class='img-responsive' ")
+                m = models.Element(IDelement=IDelement, IDbloc=IDbloc, ordre=ordre, titre=titre, categorie=categorie, date_debut=date_debut, date_fin=date_fin,
+                                parametres=parametres, texte_html=texte_html)
+                session.add(m)
+
+            liste_tables_modifiees.append("elements")
+
+
+
+
+        # Mémorise les tables modifiées qui seront à importées dans Connecthys
+        texte_tables_modifiees = ";".join(liste_tables_modifiees)
+        session.add(models.Parametre(nom="tables_modifiees_synchro", parametre=texte_tables_modifiees))
 
         # Fermeture de la base de données Noethys
         DB.Close()
@@ -1108,10 +1206,8 @@ class Synchro():
                 self.log.EcritLog(_(u"Aucune demande non traitée trouvée..."))
             elif len(liste_actions) == 1 :
                 self.log.EcritLog(_(u"1 demande non traitée trouvée..."))
-                self.log.EcritLog(_(u"Enregistrement de la demande non traitee"))
             else :
                 self.log.EcritLog(_(u"%s demandes non traitées trouvées...") % len(liste_actions))
-                self.log.EcritLog(_(u"Enregistrement des demandes non traitees"))
 
         except Exception, err :
             print err
@@ -1142,8 +1238,18 @@ class Synchro():
             listeActions = []
             listeReservations = []
             listeRenseignements = []
+            listePasswords = []
 
             for action in liste_actions :
+
+                # Modification de compte
+                if action["categorie"] == "compte" :
+
+                    # Si modification de mot de passe
+                    if action["action"] == "maj_password" :
+                        action["etat"] = "validation"
+                        action["traitement_date"] = str(datetime.date.today())
+                        listePasswords.append((action["parametres"], action["IDfamille"]))
 
                 # Mémorisation des actions
                 listeActions.append([
@@ -1177,6 +1283,13 @@ class Synchro():
                 DB.Executermany("INSERT INTO portail_reservations (date, IDinscription, IDunite, IDaction, etat) VALUES (?, ?, ?, ?, ?)", listeReservations, commit=False)
             if len(listeRenseignements) > 0 :
                 DB.Executermany("INSERT INTO portail_renseignements (champ, valeur, IDaction) VALUES (?, ?, ?)", listeRenseignements, commit=False)
+            if len(listePasswords) > 0 :
+                DB.Executermany("UPDATE familles SET internet_mdp=? WHERE IDfamille=?", listePasswords, commit=False)
+                if len(listePasswords) == 1:
+                    self.log.EcritLog(_(u"1 mot de passe modifié..."))
+                else:
+                    self.log.EcritLog(_(u"%d mots de passe modifiés...") % len(listePasswords))
+
             DB.Commit()
             DB.Close()
 

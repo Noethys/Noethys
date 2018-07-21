@@ -2154,6 +2154,25 @@ class DB:
             except Exception, err:
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
+        # =============================================================
+
+        versionFiltre = (1, 2, 3, 6)
+        if versionFichier < versionFiltre:
+            try:
+                if self.IsTableExists("portail_pages") == False: self.CreationTable("portail_pages", Tables.DB_DATA)
+                if self.IsTableExists("portail_blocs") == False: self.CreationTable("portail_blocs", Tables.DB_DATA)
+                if self.IsTableExists("portail_elements") == False: self.CreationTable("portail_elements", Tables.DB_DATA)
+                self.Importation_valeurs_defaut([[u"", ("portail_elements",), True], ])
+            except Exception, err:
+                return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
+
+
+
+
+
+
+
+
 
 
 
@@ -2425,7 +2444,7 @@ if __name__ == "__main__":
                 
     # Création d'une table données
     # db = DB(suffixe="DATA")
-    # listeTables = ("modeles_commandes",)
+    # listeTables = ("portail_elements",)
     # for nomTable in listeTables :
     #     db.CreationTable(nomTable, Tables.DB_DATA)
     # db.Close()
@@ -2463,9 +2482,9 @@ if __name__ == "__main__":
     # db.AjoutChamp("commandes_valeurs", "IDcommande", "INTEGER")
     # db.Close()
 
-    # Exportation d'une table dans la base DEFAUT
+    # # Exportation d'une table dans la base DEFAUT
     # db = DB(suffixe="DATA")
-    # db.Exportation_vers_base_defaut(nomTable="categories_medicales")
+    # db.Exportation_vers_base_defaut(nomTable="portail_elements")
     # db.Close()
     
     # Réparation d'une table
