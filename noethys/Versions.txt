@@ -1,3 +1,14 @@
+Version 1.2.3.6 (21/07/2018) :
+
+- Connecthys : Ajout des pages personnalisées
+- Connecthys : Obligation de personnaliser le mot de passe
+- Connecthys : Chiffrement de toutes les données personnelles
+- Ajout de l'export XML d'une famille depuis le bouton Outils de la fiche famille
+- Ajout de l'export XML de toutes les familles depuis le menu Individus
+- Amélioration de l'assistant de paramétrage des activités annuelles
+- Adaptations pour wxPython Phoenix
+- Correction de divers bugs
+
 Version 1.2.3.3 (08/05/2018) :
 
 - Ajout du tableau des locations dans le menu Locations
