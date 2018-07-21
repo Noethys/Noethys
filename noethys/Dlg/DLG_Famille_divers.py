@@ -19,8 +19,7 @@ import GestionDB
 from Utils import UTILS_Utilisateurs
 from Utils import UTILS_Parametres
 import wx.propgrid as wxpg
-import wx.lib.platebtn as platebtn
-
+import wx.html as html
 
 
 LISTE_CATEGORIES_TIERS = [
@@ -268,108 +267,64 @@ class CTRL_Parametres(wxpg.PropertyGrid) :
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
-class Panel(wx.Panel):
+
+class CTRL_Compte_internet(html.HtmlWindow):
     def __init__(self, parent, IDfamille=None):
-        wx.Panel.__init__(self, parent, id=-1, name="DLG_Famille_divers", style=wx.TAB_TRAVERSAL)
+        html.HtmlWindow.__init__(self, parent, -1, style=wx.BORDER_THEME | wx.html.HW_NO_SELECTION | wx.NO_FULL_REPAINT_ON_RESIZE)
         self.parent = parent
         self.IDfamille = IDfamille
-        
-        self.majEffectuee = False
-        
-        # Compte internet
-        self.staticBox_param = wx.StaticBox(self, -1, _(u"Compte internet"))
-        self.label_activation = wx.StaticText(self, -1, _(u"Activation :"))
-        self.check_activation = wx.CheckBox(self, -1, u"")
-        self.label_identifiant = wx.StaticText(self, -1, _(u"Identifiant : "))
-        self.ctrl_identifiant = wx.TextCtrl(self, -1, "", size=(80, -1))
-        self.label_mdp = wx.StaticText(self, -1, _(u"Mot de passe : "))
-        self.ctrl_mdp = wx.TextCtrl(self, -1, "", size=(60, -1))
-        self.bouton_mdp_renew = platebtn.PlateButton(self, -1, u" Générer un nouveau mot de passe", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Actualiser2.png"), wx.BITMAP_TYPE_ANY))
-        self.bouton_envoi_mail = platebtn.PlateButton(self, -1, u" Envoyer les codes par Email", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Emails_exp.png"), wx.BITMAP_TYPE_ANY))
-        self.bouton_historique = platebtn.PlateButton(self, -1, u" Consulter et traiter les demandes", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Historique.png"), wx.BITMAP_TYPE_ANY))
-        self.MAJaffichage()
+        if "gtk2" in wx.PlatformInfo:
+            self.SetStandardFonts()
+        self.SetMinSize((200, 130))
+        self.SetBorders(4)
+        self.dictDonnees = {}
 
-        try :
-            self.bouton_mdp_renew.SetBackgroundColour(self.GetParent().GetThemeBackgroundColour())
-            self.bouton_envoi_mail.SetBackgroundColour(self.GetParent().GetThemeBackgroundColour())
-            self.bouton_historique.SetBackgroundColour(self.GetParent().GetThemeBackgroundColour())
-        except :
-            pass
+    def SetDonnees(self, dictDonnees={}):
+        self.dictDonnees = dictDonnees
+        self.MAJ()
 
-        # Paramètres divers
-        self.staticBox_divers = wx.StaticBox(self, -1, _(u"Paramètres divers"))
-        self.ctrl_parametres = CTRL_Parametres(self, IDfamille=IDfamille)
-        
-        self.__set_properties()
-        self.__do_layout()
+    def GetDonnees(self):
+        return self.dictDonnees
 
-        self.Bind(wx.EVT_CHECKBOX, self.EvtCheckBox, self.check_activation)
-        self.Bind(wx.EVT_BUTTON, self.OnBoutonMdpRenew, self.bouton_mdp_renew)
-        self.Bind(wx.EVT_BUTTON, self.OnBoutonEnvoiEmail, self.bouton_envoi_mail)
-        self.Bind(wx.EVT_BUTTON, self.OnBoutonHistorique, self.bouton_historique)
+    def MAJ(self):
+        if self.dictDonnees["internet_actif"] == 1 :
+            activation = _(u"Compte internet activé")
+            image = "Ok4"
+        else :
+            activation = _(u"Compte internet désactivé")
+            image = "Interdit2"
+        identifiant = self.dictDonnees["internet_identifiant"]
+        mdp = self.dictDonnees["internet_mdp"]
+        if mdp.startswith("custom"):
+            mdp = _(u"********<BR><FONT SIZE=1>(Mot de passe personnalisé)</FONT>")
+        self.SetPage(u"""
+        <FONT SIZE=2>
+        <BR><BR>
+        <CENTER><IMG SRC="%s"><BR>%s
+        <BR><BR>
+        <B>Identifiant</B> : %s
+        <BR>
+        <B>Mot de passe</B> : %s
+        </CENTER>
+        </FONT>
+        """ % (Chemins.GetStaticPath(u"Images/16x16/%s.png" % image), activation, identifiant, mdp))
+        self.SetBackgroundColour(wx.SystemSettings.GetColour(30))
 
-    def __set_properties(self):
-        self.check_activation.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour activer le compte internet")))
-        self.ctrl_identifiant.SetToolTip(wx.ToolTip(_(u"Code identifiant du compte internet")))
-        self.ctrl_mdp.SetToolTip(wx.ToolTip(_(u"Mot de passe du compte internet")))
-        self.bouton_mdp_renew.SetToolTip(wx.ToolTip(_(u"Générer un nouveau mot de passe")))
-        self.bouton_envoi_mail.SetToolTip(wx.ToolTip(_(u"Envoyer un couriel à la famille avec les codes d'accès au portail Internet")))
-        self.bouton_historique.SetToolTip(wx.ToolTip(_(u"Consulter et traiter les demandes de la famille")))
-
-    def __do_layout(self):
-        grid_sizer_base = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
-
-        # Compte internet
-        sizer_staticBox_param = wx.StaticBoxSizer(self.staticBox_param, wx.VERTICAL)
-        grid_sizer_param = wx.FlexGridSizer(rows=6, cols=2, vgap=5, hgap=5)
-        grid_sizer_param.Add(self.label_activation, 1, wx.ALIGN_RIGHT, 0)
-        grid_sizer_param.Add(self.check_activation, 1, wx.ALL|wx.EXPAND, 0)
-        grid_sizer_param.Add( (0, 0), 1, wx.ALL|wx.EXPAND, 0)
-        grid_sizer_param.Add( (0, 0), 1, wx.ALL|wx.EXPAND, 0)
-        grid_sizer_param.Add(self.label_identifiant, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_param.Add(self.ctrl_identifiant, 1, wx.ALL|wx.EXPAND, 0)
-        grid_sizer_param.Add(self.label_mdp, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_param.Add(self.ctrl_mdp, 1, wx.ALL|wx.EXPAND, 0)
-
-        grid_sizer_param.AddGrowableCol(1)
-        sizer_staticBox_param.Add(grid_sizer_param, 1, wx.ALL|wx.EXPAND, 10)
-
-        sizer_staticBox_param.Add(self.bouton_envoi_mail, 0, wx.ALL|wx.EXPAND, 0)
-        sizer_staticBox_param.Add(self.bouton_mdp_renew, 0, wx.ALL|wx.EXPAND, 0)
-        sizer_staticBox_param.Add(self.bouton_historique, 0, wx.ALL|wx.EXPAND, 0)
-
-        grid_sizer_base.Add(sizer_staticBox_param, 1, wx.LEFT|wx.RIGHT|wx.TOP|wx.BOTTOM|wx.EXPAND, 5)
-
-        # Paramètres divers
-        sizer_staticBox_divers = wx.StaticBoxSizer(self.staticBox_divers, wx.VERTICAL)
-        sizer_staticBox_divers.Add(self.ctrl_parametres, 1, wx.ALL|wx.EXPAND, 5)
-        grid_sizer_base.Add(sizer_staticBox_divers, 1, wx.RIGHT|wx.BOTTOM|wx.TOP|wx.EXPAND, 5)
-
-        self.SetSizer(grid_sizer_base)
-        grid_sizer_base.Fit(self)
-        grid_sizer_base.AddGrowableRow(0)
-        grid_sizer_base.AddGrowableCol(1)
-
-    def MAJaffichage(self):
-        self.ctrl_identifiant.Enable(self.check_activation.GetValue())
-        self.ctrl_mdp.Enable(self.check_activation.GetValue())
-        self.Refresh() 
-        
-    def EvtCheckBox(self, event):
-        self.MAJaffichage()
-
-    def OnBoutonMdpRenew(self, event):
-        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment générer un nouveau mot de passe pour ce compte internet ? \n\nAttention, l'ancien mot de passe sera remplacé."), _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
-        reponse = dlg.ShowModal()
+    def Modifier(self, event):
+        from Dlg import DLG_Compte_internet
+        dlg = DLG_Compte_internet.Dialog(self, IDfamille=self.IDfamille)
+        if dlg.ShowModal() == wx.ID_OK:
+            self.SetDonnees(dlg.GetDonnees())
         dlg.Destroy()
-        if reponse != wx.ID_YES :
-            return
-        from Utils import UTILS_Internet
-        taille = UTILS_Parametres.Parametres(mode="get", categorie="comptes_internet", nom="taille_passwords", valeur=7)
-        self.ctrl_mdp.SetValue(UTILS_Internet.CreationMDP(nbreCaract=taille))
-        self.MAJaffichage()
 
-    def OnBoutonEnvoiEmail(self, event):
+    def GetMdp(self):
+        if self.dictDonnees["internet_mdp"].startswith("custom"):
+            internet_mdp = "********"
+        else :
+            internet_mdp = self.dictDonnees["internet_mdp"]
+        return internet_mdp
+
+    def Envoyer_email(self, event):
         # Envoyer un email à la famille
         from Utils import UTILS_Envoi_email
         listeAdresses = UTILS_Envoi_email.GetAdresseFamille(self.IDfamille)
@@ -394,8 +349,8 @@ class Panel(wx.Panel):
         dlg = DLG_Mailer.Dialog(self, categorie = "portail")
         listeDonnees = []
         champs = {
-            "{IDENTIFIANT_INTERNET}" : self.ctrl_identifiant.GetValue(),
-            "{MOTDEPASSE_INTERNET}" : self.ctrl_mdp.GetValue(),
+            "{IDENTIFIANT_INTERNET}" : self.dictDonnees["internet_identifiant"],
+            "{MOTDEPASSE_INTERNET}" : self.GetMdp(),
             "{NOM_FAMILLE}" : nom_famille,
         }
         for adresse in listeAdresses :
@@ -405,11 +360,106 @@ class Panel(wx.Panel):
         dlg.ShowModal()
         dlg.Destroy()
 
-    def OnBoutonHistorique(self, event):
+    def Envoyer_pressepapiers(self, event):
+        # Mémorisation des codes dans le presse-papiers
+        codes = _(u"Identifiant : %s / Mot de passe : %s") % (self.dictDonnees["internet_identifiant"], self.GetMdp())
+        clipdata = wx.TextDataObject()
+        clipdata.SetText(codes)
+        wx.TheClipboard.Open()
+        wx.TheClipboard.SetData(clipdata)
+        wx.TheClipboard.Close()
+
+        dlg = wx.MessageDialog(self, _(u"Les codes ont été copiés dans le presse-papiers."), u"Presse-papiers", wx.OK | wx.ICON_INFORMATION)
+        dlg.ShowModal()
+        dlg.Destroy()
+
+    def Consulter_historique(self, event):
         from Dlg import DLG_Portail_demandes
         dlg = DLG_Portail_demandes.Dialog(self, IDfamille=self.IDfamille)
         dlg.ShowModal()
         dlg.Destroy()
+
+
+
+
+class Panel(wx.Panel):
+    def __init__(self, parent, IDfamille=None):
+        wx.Panel.__init__(self, parent, id=-1, name="DLG_Famille_divers", style=wx.TAB_TRAVERSAL)
+        self.parent = parent
+        self.IDfamille = IDfamille
+        
+        self.majEffectuee = False
+        
+        # Compte internet
+        self.staticBox_param = wx.StaticBox(self, -1, _(u"Portail internet"))
+        self.ctrl_compte_internet = CTRL_Compte_internet(self, IDfamille=IDfamille)
+        self.bouton_modifier = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Modifier.png"), wx.BITMAP_TYPE_ANY))
+        self.bouton_envoi_mail = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Emails_exp.png"), wx.BITMAP_TYPE_ANY))
+        self.bouton_envoi_pressepapiers = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Clipboard.png"), wx.BITMAP_TYPE_ANY))
+        self.bouton_historique = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Historique.png"), wx.BITMAP_TYPE_ANY))
+
+        # Paramètres divers
+        self.staticBox_divers = wx.StaticBox(self, -1, _(u"Paramètres divers"))
+        self.ctrl_parametres = CTRL_Parametres(self, IDfamille=IDfamille)
+        
+        self.__set_properties()
+        self.__do_layout()
+
+        self.Bind(wx.EVT_BUTTON, self.ctrl_compte_internet.Modifier, self.bouton_modifier)
+        self.Bind(wx.EVT_BUTTON, self.ctrl_compte_internet.Envoyer_email, self.bouton_envoi_mail)
+        self.Bind(wx.EVT_BUTTON, self.ctrl_compte_internet.Envoyer_pressepapiers, self.bouton_envoi_pressepapiers)
+        self.Bind(wx.EVT_BUTTON, self.ctrl_compte_internet.Consulter_historique, self.bouton_historique)
+
+    def __set_properties(self):
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Modifier les paramètres du compte internet")))
+        self.bouton_envoi_mail.SetToolTip(wx.ToolTip(_(u"Envoyer un couriel à la famille avec les codes d'accès au portail Internet")))
+        self.bouton_envoi_pressepapiers.SetToolTip(wx.ToolTip(_(u"Copier les codes d'accès dans le presse-papiers afin de les coller ensuite dans un document ou un email par exemple")))
+        self.bouton_historique.SetToolTip(wx.ToolTip(_(u"Consulter et traiter les demandes de la famille")))
+
+    def __do_layout(self):
+        grid_sizer_base = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
+
+        # Compte internet
+        sizer_staticBox_param = wx.StaticBoxSizer(self.staticBox_param, wx.VERTICAL)
+        grid_sizer_param = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
+        grid_sizer_param.Add(self.ctrl_compte_internet, 0, wx.EXPAND, 0)
+
+        grid_sizer_boutons = wx.FlexGridSizer(rows=6, cols=1, vgap=5, hgap=5)
+        grid_sizer_boutons.Add(self.bouton_modifier, 0, 0, 0)
+        grid_sizer_boutons.Add( (5, 5), 0, 0, 0)
+        grid_sizer_boutons.Add(self.bouton_envoi_mail, 0, 0, 0)
+        grid_sizer_boutons.Add(self.bouton_envoi_pressepapiers, 0, 0, 0)
+        grid_sizer_boutons.Add(self.bouton_historique, 0, 0, 0)
+        grid_sizer_param.Add(grid_sizer_boutons, 0, 0, 0)
+        grid_sizer_param.AddGrowableRow(0)
+        grid_sizer_param.AddGrowableCol(0)
+
+        # grid_sizer_param = wx.FlexGridSizer(rows=5, cols=1, vgap=0, hgap=0)
+        # grid_sizer_param.Add(self.ctrl_compte_internet, 0, wx.EXPAND, 0)
+        # grid_sizer_param.Add(self.bouton_modifier, 1, wx.ALIGN_RIGHT, 0)
+        # grid_sizer_param.Add( (5, 5), 1, wx.ALIGN_RIGHT, 0)
+        # grid_sizer_param.Add(self.bouton_envoi_mail, 0, wx.ALL|wx.EXPAND, 0)
+        # grid_sizer_param.Add(self.bouton_historique, 0, wx.ALL|wx.EXPAND, 0)
+        #grid_sizer_param.AddGrowableRow(0)
+        sizer_staticBox_param.Add(grid_sizer_param, 1, wx.ALL|wx.EXPAND, 5)
+        grid_sizer_base.Add(sizer_staticBox_param, 1, wx.ALL|wx.EXPAND, 5)
+
+        # Paramètres divers
+        sizer_staticBox_divers = wx.StaticBoxSizer(self.staticBox_divers, wx.VERTICAL)
+        sizer_staticBox_divers.Add(self.ctrl_parametres, 1, wx.ALL|wx.EXPAND, 5)
+        grid_sizer_base.Add(sizer_staticBox_divers, 1, wx.RIGHT|wx.BOTTOM|wx.TOP|wx.EXPAND, 5)
+
+        self.SetSizer(grid_sizer_base)
+        grid_sizer_base.Fit(self)
+        grid_sizer_base.AddGrowableRow(0)
+        grid_sizer_base.AddGrowableCol(1)
+
+    def MAJaffichage(self):
+        self.Refresh()
+        
+    def EvtCheckBox(self, event):
+        self.MAJaffichage()
+
 
     def IsLectureAutorisee(self):
 ##        if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_questionnaires", "consulter", afficheMessage=False) == False : 
@@ -428,12 +478,10 @@ class Panel(wx.Panel):
             listeDonnees = DB.ResultatReq()
             DB.Close()
             if len(listeDonnees) > 0 :
-                internet_activation, internet_identifiant, internet_mdp, titulaire_helios, code_comptable, idtiers_helios, natidtiers_helios, reftiers_helios, cattiers_helios, natjur_helios, autre_adresse_facturation = listeDonnees[0]
+                internet_actif, internet_identifiant, internet_mdp, titulaire_helios, code_comptable, idtiers_helios, natidtiers_helios, reftiers_helios, cattiers_helios, natjur_helios, autre_adresse_facturation = listeDonnees[0]
 
                 # Compte internet
-                if internet_activation != None : self.check_activation.SetValue(internet_activation)
-                if internet_identifiant != None : self.ctrl_identifiant.SetValue(internet_identifiant)
-                if internet_mdp != None : self.ctrl_mdp.SetValue(internet_mdp)
+                self.ctrl_compte_internet.SetDonnees({"internet_actif": internet_actif, "internet_identifiant": internet_identifiant, "internet_mdp": internet_mdp})
 
                 # Hélios
                 self.ctrl_parametres.SetPropertyValue("titulaire_helios", titulaire_helios)
@@ -455,10 +503,8 @@ class Panel(wx.Panel):
         
         # Droits utilisateurs
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_compte_internet", "modifier", afficheMessage=False) == False : 
-            self.check_activation.Enable(False)
-            self.ctrl_identifiant.Enable(False)
-            self.ctrl_mdp.Enable(False)
-        
+            self.bouton_modifier.Enable(False)
+
         self.majEffectuee = True
                 
     def ValidationData(self):
@@ -483,24 +529,9 @@ class Panel(wx.Panel):
                     dlg.Destroy()
                     return False
 
-        # Compte internet
-        if self.check_activation.GetValue() == True :
-            if self.ctrl_identifiant.GetValue() == "" :
-                dlg = wx.MessageDialog(self, _(u"L'identifiant internet saisi n'est pas valide !"), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
-                dlg.ShowModal()
-                dlg.Destroy()
-                return False
-            if self.ctrl_mdp.GetValue() == "" :
-                dlg = wx.MessageDialog(self, _(u"Le mot de passe internet saisi n'est pas valide !"), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
-                dlg.ShowModal()
-                dlg.Destroy()
-                return False
         return True
     
     def Sauvegarde(self):
-        internet_activation = int(self.check_activation.GetValue())
-        internet_identifiant = self.ctrl_identifiant.GetValue() 
-        internet_mdp = self.ctrl_mdp.GetValue() 
         titulaire_helios = self.ctrl_parametres.GetPropertyValue("titulaire_helios")
         idtiers_helios = self.ctrl_parametres.GetPropertyValue("idtiers_helios")
         natidtiers_helios = self.ctrl_parametres.GetPropertyValue("natidtiers_helios")
@@ -511,9 +542,6 @@ class Panel(wx.Panel):
         autre_adresse_facturation = self.ctrl_parametres.GetAdresseFacturation()
         DB = GestionDB.DB()
         listeDonnees = [    
-                ("internet_actif", internet_activation),
-                ("internet_identifiant", internet_identifiant),
-                ("internet_mdp", internet_mdp),
                 ("titulaire_helios", titulaire_helios),
                 ("code_comptable", code_comptable),
                 ("idtiers_helios", idtiers_helios),

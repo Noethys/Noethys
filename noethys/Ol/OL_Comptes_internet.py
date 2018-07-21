@@ -31,6 +31,8 @@ class Track(object):
         self.internet_actif = donnees[1]
         self.internet_identifiant = donnees[2]
         self.internet_mdp = donnees[3]
+        if self.internet_mdp.startswith("custom"):
+            self.internet_mdp = "********"
 
         self.nomTitulaires = parent.dict_titulaires[self.IDfamille]["titulairesSansCivilite"]
 

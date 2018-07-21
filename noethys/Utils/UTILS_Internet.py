@@ -38,13 +38,13 @@ def DateDDEnDateFR(dateDD):
 
 
 
-def CreationIdentifiant(IDfamille=0, nbreCaract=7):
+def CreationIdentifiant(IDfamille=0, nbreCaract=8):
     """ Création d'un identifiant aléatoire """
     identifiant = ""
     numTmp = ""
     for x in range(0, nbreCaract-4) :
         numTmp += random.choice("123456789")
-    coeff = "0" * 4
+    coeff = "0" * 5
     identifiant = numTmp + coeff
     identifiant = str(int(identifiant) + IDfamille)
     return identifiant

@@ -49,7 +49,7 @@ def CreateIDfamille(DB):
     IDcompte_payeur = DB.ReqInsert("comptes_payeurs", [("IDfamille", IDfamille),])
     # Création des codes internet
     internet_identifiant= UTILS_Internet.CreationIdentifiant(IDfamille=IDfamille)
-    taille = UTILS_Parametres.Parametres(mode="get", categorie="comptes_internet", nom="taille_passwords", valeur=7)
+    taille = UTILS_Parametres.Parametres(mode="get", categorie="comptes_internet", nom="taille_passwords", valeur=8)
     internet_mdp = UTILS_Internet.CreationMDP(nbreCaract=taille)
     # Sauvegarde des données
     listeDonnees = [
