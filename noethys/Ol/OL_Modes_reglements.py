@@ -47,9 +47,13 @@ def GetImage(bufferImage):
             img = wx.Image(io, wx.BITMAP_TYPE_JPEG)
         else :
             img = wx.ImageFromStream(io, wx.BITMAP_TYPE_JPEG)
-        bmp = img.Rescale(width=TAILLE_IMAGE[0], height=TAILLE_IMAGE[1], quality=qualite) 
-        bmp = bmp.ConvertToBitmap()
-        return bmp
+        try :
+            bmp = img.Rescale(width=TAILLE_IMAGE[0], height=TAILLE_IMAGE[1], quality=qualite)
+            bmp = bmp.ConvertToBitmap()
+            return bmp
+        except :
+            return None
+
     else:
         # Si aucune image est trouvée, on prend l'image par défaut
         bmp = GetImageDefaut() 
@@ -147,8 +151,9 @@ class ListView(FastObjectListView):
         dictImages = {}
         imageList = wx.ImageList(TAILLE_IMAGE[0], TAILLE_IMAGE[1])
         for track in self.donnees :
-            indexImg = imageList.Add(track.bmp)            
-            dictImages[track.IDmode] = indexImg
+            if track.bmp != None :
+                indexImg = imageList.Add(track.bmp)
+                dictImages[track.IDmode] = indexImg
         self.SetImageLists(imageList, imageList)
                     
         def GetImage(track):

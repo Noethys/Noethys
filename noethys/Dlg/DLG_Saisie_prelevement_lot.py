@@ -561,6 +561,7 @@ class Dialog(wx.Dialog):
         # Sauvegarde de l'image
         buffer = cStringIO.StringIO()
         img = Image.open(Chemins.GetStaticPath("Images/Special/Prelevement.png"))
+        img = img.convert("RGB")
         img.save(buffer, format='JPEG', quality=100)
         buffer.seek(0)
         DB.MAJimage("modes_reglements", "IDmode", IDmode, buffer.read())
