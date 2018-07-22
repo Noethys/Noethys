@@ -1380,6 +1380,41 @@ class Synchro():
 
         return True
 
+    def Repair_application(self):
+        """ Demande un repair de la base de données """
+        # Codage de la clé de sécurité
+        secret = self.GetSecretInteger()
+
+        liste_actions = []
+        try :
+
+            # Création de l'url de syncdown
+            if self.dict_parametres["serveur_type"] == 0 :
+                url = self.dict_parametres["url_connecthys"]
+            if self.dict_parametres["serveur_type"] == 1 :
+                url = self.dict_parametres["url_connecthys"] + ("" if self.dict_parametres["url_connecthys"][-1] == "/" else "/") + self.dict_parametres["serveur_cgi_file"]
+            if self.dict_parametres["serveur_type"] == 2 :
+                url = self.dict_parametres["url_connecthys"]
+            url += ("" if url[-1] == "/" else "/") + "repairdb/%d" % int(secret)
+            print "URL repair =", url
+
+            # Récupération des données au format json
+            req = urllib2.Request(url)
+            reponse = urllib2.urlopen(req)
+            page = reponse.read()
+            data = json.loads(page)
+
+            print "Resultat :", data
+
+        except Exception, err :
+            self.log.EcritLog(_(u"[Erreur] Erreur dans la demande de réparation DB"))
+            print "Erreur dans la demande de repairdb :", err
+            self.log.EcritLog(err)
+            print "Erreur dans la demande de repairdb :", str(err)
+            return False
+
+        return True
+
     def TelechargeFichier(self, ftp=None, nomFichier="models.py", repFichier=None):
         """ Télécharge un fichier sur internet """
 

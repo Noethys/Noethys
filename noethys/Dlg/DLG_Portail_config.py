@@ -1521,6 +1521,13 @@ class Dialog(wx.Dialog):
         menu.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.DemandeUpgradeDB, id=id)
 
+        # Repair DB
+        id = wx.NewId()
+        item = wx.MenuItem(menu, id, _(u"Réparation de la base de données"))
+        item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Database.png"), wx.BITMAP_TYPE_PNG))
+        menu.AppendItem(item)
+        self.Bind(wx.EVT_MENU, self.DemandeRepairDB, id=id)
+
         menu.AppendSeparator()
 
         # AutoReload WSGI
@@ -1765,6 +1772,21 @@ class Dialog(wx.Dialog):
         if synchro.Upgrade_application() == True :
             self.EcritLog(_(u"Upgrade effectué."))
 
+    def DemandeRepairDB(self, event):
+        if self.ctrl_notebook.Validation() == False:
+            return False
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment exécuter cette opération ?\n\nAttention, cette opération peut être risquée ! "), _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+        reponse = dlg.ShowModal()
+        dlg.Destroy()
+        if reponse != wx.ID_YES :
+            return
+
+        dict_parametres = self.ctrl_notebook.GetCtrlParametres().GetValeurs()
+        self.EcritLog(_(u"Demande de réparation de la base de données..."))
+        synchro = Synchro(self, dict_parametres)
+        if synchro.Repair_application() == True :
+            self.EcritLog(_(u"Réparation effectuée."))
+
     def OuvrirNavigateur(self, event):
         dict_parametres = self.ctrl_notebook.GetCtrlParametres().GetValeurs()
         url = dict_parametres["url_connecthys"]
@@ -1914,6 +1936,11 @@ class Synchro():
         from Utils import UTILS_Portail_synchro
         synchro = UTILS_Portail_synchro.Synchro(dict_parametres=self.dict_parametres, log=self)
         synchro.Upgrade_application()
+
+    def Repair_application(self):
+        from Utils import UTILS_Portail_synchro
+        synchro = UTILS_Portail_synchro.Synchro(dict_parametres=self.dict_parametres, log=self)
+        synchro.Repair_application()
 
     def ConnectEtTelechargeFichier(self, nomFichier="", repFichier=None):
         from Utils import UTILS_Portail_synchro
