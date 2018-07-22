@@ -546,7 +546,7 @@ class Dialog(wx.Dialog):
             self.ctrl_titre.SetValue(titre)
             self.ctrl_couleur.SetID(couleur)
             self.ctrl_page.SetID(IDpage)
-            IDpage_initial = IDpage
+            self.IDpage_initial = IDpage
             dictParametres["categorie"] = categorie
             dictParametres["parametres"] = parametres
 
