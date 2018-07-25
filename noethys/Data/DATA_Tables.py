@@ -91,8 +91,8 @@ DB_DATA = {
                                     ("num_allocataire", "VARCHAR(100)", u"Numéro d'allocataire"),
                                     ("allocataire", "INTEGER", u"ID de l'individu allocataire principal"),
                                     ("internet_actif", "INTEGER", u"(0/1) Compte internet actif"),
-                                    ("internet_identifiant", "VARCHAR(50)", u"Code identifiant internet"),
-                                    ("internet_mdp", "VARCHAR(50)", u"Mot de passe internet"),
+                                    ("internet_identifiant", "VARCHAR(300)", u"Code identifiant internet"),
+                                    ("internet_mdp", "VARCHAR(300)", u"Mot de passe internet"),
                                     ("memo", "VARCHAR(2000)", u"Mémo concernant la famille"),  
                                     ("prelevement_activation", "INTEGER", u"Activation du prélèvement"),
                                     ("prelevement_etab", "VARCHAR(50)", u"Prélèvement - Code étab"),
@@ -828,6 +828,9 @@ DB_DATA = {
                                     ("actif", "INTEGER", u"Utilisateur actif"),
                                     ("image", "VARCHAR(200)", u"Images"),
                                     ("mdpcrypt", "VARCHAR(200)", u"Mot de passe crypté"),
+                                    ("internet_actif", "INTEGER", u"(0/1) Compte internet actif"),
+                                    ("internet_identifiant", "VARCHAR(300)", u"Code identifiant internet"),
+                                    ("internet_mdp", "VARCHAR(300)", u"Mot de passe internet"),
                                     ], # Utilisateurs
 
     "messages":[            ("IDmessage", "INTEGER PRIMARY KEY AUTOINCREMENT", u"IDmessage"),
@@ -1558,6 +1561,7 @@ DB_DATA = {
                                     ("horodatage", "DATETIME", u"Horodatage de l'action"),
                                     ("IDfamille", "INTEGER", u"ID de la famille"),
                                     ("IDindividu", "INTEGER", u"ID de l'individu"),
+                                    ("IDutilisateur", "INTEGER", u"ID de l'utilisateur"),
                                     ("categorie", "VARCHAR(50)", u"Catégorie de l'action"),
                                     ("action", "VARCHAR(50)", u"Nom de l'action"),
                                     ("description", "VARCHAR(300)", u"Description de l'action"),

@@ -24,13 +24,14 @@ from Ctrl.CTRL_ObjectListView import GroupListView, ColumnDefn, Filter, CTRL_Out
 
 
 class Track(object):
-    def __init__(self, parent=None, donnees={}, dictTitulaires={}):
+    def __init__(self, parent=None, donnees={}, dictTitulaires={}, dictUtilisateurs={}):
         self.parent = parent
 
         self.IDaction = donnees["IDaction"]
         self.horodatage = donnees["horodatage"]
         self.IDfamille = donnees["IDfamille"]
         self.IDindividu = donnees["IDindividu"]
+        self.IDutilisateur = donnees["IDutilisateur"]
 
         self.categorie = donnees["categorie"]
         self.FormateCategorie()
@@ -52,22 +53,35 @@ class Track(object):
         self.reponse = donnees["reponse"]
         self.email_date = donnees["email_date"]
 
-        # Nom titulaires
-        if dictTitulaires.has_key(self.IDfamille) :
-            self.famille = dictTitulaires[self.IDfamille]["titulairesAvecCivilite"]
-        else :
-            self.famille = "?"
+        # Nom
+        self.nom = ""
+
+        if self.IDfamille != None :
+            if dictTitulaires.has_key(self.IDfamille) :
+                self.nom = dictTitulaires[self.IDfamille]["titulairesAvecCivilite"]
+            else :
+                self.nom = "?"
+
+        if self.IDutilisateur != None :
+            if dictUtilisateurs.has_key(self.IDutilisateur) :
+                self.nom = dictUtilisateurs[self.IDutilisateur]
+            else :
+                self.nom = "?"
+
 
     def FormateCategorie(self):
         if self.categorie == "factures" : self.categorie_label = _(u"Factures")
-        if self.categorie == "reglements" : self.categorie_label = _(u"Règlements")
-        if self.categorie == "inscriptions" : self.categorie_label = _(u"Inscriptions")
-        if self.categorie == "reservations" : self.categorie_label = _(u"Réservations")
-        if self.categorie == "renseignements": self.categorie_label = _(u"Renseignements")
+        elif self.categorie == "reglements" : self.categorie_label = _(u"Règlements")
+        elif self.categorie == "inscriptions" : self.categorie_label = _(u"Inscriptions")
+        elif self.categorie == "reservations" : self.categorie_label = _(u"Réservations")
+        elif self.categorie == "renseignements": self.categorie_label = _(u"Renseignements")
+        elif self.categorie == "compte":self.categorie_label = _(u"Compte")
+        else : self.categorie_label = _(u"")
 
     def FormateEtat(self):
         if self.etat == "attente" : self.etat_label = _(u"En attente")
-        if self.etat == "validation" : self.etat_label = _(u"Traité")
+        elif self.etat == "validation" : self.etat_label = _(u"Traité")
+        else : self.etat_label = _(u"")
 
     def Refresh(self):
         self.FormateCategorie()
@@ -104,10 +118,19 @@ class ListView(GroupListView):
 
     def GetTracks(self):
         """ Récupération des données """
-        dictTitulaires = UTILS_Titulaires.GetTitulaires()
+        self.dictTitulaires = UTILS_Titulaires.GetTitulaires()
 
         DB = GestionDB.DB()
-        
+
+        # Importation des noms des utilisateurs
+        req = """SELECT IDutilisateur, nom, prenom
+        FROM utilisateurs;"""
+        DB.ExecuterReq(req)
+        listeDonnees = DB.ResultatReq()
+        self.dictUtilisateurs = {}
+        for IDutilisateur, nom, prenom in listeDonnees :
+            self.dictUtilisateurs[IDutilisateur] = u"%s %s" % (prenom, nom)
+
         # Lecture Actions
         liste_conditions = []
         if self.cacher_traitees == True :
@@ -121,7 +144,7 @@ class ListView(GroupListView):
         else :
             conditions = ""
 
-        req = """SELECT IDaction, horodatage, IDfamille, IDindividu, categorie, action, description, commentaire, parametres, etat, traitement_date, portail_actions.IDperiode, reponse, email_date,
+        req = """SELECT IDaction, horodatage, IDfamille, IDindividu, IDutilisateur, categorie, action, description, commentaire, parametres, etat, traitement_date, portail_actions.IDperiode, reponse, email_date,
         portail_periodes.nom, portail_periodes.date_debut, portail_periodes.date_fin, portail_periodes.IDmodele
         FROM portail_actions
         LEFT JOIN portail_periodes ON portail_periodes.IDperiode = portail_actions.IDperiode
@@ -130,15 +153,15 @@ class ListView(GroupListView):
         listeDonnees = DB.ResultatReq()
         DB.Close()
         listeActions = []
-        for IDaction, horodatage, IDfamille, IDindividu, categorie, action, description, commentaire, parametres, etat, traitement_date, IDperiode, reponse, email_date, periode_nom, periode_date_debut, periode_date_fin, periode_IDmodele in listeDonnees :
+        for IDaction, horodatage, IDfamille, IDindividu, IDutilisateur, categorie, action, description, commentaire, parametres, etat, traitement_date, IDperiode, reponse, email_date, periode_nom, periode_date_debut, periode_date_fin, periode_IDmodele in listeDonnees :
             traitement_date = UTILS_Dates.DateEngEnDateDD(traitement_date)
             email_date = UTILS_Dates.DateEngEnDateDD(email_date)
             horodatage = UTILS_Dates.DateEngEnDateDDT(horodatage)
             periode_date_debut = UTILS_Dates.DateEngEnDateDD(periode_date_debut)
             periode_date_fin = UTILS_Dates.DateEngEnDateDD(periode_date_fin)
             listeActions.append({
-                "IDaction" : IDaction, "horodatage" : horodatage, "IDfamille" : IDfamille, "IDindividu" : IDindividu, "categorie" : categorie,
-                "action" : action, "description" : description, "commentaire" : commentaire, "parametres" : parametres,
+                "IDaction" : IDaction, "horodatage" : horodatage, "IDfamille" : IDfamille, "IDindividu" : IDindividu, "IDutilisateur" : IDutilisateur,
+                "categorie" : categorie, "action" : action, "description" : description, "commentaire" : commentaire, "parametres" : parametres,
                 "etat" : etat, "traitement_date" : traitement_date, "IDperiode" : IDperiode, "reponse" : reponse, "email_date" : email_date,
                 "periode_nom" : periode_nom, "periode_date_debut" : periode_date_debut, "periode_date_fin" : periode_date_fin,
                 "periode_IDmodele" : periode_IDmodele,
@@ -146,7 +169,7 @@ class ListView(GroupListView):
 
         listeListeView = []
         for action in listeActions :
-            listeListeView.append(Track(self, action, dictTitulaires))
+            listeListeView.append(Track(self, action, self.dictTitulaires, self.dictUtilisateurs))
         return listeListeView
       
     def InitObjectListView(self):          
@@ -158,6 +181,7 @@ class ListView(GroupListView):
         self.image_inscription = self.AddNamedImages("inscriptions", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Activite.png"), wx.BITMAP_TYPE_PNG))
         self.image_reservation = self.AddNamedImages("reservations", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Calendrier_modification.png"), wx.BITMAP_TYPE_PNG))
         self.image_renseignement = self.AddNamedImages("renseignements", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Etiquette2.png"), wx.BITMAP_TYPE_PNG))
+        self.image_compte = self.AddNamedImages("compte", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Mecanisme.png"), wx.BITMAP_TYPE_PNG))
         self.image_email = self.AddNamedImages("email", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Emails_exp.png"), wx.BITMAP_TYPE_PNG))
 
         self.useExpansionColumn = True
@@ -197,7 +221,7 @@ class ListView(GroupListView):
             "etat" : ColumnDefn(_(u"Etat"), "left", 90, "etat_label", typeDonnee="texte", imageGetter=GetImageEtat),
             "traitement_date" : ColumnDefn(_(u"Traitée le"), "left", 80, "traitement_date", typeDonnee="date", stringConverter=FormateDate),
             "categorie" : ColumnDefn(_(u"Catégorie"), "left", 120, "categorie_label", typeDonnee="texte", imageGetter=GetImageCategorie),
-            "famille" : ColumnDefn(_(u"Famille"), "left", 180, "famille", typeDonnee="texte"),
+            "nom" : ColumnDefn(_(u"Nom"), "left", 180, "nom", typeDonnee="texte"),
             "description" : ColumnDefn(_(u"Description"), "left", 300, "description", typeDonnee="texte"),
             "periode" : ColumnDefn(_(u"Période"), "left", 200, "periode_nom", typeDonnee="texte"),
             "commentaire" : ColumnDefn(_(u"Commentaire"), "left", 200, "commentaire", typeDonnee="texte"),
@@ -207,11 +231,11 @@ class ListView(GroupListView):
 
         # Regroupement
         if self.regroupement != None :
-            liste_colonnes = ["horodatage", "etat", "traitement_date", "categorie", "famille", "description", "periode", "commentaire", "email_date", "reponse"]
+            liste_colonnes = ["horodatage", "etat", "traitement_date", "categorie", "nom", "description", "periode", "commentaire", "email_date", "reponse"]
             self.SetAlwaysGroupByColumn(liste_colonnes.index(self.regroupement))
             self.SetShowGroups(True)
         else :
-            liste_colonnes = ["IDaction", "horodatage", "etat", "traitement_date", "categorie", "famille", "description", "periode", "commentaire", "email_date", "reponse"]
+            liste_colonnes = ["IDaction", "horodatage", "etat", "traitement_date", "categorie", "nom", "description", "periode", "commentaire", "email_date", "reponse"]
             self.SetShowGroups(False)
         self.useExpansionColumn = False
         self.showItemCounts = False

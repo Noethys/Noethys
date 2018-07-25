@@ -3,8 +3,8 @@
 #------------------------------------------------------------------------
 # Application :    Noethys, gestion multi-activités
 # Site internet :  www.noethys.com
-# Auteur:           Ivan LUCAS
-# Copyright:       (c) 2010-11 Ivan LUCAS
+# Auteur:          Ivan LUCAS
+# Copyright:       (c) 2010-18 Ivan LUCAS
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
@@ -21,8 +21,6 @@ import datetime
 import string
 import ftplib
 
-try: import psyco; psyco.full()
-except: pass
 
 
 def DateEngEnDateDD(dateEng):
@@ -38,7 +36,7 @@ def DateDDEnDateFR(dateDD):
 
 
 
-def CreationIdentifiant(IDfamille=0, nbreCaract=8):
+def CreationIdentifiant(IDfamille=None, IDutilisateur=None, nbreCaract=8):
     """ Création d'un identifiant aléatoire """
     identifiant = ""
     numTmp = ""
@@ -46,10 +44,13 @@ def CreationIdentifiant(IDfamille=0, nbreCaract=8):
         numTmp += random.choice("123456789")
     coeff = "0" * 5
     identifiant = numTmp + coeff
-    identifiant = str(int(identifiant) + IDfamille)
+    if IDfamille != None :
+        identifiant = u"F%d" % (int(identifiant) + IDfamille)
+    if IDutilisateur != None :
+        identifiant = u"U%d" % (int(identifiant) + IDutilisateur)
     return identifiant
 
-def CreationMDP(nbreCaract=5):
+def CreationMDP(nbreCaract=8):
     """ Création d'un mot de passe aléatoire """
     mdp = ""
     for x in range(0, nbreCaract) :
@@ -62,31 +63,22 @@ def CrypteMDP(motdepasse=""):
     return mdpCrypte
 
 
-def InitIdentifiantsFiches():
-    """ Remplit tous les champs identifiant et mdp de toutes les fiches familles """
-    DB = GestionDB.DB()        
-    req = """SELECT IDfamille, nom, prenom FROM familles ORDER BY nom, prenom; """
-    DB.executerReq(req)
-    listeDonnees = DB.resultatReq()
-    DB.close()
-
-    taille = UTILS_Parametres.Parametres(mode="get", categorie="comptes_internet", nom="taille_passwords", valeur=7)
+def InitCodesUtilisateurs():
+    """ Remplit tous les champs identifiant et mdp de toutes les fiches utilisateurs """
+    DB = GestionDB.DB()
+    req = """SELECT IDutilisateur, nom, prenom FROM utilisateurs;"""
+    DB.ExecuterReq(req)
+    listeDonnees = DB.ResultatReq()
+    DB.Close()
 
     DB = GestionDB.DB()
-    for IDfamille, nom, prenom in listeDonnees :
-        identifiant = CreationIdentifiant(IDfamille)
-        mdp = CreationMDP(nbreCaract=taille)
-    
-        listeDonnees = [ ("internet_identifiant",   identifiant),  
-                                    ("internet_mdp",    mdp),
-                                    ("internet_actif",    1),
-                                     ]
-        
-        # Modification de l'identité de l'ENFANT
-        DB.ReqMAJ("familles", listeDonnees, "IDfamille", IDfamille)
-    
-    DB.commit()
-    DB.close()
+    for IDutilisateur, nom, prenom in listeDonnees :
+        identifiant = CreationIdentifiant(IDutilisateur=IDutilisateur)
+        mdp = CreationMDP(nbreCaract=8)
+        listeDonnees = [ ("internet_identifiant", identifiant), ("internet_mdp", mdp), ("internet_actif", 0)]
+        DB.ReqMAJ("utilisateurs", listeDonnees, "IDutilisateur", IDutilisateur)
+    DB.Commit()
+    DB.Close()
 
 
 def UploadCalendrier():
@@ -430,5 +422,6 @@ def GetPiecesAFournir(dictPieces, dictCotisations, dictTypesPieces, dictEnfants,
 
 
 
-
+if __name__ == u"__main__":
+    InitCodesUtilisateurs()
     

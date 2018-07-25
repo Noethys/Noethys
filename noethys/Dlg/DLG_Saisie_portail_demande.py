@@ -166,6 +166,10 @@ class CTRL_Solde(wx.TextCtrl):
         self.SetToolTip(wx.ToolTip(_(u"Solde du compte de la famille")))
 
     def MAJ(self, IDfamille=None):
+        if IDfamille == None :
+            self.SetSolde(FloatToDecimal(0.0))
+            return
+
         DB = GestionDB.DB()
         req = """SELECT IDfamille, SUM(montant)
         FROM reglements
@@ -614,6 +618,7 @@ class Dialog(wx.Dialog):
             "inscriptions" : "Activite.png",
             "reservations" : "Calendrier_modifier.png",
             "renseignements": "Cotisation.png",
+            "compte": "Mecanisme.png",
             }
         self.ctrl_image.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/32x32/%s" % dict_images[self.track.categorie]), wx.BITMAP_TYPE_PNG))
 
@@ -622,8 +627,9 @@ class Dialog(wx.Dialog):
         self.label_horodatage.SetLabel(dt.strftime("%d/%m/%Y  %H:%M:%S"))
 
         # Famille
-        self.ctrl_famille.SetValue(self.track.famille)
+        self.ctrl_famille.SetValue(self.track.nom)
         self.ctrl_solde.MAJ(IDfamille=self.track.IDfamille)
+        self.ctrl_solde.Enable(self.track.IDfamille != None)
 
         # Description
         description = self.track.description
@@ -745,10 +751,11 @@ class Dialog(wx.Dialog):
 
         # Email
         if self.track.categorie == "reservations" : self.categorie_email = "portail_demande_reservation"
-        if self.track.categorie == "reglements" : self.categorie_email = "portail_demande_recu_reglement"
-        if self.track.categorie == "factures" : self.categorie_email = "portail_demande_facture"
-        if self.track.categorie == "inscriptions" : self.categorie_email = "portail_demande_inscription"
-        if self.track.categorie == "renseignements": self.categorie_email = "portail_demande_renseignement"
+        elif self.track.categorie == "reglements" : self.categorie_email = "portail_demande_recu_reglement"
+        elif self.track.categorie == "factures" : self.categorie_email = "portail_demande_facture"
+        elif self.track.categorie == "inscriptions" : self.categorie_email = "portail_demande_inscription"
+        elif self.track.categorie == "renseignements": self.categorie_email = "portail_demande_renseignement"
+        else : self.categorie_email = None
         self.ctrl_modele_email.SetCategorie(self.categorie_email)
 
         self.MAJ_email_date()

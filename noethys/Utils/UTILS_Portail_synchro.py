@@ -490,44 +490,71 @@ class Synchro():
         FROM familles;"""
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
+        listeFamilles = []
+        for IDfamille, internet_actif, internet_identifiant, internet_mdp, email_recus in listeDonnees:
+            listeFamilles.append({"ID" : IDfamille, "internet_actif" : internet_actif, "internet_identifiant" : internet_identifiant,
+                                  "internet_mdp" : internet_mdp, "email_recus" : email_recus,})
+
+        req = """SELECT IDutilisateur, internet_actif, internet_identifiant, internet_mdp, nom, prenom
+        FROM utilisateurs;"""
+        DB.ExecuterReq(req)
+        listeDonnees = DB.ResultatReq()
+        listeUtilisateurs = []
+        for IDutilisateur, internet_actif, internet_identifiant, internet_mdp, nom, prenom in listeDonnees:
+            listeUtilisateurs.append({"ID": IDutilisateur, "internet_actif": internet_actif, "internet_identifiant": internet_identifiant,
+                                  "internet_mdp": internet_mdp, "nom": nom, "prenom" : prenom})
 
         listeIDfamille = []
-        for IDfamille, internet_actif, internet_identifiant, internet_mdp, email_recus in listeDonnees :
+        for profil, listeDonnees in [("famille", listeFamilles), ("utilisateur", listeUtilisateurs)]:
+            for dictDonnee in listeDonnees :
+                if dictDonnee["internet_identifiant"] not in ("", None) and dictDonnee["internet_mdp"] not in ("", None) :
 
-            if internet_identifiant not in ("", None) and internet_mdp not in ("", None) :
-                nomsTitulaires = cryptage.encrypt(dictTitulaires[IDfamille]["titulairesSansCivilite"])
+                    if profil == "famille" :
+                        IDfamille = dictDonnee["ID"]
+                        IDutilisateur = None
+                    if profil == "utilisateur" :
+                        IDutilisateur = dictDonnee["ID"]
+                        IDfamille = None
 
-                # Cryptage du mot de passe
-                if "custom" not in internet_mdp :
-                    internet_mdp = SHA256.new(internet_mdp.encode('utf-8')).hexdigest()
+                    # Recherche du nom complet
+                    if profil == "famille" :
+                        nomDossier = cryptage.encrypt(dictTitulaires[IDfamille]["titulairesSansCivilite"])
+                    if profil == "utilisateur" :
+                        nomDossier = u"%s %s" % (dictDonnee["prenom"], dictDonnee["nom"])
 
-                # Génération du session_token
-                session_token = "famille-%d-%s-%s-%d" % (IDfamille, internet_identifiant, internet_mdp[:20], internet_actif)
+                    # Cryptage du mot de passe
+                    if "custom" not in dictDonnee["internet_mdp"] :
+                        dictDonnee["internet_mdp"] = SHA256.new(dictDonnee["internet_mdp"].encode('utf-8')).hexdigest()
 
-                # Récupération de l email de recu
-                if email_recus != None :
-                    IDindividu, categorie, adresse = email_recus.split(";")
-                    if IDindividu != "" :
-                        req = """SELECT IDindividu, mail, travail_mail FROM individus WHERE IDindividu=%d;""" % int(IDindividu)
-                        DB.ExecuterReq(req)
-                        listeA = DB.ResultatReq()
-                        dictA = {}
-                        for IDindividu, mail, travail_mail in listeA :
-                            dictA[IDindividu] = {"perso":mail, "travail":travail_mail}
-                        email = cryptage.encrypt(dictA[IDindividu][categorie])
-                else :
+                    # Génération du session_token
+                    session_token = "%s-%d-%s-%s-%d" % (profil, dictDonnee["ID"], dictDonnee["internet_identifiant"], dictDonnee["internet_mdp"][:20], dictDonnee["internet_actif"])
+
+                    # Récupération de l email de recu
                     email = ""
+                    if dictDonnee.has_key("email_recus") and dictDonnee["email_recus"] != None :
+                        IDindividu, categorie, adresse = dictDonnee["email_recus"].split(";")
+                        if IDindividu != "" :
+                            req = """SELECT IDindividu, mail, travail_mail FROM individus WHERE IDindividu=%d;""" % int(IDindividu)
+                            DB.ExecuterReq(req)
+                            listeA = DB.ResultatReq()
+                            dictA = {}
+                            for IDindividu, mail, travail_mail in listeA :
+                                dictA[IDindividu] = {"perso":mail, "travail":travail_mail}
+                            email = cryptage.encrypt(dictA[IDindividu][categorie])
 
-                if internet_actif == 1 :
-                    listeIDfamille.append(IDfamille)
-                else :
-                    # Anonymise les infos des comptes désactivés
-                    nomsTitulaires = "XXX"
-                    email = ""
 
-                # Création du user
-                m = models.User(IDuser=None, identifiant=internet_identifiant, cryptpassword=internet_mdp, nom=nomsTitulaires, email=email, role="famille", IDfamille=IDfamille, actif=internet_actif, session_token=session_token)
-                session.add(m)
+                    if profil == "famille" and dictDonnee["internet_actif"] == 1 :
+                        listeIDfamille.append(IDfamille)
+                    if dictDonnee["internet_actif"] == 0 :
+                        # Anonymise les infos des comptes désactivés
+                        nomDossier = "XXX"
+                        email = ""
+
+                    # Création du user
+                    m = models.User(IDuser=None, identifiant=dictDonnee["internet_identifiant"], cryptpassword=dictDonnee["internet_mdp"],
+                                    nom=nomDossier, email=email, role=profil, IDfamille=IDfamille, IDutilisateur=IDutilisateur, actif=dictDonnee["internet_actif"],
+                                    session_token=session_token)
+                    session.add(m)
 
 
         # Création des factures
@@ -1238,9 +1265,13 @@ class Synchro():
             listeActions = []
             listeReservations = []
             listeRenseignements = []
-            listePasswords = []
+            listePasswordsFamilles = []
+            listePasswordsUtilisateurs = []
 
             for action in liste_actions :
+
+                if not action.has_key("IDutilisateur") :
+                    action["IDutilisateur"] = None
 
                 # Modification de compte
                 if action["categorie"] == "compte" :
@@ -1249,12 +1280,15 @@ class Synchro():
                     if action["action"] == "maj_password" :
                         action["etat"] = "validation"
                         action["traitement_date"] = str(datetime.date.today())
-                        listePasswords.append((action["parametres"], action["IDfamille"]))
+                        if action["IDfamille"] != None :
+                            listePasswordsFamilles.append((action["parametres"], action["IDfamille"]))
+                        if action["IDutilisateur"] != None :
+                            listePasswordsUtilisateurs.append((action["parametres"], action["IDutilisateur"]))
 
                 # Mémorisation des actions
                 listeActions.append([
                         prochainIDaction, action["horodatage"], action["IDfamille"], action["IDindividu"],
-                        action["categorie"], action["action"], action["description"],
+                        action["IDutilisateur"], action["categorie"], action["action"], action["description"],
                         action["commentaire"], action["parametres"], action["etat"],
                         action["traitement_date"], action["IDperiode"], action["ref_unique"], action["reponse"]
                         ])
@@ -1278,17 +1312,23 @@ class Synchro():
 
             # Enregistrement des actions
             if len(listeActions) > 0 :
-                DB.Executermany("INSERT INTO portail_actions (IDaction, horodatage, IDfamille, IDindividu, categorie, action, description, commentaire, parametres, etat, traitement_date, IDperiode, ref_unique, reponse) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", listeActions, commit=False)
+                DB.Executermany("INSERT INTO portail_actions (IDaction, horodatage, IDfamille, IDindividu, IDutilisateur, categorie, action, description, commentaire, parametres, etat, traitement_date, IDperiode, ref_unique, reponse) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", listeActions, commit=False)
             if len(listeReservations) > 0 :
                 DB.Executermany("INSERT INTO portail_reservations (date, IDinscription, IDunite, IDaction, etat) VALUES (?, ?, ?, ?, ?)", listeReservations, commit=False)
             if len(listeRenseignements) > 0 :
                 DB.Executermany("INSERT INTO portail_renseignements (champ, valeur, IDaction) VALUES (?, ?, ?)", listeRenseignements, commit=False)
-            if len(listePasswords) > 0 :
-                DB.Executermany("UPDATE familles SET internet_mdp=? WHERE IDfamille=?", listePasswords, commit=False)
-                if len(listePasswords) == 1:
-                    self.log.EcritLog(_(u"1 mot de passe modifié..."))
+            if len(listePasswordsFamilles) > 0 :
+                DB.Executermany("UPDATE familles SET internet_mdp=? WHERE IDfamille=?", listePasswordsFamilles, commit=False)
+                if len(listePasswordsFamilles) == 1:
+                    self.log.EcritLog(_(u"1 mot de passe famille modifié..."))
                 else:
-                    self.log.EcritLog(_(u"%d mots de passe modifiés...") % len(listePasswords))
+                    self.log.EcritLog(_(u"%d mots de passe familles modifiés...") % len(listePasswordsFamilles))
+            if len(listePasswordsUtilisateurs) > 0 :
+                DB.Executermany("UPDATE utilisateurs SET internet_mdp=? WHERE IDutilisateur=?", listePasswordsUtilisateurs, commit=False)
+                if len(listePasswordsUtilisateurs) == 1:
+                    self.log.EcritLog(_(u"1 mot de passe administrateur modifié..."))
+                else:
+                    self.log.EcritLog(_(u"%d mots de passe administrateurs modifiés...") % len(listePasswordsUtilisateurs))
 
             DB.Commit()
             DB.Close()

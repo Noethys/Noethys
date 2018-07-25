@@ -2166,8 +2166,22 @@ class DB:
             except Exception, err:
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
+        # =============================================================
 
-
+        versionFiltre = (1, 2, 3, 7)
+        if versionFichier < versionFiltre:
+            try:
+                if self.isNetwork == True:
+                    self.ExecuterReq("ALTER TABLE familles MODIFY COLUMN internet_identifiant VARCHAR(300);")
+                    self.ExecuterReq("ALTER TABLE familles MODIFY COLUMN internet_mdp VARCHAR(300);")
+                self.AjoutChamp("utilisateurs", "internet_actif", "INTEGER")
+                self.AjoutChamp("utilisateurs", "internet_identifiant", "VARCHAR(300)")
+                self.AjoutChamp("utilisateurs", "internet_mdp", "VARCHAR(300)")
+                self.AjoutChamp("portail_actions", "IDutilisateur", "INTEGER")
+                from Utils import UTILS_Internet
+                UTILS_Internet.InitCodesUtilisateurs()
+            except Exception, err:
+                return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
 
 
@@ -2479,7 +2493,7 @@ if __name__ == "__main__":
         
     # # Ajouter un champ
     # db = DB(suffixe="DATA")
-    # db.AjoutChamp("commandes_valeurs", "IDcommande", "INTEGER")
+    # db.AjoutChamp("portail_actions", "IDutilisateur", "INTEGER")
     # db.Close()
 
     # # Exportation d'une table dans la base DEFAUT

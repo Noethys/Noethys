@@ -22,14 +22,16 @@ from Utils import UTILS_Parametres
 
 
 class Dialog(wx.Dialog):
-    def __init__(self, parent, IDfamille=None):
+    def __init__(self, parent, IDfamille=None, IDutilisateur=None, mode_virtuel=False):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE)
         self.parent = parent
         self.IDfamille = IDfamille
+        self.IDutilisateur = IDutilisateur
+        self.mode_virtuel = mode_virtuel
         self.dictDonneesInitiales = {}
 
         # Bandeau
-        intro = _(u"Sélectionnez les paramètres du compte internet de la famille.")
+        intro = _(u"Sélectionnez les paramètres du compte internet.")
         titre = _(u"Paramètres du compte internet")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Connecthys.png")
@@ -75,8 +77,9 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
         
         # Init contrôles
-        self.radio_activation_non.SetValue(True) 
-        self.Importation() 
+        self.radio_activation_non.SetValue(True)
+        if self.mode_virtuel == False :
+            self.Importation()
 
     def __set_properties(self):
         self.radio_activation_oui.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour activer le compte internet")))
@@ -153,15 +156,13 @@ class Dialog(wx.Dialog):
         self.ctrl_identifiant.SetFocus()
 
     def ActiveMdp(self, event):
-        internet_mdp = self.ctrl_mdp.GetValue()
-        if internet_mdp.startswith("custom"):
-            dlg = wx.MessageDialog(self, _(u"Attention, ce mot de passe a déjà été personnalisé par la famille ! \n\nSouhaitez-vous vraiment modifier ce mot de passe ?"), _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+        if "********" in self.ctrl_mdp.GetValue():
+            dlg = wx.MessageDialog(self, _(u"Attention, ce mot de passe a déjà été personnalisé par l'usager ! \n\nSouhaitez-vous vraiment modifier ce mot de passe ?"), _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
             reponse = dlg.ShowModal()
             dlg.Destroy()
             if reponse != wx.ID_YES :
                 return
 
-        if "********" in self.ctrl_mdp.GetValue():
             self.ctrl_mdp.SetValue("")
 
         self.ctrl_mdp.Enable(True)
@@ -174,15 +175,16 @@ class Dialog(wx.Dialog):
         if reponse != wx.ID_YES:
             return False
 
-        internet_identifiant = UTILS_Internet.CreationIdentifiant(IDfamille=self.IDfamille)
+        internet_identifiant = UTILS_Internet.CreationIdentifiant(IDfamille=self.IDfamille, IDutilisateur=self.IDutilisateur)
         self.ctrl_identifiant.SetValue(internet_identifiant)
 
     def RegenererMdp(self, event):
-        dlg = wx.MessageDialog(self, _(u"Attention, ce mot de passe a déjà été personnalisé par la famille ! \n\nSouhaitez-vous vraiment modifier ce mot de passe ?"), _(u"Avertissement"), wx.YES_NO | wx.NO_DEFAULT | wx.CANCEL | wx.ICON_EXCLAMATION)
-        reponse = dlg.ShowModal()
-        dlg.Destroy()
-        if reponse != wx.ID_YES:
-            return False
+        if "********" in self.ctrl_mdp.GetValue():
+            dlg = wx.MessageDialog(self, _(u"Attention, ce mot de passe a déjà été personnalisé par l'usager ! \n\nSouhaitez-vous vraiment modifier ce mot de passe ?"), _(u"Avertissement"), wx.YES_NO | wx.NO_DEFAULT | wx.CANCEL | wx.ICON_EXCLAMATION)
+            reponse = dlg.ShowModal()
+            dlg.Destroy()
+            if reponse != wx.ID_YES:
+                return False
 
         dlg = wx.MessageDialog(self, _(u"Vous êtes vraiment sûr de vouloir générer un nouveau mot de passe ?"), _(u"Avertissement"), wx.YES_NO | wx.NO_DEFAULT | wx.CANCEL | wx.ICON_EXCLAMATION)
         reponse = dlg.ShowModal()
@@ -196,27 +198,36 @@ class Dialog(wx.Dialog):
 
     def Importation(self):
         """ Importation des données """
-        if self.IDfamille == None :
+        if self.IDfamille == None and self.IDutilisateur == None :
             return
 
         DB = GestionDB.DB()
-        req = """SELECT internet_actif, internet_identifiant, internet_mdp
-        FROM familles
-        WHERE IDfamille=%d;""" % self.IDfamille
+        if self.IDfamille != None :
+            req = """SELECT internet_actif, internet_identifiant, internet_mdp
+            FROM familles
+            WHERE IDfamille=%d;""" % self.IDfamille
+        if self.IDutilisateur != None :
+            req = """SELECT internet_actif, internet_identifiant, internet_mdp
+            FROM utilisateurs
+            WHERE IDutilisateur=%d;""" % self.IDutilisateur
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         DB.Close()
         if len(listeDonnees) == 0 : return
         internet_actif, internet_identifiant, internet_mdp = listeDonnees[0]
         self.dictDonneesInitiales = {"internet_actif" : internet_actif, "internet_identifiant" : internet_identifiant, "internet_mdp" : internet_mdp}
+        self.MAJ()
 
-        if internet_actif == 1:
+    def MAJ(self):
+        if self.dictDonneesInitiales["internet_actif"] == 1:
             self.radio_activation_oui.SetValue(True)
-        if internet_identifiant != None :
-            self.ctrl_identifiant.SetValue(internet_identifiant)
-        if internet_mdp != None :
-            if internet_mdp.startswith("custom"):
+        if self.dictDonneesInitiales["internet_identifiant"] != None :
+            self.ctrl_identifiant.SetValue(self.dictDonneesInitiales["internet_identifiant"])
+        if self.dictDonneesInitiales["internet_mdp"] != None :
+            if self.dictDonneesInitiales["internet_mdp"].startswith("custom"):
                 internet_mdp = "********"
+            else :
+                internet_mdp = self.dictDonneesInitiales["internet_mdp"]
             self.ctrl_mdp.SetValue(internet_mdp)
 
     def OnBoutonOk(self, event):
@@ -235,33 +246,55 @@ class Dialog(wx.Dialog):
             dlg.Destroy()
             return False
 
-        # Vérifie que l'identifiant n'a pas déjà été attribué à une autre famille
+        # Vérifie que l'identifiant n'a pas déjà été attribué à un autre utilisateur ou une autre famille
         DB = GestionDB.DB()
-        req = u"""SELECT IDfamille, internet_identifiant
-        FROM familles
-        WHERE internet_identifiant='%s' AND IDfamille<>%d;""" % (dictDonnees["internet_identifiant"], self.IDfamille)
-        DB.ExecuterReq(req)
-        listeDonnees = DB.ResultatReq()
-        DB.Close()
-        if len(listeDonnees) > 0 :
-            dlg = wx.MessageDialog(self, _(u"Cet identifiant a déjà été attribué à %d famille(s) !") % len(listeDonnees), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
-            dlg.ShowModal()
-            dlg.Destroy()
-            return False
+        if self.IDfamille != None :
+            req = u"""SELECT IDfamille, internet_identifiant
+            FROM familles
+            WHERE internet_identifiant='%s' AND IDfamille<>%d;""" % (dictDonnees["internet_identifiant"], self.IDfamille)
+            DB.ExecuterReq(req)
+            listeDonnees = DB.ResultatReq()
+            DB.Close()
+            if len(listeDonnees) > 0 :
+                dlg = wx.MessageDialog(self, _(u"Cet identifiant a déjà été attribué à %d famille(s) !") % len(listeDonnees), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg.ShowModal()
+                dlg.Destroy()
+                return False
+
+        if self.IDutilisateur != None :
+            req = u"""SELECT IDutilisateur, internet_identifiant
+            FROM utilisateurs
+            WHERE internet_identifiant='%s' AND IDutilisateur<>%d;""" % (dictDonnees["internet_identifiant"], self.IDutilisateur)
+            DB.ExecuterReq(req)
+            listeDonnees = DB.ResultatReq()
+            DB.Close()
+            if len(listeDonnees) > 0 :
+                dlg = wx.MessageDialog(self, _(u"Cet identifiant a déjà été attribué à %d utilisateur(s) !") % len(listeDonnees), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg.ShowModal()
+                dlg.Destroy()
+                return False
 
         # Sauvegarde
-        DB = GestionDB.DB()
-        listeDonnees = [
-            ("internet_actif", dictDonnees["internet_actif"]),
-            ("internet_identifiant", dictDonnees["internet_identifiant"]),
-            ("internet_mdp", dictDonnees["internet_mdp"]),
-        ]
+        if self.mode_virtuel == False :
+            DB = GestionDB.DB()
+            listeDonnees = [
+                ("internet_actif", dictDonnees["internet_actif"]),
+                ("internet_identifiant", dictDonnees["internet_identifiant"]),
+                ("internet_mdp", dictDonnees["internet_mdp"]),
+            ]
 
-        DB.ReqMAJ("familles", listeDonnees, "IDfamille", self.IDfamille)
-        DB.Close()
+            if self.IDfamille != None :
+                DB.ReqMAJ("familles", listeDonnees, "IDfamille", self.IDfamille)
+            if self.IDutilisateur != None :
+                DB.ReqMAJ("utilisateurs", listeDonnees, "IDutilisateur", self.IDutilisateur)
+            DB.Close()
 
         # Fermeture
         self.EndModal(wx.ID_OK)
+
+    def SetDonnees(self, dictDonnees={}):
+        self.dictDonneesInitiales = dictDonnees
+        self.MAJ()
 
     def GetDonnees(self):
         dictDonnees = {}
@@ -281,7 +314,7 @@ class Dialog(wx.Dialog):
 if __name__ == u"__main__":
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    dialog_1 = Dialog(None, IDfamille=1)
+    dialog_1 = Dialog(None, IDfamille=1, IDutilisateur=None)
     app.SetTopWindow(dialog_1)
     dialog_1.ShowModal()
     app.MainLoop()

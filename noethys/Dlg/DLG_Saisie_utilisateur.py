@@ -18,6 +18,10 @@ import GestionDB
 from Ctrl import CTRL_Droits
 import wx.lib.agw.hyperlink as Hyperlink
 from Crypto.Hash import SHA256
+from Utils import UTILS_Internet
+from Utils import UTILS_Parametres
+from Ctrl import CTRL_Compte_internet
+
 
 
 LISTE_IMAGES = [
@@ -251,7 +255,12 @@ class Dialog(wx.Dialog):
         self.IDutilisateur = IDutilisateur
         self.mdp = None
         self.mdpcrypt = None
-        
+
+        if IDutilisateur == None :
+            DB = GestionDB.DB()
+            IDutilisateur = DB.GetProchainID("utilisateurs")
+            DB.Close()
+
         # Identité
         self.staticbox_identite_staticbox = wx.StaticBox(self, -1, _(u"Identité"))
         self.label_sexe = wx.StaticText(self, -1, _(u"Sexe :"))
@@ -271,7 +280,15 @@ class Dialog(wx.Dialog):
         self.ctrl_actif = wx.CheckBox(self, -1, u"Utilisateur actif")
         self.ctrl_actif.SetValue(True)
         self.bouton_modif_mdp = CTRL_Bouton_image.CTRL(self, texte="", cheminImage="Images/32x32/Cle.png")
-        
+
+        # Compte internet
+        self.staticbox_internet_staticbox = wx.StaticBox(self, -1, _(u"Compte internet"))
+        self.ctrl_compte_internet = CTRL_Compte_internet.CTRL(self, IDutilisateur=IDutilisateur, couleurFond=wx.WHITE)
+        self.bouton_modifier = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Modifier.png"), wx.BITMAP_TYPE_ANY))
+        #self.bouton_envoi_mail = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Emails_exp.png"), wx.BITMAP_TYPE_ANY))
+        self.bouton_envoi_pressepapiers = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Clipboard.png"), wx.BITMAP_TYPE_ANY))
+        #self.bouton_historique = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Historique.png"), wx.BITMAP_TYPE_ANY))
+
         # Droits
         self.staticbox_droits_staticbox = wx.StaticBox(self, -1, _(u"Droits"))
         self.radio_droits_admin = wx.RadioButton(self, -1, _(u"Administrateur"), style=wx.RB_GROUP)
@@ -295,9 +312,19 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioDroits, self.radio_droits_admin)
         self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioDroits, self.radio_droits_modele)
         self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioDroits, self.radio_droits_perso)
-        
+        self.Bind(wx.EVT_BUTTON, self.ctrl_compte_internet.Modifier, self.bouton_modifier)
+        #self.Bind(wx.EVT_BUTTON, self.Envoyer_email, self.bouton_envoi_mail)
+        self.Bind(wx.EVT_BUTTON, self.ctrl_compte_internet.Envoyer_pressepapiers, self.bouton_envoi_pressepapiers)
+        #self.Bind(wx.EVT_BUTTON, self.Consulter_historique, self.bouton_historique)
+
         if self.IDutilisateur == None :
             self.SetTitle(_(u"Saisie d'un utilisateur"))
+
+            # Création des codes internet
+            internet_identifiant = UTILS_Internet.CreationIdentifiant(IDutilisateur=IDutilisateur)
+            internet_mdp = UTILS_Internet.CreationMDP(nbreCaract=8)
+            self.ctrl_compte_internet.SetDonnees({"internet_actif": 0, "internet_identifiant": internet_identifiant, "internet_mdp": internet_mdp})
+
         else:
             self.SetTitle(_(u"Modification d'un utilisateur"))
             self.Importation()
@@ -306,6 +333,10 @@ class Dialog(wx.Dialog):
         self.MAJboutonMdp()
 
     def __set_properties(self):
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Modifier les paramètres du compte internet")))
+        #self.bouton_envoi_mail.SetToolTip(wx.ToolTip(_(u"Envoyer un couriel à la famille avec les codes d'accès au portail Internet")))
+        self.bouton_envoi_pressepapiers.SetToolTip(wx.ToolTip(_(u"Copier les codes d'accès dans le presse-papiers afin de les coller ensuite dans un document ou un email par exemple")))
+        #self.bouton_historique.SetToolTip(wx.ToolTip(_(u"Consulter et traiter les demandes de l'utilisateur")))
         self.ctrl_sexe.SetToolTip(wx.ToolTip(_(u"Sélectionnez le sexe de l'utilisateur")))
         self.ctrl_sexe.SetSelection(0)
         self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez ici le nom de famille de l'utilisateur")))
@@ -318,11 +349,11 @@ class Dialog(wx.Dialog):
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
-        self.SetMinSize((690, 750))
+        self.SetMinSize((850, 750))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
-        grid_sizer_haut = wx.FlexGridSizer(rows=1, cols=2, vgap=10, hgap=10)
+        grid_sizer_haut = wx.FlexGridSizer(rows=1, cols=3, vgap=10, hgap=10)
         grid_sizer_haut_gauche = wx.FlexGridSizer(rows=2, cols=1, vgap=10, hgap=10)
         
         # Identité
@@ -361,7 +392,25 @@ class Dialog(wx.Dialog):
         
         grid_sizer_haut.AddGrowableCol(0)
         grid_sizer_base.Add(grid_sizer_haut, 1, wx.ALL|wx.EXPAND, 10)
-        
+
+        # Compte internet
+        staticbox_internet = wx.StaticBoxSizer(self.staticbox_internet_staticbox, wx.VERTICAL)
+        grid_sizer_param = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
+        grid_sizer_param.Add(self.ctrl_compte_internet, 0, wx.EXPAND, 0)
+
+        grid_sizer_boutons = wx.FlexGridSizer(rows=6, cols=1, vgap=5, hgap=5)
+        grid_sizer_boutons.Add(self.bouton_modifier, 0, 0, 0)
+        grid_sizer_boutons.Add( (5, 5), 0, 0, 0)
+        #grid_sizer_boutons.Add(self.bouton_envoi_mail, 0, 0, 0)
+        grid_sizer_boutons.Add(self.bouton_envoi_pressepapiers, 0, 0, 0)
+        #grid_sizer_boutons.Add(self.bouton_historique, 0, 0, 0)
+        grid_sizer_param.Add(grid_sizer_boutons, 0, 0, 0)
+        grid_sizer_param.AddGrowableRow(0)
+        grid_sizer_param.AddGrowableCol(0)
+
+        staticbox_internet.Add(grid_sizer_param, 1, wx.ALL|wx.EXPAND, 5)
+        grid_sizer_haut.Add(staticbox_internet, 1, wx.ALL|wx.EXPAND, 0)
+
         # Droits
         staticbox_droits = wx.StaticBoxSizer(self.staticbox_droits_staticbox, wx.VERTICAL)
         grid_sizer_droits = wx.FlexGridSizer(rows=5, cols=1, vgap=10, hgap=10)
@@ -499,7 +548,15 @@ class Dialog(wx.Dialog):
                 dlg.ShowModal()
                 dlg.Destroy()
                 return
-                
+
+        # Vérifie que le compte n'est pas inactif alors que le compte internet est actif
+        dictCompteInternet = self.ctrl_compte_internet.GetDonnees()
+        if dictCompteInternet["internet_actif"] == 1 and self.ctrl_actif.GetValue() == False :
+            dlg = wx.MessageDialog(self, _(u"Vous devez désactiver le compte internet si vous souhaitez désactiver cet utilisateur !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return False
+
         # Sauvegarde
         self.Sauvegarde()
         
@@ -512,14 +569,14 @@ class Dialog(wx.Dialog):
     def Importation(self):
         """ Importation des donnees de la base """
         DB = GestionDB.DB()
-        req = """SELECT sexe, nom, prenom, mdp, mdpcrypt, profil, actif, image
+        req = """SELECT sexe, nom, prenom, mdp, mdpcrypt, profil, actif, image, internet_actif, internet_identifiant, internet_mdp
         FROM utilisateurs 
         WHERE IDutilisateur=%d;""" % self.IDutilisateur
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         DB.Close()
         if len(listeDonnees) == 0 : return
-        sexe, nom, prenom, mdp, mdpcrypt, profil, actif, image = listeDonnees[0]
+        sexe, nom, prenom, mdp, mdpcrypt, profil, actif, image, internet_actif, internet_identifiant, internet_mdp = listeDonnees[0]
         # Identité
         if sexe == "M" :
             self.ctrl_sexe.Select(0)
@@ -546,8 +603,8 @@ class Dialog(wx.Dialog):
                 self.radio_droits_perso.SetValue(True)
         # Avatar
         self.ctrl_image.SetImage(image)
-        
-        
+        # Compte internet
+        self.ctrl_compte_internet.SetDonnees({"internet_actif": internet_actif, "internet_identifiant": internet_identifiant, "internet_mdp": internet_mdp})
 
     def Sauvegarde(self):
         """ Sauvegarde """
@@ -575,6 +632,9 @@ class Dialog(wx.Dialog):
         
         # Avatar
         nomImage = self.ctrl_image.GetImage()
+
+        # Compte internet
+        dictCompteInternet = self.ctrl_compte_internet.GetDonnees()
         
         # Sauvegarde
         DB = GestionDB.DB()
@@ -587,7 +647,10 @@ class Dialog(wx.Dialog):
                 ("profil", profil),
                 ("actif", actif),
                 ("image", nomImage),
-            ]
+                ("internet_actif", dictCompteInternet["internet_actif"]),
+                ("internet_identifiant", dictCompteInternet["internet_identifiant"]),
+                ("internet_mdp", dictCompteInternet["internet_mdp"]),
+        ]
         if self.IDutilisateur == None :
             self.IDutilisateur = DB.ReqInsert("utilisateurs", listeDonnees)
         else:

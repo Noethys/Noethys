@@ -257,7 +257,7 @@ class ListView(FastObjectListView):
             return
 
         # Récupère la taille des mots de passe
-        taille = UTILS_Parametres.Parametres(mode="get", categorie="comptes_internet", nom="taille_passwords", valeur=7)
+        taille = UTILS_Parametres.Parametres(mode="get", categorie="comptes_internet", nom="taille_passwords", valeur=8)
         dlg = wx.MessageDialog(self, _(u"Les mots de passe comporteront %d caractères.\n\nSi cela vous convient, cliquez sur Oui, sinon annulez et allez dans Menu Paramétrage > Préférences pour modifier la taille des mots de passe des comptes internet.") % taille, _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
         reponse = dlg.ShowModal()
         dlg.Destroy()

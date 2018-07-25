@@ -13,13 +13,11 @@ import Chemins
 from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
-from Ctrl import CTRL_Bouton_image
-import datetime
 import GestionDB
 from Utils import UTILS_Utilisateurs
-from Utils import UTILS_Parametres
 import wx.propgrid as wxpg
-import wx.html as html
+from Ctrl import CTRL_Compte_internet
+
 
 
 LISTE_CATEGORIES_TIERS = [
@@ -268,117 +266,6 @@ class CTRL_Parametres(wxpg.PropertyGrid) :
 
 
 
-class CTRL_Compte_internet(html.HtmlWindow):
-    def __init__(self, parent, IDfamille=None):
-        html.HtmlWindow.__init__(self, parent, -1, style=wx.BORDER_THEME | wx.html.HW_NO_SELECTION | wx.NO_FULL_REPAINT_ON_RESIZE)
-        self.parent = parent
-        self.IDfamille = IDfamille
-        if "gtk2" in wx.PlatformInfo:
-            self.SetStandardFonts()
-        self.SetMinSize((200, 130))
-        self.SetBorders(4)
-        self.dictDonnees = {}
-
-    def SetDonnees(self, dictDonnees={}):
-        self.dictDonnees = dictDonnees
-        self.MAJ()
-
-    def GetDonnees(self):
-        return self.dictDonnees
-
-    def MAJ(self):
-        if self.dictDonnees["internet_actif"] == 1 :
-            activation = _(u"Compte internet activé")
-            image = "Ok4"
-        else :
-            activation = _(u"Compte internet désactivé")
-            image = "Interdit2"
-        identifiant = self.dictDonnees["internet_identifiant"]
-        mdp = self.dictDonnees["internet_mdp"]
-        if mdp.startswith("custom"):
-            mdp = _(u"********<BR><FONT SIZE=1>(Mot de passe personnalisé)</FONT>")
-        self.SetPage(u"""
-        <FONT SIZE=2>
-        <BR><BR>
-        <CENTER><IMG SRC="%s"><BR>%s
-        <BR><BR>
-        <B>Identifiant</B> : %s
-        <BR>
-        <B>Mot de passe</B> : %s
-        </CENTER>
-        </FONT>
-        """ % (Chemins.GetStaticPath(u"Images/16x16/%s.png" % image), activation, identifiant, mdp))
-        self.SetBackgroundColour(wx.SystemSettings.GetColour(30))
-
-    def Modifier(self, event):
-        from Dlg import DLG_Compte_internet
-        dlg = DLG_Compte_internet.Dialog(self, IDfamille=self.IDfamille)
-        if dlg.ShowModal() == wx.ID_OK:
-            self.SetDonnees(dlg.GetDonnees())
-        dlg.Destroy()
-
-    def GetMdp(self):
-        if self.dictDonnees["internet_mdp"].startswith("custom"):
-            internet_mdp = "********"
-        else :
-            internet_mdp = self.dictDonnees["internet_mdp"]
-        return internet_mdp
-
-    def Envoyer_email(self, event):
-        # Envoyer un email à la famille
-        from Utils import UTILS_Envoi_email
-        listeAdresses = UTILS_Envoi_email.GetAdresseFamille(self.IDfamille)
-        if len(listeAdresses) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Il n'y a aucune adresse email !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
-            dlg.ShowModal()
-            dlg.Destroy()
-            return False
-
-        from Utils import UTILS_Titulaires
-        listefamilles = []
-        listefamilles.append(self.IDfamille)
-        titulaires = UTILS_Titulaires.GetTitulaires(listefamilles)
-        nom_famille = None
-        for id in titulaires:
-            if titulaires[id].has_key("titulairesAvecCivilite"):
-                nom_famille = titulaires[id]["titulairesAvecCivilite"]
-                break
-        if nom_famille == None:
-            raise
-        import DLG_Mailer
-        dlg = DLG_Mailer.Dialog(self, categorie = "portail")
-        listeDonnees = []
-        champs = {
-            "{IDENTIFIANT_INTERNET}" : self.dictDonnees["internet_identifiant"],
-            "{MOTDEPASSE_INTERNET}" : self.GetMdp(),
-            "{NOM_FAMILLE}" : nom_famille,
-        }
-        for adresse in listeAdresses :
-            listeDonnees.append({"adresse" : adresse, "pieces" : [], "champs" : champs})
-        dlg.SetDonnees(listeDonnees, modificationAutorisee=False)
-        dlg.ChargerModeleDefaut()
-        dlg.ShowModal()
-        dlg.Destroy()
-
-    def Envoyer_pressepapiers(self, event):
-        # Mémorisation des codes dans le presse-papiers
-        codes = _(u"Identifiant : %s / Mot de passe : %s") % (self.dictDonnees["internet_identifiant"], self.GetMdp())
-        clipdata = wx.TextDataObject()
-        clipdata.SetText(codes)
-        wx.TheClipboard.Open()
-        wx.TheClipboard.SetData(clipdata)
-        wx.TheClipboard.Close()
-
-        dlg = wx.MessageDialog(self, _(u"Les codes ont été copiés dans le presse-papiers."), u"Presse-papiers", wx.OK | wx.ICON_INFORMATION)
-        dlg.ShowModal()
-        dlg.Destroy()
-
-    def Consulter_historique(self, event):
-        from Dlg import DLG_Portail_demandes
-        dlg = DLG_Portail_demandes.Dialog(self, IDfamille=self.IDfamille)
-        dlg.ShowModal()
-        dlg.Destroy()
-
 
 
 
@@ -392,7 +279,7 @@ class Panel(wx.Panel):
         
         # Compte internet
         self.staticBox_param = wx.StaticBox(self, -1, _(u"Portail internet"))
-        self.ctrl_compte_internet = CTRL_Compte_internet(self, IDfamille=IDfamille)
+        self.ctrl_compte_internet = CTRL_Compte_internet.CTRL(self, IDfamille=IDfamille)
         self.bouton_modifier = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Modifier.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_envoi_mail = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Emails_exp.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_envoi_pressepapiers = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Clipboard.png"), wx.BITMAP_TYPE_ANY))
@@ -406,9 +293,9 @@ class Panel(wx.Panel):
         self.__do_layout()
 
         self.Bind(wx.EVT_BUTTON, self.ctrl_compte_internet.Modifier, self.bouton_modifier)
-        self.Bind(wx.EVT_BUTTON, self.ctrl_compte_internet.Envoyer_email, self.bouton_envoi_mail)
+        self.Bind(wx.EVT_BUTTON, self.Envoyer_email, self.bouton_envoi_mail)
         self.Bind(wx.EVT_BUTTON, self.ctrl_compte_internet.Envoyer_pressepapiers, self.bouton_envoi_pressepapiers)
-        self.Bind(wx.EVT_BUTTON, self.ctrl_compte_internet.Consulter_historique, self.bouton_historique)
+        self.Bind(wx.EVT_BUTTON, self.Consulter_historique, self.bouton_historique)
 
     def __set_properties(self):
         self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Modifier les paramètres du compte internet")))
@@ -434,13 +321,6 @@ class Panel(wx.Panel):
         grid_sizer_param.AddGrowableRow(0)
         grid_sizer_param.AddGrowableCol(0)
 
-        # grid_sizer_param = wx.FlexGridSizer(rows=5, cols=1, vgap=0, hgap=0)
-        # grid_sizer_param.Add(self.ctrl_compte_internet, 0, wx.EXPAND, 0)
-        # grid_sizer_param.Add(self.bouton_modifier, 1, wx.ALIGN_RIGHT, 0)
-        # grid_sizer_param.Add( (5, 5), 1, wx.ALIGN_RIGHT, 0)
-        # grid_sizer_param.Add(self.bouton_envoi_mail, 0, wx.ALL|wx.EXPAND, 0)
-        # grid_sizer_param.Add(self.bouton_historique, 0, wx.ALL|wx.EXPAND, 0)
-        #grid_sizer_param.AddGrowableRow(0)
         sizer_staticBox_param.Add(grid_sizer_param, 1, wx.ALL|wx.EXPAND, 5)
         grid_sizer_base.Add(sizer_staticBox_param, 1, wx.ALL|wx.EXPAND, 5)
 
@@ -553,8 +433,48 @@ class Panel(wx.Panel):
                 ]
         DB.ReqMAJ("familles", listeDonnees, "IDfamille", self.IDfamille)
         DB.Close()
-        
-        
+
+    def Envoyer_email(self, event):
+        # Envoyer un email à la famille
+        from Utils import UTILS_Envoi_email
+        listeAdresses = UTILS_Envoi_email.GetAdresseFamille(self.IDfamille)
+        if len(listeAdresses) == 0 :
+            dlg = wx.MessageDialog(self, _(u"Il n'y a aucune adresse email !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return False
+
+        from Utils import UTILS_Titulaires
+        listefamilles = []
+        listefamilles.append(self.IDfamille)
+        titulaires = UTILS_Titulaires.GetTitulaires(listefamilles)
+        nom_famille = None
+        for id in titulaires:
+            if titulaires[id].has_key("titulairesAvecCivilite"):
+                nom_famille = titulaires[id]["titulairesAvecCivilite"]
+                break
+        if nom_famille == None:
+            raise
+        import DLG_Mailer
+        dlg = DLG_Mailer.Dialog(self, categorie="portail")
+        listeDonnees = []
+        champs = {
+            "{IDENTIFIANT_INTERNET}" : self.ctrl_compte_internet.GetIdentifiant(),
+            "{MOTDEPASSE_INTERNET}" : self.ctrl_compte_internet.GetMdp(),
+            "{NOM_FAMILLE}" : nom_famille,
+        }
+        for adresse in listeAdresses :
+            listeDonnees.append({"adresse" : adresse, "pieces" : [], "champs" : champs})
+        dlg.SetDonnees(listeDonnees, modificationAutorisee=False)
+        dlg.ChargerModeleDefaut()
+        dlg.ShowModal()
+        dlg.Destroy()
+
+    def Consulter_historique(self, event):
+        from Dlg import DLG_Portail_demandes
+        dlg = DLG_Portail_demandes.Dialog(self, IDfamille=self.IDfamille)
+        dlg.ShowModal()
+        dlg.Destroy()
 
 
 class MyFrame(wx.Frame):
