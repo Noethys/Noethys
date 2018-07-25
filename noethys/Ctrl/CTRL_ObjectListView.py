@@ -297,7 +297,8 @@ class ObjectListView(OLV.ObjectListView):
         self.SauvegardeConfiguration()
 
         # Annule le regroupement éventuel
-        self.SetShowGroups(False)
+        if hasattr(self, "SetShowGroups"):
+            self.SetShowGroups(False)
         self.useExpansionColumn = False
 
         # Mise à jour de la liste
