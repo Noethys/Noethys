@@ -1,4 +1,4 @@
-Version 1.2.3.6 (21/07/2018) :
+Version 1.2.3.7 (25/07/2018) :
 
 - Connecthys : Ajout des pages personnalisées
 - Connecthys : Obligation de personnaliser le mot de passe
