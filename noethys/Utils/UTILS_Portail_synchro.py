@@ -1036,7 +1036,7 @@ class Synchro():
 
         # Recherche des pages
         last_update_pages = UTILS_Parametres.Parametres(mode="get", categorie="portail", nom="last_update_pages")
-        if last_update_pages > last_synchro or full_synchro == True:
+        if last_update_pages == None or last_update_pages > last_synchro or full_synchro == True:
 
             req = """SELECT IDpage, titre, couleur, ordre
             FROM portail_pages;"""
