@@ -3429,12 +3429,18 @@ class MainFrame(wx.Frame):
         
     def On_propos_versions(self, event):
         """ A propos : Notes de versions """
-        import  wx.lib.dialogs
+        # Lecture du fichier
         txtLicence = open(FonctionsPerso.GetRepertoireProjet("Versions.txt"), "r")
         msg = txtLicence.read()
         txtLicence.close()
-        dlg = wx.lib.dialogs.ScrolledMessageDialog(self, msg.decode("iso-8859-15"), _(u"Notes de versions"), size=(500, 500))
+        # Dlg
+        from Dlg import DLG_Messagebox
+        dlg = DLG_Messagebox.Dialog(self, titre=_(u"Notes de versions"), introduction=_("Liste des versions du logiciel :"), detail=msg.decode("iso-8859-15"), icone=wx.ICON_INFORMATION, boutons=[_(u"Fermer"),], defaut=0)
         dlg.ShowModal()
+        dlg.Destroy()
+        # import  wx.lib.dialogs
+        # dlg = wx.lib.dialogs.ScrolledMessageDialog(self, msg.decode("iso-8859-15"), _(u"Notes de versions"), size=(500, 500))
+        # dlg.ShowModal()
         
     def On_propos_licence(self, event):
         """ A propos : Licence """
