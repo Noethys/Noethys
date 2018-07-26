@@ -934,8 +934,10 @@ class Traitement():
         dict_parametres = {}
         if self.track.parametres and len(self.track.parametres) > 0 :
             for donnee in self.track.parametres.split("#") :
-                key, valeur = donnee.split("=")
-                dict_parametres[key] = valeur
+                donnees = donnee.split("=")
+                if len(donnees) > 1 :
+                    key, valeur = donnees
+                    dict_parametres[key] = valeur
         return dict_parametres
 
     def Traiter(self):
@@ -966,6 +968,10 @@ class Traitement():
         # Traitement des renseignements
         if self.track.categorie == "renseignements" :
             resultat = self.Traitement_renseignements()
+
+        # Traitement du compte
+        if self.track.categorie == "compte" :
+            resultat = self.Traitement_compte()
 
         self.EcritLog(_(u"Fin du traitement."))
 
@@ -1280,6 +1286,36 @@ class Traitement():
             else :
                 dlg.Destroy()
                 return {"etat": True, "reponse": reponse}
+
+    def Traitement_compte(self):
+        # Traitement manuel ou automatique
+        if self.mode == "manuel" or self.mode == "automatique" :
+
+            if self.mode == "manuel" :
+                dlg = wx.MessageDialog(None, _(u"Confirmez-vous l'enregistrement du nouveau mot de passe personnalisé de %s ?") % self.track.nom, _(u"Mise à jour du mot de passe"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+                reponse = dlg.ShowModal()
+                dlg.Destroy()
+                if reponse != wx.ID_YES :
+                    return False
+
+            # Mise à jour de mot de passe
+            if self.track.action == "maj_password" :
+                DB = GestionDB.DB()
+
+                # Famille
+                if self.track.IDfamille != None :
+                    DB.ReqMAJ("familles", [("internet_mdp", self.track.parametres)], "IDfamille", self.track.IDfamille)
+
+                # Utilisateur
+                if self.track.IDutilisateur != None :
+                    DB.ReqMAJ("utilisateurs", [("internet_mdp", self.track.parametres)], "IDutilisateur", self.track.IDutilisateur)
+
+                DB.Close()
+
+                self.EcritLog(_(u"Mise à jour du mot de passe de %s") % self.track.nom)
+                return {"etat" : True, "reponse" : ""}
+
+        return False
 
     def Init_grille(self, ctrl_grille=None):
         # Récupération des paramètres
