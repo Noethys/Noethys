@@ -419,6 +419,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL):
 
         liste_choix = [
             ("contact_everyone", _(u"Contact Everyone By Orange Business")),
+            ("cleversms", _(u"Clever SMS")),
             ]
 
         propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Plateforme"), name="plateforme", liste_choix=liste_choix, valeur=None)
@@ -445,6 +446,11 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL):
         propriete.SetHelpString(_(u"Saisissez l'adresse de destination de l'email"))
         self.Append(propriete)
 
+        # Adresse de destination
+        propriete = wxpg.StringProperty(label=_(u"Adresse de destination"), name="cleversms_adresse_destination_email", value="cleversmslight@cleversaas.fr")
+        propriete.SetHelpString(_(u"Saisissez l'adresse de destination de l'email"))
+        self.Append(propriete)
+
         # Nbre caractères max
         propriete = wxpg.IntProperty(label=_(u"Nombre maximal de caractères du message"), name="nbre_caracteres_max", value=160)
         propriete.SetHelpString(_(u"Nombre maximal de caractères du message"))
@@ -466,9 +472,24 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL):
                     {"propriete" : "orange_adresse_destination_email", "obligatoire" : True},
                     {"propriete" : "nbre_caracteres_max", "obligatoire" : True},
                     ],
-                }
+                "cleversms": [
+                    {"propriete": "adresse_expedition_email", "obligatoire": True},
+                    {"propriete": "cleversms_adresse_destination_email", "obligatoire": True},
+                    {"propriete": "nbre_caracteres_max", "obligatoire": True},
+                ],
+
+            }
             }
 
+        # Cache toutes les propriétés
+        for nom_property, dict_conditions in dict_switch.iteritems():
+            for condition, liste_proprietes in dict_conditions.iteritems():
+                for dict_propriete in liste_proprietes :
+                    propriete = self.GetPropertyByName(dict_propriete["propriete"])
+                    propriete.Hide(True)
+                    propriete.SetAttribute("obligatoire", False)
+
+        # Affiche que les propriétés souhaitées
         for nom_property, dict_conditions in dict_switch.iteritems() :
             propriete = self.GetProperty(nom_property)
             valeur = propriete.GetValue()
@@ -478,9 +499,6 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL):
                     if valeur == condition :
                         propriete.Hide(False)
                         propriete.SetAttribute("obligatoire", dict_propriete["obligatoire"])
-                    else :
-                        propriete.Hide(True)
-                        propriete.SetAttribute("obligatoire", False)
 
         if 'phoenix' in wx.PlatformInfo:
             self.Refresh()
@@ -822,6 +840,53 @@ class Dialog(wx.Dialog, Base):
                 etat = UTILS_Envoi_email.Envoi_mail(
                     adresseExpediteur=dictAdresse["adresse"],
                     listeDestinataires=[self.dictDonnees["orange_adresse_destination_email"],],
+                    sujetMail=self.dictDonnees["objet"],
+                    texteMail=_(u"Envoi de SMS"),
+                    listeFichiersJoints=[cheminFichier,],
+                    serveur=dictAdresse["smtp"],
+                    port=dictAdresse["port"],
+                    avecAuthentification=dictAdresse["auth"],
+                    avecStartTLS=dictAdresse["startTLS"],
+                    motdepasse=dictAdresse["motdepasse"],
+                    utilisateur=dictAdresse["utilisateur"],
+                    )
+            except Exception, err:
+                print (err,)
+                err = str(err).decode("iso-8859-15")
+                dlgErreur = wx.MessageDialog(None, _(u"Une erreur a été détectée dans l'envoi de l'Email !\n\nErreur : %s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
+                dlgErreur.ShowModal()
+                dlgErreur.Destroy()
+                return False
+
+
+
+        # CLEVER SMS
+        if self.dictDonnees["plateforme"] == "cleversms" :
+
+            # Récupération adresse d'expédition
+            IDadresse = self.dictDonnees["adresse_expedition_email"]
+            dictAdresse = UTILS_Envoi_email.GetAdresseExp(IDadresse=IDadresse)
+
+            # Génération de la pièce jointe
+            liste_lignes = []
+
+            message = self.dictDonnees["message"].replace("\n", "")
+            for numero in self.dictDonnees["liste_telephones"] :
+                numero = numero.replace(".", "")
+                liste_lignes.append(u"%s;%s" % (numero, message))
+
+            texte = "\n".join(liste_lignes)
+
+            cheminFichier = UTILS_Fichiers.GetRepTemp(fichier="sms.txt")
+            fichier = open(cheminFichier, 'w')
+            fichier.write(texte.encode("iso-8859-15"))
+            fichier.close()
+
+            # Envoi de l'email
+            try :
+                etat = UTILS_Envoi_email.Envoi_mail(
+                    adresseExpediteur=dictAdresse["adresse"],
+                    listeDestinataires=[self.dictDonnees["cleversms_adresse_destination_email"],],
                     sujetMail=self.dictDonnees["objet"],
                     texteMail=_(u"Envoi de SMS"),
                     listeFichiersJoints=[cheminFichier,],
