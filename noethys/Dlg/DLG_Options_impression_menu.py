@@ -869,12 +869,13 @@ class CTRL_Modeles(CTRL_Vignettes_documents.CTRL):
 
     def ImportationModeles(self):
         for dictModele in LISTE_MODELES:
-            cheminFichier = Chemins.GetStaticPath("Images/Menus/%s" % dictModele["fichier"])
+            nomFichier = dictModele["fichier"].capitalize()
+            cheminFichier = Chemins.GetStaticPath("Images/Menus/%s" % nomFichier)
             imgPIL, poidsImg = self.ChargeImage(cheminFichier)
             blob = self.GetBufferImage(imgPIL)
 
             # Conserve l'image en mémoire
-            track = Track_modele(self, buffer=blob, type=dictModele["fichier"][-3:], label=dictModele["label"],
+            track = Track_modele(self, buffer=blob, type=nomFichier[-3:], label=dictModele["label"],
                                  description=dictModele["description"], donnees=dictModele["donnees"])
             self.listePages.append(track)
 
