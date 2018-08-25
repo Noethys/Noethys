@@ -78,7 +78,7 @@ class Dialog(wx.Dialog):
         self.parent = parent
         
         # Bandeau
-        titre = _(u"Commandes de repas")
+        titre = _(u"Commandes des repas")
         intro = _(u"Vous pouvez ici créer des commandes de repas. Sélectionnez un modèle de commande puis cliquez sur le bouton Ajouter pour créer une nouvelle commande. Si aucun modèle de commande n'existe, vous devez obligatoirement commencer par en créer un avant de saisir une commande.")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Repas.png")

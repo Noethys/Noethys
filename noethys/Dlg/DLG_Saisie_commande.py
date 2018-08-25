@@ -768,7 +768,7 @@ class CTRL_Options_impression(DLG_Options_impression_pdf.CTRL_Parametres):
 if __name__ == u"__main__":
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    dialog_1 = Dialog(None, IDmodele=6, IDcommande=9)
+    dialog_1 = Dialog(None, IDmodele=1, IDcommande=1)
     app.SetTopWindow(dialog_1)
     dialog_1.ShowModal()
     app.MainLoop()

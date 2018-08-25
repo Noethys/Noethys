@@ -17,9 +17,7 @@ from Ctrl import CTRL_Bouton_image
 import datetime
 import GestionDB
 from Data import DATA_Civilites as Civilites
-from Ctrl import CTRL_Propertygrid
 from Ol import OL_Commandes_colonnes
-import copy
 
 DICT_CIVILITES = Civilites.GetDictCivilites()
 
