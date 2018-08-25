@@ -1747,8 +1747,22 @@ DB_DATA = {
                                     ("texte_html", "VARCHAR(5000)", u"Contenu du texte version HTML"),
                                     ],  # Elements pour les pages du portail
 
+    "menus":                        [("IDmenu", "INTEGER PRIMARY KEY AUTOINCREMENT", u"IDmenu"),
+                                    ("IDrestaurateur", "INTEGER", u"ID du restaurateur"),
+                                    ("IDcategorie", "INTEGER", u"ID de la catégorie"),
+                                    ("date", "DATE", u"Date"),
+                                    ("texte", "VARCHAR(1000)", u"Texte du menu"),
+                                    ],  # Menus
+
+    "menus_categories":             [("IDcategorie", "INTEGER PRIMARY KEY AUTOINCREMENT", u"IDcategorie"),
+                                    ("nom", "VARCHAR(300)", u"Nom de la catégorie"),
+                                    ("ordre", "INTEGER", u"Ordre"),
+                                    ],  # Catégories des menus
+
+
 
 }
+
 
 # ----------------------------------------------------------------------------------------------------------------------------------------------------------
 

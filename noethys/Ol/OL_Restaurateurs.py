@@ -282,11 +282,28 @@ class ListView(FastObjectListView):
             dlg.Destroy()
             return
 
+        # Vérifie que des menus n'ont pas déjà été associés
+        DB = GestionDB.DB()
+        req = """SELECT COUNT(IDmenu)
+        FROM menus 
+        WHERE IDrestaurateur=%d
+        ;""" % IDrestaurateur
+        DB.ExecuterReq(req)
+        nbreMenus = int(DB.ResultatReq()[0][0])
+        DB.Close()
+        if nbreMenus > 0 :
+            dlg = wx.MessageDialog(self, _(u"Attention, %s menus sont associés à ce restaurateur. Si vous supprimez ce restaurateur, les menus seront également supprimés. \n\nSouhaitez-vous tout de même supprimer le restaurateur ?") % nbreMenus, _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+            reponse = dlg.ShowModal()
+            dlg.Destroy()
+            if reponse != wx.ID_YES :
+                return False
+
         # Confirmation de suppression
         dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer ce restaurateur ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         if dlg.ShowModal() == wx.ID_YES :
             DB = GestionDB.DB()
             DB.ReqDEL("restaurateurs", "IDrestaurateur", IDrestaurateur)
+            DB.ReqDEL("menus", "IDrestaurateur", IDrestaurateur)
             DB.Close() 
             self.MAJ()
         dlg.Destroy()

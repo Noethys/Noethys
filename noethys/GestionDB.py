@@ -2183,6 +2183,15 @@ class DB:
             except Exception, err:
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
+        # =============================================================
+
+        versionFiltre = (1, 2, 3, 8)
+        if versionFichier < versionFiltre:
+            try:
+                if self.IsTableExists("menus") == False: self.CreationTable("menus", Tables.DB_DATA)
+                if self.IsTableExists("menus_categories") == False: self.CreationTable("menus_categories", Tables.DB_DATA)
+            except Exception, err:
+                return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
 
 
@@ -2458,7 +2467,7 @@ if __name__ == "__main__":
                 
     # Création d'une table données
     # db = DB(suffixe="DATA")
-    # listeTables = ("portail_elements",)
+    # listeTables = ("menus_categories",)
     # for nomTable in listeTables :
     #     db.CreationTable(nomTable, Tables.DB_DATA)
     # db.Close()

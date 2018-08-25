@@ -161,12 +161,20 @@ class Case():
         if self.suggestion != None :
             texte += u"\n\nValeur suggérée : %s" % self.suggestion
         if self.ouvert == True :
-            texte += u"\n\nCOMMANDES :"
+            texte += u"\n\n------- COMMANDES -------"
             texte += u"\n- Double-cliquez pour modifier une case"
             texte += u"\n- Cliquez sur le bouton droit de la souris pour ouvrir le menu contextuel"
             texte += u"\n- Utilisez le copier-coller (Ctrl+C puis Ctrl+V)"
             if "numerique" in self.categorieColonne:
                 texte += u"\n- Utilisez les touches - et +"
+
+        # Affiche le menu du jour
+        if self.grid.dictDonnees["dict_menus"].has_key(self.date):
+            texte += u"\n\n------- MENUS -------\n\n"
+            for dictMenu in self.grid.dictDonnees["dict_menus"][self.date]:
+                texte += u"%s :\n" % dictMenu["nom_categorie"]
+                texte += u"   - %s\n\n" % dictMenu["texte"].replace(u"\n", u"\n   - ")
+
         return texte
 
 
@@ -579,6 +587,26 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 if dictDonnees["valeurs"].has_key(date) == False :
                     dictDonnees["valeurs"][date] = {}
                 dictDonnees["valeurs"][date][IDcolonne] = {"IDvaleur" : IDvaleur, "valeur" : valeur}
+
+        # Menus
+        if dictDonnees.has_key("IDrestaurateur"):
+            IDrestaurateur = dictDonnees["IDrestaurateur"]
+        else :
+            IDrestaurateur = 0
+        req = """SELECT IDmenu, menus.IDcategorie, menus_categories.nom, date, texte
+        FROM menus
+        LEFT JOIN menus_categories ON menus_categories.IDcategorie = menus.IDcategorie
+        WHERE date>='%s' AND date<='%s' AND IDrestaurateur=%d
+        ORDER BY menus_categories.ordre;""" % (self.date_debut, self.date_fin, IDrestaurateur)
+        DB.ExecuterReq(req)
+        listeDonnees = DB.ResultatReq()
+        dict_menus = {}
+        for IDmenu, IDcategorie, nom_categorie, date, texte in listeDonnees:
+            date = UTILS_Dates.DateEngEnDateDD(date)
+            if dict_menus.has_key(date) == False :
+                dict_menus[date] = []
+            dict_menus[date].append({"IDmenu" : IDmenu, "IDcategorie" : IDcategorie, "nom_categorie" : nom_categorie, "texte" : texte})
+        dictDonnees["dict_menus"] = dict_menus
 
         DB.Close()
 

@@ -172,6 +172,7 @@ data_files=[
             GetDossiers("Static/Images/Drapeaux"),
             GetDossiers("Static/Images/Special"),
             GetDossiers("Static/Images/Badgeage"),
+            GetDossiers("Static/Images/Menus"),
             GetDossiers("Static/Images/Teamword"),
             GetDossiers("Static/Images/Avatars/16x16"),
             GetDossiers("Static/Images/Avatars/128x128"),

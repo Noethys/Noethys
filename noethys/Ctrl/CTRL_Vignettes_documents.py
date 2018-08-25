@@ -510,7 +510,7 @@ class MyFrame(wx.Frame):
         sizer_1 = wx.BoxSizer(wx.VERTICAL)
         sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
         self.SetSizer(sizer_1)
-        self.ctrl = CTRL(panel, IDpiece=18, afficheLabels=True, tailleVignette=64)
+        self.ctrl = CTRL(panel, IDpiece=18, afficheLabels=True, tailleVignette=128)
         self.bouton_1 = CTRL_Bouton_image.CTRL(panel, texte=_(u"Ajouter"), cheminImage="Images/32x32/Valider.png")
         self.bouton_2 = CTRL_Bouton_image.CTRL(panel, texte=_(u"Bouton 2"), cheminImage="Images/32x32/Valider.png")
         sizer_2 = wx.BoxSizer(wx.VERTICAL)

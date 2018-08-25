@@ -771,11 +771,15 @@ class MainFrame(wx.Frame):
                             },
                             ],
                     },
+                    {"code": "menu_restauration", "label": _(u"Restauration"), "items": [
+                            {"code": "restaurateurs", "label": _(u"Restaurateurs"), "infobulle": _(u"Paramétrage des restaurateurs"), "image": "Images/16x16/Restaurateur.png", "action": self.On_param_restaurateurs},
+                            {"code": "menus_categories", "label": _(u"Catégories de menus"), "infobulle": _(u"Paramétrage des catégories de menus"), "image": "Images/16x16/Menu.png", "action": self.On_param_menus_categories},
+                            ],
+                    },
                     "-",
                     {"code" : "periodes_gestion", "label": _(u"Périodes de gestion"), "infobulle": _(u"Paramétrage des périodes de gestion"), "image": "Images/16x16/Mecanisme.png", "action": self.On_param_periodes_gestion},
                     "-",
                     {"code" : "categories_messages", "label" : _(u"Catégories de messages"), "infobulle" : _(u"Paramétrage des catégories de messages"), "image" : "Images/16x16/Mail.png", "action" : self.On_param_categories_messages},
-                    {"code" : "restaurateurs", "label" : _(u"Restaurateurs"), "infobulle" : _(u"Paramétrage des restaurateurs"), "image" : "Images/16x16/Restaurateur.png", "action" : self.On_param_restaurateurs},
                     {"code" : "adresses_exp_mails", "label" : _(u"Adresses d'expédition d'Emails"), "infobulle" : _(u"Paramétrage des adresses d'expédition d'Emails"), "image" : "Images/16x16/Emails_exp.png", "action" : self.On_param_emails_exp},
                     {"code" : "listes_diffusion", "label" : _(u"Listes de diffusion"), "infobulle" : _(u"Paramétrage des listes de diffusion"), "image" : "Images/16x16/Liste_diffusion.png", "action" : self.On_param_listes_diffusion},
                     "-",
@@ -805,6 +809,9 @@ class MainFrame(wx.Frame):
             {"code" : "menu_outils", "label" : _(u"Outils"), "items" : [
                     {"code" : "statistiques", "label" : _(u"Statistiques"), "infobulle" : _(u"Statistiques"), "image" : "Images/16x16/Barres.png", "action" : self.On_outils_stats},
                     "-",
+                    {"code": "commandes_repas", "label": _(u"Commandes des repas"), "infobulle": _(u"Commandes des repas"), "image": "Images/16x16/Repas.png", "action": self.On_conso_commandes},
+                    {"code": "menus", "label": _(u"Menus des repas"), "infobulle": _(u"Menus des repas"), "image": "Images/16x16/Menu.png", "action": self.On_conso_menus},
+                    "-",
                     {"code" : "nomadhys_synchro", "label" : _(u"Nomadhys - L'application nomade"), "infobulle" : _(u"Synchroniser et configurer Nomadhys, l'application nomade de Noethys"), "image" : "Images/16x16/Nomadhys.png", "action" : self.On_outils_nomadhys_synchro},
                     {"code" : "connecthys_synchro", "label" : _(u"Connecthys - Le portail internet"), "infobulle" : _(u"Synchroniser et configurer Connecthys, le portail internet de Noethys"), "image" : "Images/16x16/Connecthys.png", "action" : self.On_outils_connecthys_synchro},
                     "-",
@@ -816,7 +823,7 @@ class MainFrame(wx.Frame):
                     "-",
                     {"code" : "villes2", "label" : _(u"Villes et codes postaux"), "infobulle" : _(u"Villes et codes postaux"), "image" : "Images/16x16/Carte.png", "action" : self.On_outils_villes},
                     {"code" : "geolocalisation", "label" : _(u"Géolocalisation GPS"), "infobulle" : _(u"Géolocalisation GPS"), "image" : "Images/16x16/Carte.png", "action" : self.On_outils_gps},
-                    {"code" : "meteo", "label" : _(u"Prévisions météorologiques"), "infobulle" : _(u"Prévisions météorologiques"), "image" : "Images/16x16/Meteo.png", "action" : self.On_outils_meteo},
+                    #{"code" : "meteo", "label" : _(u"Prévisions météorologiques"), "infobulle" : _(u"Prévisions météorologiques"), "image" : "Images/16x16/Meteo.png", "action" : self.On_outils_meteo},
                     {"code" : "horaires_soleil", "label" : _(u"Horaires du soleil"), "infobulle" : _(u"Horaires du soleil"), "image" : "Images/16x16/Soleil.png", "action" : self.On_outils_horaires_soleil},
                     "-",
                     {"code" : "connexions_reseau", "label" : _(u"Liste des connexions réseau"), "infobulle" : _(u"Liste des connexions réseau"), "image" : "Images/16x16/Connexion.png", "action" : self.On_outils_connexions},
@@ -942,8 +949,6 @@ class MainFrame(wx.Frame):
                     {"code" : "gestionnaire_conso", "label" : _(u"Gestionnaire des consommations"), "infobulle" : _(u"Gestionnaire des consommations"), "image" : "Images/16x16/Calendrier.png", "action" : self.On_conso_gestionnaire},
                     "-",
                     {"code" : "traitement_lot_conso", "label" : _(u"Traitement par lot"), "infobulle" : _(u"Traitement par lot"), "image" : "Images/16x16/Calendrier_modification.png", "action" : self.On_conso_traitement_lot},
-                    "-",
-                    {"code": "commandes_repas", "label": _(u"Commandes de repas"), "infobulle": _(u"Commandes de repas"), "image": "Images/16x16/Repas.png", "action": self.On_conso_commandes},
                     "-",
                     {"code" : "liste_attente", "label" : _(u"Liste d'attente"), "infobulle" : _(u"Liste d'attente"), "image" : "Images/16x16/Liste_attente.png", "action" : self.On_conso_attente},
                     {"code" : "liste_refus", "label" : _(u"Liste des places refusées"), "infobulle" : _(u"Liste des places refusées"), "image" : "Images/16x16/Places_refus.png", "action" : self.On_conso_refus},
@@ -1915,6 +1920,13 @@ class MainFrame(wx.Frame):
         from Dlg import DLG_Restaurateurs
         dlg = DLG_Restaurateurs.Dialog(self, mode="gestion")
         dlg.ShowModal() 
+        dlg.Destroy()
+
+    def On_param_menus_categories(self, event):
+        if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_menus_categories", "consulter") == False : return
+        from Dlg import DLG_Menus_categories
+        dlg = DLG_Menus_categories.Dialog(self)
+        dlg.ShowModal()
         dlg.Destroy()
 
     def On_param_comptes(self, event):
@@ -3201,6 +3213,12 @@ class MainFrame(wx.Frame):
     def On_conso_commandes(self, event):
         from Dlg import DLG_Commandes
         dlg = DLG_Commandes.Dialog(self)
+        dlg.ShowModal()
+        dlg.Destroy()
+
+    def On_conso_menus(self, event):
+        from Dlg import DLG_Menus
+        dlg = DLG_Menus.Dialog(self)
         dlg.ShowModal()
         dlg.Destroy()
 
