@@ -443,6 +443,7 @@ class DLG_Saisie_texte(wx.Dialog):
         if texte == None :
             texte = ""
 
+        self.label_intro = wx.StaticText(self, -1, _(u"Saisissez ci-dessous un plat par ligne :"))
         self.ctrl_texte = wx.TextCtrl(self, -1, "", style=wx.TE_MULTILINE )
         self.ctrl_texte.SetMinSize((400, 200))
 
@@ -469,7 +470,8 @@ class DLG_Saisie_texte(wx.Dialog):
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=5, cols=1, vgap=5, hgap=5)
 
-        grid_sizer_contenu = wx.FlexGridSizer(rows=2, cols=1, vgap=5, hgap=5)
+        grid_sizer_contenu = wx.FlexGridSizer(rows=3, cols=1, vgap=5, hgap=5)
+        grid_sizer_contenu.Add( self.label_intro, 0, wx.EXPAND, 0)
         grid_sizer_contenu.Add(self.ctrl_texte, 0, wx.EXPAND, 0)
 
         grid_sizer_contenu.AddGrowableCol(0)
