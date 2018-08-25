@@ -1,10 +1,14 @@
-Version 1.2.3.7 (25/07/2018) :
+Version 1.2.3.8 (25/08/2018) :
 
 - Connecthys : Ajout des pages personnalisées
 - Connecthys : Obligation de personnaliser le mot de passe
 - Connecthys : Chiffrement de toutes les données personnelles
+- Ajout de la gestion des menus des repas (Menu Outils)
+- Ajout de l'impression des menus (Menu Outils)
+- Ajout de la prise en charge de la plateforme Clever SMS
 - Ajout de l'export XML d'une famille depuis le bouton Outils de la fiche famille
 - Ajout de l'export XML de toutes les familles depuis le menu Individus
+- Déplacement de l'outil de commandes des repas vers le menu Outils
 - Amélioration de l'assistant de paramétrage des activités annuelles
 - Adaptations pour wxPython Phoenix
 - Correction de divers bugs
