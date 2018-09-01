@@ -781,19 +781,20 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         listeSuppressions = []
 
         # Récupération des valeurs
-        for numLigne in range(0, len(self.dictDonnees["liste_dates"]) - 1):
-            for numColonne in range(0, len(self.dictDonnees["liste_colonnes"])):
-                if self.dictCases.has_key((numLigne, numColonne)):
-                    case = self.dictCases[(numLigne, numColonne)]
-                    if case.ouvert == True :
-                        if unicode(case.GetValeur()) not in ("", "0"):
-                            if case.IDvaleur == None :
-                                listeAjouts.append((self.IDcommande, str(case.date), case.IDcolonne, unicode(case.GetValeur())))
+        if self.dictDonnees.has_key("liste_dates"):
+            for numLigne in range(0, len(self.dictDonnees["liste_dates"]) - 1):
+                for numColonne in range(0, len(self.dictDonnees["liste_colonnes"])):
+                    if self.dictCases.has_key((numLigne, numColonne)):
+                        case = self.dictCases[(numLigne, numColonne)]
+                        if case.ouvert == True :
+                            if unicode(case.GetValeur()) not in ("", "0"):
+                                if case.IDvaleur == None :
+                                    listeAjouts.append((self.IDcommande, str(case.date), case.IDcolonne, unicode(case.GetValeur())))
+                                else :
+                                    listeModifications.append((str(case.date), case.IDcolonne, unicode(case.GetValeur()), case.IDvaleur))
                             else :
-                                listeModifications.append((str(case.date), case.IDcolonne, unicode(case.GetValeur()), case.IDvaleur))
-                        else :
-                            if case.IDvaleur != None :
-                                listeSuppressions.append(case.IDvaleur)
+                                if case.IDvaleur != None :
+                                    listeSuppressions.append(case.IDvaleur)
 
         # Sauvegarde
         DB = GestionDB.DB()

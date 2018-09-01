@@ -192,6 +192,8 @@ class ListView(GroupListView):
         DB.ExecuterReq(req)
         listePrestations = DB.ResultatReq()
         for IDfamille, IDindividu, total_prestations in listePrestations :
+            if total_prestations == None :
+                total_prestations = 0.0
             dictFacturation[(IDfamille, IDindividu)] = {"prestations":total_prestations, "ventilation":0.0}
         
         # Récupère la ventilation

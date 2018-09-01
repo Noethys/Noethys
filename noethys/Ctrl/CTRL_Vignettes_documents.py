@@ -103,7 +103,7 @@ class Track(object):
 
     def GetImage(self):
         # Si c'est une image :
-        if self.type in ("jpg", "jpeg", "bmp", "png", "gif", None) :
+        if self.type in ("jpg", "jpeg", "bmp", "png", "gif", "PNG", "JPG", "JPEG", None) :
             io = cStringIO.StringIO(self.buffer)
             img = wx.ImageFromStream(io, wx.BITMAP_TYPE_JPEG)
             img = wxtopil(img)
@@ -260,7 +260,7 @@ Tous les fichiers (*.*)|*.*"
             extension = os.path.splitext(fichier)[1].replace(".", "")
             nomFichierCourt = os.path.basename(fichier)
             
-            if extension in ("jpeg", "jpg", "png", "bmp", "gif"):
+            if extension in ("jpeg", "jpg", "png", "bmp", "gif", "PNG", "JPG", "JPEG"):
                 # Si c'est une image :
                 imgPIL, poidsImg = ChargeImage(fichier)
                 blob = self.GetBufferImage(imgPIL)
@@ -274,7 +274,7 @@ Tous les fichiers (*.*)|*.*"
                 # Met le fichier dans un buffer
                 buffer = cStringIO.StringIO(data)
                 blob = buffer.read()
-        
+
             # Demande le titre du document
             label = self.SaisirLabel(nomFichier=nomFichierCourt)
             
