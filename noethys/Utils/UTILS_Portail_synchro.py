@@ -103,7 +103,7 @@ class Synchro():
         self.log.EcritLog(_(u"Lancement de la synchronisation..."))
 
         # Téléchargement des données en ligne
-        self.Download_data()
+        self.Download_data(full_synchro=full_synchro)
 
         # Recherche de mises à jours logicielles Connecthys
         if self.dict_parametres["client_rechercher_updates"] == True :
@@ -1182,7 +1182,7 @@ class Synchro():
                 secret += caract
         return secret
 
-    def Download_data(self):
+    def Download_data(self, full_synchro=False):
         """ Téléchargement des demandes """
         self.log.EcritLog(_(u"Téléchargement des demandes..."))
         self.Pulse_gauge()
@@ -1204,11 +1204,24 @@ class Synchro():
         DB.ExecuterReq(req)
         result = DB.ResultatReq()
         listeDonnees = [x[0] for x in result]
-        DB.Close()
         if len(listeDonnees) > 0 :
             last = int(listeDonnees[0])
         else :
             last = 0
+
+        # Téléchargement des demandes non enregistrées
+        if full_synchro == True :
+            # Demande à récupérer toutes les actions du portail
+            last = 0
+            # Lit toutes les ref_unique de la base
+            req = """
+            SELECT IDaction, ref_unique
+            FROM portail_actions;"""
+            DB.ExecuterReq(req)
+            result = DB.ResultatReq()
+            listeRefExistantes = [x[1] for x in result]
+
+        DB.Close()
 
         # Envoi de la requête pour obtenir le XML
         try :
@@ -1269,46 +1282,54 @@ class Synchro():
             listePasswordsUtilisateurs = []
 
             for action in liste_actions :
+                valide = True
 
-                if not action.has_key("IDutilisateur") :
-                    action["IDutilisateur"] = None
+                # Télécharge uniquement les demandes non enregistrées dans la base
+                if full_synchro == True:
+                    if action["ref_unique"] in listeRefExistantes :
+                        valide = False
 
-                # Modification de compte
-                if action["categorie"] == "compte" :
+                if valide == True :
 
-                    # Si modification de mot de passe
-                    if action["action"] == "maj_password" :
-                        action["etat"] = "validation"
-                        action["traitement_date"] = str(datetime.date.today())
-                        if action["IDfamille"] != None :
-                            listePasswordsFamilles.append((action["parametres"], action["IDfamille"]))
-                        if action["IDutilisateur"] != None :
-                            listePasswordsUtilisateurs.append((action["parametres"], action["IDutilisateur"]))
+                    if not action.has_key("IDutilisateur") :
+                        action["IDutilisateur"] = None
 
-                # Mémorisation des actions
-                listeActions.append([
-                        prochainIDaction, action["horodatage"], action["IDfamille"], action["IDindividu"],
-                        action["IDutilisateur"], action["categorie"], action["action"], action["description"],
-                        action["commentaire"], action["parametres"], action["etat"],
-                        action["traitement_date"], action["IDperiode"], action["ref_unique"], action["reponse"]
-                        ])
+                    # Modification de compte
+                    if action["categorie"] == "compte" :
 
-                # Mémorisation des réservations
-                if len(action["reservations"]) > 0 :
-                    for reservation in action["reservations"] :
-                        listeReservations.append([
-                                reservation["date"], reservation["IDinscription"],
-                                reservation["IDunite"], prochainIDaction, reservation["etat"],
-                                ])
+                        # Si modification de mot de passe
+                        if action["action"] == "maj_password" :
+                            action["etat"] = "validation"
+                            action["traitement_date"] = str(datetime.date.today())
+                            if action["IDfamille"] != None :
+                                listePasswordsFamilles.append((action["parametres"], action["IDfamille"]))
+                            if action["IDutilisateur"] != None :
+                                listePasswordsUtilisateurs.append((action["parametres"], action["IDutilisateur"]))
 
-                # Mémorisation des renseignements
-                if action.has_key("renseignements"):
-                    if len(action["renseignements"]) > 0 :
-                        for renseignement in action["renseignements"] :
-                            valeur = cryptage.decrypt(renseignement["valeur"])
-                            listeRenseignements.append([renseignement["champ"], valeur, prochainIDaction])
+                    # Mémorisation des actions
+                    listeActions.append([
+                            prochainIDaction, action["horodatage"], action["IDfamille"], action["IDindividu"],
+                            action["IDutilisateur"], action["categorie"], action["action"], action["description"],
+                            action["commentaire"], action["parametres"], action["etat"],
+                            action["traitement_date"], action["IDperiode"], action["ref_unique"], action["reponse"]
+                            ])
 
-                prochainIDaction += 1
+                    # Mémorisation des réservations
+                    if len(action["reservations"]) > 0 :
+                        for reservation in action["reservations"] :
+                            listeReservations.append([
+                                    reservation["date"], reservation["IDinscription"],
+                                    reservation["IDunite"], prochainIDaction, reservation["etat"],
+                                    ])
+
+                    # Mémorisation des renseignements
+                    if action.has_key("renseignements"):
+                        if len(action["renseignements"]) > 0 :
+                            for renseignement in action["renseignements"] :
+                                valeur = cryptage.decrypt(renseignement["valeur"])
+                                listeRenseignements.append([renseignement["champ"], valeur, prochainIDaction])
+
+                    prochainIDaction += 1
 
             # Enregistrement des actions
             if len(listeActions) > 0 :
