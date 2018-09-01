@@ -61,7 +61,7 @@ DB_DATA = {
                                     ("tel_domicile", "VARCHAR(50)", u"Tel domicile de la personne"),  
                                     ("tel_mobile", "VARCHAR(50)", u"Tel mobile perso de la personne"),  
                                     ("tel_fax", "VARCHAR(50)", u"Fax perso de la personne"),  
-                                    ("mail", "VARCHAR(50)", u"Email perso de la personne"),
+                                    ("mail", "VARCHAR(200)", u"Email perso de la personne"),
 
                                     ("travail_tel_sms", "INTEGER", u"SMS autorisé (0/1)"),
                                     ("tel_domicile_sms", "INTEGER", u"SMS autorisé (0/1)"),
