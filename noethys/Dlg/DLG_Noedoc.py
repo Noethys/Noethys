@@ -72,6 +72,9 @@ from reportlab.graphics.barcode.usps4s import USPS_4State
 from reportlab.graphics.barcode import createBarcodeDrawing 
 
 import DLG_Saisie_texte_doc
+from PIL import Image
+from Utils import UTILS_Images
+
 
 
 
@@ -3107,7 +3110,7 @@ class MovingScaledBitmap(FloatCanvas.ScaledBitmap, MovingObjectMixin):
         """ Surcharge pour contrer le bug des images trop petites """
         XY = WorldToPixel(self.XY)
         H = ScaleWorldToPixel(self.Height)[0]
-        W = H * (self.bmpWidth / self.bmpHeight)
+        W = H * (1.0 * self.bmpWidth / self.bmpHeight)
         if (self.ScaledBitmap is None) or (H <> self.ScaledHeight) :
             self.ScaledHeight = H
             if W < 1 : W = 1
@@ -3914,14 +3917,14 @@ class Panel_canvas(wx.Panel):
             if sens == "droite" : delta = numpy.array([1, 0])
         # Déplacement selon une nouvelle position
         if newPosition != None :
-            delta = newPosition - objet.GetXY() 
+            delta = newPosition - objet.GetXY()
         # Vérification si verrouillage de la position
         if objet.verrouillageX == True : delta[0] = 0
         if objet.verrouillageY == True : delta[1] = 0
         # Déplacement
         objet.Move(delta)
         objet.dirty = True
-##        objet.CalcBoundingBox()
+        # objet.CalcBoundingBox()
         # Affichage dans le panneau proriétés
         if objet.categorie in ("ligne", "polygone") :
             self.ctrl_proprietes.SetObjet(objet)
@@ -3995,7 +3998,7 @@ class Panel_canvas(wx.Panel):
         """ Création du cadre de sélection """
         self.Deselection(forceDraw=False, MAJpanel_proprietes=False)
         self.dictSelection = {}
-        
+
         # Mémorisation de l'objet sélectionné
         self.dictSelection["objet"] = objet
         self.dictSelection["poignees"] = []
@@ -4526,8 +4529,15 @@ class Panel_canvas(wx.Panel):
             dlg.Destroy()
             return
 
-        # Charge l'image
-        img = wx.Image(nomFichierLong)
+        # Charge une image sans icc_profile
+        image = Image.open(nomFichierLong)
+        image.load()
+        nouvelleImage = Image.new("RGBA", image.size)
+        nouvelleImage.paste(image)
+        img = UTILS_Images.PILtoWx(nouvelleImage)
+
+        # Charge l'image (Ancienne fonction)
+        #img = wx.Image(nomFichierLong)
 
         # Détermine le type d'image
         if nomFichierLong.endswith("png"):
@@ -4544,10 +4554,10 @@ class Panel_canvas(wx.Panel):
             tailleMaxi = max(self.taille_page)
             if max(largeur, hauteur) > tailleMaxi:
                 if largeur > hauteur:
-                    hauteur = hauteur * tailleMaxi / largeur
+                    hauteur = 1.0 * hauteur * tailleMaxi / largeur
                     largeur = tailleMaxi
                 else:
-                    largeur = largeur * tailleMaxi / hauteur
+                    largeur = 1.0 * largeur * tailleMaxi / hauteur
                     hauteur = tailleMaxi
 
         bmp = wx.BitmapFromImage(img)
@@ -5428,7 +5438,9 @@ def ImportationObjets(IDmodele=None, InForeground=True):
             
     # Création des objets
     for objet in listeObjets :
-        
+        objet["x"] = float(objet["x"])
+        objet["y"] = float(objet["y"])
+
         # Rectangle
         if objet["categorie"] == "rectangle" :
             objetCanvas = AjouterRectangle(
@@ -5522,7 +5534,7 @@ def ImportationObjets(IDmodele=None, InForeground=True):
                         InForeground=InForeground,
                         IDdonnee=objet["IDdonnee"],
                         )
-                
+
                 if objet["typeImage"] == "logo" :
                     objetCanvas.exists = exists
                 
@@ -5600,8 +5612,8 @@ def ImportationObjets(IDmodele=None, InForeground=True):
                     IDdonnee=objet["IDdonnee"],
                     )
         
-        listeObjetsCanvas.append(objetCanvas) 
-    
+        listeObjetsCanvas.append(objetCanvas)
+
     return listeObjetsCanvas
 
 
@@ -5991,9 +6003,9 @@ class Impression():
 if __name__ == u"__main__":
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    dialog_1 = Dialog(None, IDmodele=15,
+    dialog_1 = Dialog(None, IDmodele=17,
             nom="test", observations=u"", 
-            IDfond=None, categorie="fond", taille_page=(210, 297))
+            IDfond=None, categorie="cotisation", taille_page=(210, 297))
     app.SetTopWindow(dialog_1)
     dialog_1.ShowModal()
     app.MainLoop()

@@ -115,6 +115,21 @@ def CreationCarreCouleur(largeur, hauteur, couleur=None, contour=False):
     return bmp.ConvertToBitmap()
 
 
+
+def PILtoWx(image):
+    """Convert a PIL image to wx image format"""
+    largeur, hauteur = image.size
+    if 'phoenix' in wx.PlatformInfo:
+        imagewx = wx.Image(largeur, hauteur)
+        imagewx.SetData(image.tobytes('raw', 'RGB'))
+        imagewx.SetAlpha(image.convert("RGBA").tobytes()[3::4])
+    else :
+        imagewx = wx.EmptyImage(largeur, hauteur)
+        imagewx.SetData(image.tobytes('raw', 'RGB'))
+        imagewx.SetAlphaData(image.convert("RGBA").tobytes()[3::4])
+    return imagewx
+
+
 if __name__ == "__main__":
     app = wx.App(0)
     ConvertirToutesImagesPNG()
