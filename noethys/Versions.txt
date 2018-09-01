@@ -1,4 +1,4 @@
-Version 1.2.3.8 (25/08/2018) :
+Version 1.2.3.9 (01/09/2018) :
 
 - Connecthys : Ajout des pages personnalisées
 - Connecthys : Obligation de personnaliser le mot de passe
@@ -11,6 +11,7 @@ Version 1.2.3.8 (25/08/2018) :
 - Déplacement de l'outil de commandes des repas vers le menu Outils
 - Amélioration de l'assistant de paramétrage des activités annuelles
 - Adaptations pour wxPython Phoenix
+- Corrections diverses sur images dans Noedoc
 - Correction de divers bugs
 
 Version 1.2.3.3 (08/05/2018) :
