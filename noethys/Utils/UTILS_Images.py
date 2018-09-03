@@ -78,6 +78,15 @@ def hex_to_rgb(value):
     lv = len(value)
     return tuple(int(value[i:i+lv/3], 16) for i in range(0, lv, lv/3))
 
+def rgb_to_hex(value):
+    return '#%02x%02x%02x' % (value[0], value[1], value[2])
+
+def CouleurStrToTuple(texte=None):
+    if texte == None or len(texte) == 0 : return None
+    couleur = texte[1:-1].split(",")
+    couleur = (int(couleur[0]), int(couleur[1]), int(couleur[2]) )
+    return couleur
+
 def ConvertToRVB(couleur=None):
     if type(couleur) == str :
         r, v, b = hex_to_rgb(couleur)

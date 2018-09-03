@@ -774,6 +774,7 @@ class MainFrame(wx.Frame):
                     {"code": "menu_restauration", "label": _(u"Restauration"), "items": [
                             {"code": "restaurateurs", "label": _(u"Restaurateurs"), "infobulle": _(u"Paramétrage des restaurateurs"), "image": "Images/16x16/Restaurateur.png", "action": self.On_param_restaurateurs},
                             {"code": "menus_categories", "label": _(u"Catégories de menus"), "infobulle": _(u"Paramétrage des catégories de menus"), "image": "Images/16x16/Menu.png", "action": self.On_param_menus_categories},
+                            {"code": "menus_legendes", "label": _(u"Légendes de menus"), "infobulle": _(u"Paramétrage des légendes de menus"), "image": "Images/16x16/Etiquettes.png", "action": self.On_param_menus_legendes},
                             ],
                     },
                     "-",
@@ -1926,6 +1927,13 @@ class MainFrame(wx.Frame):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_menus_categories", "consulter") == False : return
         from Dlg import DLG_Menus_categories
         dlg = DLG_Menus_categories.Dialog(self)
+        dlg.ShowModal()
+        dlg.Destroy()
+
+    def On_param_menus_legendes(self, event):
+        if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_menus_legendes", "consulter") == False : return
+        from Dlg import DLG_Menus_legendes
+        dlg = DLG_Menus_legendes.Dialog(self)
         dlg.ShowModal()
         dlg.Destroy()
 

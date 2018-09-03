@@ -1759,6 +1759,12 @@ DB_DATA = {
                                     ("ordre", "INTEGER", u"Ordre"),
                                     ],  # Catégories des menus
 
+    "menus_legendes":               [("IDlegende", "INTEGER PRIMARY KEY AUTOINCREMENT", u"IDlegende"),
+                                     ("nom", "VARCHAR(300)", u"Nom de la légende"),
+                                     ("couleur", "VARCHAR(100)", u"Couleur"),
+                                     ],  # Légendes des menus
+
+
 
 
 }

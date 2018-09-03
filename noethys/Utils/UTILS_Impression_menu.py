@@ -17,9 +17,12 @@ import FonctionsPerso
 import GestionDB
 import random
 import copy
+import re
 from dateutil import rrule
 
 from Utils import UTILS_Dates
+from Utils import UTILS_Images
+from Utils import UTILS_Fichiers
 
 from reportlab.lib.colors import Color
 from reportlab.pdfgen.canvas import Canvas
@@ -29,7 +32,7 @@ from reportlab.lib.styles import ParagraphStyle
 from reportlab.platypus import Paragraph
 from reportlab.platypus.flowables import Image
 
-
+REGEX_LEGENDES = re.compile(r"\{[0-9]*?\}")
 
 
 
@@ -49,6 +52,7 @@ def Get_week_days(year, week):
         d = d - datetime.timedelta(d.weekday())
     dlt = datetime.timedelta(days=(week - 1) * 7)
     return d + dlt, d + dlt + datetime.timedelta(days=6)
+
 
 
 
@@ -116,7 +120,77 @@ class Titre():
 
 # ------------------------------------------------------------------------------------------------------------------
 
+class Legende():
+    def __init__(self, parent=None, liste_legendes=[], canvas=None, x=None, y=None, largeur=None):
+        self.parent = parent
+        self.canvas = canvas
+        self.x = x
+        self.y = y
+        self.largeur = largeur
+        self.dictNumerosLegendes = {}
 
+        # Préparation du dessin
+        self.canvas.saveState()
+        self.canvas.translate(x, y)
+
+        # Création du clipping
+        p = self.canvas.beginPath()
+        self.canvas.setStrokeColor(ColorWxToPdf(wx.WHITE, alpha=0))
+        self.canvas.setLineWidth(0)
+        p.roundRect(x=0, y=0, width=self.largeur, height=self.parent.dictDonnees["legende_hauteur"], radius=self.parent.dictDonnees["legende_radius"])
+        self.canvas.clipPath(p)
+
+        # Dessine la case
+        self.Dessine_legende(liste_legendes=liste_legendes)
+
+        self.canvas.restoreState()
+
+    def Dessine_legende(self, liste_legendes=[]):
+        """ Dessine la légende """
+        # Dessine le rectangle de fond
+        self.canvas.setStrokeColor(ColorWxToPdf(self.parent.dictDonnees["legende_bord_couleur"], alpha=self.parent.dictDonnees["legende_bord_alpha"]/100.0))
+        self.canvas.setFillColor(ColorWxToPdf(self.parent.dictDonnees["legende_fond_couleur"], alpha=self.parent.dictDonnees["legende_fond_alpha"]/100.0))
+        self.canvas.setLineWidth(0.25)
+        self.canvas.roundRect(x=0, y=0, width=self.largeur, height=self.parent.dictDonnees["legende_hauteur"], radius=self.parent.dictDonnees["legende_radius"], stroke=True, fill=True)
+
+        # Calcule la hauteur du texte
+        face = pdfmetrics.getFont(self.parent.dictDonnees["legende_nom_police"]).face
+        hauteur_font = face.ascent * self.parent.dictDonnees["legende_taille_police"] / 1000.0
+
+        # Tri par nom
+        liste_legendes.sort(cmp, lambda x: x["nom"])
+
+        # Création du texte
+        texte_paragraphe = u""
+        numero = 1
+        self.dictNumerosLegendes = {}
+        for dictLegende in liste_legendes :
+            IDlegende = dictLegende["IDlegende"]
+            couleur = UTILS_Images.rgb_to_hex(self.parent.dictDonnees["legendes"][IDlegende]["couleur"])
+            if self.parent.dictDonnees["legende_type"] == "numero" :
+                texte = u"<font color='%s'><super>%d</super></font>&nbsp;%s&nbsp;&nbsp;" % (couleur, numero, dictLegende["nom"])
+            elif self.parent.dictDonnees["legende_type"] == "carre" :
+                texte = u"<font face='ZapfDingbats' color='%s'>1</font>&nbsp;%s&nbsp;&nbsp;" % (couleur, dictLegende["nom"])
+            else :
+                texte = u""
+            texte_paragraphe += texte
+            self.dictNumerosLegendes[IDlegende] = numero
+            numero += 1
+
+        # Création du paragraphe
+        style = ParagraphStyle(name="style", fontName=self.parent.dictDonnees["legende_nom_police"], fontSize=self.parent.dictDonnees["legende_taille_police"],
+                               spaceBefore=0, spaceafter=0, leftIndent=0, rightIndent=0, alignment=1, leading=self.parent.dictDonnees["legende_taille_police"]+2,
+                               textColor=ColorWxToPdf(self.parent.dictDonnees["legende_texte_couleur"]))
+
+        paragraphe = Paragraph(texte_paragraphe, style=style)
+        largeur_paragraphe, hauteur_paragraphe = paragraphe.wrapOn(self.canvas, self.largeur-8, self.parent.dictDonnees["legende_hauteur"])
+
+        y_paragraphe = self.parent.dictDonnees["legende_hauteur"] / 2.0 - hauteur_paragraphe / 2.0
+        paragraphe.drawOn(self.canvas, 0, y_paragraphe)
+
+
+
+# ------------------------------------------------------------------------------------------------------------------
 
 class Pied():
     def __init__(self, parent=None, texte=u"", canvas=None, x=None, y=None, largeur=None):
@@ -141,7 +215,6 @@ class Pied():
         self.Dessine_pied(texte=texte)
 
         self.canvas.restoreState()
-
 
     def Dessine_pied(self, texte=""):
         """ Dessine un titre en haut de la page """
@@ -313,6 +386,26 @@ class Case():
         liste_paragraphes = []
         hauteur_paragraphes = 0
         for texte_paragraphe in texte.split("\n") :
+
+            # Remplacement des légendes
+            liste_legendes = REGEX_LEGENDES.findall(texte_paragraphe)
+            for chaine in liste_legendes :
+                IDlegende = int(chaine[1:-1])
+                if self.parent.dictDonnees["legendes"].has_key(IDlegende) and self.parent.dictNumerosLegendes.has_key(IDlegende):
+                    couleur = UTILS_Images.rgb_to_hex(self.parent.dictDonnees["legendes"][IDlegende]["couleur"])
+                    if self.parent.dictDonnees["legende_type"] == "numero":
+                        numero = self.parent.dictNumerosLegendes[IDlegende]
+                        chaine_remplacement = u"<font color='%s' size='-2'><super>%d</super></font>" % (couleur, numero)
+                    elif self.parent.dictDonnees["legende_type"] == "carre":
+                        chaine_remplacement = u"<font face='ZapfDingbats' color='%s' size='-2'><super>&nbsp;</super></font>" % couleur
+                    else :
+                        chaine_remplacement = ""
+
+                else :
+                    chaine_remplacement = u""
+                texte_paragraphe = texte_paragraphe.replace(chaine, chaine_remplacement)
+
+            # Création du paragraphe
             paragraphe = Paragraph(texte_paragraphe, style=style)
             largeur_paragraphe, hauteur_paragraphe = paragraphe.wrapOn(self.canvas, self.largeur_case, self.hauteur_case)
             hauteur_paragraphes += hauteur_paragraphe
@@ -484,6 +577,16 @@ class Impression():
         for IDcategorie, nom in listeDonnees:
             self.dictDonnees["categories"].append({"IDcategorie": IDcategorie, "nom": nom})
 
+        # Légendes
+        req = """SELECT IDlegende, nom, couleur
+        FROM menus_legendes ;"""
+        DB.ExecuterReq(req)
+        listeDonnees = DB.ResultatReq()
+        self.dictDonnees["legendes"] = {}
+        for IDlegende, nom, couleur in listeDonnees:
+            couleur = UTILS_Images.CouleurStrToTuple(couleur)
+            self.dictDonnees["legendes"][IDlegende] = {"IDlegende" : IDlegende, "nom": nom, "couleur" : couleur}
+
         # Menus
         req = """SELECT IDmenu, IDcategorie, date, texte
         FROM menus 
@@ -537,6 +640,7 @@ class Impression():
                 texte_titre = self.GetLabelSemaine(calendrier[0], calendrier[-1])
 
             if dictDonnees["type"] == "quotidien":
+                calendrier = None
                 nbre_lignes = 1
                 nbre_colonnes = 1
                 texte_titre = UTILS_Dates.DateComplete(dict_page["date"])
@@ -555,7 +659,7 @@ class Impression():
             # Dessine le titre
             if dictDonnees["titre_afficher"] == True:
                 if dictDonnees["titre_texte"] != "" :
-                    texte_titre = u"%s - %s" % (dictDonnees["titre_texte"], texte_titre)
+                    texte_titre = u"%s %s" % (dictDonnees["titre_texte"], texte_titre)
                 titre = Titre(parent=self, texte=texte_titre, canvas=canvas, largeur=largeur_page)
                 marge_haut += dictDonnees["titre_hauteur"]
 
@@ -573,9 +677,34 @@ class Impression():
                 marge_haut += dictDonnees["entete_hauteur"] + dictDonnees["page_espace_vertical"]
 
             # Dessine le pied
-            if dictDonnees["pied_afficher"] == True :
+            if dictDonnees["pied_afficher"] == True and len(dictDonnees["pied_texte"]) > 0 :
                 pied = Pied(parent=self, texte=dictDonnees["pied_texte"], canvas=canvas, x=dictDonnees["page_marge_gauche"], y=marge_bas, largeur=largeur_page - dictDonnees["page_marge_gauche"] - dictDonnees["page_marge_droite"])
                 marge_bas += dictDonnees["pied_hauteur"] + dictDonnees["page_espace_vertical"]
+
+            # Dessine la légende
+            self.dictNumerosLegendes = {}
+            if dictDonnees["legende_afficher"] == True :
+
+                # Recherche les légendes présentes dans la page
+                liste_legendes = []
+                for num_colonne in range(0, nbre_colonnes):
+                    for num_ligne in range(0, nbre_lignes):
+                        date, dictTextes = self.GetDateAndTextes(num_ligne=num_ligne, num_colonne=num_colonne, dict_page=dict_page, calendrier=calendrier)
+                        for IDcategorie, dictTexte in dictTextes.iteritems():
+                            for chaine in REGEX_LEGENDES.findall(dictTexte["texte"]):
+                                try :
+                                    IDlegende = int(chaine[1:-1])
+                                    dictLegende = self.dictDonnees["legendes"][IDlegende]
+                                    if dictLegende not in liste_legendes and self.dictDonnees["legendes"].has_key(IDlegende) :
+                                        liste_legendes.append(dictLegende)
+                                except :
+                                    pass
+
+                if len(liste_legendes) > 0 :
+                    legende = Legende(parent=self, liste_legendes=liste_legendes, canvas=canvas, x=dictDonnees["page_marge_gauche"], y=marge_bas, largeur=largeur_page - dictDonnees["page_marge_gauche"] - dictDonnees["page_marge_droite"])
+                    self.dictNumerosLegendes = legende.dictNumerosLegendes
+                    marge_bas += dictDonnees["legende_hauteur"] + dictDonnees["page_espace_vertical"]
+
 
             # Calcul la hauteur des cases
             hauteur_case = ((hauteur_page - marge_haut - marge_bas) - dictDonnees["page_espace_vertical"] * (nbre_lignes - 1)) / nbre_lignes
@@ -588,21 +717,10 @@ class Impression():
                     x_case = dictDonnees["page_marge_gauche"] + ((largeur_case + dictDonnees["page_espace_horizontal"]) * num_colonne)
                     y_case = hauteur_page - marge_haut - hauteur_case - ((hauteur_case + dictDonnees["page_espace_vertical"]) * num_ligne)
 
-                    # Recherche la date
-                    date = None
+                    # Recherche la date et les textes
+                    date, dictTextes = self.GetDateAndTextes(num_ligne=num_ligne, num_colonne=num_colonne, dict_page=dict_page, calendrier=calendrier)
 
-                    if dictDonnees["type"] == "mensuel" and calendrier[num_ligne][num_colonne] != 0 :
-                        date = datetime.date(dict_page["annee"], dict_page["mois"], calendrier[num_ligne][num_colonne])
-                    if dictDonnees["type"] == "hebdomadaire":
-                        date = calendrier[num_colonne]
-                    if dictDonnees["type"] == "quotidien" :
-                        date = datetime.date(dict_page["date"].year, dict_page["date"].month, dict_page["date"].day)
-
-                    # Dessine la case
-                    dictTextes = {}
-                    if dictDonnees["menus"].has_key(date) :
-                        dictTextes = dictDonnees["menus"][date]
-
+                    # Dessin de la case
                     case = Case(parent=self, date=date, dictTextes=dictTextes, canvas=canvas, x=x_case, y=y_case, largeur_case=largeur_case, hauteur_case=hauteur_case)
 
             # Dessine la grille
@@ -626,6 +744,23 @@ class Impression():
             FonctionsPerso.LanceFichierExterne(nomDoc)
         except:
             print "Probleme dans l'edition du menu"
+
+    def GetDateAndTextes(self, num_ligne=0, num_colonne=0, dict_page={}, calendrier={}):
+        # Recherche la date
+        date = None
+        if self.dictDonnees["type"] == "mensuel" and calendrier[num_ligne][num_colonne] != 0:
+            date = datetime.date(dict_page["annee"], dict_page["mois"], calendrier[num_ligne][num_colonne])
+        elif self.dictDonnees["type"] == "hebdomadaire":
+            date = calendrier[num_colonne]
+        if self.dictDonnees["type"] == "quotidien":
+            date = datetime.date(dict_page["date"].year, dict_page["date"].month, dict_page["date"].day)
+
+        # Dessine la case
+        dictTextes = {}
+        if self.dictDonnees["menus"].has_key(date):
+            dictTextes = self.dictDonnees["menus"][date]
+
+        return date, dictTextes
 
     def GetCalendrierMois(self, annee=2018, mois=0, jours_semaine=[0, 1, 2, 3, 4, 5, 6]):
         calendrier = calendar.monthcalendar(annee, mois)
@@ -667,10 +802,10 @@ if __name__ == "__main__":
 
     # Données test
     dictDonnees = {
-        "date_debut": datetime.date(2018, 7, 1),
+        "date_debut": datetime.date(2018, 7, 2),
         "date_fin": datetime.date(2018, 7, 31),
         "IDrestaurateur": 1,
-        "type": "hebdomadaire",  # mensuel, hebdomadaire, quotidien
+        "type": "mensuel",  # mensuel, hebdomadaire, quotidien
         "jours_semaine": [0, 1, 2, 3, 4, 5, 6],
         "categories_menus" : [0,],
 
@@ -752,6 +887,19 @@ if __name__ == "__main__":
         "titre_taille_police" : 25,
         "titre_texte_couleur" : wx.WHITE,
         "titre_texte" : u"Test",
+
+        # Légende
+        "legende_afficher": True,
+        "legende_type" : "carre",
+        "legende_hauteur": 50,
+        "legende_radius": 5,
+        "legende_bord_couleur": wx.WHITE,
+        "legende_bord_alpha": 0.2 * 100,
+        "legende_fond_couleur": wx.WHITE,
+        "legende_fond_alpha": 0.05 * 100,
+        "legende_nom_police": "Helvetica",  # Pas intégré dans le propertyGrid !
+        "legende_taille_police": 10,
+        "legende_texte_couleur": wx.BLACK,
 
         # Pied
         "pied_afficher" : True,

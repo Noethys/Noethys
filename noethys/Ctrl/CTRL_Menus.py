@@ -19,6 +19,7 @@ import wx.lib.mixins.gridlabelrenderer as glr
 import GestionDB
 import calendar
 from Ctrl import CTRL_Bouton_image
+from Ctrl import CTRL_Bandeau
 from Utils import UTILS_Dates
 import wx.lib.wordwrap as wordwrap
 
@@ -436,16 +437,73 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 
 # -------------------------------------------------------------------------------------------------------
 
+class CTRL_Legendes(wx.ListBox):
+    def __init__(self, parent, ctrl_texte=None):
+        wx.ListBox.__init__(self, parent, -1, style=wx.SIMPLE_BORDER)
+        self.parent = parent
+        self.ctrl_texte = ctrl_texte
+        self.SetBackgroundColour("#F0FBED")
+        self.MAJ()
+        self.Bind(wx.EVT_LISTBOX_DCLICK, self.OnDoubleClick)
+
+    def OnDoubleClick(self, event):
+        index = event.GetSelection()
+        IDlegende = self.dictDonnees[index]
+        texte = u"{%d}" % IDlegende
+        self.ctrl_texte.WriteText(texte)
+        self.ctrl_texte.SetFocus()
+
+    def MAJ(self):
+        self.dictDonnees = {}
+        DB = GestionDB.DB()
+        req = """SELECT IDlegende, nom, couleur
+        FROM menus_legendes
+        ORDER BY nom
+        ;"""
+        DB.ExecuterReq(req)
+        listeDonnees = DB.ResultatReq()
+        DB.Close()
+        listeLabels = []
+        index = 0
+        for IDlegende, nom, couleur in listeDonnees:
+            self.dictDonnees[index] = IDlegende
+            label = u"{%d}  %s" % (IDlegende, nom)
+            listeLabels.append(label)
+            index += 1
+        self.SetItems(listeLabels)
+
+    def GetID(self):
+        index = self.GetSelection()
+        if index == -1: return None
+        return self.dictDonnees[index]
+
+
+
+
+
 class DLG_Saisie_texte(wx.Dialog):
     def __init__(self, parent, texte=""):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         if texte == None :
             texte = ""
 
-        self.label_intro = wx.StaticText(self, -1, _(u"Saisissez ci-dessous un plat par ligne :"))
+        # Bandeau
+        intro = _(u"Saisissez ci-dessous un plat par ligne. Pour insérer une légende dans le texte, double-cliquez sur son nom dans la liste ou tapez directement le numéro correspondant entre accolades (Exemples : {3} ou {14}).")
+        titre = _(u"Saisie d'un menu")
+        self.SetTitle(titre)
+        self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Menu.png")
+
+        # Texte
+        self.staticbox_texte_staticbox = wx.StaticBox(self, -1, _(u"Texte"))
         self.ctrl_texte = wx.TextCtrl(self, -1, "", style=wx.TE_MULTILINE )
-        self.ctrl_texte.SetMinSize((400, 200))
+        self.ctrl_texte.SetMinSize((300, 300))
+
+        # Légendes
+        self.staticbox_legendes_staticbox = wx.StaticBox(self, -1, _(u"Légendes disponibles"))
+        self.ctrl_legendes = CTRL_Legendes(self, ctrl_texte=self.ctrl_texte)
+        self.ctrl_legendes.SetMinSize((200, 200))
+        self.bouton_legendes = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Mecanisme.png"), wx.BITMAP_TYPE_ANY))
 
         self.bouton_supprimer = CTRL_Bouton_image.CTRL(self, texte=_(u"Effacer"), cheminImage="Images/32x32/Gomme.png")
         self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
@@ -456,6 +514,7 @@ class DLG_Saisie_texte(wx.Dialog):
 
         self.Bind(wx.EVT_BUTTON, self.OnBoutonSupprimer, self.bouton_supprimer)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
+        self.Bind(wx.EVT_BUTTON, self.OnBoutonLegendes, self.bouton_legendes)
 
         # Init
         self.ctrl_texte.SetValue(texte)
@@ -463,19 +522,31 @@ class DLG_Saisie_texte(wx.Dialog):
 
     def __set_properties(self):
         self.SetTitle(_(u"Saisie d'un menu"))
-        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour effacer le contenu de cette case")))
+        self.bouton_legendes.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à la gestion des légendes")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour effacer le contenu du texte")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider ou tapez sur la touche Entrée du clavier")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
 
     def __do_layout(self):
-        grid_sizer_base = wx.FlexGridSizer(rows=5, cols=1, vgap=5, hgap=5)
+        grid_sizer_base = wx.FlexGridSizer(rows=5, cols=1, vgap=10, hgap=10)
+        grid_sizer_base.Add(self.ctrl_bandeau, 0, wx.EXPAND, 0)
 
-        grid_sizer_contenu = wx.FlexGridSizer(rows=3, cols=1, vgap=5, hgap=5)
-        grid_sizer_contenu.Add( self.label_intro, 0, wx.EXPAND, 0)
-        grid_sizer_contenu.Add(self.ctrl_texte, 0, wx.EXPAND, 0)
+        grid_sizer_contenu = wx.FlexGridSizer(rows=1, cols=2, vgap=10, hgap=10)
 
+        # Texte
+        staticbox_texte = wx.StaticBoxSizer(self.staticbox_texte_staticbox, wx.VERTICAL)
+        staticbox_texte.Add(self.ctrl_texte, 1, wx.ALL|wx.EXPAND, 5)
+        grid_sizer_contenu.Add(staticbox_texte, 1, wx.EXPAND, 0)
+
+        # Légendes
+        staticbox_legendes = wx.StaticBoxSizer(self.staticbox_legendes_staticbox, wx.HORIZONTAL)
+        staticbox_legendes.Add(self.ctrl_legendes, 1, wx.ALL|wx.EXPAND, 5)
+        staticbox_legendes.Add(self.bouton_legendes, 0, wx.TOP|wx.RIGHT, 5)
+        grid_sizer_contenu.Add(staticbox_legendes, 1, wx.EXPAND, 0)
+
+        grid_sizer_contenu.AddGrowableRow(0)
         grid_sizer_contenu.AddGrowableCol(0)
-        grid_sizer_base.Add(grid_sizer_contenu, 1, wx.ALL | wx.EXPAND, 10)
+        grid_sizer_base.Add(grid_sizer_contenu, 1, wx.LEFT|wx.RIGHT| wx.EXPAND, 10)
 
         # Boutons
         grid_sizer_boutons = wx.FlexGridSizer(rows=1, cols=4, vgap=10, hgap=10)
@@ -493,6 +564,13 @@ class DLG_Saisie_texte(wx.Dialog):
         self.Layout()
         self.SetMinSize(self.GetSize())
         self.CenterOnScreen()
+
+    def OnBoutonLegendes(self, event):
+        from Dlg import DLG_Menus_legendes
+        dlg = DLG_Menus_legendes.Dialog(self)
+        dlg.ShowModal()
+        dlg.Destroy()
+        self.ctrl_legendes.MAJ()
 
     def OnBoutonSupprimer(self, event=None):
         self.ctrl_texte.SetValue("")

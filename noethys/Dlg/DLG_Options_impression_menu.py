@@ -140,10 +140,12 @@ LISTE_MODELES = [
 
 VALEURS_DEFAUT = {
     # Données
+    #"jours_semaine" : [0, 1, 2, 3, 4],
+    #"titre_texte" : u"",
+    #"pied_texte": u"Menus susceptibles de modifications",
+    #"categories_menus" : [0,],
+
     "type" : "hebdomadaire",
-    "jours_semaine" : [0, 1, 2, 3, 4],
-    "pied_texte": u"Menus susceptibles de modifications",
-    "categories_menus" : [0,],
 
     # Page
     "page_fond_image": "Interface/Bleu/Fond.jpg",
@@ -175,11 +177,11 @@ VALEURS_DEFAUT = {
     "case_radius": 5,
     "case_rotation_aleatoire": False,
     "case_bord_couleur": wx.WHITE,
-    "case_bord_alpha": 0.6*100,
-    "case_bord_alpha_vide": 0.2*100, # Pas intégré dans le propertyGrid !
+    "case_bord_alpha": int(0.6*100),
+    "case_bord_alpha_vide": int(0.2*100), # Pas intégré dans le propertyGrid !
     "case_fond_couleur": wx.WHITE,
-    "case_fond_alpha": 0.6*100,
-    "case_fond_alpha_vide": 0.2*100, # Pas intégré dans le propertyGrid !
+    "case_fond_alpha": int(0.6*100),
+    "case_fond_alpha_vide": int(0.2*100), # Pas intégré dans le propertyGrid !
     "case_repartition_verticale": True,
     "case_nom_police": "Helvetica", # Pas intégré dans le propertyGrid !
     "case_taille_police": 10,
@@ -221,16 +223,28 @@ VALEURS_DEFAUT = {
     "titre_nom_police": "Helvetica-Bold", # Pas intégré dans le propertyGrid !
     "titre_taille_police": 25,
     "titre_texte_couleur": wx.WHITE,
-    "titre_texte" : u"",
+
+    # Légende
+    "legende_afficher": True,
+    "legende_type": "numero",
+    "legende_hauteur": 30,
+    "legende_radius": 5,
+    "legende_bord_couleur": wx.WHITE,
+    "legende_bord_alpha": int(0.2 * 100),
+    "legende_fond_couleur": wx.WHITE,
+    "legende_fond_alpha": 30,
+    "legende_nom_police": "Helvetica",  # Pas intégré dans le propertyGrid !
+    "legende_taille_police": 8,
+    "legende_texte_couleur": wx.BLACK,
 
     # Pied de page
     "pied_afficher": True,
     "pied_hauteur": 50,
     "pied_radius": 5,
     "pied_bord_couleur": wx.WHITE,
-    "pied_bord_alpha": 0.2*100,
+    "pied_bord_alpha": int(0.2*100),
     "pied_fond_couleur": wx.WHITE,
-    "pied_fond_alpha": 0.05*100,
+    "pied_fond_alpha": int(0.05*100),
     "pied_nom_police": "Helvetica", # Pas intégré dans le propertyGrid !
     "pied_taille_police": 10,
     "pied_texte_couleur": wx.BLACK,
@@ -249,18 +263,10 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         # Rubrique Données
         self.Append(wxpg.PropertyCategory(_(u"Données")))
 
-        # Orientation page
-        nom = "type"
-        propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Type d'affichage"), name=nom, liste_choix=[("mensuel", _(u"Mensuel")), ("hebdomadaire", _(u"Hebdomadaire")), ("quotidien", _(u"Journalier"))], valeur=VALEURS_DEFAUT[nom])
-        propriete.SetEditor("EditeurChoix")
-        propriete.SetHelpString(_(u"Sélectionnez le type d'affichage de la page"))
-        propriete.SetAttribute("obligatoire", True)
-        self.Append(propriete)
-
         # Jours de la semaine
         nom = "jours_semaine"
         liste_jours = [(0, _(u"Lundi")), (1, _(u"Mardi")), (2, _(u"Mercredi")), (3, _(u"Jeudi")), (4, _(u"Vendredi")), (5, _(u"Samedi")), (6, _(u"Dimanche"))]
-        propriete = CTRL_Propertygrid.Propriete_multichoix(label=_(u"Jours de la semaine"), name=nom, liste_choix=liste_jours, liste_selections=VALEURS_DEFAUT[nom])
+        propriete = CTRL_Propertygrid.Propriete_multichoix(label=_(u"Jours de la semaine"), name=nom, liste_choix=liste_jours, liste_selections=[0, 1, 2, 3, 4])
         propriete.SetHelpString(_(u"Sélectionnez les jours de la semaine à inclure. Cliquez sur le bouton à droite du champ de saisie pour accéder à la fenêtre de sélection."))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
@@ -278,25 +284,33 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
             liste_choix.append((IDcategorie, nom))
 
         nom = "categories_menus"
-        propriete = CTRL_Propertygrid.Propriete_multichoix(label=_(u"Catégories à afficher"), name=nom, liste_choix=liste_choix, liste_selections=VALEURS_DEFAUT[nom])
+        propriete = CTRL_Propertygrid.Propriete_multichoix(label=_(u"Catégories à afficher"), name=nom, liste_choix=liste_choix, liste_selections=[0,])
         propriete.SetHelpString(_(u"Sélectionnez les catégories de menus à afficher."))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
         # Texte de titre de page
         nom = "titre_texte"
-        propriete = wxpg.LongStringProperty(label=_(u"Texte de titre de page"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete = wxpg.LongStringProperty(label=_(u"Texte de titre de page"), name=nom, value=u"MENUS -")
         propriete.SetHelpString(_(u"Saisissez un texte de titre de page"))
         self.Append(propriete)
 
         # Texte de pied de page
         nom = "pied_texte"
-        propriete = wxpg.LongStringProperty(label=_(u"Texte de pied de page"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete = wxpg.LongStringProperty(label=_(u"Texte de pied de page"), name=nom, value=_(u"Menus susceptibles de modifications"))
         propriete.SetHelpString(_(u"Saisissez un texte de pied de page"))
         self.Append(propriete)
 
         # Rubrique page
         self.Append(wxpg.PropertyCategory(_(u"Page")))
+
+        # Type d'affichage
+        nom = "type"
+        propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Type d'affichage"), name=nom, liste_choix=[("mensuel", _(u"Mensuel")), ("hebdomadaire", _(u"Hebdomadaire")), ("quotidien", _(u"Journalier"))], valeur=VALEURS_DEFAUT[nom])
+        propriete.SetEditor("EditeurChoix")
+        propriete.SetHelpString(_(u"Sélectionnez le type d'affichage de la page"))
+        propriete.SetAttribute("obligatoire", True)
+        self.Append(propriete)
 
         # Orientation page
         nom = "page_format"
@@ -719,6 +733,79 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         self.Append(propriete)
 
 
+        # Rubrique Légende
+        self.Append(wxpg.PropertyCategory(_(u"Légende")))
+
+        # Afficher légende
+        nom = "legende_afficher"
+        propriete = wxpg.BoolProperty(label=_(u"Afficher la légende"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Afficher la légende"))
+        propriete.SetAttribute("UseCheckbox", True)
+        self.Append(propriete)
+
+        # Type de légende
+        nom = "legende_type"
+        liste_choix = [("numero", _(u"Numéro coloré")), ("carre", _(u"Carré de couleur")),]
+        propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Type de légende"), name=nom, liste_choix=liste_choix, valeur=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Sélectionnez un type de légende"))
+        propriete.SetAttribute("obligatoire", True)
+        self.Append(propriete)
+
+        # Hauteur
+        nom = "legende_hauteur"
+        propriete = wxpg.IntProperty(label=_(u"Hauteur"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Saisissez une valeur numérique"))
+        propriete.SetAttribute("obligatoire", True)
+        self.Append(propriete)
+        self.SetPropertyEditor(nom, "SpinCtrl")
+
+        # Fond et bord
+        temp = [
+            ("legende_fond", _(u"fond")),
+            ("legende_bord", _(u"bord")),
+        ]
+        for code, label in temp:
+
+            # Couleur
+            nom = "%s_couleur" % code
+            propriete = wxpg.ColourProperty(label=_(u"Couleur du %s") % label, name=nom, value=VALEURS_DEFAUT[nom])
+            propriete.SetHelpString(_(u"Sélectionnez une couleur"))
+            propriete.SetAttribute("obligatoire", True)
+            self.Append(propriete)
+
+            # Transparence
+            nom = "%s_alpha" % code
+            propriete = wxpg.IntProperty(label=_(u"Opacité du %s (en %%)") % label, name=nom, value=VALEURS_DEFAUT[nom])
+            propriete.SetHelpString(_(u"Saisissez une valeur numérique"))
+            propriete.SetAttribute("obligatoire", True)
+            self.Append(propriete)
+            self.SetPropertyEditor(nom, "SpinCtrl")
+            propriete.SetAttribute("Min", 0)
+            propriete.SetAttribute("Max", 100)
+
+        # Valeur de l'arrondi
+        nom = "legende_radius"
+        propriete = wxpg.IntProperty(label=_(u"Valeur de l'arrondi"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Saisissez une valeur numérique"))
+        propriete.SetAttribute("obligatoire", True)
+        self.Append(propriete)
+        self.SetPropertyEditor(nom, "SpinCtrl")
+
+        # Couleur de texte
+        nom = "legende_texte_couleur"
+        propriete = wxpg.ColourProperty(label=_(u"Couleur du texte"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Sélectionnez une couleur"))
+        propriete.SetAttribute("obligatoire", True)
+        self.Append(propriete)
+
+        # Taille de texte
+        nom = "legende_taille_police"
+        propriete = wxpg.IntProperty(label=_(u"Taille de texte"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Saisissez une taille de texte"))
+        propriete.SetAttribute("obligatoire", True)
+        self.Append(propriete)
+        self.SetPropertyEditor(nom, "SpinCtrl")
+
 
         # Rubrique Pied de page
         self.Append(wxpg.PropertyCategory(_(u"Pied de page")))
@@ -726,7 +813,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         # Afficher pied
         nom = "pied_afficher"
         propriete = wxpg.BoolProperty(label=_(u"Afficher le pied de page"), name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Afficher les macarons"))
+        propriete.SetHelpString(_(u"Afficher le pied de page"))
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
@@ -999,7 +1086,6 @@ class CTRL(wx.Panel):
     def SetModele(self, dictDonnees={}):
         self.ctrl_parametres.SetValeurs(VALEURS_DEFAUT)
         self.ctrl_parametres.SetValeurs(dictDonnees)
-
 
 
 

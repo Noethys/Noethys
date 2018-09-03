@@ -2206,6 +2206,14 @@ class DB:
         # =============================================================
 
 
+        versionFiltre = (1, 2, 4, 1)
+        if versionFichier < versionFiltre:
+            try:
+                if self.IsTableExists("menus_legendes") == False: self.CreationTable("menus_legendes", Tables.DB_DATA)
+            except Exception, err:
+                return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
+
+        # =============================================================
 
 
 
@@ -2479,7 +2487,7 @@ if __name__ == "__main__":
                 
     # Création d'une table données
     # db = DB(suffixe="DATA")
-    # listeTables = ("menus_categories",)
+    # listeTables = ("menus_legendes",)
     # for nomTable in listeTables :
     #     db.CreationTable(nomTable, Tables.DB_DATA)
     # db.Close()

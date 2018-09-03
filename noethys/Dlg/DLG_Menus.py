@@ -71,7 +71,7 @@ class Dialog(wx.Dialog):
         self.parent = parent
 
         # Bandeau
-        intro = _(u"Vous pouvez ici saisir les menus de votre restaurateur. Sélectionnez un restaurateur et un mois puis double-cliquez sur une case pour saisir un menu. Si vous n'avez paramétré aucun restaurateur, vous pouvez le faire directement en cliquant sur le bouton 'Gestion des restaurateurs' à droite de la liste déroulante restaurateur.")
+        intro = _(u"Vous pouvez ici saisir les menus de votre restaurateur. Sélectionnez un restaurateur et un mois puis double-cliquez sur une case pour saisir un menu. Vous pouvez paramétrer un restaurateur en cliquant sur le bouton 'Gestion des restaurateurs' à droite de la liste déroulante. N'oubliez pas de paramétrer également les catégories de repas depuis le menu Paramétrage > Restauration.")
         titre = _(u"Gestion des menus")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Menu.png")
