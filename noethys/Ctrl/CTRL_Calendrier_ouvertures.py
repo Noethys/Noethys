@@ -127,36 +127,40 @@ class Calendrier(HTL.HyperTreeList):
                 # tri des groupes
                 listeGroupesTemp = []
                 for IDgroupe, dictUnites in dictGroupes.iteritems() :
-                    ordre = dictNomsGroupes[IDgroupe]["ordre"]
+                    if dictNomsGroupes.has_key(IDgroupe):
+                        ordre = dictNomsGroupes[IDgroupe]["ordre"]
+                    else :
+                        ordre = None
                     listeGroupesTemp.append((ordre, IDgroupe))
                 listeGroupesTemp.sort()
                 
                 for ordre, IDgroupe in listeGroupesTemp :
-                    dictUnites = dictGroupes[IDgroupe]
+                    if ordre != None :
+                        dictUnites = dictGroupes[IDgroupe]
 
-                    # Groupes
-                    branche3 = self.AppendItem(branche2, dictNomsGroupes[IDgroupe]["nom"])
+                        # Groupes
+                        branche3 = self.AppendItem(branche2, dictNomsGroupes[IDgroupe]["nom"])
 
-                    for IDunite, nbreOuvertures in dictUnites.iteritems() :
-                        if dictColonnes.has_key(IDunite) :
-                            numColonne = dictColonnes[IDunite]
-                            if nbreOuvertures == 1 :
-                                texte = _(u"1 date")
-                            else:
-                                texte = _(u"%s dates") % nbreOuvertures
-                            self.SetItemText(branche3, texte, numColonne)
-                        
-                        # Totaux par année
-                        if dictTotaux.has_key(annee) :
-                            if dictTotaux[annee]["unites"].has_key(IDunite) :
-                                total = len(dictTotaux[annee]["unites"][IDunite])
-                                if total == 1 : 
-                                    label = _(u"1 date")
-                                else :
-                                    label = _(u"%d dates") % total
-                                self.SetItemText(branche1, label, numColonne)
+                        for IDunite, nbreOuvertures in dictUnites.iteritems() :
+                            if dictColonnes.has_key(IDunite) :
+                                numColonne = dictColonnes[IDunite]
+                                if nbreOuvertures == 1 :
+                                    texte = _(u"1 date")
+                                else:
+                                    texte = _(u"%s dates") % nbreOuvertures
+                                self.SetItemText(branche3, texte, numColonne)
 
-                    self.Expand(branche3)
+                            # Totaux par année
+                            if dictTotaux.has_key(annee) :
+                                if dictTotaux[annee]["unites"].has_key(IDunite) :
+                                    total = len(dictTotaux[annee]["unites"][IDunite])
+                                    if total == 1 :
+                                        label = _(u"1 date")
+                                    else :
+                                        label = _(u"%d dates") % total
+                                    self.SetItemText(branche1, label, numColonne)
+
+                        self.Expand(branche3)
                 self.Expand(branche2)
                         
             if annee >= datetime.date.today().year :

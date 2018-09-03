@@ -297,8 +297,9 @@ class CTRL_Activites(HTL.HyperTreeList):
             
             # Niveau Groupes
             for dictGroupe in dictActivite["groupes"] :
-                niveauGroupe = self.AppendItem(niveauActivite, dictGroupe["nom"], ct_type=1)
-                self.SetPyData(niveauGroupe, {"type" : "groupe", "ID" : dictGroupe["IDgroupe"], "nom" : dictGroupe["nom"]})
+                if dictGroupe["IDgroupe"] != None :
+                    niveauGroupe = self.AppendItem(niveauActivite, dictGroupe["nom"], ct_type=1)
+                    self.SetPyData(niveauGroupe, {"type" : "groupe", "ID" : dictGroupe["IDgroupe"], "nom" : dictGroupe["nom"]})
             
             # Coche toutes les branches enfants
             self.CheckItem(niveauActivite)
