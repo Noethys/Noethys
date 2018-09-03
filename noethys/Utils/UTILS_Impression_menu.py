@@ -390,7 +390,6 @@ class Case():
             # Remplacement des légendes
             liste_legendes = REGEX_LEGENDES.findall(texte_paragraphe)
             for chaine in liste_legendes :
-                print chaine
                 IDlegende = int(chaine[1:-1])
                 if self.parent.dictDonnees["legendes"].has_key(IDlegende) and self.parent.dictNumerosLegendes.has_key(IDlegende):
                     couleur = UTILS_Images.rgb_to_hex(self.parent.dictDonnees["legendes"][IDlegende]["couleur"])
