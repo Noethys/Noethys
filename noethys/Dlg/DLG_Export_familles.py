@@ -181,7 +181,7 @@ class Dialog(wx.Dialog):
 if __name__ == u"__main__":
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    dialog_1 = Dialog(None, IDfamille=14)
+    dialog_1 = Dialog(None, IDfamille=None)
     app.SetTopWindow(dialog_1)
     dialog_1.ShowModal()
     app.MainLoop()

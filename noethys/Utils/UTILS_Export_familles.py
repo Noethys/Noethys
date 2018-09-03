@@ -299,7 +299,7 @@ class Export():
             for key, valeur in infos.dictFamilles[IDfamille].iteritems():
                 if key.startswith("FAMILLE_"):
                     node = doc.createElement(key.replace("FAMILLE_", "").lower())
-                    node.setAttribute("valeur", valeur)
+                    node.setAttribute("valeur", unicode(valeur))
                     node_famille.appendChild(node)
 
             # Famille : Quotients
@@ -431,133 +431,133 @@ class Export():
             node_individus = doc.createElement(u"individus")
             node_famille.appendChild(node_individus)
 
-            for dictRattachement in infos.dictRattachements["familles"][IDfamille]:
-                IDindividu = dictRattachement["IDindividu"]
+            if infos.dictRattachements["familles"].has_key(IDfamille):
+                for dictRattachement in infos.dictRattachements["familles"][IDfamille]:
+                    IDindividu = dictRattachement["IDindividu"]
 
-                node_individu = doc.createElement(u"individu")
-                node_individu.setAttribute("id", str(IDindividu))
-                node_individus.appendChild(node_individu)
+                    node_individu = doc.createElement(u"individu")
+                    node_individu.setAttribute("id", str(IDindividu))
+                    node_individus.appendChild(node_individu)
 
-                # Individu : données générales
-                for key, champ in infos.GetListeChampsIndividus():
-                    valeur = infos.dictIndividus[IDindividu][key]
-                    if isinstance(valeur, (unicode, str)):
-                        node = doc.createElement(key.replace("INDIVIDU_", "").lower())
-                        node.setAttribute("valeur", valeur)
-                        node_individu.appendChild(node)
+                    # Individu : données générales
+                    for key, champ in infos.GetListeChampsIndividus():
+                        valeur = infos.dictIndividus[IDindividu][key]
+                        if isinstance(valeur, (unicode, str)):
+                            node = doc.createElement(key.replace("INDIVIDU_", "").lower())
+                            node.setAttribute("valeur", unicode(valeur))
+                            node_individu.appendChild(node)
 
-                # Individu : Messages
-                if infos.dictIndividus[IDindividu].has_key("messages"):
-                    node_messages = doc.createElement(u"messages")
-                    node_individu.appendChild(node_messages)
+                    # Individu : Messages
+                    if infos.dictIndividus[IDindividu].has_key("messages"):
+                        node_messages = doc.createElement(u"messages")
+                        node_individu.appendChild(node_messages)
 
-                    for dictMessage in infos.dictIndividus[IDindividu]["messages"]["liste"]:
-                        node = doc.createElement(u"message")
-                        node.setAttribute("categorie_nom", dictMessage["categorie_nom"])
-                        node.setAttribute("date_saisie", dictMessage["date_saisie"])
-                        node.setAttribute("date_parution", dictMessage["date_parution"])
-                        node.setAttribute("nom", dictMessage["nom"])
-                        node.setAttribute("texte", dictMessage["texte"])
-                        node_messages.appendChild(node)
+                        for dictMessage in infos.dictIndividus[IDindividu]["messages"]["liste"]:
+                            node = doc.createElement(u"message")
+                            node.setAttribute("categorie_nom", dictMessage["categorie_nom"])
+                            node.setAttribute("date_saisie", dictMessage["date_saisie"])
+                            node.setAttribute("date_parution", dictMessage["date_parution"])
+                            node.setAttribute("nom", dictMessage["nom"])
+                            node.setAttribute("texte", dictMessage["texte"])
+                            node_messages.appendChild(node)
 
-                # Individu : Infos médicales
-                if infos.dictIndividus[IDindividu].has_key("medical"):
-                    node_medicales = doc.createElement(u"infos_medicales")
-                    node_individu.appendChild(node_medicales)
+                    # Individu : Infos médicales
+                    if infos.dictIndividus[IDindividu].has_key("medical"):
+                        node_medicales = doc.createElement(u"infos_medicales")
+                        node_individu.appendChild(node_medicales)
 
-                    for dictMedicale in infos.dictIndividus[IDindividu]["medical"]["liste"]:
-                        node = doc.createElement(u"info_medicale")
-                        node.setAttribute("intitule", dictMedicale["intitule"])
-                        node.setAttribute("description", dictMedicale["description"])
-                        node.setAttribute("traitement_medical", dictMedicale["traitement_medical"])
-                        node.setAttribute("description_traitement", dictMedicale["description_traitement"])
-                        node.setAttribute("date_debut_traitement", dictMedicale["date_debut_traitement"])
-                        node.setAttribute("date_fin_traitement", dictMedicale["date_fin_traitement"])
-                        node_medicales.appendChild(node)
+                        for dictMedicale in infos.dictIndividus[IDindividu]["medical"]["liste"]:
+                            node = doc.createElement(u"info_medicale")
+                            node.setAttribute("intitule", dictMedicale["intitule"])
+                            node.setAttribute("description", dictMedicale["description"])
+                            node.setAttribute("description_traitement", dictMedicale["description_traitement"])
+                            node.setAttribute("date_debut_traitement", dictMedicale["date_debut_traitement"])
+                            node.setAttribute("date_fin_traitement", dictMedicale["date_fin_traitement"])
+                            node_medicales.appendChild(node)
 
-                # Individu : Inscriptions
-                if infos.dictIndividus[IDindividu].has_key("inscriptions"):
-                    node_inscriptions = doc.createElement(u"inscriptions")
-                    node_individu.appendChild(node_inscriptions)
+                    # Individu : Inscriptions
+                    if infos.dictIndividus[IDindividu].has_key("inscriptions"):
+                        node_inscriptions = doc.createElement(u"inscriptions")
+                        node_individu.appendChild(node_inscriptions)
 
-                    for dictInscription in infos.dictIndividus[IDindividu]["inscriptions"]["liste"]:
-                        node = doc.createElement(u"inscription")
-                        node.setAttribute("activite", dictInscription["activite"])
-                        node.setAttribute("groupe", dictInscription["groupe"])
-                        node.setAttribute("categorie_tarif", dictInscription["categorie_tarif"])
-                        node.setAttribute("parti", dictInscription["parti"])
-                        node.setAttribute("date_inscription", dictInscription["date_inscription"])
-                        node_inscriptions.appendChild(node)
+                        for dictInscription in infos.dictIndividus[IDindividu]["inscriptions"]["liste"]:
+                            node = doc.createElement(u"inscription")
+                            node.setAttribute("activite", dictInscription["activite"])
+                            node.setAttribute("groupe", dictInscription["groupe"])
+                            node.setAttribute("categorie_tarif", dictInscription["categorie_tarif"])
+                            node.setAttribute("parti", dictInscription["parti"])
+                            node.setAttribute("date_inscription", dictInscription["date_inscription"])
+                            node_inscriptions.appendChild(node)
 
-                # Individu : Questionnaires
-                if infos.dictIndividus[IDindividu].has_key("questionnaires"):
-                    node_questionnaires = doc.createElement(u"questionnaires")
-                    node_individu.appendChild(node_questionnaires)
+                    # Individu : Questionnaires
+                    if infos.dictIndividus[IDindividu].has_key("questionnaires"):
+                        node_questionnaires = doc.createElement(u"questionnaires")
+                        node_individu.appendChild(node_questionnaires)
 
-                    for dictQuestionnaire in infos.dictIndividus[IDindividu]["questionnaires"]:
-                        node = doc.createElement(u"questionnaire")
-                        node.setAttribute("question", dictQuestionnaire["label"])
-                        node.setAttribute("reponse", unicode(dictQuestionnaire["reponse"]))
-                        node_questionnaires.appendChild(node)
+                        for dictQuestionnaire in infos.dictIndividus[IDindividu]["questionnaires"]:
+                            node = doc.createElement(u"questionnaire")
+                            node.setAttribute("question", dictQuestionnaire["label"])
+                            node.setAttribute("reponse", unicode(dictQuestionnaire["reponse"]))
+                            node_questionnaires.appendChild(node)
 
-                # Individu : Scolarité
-                if infos.dictIndividus[IDindividu].has_key("scolarite"):
-                    node_scolarite = doc.createElement(u"scolarite")
-                    node_individu.appendChild(node_scolarite)
+                    # Individu : Scolarité
+                    if infos.dictIndividus[IDindividu].has_key("scolarite"):
+                        node_scolarite = doc.createElement(u"scolarite")
+                        node_individu.appendChild(node_scolarite)
 
-                    for dictScolarite in infos.dictIndividus[IDindividu]["scolarite"]["liste"]:
-                        node = doc.createElement(u"etape")
-                        node.setAttribute("date_debut", dictScolarite["date_debut"])
-                        node.setAttribute("date_fin", dictScolarite["date_fin"])
-                        node.setAttribute("ecole_nom", dictScolarite["ecole_nom"])
-                        node.setAttribute("classe_nom", dictScolarite["classe_nom"])
-                        node.setAttribute("niveau_nom", dictScolarite["niveau_nom"])
-                        node.setAttribute("niveau_abrege", dictScolarite["niveau_abrege"])
-                        node_scolarite.appendChild(node)
+                        for dictScolarite in infos.dictIndividus[IDindividu]["scolarite"]["liste"]:
+                            node = doc.createElement(u"etape")
+                            node.setAttribute("date_debut", dictScolarite["date_debut"])
+                            node.setAttribute("date_fin", dictScolarite["date_fin"])
+                            node.setAttribute("ecole_nom", dictScolarite["ecole_nom"])
+                            node.setAttribute("classe_nom", dictScolarite["classe_nom"])
+                            node.setAttribute("niveau_nom", dictScolarite["niveau_nom"])
+                            node.setAttribute("niveau_abrege", dictScolarite["niveau_abrege"])
+                            node_scolarite.appendChild(node)
 
-                # Individu : Pièces
-                if dictPieces["individus"].has_key(IDindividu):
-                    node_pieces = doc.createElement(u"pieces")
-                    node_individu.appendChild(node_pieces)
+                    # Individu : Pièces
+                    if dictPieces["individus"].has_key(IDindividu):
+                        node_pieces = doc.createElement(u"pieces")
+                        node_individu.appendChild(node_pieces)
 
-                    for dictPiece in dictPieces["individus"][IDindividu]:
-                        node = doc.createElement(u"piece")
-                        node.setAttribute("nom_piece", dictPiece["nom_piece"])
-                        node.setAttribute("date_debut", UTILS_Dates.DateDDEnFr(dictPiece["date_debut"]))
-                        node.setAttribute("date_fin", UTILS_Dates.DateDDEnFr(dictPiece["date_fin"]))
-                        node_pieces.appendChild(node)
+                        for dictPiece in dictPieces["individus"][IDindividu]:
+                            node = doc.createElement(u"piece")
+                            node.setAttribute("nom_piece", dictPiece["nom_piece"])
+                            node.setAttribute("date_debut", UTILS_Dates.DateDDEnFr(dictPiece["date_debut"]))
+                            node.setAttribute("date_fin", UTILS_Dates.DateDDEnFr(dictPiece["date_fin"]))
+                            node_pieces.appendChild(node)
 
-                # Individu : Cotisations
-                if dictCotisations["individus"].has_key(IDindividu):
-                    node_cotisations = doc.createElement(u"cotisations")
-                    node_individu.appendChild(node_cotisations)
+                    # Individu : Cotisations
+                    if dictCotisations["individus"].has_key(IDindividu):
+                        node_cotisations = doc.createElement(u"cotisations")
+                        node_individu.appendChild(node_cotisations)
 
-                    for dictCotisation in dictCotisations["individus"][IDindividu]:
-                        node = doc.createElement(u"cotisation")
-                        node.setAttribute("date_saisie", UTILS_Dates.DateDDEnFr(dictCotisation["date_saisie"]))
-                        node.setAttribute("date_creation_carte", UTILS_Dates.DateDDEnFr(dictCotisation["date_creation_carte"]))
-                        node.setAttribute("date_debut", UTILS_Dates.DateDDEnFr(dictCotisation["date_debut"]))
-                        node.setAttribute("date_fin", UTILS_Dates.DateDDEnFr(dictCotisation["date_fin"]))
-                        node.setAttribute("numero", dictCotisation["numero"])
-                        node.setAttribute("type_cotisation", dictCotisation["type_cotisation"])
-                        node.setAttribute("nom_unite_cotisation", dictCotisation["nom_unite_cotisation"])
-                        node.setAttribute("observations", dictCotisation["observations"])
-                        node.setAttribute("activites", dictCotisation["activites"])
-                        node_cotisations.appendChild(node)
+                        for dictCotisation in dictCotisations["individus"][IDindividu]:
+                            node = doc.createElement(u"cotisation")
+                            node.setAttribute("date_saisie", UTILS_Dates.DateDDEnFr(dictCotisation["date_saisie"]))
+                            node.setAttribute("date_creation_carte", UTILS_Dates.DateDDEnFr(dictCotisation["date_creation_carte"]))
+                            node.setAttribute("date_debut", UTILS_Dates.DateDDEnFr(dictCotisation["date_debut"]))
+                            node.setAttribute("date_fin", UTILS_Dates.DateDDEnFr(dictCotisation["date_fin"]))
+                            node.setAttribute("numero", dictCotisation["numero"])
+                            node.setAttribute("type_cotisation", dictCotisation["type_cotisation"])
+                            node.setAttribute("nom_unite_cotisation", dictCotisation["nom_unite_cotisation"])
+                            node.setAttribute("observations", dictCotisation["observations"])
+                            node.setAttribute("activites", dictCotisation["activites"])
+                            node_cotisations.appendChild(node)
 
-                # Individu : Consommations
-                if dictConsommations.has_key(IDfamille):
-                    if dictConsommations[IDfamille].has_key(IDindividu):
-                        node_consommations = doc.createElement(u"consommations")
-                        node_individu.appendChild(node_consommations)
+                    # Individu : Consommations
+                    if dictConsommations.has_key(IDfamille):
+                        if dictConsommations[IDfamille].has_key(IDindividu):
+                            node_consommations = doc.createElement(u"consommations")
+                            node_individu.appendChild(node_consommations)
 
-                        for dictConso in dictConsommations[IDfamille][IDindividu]:
-                            node = doc.createElement(u"consommation")
-                            node.setAttribute("date", UTILS_Dates.DateEngFr(dictConso["date"]))
-                            node.setAttribute("activite", dictConso["nomActivite"])
-                            node.setAttribute("etat", dictConso["etat"])
-                            node.setAttribute("unite", dictConso["nomUnite"])
-                            node_consommations.appendChild(node)
+                            for dictConso in dictConsommations[IDfamille][IDindividu]:
+                                node = doc.createElement(u"consommation")
+                                node.setAttribute("date", UTILS_Dates.DateEngFr(dictConso["date"]))
+                                node.setAttribute("activite", dictConso["nomActivite"])
+                                node.setAttribute("etat", dictConso["etat"])
+                                node.setAttribute("unite", dictConso["nomUnite"])
+                                node_consommations.appendChild(node)
 
         # Renvoie le doc
         return doc
@@ -581,6 +581,6 @@ class Export():
 
     
 if __name__ == "__main__":
-    export = Export(IDfamille=14)
+    export = Export(IDfamille=None)
     xml = export.GetPrettyXML()
     print xml
