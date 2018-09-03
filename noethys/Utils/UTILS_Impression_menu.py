@@ -390,6 +390,7 @@ class Case():
             # Remplacement des légendes
             liste_legendes = REGEX_LEGENDES.findall(texte_paragraphe)
             for chaine in liste_legendes :
+                print chaine
                 IDlegende = int(chaine[1:-1])
                 if self.parent.dictDonnees["legendes"].has_key(IDlegende) and self.parent.dictNumerosLegendes.has_key(IDlegende):
                     couleur = UTILS_Images.rgb_to_hex(self.parent.dictDonnees["legendes"][IDlegende]["couleur"])
@@ -397,7 +398,7 @@ class Case():
                         numero = self.parent.dictNumerosLegendes[IDlegende]
                         chaine_remplacement = u"<font color='%s' size='-2'><super>%d</super></font>" % (couleur, numero)
                     elif self.parent.dictDonnees["legende_type"] == "carre":
-                        chaine_remplacement = u"<font face='ZapfDingbats' color='%s' size='-2'><super>&nbsp;</super></font>" % couleur
+                        chaine_remplacement = u"<font face='ZapfDingbats' color='%s' size='-2'><super>X</super></font>" % couleur
                     else :
                         chaine_remplacement = ""
 
@@ -807,7 +808,7 @@ if __name__ == "__main__":
         "IDrestaurateur": 1,
         "type": "mensuel",  # mensuel, hebdomadaire, quotidien
         "jours_semaine": [0, 1, 2, 3, 4, 5, 6],
-        "categories_menus" : [0,],
+        "categories_menus" : [1,],
 
         # Page
         "page_fond_image" : "Interface/Bleu/Fond.jpg",
