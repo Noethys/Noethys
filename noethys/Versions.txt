@@ -1,3 +1,7 @@
+Version 1.2.4.1 (03/09/2018) :
+
+- Ajout des légendes aux menus des repas
+
 Version 1.2.4.0 (01/09/2018) :
 
 - Connecthys : Ajout des pages personnalisées
