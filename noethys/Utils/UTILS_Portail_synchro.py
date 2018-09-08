@@ -887,9 +887,10 @@ class Synchro():
         DB.ExecuterReq(req)
         listeUnites = DB.ResultatReq()
         for IDunite, IDactivite, nom, unites_principales, unites_secondaires, ordre in listeUnites :
-            m = models.Unite(IDunite=IDunite, nom=nom, IDactivite=IDactivite, unites_principales=unites_principales, \
-                      unites_secondaires=unites_secondaires, ordre=ordre)
-            session.add(m)
+            if dict_activites.has_key(IDactivite):
+                m = models.Unite(IDunite=IDunite, nom=nom, IDactivite=IDactivite, unites_principales=unites_principales, \
+                          unites_secondaires=unites_secondaires, ordre=ordre)
+                session.add(m)
 
         liste_tables_modifiees.append("unites")
 
