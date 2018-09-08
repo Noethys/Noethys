@@ -133,6 +133,14 @@ LISTE_MODELES = [
          'pied_texte_couleur': wx.Colour(192, 192, 192, 255), 'case_titre_afficher': True, 'titre_texte_couleur': wx.Colour(0, 128, 255, 255), 'case_macaron_afficher': False}
      },
 
+    # Minimaliste
+    {"label": _(u"Minimaliste"), "fichier": "Modele_minimaliste.png", "description": _(u"Format paysage / Hebdomadaire"), "donnees":
+        {'legende_hauteur': 20, 'case_radius': 0, 'legende_type': u'carre', 'titre_fond_couleur': wx.Colour(255, 255, 255, 255), 'pied_hauteur': 30, 'page_fond_image': u'aucune',
+         'case_titre_fond_couleur': wx.Colour(0, 0, 0, 255), 'entete_afficher': False, 'page_espace_vertical': 0, 'case_bord_couleur': wx.Colour(0, 0, 0, 255),
+         'case_titre_taille_police': 10, 'pied_taille_police': 8, 'titre_hauteur': 70, 'case_titre_afficher': True, 'page_espace_horizontal': 0, 'titre_texte_couleur': wx.Colour(0, 0, 0, 255),
+         'titre_bord_couleur': wx.Colour(255, 255, 255, 255), 'case_macaron_afficher': False}
+     },
+
 
 ]
 
