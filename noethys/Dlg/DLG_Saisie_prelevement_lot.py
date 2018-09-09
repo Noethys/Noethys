@@ -1182,11 +1182,17 @@ class Dialog(wx.Dialog):
         ctrl_factures.ctrl_factures.CocheTout()
         tracksFactures = ctrl_factures.GetTracksCoches()
         self.ctrl_prelevements.AjoutFactures(tracksFactures)
+
         # Coche tous les prélèvements
         self.ctrl_prelevements.CocheTout()
+
+        # Ferme ctrl_factures (utilise CallAfter pour éviter bug)
+        wx.CallAfter(self.FermeAssistant, ctrl_factures)
+
+    def FermeAssistant(self, ctrl_factures=None):
         ctrl_factures.Destroy()
         del ctrl_factures
-        
+
         
 if __name__ == u"__main__":
     app = wx.App(0)
