@@ -21,7 +21,6 @@ import copy
 import sys
 import traceback
 import decimal
-import wx.lib.agw.pybusyinfo as PBI
 
 from Utils import UTILS_Config
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
@@ -220,7 +219,7 @@ class CTRL(HTL.HyperTreeList):
         self.CocheTout() 
     
     def Remplissage(self):
-        dlgAttente = PBI.PyBusyInfo(_(u"Recherche des impayés en cours..."), parent=None, title=_(u"Veuillez patienter..."), icon=wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Logo.png"), wx.BITMAP_TYPE_ANY))
+        dlgAttente = wx.BusyInfo(_(u"Recherche des impayés en cours..."), None)
         wx.Yield() 
         
         try :
@@ -369,7 +368,7 @@ class CTRL(HTL.HyperTreeList):
             return False
                    
         # Fabrication du PDF
-        dlgAttente = PBI.PyBusyInfo(_(u"Création de l'aperçu au format PDF..."), parent=None, title=_(u"Veuillez patienter..."), icon=wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Logo.png"), wx.BITMAP_TYPE_ANY))
+        dlgAttente = wx.BusyInfo(_(u"Création de l'aperçu au format PDF..."), None)
         wx.Yield() 
         try :
             UTILS_Impression_rappel.Impression({IDcompte_payeur : dictCompte}, dictOptions, IDmodele=dictOptions["IDmodele"])

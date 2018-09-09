@@ -17,7 +17,6 @@ from Ctrl import CTRL_Bouton_image
 import GestionDB
 import datetime
 import locale
-import wx.lib.agw.pybusyinfo as PBI
 import FonctionsPerso
 
 from Utils.UTILS_Decimal import FloatToDecimal as FloatToDecimal
@@ -512,7 +511,7 @@ class ListView(FastObjectListView):
         for track in listeSelections :
             listeIDrappels.append(track.IDrappel)
 
-        dlgAttente = PBI.PyBusyInfo(_(u"Suppression des lettres de rappel en cours..."), parent=None, title=_(u"Veuillez patienter..."), icon=wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Logo.png"), wx.BITMAP_TYPE_ANY))
+        dlgAttente = wx.BusyInfo(_(u"Suppression des lettres de rappel en cours..."), None)
         wx.Yield() 
         DB = GestionDB.DB()
         for IDrappel in listeIDrappels :

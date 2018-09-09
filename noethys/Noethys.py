@@ -69,7 +69,6 @@ from Crypto.Hash import SHA256
 import wx.lib.agw.aui as aui
 import wx.lib.agw.advancedsplash as AS
 import wx.lib.agw.toasterbox as Toaster
-import wx.lib.agw.pybusyinfo as PBI
 
 CUSTOMIZE = None
 
@@ -1347,8 +1346,6 @@ class MainFrame(wx.Frame):
         
         # Affiche d'une fenêtre d'attente
         message = _(u"Création du nouveau fichier en cours...")
-        #dlgAttente = PBI.PyBusyInfo(message, parent=None, title=_(u"Création d'un fichier"), icon=wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Logo.png"), wx.BITMAP_TYPE_ANY))
-        #wx.Yield()
 
         nbreEtapes = len(Tables.DB_DATA) + 7 # Tables + autres étapes
         dlgprogress = wx.ProgressDialog(message, _(u"Veuillez patienter..."), maximum=nbreEtapes, parent=None, style= wx.PD_SMOOTH | wx.PD_AUTO_HIDE | wx.PD_APP_MODAL)
@@ -3761,7 +3758,7 @@ class MainFrame(wx.Frame):
             # Affiche d'une fenêtre d'attente
             try :
                 message = _(u"Mise à jour de la base de données en cours... Veuillez patienter...")
-                dlgAttente = PBI.PyBusyInfo(message, parent=None, title=_(u"Mise à jour"), icon=wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Logo.png"), wx.BITMAP_TYPE_ANY))
+                dlgAttente = wx.BusyInfo(message, None)
                 wx.Yield() 
                 
                 DB = GestionDB.DB(nomFichier = nomFichier)        

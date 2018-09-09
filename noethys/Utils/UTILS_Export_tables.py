@@ -17,7 +17,6 @@ import shelve
 import os
 import cStringIO
 import GestionDB
-import wx.lib.agw.pybusyinfo as PBI
 
 def InfosFichier(fichier=""):
     """ Récupère les infos principales sur un fichier """
@@ -189,8 +188,6 @@ class Importer():
     
     def Ajouter(self, index=0, nbre=0, dictID={}):
         dlgAttente = wx.BusyInfo(_(u"Merci de patienter..."), None)
-        # dlgAttente = PBI.PyBusyInfo(_(u"Merci de patienter durant l'opération...  (%d/%d)") % (index+1, nbre), parent=None, title=_(u"Patientez..."), icon=wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Logo.png"), wx.BITMAP_TYPE_ANY))
-        # wx.Yield()
         # Importation
         self.dictID = dictID
         self.DB = GestionDB.DB()

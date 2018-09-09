@@ -14,18 +14,10 @@ from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 
 import wx
-from Ctrl import CTRL_Bouton_image
 import datetime
-import decimal
-import time
-import copy
 import sys
 import traceback
-import wx.lib.agw.pybusyinfo as PBI
 
-import GestionDB
-from Utils import UTILS_Dates
-import FonctionsPerso
 from Utils import UTILS_Impression_facture
 from Dlg import DLG_Apercu_facture
 from Utils import UTILS_Facturation
@@ -79,8 +71,8 @@ class ListView(FastObjectListView):
 
     def GetTracks(self):
         # Récupération des données
-        dlgAttente = PBI.PyBusyInfo(_(u"Recherche des prestations à facturer en cours..."), parent=None, title=_(u"Veuillez patienter..."), icon=wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Logo.png"), wx.BITMAP_TYPE_ANY))
-        wx.Yield() 
+        dlgAttente = wx.BusyInfo(_(u"Recherche des prestations à facturer en cours..."), None)
+        #wx.Yield()
         
         try :
             facturation = UTILS_Facturation.Facturation()
@@ -363,7 +355,7 @@ class ListView(FastObjectListView):
             return False
 
         # Fabrication du PDF
-        dlgAttente = PBI.PyBusyInfo(_(u"Création de l'aperçu au format PDF..."), parent=None, title=_(u"Veuillez patienter..."), icon=wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Logo.png"), wx.BITMAP_TYPE_ANY))
+        dlgAttente = wx.BusyInfo(_(u"Création de l'aperçu au format PDF..."), None)
         wx.Yield()
         try:
             UTILS_Impression_facture.Impression(dictComptes, dictOptions, IDmodele=dictOptions["IDmodele"])

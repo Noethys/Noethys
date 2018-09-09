@@ -28,7 +28,6 @@ from Utils import UTILS_Attestations_fiscales
 from Utils import UTILS_Envoi_email
 
 import wx.lib.agw.hyperlink as Hyperlink
-import wx.lib.agw.pybusyinfo as PBI
 
 
 TEXTE_INTRO = _(u"Veuillez trouver ci-dessous le montant réglé à notre organisme sur la période du {DATE_DEBUT} au {DATE_FIN} pour la garde de votre ou vos enfants de moins de 7 ans :")
@@ -604,7 +603,7 @@ class Panel(wx.Panel):
         listeActivites = self.GetParent().page1.GetActivites() 
         self.ctrl_options.ctrl_signataire.MAJ(listeActivites)
 
-        dlgAttente = PBI.PyBusyInfo(_(u"Recherche des données..."), parent=None, title=_(u"Veuillez patienter..."), icon=wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Logo.png"), wx.BITMAP_TYPE_ANY))
+        dlgAttente = wx.BusyInfo(_(u"Recherche des données..."), None)
         wx.Yield() 
         try :
             listePrestations = self.GetParent().page1.GetPrestations() 
@@ -631,7 +630,7 @@ class Panel(wx.Panel):
         if reponse != wx.ID_YES :
             return
 
-        dlgAttente = PBI.PyBusyInfo(_(u"Sauvegarde des attestations en cours..."), parent=None, title=_(u"Veuillez patienter..."), icon=wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Logo.png"), wx.BITMAP_TYPE_ANY))
+        dlgAttente = wx.BusyInfo(_(u"Sauvegarde des attestations en cours..."), None)
         wx.Yield() 
 
         DB = GestionDB.DB()

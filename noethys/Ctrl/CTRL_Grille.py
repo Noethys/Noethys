@@ -34,7 +34,6 @@ import math
 import random
 import re
 import wx.lib.agw.supertooltip as STT
-import wx.lib.agw.pybusyinfo as PBI
 
 import pdb, traceback, sys
 
@@ -4815,7 +4814,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         dlg_grille = self.GetGrandParent()
         
         try :
-            dlgAttente = PBI.PyBusyInfo(_(u"Veuillez patienter durant la procédure..."), parent=None, title=_(u"Traitement par lot"), icon=wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Logo.png"), wx.BITMAP_TYPE_ANY))
+            dlgAttente = wx.BusyInfo(_(u"Veuillez patienter durant la procédure..."), None)
             wx.Yield() 
 
             # Sélection des individus

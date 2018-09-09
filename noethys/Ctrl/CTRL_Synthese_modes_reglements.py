@@ -16,7 +16,6 @@ import wx
 import CTRL_Bouton_image
 import os
 import wx.lib.agw.hypertreelist as HTL
-import wx.lib.agw.pybusyinfo as PBI
 import datetime
 import copy
 import sys
@@ -308,7 +307,7 @@ class CTRL(HTL.HyperTreeList):
         
         # Affiche d'une fenêtre d'attente
         message = _(u"Calcul des données en cours... Veuillez patienter...")
-        dlgAttente = PBI.PyBusyInfo(message, parent=None, title=_(u"Calcul en cours"), icon=wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Logo.png"), wx.BITMAP_TYPE_ANY))
+        dlgAttente = wx.BusyInfo(message, None)
         wx.Yield() 
 
         # Importation des données

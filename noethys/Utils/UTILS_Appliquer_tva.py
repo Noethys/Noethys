@@ -13,7 +13,6 @@ import Chemins
 from UTILS_Traduction import _
 import wx
 from Ctrl import CTRL_Bouton_image
-import wx.lib.agw.pybusyinfo as PBI
 
 import GestionDB
 import UTILS_Dates
@@ -90,7 +89,7 @@ def Appliquer():
     dlg.Destroy()
     
     # Application
-    dlgAttente = PBI.PyBusyInfo(_(u"Veuillez patienter..."), parent=None, title=_(u"Traitement en cours"), icon=wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Logo.png"), wx.BITMAP_TYPE_ANY))
+    dlgAttente = wx.BusyInfo(_(u"Traitement en cours..."), None)
     wx.Yield() 
     DB = GestionDB.DB()
     for label, listePrestations in dictPrestations.iteritems() :

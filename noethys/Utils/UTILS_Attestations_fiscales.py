@@ -19,7 +19,6 @@ import decimal
 import copy
 import sys
 import traceback
-import wx.lib.agw.pybusyinfo as PBI
 
 import UTILS_Config
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
@@ -103,7 +102,7 @@ class Attestations_fiscales():
 
     def GetDonneesImpression(self, tracks=[], dictOptions={}):
         """ Impression des factures """
-        dlgAttente = PBI.PyBusyInfo(_(u"Recherche des données..."), parent=None, title=_(u"Veuillez patienter..."), icon=wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Logo.png"), wx.BITMAP_TYPE_ANY))
+        dlgAttente = wx.BusyInfo(_(u"Recherche des données..."), None)
         try :
             wx.Yield()
         except :
@@ -249,7 +248,7 @@ class Attestations_fiscales():
         # Création des PDF à l'unité
         def CreationPDFunique(repertoireCible=""):
             dictPieces = {}
-            dlgAttente = PBI.PyBusyInfo(_(u"Génération des attestations fiscales à l'unité au format PDF..."), parent=None, title=_(u"Veuillez patienter..."), icon=wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Logo.png"), wx.BITMAP_TYPE_ANY))
+            dlgAttente = wx.BusyInfo(_(u"Génération des attestations fiscales à l'unité au format PDF..."), None)
             wx.Yield() 
             try :
                 index = 0
@@ -288,7 +287,7 @@ class Attestations_fiscales():
 
         # Fabrication du PDF global
         if repertoireTemp == False :
-            dlgAttente = PBI.PyBusyInfo(_(u"Création du PDF des attestations fiscales..."), parent=None, title=_(u"Veuillez patienter..."), icon=wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Logo.png"), wx.BITMAP_TYPE_ANY))
+            dlgAttente = wx.BusyInfo(_(u"Création du PDF des attestations fiscales..."), None)
             try :
                 wx.Yield()
             except :

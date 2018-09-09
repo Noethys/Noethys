@@ -18,7 +18,6 @@ import datetime
 import copy
 import sys
 import traceback
-import wx.lib.agw.pybusyinfo as PBI
 
 import UTILS_Conversion
 import UTILS_Config
@@ -142,6 +141,8 @@ class Facturation():
             pass
     
     def RemplaceMotsCles(self, texte="", dictValeurs={}):
+        if texte == None :
+            texte = ""
         for key, valeur, in dictValeurs.iteritems() :
             if key in texte and key.startswith("{"):
                 texte = texte.replace(key, valeur)
@@ -738,7 +739,7 @@ class Facturation():
 
     def GetDonneesImpression(self, listeFactures=[], dictOptions=None):
         """ Impression des factures """
-        dlgAttente = PBI.PyBusyInfo(_(u"Recherche des données de facturation..."), parent=None, title=_(u"Veuillez patienter..."), icon=wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Logo.png"), wx.BITMAP_TYPE_ANY))
+        dlgAttente = wx.BusyInfo(_(u"Recherche des données de facturation..."), None)
         try :
             wx.Yield() 
         except :
@@ -1015,7 +1016,7 @@ class Facturation():
         # Création des PDF à l'unité
         def CreationPDFunique(repertoireCible=""):
             dictPieces = {}
-            dlgAttente = PBI.PyBusyInfo(_(u"Génération des factures à l'unité au format PDF..."), parent=None, title=_(u"Veuillez patienter..."), icon=wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Logo.png"), wx.BITMAP_TYPE_ANY))
+            dlgProgress = wx.ProgressDialog(_(u"Génération des factures au format PDF"), _(u"Initialisation..."), maximum=len(dictFactures), parent=None, style=wx.PD_SMOOTH | wx.PD_AUTO_HIDE | wx.PD_APP_MODAL)
             try :
                 wx.Yield() 
             except :
@@ -1035,15 +1036,17 @@ class Facturation():
                             nomFichier = nomFichier.replace("{NOM_TITULAIRES_MAJ}", FormateMaj(nomTitulaires))
                         cheminFichier = u"%s/%s.pdf" % (repertoireCible, nomFichier)
                         dictComptesTemp = {IDfacture : dictFacture}
-                        self.EcritStatusbar(_(u"Edition de la facture %d/%d : %s") % (index, len(dictFactures), nomFichier))
+                        texte = _(u"Facture %d/%d : %s") % (index, len(dictFactures), nomFichier)
+                        self.EcritStatusbar(texte)
+                        dlgProgress.Update(index + 1, texte)
                         UTILS_Impression_facture.Impression(dictComptesTemp, dictOptions, IDmodele=dictOptions["IDmodele"], ouverture=False, nomFichier=cheminFichier)
                         dictPieces[IDfacture] = cheminFichier
                         index += 1
                 self.EcritStatusbar("")
-                del dlgAttente
+                dlgProgress.Destroy()
                 return dictPieces
             except Exception, err:
-                del dlgAttente
+                dlgProgress.Destroy()
                 traceback.print_exc(file=sys.stdout)
                 dlg = wx.MessageDialog(None, _(u"Désolé, le problème suivant a été rencontré dans l'édition des factures : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
@@ -1065,7 +1068,7 @@ class Facturation():
 
         # Fabrication du PDF global
         if repertoireTemp == False :
-            dlgAttente = PBI.PyBusyInfo(_(u"Création du PDF des factures..."), parent=None, title=_(u"Veuillez patienter..."), icon=wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Logo.png"), wx.BITMAP_TYPE_ANY))
+            dlgAttente = wx.BusyInfo(_(u"Création du PDF des factures..."), None)
             try :
                 wx.Yield() 
             except :
@@ -1093,7 +1096,7 @@ class Facturation():
 
 def SuppressionFacture(listeFactures=[], mode="suppression"):
     """ Suppression d'une facture """
-    dlgAttente = PBI.PyBusyInfo(_(u"%s des factures en cours...") % mode.capitalize(), parent=None, title=_(u"Veuillez patienter..."), icon=wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Logo.png"), wx.BITMAP_TYPE_ANY))
+    dlgAttente = wx.BusyInfo(_(u"%s des factures en cours...") % mode.capitalize(), None)
     wx.Yield() 
     DB = GestionDB.DB()
     
@@ -1116,7 +1119,7 @@ def SuppressionFacture(listeFactures=[], mode="suppression"):
 
 def ModificationFacture(listeFactures=[], dict_valeurs={}):
     """ Modification des caractéristique d'une facture """
-    dlgAttente = PBI.PyBusyInfo(_(u"Modification des factures en cours..."), parent=None, title=_(u"Veuillez patienter..."), icon=wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Logo.png"), wx.BITMAP_TYPE_ANY))
+    dlgAttente = wx.BusyInfo(_(u"Modification des factures en cours..."), None)
     wx.Yield()
     DB = GestionDB.DB()
 

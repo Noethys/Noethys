@@ -20,7 +20,6 @@ import datetime
 from Ctrl import CTRL_Bandeau
 import wx.lib.agw.hyperlink as Hyperlink
 import wx.lib.filebrowsebutton as filebrowse
-import wx.lib.agw.pybusyinfo as PBI
 
 try :
     import xlrd

@@ -31,7 +31,6 @@ from Utils import UTILS_Parametres
 import wx.lib.agw.labelbook as LB
 import wx.propgrid as wxpg
 import wx.lib.dialogs as dialogs
-import wx.lib.agw.pybusyinfo as PBI
 if 'phoenix' in wx.PlatformInfo:
     from wx.adv import BitmapComboBox
 else :
@@ -694,7 +693,7 @@ class Donnees():
 ##    def GetVentes(self):
 ##        DB = GestionDB.DB() 
 ##        
-##        dlgAttente = PBI.PyBusyInfo(_(u"Recherche des données en cours..."), parent=None, title=_(u"Patientez..."), icon=wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Logo.png"), wx.BITMAP_TYPE_ANY))
+##        dlgAttente = wx.BusyInfo(_(u"Recherche des données en cours..."), None)
 ##        wx.Yield() 
 ##        
 ##        # Récupération des factures

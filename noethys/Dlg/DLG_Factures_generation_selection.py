@@ -13,11 +13,9 @@ import Chemins
 from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
-from Ctrl import CTRL_Bouton_image
 import sys
 import datetime
 import traceback
-import wx.lib.agw.pybusyinfo as PBI
 from Ol import OL_Factures_generation_selection
 from Utils import UTILS_Identification
 from Utils import UTILS_Texte
@@ -193,9 +191,6 @@ class Panel(wx.Panel):
 
     def SauvegardeFactures(self):
         """ Sauvegarde des factures """
-        dlgAttente = PBI.PyBusyInfo(_(u"Génération des factures en cours..."), parent=None, title=_(u"Veuillez patienter..."), icon=wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Logo.png"), wx.BITMAP_TYPE_ANY))
-        wx.Yield() 
-        
         # Récupère Utilisateur en cours
         IDutilisateur = UTILS_Identification.GetIDutilisateur()
         
@@ -207,6 +202,9 @@ class Panel(wx.Panel):
         for track in self.ctrl_factures.GetTracksCoches() :
             listeComptes.append((track.nomSansCivilite, track.IDcompte_payeur))
         listeComptes.sort()
+
+        # ProgressBar
+        dlgProgress = wx.ProgressDialog(_(u"Génération des factures"), _(u"Initialisation..."), maximum=len(listeComptes), parent=None, style=wx.PD_SMOOTH | wx.PD_AUTO_HIDE | wx.PD_APP_MODAL)
         
         # Sélection du prochain numéro de facture
         numero = self.parent.dictParametres["prochain_numero"]
@@ -237,8 +235,10 @@ class Panel(wx.Panel):
             index = 0
             for nomTitulaires, IDcompte_payeur in listeComptes :
                 dictCompte = self.ctrl_factures.dictComptes[IDcompte_payeur]
-                self.EcritStatusbar(_(u"Génération de la facture %d sur %d...") % (index+1, len(listeComptes)))
-                
+                texte = _(u"Génération de la facture %d sur %d...") % (index+1, len(listeComptes))
+                self.EcritStatusbar(texte)
+                dlgProgress.Update(index+1, texte)
+
                 listePrestations = dictCompte["listePrestations"] 
                 total = dictCompte["total"] 
                 regle = dictCompte["ventilation"] 
@@ -291,11 +291,11 @@ class Panel(wx.Panel):
 
             DB.Close() 
             self.EcritStatusbar(u"")
-            del dlgAttente
+            dlgProgress.Destroy()
 
         except Exception, err:
-            DB.Close() 
-            del dlgAttente
+            DB.Close()
+            dlgProgress.Destroy()
             traceback.print_exc(file=sys.stdout)
             dlg = wx.MessageDialog(self, _(u"Désolé, le problème suivant a été rencontré : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()

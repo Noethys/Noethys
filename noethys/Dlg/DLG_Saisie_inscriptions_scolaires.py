@@ -16,7 +16,6 @@ import wx
 from Ctrl import CTRL_Bouton_image
 import datetime
 import GestionDB
-import wx.lib.agw.pybusyinfo as PBI
 
 from Ctrl import CTRL_Saisie_date
 from Ol import OL_Inscriptions_scolaires_2
@@ -535,7 +534,7 @@ class Dialog(wx.Dialog):
         dlg.Destroy()
         
         # Fenêtre d'attente
-        dlgAttente = PBI.PyBusyInfo(_(u"Veuillez patienter durant la procédure d'inscription..."), parent=None, title=_(u"Inscriptions scolaires"), icon=wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Logo.png"), wx.BITMAP_TYPE_ANY))
+        dlgAttente = wx.BusyInfo(_(u"Veuillez patienter durant la procédure d'inscription..."), None)
         wx.Yield() 
 
         # Récupère infos pour historique

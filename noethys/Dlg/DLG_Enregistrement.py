@@ -23,7 +23,6 @@ import traceback
 import datetime
 from Utils import UTILS_Config
 from Utils import UTILS_Utilisateurs
-import wx.lib.agw.pybusyinfo as PBI
 
 
 ##TEXTE = u"""
@@ -249,7 +248,7 @@ class Dialog(wx.Dialog):
     
     def VerifieEtat(self, identifiant="", code=""):
         """ Vérifie la validité du code en ligne """
-        dlgAttente = PBI.PyBusyInfo(_(u"Vérification du code en cours..."), parent=None, title=_(u"Veuillez patienter"), icon=wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Logo.png"), wx.BITMAP_TYPE_ANY))
+        dlgAttente = wx.BusyInfo(_(u"Vérification du code en cours..."), None)
         wx.Yield() 
         
         try :

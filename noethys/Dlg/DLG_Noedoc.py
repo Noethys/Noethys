@@ -5125,8 +5125,6 @@ class Dialog(wx.Dialog):
 
         # DLG Attente
         dlgAttente = wx.BusyInfo(_(u"Veuillez patienter durant l'initialisation de Noedoc..."), self.parent)
-        #dlgAttente = PBI.PyBusyInfo(_(u"Veuillez patienter durant l'initialisation de Noedoc..."), parent=None, title=_(u"Initialisation de Noedoc"), icon=wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Logo.png"), wx.BITMAP_TYPE_ANY))
-        #wx.Yield()
 
         # Recherche des données de la catégorie
         if categorie == "fond" : self.infosCategorie = Fond()

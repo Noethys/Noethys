@@ -20,7 +20,6 @@ import datetime
 import wx.lib.agw.labelbook as LB
 import wx.lib.agw.flatnotebook as FNB
 import wx.lib.agw.hyperlink as Hyperlink
-import wx.lib.agw.pybusyinfo as PBI
 
 import wx.html as  html
 import wx.lib.wxpTag 
@@ -381,7 +380,7 @@ class Dialog(wx.Dialog):
         listeCodes = self.ctrl_impression.GetCoches() 
         
         # Imprimer tout
-        dlgAttente = PBI.PyBusyInfo(_(u"Création du rapport..."), parent=None, title=_(u"Patientez"), icon=wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Logo.png"), wx.BITMAP_TYPE_ANY))
+        dlgAttente = wx.BusyInfo(_(u"Création du rapport..."), None)
         wx.Yield() 
         
         if ID == 10 : 
@@ -527,7 +526,7 @@ class Dialog(wx.Dialog):
 
     def MAJpage(self, indexRubrique=None, indexPage=None):
         """ Met à jour le contenu d'une page """
-        dlgAttente = PBI.PyBusyInfo(_(u"Actualisation des données..."), parent=None, title=_(u"Patientez"), icon=wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Logo.png"), wx.BITMAP_TYPE_ANY))
+        dlgAttente = wx.BusyInfo(_(u"Actualisation des données..."), None)
         wx.Yield() 
         
         codeRubrique = None

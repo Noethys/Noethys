@@ -251,9 +251,8 @@ def E4072():
     dlg.SetSize((450, 500))
     dlg.CenterOnScreen() 
     if dlg.ShowModal() == wx.ID_OK:
-        import wx.lib.agw.pybusyinfo as PBI
         message = _(u"Veuillez patienter durant la procédure...")
-        dlgAttente = PBI.PyBusyInfo(message, parent=None, title=_(u"Procédure"), icon=wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Logo.png"), wx.BITMAP_TYPE_ANY))
+        dlgAttente = wx.BusyInfo(message, None)
         wx.Yield() 
         selections = dlg.GetSelections()
         DB = GestionDB.DB()
@@ -325,11 +324,10 @@ def A5134():
 
 def A5200():
     """ Arrondi de toutes les prestations et ventilations de la base de données !!! """
-    import wx.lib.agw.pybusyinfo as PBI
     from UTILS_Decimal import FloatToDecimal as FloatToDecimal
     DB = GestionDB.DB() 
 
-    dlgAttente = PBI.PyBusyInfo(_(u"Veuillez patienter durant la procédure... Celle-ci peut nécessiter quelques minutes..."), parent=None, title=_(u"Veuillez patienter..."), icon=wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Logo.png"), wx.BITMAP_TYPE_ANY))
+    dlgAttente = wx.BusyInfo(_(u"Veuillez patienter durant la procédure... Celle-ci peut nécessiter quelques minutes..."), None)
     wx.Yield() 
 
     # Récupère les prestations

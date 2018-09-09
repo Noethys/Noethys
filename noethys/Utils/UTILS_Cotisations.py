@@ -19,7 +19,6 @@ import decimal
 import copy
 import sys
 import traceback
-import wx.lib.agw.pybusyinfo as PBI
 
 import UTILS_Config
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
@@ -99,7 +98,7 @@ class Cotisation():
 
     def GetDonneesImpression(self, listeCotisations=[]):
         """ Impression des factures """
-        dlgAttente = PBI.PyBusyInfo(_(u"Recherche des données..."), parent=None, title=_(u"Veuillez patienter..."), icon=wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Logo.png"), wx.BITMAP_TYPE_ANY))
+        dlgAttente = wx.BusyInfo(_(u"Recherche des données..."), None)
         wx.Yield() 
         
         # Récupère les données de la facture
@@ -387,7 +386,7 @@ class Cotisation():
         # Création des PDF à l'unité
         def CreationPDFunique(repertoireCible=""):
             dictPieces = {}
-            dlgAttente = PBI.PyBusyInfo(_(u"Génération des cotisations à l'unité au format PDF..."), parent=None, title=_(u"Veuillez patienter..."), icon=wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Logo.png"), wx.BITMAP_TYPE_ANY))
+            dlgAttente = wx.BusyInfo(_(u"Génération des cotisations à l'unité au format PDF..."), None)
             wx.Yield() 
             try :
                 index = 0
@@ -428,7 +427,7 @@ class Cotisation():
 
         # Fabrication du PDF global
         if repertoireTemp == False :
-            dlgAttente = PBI.PyBusyInfo(_(u"Création du PDF des cotisations..."), parent=None, title=_(u"Veuillez patienter..."), icon=wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Logo.png"), wx.BITMAP_TYPE_ANY))
+            dlgAttente = wx.BusyInfo(_(u"Création du PDF des cotisations..."), None)
             wx.Yield() 
             self.EcritStatusbar(_(u"Création du PDF des cotisations en cours... veuillez patienter..."))
             try :

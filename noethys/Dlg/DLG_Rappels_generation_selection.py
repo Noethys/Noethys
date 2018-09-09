@@ -18,7 +18,6 @@ import datetime
 import traceback
 import sys
 import wx.lib.agw.hyperlink as Hyperlink
-import wx.lib.agw.pybusyinfo as PBI
 
 from Ctrl import CTRL_Rappels_generation_selection
 from Utils import UTILS_Identification
@@ -191,7 +190,7 @@ class Panel(wx.Panel):
 
     def SauvegardeRappels(self):
         """ Sauvegarde des rappels """
-        dlgAttente = PBI.PyBusyInfo(_(u"Génération des rappels en cours..."), parent=None, title=_(u"Veuillez patienter..."), icon=wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Logo.png"), wx.BITMAP_TYPE_ANY))
+        dlgAttente = wx.BusyInfo(_(u"Génération des rappels en cours..."), None)
         wx.Yield() 
 
         # Recherche numéro de facture suivant

@@ -18,7 +18,6 @@ import GestionDB
 import datetime
 import decimal
 
-import wx.lib.agw.pybusyinfo as PBI
 from Utils import UTILS_Titulaires
 from Data import DATA_Civilites as Civilites
 DICT_CIVILITES = Civilites.GetDictCivilites()
@@ -135,7 +134,7 @@ class ListView(FastObjectListView):
         pass
 
     def InitModel(self):
-        dlgAttente = PBI.PyBusyInfo(_(u"Recherche des prestations en cours..."), parent=None, title=_(u"Patientez"), icon=wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Logo.png"), wx.BITMAP_TYPE_ANY))
+        dlgAttente = wx.BusyInfo(_(u"Recherche des prestations en cours..."), None)
         wx.Yield() 
         self.donnees = self.GetTracks()
         del dlgAttente

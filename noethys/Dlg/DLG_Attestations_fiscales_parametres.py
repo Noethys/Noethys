@@ -29,8 +29,6 @@ import DLG_Attestations_fiscales_selection
 import FonctionsPerso
 from Utils import UTILS_Utilisateurs
 
-import wx.lib.agw.pybusyinfo as PBI
-
 
 
 class CTRL_Modes_reglements(wx.CheckListBox):
@@ -241,7 +239,7 @@ class Parametres(wx.Panel):
                 return False
         
         # MAJ de la liste des prestations
-        dlgAttente = PBI.PyBusyInfo(_(u"Recherche des données..."), parent=None, title=_(u"Veuillez patienter..."), icon=wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Logo.png"), wx.BITMAP_TYPE_ANY))
+        dlgAttente = wx.BusyInfo(_(u"Recherche des données..."), None)
         wx.Yield() 
         try :
             self.MAJprestations() 

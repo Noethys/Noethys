@@ -25,7 +25,6 @@ import cStringIO
 import numpy as np
 import cv2
 from Ol import OL_Individus_grille_ajouter
-import wx.lib.agw.pybusyinfo as PBI
 
 TAILLE_IMAGE = (128, 128)
 TAILLE_IMAGE_ORIGINALE = (300, 200)
@@ -346,7 +345,7 @@ class Dialog(wx.Dialog):
         self.label_infos.SetLabel(_(u"Analyse de l'image en cours..."))
         self.Layout()
         
-        dlgAttente = PBI.PyBusyInfo(_(u"Analyse de l'image en cours..."), parent=self, title=_(u"Veuillez patienter..."), icon=wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Logo.png"), wx.BITMAP_TYPE_ANY))
+        dlgAttente = wx.BusyInfo(_(u"Analyse de l'image en cours..."), None)
         wx.Yield() 
         
         cascade = cv2.CascadeClassifier(Chemins.GetStaticPath("Divers/haarcascade_frontalface_alt2.xml"))

@@ -28,7 +28,6 @@ from Utils import UTILS_Impression_facture
 from Ctrl import CTRL_Attestations_options
 
 import wx.lib.agw.hyperlink as Hyperlink
-import wx.lib.agw.pybusyinfo as PBI
 
 
 
@@ -320,7 +319,7 @@ class Dialog(wx.Dialog):
         # Création des PDF à l'unité
         repertoire = dictOptions["repertoire_copie"]
         if repertoire not in (None, "") :
-            dlgAttente = PBI.PyBusyInfo(_(u"Génération des attestations à l'unité au format PDF..."), parent=None, title=_(u"Veuillez patienter..."), icon=wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Logo.png"), wx.BITMAP_TYPE_ANY))
+            dlgAttente = wx.BusyInfo(_(u"Génération des attestations à l'unité au format PDF..."), None)
             wx.Yield() 
             try :
                 index = 0
@@ -344,7 +343,7 @@ class Dialog(wx.Dialog):
                 return False
 
         # Fabrication du PDF global
-        dlgAttente = PBI.PyBusyInfo(_(u"Génération du lot d'attestations au format PDF..."), parent=None, title=_(u"Veuillez patienter..."), icon=wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Logo.png"), wx.BITMAP_TYPE_ANY))
+        dlgAttente = wx.BusyInfo(_(u"Génération du lot d'attestations au format PDF..."), None)
         wx.Yield() 
         self.EcritStatusbar(_(u"Génération du lot d'attestations de rappel en cours... veuillez patienter..."))
         try :
@@ -371,7 +370,7 @@ class Dialog(wx.Dialog):
         if reponse != wx.ID_YES :
             return
 
-        dlgAttente = PBI.PyBusyInfo(_(u"Sauvegarde des attestations en cours..."), parent=None, title=_(u"Veuillez patienter..."), icon=wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Logo.png"), wx.BITMAP_TYPE_ANY))
+        dlgAttente = wx.BusyInfo(_(u"Sauvegarde des attestations en cours..."), None)
         wx.Yield() 
 
         DB = GestionDB.DB()

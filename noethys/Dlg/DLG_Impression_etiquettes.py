@@ -17,7 +17,6 @@ from Ctrl import CTRL_Bouton_image
 from wx.lib.floatcanvas import FloatCanvas
 import numpy
 import wx.lib.agw.hyperlink as Hyperlink
-import wx.lib.agw.pybusyinfo as PBI
 
 import DLG_Noedoc
 from Ctrl import CTRL_Bandeau
@@ -254,7 +253,7 @@ class Dialog(wx.Dialog):
         self.categorie = categorie
 
         # DLG Attente
-        dlgAttente = PBI.PyBusyInfo(_(u"Veuillez patienter durant l'initialisation de l'éditeur..."), parent=None, title=_(u"Patientez"), icon=wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Logo.png"), wx.BITMAP_TYPE_ANY))
+        dlgAttente = wx.BusyInfo(_(u"Veuillez patienter durant l'initialisation de l'éditeur..."), None)
         try :
             wx.Yield()
         except :

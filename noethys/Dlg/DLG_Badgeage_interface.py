@@ -20,7 +20,6 @@ import datetime
 import time
 import random
 import GestionDB
-import wx.lib.agw.pybusyinfo as PBI
 import traceback
 
 from Data import DATA_Civilites
@@ -982,7 +981,7 @@ class Dialog(wx.Dialog):
                 texte = _(u"Veuillez patienter durant l'initialisation de l'interface de badgeage...")
             else :
                 texte = _(u"Veuillez patienter durant l'importation des badgeages...")
-            dlgAttente = PBI.PyBusyInfo(texte, parent=None, title=_(u"Initialisation"), icon=wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Logo.png"), wx.BITMAP_TYPE_ANY))
+            dlgAttente = wx.BusyInfo(_(u"Initialisation..."), None)
             wx.Yield() 
             
             if wx.GetKeyState(307) == True :

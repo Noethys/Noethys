@@ -22,7 +22,6 @@ import calendar
 import traceback
 import GestionDB
 from Ctrl import CTRL_Bandeau
-import wx.lib.agw.pybusyinfo as PBI
 
 
 ##        for date, IDcombi_tarif, listeUnites in self.listeDonnees :
@@ -343,7 +342,7 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             jours_scolaires, jours_vacances = dlg.GetJours() 
             feries = dlg.GetFeries()
             try :
-                dlgAttente = PBI.PyBusyInfo(_(u"Veuillez patienter durant l'opération..."), parent=None, title=_(u"Patientez..."), icon=wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Logo.png"), wx.BITMAP_TYPE_ANY))
+                dlgAttente = wx.BusyInfo(_(u"Veuillez patienter durant l'opération..."), None)
                 wx.Yield() 
                 self.TraitementLot(mode, date, date_debut, date_fin, jours_scolaires, jours_vacances, feries)
                 del dlgAttente

@@ -19,7 +19,6 @@ from wx.lib.agw.customtreectrl import EVT_TREE_ITEM_CHECKED
 import datetime
 import copy
 import sys
-import wx.lib.agw.pybusyinfo as PBI
 from Utils import UTILS_Organisateur
 from Utils.UTILS_Decimal import FloatToDecimal as FloatToDecimal
 
@@ -582,7 +581,7 @@ class CTRL(HTL.HyperTreeList):
         self.CocheTout() 
 
     def Remplissage(self):
-        dlgAttente = PBI.PyBusyInfo(_(u"Recherche des prestations en cours..."), parent=None, title=_(u"Veuillez patienter..."), icon=wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Logo.png"), wx.BITMAP_TYPE_ANY))
+        dlgAttente = wx.BusyInfo(_(u"Recherche des prestations en cours..."), None)
         try :
             wx.Yield() 
         except :

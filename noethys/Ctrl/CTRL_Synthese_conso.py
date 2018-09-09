@@ -35,7 +35,6 @@ from Utils import UTILS_Organisateur
 from Utils import UTILS_Infos_individus
 from Utils import UTILS_Texte
 from Utils import UTILS_Dates
-import wx.lib.agw.pybusyinfo as PBI
 
 LISTE_MOIS = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
 
@@ -178,7 +177,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         
         # init grid
         try :
-            dlgAttente = PBI.PyBusyInfo(_(u"Veuillez patienter durant la recherche des données..."), parent=None, title=_(u"Calcul en cours"), icon=wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Logo.png"), wx.BITMAP_TYPE_ANY))
+            dlgAttente = wx.BusyInfo(_(u"Veuillez patienter durant la recherche des données..."), None)
             wx.Yield() 
             self.InitGrid() 
             del dlgAttente
