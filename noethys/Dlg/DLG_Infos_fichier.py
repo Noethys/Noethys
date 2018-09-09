@@ -21,8 +21,6 @@ import GestionDB
 import FonctionsPerso
 from Utils import UTILS_Historique
 
-try: import psyco; psyco.full()
-except: pass
 
 def DateComplete(dateDD):
     """ Transforme une date DD en date complète : Ex : lundi 15 janvier 2008 """
@@ -80,6 +78,15 @@ class Informations():
         # Nbre de tables de données
         listeTables = self.DB.GetListeTables()
         listeItems.append((_(u"Nombre de tables de données"), str(len(listeTables)+2)))
+
+        # Récupération des variables MySQL
+        if "[RESEAU]" in nomFichier:
+            req = """SHOW VARIABLES LIKE "version";"""
+            self.DB.ExecuterReq(req)
+            listeTemp = self.DB.ResultatReq()
+            if len(listeTemp) > 0:
+                listeItems.append((_(u"Version MySQL du serveur"), listeTemp[0][1]))
+
         
         return nomCategorie, listeItems
     
