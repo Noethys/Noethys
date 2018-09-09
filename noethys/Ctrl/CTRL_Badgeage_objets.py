@@ -143,13 +143,15 @@ class Bouton(Objet):
     
     def DessineImagesRemplacement(self, bmp):
         # Dessin de l'image
-        self.dc.BeginDrawing()
+        if 'phoenix' not in wx.PlatformInfo:
+            self.dc.BeginDrawing()
         id = wx.NewId()
         self.dc.SetId(id)
         
         self.dc.DrawBitmap(bmp, self.position[0], self.position[1])
         self.dc.SetIdBounds(id, wx.Rect(self.position[0], self.position[1], self.taille[0], self.taille[1]))
-        self.dc.EndDrawing()        
+        if 'phoenix' not in wx.PlatformInfo:
+            self.dc.EndDrawing()
         return id
         
     def OnLeftDown(self, actionActive=True):

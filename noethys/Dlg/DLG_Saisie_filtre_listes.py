@@ -1291,7 +1291,10 @@ class CTRL_Champs(wx.TreeCtrl):
                 # Création des branches champs
                 for dictChamp in self.dictChamps[codeCategorie] :
                     item = self.AppendItem(categorie, dictChamp["titre"])
-                    self.SetPyData(item, dictChamp)
+                    if 'phoenix' in wx.PlatformInfo:
+                        self.SetItemData(item, dictChamp)
+                    else :
+                        self.SetPyData(item, dictChamp)
                     if dictChamp["typeDonnee"] != None :
                         self.SetItemImage(item, self.dictImages[dictChamp["typeDonnee"]], which=wx.TreeItemIcon_Normal)
                     self.dictItems[dictChamp["code"]] = item
@@ -1304,7 +1307,10 @@ class CTRL_Champs(wx.TreeCtrl):
         
     def GetDonnees(self):
         item = self.GetSelection()
-        dictChamp = self.GetPyData(item)
+        if 'phoenix' in wx.PlatformInfo:
+            dictChamp = self.GetItemData(item)
+        else:
+            dictChamp = self.GetPyData(item)
         return dictChamp
     
     def GetCode(self):

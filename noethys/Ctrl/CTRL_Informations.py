@@ -206,15 +206,22 @@ class CTRL(wx.TreeCtrl):
             else:
                 labelBranche = _(u"%d messages") % nbreMessages
             niveauCategorie = self.AppendItem(niveauParent, labelBranche)
-            self.SetPyData(niveauCategorie, {"type":"categorie"} )
+            if 'phoenix' in wx.PlatformInfo:
+                self.SetItemData(niveauCategorie, {"type":"categorie"})
+            else :
+                self.SetPyData(niveauCategorie, {"type":"categorie"})
             self.SetItemBold(niveauCategorie, True)
             self.SetItemImage(niveauCategorie, self.img_messages, which=wx.TreeItemIcon_Normal)
             niveauParent = niveauCategorie
             
             for track in self.listeMessages :
                 niveau1 = self.AppendItem(niveauParent, track.texte)
-                if track.priorite == "HAUTE" : self.SetItemImage(niveau1, self.img_attention, which=wx.TreeItemIcon_Normal)
-                self.SetPyData(niveau1, {"type":"message", "IDmessage":track.IDmessage} )
+                if track.priorite == "HAUTE" :
+                    self.SetItemImage(niveau1, self.img_attention, which=wx.TreeItemIcon_Normal)
+                if 'phoenix' in wx.PlatformInfo:
+                    self.SetItemData(niveau1, {"type":"message", "IDmessage":track.IDmessage})
+                else :
+                    self.SetPyData(niveau1, {"type":"message", "IDmessage":track.IDmessage})
 
 
     def Branches_cotisations(self, niveauParent=None):

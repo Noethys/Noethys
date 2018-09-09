@@ -2918,7 +2918,10 @@ class MovingObjectMixin:
                     handler = wx.BITMAP_TYPE_PNG
                 else:
                     handler = wx.BITMAP_TYPE_JPEG
-                image.SaveStream(buffer, handler)
+                if 'phoenix' in wx.PlatformInfo:
+                    image.SaveFile(buffer, handler)
+                else :
+                    image.SaveStream(buffer, handler)
                 buffer.seek(0)
                 blob = buffer.read()
                 return blob
@@ -3116,14 +3119,23 @@ class MovingScaledBitmap(FloatCanvas.ScaledBitmap, MovingObjectMixin):
             if W < 1 : W = 1
             if H < 1 : H = 1
             Img = self.Image.Scale(W, H)
-            self.ScaledBitmap = wx.BitmapFromImage(Img)
+            if 'phoenix' in wx.PlatformInfo:
+                self.ScaledBitmap = wx.Bitmap(Img)
+            else :
+                self.ScaledBitmap = wx.BitmapFromImage(Img)
 
         XY = self.ShiftFun(XY[0], XY[1], W, H)
-        dc.DrawBitmapPoint(self.ScaledBitmap, XY, True)
+        if 'phoenix' in wx.PlatformInfo:
+            dc.DrawBitmap(self.ScaledBitmap, XY, True)
+        else :
+            dc.DrawBitmapPoint(self.ScaledBitmap, XY, True)
         if HTdc and self.HitAble:
             HTdc.SetPen(self.HitPen)
             HTdc.SetBrush(self.HitBrush)
-            HTdc.DrawRectanglePointSize(XY, (W, H) )
+            if 'phoenix' in wx.PlatformInfo:
+                HTdc.DrawRectangle(XY, (W, H) )
+            else :
+                HTdc.DrawRectanglePointSize(XY, (W, H))
 
                 
 class MovingCircle(FloatCanvas.Circle, MovingObjectMixin):
@@ -3534,7 +3546,7 @@ class Panel_canvas(wx.Panel):
                 else :
                     label = ""
                 tailleFont = 15
-                font = wx.Font(tailleFont, family=wx.SWISS, style=wx.NORMAL, weight=wx.NORMAL, underline=False, face="Arial")
+                font = wx.Font(tailleFont, wx.SWISS, wx.NORMAL, wx.NORMAL, False, "Arial")
                 objet_label = AjouterBlocTexte(label, objet.GetXY(), taillePolicePDF=tailleFont, font=font)
 
                 # Insertion de l'objet et du label dans un groupe
@@ -3649,7 +3661,10 @@ class Panel_canvas(wx.Panel):
                     self.canvas.RemoveObject(objet)
                     self.canvas.Draw(True)
 
-            self.SetCursor(wx.StockCursor(wx.CURSOR_DEFAULT))
+            if 'phoenix' in wx.PlatformInfo:
+                self.SetCursor(wx.Cursor(wx.CURSOR_DEFAULT))
+            else :
+                self.SetCursor(wx.StockCursor(wx.CURSOR_DEFAULT))
             self.drawing_polyline = None
             self.afficheStatusBarPerso(info=u"")
 
@@ -3916,7 +3931,7 @@ class Panel_canvas(wx.Panel):
             if sens == "gauche" : delta = numpy.array([-1, 0])
             if sens == "droite" : delta = numpy.array([1, 0])
         # Déplacement selon une nouvelle position
-        if newPosition != None :
+        if hasattr(newPosition, "all"): #newPosition != None :
             delta = newPosition - objet.GetXY()
         # Vérification si verrouillage de la position
         if objet.verrouillageX == True : delta[0] = 0
@@ -4417,7 +4432,10 @@ class Panel_canvas(wx.Panel):
         self.afficheStatusBarPerso(info=_(u"Cliquez pour ajouter des points puis double-cliquez pour finaliser le polygone"))
         self.drawing_polyline = True
         self.canvas.SetFocus()
-        self.SetCursor(wx.StockCursor(wx.CURSOR_PENCIL))
+        if 'phoenix' in wx.PlatformInfo:
+            self.SetCursor(wx.Cursor(wx.CURSOR_PENCIL))
+        else :
+            self.SetCursor(wx.StockCursor(wx.CURSOR_PENCIL))
 
     def Ajouter_point_polyline(self, coords=None):
         """ Ajouter un point sur le polyline """
@@ -4469,7 +4487,10 @@ class Panel_canvas(wx.Panel):
                         largeur = largeur * tailleMaxi / hauteur
                         hauteur = tailleMaxi
                 img.Rescale(width=largeur, height=hauteur, quality=wx.IMAGE_QUALITY_HIGH)
-                bmp = wx.BitmapFromImage(img)
+                if 'phoenix' in wx.PlatformInfo:
+                    bmp = wx.Bitmap(img)
+                else :
+                    bmp = wx.BitmapFromImage(img)
             else:
                 bmp = wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Image_absente.png"), wx.BITMAP_TYPE_PNG)
             item = wx.MenuItem(menuPopup, 10002, _(u"Insérer le logo de l'organisateur"), _(u"Insérer le logo de l'organisateur"), wx.ITEM_NORMAL)
@@ -4560,7 +4581,10 @@ class Panel_canvas(wx.Panel):
                     largeur = 1.0 * largeur * tailleMaxi / hauteur
                     hauteur = tailleMaxi
 
-        bmp = wx.BitmapFromImage(img)
+        if 'phoenix' in wx.PlatformInfo:
+            bmp = wx.Bitmap(img)
+        else :
+            bmp = wx.BitmapFromImage(img)
 
         # Recherche le centre de l'objet
         tailleDC = wx.ClientDC(self.canvas).GetSize()
@@ -4576,7 +4600,10 @@ class Panel_canvas(wx.Panel):
     def OnOutil_image_logo(self, event):
         """ Importer le logo de l'organisateur """
         img, exists = GetLogo_organisateur()
-        bmp = wx.BitmapFromImage(img)
+        if 'phoenix' in wx.PlatformInfo:
+            bmp = wx.Bitmap(img)
+        else :
+            bmp = wx.BitmapFromImage(img)
 
         # Conversion de la taille px en mm
         largeur, hauteur = bmp.GetSize()
@@ -4679,7 +4706,7 @@ class Panel_canvas(wx.Panel):
 
         # Police
         tailleFont = 12
-        font = wx.Font(tailleFont, family=wx.SWISS, style=wx.NORMAL, weight=wx.NORMAL, underline=False, face="Arial")
+        font = wx.Font(tailleFont, wx.SWISS, wx.NORMAL, wx.NORMAL, False, "Arial")
 
         # Recherche le centre de l'objet
         dc = wx.ClientDC(self.canvas)
@@ -4713,7 +4740,7 @@ class Panel_canvas(wx.Panel):
 
         # Police
         tailleFont = 12
-        font = wx.Font(tailleFont, family=wx.SWISS, style=wx.NORMAL, weight=wx.NORMAL, underline=False, face="Arial")
+        font = wx.Font(tailleFont, wx.SWISS, wx.NORMAL, wx.NORMAL, False, "Arial")
 
         # Insertion
         objet = AjouterBlocTexte(texte, (0, 0), taillePolicePDF=tailleFont, font=font)
@@ -5178,7 +5205,10 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_CLOSE, self.OnClose)
         
         # Logo
-        _icon = wx.EmptyIcon()
+        if 'phoenix' in wx.PlatformInfo:
+            _icon = wx.Icon()
+        else :
+            _icon = wx.EmptyIcon()
         _icon.CopyFromBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Logo.png"), wx.BITMAP_TYPE_ANY))
         self.SetIcon(_icon)
         
@@ -5351,7 +5381,10 @@ class Dialog(wx.Dialog):
         bmp = self.ctrl_canvas.GetPhotoPage()
         img = bmp.ConvertToImage()
         buffer = cStringIO.StringIO()
-        img.SaveStream(buffer, wx.BITMAP_TYPE_PNG)
+        if 'phoenix' in wx.PlatformInfo:
+            img.SaveFile(buffer, wx.BITMAP_TYPE_PNG)
+        else :
+            img.SaveStream(buffer, wx.BITMAP_TYPE_PNG)
         buffer.seek(0)
         blob = buffer.read()
         return blob
@@ -5377,7 +5410,10 @@ def GetLogo_organisateur():
         # Si aucun logo, renvoie une image vide
         return wx.Image(Chemins.GetStaticPath("Images/Special/Logo_nb.png"), wx.BITMAP_TYPE_ANY), False
     io = cStringIO.StringIO(buffer)
-    img = wx.ImageFromStream(io, wx.BITMAP_TYPE_PNG)
+    if 'phoenix' in wx.PlatformInfo:
+        img = wx.Image(io, wx.BITMAP_TYPE_PNG)
+    else :
+        img = wx.ImageFromStream(io, wx.BITMAP_TYPE_PNG)
     return img, True
 
 
@@ -5511,8 +5547,11 @@ def ImportationObjets(IDmodele=None, InForeground=True):
             
             # Logo
             if objet["typeImage"] == "logo" :
-                img, exists = GetLogo_organisateur() 
-                bmp = wx.BitmapFromImage(img)
+                img, exists = GetLogo_organisateur()
+                if 'phoenix' in wx.PlatformInfo:
+                    bmp = wx.Bitmap(img)
+                else :
+                    bmp = wx.BitmapFromImage(img)
             # Fichier
             if objet["typeImage"].startswith("fichier") :
                 if objet["image"] != None :
@@ -5916,7 +5955,10 @@ def DessineObjetPDF(objet, canvas, valeur=None):
         if valeur != None :
             imgwx = valeur
         file = StringIO.StringIO()
-        imgwx.SaveStream(file, wx.BITMAP_TYPE_PNG)
+        if 'phoenix' in wx.PlatformInfo:
+            imgwx.SaveFile(file, wx.BITMAP_TYPE_PNG)
+        else :
+            imgwx.SaveStream(file, wx.BITMAP_TYPE_PNG)
         gif = file.getvalue()
         file.close()                 
         buf = StringIO.StringIO(gif)
