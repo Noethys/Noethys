@@ -194,7 +194,7 @@ class ListView(FastObjectListView):
                 ColumnDefn(_(u"Prénom"), "left", 140, "prenom", typeDonnee="texte"),
                 ColumnDefn(_(u"Catégorie"), "left", 100, "categorie", typeDonnee="texte"),
                 ColumnDefn(_(u"Téléphone"), "left", 100, "tel", typeDonnee="texte"),
-                ColumnDefn(_(u"SMS"), "left", 50, "sms", typeDonnee="texte", stringConverter=FormateSMS),
+                ColumnDefn(_(u"SMS"), "left", 50, "sms", typeDonnee="bool", stringConverter=FormateSMS),
                 ]
         
         else:
@@ -206,7 +206,7 @@ class ListView(FastObjectListView):
                 ColumnDefn(_(u"Prénom"), "left", 100, "prenom", typeDonnee="texte"),
                 ColumnDefn(_(u"Catégorie"), "left", 100, "categorie", typeDonnee="texte"),
                 ColumnDefn(_(u"Téléphone"), "left", 100, "tel", typeDonnee="texte"),
-                ColumnDefn(_(u"SMS"), "left", 50, "sms", typeDonnee="texte", stringConverter=FormateSMS),
+                ColumnDefn(_(u"SMS"), "left", 50, "sms", typeDonnee="bool", stringConverter=FormateSMS),
             ]
 
         self.SetColumns(liste_Colonnes)

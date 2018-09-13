@@ -240,7 +240,7 @@ class ListView(FastObjectListView):
 ##            ColumnDefn(_(u"Banque"), 'left', 120, "nomBanque"),
             ColumnDefn(_(u"Montant"), 'right', 70, "montant", typeDonnee="montant", stringConverter=FormateMontant),
             ColumnDefn(_(u"Statut"), 'left', 80, "statut", typeDonnee="texte", stringConverter=FormateStatut, imageGetter=GetImageStatut),
-            ColumnDefn(_(u"Règlement"), 'left', 70, "reglement", typeDonnee="texte", stringConverter=FormateReglement, imageGetter=GetImageReglement),
+            ColumnDefn(_(u"Règlement"), 'left', 70, "reglement", typeDonnee="bool", stringConverter=FormateReglement, imageGetter=GetImageReglement),
             ColumnDefn(_(u"Séquence"), 'left', 70, "sequence", typeDonnee="texte"),
             ColumnDefn(_(u"IBAN"), 'left', 190, "prelevement_iban", typeDonnee="texte"),
             ColumnDefn(_(u"BIC"), 'left', 100, "prelevement_bic", typeDonnee="texte"),

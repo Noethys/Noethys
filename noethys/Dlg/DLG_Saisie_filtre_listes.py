@@ -130,9 +130,44 @@ class CTRL_Page_texte(wx.Panel):
         self.ctrl_different.SetValue("")
         self.ctrl_contient.SetValue("")
         self.ctrl_contientpas.SetValue("")
-        
+
 # -------------------------------------------------------------------------------------------------------------------------------
 
+class CTRL_Page_bool(wx.Panel):
+    def __init__(self, parent):
+        wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
+        self.radio_vrai = wx.RadioButton(self, -1, _(u"Est vrai"), style=wx.RB_GROUP)
+        self.radio_faux = wx.RadioButton(self, -1, _(u"Est faux"))
+
+        self.__do_layout()
+
+    def __do_layout(self):
+        grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
+        grid_sizer_base.Add(self.radio_vrai, 1, wx.EXPAND, 0)
+        grid_sizer_base.Add(self.radio_faux, 1, wx.EXPAND, 0)
+        self.SetSizer(grid_sizer_base)
+        grid_sizer_base.Fit(self)
+
+    def SetValeur(self, choix=None, criteres=None):
+        if choix == "TRUE": self.radio_vrai.SetValue(True)
+        if choix == "FALSE": self.radio_faux.SetValue(True)
+
+    def GetValeur(self):
+        choix, criteres = "", ""
+        if self.radio_vrai.GetValue() == True:
+            choix = "TRUE"
+        if self.radio_faux.GetValue() == True:
+            choix = "FALSE"
+        return choix, criteres
+
+    def Validation(self):
+        return True
+
+    def Reinit(self):
+        self.radio_vrai.SetValue(True)
+
+
+# -------------------------------------------------------------------------------------------------------------------------------
 
 
 class CTRL_Page_entier(wx.Panel):
@@ -938,6 +973,7 @@ class CTRL_Page(wx.Panel):
         
         # Titre
         if typeDonnee == "texte" : image = "Texte_ligne.png"
+        elif typeDonnee == "bool": image = "Ctrl_coche.png"
         elif typeDonnee == "entier" : image = "Ctrl_nombre.png"
         elif typeDonnee == "montant" : image = "Euro.png"
         elif typeDonnee == "date" : image = "Jour.png"
@@ -955,6 +991,8 @@ class CTRL_Page(wx.Panel):
         # Contenu
         if typeDonnee == "texte" : 
             self.ctrl_contenu = CTRL_Page_texte(self)
+        elif typeDonnee == "bool" :
+            self.ctrl_contenu = CTRL_Page_bool(self)
         elif typeDonnee == "entier" : 
             self.ctrl_contenu = CTRL_Page_entier(self)
         elif typeDonnee == "montant" : 
@@ -1016,6 +1054,7 @@ class CTRL_Filtres_archive(wx.Treebook):
         liste_images = [
             ("colonnes", "Tableaux.png"),
             ("texte", "Texte_ligne.png"),
+            ("bool", "Ctrl_coche.png"),
             ("entier", "Ctrl_nombre.png"),
             ("montant", "Euro.png"),
             ("date", "Jour.png"),
@@ -1208,6 +1247,7 @@ class CTRL_Champs(wx.TreeCtrl):
         liste_images = [
             ("categorie", "Dossier.png"),
             ("texte", "Texte_ligne.png"),
+            ("bool", "Ctrl_coche.png"),
             ("entier", "Ctrl_nombre.png"),
             ("montant", "Euro.png"),
             ("date", "Jour.png"),
@@ -1337,7 +1377,7 @@ class CTRL_Filtres(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent, id=-1) 
         
-        self.listeTypesDonnees = ["vide", "texte", "entier", "montant", "date", "dateheure", "inscrits", "cotisations"]
+        self.listeTypesDonnees = ["vide", "texte", "bool", "entier", "montant", "date", "dateheure", "inscrits", "cotisations"]
         
         # Création des pages
         sizer = wx.BoxSizer(wx.VERTICAL)
@@ -1494,7 +1534,7 @@ if __name__ == "__main__":
     dlg = Dialog(None)
     app.SetTopWindow(dlg)
     # Test d'importation
-    dlg.SetCode("famille")
+    #dlg.SetCode("famille")
     #dlg.SetValeur("CONTIENT", _(u"Ceci est un test  !"))
 
     if dlg.ShowModal() == wx.ID_OK :

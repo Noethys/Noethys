@@ -38,7 +38,12 @@ def GetCondition(titre="", typeDonnee="", choix="", criteres=""):
         if choix == "CONTIENTPAS" : description = _(u"'%s' ne contient pas '%s'") % (titre, criteres)
         if choix == "VIDE" : description = _(u"'%s' est vide") % titre
         if choix == "PASVIDE" : description = _(u"'%s' n'est pas vide") % titre
-    
+
+    # BOOL
+    if typeDonnee == "bool" :
+        if choix == "TRUE" : description = _(u"'%s' est vrai") % titre
+        if choix == "FALSE" : description = _(u"'%s' est faux") % titre
+
     # ENTIER
     if typeDonnee == "entier" :
         if choix == "EGAL" : description = _(u"'%s' est égal à '%s'") % (titre, criteres)

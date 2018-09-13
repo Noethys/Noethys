@@ -417,7 +417,14 @@ class ObjectListView(OLV.ObjectListView):
                     filtre = "track.%s == '' or track.%s == None" % (code, code)
                 if choix == "PASVIDE" :
                     filtre = "track.%s != '' and track.%s != None" % (code, code)
-            
+
+            # Bool
+            if typeDonnee == "bool" :
+                if choix == "TRUE" :
+                    filtre = "track.%s in (True, 'True', 1, '1')" % code
+                if choix == "FALSE" :
+                    filtre = "track.%s in (False, 'False', 0, '0', None, '')" % code
+
             # Entier, montant
             if typeDonnee in ("entier", "montant") :
                 

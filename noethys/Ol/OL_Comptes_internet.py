@@ -116,7 +116,7 @@ class ListView(FastObjectListView):
         liste_Colonnes = [
             ColumnDefn(_(u"ID"), "left", 0, "IDfamille", typeDonnee="entier"),
             ColumnDefn(_(u"Famille"), 'left', 350, "nomTitulaires", typeDonnee="texte"),
-            ColumnDefn(_(u"Activation"), "left", 120, "internet_actif", typeDonnee="texte", stringConverter=FormateActivation, imageGetter=GetImageActivation),
+            ColumnDefn(_(u"Activation"), "left", 120, "internet_actif", typeDonnee="bool", stringConverter=FormateActivation, imageGetter=GetImageActivation),
             ColumnDefn(_(u"Identifiant"), "left", 120, "internet_identifiant", typeDonnee="texte"),
             ColumnDefn(_(u"Mot de passe"), "left", 120, "internet_mdp", typeDonnee="texte"),
             ]
