@@ -108,6 +108,8 @@ class CTRL(HTL.HyperTreeList):
                 IDindividu = 0
             label = dictPrestation["label"]
             montant = dictPrestation["montant"]
+            if montant == None :
+                montant = 0.0
             IDactivite = dictPrestation["IDactivite"]
             if dictPrestation.has_key("montantVentilation") :
                 montantVentilation = dictPrestation["montantVentilation"]

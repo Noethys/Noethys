@@ -514,8 +514,14 @@ class Page_Activite(wx.Panel):
                             return False
 
         # Récupération autres variables
-        IDfamille = self.GetGrandParent().ctrl_famille.GetID()
         nomActivite = self.ctrl_activite.GetNomActivite()
+
+        IDfamille = self.GetGrandParent().ctrl_famille.GetID()
+        if IDfamille == None :
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner une famille !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return False
 
         # Vérifie que l'individu n'est pas déjà inscrit à cette activite
         if self.parent.mode == "saisie" :

@@ -1093,10 +1093,10 @@ class Dialog(wx.Dialog):
                 if track.sequence in ("OOFF", "FRST") :
                     key = (track.IDmandat, track.sequence)
                     if key in listeTemp1 :
-                        if track.sequence == "OOFF" : 
-                            listeErreurs.append(_(u"- Facture n°%s : Le mandat n°%s de type ponctuel a déjà été utilisé une fois !") % (track.IDfacture, track.IDmandat))
+                        if track.sequence == "OOFF" :
+                            listeErreurs.append(_(u"- Prélèvement '%s' de %s : Le mandat '%s' de type ponctuel a déjà été utilisé une fois !") % (track.libelle, track.titulaires, track.prelevement_reference_mandat))
                         if track.sequence == "FRST" : 
-                            listeErreurs.append(_(u"- Facture n°%s : Mandat n°%s déjà initialisé. La séquence doit être définie sur 'RCUR' !") % (track.IDfacture, track.IDmandat))
+                            listeErreurs.append(_(u"- Prélèvement '%s' de %s : Mandat '%s' déjà initialisé. La séquence doit être définie sur 'RCUR' !") % (track.libelle, track.titulaires, track.prelevement_reference_mandat))
                     listeTemp1.append(key)
             
         if len(listeErreurs) > 0 :
