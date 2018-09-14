@@ -44,9 +44,15 @@ class EditeurChoix(ChoiceEditor):
         ChoiceEditor.__init__(self)
 
     def CreateControls(self, propGrid, property, pos, size):
-        ctrl = self.CallSuperMethod("CreateControls", propGrid, property, pos, size)
-        self.SetControlIntValue(property, ctrl, 0)
-        return ctrl
+        if 'phoenix' in wx.PlatformInfo:
+            ctrl = super(EditeurChoix, self).CreateControls(propGrid, property, pos, size)
+            ctrl = ctrl.m_primary
+            self.SetControlIntValue(property, ctrl, 0)
+            return wxpg.PGWindowList(ctrl)
+        else :
+            ctrl = self.CallSuperMethod("CreateControls", propGrid, property, pos, size)
+            self.SetControlIntValue(property, ctrl, 0)
+            return ctrl
 
     def UpdateControl(self, property, ctrl):
         self.SetControlStringValue(property, ctrl, property.GetDisplayedString())
@@ -271,10 +277,17 @@ class EditeurComboBoxAvecBoutons(ChoiceEditor):
         buttons.GetButton(0).SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à la gestion des paramètres")))
         
         # Create the 'primary' editor control (textctrl in this case)
-        wnd = self.CallSuperMethod("CreateControls", propGrid, property, pos, buttons.GetPrimarySize())
-        buttons.Finalize(propGrid, pos);
-        self.buttons = buttons
-        return (wnd, buttons)
+        if 'phoenix' in wx.PlatformInfo:
+            wnd = super(EditeurComboBoxAvecBoutons, self).CreateControls(propGrid, property, pos, buttons.GetPrimarySize())
+            wnd = wnd.m_primary
+            buttons.Finalize(propGrid, pos)
+            self.buttons = buttons
+            return wxpg.PGWindowList(wnd, buttons)
+        else :
+            wnd = self.CallSuperMethod("CreateControls", propGrid, property, pos, buttons.GetPrimarySize())
+            buttons.Finalize(propGrid, pos);
+            self.buttons = buttons
+            return (wnd, buttons)
 
     def OnEvent(self, propGrid, prop, ctrl, event):
         if event.GetEventType() == wx.wxEVT_COMMAND_BUTTON_CLICKED:
@@ -283,8 +296,10 @@ class EditeurComboBoxAvecBoutons(ChoiceEditor):
             if evtId == buttons.GetButtonId(0):
                 propGrid.GetPanel().OnBoutonParametres(prop)
 
-        return self.CallSuperMethod("OnEvent", propGrid, prop, ctrl, event)
-
+        if 'phoenix' in wx.PlatformInfo:
+            return super(EditeurComboBoxAvecBoutons, self).OnEvent(propGrid, prop, ctrl, event)
+        else :
+            return self.CallSuperMethod("OnEvent", propGrid, prop, ctrl, event)
 
 # ------------------------------------------------------------------------------------------------------
 
@@ -296,7 +311,10 @@ class EditeurHeure(Editor):
         try:
             ctrl = CTRL_Saisie_heure.Heure(propgrid.GetPanel(), id=wxpg.PG_SUBID1, pos=pos, size=size, style=wx.TE_PROCESS_ENTER)
             ctrl.SetHeure(property.GetDisplayedString())
-            return ctrl
+            if 'phoenix' in wx.PlatformInfo:
+                return wxpg.PGWindowList(ctrl)
+            else :
+                return ctrl
         except:
             import traceback
             print(traceback.print_exc())

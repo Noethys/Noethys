@@ -105,8 +105,12 @@ class Track(object):
         # Si c'est une image :
         if self.type in ("jpg", "jpeg", "bmp", "png", "gif", "PNG", "JPG", "JPEG", None) :
             io = cStringIO.StringIO(self.buffer)
-            img = wx.ImageFromStream(io, wx.BITMAP_TYPE_JPEG)
-            img = wxtopil(img)
+            # if 'phoenix' in wx.PlatformInfo:
+            #     img = wx.Image(io, wx.BITMAP_TYPE_JPEG)
+            # else :
+            #     img = wx.ImageFromStream(io, wx.BITMAP_TYPE_JPEG)
+            # img = wxtopil(img)
+            img = Image.open(io).convert("RGBA")
             self.isImage = True
             return img
         # Si c'est un document :
