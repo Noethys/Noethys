@@ -46,6 +46,7 @@ def ParametresCategorie(mode="get", categorie="", dictParametres={}, nomFichier=
         # Préparation de la valeur par défaut
         type_parametre = type(valeur)
         if type_parametre == int : valeurTmp = str(valeur)
+        elif type_parametre == long : valeurTmp = str(valeur)
         elif type_parametre == float : valeurTmp = str(valeur)
         elif type_parametre == str : valeurTmp = valeur
         elif type_parametre == unicode : valeurTmp = valeur
@@ -64,6 +65,7 @@ def ParametresCategorie(mode="get", categorie="", dictParametres={}, nomFichier=
                 # On le formate pour le récupérer sous son vrai format
                 try :
                     if type_parametre == int : valeur = int(valeur)
+                    if type_parametre == long : valeur = long(valeur)
                     if type_parametre == float : valeur = float(valeur)
                     if type_parametre == str : valeur = valeur
                     if type_parametre == unicode : valeur = valeur
@@ -114,6 +116,7 @@ def Parametres(mode="get", categorie="", nom="", valeur=None, nomFichier=""):
     # Préparation de la valeur par défaut
     type_parametre = type(valeur)
     if type_parametre == int : valeurTmp = str(valeur)
+    elif type_parametre == long : valeurTmp = str(valeur)
     elif type_parametre == float : valeurTmp = str(valeur)
     elif type_parametre == str : valeurTmp = valeur
     elif type_parametre == unicode : valeurTmp = valeur
@@ -139,6 +142,7 @@ def Parametres(mode="get", categorie="", nom="", valeur=None, nomFichier=""):
             valeurTmp = listeDonnees[0][1]
             # On le formate pour le récupérer sous son vrai format
             if type_parametre == int : valeurTmp = int(valeurTmp)
+            if type_parametre == long : valeurTmp = long(valeurTmp)
             if type_parametre == float : valeurTmp = float(valeurTmp)
             if type_parametre == str : valeurTmp = valeurTmp
             if type_parametre == unicode : valeurTmp = valeurTmp

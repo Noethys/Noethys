@@ -228,7 +228,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         # Envoie les paramètres dans le contrôle
         for nom, valeur in dictParametres.iteritems() :
             propriete = self.GetPropertyByName(nom)
-            ancienneValeur = propriete.GetValue() 
+            ancienneValeur = propriete.GetValue()
             propriete.SetValue(valeur)
     
     def Sauvegarde(self, forcer=False):

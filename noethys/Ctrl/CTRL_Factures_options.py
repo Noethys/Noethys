@@ -381,9 +381,9 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         # Envoie les paramètres dans le contrôle
         for nom, valeur in dictParametres.iteritems() :
             propriete = self.GetPropertyByName(nom)
-            ancienneValeur = propriete.GetValue() 
+            ancienneValeur = propriete.GetValue()
             propriete.SetValue(valeur)
-    
+
     def Sauvegarde(self, forcer=False):
         """ Mémorisation des valeurs du contrôle """
         if self.GetPropertyByName("memoriser_parametres").GetValue() == True or forcer == True :
@@ -413,7 +413,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
                 selectionDefaut = IDmodele
         propriete = self.GetPropertyByName("IDmodele")
         propriete.SetChoices(choix)
-        self.RefreshProperty(propriete) 
+        self.RefreshProperty(propriete)
         if selectionDefaut != None :
             propriete.SetValue(selectionDefaut)
         

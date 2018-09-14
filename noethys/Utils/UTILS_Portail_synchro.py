@@ -1579,7 +1579,8 @@ class Synchro():
                     ftp.storbinary('STOR ' + nomFichier, fichier)
                     fichier.close()
                 except Exception, err :
-                    print "Erreur upload fichier '%s' par FTP : %s" % (nomFichier, str(err))
+                    print "Erreur upload fichier par FTP :"
+                    print err
                     self.log.EcritLog(_(u"[ERREUR] Envoi du fichier '%s' par FTP impossible.") % nomFichier)
                     return False
 

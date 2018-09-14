@@ -15,8 +15,9 @@ from Utils.UTILS_Traduction import _
 import wx
 from Ctrl import CTRL_Bouton_image
 import GestionDB
-
+import datetime
 from Ctrl import CTRL_Editeur_email
+from Utils import UTILS_Dates
 
 
 
@@ -160,6 +161,8 @@ class Dialog(wx.Dialog):
                 valeur = ""
             if type(valeur) == int :
                 valeur = str(valeur)
+            if type(valeur) == datetime.date:
+                valeur = UTILS_Dates.DateDDEnFr(valeur)
             xml = xml.replace(motcle, valeur)
         # MAJ éditeur
         self.ctrl_editeur.SetXML(xml)
