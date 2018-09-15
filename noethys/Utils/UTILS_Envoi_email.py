@@ -20,6 +20,21 @@ import re
 from Utils import UTILS_Html2text
 from Utils import UTILS_Titulaires
 
+import smtplib
+from email.MIMEMultipart import MIMEMultipart
+from email.MIMEBase import MIMEBase
+from email.MIMEText import MIMEText
+from email.MIMEImage import MIMEImage
+from email.MIMEAudio import MIMEAudio
+from email.Utils import COMMASPACE, formatdate
+from email.header import Header
+from email.utils import formatdate, formataddr
+from email import Encoders
+import mimetypes
+
+
+
+
 
 def EnvoiEmailFamille(parent=None, IDfamille=None, nomDoc="", categorie="", listeAdresses=[], visible=True, log=None, CreationPDF=None, IDmodele=None):
     # Création du PDF
@@ -185,20 +200,13 @@ def GetAdresseFamille(IDfamille=None, choixMultiple=True, muet=False, nomTitulai
         return listeMails[0]
 
 
+
+
+
+
+
 def Envoi_mail(adresseExpediteur="", nomadresseExpediteur="", listeDestinataires=[], listeDestinatairesCCI=[], sujetMail="", texteMail="", listeFichiersJoints=[], serveur="localhost", port=None, avecAuthentification=False, avecStartTLS=False, listeImages=[], motdepasse=None, accuseReception=False, utilisateur=""):
     """ Envoi d'un mail avec pièce jointe """
-    import smtplib
-    import poplib
-    from email.MIMEMultipart import MIMEMultipart
-    from email.MIMEBase import MIMEBase
-    from email.MIMEText import MIMEText
-    from email.MIMEImage import MIMEImage
-    from email.MIMEAudio import MIMEAudio
-    from email.Utils import COMMASPACE, formatdate
-    from email import Encoders
-    from email.utils import make_msgid
-    import mimetypes
-    
     assert type(listeDestinataires)==list
     assert type(listeFichiersJoints)==list
     
@@ -230,10 +238,12 @@ def Envoi_mail(adresseExpediteur="", nomadresseExpediteur="", listeDestinataires
     msg.attach(tmpmsg)
 
     # Ajout des headers Ã  ce Multipart
-    if nomadresseExpediteur == "" or nomadresseExpediteur == None :
+    if nomadresseExpediteur in ("", None) :
         msg['From'] = adresseExpediteur
     else:
-        msg['From'] = "\"%s\" <%s>" % (nomadresseExpediteur, adresseExpediteur)
+        sender = Header(nomadresseExpediteur, "utf-8")
+        sender.append(adresseExpediteur, "ascii")
+        msg['From'] = sender #formataddr((nomadresseExpediteur, adresseExpediteur))
     msg['To'] = ";".join(listeDestinataires)
     msg['Bcc'] = ";".join(listeDestinatairesCCI)
     msg['Date'] = formatdate(localtime=True)
