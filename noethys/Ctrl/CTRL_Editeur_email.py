@@ -500,12 +500,14 @@ class Panel_Expediteur(wx.Panel):
         # Binds
         self.Bind(wx.EVT_BUTTON, self.OnBoutonExp, self.bouton_exp)
         
-    def OnBoutonExp(self, event): 
+    def OnBoutonExp(self, event):
+        ID = self.GetID()
         from Dlg import DLG_Emails_exp
         dlg = DLG_Emails_exp.Dialog(self)
         dlg.ShowModal()
         dlg.Destroy()
-        self.ctrl_exp.MAJ() 
+        self.ctrl_exp.MAJ()
+        self.SetID(ID)
     
     def MAJ(self):
         self.ctrl_exp.MAJ() 
