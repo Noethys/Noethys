@@ -98,6 +98,14 @@ class CTRL(CTRL_Propertygrid.CTRL):
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
+        # Taille nom activité
+        propriete = wxpg.IntProperty(label=_(u"Taille de police du nom d'activité"), name="activite_taille_nom", value=5)
+        propriete.SetEditor("SpinCtrl")
+        propriete.SetHelpString(_(u"Taille de police du nom d'activité"))
+        propriete.SetAttribute("obligatoire", True)
+        propriete.SetAttribute("Min", 0)
+        self.Append(propriete)
+
         # Catégorie
         self.Append(wxpg.PropertyCategory(_(u"Colonne Photo")))
 

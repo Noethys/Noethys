@@ -1885,7 +1885,7 @@ class Dialog(wx.Dialog):
             dataTableau = []
             largeursColonnes = ( (largeurContenu * 1.0 / 3, largeurContenu * 2.0 / 3) )
 
-            styleActivite = ParagraphStyle(name="activite", fontName="Helvetica", fontSize=5, leading=3, spaceAfter=0, textColor=couleurTexte)
+            styleActivite = ParagraphStyle(name="activite", fontName="Helvetica", fontSize=dictParametres["activite_taille_nom"], leading=dictParametres["activite_taille_nom"], spaceAfter=0, textColor=couleurTexte)
             styleGroupe = ParagraphStyle(name="groupe", fontName="Helvetica-Bold", fontSize=tailleGroupe, leading=tailleGroupe+2, spaceBefore=0, spaceAfter=2, textColor=couleurTexte)
             styleEcole = ParagraphStyle(name="ecole", fontName="Helvetica", alignment=2, fontSize=5, leading=3, spaceAfter=0, textColor=couleurTexte)
             styleClasse = ParagraphStyle(name="classe", fontName="Helvetica-Bold", alignment=2, fontSize=14, leading=16, spaceBefore=0, spaceAfter=2, textColor=couleurTexte)
