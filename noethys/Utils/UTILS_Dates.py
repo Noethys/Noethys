@@ -247,6 +247,14 @@ def CalculerArrondi(arrondi_type="duree", arrondi_delta=15, heure_debut=None, he
 
     return duree_arrondie
 
+def ArrondirDT(dt=None, dateDelta=datetime.timedelta(minutes=1)):
+    """ Arrondir un datetime.datetime """
+    roundTo = dateDelta.total_seconds()
+    if dt == None : dt = datetime.datetime.now()
+    seconds = (dt - dt.min).seconds
+    rounding = (seconds+roundTo/2) // roundTo * roundTo
+    return dt + datetime.timedelta(0,rounding-seconds,-dt.microsecond)
+
 def FormateMois((annee, mois)):
     return u"%s %d" % (LISTE_MOIS[mois-1].capitalize(), annee)
 
@@ -275,8 +283,29 @@ def DatetimeEnFr(date=None):
         date = datetime.datetime.strptime(date, "%Y-%m-%d %H:%M:%S")
     return date.strftime("%d/%m/%Y %H:%M:%S")
 
+def FormatDelta(delta, fmt="auto"):
+    """ fmt = 'auto' ou par exemple : '{jours} jours {heures}:{minutes}:{secondes}' """
+    # Recherche des valeurs
+    d = {"jours": delta.days}
+    d["heures"], rem = divmod(delta.seconds, 3600)
+    d["minutes"], d["secondes"] = divmod(rem, 60)
+    # Formatage des valeurs
+    if fmt == "auto" :
+        temp = []
+        if d["jours"] == 1 : temp.append("{jours} jour")
+        if d["jours"] > 1 : temp.append("{jours} jours")
+        if d["heures"] == 1 : temp.append("{heures} heure")
+        if d["heures"] > 1: temp.append("{heures} heures")
+        if d["minutes"] == 1 : temp.append("{minutes} minute")
+        if d["minutes"] > 1: temp.append("{minutes} minutes")
+        fmt = " ".join(temp)
+    return fmt.format(**d)
+
 
 
 if __name__ == "__main__":
     # Tests
-    print CalculerArrondi(arrondi_type="tranche_horaire", arrondi_delta=15, heure_debut=datetime.time(9, 25), heure_fin=datetime.time(9, 35))
+    #print CalculerArrondi(arrondi_type="tranche_horaire", arrondi_delta=15, heure_debut=datetime.time(9, 25), heure_fin=datetime.time(9, 35))
+    #print ArrondirDT(datetime.datetime.now(), datetime.timedelta(minutes=5))
+    print FormatDelta(datetime.timedelta(hours=48, minutes=30))
+
