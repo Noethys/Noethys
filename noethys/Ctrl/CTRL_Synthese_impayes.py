@@ -924,10 +924,11 @@ class MyFrame(wx.Frame):
         
         self.ctrl_stats = CTRL(panel)
         
-        self.ctrl_stats.date_debut = datetime.date(2013, 8, 1)
-        self.ctrl_stats.date_fin = datetime.date(2013, 8, 31)
+        self.ctrl_stats.date_debut = datetime.date(2018, 1, 1)
+        self.ctrl_stats.date_fin = datetime.date(2018, 2, 28)
         self.ctrl_stats.afficher_consommations = True
         self.ctrl_stats.afficher_cotisations = True
+        self.ctrl_stats.afficher_locations = True
         self.ctrl_stats.afficher_autres = True
         self.ctrl_stats.listeActivites = [1, 2, 3]
         self.ctrl_stats.mode_regroupement = "activites"

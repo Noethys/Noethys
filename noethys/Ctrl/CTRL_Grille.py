@@ -4741,6 +4741,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         for dictFiltre in listeFiltres :
             IDquestion = dictFiltre["IDquestion"]
             defaut = dictFiltre["defaut"]
+            listeReponses = []
 
             # Recherche les réponses
             if dictFiltre["type"] == "individu" :
