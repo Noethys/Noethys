@@ -527,6 +527,18 @@ class Dialog(wx.Dialog):
         dlg.ShowModal()
         dlg.Destroy()
 
+    def SetDebut(self, dt=None):
+        if dt not in ("", None):
+            self.ctrl_date_debut.SetDate(dt.date())
+            self.ctrl_heure_debut.SetHeure(UTILS_Dates.DatetimeTimeEnStr(dt, separateur=":"))
+
+    def SetFin(self, dt=None):
+        if dt not in ("", None) and dt.year != 2999:
+            self.ctrl_date_fin.SetDate(dt.date())
+            self.ctrl_heure_fin.SetHeure(UTILS_Dates.DatetimeTimeEnStr(dt, separateur=":"))
+            self.check_date_fin.SetValue(True)
+            self.OnCheckDateFin()
+
     def GetDictInfosLocation(self):
         dictInfos = {
             "IDproduit" : self.ctrl_produit.GetIDproduit(),
@@ -718,15 +730,14 @@ class Dialog(wx.Dialog):
         self.ctrl_observations.SetValue(observations)
 
         # Date de début
-        if date_debut != None :
-            self.ctrl_date_debut.SetDate(datetime.datetime.strftime(UTILS_Dates.DateEngEnDateDDT(date_debut), "%Y-%m-%d"))
-            self.ctrl_heure_debut.SetHeure(datetime.datetime.strftime(UTILS_Dates.DateEngEnDateDDT(date_debut), "%H:%M"))
+        if date_debut != None:
+            date_debut = UTILS_Dates.DateEngEnDateDDT(date_debut)
+            self.SetDebut(date_debut)
 
         # Date de fin
         if date_fin != None :
-            self.ctrl_date_fin.SetDate(datetime.datetime.strftime(UTILS_Dates.DateEngEnDateDDT(date_fin), "%Y-%m-%d"))
-            self.ctrl_heure_fin.SetHeure(datetime.datetime.strftime(UTILS_Dates.DateEngEnDateDDT(date_fin), "%H:%M"))
-            self.check_date_fin.SetValue(True)
+            date_fin = UTILS_Dates.DateEngEnDateDDT(date_fin)
+            self.SetFin(date_fin)
 
         # Quantité
         if quantite != None :

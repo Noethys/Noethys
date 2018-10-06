@@ -365,9 +365,8 @@ class EditeurHeure(Editor):
         ctrl.SetHeure(text)
 
     def OnFocus(self, property, ctrl):
-        ctrl.SetSelection(-1,-1)
+        ctrl.SetSelection(-1, -1)
         ctrl.SetFocus()
-
 
 
 

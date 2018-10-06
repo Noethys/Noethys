@@ -381,7 +381,10 @@ class CTRL(ULC.UltimateListCtrl):
                 if logo != None :
                     try :
                         io = cStringIO.StringIO(logo)
-                        img = wx.ImageFromStream(io, wx.BITMAP_TYPE_ANY)
+                        if 'phoenix' in wx.PlatformInfo:
+                            img = wx.Image(io, wx.BITMAP_TYPE_ANY)
+                        else :
+                            img = wx.ImageFromStream(io, wx.BITMAP_TYPE_ANY)
                         img = RecadreImg(img)
                         image = img.ConvertToBitmap()
                     except :

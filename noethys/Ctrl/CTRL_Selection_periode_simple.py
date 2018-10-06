@@ -74,13 +74,13 @@ class Page_Semaines(wx.Panel):
     def GetDateDebut(self):
         annee = int(self.ctrl_annee.GetValue())
         num_semaine = int(self.ctrl_semaine.GetValue())
-        date_debut = datetime.datetime.strptime("%d-W%d-1" % (annee, num_semaine), "%Y-W%W-%w")
+        date_debut = datetime.datetime.strptime("%d-W%d-1" % (annee, num_semaine), "%Y-W%W-%w").date()
         return date_debut
 
     def GetDateFin(self):
         annee = int(self.ctrl_annee.GetValue())
         num_semaine = int(self.ctrl_semaine.GetValue())
-        date_fin = datetime.datetime.strptime("%d-W%d-0" % (annee, num_semaine), "%Y-W%W-%w")
+        date_fin = datetime.datetime.strptime("%d-W%d-0" % (annee, num_semaine), "%Y-W%W-%w").date()
         return date_fin
 
 
