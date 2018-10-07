@@ -24,6 +24,7 @@ import copy
 import GestionDB
 from Ctrl import CTRL_Bandeau
 from Utils import UTILS_Dates
+from Utils import UTILS_Parametres
 import wx.lib.agw.supertooltip as STT
 
 if 'phoenix' in wx.PlatformInfo:
@@ -2031,7 +2032,12 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonSaisieLot, self.bouton_saisie_lot)
         self.Bind(wx.EVT_CHECKBOX, self.OnCheckAfficherTousGroupes, self.check_tous_groupes)
-        
+
+        # Init
+        afficher_tous_groupes = UTILS_Parametres.Parametres(mode="get", categorie="dlg_ouvertures", nom="afficher_tous_groupes", valeur=False)
+        self.check_tous_groupes.SetValue(afficher_tous_groupes)
+        self.ctrl_calendrier.afficherTousGroupes = afficher_tous_groupes
+
         self.MAJCalendrier()
 
     def __set_properties(self):
@@ -2155,6 +2161,10 @@ class Dialog(wx.Dialog):
         self.EndModal(wx.ID_CANCEL)
 
     def OnBoutonOk(self, event):
+        # Mémoriser paramètres
+        UTILS_Parametres.Parametres(mode="set", categorie="dlg_ouvertures", nom="afficher_tous_groupes", valeur=self.check_tous_groupes.GetValue())
+
+        # Mémoriser calendrier
         try :
             dlgAttente = wx.BusyInfo(_(u"Veuillez patienter durant la sauvegarde des données..."), None) # .PyBusyInfo(_(u"Veuillez patienter durant la sauvegarde des données..."), parent=None, title=_(u"Enregistrement"), icon=wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Logo.png"), wx.BITMAP_TYPE_ANY))
             wx.Yield() 
@@ -2166,6 +2176,7 @@ class Dialog(wx.Dialog):
             dlg = wx.MessageDialog(self, _(u"Désolé, le problème suivant a été rencontré dans la sauvegarde des ouvertures : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
+
         # Fermeture de la fenêtre
         self.EndModal(wx.ID_OK)
 
