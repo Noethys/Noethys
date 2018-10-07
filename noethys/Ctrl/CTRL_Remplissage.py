@@ -311,14 +311,13 @@ class Case():
         except : 
             nbreAttente = 0
 
-
         # Récupère le nombre de places restantes pour l'ensemble des groupes
         nbrePlacesInitialTousGroupes = 0
         try :
             nbrePlacesInitialTousGroupes = self.grid.dictRemplissage[IDunite_remplissage][self.date][None]["nbrePlacesInitial"]
         except :
             pass
-        
+
         if nbrePlacesInitialTousGroupes > 0 :
             nbrePlacesPrisesTousGroupes = 0
             try :
@@ -326,13 +325,13 @@ class Case():
                     nbrePlacesPrisesTousGroupes += d["nbrePlacesPrises"]
             except :
                 pass
-            
-            nbrePlacesRestantesTousGroupes = nbrePlacesInitialTousGroupes - nbrePlacesPrisesTousGroupes
-            if nbrePlacesRestantesTousGroupes < nbrePlacesRestantes or nbrePlacesInitial == 0 :
-                nbrePlacesInitial = nbrePlacesInitialTousGroupes
-##                nbrePlacesPrises = nbrePlacesPrisesTousGroupes
-                nbrePlacesRestantes = nbrePlacesRestantesTousGroupes
 
+            nbrePlacesRestantesTousGroupes = nbrePlacesInitialTousGroupes - nbrePlacesPrisesTousGroupes
+
+            if nbrePlacesRestantesTousGroupes < nbrePlacesRestantes or nbrePlacesInitial in (0, None) :
+                nbrePlacesInitial = nbrePlacesInitialTousGroupes
+                #nbrePlacesPrises = nbrePlacesPrisesTousGroupes
+                nbrePlacesRestantes = nbrePlacesRestantesTousGroupes
 
         # Création d'un dictionnaire de réponses
         dictInfosPlaces = {
@@ -351,7 +350,7 @@ class Case():
 
         # Si fermée
         if self.ouvert == False : return COULEUR_FERME
-        
+
         if self.dictInfosPlaces["nbrePlacesInitial"] != None :
             nbrePlacesRestantes = self.dictInfosPlaces["nbrePlacesRestantes"]
             seuil_alerte = self.dictInfosPlaces["seuil_alerte"]
@@ -1016,7 +1015,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         """ Commande de test pour le développement """
         # Param pour les tests
         self.listeActivites = [1,]
-        self.listePeriodes = [(datetime.date(2011, 12, 31), datetime.date(2013, 12, 31)), (datetime.date(2011, 5, 1), datetime.date(2011, 12, 31)),]
+        self.listePeriodes = [(datetime.date(2018, 10, 1), datetime.date(2018, 10, 31)),]
         self.SetModeAffichage("nbrePlacesPrises")
         # Lancement
         self.MAJ_donnees()
