@@ -44,7 +44,8 @@ def DateEngEnDateDD(dateEng):
 
 
 class Track(object):
-    def __init__(self, donnees):
+    def __init__(self, parent, donnees):
+        self.parent = parent
         self.IDreglement = donnees[0]
         self.compte_payeur = donnees[1]
         self.date = DateEngEnDateDD(donnees[2])
@@ -84,7 +85,14 @@ class Track(object):
             self.inclus = False
         else:
             self.inclus = True
-        
+
+        # Récupération du nom des titulaires
+        self.nomTitulaires = _(" ")
+        try :
+            self.nomTitulaires = self.parent.dict_titulaires[self.IDfamille]["titulairesSansCivilite"]
+        except :
+            pass
+
 
 # ---------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -251,7 +259,7 @@ class Dialog(wx.Dialog):
         db.Close()
         listeListeView = []
         for item in listeDonnees :
-            track = Track(item)
+            track = Track(self.ctrl_reglements, item)
             listeListeView.append(track)
         return listeListeView
 

@@ -185,7 +185,7 @@ class Dialog(wx.Dialog):
         self.ctrl_mode.SetMinSize((120, -1))
 
         self.label_tri = wx.StaticText(self, -1, _(u"Tri :"))
-        self.ctrl_tri = wx.Choice(self, -1, choices = (_(u"Ordre de saisie"), _(u"Date"), _(u"Mode de règlement"), _(u"Emetteur"), _(u"Numéro de pièce"), _(u"Nom de payeur"), "Montant"))
+        self.ctrl_tri = wx.Choice(self, -1, choices = (_(u"Ordre de saisie"), _(u"Date"), _(u"Mode de règlement"), _(u"Emetteur"), _(u"Numéro de pièce"), _(u"Famille"), _(u"Nom de payeur"), "Montant"))
         self.ctrl_tri.Select(1) 
         
         self.label_ordre = wx.StaticText(self, -1, _(u"Ordre :"))
@@ -244,7 +244,7 @@ class Dialog(wx.Dialog):
         self.bouton_excel.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter la liste au format Excel")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
-        self.SetMinSize((900, 700))
+        self.SetMinSize((1030, 700))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=4, cols=1, vgap=10, hgap=10)

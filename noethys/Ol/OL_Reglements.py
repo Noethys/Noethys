@@ -21,6 +21,7 @@ from Utils import UTILS_Historique
 from Utils import UTILS_Utilisateurs
 from Utils import UTILS_Gestion
 from Utils import UTILS_Config
+from Utils import UTILS_Titulaires
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 
 
@@ -47,7 +48,8 @@ def DateEngEnDateDD(dateEng):
 
         
 class Track(object):
-    def __init__(self, donnees):
+    def __init__(self, parent, donnees):
+        self.parent = parent
         self.IDreglement = donnees[0]
         self.compte_payeur = donnees[1]
         self.IDcompte_payeur = self.compte_payeur
@@ -85,6 +87,16 @@ class Track(object):
             self.montant_ventilation = None
         self.inclus = True
         self.IDprelevement = donnees[24]
+        self.IDfamille = donnees[25]
+
+        # Récupération du nom des titulaires
+        self.nomTitulaires = _(" ")
+        if self.parent.mode == "liste" :
+            try :
+                self.nomTitulaires = self.parent.dict_titulaires[self.IDfamille]["titulairesSansCivilite"]
+            except :
+                pass
+
 
     
 class ListView(FastObjectListView):
@@ -101,6 +113,11 @@ class ListView(FastObjectListView):
         self.listeFiltres = []
         self.numColonneTri = 1
         self.ordreAscendant = True
+
+        # Importation des titulaires
+        if self.mode == "liste" :
+            self.dict_titulaires = UTILS_Titulaires.GetTitulaires()
+
         # Initialisation du listCtrl
         self.nom_fichier_liste = __file__
         FastObjectListView.__init__(self, *args, **kwds)
@@ -119,6 +136,7 @@ class ListView(FastObjectListView):
 
     def GetTracks(self):
         """ Récupération des données """
+        # Conditions
         listeID = None
         if self.mode == "depot" :
             if self.IDdepot == None :
@@ -151,13 +169,15 @@ class ListView(FastObjectListView):
         reglements.IDdepot, depots.date, depots.nom, depots.verrouillage, 
         date_saisie, IDutilisateur,
         SUM(ventilation.montant) AS total_ventilation,
-        reglements.IDprelevement
+        reglements.IDprelevement,
+        comptes_payeurs.IDfamille
         FROM reglements
         LEFT JOIN ventilation ON reglements.IDreglement = ventilation.IDreglement
         LEFT JOIN modes_reglements ON reglements.IDmode=modes_reglements.IDmode
         LEFT JOIN emetteurs ON reglements.IDemetteur=emetteurs.IDemetteur
         LEFT JOIN payeurs ON reglements.IDpayeur=payeurs.IDpayeur
         LEFT JOIN depots ON reglements.IDdepot=depots.IDdepot
+        LEFT JOIN comptes_payeurs ON comptes_payeurs.IDcompte_payeur = reglements.IDcompte_payeur
         %s
         GROUP BY reglements.IDreglement
         ;""" % criteres
@@ -172,7 +192,7 @@ class ListView(FastObjectListView):
                 if item[0] not in listeID :
                     valide = False
             if valide == True :
-                track = Track(item)
+                track = Track(self, item)
                 listeListeView.append(track)
                 if self.selectionID == item[0] :
                     self.selectionTrack = track
@@ -239,7 +259,10 @@ class ListView(FastObjectListView):
             ColumnDefn(_(u"Ventilé"), 'right', 80, "montant_ventilation", typeDonnee="montant", stringConverter=FormateMontant, imageGetter=GetImageVentilation),
             ColumnDefn(_(u"Dépôt"), 'left', 90, "date_depot", typeDonnee="date", stringConverter=FormateDateCourt, imageGetter=GetImageDepot),
             ]
-        
+
+        if self.mode == "liste" :
+            liste_Colonnes.insert(5, ColumnDefn(_(u"Famille"), 'left', 130, "nomTitulaires", typeDonnee="texte"))
+
         self.SetColumns(liste_Colonnes)
         self.SetEmptyListMsg(_(u"Aucun règlement"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
@@ -630,7 +653,7 @@ class MyFrame(wx.Frame):
         sizer_1 = wx.BoxSizer(wx.VERTICAL)
         sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
         self.SetSizer(sizer_1)
-        self.myOlv = ListView(panel, id=-1, IDcompte_payeur=373, name="OL_test", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
+        self.myOlv = ListView(panel, id=-1, mode="liste", name="OL_test", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.myOlv.MAJ() 
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.myOlv, 1, wx.ALL|wx.EXPAND, 4)

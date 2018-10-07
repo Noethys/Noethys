@@ -20,6 +20,7 @@ import GestionDB
 from PIL import Image
 import os
 import cStringIO
+from Utils import UTILS_Titulaires
 
 from Utils import UTILS_Config
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
@@ -68,6 +69,9 @@ class ListView(FastObjectListView):
         self.tailleImagesMini = (16, 16)
         self.afficheImages = True
         self.imageDefaut = Chemins.GetStaticPath("Images/Special/Image_non_disponible.png")
+
+        # Importation des titulaires
+        self.dict_titulaires = UTILS_Titulaires.GetTitulaires()
 
         # Initialisation du listCtrl
         self.nom_fichier_liste = __file__
@@ -329,6 +333,7 @@ class ListView(FastObjectListView):
             ColumnDefn(_(u"Mode"), 'left', 120, "nom_mode", typeDonnee="texte", imageGetter=GetImageMode),
             ColumnDefn(_(u"Emetteur"), 'left', 145, "nom_emetteur", typeDonnee="texte", imageGetter=GetImageEmetteur),
             ColumnDefn(_(u"Numéro"), 'left', 60, "numero_piece", typeDonnee="texte"),
+            ColumnDefn(_(u"Famille"), 'left', 160, "nomTitulaires", typeDonnee="texte"),
             ColumnDefn(_(u"Payeur"), 'left', 160, "nom_payeur", typeDonnee="texte"),
             ColumnDefn(_(u"Montant"), 'right', 80, "montant", typeDonnee="montant", stringConverter=FormateMontant),
             ColumnDefn(_(u"Avis"), 'left', 110, "avis_depot", typeDonnee="date", stringConverter=FormateDateCourt, imageGetter=GetImageAvisDepot),
