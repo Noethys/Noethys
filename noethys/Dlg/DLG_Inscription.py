@@ -581,6 +581,7 @@ class Page_Activite(wx.Panel):
                 ("montant_initial", -self.dict_remboursement["montant"]),
                 ("montant", -self.dict_remboursement["montant"]),
                 ("IDactivite", IDactivite),
+                ("IDcategorie_tarif", IDcategorie_tarif),
                 ("IDfamille", IDfamille),
                 ("IDindividu", self.parent.IDindividu),
                 ("categorie", "autre"),

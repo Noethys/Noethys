@@ -111,6 +111,9 @@ class CTRL_Tarifs(html.HtmlWindow):
         DB.ExecuterReq(req)
         listeInfos = DB.ResultatReq()
 
+        if len(listeInfos) == 0 :
+            return ""
+
         activite_nom, activite_date_debut, activite_date_fin = listeInfos[0]
 
         # Importation des tarifs
