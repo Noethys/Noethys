@@ -26,6 +26,9 @@ from Ctrl import CTRL_Saisie_date
 import DLG_calendrier_simple
 from Ctrl import CTRL_Synthese_prestations
 from Utils import UTILS_Questionnaires
+from Utils import UTILS_Parametres
+from Utils import UTILS_Dialogs
+
 
 
 def DateEngEnDateDD(dateEng):
@@ -38,15 +41,18 @@ def DateEngFr(textDate):
 
 
 class CTRL_Regroupement(wx.Choice):
-    def __init__(self, parent):
+    def __init__(self, parent, option_aucun=False):
         wx.Choice.__init__(self, parent, -1)
         self.parent = parent
         self.listeDonnees = [
             {"label": _(u"Jour"), "code": "jour"},
             {"label": _(u"Mois"), "code": "mois"},
             {"label": _(u"Année"), "code": "annee"},
+            {"label": _(u"Label de la prestation"), "code": "label_prestation"},
             {"label": _(u"Activité"), "code": "activite"},
             {"label": _(u"Catégorie de tarif"), "code": "categorie_tarif"},
+            {"label": _(u"Famille"), "code": "famille"},
+            {"label": _(u"Individu"), "code": "individu"},
             {"label": _(u"Ville de résidence"), "code": "ville_residence"},
             {"label": _(u"Secteur géographique"), "code": "secteur"},
             {"label": _(u"Age"), "code": "age"},
@@ -59,6 +65,9 @@ class CTRL_Regroupement(wx.Choice):
             {"label": _(u"Quotient familial - Tranches tarifs"), "code": "qf_tarifs"},
             {"label": _(u"Quotient familial - Tranches de 100"), "code": "qf_100"},
         ]
+
+        if option_aucun == True :
+            self.listeDonnees.insert(0, {"label": _(u"Aucun"), "code": ""})
 
         # Intégration des questionnaires
         q = UTILS_Questionnaires.Questionnaires()
@@ -81,6 +90,12 @@ class CTRL_Regroupement(wx.Choice):
         index = self.GetSelection()
         return self.listeDonnees[index]["code"]
 
+    def SetValeur(self, code=""):
+        index = 0
+        for dictTemp in self.listeDonnees :
+            if dictTemp["code"] == code :
+                self.Select(index)
+            index += 1
 
 # ----------------------------------------------------------------------------------------------------------------------------------
 
@@ -381,9 +396,17 @@ class Dialog(wx.Dialog):
         # CTRL résultats
         self.staticbox_stats_staticbox = wx.StaticBox(self, -1, _(u"Résultats"))
 
-        self.label_mode_regroupement = wx.StaticText(self, -1, _(u"Regroupement :"))
-        self.ctrl_regroupement = CTRL_Regroupement(self)
-        self.ctrl_regroupement.SetMinSize((50, -1))
+        self.label_lignes_1 = wx.StaticText(self, -1, _(u"Ligne :"))
+        self.ctrl_lignes_1 = CTRL_Regroupement(self)
+        self.ctrl_lignes_1.SetMinSize((50, -1))
+
+        self.label_lignes_2 = wx.StaticText(self, -1, _(u"Détail :"))
+        self.ctrl_lignes_2 = CTRL_Regroupement(self, option_aucun=True)
+        self.ctrl_lignes_2.SetMinSize((50, -1))
+
+        self.label_colonnes = wx.StaticText(self, -1, _(u"Colonnes :"))
+        self.ctrl_colonnes = CTRL_Regroupement(self)
+        self.ctrl_colonnes.SetMinSize((50, -1))
 
         self.label_mode_affichage = wx.StaticText(self, -1, _(u"Données :"))
         self.ctrl_mode = CTRL_Mode(self)
@@ -397,8 +420,8 @@ class Dialog(wx.Dialog):
         self.bouton_excel = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Excel.png"), wx.BITMAP_TYPE_ANY))
 
         # Commandes de résultats
-        self.check_details = wx.CheckBox(self, -1, _(u"Afficher détails"))
-        self.check_details.SetValue(True) 
+        self.check_details_total = wx.CheckBox(self, -1, _(u"Afficher le détail de la ligne total"))
+        self.check_details_total.SetValue(True)
 
         self.hyper_developper = self.Build_Hyperlink_developper()
         self.label_barre = wx.StaticText(self, -1, u"|")
@@ -407,13 +430,17 @@ class Dialog(wx.Dialog):
         # Commandes
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
         self.bouton_fermer = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
-        
+
+        self.Bind(wx.EVT_CLOSE, self.OnClose)
+        self.Bind(wx.EVT_BUTTON, self.OnBoutonFermer, self.bouton_fermer)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonImprimer, self.bouton_apercu)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonExcel, self.bouton_excel)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
-        self.Bind(wx.EVT_CHOICE, self.MAJ, self.ctrl_regroupement)
+        self.Bind(wx.EVT_CHOICE, self.MAJ, self.ctrl_colonnes)
+        self.Bind(wx.EVT_CHOICE, self.MAJ, self.ctrl_lignes_1)
+        self.Bind(wx.EVT_CHOICE, self.MAJ, self.ctrl_lignes_2)
         self.Bind(wx.EVT_CHOICE, self.MAJ, self.ctrl_mode)
-        self.Bind(wx.EVT_CHECKBOX, self.OnCheckDetails, self.check_details)
+        self.Bind(wx.EVT_CHECKBOX, self.OnCheckDetailsTotal, self.check_details_total)
 
         self.__set_properties()
         self.__do_layout()
@@ -423,8 +450,16 @@ class Dialog(wx.Dialog):
         self.ctrl_parametres.ctrl_date_debut.SetDate(datetime.date(anneeActuelle, 1, 1))
         self.ctrl_parametres.ctrl_date_fin.SetDate(datetime.date(anneeActuelle, 12, 31))
 
-        self.ctrl_regroupement.Select(1)
-        self.ctrl_mode.SetID("facture")
+        # Récupération des paramètres
+        dictParametres = {"ligne" : "activite", "detail" : "label_prestation", "colonnes" : "mois", "donnees" : "facture", "detail_total" : False}
+        dictParametres = UTILS_Parametres.ParametresCategorie(mode="get", categorie="dlg_synthese_prestations", dictParametres=dictParametres)
+
+        self.ctrl_colonnes.SetValeur(dictParametres["colonnes"])
+        self.ctrl_lignes_1.SetValeur(dictParametres["ligne"])
+        self.ctrl_lignes_2.SetValeur(dictParametres["detail"])
+        self.ctrl_mode.SetID(dictParametres["donnees"])
+        self.check_details_total.SetValue(dictParametres["detail_total"])
+        self.ctrl_stats.SetAffichageDetailsTotal(dictParametres["detail_total"])
 
         self.MAJ() 
 
@@ -434,8 +469,8 @@ class Dialog(wx.Dialog):
         self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour créer un aperçu avant impression des résultats (PDF)")))
         self.bouton_excel.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter les résultats au format MS Excel")))
         self.ctrl_mode.SetToolTip(wx.ToolTip(_(u"Sélectionnez le mode d'affichage souhaité")))
-        self.check_details.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher les détails dans les résultats")))
-        self.SetMinSize((980, 700))
+        self.check_details_total.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher les détails de la ligne total")))
+        self.SetMinSize((990, 730))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
@@ -450,10 +485,17 @@ class Dialog(wx.Dialog):
         staticbox_stats= wx.StaticBoxSizer(self.staticbox_stats_staticbox, wx.VERTICAL)
         grid_sizer_contenu2 = wx.FlexGridSizer(rows=3, cols=2, vgap=5, hgap=5)
 
-        grid_sizer_affichage = wx.FlexGridSizer(rows=1, cols=7, vgap=5, hgap=5)
-        grid_sizer_affichage.Add(self.label_mode_regroupement, 0, wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_affichage.Add(self.ctrl_regroupement, 0, wx.EXPAND, 0)
-        grid_sizer_affichage.Add( (10, 10), 0, wx.EXPAND, 0)
+        grid_sizer_affichage = wx.FlexGridSizer(rows=2, cols=5, vgap=5, hgap=5)
+
+        grid_sizer_affichage.Add(self.label_lignes_1, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_affichage.Add(self.ctrl_lignes_1, 0, wx.EXPAND, 0)
+        grid_sizer_affichage.Add( (5, 5), 0, wx.EXPAND, 0)
+        grid_sizer_affichage.Add(self.label_colonnes, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_affichage.Add(self.ctrl_colonnes, 0, wx.EXPAND, 0)
+
+        grid_sizer_affichage.Add(self.label_lignes_2, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_affichage.Add(self.ctrl_lignes_2, 0, wx.EXPAND, 0)
+        grid_sizer_affichage.Add( (5, 5), 0, wx.EXPAND, 0)
         grid_sizer_affichage.Add(self.label_mode_affichage, 0, wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_affichage.Add(self.ctrl_mode, 0, wx.EXPAND, 0)
 
@@ -474,7 +516,7 @@ class Dialog(wx.Dialog):
         # Commandes de liste
         grid_sizer_commandes2 = wx.FlexGridSizer(rows=1, cols=11, vgap=5, hgap=5)
         grid_sizer_commandes2.Add( (30, 5), 0, wx.EXPAND, 0)
-        grid_sizer_commandes2.Add(self.check_details, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_commandes2.Add(self.check_details_total, 0, wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_commandes2.Add( (5, 5), 0, wx.EXPAND, 0)
         grid_sizer_commandes2.Add(self.hyper_developper, 0, wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_commandes2.Add(self.label_barre, 0, wx.ALIGN_CENTER_VERTICAL, 0)
@@ -505,6 +547,8 @@ class Dialog(wx.Dialog):
         grid_sizer_base.AddGrowableRow(1)
         grid_sizer_base.AddGrowableCol(0)
         self.Layout()
+        self.SetMinSize(self.GetSize())
+        UTILS_Dialogs.AjusteSizePerso(self, __file__)
         self.CenterOnScreen()
 
     def Build_Hyperlink_developper(self) :
@@ -543,18 +587,12 @@ class Dialog(wx.Dialog):
     def OnLeftLink_reduire(self, event):
         self.ctrl_stats.ReduireTout()
 
-    def OnCheckDetails(self, event):
-        etat = self.check_details.GetValue()
-        self.ctrl_stats.SetAffichageDetails(etat)
-        self.MAJ() 
-        self.hyper_developper.Enable(-etat)
-        self.label_barre.Enable(-etat)
-        self.hyper_reduire.Enable(-etat)
+    def OnCheckDetailsTotal(self, event):
+        etat = self.check_details_total.GetValue()
+        self.ctrl_stats.SetAffichageDetailsTotal(etat)
+        self.MAJ()
 
     def MAJ(self, event=None):
-        self.mode_regroupement = self.ctrl_regroupement.GetValeur()
-        self.mode_affichage = self.ctrl_mode.GetID()
-
         self.ctrl_stats.date_debut = self.ctrl_parametres.ctrl_date_debut.GetDate()
         self.ctrl_stats.date_fin = self.ctrl_parametres.ctrl_date_fin.GetDate()
         self.ctrl_stats.afficher_consommations = self.ctrl_parametres.radio_consommations.GetValue()
@@ -562,8 +600,10 @@ class Dialog(wx.Dialog):
         self.ctrl_stats.afficher_locations = self.ctrl_parametres.radio_locations.GetValue()
         self.ctrl_stats.afficher_autres = self.ctrl_parametres.radio_autres.GetValue()
         self.ctrl_stats.listeActivites = self.ctrl_parametres.ctrl_activites.GetActivites() 
-        self.ctrl_stats.mode_regroupement = self.mode_regroupement
-        self.ctrl_stats.mode_affichage = self.mode_affichage
+        self.ctrl_stats.key_colonne = self.ctrl_colonnes.GetValeur()
+        self.ctrl_stats.key_ligne1 = self.ctrl_lignes_1.GetValeur()
+        self.ctrl_stats.key_ligne2 = self.ctrl_lignes_2.GetValeur()
+        self.ctrl_stats.mode_affichage = self.ctrl_mode.GetID()
 
         # Options
 ##        if self.ctrl_parametres.options_cotisations.GetEtat() == True :
@@ -645,7 +685,25 @@ class Dialog(wx.Dialog):
         from Utils import UTILS_Aide
         UTILS_Aide.Aide("Synthsedesprestations")
 
+    def MemoriserParametres(self):
+        dictParametres = {
+            "ligne" : self.ctrl_lignes_1.GetValeur(),
+            "detail" : self.ctrl_lignes_2.GetValeur(),
+            "colonnes" : self.ctrl_colonnes.GetValeur(),
+            "donnees" : self.ctrl_mode.GetID(),
+            "detail_total" : self.check_details_total.GetValue(),
+        }
+        UTILS_Parametres.ParametresCategorie(mode="set", categorie="dlg_synthese_prestations", dictParametres=dictParametres)
 
+    def OnBoutonFermer(self, event):
+        self.MemoriserParametres()
+        UTILS_Dialogs.SaveSizePerso(self, __file__)
+        event.Skip()
+
+    def OnClose(self, event):
+        self.MemoriserParametres()
+        UTILS_Dialogs.SaveSizePerso(self, __file__)
+        event.Skip()
 
 # -------------------------------------------------------------------------------------------------------------------------------------------
 

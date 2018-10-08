@@ -25,6 +25,7 @@ from Utils import UTILS_Organisateur
 from Utils import UTILS_Dates
 from Utils import UTILS_Infos_individus
 from Utils import UTILS_Texte
+from Utils import UTILS_Titulaires
 
 
 def PeriodeComplete(mois, annee):
@@ -41,14 +42,16 @@ class CTRL(HTL.HyperTreeList):
         
         # Paramètres
         self.mode_affichage = "facture" # "facture", "regle", "nbre", "impaye"
-        self.mode_regroupement = "mois" # "mois", "annee"
+        self.key_colonne = "mois" # "mois", "annee"
+        self.key_ligne1 = "activite"
+        self.key_ligne2 = "label"
         self.date_debut = None
         self.date_fin = None
         self.afficher_consommations = True
         self.afficher_cotisations = True
         self.afficher_autres = True
         self.listeActivites = []
-        self.affichage_details = True
+        self.affichage_details_total = True
 
         self.filtreCotisations = False
         self.filtreCotisations_dateDebut = None
@@ -61,7 +64,47 @@ class CTRL(HTL.HyperTreeList):
         self.filtreDepots_dateFin = None
         
         self.labelParametres = ""
-                
+
+        # Importation de données
+        DB = GestionDB.DB()
+
+        req = """SELECT IDcategorie_tarif, categories_tarifs.nom, activites.nom, activites.abrege
+        FROM categories_tarifs
+        LEFT JOIN activites ON activites.IDactivite = categories_tarifs.IDactivite
+        ORDER BY categories_tarifs.nom; """
+        DB.ExecuterReq(req)
+        listeDonnees = DB.ResultatReq()
+        self.dictCategoriesTarifs = {}
+        for IDcategorie_tarif, nomCategorie, nomActivite, abregeActivite in listeDonnees :
+            self.dictCategoriesTarifs[IDcategorie_tarif] = {
+                "nomCategorie" : nomCategorie,
+                "nomActivite" : nomActivite,
+                "abregeActivite" : abregeActivite,
+                }
+
+        req = """SELECT IDactivite, nom
+        FROM activites;"""
+        DB.ExecuterReq(req)
+        listeDonnees = DB.ResultatReq()
+        self.dictActivites = {}
+        for IDactivite, nom in listeDonnees :
+            self.dictActivites[IDactivite] = {"nom" : nom}
+
+        req = """SELECT IDindividu, nom, prenom
+        FROM individus;"""
+        DB.ExecuterReq(req)
+        listeDonnees = DB.ResultatReq()
+        self.dictIndividus = {}
+        for IDindividu, nom, prenom in listeDonnees :
+            if nom == None : nom = ""
+            if prenom == None : prenom = ""
+            nom_complet = u"%s %s" % (nom, prenom)
+            self.dictIndividus[IDindividu] = {"nom" : nom, "prenom": prenom, "nom_complet" : nom_complet}
+
+        DB.Close()
+
+        self.dict_titulaires = UTILS_Titulaires.GetTitulaires()
+
         # wx.TR_COLUMN_LINES |  | wx.TR_HAS_BUTTONS
         self.SetBackgroundColour(wx.WHITE)
         if 'phoenix' in wx.PlatformInfo:
@@ -70,25 +113,6 @@ class CTRL(HTL.HyperTreeList):
             TR_COLUMN_LINES = wx.TR_COLUMN_LINES
         self.SetAGWWindowStyleFlag(wx.TR_HIDE_ROOT  | wx.TR_ROW_LINES | TR_COLUMN_LINES | wx.TR_HAS_BUTTONS | wx.TR_HAS_VARIABLE_ROW_HEIGHT | wx.TR_FULL_ROW_HIGHLIGHT ) # HTL.TR_NO_HEADER
         
-    def Importation_categories(self):
-        """ Récupération des noms des catégories de tarifs """
-        DB = GestionDB.DB()
-        req = """SELECT IDcategorie_tarif, categories_tarifs.nom, activites.nom, activites.abrege
-        FROM categories_tarifs
-        LEFT JOIN activites ON activites.IDactivite = categories_tarifs.IDactivite
-        ORDER BY categories_tarifs.nom; """
-        DB.ExecuterReq(req)
-        listeCategoriesTarifs = DB.ResultatReq()
-        DB.Close()
-        dictCategoriesTarifs = {}
-        for IDcategorie_tarif, nomCategorie, nomActivite, abregeActivite in listeCategoriesTarifs :
-            dictCategoriesTarifs[IDcategorie_tarif] = {
-                "nomCategorie" : nomCategorie,
-                "nomActivite" : nomActivite,
-                "abregeActivite" : abregeActivite,
-                }
-        return dictCategoriesTarifs
-
     def Importation_prestations(self):
         """ Importation des données """
 
@@ -150,10 +174,8 @@ class CTRL(HTL.HyperTreeList):
             conditionFacturee = " AND prestations.IDfacture IS NULL"
         
         # Récupération de toutes les prestations de la période
-        req = """SELECT IDprestation, date, categorie, label, montant, prestations.IDactivite, prestations.IDcategorie_tarif, IDfamille, IDindividu, activites.nom, categories_tarifs.nom
+        req = """SELECT IDprestation, date, categorie, label, montant, prestations.IDactivite, prestations.IDcategorie_tarif, IDfamille, IDindividu
         FROM prestations
-        LEFT JOIN activites ON activites.IDactivite = prestations.IDactivite
-        LEFT JOIN categories_tarifs ON categories_tarifs.IDcategorie_tarif = prestations.IDcategorie_tarif
         WHERE date>='%s' AND date <='%s'
         AND %s AND (%s OR prestations.IDactivite IS NULL)
         %s
@@ -185,7 +207,7 @@ class CTRL(HTL.HyperTreeList):
         dictPrestations = {}
         listeRegroupements = []
         dictLabelsRegroupements = {}
-        for IDprestation, date, categorie, label, montant, IDactivite, IDcategorie_tarif, IDfamille, IDindividu, nom_activite, nom_categorie in listePrestations :
+        for IDprestation, date, categorie, label, montant, IDactivite, IDcategorie_tarif, IDfamille, IDindividu in listePrestations :
             date = UTILS_Dates.DateEngEnDateDD(date)
             annee = date.year
             mois = date.month
@@ -193,131 +215,162 @@ class CTRL(HTL.HyperTreeList):
             if montant == None :
                 montant = 0.0
 
-            regroupement = None
+            def GetKey(key_code=""):
+                key = None
+                key_label = ""
 
-            if self.mode_regroupement == "jour":
-                regroupement = date
-                labelRegroupement = UTILS_Dates.DateEngFr(date)
+                if key_code == "jour":
+                    key = date
+                    key_label = UTILS_Dates.DateEngFr(date)
 
-            if self.mode_regroupement == "mois":
-                regroupement = (annee, mois)
-                labelRegroupement = PeriodeComplete(mois, annee)
+                if key_code == "mois":
+                    key = (annee, mois)
+                    key_label = PeriodeComplete(mois, annee)
 
-            if self.mode_regroupement == "annee":
-                regroupement = annee
-                labelRegroupement = str(annee)
+                if key_code == "annee":
+                    key = annee
+                    key_label = str(annee)
 
-            if self.mode_regroupement == "activite":
-                regroupement = IDactivite
-                labelRegroupement = nom_activite
+                if key_code == "label_prestation":
+                    key = label
+                    key_label = label
 
-            if self.mode_regroupement == "categorie_tarif":
-                regroupement = IDcategorie_tarif
-                labelRegroupement = nom_categorie
+                if key_code == "activite":
+                    key = IDactivite
+                    if IDactivite == None or self.dictActivites.has_key(IDactivite) == False:
+                        key_label = _(u"Activité inconnue")
+                    else:
+                        key_label = self.dictActivites[IDactivite]["nom"]
 
-            if self.mode_regroupement == "ville_residence" and IDindividu not in (0, None) :
-                regroupement = self.dictInfosIndividus[IDindividu]["INDIVIDU_VILLE"]
-                labelRegroupement = regroupement
+                if key_code == "categorie_tarif":
+                    key = IDcategorie_tarif
+                    if IDcategorie_tarif == None or self.dictCategoriesTarifs.has_key(IDcategorie_tarif) == False:
+                        key_label = _(u"Sans catégorie")
+                    else:
+                        key_label = self.dictCategoriesTarifs[IDcategorie_tarif]["nomCategorie"]
 
-            if self.mode_regroupement == "secteur" and IDindividu not in (0, None) :
-                regroupement = self.dictInfosIndividus[IDindividu]["INDIVIDU_SECTEUR"]
-                labelRegroupement = regroupement
+                if key_code == "famille":
+                    key = IDfamille
+                    if IDfamille == None or self.dict_titulaires.has_key(IDfamille) == False:
+                        key_label = _(u"Famille inconnue")
+                    else:
+                        key_label = self.dict_titulaires[IDfamille]["titulairesSansCivilite"]
 
-            if self.mode_regroupement == "age" and IDindividu not in (0, None) :
-                regroupement = self.dictInfosIndividus[IDindividu]["INDIVIDU_AGE_INT"]
-                labelRegroupement = str(regroupement)
+                if key_code == "individu":
+                    key = IDindividu
+                    if IDindividu == None or self.dictIndividus.has_key(IDindividu) == False:
+                        key_label = _(u"Individu inconnu")
+                    else:
+                        key_label = self.dictIndividus[IDindividu]["nom_complet"]
 
-            if self.mode_regroupement == "nom_ecole" and IDindividu not in (0, None) :
-                regroupement = self.dictInfosIndividus[IDindividu]["SCOLARITE_NOM_ECOLE"]
-                labelRegroupement = regroupement
+                if key_code == "ville_residence" and IDindividu not in (0, None) :
+                    key = self.dictInfosIndividus[IDindividu]["INDIVIDU_VILLE"]
+                    key_label = key
 
-            if self.mode_regroupement == "nom_classe" and IDindividu not in (0, None) :
-                regroupement = self.dictInfosIndividus[IDindividu]["SCOLARITE_NOM_CLASSE"]
-                labelRegroupement = regroupement
+                if key_code == "secteur" and IDindividu not in (0, None) :
+                    key = self.dictInfosIndividus[IDindividu]["INDIVIDU_SECTEUR"]
+                    key_label = key
 
-            if self.mode_regroupement == "nom_niveau_scolaire" and IDindividu not in (0, None) :
-                regroupement = self.dictInfosIndividus[IDindividu]["SCOLARITE_NOM_NIVEAU"]
-                labelRegroupement = regroupement
+                if key_code == "age" and IDindividu not in (0, None) :
+                    key = self.dictInfosIndividus[IDindividu]["INDIVIDU_AGE_INT"]
+                    key_label = str(key)
 
-            if self.mode_regroupement == "regime":
-                regroupement = self.dictInfosFamilles[IDfamille]["FAMILLE_NOM_REGIME"]
-                labelRegroupement = regroupement
+                if key_code == "nom_ecole" and IDindividu not in (0, None) :
+                    key = self.dictInfosIndividus[IDindividu]["SCOLARITE_NOM_ECOLE"]
+                    key_label = key
 
-            if self.mode_regroupement == "caisse":
-                regroupement = self.dictInfosFamilles[IDfamille]["FAMILLE_NOM_CAISSE"]
-                labelRegroupement = regroupement
+                if key_code == "nom_classe" and IDindividu not in (0, None) :
+                    key = self.dictInfosIndividus[IDindividu]["SCOLARITE_NOM_CLASSE"]
+                    key_label = key
 
-            # QF
-            if self.mode_regroupement.startswith("qf"):
-                regroupement = None
-                if self.dictInfosFamilles[IDfamille].has_key("FAMILLE_QF_ACTUEL_INT"):
-                    qf = self.dictInfosFamilles[IDfamille]["FAMILLE_QF_ACTUEL_INT"]
+                if key_code == "nom_niveau_scolaire" and IDindividu not in (0, None) :
+                    key = self.dictInfosIndividus[IDindividu]["SCOLARITE_NOM_NIVEAU"]
+                    key_label = key
 
-                    # Tranches de 100
-                    if self.mode_regroupement == "qf_100" :
-                        for x in range(0, 10000, 100):
-                            min, max = x, x + 99
-                            if qf >= min and qf <= max:
-                                regroupement = (min, max)
-                                labelRegroupement = "%s - %s" % (min, max)
+                if key_code == "regime":
+                    key = self.dictInfosFamilles[IDfamille]["FAMILLE_NOM_REGIME"]
+                    key_label = key
 
-                    # Tranches paramétrées
-                    if self.mode_regroupement == "qf_tarifs" :
-                        for min, max in liste_tranches :
-                            if qf >= min and qf <= max:
-                                regroupement = (min, max)
-                                labelRegroupement = "%s - %s" % (min, max)
+                if key_code == "caisse":
+                    key = self.dictInfosFamilles[IDfamille]["FAMILLE_NOM_CAISSE"]
+                    key_label = key
 
+                # QF
+                if key_code.startswith("qf"):
+                    key = None
+                    if self.dictInfosFamilles[IDfamille].has_key("FAMILLE_QF_ACTUEL_INT"):
+                        qf = self.dictInfosFamilles[IDfamille]["FAMILLE_QF_ACTUEL_INT"]
 
-            # Questionnaires
-            if self.mode_regroupement.startswith("question_") and "famille" in self.mode_regroupement:
-                regroupement = self.dictInfosFamilles[IDfamille]["QUESTION_%s" % self.mode_regroupement[17:]]
-                labelRegroupement = unicode(regroupement)
+                        # Tranches de 100
+                        if key_code == "qf_100" :
+                            for x in range(0, 10000, 100):
+                                min, max = x, x + 99
+                                if qf >= min and qf <= max:
+                                    key = (min, max)
+                                    key_label = "%s - %s" % (min, max)
 
-            if self.mode_regroupement.startswith("question_") and "individu" in self.mode_regroupement and IDindividu not in (0, None) :
-                regroupement = self.dictInfosIndividus[IDindividu]["QUESTION_%s" % self.mode_regroupement[18:]]
-                labelRegroupement = unicode(regroupement)
-
-            if regroupement in ("", None) :
-                regroupement = _(u"- Autre -")
-                labelRegroupement = regroupement
+                        # Tranches paramétrées
+                        if key_code == "qf_tarifs" :
+                            for min, max in liste_tranches :
+                                if qf >= min and qf <= max:
+                                    key = (min, max)
+                                    key_label = "%s - %s" % (min, max)
 
 
+                # Questionnaires
+                if key_code.startswith("question_") and "famille" in key_code:
+                    key = self.dictInfosFamilles[IDfamille]["QUESTION_%s" % key_code[17:]]
+                    key_label = unicode(key)
 
+                if key_code.startswith("question_") and "individu" in key_code and IDindividu not in (0, None) :
+                    key = self.dictInfosIndividus[IDindividu]["QUESTION_%s" % key_code[18:]]
+                    key_label = unicode(key)
+
+                if key in ("", None) :
+                    key = _(u"- Autre -")
+                    key_label = key
+
+                return key, key_label
+
+            # Création des keys de regroupements
+            regroupement, labelRegroupement = GetKey(self.key_colonne)
+            key1, key1_label = GetKey(self.key_ligne1)
+            key2, key2_label = GetKey(self.key_ligne2)
 
             # Mémorisation du regroupement
             if regroupement not in listeRegroupements :
                 listeRegroupements.append(regroupement)
                 dictLabelsRegroupements[regroupement] = labelRegroupement
-                
+
+
             # Total
-            if dictPrestations.has_key(label) == False :
-                dictPrestations[label] = {"nbre" : 0, "facture" : 0.0, "regle" : 0.0, "impaye" : 0.0, "regroupements" : {} }
-            dictPrestations[label]["nbre"] += 1
-            dictPrestations[label]["facture"] += montant
+            if dictPrestations.has_key(key1) == False :
+                dictPrestations[key1] = {"label" : key1_label, "nbre" : 0, "facture" : 0.0, "regle" : 0.0, "impaye" : 0.0, "regroupements" : {} }
+            dictPrestations[key1]["nbre"] += 1
+            dictPrestations[key1]["facture"] += montant
             
             # Détail par période
-            if dictPrestations[label]["regroupements"].has_key(regroupement) == False :
-                dictPrestations[label]["regroupements"][regroupement] = {"nbre" : 0, "facture" : 0.0, "regle" : 0.0, "impaye" : 0.0, "categories" : {} }
-            dictPrestations[label]["regroupements"][regroupement]["nbre"] += 1
-            dictPrestations[label]["regroupements"][regroupement]["facture"] += montant
+            if dictPrestations[key1]["regroupements"].has_key(regroupement) == False :
+                dictPrestations[key1]["regroupements"][regroupement] = {"nbre" : 0, "facture" : 0.0, "regle" : 0.0, "impaye" : 0.0, "key2" : {} }
+            dictPrestations[key1]["regroupements"][regroupement]["nbre"] += 1
+            dictPrestations[key1]["regroupements"][regroupement]["facture"] += montant
             
             # Détail par catégorie de tarifs
-            if dictPrestations[label]["regroupements"][regroupement]["categories"].has_key(IDcategorie_tarif) == False :
-                dictPrestations[label]["regroupements"][regroupement]["categories"][IDcategorie_tarif] = {"nbre" : 0, "facture" : 0.0, "regle" : 0.0, "impaye" : 0.0}
-            dictPrestations[label]["regroupements"][regroupement]["categories"][IDcategorie_tarif]["nbre"] += 1
-            dictPrestations[label]["regroupements"][regroupement]["categories"][IDcategorie_tarif]["facture"] += montant
+            if dictPrestations[key1]["regroupements"][regroupement]["key2"].has_key(key2) == False :
+                dictPrestations[key1]["regroupements"][regroupement]["key2"][key2] = {"label" : key2_label, "nbre" : 0, "facture" : 0.0, "regle" : 0.0, "impaye" : 0.0}
+            dictPrestations[key1]["regroupements"][regroupement]["key2"][key2]["nbre"] += 1
+            dictPrestations[key1]["regroupements"][regroupement]["key2"][key2]["facture"] += montant
             
             # Ajoute la ventilation
             if dictVentilation.has_key(IDprestation) :
-                dictPrestations[label]["regle"] += dictVentilation[IDprestation]
-                dictPrestations[label]["regroupements"][regroupement]["regle"] += dictVentilation[IDprestation]
-                dictPrestations[label]["regroupements"][regroupement]["categories"][IDcategorie_tarif]["regle"] += dictVentilation[IDprestation]
+                dictPrestations[key1]["regle"] += dictVentilation[IDprestation]
+                dictPrestations[key1]["regroupements"][regroupement]["regle"] += dictVentilation[IDprestation]
+                dictPrestations[key1]["regroupements"][regroupement]["key2"][key2]["regle"] += dictVentilation[IDprestation]
             
             # Calcule les impayés
-            dictPrestations[label]["impaye"] = dictPrestations[label]["regle"] - dictPrestations[label]["facture"]
-            dictPrestations[label]["regroupements"][regroupement]["impaye"] = dictPrestations[label]["regroupements"][regroupement]["regle"] - dictPrestations[label]["regroupements"][regroupement]["facture"]
-            dictPrestations[label]["regroupements"][regroupement]["categories"][IDcategorie_tarif]["impaye"] = dictPrestations[label]["regroupements"][regroupement]["categories"][IDcategorie_tarif]["regle"] - dictPrestations[label]["regroupements"][regroupement]["categories"][IDcategorie_tarif]["facture"]
+            dictPrestations[key1]["impaye"] = dictPrestations[key1]["regle"] - dictPrestations[key1]["facture"]
+            dictPrestations[key1]["regroupements"][regroupement]["impaye"] = dictPrestations[key1]["regroupements"][regroupement]["regle"] - dictPrestations[key1]["regroupements"][regroupement]["facture"]
+            dictPrestations[key1]["regroupements"][regroupement]["key2"][key2]["impaye"] = dictPrestations[key1]["regroupements"][regroupement]["key2"][key2]["regle"] - dictPrestations[key1]["regroupements"][regroupement]["key2"][key2]["facture"]
 
         listeRegroupements.sort()
 
@@ -348,7 +401,6 @@ class CTRL(HTL.HyperTreeList):
         dlgAttente = wx.BusyInfo(_(u"Recherche des données..."), self)
 
         # Importation des données
-        dictCategoriesTarifs = self.Importation_categories() 
         dictPrestations, listeRegroupements, dictLabelsRegroupements = self.Importation_prestations()
         self.dictImpression = { "entete" : [], "contenu" : [], "total" : [], "coloration" : [] }
         
@@ -373,89 +425,87 @@ class CTRL(HTL.HyperTreeList):
         
         # Création des branches
         
-        # ------------------ Branches prestations -----------------
-        listeLabels = []
-        for label, dictLabel in dictPrestations.iteritems() :
-            listeLabels.append(label)
-        listeLabels.sort()
+        # ------------------ Branches key1 -----------------
+        listeKeys1 = []
+        for key1, dictKey1 in dictPrestations.iteritems() :
+            listeKeys1.append((dictKey1["label"], key1))
+        listeKeys1.sort()
         
-        for label in listeLabels :
-            niveauPrestation = self.AppendItem(self.root, label)
+        for key1_label, key1 in listeKeys1 :
+            niveau1 = self.AppendItem(self.root, key1_label)
             
-            regroupements = dictPrestations[label]["regroupements"].keys()
+            regroupements = dictPrestations[key1]["regroupements"].keys()
             regroupements.sort()
             
-            impressionLigne = [label,] 
-            if self.affichage_details == True :
+            impressionLigne = [key1_label,]
+            if self.key_ligne2 != "" :
                 self.dictImpression["coloration"].append(len(self.dictImpression["contenu"]))
             
             # Colonnes périodes
             for regroupement in listeRegroupements :
-                if dictPrestations[label]["regroupements"].has_key(regroupement) :
-                    valeur = dictPrestations[label]["regroupements"][regroupement][mode_affichage]
+                if dictPrestations[key1]["regroupements"].has_key(regroupement) :
+                    valeur = dictPrestations[key1]["regroupements"][regroupement][mode_affichage]
                     if "nbre" in mode_affichage : 
                         texte = str(int(valeur))
                     else:
                         texte = u"%.2f %s" % (valeur, SYMBOLE)
-                    self.SetItemText(niveauPrestation, texte, dictColonnes[regroupement])
+                    self.SetItemText(niveau1, texte, dictColonnes[regroupement])
                     impressionLigne.append(texte)
                 else:
                     impressionLigne.append("")
             
             # Colonne Total
-            valeur = dictPrestations[label][mode_affichage]
+            valeur = dictPrestations[key1][mode_affichage]
             if "nbre" in mode_affichage : 
                 texte = str(int(valeur))
             else:
                 texte = u"%.2f %s" % (valeur, SYMBOLE)
-            self.SetItemText(niveauPrestation, texte, dictColonnes["total"])
+            self.SetItemText(niveau1, texte, dictColonnes["total"])
             impressionLigne.append(texte)
             
             self.dictImpression["contenu"].append(impressionLigne)
             
-            # ----------------- Branches catégories -------------
-            listeCategories = []
-            for regroupement in regroupements :
-                for IDcategorie_tarif in dictPrestations[label]["regroupements"][regroupement]["categories"].keys() :
-                    if IDcategorie_tarif == None or dictCategoriesTarifs.has_key(IDcategorie_tarif) == False : 
-                        nomCategorie = _(u"Sans catégorie")
-                    else: 
-                        nomCategorie = u"%s - %s" % (dictCategoriesTarifs[IDcategorie_tarif]["nomActivite"], dictCategoriesTarifs[IDcategorie_tarif]["nomCategorie"])
-                    if (nomCategorie, IDcategorie_tarif) not in listeCategories :
-                        listeCategories.append((nomCategorie, IDcategorie_tarif))
-            listeCategories.sort()
+            # ----------------- Branches key2 -------------
 
-            for nomCategorie, IDcategorie_tarif in listeCategories :
-                if self.affichage_details == True :
-                    niveauCategorie = self.AppendItem(niveauPrestation, nomCategorie)
-                    self.SetItemFont(niveauCategorie, wx.Font(7, wx.SWISS, wx.NORMAL, wx.NORMAL))
-                    self.SetItemTextColour(niveauCategorie, wx.Colour(160, 160, 160) )
-                    impressionLigne = [nomCategorie,] 
-                
+            listeKeys2 = []
+            for regroupement in regroupements:
+                for key2, dictKey2 in dictPrestations[key1]["regroupements"][regroupement]["key2"].iteritems():
+                    key = (dictKey2["label"], key2)
+                    if key not in listeKeys2:
+                        listeKeys2.append(key)
+            listeKeys2.sort()
+
+            for key2_label, key2 in listeKeys2 :
+                if self.key_ligne2 != "" :
+                    niveau2 = self.AppendItem(niveau1, key2_label)
+                    self.SetItemFont(niveau2, wx.Font(7, wx.SWISS, wx.NORMAL, wx.NORMAL))
+                    self.SetItemTextColour(niveau2, wx.Colour(160, 160, 160) )
+                    impressionLigne = [key2_label,]
+
                 # Colonnes périodes
                 totalLigne = 0.0
                 for regroupement in listeRegroupements :
                     texte = None
-                    if dictPrestations[label]["regroupements"].has_key(regroupement) :
-                        if dictPrestations[label]["regroupements"][regroupement]["categories"].has_key(IDcategorie_tarif) :
-                            valeur = dictPrestations[label]["regroupements"][regroupement]["categories"][IDcategorie_tarif][mode_affichage]
+                    if dictPrestations[key1]["regroupements"].has_key(regroupement) :
+                        if dictPrestations[key1]["regroupements"][regroupement]["key2"].has_key(key2) :
+                            valeur = dictPrestations[key1]["regroupements"][regroupement]["key2"][key2][mode_affichage]
                             totalLigne += valeur
                             if "nbre" in mode_affichage : 
                                 texte = str(int(valeur))
                             else:
                                 texte = u"%.2f %s" % (valeur, SYMBOLE)
-                            if self.affichage_details == True :
-                                self.SetItemText(niveauCategorie, texte, dictColonnes[regroupement])
+                            if self.key_ligne2 != "" :
+                                self.SetItemText(niveau2, texte, dictColonnes[regroupement])
                                 impressionLigne.append(texte)
-                    if texte == None and self.affichage_details == True : impressionLigne.append("")
+                    if texte == None and self.key_ligne2 != "" : impressionLigne.append("")
                         
                 # Colonne Total
-                if self.affichage_details == True :
+                if self.key_ligne2 != "" :
                     if "nbre" in mode_affichage : 
                         texte = str(int(totalLigne))
                     else:
                         texte = u"%.2f %s" % (totalLigne, SYMBOLE)
-                    self.SetItemText(niveauCategorie, texte, dictColonnes["total"])
+                    self.SetItemText(niveau2, texte, dictColonnes["total"])
                     impressionLigne.append(texte)
                     
                     self.dictImpression["contenu"].append(impressionLigne)
@@ -469,22 +519,23 @@ class CTRL(HTL.HyperTreeList):
         
         dictTotal = {}
         totalRegroupements = {}
-        for label in listeLabels :
-            for regroupement, dictRegroupement in dictPrestations[label]["regroupements"].iteritems() :
-                for IDcategorie_tarif, dictCategories in dictRegroupement["categories"].iteritems() :
-                    if dictTotal.has_key(IDcategorie_tarif) == False :
-                        dictTotal[IDcategorie_tarif] = {}
-                    if dictTotal[IDcategorie_tarif].has_key(regroupement) == False :
-                        dictTotal[IDcategorie_tarif][regroupement] = 0.0
-                    dictTotal[IDcategorie_tarif][regroupement] += dictCategories[mode_affichage]
+        dictLabelsKey2 = {}
+        for key1_label, key1 in listeKeys1 :
+            for regroupement, dictRegroupement in dictPrestations[key1]["regroupements"].iteritems() :
+                for key2, dictKey2 in dictRegroupement["key2"].iteritems() :
+                    dictLabelsKey2[key2] = dictKey2["label"]
+                    if dictTotal.has_key(key2) == False :
+                        dictTotal[key2] = {}
+                    if dictTotal[key2].has_key(regroupement) == False :
+                        dictTotal[key2][regroupement] = 0.0
+                    dictTotal[key2][regroupement] += dictKey2[mode_affichage]
                 
                     if totalRegroupements.has_key(regroupement) == False :
                         totalRegroupements[regroupement] = 0.0
-                    totalRegroupements[regroupement] += dictCategories[mode_affichage]
+                    totalRegroupements[regroupement] += dictKey2[mode_affichage]
         
         totalLigne = 0.0
         for regroupement in listeRegroupements :
-##        for regroupement, valeur in totalRegroupements.iteritems() :
             valeur = totalRegroupements[regroupement]
             totalLigne += valeur
             if "nbre" in mode_affichage : 
@@ -503,32 +554,28 @@ class CTRL(HTL.HyperTreeList):
         
         self.dictImpression["total"].append(impressionLigne)
         
-        if self.affichage_details == True :
+        if self.key_ligne2 != "" and self.affichage_details_total == True:
             
-            # Tri des catégories
-            listeCategories = []
-            for IDcategorie_tarif in dictTotal.keys() :
-                if IDcategorie_tarif == None or dictCategoriesTarifs.has_key(IDcategorie_tarif) == False : 
-                    nomCategorie = _(u"Sans catégorie")
-                else: 
-                    nomCategorie = u"%s - %s" % (dictCategoriesTarifs[IDcategorie_tarif]["nomActivite"], dictCategoriesTarifs[IDcategorie_tarif]["nomCategorie"])
-                listeCategories.append((nomCategorie, IDcategorie_tarif))
-            listeCategories.sort()
-            
-            for nomCategorie, IDcategorie_tarif in listeCategories :
-                niveauCategorie = self.AppendItem(niveauTotal, nomCategorie)
+            # Tri des key2
+            listeKey2 = []
+            for key2 in dictTotal.keys() :
+                listeKey2.append((dictLabelsKey2[key2], key2))
+            listeKey2.sort()
+
+            for key2_label, key2 in listeKey2 :
+                niveauCategorie = self.AppendItem(niveauTotal, key2_label)
                 self.SetItemFont(niveauCategorie, wx.Font(7, wx.SWISS, wx.NORMAL, wx.NORMAL))
                 self.SetItemTextColour(niveauCategorie, wx.Colour(120, 120, 120) )
                 self.SetItemBackgroundColour(niveauCategorie, wx.Colour(210, 210, 210) )
                 
-                impressionLigne = [nomCategorie,]
+                impressionLigne = [key2_label,]
                 
                 totalLigne = 0.0
                 for regroupement in listeRegroupements :
                     texte = None
-                    if dictTotal.has_key(IDcategorie_tarif) :
-                        if dictTotal[IDcategorie_tarif].has_key(regroupement) :
-                            valeur = dictTotal[IDcategorie_tarif][regroupement]
+                    if dictTotal.has_key(key2) :
+                        if dictTotal[key2].has_key(regroupement) :
+                            valeur = dictTotal[key2][regroupement]
                             totalLigne += valeur
                             if "nbre" in mode_affichage : 
                                 texte = str(int(valeur))
@@ -557,8 +604,8 @@ class CTRL(HTL.HyperTreeList):
             self.RemoveColumn(indexColonne)
         self.DeleteRoot() 
     
-    def SetAffichageDetails(self, etat=True):
-        self.affichage_details = etat
+    def SetAffichageDetailsTotal(self, etat=True):
+        self.affichage_details_total = etat
 
     def DevelopperTout(self):
         item = self.GetFirstChild(self.root)[0]
@@ -949,7 +996,7 @@ class MyFrame(wx.Frame):
     
     def OnChoix(self, event):
         self.ctrl_stats.mode_affichage = self.choix.GetStringSelection()
-        self.ctrl_stats.mode_regroupement = self.regroupement.GetStringSelection()
+        self.ctrl_stats.key_colonne = self.regroupement.GetStringSelection()
         self.ctrl_stats.MAJ() 
     
     def OnBoutonImprimer(self, event):
