@@ -10,7 +10,7 @@
 
 
 import Chemins
-from Utils import UTILS_Adaptations
+from Utils import UTILS_Adaptations, UTILS_Prestations
 from Utils.UTILS_Traduction import _
 """
 IMPORTANT :
@@ -5372,15 +5372,10 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 
         # ------------- Suppression des prestations et déductions à supprimer ------------------
         
-        # Version optimisée
-        if len(self.listePrestationsSupprimees) > 0 :
-            if len(self.listePrestationsSupprimees) == 1 : 
-                conditionSuppression = "(%d)" % self.listePrestationsSupprimees[0]
-            else : 
-                conditionSuppression = str(tuple(self.listePrestationsSupprimees))
-            DB.ExecuterReq("DELETE FROM prestations WHERE IDprestation IN %s" % conditionSuppression)
-            DB.ExecuterReq("DELETE FROM ventilation WHERE IDprestation IN %s" % conditionSuppression)
-            DB.ExecuterReq("DELETE FROM deductions WHERE IDprestation IN %s" % conditionSuppression)
+        # Annuler la prestation et supprimer les déductions
+        for prestation_id in self.listePrestationsSupprimees:
+            UTILS_Prestations.annuler(prestation_id)
+            DB.ReqDEL("deductions", "IDprestation", prestation_id)
 
         # --------------- Sauvegarde du DictConso --------------------
         listeAjouts = []

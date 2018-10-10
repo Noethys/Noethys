@@ -25,6 +25,7 @@ from Utils import UTILS_Historique
 from Utils import UTILS_Identification
 from Utils import UTILS_Divers
 from Utils import UTILS_Gestion
+from Utils import UTILS_Prestations
 
 
 def DateEngFr(textDate):
@@ -951,7 +952,7 @@ class CTRL_Parametres(wx.Panel):
         label_prestation = self.ctrl_label.GetValue()
         IDcompte_payeur = self.ctrl_payeur.GetIDcompte_payeur()
         IDfamille_payeur = self.ctrl_payeur.GetIDfamille()
-        IDprestation = self.IDprestation
+        nouvelId = None
 
         if facturer == True:
 
@@ -965,19 +966,17 @@ class CTRL_Parametres(wx.Panel):
                 ("montant", montant),
                 ("IDfamille", IDfamille_payeur),
                 ("IDindividu", IDindividu),
+                ("date_valeur", str(datetime.date.today())),
             ]
-            if IDprestation == None:
-                listeDonnees.append(("date_valeur", str(datetime.date.today())))
-                IDprestation = DB.ReqInsert("prestations", listeDonnees)
-            else:
-                DB.ReqMAJ("prestations", listeDonnees, "IDprestation", IDprestation)
+            nouvelId = DB.ReqInsert("prestations", listeDonnees)
+            if self.IDprestation is not None:
 
                 # Recherche si cette prestation a déjà été ventilée sur un règlement
                 req = """SELECT IDventilation, ventilation.montant
                 FROM ventilation
                 LEFT JOIN reglements ON reglements.IDreglement = ventilation.IDreglement
                 WHERE IDprestation=%d
-                ORDER BY reglements.date;""" % IDprestation
+                ORDER BY reglements.date;""" % self.IDprestation
                 DB.ExecuterReq(req)
                 listeVentilations = DB.ResultatReq()
                 montantVentilation = 0.0
@@ -996,17 +995,20 @@ class CTRL_Parametres(wx.Panel):
                             else:
                                 DB.ReqDEL("ventilation", "IDventilation", IDventilation)
 
+                # Migrer les ventilations, s'il y en a, à la nouvelle prestation
+                req = """
+                UPDATE ventilation
+                SET IDprestation = %d
+                WHERE IDprestation = %d
+                """ % (nouvelId, self.IDprestation)
+                DB.ExecuterReq(req)
 
-        else:
-
-            # Suppression d'une prestation précédemment créée
-            if IDprestation != None:
-                DB.ReqDEL("prestations", "IDprestation", IDprestation)
-                DB.ReqDEL("ventilation", "IDprestation", IDprestation)
-                IDprestation = None
+        if self.IDprestation is not None:
+            # Si une prestation existe déjà, créer une prestation d'annulation
+            UTILS_Prestations.annuler(self.IDprestation, DB)
 
         # Insertion du IDprestation dans la cotisation
-        DB.ReqMAJ("cotisations", [("IDprestation", IDprestation), ], "IDcotisation", self.IDcotisation)
+        DB.ReqMAJ("cotisations", [("IDprestation", nouvelId), ], "IDcotisation", self.IDcotisation)
 
         DB.Close()
 

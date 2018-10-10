@@ -10,7 +10,7 @@
 
 
 import Chemins
-from Utils import UTILS_Adaptations
+from Utils import UTILS_Adaptations, UTILS_Prestations
 from Utils.UTILS_Traduction import _
 import wx
 from Ctrl import CTRL_Bouton_image
@@ -827,7 +827,20 @@ class Dialog(wx.Dialog):
         DB = GestionDB.DB()
         
         # Recherche si cette prestation a déjà été ventilée sur un règlement
-        if self.IDprestation != None :
+        if self.IDprestation is not None:
+            # Avertir l'utilisateur qu'il s'agit d'un ajout de deux prestations, et demander son accord
+            msg = u"Pour préserver l'intégrité des états comptables, " \
+                u"cette modification engendrerait deux nouvelles prestations: " \
+                u"une d'annulation et une autre avec les nouvelles valeurs que vous venez de saisir. " \
+                u"La prestation d'origine reste intacte.\n" \
+                u"Voulez-vous continuer ?"
+            dlg = wx.MessageDialog(self, _(msg), _(u"Confirmation"), wx.YES_NO | wx.ICON_QUESTION)
+            reponse = dlg.ShowModal()
+            dlg.Destroy()
+            if reponse != wx.ID_YES:
+                self.ctrl_label.SetFocus()
+                DB.Close()
+                return
             req = """SELECT IDventilation, ventilation.montant
             FROM ventilation
             LEFT JOIN reglements ON reglements.IDreglement = ventilation.IDreglement
@@ -867,14 +880,22 @@ class Dialog(wx.Dialog):
                 ("IDcategorie_tarif", IDcategorie_tarif),
                 ("code_compta", code_comptable),
                 ("tva", tva),
+                ("date_valeur", str(datetime.date.today()))
             ]
-        if self.IDprestation == None :
-            listeDonnees.append(("date_valeur", str(datetime.date.today())))
-            self.IDprestation = DB.ReqInsert("prestations", listeDonnees)
-        else:
-            DB.ReqMAJ("prestations", listeDonnees, "IDprestation", self.IDprestation)
+        nouvelId = DB.ReqInsert("prestations", listeDonnees)
+        if self.IDprestation is not None:
+            # Migrer les ventilations, s'il y en a, à la nouvelle prestation
+            req = """
+            UPDATE ventilation
+            SET IDprestation = %d
+            WHERE IDprestation = %d
+            """ % (nouvelId, self.IDprestation)
+            DB.ExecuterReq(req)
+            # Si une prestation existe déjà, créer une prestation d'annulation
+            UTILS_Prestations.annuler(self.IDprestation, DB)
+        self.IDprestation = nouvelId
         DB.Close()
-        
+
         # Sauvegarde des déductions
         self.ctrl_deductions.Sauvegarde(IDprestation=self.IDprestation)        
         

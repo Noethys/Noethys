@@ -10,7 +10,7 @@
 
 
 import Chemins
-from Utils import UTILS_Adaptations
+from Utils import UTILS_Adaptations, UTILS_Prestations
 from Utils.UTILS_Traduction import _
 import wx
 from Ctrl import CTRL_Bouton_image
@@ -463,8 +463,8 @@ class ListView(FastObjectListView):
 
         # Demande de confirmation
         if len(listePrestationsForfait) == 0 : texteForfait = u""
-        elif len(listePrestationsForfait) == 1 : texteForfait = _(u"\n\n(La prestation associée sera également supprimée)")
-        else : texteForfait = _(u"\n\n(Les %d prestations associées seront également supprimées)") % len(listePrestationsForfait)
+        elif len(listePrestationsForfait) == 1 : texteForfait = _(u"\n\n(La prestation associée sera annulée)")
+        else : texteForfait = _(u"\n\n(Les %d prestations associées seront annulées)") % len(listePrestationsForfait)
         dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer cette inscription ?%s") % texteForfait, _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         if dlg.ShowModal() == wx.ID_YES :
             IDinscription = self.Selection()[0].IDinscription
@@ -472,10 +472,9 @@ class ListView(FastObjectListView):
             DB.ReqDEL("inscriptions", "IDinscription", IDinscription)
             # Suppression des forfaits associés déjà saisis
             for IDprestation in listePrestationsForfait :
-                DB.ReqDEL("prestations", "IDprestation", IDprestation)
+                UTILS_Prestations.annuler(IDprestation, DB)
                 DB.ReqDEL("consommations", "IDprestation", IDprestation)
                 DB.ReqDEL("deductions", "IDprestation", IDprestation)
-                DB.ReqDEL("ventilation", "IDprestation", IDprestation)
             DB.Close() 
             
             # Mémorise l'action dans l'historique

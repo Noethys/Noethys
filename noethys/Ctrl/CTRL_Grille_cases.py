@@ -891,7 +891,7 @@ class Case():
                         return IDunite
         return None
 
-    def ProtectionsModifSuppr(self, conso=None, modeSilencieux=False):
+    def ProtectionsModifSuppr(self, conso=None, modeSilencieux=False, verifierVentilations=True):
         """ Protections anti modif et suppression de conso """
         # Si la conso est dans une facture, on annule la suppression
         if conso.IDfacture != None :
@@ -939,8 +939,7 @@ class Case():
                 return False
 
         # Regarde si la prestation correspondante est déja payée
-        if self.grid.dictPrestations.has_key(conso.IDprestation) and modeSilencieux == False :
-            montantPrestation = self.grid.dictPrestations[conso.IDprestation]["montant"]
+        if conso.IDprestation in self.grid.dictPrestations and not modeSilencieux and verifierVentilations:
             montantVentilation = self.grid.dictPrestations[conso.IDprestation]["montantVentilation"]
             if montantVentilation > 0.0 :
                 message = _(u"La prestation correspondant à cette consommation a déjà été ventilée sur un règlement.\n\nSouhaitez-vous quand-même modifier ou supprimer cette consommation ? \n\n(Dans ce cas, la ventilation sera supprimée)")
@@ -1133,7 +1132,7 @@ class CaseStandard(Case):
 
         # Protections anti modification et suppression
         conso = self.GetConso()
-        if conso != None and self.ProtectionsModifSuppr(conso, modeSilencieux) == False :
+        if conso and not self.ProtectionsModifSuppr(conso, modeSilencieux, verifierVentilations=False):
             return
         if self.verrouillage == 1 :
             return
