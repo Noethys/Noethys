@@ -137,7 +137,7 @@ class GetValeurs() :
             "date_naiss", "IDpays_naiss", "cp_naiss", "ville_naiss",
             "adresse_auto", "rue_resid", "cp_resid", "ville_resid", 
             "IDcategorie_travail", "profession", "employeur", "travail_tel", "travail_fax", "travail_mail", 
-            "tel_domicile", "tel_mobile", "tel_fax", "mail"
+            "tel_domicile", "tel_mobile", "tel_fax", "mail", "deces",
             )
 
         if len(listeIDindividus) == 0 : conditionIndividus = "()"
@@ -300,7 +300,8 @@ class GetValeurs() :
             dictCadres[IDindividu]["IDrattachement"] = self.dictInfosIndividus[IDindividu]["IDrattachement"]
             dictCadres[IDindividu]["inscriptions"] = self.dictInfosIndividus[IDindividu]["inscriptions"]
             dictCadres[IDindividu]["photo"] = self.dictInfosIndividus[IDindividu]["photo"]
-        
+            dictCadres[IDindividu]["deces"] = self.dictInfosIndividus[IDindividu]["deces"]
+
         return dictCadres
     
     def GetDictInfoBulles(self):
@@ -361,7 +362,7 @@ class GetValeurs() :
 
 
 class CadreIndividu():
-    def __init__(self, parent, dc, IDindividu=None, listeTextes=[], genre="M", photo=None, xCentre=None, yCentre=None, largeur=None, hauteur=None, numCol=None, titulaire=0, calendrierActif=False):
+    def __init__(self, parent, dc, IDindividu=None, listeTextes=[], genre="M", photo=None, xCentre=None, yCentre=None, largeur=None, hauteur=None, numCol=None, titulaire=0, calendrierActif=False, deces=0):
         self.parent = parent
         self.zoom = 1
         self.zoomContenu = True
@@ -370,6 +371,7 @@ class CadreIndividu():
         self.survolCadre = False
         self.calendrierActif = calendrierActif
         self.survolCalendrier = False
+        self.deces = deces
         
         self.IDindividu = IDindividu
         self.dc = dc
@@ -415,6 +417,10 @@ class CadreIndividu():
         else:
             couleurFondHautCadre = (251, 212, 239)
             couleurFondBasCadre = (253, 193, 235)
+        if self.deces in (True, 1):
+            couleurFondHautCadre = (180, 180, 180)
+            couleurFondBasCadre = (150, 150, 150)
+
         couleurBordCadre = (0, 0, 0)
         couleurSelectionCadre = (133, 236, 90)
         paddingCadre = 8*self.zoomContenuRatio
@@ -723,7 +729,8 @@ class CTRL_Graphique(wx.ScrolledWindow):
                 titulaire = self.dictCadres[IDindividu]["titulaire"] 
                 calendrierActif = self.dictCadres[IDindividu]["inscriptions"]
                 photo = self.dictCadres[IDindividu]["photo"]
-                cadre = CadreIndividu(self, dc, IDindividu, listeTextes, genre, photo, xCentre, yCentre, largeurCase, hauteurCase, numCol, titulaire, calendrierActif)
+                deces = self.dictCadres[IDindividu]["deces"]
+                cadre = CadreIndividu(self, dc, IDindividu, listeTextes, genre, photo, xCentre, yCentre, largeurCase, hauteurCase, numCol, titulaire, calendrierActif, deces)
                 self.dictCadres[IDindividu]["ctrl"] = cadre
                 yCentre += hauteurCase + espaceVertical
             
