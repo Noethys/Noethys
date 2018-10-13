@@ -94,13 +94,29 @@ class Barre(object):
         reponse = dlg.ShowModal()
         dlg.Destroy()
         if reponse == wx.ID_OK:
-            self.parent.MAJ()
+            self.parent.MAJ(select_location=self.IDlocation)
 
     def Supprimer(self, event=None):
         from Ol.OL_Locations import Supprimer_location
         resultat = Supprimer_location(self.parent, IDlocation=self.IDlocation)
         if resultat == True :
             self.parent.MAJ()
+
+    def Dupliquer(self, event=None):
+        DB = GestionDB.DB()
+
+        # Duplication de la location
+        conditions = "IDlocation=%d" % self.IDlocation
+        dictModifications = {"date_saisie": datetime.date.today(),}
+        newIDlocation = DB.Dupliquer("locations", "IDlocation", conditions, dictModifications)
+
+        # Duplication de la prestation
+        conditions = "IDdonnee=%d" % self.IDlocation
+        dictModifications = {"IDdonnee": newIDlocation}
+        newIDprestation = DB.Dupliquer("prestations", "IDlocation", conditions, dictModifications)
+
+        DB.Close()
+        self.parent.MAJ(select_location=newIDlocation)
 
     def GetTexteStatusBar(self):
         debut = UTILS_Dates.DatetimeEnFr(self.date_debut)
@@ -620,7 +636,7 @@ class CTRL_Tableau(wx.Panel):
             barre = Barre(self, donnees=item)
             self.liste_barres.append(barre)
 
-    def MAJ(self, reinit_scroll_h=False, reinit_scroll_v=False):
+    def MAJ(self, reinit_scroll_h=False, reinit_scroll_v=False, select_location=None):
         # Importation
         self.Importation()
 
@@ -648,6 +664,15 @@ class CTRL_Tableau(wx.Panel):
         # self.parent.scrollbar_v.SetScrollPos(wx.VERTICAL, posScrollV)
 
         self.parent.ctrl_infos_2.SetTexte("")
+
+        # Sélection selon IDlocation
+        if select_location != None:
+            for barre in self.liste_barres:
+                if barre.IDlocation == select_location:
+                    self.barre_selectionnee = barre
+                    self.MajTexteInfos2()
+                    break
+
         self.Redraw()
 
     def CreateBuffer(self):
@@ -763,6 +788,15 @@ class CTRL_Tableau(wx.Panel):
                 menuPop.AppendItem(item)
                 self.Bind(wx.EVT_MENU, barre.Supprimer, id=30)
 
+                menuPop.AppendSeparator()
+
+                # Item Dupliquer
+                item = wx.MenuItem(menuPop, 40, _(u"Dupliquer"))
+                bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Dupliquer.png"), wx.BITMAP_TYPE_PNG)
+                item.SetBitmap(bmp)
+                menuPop.AppendItem(item)
+                self.Bind(wx.EVT_MENU, barre.Dupliquer, id=40)
+
             self.PopupMenu(menuPop)
             menuPop.Destroy()
 
@@ -789,9 +823,10 @@ class CTRL_Tableau(wx.Panel):
         dlg = DLG_Saisie_location.Dialog(self, IDproduit=IDproduit)
         dlg.SetDebut(heure_debut)
         reponse = dlg.ShowModal()
+        IDlocation = dlg.GetIDlocation()
         dlg.Destroy()
         if reponse == wx.ID_OK:
-            self.MAJ()
+            self.MAJ(select_location=IDlocation)
 
     def SetCurseur(self, region=None):
         """ Change la forme du curseur lors d'un dragging """
