@@ -218,21 +218,26 @@ class CTRL(HTL.HyperTreeList):
             def GetKey(key_code=""):
                 key = None
                 key_label = ""
+                key_tri = None
 
                 if key_code == "jour":
                     key = date
+                    key_tri = key
                     key_label = UTILS_Dates.DateEngFr(date)
 
                 if key_code == "mois":
                     key = (annee, mois)
+                    key_tri = key
                     key_label = PeriodeComplete(mois, annee)
 
                 if key_code == "annee":
                     key = annee
+                    key_tri = key
                     key_label = str(annee)
 
                 if key_code == "label_prestation":
                     key = label
+                    key_tri = label
                     key_label = label
 
                 if key_code == "activite":
@@ -241,6 +246,7 @@ class CTRL(HTL.HyperTreeList):
                         key_label = _(u"Activité inconnue")
                     else:
                         key_label = self.dictActivites[IDactivite]["nom"]
+                    key_tri = key_label
 
                 if key_code == "categorie_tarif":
                     key = IDcategorie_tarif
@@ -248,6 +254,7 @@ class CTRL(HTL.HyperTreeList):
                         key_label = _(u"Sans catégorie")
                     else:
                         key_label = self.dictCategoriesTarifs[IDcategorie_tarif]["nomCategorie"]
+                    key_tri = key_label
 
                 if key_code == "famille":
                     key = IDfamille
@@ -255,6 +262,7 @@ class CTRL(HTL.HyperTreeList):
                         key_label = _(u"Famille inconnue")
                     else:
                         key_label = self.dict_titulaires[IDfamille]["titulairesSansCivilite"]
+                    key_tri = key_label
 
                 if key_code == "individu":
                     key = IDindividu
@@ -262,38 +270,47 @@ class CTRL(HTL.HyperTreeList):
                         key_label = _(u"Individu inconnu")
                     else:
                         key_label = self.dictIndividus[IDindividu]["nom_complet"]
+                    key_tri = key_label
 
                 if key_code == "ville_residence" and IDindividu not in (0, None) :
                     key = self.dictInfosIndividus[IDindividu]["INDIVIDU_VILLE"]
                     key_label = key
+                    key_tri = key
 
                 if key_code == "secteur" and IDindividu not in (0, None) :
                     key = self.dictInfosIndividus[IDindividu]["INDIVIDU_SECTEUR"]
                     key_label = key
+                    key_tri = key
 
                 if key_code == "age" and IDindividu not in (0, None) :
                     key = self.dictInfosIndividus[IDindividu]["INDIVIDU_AGE_INT"]
                     key_label = str(key)
+                    key_tri = key
 
                 if key_code == "nom_ecole" and IDindividu not in (0, None) :
                     key = self.dictInfosIndividus[IDindividu]["SCOLARITE_NOM_ECOLE"]
                     key_label = key
+                    key_tri = key
 
                 if key_code == "nom_classe" and IDindividu not in (0, None) :
                     key = self.dictInfosIndividus[IDindividu]["SCOLARITE_NOM_CLASSE"]
                     key_label = key
+                    key_tri = key
 
                 if key_code == "nom_niveau_scolaire" and IDindividu not in (0, None) :
                     key = self.dictInfosIndividus[IDindividu]["SCOLARITE_NOM_NIVEAU"]
                     key_label = key
+                    key_tri = key
 
                 if key_code == "regime":
                     key = self.dictInfosFamilles[IDfamille]["FAMILLE_NOM_REGIME"]
                     key_label = key
+                    key_tri = key
 
                 if key_code == "caisse":
                     key = self.dictInfosFamilles[IDfamille]["FAMILLE_NOM_CAISSE"]
                     key_label = key
+                    key_tri = key
 
                 # QF
                 if key_code.startswith("qf"):
@@ -307,6 +324,7 @@ class CTRL(HTL.HyperTreeList):
                                 min, max = x, x + 99
                                 if qf >= min and qf <= max:
                                     key = (min, max)
+                                    key_tri = key
                                     key_label = "%s - %s" % (min, max)
 
                         # Tranches paramétrées
@@ -314,6 +332,7 @@ class CTRL(HTL.HyperTreeList):
                             for min, max in liste_tranches :
                                 if qf >= min and qf <= max:
                                     key = (min, max)
+                                    key_tri = key
                                     key_label = "%s - %s" % (min, max)
 
 
@@ -321,21 +340,24 @@ class CTRL(HTL.HyperTreeList):
                 if key_code.startswith("question_") and "famille" in key_code:
                     key = self.dictInfosFamilles[IDfamille]["QUESTION_%s" % key_code[17:]]
                     key_label = unicode(key)
+                    key_tri = key_label
 
                 if key_code.startswith("question_") and "individu" in key_code and IDindividu not in (0, None) :
                     key = self.dictInfosIndividus[IDindividu]["QUESTION_%s" % key_code[18:]]
                     key_label = unicode(key)
+                    key_tri = key_label
 
                 if key in ("", None) :
                     key = _(u"- Autre -")
                     key_label = key
+                    key_tri = key_label
 
-                return key, key_label
+                return key, key_label, key_tri
 
             # Création des keys de regroupements
-            regroupement, labelRegroupement = GetKey(self.key_colonne)
-            key1, key1_label = GetKey(self.key_ligne1)
-            key2, key2_label = GetKey(self.key_ligne2)
+            regroupement, labelRegroupement, triRegroupement = GetKey(self.key_colonne)
+            key1, key1_label, key1_tri = GetKey(self.key_ligne1)
+            key2, key2_label, key2_tri = GetKey(self.key_ligne2)
 
             # Mémorisation du regroupement
             if regroupement not in listeRegroupements :
@@ -345,7 +367,7 @@ class CTRL(HTL.HyperTreeList):
 
             # Total
             if dictPrestations.has_key(key1) == False :
-                dictPrestations[key1] = {"label" : key1_label, "nbre" : 0, "facture" : 0.0, "regle" : 0.0, "impaye" : 0.0, "regroupements" : {} }
+                dictPrestations[key1] = {"label" : key1_label, "tri" : key1_tri, "nbre" : 0, "facture" : 0.0, "regle" : 0.0, "impaye" : 0.0, "regroupements" : {} }
             dictPrestations[key1]["nbre"] += 1
             dictPrestations[key1]["facture"] += montant
             
@@ -357,7 +379,7 @@ class CTRL(HTL.HyperTreeList):
             
             # Détail par catégorie de tarifs
             if dictPrestations[key1]["regroupements"][regroupement]["key2"].has_key(key2) == False :
-                dictPrestations[key1]["regroupements"][regroupement]["key2"][key2] = {"label" : key2_label, "nbre" : 0, "facture" : 0.0, "regle" : 0.0, "impaye" : 0.0}
+                dictPrestations[key1]["regroupements"][regroupement]["key2"][key2] = {"label" : key2_label, "tri" : key2_tri, "nbre" : 0, "facture" : 0.0, "regle" : 0.0, "impaye" : 0.0}
             dictPrestations[key1]["regroupements"][regroupement]["key2"][key2]["nbre"] += 1
             dictPrestations[key1]["regroupements"][regroupement]["key2"][key2]["facture"] += montant
             
@@ -428,10 +450,10 @@ class CTRL(HTL.HyperTreeList):
         # ------------------ Branches key1 -----------------
         listeKeys1 = []
         for key1, dictKey1 in dictPrestations.iteritems() :
-            listeKeys1.append((dictKey1["label"], key1))
+            listeKeys1.append((dictKey1["tri"], key1, dictKey1["label"]))
         listeKeys1.sort()
         
-        for key1_label, key1 in listeKeys1 :
+        for key1_tri, key1, key1_label in listeKeys1 :
             niveau1 = self.AppendItem(self.root, key1_label)
             
             regroupements = dictPrestations[key1]["regroupements"].keys()
@@ -470,12 +492,12 @@ class CTRL(HTL.HyperTreeList):
             listeKeys2 = []
             for regroupement in regroupements:
                 for key2, dictKey2 in dictPrestations[key1]["regroupements"][regroupement]["key2"].iteritems():
-                    key = (dictKey2["label"], key2)
+                    key = (dictKey2["tri"], key2, dictKey2["label"])
                     if key not in listeKeys2:
                         listeKeys2.append(key)
             listeKeys2.sort()
 
-            for key2_label, key2 in listeKeys2 :
+            for key2_tri, key2, key2_label in listeKeys2 :
                 if self.key_ligne2 != "" :
                     niveau2 = self.AppendItem(niveau1, key2_label)
                     self.SetItemFont(niveau2, wx.Font(7, wx.SWISS, wx.NORMAL, wx.NORMAL))
@@ -520,7 +542,7 @@ class CTRL(HTL.HyperTreeList):
         dictTotal = {}
         totalRegroupements = {}
         dictLabelsKey2 = {}
-        for key1_label, key1 in listeKeys1 :
+        for key1_tri, key1, key1_label in listeKeys1 :
             for regroupement, dictRegroupement in dictPrestations[key1]["regroupements"].iteritems() :
                 for key2, dictKey2 in dictRegroupement["key2"].iteritems() :
                     dictLabelsKey2[key2] = dictKey2["label"]
@@ -559,10 +581,10 @@ class CTRL(HTL.HyperTreeList):
             # Tri des key2
             listeKey2 = []
             for key2 in dictTotal.keys() :
-                listeKey2.append((dictLabelsKey2[key2], key2))
+                listeKey2.append((key2, dictLabelsKey2[key2]))
             listeKey2.sort()
 
-            for key2_label, key2 in listeKey2 :
+            for key2, key2_label in listeKey2 :
                 niveauCategorie = self.AppendItem(niveauTotal, key2_label)
                 self.SetItemFont(niveauCategorie, wx.Font(7, wx.SWISS, wx.NORMAL, wx.NORMAL))
                 self.SetItemTextColour(niveauCategorie, wx.Colour(120, 120, 120) )
