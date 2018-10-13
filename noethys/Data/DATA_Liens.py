@@ -42,7 +42,14 @@ DICT_TYPES_LIENS = {
     18 : { "M" : u"tuteur", "F" : u"tutrice", "public" : "A", "lien" : 19, "type" : None, "texte" : { "M" : u"est son tuteur", "F" : u"est sa tutrice"} },
     19 : { "M" : u"sous sa tutelle", "F" : u"sous sa tutelle", "public" : "E", "lien" : 18, "type" : None, "texte" : { "M" : u"est sous sa tutelle", "F" : u"est sous sa tutelle"} },
 
-    }
+    20: {"M": u"assistant maternel", "F": u"assistante maternelle", "public": "A", "lien": 21, "type": None, "texte": {"M": u"est son assistant maternel", "F": u"est son assistante maternelle"}},
+    21: {"M": u"sous sa garde", "F": u"sous sa garde", "public": "E", "lien": 20, "type": None, "texte": {"M": u"est sous sa garde", "F": u"est sous sa garde"}},
+
+    22: {"M": u"ami", "F": u"amie", "public": "AE", "lien": 22, "type": None, "texte": {"M": u"est son ami", "F": u"est son amie"}},
+
+    23: {"M": u"voisin", "F": u"voisine", "public": "AE", "lien": 23, "type": None, "texte": {"M": u"est son voisin", "F": u"est sa voisine"}},
+
+}
 
 
 DICT_AUTORISATIONS = {

@@ -304,7 +304,7 @@ class Choice_liens(wx.Choice):
         """ typeIndividu = "A" ou "E" (adulte ou enfant) """
         """ sexeIndividu = "M" ou "F" (masculin ou féminin) """
         """ Lien = ID type lien par défaut """
-        wx.Choice.__init__(self, parent, id=id, size=(140, -1)) 
+        wx.Choice.__init__(self, parent, id=id, size=(160, -1))
         self.parent = parent
         self.IDfamille = IDfamille
         self.IDindividu_objet = IDindividu_objet
@@ -544,7 +544,7 @@ class CTRL_Saisie_Liens(HTL.HyperTreeList):
         self.AddColumn(_(u"Individu"))
         self.SetColumnWidth(0, 230)
         self.AddColumn(_(u"Type de lien"))
-        self.SetColumnWidth(1, 145)
+        self.SetColumnWidth(1, 170)
         self.AddColumn(_(u"Niveau d'autorisation"))
         self.SetColumnWidth(2, 200)
         self.SetMainColumn(0)
