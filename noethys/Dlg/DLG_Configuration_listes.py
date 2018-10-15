@@ -35,7 +35,6 @@ def SauvegardeConfiguration(nomListe=None, listeColonnes=[]):
     
 def RestaurationConfiguration(nomListe=None, listeColonnesDefaut=[]):
     listeColonnesFinale = []
-
     # Mémorise les colonnes par défaut
     dictColonnes = {}
     for col in listeColonnesDefaut :

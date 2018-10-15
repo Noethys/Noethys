@@ -3996,7 +3996,11 @@ class MainFrame(wx.Frame):
             versionLogiciel = self.ConvertVersionTuple(VERSION_APPLICATION)
             if versionAnnonce < versionLogiciel :
                 # Déplace les fichiers exemples vers le répertoire des fichiers de données
-                UTILS_Fichiers.DeplaceExemples()
+                try :
+                    UTILS_Fichiers.DeplaceExemples()
+                except Exception, err:
+                    print "Erreur dans UTILS_Fichiers.DeplaceExemples :"
+                    print (err,)
                 # Affiche le message d'accueil
                 from Dlg import DLG_Message_accueil
                 dlg = DLG_Message_accueil.Dialog(self)

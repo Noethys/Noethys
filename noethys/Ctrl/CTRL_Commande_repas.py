@@ -591,6 +591,8 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         # Menus
         if dictDonnees.has_key("IDrestaurateur"):
             IDrestaurateur = dictDonnees["IDrestaurateur"]
+            if IDrestaurateur == None :
+                IDrestaurateur = 0
         else :
             IDrestaurateur = 0
         req = """SELECT IDmenu, menus.IDcategorie, menus_categories.nom, date, texte

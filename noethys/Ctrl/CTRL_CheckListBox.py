@@ -68,8 +68,10 @@ class CTRL(wx.CheckListBox):
     def GetLabelsCoches(self):
         """ Renvoie un texte de type 'label1, label2, label3, ...' """
         listeLabels = []
+        listeID = self.GetIDcoches()
         for index, dictItem in self.dictDonnees.iteritems() :
-            listeLabels.append(dictItem["label"])
+            if dictItem["ID"] in listeID :
+                listeLabels.append(dictItem["label"])
         return ", ".join(listeLabels)
 
 

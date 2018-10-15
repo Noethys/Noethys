@@ -651,11 +651,18 @@ class Dialog(wx.Dialog):
         req = """SELECT IDcompte_payeur FROM comptes_payeurs WHERE IDfamille=%d""" % self.IDfamille
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
-        IDcompte_payeur = listeDonnees[0][0]
+        try :
+            IDcompte_payeur = listeDonnees[0][0]
+        except :
+            IDcompte_payeur = None
         # Suppression des tables rattachées
-        DB.ReqDEL("payeurs", "IDcompte_payeur", IDcompte_payeur)
-        DB.ReqDEL("deductions", "IDcompte_payeur", IDcompte_payeur)
-        DB.ReqDEL("rappels", "IDcompte_payeur", IDcompte_payeur)
+        if IDcompte_payeur != None :
+            DB.ReqDEL("payeurs", "IDcompte_payeur", IDcompte_payeur)
+            DB.ReqDEL("deductions", "IDcompte_payeur", IDcompte_payeur)
+            DB.ReqDEL("rappels", "IDcompte_payeur", IDcompte_payeur)
+            DB.ReqDEL("factures", "IDcompte_payeur", IDcompte_payeur)
+            DB.ReqDEL("prestations", "IDcompte_payeur", IDcompte_payeur)
+
         DB.ReqDEL("quotients", "IDfamille", self.IDfamille)
         DB.ReqDEL("attestations", "IDfamille", self.IDfamille)
         DB.ReqDEL("messages", "IDfamille", self.IDfamille)
@@ -665,8 +672,6 @@ class Dialog(wx.Dialog):
         DB.ReqDEL("historique", "IDfamille", self.IDfamille)
         DB.ReqDEL("comptes_payeurs", "IDfamille", self.IDfamille)
         DB.ReqDEL("familles", "IDfamille", self.IDfamille)
-        DB.ReqDEL("factures", "IDcompte_payeur", IDcompte_payeur)
-        DB.ReqDEL("prestations", "IDcompte_payeur", IDcompte_payeur)
         DB.ReqDEL("mandats", "IDfamille", self.IDfamille)
         DB.Commit() 
         DB.Close()

@@ -614,6 +614,7 @@ class CTRL_Messages(wx.Panel):
         self.parent = parent
                 
         self.ctrl_messages = ListBox_Messages(self)
+        self.ctrl_messages.SetMinSize((50, 50))
 
         self.bouton_ajouter_message = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Ajouter.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_modifier_message = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Modifier.png"), wx.BITMAP_TYPE_ANY))
