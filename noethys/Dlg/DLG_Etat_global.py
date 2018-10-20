@@ -31,6 +31,7 @@ from Utils import UTILS_Infos_individus
 from Utils import UTILS_Texte
 from Utils import UTILS_Divers
 from Utils import UTILS_Dialogs
+from UTILS_Dates import HeureStrEnDelta as HEURE
 
 import FonctionsPerso
 import wx.lib.dialogs as dialogs
@@ -326,6 +327,32 @@ class Dialog(wx.Dialog):
         """ Importation des paramètres """
         self.ctrl_parametres.SetParametres(dictParametres)
         self.ctrl_options.SetParametres(dictParametres)
+
+    def Calcule_formule(self, formule="", debut=None, fin=None):
+        debut = UTILS_Dates.TimeEnDelta(debut)
+        fin = UTILS_Dates.TimeEnDelta(fin)
+        duree = fin - debut
+
+        def SI(condition=None, alors=None, sinon=datetime.timedelta(minutes=0)):
+            if condition:
+                return alors
+            else:
+                return sinon
+
+        # Remplacements
+        remplacements = [("\n", ""), ("ET", "and"), ("OU", "or")]
+        for expression, remplacement in remplacements:
+            formule = formule.replace(expression, remplacement)
+
+        # Calcule de la formule
+        resultat = datetime.timedelta(minutes=0)
+        exec("""resultat = %s""" % formule)
+        if resultat == None :
+            resultat = datetime.timedelta(minutes=0)
+        if type(resultat) == int :
+            resultat = datetime.timedelta(hours=resultat)
+
+        return resultat
 
     def Apercu(self, event):
         """ Génération du document PDF """
@@ -801,13 +828,23 @@ class Dialog(wx.Dialog):
                             if valeur > duree_plafond :
                                 valeur = duree_plafond
 
-                else:
+                elif dictCalcul["typeCalcul"] == 2:
                     # Si c'est en fonction du temps facturé
                     if temps_facture != None and temps_facture != "" :
                         if IDprestation not in listePrestationsTraitees :
                             hr, mn = temps_facture.split(":")
                             valeur = datetime.timedelta(hours=int(hr), minutes=int(mn))
                             listePrestationsTraitees.append(IDprestation)
+
+                elif dictCalcul["typeCalcul"] == 3:
+                    # Calcul selon une formule
+                    try :
+                        valeur = self.Calcule_formule(formule=dictCalcul["formule"], debut=heure_debut, fin=heure_fin)
+                    except Exception, err:
+                        dlg = wx.MessageDialog(self, unicode(err), _(u"Erreur de formule"), wx.OK | wx.ICON_ERROR)
+                        dlg.ShowModal()
+                        dlg.Destroy()
+                        return False
 
                 # Calcule l'âge de l'individu
                 if date_naiss != None :

@@ -18,6 +18,7 @@ import wx.lib.agw.hypertreelist as HTL
 import datetime
 import GestionDB
 import CTRL_Saisie_heure
+import wx.combo
 
 COULEUR_FOND_REGROUPEMENT = (200, 200, 200)
 COULEUR_TEXTE_REGROUPEMENT = (140, 140, 140)
@@ -45,6 +46,7 @@ class Track(object):
         self.ctrl_duree_plafond  = None
         self.ctrl_heure_seuil  = None
         self.ctrl_heure_plafond  = None
+        self.ctrl_formule = None
 
     def GetType(self):
         """ Retourne le type de calcul sélectionné """
@@ -85,6 +87,9 @@ class Track(object):
             return False
         return self.ctrl_heure_seuil.GetValeur()
 
+    def GetFormule(self):
+        return self.ctrl_formule.GetValue()
+
     def GetParametres(self):
         dictParametres = {
             "IDunite": self.IDunite,
@@ -95,6 +100,7 @@ class Track(object):
             "duree_seuil": self.GetDureeSeuil(),
             "heure_plafond": self.GetHeurePlafond(),
             "heure_seuil": self.GetHeureSeuil(),
+            "formule": self.GetFormule(),
             }
         return dictParametres
 
@@ -120,6 +126,9 @@ class Track(object):
         # Heure plafond
         if dictParametres.has_key("heure_plafond") :
             self.ctrl_heure_plafond.SetValeur(dictParametres["heure_plafond"])
+        # Formule
+        if dictParametres.has_key("formule") :
+            self.ctrl_formule.SetValue(dictParametres["formule"])
 
 # --------------------------------------------------------------------------------------------------------------------------------
 
@@ -130,7 +139,7 @@ class CTRL_Type(wx.Choice):
         self.parent = parent
         self.item = item
         self.track = track
-        self.SetItems([_(u"Nombre d'unités consommées"), _(u"Temps réél de présence"), _(u"Temps de présence facturé")])
+        self.SetItems([_(u"Nombre d'unités consommées"), _(u"Temps réél de présence"), _(u"Temps de présence facturé"), _(u"Formule")])
         self.SetToolTip(wx.ToolTip(_(u"Sélectionnez le type de calcul à appliquer à cette unité de consommation")))
         self.Bind(wx.EVT_CHOICE, self.OnChoice)
         # Defaut
@@ -140,27 +149,13 @@ class CTRL_Type(wx.Choice):
             self.SetSelection(0)
 
     def OnChoice(self, event=None):
-        if self.GetSelection() == 0 :
-            self.track.ctrl_coeff.Enable(True)
-            self.track.ctrl_arrondi.Enable(False)
-            self.track.ctrl_duree_seuil.Enable(False)
-            self.track.ctrl_duree_plafond.Enable(False)
-            self.track.ctrl_heure_seuil.Enable(False)
-            self.track.ctrl_heure_plafond.Enable(False)
-        elif self.GetSelection() == 1 :
-            self.track.ctrl_coeff.Enable(False)
-            self.track.ctrl_arrondi.Enable(True)
-            self.track.ctrl_duree_seuil.Enable(True)
-            self.track.ctrl_duree_plafond.Enable(True)
-            self.track.ctrl_heure_seuil.Enable(True)
-            self.track.ctrl_heure_plafond.Enable(True)
-        else:
-            self.track.ctrl_coeff.Enable(False)
-            self.track.ctrl_arrondi.Enable(False)
-            self.track.ctrl_duree_seuil.Enable(False)
-            self.track.ctrl_duree_plafond.Enable(False)
-            self.track.ctrl_heure_seuil.Enable(False)
-            self.track.ctrl_heure_plafond.Enable(False)
+        self.track.ctrl_coeff.Enable(self.GetSelection() == 0)
+        self.track.ctrl_arrondi.Enable(self.GetSelection() == 1)
+        self.track.ctrl_duree_seuil.Enable(self.GetSelection() == 1)
+        self.track.ctrl_duree_plafond.Enable(self.GetSelection() == 1)
+        self.track.ctrl_heure_seuil.Enable(self.GetSelection() == 1)
+        self.track.ctrl_heure_plafond.Enable(self.GetSelection() == 1)
+        self.track.ctrl_formule.Enable(self.GetSelection() == 3)
 
     def SetParametre(self, index=0):
         self.SetSelection(index)
@@ -281,6 +276,135 @@ class CTRL_Heure(CTRL_Saisie_heure.Heure):
 
 # -------------------------------------------------------------------------------------------------------------------
 
+class CTRL_Formule(wx.combo.ComboCtrl):
+    def __init__(self, *args, **kw):
+        wx.combo.ComboCtrl.__init__(self, *args, **kw)
+
+        # make a custom bitmap showing "..."
+        bw, bh = 14, 16
+        bmp = wx.EmptyBitmap(bw, bh)
+        dc = wx.MemoryDC(bmp)
+        bgcolor = wx.Colour(255, 254, 255)
+        dc.SetBackground(wx.Brush(bgcolor))
+        dc.Clear()
+        dc.DrawBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Modifier.png"), wx.BITMAP_TYPE_ANY), 0, 0)
+        del dc
+
+        # now apply a mask using the bgcolor
+        bmp.SetMaskColour(bgcolor)
+
+        # and tell the ComboCtrl to use it
+        self.SetButtonBitmaps(bmp, True)
+
+    # Overridden from ComboCtrl, called when the combo button is clicked
+    def OnButtonClick(self):
+        dlg = DLG_Saisie_formule(self, texte=self.GetValue())
+        if dlg.ShowModal() == wx.ID_OK :
+            self.SetValue(dlg.GetTexte())
+        dlg.Destroy()
+        self.SetFocus()
+
+    # Overridden from ComboCtrl to avoid assert since there is no ComboPopup
+    def DoSetPopupControl(self, popup):
+        pass
+
+    def Enable(self, etat=True):
+        self.GetTextCtrl().Enable(etat)
+
+
+class DLG_Saisie_formule(wx.Dialog):
+    def __init__(self, parent, texte=""):
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
+        self.parent = parent
+        if texte == None :
+            texte = ""
+
+        # Texte
+        self.staticbox_texte_staticbox = wx.StaticBox(self, -1, _(u"Formule python"))
+        self.ctrl_texte = wx.TextCtrl(self, -1, "", style=wx.TE_MULTILINE )
+        self.ctrl_texte.SetMinSize((600, 250))
+
+        formule_exemple = u"""Exemples de variables et de fonctions spéciales :
+        debut, fin, duree, HEURE(), SI(condition, alors, sinon), ET, OU
+        
+Exemple de formule :
+        SI(debut <= HEURE("9h") ET fin >= HEURE("7h00"), HEURE("2h"))
+        + SI(debut <= HEURE("12h") ET fin >= HEURE("9h00"), HEURE("3h"))
+        + SI(debut <= HEURE("14h") ET fin >= HEURE("12h00"), HEURE("2h00"))"""
+        self.ctrl_exemple = wx.StaticText(self, -1, formule_exemple)
+
+        # Boutons
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_supprimer = CTRL_Bouton_image.CTRL(self, texte=_(u"Effacer"), cheminImage="Images/32x32/Gomme.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
+
+        self.__set_properties()
+        self.__do_layout()
+
+        self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
+        self.Bind(wx.EVT_BUTTON, self.OnBoutonSupprimer, self.bouton_supprimer)
+        self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
+
+        # Init
+        self.ctrl_texte.SetValue(texte)
+        self.ctrl_texte.SetFocus()
+
+    def __set_properties(self):
+        self.SetTitle(_(u"Saisie d'une formule"))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à l'aide")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour effacer le contenu du texte")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider ou tapez sur la touche Entrée du clavier")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
+
+    def __do_layout(self):
+        grid_sizer_base = wx.FlexGridSizer(rows=5, cols=1, vgap=10, hgap=10)
+
+        # Texte
+        staticbox_texte = wx.StaticBoxSizer(self.staticbox_texte_staticbox, wx.VERTICAL)
+        staticbox_texte.Add(self.ctrl_texte, 1, wx.ALL|wx.EXPAND, 5)
+        staticbox_texte.Add(self.ctrl_exemple, 0, wx.ALL | wx.EXPAND, 5)
+        grid_sizer_base.Add(staticbox_texte, 1, wx.TOP | wx.LEFT | wx.RIGHT | wx.EXPAND, 10)
+
+        # Boutons
+        grid_sizer_boutons = wx.FlexGridSizer(rows=1, cols=5, vgap=10, hgap=10)
+        grid_sizer_boutons.Add(self.bouton_aide, 0, 0, 0)
+        grid_sizer_boutons.Add(self.bouton_supprimer, 0, 0, 0)
+        grid_sizer_boutons.Add((20, 20), 0, wx.EXPAND, 0)
+        grid_sizer_boutons.Add(self.bouton_ok, 0, 0, 0)
+        grid_sizer_boutons.Add(self.bouton_annuler, 0, 0, 0)
+        grid_sizer_boutons.AddGrowableCol(2)
+        grid_sizer_base.Add(grid_sizer_boutons, 1, wx.LEFT | wx.RIGHT | wx.BOTTOM | wx.EXPAND, 10)
+
+        self.SetSizer(grid_sizer_base)
+        grid_sizer_base.Fit(self)
+        grid_sizer_base.AddGrowableRow(0)
+        grid_sizer_base.AddGrowableCol(0)
+        self.Layout()
+        self.SetMinSize(self.GetSize())
+        self.CenterOnScreen()
+
+    def OnBoutonAide(self, event):
+        from Utils import UTILS_Aide
+        UTILS_Aide.Aide("Etatglobal")
+
+    def OnBoutonSupprimer(self, event=None):
+        self.ctrl_texte.SetValue("")
+        self.EndModal(wx.ID_OK)
+
+    def OnBoutonOk(self, event=None):
+        self.EndModal(wx.ID_OK)
+
+    def GetTexte(self):
+        texte = self.ctrl_texte.GetValue()
+        texte = texte.strip()
+        if texte.endswith("\n"):
+            texte = texte[:-1]
+        return texte
+
+
+# -------------------------------------------------------------------------------------------------------------------
+
 class CTRL(HTL.HyperTreeList):
     def __init__(self, parent): 
         HTL.HyperTreeList.__init__(self, parent, -1)
@@ -296,6 +420,7 @@ class CTRL(HTL.HyperTreeList):
             ( _(u"Unité de consommation"), 225, wx.ALIGN_LEFT),
             ( _(u"Type de calcul"), 210, wx.ALIGN_LEFT),
             ( _(u"Coefficient"), 80, wx.ALIGN_LEFT),
+            ( _(u"Formule"), 100, wx.ALIGN_LEFT),
             ( _(u"Arrondi"), 150, wx.ALIGN_LEFT),
             ( _(u"Durée seuil"), 90, wx.ALIGN_LEFT),
             ( _(u"Durée plafond"), 90, wx.ALIGN_LEFT),
@@ -408,47 +533,37 @@ class CTRL(HTL.HyperTreeList):
                     # CTRL du Coeff
                     ctrl_coeff = CTRL_Coeff(self.GetMainWindow(), item=brancheUnite, track=track)
                     self.SetItemWindow(brancheUnite, ctrl_coeff, 2)        
-                    track.ctrl_coeff = ctrl_coeff      
-                    if track.ctrl_type.GetSelection() == 1 :
-                        ctrl_coeff.Enable(False)
-                    
-                    #if self.dictCoeff.has_key(track.IDunite) :
-                    #    track.SetCoeff(self.dictCoeff[track.IDunite])
+                    track.ctrl_coeff = ctrl_coeff
+
+                    # CTRL de la formule
+                    ctrl_formule = CTRL_Formule(self.GetMainWindow(), size=(94, -1))
+                    self.SetItemWindow(brancheUnite, ctrl_formule, 3)
+                    track.ctrl_formule = ctrl_formule
 
                     # CTRL de l'Arrondi
                     ctrl_arrondi = CTRL_Arrondi(self.GetMainWindow(), item=brancheUnite, track=track)
-                    self.SetItemWindow(brancheUnite, ctrl_arrondi, 3)        
-                    track.ctrl_arrondi = ctrl_arrondi      
-                    if track.ctrl_type.GetSelection() == 0 :
-                        ctrl_arrondi.Enable(False)
+                    self.SetItemWindow(brancheUnite, ctrl_arrondi, 4)
+                    track.ctrl_arrondi = ctrl_arrondi
 
                     # CTRL durée seuil
                     ctrl_duree_seuil = CTRL_Heure(self.GetMainWindow(), item=brancheUnite, track=track, tooltip=_(u"Saisissez la durée seuil pour chaque consommation : La durée de chaque consommation ne pourra être inférieure à cette valeur"))
-                    self.SetItemWindow(brancheUnite, ctrl_duree_seuil, 4)
+                    self.SetItemWindow(brancheUnite, ctrl_duree_seuil, 5)
                     track.ctrl_duree_seuil = ctrl_duree_seuil
-                    if track.ctrl_type.GetSelection() == 0 :
-                        ctrl_duree_seuil.Enable(False)
 
                     # CTRL durée plafond
                     ctrl_duree_plafond = CTRL_Heure(self.GetMainWindow(), item=brancheUnite, track=track, tooltip=_(u"Saisissez la durée plafond pour chaque consommation : La durée de chaque consommation ne pourra être supérieure à cette valeur"))
-                    self.SetItemWindow(brancheUnite, ctrl_duree_plafond, 5)
+                    self.SetItemWindow(brancheUnite, ctrl_duree_plafond, 6)
                     track.ctrl_duree_plafond = ctrl_duree_plafond
-                    if track.ctrl_type.GetSelection() == 0 :
-                        ctrl_duree_plafond.Enable(False)
 
                     # CTRL heure seuil
                     ctrl_heure_seuil = CTRL_Heure(self.GetMainWindow(), item=brancheUnite, track=track, tooltip=_(u"Saisissez une heure seuil pour chaque consommation : La durée sera calculée uniquement à partir de cette heure-là"))
-                    self.SetItemWindow(brancheUnite, ctrl_heure_seuil, 6)
+                    self.SetItemWindow(brancheUnite, ctrl_heure_seuil, 7)
                     track.ctrl_heure_seuil = ctrl_heure_seuil
-                    if track.ctrl_type.GetSelection() == 0 :
-                        ctrl_heure_seuil.Enable(False)
 
                     # CTRL heure plafond
                     ctrl_heure_plafond = CTRL_Heure(self.GetMainWindow(), item=brancheUnite, track=track, tooltip=_(u"Saisissez une heure plafond pour chaque consommation : La durée sera calculée uniquement jusqu'à cette heure-là"))
-                    self.SetItemWindow(brancheUnite, ctrl_heure_plafond, 7)
+                    self.SetItemWindow(brancheUnite, ctrl_heure_plafond, 8)
                     track.ctrl_heure_plafond = ctrl_heure_plafond
-                    if track.ctrl_type.GetSelection() == 0 :
-                        ctrl_heure_plafond.Enable(False)
 
         self.ExpandAllChildren(self.root)
         
@@ -479,7 +594,14 @@ class CTRL(HTL.HyperTreeList):
         for track in self.listeTracks :
             
             if self.IsItemChecked(track.item) :
-                
+                coeff = None
+                arrondi = None
+                duree_plafond = None
+                duree_seuil = None
+                heure_plafond = None
+                heure_seuil = None
+                formule = None
+
                 typeCalcul = track.GetType()
                 if typeCalcul == 0 :
                     # Heure selon coeff
@@ -489,11 +611,6 @@ class CTRL(HTL.HyperTreeList):
                         dlg.Destroy()
                         return False
                     coeff = track.GetCoeff() 
-                    arrondi = None
-                    duree_plafond = None
-                    duree_seuil = None
-                    heure_plafond = None
-                    heure_seuil = None
 
                 elif typeCalcul == 1 :
                     # heures réelles
@@ -527,21 +644,19 @@ class CTRL(HTL.HyperTreeList):
                         dlg.Destroy()
                         return False
 
-                    coeff = None
-                    arrondi = track.GetArrondi() 
+                    arrondi = track.GetArrondi()
                     duree_seuil = track.GetDureeSeuil()
                     duree_plafond = track.GetDureePlafond()
                     heure_seuil = track.GetHeureSeuil()
                     heure_plafond = track.GetHeurePlafond()
 
-                else :
+                elif typeCalcul == 2:
                     # Heures facturées
-                    coeff = None
-                    arrondi = None
-                    duree_plafond = None
-                    duree_seuil = None
-                    heure_plafond = None
-                    heure_seuil = None
+                    pass
+
+                elif typeCalcul == 3:
+                    formule = track.GetFormule()
+
 
                 # Mémorisation des valeurs
                 dictValeurs = {
@@ -556,6 +671,7 @@ class CTRL(HTL.HyperTreeList):
                     "duree_seuil" : duree_seuil,
                     "heure_plafond" : heure_plafond,
                     "heure_seuil" : heure_seuil,
+                    "formule": formule,
                     }
                 dictDonnees[track.IDunite] = dictValeurs
         
