@@ -31,7 +31,7 @@ from Utils import UTILS_Infos_individus
 from Utils import UTILS_Texte
 from Utils import UTILS_Divers
 from Utils import UTILS_Dialogs
-from UTILS_Dates import HeureStrEnDelta as HEURE
+from Utils.UTILS_Dates import HeureStrEnDelta as HEURE
 
 import FonctionsPerso
 import wx.lib.dialogs as dialogs
