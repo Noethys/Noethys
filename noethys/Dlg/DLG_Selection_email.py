@@ -302,7 +302,7 @@ class Panel_adresses_multiples(wx.Panel):
             liste_autres = autres_adresses.split(";")
             for adresse in liste_autres :
                 # Validation de l'adresse
-                if re.match(r"^[a-zA-Z0-9._]+\@[a-zA-Z0-9._]+\.[a-zA-Z]{2,}$", adresse) == None:
+                if re.match("^.+\\@(\\[?)[a-zA-Z0-9\\-\\.]+\\.([a-zA-Z]{2,3}|[0-9]{1,3})(\\]?)$", adresse) == None:
                     dlg = wx.MessageDialog(self, _(u"L'adresse Email saisie '%s' n'est pas valide !") % adresse, _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                     dlg.ShowModal()
                     dlg.Destroy()

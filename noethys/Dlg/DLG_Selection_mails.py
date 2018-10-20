@@ -168,7 +168,7 @@ class Page_Saisie_manuelle(wx.Panel):
         listeTemp = self.ctrl.GetValue().split(";")
         listeAdresses = []
         for texte in listeTemp :
-            if re.match(r"^[a-zA-Z0-9._]+\@[a-zA-Z0-9._]+\.[a-zA-Z]{2,}$", texte) != None:
+            if re.match("^.+\\@(\\[?)[a-zA-Z0-9\\-\\.]+\\.([a-zA-Z]{2,3}|[0-9]{1,3})(\\]?)$", texte) != None:
                 listeAdresses.append(texte)
         return listeAdresses
     
