@@ -565,6 +565,8 @@ class CTRL(HTL.HyperTreeList):
                     self.SetItemWindow(brancheUnite, ctrl_heure_plafond, 8)
                     track.ctrl_heure_plafond = ctrl_heure_plafond
 
+                    ctrl_type.OnChoice()
+
         self.ExpandAllChildren(self.root)
         
         # Pour éviter le bus de positionnement des contrôles
