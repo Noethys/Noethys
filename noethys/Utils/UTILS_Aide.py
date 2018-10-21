@@ -59,7 +59,7 @@ def Aide(page=None):
     if page != None and page != "" :
         listeOptions.append("page=%s.php" % page)
         
-    url = "http://www.noethys.com/aide/html/identification.php"
+    url = "https://www.noethys.com/aide/html/identification.php"
     if len(listeOptions) > 0 :
         url += "?" + "&".join(listeOptions)
         

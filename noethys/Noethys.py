@@ -3432,23 +3432,23 @@ class MainFrame(wx.Frame):
 
     def On_aide_guide_demarrage(self, event):
         """ Accéder à la page de téléchargement du guide de démarrage rapide """
-        FonctionsPerso.LanceFichierExterne("http://www.noethys.com/index.php?option=com_content&view=article&id=118&Itemid=45")
+        FonctionsPerso.LanceFichierExterne("https://www.noethys.com/index.php?option=com_content&view=article&id=118&Itemid=45")
 
     def On_aide_forum(self, event):
         """ Accéder au forum d'entraide """
-        FonctionsPerso.LanceFichierExterne("http://www.noethys.com/index.php?option=com_kunena&Itemid=7")
+        FonctionsPerso.LanceFichierExterne("https://www.noethys.com/index.php?option=com_kunena&Itemid=7")
 
     def On_aide_videos(self, event):
         """ Accéder au tutoriels vidéos """
-        FonctionsPerso.LanceFichierExterne("http://www.noethys.com/index.php?option=com_content&view=article&id=27&Itemid=16")
+        FonctionsPerso.LanceFichierExterne("https://www.noethys.com/index.php?option=com_content&view=article&id=27&Itemid=16")
 
     def On_aide_telechargements(self, event):
         """ Accéder à la plate-forme de téléchargements communautaire """
-        FonctionsPerso.LanceFichierExterne("http://www.noethys.com/index.php?option=com_phocadownload&view=section&id=2&Itemid=21")
+        FonctionsPerso.LanceFichierExterne("https://www.noethys.com/index.php?option=com_phocadownload&view=section&id=2&Itemid=21")
 
     def On_aide_auteur(self, event):
         """ Envoyer un email à l'auteur """
-        FonctionsPerso.LanceFichierExterne("http://www.noethys.com/index.php?option=com_contact&view=contact&id=1&Itemid=13")
+        FonctionsPerso.LanceFichierExterne("https://www.noethys.com/index.php?option=com_contact&view=contact&id=1&Itemid=13")
         
     def On_propos_versions(self, event):
         """ A propos : Notes de versions """

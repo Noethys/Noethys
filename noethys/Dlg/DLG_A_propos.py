@@ -59,7 +59,7 @@ class MyHtml(html.HtmlWindow):
         self.SetBackgroundColour(couleurFond)
     
     def OnLinkClicked(self, link):
-        FonctionsPerso.LanceFichierExterne(_(u"http://www.noethys.com"))
+        FonctionsPerso.LanceFichierExterne(_(u"https://www.noethys.com"))
         
 
 class MargeGauche(wx.Panel):

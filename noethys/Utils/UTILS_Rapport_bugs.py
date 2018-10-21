@@ -146,7 +146,7 @@ class DLG_Rapport(wx.Dialog):
         dlg = wx.MessageDialog(self, _(u"Noethys va ouvrir votre navigateur internet à la page du forum de Noethys. Vous n'aurez plus qu'à vous connecter avec vos identifiants Noethys et poster un nouveau message dans la rubrique dédiée aux bugs."), _(u"Forum Noethys"), wx.OK | wx.ICON_INFORMATION)
         dlg.ShowModal()
         dlg.Destroy()
-        webbrowser.open("http://www.noethys.com/index.php/forum-34/6-signaler-un-bug")
+        webbrowser.open("https://www.noethys.com/index.php/forum-34/6-signaler-un-bug")
 
     def GetAdresseExpDefaut(self):
         """ Retourne les paramètres de l'adresse d'expéditeur par défaut """

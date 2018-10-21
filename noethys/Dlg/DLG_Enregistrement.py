@@ -68,7 +68,7 @@ def DateEngEnDateDD(dateEng):
 
 def GetValidite(identifiant="", code=""):
     try :
-        url = "http://www.noethys.com/aide/html/testcode.php?identifiant=%s&code=%s" % (identifiant, code)
+        url = "https://www.noethys.com/aide/html/testcode.php?identifiant=%s&code=%s" % (identifiant, code)
         h = urllib2.urlopen(url, timeout=5)
         html = h.read()
         h.close()
@@ -252,7 +252,7 @@ class Dialog(wx.Dialog):
         wx.Yield() 
         
         try :
-            url = "http://www.noethys.com/aide/html/testcode.php?identifiant=%s&code=%s" % (identifiant, code)
+            url = "https://www.noethys.com/aide/html/testcode.php?identifiant=%s&code=%s" % (identifiant, code)
             h = urllib2.urlopen(url, timeout=5)
             html = h.read()
             h.close()

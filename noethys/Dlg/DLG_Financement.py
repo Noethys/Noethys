@@ -86,7 +86,7 @@ class Page_documentation(wx.Panel):
         self.GetGrandParent().EndModal(wx.ID_CANCEL)
 
     def OnBoutonAide(self, event):
-        url = "http://www.noethys.com/index.php/presentation/2013-09-08-15-48-17/programme-de-financement"
+        url = "https://www.noethys.com/index.php/presentation/2013-09-08-15-48-17/programme-de-financement"
         webbrowser.open(url)
 
     def OnBoutonImprimer(self, event):
@@ -246,7 +246,7 @@ class Page_formations(wx.Panel):
         self.GetGrandParent().EndModal(wx.ID_CANCEL)
 
     def OnBoutonAide(self, event):
-        url = "http://www.noethys.com/index.php/assistance2/2015-07-19-17-22-35/les-formations"
+        url = "https://www.noethys.com/index.php/assistance2/2015-07-19-17-22-35/les-formations"
         webbrowser.open(url)
 
 
