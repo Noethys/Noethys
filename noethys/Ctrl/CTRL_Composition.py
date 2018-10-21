@@ -1949,7 +1949,7 @@ class Notebook(wx.Notebook):
         self.IDfamille = IDfamille
         self.dictPages = {}
         
-        listePages = [
+        self.listePages = [
             (_(u"graphique"), _(u"  Graphique  "), u"CTRL_Graphique(self, IDfamille=IDfamille)", None),
             (_(u"liste"), _(u"  Liste  "), u"CTRL_Liste(self, IDfamille=IDfamille)", None),
 ##            (_(u"liens"), _(u"  Liens  "), u"DLG_Individu_liens.Notebook(self, IDfamille=IDfamille)", None),
@@ -1958,7 +1958,7 @@ class Notebook(wx.Notebook):
         # ImageList pour le NoteBook
         il = wx.ImageList(16, 16)
         index = 0
-        for codePage, labelPage, ctrlPage, imgPage in listePages :
+        for codePage, labelPage, ctrlPage, imgPage in self.listePages :
             if imgPage != None :
                 exec("self.img%d = il.Add(wx.Bitmap(Chemins.GetStaticPath('Images/16x16/%s'), wx.BITMAP_TYPE_PNG))" % (index, imgPage))
                 index += 1
@@ -1966,7 +1966,7 @@ class Notebook(wx.Notebook):
 
         # Création des pages
         index = 0
-        for codePage, labelPage, ctrlPage, imgPage in listePages :
+        for codePage, labelPage, ctrlPage, imgPage in self.listePages :
             exec("self.page%d = %s" % (index, ctrlPage))
             exec("self.AddPage(self.page%d, u'%s')" % (index, labelPage))
             if imgPage != None :
@@ -1978,7 +1978,11 @@ class Notebook(wx.Notebook):
         
     def GetPageAvecCode(self, codePage=""):
         return self.dictPages[codePage]["ctrl"]
-    
+
+    def GetCodePage(self):
+        index = self.GetSelection()
+        return self.listePages[index][0]
+
     def AffichePage(self, codePage=""):
         indexPage = self.dictPages[codePage]["index"]
         self.SetSelection(indexPage)

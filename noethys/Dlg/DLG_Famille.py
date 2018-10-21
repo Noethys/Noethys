@@ -206,6 +206,8 @@ class Dialog(wx.Dialog):
         self.notebook.GetPageAvecCode("informations").MAJ() 
         
         # MAJ CTRL composition
+        code = UTILS_Config.GetParametre("affichage_composition_famille", defaut="graphique")
+        self.ctrl_composition.AffichePage(code)
         self.ctrl_composition.MAJ()
 
         # Affiche les messages à l'ouverture de la fiche famille
@@ -593,16 +595,20 @@ class Dialog(wx.Dialog):
         self.Annuler()
     
     def OnClose(self, event):
-        self.MemoriseTailleFenetre() 
+        self.MemoriseParametres()
         self.Annuler()
         
-    def MemoriseTailleFenetre(self):
+    def MemoriseParametres(self):
         # Mémorisation du paramètre de la taille d'écran
         if self.IsMaximized() == True :
             taille_fenetre = (0, 0)
         else:
             taille_fenetre = tuple(self.GetSize())
         UTILS_Config.SetParametre("taille_fenetre_famille", taille_fenetre)
+
+        # Mémorisation du type d'affichage de la composition
+        code = self.ctrl_composition.GetCodePage()
+        UTILS_Config.SetParametre("affichage_composition_famille", code)
 
     def Sauvegarde(self):
         # Validation des données avant sauvegarde
@@ -625,7 +631,7 @@ class Dialog(wx.Dialog):
         if etat == False :
             return
         # Mémorise taille fenêtre
-        self.MemoriseTailleFenetre() 
+        self.MemoriseParametres()
         # Fermeture de la fenêtre
         try :
             self.EndModal(wx.ID_OK)
