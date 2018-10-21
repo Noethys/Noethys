@@ -157,12 +157,13 @@ class Barre(object):
         hauteur = self.parent.dict_options["case_hauteur"]
         ligne = self.parent.dict_lignes[self.IDproduit]
 
+        self.rect = None
+        self.poignees = None
+
         if ligne.rect != None and ligne in self.parent.liste_lignes_affichees :
 
             y = ligne.rect.y + ((num_sousligne - 1) * hauteur)
 
-            self.rect = None
-            self.poignees = None
             if left != None and right != None and y != None :
                 largeur = right - left
                 rect = wx.Rect(left + self.parent.delta[0], y, largeur, hauteur)
