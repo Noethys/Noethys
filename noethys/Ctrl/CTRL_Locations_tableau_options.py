@@ -248,7 +248,7 @@ class CTRL(wx.Panel):
     def OnChangePeriode(self):
         self.ctrl_tableau.SetOption("date_debut", self.ctrl_periode.GetDateDebut())
         self.ctrl_tableau.SetOption("date_fin", self.ctrl_periode.GetDateFin())
-        self.ctrl_tableau.MAJ(reinit_scroll_h=True)
+        self.ctrl_tableau.MAJ(reinit_scroll_h=True, reinit_scroll_v=True)
 
     def OnCheckCategories(self, event):
         self.ctrl_tableau.SetOption("categories", self.ctrl_categories.GetIDcoches())

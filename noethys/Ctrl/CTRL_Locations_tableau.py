@@ -118,6 +118,14 @@ class Barre(object):
         DB.Close()
         self.parent.MAJ(select_location=newIDlocation)
 
+    def Recopier(self, event=None):
+        from Dlg import DLG_Saisie_lot_locations
+        dlg = DLG_Saisie_lot_locations.Dialog(self.parent, IDlocation=self.IDlocation, periode=(self.parent.dict_options["date_debut"], self.parent.dict_options["date_fin"]))
+        reponse = dlg.ShowModal()
+        dlg.Destroy()
+        if reponse == wx.ID_OK:
+            self.parent.MAJ(select_location=self.IDlocation)
+
     def GetTexteStatusBar(self):
         debut = UTILS_Dates.DatetimeEnFr(self.date_debut)
         if self.date_fin.year == 2999:
@@ -304,8 +312,6 @@ class CTRL(wx.Panel):
         self.slider_largeur.SetMinSize((200, -1))
         self.Bind(wx.EVT_SCROLL, self.OnSliderLargeur, self.slider_largeur)
 
-        self.scroll_step = 10
-
         self.scrollbar_h = wx.ScrollBar(self, -1, size=(-1, -1), style=wx.SB_HORIZONTAL)
         self.Bind(wx.EVT_COMMAND_SCROLL, self.OnScrollH, self.scrollbar_h)
 
@@ -353,12 +359,12 @@ class CTRL(wx.Panel):
             self.ctrl_tableau.MAJ(reinit_scroll_h=True, reinit_scroll_v=True)
 
     def OnScrollH(self, event=None):
-        valeur = self.scrollbar_h.GetThumbPosition() * self.dict_options["case_largeur"] /self.scroll_step
+        valeur = self.scrollbar_h.GetThumbPosition() * self.dict_options["case_largeur"]
         self.ctrl_tableau.SetDelta(h=-valeur)
         self.ctrl_tableau.Redraw()
 
     def OnScrollV(self, event=None):
-        valeur = self.scrollbar_v.GetThumbPosition() * self.dict_options["case_hauteur"] /self.scroll_step
+        valeur = self.scrollbar_v.GetThumbPosition() * self.dict_options["case_hauteur"]
         self.ctrl_tableau.SetDelta(v=-valeur)
         self.ctrl_tableau.Redraw()
 
@@ -367,19 +373,28 @@ class CTRL(wx.Panel):
 
         if h == True :
             self.ctrl_tableau.SetDelta(h=0)
-            nbre_colonnes = (1 + len(self.ctrl_tableau.liste_colonnes)) * self.scroll_step
-            nbre_colonnes_visibles = 1 + largeur_reelle / self.dict_options["case_largeur"] *self.scroll_step
+            nbre_colonnes = (1 + len(self.ctrl_tableau.liste_colonnes))
+            nbre_colonnes_visibles = 1 + largeur_reelle / self.dict_options["case_largeur"]
             self.scrollbar_h.SetScrollbar(0, nbre_colonnes_visibles, nbre_colonnes, nbre_colonnes_visibles)
 
         if v == True :
             self.ctrl_tableau.SetDelta(v=0)
-            nbre_lignes = (1 + len(self.ctrl_tableau.liste_lignes)) * self.scroll_step
-            nbre_lignes_visibles = 1 + hauteur_reelle / self.dict_options["case_hauteur"] *self.scroll_step
-            self.scrollbar_v.SetScrollbar(0, nbre_lignes_visibles, nbre_lignes, nbre_lignes_visibles)
+
+            nbre_lignes_total = 0
+            for ligne in self.ctrl_tableau.liste_lignes:
+                # Recherche s'il existe des souslignes
+                if self.ctrl_tableau.dict_lignes_barres.has_key(ligne.dict_produit["IDproduit"]):
+                    nbre = len(self.ctrl_tableau.dict_lignes_barres[ligne.dict_produit["IDproduit"]])
+                else:
+                    nbre = 1
+                nbre_lignes_total += nbre
+
+            nbre_lignes_visibles = (hauteur_reelle / self.dict_options["case_hauteur"])
+            self.scrollbar_v.SetScrollbar(0, nbre_lignes_visibles, nbre_lignes_total+1, nbre_lignes_visibles)
 
     def SetWheel(self, valeur=0):
         position_actuelle = self.scrollbar_v.GetThumbPosition()
-        step = self.dict_options["case_hauteur"] / self.scroll_step
+        step = self.dict_options["case_hauteur"] * 0.05
         self.scrollbar_v.SetThumbPosition(position_actuelle - step * valeur)
         self.OnScrollV()
 
@@ -658,8 +673,6 @@ class CTRL_Tableau(wx.Panel):
         self.MAJ_colonnes()
         self.MAJ_lignes()
 
-        self.parent.AjusteScrollbars(h=reinit_scroll_h, v=reinit_scroll_v)
-
         # self.parent.scrollbar_h.SetScrollPos(wx.HORIZONTAL, posScrollH)
         # self.parent.scrollbar_v.SetScrollPos(wx.VERTICAL, posScrollV)
 
@@ -673,6 +686,11 @@ class CTRL_Tableau(wx.Panel):
                     self.MajTexteInfos2()
                     break
 
+        # Ajustement des scrollbars
+        self.dict_lignes_barres = self.CalcSouslignes()
+        self.parent.AjusteScrollbars(h=reinit_scroll_h, v=reinit_scroll_v)
+
+        # Redessine le tableau
         self.Redraw()
 
     def CreateBuffer(self):
@@ -796,6 +814,15 @@ class CTRL_Tableau(wx.Panel):
                 item.SetBitmap(bmp)
                 menuPop.AppendItem(item)
                 self.Bind(wx.EVT_MENU, barre.Dupliquer, id=40)
+
+                menuPop.AppendSeparator()
+
+                # Item Recopier
+                item = wx.MenuItem(menuPop, 50, _(u"Recopier sur plusieurs dates"))
+                bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Dupliquer.png"), wx.BITMAP_TYPE_PNG)
+                item.SetBitmap(bmp)
+                menuPop.AppendItem(item)
+                self.Bind(wx.EVT_MENU, barre.Recopier, id=50)
 
             self.PopupMenu(menuPop)
             menuPop.Destroy()
