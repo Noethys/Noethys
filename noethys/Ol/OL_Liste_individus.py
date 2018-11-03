@@ -43,7 +43,7 @@ def GetDictInfosIndividus():
         dictInfos[IDindividu] = { "nom" : nom, "prenom" : prenom, "rue_resid" : rue_resid, "cp_resid" : cp_resid, "ville_resid" : ville_resid}
     DICT_INFOS_INDIVIDUS = dictInfos
 
-def GetListe(listeActivites=None, presents=None):
+def GetListe(listeActivites=None, presents=None, archives=False):
     if listeActivites == None : return []
 
     # Conditions Activites
@@ -54,6 +54,12 @@ def GetListe(listeActivites=None, presents=None):
             conditionActivites = " AND inscriptions.IDactivite=%d" % listeActivites[0]
         else:
             conditionActivites = " AND inscriptions.IDactivite IN %s" % str(tuple(listeActivites))
+
+    # Condition archives
+    if archives == True :
+        conditionArchives = "AND (individus.etat IS NULL OR individus.etat='archive')"
+    else :
+        conditionArchives = "AND individus.etat IS NULL"
 
     # Conditions Présents
 ##    if presents == None :
@@ -91,9 +97,9 @@ def GetListe(listeActivites=None, presents=None):
     SELECT %s
     FROM inscriptions 
     LEFT JOIN individus ON individus.IDindividu = inscriptions.IDindividu
-    WHERE (inscriptions.date_desinscription IS NULL OR inscriptions.date_desinscription>='%s') %s
+    WHERE (inscriptions.date_desinscription IS NULL OR inscriptions.date_desinscription>='%s') %s %s
     GROUP BY individus.IDindividu
-    ;""" % (",".join(listeChamps), datetime.date.today(), conditionActivites)
+    ;""" % (",".join(listeChamps), datetime.date.today(), conditionArchives, conditionActivites)
     DB.ExecuterReq(req)
     listeDonnees = DB.ResultatReq()
     DB.Close() 
@@ -199,6 +205,7 @@ class ListView(FastObjectListView):
         self.dateReference = None
         self.listeActivites = None
         self.presents = None
+        self.archives = False
         self.concernes = False
         self.labelParametres = ""
         # Initialisation du listCtrl
@@ -216,7 +223,7 @@ class ListView(FastObjectListView):
 
     def GetTracks(self):
         """ Récupération des données """
-        listeListeView = GetListe(self.listeActivites, self.presents)
+        listeListeView = GetListe(self.listeActivites, self.presents, self.archives)
 ##        listeListeView = []
 ##        for IDfamille, dictTemp in dictDonnees.iteritems() :
 ##            track = Track(dictTemp)
@@ -279,9 +286,10 @@ class ListView(FastObjectListView):
             self.SetSortColumn(self.columns[1])
         self.SetObjects(self.donnees)
        
-    def MAJ(self, listeActivites=None, presents=None, labelParametres=""):
+    def MAJ(self, listeActivites=None, presents=None, archives=False, labelParametres=""):
         self.listeActivites = listeActivites
         self.presents = presents
+        self.archives = archives
         self.labelParametres = labelParametres
         attente = wx.BusyInfo(_(u"Recherche des données..."), self)
         self.InitModel()
