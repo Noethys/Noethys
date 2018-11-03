@@ -18,6 +18,7 @@ import wx.html as html
 import GestionDB
 from Utils import UTILS_Historique
 from Utils import UTILS_Utilisateurs
+from Utils import UTILS_Config
 import datetime
 
 from Ctrl import CTRL_Photo
@@ -32,24 +33,6 @@ import DLG_Individu_questionnaire
 import DLG_Individu_scolarite
 import DLG_Individu_transports
 
-
-##import wx.html
-
-##class ResumeHtml(wx.html.HtmlWindow):
-##    def __init__(self, parent, id=-1):
-##        wx.html.HtmlWindow.__init__(self, parent, id)
-##        if "gtk2" in wx.PlatformInfo:
-##            self.SetStandardFonts()
-##        # Fond transparent
-##        self.couleurFond = wx.SystemSettings.GetColour(30)
-##        self.SetBackgroundColour(self.couleurFond)
-##    
-##    def SetContenuHtml(self, texte=""):
-##        self.SetPage(texte)
-##        self.SetBackgroundColour(self.couleurFond)
-##
-##    def OnLinkClicked(self, link):
-##        print link.GetHref()
 
 
 class CTRL_header_rattachement(html.HtmlWindow):
@@ -81,7 +64,7 @@ class Notebook(wx.Notebook):
         self.dictFamillesRattachees = dictFamillesRattachees
         self.dictPages = {}
         
-        listePages = [
+        self.listePages = [
             ("informations", _(u"Informations"), u"DLG_Individu_informations.Panel(self, IDindividu=IDindividu, dictFamillesRattachees=dictFamillesRattachees)", "Information.png"),
             ("identite", _(u"Identité"), u"DLG_Individu_identite.Panel_identite(self, IDindividu=IDindividu)", "Identite.png"),
             ("liens", _(u"Liens"), u"DLG_Individu_liens.Panel_liens(self, IDindividu=IDindividu)", "Famille.png"),
@@ -93,28 +76,37 @@ class Notebook(wx.Notebook):
             ("transports", _(u"Transports"), u"DLG_Individu_transports.Panel(self, IDindividu=IDindividu, dictFamillesRattachees=dictFamillesRattachees)", "Transport.png"),
             ("medical", _(u"Médical"), u"DLG_Individu_medical.Panel(self, IDindividu=IDindividu)", "Medical.png"),
             ]
-            
+
+        # Pages à afficher obligatoirement
+        self.pagesObligatoires = ["informations", "identite", "coords"]
+
         # ImageList pour le NoteBook
         il = wx.ImageList(16, 16)
         index = 0
-        for codePage, labelPage, ctrlPage, imgPage in listePages :
+        for codePage, labelPage, ctrlPage, imgPage in self.listePages :
             exec("self.img%d = il.Add(wx.Bitmap(Chemins.GetStaticPath('Images/16x16/%s'), wx.BITMAP_TYPE_PNG))" % (index, imgPage))
             index += 1
         self.AssignImageList(il)
 
         # Création des pages
+        dictParametres = self.GetParametres()
+
         index = 0
-        for codePage, labelPage, ctrlPage, imgPage in listePages :
-            exec("self.page%d = %s" % (index, ctrlPage))
-            exec("self.AddPage(self.page%d, u'%s')" % (index, labelPage))
-            exec("self.SetPageImage(%d, self.img%d)" % (index, index))
-            exec("self.dictPages['%s'] = {'ctrl' : self.page%d, 'index' : %d}" % (codePage, index, index))
-            index += 1
+        for codePage, labelPage, ctrlPage, imgPage in self.listePages :
+            if dictParametres[codePage] == True:
+                exec("self.page%d = %s" % (index, ctrlPage))
+                exec("self.AddPage(self.page%d, u'%s')" % (index, labelPage))
+                exec("self.SetPageImage(%d, self.img%d)" % (index, index))
+                exec("self.dictPages['%s'] = {'ctrl' : self.page%d, 'index' : %d}" % (codePage, index, index))
+                index += 1
         
         self.Bind(wx.EVT_NOTEBOOK_PAGE_CHANGED, self.OnPageChanged)
         
     def GetPageAvecCode(self, codePage=""):
-        return self.dictPages[codePage]["ctrl"]
+        if self.dictPages.has_key(codePage):
+            return self.dictPages[codePage]["ctrl"]
+        else:
+            return None
     
     def AffichePage(self, codePage=""):
         indexPage = self.dictPages[codePage]["index"]
@@ -129,6 +121,63 @@ class Notebook(wx.Notebook):
         wx.CallLater(1, page.MAJ)
         self.Thaw()
         event.Skip()
+
+    def GetParametres(self):
+        parametres = UTILS_Config.GetParametre("fiche_individu_pages", defaut={})
+        dictParametres = {}
+        for codePage, labelPage, ctrlPage, imgPage in self.listePages:
+            if parametres.has_key(codePage):
+                afficher = parametres[codePage]
+            else :
+                afficher = True
+            dictParametres[codePage] = afficher
+        return dictParametres
+
+    def SelectionParametresPages(self):
+        # Préparation de l'affichage des pages
+        dictParametres = self.GetParametres()
+        listeLabels = []
+        listeSelections = []
+        listeCodes = []
+        index = 0
+        for codePage, labelPage, ctrlPage, imgPage in self.listePages:
+            if codePage not in self.pagesObligatoires :
+                listeLabels.append(labelPage)
+                if dictParametres.has_key(codePage):
+                    if dictParametres[codePage] == True :
+                        listeSelections.append(index)
+                listeCodes.append(codePage)
+                index += 1
+
+        # Demande la sélection des pages
+        dlg = wx.MultiChoiceDialog( self, _(u"Cochez ou décochez les onglets à afficher ou à masquer :"), _(u"Afficher/masquer des onglets"), listeLabels)
+        dlg.SetSelections(listeSelections)
+        dlg.SetSize((300, 350))
+        dlg.CenterOnScreen()
+        reponse = dlg.ShowModal()
+        selections = dlg.GetSelections()
+        dlg.Destroy()
+        if reponse != wx.ID_OK :
+            return False
+
+        # Mémorisation des pages cochées
+        dictParametres = {}
+        index = 0
+        for codePage in listeCodes:
+            if index in selections :
+                dictParametres[codePage] = True
+            else :
+                dictParametres[codePage] = False
+            index += 1
+        UTILS_Config.SetParametre("fiche_individu_pages", dictParametres)
+
+        # Info
+        dlg = wx.MessageDialog(self, _(u"Fermez cette fiche pour appliquer les modifications demandées !"), _(u"Information"), wx.OK | wx.ICON_INFORMATION)
+        dlg.ShowModal()
+        dlg.Destroy()
+
+
+
 
 
 
@@ -169,6 +218,7 @@ class Dialog(wx.Dialog):
 
         self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
         self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
+        self.bouton_options = CTRL_Bouton_image.CTRL(self, texte=_(u"Options"), cheminImage="Images/32x32/Configuration2.png")
         self.bouton_outils = CTRL_Bouton_image.CTRL(self, texte=_(u"Outils"), cheminImage="Images/32x32/Configuration.png")
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
 
@@ -176,6 +226,7 @@ class Dialog(wx.Dialog):
         self.__do_layout()
         
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
+        self.Bind(wx.EVT_BUTTON, self.OnBoutonOptions, self.bouton_options)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOutils, self.bouton_outils)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
@@ -226,13 +277,14 @@ class Dialog(wx.Dialog):
         self.ctrl_nom.SetFont(wx.Font(16, wx.FONTFAMILY_DEFAULT, wx.NORMAL, wx.BOLD, 0, ""))
         self.ctrl_photo.SetToolTip(wx.ToolTip(_(u"Cliquez sur le bouton droit de la souris\npour accéder aux outils photo")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_options.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder aux options")))
         self.bouton_outils.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder aux outils")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider et fermer la fiche")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler la\nsaisie et fermer la fiche")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
-        grid_sizer_boutons = wx.FlexGridSizer(rows=1, cols=5, vgap=10, hgap=10)
+        grid_sizer_boutons = wx.FlexGridSizer(rows=1, cols=6, vgap=10, hgap=10)
         grid_sizer_header = wx.FlexGridSizer(rows=1, cols=2, vgap=10, hgap=10)
         grid_sizer_header_gauche = wx.FlexGridSizer(rows=7, cols=1, vgap=0, hgap=0)
         grid_sizer_header_gauche.Add(self.ctrl_ID, 0, wx.ALIGN_RIGHT, 0)
@@ -250,11 +302,12 @@ class Dialog(wx.Dialog):
         grid_sizer_base.Add(grid_sizer_header, 1, wx.RIGHT|wx.LEFT|wx.TOP|wx.EXPAND, 10)
         grid_sizer_base.Add(self.ctrl_notebook, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
         grid_sizer_boutons.Add(self.bouton_aide, 0, 0, 0)
+        grid_sizer_boutons.Add(self.bouton_options, 0, 0, 0)
         grid_sizer_boutons.Add(self.bouton_outils, 0, 0, 0)
         grid_sizer_boutons.Add((20, 20), 0, wx.EXPAND, 0)
         grid_sizer_boutons.Add(self.bouton_ok, 0, 0, 0)
         grid_sizer_boutons.Add(self.bouton_annuler, 0, 0, 0)
-        grid_sizer_boutons.AddGrowableCol(2)
+        grid_sizer_boutons.AddGrowableCol(3)
         grid_sizer_base.Add(grid_sizer_boutons, 1, wx.LEFT|wx.RIGHT|wx.BOTTOM|wx.EXPAND, 10)
         self.SetSizer(grid_sizer_base)
         grid_sizer_base.AddGrowableRow(1)
@@ -279,6 +332,9 @@ class Dialog(wx.Dialog):
 
     def OnBoutonAnnuler(self, event):
         self.Annuler()
+
+    def OnBoutonOptions(self, event):
+        self.ctrl_notebook.SelectionParametresPages()
 
     def OnBoutonOutils(self, event):
         # Création du menu contextuel
@@ -318,13 +374,13 @@ class Dialog(wx.Dialog):
         listePages = ("identite", "liens", "questionnaire", "coords")
         for codePage in listePages :
             page = self.ctrl_notebook.GetPageAvecCode(codePage)
-            if page.majEffectuee == True and page.ValidationData() == False : 
+            if page != None and page.majEffectuee == True and page.ValidationData() == False :
                 self.ctrl_notebook.AffichePage(codePage)
                 return
         # Sauvegarde des données
         for codePage in listePages :
             page = self.ctrl_notebook.GetPageAvecCode(codePage)
-            if page.majEffectuee == True :
+            if page != None and page.majEffectuee == True :
                 page.Sauvegarde()
         # Fermeture de la fenêtre
         try :
