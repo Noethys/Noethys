@@ -137,7 +137,7 @@ class GetValeurs() :
             "date_naiss", "IDpays_naiss", "cp_naiss", "ville_naiss",
             "adresse_auto", "rue_resid", "cp_resid", "ville_resid", 
             "IDcategorie_travail", "profession", "employeur", "travail_tel", "travail_fax", "travail_mail", 
-            "tel_domicile", "tel_mobile", "tel_fax", "mail", "deces",
+            "tel_domicile", "tel_mobile", "tel_fax", "mail", "deces", "etat"
             )
 
         if len(listeIDindividus) == 0 : conditionIndividus = "()"
@@ -301,6 +301,7 @@ class GetValeurs() :
             dictCadres[IDindividu]["inscriptions"] = self.dictInfosIndividus[IDindividu]["inscriptions"]
             dictCadres[IDindividu]["photo"] = self.dictInfosIndividus[IDindividu]["photo"]
             dictCadres[IDindividu]["deces"] = self.dictInfosIndividus[IDindividu]["deces"]
+            dictCadres[IDindividu]["etat"] = self.dictInfosIndividus[IDindividu]["etat"]
 
         return dictCadres
     
@@ -362,7 +363,7 @@ class GetValeurs() :
 
 
 class CadreIndividu():
-    def __init__(self, parent, dc, IDindividu=None, listeTextes=[], genre="M", photo=None, xCentre=None, yCentre=None, largeur=None, hauteur=None, numCol=None, titulaire=0, calendrierActif=False, deces=0):
+    def __init__(self, parent, dc, IDindividu=None, listeTextes=[], genre="M", photo=None, xCentre=None, yCentre=None, largeur=None, hauteur=None, numCol=None, titulaire=0, calendrierActif=False, deces=0, etat=None):
         self.parent = parent
         self.zoom = 1
         self.zoomContenu = True
@@ -372,6 +373,7 @@ class CadreIndividu():
         self.calendrierActif = calendrierActif
         self.survolCalendrier = False
         self.deces = deces
+        self.etat = etat
         
         self.IDindividu = IDindividu
         self.dc = dc
@@ -420,6 +422,12 @@ class CadreIndividu():
         if self.deces in (True, 1):
             couleurFondHautCadre = (180, 180, 180)
             couleurFondBasCadre = (150, 150, 150)
+        if self.etat == "archive":
+            couleurFondHautCadre = (186, 139, 60)
+            couleurFondBasCadre = (186, 139, 60)
+        if self.etat == "efface":
+            couleurFondHautCadre = (255, 255, 255)
+            couleurFondBasCadre = (255, 255, 255)
 
         couleurBordCadre = (0, 0, 0)
         couleurSelectionCadre = (133, 236, 90)
@@ -492,12 +500,25 @@ class CadreIndividu():
             xBmpConso, yBmpConso = x+largeur-5-32, y+5
             self.dc.DrawBitmap(bmpConso, xBmpConso, yBmpConso)
         
-        # Dessin du symbole TITULAIRE
+        # Symboles de l'individu
+        xSymbole = x + paddingCadre
+        ySymbole = y + paddingCadre + 2
+
         if self.titulaire == 1 :
-            bmpTitulaire = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Titulaire.png"), wx.BITMAP_TYPE_ANY) 
-            xBmpTitulaire, yBmpTitulaire = x+largeur-5-32, y+5
-            self.dc.DrawBitmap(bmpTitulaire, x+paddingCadre, y+paddingCadre+2)
-            
+            bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Titulaire.png"), wx.BITMAP_TYPE_ANY)
+            self.dc.DrawBitmap(bmp, xSymbole, ySymbole)
+            xSymbole += 16
+
+        if self.etat == "archive" :
+            bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Archiver.png"), wx.BITMAP_TYPE_ANY)
+            self.dc.DrawBitmap(bmp, xSymbole, ySymbole)
+            xSymbole += 16
+
+        if self.etat == "efface" :
+            bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Gomme.png"), wx.BITMAP_TYPE_ANY)
+            self.dc.DrawBitmap(bmp, xSymbole, ySymbole)
+            xSymbole += 16
+
         # Mémorisation dans le dictionnaire d'objets
         self.dc.SetIdBounds(self.IDobjet, wx.Rect(x, y, largeur, hauteur)) 
         self.parent.dictIDs[self.IDobjet] = ("individu", self.IDindividu)
@@ -730,7 +751,8 @@ class CTRL_Graphique(wx.ScrolledWindow):
                 calendrierActif = self.dictCadres[IDindividu]["inscriptions"]
                 photo = self.dictCadres[IDindividu]["photo"]
                 deces = self.dictCadres[IDindividu]["deces"]
-                cadre = CadreIndividu(self, dc, IDindividu, listeTextes, genre, photo, xCentre, yCentre, largeurCase, hauteurCase, numCol, titulaire, calendrierActif, deces)
+                etat = self.dictCadres[IDindividu]["etat"]
+                cadre = CadreIndividu(self, dc, IDindividu, listeTextes, genre, photo, xCentre, yCentre, largeurCase, hauteurCase, numCol, titulaire, calendrierActif, deces, etat)
                 self.dictCadres[IDindividu]["ctrl"] = cadre
                 yCentre += hauteurCase + espaceVertical
             
@@ -998,9 +1020,20 @@ class CTRL_Graphique(wx.ScrolledWindow):
         self.tip.SetHeaderFont(wx.Font(10, font.GetFamily(), font.GetStyle(), wx.BOLD, font.GetUnderlined(), font.GetFaceName()))
         self.tip.SetHeader(dictInfoIndividu["nomComplet2"])
         self.tip.SetDrawHeaderLine(True)
-        
+
         # Corps du tooltip
         message = u""
+
+        # Décès
+        if dictInfoIndividu["deces"] in (True, 1):
+            message += _(u"</b>######### Individu décédé #########\n\n")
+        # Archive
+        if dictInfoIndividu["etat"] == "archive":
+            message += _(u"</b>######### Individu archivé #########\n\n")
+        # Effacé
+        if dictInfoIndividu["etat"] == "efface":
+            message += _(u"</b>######### Individu effacé #########\n\n")
+
         if dictInfoIndividu["datenaissComplet"] != None : message += u"%s\n" % dictInfoIndividu["datenaissComplet"]
         
         adresse = u""
