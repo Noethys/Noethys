@@ -82,7 +82,10 @@ class Notebook(wx.Notebook):
             ("reglements", _(u"Règlements"), u"DLG_Famille_reglements.Panel(self, IDfamille=IDfamille)", "Reglement.png"),
             ("divers", _(u"Divers"), u"DLG_Famille_divers.Panel(self, IDfamille=IDfamille)", "Planete.png"),
             ]
-            
+
+        # Pages à afficher obligatoirement
+        self.pagesObligatoires = ["informations",]
+
         # ImageList pour le NoteBook
         il = wx.ImageList(16, 16)
         index = 0
@@ -92,18 +95,24 @@ class Notebook(wx.Notebook):
         self.AssignImageList(il)
 
         # Création des pages
+        dictParametres = self.GetParametres()
+
         index = 0
         for codePage, labelPage, ctrlPage, imgPage in self.listePages :
-            exec("self.page%d = %s" % (index, ctrlPage))
-            exec("self.AddPage(self.page%d, u'%s')" % (index, labelPage))
-            exec("self.SetPageImage(%d, self.img%d)" % (index, index))
-            exec("self.dictPages['%s'] = {'ctrl' : self.page%d, 'index' : %d}" % (codePage, index, index))
-            index += 1
+            if dictParametres[codePage] == True :
+                exec("self.page%d = %s" % (index, ctrlPage))
+                exec("self.AddPage(self.page%d, u'%s')" % (index, labelPage))
+                exec("self.SetPageImage(%d, self.img%d)" % (index, index))
+                exec("self.dictPages['%s'] = {'ctrl' : self.page%d, 'index' : %d}" % (codePage, index, index))
+                index += 1
         
         self.Bind(wx.EVT_NOTEBOOK_PAGE_CHANGED, self.OnPageChanged)
         
     def GetPageAvecCode(self, codePage=""):
-        return self.dictPages[codePage]["ctrl"]
+        if self.dictPages.has_key(codePage):
+            return self.dictPages[codePage]["ctrl"]
+        else:
+            return None
     
     def AffichePage(self, codePage=""):
         indexPage = self.dictPages[codePage]["index"]
@@ -137,8 +146,64 @@ class Notebook(wx.Notebook):
         wx.CallLater(1, page.MAJ)
     
     def MAJpage(self, codePage=""):
-        page = self.dictPages[codePage]["ctrl"]
-        wx.CallLater(1, page.MAJ)
+        if self.dictPages.has_key(codePage):
+            page = self.dictPages[codePage]["ctrl"]
+            wx.CallLater(1, page.MAJ)
+
+    def GetParametres(self):
+        parametres = UTILS_Config.GetParametre("fiche_famille_pages", defaut={})
+        dictParametres = {}
+        for codePage, labelPage, ctrlPage, imgPage in self.listePages:
+            if parametres.has_key(codePage):
+                afficher = parametres[codePage]
+            else :
+                afficher = True
+            dictParametres[codePage] = afficher
+        return dictParametres
+
+    def SelectionParametresPages(self):
+        # Préparation de l'affichage des pages
+        dictParametres = self.GetParametres()
+        listeLabels = []
+        listeSelections = []
+        listeCodes = []
+        index = 0
+        for codePage, labelPage, ctrlPage, imgPage in self.listePages:
+            if codePage not in self.pagesObligatoires :
+                listeLabels.append(labelPage)
+                if dictParametres.has_key(codePage):
+                    if dictParametres[codePage] == True :
+                        listeSelections.append(index)
+                listeCodes.append(codePage)
+                index += 1
+
+        # Demande la sélection des pages
+        dlg = wx.MultiChoiceDialog( self, _(u"Cochez ou décochez les onglets à afficher ou à masquer :"), _(u"Afficher/masquer des onglets"), listeLabels)
+        dlg.SetSelections(listeSelections)
+        dlg.SetSize((300, 350))
+        dlg.CenterOnScreen()
+        reponse = dlg.ShowModal()
+        selections = dlg.GetSelections()
+        dlg.Destroy()
+        if reponse != wx.ID_OK :
+            return False
+
+        # Mémorisation des pages cochées
+        dictParametres = {}
+        index = 0
+        for codePage in listeCodes:
+            if index in selections :
+                dictParametres[codePage] = True
+            else :
+                dictParametres[codePage] = False
+            index += 1
+        UTILS_Config.SetParametre("fiche_famille_pages", dictParametres)
+
+        # Info
+        dlg = wx.MessageDialog(self, _(u"Fermez cette fiche pour appliquer les modifications demandées !"), _(u"Information"), wx.OK | wx.ICON_INFORMATION)
+        dlg.ShowModal()
+        dlg.Destroy()
+
 
 
 
@@ -171,6 +236,7 @@ class Dialog(wx.Dialog):
         
         # Boutons de commande
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_options = CTRL_Bouton_image.CTRL(self, texte=_(u"Options"), cheminImage="Images/32x32/Configuration2.png")
         self.bouton_outils = CTRL_Bouton_image.CTRL(self, texte=_(u"Outils"), cheminImage="Images/32x32/Configuration.png")
         self.bouton_consommations = CTRL_Bouton_image.CTRL(self, texte=_(u"Consommations"), cheminImage="Images/32x32/Calendrier.png")
         self.bouton_saisie_reglement = CTRL_Bouton_image.CTRL(self, texte=_(u"Saisir un règlement"), cheminImage="Images/32x32/Reglement.png")
@@ -183,6 +249,7 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAjouterIndividu, self.bouton_ajouter)
 
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
+        self.Bind(wx.EVT_BUTTON, self.OnBoutonOptions, self.bouton_options)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOutils, self.bouton_outils)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonLiens, self.bouton_liens_famille)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonCalendrier, self.bouton_calendrier)
@@ -201,7 +268,11 @@ class Dialog(wx.Dialog):
         # Si c'est une nouvelle fiche, on propose immédiatement la création d'un individu
         if self.nouvelleFiche == True :
             wx.CallAfter(self.CreerPremierIndividu)
-        
+
+        # Cache le bouton de saisie d'un règlement si l'onglet Règlements est caché
+        if self.notebook.dictPages.has_key("reglements") == False :
+            self.bouton_saisie_reglement.Show(False)
+
         # MAJ de l'onglet Informations
         self.notebook.GetPageAvecCode("informations").MAJ() 
         
@@ -223,6 +294,7 @@ class Dialog(wx.Dialog):
         self.bouton_liens_famille.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour visualiser l'ensemble des liens de la famille")))
         self.bouton_calendrier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ouvrir la grille des consommations de l'individu sélectionné")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_options.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder aux options")))
         self.bouton_outils.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder aux outils")))
         self.bouton_consommations.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour consulter ou modifier les consommations d'un membre de la famille")))
         self.bouton_saisie_reglement.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour saisir rapidement un règlement")))
@@ -264,13 +336,14 @@ class Dialog(wx.Dialog):
         
         grid_sizer_boutons = wx.FlexGridSizer(rows=1, cols=9, vgap=10, hgap=10)
         grid_sizer_boutons.Add(self.bouton_aide, 0, 0, 0)
+        grid_sizer_boutons.Add(self.bouton_options, 0, 0, 0)
         grid_sizer_boutons.Add(self.bouton_outils, 0, 0, 0)
         grid_sizer_boutons.Add(self.bouton_consommations, 0, 0, 0)
         grid_sizer_boutons.Add(self.bouton_saisie_reglement, 0, 0, 0)
         grid_sizer_boutons.Add((20, 20), 0, wx.EXPAND, 0)
         grid_sizer_boutons.Add(self.bouton_ok, 0, 0, 0)
         grid_sizer_boutons.Add(self.bouton_annuler, 0, 0, 0)
-        grid_sizer_boutons.AddGrowableCol(4)
+        grid_sizer_boutons.AddGrowableCol(5)
         grid_sizer_base.Add(grid_sizer_boutons, 1, wx.LEFT|wx.RIGHT|wx.BOTTOM|wx.EXPAND, 10)
 
         grid_sizer_base.AddGrowableRow(0)
@@ -328,7 +401,10 @@ class Dialog(wx.Dialog):
     def OnBoutonAide(self, event):
         from Utils import UTILS_Aide
         UTILS_Aide.Aide("Lafichefamiliale")
-    
+
+    def OnBoutonOptions(self, event):
+        self.notebook.SelectionParametresPages()
+
     def OnBoutonOutils(self, event):
         # Création du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
@@ -615,13 +691,13 @@ class Dialog(wx.Dialog):
         listePages = ("questionnaire", "caisse", "divers")
         for codePage in listePages :
             page = self.notebook.GetPageAvecCode(codePage)
-            if page.majEffectuee == True and page.ValidationData() == False : 
+            if page != None and page.majEffectuee == True and page.ValidationData() == False :
                 self.notebook.AffichePage(codePage)
                 return False
         # Sauvegarde des données
         for codePage in listePages :
             page = self.notebook.GetPageAvecCode(codePage)
-            if page.majEffectuee == True :
+            if page != None and page.majEffectuee == True :
                 page.Sauvegarde()
         return True
 
