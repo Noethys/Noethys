@@ -898,12 +898,14 @@ class MainFrame(wx.Frame):
                     {"code" : "liste_comptes_internet", "label" : _(u"Liste des comptes internet"), "infobulle" : _(u"Editer la liste des comptes internet"), "image" : "Images/16x16/Connecthys.png", "action" : self.On_individus_comptes_internet},
                     "-",
                     {"code" : "importer_photos", "label" : _(u"Importer des photos individuelles"), "infobulle" : _(u"Importer des photos individuelles"), "image" : "Images/16x16/Photos.png", "action" : self.On_individus_importer_photos},
+                    "-",
                     {"code" : "menu_individus_importation", "label" : _(u"Importer des familles ou des individus"), "items" : [
                             {"code" : "importation_individus_csv", "label" : _(u"Importer des individus ou des familles depuis un fichier Excel ou CSV"), "infobulle" : _(u"Importer des individus ou des familles"), "image" : "Images/16x16/Document_import.png", "action" : self.On_individus_importer_csv},
                             {"code" : "importation_individus_fichier", "label" : _(u"Importer des familles depuis un fichier Noethys"), "infobulle" : _(u"Importer des familles depuis un fichier Noethys"), "image" : "Images/16x16/Document_import.png", "action" : self.On_individus_importer_fichier},
                             ],
                      },
                     {"code": "exporter_familles", "label": _(u"Exporter les familles au format XML"), "infobulle": _(u"Exporter les familles au format XML"), "image": "Images/16x16/Document_export.png", "action": self.On_individus_exporter_familles},
+                    {"code": "archiver_individus", "label": _(u"Archiver et effacer des individus"), "infobulle": _(u"Archiver et effacer des individus"), "image": "Images/16x16/Archiver.png", "action": self.On_individus_archiver_individus},
                     "-",
                     {"code" : "individus_edition_etiquettes", "label" : _(u"Edition d'étiquettes et de badges"), "infobulle" : _(u"Edition d'étiquettes et de badges au format PDF"), "image" : "Images/16x16/Etiquette2.png", "action" : self.On_individus_edition_etiquettes},
                     ],
@@ -3362,6 +3364,14 @@ class MainFrame(wx.Frame):
         from Dlg import DLG_Importation_fichier
         dlg = DLG_Importation_fichier.Dialog(self)
         dlg.ShowModal() 
+        dlg.Destroy()
+        self.ctrl_individus.MAJ()
+
+    def On_individus_archiver_individus(self, event):
+        if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("individus_archiver", "creer") == False: return
+        from Dlg import DLG_Archivage
+        dlg = DLG_Archivage.Dialog(self)
+        dlg.ShowModal()
         dlg.Destroy()
         self.ctrl_individus.MAJ()
 

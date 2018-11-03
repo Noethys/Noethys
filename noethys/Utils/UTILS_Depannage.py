@@ -452,7 +452,7 @@ class Depannage():
         FROM factures
         LEFT JOIN comptes_payeurs ON comptes_payeurs.IDcompte_payeur = factures.IDcompte_payeur
         LEFT JOIN familles ON familles.IDfamille = comptes_payeurs.IDfamille
-        WHERE etat <> "annulation"
+        WHERE factures.etat <> "annulation"
         ORDER BY factures.date_edition;"""
         self.DB.ExecuterReq(req)
         listeFactures = self.DB.ResultatReq()

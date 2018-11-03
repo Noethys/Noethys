@@ -2205,7 +2205,6 @@ class DB:
 
         # =============================================================
 
-
         versionFiltre = (1, 2, 4, 1)
         if versionFichier < versionFiltre:
             try:
@@ -2215,6 +2214,17 @@ class DB:
 
         # =============================================================
 
+        versionFiltre = (1, 2, 4, 5)
+        if versionFichier < versionFiltre:
+            try:
+                self.AjoutChamp("familles", "etat", "VARCHAR(50)")
+                self.AjoutChamp("individus", "etat", "VARCHAR(50)")
+                self.CreationIndex("index_familles_etat")
+                self.CreationIndex("index_individus_etat")
+            except Exception, err:
+                return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
+
+        # =============================================================
 
 
 

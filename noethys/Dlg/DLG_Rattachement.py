@@ -115,6 +115,7 @@ class Dialog(wx.Dialog):
         # Sélection individu
         self.staticbox_selection_staticbox = wx.StaticBox(self, -1, _(u"2. Saisie du nom de l'individu"))
         self.ctrl_propositions = OL_Individus.ListView(self, id=-1, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
+        self.ctrl_propositions.dictParametres["archives"] = True
         self.label_nom = wx.StaticText(self, -1, _(u"Nom :"))
         self.ctrl_nom = CtrlRecherche(self, numColonne=1)
         self.label_prenom = wx.StaticText(self, -1, _(u"Prénom :"))

@@ -72,6 +72,7 @@ DB_DATA = {
                                     ("IDtype_sieste", "INTEGER", u"Type de sieste"),
                                     
                                     ("date_creation", "DATE", u"Date de création de la fiche individu"),
+                                    ("etat", "VARCHAR(50)", u"Etat"),
                                     ], # Les individus
     
     
@@ -123,6 +124,7 @@ DB_DATA = {
                                     ("natjur_helios", "INTEGER", u"Nature juridique du tiers pour Hélios"),
                                     ("autorisation_cafpro", "INTEGER", u"Autorisation de consultation CAFPRO (0/1)"),
                                     ("autre_adresse_facturation", "VARCHAR(450)", u"Autre adresse de facturation"),
+                                    ("etat", "VARCHAR(50)", u"Etat"),
                                     ], # Les familles
     
     "rattachements":[       ("IDrattachement", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID rattachement"),
@@ -1825,7 +1827,8 @@ DB_INDEX = {
     "index_ventilation_IDcompte_payeur" : {"table" : "ventilation", "champ" : "IDcompte_payeur"},
     "index_ventilation_IDprestation" : {"table" : "ventilation", "champ" : "IDprestation"},
     "index_factures_IDcompte_payeur" : {"table" : "factures", "champ" : "IDcompte_payeur"},
-
+    "index_familles_etat" : {"table" : "familles", "champ" : "etat"},
+    "index_individus_etat" : {"table" : "individus", "champ" : "etat"},
     }
 
 

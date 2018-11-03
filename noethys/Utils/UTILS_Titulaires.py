@@ -85,10 +85,11 @@ def GetTitulaires(listeIDfamille=[], mode_adresse_facturation=False, inclure_tel
     
     # Recherche des noms des titulaires
     for IDfamille, dictFamille in dictFamilles.iteritems() :
+        nbreTitulaires = 0
+
         if dictRattachements.has_key(IDfamille):
             listeIndividusFamilles = dictRattachements[IDfamille]
             listeTitulaires = []
-            nbreTitulaires = 0
             for IDrattachement, IDindividuTmp, IDfamilleTmp, IDcategorie, titulaire in listeIndividusFamilles :
                 if dictIndividus.has_key(IDindividuTmp) :
                     if titulaire == 1 :
@@ -139,50 +140,51 @@ def GetTitulaires(listeIDfamille=[], mode_adresse_facturation=False, inclure_tel
                     "sansCivilite" : nomsSansCivilite,
                     "avecCivilite" : nomsAvecCivilite,
                     }
-            
-            # Recherche de l'adresse de la famille
-            IDindividuTitulaire = listeTitulaires[0]["IDindividu"]
-            adresse_auto = dictIndividus[IDindividuTitulaire]["adresse_auto"]
-            if adresse_auto != None and dictIndividus.has_key(adresse_auto) :
-                rue_resid = dictIndividus[adresse_auto]["rue_resid"]
-                cp_resid = dictIndividus[adresse_auto]["cp_resid"]
-                ville_resid = dictIndividus[adresse_auto]["ville_resid"]
-                IDsecteur = dictIndividus[adresse_auto]["IDsecteur"]
-                nomSecteur = dictIndividus[adresse_auto]["nomSecteur"]
-            else:
-                rue_resid = dictIndividus[IDindividuTitulaire]["rue_resid"]
-                cp_resid = dictIndividus[IDindividuTitulaire]["cp_resid"]
-                ville_resid = dictIndividus[IDindividuTitulaire]["ville_resid"]
-                IDsecteur = dictIndividus[IDindividuTitulaire]["IDsecteur"]
-                nomSecteur = dictIndividus[IDindividuTitulaire]["nomSecteur"]
-            dictAdresse = {"rue":rue_resid, "cp":cp_resid, "ville":ville_resid, "IDsecteur":IDsecteur, "nomSecteur":nomSecteur, "secteur":nomSecteur}
-            
-            # Recherche des adresses Emails des titulaires
-            listeMails = []
-            for dictTemp in listeTitulaires :
-                if dictTemp["mail"] not in (None, ""):
-                    listeMails.append(dictTemp["mail"])
 
-            # Noms des titulaires
-            titulairesAvecCivilite = nomsTitulaires["avecCivilite"]
-            titulairesSansCivilite = nomsTitulaires["sansCivilite"]
+            if nbreTitulaires > 0:
+                # Recherche de l'adresse de la famille
+                IDindividuTitulaire = listeTitulaires[0]["IDindividu"]
+                adresse_auto = dictIndividus[IDindividuTitulaire]["adresse_auto"]
+                if adresse_auto != None and dictIndividus.has_key(adresse_auto) :
+                    rue_resid = dictIndividus[adresse_auto]["rue_resid"]
+                    cp_resid = dictIndividus[adresse_auto]["cp_resid"]
+                    ville_resid = dictIndividus[adresse_auto]["ville_resid"]
+                    IDsecteur = dictIndividus[adresse_auto]["IDsecteur"]
+                    nomSecteur = dictIndividus[adresse_auto]["nomSecteur"]
+                else:
+                    rue_resid = dictIndividus[IDindividuTitulaire]["rue_resid"]
+                    cp_resid = dictIndividus[IDindividuTitulaire]["cp_resid"]
+                    ville_resid = dictIndividus[IDindividuTitulaire]["ville_resid"]
+                    IDsecteur = dictIndividus[IDindividuTitulaire]["IDsecteur"]
+                    nomSecteur = dictIndividus[IDindividuTitulaire]["nomSecteur"]
+                dictAdresse = {"rue":rue_resid, "cp":cp_resid, "ville":ville_resid, "IDsecteur":IDsecteur, "nomSecteur":nomSecteur, "secteur":nomSecteur}
 
-            # Autre adresse de facturation
-            autre_adresse_facturation = dictFamille["autre_adresse_facturation"]
-            if mode_adresse_facturation == True and autre_adresse_facturation not in (None, ""):
-                valeurs_autre_adresse = autre_adresse_facturation.split("##")
-                titulairesAvecCivilite = valeurs_autre_adresse[0]
-                titulairesSansCivilite = valeurs_autre_adresse[0]
-                dictAdresse = {"rue": valeurs_autre_adresse[1], "cp": valeurs_autre_adresse[2], "ville": valeurs_autre_adresse[3], "IDsecteur": None, "nomSecteur": "", "secteur": ""}
+                # Recherche des adresses Emails des titulaires
+                listeMails = []
+                for dictTemp in listeTitulaires :
+                    if dictTemp["mail"] not in (None, ""):
+                        listeMails.append(dictTemp["mail"])
 
-            # Définit les noms des titulaires
-            dictFamilles[IDfamille]["titulairesAvecCivilite"] = titulairesAvecCivilite
-            dictFamilles[IDfamille]["titulairesSansCivilite"] = titulairesSansCivilite
-            dictFamilles[IDfamille]["listeTitulaires"] = listeTitulaires
-            dictFamilles[IDfamille]["adresse"] = dictAdresse
-            dictFamilles[IDfamille]["listeMails"] = listeMails
-        
-        else:
+                # Noms des titulaires
+                titulairesAvecCivilite = nomsTitulaires["avecCivilite"]
+                titulairesSansCivilite = nomsTitulaires["sansCivilite"]
+
+                # Autre adresse de facturation
+                autre_adresse_facturation = dictFamille["autre_adresse_facturation"]
+                if mode_adresse_facturation == True and autre_adresse_facturation not in (None, ""):
+                    valeurs_autre_adresse = autre_adresse_facturation.split("##")
+                    titulairesAvecCivilite = valeurs_autre_adresse[0]
+                    titulairesSansCivilite = valeurs_autre_adresse[0]
+                    dictAdresse = {"rue": valeurs_autre_adresse[1], "cp": valeurs_autre_adresse[2], "ville": valeurs_autre_adresse[3], "IDsecteur": None, "nomSecteur": "", "secteur": ""}
+
+                # Définit les noms des titulaires
+                dictFamilles[IDfamille]["titulairesAvecCivilite"] = titulairesAvecCivilite
+                dictFamilles[IDfamille]["titulairesSansCivilite"] = titulairesSansCivilite
+                dictFamilles[IDfamille]["listeTitulaires"] = listeTitulaires
+                dictFamilles[IDfamille]["adresse"] = dictAdresse
+                dictFamilles[IDfamille]["listeMails"] = listeMails
+
+        if nbreTitulaires== 0:
             # Définit les noms des titulaires
             dictFamilles[IDfamille]["titulairesAvecCivilite"] = _(u"Sans titulaires")
             dictFamilles[IDfamille]["titulairesSansCivilite"] = _(u"Sans titulaires")
