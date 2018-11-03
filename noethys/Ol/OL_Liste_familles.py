@@ -28,7 +28,7 @@ from Utils import UTILS_Infos_individus
 def DateEngEnDateDD(dateEng):
     return datetime.date(int(dateEng[:4]), int(dateEng[5:7]), int(dateEng[8:10]))
 
-def GetListe(listeActivites=None, presents=None):
+def GetListe(listeActivites=None, presents=None, archives=False):
     if listeActivites == None : return {} 
     
     # Récupération des données
@@ -43,31 +43,13 @@ def GetListe(listeActivites=None, presents=None):
         else:
             conditionActivites = " AND inscriptions.IDactivite IN %s" % str(tuple(listeActivites))
 
-    # Conditions Présents
-##    if presents == None :
-##        conditionPresents = ""
-##        jointurePresents = ""
-##    else:
-##        conditionPresents = " AND consommations.date>='%s' AND consommations.date<='%s' AND consommations.etat IN ('reservation', 'present')" % (str(presents[0]), str(presents[1]))
-##        jointurePresents = "LEFT JOIN consommations ON consommations.IDindividu = individus.IDindividu"
-    
-    
-    DB = GestionDB.DB()
+    # Condition archives
+    if archives == True :
+        conditionArchives = "AND (familles.etat IS NULL OR familles.etat='archive')"
+    else :
+        conditionArchives = "AND familles.etat IS NULL"
 
-### Ancienne version lente :
-##    req = """
-##    SELECT 
-##    familles.IDfamille, regimes.nom, caisses.nom, num_allocataire
-##    FROM familles 
-##    LEFT JOIN individus ON individus.IDindividu = inscriptions.IDindividu
-##    LEFT JOIN consommations ON consommations.IDindividu = individus.IDindividu
-##    LEFT JOIN inscriptions ON inscriptions.IDactivite = consommations.IDactivite 
-##    AND inscriptions.IDfamille = familles.IDfamille
-##    LEFT JOIN caisses ON caisses.IDcaisse = familles.IDcaisse
-##    LEFT JOIN regimes ON regimes.IDregime = caisses.IDregime
-##    WHERE inscriptions.parti=0 %s %s
-##    GROUP BY familles.IDfamille
-##    ;""" % (conditionActivites, conditionPresents)
+    DB = GestionDB.DB()
 
     # Récupération des présents
     listePresents = []
@@ -93,9 +75,9 @@ def GetListe(listeActivites=None, presents=None):
     AND inscriptions.IDfamille = familles.IDfamille
     LEFT JOIN caisses ON caisses.IDcaisse = familles.IDcaisse
     LEFT JOIN regimes ON regimes.IDregime = caisses.IDregime
-    WHERE (inscriptions.date_desinscription IS NULL OR inscriptions.date_desinscription>='%s') %s
+    WHERE (inscriptions.date_desinscription IS NULL OR inscriptions.date_desinscription>='%s') %s %s
     GROUP BY familles.IDfamille
-    ;""" % (datetime.date.today(), conditionActivites)
+    ;""" % (datetime.date.today(), conditionArchives, conditionActivites)
 
     DB.ExecuterReq(req)
     listeFamilles = DB.ResultatReq()
@@ -158,6 +140,7 @@ class ListView(FastObjectListView):
         self.dateReference = None
         self.listeActivites = None
         self.presents = None
+        self.archives = False
         self.concernes = False
         self.labelParametres = ""
         # Initialisation du listCtrl
@@ -175,7 +158,7 @@ class ListView(FastObjectListView):
 
     def GetTracks(self):
         """ Récupération des données """
-        dictDonnees = GetListe(self.listeActivites, self.presents)
+        dictDonnees = GetListe(self.listeActivites, self.presents, self.archives)
         listeListeView = []
         for IDfamille, dictTemp in dictDonnees.iteritems() :
             track = Track(dictTemp)
@@ -215,9 +198,10 @@ class ListView(FastObjectListView):
             self.SetSortColumn(self.columns[1])
         self.SetObjects(self.donnees)
        
-    def MAJ(self, listeActivites=None, presents=None, labelParametres=""):
+    def MAJ(self, listeActivites=None, presents=None, archives=False, labelParametres=""):
         self.listeActivites = listeActivites
         self.presents = presents
+        self.archives = archives
         self.labelParametres = labelParametres
         attente = wx.BusyInfo(_(u"Recherche des données..."), self)
         self.InitModel()

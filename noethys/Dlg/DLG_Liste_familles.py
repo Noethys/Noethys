@@ -44,6 +44,7 @@ class Options(wx.Panel):
         self.label_date_fin = wx.StaticText(self, -1, _(u"Au"))
         self.ctrl_date_fin = CTRL_Saisie_date.Date(self)
         self.bouton_date_fin = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Calendrier.png"), wx.BITMAP_TYPE_ANY))
+        self.check_archives = wx.CheckBox(self, -1, _(u"Afficher les familles archivées"))
 
         self.__set_properties()
         self.__do_layout()
@@ -78,7 +79,9 @@ class Options(wx.Panel):
         grid_sizer_dates.Add(self.ctrl_date_fin, 0, wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_dates.Add(self.bouton_date_fin, 0, 0, 0)
         grid_sizer_base.Add(grid_sizer_dates, 1, wx.LEFT|wx.EXPAND, 18)
-        
+
+        grid_sizer_base.Add(self.check_archives, 1, wx.EXPAND |wx.TOP, 5)
+
         self.SetSizer(grid_sizer_base)
         grid_sizer_base.Fit(self)
         grid_sizer_base.AddGrowableCol(0)
@@ -145,6 +148,10 @@ class Options(wx.Panel):
                 return False
             
             return (date_debut, date_fin)
+
+    def GetArchives(self):
+        return self.check_archives.GetValue()
+
 
 # -------------------------------------------------------------------------------------------------------------------------
 
@@ -235,9 +242,12 @@ class Parametres(wx.Panel):
         # Vérifie Inscrits / Présents
         presents = self.ctrl_options.GetPresents()
         if presents == False : return
-        
+
+        # Archivés
+        archives = self.ctrl_options.GetArchives()
+
         # Envoi des données
-        self.parent.MAJ(listeActivites=listeActivites, presents=presents)
+        self.parent.MAJ(listeActivites=listeActivites, presents=presents, archives=archives)
         
         return True
     
@@ -362,9 +372,9 @@ class Dialog(wx.Dialog):
     def ExportExcel(self, event):
         self.ctrl_listview.ExportExcel(None)
 
-    def MAJ(self, listeActivites=None, presents=None):
+    def MAJ(self, listeActivites=None, presents=None, archives=False):
         labelParametres = self.GetLabelParametres() 
-        self.ctrl_listview.MAJ(listeActivites, presents, labelParametres) 
+        self.ctrl_listview.MAJ(listeActivites, presents, archives, labelParametres)
 
     def GetLabelParametres(self):
         listeParametres = []
@@ -381,7 +391,11 @@ class Dialog(wx.Dialog):
             listeParametres.append(_(u"Toutes les familles dont un des membres est inscrit"))
         else :
             listeParametres.append(_(u"Uniquement les familles dont un des membres est présent du %s au %s") % (DateEngFr(str(presents[0])), DateEngFr(str(presents[1]))))
-        
+
+        # Archivés
+        if self.ctrl_parametres.ctrl_options.GetArchives() == True :
+            listeParametres.append(_(u"Familles archivées incluses"))
+
         labelParametres = " | ".join(listeParametres)
         return labelParametres
 
