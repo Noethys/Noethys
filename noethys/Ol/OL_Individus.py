@@ -28,6 +28,54 @@ from Ctrl.CTRL_ObjectListView import FastObjectListView, ColumnDefn, Filter, CTR
 from Utils import UTILS_Utilisateurs
 
 
+def GetRattachements(IDindividu):
+    # Récupération des rattachements dans la base
+    DB = GestionDB.DB()
+    req = """SELECT IDrattachement, IDindividu, IDfamille, IDcategorie, titulaire
+    FROM rattachements
+    WHERE IDindividu=%d
+    ;""" % IDindividu
+    DB.ExecuterReq(req)
+    listeRattachements = DB.ResultatReq()
+    DB.Close()
+
+    # Recherche des rattachements
+    dictTitulaires = {}
+    if len(listeRattachements) == 0:
+        rattachements = None
+        dictTitulaires = {}
+        txtTitulaires = _(u"Rattaché à aucune famille")
+    elif len(listeRattachements) == 1:
+        IDfamille = listeRattachements[0][2]
+        IDcategorie = listeRattachements[0][3]
+        titulaire = listeRattachements[0][4]
+        rattachements = [(IDcategorie, IDfamille, titulaire)]
+        dictTitulaires[IDfamille] = GetNomsTitulaires(IDfamille)
+        txtTitulaires = dictTitulaires[IDfamille]
+    else:
+        rattachements = []
+        txtTitulaires = ""
+        for IDrattachement, IDindividu, IDfamille, IDcategorie, titulaire in listeRattachements:
+            rattachements.append((IDcategorie, IDfamille, titulaire))
+            nomsTitulaires = GetNomsTitulaires(IDfamille)
+            dictTitulaires[IDfamille] = nomsTitulaires
+            txtTitulaires += nomsTitulaires + u" | "
+        if len(txtTitulaires) > 0:
+            txtTitulaires = txtTitulaires[:-2]
+
+    return rattachements, dictTitulaires, txtTitulaires
+
+
+def GetNomsTitulaires(IDfamille=None):
+    dictTitulaires = UTILS_Titulaires.GetTitulaires(listeIDfamille=[IDfamille, ])
+    if dictTitulaires.has_key(IDfamille):
+        noms = dictTitulaires[IDfamille]["titulairesSansCivilite"]
+    else:
+        noms = "?"
+    return noms
+
+
+
 
 class Track(object):
     def __init__(self, donnees, dictIndividus):
@@ -68,6 +116,7 @@ class Track(object):
         self.civiliteLong = donnees["civiliteLong"]
         self.civiliteAbrege = donnees["civiliteAbrege"]
         self.nomImage = donnees["nomImage"]
+        self.etat = donnees["etat"]
         
         # Champ pour filtre de recherche
         nom = self.nom
@@ -75,52 +124,12 @@ class Track(object):
         prenom = self.prenom
         if prenom == None : prenom = ""
         self.champ_recherche = u"%s %s %s" % (nom, prenom, nom)
-    
-    
+
     def GetRattachements(self):
-        # Récupération des rattachements dans la base
-        DB = GestionDB.DB()
-        req = """SELECT IDrattachement, IDindividu, IDfamille, IDcategorie, titulaire
-        FROM rattachements
-        WHERE IDindividu=%d
-        ;""" % self.IDindividu
-        DB.ExecuterReq(req)
-        listeRattachements = DB.ResultatReq()
-        DB.Close()
-    
-        # Recherche des rattachements
-        dictTitulaires = {}
-        if len(listeRattachements) == 0 :
-            rattachements = None
-            dictTitulaires = {}
-            txtTitulaires = _(u"Rattaché à aucune famille")
-        elif len(listeRattachements) == 1 :
-            IDfamille = listeRattachements[0][2]
-            IDcategorie = listeRattachements[0][3]
-            titulaire = listeRattachements[0][4]
-            rattachements = [(IDcategorie, IDfamille, titulaire)]
-            dictTitulaires[IDfamille] = self.GetNomsTitulaires(IDfamille)
-            txtTitulaires = dictTitulaires[IDfamille]
-        else:
-            rattachements = []
-            txtTitulaires = ""
-            for IDrattachement, IDindividu, IDfamille, IDcategorie, titulaire in listeRattachements :
-                rattachements.append((IDcategorie, IDfamille, titulaire))
-                nomsTitulaires =  self.GetNomsTitulaires(IDfamille)
-                dictTitulaires[IDfamille] = nomsTitulaires
-                txtTitulaires += nomsTitulaires + u" | "
-            if len(txtTitulaires) > 0 :
-                txtTitulaires = txtTitulaires[:-2]
-        
-        return rattachements, dictTitulaires, txtTitulaires
-                    
+        return GetRattachements(self.IDindividu)
+
     def GetNomsTitulaires(self, IDfamille=None):
-        dictTitulaires = UTILS_Titulaires.GetTitulaires(listeIDfamille=[IDfamille,])
-        if dictTitulaires.has_key(IDfamille) :
-            noms = dictTitulaires[IDfamille]["titulairesSansCivilite"]
-        else :
-            noms = "?"
-        return noms
+        return GetNomsTitulaires(IDfamille)
 
 
     
@@ -134,8 +143,12 @@ class ListView(FastObjectListView):
         self.dictTracks = {}
         self.dictIndividus = {}
         self.donnees = []
-        self.listeActivites = []
-        self.listeGroupesActivites = []
+        self.dictParametres = {
+            "groupes_activites" : [],
+            "activites" : [],
+            "archives" : False,
+            "effaces" : False,
+        }
         self.forceActualisation = False
         # Initialisation du listCtrl
         self.nom_fichier_liste = __file__
@@ -148,7 +161,41 @@ class ListView(FastObjectListView):
         # Binds perso
         self.Bind(wx.EVT_LIST_ITEM_ACTIVATED, self.OnItemActivated)
         self.Bind(wx.EVT_CONTEXT_MENU, self.OnContextMenu)
-        
+
+    def SetParametres(self, parametres=""):
+        if parametres == None :
+            parametres = {}
+
+        dictParametres = {}
+        listeParametres = parametres.split("###")
+        for parametre in listeParametres :
+            if "===" in parametre:
+                nom, valeur = parametre.split("===")
+                dictParametres[nom] = valeur
+
+        # Groupes d'activités
+        self.dictParametres["groupes_activites"] = []
+        if dictParametres.has_key("liste_groupes_activites"):
+            listeID = [int(ID) for ID in dictParametres["liste_groupes_activites"].split(";")]
+            self.dictParametres["groupes_activites"] = listeID
+
+        # Activités
+            self.dictParametres["activites"] = []
+        if dictParametres.has_key("liste_activites"):
+            listeID = [int(ID) for ID in dictParametres["liste_activites"].split(";")]
+            self.dictParametres["activites"] = listeID
+
+        # Options
+        if dictParametres.has_key("archives"):
+            self.dictParametres["archives"] = True
+        else :
+            self.dictParametres["archives"] = False
+
+        if dictParametres.has_key("effaces"):
+            self.dictParametres["effaces"] = True
+        else :
+            self.dictParametres["effaces"] = False
+
     def OnItemActivated(self,event):
         self.Modifier(None)
     
@@ -177,10 +224,17 @@ class ListView(FastObjectListView):
             "date_naiss", "IDpays_naiss", "cp_naiss", "ville_naiss",
             "adresse_auto", "rue_resid", "cp_resid", "ville_resid", 
             "IDcategorie_travail", "profession", "employeur", "travail_tel", "travail_fax", "travail_mail", 
-            "tel_domicile", "tel_mobile", "tel_fax", "mail"
+            "tel_domicile", "tel_mobile", "tel_fax", "mail", "etat"
             )
+
+        conditions = "etat IS NULL"
+        if self.dictParametres.has_key("archives") and self.dictParametres["archives"] == True :
+            conditions += " OR etat='archive'"
+        if self.dictParametres.has_key("effaces") and self.dictParametres["effaces"] == True :
+            conditions += " OR etat='efface'"
+
         db = GestionDB.DB()
-        req = """SELECT %s FROM individus;""" % ",".join(listeChamps)
+        req = """SELECT %s FROM individus WHERE %s;""" % (",".join(listeChamps), conditions)
         db.ExecuterReq(req)
         listeDonnees = db.ResultatReq()
         db.Close()
@@ -222,22 +276,20 @@ class ListView(FastObjectListView):
                     dictTemp["date_naiss"] = datenaissDD
                 except :
                     dictTemp["age"] = None
-        
+
             dictIndividus[IDindividu] = dictTemp
         
         # Vérifie si le dictIndividus est différent du précédent pour empêcher l'actualisation de la liste
-        if dictIndividus == self.dictIndividus and len(self.listeActivites) == 0 and len(self.listeGroupesActivites) == 0 and self.forceActualisation == False :
+        if dictIndividus == self.dictIndividus and self.forceActualisation == False :
             return None
         else :
             self.dictIndividus = dictIndividus
         
         filtre = None
-        
+
         # Si filtre activités
-        if len(self.listeActivites) > 0 :
-            if len(self.listeActivites) == 0 : conditionActivites = "()"
-            elif len(self.listeActivites) == 1 : conditionActivites = "(%d)" % self.listeActivites[0]
-            else : conditionActivites = str(tuple(self.listeActivites))
+        if len(self.dictParametres["activites"]) > 0 :
+            conditionActivites = GestionDB.ConvertConditionChaine(self.dictParametres["activites"])
             db = GestionDB.DB()
             req = """SELECT individus.IDindividu, nom
             FROM individus
@@ -252,10 +304,8 @@ class ListView(FastObjectListView):
                 filtre.append(ID)
 
         # Si filtre Groupes d'activités
-        if len(self.listeGroupesActivites) > 0 :
-            if len(self.listeGroupesActivites) == 0 : conditionGroupesActivites = "()"
-            elif len(self.listeGroupesActivites) == 1 : conditionGroupesActivites = "(%d)" % self.listeGroupesActivites[0]
-            else : conditionGroupesActivites = str(tuple(self.listeGroupesActivites))
+        if len(self.dictParametres["groupes_activites"]) > 0 :
+            conditionGroupesActivites = GestionDB.ConvertConditionChaine(self.dictParametres["groupes_activites"])
             db = GestionDB.DB()
             req = """SELECT individus.IDindividu, nom
             FROM individus
@@ -287,8 +337,14 @@ class ListView(FastObjectListView):
             for IDcivilite, CiviliteLong, CiviliteAbrege, nomImage, genre in civilites :
                 indexImg = self.AddNamedImages(nomImage, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/%s" % nomImage), wx.BITMAP_TYPE_PNG))
         imgSansRattachement = self.AddNamedImages("sansRattachement", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Attention.png"), wx.BITMAP_TYPE_PNG))
-        
+        imgArchive = self.AddNamedImages("archive", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Archiver.png"), wx.BITMAP_TYPE_PNG))
+        imgEfface = self.AddNamedImages("efface", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Gomme.png"), wx.BITMAP_TYPE_PNG))
+
         def GetImageCivilite(track):
+            if track.etat == "archive" :
+                return "archive"
+            if track.etat == "efface" :
+                return "efface"
             return track.nomImage
 
         def FormateDate(date):

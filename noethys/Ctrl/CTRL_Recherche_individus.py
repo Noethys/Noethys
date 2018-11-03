@@ -48,6 +48,7 @@ class ToolBar(wx.ToolBar):
             {"ID": ID_OUVRIR_GRILLE, "label": _(u"Calendrier"), "image": "Images/32x32/Calendrier.png", "tooltip": _(u"Ouvrir la grille des consommations de l'individu sélectionné\n(ou double-clic sur la ligne + touche CTRL enfoncée)")},
             {"ID": ID_OUVRIR_FICHE_IND, "label": _(u"Fiche ind."), "image": "Images/32x32/Personnes.png", "tooltip": _(u"Ouvrir la fiche individuelle de l'individu sélectionné\n(ou double-clic sur la ligne + touche SHIFT enfoncée)")},
             None,
+            {"ID": ID_PARAMETRES, "label": _(u"Paramètres"), "image": "Images/32x32/Configuration2.png", "type": wx.ITEM_NORMAL, "tooltip": _(u"Sélectionner les paramètres d'affichage")},
             {"ID": ID_OUTILS, "label": _(u"Outils"), "image": "Images/32x32/Configuration.png", "tooltip": _(u"Outils")},
             ]
         for bouton in liste_boutons :
@@ -58,16 +59,6 @@ class ToolBar(wx.ToolBar):
                     self.AddTool(bouton["ID"], bouton["label"], wx.Bitmap(Chemins.GetStaticPath(bouton["image"]), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, bouton["tooltip"], "")
                 except :
                     self.AddLabelTool(bouton["ID"], bouton["label"], wx.Bitmap(Chemins.GetStaticPath(bouton["image"]), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, bouton["tooltip"], "")
-
-        # self.AddLabelTool(ID_CREER_FAMILLE, _(u"Ajouter"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Famille_ajouter.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Créer une nouvelle famille"), "")
-        # self.AddSeparator()
-        # self.AddLabelTool(ID_MODIFIER_FAMILLE, _(u"Modifier"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Famille_modifier.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Modifier la fiche famille de l'individu sélectionné"), "")
-        # self.AddLabelTool(ID_SUPPRIMER_FAMILLE, _(u"Supprimer"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Famille_supprimer.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Supprimer ou détacher l'individu sélectionné"), "")
-        # self.AddSeparator()
-        # self.AddLabelTool(ID_OUVRIR_GRILLE, _(u"Calendrier"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Calendrier.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Ouvrir la grille des consommations de l'individu sélectionné\n(ou double-clic sur la ligne + touche CTRL enfoncée)"), "")
-        # self.AddLabelTool(ID_OUVRIR_FICHE_IND, _(u"Fiche ind."), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Personnes.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Ouvrir la fiche individuelle de l'individu sélectionné\n(ou double-clic sur la ligne + touche SHIFT enfoncée)"), "")
-        # self.AddSeparator()
-        # self.AddLabelTool(ID_OUTILS, _(u"Outils"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Configuration.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Outils"), "")
 
         # Binds
         self.Bind(wx.EVT_TOOL, self.Ajouter_famille, id=ID_CREER_FAMILLE)
@@ -97,41 +88,14 @@ class ToolBar(wx.ToolBar):
         self.GetParent().ctrl_listview.Modifier(event)
 
     def Parametres(self, event):
+        parametres = UTILS_Config.GetParametre("liste_individus_parametres", defaut={})
         from Dlg import DLG_Selection_individus
-        dlg = DLG_Selection_individus.Dialog(self, afficherPresents=False)
-        dlg.SetTitle(_(u"Paramètres d'affichage de la liste d'individus"))
-        parametres = UTILS_Config.GetParametre("liste_individus_parametre_activites", defaut=None)
-        if parametres != None :
-            dlg.radio_inscrits.SetValue(True)
-            dlg.OnRadio(None)
-            code, liste = parametres.split("###")
-            listeID = []
-            for ID in liste.split(";") :
-                listeID.append(int(ID))
-            if code == "liste_groupes_activites" :
-                dlg.ctrl_activites.SetValeurs("groupes", listeID) 
-            if code == "liste_activites" :
-                dlg.ctrl_activites.SetValeurs("activites", listeID) 
-            
-            
-        if dlg.ShowModal() == wx.ID_OK :
-            # Tous les individus
-            if dlg.GetMode() == "tous" :
-                parametre = None
-            # Uniquement les inscrits
-            if dlg.GetMode() == "inscrits" :
-                mode, listeIDtemp = dlg.ctrl_activites.GetValeurs() 
-                listeID = []
-                for ID in listeIDtemp :
-                    listeID.append(str(ID))
-                if mode == "groupes" : 
-                    parametre = "liste_groupes_activites###%s" % ";".join(listeID)
-                if mode == "activites" : 
-                    parametre = "liste_activites###%s" % ";".join(listeID)
-            # Mémorisation du paramètre
-            UTILS_Config.SetParametre("liste_individus_parametre_activites", parametre)
-        dlg.Destroy() 
-        
+        dlg = DLG_Selection_individus.Dialog(self)
+        dlg.SetParametres(parametres)
+        if dlg.ShowModal() == wx.ID_OK:
+            UTILS_Config.SetParametre("liste_individus_parametres", dlg.GetParametres())
+        dlg.Destroy()
+
         # Actualise la liste d'individus
         self.GetParent().ActualiseParametresAffichage() 
         self.GetParent().ctrl_listview.MAJ(forceActualisation=True)
@@ -204,7 +168,7 @@ class Panel(wx.Panel):
         self.__do_layout()
         
         # Recherche paramètres d'affichage de la liste des individus
-##        self.ActualiseParametresAffichage() 
+        self.ActualiseParametresAffichage()
 
     def __set_properties(self):
         pass
@@ -227,18 +191,8 @@ class Panel(wx.Panel):
         UTILS_Aide.Aide("Lalistedesindividus")
     
     def ActualiseParametresAffichage(self):
-        self.ctrl_listview.listeActivites = []
-        self.ctrl_listview.listeGroupesActivites = []
-        parametres = UTILS_Config.GetParametre("liste_individus_parametre_activites", defaut=None)
-        if parametres != None :
-            code, liste = parametres.split("###")
-            listeID = []
-            for ID in liste.split(";") :
-                listeID.append(int(ID))
-            if code == "liste_activites" : 
-                self.ctrl_listview.listeActivites = listeID
-            if code == "liste_groupes_activites" : 
-                self.ctrl_listview.listeGroupesActivites = listeID
+        parametres = UTILS_Config.GetParametre("liste_individus_parametres", defaut={})
+        self.ctrl_listview.SetParametres(parametres)
 
 
 class MyFrame(wx.Frame):
