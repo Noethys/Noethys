@@ -102,7 +102,7 @@ class CTRL(wx.Panel):
         self.Layout()
 
     def OnBoutonApercu(self, event): 
-        self.ctrl_inscriptions.Reedition(None)
+        self.ctrl_inscriptions.ImprimerPDF(None)
 
     def OnBoutonEmail(self, event): 
         self.ctrl_inscriptions.EnvoyerEmail(None)
