@@ -25,10 +25,10 @@ def GetTitulaires(listeIDfamille=[], mode_adresse_facturation=False, inclure_tel
     if len(listeIDfamille) == 0 : conditionFamilles = ""
     elif len(listeIDfamille) == 1 :
         if listeIDfamille[0] != None :
-            conditionFamilles = "WHERE IDfamille=%d" % listeIDfamille[0]
+            conditionFamilles = "AND IDfamille=%d" % listeIDfamille[0]
         else :
-            conditionFamilles = "WHERE IDfamille=0"
-    else : conditionFamilles = "WHERE IDfamille IN %s" % str(tuple(listeIDfamille))
+            conditionFamilles = "AND IDfamille=0"
+    else : conditionFamilles = "AND IDfamille IN %s" % str(tuple(listeIDfamille))
     
     DB = GestionDB.DB()
 
@@ -36,7 +36,7 @@ def GetTitulaires(listeIDfamille=[], mode_adresse_facturation=False, inclure_tel
     req = """
     SELECT IDfamille, IDcompte_payeur, autre_adresse_facturation
     FROM familles
-    %s;""" % conditionFamilles
+    WHERE IDfamille>0 %s;""" % conditionFamilles
     DB.ExecuterReq(req)
     listeFamilles = DB.ResultatReq()  
     for IDfamille, IDcompte_payeur, autre_adresse_facturation in listeFamilles :
@@ -70,9 +70,10 @@ def GetTitulaires(listeIDfamille=[], mode_adresse_facturation=False, inclure_tel
                 }
 
     # Récupération des rattachements
-    req = """SELECT IDrattachement, IDindividu, IDfamille, IDcategorie, titulaire
+    req = """SELECT IDrattachement, rattachements.IDindividu, IDfamille, IDcategorie, titulaire
     FROM rattachements
-    %s;""" % conditionFamilles
+    LEFT JOIN individus ON individus.IDindividu = rattachements.IDindividu
+    WHERE individus.etat IS NULL %s;""" % conditionFamilles
     DB.ExecuterReq(req)
     listeDonnees = DB.ResultatReq()
     DB.Close() 

@@ -483,17 +483,30 @@ class Synchro():
         session.add(models.Parametre(nom="AIDE_AFFICHER", parametre=str(self.dict_parametres["aide_afficher"])))
 
 
+        # Recherche des adresses emails des familles
+        req = """SELECT rattachements.IDindividu, rattachements.IDfamille, mail
+        FROM rattachements
+        LEFT JOIN individus ON individus.IDindividu = rattachements.IDindividu
+        WHERE IDcategorie=1 AND titulaire=1 AND etat IS NULL AND deces<>1 AND mail IS NOT NULL;"""
+        DB.ExecuterReq(req)
+        listeEmails = DB.ResultatReq()
+        dictEmailsFamilles = {}
+        for IDindividu, IDfamille, mail in listeEmails:
+            if dictEmailsFamilles.has_key(IDfamille) == False :
+                dictEmailsFamilles[IDfamille] = []
+            dictEmailsFamilles[IDfamille].append(mail)
+
         # Création des users
         dictTitulaires = UTILS_Titulaires.GetTitulaires()
 
-        req = """SELECT IDfamille, internet_actif, internet_identifiant, internet_mdp, email_recus
+        req = """SELECT IDfamille, internet_actif, internet_identifiant, internet_mdp, email_recus, etat
         FROM familles;"""
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         listeFamilles = []
-        for IDfamille, internet_actif, internet_identifiant, internet_mdp, email_recus in listeDonnees:
+        for IDfamille, internet_actif, internet_identifiant, internet_mdp, email_recus, etat in listeDonnees:
             listeFamilles.append({"ID" : IDfamille, "internet_actif" : internet_actif, "internet_identifiant" : internet_identifiant,
-                                  "internet_mdp" : internet_mdp, "email_recus" : email_recus,})
+                                  "internet_mdp" : internet_mdp, "email_recus" : email_recus, "etat" : etat})
 
         req = """SELECT IDutilisateur, internet_actif, internet_identifiant, internet_mdp, nom, prenom
         FROM utilisateurs;"""
@@ -502,7 +515,8 @@ class Synchro():
         listeUtilisateurs = []
         for IDutilisateur, internet_actif, internet_identifiant, internet_mdp, nom, prenom in listeDonnees:
             listeUtilisateurs.append({"ID": IDutilisateur, "internet_actif": internet_actif, "internet_identifiant": internet_identifiant,
-                                  "internet_mdp": internet_mdp, "nom": nom, "prenom" : prenom})
+                                  "internet_mdp": internet_mdp, "nom": nom, "prenom" : prenom, "etat" : None})
+
 
         listeIDfamille = []
         for profil, listeDonnees in [("famille", listeFamilles), ("utilisateur", listeUtilisateurs)]:
@@ -531,20 +545,18 @@ class Synchro():
 
                     # Récupération de l email de recu
                     email = ""
-                    if dictDonnee.has_key("email_recus") and dictDonnee["email_recus"] != None :
-                        IDindividu, categorie, adresse = dictDonnee["email_recus"].split(";")
-                        if IDindividu != "" :
-                            req = """SELECT IDindividu, mail, travail_mail FROM individus WHERE IDindividu=%d;""" % int(IDindividu)
-                            DB.ExecuterReq(req)
-                            listeA = DB.ResultatReq()
-                            dictA = {}
-                            for IDindividu, mail, travail_mail in listeA :
-                                dictA[IDindividu] = {"perso":mail, "travail":travail_mail}
-                            email = cryptage.encrypt(dictA[IDindividu][categorie])
+                    if dictEmailsFamilles.has_key(IDfamille):
+                        # Sélectionne les 3 premières adresses email de la famille
+                        email = ";".join(dictEmailsFamilles[IDfamille][:3])
+                        email = cryptage.encrypt(email)
 
+                    # Si famille archivée ou effacée
+                    if dictDonnee["etat"] != None:
+                        dictDonnee["internet_actif"] = 0
 
                     if profil == "famille" and dictDonnee["internet_actif"] == 1 :
                         listeIDfamille.append(IDfamille)
+                        
                     if dictDonnee["internet_actif"] == 0 :
                         # Anonymise les infos des comptes désactivés
                         nomDossier = "XXX"
@@ -811,7 +823,7 @@ class Synchro():
         req = """SELECT %s
         FROM rattachements
         LEFT JOIN individus ON individus.IDindividu = rattachements.IDindividu
-        WHERE IDcategorie=2 OR (IDcategorie=1 AND titulaire=1);""" % ", ".join(champs_individus)
+        WHERE (IDcategorie=2 OR (IDcategorie=1 AND titulaire=1)) AND etat IS NULL AND deces<>1;""" % ", ".join(champs_individus)
         DB.ExecuterReq(req)
         listeRattachements = DB.ResultatReq()
         for donnees in listeRattachements :
