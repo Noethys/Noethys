@@ -183,7 +183,10 @@ def HeureStrEnTime(heureStr):
     if heureStr == None or heureStr == "" : return datetime.time(0, 0)
     if len(heureStr.split(":")) == 2 : heures, minutes = heureStr.split(":")
     if len(heureStr.split(":")) == 3 : heures, minutes, secondes = heureStr.split(":")
-    return datetime.time(int(heures), int(minutes))
+    try :
+        return datetime.time(int(heures), int(minutes))
+    except :
+        return datetime.time(0, 0)
 
 def DatetimeTimeEnStr(heure, separateur="h"):
     if heure == None : 
