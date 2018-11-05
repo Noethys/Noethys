@@ -174,6 +174,67 @@ class Synchro():
         liste_lignes.append(Ecrit_ligne("PREFIXE_TABLES", self.dict_parametres["prefixe_tables"], type_valeur=str))
         liste_lignes.append(Ecrit_ligne("DEBUG", self.dict_parametres["mode_debug"], type_valeur=bool))
 
+        # Paramètres SMTP pour Flask-mail
+        if self.dict_parametres["email_type_adresse"] > 0 :
+            adresse_valide = False
+
+            if self.dict_parametres["email_type_adresse"] == 999:
+                MAIL_SERVER = self.dict_parametres["email_serveur"]
+                MAIL_DEFAULT_SENDER = self.dict_parametres["email_adresse"]
+                MAIL_PORT = self.dict_parametres["email_port"]
+                MAIL_USE_TLS = self.dict_parametres["email_tls"]
+                MAIL_USE_SSL = self.dict_parametres["email_ssl"]
+                MAIL_USERNAME = self.dict_parametres["email_utilisateur"]
+                MAIL_PASSWORD = self.dict_parametres["email_password"]
+                adresse_valide = True
+
+            else :
+                DB = GestionDB.DB()
+                req = """SELECT smtp, adresse, port, startTLS, connexionAuthentifiee, utilisateur, motdepasse
+                FROM adresses_mail WHERE IDadresse=%d;""" % self.dict_parametres["email_type_adresse"]
+                DB.ExecuterReq(req)
+                listeAdresses = DB.ResultatReq()
+                DB.Close()
+                if len(listeAdresses) > 0:
+                    MAIL_SERVER, MAIL_DEFAULT_SENDER, MAIL_PORT, MAIL_USE_TLS, MAIL_USE_SSL, MAIL_USERNAME, MAIL_PASSWORD = listeAdresses[0]
+                    adresse_valide = True
+
+            # Mémorisation des paramètres emails
+            if adresse_valide == True :
+                liste_lignes.append(Ecrit_ligne("MAIL_SERVER", MAIL_SERVER, type_valeur=str))
+                liste_lignes.append(Ecrit_ligne("MAIL_DEFAULT_SENDER", MAIL_DEFAULT_SENDER, type_valeur=str))
+                try:
+                    MAIL_PORT = int(MAIL_PORT)
+                except:
+                    MAIL_PORT = None
+                liste_lignes.append(Ecrit_ligne("MAIL_PORT", MAIL_PORT))
+
+                if MAIL_USE_TLS in (1, True):
+                    MAIL_USE_TLS = True
+                else :
+                    MAIL_USE_TLS = False
+                liste_lignes.append(Ecrit_ligne("MAIL_USE_TLS", MAIL_USE_TLS))
+
+                if MAIL_USE_SSL in (1, True):
+                    MAIL_USE_SSL = True
+                else :
+                    MAIL_USE_SSL = False
+                liste_lignes.append(Ecrit_ligne("MAIL_USE_SSL", MAIL_USE_SSL))
+
+
+                if MAIL_USERNAME in ("", None):
+                    liste_lignes.append(Ecrit_ligne("MAIL_USERNAME", None))
+                else :
+                    liste_lignes.append(Ecrit_ligne("MAIL_USERNAME", MAIL_USERNAME, type_valeur=str))
+
+                if MAIL_PASSWORD in ("", None):
+                    liste_lignes.append(Ecrit_ligne("MAIL_PASSWORD", None))
+                else :
+                    liste_lignes.append(Ecrit_ligne("MAIL_PASSWORD", MAIL_PASSWORD, type_valeur=unicode))
+
+            else :
+                self.dict_parametres["mdp_autoriser_reinitialisation"] = False
+
         # Génération du fichier
         nomFichier = "config.py"
         nomFichierComplet = UTILS_Fichiers.GetRepTemp(fichier=nomFichier)

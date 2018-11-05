@@ -96,6 +96,15 @@ VALEURS_DEFAUT = {
     "recevoir_document_site_lieu" : _(u"à l'accueil de la structure"),
     "mdp_forcer_modification": True,
     "mdp_autoriser_modification": True,
+    "mdp_autoriser_reinitialisation": True,
+    "email_type_adresse" : 0,
+    "email_serveur": "",
+    "email_adresse": "",
+    "email_port": "",
+    "email_tls": False,
+    "email_ssl": False,
+    "email_utilisateur": "",
+    "email_password": "",
     "paiement_ligne_actif" : False,
     "paiement_ligne_systeme" : 0,
     "paiement_ligne_mode_reglement" : 0,
@@ -261,6 +270,18 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
                         propriete.Hide(True)
                         propriete.SetAttribute("obligatoire", False)
 
+        # email_type_adresse
+        propriete = self.GetPropertyByName("email_type_adresse")
+        if propriete.GetValue() == 999 :
+            visible, obligatoire = True, True
+        else :
+            visible, obligatoire = False, False
+        for nom in ["email_serveur", "email_adresse", "email_port", "email_tls", "email_ssl", "email_utilisateur", "email_password"] :
+            propriete = self.GetPropertyByName(nom)
+            propriete.Hide(not visible)
+            propriete.SetAttribute("obligatoire", obligatoire)
+
+        # MAJ affichage
         if 'phoenix' in wx.PlatformInfo:
             self.Refresh()
         else :
@@ -501,6 +522,16 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
+        # Mode debug
+        nom = "mode_debug"
+        propriete = wxpg.BoolProperty(label=_(u"Mode debug"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Cochez cette case pour activer le mode debug (Ne surtout pas utiliser en production !)"))
+        propriete.SetAttribute("UseCheckbox", True)
+        self.Append(propriete)
+
+        # Gestion des mots de passe
+        self.Append( wxpg.PropertyCategory(_(u"Mots de passe")) )
+
         # Forcer modification mot de passe
         nom = "mdp_forcer_modification"
         propriete = wxpg.BoolProperty(label=_(u"Forcer la modification du mot de passe"), name=nom, value=VALEURS_DEFAUT[nom])
@@ -515,11 +546,77 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
-        # Mode debug
-        nom = "mode_debug"
-        propriete = wxpg.BoolProperty(label=_(u"Mode debug"), name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Cochez cette case pour activer le mode debug (Ne surtout pas utiliser en production !)"))
+        # Autoriser mot de passe oublié
+        nom = "mdp_autoriser_reinitialisation"
+        propriete = wxpg.BoolProperty(label=_(u"Autoriser réinitialisation du mot de passe"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Cochez cette case pour autoriser l'utilisateur à réinitialiser lui-même son mot de passe en cas d'oubli"))
         propriete.SetAttribute("UseCheckbox", True)
+        self.Append(propriete)
+
+        # Adresse d'expédition d'emails
+        nom = "email_type_adresse"
+        labels = [(u"Aucune"), _(u"L'adresse suivante...")]
+        valeurs = [0, 999]
+        DB = GestionDB.DB()
+        req = """SELECT IDadresse, adresse FROM adresses_mail ORDER BY adresse; """
+        DB.ExecuterReq(req)
+        listeDonnees = DB.ResultatReq()
+        for IDadresse, adresse in listeDonnees :
+            labels.insert(len(labels)-1, adresse)
+            valeurs.insert(len(valeurs)-1, IDadresse)
+        DB.Close()
+        propriete = wxpg.EnumProperty(label=_(u"Adresse d'expédition d'emails"), labels=labels, values=valeurs, name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Sélectionnez une adresse d'expédition d'emails qui sera utilisée pour envoyer les emails de réinitialisation des mots de passe"))
+        propriete.SetAttribute("obligatoire", True)
+        self.Append(propriete)
+
+        # Adresse email : serveur
+        nom = "email_serveur"
+        propriete = wxpg.StringProperty(label=_(u"Serveur"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Saisissez l'adresse du serveur d'emails"))
+        propriete.SetAttribute("obligatoire", True)
+        self.Append(propriete)
+
+        # Adresse email : adresse
+        nom = "email_adresse"
+        propriete = wxpg.StringProperty(label=_(u"Adresse"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Saisissez l'adresse d'expédition"))
+        propriete.SetAttribute("obligatoire", True)
+        self.Append(propriete)
+
+        # Adresse email : port
+        nom = "email_port"
+        propriete = wxpg.StringProperty(label=_(u"Port"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Saisissez le numéro de port"))
+        propriete.SetAttribute("obligatoire", True)
+        self.Append(propriete)
+
+        # Adresse email : TLS
+        nom = "email_tls"
+        propriete = wxpg.BoolProperty(label=_(u"TLS"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Active le protocole TLS"))
+        propriete.SetAttribute("UseCheckbox", True)
+        self.Append(propriete)
+
+        # Adresse email : SSL
+        nom = "email_ssl"
+        propriete = wxpg.BoolProperty(label=_(u"SSL"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Active le protocole SSL"))
+        propriete.SetAttribute("UseCheckbox", True)
+        self.Append(propriete)
+
+        # Adresse email : utilisateur
+        nom = "email_utilisateur"
+        propriete = wxpg.StringProperty(label=_(u"Utilisateur"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Saisissez le nom d'utilisateur (Est souvent identique à l'adresse email)"))
+        propriete.SetAttribute("obligatoire", True)
+        self.Append(propriete)
+
+        # Adresse email : Mot de passe
+        nom = "email_password"
+        propriete = wxpg.StringProperty(label=_(u"Mot de passe"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Saisissez le mot de passe s'il s'agit d'une connexion authentifiée"))
+        propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
 
@@ -574,7 +671,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         # Lieu pour retraite sur site
         nom = "recevoir_document_site_lieu"
         propriete = wxpg.StringProperty(label=_(u"Lieu du retrait sur site"), name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Saisissez un nom de lieux pour le retrait du document (ex: à l'accueil de la structure)"))
+        propriete.SetHelpString(_(u"Saisissez un nom de lieu pour le retrait du document (ex: à l'accueil de la structure)"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
