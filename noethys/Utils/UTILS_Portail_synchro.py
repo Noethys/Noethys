@@ -496,6 +496,7 @@ class Synchro():
         session.add(models.Parametre(nom="PAIEMENT_EN_LIGNE_ACTIF", parametre=str(self.dict_parametres["paiement_ligne_actif"])))
         session.add(models.Parametre(nom="MDP_FORCER_MODIFICATION", parametre=str(self.dict_parametres["mdp_forcer_modification"])))
         session.add(models.Parametre(nom="MDP_AUTORISER_MODIFICATION", parametre=str(self.dict_parametres["mdp_autoriser_modification"])))
+        session.add(models.Parametre(nom="MDP_AUTORISER_REINITIALISATION", parametre=str(self.dict_parametres["mdp_autoriser_reinitialisation"])))
 
         if self.dict_parametres["paiement_ligne_actif"] == 1 :
             session.add(models.Parametre(nom="PAIEMENT_EN_LIGNE_SYSTEME", parametre=str(self.dict_parametres["paiement_ligne_systeme"])))

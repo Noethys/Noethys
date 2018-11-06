@@ -96,7 +96,7 @@ VALEURS_DEFAUT = {
     "recevoir_document_site_lieu" : _(u"à l'accueil de la structure"),
     "mdp_forcer_modification": True,
     "mdp_autoriser_modification": True,
-    "mdp_autoriser_reinitialisation": True,
+    "mdp_autoriser_reinitialisation": False,
     "email_type_adresse" : 0,
     "email_serveur": "",
     "email_adresse": "",
@@ -572,49 +572,49 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
 
         # Adresse email : serveur
         nom = "email_serveur"
-        propriete = wxpg.StringProperty(label=_(u"Serveur"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete = wxpg.StringProperty(label=_(u"Email : Serveur"), name=nom, value=VALEURS_DEFAUT[nom])
         propriete.SetHelpString(_(u"Saisissez l'adresse du serveur d'emails"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
         # Adresse email : adresse
         nom = "email_adresse"
-        propriete = wxpg.StringProperty(label=_(u"Adresse"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete = wxpg.StringProperty(label=_(u"Email : Adresse"), name=nom, value=VALEURS_DEFAUT[nom])
         propriete.SetHelpString(_(u"Saisissez l'adresse d'expédition"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
         # Adresse email : port
         nom = "email_port"
-        propriete = wxpg.StringProperty(label=_(u"Port"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete = wxpg.StringProperty(label=_(u"Email : Port"), name=nom, value=VALEURS_DEFAUT[nom])
         propriete.SetHelpString(_(u"Saisissez le numéro de port"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
         # Adresse email : TLS
         nom = "email_tls"
-        propriete = wxpg.BoolProperty(label=_(u"TLS"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete = wxpg.BoolProperty(label=_(u"Email : TLS"), name=nom, value=VALEURS_DEFAUT[nom])
         propriete.SetHelpString(_(u"Active le protocole TLS"))
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
         # Adresse email : SSL
         nom = "email_ssl"
-        propriete = wxpg.BoolProperty(label=_(u"SSL"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete = wxpg.BoolProperty(label=_(u"Email : SSL"), name=nom, value=VALEURS_DEFAUT[nom])
         propriete.SetHelpString(_(u"Active le protocole SSL"))
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
         # Adresse email : utilisateur
         nom = "email_utilisateur"
-        propriete = wxpg.StringProperty(label=_(u"Utilisateur"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete = wxpg.StringProperty(label=_(u"Email : Utilisateur"), name=nom, value=VALEURS_DEFAUT[nom])
         propriete.SetHelpString(_(u"Saisissez le nom d'utilisateur (Est souvent identique à l'adresse email)"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
         # Adresse email : Mot de passe
         nom = "email_password"
-        propriete = wxpg.StringProperty(label=_(u"Mot de passe"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete = wxpg.StringProperty(label=_(u"Email : Mot de passe"), name=nom, value=VALEURS_DEFAUT[nom])
         propriete.SetHelpString(_(u"Saisissez le mot de passe s'il s'agit d'une connexion authentifiée"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
@@ -1068,6 +1068,14 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
                     dlg.ShowModal()
                     dlg.Destroy()
                     return False
+
+        if self.GetPropertyByName("mdp_autoriser_reinitialisation").GetValue() == True :
+            if self.GetPropertyByName("email_type_adresse").GetValue() == 0 :
+                dlg = wx.MessageDialog(self, _(u"Vous avez coché l'activation de la fonction de réinitialisation des mots de passe. Vous devez donc obligatoirement sélectionner ou saisir une adresse d'expédition d'email !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg.ShowModal()
+                dlg.Destroy()
+                return False
+
         return True
 
     def Importation(self):
