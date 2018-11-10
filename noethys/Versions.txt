@@ -1,6 +1,11 @@
-Version 1.2.4.5 (03/11/2018) :
+Version 1.2.4.6 (10/11/2018) :
 
-- Archivage et effacement des fiches
+- Ajout de l'archivage et effacement des fiches
+- Ajout du masquage des onglets des fiches famille et individu
+- Ajout de la fonction mot de passe oublié dans Connecthys
+- Ajout du paramétrage de l'email pour Connecthys
+- Ajout du recopiage des locations dans le tableau des locations
+- Correction de petits bugs
 
 Version 1.2.4.3 (20/10/2018) :
 
