@@ -75,7 +75,7 @@ class CTRL(HTL.HyperTreeList):
         # Importation des consommations
         DB = GestionDB.DB()
         req = """
-        SELECT IDconso, consommations.IDindividu, consommations.IDactivite, date, consommations.IDunite, consommations.IDgroupe, etat, date_saisie, quantite,
+        SELECT IDconso, consommations.IDindividu, consommations.IDactivite, date, consommations.IDunite, consommations.IDgroupe, consommations.etat, date_saisie, quantite,
         individus.nom, individus.prenom,
         unites.nom, unites.ordre, unites.abrege,
         activites.nom, groupes.nom,

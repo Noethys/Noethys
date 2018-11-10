@@ -1602,14 +1602,14 @@ class Dialog(wx.Dialog):
         dictEtiquettes = self.GetPage("etiquettes").ctrl_etiquettes.GetDictEtiquettes()
 
         # Récupération des consommations
-        req = """SELECT IDconso, consommations.IDindividu, IDcivilite, consommations.IDactivite, IDunite, consommations.IDgroupe, heure_debut, heure_fin, etat, quantite, etiquettes, IDevenement,
+        req = """SELECT IDconso, consommations.IDindividu, IDcivilite, consommations.IDactivite, IDunite, consommations.IDgroupe, heure_debut, heure_fin, consommations.etat, quantite, etiquettes, IDevenement,
         IDcivilite, individus.nom, prenom, date_naiss, types_sieste.nom, inscriptions.IDfamille, consommations.date, scolarite.IDecole, scolarite.IDclasse
         FROM consommations 
         LEFT JOIN individus ON individus.IDindividu = consommations.IDindividu
         LEFT JOIN types_sieste ON types_sieste.IDtype_sieste = individus.IDtype_sieste
         LEFT JOIN inscriptions ON inscriptions.IDinscription = consommations.IDinscription
         LEFT JOIN scolarite ON scolarite.IDindividu = consommations.IDindividu AND scolarite.date_debut <= consommations.date AND scolarite.date_fin >= consommations.date
-        WHERE etat IN ("reservation", "present")
+        WHERE consommations.etat IN ("reservation", "present")
         AND consommations.IDactivite IN %s AND consommations.date IN %s %s %s
         ORDER BY consommations.date, consommations.heure_debut
         ;""" % (conditionActivites, conditionDates, conditionsScolarite, conditionsEvenements)

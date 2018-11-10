@@ -47,7 +47,7 @@ def GetComparatifNombre(DB, dictParametres) :
     # Recherche des périodes de comparaison
     req = """SELECT MIN(date), MAX(date) 
     FROM consommations 
-    WHERE etat IN ('reservation', 'present')
+    WHERE consommations.etat IN ('reservation', 'present')
     AND IDactivite IN %s
     ;""" % conditionsActivites
     DB.ExecuterReq(req)
@@ -70,7 +70,7 @@ def GetComparatifNombre(DB, dictParametres) :
         FROM consommations 
         LEFT JOIN comptes_payeurs ON comptes_payeurs.IDcompte_payeur = consommations.IDcompte_payeur
         WHERE date>='%s' AND date<='%s' 
-        AND etat IN ('reservation', 'present')
+        AND consommations.etat IN ('reservation', 'present')
         AND IDactivite IN %s
         GROUP BY comptes_payeurs.IDfamille
         ;""" % (dictPeriode["date_debut"], dictPeriode["date_fin"], conditionsActivites)
@@ -113,7 +113,7 @@ def GetDictCaisses(DB, dictParametres):
         LEFT JOIN comptes_payeurs ON comptes_payeurs.IDfamille = familles.IDfamille
         LEFT JOIN consommations ON consommations.IDcompte_payeur = comptes_payeurs.IDcompte_payeur
         WHERE date>='%s' AND date<='%s' 
-        AND etat IN ('reservation', 'present')
+        AND consommations.etat IN ('reservation', 'present')
         AND IDactivite IN %s
         GROUP BY IDcaisse, familles.IDfamille
         ;""" % (date_debut, date_fin, conditionsActivites)
@@ -165,7 +165,7 @@ def GetDictMembres(DB, dictParametres):
         FROM consommations 
         LEFT JOIN comptes_payeurs ON comptes_payeurs.IDcompte_payeur = consommations.IDcompte_payeur
         WHERE date>='%s' AND date<='%s' 
-        AND etat IN ('reservation', 'present')
+        AND consommations.etat IN ('reservation', 'present')
         AND IDactivite IN %s
         GROUP BY IDfamille, consommations.IDindividu
         ;""" % (date_debut, date_fin, conditionsActivites)
@@ -221,7 +221,7 @@ def GetDictQuotients(DB, dictParametres):
         LEFT JOIN comptes_payeurs ON comptes_payeurs.IDfamille = familles.IDfamille
         LEFT JOIN consommations ON consommations.IDcompte_payeur = comptes_payeurs.IDcompte_payeur
         WHERE date>='%s' AND date<='%s' 
-        AND etat IN ('reservation', 'present')
+        AND consommations.etat IN ('reservation', 'present')
         AND IDactivite IN %s
         GROUP BY familles.IDfamille, IDquotient
         ;""" % (date_debut, date_fin, conditionsActivites)
@@ -308,7 +308,7 @@ class Texte_nombre_familles(MODELES.Texte):
             FROM consommations 
             LEFT JOIN comptes_payeurs ON comptes_payeurs.IDcompte_payeur = consommations.IDcompte_payeur
             WHERE date>='%s' AND date<='%s' 
-            AND etat IN ('reservation', 'present')
+            AND consommations.etat IN ('reservation', 'present')
             AND IDactivite IN %s
             GROUP BY comptes_payeurs.IDfamille
             ;""" % (date_debut, date_fin, conditionsActivites)
@@ -358,7 +358,7 @@ class Tableau_nombre_familles(MODELES.Tableau):
             FROM consommations 
             LEFT JOIN comptes_payeurs ON comptes_payeurs.IDcompte_payeur = consommations.IDcompte_payeur
             WHERE date>='%s' AND date<='%s' 
-            AND etat IN ('reservation', 'present')
+            AND consommations.etat IN ('reservation', 'present')
             AND IDactivite IN %s
             GROUP BY IDactivite, IDfamille
             ;""" % (date_debut, date_fin, conditionsActivites)

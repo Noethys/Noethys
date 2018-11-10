@@ -1431,7 +1431,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 dictRemplissage[IDunite_remplissage][dateDD][IDgroupe] = dictValeursTemp
 
         # Récupération des consommations existantes 
-        req = """SELECT IDconso, IDactivite, date, IDunite, IDgroupe, heure_debut, heure_fin, etat, quantite, etiquettes, IDevenement
+        req = """SELECT IDconso, IDactivite, date, IDunite, IDgroupe, heure_debut, heure_fin, consommations.etat, quantite, etiquettes, IDevenement
         FROM consommations 
         WHERE IDactivite IN %s %s; """ % (conditionActivites, conditionDates)
         self.DB.ExecuterReq(req)

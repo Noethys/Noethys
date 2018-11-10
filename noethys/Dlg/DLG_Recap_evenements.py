@@ -129,7 +129,7 @@ class CTRL(HTL.HyperTreeList):
 
         req = """SELECT IDconso, IDevenement, etat
         FROM consommations
-        WHERE IDevenement IS NOT NULL AND etat in ('reservation', 'present', 'attente')
+        WHERE IDevenement IS NOT NULL AND consommations.etat in ('reservation', 'present', 'attente')
         AND consommations.IDactivite IN %s %s
         ;""" % (conditionActivites, conditionDates)
         DB.ExecuterReq(req)

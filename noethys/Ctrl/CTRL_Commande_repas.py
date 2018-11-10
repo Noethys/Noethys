@@ -494,7 +494,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         # Consommations
         req = """SELECT IDconso, date, IDgroupe, IDunite, IDindividu
         FROM consommations 
-        WHERE date>='%s' AND date<='%s' AND IDunite IN %s AND etat IN ('reservation', 'present')
+        WHERE date>='%s' AND date<='%s' AND IDunite IN %s AND consommations.etat IN ('reservation', 'present')
         ;""" % (self.date_debut, self.date_fin, conditionUnites)
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()

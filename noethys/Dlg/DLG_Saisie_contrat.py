@@ -378,7 +378,7 @@ class Dialog(wx.Dialog):
         self.ctrl_tarif.SetID(IDtarif)
 
         # Importation des consommations liées au contrat
-        req = """SELECT IDconso, consommations.IDindividu, IDinscription, consommations.IDactivite, consommations.date, IDunite, IDgroupe, heure_debut, heure_fin, etat, verrouillage, date_saisie, IDutilisateur, quantite, consommations.IDcategorie_tarif, consommations.IDcompte_payeur, consommations.IDprestation
+        req = """SELECT IDconso, consommations.IDindividu, IDinscription, consommations.IDactivite, consommations.date, IDunite, IDgroupe, heure_debut, heure_fin, consommations.etat, verrouillage, date_saisie, IDutilisateur, quantite, consommations.IDcategorie_tarif, consommations.IDcompte_payeur, consommations.IDprestation
         FROM consommations
         LEFT JOIN prestations ON prestations.IDprestation = consommations.IDprestation 
         WHERE prestations.IDcontrat=%d; """ % IDcontrat

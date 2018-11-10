@@ -148,7 +148,7 @@ class Timeline(TL.TimelinePerso):
         else: conditions = ""
         DB = GestionDB.DB()
         req = """SELECT IDconso, consommations.IDindividu, individus.nom, prenom, consommations.IDactivite, 
-        date, heure_debut, heure_fin, IDunite, consommations.IDgroupe, etat, groupes.nom,
+        date, heure_debut, heure_fin, IDunite, consommations.IDgroupe, consommations.etat, groupes.nom,
         activites.nom
         FROM consommations
         LEFT JOIN comptes_payeurs ON comptes_payeurs.IDcompte_payeur = consommations.IDcompte_payeur

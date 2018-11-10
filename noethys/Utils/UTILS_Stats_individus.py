@@ -47,7 +47,7 @@ def GetComparatifNombre(DB, dictParametres) :
     # Recherche des périodes de comparaison
     req = """SELECT MIN(date), MAX(date) 
     FROM consommations 
-    WHERE etat IN ('reservation', 'present')
+    WHERE consommations.etat IN ('reservation', 'present')
     AND IDactivite IN %s
     ;""" % conditionsActivites
     DB.ExecuterReq(req)
@@ -69,7 +69,7 @@ def GetComparatifNombre(DB, dictParametres) :
         req = """SELECT COUNT(IDindividu)
         FROM consommations 
         WHERE date>='%s' AND date<='%s' 
-        AND etat IN ('reservation', 'present')
+        AND consommations.etat IN ('reservation', 'present')
         AND IDactivite IN %s
         GROUP BY IDindividu
         ;""" % (dictPeriode["date_debut"], dictPeriode["date_fin"], conditionsActivites)
@@ -104,7 +104,7 @@ def GetDictGenres(DB, dictParametres) :
         FROM individus
         LEFT JOIN consommations ON consommations.IDindividu = individus.IDindividu 
         WHERE date>='%s' AND date<='%s' 
-        AND etat IN ('reservation', 'present')
+        AND consommations.etat IN ('reservation', 'present')
         AND IDactivite IN %s
         GROUP BY individus.IDindividu
         ;""" % (date_debut, date_fin, conditionsActivites)
@@ -156,7 +156,7 @@ def GetDictAges(DB, dictParametres) :
         FROM individus
         LEFT JOIN consommations ON consommations.IDindividu = individus.IDindividu 
         WHERE date>='%s' AND date<='%s' 
-        AND etat IN ('reservation', 'present')
+        AND consommations.etat IN ('reservation', 'present')
         AND IDactivite IN %s
         GROUP BY individus.IDindividu
         ;""" % (date_debut, date_fin, conditionsActivites)
@@ -253,7 +253,7 @@ def GetDictVilles(DB, dictParametres):
         FROM individus
         LEFT JOIN consommations ON consommations.IDindividu = individus.IDindividu 
         WHERE date>='%s' AND date<='%s' 
-        AND etat IN ('reservation', 'present')
+        AND consommations.etat IN ('reservation', 'present')
         AND IDactivite IN %s
         GROUP BY individus.IDindividu
         ;""" % (date_debut, date_fin, conditionsActivites)
@@ -336,7 +336,7 @@ def GetListeActivitesPro(DB, dictParametres) :
         LEFT JOIN consommations ON consommations.IDindividu = individus.IDindividu 
         LEFT JOIN categories_travail ON categories_travail.IDcategorie = individus.IDcategorie_travail
         WHERE date>='%s' AND date<='%s' 
-        AND etat IN ('reservation', 'present')
+        AND consommations.etat IN ('reservation', 'present')
         AND IDactivite IN %s
         GROUP BY IDcategorie_travail, consommations.IDindividu
         ;""" % (date_debut, date_fin, conditionsActivites)
@@ -391,7 +391,7 @@ def GetAnciennete(DB, dictParametres):
     req = """SELECT IDindividu, MIN(date), MAX(date)
     FROM consommations
     WHERE date<='%s' 
-    AND etat IN ('reservation', 'present')
+    AND consommations.etat IN ('reservation', 'present')
     AND IDactivite IN %s
     GROUP BY IDindividu
     ;""" % (date_fin, conditionsActivites)
@@ -447,7 +447,7 @@ def GetListeEcoles(DB, dictParametres) :
         LEFT JOIN scolarite ON scolarite.IDindividu = individus.IDindividu AND scolarite.date_debut <= '%s' AND scolarite.date_fin >= '%s'
         LEFT JOIN ecoles ON scolarite.IDecole = ecoles.IDecole
         WHERE date>='%s' AND date<='%s' 
-        AND etat IN ('reservation', 'present')
+        AND consommations.etat IN ('reservation', 'present')
         AND IDactivite IN %s
         GROUP BY scolarite.IDecole, consommations.IDindividu
         ;""" % (date_debut, date_debut, date_debut, date_fin, conditionsActivites)
@@ -498,7 +498,7 @@ def GetListeNiveauxScolaires(DB, dictParametres) :
         LEFT JOIN scolarite ON scolarite.IDindividu = individus.IDindividu AND scolarite.date_debut <= '%s' AND scolarite.date_fin >= '%s'
         LEFT JOIN niveaux_scolaires ON niveaux_scolaires.IDniveau = scolarite.IDniveau
         WHERE date>='%s' AND date<='%s' 
-        AND etat IN ('reservation', 'present')
+        AND consommations.etat IN ('reservation', 'present')
         AND IDactivite IN %s
         GROUP BY scolarite.IDecole, consommations.IDindividu
         ;""" % (date_debut, date_debut, date_debut, date_fin, conditionsActivites)
@@ -546,7 +546,7 @@ class Texte_nombre_individus(MODELES.Texte):
             req = """SELECT COUNT(IDindividu)
             FROM consommations 
             WHERE date>='%s' AND date<='%s' 
-            AND etat IN ('reservation', 'present')
+            AND consommations.etat IN ('reservation', 'present')
             AND IDactivite IN %s
             GROUP BY IDindividu
             ;""" % (date_debut, date_fin, conditionsActivites)
@@ -592,7 +592,7 @@ class Tableau_nombre_individus(MODELES.Tableau):
             req = """SELECT IDactivite, COUNT(IDindividu)
             FROM consommations 
             WHERE date>='%s' AND date<='%s' 
-            AND etat IN ('reservation', 'present')
+            AND consommations.etat IN ('reservation', 'present')
             AND IDactivite IN %s
             GROUP BY IDactivite, IDindividu
             ;""" % (date_debut, date_fin, conditionsActivites)

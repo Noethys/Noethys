@@ -128,7 +128,7 @@ class CTRL(HTL.HyperTreeList):
         # Importation des consommations en attente
         DB = GestionDB.DB()
         req = """
-        SELECT IDconso, consommations.IDindividu, consommations.IDactivite, consommations.date, consommations.IDunite, consommations.IDgroupe, consommations.IDevenement, etat, date_saisie,
+        SELECT IDconso, consommations.IDindividu, consommations.IDactivite, consommations.date, consommations.IDunite, consommations.IDgroupe, consommations.IDevenement, consommations.etat, date_saisie,
         evenements.nom,
         individus.nom, individus.prenom,
         unites.nom, unites.ordre,
@@ -141,7 +141,7 @@ class CTRL(HTL.HyperTreeList):
         LEFT JOIN activites ON activites.IDactivite = consommations.IDactivite
         LEFT JOIN groupes ON groupes.IDgroupe = consommations.IDgroupe
         LEFT JOIN comptes_payeurs ON comptes_payeurs.IDcompte_payeur = consommations.IDcompte_payeur
-        WHERE etat = '%s' AND consommations.IDactivite IN %s AND %s
+        WHERE consommations.etat = '%s' AND consommations.IDactivite IN %s AND %s
         ORDER BY IDconso
         ;""" % (self.mode, conditionActivites, conditionsDates)
         DB.ExecuterReq(req)

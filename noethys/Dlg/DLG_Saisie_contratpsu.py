@@ -621,7 +621,7 @@ class Base(object) :
             return
 
         # Lecture des consommations
-        req = """SELECT IDconso, date, IDunite, IDgroupe, heure_debut, heure_fin, etat, verrouillage, date_saisie, IDutilisateur,
+        req = """SELECT IDconso, date, IDunite, IDgroupe, heure_debut, heure_fin, consommations.etat, verrouillage, date_saisie, IDutilisateur,
         IDcategorie_tarif, IDprestation, forfait, quantite, etiquettes
         FROM consommations
         WHERE IDinscription=%d AND date>='%s' AND date<='%s'

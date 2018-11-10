@@ -558,7 +558,7 @@ class Dialog(wx.Dialog):
             IDcivilite, nom, prenom, date_naiss
             FROM consommations 
             LEFT JOIN individus ON individus.IDindividu = consommations.IDindividu
-            WHERE etat IN ("reservation", "present")
+            WHERE consommations.etat IN ("reservation", "present")
             AND IDactivite IN %s AND %s
             GROUP BY individus.IDindividu
             ORDER BY nom, prenom

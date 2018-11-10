@@ -57,7 +57,7 @@ def GetListe(listeActivites=None, presents=None, archives=False):
         req = """SELECT IDfamille, inscriptions.IDinscription
         FROM consommations
         LEFT JOIN inscriptions ON inscriptions.IDinscription = consommations.IDinscription
-        WHERE date>='%s' AND date<='%s' AND etat IN ('reservation', 'present') %s
+        WHERE date>='%s' AND date<='%s' AND consommations.etat IN ('reservation', 'present') %s
         GROUP BY IDfamille
         ;"""  % (str(presents[0]), str(presents[1]), conditionActivites.replace("inscriptions", "consommations"))
         DB.ExecuterReq(req)

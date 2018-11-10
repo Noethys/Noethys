@@ -164,7 +164,7 @@ class ListView(GroupListView):
                 self.dictIDappareil[nomFichierCourt] = dictParametres["ID_appareil"]
                 
                 # Lecture des consommations
-                req = """SELECT IDconso, horodatage, action, IDindividu, IDactivite, IDinscription, date, IDunite, IDgroupe, heure_debut, heure_fin, etat, date_saisie, IDutilisateur, IDcategorie_tarif, IDcompte_payeur, quantite, IDfamille
+                req = """SELECT IDconso, horodatage, action, IDindividu, IDactivite, IDinscription, date, IDunite, IDgroupe, heure_debut, heure_fin, consommations.etat, date_saisie, IDutilisateur, IDcategorie_tarif, IDcompte_payeur, quantite, IDfamille
                 FROM consommations;"""
                 DB.ExecuterReq(req)
                 listeConsommations = DB.ResultatReq()

@@ -149,7 +149,7 @@ class Export():
 
         # Importation des consommations
         req = """
-        SELECT IDconso, date, activites.nom, etat, 
+        SELECT IDconso, date, activites.nom, consommations.etat, 
         unites.nom, consommations.IDindividu, comptes_payeurs.IDfamille
         FROM consommations
         LEFT JOIN activites ON activites.IDactivite = consommations.IDactivite

@@ -666,7 +666,7 @@ def A8836():
     DB = GestionDB.DB()
     req = """SELECT IDconso, consommations.IDindividu, IDinscription, consommations.date, IDunite, consommations.IDprestation, prestations.IDprestation, consommations.etat FROM consommations
     LEFT JOIN prestations ON prestations.IDprestation = consommations.IDprestation
-    WHERE consommations.IDprestation IS NOT NULL AND prestations.IDprestation IS NULL AND etat='reservation'
+    WHERE consommations.IDprestation IS NOT NULL AND prestations.IDprestation IS NULL AND consommations.etat='reservation'
     ORDER BY consommations.IDindividu, IDunite;"""
     DB.ExecuterReq(req)
     listeDonnees = DB.ResultatReq()

@@ -86,7 +86,7 @@ class ListView(FastObjectListView):
         # Recherche si des consommations y sont attachées
         DB = GestionDB.DB()
         req = """
-        SELECT IDconso, date, consommations.IDactivite, activites.nom, etat, consommations.IDunite, 
+        SELECT IDconso, date, consommations.IDactivite, activites.nom, consommations.etat, consommations.IDunite, 
         unites.nom, consommations.IDindividu, individus.nom, individus.prenom
         FROM consommations
         LEFT JOIN activites ON activites.IDactivite = consommations.IDactivite

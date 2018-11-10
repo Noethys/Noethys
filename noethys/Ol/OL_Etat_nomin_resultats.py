@@ -498,7 +498,7 @@ class ListView(FastObjectListView):
         LEFT JOIN caisses ON caisses.IDcaisse = familles.IDcaisse
         LEFT JOIN prestations ON prestations.IDprestation = consommations.IDprestation
         WHERE consommations.date >='%s' AND consommations.date <='%s'
-        AND etat NOT IN ('attente', 'refus')
+        AND consommations.etat NOT IN ('attente', 'refus')
         %s %s %s
         ;""" % (self.dictParametres["date_debut"], self.dictParametres["date_fin"], conditionCaisses, conditionGroupes, conditionCategories)
         DB.ExecuterReq(req)

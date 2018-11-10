@@ -550,7 +550,7 @@ class ListView(GroupListView):
 
             # Recherche si des consommations y sont attachées
             req = """
-            SELECT IDconso, date, etat, consommations.IDunite, unites.nom, 
+            SELECT IDconso, date, consommations.etat, consommations.IDunite, unites.nom, 
             consommations.IDindividu, individus.nom, individus.prenom
             FROM consommations
             LEFT JOIN unites ON unites.IDunite = consommations.IDunite

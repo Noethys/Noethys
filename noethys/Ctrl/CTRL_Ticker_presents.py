@@ -111,7 +111,7 @@ class CTRL(wx.Panel):
         AND date = '%s'
         AND heure_debut <= '%s' 
         AND heure_fin >= '%s'
-        AND etat IN ("reservation", "present")
+        AND consommations.etat IN ("reservation", "present")
         GROUP BY consommations.IDactivite, consommations.IDindividu
         ORDER BY activites.nom, groupes.ordre;""" % (conditionActivites, date, heure, heure)
         DB.ExecuterReq(req)

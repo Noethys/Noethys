@@ -252,7 +252,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 
         # Consommations
         req = """SELECT IDconso, consommations.date, consommations.IDindividu, consommations.IDunite, consommations.IDgroupe, consommations.IDactivite, consommations.etiquettes,
-        heure_debut, heure_fin, etat, quantite, IDevenement, consommations.IDprestation, prestations.temps_facture,
+        heure_debut, heure_fin, consommations.etat, quantite, IDevenement, consommations.IDprestation, prestations.temps_facture,
         comptes_payeurs.IDfamille,  
         activites.nom,
         groupes.nom,
@@ -265,7 +265,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         LEFT JOIN categories_tarifs ON categories_tarifs.IDcategorie_tarif = consommations.IDcategorie_tarif
         WHERE consommations.IDactivite=%d AND consommations.IDgroupe IN %s 
         AND consommations.date>='%s' AND consommations.date<='%s'
-        AND etat IN %s
+        AND consommations.etat IN %s
         ;""" % (self.IDactivite, conditionGroupes, self.date_debut, self.date_fin, conditionEtat)
         DB.ExecuterReq(req)
         listeConsommations = DB.ResultatReq()

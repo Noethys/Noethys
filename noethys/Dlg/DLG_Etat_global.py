@@ -601,7 +601,7 @@ class Dialog(wx.Dialog):
         else : conditionSQL = "AND consommations.IDunite IN %s" % str(tuple(listeUnitesUtilisees))
 
         req = """SELECT IDconso, consommations.date, consommations.IDindividu, consommations.IDunite, consommations.IDgroupe, consommations.IDactivite, consommations.etiquettes,
-        heure_debut, heure_fin, etat, quantite, consommations.IDevenement, consommations.IDprestation, prestations.temps_facture,
+        heure_debut, heure_fin, consommations.etat, quantite, consommations.IDevenement, consommations.IDprestation, prestations.temps_facture,
         comptes_payeurs.IDfamille, activites.nom, groupes.nom, categories_tarifs.nom, 
         familles.IDcaisse, caisses.IDregime, individus.date_naiss
         FROM consommations
@@ -614,7 +614,7 @@ class Dialog(wx.Dialog):
         LEFT JOIN groupes ON groupes.IDgroupe = consommations.IDgroupe
         LEFT JOIN categories_tarifs ON categories_tarifs.IDcategorie_tarif = consommations.IDcategorie_tarif
         WHERE consommations.date >='%s' AND consommations.date <='%s'
-        AND etat NOT IN ('attente', 'refus')
+        AND consommations.etat NOT IN ('attente', 'refus')
         %s
         ORDER BY consommations.date;""" % (str(date_debut), str(date_fin), conditionSQL)
         DB.ExecuterReq(req)

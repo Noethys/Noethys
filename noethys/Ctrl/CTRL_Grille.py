@@ -1367,7 +1367,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 
         # Récupération des consommations existantes 
         req = """SELECT IDconso, consommations.IDindividu, IDactivite, IDinscription, date, IDunite, 
-        IDgroupe, heure_debut, heure_fin, etat, verrouillage, date_saisie, IDutilisateur, 
+        IDgroupe, heure_debut, heure_fin, consommations.etat, verrouillage, date_saisie, IDutilisateur, 
         IDcategorie_tarif, consommations.IDcompte_payeur, IDprestation, forfait, quantite, etiquettes,
         comptes_payeurs.IDfamille, IDevenement
         FROM consommations 
