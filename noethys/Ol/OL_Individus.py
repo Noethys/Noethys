@@ -164,7 +164,7 @@ class ListView(FastObjectListView):
 
     def SetParametres(self, parametres=""):
         if parametres == None :
-            parametres = {}
+            parametres = ""
 
         dictParametres = {}
         listeParametres = parametres.split("###")

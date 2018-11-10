@@ -88,7 +88,7 @@ class ToolBar(wx.ToolBar):
         self.GetParent().ctrl_listview.Modifier(event)
 
     def Parametres(self, event):
-        parametres = UTILS_Config.GetParametre("liste_individus_parametres", defaut={})
+        parametres = UTILS_Config.GetParametre("liste_individus_parametres", defaut="")
         from Dlg import DLG_Selection_individus
         dlg = DLG_Selection_individus.Dialog(self)
         dlg.SetParametres(parametres)
@@ -191,7 +191,7 @@ class Panel(wx.Panel):
         UTILS_Aide.Aide("Lalistedesindividus")
     
     def ActualiseParametresAffichage(self):
-        parametres = UTILS_Config.GetParametre("liste_individus_parametres", defaut={})
+        parametres = UTILS_Config.GetParametre("liste_individus_parametres", defaut="")
         self.ctrl_listview.SetParametres(parametres)
 
 
