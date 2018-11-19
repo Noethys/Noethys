@@ -330,6 +330,9 @@ class Dialog(wx.Dialog):
                 date_fin = datetime.datetime.strptime(date_fin, "%Y-%m-%d %H:%M:%S")
                 duree = date_fin - date_debut
                 duree_str = UTILS_Dates.FormatDelta(duree)
+            elif isinstance(date_fin, datetime.datetime):
+                duree = date_fin - date_debut
+                duree_str = UTILS_Dates.FormatDelta(duree)
             else :
                 duree = None
                 duree_str = _(u"Non définie")
