@@ -1,4 +1,4 @@
-Version 1.2.4.6 (10/11/2018) :
+Version 1.2.4.8 (19/11/2018) :
 
 - Ajout de l'archivage et effacement des fiches
 - Ajout du masquage des onglets des fiches famille et individu
