@@ -931,7 +931,7 @@ class CTRL_Interface(wx.Panel):
         for IDunite in listeUnitesChoisies :
             placeDispo = self.ctrl_grille.HasPlacesDisponibles(IDunite) 
             if placeDispo == False :
-                listeUnitesCompletes.append(dictUnites[IDunite][nom]) 
+                listeUnitesCompletes.append(dictUnites[IDunite]["nom"])
                     
         if len(listeUnitesCompletes) > 0 :
             texte = _(u"Désolé mais il est possible qu'il n'y ait plus de places. Contactez un responsable.")
