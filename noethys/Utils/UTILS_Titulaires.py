@@ -17,7 +17,7 @@ from Data import DATA_Civilites as Civilites
 DICT_CIVILITES = Civilites.GetDictCivilites()
 
 
-def GetTitulaires(listeIDfamille=[], mode_adresse_facturation=False, inclure_telephones=False):
+def GetTitulaires(listeIDfamille=[], mode_adresse_facturation=False, inclure_telephones=False, inclure_archives=False):
     """ si listeIDfamille == [] alors renvoie toutes les familles """
     dictFamilles = {}
     
@@ -70,10 +70,14 @@ def GetTitulaires(listeIDfamille=[], mode_adresse_facturation=False, inclure_tel
                 }
 
     # Récupération des rattachements
+    if inclure_archives == False :
+        conditionArchives = "individus.etat IS NULL"
+    else :
+        conditionArchives = "IDrattachement>0"
     req = """SELECT IDrattachement, rattachements.IDindividu, IDfamille, IDcategorie, titulaire
     FROM rattachements
     LEFT JOIN individus ON individus.IDindividu = rattachements.IDindividu
-    WHERE individus.etat IS NULL %s;""" % conditionFamilles
+    WHERE %s %s;""" % (conditionArchives, conditionFamilles)
     DB.ExecuterReq(req)
     listeDonnees = DB.ResultatReq()
     DB.Close() 

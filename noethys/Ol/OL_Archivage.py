@@ -187,7 +187,7 @@ class ListView(FastObjectListView):
 
     def MAJ(self, ID=None):
         if self.mode == "familles":
-            self.dict_titulaires = UTILS_Titulaires.GetTitulaires()
+            self.dict_titulaires = UTILS_Titulaires.GetTitulaires(inclure_archives=True)
         if ID != None :
             self.selectionID = ID
             self.selectionTrack = None
