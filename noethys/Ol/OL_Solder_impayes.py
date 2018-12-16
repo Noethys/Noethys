@@ -61,7 +61,7 @@ class ListView(FastObjectListView):
         self.Bind(wx.EVT_CONTEXT_MENU, self.OnContextMenu)
         
     def OnActivated(self,event):
-        self.Modifier(None)
+        self.OuvrirFicheFamille(None)
 
     def InitModel(self):
         self.donnees = self.GetTracks()
