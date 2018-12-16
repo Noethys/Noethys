@@ -73,11 +73,16 @@ def ConversionLocalReseau(parent, nomFichier=""):
     
     # Lance la conversion
     parent.SetStatusText(_(u"Conversion du fichier en cours... Veuillez patienter..."))
-    conversion = GestionDB.ConversionLocalReseau(nomFichier, nouveauFichier, parent)
-    parent.SetStatusText(_(u"La conversion s'est terminée avec succès."))
-    dlg = wx.MessageDialog(None, _(u"La conversion s'est terminée avec succès. Le nouveau fichier a été créé."), "Information", wx.OK | wx.ICON_INFORMATION)
+    resultat = GestionDB.ConversionLocalReseau(nomFichier, nouveauFichier, parent)
+    if resultat[0] == True :
+        parent.SetStatusText(_(u"La conversion s'est terminée avec succès."))
+        dlg = wx.MessageDialog(None, _(u"La conversion s'est terminée avec succès. Le nouveau fichier a été créé."), _(u"Information"), wx.OK | wx.ICON_INFORMATION)
+    else :
+        parent.SetStatusText(_(u"Erreur de conversion"))
+        dlg = wx.MessageDialog(None, resultat[1], _(u"Erreur de conversion"), wx.OK | wx.ICON_ERROR)
     dlg.ShowModal()
     dlg.Destroy()
+    parent.SetStatusText("")
     return True
 
 
@@ -129,10 +134,15 @@ def ConversionReseauLocal(parent, nomFichier=""):
     
     # Lance la conversion
     parent.SetStatusText(_(u"Conversion du fichier en cours... Veuillez patienter..."))
-    conversion = GestionDB.ConversionReseauLocal(nomFichier, nouveauFichier, parent)
-    parent.SetStatusText(_(u"La conversion s'est terminée avec succès."))
-    dlg = wx.MessageDialog(None, _(u"La conversion s'est terminée avec succès. Le nouveau fichier a été créé."), "Information", wx.OK | wx.ICON_INFORMATION)
+    resultat = GestionDB.ConversionReseauLocal(nomFichier, nouveauFichier, parent)
+    if resultat[0] == True :
+        parent.SetStatusText(_(u"La conversion s'est terminée avec succès."))
+        dlg = wx.MessageDialog(None, _(u"La conversion s'est terminée avec succès. Le nouveau fichier a été créé."), _(u"Information"), wx.OK | wx.ICON_INFORMATION)
+    else :
+        parent.SetStatusText(_(u"Erreur de conversion"))
+        dlg = wx.MessageDialog(None, resultat[1], _(u"Erreur de conversion"), wx.OK | wx.ICON_ERROR)
     dlg.ShowModal()
     dlg.Destroy()
+    parent.SetStatusText("")
     return True
 

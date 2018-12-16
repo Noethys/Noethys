@@ -717,17 +717,16 @@ class DB:
 
             if os.path.isfile(nomFichierdefault)  == False :
                 print "Le fichier n'existe pas."
-                return
+                return (False, _(u"Le fichier n'existe pas"))
 
             try:
                 connexionDefaut = sqlite3.connect(nomFichierdefault.encode('utf-8'))
             except Exception, err:
                 print "Echec Importation table. Erreur detectee :%s" % err
-                echec = 1
+                return (False, "Echec Importation table. Erreur detectee :%s" % err)
             else:
                 cursor = connexionDefaut.cursor()
-                echec = 0
-        
+
         else :
             
             try :
@@ -739,11 +738,8 @@ class DB:
                 
             except Exception, err:
                 print "La connexion avec la base de donnees MYSQL a importer a echouee : \nErreur detectee :%s" % err
-                erreur = err
-                echec = 1
-            else:
-                echec = 0
-        
+                return (False, "La connexion avec la base de donnees MYSQL a importer a echouee : \nErreur detectee :%s" % err)
+
         # Recherche des noms de champs de la table
         req = "SELECT * FROM %s" % nomTable
         cursor.execute(req)
@@ -778,7 +774,9 @@ class DB:
         except Exception, err :
             print "Erreur dans l'importation de la table %s :" % nomTable
             print err
+            return (False, "Erreur dans l'importation de la table %s : %s" % (nomTable, err))
         self.connexion.commit()
+        return (True, None)
 
     def Importation_table_reseau(self, nomTable="", nomFichier="", dictTables={}):
         """ Importe toutes les données d'une table donnée dans un fichier réseau """
@@ -794,10 +792,7 @@ class DB:
 
         except Exception, err:
             print "La connexion avec la base de donnees MYSQL a importer a echouee : \nErreur detectee :%s" % err
-            erreur = err
-            echec = 1
-        else:
-            echec = 0
+            return (False, "La connexion avec la base de donnees MYSQL a importer a echouee : \nErreur detectee :%s" % err)
 
         # Recherche des noms de champs de la table
         req = "SELECT * FROM %s" % nomTable
@@ -835,6 +830,7 @@ class DB:
         req = "INSERT INTO %s %s VALUES %s" % (nomTable, txtChamps, txtQMarks)
         self.cursor.executemany(req, listeDonnees)
         self.connexion.commit()
+        return (True, None)
 
     def Importation_valeurs_defaut(self, listeDonnees=[]):
         """ Importe dans la base de données chargée toutes les valeurs de la base des valeurs par défaut """
@@ -2226,6 +2222,15 @@ class DB:
 
         # =============================================================
 
+        versionFiltre = (1, 2, 4, 9)
+        if versionFichier < versionFiltre:
+            try:
+                if self.isNetwork == True:
+                    self.ExecuterReq("ALTER TABLE factures_regies MODIFY COLUMN numclitipi VARCHAR(50);")
+            except Exception, err:
+                return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
+
+        # =============================================================
 
 
 
@@ -2289,29 +2294,20 @@ def ConversionLocalReseau(nomFichier="", nouveauFichier="", fenetreParente=None)
         # Vérifie la connexion au réseau
         if dictResultats["connexion"][0] == False :
             erreur = dictResultats["connexion"][1]
-            dlg = wx.MessageDialog(None, _(u"La connexion au réseau MySQL est impossible. \n\nErreur : %s") % erreur, "Erreur de connexion", wx.OK | wx.ICON_ERROR)
-            dlg.ShowModal()
-            dlg.Destroy()
             print "connexion reseau MySQL impossible."
-            return False
+            return (False, _(u"La connexion au réseau MySQL est impossible"))
         
         # Vérifie que le fichier n'est pas déjà utilisé
         if dictResultats["fichier"][0] == True :
-            dlg = wx.MessageDialog(None, _(u"Le fichier existe déjà."), u"Erreur de création de fichier", wx.OK | wx.ICON_ERROR)
-            dlg.ShowModal()
-            dlg.Destroy()
             print "le nom existe deja."
-            return False
+            return (False, _(u"Le fichier existe déjà"))
         
         # Création de la base de données
         if fenetreParente != None : fenetreParente.SetStatusText(_(u"Conversion du fichier en cours... Création du fichier réseau..."))
         db = DB(suffixe=suffixe, nomFichier=nouveauFichier, modeCreation=True)
         if db.echec == 1 :
-            erreur = db.erreur
-            dlg = wx.MessageDialog(None, _(u"Erreur dans la création du fichier.\n\nErreur : %s") % erreur, _(u"Erreur de création de fichier"), wx.OK | wx.ICON_ERROR)
-            dlg.ShowModal()
-            dlg.Destroy()
-            return False
+            message = _(u"Erreur dans la création du fichier.\n\nErreur : %s") % db.erreur
+            return (False, message)
         print "  > Nouveau fichier reseau %s cree..." % suffixe
         
         # Création des tables
@@ -2325,14 +2321,17 @@ def ConversionLocalReseau(nomFichier="", nouveauFichier="", fenetreParente=None)
         for nomTable in listeTables :
             print "  > Importation de la table '%s' (%d/%d)" % (nomTable, index, len(listeTables))
             if fenetreParente != None : fenetreParente.SetStatusText(_(u"Conversion du fichier en cours... Importation de la table %d sur %s...") % (index, len(listeTables)))
-            db.Importation_table(nomTable, nomFichierActif)
-            print "     -> ok"
+            resultat = db.Importation_table(nomTable, nomFichierActif)
+            if resultat[0] == False :
+                return resultat
+            else :
+                print "     -> ok"
             index += 1
         
         db.Close() 
     
     print "  > Conversion terminee avec succes."
-            
+    return (True, None)
 
 def ConversionReseauLocal(nomFichier="", nouveauFichier="", fenetreParente=None):
     """ Convertit une DB RESEAU MySQL en version LOCALE SQLITE """
@@ -2345,21 +2344,14 @@ def ConversionReseauLocal(nomFichier="", nouveauFichier="", fenetreParente=None)
         
         # Vérifie que le fichier n'est pas déjà utilisé
         if os.path.isfile(nouveauNom)  == True :
-            dlg = wx.MessageDialog(None, _(u"Le fichier existe déjà."), u"Erreur de création de fichier", wx.OK | wx.ICON_ERROR)
-            dlg.ShowModal()
-            dlg.Destroy()
-            print "le nom existe deja."
-            return False
+            return (False, _(u"Le fichier existe déjà"))
         
         # Création de la base de données
         if fenetreParente != None : fenetreParente.SetStatusText(_(u"Conversion du fichier en cours... Création du fichier local..."))
         db = DB(suffixe=suffixe, nomFichier=nouveauFichier, modeCreation=True)
         if db.echec == 1 :
-            erreur = db.erreur
-            dlg = wx.MessageDialog(None, _(u"Erreur dans la création du fichier.\n\nErreur : %s") % erreur, _(u"Erreur de création de fichier"), wx.OK | wx.ICON_ERROR)
-            dlg.ShowModal()
-            dlg.Destroy()
-            return False
+            message = _(u"Erreur dans la création du fichier.\n\nErreur : %s") % db.erreur
+            return (False, _(u"Le fichier existe déjà"))
         print "  > Nouveau fichier local %s cree..." % suffixe
         
         # Création des tables
@@ -2373,14 +2365,17 @@ def ConversionReseauLocal(nomFichier="", nouveauFichier="", fenetreParente=None)
         for nomTable in listeTables :
             print "  > Importation de la table '%s' (%d/%d)" % (nomTable, index, len(listeTables))
             if fenetreParente != None : fenetreParente.SetStatusText(_(u"Conversion du fichier en cours... Importation de la table %d sur %s...") % (index, len(listeTables)))
-            db.Importation_table_reseau(nomTable, u"%s_%s" % (nomFichier, suffixe), dictTables)
-            print "     -> ok"
+            resultat = db.Importation_table_reseau(nomTable, u"%s_%s" % (nomFichier, suffixe), dictTables)
+            if resultat[0] == False :
+                return resultat
+            else :
+                print "     -> ok"
             index += 1
         
         db.Close() 
     
     print "  > Conversion reseau->local terminee avec succes."
-
+    return (True, None)
 
 def TestConnexionMySQL(typeTest="fichier", nomFichier=""):
     """ typeTest=fichier ou reseau """

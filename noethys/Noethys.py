@@ -1679,15 +1679,13 @@ class MainFrame(wx.Frame):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("fichier_conversions", "creer") == False : return
         nomFichier = self.userConfig["nomFichier"]
         from Utils import UTILS_Conversion_fichier
-        resultat = UTILS_Conversion_fichier.ConversionLocalReseau(self, nomFichier)
-        print "Succes de la procedure : ", resultat
+        UTILS_Conversion_fichier.ConversionLocalReseau(self, nomFichier)
 
     def On_fichier_Convertir_local(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("fichier_conversions", "creer") == False : return
         nomFichier = self.userConfig["nomFichier"]
         from Utils import UTILS_Conversion_fichier
-        resultat = UTILS_Conversion_fichier.ConversionReseauLocal(self, nomFichier)
-        print "Succes de la procedure : ", resultat
+        UTILS_Conversion_fichier.ConversionReseauLocal(self, nomFichier)
 
     def On_fichier_Quitter(self, event):
         if self.Quitter() == False :
