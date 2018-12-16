@@ -1534,7 +1534,7 @@ DB_DATA = {
 
     "factures_regies":              [("IDregie", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID régie de facturation"),
                                     ("nom", "VARCHAR(450)", u"Nom de la régie"),
-                                    ("numclitipi", "VARCHAR(8)", u"Numéro de client TIPI"),
+                                    ("numclitipi", "VARCHAR(50)", u"Numéro de client TIPI"),
                                     ("email_regisseur", "VARCHAR(100)", u"email du régisseur"),
                                     ("IDcompte_bancaire", "INTEGER", u"ID du compte bancaire associé"),
                                     ], # RÃ©gies de facturation
