@@ -31,7 +31,7 @@ class CTRL_Regroupement(wx.Choice):
             (_(u"Aucun"), None),
             (_(u"Etat"), "etat"),
             (_(u"Catégorie"), "categorie"),
-            (_(u"Famille"), "famille"),
+            (_(u"Famille"), "nom"),
             (_(u"Période"), "periode"),
             ]
 
