@@ -777,7 +777,7 @@ DB_DATA = {
                                     ], # Messages dans les factures
 
     "factures":[                ("IDfacture", "INTEGER PRIMARY KEY AUTOINCREMENT", u"IDfacture"),
-                                    ("numero", "INTEGER", u"Numéro de facture"),
+                                    ("numero", "BIGINT", u"Numéro de facture"),
                                     ("IDcompte_payeur", "INTEGER", u"ID du compte payeur"),
                                     ("date_edition", "DATE", u"Date d'édition de la facture"),
                                     ("date_echeance", "DATE", u"Date d'échéance de la facture"),
@@ -1341,7 +1341,7 @@ DB_DATA = {
                                     ("titulaire_helios", "INTEGER", u"Tiers Trésor public"),
                                     ("type", "VARCHAR(400)", u"Type du prélèvement"),
                                     ("IDfacture", "INTEGER", u"ID de la facture"),
-                                    ("numero", "INTEGER", u"Numéro de facture"),
+                                    ("numero", "BIGINT", u"Numéro de facture"),
                                     ("libelle", "VARCHAR(400)", u"Libellé de la pièce"),
                                     ("montant", "FLOAT", u"Montant du prélèvement"),
                                     ], # Pièces PESV2 ORMC

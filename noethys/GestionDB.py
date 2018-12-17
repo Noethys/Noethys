@@ -201,6 +201,7 @@ class DB:
                 typeChamp = descr[1]
                 # Adaptation à Sqlite
                 if self.isNetwork == False and typeChamp == "LONGBLOB" : typeChamp = "BLOB"
+                if self.isNetwork == False and typeChamp == "BIGINT": typeChamp = "INTEGER"
                 # Adaptation à MySQL :
                 if self.isNetwork == True and typeChamp == "INTEGER PRIMARY KEY AUTOINCREMENT" : typeChamp = "INTEGER PRIMARY KEY AUTO_INCREMENT"
                 if self.isNetwork == True and typeChamp == "FLOAT" : typeChamp = "REAL"
@@ -224,6 +225,7 @@ class DB:
             typeChamp = descr[1]
             # Adaptation à Sqlite
             if self.isNetwork == False and typeChamp == "LONGBLOB" : typeChamp = "BLOB"
+            if self.isNetwork == False and typeChamp == "BIGINT": typeChamp = "INTEGER"
             # Adaptation à MySQL :
             if self.isNetwork == True and typeChamp == "INTEGER PRIMARY KEY AUTOINCREMENT" : typeChamp = "INTEGER PRIMARY KEY AUTO_INCREMENT"
             if self.isNetwork == True and typeChamp == "FLOAT" : typeChamp = "REAL"
@@ -667,6 +669,7 @@ class DB:
                 nomChamp = descr[0]
                 typeChamp = descr[1]
                 if self.isNetwork == False and typeChamp == "LONGBLOB" : typeChamp = "BLOB"
+                if self.isNetwork == False and typeChamp == "BIGINT": typeChamp = "INTEGER"
                 listeChamps.append("%s %s" % (nomChamp, typeChamp))
                 listeNomsChamps.append(nomChamp)
             varChamps = ", ".join(listeChamps)
@@ -880,6 +883,7 @@ class DB:
                 nomChamp = descr[0]
                 typeChamp = descr[1]
                 if self.isNetwork == False and typeChamp == "LONGBLOB" : typeChamp = "BLOB"
+                if self.isNetwork == False and typeChamp == "BIGINT": typeChamp = "INTEGER"
                 req = req + "%s %s, " % (nomChamp, typeChamp)
             req = req[:-2] + ")"
             cursorDefaut.execute(req)
@@ -2227,6 +2231,9 @@ class DB:
             try:
                 if self.isNetwork == True:
                     self.ExecuterReq("ALTER TABLE factures_regies MODIFY COLUMN numclitipi VARCHAR(50);")
+                    self.ExecuterReq("ALTER TABLE factures MODIFY COLUMN numero BIGINT;")
+                    self.ExecuterReq("ALTER TABLE pes_pieces MODIFY COLUMN numero BIGINT;")
+                    self.Commit()
             except Exception, err:
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
@@ -2323,6 +2330,7 @@ def ConversionLocalReseau(nomFichier="", nouveauFichier="", fenetreParente=None)
             if fenetreParente != None : fenetreParente.SetStatusText(_(u"Conversion du fichier en cours... Importation de la table %d sur %s...") % (index, len(listeTables)))
             resultat = db.Importation_table(nomTable, nomFichierActif)
             if resultat[0] == False :
+                db.Close()
                 return resultat
             else :
                 print "     -> ok"
@@ -2367,6 +2375,7 @@ def ConversionReseauLocal(nomFichier="", nouveauFichier="", fenetreParente=None)
             if fenetreParente != None : fenetreParente.SetStatusText(_(u"Conversion du fichier en cours... Importation de la table %d sur %s...") % (index, len(listeTables)))
             resultat = db.Importation_table_reseau(nomTable, u"%s_%s" % (nomFichier, suffixe), dictTables)
             if resultat[0] == False :
+                db.Close()
                 return resultat
             else :
                 print "     -> ok"
