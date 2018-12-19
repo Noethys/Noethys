@@ -50,7 +50,7 @@ Dépendances pour Linux
 - python-mysqldb (Pour l'utilisation en mode réseau)
 - python-dateutil (Manipulation des dates)
 - python-numpy (Calculs avancés)
-- python-imaging (Traitement des photos)
+- python-pil (Traitement des photos)
 - python-reportlab (Création des PDF)
 - python-matplotlib (Création de graphes)
 - python-xlrd (Traitement de fichiers Excel)
@@ -68,7 +68,7 @@ Dépendances pour Linux
 Ils s'installent depuis le terminal tout simplement avec la commande (**à exécuter si besoin avec sudo**):
 
 ```
-apt-get install python-mysqldb python-dateutil python-numpy python-imaging python-reportlab python-matplotlib 
+apt-get install python-mysqldb python-dateutil python-numpy python-pil python-reportlab python-matplotlib 
 python-xlrd python-excelerator python-pip python-espeak python-pyscard python-opencv python-crypto python-appdirs
 python-wxgtk3.0 python-sqlalchemy libcanberra-gtk-module python-psutil python-paramiko python-lxml
 ```
@@ -78,11 +78,6 @@ Et pour pyttsx et icalendar il faut avoir installé python-pip (ce qui a ét fai
 pip install pyttsx
 pip install icalendar
 ```
-Puis:
-```
-apt-get install python-wxgtk3.0
-```
-Si cette commande se termine correctement, vous avez fini.
 
 
 Pour lancer Noethys, lancez le terminal de Linux, placez-vous dans le répertoire d'installation de Noethys, puis saisissez la commande "python Noethys.py"
