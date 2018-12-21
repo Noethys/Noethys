@@ -200,7 +200,9 @@ class Panel(wx.Panel):
     def OnBoutonHelios(self, event):
         """ Export vers Helios """ 
         from Utils import UTILS_Pes
-        choix = UTILS_Pes.DemanderChoix(self)
+
+        # Obsolète, donc PES imposé
+        choix = "pes" #UTILS_Pes.DemanderChoix(self)
         
         if choix == "rolmre" :
             
