@@ -185,7 +185,10 @@ class Barre(object):
                     else :
                         dc.SetPen(wx.Pen(self.couleur_barre))
                     dc.SetBrush(wx.Brush(self.couleur_barre))
-                    dc.DrawRectangleRect(rect)
+                    if 'phoenix' not in wx.PlatformInfo:
+                        dc.DrawRectangleRect(rect)
+                    else :
+                        dc.DrawRectangle(rect)
 
                     # Affiche le nom de la barre
                     dc.SetFont(wx.Font(8, wx.SWISS, wx.NORMAL, wx.NORMAL))
@@ -1071,7 +1074,10 @@ class CTRL_Tableau(wx.Panel):
         self.Draw_entetes_lignes(dc)
 
         # Calcule la taille de la fenetre affichée
-        taille_fenetre = self.GetClientSizeTuple()
+        if 'phoenix' not in wx.PlatformInfo:
+            taille_fenetre = self.GetClientSizeTuple()
+        else :
+            taille_fenetre = self.GetClientSize()
         x_fenetre = self.dict_options["entete_ligne_largeur"]
         y_fenetre = self.dict_options["entete_colonne_hauteur"]
         largeur_fenetre = taille_fenetre[0] - x_fenetre
@@ -1422,7 +1428,10 @@ class CTRL_Infos(wx.Panel):
             dc.SetFont(wx.Font(8, wx.SWISS, wx.NORMAL, wx.NORMAL))
             padding_titre = 2
             tmp, largTitre, hautTitre = GetTailleTexte(dc, self.titre, rect.width)
-            dc.DrawRectangleRect(wx.Rect(0, 0, largTitre + padding_titre*4, rect.height-padding_titre*2))
+            if 'phoenix' not in wx.PlatformInfo:
+                dc.DrawRectangleRect(wx.Rect(0, 0, largTitre + padding_titre*4, rect.height-padding_titre*2))
+            else :
+                dc.DrawRectangle(wx.Rect(0, 0, largTitre + padding_titre * 4, rect.height - padding_titre * 2))
             y = rect.height / 2.0 - hautTitre / 2.0
             dc.DrawText(self.titre, padding_titre*2, y-2)
             x_texte = largTitre + 12
@@ -1491,7 +1500,10 @@ class TableauPrintout(wx.Printout):
             x_max = panel_width  + (2 * x_margin)
             y_max = panel_height + (2 * y_margin)
             # Get the size of the DC in pixels
-            (dc_width, dc_heighth) = dc.GetSizeTuple()
+            if 'phoenix' not in wx.PlatformInfo:
+                (dc_width, dc_heighth) = dc.GetSizeTuple()
+            else :
+                (dc_width, dc_heighth) = dc.GetSize()
             # Calculate a suitable scaling factor
             x_scale = float(dc_width) / x_max
             y_scale = float(dc_heighth) / y_max
@@ -1505,9 +1517,11 @@ class TableauPrintout(wx.Printout):
 
         dc = self.GetDC()
         SetScaleAndDeviceOrigin(dc)
-        dc.BeginDrawing()
+        if 'phoenix' not in wx.PlatformInfo:
+            dc.BeginDrawing()
         dc.DrawBitmap(self.panel.bgbuf, 0, 0, True)
-        dc.EndDrawing()
+        if 'phoenix' not in wx.PlatformInfo:
+            dc.EndDrawing()
         return True
 
 # -------------------------------------------------------------------------------------------------------------------------------------------
