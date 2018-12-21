@@ -482,6 +482,10 @@ class ListView(FastObjectListView):
         elif len(self.dictParametres["categories"]) == 1 : conditionCategories = "AND consommations.IDcategorie_tarif IN (%d)" % self.dictParametres["categories"][0]
         else : conditionCategories = "AND consommations.IDcategorie_tarif IN %s" % str(tuple(self.dictParametres["categories"]))
 
+        if len(self.dictParametres["etats"]) == 0 : conditionEtats = "AND consommations.etat ='xxxxx'"
+        elif len(self.dictParametres["etats"]) == 1 : conditionEtats = "AND consommations.etat IN ('%s')" % self.dictParametres["etats"][0]
+        else : conditionEtats = "AND consommations.etat IN %s" % str(tuple(self.dictParametres["etats"]))
+
         # Récupération des consommations
         req = """SELECT 
         consommations.IDconso, consommations.IDindividu, consommations.IDactivite, 
@@ -498,9 +502,8 @@ class ListView(FastObjectListView):
         LEFT JOIN caisses ON caisses.IDcaisse = familles.IDcaisse
         LEFT JOIN prestations ON prestations.IDprestation = consommations.IDprestation
         WHERE consommations.date >='%s' AND consommations.date <='%s'
-        AND consommations.etat NOT IN ('attente', 'refus')
-        %s %s %s
-        ;""" % (self.dictParametres["date_debut"], self.dictParametres["date_fin"], conditionCaisses, conditionGroupes, conditionCategories)
+        %s %s %s %s
+        ;""" % (self.dictParametres["date_debut"], self.dictParametres["date_fin"], conditionCaisses, conditionGroupes, conditionCategories, conditionEtats)
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         DB.Close() 
