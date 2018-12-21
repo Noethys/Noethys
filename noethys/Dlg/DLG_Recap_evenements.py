@@ -111,6 +111,8 @@ class CTRL(HTL.HyperTreeList):
         dictEvenements = {}
         dictDonnees = {}
         for IDevenement, IDactivite, nom, date, heure_debut, heure_fin, capacite_max, nomActivite in listeDonnees :
+            if nomActivite == None :
+                nomActivite = _(u"Activité inconnue")
             date = UTILS_Dates.DateEngEnDateDD(date)
             dictEvenement = {"nom" : nom, "IDactivite" : IDactivite, "date" : date, "heure_debut" : heure_debut, "heure_fin" : heure_fin, "nomActivite" : nomActivite, "nbre_max" : capacite_max, "nbre_inscrits" : 0, "nbre_attente" : 0}
             dictEvenements[IDevenement] = dictEvenement
