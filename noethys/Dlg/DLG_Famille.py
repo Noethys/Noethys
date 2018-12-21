@@ -882,7 +882,10 @@ class Dialog(wx.Dialog):
         tb = Toaster.ToasterBox(wx.GetApp().GetTopWindow(), Toaster.TB_SIMPLE, Toaster.TB_DEFAULT_STYLE, Toaster.TB_ONTIME)  # TB_CAPTION
         tb.SetTitle(titre)
         tb.SetPopupSize((largeur, hauteur))
-        largeurEcran, hauteurEcran = wx.ScreenDC().GetSizeTuple()
+        if 'phoenix' not in wx.PlatformInfo:
+            largeurEcran, hauteurEcran = wx.ScreenDC().GetSizeTuple()
+        else :
+            largeurEcran, hauteurEcran = wx.ScreenDC().GetSize()
         tb.SetPopupPosition((largeurEcran - largeur - 10, hauteurEcran - hauteur - 50))
         tb.SetPopupPauseTime(3000)
         tb.SetPopupScrollSpeed(8)

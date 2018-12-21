@@ -162,14 +162,14 @@ class CTRL(CT.CustomTreeCtrl):
                 self.SetPyData(brancheLigne, {"categorie":"lignes", "code":IDligne})
                 brancheLigne.Check() 
                 self.listeBranches.append(brancheLigne) 
-                
+
                 # Arrêts
                 for IDarret in dictResultats[categorie]["arrets"] :
                     if dictArrets.has_key(IDarret) :
                         label = dictArrets[IDarret]["nom"]
                     else :
                         label = _(u"Arrêt inconnu")
-                    if IDarret == None or dictArrets[IDarret]["IDligne"] == IDligne :
+                    if IDarret == None or (dictArrets.has_key(IDarret) and dictArrets[IDarret]["IDligne"] == IDligne):
                         brancheArret = self.AppendItem(brancheLigne, label, ct_type=1)
                         self.SetPyData(brancheArret, {"categorie":"arrets", "code":IDarret})
                         brancheArret.Check() 
