@@ -135,7 +135,10 @@ def GetAdresseFamille(IDfamille=None, choixMultiple=True, muet=False, nomTitulai
     # Récupération du nom de la famille
     if nomTitulaires == None :
         dictTitulaires = UTILS_Titulaires.GetTitulaires([IDfamille,])
-        nomTitulaires = dictTitulaires[IDfamille]["titulairesSansCivilite"]        
+        if dictTitulaires.has_key(IDfamille):
+            nomTitulaires = dictTitulaires[IDfamille]["titulairesSansCivilite"]
+        else :
+            nomTitulaires = _(u"Famille inconnue")
     # Récupération des adresses mails de chaque membre de la famille
     DB = GestionDB.DB()
     req = """
