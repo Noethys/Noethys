@@ -237,6 +237,8 @@ class Dialog(wx.Dialog):
             self.ctrl_individu.Enable(False)
         else:
             self.ctrl_individu.Enable(True)
+            if self.ctrl_individu.GetID() == None :
+                self.ctrl_individu.Select(0)
 
         if dictModele != None :
 
