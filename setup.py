@@ -95,7 +95,7 @@ options = {
                 "email", "email.encoders", "email.generator", "email.iterators", "email.utils",
                 "email.mime.base", "email.mime.multipart", "email.mime.text",
                 "email.mime.image", "email.mime.audio", "email.base64mime",
-                "pyttsx.drivers.sapi5", "zope.interface",
+                "pyttsx.drivers.sapi5", "zope.interface", "mysql.connector.locales.eng.client_error"
                 ],
 
          'excludes' : [
