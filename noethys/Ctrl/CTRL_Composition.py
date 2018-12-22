@@ -117,7 +117,7 @@ class GetValeurs() :
         LEFT JOIN activites ON activites.IDactivite = inscriptions.IDactivite
         LEFT JOIN groupes ON groupes.IDgroupe = inscriptions.IDgroupe
         LEFT JOIN categories_tarifs ON categories_tarifs.IDcategorie_tarif = inscriptions.IDcategorie_tarif
-        WHERE IDfamille=%d;""" % self.IDfamille
+        WHERE inscriptions.statut='ok' AND IDfamille=%d;""" % self.IDfamille
         DB.ExecuterReq(req)
         listeInscriptions = DB.ResultatReq()
         for IDinscription, IDindividu, dateInscription, parti, nomActivite, activiteDebut, activiteFin, nomGroupe, nomCategorie in listeInscriptions :

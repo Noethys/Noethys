@@ -294,7 +294,7 @@ class ListView(FastObjectListView):
             req = """SELECT individus.IDindividu, nom
             FROM individus
             LEFT JOIN inscriptions ON inscriptions.IDindividu = individus.IDindividu
-            WHERE inscriptions.IDactivite IN %s
+            WHERE inscriptions.statut='ok' AND inscriptions.IDactivite IN %s
             ;""" % conditionActivites
             db.ExecuterReq(req)
             listeDonnees = db.ResultatReq()
@@ -311,7 +311,7 @@ class ListView(FastObjectListView):
             FROM individus
             LEFT JOIN inscriptions ON inscriptions.IDindividu = individus.IDindividu
             LEFT JOIN groupes_activites ON groupes_activites.IDactivite = inscriptions.IDactivite
-            WHERE groupes_activites.IDtype_groupe_activite IN %s
+            WHERE inscriptions.statut='ok' AND groupes_activites.IDtype_groupe_activite IN %s
             ;""" % conditionGroupesActivites
             db.ExecuterReq(req)
             listeDonnees = db.ResultatReq()

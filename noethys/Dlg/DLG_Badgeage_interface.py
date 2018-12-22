@@ -211,7 +211,7 @@ class InfosIndividus():
         DB = GestionDB.DB()
         req = """SELECT IDfamille, IDactivite, IDgroupe, IDcategorie_tarif, parti
         FROM inscriptions
-        WHERE IDindividu=%d AND (date_desinscription IS NULL OR date_desinscription>='%s')
+        WHERE inscriptions.statut='ok' AND IDindividu=%d AND (date_desinscription IS NULL OR date_desinscription>='%s')
         ;""" % (IDindividu, datetime.date.today())
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()

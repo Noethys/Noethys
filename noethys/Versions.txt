@@ -1,7 +1,9 @@
-Version 1.2.4.9 (21/12/2018) :
+Version 1.2.5.0 (22/12/2018) :
 
+- Ajout des inscriptions refusées et en attente
 - Ajout affichage des erreurs de conversion de fichiers
 - Ajout du filtre état à l'état nominatif
+- Désactivation rolmre et prélévements nationaux
 - Correction sur les grands numéros de factures
 - Correction de petits bugs
 

@@ -24,6 +24,7 @@ from Utils import UTILS_Dates
 from Utils import UTILS_Interface
 from Utils import UTILS_Gestion
 from Ctrl.CTRL_ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
+from Dlg.DLG_Inscription import STATUTS
 
 from Utils import UTILS_Utilisateurs
 
@@ -64,6 +65,8 @@ class Track(object):
         self.date_debut = UTILS_Dates.DateEngEnDateDD(donnees[11])
         self.date_fin = UTILS_Dates.DateEngEnDateDD(donnees[12])
         self.psu_activation = donnees[13]
+        self.statut = donnees[14]
+
 ##        self.logo_activite = donnees[13]
 ##        self.bmp = self.GetImage()
 
@@ -148,7 +151,8 @@ class ListView(FastObjectListView):
         inscriptions.IDactivite, inscriptions.IDgroupe, inscriptions.IDcategorie_tarif, date_inscription, 
         activites.nom, groupes.nom, categories_tarifs.nom,
         inscriptions.date_desinscription, activites.date_debut, activites.date_fin,
-        activites.psu_activation
+        activites.psu_activation,
+        inscriptions.statut
         FROM inscriptions 
         LEFT JOIN activites ON inscriptions.IDactivite=activites.IDactivite
         LEFT JOIN groupes ON inscriptions.IDgroupe=groupes.IDgroupe
@@ -183,6 +187,11 @@ class ListView(FastObjectListView):
         self.oddRowsBackColor = UTILS_Interface.GetValeur("couleur_tres_claire", wx.Colour(240, 251, 237))
         self.evenRowsBackColor = wx.Colour(255, 255, 255)
         self.useExpansionColumn = True
+
+        # Ajoute les images des statuts
+        for dictStatut in STATUTS :
+            self.AddNamedImages(dictStatut["code"], wx.Bitmap(Chemins.GetStaticPath("Images/16x16/%s" % dictStatut["image"]), wx.BITMAP_TYPE_PNG))
+
         
         # Création du imageList avec une taille personnalisée
 ##        dictImages = {}
@@ -205,6 +214,22 @@ class ListView(FastObjectListView):
                 text = ""
             return text
 
+        def FormateStatut(statut):
+            for dictStatut in STATUTS :
+                if dictStatut["code"] == statut :
+                    return dictStatut["label_court"]
+            return ""
+
+        def GetImageStatut(track):
+            if track.statut == "ok" :
+                return "ok"
+            elif track.statut == "attente" :
+                return "attente"
+            elif track.statut == "refus" :
+                return "refus"
+            else :
+                return None
+
         def rowFormatter(listItem, track):
             if track.valide == False :
                 listItem.SetTextColour((180, 180, 180))
@@ -212,8 +237,9 @@ class ListView(FastObjectListView):
         if self.nbreFamilles > 1 :
             liste_Colonnes = [
                 ColumnDefn(_(u"ID"), "left", 0, "IDinscription", typeDonnee="entier"),
-##                ColumnDefn(u"", 'left', TAILLE_IMAGE[0]+1, "", imageGetter=GetLogo),
+                # ColumnDefn(u"", 'left', TAILLE_IMAGE[0]+1, "", imageGetter=GetLogo),
                 ColumnDefn(_(u"Date"), 'center', 70, "date_inscription", typeDonnee="date", stringConverter=DateEngFr),
+                ColumnDefn(_(u"Statut"), 'left', 70, "statut", typeDonnee="texte", stringConverter=FormateStatut, imageGetter=GetImageStatut),
                 ColumnDefn(_(u"Nom de l'activité"), 'left', 110, "nom_activite", typeDonnee="texte", isSpaceFilling=True),
                 ColumnDefn(_(u"Groupe"), 'left', 80, "nom_groupe", typeDonnee="texte"),
                 ColumnDefn(_(u"Catégorie de tarifs"), 'left', 110, "nom_categorie", typeDonnee="texte"),
@@ -222,8 +248,9 @@ class ListView(FastObjectListView):
         else:
             liste_Colonnes = [
                 ColumnDefn(_(u"ID"), "left", 0, "IDinscription", typeDonnee="entier"),
-##                ColumnDefn(u"", 'left', TAILLE_IMAGE[0]+1, "", imageGetter=GetLogo),
+                # ColumnDefn(u"", 'left', TAILLE_IMAGE[0]+1, "", imageGetter=GetLogo),
                 ColumnDefn(_(u"Date"), 'center', 70, "date_inscription", typeDonnee="date", stringConverter=DateEngFr),
+                ColumnDefn(_(u"Statut"), 'left', 70, "statut", typeDonnee="texte", stringConverter=FormateStatut, imageGetter=GetImageStatut),
                 ColumnDefn(_(u"Nom de l'activité"), 'left', 160, "nom_activite", typeDonnee="texte", isSpaceFilling=True),
                 ColumnDefn(_(u"Groupe"), 'left', 100, "nom_groupe", typeDonnee="texte"),
                 ColumnDefn(_(u"Catégorie de tarifs"), 'left', 140, "nom_categorie", typeDonnee="texte"),

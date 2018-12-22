@@ -1109,7 +1109,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             req = """SELECT inscriptions.IDinscription, IDindividu, inscriptions.IDactivite, IDgroupe, inscriptions.IDcategorie_tarif, categories_tarifs.nom, date_desinscription
             FROM inscriptions 
             LEFT JOIN categories_tarifs ON categories_tarifs.IDcategorie_tarif = inscriptions.IDcategorie_tarif
-            WHERE IDfamille = %d ;""" % self.IDfamille
+            WHERE inscriptions.statut='ok' AND IDfamille = %d ;""" % self.IDfamille
             self.DB.ExecuterReq(req)
             listeInscriptions = self.DB.ResultatReq()
             for IDinscription, IDindividu, IDactivite, IDgroupe, IDcategorie_tarif, nomCategorie_tarif, date_desinscription in listeInscriptions :
@@ -1153,7 +1153,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             req = """SELECT inscriptions.IDinscription, IDindividu, inscriptions.IDactivite, IDgroupe, inscriptions.IDcategorie_tarif, categories_tarifs.nom, date_desinscription
             FROM inscriptions 
             LEFT JOIN categories_tarifs ON categories_tarifs.IDcategorie_tarif = inscriptions.IDcategorie_tarif
-            ;"""
+            WHERE inscriptions.statut='ok';"""
             self.DB.ExecuterReq(req)
             listeInscriptions = self.DB.ResultatReq()
             for IDinscription, IDindividu, IDactivite, IDgroupe, IDcategorie_tarif, nomCategorie_tarif, date_desinscription in listeInscriptions :
@@ -1455,12 +1455,12 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             req = """SELECT IDinscription, IDindividu, IDfamille, inscriptions.IDactivite, IDgroupe, inscriptions.IDcategorie_tarif, categories_tarifs.nom, date_inscription, IDcompte_payeur, date_desinscription
             FROM inscriptions
             LEFT JOIN categories_tarifs ON inscriptions.IDcategorie_tarif = categories_tarifs.IDcategorie_tarif
-            WHERE IDindividu IN %s AND IDfamille=%d;""" % (condition, self.IDfamille) 
+            WHERE inscriptions.statut='ok' AND IDindividu IN %s AND IDfamille=%d;""" % (condition, self.IDfamille)
         else:
             req = """SELECT IDinscription, IDindividu, IDfamille, inscriptions.IDactivite, IDgroupe, inscriptions.IDcategorie_tarif, categories_tarifs.nom, date_inscription, IDcompte_payeur, date_desinscription
             FROM inscriptions
             LEFT JOIN categories_tarifs ON inscriptions.IDcategorie_tarif = categories_tarifs.IDcategorie_tarif
-            WHERE IDindividu IN %s;""" % condition
+            WHERE inscriptions.statut='ok' AND IDindividu IN %s;""" % condition
         self.DB.ExecuterReq(req)
         listeDonnees = self.DB.ResultatReq()
         for IDinscription, IDindividu, IDfamille, IDactivite, IDgroupe, IDcategorie_tarif, nom_categorie_tarif, date_inscription, IDcompte_payeur, date_desinscription in listeDonnees :

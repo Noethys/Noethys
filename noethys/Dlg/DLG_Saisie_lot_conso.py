@@ -58,7 +58,7 @@ class CTRL_Individus(wx.CheckListBox):
         # Get Inscriptions
         req = """SELECT IDinscription, IDactivite, IDindividu
         FROM inscriptions
-        WHERE IDindividu IN %s;""" % condition
+        WHERE inscriptions.statut='ok' AND IDindividu IN %s;""" % condition
         DB.ExecuterReq(req)
         listeInscriptions = DB.ResultatReq()
         dictInscriptions = {}

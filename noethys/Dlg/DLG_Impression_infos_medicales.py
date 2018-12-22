@@ -584,7 +584,7 @@ class Dialog(wx.Dialog):
             IDcivilite, nom, prenom, date_naiss
             FROM individus 
             LEFT JOIN inscriptions ON inscriptions.IDindividu = individus.IDindividu
-            WHERE IDactivite IN %s
+            WHERE inscriptions.statut='ok' AND IDactivite IN %s
             GROUP BY individus.IDindividu
             ORDER BY nom, prenom
             ;""" % conditionActivites

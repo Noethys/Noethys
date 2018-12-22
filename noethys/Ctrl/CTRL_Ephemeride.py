@@ -237,7 +237,7 @@ class CTRL(wx.Panel):
             req = """SELECT individus.IDindividu, nom, prenom, date_naiss
             FROM individus 
             LEFT JOIN inscriptions ON inscriptions.IDindividu = individus.IDindividu
-            WHERE  date_naiss LIKE '%%%s' AND IDinscription IS NOT NULL
+            WHERE inscriptions.statut='ok' AND date_naiss LIKE '%%%s' AND IDinscription IS NOT NULL
             GROUP BY individus.IDindividu
             ORDER BY date_naiss DESC
             ;""" % conditionJour

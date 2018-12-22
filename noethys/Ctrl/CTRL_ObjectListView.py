@@ -533,7 +533,7 @@ class ObjectListView(OLV.ObjectListView):
         req = """SELECT %s
         FROM inscriptions 
         %s
-        WHERE (inscriptions.date_desinscription IS NULL OR inscriptions.date_desinscription>='%s')  %s %s %s %s
+        WHERE inscriptions.statut='ok' AND (inscriptions.date_desinscription IS NULL OR inscriptions.date_desinscription>='%s')  %s %s %s %s
         GROUP BY %s
         ;""" % (key, jointurePresents, datetime.date.today(), conditionActivites, conditionGroupes, conditionPresents, conditionDateInscription, key)
         DB.ExecuterReq(req)

@@ -122,7 +122,7 @@ class ListView(FastObjectListView):
             req = """SELECT IDfamille, inscriptions.IDinscription
             FROM consommations
             LEFT JOIN inscriptions ON inscriptions.IDinscription = consommations.IDinscription
-            WHERE date>='%s' AND date<='%s' AND consommations.etat IN ('reservation', 'present') %s
+            WHERE inscriptions.statut='ok' AND date>='%s' AND date<='%s' AND consommations.etat IN ('reservation', 'present') %s
             GROUP BY IDfamille
             ;"""  % (str(self.presents[0]), str(self.presents[1]), conditionActivites.replace("inscriptions", "consommations"))
             DB.ExecuterReq(req)
@@ -147,7 +147,7 @@ class ListView(FastObjectListView):
         AND inscriptions.IDfamille = familles.IDfamille
         LEFT JOIN caisses ON caisses.IDcaisse = familles.IDcaisse
         LEFT JOIN regimes ON regimes.IDregime = caisses.IDregime
-        WHERE (inscriptions.date_desinscription IS NULL OR inscriptions.date_desinscription>='%s') %s
+        WHERE inscriptions.statut='ok' AND (inscriptions.date_desinscription IS NULL OR inscriptions.date_desinscription>='%s') %s
         GROUP BY familles.IDfamille
         ;""" % (datetime.date.today(), conditionActivites)
 

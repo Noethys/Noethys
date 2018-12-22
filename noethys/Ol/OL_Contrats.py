@@ -95,7 +95,7 @@ class ListView(FastObjectListView):
         for filtre in self.listeFiltres :
             listeConditions.append(filtre)
         if len(listeConditions) > 0 :
-            conditions = "WHERE " + " AND ".join(listeConditions)
+            conditions = "AND " + " AND ".join(listeConditions)
         else :
             conditions = ""
             
@@ -111,7 +111,7 @@ class ListView(FastObjectListView):
         LEFT JOIN activites ON activites.IDactivite=inscriptions.IDactivite
         LEFT JOIN prestations ON prestations.IDcontrat = contrats.IDcontrat
         LEFT JOIN individus ON individus.IDindividu = contrats.IDindividu
-        %s
+        WHERE inscriptions.statut='ok' %s
         GROUP BY contrats.IDcontrat
         ORDER BY contrats.date_debut; """ % conditions
         DB.ExecuterReq(req)

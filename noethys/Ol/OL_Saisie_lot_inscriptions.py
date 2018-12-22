@@ -71,7 +71,8 @@ class ListView(FastObjectListView):
         
         # Récupération des inscriptions existantes
         req = """SELECT IDinscription, IDindividu, IDfamille, IDactivite, IDgroupe, IDcategorie_tarif, IDcompte_payeur, date_inscription, parti
-        FROM inscriptions;"""
+        FROM inscriptions
+        WHERE inscriptions.statut='ok';"""
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         self.dictInscriptions = {}

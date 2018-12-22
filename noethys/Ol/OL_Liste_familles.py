@@ -75,7 +75,7 @@ def GetListe(listeActivites=None, presents=None, archives=False):
     AND inscriptions.IDfamille = familles.IDfamille
     LEFT JOIN caisses ON caisses.IDcaisse = familles.IDcaisse
     LEFT JOIN regimes ON regimes.IDregime = caisses.IDregime
-    WHERE (inscriptions.date_desinscription IS NULL OR inscriptions.date_desinscription>='%s') %s %s
+    WHERE inscriptions.statut='ok' AND (inscriptions.date_desinscription IS NULL OR inscriptions.date_desinscription>='%s') %s %s
     GROUP BY familles.IDfamille
     ;""" % (datetime.date.today(), conditionArchives, conditionActivites)
 

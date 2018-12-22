@@ -67,6 +67,8 @@ class CTRL(HTL.HyperTreeList):
             (_(u"Inscrits"), 80, wx.ALIGN_CENTER),
             (_(u"Places max"), 90, wx.ALIGN_CENTER),
             (_(u"Places libres"), 90, wx.ALIGN_CENTER),
+            (_(u"Places attente"), 90, wx.ALIGN_CENTER),
+            (_(u"Places refusées"), 90, wx.ALIGN_CENTER),
         ]
         index = 0
         for label, largeur, alignement in liste_colonnes :
@@ -172,19 +174,19 @@ class CTRL(HTL.HyperTreeList):
                 condition_partis = "AND (inscriptions.date_desinscription IS NULL OR inscriptions.date_desinscription>='%s')" % datetime.date.today()
 
         # Récupère les inscrits
-        req = """SELECT inscriptions.IDgroupe, COUNT(inscriptions.IDinscription) as nbre_inscriptions
+        req = """SELECT inscriptions.IDgroupe, inscriptions.statut, COUNT(inscriptions.IDinscription) as nbre_inscriptions
         FROM inscriptions
         LEFT JOIN activites ON activites.IDactivite = inscriptions.IDactivite
         %s %s
-        GROUP BY inscriptions.IDgroupe
+        GROUP BY inscriptions.IDgroupe, inscriptions.statut
         ;""" % (condition, condition_partis)
         DB.ExecuterReq(req)
         listeInscrits = DB.ResultatReq()
         dictInscrits = {}
-        for IDgroupe, nbre_inscriptions in listeInscrits :
+        for IDgroupe, statut, nbre_inscriptions in listeInscrits :
             if dictInscrits.has_key(IDgroupe) == False :
-                dictInscrits[IDgroupe] = 0
-            dictInscrits[IDgroupe] += nbre_inscriptions
+                dictInscrits[IDgroupe] = {"ok" : 0, "attente" : 0, "refus" : 0}
+            dictInscrits[IDgroupe][statut] += nbre_inscriptions
 
         # Récupère la liste des groupes
         req = """SELECT groupes.IDgroupe, groupes.IDactivite, groupes.nom, groupes.abrege, groupes.nbre_inscrits_max
@@ -198,13 +200,17 @@ class CTRL(HTL.HyperTreeList):
 
         dictGroupes = {}
         for IDgroupe, IDactivite, nom, abrege, nbre_inscrits_max in listeGroupes :
-            if dictInscrits.has_key(IDgroupe) :
-                nbre_inscrits = dictInscrits[IDgroupe]
-            else :
-                nbre_inscrits = 0
-
             if nom == None : nom = _(u"Sans nom !")
             if abrege == None : abrege = ""
+
+            if dictInscrits.has_key(IDgroupe) :
+                nbre_inscrits = dictInscrits[IDgroupe]["ok"]
+                nbre_attente = dictInscrits[IDgroupe]["attente"]
+                nbre_refus = dictInscrits[IDgroupe]["refus"]
+            else :
+                nbre_inscrits = 0
+                nbre_attente = 0
+                nbre_refus = 0
 
             if nbre_inscrits_max != None :
                 nbre_places_libres = nbre_inscrits_max - nbre_inscrits
@@ -213,7 +219,7 @@ class CTRL(HTL.HyperTreeList):
 
             if dictGroupes.has_key(IDactivite) == False :
                 dictGroupes[IDactivite] = []
-            dictGroupes[IDactivite].append({"IDgroupe" : IDgroupe, "nom" : nom, "abrege" : abrege, "nbre_inscrits_max" : nbre_inscrits_max, "nbre_inscrits" : nbre_inscrits, "nbre_places_libres" : nbre_places_libres, "IDactivite" : IDactivite})
+            dictGroupes[IDactivite].append({"IDgroupe" : IDgroupe, "nom" : nom, "abrege" : abrege, "nbre_inscrits_max" : nbre_inscrits_max, "nbre_inscrits" : nbre_inscrits, "nbre_places_libres" : nbre_places_libres, "nbre_attente" : nbre_attente, "nbre_refus" : nbre_refus, "IDactivite" : IDactivite})
 
         # Récupération des activités
         activite_ouverte = UTILS_Config.GetParametre("nbre_inscrits_parametre_ouvert", 1)
@@ -242,9 +248,13 @@ class CTRL(HTL.HyperTreeList):
             if dictGroupes.has_key(IDactivite) :
                 liste_groupes = dictGroupes[IDactivite]
             nbre_inscrits = 0
+            nbre_attente = 0
+            nbre_refus = 0
             liste_infos = [nom,]
             for dictGroupe in liste_groupes :
                 nbre_inscrits += dictGroupe["nbre_inscrits"]
+                nbre_attente += dictGroupe["nbre_attente"]
+                nbre_refus += dictGroupe["nbre_refus"]
                 liste_infos.append(dictGroupe["nom"])
 
             if nbre_inscrits_max != None :
@@ -252,7 +262,7 @@ class CTRL(HTL.HyperTreeList):
             else :
                 nbre_places_libres = None
 
-            listeActivitesTemp.append({"IDactivite" : IDactivite, "nom" : nom, "abrege" : abrege, "nbre_inscrits_max" : nbre_inscrits_max, "nbre_inscrits" : nbre_inscrits, "nbre_places_libres" : nbre_places_libres, "liste_groupes" : liste_groupes, "infos" : " ".join(liste_infos)})
+            listeActivitesTemp.append({"IDactivite" : IDactivite, "nom" : nom, "abrege" : abrege, "nbre_inscrits_max" : nbre_inscrits_max, "nbre_inscrits" : nbre_inscrits, "nbre_places_libres" : nbre_places_libres, "nbre_attente" : nbre_attente, "nbre_refus" : nbre_refus, "liste_groupes" : liste_groupes, "infos" : " ".join(liste_infos)})
             listeIDactivite.append(IDactivite)
 
         # Pour éviter l'actualisation de l'affichage si aucune modification des données
@@ -353,6 +363,20 @@ class CTRL(HTL.HyperTreeList):
                             texte_places_libres = str(nbre_places_libres)
                         self.SetItemText(niveau_activite, texte_places_libres, 4)
 
+                        nbre_attente = dictActivite["nbre_attente"]
+                        if nbre_attente == None :
+                            texte_attente = ""
+                        else :
+                            texte_attente = str(nbre_attente)
+                        self.SetItemText(niveau_activite, texte_attente, 5)
+
+                        nbre_refus = dictActivite["nbre_refus"]
+                        if nbre_refus == None :
+                            texte_refus = ""
+                        else :
+                            texte_refus = str(nbre_refus)
+                        self.SetItemText(niveau_activite, texte_refus, 6)
+
                         # Couleur de la ligne
                         couleur_fond = self.GetCouleurLigne(nbre_places_libres)
                         if couleur_fond != None :
@@ -392,6 +416,20 @@ class CTRL(HTL.HyperTreeList):
                             else :
                                 texte_places_libres = str(nbre_places_libres)
                             self.SetItemText(niveau_groupe, texte_places_libres, 4)
+
+                            nbre_attente = dictGroupe["nbre_attente"]
+                            if nbre_attente in (0, None):
+                                texte_attente = ""
+                            else:
+                                texte_attente = str(nbre_attente)
+                            self.SetItemText(niveau_groupe, texte_attente, 5)
+
+                            nbre_refus = dictGroupe["nbre_refus"]
+                            if nbre_refus in (0, None):
+                                texte_refus = ""
+                            else:
+                                texte_refus = str(nbre_refus)
+                            self.SetItemText(niveau_groupe, texte_refus, 6)
 
                             # Couleur de la ligne
                             couleur_fond = self.GetCouleurLigne(nbre_places_libres)
@@ -713,6 +751,10 @@ class Panel(wx.Panel):
         self.ctrl_inscriptions = CTRL(self)
         
         # Commandes
+        self.bouton_attente = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Attente.png"), wx.BITMAP_TYPE_PNG))
+        self.bouton_attente.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher la liste des inscriptions en attente")))
+        self.bouton_refus = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Interdit.png"), wx.BITMAP_TYPE_PNG))
+        self.bouton_refus.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher la liste des inscriptions refusées")))
         self.bouton_imprimer = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Imprimante.png"), wx.BITMAP_TYPE_PNG))
         self.bouton_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer la liste")))
         self.bouton_export = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Excel.png"), wx.BITMAP_TYPE_PNG))
@@ -730,6 +772,8 @@ class Panel(wx.Panel):
         self.__do_layout()
         
         # Binds
+        self.Bind(wx.EVT_BUTTON, self.OnBoutonAttente, self.bouton_attente)
+        self.Bind(wx.EVT_BUTTON, self.OnBoutonRefus, self.bouton_refus)
         self.Bind(wx.EVT_BUTTON, self.ctrl_inscriptions.Imprimer, self.bouton_imprimer)
         self.Bind(wx.EVT_BUTTON, self.ctrl_inscriptions.ExportExcel, self.bouton_export)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonParametres, self.bouton_parametres)
@@ -740,7 +784,10 @@ class Panel(wx.Panel):
         sizer_base = wx.BoxSizer(wx.VERTICAL)
         grid_sizer = wx.FlexGridSizer(rows=2, cols=2, vgap=5, hgap=5)
         grid_sizer.Add(self.ctrl_inscriptions, 1, wx.EXPAND|wx.TOP|wx.LEFT, 10)
-        grid_sizer_boutons = wx.FlexGridSizer(rows=7, cols=1, vgap=5, hgap=5)
+        grid_sizer_boutons = wx.FlexGridSizer(rows=10, cols=1, vgap=5, hgap=5)
+        grid_sizer_boutons.Add(self.bouton_attente, 0, 0, 0)
+        grid_sizer_boutons.Add(self.bouton_refus, 0, 0, 0)
+        grid_sizer_boutons.Add( (5, 5), 0, 0, 0)
         grid_sizer_boutons.Add(self.bouton_imprimer, 0, 0, 0)
         grid_sizer_boutons.Add(self.bouton_export, 0, 0, 0)
         grid_sizer_boutons.Add( (5, 5), 0, 0, 0)
@@ -757,6 +804,20 @@ class Panel(wx.Panel):
     
     def MAJ(self):
         self.ctrl_inscriptions.MAJ()
+
+    def OnBoutonAttente(self, event):
+        self.ConsulterInscriptions("attente")
+
+    def OnBoutonRefus(self, event):
+        self.ConsulterInscriptions("refus")
+
+    def ConsulterInscriptions(self, mode="attente"):
+        from Dlg import DLG_Inscriptions_attente
+        liste_activites = [dictTemp["IDactivite"] for dictTemp in self.ctrl_inscriptions.listeActivites]
+        dlg = DLG_Inscriptions_attente.Dialog(self, liste_activites=liste_activites, mode=mode)
+        dlg.ShowModal()
+        dlg.Destroy()
+        self.ctrl_inscriptions.MAJ(forcerActualisation=True)
 
     def OnBoutonParametres(self, event):
         import DLG_Parametres_nbre_inscrits

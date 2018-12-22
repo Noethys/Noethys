@@ -131,7 +131,7 @@ class CTRL(HTL.HyperTreeList):
         LEFT JOIN inscriptions ON inscriptions.IDactivite = pieces_activites.IDactivite
         LEFT JOIN individus ON individus.IDindividu = inscriptions.IDindividu
         LEFT JOIN activites ON activites.IDactivite = inscriptions.IDactivite
-        WHERE activites.date_fin>='%s' %s
+        WHERE inscriptions.statut='ok' AND activites.date_fin>='%s' %s
         GROUP BY inscriptions.IDfamille, pieces_activites.IDtype_piece, individus.IDindividu;
         """ % (datetime.date.today(), condition)
         DB.ExecuterReq(req)

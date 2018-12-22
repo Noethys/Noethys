@@ -121,7 +121,7 @@ class ListView(FastObjectListView):
         LEFT JOIN individus ON individus.IDindividu = inscriptions.IDindividu
         LEFT JOIN categories_tarifs ON categories_tarifs.IDcategorie_tarif = inscriptions.IDcategorie_tarif
         LEFT JOIN groupes ON groupes.IDgroupe = inscriptions.IDgroupe
-        WHERE inscriptions.IDactivite=%d
+        WHERE inscriptions.statut='ok' AND inscriptions.IDactivite=%d
         ;""" % self.IDactivite
         DB.ExecuterReq(req)
         listeInscrits = DB.ResultatReq() 

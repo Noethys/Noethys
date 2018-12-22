@@ -941,7 +941,8 @@ class Synchro():
         self.Pulse_gauge()
 
         req = """SELECT IDinscription, IDindividu, IDfamille, IDactivite, IDgroupe, date_desinscription
-        FROM inscriptions;"""
+        FROM inscriptions
+        WHERE inscriptions.statut='ok';"""
         DB.ExecuterReq(req)
         listeInscriptions = DB.ResultatReq()
         for IDinscription, IDindividu, IDfamille, IDactivite, IDgroupe, date_desinscription in listeInscriptions :

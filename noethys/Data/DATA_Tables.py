@@ -504,6 +504,7 @@ DB_DATA = {
                                     ("date_inscription", "DATE", u"Date de l'inscription"),
                                     ("parti", "INTEGER", u"(0/1) est parti"),
                                     ("date_desinscription", "DATE", u"Date de désinscription"),
+                                    ("statut", "VARCHAR(100)", u"Statut de l'inscription"),
                                     ], # Inscriptions des individus à des activités
 
     "consommations":[    ("IDconso", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID consommation"),

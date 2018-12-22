@@ -121,7 +121,7 @@ class CTRL_Individus(wx.CheckListBox):
         LEFT JOIN inscriptions ON inscriptions.IDindividu = individus.IDindividu
         LEFT JOIN consommations ON consommations.IDindividu = individus.IDindividu
         WHERE inscriptions.IDfamille=%d
-        AND consommations.date>='%s' AND consommations.date<='%s'
+        AND inscriptions.statut='ok' AND consommations.date>='%s' AND consommations.date<='%s'
         GROUP BY individus.IDindividu
         ;""" % (self.parent.IDfamille, self.date_debut, self.date_fin)
         DB.ExecuterReq(req)
