@@ -474,7 +474,326 @@ class CTRL_Profil(wx.Choice):
         index = self.GetSelection()
         if index == -1 : return None
         return self.dictDonnees[index]["ID"]
-            
+
+
+class CTRL_Etats(wx.CheckListBox):
+    def __init__(self, parent):
+        wx.CheckListBox.__init__(self, parent, -1, size=(-1, 60))
+        self.parent = parent
+        self.data = []
+        self.MAJ()
+
+    def MAJ(self):
+        listeDonnees = [
+            ("reservation", _(u"Pointage en attente")),
+            ("present", _(u"Présent")),
+            ("absentj", _(u"Absence justifiée")),
+            ("absenti", _(u"Absence injustifiée")),
+        ]
+        listeValeurs = []
+        for code, nom in listeDonnees:
+            checked = True
+            listeValeurs.append((code, nom, checked))
+        self.SetData(listeValeurs)
+
+    def SetData(self, listeValeurs=[]):
+        """ items = (ID, label, checked) """
+        self.data = []
+        index = 0
+        self.Clear()
+        for code, label, checked in listeValeurs:
+            self.data.append((code, label))
+            self.Append(label)
+            if checked == True:
+                self.Check(index)
+            index += 1
+
+    def GetIDcoches(self):
+        listeIDcoches = []
+        NbreItems = len(self.data)
+        for index in range(0, NbreItems):
+            if self.IsChecked(index):
+                listeIDcoches.append(self.data[index][0])
+        return listeIDcoches
+
+    def SetIDcoches(self, listeIDcoches=[]):
+        index = 0
+        for index in range(0, len(self.data)):
+            ID = self.data[index][0]
+            if ID in listeIDcoches:
+                self.Check(index)
+            index += 1
+
+
+
+# -------------------------------------------------------------------------------------------------------------------------
+
+
+class CTRL_Champs(wx.Panel):
+    def __init__(self, parent):
+        wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
+        self.parent = parent
+
+        self.label_profil = wx.StaticText(self, -1, _(u"Profil :"))
+        self.ctrl_profil = CTRL_Profil(self)
+        self.bouton_profils = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Mecanisme.png"), wx.BITMAP_TYPE_ANY))
+        self.label_champs = wx.StaticText(self, -1, _(u"Champs :"))
+        self.ctrl_champs = OL_Etat_nomin_selections.ListView(self, id=-1, style=wx.LC_REPORT | wx.SUNKEN_BORDER | wx.LC_SINGLE_SEL | wx.LC_HRULES | wx.LC_VRULES)
+
+        self.bouton_modifier = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Modifier.png"), wx.BITMAP_TYPE_ANY))
+        self.bouton_monter = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Fleche_haut.png"), wx.BITMAP_TYPE_ANY))
+        self.bouton_descendre = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Fleche_bas.png"), wx.BITMAP_TYPE_ANY))
+
+        # Bind
+        self.Bind(wx.EVT_CHOICE, self.OnChoixProfil, self.ctrl_profil)
+        self.Bind(wx.EVT_BUTTON, self.OnBoutonProfils, self.bouton_profils)
+        self.Bind(wx.EVT_BUTTON, self.OnBoutonModifier, self.bouton_modifier)
+        self.Bind(wx.EVT_BUTTON, self.OnBoutonMonter, self.bouton_monter)
+        self.Bind(wx.EVT_BUTTON, self.OnBoutonDescendre, self.bouton_descendre)
+
+        # Properties
+        self.ctrl_profil.SetToolTip(wx.ToolTip(_(u"Selectionnez un profil de liste")))
+        self.bouton_profils.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à la gestion des profils")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la liste des champs")))
+        self.bouton_monter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour monter le champ sélectionné")))
+        self.bouton_descendre.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour descendre le champ sélectionné")))
+
+        # Layout
+        sizer_base = wx.BoxSizer(wx.VERTICAL)
+
+        # Champs
+        grid_sizer_champs = wx.FlexGridSizer(rows=2, cols=3, vgap=10, hgap=5)
+
+        grid_sizer_champs.Add(self.label_profil, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_champs.Add(self.ctrl_profil, 0, wx.EXPAND, 0)
+        grid_sizer_champs.Add(self.bouton_profils, 0, 0, 0)
+        grid_sizer_champs.Add(self.label_champs, 0, wx.ALIGN_RIGHT, 0)
+        grid_sizer_champs.Add(self.ctrl_champs, 1, wx.EXPAND, 0)
+
+        grid_sizer_commandes = wx.FlexGridSizer(rows=4, cols=1, vgap=5, hgap=5)
+        grid_sizer_commandes.Add(self.bouton_modifier, 0, 0, 0)
+        grid_sizer_commandes.Add((10, 10), 0, wx.EXPAND, 0)
+        grid_sizer_commandes.Add(self.bouton_monter, 0, 0, 0)
+        grid_sizer_commandes.Add(self.bouton_descendre, 0, 0, 0)
+
+        grid_sizer_champs.Add(grid_sizer_commandes, 1, wx.EXPAND, 0)
+        grid_sizer_champs.AddGrowableRow(1)
+        grid_sizer_champs.AddGrowableCol(1)
+        sizer_base.Add(grid_sizer_champs, 1, wx.ALL | wx.EXPAND, 0)
+
+        self.SetSizer(sizer_base)
+        self.Layout()
+
+    def OnChoixProfil(self, event):
+        if self.ctrl_profil.GetID() == None :
+            actif = False
+        else:
+            actif = True
+        self.ctrl_champs.Enable(actif)
+        self.bouton_modifier.Enable(actif)
+        self.bouton_monter.Enable(actif)
+        self.bouton_descendre.Enable(actif)
+        self.MAJlisteChamps()
+
+    def OnBoutonProfils(self, event):
+        import DLG_Etat_nomin_profils
+        dlg = DLG_Etat_nomin_profils.Dialog(self)
+        dlg.ShowModal()
+        dlg.Destroy()
+        self.ctrl_profil.MAJ()
+        self.OnChoixProfil(None)
+
+    def OnBoutonModifier(self, event):
+        self.ctrl_champs.Modifier(None)
+
+    def OnBoutonMonter(self, event):
+        self.ctrl_champs.Monter(None)
+
+    def OnBoutonDescendre(self, event):
+        self.ctrl_champs.Descendre(None)
+
+    def MAJlisteChamps(self):
+        IDprofil = self.ctrl_profil.GetID()
+        if IDprofil == None : IDprofil = 0
+        date_debut = self.parent.ctrl_periode.GetDateDebut()
+        date_fin = self.parent.ctrl_periode.GetDateFin()
+        listeActivites = self.parent.ctrl_activites.GetActivites()
+        self.ctrl_champs.SetParametres(IDprofil=IDprofil, dateMin=date_debut, dateMax=date_fin, listeActivites=listeActivites)
+        self.ctrl_champs.MAJ()
+
+
+class Page_Groupes(wx.Panel):
+    def __init__(self, parent):
+        wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
+        self.parent = parent
+
+        self.ctrl_groupes = CTRL_Groupes(self)
+
+        # Layout
+        sizer_base = wx.BoxSizer(wx.VERTICAL)
+        sizer_base.Add(self.ctrl_groupes, 1, wx.ALL | wx.EXPAND, 10)
+        self.SetSizer(sizer_base)
+        self.Layout()
+
+    def GetDonnees(self):
+        return self.ctrl_groupes.GetIDcoches()
+
+
+class Page_Categories(wx.Panel):
+    def __init__(self, parent):
+        wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
+        self.parent = parent
+
+        self.ctrl_categories = CTRL_Categories(self)
+
+        # Layout
+        sizer_base = wx.BoxSizer(wx.VERTICAL)
+        sizer_base.Add(self.ctrl_categories, 1, wx.ALL | wx.EXPAND, 10)
+        self.SetSizer(sizer_base)
+        self.Layout()
+
+    def GetDonnees(self):
+        return self.ctrl_categories.GetIDcoches()
+
+
+class Page_Age(wx.Panel):
+    def __init__(self, parent):
+        wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
+        self.parent = parent
+
+        self.ctrl_age = CTRL_Age(self)
+
+        # Layout
+        sizer_base = wx.BoxSizer(wx.VERTICAL)
+        sizer_base.Add(self.ctrl_age, 1, wx.ALL | wx.EXPAND, 10)
+        self.SetSizer(sizer_base)
+        self.Layout()
+
+    def GetDonnees(self):
+        if self.ctrl_age.Validation() == False : return False
+        age = self.ctrl_age.GetCondition()
+        return age
+
+
+class Page_Caisse(wx.Panel):
+    def __init__(self, parent):
+        wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
+        self.parent = parent
+
+        self.ctrl_caisses = CTRL_Caisses(self)
+
+        # Layout
+        sizer_base = wx.BoxSizer(wx.VERTICAL)
+        sizer_base.Add(self.ctrl_caisses, 1, wx.ALL | wx.EXPAND, 10)
+        self.SetSizer(sizer_base)
+        self.Layout()
+
+    def GetDonnees(self):
+        return self.ctrl_caisses.GetIDcoches()
+
+
+class Page_Quotient(wx.Panel):
+    def __init__(self, parent):
+        wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
+        self.parent = parent
+
+        self.ctrl_qf = CTRL_QF(self)
+
+        # Layout
+        sizer_base = wx.BoxSizer(wx.VERTICAL)
+        sizer_base.Add(self.ctrl_qf, 1, wx.ALL | wx.EXPAND, 10)
+        self.SetSizer(sizer_base)
+        self.Layout()
+
+    def GetDonnees(self):
+        return self.ctrl_qf.GetCondition()
+
+
+class Page_Etat(wx.Panel):
+    def __init__(self, parent):
+        wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
+        self.parent = parent
+
+        self.ctrl_etat = CTRL_Etats(self)
+
+        # Layout
+        sizer_base = wx.BoxSizer(wx.VERTICAL)
+        sizer_base.Add(self.ctrl_etat, 1, wx.ALL | wx.EXPAND, 10)
+        self.SetSizer(sizer_base)
+        self.Layout()
+
+    def GetDonnees(self):
+        return self.ctrl_etat.GetIDcoches()
+
+
+
+class CTRL_Filtres(wx.Notebook):
+    def __init__(self, parent):
+        wx.Notebook.__init__(self, parent, id=-1, style=wx.BK_DEFAULT | wx.NB_MULTILINE)
+        self.dictPages = {}
+
+        self.listePages = [
+            {"code": "groupes", "ctrl": Page_Groupes(self), "label": _(u"Groupe")},
+            {"code": "categories", "ctrl": Page_Categories(self), "label": _(u"Catégorie de tarif")},
+            {"code": "age", "ctrl": Page_Age(self), "label": _(u"Age")},
+            {"code": "caisse", "ctrl": Page_Caisse(self), "label": _(u"Caisse")},
+            {"code": "quotient", "ctrl": Page_Quotient(self), "label": _(u"Quotient familial")},
+            {"code": "etats", "ctrl": Page_Etat(self), "label": _(u"Etat")},
+        ]
+
+        # Création des pages
+        self.dictPages = {}
+        index = 0
+        for dictPage in self.listePages:
+            self.AddPage(dictPage["ctrl"], dictPage["label"])
+            self.dictPages[dictPage["code"]] = dictPage["ctrl"]
+            index += 1
+
+        self.Bind(wx.EVT_NOTEBOOK_PAGE_CHANGED, self.OnPageChanged)
+
+    def GetPageAvecCode(self, codePage=""):
+        return self.dictPages[codePage]
+
+    def AffichePage(self, codePage=""):
+        index = 0
+        for dictPage in self.listePages:
+            if dictPage["code"] == codePage:
+                self.SetSelection(index)
+            index += 1
+
+    def OnPageChanged(self, event):
+        """ Quand une page du notebook est sélectionnée """
+        if event.GetOldSelection() == -1: return
+        indexPage = event.GetSelection()
+        page = self.GetPage(indexPage)
+        event.Skip()
+
+    def Validation(self):
+        for dictPage in self.listePages :
+            if dictPage["ctrl"].Validation() == False :
+                return False
+        return True
+
+    def GetDonnees(self):
+        dictDonnees = {}
+        for dictPage in self.listePages :
+            for key, valeur in dictPage["ctrl"].GetDonnees().iteritems() :
+                dictDonnees[key] = valeur
+        return dictDonnees
+
+    def SetDonnees(self, dictDonnees={}):
+        for dictPage in self.listePages :
+            dictPage["ctrl"].SetDonnees(dictDonnees)
+
+    def SetTexteOnglet(self, code, texte=""):
+        index = 0
+        for dictPage in self.listePages :
+            if dictPage["code"] == code :
+                self.SetPageText(index, texte)
+            index += 1
+
+
+
 # -------------------------------------------------------------------------------------------------------------------------------------------
 
 class Dialog(wx.Dialog):
@@ -483,7 +802,7 @@ class Dialog(wx.Dialog):
         self.parent = parent
         
         # Bandeau
-        intro = _(u"Commencez par créer un profil de liste afin de constituer une liste de champs persistante. Vous pouvez sélectionner les champs prédéfinis ou paramétrer des champs personnalisés en fonction de vos besoins. Sélectionnez enfin des paramètres conditionnels avant de lancer la création de la liste de données.")
+        intro = _(u"Commencez par créer un profil de liste afin de constituer une liste de champs persistante. Vous pouvez sélectionner les champs prédéfinis ou paramétrer des champs personnalisés en fonction de vos besoins. Sélectionnez enfin des filtres conditionnels avant de lancer la création de la liste de données en cliquant sur Aperçu.")
         titre = _(u"Etat nominatif des consommations")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Tableaux.png")
@@ -497,39 +816,16 @@ class Dialog(wx.Dialog):
         self.ctrl_activites = CTRL_Selection_activites.CTRL(self)
         self.ctrl_activites.SetMinSize((240, -1))
 
-        # Groupes
-        self.box_groupes_staticbox = wx.StaticBox(self, -1, _(u"Groupes"))
-        self.ctrl_groupes = CTRL_Groupes(self)
-
-        # Age
-        self.box_age_staticbox = wx.StaticBox(self, -1, _(u"Age"))
-        self.ctrl_age = CTRL_Age(self)
-
-        # Caisse
-        self.box_caisses_staticbox = wx.StaticBox(self, -1, _(u"Caisses"))
-        self.ctrl_caisses = CTRL_Caisses(self)
-
-        # QF
-        self.box_qf_staticbox = wx.StaticBox(self, -1, _(u"Quotient familial"))
-        self.ctrl_qf = CTRL_QF(self)
-        
-        # Catégories de tarifs
-        self.box_categories_staticbox = wx.StaticBox(self, -1, _(u"Catégories de tarifs"))
-        self.ctrl_categories = CTRL_Categories(self)
-        
         # Champs
-        self.box_champs_staticbox = wx.StaticBox(self, -1, _(u"Champs"))
-        
-        self.label_profil = wx.StaticText(self, -1, _(u"Profil :"))
-        self.ctrl_profil = CTRL_Profil(self)
-        self.bouton_profils = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Mecanisme.png"), wx.BITMAP_TYPE_ANY))
-        self.label_champs = wx.StaticText(self, -1, _(u"Champs :"))
-        self.ctrl_champs = OL_Etat_nomin_selections.ListView(self, id=-1, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
-        
-        self.bouton_modifier = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Modifier.png"), wx.BITMAP_TYPE_ANY))
-        self.bouton_monter = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Fleche_haut.png"), wx.BITMAP_TYPE_ANY))
-        self.bouton_descendre = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Fleche_bas.png"), wx.BITMAP_TYPE_ANY))
-        
+        self.box_champs = wx.StaticBox(self, -1, _(u"Champs"))
+        self.ctrl_champs = CTRL_Champs(self)
+        self.ctrl_champs.SetMinSize((-1, 220))
+
+        # Filtres
+        self.box_filtres = wx.StaticBox(self, -1, _(u"Filtres"))
+        self.ctrl_filtres = CTRL_Filtres(self)
+        self.ctrl_filtres.SetMinSize((-1, 160))
+
         # Boutons
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
         self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Aperçu"), cheminImage="Images/32x32/Apercu.png")
@@ -538,30 +834,19 @@ class Dialog(wx.Dialog):
         self.__set_properties()
         self.__do_layout()
 
-        self.Bind(wx.EVT_CHOICE, self.OnChoixProfil, self.ctrl_profil)
-        self.Bind(wx.EVT_BUTTON, self.OnBoutonProfils, self.bouton_profils)
-        self.Bind(wx.EVT_BUTTON, self.OnBoutonModifier, self.bouton_modifier)
-        self.Bind(wx.EVT_BUTTON, self.OnBoutonMonter, self.bouton_monter)
-        self.Bind(wx.EVT_BUTTON, self.OnBoutonDescendre, self.bouton_descendre)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonFermer, self.bouton_fermer)
         
         # Init
-        self.OnChoixProfil(None)
+        self.ctrl_champs.OnChoixProfil(None)
         
-        #wx.CallAfter(self.AfficheAvertissement)
 
     def __set_properties(self):
-        self.ctrl_profil.SetToolTip(wx.ToolTip(_(u"Selectionnez un profil de liste")))
-        self.bouton_profils.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à la gestion des profils")))
-        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la liste des champs")))
-        self.bouton_monter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour monter le champ sélectionné")))
-        self.bouton_descendre.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour descendre le champ sélectionné")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher les resultats")))
         self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
-        self.SetMinSize((800, 700))
+        self.SetMinSize((850, 650))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
@@ -569,12 +854,9 @@ class Dialog(wx.Dialog):
         grid_sizer_base.Add(self.ctrl_bandeau, 0, wx.EXPAND, 0)
         
         grid_sizer_contenu = wx.FlexGridSizer(rows=1, cols=2, vgap=10, hgap=10)
-        grid_sizer_haut = wx.FlexGridSizer(rows=2, cols=1, vgap=10, hgap=10)
-        grid_sizer_haut_contenu = wx.FlexGridSizer(rows=1, cols=3, vgap=10, hgap=10)
-        grid_sizer_haut_milieu = wx.FlexGridSizer(rows=2, cols=1, vgap=10, hgap=10)
-        grid_sizer_haut_gauche = wx.FlexGridSizer(rows=2, cols=1, vgap=10, hgap=10)
-        grid_sizer_gauche = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
-        
+        grid_sizer_gauche = wx.FlexGridSizer(rows=2, cols=1, vgap=10, hgap=10)
+        grid_sizer_droite = wx.FlexGridSizer(rows=2, cols=1, vgap=10, hgap=10)
+
         # Période
         box_periode = wx.StaticBoxSizer(self.box_periode_staticbox, wx.VERTICAL)
         box_periode.Add(self.ctrl_periode, 1, wx.ALL|wx.EXPAND, 10)
@@ -584,74 +866,26 @@ class Dialog(wx.Dialog):
         box_activites = wx.StaticBoxSizer(self.box_activites_staticbox, wx.VERTICAL)
         box_activites.Add(self.ctrl_activites, 1, wx.ALL|wx.EXPAND, 10)
         grid_sizer_gauche.Add(box_activites, 1, wx.EXPAND, 0)
-        
-        # Groupes
-        box_groupes = wx.StaticBoxSizer(self.box_groupes_staticbox, wx.VERTICAL)
-        box_groupes.Add(self.ctrl_groupes, 1, wx.ALL|wx.EXPAND, 10)
-        grid_sizer_gauche.Add(box_groupes, 1, wx.EXPAND, 0)
-        
+
         grid_sizer_gauche.AddGrowableRow(1)
         grid_sizer_gauche.AddGrowableCol(0)
         grid_sizer_contenu.Add(grid_sizer_gauche, 1, wx.EXPAND, 0)
-        
-        # Caisses
-        box_categories = wx.StaticBoxSizer(self.box_categories_staticbox, wx.VERTICAL)
-        box_categories.Add(self.ctrl_categories, 1, wx.ALL|wx.EXPAND, 10)
-        grid_sizer_haut_gauche.Add(box_categories, 1, wx.EXPAND, 0)
 
-        # Age
-        box_age = wx.StaticBoxSizer(self.box_age_staticbox, wx.VERTICAL)
-        box_age.Add(self.ctrl_age, 1, wx.ALL|wx.EXPAND, 10)
-        grid_sizer_haut_gauche.Add(box_age, 1, wx.EXPAND, 0)
-        
-        grid_sizer_haut_gauche.AddGrowableRow(0)
-        grid_sizer_haut_gauche.AddGrowableCol(0)
-        grid_sizer_haut_contenu.Add(grid_sizer_haut_gauche, 1, wx.EXPAND, 0)
-        
-        # QF
-        box_qf = wx.StaticBoxSizer(self.box_qf_staticbox, wx.VERTICAL)
-        box_qf.Add(self.ctrl_qf, 1, wx.ALL|wx.EXPAND, 10)
-        grid_sizer_haut_milieu.Add(box_qf, 1, wx.EXPAND, 0)
-        
-        # Catégories
-        box_caisses = wx.StaticBoxSizer(self.box_caisses_staticbox, wx.VERTICAL)
-        box_caisses.Add(self.ctrl_caisses, 1, wx.ALL|wx.EXPAND, 10)
-        grid_sizer_haut_milieu.Add(box_caisses, 1, wx.EXPAND, 0)
-
-        grid_sizer_haut_milieu.AddGrowableRow(1)
-        grid_sizer_haut_milieu.AddGrowableCol(0)
-        grid_sizer_haut_contenu.Add(grid_sizer_haut_milieu, 1, wx.EXPAND, 0)
-        grid_sizer_haut_contenu.AddGrowableRow(0)
-        grid_sizer_haut_contenu.AddGrowableCol(0)
-        grid_sizer_haut_contenu.AddGrowableCol(1)
-        grid_sizer_haut_contenu.AddGrowableCol(2)
-        grid_sizer_haut.Add(grid_sizer_haut_contenu, 1, wx.EXPAND, 0)
-        
         # Champs
-        box_champs = wx.StaticBoxSizer(self.box_champs_staticbox, wx.VERTICAL)
-        grid_sizer_champs = wx.FlexGridSizer(rows=2, cols=3, vgap=10, hgap=5)
+        box_champs = wx.StaticBoxSizer(self.box_champs, wx.VERTICAL)
+        box_champs.Add(self.ctrl_champs, 1, wx.ALL | wx.EXPAND, 10)
+        grid_sizer_droite.Add(box_champs, 1, wx.EXPAND, 0)
 
-        grid_sizer_champs.Add(self.label_profil, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_champs.Add(self.ctrl_profil, 0, wx.EXPAND, 0)
-        grid_sizer_champs.Add(self.bouton_profils, 0, 0, 0)
-        grid_sizer_champs.Add(self.label_champs, 0, wx.ALIGN_RIGHT, 0)
-        grid_sizer_champs.Add(self.ctrl_champs, 1, wx.EXPAND, 0)
-        
-        grid_sizer_commandes = wx.FlexGridSizer(rows=4, cols=1, vgap=5, hgap=5)
-        grid_sizer_commandes.Add(self.bouton_modifier, 0, 0, 0)
-        grid_sizer_commandes.Add((10, 10), 0, wx.EXPAND, 0)
-        grid_sizer_commandes.Add(self.bouton_monter, 0, 0, 0)
-        grid_sizer_commandes.Add(self.bouton_descendre, 0, 0, 0)
+        # Filtres
+        box_filtres = wx.StaticBoxSizer(self.box_filtres, wx.VERTICAL)
+        box_filtres.Add(self.ctrl_filtres, 1, wx.ALL | wx.EXPAND, 10)
+        grid_sizer_droite.Add(box_filtres, 1, wx.EXPAND, 0)
 
-        grid_sizer_champs.Add(grid_sizer_commandes, 1, wx.EXPAND, 0)
-        grid_sizer_champs.AddGrowableRow(1)
-        grid_sizer_champs.AddGrowableCol(1)
-        box_champs.Add(grid_sizer_champs, 1, wx.ALL|wx.EXPAND, 10)
-        grid_sizer_haut.Add(box_champs, 1, wx.EXPAND, 0)
-        
-        grid_sizer_haut.AddGrowableRow(1)
-        grid_sizer_haut.AddGrowableCol(0)
-        grid_sizer_contenu.Add(grid_sizer_haut, 1, wx.EXPAND, 0)
+        grid_sizer_droite.AddGrowableRow(0)
+        grid_sizer_droite.AddGrowableRow(1)
+        grid_sizer_droite.AddGrowableCol(0)
+        grid_sizer_contenu.Add(grid_sizer_droite, 1, wx.EXPAND, 0)
+
         grid_sizer_contenu.AddGrowableRow(0)
         grid_sizer_contenu.AddGrowableCol(1)
         grid_sizer_base.Add(grid_sizer_contenu, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
@@ -671,43 +905,6 @@ class Dialog(wx.Dialog):
         grid_sizer_base.AddGrowableCol(0)
         self.Layout()
         self.CenterOnScreen()
-    
-    def MAJlisteChamps(self):
-        IDprofil = self.ctrl_profil.GetID()
-        if IDprofil == None : IDprofil = 0
-        date_debut = self.ctrl_periode.GetDateDebut() 
-        date_fin = self.ctrl_periode.GetDateFin() 
-        listeActivites = self.ctrl_activites.GetActivites()
-        self.ctrl_champs.SetParametres(IDprofil=IDprofil, dateMin=date_debut, dateMax=date_fin, listeActivites=listeActivites)
-        self.ctrl_champs.MAJ()
-
-    def OnChoixProfil(self, event): 
-        if self.ctrl_profil.GetID() == None :
-            actif = False
-        else:
-            actif = True
-        self.ctrl_champs.Enable(actif)
-        self.bouton_modifier.Enable(actif)
-        self.bouton_monter.Enable(actif)
-        self.bouton_descendre.Enable(actif)
-        self.MAJlisteChamps() 
-
-    def OnBoutonProfils(self, event): 
-        import DLG_Etat_nomin_profils
-        dlg = DLG_Etat_nomin_profils.Dialog(self)
-        dlg.ShowModal()
-        dlg.Destroy()
-        self.ctrl_profil.MAJ() 
-        self.OnChoixProfil(None)
-
-    def OnBoutonModifier(self, event): 
-        self.ctrl_champs.Modifier(None)
-
-    def OnBoutonMonter(self, event): 
-        self.ctrl_champs.Monter(None)
-
-    def OnBoutonDescendre(self, event): 
-        self.ctrl_champs.Descendre(None)
 
     def OnBoutonAide(self, event): 
         from Utils import UTILS_Aide
@@ -721,11 +918,11 @@ class Dialog(wx.Dialog):
 
     def OnCheckActivites(self, event=None):
         listeActivites = self.ctrl_activites.GetActivites()
-        self.ctrl_groupes.SetActivites(listeActivites)
-        self.ctrl_categories.SetActivites(listeActivites)
-        self.MAJlisteChamps() 
+        self.ctrl_filtres.GetPageAvecCode("groupes").ctrl_groupes.SetActivites(listeActivites)
+        self.ctrl_filtres.GetPageAvecCode("categories").ctrl_categories.SetActivites(listeActivites)
+        self.ctrl_champs.MAJlisteChamps()
 
-    def OnBoutonOk(self, event): 
+    def OnBoutonOk(self, event):
         dictParametres = {}
         
         # Récupération de la période
@@ -743,7 +940,7 @@ class Dialog(wx.Dialog):
         dictParametres["activites"] = listeActivites
         
         # Récupération des groupes
-        listeGroupes = self.ctrl_groupes.GetIDcoches()
+        listeGroupes = self.ctrl_filtres.GetPageAvecCode("groupes").GetDonnees()
         if len(listeGroupes) == 0 :
             dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun groupe !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
@@ -752,7 +949,7 @@ class Dialog(wx.Dialog):
         dictParametres["groupes"] = listeGroupes
         
         # Récupération des catégories de tarifs
-        listeCategories = self.ctrl_categories.GetIDcoches()
+        listeCategories = self.ctrl_filtres.GetPageAvecCode("categories").GetDonnees()
         if len(listeCategories) == 0 :
             dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune catégorie de tarif !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
@@ -761,20 +958,24 @@ class Dialog(wx.Dialog):
         dictParametres["categories"] = listeCategories
         
         # Récupération des caisses
-        listeCaisses = self.ctrl_caisses.GetIDcoches()
+        listeCaisses = self.ctrl_filtres.GetPageAvecCode("caisse").GetDonnees()
         dictParametres["caisses"] = listeCaisses
 
         # Récupération de l'âge
-        if self.ctrl_age.Validation() == False : return
-        age = self.ctrl_age.GetCondition()
+        age = self.ctrl_filtres.GetPageAvecCode("age").GetDonnees()
+        if age == False : return
         dictParametres["age"] = age
         
         # Récupération du QF
-        QF = self.ctrl_qf.GetCondition()
+        QF = self.ctrl_filtres.GetPageAvecCode("quotient").GetDonnees()
         dictParametres["qf"] = QF
-        
+
+        # Récupération de l'état
+        listeEtats = self.ctrl_filtres.GetPageAvecCode("etats").GetDonnees()
+        dictParametres["etats"] = listeEtats
+
         # Récupération des champs sélectionnés
-        listeChamps = self.ctrl_champs.GetTracksSelections()
+        listeChamps = self.ctrl_champs.ctrl_champs.GetTracksSelections()
         if len(listeChamps) == 0 :
             dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun champ !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
@@ -796,7 +997,7 @@ class Dialog(wx.Dialog):
                 return
 
         # Récupération de tous les champs disponibles
-        listeChampsDispo = self.ctrl_champs.GetListeChampsDispo()
+        listeChampsDispo = self.ctrl_champs.ctrl_champs.GetListeChampsDispo()
         dictParametres["champsDispo"] = listeChampsDispo
         
         # Affichage des résultats
@@ -806,32 +1007,7 @@ class Dialog(wx.Dialog):
         
         
         
-    def AfficheAvertissement(self):
-        if UTILS_Parametres.Parametres(mode="get", categorie="ne_plus_afficher", nom="infos_etat_nomin", valeur=False) == True :
-            return
 
-        import DLG_Message_html
-        texte = u"""
-<CENTER><IMG SRC="Static/Images/32x32/Information.png">
-<BR><BR>
-<FONT SIZE=2>
-<B>Avertissement</B>
-<BR><BR>
-La fonctionnalité 'Etat nominatif des consommations' étant très récente, je ne peux que vous conseiller de bien vérifier les résultats obtenus. Si vous constatez un bug, n'hésitez pas à le signaler sur le forum de Noethys.
-<BR><BR>
-D'autre part, cette fonctionnalité peut être ardue à appréhender en raison de ses nombreuses possibilités. Je vous propose de découvrir sur le forum un mode d'emploi complet sur son utilisation :
-<BR>
-<A HREF="http://www.noethys.com/index.php?option=com_kunena&Itemid=7&func=view&catid=5&id=772#772">Cliquez ici pour accéder au mode d'emploi</A>
-</FONT>
-</CENTER>
-"""
-        dlg = DLG_Message_html.Dialog(self, texte=texte, titre=_(u"Information"), nePlusAfficher=True)
-        dlg.ShowModal()
-        nePlusAfficher = dlg.GetEtatNePlusAfficher()
-        dlg.Destroy()
-        if nePlusAfficher == True :
-            UTILS_Parametres.Parametres(mode="set", categorie="ne_plus_afficher", nom="infos_etat_nomin", valeur=nePlusAfficher)
-        
 
 if __name__ == u"__main__":
     app = wx.App(0)

@@ -2850,7 +2850,9 @@ class MainFrame(wx.Frame):
     def On_facturation_factures_helios(self, event):
         if self.VerificationVentilation() == False : return
         from Utils import UTILS_Pes
-        choix = UTILS_Pes.DemanderChoix(self)
+
+        # Obsolète, donc PES imposé
+        choix = "pes" #UTILS_Pes.DemanderChoix(self)
         
         if choix == "rolmre" :
             from Dlg import DLG_Export_helios

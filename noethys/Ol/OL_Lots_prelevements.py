@@ -267,17 +267,18 @@ class ListView(FastObjectListView):
     
     def DemanderTypePrelevement(self):
         """ Demander si SEPA ou National à créer """
-        from Dlg import DLG_Choix
-        listeBoutons = [
-            (_(u"Prélèvement SEPA"), _(u"Nouvelle norme de prélèvements bancaires valables dans toute l'Europe à partir du 1er février 2014. Veuillez à saisir les mandats de vos usagers avant d'utiliser ce nouveau type de prélèvement.")),
-            (_(u"Prélèvement National"), _(u"Type de prélèvement valable uniquement jusqu'au 1er février 2014 en France. Ce type de prélèvement sera impossible au-delà de cette date.")),
-            ]
-        dlg = DLG_Choix.Dialog(self, listeBoutons=listeBoutons)
-        reponse = dlg.ShowModal() 
-        dlg.Destroy()
-        if reponse == wx.ID_CANCEL : return False
-        if reponse == 0 : return "sepa"
-        if reponse == 1 : return "national"
+        # from Dlg import DLG_Choix
+        # listeBoutons = [
+        #     (_(u"Prélèvement SEPA"), _(u"Nouvelle norme de prélèvements bancaires valables dans toute l'Europe à partir du 1er février 2014. Veuillez à saisir les mandats de vos usagers avant d'utiliser ce nouveau type de prélèvement.")),
+        #     (_(u"Prélèvement National"), _(u"Type de prélèvement valable uniquement jusqu'au 1er février 2014 en France. Ce type de prélèvement sera impossible au-delà de cette date.")),
+        #     ]
+        # dlg = DLG_Choix.Dialog(self, listeBoutons=listeBoutons)
+        # reponse = dlg.ShowModal()
+        # dlg.Destroy()
+        # if reponse == wx.ID_CANCEL : return False
+        # if reponse == 0 : return "sepa"
+        # if reponse == 1 : return "national"
+        return "sepa"
         
 
 # -------------------------------------------------------------------------------------------------------------------------------------------
