@@ -1,7 +1,9 @@
-Version 1.2.4.9 (17/12/2018) :
+Version 1.2.4.9 (21/12/2018) :
 
 - Ajout affichage des erreurs de conversion de fichiers
+- Ajout du filtre état à l'état nominatif
 - Correction sur les grands numéros de factures
+- Correction de petits bugs
 
 Version 1.2.4.8 (19/11/2018) :
 
