@@ -54,7 +54,8 @@ class CTRL_Barre_numerique(wx.SearchCtrl):
             req = """SELECT individus.IDindividu, nom, prenom 
                     FROM individus 
                     LEFT JOIN inscriptions ON inscriptions.IDindividu = individus.IDindividu
-                    WHERE inscriptions.IDactivite IN %s
+                    WHERE inscriptions.statut='ok'
+                    AND inscriptions.IDactivite IN %s
                     AND (date_desinscription IS NULL OR date_desinscription>='%s')
                     GROUP BY individus.IDindividu
                     ORDER BY nom, prenom;""" % (conditionActivites, self.interface.date)
@@ -270,7 +271,7 @@ class CTRL_Liste_individus(ULC.UltimateListCtrl):
             req = """SELECT individus.IDindividu, IDcivilite, nom, prenom 
                         FROM individus 
                         LEFT JOIN inscriptions ON inscriptions.IDindividu = individus.IDindividu
-                        WHERE inscriptions.IDactivite IN %s
+                        WHERE inscriptions.statut='ok' AND inscriptions.IDactivite IN %s
                         AND (date_desinscription IS NULL OR date_desinscription>='%s')
                         GROUP BY individus.IDindividu
                         ORDER BY nom, prenom;""" % (conditionActivites, self.interface.date)

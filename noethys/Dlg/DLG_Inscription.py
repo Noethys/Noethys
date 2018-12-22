@@ -29,6 +29,17 @@ from Dlg import DLG_Selection_activite
 from Dlg import DLG_Inscription_desinscription
 from Dlg import DLG_Appliquer_forfait
 from Dlg import DLG_Messagebox
+if 'phoenix' in wx.PlatformInfo:
+    from wx.adv import BitmapComboBox
+else :
+    from wx.combo import BitmapComboBox
+
+
+STATUTS = [
+    {"code": "ok", "label_long": _(u"Inscription validée"), "label_court": _(u"Valide"), "image" : "Ok4.png"},
+    {"code": "attente", "label_long": _(u"Inscription en attente"), "label_court": _(u"Attente"), "image" : "Attente.png"},
+    {"code": "refus", "label_long": _(u"Inscription refusée"), "label_court": _(u"Refus"), "image" : "Interdit.png"},
+]
 
 
 
@@ -72,6 +83,35 @@ class Choix_famille(wx.Choice):
 
 # ------------------------------------------------------------------------------------------------------------------------------------------
 
+class Choix_statut(BitmapComboBox):
+    def __init__(self, parent):
+        BitmapComboBox.__init__(self, parent, id=-1, size=(170, -1), style=wx.CB_READONLY)
+        self.parent = parent
+        self.listeLabels = []
+        self.listeDonnees = []
+        self.MAJ()
+        self.Select(0)
+
+    def MAJ(self):
+        for dictStatut in STATUTS:
+            self.listeLabels.append(dictStatut["label_long"])
+            self.listeDonnees.append(dictStatut["code"])
+            self.Append(dictStatut["label_long"], wx.Bitmap(Chemins.GetStaticPath("Images/16x16/%s" % dictStatut["image"]), wx.BITMAP_TYPE_PNG), dictStatut["code"])
+
+    def SetID(self, ID=None):
+        index = 0
+        for code in self.listeDonnees :
+            if code == ID :
+                 self.SetSelection(index)
+            index += 1
+
+    def GetID(self):
+        index = self.GetSelection()
+        if index == -1 : return None
+        return self.listeDonnees[index]
+
+
+# -------------------------------------------------------------------------------------------------------------
 
 
 class ListBox(wx.ListBox):
@@ -184,6 +224,7 @@ class CTRL_Activite(wx.Panel):
 class CTRL_Parametres(wx.Notebook):
     def __init__(self, parent, mode="saisie", IDindividu=None, IDinscription=None, IDfamille=None, cp=None, ville=None):
         wx.Notebook.__init__(self, parent, id=-1, style=wx.BK_DEFAULT | wx.NB_MULTILINE)
+        self.parent = parent
         self.dictPages = {}
         self.IDinscription = IDinscription
         self.IDindividu = IDindividu
@@ -289,6 +330,7 @@ class Page_Activite(wx.Panel):
         self.date_inscription = datetime.date.today()
         self.dict_remboursement = None
         self.action_consommation = None
+        self.ancien_statut = None
 
         # Activité
         self.staticbox_activite_staticbox = wx.StaticBox(self, -1, _(u"Activité"))
@@ -386,14 +428,14 @@ class Page_Activite(wx.Panel):
 
     def Importation(self):
         DB = GestionDB.DB()
-        req = """SELECT IDactivite, IDgroupe, IDcategorie_tarif, date_inscription, date_desinscription
+        req = """SELECT IDactivite, IDgroupe, IDcategorie_tarif, date_inscription, date_desinscription, statut
         FROM inscriptions
         WHERE IDinscription=%d;""" % self.IDinscription
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         DB.Close()
         if len(listeDonnees) > 0 :
-            IDactivite, IDgroupe, IDcategorie_tarif, date_inscription, date_desinscription = listeDonnees[0]
+            IDactivite, IDgroupe, IDcategorie_tarif, date_inscription, date_desinscription, statut = listeDonnees[0]
             self.SetIDactivite(IDactivite)
             self.ctrl_groupes.SetID(IDgroupe)
             self.IDgroupe = IDgroupe
@@ -403,6 +445,9 @@ class Page_Activite(wx.Panel):
                 date_desinscription = UTILS_Dates.DateEngEnDateDD(date_desinscription)
                 self.ctrl_check_depart.SetValue(True)
                 self.ctrl_date_depart.SetDate(date_desinscription)
+            if statut != None :
+                self.parent.parent.ctrl_statut.SetID(statut)
+                self.ancien_statut = statut
 
     def Validation(self):
         IDactivite = self.GetIDactivite()
@@ -425,6 +470,17 @@ class Page_Activite(wx.Panel):
             dlg.ShowModal()
             dlg.Destroy()
             return False
+
+        IDfamille = self.GetGrandParent().ctrl_famille.GetID()
+        if IDfamille == None :
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner une famille !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return False
+
+        nomActivite = self.ctrl_activite.GetNomActivite()
+
+        statut = self.parent.parent.ctrl_statut.GetID()
 
         DB = GestionDB.DB()
 
@@ -491,38 +547,6 @@ class Page_Activite(wx.Panel):
             DB.Close()
             return False
 
-        # Vérification du nombre d'inscrits max de l'activité
-        if self.parent.mode == "saisie" and self.dictActivite["nbre_places_disponibles"] != None :
-            if self.dictActivite["nbre_places_disponibles"] <= 0 :
-                dlg = wx.MessageDialog(None, _(u"Le nombre maximal d'inscrits autorisé pour cette activité (%d places max) a été atteint !\n\nSouhaitez-vous tout de même inscrire cet individu ?") % self.dictActivite["nbre_inscrits_max"], _(u"Nbre d'inscrit maximal atteint"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
-                reponse = dlg.ShowModal()
-                dlg.Destroy()
-                if reponse != wx.ID_YES :
-                    DB.Close()
-                    return False
-
-        # Vérification du nombre d'inscrits max du groupe
-        if IDgroupe != self.IDgroupe :
-            for dictGroupe in self.dictActivite["groupes"] :
-                if dictGroupe["IDgroupe"] == IDgroupe and dictGroupe["nbre_places_disponibles"] != None :
-                    if dictGroupe["nbre_places_disponibles"] <= 0 :
-                        dlg = wx.MessageDialog(None, _(u"Le nombre maximal d'inscrits autorisé sur ce groupe (%d places max) a été atteint !\n\nSouhaitez-vous tout de même inscrire cet individu ?") % dictGroupe["nbre_inscrits_max"], _(u"Nbre d'inscrit maximal atteint"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
-                        reponse = dlg.ShowModal()
-                        dlg.Destroy()
-                        if reponse != wx.ID_YES :
-                            DB.Close()
-                            return False
-
-        # Récupération autres variables
-        nomActivite = self.ctrl_activite.GetNomActivite()
-
-        IDfamille = self.GetGrandParent().ctrl_famille.GetID()
-        if IDfamille == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner une famille !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
-            dlg.ShowModal()
-            dlg.Destroy()
-            return False
-
         # Vérifie que l'individu n'est pas déjà inscrit à cette activite
         if self.parent.mode == "saisie" :
             req = """SELECT IDinscription, IDindividu, IDfamille
@@ -533,6 +557,54 @@ class Page_Activite(wx.Panel):
             if len(listeDonnees) > 0 :
                 DB.Close()
                 dlg = wx.MessageDialog(self, _(u"Cet individu est déjà inscrit à l'activité '%s' !") % nomActivite, _(u"Erreur de saisie"), wx.OK | wx.ICON_ERROR)
+                dlg.ShowModal()
+                dlg.Destroy()
+                return False
+
+        # Vérification du nombre d'inscrits max de l'activité
+        if (statut == "ok" and self.ancien_statut != "ok") or (IDgroupe != self.IDgroupe) :
+            reponse = None
+
+            if self.dictActivite["nbre_places_disponibles"] != None :
+                if self.dictActivite["nbre_places_disponibles"] <= 0 :
+                    intro = _(u"Le nombre maximal d'inscrits autorisé pour cette activité (%d places max) a été atteint !\n\nQue souhaitez-vous faire ?") % self.dictActivite["nbre_inscrits_max"]
+                    dlg = DLG_Messagebox.Dialog(self, titre=_(u"Nbre d'inscrit maximal atteint"), introduction=intro, detail=None, icone=wx.ICON_EXCLAMATION, boutons=[_(u"Valider quand même"), _(u"Mettre en attente"), _(u"Refuser"), _(u"Annuler")], defaut=1)
+                    reponse = dlg.ShowModal()
+                    dlg.Destroy()
+
+            # Vérification du nombre d'inscrits max du groupe
+            if reponse == None:
+                for dictGroupe in self.dictActivite["groupes"] :
+                    if dictGroupe["IDgroupe"] == IDgroupe and dictGroupe["nbre_places_disponibles"] != None :
+                        if dictGroupe["nbre_places_disponibles"] <= 0 :
+                            intro = _(u"Le nombre maximal d'inscrits autorisé sur ce groupe (%d places max) a été atteint !\n\nQue souhaitez-vous faire ?") % dictGroupe["nbre_inscrits_max"]
+                            dlg = DLG_Messagebox.Dialog(self, titre=_(u"Nbre d'inscrit maximal atteint"), introduction=intro, detail=None, icone=wx.ICON_EXCLAMATION, boutons=[_(u"Valider quand même"), _(u"Mettre en attente"), _(u"Refuser"), _(u"Annuler")], defaut=1)
+                            reponse = dlg.ShowModal()
+                            dlg.Destroy()
+
+            # Applique un statut à l'inscription
+            if reponse != None :
+                if reponse == 0:
+                    self.parent.parent.ctrl_statut.SetID("ok")
+                elif reponse == 1:
+                    self.parent.parent.ctrl_statut.SetID("attente")
+                elif reponse == 2:
+                    self.parent.parent.ctrl_statut.SetID("refus")
+                else:
+                    DB.Close()
+                    return False
+
+        # Si changement de statut : Vérifie si l'individu n'a pas déjà des prestations
+        if self.IDinscription != None and statut != "ok" and self.ancien_statut == "ok" :
+            req = """SELECT IDprestation, prestations.date, prestations.forfait
+            FROM prestations
+            WHERE IDactivite=%d AND IDindividu=%d
+            ;""" % (IDactivite, self.parent.parent.IDindividu)
+            DB.ExecuterReq(req)
+            listePrestations = DB.ResultatReq()
+            if len(listePrestations) > 0 :
+                DB.Close()
+                dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas modifier le statut de cette inscription car des prestations y ont déjà été associées !"), _(u"Erreur"), wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
@@ -554,6 +626,7 @@ class Page_Activite(wx.Panel):
             date_desinscription = str(self.ctrl_date_depart.GetDate())
         else :
             date_desinscription = None
+        statut = self.parent.parent.ctrl_statut.GetID()
 
         # Sauvegarde
         DB = GestionDB.DB()
@@ -565,6 +638,7 @@ class Page_Activite(wx.Panel):
             ("IDcategorie_tarif", IDcategorie_tarif),
             ("IDcompte_payeur", IDcompte_payeur),
             ("date_desinscription", date_desinscription),
+            ("statut", statut),
             ]
         if self.parent.mode == "saisie" :
             listeDonnees.append(("date_inscription", str(datetime.date.today())))
@@ -612,7 +686,8 @@ class Page_Activite(wx.Panel):
             },])
 
         # Saisie de forfaits auto
-        if self.parent.mode == "saisie" :
+        #if self.parent.mode == "saisie" :
+        if statut == "ok" and self.ancien_statut != "ok" :
             f = DLG_Appliquer_forfait.Forfaits(IDfamille=IDfamille, listeActivites=[IDactivite,], listeIndividus=[self.parent.IDindividu,], saisieManuelle=False, saisieAuto=True)
             resultat = f.Applique_forfait(selectionIDcategorie_tarif=IDcategorie_tarif, inscription=True, selectionIDactivite=IDactivite)
             if resultat == False :
@@ -697,7 +772,7 @@ class Page_Activite(wx.Panel):
         # Recherche des inscriptions existantes
         req = """SELECT IDgroupe, COUNT(IDinscription)
         FROM inscriptions
-        WHERE IDactivite=%d
+        WHERE IDactivite=%d AND inscriptions.statut='ok'
         GROUP BY IDgroupe;""" % IDactivite
         DB.ExecuterReq(req)
         listeInscriptions = DB.ResultatReq()
@@ -803,7 +878,12 @@ class Dialog(wx.Dialog):
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Activite.png")
 
         # Famille
+        self.staticbox_famille = wx.StaticBox(self, -1, _(u"Famille rattachée"))
         self.ctrl_famille = Choix_famille(self, IDindividu=self.IDindividu, verrouillage=self.mode!="saisie")
+
+        # Famille
+        self.staticbox_statut = wx.StaticBox(self, -1, _(u"Statut"))
+        self.ctrl_statut = Choix_statut(self)
 
         # Paramètres
         self.ctrl_parametres = CTRL_Parametres(self, mode=mode, IDindividu=IDindividu, IDinscription=IDinscription, IDfamille=IDfamille, cp=cp, ville=ville)
@@ -825,6 +905,7 @@ class Dialog(wx.Dialog):
     def __set_properties(self):
         self.SetTitle(_(u"Inscription à une activité"))
         self.ctrl_famille.SetToolTip(wx.ToolTip(_(u"Sélectionnez une famille")))
+        self.ctrl_statut.SetToolTip(wx.ToolTip(_(u"Sélectionnez un statut")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
@@ -834,8 +915,16 @@ class Dialog(wx.Dialog):
         grid_sizer_base.Add(self.ctrl_bandeau, 0, wx.EXPAND, 0)
         
         # Famille
-        grid_sizer_options = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=30)
-        grid_sizer_options.Add(self.ctrl_famille, 1, wx.EXPAND, 0)
+        grid_sizer_options = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=10)
+
+        staticbox_famille = wx.StaticBoxSizer(self.staticbox_famille, wx.VERTICAL)
+        staticbox_famille.Add(self.ctrl_famille, 1, wx.EXPAND | wx.ALL, 5)
+        grid_sizer_options.Add(staticbox_famille, 1, wx.EXPAND, 0)
+
+        staticbox_statut = wx.StaticBoxSizer(self.staticbox_statut, wx.VERTICAL)
+        staticbox_statut.Add(self.ctrl_statut, 1, wx.EXPAND | wx.ALL, 5)
+        grid_sizer_options.Add(staticbox_statut, 1, wx.EXPAND, 0)
+
         grid_sizer_options.AddGrowableCol(0)
         grid_sizer_base.Add(grid_sizer_options, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
         
@@ -882,6 +971,10 @@ class Dialog(wx.Dialog):
 
     def GetIDinscription(self):
         return self.IDinscription
+
+    def GetStatut(self):
+        return self.ctrl_statut.GetID()
+
 
 
 

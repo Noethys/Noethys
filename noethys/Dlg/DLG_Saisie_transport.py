@@ -159,7 +159,7 @@ class CTRL_Choix_unites(HTL.HyperTreeList):
         FROM unites
         LEFT JOIN activites ON activites.IDactivite = unites.IDactivite
         LEFT JOIN inscriptions ON inscriptions.IDactivite = activites.IDactivite
-        WHERE IDindividu=%d
+        WHERE inscriptions.statut='ok' AND IDindividu=%d
         ORDER BY unites.IDactivite, ordre;""" % self.IDindividu
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()      
@@ -620,7 +620,7 @@ class CTRL_Choix_activite(wx.Choice):
         req = """SELECT activites.IDactivite, activites.nom
         FROM activites
         LEFT JOIN inscriptions ON inscriptions.IDactivite = activites.IDactivite
-        WHERE IDindividu=%d
+        WHERE inscriptions.statut='ok' AND IDindividu=%d
         ORDER BY activites.date_fin DESC;""" % self.IDindividu
         db.ExecuterReq(req)
         listeDonnees = db.ResultatReq()

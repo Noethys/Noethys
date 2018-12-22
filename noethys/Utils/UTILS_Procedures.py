@@ -58,6 +58,7 @@ DICT_PROCEDURES = {
     "A9080" : _(u"Création de la table DOCUMENTS"),
     "A9081" : _(u"Création du profil de configuration par défaut pour la liste des infos médicales"),
     "A9102" : _(u"Suppression des données personnelles"),
+    "A9105" : _(u"Remplissage du champ statut de la table inscriptions"),
 }
 
 
@@ -1038,6 +1039,15 @@ def A9102():
     DB.ExecuterReq("DELETE FROM documents;")
     DB.Commit()
     DB.Close()
+
+
+def A9105():
+    """ Remplissage du champ statut de la table inscriptions """
+    DB = GestionDB.DB()
+    DB.ExecuterReq("UPDATE inscriptions SET statut='ok';")
+    DB.Commit()
+    DB.Close()
+
 
 
 

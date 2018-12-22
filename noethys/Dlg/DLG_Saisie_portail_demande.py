@@ -1210,10 +1210,16 @@ class Traitement():
             dlg.GetPageActivite().SetIDactivite(IDactivite)
             dlg.GetPageActivite().SetIDgroupe(IDgroupe)
             reponse = dlg.ShowModal()
+            statut = dlg.GetStatut()
             dlg.Destroy()
             if reponse == wx.ID_OK :
                 self.EcritLog(_(u"Inscription de %s enregistrée.") % prenom)
-                reponse = _(u"Inscription de %s confirmée.") % prenom
+                if statut == "attente" :
+                    reponse = _(u"Inscription de %s mise en attente.") % prenom
+                elif statut == "refus" :
+                    reponse = _(u"Inscription de %s refusée.") % prenom
+                else :
+                    reponse = _(u"Inscription de %s validée.") % prenom
                 return {"etat" : True, "reponse" : reponse}
             else :
                 self.EcritLog(_(u"Inscription de %s annulée.") % prenom)

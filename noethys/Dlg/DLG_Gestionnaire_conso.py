@@ -485,7 +485,7 @@ class PanelGrille(wx.Panel):
                            AND scolarite.date_debut <= '{0}'
                            AND scolarite.date_fin >= '{0}'""".format(self.date)
         req += """
-        WHERE {0}
+        WHERE inscriptions.statut='ok' AND {0}
         GROUP BY inscriptions.IDindividu
         ORDER BY inscriptions.IDindividu;""".format(" AND ".join(conditions))
         DB.ExecuterReq(req)

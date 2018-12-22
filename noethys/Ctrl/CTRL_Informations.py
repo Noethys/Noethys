@@ -466,7 +466,7 @@ class CTRL(wx.TreeCtrl):
         LEFT JOIN inscriptions ON inscriptions.IDactivite = pieces_activites.IDactivite
         LEFT JOIN individus ON individus.IDindividu = inscriptions.IDindividu
         LEFT JOIN activites ON activites.IDactivite = inscriptions.IDactivite
-        WHERE (inscriptions.date_desinscription IS NULL OR inscriptions.date_desinscription>='%s') %s AND activites.date_fin>='%s'
+        WHERE inscriptions.statut='ok' AND (inscriptions.date_desinscription IS NULL OR inscriptions.date_desinscription>='%s') %s AND activites.date_fin>='%s'
         GROUP BY inscriptions.IDfamille, pieces_activites.IDtype_piece, individus.IDindividu;
         """ % (datetime.date.today(), condition, datetime.date.today())
         self.DB.ExecuterReq(req)
@@ -592,7 +592,7 @@ class CTRL(wx.TreeCtrl):
         LEFT JOIN inscriptions ON inscriptions.IDactivite = renseignements_activites.IDactivite
         LEFT JOIN individus ON individus.IDindividu = inscriptions.IDindividu
         LEFT JOIN activites ON activites.IDactivite = inscriptions.IDactivite
-        WHERE (inscriptions.date_desinscription IS NULL OR inscriptions.date_desinscription>='%s') %s AND activites.date_fin>='%s'
+        WHERE inscriptions.statut='ok' AND (inscriptions.date_desinscription IS NULL OR inscriptions.date_desinscription>='%s') %s AND activites.date_fin>='%s'
         GROUP BY individus.IDindividu, renseignements_activites.IDtype_renseignement;
         """ % (datetime.date.today(), condition, datetime.date.today())
         self.DB.ExecuterReq(req)
@@ -787,7 +787,7 @@ class CTRL(wx.TreeCtrl):
         FROM activites
         LEFT JOIN inscriptions ON inscriptions.IDactivite = activites.IDactivite
         LEFT JOIN individus ON individus.IDindividu = inscriptions.IDindividu
-        WHERE (inscriptions.date_desinscription IS NULL OR inscriptions.date_desinscription>='%s') AND vaccins_obligatoires=1 %s AND activites.date_fin>='%s'
+        WHERE inscriptions.statut='ok' AND (inscriptions.date_desinscription IS NULL OR inscriptions.date_desinscription>='%s') AND vaccins_obligatoires=1 %s AND activites.date_fin>='%s'
         GROUP BY inscriptions.IDindividu;
         """ % (datetime.date.today(), condition, datetime.date.today())
         self.DB.ExecuterReq(req)
@@ -887,7 +887,7 @@ class CTRL(wx.TreeCtrl):
         LEFT JOIN inscriptions ON inscriptions.IDactivite = cotisations_activites.IDactivite
         LEFT JOIN individus ON individus.IDindividu = inscriptions.IDindividu
         LEFT JOIN activites ON activites.IDactivite = inscriptions.IDactivite
-        WHERE (inscriptions.date_desinscription IS NULL OR inscriptions.date_desinscription>='%s') AND types_cotisations.IDtype_cotisation IS NOT NULL %s AND activites.date_fin>='%s'
+        WHERE inscriptions.statut='ok' AND (inscriptions.date_desinscription IS NULL OR inscriptions.date_desinscription>='%s') AND types_cotisations.IDtype_cotisation IS NOT NULL %s AND activites.date_fin>='%s'
         GROUP BY inscriptions.IDfamille, cotisations_activites.IDtype_cotisation, individus.IDindividu;
         """ % (datetime.date.today(), condition, datetime.date.today())
         self.DB.ExecuterReq(req)

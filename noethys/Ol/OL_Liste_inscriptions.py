@@ -216,7 +216,7 @@ class ListView(GroupListView):
                 listeChamps2.append(champ)
 
         if len(conditions) > 0 :
-            conditions = "WHERE " + " AND ".join(conditions)
+            conditions = "AND " + " AND ".join(conditions)
         else :
             conditions = ""
 
@@ -228,7 +228,7 @@ class ListView(GroupListView):
         LEFT JOIN groupes ON groupes.IDgroupe = inscriptions.IDgroupe
         LEFT JOIN categories_tarifs ON categories_tarifs.IDcategorie_tarif = inscriptions.IDcategorie_tarif
         LEFT JOIN categories_travail ON categories_travail.IDcategorie = individus.IDcategorie_travail
-        %s
+        WHERE inscriptions.statut='ok' %s
         GROUP BY individus.IDindividu
         ;""" % (",".join(listeChamps2), conditions)
         # LEFT JOIN prestations ON prestations.IDactivite = inscriptions.IDactivite a été supprimé pour accélérer le traitement

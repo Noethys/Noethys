@@ -1610,6 +1610,7 @@ class Dialog(wx.Dialog):
         LEFT JOIN inscriptions ON inscriptions.IDinscription = consommations.IDinscription
         LEFT JOIN scolarite ON scolarite.IDindividu = consommations.IDindividu AND scolarite.date_debut <= consommations.date AND scolarite.date_fin >= consommations.date
         WHERE consommations.etat IN ("reservation", "present")
+        AND inscriptions.statut='ok'
         AND consommations.IDactivite IN %s AND consommations.date IN %s %s %s
         ORDER BY consommations.date, consommations.heure_debut
         ;""" % (conditionActivites, conditionDates, conditionsScolarite, conditionsEvenements)
@@ -1695,7 +1696,7 @@ class Dialog(wx.Dialog):
             LEFT JOIN types_sieste ON types_sieste.IDtype_sieste = individus.IDtype_sieste
             LEFT JOIN inscriptions ON inscriptions.IDindividu = individus.IDindividu
             LEFT JOIN scolarite ON scolarite.IDindividu = individus.IDindividu AND scolarite.date_debut <= '%s' AND scolarite.date_fin >= '%s'
-            WHERE inscriptions.IDactivite IN %s and (inscriptions.date_desinscription IS NULL OR inscriptions.date_desinscription>='%s')
+            WHERE inscriptions.statut='ok' AND inscriptions.IDactivite IN %s and (inscriptions.date_desinscription IS NULL OR inscriptions.date_desinscription>='%s')
             ; """ % (min(listeDates), max(listeDates), conditionActivites, max(listeDates))
             DB.ExecuterReq(req)
             listeTousInscrits = DB.ResultatReq()

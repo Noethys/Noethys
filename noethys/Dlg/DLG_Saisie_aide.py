@@ -47,6 +47,7 @@ class CTRL_Activite(wx.Choice):
             req = """SELECT inscriptions.IDactivite, activites.nom
             FROM inscriptions
             LEFT JOIN activites ON activites.IDactivite = inscriptions.IDactivite
+            WHERE inscriptions.statut='ok'
             GROUP BY inscriptions.IDactivite
             ORDER BY activites.date_fin DESC;"""
         db.ExecuterReq(req)

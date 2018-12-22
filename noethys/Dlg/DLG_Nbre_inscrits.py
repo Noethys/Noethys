@@ -231,10 +231,10 @@ class CTRL(ULC.UltimateListCtrl):
                     listeActivites = []
                     for IDtype_groupe_activite, IDactivite in listeDonnees :
                         listeActivites.append(IDactivite)
-                    condition = "WHERE activites.IDactivite IN %s" % GestionDB.ConvertConditionChaine(listeActivites)
+                    condition = "AND activites.IDactivite IN %s" % GestionDB.ConvertConditionChaine(listeActivites)
 
                 if code == "liste_activites" :
-                    condition = "WHERE activites.IDactivite IN %s" % GestionDB.ConvertConditionChaine(listeID)
+                    condition = "AND activites.IDactivite IN %s" % GestionDB.ConvertConditionChaine(listeID)
 
         # Tri
         tri = UTILS_Config.GetParametre("nbre_inscrits_parametre_tri", 3)
@@ -263,7 +263,7 @@ class CTRL(ULC.UltimateListCtrl):
         FROM groupes
         LEFT JOIN activites ON activites.IDactivite = groupes.IDactivite
         LEFT JOIN inscriptions ON inscriptions.IDgroupe = groupes.IDgroupe
-        %s
+        WHERE inscriptions.statut='ok' %s
         GROUP BY groupes.IDgroupe
         ORDER BY groupes.ordre
         ;""" % condition

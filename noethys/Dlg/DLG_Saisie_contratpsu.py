@@ -567,7 +567,7 @@ class Base(object) :
 
             req = """SELECT IDindividu, IDfamille, IDactivite, IDgroupe, IDcategorie_tarif, IDcompte_payeur, date_inscription, parti
             FROM inscriptions
-            WHERE IDinscription=%d
+            WHERE inscriptions.statut='ok' AND IDinscription=%d
             ;""" % self.IDinscription
             DB.ExecuterReq(req)
             listeDonnees = DB.ResultatReq()

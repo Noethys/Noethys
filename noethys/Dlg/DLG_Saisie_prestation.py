@@ -117,7 +117,7 @@ class Choix_individu(wx.Choice):
         req = """SELECT inscriptions.IDinscription, IDindividu, inscriptions.IDactivite, IDgroupe, inscriptions.IDcategorie_tarif, categories_tarifs.nom
         FROM inscriptions 
         LEFT JOIN categories_tarifs ON categories_tarifs.IDcategorie_tarif = inscriptions.IDcategorie_tarif
-        WHERE IDfamille = %d ;""" % self.IDfamille
+        WHERE inscriptions.statut='ok' AND IDfamille = %d ;""" % self.IDfamille
         DB.ExecuterReq(req)
         listeInscriptions = DB.ResultatReq()
         for IDinscription, IDindividu, IDactivite, IDgroupe, IDcategorie_tarif, nomCategorie_tarif in listeInscriptions:
