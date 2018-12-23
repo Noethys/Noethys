@@ -44,7 +44,8 @@ class CTRL(wx.Panel):
         self.bouton_liste_imprimer = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Imprimante.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_liste_export_texte = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Texte2.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_liste_export_excel = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Excel.png"), wx.BITMAP_TYPE_ANY))
-        
+        self.bouton_configuration = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Mecanisme.png"), wx.BITMAP_TYPE_ANY))
+
         # Options de liste
         self.ctrl_recherche = OL_Liste_cotisations.CTRL_Outils(self, listview=self.ctrl_cotisations, afficherCocher=True)
 
@@ -58,6 +59,7 @@ class CTRL(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonListeImprimer, self.bouton_liste_imprimer)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonListeExportTexte, self.bouton_liste_export_texte)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonListeExportExcel, self.bouton_liste_export_excel)
+        self.Bind(wx.EVT_BUTTON, self.ctrl_cotisations.MenuConfigurerListe, self.bouton_configuration)
         
     def __set_properties(self):
         self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher un aperçu de la cotisation sélectionnée")))
@@ -67,6 +69,7 @@ class CTRL(wx.Panel):
         self.bouton_liste_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer cette liste")))
         self.bouton_liste_export_texte.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter cette liste au format Texte")))
         self.bouton_liste_export_excel.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter cette liste au format Excel")))
+        self.bouton_configuration.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour configurer la liste")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=2, cols=1, vgap=5, hgap=5)
@@ -76,7 +79,7 @@ class CTRL(wx.Panel):
         grid_sizer_liste.Add(self.listviewAvecFooter, 1, wx.EXPAND, 0)
         
         # Commandes de liste
-        grid_sizer_commandes = wx.FlexGridSizer(rows=10, cols=1, vgap=5, hgap=5)
+        grid_sizer_commandes = wx.FlexGridSizer(rows=12, cols=1, vgap=5, hgap=5)
         grid_sizer_commandes.Add(self.bouton_apercu, 0, 0, 0)
         grid_sizer_commandes.Add(self.bouton_email, 0, 0, 0)
         grid_sizer_commandes.Add((5, 5), 0, wx.EXPAND, 0)
@@ -90,6 +93,10 @@ class CTRL(wx.Panel):
         
         grid_sizer_commandes.Add(self.bouton_liste_export_texte, 0, 0, 0)
         grid_sizer_commandes.Add(self.bouton_liste_export_excel, 0, 0, 0)
+        grid_sizer_commandes.Add((5, 5), 0, wx.EXPAND, 0)
+
+        grid_sizer_commandes.Add(self.bouton_configuration, 0, 0, 0)
+
         grid_sizer_liste.Add(grid_sizer_commandes, 1, wx.EXPAND, 0)
         
         # Options de liste

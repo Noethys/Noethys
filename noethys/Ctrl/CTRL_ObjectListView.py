@@ -234,6 +234,7 @@ class ObjectListView(OLV.ObjectListView):
         if self.listeColonnes == [] :
             from Dlg import DLG_Configuration_listes
             self.listeColonnesDefaut = copy.deepcopy(colonnes)
+            self.listeCodesDefaut = [col.valueGetter for col in self.listeColonnesDefaut if hasattr(col, "visible") and col.visible == True]
             self.listeColonnes = DLG_Configuration_listes.RestaurationConfiguration(nomListe=nomListe, listeColonnesDefaut=colonnes)
         self.SetColumns(self.listeColonnes)
 
@@ -264,33 +265,41 @@ class ObjectListView(OLV.ObjectListView):
         item.Enable(False)
     
     def MenuConfigurerListe(self, event=None):
-        # Préparation de la liste
-        listeDonnees = []
-        dictColonnes = {}
+        # Recherche les colonnes disponibles
+        colonnes_dispo = []
+        for col in self.listeColonnesDefaut:
+            if hasattr(col, "visible"):
+                # Mémorise colonne disponible
+                nom = col.title
+                if nom == "":
+                    nom = col.valueGetter
+                colonnes_dispo.append({"nom" : nom, "code" : col.valueGetter, "col" : col})
+
+        # Mémorise sélection actuelle
+        colonnes_selection = []
         for col in self.listeColonnes :
             if hasattr(col, "visible"):
-                listeDonnees.append((col.valueGetter, col.visible))
-                dictColonnes[col.valueGetter] = col
+                if col.visible == True :
+                    colonnes_selection.append(col.valueGetter)
 
-        listeDonneesDefaut = []
-        for col in self.listeColonnesDefaut :
-            listeDonneesDefaut.append((col.valueGetter, col.visible))
-            
+        # Recherche les colonnes par défaut
+        colonnes_defaut = copy.copy(self.listeCodesDefaut)
+
         # DLG de la configuration de listes
         from Dlg import DLG_Configuration_listes
-        dlg = DLG_Configuration_listes.Dialog(self, listeDonnees=listeDonnees, listeDonneesDefaut=listeDonneesDefaut)      
+        dlg = DLG_Configuration_listes.Dialog(self, colonnes_dispo=colonnes_dispo, colonnes_defaut=colonnes_defaut, colonnes_selection=colonnes_selection)
         if dlg.ShowModal() == wx.ID_OK:
-            listeDonnees = dlg.GetListeDonnees()
-            dlg.Destroy() 
+            listeColonnesSelection = dlg.GetSelections(mode="dict")
+            dlg.Destroy()
         else :
-            dlg.Destroy() 
+            dlg.Destroy()
             return
 
         # Analyse des résultats
         self.listeColonnes = []
-        for nom, visible in listeDonnees :
-            col = dictColonnes[nom]
-            col.visible = visible
+        for dictColonne in listeColonnesSelection :
+            col = dictColonne["col"]
+            col.visible = True
             self.listeColonnes.append(col)
 
         # Sauvegarde

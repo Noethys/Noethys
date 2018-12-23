@@ -185,11 +185,18 @@ class ListView(FastObjectListView):
             ColumnDefn(_(u"Numéro Alloc."), "left", 120, "numAlloc", typeDonnee="texte"),
             ]        
 
-        # Insertion des champs infos de base individus
-        listeChamps = self.infosIndividus.GetNomsChampsPresents(mode="famille")
-        for nomChamp in listeChamps :
-            typeDonnee = UTILS_Infos_individus.GetTypeChamp(nomChamp)
-            liste_Colonnes.append(ColumnDefn(nomChamp, "left", 100, nomChamp, typeDonnee=typeDonnee, visible=False))
+        # # Insertion des champs infos de base individus
+        # listeChamps = self.infosIndividus.GetNomsChampsPresents(mode="famille")
+        # for nomChamp in listeChamps :
+        #     typeDonnee = UTILS_Infos_individus.GetTypeChamp(nomChamp)
+        #     liste_Colonnes.append(ColumnDefn(nomChamp, "left", 100, nomChamp, typeDonnee=typeDonnee, visible=False))
+
+        listeChamps = UTILS_Infos_individus.GetNomsChampsPossibles(mode="famille")
+        for titre, exemple, code in listeChamps :
+            if u"n°" not in titre and "_x_" not in code:
+                typeDonnee = UTILS_Infos_individus.GetTypeChamp(code)
+                code = code.replace("{", "").replace("}", "")
+                liste_Colonnes.append(ColumnDefn(titre, "left", 100, code, typeDonnee=typeDonnee, visible=False))
 
         self.SetColumns2(colonnes=liste_Colonnes, nomListe="OL_Liste_familles")
         self.SetEmptyListMsg(_(u"Aucune famille"))

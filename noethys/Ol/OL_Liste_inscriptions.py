@@ -31,9 +31,9 @@ SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 
 DICT_INFOS_INDIVIDUS = {}
 
-
 from Utils import UTILS_Interface
 from Ctrl.CTRL_ObjectListView import GroupListView, ColumnDefn, Filter, CTRL_Outils, PanelAvecFooter
+from Utils import UTILS_Infos_individus
 
 
 
@@ -145,6 +145,13 @@ class ListView(GroupListView):
 
         # Importation des données
         self.donnees = self.GetTracks()
+
+        # Infos individus
+        self.infosIndividus = UTILS_Infos_individus.Informations()
+        for track in self.donnees :
+            self.infosIndividus.SetAsAttributs(parent=track, mode="individu", ID=track.IDindividu)
+        for track in self.donnees :
+            self.infosIndividus.SetAsAttributs(parent=track, mode="famille", ID=track.IDfamille)
 
     def GetTracks(self):
         listeListeView = []
@@ -386,6 +393,14 @@ class ListView(GroupListView):
 
         # Ajout des questions des questionnaires
         listeColonnes.extend(UTILS_Questionnaires.GetColonnesForOL(self.liste_questions))
+
+        # Ajout des infos individus
+        listeChamps = UTILS_Infos_individus.GetNomsChampsPossibles(mode="individu+famille")
+        for titre, exemple, code in listeChamps :
+            if u"n°" not in titre and "_x_" not in code:
+                typeDonnee = UTILS_Infos_individus.GetTypeChamp(code)
+                code = code.replace("{", "").replace("}", "")
+                listeColonnes.append(ColumnDefn(titre, "left", 100, code, typeDonnee=typeDonnee, visible=False))
 
         #self.SetColumns(listeColonnes)
         self.SetColumns2(colonnes=listeColonnes, nomListe="OL_Liste_inscriptions")

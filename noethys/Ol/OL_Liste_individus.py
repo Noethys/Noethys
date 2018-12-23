@@ -216,6 +216,7 @@ class ListView(FastObjectListView):
 
     def InitModel(self):
         self.donnees = self.GetTracks()
+
         # Récupération des infos de base individus et familles
         self.infosIndividus = UTILS_Infos_individus.Informations() 
         for track in self.donnees :
@@ -272,11 +273,17 @@ class ListView(FastObjectListView):
             ]
         
         # Insertion des champs infos de base individus
-        listeChamps = self.infosIndividus.GetNomsChampsPresents(mode="individu")
-        for nomChamp in listeChamps :
-            typeDonnee = UTILS_Infos_individus.GetTypeChamp(nomChamp)
-            liste_Colonnes.append(ColumnDefn(nomChamp, "left", 100, nomChamp, typeDonnee=typeDonnee, visible=False))
+        # listeChamps = self.infosIndividus.GetNomsChampsPresents(mode="individu")
+        # for nomChamp in listeChamps :
+        #     typeDonnee = UTILS_Infos_individus.GetTypeChamp(nomChamp)
+        #     liste_Colonnes.append(ColumnDefn(nomChamp, "left", 100, nomChamp, typeDonnee=typeDonnee, visible=False))
 
+        listeChamps = UTILS_Infos_individus.GetNomsChampsPossibles(mode="individu")
+        for titre, exemple, code in listeChamps :
+            if u"n°" not in titre and "_x_" not in code:
+                typeDonnee = UTILS_Infos_individus.GetTypeChamp(code)
+                code = code.replace("{", "").replace("}", "")
+                liste_Colonnes.append(ColumnDefn(titre, "left", 100, code, typeDonnee=typeDonnee, visible=False))
 
         self.SetColumns2(colonnes=liste_Colonnes, nomListe="OL_Liste_individus")
         

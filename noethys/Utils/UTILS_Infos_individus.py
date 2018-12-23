@@ -116,7 +116,7 @@ def GetNomsChampsPossibles(mode="individu+famille"):
     # Infos scolarité
     listeChampsScolarite = [
             (_(u"Date de début de l'étape de scolarité"), u"01/09/2014", "{SCOLARITE_DATE_DEBUT}"),
-            (_(u"Date de fin de l'étape de scolarité"), u"30/06/2014", "{SCOLARITE_DATE_FIN}"),
+            (_(u"Date de fin de l'étape de scolarité"), u"30/06/2015", "{SCOLARITE_DATE_FIN}"),
             (_(u"Nom de l'école"), _(u"Ecole Jules Ferry"), "{SCOLARITE_NOM_ECOLE}"),
             (_(u"Nom de la classe"), _(u"CP/CE1 de Mme Machin"), "{SCOLARITE_NOM_CLASSE}"),
             (_(u"Nom du niveau scolaire"), _(u"Cours élémentaire 1"), "{SCOLARITE_NOM_NIVEAU}"),
@@ -125,6 +125,18 @@ def GetNomsChampsPossibles(mode="individu+famille"):
 
     if "individu" in mode :
         listeChamps.extend(listeChampsScolarite)
+
+    # Infos cotisations
+    listeChampsCotisations = [
+            (_(u"Date de début de la cotisation actuelle"), u"01/09/2018", "{COTISATION_DATE_DEBUT}"),
+            (_(u"Date de fin de la cotisation actuelle"), u"30/06/2019", "{COTISATION_DATE_FIN}"),
+            (_(u"Nom du type de la cotisation actuelle"), _(u"Adhésion annuelle"), "{COTISATION_TYPE}"),
+            (_(u"Nom de l'unité de cotisation actuelle"), _(u"2018-19"), "{COTISATION_UNITE}"),
+            (_(u"Numéro de la cotisation actuelle"), _(u"12345678"), "{COTISATION_NUMERO}"),
+            ]
+
+    if "individu" in mode :
+        listeChamps.extend(listeChampsCotisations)
 
     # Famille
     listeChampsFamille = [
@@ -221,6 +233,7 @@ class Informations() :
             questionnaires = True,   
             scolarite = True,
             mode_adresse_facturation = False,
+            cotisations = True,
             ) :
         self.date_reference = date_reference
         self.qf = qf
@@ -231,6 +244,7 @@ class Informations() :
         self.piecesManquantes = piecesManquantes
         self.questionnaires = questionnaires
         self.scolarite = scolarite
+        self.cotisations = cotisations
         
         # Lancement du calcul
         self.dictTitulaires = UTILS_Titulaires.GetTitulaires(mode_adresse_facturation=mode_adresse_facturation)
@@ -255,7 +269,8 @@ class Informations() :
         if self.cotisationsManquantes : self.RechercheCotisationsManquantes()
         if self.piecesManquantes : self.RecherchePiecesManquantes() 
         if self.questionnaires : self.RechercheQuestionnaires() 
-        if self.scolarite : self.RechercheScolarite() 
+        if self.scolarite : self.RechercheScolarite()
+        if self.cotisations : self.RechercheCotisations()
         
         # Fermeture de la DB
         self.DB.Close() 
@@ -751,7 +766,37 @@ class Informations() :
                      "ecole_nom": ecole_nom, "classe_nom": classe_nom, "niveau_nom": niveau_nom, "niveau_abrege":niveau_abrege})
 
     # ---------------------------------------------------------------------------------------------------------------------------------
-        
+
+    def RechercheCotisations(self):
+        """ Recherche la cotisation actuelle des individus """
+        req = """SELECT IDcotisation, IDfamille, IDindividu, cotisations.date_debut, cotisations.date_fin, numero,
+        types_cotisations.nom, unites_cotisations.nom
+        FROM cotisations
+        LEFT JOIN types_cotisations ON types_cotisations.IDtype_cotisation = cotisations.IDtype_cotisation
+        LEFT JOIN unites_cotisations ON unites_cotisations.IDunite_cotisation = cotisations.IDunite_cotisation
+        ORDER BY cotisations.date_debut
+        ;"""
+        listeDonnees = self.ReadDB(req)
+        for IDcotisation, IDfamille, IDindividu, date_debut, date_fin, numero, nom_type, nom_unite in listeDonnees :
+            if self.dictIndividus.has_key(IDindividu) :
+                if date_debut <= str(self.date_reference) and date_fin >= str(self.date_reference) :
+                    self.dictIndividus[IDindividu]["COTISATION_DATE_DEBUT"] = UTILS_Dates.DateEngFr(date_debut)
+                    self.dictIndividus[IDindividu]["COTISATION_DATE_FIN"] = UTILS_Dates.DateEngFr(date_fin)
+                    self.dictIndividus[IDindividu]["COTISATION_TYPE"] = nom_type
+                    self.dictIndividus[IDindividu]["COTISATION_UNITE"] = nom_unite
+                    self.dictIndividus[IDindividu]["COTISATION_NUMERO"] = numero
+
+                if self.dictIndividus[IDindividu].has_key("cotisations") == False:
+                    self.dictIndividus[IDindividu]["cotisations"] = {"nombre": 0, "liste": []}
+                self.dictIndividus[IDindividu]["cotisations"]["nombre"] += 1
+
+                # Mémorise l'étape de scolarité au format liste
+                self.dictIndividus[IDindividu]["cotisations"]["liste"].append(
+                    {"date_debut": UTILS_Dates.DateEngFr(date_debut), "date_fin": UTILS_Dates.DateEngFr(date_fin),
+                     "nom_type": nom_type, "nom_unite": nom_unite, "numero": numero})
+
+    # ---------------------------------------------------------------------------------------------------------------------------------
+
     def GetNomsChampsPresents(self, mode="individu+famille", listeID=None):
         """ Renvoie les noms des champs disponibles après calcul des données. """
         """ mode='individu' ou 'famille' ou 'individu+famille' """
@@ -803,7 +848,7 @@ class Informations() :
     def SetAsAttributs(self, parent=None, mode="individu", ID=None):
         """ Attribue les valeurs en tant que attribut à un module. Sert pour les tracks des objectlistview """
         dictDonnees = self.GetDictValeurs(mode=mode, ID=ID, formatChamp=False)
-        for code, valeur in dictDonnees.iteritems() :
+        for code, valeur in dictDonnees.iteritems():
             setattr(parent, code, valeur)
     
     def StockageTable(self, mode="famille"):
@@ -947,12 +992,12 @@ class Informations() :
         """ Pour les tests """
         # Récupération des noms des champs
         #print len(self.GetNomsChampsPresents(mode="individu", listeID=None))
-##        print len(GetNomsChampsPossibles(mode="individu"))
+        print len(GetNomsChampsPossibles(mode="individu"))
         #for x in self.GetNomsChampsPresents(mode="individu", listeID=None) :
         # print x
         
         #self.EnregistreFichier(mode="individu", nomFichier="Temp/infos_individus.dat") 
-        self.EnregistreDansDB()
+        #self.EnregistreDansDB()
 ##        print len(self.LectureFichier())
         
 if __name__ == '__main__':

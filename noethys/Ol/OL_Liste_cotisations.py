@@ -24,6 +24,7 @@ from Utils import UTILS_Utilisateurs
 from Utils import UTILS_Config
 from Utils import UTILS_Dates
 from Utils import UTILS_Gestion
+from Utils import UTILS_Infos_individus
 from Utils import UTILS_Divers
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 
@@ -197,6 +198,16 @@ class ListView(FastObjectListView):
     def InitModel(self):
         self.donnees = self.GetTracks()
 
+        # Récupération des infos de base individus et familles
+        if self.mode == "liste":
+            self.infosIndividus = UTILS_Infos_individus.Informations()
+            for track in self.donnees :
+                if track.IDindividu != None:
+                    self.infosIndividus.SetAsAttributs(parent=track, mode="individu", ID=track.IDindividu)
+            for track in self.donnees :
+                if track.IDfamille != None:
+                    self.infosIndividus.SetAsAttributs(parent=track, mode="famille", ID=track.IDfamille)
+
     def SetFiltres(self, filtres=None):
         self.filtres = filtres
 
@@ -226,13 +237,7 @@ class ListView(FastObjectListView):
         # Conditions
         listeConditions = []
         conditions = ""
-        
-##        if self.IDfamille != None :
-##            listeConditions.append("cotisations.IDfamille = %d" % self.IDfamille)
-##
-##        if self.IDindividu != None :
-##            listeConditions.append("cotisations.IDindividu = %d" % self.IDindividu)
-        
+
         # 1ère série de filtres
         if self.filtres != None :
             for filtre in self.filtres :
@@ -256,10 +261,6 @@ class ListView(FastObjectListView):
                 if filtre["type"] == "unite" :
                     listeConditions.append("cotisations.IDunite_cotisation=%d" % filtre["IDunite_cotisation"])
 
-##                # Date d'échéance
-##                if filtre["type"] == "date_echeance" :
-##                    listeConditions.append( "(factures.date_echeance>='%s' AND factures.date_echeance<='%s')" % (filtre["date_min"], filtre["date_max"]) )
-                
                 # Carte créée
                 if filtre["type"] == "carte" :
                     if filtre["choix"] == True :
@@ -282,23 +283,11 @@ class ListView(FastObjectListView):
         dictFacturation = {}
         
         if self.mode == "liste" :
-            
-##            if self.filtre == None or self.filtre["IDtype_cotisation"] == None or self.filtre["IDunite_cotisation"] == None :
-##                return []
-            
-##            if self.filtre != None :
-##                conditionsCotisations = "WHERE cotisations.IDtype_cotisation=%d AND cotisations.IDunite_cotisation=%d" % (self.filtre["IDtype_cotisation"], self.filtre["IDunite_cotisation"])
-                
+
             # Pour le mode LISTE 
             if len(listeConditions) > 0 :
                 conditions = "WHERE %s" % " AND ".join(listeConditions)
             
-            # Récupère les prestations
-##            req = """SELECT IDcotisation, SUM(montant)
-##            FROM prestations
-##            LEFT JOIN cotisations ON cotisations.IDprestation = prestations.IDprestation
-##            %s 
-##            GROUP BY cotisations.IDcotisation;""" % conditions
             req = """SELECT prestations.IDprestation, SUM(montant)
             FROM cotisations
             LEFT JOIN prestations ON prestations.IDprestation = cotisations.IDprestation
@@ -322,24 +311,7 @@ class ListView(FastObjectListView):
                     dictFacturation[IDprestation]["ventilation"] = ventilation
                     dictFacturation[IDprestation]["dateReglement"] = dateReglement
                     dictFacturation[IDprestation]["modeReglement"] = modeReglement
-            
-            # Récupère la ventilation
-##            req = """SELECT IDcotisation, SUM(ventilation.montant), MIN(reglements.date), MIN(modes_reglements.label)
-##            FROM ventilation
-##            LEFT JOIN prestations ON prestations.IDprestation = ventilation.IDprestation
-##            LEFT JOIN cotisations ON cotisations.IDprestation = ventilation.IDprestation
-##            LEFT JOIN reglements ON reglements.IDreglement = ventilation.IDreglement
-##            LEFT JOIN modes_reglements ON modes_reglements.IDmode = reglements.IDmode
-##            %s
-##            GROUP BY cotisations.IDcotisation;""" % conditions
-##            DB.ExecuterReq(req)
-##            listeVentilations = DB.ResultatReq()
-##            for IDcotisation, ventilation, dateReglement, modeReglement in listeVentilations :
-##                if dictFacturation.has_key(IDcotisation) :
-##                    dictFacturation[IDcotisation]["ventilation"] = ventilation
-##                    dictFacturation[IDcotisation]["dateReglement"] = dateReglement
-##                    dictFacturation[IDcotisation]["modeReglement"] = modeReglement
-                        
+
             # Recherche les cotisations
             req = """
             SELECT 
@@ -476,12 +448,6 @@ class ListView(FastObjectListView):
                         if track.numero_int not in filtre["liste"] :
                             valide = False
 
-##                    if filtre["type"] == "email" :
-##                        if filtre["choix"] == True :
-##                            if dictTemp["email_factures"] == None : valide = False
-##                        else :
-##                            if dictTemp["email_factures"] != None : valide = False
-
             if listeID != None :
                 if item[0] not in listeID :
                     valide = False
@@ -567,43 +533,6 @@ class ListView(FastObjectListView):
             "observations" : ColumnDefn(_(u"Notes"), 'left', 150, "observations", typeDonnee="texte"),
             }
             
-            
-##        if self.mode == "liste" :
-##            # Mode liste générale
-##            liste_Colonnes = [
-##                ColumnDefn(u"", "left", 0, "IDcotisation"),
-##                ColumnDefn(u"Du", 'left', 80, "date_debut", stringConverter=FormateDate), 
-##                ColumnDefn(_(u"Au"), 'left', 80, "date_fin", stringConverter=FormateDate), 
-##                ColumnDefn(_(u"Bénéficiaires"), 'left', 150, "beneficiaires"),
-##                ColumnDefn(_(u"Rue"), 'left', 120, "rue"),
-##                ColumnDefn(_(u"CP"), 'left', 70, "cp"),
-##                ColumnDefn(_(u"Ville"), 'left', 100, "ville"),
-##                ColumnDefn(_(u"Type"), 'left', 110, "typeStr"),
-##                ColumnDefn(_(u"Nom"), 'left', 210, "nomCotisation"),
-##                ColumnDefn(_(u"Numéro"), 'left', 70, "numero"), 
-##                ColumnDefn(_(u"Montant"), 'left', 70, "montant", stringConverter=FormateMontant), 
-##                ColumnDefn(_(u"Réglé"), 'left', 70, "ventilation", stringConverter=FormateMontant), 
-##                ColumnDefn(_(u"Date réglement"), 'left', 80, "dateReglement", stringConverter=FormateDate), 
-##                ColumnDefn(_(u"Mode réglement"), 'left', 80, "modeReglement"), 
-##                ColumnDefn(_(u"Solde"), 'left', 80, "solde", stringConverter=FormateMontant, imageGetter=GetImageVentilation), 
-##                ColumnDefn(_(u"Création carte"), 'left', 100, "date_creation_carte", stringConverter=FormateDate, imageGetter=GetImageCreation), 
-##                ColumnDefn(_(u"Dépôt carte"), 'left', 100, "depotStr", imageGetter=GetImageDepot), 
-##                ]
-##        else :
-##            # Mode famille
-##            liste_Colonnes = [
-##                ColumnDefn(u"", "left", 0, "IDcotisation"),
-##                ColumnDefn(u"Du", 'left', 80, "date_debut", stringConverter=FormateDate), 
-##                ColumnDefn(_(u"Au"), 'left', 80, "date_fin", stringConverter=FormateDate), 
-##                ColumnDefn(_(u"Bénéficiaires"), 'left', 150, "beneficiaires"),
-##                ColumnDefn(_(u"Type"), 'left', 130, "typeStr"),
-##                ColumnDefn(_(u"Nom"), 'left', 230, "nomCotisation"),
-##                ColumnDefn(_(u"Numéro"), 'left', 70, "numero"), 
-##                ColumnDefn(_(u"Création carte"), 'left', 90, "date_creation_carte", stringConverter=FormateDate, imageGetter=GetImageCreation), 
-##                ColumnDefn(_(u"Dépôt carte"), 'left', 100, "depotStr", imageGetter=GetImageDepot), 
-##                ]
-        
-            
         self.rowFormatter = rowFormatter
 
         listeColonnes = []
@@ -615,8 +544,18 @@ class ListView(FastObjectListView):
             if codeColonne == self.triColonne :
                 tri = index
             index += 1
-        
-        self.SetColumns(listeColonnes)
+
+        if self.mode == "liste":
+            listeChamps = UTILS_Infos_individus.GetNomsChampsPossibles(mode="individu+famille")
+            for titre, exemple, code in listeChamps :
+                if u"n°" not in titre and "_x_" not in code:
+                    typeDonnee = UTILS_Infos_individus.GetTypeChamp(code)
+                    code = code.replace("{", "").replace("}", "")
+                    listeColonnes.append(ColumnDefn(titre, "left", 100, code, typeDonnee=typeDonnee, visible=False))
+            self.SetColumns2(colonnes=listeColonnes, nomListe="OL_Liste_cotisations")
+        else :
+            self.SetColumns(listeColonnes)
+
         if self.checkColonne == True :
             self.CreateCheckStateColumn(1)
         if tri != None :
@@ -732,6 +671,10 @@ class ListView(FastObjectListView):
 
         # Génération automatique des fonctions standards
         self.GenerationContextMenu(menuPop, dictParametres=self.GetParametresImpression())
+
+        if self.mode == "liste":
+            # Commandes standards
+            self.AjouterCommandesMenuContext(menuPop)
 
         self.PopupMenu(menuPop)
         menuPop.Destroy()
