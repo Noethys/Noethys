@@ -56,13 +56,18 @@ def RestaurationConfiguration(nomListe=None, listeColonnesDefaut=[]):
     listeColonnesFinale = []
     listeNomsTemp = []
     for code in texte.split("##"):
+        # Pour gérer les anciennes configurations de liste
+        visible = True
         if ";" in code :
             code, visible = code.split(";")
-        listeNomsTemp.append(code)
-        if dictColonnes.has_key(code) :
-            col = dictColonnes[code]
-            col.visible = True
-            listeColonnesFinale.append(col)
+            visible = bool(visible)
+        # Mémorisation des colonnes sélectionnées
+        if visible == True :
+            listeNomsTemp.append(code)
+            if dictColonnes.has_key(code) :
+                col = dictColonnes[code]
+                col.visible = True
+                listeColonnesFinale.append(col)
 
     # Vérifie que toutes les colonnes de la liste initiale ont été traitées
     for code, col in dictColonnes.iteritems() :

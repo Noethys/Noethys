@@ -819,7 +819,7 @@ class Dialog(wx.Dialog):
         # Champs
         self.box_champs = wx.StaticBox(self, -1, _(u"Champs"))
         self.ctrl_champs = CTRL_Champs(self)
-        self.ctrl_champs.SetMinSize((-1, 220))
+        self.ctrl_champs.SetMinSize((200, 220))
 
         # Filtres
         self.box_filtres = wx.StaticBox(self, -1, _(u"Filtres"))
@@ -846,7 +846,7 @@ class Dialog(wx.Dialog):
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher les resultats")))
         self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
-        self.SetMinSize((850, 650))
+        self.SetMinSize((950, 700))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
