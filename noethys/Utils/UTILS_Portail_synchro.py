@@ -501,7 +501,17 @@ class Synchro():
         if self.dict_parametres["paiement_ligne_actif"] == 1 :
             session.add(models.Parametre(nom="PAIEMENT_EN_LIGNE_SYSTEME", parametre=str(self.dict_parametres["paiement_ligne_systeme"])))
             session.add(models.Parametre(nom="PAIEMENT_EN_LIGNE_MULTI_FACTURES", parametre=str(self.dict_parametres["paiement_ligne_multi_factures"])))
-            session.add(models.Parametre(nom="PAIEMENT_EN_LIGNE_TIPI_SAISIE", parametre=str(self.dict_parametres["paiement_ligne_tipi_saisie"])))
+            session.add(models.Parametre(nom="PAIEMENT_EN_LIGNE_MONTANT_MINIMAL", parametre=str(self.dict_parametres["paiement_ligne_montant_minimal"])))
+            if self.dict_parametres.has_key("paiement_ligne_tipi_saisie"):
+                session.add(models.Parametre(nom="PAIEMENT_EN_LIGNE_TIPI_SAISIE", parametre=str(self.dict_parametres["paiement_ligne_tipi_saisie"])))
+            if self.dict_parametres.has_key("payzen_site_id"):
+                session.add(models.Parametre(nom="PAYZEN_SITE_ID", parametre=str(self.dict_parametres["payzen_site_id"])))
+            if self.dict_parametres.has_key("payzen_mode"):
+                session.add(models.Parametre(nom="PAYZEN_MODE", parametre=str(self.dict_parametres["payzen_mode"])))
+            if self.dict_parametres.has_key("payzen_certificat_test"):
+                session.add(models.Parametre(nom="PAYZEN_CERTIFICAT_TEST", parametre=str(self.dict_parametres["payzen_certificat_test"])))
+            if self.dict_parametres.has_key("payzen_certificat_production"):
+                session.add(models.Parametre(nom="PAYZEN_CERTIFICAT_PRODUCTION", parametre=str(self.dict_parametres["payzen_certificat_production"])))
 
         session.add(models.Parametre(nom="ACCUEIL_BIENVENUE", parametre=self.dict_parametres["accueil_bienvenue"]))
         session.add(models.Parametre(nom="ACCUEIL_MESSAGES_AFFICHER", parametre=str(self.dict_parametres["accueil_messages_afficher"])))
@@ -1069,16 +1079,18 @@ class Synchro():
         # Création des actions
         self.Pulse_gauge()
 
-        req = """SELECT IDaction, horodatage, IDfamille, IDindividu, categorie, action, description, commentaire, parametres, etat, traitement_date, IDperiode, ref_unique, reponse
+        req = """SELECT IDaction, horodatage, IDfamille, IDindividu, categorie, action, description, commentaire, parametres, etat, traitement_date, IDperiode, ref_unique, reponse, IDpaiement, ventilation
         FROM portail_actions
         WHERE horodatage>='%s';""" % (datetime.datetime.now() - datetime.timedelta(days=(self.dict_parametres["historique_delai"]+1)*30))
         DB.ExecuterReq(req)
         listeActions = DB.ResultatReq()
-        for IDaction, horodatage, IDfamille, IDindividu, categorie, action, description, commentaire, parametres, etat, traitement_date, IDperiode, ref_unique, reponse in listeActions :
+        for IDaction, horodatage, IDfamille, IDindividu, categorie, action, description, commentaire, parametres, etat, traitement_date, IDperiode, ref_unique, reponse, IDpaiement, ventilation in listeActions :
             if IDfamille in listeIDfamille :
                 traitement_date = UTILS_Dates.DateEngEnDateDD(traitement_date)
                 horodatage = UTILS_Dates.DateEngEnDateDDT(horodatage)
-                m = models.Action(horodatage=horodatage, IDfamille=IDfamille, IDindividu=IDindividu, categorie=categorie, action=action, description=description, commentaire=commentaire, parametres=parametres, etat=etat, traitement_date=traitement_date, IDperiode=IDperiode, ref_unique=ref_unique, reponse=reponse)
+                m = models.Action(horodatage=horodatage, IDfamille=IDfamille, IDindividu=IDindividu, categorie=categorie, action=action, description=description,
+                                  commentaire=commentaire, parametres=parametres, etat=etat, traitement_date=traitement_date, IDperiode=IDperiode, ref_unique=ref_unique,
+                                  reponse=reponse, IDpaiement=IDpaiement, ventilation=ventilation)
                 session.add(m)
 
         liste_tables_modifiees.append("actions")
@@ -1387,7 +1399,8 @@ class Synchro():
                             prochainIDaction, action["horodatage"], action["IDfamille"], action["IDindividu"],
                             action["IDutilisateur"], action["categorie"], action["action"], action["description"],
                             action["commentaire"], action["parametres"], action["etat"],
-                            action["traitement_date"], action["IDperiode"], action["ref_unique"], action["reponse"]
+                            action["traitement_date"], action["IDperiode"], action["ref_unique"], action["reponse"],
+                            action.get("IDpaiement", None), action.get("ventilation", None),
                             ])
 
                     # Mémorisation des réservations
@@ -1409,7 +1422,7 @@ class Synchro():
 
             # Enregistrement des actions
             if len(listeActions) > 0 :
-                DB.Executermany("INSERT INTO portail_actions (IDaction, horodatage, IDfamille, IDindividu, IDutilisateur, categorie, action, description, commentaire, parametres, etat, traitement_date, IDperiode, ref_unique, reponse) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", listeActions, commit=False)
+                DB.Executermany("INSERT INTO portail_actions (IDaction, horodatage, IDfamille, IDindividu, IDutilisateur, categorie, action, description, commentaire, parametres, etat, traitement_date, IDperiode, ref_unique, reponse, IDpaiement, ventilation) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", listeActions, commit=False)
             if len(listeReservations) > 0 :
                 DB.Executermany("INSERT INTO portail_reservations (date, IDinscription, IDunite, IDaction, etat) VALUES (?, ?, ?, ?, ?)", listeReservations, commit=False)
             if len(listeRenseignements) > 0 :

@@ -53,6 +53,9 @@ class Track(object):
         self.reponse = donnees["reponse"]
         self.email_date = donnees["email_date"]
 
+        self.IDpaiement = donnees["IDpaiement"]
+        self.ventilation = donnees["ventilation"]
+
         # Nom
         self.nom = ""
 
@@ -144,7 +147,8 @@ class ListView(GroupListView):
         else :
             conditions = ""
 
-        req = """SELECT IDaction, horodatage, IDfamille, IDindividu, IDutilisateur, categorie, action, description, commentaire, parametres, etat, traitement_date, portail_actions.IDperiode, reponse, email_date,
+        req = """SELECT IDaction, horodatage, IDfamille, IDindividu, IDutilisateur, categorie, action, description, commentaire, 
+        parametres, etat, traitement_date, portail_actions.IDperiode, reponse, email_date, IDpaiement, ventilation,
         portail_periodes.nom, portail_periodes.date_debut, portail_periodes.date_fin, portail_periodes.IDmodele
         FROM portail_actions
         LEFT JOIN portail_periodes ON portail_periodes.IDperiode = portail_actions.IDperiode
@@ -153,7 +157,7 @@ class ListView(GroupListView):
         listeDonnees = DB.ResultatReq()
         DB.Close()
         listeActions = []
-        for IDaction, horodatage, IDfamille, IDindividu, IDutilisateur, categorie, action, description, commentaire, parametres, etat, traitement_date, IDperiode, reponse, email_date, periode_nom, periode_date_debut, periode_date_fin, periode_IDmodele in listeDonnees :
+        for IDaction, horodatage, IDfamille, IDindividu, IDutilisateur, categorie, action, description, commentaire, parametres, etat, traitement_date, IDperiode, reponse, email_date, IDpaiement, ventilation, periode_nom, periode_date_debut, periode_date_fin, periode_IDmodele in listeDonnees :
             traitement_date = UTILS_Dates.DateEngEnDateDD(traitement_date)
             email_date = UTILS_Dates.DateEngEnDateDD(email_date)
             horodatage = UTILS_Dates.DateEngEnDateDDT(horodatage)
@@ -164,7 +168,7 @@ class ListView(GroupListView):
                 "categorie" : categorie, "action" : action, "description" : description, "commentaire" : commentaire, "parametres" : parametres,
                 "etat" : etat, "traitement_date" : traitement_date, "IDperiode" : IDperiode, "reponse" : reponse, "email_date" : email_date,
                 "periode_nom" : periode_nom, "periode_date_debut" : periode_date_debut, "periode_date_fin" : periode_date_fin,
-                "periode_IDmodele" : periode_IDmodele,
+                "periode_IDmodele" : periode_IDmodele, "IDpaiement" : IDpaiement, "ventilation" : ventilation,
             })
 
         listeListeView = []

@@ -110,6 +110,11 @@ VALEURS_DEFAUT = {
     "paiement_ligne_mode_reglement" : 0,
     "paiement_ligne_tipi_saisie" : 0,
     "paiement_ligne_multi_factures" : False,
+    "paiement_ligne_montant_minimal" : 0.0,
+    "payzen_site_id" : "",
+    "payzen_mode" : "TEST",
+    "payzen_certificat_test" : "",
+    "payzen_certificat_production" : "",
     "accueil_bienvenue" : _(u"Bienvenue sur le portail Famille"),
     "accueil_messages_afficher" : True,
     "accueil_etat_dossier_afficher" : True,
@@ -176,99 +181,54 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         event.Skip()
 
     def Switch(self):
-        dict_switch = {
-            "hebergement_type" : {
-                # Local
-                0 : [
-                    {"propriete" : "hebergement_local_repertoire", "obligatoire" : True},
-                    ],
-                # FTP
-                1 : [
-                    {"propriete" : "ftp_serveur", "obligatoire" : True},
-                    {"propriete" : "ftp_utilisateur", "obligatoire" : True},
-                    {"propriete" : "ftp_mdp", "obligatoire" : True},
-                    {"propriete" : "ftp_repertoire", "obligatoire" : False},
-                    ],
-                #SFTP/SSH
-                2 : [
-                    {"propriete" : "ssh_serveur", "obligatoire" : True},
-                    {"propriete" : "ssh_port", "obligatoire" : True},
-                    {"propriete" : "ssh_utilisateur", "obligatoire" : True},
-                    {"propriete" : "ssh_mdp", "obligatoire" : True},
-                    {"propriete" : "ssh_key_file", "obligatoire" : False},
-                    {"propriete" : "ssh_repertoire", "obligatoire" : False},
-                    ]
-                 },
+        liste_conditions = [
+            ("hebergement_local_repertoire", "p('hebergement_type') == 0"),
+            ("ftp_serveur", "p('hebergement_type') == 1"),
+            ("ftp_utilisateur", "p('hebergement_type') == 1"),
+            ("ftp_mdp", "p('hebergement_type') == 1"),
+            ("ftp_repertoire", "p('hebergement_type') == 1"),
+            ("ssh_serveur", "p('hebergement_type') == 2"),
+            ("ssh_port", "p('hebergement_type') == 2"),
+            ("ssh_utilisateur", "p('hebergement_type') == 2"),
+            ("ssh_mdp", "p('hebergement_type') == 2"),
+            ("ssh_key_file", "p('hebergement_type') == 2"),
+            ("ssh_repertoire", "p('hebergement_type') == 2"),
 
-            "db_type" : {
-                # SQLITE
-                0 : [
-                    ],
-                # MYSQL
-                1 : [
-                    {"propriete" : "db_serveur", "obligatoire" : True},
-                    {"propriete" : "db_utilisateur", "obligatoire" : True},
-                    {"propriete" : "db_mdp", "obligatoire" : True},
-                    {"propriete" : "db_nom", "obligatoire" : True},
-                    ],
-                 },
+            ("db_serveur", "p('db_type') == 1"),
+            ("db_utilisateur", "p('db_type') == 1"),
+            ("db_mdp", "p('db_type') == 1"),
+            ("db_nom", "p('db_type') == 1"),
 
-            "serveur_type" : {
-                # Serveur autonome
-                0 : [
-                    {"propriete" : "serveur_options", "obligatoire" : False},
-                    ],
-                # CGI
-                1 : [
-                    {"propriete" : "serveur_cgi_file", "obligatoire" : True},
-                    ],
-                # WSGI
-                2 : [
-                    ]
-                 },
+            ("serveur_options", "p('serveur_type') == 0"),
+            ("serveur_cgi_file", "p('serveur_type') == 1"),
 
-            "paiement_ligne_actif" : {
-                True : [
-                       {"propriete" : "paiement_ligne_systeme", "obligatoire" : True},
-                       {"propriete" : "paiement_ligne_mode_reglement", "obligatoire" : True},
-                       {"propriete" : "paiement_ligne_multi_factures", "obligatoire" : True},
-                       {"propriete" : "paiement_ligne_tipi_saisie", "obligatoire" : True},
-                       ],
-                False : [
-                        {"propriete" : "paiement_ligne_systeme", "obligatoire" : False},
-                        {"propriete" : "paiement_ligne_mode_reglement", "obligatoire" : False},
-                        {"propriete" : "paiement_ligne_multi_factures", "obligatoire" : False},
-                        {"propriete" : "paiement_ligne_tipi_saisie", "obligatoire" : False},
-                        ]
-                 },
+            ("paiement_ligne_systeme", "p('paiement_ligne_actif') == True"),
+            ("paiement_ligne_mode_reglement", "p('paiement_ligne_actif') == True"),
+            ("paiement_ligne_multi_factures", "p('paiement_ligne_actif') == True"),
+            ("paiement_ligne_montant_minimal", "p('paiement_ligne_actif') == True"),
 
-            #"paiement_ligne_systeme" : {
-            #    0 : [
-            #        {"propriete" : "paiement_ligne_tipi_saisie", "obligatoire" : False},
-            #        ],
-            #    1 : [
-            #        {"propriete" : "paiement_ligne_tipi_saisie", "obligatoire" : True},
-            #        ],
-            #    2 : [
-            #        {"propriete" : "paiement_ligne_tipi_saisie", "obligatoire" : True},
-            #        ]
-            #    },
+            ("payzen_site_id", "p('paiement_ligne_systeme') == 3"),
+            ("payzen_mode", "p('paiement_ligne_systeme') == 3"),
+            ("payzen_certificat_test", "p('paiement_ligne_systeme') == 3"),
+            ("payzen_certificat_production", "p('paiement_ligne_systeme') == 3"),
 
+            ("paiement_ligne_tipi_saisie", "p('paiement_ligne_systeme') == 1"),
+        ]
 
-            }
-
-        for nom_property, dict_conditions in dict_switch.iteritems() :
-            propriete = self.GetProperty(nom_property)
+        # Vérifie les conditions d'affichage des propriétés d'affichage
+        def p(nom=''):
+            propriete = self.GetProperty(nom)
             valeur = propriete.GetValue()
-            for condition, liste_proprietes in dict_conditions.iteritems() :
-                for dict_propriete in liste_proprietes :
-                    propriete = self.GetPropertyByName(dict_propriete["propriete"])
-                    if valeur == condition :
-                        propriete.Hide(False)
-                        propriete.SetAttribute("obligatoire", dict_propriete["obligatoire"])
-                    else :
-                        propriete.Hide(True)
-                        propriete.SetAttribute("obligatoire", False)
+            return valeur
+
+        for nom, condition in liste_conditions:
+            propriete = self.GetProperty(nom)
+            if eval(condition) == True :
+                propriete.Hide(False)
+                propriete.SetAttribute("obligatoire", self.GetPropertyAttribute(propriete, "obligatoire"))
+            else:
+                propriete.Hide(True)
+                propriete.SetAttribute("obligatoire", False)
 
         # email_type_adresse
         propriete = self.GetPropertyByName("email_type_adresse")
@@ -288,7 +248,6 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
             self.RefreshGrid()
 
     def Remplissage(self):
-
         # Catégorie
         self.Append( wxpg.PropertyCategory(_(u"Activation")) )
 
@@ -688,7 +647,8 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
 
         # Choix du systeme de paiement en ligne
         nom = "paiement_ligne_systeme"
-        propriete = wxpg.EnumProperty(label=_(u"Système / Partenaire"), labels=[_(u"Aucun"), _(u"TIPI Régie"), _(u"TIPI Formulaire/(NON ACTIF)")], values=[0, 1, 2], name=nom, value=VALEURS_DEFAUT[nom])
+        # _(u"TIPI Formulaire (Non actif)"),
+        propriete = wxpg.EnumProperty(label=_(u"Système / Partenaire"), labels=[_(u"Aucun"), _(u"TIPI Régie"), _(u"Payzen"), _(u"Mode démo")], values=[0, 1, 3, 4], name=nom, value=VALEURS_DEFAUT[nom])
         propriete.SetHelpString(_(u"Choisissez le système / partenaire à utiliser pour le paiement en ligne"))
         self.Append(propriete)
 
@@ -716,10 +676,44 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
-        # Type de saisie pour TIPI ( Test / Validation / Production )
+        # Montant minimal pour le paiement en ligne
+        nom = "paiement_ligne_montant_minimal"
+        propriete = wxpg.FloatProperty(label=_(u"Montant minimal autorisé"), name="paiement_ligne_montant_minimal", value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Indiquez le montant minimal autorisé pour le paiement en ligne"))
+        propriete.SetAttribute("obligatoire", True)
+        self.Append(propriete)
+
+        # TIPI : Type de saisie ( Test / Validation / Production )
         nom = "paiement_ligne_tipi_saisie"
         propriete = wxpg.EnumProperty(label=_(u"Mode de saisie TIPI"), labels=[_(u"Test"), _(u"Validation"), _(u"Production")], values=[0, 1, 2], name=nom, value=VALEURS_DEFAUT[nom])
         propriete.SetHelpString(_(u"Choisissez le type de saisie TIPI.\nATTENTION !!!\n(A modifier uniquement si vous savez ce que vous faites.)"))
+        self.Append(propriete)
+
+        # PAYZEN : ID de la boutique
+        nom = "payzen_site_id"
+        propriete = wxpg.StringProperty(label=_(u"Identifiant boutique"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Saisissez l'identifiant boutique attribué par Payzen"))
+        propriete.SetAttribute("obligatoire", True)
+        self.Append(propriete)
+
+        # PAYZEN : Mode test ou production
+        nom = "payzen_mode"
+        propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Mode de fonctionnement"), name=nom, liste_choix=[("TEST", _(u"Test")), ("PRODUCTION", _(u"Production"))], valeur=VALEURS_DEFAUT[nom])
+        propriete.SetEditor("EditeurChoix")
+        propriete.SetHelpString(_(u"Sélectionnez le mode de saisie des paiements. Attention, ne passez en mode production qu'après avoir effectué des essais en mode test."))
+        propriete.SetAttribute("obligatoire", True)
+        self.Append(propriete)
+
+        # PAYZEN : Certificat de test
+        nom = "payzen_certificat_test"
+        propriete = wxpg.StringProperty(label=_(u"Certificat de test"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Saisissez le certificat de test attribué par Payzen"))
+        self.Append(propriete)
+
+        # PAYZEN : Certificat de production
+        nom = "payzen_certificat_production"
+        propriete = wxpg.StringProperty(label=_(u"Certificat de production"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Saisissez le certificat de production attribué par Payzen"))
         self.Append(propriete)
 
         # Catégorie

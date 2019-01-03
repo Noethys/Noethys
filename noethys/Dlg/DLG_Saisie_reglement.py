@@ -1584,8 +1584,12 @@ class Dialog(wx.Dialog):
             self.OnChoixEmetteur(None)
         self.ctrl_payeur.SetID(IDpayeur)
     
-    def SelectionneFacture(self, IDfacture=None):
-        self.ctrl_ventilation.SelectionneFacture(IDfacture)
+    def SelectionneFacture(self, IDfacture=None, liste_IDfacture=[]):
+        if len(liste_IDfacture) > 0 :
+            for ID in liste_IDfacture :
+                self.ctrl_ventilation.SelectionneFacture(ID)
+        if IDfacture != None :
+            self.ctrl_ventilation.SelectionneFacture(IDfacture)
         montant = self.ctrl_ventilation.ctrl_ventilation.GetTotalVentile()
         self.ctrl_ventilation.SetMontantReglement(montant)
         self.ctrl_montant.SetMontant(montant)

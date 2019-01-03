@@ -1050,61 +1050,80 @@ class Traitement():
 
     def Traitement_paiement_en_ligne(self):
         # Récupération des paramètres
-        IDmodepaiement = int(UTILS_Parametres.Parametres(mode="get", categorie="portail", nom="paiement_ligne_mode_reglement", valeur=None))
-        IDpaiement = int(self.dict_parametres["IDpaiement"])
-        IDfacture = int(self.dict_parametres["factures_ID"])
+        IDmode_reglement = int(UTILS_Parametres.Parametres(mode="get", categorie="portail", nom="paiement_ligne_mode_reglement", valeur=None))
+        if IDmode_reglement in (None, 0):
+            dlg = wx.MessageDialog(self.parent, _(u"Vous devez obligatoirement commencer par renseigner un mode de règlement dans la configuration de Connecthys (Menu Outils > Connecthys > Rubrique Paiement en ligne) !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return False
+
         IDfamille = self.track.IDfamille
-        montant = self.dict_parametres["montant"]
-        # IDcompte_payeur = ????
-        # on recupère l' ID du compte payeur de la famille liée a la facture
-        # lequel ?
-        # le dernier ?
-        # le plus fréquement utilisé ?
-        # un  choix ?
-        # le plus simple: IDcompte_payeur dans la table famille
-        # lequel est-ce ?
+        IDpaiement = self.track.IDpaiement
+        #factures_ID = self.dict_parametres["factures_ID"]
+        systeme_paiement = self.dict_parametres.get("systeme_paiement", u"Système inconnu")
+        IDtransaction = self.dict_parametres["IDtransaction"].split("_")[1]
+        montant_reglement = float(self.dict_parametres["montant"])
+        ventilation = self.track.ventilation
+
+        # Analyse de la ventilation
+        dict_paiements = {}
+        for texte in ventilation.split(","):
+            IDfacture, montant = texte[1:].split("#")
+            IDfacture, montant = int(IDfacture), float(montant)
+            dict_paiements[IDfacture] = montant
+
+        # Importation du IDcompte_payeur
         DB = GestionDB.DB()
         req = """SELECT IDcompte_payeur
         FROM familles
         WHERE IDfamille=%d;""" % IDfamille
         DB.ExecuterReq(req)
         IDcompte_payeur = DB.ResultatReq()[0][0]
-        # on récupère l ID du compte bancaire de la régie si la facture est liée a une régie
-        req = """SELECT factures_regies.IDcompte_bancaire
-        FROM factures
-        LEFT JOIN factures_regies ON factures_regies.IDregie = factures.IDregie
-        WHERE IDfacture=%d;""" % IDfacture
-        DB.ExecuterReq(req)
-        DB.Close()
-        IDcompte_bancaire = DB.ResultatReq()[0][0]
-        numauto = self.dict_parametres["numauto"]
-        numpiece = "auth_num-" + numauto
 
+        # On récupère l'ID du compte bancaire de la régie si la facture est liée a une régie
+        IDcompte_bancaire = None
+        num_piece = ""
+
+        if "payzen" in systeme_paiement :
+            num_piece = IDtransaction
+
+        if "tipi" in systeme_paiement :
+            IDfacture = dict_paiements.keys()[0]
+            req = """SELECT factures_regies.IDcompte_bancaire
+            FROM factures
+            LEFT JOIN factures_regies ON factures_regies.IDregie = factures.IDregie
+            WHERE IDfacture=%d;""" % IDfacture
+            DB.ExecuterReq(req)
+            IDcompte_bancaire = DB.ResultatReq()[0][0]
+            DB.Close()
+            num_piece = "auth_num-" + self.dict_parametres["numauto"]
 
         # Traitement manuel
         if self.mode == "manuel" :
             from Dlg import DLG_Saisie_reglement
             dlg = DLG_Saisie_reglement.Dialog(None, IDcompte_payeur=IDcompte_payeur, IDreglement=None)
-            dlg.SelectionneFacture(IDfacture=IDfacture)
-            dlg.ctrl_montant.SetValue(montant)
-            dlg.ctrl_numero.SetValue(numpiece)
-            dlg.ctrl_mode.SetID(IDmodepaiement)
-            dlg.ctrl_emetteur.MAJ(IDmodepaiement)
-            dlg.ctrl_emetteur.Enable(False)
-            dlg.bouton_emetteur.Enable(False)
-            if IDcompte_bancaire != 0:
+            dlg.SelectionneFacture(liste_IDfacture=dict_paiements.keys())
+            dlg.ctrl_montant.SetMontant(montant_reglement)
+            dlg.ctrl_numero.SetValue(num_piece)
+            dlg.ctrl_mode.SetID(IDmode_reglement)
+            dlg.OnChoixMode(None)
+            # dlg.ctrl_emetteur.MAJ(IDmode_reglement)
+            # dlg.ctrl_emetteur.Enable(False)
+            # dlg.bouton_emetteur.Enable(False)
+            dlg.ctrl_observations.SetValue(_(u"Transaction n°%s sur %s (IDpaiement %d)" % (IDtransaction, systeme_paiement, IDpaiement)))
+            if IDcompte_bancaire not in (0, None):
                 dlg.ctrl_compte.SetID(IDcompte_bancaire)
-            dlg.ShowModal()
+            reponse = dlg.ShowModal()
             dlg.Destroy()
+            if reponse != wx.ID_OK:
+                return False
 
             reponse = ""
-
             return {"etat" : True, "reponse" : reponse}
 
         # Traitement automatique (desactivé par choix dans Dialog.OnRadioEtat)
         if self.mode == "automatique" :
             reponse = ""
-
             return {"etat" : False, "reponse" : reponse}
 
 
