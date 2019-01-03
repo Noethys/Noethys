@@ -1,5 +1,6 @@
-Version 1.2.5.0 (23/12/2018) :
+Version 1.2.5.2 (03/01/2019) :
 
+- Ajout du paiement en ligne avec Payzen sur Connecthys
 - Ajout des inscriptions refusées et en attente
 - Ajout affichage des erreurs de conversion de fichiers
 - Ajout du filtre état à l'état nominatif
