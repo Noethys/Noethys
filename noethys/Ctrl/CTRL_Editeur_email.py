@@ -214,7 +214,9 @@ MOTSCLES = {
                 ( "{PERIODE_NOM}", _(u"Nom de la période") ),
                 ( "{PERIODE_DATE_DEBUT}", _(u"Date de début de la période") ),
                 ( "{PERIODE_DATE_FIN}", _(u"Date de fin de la période") ),
-                ( "{SOLDE}", _(u"Solde du document") ),
+                ( "{TOTAL}", _(u"Total des prestations de la période") ),
+                ( "{REGLE}", _(u"Total déjà réglé pour la période") ),
+                ( "{SOLDE}", _(u"Solde de la période") ),
                 ],
 
     "portail_demande_facture" : [

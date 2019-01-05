@@ -55,8 +55,8 @@ class CTRL_Html(html.HtmlWindow):
 
     def SetTexte(self, texte=""):
         self.texte = texte
-        self.SetPage(u"""<BODY><FONT SIZE=3 COLOR='#000000'>%s</FONT></BODY>""" % texte)
-        self.SetBackgroundColour(self.couleurFond)
+        self.SetPage(u"""<BODY><FONT SIZE=2 COLOR='#000000'>%s</FONT></BODY>""" % texte)
+        #self.SetBackgroundColour(self.couleurFond)
 
     def GetTexte(self):
         return self.texte
@@ -262,6 +262,7 @@ class Dialog(wx.Dialog):
 
         self.label_famille = wx.StaticText(self, -1, _(u"Famille :"))
         self.ctrl_famille = wx.TextCtrl(self, -1, "", style=wx.TE_READONLY)
+        self.ctrl_famille.SetBackgroundColour(wx.WHITE)
         font = self.ctrl_famille.GetFont()
         font.SetWeight(wx.BOLD)
         self.ctrl_famille.SetFont(font)
@@ -279,6 +280,10 @@ class Dialog(wx.Dialog):
         self.ctrl_commentaire = CTRL_Html(self, couleurFond=self.GetBackgroundColour())
         self.ctrl_commentaire.SetMinSize((-1, 30))
 
+        self.label_informations = wx.StaticText(self, -1, _(u"Informations :"))
+        self.ctrl_informations = CTRL_Html(self, couleurFond=self.GetBackgroundColour())
+        self.ctrl_informations.SetMinSize((-1, 25))
+
         # Traitement
         self.box_traitement_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Traitement"))
 
@@ -292,7 +297,7 @@ class Dialog(wx.Dialog):
 
         self.label_reponse = wx.StaticText(self, -1, _(u"Réponse :"))
         self.ctrl_reponse = wx.TextCtrl(self, -1, "", style=wx.TE_MULTILINE)
-        self.ctrl_reponse.SetMinSize((-1, 50))
+        self.ctrl_reponse.SetMinSize((-1, 60))
 
         # Email
         self.label_email = wx.StaticText(self, -1, _(u"Email :"))
@@ -395,7 +400,7 @@ class Dialog(wx.Dialog):
 
         # Demande
         box_demande = wx.StaticBoxSizer(self.box_demande_staticbox, wx.VERTICAL)
-        grid_sizer_demande = wx.FlexGridSizer(rows=3, cols=2, vgap=10, hgap=10)
+        grid_sizer_demande = wx.FlexGridSizer(rows=4, cols=2, vgap=10, hgap=10)
 
         # Famille
         grid_sizer_demande.Add(self.label_famille, 0, wx.ALIGN_CENTER_VERTICAL | wx.ALIGN_RIGHT, 0)
@@ -413,9 +418,13 @@ class Dialog(wx.Dialog):
         grid_sizer_demande.Add(self.label_description, 0, wx.ALIGN_RIGHT, 0)
         grid_sizer_demande.Add(self.ctrl_description, 0, wx.EXPAND, 0)
 
-        # commentaire
+        # Commentaire
         grid_sizer_demande.Add(self.label_commentaire, 0, wx.ALIGN_RIGHT, 0)
         grid_sizer_demande.Add(self.ctrl_commentaire, 0, wx.EXPAND, 0)
+
+        # Informations
+        grid_sizer_demande.Add(self.label_informations, 0, wx.ALIGN_CENTER_VERTICAL | wx.ALIGN_RIGHT, 0)
+        grid_sizer_demande.Add(self.ctrl_informations, 0, wx.EXPAND, 0)
 
         grid_sizer_demande.AddGrowableRow(1)
         grid_sizer_demande.AddGrowableRow(2)
@@ -466,7 +475,6 @@ class Dialog(wx.Dialog):
         grid_sizer_contenu.Add(box_traitement, 0, wx.EXPAND, 0)
 
         grid_sizer_contenu.AddGrowableRow(0)
-        grid_sizer_contenu.AddGrowableRow(1)
         grid_sizer_contenu.AddGrowableCol(0)
         grid_sizer_base.Add(grid_sizer_contenu, 1, wx.LEFT | wx.RIGHT | wx.EXPAND, 10)
 
@@ -739,6 +747,9 @@ class Dialog(wx.Dialog):
         if self.track.commentaire != None :
             self.ctrl_commentaire.SetTexte(self.track.commentaire)
 
+        # Informations
+        self.MAJ_informations()
+
         # Etat
         self.SetEtat(self.track.etat, self.track.traitement_date)
 
@@ -789,6 +800,21 @@ class Dialog(wx.Dialog):
             self.label_email_reponse.Show(False)
         self.grid_sizer_etat.Layout()
 
+    def MAJ_informations(self):
+        texte = ""
+
+        if self.track.categorie == "reservations":
+            # Calcule le solde actuel de la période de réservations
+            traitement = Traitement(parent=self, track=self.track)
+            montants = traitement.Get_montants_reservations()
+            texte_solde = u"%.2f %s" % (montants["solde"], SYMBOLE)
+            if montants["solde"] > FloatToDecimal(0.0):
+                texte_solde = u"<FONT COLOR='red'>%s</FONT>" % texte_solde
+            texte = _(u"Total pour la période : %.2f %s | Réglé : %.2f %s | Solde à régler : %s") % (montants["total"], SYMBOLE, montants["regle"], SYMBOLE, texte_solde)
+
+
+        self.ctrl_informations.SetTexte(texte)
+
     def OnNavigation(self, event):
         self.Sauvegarde()
 
@@ -815,6 +841,7 @@ class Dialog(wx.Dialog):
         dlg.ShowModal()
         dlg.Destroy()
         self.ctrl_solde.MAJ(IDfamille=self.track.IDfamille)
+        self.MAJ_informations()
 
     def OnBoutonAutomatique(self, event):
         self.Traitement(mode="automatique")
@@ -842,6 +869,7 @@ class Dialog(wx.Dialog):
 
         # Réactualise le solde
         self.ctrl_solde.MAJ(IDfamille=self.track.IDfamille)
+        self.MAJ_informations()
 
     def OnBoutonEnvoyer(self, event=None):
         self.Envoyer(visible=False)
@@ -901,13 +929,12 @@ class Dialog(wx.Dialog):
             dict_champs_reservations = self.ctrl_grille.grille.CreationPDF(nomDoc=nomDoc, afficherDoc=afficherDoc)
             dict_champs.update(dict_champs_reservations)
 
-        # Génération du PDF de la facture
-        #facturation = UTILS_Facturation.Facturation()
-        #resultat = facturation.Impression(listeFactures=[IDfacture,], nomDoc=nomDoc, afficherDoc=afficherDoc, afficherOptions=self.afficherOptions)
-        #if resultat == False :
-        #    return False
-        #dictChampsFusion, dictPieces = resultat
-        #dict_champs = dictChampsFusion[IDfacture]
+            # Calcule le solde actuel de la période de réservations
+            traitement = Traitement(parent=self, track=self.track)
+            montants = traitement.Get_montants_reservations()
+            dict_champs["{TOTAL}"] = u"%.2f %s" % (montants["total"], SYMBOLE)
+            dict_champs["{REGLE}"] = u"%.2f %s" % (montants["regle"], SYMBOLE)
+            dict_champs["{SOLDE}"] = u"%.2f %s" % (montants["solde"], SYMBOLE)
 
         return dict_champs
 
@@ -1518,7 +1545,44 @@ class Traitement():
                 return False
         return True
 
+    def Get_montants_reservations(self):
+        # Récupération des variables
+        IDactivite = int(self.dict_parametres["IDactivite"])
+        date_debut = UTILS_Dates.DateEngEnDateDD(self.dict_parametres["date_debut_periode"])
+        date_fin = UTILS_Dates.DateEngEnDateDD(self.dict_parametres["date_fin_periode"])
+        IDindividu = self.track.IDindividu
+        IDfamille = self.track.IDfamille
 
+        # Récupère les prestations
+        DB = GestionDB.DB()
+        req = """SELECT IDprestation, montant
+        FROM prestations
+        WHERE IDactivite=%d AND IDfamille=%d AND IDindividu=%d AND date>='%s' AND date<='%s'
+        ;""" % (IDactivite, IDfamille, IDindividu, date_debut, date_fin)
+        DB.ExecuterReq(req)
+        listePrestations = DB.ResultatReq()
+        total_prestations = FloatToDecimal(0.0)
+        liste_IDprestation = []
+        for IDprestation, montant in listePrestations:
+            liste_IDprestation.append(IDprestation)
+            total_prestations += FloatToDecimal(montant)
+
+        # Récupère la ventilation
+        req = """SELECT SUM(ventilation.montant)
+        FROM ventilation
+        LEFT JOIN prestations ON prestations.IDprestation = ventilation.IDprestation
+        WHERE prestations.IDprestation IN %s
+        ;""" % GestionDB.ConvertConditionChaine(liste_IDprestation)
+        DB.ExecuterReq(req)
+        listeVentilations = DB.ResultatReq()
+        DB.Close()
+        total_ventilation = FloatToDecimal(0.0)
+        if len(listeVentilations) > 0 :
+            total_ventilation = FloatToDecimal(listeVentilations[0][0])
+
+        # Calcul du solde
+        solde = total_prestations - total_ventilation
+        return {"total": total_prestations, "regle": total_ventilation, "solde": solde}
 
 
 
