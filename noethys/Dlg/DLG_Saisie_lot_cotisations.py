@@ -18,10 +18,12 @@ import GestionDB
 from Ctrl import CTRL_Bandeau
 from Ol import OL_Saisie_lot_cotisations
 from Dlg.DLG_Saisie_cotisation import CTRL_Parametres
+from Dlg import DLG_Messagebox
 import datetime
 from Utils import UTILS_Dates
 from Utils import UTILS_Historique
 from Utils import UTILS_Texte
+from Utils import UTILS_Titulaires
 
 
 
@@ -149,6 +151,47 @@ class Dialog(wx.Dialog):
         date_fin = self.ctrl_parametres.ctrl_date_fin.GetDate()
         activites = self.ctrl_parametres.ctrl_activites.GetDonnees(format="texte")
         observations = self.ctrl_parametres.ctrl_observations.GetValue()
+        type_cotisation = self.ctrl_parametres.ctrl_type.GetDetailDonnees()["type"]
+
+        # Vérifie que les cotisations n'existent pas déjà
+        liste_IDindividu = [track.IDindividu for track in liste_tracks if track.IDindividu != None]
+        if len(liste_IDindividu) == 1 :
+            condition_individus = "AND cotisations.IDindividu == %d" % liste_IDindividu[0]
+        elif len(liste_IDindividu) > 1 :
+            condition_individus = "AND cotisations.IDindividu IN %s" % str(tuple(liste_IDindividu))
+        else :
+            condition_individus = ""
+
+        DB = GestionDB.DB()
+        req = """SELECT IDcotisation, IDfamille, cotisations.IDindividu, numero, individus.prenom, individus.nom
+        FROM cotisations 
+        LEFT JOIN individus ON individus.IDindividu = cotisations.IDindividu 
+        WHERE IDtype_cotisation=%d AND IDunite_cotisation=%d
+        %s;""" % (IDtype_cotisation, IDunite_cotisation, condition_individus)
+        DB.ExecuterReq(req)
+        listeCotisationsExistantes = DB.ResultatReq()
+        DB.Close()
+        if len(listeCotisationsExistantes) > 0 :
+            dictTitulaires = UTILS_Titulaires.GetTitulaires()
+            liste_details = []
+            for IDcotisation, IDfamille, IDindividu, numero, prenom_individu, nom_individu in listeCotisationsExistantes :
+                # Si cotisation familiale
+                if IDfamille != None and dictTitulaires.has_key(IDfamille):
+                    nom_famille = dictTitulaires[IDfamille]["titulairesSansCivilite"]
+                    liste_details.append(_(u"Famille de %s : Cotisation n°%s") % (nom_famille, numero))
+                # Si cotisation individuelle
+                if IDindividu != None :
+                    if prenom_individu == None : prenom_individu = ""
+                    liste_details.append(_(u"%s %s : Cotisation n°%s") % (nom_individu, prenom_individu, numero))
+            # Demande si on continue ou non
+            intro = _(u"Les cotisations suivantes existent déjà avec le même type et la même unité de cotisation :")
+            conclusion = _(u"Souhaitez-vous quand même les générer une nouvelle fois ?")
+            detail = "\n".join(liste_details)
+            dlg = DLG_Messagebox.Dialog(self, titre=_(u"Avertissement"), introduction=intro, detail=detail, conclusion=conclusion, icone=wx.ICON_EXCLAMATION, boutons=[_(u"Oui"), _(u"Non"), _(u"Annuler")])
+            reponse = dlg.ShowModal()
+            dlg.Destroy()
+            if reponse in (1, 2):
+                return False
 
         # Création de la carte
         if self.ctrl_parametres.ctrl_creation.GetValue() == True:
@@ -179,8 +222,13 @@ class Dialog(wx.Dialog):
             if numero_manuel == True :
                 numero = track.numero
 
+            if type_cotisation == "famille":
+                IDfamille = track.IDfamille
+            else :
+                IDfamille = None
+
             listeDonnees = [
-                ("IDfamille", track.IDfamille),
+                ("IDfamille", IDfamille),
                 ("IDindividu", track.IDindividu),
                 ("IDtype_cotisation", IDtype_cotisation),
                 ("IDunite_cotisation", IDunite_cotisation),
