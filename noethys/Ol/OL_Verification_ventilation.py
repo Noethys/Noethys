@@ -61,6 +61,9 @@ def Importation(onlyNonVentiles=True, IDcompte_payeur=None):
     ;""" % conditionCompte
     DB.ExecuterReq(req)
     listeComptes = DB.ResultatReq()
+
+    # Mémorise les IDfamille
+    listeIDfamille = [IDfamille for temp, IDfamille in listeComptes]
     
     # Récupère la ventilation
     req = """SELECT IDcompte_payeur, SUM(montant) AS total_ventilations
@@ -104,7 +107,7 @@ def Importation(onlyNonVentiles=True, IDcompte_payeur=None):
     DB.Close()
     
     # Récupération des titulaires de familles
-    dictTitulaires = UTILS_Titulaires.GetTitulaires() 
+    dictTitulaires = UTILS_Titulaires.GetTitulaires(listeIDfamille=listeIDfamille)
     
     # Traitement des données
     listeListeView = []
@@ -123,7 +126,7 @@ def Importation(onlyNonVentiles=True, IDcompte_payeur=None):
             total_reglements = FloatToDecimal(0.0)
         item = (IDcompte_payeur, IDfamille, total_ventilations, total_reglements, total_prestations)
         track = Track(dictTitulaires, item)
-        
+
         if onlyNonVentiles == True :
             # Afficher seulement ceux qui sont mal ventilés
             if track.reste_a_ventiler > FloatToDecimal(0.0) :
@@ -313,6 +316,7 @@ class ListView(FastObjectListView):
         self.itemSelected = False
         self.popupIndex = -1
         self.listeFiltres = []
+        self.donnees = None
         # Initialisation du listCtrl
         self.nom_fichier_liste = __file__
         FastObjectListView.__init__(self, *args, **kwds)
@@ -324,29 +328,12 @@ class ListView(FastObjectListView):
         self.OuvrirFicheFamille(None)
                 
     def InitModel(self):
-        self.donnees = self.GetTracks()
-
-    def GetTracks(self):
         """ Récupération des données """
-        listeID = None
-        
-        if self.tracks == None :
-            listeListeView = Importation(self.onlyNonVentiles, self.IDcompte_payeur)
+        if self.tracks == None or self.donnees != None :
+            self.donnees = Importation(self.onlyNonVentiles, self.IDcompte_payeur)
         else:
-            listeListeView = self.tracks
-        
-##        for item in listeDonnees :
-##            valide = True
-##            if listeID != None :
-##                if item[0] not in listeID :
-##                    valide = False
-##            if valide == True :
-##                track = Track(item)
-##                listeListeView.append(track)
-##                if self.selectionID == item[0] :
-##                    self.selectionTrack = track
-        return listeListeView
-            
+            self.donnees = self.tracks
+
     def InitObjectListView(self):            
         # Couleur en alternance des lignes
         self.oddRowsBackColor = UTILS_Interface.GetValeur("couleur_tres_claire", wx.Colour(240, 251, 237))
@@ -549,8 +536,11 @@ class ListView(FastObjectListView):
     def GetTracksCoches(self):
         return self.GetCheckedObjects()
 
-    def VentilationAuto(self, event):
-        ID = event.GetId() 
+    def VentilationAuto(self, event=None, action=None):
+        if action != None:
+            ID = action
+        else:
+            ID = event.GetId()
         if ID == 201 :
             # Uniquement la ligne sélectionnée
             if len(self.Selection()) == 0 :
