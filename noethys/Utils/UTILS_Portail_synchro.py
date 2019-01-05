@@ -838,6 +838,36 @@ class Synchro():
 
         liste_tables_modifiees.append("cotisations_manquantes")
 
+        # Création de la liste des cotisations
+        if self.dict_parametres["cotisations_selection"] == 0 :
+            conditions_cotisations = ""
+        else :
+            nbre_mois = self.dict_parametres["cotisations_selection"]
+            date_limite = datetime.date.today() + relativedelta.relativedelta(months=-nbre_mois)
+            conditions_cotisations = "WHERE cotisations.date_fin >= '%s'" % date_limite
+
+        req = """SELECT IDcotisation, IDfamille, cotisations.IDindividu, cotisations.numero, cotisations.date_debut, cotisations.date_fin, 
+        types_cotisations.nom, unites_cotisations.nom, individus.prenom
+        FROM cotisations 
+        LEFT JOIN types_cotisations ON types_cotisations.IDtype_cotisation = cotisations.IDtype_cotisation
+        LEFT JOIN unites_cotisations ON unites_cotisations.IDunite_cotisation = cotisations.IDunite_cotisation
+        LEFT JOIN individus ON individus.IDindividu = cotisations.IDindividu
+        %s
+        ;""" % conditions_cotisations
+        DB.ExecuterReq(req)
+        listeCotisations = DB.ResultatReq()
+        for IDcotisation, IDfamille, IDindividu, numero, date_debut, date_fin, nom_cotisation, nom_unite, prenom_individu in listeCotisations:
+            date_debut = UTILS_Dates.DateEngEnDateDD(date_debut)
+            date_fin = UTILS_Dates.DateEngEnDateDD(date_fin)
+            if prenom_individu != None :
+                prenom_individu = cryptage.encrypt(prenom_individu)
+            m = models.Cotisation(IDcotisation=IDcotisation, IDfamille=IDfamille, IDindividu=IDindividu, numero=numero, date_debut=date_debut,
+                                  date_fin = date_fin, nom_cotisation=nom_cotisation, nom_unite=nom_unite, prenom_individu=prenom_individu)
+            session.add(m)
+
+        liste_tables_modifiees.append("cotisations")
+
+
         # Création des activités
         self.Pulse_gauge()
 
