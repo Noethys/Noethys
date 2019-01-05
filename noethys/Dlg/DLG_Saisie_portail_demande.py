@@ -960,10 +960,12 @@ class Traitement():
         # Traitement des inscriptions
         if self.track.categorie == "inscriptions" :
             resultat = self.Traitement_inscriptions()
+            self.Verifier_ventilation()
 
         # Traitement des réservations
         if self.track.categorie == "reservations" :
             resultat = self.Traitement_reservations()
+            self.Verifier_ventilation()
 
         # Traitement des renseignements
         if self.track.categorie == "renseignements" :
@@ -1058,6 +1060,7 @@ class Traitement():
             return False
 
         IDfamille = self.track.IDfamille
+        IDcompte_payeur = self.track.IDcompte_payeur
         IDpaiement = self.track.IDpaiement
         #factures_ID = self.dict_parametres["factures_ID"]
         systeme_paiement = self.dict_parametres.get("systeme_paiement", u"Système inconnu")
@@ -1072,14 +1075,6 @@ class Traitement():
             IDfacture, montant = int(IDfacture), float(montant)
             dict_paiements[IDfacture] = montant
 
-        # Importation du IDcompte_payeur
-        DB = GestionDB.DB()
-        req = """SELECT IDcompte_payeur
-        FROM familles
-        WHERE IDfamille=%d;""" % IDfamille
-        DB.ExecuterReq(req)
-        IDcompte_payeur = DB.ResultatReq()[0][0]
-
         # On récupère l'ID du compte bancaire de la régie si la facture est liée a une régie
         IDcompte_bancaire = None
         num_piece = ""
@@ -1089,6 +1084,7 @@ class Traitement():
 
         if "tipi" in systeme_paiement :
             IDfacture = dict_paiements.keys()[0]
+            DB = GestionDB.DB()
             req = """SELECT factures_regies.IDcompte_bancaire
             FROM factures
             LEFT JOIN factures_regies ON factures_regies.IDregie = factures.IDregie
@@ -1507,7 +1503,20 @@ class Traitement():
             self.EcritLog(_(u"Réponse : %s") % reponse, log_jumeau)
             return reponse
 
-
+    def Verifier_ventilation(self):
+        import DLG_Verification_ventilation
+        tracks = DLG_Verification_ventilation.Verification(self.track.IDcompte_payeur)
+        if len(tracks) > 0 :
+            dlg = wx.MessageDialog(None, _(u"Un ou plusieurs règlements peuvent être ventilés.\n\nSouhaitez-vous le faire maintenant (conseillé) ?"), _(u"Ventilation"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+            reponse = dlg.ShowModal()
+            dlg.Destroy()
+            if reponse == wx.ID_YES :
+                dlg = DLG_Verification_ventilation.Dialog(None, tracks=tracks, IDcompte_payeur=self.track.IDcompte_payeur)
+                dlg.ShowModal()
+                dlg.Destroy()
+            if reponse == wx.ID_CANCEL :
+                return False
+        return True
 
 
 

@@ -62,8 +62,10 @@ class Track(object):
         if self.IDfamille != None :
             if dictTitulaires.has_key(self.IDfamille) :
                 self.nom = dictTitulaires[self.IDfamille]["titulairesAvecCivilite"]
+                self.IDcompte_payeur = dictTitulaires[self.IDfamille]["IDcompte_payeur"]
             else :
                 self.nom = "?"
+                self.IDcompte_payeur = None
 
         if self.IDutilisateur != None :
             if dictUtilisateurs.has_key(self.IDutilisateur) :
