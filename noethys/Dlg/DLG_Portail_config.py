@@ -141,6 +141,7 @@ VALEURS_DEFAUT = {
     "factures_intro" : _(u"Vous pouvez consulter ici la liste des factures et demander des duplicatas."),
     "factures_selection" : 0,
     "factures_demande_facture" : True,
+    "factures_prefacturation" : True,
     "reglements_afficher" : True,
     "reglements_intro" : _(u"Vous pouvez consulter ici la liste des règlements et demander des reçus."),
     "reglements_selection" : 0,
@@ -907,6 +908,13 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         nom = "factures_demande_facture"
         propriete = wxpg.BoolProperty(label=_(u"Autoriser la demande de factures"), name=nom, value=VALEURS_DEFAUT[nom])
         propriete.SetHelpString(_(u"Cochez cette case pour autoriser la demande de factures"))
+        propriete.SetAttribute("UseCheckbox", True)
+        self.Append(propriete)
+
+        # Afficher la préfacturation
+        nom = "factures_prefacturation"
+        propriete = wxpg.BoolProperty(label=_(u"Afficher la préfacturation"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Cochez cette case pour afficher la préfacturation"))
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 

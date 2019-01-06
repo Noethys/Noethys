@@ -133,6 +133,10 @@ class Dialog(wx.Dialog):
         self.ctrl_modele_email = CTRL_Choix_modele(self)
         self.bouton_gestion_modeles = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Mecanisme.png"), wx.BITMAP_TYPE_ANY))
 
+        # Préfacturation
+        self.box_prefacturation_staticbox = wx.StaticBox(self, -1, _(u"Préfacturation"))
+        self.ctrl_prefacturation = wx.CheckBox(self, -1, _(u"Activer la préfacturation pour cette période"))
+
         # Boutons
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
         self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
@@ -168,6 +172,7 @@ class Dialog(wx.Dialog):
         self.radio_modele_choix.SetToolTip(wx.ToolTip(_(u"Sélectionnez cette option pour utiliser un modèle d'Email spécifique pour les réponses aux demandes")))
         self.ctrl_modele_email.SetToolTip(wx.ToolTip(_(u"Sélectionnez le modèle d'Email à associer à la période")))
         self.bouton_gestion_modeles.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à la gestion des modèles d'Emails")))
+        self.ctrl_prefacturation.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour que le solde à régler pour cette période apparaisse sur le portail")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
@@ -176,7 +181,7 @@ class Dialog(wx.Dialog):
         grid_sizer_base = wx.FlexGridSizer(rows=5, cols=1, vgap=10, hgap=10)
         grid_sizer_base.Add(self.ctrl_bandeau, 0, wx.EXPAND, 0)
 
-        grid_sizer_contenu = wx.FlexGridSizer(rows=5, cols=1, vgap=10, hgap=10)
+        grid_sizer_contenu = wx.FlexGridSizer(rows=6, cols=1, vgap=10, hgap=10)
 
         # Nom
         box_nom = wx.StaticBoxSizer(self.box_nom_staticbox, wx.VERTICAL)
@@ -242,6 +247,11 @@ class Dialog(wx.Dialog):
         box_modele.Add(grid_sizer_modele, 1, wx.ALL | wx.EXPAND, 10)
         grid_sizer_contenu.Add(box_modele, 1,wx.EXPAND, 0)
 
+        # Préfacturation
+        box_prefacturation = wx.StaticBoxSizer(self.box_prefacturation_staticbox, wx.VERTICAL)
+        box_prefacturation.Add(self.ctrl_prefacturation, 0, wx.ALL, 10)
+        grid_sizer_contenu.Add(box_prefacturation, 1, wx.EXPAND, 0)
+
         grid_sizer_contenu.AddGrowableCol(0)
         grid_sizer_base.Add(grid_sizer_contenu, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
         
@@ -296,14 +306,14 @@ class Dialog(wx.Dialog):
             return
 
         DB = GestionDB.DB()
-        req = """SELECT IDactivite, nom, date_debut, date_fin, affichage, affichage_date_debut, affichage_date_fin, IDmodele, introduction
+        req = """SELECT IDactivite, nom, date_debut, date_fin, affichage, affichage_date_debut, affichage_date_fin, IDmodele, introduction, prefacturation
         FROM portail_periodes
         WHERE IDperiode=%d;""" % self.IDperiode
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         DB.Close()
         if len(listeDonnees) == 0 : return
-        IDactivite, nom, date_debut, date_fin, affichage, affichage_date_debut, affichage_date_fin, IDmodele, introduction = listeDonnees[0]
+        IDactivite, nom, date_debut, date_fin, affichage, affichage_date_debut, affichage_date_fin, IDmodele, introduction, prefacturation = listeDonnees[0]
         affichage_date_debut = UTILS_Dates.DateEngEnDateDDT(affichage_date_debut)
         affichage_date_fin = UTILS_Dates.DateEngEnDateDDT(affichage_date_fin)
 
@@ -328,6 +338,9 @@ class Dialog(wx.Dialog):
         if IDmodele not in (None, ""):
             self.radio_modele_choix.SetValue(True)
             self.ctrl_modele_email.SetID(IDmodele)
+
+        if prefacturation == 1 :
+            self.ctrl_prefacturation.SetValue(True)
 
 
     def OnBoutonOk(self, event):
@@ -426,6 +439,8 @@ class Dialog(wx.Dialog):
         else :
             IDmodele = None
 
+        prefacturation = self.ctrl_prefacturation.GetValue()
+
         # Sauvegarde
         DB = GestionDB.DB()
         listeDonnees = [
@@ -438,6 +453,7 @@ class Dialog(wx.Dialog):
             ("affichage_date_fin", affichage_date_fin),
             ("IDmodele", IDmodele),
             ("introduction", self.ctrl_intro.GetValue()),
+            ("prefacturation", int(prefacturation)),
             ]
         if self.IDperiode == None :
             self.IDperiode = DB.ReqInsert("portail_periodes", listeDonnees)

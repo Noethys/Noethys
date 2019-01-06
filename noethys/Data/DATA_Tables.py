@@ -1550,6 +1550,7 @@ DB_DATA = {
                                     ("affichage_date_fin", "DATETIME", u"Date et heure de fin d'affichage"),
                                     ("IDmodele", "INTEGER", u"IDmodele d'email rattaché à la période"),
                                     ("introduction", "VARCHAR(1000)", u"Texte d'introduction"),
+                                    ("prefacturation", "INTEGER", u"Préfacturation (0/1)"),
                                     ], # Périodes de réservations pour le portail
 
     "portail_unites":               [("IDunite", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID unité"),

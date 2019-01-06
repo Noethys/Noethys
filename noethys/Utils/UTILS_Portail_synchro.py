@@ -537,6 +537,7 @@ class Synchro():
         session.add(models.Parametre(nom="FACTURES_AFFICHER", parametre=str(self.dict_parametres["factures_afficher"])))
         session.add(models.Parametre(nom="FACTURES_INTRO", parametre=self.dict_parametres["factures_intro"]))
         session.add(models.Parametre(nom="FACTURES_DEMANDE_FACTURE", parametre=str(self.dict_parametres["factures_demande_facture"])))
+        session.add(models.Parametre(nom="FACTURES_PREFACTURATION", parametre=str(self.dict_parametres["factures_prefacturation"])))
         session.add(models.Parametre(nom="REGLEMENTS_AFFICHER", parametre=str(self.dict_parametres["reglements_afficher"])))
         session.add(models.Parametre(nom="REGLEMENTS_INTRO", parametre=self.dict_parametres["reglements_intro"]))
         session.add(models.Parametre(nom="REGLEMENTS_DEMANDE_RECU", parametre=str(self.dict_parametres["reglements_demande_recu"])))
@@ -1012,29 +1013,38 @@ class Synchro():
         # Création des périodes
         self.Pulse_gauge()
 
-        req = """SELECT IDperiode, IDactivite, nom, date_debut, date_fin, affichage, affichage_date_debut, affichage_date_fin, introduction
+        req = """SELECT IDperiode, IDactivite, nom, date_debut, date_fin, affichage, affichage_date_debut, affichage_date_fin, introduction, prefacturation
         FROM portail_periodes
         WHERE affichage=1;"""
         DB.ExecuterReq(req)
         listePeriodes = DB.ResultatReq()
         dict_dates_activites = {}
-        for IDperiode, IDactivite, nom, date_debut, date_fin, affichage, affichage_date_debut, affichage_date_fin, introduction in listePeriodes :
+        dict_periodes = {}
+        for IDperiode, IDactivite, nom, date_debut, date_fin, affichage, affichage_date_debut, affichage_date_fin, introduction, prefacturation in listePeriodes :
             date_debut = UTILS_Dates.DateEngEnDateDD(date_debut)
             date_fin = UTILS_Dates.DateEngEnDateDD(date_fin)
             affichage_date_debut = UTILS_Dates.DateEngEnDateDDT(affichage_date_debut)
             affichage_date_fin = UTILS_Dates.DateEngEnDateDDT(affichage_date_fin)
 
             m = models.Periode(IDperiode=IDperiode, IDactivite=IDactivite, nom=nom, date_debut=date_debut, date_fin=date_fin, \
-                        affichage_date_debut=affichage_date_debut, affichage_date_fin=affichage_date_fin, introduction=introduction)
+                                affichage_date_debut=affichage_date_debut, affichage_date_fin=affichage_date_fin, introduction=introduction,
+                                prefacturation=prefacturation)
             session.add(m)
 
             # Mémorise les activités pour lesquelles il y a des périodes...
-            if not dict_dates_activites.has_key(IDactivite) :
-                dict_dates_activites[IDactivite] = {"date_min" : None, "date_max" : None}
-            if dict_dates_activites[IDactivite]["date_min"] == None or dict_dates_activites[IDactivite]["date_min"] > date_debut :
-                dict_dates_activites[IDactivite]["date_min"] = date_debut
-            if dict_dates_activites[IDactivite]["date_max"] == None or dict_dates_activites[IDactivite]["date_max"] < date_fin :
-                dict_dates_activites[IDactivite]["date_max"] = date_fin
+            if affichage_date_fin == None or date_fin >= datetime.date.today() or affichage_date_fin >= datetime.datetime.now():
+                if not dict_dates_activites.has_key(IDactivite) :
+                    dict_dates_activites[IDactivite] = {"date_min" : None, "date_max" : None}
+                if dict_dates_activites[IDactivite]["date_min"] == None or dict_dates_activites[IDactivite]["date_min"] > date_debut :
+                    dict_dates_activites[IDactivite]["date_min"] = date_debut
+                if dict_dates_activites[IDactivite]["date_max"] == None or dict_dates_activites[IDactivite]["date_max"] < date_fin :
+                    dict_dates_activites[IDactivite]["date_max"] = date_fin
+
+            # Mémorise période pour préfacturation
+            if prefacturation == 1 :
+                if dict_periodes.has_key(IDactivite) == False :
+                    dict_periodes[IDactivite] = []
+                dict_periodes[IDactivite].append({"date_debut": date_debut, "date_fin": date_fin, "IDperiode": IDperiode})
 
         liste_tables_modifiees.append("periodes")
 
@@ -1105,6 +1115,58 @@ class Synchro():
                 session.add(m)
 
             liste_tables_modifiees.append("consommations")
+
+
+        # Création de la pré-facturation
+
+        # Récupère la ventilation
+        req = """SELECT ventilation.IDprestation, SUM(ventilation.montant)
+        FROM ventilation
+        LEFT JOIN prestations ON prestations.IDprestation = ventilation.IDprestation
+        WHERE IDfacture IS NULL AND %s
+        GROUP BY prestations.IDPrestation;""" % texteConditions
+        DB.ExecuterReq(req)
+        listeVentilations = DB.ResultatReq()
+        dict_ventilation = {}
+        for IDprestation, montant in listeVentilations:
+            dict_ventilation[IDprestation] = FloatToDecimal(montant)
+
+        # Récupère les prestations
+        req = """SELECT IDprestation, IDfamille, IDactivite, date, montant
+        FROM prestations
+        WHERE IDfacture IS NULL AND %s;""" % texteConditions
+        DB.ExecuterReq(req)
+        listePrestations = DB.ResultatReq()
+        dict_prestations = {}
+        for IDprestation, IDfamille, IDactivite, date, montant in listePrestations:
+            date = UTILS_Dates.DateEngEnDateDD(date)
+            montant = FloatToDecimal(montant)
+
+            if dict_prestations.has_key(IDfamille) == False :
+                dict_prestations[IDfamille] = {}
+
+            # Recherche la période correspondante
+            IDperiode = None
+            if dict_periodes.has_key(IDactivite):
+                for dictPeriode in dict_periodes[IDactivite]:
+                    if date >= dictPeriode["date_debut"] and date <= dictPeriode["date_fin"]:
+                        IDperiode = dictPeriode["IDperiode"]
+
+            if IDperiode != None :
+                if dict_prestations[IDfamille].has_key(IDperiode) == False :
+                    dict_prestations[IDfamille][IDperiode] = {"montant" : FloatToDecimal(0.0), "montant_regle" : FloatToDecimal(0.0), "montant_solde" : FloatToDecimal(0.0)}
+                dict_prestations[IDfamille][IDperiode]["montant"] += montant
+                dict_prestations[IDfamille][IDperiode]["montant_regle"] += dict_ventilation.get(IDprestation, FloatToDecimal(0.0))
+                dict_prestations[IDfamille][IDperiode]["montant_solde"] = dict_prestations[IDfamille][IDperiode]["montant"] - dict_prestations[IDfamille][IDperiode]["montant_regle"]
+
+        # Enregistrement de la table prefacturation
+        for IDfamille, dictPeriode in dict_prestations.iteritems():
+            for IDperiode, dict_montants in dictPeriode.iteritems():
+                m = models.Prefacturation(IDfamille=IDfamille, IDperiode=IDperiode, montant=float(dict_montants["montant"]),
+                                          montant_regle=float(dict_montants["montant_regle"]), montant_solde=float(dict_montants["montant_solde"]))
+                session.add(m)
+
+        liste_tables_modifiees.append("prefacturation")
 
         # Création des actions
         self.Pulse_gauge()

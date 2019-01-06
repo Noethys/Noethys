@@ -278,11 +278,11 @@ class Dialog(wx.Dialog):
 
         self.label_commentaire = wx.StaticText(self, -1, _(u"Commentaire :"))
         self.ctrl_commentaire = CTRL_Html(self, couleurFond=self.GetBackgroundColour())
-        self.ctrl_commentaire.SetMinSize((-1, 30))
+        self.ctrl_commentaire.SetMinSize((-1, 40))
 
         self.label_informations = wx.StaticText(self, -1, _(u"Informations :"))
         self.ctrl_informations = CTRL_Html(self, couleurFond=self.GetBackgroundColour())
-        self.ctrl_informations.SetMinSize((-1, 25))
+        self.ctrl_informations.SetMinSize((-1, 40))
 
         # Traitement
         self.box_traitement_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Traitement"))
@@ -423,11 +423,10 @@ class Dialog(wx.Dialog):
         grid_sizer_demande.Add(self.ctrl_commentaire, 0, wx.EXPAND, 0)
 
         # Informations
-        grid_sizer_demande.Add(self.label_informations, 0, wx.ALIGN_CENTER_VERTICAL | wx.ALIGN_RIGHT, 0)
+        grid_sizer_demande.Add(self.label_informations, 0, wx.ALIGN_RIGHT, 0)
         grid_sizer_demande.Add(self.ctrl_informations, 0, wx.EXPAND, 0)
 
         grid_sizer_demande.AddGrowableRow(1)
-        grid_sizer_demande.AddGrowableRow(2)
         grid_sizer_demande.AddGrowableCol(1)
 
         box_demande.Add(grid_sizer_demande, 1, wx.ALL | wx.EXPAND, 10)
@@ -803,6 +802,7 @@ class Dialog(wx.Dialog):
     def MAJ_informations(self):
         texte = ""
 
+        # Affiche le solde pour la période de la réservation
         if self.track.categorie == "reservations":
             # Calcule le solde actuel de la période de réservations
             traitement = Traitement(parent=self, track=self.track)
@@ -811,6 +811,54 @@ class Dialog(wx.Dialog):
             if montants["solde"] > FloatToDecimal(0.0):
                 texte_solde = u"<FONT COLOR='red'>%s</FONT>" % texte_solde
             texte = _(u"Total pour la période : %.2f %s | Réglé : %.2f %s | Solde à régler : %s") % (montants["total"], SYMBOLE, montants["regle"], SYMBOLE, texte_solde)
+
+        # Affiche la ventilation du paiement en ligne
+        if self.track.categorie == "reglements" and self.track.action == "paiement_en_ligne":
+            # Analyse de la ventilation
+            dict_paiements = {"facture": {}, "periode": {}}
+            for texte in self.track.ventilation.split(","):
+                if texte[0] == "F": type_impaye = "facture"
+                if texte[0] == "P": type_impaye = "periode"
+                ID, montant = texte[1:].split("#")
+                dict_paiements[type_impaye][int(ID)] = float(montant)
+
+            DB = GestionDB.DB()
+
+            # Importation des périodes
+            if len(dict_paiements["periode"]) > 0:
+                req = """SELECT IDperiode, portail_periodes.nom, activites.nom
+                FROM portail_periodes
+                LEFT JOIN activites ON activites.IDactivite = portail_periodes.IDactivite
+                WHERE IDperiode IN %s;""" % GestionDB.ConvertConditionChaine(dict_paiements["periode"].keys())
+                DB.ExecuterReq(req)
+                listePeriodes = DB.ResultatReq()
+                dict_periodes = {}
+                for IDperiode, nom_periode, nom_activite in listePeriodes :
+                    dict_periodes[IDperiode] = u"%s - %s" % (nom_periode, nom_activite)
+
+            if len(dict_paiements["facture"]) > 0:
+                req = """SELECT IDfacture, numero, date_debut, date_fin
+                FROM factures
+                WHERE IDfacture IN %s;""" % GestionDB.ConvertConditionChaine(dict_paiements["facture"].keys())
+                DB.ExecuterReq(req)
+                listeFactures = DB.ResultatReq()
+                dict_factures = {}
+                for IDfacture, numero, date_debut, date_fin in listeFactures :
+                    dict_factures[IDfacture] = _(u"Facture n°%s du %s au %s") % (numero, UTILS_Dates.DateEngFr(date_debut), UTILS_Dates.DateEngFr(date_fin))
+
+            DB.Close()
+
+            liste_textes = []
+            for type_impaye in ("facture", "periode"):
+                for ID, montant in dict_paiements[type_impaye].iteritems():
+                    texte = u""
+                    if type_impaye == "periode" :
+                        texte = dict_periodes[ID]
+                    if type_impaye == "facture" :
+                        texte = dict_factures[ID]
+                    texte += u" (%.2f %s)" % (montant, SYMBOLE)
+                    liste_textes.append(texte)
+            texte = _(u"En règlement de : %s") % u", ".join(liste_textes)
 
 
         self.ctrl_informations.SetTexte(texte)
@@ -1096,11 +1144,26 @@ class Traitement():
         ventilation = self.track.ventilation
 
         # Analyse de la ventilation
-        dict_paiements = {}
+        dict_paiements = {"facture": {}, "periode": {}}
         for texte in ventilation.split(","):
-            IDfacture, montant = texte[1:].split("#")
-            IDfacture, montant = int(IDfacture), float(montant)
-            dict_paiements[IDfacture] = montant
+            if texte[0] == "F": type_impaye = "facture"
+            if texte[0] == "P": type_impaye = "periode"
+            ID, montant = texte[1:].split("#")
+            dict_paiements[type_impaye][int(ID)] = float(montant)
+
+        DB = GestionDB.DB()
+
+        # Importation des périodes
+        req = """SELECT IDperiode, IDactivite, date_debut, date_fin
+        FROM portail_periodes
+        WHERE IDperiode IN %s;""" % GestionDB.ConvertConditionChaine(dict_paiements["periode"].keys())
+        DB.ExecuterReq(req)
+        listePeriodes = DB.ResultatReq()
+        dict_periodes = {}
+        for IDperiode, IDactivite, date_debut, date_fin in listePeriodes :
+            date_debut = UTILS_Dates.DateEngEnDateDD(date_debut)
+            date_fin = UTILS_Dates.DateEngEnDateDD(date_fin)
+            dict_periodes[IDperiode] = {"IDactivite": IDactivite, "date_debut": date_debut, "date_fin":date_fin}
 
         # On récupère l'ID du compte bancaire de la régie si la facture est liée a une régie
         IDcompte_bancaire = None
@@ -1111,31 +1174,37 @@ class Traitement():
 
         if "tipi" in systeme_paiement :
             IDfacture = dict_paiements.keys()[0]
-            DB = GestionDB.DB()
             req = """SELECT factures_regies.IDcompte_bancaire
             FROM factures
             LEFT JOIN factures_regies ON factures_regies.IDregie = factures.IDregie
             WHERE IDfacture=%d;""" % IDfacture
             DB.ExecuterReq(req)
             IDcompte_bancaire = DB.ResultatReq()[0][0]
-            DB.Close()
             num_piece = "auth_num-" + self.dict_parametres["numauto"]
+
+        DB.Close()
 
         # Traitement manuel
         if self.mode == "manuel" :
             from Dlg import DLG_Saisie_reglement
             dlg = DLG_Saisie_reglement.Dialog(None, IDcompte_payeur=IDcompte_payeur, IDreglement=None)
-            dlg.SelectionneFacture(liste_IDfacture=dict_paiements.keys())
+            dlg.SelectionneFacture(liste_IDfacture=dict_paiements["facture"].keys())
             dlg.ctrl_montant.SetMontant(montant_reglement)
             dlg.ctrl_numero.SetValue(num_piece)
             dlg.ctrl_mode.SetID(IDmode_reglement)
             dlg.OnChoixMode(None)
-            # dlg.ctrl_emetteur.MAJ(IDmode_reglement)
-            # dlg.ctrl_emetteur.Enable(False)
-            # dlg.bouton_emetteur.Enable(False)
             dlg.ctrl_observations.SetValue(_(u"Transaction n°%s sur %s (IDpaiement %d)" % (IDtransaction, systeme_paiement, IDpaiement)))
             if IDcompte_bancaire not in (0, None):
                 dlg.ctrl_compte.SetID(IDcompte_bancaire)
+
+            # Coche les périodes à ventiler
+            if len(dict_paiements["periode"]) > 0:
+                for ligne_prestation in dlg.ctrl_ventilation.ctrl_ventilation.listeLignesPrestations:
+                    for IDperiode, dict_periode in dict_periodes.iteritems():
+                        if ligne_prestation.IDactivite == dict_periode["IDactivite"] and ligne_prestation.date >= dict_periode["date_debut"] and ligne_prestation.date <= dict_periode["date_fin"]:
+                            ligne_prestation.SetEtat(True, majTotaux=False)
+                dlg.ctrl_ventilation.ctrl_ventilation.MAJtotaux()
+
             reponse = dlg.ShowModal()
             dlg.Destroy()
             if reponse != wx.ID_OK:
