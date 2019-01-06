@@ -1,6 +1,7 @@
-Version 1.2.5.3 (05/01/2019) :
+Version 1.2.5.4 (06/01/2019) :
 
 - Ajout du paiement en ligne avec Payzen sur Connecthys
+- Ajout de la préfacturation dans Connecthys
 - Ajout de l'affichage de la liste des cotisations dans Connecthys
 - Ajout des inscriptions refusées et en attente
 - Ajout affichage des erreurs de conversion de fichiers
