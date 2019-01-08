@@ -4275,7 +4275,7 @@ class UltimateListLineData(object):
                 r = wx.Rect(*self._gi._rectAll)
                 dc.SetBrush(wx.TRANSPARENT_BRUSH)
                 dc.SetPen(wx.Pen(wx.NamedColour("orange")))
-                dc.DrawRoundedRectangleRect(r, 3)
+                dc.DrawRoundedRectangle(r, 3)
 
         if borderOnly and drawn:
             dc.SetPen(wx.Pen(wx.Colour(0, 191, 255), 2))
@@ -4285,7 +4285,7 @@ class UltimateListLineData(object):
             r.y += 1
             r.width -= 1
             r.height -= 1
-            dc.DrawRoundedRectangleRect(r, 4)
+            dc.DrawRoundedRectangle(r, 4)
             
 
     def HideItemWindow(self, item):
@@ -4520,7 +4520,7 @@ class UltimateListLineData(object):
                 r.height -= 1
                 dc.SetBrush(wx.TRANSPARENT_BRUSH)
                 dc.SetPen(wx.Pen(wx.NamedColour("orange")))
-                dc.DrawRoundedRectangleRect(r, 3)
+                dc.DrawRoundedRectangle(r, 3)
                 dc.SetPen(oldPN)
 
         if borderOnly and drawn:
@@ -4529,7 +4529,7 @@ class UltimateListLineData(object):
             rect = wx.Rect(*paintRect)
             rect.y += 1
             rect.height -= 1
-            dc.DrawRoundedRectangleRect(rect, 3)
+            dc.DrawRoundedRectangle(rect, 3)
             dc.SetPen(oldPN)
             
 
@@ -4762,10 +4762,10 @@ class UltimateListLineData(object):
         
         dc.SetBrush(wx.TRANSPARENT_BRUSH)
         dc.SetPen(wx.Pen(outer))
-        dc.DrawRoundedRectangleRect(bdrRect, 3)
+        dc.DrawRoundedRectangle(bdrRect, 3)
         bdrRect.Deflate(1, 1)
         dc.SetPen(wx.Pen(inner))
-        dc.DrawRoundedRectangleRect(bdrRect, 2)
+        dc.DrawRoundedRectangle(bdrRect, 2)
 
         dc.SetPen(oldpen)
         dc.SetBrush(oldbrush)

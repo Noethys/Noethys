@@ -147,7 +147,7 @@ class Panel(wx.Panel):
         self.bouton_outils.SetToolTip(wx.ToolTip(_(u"Outils")))
 
         self.__do_layout()
-        self.MAJ_bouton()
+        #self.MAJ_bouton()
 
         # Binds
         self.Bind(wx.EVT_BUTTON, self.OnBoutonTraiter, self.bouton_traiter)
@@ -213,7 +213,7 @@ class Panel(wx.Panel):
                 raise e
             else:
                 self.lock.release()
-            self.MAJ_bouton()
+            #self.MAJ_bouton()
             return True
         else:
             return False

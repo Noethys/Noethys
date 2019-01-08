@@ -619,6 +619,7 @@ class Dialog(wx.Dialog):
             "reservations" : "Calendrier_modifier.png",
             "renseignements": "Cotisation.png",
             "compte": "Mecanisme.png",
+            "inscription_noethys": "Mecanisme.png"
             }
         self.ctrl_image.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/32x32/%s" % dict_images[self.track.categorie]), wx.BITMAP_TYPE_PNG))
 
@@ -972,7 +973,11 @@ class Traitement():
         # Traitement du compte
         if self.track.categorie == "compte" :
             resultat = self.Traitement_compte()
-
+        
+        # Traitement inscription au portail
+        if self.track.categorie == "inscription_noethys" :
+            resultat = self.Traitement_inscription_noethys()
+        
         self.EcritLog(_(u"Fin du traitement."))
 
         # Sélection de l'état 'Traité'
@@ -1293,6 +1298,24 @@ class Traitement():
                 dlg.Destroy()
                 return {"etat": True, "reponse": reponse}
 
+    def Traitement_inscription_noethys(self):
+        from Dlg import DLG_Individu
+        from Dlg import DLG_Famille
+        param = self.track.parametres.split('##')
+        dictInfosNouveau = {}
+        for item in param:
+            parametre=item.split('=')
+            dictInfosNouveau[parametre[0]]=parametre[1]
+        dictInfosNouveau['IDcategorie']=1
+        dictInfosNouveau['titulaire']=1
+        print dictInfosNouveau
+        DB = GestionDB.DB()
+        FamilleID = DLG_Famille.CreateIDfamille(DB,dictInfosNouveau)
+        dictInfosNouveau['IDfamille']=FamilleID
+        dlg = DLG_Individu.Dialog(None, IDindividu=None, dictInfosNouveau=dictInfosNouveau)
+        print(dlg)
+        return {"etat" : True}
+    
     def Traitement_compte(self):
         # Traitement manuel ou automatique
         if self.mode == "manuel" or self.mode == "automatique" :

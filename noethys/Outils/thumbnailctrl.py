@@ -1788,7 +1788,7 @@ class ScrolledThumbnail(wx.ScrolledWindow):
                 if 'phoenix' in wx.PlatformInfo:
                     dc.DrawRoundedRectangle(dotrect, 2)
                 else :
-                    dc.DrawRoundedRectangleRect(dotrect, 2)
+                    dc.DrawRoundedRectangle(dotrect, 2)
                 
                 dc.SetPen(wx.Pen(wx.WHITE))
                 dc.DrawRectangle(imgRect.x, imgRect.y,

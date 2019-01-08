@@ -263,7 +263,7 @@ class Barre(object):
                             if 'phoenix' in wx.PlatformInfo:
                                 dc.DrawRoundedRectangle(rect_poignee, radius)
                             else:
-                                dc.DrawRoundedRectangleRect(rect_poignee, radius)
+                                dc.DrawRoundedRectangle(rect_poignee, radius)
 
                 self.rect = rect
 
