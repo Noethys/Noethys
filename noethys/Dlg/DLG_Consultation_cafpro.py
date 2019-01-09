@@ -181,7 +181,7 @@ class CTRL_Drop(wx.StaticBitmap):
         # Cadre
         dc.SetBrush(wx.Brush(couleur_fond))
         dc.SetPen(wx.Pen(couleur_texte, width=2, style=wx.PENSTYLE_DOT))
-        dc.DrawRoundedRectangleRect(wx.Rect(0, 0, largeurImage, hauteurImage), 10)
+        dc.DrawRoundedRectangle(wx.Rect(0, 0, largeurImage, hauteurImage), 10)
 
         # Texte
         if texte != None :

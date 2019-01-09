@@ -442,7 +442,7 @@ class CadreIndividu():
             if 'phoenix' in wx.PlatformInfo:
                 self.dc.DrawRoundedRectangle(wx.Rect(x-ecart, y-ecart, largeur+(ecart*2), hauteur+(ecart*2)), radius=5*self.zoom)
             else :
-                self.dc.DrawRoundedRectangleRect(wx.Rect(x-ecart, y-ecart, largeur+(ecart*2), hauteur+(ecart*2)), radius=5*self.zoom)
+                self.dc.DrawRoundedRectangle(wx.Rect(x-ecart, y-ecart, largeur+(ecart*2), hauteur+(ecart*2)), radius=5*self.zoom)
 
         # Dessin du cadre
         self.dc.SetBrush(wx.Brush(couleurFondBasCadre))
@@ -450,7 +450,7 @@ class CadreIndividu():
         if 'phoenix' in wx.PlatformInfo:
             self.dc.DrawRoundedRectangle(wx.Rect(x, y, largeur, hauteur), radius=5*self.zoom)
         else :
-            self.dc.DrawRoundedRectangleRect(wx.Rect(x, y, largeur, hauteur), radius=5*self.zoom)
+            self.dc.DrawRoundedRectangle(wx.Rect(x, y, largeur, hauteur), radius=5*self.zoom)
         coordsSpline = [(x+1, y+(hauteur/3)), (x+(largeur/2.5), y+(hauteur/4.1)), (x+largeur-1, y+(hauteur/1.8))]
         self.dc.DrawSpline(coordsSpline)
         

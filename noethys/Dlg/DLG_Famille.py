@@ -40,7 +40,7 @@ import DLG_Famille_locations
 
 
 
-def CreateIDfamille(DB):
+def CreateIDfamille(DB,parametres=None):
     """ Crée la fiche famille dans la base de données afin d'obtenir un IDfamille et un IDcompte_payeur """
     from Utils import UTILS_Internet
     date_creation = str(datetime.date.today())
@@ -48,9 +48,15 @@ def CreateIDfamille(DB):
     # Création du compte payeur
     IDcompte_payeur = DB.ReqInsert("comptes_payeurs", [("IDfamille", IDfamille),])
     # Création des codes internet
-    internet_identifiant= UTILS_Internet.CreationIdentifiant(IDfamille=IDfamille)
-    taille = UTILS_Parametres.Parametres(mode="get", categorie="comptes_internet", nom="taille_passwords", valeur=8)
-    internet_mdp = UTILS_Internet.CreationMDP(nbreCaract=taille)
+    try:
+        internet_identifiant= parametres['identifiant']
+    except :
+        internet_identifiant= UTILS_Internet.CreationIdentifiant(IDfamille=IDfamille)
+    try:
+        internet_mdp = parametres['password1']
+    except :
+        taille = UTILS_Parametres.Parametres(mode="get", categorie="comptes_internet", nom="taille_passwords", valeur=8)
+        internet_mdp = UTILS_Internet.CreationMDP(nbreCaract=taille)
     # Sauvegarde des données
     listeDonnees = [
         ("IDcompte_payeur", IDcompte_payeur),
@@ -58,6 +64,7 @@ def CreateIDfamille(DB):
         ("internet_identifiant", internet_identifiant),
         ("internet_mdp", internet_mdp),
         ]
+    print listeDonnees
     DB.ReqMAJ("familles", listeDonnees, "IDfamille", IDfamille)
     return IDfamille
 
