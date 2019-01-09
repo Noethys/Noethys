@@ -388,6 +388,11 @@ class Dialog(wx.Dialog):
         except :
             pass
 
+    def SetValues(self, dictInfos=None):
+        print self.IDindividu
+        dlg = DLG_Individu_coords.Panel_coords(self, IDindividu=self.IDindividu)
+        dlg.SetData(dictInfos)
+        
     def GetFamillesRattachees(self):
         # Recherche des familles rattachées
         db = GestionDB.DB()

@@ -1301,19 +1301,13 @@ class Traitement():
     def Traitement_inscription_noethys(self):
         from Dlg import DLG_Individu
         from Dlg import DLG_Famille
-        param = self.track.parametres.split('##')
-        dictInfosNouveau = {}
-        for item in param:
-            parametre=item.split('=')
-            dictInfosNouveau[parametre[0]]=parametre[1]
-        dictInfosNouveau['IDcategorie']=1
-        dictInfosNouveau['titulaire']=1
-        print dictInfosNouveau
+        self.dict_parametres["IDcategorie"]=1
+        self.dict_parametres['titulaire']=1
         DB = GestionDB.DB()
-        FamilleID = DLG_Famille.CreateIDfamille(DB,dictInfosNouveau)
-        dictInfosNouveau['IDfamille']=FamilleID
-        dlg = DLG_Individu.Dialog(None, IDindividu=None, dictInfosNouveau=dictInfosNouveau)
-        print(dlg)
+        FamilleID = DLG_Famille.CreateIDfamille(DB,self.dict_parametres)
+        self.dict_parametres['IDfamille']=FamilleID
+        dlg = DLG_Individu.Dialog(None, IDindividu=None, dictInfosNouveau=self.dict_parametres)
+        dlg.SetValues(dictInfos=self.dict_parametres)
         return {"etat" : True}
     
     def Traitement_compte(self):

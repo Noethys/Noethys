@@ -50,11 +50,11 @@ def CreateIDfamille(DB,parametres=None):
     # Création des codes internet
     try:
         internet_identifiant= parametres['identifiant']
-    except NameError:
+    except :
         internet_identifiant= UTILS_Internet.CreationIdentifiant(IDfamille=IDfamille)
     try:
         internet_mdp = parametres['password1']
-    except NameError:
+    except :
         taille = UTILS_Parametres.Parametres(mode="get", categorie="comptes_internet", nom="taille_passwords", valeur=8)
         internet_mdp = UTILS_Internet.CreationMDP(nbreCaract=taille)
     # Sauvegarde des données
@@ -64,6 +64,7 @@ def CreateIDfamille(DB,parametres=None):
         ("internet_identifiant", internet_identifiant),
         ("internet_mdp", internet_mdp),
         ]
+    print listeDonnees
     DB.ReqMAJ("familles", listeDonnees, "IDfamille", IDfamille)
     return IDfamille
 

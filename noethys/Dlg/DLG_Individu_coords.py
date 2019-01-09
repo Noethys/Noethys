@@ -777,12 +777,56 @@ class Panel_coords(wx.Panel):
             "tel_domicile_sms": int(self.bouton_tel_domicile_sms.GetEtat()),
             "tel_mobile_sms": int(self.bouton_tel_mobile_sms.GetEtat()),
         }
-
+        
         return dictDonnees
-
+        
+    def SetData(self, dictInfosNouveau=None):
+        print dictInfosNouveau
+        for key,val in dictInfosNouveau.items():
+            print key
+            print val
+            if key=="adresse_auto" : 
+                self.ctrl_adresse_auto.SetValue(val)
+            elif key=="rue" : 
+                self.ctrl_rue.SetValue(val)
+            elif key=="cp" :
+                self.ctrl_ville.SetValueCP(val)
+            elif key=="ville" : 
+                self.ctrl_ville.SetValueVille(val)
+            elif key=="IDsecteur" : 
+                self.ctrl_secteur.SetID(val)
+            elif key=="travail_categorie" : 
+                self.ctrl_categorie.SetID(val)
+            elif key=="profession" : 
+                self.ctrl_profession.SetValue(val)
+            elif key=="employeur" : 
+                self.ctrl_employeur.SetValue(val)
+            elif key=="travail_tel" : 
+                self.ctrl_travail_tel.SetNumero(val)
+            elif key=="travail_fax" : 
+                self.ctrl_travail_fax.SetNumero(val)
+            elif key=="travail_mail" : 
+                self.ctrl_travail_mail.SetMail(val)
+            elif key=="tel_domicile" : 
+                self.ctrl_tel_domicile.SetNumero(val)
+            elif key=="tel_mobile" : 
+                self.ctrl_tel_mobile.SetNumero(val)
+            elif key=="tel_fax" : 
+                self.ctrl_tel_fax.SetNumero(val)
+            elif key=="mail" : 
+                self.ctrl_mail.SetMail(val)
+            elif key=="travail_tel_sms": 
+                self.bouton_tel_travail_sms.SetEtat(val)
+            elif key=="tel_domicile_sms": 
+                self.bouton_tel_domicile_sms.GetEtat(val)
+            elif key=="tel_mobile_sms": 
+                self.bouton_tel_mobile_sms.SetEtat(val)
+        self.Sauvegarde()
+            
     def Sauvegarde(self):
         """ Sauvegarde des données dans la base """
         dictDonnees = self.GetData()
+        print dictDonnees
         DB = GestionDB.DB()
         listeDonnees = [    
                             ("adresse_auto", dictDonnees["adresse_auto"]),
