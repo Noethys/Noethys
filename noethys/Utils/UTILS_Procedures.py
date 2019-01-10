@@ -59,6 +59,7 @@ DICT_PROCEDURES = {
     "A9081" : _(u"Création du profil de configuration par défaut pour la liste des infos médicales"),
     "A9102" : _(u"Suppression des données personnelles"),
     "A9105" : _(u"Remplissage du champ statut de la table inscriptions"),
+    "A9120" : _(u"Effacement de toutes les actions du portail"),
 }
 
 
@@ -1047,6 +1048,16 @@ def A9105():
     DB.ExecuterReq("UPDATE inscriptions SET statut='ok';")
     DB.Commit()
     DB.Close()
+
+def A9120():
+    """ Effacement de toutes les actions du portail """
+    DB = GestionDB.DB()
+    DB.ExecuterReq("DELETE FROM portail_actions;")
+    DB.ExecuterReq("DELETE FROM portail_reservations;")
+    DB.ExecuterReq("DELETE FROM portail_renseignements;")
+    DB.Commit()
+    DB.Close()
+
 
 
 
