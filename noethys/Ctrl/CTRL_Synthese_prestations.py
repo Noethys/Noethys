@@ -197,7 +197,7 @@ class CTRL(HTL.HyperTreeList):
         listeDonnees = DB.ResultatReq()
         liste_tranches = []
         for IDligne, qf_min, qf_max in listeDonnees:
-            tranche = (int(qf_min), int(qf_max))
+            tranche = qf_min, qf_max
             if tranche not in liste_tranches :
                 liste_tranches.append(tranche)
         liste_tranches.sort()

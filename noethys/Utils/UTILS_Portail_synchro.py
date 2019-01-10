@@ -339,7 +339,7 @@ class Synchro():
             except Exception, err :
                 print "Erreur connexion SSH/SFTP au serveur : ", str(err)
                 self.log.EcritLog(_(u"[ERREUR] Connexion SSH/SFTP impossible."))
-                self.log.EcritLog(_(u"[ERREUR] err: %s") % err)
+                self.log.EcritLog(_(u"[ERREUR] err: %s") % err.encode('ascii', 'ignore'))
                 return False
 
         return ftp, ssh
