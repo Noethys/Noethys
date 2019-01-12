@@ -2643,7 +2643,7 @@ class MainFrame(wx.Frame):
         """ Commande spéciale """
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("outils_utilitaires", "consulter") == False : return
         from Utils import UTILS_Procedures
-        dlg = wx.TextEntryDialog(self, _(u"Entrez le code de procédure qui vous été communiqué :"), _(u"Procédure"), "")
+        dlg = wx.TextEntryDialog(self, _(u"Entrez le code de procédure qui vous a été communiqué :"), _(u"Procédure"), "")
         if dlg.ShowModal() == wx.ID_OK:
             code = dlg.GetValue()
             UTILS_Procedures.Procedure(code)

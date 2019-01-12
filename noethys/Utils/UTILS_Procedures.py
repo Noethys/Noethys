@@ -60,6 +60,7 @@ DICT_PROCEDURES = {
     "A9102" : _(u"Suppression des données personnelles"),
     "A9105" : _(u"Remplissage du champ statut de la table inscriptions"),
     "A9120" : _(u"Effacement de toutes les actions du portail"),
+    "A9122" : _(u"Réparation des prestations : Rapprochement des prestations et des consommations détachées"),
 }
 
 
@@ -214,7 +215,8 @@ def E4072():
     DB = GestionDB.DB()
     
     # Récupération des prestations
-    req = """SELECT IDprestation, label FROM prestations;""" 
+    req = """SELECT IDprestation, label FROM prestations 
+    WHERE categorie='consommation' AND (IDfacture IS NULL OR montant=0.0);"""
     DB.ExecuterReq(req)
     listePrestations = DB.ResultatReq()
     
@@ -1058,7 +1060,124 @@ def A9120():
     DB.Commit()
     DB.Close()
 
+def A9122():
+    """ Réparation des prestations : Rapprochement des prestations et des consommations détachées """
+    from UTILS_Decimal import FloatToDecimal
+    from UTILS_Divers import DictionnaireImbrique
+    DB = GestionDB.DB()
 
+    # Importation des individus
+    req = """SELECT IDindividu, nom, prenom FROM individus;"""
+    DB.ExecuterReq(req)
+    listeIndividus = DB.ResultatReq()
+    dict_individus = {}
+    for IDindividu, nom, prenom in listeIndividus:
+        if prenom == None : prenom = ""
+        dict_individus[IDindividu] = u"%s %s" % (nom, prenom)
+
+    # Importation des prestations
+    req = """SELECT IDprestation, IDindividu, date, label, IDtarif, montant, IDfacture
+    FROM prestations
+    WHERE IDtarif IS NOT NULL AND IDindividu IS NOT NULL AND IDindividu<>0;"""
+    DB.ExecuterReq(req)
+    listePrestations = DB.ResultatReq()
+    dict_prestations = {}
+    for IDprestation, IDindividu, date, label, IDtarif, montant, IDfacture in listePrestations:
+        dict_prestations[IDprestation] = {"IDprestation": IDprestation, "label": label, "IDindividu": IDindividu, "date": date, "IDtarif": IDtarif, "montant": FloatToDecimal(montant), "IDfacture": IDfacture}
+
+    # Importation des consommations
+    req = """SELECT IDconso, IDindividu, IDprestation, date, consommations.IDunite, unites.nom 
+    FROM consommations
+    LEFT JOIN unites ON unites.IDunite = consommations.IDunite;"""
+    DB.ExecuterReq(req)
+    listeConsommations = DB.ResultatReq()
+    dict_consos = {}
+    dict_IDprestation_consos = {}
+    dict_consos_regroupements = {}
+    for IDconso, IDindividu, IDprestation, date, IDunite, nom_unite in listeConsommations:
+        dict_consos[IDconso] = {"IDindividu": IDindividu, "IDprestation": IDprestation, "date": date, "IDunite": IDunite, "nom_unite": nom_unite}
+        dict_IDprestation_consos[IDprestation] = None
+        dict_consos_regroupements = DictionnaireImbrique(dictionnaire=dict_consos_regroupements, cles=[IDindividu, date, IDunite], valeur=IDconso)
+
+    # Importation des tarifs et des unités de conso
+    req = """SELECT IDcombi_tarif_unite, IDcombi_tarif, IDtarif, IDunite FROM combi_tarifs_unites;"""
+    DB.ExecuterReq(req)
+    listeConsommations = DB.ResultatReq()
+    dict_unites_tarifs = {}
+    for IDcombi_tarif_unite, IDcombi_tarif, IDtarif, IDunite in listeConsommations:
+        if dict_unites_tarifs.has_key(IDtarif) == False :
+            dict_unites_tarifs[IDtarif] = {}
+        if dict_unites_tarifs[IDtarif].has_key(IDcombi_tarif) == False :
+            dict_unites_tarifs[IDtarif][IDcombi_tarif] = []
+        dict_unites_tarifs[IDtarif][IDcombi_tarif].append(IDunite)
+
+    # Recherche les consommations avec prestations disparues
+    liste_consos_malades = []
+    for IDconso, dict_conso in dict_consos.iteritems():
+        if dict_conso["IDprestation"] != None and dict_prestations.has_key(dict_conso["IDprestation"]) == False:
+            liste_consos_malades.append(dict_conso)
+
+    print "liste_consos_malades=", len(liste_consos_malades)
+
+    # Recherche les prestations sans consommations associées
+    liste_prestations_sans_conso = []
+    for IDprestation in dict_prestations.keys():
+        if dict_IDprestation_consos.has_key(IDprestation) == False :
+            liste_prestations_sans_conso.append(dict_prestations[IDprestation])
+
+    print "liste_prestations_sans_conso=", len(liste_prestations_sans_conso)
+
+    # Recherche les consommations qui pourraient associées à des prestations
+    dict_rapprochements = {}
+    liste_IDprestation_corrigees = []
+    for dict_prestation in liste_prestations_sans_conso:
+        if True:#dict_prestation["IDindividu"] == 157:
+
+            IDprestation = dict_prestation["IDprestation"]
+            IDtarif = dict_prestation["IDtarif"]
+            IDindividu = dict_prestation["IDindividu"]
+            date = dict_prestation["date"]
+
+            # Recherche les combinaisons d'unités du tarif
+            if dict_unites_tarifs.has_key(IDtarif):
+                for IDcombi_tarif, combi_unites in dict_unites_tarifs.get(IDtarif, {}).iteritems():
+                    if len(combi_unites) > 0 :
+                        combi_found = True
+                        for IDunite in combi_unites :
+                            if dict_consos_regroupements[IDindividu].has_key(date) == False or IDunite not in dict_consos_regroupements[IDindividu][date].keys():
+                                combi_found = False
+
+                        # Si combi trouvée, on cherche les conso potentielles :
+                        if combi_found == True :
+                            for IDunite in combi_unites:
+                                IDconso = dict_consos_regroupements[IDindividu][date][IDunite]
+
+                                dict_rapprochements = DictionnaireImbrique(dictionnaire=dict_rapprochements, cles=[IDindividu, date, IDprestation], valeur=[])
+                                dict_rapprochements[IDindividu][date][IDprestation].append(IDconso)
+                                liste_IDprestation_corrigees.append(IDprestation)
+
+    print "liste_IDprestation_corrigees =", len(liste_IDprestation_corrigees)
+
+    # Réparation
+    for IDindividu, dict_individu in dict_rapprochements.iteritems():
+        print dict_individus[IDindividu]
+        for date, dict_prestations_temp in dict_individu.iteritems():
+            print "   %s" % date
+            for IDprestation, liste_consos in dict_prestations_temp.iteritems():
+                print "      prestation =", dict_prestations[IDprestation]["label"]
+                for IDconso in liste_consos:
+                    print "         > conso =", dict_consos[IDconso]["nom_unite"]
+                    # Enregistrement des corrections
+                    DB.ReqMAJ("consommations", [("IDprestation", IDprestation), ], "IDconso", IDconso)
+
+    DB.Close()
+
+    print "Fin de la correction"
+
+    # Message de fin
+    dlg = wx.MessageDialog(None, _(u"Réparation terminée : %d prestations corrigées.") % len(liste_IDprestation_corrigees), _(u"Fin de la procédure"), wx.OK | wx.ICON_INFORMATION)
+    dlg.ShowModal()
+    dlg.Destroy()
 
 
 
@@ -1148,5 +1267,5 @@ def A9120():
 if __name__ == u"__main__":
     app = wx.App(0)
     # TEST D'UNE PROCEDURE :
-    A9102()
+    E4072()
     app.MainLoop()
