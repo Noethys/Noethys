@@ -93,7 +93,7 @@ class CTRL(HTL.HyperTreeList):
         LEFT JOIN activites ON activites.IDactivite = consommations.IDactivite
         LEFT JOIN comptes_payeurs ON comptes_payeurs.IDcompte_payeur = consommations.IDcompte_payeur
         WHERE IDprestation IS NULL AND forfait IS NULL
-        AND consommations.etat <> 'attente' AND consommations.etat <> 'refus'
+        AND consommations.etat <> 'attente' AND consommations.etat NOT IN ('absentj', 'refus')
         ORDER BY date
         ;""" 
         DB.ExecuterReq(req)
