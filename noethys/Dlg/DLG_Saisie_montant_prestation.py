@@ -53,7 +53,9 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
         
         self.ctrl_montant.SelectAll()
-        self.ctrl_montant.SetFocus() 
+        self.ctrl_montant.SetFocus()
+
+        self.bouton_annuler.Show(False)
 
     def __set_properties(self):
         self.ctrl_label.SetToolTip(wx.ToolTip(_(u"Vous pouvez modifier ici un label personnalisé pour la prestation")))

@@ -2506,7 +2506,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             IDfacture = self.dictPrestations[conso.IDprestation]["IDfacture"]
         return IDfacture
 
-    def Facturation(self, IDactivite, IDindividu, IDfamille, date, IDcategorie_tarif, numIndividu=None, IDgroupe=None, case=None, modeSilencieux=False, etiquettes=[]):
+    def Facturation(self, IDactivite, IDindividu, IDfamille, date, IDcategorie_tarif, numIndividu=None, IDgroupe=None, case=None, modeSilencieux=False, etiquettes=[], action="saisie"):
         # 1 - Recherche les unités de la ligne
         try :
             dictUnites = self.dictConsoIndividus[IDindividu][date]
@@ -2710,7 +2710,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                     quantite = None
 
                 # Calcul du tarif
-                resultat = self.CalculeTarif(dictTarif, combinaisons_unites, date, temps_facture, IDfamille, IDindividu, quantite, case, modeSilencieux, evenement)
+                resultat = self.CalculeTarif(dictTarif, combinaisons_unites, date, temps_facture, IDfamille, IDindividu, quantite, case, modeSilencieux, evenement, action)
                 if resultat == False :
                     return False
                 elif resultat == "break" :
@@ -3417,7 +3417,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         reponse = q.GetReponse(IDquestion, IDfamille, IDindividu)
         return reponse
         
-    def CalculeTarif(self, dictTarif={}, combinaisons_unites=[], date=None, temps_facture=None, IDfamille=None, IDindividu=None, quantite=None, case=None, modeSilencieux=False, evenement=None):
+    def CalculeTarif(self, dictTarif={}, combinaisons_unites=[], date=None, temps_facture=None, IDfamille=None, IDindividu=None, quantite=None, case=None, modeSilencieux=False, evenement=None, action="saisie"):
         IDtarif = dictTarif["IDtarif"]
         IDactivite = dictTarif["IDactivite"]
         nom_tarif = dictTarif["nom_tarif"]
@@ -3811,17 +3811,14 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 
         # Recherche du montant du tarif : VARIABLE (MONTANT ET LABEL SAISIS PAR L'UTILISATEUR)
         if methode_calcul == "variable" :
-            if case.IDunite in combinaisons_unites and modeSilencieux == False :
+            if action == "saisie" and case.IDunite in combinaisons_unites and modeSilencieux == False :
                 # Nouvelle saisie si clic sur la case
                 from Dlg import DLG_Saisie_montant_prestation
                 dlg = DLG_Saisie_montant_prestation.Dialog(self, label=nom_tarif, montant=0.0)
-                if dlg.ShowModal() == wx.ID_OK:
-                    nom_tarif = dlg.GetLabel()
-                    montant_tarif = dlg.GetMontant()
-                    dlg.Destroy()
-                else:
-                    dlg.Destroy()
-                    return False
+                dlg.ShowModal()
+                nom_tarif = dlg.GetLabel()
+                montant_tarif = dlg.GetMontant()
+                dlg.Destroy()
             else :
                 # Sinon pas de nouvelle saisie : on cherche l'ancienne prestation déjà saisie
                 for IDprestation, dictValeurs in self.dictPrestations.iteritems() :
@@ -3831,18 +3828,15 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 
         # Recherche du montant du tarif : CHOIX (MONTANT ET LABEL SELECTIONNES PAR L'UTILISATEUR)
         if methode_calcul == "choix" :
-            if case != None and case.IDunite in combinaisons_unites and modeSilencieux == False :
+            if case != None and action == "saisie" and case.IDunite in combinaisons_unites and modeSilencieux == False :
                 # Nouvelle saisie si clic sur la case
                 lignes_calcul = dictTarif["lignes_calcul"]
                 from Dlg import DLG_Selection_montant_prestation
                 dlg = DLG_Selection_montant_prestation.Dialog(self, lignes_calcul=lignes_calcul, label=nom_tarif, montant=0.0)
-                if dlg.ShowModal() == wx.ID_OK:
-                    nom_tarif = dlg.GetLabel()
-                    montant_tarif = dlg.GetMontant()
-                    dlg.Destroy()
-                else:
-                    dlg.Destroy()
-                    return False
+                dlg.ShowModal()
+                nom_tarif = dlg.GetLabel()
+                montant_tarif = dlg.GetMontant()
+                dlg.Destroy()
             else :
                 # Sinon pas de nouvelle saisie : on cherche l'ancienne prestation déjà saisie
                 for IDprestation, dictValeurs in self.dictPrestations.iteritems() :
@@ -4815,8 +4809,8 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         dlg_grille = self.GetGrandParent()
         
         try :
-            dlgAttente = wx.BusyInfo(_(u"Veuillez patienter durant la procédure..."), None)
-            wx.Yield() 
+            # dlgAttente = wx.BusyInfo(_(u"Veuillez patienter durant la procédure..."), None)
+            # wx.Yield()
 
             # Sélection des individus
             listeIndividus = []
@@ -4849,10 +4843,10 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             # Processus
             journal = self.TraitementLot_processus(resultats=resultats) 
             
-            del dlgAttente
+            # del dlgAttente
 
         except Exception, err:
-            del dlgAttente
+            # del dlgAttente
             traceback.print_exc(file=sys.stdout)
             dlg = wx.MessageDialog(self, _(u"Désolé, le problème suivant a été rencontré dans le traitement par lot des consommations : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
@@ -6074,7 +6068,7 @@ if __name__ == '__main__':
     app = wx.App(0)
     heure_debut = time.time()
     from Dlg import DLG_Grille
-    frame_1 = DLG_Grille.Dialog(None, IDfamille=1, selectionIndividus=[3,])
+    frame_1 = DLG_Grille.Dialog(None, IDfamille=353, selectionIndividus=[841,])
     app.SetTopWindow(frame_1)
     print "Temps de chargement CTRL_Grille =", time.time() - heure_debut
     frame_1.ShowModal()

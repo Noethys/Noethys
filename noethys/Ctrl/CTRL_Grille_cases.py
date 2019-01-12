@@ -395,7 +395,7 @@ class Case():
             dictInfosInscriptions = None
         return dictInfosInscriptions
 
-    def MAJ_facturation(self, modeSilencieux=False, evenement=None):
+    def MAJ_facturation(self, modeSilencieux=False, evenement=None, action="saisie"):
         # Vérifie la période de gestion
         if self.grid.gestion.Verification("consommations", self.date) == False : return False
 
@@ -426,7 +426,7 @@ class Case():
             if conso.verrouillage == 1 :
                 return False
 
-        self.grid.Facturation(self.IDactivite, self.IDindividu, self.IDfamille, self.date, self.IDcategorie_tarif, IDgroupe=self.IDgroupe, case=self, etiquettes=listeEtiquettes, modeSilencieux=modeSilencieux)
+        self.grid.Facturation(self.IDactivite, self.IDindividu, self.IDfamille, self.date, self.IDcategorie_tarif, IDgroupe=self.IDgroupe, case=self, etiquettes=listeEtiquettes, modeSilencieux=modeSilencieux, action=action)
         self.grid.ProgrammeTransports(self.IDindividu, self.date, self.ligne)
 
     def GetTexteInfobulleConso(self, conso=None, evenement=None):
@@ -984,7 +984,7 @@ class Case():
                                         self.grid.listeConsoSupprimees.append(conso)
                                     if conso.IDconso == None : 
                                         conso.statut = "suppression"
-                                    case.MAJ_facturation()
+                                    case.MAJ_facturation(action="suppression")
                                     case.listeBarres.remove(conso.barre)
                                     self.grid.dictConsoIndividus[case.IDindividu][case.date][case.IDunite].remove(conso)
                                     self.Refresh() 
@@ -1002,7 +1002,7 @@ class Case():
                                             listeCases.append(case)
         
         for case in listeCases :
-            case.MAJ_facturation()
+            case.MAJ_facturation(action="suppression")
                                             
         self.MAJremplissage()
 
@@ -1086,6 +1086,7 @@ class CaseStandard(Case):
     def OnClick(self, TouchesRaccourciActives=True, saisieHeureDebut=None, saisieHeureFin=None, saisieQuantite=None, modeSilencieux=False, ForcerSuppr=False, etiquettes=None):
         """ Lors d'un clic sur la case """
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("consommations_conso", "modifier", IDactivite=self.IDactivite) == False : return
+        action = None
 
         # Vérifie la période de gestion
         if self.grid.gestion.Verification("consommations", self.date) == False : return False
@@ -1213,6 +1214,7 @@ class CaseStandard(Case):
                     
                     # Mémorisation des horaires pour le raccourci
                     self.grid.memoireHoraires[self.IDunite] = {"heure_debut":heure_debut, "heure_fin":heure_fin}
+                    action = "modification"
                     
                 elif reponse == 3 :
                     # Suppression de la conso horaire
@@ -1221,6 +1223,7 @@ class CaseStandard(Case):
                     if self.IDconso != None : self.statut = "suppression"
                     if self.IDconso == None : self.statut = None
                     self.grid.listeHistorique.append((self.IDindividu, self.date, self.IDunite, _(u"Suppression d'une consommation horaire")))
+                    action = "suppression"
                    
                 else:
                     # Annulation de la modification
@@ -1262,7 +1265,8 @@ class CaseStandard(Case):
                     self.quantite = quantite
                     if self.IDconso != None : self.statut = "modification"
                     self.grid.listeHistorique.append((self.IDindividu, self.date, self.IDunite, _(u"Modification d'une consommation quantité")))
-                    
+                    action = "modification"
+
                     # Mémorisation des horaires pour le raccourci
                     self.grid.memoireHoraires[self.IDunite] = {"quantite":quantite}
                     
@@ -1273,7 +1277,8 @@ class CaseStandard(Case):
                     if self.IDconso != None : self.statut = "suppression"
                     if self.IDconso == None : self.statut = None
                     self.grid.listeHistorique.append((self.IDindividu, self.date, self.IDunite, _(u"Suppression d'une consommation quantité")))
-                   
+                    action = "suppression"
+
                 else:
                     # Annulation de la modification
                     return
@@ -1286,14 +1291,15 @@ class CaseStandard(Case):
                 if self.IDconso != None : self.statut = "suppression"
                 if self.IDconso == None : self.statut = None
                 self.grid.listeHistorique.append((self.IDindividu, self.date, self.IDunite, _(u"Suppression d'une consommation")))
+                action = "suppression"
 
         else:
-            
+
             # Réservation
-            #if self.etat == None and mode == "reservation" :
             if self.etat == None and mode in ("reservation", "attente", "refus"):
                 self.etat = mode
-                
+                action = "saisie"
+
                 if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("consommations_conso", "creer", IDactivite=self.IDactivite) == False : return
                 
                 # Vérifie d'abord qu'il n'y a aucune incompatibilités entre unités
@@ -1431,56 +1437,18 @@ class CaseStandard(Case):
                 else :
                     texte = _(u"Saisie d'une consommation refusée")
                 self.grid.listeHistorique.append((self.IDindividu, self.date, self.IDunite, texte))
-                                
-            # Attente
-            # if self.etat == None and mode == "attente" :
-            #     self.etat = "attente"
-            #     self.heure_debut = self.grid.dictUnites[self.IDunite]["heure_debut"]
-            #     self.heure_fin = self.grid.dictUnites[self.IDunite]["heure_fin"]
-            #     self.date_saisie = datetime.date.today()
-            #     self.IDcategorie_tarif = self.dictInfosInscriptions["IDcategorie_tarif"]
-            #     self.IDcompte_payeur = self.dictInfosInscriptions["IDcompte_payeur"]
-            #     self.IDinscription = self.dictInfosInscriptions["IDinscription"]
-            #     self.IDutilisateur = self.grid.IDutilisateur
-            #     if self.grid.dictInfosInscriptions[self.IDindividu].has_key(self.IDactivite) :
-            #         if self.grid.mode == "individu" :
-            #             self.IDgroupe = self.grid.GetGrandParent().panel_activites.ctrl_activites.GetIDgroupe(self.IDactivite, self.IDindividu)
-            #         if self.IDgroupe == None :
-            #             self.IDgroupe = self.grid.dictInfosInscriptions[self.IDindividu][self.IDactivite]["IDgroupe"]
-            #     else:
-            #         self.IDgroupe = None
-            #
-            #     self.grid.listeHistorique.append((self.IDindividu, self.date, self.IDunite, _(u"Saisie d'une consommation en attente")))
-                    
-            # Refus
-            # if self.etat == None and mode == "refus" :
-            #     self.etat = "refus"
-            #     self.heure_debut = self.grid.dictUnites[self.IDunite]["heure_debut"]
-            #     self.heure_fin = self.grid.dictUnites[self.IDunite]["heure_fin"]
-            #     self.date_saisie = datetime.date.today()
-            #     self.IDcategorie_tarif = self.dictInfosInscriptions["IDcategorie_tarif"]
-            #     self.IDcompte_payeur = self.dictInfosInscriptions["IDcompte_payeur"]
-            #     self.IDinscription = self.dictInfosInscriptions["IDinscription"]
-            #     self.IDutilisateur = self.grid.IDutilisateur
-            #     if self.grid.dictInfosInscriptions[self.IDindividu].has_key(self.IDactivite) :
-            #         if self.grid.mode == "individu" :
-            #             self.IDgroupe = self.grid.GetGrandParent().panel_activites.ctrl_activites.GetIDgroupe(self.IDactivite, self.IDindividu)
-            #         if self.IDgroupe == None :
-            #             self.IDgroupe = self.grid.dictInfosInscriptions[self.IDindividu][self.IDactivite]["IDgroupe"]
-            #     else:
-            #         self.IDgroupe = None
-            #
-            #     self.grid.listeHistorique.append((self.IDindividu, self.date, self.IDunite, _(u"Saisie d'une consommation refusée")))
-            
+
             # Modifie le statut de la case
-            if self.IDconso == None : self.statut = "ajout"
-            if self.IDconso != None : self.statut = "modification"
-        
+            if self.IDconso == None :
+                self.statut = "ajout"
+            if self.IDconso != None :
+                self.statut = "modification"
+
         # Sauvegarde des données dans le dictConsoIndividus
         self.MemoriseValeurs()
                 
         # Facturation
-        self.MAJ_facturation() 
+        self.MAJ_facturation(action=action, modeSilencieux=modeSilencieux)
 
         # Change l'apparence de la case
         self.Refresh()
@@ -1609,11 +1577,7 @@ class CaseStandard(Case):
         self.MemoriseValeurs()
 
         if self.forfait == 0 or self.forfait == None :
-##            if etat in (None, "reservation", "present", "absenti") and ancienEtat in ("attente", "refus", "absentj") : 
-##                self.MAJ_facturation()
-##            if etat in (None, "attente", "refus", "absentj") and ancienEtat in ("reservation", "present", "absenti") : 
-##                self.MAJ_facturation()
-            self.MAJ_facturation()
+            self.MAJ_facturation(action="modification_etat")
         
         self.Refresh()
         self.MAJremplissage() 
@@ -1666,20 +1630,6 @@ class CaseStandard(Case):
         for conso in self.GetListeConso() :
             if conso.etat != None :
                 self.OnClick()
-            
-##        if self.quantite != None :
-##            quantiteTemp = self.quantite
-##        else:
-##            quantiteTemp = 1
-##        self.etat = None
-##        if self.IDconso != None : self.statut = "suppression"
-##        if self.IDconso == None : self.statut = None
-##        self.grid.listeHistorique.append((self.IDindividu, self.date, self.IDunite, _(u"Suppression d'une consommation")))
-##
-##        self.MemoriseValeurs()
-##        self.Refresh()
-##        self.MAJ_facturation() 
-##        self.MAJremplissage() 
 
     def IsCaseDisponible(self, heure_debut=None, heure_fin=None):
         """ Regarde si conso existe déjà sur ce créneau """
@@ -1720,7 +1670,7 @@ class CaseStandard(Case):
             listeCoches = dlg.GetCoches() 
             self.etiquettes = listeCoches
             self.MemoriseValeurs()
-            self.MAJ_facturation() 
+            self.MAJ_facturation(action="modification")
             self.Refresh()
             self.MAJremplissage() 
         dlg.Destroy()
@@ -1806,8 +1756,8 @@ class Barre():
                 self.conso.statut = "modification"
             self.case.grid.dictConsoIndividus[self.case.IDindividu][self.case.date][self.case.IDunite][position] = self.conso
         
-    def MAJ_facturation(self):
-        self.case.MAJ_facturation() 
+    def MAJ_facturation(self, action=None):
+        self.case.MAJ_facturation(action=action)
         
         
 
@@ -1981,9 +1931,9 @@ class CaseMultihoraires(Case):
         
         if barre.conso.forfait == 0 or barre.conso.forfait == None :
             if etat in ("reservation", "present", "absenti") and ancienEtat in ("attente", "refus", "absentj") : 
-                self.MAJ_facturation()
+                self.MAJ_facturation(action="modification_etat")
             if etat in ("attente", "refus", "absentj") and ancienEtat in ("reservation", "present", "absenti") : 
-                self.MAJ_facturation()
+                self.MAJ_facturation(action="modification_etat")
             
         barre.Refresh()
         self.MAJremplissage() 
@@ -2102,7 +2052,7 @@ class CaseMultihoraires(Case):
         self.MAJremplissage()
         
         # Facturation
-        self.MAJ_facturation() 
+        self.MAJ_facturation(action="saisie")
         
         barre.Refresh()
         
@@ -2211,7 +2161,7 @@ class CaseMultihoraires(Case):
             if barre.conso.IDconso != None : 
                 barre.conso.statut = "modification"
             self.MAJremplissage()
-            self.MAJ_facturation() 
+            self.MAJ_facturation(action="modification")
             barre.Refresh()
             self.grid.listeHistorique.append((self.IDindividu, self.date, self.IDunite, _(u"Modification d'une consommation multihoraires")))        
 
@@ -2257,7 +2207,7 @@ class CaseMultihoraires(Case):
             self.grid.listeConsoSupprimees.append(barre.conso)
         if barre.conso.IDconso == None : 
             barre.conso.statut = "suppression"
-        self.MAJ_facturation() 
+        self.MAJ_facturation(action="suppression")
         self.listeBarres.remove(barre)
         self.grid.dictConsoIndividus[self.IDindividu][self.date][self.IDunite].remove(barre.conso)
         self.MAJremplissage()
@@ -2352,7 +2302,7 @@ class CaseMultihoraires(Case):
             barre.MemoriseValeurs()
             if barre.conso.IDconso != None : 
                 barre.conso.statut = "modification"
-            self.MAJ_facturation() 
+            self.MAJ_facturation(action="modification")
             barre.Refresh()
             self.MAJremplissage() 
         dlg.Destroy()
@@ -2424,8 +2374,8 @@ class Evenement():
                 self.conso.statut = "modification"
             self.case.grid.dictConsoIndividus[self.case.IDindividu][self.case.date][self.case.IDunite][position] = self.conso
 
-    def MAJ_facturation(self):
-        self.case.MAJ_facturation(evenement=self)
+    def MAJ_facturation(self, action=None):
+        self.case.MAJ_facturation(evenement=self, action=None)
 
     def GetCouleur(self):
         """ Retourn la couleur de fond du bouton """
@@ -2654,7 +2604,7 @@ class CaseEvenement(Case):
         self.MAJremplissage()
 
         # Facturation
-        self.MAJ_facturation(evenement=evenement)
+        self.MAJ_facturation(evenement=evenement, action="saisie")
 
         self.grid.listeHistorique.append((self.IDindividu, self.date, self.IDunite, _(u"Ajout d'une consommation évènement")))
 
@@ -2695,7 +2645,7 @@ class CaseEvenement(Case):
         if TouchesRaccourciActives == True:
             self.OnTouchesRaccourcisPerso()
 
-        self.MAJ_facturation(evenement=evenement)
+        self.MAJ_facturation(evenement=evenement, action="suppression")
         self.grid.dictConsoIndividus[self.IDindividu][self.date][self.IDunite].remove(evenement.conso)
         evenement.conso = None
         self.MAJremplissage()
@@ -2794,9 +2744,9 @@ class CaseEvenement(Case):
 
         if conso.forfait == 0 or conso.forfait == None:
             if etat in ("reservation", "present", "absenti") and ancienEtat in ("attente", "refus", "absentj"):
-                self.MAJ_facturation(evenement=conso.evenement)
+                self.MAJ_facturation(evenement=conso.evenement, action="modification_etat")
             if etat in ("attente", "refus", "absentj") and ancienEtat in ("reservation", "present", "absenti"):
-                self.MAJ_facturation(evenement=conso.evenement)
+                self.MAJ_facturation(evenement=conso.evenement, action="modification_etat")
 
         conso.evenement.Refresh()
         self.MAJremplissage()
@@ -2825,7 +2775,7 @@ class CaseEvenement(Case):
             evenement.MemoriseValeurs()
             if evenement.conso.IDconso != None:
                 evenement.conso.statut = "modification"
-            self.MAJ_facturation()
+            self.MAJ_facturation(action="modification")
             evenement.Refresh()
             self.MAJremplissage()
         dlg.Destroy()

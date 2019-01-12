@@ -137,7 +137,8 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
         
         # Init
-        self.ctrl_choix.SetFocus() 
+        self.ctrl_choix.SetFocus()
+        self.bouton_annuler.Show(False)
 
     def __set_properties(self):
         self.ctrl_label.SetToolTip(wx.ToolTip(_(u"Vous pouvez modifier ici un label personnalisé pour la prestation")))
