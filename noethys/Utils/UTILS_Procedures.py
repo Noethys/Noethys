@@ -216,7 +216,7 @@ def E4072():
     
     # Récupération des prestations
     req = """SELECT IDprestation, label FROM prestations 
-    WHERE categorie='consommation' AND (IDfacture IS NULL OR montant=0.0);"""
+    WHERE categorie='consommation' AND IDfacture IS NULL;"""
     DB.ExecuterReq(req)
     listePrestations = DB.ResultatReq()
     

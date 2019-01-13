@@ -87,7 +87,7 @@ class CTRL(HTL.HyperTreeList):
         individus.nom, individus.prenom
         FROM prestations
         LEFT JOIN individus ON individus.IDindividu = prestations.IDindividu
-        WHERE categorie='consommation' AND (IDfacture IS NULL OR montant=0.0)
+        WHERE categorie='consommation' AND IDfacture IS NULL
         ORDER BY prestations.IDfamille, prestations.IDindividu, date
         ;""" 
         DB.ExecuterReq(req)
