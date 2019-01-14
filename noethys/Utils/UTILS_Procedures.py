@@ -1160,19 +1160,12 @@ def A9122():
 
     # Réparation
     for IDindividu, dict_individu in dict_rapprochements.iteritems():
-        print dict_individus[IDindividu]
         for date, dict_prestations_temp in dict_individu.iteritems():
-            print "   %s" % date
             for IDprestation, liste_consos in dict_prestations_temp.iteritems():
-                print "      prestation =", dict_prestations[IDprestation]["label"]
                 for IDconso in liste_consos:
-                    print "         > conso =", dict_consos[IDconso]["nom_unite"]
-                    # Enregistrement des corrections
                     DB.ReqMAJ("consommations", [("IDprestation", IDprestation), ], "IDconso", IDconso)
 
     DB.Close()
-
-    print "Fin de la correction"
 
     # Message de fin
     dlg = wx.MessageDialog(None, _(u"Réparation terminée : %d prestations corrigées.") % len(liste_IDprestation_corrigees), _(u"Fin de la procédure"), wx.OK | wx.ICON_INFORMATION)
