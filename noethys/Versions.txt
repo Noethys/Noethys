@@ -1,4 +1,4 @@
-Version 1.2.5.5 (13/01/2019) :
+Version 1.2.5.5 (16/01/2019) :
 
 - Ajout du paiement en ligne avec Payzen sur Connecthys
 - Ajout de la préfacturation dans Connecthys
