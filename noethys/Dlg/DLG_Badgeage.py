@@ -3,8 +3,8 @@
 #------------------------------------------------------------------------
 # Application :    Noethys, gestion multi-activités
 # Site internet :  www.noethys.com
-# Auteur:           Ivan LUCAS
-# Copyright:       (c) 2010-12 Ivan LUCAS
+# Auteur:          Ivan LUCAS
+# Copyright:       (c) 2010-19 Ivan LUCAS
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
@@ -24,6 +24,7 @@ import DLG_Badgeage_interface
 from Utils import UTILS_Vocal
 import wx.lib.agw.hyperlink as Hyperlink
 from Utils import UTILS_Parametres
+from Dlg import DLG_Messagebox
 
 
 class Hyperlien(Hyperlink.HyperLinkCtrl):
@@ -42,6 +43,12 @@ class Hyperlien(Hyperlink.HyperLinkCtrl):
         self.Bind(Hyperlink.EVT_HYPERLINK_LEFT, self.OnLeftLink)
         
     def OnLeftLink(self, event):
+        if self.URL == "consommations" :
+            import DLG_Badgeage_consommations
+            dlg = DLG_Badgeage_consommations.Dialog(self)
+            dlg.ShowModal()
+            dlg.Destroy()
+
         if self.URL == "historique" :
             import DLG_Badgeage_journal
             dlg = DLG_Badgeage_journal.Dialog(self)
@@ -111,9 +118,10 @@ class CTRL_Procedure(wx.Choice):
 
 
 class Dialog(wx.Dialog):
-    def __init__(self, parent):
+    def __init__(self, parent, mode_debug=False):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
+        self.mode_debug = mode_debug
         
         # Bandeau
         intro = _(u"Vous pouvez ici effectuer des procédures de badgeage. Commencez par sélectionner la procédure souhaitée dans la liste pour cliquez sur le bouton 'Ok' pour lancer la procédure. Vous pourrez interrompre celle-ci en appuyant sur CTRL+SHIFT+Q.")
@@ -139,19 +147,23 @@ class Dialog(wx.Dialog):
         
         self.ctrl_log = OL_Badgeage_log.ListView(self, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_VRULES)
         self.log = self.ctrl_log
-        
+        self.ctrl_log.SetMinSize((100, 100))
+        self.ctrl_recherche = OL_Badgeage_log.CTRL_Outils(self, listview=self.ctrl_log)
+
         self.bouton_log_apercu = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Apercu.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_log_imprimer = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Imprimante.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_log_excel = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Excel.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_log_texte = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Texte.png"), wx.BITMAP_TYPE_ANY))
-        
+
+        self.hyper_consommations = Hyperlien(self, label=_(u"Consulter la liste des consommations badgées"), infobulle=_(u"Cliquez ici pour consulter la liste des consommations badgées"), URL="consommations")
+        self.label_separation1 = wx.StaticText(self, -1, u"|")
         self.hyper_journal = Hyperlien(self, label=_(u"Consulter l'historique du journal"), infobulle=_(u"Cliquez ici pour consulter l'historique du journal"), URL="historique")
-        self.label_separation = wx.StaticText(self, -1, u"|")
+        self.label_separation2 = wx.StaticText(self, -1, u"|")
         self.hyper_purger = Hyperlien(self, label=_(u"Purger l'historique"), infobulle=_(u"Cliquez ici pour purger l'historique du journal"), URL="purger")
 
         # Boutons
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
-        self.bouton_vocal = CTRL_Bouton_image.CTRL(self, texte=_(u"Configuration de la synthèse vocale"), cheminImage="Images/32x32/Vocal.png")
+        self.bouton_vocal = CTRL_Bouton_image.CTRL(self, texte=_(u"Synthèse vocale"), cheminImage="Images/32x32/Vocal.png")
         self.bouton_importation = CTRL_Bouton_image.CTRL(self, texte=_(u"Importer"), cheminImage="Images/32x32/Fleche_bas.png")
         self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Commencer le badgeage"), cheminImage="Images/32x32/Badgeage.png")
         self.bouton_fermer = CTRL_Bouton_image.CTRL(self, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
@@ -189,7 +201,7 @@ class Dialog(wx.Dialog):
         self.bouton_importation.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour importer des badgeages manuellement")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour lancer la procédure de badgeage en temps réél")))
         self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
-        self.SetMinSize((850, 700))
+        self.SetMinSize((950, 750))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=4, cols=1, vgap=10, hgap=10)
@@ -217,9 +229,9 @@ class Dialog(wx.Dialog):
         
         # Log
         box_log = wx.StaticBoxSizer(self.box_log_staticbox, wx.VERTICAL)
-        grid_sizer_log = wx.FlexGridSizer(rows=2, cols=2, vgap=5, hgap=5)
+        grid_sizer_log = wx.FlexGridSizer(rows=3, cols=2, vgap=5, hgap=5)
         grid_sizer_log.Add(self.ctrl_log, 1, wx.EXPAND, 0)
-        
+
         # Commandes
         grid_sizer_log_commandes = wx.FlexGridSizer(rows=6, cols=1, vgap=5, hgap=5)
         grid_sizer_log_commandes.Add(self.bouton_log_apercu, 0, 0, 0)
@@ -229,11 +241,16 @@ class Dialog(wx.Dialog):
         grid_sizer_log_commandes.Add(self.bouton_log_texte, 0, 0, 0)
         grid_sizer_log.Add(grid_sizer_log_commandes, 1, wx.EXPAND, 0)
 
-        grid_sizer_log_options = wx.FlexGridSizer(rows=1, cols=5, vgap=5, hgap=5)
+        grid_sizer_log.Add(self.ctrl_recherche, 1, wx.EXPAND, 0)
+        grid_sizer_log.Add( (5, 5), 1, wx.EXPAND, 0)
+
+        grid_sizer_log_options = wx.FlexGridSizer(rows=1, cols=6, vgap=5, hgap=5)
+        grid_sizer_log_options.Add(self.hyper_consommations, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_log_options.Add(self.label_separation1, 0, wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_log_options.Add(self.hyper_journal, 0, wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_log_options.Add(self.label_separation, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_log_options.Add(self.label_separation2, 0, wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_log_options.Add(self.hyper_purger, 0, wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_log.Add(grid_sizer_log_options, 0, wx.ALIGN_RIGHT, 0)
+        grid_sizer_log.Add(grid_sizer_log_options, 0, 0, 0)
 
         grid_sizer_log.AddGrowableRow(0)
         grid_sizer_log.AddGrowableCol(0)
@@ -313,8 +330,11 @@ class Dialog(wx.Dialog):
         self.LancementProcedure() 
         
     def LancementProcedure(self, importationManuelle=False) :
-        modeDebug = wx.GetKeyState(307) # CONSERVER LA TOUCHE ALT ENFONCEE POUR LE MODE DEBUG
-        
+        if self.mode_debug == True or wx.GetKeyState(307):
+            modeDebug = True # CONSERVER LA TOUCHE ALT ENFONCEE POUR LE MODE DEBUG
+        else :
+            modeDebug = False
+
         # Validation des données
         IDprocedure = self.ctrl_procedure.GetID() 
         if IDprocedure == None :
@@ -343,14 +363,18 @@ class Dialog(wx.Dialog):
         try :
             vocal = UTILS_Vocal.Vocal() 
             if vocal.VerifieSiVirginieInstallee() == False :
-                dlg = wx.MessageDialog(self, _(u"Attention, la voix française n'est pas installée sur votre ordinateur.\n\nSouhaitez-vous l'installer maintenant (Conseillé) ?"), _(u"Synthèse vocale"), wx.YES_NO|wx.YES_DEFAULT|wx.ICON_EXCLAMATION)
-                reponse = dlg.ShowModal()
-                dlg.Destroy()
-                if reponse == wx.ID_YES:
-                    self.OnBoutonVocal(None)
+                if UTILS_Parametres.Parametres(mode="get", categorie="ne_plus_afficher", nom="voix_virginie", valeur=False) == False:
+                    introduction = _(u"Souhaitez-vous installer la voix française Virginie pour la synthèse vocale ?")
+                    dlg = DLG_Messagebox.Dialog(self, titre=_(u"Avertissement"), introduction=introduction, icone=wx.ICON_EXCLAMATION, boutons=[_(u"Oui"), _(u"Pas maintenant"), _(u"Ne plus demander")], defaut=0)
+                    reponse = dlg.ShowModal()
+                    dlg.Destroy()
+                    if reponse == 0:
+                        self.OnBoutonVocal(None)
+                    if reponse == 2:
+                        UTILS_Parametres.Parametres(mode="set", categorie="ne_plus_afficher", nom="voix_virginie", valeur=True)
             else :
                 if vocal.VerifieSiVirginieDefaut() == False :
-                    dlg = wx.MessageDialog(self, _(u"Attention, la voix française est bien installée sur votre ordinateur mais n'a pas été sélectionnée comme voix par défaut.\n\nSouhaitez-vous le faire maintenant (conseillé) ?"), _(u"Synthèse vocale"), wx.YES_NO|wx.YES_DEFAULT|wx.ICON_EXCLAMATION)
+                    dlg = wx.MessageDialog(self, _(u"La voix française Virginie est bien installée sur votre ordinateur mais n'a pas été sélectionnée comme voix par défaut.\n\nSouhaitez-vous le faire maintenant (conseillé) ?"), _(u"Synthèse vocale"), wx.YES_NO|wx.YES_DEFAULT|wx.ICON_EXCLAMATION)
                     reponse = dlg.ShowModal()
                     dlg.Destroy()
                     if reponse == wx.ID_YES:
@@ -373,7 +397,7 @@ class Dialog(wx.Dialog):
             style = wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX # CONSERVER LA TOUCHE ALT ENFONCEE POUR EVITER L'AFFICHAGE PLEIN ECRAN
         else :
             style = wx.BORDER_NONE
-        dlg = DLG_Badgeage_interface.Dialog(self, log=self.ctrl_log, IDprocedure=IDprocedure, date=date, dateauto=self.check_dateauto.GetValue(), importationManuelle=importationManuelle, style=style)
+        dlg = DLG_Badgeage_interface.Dialog(self, log=self.ctrl_log, IDprocedure=IDprocedure, date=date, dateauto=self.check_dateauto.GetValue(), importationManuelle=importationManuelle, style=style, mode_debug=modeDebug)
         if modeDebug == False : 
             dlg.ShowFullScreen(wx.FULLSCREEN_ALL)
         dlg.ShowModal() 
@@ -480,7 +504,7 @@ Vous pouvez découvrir un petit aperçu des nombreuses possibilités offertes par c
 if __name__ == u"__main__":
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    frame_1 = Dialog(None)
+    frame_1 = Dialog(None, mode_debug=True)
     app.SetTopWindow(frame_1)
     frame_1.ShowModal()
     app.MainLoop()
