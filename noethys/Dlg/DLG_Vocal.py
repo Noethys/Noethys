@@ -48,9 +48,9 @@ class MyHtml(html.HtmlWindow):
             <BR><BR>
             Vous pouvez télécharger gratuitement la voix française "Virginie" en cliquant sur le lien suivant :
             <BR>
-            <A HREF="http://pedagogie.ac-limoges.fr/ia87/spip.php?article315">Page de téléchargement</A>.
+            <A HREF="http://www4.ac-nancy-metz.fr/tice57/spip.php?article139">Page de téléchargement</A>.
             <BR><BR>
-            <I>(Le fichier à télécharger "Virginie-2.zip" se trouve en bas de la page dans le chapitre "Documents joints").</I>
+            <I>(Le fichier à télécharger "Voix de Virginie" se trouve en bas de la page).</I>
         </CENTER>
         <BR><BR>
         Pour installer le fichier :
