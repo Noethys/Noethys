@@ -47,7 +47,9 @@ class Dialog(wx.Dialog):
         
         self.ctrl_log = OL_Badgeage_log.ListView(self, modeHistorique=True, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_VRULES)
         self.log = self.ctrl_log
-        
+        self.ctrl_log.SetMinSize((100, 100))
+        self.ctrl_recherche = OL_Badgeage_log.CTRL_Outils(self, listview=self.ctrl_log)
+
         self.bouton_log_apercu = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Apercu.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_log_imprimer = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Imprimante.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_log_excel = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Excel.png"), wx.BITMAP_TYPE_ANY))
@@ -104,7 +106,7 @@ class Dialog(wx.Dialog):
         box_log = wx.StaticBoxSizer(self.box_log_staticbox, wx.VERTICAL)
         grid_sizer_log = wx.FlexGridSizer(rows=2, cols=2, vgap=5, hgap=5)
         grid_sizer_log.Add(self.ctrl_log, 1, wx.EXPAND, 0)
-        
+
         # Commandes
         grid_sizer_log_commandes = wx.FlexGridSizer(rows=6, cols=1, vgap=5, hgap=5)
         grid_sizer_log_commandes.Add(self.bouton_log_apercu, 0, 0, 0)
@@ -117,7 +119,9 @@ class Dialog(wx.Dialog):
         grid_sizer_log.AddGrowableCol(0)
         box_log.Add(grid_sizer_log, 1, wx.ALL|wx.EXPAND, 10)
         grid_sizer_base.Add(box_log, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
-        
+
+        grid_sizer_log.Add(self.ctrl_recherche, 1, wx.EXPAND, 0)
+
         # Boutons
         grid_sizer_boutons = wx.FlexGridSizer(rows=1, cols=5, vgap=10, hgap=10)
         grid_sizer_boutons.Add(self.bouton_aide, 0, 0, 0)

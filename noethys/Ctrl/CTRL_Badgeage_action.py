@@ -599,15 +599,15 @@ class CTRL_Enregistrer(wx.Panel):
 
         # Début
         self.box_debut_staticbox = wx.StaticBox(self, -1, _(u"Heure de début"))
-        self.radio_debut_defaut = wx.RadioButton(self, -1, _(u"Heure par défaut"), style=wx.RB_GROUP)
-        self.radio_debut_pointee = wx.RadioButton(self, -1, _(u"Heure du badgeage"))
+        self.radio_debut_pointee = wx.RadioButton(self, -1, _(u"Heure du badgeage"), style=wx.RB_GROUP)
+        self.radio_debut_defaut = wx.RadioButton(self, -1, _(u"Heure par défaut"))
         self.radio_debut_autre = wx.RadioButton(self, -1, _(u"Autre heure :"))
         self.ctrl_debut_autre = CTRL_Saisie_heure.Heure(self)
 
         # Fin
         self.box_fin_staticbox = wx.StaticBox(self, -1, _(u"Heure de fin"))
-        self.radio_fin_defaut = wx.RadioButton(self, -1, _(u"Heure par défaut"), style=wx.RB_GROUP)
-        self.radio_fin_pointee = wx.RadioButton(self, -1, _(u"Heure du badgeage"))
+        self.radio_fin_pointee = wx.RadioButton(self, -1, _(u"Heure du badgeage"), style=wx.RB_GROUP)
+        self.radio_fin_defaut = wx.RadioButton(self, -1, _(u"Heure par défaut"))
         self.radio_fin_autre = wx.RadioButton(self, -1, _(u"Autre heure :"))
         self.ctrl_fin_autre = CTRL_Saisie_heure.Heure(self)
         
@@ -656,13 +656,13 @@ class CTRL_Enregistrer(wx.Panel):
         self.ctrl_activite.SetToolTip(wx.ToolTip(_(u"Sélectionnez une activité")))
         self.ctrl_unite.SetToolTip(wx.ToolTip(_(u"Sélectionnez une unité de consommation")))
         self.ctrl_etat.SetToolTip(wx.ToolTip(_(u"Sélectionnez un état")))
-        self.check_demander.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour que Noethys demande s'il s'agit du début ou de la fin de la consommation. Utile quand l'unité de consommation n'a pas d'heure fixe de début ou de fin (ex : crèche, accueil de loisirs)")))
+        self.check_demander.SetToolTip(wx.ToolTip(_(u"[OPTION OBSOLETE] Cochez cette case pour que Noethys demande s'il s'agit du début ou de la fin de la consommation.")))
         self.radio_debut_defaut.SetToolTip(wx.ToolTip(_(u"Heure par défaut définie dans le paramétrage de l'unité")))
-        self.radio_debut_pointee.SetToolTip(wx.ToolTip(_(u"Heure pointée")))
+        self.radio_debut_pointee.SetToolTip(wx.ToolTip(_(u"Heure badgée")))
         self.radio_debut_autre.SetToolTip(wx.ToolTip(_(u"Autre heure")))
         self.ctrl_debut_autre.SetToolTip(wx.ToolTip(_(u"Saisissez une heure")))
         self.radio_fin_defaut.SetToolTip(wx.ToolTip(_(u"Heure par défaut définie dans le paramétrage de l'unité")))
-        self.radio_fin_pointee.SetToolTip(wx.ToolTip(_(u"Heure pointée")))
+        self.radio_fin_pointee.SetToolTip(wx.ToolTip(_(u"Heure badgée")))
         self.radio_fin_autre.SetToolTip(wx.ToolTip(_(u"Autre heure")))
         self.ctrl_fin_autre.SetToolTip(wx.ToolTip(_(u"Saisissez une heure")))
         self.check_message_actif.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour activer l'affichage d'un message de confirmation")))
@@ -697,8 +697,8 @@ class CTRL_Enregistrer(wx.Panel):
         # Début
         box_debut = wx.StaticBoxSizer(self.box_debut_staticbox, wx.VERTICAL)
         grid_sizer_debut = wx.FlexGridSizer(rows=3, cols=1, vgap=5, hgap=5)
-        grid_sizer_debut.Add(self.radio_debut_defaut, 0, 0, 0)
         grid_sizer_debut.Add(self.radio_debut_pointee, 0, 0, 0)
+        grid_sizer_debut.Add(self.radio_debut_defaut, 0, 0, 0)
         grid_sizer_debut_autre = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
         grid_sizer_debut_autre.Add(self.radio_debut_autre, 0, 0, 0)
         grid_sizer_debut_autre.Add(self.ctrl_debut_autre, 0, 0, 0)
@@ -709,8 +709,8 @@ class CTRL_Enregistrer(wx.Panel):
         # Fin
         box_fin = wx.StaticBoxSizer(self.box_fin_staticbox, wx.VERTICAL)
         grid_sizer_fin = wx.FlexGridSizer(rows=3, cols=1, vgap=5, hgap=5)
-        grid_sizer_fin.Add(self.radio_fin_defaut, 0, 0, 0)
         grid_sizer_fin.Add(self.radio_fin_pointee, 0, 0, 0)
+        grid_sizer_fin.Add(self.radio_fin_defaut, 0, 0, 0)
         grid_sizer_fin_autre = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
         grid_sizer_fin_autre.Add(self.radio_fin_autre, 0, 0, 0)
         grid_sizer_fin_autre.Add(self.ctrl_fin_autre, 0, 0, 0)

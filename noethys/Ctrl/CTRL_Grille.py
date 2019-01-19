@@ -298,6 +298,8 @@ class Conso():
         self.case = None
         self.etiquettes = []
         self.IDevenement = None
+        self.badgeage_debut = None
+        self.badgeage_fin = None
 
 
     
@@ -1369,14 +1371,14 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         req = """SELECT IDconso, consommations.IDindividu, IDactivite, IDinscription, date, IDunite, 
         IDgroupe, heure_debut, heure_fin, consommations.etat, verrouillage, date_saisie, IDutilisateur, 
         IDcategorie_tarif, consommations.IDcompte_payeur, IDprestation, forfait, quantite, etiquettes,
-        comptes_payeurs.IDfamille, IDevenement
+        comptes_payeurs.IDfamille, IDevenement, badgeage_debut, badgeage_fin
         FROM consommations 
         LEFT JOIN comptes_payeurs ON comptes_payeurs.IDcompte_payeur = consommations.IDcompte_payeur
         WHERE IDactivite IN %s %s
         ORDER BY date; """ % (conditionActivites, conditionDates)
         self.DB.ExecuterReq(req)
         listeConso = self.DB.ResultatReq()
-        for IDconso, IDindividu, IDactivite, IDinscription, date, IDunite, IDgroupe, heure_debut, heure_fin, etat, verrouillage, date_saisie, IDutilisateur, IDcategorie_tarif, IDcompte_payeur, IDprestation, forfait, quantite, etiquettes, IDfamille, IDevenement in listeConso :
+        for IDconso, IDindividu, IDactivite, IDinscription, date, IDunite, IDgroupe, heure_debut, heure_fin, etat, verrouillage, date_saisie, IDutilisateur, IDcategorie_tarif, IDcompte_payeur, IDprestation, forfait, quantite, etiquettes, IDfamille, IDevenement, badgeage_debut, badgeage_fin in listeConso :
             dateDD = DateEngEnDateDD(date)
             date_saisieDD = DateEngEnDateDD(date_saisie)
             etiquettes = ConvertStrToListe(etiquettes, siVide=[]) 
@@ -1410,6 +1412,8 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 conso.IDunite = IDunite
                 conso.etiquettes = etiquettes
                 conso.IDevenement = IDevenement
+                conso.badgeage_debut = UTILS_Dates.DateEngEnDateDDT(badgeage_debut)
+                conso.badgeage_fin = UTILS_Dates.DateEngEnDateDDT(badgeage_fin)
                 
                 dictConsoIndividus = UTILS_Divers.DictionnaireImbrique(dictionnaire=dictConsoIndividus, cles=[IDindividu, dateDD, IDunite], valeur=[])
                     
@@ -5412,7 +5416,9 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                             ("quantite", conso.quantite),
                             ("etiquettes", ConvertListeToStr(conso.etiquettes)),
                             ("IDevenement", conso.IDevenement),
-                            ]
+                            ("badgeage_debut", conso.badgeage_debut),
+                            ("badgeage_fin", conso.badgeage_fin),
+                        ]
 
                         # Pour version optimisée :
                         listeValeurs = []

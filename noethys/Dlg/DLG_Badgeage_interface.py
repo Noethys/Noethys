@@ -31,6 +31,7 @@ from Utils import UTILS_Titulaires
 from Utils import UTILS_Filtres_questionnaires
 from Utils import UTILS_Vocal
 from Utils import UTILS_Ticket
+from Utils import UTILS_Dates
 
 from Data.DATA_Tables import DB_DATA as DICT_TABLES
 
@@ -748,6 +749,11 @@ class CTRL_Interface(wx.Panel):
         message = dictAction["action_message"]
         vocal = int(dictAction["action_vocal"])
         ticket = dictAction["action_ticket"]
+
+        conso_a_modifier = None
+        badgeage_debut = None
+        badgeage_fin = None
+        maintenant = datetime.datetime(date.year, date.month, date.day, int(heure.split(":")[0]), int(heure.split(":")[1]))
         
         # Récupération des infos sur l'activité et sur l'individu
         dictActivite, dictUnites, listeOuvertures, dictGroupes = GetInfosActivite(IDactivite, date) 
@@ -794,20 +800,59 @@ class CTRL_Interface(wx.Panel):
                 return False
             
         else :
-            # Calcul des heures
-            if heure_debut == "defaut" : heureDebut = "defaut"
-            elif heure_debut == "pointee" : heureDebut = heure
-            else : heure_debut = heureDebut
-            
-            if heure_fin == "defaut" : heureFin = "defaut"
-            elif heure_fin == "pointee" : heureFin = heure
-            else : heure_fin = heureFin
-        
+            # Recherche l'heure de début à appliquer
+            if heure_debut == "defaut":
+                heureDebut = "defaut"
+            elif heure_debut == "pointee":
+                heureDebut = heure
+            else:
+                heureDebut = heure_debut
+
+            # Recherche l'heure de fin à appliquer
+            if heure_fin == "defaut":
+                heureFin = "defaut"
+            elif heure_fin == "pointee":
+                heureFin = heure
+            else:
+                heureFin = heure_fin
+
+            if heure_debut == "pointee" and heure_fin == "pointee":
+
+                # Recherche si une conso a déjà un badgeage de début
+                case = self.ctrl_grille.GetCase(IDunite, date)
+                if case != None:
+                    for conso in case.GetListeConso():
+                        if conso.badgeage_debut != None and conso.badgeage_fin == None:
+                            conso_a_modifier = conso
+                        if case.GetTypeUnite() != "Multihoraires" and conso.badgeage_debut != None and conso.badgeage_fin != None:
+                            DIALOGUES.DLG_Message(self, message=_(u"Les heures d'arrivée et de départ ont déjà été enregistrées !"), icone="erreur")
+                            self.log.AjouterAction(individu=nomIndividu, IDindividu=IDindividu, action=nomAction, resultat=_(u"Unité '%s' déjà badgée à l'arrivée et au départ !") % dictUnites[IDunite]["nom"])
+                            return False
+
+                if conso_a_modifier == None :
+                    # Si on doit créer une nouvelle conso
+                    heureDebut = heure
+                    heureFin = "defaut"
+                    badgeage_debut = maintenant
+                else:
+                    # Si on doit modifier une conso existante
+                    heureDebut = conso.heure_debut
+                    heureFin = heure
+                    badgeage_debut = conso.badgeage_debut
+                    badgeage_fin = maintenant
+
+                    # On vérifie que le badgeage de début date de plus d'une minute
+                    if UTILS_Dates.HeureStrEnDelta(heureFin) - UTILS_Dates.HeureStrEnDelta(heureDebut) < UTILS_Dates.HeureStrEnDelta("00:01"):
+                        DIALOGUES.DLG_Message(self, message=_(u"L'heure d'arrivée a été enregistrée il y a moins d'une minute !"), icone="erreur")
+                        self.log.AjouterAction(individu=nomIndividu, IDindividu=IDindividu, action=nomAction, resultat=_(u"Unité '%s' badgée il y a moins d'une minute!") % dictUnites[IDunite]["nom"])
+                        return False
+
+
 ##            case = self.ctrl_grille.GetCase(IDunite)
 ##            print case.heure_debut, case.heure_fin, case.etat
         
         # Saisie de la consommation
-        resultat = self.ctrl_grille.SaisieConso(IDunite=IDunite, mode="reservation", etat=etat, heure_debut=heureDebut, heure_fin=heureFin)
+        resultat = self.ctrl_grille.SaisieConso(IDunite=IDunite, mode="reservation", etat=etat, heure_debut=heureDebut, heure_fin=heureFin, badgeage_debut=badgeage_debut, badgeage_fin=badgeage_fin, conso=conso_a_modifier)
         self.log.AjouterAction(individu=nomIndividu, IDindividu=IDindividu, action=nomAction, resultat=resultat)
         
         # Impression ticket
@@ -970,10 +1015,11 @@ class CTRL_Interface(wx.Panel):
 
 
 class Dialog(wx.Dialog):
-    def __init__(self, parent, log=None, IDprocedure=None, date=None, dateauto=False, importationManuelle=False, style=wx.BORDER_NONE):
+    def __init__(self, parent, log=None, IDprocedure=None, date=None, dateauto=False, importationManuelle=False, style=wx.BORDER_NONE, mode_debug=False):
         wx.Dialog.__init__(self, parent, -1, style=style)
         self.parent = parent
         self.importationManuelle = importationManuelle
+        self.mode_debug = mode_debug
         
         # Création d'une dlg d'attente durant l'initialisation
         try :
@@ -984,7 +1030,7 @@ class Dialog(wx.Dialog):
             dlgAttente = wx.BusyInfo(_(u"Initialisation..."), None)
             wx.Yield() 
             
-            if wx.GetKeyState(307) == True :
+            if self.mode_debug == True :
                 montrerGrille = True
             else :
                 montrerGrille = False

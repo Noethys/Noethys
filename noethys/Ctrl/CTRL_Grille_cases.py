@@ -358,6 +358,8 @@ class Case():
         self.IDactivite = IDactivite
         self.IDinscription = None
         self.IDgroupe = None
+        self.badgeage_debut = None
+        self.badgeage_fin = None
 
         # Récupération du groupe en mode INDIVIDU
         if grid.dictInfosInscriptions.has_key(self.IDindividu) :
@@ -1032,6 +1034,8 @@ class CaseStandard(Case):
         self.IDfacture = None
         self.quantite = None
         self.etiquettes = []
+        self.badgeage_debut = None
+        self.badgeage_fin = None
 
         # Recherche s'il y a des conso pour cette case
         self.conso = self.GetConso() 
@@ -1083,7 +1087,7 @@ class CaseStandard(Case):
     def GetListeConso(self):
         return [self.conso,]
                         
-    def OnClick(self, TouchesRaccourciActives=True, saisieHeureDebut=None, saisieHeureFin=None, saisieQuantite=None, modeSilencieux=False, ForcerSuppr=False, etiquettes=None):
+    def OnClick(self, TouchesRaccourciActives=True, saisieHeureDebut=None, saisieHeureFin=None, saisieQuantite=None, modeSilencieux=False, ForcerSuppr=False, etiquettes=None, badgeage_debut=None, badgeage_fin=None):
         """ Lors d'un clic sur la case """
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("consommations_conso", "modifier", IDactivite=self.IDactivite) == False : return
         action = None
@@ -1444,6 +1448,12 @@ class CaseStandard(Case):
             if self.IDconso != None :
                 self.statut = "modification"
 
+        # Mémoire badgeage
+        if badgeage_debut != None :
+            self.badgeage_debut = badgeage_debut
+        if badgeage_fin != None :
+            self.badgeage_fin = badgeage_fin
+
         # Sauvegarde des données dans le dictConsoIndividus
         self.MemoriseValeurs()
                 
@@ -1506,6 +1516,8 @@ class CaseStandard(Case):
         self.conso.IDunite = self.IDunite
         self.conso.IDactivite = self.IDactivite
         self.conso.etiquettes = self.etiquettes
+        self.conso.badgeage_debut = self.badgeage_debut
+        self.conso.badgeage_fin = self.badgeage_fin
 
         if index != None :
             self.grid.dictConsoIndividus[self.IDindividu][self.date][self.IDunite][index] = self.conso
@@ -1970,7 +1982,7 @@ class CaseMultihoraires(Case):
             self.grid.Autogeneration(ligne=self.ligne, IDactivite=self.IDactivite, IDunite=self.IDunite)
         dlg.Destroy()
     
-    def SaisieBarre(self, heure_debut=None, heure_fin=None, modeSilencieux=False, TouchesRaccourciActives=True, etiquettes=None):
+    def SaisieBarre(self, heure_debut=None, heure_fin=None, modeSilencieux=False, TouchesRaccourciActives=True, etiquettes=None, badgeage_debut=None, badgeage_fin=None):
         """ Création d'une barre + conso """        
         # Vérifie d'abord qu'il n'y a aucune incompatibilités entre unités
         incompatibilite = self.VerifieCompatibilitesUnites()
@@ -2013,6 +2025,8 @@ class CaseMultihoraires(Case):
         conso.IDgroupe = self.IDgroupe
         conso.heure_debut = UTILS_Dates.DatetimeTimeEnStr(heure_debut, ":") # self.grid.dictUnites[self.IDunite]["heure_debut"]
         conso.heure_fin = UTILS_Dates.DatetimeTimeEnStr(heure_fin, ":") # self.grid.dictUnites[self.IDunite]["heure_fin"]
+        if badgeage_debut != None : conso.badgeage_debut = badgeage_debut
+        if badgeage_fin != None: conso.badgeage_fin = badgeage_fin
         
         # Mode de saisie
         conso.etat = self.grid.GetGrandParent().panel_grille.GetMode()
@@ -2128,7 +2142,7 @@ class CaseMultihoraires(Case):
         if self.grid.gestion.Verification("consommations", self.date) == False: return False
         self.SupprimerBarre(self.barreContextMenu)
         
-    def ModifierBarre(self, barre=None, horaires=None, etiquettes=None):
+    def ModifierBarre(self, barre=None, horaires=None, etiquettes=None, badgeage_debut=None, badgeage_fin=None):
         """ Horaires = None ou (heure_debut, heure_fin) """
         # Protections anti modification et suppression
         if self.ProtectionsModifSuppr(barre.conso) == False :
@@ -2155,6 +2169,8 @@ class CaseMultihoraires(Case):
         if reponse == wx.ID_OK:
             barre.conso.heure_debut = heure_debut
             barre.conso.heure_fin = heure_fin
+            barre.conso.badgeage_debut = badgeage_debut
+            barre.conso.badgeage_fin = badgeage_fin
             if etiquettes != None :
                 barre.conso.etiquettes = etiquettes
             barre.MemoriseValeurs()

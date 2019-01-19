@@ -527,6 +527,8 @@ DB_DATA = {
                                     ("quantite", "INTEGER", u"Quantité de consommations"),
                                     ("etiquettes", "VARCHAR(50)", u"Etiquettes"),
                                     ("IDevenement", "INTEGER", u"ID de l'évènement"),
+                                    ("badgeage_debut", "DATETIME", u"Date et heure de badgeage du début"),
+                                    ("badgeage_fin", "DATETIME", u"Date et heure de badgeage de fin"),
                                     ], # Consommations
 
     "memo_journee":[      ("IDmemo", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID memo"),

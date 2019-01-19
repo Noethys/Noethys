@@ -185,7 +185,7 @@ class CTRL(wx.Panel):
             return _(u"Cette case est inexistante.")
         return case.ouvert
 
-    def SaisieConso(self, IDunite=None, mode="reservation", etat="reservation", heure_debut="defaut", heure_fin="defaut", date=None, quantite=None):
+    def SaisieConso(self, IDunite=None, mode="reservation", etat="reservation", heure_debut="defaut", heure_fin="defaut", date=None, quantite=None, badgeage_debut=None, badgeage_fin=None, conso=None):
         """ Crée ou modifie une conso pour l'unité indiquée """
         case = self.GetCase(IDunite, date)
         if case == None :
@@ -228,11 +228,11 @@ class CTRL(wx.Panel):
             if quantite != None :
                 quantiteTmp = quantite
             if typeUnite == "Multihoraires" :
-                barre = case.SaisieBarre(UTILS_Dates.HeureStrEnTime(heure_debut), UTILS_Dates.HeureStrEnTime(heure_fin))
+                barre = case.SaisieBarre(UTILS_Dates.HeureStrEnTime(heure_debut), UTILS_Dates.HeureStrEnTime(heure_fin), badgeage_debut=badgeage_debut, badgeage_fin=badgeage_fin)
                 if mode == "reservation" :
                     case.ModifieEtat(barre.conso, etat)
             else :
-                case.OnClick(saisieHeureDebut=heure_debut, saisieHeureFin=heure_fin, saisieQuantite=quantiteTmp, modeSilencieux=True)
+                case.OnClick(saisieHeureDebut=heure_debut, saisieHeureFin=heure_fin, saisieQuantite=quantiteTmp, modeSilencieux=True, badgeage_debut=badgeage_debut, badgeage_fin=badgeage_fin)
                 if mode == "reservation" :
                     case.ModifieEtat(None, etat)
 
@@ -242,7 +242,7 @@ class CTRL(wx.Panel):
             
             # Type Horaire
             if typeUnite == "Horaire" :
-                case.OnClick(saisieHeureDebut=heure_debut, saisieHeureFin=heure_fin, modeSilencieux=True)
+                case.OnClick(saisieHeureDebut=heure_debut, saisieHeureFin=heure_fin, modeSilencieux=True, badgeage_debut=badgeage_debut, badgeage_fin=badgeage_fin)
                 case.ModifieEtat(None, etat)
             else :
                 if heure_debut != None : case.heure_debut = heure_debut
@@ -257,11 +257,14 @@ class CTRL(wx.Panel):
                     if quantiteTmp == None :
                         quantiteTmp = 1
                     quantiteTmp += 1
-                case.OnClick(saisieHeureDebut=heure_debut, saisieHeureFin=heure_fin, saisieQuantite=quantiteTmp, modeSilencieux=True)
+                case.OnClick(saisieHeureDebut=heure_debut, saisieHeureFin=heure_fin, saisieQuantite=quantiteTmp, modeSilencieux=True, badgeage_debut=badgeage_debut, badgeage_fin=badgeage_fin)
                 case.ModifieEtat(None, etat)
             
             if typeUnite == "Unitaire" :
                 case.ModifieEtat(None, etat)
+
+            if typeUnite == "Multihoraires":
+                case.ModifierBarre(barre=conso.barre, horaires=(heure_debut, heure_fin), badgeage_debut=badgeage_debut, badgeage_fin=badgeage_fin)
 
         # Si mode = attente
         #if hasPlaces == False :
@@ -350,11 +353,11 @@ class Dialog(wx.Dialog):
 
     def OnBoutonTest1(self, event):
         """ TEST 1 """
-        self.ctrl.InitGrille(IDindividu=46, IDfamille=14, IDactivite=3, date=datetime.date(2013, 6, 19))
+        self.ctrl.InitGrille(IDindividu=46, IDfamille=14, IDactivite=1, date=datetime.date(2019, 1, 18))
 
     def OnBoutonTest2(self, event):
         """ TEST 2 """
-        self.ctrl.InitGrille(IDindividu=3, IDfamille=1, IDactivite=1, periode=(datetime.date(2013, 6, 19), datetime.date(2013, 7, 1)) )
+        self.ctrl.InitGrille(IDindividu=3, IDfamille=1, IDactivite=1, periode=(datetime.date(2019, 1, 18), datetime.date(2019, 1, 22)) )
         
     def OnBoutonTest3(self, event):
         """ TEST 3 """
@@ -381,11 +384,11 @@ class Dialog(wx.Dialog):
 ##        print ("Test saisie Garderie du Matin :", resultat)
 
         # Saisie d'une journée avec repas sur une date donnée
-        resultat = self.ctrl.SaisieConso(IDunite=1, mode="reservation", etat="refus", date=datetime.date(2013, 6, 20) )
+        resultat = self.ctrl.SaisieConso(IDunite=1, mode="reservation", etat="reservation", date=datetime.date(2019, 1, 18) )
         print ("Test saisie Unité 1 :", resultat)
-        resultat = self.ctrl.SaisieConso(IDunite=2, mode="reservation", etat="refus", date=datetime.date(2013, 6, 20) )
+        resultat = self.ctrl.SaisieConso(IDunite=2, mode="reservation", etat="reservation", date=datetime.date(2019, 1, 18) )
         print ("Test saisie Unité 2 :", resultat)
-        resultat = self.ctrl.SaisieConso(IDunite=5, mode="reservation", etat="refus", date=datetime.date(2013, 6, 21) )
+        resultat = self.ctrl.SaisieConso(IDunite=5, mode="reservation", etat="reservation", date=datetime.date(2019, 1, 18) )
         print ("Test saisie Unité 2 :", resultat)
 
 if __name__ == "__main__":
