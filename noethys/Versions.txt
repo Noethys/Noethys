@@ -1,3 +1,8 @@
+Version 1.2.5.6 (19/01/2019) :
+
+- Amélioration du badgeage
+- Ajout de la liste des consommations badgées
+
 Version 1.2.5.5 (16/01/2019) :
 
 - Ajout du paiement en ligne avec Payzen sur Connecthys
