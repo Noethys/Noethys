@@ -487,24 +487,21 @@ class CaseMultihoraires(GridCellRenderer):
                                      
             # Dessin des graduations
             gc.SetPen(wx.Pen((230, 230, 230), 1, wx.SOLID))
-            # graduationStep = 25
-            # listeGraduations = range(UTILS_Dates.HeuresEnDecimal(self.case.heure_min), UTILS_Dates.HeuresEnDecimal(self.case.heure_max)+graduationStep, graduationStep)
-            # nbreGraduations = len(listeGraduations)
-            # if nbreGraduations <= 1 :
-            #     nbreGraduations = 2
-            # step = 1.0 * (rect.width - PADDING_MULTIHORAIRES["horizontal"] * 2) / (nbreGraduations - 1)
-            # if step > 3.0 :
-            #     x = PADDING_MULTIHORAIRES["horizontal"]
-            #     for temp in listeGraduations :
-            #         gc.StrokeLine(x, 1, x, rect.height-2)
-            #         x += step
+
+            try:
+                nbre_quarts_heures = UTILS_Dates.SoustractionHeures(self.case.heure_max, self.case.heure_min).seconds / 900.0
+                largeur = rect.width - PADDING_MULTIHORAIRES["horizontal"] * 2
+                largeur_quarts_heures = largeur / nbre_quarts_heures
+            except:
+                largeur_quarts_heures = 99
 
             h = datetime.timedelta(minutes=0)
             for x in range(0, 96) :
                 htime = UTILS_Dates.DeltaEnTime(h)
                 if htime >= self.case.heure_min and htime <= self.case.heure_max :
                     x = self.case.HeureEnPos(h) + PADDING_MULTIHORAIRES["horizontal"]
-                    gc.StrokeLine(x, 1, x, rect.height-2)
+                    if htime.minute == 0 or largeur_quarts_heures > 4:
+                        gc.StrokeLine(x, 1, x, rect.height-2)
                 h += datetime.timedelta(minutes=15)
 
 
@@ -1012,11 +1009,10 @@ class LabelColonneStandard(glr.GridLabelRenderer):
         hAlign, vAlign = grid.GetColLabelAlignment()
         text = grid.GetColLabelValue(col)
         if self.typeColonne == "unite" :
-            text = wordwrap.wordwrap(text, CTRL_Grille.LARGEUR_COLONNE_UNITE, dc)
+            text = wordwrap.wordwrap(text, rect.width, dc)
         if self.typeColonne == "unite" :
             DrawBorder(grid, dc, rect)
         self.DrawText(grid, dc, rect, text, hAlign, vAlign)
-
 
 
 
@@ -1048,7 +1044,7 @@ class LabelColonneMultihoraires(glr.GridLabelRenderer):
         dc.SetFont(wx.Font(9, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
         hAlign, vAlign = grid.GetColLabelAlignment()
         texte = grid.GetColLabelValue(col)
-        texte = wordwrap.wordwrap(texte, rect.width, dc)
+        texte = wordwrap.wordwrap(texte, rect.width, dc).split("\n")[0]
         self.DrawBorder(grid, dc, rect)
         largTexte, hautTexte = dc.GetTextExtent(texte)
         x = rect.width / 2.0 - largTexte / 2.0 + rect.x
@@ -1059,23 +1055,42 @@ class LabelColonneMultihoraires(glr.GridLabelRenderer):
         dc.SetTextForeground("black")
         dc.SetFont(wx.Font(7, wx.SWISS, wx.NORMAL, wx.NORMAL))
 
+        try :
+            nbre_quarts_heures = UTILS_Dates.SoustractionHeures(self.heure_max, self.heure_min).seconds / 900.0
+            largeur = rect.width - PADDING_MULTIHORAIRES["horizontal"] * 2
+            largeur_quarts_heures = largeur / nbre_quarts_heures
+        except:
+            largeur_quarts_heures = 99
+
         h = datetime.timedelta(minutes=0)
+        chiffre_pair = 0
         for x in range(0, 96) :
             htime = UTILS_Dates.DeltaEnTime(h)
             if htime >= self.heure_min and htime <= self.heure_max :
                 x = self.HeureEnPos(h, rect) + PADDING_MULTIHORAIRES["horizontal"]
                 posY = rect.height - 17
                 hautTraitHeures = 4
+                hauteurTrait = None
                 if htime.minute == 0 :
                     hauteurTrait = hautTraitHeures
                     texte = "%dh" % htime.hour
                     largTexte, hautTexte = dc.GetTextExtent(texte)
-                    dc.DrawText(texte, x-(largTexte/2)+rect.x , posY+2)
-                elif htime.minute in (15, 45) :
+                    affiche_heure = False
+                    if largeur_quarts_heures > 4:
+                        affiche_heure = True
+                    if largeur_quarts_heures > 2 and largeur_quarts_heures < 4 and chiffre_pair % 2 == 0:
+                        affiche_heure = True
+                    if largeur_quarts_heures > 1 and largeur_quarts_heures < 2 and chiffre_pair % 3 == 0:
+                        affiche_heure = True
+                    if affiche_heure == True :
+                        dc.DrawText(texte, x-(largTexte/2)+rect.x , posY+2)
+                    chiffre_pair += 1
+                elif htime.minute in (15, 45) and largeur_quarts_heures > 4 :
                     hauteurTrait = 1
-                elif htime.minute == 30 :
+                elif htime.minute == 30 and largeur_quarts_heures > 4 :
                     hauteurTrait = 2.5
-                dc.DrawLine(x+rect.x, posY+hautTexte+hautTraitHeures-hauteurTrait, x+rect.x, posY+hautTexte+hautTraitHeures)
+                if hauteurTrait != None :
+                    dc.DrawLine(x+rect.x, posY+hautTexte+hautTraitHeures-hauteurTrait, x+rect.x, posY+hautTexte+hautTraitHeures)
 
             h += datetime.timedelta(minutes=15)
 
