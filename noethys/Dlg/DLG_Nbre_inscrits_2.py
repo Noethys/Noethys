@@ -184,6 +184,8 @@ class CTRL(HTL.HyperTreeList):
         listeInscrits = DB.ResultatReq()
         dictInscrits = {}
         for IDgroupe, statut, nbre_inscriptions in listeInscrits :
+            if statut == None :
+                statut = "ok"
             if dictInscrits.has_key(IDgroupe) == False :
                 dictInscrits[IDgroupe] = {"ok" : 0, "attente" : 0, "refus" : 0}
             dictInscrits[IDgroupe][statut] += nbre_inscriptions
