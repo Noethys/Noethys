@@ -127,6 +127,14 @@ def GetListeIndividus(listview=None, infosIndividus=None):
     ;""" % ",".join(listeChamps)
     DB.ExecuterReq(req)
     listeDonnees = DB.ResultatReq()
+
+    filtre_IDindividu = []
+    if listview.masquer == True and listview.IDunite != None:
+        req = """SELECT IDindividu, IDcotisation FROM cotisations WHERE IDunite_cotisation=%d;""" % listview.IDunite
+        DB.ExecuterReq(req)
+        listeCotisations = DB.ResultatReq()
+        filtre_IDindividu = [IDindividu for IDindividu, IDcotisation in listeCotisations]
+
     DB.Close() 
 
     # Récupération des civilités
@@ -171,8 +179,9 @@ def GetListeIndividus(listview=None, infosIndividus=None):
         dictTemp["nomTitulaires"] = nomTitulaires
 
         # Formatage sous forme de TRACK
-        track = TrackIndividu(listview, dictTemp, infosIndividus)
-        listeListeView.append(track)
+        if dictTemp["IDindividu"] not in filtre_IDindividu :
+            track = TrackIndividu(listview, dictTemp, infosIndividus)
+            listeListeView.append(track)
         
     return listeListeView
 
@@ -225,11 +234,19 @@ def GetListeFamilles(listview=None, infosIndividus=None):
     LEFT JOIN caisses ON caisses.IDcaisse = familles.IDcaisse
     LEFT JOIN regimes ON regimes.IDregime = caisses.IDregime
     ;"""
-
     DB.ExecuterReq(req)
     listeFamilles = DB.ResultatReq()
-    DB.Close() 
-    
+
+    # Recherche les cotisations existantes
+    filtre_IDfamille = []
+    if listview.masquer == True and listview.IDunite != None:
+        req = """SELECT IDfamille, IDcotisation FROM cotisations WHERE IDunite_cotisation=%d;""" % listview.IDunite
+        DB.ExecuterReq(req)
+        listeCotisations = DB.ResultatReq()
+        filtre_IDfamille = [IDfamille for IDfamille, IDcotisation in listeCotisations]
+
+    DB.Close()
+
     # Formatage des données
     listeListeView = []
     titulaires = UTILS_Titulaires.GetTitulaires() 
@@ -255,8 +272,9 @@ def GetListeFamilles(listview=None, infosIndividus=None):
             }
     
         # Formatage sous forme de TRACK
-        track = TrackFamille(listview, dictTemp, infosIndividus)
-        listeListeView.append(track)
+        if IDfamille not in filtre_IDfamille :
+            track = TrackFamille(listview, dictTemp, infosIndividus)
+            listeListeView.append(track)
         
     return listeListeView
 
@@ -267,6 +285,8 @@ class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
         # Récupération des paramètres perso
         self.categorie = kwds.pop("categorie", "individu")
+        self.IDunite = None
+        self.masquer = False
         self.afficher_colonne_numero = False
         self.dictNumeros = {"famille" : {}, "individu" : {}}
         self.donnees = []
@@ -387,9 +407,11 @@ class ListView(FastObjectListView):
             self.SetSortColumn(self.columns[2])
         self.SetObjects(self.donnees)
        
-    def MAJ(self, categorie=None):
+    def MAJ(self, categorie=None, IDunite=None):
         if categorie != None :
             self.categorie = categorie
+        if IDunite != None :
+            self.IDunite = IDunite
         self.InitModel()
         self.InitObjectListView()
         self.MAJlabel()

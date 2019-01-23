@@ -42,6 +42,7 @@ class Dialog(wx.Dialog):
 
         self.label_info = wx.StaticText(self, -1, _(u"Double-cliquez sur une ligne pour modifier le numéro de cotisation à générer."))
         self.label_info.SetFont(wx.Font(7, wx.SWISS, wx.NORMAL, wx.NORMAL))
+        self.check_masquer = wx.CheckBox(self, -1, _(u"Masquer si la cotisation existe déjà"))
         self.ctrl_listview = OL_Saisie_lot_cotisations.ListView(self, id=-1, categorie="individu", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.ctrl_listview.SetMinSize((10, 10))
         self.ctrl_recherche = OL_Saisie_lot_cotisations.CTRL_Outils(self, listview=self.ctrl_listview, afficherCocher=True)
@@ -59,6 +60,7 @@ class Dialog(wx.Dialog):
         
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
+        self.Bind(wx.EVT_CHECKBOX, self.OnCheckMasquer, self.check_masquer)
 
         # Init
         self.ShowLabelInfo(False)
@@ -68,6 +70,7 @@ class Dialog(wx.Dialog):
             self.ctrl_listview.MAJ()
 
     def __set_properties(self):
+        self.check_masquer.SetToolTip(wx.ToolTip(_(u"Masquez les familles ou les individus qui possèdent déjà la cotisation sélectionnée")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour inscrire les individus cochés")))
         self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
@@ -84,11 +87,12 @@ class Dialog(wx.Dialog):
         # Contenu
         staticbox_individus = wx.StaticBoxSizer(self.staticbox_individus_staticbox, wx.VERTICAL)
 
-        self.grid_sizer_individus = wx.FlexGridSizer(rows=3, cols=1, vgap=5, hgap=5)
+        self.grid_sizer_individus = wx.FlexGridSizer(rows=4, cols=1, vgap=5, hgap=5)
         self.grid_sizer_individus.Add(self.label_info, 0, wx.EXPAND, 0)
+        self.grid_sizer_individus.Add(self.check_masquer, 0, wx.EXPAND, 0)
         self.grid_sizer_individus.Add(self.ctrl_listview, 0, wx.EXPAND, 0)
         self.grid_sizer_individus.Add(self.ctrl_recherche, 0, wx.EXPAND, 0)
-        self.grid_sizer_individus.AddGrowableRow(1)
+        self.grid_sizer_individus.AddGrowableRow(2)
         self.grid_sizer_individus.AddGrowableCol(0)
         
         staticbox_individus.Add(self.grid_sizer_individus, 1, wx.EXPAND|wx.ALL, 10)
@@ -112,6 +116,10 @@ class Dialog(wx.Dialog):
         grid_sizer_base.AddGrowableCol(0)
         self.Layout()
         self.CenterOnScreen()
+
+    def OnCheckMasquer(self, event=None):
+        self.ctrl_listview.masquer = self.check_masquer.GetValue()
+        self.ctrl_listview.MAJ()
 
     def ShowLabelInfo(self, etat=False):
         self.label_info.Show(etat)
@@ -162,12 +170,20 @@ class Dialog(wx.Dialog):
         else :
             condition_individus = ""
 
+        liste_IDfamille = [track.IDfamille for track in liste_tracks if track.IDfamille != None]
+        if len(liste_IDfamille) == 1 :
+            condition_familles = "AND cotisations.IDfamille == %d" % liste_IDfamille[0]
+        elif len(liste_IDfamille) > 1 :
+            condition_familles = "AND cotisations.IDfamille IN %s" % str(tuple(liste_IDfamille))
+        else :
+            condition_familles = ""
+
         DB = GestionDB.DB()
         req = """SELECT IDcotisation, IDfamille, cotisations.IDindividu, numero, individus.prenom, individus.nom
         FROM cotisations 
         LEFT JOIN individus ON individus.IDindividu = cotisations.IDindividu 
         WHERE IDtype_cotisation=%d AND IDunite_cotisation=%d
-        %s;""" % (IDtype_cotisation, IDunite_cotisation, condition_individus)
+        %s %s;""" % (IDtype_cotisation, IDunite_cotisation, condition_individus, condition_familles)
         DB.ExecuterReq(req)
         listeCotisationsExistantes = DB.ResultatReq()
         DB.Close()
@@ -291,6 +307,9 @@ class Dialog(wx.Dialog):
         dlg = wx.MessageDialog(self, _(u"Les %d cotisations ont été générées avec succès.") % len(liste_tracks), _(u"Fin"), wx.OK | wx.ICON_INFORMATION)
         dlg.ShowModal()
         dlg.Destroy()
+
+        # MAJ
+        self.ctrl_listview.MAJ()
 
         return True
 

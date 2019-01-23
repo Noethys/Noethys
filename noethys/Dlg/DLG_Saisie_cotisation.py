@@ -710,10 +710,6 @@ class CTRL_Parametres(wx.Panel):
             if carte == 1:
                 self.ctrl_creation.SetValue(True)
 
-            if self.mode_lot == True :
-                if self.GetParent().ctrl_listview.categorie != type :
-                    self.GetParent().ctrl_listview.MAJ(categorie=type)
-
         # Récupère les données sur l'unité
         dictDonneesUnite = self.ctrl_unite.GetDetailDonnees()
         if dictDonneesUnite != None:
@@ -760,6 +756,10 @@ class CTRL_Parametres(wx.Panel):
         # MAJ contrôles
         self.OnChoixCreation(None)
         self.OnChoixFacturer(None)
+
+        if self.mode_lot == True and dictDonneesType != None and dictDonneesUnite != None:
+            self.GetParent().ctrl_listview.MAJ(categorie=dictDonneesType["type"], IDunite=dictDonneesUnite["ID"])
+
 
     def OnBoutonActivites(self, event):
         self.ctrl_activites.Modifier()
