@@ -512,6 +512,7 @@ class Dialog(wx.Dialog):
         nom_commande = self.ctrl_nom.GetValue()
         date_debut = self.ctrl_date_debut.GetDate()
         date_fin = self.ctrl_date_fin.GetDate()
+        observations = self.ctrl_observations.GetValue()
         dictDonnees = self.ctrl_repas.GetDonnees()
 
         # Récupération des options d'impression
@@ -606,40 +607,60 @@ class Dialog(wx.Dialog):
         dataTableau.append(ligne)
 
         # Dessin des lignes
+        dict_totaux_colonnes = {}
         for numLigne in range(0, len(dictDonnees["liste_dates"])):
             ligne = []
 
             # Ajout de la date à la ligne
             date = dictDonnees["liste_dates"][numLigne]
-            if type(date) == datetime.date :
-                valeur = UTILS_Dates.DateComplete(date)
-            else :
-                valeur = date
-            ligne.append(Paragraph(valeur, style_entete))
 
-            # Ajout des cases à la ligne
-            numColonne = 0
-            for dictColonne in dictDonnees["liste_colonnes"]:
+            afficher_ligne = True
+            if dictOptions["masquer_dates_anciennes"] == True and type(date) == datetime.date and date < datetime.date.today():
+                afficher_ligne = False
 
-                # Recherche la valeur
-                valeur = ""
-                if dictDonnees["cases"].has_key((numLigne, numColonne)):
-                    case = dictDonnees["cases"][(numLigne, numColonne)]
-                    valeur = case.GetValeur()
+            if afficher_ligne == True :
 
-                    # Recherche le style à appliquer
-                    if "numerique" in case.categorieColonne:
-                        style = style_numerique
-                        if "total" in case.categorieColonne or numLigne == len(dictDonnees["liste_dates"])-1 :
-                            style = style_total
-                    else :
-                        style = style_texte
-                        valeur = valeur.replace("\n", "<br/>")
-                ligne.append(Paragraph(unicode(valeur), style))
-                numColonne += 1
+                if type(date) == datetime.date :
+                    valeur = UTILS_Dates.DateComplete(date)
+                else :
+                    valeur = date
+                ligne.append(Paragraph(valeur, style_entete))
 
-            # Ajout de la ligne au tableau
-            dataTableau.append(ligne)
+                # Ajout des cases à la ligne
+                numColonne = 0
+                for dictColonne in dictDonnees["liste_colonnes"]:
+
+                    # Recherche la valeur
+                    valeur = ""
+                    if dictDonnees["cases"].has_key((numLigne, numColonne)):
+                        case = dictDonnees["cases"][(numLigne, numColonne)]
+                        valeur = case.GetValeur()
+
+                        # Recherche le style à appliquer
+                        if "numerique" in case.categorieColonne:
+                            style = style_numerique
+
+                            # Définit le style de la case total
+                            if "total" in case.categorieColonne or numLigne == len(dictDonnees["liste_dates"])-1 :
+                                style = style_total
+
+                            if numLigne == len(dictDonnees["liste_dates"]) - 1:
+                                # Récupère la valeur total de la colonne
+                                valeur = dict_totaux_colonnes.get(numColonne, 0)
+                            else :
+                                # Mémorise total de la colonne numérique
+                                if dict_totaux_colonnes.has_key(numColonne) == False:
+                                    dict_totaux_colonnes[numColonne] = 0
+                                dict_totaux_colonnes[numColonne] += valeur
+
+                        else :
+                            style = style_texte
+                            valeur = valeur.replace("\n", "<br/>")
+                    ligne.append(Paragraph(unicode(valeur), style))
+                    numColonne += 1
+
+                # Ajout de la ligne au tableau
+                dataTableau.append(ligne)
 
         # Style du tableau
         couleur_fond_entetes = UTILS_Divers.ConvertCouleurWXpourPDF(dictOptions["couleur_fond_entetes"])
@@ -670,6 +691,11 @@ class Dialog(wx.Dialog):
         tableau.setStyle(style)
         story.append(tableau)
 
+        # Observations
+        if dictOptions["afficher_observations"] == True and len(observations) > 0:
+            style_observations = ParagraphStyle(name="2", alignment=1, fontName="Helvetica", fontSize=dictOptions["taille_texte"], leading=8, spaceBefore=10)
+            story.append(Paragraph(observations, style=style_observations))
+
         # Enregistrement du PDF
         doc.build(story)
 
@@ -690,21 +716,33 @@ class CTRL_Options_impression(DLG_Options_impression_pdf.CTRL_Parametres):
         DLG_Options_impression_pdf.CTRL_Parametres.__init__(self, parent)
 
     def Remplissage(self):
+        # Affichage
+        self.Append(wxpg.PropertyCategory(_(u"Affichage")))
+
         # Période à afficher
-        # date_debut = UTILS_Dates.ConvertDateDTenWX(DICT_INFOS_IMPRESSION["date_debut"])
-        # date_fin = UTILS_Dates.ConvertDateDTenWX(DICT_INFOS_IMPRESSION["date_fin"])
-        #
+        # date_debut = DICT_INFOS_IMPRESSION["date_debut"]
+        # date_fin = DICT_INFOS_IMPRESSION["date_fin"]
         # if date_debut != None and date_fin != None :
-        #     # Affichage
-        #     self.Append(wxpg.PropertyCategory(_(u"Affichage")))
         #
-        #     propriete = wxpg.DateProperty(label=_(u"Date de début"), name="date_debut", value=wx.DateTime_Now())
-        #     propriete.SetAttribute(wxpg.PG_DATE_PICKER_STYLE, wx.DP_DROPDOWN|wx.DP_SHOWCENTURY )
+        #     propriete = wxpg.StringProperty(label=_(u"Date de début"), name="date_debut", value=UTILS_Dates.DateDDEnFr(date_debut))
+        #     propriete.SetEditor("EditeurDate")
         #     self.Append(propriete)
         #
-        #     propriete = wxpg.DateProperty(label=_(u"Date de fin"), name="date_fin", value=wx.DateTime_Now())
-        #     propriete.SetAttribute(wxpg.PG_DATE_PICKER_STYLE, wx.DP_DROPDOWN|wx.DP_SHOWCENTURY )
+        #     propriete = wxpg.StringProperty(label=_(u"Date de fin"), name="date_fin", value=UTILS_Dates.DateDDEnFr(date_fin))
+        #     propriete.SetEditor("EditeurDate")
         #     self.Append(propriete)
+
+        # Masquer dates anciennes
+        propriete = wxpg.BoolProperty(label=_(u"Masquer les anciennes dates"), name="masquer_dates_anciennes", value=False)
+        propriete.SetHelpString(_(u"Cochez cette case pour masquer les dates passées"))
+        propriete.SetAttribute("UseCheckbox", True)
+        self.Append(propriete)
+
+        # Afficher observations
+        propriete = wxpg.BoolProperty(label=_(u"Afficher les observations"), name="afficher_observations", value=False)
+        propriete.SetHelpString(_(u"Cochez cette case pour afficher les observations"))
+        propriete.SetAttribute("UseCheckbox", True)
+        self.Append(propriete)
 
         # Page
         self.Append(wxpg.PropertyCategory(_(u"Page")))

@@ -31,7 +31,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
     def Remplissage(self):
         # --------------------------- TYPE DE DOCUMENT------------------------------------------
         self.Append( wxpg.PropertyCategory(_(u"Type de document")) )
-    
+
         # Type
         propriete = wxpg.EnumProperty(label=_(u"Type"), name="type_document", labels=[_(u"Détaillé"), _(u"Simplifié"), _(u"Totaux")], values=[0, 1, 2], value=0)
         propriete.SetHelpString(_(u"Sélectionnez un type de document")) 
