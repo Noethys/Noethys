@@ -74,19 +74,25 @@ class ListView(FastObjectListView):
         self.itemSelected = False
         self.popupIndex = -1
         self.listeFiltres = []
-        self.dateReference = None
-        self.listeActivites = None
-        self.presents = None
-        self.familles = "TOUTES"
-        self.labelParametres = ""
-        self.IDtype_quotient = None
+        self.dict_parametres = {
+            "date_reference": None,
+            "liste_activites": None,
+            "presents": None,
+            "familles": "TOUTES",
+            "label_parametres": "",
+            "IDtype_quotient": None,
+            }
 
         # Initialisation du listCtrl
         self.nom_fichier_liste = __file__
         FastObjectListView.__init__(self, *args, **kwds)
         # Binds perso
         self.Bind(wx.EVT_CONTEXT_MENU, self.OnContextMenu)
-                                
+        self.Bind(wx.EVT_LIST_ITEM_ACTIVATED, self.OnItemActivated)
+
+    def OnItemActivated(self, event):
+        self.OuvrirFicheFamille()
+
     def InitModel(self):
         global DICT_TITULAIRES
         DICT_TITULAIRES = UTILS_Titulaires.GetTitulaires() 
@@ -94,51 +100,35 @@ class ListView(FastObjectListView):
 
     def GetTracks(self):
         """ Récupération des données """
-        if self.dateReference == None : return []
-        if self.IDtype_quotient == None : return []
+        if self.dict_parametres["date_reference"] == None : return []
+        if self.dict_parametres["IDtype_quotient"] == None : return []
         
         # Conditions Activites
-        if self.listeActivites == None or self.listeActivites == [] :
+        if self.dict_parametres["liste_activites"] == None or self.dict_parametres["liste_activites"] == [] :
             conditionActivites = ""
         else:
-            if len(self.listeActivites) == 1 :
-                conditionActivites = " AND inscriptions.IDactivite=%d" % self.listeActivites[0]
+            if len(self.dict_parametres["liste_activites"]) == 1 :
+                conditionActivites = " AND inscriptions.IDactivite=%d" % self.dict_parametres["liste_activites"][0]
             else:
-                conditionActivites = " AND inscriptions.IDactivite IN %s" % str(tuple(self.listeActivites))
-                
-        # Conditions Présents
-##        if self.presents == None :
-##            conditionPresents = ""
-##            jointurePresents = ""
-##        else:
-##            conditionPresents = " AND (consommations.date>='%s' AND consommations.date<='%s')" % (str(self.presents[0]), str(self.presents[1]))
-##            jointurePresents = "LEFT JOIN consommations ON consommations.IDindividu = individus.IDindividu"
+                conditionActivites = " AND inscriptions.IDactivite IN %s" % str(tuple(self.dict_parametres["liste_activites"]))
 
         DB = GestionDB.DB()
 
         # Récupération des présents
         listePresents = []
-        if self.presents != None :
+        if self.dict_parametres["presents"] != None :
             req = """SELECT IDfamille, inscriptions.IDinscription
             FROM consommations
             LEFT JOIN inscriptions ON inscriptions.IDinscription = consommations.IDinscription
             WHERE inscriptions.statut='ok' AND date>='%s' AND date<='%s' AND consommations.etat IN ('reservation', 'present') %s
             GROUP BY IDfamille
-            ;"""  % (str(self.presents[0]), str(self.presents[1]), conditionActivites.replace("inscriptions", "consommations"))
+            ;"""  % (str(self.dict_parametres["presents"][0]), str(self.dict_parametres["presents"][1]), conditionActivites.replace("inscriptions", "consommations"))
             DB.ExecuterReq(req)
             listeIndividusPresents = DB.ResultatReq()
             for IDfamille, IDinscription in listeIndividusPresents :
                 listePresents.append(IDfamille)
 
         # Récupération des familles
-##        req = """SELECT familles.IDfamille
-##        FROM familles 
-##        LEFT JOIN rattachements ON rattachements.IDfamille = familles.IDfamille
-##        %s
-##        WHERE familles.IDfamille>0 %s %s
-##        GROUP BY familles.IDfamille
-##        ;""" % (jointurePresents, conditionActivites, conditionPresents)
-
         req = """
         SELECT inscriptions.IDfamille, familles.autorisation_cafpro
         FROM inscriptions 
@@ -159,7 +149,7 @@ class ListView(FastObjectListView):
         FROM quotients
         WHERE date_debut<='%s' AND date_fin>='%s' AND IDtype_quotient=%d
         ORDER BY date_fin
-        ;""" % (self.dateReference, self.dateReference, self.IDtype_quotient)
+        ;""" % (self.dict_parametres["date_reference"], self.dict_parametres["date_reference"], self.dict_parametres["IDtype_quotient"])
         DB.ExecuterReq(req)
         listeQuotients = DB.ResultatReq()
         dictQuotients = {}
@@ -171,18 +161,18 @@ class ListView(FastObjectListView):
         listeListeView = []
         for IDfamille, autorisation_cafpro in listeFamilles :
             
-            if self.presents == None or (self.presents != None and IDfamille in listePresents) :
+            if self.dict_parametres["presents"] == None or (self.dict_parametres["presents"] != None and IDfamille in listePresents) :
                 
                 if dictQuotients.has_key(IDfamille) :
                     dictQuotient = dictQuotients[IDfamille]
                 else :
                     dictQuotient = None
                     
-                if self.familles == "TOUTES" :
+                if self.dict_parametres["familles"] == "TOUTES" :
                     listeListeView.append(Track(IDfamille, autorisation_cafpro, dictQuotient))
-                if self.familles == "AVEC" and dictQuotient != None:
+                if self.dict_parametres["familles"] == "AVEC" and dictQuotient != None:
                     listeListeView.append(Track(IDfamille, autorisation_cafpro, dictQuotient))
-                if self.familles == "SANS" and dictQuotient == None:
+                if self.dict_parametres["familles"] == "SANS" and dictQuotient == None:
                     listeListeView.append(Track(IDfamille, autorisation_cafpro, dictQuotient))
 
         return listeListeView
@@ -216,19 +206,21 @@ class ListView(FastObjectListView):
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
         self.SetSortColumn(self.columns[1])
         self.SetObjects(self.donnees)
-       
-    def MAJ(self, date_reference=None, listeActivites=None, presents=None, familles="TOUTES", labelParametres="", IDtype_quotient=None):
-        self.dateReference = date_reference
-        self.listeActivites = listeActivites
-        self.presents = presents
-        self.familles = familles
-        self.labelParametres = labelParametres
-        self.IDtype_quotient = IDtype_quotient
 
+    def SetParametre(self, nom="", valeur=""):
+        self.dict_parametres[nom] = valeur
+
+    def MAJ(self, IDfamille=None):
         attente = wx.BusyInfo(_(u"Recherche des données..."), self)
         self.InitModel()
         self.InitObjectListView()
         del attente
+
+        # Sélection
+        for track in self.donnees:
+            if track.IDfamille == IDfamille :
+                self.SelectObject(track, ensureVisible=True)
+                break
     
     def Selection(self):
         return self.GetSelectedObjects()
@@ -256,13 +248,13 @@ class ListView(FastObjectListView):
     def GetParametresImpression(self):
         dictParametres = {
             "titre" : _(u"Liste des quotients familiaux/revenus"),
-            "intro" : self.labelParametres,
+            "intro" : self.dict_parametres["label_parametres"],
             "total" : _(u"> %s familles") % len(self.donnees),
             "orientation" : wx.PORTRAIT,
             }
         return dictParametres
 
-    def OuvrirFicheFamille(self, event):
+    def OuvrirFicheFamille(self, event=None):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_fiche", "consulter") == False : return
         if len(self.Selection()) == 0 :
             dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune fiche famille à ouvrir !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
@@ -273,7 +265,7 @@ class ListView(FastObjectListView):
         from Dlg import DLG_Famille
         dlg = DLG_Famille.Dialog(self, IDfamille)
         if dlg.ShowModal() == wx.ID_OK:
-            self.MAJ(self.dateReference, self.listeActivites, self.presents, self.familles)
+            self.MAJ(IDfamille=IDfamille)
         dlg.Destroy()
 
 # -------------------------------------------------------------------------------------------------------------------------------------
@@ -330,7 +322,7 @@ class MyFrame(wx.Frame):
         self.myOlv = ListView(panel, id=-1, name="OL_test", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         import time
         t = time.time()
-        self.myOlv.MAJ(date_reference=datetime.date(2015, 8, 13), listeActivites=[1, 2, 3, 4], presents=(datetime.date(2015, 1, 1), datetime.date(2015, 12, 31)), familles="TOUTES")
+        self.myOlv.MAJ()
         #print len(self.myOlv.donnees)
         #print "Temps d'execution =", time.time() - t
         sizer_2 = wx.BoxSizer(wx.VERTICAL)

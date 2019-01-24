@@ -352,7 +352,7 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.ExportExcel, self.bouton_excel)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
         
-        self.MAJ(None)
+        self.MAJ()
         
 
     def __set_properties(self):
@@ -431,8 +431,13 @@ class Dialog(wx.Dialog):
         UTILS_Aide.Aide("Listedesquotientsfamiliaux")
 
     def MAJ(self, date_reference=None, listeActivites=None, presents=None, familles=None, IDtype_quotient=None):
-        labelParametres = self.GetLabelParametres() 
-        self.ctrl_listview.MAJ(date_reference, listeActivites, presents, familles, labelParametres, IDtype_quotient)
+        self.ctrl_listview.SetParametre("date_reference", date_reference)
+        self.ctrl_listview.SetParametre("liste_activites", listeActivites)
+        self.ctrl_listview.SetParametre("presents", presents)
+        self.ctrl_listview.SetParametre("familles", familles)
+        self.ctrl_listview.SetParametre("label_parametres", self.GetLabelParametres())
+        self.ctrl_listview.SetParametre("IDtype_quotient", IDtype_quotient)
+        self.ctrl_listview.MAJ()
 
     def GetLabelParametres(self):
         listeParametres = []
