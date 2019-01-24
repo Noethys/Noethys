@@ -1,7 +1,12 @@
-Version 1.2.5.6 (19/01/2019) :
+Version 1.2.5.6 (24/01/2019) :
 
-- Amélioration du badgeage
 - Ajout de la liste des consommations badgées
+- Ajout de la date de naissance dans la liste des déductions
+- Ajout du masquage des dates passées dans la commande des repas
+- Ajout du masquage des cotisations existantes dans la saisie par lot des cotisations
+- Amélioration du badgeage par tranches horaires
+- Amélioration des headers de la grille des conso
+- Correction de la maj de la liste des quotients
 
 Version 1.2.5.5 (16/01/2019) :
 
