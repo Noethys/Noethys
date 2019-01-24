@@ -49,6 +49,7 @@ class Track(object):
             self.nomIndividu = u""
             self.prenomIndividu = u""
             self.nomComplet = u""
+        self.date_naiss = donnees["date_naiss"]
         self.labelPrestation = donnees["labelPrestation"]
         self.montantPrestation = donnees["montantPrestation"]
         self.montantInitialPrestation = donnees["montantInitialPrestation"]
@@ -79,7 +80,7 @@ class ListView(FastObjectListView):
         self.criteres = ""
         self.itemSelected = False
         self.popupIndex = -1
-        self.dictTitulaires = UTILS_Titulaires.GetTitulaires() 
+        self.dictTitulaires = UTILS_Titulaires.GetTitulaires()
 
         self.date_debut = None
         self.date_fin = None
@@ -133,7 +134,8 @@ class ListView(FastObjectListView):
         db = GestionDB.DB()
         req = """SELECT 
         IDdeduction, deductions.IDprestation, deductions.IDcompte_payeur, deductions.date, deductions.montant, deductions.label, IDaide, 
-        individus.nom, individus.prenom, prestations.label, prestations.montant, prestations.montant_initial, prestations.IDfamille, prestations.IDactivite, activites.abrege, prestations.IDindividu, prestations.date, prestations.IDfacture,
+        individus.nom, individus.prenom, individus.date_naiss,
+        prestations.label, prestations.montant, prestations.montant_initial, prestations.IDfamille, prestations.IDactivite, activites.abrege, prestations.IDindividu, prestations.date, prestations.IDfacture,
         familles.IDcaisse, familles.num_allocataire, caisses.nom
         FROM deductions
         LEFT JOIN prestations ON prestations.IDprestation = deductions.IDprestation
@@ -146,13 +148,14 @@ class ListView(FastObjectListView):
         listeDonnees = db.ResultatReq()
         db.Close() 
         listeDeductions = []
-        for IDdeduction, IDprestation, IDcompte_payeur, date, montant, label, IDaide, nomIndividu, prenomIndividu, labelPrestation, montantPrestation, montantInitialPrestation, IDfamille, IDactivite, abregeActivite, IDindividu, datePrestation, IDfacture, IDcaisse, num_allocataire, nomCaisse in listeDonnees :
+        for IDdeduction, IDprestation, IDcompte_payeur, date, montant, label, IDaide, nomIndividu, prenomIndividu, date_naiss, labelPrestation, montantPrestation, montantInitialPrestation, IDfamille, IDactivite, abregeActivite, IDindividu, datePrestation, IDfacture, IDcaisse, num_allocataire, nomCaisse in listeDonnees :
             date = UTILS_Dates.DateEngEnDateDD(date)
             datePrestation = UTILS_Dates.DateEngEnDateDD(datePrestation)
+            date_naiss = UTILS_Dates.DateEngEnDateDD(date_naiss)
             dictTemp = {
                 "IDdeduction" : IDdeduction, "IDprestation" : IDprestation, "IDcompte_payeur" : IDcompte_payeur, 
                 "date" : date, "montant" : montant, "label" : label, "IDaide" : IDaide, 
-                "nomIndividu" : nomIndividu, "prenomIndividu" : prenomIndividu, 
+                "nomIndividu" : nomIndividu, "prenomIndividu" : prenomIndividu, "date_naiss" : date_naiss,
                 "labelPrestation" : labelPrestation, "montantPrestation" : montantPrestation, "montantInitialPrestation" : montantInitialPrestation,
                 "IDfamille" : IDfamille, "IDactivite" : IDactivite, "abregeActivite" : abregeActivite, "IDindividu" : IDindividu, "datePrestation" : datePrestation, "IDfacture" : IDfacture,
                 "IDcaisse" : IDcaisse, "num_allocataire" : num_allocataire, "nomCaisse" : nomCaisse,
@@ -202,14 +205,15 @@ class ListView(FastObjectListView):
                 return _(u"Non")
             else :
                 return _(u"Oui")
-            
+
         liste_Colonnes = [
             ColumnDefn(_(u"ID"), "left", 0, "IDdeduction", typeDonnee="entier"),
             ColumnDefn(_(u"Date"), 'left', 90, "date", typeDonnee="date", stringConverter=FormateDateCourt), 
             ColumnDefn(_(u"Famille"), 'left', 160, "nomTitulaires", typeDonnee="texte"),
             ColumnDefn(_(u"Caisse"), 'left', 80, "nomCaisse", typeDonnee="texte"),
             ColumnDefn(_(u"n° Alloc."), 'left', 80, "num_allocataire", typeDonnee="texte"),
-            ColumnDefn(_(u"Individu"), 'left', 140, "nomComplet", typeDonnee="texte"), 
+            ColumnDefn(_(u"Individu"), 'left', 140, "nomComplet", typeDonnee="texte"),
+            ColumnDefn(_(u"Date naiss."), 'left', 90, "date_naiss", typeDonnee="date", stringConverter=FormateDateCourt),
             ColumnDefn(_(u"Label déduction"), 'left', 220, "label", typeDonnee="texte"), 
             ColumnDefn(_(u"Montant"), 'right', 90, "montant", typeDonnee="montant", stringConverter=FormateMontant), 
             ColumnDefn(_(u"Label prestation"), 'left', 150, "labelPrestation", typeDonnee="texte"), 
@@ -226,7 +230,7 @@ class ListView(FastObjectListView):
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
         self.SetSortColumn(self.columns[1])
         self.SetObjects(self.donnees)
-       
+
     def MAJ(self, date_debut=None, date_fin=None, listeActivites=[], filtres=[], ID=None, labelParametres=""):     
         self.date_debut = date_debut
         self.date_fin = date_fin
@@ -428,7 +432,7 @@ class MyFrame(wx.Frame):
         sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
         self.SetSizer(sizer_1)
         self.myOlv = ListView(panel, id=-1, name="OL_test", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
-        self.myOlv.MAJ() 
+        self.myOlv.MAJ(date_debut=datetime.date(2010, 1, 1), date_fin=datetime.date(2018, 1, 1), listeActivites="toutes", filtres=['cotisation', 'consommation', 'location', 'autre'])
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.myOlv, 1, wx.ALL|wx.EXPAND, 4)
         panel.SetSizer(sizer_2)
