@@ -184,9 +184,9 @@ def GetListeIndividus(listview=None, listeActivites=None, presents=None, IDindiv
         conditionActivites = ""
     else:
         if len(listeActivites) == 1 :
-            conditionActivites = " AND inscriptions.IDactivite=%d" % listeActivites[0]
+            conditionActivites = " AND inscriptions.IDactivite=%d AND inscriptions.statut='ok' AND (inscriptions.date_desinscription IS NULL OR inscriptions.date_desinscription>='%s') " % (listeActivites[0], datetime.date.today())
         else:
-            conditionActivites = " AND inscriptions.IDactivite IN %s" % str(tuple(listeActivites))
+            conditionActivites = " AND inscriptions.IDactivite IN %s AND inscriptions.statut='ok' AND (inscriptions.date_desinscription IS NULL OR inscriptions.date_desinscription>='%s') " % (str(tuple(listeActivites)), datetime.date.today())
 
     # Conditions Présents
     conditionPresents = ""
@@ -214,9 +214,9 @@ def GetListeIndividus(listview=None, listeActivites=None, presents=None, IDindiv
     FROM individus 
     LEFT JOIN inscriptions ON inscriptions.IDindividu = individus.IDindividu
     %s
-    WHERE inscriptions.statut='ok' AND (inscriptions.date_desinscription IS NULL OR inscriptions.date_desinscription>='%s') %s %s %s
+    WHERE individus.IDindividu>0 %s %s %s
     GROUP BY individus.IDindividu
-    ;""" % (",".join(listeChamps), jointurePresents, datetime.date.today(), conditionActivites, conditionPresents, conditionIndividus)
+    ;""" % (",".join(listeChamps), jointurePresents, conditionActivites, conditionPresents, conditionIndividus)
     
     DB.ExecuterReq(req)
     listeDonnees = DB.ResultatReq()
