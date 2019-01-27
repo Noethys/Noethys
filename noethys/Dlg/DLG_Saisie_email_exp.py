@@ -164,6 +164,7 @@ class Page_SMTP(wx.Panel):
         self.Layout()
 
         # Init controles
+        self.radio_predefini.SetValue(True)
         self.OnRadioServeur(None)
 
     def OnRadioServeur(self, event):
@@ -299,6 +300,7 @@ class Page_SMTP(wx.Panel):
                 self.ctrl_startTLS.SetValue(dictDonnees["startTLS"])
             self.radio_personnalise.SetValue(True)
 
+        self.OnRadioServeur(None)
         self.ActiveCtrlMdp()
 
     def Validation(self):
