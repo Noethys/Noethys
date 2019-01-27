@@ -1533,11 +1533,14 @@ class Traitement():
                 for IDunite in liste_unites_conso :
                     if ctrl_grille.IsOuvert(IDunite=IDunite, date=date) :
 
-                        nomUnite = ctrl_grille.grille.dictUnites[IDunite]["nom"]
-                        texte = _(u"Saisie de l'unité %s du %s en mode %s") % (nomUnite, UTILS_Dates.DateDDEnFr(date), mode_label)
-                        self.EcritLog(texte, log_jumeau)
+                        if ctrl_grille.grille.dictUnites.has_key(IDunite):
+                            nomUnite = ctrl_grille.grille.dictUnites[IDunite]["nom"]
+                            texte = _(u"Saisie de l'unité %s du %s en mode %s") % (nomUnite, UTILS_Dates.DateDDEnFr(date), mode_label)
+                            self.EcritLog(texte, log_jumeau)
+                            resultat = ctrl_grille.SaisieConso(IDunite=IDunite, date=date, mode=mode)
+                        else :
+                            resultat = _(u"L'unité ID%d est inconnue. Vérifiez le paramétrage des unités de réservation." % IDunite)
 
-                        resultat = ctrl_grille.SaisieConso(IDunite=IDunite, date=date, mode=mode)
                         if resultat != True :
                             self.EcritLog(_(u"[ERREUR] %s") % resultat, log_jumeau)
                             liste_erreurs.append(u"> %s :\n    %s" % (texte, resultat))
