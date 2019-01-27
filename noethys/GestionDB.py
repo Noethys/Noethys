@@ -2279,7 +2279,17 @@ class DB:
 
         # =============================================================
 
+        versionFiltre = (1, 2, 5, 7)
+        if versionFichier < versionFiltre:
+            try:
+                self.AjoutChamp("adresses_mail", "moteur", "VARCHAR(200)")
+                self.AjoutChamp("adresses_mail", "parametres", "VARCHAR(1000)")
+                from Utils import UTILS_Procedures
+                UTILS_Procedures.A9130()
+            except Exception, err:
+                return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
+        # =============================================================
 
 
 

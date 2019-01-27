@@ -61,6 +61,7 @@ DICT_PROCEDURES = {
     "A9105" : _(u"Remplissage du champ statut de la table inscriptions"),
     "A9120" : _(u"Effacement de toutes les actions du portail"),
     "A9122" : _(u"Réparation des prestations : Rapprochement des prestations et des consommations détachées"),
+    "A9130" : _(u"Remplissage du champ moteur de la table adresses_mail"),
 }
 
 
@@ -1173,6 +1174,12 @@ def A9122():
     dlg.Destroy()
 
 
+def A9130():
+    """ Remplissage du champ moteur de la table adresses_mail """
+    DB = GestionDB.DB()
+    DB.ExecuterReq("UPDATE adresses_mail SET moteur='smtp';")
+    DB.Commit()
+    DB.Close()
 
 
 

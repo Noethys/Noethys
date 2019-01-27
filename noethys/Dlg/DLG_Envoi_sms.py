@@ -841,9 +841,9 @@ class Dialog(wx.Dialog, Base):
 
             # Envoi de l'email
             try :
-                messagerie = UTILS_Envoi_email.Messagerie(hote=dictAdresse["smtp"], port=dictAdresse["port"], utilisateur=dictAdresse["utilisateur"],
+                messagerie = UTILS_Envoi_email.Messagerie(backend=dictAdresse["moteur"], hote=dictAdresse["smtp"], port=dictAdresse["port"], utilisateur=dictAdresse["utilisateur"],
                                                           motdepasse=dictAdresse["motdepasse"], email_exp=dictAdresse["adresse"],
-                                                          use_tls=dictAdresse["startTLS"])
+                                                          use_tls=dictAdresse["startTLS"], parametres=dictAdresse["parametres"])
                 messagerie.Connecter()
                 messagerie.Envoyer(message)
                 messagerie.Fermer()
@@ -885,9 +885,9 @@ class Dialog(wx.Dialog, Base):
 
             # Envoi de l'email
             try :
-                messagerie = UTILS_Envoi_email.Messagerie(hote=dictAdresse["smtp"], port=dictAdresse["port"], utilisateur=dictAdresse["utilisateur"],
+                messagerie = UTILS_Envoi_email.Messagerie(backend=dictAdresse["moteur"], hote=dictAdresse["smtp"], port=dictAdresse["port"], utilisateur=dictAdresse["utilisateur"],
                                                           motdepasse=dictAdresse["motdepasse"], email_exp=dictAdresse["adresse"],
-                                                          use_tls=dictAdresse["startTLS"])
+                                                          use_tls=dictAdresse["startTLS"], parametres=dictAdresse["parametres"])
                 messagerie.Connecter()
                 messagerie.Envoyer(message)
                 messagerie.Fermer()

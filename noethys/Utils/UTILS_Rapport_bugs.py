@@ -171,6 +171,7 @@ class DLG_Rapport(wx.Dialog):
             dlg.ShowModal()
             dlg.Destroy()
             return False
+        moteur = dictExp["moteur"]
         adresseExpediteur = dictExp["adresse"]
         serveur = dictExp["smtp"]
         port = dictExp["port"]
@@ -178,21 +179,10 @@ class DLG_Rapport(wx.Dialog):
         startTLS = dictExp["startTLS"]
         motdepasse = dictExp["motdepasse"]
         utilisateur = dictExp["utilisateur"]
+        parametres = dictExp["parametres"]
 
         if adresseExpediteur == None :
             dlg = wx.MessageDialog(self, _(u"L'adresse d'expédition ne semble pas valide. Veuillez la vérifier."), _(u"Envoi impossible"), wx.OK | wx.ICON_EXCLAMATION)
-            dlg.ShowModal()
-            dlg.Destroy()
-            return False
-
-        if auth == True and motdepasse == None :
-            dlg = wx.MessageDialog(self, _(u"Le mot de passe associé à l'adresse d'expédition ne semble pas valide. Veuillez le vérifier."), _(u"Envoi impossible"), wx.OK | wx.ICON_EXCLAMATION)
-            dlg.ShowModal()
-            dlg.Destroy()
-            return False
-
-        if auth == True and utilisateur == None :
-            dlg = wx.MessageDialog(self, _(u"Le nom d'utilisateur associé à l'adresse d'expédition ne semble pas valide. Veuillez le vérifier."), _(u"Envoi impossible"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -216,7 +206,7 @@ class DLG_Rapport(wx.Dialog):
 
         # Envoi du mail
         try :
-            messagerie = UTILS_Envoi_email.Messagerie(hote=serveur, port=port, utilisateur=utilisateur, motdepasse=motdepasse, email_exp=adresseExpediteur, use_tls=startTLS)
+            messagerie = UTILS_Envoi_email.Messagerie(backend=moteur, hote=serveur, port=port, utilisateur=utilisateur, motdepasse=motdepasse, email_exp=adresseExpediteur, use_tls=startTLS, parametres=parametres)
             messagerie.Connecter()
             messagerie.Envoyer(message)
             messagerie.Fermer()

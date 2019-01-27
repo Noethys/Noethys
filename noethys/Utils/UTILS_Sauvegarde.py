@@ -210,8 +210,9 @@ def Sauvegarde(listeFichiersLocaux=[], listeFichiersReseau=[], nom="", repertoir
     if listeEmails != None :
         dlgprogress.Update(numEtape, _(u"Expédition de la sauvegarde par Email..."));numEtape += 1
         try :
-            messagerie = UTILS_Envoi_email.Messagerie(hote=dictAdresse["smtp"], port=dictAdresse["port"], utilisateur=dictAdresse["utilisateur"],
-                                                      motdepasse=dictAdresse["motdepasse"], email_exp=dictAdresse["adresse"], use_tls=dictAdresse["startTLS"])
+            messagerie = UTILS_Envoi_email.Messagerie(backend=dictAdresse["moteur"], hote=dictAdresse["smtp"], port=dictAdresse["port"], utilisateur=dictAdresse["utilisateur"],
+                                                      motdepasse=dictAdresse["motdepasse"], email_exp=dictAdresse["adresse"], use_tls=dictAdresse["startTLS"],
+                                                      timeout=60*3, parametres=dictAdresse["parametres"])
             messagerie.Connecter()
             messagerie.Envoyer(message)
             messagerie.Fermer()
