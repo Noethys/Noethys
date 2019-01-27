@@ -1,5 +1,7 @@
-Version 1.2.5.6 (24/01/2019) :
+Version 1.2.5.7 (27/01/2019) :
 
+- Nouveau moteur d'envoi des emails
+- Ajout de la prise en charge du service d'envoi d'emails Mailjet
 - Ajout de la liste des consommations badgées
 - Ajout de la date de naissance dans la liste des déductions
 - Ajout du masquage des dates passées dans la commande des repas
