@@ -3,8 +3,8 @@
 #------------------------------------------------------------------------
 # Application :    Noethys, gestion multi-activités
 # Site internet :  www.noethys.com
-# Auteur:           Ivan LUCAS
-# Copyright:       (c) 2010-11 Ivan LUCAS
+# Auteur:          Ivan LUCAS
+# Copyright:       (c) 2010-19 Ivan LUCAS
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
@@ -15,7 +15,11 @@ from Utils.UTILS_Traduction import _
 import wx
 from Ctrl import CTRL_Bouton_image
 import GestionDB
+import datetime
 from Data import DATA_Serveurs_fai
+from Dlg import DLG_Messagebox
+from Utils import UTILS_Parametres
+from Utils import UTILS_Envoi_email
 
 
 class Dialog(wx.Dialog):
@@ -32,7 +36,7 @@ class Dialog(wx.Dialog):
         
         self.static_sizer_adresse_staticbox = wx.StaticBox(self, -1, _(u"Adresse de messagerie"))
         self.static_sizer_serveur_staticbox = wx.StaticBox(self, -1, _(u"Serveur de messagerie"))
-        self.label_intro = wx.StaticText(self, -1, _(u"Choisissez le serveur de messagerie dans la liste qui correspond à votre\nadresse de messagerie."))
+        self.label_intro = wx.StaticText(self, -1, _(u"Renseignez les paramètres de votre adresse d'expédition d'emails."))
         self.radio_predefini = wx.RadioButton(self, -1, "")
         self.label_predefini = wx.StaticText(self, -1, _(u"Serveur prédéfini :"))
         self.ctrl_predefinis = wx.Choice(self, -1, choices=listeServeursChoices)
@@ -42,21 +46,22 @@ class Dialog(wx.Dialog):
         self.ctrl_smtp = wx.TextCtrl(self, -1, "")
         self.label_port = wx.StaticText(self, -1, _(u"Numéro de port :"))
         self.ctrl_port = wx.TextCtrl(self, -1, "")
-        self.label_authentification  = wx.StaticText(self, -1, _(u"Connexion authentifiée :"))
+        self.label_authentification  = wx.StaticText(self, -1, _(u"Authentification :"))
         self.ctrl_authentification  = wx.CheckBox(self, -1, "")
-        self.label_startTLS  = wx.StaticText(self, -1, _(u"startTLS :"))
+        self.label_startTLS  = wx.StaticText(self, -1, _(u"TLS :"))
         self.ctrl_startTLS   = wx.CheckBox(self, -1, "")
         self.label_adresse = wx.StaticText(self, -1, _(u"Adresse d'envoi :"))
         self.ctrl_adresse = wx.TextCtrl(self, -1, "")
-        self.label_nom_adresse = wx.StaticText(self, -1, _(u"Nom affiché pour l'adresse d'envoi :"))
+        self.label_nom_adresse = wx.StaticText(self, -1, _(u"Nom affiché :"))
         self.ctrl_nom_adresse = wx.TextCtrl(self, -1, "")
-        self.label_utilisateur = wx.StaticText(self, -1, _(u"Nom d'utilisateur :"))
+        self.label_utilisateur = wx.StaticText(self, -1, _(u"Utilisateur :"))
         self.ctrl_utilisateur = wx.TextCtrl(self, -1, "")
         self.label_mdp = wx.StaticText(self, -1, _(u"Mot de passe :"))
         self.ctrl_mdp = wx.TextCtrl(self, -1, "", style=wx.TE_PASSWORD)
         self.ctrl_mdp.Enable(False)
         
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_tester = CTRL_Bouton_image.CTRL(self, texte=_(u"Tester"), cheminImage="Images/32x32/Connexion.png")
         self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
         self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
@@ -68,6 +73,7 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_CHECKBOX, self.OnCheckAuthentification, self.ctrl_authentification)
         self.Bind(wx.EVT_CHOICE, self.OnChoiceServeur, self.ctrl_predefinis)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
+        self.Bind(wx.EVT_BUTTON, self.OnBoutonTester, self.bouton_tester)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
         
         if self.IDadresse != None :
@@ -78,17 +84,19 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.radio_predefini.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sélectionner un serveur prédéfini dans la liste")))
-        self.ctrl_predefinis.SetMinSize((200, -1))
+        self.ctrl_predefinis.SetMinSize((400, -1))
         self.radio_personnalise.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour saisir manuellement les caractéristiques du serveur de messagerie")))
         self.ctrl_smtp.SetToolTip(wx.ToolTip(_(u"Saisissez ici le nom du serveur SMPT (exemple : smtp.orange.fr)")))
         self.ctrl_port.SetMinSize((60, -1))
-        self.ctrl_port.SetToolTip(wx.ToolTip(_(u"Saisissez ici le numero de port (laissez la case vide pour utiliser le numéro de port par défaut)")))
-        self.ctrl_authentification.SetToolTip(wx.ToolTip(_(u"Cliquez ici sur le serveur de messagerie nécessite une authentification")))
+        self.ctrl_port.SetToolTip(wx.ToolTip(_(u"Saisissez ici le numéro de port (laissez la case vide pour utiliser le numéro de port par défaut)")))
+        self.ctrl_authentification.SetToolTip(wx.ToolTip(_(u"Cliquez ici si le serveur de messagerie nécessite une authentification")))
         self.ctrl_adresse.SetToolTip(wx.ToolTip(_(u"Saisissez ici votre adresse mail d'envoi")))
-        self.ctrl_nom_adresse.SetToolTip(wx.ToolTip(_(u"Saisissez ici le nom qui sera affiché pour l'adrese mail d'envoi")))
-        self.ctrl_utilisateur.SetToolTip(wx.ToolTip(_(u"Saisissez ici votre nom d'utilisateur (il s'agit parfois de l'adresse d'envoi)")))
-        self.ctrl_mdp.SetToolTip(wx.ToolTip(_(u"Saisissez ici le mot de passe s'il s'agit d'une connexion SSL")))
+        self.ctrl_nom_adresse.SetToolTip(wx.ToolTip(_(u"Saisissez ici le nom qui sera affiché pour l'adresse mail d'envoi")))
+        self.ctrl_utilisateur.SetToolTip(wx.ToolTip(_(u"Saisissez ici votre nom d'utilisateur (il s'agit souvent de l'adresse d'envoi)")))
+        self.ctrl_mdp.SetToolTip(wx.ToolTip(_(u"Saisissez ici le mot de passe s'il s'agit d'une connexion authentifiée")))
+        self.ctrl_startTLS.SetToolTip(wx.ToolTip(_(u"Cochez cette case si votre messagerie utilise le protocole TLS")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à l'aide")))
+        self.bouton_tester.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour réaliser un test d'envoi d'email")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler la saisie")))
 
@@ -101,7 +109,7 @@ class Dialog(wx.Dialog):
         grid_sizer_serveur.Add(self.radio_predefini, 0, wx.ALIGN_CENTER_VERTICAL, 0)
 
         # Serveur prédéfini
-        grid_sizer_predefini = wx.FlexGridSizer(rows=1, cols=2, vgap=10, hgap=10)
+        grid_sizer_predefini = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
         grid_sizer_predefini.Add(self.label_predefini, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_predefini.Add(self.ctrl_predefinis, 0, wx.EXPAND, 0)
         grid_sizer_predefini.AddGrowableCol(1)
@@ -109,18 +117,24 @@ class Dialog(wx.Dialog):
 
         grid_sizer_serveur.Add(self.radio_personnalise, 0, wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_serveur.Add(self.label_personnalise, 0, wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_serveur.Add((20, 20), 0, wx.EXPAND, 0)
+        grid_sizer_serveur.Add((5, 5), 0, wx.EXPAND, 0)
 
         # Personnalisé
-        grid_sizer_personnalise = wx.FlexGridSizer(rows=4, cols=2, vgap=10, hgap=10)
+        grid_sizer_personnalise = wx.FlexGridSizer(rows=4, cols=2, vgap=5, hgap=5)
         grid_sizer_personnalise.Add(self.label_smtp, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_personnalise.Add(self.ctrl_smtp, 0, wx.EXPAND, 0)
         grid_sizer_personnalise.Add(self.label_port, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_personnalise.Add(self.ctrl_port, 0, 0, 0)
-        grid_sizer_personnalise.Add(self.label_authentification, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_personnalise.Add(self.ctrl_authentification, 0, 0, 0)
-        grid_sizer_personnalise.Add(self.label_startTLS, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_personnalise.Add(self.ctrl_startTLS, 0, 0, 0)
+
+        grid_sizer_personnalise_2 = wx.FlexGridSizer(rows=1, cols=7, vgap=5, hgap=5)
+        grid_sizer_personnalise_2.Add(self.ctrl_port, 0, 0, 0)
+        grid_sizer_personnalise_2.Add((5, 5), 0, 0, 0)
+        grid_sizer_personnalise_2.Add(self.label_authentification, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_personnalise_2.Add(self.ctrl_authentification, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_personnalise_2.Add((5, 5), 0, 0, 0)
+        grid_sizer_personnalise_2.Add(self.label_startTLS, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_personnalise_2.Add(self.ctrl_startTLS, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_personnalise.Add(grid_sizer_personnalise_2, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+
         grid_sizer_personnalise.AddGrowableCol(1)
         grid_sizer_serveur.Add(grid_sizer_personnalise, 1, wx.LEFT|wx.EXPAND, 20)
         grid_sizer_serveur.AddGrowableCol(1)
@@ -128,33 +142,38 @@ class Dialog(wx.Dialog):
         grid_sizer_base.Add(static_sizer_serveur, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
 
         # Saisie adresse
-        grid_sizer_adresse = wx.FlexGridSizer(rows=4, cols=2, vgap=10, hgap=10)
+        grid_sizer_adresse = wx.FlexGridSizer(rows=2, cols=5, vgap=5, hgap=5)
         grid_sizer_adresse.Add(self.label_adresse, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_adresse.Add(self.ctrl_adresse, 0, wx.EXPAND, 0)
-        grid_sizer_adresse.Add(self.label_nom_adresse, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_adresse.Add(self.ctrl_nom_adresse, 0, wx.EXPAND, 0)
+        grid_sizer_adresse.Add((1, 1), 0, wx.EXPAND, 0)
         grid_sizer_adresse.Add(self.label_utilisateur, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_adresse.Add(self.ctrl_utilisateur, 0, wx.EXPAND, 0)
+        grid_sizer_adresse.Add(self.label_nom_adresse, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_adresse.Add(self.ctrl_nom_adresse, 0, wx.EXPAND, 0)
+        grid_sizer_adresse.Add((1, 1), 0, wx.EXPAND, 0)
         grid_sizer_adresse.Add(self.label_mdp, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_adresse.Add(self.ctrl_mdp, 0, wx.EXPAND, 0)
         grid_sizer_adresse.AddGrowableCol(1)
+        grid_sizer_adresse.AddGrowableCol(4)
 
         static_sizer_adresse = wx.StaticBoxSizer(self.static_sizer_adresse_staticbox, wx.VERTICAL)
         static_sizer_adresse.Add(grid_sizer_adresse, 1, wx.ALL|wx.EXPAND, 10)
         grid_sizer_base.Add(static_sizer_adresse, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
 
         # Boutons
-        grid_sizer_boutons = wx.FlexGridSizer(rows=1, cols=4, vgap=10, hgap=10)
+        grid_sizer_boutons = wx.FlexGridSizer(rows=1, cols=5, vgap=10, hgap=10)
         grid_sizer_boutons.Add(self.bouton_aide, 0, 0, 0)
+        grid_sizer_boutons.Add(self.bouton_tester, 0, 0, 0)
         grid_sizer_boutons.Add((20, 20), 0, wx.EXPAND, 0)
         grid_sizer_boutons.Add(self.bouton_ok, 0, 0, 0)
         grid_sizer_boutons.Add(self.bouton_annuler, 0, 0, 0)
-        grid_sizer_boutons.AddGrowableCol(1)
+        grid_sizer_boutons.AddGrowableCol(2)
         grid_sizer_base.Add(grid_sizer_boutons, 1, wx.ALL|wx.EXPAND, 10)
         self.SetSizer(grid_sizer_base)
         grid_sizer_base.Fit(self)
         grid_sizer_base.AddGrowableCol(0)
         self.Layout()
+        self.CentreOnScreen()
     
     def OnRadioServeur(self, event):
         if self.radio_predefini.GetValue() == True :
@@ -262,21 +281,75 @@ class Dialog(wx.Dialog):
     def OnBoutonAide(self, event):
         from Utils import UTILS_Aide
         UTILS_Aide.Aide("Adressesdexpditiondemails")
-        
+
+    def OnBoutonTester(self, event):
+        # Récupération des paramètres
+        dict_donnees = self.GetDonnees()
+
+        # Demande une adresse de destination
+        adresse = UTILS_Parametres.Parametres(mode="get", categorie="emails", nom="adresse_test", valeur=u"")
+        dlg = wx.TextEntryDialog(self, _(u"Saisissez une adresse Email de destination et cliquez sur Ok :"), _(u"Envoi d'un Email de test"), adresse)
+        if dlg.ShowModal() != wx.ID_OK:
+            dlg.Destroy()
+            return
+        adresse = dlg.GetValue()
+        dlg.Destroy()
+        # Mémorise l'adresse saisie
+        if UTILS_Envoi_email.ValidationEmail(adresse) == False :
+            dlg = wx.MessageDialog(self, _(u"L'adresse saisie n'est pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return
+        UTILS_Parametres.Parametres(mode="set", categorie="emails", nom="adresse_test", valeur=adresse)
+
+        # Création du message de test
+        message = UTILS_Envoi_email.Message(
+            destinataires=[adresse, ],
+            sujet=u"Test de messagerie",
+            texte_html=u"<p>Ceci est un <b>test de messagerie</b> envoyé à %s.</p>" % datetime.datetime.now().strftime("%H:%M:%S"),
+        )
+
+        try :
+            messagerie = UTILS_Envoi_email.Messagerie(
+                hote=dict_donnees["smtp"],
+                port=dict_donnees["port"],
+                utilisateur=dict_donnees["utilisateur"],
+                motdepasse=dict_donnees["motdepasse"],
+                email_exp=dict_donnees["adresse"],
+                nom_exp=dict_donnees["nom_adresse"],
+                timeout=10,
+                use_tls=dict_donnees["startTLS"]
+            )
+            messagerie.Connecter()
+            messagerie.Envoyer(message)
+            messagerie.Fermer()
+        except Exception, err:
+            err = str(err).decode("iso-8859-15")
+            intro = _(u"L'envoi de l'email de test est impossible :")
+            conclusion = _(u"Vérifiez votre connexion internet ou les paramètres de votre adresse d'expédition.")
+            dlgErreur = DLG_Messagebox.Dialog(self, titre=_(u"Erreur"), introduction=intro, detail=err, conclusion=conclusion, icone=wx.ICON_ERROR, boutons=[_(u"Ok"),])
+            dlgErreur.ShowModal()
+            dlgErreur.Destroy()
+            return False
+
+        dlg = wx.MessageDialog(self, _(u"L'email de test a été envoyé avec succès."), _(u"Test de connexion"), wx.OK | wx.ICON_INFORMATION)
+        dlg.ShowModal()
+        dlg.Destroy()
+
     def OnBoutonOk(self, event):
         """ Validation des données saisies """
         if self.radio_predefini.GetValue() == True :
         
             # Validation du serveur prédéfini
             if self.ctrl_predefinis.GetSelection() == -1 :
-                dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun serveur de messagerie dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_ERROR)
+                dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun serveur de messagerie dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return
             
             # Validation du serveur prédéfini
             if self.ctrl_adresse.GetValue() == "" :
-                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une adresse de messagerie."), _(u"Erreur de saisie"), wx.OK | wx.ICON_ERROR)
+                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une adresse de messagerie !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return
@@ -284,13 +357,13 @@ class Dialog(wx.Dialog):
             # Validation du mot de passe
             if self.listeServeurs[self.ctrl_predefinis.GetSelection()][3] == True :
                 if self.ctrl_mdp.GetValue() == "" :
-                    dlg = wx.MessageDialog(self, _(u"Vous avez omis de saisir le mot de passe de votre messagerie"), _(u"Erreur de saisie"), wx.OK | wx.ICON_ERROR)
+                    dlg = wx.MessageDialog(self, _(u"Vous avez omis de saisir le mot de passe de votre messagerie !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_ERROR)
                     dlg.ShowModal()
                     dlg.Destroy()
                     return
 
                 if self.ctrl_utilisateur.GetValue() == "" :
-                    dlg = wx.MessageDialog(self, _(u"Vous avez omis de saisir le nom d'utilisateur de votre messagerie"), _(u"Erreur de saisie"), wx.OK | wx.ICON_ERROR)
+                    dlg = wx.MessageDialog(self, _(u"Vous avez omis de saisir le nom d'utilisateur de votre messagerie !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_ERROR)
                     dlg.ShowModal()
                     dlg.Destroy()
                     return
@@ -298,7 +371,7 @@ class Dialog(wx.Dialog):
         else:
             
             if self.ctrl_smtp.GetValue() == "" :
-                dlg = wx.MessageDialog(self, _(u"Vous avez omis de saisir le nom du serveur SMTP"), _(u"Erreur de saisie"), wx.OK | wx.ICON_ERROR)
+                dlg = wx.MessageDialog(self, _(u"Vous avez omis de saisir le nom du serveur SMTP !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return
@@ -307,7 +380,7 @@ class Dialog(wx.Dialog):
                 try :
                     test = int(self.ctrl_port.GetValue())
                 except :
-                    dlg = wx.MessageDialog(self, _(u"Le numéro de port que vous avez saisi n'est pas valide."), _(u"Erreur de saisie"), wx.OK | wx.ICON_ERROR)
+                    dlg = wx.MessageDialog(self, _(u"Le numéro de port que vous avez saisi n'est pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_ERROR)
                     dlg.ShowModal()
                     dlg.Destroy()
                     return
@@ -315,13 +388,13 @@ class Dialog(wx.Dialog):
             # Validation du mot de passe
             if self.ctrl_authentification.GetValue() == True :
                 if self.ctrl_mdp.GetValue() == "" :
-                    dlg = wx.MessageDialog(self, _(u"Vous avez omis de saisir le mot de passe de votre messagerie"), _(u"Erreur de saisie"), wx.OK | wx.ICON_ERROR)
+                    dlg = wx.MessageDialog(self, _(u"Vous avez omis de saisir le mot de passe de votre messagerie !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_ERROR)
                     dlg.ShowModal()
                     dlg.Destroy()
                     return
 
                 if self.ctrl_utilisateur.GetValue() == "" :
-                    dlg = wx.MessageDialog(self, _(u"Vous avez omis de saisir le nom d'utilisateur de votre messagerie"), _(u"Erreur de saisie"), wx.OK | wx.ICON_ERROR)
+                    dlg = wx.MessageDialog(self, _(u"Vous avez omis de saisir le nom d'utilisateur de votre messagerie !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_ERROR)
                     dlg.ShowModal()
                     dlg.Destroy()
                     return
@@ -332,8 +405,7 @@ class Dialog(wx.Dialog):
         # Ferme la boîte de dialogue
         self.EndModal(wx.ID_OK)  
 
-    def Sauvegarde(self):
-        """ Sauvegarde des données """
+    def GetDonnees(self):
         # Récupération des valeurs saisies
         if self.radio_predefini.GetValue() == True :
             
@@ -361,12 +433,6 @@ class Dialog(wx.Dialog):
                 nom_adresse = None
             else:
                 nom_adresse = self.ctrl_nom_adresse.GetValue()
-            if self.ctrl_mdp.GetValue() == "" :
-                motdepasse = None
-                utilisateur = None
-            else:
-                motdepasse = self.ctrl_mdp.GetValue()
-                utilisateur = self.ctrl_utilisateur.GetValue()
             if self.ctrl_smtp.GetValue() == "" :
                 smtp = None
             else:
@@ -377,32 +443,48 @@ class Dialog(wx.Dialog):
                 port = int(self.ctrl_port.GetValue())
             if self.ctrl_authentification.GetValue() == True :
                 auth = 1
+                motdepasse = self.ctrl_mdp.GetValue()
+                utilisateur = self.ctrl_utilisateur.GetValue()
             else:
                 auth = 0
+                motdepasse = None
+                utilisateur = None
             if self.ctrl_startTLS.GetValue() == True :
                 startTLS = 1
             else :
                 startTLS = 0
-        
+
+        # Renvoie un dict des données
+        dict_donnees = {
+            "adresse": adresse, "nom_adresse": nom_adresse, "motdepasse": motdepasse, "smtp": smtp, "port": port,
+            "auth": auth, "startTLS": startTLS, "utilisateur": utilisateur}
+        return dict_donnees
+
+    def Sauvegarde(self):
+        """ Sauvegarde des données """
+        # Récupération des données
+        dict_donnees = self.GetDonnees()
+
         # Si c'est la première adresse saisie, on la met comme defaut
-        nbreAdresses = self.GetNbreAdresses() 
+        nbreAdresses = self.GetNbreAdresses()
         if nbreAdresses == 0 :
             defaut = True
         else:
             defaut = self.defaut
-            
+
         # Enregistrement des données
         DB = GestionDB.DB()
-        listeDonnees = [    ("adresse",   adresse),  
-                                    ("nom_adresse",    nom_adresse),
-                                    ("motdepasse",    motdepasse),
-                                    ("smtp",    smtp),
-                                    ("port",    port), 
-                                    ("connexionAuthentifiee", auth),
-                                    ("startTLS", startTLS),
-                                    ("defaut",    defaut),
-                                    ("utilisateur", utilisateur),
-                                    ]
+        listeDonnees = [
+            ("adresse", dict_donnees["adresse"]),
+            ("nom_adresse", dict_donnees["nom_adresse"]),
+            ("motdepasse", dict_donnees["motdepasse"]),
+            ("smtp", dict_donnees["smtp"]),
+            ("port", dict_donnees["port"]),
+            ("connexionAuthentifiee", dict_donnees["auth"]),
+            ("startTLS", dict_donnees["startTLS"]),
+            ("utilisateur", dict_donnees["utilisateur"]),
+            ("defaut", defaut),
+            ]
         if self.IDadresse == None :
             # Enregistrement
             newID = DB.ReqInsert("adresses_mail", listeDonnees)

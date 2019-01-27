@@ -27,6 +27,7 @@ import wx.lib.filebrowsebutton as filebrowse
 import  wx.lib.dialogs
 import FonctionsPerso
 import time
+from Dlg import DLG_Messagebox
 from Utils import UTILS_Envoi_email
 from Utils import UTILS_Parametres
 from Utils import UTILS_Historique
@@ -460,18 +461,33 @@ class Dialog(wx.Dialog):
             dlg.Destroy()
 
         # Envoi des mails
-        dlg = wx.ProgressDialog(_(u"Envoi des mails"), _(u"Veuillez patienter..."), maximum = len(listeDestinataires)+1, parent=self)
-        dlg.SetSize((370, 140))
-        dlg.CenterOnScreen() 
-        
+        dlg_progress = wx.ProgressDialog(_(u"Envoi des mails"), _(u"Connexion au serveur de messagerie..."), maximum=len(listeDestinataires)+1, parent=self)
+        dlg_progress.SetSize((450, 140))
+        dlg_progress.CenterOnScreen()
+
+        # Connexion messagerie
+        try :
+            messagerie = UTILS_Envoi_email.Messagerie(hote=serveur, port=port, utilisateur=utilisateur, motdepasse=motdepasse,
+                                                    email_exp=exp, nom_exp=nomexp, timeout=30, use_tls=connexionStartTLS)
+            messagerie.Connecter()
+        except Exception, err:
+            dlg_progress.Destroy()
+            err = str(err).decode("iso-8859-15")
+            intro = _(u"La connexion au serveur de messagerie est impossible :")
+            conclusion = _(u"Vérifiez votre connexion internet ou les paramètres de votre adresse d'expédition.")
+            dlgErreur = DLG_Messagebox.Dialog(self, titre=_(u"Erreur"), introduction=intro, detail=err, conclusion=conclusion, icone=wx.ICON_ERROR, boutons=[_(u"Ok"),])
+            dlgErreur.ShowModal()
+            dlgErreur.Destroy()
+            return False
+
         index = 1
         self.listeAnomalies = []
         self.listeSucces = []
+        ne_pas_signaler_erreurs = False
         for track in listeDestinataires :
             adresse = track.adresse
             if adresseTest != None :
                 adresse = adresseTest
-##            adresse = FonctionsPerso.Supprime_accent2(adresse)
             listePiecesPersonnelles = track.pieces
             dictChamps = track.champs      
             
@@ -489,67 +505,89 @@ class Dialog(wx.Dialog):
                 if type(valeur) == bool : valeur = str(valeur)
                 if type(valeur) == datetime.date : valeur = UTILS_Dates.DateDDEnFr(valeur)
                 texte = texte.replace(motcle, valeur)
-            
+
             # Envoi du mail
-            try :
-                labelAdresse = adresse.decode("iso-8859-15")
-            except :
-                labelAdresse = adresse
-            label = _(u"Envoi %d/%d : %s...") % (index, len(listeDestinataires), labelAdresse)
-            self.EcritStatusBar(label)
-            dlg.Update(index, label)
-            
-            try :
-                etat = UTILS_Envoi_email.Envoi_mail( 
-                    adresseExpediteur=exp, 
-                    nomadresseExpediteur=nomexp, 
-                    listeDestinataires=[adresse,], 
-                    listeDestinatairesCCI=[], 
-                    sujetMail=sujet, 
-                    texteMail=texte, 
-                    listeFichiersJoints=listePieces, 
-                    serveur=serveur, 
-                    port=port, 
-                    avecAuthentification=connexionAuthentifiee,
-                    avecStartTLS=connexionStartTLS,
-                    listeImages=listeImages,
-                    motdepasse=motdepasse,
-                    accuseReception=accuseReception,
-                    utilisateur=utilisateur,
+            while True :
+
+                try :
+                    labelAdresse = adresse.decode("iso-8859-15")
+                except :
+                    labelAdresse = adresse
+                label = _(u"Envoi %d/%d : %s...") % (index, len(listeDestinataires), labelAdresse)
+                self.EcritStatusBar(label)
+
+                # Si la dlg_progress a été fermée, on la réouvre
+                if dlg_progress == None :
+                    dlg_progress = wx.ProgressDialog(_(u"Envoi des mails"), _(u""), maximum=len(listeDestinataires) + 1, parent=self)
+                    dlg_progress.SetSize((450, 140))
+                    dlg_progress.CenterOnScreen()
+                dlg_progress.Update(index, label)
+
+                # Envoi
+                message = UTILS_Envoi_email.Message(
+                    destinataires=[adresse,],
+                    sujet=sujet,
+                    texte_html=texte,
+                    fichiers=listePieces,
+                    images=listeImages,
                     )
-                self.listeSucces.append(track)
-                
-                # Mémorisation dans l'historique
-                self.MemorisationHistorique(adresse, sujet)
 
-            except Exception, err:
-                err = str(err).decode("iso-8859-15")
-                self.listeAnomalies.append((track, err))
-                print ("Erreur dans l'envoi d'un mail : %s...", err)
-                traceback.print_exc(file=sys.stdout)
+                try :
+                    messagerie.Envoyer(message)
+                    self.listeSucces.append(track)
+                    self.MemorisationHistorique(adresse, sujet)
+                except Exception, err:
+                    err = str(err).decode("iso-8859-15")
+                    self.listeAnomalies.append((track, err))
+                    print ("Erreur dans l'envoi d'un mail : %s...", err)
+                    traceback.print_exc(file=sys.stdout)
 
-                if index == len(listeDestinataires) :
-                    dlgErreur = wx.MessageDialog(self, _(u"%s\n\nL'erreur suivante a été détectée :\n%s.") % (label, err), _(u"Erreur"), wx.OK | wx.ICON_ERROR)
-                    dlgErreur.ShowModal()
-                    dlgErreur.Destroy()
-                else :
-                    dlgErreur = wx.MessageDialog(self, _(u"%s\n\nL'erreur suivante a été détectée :\n%s.\n\nSouhaitez-vous quand même continuer le processus ?") % (label, err), _(u"Erreur"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_ERROR)
-                    if dlgErreur.ShowModal() != wx.ID_YES :
+                    if ne_pas_signaler_erreurs == False:
+
+                        # Fermeture de la dlg_progress
+                        dlg_progress.Destroy()
+                        dlg_progress = None
+
+                        # Affichage de l'erreur
+                        intro = _(u"L'erreur suivante a été détectée :")
+                        detail = err
+                        if index <= len(listeDestinataires)-1 :
+                            conclusion = _(u"Souhaitez-vous quand même continuer l'envoi des autres emails ?")
+                            boutons = [_(u"Réessayer"), _(u"Continuer"), _(u"Continuer et ne plus signaler les erreurs"), _(u"Arrêter")]
+                        else :
+                            conclusion = None
+                            boutons = [_(u"Réessayer"), _(u"Arrêter"),]
+                        dlgErreur = DLG_Messagebox.Dialog(self, titre=_(u"Erreur"), introduction=intro, detail=detail, conclusion=conclusion, icone=wx.ICON_ERROR, boutons=boutons)
+                        reponse = dlgErreur.ShowModal()
                         dlgErreur.Destroy()
-                        # Arrêt du processus
-                        dlg.Destroy()
-                        handler.DeleteTemporaryImages()
-                        self.EcritStatusBar(u"")
-                        return
-                    dlgErreur.Destroy()
+                        if reponse == 0:
+                            continue
+                        if reponse == 2:
+                            ne_pas_signaler_erreurs = True
+                        if reponse == 3:
+                            handler.DeleteTemporaryImages()
+                            self.EcritStatusBar(u"")
+                            try :
+                                messagerie.Fermer()
+                            except:
+                                pass
+                            return False
+                break
 
             if len(listeDestinataires) > 1 :
-                time.sleep(2) # Attente entre chaque envoi...
+                time.sleep(1) # Attente entre chaque envoi...
             index += 1
-        
+
+        # Fermeture de la connexion
+        try :
+            messagerie.Fermer()
+        except:
+            pass
+
         # Fin de la gauge
-        dlg.Update(index, _(u"Fin de l'envoi."))
-        dlg.Destroy()
+        if dlg_progress != None:
+            dlg_progress.Update(index, _(u"Fin de l'envoi."))
+            dlg_progress.Destroy()
         
         # Suppression des images temporaires incluses dans le message
         handler.DeleteTemporaryImages()
@@ -569,21 +607,20 @@ class Dialog(wx.Dialog):
         
         # Si Anomalies
         if len(self.listeAnomalies) > 0 and len(listeDestinataires) > 1 :
-            
             if len(self.listeSucces) > 0 :
-                message = _(u"%d Email(s) ont été envoyés avec succès mais les %d envois suivants ont échoué :\n\n") % (len(self.listeSucces), len(self.listeAnomalies))
+                intro = _(u"%d Email(s) ont été envoyés avec succès mais les %d envois suivants ont échoué :") % (len(self.listeSucces), len(self.listeAnomalies))
             else :
-                message = _(u"Tous les envois ont lamentablement échoué :\n\n")
-            
+                intro = _(u"Tous les envois ont lamentablement échoué :")
+            lignes = []
             for track, erreur in self.listeAnomalies :
                 try :
-                    message += u"   - %s : %s" % (track.adresse.decode("iso-8859-15"), erreur)
+                    lignes.append(u"- %s : %s" % (track.adresse.decode("iso-8859-15"), erreur))
                 except :
-                    message += u"   - %s : %s" % (track.adresse, erreur)
-            
-            dlg = wx.lib.dialogs.ScrolledMessageDialog(self, message, _(u"Compte-rendu de l'envoi"))
+                    lignes.append(u"- %s : %s" % (track.adresse, erreur))
+            dlg = DLG_Messagebox.Dialog(self, titre=_(u"Compte-rendu de l'envoi"), introduction=intro, detail="\n".join(lignes), icone=wx.ICON_INFORMATION, boutons=[_(u"Ok"),])
             dlg.ShowModal()
-                    
+            dlg.Destroy()
+
         self.EcritStatusBar(u"")
     
     def MemorisationHistorique(self, adresse="", sujet=""):

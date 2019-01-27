@@ -835,21 +835,18 @@ class Dialog(wx.Dialog, Base):
             fichier.write(texte.encode("iso-8859-15"))
             fichier.close()
 
+            # Préparation du message
+            message = UTILS_Envoi_email.Message(destinataires=[self.dictDonnees["orange_adresse_destination_email"],],
+                                                sujet=self.dictDonnees["objet"], texte_html=_(u"Envoi de SMS"), fichiers=[cheminFichier,])
+
             # Envoi de l'email
             try :
-                etat = UTILS_Envoi_email.Envoi_mail(
-                    adresseExpediteur=dictAdresse["adresse"],
-                    listeDestinataires=[self.dictDonnees["orange_adresse_destination_email"],],
-                    sujetMail=self.dictDonnees["objet"],
-                    texteMail=_(u"Envoi de SMS"),
-                    listeFichiersJoints=[cheminFichier,],
-                    serveur=dictAdresse["smtp"],
-                    port=dictAdresse["port"],
-                    avecAuthentification=dictAdresse["auth"],
-                    avecStartTLS=dictAdresse["startTLS"],
-                    motdepasse=dictAdresse["motdepasse"],
-                    utilisateur=dictAdresse["utilisateur"],
-                    )
+                messagerie = UTILS_Envoi_email.Messagerie(hote=dictAdresse["smtp"], port=dictAdresse["port"], utilisateur=dictAdresse["utilisateur"],
+                                                          motdepasse=dictAdresse["motdepasse"], email_exp=dictAdresse["adresse"],
+                                                          use_tls=dictAdresse["startTLS"])
+                messagerie.Connecter()
+                messagerie.Envoyer(message)
+                messagerie.Fermer()
             except Exception, err:
                 print (err,)
                 err = str(err).decode("iso-8859-15")
@@ -882,21 +879,18 @@ class Dialog(wx.Dialog, Base):
             fichier.write(texte.encode("iso-8859-15"))
             fichier.close()
 
+            # Préparation du message
+            message = UTILS_Envoi_email.Message(destinataires=[self.dictDonnees["cleversms_adresse_destination_email"],],
+                                                sujet=self.dictDonnees["objet"], texte_html=_(u"Envoi de SMS"), fichiers=[cheminFichier,])
+
             # Envoi de l'email
             try :
-                etat = UTILS_Envoi_email.Envoi_mail(
-                    adresseExpediteur=dictAdresse["adresse"],
-                    listeDestinataires=[self.dictDonnees["cleversms_adresse_destination_email"],],
-                    sujetMail=self.dictDonnees["objet"],
-                    texteMail=_(u"Envoi de SMS"),
-                    listeFichiersJoints=[cheminFichier,],
-                    serveur=dictAdresse["smtp"],
-                    port=dictAdresse["port"],
-                    avecAuthentification=dictAdresse["auth"],
-                    avecStartTLS=dictAdresse["startTLS"],
-                    motdepasse=dictAdresse["motdepasse"],
-                    utilisateur=dictAdresse["utilisateur"],
-                    )
+                messagerie = UTILS_Envoi_email.Messagerie(hote=dictAdresse["smtp"], port=dictAdresse["port"], utilisateur=dictAdresse["utilisateur"],
+                                                          motdepasse=dictAdresse["motdepasse"], email_exp=dictAdresse["adresse"],
+                                                          use_tls=dictAdresse["startTLS"])
+                messagerie.Connecter()
+                messagerie.Envoyer(message)
+                messagerie.Fermer()
             except Exception, err:
                 print (err,)
                 err = str(err).decode("iso-8859-15")

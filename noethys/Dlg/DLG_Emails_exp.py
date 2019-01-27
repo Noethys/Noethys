@@ -239,7 +239,7 @@ class ListCtrl(wx.ListCtrl, listmix.ListCtrlAutoWidthMixin, listmix.ColumnSorter
         # Création des colonnes
         self.nbreColonnes = 7
         self.InsertColumn(0, u"")
-        self.SetColumnWidth(0, 30)
+        self.SetColumnWidth(0, 22)
         self.InsertColumn(1, _(u"Adresse"))
         self.SetColumnWidth(1, 150)
         self.InsertColumn(2, _(u"Nom"))
@@ -323,7 +323,12 @@ class ListCtrl(wx.ListCtrl, listmix.ListCtrlAutoWidthMixin, listmix.ColumnSorter
         """ Affichage des valeurs dans chaque case du ListCtrl """
         index=self.itemIndexMap[item]
         valeur = unicode(self.itemDataMap[index][col])
-        
+
+        # Nom
+        if col == 2 :
+            if valeur == "None" :
+                valeur = ""
+
         # Port
         if col == 4 : 
             if valeur == "None" : 

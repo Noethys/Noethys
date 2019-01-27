@@ -3,8 +3,8 @@
 #------------------------------------------------------------------------
 # Application :    Noethys, gestion multi-activités
 # Site internet :  www.noethys.com
-# Auteur:           Ivan LUCAS
-# Copyright:       (c) 2010-13 Ivan LUCAS
+# Auteur:          Ivan LUCAS
+# Copyright:       (c) 2010-19 Ivan LUCAS
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
@@ -14,7 +14,6 @@ from UTILS_Traduction import _
 import wx
 from Ctrl import CTRL_Bouton_image
 import sys
-import os
 import platform
 import traceback
 import datetime
@@ -138,9 +137,7 @@ class DLG_Rapport(wx.Dialog):
         dlg.Destroy()
 
         if reponse == wx.ID_OK :
-            resultat = self.Envoi_mail(commentaires, joindre_journal)
-##            if resultat == True :
-##                self.EndModal(wx.ID_CANCEL)
+            self.Envoyer_mail(commentaires, joindre_journal)
 
     def OnBoutonForum(self, event):
         dlg = wx.MessageDialog(self, _(u"Noethys va ouvrir votre navigateur internet à la page du forum de Noethys. Vous n'aurez plus qu'à vous connecter avec vos identifiants Noethys et poster un nouveau message dans la rubrique dédiée aux bugs."), _(u"Forum Noethys"), wx.OK | wx.ICON_INFORMATION)
@@ -163,28 +160,9 @@ class DLG_Rapport(wx.Dialog):
         dictAdresse = {"adresse":adresse, "motdepasse":motdepasse, "smtp":smtp, "port":port, "auth":connexionAuthentifiee, "startTLS":startTLS, "utilisateur" : utilisateur}
         return dictAdresse
 
-    def Envoi_mail(self, commentaires="", joindre_journal=False):
+    def Envoyer_mail(self, commentaires="", joindre_journal=False):
         """ Envoi d'un mail avec pièce jointe """
-        import smtplib
-        from email.MIMEMultipart import MIMEMultipart
-        from email.MIMEBase import MIMEBase
-        from email.MIMEText import MIMEText
-        from email.MIMEImage import MIMEImage
-        from email.MIMEAudio import MIMEAudio
-        from email.Utils import COMMASPACE, formatdate
-        from email import Encoders
-        import mimetypes
-
-        IDrapport = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
-
-        # texte
-        texteRapport = self.ctrl_rapport.GetValue().replace("\n","<br/>")
-        if len(commentaires) == 0 :
-            commentaires = _(u"Aucun")
-        texteMail = _(u"<u>Rapport de bug %s :</u><br/><br/>%s<br/><u>Commentaires :</u><br/><br/>%s") % (IDrapport, texteRapport, commentaires)
-
-        # Destinataire
-        listeDestinataires = ["noethys" + "@gmail.com",]
+        from Utils import UTILS_Envoi_email
 
         # Expéditeur
         dictExp = self.GetAdresseExpDefaut()
@@ -219,49 +197,29 @@ class DLG_Rapport(wx.Dialog):
             dlg.Destroy()
             return False
 
-        # Création du message
-        msg = MIMEMultipart()
-        msg['From'] = adresseExpediteur
-        msg['To'] = ";".join(listeDestinataires)
-        msg['Date'] = formatdate(localtime=True)
-        msg['Subject'] = _(u"Rapport de bug Noethys n°%s") % IDrapport
-
-        msg.attach( MIMEText(texteMail.encode('utf-8'), 'html', 'utf-8') )
-
         # Attacher le journal d'erreurs
+        fichiers = []
         if joindre_journal == True :
             customize = UTILS_Customize.Customize()
-            nomJournal = UTILS_Fichiers.GetRepUtilisateur(customize.GetValeur("journal", "nom", "journal.log"))
-            # Recherche le type
-            ctype, encoding = mimetypes.guess_type(nomJournal)
-            if ctype is None or encoding is not None:
-                ctype = 'application/octet-stream'
-            maintype, subtype = ctype.split('/', 1)
-            # Lecture du fichier
-            fp = open(nomJournal)
-            part = MIMEText(fp.read(), _subtype=subtype)
-            fp.close()
-            # Header
-            nomFichier = os.path.basename(nomJournal)
-            part.add_header('Content-Disposition', "attachment; filename=\"%s\"" % nomFichier)
-            msg.attach(part)
+            nom_journal = UTILS_Fichiers.GetRepUtilisateur(customize.GetValeur("journal", "nom", "journal.log"))
+            fichiers.append(nom_journal)
 
-        # Envoi
-        if auth == False :
-            # Envoi standard
-            smtp = smtplib.SMTP(serveur)
-        else:
-            # Si identification SSL nécessaire :
-            smtp = smtplib.SMTP(serveur, port, timeout=150)
-            smtp.ehlo()
-            if startTLS == True :
-                smtp.starttls()
-                smtp.ehlo()
-            smtp.login(utilisateur.encode('utf-8'), motdepasse.encode('utf-8'))
+        # Préparation du message
+        IDrapport = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+        texteRapport = self.ctrl_rapport.GetValue().replace("\n","<br/>")
+        if len(commentaires) == 0 :
+            commentaires = _(u"Aucun")
+        texte_html = _(u"<u>Rapport de bug %s :</u><br/><br/>%s<br/><u>Commentaires :</u><br/><br/>%s") % (IDrapport, texteRapport, commentaires)
 
+        sujet = _(u"Rapport de bug Noethys n°%s") % IDrapport
+        message = UTILS_Envoi_email.Message(destinataires=["noe" + "thys" + "@" + "gm" + "ail" + ".com",], sujet=sujet, texte_html=texte_html, fichiers=fichiers)
+
+        # Envoi du mail
         try :
-            smtp.sendmail(adresseExpediteur, listeDestinataires, msg.as_string())
-            smtp.close()
+            messagerie = UTILS_Envoi_email.Messagerie(hote=serveur, port=port, utilisateur=utilisateur, motdepasse=motdepasse, email_exp=adresseExpediteur, use_tls=startTLS)
+            messagerie.Connecter()
+            messagerie.Envoyer(message)
+            messagerie.Fermer()
         except Exception, err :
             dlg = wx.MessageDialog(self, _(u"Le message n'a pas pu être envoyé. Merci de poster votre rapport de bug sur le forum de Noethys.\n\nErreur : %s !") % err, _(u"Envoi impossible"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()

@@ -32,6 +32,8 @@ from email.utils import formatdate, formataddr
 from email import Encoders
 import mimetypes
 
+from Outils import mail
+
 
 
 
@@ -206,153 +208,237 @@ def GetAdresseFamille(IDfamille=None, choixMultiple=True, muet=False, nomTitulai
 
 
 
+class Message():
+    def __init__(self, destinataires=[], sujet="", texte_html="", fichiers=[], images=[]):
+        self.destinataires = destinataires
+        self.sujet = sujet
+        self.fichiers = fichiers
+        self.images = images
+        self.texte_html = texte_html
 
+        # Corrige le pb des images embarquées
+        index = 0
+        for img in images:
+            img = img.replace(u"\\", u"/")
+            img = img.replace(u":", u"%3a")
+            self.texte_html = self.texte_html.replace(_(u"file:/%s") % img, u"cid:image%d" % index)
+            index += 1
 
-def Envoi_mail(adresseExpediteur="", nomadresseExpediteur="", listeDestinataires=[], listeDestinatairesCCI=[], sujetMail="", texteMail="", listeFichiersJoints=[], serveur="localhost", port=None, avecAuthentification=False, avecStartTLS=False, listeImages=[], motdepasse=None, accuseReception=False, utilisateur=""):
-    """ Envoi d'un mail avec pièce jointe """
-    assert type(listeDestinataires)==list
-    assert type(listeFichiersJoints)==list
-    
-    # Corrige le pb des images embarquées
-    index = 0
-    for img in listeImages :
-        img = img.replace(u"\\", u"/")
-        img = img.replace(u":", u"%3a")
-        texteMail = texteMail.replace(_(u"file:/%s") % img, u"cid:image%d" % index)
-        index += 1
+        # Conversion du html en texte plain
+        self.texte_plain = UTILS_Html2text.html2text(self.texte_html)
 
-    # Création du message
-    msg = MIMEMultipart('alternative')
-    #msg['Message-ID'] = make_msgid()
-
-    if accuseReception == True :
-        msg['Disposition-Notification-To'] = adresseExpediteur
-
-    # Conversion du HTML en plain text
-    textePlain = UTILS_Html2text.html2text(texteMail)
-
-    msg.attach( MIMEText(textePlain.encode('utf-8'), 'plain', 'utf-8') )
-    msg.attach( MIMEText(texteMail.encode('utf-8'), 'html', 'utf-8') )
-
-    # on encapsule dans un Multipart en mixed suplÃ©mentaire pour palier Ã  la mauvaise detection de la piece jointe
-    # par certains lecteurs mails
-    tmpmsg = msg
-    msg = MIMEMultipart('mixed')
-    msg.attach(tmpmsg)
-
-    # Ajout des headers Ã  ce Multipart
-    if nomadresseExpediteur in ("", None) :
-        msg['From'] = adresseExpediteur
-    else:
-        sender = Header(nomadresseExpediteur, "utf-8")
-        sender.append(adresseExpediteur, "ascii")
-        msg['From'] = sender #formataddr((nomadresseExpediteur, adresseExpediteur))
-    msg['To'] = ";".join(listeDestinataires)
-    msg['Bcc'] = ";".join(listeDestinatairesCCI)
-    msg['Date'] = formatdate(localtime=True)
-    msg['Subject'] = sujetMail
-
-    # Attache des pièces jointes
-    for fichier in listeFichiersJoints:
-        """Guess the content type based on the file's extension. Encoding
-        will be ignored, altough we should check for simple things like
-        gzip'd or compressed files."""
-        ctype, encoding = mimetypes.guess_type(fichier)
-        if ctype is None or encoding is not None:
-            # No guess could be made, or the file is encoded (compresses), so
-            # use a generic bag-of-bits type.
-            ctype = 'application/octet-stream'
-        maintype, subtype = ctype.split('/', 1)
-        if maintype == 'text':
-            fp = open(fichier)
-            # Note : we should handle calculating the charset
-            part = MIMEText(fp.read(), _subtype=subtype)
+    def AttacheImagesIncluses(self, email=None):
+        index = 0
+        for img in self.images:
+            fp = open(img, 'rb')
+            msgImage = MIMEImage(fp.read())
             fp.close()
-        elif maintype == 'image':
-            fp = open(fichier, 'rb')
-            part = MIMEImage(fp.read(), _subtype=subtype)
-            fp.close()
-        elif maintype == 'audio':
-            fp = open(fichier, 'rb')
-            part = MIMEAudio(fp.read(), _subtype=subtype)
-            fp.close()
+            msgImage.add_header('Content-ID', '<image%d>' % index)
+            msgImage.add_header('Content-Disposition', 'inline', filename=img)
+            email.attach(msgImage)
+            index += 1
+
+    def AttacheFichiersJoints(self, email=None):
+        for fichier in self.fichiers:
+            """Guess the content type based on the file's extension. Encoding
+            will be ignored, altough we should check for simple things like
+            gzip'd or compressed files."""
+            ctype, encoding = mimetypes.guess_type(fichier)
+            if ctype is None or encoding is not None:
+                # No guess could be made, or the file is encoded (compresses), so
+                # use a generic bag-of-bits type.
+                ctype = 'application/octet-stream'
+            maintype, subtype = ctype.split('/', 1)
+            if maintype == 'text':
+                fp = open(fichier)
+                # Note : we should handle calculating the charset
+                part = MIMEText(fp.read(), _subtype=subtype)
+                fp.close()
+            elif maintype == 'image':
+                fp = open(fichier, 'rb')
+                part = MIMEImage(fp.read(), _subtype=subtype)
+                fp.close()
+            elif maintype == 'audio':
+                fp = open(fichier, 'rb')
+                part = MIMEAudio(fp.read(), _subtype=subtype)
+                fp.close()
+            else:
+                fp = open(fichier, 'rb')
+                part = MIMEBase(maintype, subtype)
+                part.set_payload(fp.read())
+                fp.close()
+                # Encode the payload using Base64
+                Encoders.encode_base64(part)
+            # Set the filename parameter
+            nomFichier = os.path.basename(fichier)
+            if type(nomFichier) == unicode:
+                nomFichier = FonctionsPerso.Supprime_accent(nomFichier)
+            # changement cosmetique pour ajouter les guillements autour du filename
+            part.add_header('Content-Disposition', "attachment; filename=\"%s\"" % nomFichier)
+            email.attach(part)
+
+
+
+
+def Messagerie(backend='SmtpV2', **kwds):
+    # Ancien moteur SMTP
+    if backend == "SmtpV1":
+        klass = SmtpV1(**kwds)
+    # Nouveau moteur SMTP
+    if backend == "SmtpV2":
+        klass = SmtpV2(**kwds)
+    return klass
+
+
+
+
+class Base_messagerie():
+    def __init__(self, hote=None, port=None, utilisateur=None, motdepasse=None, email_exp=None, nom_exp=None, timeout=None, use_tls=False, fail_silently=False):
+        self.hote = hote
+        self.port = port
+        self.utilisateur = utilisateur
+        self.motdepasse = motdepasse
+        self.email_exp = email_exp
+        self.nom_exp = nom_exp
+        self.timeout = timeout
+        self.use_tls = use_tls
+        self.fail_silently = fail_silently
+
+        if self.utilisateur == "" : self.utilisateur = None
+        if self.motdepasse == "" : self.motdepasse = None
+
+        # Préparation de l'adresse d'expédition
+        if self.nom_exp not in ("", None):
+            self.from_email = u"%s <%s>" % (self.nom_exp, self.email_exp)
+        else :
+            self.from_email = self.email_exp
+
+    def Connecter(self):
+        pass
+
+    def Envoyer(self, message=None):
+        pass
+
+    def Fermer(self):
+        pass
+
+
+
+
+
+class SmtpV1(Base_messagerie):
+    def __init__(self, **kwds):
+        Base_messagerie.__init__(self, **kwds)
+
+    def Connecter(self):
+        try :
+            if self.motdepasse == None: self.motdepasse = ""
+            if self.utilisateur == None: self.utilisateur = ""
+
+            if self.utilisateur == None and self.motdepasse == None:
+                # Envoi standard
+                self.connection = smtplib.SMTP(self.hote, timeout=self.timeout)
+            else:
+                # Si identification SSL nécessaire :
+                self.connection = smtplib.SMTP(self.hote, self.port, timeout=self.timeout)
+                self.connection.ehlo()
+                if self.use_tls == True:
+                    self.connection.starttls()
+                    self.connection.ehlo()
+                self.connection.login(self.utilisateur.encode('utf-8'), self.motdepasse.encode('utf-8'))
+        except smtplib.SMTPException:
+            if not self.fail_silently:
+                raise
+
+    def Envoyer(self, message=None):
+        # Création du message
+        email = MIMEMultipart('alternative')
+        # msg['Message-ID'] = make_msgid()
+
+        # if accuseReception == True:
+        #     msg['Disposition-Notification-To'] = adresseExpediteur
+
+        email.attach(MIMEText(message.texte_plain.encode('utf-8'), 'plain', 'utf-8'))
+        email.attach(MIMEText(message.texte_html.encode('utf-8'), 'html', 'utf-8'))
+
+        tmpmsg = email
+        email = MIMEMultipart('mixed')
+        email.attach(tmpmsg)
+
+        # Ajout des headers Ã  ce Multipart
+        if self.nom_exp in ("", None):
+            email['From'] = self.email_exp
         else:
-            fp = open(fichier, 'rb')
-            part = MIMEBase(maintype, subtype)
-            part.set_payload(fp.read())
-            fp.close()
-            # Encode the payload using Base64
-            Encoders.encode_base64(part)
-        # Set the filename parameter
-        nomFichier= os.path.basename(fichier)
-        if type(nomFichier) == unicode :
-            nomFichier = FonctionsPerso.Supprime_accent(nomFichier)
-        # changement cosmetique pour ajouter les guillements autour du filename
-        part.add_header('Content-Disposition', "attachment; filename=\"%s\"" % nomFichier)
-        msg.attach(part)
+            sender = Header(self.nom_exp, "utf-8")
+            sender.append(self.email_exp, "ascii")
+            email['From'] = sender  # formataddr((nomadresseExpediteur, adresseExpediteur))
+        email['To'] = ";".join(message.destinataires)
+        email['Date'] = formatdate(localtime=True)
+        email['Subject'] = message.sujet
 
-    # Images incluses
-    index = 0
-    for img in listeImages :
-        fp = open(img, 'rb')
-        msgImage = MIMEImage(fp.read())
-        fp.close()
-        msgImage.add_header('Content-ID', '<image%d>' % index)
-        msgImage.add_header('Content-Disposition', 'inline', filename=img)
-        msg.attach(msgImage)
-        index += 1
+        message.AttacheImagesIncluses(email)
+        message.AttacheFichiersJoints(email)
 
+        try:
+            self.connection.sendmail(self.email_exp, message.destinataires, email.as_string())
+        except smtplib.SMTPException:
+            if not self.fail_silently:
+                raise
+            return False
+        return True
 
-## Certains SMTP (exemple Orange Pro) demandent une authentifcation (en général user : boite mail et pwd : mot de passe associÃ© au smtp sÃ©curisÃ© )
-## mais ne supportent pas le mode starttls
-## Ces identifiants sont gÃ©nÃ©ralement utilisÃ©s lors d'un envoi de mail abec un FAI diffÃ©rent du propriÃ©taire du SMTP
-## Par exemple pour envoyer un mail avec le smtp pro orange depuis un autre FAI (Free, SFR....)
-##      serveur : smtp.premium.orange.fr - port 587
-##      user : mon.user@orange.fr
-##      pwd : mon_pwd
-##  On positionne dans ce cas le parametre avecAuthentification a True
-##  et le parametre avecStartTLS est positionnÃ© selon l'Ã©tat du support de la fonction startTLS par le SMTP
-
-    if motdepasse == None :
-        motdepasse = ""
-    if utilisateur == None :
-        utilisateur = ""
-
-    if avecAuthentification in (0, False, None) :
-        # Envoi standard
-        smtp = smtplib.SMTP(serveur, timeout=150)
-    else:
-        # Si identification SSL nécessaire :
-        smtp = smtplib.SMTP(serveur, port, timeout=150)
-        smtp.ehlo()
-        if avecStartTLS == True :
-            smtp.starttls()
-            smtp.ehlo()
-        smtp.login(utilisateur.encode('utf-8'), motdepasse.encode('utf-8'))
-    
-    smtp.sendmail(adresseExpediteur, listeDestinataires + listeDestinatairesCCI, msg.as_string())
-    smtp.close()
-    
-    return True
+    def Fermer(self):
+        self.connection.close()
 
 
 
-# TEST d'envoi d'emails
-if __name__ == u"__main__":
-    print Envoi_mail( 
-        adresseExpediteur="XXX", 
-        nomadresseExpediteur="My name is Bond", 
-        listeDestinataires=["XXX",], 
-        listeDestinatairesCCI=[], 
-        sujetMail=_(u"Sujet du Mail"), 
-        texteMail=_(u"Texte du Mail"), 
-        listeFichiersJoints=[], 
-        serveur="XXX", 
-        port=465, 
-        avecAuthentification=True,
-        avecStartTLS=False,
-        listeImages=[],
-        motdepasse="XXX",
-        utilisateur="XXX",
-        accuseReception = False,
+
+
+class SmtpV2(Base_messagerie):
+    def __init__(self, **kwds):
+        Base_messagerie.__init__(self, **kwds)
+
+    def Connecter(self):
+        try :
+            self.connection = mail.get_connection(backend='Outils.mail.smtp.EmailBackend', fail_silently=self.fail_silently,
+                                             host=self.hote, port=self.port, username=self.utilisateur, password=self.motdepasse,
+                                             use_tls=self.use_tls, use_ssl=False, timeout=self.timeout, ssl_keyfile=None, ssl_certfile=None)
+            self.connection.open()
+        except smtplib.SMTPException:
+            if not self.fail_silently:
+                raise
+
+
+    def Envoyer(self, message=None):
+        email = mail.EmailMultiAlternatives(
+            subject=message.sujet,
+            body=message.texte_plain,
+            from_email=self.from_email,
+            to=message.destinataires,
+            connection=self.connection,
         )
+        email.attach_alternative(message.texte_html, "text/html")
+
+        message.AttacheImagesIncluses(email)
+        message.AttacheFichiersJoints(email)
+
+        resultat = email.send()
+        return resultat
+
+    def Fermer(self):
+        self.connection.close()
+
+
+
+
+
+if __name__ == u"__main__":
+    # Préparation du message
+    message = Message(destinataires=[""], sujet=u"Sujet du mail", texte_html="<p>Ceci est le <b>texte</b> html</p>", fichiers=[], images=[])
+
+    # Envoi du message
+    messagerie = Messagerie(hote="", port=None, utilisateur="", motdepasse="", email_exp="", nom_exp=u"", timeout=None, use_tls=False)
+    messagerie.Connecter()
+    print messagerie.Envoyer(message)
+    messagerie.Fermer()
+

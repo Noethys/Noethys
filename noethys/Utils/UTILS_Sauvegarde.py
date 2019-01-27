@@ -3,8 +3,8 @@
 #------------------------------------------------------------------------
 # Application :    Noethys, gestion multi-activités
 # Site internet :  www.noethys.com
-# Auteur:           Ivan LUCAS
-# Copyright:       (c) 2010-13 Ivan LUCAS
+# Auteur:          Ivan LUCAS
+# Copyright:       (c) 2010-19 Ivan LUCAS
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
@@ -21,12 +21,12 @@ import subprocess
 import shutil
 import time
 
-import UTILS_Fichiers
-import UTILS_Config
-import UTILS_Cryptage_fichier
-import UTILS_Envoi_email
-import UTILS_Fichiers
 import GestionDB
+from Utils import UTILS_Fichiers
+from Utils import UTILS_Config
+from Utils import UTILS_Cryptage_fichier
+from Utils import UTILS_Fichiers
+from Utils import UTILS_Envoi_email
 
 
 LISTE_CATEGORIES = [
@@ -200,26 +200,21 @@ def Sauvegarde(listeFichiersLocaux=[], listeFichiersReseau=[], nom="", repertoir
             shutil.copy2(UTILS_Fichiers.GetRepTemp(fichier=nomFichierTemp), fichierDest)
         except :
             print "Le repertoire de destination de sauvegarde n'existe pas."
-    
+
+    # Préparation du message
+    message = UTILS_Envoi_email.Message(destinataires=listeEmails, sujet=_(u"Sauvegarde Noethys : %s") % nom,
+                                        texte_html=_(u"Envoi de la sauvegarde de Noethys"),
+                                        fichiers=[UTILS_Fichiers.GetRepTemp(fichier=nomFichierTemp),])
+
     # Envoi par Email
     if listeEmails != None :
         dlgprogress.Update(numEtape, _(u"Expédition de la sauvegarde par Email..."));numEtape += 1
         try :
-            etat = UTILS_Envoi_email.Envoi_mail( 
-                adresseExpediteur=dictAdresse["adresse"], 
-                listeDestinataires=listeEmails, 
-                #listeDestinatairesCCI=[], 
-                sujetMail=_(u"Sauvegarde Noethys : %s") % nom, 
-                texteMail=_(u"Envoi de la sauvegarde de Noethys"), 
-                listeFichiersJoints=[UTILS_Fichiers.GetRepTemp(fichier=nomFichierTemp),],
-                serveur=dictAdresse["smtp"], 
-                port=dictAdresse["port"], 
-                avecAuthentification=dictAdresse["auth"],
-                avecStartTLS=dictAdresse["startTLS"],
-                motdepasse=dictAdresse["motdepasse"],
-                utilisateur=dictAdresse["utilisateur"],
-                #listeImages=listeImages,
-                )
+            messagerie = UTILS_Envoi_email.Messagerie(hote=dictAdresse["smtp"], port=dictAdresse["port"], utilisateur=dictAdresse["utilisateur"],
+                                                      motdepasse=dictAdresse["motdepasse"], email_exp=dictAdresse["adresse"], use_tls=dictAdresse["startTLS"])
+            messagerie.Connecter()
+            messagerie.Envoyer(message)
+            messagerie.Fermer()
         except Exception, err:
             dlgprogress.Destroy()
             print (err,)
