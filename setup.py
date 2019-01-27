@@ -268,6 +268,12 @@ if "py2exe" in sys.argv :
     nom = "C866CA3A-32F7-11D2-9602-00C04F8EE628x0x5x0.py"
     z.write("noethys/Outils/%s" % nom, "win32com/gen_py/%s" % nom)
 
+    # Importe le cacert.pem dans le répertoire certifi
+    import certifi
+    chemin_cert = certifi.where()
+    z.write(chemin_cert, "certifi/cacert.pem")
+
+    # Cloture le ZIP
     z.close()
 
     # Supprime le répertoire des données exemples de Matplotlib

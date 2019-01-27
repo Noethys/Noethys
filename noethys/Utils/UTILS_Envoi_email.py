@@ -39,6 +39,9 @@ import mimetypes
 
 from Outils import mail
 
+# Import pour permettre compilation windows
+from Outils.mail import base, smtp
+
 
 
 
