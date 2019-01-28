@@ -506,7 +506,7 @@ class Dialog(wx.Dialog):
             return False
 
         # Envoi des messages
-        liste_succes = messagerie.Envoyer_lot(messages=liste_messages, dlg_progress=dlg_progress, afficher_confirmation_envoi=self.afficher_confirmation_envoi)
+        self.listeSucces = messagerie.Envoyer_lot(messages=liste_messages, dlg_progress=dlg_progress, afficher_confirmation_envoi=self.afficher_confirmation_envoi)
 
         # Fermeture messagerie
         try :
@@ -525,7 +525,7 @@ class Dialog(wx.Dialog):
         handler.DeleteTemporaryImages()
 
         # Mémorisation dans l'historique
-        for message in liste_succes :
+        for message in self.listeSucces :
             self.MemorisationHistorique(message.GetLabelDestinataires(), message.sujet)
 
 
