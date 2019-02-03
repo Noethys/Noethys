@@ -21,7 +21,7 @@ import FonctionsPerso
 VERSION_LOGICIEL = FonctionsPerso.GetVersionLogiciel()
 
 TEXTE_ACCUEIL = u"""
-<CENTER><IMG SRC="Static/Images/80x80/Logo.png">
+<CENTER><IMG SRC="%s">
 <BR>
 <FONT SIZE=2>
 <B>Bienvenue dans Noethys</B><BR>
@@ -37,7 +37,7 @@ sur le forum dédié :
 <A HREF="Saisie">Cliquez ici pour accéder au forum</A>.
 </FONT>
 </CENTER>
-""" % VERSION_LOGICIEL
+""" % (Chemins.GetStaticPath("Images/80x80/Logo.png"), VERSION_LOGICIEL)
 
 #Si vous jugez que ce logiciel vous apporte un service appréciable au quotidien et 
 #que vous souhaitez participez au développement du logiciel, vous pouvez apporter 
