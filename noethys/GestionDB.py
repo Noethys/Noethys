@@ -189,6 +189,14 @@ class DB:
             listeDatabases.append(valeurs[0])
         return listeDatabases
 
+    def GetVersionServeur(self):
+        req = """SHOW VARIABLES LIKE "version";"""
+        self.ExecuterReq(req)
+        listeTemp = self.ResultatReq()
+        if len(listeTemp) > 0:
+            return listeTemp[0][1]
+        return None
+
     def CreationTables(self, dicoDB={}, fenetreParente=None):
         for table in dicoDB:
             # Affichage dans la StatusBar
