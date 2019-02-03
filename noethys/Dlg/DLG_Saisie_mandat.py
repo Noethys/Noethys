@@ -39,11 +39,18 @@ from reportlab.lib.units import inch, cm
 from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet
 
+if 'phoenix' in wx.PlatformInfo:
+    validator = wx.Validator
+    IsSilent = wx.Validator.IsSilent
+else :
+    validator = wx.PyValidator
+    IsSilent = wx.Validator_IsSilent
 
 
-class MyValidator(wx.PyValidator):
+
+class MyValidator(validator):
     def __init__(self):
-        wx.PyValidator.__init__(self)
+        validator.__init__(self)
         self.Bind(wx.EVT_CHAR, self.OnChar)
 
     def Clone(self):
@@ -68,7 +75,7 @@ class MyValidator(wx.PyValidator):
             event.Skip()
             return
 
-        if not wx.Validator_IsSilent():
+        if not IsSilent():
             wx.Bell()
 
         return

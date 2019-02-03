@@ -17,16 +17,15 @@ from Ctrl import CTRL_Bouton_image
 from PIL import Image
 import cStringIO
 import GestionDB
-
-
 import FonctionsPerso
-
-
 
 
 def pil2wx(image):
     """Convert a PIL image to wx image format"""
-    imagewx=wx.EmptyImage(image.size[0], image.size[1])
+    if 'phoenix' in wx.PlatformInfo:
+        imagewx = wx.Image(image.size[0], image.size[1])
+    else :
+        imagewx = wx.EmptyImage(image.size[0], image.size[1])
     imagewx.SetData(image.tobytes('raw', 'RGB'))
     return imagewx
 
@@ -78,13 +77,13 @@ class ImgBox(wx.Window):
         self.InitImage()
 
         # Binds
-        wx.EVT_PAINT(self, self.evt_paint)
-        wx.EVT_SIZE(self, self.evt_size)
-        wx.EVT_KEY_DOWN(self, self.evt_key)
-        wx.EVT_LEFT_DOWN(self, self.evt_mouse)
-        wx.EVT_LEFT_UP(self, self.evt_mouse)
-        wx.EVT_MOTION(self, self.evt_mouse)
-        wx.EVT_LEAVE_WINDOW(self, self.OnLeaveWindow)
+        self.Bind(wx.EVT_PAINT, self.evt_paint)
+        self.Bind(wx.EVT_SIZE, self.evt_size)
+        self.Bind(wx.EVT_KEY_DOWN, self.evt_key)
+        self.Bind(wx.EVT_LEFT_DOWN, self.evt_mouse)
+        self.Bind(wx.EVT_LEFT_UP, self.evt_mouse)
+        self.Bind(wx.EVT_MOTION, self.evt_mouse)
+        self.Bind(wx.EVT_LEAVE_WINDOW, self.OnLeaveWindow)
         
     def InitImage(self):
         # Chargement de l'image source
@@ -200,7 +199,10 @@ class ImgBox(wx.Window):
             self.posxPhoto = self.posxPhoto + (self.largeurDC-ancLargeurDC)/2
             self.posyPhoto = self.posyPhoto + (self.hauteurDC-ancHauteurDC)/2
         # Redessine toute l'image
-        self._Buffer = wx.EmptyBitmap(self.largeurDC, self.hauteurDC)
+        if 'phoenix' in wx.PlatformInfo:
+            self._Buffer = wx.Bitmap(self.largeurDC, self.hauteurDC)
+        else :
+            self._Buffer = wx.EmptyBitmap(self.largeurDC, self.hauteurDC)
         self.UpdateDrawing()
 
 
@@ -211,15 +213,21 @@ class ImgBox(wx.Window):
         newLargeur = largeurImg * self.zoom
         newHauteur = hauteurImg * self.zoom
         # Redimensionne l'image
-        source = self.source.Scale(newLargeur, newHauteur)
-        self.bmp = wx.BitmapFromImage(source)
+        if newLargeur > 1 and newHauteur > 1 :
+            source = self.source.Scale(newLargeur, newHauteur)
+            if 'phoenix' in wx.PlatformInfo:
+                self.bmp = wx.Bitmap(source)
+            else:
+                self.bmp = wx.BitmapFromImage(source)
     
     def UpdateDrawing(self):
         """Create the device context and draw the window contents"""
         dc = wx.BufferedDC(wx.ClientDC(self), self._Buffer)
-        dc.BeginDrawing()
+        if 'phoenix' not in wx.PlatformInfo:
+            dc.BeginDrawing()
         self.Draw(dc)
-        dc.EndDrawing()
+        if 'phoenix' not in wx.PlatformInfo:
+            dc.EndDrawing()
 
     def Zoom(self, valeurZoom):
         """ Zoom """
@@ -441,6 +449,6 @@ class Dialog(wx.Dialog):
 if __name__ == "__main__":
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    frm = Dialog(None, image="C:\Users\Ivan\Desktop\phototest.jpg", tailleCadre=(220, 100))
+    frm = Dialog(None, image="C:/Users/Ivan/Desktop/bandeau_mailjet.jpg", tailleCadre=(220, 100))
     frm.ShowModal()
     app.MainLoop()

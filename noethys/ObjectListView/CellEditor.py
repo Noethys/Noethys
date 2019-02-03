@@ -54,8 +54,11 @@ import six
 
 if 'phoenix' in wx.PlatformInfo:
     from wx.adv import DatePickerCtrl
+    validator = wx.Validator
 else:
     from wx import DatePickerCtrl
+    validator = wx.PyValidator
+
 
 
 #======================================================================
@@ -427,12 +430,12 @@ class DateTimeEditor(BaseCellTextEditor):
 #----------------------------------------------------------------------------
 
 
-class NumericValidator(wx.PyValidator):
+class NumericValidator(validator):
 
     """This validator only accepts numeric keys"""
 
     def __init__(self, acceptableChars="0123456789+-"):
-        wx.PyValidator.__init__(self)
+        validator.__init__(self)
         self.Bind(wx.EVT_CHAR, self._OnChar)
         self.acceptableChars = acceptableChars
         self.acceptableCodes = [ord(x) for x in self.acceptableChars]

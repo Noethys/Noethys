@@ -17,12 +17,19 @@ from wx.lib.masked import BaseMaskedTextCtrl, TextCtrl
 import datetime
 from Utils import UTILS_Dates
 
+if 'phoenix' in wx.PlatformInfo:
+    validator = wx.Validator
+    IsSilent = wx.Validator.IsSilent
+else :
+    validator = wx.PyValidator
+    IsSilent = wx.Validator_IsSilent
+
 
 CARACT_AUTORISES = "0123456789-:.hH"
 
-class MyValidator(wx.PyValidator):
+class MyValidator(validator):
     def __init__(self):
-        wx.PyValidator.__init__(self)
+        validator.__init__(self)
         self.Bind(wx.EVT_CHAR, self.OnChar)
 
     def Clone(self):
@@ -49,7 +56,7 @@ class MyValidator(wx.PyValidator):
             event.Skip()
             return
 
-        if not wx.Validator_IsSilent():
+        if not IsSilent():
             wx.Bell()
 
         # Returning without calling even.Skip eats the event before it
