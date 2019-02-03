@@ -1789,6 +1789,6 @@ if __name__ == "__main__":
     #InsertCodeToolTip()
     #CreerDonneesVirtuellesLocations(1000)
 
-    InsertCode()
+    #InsertCode()
 
     pass
