@@ -1854,6 +1854,6 @@ def RechercherBIC(bic=""):
 
 
 if __name__ == "__main__":
-    print RechercherBIC("VEOEFRPP")
+    print(RechercherBIC("VEOEFRPP"))
 
 

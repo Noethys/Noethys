@@ -67,9 +67,9 @@ def GetListeCotisationsManquantes(dateReference=None, listeActivites=None, prese
     
     dictCotisationObligatoires = {}
     for IDfamille, IDactivite, IDtype_cotisation, nomCotisation, typeCotisation, prenom, IDindividu in listeCotisationsObligatoires :
-        if dictCotisationObligatoires.has_key(IDfamille) == False :
+        if (IDfamille in dictCotisationObligatoires) == False :
             dictCotisationObligatoires[IDfamille] = {}
-        if dictCotisationObligatoires[IDfamille].has_key(IDactivite) == False :
+        if (IDactivite in dictCotisationObligatoires[IDfamille]) == False :
             dictCotisationObligatoires[IDfamille][IDactivite] = []
         dictCotisationObligatoires[IDfamille][IDactivite].append((IDfamille, IDtype_cotisation, nomCotisation, typeCotisation, prenom, IDindividu))
     
@@ -95,8 +95,8 @@ def GetListeCotisationsManquantes(dateReference=None, listeActivites=None, prese
     
     # Comparaison de la liste des cotisations à fournir et la liste des cotisations fournies
     dictDonnees = {}
-    for IDfamille, dictCotisationsFamille in dictCotisationObligatoires.iteritems() :
-        for IDactivite, listeCotisationsActivite in dictCotisationsFamille.iteritems() :
+    for IDfamille, dictCotisationsFamille in dictCotisationObligatoires.items() :
+        for IDactivite, listeCotisationsActivite in dictCotisationsFamille.items() :
             activiteValide = False
             
             listeTemp = []
@@ -115,10 +115,10 @@ def GetListeCotisationsManquantes(dateReference=None, listeActivites=None, prese
                 else:
                     label = _(u"%s de %s") % (nomCotisation, prenom)
                 
-                if dictCotisationsFournies.has_key((None, IDtype_cotisation, IDindividu)) or dictCotisationsFournies.has_key((IDfamille, IDtype_cotisation, None)) :
-                    if dictCotisationsFournies.has_key((None, IDtype_cotisation, IDindividu)) :
+                if (None, IDtype_cotisation, IDindividu) in dictCotisationsFournies or (IDfamille, IDtype_cotisation, None) in dictCotisationsFournies :
+                    if (None, IDtype_cotisation, IDindividu) in dictCotisationsFournies :
                         date_debut, date_fin = dictCotisationsFournies[(None, IDtype_cotisation, IDindividu)]
-                    if dictCotisationsFournies.has_key((IDfamille, IDtype_cotisation, None)) :
+                    if (IDfamille, IDtype_cotisation, None) in dictCotisationsFournies :
                         date_debut, date_fin = dictCotisationsFournies[(IDfamille, IDtype_cotisation, None)]
                     nbreJoursRestants = (date_fin - datetime.date.today()).days
                     if nbreJoursRestants > 15 :
@@ -175,9 +175,9 @@ def GetListeCotisationsManquantes(dateReference=None, listeActivites=None, prese
     dictCotisations = {}
     nbreFamilles = 0
     nbreCotisations = len(dictDonnees)
-    for key, valeurs in dictDonnees.iteritems() :
+    for key, valeurs in dictDonnees.items() :
         IDfamille = valeurs[0]
-        if dictCotisations.has_key(IDfamille) == False :
+        if (IDfamille in dictCotisations) == False :
             dictCotisations[IDfamille] = []
             if IDfamille != None : 
                 nbreFamilles += 1
@@ -187,11 +187,11 @@ def GetListeCotisationsManquantes(dateReference=None, listeActivites=None, prese
     # Formatage des données
     dictFinal = {}
     titulaires = UTILS_Titulaires.GetTitulaires() 
-    for IDfamille, dictTemp in dictCotisations.iteritems() :
+    for IDfamille, dictTemp in dictCotisations.items() :
 ##        print IDfamille
 ##        for cotisation in dictTemp :
 ##            print "  >", cotisation
-        if IDfamille != None and titulaires.has_key(IDfamille) :
+        if IDfamille != None and IDfamille in titulaires :
             nomTitulaires = titulaires[IDfamille]["titulairesSansCivilite"]
         else :
             nomTitulaires = _(u"Aucun titulaire")
@@ -214,4 +214,4 @@ def GetListeCotisationsManquantes(dateReference=None, listeActivites=None, prese
             
             
 if __name__ == '__main__':
-    print GetListeCotisationsManquantes(dateReference=datetime.date(2012, 11, 16), listeActivites=None, presents=None, concernes=False)
+    print(GetListeCotisationsManquantes(dateReference=datetime.date(2012, 11, 16), listeActivites=None, presents=None, concernes=False))

@@ -191,7 +191,7 @@ class MyFrame(wx.Frame):
         
     def OnBoutonTest(self, event):
         """ Bouton Test """
-        print self.ctrl.GetOptions() 
+        print(self.ctrl.GetOptions()) 
 
 if __name__ == '__main__':
     app = wx.App(0)

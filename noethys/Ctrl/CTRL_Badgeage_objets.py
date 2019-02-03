@@ -363,7 +363,7 @@ class Groupe_clavier_numerique(Groupe):
                 y -= tailleTouche + espace
 
     def EnfonceBouton(self, touche=""):
-        if self.dictTouches.has_key(touche) :
+        if touche in self.dictTouches :
             self.dictTouches[touche].EnfonceBouton(actionActive=False)
 
 

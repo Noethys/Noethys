@@ -159,7 +159,7 @@ class XImportLine(object):
         else:       #Si aucun type n'est renseigné, il y a un probléme
             raise ValueError("'type' not in data")
         
-        for i in dataTypes.keys():  #Convertie toutes les donnée
+        for i in list(dataTypes.keys()):  #Convertie toutes les donnée
             if i in values:         #Si la donnée a bien été fournie, on la converti 
                 self.values[i]=dataTypes[i].convert(values[i])
             else:                   #Sinon on remplis de blanc, pour respecter la largeur des colones

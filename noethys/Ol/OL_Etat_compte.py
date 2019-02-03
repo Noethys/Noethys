@@ -94,7 +94,7 @@ class ListView(FastObjectListView):
         listeVentilations = DB.ResultatReq()
         dictVentilations = {}
         for IDprestation, montant in listeVentilations :
-            if dictVentilations.has_key(IDprestation) == False :
+            if (IDprestation in dictVentilations) == False :
                 dictVentilations[IDprestation] = 0.0
             dictVentilations[IDprestation] += montant
 
@@ -109,7 +109,7 @@ class ListView(FastObjectListView):
         listePrestations = DB.ResultatReq()
         for IDprestation, IDcompte_payeur, date, montant, IDfacture in listePrestations :
             date = DateEngEnDateDD(date) 
-            if dictVentilations.has_key(IDprestation) :
+            if IDprestation in dictVentilations :
                 montant_ventilation = decimal.Decimal(str(dictVentilations[IDprestation]))
             else :
                 montant_ventilation = decimal.Decimal(0.0)
@@ -145,7 +145,7 @@ class ListView(FastObjectListView):
         
         # Traitement des données
         listeListeView = []
-        for code, dictDonnee in self.dictDonnees.iteritems()  :
+        for code, dictDonnee in self.dictDonnees.items()  :
             if dictDonnee["afficher"] == True :
                 track = Track(dictDonnee)
                 listeListeView.append(track)
@@ -153,7 +153,7 @@ class ListView(FastObjectListView):
         return listeListeView
     
     def GetSolde(self):
-        if self.dictDonnees.has_key("soldeFinal") :
+        if "soldeFinal" in self.dictDonnees :
             solde = self.dictDonnees["soldeFinal"]["valeur"]
             return solde
         else:
@@ -322,6 +322,6 @@ if __name__ == '__main__':
     heure_debut = time.time()
     frame_1 = MyFrame(None, -1, "OL TEST")
     app.SetTopWindow(frame_1)
-    print "Temps de chargement OL_Etat_compte =", time.time() - heure_debut
+    print("Temps de chargement OL_Etat_compte =", time.time() - heure_debut)
     frame_1.Show()
     app.MainLoop()

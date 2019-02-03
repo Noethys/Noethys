@@ -171,13 +171,13 @@ Exemples de saisies possibles :
                 "synchro_serveur_ip_autorisees" : self.ctrl_ip_autorisees.GetValue(), "synchro_serveur_ip_interdites" : self.ctrl_ip_interdites.GetValue()}
     
     def SetParametres(self, dictDonnees={}):
-        if dictDonnees.has_key("synchro_serveur_activer") : 
+        if "synchro_serveur_activer" in dictDonnees : 
             self.check_activer.SetValue(dictDonnees["synchro_serveur_activer"])
-        if dictDonnees.has_key("synchro_serveur_port") : 
+        if "synchro_serveur_port" in dictDonnees : 
             self.ctrl_port.SetValue(dictDonnees["synchro_serveur_port"])
-        if dictDonnees.has_key("synchro_serveur_ip_autorisees") :
+        if "synchro_serveur_ip_autorisees" in dictDonnees :
             self.ctrl_ip_autorisees.SetValue(dictDonnees["synchro_serveur_ip_autorisees"])
-        if dictDonnees.has_key("synchro_serveur_ip_interdites") :
+        if "synchro_serveur_ip_interdites" in dictDonnees :
             self.ctrl_ip_interdites.SetValue(dictDonnees["synchro_serveur_ip_interdites"])
 
     def Validation(self):
@@ -245,7 +245,7 @@ class Page_ftp(wx.Panel):
             ftp = ftplib.FTP(dictParametres["synchro_ftp_hote"], dictParametres["synchro_ftp_identifiant"], dictParametres["synchro_ftp_mdp"])
             ftp.cwd(dictParametres["synchro_ftp_repertoire"])
             ftp.quit()
-        except Exception, err :
+        except Exception as err :
             dlg = wx.MessageDialog(self, _(u"La connexion n'a pas pu être établie !\n\nVérifiez les paramètres de connexion FTP dans les paramètres de synchronisation."), "Erreur", wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
@@ -261,14 +261,14 @@ class Page_ftp(wx.Panel):
         return {"synchro_ftp_hote" : self.ctrl_hote.GetValue(), "synchro_ftp_identifiant" : self.ctrl_identifiant.GetValue(), "synchro_ftp_mdp" : mdp, "synchro_ftp_repertoire" : self.ctrl_repertoire.GetValue()}
     
     def SetParametres(self, dictDonnees={}):
-        if dictDonnees.has_key("synchro_ftp_hote") : 
+        if "synchro_ftp_hote" in dictDonnees : 
             self.ctrl_hote.SetValue(dictDonnees["synchro_ftp_hote"])
-        if dictDonnees.has_key("synchro_ftp_identifiant") : 
+        if "synchro_ftp_identifiant" in dictDonnees : 
             self.ctrl_identifiant.SetValue(dictDonnees["synchro_ftp_identifiant"])
-        if dictDonnees.has_key("synchro_ftp_mdp") : 
+        if "synchro_ftp_mdp" in dictDonnees : 
             mdp = base64.b64decode(dictDonnees["synchro_ftp_mdp"])
             self.ctrl_mdp.SetValue(mdp)
-        if dictDonnees.has_key("synchro_ftp_repertoire") : 
+        if "synchro_ftp_repertoire" in dictDonnees : 
             self.ctrl_repertoire.SetValue(dictDonnees["synchro_ftp_repertoire"])
 
     def Validation(self):
@@ -316,9 +316,9 @@ class Page_cryptage(wx.Panel):
         return {"synchro_cryptage_activer" : self.check_activer.GetValue(), "synchro_cryptage_mdp" : mdp}
     
     def SetParametres(self, dictDonnees={}):
-        if dictDonnees.has_key("synchro_cryptage_activer") : 
+        if "synchro_cryptage_activer" in dictDonnees : 
             self.check_activer.SetValue(dictDonnees["synchro_cryptage_activer"])
-        if dictDonnees.has_key("synchro_cryptage_mdp") : 
+        if "synchro_cryptage_mdp" in dictDonnees : 
             mdp = base64.b64decode(dictDonnees["synchro_cryptage_mdp"])
             self.ctrl_mdp.SetValue(mdp)
 
@@ -372,9 +372,9 @@ class Page_archivage(wx.Panel):
         return {"synchro_archivage_activer" : self.check_activer.GetValue(), "synchro_archivage_delai" : self.ctrl_delai.GetValue()}
     
     def SetParametres(self, dictDonnees={}):
-        if dictDonnees.has_key("synchro_archivage_activer") : 
+        if "synchro_archivage_activer" in dictDonnees : 
             self.check_activer.SetValue(dictDonnees["synchro_archivage_activer"])
-        if dictDonnees.has_key("synchro_archivage_delai") : 
+        if "synchro_archivage_delai" in dictDonnees : 
             self.ctrl_delai.SetValue(dictDonnees["synchro_archivage_delai"])
     
     def Validation(self):
@@ -431,13 +431,13 @@ class Notebook(wx.Notebook):
     
     def GetParametres(self):
         dictParametres = {}
-        for codePage, dictPage in self.dictPages.iteritems() :
-            for key, valeur in dictPage["ctrl"].GetParametres().iteritems() :
+        for codePage, dictPage in self.dictPages.items() :
+            for key, valeur in dictPage["ctrl"].GetParametres().items() :
                 dictParametres[key] = valeur
         return dictParametres
     
     def SetParametres(self, dictParametres={}):
-        for codePage, dictPage in self.dictPages.iteritems() :
+        for codePage, dictPage in self.dictPages.items() :
             dictPage["ctrl"].SetParametres(dictParametres)
 
     def ImportationParametres(self):
@@ -446,7 +446,7 @@ class Notebook(wx.Notebook):
         self.SetParametres(dictParametres)
     
     def Validation(self):
-        for codePage, dictPage in self.dictPages.iteritems() :
+        for codePage, dictPage in self.dictPages.items() :
             if dictPage["ctrl"].Validation() == False :
                 self.AffichePage(codePage)
                 return False
@@ -625,8 +625,8 @@ class Dialog(wx.Dialog):
                     ftp.delete(nomFichier)
                     nbreFichiersSupprimes += 1
             ftp.quit()
-        except Exception, err :
-            print err
+        except Exception as err :
+            print(err)
             dlg = wx.MessageDialog(self, _(u"La connexion FTP n'a pas pu être établie !\n\nVérifiez les paramètres de connexion FTP dans les paramètres de synchronisation."), "Erreur ", wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
@@ -723,8 +723,8 @@ class Dialog(wx.Dialog):
                     ftp.retrbinary("RETR %s" % nomFichier, open(UTILS_Fichiers.GetRepSync(nomFichier), "wb").write)
                     listeFichiersRecus.append((nomFichier, tailleFichier))
             ftp.quit()
-        except Exception, err :
-            print err
+        except Exception as err :
+            print(err)
             del dlgAttente
             dlg = wx.MessageDialog(self, _(u"La connexion FTP n'a pas pu être établie !\n\nVérifiez les paramètres de connexion FTP dans les paramètres de synchronisation."), "Erreur ", wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()

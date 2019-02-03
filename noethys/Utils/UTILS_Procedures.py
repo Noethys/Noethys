@@ -14,7 +14,7 @@ from UTILS_Traduction import _
 import wx
 import datetime
 import GestionDB
-
+import six
 
 
 DICT_PROCEDURES = {
@@ -70,7 +70,7 @@ DICT_PROCEDURES = {
 
 def Procedure(code=""):
     # Recherche si procédure existe
-    if DICT_PROCEDURES.has_key(code) == False :
+    if (code in DICT_PROCEDURES) == False :
         dlg = wx.MessageDialog(None, _(u"Désolé, cette procédure n'existe pas..."), _(u"Erreur"), wx.OK | wx.ICON_ERROR)
         dlg.ShowModal()
         dlg.Destroy()
@@ -83,10 +83,10 @@ def Procedure(code=""):
     if reponse != wx.ID_YES :
         return
     # Lancement
-    print "Lancement de la procedure '%s'..." % code
+    print("Lancement de la procedure '%s'..." % code)
     try :
         exec("%s()" % code)
-    except Exception, err :
+    except Exception as err :
         dlg = wx.MessageDialog(None, _(u"Désolé, une erreur a été rencontrée :\n\n-> %s  ") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
         dlg.ShowModal()
         dlg.Destroy()
@@ -95,7 +95,7 @@ def Procedure(code=""):
     dlg = wx.MessageDialog(None, _(u"La procédure s'est terminée avec succès."), _(u"Procédure terminée"), wx.OK | wx.ICON_INFORMATION)
     dlg.ShowModal()
     dlg.Destroy()
-    print "Fin de la procedure '%s'." % code
+    print("Fin de la procedure '%s'." % code)
     return
 
 def EcritStatusbar(texte=u""):
@@ -119,8 +119,8 @@ def A3687():
     DB.ExecuterReq(req)
     listeLignes = DB.ResultatReq()
     for IDligne, qf_min, qf_max in listeLignes :
-        if type(qf_min) == unicode or type(qf_min) == str : DB.ReqMAJ("tarifs_lignes", [("qf_min", float(qf_min.replace(",","."))),], "IDligne", IDligne)
-        if type(qf_max) == unicode or type(qf_max) == str : DB.ReqMAJ("tarifs_lignes", [("qf_max", float(qf_max.replace(",","."))),], "IDligne", IDligne)
+        if type(qf_min) == six.text_type or type(qf_min) == str : DB.ReqMAJ("tarifs_lignes", [("qf_min", float(qf_min.replace(",","."))),], "IDligne", IDligne)
+        if type(qf_max) == six.text_type or type(qf_max) == str : DB.ReqMAJ("tarifs_lignes", [("qf_max", float(qf_max.replace(",","."))),], "IDligne", IDligne)
     DB.Close()
 
 def A3688():
@@ -179,17 +179,17 @@ def S1290():
         DB.ReqMAJ("noms_tarifs", [("IDcategorie_tarif", None),], "IDnom_tarif", IDnom_tarif)
 
         # Regroupement par activité
-        if dictDonnees.has_key(IDactivite) == False :
+        if (IDactivite in dictDonnees) == False :
             dictDonnees[IDactivite] = {}
         
         # Regroupement par nom de tarif
-        if dictDonnees[IDactivite].has_key(nom) == False :
+        if (nom in dictDonnees[IDactivite]) == False :
             dictDonnees[IDactivite][nom] = []
         dictDonnees[IDactivite][nom].append(IDnom_tarif)
     
     # Regroupement par activités et noms de tarifs
-    for IDactivite, dictNoms in dictDonnees.iteritems() :
-        for nom, listeIDnom_tarif in dictNoms.iteritems() :
+    for IDactivite, dictNoms in dictDonnees.items() :
+        for nom, listeIDnom_tarif in dictNoms.items() :
             # Conservation du premier IDnom_tarif
             newIDnom_tarif = listeIDnom_tarif[0]
             
@@ -212,7 +212,7 @@ def D1051():
     
 def E4072():
     """ Suppression des prestations sans consommations associées """    
-    print "Lancement de la procedure E4072..."
+    print("Lancement de la procedure E4072...")
     DB = GestionDB.DB()
     
     # Récupération des prestations
@@ -230,19 +230,19 @@ def E4072():
     # Analyse
     dictPrestations = {}
     for IDconso, IDprestation in listeConsommations :
-        if dictPrestations.has_key(IDprestation) == False :
+        if (IDprestation in dictPrestations) == False :
             dictPrestations[IDprestation] = []
         dictPrestations[IDprestation].append(IDconso)
     
     dictResultats = {}
     for IDprestation, label in listePrestations :
-        if dictPrestations.has_key(IDprestation) == False :
-            if dictResultats.has_key(label) == False :
+        if (IDprestation in dictPrestations) == False :
+            if (label in dictResultats) == False :
                 dictResultats[label] = []
             dictResultats[label].append(IDprestation)
     
     listeDonnees = []
-    for label, listePrestationsTemp in dictResultats.iteritems() :
+    for label, listePrestationsTemp in dictResultats.items() :
         texte = _(u"%s (%d prestations)") % (label, len(listePrestationsTemp))
         listeDonnees.append((texte, label, listePrestationsTemp))
     listeDonnees.sort() 
@@ -268,7 +268,7 @@ def E4072():
         DB.Close()
         del dlgAttente
     dlg.Destroy()
-    print "Fin de la procedure E4072."
+    print("Fin de la procedure E4072.")
     
 def X0202():
     """ Ajout du champ forfait_date_debut à la table Prestations """
@@ -285,11 +285,11 @@ def G2345():
     listeGroupes = DB.ResultatReq()
     dictGroupes = {}
     for IDgroupe, IDactivite in listeGroupes :
-        if dictGroupes.has_key(IDactivite) == False :
+        if (IDactivite in dictGroupes) == False :
             dictGroupes[IDactivite] = []
         dictGroupes[IDactivite].append(IDgroupe)
     # Attribution d'un numéro d'ordre
-    for IDactivite, listeGroupes in dictGroupes.iteritems() :
+    for IDactivite, listeGroupes in dictGroupes.items() :
         ordre = 1
         for IDgroupe in listeGroupes :
             DB.ReqMAJ("groupes", [("ordre", ordre),], "IDgroupe", IDgroupe)
@@ -317,8 +317,8 @@ def A5000():
         DB.ExecuterReq(req)
         DB.Commit()
         DB.Close()
-    except Exception, err:
-        print "Erreur dans procedure A5000 :", err
+    except Exception as err:
+        print("Erreur dans procedure A5000 :", err)
 
 def A5134():
     """ Ancienne fonction Etat global des conso """
@@ -425,7 +425,7 @@ def A5500():
     listeFactures = DB.ResultatReq()    
     dictFactures = {}
     for IDfacture, IDcompte_payeur, date_debut, date_fin in listeFactures :
-        if dictFactures.has_key(IDcompte_payeur) == False :
+        if (IDcompte_payeur in dictFactures) == False :
             dictFactures[IDcompte_payeur] = []
         dictFactures[IDcompte_payeur].append({"IDfacture":IDfacture, "date_debut":UTILS_Dates.DateEngEnDateDD(date_debut), "date_fin":UTILS_Dates.DateEngEnDateDD(date_fin)})
     
@@ -451,7 +451,7 @@ def A5500():
         date = UTILS_Dates.DateEngEnDateDD(date)
         
         # Recherche la facture probable
-        if dictFactures.has_key(IDcompte_payeur) :
+        if IDcompte_payeur in dictFactures :
             for dictFacture in dictFactures[IDcompte_payeur] :
                 if date >= dictFacture["date_debut"] and date <= dictFacture["date_fin"] :
                     IDfacture = dictFacture["IDfacture"]
@@ -485,7 +485,7 @@ def A7650():
     DB.Close() 
     dictIndividus = {}
     for IDfamille, IDindividu, IDcivilite, nom, prenom in listeDonnees :
-        if dictIndividus.has_key(IDfamille) == False :
+        if (IDfamille in dictIndividus) == False :
             dictIndividus[IDfamille] = []
         dictIndividus[IDfamille].append({"IDcivilite":IDcivilite, "IDindividu":IDindividu, "nom":nom, "prenom":prenom})
     
@@ -500,12 +500,12 @@ def A7650():
     listeModifications = []
     for IDfamille, titulaire_helios in listeDonnees :
         if titulaire_helios == None or titulaire_helios == "" :
-            if dictIndividus.has_key(IDfamille) :
+            if IDfamille in dictIndividus :
                 dictIndividu = dictIndividus[IDfamille][0]
                 titulaire_helios = dictIndividu["IDindividu"]
                 listeModifications.append((titulaire_helios, IDfamille))
     
-    print "Nbre de titulaires HELIOS a enregistrer : %d" % len(listeModifications)
+    print("Nbre de titulaires HELIOS a enregistrer : %d" % len(listeModifications))
         
     # Enregistrement des modifications
     DB = GestionDB.DB() 
@@ -542,17 +542,17 @@ def A8452():
     dictLiens = {}
     for IDlien, IDfamille, IDindividu_sujet, IDtype_lien, IDindividu_objet, responsable, IDautorisation in listeDonnees :
         key = (IDindividu_sujet, IDindividu_objet)
-        if dictLiens.has_key(IDfamille) == False :
+        if (IDfamille in dictLiens) == False :
             dictLiens[IDfamille] = {}
-        if dictLiens[IDfamille].has_key(key) == False :
+        if (key in dictLiens[IDfamille]) == False :
             dictLiens[IDfamille][key] = []
         dictLiens[IDfamille][key].append(IDlien)
         dictLiens[IDfamille][key].sort() 
     # Analyse
     listeLiensASupprimer = []
     listeIDfamille = []
-    for IDfamille, dictKeys in dictLiens.iteritems() :
-        for key, listeIDlien in dictKeys.iteritems() :
+    for IDfamille, dictKeys in dictLiens.items() :
+        for key, listeIDlien in dictKeys.items() :
             if len(listeIDlien) > 1 :
                 # Suppression des liens obsolètes
                 for IDlien in listeIDlien[1:] :
@@ -561,8 +561,8 @@ def A8452():
                 if IDfamille not in listeIDfamille :
                     listeIDfamille.append(IDfamille)
     DB.Close() 
-    print "Nbre de liens supprimes :", len(listeLiensASupprimer)
-    print listeIDfamille
+    print("Nbre de liens supprimes :", len(listeLiensASupprimer))
+    print(listeIDfamille)
     
 def A8574():
     """ Mise à niveau de la base de données """
@@ -589,11 +589,11 @@ def A8574():
         dlg.Destroy()
         return False
     
-    print "Procedure manuelle de mise a niveau de la base de donnee depuis la version : ", version
+    print("Procedure manuelle de mise a niveau de la base de donnee depuis la version : ", version)
     DB = GestionDB.DB()        
     resultat = DB.ConversionDB(version)
     DB.Close()
-    print resultat
+    print(resultat)
     
 def A8623():
     """ Remplacement des exercices comptables par les dates budgétaires """
@@ -640,11 +640,11 @@ def A8733():
     WHERE IDinscription IS NULL;"""
     DB.ExecuterReq(req)
     listeDonnees = DB.ResultatReq()
-    print "%d IDinscription NULL sont a corriger..." % len(listeDonnees)
+    print("%d IDinscription NULL sont a corriger..." % len(listeDonnees))
     
     listeModifications = []
     for IDconso, IDindividu, IDactivite, IDcompte_payeur in listeDonnees :
-        if dictInscriptions.has_key((IDindividu, IDactivite, IDcompte_payeur)) :
+        if (IDindividu, IDactivite, IDcompte_payeur) in dictInscriptions :
             IDinscription = dictInscriptions[(IDindividu, IDactivite, IDcompte_payeur)]
             listeModifications.append((IDinscription, IDconso)) 
             
@@ -676,7 +676,7 @@ def A8836():
     DB.ExecuterReq(req)
     listeDonnees = DB.ResultatReq()
     DB.Close() 
-    print "Nbre consommations avec prestations supprimées : ", len(listeDonnees)
+    print("Nbre consommations avec prestations supprimées : ", len(listeDonnees))
     listeConso = []
     for listeTemp in listeDonnees :
         listeConso.append(listeTemp[0])
@@ -714,11 +714,11 @@ def A8956():
         date = UTILS_Dates.DateEngEnDateDD(date)
         dictTemp = {"IDprestation":IDprestation, "IDcompte_payeur":IDcompte_payeur, "date":date, "montant":montant, "IDfacture":IDfacture}
 
-        if dictPrestations.has_key(IDcompte_payeur) == False :
+        if (IDcompte_payeur in dictPrestations) == False :
             dictPrestations[IDcompte_payeur] = []
         dictPrestations[IDcompte_payeur].append(dictTemp)
 
-        if dictPrestationsFactures.has_key(IDfacture) == False :
+        if (IDfacture in dictPrestationsFactures) == False :
             dictPrestationsFactures[IDfacture] = {"total" : FloatToDecimal(0.0), "prestations" : []}
         dictPrestationsFactures[IDfacture]["prestations"].append(dictTemp)
         dictPrestationsFactures[IDfacture]["total"] += montant
@@ -737,7 +737,7 @@ def A8956():
         total_facture = FloatToDecimal(total_facture)
 
         # Vérifie si le total des prestations correspond bien au total de la facture
-        if dictPrestationsFactures.has_key(IDfacture):
+        if IDfacture in dictPrestationsFactures:
             total_prestations = dictPrestationsFactures[IDfacture]["total"]
         else :
             total_prestations = FloatToDecimal(0.0)
@@ -748,7 +748,7 @@ def A8956():
             # Recherche les possibles prestations à rattacher
             listePrestationsTrouvees = []
             totalPrestationsTrouvees = copy.copy(total_prestations)
-            if dictPrestations.has_key(IDcompte_payeur) :
+            if IDcompte_payeur in dictPrestations :
                 for dictPrestation in dictPrestations[IDcompte_payeur] :
                     if dictPrestation["IDfacture"] == None and dictPrestation["date"] >= date_debut and dictPrestation["date"] <= date_fin :
                         listePrestationsTrouvees.append(dictPrestation)
@@ -824,7 +824,7 @@ def A9023():
     liste_groupes = DB.ResultatReq()
     dict_groupes = {}
     for IDgroupe, IDactivite in liste_groupes :
-        if not dict_groupes.has_key(IDactivite) :
+        if IDactivite not in dict_groupes :
             dict_groupes[IDactivite] = []
         dict_groupes[IDactivite].append(IDgroupe)
 
@@ -836,12 +836,12 @@ def A9023():
     for IDouverture, IDactivite, IDgroupe in liste_ouvertures :
         if IDgroupe == 0 :
             # Recherche un groupe pour cette activité
-            if dict_groupes.has_key(IDactivite) :
+            if IDactivite in dict_groupes :
                 if len(dict_groupes[IDactivite]) == 1 :
                     IDgroupe = dict_groupes[IDactivite][0]
                     liste_modifications.append((IDgroupe, IDouverture))
 
-    print "Procedure A9023 : Nbre ouvertures a corriger =", len(liste_modifications)
+    print("Procedure A9023 : Nbre ouvertures a corriger =", len(liste_modifications))
 
     # Enoi des modifications à la DB
     DB.Executermany("UPDATE ouvertures SET IDgroupe=? WHERE IDouverture=?", liste_modifications, commit=True)
@@ -881,7 +881,7 @@ def A9054():
             IDmodele = DB.ReqInsert("modeles_emails", liste_donnees)
             nbre_ajouts += 1
 
-    print "%d modeles d'Emails ajoutes" % nbre_ajouts
+    print("%d modeles d'Emails ajoutes" % nbre_ajouts)
     DB.Close()
 
 def A9061():
@@ -1106,27 +1106,27 @@ def A9122():
     listeConsommations = DB.ResultatReq()
     dict_unites_tarifs = {}
     for IDcombi_tarif_unite, IDcombi_tarif, IDtarif, IDunite in listeConsommations:
-        if dict_unites_tarifs.has_key(IDtarif) == False :
+        if (IDtarif in dict_unites_tarifs) == False :
             dict_unites_tarifs[IDtarif] = {}
-        if dict_unites_tarifs[IDtarif].has_key(IDcombi_tarif) == False :
+        if (IDcombi_tarif in dict_unites_tarifs[IDtarif]) == False :
             dict_unites_tarifs[IDtarif][IDcombi_tarif] = []
         dict_unites_tarifs[IDtarif][IDcombi_tarif].append(IDunite)
 
     # Recherche les consommations avec prestations disparues
     liste_consos_malades = []
-    for IDconso, dict_conso in dict_consos.iteritems():
-        if dict_conso["IDprestation"] != None and dict_prestations.has_key(dict_conso["IDprestation"]) == False:
+    for IDconso, dict_conso in dict_consos.items():
+        if dict_conso["IDprestation"] != None and (dict_conso["IDprestation"] in dict_prestations) == False:
             liste_consos_malades.append(dict_conso)
 
-    print "liste_consos_malades=", len(liste_consos_malades)
+    print("liste_consos_malades=", len(liste_consos_malades))
 
     # Recherche les prestations sans consommations associées
     liste_prestations_sans_conso = []
-    for IDprestation in dict_prestations.keys():
-        if dict_IDprestation_consos.has_key(IDprestation) == False :
+    for IDprestation in list(dict_prestations.keys()):
+        if (IDprestation in dict_IDprestation_consos) == False :
             liste_prestations_sans_conso.append(dict_prestations[IDprestation])
 
-    print "liste_prestations_sans_conso=", len(liste_prestations_sans_conso)
+    print("liste_prestations_sans_conso=", len(liste_prestations_sans_conso))
 
     # Recherche les consommations qui pourraient associées à des prestations
     dict_rapprochements = {}
@@ -1140,12 +1140,12 @@ def A9122():
             date = dict_prestation["date"]
 
             # Recherche les combinaisons d'unités du tarif
-            if dict_unites_tarifs.has_key(IDtarif):
-                for IDcombi_tarif, combi_unites in dict_unites_tarifs.get(IDtarif, {}).iteritems():
+            if IDtarif in dict_unites_tarifs:
+                for IDcombi_tarif, combi_unites in dict_unites_tarifs.get(IDtarif, {}).items():
                     if len(combi_unites) > 0 :
                         combi_found = True
                         for IDunite in combi_unites :
-                            if dict_consos_regroupements[IDindividu].has_key(date) == False or IDunite not in dict_consos_regroupements[IDindividu][date].keys():
+                            if (date in dict_consos_regroupements[IDindividu]) == False or IDunite not in list(dict_consos_regroupements[IDindividu][date].keys()):
                                 combi_found = False
 
                         # Si combi trouvée, on cherche les conso potentielles :
@@ -1157,12 +1157,12 @@ def A9122():
                                 dict_rapprochements[IDindividu][date][IDprestation].append(IDconso)
                                 liste_IDprestation_corrigees.append(IDprestation)
 
-    print "liste_IDprestation_corrigees =", len(liste_IDprestation_corrigees)
+    print("liste_IDprestation_corrigees =", len(liste_IDprestation_corrigees))
 
     # Réparation
-    for IDindividu, dict_individu in dict_rapprochements.iteritems():
-        for date, dict_prestations_temp in dict_individu.iteritems():
-            for IDprestation, liste_consos in dict_prestations_temp.iteritems():
+    for IDindividu, dict_individu in dict_rapprochements.items():
+        for date, dict_prestations_temp in dict_individu.items():
+            for IDprestation, liste_consos in dict_prestations_temp.items():
                 for IDconso in liste_consos:
                     DB.ReqMAJ("consommations", [("IDprestation", IDprestation), ], "IDconso", IDconso)
 

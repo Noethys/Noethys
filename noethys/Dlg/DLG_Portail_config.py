@@ -23,7 +23,7 @@ import os.path
 import webbrowser
 import GestionDB
 import wx.richtext as rt
-import cStringIO
+import six
 
 from Dlg import DLG_Message_html
 
@@ -164,7 +164,7 @@ VALEURS_DEFAUT = {
 
 
 def GetDefaut(nom="", defaut=None):
-    if VALEURS_DEFAUT.has_key(nom) :
+    if nom in VALEURS_DEFAUT :
         return VALEURS_DEFAUT[nom]
     else :
         return defaut
@@ -1070,7 +1070,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
 
     def Validation(self):
         """ Validation des données saisies """
-        for nom, valeur in self.GetPropertyValues().iteritems() :
+        for nom, valeur in self.GetPropertyValues().items() :
             propriete = self.GetPropertyByName(nom)
             if self.GetPropertyAttribute(propriete, "obligatoire") == True :
                 if valeur == "" or valeur == None :
@@ -1105,7 +1105,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         #dictParametres["serveur_type"] = UTILS_Config.GetParametre("serveur_type", 0)
 
         # Envoie les paramètres dans le contrôle
-        for nom, valeur in dictParametres.iteritems() :
+        for nom, valeur in dictParametres.items() :
             propriete = self.GetPropertyByName(nom)
             type_propriete = type(VALEURS_DEFAUT[nom])
             if type_propriete == int and valeur != None :
@@ -1159,8 +1159,8 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
                     propriete = self.GetPropertyByName(cle)
                     if propriete != None :
                         type_propriete = type(VALEURS_DEFAUT[cle])
-                        if type_propriete in (str, unicode) :
-                            valeur = unicode(valeur)
+                        if type_propriete in (str, six.text_type) :
+                            valeur = six.text_type(valeur)
                         if type_propriete == bool :
                             if valeur == "True" :
                                 valeur = True
@@ -1210,8 +1210,8 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         # Création du fichier
         fichier = codecs.open(cheminFichier, encoding='utf-8', mode='w')
         dictValeurs = copy.deepcopy(self.GetPropertyValues())
-        for cle, valeur in dictValeurs.iteritems() :
-            if type(valeur) in (str, unicode) :
+        for cle, valeur in dictValeurs.items() :
+            if type(valeur) in (str, six.text_type) :
                 valeur = valeur.replace("\n", "#!#")
             ligne = u"%s = %s\n" % (cle, valeur)
             fichier.write(ligne)
@@ -1296,7 +1296,7 @@ class Page_Conditions(wx.Panel):
         IDelement, texte_xml = listeDonnees[0]
 
         # Insertion du texte
-        out = cStringIO.StringIO()
+        out = six.BytesIO()
         handler = wx.richtext.RichTextXMLHandler()
         buffer = self.ctrl_html.GetBuffer()
         buffer.AddHandler(handler)

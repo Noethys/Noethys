@@ -19,6 +19,7 @@ import datetime
 import GestionDB
 import CTRL_Saisie_heure
 import wx.combo
+import six
 
 COULEUR_FOND_REGROUPEMENT = (200, 200, 200)
 COULEUR_TEXTE_REGROUPEMENT = (140, 140, 140)
@@ -106,28 +107,28 @@ class Track(object):
 
     def SetParametres(self, dictParametres={}):
         # Coeff
-        if dictParametres.has_key("coeff") :
+        if "coeff" in dictParametres :
             self.ctrl_coeff.SetValeur(dictParametres["coeff"])
         # Arrondi
-        if dictParametres.has_key("arrondi") :
+        if "arrondi" in dictParametres :
             self.ctrl_arrondi.SetParametre(dictParametres["arrondi"])
         # Type de calcul
-        if dictParametres.has_key("typeCalcul") :
+        if "typeCalcul" in dictParametres :
             self.ctrl_type.SetParametre(dictParametres["typeCalcul"])
         # Durée seuil
-        if dictParametres.has_key("duree_seuil") :
+        if "duree_seuil" in dictParametres :
             self.ctrl_duree_seuil.SetValeur(dictParametres["duree_seuil"])
         # Durée plafond
-        if dictParametres.has_key("duree_plafond") :
+        if "duree_plafond" in dictParametres :
             self.ctrl_duree_plafond.SetValeur(dictParametres["duree_plafond"])
         # Heure seuil
-        if dictParametres.has_key("heure_seuil") :
+        if "heure_seuil" in dictParametres :
             self.ctrl_heure_seuil.SetValeur(dictParametres["heure_seuil"])
         # Heure plafond
-        if dictParametres.has_key("heure_plafond") :
+        if "heure_plafond" in dictParametres :
             self.ctrl_heure_plafond.SetValeur(dictParametres["heure_plafond"])
         # Formule
-        if dictParametres.has_key("formule") :
+        if "formule" in dictParametres :
             self.ctrl_formule.SetValue(dictParametres["formule"])
 
 # --------------------------------------------------------------------------------------------------------------------------------
@@ -694,8 +695,8 @@ class CTRL(HTL.HyperTreeList):
             self.MAJ(reinitialisation=True)
             return
         # Envoi des paramètres au Ctrl
-        for IDunite, dictParametresTrack in dictParametres.iteritems():
-            if type(IDunite) in (str, unicode) and IDunite.startswith("parametres_unite_"):
+        for IDunite, dictParametresTrack in dictParametres.items():
+            if type(IDunite) in (str, six.text_type) and IDunite.startswith("parametres_unite_"):
                 IDunite = int(IDunite.replace("parametres_unite_", ""))
             for track in self.listeTracks:
                 if IDunite == track.IDunite :
@@ -730,7 +731,7 @@ class MyFrame(wx.Frame):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonTest, self.boutonTest)
     
     def OnBoutonTest(self, event):
-        print self.ctrl.GetParametres()
+        print(self.ctrl.GetParametres())
         
 
 if __name__ == '__main__':

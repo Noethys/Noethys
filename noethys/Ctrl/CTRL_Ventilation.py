@@ -12,9 +12,8 @@
 import Chemins
 from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
-
 import wx
-import CTRL_Bouton_image
+import six
 import wx.grid as gridlib
 import wx.lib.agw.hyperlink as Hyperlink
 import datetime
@@ -151,9 +150,9 @@ class Ligne_regroupement(object):
             total_ventilationActuelle += ligne.ventilationActuelle
         
         # Affichage des totaux
-        self.grid.SetCellValue(self.numLigne, 5, unicode(total_prestation))
-        self.grid.SetCellValue(self.numLigne, 6, unicode(total_aVentiler))
-        self.grid.SetCellValue(self.numLigne, 7, unicode(total_ventilationActuelle))
+        self.grid.SetCellValue(self.numLigne, 5, six.text_type(total_prestation))
+        self.grid.SetCellValue(self.numLigne, 6, six.text_type(total_aVentiler))
+        self.grid.SetCellValue(self.numLigne, 7, six.text_type(total_ventilationActuelle))
 
     def GetEtat(self):
         valeur = self.grid.GetCellValue(self.numLigne, 0)
@@ -307,10 +306,10 @@ class Ligne_prestation(object):
         self.grid.SetCellValue(self.numLigne, 4, self.label_facture)
 
         # Montant de la prestation
-        self.grid.SetCellValue(self.numLigne, 5, unicode(self.montant))
+        self.grid.SetCellValue(self.numLigne, 5, six.text_type(self.montant))
 
         # Montant déjà ventilé
-        self.grid.SetCellValue(self.numLigne, 6, unicode(self.resteAVentiler))
+        self.grid.SetCellValue(self.numLigne, 6, six.text_type(self.resteAVentiler))
         
         if self.resteAVentiler == 0.0 and self.GetEtat() == True : 
             self.grid.SetCellBackgroundColour(self.numLigne, 6, COULEUR_TOTAL)
@@ -320,7 +319,7 @@ class Ligne_prestation(object):
             self.grid.SetCellBackgroundColour(self.numLigne, 6, COULEUR_PARTIEL)
 
         # Montant ventilé
-        self.grid.SetCellValue(self.numLigne, 7, unicode(self.ventilationActuelle))
+        self.grid.SetCellValue(self.numLigne, 7, six.text_type(self.ventilationActuelle))
         self.grid.SetReadOnly(self.numLigne, 7, not self.GetEtat())
 
         if self.GetEtat() == True : 
@@ -553,7 +552,7 @@ class CTRL_Ventilation(gridlib.Grid):
         
         # Importation des ventilations existantes du règlement
         for ligne_prestation in self.listeLignesPrestations :
-            if self.dictVentilation.has_key(ligne_prestation.IDprestation) :
+            if ligne_prestation.IDprestation in self.dictVentilation :
                 montant = self.dictVentilation[ligne_prestation.IDprestation]
                 ligne_prestation.SetEtat(True, montant, majTotaux=False)
         self.MAJtotaux() 
@@ -617,15 +616,15 @@ class CTRL_Ventilation(gridlib.Grid):
         for IDprestation, IDcompte_payeur, date, categorie, label, montant, IDactivite, nomActivite, IDtarif, nomTarif, nomCategorieTarif, IDfacture, IDprefixe, prefixe, num_facture, date_facture, IDfamille, IDindividu, nomIndividu, prenomIndividu in listeDonnees :
             montant = FloatToDecimal(montant)
 
-            if dictVentilationPassee.has_key(IDprestation) :
+            if IDprestation in dictVentilationPassee :
                 montantVentilation = FloatToDecimal(dictVentilationPassee[IDprestation])
             else :
                 montantVentilation = FloatToDecimal(0.0)
 
             if num_facture == None : num_facture = 0
-            if (montant >= FloatToDecimal(0.0) and montantVentilation < montant) or (montant < FloatToDecimal(0.0) and montantVentilation > montant) or IDprestation in self.dictVentilation.keys() :
+            if (montant >= FloatToDecimal(0.0) and montantVentilation < montant) or (montant < FloatToDecimal(0.0) and montantVentilation > montant) or IDprestation in list(self.dictVentilation.keys()) :
                 date = DateEngEnDateDD(date)
-                if self.dictVentilation.has_key(IDprestation) :
+                if IDprestation in self.dictVentilation :
                     montantVentilation = montantVentilation - self.dictVentilation[IDprestation] 
 
                 dictTemp = {
@@ -644,14 +643,14 @@ class CTRL_Ventilation(gridlib.Grid):
         numLigne = event.GetRow()
         numColonne = event.GetCol()
         # Checkbox
-        if self.dictLignes.has_key(numLigne) :
+        if numLigne in self.dictLignes :
             ligne = self.dictLignes[numLigne]
             if numColonne == 7 and ligne.GetEtat() == True :
                 pass
             else :
                 ligne.OnCheck()
         # Case montant modifiable
-        if numColonne == 7 and self.dictLignes.has_key(numLigne) :
+        if numColonne == 7 and numLigne in self.dictLignes :
             ligne = self.dictLignes[numLigne]
             if ligne.type_ligne == "prestation" and ligne.GetEtat() == True :
                 event.Skip()
@@ -689,7 +688,7 @@ class CTRL_Ventilation(gridlib.Grid):
                 key = ligne_prestation.periode
                 label = ligne_prestation.periode_complete
             
-            if self.dictRegroupements.has_key(key) == False :
+            if (key in self.dictRegroupements) == False :
                 self.dictRegroupements[key] = { "label" : label, "total" : FloatToDecimal(0.0), "prestations" : [], "ligne_regroupement" : None}
                 listeKeys.append(key)
                 nbreLignes += 1
@@ -730,7 +729,7 @@ class CTRL_Ventilation(gridlib.Grid):
     def MAJtotaux(self):
         """ Mise à jour de tous les totaux regroupements + barreInfos """
         # MAJ de tous les totaux de regroupement
-        for key, dictRegroupement in self.dictRegroupements.iteritems() :
+        for key, dictRegroupement in self.dictRegroupements.items() :
             ligne_regroupement = dictRegroupement["ligne_regroupement"]
             ligne_regroupement.MAJ() 
         # MAJ de la barre d'infos
@@ -750,7 +749,7 @@ class CTRL_Ventilation(gridlib.Grid):
         # Afficher par facture
         self.SetRegroupement("facture")
         # Coche les prestations liées à la facture données
-        for key, dictRegroupement in self.dictRegroupements.iteritems():
+        for key, dictRegroupement in self.dictRegroupements.items():
             if key == IDfacture :
                 ligne_regroupement = dictRegroupement["ligne_regroupement"]
                 ligne_regroupement.SetEtat(True)
@@ -782,7 +781,7 @@ class CTRL_Ventilation(gridlib.Grid):
             IDprestation = ligne.IDprestation
             montant = float(ligne.ventilationActuelle)
             
-            if self.dictVentilationInitiale.has_key(IDprestation) :
+            if IDprestation in self.dictVentilationInitiale :
                 IDventilation = self.dictVentilationInitiale[IDprestation]
             else:
                 IDventilation = None
@@ -1096,7 +1095,7 @@ if __name__ == '__main__':
     import time
     heure_debut = time.time()
     frame_1 = MyFrame(None, -1, "OL TEST")
-    print "Temps de chargement =", time.time() - heure_debut
+    print("Temps de chargement =", time.time() - heure_debut)
     app.SetTopWindow(frame_1)
     frame_1.Show()
     app.MainLoop()

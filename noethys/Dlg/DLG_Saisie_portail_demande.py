@@ -145,7 +145,7 @@ class CTRL_Choix_modele(wx.Choice):
         return listeItems
 
     def SetID(self, ID=None):
-        for index, values in self.dictDonnees.iteritems():
+        for index, values in self.dictDonnees.items():
             if values != None and values["ID"] == ID :
                  self.SetSelection(index)
 
@@ -181,7 +181,7 @@ class CTRL_Solde(wx.TextCtrl):
         listeReglements = DB.ResultatReq()
         dictReglements = {}
         for IDfamille, montant in listeReglements :
-            if dictReglements.has_key(IDfamille) == False :
+            if (IDfamille in dictReglements) == False :
                 dictReglements[IDfamille] = FloatToDecimal(0.0)
                 dictReglements[IDfamille] += FloatToDecimal(montant)
 
@@ -196,7 +196,7 @@ class CTRL_Solde(wx.TextCtrl):
         dict_soldes = {}
         for IDfamille, montant in listePrestations :
             montant = FloatToDecimal(montant)
-            if dictReglements.has_key(IDfamille) == True :
+            if (IDfamille in dictReglements) == True :
                 regle = dictReglements[IDfamille]
             else :
                 regle = FloatToDecimal(0.0)
@@ -205,7 +205,7 @@ class CTRL_Solde(wx.TextCtrl):
         DB.Close()
 
         # Affichage du solde
-        if dict_soldes.has_key(IDfamille) :
+        if IDfamille in dict_soldes :
             solde = dict_soldes[IDfamille]
         else :
             solde = FloatToDecimal(0.0)
@@ -715,7 +715,7 @@ class Dialog(wx.Dialog):
             for champ, valeur in listeDonnees :
 
                 label = None
-                if DICT_RENSEIGNEMENTS.has_key(champ):
+                if champ in DICT_RENSEIGNEMENTS:
                     label = _(u"<li>%s : %s</li>") % (DICT_RENSEIGNEMENTS[champ], valeur)
 
                 if champ == "adresse_auto" and valeur != None:
@@ -829,7 +829,7 @@ class Dialog(wx.Dialog):
                 req = """SELECT IDperiode, portail_periodes.nom, activites.nom
                 FROM portail_periodes
                 LEFT JOIN activites ON activites.IDactivite = portail_periodes.IDactivite
-                WHERE IDperiode IN %s;""" % GestionDB.ConvertConditionChaine(dict_paiements["periode"].keys())
+                WHERE IDperiode IN %s;""" % GestionDB.ConvertConditionChaine(list(dict_paiements["periode"].keys()))
                 DB.ExecuterReq(req)
                 listePeriodes = DB.ResultatReq()
                 dict_periodes = {}
@@ -839,7 +839,7 @@ class Dialog(wx.Dialog):
             if len(dict_paiements["facture"]) > 0:
                 req = """SELECT IDfacture, numero, date_debut, date_fin
                 FROM factures
-                WHERE IDfacture IN %s;""" % GestionDB.ConvertConditionChaine(dict_paiements["facture"].keys())
+                WHERE IDfacture IN %s;""" % GestionDB.ConvertConditionChaine(list(dict_paiements["facture"].keys()))
                 DB.ExecuterReq(req)
                 listeFactures = DB.ResultatReq()
                 dict_factures = {}
@@ -850,7 +850,7 @@ class Dialog(wx.Dialog):
 
             liste_textes = []
             for type_impaye in ("facture", "periode"):
-                for ID, montant in dict_paiements[type_impaye].iteritems():
+                for ID, montant in dict_paiements[type_impaye].items():
                     texte = u""
                     if type_impaye == "periode" :
                         texte = dict_periodes[ID]
@@ -909,7 +909,7 @@ class Dialog(wx.Dialog):
                 self.SetEtat(etat="valide", traitement_date=datetime.date.today())
 
                 # Mémorisation de la réponse
-                if resultat.has_key("reponse") and resultat["reponse"] not in (None, "") :
+                if "reponse" in resultat and resultat["reponse"] not in (None, "") :
                     self.ctrl_reponse.SetValue(resultat["reponse"])
 
                 # Enregistrement de la demande
@@ -1156,7 +1156,7 @@ class Traitement():
         # Importation des périodes
         req = """SELECT IDperiode, IDactivite, date_debut, date_fin
         FROM portail_periodes
-        WHERE IDperiode IN %s;""" % GestionDB.ConvertConditionChaine(dict_paiements["periode"].keys())
+        WHERE IDperiode IN %s;""" % GestionDB.ConvertConditionChaine(list(dict_paiements["periode"].keys()))
         DB.ExecuterReq(req)
         listePeriodes = DB.ResultatReq()
         dict_periodes = {}
@@ -1173,7 +1173,7 @@ class Traitement():
             num_piece = IDtransaction
 
         if "tipi" in systeme_paiement :
-            IDfacture = dict_paiements.keys()[0]
+            IDfacture = list(dict_paiements.keys())[0]
             req = """SELECT factures_regies.IDcompte_bancaire
             FROM factures
             LEFT JOIN factures_regies ON factures_regies.IDregie = factures.IDregie
@@ -1188,7 +1188,7 @@ class Traitement():
         if self.mode == "manuel" :
             from Dlg import DLG_Saisie_reglement
             dlg = DLG_Saisie_reglement.Dialog(None, IDcompte_payeur=IDcompte_payeur, IDreglement=None)
-            dlg.SelectionneFacture(liste_IDfacture=dict_paiements["facture"].keys())
+            dlg.SelectionneFacture(liste_IDfacture=list(dict_paiements["facture"].keys()))
             dlg.ctrl_montant.SetMontant(montant_reglement)
             dlg.ctrl_numero.SetValue(num_piece)
             dlg.ctrl_mode.SetID(IDmode_reglement)
@@ -1200,7 +1200,7 @@ class Traitement():
             # Coche les périodes à ventiler
             if len(dict_paiements["periode"]) > 0:
                 for ligne_prestation in dlg.ctrl_ventilation.ctrl_ventilation.listeLignesPrestations:
-                    for IDperiode, dict_periode in dict_periodes.iteritems():
+                    for IDperiode, dict_periode in dict_periodes.items():
                         if ligne_prestation.IDactivite == dict_periode["IDactivite"] and ligne_prestation.date >= dict_periode["date_debut"] and ligne_prestation.date <= dict_periode["date_fin"]:
                             ligne_prestation.SetEtat(True, majTotaux=False)
                 dlg.ctrl_ventilation.ctrl_ventilation.MAJtotaux()
@@ -1533,7 +1533,7 @@ class Traitement():
                 for IDunite in liste_unites_conso :
                     if ctrl_grille.IsOuvert(IDunite=IDunite, date=date) :
 
-                        if ctrl_grille.grille.dictUnites.has_key(IDunite):
+                        if IDunite in ctrl_grille.grille.dictUnites:
                             nomUnite = ctrl_grille.grille.dictUnites[IDunite]["nom"]
                             texte = _(u"Saisie de l'unité %s du %s en mode %s") % (nomUnite, UTILS_Dates.DateDDEnFr(date), mode_label)
                             self.EcritLog(texte, log_jumeau)

@@ -59,7 +59,7 @@ class Choix_famille(wx.Choice):
 
             self.listeNoms = []
             self.listeDonnees = []
-            for IDfamille, dictFamille in dictFamillesRattachees.iteritems() :
+            for IDfamille, dictFamille in dictFamillesRattachees.items() :
                 nom = _(u"Famille de %s") % dictFamille["nomsTitulaires"]
                 self.listeNoms.append(nom)
                 self.listeDonnees.append({"IDfamille" : IDfamille, "nom" : nom})
@@ -791,7 +791,7 @@ class Page_Activite(wx.Panel):
         for IDgroupe, nom, nbre_inscrits_max in listeGroupes :
 
             # Recherche le nombre d'inscrits sur chaque groupe
-            if dictActivite["inscriptions"].has_key(IDgroupe) :
+            if IDgroupe in dictActivite["inscriptions"] :
                 nbre_inscrits = dictActivite["inscriptions"][IDgroupe]
             else :
                 nbre_inscrits = 0
@@ -807,7 +807,7 @@ class Page_Activite(wx.Panel):
 
         # Recherche le nombre d'inscrits total de l'activité
         dictActivite["nbre_inscrits"] = 0
-        for IDgroupe, nbre_inscrits in dictActivite["inscriptions"].iteritems() :
+        for IDgroupe, nbre_inscrits in dictActivite["inscriptions"].items() :
             dictActivite["nbre_inscrits"] += nbre_inscrits
 
         # Recherche du nombre de places disponibles sur l'activité
@@ -832,13 +832,13 @@ class Page_Activite(wx.Panel):
 
         dictVilles = {}
         for IDville, IDcategorie_tarif, cp, nom in listeVilles :
-            if dictVilles.has_key(IDcategorie_tarif) == False :
+            if (IDcategorie_tarif in dictVilles) == False :
                 dictVilles[IDcategorie_tarif] = []
             dictVilles[IDcategorie_tarif].append((cp, nom))
 
         dictActivite["categories_tarifs"] = []
         for IDcategorie_tarif, nom in listeCategories :
-            if dictVilles.has_key(IDcategorie_tarif) :
+            if IDcategorie_tarif in dictVilles :
                 listeVilles = dictVilles[IDcategorie_tarif]
             else:
                 listeVilles = []

@@ -103,14 +103,14 @@ class ListView(FastObjectListView):
             date = UTILS_Dates.DateEngEnDateDD(date)  
             
             montant = decimal.Decimal(montant)
-            if dictVentilation.has_key(IDprestation) :
+            if IDprestation in dictVentilation :
                 montant_ventilation = decimal.Decimal(dictVentilation[IDprestation])
             else :
                 montant_ventilation = decimal.Decimal(0.0)
             paye = montant_ventilation
             impaye = montant - montant_ventilation
             
-            if dictResultats.has_key(IDfamille) == False :
+            if (IDfamille in dictResultats) == False :
                 dictResultats[IDfamille] = {"IDfamille" : IDfamille, "IDcompte_payeur" : IDcompte_payeur, "prestations" : [], "quantite" : 0, "total" : decimal.Decimal(0.0), "paye" : decimal.Decimal(0.0), "impaye" : decimal.Decimal(0.0) }            
             
             dictResultats[IDfamille]["prestations"].append({"IDprestation" : IDprestation, "label" : label, "montant" : montant, "paye" : paye, "impaye" : impaye, "IDfamille" : IDfamille, "IDcompte_payeur" : IDcompte_payeur, "IDfacture" : IDfacture})
@@ -121,7 +121,7 @@ class ListView(FastObjectListView):
             
     
         listeListeView = []
-        for IDfamille, dictTemp in dictResultats.iteritems() :
+        for IDfamille, dictTemp in dictResultats.items() :
             valide = True
             if listeID != None :
                 if item[0] not in listeID :

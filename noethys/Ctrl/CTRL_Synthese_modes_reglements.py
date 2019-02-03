@@ -206,11 +206,11 @@ class CTRL(HTL.HyperTreeList):
                 if categoriePrestation == "cotisation" :
                     IDactivite = 99999
                 
-                if dictResultats.has_key(IDactivite) == False :
+                if (IDactivite in dictResultats) == False :
                     dictResultats[IDactivite] = {}
-                if dictResultats[IDactivite].has_key(labelPrestation) == False :
+                if (labelPrestation in dictResultats[IDactivite]) == False :
                     dictResultats[IDactivite][labelPrestation] = {}
-                if dictResultats[IDactivite][labelPrestation].has_key(IDmode) == False :
+                if (IDmode in dictResultats[IDactivite][labelPrestation]) == False :
                     dictResultats[IDactivite][labelPrestation][IDmode] = 0.0
                 dictResultats[IDactivite][labelPrestation][IDmode] += montantVentilation
                 
@@ -246,15 +246,15 @@ class CTRL(HTL.HyperTreeList):
             # Synthèse des non ventilés
             for IDmode, montant in listeReglements :
                 
-                if dictTemp.has_key(IDmode) :
+                if IDmode in dictTemp :
                     montantAvoir = montant - dictTemp[IDmode]
                 else :
                     montantAvoir = montant
                 
                 if montantAvoir > 0.0 :
-                    if dictResultats.has_key(88888) == False :
+                    if (88888 in dictResultats) == False :
                         dictResultats[88888] = {"Avoirs" : {} }
-                    if dictResultats[88888]["Avoirs"].has_key(IDmode) == False :
+                    if (IDmode in dictResultats[88888]["Avoirs"]) == False :
                         dictResultats[88888]["Avoirs"][IDmode] = 0.0
                     dictResultats[88888]["Avoirs"][IDmode] += montantAvoir
 
@@ -317,7 +317,7 @@ class CTRL(HTL.HyperTreeList):
         # Tri des modes par ordre alphabétique
         listeModesAlpha = []
         for IDmode in listeModes :
-            if self.dictModes.has_key(IDmode) :
+            if IDmode in self.dictModes :
                 label = self.dictModes[IDmode]["nom"]
             else :
                 label = _(u"Mode inconnu")
@@ -331,8 +331,8 @@ class CTRL(HTL.HyperTreeList):
         
         # Branches Activités
         listeLabels = []
-        for IDactivite, dictActivite in dictResultats.iteritems() :
-            if self.dictActivites.has_key(IDactivite) :
+        for IDactivite, dictActivite in dictResultats.items() :
+            if IDactivite in self.dictActivites :
                 nomActivite = self.dictActivites[IDactivite]["nom"]
             else :
                 if IDactivite == 99999 :
@@ -351,15 +351,15 @@ class CTRL(HTL.HyperTreeList):
             
             # Total par mode
             dictTotal = {}
-            for labelPrestation, dictPrestation in dictActivite.iteritems() :
-                for IDmode, montant in dictPrestation.iteritems() :
-                    if dictTotal.has_key(IDmode) == False :
+            for labelPrestation, dictPrestation in dictActivite.items() :
+                for IDmode, montant in dictPrestation.items() :
+                    if (IDmode in dictTotal) == False :
                         dictTotal[IDmode] = 0.0
                     dictTotal[IDmode] += montant
             
             totalLigne = 0.0
             for labelMode, IDmode in listeModesAlpha :
-                if dictTotal.has_key(IDmode) :
+                if IDmode in dictTotal :
                     montant = dictTotal[IDmode]
                     texte = u"%.2f %s" % (montant, SYMBOLE)
                     self.SetItemText(niveauActivite, texte, dictColonnes[IDmode])
@@ -377,7 +377,7 @@ class CTRL(HTL.HyperTreeList):
             
             # Branches Prestations
             listePrestations = []
-            for labelPrestation, dictPrestation in dictActivite.iteritems() :
+            for labelPrestation, dictPrestation in dictActivite.items() :
                 listePrestations.append((labelPrestation, dictPrestation))
             listePrestations.sort()
             
@@ -394,7 +394,7 @@ class CTRL(HTL.HyperTreeList):
                     # Colonnes Modes
                     totalLigne = 0.0
                     for labelMode, IDmode in listeModesAlpha :
-                        if dictPrestation.has_key(IDmode) :
+                        if IDmode in dictPrestation :
                             montant = dictPrestation[IDmode]
                             texte = u"%.2f %s" % (montant, SYMBOLE)
                             self.SetItemText(niveauPrestation, texte, dictColonnes[IDmode])
@@ -417,16 +417,16 @@ class CTRL(HTL.HyperTreeList):
         impressionLigne = [_(u"Total"),]
         
         totauxColonnes = {}
-        for IDactivite, dictActivite in dictResultats.iteritems() :
-            for labelPrestation, dictPrestation in dictActivite.iteritems() :
-                for IDmode, montant in dictPrestation.iteritems() :
-                    if totauxColonnes.has_key(IDmode) == False :
+        for IDactivite, dictActivite in dictResultats.items() :
+            for labelPrestation, dictPrestation in dictActivite.items() :
+                for IDmode, montant in dictPrestation.items() :
+                    if (IDmode in totauxColonnes) == False :
                         totauxColonnes[IDmode] = 0.0 
                     totauxColonnes[IDmode] += montant
 
         totalLigne = 0.0
         for labelMode, IDmode in listeModesAlpha :
-            if totauxColonnes.has_key(IDmode) :
+            if IDmode in totauxColonnes :
                 montant = totauxColonnes[IDmode]
                 texte = u"%.2f %s" % (montant, SYMBOLE)
                 self.SetItemText(niveauTotal, texte, dictColonnes[IDmode])

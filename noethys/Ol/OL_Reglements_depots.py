@@ -13,19 +13,15 @@ import Chemins
 from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
-from Ctrl import CTRL_Bouton_image
+import six
 import datetime
 import decimal
 import GestionDB
 from PIL import Image
 import os
-import cStringIO
 from Utils import UTILS_Titulaires
-
 from Utils import UTILS_Config
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
-
-
 from Utils import UTILS_Interface
 from Ctrl.CTRL_ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils, PanelAvecFooter
 
@@ -156,7 +152,7 @@ class ListView(FastObjectListView):
         """ Récupère une image mode ou émetteur depuis un buffer """            
         # Recherche de l'image
         if buffer != None :
-            io = cStringIO.StringIO(buffer)
+            io = six.BytesIO(buffer)
             if 'phoenix' in wx.PlatformInfo:
                 img = wx.Image(io, wx.BITMAP_TYPE_JPEG)
             else :
@@ -246,13 +242,13 @@ class ListView(FastObjectListView):
 
 
         def GetImageMode(track):
-            if dictImages["modes"].has_key(track.IDmode) :
+            if track.IDmode in dictImages["modes"] :
                 return dictImages["modes"][track.IDmode]
             else :
                 return None
 
         def GetImageEmetteur(track):
-            if dictImages["emetteurs"].has_key(track.IDemetteur) :
+            if track.IDemetteur in dictImages["emetteurs"] :
                 return dictImages["emetteurs"][track.IDemetteur]
             else :
                 return None
@@ -419,14 +415,14 @@ class ListView(FastObjectListView):
                 # Nbre total
                 montantTotal += track.montant
                 # Détail
-                if dictDetails.has_key(track.IDmode) == False :
+                if (track.IDmode in dictDetails) == False :
                     dictDetails[track.IDmode] = { "label" : track.nom_mode, "nbre" : 0, "montant" : 0.0}
                 dictDetails[track.IDmode]["nbre"] += 1
                 dictDetails[track.IDmode]["montant"] += track.montant
         # Création du texte
         listeDetails = []
         texte = _(u"%d règlements (%.2f ¤)") % (nbreTotal, montantTotal)
-        for IDmode, dictDetail in dictDetails.iteritems() :
+        for IDmode, dictDetail in dictDetails.items() :
             texteDetail = u"%d %s (%.2f ¤)" % (dictDetail["nbre"], dictDetail["label"], dictDetail["montant"])
             listeDetails.append(texteDetail)
         if len(listeDetails) > 0 :

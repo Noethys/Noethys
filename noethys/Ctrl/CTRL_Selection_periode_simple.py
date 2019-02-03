@@ -449,7 +449,7 @@ class MyFrame(wx.Frame):
         self.Bind(wx.EVT_BUTTON, self.OnBouton, bouton_test) 
         
     def OnBouton(self, event):
-        print "test"
+        print("test")
         
 
 if __name__ == '__main__':

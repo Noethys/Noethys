@@ -131,10 +131,10 @@ class CTRL_Annee(wx.Choice):
         for IDreglement, date in listeDonnees :
             dateDD = UTILS_Dates.DateEngEnDateDD(date)
             if dateDD != None :
-                if dictAnnees.has_key(dateDD.year) == False :
+                if (dateDD.year in dictAnnees) == False :
                     dictAnnees[dateDD.year] = 0
                 dictAnnees[dateDD.year] += 1
-        listeAnnees = dictAnnees.keys() 
+        listeAnnees = list(dictAnnees.keys()) 
         listeAnnees.sort() 
         for annee in listeAnnees :
             nbreReglements = dictAnnees[annee]

@@ -49,9 +49,9 @@ def GetListeItemsMenu():
     def AnalyseItem(listeItems):
         for item in listeItems :
             if type(item) == dict :
-                if item.has_key("action") :
+                if "action" in item :
                     listeItemsFinale.append(item)
-                if item.has_key("items") :
+                if "items" in item :
                     AnalyseItem(item["items"])
     AnalyseItem(listeItemsMenu)
     return listeItemsFinale
@@ -91,7 +91,7 @@ class CTRL_elements(wx.TreeCtrl):
         # Images des éléments
         for dictCategorie in self.listeElements :
             for dictItem in dictCategorie["elements"] :
-                if dictItem.has_key("image") :
+                if "image" in dictItem :
                     self.dictImages[dictItem["code"]] = il.Add(wx.Bitmap(Chemins.GetStaticPath(dictItem["image"]), wx.BITMAP_TYPE_PNG))
         self.AssignImageList(il)
 
@@ -124,14 +124,14 @@ class CTRL_elements_dispo(CTRL_elements):
                     self.SetItemData(item, dictItem)
                 else :
                     self.SetPyData(item, dictItem)
-                if dictItem.has_key("image") :
+                if "image" in dictItem :
                     self.SetItemImage(item, self.dictImages[dictItem["code"]], which=wx.TreeItemIcon_Normal)
                 self.dictItems[dictItem["code"]] = item
         self.ExpandAll() 
         self.EnsureVisible(self.GetFirstChild(self.root)[0])
         
     def MAJ(self):
-        for code, item in self.dictItems.iteritems() :
+        for code, item in self.dictItems.items() :
             if code in self.listeElementsPris and code not in ("|", "-") :
                 self.SetItemTextColour(item, "red")
                 self.SetItemBold(item)
@@ -197,7 +197,7 @@ class CTRL_elements_barre(CTRL_elements):
                 self.SetItemData(item, dictItem)
             else:
                 self.SetPyData(item, dictItem)
-            if dictItem.has_key("image") :
+            if "image" in dictItem :
                 self.SetItemImage(item, self.dictImages[dictItem["code"]], which=wx.TreeItemIcon_Normal)
             self.dictItems[dictItem["code"]] = item
             if enregistrer == True :

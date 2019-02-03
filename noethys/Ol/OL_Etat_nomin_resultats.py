@@ -13,10 +13,9 @@ import Chemins
 from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
-from Ctrl import CTRL_Bouton_image
 import datetime
 import time
-import decimal
+import six
 import GestionDB
 
 
@@ -141,7 +140,7 @@ def GetDictIndividus():
         dictTemp["secteur"] = dictAdresses[IDindividu]["secteur"]
 
         # Adresse auto ou manuelle
-        if dictTemp["adresse_auto"] != None and dictAdresses.has_key(dictTemp["adresse_auto"]) :
+        if dictTemp["adresse_auto"] != None and dictTemp["adresse_auto"] in dictAdresses :
             dictTemp["rue_resid"] = dictAdresses[dictTemp["adresse_auto"]]["rue_resid"]
             dictTemp["cp_resid"] = dictAdresses[dictTemp["adresse_auto"]]["cp_resid"]
             dictTemp["ville_resid"] = dictAdresses[dictTemp["adresse_auto"]]["ville_resid"]
@@ -198,7 +197,7 @@ def GetQuestionnaires():
                         listeTemp2 = []
                         for IDchoix in listeTemp :
                             try :
-                                if dictChoix.has_key(int(IDchoix)) :
+                                if int(IDchoix) in dictChoix :
                                     listeTemp2.append(dictChoix[int(IDchoix)])
                             except :
                                 pass
@@ -215,16 +214,16 @@ def GetQuestionnaires():
                     ID = IDindividu
                 else :
                     ID = IDfamille
-                if dictReponses.has_key(IDquestion) == False :
+                if (IDquestion in dictReponses) == False :
                     dictReponses[IDquestion] = {}
-                if dictReponses[IDquestion].has_key(ID) == False :
+                if (ID in dictReponses[IDquestion]) == False :
                     dictReponses[IDquestion][ID] = texteReponse
         
     return dictReponses
 
 def GetReponse(IDquestion=None, ID=None):
-    if DICT_QUESTIONNAIRES.has_key(IDquestion) :
-        if DICT_QUESTIONNAIRES[IDquestion].has_key(ID) :
+    if IDquestion in DICT_QUESTIONNAIRES :
+        if ID in DICT_QUESTIONNAIRES[IDquestion] :
             return DICT_QUESTIONNAIRES[IDquestion][ID]
     return u""
 
@@ -282,7 +281,7 @@ class Track(object):
         for dictTemp in listeConso :
             IDunite = dictTemp["IDunite"]
             quantite = dictTemp["quantite"]
-            if dictConso.has_key(IDunite) == False :
+            if (IDunite in dictConso) == False :
                 dictConso[IDunite] = {
                     "NBRE_UNITE":0, "NBRE_HV_UNITE":0, "NBRE_PV_UNITE":0, "NBRE_GV_UNITE":0,
                     "TEMPS_UNITE":datetime.timedelta(hours=0, minutes=0), "TEMPS_HV_UNITE":datetime.timedelta(hours=0, minutes=0), "TEMPS_PV_UNITE":datetime.timedelta(hours=0, minutes=0), "TEMPS_GV_UNITE":datetime.timedelta(hours=0, minutes=0),
@@ -307,7 +306,7 @@ class Track(object):
                     for categorie in ("%s_UNITE" % prefixe, "%s_HV_UNITE" % prefixe, "%s_PV_UNITE" % prefixe, "%s_GV_UNITE" % prefixe) :
                         if champ.code.startswith(categorie):
                             IDunite = int(champ.code[len(categorie):])
-                            if dictConso.has_key(IDunite) :
+                            if IDunite in dictConso :
                                 valeur = dictConso[IDunite][categorie]
                             else :
                                 if prefixe == "NBRE" : valeur = 0
@@ -356,7 +355,7 @@ class Track(object):
         try :
             exec("""self.%s = %s""" % (champ.code, formule))
             return "ok"
-        except Exception, err :
+        except Exception as err :
             if champ.code != "" :
                 exec("self.%s = None" % champ.code)
                 self.listeErreurs.append("Probleme dans le champ %s : %s" % (champ.code, err))
@@ -404,7 +403,7 @@ class ListView(FastObjectListView):
         listeQuotients = DB.ResultatReq()     
         dictQuotients = {}
         for IDquotient, IDfamille, date_debut, date_fin, quotient in listeQuotients :
-            if dictQuotients.has_key(IDfamille) == False :
+            if (IDfamille in dictQuotients) == False :
                 dictQuotients[IDfamille] = []
             dictQuotients[IDfamille].append({"IDquotient":IDquotient, "date_debut":DateEngEnDateDD(date_debut), "date_fin":DateEngEnDateDD(date_fin), "quotient":quotient})
 
@@ -432,14 +431,14 @@ class ListView(FastObjectListView):
         for IDfamille, IDcaisse, nomCaisse, num_allocataire, allocataire in listeFamilles :
             
             # Nom allocataire
-            if allocataire != None and DICT_INDIVIDUS.has_key(allocataire) :
+            if allocataire != None and allocataire in DICT_INDIVIDUS :
                 nomAllocataire = u"%s %s" % (DICT_INDIVIDUS[allocataire]["nom"], DICT_INDIVIDUS[allocataire]["prenom"])
             else :
                 nomAllocataire = None
             
             # Recherche des QF
             qf = None
-            if dictQuotients.has_key(IDfamille) :
+            if IDfamille in dictQuotients :
                 listeQuotients = dictQuotients[IDfamille]
                 for dictQF in listeQuotients :
                     if dictQF["date_debut"] <= self.dictParametres["date_fin"] and dictQF["date_fin"] >= self.dictParametres["date_debut"] :
@@ -585,7 +584,7 @@ class ListView(FastObjectListView):
             
             # Mémorisation de la consommation
             if valide == True :
-                if dictResultats.has_key((IDindividu, IDfamille)) == False :
+                if ((IDindividu, IDfamille) in dictResultats) == False :
                     dictResultats[(IDindividu, IDfamille)] = []
                 dictTemp = {"IDconso":IDconso, "IDactivite":IDactivite, "date":date, "IDunite":IDunite, "IDgroupe":IDgroupe, "heure_debut":heure_debut, 
                                 "heure_fin":heure_fin, "etat":etat, "IDcategorie_tarif":IDcategorie_tarif, "IDprestation":IDprestation, "montantInitial":montantInitial, 
@@ -596,7 +595,7 @@ class ListView(FastObjectListView):
                 
         # Création des tracks
         listeListeView = []
-        for (IDindividu, IDfamille), listeConso in dictResultats.iteritems() :
+        for (IDindividu, IDfamille), listeConso in dictResultats.items() :
             listeListeView.append(Track(IDindividu, IDfamille, listeConso, self.dictParametres["champsDispo"]))
 
         # Avertissement au sujet des familles sans QF
@@ -619,7 +618,7 @@ class ListView(FastObjectListView):
             # Texte
             if isinstance(valeur, str) : 
                 return valeur
-            if isinstance(valeur, unicode) : 
+            if isinstance(valeur, six.text_type) :
                 return valeur
             # Nombre
             if isinstance(valeur, int) : 
@@ -701,7 +700,7 @@ class ListView(FastObjectListView):
                 
                 # Mémorisation
                 if valeur != None and codeChamp not in ("IDindividu", "INDIVIDU_ID", "FAMILLE_ID", "INDIVIDU_AGE", "FAMILLE_QF") :
-                    if dictValeurs.has_key(codeChamp) == False :
+                    if (codeChamp in dictValeurs) == False :
                         dictValeurs[codeChamp] = {"valeur":valeur, "label" : labelChamp}
                     else :
                         dictValeurs[codeChamp]["valeur"] += valeur
@@ -724,7 +723,7 @@ class ListView(FastObjectListView):
             return None
 
         listeTextes = []
-        for codeChamp, dictTemp in dictValeurs.iteritems() :
+        for codeChamp, dictTemp in dictValeurs.items() :
             label = dictTemp["label"]
             valeur = dictTemp["valeur"]
             
@@ -879,7 +878,7 @@ class MyFrame(wx.Frame):
         listeChamps = []
         import OL_Etat_nomin_selections
         for IDselection, IDprofil, code, ordre in listeSelectionChamps :
-            if dictChamps.has_key(code) :
+            if code in dictChamps :
                 # Champ disponible
                 trackInfo = dictChamps[code]
                 dictTemp = {"IDselection":IDselection, "IDprofil":IDprofil, "code":code, "ordre":ordre, "label":trackInfo.label, "type":trackInfo.type, "categorie":trackInfo.categorie, "formule":trackInfo.formule, "titre":trackInfo.titre, "largeur":trackInfo.largeur}

@@ -117,7 +117,7 @@ def GetListeFamilles(listview=None, listeActivites=None, presents=None, IDfamill
     """ Récupération des infos familles """
     listeListeView = []
     titulaires = UTILS_Titulaires.GetTitulaires(inclure_telephones=True)
-    for IDfamille, dictTemp in titulaires.iteritems() :
+    for IDfamille, dictTemp in titulaires.items() :
         nomTitulaires = dictTemp["titulairesSansCivilite"]
 
         for dictTitulaire in dictTemp["listeTitulaires"] :

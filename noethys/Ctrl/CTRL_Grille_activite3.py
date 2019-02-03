@@ -219,7 +219,7 @@ class CTRL(HTL.HyperTreeList):
         dictCoches = self.GetCoches()
         listeActivites = []
         listeGroupes = []
-        for IDactivite, listeGroupesTemp in dictCoches.iteritems():
+        for IDactivite, listeGroupesTemp in dictCoches.items():
             listeActivites.append(IDactivite)
             for IDgroupe in listeGroupesTemp:
                 listeGroupes.append(IDgroupe)
@@ -243,7 +243,7 @@ class CTRL(HTL.HyperTreeList):
     def Remplissage(self):
         # Tri des activités par nom
         listeActivites = []
-        for IDactivite, dictActivite in self.dictActivites.iteritems():
+        for IDactivite, dictActivite in self.dictActivites.items():
             listeActivites.append((dictActivite["nom"], IDactivite))
         listeActivites.sort()
 

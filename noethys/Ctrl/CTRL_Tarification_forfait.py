@@ -92,7 +92,7 @@ class ListBoxCombinaisons_ARCHIVE(wx.ListBox):
         for IDcombi_tarif_unite, IDcombi_tarif, IDunite in listeUnites :
             self.listeAnciennesUnites.append(IDcombi_tarif_unite)
             dictTemp = {"IDcombi_tarif_unite":IDcombi_tarif_unite, "IDunite":IDunite}
-            if dictDonnees.has_key(IDcombi_tarif) :
+            if IDcombi_tarif in dictDonnees :
                 dictDonnees[IDcombi_tarif].append(dictTemp)
             else:
                 dictDonnees[IDcombi_tarif] = [dictTemp,]
@@ -100,7 +100,7 @@ class ListBoxCombinaisons_ARCHIVE(wx.ListBox):
         listeDonnees = []
         for IDcombi_tarif, IDtarif, date in listeCombinaisons :
             if date != None : date = DateEngEnDateDD(date)
-            if dictDonnees.has_key(IDcombi_tarif) :
+            if IDcombi_tarif in dictDonnees :
                 listeValeurs = []
                 for dictValeurs in dictDonnees[IDcombi_tarif] :
                     listeValeurs.append([dictValeurs["IDcombi_tarif_unite"], dictValeurs["IDunite"]])

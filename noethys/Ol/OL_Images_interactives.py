@@ -39,7 +39,7 @@ class Track(object):
         self.IDdonnee = donnees[5]
 
         # Récupération du nom de la donnée associée
-        if parent.dictNomsDonnees.has_key(self.IDdonnee) :
+        if self.IDdonnee in parent.dictNomsDonnees :
             self.nomDonnee = parent.dictNomsDonnees[self.IDdonnee]
         else:
             self.nomDonnee = ""
@@ -100,7 +100,7 @@ class ListView(FastObjectListView):
             DB.ExecuterReq(req)
             listeProduits = DB.ResultatReq()
             for IDproduit, IDcategorie, nom in listeProduits:
-                if self.champs_interactifs.has_key(IDcategorie) == False :
+                if (IDcategorie in self.champs_interactifs) == False :
                     self.champs_interactifs[IDcategorie] = {}
                 self.champs_interactifs[IDcategorie][IDproduit] = nom
 
@@ -279,7 +279,7 @@ class ListView(FastObjectListView):
             return False
 
         # Ouvre l'éditeur d'images interactives
-        if self.champs_interactifs.has_key(dictResultats["IDdonnee"]) :
+        if dictResultats["IDdonnee"] in self.champs_interactifs :
             champs_interactifs = self.champs_interactifs[dictResultats["IDdonnee"]]
         else :
             champs_interactifs = {}
@@ -301,7 +301,7 @@ class ListView(FastObjectListView):
         track = self.Selection()[0]
         IDmodele = track.IDmodele
         IDdonnee = track.IDdonnee
-        if self.champs_interactifs.has_key(IDdonnee):
+        if IDdonnee in self.champs_interactifs:
             champs_interactifs = self.champs_interactifs[IDdonnee]
         else :
             champs_interactifs = {}

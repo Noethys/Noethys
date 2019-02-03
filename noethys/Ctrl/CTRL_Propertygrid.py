@@ -318,7 +318,7 @@ class EditeurHeure(Editor):
                 return ctrl
         except:
             import traceback
-            print(traceback.print_exc())
+            print((traceback.print_exc()))
 
     def UpdateControl(self, property, ctrl):
         ctrl.SetHeure(property.GetDisplayedString())
@@ -388,7 +388,7 @@ class EditeurDate(Editor):
                 return ctrl
         except:
             import traceback
-            print(traceback.print_exc())
+            print((traceback.print_exc()))
 
     def UpdateControl(self, property, ctrl):
         ctrl.SetDate(property.GetDisplayedString())
@@ -655,7 +655,7 @@ class CTRL(wxpg.PropertyGrid) :
                 return False
 
         # Réinitialisation
-        for nom, valeur in self.dictValeursDefaut.iteritems() :
+        for nom, valeur in self.dictValeursDefaut.items() :
             propriete = self.GetPropertyByName(nom)
             if self.GetPropertyAttribute(propriete, "reinitialisation_interdite") != True :
                 propriete.SetValue(valeur)
@@ -893,7 +893,7 @@ class CTRL_TEST(CTRL) :
         # Recherche les paramètres mémorisés
         dictParametres = UTILS_Parametres.ParametresCategorie(mode="get", categorie="impression_facture", dictParametres=dictValeurs)
         # Envoie les paramètres dans le contrôle
-        for nom, valeur in dictParametres.iteritems() :
+        for nom, valeur in dictParametres.items() :
             propriete = self.GetPropertyByName(nom)
             # propriete
             ancienneValeur = propriete.GetValue() 

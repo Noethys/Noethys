@@ -42,12 +42,12 @@ class Track(object):
         self.dictAnalytiques = {}
     
     def MAJ(self):            
-        if self.dictCategories.has_key(self.IDcategorie) :
+        if self.IDcategorie in self.dictCategories :
             self.label_categorie = self.dictCategories[self.IDcategorie]
         else :
             self.label_categorie = _(u"Catégorie inconnue")
             
-        if self.dictAnalytiques.has_key(self.IDanalytique) :
+        if self.IDanalytique in self.dictAnalytiques :
             self.label_analytique = self.dictAnalytiques[self.IDanalytique]
         else :
             self.label_analytique = _(u"Code analytique inconnu")

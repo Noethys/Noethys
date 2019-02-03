@@ -58,7 +58,7 @@ class CTRL_Categorie(wx.Choice):
         return listeItems
 
     def SetID(self, ID=0):
-        for index, values in self.dictDonnees.iteritems():
+        for index, values in self.dictDonnees.items():
             if values["IDcategorie"] == ID:
                 self.SetSelection(index)
 
@@ -130,7 +130,7 @@ class CTRL_Parametres(wx.Notebook):
     def GetDonnees(self):
         dictDonnees = {}
         for dictPage in self.listePages :
-            for key, valeur in dictPage["ctrl"].GetDonnees().iteritems() :
+            for key, valeur in dictPage["ctrl"].GetDonnees().items() :
                 dictDonnees[key] = valeur
         return dictDonnees
 
@@ -195,7 +195,7 @@ class Page_Stock(wx.Panel):
         return dictDonnees
 
     def SetDonnees(self, dictDonnees={}):
-        if dictDonnees.has_key("quantite"):
+        if "quantite" in dictDonnees:
             if dictDonnees["quantite"] != None :
                 self.ctrl_quantite.SetValue(dictDonnees["quantite"])
 
@@ -322,10 +322,10 @@ class Page_Tarification(wx.Panel):
         return dictDonnees
 
     def SetDonnees(self, dictDonnees={}):
-        if dictDonnees.has_key("montant") and dictDonnees["montant"] != None :
+        if "montant" in dictDonnees and dictDonnees["montant"] != None :
             self.ctrl_montant.SetMontant(dictDonnees["montant"])
             self.radio_tarification_montant.SetValue(True)
-        if dictDonnees.has_key("tarifs") and len(dictDonnees["tarifs"]) > 0 :
+        if "tarifs" in dictDonnees and len(dictDonnees["tarifs"]) > 0 :
             self.ctrl_tarifs.SetTarifs(dictDonnees["tarifs"])
             self.radio_tarification_tarif.SetValue(True)
         self.OnRadioTarification()
@@ -624,7 +624,7 @@ class Dialog(wx.Dialog):
                 DB.Executermany("UPDATE %s SET %s WHERE %s=?" % (track.nom_table, track.Get_interrogations_et_variables_pour_db(), track.champ_cle), listeDonnees, commit=False)
 
         # Recherche les suppressions à effectuer
-        for nom_table, dictTemp in dict_suppressions.iteritems():
+        for nom_table, dictTemp in dict_suppressions.items():
             liste_suppressions = []
             for ID in self.dict_donnees_initiales[nom_table]:
                 if ID not in dictTemp["listeID"]:
@@ -691,7 +691,7 @@ class Dialog(wx.Dialog):
         listeDonneesFiltres = DB.ResultatReq()
         dictFiltres = {}
         for IDtarif, IDfiltre, IDquestion, categorie, choix, criteres in listeDonneesFiltres:
-            if dictFiltres.has_key(IDtarif) == False:
+            if (IDtarif in dictFiltres) == False:
                 dictFiltres[IDtarif] = []
             dictTemp = {"IDfiltre": IDfiltre, "IDquestion": IDquestion, "categorie": categorie, "choix": choix, "criteres": criteres, "IDtarif": IDtarif}
             dictFiltres[IDtarif].append(dictTemp)
@@ -708,7 +708,7 @@ class Dialog(wx.Dialog):
             for valeur in ligne:
                 dictLigne[CHAMPS_TABLE_LIGNES[index]] = valeur
                 index += 1
-            if dictLignes.has_key(dictLigne["IDtarif"]) == False:
+            if (dictLigne["IDtarif"] in dictLignes) == False:
                 dictLignes[dictLigne["IDtarif"]] = []
             dictLignes[dictLigne["IDtarif"]].append(dictLigne)
             self.dict_donnees_initiales["tarifs_lignes"].append(dictLigne["IDligne"])
@@ -717,13 +717,13 @@ class Dialog(wx.Dialog):
         for IDtarif, IDactivite, date_debut, date_fin, methode, type, categories_tarifs, groupes, etiquettes, cotisations, caisses, description, jours_scolaires, jours_vacances, observations, tva, code_compta, IDtype_quotient, label_prestation, IDproduit in listeDonneesTarifs:
 
             # Récupération des filtres du tarif
-            if dictFiltres.has_key(IDtarif):
+            if IDtarif in dictFiltres:
                 liste_filtres = dictFiltres[IDtarif]
             else:
                 liste_filtres = []
 
             # Récupération des lignes du tarif
-            if dictLignes.has_key(IDtarif):
+            if IDtarif in dictLignes:
                 liste_lignes = dictLignes[IDtarif]
             else:
                 liste_lignes = []

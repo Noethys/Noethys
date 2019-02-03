@@ -45,7 +45,7 @@ class Track(object):
             nom = None
             if IDcategorie == 0 :
                 nom = _(u"Toutes les catégories inutilisées")
-            if self.parent.dictCategories.has_key(IDcategorie):
+            if IDcategorie in self.parent.dictCategories:
                 nom = self.parent.dictCategories[IDcategorie]
             if nom != None :
                 listeTemp.append(nom)
@@ -308,7 +308,7 @@ class CTRL_Categories(wx.CheckListBox):
 
     def GetIDcoches(self):
         listeIDcoches = []
-        for index, IDcategorie in self.dictCategories.iteritems():
+        for index, IDcategorie in self.dictCategories.items():
             if self.IsChecked(index):
                 listeIDcoches.append(IDcategorie)
         listeIDcoches = UTILS_Texte.ConvertListeToStr(listeIDcoches)
@@ -318,7 +318,7 @@ class CTRL_Categories(wx.CheckListBox):
         if type(listeIDcoches) == str :
             listeIDcoches = UTILS_Texte.ConvertStrToListe(listeIDcoches)
         index = 0
-        for index, IDcategorie in self.dictCategories.iteritems():
+        for index, IDcategorie in self.dictCategories.items():
             if IDcategorie in listeIDcoches:
                 self.Check(index)
 

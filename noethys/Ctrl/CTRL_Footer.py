@@ -10,6 +10,7 @@
 
 import wx
 import datetime
+import six
 
 if 'phoenix' in wx.PlatformInfo:
     from wx import Control
@@ -46,15 +47,15 @@ class Footer(Control):
     def MAJ_totaux(self):
         self.dictTotaux = {}
         for track in self.listview.innerList :
-            for nomColonne, dictColonne in self.dictColonnes.iteritems() :
+            for nomColonne, dictColonne in self.dictColonnes.items() :
                 if dictColonne["mode"] == "total" :
                     if hasattr(track, nomColonne) :
                         total = getattr(track, nomColonne)
-                        if self.dictTotaux.has_key(nomColonne) == False :
+                        if (nomColonne in self.dictTotaux) == False :
                             # Format classique (numérique)
                             self.dictTotaux[nomColonne] = 0
                             # Autre format
-                            if dictColonne.has_key("format") :
+                            if "format" in dictColonne :
                                 if dictColonne["format"] in ("temps", "duree") :
                                     self.dictTotaux[nomColonne] = datetime.timedelta(0)
                         if total != None :
@@ -96,24 +97,28 @@ class Footer(Control):
             
             # Recherche infos personnalisées à afficher dans la colonne
             mode = None
-            if self.dictColonnes.has_key(nom) :
+            if nom in self.dictColonnes :
                 infoColonne = self.dictColonnes[nom]
                 mode = infoColonne["mode"]
                 
                 # Valeur : TOTAL
                 if mode == "total" :
-                    if self.dictTotaux.has_key(nom) :
+                    if nom in self.dictTotaux :
                         texte = self.dictTotaux[nom]
                     else :
                         # Total format classique (numérique)
                         texte = 0
                         # Autres formats de total
-                        if infoColonne.has_key("format") :
+                        if "format" in infoColonne :
                             if infoColonne["format"] in ("temps", "duree") :
                                 texte = datetime.timedelta(0)
                     if converter != None :
                         texte = converter(texte)
-                    if type(texte) in (int, float, long) :
+                    if six.PY2:
+                        liste_types = (int, float, long)
+                    else :
+                        liste_types = (int, float)
+                    if type(texte) in liste_types :
                         texte = str(texte)
                 
                 # Valeur : NOMBRE
@@ -129,9 +134,9 @@ class Footer(Control):
                     texte = infoColonne["texte"]
 
                 # Paramètres personnalisés
-                if infoColonne.has_key("alignement") : alignement = infoColonne["alignement"]
-                if infoColonne.has_key("font") : font = infoColonne["font"]
-                if infoColonne.has_key("couleur") : couleur = infoColonne["couleur"]
+                if "alignement" in infoColonne : alignement = infoColonne["alignement"]
+                if "font" in infoColonne : font = infoColonne["font"]
+                if "couleur" in infoColonne : couleur = infoColonne["couleur"]
             
             # Pour éviter les bords si les cases sont vides
             ajustement = 0

@@ -64,13 +64,13 @@ class CTRL_Compte(wx.Choice):
         return listeItems
     
     def SetDefaut(self):
-        for index, dictTemp in self.dictDonnees.iteritems() :
+        for index, dictTemp in self.dictDonnees.items() :
             if dictTemp["code_nne"] not in (None, "") :
                 self.SetID(dictTemp["ID"])
                 return
 
     def SetID(self, ID=0):
-        for index, values in self.dictDonnees.iteritems():
+        for index, values in self.dictDonnees.items():
             if values["ID"] == ID :
                  self.SetSelection(index)
 
@@ -124,7 +124,7 @@ class CTRL_Mode(wx.Choice):
         return listeItems
 
     def SetID(self, ID=0):
-        for index, values in self.dictDonnees.iteritems():
+        for index, values in self.dictDonnees.items():
             if values["ID"] == ID :
                  self.SetSelection(index)
 
@@ -179,7 +179,7 @@ class CTRL_Emetteur(wx.Choice):
         return listeItems
 
     def SetID(self, ID=0):
-        for index, values in self.dictDonnees.iteritems():
+        for index, values in self.dictDonnees.items():
             if values["ID"] == ID :
                  self.SetSelection(index)
 
@@ -438,7 +438,7 @@ class Dialog(wx.Dialog):
         listeDonnees = DB.ResultatReq()
         dictPayeurs = {}
         for IDpayeur, IDcompte_payeur, nom in listeDonnees :
-            if dictPayeurs.has_key(IDcompte_payeur) == False :
+            if (IDcompte_payeur in dictPayeurs) == False :
                 dictPayeurs[IDcompte_payeur] = []
             dictPayeurs[IDcompte_payeur].append({"nom" : nom, "IDpayeur" : IDpayeur})
 
@@ -448,7 +448,7 @@ class Dialog(wx.Dialog):
                 
             # Recherche du payeur
             IDpayeur = None
-            if dictPayeurs.has_key(track.IDcompte_payeur) :
+            if track.IDcompte_payeur in dictPayeurs :
                 IDpayeur = dictPayeurs[track.IDcompte_payeur][0]["IDpayeur"]
             else :
                 nomTitulaire = u"%s %s" % (track.listeTitulaires[0]["nom"], track.listeTitulaires[0]["prenom"])

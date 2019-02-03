@@ -194,7 +194,7 @@ class Impression():
                 labelDate = u"%s %d" % (nomJour, numJour)
                 
                 # Création du contenu de chaque case
-                if self.dictPresences.has_key(dateDD) :
+                if dateDD in self.dictPresences :
                     dictBarres = self.dictPresences[dateDD]
                 else:
                     dictBarres = {}
@@ -202,7 +202,7 @@ class Impression():
                 dataTableau[numJour][numCol] = case
                 
                 # Calcule le nbre d'heures du mois
-                if self.dictPresences.has_key(dateDD) :
+                if dateDD in self.dictPresences :
                     totalMinutesMois += self.dictPresences[dateDD]["totalJour"]
             
             # Ecrit le nombre d'heures du mois
@@ -261,7 +261,7 @@ class Impression():
             dataTableauLegende[numLigne][numCol] = CaseLegende(0, 10, _(u"Jours fériés"), COULEUR_FERIES, None)
             numLigne += 1
         
-        for IDcategorie, nbreHeures in self.dictTotauxCategories.iteritems() :
+        for IDcategorie, nbreHeures in self.dictTotauxCategories.items() :
             if IDcategorie != "totalAnnee" :
                 nom_categorie, ordre, couleur = DICT_CATEGORIES[IDcategorie]
                 legende = CaseLegende(0, 10, nom_categorie, couleur, nbreHeures)
@@ -319,8 +319,8 @@ class Impression():
             HMin = datetime.timedelta(hours=heure_debut.hour, minutes=heure_debut.minute)
             HMax = datetime.timedelta(hours=heure_fin.hour, minutes=heure_fin.minute)
             duree = ((HMax - HMin).seconds)/60
-            if dictPresences.has_key(dateDD):
-                if dictPresences[dateDD].has_key(IDcategorie):
+            if dateDD in dictPresences:
+                if IDcategorie in dictPresences[dateDD]:
                     dictPresences[dateDD][IDcategorie] = dictPresences[dateDD][IDcategorie] + duree
                     dictPresences[dateDD]["totalJour"] = dictPresences[dateDD]["totalJour"] + duree
                 else:
@@ -329,11 +329,11 @@ class Impression():
             else:
                 dictPresences[dateDD] = { IDcategorie : duree, "totalJour" : duree }
             # Création du dict des totaux par categories
-            if dictTotalHeures.has_key(IDcategorie):
+            if IDcategorie in dictTotalHeures:
                 dictTotalHeures[IDcategorie] = dictTotalHeures[IDcategorie] + duree
             else:
                 dictTotalHeures[IDcategorie] = duree
-            if dictTotalHeures.has_key("totalAnnee"):
+            if "totalAnnee" in dictTotalHeures:
                 dictTotalHeures["totalAnnee"] = dictTotalHeures["totalAnnee"] + duree
             else:
                 dictTotalHeures["totalAnnee"] = duree
@@ -430,7 +430,7 @@ class CaseDate(Flowable) :
         
         # Transformation du nombre d'heures par catégorie en pourcentage
         listeCategories = []
-        for IDcategorie, nbreHeures in self.dictBarres.iteritems():
+        for IDcategorie, nbreHeures in self.dictBarres.items():
             if IDcategorie != "totalJour" :
                 largeurBarre = nbreHeures * 1.0 * (self.largeurCase-positionSeparation-0.25) / totalJour
                 listeCategories.append( (largeurBarre, IDcategorie) )

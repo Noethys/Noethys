@@ -63,7 +63,7 @@ class CTRL(ULC.UltimateListCtrl):
             else :
                 label = nomFichier
                 
-            if self.dictImages.has_key(extension) :
+            if extension in self.dictImages :
                 bmp = self.dictImages[extension]
             else:
                 bmp = self.dictImages["tous"]

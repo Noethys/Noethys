@@ -129,7 +129,7 @@ class Panel(wx.Panel):
         """ MAJ integrale du controle avec MAJ des donnees """
         self.IDindividu = self.GetGrandParent().IDindividu
         if self.IDindividu == None :
-            print "pas de IDindividu !"
+            print("pas de IDindividu !")
             return
         self.ctrl_prog_transports.MAJ() 
         self.ctrl_liste_transports.MAJ() 

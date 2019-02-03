@@ -49,7 +49,7 @@ class CTRL_Couleur(wx.Choice):
         self.SetItems(listeItems)
 
     def SetID(self, ID=0):
-        for index, values in self.dictDonnees.iteritems():
+        for index, values in self.dictDonnees.items():
             if values["ID"] == ID:
                 self.SetSelection(index)
 
@@ -64,7 +64,7 @@ class CTRL_Couleur(wx.Choice):
         return self.dictDonnees[index]["couleur"]
 
     def SetCouleur(self, couleur=""):
-        for index, values in self.dictDonnees.iteritems():
+        for index, values in self.dictDonnees.items():
             if values["couleur"] == couleur:
                 self.SetSelection(index)
 
@@ -121,7 +121,7 @@ class CTRL(wx.TreeCtrl):
         dictBlocsParPage = {}
         for IDbloc, IDpage, titre, couleur, ordre in listeDonnees :
             dictTemp = {"IDbloc" : IDbloc, "titre" : titre, "couleur" : couleur, "ordre" : ordre}
-            if dictBlocsParPage.has_key(IDpage) == False :
+            if (IDpage in dictBlocsParPage) == False :
                 dictBlocsParPage[IDpage] = []
             dictBlocsParPage[IDpage].append(dictTemp)
 
@@ -137,7 +137,7 @@ class CTRL(wx.TreeCtrl):
         DB.Close()
         listePages = []
         for IDpage, titre, couleur, ordre in listeDonnees:
-            if dictBlocsParPage.has_key(IDpage) :
+            if IDpage in dictBlocsParPage :
                 listeBlocs = dictBlocsParPage[IDpage]
             else :
                 listeBlocs = []
@@ -187,7 +187,7 @@ class CTRL(wx.TreeCtrl):
             item_page = self.AppendItem(self.root, dictPage["titre"])
             self.SetItemBold(item_page)
             self.SetPyData(item_page, {"type" : "page", "ID" : dictPage["IDpage"], "ordre" : dictPage["ordre"]})
-            if self.dictImages["pages"].has_key(dictPage["IDpage"]):
+            if dictPage["IDpage"] in self.dictImages["pages"]:
                 self.SetItemImage(item_page, self.dictImages["pages"][dictPage["IDpage"]], wx.TreeItemIcon_Normal)
             self.dictItems["pages"][dictPage["IDpage"]] = item_page
 
@@ -195,7 +195,7 @@ class CTRL(wx.TreeCtrl):
             for dictBloc in dictPage["listeBlocs"]:
                 item_bloc = self.AppendItem(item_page, dictBloc["titre"])
                 self.SetPyData(item_bloc, {"type": "bloc", "ID": dictBloc["IDbloc"], "ordre": dictBloc["ordre"]})
-                if self.dictImages["blocs"].has_key(dictBloc["IDbloc"]):
+                if dictBloc["IDbloc"] in self.dictImages["blocs"]:
                     self.SetItemImage(item_bloc, self.dictImages["blocs"][dictBloc["IDbloc"]], wx.TreeItemIcon_Normal)
                 self.dictItems["blocs"][dictBloc["IDbloc"]] = item_bloc
 
@@ -464,10 +464,10 @@ class CTRL(wx.TreeCtrl):
     def SetID(self, IDpage=None, IDbloc=None):
         item = None
         if IDpage != None :
-            if self.dictItems["pages"].has_key(IDpage) :
+            if IDpage in self.dictItems["pages"] :
                 item = self.dictItems["pages"][IDpage]
         if IDbloc != None :
-            if self.dictItems["blocs"].has_key(IDbloc) :
+            if IDbloc in self.dictItems["blocs"] :
                 item = self.dictItems["blocs"][IDbloc]
         if item != None :
             self.EnsureVisible(item)
@@ -478,7 +478,7 @@ class CTRL(wx.TreeCtrl):
         self.SelectItem(item)
 
     def GetItem(self, IDetiquette=None, IDactivite=None):
-        if self.dictItems.has_key(IDetiquette) :
+        if IDetiquette in self.dictItems :
             return self.dictItems[IDetiquette]
         else :
             item, cookie = self.GetFirstChild(self.root)

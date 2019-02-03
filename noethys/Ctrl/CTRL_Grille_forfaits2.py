@@ -68,21 +68,21 @@ class CTRL_Forfait(HTL.HyperTreeList):
         dictDonnees = {}
         self.dictImages = {}
         il = wx.ImageList(9, 16)
-        for IDprestation, dictForfait in self.dictForfaits.iteritems() :
+        for IDprestation, dictForfait in self.dictForfaits.items() :
             IDfamille = dictForfait["IDfamille"]
             IDindividu = dictForfait["IDindividu"]
             
             if IDindividu == 0 or IDindividu == None :
                 # Forfait familial
-                if dictDonnees.has_key(IDfamille) == False :
+                if (IDfamille in dictDonnees) == False :
                     dictDonnees[IDfamille] = {"forfaits":[], "individus":{}}
                 dictDonnees[IDfamille]["forfaits"].append(dictForfait)
             else :
                 # Forfait individuel
                 if IDindividu in self.listeSelectionIndividus :
-                    if dictDonnees.has_key(IDfamille) == False :
+                    if (IDfamille in dictDonnees) == False :
                         dictDonnees[IDfamille] = {"forfaits":[], "individus":{}}
-                    if dictDonnees[IDfamille]["individus"].has_key(IDindividu) == False :
+                    if (IDindividu in dictDonnees[IDfamille]["individus"]) == False :
                         dictDonnees[IDfamille]["individus"][IDindividu] = {"nomIndividu":dictForfait["nomIndividu"], "forfaits":[]}
                     dictDonnees[IDfamille]["individus"][IDindividu]["forfaits"].append(dictForfait)
             
@@ -94,14 +94,14 @@ class CTRL_Forfait(HTL.HyperTreeList):
             self.AssignImageList(il)
         
         # Recherche du nom des titulaires
-        dictTitulaires = UTILS_Titulaires.GetTitulaires(dictDonnees.keys())
+        dictTitulaires = UTILS_Titulaires.GetTitulaires(list(dictDonnees.keys()))
 
         # Création des branches
         famillesAffichees = False
-        for IDfamille, dictFamille in dictDonnees.iteritems() :
+        for IDfamille, dictFamille in dictDonnees.items() :
             
             # Branche famille
-            if len(dictDonnees.keys()) > 1 or len(dictFamille["forfaits"]) > 0 :
+            if len(list(dictDonnees.keys())) > 1 or len(dictFamille["forfaits"]) > 0 :
                 famillesAffichees = True
                 label = _(u"Famille %s") % dictTitulaires[IDfamille]["titulairesSansCivilite"]
                 brancheFamille = self.AppendItem(self.root, label)
@@ -116,7 +116,7 @@ class CTRL_Forfait(HTL.HyperTreeList):
                 brancheFamille = self.root
             
             # Branche Individu
-            for IDindividu, dictIndividu in dictFamille["individus"].iteritems() :
+            for IDindividu, dictIndividu in dictFamille["individus"].items() :
                 
                 if len(dictFamille["individus"]) > 1 or famillesAffichees == True or len(self.listeSelectionIndividus) > 1 :
                     label = dictIndividu["nomIndividu"]
@@ -269,9 +269,9 @@ class CTRL_Forfait(HTL.HyperTreeList):
 
             # Propose éventuellement un recalcul des conso déjà présentes
             nbreConso = 0
-            for IDindividuTemp, dictIndividu in self.grille.dictConsoIndividus.iteritems() :
-                for dateDD, dictDate in dictIndividu.iteritems() :
-                    for IDunite, listeConso in dictDate.iteritems() :
+            for IDindividuTemp, dictIndividu in self.grille.dictConsoIndividus.items() :
+                for dateDD, dictDate in dictIndividu.items() :
+                    for IDunite, listeConso in dictDate.items() :
                         for conso in listeConso :
                             case = conso.case
                             if case != None and case.date >= date_debut and case.date <= date_fin :
@@ -365,9 +365,9 @@ class CTRL_Forfait(HTL.HyperTreeList):
 
             # Propose éventuellement un recalcul des conso déjà présentes
             nbreConso = 0
-            for IDindividuTemp, dictIndividu in self.grille.dictConsoIndividus.iteritems() :
-                for dateDD, dictDate in dictIndividu.iteritems() :
-                    for IDunite, listeConso in dictDate.iteritems() :
+            for IDindividuTemp, dictIndividu in self.grille.dictConsoIndividus.items() :
+                for dateDD, dictDate in dictIndividu.items() :
+                    for IDunite, listeConso in dictDate.items() :
                         for conso in listeConso :
                             case = conso.case
                             if case != None and case.date >= date_debut and case.date <= date_fin :
@@ -408,9 +408,9 @@ class CTRL_Forfait(HTL.HyperTreeList):
 
         # Vérifie si des consommations du forfait existent déjà sur d'autres périodes non affichées
         listeConso = []
-        for IDindividu, dictIndividu in self.grille.dictConsoIndividus.iteritems() :
-            for dateDD, dictDate in dictIndividu.iteritems() :
-                for IDunite, listeConsoTemp in dictDate.iteritems() :
+        for IDindividu, dictIndividu in self.grille.dictConsoIndividus.items() :
+            for dateDD, dictDate in dictIndividu.items() :
+                for IDunite, listeConsoTemp in dictDate.items() :
                     for conso in listeConsoTemp :
                         if conso.IDconso != None :
                             listeConso.append(conso.IDconso)

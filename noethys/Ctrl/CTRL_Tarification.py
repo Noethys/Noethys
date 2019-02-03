@@ -161,7 +161,7 @@ class CTRL(HTL.HyperTreeList):
         
         dictTarifs = {}
         for IDtarif, IDnom_tarif, date_debut, date_fin, methode, categories_tarifs, groupes, description in listeTarifs :
-            if dictTarifs.has_key(IDnom_tarif) == False :
+            if (IDnom_tarif in dictTarifs) == False :
                 dictTarifs[IDnom_tarif] = []
             dictTemp = { "IDtarif" : IDtarif, "date_debut" : date_debut, "date_fin" : date_fin, "methode" : methode, "categories_tarifs" : categories_tarifs, "groupes" : groupes, "description" : description}
             dictTarifs[IDnom_tarif].append(dictTemp)
@@ -178,7 +178,7 @@ class CTRL(HTL.HyperTreeList):
             self.dictBranches["noms_tarifs"][IDnom_tarif] = brancheNom
             
             # Tarifs
-            if dictTarifs.has_key(IDnom_tarif) :
+            if IDnom_tarif in dictTarifs :
                 for dictTarifTemp in dictTarifs[IDnom_tarif] :
                     IDtarif = dictTarifTemp["IDtarif"]
                     
@@ -633,7 +633,7 @@ class CTRL(HTL.HyperTreeList):
         
         # Duplication des unités de combinaisons de tarifs
         if type(dictCorrespondances) == dict :
-            for ancienIDcombi, newIDcombi in dictCorrespondances.iteritems() :
+            for ancienIDcombi, newIDcombi in dictCorrespondances.items() :
                 DB.Dupliquer(nomTable="combi_tarifs_unites", nomChampCle="IDcombi_tarif_unite", conditions="IDcombi_tarif=%d" % ancienIDcombi, dictModifications={"IDcombi_tarif":newIDcombi, "IDtarif":newIDtarif})
         
         # Duplication des lignes de tarifs

@@ -13,10 +13,9 @@ import Chemins
 from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
-import CTRL_Bouton_image
+import six
 from PIL import Image
 import os
-import cStringIO
 import base64
 import GestionDB
 from Utils import UTILS_Utilisateurs
@@ -37,7 +36,7 @@ def GetPhoto(IDindividu=None, nomFichier=None, taillePhoto=(128, 128), qualite=w
             if len(listeDonnees) > 0 :
                 IDphoto, bufferPhoto = listeDonnees[0]
                 # Transformation du buffer en wx.bitmap
-                io = cStringIO.StringIO(bufferPhoto)
+                io = six.BytesIO(bufferPhoto)
                 if 'phoenix' in wx.PlatformInfo:
                     img = wx.Image(io, wx.BITMAP_TYPE_JPEG)
                 else :
@@ -66,7 +65,7 @@ def GetPhotos(listeIndividus=[], taillePhoto=None, qualite=wx.IMAGE_QUALITY_HIGH
     listeIDindividus = []
     for IDindividu, nomFichier in listeIndividus :
         listeIDindividus.append(IDindividu)
-        if nomFichier != None and dictImagesDefaut.has_key(nomFichier) == False :
+        if nomFichier != None and (nomFichier in dictImagesDefaut) == False :
             if os.path.isfile(nomFichier):
                 bmp = wx.Bitmap(nomFichier, wx.BITMAP_TYPE_ANY)
                 if taillePhoto != None :
@@ -91,11 +90,11 @@ def GetPhotos(listeIndividus=[], taillePhoto=None, qualite=wx.IMAGE_QUALITY_HIGH
     # Traite les photos de chaque individu
     dictPhotos = {}
     for IDindividu, nomFichier in listeIndividus :
-        if dictPhotosDB.has_key(IDindividu) :
+        if IDindividu in dictPhotosDB :
             # Si photo existe dans DB
             IDphoto = dictPhotosDB[IDindividu]["IDphoto"]
             bufferPhoto = dictPhotosDB[IDindividu]["bufferPhoto"]
-            io = cStringIO.StringIO(bufferPhoto)
+            io = six.BytesIO(bufferPhoto)
             if 'phoenix' in wx.PlatformInfo:
                 img = wx.Image(io, wx.BITMAP_TYPE_JPEG)
             else :
@@ -106,7 +105,7 @@ def GetPhotos(listeIndividus=[], taillePhoto=None, qualite=wx.IMAGE_QUALITY_HIGH
         else :
             # Si aucune photo dans DB
             IDphoto = None
-            if dictImagesDefaut.has_key(nomFichier) :
+            if nomFichier in dictImagesDefaut :
                 bmp = dictImagesDefaut[nomFichier]
             else :
                 bmp = None
@@ -143,7 +142,7 @@ class CTRL_Photo(wx.StaticBitmap):
         # Affiche une photo base64
         if imgbase64 != None :
             self.image_base64 = imgbase64
-            io = cStringIO.StringIO(base64.b64decode(imgbase64))
+            io = six.BytesIO(base64.b64decode(imgbase64))
             if 'phoenix' in wx.PlatformInfo:
                 img = wx.Image(io, wx.BITMAP_TYPE_JPEG)
             else:

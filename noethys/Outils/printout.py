@@ -326,11 +326,11 @@ class PrintTableDraw(wx.ScrolledWindow, PrintBase):
 
         if self.label != []:
             if len(self.column) -1 != len(self.label):
-                print("Column Settings Incorrect", "\nColumn Value: " + str(self.column), "\nLabel Value: " + str(self.label))
+                print(("Column Settings Incorrect", "\nColumn Value: " + str(self.column), "\nLabel Value: " + str(self.label)))
                 return
 
         if column_total != len(self.column) -1:
-            print("Cannot fit", first_value, 'in', len(self.column)-1, 'columns.')
+            print(("Cannot fit", first_value, 'in', len(self.column)-1, 'columns.'))
             return
 
         for col in range(column_total):

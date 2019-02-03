@@ -95,5 +95,5 @@ if __name__ == u"__main__":
         ]
     dialog_1 = Dialog(None, listeBoutons=listeBoutons)
     app.SetTopWindow(dialog_1)
-    print dialog_1.ShowModal()
+    print(dialog_1.ShowModal())
     app.MainLoop()

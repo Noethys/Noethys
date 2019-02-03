@@ -56,8 +56,8 @@ def GetValeur(cle="", defaut="", theme=None):
         theme = UTILS_Customize.GetValeur("interface", "theme", "Vert")
 
     # Lecture de la valeur
-    if DONNEES.has_key(theme) :
-        if DONNEES[theme].has_key(cle):
+    if theme in DONNEES :
+        if cle in DONNEES[theme]:
             return DONNEES[theme][cle]
 
     # Sinon renvoie la valeur par défaut
@@ -65,4 +65,4 @@ def GetValeur(cle="", defaut="", theme=None):
 
 
 if __name__ == '__main__':
-    print GetValeur("couleur_tres_fonce", wx.Colour(255, 0, 0))
+    print(GetValeur("couleur_tres_fonce", wx.Colour(255, 0, 0)))

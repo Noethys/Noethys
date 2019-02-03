@@ -219,7 +219,7 @@ class CTRL_Parametres(wx.Panel):
         self.SetSizer(self.grid_sizer_pages)
 
     def AffichePage(self, code=""):
-        for codeTemp, valeurs in self.dictPages.iteritems() :
+        for codeTemp, valeurs in self.dictPages.items() :
             if code == codeTemp :
                 valeurs["ctrl"].Show(True)
             else :

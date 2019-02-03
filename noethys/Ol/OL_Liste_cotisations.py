@@ -66,7 +66,7 @@ class Track(object):
             listeTemp = []
             listeIDactivites = UTILS_Divers.ConvertChaineEnListe(self.activites)
             for IDactivite in listeIDactivites :
-                if parent.dictActivites.has_key(IDactivite) :
+                if IDactivite in parent.dictActivites :
                     nomActivite = parent.dictActivites[IDactivite]["nom"]
                     listeTemp.append(nomActivite)
             if len(listeTemp) > 0 :
@@ -83,7 +83,7 @@ class Track(object):
             self.numero_int = None
         
         # Titulaires famille
-        if parent.titulaires.has_key(self.IDfamille) :
+        if self.IDfamille in parent.titulaires :
             self.nomsTitulaires = parent.titulaires[self.IDfamille]["titulairesSansCivilite"]
         else :
             self.nomsTitulaires = "nom inconnu"
@@ -116,7 +116,7 @@ class Track(object):
         if self.IDfamille != None :
             self.beneficiaires = _(u"IDfamille n°%d") % self.IDfamille
             if parent.dictFamillesRattachees != None :
-                if parent.dictFamillesRattachees.has_key(self.IDfamille) :
+                if self.IDfamille in parent.dictFamillesRattachees :
                     self.beneficiaires = parent.dictFamillesRattachees[self.IDfamille]["nomsTitulaires"]
             else:
                 self.beneficiaires = parent.titulaires[self.IDfamille]["titulairesSansCivilite"]
@@ -124,7 +124,7 @@ class Track(object):
                 self.cp = parent.titulaires[self.IDfamille]["adresse"]["cp"]
                 self.ville = parent.titulaires[self.IDfamille]["adresse"]["ville"]
         
-        if self.IDindividu != None and parent.individus.has_key(self.IDindividu) :
+        if self.IDindividu != None and self.IDindividu in parent.individus :
             self.beneficiaires = parent.individus[self.IDindividu]["nom_complet"]
             self.rue = parent.individus[self.IDindividu]["rue"]
             self.cp = parent.individus[self.IDindividu]["cp"]
@@ -136,7 +136,7 @@ class Track(object):
         self.dateReglement = None
         self.modeReglement = None
         
-        if dictFacturation.has_key(self.IDprestation):
+        if self.IDprestation in dictFacturation:
             self.montant = dictFacturation[self.IDprestation]["montant"]
             self.ventilation = dictFacturation[self.IDprestation]["ventilation"]
             self.dateReglement = dictFacturation[self.IDprestation]["dateReglement"]
@@ -307,7 +307,7 @@ class ListView(FastObjectListView):
             DB.ExecuterReq(req)
             listeVentilations = DB.ResultatReq()
             for IDprestation, ventilation, dateReglement, modeReglement in listeVentilations :
-                if dictFacturation.has_key(IDprestation) :
+                if IDprestation in dictFacturation :
                     dictFacturation[IDprestation]["ventilation"] = ventilation
                     dictFacturation[IDprestation]["dateReglement"] = dateReglement
                     dictFacturation[IDprestation]["modeReglement"] = modeReglement
@@ -335,7 +335,7 @@ class ListView(FastObjectListView):
                 # Pour une fiche individu
                 if self.dictFamillesRattachees != None :
                     listeIDfamille = []
-                    for IDfamille, dictFamille in self.dictFamillesRattachees.iteritems() :
+                    for IDfamille, dictFamille in self.dictFamillesRattachees.items() :
                         if dictFamille["IDcategorie"] in (1, 2) :
                             listeIDfamille.append(IDfamille)
                     if len(listeIDfamille) == 0 : conditionIDfamille = "()"
@@ -758,7 +758,7 @@ class ListView(FastObjectListView):
         # Vérifie que l'individu est rattaché comme REPRESENTANT ou ENFANT à une famille
         if self.dictFamillesRattachees != None :
             valide = False
-            for IDfamille, dictFamille in self.dictFamillesRattachees.iteritems() :
+            for IDfamille, dictFamille in self.dictFamillesRattachees.items() :
                 if dictFamille["IDcategorie"] in (1, 2) :
                     valide = True
             if valide == False :

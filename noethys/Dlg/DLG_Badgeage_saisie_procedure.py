@@ -40,7 +40,7 @@ class CTRL_Style(wx.Choice):
         self.Select(0)
 
     def SetID(self, code=""):
-        for index, codeTemp in self.dictDonnees.iteritems():
+        for index, codeTemp in self.dictDonnees.items():
             if codeTemp == code :
                  self.SetSelection(index)
 
@@ -67,7 +67,7 @@ class CTRL_Theme(wx.ListBox):
         self.Select(0)
 
     def SetID(self, code=""):
-        for index, codeTemp in self.dictDonnees.iteritems():
+        for index, codeTemp in self.dictDonnees.items():
             if codeTemp == code :
                  self.SetSelection(index)
 
@@ -623,7 +623,7 @@ class Dialog(wx.Dialog):
             listeDonnees = [("IDprocedure", self.IDprocedure), ("ordre", ordre), ]
             for code in listeChamps :
                 if code not in ("IDaction", "IDprocedure", "ordre") :
-                    if dictAction.has_key(code) :
+                    if code in dictAction :
                         valeur = dictAction[code]
                     else :
                         valeur = None
@@ -636,7 +636,7 @@ class Dialog(wx.Dialog):
                 DB.ReqMAJ("badgeage_actions", listeDonnees, "IDaction", IDaction)
             
             # Sauvegarde des messages
-            if dictAction.has_key("action_messages") :
+            if "action_messages" in dictAction :
                 listeMessages = dictAction["action_messages"]
                 for IDmessage, message in listeMessages :
                     if IDmessage == None :

@@ -147,7 +147,7 @@ class CTRL_Signataires(wx.Choice):
         return listeItems, indexDefaut
 
     def SetID(self, ID=0):
-        for index, values in self.dictDonnees.iteritems():
+        for index, values in self.dictDonnees.items():
             if values["ID"] == ID :
                  self.SetSelection(index)
 
@@ -231,7 +231,7 @@ class Dialog(wx.Dialog):
         self.ctrl_signataire.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici le signataire du document")))
         self.ctrl_intro.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour inclure le texte d'introduction : 'Je soussigné... atteste...' ")))
         listeMotsCles = []
-        for mot in self.dictInscription.keys() :
+        for mot in list(self.dictInscription.keys()) :
             listeMotsCles.append(u"{%s}" % mot)
         self.ctrl_texte_intro.SetToolTip(wx.ToolTip(_(u"Vous pouvez modifier ici le texte d'introduction. \n\nVous pouvez utiliser les mots-clés suivants : %s") % ", ".join(listeMotsCles)))
         self.ctrl_tableau.SetToolTip(wx.ToolTip(_(u"Afficher un tableau comportant les caractéristiques de l'inscription")))
@@ -353,7 +353,7 @@ class Dialog(wx.Dialog):
             "familles.num_allocataire" : "FAMILLE_NUMALLOC",
             }
         
-        listeChamps = dictChamps.keys()
+        listeChamps = list(dictChamps.keys())
         
         DB = GestionDB.DB()
         req = """SELECT %s
@@ -585,7 +585,7 @@ class Dialog(wx.Dialog):
             textIntro = textIntro.replace("{SIGNATAIRE_GENRE}", genreSignataire)
             textIntro = textIntro.replace("{SIGNATAIRE_NOM}", nomSignataire)
             textIntro = textIntro.replace("{SIGNATAIRE_FONCTION}", fonctionSignataire)
-            for key, valeur in dictValeurs.iteritems() :
+            for key, valeur in dictValeurs.items() :
                 if key.startswith("{") :
                     if valeur == None : valeur = ""
                     if type(valeur) == int : valeur = str(valeur)
@@ -597,7 +597,7 @@ class Dialog(wx.Dialog):
         # Tableau
         dictValeurs["tableau"] = self.ctrl_tableau.GetValue()
 
-        for key, valeur in dictValeurs.iteritems() :
+        for key, valeur in dictValeurs.items() :
             if valeur == None : valeur = ""
             dictChampsFusion[key] = valeur
                         

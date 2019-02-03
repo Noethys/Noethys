@@ -31,7 +31,7 @@ class Track(object):
         
         # Recherche des villes rattachées
         self.villesRattachees = u""
-        if dictVilles.has_key(self.IDcategorie_tarif):
+        if self.IDcategorie_tarif in dictVilles:
             listeVilles = dictVilles[self.IDcategorie_tarif]
             self.villesRattachees = "; ".join(listeVilles)
             
@@ -82,7 +82,7 @@ class ListView(FastObjectListView):
         DB.Close()
         dictVilles = {}
         for IDville, IDcategorie_tarif, cp, nom in listeVilles :
-            if dictVilles.has_key(IDcategorie_tarif) == False :
+            if (IDcategorie_tarif in dictVilles) == False :
                 dictVilles[IDcategorie_tarif] = []
             dictVilles[IDcategorie_tarif].append(nom)
         

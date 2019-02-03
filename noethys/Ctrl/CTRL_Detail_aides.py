@@ -95,7 +95,7 @@ class Track(object):
         
         # Noms des bénéficiaires
         self.texteBeneficiaires = u""
-        if DICT_INDIVIDUS.has_key(self.IDaide) :
+        if self.IDaide in DICT_INDIVIDUS :
             for IDindividu, nom, prenom in DICT_INDIVIDUS[self.IDaide] :
                 self.texteBeneficiaires += u"%s, " % prenom
             if len(DICT_INDIVIDUS[self.IDaide]) > 0 :
@@ -190,7 +190,7 @@ class CTRL(HTL.HyperTreeList):
         
         dictNoms = {}
         for IDaide_beneficiaire, IDaide, IDindividu, nom, prenom in listeNoms :
-            if dictNoms.has_key(IDaide) == False :
+            if (IDaide in dictNoms) == False :
                 dictNoms[IDaide] = [] 
             if IDindividu not in dictNoms[IDaide] :
                 dictNoms[IDaide].append((IDindividu, nom, prenom))

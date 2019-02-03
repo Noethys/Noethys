@@ -856,7 +856,7 @@ class Panel(wx.Panel):
         return dictDonnees
     
     def SetDonnees(self, dictDonnees={}):
-        for code, valeur in dictDonnees.iteritems() :
+        for code, valeur in dictDonnees.items() :
             self.SetValeur(code, valeur)
             
     
@@ -878,23 +878,23 @@ class MyFrame(wx.Frame):
 
         # Test ACTIVITES
         self.ctrl.SetValeur("activite", "1;2")
-        print "Activite =", self.ctrl.GetValeur("activite")
+        print("Activite =", self.ctrl.GetValeur("activite"))
 
         # Test HEURE
         self.ctrl.SetValeur("heure", "COMPRIS;10:45-11:50")
-        print "Heure =", self.ctrl.GetValeur("heure")
+        print("Heure =", self.ctrl.GetValeur("heure"))
         
         # Test PERIODE
         self.ctrl.SetValeur("periode", "1-2")
-        print "Periode =", self.ctrl.GetValeur("periode")
+        print("Periode =", self.ctrl.GetValeur("periode"))
         
         # Test POSTE
         self.ctrl.SetValeur("poste", "poste1;poste2;poste3")
-        print "Poste =", self.ctrl.GetValeur("poste")
+        print("Poste =", self.ctrl.GetValeur("poste"))
 
         # Test QUESTIONNAIRE
         self.ctrl.SetValeur("questionnaire", "1;;EGAL;;bonjour##4;;SUPEGAL;;2")
-        print "Questionnaire =", self.ctrl.GetValeur("questionnaire")
+        print("Questionnaire =", self.ctrl.GetValeur("questionnaire"))
 
 
 

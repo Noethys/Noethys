@@ -55,7 +55,7 @@ def Importation_donnees():
         valide = True
         
         # Traitement des corrections
-        if dictCorrections.has_key(IDville) :
+        if IDville in dictCorrections :
             if dictCorrections[IDville]["mode"] == "modif" :
                 nom = dictCorrections[IDville]["nom"]
                 cp = dictCorrections[IDville]["cp"]

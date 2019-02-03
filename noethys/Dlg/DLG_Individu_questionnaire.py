@@ -71,11 +71,11 @@ class Panel(wx.Panel):
         
         # Sauvegarde
         DB = GestionDB.DB()
-        for IDquestion, reponse in valeurs.iteritems() :            
+        for IDquestion, reponse in valeurs.items() :            
             # Si la réponse est différente de la réponse initiale
             if reponse != dictValeursInitiales[IDquestion] or reponse == "##DOCUMENTS##" :
 
-                if dictReponses.has_key(IDquestion):
+                if IDquestion in dictReponses:
                     IDreponse = dictReponses[IDquestion]["IDreponse"]
                 else:
                     IDreponse = None

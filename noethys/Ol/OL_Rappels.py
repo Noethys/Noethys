@@ -199,7 +199,7 @@ class ListView(FastObjectListView):
             date_min = UTILS_Dates.DateEngEnDateDD(date_min)
             date_max = UTILS_Dates.DateEngEnDateDD(date_max)
             date_reference = UTILS_Dates.DateEngEnDateDD(date_reference)
-            if dictTitulaires.has_key(IDfamille):
+            if IDfamille in dictTitulaires:
                 titulaires = dictTitulaires[IDfamille]["titulairesSansCivilite"]
             else :
                 titulaires = _(u"Titulaires inconnus")
@@ -210,7 +210,7 @@ class ListView(FastObjectListView):
                 "IDlot" : IDlot, "nomLot" : nomLot, "IDtexte" : IDtexte, "labelTexte" : labeltexte,
                 }
             
-            if dictInfosFamilles.has_key(IDcompte_payeur) :
+            if IDcompte_payeur in dictInfosFamilles :
                 dictTemp.update(dictInfosFamilles[IDcompte_payeur])
 
             valide = True

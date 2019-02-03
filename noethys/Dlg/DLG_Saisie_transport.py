@@ -26,7 +26,7 @@ import GestionDB
 
 
 def MelangeDictionnaires(d1={}, d2={}):
-    for key, value in d2.iteritems() :
+    for key, value in d2.items() :
         d1[key] = value
     return d1
     
@@ -92,7 +92,7 @@ class CTRL_Choix_unites(HTL.HyperTreeList):
     def GetUnites(self) :
         dictCoches = self.GetCoches() 
         listeUnites = []
-        for IDactivite, listeUnitesTemp in dictCoches.iteritems() :
+        for IDactivite, listeUnitesTemp in dictCoches.items() :
             for IDunite in listeUnitesTemp :
                 listeUnites.append(IDunite)
         return listeUnites
@@ -125,7 +125,7 @@ class CTRL_Choix_unites(HTL.HyperTreeList):
     def Remplissage(self, listeCoches=[]):
         # Tri des activités par date de fin de validité
         listeActivites = []
-        for IDactivite, dictActivite in self.dictUnites.iteritems() :
+        for IDactivite, dictActivite in self.dictUnites.items() :
             listeActivites.append((dictActivite["date_fin"], IDactivite))
         listeActivites.sort(reverse=True) 
         
@@ -168,7 +168,7 @@ class CTRL_Choix_unites(HTL.HyperTreeList):
             if date_debut != None : date_debut = DateEngEnDateDD(date_debut)
             if date_fin != None : date_fin = DateEngEnDateDD(date_fin)
             
-            if dictUnites.has_key(IDactivite) == False :
+            if (IDactivite in dictUnites) == False :
                 dictUnites[IDactivite] = {"nom" : nomActivite, "date_debut" : date_debut, "date_fin" : date_fin, "unites" : []}
             dictUnites[IDactivite]["unites"].append((ordre, IDunite, nomUnite))
                 
@@ -637,7 +637,7 @@ class CTRL_Choix_activite(wx.Choice):
     def SetID(self, ID=0):
         if ID == None :
             self.SetSelection(0)
-        for index, values in self.dictDonnees.iteritems():
+        for index, values in self.dictDonnees.items():
             if values["ID"] == ID :
                  self.SetSelection(index)
 

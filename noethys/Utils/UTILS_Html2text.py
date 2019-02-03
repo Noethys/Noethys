@@ -15,7 +15,7 @@ except NameError:
     setattr(__builtins__, 'False', 0)
 
 def has_key(x, y):
-    if hasattr(x, 'has_key'): return x.has_key(y)
+    if hasattr(x, 'has_key'): return y in x
     else: return y in x
 
 try:
@@ -24,12 +24,9 @@ try:
     import HTMLParser
 except ImportError: #Python3
     import html.entities as htmlentitydefs
-    import urllib.parse as urlparse
+    from six.moves.urllib import parse as urlparse
     import html.parser as HTMLParser
-try: #Python3
-    import urllib.request as urllib
-except:
-    import urllib
+from six.moves import urllib
 import optparse, re, sys, codecs, types
 
 try: from textwrap import wrap
@@ -80,7 +77,7 @@ unifiable = {'rsquo':"'", 'lsquo':"'", 'rdquo':'"', 'ldquo':'"',
 
 unifiable_n = {}
 
-for k in unifiable.keys():
+for k in list(unifiable.keys()):
     unifiable_n[name2cp(k)] = unifiable[k]
 
 def charref(name):
@@ -89,7 +86,7 @@ def charref(name):
     else:
         c = int(name)
     
-    if not UNICODE_SNOB and c in unifiable_n.keys():
+    if not UNICODE_SNOB and c in list(unifiable_n.keys()):
         return unifiable_n[c]
     else:
         try:
@@ -98,7 +95,7 @@ def charref(name):
             return chr(c)
 
 def entityref(c):
-    if not UNICODE_SNOB and c in unifiable.keys():
+    if not UNICODE_SNOB and c in list(unifiable.keys()):
         return unifiable[c]
     else:
         try: name2cp(c)
@@ -666,7 +663,7 @@ class _html2text(HTMLParser.HTMLParser):
                 self.a = newa
             
             if self.abbr_list and force == "end":
-                for abbr, definition in self.abbr_list.items():
+                for abbr, definition in list(self.abbr_list.items()):
                     self.out("  *[" + abbr + "]: " + definition + "\n")
 
             self.p_p = 0

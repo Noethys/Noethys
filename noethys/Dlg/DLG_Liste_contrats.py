@@ -43,14 +43,14 @@ class CTRL_Annee(wx.Choice):
         for IDcontrat, date_debut, date_fin in listeDonnees :
             date_debut = UTILS_Dates.DateEngEnDateDD(date_debut)
             date_fin = UTILS_Dates.DateEngEnDateDD(date_fin)
-            if dictAnnees.has_key(date_debut.year) == False :
+            if (date_debut.year in dictAnnees) == False :
                 dictAnnees[date_debut.year] = 0
             dictAnnees[date_debut.year] += 1
-            if dictAnnees.has_key(date_fin.year) == False :
+            if (date_fin.year in dictAnnees) == False :
                 dictAnnees[date_fin.year] = 0
             dictAnnees[date_fin.year] += 1
 
-        listeAnnees = dictAnnees.keys() 
+        listeAnnees = list(dictAnnees.keys()) 
         listeAnnees.sort() 
         for annee in listeAnnees :
             nbreReglements = dictAnnees[annee]

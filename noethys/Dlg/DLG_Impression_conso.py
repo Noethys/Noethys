@@ -24,6 +24,7 @@ import FonctionsPerso
 import sys
 import operator
 import os
+import six
 
 from Ctrl import CTRL_Calendrier
 from Ctrl import CTRL_Photo
@@ -269,10 +270,10 @@ class CTRL_Activites(HTL.HyperTreeList):
             if date_fin != None : date_fin = UTILS_Dates.DateEngEnDateDD(date_fin)
             
             # Mémorisation de l'activité et du groupe
-            if dictActivites.has_key(IDactivite) == False :
+            if (IDactivite in dictActivites) == False :
                 dictActivites[IDactivite] = { "nom":nom, "abrege":abrege, "date_debut":date_debut, "date_fin":date_fin, "groupes":[]}
             
-            if dictGroupes.has_key(IDgroupe) == False :
+            if (IDgroupe in dictGroupes) == False :
                 dictGroupes[IDgroupe] = {"nom" : nomGroupe, "IDactivite" : IDactivite, "ordre":ordreGroupe}
                 
             dictActivites[IDactivite]["groupes"].append({"IDgroupe":IDgroupe, "nom":nomGroupe, "ordre":ordreGroupe})
@@ -282,7 +283,7 @@ class CTRL_Activites(HTL.HyperTreeList):
     def Remplissage(self):
         # Tri des activités par nom
         listeActivites = []
-        for IDactivite, dictActivite in self.dictActivites.iteritems() :
+        for IDactivite, dictActivite in self.dictActivites.items() :
             listeActivites.append((dictActivite["nom"], IDactivite))
         listeActivites.sort() 
         
@@ -454,7 +455,7 @@ class CTRL_Ecoles(HTL.HyperTreeList):
                 txtTemp = []
                 for niveau in listeTemp :
                     IDniveau = int(niveau)
-                    if self.dictNiveaux.has_key(IDniveau) :
+                    if IDniveau in self.dictNiveaux :
                         nomNiveau = self.dictNiveaux[IDniveau]["abrege"]
                         ordreNiveau = self.dictNiveaux[IDniveau]["ordre"]
                         listeNiveaux.append(IDniveau)
@@ -463,7 +464,7 @@ class CTRL_Ecoles(HTL.HyperTreeList):
                 txtNiveaux = ", ".join(txtTemp)
 
             # Mémorisation de l'école
-            if dictEcoles.has_key(IDecole) == False:
+            if (IDecole in dictEcoles) == False:
                 dictEcoles[IDecole] = {"nom": ecole_nom, "classes": []}
 
             if IDclasse != None and self.regroupement == "classe" :
@@ -474,7 +475,7 @@ class CTRL_Ecoles(HTL.HyperTreeList):
                     dictEcoles[IDecole]["classes"].append(donnees)
 
                 # Mémorisation dans le dictClasses
-                if dictClasses.has_key(IDclasse) == False:
+                if (IDclasse in dictClasses) == False:
                     dictClasses[IDclasse] = {"nom": classe_nom, "IDecole": IDecole, "date_debut": classe_debut, "date_fin": classe_fin, "txtNiveaux": txtNiveaux}
 
         return dictEcoles, dictClasses
@@ -483,7 +484,7 @@ class CTRL_Ecoles(HTL.HyperTreeList):
     def Remplissage(self):
         # Tri des écoles par nom
         listeEcoles = []
-        for IDecole, dictEcole in self.dictEcoles.iteritems() :
+        for IDecole, dictEcole in self.dictEcoles.items() :
             listeEcoles.append((dictEcole["nom"], IDecole))
         listeEcoles.sort() 
         
@@ -593,8 +594,8 @@ class Page_Activites(wx.Panel):
             self.checkbox_saut_activites.SetValue(True)
             self.checkbox_saut_groupes.SetValue(True)
         else :
-            if dictParametres.has_key("saut_activites") : self.checkbox_saut_activites.SetValue(dictParametres["saut_activites"])
-            if dictParametres.has_key("saut_groupes") : self.checkbox_saut_groupes.SetValue(dictParametres["saut_groupes"])
+            if "saut_activites" in dictParametres : self.checkbox_saut_activites.SetValue(dictParametres["saut_activites"])
+            if "saut_groupes" in dictParametres : self.checkbox_saut_groupes.SetValue(dictParametres["saut_groupes"])
 
 # -----------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -715,7 +716,7 @@ class Page_Scolarite(wx.Panel):
             self.checkbox_saut_classes.SetValue(True)
             self.checkbox_inconnus.SetValue(False)
         else :
-            if dictParametres.has_key("regroupement_ecoles") :
+            if "regroupement_ecoles" in dictParametres :
                 if dictParametres["regroupement_ecoles"] in (1, "classe") :
                     self.checkbox_classes.SetValue(True)
                     self.OnCheck(True, "classe")
@@ -723,12 +724,12 @@ class Page_Scolarite(wx.Panel):
                     self.checkbox_ecoles.SetValue(True)
                     self.OnCheck(True, "ecole")
 
-            if dictParametres.has_key("scolarite_inconnue") :
+            if "scolarite_inconnue" in dictParametres :
                 self.checkbox_inconnus.SetValue(dictParametres["scolarite_inconnue"])
             else :
                 self.checkbox_inconnus.SetValue(False)
-            if dictParametres.has_key("saut_ecoles") : self.checkbox_saut_ecoles.SetValue(dictParametres["saut_ecoles"])
-            if dictParametres.has_key("saut_classes") : self.checkbox_saut_classes.SetValue(dictParametres["saut_classes"])
+            if "saut_ecoles" in dictParametres : self.checkbox_saut_ecoles.SetValue(dictParametres["saut_ecoles"])
+            if "saut_classes" in dictParametres : self.checkbox_saut_classes.SetValue(dictParametres["saut_classes"])
 
 # -----------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -795,8 +796,8 @@ class Page_Evenements(wx.Panel):
             self.checkbox_evenements.SetValue(False)
             self.checkbox_saut_evenements.SetValue(True)
         else:
-            if dictParametres.has_key("regroupement_evenements"): self.checkbox_evenements.SetValue(dictParametres["regroupement_evenements"])
-            if dictParametres.has_key("saut_evenements"): self.checkbox_saut_evenements.SetValue(dictParametres["saut_evenements"])
+            if "regroupement_evenements" in dictParametres: self.checkbox_evenements.SetValue(dictParametres["regroupement_evenements"])
+            if "saut_evenements" in dictParametres: self.checkbox_saut_evenements.SetValue(dictParametres["saut_evenements"])
         self.OnCheckEvenements()
 
         # -----------------------------------------------------------------------------------------------------------------------------------------------
@@ -867,8 +868,8 @@ class Page_Etiquettes(wx.Panel):
             self.checkbox_etiquettes.SetValue(False)
             self.checkbox_saut_etiquettes.SetValue(True)
         else :
-            if dictParametres.has_key("regroupement_etiquettes") : self.checkbox_etiquettes.SetValue(dictParametres["regroupement_etiquettes"])
-            if dictParametres.has_key("saut_etiquettes") : self.checkbox_saut_etiquettes.SetValue(dictParametres["saut_etiquettes"])
+            if "regroupement_etiquettes" in dictParametres : self.checkbox_etiquettes.SetValue(dictParametres["regroupement_etiquettes"])
+            if "saut_etiquettes" in dictParametres : self.checkbox_saut_etiquettes.SetValue(dictParametres["saut_etiquettes"])
         self.OnCheckEtiquettes()
 
 # -----------------------------------------------------------------------------------------------------------------------------------------------
@@ -1367,12 +1368,12 @@ class Dialog(wx.Dialog):
                     if isinstance(valeur, Paragraph) :
                         valeur = valeur.text
                     # Largeur colonne
-                    if type(valeur) == unicode and (_(u"Nom - ") in valeur or valeur == "Informations") :
+                    if type(valeur) == six.text_type and (_(u"Nom - ") in valeur or valeur == "Informations") :
                         feuille.col(numColonne).width = 10000
                     # Valeur case
-                    if type(valeur) in (str, unicode, int) :
+                    if type(valeur) in (str, six.text_type, int) :
                         # Formatage des heures
-                        if type(valeur) == unicode and len(valeur) == 11 and valeur[2] == "h" and valeur[8] == "h" :
+                        if type(valeur) == six.text_type and len(valeur) == 11 and valeur[2] == "h" and valeur[8] == "h" :
                             valeur = valeur.replace(u"\n", u"-")
                         feuille.write(numLigne, numColonne, valeur, styleDefaut)
                     # Si c'est une liste
@@ -1549,9 +1550,9 @@ class Dialog(wx.Dialog):
         dictOuvertures = {}
         for IDouverture, IDactivite, IDunite, IDgroupe, date in listeOuvertures :
             date = UTILS_Dates.DateEngEnDateDD(date)
-            if dictOuvertures.has_key(IDactivite) == False : dictOuvertures[IDactivite] = {}
-            if dictOuvertures[IDactivite].has_key(IDgroupe) == False : dictOuvertures[IDactivite][IDgroupe] = {}
-            if dictOuvertures[IDactivite][IDgroupe].has_key(date) == False : dictOuvertures[IDactivite][IDgroupe][date] = []
+            if (IDactivite in dictOuvertures) == False : dictOuvertures[IDactivite] = {}
+            if (IDgroupe in dictOuvertures[IDactivite]) == False : dictOuvertures[IDactivite][IDgroupe] = {}
+            if (date in dictOuvertures[IDactivite][IDgroupe]) == False : dictOuvertures[IDactivite][IDgroupe][date] = []
             dictOuvertures[IDactivite][IDgroupe][date].append(IDunite)
 
 ##            if dictOuvertures.has_key(IDactivite) == False : dictOuvertures[IDactivite] = {}
@@ -1579,7 +1580,7 @@ class Dialog(wx.Dialog):
         dictUnitesRemplissage = {}
         for IDunite_remplissage, nom, abrege, etiquettes, heure_min, heure_max, IDunite_remplissage_unite, IDunite in listeUnitesRemplissage :
             etiquettes = UTILS_Texte.ConvertStrToListe(etiquettes)
-            if dictUnitesRemplissage.has_key(IDunite_remplissage) == False :
+            if (IDunite_remplissage in dictUnitesRemplissage) == False :
                 dictUnitesRemplissage[IDunite_remplissage] = {"nom" : nom, "abrege" : abrege, "etiquettes" : etiquettes, "heure_min" : heure_min, "heure_max" : heure_max, "unites" : [] }
             dictUnitesRemplissage[IDunite_remplissage]["unites"].append(IDunite)
 
@@ -1629,11 +1630,11 @@ class Dialog(wx.Dialog):
             age = self.GetAge(date_naiss)
 
             # Mémorisation de l'activité
-            if dictConso.has_key(IDactivite) == False :
+            if (IDactivite in dictConso) == False :
                 dictConso[IDactivite] = {}
 
             # Mémorisation du groupe
-            if dictConso[IDactivite].has_key(IDgroupe) == False :
+            if (IDgroupe in dictConso[IDactivite]) == False :
                 dictConso[IDactivite][IDgroupe] = {}
 
             # Mémorisation du regroupement de scolarité
@@ -1645,14 +1646,14 @@ class Dialog(wx.Dialog):
             else :
                 scolarite = None
 
-            if dictConso[IDactivite][IDgroupe].has_key(scolarite) == False :
+            if (scolarite in dictConso[IDactivite][IDgroupe]) == False :
                 dictConso[IDactivite][IDgroupe][scolarite] = {}
 
             # Mémorisation de l'évènement
             if self.GetPage("evenements").checkbox_evenements.GetValue() == False :
                 IDevenement = None
 
-            if dictConso[IDactivite][IDgroupe][scolarite].has_key(IDevenement) == False :
+            if (IDevenement in dictConso[IDactivite][IDgroupe][scolarite]) == False :
                 dictConso[IDactivite][IDgroupe][scolarite][IDevenement] = {}
 
             # Mémorisation de l'étiquette
@@ -1663,19 +1664,19 @@ class Dialog(wx.Dialog):
 
             for IDetiquette in listeEtiquettes :
 
-                if dictConso[IDactivite][IDgroupe][scolarite][IDevenement].has_key(IDetiquette) == False :
+                if (IDetiquette in dictConso[IDactivite][IDgroupe][scolarite][IDevenement]) == False :
                     dictConso[IDactivite][IDgroupe][scolarite][IDevenement][IDetiquette] = {}
 
                 # Mémorisation de l'individu
-                if dictConso[IDactivite][IDgroupe][scolarite][IDevenement][IDetiquette].has_key(IDindividu) == False :
+                if (IDindividu in dictConso[IDactivite][IDgroupe][scolarite][IDevenement][IDetiquette]) == False :
                     dictConso[IDactivite][IDgroupe][scolarite][IDevenement][IDetiquette][IDindividu] = { "IDcivilite" : IDcivilite, "nom" : nom, "prenom" : prenom, "date_naiss" : date_naiss, "age" : age, "nomSieste" : nomSieste, "listeConso" : {} }
 
                 # Mémorisation de la date
-                if dictConso[IDactivite][IDgroupe][scolarite][IDevenement][IDetiquette][IDindividu]["listeConso"].has_key(date) == False :
+                if (date in dictConso[IDactivite][IDgroupe][scolarite][IDevenement][IDetiquette][IDindividu]["listeConso"]) == False :
                     dictConso[IDactivite][IDgroupe][scolarite][IDevenement][IDetiquette][IDindividu]["listeConso"][date] = {}
 
                 # Mémorisation de la consommation
-                if dictConso[IDactivite][IDgroupe][scolarite][IDevenement][IDetiquette][IDindividu]["listeConso"][date].has_key(IDunite) == False :
+                if (IDunite in dictConso[IDactivite][IDgroupe][scolarite][IDevenement][IDetiquette][IDindividu]["listeConso"][date]) == False :
                     dictConso[IDactivite][IDgroupe][scolarite][IDevenement][IDetiquette][IDindividu]["listeConso"][date][IDunite] = []
 
                 dictConso[IDactivite][IDgroupe][scolarite][IDevenement][IDetiquette][IDindividu]["listeConso"][date][IDunite].append( { "heure_debut" : heure_debut, "heure_fin" : heure_fin, "etat" : etat, "quantite" : quantite, "IDfamille" : IDfamille, "IDevenement" : conso_IDevenement, "etiquettes" : etiquettes } )
@@ -1707,11 +1708,11 @@ class Dialog(wx.Dialog):
                 age = self.GetAge(date_naiss)
 
                 # Mémorisation de l'activité
-                if dictConso.has_key(IDactivite) == False :
+                if (IDactivite in dictConso) == False :
                     dictConso[IDactivite] = {}
 
                 # Mémorisation du groupe
-                if dictConso[IDactivite].has_key(IDgroupe) == False :
+                if (IDgroupe in dictConso[IDactivite]) == False :
                     dictConso[IDactivite][IDgroupe] = {}
 
                 # Mémorisation du regroupement de scolarité
@@ -1723,19 +1724,19 @@ class Dialog(wx.Dialog):
                 else:
                     scolarite = None
 
-                if dictConso[IDactivite][IDgroupe].has_key(scolarite) == False :
+                if (scolarite in dictConso[IDactivite][IDgroupe]) == False :
                     dictConso[IDactivite][IDgroupe][scolarite] = {}
 
                 IDevenement = None
-                if dictConso[IDactivite][IDgroupe][scolarite].has_key(IDevenement) == False :
+                if (IDevenement in dictConso[IDactivite][IDgroupe][scolarite]) == False :
                     dictConso[IDactivite][IDgroupe][scolarite][IDevenement] = {}
 
                 IDetiquette = None
-                if dictConso[IDactivite][IDgroupe][scolarite][IDevenement].has_key(IDetiquette) == False :
+                if (IDetiquette in dictConso[IDactivite][IDgroupe][scolarite][IDevenement]) == False :
                     dictConso[IDactivite][IDgroupe][scolarite][IDevenement][IDetiquette] = {}
 
                 # Mémorisation de l'individu
-                if dictConso[IDactivite][IDgroupe][scolarite][IDevenement][IDetiquette].has_key(IDindividu) == False :
+                if (IDindividu in dictConso[IDactivite][IDgroupe][scolarite][IDevenement][IDetiquette]) == False :
                     dictConso[IDactivite][IDgroupe][scolarite][IDevenement][IDetiquette][IDindividu] = { "IDcivilite" : IDcivilite, "nom" : nom, "prenom" : prenom, "date_naiss" : date_naiss, "age" : age, "nomSieste" : nomSieste, "listeConso" : {} }
 
                 # Mémorisation du IDindividu
@@ -1756,7 +1757,7 @@ class Dialog(wx.Dialog):
         dictMemos = {}
         for IDmemo, IDindividu, date, texte in listeMemos :
             date = UTILS_Dates.DateEngEnDateDD(date)
-            if dictMemos.has_key(IDindividu) == False :
+            if (IDindividu in dictMemos) == False :
                 dictMemos[IDindividu] = {}
             dictMemos[IDindividu][date] = texte
 
@@ -1795,10 +1796,10 @@ class Dialog(wx.Dialog):
                 "afficher_accueil":afficher_accueil, "afficher_liste":afficher_liste, "texte":texte, "nom":nom,
                 }
             # Si c'est un message familial
-            if IDindividu != None and dictMessagesIndividus.has_key(IDindividu) == False : dictMessagesIndividus[IDindividu] = []
+            if IDindividu != None and (IDindividu in dictMessagesIndividus) == False : dictMessagesIndividus[IDindividu] = []
             if IDindividu != None : dictMessagesIndividus[IDindividu].append(dictTemp)
             # Si c'est un message individuel
-            if IDfamille != None and dictMessagesFamilles.has_key(IDfamille) == False : dictMessagesFamilles[IDfamille] = []
+            if IDfamille != None and (IDfamille in dictMessagesFamilles) == False : dictMessagesFamilles[IDfamille] = []
             if IDfamille != None : dictMessagesFamilles[IDfamille].append(dictTemp)
 
         # Récupération de la liste des cotisations manquantes
@@ -1816,7 +1817,7 @@ class Dialog(wx.Dialog):
         listeInfosMedicales = DB.ResultatReq()
         dictInfosMedicales = {}
         for IDprobleme, IDindividu, IDtype, intitule, description, traitement_medical, description_traitement, date_debut_traitement, date_fin_traitement in listeInfosMedicales :
-            if dictInfosMedicales.has_key(IDindividu) == False : dictInfosMedicales[IDindividu] = []
+            if (IDindividu in dictInfosMedicales) == False : dictInfosMedicales[IDindividu] = []
             dictTemp = {"IDtype":IDtype, "intitule":intitule, "description":description, "traitement_medical":traitement_medical, "description_traitement":description_traitement, "date_debut_traitement":date_debut_traitement, "date_fin_traitement":date_fin_traitement}
             dictInfosMedicales[IDindividu].append(dictTemp)
 
@@ -1947,11 +1948,11 @@ class Dialog(wx.Dialog):
             nomActivite = dictActivites[IDactivite]["nom"]
 
             # Groupes
-            if dictOuvertures.has_key(IDactivite) :
+            if IDactivite in dictOuvertures :
                 nbreGroupes = len(dictOuvertures[IDactivite])
 
                 # tri des groupes par ordre
-                listeGroupesTemp = self.TriGroupes(dictOuvertures[IDactivite].keys(), dictGroupes)
+                listeGroupesTemp = self.TriGroupes(list(dictOuvertures[IDactivite].keys()), dictGroupes)
 
                 indexGroupe = 1
                 for IDgroupe in listeGroupesTemp :
@@ -1961,9 +1962,9 @@ class Dialog(wx.Dialog):
 
                     # Classes
                     listeScolarite = []
-                    if dictConso.has_key(IDactivite) :
-                        if dictConso[IDactivite].has_key(IDgroupe) :
-                            listeScolarite = dictConso[IDactivite][IDgroupe].keys()
+                    if IDactivite in dictConso :
+                        if IDgroupe in dictConso[IDactivite] :
+                            listeScolarite = list(dictConso[IDactivite][IDgroupe].keys())
 
                     # tri des classes
                     listeInfosScolarite = self.TriClasses(listeScolarite, dictEcoles)
@@ -1999,10 +2000,10 @@ class Dialog(wx.Dialog):
 
                         # Recherche des évènements
                         listeEvenements = []
-                        if dictConso.has_key(IDactivite):
-                            if dictConso[IDactivite].has_key(IDgroupe):
-                                if dictConso[IDactivite][IDgroupe].has_key(scolarite):
-                                    listeEvenements = dictConso[IDactivite][IDgroupe][scolarite].keys()
+                        if IDactivite in dictConso:
+                            if IDgroupe in dictConso[IDactivite]:
+                                if scolarite in dictConso[IDactivite][IDgroupe]:
+                                    listeEvenements = list(dictConso[IDactivite][IDgroupe][scolarite].keys())
 
                         # tri des évènements
                         #listeInfosScolarite = self.TriClasses(listeScolarite, dictEcoles) #todo ?
@@ -2021,11 +2022,11 @@ class Dialog(wx.Dialog):
 
                             # Parcours les étiquettes
                             listeIDetiquette = []
-                            if dictConso.has_key(IDactivite) :
-                                if dictConso[IDactivite].has_key(IDgroupe) :
-                                    if dictConso[IDactivite][IDgroupe].has_key(scolarite) :
-                                        if dictConso[IDactivite][IDgroupe][scolarite].has_key(IDevenement):
-                                            for IDetiquette, temp in dictConso[IDactivite][IDgroupe][scolarite][IDevenement].iteritems() :
+                            if IDactivite in dictConso :
+                                if IDgroupe in dictConso[IDactivite] :
+                                    if scolarite in dictConso[IDactivite][IDgroupe] :
+                                        if IDevenement in dictConso[IDactivite][IDgroupe][scolarite]:
+                                            for IDetiquette, temp in dictConso[IDactivite][IDgroupe][scolarite][IDevenement].items() :
                                                 listeIDetiquette.append(IDetiquette)
                             if len(listeIDetiquette) == 0 :
                                 listeIDetiquette = [None,]
@@ -2067,7 +2068,7 @@ class Dialog(wx.Dialog):
                                 positionCol1 = len(labelsColonnes)
                                 indexCol = len(labelsColonnes)
                                 for date in listeDates :
-                                    if dictDatesUnites.has_key(date) :
+                                    if date in dictDatesUnites :
                                         listeUnites = dictDatesUnites[date]
                                         positionG = indexCol
                                         for typeTemp, IDunite, affichage in dictChoixUnites[IDactivite] :
@@ -2075,7 +2076,7 @@ class Dialog(wx.Dialog):
                                                 if typeTemp == "conso" :
                                                     abregeUnite = dictUnites[IDunite]["abrege"]
                                                 else:
-                                                    if dictUnitesRemplissage.has_key(IDunite) :
+                                                    if IDunite in dictUnitesRemplissage :
                                                         abregeUnite = dictUnitesRemplissage[IDunite]["abrege"]
                                                     else :
                                                         abregeUnite = "?"
@@ -2177,12 +2178,12 @@ class Dialog(wx.Dialog):
 
                                 # Création d'une liste temporaire pour le tri
                                 listeIndividus = []
-                                if dictConso.has_key(IDactivite) :
-                                    if dictConso[IDactivite].has_key(IDgroupe) :
-                                        if dictConso[IDactivite][IDgroupe].has_key(scolarite) :
-                                            if dictConso[IDactivite][IDgroupe][scolarite].has_key(IDevenement) :
-                                                if dictConso[IDactivite][IDgroupe][scolarite][IDevenement].has_key(IDetiquette):
-                                                    for IDindividu, dictIndividu in dictConso[IDactivite][IDgroupe][scolarite][IDevenement][IDetiquette].iteritems() :
+                                if IDactivite in dictConso :
+                                    if IDgroupe in dictConso[IDactivite] :
+                                        if scolarite in dictConso[IDactivite][IDgroupe] :
+                                            if IDevenement in dictConso[IDactivite][IDgroupe][scolarite] :
+                                                if IDetiquette in dictConso[IDactivite][IDgroupe][scolarite][IDevenement]:
+                                                    for IDindividu, dictIndividu in dictConso[IDactivite][IDgroupe][scolarite][IDevenement][IDetiquette].items() :
                                                         valeursTri = (IDindividu, dictIndividu["nom"], dictIndividu["prenom"], dictIndividu["age"])
                                                         listeIndividus.append(valeursTri)
 
@@ -2225,7 +2226,7 @@ class Dialog(wx.Dialog):
 
                                     # Unites
                                     for date in listeDates :
-                                        if dictDatesUnites.has_key(date) :
+                                        if date in dictDatesUnites :
                                             listeUnites = dictDatesUnites[date]
 
                                             for typeTemp, IDunite, affichage in dictChoixUnites[IDactivite] :
@@ -2239,8 +2240,8 @@ class Dialog(wx.Dialog):
 
                                                     if typeTemp == "conso" :
                                                         # Unité de Conso
-                                                        if dictIndividu["listeConso"].has_key(date) :
-                                                            if dictIndividu["listeConso"][date].has_key(IDunite) :
+                                                        if date in dictIndividu["listeConso"] :
+                                                            if IDunite in dictIndividu["listeConso"][date] :
                                                                 typeUnite = dictUnites[IDunite]["type"]
 
                                                                 label = u""
@@ -2291,7 +2292,7 @@ class Dialog(wx.Dialog):
 
                                                     else:
                                                         # Unité de Remplissage
-                                                        if dictUnitesRemplissage.has_key(IDunite) :
+                                                        if IDunite in dictUnitesRemplissage :
                                                             unitesLiees = dictUnitesRemplissage[IDunite]["unites"]
                                                             etiquettesUnitesRemplissage = dictUnitesRemplissage[IDunite]["etiquettes"]
                                                         else :
@@ -2299,8 +2300,8 @@ class Dialog(wx.Dialog):
                                                             etiquettesUnitesRemplissage = []
 
                                                         for IDuniteLiee in unitesLiees :
-                                                            if dictIndividu["listeConso"].has_key(date) :
-                                                                if dictIndividu["listeConso"][date].has_key(IDuniteLiee) :
+                                                            if date in dictIndividu["listeConso"] :
+                                                                if IDuniteLiee in dictIndividu["listeConso"][date] :
                                                                     typeUnite = dictUnites[IDuniteLiee]["type"]
 
                                                                     for dictConsoTemp in dictIndividu["listeConso"][date][IDuniteLiee] :
@@ -2367,7 +2368,7 @@ class Dialog(wx.Dialog):
 
                                                     if len(listeLabels) > 0 :
                                                         ligneVide = False
-                                                        if dictTotauxColonnes.has_key(indexColonne) == True :
+                                                        if (indexColonne in dictTotauxColonnes) == True :
                                                             dictTotauxColonnes[indexColonne] += quantite
                                                         else:
                                                             dictTotauxColonnes[indexColonne] = quantite
@@ -2438,9 +2439,9 @@ class Dialog(wx.Dialog):
                                     paraStyle = ParagraphStyle(name="infos", fontName="Helvetica", fontSize=7, leading=8, spaceAfter=2,)
 
                                     # Mémo-journée
-                                    if dictMemos.has_key(IDindividu) :
+                                    if IDindividu in dictMemos :
                                         for date in listeDates :
-                                            if dictMemos[IDindividu].has_key(date) :
+                                            if date in dictMemos[IDindividu] :
                                                 memo_journee = dictMemos[IDindividu][date]
                                                 if typeListe == "period" :
                                                     memo_journee = u"%02d/%02d/%04d : %s" % (date.day, date.month, date.year, memo_journee)
@@ -2448,22 +2449,22 @@ class Dialog(wx.Dialog):
                                                 listeInfos.append(ParagraphAndImage(Paragraph(memo_journee, paraStyle), Image(Chemins.GetStaticPath("Images/16x16/Information.png"),width=8, height=8), xpad=1, ypad=0, side="left"))
 
                                     # Messages individuels
-                                    if dictMessagesIndividus.has_key(IDindividu):
+                                    if IDindividu in dictMessagesIndividus:
                                         for dictMessage in dictMessagesIndividus[IDindividu] :
                                             texteMessage = dictMessage["texte"]
                                             listeInfos.append(ParagraphAndImage(Paragraph(texteMessage, paraStyle), Image(Chemins.GetStaticPath("Images/16x16/Mail.png"),width=8, height=8), xpad=1, ypad=0, side="left"))
 
                                     # Récupère la liste des familles rattachées à cet individu
                                     listeIDfamille = []
-                                    for date, dictUnitesTemps in dictIndividu["listeConso"].iteritems() :
-                                        for temp, listeConso in dictUnitesTemps.iteritems() :
+                                    for date, dictUnitesTemps in dictIndividu["listeConso"].items() :
+                                        for temp, listeConso in dictUnitesTemps.items() :
                                             for dictConsoTemp in listeConso :
                                                 if dictConsoTemp["IDfamille"] not in listeIDfamille :
                                                     listeIDfamille.append(dictConsoTemp["IDfamille"])
 
                                     # Messages familiaux
                                     for IDfamille in listeIDfamille :
-                                        if dictMessagesFamilles.has_key(IDfamille):
+                                        if IDfamille in dictMessagesFamilles:
                                             for dictMessage in dictMessagesFamilles[IDfamille] :
                                                 texteMessage = dictMessage["texte"]
                                                 listeInfos.append(ParagraphAndImage(Paragraph(texteMessage, paraStyle), Image(Chemins.GetStaticPath("Images/16x16/Mail.png"),width=8, height=8), xpad=1, ypad=0, side="left"))
@@ -2471,7 +2472,7 @@ class Dialog(wx.Dialog):
                                     # Cotisations manquantes
                                     if dictParametres["afficher_cotisations_manquantes"] == True :
                                         for IDfamille in listeIDfamille :
-                                            if dictCotisations.has_key(IDfamille):
+                                            if IDfamille in dictCotisations:
                                                 if dictCotisations[IDfamille]["nbre"] == 1 :
                                                     texteCotisation = _(u"1 cotisation manquante : %s") % dictCotisations[IDfamille]["cotisations"]
                                                 else:
@@ -2481,7 +2482,7 @@ class Dialog(wx.Dialog):
                                     # Pièces manquantes
                                     if dictParametres["afficher_pieces_manquantes"] == True :
                                         for IDfamille in listeIDfamille :
-                                            if dictPieces.has_key(IDfamille):
+                                            if IDfamille in dictPieces:
                                                 if dictPieces[IDfamille]["nbre"] == 1 :
                                                     textePiece = _(u"1 pièce manquante : %s") % dictPieces[IDfamille]["pieces"]
                                                 else:
@@ -2495,7 +2496,7 @@ class Dialog(wx.Dialog):
                                         listeInfos.append(ParagraphAndImage(Paragraph(texte_sieste, paraStyle), Image(Chemins.GetStaticPath("Images/16x16/Reveil.png"),width=8, height=8), xpad=1, ypad=0, side="left"))
 
                                     # Informations médicales
-                                    if dictInfosMedicales.has_key(IDindividu) :
+                                    if IDindividu in dictInfosMedicales :
                                         for infoMedicale in dictInfosMedicales[IDindividu] :
                                             intitule = infoMedicale["intitule"]
                                             description = infoMedicale["description"]
@@ -2619,7 +2620,7 @@ class Dialog(wx.Dialog):
                                 ligne = []
                                 indexCol = 0
                                 for indexCol in range(0, len(labelsColonnes)) :
-                                    if dictTotauxColonnes.has_key(indexCol) :
+                                    if indexCol in dictTotauxColonnes :
                                         valeur = dictTotauxColonnes[indexCol]
                                     else:
                                         valeur = ""
@@ -2673,11 +2674,11 @@ class Dialog(wx.Dialog):
                         if self.GetPage("scolarite").GetRegroupement() == "classe" and self.GetPage("scolarite").checkbox_saut_ecoles.GetValue() == True :
                             IDecoleActuelle = None
                             IDecoleSuivante = None
-                            if dictClasses.has_key(IDclasse) :
+                            if IDclasse in dictClasses :
                                 IDecoleActuelle = dictClasses[IDclasse]["IDecole"]
                                 if indexClasse < nbreClasses :
                                     IDclasseSuivante = listeInfosScolarite[indexClasse]["IDclasse"]
-                                    if dictClasses.has_key(IDclasseSuivante) :
+                                    if IDclasseSuivante in dictClasses :
                                         IDecoleSuivante = dictClasses[IDclasseSuivante]["IDecole"]
                             if IDecoleActuelle != IDecoleSuivante :
                                 CreationSautPage()
@@ -2747,7 +2748,7 @@ class Dialog(wx.Dialog):
 
         # Insertion des écoles
         listeEcoles = []
-        for IDecole, dictEcole in dictEcoles.iteritems() :
+        for IDecole, dictEcole in dictEcoles.items() :
             listeEcoles.append((dictEcole["nom"], IDecole))
         listeEcoles.sort()
 
@@ -2813,7 +2814,7 @@ class Dialog(wx.Dialog):
         if dictParametres == None :
             self.SetTypeListe("journ")
         else :
-            if dictParametres.has_key("type_liste") :
+            if "type_liste" in dictParametres :
                 self.SetTypeListe(dictParametres["type_liste"])
 
         # Autres pages

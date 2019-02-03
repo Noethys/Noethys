@@ -10,8 +10,7 @@
 
 import GestionDB
 import wx
-from Ctrl import CTRL_Bouton_image
-import cStringIO
+import six
 
 
 def GetNom():
@@ -63,7 +62,7 @@ def GetDonnees(tailleLogo=(40, 40)) :
     if num_siret == None : num_siret = u""
     if code_ape == None : code_ape = u""
     if logo != None :
-        io = cStringIO.StringIO(logo)
+        io = six.BytesIO(logo)
         if 'phoenix' in wx.PlatformInfo:
             img = wx.Image(io, wx.BITMAP_TYPE_ANY)
         else :
@@ -80,4 +79,4 @@ def GetDonnees(tailleLogo=(40, 40)) :
 
 
 if __name__ == '__main__':
-    print GetNom()
+    print(GetNom())

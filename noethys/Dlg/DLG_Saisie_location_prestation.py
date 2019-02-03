@@ -92,7 +92,7 @@ class OL_Tarifs(FastObjectListView):
             for valeur in ligne:
                 dictLigne[CHAMPS_TABLE_LIGNES[index]] = valeur
                 index += 1
-            if dictLignes.has_key(dictLigne["IDtarif"]) == False:
+            if (dictLigne["IDtarif"] in dictLignes) == False:
                 dictLignes[dictLigne["IDtarif"]] = []
             dictLignes[dictLigne["IDtarif"]].append(dictLigne)
 
@@ -100,7 +100,7 @@ class OL_Tarifs(FastObjectListView):
         for IDtarif, IDactivite, date_debut, date_fin, methode, type, categories_tarifs, groupes, etiquettes, cotisations, caisses, description, jours_scolaires, jours_vacances, observations, tva, code_compta, IDtype_quotient, label_prestation, IDproduit in listeDonneesTarifs:
 
             # Récupération des lignes du tarif
-            if dictLignes.has_key(IDtarif):
+            if IDtarif in dictLignes:
                 liste_lignes = dictLignes[IDtarif]
             else:
                 liste_lignes = []
@@ -129,7 +129,7 @@ class OL_Tarifs(FastObjectListView):
 
             # ------------ Recherche du montant du tarif : MONTANT PROPORTIONNEL A LA QUANTITE
             if methode == "produit_proportionnel_quantite":
-                if self.dictInfosLocation.has_key("quantite") :
+                if "quantite" in self.dictInfosLocation :
                     quantite = self.dictInfosLocation["quantite"]
                     track.montant = quantite * liste_lignes[0]["montant_unique"]
 

@@ -319,8 +319,8 @@ class Dialog(wx.Dialog):
         try :
             from Utils import UTILS_Ticket
             UTILS_Ticket.Impression(lignes=listeLignes, imprimante=imprimante, titre=_(u"Ticket"), nomPolice="Arial", taillePolice=taillePolice, interligne=interligne)
-        except Exception, erreur :
-            print Exception, erreur
+        except Exception as erreur :
+            print(Exception, erreur)
         
 
 

@@ -177,7 +177,7 @@ class CTRL_Options(CTRL_Propertygrid.CTRL):
     def Validation(self):
         """ Validation des données saisies """
         # Vérifie que les données obligatoires ont été saisies
-        for nom, valeur in self.GetPropertyValues().iteritems():
+        for nom, valeur in self.GetPropertyValues().items():
             propriete = self.GetPropertyByName(nom)
             if self.GetPropertyAttribute(propriete, "obligatoire") == True:
                 if valeur == "" or valeur == None:
@@ -202,7 +202,7 @@ class CTRL_Options(CTRL_Propertygrid.CTRL):
             return
 
         # Envoi des paramètres au Ctrl
-        for nom, valeur in dictParametres.iteritems():
+        for nom, valeur in dictParametres.items():
             try :
                 propriete = self.GetPropertyByName(nom)
                 propriete.SetValue(valeur)
@@ -230,7 +230,7 @@ class Page_Generalites(wx.Panel):
         return self.ctrl_parametres.GetParametres()
 
     def SetParametres(self, dictParametres={}):
-        if dictParametres.has_key("mode"):
+        if "mode" in dictParametres:
             self.ctrl_parametres.SetModePresents(dictParametres["mode"] == "presents")
 
 
@@ -288,7 +288,7 @@ class Page_Colonnes(wx.Panel):
         return {"colonnes" : self.ctrl_colonnes.GetParametres()}
 
     def SetParametres(self, dictParametres={}):
-        if dictParametres.has_key("colonnes"):
+        if "colonnes" in dictParametres:
             self.ctrl_colonnes.SetParametres(dictParametres["colonnes"])
 
 
@@ -548,7 +548,7 @@ class Dialog(wx.Dialog):
             listeOuvertures = DB.ResultatReq()
             dictOuvertures = {}
             for IDouverture, IDactivite, IDunite, IDgroupe in listeOuvertures :
-                if dictOuvertures.has_key(IDactivite) == False :
+                if (IDactivite in dictOuvertures) == False :
                     dictOuvertures[IDactivite] = []
                 if IDgroupe not in dictOuvertures[IDactivite] :
                     dictOuvertures[IDactivite].append(IDgroupe)
@@ -572,9 +572,9 @@ class Dialog(wx.Dialog):
         if dictParametres["mode"] == "inscrits" :
 
             dictOuvertures = {}
-            for IDgroupe, dictGroupe in dictGroupes.iteritems() :
+            for IDgroupe, dictGroupe in dictGroupes.items() :
                 IDactivite = dictGroupe["IDactivite"]
-                if dictOuvertures.has_key(IDactivite) == False :
+                if (IDactivite in dictOuvertures) == False :
                     dictOuvertures[IDactivite] = []
                 if IDgroupe not in dictOuvertures[IDactivite] :
                     dictOuvertures[IDactivite].append(IDgroupe)
@@ -621,7 +621,7 @@ class Dialog(wx.Dialog):
         DB.Close()
         dictInfosMedicales = {}
         for IDprobleme, IDindividu, IDtype, intitule, date_debut, date_fin, description, traitement_medical, description_traitement, date_debut_traitement, date_fin_traitement, eviction, date_debut_eviction, date_fin_eviction in listeInformations :
-            if dictInfosMedicales.has_key(IDindividu) == False :
+            if (IDindividu in dictInfosMedicales) == False :
                 dictInfosMedicales[IDindividu] = []
             dictTemp = {
                 "IDprobleme" : IDprobleme, "IDcategorie" : IDtype, "intitule" : intitule, "date_debut" : date_debut,
@@ -685,7 +685,7 @@ class Dialog(wx.Dialog):
         for IDactivite in listeActivites :
 
             # Groupes
-            if dictOuvertures.has_key(IDactivite) :
+            if IDactivite in dictOuvertures :
                 nbreGroupes = len(dictOuvertures[IDactivite])
                 indexGroupe = 1
                 for IDgroupe in dictOuvertures[IDactivite] :
@@ -739,7 +739,7 @@ class Dialog(wx.Dialog):
                             
                     # Création d'une liste temporaire pour le tri
                     listeIndividus = []
-                    if dictOuvertures.has_key(IDactivite) :
+                    if IDactivite in dictOuvertures :
                         if IDgroupe in dictOuvertures[IDactivite] :
                             for IDindividu in listeIDindividus :
                                 dictIndividu = dictIndividus[IDindividu]
@@ -747,7 +747,7 @@ class Dialog(wx.Dialog):
                                     valeursTri = (IDindividu, dictIndividu["nom"], dictIndividu["prenom"], dictIndividu["age"])
                                     
                                     # + Sélection uniquement des individus avec infos
-                                    if dictParametres["individus_avec_infos"] == False or (dictParametres["individus_avec_infos"] == True and dictInfosMedicales.has_key(IDindividu) ) :
+                                    if dictParametres["individus_avec_infos"] == False or (dictParametres["individus_avec_infos"] == True and IDindividu in dictInfosMedicales ) :
                                         listeIndividus.append(valeursTri)
                     
                     if dictParametres["tri"] == "nom" : paramTri = 1 # Nom
@@ -795,7 +795,7 @@ class Dialog(wx.Dialog):
 
                             case = []
                             # Recherche s'il y a une info médicale dans cette case
-                            if dictInfosMedicales.has_key(IDindividu):
+                            if IDindividu in dictInfosMedicales:
                                 for infoMedicale in dictInfosMedicales[IDindividu] :
                                     IDcategorie = infoMedicale["IDcategorie"]
 

@@ -65,7 +65,7 @@ class Dialog(wx.Dialog):
         self.listeCategories = []
         self.dictCategories = {}
         index = 0
-        for IDcategorie, label in UTILS_Historique.CATEGORIES.iteritems() :
+        for IDcategorie, label in UTILS_Historique.CATEGORIES.items() :
             self.listeCategories.append(label)
             self.dictCategories[index] = IDcategorie
             index += 1

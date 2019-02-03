@@ -11,16 +11,12 @@
 
 import Chemins
 from UTILS_Traduction import _
-import datetime
-import string
 from xml.dom.minidom import Document
 from lxml import etree
-import StringIO
+import six
 import wx
-from Ctrl import CTRL_Bouton_image
-import UTILS_Utilisateurs
 import FonctionsPerso
-import urllib
+from six.moves.urllib.request import urlretrieve
 from Utils import UTILS_Fichiers
 import zipfile
 
@@ -454,7 +450,7 @@ def GetXML(dictDonnees={}):
         IdVer.setAttribute("V", "1")
         EnTetePES_PJ.appendChild(IdVer)
 
-        for IDfacture, dictPieceJointe in dictDonnees["pieces_jointes"].iteritems() :
+        for IDfacture, dictPieceJointe in dictDonnees["pieces_jointes"].items() :
 
             PJ = doc.createElement("PJ")
             PES_PJ.appendChild(PJ)
@@ -528,7 +524,7 @@ def ValidationXSD(xml=""):
         # Téléchargement du fichier XSD
         url = "http://www.noethys.com/fichiers/pes/schemas_pes.zip"
         fichier_dest = UTILS_Fichiers.GetRepTemp(fichier="schemas_pes.zip")
-        urllib.urlretrieve(url, fichier_dest)
+        urlretrieve(url, fichier_dest)
 
         # Décompression du zip XSD
         z = zipfile.ZipFile(fichier_dest, 'r')
@@ -542,7 +538,7 @@ def ValidationXSD(xml=""):
         xsd = etree.XMLSchema(xmlschema_doc)
 
         # Lecture du XML
-        doc = etree.parse(StringIO.StringIO(xml))
+        doc = etree.parse(six.BytesIO(xml))
 
         # Validation du XML avec le XSD
         if xsd.validate(doc) == True :
@@ -554,9 +550,9 @@ def ValidationXSD(xml=""):
             liste_erreurs.append(u"Ligne %d : %s" % (error.line, error.message))
         return liste_erreurs
 
-    except Exception, err:
-        print "Erreur dans validation XSD :"
-        print err
+    except Exception as err:
+        print("Erreur dans validation XSD :")
+        print(err)
         return True
 
 
@@ -612,7 +608,7 @@ if __name__ == "__main__":
 
     doc = GetXML(dictDonnees) 
     xml = doc.toprettyxml(indent="  ", encoding="ISO-8859-1")
-    print xml
+    print(xml)
 
     # Test de validation XSD
-    print ValidationXSD(xml)
+    print(ValidationXSD(xml))

@@ -14,15 +14,12 @@ from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
 from Ctrl import CTRL_Bouton_image
-
 import GestionDB
-from Ctrl import CTRL_Image_mode
+import six
 from Ctrl import CTRL_Bandeau
 from Ol import OL_Emetteurs
-
 from PIL import Image
 import os
-import cStringIO
 if 'phoenix' in wx.PlatformInfo:
     from wx.adv import BitmapComboBox
 else :
@@ -72,7 +69,7 @@ class CTRL_Mode(BitmapComboBox):
 
         # Recherche de l'image
         if bufferImage != None :
-            io = cStringIO.StringIO(bufferImage)
+            io = six.BytesIO(bufferImage)
             if 'phoenix' in wx.PlatformInfo:
                 img = wx.Image(io, wx.BITMAP_TYPE_JPEG)
             else :
@@ -101,7 +98,7 @@ class CTRL_Mode(BitmapComboBox):
         return None
 
     def SetID(self, ID=0):
-        for index, values in self.dictDonnees.iteritems():
+        for index, values in self.dictDonnees.items():
             if values["ID"] == ID :
                  self.SetSelection(index)
 
@@ -145,7 +142,7 @@ class CTRL_Mode_archive(wx.Choice):
         return listeItems
 
     def SetID(self, ID=0):
-        for index, values in self.dictDonnees.iteritems():
+        for index, values in self.dictDonnees.items():
             if values["ID"] == ID :
                  self.SetSelection(index)
 

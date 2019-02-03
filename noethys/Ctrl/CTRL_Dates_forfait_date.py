@@ -119,7 +119,7 @@ class CTRL(HTL.HyperTreeList):
         for IDcombi_tarif_unite, IDcombi_tarif, IDunite in self.listeUnitesCombi :
             self.listeAnciennesUnites.append(IDcombi_tarif_unite)
             dictTemp = {"IDcombi_tarif_unite":IDcombi_tarif_unite, "IDunite":IDunite}
-            if self.dictUnitesCombi.has_key(IDcombi_tarif) :
+            if IDcombi_tarif in self.dictUnitesCombi :
                 self.dictUnitesCombi[IDcombi_tarif].append(dictTemp)
             else:
                 self.dictUnitesCombi[IDcombi_tarif] = [dictTemp,]
@@ -129,7 +129,7 @@ class CTRL(HTL.HyperTreeList):
         for IDcombi_tarif, IDtarif, date, IDgroupe in self.listeCombinaisons :
             if date != None : date = UTILS_Dates.DateEngEnDateDD(date)
             listeUnites = []
-            if self.dictUnitesCombi.has_key(IDcombi_tarif) :
+            if IDcombi_tarif in self.dictUnitesCombi :
                 listeUnites = self.dictUnitesCombi[IDcombi_tarif]
             
             if IDgroupe != None :
@@ -137,7 +137,7 @@ class CTRL(HTL.HyperTreeList):
                 self.listeDonneesInitiale.append({"date":date, "IDcombi_tarif":IDcombi_tarif, "IDgroupe":IDgroupe, "unites":listeUnites})
             else :
                 # Pour gérer ancienne version
-                for IDgroupe, x in self.dictGroupes.iteritems() :
+                for IDgroupe, x in self.dictGroupes.items() :
                     self.listeDonneesInitiale.append({"date":date, "IDcombi_tarif":IDcombi_tarif, "IDgroupe":IDgroupe, "unites":listeUnites})
                 
         self.listeDonnees = copy.deepcopy(self.listeDonneesInitiale)
@@ -152,16 +152,16 @@ class CTRL(HTL.HyperTreeList):
             if IDgroupe == None :
                 nomGroupe = _(u"Tous les groupes")
             else :
-                if self.dictGroupes.has_key(IDgroupe) :
+                if IDgroupe in self.dictGroupes :
                     nomGroupe = self.dictGroupes[IDgroupe]["nom"]
                 else :
                     nomGroupe = _(u"Groupe inconnu")
             groupe = (nomGroupe, IDgroupe)
-            if dictTemp.has_key(groupe) == False :
+            if (groupe in dictTemp) == False :
                 dictTemp[groupe] = []
             dictTemp[groupe].append(dictCombi)
             dictTemp[groupe] = sorted(dictTemp[groupe], key=operator.itemgetter("date"), reverse=False)
-        listeGroupes = dictTemp.keys() 
+        listeGroupes = list(dictTemp.keys()) 
         listeGroupes.sort() 
         
         for groupe in listeGroupes :
@@ -211,9 +211,9 @@ class CTRL(HTL.HyperTreeList):
             for dictUniteCombi in listeUnites :
                 IDcombi_tarif_unite = dictUniteCombi["IDcombi_tarif_unite"]
                 IDunite = dictUniteCombi["IDunite"]
-                if dictSelections.has_key(date) == False :
+                if (date in dictSelections) == False :
                     dictSelections[date] = {}
-                if dictSelections[date].has_key(IDgroupe) == False :
+                if (IDgroupe in dictSelections[date]) == False :
                     dictSelections[date][IDgroupe] = []
                 if IDunite not in dictSelections[date][IDgroupe] :
                     dictSelections[date][IDgroupe].append(IDunite)
@@ -231,18 +231,18 @@ class CTRL(HTL.HyperTreeList):
         
         # Conversion pour le listeDonnees
         self.listeDonnees = []
-        for date, dictDates in dictSelections.iteritems() :
+        for date, dictDates in dictSelections.items() :
             
-            for IDgroupe, listeUnites in dictDates.iteritems() :
+            for IDgroupe, listeUnites in dictDates.items() :
                 
-                if dictTempCombi.has_key((date, IDgroupe)) :
+                if (date, IDgroupe) in dictTempCombi :
                     IDcombi_tarif = dictTempCombi[(date, IDgroupe)]["IDcombi_tarif"]
                 else :
                     IDcombi_tarif = None
                 
                 listeTemp = []
                 for IDunite in listeUnites :
-                    if dictTempUnites.has_key((date, IDgroupe, IDunite)) :
+                    if (date, IDgroupe, IDunite) in dictTempUnites :
                         IDcombi_tarif_unite = dictTempUnites[(date, IDgroupe, IDunite)]
                     else :
                         IDcombi_tarif_unite = None

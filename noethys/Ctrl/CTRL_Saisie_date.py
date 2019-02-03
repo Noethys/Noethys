@@ -16,6 +16,7 @@ import re
 import sys
 import datetime
 import calendar
+import six
 from Utils import UTILS_Config
 from dateutil.parser import parse, parserinfo
 from dateutil import relativedelta
@@ -115,7 +116,7 @@ class Date(masked.TextCtrl):
             if type(date) == datetime.date :
                 # Si c'est un datetime
                 dateDD = date
-            if type(date) == str or type(date) == unicode :
+            if type(date) == str or type(date) == six.text_type :
                 if date[2] == "/" :
                     # Si c'est une date française
                     dateDD = datetime.date(year=int(date[6:10]), month=int(date[3:5]), day=int(date[:2]))
@@ -455,7 +456,7 @@ class Date2(wx.Panel):
                 pass
 
     def SetDate(self, date):
-        if type(date) == datetime.datetime or (type(date) in (str, unicode) and ":" in date):
+        if type(date) == datetime.datetime or (type(date) in (str, six.text_type) and ":" in date):
             self.ctrl_date.SetDate(datetime.datetime.strftime(UTILS_Dates.DateEngEnDateDDT(date), "%Y-%m-%d"))
             if self.heure == True :
                 self.ctrl_heure.SetHeure(datetime.datetime.strftime(UTILS_Dates.DateEngEnDateDDT(date), "%H:%M"))
@@ -525,7 +526,7 @@ class MyFrame(wx.Frame):
         self.Bind(wx.EVT_BUTTON, self.OnBouton1, self.bouton1)
 
     def OnBouton1(self, event):
-        print self.ctrl1.Validation()
+        print(self.ctrl1.Validation())
 
 
 

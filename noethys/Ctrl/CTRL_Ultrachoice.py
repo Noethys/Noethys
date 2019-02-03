@@ -86,7 +86,7 @@ class CTRL(OwnerDrawnComboBox):
     def DessineItem(self, dc, r, dictItem):
         """ Dessine un item dans la liste popup """
         # Image
-        if dictItem.has_key("image") == False or dictItem["image"] == None :
+        if ("image" in dictItem) == False or dictItem["image"] == None :
             tailleImage = (0, 0)
         else :
             tailleImage = dictItem["image"].GetSize()
@@ -180,7 +180,7 @@ class MyFrame(wx.Frame):
         self.Bind(wx.EVT_COMBOBOX, self.OnSelection2, self.ctrl2)
 
     def OnSelection2(self, event):
-        print "Selection =", self.ctrl2.GetSelection2() 
+        print("Selection =", self.ctrl2.GetSelection2()) 
         
 
 

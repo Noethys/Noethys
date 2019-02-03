@@ -35,12 +35,12 @@ class CTRL(CT.CustomTreeCtrl):
 
         # Création de l'ImageList
         self.dictImages = {}
-        for code, valeurs in DICT_CATEGORIES.iteritems() :
+        for code, valeurs in DICT_CATEGORIES.items() :
             self.dictImages[code] = {"img" : wx.Bitmap(Chemins.GetStaticPath('Images/16x16/%s.png' % valeurs["image"]), wx.BITMAP_TYPE_PNG), "index" : None}
         
         il = wx.ImageList(16, 16)
         index =0
-        for code, dictImage in self.dictImages.iteritems() :
+        for code, dictImage in self.dictImages.items() :
             il.Add(dictImage["img"])
             dictImage["index"] = index
             index += 1
@@ -110,7 +110,7 @@ class CTRL(CT.CustomTreeCtrl):
             typeTransports = DICT_CATEGORIES[categorie]["type"]
             
             # Ajout catégorie
-            if dictResultats.has_key(categorie) == False :
+            if (categorie in dictResultats) == False :
                 dictResultats[categorie] = {"lignes":[], "arrets":[], "lieux":[]}
             
             # Ajout Ligne
@@ -134,7 +134,7 @@ class CTRL(CT.CustomTreeCtrl):
         # Remplissage
         listeCategories = []
         if len(dictResultats) > 0 :
-            listeCategories = dictResultats.keys() 
+            listeCategories = list(dictResultats.keys()) 
         listeCategories.sort() 
         
         for categorie in listeCategories :
@@ -150,7 +150,7 @@ class CTRL(CT.CustomTreeCtrl):
             # Lignes
             listeLignes = []
             for IDligne in dictResultats[categorie]["lignes"] :
-                if dictLignes.has_key(IDligne) :
+                if IDligne in dictLignes :
                     label = dictLignes[IDligne]
                 else :
                     label = _(u"Ligne inconnue")
@@ -165,11 +165,11 @@ class CTRL(CT.CustomTreeCtrl):
 
                 # Arrêts
                 for IDarret in dictResultats[categorie]["arrets"] :
-                    if dictArrets.has_key(IDarret) :
+                    if IDarret in dictArrets :
                         label = dictArrets[IDarret]["nom"]
                     else :
                         label = _(u"Arrêt inconnu")
-                    if IDarret == None or (dictArrets.has_key(IDarret) and dictArrets[IDarret]["IDligne"] == IDligne):
+                    if IDarret == None or (IDarret in dictArrets and dictArrets[IDarret]["IDligne"] == IDligne):
                         brancheArret = self.AppendItem(brancheLigne, label, ct_type=1)
                         self.SetPyData(brancheArret, {"categorie":"arrets", "code":IDarret})
                         brancheArret.Check() 
@@ -178,7 +178,7 @@ class CTRL(CT.CustomTreeCtrl):
             # Lieux
             listeLieux = []
             for IDlieu in dictResultats[categorie]["lieux"] :
-                if dictLieux.has_key(IDlieu) :
+                if IDlieu in dictLieux :
                     label = dictLieux[IDlieu]
                 else :
                     label = _(u"Lieu inconnu")
@@ -209,7 +209,7 @@ class CTRL(CT.CustomTreeCtrl):
         for branche in self.listeBranches :
             if self.IsItemChecked(branche) == True :
                 data = self.GetPyData(branche)
-                if dictCoches.has_key(data["categorie"]) == False :
+                if (data["categorie"] in dictCoches) == False :
                     dictCoches[data["categorie"]] = []
                 dictCoches[data["categorie"]].append(data["code"])
         return dictCoches

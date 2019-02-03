@@ -108,13 +108,13 @@ class CTRL_Banque(CTRL_Ultrachoice.CTRL):
         return listeItems
 
     def SetID(self, ID=0):
-        for index, values in self.dictDonnees.iteritems():
+        for index, values in self.dictDonnees.items():
             if values["ID"] == ID :
                  self.SetSelection2(index)
 
     def GetID(self):
         index = self.GetSelection2()
-        if index == -1 or self.dictDonnees.has_key(index) == False : 
+        if index == -1 or (index in self.dictDonnees) == False : 
             return None
         return self.dictDonnees[index]["ID"]
 
@@ -169,7 +169,7 @@ class CTRL_Titulaire(wx.Choice):
     def SetID(self, ID=0):
         if ID == None :
             self.SetSelection(0)
-        for index, values in self.dictDonnees.iteritems():
+        for index, values in self.dictDonnees.items():
             if values["ID"] == ID :
                  self.SetSelection(index)
 

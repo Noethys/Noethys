@@ -85,7 +85,7 @@ def Impression(dictDonnees={}, nomDoc=FonctionsPerso.GenerationNomDoc("RESERVATI
     
     # Tableau NOM INDIVIDU
     totalFacturationFamille = 0.0
-    for IDindividu, dictIndividu in dictDonnees.iteritems() :
+    for IDindividu, dictIndividu in dictDonnees.items() :
         nom = dictIndividu["nom"]
         prenom = dictIndividu["prenom"]
         date_naiss = dictIndividu["date_naiss"]
@@ -124,7 +124,7 @@ def Impression(dictDonnees={}, nomDoc=FonctionsPerso.GenerationNomDoc("RESERVATI
     
         # Tableau NOM ACTIVITE
         listePrestationsUtilisees = []
-        for IDactivite, dictActivite in dictIndividu["activites"].iteritems() :
+        for IDactivite, dictActivite in dictIndividu["activites"].items() :
             texteActivite = dictActivite["nom"]
             if dictActivite["agrement"] != None :
                 texteActivite += dictActivite["agrement"]
@@ -158,7 +158,7 @@ def Impression(dictDonnees={}, nomDoc=FonctionsPerso.GenerationNomDoc("RESERVATI
                             
             # lignes DATES
             listeDates = []
-            for date, dictDates in dictActivite["dates"].iteritems() :
+            for date, dictDates in dictActivite["dates"].items() :
                 listeDates.append(date)
             listeDates.sort() 
             
@@ -173,7 +173,7 @@ def Impression(dictDonnees={}, nomDoc=FonctionsPerso.GenerationNomDoc("RESERVATI
                 listeEtats = []
                 listeConso = []
                 listePrestations = []
-                for IDunite, dictUnite in dictDate.iteritems() :
+                for IDunite, dictUnite in dictDate.items() :
                     nomUnite = dictUnite["nomUnite"]
                     etat = dictUnite["etat"]
                     
@@ -276,8 +276,8 @@ def Impression(dictDonnees={}, nomDoc=FonctionsPerso.GenerationNomDoc("RESERVATI
     # Enregistrement et ouverture du PDF
     try :
         doc.build(story)
-    except Exception, err :
-        print "Erreur dans ouverture PDF :", err
+    except Exception as err :
+        print("Erreur dans ouverture PDF :", err)
         if "Permission denied" in err :
             dlg = wx.MessageDialog(None, _(u"Noethys ne peut pas créer le PDF.\n\nVeuillez vérifier qu'un autre PDF n'est pas déjà ouvert en arrière-plan..."), _(u"Erreur d'édition"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()

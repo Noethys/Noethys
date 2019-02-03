@@ -244,8 +244,8 @@ class Impression():
         # Enregistrement et ouverture du PDF
         try :
             doc.build(story)
-        except Exception, err :
-            print "Erreur dans ouverture PDF :", err
+        except Exception as err :
+            print("Erreur dans ouverture PDF :", err)
             if "Permission denied" in err :
                 dlg = wx.MessageDialog(None, _(u"Noethys ne peut pas créer le PDF.\n\nVeuillez vérifier qu'un autre PDF n'est pas déjà ouvert en arrière-plan..."), _(u"Erreur d'édition"), wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()

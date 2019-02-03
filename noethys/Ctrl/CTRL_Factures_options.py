@@ -362,7 +362,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
 
     def Validation(self):
         """ Validation des données saisies """
-        for nom, valeur in self.GetPropertyValues().iteritems() :
+        for nom, valeur in self.GetPropertyValues().items() :
             propriete = self.GetPropertyByName(nom)
             if self.GetPropertyAttribute(propriete, "obligatoire") == True :
                 if valeur == "" or valeur == None :
@@ -379,7 +379,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         # Recherche les paramètres mémorisés
         dictParametres = UTILS_Parametres.ParametresCategorie(mode="get", categorie="impression_facture", dictParametres=dictValeurs)
         # Envoie les paramètres dans le contrôle
-        for nom, valeur in dictParametres.iteritems() :
+        for nom, valeur in dictParametres.items() :
             propriete = self.GetPropertyByName(nom)
             ancienneValeur = propriete.GetValue()
             propriete.SetValue(valeur)
@@ -464,7 +464,7 @@ class ListBox_Messages(wx.ListBox):
         index = self.GetSelection()
         if index == -1 : return None
         IDmessage = self.GetClientData(index)
-        if self.dictDonnees.has_key(IDmessage) :
+        if IDmessage in self.dictDonnees :
             return self.dictDonnees[IDmessage]
         else:
             return None
@@ -727,7 +727,7 @@ class CTRL(wx.Panel):
         # Récupération des paramètres
         if self.ctrl_parametres.Validation() == False :
             return False
-        for nom, valeur in self.ctrl_parametres.GetValeurs().iteritems()  :
+        for nom, valeur in self.ctrl_parametres.GetValeurs().items()  :
             dictOptions[nom] = valeur
 
         # Récupération des messages

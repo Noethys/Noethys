@@ -157,19 +157,19 @@ class CTRL(HTL.HyperTreeList):
             date_saisie = DateEngEnDateDD(date_saisie)
             
             # Date
-            if dictConso.has_key(date) == False :
+            if (date in dictConso) == False :
                 dictConso[date] = {}
             # Activité
-            if dictConso[date].has_key(IDactivite) == False :
+            if (IDactivite in dictConso[date]) == False :
                 dictConso[date][IDactivite] = {}
             # Groupe
-            if dictConso[date][IDactivite].has_key(IDgroupe) == False :
+            if (IDgroupe in dictConso[date][IDactivite]) == False :
                 dictConso[date][IDactivite][IDgroupe] = {}
             # Evènement
-            if dictConso[date][IDactivite][IDgroupe].has_key(IDevenement) == False :
+            if (IDevenement in dictConso[date][IDactivite][IDgroupe]) == False :
                 dictConso[date][IDactivite][IDgroupe][IDevenement] = {}
             # Individu
-            if dictConso[date][IDactivite][IDgroupe][IDevenement].has_key(IDindividu) == False :
+            if (IDindividu in dictConso[date][IDactivite][IDgroupe][IDevenement]) == False :
                 dictConso[date][IDactivite][IDgroupe][IDevenement][IDindividu] = []
                 
             dictTemp = {
@@ -180,14 +180,14 @@ class CTRL(HTL.HyperTreeList):
                 }
             dictConso[date][IDactivite][IDgroupe][IDevenement][IDindividu].append(dictTemp)
             
-            if dictActivites.has_key(IDactivite) == False :
+            if (IDactivite in dictActivites) == False :
                 dictActivites[IDactivite] = nomActivite
-            if dictGroupes.has_key(IDgroupe) == False :
+            if (IDgroupe in dictGroupes) == False :
                 dictGroupes[IDgroupe] = nomGroupe
-            if dictIndividus.has_key(IDindividu) == False :
+            if (IDindividu in dictIndividus) == False :
                 dictIndividus[IDindividu] = {"nomIndividu" : u"%s %s" % (nomIndividu, prenomIndividu), "IDfamille" : IDfamille }
 
-            if dictEvenements.has_key(IDevenement) == False and IDevenement != None :
+            if (IDevenement in dictEvenements) == False and IDevenement != None :
                 dictEvenements[IDevenement] = nomEvenement
 
         return dictConso, dictActivites, dictGroupes, dictIndividus, dictEvenements
@@ -210,7 +210,7 @@ class CTRL(HTL.HyperTreeList):
         self.listeImpression = []
         
         # Branches DATE
-        listeDates = dictConso.keys()
+        listeDates = list(dictConso.keys())
         listeDates.sort() 
         
         for date in listeDates :
@@ -220,7 +220,7 @@ class CTRL(HTL.HyperTreeList):
             self.SetItemBackgroundColour(niveauDate, wx.Colour(*COULEUR_FOND_REGROUPEMENT))
             
             # Branches Activités
-            listeActivites = dictConso[date].keys()
+            listeActivites = list(dictConso[date].keys())
             listeActivites.sort() 
             
             for IDactivite in listeActivites :
@@ -234,7 +234,7 @@ class CTRL(HTL.HyperTreeList):
                 
                 # Branches Groupe
                 listeImpressionGroupes = []
-                listeGroupes = dictConso[date][IDactivite].keys()
+                listeGroupes = list(dictConso[date][IDactivite].keys())
                 listeGroupes.sort() 
                 
                 for IDgroupe in listeGroupes :
@@ -244,7 +244,7 @@ class CTRL(HTL.HyperTreeList):
                     self.SetItemBold(niveauGroupe, True)
 
                     # Parcourt les évènements
-                    for IDevenement, dictTemp in dictConso[date][IDactivite][IDgroupe].iteritems() :
+                    for IDevenement, dictTemp in dictConso[date][IDactivite][IDgroupe].items() :
 
                         if IDevenement != None :
                             parent = self.AppendItem(niveauGroupe, dictEvenements[IDevenement])
@@ -256,7 +256,7 @@ class CTRL(HTL.HyperTreeList):
                         # Branches Individus
                         listeImpressionIndividus = []
                         listeIndividus = []
-                        for IDindividu, listeConso in dictTemp.iteritems() :
+                        for IDindividu, listeConso in dictTemp.items() :
                             listeIDconso = []
                             for dictConsoIndividu in listeConso :
                                 listeIDconso.append(dictConsoIndividu["IDconso"])
@@ -289,13 +289,13 @@ class CTRL(HTL.HyperTreeList):
                                     dateSaisie = date_saisie
 
                                 # Etat des places
-                                if self.dictUnitesRemplissage.has_key(IDunite) :
+                                if IDunite in self.dictUnitesRemplissage :
                                     listePlacesRestantes = []
                                     for IDuniteRemplissage in self.dictUnitesRemplissage[IDunite] :
                                         key = (date, IDactivite, IDgroupe, IDuniteRemplissage, IDevenement)
-                                        if dictPlacesRestantes.has_key(key) :
+                                        if key in dictPlacesRestantes :
                                             nbrePlacesRestantes = dictPlacesRestantes[key]
-                                        elif self.dictEtatPlaces.has_key(key) :
+                                        elif key in self.dictEtatPlaces :
                                             if IDevenement == None :
                                                 nbrePlacesRestantes = self.dictEtatPlaces[key]["remplissage"]["nbrePlacesRestantes"]
                                             else :
@@ -314,7 +314,7 @@ class CTRL(HTL.HyperTreeList):
                             if placeDispo == True :
                                 for dictUnite in dictConso[date][IDactivite][IDgroupe][IDevenement][IDindividu] :
                                     IDunite = dictUnite["IDunite"]
-                                    if self.dictUnitesRemplissage.has_key(IDunite) :
+                                    if IDunite in self.dictUnitesRemplissage :
                                         for IDuniteRemplissage in self.dictUnitesRemplissage[IDunite] :
                                             key = (date, IDactivite, IDgroupe, IDuniteRemplissage, IDevenement)
                                             #self.dictEtatPlaces[key]["remplissage"]["nbrePlacesRestantes"] -= 1

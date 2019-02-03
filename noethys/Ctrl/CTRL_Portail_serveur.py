@@ -104,7 +104,7 @@ class Serveur(Thread):
                         self.parent.SetImage("on")
                         self.parent.MAJ_bouton()
 
-                except Exception, err :
+                except Exception as err :
                     if not str(err).startswith("The C++ part"):
                         raise
 

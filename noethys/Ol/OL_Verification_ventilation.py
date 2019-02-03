@@ -112,15 +112,15 @@ def Importation(onlyNonVentiles=True, IDcompte_payeur=None):
     # Traitement des données
     listeListeView = []
     for IDcompte_payeur, IDfamille in listeComptes :
-        if dictVentilations.has_key(IDcompte_payeur) :
+        if IDcompte_payeur in dictVentilations :
             total_ventilations = FloatToDecimal(dictVentilations[IDcompte_payeur])
         else:
             total_ventilations = FloatToDecimal(0.0)
-        if dictPrestations.has_key(IDcompte_payeur) :
+        if IDcompte_payeur in dictPrestations :
             total_prestations = FloatToDecimal(dictPrestations[IDcompte_payeur])
         else:
             total_prestations = FloatToDecimal(0.0)
-        if dictReglements.has_key(IDcompte_payeur) :
+        if IDcompte_payeur in dictReglements :
             total_reglements = FloatToDecimal(dictReglements[IDcompte_payeur])
         else:
             total_reglements = FloatToDecimal(0.0)
@@ -145,7 +145,7 @@ class Track(object):
         self.total_ventilations = donnees[2]
         self.total_reglements = donnees[3]
         self.total_prestations = donnees[4]
-        if dictTitulaires.has_key(self.IDfamille) :
+        if self.IDfamille in dictTitulaires :
             self.nomsTitulaires =  dictTitulaires[self.IDfamille]["titulairesSansCivilite"]
         else:
             self.nomsTitulaires = _(u"Sans titulaires")
@@ -177,11 +177,11 @@ def VentilationAuto(IDcompte_payeur=None, IDreglement=None):
     for IDventilation, IDreglement, IDprestation, montant in listeDonnees :
         dictVentilations[IDventilation] = {"IDreglement" : IDreglement, "IDprestation" : IDprestation, "montant" : FloatToDecimal(montant)}
         
-        if dictVentilationsReglement.has_key(IDreglement) == False :
+        if (IDreglement in dictVentilationsReglement) == False :
             dictVentilationsReglement[IDreglement] = []
         dictVentilationsReglement[IDreglement].append(IDventilation)
 
-        if dictVentilationsPrestation.has_key(IDprestation) == False :
+        if (IDprestation in dictVentilationsPrestation) == False :
             dictVentilationsPrestation[IDprestation] = []
         dictVentilationsPrestation[IDprestation].append(IDventilation)
     
@@ -201,7 +201,7 @@ def VentilationAuto(IDcompte_payeur=None, IDreglement=None):
         IDprestation = dictPrestation["IDprestation"]
                         
         montantVentilation = FloatToDecimal(0.0)
-        if dictVentilationsPrestation.has_key(IDprestation) :
+        if IDprestation in dictVentilationsPrestation :
             for IDventilation in dictVentilationsPrestation[IDprestation] :
                 montantVentilation += dictVentilations[IDventilation]["montant"]
         
@@ -231,7 +231,7 @@ def VentilationAuto(IDcompte_payeur=None, IDreglement=None):
         
         # Recherche s'il reste du crédit à ventiler dans ce règlement
         montantVentilation = FloatToDecimal(0.0)
-        if dictVentilationsReglement.has_key(IDreglement) :
+        if IDreglement in dictVentilationsReglement :
             for IDventilation in dictVentilationsReglement[IDreglement] :
                 montantVentilation += dictVentilations[IDventilation]["montant"]
                 
@@ -245,7 +245,7 @@ def VentilationAuto(IDcompte_payeur=None, IDreglement=None):
                 IDprestation = dictPrestation["IDprestation"]
                                 
                 montantVentilation = FloatToDecimal(0.0)
-                if dictVentilationsPrestation.has_key(IDprestation) :
+                if IDprestation in dictVentilationsPrestation :
                     for IDventilation in dictVentilationsPrestation[IDprestation] :
                         montantVentilation += dictVentilations[IDventilation]["montant"]
                 
@@ -261,7 +261,7 @@ def VentilationAuto(IDcompte_payeur=None, IDreglement=None):
                         
                         # Modification d'une ventilation existante
                         ventilationTrouvee = False
-                        if dictVentilationsPrestation.has_key(IDprestation) :
+                        if IDprestation in dictVentilationsPrestation :
                             for IDventilation in dictVentilationsPrestation[IDprestation] :
                                 if dictVentilations[IDventilation]["IDreglement"] == IDreglement :
                                     nouveauMontant = montant + montantVentilation
@@ -287,10 +287,10 @@ def VentilationAuto(IDcompte_payeur=None, IDreglement=None):
                             
                             # Mémorisation de la nouvelle ventilation
                             dictVentilations[IDventilation] = {"IDreglement" : IDreglement, "IDprestation" : IDprestation, "montant" : montant}
-                            if dictVentilationsReglement.has_key(IDreglement) == False :
+                            if (IDreglement in dictVentilationsReglement) == False :
                                 dictVentilationsReglement[IDreglement] = []
                             dictVentilationsReglement[IDreglement].append(IDventilation)
-                            if dictVentilationsPrestation.has_key(IDprestation) == False :
+                            if (IDprestation in dictVentilationsPrestation) == False :
                                 dictVentilationsPrestation[IDprestation] = []
                             dictVentilationsPrestation[IDprestation].append(IDventilation)
                             ResteAVentiler -= montant

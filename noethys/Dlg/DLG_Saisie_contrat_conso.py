@@ -19,7 +19,7 @@ from Ctrl import CTRL_Saisie_date
 from Ol import OL_Contrats_planning_elements
 import GestionDB
 from Utils import UTILS_Dates
-import cPickle
+from six.moves import cPickle
 import copy
 import wx.lib.dialogs as dialogs
 
@@ -60,7 +60,7 @@ class CTRL_Modeles(wx.Choice):
         return listeItems
 
     def SetID(self, ID=0):
-        for index, values in self.dictDonnees.iteritems():
+        for index, values in self.dictDonnees.items():
             if values["ID"] == ID :
                  self.SetSelection(index)
 
@@ -306,8 +306,8 @@ class Dialog(wx.Dialog):
         listeDonnees = DB.ResultatReq()
         DB.Close() 
         for IDunite_incompat, IDunite, IDunite_incompatible in listeDonnees :
-            if dictUnites.has_key(IDunite) : dictUnites[IDunite]["unites_incompatibles"].append(IDunite_incompatible)
-            if dictUnites.has_key(IDunite_incompatible) : dictUnites[IDunite_incompatible]["unites_incompatibles"].append(IDunite)
+            if IDunite in dictUnites : dictUnites[IDunite]["unites_incompatibles"].append(IDunite_incompatible)
+            if IDunite_incompatible in dictUnites : dictUnites[IDunite_incompatible]["unites_incompatibles"].append(IDunite)
 
         return dictUnites
     
@@ -440,16 +440,16 @@ class Dialog(wx.Dialog):
                     IDunite = dictUnite["IDunite"]
                     options = dictUnite["options"]
                     
-                    if options.has_key("heure_debut"):
+                    if "heure_debut" in options:
                         heure_debut = options["heure_debut"]
                     else :
                         heure_debut = self.dictUnites[IDunite]["heure_debut"]
-                    if options.has_key("heure_fin"):
+                    if "heure_fin" in options:
                         heure_fin = options["heure_fin"]
                     else :
                         heure_fin = self.dictUnites[IDunite]["heure_fin"]
 
-                    if options.has_key("quantite"):
+                    if "quantite" in options:
                         quantite = options["quantite"]
                     else :
                         quantite = None
@@ -497,7 +497,7 @@ class Dialog(wx.Dialog):
                                     valide = False
                             
                     # Vérifie si unité ouverte
-                    if self.IDgroupe != None and self.dictOuvertures.has_key((dictConso["date"], dictConso["IDunite"], self.IDgroupe)) == False :
+                    if self.IDgroupe != None and ((dictConso["date"], dictConso["IDunite"], self.IDgroupe) in self.dictOuvertures) == False :
                         listeAnomalies.append(_(u"%s : Unité %s fermée") % (dateFr, self.dictUnites[dictConso["IDunite"]]["nom"]))
                         valide = False
                             

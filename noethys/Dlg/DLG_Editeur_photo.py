@@ -15,9 +15,7 @@ from Utils.UTILS_Traduction import _
 import wx
 from Ctrl import CTRL_Bouton_image
 from PIL import Image
-import cStringIO
-import GestionDB
-import FonctionsPerso
+import six
 
 
 def pil2wx(image):
@@ -31,7 +29,7 @@ def pil2wx(image):
 
 def load_image(fn):
     """Read a file into PIL Image object. Return the image and file size"""
-    buf=cStringIO.StringIO()
+    buf = six.BytesIO()
     f=open(fn,"rb")
     while 1:
         rdbuf=f.read(8192)
@@ -46,7 +44,7 @@ def save_image_buf(image,q=wx.IMAGE_QUALITY_HIGH):
     """Save a PIL Image into a byte buffer as a JPEG with the given quality.
     Return the buffer and file size.
     """
-    buf=cStringIO.StringIO()
+    buf = six.BytesIO()
     image.save(buf, format='JPEG',quality=q)
     buf.seek(0)
     return buf,len(buf.getvalue())
@@ -87,7 +85,7 @@ class ImgBox(wx.Window):
         
     def InitImage(self):
         # Chargement de l'image source
-        if type(self.fichierImageSource) == str or type(self.fichierImageSource) == unicode :
+        if type(self.fichierImageSource) == str or type(self.fichierImageSource) == six.text_type :
             self.sourcePIL = load_image(self.fichierImageSource)
         else :
             self.sourcePIL = self.fichierImageSource
@@ -274,14 +272,14 @@ class ImgBox(wx.Window):
     def evt_key(self, event):
         """ Touches clavier """
         keyCode = event.GetKeyCode()
-        print keyCode
+        print(keyCode)
 
     def GetBuffer(self):
         # Récupération de l'image dans le cadre de sélection
         tailleImg = self.selection.GetSize()
         imgTemp = self.selection.GetSubBitmap( (0, 0, tailleImg[0], tailleImg[1]) ) 
         imgFinale = wxtopil(imgTemp.ConvertToImage())
-        buffer = cStringIO.StringIO()
+        buffer = six.BytesIO()
         imgFinale.save(buffer, format="JPEG", quality=100)
         buffer.seek(0)
         return buffer

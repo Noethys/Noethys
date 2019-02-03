@@ -241,7 +241,7 @@ class CTRL(CTRL_Propertygrid.CTRL):
     def Validation(self):
         """ Validation des données saisies """
         # Vérifie que les données obligatoires ont été saisies
-        for nom, valeur in self.GetPropertyValues().iteritems():
+        for nom, valeur in self.GetPropertyValues().items():
             propriete = self.GetPropertyByName(nom)
             if self.GetPropertyAttribute(propriete, "obligatoire") == True:
                 if valeur == "" or valeur == None:
@@ -274,7 +274,7 @@ class CTRL(CTRL_Propertygrid.CTRL):
             return
 
         # Envoi des paramètres au Ctrl
-        for nom, valeur in dictParametres.iteritems():
+        for nom, valeur in dictParametres.items():
             try :
                 propriete = self.GetPropertyByName(nom)
                 propriete.SetValue(valeur)

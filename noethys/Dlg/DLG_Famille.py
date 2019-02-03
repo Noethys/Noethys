@@ -109,7 +109,7 @@ class Notebook(wx.Notebook):
         self.Bind(wx.EVT_NOTEBOOK_PAGE_CHANGED, self.OnPageChanged)
         
     def GetPageAvecCode(self, codePage=""):
-        if self.dictPages.has_key(codePage):
+        if codePage in self.dictPages:
             return self.dictPages[codePage]["ctrl"]
         else:
             return None
@@ -146,7 +146,7 @@ class Notebook(wx.Notebook):
         wx.CallLater(1, page.MAJ)
     
     def MAJpage(self, codePage=""):
-        if self.dictPages.has_key(codePage):
+        if codePage in self.dictPages:
             page = self.dictPages[codePage]["ctrl"]
             wx.CallLater(1, page.MAJ)
 
@@ -154,7 +154,7 @@ class Notebook(wx.Notebook):
         parametres = UTILS_Config.GetParametre("fiche_famille_pages", defaut={})
         dictParametres = {}
         for codePage, labelPage, ctrlPage, imgPage in self.listePages:
-            if parametres.has_key(codePage):
+            if codePage in parametres:
                 afficher = parametres[codePage]
             else :
                 afficher = True
@@ -171,7 +171,7 @@ class Notebook(wx.Notebook):
         for codePage, labelPage, ctrlPage, imgPage in self.listePages:
             if codePage not in self.pagesObligatoires :
                 listeLabels.append(labelPage)
-                if dictParametres.has_key(codePage):
+                if codePage in dictParametres:
                     if dictParametres[codePage] == True :
                         listeSelections.append(index)
                 listeCodes.append(codePage)
@@ -270,7 +270,7 @@ class Dialog(wx.Dialog):
             wx.CallAfter(self.CreerPremierIndividu)
 
         # Cache le bouton de saisie d'un règlement si l'onglet Règlements est caché
-        if self.notebook.dictPages.has_key("reglements") == False :
+        if ("reglements" in self.notebook.dictPages) == False :
             self.bouton_saisie_reglement.Show(False)
 
         # MAJ de l'onglet Informations
@@ -904,7 +904,7 @@ if __name__ == "__main__":
     import time
     heure_debut = time.time()
     dialog_1 = Dialog(None, IDfamille=1)
-    print "Temps de chargement fiche famille =", time.time() - heure_debut
+    print("Temps de chargement fiche famille =", time.time() - heure_debut)
     app.SetTopWindow(dialog_1)
     dialog_1.ShowModal()
     app.MainLoop()

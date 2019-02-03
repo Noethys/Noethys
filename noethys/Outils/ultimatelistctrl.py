@@ -186,8 +186,6 @@ import math
 import bisect
 import types
 import zlib
-import cStringIO
-
 from wx.lib.expando import ExpandoTextCtrl
 
 # Version Info
@@ -587,7 +585,7 @@ def GetdragcursorBitmap():
     return wx.BitmapFromImage(GetdragcursorImage())
 
 def GetdragcursorImage():
-    stream = cStringIO.StringIO(GetdragcursorData())
+    stream = six.BytesIO(GetdragcursorData())
     return wx.ImageFromStream(stream)
 
 

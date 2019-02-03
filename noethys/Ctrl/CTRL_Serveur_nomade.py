@@ -44,8 +44,8 @@ try :
     from twisted.internet import reactor, protocol
     Protocol = protocol.Protocol
     IMPORT_TWISTED = True
-except Exception, err :
-    print "Erreur d'importation de Twisted : ", err
+except Exception as err :
+    print("Erreur d'importation de Twisted : ", err)
     IMPORT_TWISTED = False
     Protocol = Erreur
     
@@ -227,8 +227,8 @@ def StartServer(log=None):
         reactor.registerWxApp(wx.GetApp())
         port = int(UTILS_Config.GetParametre("synchro_serveur_port", defaut=PORT_DEFAUT))
         reactor.listenTCP(port, factory)
-    except Exception, err:
-        print ("Erreur lancement serveur Nomadhys :", err)
+    except Exception as err:
+        print(("Erreur lancement serveur Nomadhys :", err))
         log.EcritLog(_(u"Erreur dans le lancement du serveur Nomadhys [factory] :") )
         log.EcritLog(err)
 
@@ -240,8 +240,8 @@ def StartServer(log=None):
         ip_local = s.getsockname()[0]
         s.close()
         log.EcritLog(_(u"IP locale : %s") % ip_local)
-    except Exception, err:
-        print ("Erreur lancement serveur Nomadhys :", err)
+    except Exception as err:
+        print(("Erreur lancement serveur Nomadhys :", err))
         log.EcritLog(_(u"Erreur dans le lancement du serveur Nomadhys [IP locale] :"))
         log.EcritLog(err)
 
@@ -249,8 +249,8 @@ def StartServer(log=None):
         # IP internet
         ip_internet = json.loads(urlopen("https://jsonip.com", timeout=1).read())["ip"]
         log.EcritLog(_(u"IP internet : %s") % ip_internet)
-    except Exception, err:
-        print ("Erreur lancement serveur Nomadhys :", err)
+    except Exception as err:
+        print(("Erreur lancement serveur Nomadhys :", err))
         log.EcritLog(_(u"Erreur dans le lancement du serveur Nomadhys [IP internet] :"))
         log.EcritLog(err)
 
@@ -260,8 +260,8 @@ def StartServer(log=None):
     # Démarrage serveur
     try :
         reactor.run()
-    except Exception, err :
-        print ("Erreur lancement serveur Nomadhys :", err)
+    except Exception as err :
+        print(("Erreur lancement serveur Nomadhys :", err))
         log.EcritLog(_(u"Erreur dans le lancement du serveur Nomadhys [reactor] :") )
         log.EcritLog(err)
 
@@ -269,7 +269,7 @@ def StartServer(log=None):
 def StopServer():
     try :
         reactor.stop()
-    except Exception, err :
+    except Exception as err :
         pass
         
 # ----------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -363,7 +363,7 @@ class Panel(wx.Panel):
         self.MAJ() 
 
     def OnBoutonOptions(self, event=None):
-        print "options"
+        print("options")
     
     def SetImage(self, etat="on"):
         if etat == "upload" : 

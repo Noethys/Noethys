@@ -55,7 +55,7 @@ class Track(object):
             self.quantite = donnees["quantite"]
             self.IDfamille = donnees["IDfamille"]
             self.nomUnite = dictUnites[self.IDunite]
-            if dictIndividus.has_key(self.IDindividu) :
+            if self.IDindividu in dictIndividus :
                 self.nomIndividu = dictIndividus[self.IDindividu]
             else :
                 self.nomIndividu = _(u"Individu ID%d inexistant") % self.IDindividu
@@ -69,7 +69,7 @@ class Track(object):
             self.IDindividu = donnees["IDindividu"]
             self.date = donnees["date"]
             self.texte = donnees["texte"]
-            if dictIndividus.has_key(self.IDindividu) :
+            if self.IDindividu in dictIndividus :
                 self.nomIndividu = dictIndividus[self.IDindividu]
             else :
                 self.nomIndividu = _(u"Individu ID%d inexistant") % self.IDindividu
@@ -77,7 +77,7 @@ class Track(object):
     
         # Recherche anomalie
         self.anomalie = False
-        if dictIndividus.has_key(self.IDindividu) == False :
+        if (self.IDindividu in dictIndividus) == False :
             self.anomalie = _(u"Individu ID%d inexistant dans le fichier") % donnees["IDindividu"]
 
     
@@ -155,9 +155,9 @@ class ListView(GroupListView):
                 for IDparametre, nom, valeur in listeParametres :
                     dictParametres[nom] = valeur
                 
-                if dictParametres.has_key("nom_appareil") == False :
+                if ("nom_appareil" in dictParametres) == False :
                     dictParametres["nom_appareil"] = "Appareil inconnu"
-                if dictParametres.has_key("ID_appareil") == False :
+                if ("ID_appareil" in dictParametres) == False :
                     dictParametres["ID_appareil"] = "IDAppareil inconnu"
                 
                 # Mémorise l'IDappareil

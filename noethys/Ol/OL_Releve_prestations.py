@@ -70,10 +70,10 @@ class Track(object):
         # Options
         self.listeOptions = []
                 
-        if self.dictOptions.has_key("impayes") and self.dictOptions["impayes"] == True :
+        if "impayes" in self.dictOptions and self.dictOptions["impayes"] == True :
             self.listeOptions.append(_(u"Uniquement les impayés"))
         
-        if self.dictOptions.has_key("regroupement") :
+        if "regroupement" in self.dictOptions :
             if self.dictOptions["regroupement"] == "date" :
                 self.listeOptions.append(_(u"Regroupement par date"))
             if self.dictOptions["regroupement"] == "mois" :
@@ -81,7 +81,7 @@ class Track(object):
             if self.dictOptions["regroupement"] == "annee" :
                 self.listeOptions.append(_(u"Regroupement par année"))
                 
-        if self.dictOptions.has_key("conso") and self.dictOptions["conso"] == True :
+        if "conso" in self.dictOptions and self.dictOptions["conso"] == True :
             self.listeOptions.append(_(u"Détail des consommations"))
         
         self.label_options = ", ".join(self.listeOptions)

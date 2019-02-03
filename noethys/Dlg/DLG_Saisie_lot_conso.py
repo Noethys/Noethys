@@ -63,7 +63,7 @@ class CTRL_Individus(wx.CheckListBox):
         listeInscriptions = DB.ResultatReq()
         dictInscriptions = {}
         for IDinscription, IDactivite, IDindividu in listeInscriptions :
-            if dictInscriptions.has_key(IDindividu) == False :
+            if (IDindividu in dictInscriptions) == False :
                 dictInscriptions[IDindividu] = []
             if IDindividu not in dictInscriptions[IDindividu] :
                 dictInscriptions[IDindividu].append(IDactivite)
@@ -72,7 +72,7 @@ class CTRL_Individus(wx.CheckListBox):
         listeValeurs = []
         for IDindividu, nom, prenom in listeIndividus :
             if prenom == None : prenom = u""
-            if dictInscriptions.has_key(IDindividu) :
+            if IDindividu in dictInscriptions :
                 inscriptions = dictInscriptions[IDindividu]
             else :
                 inscriptions = []
@@ -240,7 +240,7 @@ class CTRL_Activite(wx.Choice):
         self.SetItems(listeLabels)
 
     def SetActivite(self, IDactivite=None):
-        for index, IDactiviteTmp in self.dictDonnees.iteritems() :
+        for index, IDactiviteTmp in self.dictDonnees.items() :
             if IDactiviteTmp == IDactivite :
                 self.SetSelection(index)
 
@@ -574,7 +574,7 @@ class CTRL_Unites(HTL.HyperTreeList):
                         ctrl.SetHeureFin(dictTemp["options"]["heure_fin"])
         
                     if dictItem["type"] == "Multihoraires" :
-                        if dictTempMultihoraires.has_key(IDunite) == False :
+                        if (IDunite in dictTempMultihoraires) == False :
                             dictTempMultihoraires[IDunite] = 0
                         index = dictTempMultihoraires[IDunite]
                         if index > len(dictItem["controles"]) -1 :
@@ -1023,7 +1023,7 @@ class Dialog(wx.Dialog):
                     
                     # Récupération des données
                     dictOptions = {}
-                    for key, valeur in ctrl.GetDonnees().iteritems() :
+                    for key, valeur in ctrl.GetDonnees().items() :
                         dictOptions[key] = valeur
 
                     listeUnites.append({"IDunite":IDunite, "nom":nom, "type":typeUnite, "options":dictOptions})
@@ -1231,5 +1231,5 @@ if __name__ == u"__main__":
     dialog_1 = Dialog(None, listeIndividus=[46,], date_debut=datetime.date(2013, 6, 1), date_fin=datetime.date(2013, 6, 2), IDactivite="", mode_parametres=True)
     app.SetTopWindow(dialog_1)
     dialog_1.ShowModal()
-    print dialog_1.GetResultats() 
+    print(dialog_1.GetResultats()) 
     app.MainLoop()

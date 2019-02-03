@@ -126,7 +126,7 @@ class Timeline(TL.TimelinePerso):
             if quantite == None :
                 quantite = 1
 
-            if dictTitulaires.has_key(IDfamille) :
+            if IDfamille in dictTitulaires :
                 nomTitulaires = dictTitulaires[IDfamille]["titulairesSansCivilite"]
             else :
                 nomTitulaires = _(u"Famille inconnue")
@@ -152,7 +152,7 @@ class Timeline(TL.TimelinePerso):
 
         categorie_disponible = TL.Category(_(u"Stock disponible"), (233, 255, 156), True)
         categorie_loue = TL.Category(_(u"Quantité louée"), (204, 227, 250), True)
-        for periode, valeurs in dictPeriodes.iteritems():
+        for periode, valeurs in dictPeriodes.items():
             date_debut = periode[0]
 
             evt = TL.Event(date_debut, date_debut, str(valeurs["loue"]), categorie_loue)
@@ -251,7 +251,7 @@ class CTRL_Onglets(wx.Notebook):
     def GetDonnees(self):
         dictDonnees = {}
         for dictPage in self.listePages :
-            for key, valeur in dictPage["ctrl"].GetDonnees().iteritems() :
+            for key, valeur in dictPage["ctrl"].GetDonnees().items() :
                 dictDonnees[key] = valeur
         return dictDonnees
 

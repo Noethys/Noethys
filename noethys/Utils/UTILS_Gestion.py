@@ -17,6 +17,7 @@ from Ctrl import CTRL_Bouton_image
 import wx.lib.dialogs
 import GestionDB
 from Utils import UTILS_Dates
+import six
 
 
 class Track_periode(object):
@@ -67,7 +68,7 @@ class Gestion():
         liste_problemes = []
 
         # Formate les données reçues
-        if type(donnees) in (datetime.date, str, unicode) :
+        if type(donnees) in (datetime.date, str, six.text_type) :
             listeDonnees = [{"date" : donnees},]
         elif type(donnees) == dict :
             listeDonnees = [donnees,]
@@ -91,11 +92,11 @@ class Gestion():
             # Recherche le format de la donnée
             if type(donnees) == datetime.date:
                 date = donnees
-            elif type(donnees) in (str, unicode):
+            elif type(donnees) in (str, six.text_type):
                 date = UTILS_Dates.DateEngEnDateDD(donnees)
             elif type(donnees) == dict:
                 date = donnees["date"]
-                if type(date) in (str, unicode):
+                if type(date) in (str, six.text_type):
                     date = UTILS_Dates.DateEngEnDateDD(date)
 
             # Vérifie que la date n'est pas dans une période de gestion
@@ -223,7 +224,7 @@ if __name__ == u"__main__":
         {"date" : datetime.date(2017, 1, 2)},
     ]
 
-    print gestion.Verification(listeDonnees)
+    print(gestion.Verification(listeDonnees))
 
     #dialog_1 = DLG_Verrouillage(None)
     #app.SetTopWindow(dialog_1)

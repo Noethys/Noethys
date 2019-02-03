@@ -73,11 +73,11 @@ class Base(object) :
         self.dictContrat[key] = valeur
 
     def SetValeurs(self, dictValeurs={}):
-        for key, valeur in dictValeurs.iteritems() :
+        for key, valeur in dictValeurs.items() :
             self.dictContrat[key] = valeur
 
     def GetValeur(self, key=None, defaut=None):
-        if self.dictContrat.has_key(key) :
+        if key in self.dictContrat :
             return self.dictContrat[key]
         else :
             return defaut
@@ -87,10 +87,10 @@ class Base(object) :
         """ dict_valeurs : pour saisir des valeurs tests """
         # Récupération des données
         date_debut = self.GetValeur("date_debut")
-        if dict_valeurs.has_key("date_debut") :
+        if "date_debut" in dict_valeurs :
             date_debut = dict_valeurs["date_debut"]
         date_fin = self.GetValeur("date_fin")
-        if dict_valeurs.has_key("date_fin") :
+        if "date_fin" in dict_valeurs :
             date_fin = dict_valeurs["date_fin"]
         tracks_previsions = self.GetValeur("tracks_previsions", [])
         tracks_tarifs = self.GetValeur("tracks_tarifs", [])
@@ -650,7 +650,7 @@ class Base(object) :
             track = Track_conso(self, dictConso)
 
             liste_conso.append(track)
-            if dict_conso.has_key(date) == False :
+            if (date in dict_conso) == False :
                 dict_conso[date] = []
             dict_conso[date].append(track)
 

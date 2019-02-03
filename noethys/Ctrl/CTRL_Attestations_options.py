@@ -32,7 +32,7 @@ TEXTE_INTRO = _(u"Je soussigné{SIGNATAIRE_GENRE} {SIGNATAIRE_NOM}, {SIGNATAIRE_F
 
 
 def RemplaceMotsCles(texte="", dictValeurs={}):
-    for key, valeur, in dictValeurs.iteritems() :
+    for key, valeur, in dictValeurs.items() :
         if key in texte :
             texte = texte.replace(key, valeur)
     return texte
@@ -330,7 +330,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
 
     def Validation(self):
         """ Validation des données saisies """
-        for nom, valeur in self.GetPropertyValues().iteritems() :
+        for nom, valeur in self.GetPropertyValues().items() :
             propriete = self.GetPropertyByName(nom)
             if self.GetPropertyAttribute(propriete, "obligatoire") == True :
                 if valeur == "" or valeur == None :
@@ -348,7 +348,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         # Recherche les paramètres mémorisés
         dictParametres = UTILS_Parametres.ParametresCategorie(mode="get", categorie="impression_attestation", dictParametres=dictValeurs)
         # Envoie les paramètres dans le contrôle
-        for nom, valeur in dictParametres.iteritems() :
+        for nom, valeur in dictParametres.items() :
             propriete = self.GetPropertyByName(nom)
             ancienneValeur = propriete.GetValue() 
             propriete.SetValue(valeur)
@@ -391,7 +391,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         ancienneValeur = None
         propriete = self.GetPropertyByName("signataire")
         index = propriete.GetValue()
-        if index != None and self.dictDonnees["signataires"].has_key(index) :
+        if index != None and index in self.dictDonnees["signataires"] :
             ancienneValeur = self.dictDonnees["signataires"][index]["ID"]
             
         if len(self.listeActivites) == 0 : conditionActivites = "()"
@@ -421,7 +421,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
             propriete.SetValue(selectionDefaut)
         # Recherche le nom de l'utilisateur parmi la liste des signataires
         dictUtilisateur = UTILS_Identification.GetDictUtilisateur()
-        for index, dictDonnees in self.dictDonnees["signataires"].iteritems() :
+        for index, dictDonnees in self.dictDonnees["signataires"].items() :
             if ancienneValeur == dictDonnees["ID"] : 
                 propriete.SetValue(index)
                 break
@@ -434,7 +434,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
     def GetInfosSignataire(self):
         propriete = self.GetPropertyByName("signataire")
         index = propriete.GetValue()
-        if index == None or self.dictDonnees["signataires"].has_key(index) == False : 
+        if index == None or (index in self.dictDonnees["signataires"]) == False : 
             return None
         return self.dictDonnees["signataires"][index]
         
@@ -508,7 +508,7 @@ class CTRL(wx.Panel):
         # Récupération des paramètres
         if self.ctrl_parametres.Validation() == False :
             return False
-        for nom, valeur in self.ctrl_parametres.GetValeurs().iteritems()  :
+        for nom, valeur in self.ctrl_parametres.GetValeurs().items()  :
             dictOptions[nom] = valeur
         
         return dictOptions

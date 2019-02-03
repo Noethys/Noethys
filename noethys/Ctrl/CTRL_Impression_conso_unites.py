@@ -172,7 +172,7 @@ class CTRL(HTL.HyperTreeList):
         # Met les tracks de la base de données dans un dict
         self.dictTracksInitial = {}
         for track in self.listeTracks :
-            if self.dictTracksInitial.has_key(track.IDactivite) == False:
+            if (track.IDactivite in self.dictTracksInitial) == False:
                 self.dictTracksInitial[track.IDactivite] = []
             self.dictTracksInitial[track.IDactivite].append(track)
 
@@ -193,7 +193,7 @@ class CTRL(HTL.HyperTreeList):
     def Remplissage(self, selectionItem=None):
         # Regroupement
         listeKeys = []
-        for IDactivite, nomActivite in self.dictActivites.iteritems() :
+        for IDactivite, nomActivite in self.dictActivites.items() :
             key = (nomActivite, IDactivite)
             if key not in listeKeys :
                 listeKeys.append(key)
@@ -250,10 +250,10 @@ class CTRL(HTL.HyperTreeList):
     def GetDonnees(self):
         """ Récupère les résultats des données saisies """
         dictDonnees = {}
-        for IDactivite, listeTracks in self.dictTracksFinal.iteritems() :
+        for IDactivite, listeTracks in self.dictTracksFinal.items() :
             for track in listeTracks :
                 if track.affichage != None :
-                    if dictDonnees.has_key(IDactivite) == False:
+                    if (IDactivite in dictDonnees) == False:
                         dictDonnees[IDactivite] = []
                     dictDonnees[IDactivite].append((track.type, track.IDunite, track.affichage))
         return dictDonnees
@@ -264,17 +264,17 @@ class CTRL(HTL.HyperTreeList):
     def SetParametres(self, dictParametres={}):
         if dictParametres == None :
             return False
-        if dictParametres.has_key("unites") :
+        if "unites" in dictParametres :
             self.dictParametres = dictParametres["unites"]
 
         # Recherche les paramètres dans le profil de config
         self.dictTracksFinal = {}
         listeTracksTemp = self.listeTracks[:]
-        for IDactivite, listeUnites in self.dictParametres.iteritems():
-            if self.dictTracksFinal.has_key(IDactivite) == False:
+        for IDactivite, listeUnites in self.dictParametres.items():
+            if (IDactivite in self.dictTracksFinal) == False:
                 self.dictTracksFinal[IDactivite] = []
             for type, IDunite, affichage in listeUnites:
-                if self.dictTracksInitial.has_key(IDactivite):
+                if IDactivite in self.dictTracksInitial:
                     # Recherche si le track existe dans la liste initiale. Si oui, le récupère et le copie dans la liste finale
                     for track in self.dictTracksInitial[IDactivite] :
                         if track.type == type and track.IDunite == IDunite :
@@ -285,7 +285,7 @@ class CTRL(HTL.HyperTreeList):
         # Rajoute les tracks n'apparaissant pas dans le dict des paramètres
         for track in listeTracksTemp:
             IDactivite = track.IDactivite
-            if self.dictTracksFinal.has_key(IDactivite) == False:
+            if (IDactivite in self.dictTracksFinal) == False:
                 self.dictTracksFinal[IDactivite] = []
             self.dictTracksFinal[IDactivite].append(copy.deepcopy(track))
 
@@ -404,7 +404,7 @@ class MyFrame(wx.Frame):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonTest, self.boutonTest)
     
     def OnBoutonTest(self, event):
-        print self.ctrl.GetDonnees()
+        print(self.ctrl.GetDonnees())
         
 
 if __name__ == '__main__':

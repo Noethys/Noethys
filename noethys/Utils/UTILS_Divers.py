@@ -15,37 +15,37 @@ def DictionnaireImbrique(dictionnaire={}, cles=[], valeur=None):
     if len(cles) == 0 :
         return dictionnaire
     
-    if dictionnaire.has_key(cles[0]) == False :
+    if (cles[0] in dictionnaire) == False :
         dictionnaire[cles[0]] = {}
     if len(cles) == 1 : 
         if dictionnaire[cles[0]] == {} : dictionnaire[cles[0]] = valeur
         return dictionnaire
 
-    if dictionnaire[cles[0]].has_key(cles[1]) == False :
+    if (cles[1] in dictionnaire[cles[0]]) == False :
         dictionnaire[cles[0]][cles[1]] = {}
     if len(cles) == 2 : 
         if dictionnaire[cles[0]][cles[1]] == {} : dictionnaire[cles[0]][cles[1]] = valeur
         return dictionnaire
 
-    if dictionnaire[cles[0]][cles[1]].has_key(cles[2]) == False :
+    if (cles[2] in dictionnaire[cles[0]][cles[1]]) == False :
         dictionnaire[cles[0]][cles[1]][cles[2]] = {}
     if len(cles) == 3 : 
         if dictionnaire[cles[0]][cles[1]][cles[2]] == {} : dictionnaire[cles[0]][cles[1]][cles[2]] = valeur
         return dictionnaire
 
-    if dictionnaire[cles[0]][cles[1]][cles[2]].has_key(cles[3]) == False :
+    if (cles[3] in dictionnaire[cles[0]][cles[1]][cles[2]]) == False :
         dictionnaire[cles[0]][cles[1]][cles[2]][cles[3]] = {}
     if len(cles) == 4 : 
         if dictionnaire[cles[0]][cles[1]][cles[2]][cles[3]] == {} : dictionnaire[cles[0]][cles[1]][cles[2]][cles[3]] = valeur
         return dictionnaire
 
-    if dictionnaire[cles[0]][cles[1]][cles[2]][cles[3]].has_key(cles[4]) == False :
+    if (cles[4] in dictionnaire[cles[0]][cles[1]][cles[2]][cles[3]]) == False :
         dictionnaire[cles[0]][cles[1]][cles[2]][cles[3]][cles[4]] = {}
     if len(cles) == 5 : 
         if dictionnaire[cles[0]][cles[1]][cles[2]][cles[3]][cles[4]] == {} : dictionnaire[cles[0]][cles[1]][cles[2]][cles[3]][cles[4]] = valeur
         return dictionnaire
 
-    if dictionnaire[cles[0]][cles[1]][cles[2]][cles[3]][cles[4]].has_key(cles[5]) == False :
+    if (cles[5] in dictionnaire[cles[0]][cles[1]][cles[2]][cles[3]][cles[4]]) == False :
         dictionnaire[cles[0]][cles[1]][cles[2]][cles[3]][cles[4]][cles[5]] = {}
     if len(cles) == 6 : 
         if dictionnaire[cles[0]][cles[1]][cles[2]][cles[3]][cles[4]][cles[5]] == {} : dictionnaire[cles[0]][cles[1]][cles[2]][cles[3]][cles[4]][cles[5]] = valeur
@@ -82,6 +82,6 @@ def ConvertCouleurPDFpourWX(couleurpdf=(0, 0, 0)):
 
 
 if __name__ == "__main__":
-    d = DictionnaireImbrique({}, [10, 20, 30, 40, 401], 888);print d
-    d[10][20][30][40][401] +=1;print d
-    d = DictionnaireImbrique(d, [10, 20, 30, 40, 401], 888);print d
+    d = DictionnaireImbrique({}, [10, 20, 30, 40, 401], 888);print(d)
+    d[10][20][30][40][401] +=1;print(d)
+    d = DictionnaireImbrique(d, [10, 20, 30, 40, 401], 888);print(d)

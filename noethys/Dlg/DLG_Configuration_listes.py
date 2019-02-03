@@ -64,13 +64,13 @@ def RestaurationConfiguration(nomListe=None, listeColonnesDefaut=[]):
         # Mémorisation des colonnes sélectionnées
         if visible == True :
             listeNomsTemp.append(code)
-            if dictColonnes.has_key(code) :
+            if code in dictColonnes :
                 col = dictColonnes[code]
                 col.visible = True
                 listeColonnesFinale.append(col)
 
     # Vérifie que toutes les colonnes de la liste initiale ont été traitées
-    for code, col in dictColonnes.iteritems() :
+    for code, col in dictColonnes.items() :
         if code not in listeNomsTemp :
             col.visible = False
             listeColonnesFinale.append(col)

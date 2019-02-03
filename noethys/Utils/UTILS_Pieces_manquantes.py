@@ -134,7 +134,7 @@ def GetListePiecesManquantes(dateReference=None, listeActivites=None, presents=N
             else:
                 label = _(u"%s de %s") % (nomPiece, prenom)
                         
-            if dictPiecesFournies.has_key( (IDfamilleTemp, IDtype_piece, IDindividu) ) :
+            if (IDfamilleTemp, IDtype_piece, IDindividu) in dictPiecesFournies :
                 date_debut, date_fin = dictPiecesFournies[(IDfamilleTemp, IDtype_piece, IDindividu)]
                 nbreJoursRestants = (date_fin - datetime.date.today()).days
                 if nbreJoursRestants > 15 :
@@ -149,9 +149,9 @@ def GetListePiecesManquantes(dateReference=None, listeActivites=None, presents=N
     # Répartition par famille
     dictPieces = {}
     nbreFamilles = 0
-    for key, valeurs in dictDonnees.iteritems() :
+    for key, valeurs in dictDonnees.items() :
         IDfamille = valeurs[0]
-        if dictPieces.has_key(IDfamille) == False :
+        if (IDfamille in dictPieces) == False :
             dictPieces[IDfamille] = []
             if IDfamille != None : 
                 nbreFamilles += 1
@@ -161,9 +161,9 @@ def GetListePiecesManquantes(dateReference=None, listeActivites=None, presents=N
     # Formatage des données
     dictFinal = {}
     titulaires = UTILS_Titulaires.GetTitulaires() 
-    for IDfamille, dictTemp in dictPieces.iteritems() :
+    for IDfamille, dictTemp in dictPieces.items() :
 
-        if IDfamille != None and titulaires.has_key(IDfamille) :
+        if IDfamille != None and IDfamille in titulaires :
             nomTitulaires = titulaires[IDfamille]["titulairesSansCivilite"]
         else :
             nomTitulaires = _(u"Aucun titulaire")
@@ -185,4 +185,4 @@ def GetListePiecesManquantes(dateReference=None, listeActivites=None, presents=N
             
             
 if __name__ == '__main__':
-    print len(GetListePiecesManquantes(dateReference=datetime.date.today(), listeActivites=[1,], presents=(datetime.date(2015, 8, 13), datetime.date(2015, 8, 13)), concernes=True))
+    print(len(GetListePiecesManquantes(dateReference=datetime.date.today(), listeActivites=[1,], presents=(datetime.date(2015, 8, 13), datetime.date(2015, 8, 13)), concernes=True)))

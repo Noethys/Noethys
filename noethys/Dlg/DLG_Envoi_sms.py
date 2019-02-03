@@ -317,7 +317,7 @@ class CTRL_Destinataires(wx.Notebook):
 
     def GetListeTelephonesUniques(self):
         listeTelephonesUniques = []
-        for code, dictDonnees in self.donnees.iteritems():
+        for code, dictDonnees in self.donnees.items():
             for adresse in dictDonnees["liste_telephones"]:
                 if adresse not in listeTelephonesUniques:
                     listeTelephonesUniques.append(adresse)
@@ -333,7 +333,7 @@ class CTRL_Destinataires(wx.Notebook):
         return self.donnees, self.GetListeTelephonesUniques()
 
     def SetDonnees(self, donnees={}):
-        for code, dictDonnees in donnees.iteritems():
+        for code, dictDonnees in donnees.items():
             page = self.GetPageByCode(code)
             page.SetDonnees(dictDonnees)
 
@@ -482,18 +482,18 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL):
             }
 
         # Cache toutes les propriétés
-        for nom_property, dict_conditions in dict_switch.iteritems():
-            for condition, liste_proprietes in dict_conditions.iteritems():
+        for nom_property, dict_conditions in dict_switch.items():
+            for condition, liste_proprietes in dict_conditions.items():
                 for dict_propriete in liste_proprietes :
                     propriete = self.GetPropertyByName(dict_propriete["propriete"])
                     propriete.Hide(True)
                     propriete.SetAttribute("obligatoire", False)
 
         # Affiche que les propriétés souhaitées
-        for nom_property, dict_conditions in dict_switch.iteritems() :
+        for nom_property, dict_conditions in dict_switch.items() :
             propriete = self.GetProperty(nom_property)
             valeur = propriete.GetValue()
-            for condition, liste_proprietes in dict_conditions.iteritems() :
+            for condition, liste_proprietes in dict_conditions.items() :
                 for dict_propriete in liste_proprietes :
                     propriete = self.GetPropertyByName(dict_propriete["propriete"])
                     if valeur == condition :
@@ -509,7 +509,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL):
     def Validation(self):
         """ Validation des données saisies """
         # Vérifie que les données obligatoires ont été saisies
-        for nom, valeur in self.GetPropertyValues().iteritems():
+        for nom, valeur in self.GetPropertyValues().items():
             propriete = self.GetPropertyByName(nom)
             if self.GetPropertyAttribute(propriete, "obligatoire") == True:
                 if valeur == "" or valeur == None:
@@ -535,7 +535,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL):
         # Recherche les paramètres mémorisés
         dictParametres = UTILS_Parametres.ParametresCategorie(mode="get", categorie="envoi_sms", dictParametres=dictValeurs)
         # Envoie les paramètres dans le contrôle
-        for nom, valeur in dictParametres.iteritems():
+        for nom, valeur in dictParametres.items():
             propriete = self.GetPropertyByName(nom)
             ancienneValeur = propriete.GetValue()
             propriete.SetValue(valeur)
@@ -605,7 +605,7 @@ class Page_Parametres(wx.Panel):
         return True
 
     def Sauvegarde(self):
-        for nom, valeur in self.ctrl_parametres.GetParametres().iteritems() :
+        for nom, valeur in self.ctrl_parametres.GetParametres().items() :
             self.clsbase.SetValeur(nom, valeur)
         return True
 
@@ -639,7 +639,7 @@ class Base(object) :
         return self.dictDonnees
 
     def GetValeur(self, nom="", defaut=None):
-        if self.dictDonnees.has_key(nom):
+        if nom in self.dictDonnees:
             return self.dictDonnees[nom]
         return defaut
 
@@ -847,8 +847,8 @@ class Dialog(wx.Dialog, Base):
                 messagerie.Connecter()
                 messagerie.Envoyer(message)
                 messagerie.Fermer()
-            except Exception, err:
-                print (err,)
+            except Exception as err:
+                print((err,))
                 err = str(err).decode("iso-8859-15")
                 dlgErreur = wx.MessageDialog(None, _(u"Une erreur a été détectée dans l'envoi de l'Email !\n\nErreur : %s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
                 dlgErreur.ShowModal()
@@ -891,8 +891,8 @@ class Dialog(wx.Dialog, Base):
                 messagerie.Connecter()
                 messagerie.Envoyer(message)
                 messagerie.Fermer()
-            except Exception, err:
-                print (err,)
+            except Exception as err:
+                print((err,))
                 err = str(err).decode("iso-8859-15")
                 dlgErreur = wx.MessageDialog(None, _(u"Une erreur a été détectée dans l'envoi de l'Email !\n\nErreur : %s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
                 dlgErreur.ShowModal()

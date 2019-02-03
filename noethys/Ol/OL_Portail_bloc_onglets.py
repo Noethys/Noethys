@@ -328,9 +328,9 @@ class DLG_Saisie_element(wx.Dialog):
     def SetDonnees(self, dictDonnees={}):
         self.dictDonnees = dictDonnees
         self.SetTitle(_(u"Modification d'un onglet"))
-        if self.dictDonnees.has_key("titre") :
+        if "titre" in self.dictDonnees :
             self.ctrl_titre.SetValue(self.dictDonnees["titre"])
-        if self.dictDonnees.has_key("texte_xml") :
+        if "texte_xml" in self.dictDonnees :
             self.ctrl_editeur.SetXML(self.dictDonnees["texte_xml"])
 
 

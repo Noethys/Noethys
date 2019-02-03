@@ -190,11 +190,11 @@ def GetDictAges(DB, dictParametres) :
             age = None
             annee = None
         
-        if dictAges.has_key(age) == False :
+        if (age in dictAges) == False :
             dictAges[age] = 0
         dictAges[age] += 1
 
-        if dictAnnees.has_key(annee) == False :
+        if (annee in dictAnnees) == False :
             dictAnnees[annee] = 0
         dictAnnees[annee] += 1
 
@@ -275,7 +275,7 @@ def GetDictVilles(DB, dictParametres):
     for IDindividu, adresse_auto in listeDonnees :
         
         # Recherche de l'adresse de l'individu
-        if adresse_auto != None and dictInfos.has_key(adresse_auto) :
+        if adresse_auto != None and adresse_auto in dictInfos :
             rue_resid = dictInfos[adresse_auto]["rue_resid"]
             cp_resid = dictInfos[adresse_auto]["cp_resid"]
             ville_resid = dictInfos[adresse_auto]["ville_resid"]
@@ -285,7 +285,7 @@ def GetDictVilles(DB, dictParametres):
             ville_resid = dictInfos[IDindividu]["ville_resid"]
     
         # Synthèse des infos
-        if dictVilles.has_key((cp_resid, ville_resid)) == False :
+        if ((cp_resid, ville_resid) in dictVilles) == False :
             dictVilles[(cp_resid, ville_resid)] = {"nbreIndividus" : 0, "distance" : "", "distance_metres" : 0}
             if cp_resid != None and ville_resid != None :
                 destinations.append((cp_resid, ville_resid))
@@ -305,8 +305,8 @@ def GetDictVilles(DB, dictParametres):
     except :
         pass
 
-    for key, valeurs in dictVilles.iteritems() :
-        if dictDistances.has_key(key) and key != origine :
+    for key, valeurs in dictVilles.items() :
+        if key in dictDistances and key != origine :
             dictVilles[key]["distance"] = dictDistances[key]["distance_texte"]
             dictVilles[key]["distance_metres"] = dictDistances[key]["distance_metres"]
 
@@ -358,12 +358,12 @@ def GetListeActivitesPro(DB, dictParametres) :
     for IDcategorie, nomCategorie, IDindividu in listeDonnees :
         if nomCategorie == None :
             nomCategorie = _(u"Catégorie inconnue")
-        if dictCategories.has_key(IDcategorie) == False :
+        if (IDcategorie in dictCategories) == False :
             dictCategories[IDcategorie] = {"nom" : nomCategorie, "nbre" : 0}
         dictCategories[IDcategorie]["nbre"] += 1
 
     listeResultats = []
-    for IDcategorie, valeurs in dictCategories.iteritems() :
+    for IDcategorie, valeurs in dictCategories.items() :
         listeResultats.append((valeurs["nbre"], valeurs["nom"]))
     listeResultats.sort(reverse=True)
 
@@ -409,7 +409,7 @@ def GetAnciennete(DB, dictParametres):
         # Vérifie si individu présent sur la période de référence
         if dateMax >= date_debut :
             moisArrivee = (dateMin.year, dateMin.month)
-            if dictResultats.has_key(moisArrivee) == False :
+            if (moisArrivee in dictResultats) == False :
                 dictResultats[moisArrivee] = 0
             dictResultats[moisArrivee] += 1
             
@@ -463,12 +463,12 @@ def GetListeEcoles(DB, dictParametres) :
     for IDecole, nomEcole, IDindividu in listeDonnees :
         if nomEcole == None :
             nomEcole = _(u"Ecole inconnue")
-        if dictEcoles.has_key(IDecole) == False :
+        if (IDecole in dictEcoles) == False :
             dictEcoles[IDecole] = {"nom" : nomEcole, "nbre" : 0}
         dictEcoles[IDecole]["nbre"] += 1
 
     listeResultats = []
-    for IDecole, valeurs in dictEcoles.iteritems() :
+    for IDecole, valeurs in dictEcoles.items() :
         listeResultats.append((valeurs["nbre"], valeurs["nom"]))
     listeResultats.sort(reverse=True)
 
@@ -514,12 +514,12 @@ def GetListeNiveauxScolaires(DB, dictParametres) :
     for IDniveau, ordre, nomNiveau, IDindividu in listeDonnees :
         if nomNiveau == None :
             nomNiveau = _(u"Niveau inconnu")
-        if dictNiveaux.has_key(IDniveau) == False :
+        if (IDniveau in dictNiveaux) == False :
             dictNiveaux[IDniveau] = {"nom" : nomNiveau, "nbre" : 0, "ordre": ordre}
         dictNiveaux[IDniveau]["nbre"] += 1
 
     listeResultats = []
-    for IDniveau, valeurs in dictNiveaux.iteritems() :
+    for IDniveau, valeurs in dictNiveaux.items() :
         listeResultats.append((valeurs["ordre"], valeurs["nbre"], valeurs["nom"]))
     listeResultats.sort()
 
@@ -610,7 +610,7 @@ class Tableau_nombre_individus(MODELES.Tableau):
         
         dictActiTemp = {}
         for IDactivite, nbreConso in listeDonnees :
-            if dictActiTemp.has_key(IDactivite) == False :
+            if (IDactivite in dictActiTemp) == False :
                 dictActiTemp[IDactivite] = 0
             dictActiTemp[IDactivite] += 1
         
@@ -618,7 +618,7 @@ class Tableau_nombre_individus(MODELES.Tableau):
         self.largeur = "400"
         self.colonnes = [ (_(u"Activité"), "250"), (_(u"Nombre d'individus"), "150") ]
         self.lignes = []
-        for IDactivite, listeIndividus in dictActiTemp.iteritems() :
+        for IDactivite, listeIndividus in dictActiTemp.items() :
             nomActivite = dictParametres["dictActivites"][IDactivite]
             self.lignes.append((nomActivite, listeIndividus))
 
@@ -697,7 +697,7 @@ class Tableau_repartition_genre(MODELES.Tableau):
         self.colonnes = [ (_(u"Genre"), "250"), (_(u"Nombre d'individus"), "150") ]
         self.lignes = []
         
-        for IDgenre, dictTemp in dictGenres.iteritems() :
+        for IDgenre, dictTemp in dictGenres.items() :
             if dictTemp["quantite"] > 0 :
                 self.lignes.append((dictTemp["label1"], dictTemp["quantite"]))
 
@@ -720,7 +720,7 @@ class Graphe_repartition_genre(MODELES.Graphe):
         listeValeurs = []
         listeLabels = []
         listeCouleurs = []
-        for IDgenre, dictTemp in dictGenres.iteritems() :
+        for IDgenre, dictTemp in dictGenres.items() :
             if dictTemp["quantite"] > 0 :
                 listeValeurs.append(dictTemp["quantite"])
                 listeLabels.append(dictTemp["label1"])
@@ -758,7 +758,7 @@ class Tableau_repartition_ages(MODELES.Tableau):
         self.colonnes = [ (_(u"Age"), "250"), (_(u"Nombre d'individus"), "150") ]
         self.lignes = []
         
-        listeAges = dictAges.keys() 
+        listeAges = list(dictAges.keys()) 
         listeAges.sort() 
         
         for age in listeAges :
@@ -785,7 +785,7 @@ class Graphe_repartition_ages(MODELES.Graphe):
         
         dictAges, dictAnnees = GetDictAges(DB, dictParametres)
         
-        listeAges = dictAges.keys() 
+        listeAges = list(dictAges.keys()) 
         listeAges.sort() 
         
         listeLabels = [] 
@@ -850,7 +850,7 @@ class Tableau_repartition_annees_naiss(MODELES.Tableau):
         self.colonnes = [ (_(u"Année de naissance"), "250"), (_(u"Nombre d'individus"), "150") ]
         self.lignes = []
         
-        listeAnnees = dictAnnees.keys() 
+        listeAnnees = list(dictAnnees.keys()) 
         listeAnnees.sort() 
         
         for annee in listeAnnees :
@@ -877,7 +877,7 @@ class Graphe_repartition_annees_naiss(MODELES.Graphe):
         
         dictAges, dictAnnees = GetDictAges(DB, dictParametres)
         
-        listeAnnees = dictAnnees.keys() 
+        listeAnnees = list(dictAnnees.keys()) 
         listeAnnees.sort() 
         
         listeLabels = [] 
@@ -946,7 +946,7 @@ class Tableau_repartition_villes(MODELES.Tableau):
         
         # Tri par nbre d'individus
         listeVilles = []
-        for key, valeurs in dictVilles.iteritems() :
+        for key, valeurs in dictVilles.items() :
             cpVille, nomVille = key
             nbreIndividus = valeurs["nbreIndividus"]
             distance = valeurs["distance"]
@@ -980,7 +980,7 @@ class Graphe_repartition_villes(MODELES.Graphe):
         # Tri par nbre d'individus
         listeVilles = []
         nbreTotalIndividus = 0
-        for key, valeurs in dictVilles.iteritems() :
+        for key, valeurs in dictVilles.items() :
             cpVille, nomVille = key
             nbreIndividus = valeurs["nbreIndividus"]
             listeVilles.append((nbreIndividus, nomVille))
@@ -1185,7 +1185,7 @@ class Tableau_nouveaux_individus(MODELES.Tableau):
         self.lignes = []
         
         for annee, mois in listeMoisPeriode :
-            if dictResultats.has_key((annee, mois)) :
+            if (annee, mois) in dictResultats :
                 label = u"%s %s" % (MODELES.LISTE_NOMS_MOIS[mois-1], annee)
                 self.lignes.append((label, dictResultats[(annee, mois)]))
 
@@ -1210,7 +1210,7 @@ class Graphe_nouveaux_individus(MODELES.Graphe):
         
         for annee, mois in listeMoisPeriode :
             label = u"%s %s" % (MODELES.LISTE_NOMS_MOIS[mois-1], annee)
-            if dictResultats.has_key((annee, mois)) :
+            if (annee, mois) in dictResultats :
                 nbreIndividus = dictResultats[(annee, mois)]
             else :
                 nbreIndividus = 0
@@ -1267,7 +1267,7 @@ class Graphe_arrivee_individus(MODELES.Graphe):
         listeX = []
         listeY = []
         for annee, mois in listeMoisPeriode :
-            if dictResultats.has_key((annee, mois)) :
+            if (annee, mois) in dictResultats :
                 nbreIndividus = dictResultats[(annee, mois)]
             else :
                 nbreIndividus = 0

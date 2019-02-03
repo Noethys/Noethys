@@ -17,9 +17,8 @@ from Ctrl import CTRL_Bouton_image
 import wx.lib.colourselect as csel
 import wx.richtext as rt
 import sys
-import cStringIO
 import re
-
+import six
 import FonctionsPerso
 import GestionDB
 
@@ -481,19 +480,18 @@ class Dialog(wx.Dialog):
         else:
             handler.SetFlags(rt.RICHTEXT_HANDLER_SAVE_IMAGES_TO_MEMORY)
         handler.SetFontSizeMapping([7,9,11,12,14,22,100])
-        import cStringIO
-        stream = cStringIO.StringIO()
+        stream = six.BytesIO()
         if self.ctrl_texte == None and self.nb.GetPageCount()>0 :
             self.ctrl_texte = self.nb.GetPage(self.nb.GetSelection())
         if not handler.SaveStream(self.ctrl_texte.GetBuffer(), stream):
             return False
         source = stream.getvalue() 
-##        source = source.replace("<head></head>", head)
-        source = source.decode("utf-8")
+        if six.PY2:
+            source = source.decode("utf-8")
         return source
     
     def SaveTexte(self):
-        out = cStringIO.StringIO()
+        out = six.BytesIO()
         handler = wx.richtext.RichTextXMLHandler()
         buffer = self.ctrl_texte.GetBuffer()
         if 'phoenix' in wx.PlatformInfo:
@@ -505,7 +503,7 @@ class Dialog(wx.Dialog):
         return content
     
     def LoadTexte(self, texteXml=""):
-        out = cStringIO.StringIO()
+        out = six.BytesIO()
         handler = wx.richtext.RichTextXMLHandler()
         buffer = self.ctrl_texte.GetBuffer()
         buffer.AddHandler(handler)
@@ -691,9 +689,9 @@ if __name__ == u"__main__":
         texteXML = dlg.SaveTexte()
         textePDF = dlg.HtmlEnReportlab(dlg.GetHtmlText())
         
-        print "texteXML=", texteXML
-        print "texteHTML=", dlg.GetHtmlText()
-        print "textePDF=", textePDF
+        print("texteXML=", texteXML)
+        print("texteHTML=", dlg.GetHtmlText())
+        print("textePDF=", textePDF)
         
         dlg.ImpressionTEST() 
 

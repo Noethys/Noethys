@@ -97,7 +97,7 @@ class CTRL_Adresse_auto(wx.Choice):
             self.SetSelection(0)
             return True
         else :
-            for index, values in self.dictDonnees.iteritems():
+            for index, values in self.dictDonnees.items():
                 if values["ID"] == int(ID):
                     self.SetSelection(index)
                     return True
@@ -261,13 +261,13 @@ class CTRL_Renseignements(ULC.UltimateListCtrl):
             index += 1
 
     def GetCtrlByCode(self, code=""):
-        for index, dictTemp in self.dictControles.iteritems() :
+        for index, dictTemp in self.dictControles.items() :
             if dictTemp["code"] == code :
                 return dictTemp["ctrl"]
         return None
 
     def GetIndexByCode(self, code=""):
-        for index, dictTemp in self.dictControles.iteritems() :
+        for index, dictTemp in self.dictControles.items() :
             if dictTemp["code"] == code:
                 return index
         return -1
@@ -565,7 +565,7 @@ class Dialog(wx.Dialog):
 
                 liste_champs_importes.append(champ)
 
-            except Exception, err:
+            except Exception as err:
                 self.parent.EcritLog(_(u"Le champ '%s' n'a pas pu être importé. Erreur : %s") % (DICT_RENSEIGNEMENTS[champ], err), self.ctrl_log)
                 listeAnomalies.append(champ)
 

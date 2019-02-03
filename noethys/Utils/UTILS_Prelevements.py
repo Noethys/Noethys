@@ -125,7 +125,7 @@ def AlgoControleRIB(bic):
         return False
     for i in range(len(bic)):
         char = bic[i]
-        for pattern in replacement_table.keys():
+        for pattern in list(replacement_table.keys()):
             if char in pattern:
                 bic = bic.replace(char, replacement_table[pattern])
     bankcode = int(bic[:5])
@@ -167,7 +167,7 @@ def ControleIBAN(iban=""):
      
     def replaceAll(text, char_map):
         """Replace the char_map in text"""
-        for k, v in char_map.iteritems():
+        for k, v in char_map.items():
             text = text.replace(k, v)
         return text
     
@@ -548,5 +548,5 @@ def EnregistrerXML(doc=None, nomFichier=""):
     
 if __name__ == "__main__":
     rib = "20041010011505203J02242"
-    print ControleIBAN(iban="FR76"+rib)
-    print CalcCleBAN(rib)
+    print(ControleIBAN(iban="FR76"+rib))
+    print(CalcCleBAN(rib))

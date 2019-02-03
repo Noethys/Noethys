@@ -148,7 +148,7 @@ class InfosIndividus():
         
     def RechercheIndividu(self, IDindividu=None):
         """ Recherche un individu d'après son IDindividu """
-        if self.dictIndividus.has_key(IDindividu) == False :
+        if (IDindividu in self.dictIndividus) == False :
             return None
         # Renvoie les informations
         return self.dictIndividus[IDindividu]
@@ -168,11 +168,11 @@ class InfosIndividus():
     
     def IdentificationCodebarre(self, cb=""):
         # Recherche le code-barres dans les questionnaires
-        if self.dictCodesbarres["questionnaire"].has_key(cb) :
+        if cb in self.dictCodesbarres["questionnaire"] :
             return self.dictCodesbarres["questionnaire"][cb]
         # Recherche un code-barres dans le dict Standard
         if len(cb) > 7 : cb = cb[:7]
-        if self.dictCodesbarres["standard"].has_key(cb) :
+        if cb in self.dictCodesbarres["standard"] :
             return self.dictCodesbarres["standard"][cb]
         # Si aucun résultat
         return None
@@ -195,7 +195,7 @@ class InfosIndividus():
             dictCodesbarres["questionnaire"][reponse] = IDindividu
             
         # Création des codesbarres des individus
-        for IDindividu, dictTemp in self.dictIndividus.iteritems() :
+        for IDindividu, dictTemp in self.dictIndividus.items() :
             cb = "I%06d" % IDindividu
             dictCodesbarres["standard"][cb] = IDindividu
         
@@ -203,7 +203,7 @@ class InfosIndividus():
 
     def IdentificationRFID(self, rfid=""):
         # Recherche le RFID dans les questionnaires
-        if self.dictCodesbarres["questionnaire"].has_key(rfid) :
+        if rfid in self.dictCodesbarres["questionnaire"] :
             return self.dictCodesbarres["questionnaire"][rfid]
         return None
 
@@ -244,7 +244,7 @@ class CTRL_Interface(wx.Panel):
         # Initialisation du moteur vocal
         try :
             self.vocal = UTILS_Vocal.Vocal() 
-        except Exception, err:
+        except Exception as err:
             self.vocal = None
             
         # Importation de la procédure
@@ -342,7 +342,7 @@ class CTRL_Interface(wx.Panel):
         x,y = event.GetX(), event.GetY()
         objets = self.pdc.FindObjects(x, y, 5)
         for id in objets :
-            if self.dictObjets.has_key(id) :
+            if id in self.dictObjets :
                 objet = self.dictObjets[id]
                 if event.Moving() : objet.OnMotion()
                 if event.LeftDown() : objet.OnLeftDown()
@@ -350,7 +350,7 @@ class CTRL_Interface(wx.Panel):
 
         # Supprime les images de survol
         maj = False
-        for id, objet in self.dictObjets.iteritems() :
+        for id, objet in self.dictObjets.items() :
             if id not in objets :
                 if objet.objetImageSurvol != None : objet.EffaceSurvol()
                 if objet.objetImageEnfonce != None : objet.EffaceEnfonce()
@@ -1057,7 +1057,7 @@ class Dialog(wx.Dialog):
             # Fin de la dlg d'attente
             del dlgAttente
 
-        except Exception, err:
+        except Exception as err:
             del dlgAttente
             traceback.print_exc(file=sys.stdout)
             dlg = wx.MessageDialog(self, _(u"Désolé, le problème suivant a été rencontré dans l'initialisation de l'interface de badgeage : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
@@ -1083,7 +1083,7 @@ class LogTest():
     def __init__(self):
         pass
     def AjouterAction(self, individu=u"", IDindividu=None, action=u"", resultat=True):
-        print "LOG =", (action, individu, resultat)
+        print("LOG =", (action, individu, resultat))
         
         
 if __name__ == u"__main__":

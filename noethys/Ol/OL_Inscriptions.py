@@ -13,9 +13,7 @@ import Chemins
 from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
-from Ctrl import CTRL_Bouton_image
-import os
-import cStringIO
+import six
 import datetime
 import GestionDB
 import FonctionsPerso
@@ -73,7 +71,7 @@ class Track(object):
         # Nom des titulaires de famille
         self.nomTitulaires = _(u"IDfamille n°%d") % self.IDfamille
         if parent.dictFamillesRattachees != None :
-            if parent.dictFamillesRattachees.has_key(self.IDfamille) : 
+            if self.IDfamille in parent.dictFamillesRattachees : 
                 self.nomTitulaires = parent.dictFamillesRattachees[self.IDfamille]["nomsTitulaires"]
 
         # Validité de la pièce
@@ -86,7 +84,7 @@ class Track(object):
 ##        """ Récupère une image """            
 ##        # Recherche de l'image
 ##        if self.logo_activite != None :
-##            io = cStringIO.StringIO(self.logo_activite)
+##            io = six.BytesIO(self.logo_activite)
 ##            img = wx.ImageFromStream(io, wx.BITMAP_TYPE_ANY)
 ##            img = RecadreImg(img)
 ##            bmp = img.ConvertToBitmap()
@@ -125,7 +123,7 @@ class ListView(FastObjectListView):
         nom, logo = DB.ResultatReq()[0]
         DB.Close()
         if logo != None :
-            io = cStringIO.StringIO(logo)
+            io = six.BytesIO(logo)
             img = wx.ImageFromStream(io, wx.BITMAP_TYPE_ANY)
             img = RecadreImg(img)
             bmp = img.ConvertToBitmap()
@@ -357,7 +355,7 @@ class ListView(FastObjectListView):
         # Vérifie que l'individu est rattaché comme REPRESENTANT ou ENFANT à une famille
         if self.dictFamillesRattachees != None :
             valide = False
-            for IDfamille, dictFamille in self.dictFamillesRattachees.iteritems() :
+            for IDfamille, dictFamille in self.dictFamillesRattachees.items() :
                 if dictFamille["IDcategorie"] in (1, 2) :
                     valide = True
             if valide == False :
@@ -367,12 +365,12 @@ class ListView(FastObjectListView):
                 return
         
         if len(self.dictFamillesRattachees) == 1 :
-            IDfamille = self.dictFamillesRattachees.keys()[0]
+            IDfamille = list(self.dictFamillesRattachees.keys())[0]
             listeFamille.append(IDfamille)
             listeNoms.append(self.dictFamillesRattachees[IDfamille]["nomsTitulaires"])
         else:
             # Si rattachée à plusieurs familles
-            for IDfamille, dictFamille in self.dictFamillesRattachees.iteritems() :
+            for IDfamille, dictFamille in self.dictFamillesRattachees.items() :
                 IDcategorie = dictFamille["IDcategorie"]
                 if IDcategorie in (1, 2) :
                     listeFamille.append(IDfamille)

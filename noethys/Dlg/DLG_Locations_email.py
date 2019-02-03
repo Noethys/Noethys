@@ -130,7 +130,7 @@ class Dialog(wx.Dialog):
         dictChampsFusion, dictPieces = resultat
         
         def SupprimerFichiersTemp():
-            for IDlocation, fichier in dictPieces.iteritems() :
+            for IDlocation, fichier in dictPieces.items() :
                 os.remove(fichier)  
 
         # Récupération de toutes les adresses Emails
@@ -153,7 +153,7 @@ class Dialog(wx.Dialog):
             
             # Mémorisation des données
             if adresse not in (None, "", []) : 
-                if dictPieces.has_key(track.IDlocation) :
+                if track.IDlocation in dictPieces :
                     fichier = dictPieces[track.IDlocation]
                     champs = dictChampsFusion[track.IDlocation]
                     listeDonnees.append({"adresse" : adresse, "pieces" : [fichier,], "champs" : champs})

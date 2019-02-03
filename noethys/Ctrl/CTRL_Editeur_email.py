@@ -13,17 +13,12 @@ import Chemins
 from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
-import CTRL_Bouton_image
-import wx.lib.colourselect as csel
 import wx.richtext as rt
-import sys
+import six
 import copy
 import datetime
-import cStringIO
 import os
 import wx.lib.agw.hyperlink as Hyperlink
-
-import FonctionsPerso
 import GestionDB
 from Utils import UTILS_Identification
 
@@ -281,7 +276,7 @@ MOTSCLES = {
 
 def GetMotscles(categorie=""):
     listeTemp = copy.deepcopy(MOTSCLES_STANDARDS)
-    if MOTSCLES.has_key(categorie) :
+    if categorie in MOTSCLES :
         listeTemp.extend(MOTSCLES[categorie])
     return listeTemp
 
@@ -463,7 +458,7 @@ class CTRL_Expediteur(wx.Choice):
             self.Enable(True)
 
     def SetID(self, ID=0):
-        for index, values in self.dictAdresses.iteritems():
+        for index, values in self.dictAdresses.items():
             if values["IDadresse"] == ID :
                  self.SetSelection(index)
 
@@ -606,7 +601,7 @@ class Editeur(rt.RichTextCtrl):
         rt.RichTextCtrl.__init__(self, parent, id=id, style=style)
 
     def GetXML(self):
-        out = cStringIO.StringIO()
+        out = six.BytesIO()
         handler = wx.richtext.RichTextXMLHandler()
         buffer = self.GetBuffer()
         if 'phoenix' in wx.PlatformInfo:
@@ -618,7 +613,7 @@ class Editeur(rt.RichTextCtrl):
         return content
     
     def SetXML(self, texteXml=""):
-        out = cStringIO.StringIO()
+        out = six.BytesIO()
         handler = wx.richtext.RichTextXMLHandler()
         buffer = self.GetBuffer()
         buffer.AddHandler(handler)
@@ -701,7 +696,7 @@ class CTRL(wx.Panel):
         # Impression
         preview = wx.PrintPreview(printout1, printout2, data)
         if not preview.Ok():
-            print "Probleme dans le preview du richTextCtrl."
+            print("Probleme dans le preview du richTextCtrl.")
             return
         
         from Utils import UTILS_Printer
@@ -1002,8 +997,7 @@ class CTRL(wx.Panel):
         handler.SetFlags(rt.RICHTEXT_HANDLER_SAVE_IMAGES_TO_MEMORY)
         handler.SetFontSizeMapping([7,9,11,12,14,22,100])
 
-        import cStringIO
-        stream = cStringIO.StringIO()
+        stream = six.BytesIO()
         if not handler.SaveStream(self.ctrl_editeur.GetBuffer(), stream):
             return
         
@@ -1014,9 +1008,9 @@ class CTRL(wx.Panel):
 </head>
         """
         source = source.replace("<head></head>", head)
-        source = source.decode("utf-8")
-        #print source
-        
+        if six.PY2:
+            source = source.decode("utf-8")
+
         import wx.html
         dlg = wx.Dialog(self, title="HTML", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER)
         html = wx.html.HtmlWindow(dlg, size=(500,400), style=wx.BORDER_SUNKEN)
@@ -1043,13 +1037,12 @@ class CTRL(wx.Panel):
         else:
             handler.SetFlags(rt.RICHTEXT_HANDLER_SAVE_IMAGES_TO_MEMORY)
         handler.SetFontSizeMapping([7,9,11,12,14,22,100])
-        import cStringIO
-        stream = cStringIO.StringIO()
+        stream = six.BytesIO()
         if not handler.SaveStream(self.ctrl_editeur.GetBuffer(), stream):
             return False
         source = stream.getvalue() 
-##        source = source.replace("<head></head>", head)
-        source = source.decode("utf-8")
+        if six.PY2:
+            source = source.decode("utf-8")
         listeImages = handler.GetTemporaryImageLocations()
         return source, listeImages, handler
 
@@ -1058,12 +1051,11 @@ class CTRL(wx.Panel):
         handler = rt.RichTextHTMLHandler()
         handler.SetFlags(rt.RICHTEXT_HANDLER_SAVE_IMAGES_TO_BASE64)
         handler.SetFontSizeMapping([7, 9, 11, 12, 14, 22, 100])
-        import cStringIO
-        stream = cStringIO.StringIO()
         if not handler.SaveStream(self.ctrl_editeur.GetBuffer(), stream):
             return False
         source = stream.getvalue()
-        source = source.decode("utf-8")
+        if six.PY2:
+            source = source.decode("utf-8")
         for balise in ("<html>", "</html>", "<head>", "</head>", "<body>", "</body>"):
             source = source.replace(balise, "")
         return source
@@ -1103,7 +1095,7 @@ class MyFrame(wx.Frame):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonTest, self.bouton_test)
 
     def OnBoutonTest(self, event):
-        print self.ctrl.GetHTML(base64=True)[0]
+        print(self.ctrl.GetHTML(base64=True)[0])
         self.ctrl.OnFileViewHTML()
 
 

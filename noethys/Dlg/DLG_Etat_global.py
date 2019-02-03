@@ -59,7 +59,7 @@ def FormateValeur(valeur, mode="decimal"):
         return "%dh%02d" % (heures, minutes)
 
 def GetQF(dictQuotientsFamiliaux={}, IDfamille=None, date=None):
-    if dictQuotientsFamiliaux.has_key(IDfamille) :
+    if IDfamille in dictQuotientsFamiliaux :
         for date_debut, date_fin, quotient in dictQuotientsFamiliaux[IDfamille] :
             if date >= date_debut and date <= date_fin :
                 return quotient
@@ -590,12 +590,12 @@ class Dialog(wx.Dialog):
             for IDquotient, IDfamille, date_debut_temp, date_fin_temp, quotient in listeDonnees :
                 date_debut_temp = UTILS_Dates.DateEngEnDateDD(date_debut_temp)
                 date_fin_temp = UTILS_Dates.DateEngEnDateDD(date_fin_temp)
-                if dictQuotientsFamiliaux.has_key(IDfamille) == False :
+                if (IDfamille in dictQuotientsFamiliaux) == False :
                     dictQuotientsFamiliaux[IDfamille] = []
                 dictQuotientsFamiliaux[IDfamille].append((date_debut_temp, date_fin_temp, quotient))
 
         # Récupération des consommations
-        listeUnitesUtilisees = dictUnites.keys()
+        listeUnitesUtilisees = list(dictUnites.keys())
         if len(listeUnitesUtilisees) == 0 : conditionSQL = "AND consommations.IDunite IN ()"
         elif len(listeUnitesUtilisees) == 1 : conditionSQL = "AND consommations.IDunite IN (%d)" % listeUnitesUtilisees[0]
         else : conditionSQL = "AND consommations.IDunite IN %s" % str(tuple(listeUnitesUtilisees))
@@ -628,7 +628,7 @@ class Dialog(wx.Dialog):
             mois = date.month
             annee = date.year
 
-            if dictUnites.has_key(IDunite) :
+            if IDunite in dictUnites :
                 nom_unite_conso = dictUnites[IDunite]["nomUnite"]
             else :
                 nom_unite_conso = _(u"Unité inconnue")
@@ -688,7 +688,7 @@ class Dialog(wx.Dialog):
                     if len(etiquettes) > 0:
                         temp = []
                         for IDetiquette in etiquettes:
-                            if dictEtiquettes.has_key(IDetiquette):
+                            if IDetiquette in dictEtiquettes:
                                 temp.append(dictEtiquettes[IDetiquette]["label"])
                         regroupement = temp
                     else:
@@ -840,7 +840,7 @@ class Dialog(wx.Dialog):
                     # Calcul selon une formule
                     try :
                         valeur = self.Calcule_formule(formule=dictCalcul["formule"], debut=heure_debut, fin=heure_fin)
-                    except Exception, err:
+                    except Exception as err:
                         dlg = wx.MessageDialog(self, unicode(err), _(u"Erreur de formule"), wx.OK | wx.ICON_ERROR)
                         dlg.ShowModal()
                         dlg.Destroy()
@@ -856,8 +856,8 @@ class Dialog(wx.Dialog):
                 if len(dict_tranches_age) == 0 :
                     index_tranche_age = 0
                 else :
-                    for key, dictTemp in dict_tranches_age.iteritems() :
-                        if dictTemp.has_key("min") :
+                    for key, dictTemp in dict_tranches_age.items() :
+                        if "min" in dictTemp :
                             if dictTemp["min"] == None and age < dictTemp["max"] :
                                 index_tranche_age = key
                             if dictTemp["max"] == None and age >= dictTemp["min"] :
@@ -938,7 +938,7 @@ class Dialog(wx.Dialog):
         story.append(Paragraph(labelParametres, styleA))       
 
         # Tri du niveau de regroupement principal
-        regroupements = dict_resultats.keys()
+        regroupements = list(dict_resultats.keys())
         regroupements.sort()
 
         listeRegimesUtilises.sort() 
@@ -952,7 +952,7 @@ class Dialog(wx.Dialog):
             listeColonnes = []
             largeurColonne = 80
             for IDregime in listeRegimesUtilises :
-                if dictRegimes.has_key(IDregime) :
+                if IDregime in dictRegimes :
                     nomRegime = dictRegimes[IDregime]
                 else:
                     nomRegime = _(u"Sans régime")
@@ -984,9 +984,9 @@ class Dialog(wx.Dialog):
                 label_regroupement = UTILS_Dates.FormateMois(regroupement)
             elif regroupement_principal == "annee" :
                 label_regroupement = str(regroupement)
-            elif regroupement_principal == "evenement" and dictEvenements.has_key(regroupement) :
+            elif regroupement_principal == "evenement" and regroupement in dictEvenements :
                 label_regroupement = dictEvenements[regroupement]["nom"]
-            elif regroupement_principal == "evenement_date" and dictEvenements.has_key(regroupement) :
+            elif regroupement_principal == "evenement_date" and regroupement in dictEvenements :
                 label_regroupement = u"%s (%s)" % (dictEvenements[regroupement]["nom"], UTILS_Dates.DateDDEnFr(dictEvenements[regroupement]["date"]))
             elif regroupement_principal.startswith("qf") and type(regroupement) == tuple :
                 label_regroupement = u"%d-%d" % regroupement
@@ -1024,12 +1024,12 @@ class Dialog(wx.Dialog):
 
             # Création des lignes
             index = 1
-            for index_tranche_age, dict_resultats_periode in dict_resultats_age.iteritems() :
+            for index_tranche_age, dict_resultats_periode in dict_resultats_age.items() :
                 
                 dataTableau = []
 
                 # Création des niveaux de regroupement
-                if dict_tranches_age.has_key(index_tranche_age) :
+                if index_tranche_age in dict_tranches_age :
                     label_tranche_age = dict_tranches_age[index_tranche_age]["label"]
                 else :
                     label_tranche_age = _(u"Sans date de naissance")
@@ -1053,7 +1053,7 @@ class Dialog(wx.Dialog):
                     
                 dictTotaux = {}
                 for dictPeriode in listePeriodes :
-                    if dict_resultats_periode.has_key(dictPeriode["code"]) :
+                    if dictPeriode["code"] in dict_resultats_periode :
                         ligne = []
                         
                         # Label ligne
@@ -1073,13 +1073,13 @@ class Dialog(wx.Dialog):
                         totalLigne = datetime.timedelta(hours=0, minutes=0)
                         for IDregime, labelColonne, largeurColonne in listeColonnes :
                             if IDregime < 1000 :
-                                if dict_resultats_periode[dictPeriode["code"]].has_key(IDregime) :
+                                if IDregime in dict_resultats_periode[dictPeriode["code"]] :
                                     valeur = dict_resultats_periode[dictPeriode["code"]][IDregime]
                                 else:
                                     valeur = datetime.timedelta(hours=0, minutes=0)
                                 ligne.append(FormateValeur(valeur, modeAffichage))
                                 totalLigne += valeur
-                                if dictTotaux.has_key(IDregime) == False :
+                                if (IDregime in dictTotaux) == False :
                                     dictTotaux[IDregime] = datetime.timedelta(hours=0, minutes=0)
                                 dictTotaux[IDregime] += valeur
                         # Total de la ligne
@@ -1094,7 +1094,7 @@ class Dialog(wx.Dialog):
                 indexColonne = 0
                 for IDregime, labelColonne, largeurColonne in listeColonnes :
                     if IDregime < 1000 :
-                        if dictTotaux.has_key(IDregime) :
+                        if IDregime in dictTotaux :
                             total = dictTotaux[IDregime]
                         else:
                             total = datetime.timedelta(hours=0, minutes=0)
@@ -1102,7 +1102,7 @@ class Dialog(wx.Dialog):
                         ligne.append(FormateValeur(total, modeAffichage))
                         totalLigne += total
 
-                        if dict_totaux_regroupement.has_key(indexColonne) == False :
+                        if (indexColonne in dict_totaux_regroupement) == False :
                             dict_totaux_regroupement[indexColonne] = datetime.timedelta(hours=0, minutes=0)
                         dict_totaux_regroupement[indexColonne] += total
 
@@ -1167,7 +1167,7 @@ class Dialog(wx.Dialog):
             for IDregime, label, largeur in listeColonnes :
 
                 # Colonne Total par régime
-                if dict_totaux_regroupement.has_key(indexColonne) :
+                if indexColonne in dict_totaux_regroupement :
                     valeur = dict_totaux_regroupement[indexColonne]
                 else :
                     valeur = datetime.timedelta(hours=0, minutes=0)
@@ -1196,8 +1196,8 @@ class Dialog(wx.Dialog):
         # Enregistrement du PDF
         try :
             doc.build(story)
-        except Exception, err :
-            print "Erreur dans ouverture PDF :", err
+        except Exception as err :
+            print("Erreur dans ouverture PDF :", err)
             if "Permission denied" in err :
                 dlg = wx.MessageDialog(None, _(u"Noethys ne peut pas créer le PDF.\n\nVeuillez vérifier qu'un autre PDF n'est pas déjà ouvert en arrière-plan..."), _(u"Erreur d'édition"), wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()

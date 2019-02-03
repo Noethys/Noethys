@@ -17,6 +17,7 @@ import CTRL_Bouton_image
 import CTRL_Bandeau
 import GestionDB
 import datetime
+import six
 from Utils import UTILS_Schedule
 from Outils import wxScheduler
 from Outils import wxReportScheduler
@@ -47,7 +48,7 @@ def ConvertDateWXenDT(datewx=None):
 
 def ConvertDateDTenWX(date=None, heure=None):
     """ Convertit une date datetime en WX.datetime """
-    if type(date) == unicode :
+    if type(date) == six.text_type :
         date = datetime.date(int(date[:4]), int(date[5:7]), int(date[8:10]))
     hr, mn = 0, 0
     if heure != None :

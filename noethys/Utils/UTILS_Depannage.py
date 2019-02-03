@@ -463,7 +463,7 @@ class Depannage():
         listePrestations = self.DB.ResultatReq()
         dictPrestationsFacture = {}
         for IDprestation, montant, IDfacture in listePrestations :
-            if dictPrestationsFacture.has_key(IDfacture) == False :
+            if (IDfacture in dictPrestationsFacture) == False :
                 dictPrestationsFacture[IDfacture] = []
             dictPrestationsFacture[IDfacture].append({"IDprestation":IDprestation, "montant" : FloatToDecimal(montant)})
         # Analyse
@@ -472,7 +472,7 @@ class Depannage():
             totalFacture = FloatToDecimal(totalFacture)
             regleFacture = FloatToDecimal(regleFacture)
             soldeFacture = FloatToDecimal(soldeFacture)
-            if dictPrestationsFacture.has_key(IDfacture) :
+            if IDfacture in dictPrestationsFacture :
                 listePrestationsFacture = dictPrestationsFacture[IDfacture]
             else :
                 listePrestationsFacture = []
@@ -582,24 +582,24 @@ class Depannage():
         dictLiens = {}
         for IDlien, IDfamille, IDindividu_sujet, IDtype_lien, IDindividu_objet, responsable, IDautorisation in listeDonnees :
             key = (IDindividu_sujet, IDindividu_objet)
-            if dictLiens.has_key(IDfamille) == False :
+            if (IDfamille in dictLiens) == False :
                 dictLiens[IDfamille] = {}
-            if dictLiens[IDfamille].has_key(key) == False :
+            if (key in dictLiens[IDfamille]) == False :
                 dictLiens[IDfamille][key] = []
             dictLiens[IDfamille][key].append(IDlien)
             dictLiens[IDfamille][key].sort() 
         # Analyse
         dictLiensASupprimer = {}
-        for IDfamille, dictKeys in dictLiens.iteritems() :
-            for key, listeIDlien in dictKeys.iteritems() :
+        for IDfamille, dictKeys in dictLiens.items() :
+            for key, listeIDlien in dictKeys.items() :
                 if len(listeIDlien) > 1 :
-                    if dictLiensASupprimer.has_key(IDfamille) == False :
+                    if (IDfamille in dictLiensASupprimer) == False :
                         dictLiensASupprimer[IDfamille] = []
                     # Suppression des liens obsolètes
                     for IDlien in listeIDlien[1:] :
                         dictLiensASupprimer[IDfamille].append(IDlien)
         # Mémorisation
-        listeIDfamille = dictLiensASupprimer.keys() 
+        listeIDfamille = list(dictLiensASupprimer.keys()) 
         listeIDfamille.sort() 
         listeTemp = []
         for IDfamille in listeIDfamille :
@@ -620,7 +620,7 @@ class Depannage():
         dictTemp = {}
         for IDventilation, IDcompte_payeur, IDreglement, IDprestation, IDfamille in listeDonnees :
             key = (IDcompte_payeur, IDreglement, IDprestation)
-            if dictTemp.has_key(key) :
+            if key in dictTemp :
                 label = _(u"Ventilation ID%d pour la prestation ID%d et le règlement ID%d pour la famille ID%d") % (IDventilation, IDprestation, IDreglement, IDfamille)
                 listeTemp.append(VentilationsExcessives(label=label, IDventilation=IDventilation, IDprestation=IDprestation, IDreglement=IDreglement, IDfamille=IDfamille))
             else :
@@ -652,14 +652,14 @@ class Depannage():
         # Analyse
         dictPrestations = {}
         for IDconso, IDprestation in listeConsommations:
-            if dictPrestations.has_key(IDprestation) == False:
+            if (IDprestation in dictPrestations) == False:
                 dictPrestations[IDprestation] = []
             dictPrestations[IDprestation].append(IDconso)
 
         listeTemp = []
         for IDprestation, label, date, IDfamille, IDindividu, nom, prenom in listePrestations:
             date = UTILS_Dates.DateEngEnDateDD(date)
-            if dictPrestations.has_key(IDprestation) == False:
+            if (IDprestation in dictPrestations) == False:
                 if nom != None and prenom != None:
                     nomIndividu = u"%s %s" % (nom, prenom)
                 else:
@@ -674,7 +674,7 @@ class Depannage():
 
 if __name__ == "__main__":
     d = Depannage()
-    print (d.GetTexte(),)
+    print((d.GetTexte(),))
     
     
     pass

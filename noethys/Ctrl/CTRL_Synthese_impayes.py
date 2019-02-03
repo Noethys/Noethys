@@ -156,7 +156,7 @@ class CTRL(HTL.HyperTreeList):
         
         dictVentilation = {}
         for IDventilation, IDreglement, IDprestation, montantVentilation, dateReglement, dateSaisieReglement, dateDepotReglement, datePrestation in listeVentilation :
-            if dictVentilation.has_key(IDprestation) == False :
+            if (IDprestation in dictVentilation) == False :
                 dictVentilation[IDprestation] = 0.0
             dictVentilation[IDprestation] += montantVentilation
             
@@ -208,7 +208,7 @@ class CTRL(HTL.HyperTreeList):
             if IDactivite == None : 
                 IDactivite = 999999
             
-            if dictVentilation.has_key(IDprestation) :
+            if IDprestation in dictVentilation :
                 solde = float(FloatToDecimal(montant) - FloatToDecimal(dictVentilation[IDprestation]))
             else :
                 solde = montant
@@ -217,11 +217,11 @@ class CTRL(HTL.HyperTreeList):
                 solde = 0.0
 
             # Regroupement par activités
-            if dictResultats["activites"].has_key(IDactivite) == False :
+            if (IDactivite in dictResultats["activites"]) == False :
                 dictResultats["activites"][IDactivite] = {"total":0, "periodes":{}}
-            if dictResultats["activites"][IDactivite]["periodes"].has_key(periode) == False :
+            if (periode in dictResultats["activites"][IDactivite]["periodes"]) == False :
                 dictResultats["activites"][IDactivite]["periodes"][periode] = {"total":0, "familles":{}}
-            if dictResultats["activites"][IDactivite]["periodes"][periode]["familles"].has_key(IDfamille) == False :
+            if (IDfamille in dictResultats["activites"][IDactivite]["periodes"][periode]["familles"]) == False :
                 dictResultats["activites"][IDactivite]["periodes"][periode]["familles"][IDfamille] = 0
 
             dictResultats["activites"][IDactivite]["total"] += solde
@@ -229,11 +229,11 @@ class CTRL(HTL.HyperTreeList):
             dictResultats["activites"][IDactivite]["periodes"][periode]["familles"][IDfamille] += solde
             
             # Regroupement par familles
-            if dictResultats["familles"].has_key(IDfamille) == False :
+            if (IDfamille in dictResultats["familles"]) == False :
                 dictResultats["familles"][IDfamille] = {"total":0, "periodes":{}}
-            if dictResultats["familles"][IDfamille]["periodes"].has_key(periode) == False :
+            if (periode in dictResultats["familles"][IDfamille]["periodes"]) == False :
                 dictResultats["familles"][IDfamille]["periodes"][periode] = {"total":0, "activites":{}}
-            if dictResultats["familles"][IDfamille]["periodes"][periode]["activites"].has_key(IDactivite) == False :
+            if (IDactivite in dictResultats["familles"][IDfamille]["periodes"][periode]["activites"]) == False :
                 dictResultats["familles"][IDfamille]["periodes"][periode]["activites"][IDactivite] = 0
             
             dictResultats["familles"][IDfamille]["total"] += solde
@@ -302,14 +302,14 @@ class CTRL(HTL.HyperTreeList):
     
         # Création des branches
         def GetNomActivite(IDactivite=None):
-            if dictActivites.has_key(IDactivite) : return dictActivites[IDactivite]["nom"]
+            if IDactivite in dictActivites : return dictActivites[IDactivite]["nom"]
             if IDactivite == 777777: return _(u"Locations")
             if IDactivite == 888888 : return _(u"Cotisations")
             if IDactivite == 999999 : return _(u"Autres")
             return _(u"Activité inconnue")
         
         def GetNomFamille(IDfamille=None):
-            if self.dictTitulaires.has_key(IDfamille) :
+            if IDfamille in self.dictTitulaires :
                 return self.dictTitulaires[IDfamille]["titulairesSansCivilite"]
             else :
                 return _(u"Famille ID%d") % IDfamille
@@ -317,12 +317,12 @@ class CTRL(HTL.HyperTreeList):
         def GetLabels(mode="activites"):
             listeLabels = []
             if mode == "activites" :
-                for IDactivite, dictActivite in dictResultats["activites"].iteritems() :
+                for IDactivite, dictActivite in dictResultats["activites"].items() :
                     label = GetNomActivite(IDactivite)
                     if dictActivite["total"] != 0.0 :
                         listeLabels.append((label, IDactivite))
             else :
-                for IDfamille, dictFamille in dictResultats["familles"].iteritems() :
+                for IDfamille, dictFamille in dictResultats["familles"].items() :
                     label = GetNomFamille(IDfamille)
                     if dictFamille["total"] != 0.0 :
                         listeLabels.append((label, IDfamille))
@@ -343,7 +343,7 @@ class CTRL(HTL.HyperTreeList):
             
             # Colonnes périodes
             for periode in listePeriodes :
-                if dictResultats[self.mode_regroupement][ID1]["periodes"].has_key(periode) :
+                if periode in dictResultats[self.mode_regroupement][ID1]["periodes"] :
                     valeur = dictResultats[self.mode_regroupement][ID1]["periodes"][periode]["total"]
                     if valeur == 0 :
                         texte = ""
@@ -371,15 +371,15 @@ class CTRL(HTL.HyperTreeList):
 
             listeLabels2 = []
             if self.mode_regroupement == "activites" :
-                for periode, dictPeriode in dictResultats["activites"][ID1]["periodes"].iteritems() :
-                    for IDfamille, impayes in dictPeriode["familles"].iteritems() :
+                for periode, dictPeriode in dictResultats["activites"][ID1]["periodes"].items() :
+                    for IDfamille, impayes in dictPeriode["familles"].items() :
                         if impayes > 0 :
                             label = GetNomFamille(IDfamille)
                             if (label, IDfamille) not in listeLabels2 :
                                 listeLabels2.append((label, IDfamille))
             else :
-                for periode, dictPeriode in dictResultats["familles"][ID1]["periodes"].iteritems() :
-                    for IDactivite, impayes in dictPeriode["activites"].iteritems() :
+                for periode, dictPeriode in dictResultats["familles"][ID1]["periodes"].items() :
+                    for IDactivite, impayes in dictPeriode["activites"].items() :
                         if impayes > 0 :
                             label = GetNomActivite(IDactivite)
                             if (label, IDactivite) not in listeLabels2 :
@@ -399,8 +399,8 @@ class CTRL(HTL.HyperTreeList):
                 totalLigne = 0.0
                 for periode in listePeriodes :
                     texte = None
-                    if dictResultats[self.mode_regroupement][ID1]["periodes"].has_key(periode) :
-                        if dictResultats[self.mode_regroupement][ID1]["periodes"][periode][mode2].has_key(ID2) :
+                    if periode in dictResultats[self.mode_regroupement][ID1]["periodes"] :
+                        if ID2 in dictResultats[self.mode_regroupement][ID1]["periodes"][periode][mode2] :
                             valeur = dictResultats[self.mode_regroupement][ID1]["periodes"][periode][mode2][ID2]
                             totalLigne += valeur
                             if valeur == 0 :
@@ -435,15 +435,15 @@ class CTRL(HTL.HyperTreeList):
         totalPeriodes = {}
         
         if self.mode_regroupement == "activites" :
-            for IDactivite, dictActivite in dictResultats["activites"].iteritems() :
-                for periode, dictPeriode in dictActivite["periodes"].iteritems() :
-                    if totalPeriodes.has_key(periode) == False :
+            for IDactivite, dictActivite in dictResultats["activites"].items() :
+                for periode, dictPeriode in dictActivite["periodes"].items() :
+                    if (periode in totalPeriodes) == False :
                         totalPeriodes[periode] = 0.0
                     totalPeriodes[periode] += dictPeriode["total"]
         else :
-            for IDfamille, dictFamille in dictResultats["familles"].iteritems() :
-                for periode, dictPeriode in dictFamille["periodes"].iteritems() :
-                    if totalPeriodes.has_key(periode) == False :
+            for IDfamille, dictFamille in dictResultats["familles"].items() :
+                for periode, dictPeriode in dictFamille["periodes"].items() :
+                    if (periode in totalPeriodes) == False :
                         totalPeriodes[periode] = 0.0
                     totalPeriodes[periode] += dictPeriode["total"]
         

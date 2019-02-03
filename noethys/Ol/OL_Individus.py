@@ -68,7 +68,7 @@ def GetRattachements(IDindividu):
 
 def GetNomsTitulaires(IDfamille=None):
     dictTitulaires = UTILS_Titulaires.GetTitulaires(listeIDfamille=[IDfamille, ])
-    if dictTitulaires.has_key(IDfamille):
+    if IDfamille in dictTitulaires:
         noms = dictTitulaires[IDfamille]["titulairesSansCivilite"]
     else:
         noms = "?"
@@ -92,7 +92,7 @@ class Track(object):
         self.adresse_auto = donnees["adresse_auto"]
         
         # Adresse auto ou manuelle
-        if self.adresse_auto != None and dictIndividus.has_key(self.adresse_auto) :
+        if self.adresse_auto != None and self.adresse_auto in dictIndividus :
             self.rue_resid = dictIndividus[self.adresse_auto]["rue_resid"]
             self.cp_resid = dictIndividus[self.adresse_auto]["cp_resid"]
             self.ville_resid = dictIndividus[self.adresse_auto]["ville_resid"]
@@ -175,23 +175,23 @@ class ListView(FastObjectListView):
 
         # Groupes d'activités
         self.dictParametres["groupes_activites"] = []
-        if dictParametres.has_key("liste_groupes_activites"):
+        if "liste_groupes_activites" in dictParametres:
             listeID = [int(ID) for ID in dictParametres["liste_groupes_activites"].split(";")]
             self.dictParametres["groupes_activites"] = listeID
 
         # Activités
             self.dictParametres["activites"] = []
-        if dictParametres.has_key("liste_activites"):
+        if "liste_activites" in dictParametres:
             listeID = [int(ID) for ID in dictParametres["liste_activites"].split(";")]
             self.dictParametres["activites"] = listeID
 
         # Options
-        if dictParametres.has_key("archives"):
+        if "archives" in dictParametres:
             self.dictParametres["archives"] = True
         else :
             self.dictParametres["archives"] = False
 
-        if dictParametres.has_key("effaces"):
+        if "effaces" in dictParametres:
             self.dictParametres["effaces"] = True
         else :
             self.dictParametres["effaces"] = False
@@ -211,7 +211,7 @@ class ListView(FastObjectListView):
         dictRattachementsFamilles = {}
         for IDrattachement, IDindividu, IDfamille, IDcategorie, titulaire in listeDonnees :
             # Ajout au dictionnaire INDIVIDUS
-            if dictRattachementsIndividus.has_key(IDindividu) == False :
+            if (IDindividu in dictRattachementsIndividus) == False :
                 dictRattachementsIndividus[IDindividu] = [(IDrattachement, IDindividu, IDfamille, IDcategorie, titulaire),]
             else:
                 dictRattachementsIndividus[IDindividu].append((IDrattachement, IDindividu, IDfamille, IDcategorie, titulaire))
@@ -228,9 +228,9 @@ class ListView(FastObjectListView):
             )
 
         conditions = "etat IS NULL"
-        if self.dictParametres.has_key("archives") and self.dictParametres["archives"] == True :
+        if "archives" in self.dictParametres and self.dictParametres["archives"] == True :
             conditions += " OR etat='archive'"
-        if self.dictParametres.has_key("effaces") and self.dictParametres["effaces"] == True :
+        if "effaces" in self.dictParametres and self.dictParametres["effaces"] == True :
             conditions += " OR etat='efface'"
 
         db = GestionDB.DB()
@@ -323,7 +323,7 @@ class ListView(FastObjectListView):
         # Création des Tracks
         listeListeView = []
         self.dictTracks = {}
-        for IDindividu, dictTemp in dictIndividus.iteritems() :
+        for IDindividu, dictTemp in dictIndividus.items() :
             if filtre == None or IDindividu in filtre :
                 track = Track(dictTemp, dictIndividus)
                 listeListeView.append(track)
@@ -396,7 +396,7 @@ class ListView(FastObjectListView):
     
     def Reselection(self, IDindividu=None):
         """ Re-sélection après MAJ de la liste """
-        if self.dictTracks.has_key(IDindividu) :
+        if IDindividu in self.dictTracks :
             track = self.dictTracks[IDindividu]
             self.SelectObject(track, deselectOthers=True, ensureVisible=True)
         
@@ -756,7 +756,7 @@ class BarreRecherche(wx.SearchCtrl):
                 IDindividu = int(txtSearch)
             except :
                 IDfamille = None
-            if IDindividu != None and self.listView.dictTracks.has_key(IDindividu) :
+            if IDindividu != None and IDindividu in self.listView.dictTracks :
                 track = self.listView.dictTracks[IDindividu]
                 self.listView.SelectObject(track)
                 self.listView.OuvrirFicheFamille(track)
@@ -827,7 +827,7 @@ class BarreRecherche(wx.SearchCtrl):
         item.Enable(False)
         index = 0
         for IDindividu in self.listView.historique :
-            if self.listView.dictTracks.has_key(IDindividu) :
+            if IDindividu in self.listView.dictTracks :
                 track = self.listView.dictTracks[IDindividu]
                 label = u"%s %s" % (track.nom, track.prenom)
                 menu.Append(index, label)

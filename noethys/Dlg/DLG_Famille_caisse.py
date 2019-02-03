@@ -90,7 +90,7 @@ class CTRL_Caisse(wx.Choice):
     def SetID(self, ID=0):
         if ID == None :
             self.SetSelection(0)
-        for index, values in self.dictDonnees.iteritems():
+        for index, values in self.dictDonnees.items():
             if values["ID"] == ID :
                  self.SetSelection(index)
 
@@ -146,7 +146,7 @@ class CTRL_Allocataire(wx.Choice):
     def SetID(self, ID=0):
         if ID == None :
             self.SetSelection(0)
-        for index, values in self.dictDonnees.iteritems():
+        for index, values in self.dictDonnees.items():
             if values["ID"] == ID :
                  self.SetSelection(index)
 

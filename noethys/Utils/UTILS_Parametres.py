@@ -9,7 +9,7 @@
 #------------------------------------------------------------------------
 
 import wx
-from Ctrl import CTRL_Bouton_image
+import six
 import GestionDB
 
 if 'phoenix' in wx.PlatformInfo:
@@ -41,15 +41,15 @@ def ParametresCategorie(mode="get", categorie="", dictParametres={}, nomFichier=
     dictFinal = {}
     
     # On boucle sur chaque valeur
-    for nom, valeur in dictParametres.iteritems() :
+    for nom, valeur in dictParametres.items() :
 
         # Préparation de la valeur par défaut
         type_parametre = type(valeur)
         if type_parametre == int : valeurTmp = str(valeur)
-        elif type_parametre == long : valeurTmp = str(valeur)
+        elif six.PY2 and type_parametre == long : valeurTmp = str(valeur)
         elif type_parametre == float : valeurTmp = str(valeur)
         elif type_parametre == str : valeurTmp = valeur
-        elif type_parametre == unicode : valeurTmp = valeur
+        elif type_parametre == six.text_type : valeurTmp = valeur
         elif type_parametre == tuple : valeurTmp = str(valeur)
         elif type_parametre == list : valeurTmp = str(valeur)
         elif type_parametre == dict : valeurTmp = str(valeur)
@@ -57,7 +57,7 @@ def ParametresCategorie(mode="get", categorie="", dictParametres={}, nomFichier=
         elif type_parametre == TYPE_COULEUR : valeurTmp = str(valeur)
         else : valeurTmp = ""
 
-        if dictDonnees.has_key(nom) :
+        if nom in dictDonnees :
             
             if mode == "get" :
                 # Un parametre existe :
@@ -65,10 +65,10 @@ def ParametresCategorie(mode="get", categorie="", dictParametres={}, nomFichier=
                 # On le formate pour le récupérer sous son vrai format
                 try :
                     if type_parametre == int : valeur = int(valeur)
-                    if type_parametre == long : valeur = long(valeur)
+                    if six.PY2 and type_parametre == long : valeur = long(valeur)
                     if type_parametre == float : valeur = float(valeur)
                     if type_parametre == str : valeur = valeur
-                    if type_parametre == unicode : valeur = valeur
+                    if type_parametre == six.text_type : valeur = valeur
                     if type_parametre == tuple : exec("valeur = " + valeur)
                     if type_parametre == list : exec("valeur = " + valeur)
                     if type_parametre == dict : exec("valeur = " + valeur)
@@ -116,10 +116,10 @@ def Parametres(mode="get", categorie="", nom="", valeur=None, nomFichier=""):
     # Préparation de la valeur par défaut
     type_parametre = type(valeur)
     if type_parametre == int : valeurTmp = str(valeur)
-    elif type_parametre == long : valeurTmp = str(valeur)
+    elif six.PY2 and type_parametre == long : valeurTmp = str(valeur)
     elif type_parametre == float : valeurTmp = str(valeur)
     elif type_parametre == str : valeurTmp = valeur
-    elif type_parametre == unicode : valeurTmp = valeur
+    elif type_parametre == six.text_type : valeurTmp = valeur
     elif type_parametre == tuple : valeurTmp = str(valeur)
     elif type_parametre == list : valeurTmp = str(valeur)
     elif type_parametre == dict : valeurTmp = str(valeur)
@@ -142,10 +142,10 @@ def Parametres(mode="get", categorie="", nom="", valeur=None, nomFichier=""):
             valeurTmp = listeDonnees[0][1]
             # On le formate pour le récupérer sous son vrai format
             if type_parametre == int : valeurTmp = int(valeurTmp)
-            if type_parametre == long : valeurTmp = long(valeurTmp)
+            if six.PY2 and type_parametre == long : valeurTmp = long(valeurTmp)
             if type_parametre == float : valeurTmp = float(valeurTmp)
             if type_parametre == str : valeurTmp = valeurTmp
-            if type_parametre == unicode : valeurTmp = valeurTmp
+            if type_parametre == six.text_type : valeurTmp = valeurTmp
             if type_parametre == tuple : exec("valeurTmp = " + valeurTmp)
             if type_parametre == list : exec("valeurTmp = " + valeurTmp)
             if type_parametre == dict : exec("valeurTmp = " + valeurTmp)
@@ -180,7 +180,7 @@ def TestParametre(categorie="", nom="", valeur=None, nomFichier=""):
 
 # ----------------------- TESTS --------------------------------------------------------------------------------------------------------------------------------------------------------------------
 if __name__ == u"__main__":
-    print ParametresCategorie(mode="get", categorie="parametres_grille_conso", dictParametres={"affiche_colonne_memo":True, "test":u"ça marche !"}, nomFichier="")
+    print(ParametresCategorie(mode="get", categorie="parametres_grille_conso", dictParametres={"affiche_colonne_memo":True, "test":u"ça marche !"}, nomFichier=""))
     
     
     

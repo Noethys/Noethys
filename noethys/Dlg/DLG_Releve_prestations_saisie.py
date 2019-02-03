@@ -348,7 +348,7 @@ class Dialog(wx.Dialog):
         if self.radio_vacances.GetValue() == True :
             nom = self.ctrl_vacances.GetStringSelection()
             annee = self.ctrl_vacances_annee.GetValue()
-            if self.dictVacances.has_key((nom, annee)) :
+            if (nom, annee) in self.dictVacances :
                 date_debut, date_fin = self.dictVacances[nom, annee]
             parametres = {"code":"vacances", "nom":nom, "annee":annee, "date_debut":date_debut, "date_fin":date_fin, "label":_(u"Vacances de %s %d") % (nom, annee)}
         
@@ -361,10 +361,10 @@ class Dialog(wx.Dialog):
 
     def SetOptions(self, dictOptions={}):
         # Impayés
-        if dictOptions.has_key("impayes") :
+        if "impayes" in dictOptions :
             self.check_impayes.SetValue(dictOptions["impayes"])
         # Regroupement
-        if dictOptions.has_key("regroupement") :
+        if "regroupement" in dictOptions :
             if dictOptions["regroupement"] == "date" :
                 self.ctrl_regroupement_date.SetSelection(0)
                 self.check_regroupement.SetValue(True) 
@@ -375,7 +375,7 @@ class Dialog(wx.Dialog):
                 self.ctrl_regroupement_date.SetSelection(2)
                 self.check_regroupement.SetValue(True) 
         # Détail consommations
-        if dictOptions.has_key("conso") :
+        if "conso" in dictOptions :
             self.check_conso.SetValue(dictOptions["conso"])
 
     def SetPeriode(self, parametres={}):

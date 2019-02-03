@@ -127,8 +127,8 @@ class ListView(FastObjectListView):
         listeDonnees = DB.ResultatReq()
         DB.Close() 
         for IDunite_incompat, IDunite, IDunite_incompatible in listeDonnees :
-            if self.dictUnites.has_key(IDunite) : self.dictUnites[IDunite]["unites_incompatibles"].append(IDunite_incompatible)
-            if self.dictUnites.has_key(IDunite_incompatible) : self.dictUnites[IDunite_incompatible]["unites_incompatibles"].append(IDunite)
+            if IDunite in self.dictUnites : self.dictUnites[IDunite]["unites_incompatibles"].append(IDunite_incompatible)
+            if IDunite_incompatible in self.dictUnites : self.dictUnites[IDunite_incompatible]["unites_incompatibles"].append(IDunite)
 
     def OnItemActivated(self,event):
         self.Modifier(None)
@@ -422,8 +422,8 @@ class ListView(FastObjectListView):
         listeDonnees = DB.ResultatReq()
         DB.Close()
         for IDunite_incompat, IDunite, IDunite_incompatible in listeDonnees :
-            if dictUnites.has_key(IDunite) : dictUnites[IDunite]["unites_incompatibles"].append(IDunite_incompatible)
-            if dictUnites.has_key(IDunite_incompatible) : dictUnites[IDunite_incompatible]["unites_incompatibles"].append(IDunite)
+            if IDunite in dictUnites : dictUnites[IDunite]["unites_incompatibles"].append(IDunite_incompatible)
+            if IDunite_incompatible in dictUnites : dictUnites[IDunite_incompatible]["unites_incompatibles"].append(IDunite)
 
         return dictUnites
 
@@ -482,7 +482,7 @@ class ListView(FastObjectListView):
 
             # Vérifie si unité ouverte
             IDgroupe = self.clsbase.GetValeur("IDgroupe")
-            if IDgroupe != None and self.dictOuvertures.has_key((dictConso["date"], dictConso["IDunite"], IDgroupe)) == False :
+            if IDgroupe != None and ((dictConso["date"], dictConso["IDunite"], IDgroupe) in self.dictOuvertures) == False :
                 listeAnomalies.append(_(u"%s : Unité %s fermée") % (dateFr, self.dictUnites[dictConso["IDunite"]]["nom"]))
                 valide = False
 

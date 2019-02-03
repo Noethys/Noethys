@@ -107,7 +107,7 @@ class CTRL(HTL.HyperTreeList):
                 "IDunite" : IDunite, "nomUnite" : nomUnite, "IDfamille" : IDfamille, "IDindividu" : IDindividu,
                 "nomActivite" : nomActivite, "etat" : etat,
                 }
-            if dictResultats.has_key(IDindividu) == False :
+            if (IDindividu in dictResultats) == False :
                 dictResultats[IDindividu] = {"nom":nom, "prenom":prenom, "listeFamilles":[], "listeConso":[]}
             if IDfamille not in dictResultats[IDindividu]["listeFamilles"] :
                 dictResultats[IDindividu]["listeFamilles"].append(IDfamille)
@@ -126,7 +126,7 @@ class CTRL(HTL.HyperTreeList):
                 
         # Tri des individus par ordre alphabétique
         listeNoms = []
-        for IDindividu, dictIndividu in dictResultats.iteritems() :
+        for IDindividu, dictIndividu in dictResultats.items() :
             nomCompletIndividu = u"%s %s" % (dictIndividu["nom"], dictIndividu["prenom"])
             listeNoms.append((nomCompletIndividu, IDindividu, dictIndividu))
         listeNoms.sort() 

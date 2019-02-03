@@ -36,7 +36,7 @@ class Track(object):
         self.dictCategories = {}
     
     def MAJ(self):
-        if self.dictCategories.has_key(self.IDcategorie) :
+        if self.IDcategorie in self.dictCategories :
             self.label_categorie = self.dictCategories[self.IDcategorie]
         else :
             self.label_categorie = _(u"Catégorie inconnue")

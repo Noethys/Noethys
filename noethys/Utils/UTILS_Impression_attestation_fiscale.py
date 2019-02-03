@@ -177,7 +177,7 @@ class Impression():
         
         # ----------- Insertion du contenu des frames --------------
         listeNomsSansCivilite = []
-        for IDcompte_payeur, dictCompte in dictComptes.iteritems() :
+        for IDcompte_payeur, dictCompte in dictComptes.items() :
             listeNomsSansCivilite.append((dictCompte["{FAMILLE_NOM}"], IDcompte_payeur))
         listeNomsSansCivilite.sort() 
         

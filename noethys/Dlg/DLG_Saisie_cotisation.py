@@ -90,7 +90,7 @@ class Choix_type(wx.Choice):
         return self.dictDonnees[index]
 
     def SetID(self, ID=0):
-        for index, values in self.dictDonnees.iteritems():
+        for index, values in self.dictDonnees.items():
             if values["ID"] == ID :
                  self.SetSelection(index)
 
@@ -159,7 +159,7 @@ class Choix_unite(wx.Choice):
         return self.dictDonnees[index]
 
     def SetID(self, ID=0):
-        for index, values in self.dictDonnees.iteritems():
+        for index, values in self.dictDonnees.items():
             if values["ID"] == ID :
                  self.SetSelection(index)
 
@@ -211,7 +211,7 @@ class Choix_beneficiaire(wx.Choice):
                 listeIndividus = DB.ResultatReq()
                 DB.Close()
                 if len(listeIndividus) == 0 : 
-                    print "Erreur dans ctrl_beneficiaire : pas d'individu trouve."
+                    print("Erreur dans ctrl_beneficiaire : pas d'individu trouve.")
                     return
                 nom, prenom = listeIndividus[0]
                 nomIndividu = u"%s %s" % (nom, prenom)
@@ -255,7 +255,7 @@ class Choix_beneficiaire(wx.Choice):
                 # Si on vient d'une fiche individuelle : on affiche les familles rattachées
                 IDindividu = self.GetGrandParent().IDindividu
                 if self.GetGrandParent().dictFamillesRattachees != None :
-                    for IDfamille, dictFamille in self.GetGrandParent().dictFamillesRattachees.iteritems() :
+                    for IDfamille, dictFamille in self.GetGrandParent().dictFamillesRattachees.items() :
                         if dictFamille["IDcategorie"] in (1, 2) :
                             nomTitulaires = dictFamille["nomsTitulaires"]
                             self.listeNoms.append(_(u"Famille de %s") % nomTitulaires)
@@ -301,7 +301,7 @@ class Choix_payeur(wx.Choice):
         # Si on vient d'une fiche INDIVIDU :
         if self.GetGrandParent().IDindividu != None :
                         
-            for IDfamille, dictFamille in self.GetGrandParent().dictFamillesRattachees.iteritems() :
+            for IDfamille, dictFamille in self.GetGrandParent().dictFamillesRattachees.items() :
                 nomTitulaires = dictFamille["nomsTitulaires"]
                 IDcompte_payeur = dictFamille["IDcompte_payeur"]
                 self.listeNoms.append(nomTitulaires)
@@ -395,7 +395,7 @@ class CTRL_Activites(wx.TextCtrl):
         texte = ""
         listeTemp = []
         for IDactivite in self.listeDonnees :
-            if self.dictActivites.has_key(IDactivite) :
+            if IDactivite in self.dictActivites :
                 nomActivite = self.dictActivites[IDactivite]["nom"]
                 listeTemp.append(nomActivite)
         if len(listeTemp) > 0 :

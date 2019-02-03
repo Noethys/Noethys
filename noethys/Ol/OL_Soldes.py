@@ -104,15 +104,15 @@ def Importation(date=None, afficherDebit=True, afficherCredit=True, afficherNul=
     # Traitement des données
     listeListeView = []
     for IDcompte_payeur, IDfamille in listeComptes :
-        if dictVentilations.has_key(IDcompte_payeur) :
+        if IDcompte_payeur in dictVentilations :
             total_ventilations = FloatToDecimal(dictVentilations[IDcompte_payeur])
         else:
             total_ventilations = FloatToDecimal(0.0)
-        if dictPrestations.has_key(IDcompte_payeur) :
+        if IDcompte_payeur in dictPrestations :
             total_prestations = FloatToDecimal(dictPrestations[IDcompte_payeur])
         else:
             total_prestations = FloatToDecimal(0.0)
-        if dictReglements.has_key(IDcompte_payeur) :
+        if IDcompte_payeur in dictReglements :
             total_reglements = FloatToDecimal(dictReglements[IDcompte_payeur])
         else:
             total_reglements = FloatToDecimal(0.0)
@@ -152,7 +152,7 @@ class Track(object):
         self.total_a_ventiler = donnees["total_a_ventiler"]
         self.reste_a_ventiler = donnees["reste_a_ventiler"]
 
-        if dictTitulaires.has_key(self.IDfamille) :
+        if self.IDfamille in dictTitulaires :
             self.nomsTitulaires =  dictTitulaires[self.IDfamille]["titulairesSansCivilite"]
         else:
             self.nomsTitulaires = _(u"Sans titulaires")

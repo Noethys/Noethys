@@ -176,7 +176,7 @@ class Dialog(wx.Dialog):
         self.ctrl_parent.SetID(IDetiquette, IDactivite)
         
     def SetOptions(self, dictOptions={}):
-        if dictOptions.has_key("active") : 
+        if "active" in dictOptions : 
             active = dictOptions["active"]
             if active == "" or active == None :
                 active = 1

@@ -96,7 +96,7 @@ class ListView(FastObjectListView):
         def GetCategories(categories_tarifs):
             listeTemp = []
             for IDcategorie in UTILS_Texte.ConvertStrToListe(categories_tarifs) :
-                if self.dictCategories.has_key(IDcategorie) :
+                if IDcategorie in self.dictCategories :
                     listeTemp.append(self.dictCategories[IDcategorie])
             return ", ".join(listeTemp)
 

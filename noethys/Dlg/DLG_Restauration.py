@@ -250,11 +250,11 @@ class Dialog(wx.Dialog):
     def OnBoutonOk(self, event):         
         # Données à sauver
         dictDonnees = self.ctrl_donnees.GetCoches() 
-        if dictDonnees.has_key("locaux") :
+        if "locaux" in dictDonnees :
             listeFichiersLocaux = dictDonnees["locaux"]
         else:
             listeFichiersLocaux = []
-        if dictDonnees.has_key("reseau") :
+        if "reseau" in dictDonnees :
             listeFichiersReseau = dictDonnees["reseau"]
         else:
             listeFichiersReseau = []

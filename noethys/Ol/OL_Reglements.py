@@ -406,13 +406,13 @@ class ListView(FastObjectListView):
                 # Nbre total
                 montantTotal += track.montant
                 # Détail
-                if dictDetails.has_key(track.IDmode) == False :
+                if (track.IDmode in dictDetails) == False :
                     dictDetails[track.IDmode] = { "label" : track.nom_mode, "nbre" : 0, "montant" : 0.0}
                 dictDetails[track.IDmode]["nbre"] += 1
                 dictDetails[track.IDmode]["montant"] += track.montant
         # Création du texte
         texte = _(u"%d règlements (%.2f ¤) : ") % (nbreTotal, montantTotal)
-        for IDmode, dictDetail in dictDetails.iteritems() :
+        for IDmode, dictDetail in dictDetails.items() :
             texteDetail = u"%d %s (%.2f ¤), " % (dictDetail["nbre"], dictDetail["label"], dictDetail["montant"])
             texte += texteDetail
         if len(dictDetails) > 0 :

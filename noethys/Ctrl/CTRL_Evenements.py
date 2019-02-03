@@ -84,17 +84,17 @@ class CTRL(CT.CustomTreeCtrl):
             IDactivite = dictEvenement["IDactivite"]
             date = dictEvenement["date"]
 
-            if dictEvenements.has_key(IDactivite) == False :
+            if (IDactivite in dictEvenements) == False :
                 dictEvenements[IDactivite] = {}
                 dictActivites[IDactivite] = dictEvenement["nomActivite"]
 
-            if dictEvenements[IDactivite].has_key(date) == False :
+            if (date in dictEvenements[IDactivite]) == False :
                 dictEvenements[IDactivite][date] = []
 
             dictEvenements[IDactivite][date].append(dictEvenement)
 
         # Tri des activités par ordre alpha
-        listeActivites = [(dictActivites[IDactivite], IDactivite) for IDactivite in dictEvenements.keys()]
+        listeActivites = [(dictActivites[IDactivite], IDactivite) for IDactivite in list(dictEvenements.keys())]
         listeActivites.sort()
 
         for nomActivite, IDactivite in listeActivites :
@@ -103,7 +103,7 @@ class CTRL(CT.CustomTreeCtrl):
             self.SetPyData(niveauActivite, {"type" : "activite", "IDactivite" : IDactivite})
 
             # Tri des dates
-            listeDates = dictEvenements[IDactivite].keys()
+            listeDates = list(dictEvenements[IDactivite].keys())
             listeDates.sort()
 
             for date in listeDates :
@@ -312,7 +312,7 @@ class CTRL(CT.CustomTreeCtrl):
         IDetiquette = dictData["IDetiquette"]
         
         dictConsoAssociees = self.RechercheNbreConsoAssociees() 
-        if dictConsoAssociees.has_key(IDetiquette) :
+        if IDetiquette in dictConsoAssociees :
             if dictConsoAssociees[IDetiquette] > 0 :
                 dlg = wx.MessageDialog(self, _(u"Cette étiquette a déjà été associée à %d consommation(s) !\n\nVous ne pouvez donc pas la supprimer." % dictConsoAssociees[IDetiquette]), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
@@ -328,7 +328,7 @@ class CTRL(CT.CustomTreeCtrl):
             
             # Va servir à vérifier les liens avec les autres tables :
             for dictDataTemp in listeTousEnfants :
-                if dictConsoAssociees.has_key(dictDataTemp["IDetiquette"]) :
+                if dictDataTemp["IDetiquette"] in dictConsoAssociees :
                     if dictConsoAssociees[dictDataTemp["IDetiquette"]] > 0 :
                         dlg = wx.MessageDialog(self, _(u"L'étiquette enfant '%s' qui dépend de l'étiquette sélectionnée a déjà été associée à %d consommation(s) !\n\nVous ne pouvez donc pas supprimer l'étiquette parent." % (dictDataTemp["label"], dictDataTemp["IDetiquette"])), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
                         dlg.ShowModal()
@@ -373,10 +373,10 @@ class CTRL(CT.CustomTreeCtrl):
 
     def SetID(self, IDetiquette=None, IDactivite=None):
         item = None
-        if self.dictItems.has_key(IDetiquette) :
+        if IDetiquette in self.dictItems :
             item = self.dictItems[IDetiquette]
         else :
-            if self.dictItemsActivites.has_key(IDactivite) :
+            if IDactivite in self.dictItemsActivites :
                 item = self.dictItemsActivites[IDactivite]
         if item != None :
             self.EnsureVisible(item)
@@ -394,7 +394,7 @@ class CTRL(CT.CustomTreeCtrl):
         return dictData["IDetiquette"], dictData["IDactivite"]
     
     def GetItem(self, IDetiquette=None, IDactivite=None):
-        if self.dictItems.has_key(IDetiquette) :
+        if IDetiquette in self.dictItems :
             return self.dictItems[IDetiquette]
         else :
             item, cookie = self.GetFirstChild(self.root)
@@ -412,14 +412,14 @@ class CTRL(CT.CustomTreeCtrl):
     def GetCoches(self):
         """ Obtient la liste des étiquettes cochées """
         listeCoches = []
-        for IDevenement, item in self.dictItems.iteritems() :
+        for IDevenement, item in self.dictItems.items() :
             if self.IsItemChecked(item) == True :
                 listeCoches.append(IDevenement)
         listeCoches.sort() 
         return listeCoches
     
     def SetCoches(self, listeCoches=[], tout=False, rien=False):
-        for IDevenement, item in self.dictItems.iteritems() :
+        for IDevenement, item in self.dictItems.items() :
             if IDevenement in listeCoches or tout == True :
                 item.Check(True)
             if rien == True :

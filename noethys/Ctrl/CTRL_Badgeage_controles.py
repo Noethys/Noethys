@@ -139,7 +139,7 @@ class CTRL_Barre_numerique(wx.SearchCtrl):
                         else :
                             DIALOGUES.DLG_Message(self.interface, message=_(u"Ce numéro de badge RFID n'est pas répertorié !"), icone="erreur")
                             self.Start() 
-            except Exception, err :
+            except Exception as err :
                 #print err
                 pass
 

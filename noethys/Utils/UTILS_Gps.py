@@ -9,14 +9,15 @@
 #-----------------------------------------------------------
 
 
-import urllib2, json
+from six.moves.urllib.request import urlopen
+import json
 
 
 def GPS(numero="", rue="", cp="", ville="", pays=""):
     try :
         req = "http://maps.google.com/maps/api/geocode/json?address=%s ,%s ,%s ,%s ,%s &&sensor=false" % (numero, rue, cp, ville, pays)
         req = req.replace(' ','%20')
-        f = urllib2.urlopen(req, timeout=5)
+        f = urlopen(req, timeout=5)
         xml = f.read()
         data = json.loads(xml)
         
@@ -26,7 +27,7 @@ def GPS(numero="", rue="", cp="", ville="", pays=""):
         # Recherche Pays
         pays = ""
         for dictTemp in data['results'][0]['address_components'] :
-            if dictTemp.has_key("types") :
+            if "types" in dictTemp :
                 if "country" in dictTemp["types"] :
                     pays = dictTemp["long_name"]
             
@@ -37,4 +38,4 @@ def GPS(numero="", rue="", cp="", ville="", pays=""):
 
 if __name__ == "__main__":
     g = GPS(cp="29200", ville="BREST", pays="France")
-    print g
+    print(g)

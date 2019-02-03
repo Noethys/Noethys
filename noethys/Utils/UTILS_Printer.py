@@ -218,7 +218,7 @@ class ObjectListViewPrinter():
         # Remplacement des mots-clés
         listeChamps = ["pied_page_texte_gauche", "pied_page_texte_milieu", "pied_page_texte_droite"]
         nomOrganisateur = self.GetNomOrganisateur()
-        for key, valeur in dictOptions.iteritems() :
+        for key, valeur in dictOptions.items() :
             if key in listeChamps :
                 valeur = valeur.replace("{DATE_JOUR}", UTILS_Dates.DateDDEnFr(datetime.date.today()))
                 valeur = valeur.replace("{TITRE_DOCUMENT}", self.titre)

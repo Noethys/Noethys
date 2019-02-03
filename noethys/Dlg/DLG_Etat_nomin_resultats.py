@@ -142,7 +142,7 @@ if __name__ == u"__main__":
     listeChamps = []
     from Ol import OL_Etat_nomin_selections
     for IDselection, IDprofil, code, ordre in listeSelectionChamps :
-        if dictChamps.has_key(code) :
+        if code in dictChamps :
             # Champ disponible
             trackInfo = dictChamps[code]
             dictTemp = {"IDselection":IDselection, "IDprofil":IDprofil, "code":code, "ordre":ordre, "label":trackInfo.label, "type":trackInfo.type, "categorie":trackInfo.categorie, "formule":trackInfo.formule, "titre":trackInfo.titre, "largeur":trackInfo.largeur}

@@ -159,8 +159,8 @@ class CTRL(wx.Panel):
     
     def GetCase(self, IDunite=None, date=None, memo=False):
         """ Récupère une case d'après un IDunite """
-        for numLigne, ligne in self.grille.dictLignes.iteritems() :
-            for numColonne, case in ligne.dictCases.iteritems() :
+        for numLigne, ligne in self.grille.dictLignes.items() :
+            for numColonne, case in ligne.dictCases.items() :
                 if case.typeCase == "consommation" and memo == False :
                     if case.IDunite == IDunite and (case.date == date or date == None) :
                         return case
@@ -171,7 +171,7 @@ class CTRL(wx.Panel):
 
     def GetDictLignesParDate(self):
         dictLignesParDate = {}
-        for numLigne, ligne in self.grille.dictLignes.iteritems() :
+        for numLigne, ligne in self.grille.dictLignes.items() :
             dictLignesParDate[ligne.date] = ligne
         return dictLignesParDate
 
@@ -385,11 +385,11 @@ class Dialog(wx.Dialog):
 
         # Saisie d'une journée avec repas sur une date donnée
         resultat = self.ctrl.SaisieConso(IDunite=1, mode="reservation", etat="reservation", date=datetime.date(2019, 1, 18) )
-        print ("Test saisie Unité 1 :", resultat)
+        print(("Test saisie Unité 1 :", resultat))
         resultat = self.ctrl.SaisieConso(IDunite=2, mode="reservation", etat="reservation", date=datetime.date(2019, 1, 18) )
-        print ("Test saisie Unité 2 :", resultat)
+        print(("Test saisie Unité 2 :", resultat))
         resultat = self.ctrl.SaisieConso(IDunite=5, mode="reservation", etat="reservation", date=datetime.date(2019, 1, 18) )
-        print ("Test saisie Unité 2 :", resultat)
+        print(("Test saisie Unité 2 :", resultat))
 
 if __name__ == "__main__":
     app = wx.App(0)

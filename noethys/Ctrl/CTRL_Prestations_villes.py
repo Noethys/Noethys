@@ -138,7 +138,7 @@ class CTRL(HTL.HyperTreeList):
         dictConso = {}   
         for IDconso, IDindividu, quantite, IDprestation in listeConso :
             if quantite != None :
-                if dictConso.has_key(IDprestation) == False :
+                if (IDprestation in dictConso) == False :
                     dictConso[IDprestation] = 0
                 dictConso[IDprestation] += quantite
         
@@ -149,7 +149,7 @@ class CTRL(HTL.HyperTreeList):
             date = DateEngEnDateDD(date)
             if nomActivite == None : nomActivite = _(u"Nom d'activité inconnu")
             
-            if self.dictTitulaires.has_key(IDfamille) :
+            if IDfamille in self.dictTitulaires :
                 
                 dictTitulaire = self.dictTitulaires[IDfamille]
                 nomTitulaires = dictTitulaire["titulairesSansCivilite"]
@@ -161,21 +161,21 @@ class CTRL(HTL.HyperTreeList):
                 if listeVilles == None or ville.upper() in listeVilles :
                 
                     # Famille
-                    if dictResultats.has_key(IDfamille) == False :
+                    if (IDfamille in dictResultats) == False :
                         dictResultats[IDfamille] = {"nom":nomTitulaires, "rue":rue, "cp":cp, "ville":ville, "individus":{}, "montant":0.0, "nombre":0}
                         dictStats["familles"] += 1
                         
                     # Individu
-                    if dictResultats[IDfamille]["individus"].has_key(IDindividu) == False :
+                    if (IDindividu in dictResultats[IDfamille]["individus"]) == False :
                         dictResultats[IDfamille]["individus"][IDindividu] = {"nom":nom, "prenom":prenom, "date_naiss":date_naiss, "IDcivilite":IDcivilite, "prestations":{} }
                         dictStats["individus"] += 1
                         
                     # Prestation
-                    if dictResultats[IDfamille]["individus"][IDindividu]["prestations"].has_key(label) == False :
+                    if (label in dictResultats[IDfamille]["individus"][IDindividu]["prestations"]) == False :
                         dictResultats[IDfamille]["individus"][IDindividu]["prestations"][label] = {"montant":0.0, "nombre":0}
                     
                     # Quantité
-                    if dictConso.has_key(IDprestation) : 
+                    if IDprestation in dictConso : 
                         quantite = dictConso[IDprestation]
                     else :
                         quantite = 1                    
@@ -191,7 +191,7 @@ class CTRL(HTL.HyperTreeList):
                     dictStats["montant"] += montant
                     dictStats["nombre"] += quantite
                     
-                    if dictStats["prestations"].has_key(label) == False :
+                    if (label in dictStats["prestations"]) == False :
                         dictStats["prestations"][label] = {"montant":0.0, "nombre":0, "nomActivite":nomActivite}
                     dictStats["prestations"][label]["montant"] += montant
                     dictStats["prestations"][label]["nombre"] += quantite
@@ -213,7 +213,7 @@ class CTRL(HTL.HyperTreeList):
         
         # Tri par nom de titulaires de famille
         listeFamilles = []
-        for IDfamille, dictFamille in dictResultats.iteritems() :
+        for IDfamille, dictFamille in dictResultats.items() :
             nomTitulaires = dictFamille["nom"]
             listeFamilles.append((nomTitulaires, IDfamille))
         listeFamilles.sort() 
@@ -234,7 +234,7 @@ class CTRL(HTL.HyperTreeList):
             # Pour impression
             impressionTempFamille = {"nom":nomTitulaires, "adresse":adresse, "montant":montantStr, "nombre":dictResultats[IDfamille]["nombre"], "individus":[]}
             
-            for IDindividu, dictIndividu in dictResultats[IDfamille]["individus"].iteritems() :
+            for IDindividu, dictIndividu in dictResultats[IDfamille]["individus"].items() :
                 
                 # Niveau individu
                 nomIndividu = u"%s %s" % (dictIndividu["nom"], dictIndividu["prenom"])
@@ -258,7 +258,7 @@ class CTRL(HTL.HyperTreeList):
                 
                 # Tri par label
                 listeLabels = []
-                for label, dictPrestation in dictResultats[IDfamille]["individus"][IDindividu]["prestations"].iteritems() :
+                for label, dictPrestation in dictResultats[IDfamille]["individus"][IDindividu]["prestations"].items() :
                     listeLabels.append((label, dictPrestation))
                 listeLabels.sort() 
                 
@@ -298,7 +298,7 @@ class CTRL(HTL.HyperTreeList):
         
         # Tri par label
         listeLabels = []
-        for label, dictPrestation in dictStats["prestations"].iteritems() :
+        for label, dictPrestation in dictStats["prestations"].items() :
             listeLabels.append((label, dictPrestation))
         listeLabels.sort() 
         

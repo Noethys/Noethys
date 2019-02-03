@@ -425,7 +425,7 @@ class Traitement(Thread):
             self.succes = True
             raise Abort
         
-        except Abort, KeyBoardInterrupt: 
+        except Abort as KeyBoardInterrupt: 
             if self.succes == True :
                 self.parent.label_intro.SetLabel(_(u"Traitement terminé")) 
                 self.parent.parent.EcritLog(_(u"Traitement terminé")) 
@@ -435,7 +435,7 @@ class Traitement(Thread):
                 self.parent.label_intro.SetLabel(_(u"Traitement interrompu par l'utilisateur")) 
                 self.parent.parent.EcritLog(_(u"Traitement interrompu par l'utilisateur")) 
                 self.parent.bouton_fermer.SetBitmap(wx.Bitmap(Chemins.GetStaticPath(u"Images/BoutonsImages/Fermer_L72.png"), wx.BITMAP_TYPE_ANY))
-        except Exception, err : 
+        except Exception as err : 
             self.parent.parent.EcritLog("Erreur : " + str(err))
             self.stop = True 
             raise 

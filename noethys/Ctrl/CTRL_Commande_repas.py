@@ -18,6 +18,7 @@ import copy
 import wx.grid as gridlib
 import wx.lib.mixins.gridlabelrenderer as glr
 import GestionDB
+import six
 from Ctrl import CTRL_Bouton_image
 from Utils import UTILS_Dates
 from Utils import UTILS_Divers
@@ -154,7 +155,7 @@ class Case():
         valeur = self.grid.GetCellValue(self.numLigne, self.numColonne)
         if valeur == None :
             valeur = u"Aucune valeur"
-        texte = unicode(valeur)
+        texte = six.text_type(valeur)
         texte = texte.replace("<b>", "")
         texte = texte.replace("</b>", "")
         # Ajoute la suggestion au texte
@@ -169,7 +170,7 @@ class Case():
                 texte += u"\n- Utilisez les touches - et +"
 
         # Affiche le menu du jour
-        if self.grid.dictDonnees["dict_menus"].has_key(self.date):
+        if self.date in self.grid.dictDonnees["dict_menus"]:
             texte += u"\n\n------- MENUS -------\n\n"
             for dictMenu in self.grid.dictDonnees["dict_menus"][self.date]:
                 texte += u"%s :\n" % dictMenu["nom_categorie"]
@@ -323,7 +324,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 
         if (numLigne, numColonne) != self.last_survol :
             self.last_survol = (numLigne, numColonne)
-            if numLigne < 0 or numColonne < 0 or self.dictCases.has_key((numLigne, numColonne)) == False :
+            if numLigne < 0 or numColonne < 0 or ((numLigne, numColonne) in self.dictCases) == False :
                 self.GetGridWindow().SetToolTip(None)
             else :
                 case = self.dictCases[(numLigne, numColonne)]
@@ -337,7 +338,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         numLigne = self.GetGridCursorRow()
         numColonne = self.GetGridCursorCol()
         keycode = event.GetKeyCode()
-        if self.dictCases.has_key((numLigne, numColonne)):
+        if (numLigne, numColonne) in self.dictCases:
             case = self.dictCases[(numLigne, numColonne)]
             # +
             if keycode == 43:
@@ -357,7 +358,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
     def OnCellRightClick(self, event):
         numLigne = event.GetRow()
         numColonne = event.GetCol()
-        if self.dictCases.has_key((numLigne, numColonne)):
+        if (numLigne, numColonne) in self.dictCases:
             case = self.dictCases[(numLigne, numColonne)]
 
             menuPop = UTILS_Adaptations.Menu()
@@ -425,7 +426,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         listeDonnees = DB.ResultatReq()
         if len(listeDonnees) > 0:
             nom_modele, IDrestaurateur, parametres, restaurateur_nom, restaurateur_tel, restaurateur_mail = listeDonnees[0]
-            if type(parametres) in (str, unicode):
+            if type(parametres) in (str, six.text_type):
                 exec (u"parametres = %s" % parametres)
 
             dictDonnees["modele_nom"] = nom_modele
@@ -447,7 +448,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         if len(listeDonnees) > 0:
             index = 0
             for IDcolonne, ordre, nom_colonne, largeur, categorie, parametres in listeDonnees:
-                if type(parametres) in (str, unicode):
+                if type(parametres) in (str, six.text_type):
                     exec (u"parametres = %s" % parametres)
                 dictColonne = {"IDcolonne": IDcolonne, "ordre": ordre, "nom_colonne": nom_colonne, "largeur": largeur, "categorie": categorie, "parametres": parametres}
                 dictDonnees["liste_colonnes"].append(dictColonne)
@@ -458,7 +459,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         # Recherche les activités concernées
         listeUnites = []
         for dictColonne in dictDonnees["liste_colonnes"] :
-            if dictColonne["parametres"].has_key("unites"):
+            if "unites" in dictColonne["parametres"]:
                 for (IDgroupe, IDunite) in dictColonne["parametres"]["unites"] :
                     if IDunite not in listeUnites :
                         listeUnites.append(IDunite)
@@ -504,20 +505,20 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         for IDconso, date, IDgroupe, IDunite, IDindividu in listeDonnees :
             date = UTILS_Dates.DateEngEnDateDD(date)
 
-            if dictDonnees["dict_conso"].has_key(date) == False:
+            if (date in dictDonnees["dict_conso"]) == False:
                 dictDonnees["dict_conso"][date] = {}
-            if dictDonnees["dict_conso"][date].has_key(IDgroupe) == False:
+            if (IDgroupe in dictDonnees["dict_conso"][date]) == False:
                 dictDonnees["dict_conso"][date][IDgroupe] = {}
-            if dictDonnees["dict_conso"][date][IDgroupe].has_key(IDunite) == False:
+            if (IDunite in dictDonnees["dict_conso"][date][IDgroupe]) == False:
                 dictDonnees["dict_conso"][date][IDgroupe][IDunite] = 0
             dictDonnees["dict_conso"][date][IDgroupe][IDunite] += 1
 
             if IDindividu not in dictDonnees["liste_individus"] :
                 dictDonnees["liste_individus"].append(IDindividu)
 
-            if dictDonnees["dict_dates"].has_key(date) == False :
+            if (date in dictDonnees["dict_dates"]) == False :
                 dictDonnees["dict_dates"][date] = {}
-            if dictDonnees["dict_dates"][date].has_key(IDindividu) == False :
+            if (IDindividu in dictDonnees["dict_dates"][date]) == False :
                 dictDonnees["dict_dates"][date][IDindividu] = []
             if IDgroupe not in dictDonnees["dict_dates"][date][IDindividu] :
                 dictDonnees["dict_dates"][date][IDindividu].append(IDgroupe)
@@ -543,7 +544,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             date_debut = UTILS_Dates.DateEngEnDateDD(date_debut)
             date_fin = UTILS_Dates.DateEngEnDateDD(date_fin)
 
-            if dictInfosMedicales.has_key(IDindividu) == False :
+            if (IDindividu in dictInfosMedicales) == False :
                 dictInfosMedicales[IDindividu] = []
             dictTemp = {
                 "IDprobleme" : IDprobleme, "IDcategorie" : IDtype, "intitule" : intitule, "date_debut" : date_debut,
@@ -567,7 +568,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         for IDmessage, IDcategorie, priorite, IDindividu, texte, individu_nom, individu_prenom in listeDonnees :
             dictTemp = {"IDmessage" : IDmessage, "IDindividu" : IDindividu, "priorite" : priorite, "texte" : texte,
                         "individu_nom" : individu_nom, "individu_prenom" : individu_prenom}
-            if dictMessages.has_key(IDindividu) == False :
+            if (IDindividu in dictMessages) == False :
                 dictMessages[IDindividu] = []
             dictMessages[IDindividu].append(dictTemp)
         dictDonnees["messages"] = dictMessages
@@ -584,12 +585,12 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 
             for IDvaleur, date, IDcolonne, valeur in listeDonnees :
                 date = UTILS_Dates.DateEngEnDateDD(date)
-                if dictDonnees["valeurs"].has_key(date) == False :
+                if (date in dictDonnees["valeurs"]) == False :
                     dictDonnees["valeurs"][date] = {}
                 dictDonnees["valeurs"][date][IDcolonne] = {"IDvaleur" : IDvaleur, "valeur" : valeur}
 
         # Menus
-        if dictDonnees.has_key("IDrestaurateur"):
+        if "IDrestaurateur" in dictDonnees:
             IDrestaurateur = dictDonnees["IDrestaurateur"]
             if IDrestaurateur == None :
                 IDrestaurateur = 0
@@ -605,7 +606,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         dict_menus = {}
         for IDmenu, IDcategorie, nom_categorie, date, texte in listeDonnees:
             date = UTILS_Dates.DateEngEnDateDD(date)
-            if dict_menus.has_key(date) == False :
+            if (date in dict_menus) == False :
                 dict_menus[date] = []
             dict_menus[date].append({"IDmenu" : IDmenu, "IDcategorie" : IDcategorie, "nom_categorie" : nom_categorie, "texte" : texte})
         dictDonnees["dict_menus"] = dict_menus
@@ -620,7 +621,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 
         # Mémorisation des données existantes
         try :
-            for case in self.dictCases.values():
+            for case in list(self.dictCases.values()):
                 if case.ouvert == True :
                     self.dictValeursAnterieures[(case.date, case.IDcolonne)] = case.GetValeur()
         except:
@@ -690,7 +691,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                         pass
 
                     # Récupération de la valeur avant MAJ
-                    if self.dictValeursAnterieures.has_key((date, dictColonne["IDcolonne"])):
+                    if (date, dictColonne["IDcolonne"]) in self.dictValeursAnterieures:
                         valeur = self.dictValeursAnterieures[(date, dictColonne["IDcolonne"])]
 
                     # Recherche suggestion
@@ -710,11 +711,11 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                     if dictColonne["categorie"] == "texte_infos" :
                         ouvert = False
                         liste_infos = []
-                        if self.dictDonnees["dict_dates"].has_key(date) :
+                        if date in self.dictDonnees["dict_dates"] :
                             for IDindividu in self.dictDonnees["dict_dates"][date] :
                                 valide = True
 
-                                if dictColonne["parametres"].has_key("groupes") :
+                                if "groupes" in dictColonne["parametres"] :
                                     valide = False
                                     groupes = dictColonne["parametres"]["groupes"]
                                     for IDgroupe in groupes :
@@ -724,15 +725,15 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                                 if valide == True :
 
                                     # Recherche infos médicales
-                                    if dictColonne["parametres"].has_key("infos_medicales"):
-                                        if self.dictDonnees["infos_medicales"].has_key(IDindividu) :
+                                    if "infos_medicales" in dictColonne["parametres"]:
+                                        if IDindividu in self.dictDonnees["infos_medicales"] :
                                             for dictInfos in self.dictDonnees["infos_medicales"][IDindividu]:
                                                 texte = u"<b>%s %s</b> : %s (%s)" % (dictInfos["individu_prenom"], dictInfos["individu_nom"], dictInfos["intitule"], dictInfos["description"])
                                                 liste_infos.append(texte)
 
                                     # Recherche messages
-                                    if dictColonne["parametres"].has_key("messages_individuels"):
-                                        if self.dictDonnees["messages"].has_key(IDindividu) :
+                                    if "messages_individuels" in dictColonne["parametres"]:
+                                        if IDindividu in self.dictDonnees["messages"] :
                                             for dictMessages in self.dictDonnees["messages"][IDindividu]:
                                                 texte = u"<b>%s %s</b> : %s" % (dictMessages["individu_prenom"], dictMessages["individu_nom"], dictMessages["texte"])
                                                 liste_infos.append(texte)
@@ -749,7 +750,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                     self.dictCases[(numLigne, numColonne)] = case
 
                 # Ligne de total
-                if type(date) in (str, unicode):
+                if type(date) in (str, six.text_type):
 
                     # Création de la case
                     case = Case(self, numLigne=numLigne, numColonne=numColonne, IDcolonne=dictColonne["IDcolonne"], date=date, categorieColonne=dictColonne["categorie"], ouvert=False, valeur=None)
@@ -783,10 +784,10 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         listeSuppressions = []
 
         # Récupération des valeurs
-        if self.dictDonnees.has_key("liste_dates"):
+        if "liste_dates" in self.dictDonnees:
             for numLigne in range(0, len(self.dictDonnees["liste_dates"]) - 1):
                 for numColonne in range(0, len(self.dictDonnees["liste_colonnes"])):
-                    if self.dictCases.has_key((numLigne, numColonne)):
+                    if (numLigne, numColonne) in self.dictCases:
                         case = self.dictCases[(numLigne, numColonne)]
                         if case.ouvert == True :
                             if unicode(case.GetValeur()) not in ("", "0"):
@@ -833,9 +834,9 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         DB.Close()
 
     def RechercheOuverture(self, date, IDgroupe, IDunite):
-        if self.dictDonnees["dict_ouvertures"].has_key(date) :
-            if self.dictDonnees["dict_ouvertures"][date].has_key(IDgroupe) :
-                if self.dictDonnees["dict_ouvertures"][date][IDgroupe].has_key(IDunite) :
+        if date in self.dictDonnees["dict_ouvertures"] :
+            if IDgroupe in self.dictDonnees["dict_ouvertures"][date] :
+                if IDunite in self.dictDonnees["dict_ouvertures"][date][IDgroupe] :
                     return self.dictDonnees["dict_ouvertures"][date][IDgroupe][IDunite]
         return None
 
@@ -843,7 +844,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         x, y = self.CalcUnscrolledPosition(event.GetPosition())
         numLigne = self.YToRow(y)
         numColonne = self.XToCol(x)
-        if self.dictCases.has_key((numLigne, numColonne)) == False :
+        if ((numLigne, numColonne) in self.dictCases) == False :
             return False
         case = self.dictCases[(numLigne, numColonne)]
         if case.ouvert == False :
@@ -863,7 +864,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             numColonneTotal = 0
             for dictColonne in self.dictDonnees["liste_colonnes"]:
                 if dictColonne["categorie"] == "numerique_total":
-                    if dictColonne["parametres"].has_key("colonnes"):
+                    if "colonnes" in dictColonne["parametres"]:
                         listeIDcolonne = dictColonne["parametres"]["colonnes"]
                     else :
                         listeIDcolonne = None
@@ -871,7 +872,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                     # On parcourt les colonnes de la ligne pour calculer le total
                     valeur = 0
                     for numColonne in range(0, len(self.dictDonnees["liste_colonnes"])):
-                        if self.dictCases.has_key((numLigne, numColonne)):
+                        if (numLigne, numColonne) in self.dictCases:
                             case = self.dictCases[(numLigne, numColonne)]
                             if (listeIDcolonne == None or case.IDcolonne in listeIDcolonne) and "numerique" in case.categorieColonne and "total" not in case.categorieColonne:
                                 valeur += case.GetValeur()
@@ -885,15 +886,15 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         totaux_colonnes = {}
         for numLigne in range(0, len(self.dictDonnees["liste_dates"]) - 1):
             for numColonne in range(0, len(self.dictDonnees["liste_colonnes"])):
-                if self.dictCases.has_key((numLigne, numColonne)):
+                if (numLigne, numColonne) in self.dictCases:
                     case = self.dictCases[(numLigne, numColonne)]
                     if "numerique" in case.categorieColonne:
-                        if totaux_colonnes.has_key(numColonne) == False:
+                        if (numColonne in totaux_colonnes) == False:
                             totaux_colonnes[numColonne] = 0
                         totaux_colonnes[numColonne] += case.GetValeur()
 
         # Envoie les totaux vers les cases de la ligne de total
-        for numColonne, valeur in totaux_colonnes.iteritems():
+        for numColonne, valeur in totaux_colonnes.items():
             numLigne = len(self.dictDonnees["liste_dates"]) - 1
             self.dictCases[(numLigne, numColonne)].SetValeur(valeur)
 
@@ -916,12 +917,12 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         return dictDonnees
 
     def Importer_suggestions(self, event=None):
-        for case in self.dictCases.values() :
+        for case in list(self.dictCases.values()) :
             case.ImporterSuggestion()
         self.CalcTotaux()
 
     def RAZ(self, event=None):
-        for case in self.dictCases.values():
+        for case in list(self.dictCases.values()):
             case.RAZ()
         self.CalcTotaux()
 

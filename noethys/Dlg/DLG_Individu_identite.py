@@ -61,7 +61,7 @@ class Sieste(wx.Choice):
 
     def SetID(self, ID=0):
         if ID == None : return
-        for index, values in self.dictDonnees.iteritems():
+        for index, values in self.dictDonnees.items():
             if values[0] == ID :
                  self.SetSelection(index)
 
@@ -389,7 +389,7 @@ class Panel_identite(wx.Panel):
             return
         self.IDindividu = self.GetGrandParent().IDindividu
         if self.IDindividu == None :
-            print "pas de IDindividu !"
+            print("pas de IDindividu !")
             return
         if self.GetGrandParent().nouvelleFiche == True :
             return

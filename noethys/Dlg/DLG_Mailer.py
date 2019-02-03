@@ -17,7 +17,6 @@ from Ctrl import CTRL_Bouton_image
 import sys
 import os
 import re
-import cStringIO
 import traceback
 import copy
 import datetime
@@ -467,9 +466,9 @@ class Dialog(wx.Dialog):
 
             # Traitement des champs pour la fusion
             texte = copy.deepcopy(texteHTML)
-            for motcle, valeur in CTRL_Editeur_email.GetChampsStandards().iteritems():
+            for motcle, valeur in CTRL_Editeur_email.GetChampsStandards().items():
                 texte = texte.replace(motcle, valeur)
-            for motcle, valeur in dictChamps.iteritems():
+            for motcle, valeur in dictChamps.items():
                 if valeur == None: valeur = u""
                 if type(valeur) == int: valeur = str(valeur)
                 if type(valeur) == bool: valeur = str(valeur)
@@ -495,7 +494,7 @@ class Dialog(wx.Dialog):
             messagerie = UTILS_Envoi_email.Messagerie(backend=dictExp["moteur"], hote=dictExp["smtp"], port=dictExp["port"], utilisateur=dictExp["utilisateur"], motdepasse=dictExp["motdepasse"],
                                                     email_exp=dictExp["adresse"], nom_exp=dictExp["nom_adresse"], timeout=20, use_tls=dictExp["startTLS"], parametres=dictExp["parametres"])
             messagerie.Connecter()
-        except Exception, err:
+        except Exception as err:
             dlg_progress.Destroy()
             err = str(err).decode("iso-8859-15")
             intro = _(u"La connexion au serveur de messagerie est impossible :")
@@ -554,9 +553,9 @@ class Dialog(wx.Dialog):
             
             # Remplacement des champs pour la fusion
             texte = copy.deepcopy(texteHTML)
-            for motcle, valeur in CTRL_Editeur_email.GetChampsStandards().iteritems() :
+            for motcle, valeur in CTRL_Editeur_email.GetChampsStandards().items() :
                 texte = texte.replace(motcle, valeur)
-            for motcle, valeur in dictChamps.iteritems() :
+            for motcle, valeur in dictChamps.items() :
                 try :
                     if valeur == None : valeur = u""
                     if type(valeur) == int : valeur = str(valeur)

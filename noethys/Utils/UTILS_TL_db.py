@@ -296,19 +296,19 @@ class TimelinePerso(Timeline):
 ##        self.events.append(evt)
 
     def _save_data(self):
-        print "--------- Sauvegarde fictive : ----------"
+        print("--------- Sauvegarde fictive : ----------")
         
         # Sauvegarde de la période préférée
-        print "Periode preferee :"
-        print (self.preferred_period.start_time, self.preferred_period.end_time)
+        print("Periode preferee :")
+        print((self.preferred_period.start_time, self.preferred_period.end_time))
         
         # Sauvegarde des catégories
-        print "Categories :"
+        print("Categories :")
         for categorie in self.categories:
-            print (categorie.name, categorie.color, categorie.visible)
+            print((categorie.name, categorie.color, categorie.visible))
         
         # Sauvegarde des events
-        print "Events :"
+        print("Events :")
         for event in self.events :
             dateDebut = event.time_period.start_time
             dateFin = event.time_period.end_time
@@ -320,15 +320,15 @@ class TimelinePerso(Timeline):
             description = event.get_data("description")
             icon = event.get_data("icon")
             
-            print ">>>>>> EVENT  >>>>>>>>>>>"
-            print (dateDebut, dateFin) # time.year, time.month, time.day, time.hour, time.minute, time.second
-            print (texte,)
-            print (nomCategorie,)
-            print (description,)
-            print (icon,)
-            print "-------------------------------------------------"
+            print(">>>>>> EVENT  >>>>>>>>>>>")
+            print((dateDebut, dateFin)) # time.year, time.month, time.day, time.hour, time.minute, time.second
+            print((texte,))
+            print((nomCategorie,))
+            print((description,))
+            print((icon,))
+            print("-------------------------------------------------")
             
         # Indique que tout a été sauvegardé
         self._notify(Timeline.STATE_CHANGE_ANY)
         
-        print "Fin sauvegarde."
+        print("Fin sauvegarde.")

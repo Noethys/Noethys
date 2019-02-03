@@ -75,7 +75,7 @@ class Track(object):
         self.datePrelevement = donnees["datePrelevement"]
         
     def InitTitulaireHelios(self):
-        if DICT_INDIVIDUS.has_key(self.titulaire_helios) :
+        if self.titulaire_helios in DICT_INDIVIDUS :
             self.titulaireCivilite = DICT_INDIVIDUS[self.titulaire_helios]["civiliteAbrege"] 
             self.titulaireNom = DICT_INDIVIDUS[self.titulaire_helios]["nom"]
             self.titulairePrenom = DICT_INDIVIDUS[self.titulaire_helios]["prenom"]
@@ -398,7 +398,7 @@ class MyFrame(wx.Frame):
         self.CenterOnScreen()
         
     def OnBoutonTest(self, event):
-        print "Test de la sauvegarde des reglements :"
+        print("Test de la sauvegarde des reglements :")
         self.myOlv.SauvegardeReglements(date=datetime.date.today(), IDcompte=99)
         
         

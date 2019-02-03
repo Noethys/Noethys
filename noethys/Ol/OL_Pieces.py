@@ -56,7 +56,7 @@ class Track(object):
         self.individu_prenom = donnees[11]
         
         # Nbre documents scannés
-        if DICT_DOCUMENTS.has_key(self.IDpiece) :
+        if self.IDpiece in DICT_DOCUMENTS :
             self.nbre_documents = DICT_DOCUMENTS[self.IDpiece]
         else:
             self.nbre_documents = 0
@@ -77,7 +77,7 @@ class Track(object):
         if self.IDfamille != None :
             self.nomTitulaires = _(u"IDfamille n°%d") % self.IDfamille
             if parent.dictFamillesRattachees != None :
-                if parent.dictFamillesRattachees.has_key(self.IDfamille) :
+                if self.IDfamille in parent.dictFamillesRattachees :
                     self.nomTitulaires = parent.dictFamillesRattachees[self.IDfamille]["nomsTitulaires"]
         else:
             self.nomTitulaires = None
@@ -121,7 +121,7 @@ class ListView(FastObjectListView):
             # Pour un individu
             if self.dictFamillesRattachees != None :
                 listeIDfamille = []
-                for IDfamille, dictFamille in self.dictFamillesRattachees.iteritems() :
+                for IDfamille, dictFamille in self.dictFamillesRattachees.items() :
                     if dictFamille["IDcategorie"] in (1, 2) :
                         listeIDfamille.append(IDfamille)
                 if len(listeIDfamille) == 0 : conditionIDfamille = "()"
@@ -203,7 +203,7 @@ class ListView(FastObjectListView):
         DB.Close()
         dictDocuments = {}
         for IDdocument, IDpiece in listeDonnees :
-            if dictDocuments.has_key(IDpiece) == False :
+            if (IDpiece in dictDocuments) == False :
                 dictDocuments[IDpiece] = 1
             else:
                 dictDocuments[IDpiece] += 1
@@ -396,7 +396,7 @@ class ListView(FastObjectListView):
         # Vérifie que l'individu est rattaché comme REPRESENTANT ou ENFANT à une famille
         if self.dictFamillesRattachees != None :
             valide = False
-            for IDfamilleTmp, dictFamille in self.dictFamillesRattachees.iteritems() :
+            for IDfamilleTmp, dictFamille in self.dictFamillesRattachees.items() :
                 if dictFamille["IDcategorie"] in (1, 2) :
                     valide = True
             if valide == False :
@@ -428,7 +428,7 @@ class ListView(FastObjectListView):
         # Vérifie que l'individu est rattaché comme REPRESENTANT ou ENFANT à une famille
         if self.dictFamillesRattachees != None :
             valide = False
-            for IDfamilleTmp, dictFamille in self.dictFamillesRattachees.iteritems() :
+            for IDfamilleTmp, dictFamille in self.dictFamillesRattachees.items() :
                 if dictFamille["IDcategorie"] in (1, 2) :
                     valide = True
             if valide == False :

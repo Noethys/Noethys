@@ -13,12 +13,8 @@ import Chemins
 from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
-import CTRL_Bouton_image
-import os
-import cStringIO
+import six
 
-try: import psyco; psyco.full()
-except: pass
 
 
 def ChargeImage(fichier):
@@ -210,7 +206,7 @@ class CTRL(wx.StaticBitmap):
         if buffer == None :
             self.imagewx = None
         else :
-            io = cStringIO.StringIO(buffer)
+            io = six.BytesIO(buffer)
             if 'phoenix' in wx.PlatformInfo:
                 self.imagewx = wx.Image(io, wx.BITMAP_TYPE_PNG)
             else :
@@ -220,7 +216,7 @@ class CTRL(wx.StaticBitmap):
     def GetBuffer(self):
         """ Récupère le buffer de l'image """
         if self.imagewx == None : return None
-        buffer = cStringIO.StringIO()
+        buffer = six.BytesIO()
         self.imagewx.SaveStream(buffer, wx.BITMAP_TYPE_PNG)
         buffer.seek(0)
         blob = buffer.read()

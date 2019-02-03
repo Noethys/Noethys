@@ -17,6 +17,7 @@ import GestionDB
 from Utils import UTILS_Dates
 import datetime
 import calendar
+import six
 from Utils.UTILS_Decimal import FloatToDecimal as FloatToDecimal
 from Utils import UTILS_Config
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
@@ -92,7 +93,7 @@ class Track(object):
 
         dict_conso = self.clsbase.GetValeur("dict_conso", {})
         self.dict_dates = {}
-        for date, listeConso in dict_conso.iteritems() :
+        for date, listeConso in dict_conso.items() :
 
             # Recherche des consommations de la date
             if date.month == self.mois and date.year == self.annee :
@@ -287,7 +288,7 @@ class ListView(FastObjectListView):
                 return ""
             if type(duree) == datetime.timedelta :
                 return UTILS_Dates.DeltaEnStr(duree, separateur="h")
-            if type(duree) in (str, unicode) :
+            if type(duree) in (str, six.text_type) :
                 duree = duree.replace(' ','')
                 duree = duree.replace(":", "h")
                 return duree

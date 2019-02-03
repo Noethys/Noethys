@@ -192,7 +192,7 @@ class Dialog(wx.Dialog):
             liste_details = []
             for IDcotisation, IDfamille, IDindividu, numero, prenom_individu, nom_individu in listeCotisationsExistantes :
                 # Si cotisation familiale
-                if IDfamille != None and dictTitulaires.has_key(IDfamille):
+                if IDfamille != None and IDfamille in dictTitulaires:
                     nom_famille = dictTitulaires[IDfamille]["titulairesSansCivilite"]
                     liste_details.append(_(u"Famille de %s : Cotisation n°%s") % (nom_famille, numero))
                 # Si cotisation individuelle

@@ -171,7 +171,7 @@ class Dialog(wx.Dialog):
         
         # Remplissage du fichier
         fichier["###INFOS###"] = {"nom_langue" : nom_langue, "code_langue" : code_langue}
-        for texte, traduction in dictTraductions.iteritems() :
+        for texte, traduction in dictTraductions.items() :
             fichier[texte] = traduction
         
         # Clôture du fichier

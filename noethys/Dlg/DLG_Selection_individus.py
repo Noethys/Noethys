@@ -235,22 +235,22 @@ class Dialog(wx.Dialog):
                 dictParametres[nom] = valeur
 
         # Groupes d'activités
-        if dictParametres.has_key("liste_groupes_activites"):
+        if "liste_groupes_activites" in dictParametres:
             listeID = [int(ID) for ID in dictParametres["liste_groupes_activites"].split(";")]
             self.ctrl_activites.SetValeurs("groupes", listeID)
             self.radio_inscrits.SetValue(True)
 
         # Activités
-        if dictParametres.has_key("liste_activites"):
+        if "liste_activites" in dictParametres:
             listeID = [int(ID) for ID in dictParametres["liste_activites"].split(";")]
             self.ctrl_activites.SetValeurs("activites", listeID)
             self.radio_inscrits.SetValue(True)
 
         # Options
-        if dictParametres.has_key("archives"):
+        if "archives" in dictParametres:
             self.check_archives.SetValue(True)
 
-        if dictParametres.has_key("effaces"):
+        if "effaces" in dictParametres:
             self.check_effaces.SetValue(True)
 
         self.OnRadio(None)

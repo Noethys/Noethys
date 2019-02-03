@@ -189,7 +189,7 @@ class Dialog(wx.Dialog):
         # Requête
         try :
             reponse = requests.get(url)
-        except Exception, error :
+        except Exception as error :
             self.ctrl_resultats.SetTexte(unicode(error))
             return
 

@@ -12,11 +12,10 @@
 import Chemins
 from UTILS_Traduction import _
 import GestionDB
-
 import UTILS_CryptageMD5
-from Utils import UTILS_Parametres
+import six
 import random
-import urllib
+from six.moves.urllib.request import urlopen
 import datetime
 import string
 import ftplib
@@ -97,7 +96,7 @@ def UploadCalendrier():
     dictDates = {}
     for IDperiode, annee, date in listeDatesTmp :
         key = (IDperiode, annee)
-        if dictDates.has_key(key):
+        if key in dictDates:
             dictDates[key].append(date)
         else:
             dictDates[key] = [date,]
@@ -152,7 +151,7 @@ def ImporteFichierReservations():
     """ Récupère le contenu du fichier présences sur Internet """
     
     # Récupère le fichier en ligne
-    f = urllib.urlopen('http://xxx/presences.txt')
+    f = urlopen('http://xxx/presences.txt')
     txtPresences = f.readlines()
     f.close()
     
@@ -235,7 +234,7 @@ def ImporteFichierReservations():
             nbreEnregistrements += 1
             
             # Enregistrement des présences de la réservation
-            for date, type_presence in dictPresences.iteritems() : 
+            for date, type_presence in dictPresences.items() : 
                 listeDonnees = [ ("IDreservation",   IDreservation),  
                                             ("IDfamille",   IDfamille),  
                                             ("date",    date),
@@ -269,7 +268,7 @@ def UploadFichierIdentites():
     DB.close()
     dictEnfants = {}
     for IDenfant, IDfamille, prenom in listeEnfants :
-        if dictEnfants.has_key(IDfamille) :
+        if IDfamille in dictEnfants :
             dictEnfants[IDfamille].append( (IDenfant, prenom) )
         else:
             dictEnfants[IDfamille] = [ (IDenfant, prenom), ]
@@ -290,7 +289,7 @@ def UploadFichierIdentites():
         
         # Enfants
         txtEnfants = ""
-        if dictEnfants.has_key(IDfamille) :
+        if IDfamille in dictEnfants :
             for IDenfant, prenom in dictEnfants[IDfamille] :
                 txtEnfants += u"%05d%s;" % (IDenfant, prenom.decode("iso-8859-15"))
             if len(txtEnfants) > 0 : txtEnfants = txtEnfants[:-1]
@@ -338,7 +337,7 @@ def GetInfosPieces():
     DB.close()
     dictio = {}
     for IDpiece, IDfamille, IDenfant, IDtype, date_debut, date_fin in listeDonnees:
-        if dictPieces.has_key(IDfamille) :
+        if IDfamille in dictPieces :
             dictPieces[IDfamille].append( (IDpiece, IDenfant, IDtype, date_debut, date_fin) )
         else :
             dictPieces[IDfamille] = [ (IDpiece, IDenfant, IDtype, date_debut, date_fin), ]
@@ -353,18 +352,18 @@ def GetInfosCotisations():
     DB.close()
     dictio = {}
     for IDcotisation, IDfamille, date_debut, date_fin in listeDonnees:
-        if dictCotisations.has_key(IDfamille) :
+        if IDfamille in dictCotisations :
             dictCotisations[IDfamille].append( (IDcotisation, date_debut, date_fin) )
         else:
             dictCotisations[IDfamille] = [ (IDcotisation, date_debut, date_fin), ]
     return dictCotisations
         
 def GetPiecesAFournir(dictPieces, dictCotisations, dictTypesPieces, dictEnfants, IDfamille):
-        if dictPieces.has_key(IDfamille) :
+        if IDfamille in dictPieces :
             listePiecesFournies = dictPieces[IDfamille]
         else:
             listePiecesFournies = []
-        if dictCotisations.has_key(IDfamille) :
+        if IDfamille in dictCotisations :
             listeCotisationsFournies = dictCotisations[IDfamille]
         else :
             listeCotisationsFournies = []
@@ -373,7 +372,7 @@ def GetPiecesAFournir(dictPieces, dictCotisations, dictTypesPieces, dictEnfants,
         datedujour = datetime.date.today()
         listeDonnees = []
         index = 1
-        for key, valeurs in dictTypesPieces.iteritems():
+        for key, valeurs in dictTypesPieces.items():
             IDtypePiece = key
             nomTypePiece = valeurs[0]
             attribution = valeurs[1]
@@ -404,7 +403,7 @@ def GetPiecesAFournir(dictPieces, dictCotisations, dictTypesPieces, dictEnfants,
                     listeDonnees.append( "%d0" % IDtypePiece )
         
             if attribution == "enfant" :
-                if dictEnfants.has_key(IDfamille) :
+                if IDfamille in dictEnfants :
                     for IDenfant, prenom in dictEnfants[IDfamille] :
                         etat = "pasok"
                         # Recherche d'une pièce de type enfant
@@ -413,7 +412,9 @@ def GetPiecesAFournir(dictPieces, dictCotisations, dictTypesPieces, dictEnfants,
                                 # Vérifie si la pièce est valide :
                                 if date_debut <= str(datedujour) <= date_fin : 
                                     etat = "ok"
-                        labelPiece = nomTypePiece + " de " + prenom.decode("iso-8859-15")
+                        if six.PY2:
+                            prenom = prenom.decode("iso-8859-15")
+                        labelPiece = nomTypePiece + " de " + prenom
                         if etat == "pasok" :
                             listeDonnees.append( "%d%d" % (IDtypePiece, IDenfant) ) 
     

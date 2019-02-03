@@ -62,7 +62,7 @@ class CTRL_Modeles(wx.Choice):
                 dictLigne[CHAMPS_TABLE_LIGNES[index]] = valeur
                 index += 1
             IDmodele = dictLigne["IDmodele"]
-            if dictLignes.has_key(IDmodele) == False :
+            if (IDmodele in dictLignes) == False :
                 dictLignes[IDmodele] = []
             dictLignes[IDmodele].append(dictLigne)
 
@@ -75,7 +75,7 @@ class CTRL_Modeles(wx.Choice):
         DB.Close()
         for IDmodele, categorie, label, IDactivite, IDtarif, IDcategorie_tarif, code_compta, tva, public, IDtype_quotient in listeDonnees :
 
-            if dictLignes.has_key(IDmodele) :
+            if IDmodele in dictLignes :
                 liste_lignes = dictLignes[IDmodele]
                 methode = liste_lignes[0]["code"]
             else :

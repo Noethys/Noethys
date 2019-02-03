@@ -15,13 +15,11 @@ import wx
 from Ctrl import CTRL_Bouton_image
 import os
 import datetime
-import re
-import sys
+import six
 import decimal
 from Dlg import DLG_Selection_liste
 import FonctionsPerso
 from Ctrl import CTRL_Bandeau
-
 from Utils import UTILS_Fichiers
 import UTILS_Dates
 import UTILS_Config
@@ -393,7 +391,7 @@ def ExportExcel(listview=None, grid=None, titre=_(u"Liste"), listeColonnes=None,
         except :
             pass
 
-        if type(valeur) in (str, unicode) :
+        if type(valeur) in (str, six.text_type) :
             if len(valeur) == 10 :
                 if valeur[2] == "/" and valeur[5] == "/" : return (valeur, styleDate)
                 if valeur[4] == "-" and valeur[7] == "-" : return (UTILS_Dates.DateEngFr(valeur), styleDate)

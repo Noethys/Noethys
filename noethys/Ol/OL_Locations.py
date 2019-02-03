@@ -16,6 +16,7 @@ import wx
 import datetime
 import GestionDB
 import FonctionsPerso
+import six
 from Utils import UTILS_Titulaires
 from Utils import UTILS_Interface
 from Utils import UTILS_Questionnaires
@@ -91,10 +92,10 @@ class Track(object):
             self.quantite = 1
 
         # Période
-        if isinstance(self.date_debut, str) or isinstance(self.date_debut, unicode) :
+        if isinstance(self.date_debut, str) or isinstance(self.date_debut, six.text_type) :
             self.date_debut = datetime.datetime.strptime(self.date_debut, "%Y-%m-%d %H:%M:%S")
 
-        if isinstance(self.date_fin, str) or isinstance(self.date_fin, unicode) :
+        if isinstance(self.date_fin, str) or isinstance(self.date_fin, six.text_type) :
             self.date_fin = datetime.datetime.strptime(self.date_fin, "%Y-%m-%d %H:%M:%S")
 
         # Récupération des réponses des questionnaires
@@ -257,8 +258,8 @@ class ListView(FastObjectListView):
         self.selectionTrack = None
 
     def GetReponse(self, IDquestion=None, ID=None):
-        if self.dict_questionnaires.has_key(IDquestion) :
-            if self.dict_questionnaires[IDquestion].has_key(ID) :
+        if IDquestion in self.dict_questionnaires :
+            if ID in self.dict_questionnaires[IDquestion] :
                 return self.dict_questionnaires[IDquestion][ID]
         return u""
 

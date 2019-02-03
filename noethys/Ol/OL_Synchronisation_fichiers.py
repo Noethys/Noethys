@@ -85,9 +85,9 @@ class ListView(FastObjectListView):
                 for IDparametre, nom, valeur in listeParametres :
                     dictParametres[nom] = valeur
                 
-                if dictParametres.has_key("nom_appareil") == False :
+                if ("nom_appareil" in dictParametres) == False :
                     dictParametres["nom_appareil"] = "Appareil inconnu"
-                if dictParametres.has_key("ID_appareil") == False :
+                if ("ID_appareil" in dictParametres) == False :
                     dictParametres["ID_appareil"] = "IDAppareil inconnu"
 
                 liste_details_actions = []

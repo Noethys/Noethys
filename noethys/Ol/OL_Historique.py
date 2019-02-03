@@ -59,7 +59,7 @@ class Track(object):
         # Famille
         self.IDfamille = donnees[4]
         if self.IDfamille != None :
-            if parent.titulaires.has_key(self.IDfamille) :
+            if self.IDfamille in parent.titulaires :
                 self.nomTitulaires = parent.titulaires[self.IDfamille]["titulairesSansCivilite"]
             else:
                 self.nomTitulaires = _(u"Aucun titulaire")
@@ -79,7 +79,7 @@ class Track(object):
             self.nomComplet_individu = u""
         # Catégorie
         self.IDcategorie = donnees[6]
-        if UTILS_Historique.CATEGORIES.has_key(self.IDcategorie) :
+        if self.IDcategorie in UTILS_Historique.CATEGORIES :
             self.nomCategorie = UTILS_Historique.CATEGORIES[self.IDcategorie]
         else :
             self.nomCategorie = u""

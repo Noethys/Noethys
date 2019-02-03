@@ -13,6 +13,7 @@ import Chemins
 from Utils.UTILS_Traduction import _
 from Utils import UTILS_Traduction
 
+import six
 import wx
 import sys
 import platform
@@ -58,11 +59,13 @@ from Ctrl import CTRL_Portail_serveur
 from Ctrl import CTRL_TaskBarIcon
 
 import shelve
-import dbhash
-import anydbm
+try :
+    import dbhash
+    import anydbm
+except:
+    pass
 import random 
-import urllib
-import urllib2
+from six.moves.urllib.request import urlopen
 
 from Crypto.Hash import SHA256
 
@@ -116,7 +119,11 @@ class MainFrame(wx.Frame):
         # Ecrit la date et l'heure dans le journal.log
         dateDuJour = datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S")
         systeme = u"%s %s %s %s " % (sys.platform, platform.system(), platform.release(), platform.machine())
-        print "-------- %s | %s | wxPython %s | %s --------" % (dateDuJour, VERSION_APPLICATION, wx.version(), systeme)
+        if six.PY2:
+            version_python = "2"
+        else :
+            version_python = "3"
+        print("-------- %s | %s | Python %s | wxPython %s | %s --------" % (dateDuJour, VERSION_APPLICATION, version_python, wx.version(), systeme))
 
         # Diminution de la taille de la police sous linux
         from Utils import UTILS_Linux
@@ -148,11 +155,11 @@ class MainFrame(wx.Frame):
 
         # Récupération du nom du dernier fichier chargé
         self.nomDernierFichier = ""
-        if self.userConfig.has_key("nomFichier") :
+        if "nomFichier" in self.userConfig :
             self.nomDernierFichier = self.userConfig["nomFichier"]
         self.userConfig["nomFichier"] = ""
         
-        if self.userConfig.has_key("assistant_demarrage") :
+        if "assistant_demarrage" in self.userConfig :
             if self.userConfig["assistant_demarrage"] == True :
                 self.afficherAssistant = False
             else: self.afficherAssistant = True
@@ -170,17 +177,17 @@ class MainFrame(wx.Frame):
             self.MAJexiste = False
 
         # Récupération des perspectives de la page d'accueil
-        if self.userConfig.has_key("perspectives") == True :
+        if ("perspectives" in self.userConfig) == True :
             self.perspectives = self.userConfig["perspectives"]
         else:
             self.perspectives = []
-        if self.userConfig.has_key("perspective_active") == True :
+        if ("perspective_active" in self.userConfig) == True :
             self.perspective_active = self.userConfig["perspective_active"]
         else:
             self.perspective_active = None
         
         # Sélection de l'interface MySQL
-        if self.userConfig.has_key("interface_mysql"):
+        if "interface_mysql" in self.userConfig:
             interface_mysql = self.userConfig["interface_mysql"]
             GestionDB.SetInterfaceMySQL(interface_mysql)
         
@@ -214,7 +221,7 @@ class MainFrame(wx.Frame):
         
         # Détermine la taille de la fenêtre
         self.SetMinSize((935, 740))
-        if self.userConfig.has_key("taille_fenetre") == False :
+        if ("taille_fenetre" in self.userConfig) == False :
             self.userConfig["taille_fenetre"] = (0, 0)
         taille_fenetre = self.userConfig["taille_fenetre"]
         if taille_fenetre == (0, 0) :
@@ -247,7 +254,7 @@ class MainFrame(wx.Frame):
         if self.autodeconnect_timer.IsRunning():
             self.autodeconnect_timer.Stop()
         # Lance le timer
-        if self.userConfig.has_key("autodeconnect") :
+        if "autodeconnect" in self.userConfig :
             if self.userConfig["autodeconnect"] not in (0, None) :
                 secondes = self.userConfig["autodeconnect"]
                 self.autodeconnect_timer.Start(secondes * 1000)
@@ -467,7 +474,7 @@ class MainFrame(wx.Frame):
         
 ##        if self.userConfig.has_key("perspective_ctrl_effectifs") == True :
 ##            self.ctrl_remplissage.LoadPerspective(self.userConfig["perspective_ctrl_effectifs"])
-        if self.userConfig.has_key("page_ctrl_effectifs") == True :
+        if ("page_ctrl_effectifs" in self.userConfig) == True :
             self.ctrl_remplissage.SetPageActive(self.userConfig["page_ctrl_effectifs"])
         
         # Panneau Messages
@@ -537,7 +544,7 @@ class MainFrame(wx.Frame):
         self._mgr.Update()
 
         # Barres personnalisées --------------------------------------------
-        if self.userConfig.has_key("barres_outils_perso") == True :
+        if ("barres_outils_perso" in self.userConfig) == True :
             texteBarresOutils = self.userConfig["barres_outils_perso"]
         else :
             self.userConfig["barres_outils_perso"] = ""
@@ -591,7 +598,7 @@ class MainFrame(wx.Frame):
                 tb.AddSimpleTool(wx.NewId(), label, wx.NullBitmap, kind=aui.ITEM_LABEL)
             else :
                 item = dictItems[code]
-                if item.has_key("image") and style != "texteseul" :
+                if "image" in item and style != "texteseul" :
                     image = wx.Bitmap(Chemins.GetStaticPath(item["image"]), wx.BITMAP_TYPE_PNG)
                 else :
                     image = wx.NullBitmap
@@ -1090,12 +1097,12 @@ class MainFrame(wx.Frame):
         # Création du menu
         def CreationItem(menuParent, item):
             id = wx.NewId()
-            if item.has_key("genre"):
+            if "genre" in item:
                 genre = item["genre"]
             else :
                 genre = wx.ITEM_NORMAL
             itemMenu = wx.MenuItem(menuParent, id, item["label"], item["infobulle"], genre)
-            if item.has_key("image") :
+            if "image" in item :
                 itemMenu.SetBitmap(wx.Bitmap(Chemins.GetStaticPath(item["image"]), wx.BITMAP_TYPE_PNG))
             try :
                 menuParent.Append(itemMenu)
@@ -1104,7 +1111,7 @@ class MainFrame(wx.Frame):
                     menuParent.Append(itemMenu)
                 else :
                     menuParent.AppendItem(itemMenu)
-            if item.has_key("actif") :
+            if "actif" in item :
                 itemMenu.Enable(item["actif"])
             self.Bind(wx.EVT_MENU, item["action"], id=id)
             self.dictInfosMenu[item["code"]] = {"id" : id, "ctrl" : itemMenu}
@@ -1115,7 +1122,7 @@ class MainFrame(wx.Frame):
             for sousitem in item["items"] :
                 if sousitem == "-" :
                     menu.AppendSeparator()
-                elif sousitem.has_key("items") :
+                elif "items" in sousitem :
                     CreationMenu(menu, sousitem, sousmenu=True)
                 else :
                     CreationItem(menu, sousitem)
@@ -1138,7 +1145,7 @@ class MainFrame(wx.Frame):
         menu_fichier = self.dictInfosMenu["menu_fichier"]["ctrl"]
 
         # Intégration des derniers fichiers ouverts :
-        if self.userConfig.has_key("derniersFichiers"):
+        if "derniersFichiers" in self.userConfig:
             listeDerniersFichiersTmp = self.userConfig["derniersFichiers"]
         else :
             listeDerniersFichiersTmp = []
@@ -1241,9 +1248,9 @@ class MainFrame(wx.Frame):
         def AnalyseItem(listeItems):
             for item in listeItems :
                 if type(item) == dict :
-                    if item.has_key("action") :
+                    if "action" in item :
                         dictItems[item["code"]] = item
-                    if item.has_key("items") :
+                    if "items" in item :
                         AnalyseItem(item["items"])
         
         AnalyseItem(self.listeItemsMenu)
@@ -1300,7 +1307,7 @@ class MainFrame(wx.Frame):
         self.perspective_active = None
         self.perspectives = []
         self.MAJmenuPerspectives() 
-        print "Toutes les perspectives ont ete supprimees."
+        print("Toutes les perspectives ont ete supprimees.")
         
     def ParadeAffichagePanneau(self, nom=""):
         """ Supprime toutes les perspectives si le panneau donné n'apparait pas """
@@ -3484,7 +3491,9 @@ class MainFrame(wx.Frame):
         txtLicence.close()
         # Dlg
         from Dlg import DLG_Messagebox
-        dlg = DLG_Messagebox.Dialog(self, titre=_(u"Notes de versions"), introduction=_("Liste des versions du logiciel :"), detail=msg.decode("iso-8859-15"), icone=wx.ICON_INFORMATION, boutons=[_(u"Fermer"),], defaut=0)
+        if six.PY2:
+            msg = msg.decode("iso-8859-15")
+        dlg = DLG_Messagebox.Dialog(self, titre=_(u"Notes de versions"), introduction=_("Liste des versions du logiciel :"), detail=msg, icone=wx.ICON_INFORMATION, boutons=[_(u"Fermer"),], defaut=0)
         dlg.ShowModal()
         dlg.Destroy()
         # import  wx.lib.dialogs
@@ -3497,7 +3506,9 @@ class MainFrame(wx.Frame):
         txtLicence = open(FonctionsPerso.GetRepertoireProjet("Licence.txt"), "r")
         msg = txtLicence.read()
         txtLicence.close()
-        dlg = wx.lib.dialogs.ScrolledMessageDialog(self, msg.decode("iso-8859-15"), _(u"A propos"), size=(500, 500))
+        if six.PY2:
+            msg = msg.decode("iso-8859-15")
+        dlg = wx.lib.dialogs.ScrolledMessageDialog(self, msg, _(u"A propos"), size=(500, 500))
         dlg.ShowModal()
 
     def On_propos_soutenir(self, event):
@@ -3779,7 +3790,7 @@ class MainFrame(wx.Frame):
             # Fait la conversion à la nouvelle version
             info = "Lancement de la conversion %s -> %s..." %(".".join([str(x) for x in versionFichier]), ".".join([str(x) for x in versionLogiciel]))
             self.SetStatusText(info)
-            print info
+            print(info)
             
             # Affiche d'une fenêtre d'attente
             try :
@@ -3794,7 +3805,7 @@ class MainFrame(wx.Frame):
                 # Fermeture de la fenêtre d'attente
                 del dlgAttente
 
-            except Exception, err:
+            except Exception as err:
                 del dlgAttente
                 traceback.print_exc(file=sys.stdout)
                 dlg = wx.MessageDialog(self, _(u"Désolé, le problème suivant a été rencontré dans la mise à jour de la base de données : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
@@ -3802,7 +3813,7 @@ class MainFrame(wx.Frame):
                 dlg.Destroy()
 
             if resultat != True :
-                print resultat
+                print(resultat)
                 dlg = wx.MessageDialog(self, _(u"Le logiciel n'arrive pas à convertir le fichier !\n\nErreur : ") + resultat + _(u"\n\nVeuillez contacter le développeur du logiciel..."), _(u"Erreur de conversion de fichier"), wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
                 dlg.Destroy()
@@ -3812,7 +3823,7 @@ class MainFrame(wx.Frame):
             UTILS_Parametres.Parametres(mode="set", categorie="fichier", nom="version", valeur=".".join([str(x) for x in versionLogiciel]), nomFichier=nomFichier)
             info = "Conversion %s -> %s reussie." %(".".join([str(x) for x in versionFichier]), ".".join([str(x) for x in versionLogiciel]))
             self.SetStatusText(info)
-            print info
+            print(info)
 
             # Messages exceptionnels suite à la mise à jour
             if versionFichier < (1, 1, 0, 3) :
@@ -3988,17 +3999,17 @@ class MainFrame(wx.Frame):
         try :
             if "linux" in sys.platform :
                 # Version Debian
-                fichierVersions = urllib2.urlopen('https://raw.githubusercontent.com/Noethys/Noethys/master/noethys/Versions.txt', timeout=5)
+                fichierVersions = urlopen('https://raw.githubusercontent.com/Noethys/Noethys/master/noethys/Versions.txt', timeout=5)
             else:
                 # Version Windows
-                fichierVersions = urllib2.urlopen('http://www.noethys.com/fichiers/windows/Versions.txt', timeout=5)
+                fichierVersions = urlopen('http://www.noethys.com/fichiers/windows/Versions.txt', timeout=5)
             texteNouveautes= fichierVersions.read()
             fichierVersions.close()
             pos_debut_numVersion =texteNouveautes.find("n")
             pos_fin_numVersion = texteNouveautes.find("(")
             versionMaj = texteNouveautes[pos_debut_numVersion+1:pos_fin_numVersion].strip()
         except :
-            print "Recuperation du num de version de la MAJ sur internet impossible."
+            print("Recuperation du num de version de la MAJ sur internet impossible.")
             versionMaj = "0.0.0.0"
         # Compare les deux versions et renvois le résultat
         try :
@@ -4011,7 +4022,7 @@ class MainFrame(wx.Frame):
             return False
 
     def GetVersionAnnonce(self):
-        if self.userConfig.has_key("annonce") :
+        if "annonce" in self.userConfig :
             versionAnnonce = self.userConfig["annonce"]
             if versionAnnonce != None :
                 return versionAnnonce
@@ -4027,9 +4038,9 @@ class MainFrame(wx.Frame):
                 # Déplace les fichiers exemples vers le répertoire des fichiers de données
                 try :
                     UTILS_Fichiers.DeplaceExemples()
-                except Exception, err:
-                    print "Erreur dans UTILS_Fichiers.DeplaceExemples :"
-                    print (err,)
+                except Exception as err:
+                    print("Erreur dans UTILS_Fichiers.DeplaceExemples :")
+                    print((err,))
                 # Affiche le message d'accueil
                 from Dlg import DLG_Message_accueil
                 dlg = DLG_Message_accueil.Dialog(self)
@@ -4274,7 +4285,7 @@ class MyApp(wx.App):
         if hasattr(frame, 'ctrl_serveur_nomade') == True:
             frame.ctrl_serveur_nomade.StartServeur()
 
-        print "Temps de chargement ouverture de Noethys = ", time.time() - heure_debut
+        print("Temps de chargement ouverture de Noethys = ", time.time() - heure_debut)
         return True
 
 

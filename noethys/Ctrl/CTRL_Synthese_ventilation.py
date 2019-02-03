@@ -211,7 +211,7 @@ class CTRL(HTL.HyperTreeList):
             datePrestation = UTILS_Dates.DateEngEnDateDD(datePrestation)
             
             # Compte le nombre de règlements dans chaque dépôt
-            if dictIDreglements.has_key(IDdepot) == False :
+            if (IDdepot in dictIDreglements) == False :
                 dictIDreglements[IDdepot] = []
             if IDreglement not in dictIDreglements[IDdepot] :
                 dictIDreglements[IDdepot].append(IDreglement)
@@ -232,11 +232,11 @@ class CTRL(HTL.HyperTreeList):
                 if periode not in listePeriodes :
                     listePeriodes.append(periode)
                     
-                if dictVentilation.has_key(IDdepot) == False :
+                if (IDdepot in dictVentilation) == False :
                     dictVentilation[IDdepot] = {}
-                if dictVentilation[IDdepot].has_key(periode) == False :
+                if (periode in dictVentilation[IDdepot]) == False :
                     dictVentilation[IDdepot][periode] = {}
-                if dictVentilation[IDdepot][periode].has_key(labelPrestation) == False :
+                if (labelPrestation in dictVentilation[IDdepot][periode]) == False :
                     dictVentilation[IDdepot][periode][labelPrestation] = 0.0
                 dictVentilation[IDdepot][periode][labelPrestation] += montantVentilation
         
@@ -290,12 +290,12 @@ class CTRL(HTL.HyperTreeList):
         # Importation des données
         dictVentilation, listePeriodes, dictIDreglements = self.Importation_ventilation() 
         if self.type == "prestations" :
-            self.listeDepots = dictVentilation.keys()
+            self.listeDepots = list(dictVentilation.keys())
             if None in self.listeDepots : self.listeDepots.remove(None)
         dictDepots = self.Importation_depots()
         
         # Si on est en type PRESTATIONS, on crée un dépôt virtuel pour les règlements non déposées
-        if self.type == "prestations" and dictVentilation.has_key(None) :
+        if self.type == "prestations" and None in dictVentilation :
             dictDepots[None] = {"date":datetime.date(1977, 1, 1), "nom":_(u"----- %d règlements non déposés -----") % len(dictIDreglements[None]), "verrouillage":False, "IDcompte":None, "montantTotal":0.0}
         
         self.dictImpression = { "entete" : [], "contenu" : [], "total" : [], "coloration" : [] }
@@ -330,7 +330,7 @@ class CTRL(HTL.HyperTreeList):
         
         # Tri des dépôts par date de dépôt
         listeDepotsTemp = []
-        for IDdepot, dictDepot in dictDepots.iteritems() :
+        for IDdepot, dictDepot in dictDepots.items() :
             if dictDepot["date"] == None :
                 dateDepot = datetime.date(1977, 1, 1)
             else:
@@ -357,9 +357,9 @@ class CTRL(HTL.HyperTreeList):
             # Colonnes périodes
             totalLigne = 0.0
             for periode in listePeriodes :
-                if dictVentilation.has_key(IDdepot) and dictVentilation[IDdepot].has_key(periode) :
+                if IDdepot in dictVentilation and periode in dictVentilation[IDdepot] :
                     valeur = 0.0
-                    for labelPrestation, montantVentilation in dictVentilation[IDdepot][periode].iteritems() : 
+                    for labelPrestation, montantVentilation in dictVentilation[IDdepot][periode].items() : 
                         valeur += montantVentilation
                     totalLigne += valeur
                     texte = u"%.2f %s" % (valeur, SYMBOLE)
@@ -392,9 +392,9 @@ class CTRL(HTL.HyperTreeList):
                 
             listeLabelsPrestations = []
             for periode in listePeriodes :
-                if dictVentilation.has_key(IDdepot) :
-                    if dictVentilation[IDdepot].has_key(periode) :
-                        for labelPrestation, montantVentilation in dictVentilation[IDdepot][periode].iteritems() : 
+                if IDdepot in dictVentilation :
+                    if periode in dictVentilation[IDdepot] :
+                        for labelPrestation, montantVentilation in dictVentilation[IDdepot][periode].items() : 
                             if labelPrestation not in listeLabelsPrestations :
                                 listeLabelsPrestations.append(labelPrestation)
             listeLabelsPrestations.sort()
@@ -410,14 +410,14 @@ class CTRL(HTL.HyperTreeList):
                 totalLigne = 0.0
                 for periode in listePeriodes :
                     texte = None
-                    if dictVentilation.has_key(IDdepot) :
-                        if dictVentilation[IDdepot].has_key(periode) :
-                            if dictVentilation[IDdepot][periode].has_key(labelPrestation) :
+                    if IDdepot in dictVentilation :
+                        if periode in dictVentilation[IDdepot] :
+                            if labelPrestation in dictVentilation[IDdepot][periode] :
                                 valeur = dictVentilation[IDdepot][periode][labelPrestation]
                                 totalLigne += valeur
-                                if dictLigneTotal.has_key(labelPrestation) == False :
+                                if (labelPrestation in dictLigneTotal) == False :
                                     dictLigneTotal[labelPrestation] = {}
-                                if dictLigneTotal[labelPrestation].has_key(periode) == False :
+                                if (periode in dictLigneTotal[labelPrestation]) == False :
                                     dictLigneTotal[labelPrestation][periode] = 0.0
                                 dictLigneTotal[labelPrestation][periode] += valeur
                                 if self.affichage_details == True :
@@ -445,7 +445,7 @@ class CTRL(HTL.HyperTreeList):
         
         impressionLigne = [_(u"Total"),]
         
-        listeLabels = dictLigneTotal.keys()
+        listeLabels = list(dictLigneTotal.keys())
         listeLabels.sort()
         
         # Ligne de TOTAL pour chaque PERIODE
@@ -454,9 +454,9 @@ class CTRL(HTL.HyperTreeList):
             totalColonne = 0.0
             for dateDepot, IDdepot, dictDepot in listeDepotsTemp :
                 for label in listeLabels :
-                    if dictVentilation.has_key(IDdepot) :
-                        if dictVentilation[IDdepot].has_key(periode):
-                            if dictVentilation[IDdepot][periode].has_key(label):
+                    if IDdepot in dictVentilation :
+                        if periode in dictVentilation[IDdepot]:
+                            if label in dictVentilation[IDdepot][periode]:
                                 valeur = dictVentilation[IDdepot][periode][label]
                                 totalColonne += valeur
             texte = u"%.2f %s" % (totalColonne, SYMBOLE)
@@ -492,8 +492,8 @@ class CTRL(HTL.HyperTreeList):
                 totalLigne = 0.0
                 for periode in listePeriodes :
                     texte = None
-                    if dictLigneTotal.has_key(label):
-                        if dictLigneTotal[label].has_key(periode) :
+                    if label in dictLigneTotal:
+                        if periode in dictLigneTotal[label] :
                             valeur = dictLigneTotal[label][periode]
                             totalLigne += valeur
                             texte = u"%.2f %s" % (valeur, SYMBOLE)

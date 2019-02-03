@@ -49,7 +49,7 @@ class ListBox_Messages(wx.ListBox):
         index = self.GetSelection()
         if index == -1 : return None
         IDmessage = self.GetClientData(index)
-        if self.dictDonnees.has_key(IDmessage) :
+        if IDmessage in self.dictDonnees :
             return self.dictDonnees[IDmessage]
         else:
             return None

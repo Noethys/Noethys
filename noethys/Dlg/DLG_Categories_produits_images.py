@@ -13,7 +13,7 @@ from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
 import GestionDB
-import cStringIO
+import six
 from Utils import UTILS_Images
 from wx.lib.agw import ultimatelistctrl as ULC
 from Ctrl import CTRL_Bouton_image
@@ -71,7 +71,7 @@ class CTRL(ULC.UltimateListCtrl):
 
             # Conversion en bmp de l'image
             if image != None :
-                io = cStringIO.StringIO(image)
+                io = six.BytesIO(image)
                 if 'phoenix' in wx.PlatformInfo:
                     img = wx.Image(io, wx.BITMAP_TYPE_PNG)
                 else:
@@ -106,7 +106,7 @@ class CTRL(ULC.UltimateListCtrl):
         index = 0
         for dictImage in self.liste_images:
             label = dictImage["nomModele"]
-            if dictPhotos.has_key(dictImage["IDmodele"]):
+            if dictImage["IDmodele"] in dictPhotos:
                 indexPhoto = dictPhotos[dictImage["IDmodele"]]
             else :
                 indexPhoto = 0

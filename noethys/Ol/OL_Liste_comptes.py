@@ -84,7 +84,7 @@ class ListView(FastObjectListView):
                 montant = - montant
             else :
                 montant = + montant
-            if dictComptes.has_key(IDcompte) :
+            if IDcompte in dictComptes :
                 dictComptes[IDcompte]["solde"] += montant
                 if IDreleve != None :
                     dictComptes[IDcompte]["solde_pointe"] += montant
@@ -92,7 +92,7 @@ class ListView(FastObjectListView):
                     dictComptes[IDcompte]["solde_jour"] += montant
         
         listeListeView = []
-        for IDcompte, dictCompte in dictComptes.iteritems() :
+        for IDcompte, dictCompte in dictComptes.items() :
             track = Track(dictCompte)
             listeListeView.append(track)        
         return listeListeView

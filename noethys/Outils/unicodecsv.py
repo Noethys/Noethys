@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import csv
 from itertools import izip
+import six
 
 #http://semver.org/
 VERSION = (0, 9, 2)
@@ -35,7 +36,7 @@ for prop in pass_throughs:
 def _stringify(s, encoding, errors):
     if s is None:
         return ''
-    if isinstance(s, unicode):
+    if isinstance(s, six.text_type):
         return s.encode(encoding, errors)
     elif isinstance(s, (int , float)):
         pass #let csv.QUOTE_NONNUMERIC do its thing.
@@ -46,13 +47,13 @@ def _stringify(s, encoding, errors):
 def _stringify_list(l, encoding, errors='strict'):
     try:
         return [_stringify(s, encoding, errors) for s in iter(l)]
-    except TypeError, e:
+    except TypeError as e:
         raise csv.Error(str(e))
 
 def _unicodify(s, encoding):
     if s is None:
         return None
-    if isinstance(s, (unicode, int, float)):
+    if isinstance(s, (six.text_type, int, float)):
         return s
     elif isinstance(s, str):
         return s.decode(encoding)
@@ -96,7 +97,7 @@ class UnicodeReader(object):
                  **kwds):
         format_params = ['delimiter', 'doublequote', 'escapechar', 'lineterminator', 'quotechar', 'quoting', 'skipinitialspace']
         if dialect is None:
-            if not any([kwd_name in format_params for kwd_name in kwds.keys()]):
+            if not any([kwd_name in format_params for kwd_name in list(kwds.keys())]):
                 dialect = csv.excel
         self.reader = csv.reader(f, dialect, **kwds)
         self.encoding = encoding
@@ -107,7 +108,7 @@ class UnicodeReader(object):
         encoding = self.encoding
         encoding_errors = self.encoding_errors
         float_ = float
-        unicode_ = unicode
+        unicode_ = six.text_type
         return [(value if isinstance(value, float_) else
                  unicode_(value, encoding, encoding_errors)) for value in row]
 

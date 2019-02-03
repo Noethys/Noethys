@@ -13,6 +13,7 @@ from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
 import datetime
+import six
 from Utils import UTILS_Interface
 from Utils import UTILS_Dates
 from Ctrl import CTRL_Bouton_image
@@ -35,10 +36,10 @@ class Track(object):
         self.parametres = donnees["parametres"]
 
         # Période
-        if isinstance(self.date_debut, str) or isinstance(self.date_debut, unicode) :
+        if isinstance(self.date_debut, str) or isinstance(self.date_debut, six.text_type) :
             self.date_debut = datetime.datetime.strptime(self.date_debut, "%Y-%m-%d %H:%M:%S")
 
-        if isinstance(self.date_fin, str) or isinstance(self.date_fin, unicode) :
+        if isinstance(self.date_fin, str) or isinstance(self.date_fin, six.text_type) :
             self.date_fin = datetime.datetime.strptime(self.date_fin, "%Y-%m-%d %H:%M:%S")
 
     
@@ -326,13 +327,13 @@ class DLG_Saisie_element(wx.Dialog):
     def SetDonnees(self, dictDonnees={}):
         self.dictDonnees = dictDonnees
         self.SetTitle(_(u"Modification d'un article"))
-        if self.dictDonnees.has_key("titre") :
+        if "titre" in self.dictDonnees :
             self.ctrl_titre.SetValue(self.dictDonnees["titre"])
-        if self.dictDonnees.has_key("date_debut") :
+        if "date_debut" in self.dictDonnees :
             self.ctrl_date_debut.SetDate(self.dictDonnees["date_debut"])
-        if self.dictDonnees.has_key("date_fin") :
+        if "date_fin" in self.dictDonnees :
             self.ctrl_date_fin.SetDate(self.dictDonnees["date_fin"])
-        if self.dictDonnees.has_key("parametres") :
+        if "parametres" in self.dictDonnees :
             listeParametres = self.dictDonnees["parametres"].split("###")
             for parametre in listeParametres :
                 nom, valeur = parametre.split(":::")

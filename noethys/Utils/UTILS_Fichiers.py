@@ -16,6 +16,7 @@ import platform
 import subprocess
 import UTILS_Customize
 import appdirs
+import six
 
 
 def GetRepData(fichier=""):
@@ -105,14 +106,14 @@ def DeplaceFichiers():
         for rep in ("", Chemins.GetMainPath("Data"), os.path.join(os.path.expanduser("~"), "noethys")) :
             fichier = os.path.join(rep, nom)
             if os.path.isfile(fichier) :
-                print ["deplacement fichier config :", fichier, " > ", GetRepUtilisateur(nom)]
+                print(["deplacement fichier config :", fichier, " > ", GetRepUtilisateur(nom)])
                 shutil.move(fichier, GetRepUtilisateur(nom))
 
     # Déplace les fichiers xlang
     if os.path.isdir(Chemins.GetMainPath("Lang")) :
         for nomFichier in os.listdir(Chemins.GetMainPath("Lang")) :
             if nomFichier.endswith(".xlang") :
-                print ["deplacement fichier xlang :", fichier, " > ", GetRepLang(nomFichier)]
+                print(["deplacement fichier xlang :", fichier, " > ", GetRepLang(nomFichier)])
                 shutil.move(u"Lang/%s" % nomFichier, GetRepLang(nomFichier))
 
     # Déplace les fichiers du répertoire Sync
@@ -123,10 +124,11 @@ def DeplaceFichiers():
     # Déplace les fichiers de données du répertoire Data
     if GetRepData() != "Data/" and os.path.isdir(Chemins.GetMainPath("Data")) :
         for nomFichier in os.listdir(Chemins.GetMainPath("Data")) :
-            nomFichier = nomFichier.decode("iso-8859-15")
+            if six.PY2:
+                nomFichier = nomFichier.decode("iso-8859-15")
             if nomFichier.endswith(".dat") and "_" in nomFichier and "EXEMPLE_" not in nomFichier and "_archive.dat" not in nomFichier :
                 # Déplace le fichier vers le répertoire des fichiers de données
-                print ["copie base de donnees :", nomFichier, " > ", GetRepData(nomFichier)]
+                print(["copie base de donnees :", nomFichier, " > ", GetRepData(nomFichier)])
                 shutil.copy(Chemins.GetMainPath(u"Data/%s" % nomFichier), GetRepData(nomFichier))
                 # Renomme le fichier de données en archive (par sécurité)
                 try :
@@ -158,9 +160,9 @@ if __name__ == "__main__":
     # DeplaceFichiers()
 
     # Répertoire utilisateur
-    print GetRepUtilisateur()
+    print(GetRepUtilisateur())
 
     # Répertoire des données
     chemin = GetRepData()
-    print 1, os.path.join(chemin, u"Testé.pdf")
-    print 2, os.path.join(chemin, "Test.pdf")
+    print(1, os.path.join(chemin, u"Testé.pdf"))
+    print(2, os.path.join(chemin, "Test.pdf"))

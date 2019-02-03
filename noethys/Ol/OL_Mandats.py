@@ -80,7 +80,7 @@ class Track(object):
         self.nomBanque = donnees[18]
         
         # NomFamille
-        if dictTitulaires != None and dictTitulaires.has_key(self.IDfamille) :
+        if dictTitulaires != None and self.IDfamille in dictTitulaires :
             self.titulairesFamille = dictTitulaires[self.IDfamille]["titulairesSansCivilite"]
         else :
             self.titulairesFamille = u""

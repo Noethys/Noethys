@@ -56,7 +56,7 @@ class Track(object):
         self.date_edition = donnees["date_edition"]
         self.IDutilisateur = donnees["IDutilisateur"]
         self.IDreglement = donnees["IDreglement"]
-        if parent.titulaires.has_key(self.IDfamille) :
+        if self.IDfamille in parent.titulaires :
             self.nomsTitulaires =  parent.titulaires[self.IDfamille]["titulairesSansCivilite"]
         else :
             self.nomsTitulaires = _(u"Famille inconnue")

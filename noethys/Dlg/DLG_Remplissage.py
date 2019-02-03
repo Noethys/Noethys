@@ -114,13 +114,13 @@ class ToolBar(wx.ToolBar):
         global AFFICHE_PRESENTS
         import DLG_Parametres_remplissage
         dictDonnees = self.GetParent().dictDonnees
-        if dictDonnees.has_key("modeAffichage") :
+        if "modeAffichage" in dictDonnees :
             modeAffichage = dictDonnees["modeAffichage"]
         else:
             modeAffichage = "nbrePlacesPrises"
         abregeGroupes = self.GetParent().ctrl_remplissage.GetAbregeGroupes()
         totaux = self.GetParent().ctrl_remplissage.GetAfficheTotaux()
-        print totaux
+        print(totaux)
         affichePresents = AFFICHE_PRESENTS
         dlg = DLG_Parametres_remplissage.Dialog(None, dictDonnees, abregeGroupes=abregeGroupes, affichePresents=affichePresents, totaux=totaux)
         if dlg.ShowModal() == wx.ID_OK:
@@ -219,7 +219,7 @@ class Panel(wx.Panel):
         global AFFICHE_PRESENTS
         AFFICHE_PRESENTS = UTILS_Config.GetParametre("remplissage_affiche_presents", 1) 
 
-        if self.dictDonnees.has_key("modeAffichage") :
+        if "modeAffichage" in self.dictDonnees :
             if self.dictDonnees["modeAffichage"] == "nbrePlacesInitial" : self.toolBar.ToggleTool(ID_MODE_PLACES_INITIALES, True)
             if self.dictDonnees["modeAffichage"] == "nbrePlacesPrises" : self.toolBar.ToggleTool(ID_MODE_PLACES_PRISES, True)
             if self.dictDonnees["modeAffichage"] == "nbrePlacesRestantes" : self.toolBar.ToggleTool(ID_MODE_PLACES_RESTANTES, True)

@@ -86,7 +86,7 @@ class Track(object):
             self.titulaires = self.dictTitulaires[self.IDfamille]["titulairesSansCivilite"]
     
     def MAJnomBanque(self):
-        if DICT_BANQUES.has_key(self.prelevement_banque) :
+        if self.prelevement_banque in DICT_BANQUES :
             self.nomBanque = DICT_BANQUES[self.prelevement_banque]
         else :
             self.nomBanque = u""
@@ -331,7 +331,7 @@ class ListView(FastObjectListView):
             nbreTotal += 1
             montantTotal += track.montant
             # Regroupement par statut
-            if dictDetails.has_key(track.statut) == False :
+            if (track.statut in dictDetails) == False :
                 dictDetails[track.statut] = {"nbre" : 0, "montant" : 0.0}
             dictDetails[track.statut]["nbre"] += 1
             dictDetails[track.statut]["montant"] += track.montant
@@ -340,7 +340,7 @@ class ListView(FastObjectListView):
                 reglement = "regle"
             else :
                 reglement = "pasregle"
-            if dictDetails.has_key(reglement) == False :
+            if (reglement in dictDetails) == False :
                 dictDetails[reglement] = {"nbre" : 0, "montant" : 0.0}
             dictDetails[reglement]["nbre"] += 1
             dictDetails[reglement]["montant"] += track.montant
@@ -354,7 +354,7 @@ class ListView(FastObjectListView):
             texte = _(u"<B>%d prélèvements (%.2f %s) : </B>") % (nbreTotal, montantTotal, SYMBOLE)
         
         for key in ("attente", "valide", "refus", "regle", "pasregle") :
-            if dictDetails.has_key(key) :
+            if key in dictDetails :
                 dictDetail = dictDetails[key]
                 if dictDetail["nbre"] == 1 :
                     if key == "attente" : label = _(u"en attente")
@@ -447,7 +447,7 @@ class MyFrame(wx.Frame):
         self.CenterOnScreen()
         
     def OnBoutonTest(self, event):
-        print "Test de la sauvegarde des reglements :"
+        print("Test de la sauvegarde des reglements :")
         self.myOlv.SauvegardeReglements(date=datetime.date.today(), IDcompte=99)
         
         

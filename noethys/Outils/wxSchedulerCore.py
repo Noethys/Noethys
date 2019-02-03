@@ -252,7 +252,7 @@ class wxSchedulerCore( wxSchedulerPaint ):
 			start.SetDay( 1 )
 			end.SetDay( wx.DateTime.GetNumberOfDaysInMonth( end.GetMonth() ) )
 		else:
-			print "Why I'm here?"
+			print("Why I'm here?")
 			return
 		
 		# Make the control

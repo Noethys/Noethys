@@ -59,7 +59,7 @@ class CTRL_Ecole(wx.Choice):
         return listeItems
 
     def SetEcole(self, IDecole=None):
-        for index, IDecoleTemp in self.dictEcoles.iteritems() :
+        for index, IDecoleTemp in self.dictEcoles.items() :
             if IDecoleTemp == IDecole :
                 self.SetSelection(index)
 

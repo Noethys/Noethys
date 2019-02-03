@@ -313,7 +313,7 @@ class Impression():
                 "heure_debut" : heure_debut, "heure_fin" : heure_fin, 
                 "nomUnite" : nomUnite, "abregeUnite" : abregeUnite,
                 }
-            if dictConsommations.has_key(IDprestation) == False :
+            if (IDprestation in dictConsommations) == False :
                 dictConsommations[IDprestation] = []
             dictConsommations[IDprestation].append(dictTemp)
         
@@ -336,12 +336,12 @@ class Impression():
         listePrestations = []
         for IDprestation, IDcompte_payeur, date, categorie, label, montant, IDactivite, nomActivite, abregeActivite, IDtarif, nomTarif, nomCategorieTarif, IDfacture, IDindividu, IDfamille in listePrestationsTemp :
             
-            if dictVentilationPrestations.has_key(IDprestation) :
+            if IDprestation in dictVentilationPrestations :
                 montant_ventilation = dictVentilationPrestations[IDprestation]
             else :
                 montant_ventilation = 0.0
             
-            if dictConsommations.has_key(IDprestation) :
+            if IDprestation in dictConsommations :
                 listeConsommations = dictConsommations[IDprestation]
             else :
                 listeConsommations = []
@@ -440,7 +440,7 @@ class Impression():
         
         # Recherche la couleur de titre
         couleur_fond_titre = ConvertCouleurWXpourPDF((255, 255, 255))
-        if self.dictOptionsImpression.has_key("couleur") :
+        if "couleur" in self.dictOptionsImpression :
             if self.dictOptionsImpression["couleur"] != False :
                 couleur_fond_titre = ConvertCouleurWXpourPDF(self.dictOptionsImpression["couleur"])
 
@@ -515,7 +515,7 @@ class Impression():
                 date_fin = dictPeriode["date_fin"]
 
                 # Impayés
-                if dictOptions.has_key("impayes") and dictOptions["impayes"] == True :
+                if "impayes" in dictOptions and dictOptions["impayes"] == True :
                     impayes = True
                 else :
                     impayes = False               
@@ -529,7 +529,7 @@ class Impression():
                     
                     # Regroupement
                     modeRegroupement = "date"
-                    if dictOptions.has_key("regroupement") and dictOptions["regroupement"] != None :
+                    if "regroupement" in dictOptions and dictOptions["regroupement"] != None :
                         modeRegroupement = dictOptions["regroupement"]
                         detail = False
                     else :
@@ -540,7 +540,7 @@ class Impression():
                     if modeRegroupement == "annee" : labelRegroupement = _(u"Année")
                     
                     # Affichage des conso
-                    if dictOptions.has_key("conso") and dictOptions["conso"] == True :
+                    if "conso" in dictOptions and dictOptions["conso"] == True :
                         modeConso = True
                     else :
                         modeConso = False
@@ -613,12 +613,12 @@ class Impression():
                                 key = date.year
                             
                             # Mémorisation
-                            if dictRegroupement.has_key(key) == False :
+                            if (key in dictRegroupement) == False :
                                 dictRegroupement[key] = []
                             dictRegroupement[key].append(dictPrestation)
                     
                     # Tri des keys
-                    listeKeys = dictRegroupement.keys()
+                    listeKeys = list(dictRegroupement.keys())
                     listeKeys.sort() 
                     
                     # Parcours des éléments
@@ -690,7 +690,7 @@ class Impression():
                             total_reste_global += reste_du
                             
                             IDprestation = dictPrestation["IDprestation"]
-                            if dictPrestationsAffichees.has_key(IDprestation) == False :
+                            if (IDprestation in dictPrestationsAffichees) == False :
                                 dictPrestationsAffichees[IDprestation] = 0
                             dictPrestationsAffichees[IDprestation] += 1
                             
@@ -840,7 +840,7 @@ class Impression():
                             
                             for dictPrestation in dictFacture["listePrestations"] :
                                 IDprestation = dictPrestation["IDprestation"]
-                                if dictPrestationsAffichees.has_key(IDprestation) == False :
+                                if (IDprestation in dictPrestationsAffichees) == False :
                                     dictPrestationsAffichees[IDprestation] = 0
                                 dictPrestationsAffichees[IDprestation] += 1
 
@@ -917,7 +917,7 @@ class Impression():
         
         # Vérifie que des prestations ne sont pas présentes dans plusieurs périodes :
         nbreDoublons = 0
-        for IDprestation, nbre in dictPrestationsAffichees.iteritems() :
+        for IDprestation, nbre in dictPrestationsAffichees.items() :
             if nbre > 1 :
                 nbreDoublons += 1
         if nbreDoublons > 0 :
@@ -934,8 +934,8 @@ class Impression():
         # Enregistrement et ouverture du PDF
         try :
             doc.build(story)
-        except Exception, err :
-            print "Erreur dans ouverture PDF :", err
+        except Exception as err :
+            print("Erreur dans ouverture PDF :", err)
             if "Permission denied" in err :
                 dlg = wx.MessageDialog(None, _(u"Noethys ne peut pas créer le PDF.\n\nVeuillez vérifier qu'un autre PDF n'est pas déjà ouvert en arrière-plan..."), _(u"Erreur d'édition"), wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()

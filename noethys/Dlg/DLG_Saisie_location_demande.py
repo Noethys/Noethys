@@ -312,7 +312,7 @@ class Notebook(wx.Notebook):
         self.SetSelection(indexPage)
 
     def Validation(self):
-        for codePage, dictPage in self.dictPages.iteritems():
+        for codePage, dictPage in self.dictPages.items():
             if dictPage["ctrl"].Validation() == False:
                 self.AffichePage(codePage)
                 return False

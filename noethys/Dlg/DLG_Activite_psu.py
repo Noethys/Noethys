@@ -63,7 +63,7 @@ class CTRL_Etiquette(wx.Choice):
         return listeItems
 
     def SetID(self, ID=0):
-        for index, values in self.dictDonnees.iteritems():
+        for index, values in self.dictDonnees.items():
             if values["IDetiquette"] == ID :
                  self.SetSelection(index)
 
@@ -110,7 +110,7 @@ class CTRL_Unite(wx.Choice):
         return listeItems
 
     def SetID(self, ID=0):
-        for index, values in self.dictDonnees.iteritems():
+        for index, values in self.dictDonnees.items():
             if values["ID"] == ID :
                  self.SetSelection(index)
 

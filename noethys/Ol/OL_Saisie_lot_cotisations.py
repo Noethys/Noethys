@@ -86,7 +86,7 @@ class TrackIndividu(object):
         self.adresse_auto = donnees["adresse_auto"]
         
         # Adresse auto ou manuelle
-        if self.adresse_auto != None and DICT_INFOS_INDIVIDUS.has_key(self.adresse_auto) :
+        if self.adresse_auto != None and self.adresse_auto in DICT_INFOS_INDIVIDUS :
             self.rue_resid = DICT_INFOS_INDIVIDUS[self.adresse_auto]["rue_resid"]
             self.cp_resid = DICT_INFOS_INDIVIDUS[self.adresse_auto]["cp_resid"]
             self.ville_resid = DICT_INFOS_INDIVIDUS[self.adresse_auto]["ville_resid"]
@@ -101,7 +101,7 @@ class TrackIndividu(object):
         self.civiliteAbrege = donnees["civiliteAbrege"]
 
         self.numero = None
-        if self.listview.dictNumeros["individu"].has_key(self.IDindividu) :
+        if self.IDindividu in self.listview.dictNumeros["individu"] :
             self.numero = self.listview.dictNumeros["individu"][self.IDindividu]
 
         # Récupération des réponses des questionnaires
@@ -172,7 +172,7 @@ def GetListeIndividus(listview=None, infosIndividus=None):
             dictTemp["age"] = age
 
         IDfamille = dictTemp["rattachements.IDfamille"]
-        if IDfamille != None and titulaires.has_key(IDfamille):
+        if IDfamille != None and IDfamille in titulaires:
             nomTitulaires = titulaires[IDfamille]["titulairesSansCivilite"]
         else:
             nomTitulaires = _(u"Aucun titulaire")
@@ -214,7 +214,7 @@ class TrackFamille(object):
 
         # Numéro
         self.numero = None
-        if self.listview.dictNumeros["famille"].has_key(self.IDfamille) :
+        if self.IDfamille in self.listview.dictNumeros["famille"] :
             self.numero = self.listview.dictNumeros["famille"][self.IDfamille]
 
         # Récupération des réponses des questionnaires
@@ -252,7 +252,7 @@ def GetListeFamilles(listview=None, infosIndividus=None):
     titulaires = UTILS_Titulaires.GetTitulaires() 
     for IDfamille, nomRegime, nomCaisse, numAlloc, IDcompte_payeur in listeFamilles :
         dictTemp = {}
-        if IDfamille != None and titulaires.has_key(IDfamille) :
+        if IDfamille != None and IDfamille in titulaires :
             nomTitulaires = titulaires[IDfamille]["titulairesSansCivilite"]
             rue = titulaires[IDfamille]["adresse"]["rue"]
             cp = titulaires[IDfamille]["adresse"]["cp"]
@@ -432,8 +432,8 @@ class ListView(FastObjectListView):
             self.MAJ()
 
     def GetReponse(self, IDquestion=None, ID=None):
-        if self.DICT_QUESTIONNAIRES.has_key(IDquestion) :
-            if self.DICT_QUESTIONNAIRES[IDquestion].has_key(ID) :
+        if IDquestion in self.DICT_QUESTIONNAIRES :
+            if ID in self.DICT_QUESTIONNAIRES[IDquestion] :
                 return self.DICT_QUESTIONNAIRES[IDquestion][ID]
         return u""
 

@@ -146,7 +146,7 @@ class ClsParametres():
         self.dictDonnees[code] = valeur
 
     def GetValeur(self, code="", defaut=None):
-        if self.dictDonnees.has_key(code):
+        if code in self.dictDonnees:
             return self.dictDonnees[code]
         else :
             return defaut

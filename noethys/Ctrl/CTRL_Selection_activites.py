@@ -66,13 +66,13 @@ class CTRL_Groupes(CT.CustomTreeCtrl):
         # Préparation des données
         dictDonnees = {}
         for IDgroupe, nomGroupe, ordreGroupe, IDactivite, nomActivite, dateFinActivite in self.listeDonnees :
-            if dictDonnees.has_key(IDactivite) == False :
+            if (IDactivite in dictDonnees) == False :
                 dictDonnees[IDactivite] = {"nom" : nomActivite, "IDactivite" : IDactivite, "dateFinActivite" : dateFinActivite, "groupes" : []}
             dictDonnees[IDactivite]["groupes"].append((ordreGroupe, IDgroupe, nomGroupe))
 
         # Tri des noms des activités par ordre alpha
         listeActivites = []
-        for IDactivite, dictActivite in dictDonnees.iteritems() :
+        for IDactivite, dictActivite in dictDonnees.items() :
             listeActivites.append((dictActivite["dateFinActivite"], IDactivite))
         listeActivites.sort(reverse=True)         
         
@@ -149,7 +149,7 @@ class CTRL_Groupes(CT.CustomTreeCtrl):
     def GetGroupes(self):
         """ Renvoie la liste des groupes cochés """
         listeGroupes = []
-        for item, dictData in self.dictItems.iteritems() :
+        for item, dictData in self.dictItems.items() :
             if self.IsItemEnabled(item) and self.IsItemChecked(item) and dictData["type"] == "groupe" :
                 listeGroupes.append(dictData["IDgroupe"])
         listeGroupes.sort()
@@ -158,7 +158,7 @@ class CTRL_Groupes(CT.CustomTreeCtrl):
     def SetGroupes(self, listeGroupes=[]):
         """ Coche les groupes donnés """
         self.mode_importation = True
-        for item, dictData in self.dictItems.iteritems() :
+        for item, dictData in self.dictItems.items() :
             if dictData["type"] == "groupe" :
                 if dictData["IDgroupe"] in listeGroupes :
                     self.Coche(item, etat=True)
@@ -168,7 +168,7 @@ class CTRL_Groupes(CT.CustomTreeCtrl):
     
     def SetActivites(self, listeActivites=[]):
         """ Coche les activités """
-        for item, dictData in self.dictItems.iteritems() :
+        for item, dictData in self.dictItems.items() :
             if dictData["type"] == "activite" :
                 if dictData["IDactivite"] in listeActivites :
                     self.Coche(item, etat=True)
@@ -223,7 +223,7 @@ class CTRL_Groupes_activites(wx.CheckListBox):
             listeTemp = (nomGroupe, IDtype_groupe_activite)
             if listeTemp not in listeDonnees : 
                 listeDonnees.append(listeTemp)
-            if self.dictDonnees.has_key(IDtype_groupe_activite) == False :
+            if (IDtype_groupe_activite in self.dictDonnees) == False :
                 self.dictDonnees[IDtype_groupe_activite] = []
             self.dictDonnees[IDtype_groupe_activite].append(IDactivite)    
             self.dictActivites[IDactivite] = nomActivite        
@@ -552,7 +552,7 @@ class MyFrame(wx.Frame):
         
     def OnBouton(self, event):
         self.ctrl.ctrl_groupes.SetGroupes([1, 3])
-        print self.ctrl.ctrl_groupes.GetGroupes()
+        print(self.ctrl.ctrl_groupes.GetGroupes())
         
 
 if __name__ == '__main__':

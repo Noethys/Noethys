@@ -18,6 +18,7 @@ from Utils import UTILS_Dates
 from Utils.UTILS_Decimal import FloatToDecimal as FloatToDecimal
 from Utils import UTILS_Config
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
+import six
 
 
 class Export():
@@ -58,11 +59,11 @@ class Export():
                          "date_fin": UTILS_Dates.DateEngEnDateDD(date_fin)}
 
             if public == "famille" :
-                if dictPieces["familles"].has_key(IDfamille) == False :
+                if (IDfamille in dictPieces["familles"]) == False :
                     dictPieces["familles"][IDfamille] = []
                 dictPieces["familles"][IDfamille].append(dictPiece)
             if public == "individu" :
-                if dictPieces["individus"].has_key(IDindividu) == False :
+                if (IDindividu in dictPieces["individus"]) == False :
                     dictPieces["individus"][IDindividu] = []
                 dictPieces["individus"][IDindividu].append(dictPiece)
 
@@ -99,12 +100,12 @@ class Export():
 
             if dictCotisation["type"] == "famille" :
                 IDfamille = dictCotisation["IDfamille"]
-                if dictCotisations["familles"].has_key(IDfamille) == False :
+                if (IDfamille in dictCotisations["familles"]) == False :
                     dictCotisations["familles"][IDfamille] = []
                 dictCotisations["familles"][IDfamille].append(dictCotisation)
             if dictCotisation["type"] == "individu" :
                 IDindividu = dictCotisation["IDindividu"]
-                if dictCotisations["individus"].has_key(IDindividu) == False :
+                if (IDindividu in dictCotisations["individus"]) == False :
                     dictCotisations["individus"][IDindividu] = []
                 dictCotisations["individus"][IDindividu].append(dictCotisation)
 
@@ -143,7 +144,7 @@ class Export():
             if dictPrestation["prenom"] == None : dictPrestation["prenom"] = ""
 
             IDfamille = dictPrestation["IDfamille"]
-            if dictPrestations.has_key(IDfamille) == False :
+            if (IDfamille in dictPrestations) == False :
                 dictPrestations[IDfamille] = []
             dictPrestations[IDfamille].append(dictPrestation)
 
@@ -167,9 +168,9 @@ class Export():
                 "IDconso" : IDconso, "date" : date, "nomActivite" : nomActivite,
                 "etat" : etat, "nomUnite" : nomUnite,
                 }
-            if dictConsommations.has_key(IDfamille) == False :
+            if (IDfamille in dictConsommations) == False :
                 dictConsommations[IDfamille] = {}
-            if dictConsommations[IDfamille].has_key(IDindividu) == False :
+            if (IDindividu in dictConsommations[IDfamille]) == False :
                 dictConsommations[IDfamille][IDindividu] = []
             dictConsommations[IDfamille][IDindividu].append(dictConso)
 
@@ -222,11 +223,11 @@ class Export():
         for IDfacture, numero, date_edition, date_debut, date_fin, total, regle, solde, IDfamille in listeFactures :
             if numero == None : numero = 0
             total = FloatToDecimal(total)
-            if dictVentilationFactures.has_key(IDfacture) :
+            if IDfacture in dictVentilationFactures :
                 totalVentilation = FloatToDecimal(dictVentilationFactures[IDfacture])
             else :
                 totalVentilation = FloatToDecimal(0.0)
-            if dictPrestationsFactures.has_key(IDfacture) :
+            if IDfacture in dictPrestationsFactures :
                 totalPrestations = FloatToDecimal(dictPrestationsFactures[IDfacture])
             else :
                 totalPrestations = FloatToDecimal(0.0)
@@ -238,7 +239,7 @@ class Export():
                 "montant_solde" : float(solde_actuel),
                 }
 
-            if dictFactures.has_key(IDfamille) == False :
+            if (IDfamille in dictFactures) == False :
                 dictFactures[IDfamille] = []
             dictFactures[IDfamille].append(dictFacture)
 
@@ -272,7 +273,7 @@ class Export():
                 "payeur": payeur, "observations" : observations, "numero_quittancier" : numero_quittancier,
                 "date_differe" : date_differe, "date_saisie" : date_saisie, "date_encaissement": date_encaissement,
             }
-            if dictReglements.has_key(IDfamille) == False :
+            if (IDfamille in dictReglements) == False :
                 dictReglements[IDfamille] = []
             dictReglements[IDfamille].append(dictReglement)
 
@@ -296,14 +297,14 @@ class Export():
             node_famille.setAttribute("id", str(IDfamille))
             node_racine.appendChild(node_famille)
 
-            for key, valeur in infos.dictFamilles[IDfamille].iteritems():
+            for key, valeur in infos.dictFamilles[IDfamille].items():
                 if key.startswith("FAMILLE_"):
                     node = doc.createElement(key.replace("FAMILLE_", "").lower())
                     node.setAttribute("valeur", unicode(valeur))
                     node_famille.appendChild(node)
 
             # Famille : Quotients
-            if infos.dictFamilles[IDfamille].has_key("qf"):
+            if "qf" in infos.dictFamilles[IDfamille]:
                 node_qf = doc.createElement(u"quotients_familiaux")
                 node_famille.appendChild(node_qf)
 
@@ -316,7 +317,7 @@ class Export():
                     node_qf.appendChild(node)
 
             # Famille : Messages
-            if infos.dictFamilles[IDfamille].has_key("messages"):
+            if "messages" in infos.dictFamilles[IDfamille]:
                 node_messages = doc.createElement(u"messages")
                 node_famille.appendChild(node_messages)
 
@@ -330,7 +331,7 @@ class Export():
                     node_messages.appendChild(node)
 
             # Famille : Questionnaires
-            if infos.dictFamilles[IDfamille].has_key("questionnaires"):
+            if "questionnaires" in infos.dictFamilles[IDfamille]:
                 node_questionnaires = doc.createElement(u"questionnaires")
                 node_famille.appendChild(node_questionnaires)
 
@@ -341,7 +342,7 @@ class Export():
                     node_questionnaires.appendChild(node)
 
             # Famille : Pièces
-            if dictPieces["familles"].has_key(IDfamille):
+            if IDfamille in dictPieces["familles"]:
                 node_pieces = doc.createElement(u"pieces")
                 node_famille.appendChild(node_pieces)
 
@@ -353,7 +354,7 @@ class Export():
                     node_pieces.appendChild(node)
 
             # Famille : Cotisations
-            if dictCotisations["familles"].has_key(IDfamille):
+            if IDfamille in dictCotisations["familles"]:
                 node_cotisations = doc.createElement(u"cotisations")
                 node_famille.appendChild(node_cotisations)
 
@@ -371,7 +372,7 @@ class Export():
                     node_cotisations.appendChild(node)
 
             # Famille : Prestations
-            if dictPrestations.has_key(IDfamille):
+            if IDfamille in dictPrestations:
                 node_prestations = doc.createElement(u"prestations")
                 node_famille.appendChild(node_prestations)
 
@@ -387,7 +388,7 @@ class Export():
                     node_prestations.appendChild(node)
 
                 # Famille : Factures
-                if dictFactures.has_key(IDfamille):
+                if IDfamille in dictFactures:
                     node_factures = doc.createElement(u"factures")
                     node_famille.appendChild(node_factures)
 
@@ -404,7 +405,7 @@ class Export():
                         node_factures.appendChild(node)
 
                 # Famille : Règlements
-                if dictReglements.has_key(IDfamille):
+                if IDfamille in dictReglements:
                     node_reglements = doc.createElement(u"reglements")
                     node_famille.appendChild(node_reglements)
 
@@ -431,7 +432,7 @@ class Export():
             node_individus = doc.createElement(u"individus")
             node_famille.appendChild(node_individus)
 
-            if infos.dictRattachements["familles"].has_key(IDfamille):
+            if IDfamille in infos.dictRattachements["familles"]:
                 for dictRattachement in infos.dictRattachements["familles"][IDfamille]:
                     IDindividu = dictRattachement["IDindividu"]
 
@@ -442,13 +443,13 @@ class Export():
                     # Individu : données générales
                     for key, champ in infos.GetListeChampsIndividus():
                         valeur = infos.dictIndividus[IDindividu][key]
-                        if isinstance(valeur, (unicode, str)):
+                        if isinstance(valeur, (six.text_type, str)):
                             node = doc.createElement(key.replace("INDIVIDU_", "").lower())
-                            node.setAttribute("valeur", unicode(valeur))
+                            node.setAttribute("valeur", six.text_type(valeur))
                             node_individu.appendChild(node)
 
                     # Individu : Messages
-                    if infos.dictIndividus[IDindividu].has_key("messages"):
+                    if "messages" in infos.dictIndividus[IDindividu]:
                         node_messages = doc.createElement(u"messages")
                         node_individu.appendChild(node_messages)
 
@@ -462,7 +463,7 @@ class Export():
                             node_messages.appendChild(node)
 
                     # Individu : Infos médicales
-                    if infos.dictIndividus[IDindividu].has_key("medical"):
+                    if "medical" in infos.dictIndividus[IDindividu]:
                         node_medicales = doc.createElement(u"infos_medicales")
                         node_individu.appendChild(node_medicales)
 
@@ -476,7 +477,7 @@ class Export():
                             node_medicales.appendChild(node)
 
                     # Individu : Inscriptions
-                    if infos.dictIndividus[IDindividu].has_key("inscriptions"):
+                    if "inscriptions" in infos.dictIndividus[IDindividu]:
                         node_inscriptions = doc.createElement(u"inscriptions")
                         node_individu.appendChild(node_inscriptions)
 
@@ -490,7 +491,7 @@ class Export():
                             node_inscriptions.appendChild(node)
 
                     # Individu : Questionnaires
-                    if infos.dictIndividus[IDindividu].has_key("questionnaires"):
+                    if "questionnaires" in infos.dictIndividus[IDindividu]:
                         node_questionnaires = doc.createElement(u"questionnaires")
                         node_individu.appendChild(node_questionnaires)
 
@@ -501,7 +502,7 @@ class Export():
                             node_questionnaires.appendChild(node)
 
                     # Individu : Scolarité
-                    if infos.dictIndividus[IDindividu].has_key("scolarite"):
+                    if "scolarite" in infos.dictIndividus[IDindividu]:
                         node_scolarite = doc.createElement(u"scolarite")
                         node_individu.appendChild(node_scolarite)
 
@@ -516,7 +517,7 @@ class Export():
                             node_scolarite.appendChild(node)
 
                     # Individu : Pièces
-                    if dictPieces["individus"].has_key(IDindividu):
+                    if IDindividu in dictPieces["individus"]:
                         node_pieces = doc.createElement(u"pieces")
                         node_individu.appendChild(node_pieces)
 
@@ -528,7 +529,7 @@ class Export():
                             node_pieces.appendChild(node)
 
                     # Individu : Cotisations
-                    if dictCotisations["individus"].has_key(IDindividu):
+                    if IDindividu in dictCotisations["individus"]:
                         node_cotisations = doc.createElement(u"cotisations")
                         node_individu.appendChild(node_cotisations)
 
@@ -546,8 +547,8 @@ class Export():
                             node_cotisations.appendChild(node)
 
                     # Individu : Consommations
-                    if dictConsommations.has_key(IDfamille):
-                        if dictConsommations[IDfamille].has_key(IDindividu):
+                    if IDfamille in dictConsommations:
+                        if IDindividu in dictConsommations[IDfamille]:
                             node_consommations = doc.createElement(u"consommations")
                             node_individu.appendChild(node_consommations)
 
@@ -583,4 +584,4 @@ class Export():
 if __name__ == "__main__":
     export = Export(IDfamille=None)
     xml = export.GetPrettyXML()
-    print xml
+    print(xml)

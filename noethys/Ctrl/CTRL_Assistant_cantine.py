@@ -38,7 +38,7 @@ class Page_generalites(Assistant.Page):
     def __init__(self, parent):
         Assistant.Page.__init__(self, parent)
         self.Ajouter_rubrique(titre=_(u"Généralités"))
-        if not self.parent.dict_valeurs.has_key("nom"):
+        if "nom" not in self.parent.dict_valeurs:
             self.parent.dict_valeurs["nom"] = _(u"Cantine")
         self.Ajouter_question(code="nom", titre=_(u"Quel est le nom de la cantine ?"), commentaire=_(u"Exemple : 'Cantine scolaire'"), ctrl=Assistant.CTRL_Texte, obligatoire=False)
         self.Ajouter_question(code="groupes_activites", titre=_(u"Cochez les groupes d'activités associés à cette activité :"), commentaire=_(u"Les groupes d'activités permettent une sélection plus rapide dans certaines fenêtres de Noethys."), ctrl=Assistant.CTRL_Groupes_activite)
@@ -85,7 +85,7 @@ class Page_groupes_liste(Assistant.Page):
         self.Ajouter_rubrique(titre=_(u"Services"))
         for index in range(1, self.parent.dict_valeurs["nbre_groupes"]+1) :
             code = "nom_groupe#%d" % index
-            if not self.parent.dict_valeurs.has_key(code):
+            if code not in self.parent.dict_valeurs:
                 self.parent.dict_valeurs[code] = _(u"Service %d") % index
             self.Ajouter_question(code=code, titre=_(u"Quel est le nom du service n°%d ?") % index, commentaire=None, ctrl=Assistant.CTRL_Texte, obligatoire=True)
 

@@ -13,20 +13,12 @@ import Chemins
 from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
-from Ctrl import CTRL_Bouton_image
-import datetime
-from PIL import Image
 import os
-import cStringIO
-
+import six
 import GestionDB
-
 from Dlg import DLG_Saisie_mode_reglement
-
-
 from Utils import UTILS_Interface
 from Ctrl.CTRL_ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
-
 from Utils import UTILS_Utilisateurs
 
 
@@ -42,7 +34,7 @@ def GetImage(bufferImage):
         
     # Recherche de l'image
     if bufferImage != None :
-        io = cStringIO.StringIO(bufferImage)
+        io = six.BytesIO(bufferImage)
         if 'phoenix' in wx.PlatformInfo:
             img = wx.Image(io, wx.BITMAP_TYPE_JPEG)
         else :

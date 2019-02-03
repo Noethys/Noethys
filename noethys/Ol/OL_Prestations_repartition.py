@@ -352,7 +352,7 @@ class ListView(GroupListView):
     
     def GetFiltres(self):
         filtreSQL = ""
-        for champFiltre, valeur in self.dictFiltres.iteritems() :
+        for champFiltre, valeur in self.dictFiltres.items() :
             if valeur != None :
                 filtreSQL += " AND %s = %s" % (champFiltre, valeur)
         return filtreSQL

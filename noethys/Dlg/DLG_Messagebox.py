@@ -125,5 +125,5 @@ if __name__ == u"__main__":
     dlg = Dialog(None, titre=_(u"Avertissement"), introduction=_(u"Introduction ici !"), detail="detail", conclusion=_(u"Conclusion ici"), icone=icone, boutons=[_(u"Oui"), _(u"Oui pour tout"), _(u"Non"), _(u"Annuler")])
     reponse = dlg.ShowModal() 
     dlg.Destroy() 
-    print reponse
+    print(reponse)
     app.MainLoop()

@@ -58,7 +58,7 @@ class CTRL_Analytique(CTRL_Combobox_autocomplete.CTRL):
         return listeItems
 
     def SetID(self, ID=0):
-        for index, values in self.dictDonnees.iteritems():
+        for index, values in self.dictDonnees.items():
             if values["ID"] == ID :
                  self.SetSelection(index)
 
@@ -105,7 +105,7 @@ class CTRL_Categorie(CTRL_Combobox_autocomplete.CTRL):
         return listeItems
 
     def SetID(self, ID=0):
-        for index, values in self.dictDonnees.iteritems():
+        for index, values in self.dictDonnees.items():
             if values["ID"] == ID :
                  self.SetSelection(index)
 

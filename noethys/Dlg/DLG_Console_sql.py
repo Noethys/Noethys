@@ -96,10 +96,10 @@ class Dialog(wx.Dialog):
                 self.db.ExecuterReq(cmd.strip())
                 if cmd.lstrip().upper().startswith("SELECT"):
                     resultat = self.db.ResultatReq()
-                    print resultat
+                    print(resultat)
                     self.ctrl.push("print %s" % resultat)
-            except Exception, err:
-               print "An error occurred:", err
+            except Exception as err:
+               print("An error occurred:", err)
 
 
 

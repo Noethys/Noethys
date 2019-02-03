@@ -265,7 +265,7 @@ class CTRL_Choix_port(wx.Choice):
     def SetID(self, code=None):
         if code == None :
             self.SetSelection(0)
-        for index, values in self.dictDonnees.iteritems():
+        for index, values in self.dictDonnees.items():
             if values["code"] == code :
                  self.SetSelection(index)
 
@@ -309,7 +309,7 @@ class CTRL_Choix_appareil(wx.Choice):
     def SetID(self, code=None):
         if code == None :
             self.SetSelection(0)
-        for index, values in self.dictDonnees.iteritems():
+        for index, values in self.dictDonnees.items():
             if values["code"] == code :
                  self.SetSelection(index)
 
@@ -415,7 +415,7 @@ class Page_scanner(wx.Panel):
         # Lecture de l'heure
         try :
             scanner.get_time()
-        except Exception, err:
+        except Exception as err:
             pass
         
         # Réglage de l'heure du scanner
@@ -427,8 +427,8 @@ class Page_scanner(wx.Panel):
         # Lecture des codes-barres
         try :
             listeBarcodes = scanner.get_barcodes()
-        except Exception, err:
-            print "Erreur de lecture du scanner :", err
+        except Exception as err:
+            print("Erreur de lecture du scanner :", err)
             dlg = wx.MessageDialog(self, _(u"Noethys n'arrive pas à lire les données du scanner. Essayez de le déconnecter et le reconnecter...\n\nErreur : %s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
@@ -442,8 +442,8 @@ class Page_scanner(wx.Panel):
                 date = datetime.date(timestamp.year, timestamp.month, timestamp.day) 
                 heure = u"%02d:%02d" % (timestamp.hour, timestamp.minute)
                 listeDonnees.append((codebarres, date, heure))
-            except Exception, err:
-                print "Erreur de lecture du code-barres %d :" % index+1, err
+            except Exception as err:
+                print("Erreur de lecture du code-barres %d :" % index+1, err)
                 dlg = wx.MessageDialog(None, _(u"Erreur de lecture du code-barres %d : %s\n\nVoulez-vous quand-même continuer ?") % (index+1, err), _(u"Erreur"), wx.YES_NO|wx.YES_DEFAULT|wx.ICON_EXCLAMATION)
                 if dlg.ShowModal() != wx.ID_YES :
                     dlg.Destroy()
@@ -483,7 +483,7 @@ class Page_scanner(wx.Panel):
             try :
                 scanner = UTILS_CS1504.CS1504(port)
                 scanner.interrogate()
-            except Exception, err:
+            except Exception as err:
                 dlg = wx.MessageDialog(self, _(u"Noethys n'arrive pas à se connecter à l'appareil."), _(u"Erreur"), wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
                 dlg.Destroy()
@@ -495,13 +495,13 @@ class Page_scanner(wx.Panel):
         try :
             scanner.power_down()
             del scanner
-        except Exception, err :
-            print err
+        except Exception as err :
+            print(err)
     
     def ReglerHeure(self, scanner=None):
         try :
             scanner.set_time()
-        except Exception, err:
+        except Exception as err:
             dlg = wx.MessageDialog(self, _(u"Noethys n'arrive pas à se régler l'heure du scanner.\n\nErreur : %s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
@@ -512,7 +512,7 @@ class Page_scanner(wx.Panel):
         if dlg.ShowModal() == wx.ID_YES :
             try :
                 scanner.clear_barcodes()
-            except Exception, err:
+            except Exception as err:
                 dlg = wx.MessageDialog(self, _(u"Noethys n'arrive pas à vider l'appareil.\n\nErreur : %s") % err, _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
@@ -600,7 +600,7 @@ class Page_excel(wx.Panel):
                 heure = u"%02d:%02d" % (dateTuple[3], dateTuple[4])
                 # Mémorisation
                 listeDonnees.append((codebarres, date, heure))
-        except Exception, err :
+        except Exception as err :
             listeDonnees = []
             dlg = wx.MessageDialog(self, _(u"Noethys n'a pas réussi à lire les données !\n\nErreur : %s.\n\nNotez que les colonnes du fichier Excel doivent être les suivantes : 1. Code-barres 2. Date, 3. Heure.") % err, _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
@@ -737,7 +737,7 @@ class Page_csv(wx.Panel):
                 heure = u"%02d:%02d" % (int(Decodage("HH")), int(Decodage("MN")))
                 # Mémorisation
                 listeDonnees.append((codebarres, date, heure))
-        except Exception, err :
+        except Exception as err :
             listeDonnees = []
             dlg = wx.MessageDialog(self, _(u"Noethys n'a pas réussi à lire les données !\n\nVérifiez peut-être le format de la ligne.\n\nErreur : %s") % err, _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()

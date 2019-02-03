@@ -1123,7 +1123,7 @@ class Dialog(wx.Dialog):
 
         # Conversion des fichiers en GZIP/base64
         dict_pieces_jointes = {}
-        for IDfacture, cheminFichier in dictPieces.iteritems() :
+        for IDfacture, cheminFichier in dictPieces.items() :
 
             # Compression GZIP
             cheminFichierGzip = cheminFichier + ".zip"

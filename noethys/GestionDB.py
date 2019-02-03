@@ -18,6 +18,7 @@ import os
 import traceback
 import datetime
 import random
+import six
 from Data import DATA_Tables as Tables
 from Utils import UTILS_Fichiers
 
@@ -29,7 +30,7 @@ try :
     from MySQLdb.constants import FIELD_TYPE
     from MySQLdb.converters import conversions
     IMPORT_MYSQLDB_OK = True
-except Exception, err :
+except Exception as err :
     IMPORT_MYSQLDB_OK = False
 
 # import mysql.connector
@@ -38,7 +39,7 @@ try :
     from mysql.connector.constants import FieldType
     from mysql.connector import conversion
     IMPORT_MYSQLCONNECTOR_OK = True
-except Exception, err :
+except Exception as err :
     IMPORT_MYSQLCONNECTOR_OK = False
 
 
@@ -123,8 +124,8 @@ class DB:
         try :
             self.connexion = sqlite3.connect(nomFichier.encode('utf-8'))
             self.cursor = self.connexion.cursor()
-        except Exception, err:
-            print "La connexion avec la base de donnees SQLITE a echouee : \nErreur detectee :%s" % err
+        except Exception as err:
+            print("La connexion avec la base de donnees SQLITE a echouee : \nErreur detectee :%s" % err)
             self.erreur = err
             self.echec = 1
         else:
@@ -154,9 +155,9 @@ class DB:
             if nomFichier not in ("", None, "_data") :
                 self.cursor.execute("USE %s;" % nomFichier)
             
-        except Exception, err:
-            print "La connexion avec la base de donnees MYSQL a echouee. Erreur :"
-            print (err,)
+        except Exception as err:
+            print("La connexion avec la base de donnees MYSQL a echouee. Erreur :")
+            print((err,))
             self.erreur = err
             self.echec = 1
             #AfficheConnexionOuvertes() 
@@ -258,8 +259,8 @@ class DB:
         try:
             self.cursor.execute(req)
             DICT_CONNEXIONS[self.IDconnexion].append(req)
-        except Exception, err:
-            print _(u"Requete SQL incorrecte :\n%s\nErreur detectee:\n%s") % (req, err)
+        except Exception as err:
+            print(_(u"Requete SQL incorrecte :\n%s\nErreur detectee:\n%s") % (req, err))
             return 0
         else:
             return 1
@@ -282,10 +283,10 @@ class DB:
     def Close(self):
         try :
             self.connexion.close()
-        except Exception, err :
+        except Exception as err :
             pass
 
-        if DICT_CONNEXIONS.has_key(self.IDconnexion) :
+        if self.IDconnexion in DICT_CONNEXIONS :
             del DICT_CONNEXIONS[self.IDconnexion]
                 
     def Executermany(self, req="", listeDonnees=[], commit=True):
@@ -344,8 +345,8 @@ class DB:
                 self.cursor.execute("SELECT last_insert_rowid() FROM %s" % nomTable)
             newID = self.cursor.fetchall()[0][0]
             
-        except Exception, err:
-            print "Requete sql d'INSERT incorrecte :\n%s\nErreur detectee:\n%s" % (req, err)
+        except Exception as err:
+            print("Requete sql d'INSERT incorrecte :\n%s\nErreur detectee:\n%s" % (req, err))
         # Retourne l'ID de l'enregistrement créé
         return newID
     
@@ -429,8 +430,8 @@ class DB:
             self.cursor.execute(req, tuple(valeurs))
             if commit == True :
                 self.Commit()
-        except Exception, err:
-            print _(u"Requete sql de mise a jour incorrecte :\n%s\nErreur detectee:\n%s") % (req, err)
+        except Exception as err:
+            print(_(u"Requete sql de mise a jour incorrecte :\n%s\nErreur detectee:\n%s") % (req, err))
         
     def ReqDEL(self, nomTable="", nomChampID="", ID="", commit=True):
         """ Suppression d'un enregistrement """
@@ -439,8 +440,8 @@ class DB:
             self.cursor.execute(req)
             if commit == True :
                 self.Commit()
-        except Exception, err:
-            print _(u"Requete sql de suppression incorrecte :\n%s\nErreur detectee:\n%s") % (req, err)
+        except Exception as err:
+            print(_(u"Requete sql de suppression incorrecte :\n%s\nErreur detectee:\n%s") % (req, err))
         
     def Modifier(self, table, ID, champs, valeurs, dicoDB, commit=True):
         # champs et valeurs sont des tuples
@@ -498,7 +499,7 @@ class DB:
             ID = None
             for nomChamp in listeChamps :
                 valeur = enregistrement[index]
-                if dictModifications.has_key(nomChamp):
+                if nomChamp in dictModifications:
                     valeur = dictModifications[nomChamp]
                 if nomChamp != nomChampCle :
                     listeTemp.append((nomChamp, valeur))
@@ -719,7 +720,7 @@ class DB:
             self.cursor.execute("DROP TABLE %s_backup;" % nomTable)
             self.Commit() 
             
-            print "Reparation de la table '%s' terminee." % nomTable
+            print("Reparation de la table '%s' terminee." % nomTable)
 
     def Importation_table(self, nomTable="", nomFichierdefault=Chemins.GetStaticPath("Databases/Defaut.dat"), mode="local"):
         """ Importe toutes les données d'une table donnée """
@@ -727,13 +728,13 @@ class DB:
         if mode == "local" :
 
             if os.path.isfile(nomFichierdefault)  == False :
-                print "Le fichier n'existe pas."
+                print("Le fichier n'existe pas.")
                 return (False, _(u"Le fichier n'existe pas"))
 
             try:
                 connexionDefaut = sqlite3.connect(nomFichierdefault.encode('utf-8'))
-            except Exception, err:
-                print "Echec Importation table. Erreur detectee :%s" % err
+            except Exception as err:
+                print("Echec Importation table. Erreur detectee :%s" % err)
                 return (False, "Echec Importation table. Erreur detectee :%s" % err)
             else:
                 cursor = connexionDefaut.cursor()
@@ -747,8 +748,8 @@ class DB:
                 # Ouverture Database
                 cursor.execute("USE %s;" % nomFichier)
                 
-            except Exception, err:
-                print "La connexion avec la base de donnees MYSQL a importer a echouee : \nErreur detectee :%s" % err
+            except Exception as err:
+                print("La connexion avec la base de donnees MYSQL a importer a echouee : \nErreur detectee :%s" % err)
                 return (False, "La connexion avec la base de donnees MYSQL a importer a echouee : \nErreur detectee :%s" % err)
 
         # Recherche des noms de champs de la table
@@ -764,7 +765,7 @@ class DB:
         listeMarks = []
         dictTypesChamps = GetChampsTable(nomTable)
         for nomChamp in listeNomsChamps[0:] :
-            if dictTypesChamps.has_key(nomChamp):
+            if nomChamp in dictTypesChamps:
                 listeChamps.append(nomChamp)
                 if self.isNetwork == True :
                     # Version MySQL
@@ -782,17 +783,15 @@ class DB:
         req = "INSERT INTO %s (%s) VALUES (%s)" % (nomTable, ", ".join(listeChamps), ", ".join(listeMarks))
         try :
             self.cursor.executemany(req, listeDonnees)
-        except Exception, err :
-            print "Erreur dans l'importation de la table %s :" % nomTable
-            print err
+        except Exception as err :
+            print("Erreur dans l'importation de la table %s :" % nomTable)
+            print(err)
             return (False, "Erreur dans l'importation de la table %s : %s" % (nomTable, err))
         self.connexion.commit()
         return (True, None)
 
     def Importation_table_reseau(self, nomTable="", nomFichier="", dictTables={}):
         """ Importe toutes les données d'une table donnée dans un fichier réseau """
-        import cStringIO
-        
         # Ouverture de la base réseau
         try :
             connexionDefaut, nomFichier = GetConnexionReseau(nomFichier)
@@ -801,8 +800,8 @@ class DB:
             # Ouverture Database
             cursor.execute("USE %s;" % nomFichier)
 
-        except Exception, err:
-            print "La connexion avec la base de donnees MYSQL a importer a echouee : \nErreur detectee :%s" % err
+        except Exception as err:
+            print("La connexion avec la base de donnees MYSQL a importer a echouee : \nErreur detectee :%s" % err)
             return (False, "La connexion avec la base de donnees MYSQL a importer a echouee : \nErreur detectee :%s" % err)
 
         # Recherche des noms de champs de la table
@@ -936,7 +935,7 @@ class DB:
     
     def CreationTousIndex(self):
         """ Création de tous les index """
-        for nomIndex, temp in Tables.DB_INDEX.iteritems() :
+        for nomIndex, temp in Tables.DB_INDEX.items() :
             self.CreationIndex(nomIndex)
 
 
@@ -953,7 +952,7 @@ class DB:
         if versionFichier < versionFiltre :   
             try :
                 self.CreationTable("historique", Tables.DB_DATA)
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
         # =============================================================
@@ -963,7 +962,7 @@ class DB:
             try :
                 if self.IsTableExists("historique") == False :
                     self.CreationTable("historique", Tables.DB_DATA)
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
         
         # =============================================================
@@ -973,7 +972,7 @@ class DB:
             try :
                 if self.IsTableExists("attestations") == False :
                     self.CreationTable("attestations", Tables.DB_DATA)
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
         
         # =============================================================
@@ -983,7 +982,7 @@ class DB:
             try :
                 if self.IsTableExists("recus") == False :
                     self.CreationTable("recus", Tables.DB_DATA)
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
         
         # =============================================================
@@ -993,7 +992,7 @@ class DB:
             try :
                 if self.IsTableExists("adresses_mail") == False :
                     self.CreationTable("adresses_mail", Tables.DB_DATA)
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
         
         # =============================================================
@@ -1003,7 +1002,7 @@ class DB:
             try :
                 if self.IsTableExists("listes_diffusion") == False : self.CreationTable("listes_diffusion", Tables.DB_DATA)
                 if self.IsTableExists("abonnements") == False : self.CreationTable("abonnements", Tables.DB_DATA)
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
         
         # =============================================================
@@ -1019,7 +1018,7 @@ class DB:
                 self.AjoutChamp("tarifs_lignes", "heure_fin_max", "VARCHAR(10)")
                 self.AjoutChamp("tarifs_lignes", "duree_min", "VARCHAR(10)")
                 self.AjoutChamp("tarifs_lignes", "duree_max", "VARCHAR(10)")
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
         
         # =============================================================
@@ -1029,7 +1028,7 @@ class DB:
             try :
                 self.AjoutChamp("tarifs_lignes", "date", "VARCHAR(10)")
                 self.AjoutChamp("tarifs_lignes", "label", "VARCHAR(300)")
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
         
         # =============================================================
@@ -1040,7 +1039,7 @@ class DB:
                 if self.IsTableExists("documents_modeles") == False : self.CreationTable("documents_modeles", Tables.DB_DATA)
                 if self.IsTableExists("documents_objets") == False : self.CreationTable("documents_objets", Tables.DB_DATA)
                 self.Importation_valeurs_defaut([[u"", ("documents_modeles", "documents_objets"), True],])
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
         
         # =============================================================
@@ -1049,7 +1048,7 @@ class DB:
         if versionFichier < versionFiltre :   
             try :
                 self.AjoutChamp("prestations", "temps_facture", "VARCHAR(10)")
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
         
         # =============================================================
@@ -1063,7 +1062,7 @@ class DB:
                 self.AjoutChamp("prestations", "IDcategorie_tarif", "INTEGER")
                 from Utils import UTILS_Procedures
                 UTILS_Procedures.S1290()
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
         
         # =============================================================
@@ -1082,7 +1081,7 @@ class DB:
                 self.AjoutChamp("familles", "memo", typeChamp)
                 from Utils import UTILS_Procedures
                 UTILS_Procedures.D1051()
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
         
         # =============================================================
@@ -1094,7 +1093,7 @@ class DB:
                 self.AjoutChamp("tarifs_lignes", "duree_seuil", "VARCHAR(10)")
                 self.AjoutChamp("tarifs_lignes", "duree_plafond", "VARCHAR(10)")
                 self.AjoutChamp("tarifs_lignes", "taux", "FLOAT")
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
         
         # =============================================================
@@ -1103,7 +1102,7 @@ class DB:
         if versionFichier < versionFiltre :   
             try :
                 self.AjoutChamp("tarifs_lignes", "ajustement", "FLOAT")
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
         
         # =============================================================
@@ -1118,7 +1117,7 @@ class DB:
                 self.Importation_valeurs_defaut([[u"", ("niveaux_scolaires",), True],])
                 self.AjoutChamp("unites_remplissage", "heure_min", "VARCHAR(10)")
                 self.AjoutChamp("unites_remplissage", "heure_max", "VARCHAR(10)")
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
         
         # =============================================================
@@ -1131,7 +1130,7 @@ class DB:
                 self.AjoutChamp("tarifs", "forfait_beneficiaire", "VARCHAR(50)")
                 self.AjoutChamp("prestations", "forfait_date_debut", "VARCHAR(10)")
                 self.AjoutChamp("prestations", "forfait_date_fin", "VARCHAR(10)")
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
         
         # =============================================================
@@ -1145,7 +1144,7 @@ class DB:
                 if self.IsTableExists("transports_arrets") == False : self.CreationTable("transports_arrets", Tables.DB_DATA)
                 if self.IsTableExists("transports") == False : self.CreationTable("transports", Tables.DB_DATA)
                 self.AjoutChamp("tarifs", "cotisations", "VARCHAR(300)")
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
         
         # =============================================================
@@ -1157,7 +1156,7 @@ class DB:
                 self.AjoutChamp("groupes", "ordre", "INTEGER")
                 from Utils import UTILS_Procedures
                 UTILS_Procedures.G2345()
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
         
         # =============================================================
@@ -1166,7 +1165,7 @@ class DB:
         if versionFichier < versionFiltre :
             try :
                 if self.IsTableExists("questionnaire_filtres") == False : self.CreationTable("questionnaire_filtres", Tables.DB_DATA)
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
         
         # =============================================================
@@ -1177,7 +1176,7 @@ class DB:
                 self.AjoutChamp("organisateur", "gps", "VARCHAR(200)")
 ##                from Utils import UTILS_Procedures
 ##                UTILS_Procedures.A4567()
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
         
         # =============================================================
@@ -1189,7 +1188,7 @@ class DB:
                 if self.IsTableExists("etat_nomin_champs") == False : self.CreationTable("etat_nomin_champs", Tables.DB_DATA)
                 if self.IsTableExists("etat_nomin_selections") == False : self.CreationTable("etat_nomin_selections", Tables.DB_DATA)
                 if self.IsTableExists("etat_nomin_profils") == False : self.CreationTable("etat_nomin_profils", Tables.DB_DATA)
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
         
         # =============================================================
@@ -1199,7 +1198,7 @@ class DB:
             try :
                 self.AjoutChamp("tarifs", "caisses", "VARCHAR(300)")
                 self.AjoutChamp("tarifs", "description", "VARCHAR(450)")
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
         
         # =============================================================
@@ -1209,7 +1208,7 @@ class DB:
             try :
                 self.AjoutChamp("tarifs", "jours_scolaires", "VARCHAR(100)")
                 self.AjoutChamp("tarifs", "jours_vacances", "VARCHAR(100)")
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
         
         # =============================================================
@@ -1222,7 +1221,7 @@ class DB:
                 if self.IsTableExists("badgeage_procedures") == False : self.CreationTable("badgeage_procedures", Tables.DB_DATA)
                 if self.IsTableExists("badgeage_journal") == False : self.CreationTable("badgeage_journal", Tables.DB_DATA)
                 if self.IsTableExists("corrections_phoniques") == False : self.CreationTable("corrections_phoniques", Tables.DB_DATA)
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
         
         # =============================================================
@@ -1233,7 +1232,7 @@ class DB:
                 self.AjoutChamp("consommations", "quantite", "INTEGER")
                 self.AjoutChamp("documents_objets", "norme", "VARCHAR(100)")
                 self.AjoutChamp("documents_objets", "afficheNumero", "INTEGER")
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
         
         # =============================================================
@@ -1244,7 +1243,7 @@ class DB:
                 if self.isNetwork == True :
                     self.ExecuterReq("ALTER TABLE documents_objets MODIFY COLUMN image LONGBLOB;")
                     self.Commit()
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
         
         # =============================================================
@@ -1253,7 +1252,7 @@ class DB:
         if versionFichier < versionFiltre :
             try :
                 if self.IsTableExists("corrections_villes") == False : self.CreationTable("corrections_villes", Tables.DB_DATA)
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
         # =============================================================
@@ -1262,7 +1261,7 @@ class DB:
         if versionFichier < versionFiltre :
             try :
                 self.AjoutChamp("tarifs", "options", "VARCHAR(450)")
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
         # =============================================================
@@ -1271,7 +1270,7 @@ class DB:
         if versionFichier < versionFiltre :
             try :
                 if self.IsTableExists("badgeage_archives") == False : self.CreationTable("badgeage_archives", Tables.DB_DATA)
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
         # =============================================================
@@ -1280,7 +1279,7 @@ class DB:
         if versionFichier < versionFiltre :
             try :
                 self.AjoutChamp("messages", "afficher_facture", "INTEGER")
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
         # =============================================================
@@ -1290,7 +1289,7 @@ class DB:
             try :
                 if self.IsTableExists("modeles_emails") == False : self.CreationTable("modeles_emails", Tables.DB_DATA)
                 self.AjoutChamp("prestations", "reglement_frais", "INTEGER")
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
         # =============================================================
@@ -1320,7 +1319,7 @@ class DB:
                 self.AjoutChamp("familles", "prelevement_ville", "VARCHAR(400)") 
                 self.AjoutChamp("familles", "email_factures", "VARCHAR(450)") 
 
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
         # =============================================================
@@ -1336,7 +1335,7 @@ class DB:
                 self.AjoutChamp("comptes_bancaires", "code_nne", "VARCHAR(400)")
                 self.AjoutChamp("reglements", "IDprelevement", "INTEGER")
 
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
 
@@ -1350,7 +1349,7 @@ class DB:
                 self.AjoutChamp("tarifs", "code_compta", "VARCHAR(200)")
                 self.AjoutChamp("prestations", "tva", "FLOAT")
                 self.AjoutChamp("prestations", "code_compta", "VARCHAR(200)")
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
         # =============================================================
@@ -1359,7 +1358,7 @@ class DB:
         if versionFichier < versionFiltre :
             try :
                 self.AjoutChamp("combi_tarifs", "IDgroupe", "INTEGER")
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
         # =============================================================
@@ -1369,7 +1368,7 @@ class DB:
             try :
                 if self.IsTableExists("modeles_tickets") == False : self.CreationTable("modeles_tickets", Tables.DB_DATA)
                 self.AjoutChamp("badgeage_actions", "action_ticket", "VARCHAR(450)")
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
         # =============================================================
@@ -1379,7 +1378,7 @@ class DB:
             try :
                 self.AjoutChamp("modeles_tickets", "taille", "INTEGER")
                 self.AjoutChamp("modeles_tickets", "interligne", "INTEGER")
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
         # =============================================================
@@ -1389,7 +1388,7 @@ class DB:
             try :
                 self.AjoutChamp("modeles_tickets", "imprimante", "VARCHAR(450)")
                 self.AjoutChamp("unites", "largeur", "INTEGER")
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
         # =============================================================
@@ -1400,7 +1399,7 @@ class DB:
                 self.AjoutChamp("unites_remplissage", "afficher_page_accueil", "INTEGER")
                 self.AjoutChamp("unites_remplissage", "afficher_grille_conso", "INTEGER")
                 self.AjoutChamp("tarifs", "date_facturation", "VARCHAR(450)")
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
         # =============================================================
@@ -1412,7 +1411,7 @@ class DB:
                 self.AjoutChamp("familles", "email_recus", "VARCHAR(450)")
                 self.AjoutChamp("familles", "email_depots", "VARCHAR(450)")
                 self.AjoutChamp("reglements", "avis_depot", "DATE")
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
         # =============================================================
@@ -1421,7 +1420,7 @@ class DB:
         if versionFichier < versionFiltre :
             try :
                 if self.IsTableExists("sauvegardes_auto") == False : self.CreationTable("sauvegardes_auto", Tables.DB_DATA)
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
         
         # =============================================================
@@ -1432,7 +1431,7 @@ class DB:
                 from Utils import UTILS_Procedures
                 UTILS_Procedures.A5300()
                 UTILS_Procedures.A5400()
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
         
         # =============================================================
@@ -1455,7 +1454,7 @@ class DB:
                 self.AjoutChamp("prelevements", "prelevement_bic", "VARCHAR(100)")
                 self.AjoutChamp("prelevements", "prelevement_reference_mandat", "VARCHAR(300)")
                 self.AjoutChamp("prelevements", "prelevement_date_mandat", "DATE")
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
         # =============================================================
@@ -1470,7 +1469,7 @@ class DB:
                 self.AjoutChamp("prelevements", "IDmandat", "INTEGER")
                 self.AjoutChamp("prelevements", "sequence", "VARCHAR(100)")
                 self.AjoutChamp("utilisateurs", "image", "VARCHAR(200)")
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
         
         # =============================================================
@@ -1485,7 +1484,7 @@ class DB:
                 self.AjoutChamp("familles", "code_comptable", "VARCHAR(450)")
                 from Utils import UTILS_Procedures
                 UTILS_Procedures.A7650() # Création auto des titulaires Hélios
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
         
         # =============================================================
@@ -1499,7 +1498,7 @@ class DB:
                 self.AjoutChamp("types_cotisations", "code_comptable", "VARCHAR(450)")
                 from Utils import UTILS_Procedures
                 UTILS_Procedures.A8120() # Création auto type_comptable dans table modes_règlements
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
         
         # =============================================================
@@ -1508,7 +1507,7 @@ class DB:
         if versionFichier < versionFiltre :
             try :
                 self.AjoutChamp("pes_lots", "objet_piece", "VARCHAR(450)")
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
         
         # =============================================================
@@ -1519,7 +1518,7 @@ class DB:
                 from Utils import UTILS_Export_documents
                 UTILS_Export_documents.ImporterDepuisFichierDefaut(IDmodele=12, nom=None, IDfond=0, defaut=1) # import modèle doc reçu don aux oeuvres
                 UTILS_Export_documents.ImporterDepuisFichierDefaut(IDmodele=13, nom=None, IDfond=1, defaut=1) # import modèle doc attestation fiscale
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
         
         # =============================================================
@@ -1529,7 +1528,7 @@ class DB:
             try :
                 from Utils import UTILS_Procedures
                 UTILS_Procedures.A8260() 
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
         
         # =============================================================
@@ -1538,7 +1537,7 @@ class DB:
         if versionFichier < versionFiltre :
             try :
                 self.AjoutChamp("unites", "coeff", "VARCHAR(50)")
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
         
         # =============================================================
@@ -1549,7 +1548,7 @@ class DB:
                 if self.isNetwork == True :
                     self.ExecuterReq("ALTER TABLE parametres MODIFY COLUMN parametre TEXT;")
                     self.Commit()
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
         
         # =============================================================
@@ -1559,7 +1558,7 @@ class DB:
             try :
                 self.AjoutChamp("modes_reglements", "code_compta", "VARCHAR(200)")
                 self.AjoutChamp("depots", "code_compta", "VARCHAR(200)")
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
         
         # =============================================================
@@ -1572,7 +1571,7 @@ class DB:
                 if self.IsTableExists("contrats") == False : self.CreationTable("contrats", Tables.DB_DATA) 
                 if self.IsTableExists("modeles_contrats") == False : self.CreationTable("modeles_contrats", Tables.DB_DATA)
                 if self.IsTableExists("modeles_plannings") == False : self.CreationTable("modeles_plannings", Tables.DB_DATA)
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
         
         # =============================================================
@@ -1583,7 +1582,7 @@ class DB:
                 if self.isNetwork == True :
                     self.ExecuterReq("ALTER TABLE parametres MODIFY COLUMN parametre MEDIUMTEXT;")
                     self.Commit()
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
         
         # =============================================================
@@ -1605,8 +1604,8 @@ class DB:
                 try :
                     self.Importation_valeurs_defaut([[u"", ("compta_comptes_comptables",), True],])
                 except :
-                    print "Table 'compta_comptes_comptables' impossible a remplir : Elle a deja ete remplie !"
-            except Exception, err :
+                    print("Table 'compta_comptes_comptables' impossible a remplir : Elle a deja ete remplie !")
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
         
         # =============================================================
@@ -1619,7 +1618,7 @@ class DB:
                 self.AjoutChamp("familles", "reftiers_helios", "VARCHAR(200)")
                 self.AjoutChamp("familles", "cattiers_helios", "INTEGER")
                 self.AjoutChamp("familles", "natjur_helios", "INTEGER")
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
         
         # =============================================================
@@ -1633,7 +1632,7 @@ class DB:
                 self.AjoutChamp("compta_budgets", "date_fin", "DATE")
                 from Utils import UTILS_Procedures
                 UTILS_Procedures.A8623() 
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
         
         # =============================================================
@@ -1644,7 +1643,7 @@ class DB:
                 if self.IsTableExists("nomade_archivage") == False : self.CreationTable("nomade_archivage", Tables.DB_DATA) 
                 from Utils import UTILS_Procedures
                 UTILS_Procedures.A8733() 
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
         
         # =============================================================
@@ -1654,7 +1653,7 @@ class DB:
             try :
                 from Utils import UTILS_Procedures
                 UTILS_Procedures.A8823() 
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
         
         # =============================================================
@@ -1663,7 +1662,7 @@ class DB:
         if versionFichier < versionFiltre :   
             try :
                 self.AjoutChamp("factures", "etat", "VARCHAR(100)")
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
         
         # =============================================================
@@ -1672,7 +1671,7 @@ class DB:
         if versionFichier < versionFiltre :   
             try :
                 self.AjoutChamp("cotisations", "observations", "VARCHAR(1000)")
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
         
         # =============================================================
@@ -1681,7 +1680,7 @@ class DB:
         if versionFichier < versionFiltre :   
             try :
                 self.AjoutChamp("cotisations", "activites", "VARCHAR(450)")
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
         
         # =============================================================
@@ -1696,7 +1695,7 @@ class DB:
                 self.AjoutChamp("unites_remplissage", "etiquettes", "VARCHAR(450)")
                 from Utils import UTILS_Procedures
                 UTILS_Procedures.A8941() 
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
         
         # =============================================================
@@ -1705,7 +1704,7 @@ class DB:
         if versionFichier < versionFiltre :   
             try :
                 self.AjoutChamp("etiquettes", "active", "INTEGER")
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
         
         # =============================================================
@@ -1716,7 +1715,7 @@ class DB:
                 self.AjoutChamp("unites", "autogen_active", "INTEGER")
                 self.AjoutChamp("unites", "autogen_conditions", "VARCHAR(400)")
                 self.AjoutChamp("unites", "autogen_parametres", "VARCHAR(400)")
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
         # =============================================================
@@ -1728,7 +1727,7 @@ class DB:
                 self.AjoutChamp("quotients", "revenu", "FLOAT")
                 self.AjoutChamp("tarifs_lignes", "revenu_min", "FLOAT")
                 self.AjoutChamp("tarifs_lignes", "revenu_max", "FLOAT")
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
         # =============================================================
@@ -1741,7 +1740,7 @@ class DB:
                 self.AjoutChamp("contrats", "nbre_absences_prevues", "INTEGER")
                 self.AjoutChamp("contrats", "nbre_heures_regularisation", "INTEGER")
                 if self.IsTableExists("contrats_tarifs") == False : self.CreationTable("contrats_tarifs", Tables.DB_DATA)
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
         # =============================================================
@@ -1751,7 +1750,7 @@ class DB:
             try :
                 self.AjoutChamp("contrats", "arrondi_type", "VARCHAR(50)")
                 self.AjoutChamp("contrats", "arrondi_delta", "INTEGER")
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
         # =============================================================
@@ -1767,7 +1766,7 @@ class DB:
                 self.AjoutChamp("contrats", "duree_absences_prevues", "VARCHAR(50)")
                 self.AjoutChamp("contrats", "duree_heures_regularisation", "VARCHAR(50)")
                 self.AjoutChamp("contrats", "duree_tolerance_depassement", "VARCHAR(50)")
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
         # =============================================================
@@ -1777,7 +1776,7 @@ class DB:
             try :
                 self.AjoutChamp("adresses_mail", "connexionAuthentifiee", "INTEGER")
                 self.AjoutChamp("adresses_mail", "startTLS", "INTEGER")
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
         # =============================================================
@@ -1787,7 +1786,7 @@ class DB:
             try :
                 self.AjoutChamp("contrats", "planning", "VARCHAR(900)")
                 self.AjoutChamp("groupes", "nbre_inscrits_max", "INTEGER")
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
         # =============================================================
@@ -1800,7 +1799,7 @@ class DB:
                 self.AjoutChamp("tarifs", "IDtype_quotient", "INTEGER")
                 from Utils import UTILS_Procedures
                 UTILS_Procedures.A8971()
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
         # =============================================================
@@ -1810,7 +1809,7 @@ class DB:
             try :
                 if self.IsTableExists("factures_prefixes") == False : self.CreationTable("factures_prefixes", Tables.DB_DATA)
                 self.AjoutChamp("factures", "IDprefixe", "INTEGER")
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
 
@@ -1830,7 +1829,7 @@ class DB:
                 self.AjoutChamp("activites", "portail_unites_multiples", "INTEGER")
                 from Utils import UTILS_Procedures
                 UTILS_Procedures.A9001()
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
         # =============================================================
@@ -1842,7 +1841,7 @@ class DB:
                 if self.IsTableExists("portail_reservations") == False : self.CreationTable("portail_reservations", Tables.DB_DATA)
                 self.AjoutChamp("activites", "portail_reservations_limite", "VARCHAR(20)")
                 self.AjoutChamp("activites", "portail_reservations_absenti", "VARCHAR(20)")
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
         # =============================================================
@@ -1853,7 +1852,7 @@ class DB:
                 self.AjoutChamp("portail_actions", "reponse", "VARCHAR(450)")
                 self.AjoutChamp("portail_reservations", "etat", "INTEGER")
                 if self.IsTableExists("portail_messages") == False : self.CreationTable("portail_messages", Tables.DB_DATA)
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
         # =============================================================
@@ -1863,7 +1862,7 @@ class DB:
             try :
                 from Utils import UTILS_Procedures
                 UTILS_Procedures.A9054()
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
         # =============================================================
@@ -1872,7 +1871,7 @@ class DB:
         if versionFichier < versionFiltre :
             try :
                 self.AjoutChamp("portail_periodes", "IDmodele", "INTEGER")
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
         # =============================================================
@@ -1881,7 +1880,7 @@ class DB:
         if versionFichier < versionFiltre :
             try :
                 self.AjoutChamp("portail_actions", "email_date", "DATE")
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
         # =============================================================
@@ -1893,7 +1892,7 @@ class DB:
                 self.ReqMAJ("organisateur", [("logo_update", datetime.datetime.now()), ], "IDorganisateur", 1)
                 from Utils import UTILS_Procedures
                 UTILS_Procedures.A9061()
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
         # =============================================================
@@ -1904,7 +1903,7 @@ class DB:
                 self.AjoutChamp("portail_periodes", "introduction", "VARCHAR(1000)")
                 self.AjoutChamp("portail_messages", "affichage_date_debut", "DATETIME")
                 self.AjoutChamp("portail_messages", "affichage_date_fin", "DATETIME")
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
         # =============================================================
@@ -1915,7 +1914,7 @@ class DB:
                 self.AjoutChamp("utilisateurs", "mdpcrypt", "VARCHAR(200)")
                 from Utils import UTILS_Procedures
                 UTILS_Procedures.A9074()
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
         # =============================================================
@@ -1926,7 +1925,7 @@ class DB:
                 self.AjoutChamp("prestations", "date_valeur", "DATE")
                 self.ExecuterReq('UPDATE prestations SET date_valeur = date;')
                 self.Commit()
-            except Exception, err:
+            except Exception as err:
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
         # =============================================================
@@ -1935,7 +1934,7 @@ class DB:
         if versionFichier < versionFiltre:
             try:
                 self.AjoutChamp("tarifs", "label_prestation", "VARCHAR(300)")
-            except Exception, err:
+            except Exception as err:
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
         # =============================================================
@@ -1945,7 +1944,7 @@ class DB:
             try:
                 if self.IsTableExists("profils") == False: self.CreationTable("profils", Tables.DB_DATA)
                 if self.IsTableExists("profils_parametres") == False: self.CreationTable("profils_parametres", Tables.DB_DATA)
-            except Exception, err:
+            except Exception as err:
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
         # =============================================================
@@ -1956,7 +1955,7 @@ class DB:
                 if self.IsTableExists("profils") == False: self.CreationTable("profils", Tables.DB_DATA)
                 if self.IsTableExists("profils_parametres") == False: self.CreationTable("profils_parametres", Tables.DB_DATA)
                 self.AjoutChamp("profils", "defaut", "INTEGER")
-            except Exception, err:
+            except Exception as err:
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
         # =============================================================
@@ -1966,7 +1965,7 @@ class DB:
             try:
                 self.AjoutChamp("inscriptions", "date_desinscription", "DATE")
                 self.ReqMAJ("inscriptions", [("date_desinscription", datetime.date.today()), ], "parti", 1)
-            except Exception, err:
+            except Exception as err:
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
         # =============================================================
@@ -1976,7 +1975,7 @@ class DB:
             try:
                 self.AjoutChamp("aides", "jours_scolaires", "VARCHAR(50)")
                 self.AjoutChamp("aides", "jours_vacances", "VARCHAR(50)")
-            except Exception, err:
+            except Exception as err:
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
         # =============================================================
@@ -1986,7 +1985,7 @@ class DB:
             try:
                 if self.isNetwork == True:
                     self.ExecuterReq("ALTER TABLE modeles_emails MODIFY COLUMN texte_xml MEDIUMTEXT;")
-            except Exception, err:
+            except Exception as err:
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
         # =============================================================
@@ -1997,7 +1996,7 @@ class DB:
                 self.AjoutChamp("factures", "IDregie", "INTEGER")
                 self.AjoutChamp("activites", "regie", "INTEGER")
                 if self.IsTableExists("factures_regies") == False: self.CreationTable("factures_regies", Tables.DB_DATA)
-            except Exception, err:
+            except Exception as err:
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
         # =============================================================
@@ -2006,7 +2005,7 @@ class DB:
         if versionFichier < versionFiltre :
             try :
                 self.AjoutChamp("messages", "rappel_famille", "INTEGER")
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
         # =============================================================
@@ -2017,7 +2016,7 @@ class DB:
                 self.AjoutChamp("adresses_mail", "utilisateur", "VARCHAR(200)")
                 self.ExecuterReq('UPDATE adresses_mail SET utilisateur = adresse WHERE connexionAuthentifiee = 1;')
                 self.Commit()
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
         # =============================================================
@@ -2026,7 +2025,7 @@ class DB:
         if versionFichier < versionFiltre :
             try :
                 self.AjoutChamp("familles", "autre_adresse_facturation", "VARCHAR(450)")
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
 
@@ -2036,7 +2035,7 @@ class DB:
         if versionFichier < versionFiltre :
             try :
                 self.AjoutChamp("unites_cotisations", "duree", "VARCHAR(100)")
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
         # =============================================================
@@ -2050,7 +2049,7 @@ class DB:
                 self.AjoutChamp("unites_remplissage", "largeur", "INTEGER")
                 self.AjoutChamp("tarifs", "IDevenement", "INTEGER")
                 self.AjoutChamp("tarifs_lignes", "IDmodele", "INTEGER")
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
         # =============================================================
@@ -2067,7 +2066,7 @@ class DB:
                 self.AjoutChamp("questionnaire_filtres", "IDdonnee", "INTEGER")
                 self.AjoutChamp("documents_objets", "IDdonnee", "INTEGER")
                 self.AjoutChamp("documents_modeles", "IDdonnee", "INTEGER")
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
         # =============================================================
@@ -2077,7 +2076,7 @@ class DB:
             try :
                 from Utils import UTILS_Procedures
                 UTILS_Procedures.A9078()
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
         # =============================================================
@@ -2089,7 +2088,7 @@ class DB:
                 self.AjoutChamp("individus", "travail_tel_sms", "INTEGER")
                 self.AjoutChamp("individus", "tel_domicile_sms", "INTEGER")
                 self.AjoutChamp("individus", "tel_mobile_sms", "INTEGER")
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
         # =============================================================
@@ -2102,7 +2101,7 @@ class DB:
                 self.AjoutChamp("tarifs", "IDproduit", "INTEGER")
                 self.AjoutChamp("locations", "quantite", "INTEGER")
                 self.AjoutChamp("prestations", "IDdonnee", "INTEGER")
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
         # =============================================================
@@ -2111,7 +2110,7 @@ class DB:
         if versionFichier < versionFiltre :
             try :
                 if self.IsTableExists("portail_renseignements") == False: self.CreationTable("portail_renseignements", Tables.DB_DATA)
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
         # =============================================================
@@ -2120,7 +2119,7 @@ class DB:
         if versionFichier < versionFiltre :
             try :
                 if self.IsTableExists("periodes_gestion") == False: self.CreationTable("periodes_gestion", Tables.DB_DATA)
-            except Exception, err :
+            except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
         # =============================================================
@@ -2131,7 +2130,7 @@ class DB:
                 if self.isNetwork == True:
                     self.ExecuterReq("ALTER TABLE activites MODIFY COLUMN portail_reservations_limite VARCHAR(100);")
                     self.ExecuterReq("ALTER TABLE activites MODIFY COLUMN portail_reservations_absenti VARCHAR(100);")
-            except Exception, err:
+            except Exception as err:
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
         # =============================================================
@@ -2143,7 +2142,7 @@ class DB:
                 self.Importation_valeurs_defaut([[u"", ("categories_medicales",), True], ])
                 from Utils import UTILS_Procedures
                 UTILS_Procedures.A9081()
-            except Exception, err:
+            except Exception as err:
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
         # =============================================================
@@ -2159,7 +2158,7 @@ class DB:
                 # Importation du modèle d'emails 'Commande de repas'
                 from Utils import UTILS_Procedures
                 UTILS_Procedures.A9054()
-            except Exception, err:
+            except Exception as err:
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
         # =============================================================
@@ -2171,7 +2170,7 @@ class DB:
                 if self.IsTableExists("portail_blocs") == False: self.CreationTable("portail_blocs", Tables.DB_DATA)
                 if self.IsTableExists("portail_elements") == False: self.CreationTable("portail_elements", Tables.DB_DATA)
                 self.Importation_valeurs_defaut([[u"", ("portail_elements",), True], ])
-            except Exception, err:
+            except Exception as err:
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
         # =============================================================
@@ -2188,7 +2187,7 @@ class DB:
                 self.AjoutChamp("portail_actions", "IDutilisateur", "INTEGER")
                 from Utils import UTILS_Internet
                 UTILS_Internet.InitCodesUtilisateurs()
-            except Exception, err:
+            except Exception as err:
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
         # =============================================================
@@ -2198,7 +2197,7 @@ class DB:
             try:
                 if self.IsTableExists("menus") == False: self.CreationTable("menus", Tables.DB_DATA)
                 if self.IsTableExists("menus_categories") == False: self.CreationTable("menus_categories", Tables.DB_DATA)
-            except Exception, err:
+            except Exception as err:
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
         # =============================================================
@@ -2208,7 +2207,7 @@ class DB:
             try:
                 if self.isNetwork == True:
                     self.ExecuterReq("ALTER TABLE individus MODIFY COLUMN mail VARCHAR(200);")
-            except Exception, err:
+            except Exception as err:
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
         # =============================================================
@@ -2217,7 +2216,7 @@ class DB:
         if versionFichier < versionFiltre:
             try:
                 if self.IsTableExists("menus_legendes") == False: self.CreationTable("menus_legendes", Tables.DB_DATA)
-            except Exception, err:
+            except Exception as err:
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
         # =============================================================
@@ -2229,7 +2228,7 @@ class DB:
                 self.AjoutChamp("individus", "etat", "VARCHAR(50)")
                 self.CreationIndex("index_familles_etat")
                 self.CreationIndex("index_individus_etat")
-            except Exception, err:
+            except Exception as err:
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
         # =============================================================
@@ -2242,7 +2241,7 @@ class DB:
                     self.ExecuterReq("ALTER TABLE factures MODIFY COLUMN numero BIGINT;")
                     self.ExecuterReq("ALTER TABLE pes_pieces MODIFY COLUMN numero BIGINT;")
                     self.Commit()
-            except Exception, err:
+            except Exception as err:
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
         # =============================================================
@@ -2253,7 +2252,7 @@ class DB:
                 self.AjoutChamp("inscriptions", "statut", "VARCHAR(100)")
                 from Utils import UTILS_Procedures
                 UTILS_Procedures.A9105()
-            except Exception, err:
+            except Exception as err:
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
         # =============================================================
@@ -2263,7 +2262,7 @@ class DB:
             try:
                 self.AjoutChamp("portail_actions", "IDpaiement", "INTEGER")
                 self.AjoutChamp("portail_actions", "ventilation", "VARCHAR(5000)")
-            except Exception, err:
+            except Exception as err:
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
         # =============================================================
@@ -2272,7 +2271,7 @@ class DB:
         if versionFichier < versionFiltre:
             try:
                 self.AjoutChamp("portail_periodes", "prefacturation", "INTEGER")
-            except Exception, err:
+            except Exception as err:
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
         # =============================================================
@@ -2282,7 +2281,7 @@ class DB:
             try:
                 self.AjoutChamp("consommations", "badgeage_debut", "DATETIME")
                 self.AjoutChamp("consommations", "badgeage_fin", "DATETIME")
-            except Exception, err:
+            except Exception as err:
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
         # =============================================================
@@ -2294,7 +2293,7 @@ class DB:
                 self.AjoutChamp("adresses_mail", "parametres", "VARCHAR(1000)")
                 from Utils import UTILS_Procedures
                 UTILS_Procedures.A9130()
-            except Exception, err:
+            except Exception as err:
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
         # =============================================================
@@ -2320,7 +2319,7 @@ def GetConnexionReseau(nomFichier=""):
         connexion.set_character_set('utf8')
 
     if INTERFACE_MYSQL == "mysql.connector":
-        if CERTIFICATS_SSL.has_key("ca"):
+        if "ca" in CERTIFICATS_SSL:
             ssl_ca = CERTIFICATS_SSL["ca"]
         else :
             ssl_ca = ""
@@ -2334,7 +2333,7 @@ def GetConnexionReseau(nomFichier=""):
 
 def GetChampsTable(nomTable=""):
     for dictTables in (Tables.DB_DATA, Tables.DB_PHOTOS, Tables.DB_DOCUMENTS) :
-        if dictTables.has_key(nomTable) :
+        if nomTable in dictTables :
             dictChamps = {}
             for nom, typeTable, info in dictTables[nomTable] :
                 dictChamps[nom] = typeTable
@@ -2350,7 +2349,7 @@ def ConvertConditionChaine(liste=[]):
 
 def ConversionLocalReseau(nomFichier="", nouveauFichier="", fenetreParente=None):
     """ Convertit une DB locale en version RESEAU MySQL """
-    print "Lancement de la procedure de conversion local->reseau :"
+    print("Lancement de la procedure de conversion local->reseau :")
     
     for suffixe, dictTables in ( ("DATA", Tables.DB_DATA), ("PHOTOS", Tables.DB_PHOTOS), ("DOCUMENTS", Tables.DB_DOCUMENTS) ) :
         
@@ -2361,12 +2360,12 @@ def ConversionLocalReseau(nomFichier="", nouveauFichier="", fenetreParente=None)
         # Vérifie la connexion au réseau
         if dictResultats["connexion"][0] == False :
             erreur = dictResultats["connexion"][1]
-            print "connexion reseau MySQL impossible."
+            print("connexion reseau MySQL impossible.")
             return (False, _(u"La connexion au réseau MySQL est impossible"))
         
         # Vérifie que le fichier n'est pas déjà utilisé
         if dictResultats["fichier"][0] == True :
-            print "le nom existe deja."
+            print("le nom existe deja.")
             return (False, _(u"Le fichier existe déjà"))
         
         # Création de la base de données
@@ -2375,35 +2374,35 @@ def ConversionLocalReseau(nomFichier="", nouveauFichier="", fenetreParente=None)
         if db.echec == 1 :
             message = _(u"Erreur dans la création du fichier.\n\nErreur : %s") % db.erreur
             return (False, message)
-        print "  > Nouveau fichier reseau %s cree..." % suffixe
+        print("  > Nouveau fichier reseau %s cree..." % suffixe)
         
         # Création des tables
         if fenetreParente != None : fenetreParente.SetStatusText(_(u"Conversion du fichier en cours... Création des tables de données %s...") % suffixe)
         db.CreationTables(dicoDB=dictTables)
-        print "  > Nouvelles tables %s creees..." % suffixe
+        print("  > Nouvelles tables %s creees..." % suffixe)
         
         # Importation des valeurs
-        listeTables = dictTables.keys()
+        listeTables = list(dictTables.keys())
         index = 1
         for nomTable in listeTables :
-            print "  > Importation de la table '%s' (%d/%d)" % (nomTable, index, len(listeTables))
+            print("  > Importation de la table '%s' (%d/%d)" % (nomTable, index, len(listeTables)))
             if fenetreParente != None : fenetreParente.SetStatusText(_(u"Conversion du fichier en cours... Importation de la table %d sur %s...") % (index, len(listeTables)))
             resultat = db.Importation_table(nomTable, nomFichierActif)
             if resultat[0] == False :
                 db.Close()
                 return resultat
             else :
-                print "     -> ok"
+                print("     -> ok")
             index += 1
         
         db.Close() 
     
-    print "  > Conversion terminee avec succes."
+    print("  > Conversion terminee avec succes.")
     return (True, None)
 
 def ConversionReseauLocal(nomFichier="", nouveauFichier="", fenetreParente=None):
     """ Convertit une DB RESEAU MySQL en version LOCALE SQLITE """
-    print "Lancement de la procedure de conversion reseau->local :"
+    print("Lancement de la procedure de conversion reseau->local :")
     
     for suffixe, dictTables in ( ("DATA", Tables.DB_DATA), ("PHOTOS", Tables.DB_PHOTOS), ("DOCUMENTS", Tables.DB_DOCUMENTS) ) :
         
@@ -2420,30 +2419,30 @@ def ConversionReseauLocal(nomFichier="", nouveauFichier="", fenetreParente=None)
         if db.echec == 1 :
             message = _(u"Erreur dans la création du fichier.\n\nErreur : %s") % db.erreur
             return (False, _(u"Le fichier existe déjà"))
-        print "  > Nouveau fichier local %s cree..." % suffixe
+        print("  > Nouveau fichier local %s cree..." % suffixe)
         
         # Création des tables
         if fenetreParente != None : fenetreParente.SetStatusText(_(u"Conversion du fichier en cours... Création des tables de données %s...") % suffixe)
         db.CreationTables(dicoDB=dictTables)
-        print "  > Nouvelles tables %s creees..." % suffixe
+        print("  > Nouvelles tables %s creees..." % suffixe)
         
         # Importation des valeurs
-        listeTables = dictTables.keys()
+        listeTables = list(dictTables.keys())
         index = 1
         for nomTable in listeTables :
-            print "  > Importation de la table '%s' (%d/%d)" % (nomTable, index, len(listeTables))
+            print("  > Importation de la table '%s' (%d/%d)" % (nomTable, index, len(listeTables)))
             if fenetreParente != None : fenetreParente.SetStatusText(_(u"Conversion du fichier en cours... Importation de la table %d sur %s...") % (index, len(listeTables)))
             resultat = db.Importation_table_reseau(nomTable, u"%s_%s" % (nomFichier, suffixe), dictTables)
             if resultat[0] == False :
                 db.Close()
                 return resultat
             else :
-                print "     -> ok"
+                print("     -> ok")
             index += 1
         
         db.Close() 
     
-    print "  > Conversion reseau->local terminee avec succes."
+    print("  > Conversion reseau->local terminee avec succes.")
     return (True, None)
 
 def TestConnexionMySQL(typeTest="fichier", nomFichier=""):
@@ -2458,7 +2457,7 @@ def TestConnexionMySQL(typeTest="fichier", nomFichier=""):
         cursor = connexion.cursor()
         dictResultats["connexion"] =  (True, None)
         connexion_ok = True
-    except Exception, err :
+    except Exception as err :
         dictResultats["connexion"] =  (False, err)
         connexion_ok = False
 
@@ -2482,7 +2481,7 @@ def TestConnexionMySQL(typeTest="fichier", nomFichier=""):
                     dictResultats["fichier"] =  (True, None)
             else:
                 dictResultats["fichier"] =  (False, _(u"Accès au fichier impossible."))
-        except Exception, err :
+        except Exception as err :
             dictResultats["fichier"] =  (False, err)
     
     if connexion != None :
@@ -2502,7 +2501,10 @@ def ImporterFichierDonnees() :
     index = 0
     for ligne in txt :
         ID, prenom, genre = ligne.split(";")
-        listeDonnees = [("prenom", prenom.decode("iso-8859-15") ), ("genre", genre.decode("iso-8859-15")),]
+        if six.PY2:
+            prenom = prenom.decode("iso-8859-15")
+            genre = genre.decode("iso-8859-15")
+        listeDonnees = [("prenom", prenom), ("genre", genre),]
         IDprenom = db.ReqInsert("prenoms", listeDonnees)
         index += 1
     db.Close()
@@ -2549,11 +2551,11 @@ def CreationBaseAnnonces():
 def AfficheConnexionOuvertes():
     """ Affiche les connexions non fermées """
     if len(DICT_CONNEXIONS) > 0 :
-        print "--------- Attention, il reste %d connexions encore ouvertes : ---------" % len(DICT_CONNEXIONS)
-        for IDconnexion, requetes in DICT_CONNEXIONS.iteritems() :
-            print ">> IDconnexion = %d (%d requetes) :" % (IDconnexion, len(requetes))
+        print("--------- Attention, il reste %d connexions encore ouvertes : ---------" % len(DICT_CONNEXIONS))
+        for IDconnexion, requetes in DICT_CONNEXIONS.items() :
+            print(">> IDconnexion = %d (%d requetes) :" % (IDconnexion, len(requetes)))
             for requete in requetes :
-                print requete
+                print(requete)
 
 
 

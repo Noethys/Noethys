@@ -14,7 +14,6 @@ from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
 from Ctrl import CTRL_Bouton_image
-import cStringIO
 import datetime
 from Ctrl import CTRL_Bandeau
 from Ctrl import CTRL_Saisie_adresse

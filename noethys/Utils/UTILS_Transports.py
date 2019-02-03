@@ -61,9 +61,9 @@ class AnalyseLocalisation():
     def Analyse(self, IDarret=None, IDlieu=None, localisation=None):
         # Analyse du départ ou de l'arrivée
         nom = u""
-        if IDarret != None and self.dict_arrets.has_key(IDarret) :
+        if IDarret != None and IDarret in self.dict_arrets :
             nom = self.dict_arrets[IDarret]
-        if IDlieu != None and self.dict_lieux.has_key(IDlieu) :
+        if IDlieu != None and IDlieu in self.dict_lieux :
             nom = self.dict_lieux[IDlieu]
         if localisation != None :
             nom = self.Localisation(localisation)
@@ -76,11 +76,11 @@ class AnalyseLocalisation():
             return _(u"Domicile")
         if code == "ECOL" :
             IDecole = int(texte.split(";")[1])
-            if self.dict_ecoles.has_key(IDecole):
+            if IDecole in self.dict_ecoles:
                 return self.dict_ecoles[IDecole]
         if code == "ACTI" :
             IDactivite = int(texte.split(";")[1])
-            if self.dict_activites.has_key(IDactivite):
+            if IDactivite in self.dict_activites:
                 return self.dict_activites[IDactivite]
         if code == "AUTR" :
             code, nom, rue, cp, ville = texte.split(";")

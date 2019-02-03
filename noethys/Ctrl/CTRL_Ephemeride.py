@@ -29,8 +29,8 @@ from Data.DATA_Citations import LISTE_CITATIONS
 
 try :
     from Utils.UTILS_Astral import City
-except Exception, err :
-    print err
+except Exception as err :
+    print(err)
     
 from Utils import UTILS_Meteo
 
@@ -207,14 +207,14 @@ class CTRL(wx.Panel):
         try :
             # Fêtes
             texteFetes = ""
-            if DICT_FETES.has_key((self.dateJour.day, self.dateJour.month)) :
+            if (self.dateJour.day, self.dateJour.month) in DICT_FETES :
                 noms = DICT_FETES[(self.dateJour.day, self.dateJour.month)]
                 listeNoms = noms.split(";")
                 texteFetes = Concatenation(listeNoms)
                 
             # Fêtes
             texteCelebrations = ""
-            if DICT_CELEBRATIONS.has_key((self.dateJour.day, self.dateJour.month)) :
+            if (self.dateJour.day, self.dateJour.month) in DICT_CELEBRATIONS :
                 texteCelebrations = DICT_CELEBRATIONS[(self.dateJour.day, self.dateJour.month)]
                 
             # Mix des fêtes et des célébrations
@@ -282,7 +282,7 @@ class CTRL(wx.Panel):
             texte = _(u"<t>HORAIRES DU SOLEIL</t>Aujourd'hui à %s, le soleil se lève à %dh%02d et se couche à %dh%02d.") % (ville.capitalize(), heureLever.hour, heureLever.minute, heureCoucher.hour, heureCoucher.minute)
             return texte
         
-        except Exception, err :
+        except Exception as err :
             return None
     
     def GetMeteo(self):

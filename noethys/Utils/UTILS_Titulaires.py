@@ -83,20 +83,20 @@ def GetTitulaires(listeIDfamille=[], mode_adresse_facturation=False, inclure_tel
     DB.Close() 
     dictRattachements = {}
     for IDrattachement, IDindividu, IDfamille, IDcategorie, titulaire in listeDonnees :
-        if dictRattachements.has_key(IDfamille) == False :
+        if (IDfamille in dictRattachements) == False :
             dictRattachements[IDfamille] = [(IDrattachement, IDindividu, IDfamille, IDcategorie, titulaire),]
         else:
             dictRattachements[IDfamille].append((IDrattachement, IDindividu, IDfamille, IDcategorie, titulaire))
     
     # Recherche des noms des titulaires
-    for IDfamille, dictFamille in dictFamilles.iteritems() :
+    for IDfamille, dictFamille in dictFamilles.items() :
         nbreTitulaires = 0
 
-        if dictRattachements.has_key(IDfamille):
+        if IDfamille in dictRattachements:
             listeIndividusFamilles = dictRattachements[IDfamille]
             listeTitulaires = []
             for IDrattachement, IDindividuTmp, IDfamilleTmp, IDcategorie, titulaire in listeIndividusFamilles :
-                if dictIndividus.has_key(IDindividuTmp) :
+                if IDindividuTmp in dictIndividus :
                     if titulaire == 1 :
                         nom = dictIndividus[IDindividuTmp]["nom"]
                         prenom = dictIndividus[IDindividuTmp]["prenom"]
@@ -150,7 +150,7 @@ def GetTitulaires(listeIDfamille=[], mode_adresse_facturation=False, inclure_tel
                 # Recherche de l'adresse de la famille
                 IDindividuTitulaire = listeTitulaires[0]["IDindividu"]
                 adresse_auto = dictIndividus[IDindividuTitulaire]["adresse_auto"]
-                if adresse_auto != None and dictIndividus.has_key(adresse_auto) :
+                if adresse_auto != None and adresse_auto in dictIndividus :
                     rue_resid = dictIndividus[adresse_auto]["rue_resid"]
                     cp_resid = dictIndividus[adresse_auto]["cp_resid"]
                     ville_resid = dictIndividus[adresse_auto]["ville_resid"]
@@ -221,7 +221,7 @@ def GetIndividus():
     
     # Recherche les noms et adresses de chaque individu
     dictIndividus = {}
-    for IDindividu, dictIndividu in dictTemp.iteritems() :
+    for IDindividu, dictIndividu in dictTemp.items() :
         
         # Civilité
         IDcivilite = dictIndividu["IDcivilite"]
@@ -239,7 +239,7 @@ def GetIndividus():
             
         # Adresse 
         adresse_auto = dictIndividu["adresse_auto"]
-        if adresse_auto != None and dictTemp.has_key(adresse_auto) :
+        if adresse_auto != None and adresse_auto in dictTemp :
             dictIndividu["rue"] = dictTemp[adresse_auto]["rue"]
             dictIndividu["cp"] = dictTemp[adresse_auto]["cp"]
             dictIndividu["ville"] = dictTemp[adresse_auto]["ville"]
@@ -270,7 +270,7 @@ def GetFamillesRattachees(IDindividu=None):
         dictFamilles[IDfamille] = {"nomsTitulaires" : u"", "listeNomsTitulaires" : [], "IDcategorie" : IDcategorie, "nomCategorie" : nomCategorie, "IDcompte_payeur" : IDcompte_payeur }
     # Recherche des noms des titulaires
     if len(dictFamilles) == 0 : condition = "()"
-    if len(dictFamilles) == 1 : condition = "(%d)" % dictFamilles.keys()[0]
+    if len(dictFamilles) == 1 : condition = "(%d)" % list(dictFamilles.keys())[0]
     else : condition = str(tuple(dictFamilles))
     req = """SELECT IDrattachement, individus.IDindividu, IDfamille, IDcategorie, titulaire, nom, prenom
     FROM rattachements
@@ -335,4 +335,4 @@ def GetCoordsIndividu(IDindividu=None):
 
 
 if __name__ == '__main__':
-    print GetCoordsIndividu(IDindividu=100)
+    print(GetCoordsIndividu(IDindividu=100))

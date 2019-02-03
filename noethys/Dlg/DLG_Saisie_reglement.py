@@ -16,12 +16,12 @@ import wx
 from Ctrl import CTRL_Bouton_image
 import os
 import sys
-import cStringIO
 import datetime
 import decimal
 import wx.html as html
 import wx.lib.agw.hyperlink as Hyperlink
 import FonctionsPerso
+import six
 
 from Utils import UTILS_Historique
 from Utils import UTILS_Identification
@@ -93,7 +93,7 @@ class CTRL_Image(wx.StaticBitmap):
                 # Si une image est trouvée
                 bmpBuffer = listeDonnees[0][0]
                 if bmpBuffer != None :
-                    io = cStringIO.StringIO(bmpBuffer)
+                    io = six.BytesIO(bmpBuffer)
                     if 'phoenix' in wx.PlatformInfo:
                         img = wx.Image(io, wx.BITMAP_TYPE_JPEG)
                     else :
@@ -180,7 +180,7 @@ class CTRL_Emetteur(wx.Choice):
         return listeItems
 
     def SetID(self, ID=0):
-        for index, values in self.dictDonnees.iteritems():
+        for index, values in self.dictDonnees.items():
             if values["ID"] == ID :
                  self.SetSelection(index)
 
@@ -368,7 +368,7 @@ class CTRL_Mode(wx.Choice):
         return listeItems
 
     def SetID(self, ID=0):
-        for index, values in self.dictDonnees.iteritems():
+        for index, values in self.dictDonnees.items():
             if values["ID"] == ID :
                  self.SetSelection(index)
 
@@ -534,7 +534,7 @@ class CTRL_Compte(wx.Choice):
         return listeItems
 
     def SetID(self, ID=0):
-        for index, values in self.dictDonnees.iteritems():
+        for index, values in self.dictDonnees.items():
             if values["ID"] == ID :
                  self.SetSelection(index)
 
@@ -1184,7 +1184,7 @@ class Dialog(wx.Dialog):
                 IDindividu, categorie, adresse = email_recus.split(";")
                 if IDindividu != "" :
                     try :
-                        if dictAdressesIndividus.has_key(int(IDindividu)) :
+                        if int(IDindividu) in dictAdressesIndividus :
                             adresse = dictAdressesIndividus[int(IDindividu)][categorie]
                     except :
                         pass
@@ -1603,7 +1603,7 @@ if __name__ == u"__main__":
     import time
     heure_debut = time.time()
     dialog_1 = Dialog(None, IDcompte_payeur=71, IDreglement=None)
-    print "Temps de chargement =", time.time() - heure_debut
+    print("Temps de chargement =", time.time() - heure_debut)
     app.SetTopWindow(dialog_1)
     dialog_1.ShowModal()
     app.MainLoop()

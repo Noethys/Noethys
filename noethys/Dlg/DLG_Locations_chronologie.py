@@ -57,7 +57,7 @@ class Timeline(TL.TimelinePerso):
         dictProduits = {}
         for IDlocation, IDfamille, date_debut, date_fin, quantite, IDproduit, nom_produit in listeLocations:
             listeIDfamille.append(IDfamille)
-            if dictProduits.has_key(IDproduit) == False :
+            if (IDproduit in dictProduits) == False :
                 r = random.randint(128, 255)
                 v = random.randint(128, 255)
                 b = random.randint(128, 255)
@@ -75,7 +75,7 @@ class Timeline(TL.TimelinePerso):
             if quantite == None :
                 quantite = 1
 
-            if dictTitulaires.has_key(IDfamille) :
+            if IDfamille in dictTitulaires :
                 nomTitulaires = dictTitulaires[IDfamille]["titulairesSansCivilite"]
             else :
                 nomTitulaires = _(u"Famille inconnue")

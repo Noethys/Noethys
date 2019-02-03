@@ -25,13 +25,11 @@ import wx.grid
 import wx.lib.agw.floatspin as FloatSpin
 import wx.lib.agw.supertooltip as STT
 from wx.lib.wordwrap import wordwrap
-
 from Utils import UTILS_Couleurs
 import numpy
 import sys
 import os
-import cStringIO
-import StringIO
+import six
 import random
 import GestionDB
 import datetime
@@ -1351,7 +1349,7 @@ class CTRL_Style(OwnerDrawnComboBox):
         return self.dictStyles[index]
 
     def SetValeur(self, valeur="Solid"):
-        for index, code in self.dictStyles.iteritems() :
+        for index, code in self.dictStyles.items() :
             if code == valeur :
                 self.Select(index)
                 self.selection = index
@@ -1520,7 +1518,7 @@ class CTRL_Fond(wx.Choice):
         if ID == None : 
             self.SetSelection(0)
             return
-        for index, values in self.dictDonnees.iteritems():
+        for index, values in self.dictDonnees.items():
             if values != None and values["ID"] == ID :
                  self.SetSelection(index)
 
@@ -2405,7 +2403,7 @@ class CTRL_Champs_interactifs(wx.Choice):
         # Tri par ordre alpha
         liste_temp = []
         if canvas.champs_interactifs != None :
-            for IDdonnee, label in canvas.champs_interactifs.iteritems() :
+            for IDdonnee, label in canvas.champs_interactifs.items() :
                 liste_temp.append((label, IDdonnee))
             liste_temp.sort()
 
@@ -2423,7 +2421,7 @@ class CTRL_Champs_interactifs(wx.Choice):
         self.SetItems(listeItems)
 
     def SetID(self, ID=None):
-        for index, IDdonnee in self.dictDonnees.iteritems():
+        for index, IDdonnee in self.dictDonnees.items():
             if ID == IDdonnee :
                 self.SetSelection(index)
 
@@ -2775,7 +2773,7 @@ class CTRL_Normes(wx.Choice):
     def SetNorme(self, code=""):
         if code == "" or code == None :
             code = "Extended39"
-        for index, codeTemp in self.dictDonnees.iteritems():
+        for index, codeTemp in self.dictDonnees.items():
             if code == codeTemp :
                  self.SetSelection(index)
 
@@ -2913,7 +2911,7 @@ class MovingObjectMixin:
             # Image d'un fichier
             if self.typeImage.startswith("fichier"):
                 image = self.Image
-                buffer = cStringIO.StringIO()
+                buffer = six.BytesIO()
                 if "png" in self.typeImage : 
                     handler = wx.BITMAP_TYPE_PNG
                 else:
@@ -3114,7 +3112,7 @@ class MovingScaledBitmap(FloatCanvas.ScaledBitmap, MovingObjectMixin):
         XY = WorldToPixel(self.XY)
         H = ScaleWorldToPixel(self.Height)[0]
         W = H * (1.0 * self.bmpWidth / self.bmpHeight)
-        if (self.ScaledBitmap is None) or (H <> self.ScaledHeight) :
+        if (self.ScaledBitmap is None) or (H != self.ScaledHeight) :
             self.ScaledHeight = H
             if W < 1 : W = 1
             if H < 1 : H = 1
@@ -4783,7 +4781,7 @@ class Panel_canvas(wx.Panel):
                 index += 1
 
                 # Disable si nbre max d'objets de ce type atteint
-                if dictSpecial.has_key("nbreMax"):
+                if "nbreMax" in dictSpecial:
                     if dictSpecial["nbreMax"] != None:
                         listeObjets = self.canvas._ForeDrawList
                         nbre = 0
@@ -4833,22 +4831,22 @@ class Panel_canvas(wx.Panel):
 
         # Insertion
         objet = AjouterSpecial(numpy.array([x, y]), largeur, hauteur, dictSpecial["nom"], dictSpecial["champ"], couleurFond=(250, 250, 50))
-        if dictSpecial.has_key("obligatoire"): objet.obligatoire = dictSpecial["obligatoire"]
-        if dictSpecial.has_key("nbreMax"): objet.nbreMaxe = dictSpecial["nbreMax"]
-        if dictSpecial.has_key("Xmodifiable"): objet.Xmodifiable = dictSpecial["Xmodifiable"]
-        if dictSpecial.has_key("Ymodifiable"): objet.Ymodifiable = dictSpecial["Ymodifiable"]
-        if dictSpecial.has_key("verrouillageX"): objet.verrouillageX = dictSpecial["verrouillageX"]
-        if dictSpecial.has_key("verrouillageY"): objet.verrouillageY = dictSpecial["verrouillageY"]
-        if dictSpecial.has_key("largeurModifiable"): objet.largeurModifiable = dictSpecial["largeurModifiable"]
-        if dictSpecial.has_key("hauteurModifiable"): objet.hauteurModifiable = dictSpecial["hauteurModifiable"]
-        if dictSpecial.has_key("largeurMin"): objet.largeurMin = dictSpecial["largeurMin"]
-        if dictSpecial.has_key("largeurMax"): objet.largeurMax = dictSpecial["largeurMax"]
-        if dictSpecial.has_key("hauteurMin"): objet.hauteurMin = dictSpecial["hauteurMin"]
-        if dictSpecial.has_key("hauteurMax"): objet.hauteurMax = dictSpecial["hauteurMax"]
-        if dictSpecial.has_key("verrouillageLargeur"): objet.verrouillageLargeur = dictSpecial["verrouillageLargeur"]
-        if dictSpecial.has_key("verrouillageHauteur"): objet.verrouillageHauteur = dictSpecial["verrouillageHauteur"]
-        if dictSpecial.has_key("verrouillageProportions"): objet.verrouillageProportions = dictSpecial["verrouillageProportions"]
-        if dictSpecial.has_key("interditModifProportions"): objet.interditModifProportions = dictSpecial["interditModifProportions"]
+        if "obligatoire" in dictSpecial: objet.obligatoire = dictSpecial["obligatoire"]
+        if "nbreMax" in dictSpecial: objet.nbreMaxe = dictSpecial["nbreMax"]
+        if "Xmodifiable" in dictSpecial: objet.Xmodifiable = dictSpecial["Xmodifiable"]
+        if "Ymodifiable" in dictSpecial: objet.Ymodifiable = dictSpecial["Ymodifiable"]
+        if "verrouillageX" in dictSpecial: objet.verrouillageX = dictSpecial["verrouillageX"]
+        if "verrouillageY" in dictSpecial: objet.verrouillageY = dictSpecial["verrouillageY"]
+        if "largeurModifiable" in dictSpecial: objet.largeurModifiable = dictSpecial["largeurModifiable"]
+        if "hauteurModifiable" in dictSpecial: objet.hauteurModifiable = dictSpecial["hauteurModifiable"]
+        if "largeurMin" in dictSpecial: objet.largeurMin = dictSpecial["largeurMin"]
+        if "largeurMax" in dictSpecial: objet.largeurMax = dictSpecial["largeurMax"]
+        if "hauteurMin" in dictSpecial: objet.hauteurMin = dictSpecial["hauteurMin"]
+        if "hauteurMax" in dictSpecial: objet.hauteurMax = dictSpecial["hauteurMax"]
+        if "verrouillageLargeur" in dictSpecial: objet.verrouillageLargeur = dictSpecial["verrouillageLargeur"]
+        if "verrouillageHauteur" in dictSpecial: objet.verrouillageHauteur = dictSpecial["verrouillageHauteur"]
+        if "verrouillageProportions" in dictSpecial: objet.verrouillageProportions = dictSpecial["verrouillageProportions"]
+        if "interditModifProportions" in dictSpecial: objet.interditModifProportions = dictSpecial["interditModifProportions"]
         self.AjouterObjet(objet)
 
         # MAJ Canvas
@@ -5040,7 +5038,7 @@ class Panel_canvas(wx.Panel):
         self.tip.SetHyperlinkFont(wx.Font(8, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, 'Arial'))
 
         dictDonnees["couleur"] = objet.FillColor
-        if dictDonnees.has_key("couleur"):
+        if "couleur" in dictDonnees:
             couleur = dictDonnees["couleur"]
             self.tip.SetTopGradientColour(couleur)
             self.tip.SetMiddleGradientColour(wx.Colour(255, 255, 255))
@@ -5052,25 +5050,25 @@ class Panel_canvas(wx.Panel):
 
         # Titre du tooltip
         bmp = None
-        if dictDonnees.has_key("bmp"):
+        if "bmp" in dictDonnees:
             bmp = dictDonnees["bmp"]
         self.tip.SetHeaderBitmap(bmp)
 
         titre = None
-        if dictDonnees.has_key("titre"):
+        if "titre" in dictDonnees:
             titre = dictDonnees["titre"]
             self.tip.SetHeaderFont(wx.Font(10, font.GetFamily(), font.GetStyle(), wx.BOLD, font.GetUnderlined(), font.GetFaceName()))
             self.tip.SetHeader(titre)
             self.tip.SetDrawHeaderLine(True)
 
         # Corps du message
-        if dictDonnees.has_key("texte"):
+        if "texte" in dictDonnees:
             texte = dictDonnees["texte"]
             self.tip.SetMessage(texte)
 
         # Pied du tooltip
         pied = None
-        if dictDonnees.has_key("pied") and dictDonnees["pied"] != None :
+        if "pied" in dictDonnees and dictDonnees["pied"] != None :
             pied = dictDonnees["pied"]
             self.tip.SetDrawFooterLine(True)
             self.tip.SetFooterBitmap(wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Aide.png"), wx.BITMAP_TYPE_ANY))
@@ -5378,7 +5376,7 @@ class Dialog(wx.Dialog):
     def GetBufferPhotoPage(self):
         bmp = self.ctrl_canvas.GetPhotoPage()
         img = bmp.ConvertToImage()
-        buffer = cStringIO.StringIO()
+        buffer = six.BytesIO()
         if 'phoenix' in wx.PlatformInfo:
             img.SaveFile(buffer, wx.BITMAP_TYPE_PNG)
         else :
@@ -5407,7 +5405,7 @@ def GetLogo_organisateur():
     if buffer == None : 
         # Si aucun logo, renvoie une image vide
         return wx.Image(Chemins.GetStaticPath("Images/Special/Logo_nb.png"), wx.BITMAP_TYPE_ANY), False
-    io = cStringIO.StringIO(buffer)
+    io = six.BytesIO(buffer)
     if 'phoenix' in wx.PlatformInfo:
         img = wx.Image(io, wx.BITMAP_TYPE_PNG)
     else :
@@ -5553,7 +5551,7 @@ def ImportationObjets(IDmodele=None, InForeground=True):
             # Fichier
             if objet["typeImage"].startswith("fichier") :
                 if objet["image"] != None :
-                    io = cStringIO.StringIO(objet["image"])
+                    io = six.BytesIO(objet["image"])
                     bmp = wx.ImageFromStream(io, wx.BITMAP_TYPE_ANY)
             # Photo
             if objet["typeImage"] == "photo" :
@@ -5734,7 +5732,7 @@ class ModeleDoc():
         valeur = None
         # -------- CODE-BARRES -------
         if objet.categorie == "barcode" :
-            if dictChamps.has_key(objet.champ) :
+            if objet.champ in dictChamps :
                 valeur = dictChamps[objet.champ]
                 if len(valeur) == 0 :
                     valeur = None
@@ -5742,11 +5740,11 @@ class ModeleDoc():
         # -------- TEXTE ----------
         if "texte" in objet.categorie :
             texte = objet.GetTexte() 
-            for nomChamp, valeur in dictChamps.iteritems() :
+            for nomChamp, valeur in dictChamps.items() :
                 # Traitement d'une formule
-                texte = DLG_Saisie_formule.ResolveurTexte(texte=texte, listeChamps=dictChamps.keys(), dictValeurs=dictChamps)
+                texte = DLG_Saisie_formule.ResolveurTexte(texte=texte, listeChamps=list(dictChamps.keys()), dictValeurs=dictChamps)
                 # Remplacement des mos-clés par les valeurs
-                if type(nomChamp) in (str, unicode) and nomChamp.startswith("{") :
+                if type(nomChamp) in (str, six.text_type) and nomChamp.startswith("{") :
                     if valeur == None : valeur = ""
                     if type(valeur) == int : valeur = str(valeur)
                     if type(valeur) == float : valeur = u"%.02f %s" % (valeur, SYMBOLE)
@@ -5766,7 +5764,7 @@ class ModeleDoc():
                     valeur = False
             elif objet.typeImage == "photo" :
                 # Type Photo
-                if dictChamps.has_key("{IDINDIVIDU}") :
+                if "{IDINDIVIDU}" in dictChamps :
                     IDindividu = dictChamps["{IDINDIVIDU}"]
                     DB = GestionDB.DB(suffixe="PHOTOS")
                     req = "SELECT IDphoto, photo FROM photos WHERE IDindividu=%s;" % IDindividu 
@@ -5775,12 +5773,12 @@ class ModeleDoc():
                     DB.Close()
                     if len(listeDonnees) > 0 :
                         IDphoto, bufferPhoto = listeDonnees[0]
-                        io = cStringIO.StringIO(bufferPhoto)
+                        io = six.BytesIO(bufferPhoto)
                         img = wx.ImageFromStream(io, wx.BITMAP_TYPE_ANY)
                         valeur=img
                     else:
                         # Image par défaut
-                        if dictChamps.has_key("nomImage") :
+                        if "nomImage" in dictChamps :
                             nomImage = dictChamps["nomImage"]
                             bmp = wx.Bitmap(Chemins.GetStaticPath("Images/128x128/%s" % nomImage), wx.BITMAP_TYPE_ANY)
                             img = bmp.ConvertToImage()
@@ -5952,14 +5950,14 @@ def DessineObjetPDF(objet, canvas, valeur=None):
         imgwx = objet.Image
         if valeur != None :
             imgwx = valeur
-        file = StringIO.StringIO()
+        file = six.BytesIO()
         if 'phoenix' in wx.PlatformInfo:
             imgwx.SaveFile(file, wx.BITMAP_TYPE_PNG)
         else :
             imgwx.SaveStream(file, wx.BITMAP_TYPE_PNG)
         gif = file.getvalue()
         file.close()                 
-        buf = StringIO.StringIO(gif)
+        buf = six.BytesIO(gif)
         canvas.drawImage(ImageReader(buf), x, y, largeur, hauteur, mask="auto", preserveAspectRatio=objet.verrouillageProportions)
         
     # ------- BARCODE ------

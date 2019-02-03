@@ -15,8 +15,8 @@ import GestionDB
 import sqlite3
 import datetime
 import base64
-import cPickle
-
+from six.moves import cPickle
+import six
 import UTILS_Dates
 import UTILS_Titulaires
 import UTILS_Cotisations_manquantes
@@ -35,7 +35,7 @@ def GetTypeChamp(codeChamp=""):
     dictTypes = {
         "INDIVIDU_AGE_INT" : "entier",
         }
-    if dictTypes.has_key(codeChamp) :
+    if codeChamp in dictTypes :
         return dictTypes[codeChamp]
     else :
         return "texte"
@@ -338,11 +338,11 @@ class Informations() :
         
         # Recherche les noms et adresses de chaque individu
         dictIndividus = {}
-        for IDindividu, dictIndividu in dictTemp.iteritems() :
+        for IDindividu, dictIndividu in dictTemp.items() :
             
             # Civilité
             IDcivilite = dictIndividu["individu_IDcivilite"]
-            if DICT_CIVILITES.has_key(IDcivilite) == False : 
+            if (IDcivilite in DICT_CIVILITES) == False : 
                 IDcivilite = 1
             dictIndividu["INDIVIDU_CIVILITE_COURT"] = DICT_CIVILITES[IDcivilite]["civiliteAbrege"] 
             if dictIndividu["INDIVIDU_CIVILITE_COURT"] == None :
@@ -360,7 +360,7 @@ class Informations() :
 
             # Adresse 
             adresse_auto = dictIndividu["individu_adresse_auto"]
-            if adresse_auto != None and dictTemp.has_key(adresse_auto) :
+            if adresse_auto != None and adresse_auto in dictTemp :
                 dictIndividu["INDIVIDU_RUE"] = dictTemp[adresse_auto]["INDIVIDU_RUE"]
                 dictIndividu["INDIVIDU_CP"] = dictTemp[adresse_auto]["INDIVIDU_CP"]
                 dictIndividu["INDIVIDU_VILLE"] = dictTemp[adresse_auto]["INDIVIDU_VILLE"]
@@ -393,17 +393,17 @@ class Informations() :
         dictRattachementsIndividus = {}
         for IDrattachement, IDindividu, IDfamille, IDcategorie, titulaire in listeDonnees :
             valeurs = {"IDrattachement" : IDrattachement, "IDindividu" : IDindividu, "IDfamille" : IDfamille, "IDcategorie" : IDcategorie, "titulaire" : titulaire}
-            if dictRattachementsFamilles.has_key(IDfamille) == False :
+            if (IDfamille in dictRattachementsFamilles) == False :
                 dictRattachementsFamilles[IDfamille] = []
             dictRattachementsFamilles[IDfamille].append(valeurs)
-            if dictRattachementsIndividus.has_key(IDindividu) == False :
+            if (IDindividu in dictRattachementsIndividus) == False :
                 dictRattachementsIndividus[IDindividu] = []
             dictRattachementsIndividus[IDindividu].append(valeurs)
         dictRattachements = {"familles" : dictRattachementsFamilles, "individus" : dictRattachementsIndividus}
         
         # Insertion des liens rattachés dans le dictFamilles
-        for IDfamille, listeRattachements in dictRattachementsFamilles.iteritems() :
-            if self.dictFamilles.has_key(IDfamille) :
+        for IDfamille, listeRattachements in dictRattachementsFamilles.items() :
+            if IDfamille in self.dictFamilles :
                 for dictValeurs in listeRattachements :
                     IDindividu = dictValeurs["IDindividu"]
                     IDcategorie = dictValeurs["IDcategorie"]
@@ -424,7 +424,7 @@ class Informations() :
                     codeCible = dictCibles[IDcategorie]["code"] + "_%d" % index
                     
                     # Récupération des infos sur l'individu pour transfert vers dictFamilles
-                    for code, valeur in self.dictIndividus[IDindividu].iteritems() :
+                    for code, valeur in self.dictIndividus[IDindividu].items() :
                         if code.startswith("INDIVIDU") :
                             self.dictFamilles[IDfamille][code.replace("INDIVIDU", codeCible)] = valeur
                     self.dictFamilles[IDfamille][codeCible + "_TITULAIRE"] = titulaireStr
@@ -455,7 +455,7 @@ class Informations() :
         listeDonnees = self.ReadDB(req)
         dictLiens = {}
         for IDlien, IDfamille, IDindividu_sujet, IDtype_lien, IDindividu_objet, IDautorisation in listeDonnees :
-            if self.dictFamilles.has_key(IDfamille) and self.dictIndividus.has_key(IDindividu_objet) and self.dictIndividus.has_key(IDindividu_sujet) :
+            if IDfamille in self.dictFamilles and IDindividu_objet in self.dictIndividus and IDindividu_sujet in self.dictIndividus :
                 
                 # Recherche les détails du lien
                 if IDtype_lien != None :
@@ -469,7 +469,7 @@ class Informations() :
                         typeLien = ""
                         texteLien = ""
                     
-                    if DICT_AUTORISATIONS.has_key(IDautorisation) :
+                    if IDautorisation in DICT_AUTORISATIONS :
                         if sexe in (None, "") : sexe = "M"
                         autorisation = DICT_AUTORISATIONS[IDautorisation][sexe]
                     else :
@@ -485,7 +485,7 @@ class Informations() :
                             codeCible = "PERE"
                         else :
                             codeCible = "MERE"
-                        for code, valeur in self.dictIndividus[IDindividu_sujet].iteritems() :
+                        for code, valeur in self.dictIndividus[IDindividu_sujet].items() :
                             if code.startswith("INDIVIDU") :
                                 # Mémorisation dans dictIndividus
                                 self.dictIndividus[IDindividu_objet][code.replace("INDIVIDU", codeCible)] = valeur
@@ -496,7 +496,7 @@ class Informations() :
 
                     # Mémorisation des informations sur le conjoint de l'individu uniquement au format texte
                     elif IDtype_lien in (10, 11) :
-                        for code, valeur in self.dictIndividus[IDindividu_sujet].iteritems() :
+                        for code, valeur in self.dictIndividus[IDindividu_sujet].items() :
                             if code.startswith("INDIVIDU") :
                                 self.dictIndividus[IDindividu_objet][code.replace("INDIVIDU", "CONJOINT")] = valeur
                         self.dictIndividus[IDindividu_objet]["CONJOINT_AUTORISATION"] = autorisation
@@ -506,7 +506,7 @@ class Informations() :
                     elif IDtype_lien == 2 :
                         self.dictIndividus[IDindividu_objet]["NBRE_ENFANTS"] += 1
                         codeCible = "ENFANT_%d" % self.dictIndividus[IDindividu_objet]["NBRE_ENFANTS"]
-                        for code, valeur in self.dictIndividus[IDindividu_sujet].iteritems() :
+                        for code, valeur in self.dictIndividus[IDindividu_sujet].items() :
                             if code.startswith("INDIVIDU") :
                                 # Mémorisation dans dictIndividus
                                 self.dictIndividus[IDindividu_objet][code.replace("INDIVIDU", codeCible)] = valeur
@@ -519,7 +519,7 @@ class Informations() :
                     else :
                         self.dictIndividus[IDindividu_objet]["NBRE_AUTRES_LIENS"] += 1
                         codeCible = "AUTRE_LIEN_%d" % self.dictIndividus[IDindividu_objet]["NBRE_AUTRES_LIENS"]
-                        for code, valeur in self.dictIndividus[IDindividu_sujet].iteritems() :
+                        for code, valeur in self.dictIndividus[IDindividu_sujet].items() :
                             if code.startswith("INDIVIDU") :
                                 # Mémorisation dans dictIndividus
                                 self.dictIndividus[IDindividu_objet][code.replace("INDIVIDU", codeCible)] = valeur
@@ -542,12 +542,12 @@ class Informations() :
         dictFamilles = {}
         for IDfamille, date_creation, IDcompte_payeur, caisse_nom, regime_nom, num_allocataire, IDallocataire, memo in listeDonnees :
             date_creation = UTILS_Dates.DateEngFr(date_creation)
-            if self.dictIndividus.has_key(IDallocataire) :
+            if IDallocataire in self.dictIndividus :
                 allocataire_nom = self.dictIndividus[IDallocataire]["INDIVIDU_NOM_COMPLET"]
             else :
                 allocataire_nom = ""
             # Recherche titulaires et adresse de la famille
-            if self.dictTitulaires.has_key(IDfamille) :
+            if IDfamille in self.dictTitulaires :
                 nomsTitulaires = self.dictTitulaires[IDfamille]["titulairesSansCivilite"]
                 dictAdresse = self.dictTitulaires[IDfamille]["adresse"]
             else :
@@ -578,13 +578,13 @@ class Informations() :
             date_debut = UTILS_Dates.DateEngEnDateDD(date_debut)
             date_fin = UTILS_Dates.DateEngEnDateDD(date_fin)
             
-            if self.dictFamilles.has_key(IDfamille) :
+            if IDfamille in self.dictFamilles :
                 # Mémorisation du QF actuel au format texte
                 if date_debut <= self.date_reference and date_fin >= self.date_reference :
                     self.dictFamilles[IDfamille]["FAMILLE_QF_ACTUEL"] = str(quotient)
                     self.dictFamilles[IDfamille]["FAMILLE_QF_ACTUEL_INT"] = quotient
                 # Mémorisation sous forme de liste
-                if self.dictFamilles[IDfamille].has_key("qf") == False :
+                if ("qf" in self.dictFamilles[IDfamille]) == False :
                     self.dictFamilles[IDfamille]["qf"] = []
                 self.dictFamilles[IDfamille]["qf"].append({"IDquotient" : IDquotient, "date_debut" : UTILS_Dates.DateDDEnFr(date_debut), "date_fin" : UTILS_Dates.DateDDEnFr(date_fin), "quotient" : quotient, "observations" : observations})
         
@@ -602,7 +602,7 @@ class Informations() :
         listeDonnees = self.ReadDB(req)
         for IDinscription, IDindividu, IDfamille, activite, groupe, categorie_tarif, IDcompte_payeur, date_inscription, parti in listeDonnees :
             date_inscription = UTILS_Dates.DateEngFr(date_inscription)
-            if self.dictTitulaires.has_key(IDfamille) :
+            if IDfamille in self.dictTitulaires :
                 nomTitulaires = self.dictTitulaires[IDfamille]["titulairesSansCivilite"]
             else :
                 nomTitulaires = _(u"Famille inconnue")
@@ -611,10 +611,10 @@ class Informations() :
             else :
                 parti = _(u"Non")
                 
-            if self.dictIndividus.has_key(IDindividu) :
+            if IDindividu in self.dictIndividus :
                 
                 # Mémorise le nombre d'inscriptions
-                if self.dictIndividus[IDindividu].has_key("inscriptions") == False :
+                if ("inscriptions" in self.dictIndividus[IDindividu]) == False :
                     self.dictIndividus[IDindividu]["inscriptions"] = {"nombre" : 0, "liste" : []}
                 self.dictIndividus[IDindividu]["inscriptions"]["nombre"] += 1
                 
@@ -641,10 +641,10 @@ class Informations() :
             date_debut_traitement = UTILS_Dates.DateEngFr(date_debut_traitement)
             date_fin_traitement = UTILS_Dates.DateEngFr(date_fin_traitement)           
             
-            if self.dictIndividus.has_key(IDindividu) :
+            if IDindividu in self.dictIndividus :
                 
                 # Mémorise le nombre d'informations médicales
-                if self.dictIndividus[IDindividu].has_key("medical") == False :
+                if ("medical" in self.dictIndividus[IDindividu]) == False :
                     self.dictIndividus[IDindividu]["medical"] = {"nombre" : 0, "liste" : []}
                 self.dictIndividus[IDindividu]["medical"]["nombre"] += 1
                 
@@ -681,8 +681,8 @@ class Informations() :
 
             for ID, dictCible in [(IDindividu, self.dictIndividus), (IDfamille, self.dictFamilles)] :
                 if ID != None :
-                    if dictCible.has_key(ID) :
-                        if dictCible[ID].has_key("messages") == False :
+                    if ID in dictCible :
+                        if ("messages" in dictCible[ID]) == False :
                             dictCible[ID]["messages"] = {"nombre" : 0, "liste" : []}
                         dictCible[ID]["messages"]["nombre"] += 1
                     
@@ -705,24 +705,24 @@ class Informations() :
     def RechercheCotisationsManquantes(self):
         """ Récupération de la liste des cotisations manquantes """
         dictCotisations = UTILS_Cotisations_manquantes.GetListeCotisationsManquantes(dateReference=self.date_reference)
-        for IDfamille, dictValeurs in dictCotisations.iteritems() :
-            if self.dictFamilles.has_key(IDfamille) :
+        for IDfamille, dictValeurs in dictCotisations.items() :
+            if IDfamille in self.dictFamilles :
                 self.dictFamilles[IDfamille]["COTISATIONS_MANQUANTES"] = dictValeurs["cotisations"]
 
     def RecherchePiecesManquantes(self):
         """ Recherche des pièces manquantes """
         dictPieces = UTILS_Pieces_manquantes.GetListePiecesManquantes(dateReference=self.date_reference)
-        for IDfamille, dictValeurs in dictPieces.iteritems() :
-            if self.dictFamilles.has_key(IDfamille) :
+        for IDfamille, dictValeurs in dictPieces.items() :
+            if IDfamille in self.dictFamilles :
                 self.dictFamilles[IDfamille]["PIECES_MANQUANTES"] = dictValeurs["pieces"]
     
     def RechercheQuestionnaires(self):
         """ Récupération des questionnaires familiaux et individuels """
         for public, dictPublic in [("famille", self.dictFamilles), ("individu", self.dictIndividus)] :
             q = UTILS_Questionnaires.ChampsEtReponses(type=public) 
-            for ID in dictPublic.keys() :
-                if dictPublic.has_key(ID) :
-                    if dictPublic[ID].has_key("questionnaires") == False :
+            for ID in list(dictPublic.keys()) :
+                if ID in dictPublic :
+                    if ("questionnaires" in dictPublic[ID]) == False :
                         dictPublic[ID]["questionnaires"] = []
                     listeDonnees = q.GetDonnees(ID, formatStr=False) 
                     for donnee in listeDonnees :
@@ -747,7 +747,7 @@ class Informations() :
             if classe_nom == None : classe_nom = u""
             if niveau_nom == None : niveau_nom = u""
             if niveau_abrege == None : niveau_abrege = u""
-            if self.dictIndividus.has_key(IDindividu) :
+            if IDindividu in self.dictIndividus :
                 if date_debut < str(self.date_reference) and date_fin > str(self.date_reference) :
                     self.dictIndividus[IDindividu]["SCOLARITE_DATE_DEBUT"] = UTILS_Dates.DateEngFr(date_debut)
                     self.dictIndividus[IDindividu]["SCOLARITE_DATE_FIN"] = UTILS_Dates.DateEngFr(date_fin)
@@ -756,7 +756,7 @@ class Informations() :
                     self.dictIndividus[IDindividu]["SCOLARITE_NOM_NIVEAU"] = niveau_nom
                     self.dictIndividus[IDindividu]["SCOLARITE_ABREGE_NIVEAU"] = niveau_abrege
 
-                if self.dictIndividus[IDindividu].has_key("scolarite") == False:
+                if ("scolarite" in self.dictIndividus[IDindividu]) == False:
                     self.dictIndividus[IDindividu]["scolarite"] = {"nombre": 0, "liste": []}
                 self.dictIndividus[IDindividu]["scolarite"]["nombre"] += 1
 
@@ -778,7 +778,7 @@ class Informations() :
         ;"""
         listeDonnees = self.ReadDB(req)
         for IDcotisation, IDfamille, IDindividu, date_debut, date_fin, numero, nom_type, nom_unite in listeDonnees :
-            if self.dictIndividus.has_key(IDindividu) :
+            if IDindividu in self.dictIndividus :
                 if date_debut <= str(self.date_reference) and date_fin >= str(self.date_reference) :
                     self.dictIndividus[IDindividu]["COTISATION_DATE_DEBUT"] = UTILS_Dates.DateEngFr(date_debut)
                     self.dictIndividus[IDindividu]["COTISATION_DATE_FIN"] = UTILS_Dates.DateEngFr(date_fin)
@@ -786,7 +786,7 @@ class Informations() :
                     self.dictIndividus[IDindividu]["COTISATION_UNITE"] = nom_unite
                     self.dictIndividus[IDindividu]["COTISATION_NUMERO"] = numero
 
-                if self.dictIndividus[IDindividu].has_key("cotisations") == False:
+                if ("cotisations" in self.dictIndividus[IDindividu]) == False:
                     self.dictIndividus[IDindividu]["cotisations"] = {"nombre": 0, "liste": []}
                 self.dictIndividus[IDindividu]["cotisations"]["nombre"] += 1
 
@@ -804,10 +804,10 @@ class Informations() :
         listeNomsChamps = []
         for modeTemp, dictTemp in [("individu", self.dictIndividus), ("famille", self.dictFamilles)] :
             if modeTemp in mode :
-                for ID, dictValeurs in dictTemp.iteritems()  :
+                for ID, dictValeurs in dictTemp.items()  :
                     if listeID == None or ID in listeID :
                         if type(dictValeurs) == dict :
-                            for key, valeur in dictValeurs.iteritems() :
+                            for key, valeur in dictValeurs.items() :
                                 if key[0] == key[0].upper() and key not in listeNomsChamps :
                                     listeNomsChamps.append(key)
         listeNomsChamps.sort() 
@@ -820,7 +820,7 @@ class Informations() :
         def FormateDict(dictTemp2) :
             if formatChamp == True :
                 dictFinal = {}
-                for key, valeur in dictTemp2.iteritems() :
+                for key, valeur in dictTemp2.items() :
                     if key[0] == key[0].upper() : 
                         dictFinal["{%s}" % key] = valeur
                 return dictFinal
@@ -832,14 +832,14 @@ class Informations() :
         else :
             dictTemp = self.dictFamilles
         if ID != None :
-            if dictTemp.has_key(ID) == False :
+            if (ID in dictTemp) == False :
                 return {}
             else :
                 return FormateDict(dictTemp[ID])
         else :
             if formatChamp == True :
                 dictFinal2 = {}
-                for ID, dictValeurs in dictTemp.iteritems() :
+                for ID, dictValeurs in dictTemp.items() :
                     dictFinal2[ID] = FormateDict(dictValeurs)
                 return dictFinal2
             else :
@@ -848,7 +848,7 @@ class Informations() :
     def SetAsAttributs(self, parent=None, mode="individu", ID=None):
         """ Attribue les valeurs en tant que attribut à un module. Sert pour les tracks des objectlistview """
         dictDonnees = self.GetDictValeurs(mode=mode, ID=ID, formatChamp=False)
-        for code, valeur in dictDonnees.iteritems():
+        for code, valeur in dictDonnees.items():
             setattr(parent, code, valeur)
     
     def StockageTable(self, mode="famille"):
@@ -872,10 +872,10 @@ class Informations() :
         # Insertion des données
         dictValeurs = self.GetDictValeurs(mode=mode, formatChamp=False)
         listeDonnees = []
-        for ID, dictTemp in dictValeurs.iteritems() :
+        for ID, dictTemp in dictValeurs.items() :
             listeValeurs = [ID,]
             for champ in listeNomsChamps :
-                if dictTemp.has_key(champ) :
+                if champ in dictTemp :
                     valeur = dictTemp[champ]
                 else:
                     valeur = ""
@@ -948,9 +948,9 @@ class Informations() :
         # Insertion des données du dictIndividus
         dictValeurs = self.GetDictValeurs(mode="individu", formatChamp=False)
         listeDonnees = []
-        for ID, dictTemp in dictValeurs.iteritems() :
-            for champ, valeur in dictTemp.iteritems() :
-                if type(valeur) in (str, unicode) and valeur not in ("", None) :
+        for ID, dictTemp in dictValeurs.items() :
+            for champ, valeur in dictTemp.items() :
+                if type(valeur) in (str, six.text_type) and valeur not in ("", None) :
                     listeDonnees.append((ID, champ, valeur))
         
         Enregistre(nomTable="informations", listeChamps=["IDindividu", "champ", "valeur"], listeDonnees=listeDonnees)
@@ -972,7 +972,7 @@ class Informations() :
         db.Close()
         listeDonnees = []
         for IDindividu, IDcivilite, nom, prenom in listeIndividus :
-            if dictPhotos.has_key(IDindividu) :
+            if IDindividu in dictPhotos :
                 photo = sqlite3.Binary(dictPhotos[IDindividu])
             else :
                 photo = None
@@ -992,7 +992,7 @@ class Informations() :
         """ Pour les tests """
         # Récupération des noms des champs
         #print len(self.GetNomsChampsPresents(mode="individu", listeID=None))
-        print len(GetNomsChampsPossibles(mode="individu"))
+        print(len(GetNomsChampsPossibles(mode="individu")))
         #for x in self.GetNomsChampsPresents(mode="individu", listeID=None) :
         # print x
         

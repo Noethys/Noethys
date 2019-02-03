@@ -240,6 +240,6 @@ if __name__ == '__main__':
     heure_debut = time.time()
     frame_1 = MyFrame(None, -1, _(u"TEST"), size=(800, 400))
     app.SetTopWindow(frame_1)
-    print "Temps de chargement DLG_Famille_informations =", time.time() - heure_debut
+    print("Temps de chargement DLG_Famille_informations =", time.time() - heure_debut)
     frame_1.Show()
     app.MainLoop()

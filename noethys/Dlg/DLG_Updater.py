@@ -18,10 +18,9 @@ import FonctionsPerso
 import sys 
 from time import sleep 
 from threading import Thread 
-import urllib
-import urllib2
+from six.moves.urllib.request import Request, urlopen, urlretrieve
 import os
-import wx.lib.agw.hyperlink as hl
+import six
 import zipfile
 import glob
 
@@ -41,7 +40,7 @@ DEBUG = True
 
 def AffichetailleFichier(fichierURL):
     try :
-        fichier = urllib2.urlopen(fichierURL)
+        fichier = urlopen(fichierURL)
         infoFichier = (fichier.info().getheaders('Content-Length'))
         if len(infoFichier) > 0 :
             tailleFichier = infoFichier[0]
@@ -166,8 +165,8 @@ class Download(Thread):
         try: 
             if "linux" in sys.platform :
                 self.zoneTexte.SetLabel(_(u"Téléchargement en cours..."))
-            urllib.urlretrieve(self.fichierURL, self.fichierDest, self._hook) 
-        except Abort, KeyBoardInterrupt: 
+            urlretrieve(self.fichierURL, self.fichierDest, self._hook)
+        except Abort as KeyBoardInterrupt: 
             #print 'Aborted ici !' 
             if self.succes == True :
                 # Téléchargement réussi
@@ -291,10 +290,10 @@ class Page_recherche(wx.Panel):
         try :
             if "linux" in sys.platform :
                 # Version Debian
-                fichierVersions = urllib2.urlopen('https://raw.githubusercontent.com/Noethys/Noethys/master/noethys/Versions.txt', timeout=10)
+                fichierVersions = urlopen('https://raw.githubusercontent.com/Noethys/Noethys/master/noethys/Versions.txt', timeout=10)
             else:
                 # Version Windows
-                fichierVersions = urllib2.urlopen('http://www.noethys.com/fichiers/windows/Versions.txt', timeout=10)
+                fichierVersions = urlopen('http://www.noethys.com/fichiers/windows/Versions.txt', timeout=10)
             self.texteNouveautes= fichierVersions.read()
             fichierVersions.close()
         except :
@@ -361,7 +360,9 @@ class Page_recherche(wx.Panel):
                 texteIntro1 = _(u"La version ") + self.versionFichier + " de Noethys est disponible (" + self.tailleFichier + ")."
                 self.parent.GetPage("page_disponible").label_introduction1.SetLabel(texteIntro1)
                 texteNouveautes = self.texteNouveautes
-                self.parent.GetPage("page_disponible").textCtrl_nouveautes.SetValue(texteNouveautes.decode("iso-8859-15"))
+                if six.PY2:
+                    texteNouveautes = texteNouveautes.decode("iso-8859-15")
+                self.parent.GetPage("page_disponible").textCtrl_nouveautes.SetValue(texteNouveautes)
                 self.parent.Active_page("page_disponible")
               
 
@@ -538,8 +539,8 @@ class Page_telechargement(wx.Panel):
             try :
                 versionFichier = self.parent.versionFichier
                 fichier = "%s-%s-%s" % (typeFichier, versionFichier, id)
-                req = urllib2.Request("http://www.noethys.com/fichiers/telechargement.cgi?fichier=%s" % fichier)
-                handle = urllib2.urlopen(req)
+                req = Request("http://www.noethys.com/fichiers/telechargement.cgi?fichier=%s" % fichier)
+                handle = urlopen(req)
             except :
                 pass
             # Si téléchargement complet, on passe à la page de fin de téléchargement
@@ -727,7 +728,7 @@ class Page_installation(wx.Panel):
         
     def Onbouton_ok(self, event):
         # Fermeture
-        print "ok"
+        print("ok")
 
     def Activation(self):
         # Pour contrer bug de Layout
@@ -769,7 +770,7 @@ class Page_installation(wx.Panel):
         # Lancement de l'installeur
         fichierMAJ = self.parent.fichierDest + "/" + self.parent.nomFichier
         if "linux" in sys.platform :
-	    dirTemp = UTILS_Fichiers.GetRepTemp()
+            dirTemp = UTILS_Fichiers.GetRepTemp()
             self.journal.WriteText(_(u"\n\nExtraction des fichiers. Veuillez patienter..."))
             os.system("unzip -d " + dirTemp + " " + fichierMAJ)
             self.journal.WriteText(_(u"\n\nCopie des fichiers. Veuillez patienter..."))

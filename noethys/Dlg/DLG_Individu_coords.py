@@ -106,7 +106,7 @@ class Adresse_auto(wx.Choice):
         return listeNoms
 
     def SetID(self, ID=0):
-        for index, values in self.dictDonnees.iteritems():
+        for index, values in self.dictDonnees.items():
             if values["ID"] == ID :
                  self.SetSelection(index)
 
@@ -148,7 +148,7 @@ class Categorie(wx.Choice):
         return listeNoms
 
     def SetID(self, ID=0):
-        for index, values in self.dictDonnees.iteritems():
+        for index, values in self.dictDonnees.items():
             if values[0] == ID :
                  self.SetSelection(index)
 
@@ -193,7 +193,7 @@ class Secteur(wx.Choice):
 
     def SetID(self, ID=0):
         if ID == None : return
-        for index, values in self.dictDonnees.iteritems():
+        for index, values in self.dictDonnees.items():
             if values[0] == ID :
                  self.SetSelection(index)
 
@@ -524,7 +524,7 @@ class Panel_coords(wx.Panel):
         if self.radio_adresse_auto.GetValue() == True :
             # Adresse auto
             indexSelection = self.ctrl_adresse_auto.GetSelection()
-            if indexSelection != - 1 and self.ctrl_adresse_auto.dictDonnees.has_key(indexSelection) :
+            if indexSelection != - 1 and indexSelection in self.ctrl_adresse_auto.dictDonnees :
                 rue = self.ctrl_adresse_auto.dictDonnees[indexSelection]["rue"]
                 cp = self.ctrl_adresse_auto.dictDonnees[indexSelection]["cp"]
                 ville = self.ctrl_adresse_auto.dictDonnees[indexSelection]["ville"]

@@ -79,7 +79,7 @@ class CTRL_Forfaits(HTL.HyperTreeList):
         dictTitulaires = UTILS_Titulaires.GetTitulaires([self.IDfamille,])
                     
         # Création des branches
-        for IDfamille, dictFamille in self.dictDonnees.iteritems() :
+        for IDfamille, dictFamille in self.dictDonnees.items() :
             
             if IDfamille == self.IDfamille :
                 
@@ -93,7 +93,7 @@ class CTRL_Forfaits(HTL.HyperTreeList):
                     self.dictBranches[(None, dictTarif["IDtarif"])] = item
                     
                 # Forfaits individuels
-                for IDindividu, dictIndividu in dictFamille["individus"].iteritems() :
+                for IDindividu, dictIndividu in dictFamille["individus"].items() :
                     
                     if len(dictIndividu["forfaits"]) > 0 :
                         label = u"%s %s" % (dictIndividu["nom"], dictIndividu["prenom"])
@@ -144,7 +144,7 @@ class CTRL_Forfaits(HTL.HyperTreeList):
         return None
     
     def SetForfait(self, IDindividu=None, IDtarif=None):
-        if self.dictBranches.has_key((IDindividu, IDtarif)) :
+        if (IDindividu, IDtarif) in self.dictBranches :
             item = self.dictBranches[(IDindividu, IDtarif)]
             self.SelectItem(item)
     

@@ -137,7 +137,7 @@ class MainFrame(wx.Frame):
         try:
             dialog = EventEditor(self, _("Edit Event"), self.timeline,
                                  event=event)
-        except TimelineIOError, e:
+        except TimelineIOError as e:
             self.handle_timeline_error(e)
         else:
             if dialog.ShowModal() == ID_ERROR:
@@ -147,7 +147,7 @@ class MainFrame(wx.Frame):
     def edit_categories(self):
         try:
             dialog = CategoriesEditor(self, self.timeline)
-        except TimelineIOError, e:
+        except TimelineIOError as e:
             self.handle_timeline_error(e)
         else:
             if dialog.ShowModal() == ID_ERROR:
@@ -213,7 +213,7 @@ class CTRL(wx.Panel):
 
     def ExportImage(self, event):
         extension_map = {"png": wx.BITMAP_TYPE_PNG}
-        extensions = extension_map.keys()
+        extensions = list(extension_map.keys())
         wildcard = _create_wildcard("Fichiers images", extensions)
         dialog = wx.FileDialog(self, message=_(u"Exporter au format image"),
                                wildcard=wildcard, style=wx.FD_SAVE)
@@ -391,7 +391,7 @@ class CategoriesVisibleCheckListBox(wx.CheckListBox):
         self.categories[i].visible = self.IsChecked(i)
         try:
             self.timeline.category_edited(self.categories[i])
-        except TimelineIOError, e:
+        except TimelineIOError as e:
             wx.GetTopLevelParent(self).handle_timeline_error(e)
 
     def _timeline_changed(self, state_change):
@@ -401,7 +401,7 @@ class CategoriesVisibleCheckListBox(wx.CheckListBox):
     def _update_categories(self):
         try:
             self.categories = sort_categories(self.timeline.get_categories())
-        except TimelineIOError, e:
+        except TimelineIOError as e:
             wx.GetTopLevelParent(self).handle_timeline_error(e)
         else:
             self.Clear()
@@ -704,7 +704,7 @@ class DrawingArea(wx.Panel):
             self.timeline.register(self._timeline_changed)
             try:
                 self.time_period = timeline.get_preferred_period()
-            except TimelineIOError, e:
+            except TimelineIOError as e:
                 wx.GetTopLevelParent(self).handle_timeline_error(e)
                 return
             self._redraw_timeline()
@@ -836,7 +836,7 @@ class DrawingArea(wx.Panel):
                 if evt.ControlDown() : # evt.m_controlDown:
                     self._set_select_period_cursor()
             evt.Skip()
-        except TimelineIOError, e:
+        except TimelineIOError as e:
             wx.GetTopLevelParent(self).handle_timeline_error(e)
 
     def _window_on_right_down(self, evt):
@@ -1080,7 +1080,7 @@ class DrawingArea(wx.Panel):
             if self.timeline:
                 try:
                     current_events = self.timeline.get_events(self.time_period)
-                except TimelineIOError, e:
+                except TimelineIOError as e:
                     wx.GetTopLevelParent(self).handle_timeline_error(e)
                 else:
                     self.drawing_algorithm.draw(memdc, self.time_period,
@@ -1093,7 +1093,7 @@ class DrawingArea(wx.Panel):
             del memdc
             self.Refresh()
             self.Update()
-        except Exception, ex:
+        except Exception as ex:
             self.bgbuf = None
             logging.fatal("Error in drawing", exc_info=ex)
 
@@ -1194,7 +1194,7 @@ class DrawingArea(wx.Panel):
         if _ask_question(text, self) == wx.YES:
             try:
                 self.timeline.delete_selected_events()
-            except TimelineIOError, e:
+            except TimelineIOError as e:
                 wx.GetTopLevelParent(self).handle_timeline_error(e)
 
     def _get_period_selection(self, current_x):
@@ -1395,10 +1395,10 @@ class EventEditor(wx.Dialog):
                         plugin.clear_editor_data(editor)
                 else:
                     self._close()
-            except TxtException, ex:
+            except TxtException as ex:
                 _display_error_message("%s" % ex.error_message)
                 _set_focus_and_select(ex.control)
-        except TimelineIOError, e:
+        except TimelineIOError as e:
             _display_error_message(e.message, self)
             self.error = e
             self.EndModal(ID_ERROR)
@@ -1425,7 +1425,7 @@ class EventEditor(wx.Dialog):
         try:
             dialog = CategoryEditor(self, "Add Category",
                                     self.timeline, None)
-        except TimelineIOError, e:
+        except TimelineIOError as e:
             _display_error_message(e.message, self)
             self.error = e
             self.EndModal(ID_ERROR)
@@ -1437,7 +1437,7 @@ class EventEditor(wx.Dialog):
             elif dialog_result == wx.ID_OK:
                 try:
                     self._update_categories(dialog.get_edited_category())
-                except TimelineIOError, e:
+                except TimelineIOError as e:
                     _display_error_message(e.message, self)
                     self.error = e
                     self.EndModal(ID_ERROR)
@@ -1446,7 +1446,7 @@ class EventEditor(wx.Dialog):
     def _edit_categories(self):
         try:
             dialog = CategoriesEditor(self, self.timeline)
-        except TimelineIOError, e:
+        except TimelineIOError as e:
             _display_error_message(e.message, self)
             self.error = e
             self.EndModal(ID_ERROR)
@@ -1459,7 +1459,7 @@ class EventEditor(wx.Dialog):
                     prev_index = self.lst_category.GetSelection()
                     prev_category = self.lst_category.GetClientData(prev_index)
                     self._update_categories(prev_category)
-                except TimelineIOError, e:
+                except TimelineIOError as e:
                     _display_error_message(e.message, self)
                     self.error = e
                     self.EndModal(ID_ERROR)
@@ -1598,7 +1598,7 @@ class CategoriesEditor(wx.Dialog):
             selection = e.GetSelection()
             dialog = CategoryEditor(self, "Edit Category", self.timeline,
                                     e.GetClientData())
-        except TimelineIOError, e:
+        except TimelineIOError as e:
             _display_error_message(e.message, self)
             self.error = e
             self.EndModal(ID_ERROR)
@@ -1612,7 +1612,7 @@ class CategoriesEditor(wx.Dialog):
         try:
             dialog = CategoryEditor(self, "Add Category", self.timeline,
                                     None)
-        except TimelineIOError, e:
+        except TimelineIOError as e:
             _display_error_message(e.message, self)
             self.error = e
             self.EndModal(ID_ERROR)
@@ -1625,7 +1625,7 @@ class CategoriesEditor(wx.Dialog):
     def _btn_del_on_click(self, e):
         try:
             self._delete_selected_category()
-        except TimelineIOError, e:
+        except TimelineIOError as e:
             _display_error_message(e.message, self)
             self.error = e
             self.EndModal(ID_ERROR)
@@ -1640,7 +1640,7 @@ class CategoriesEditor(wx.Dialog):
             if keycode == wx.WXK_DELETE:
                 self._delete_selected_category()
             e.Skip()
-        except TimelineIOError, e:
+        except TimelineIOError as e:
             _display_error_message(e.message, self)
             self.error = e
             self.EndModal(ID_ERROR)
@@ -1649,7 +1649,7 @@ class CategoriesEditor(wx.Dialog):
         try:
             if state_change == Timeline.STATE_CHANGE_CATEGORY:
                 self._update_categories()
-        except TimelineIOError, e:
+        except TimelineIOError as e:
             _display_error_message(e.message, self)
             self.error = e
             self.EndModal(ID_ERROR)
@@ -1737,7 +1737,7 @@ class CategoryEditor(wx.Dialog):
             else:
                 self.timeline.category_edited(self.category)
             self.EndModal(wx.ID_OK)
-        except TimelineIOError, e:
+        except TimelineIOError as e:
             _display_error_message(e.message, self)
             self.error = e
             self.EndModal(ID_ERROR)

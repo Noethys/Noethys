@@ -182,7 +182,7 @@ class CTRL_Individus(wx.CheckListBox):
         """ Récupère les noms sous la forme David DUPOND et Maxime DURAND... """
         listeNoms = []
         listeIDIndividu = self.GetListeIndividus() 
-        for IDindividu, dictIndividu in self.dictIndividus.iteritems() :
+        for IDindividu, dictIndividu in self.dictIndividus.items() :
             nom = dictIndividu["nom"]
             prenom = dictIndividu["prenom"]
             if IDindividu in listeIDIndividu :
@@ -527,7 +527,7 @@ class CTRL_Donnees(gridlib.Grid):
             for dictChamp in dictCategorie["champs"] :
                 code = dictChamp["code"]
                 label = dictChamp["label"]
-                if DICT_DONNEES.has_key(code):
+                if code in DICT_DONNEES:
                     valeur = DICT_DONNEES[code]
                 else:
                     valeur = u""
@@ -567,7 +567,7 @@ class CTRL_Donnees(gridlib.Grid):
         evt.Skip()
 
     def GetValeur(self, code=""):
-        if DICT_DONNEES.has_key(code) :
+        if code in DICT_DONNEES :
             return DICT_DONNEES[code]
         else:
             return None
@@ -1009,7 +1009,7 @@ class Dialog(wx.Dialog):
         listeDeductionsTemp = DB.ResultatReq()  
         dictDeductions = {}
         for IDdeduction, IDprestation, IDfamille, date, montant, label, IDaide in listeDeductionsTemp :
-            if dictDeductions.has_key(IDprestation) == False :
+            if (IDprestation in dictDeductions) == False :
                 dictDeductions[IDprestation] = []
             dictDeductions[IDprestation].append({"IDdeduction":IDdeduction, "date":date, "montant":montant, "label":label, "IDaide":IDaide})
             
@@ -1029,7 +1029,7 @@ class Dialog(wx.Dialog):
         dictConsommations = {}
         for IDconso, date, IDprestation in listeConsommations :
             date = DateEngEnDateDD(date)
-            if dictConsommations.has_key(IDprestation) == False :
+            if (IDprestation in dictConsommations) == False :
                 dictConsommations[IDprestation] = []
             if date not in dictConsommations[IDprestation] :
                 dictConsommations[IDprestation].append(date)
@@ -1086,7 +1086,7 @@ class Dialog(wx.Dialog):
             montant_ventilation = FloatToDecimal(montant_ventilation) 
             
             # Regroupement par compte payeur
-            if dictValeurs.has_key(IDcompte_payeur) == False :
+            if (IDcompte_payeur in dictValeurs) == False :
                     
                 # Recherche des titulaires
                 dictInfosTitulaires = dictNomsTitulaires[IDfamille]
@@ -1187,8 +1187,8 @@ class Dialog(wx.Dialog):
                 IDactivite = 0
             
             # Ajout d'un individu
-            if dictValeurs[IDcompte_payeur]["individus"].has_key(IDindividu) == False :
-                if dictIndividus.has_key(IDindividu) :
+            if (IDindividu in dictValeurs[IDcompte_payeur]["individus"]) == False :
+                if IDindividu in dictIndividus :
                     
                     # Si c'est bien un individu
                     IDcivilite = dictIndividus[IDindividu]["IDcivilite"]
@@ -1213,7 +1213,7 @@ class Dialog(wx.Dialog):
                 dictValeurs[IDcompte_payeur]["individus"][IDindividu] = { "texte" : texteIndividu, "activites" : {}, "total" : FloatToDecimal(0.0), "ventilation" : FloatToDecimal(0.0), "total_reports" : FloatToDecimal(0.0), "nom" : nom, "select" : True }
             
             # Ajout de l'activité
-            if dictValeurs[IDcompte_payeur]["individus"][IDindividu]["activites"].has_key(IDactivite) == False :
+            if (IDactivite in dictValeurs[IDcompte_payeur]["individus"][IDindividu]["activites"]) == False :
                 texteActivite = nomActivite
                 agrement = RechercheAgrement(listeAgrements, IDactivite, date)
                 if agrement != None :
@@ -1221,17 +1221,17 @@ class Dialog(wx.Dialog):
                 dictValeurs[IDcompte_payeur]["individus"][IDindividu]["activites"][IDactivite] = { "texte" : texteActivite, "presences" : {} }
             
             # Ajout de la présence
-            if dictValeurs[IDcompte_payeur]["individus"][IDindividu]["activites"][IDactivite]["presences"].has_key(date) == False :
+            if (date in dictValeurs[IDcompte_payeur]["individus"][IDindividu]["activites"][IDactivite]["presences"]) == False :
                 dictValeurs[IDcompte_payeur]["individus"][IDindividu]["activites"][IDactivite]["presences"][date] = { "texte" : DateEngFr(str(date)), "unites" : [], "total" : FloatToDecimal(0.0) }
             
             # Recherche du nbre de dates pour cette prestation
-            if dictConsommations.has_key(IDprestation) :
+            if IDprestation in dictConsommations :
                 listeDates = dictConsommations[IDprestation]
             else:
                 listeDates = []
             
             # Recherche des déductions
-            if dictDeductions.has_key(IDprestation) :
+            if IDprestation in dictDeductions :
                 deductions = dictDeductions[IDprestation]
             else :
                 deductions = []

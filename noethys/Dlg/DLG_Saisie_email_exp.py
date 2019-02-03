@@ -669,7 +669,7 @@ class Dialog(wx.Dialog):
             messagerie.Connecter()
             messagerie.Envoyer(message)
             messagerie.Fermer()
-        except Exception, err:
+        except Exception as err:
             err = str(err).decode("iso-8859-15")
             intro = _(u"L'envoi de l'email de test est impossible :")
             conclusion = _(u"Vérifiez votre connexion internet ou les paramètres de votre adresse d'expédition.")

@@ -18,6 +18,7 @@ import GestionDB
 import datetime
 import locale
 import FonctionsPerso
+import six
 
 from Utils.UTILS_Decimal import FloatToDecimal as FloatToDecimal
 
@@ -313,16 +314,16 @@ class ListView(FastObjectListView):
             date_fin = UTILS_Dates.DateEngEnDateDD(date_fin)
             date_echeance = UTILS_Dates.DateEngEnDateDD(date_echeance)       
             total = FloatToDecimal(total)
-            if dictVentilation.has_key(IDfacture) :
+            if IDfacture in dictVentilation :
                 totalVentilation = FloatToDecimal(dictVentilation[IDfacture])
             else :
                 totalVentilation = FloatToDecimal(0.0)
-            if dictPrestations.has_key(IDfacture) :
+            if IDfacture in dictPrestations :
                 totalPrestations = FloatToDecimal(dictPrestations[IDfacture])
             else :
                 totalPrestations = FloatToDecimal(0.0)
             solde_actuel = totalPrestations - totalVentilation
-            if dictTitulaires.has_key(IDfamille) == True :
+            if (IDfamille in dictTitulaires) == True :
                 
                 titulaires = dictTitulaires[IDfamille]["titulairesSansCivilite"]
                 adresse_famille = dictTitulaires[IDfamille]["adresse"]
@@ -334,7 +335,7 @@ class ListView(FastObjectListView):
                     "adresse_famille" : adresse_famille, "etat" : etat,
                     }
                 
-                if dictInfosFamilles.has_key(IDcompte_payeur) :
+                if IDcompte_payeur in dictInfosFamilles :
                     dictTemp.update(dictInfosFamilles[IDcompte_payeur])
 
                 valide = True
@@ -438,7 +439,7 @@ class ListView(FastObjectListView):
         def FormateNumero(numero):
             if numero == None :
                 return ""
-            if type(numero) == str or type(numero) == unicode :
+            if type(numero) == str or type(numero) == six.text_type :
                 numero = int(numero)
             return "%06d" % numero
 

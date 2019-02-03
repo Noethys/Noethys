@@ -111,9 +111,9 @@ class Analyse():
             plafond = self.CalculePlafond(valeur)
             
             realise = 0.0
-            if dictOperationsTresorerie.has_key(IDcategorie) :
+            if IDcategorie in dictOperationsTresorerie :
                 realise += dictOperationsTresorerie[IDcategorie]
-            if dictOperationsBudgetaires.has_key(IDcategorie) :
+            if IDcategorie in dictOperationsBudgetaires :
                 realise += dictOperationsBudgetaires[IDcategorie]
                 
             if typeCategorie == "debit" : 
@@ -132,7 +132,7 @@ class Analyse():
             
             totalSolde += solde 
 
-            if dictInfosCategories.has_key(IDcategorie) :
+            if IDcategorie in dictInfosCategories :
                 nomCategorie = dictInfosCategories[IDcategorie]["nom"]
             else :
                 nomCategorie = _(u"Catégorie inconnue")
@@ -154,9 +154,9 @@ class Analyse():
                     typeCategorie = dictInfosCategories[IDcategorie]["typeCategorie"]
                     
                     realise = 0.0
-                    if dictOperationsBudgetaires.has_key(IDcategorie) :
+                    if IDcategorie in dictOperationsBudgetaires :
                         realise += dictOperationsBudgetaires[IDcategorie]
-                    if dictOperationsTresorerie.has_key(IDcategorie) :
+                    if IDcategorie in dictOperationsTresorerie :
                         realise += dictOperationsTresorerie[IDcategorie]
 
                     if typeCategorie == "debit" : 
@@ -191,14 +191,14 @@ class Analyse():
     def CalculePlafond(self, valeur=""):
         """ Calcule du montant plafond de la catégorie """
         # Remplacement des champs
-        for nomChamp, valChamp in self.dictChamps.iteritems() :
+        for nomChamp, valChamp in self.dictChamps.items() :
             valeur = valeur.replace(nomChamp, str(valChamp))
         # Calcul et formatage de la valeur
         try :
             exec("""resultat = float(%s)""" % valeur)
-        except Exception, err :
+        except Exception as err :
             resultat = 0.0
-            print "Erreur dans categorie budgetaire : ", err
+            print("Erreur dans categorie budgetaire : ", err)
         return resultat
         
         

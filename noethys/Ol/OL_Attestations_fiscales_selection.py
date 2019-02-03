@@ -82,7 +82,7 @@ class ListView(FastObjectListView):
                 IDcompte_payeur = dictPrestation["IDcompte_payeur"]
                 IDfamille = dictPrestation["IDfamille"]
 
-                if dictComptes.has_key(IDcompte_payeur) == False :
+                if (IDcompte_payeur in dictComptes) == False :
 
                     # Récupération des infos sur la famille
                     dictInfosTitulaires = self.dictTitulaires[IDfamille]
@@ -129,7 +129,7 @@ class ListView(FastObjectListView):
         
         # Regroupement des prestations par label
         listeListeView = []
-        for IDcompte_payeur, dictValeurs in dictComptes.iteritems() :
+        for IDcompte_payeur, dictValeurs in dictComptes.items() :
             track = Track(dictValeurs)
             listeListeView.append(track)
         return listeListeView
@@ -212,7 +212,7 @@ class ListView(FastObjectListView):
         listeDonnees = []
         for track in self.GetTracksCoches() :
             dictTemp = track.GetDict()
-            for code, valeur in self.dictOrganisme.iteritems() :
+            for code, valeur in self.dictOrganisme.items() :
                 dictTemp[code] = valeur
             listeDonnees.append(dictTemp)
         return listeDonnees

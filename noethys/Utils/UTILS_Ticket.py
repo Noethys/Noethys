@@ -28,8 +28,8 @@ def GetListeImprimantes():
     try : 
         for a, b, nom, c in win32print.EnumPrinters(2) :
             listeImprimantes.append(nom)
-    except Exception, err :
-        print "Erreur dans recuperation de la liste des imprimantes : ", err
+    except Exception as err :
+        print("Erreur dans recuperation de la liste des imprimantes : ", err)
     return listeImprimantes
 
 
@@ -55,9 +55,9 @@ def Impression(lignes=[], imprimante=None, titre=_(u"Ticket"), nomPolice="Arial"
     dc = win32ui.CreateDC() 
     try :
         dc.CreatePrinterDC(imprimante) 
-    except Exception, err :
-        print "Erreur dans l'impression du ticket :", err
-        print "Test sur l'imprimante par defaut..."
+    except Exception as err :
+        print("Erreur dans l'impression du ticket :", err)
+        print("Test sur l'imprimante par defaut...")
         dc.CreatePrinterDC() 
     dc.StartDoc(titre)
     dc.StartPage() 
@@ -101,7 +101,7 @@ def ImpressionModele(IDmodele=None, dictValeurs={}, titre=_(u"Ticket")):
     # Remplacement des valeurs
     lignesFinales = []
     for ligne in lignes :
-        for motcle, valeur in dictValeurs.iteritems() :
+        for motcle, valeur in dictValeurs.items() :
             ligne = ligne.replace(motcle, valeur)
         lignesFinales.append(ligne)
         

@@ -61,7 +61,7 @@ class ListView(FastObjectListView):
         dictDonnees = UTILS_Pieces_manquantes.GetListePiecesManquantes(self.dateReference, self.listeActivites, self.presents, concernes=self.concernes)
 
         listeListeView = []
-        for IDfamille, dictTemp in dictDonnees.iteritems() :
+        for IDfamille, dictTemp in dictDonnees.items() :
             item = (IDfamille, dictTemp["titulaires"], dictTemp["pieces"])
             valide = True
             if valide == True :

@@ -168,7 +168,7 @@ class CTRL_ligne_texte(wx.TextCtrl):
 
 class CTRL_bloc_texte(wx.TextCtrl):
     def __init__(self, parent, item=None, track=None):
-        if track.dictOptions.has_key("hauteur"):
+        if "hauteur" in track.dictOptions:
             hauteur = int(track.dictOptions["hauteur"])
         else:
             hauteur = 60
@@ -204,11 +204,11 @@ class CTRL_entier(wx.SpinCtrl):
         self.item = item
         self.track = track
         
-        if self.track.dictOptions.has_key("min"):
+        if "min" in self.track.dictOptions:
             min = int(self.track.dictOptions["min"])
         else:
             min = 0
-        if self.track.dictOptions.has_key("max"):
+        if "max" in self.track.dictOptions:
             max = int(self.track.dictOptions["max"])
         else:
             max = 99999
@@ -246,11 +246,11 @@ class CTRL_decimal(FS.FloatSpin):
         self.item = item
         self.track = track
 
-        if self.track.dictOptions.has_key("min"):
+        if "min" in self.track.dictOptions:
             min = int(self.track.dictOptions["min"])
         else:
             min = 0
-        if self.track.dictOptions.has_key("max"):
+        if "max" in self.track.dictOptions:
             max = int(self.track.dictOptions["max"])
         else:
             max = 99999
@@ -344,7 +344,7 @@ class CTRL_liste_deroulante(wx.Choice):
     def SetValeur(self, IDchoix=None):
         if IDchoix == None : 
             self.Select(0)
-        for index, dictChoix in self.dictDonnees.iteritems() :
+        for index, dictChoix in self.dictDonnees.items() :
             if IDchoix == dictChoix["IDchoix"] :
                 self.Select(index)
 
@@ -361,7 +361,7 @@ class CTRL_liste_deroulante(wx.Choice):
 
     def GetValeur(self):
         index = self.GetSelection() 
-        if self.dictDonnees.has_key(index) :
+        if index in self.dictDonnees :
             dictChoix = self.dictDonnees[index]
             return dictChoix["IDchoix"]
         else:
@@ -377,7 +377,7 @@ class CTRL_liste_deroulante(wx.Choice):
 
 class CTRL_liste_coches(wx.CheckListBox):
     def __init__(self, parent, item=None, track=None):
-        if track.dictOptions.has_key("hauteur"):
+        if "hauteur" in track.dictOptions:
             hauteur = int(track.dictOptions["hauteur"])
         else:
             hauteur = -1
@@ -397,7 +397,7 @@ class CTRL_liste_coches(wx.CheckListBox):
         self.Bind(wx.EVT_CONTEXT_MENU, self.OnContextMenu)
 
     def SetValeur(self, listeIDchoix=[]):
-        for index, dictChoix in self.dictDonnees.iteritems() :
+        for index, dictChoix in self.dictDonnees.items() :
             if dictChoix["IDchoix"] in listeIDchoix :
                 etat = True
             else:
@@ -420,7 +420,7 @@ class CTRL_liste_coches(wx.CheckListBox):
 
     def GetValeur(self):
         listeIDchoix = []
-        for index, dictChoix in self.dictDonnees.iteritems() :
+        for index, dictChoix in self.dictDonnees.items() :
             if self.IsChecked(index) == True :
                 listeIDchoix.append(dictChoix["IDchoix"])
         if len(listeIDchoix) == 0 : return None
@@ -538,7 +538,7 @@ class CTRL_date(CTRL_Saisie_date.Date2):
 
 class CTRL_slider(wx.Panel):
     def __init__(self, parent, item=None, track=None):
-        if track.dictOptions.has_key("hauteur"):
+        if "hauteur" in track.dictOptions:
             hauteur = int(track.dictOptions["hauteur"])
         else:
             hauteur = -1
@@ -553,11 +553,11 @@ class CTRL_slider(wx.Panel):
         self.label_valeur.SetMinSize((25, -1))
         
         self.ctrl_slider = wx.Slider(self, -1, style=wx.SL_HORIZONTAL|wx.SL_AUTOTICKS)
-        if track.dictOptions.has_key("min"):
+        if "min" in track.dictOptions:
             min = int(track.dictOptions["min"])
         else:
             min = 0
-        if track.dictOptions.has_key("max"):
+        if "max" in track.dictOptions:
             max = int(track.dictOptions["max"])
         else:
             max = 10
@@ -605,7 +605,7 @@ class CTRL_slider(wx.Panel):
 
 class CTRL_couleur(wx.lib.colourselect.ColourSelect):
     def __init__(self, parent, item=None, track=None):
-        if track.dictOptions.has_key("hauteur"):
+        if "hauteur" in track.dictOptions:
             hauteur = int(track.dictOptions["hauteur"])
         else:
             hauteur = 20
@@ -709,7 +709,7 @@ class CTRL_couleur(wx.lib.colourselect.ColourSelect):
 
 class CTRL_documents(wx.Panel):
     def __init__(self, parent, item=None, track=None):
-        if track.dictOptions.has_key("hauteur"):
+        if "hauteur" in track.dictOptions:
             hauteur = int(track.dictOptions["hauteur"])
         else:
             hauteur = -1
@@ -742,7 +742,7 @@ class CTRL_documents(wx.Panel):
     def SetValeur(self, valeur=None):
         IDquestion = self.track.IDquestion
         dictReponses = self.GetGrandParent().dictReponses
-        if dictReponses.has_key(IDquestion) :
+        if IDquestion in dictReponses :
             IDreponse = dictReponses[IDquestion]["IDreponse"]
             self.ctrl_vignettes.SetIDreponse(IDreponse)
 
@@ -872,7 +872,7 @@ class Track(object):
                 self.dictOptions[codeOption] = valeurOption
         
         # Liste de choix
-        if dictChoix.has_key(self.IDquestion):
+        if self.IDquestion in dictChoix:
             self.listeChoix = dictChoix[self.IDquestion]
         else:
             self.listeChoix = []
@@ -1011,7 +1011,7 @@ class CTRL(HTL.HyperTreeList):
         listeChoix = DB.ResultatReq()     
         dictChoix = {}
         for IDchoix, IDquestion, ordre, visible, label in listeChoix :
-            if dictChoix.has_key(IDquestion) == False :
+            if (IDquestion in dictChoix) == False :
                 dictChoix[IDquestion] = []
             dictTemp = {"IDchoix":IDchoix, "ordre":ordre, "visible":visible, "label":label}
             dictChoix[IDquestion].append(dictTemp)
@@ -1129,7 +1129,7 @@ class CTRL(HTL.HyperTreeList):
                             track.ctrl = ctrl      
                         
                         # Insère la valeur
-                        if self.dictReponses.has_key(IDquestion) :
+                        if IDquestion in self.dictReponses :
                             valeur = self.dictReponses[IDquestion]["reponse"]
                         else:
                             valeur = track.defaut
@@ -1145,7 +1145,7 @@ class CTRL(HTL.HyperTreeList):
         self.GetMainWindow().CalculatePositions() 
     
     def IdentificationBranche(self, branche):
-        if self.dictBranches.has_key(branche) :
+        if branche in self.dictBranches :
             return self.dictBranches[branche]
         else:
             return None
@@ -1168,7 +1168,7 @@ class CTRL(HTL.HyperTreeList):
     def SetValeurs(self, dictValeurs={}):
         # Remplit le ctrl avec les valeurs données. Ex : {IDquestion : valeur} """
         for track in self.dictCategories[IDcategorie]["questions"] :
-            if dictValeurs.has_key(track.IDquestion) :
+            if track.IDquestion in dictValeurs :
                 track.SetValeurStr(dictValeurs[track.IDquestion])
         
     def OnContextMenu(self, event):
@@ -1454,12 +1454,12 @@ class CTRL(HTL.HyperTreeList):
             DBT = DB
 
         # Sauvegarde du questionnaire
-        for IDquestion, reponse in valeurs.iteritems():
+        for IDquestion, reponse in valeurs.items():
             # Si la réponse est différente de la réponse initiale
             if reponse != dictValeursInitiales[IDquestion] or reponse == "##DOCUMENTS##":
                 dirty = True
 
-                if dictReponses.has_key(IDquestion):
+                if IDquestion in dictReponses:
                     IDreponse = dictReponses[IDquestion]["IDreponse"]
                 else:
                     IDreponse = None
@@ -1535,9 +1535,9 @@ class MyFrame(wx.Frame):
         listeIDcategorie = self.ctrl.listeIDcategorie
         
         for IDcategorie in listeIDcategorie :
-            print ">>>", dictCategories[IDcategorie]["label"]
+            print(">>>", dictCategories[IDcategorie]["label"])
             for track in dictCategories[IDcategorie]["questions"] :
-                print (track.label, track.GetValeur(), track.GetValeurStr())
+                print((track.label, track.GetValeur(), track.GetValeurStr()))
             
         
 

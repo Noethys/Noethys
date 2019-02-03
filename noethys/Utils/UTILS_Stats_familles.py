@@ -133,8 +133,8 @@ def GetDictCaisses(DB, dictParametres):
     
     dictResultats = {}
     for IDcaisse, IDfamille in listeDonnees :
-        if dictResultats.has_key(IDcaisse) == False :
-            if dictCaisses.has_key(IDcaisse) :
+        if (IDcaisse in dictResultats) == False :
+            if IDcaisse in dictCaisses :
                 nom = dictCaisses[IDcaisse] 
             else :
                 nom = _(u"Caisse inconnue")
@@ -184,13 +184,13 @@ def GetDictMembres(DB, dictParametres):
     
     dictFamilles = {}
     for IDfamille, IDindividu in listeDonnees :
-        if dictFamilles.has_key(IDfamille) == False :
+        if (IDfamille in dictFamilles) == False :
             dictFamilles[IDfamille] = 0
         dictFamilles[IDfamille] += 1
     
     dictResultats = {}
-    for IDfamille, nbreMembres in dictFamilles.iteritems() :
-        if dictResultats.has_key(nbreMembres) == False :
+    for IDfamille, nbreMembres in dictFamilles.items() :
+        if (nbreMembres in dictResultats) == False :
             dictResultats[nbreMembres] = 0
         dictResultats[nbreMembres] += 1
 
@@ -257,7 +257,7 @@ def GetDictQuotients(DB, dictParametres):
     dictTranchesTarifs = {"pasqf" : 0, "autre" : 0}
     for IDligne, qf_min, qf_max in listeDonnees : 
         tranche = (qf_min, qf_max)
-        if dictTranchesTarifs.has_key(tranche) == False :
+        if (tranche in dictTranchesTarifs) == False :
             dictTranchesTarifs[tranche] = 0
     
     # Création des tranches de 100
@@ -269,13 +269,13 @@ def GetDictQuotients(DB, dictParametres):
     dictTranchesDefaut[(3001, 99999)] = 0
     
     # Répartition des QF par tranche
-    for IDfamille, quotient in dictQuotients.iteritems() :
+    for IDfamille, quotient in dictQuotients.items() :
         for dictTranches in (dictTranchesDefaut, dictTranchesTarifs) :
             if quotient == None :
                 dictTranches["pasqf"] += 1
             else :
                 found = False
-                for tranche in dictTranches.keys() :
+                for tranche in list(dictTranches.keys()) :
                     if tranche not in ("pasqf", "autre") and quotient >= tranche[0] and quotient <= tranche[1] :
                         dictTranches[tranche] += 1
                         found = True
@@ -377,7 +377,7 @@ class Tableau_nombre_familles(MODELES.Tableau):
         
         dictActiTemp = {}
         for IDactivite, nbreConso in listeDonnees :
-            if dictActiTemp.has_key(IDactivite) == False :
+            if (IDactivite in dictActiTemp) == False :
                 dictActiTemp[IDactivite] = 0
             dictActiTemp[IDactivite] += 1
         
@@ -385,7 +385,7 @@ class Tableau_nombre_familles(MODELES.Tableau):
         self.largeur = "400"
         self.colonnes = [ (_(u"Activité"), "250"), (_(u"Nombre de familles"), "150") ]
         self.lignes = []
-        for IDactivite, listeFamilles in dictActiTemp.iteritems() :
+        for IDactivite, listeFamilles in dictActiTemp.items() :
             nomActivite = dictParametres["dictActivites"][IDactivite]
             self.lignes.append((nomActivite, listeFamilles))
 
@@ -468,7 +468,7 @@ class Tableau_repartition_caisses(MODELES.Tableau):
         
         # Tri par nbre de familles
         listeCaisses = []
-        for IDcaisse, valeurs in dictCaisses.iteritems() :
+        for IDcaisse, valeurs in dictCaisses.items() :
             nbreFamilles = valeurs["nbreFamilles"]
             nomCaisse = valeurs["nom"]
             listeCaisses.append((nbreFamilles, nomCaisse))
@@ -499,7 +499,7 @@ class Graphe_repartition_caisses(MODELES.Graphe):
         # Tri par nbre de familles
         listeCaisses = []
         nbreTotalFamilles = 0
-        for IDcaisse, valeurs in dictCaisses.iteritems() :
+        for IDcaisse, valeurs in dictCaisses.items() :
             nbreFamilles = valeurs["nbreFamilles"]
             nomCaisse = valeurs["nom"]
             listeCaisses.append((nbreFamilles, nomCaisse))
@@ -556,7 +556,7 @@ class Tableau_nombre_membres(MODELES.Tableau):
         self.largeur = "400"
         self.colonnes = [ (_(u"Nombre de membres"), "250"), (_(u"Nombre de familles"), "150") ]
         self.lignes = []
-        for nbreMembres, nbreFamilles in dictResultats.iteritems() :
+        for nbreMembres, nbreFamilles in dictResultats.items() :
             self.lignes.append((nbreMembres, nbreFamilles))
         self.lignes.sort() 
 
@@ -590,7 +590,7 @@ class Graphe_nombre_membres(MODELES.Graphe):
         
         listeResultats = []
         nbreTotalFamilles = 0
-        for nbreMembres, nbreFamilles in dictResultats.iteritems() :
+        for nbreMembres, nbreFamilles in dictResultats.items() :
             listeResultats.append((nbreMembres, nbreFamilles))
             nbreTotalFamilles += nbreFamilles
         listeResultats.sort() 
@@ -642,7 +642,7 @@ class Tableau_qf_tarifs(MODELES.Tableau):
         
         # Tri des tranches par ordre croissant
         listeTranches = []
-        listeTranches = dictTranches.keys()
+        listeTranches = list(dictTranches.keys())
         listeTranches.sort() 
         
         # Création du tableau des valeurs
@@ -678,7 +678,7 @@ class Graphe_qf_tarifs(MODELES.Graphe):
         
         # Tri des tranches par ordre croissant
         listeTranches = []
-        listeTranches = dictTranches.keys()
+        listeTranches = list(dictTranches.keys())
         listeTranches.sort() 
         
         nbreTotal = 0
@@ -740,7 +740,7 @@ class Tableau_qf_defaut(MODELES.Tableau):
         
         # Tri des tranches par ordre croissant
         listeTranches = []
-        listeTranches = dictTranches.keys()
+        listeTranches = list(dictTranches.keys())
         listeTranches.sort() 
         
         # Création du tableau des valeurs
@@ -776,7 +776,7 @@ class Graphe_qf_defaut2(MODELES.Graphe):
         
         # Tri des tranches par ordre croissant
         listeTranches = []
-        listeTranches = dictTranches.keys()
+        listeTranches = list(dictTranches.keys())
         listeTranches.sort() 
         
         nbreTotal = 0
@@ -834,7 +834,7 @@ class Graphe_qf_defaut(MODELES.Graphe):
         
         # Tri des tranches par ordre croissant
         listeTranches = []
-        listeTranches = dictTranches.keys()
+        listeTranches = list(dictTranches.keys())
         listeTranches.sort() 
         
         # Création du tableau des valeurs

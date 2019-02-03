@@ -43,7 +43,7 @@ class Civilite(wx.Choice):
         return index
 
     def SetID(self, ID=0):
-        for index, values in self.dictCivilites.iteritems():
+        for index, values in self.dictCivilites.items():
             if values["ID"] == ID :
                  self.SetSelection(index)
 

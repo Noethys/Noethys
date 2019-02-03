@@ -63,12 +63,12 @@ class Notebook(wx.Notebook):
     def OnPageChanged(self, event):
         oldIndex = event.GetOldSelection()
         indexPage = event.GetSelection()
-        for code, dictPage in self.dictPages.iteritems() :
+        for code, dictPage in self.dictPages.items() :
             if dictPage["index"] == indexPage :
                 dictPage["ctrl"].MAJ()
 
     def GetPage(self, codePage=""):
-        if self.dictPages.has_key(codePage):
+        if codePage in self.dictPages:
             return self.dictPages[codePage]["ctrl"]
         else :
             return None
@@ -79,7 +79,7 @@ class Notebook(wx.Notebook):
 
     def ValidationPages(self) :
         # Validation des données des pages
-        for code, dictPage in self.dictPages.iteritems() :
+        for code, dictPage in self.dictPages.items() :
             if dictPage["ctrl"].Validation() == False:
                 return False
         return True
@@ -87,7 +87,7 @@ class Notebook(wx.Notebook):
     def Sauvegarde(self):
         # Sauvegarde des données
         dict_resultats = {}
-        for code, dictPage in self.dictPages.iteritems() :
+        for code, dictPage in self.dictPages.items() :
             resultat = dictPage["ctrl"].Sauvegarde()
             dict_resultats[code] = resultat
         return dict_resultats

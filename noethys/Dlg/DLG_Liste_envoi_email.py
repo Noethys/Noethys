@@ -154,7 +154,7 @@ class Dialog(wx.Dialog):
                 dictAdressesIndividus[IDindividu] = {"mail": mail, "nom": nom, "prenom" : prenom}
 
             for track in tracks :
-                if dictAdressesIndividus.has_key(track.IDindividu) :
+                if track.IDindividu in dictAdressesIndividus :
                     adresse = dictAdressesIndividus[track.IDindividu]["mail"]
                     nom, prenom = dictAdressesIndividus[track.IDindividu]["nom"], dictAdressesIndividus[track.IDindividu]["prenom"]
                     if prenom == None : prenom = ""
@@ -171,7 +171,7 @@ class Dialog(wx.Dialog):
 
             for track in tracks:
                 adresse = None
-                if dict_titulaires.has_key(track.IDfamille) :
+                if track.IDfamille in dict_titulaires :
                     #adresse = UTILS_Envoi_email.GetAdresseFamille(track.IDfamille, choixMultiple=False, muet=True, nomTitulaires=track.nomTitulaires)
                     listeEmails = dict_titulaires[track.IDfamille]["listeMails"]
                     if len(listeEmails) > 0 :

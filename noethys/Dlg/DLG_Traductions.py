@@ -17,7 +17,7 @@ from Ctrl import CTRL_Bouton_image
 from Ctrl import CTRL_Bandeau
 from Ol import OL_Langues
 import wx.lib.agw.hyperlink as Hyperlink
-import webbrowser
+import six
 import os
 import FonctionsPerso
 import datetime
@@ -368,7 +368,7 @@ class DLG_Envoi(wx.Dialog):
                 Encoders.encode_base64(part)
             # Set the filename parameter
             nomFichier= os.path.basename(fichier)
-            if type(nomFichier) == unicode :
+            if type(nomFichier) == six.text_type :
                 nomFichier = FonctionsPerso.Supprime_accent(nomFichier)
             part.add_header('Content-Disposition', 'attachment', filename=nomFichier)
             msg.attach(part)
@@ -387,7 +387,7 @@ class DLG_Envoi(wx.Dialog):
         try :
             smtp.sendmail(adresseExpediteur, listeDestinataires, msg.as_string())
             smtp.close()
-        except Exception, err :
+        except Exception as err :
             dlg = wx.MessageDialog(self, _(u"Le message n'a pas pu être envoyé.\n\nErreur : %s !") % err, _(u"Envoi impossible"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()

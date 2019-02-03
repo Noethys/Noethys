@@ -30,8 +30,8 @@ try :
     from matplotlib.pyplot import setp
     import matplotlib.dates as mdates
     import matplotlib.mlab as mlab
-except Exception, err :
-    print "Erreur d'import : ", Exception, err
+except Exception as err :
+    print("Erreur d'import : ", Exception, err)
 
 
 
@@ -69,7 +69,7 @@ class CTRL_Affichage(wx.Choice):
         return listeItems
 
     def SetCode(self, code=None):
-        for index, codeTemp in self.dictDonnees.iteritems():
+        for index, codeTemp in self.dictDonnees.items():
             if codeTemp == code :
                  self.SetSelection(index)
 

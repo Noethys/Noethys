@@ -83,7 +83,7 @@ class Case():
         self.grid.SetReadOnly(self.numLigne, self.numColonne, True)
 
         # Importation des valeurs
-        if dictMenu != None and dictMenu.has_key("texte"):
+        if dictMenu != None and "texte" in dictMenu:
             self.IDmenu = dictMenu["IDmenu"]
             self.SetValeur(dictMenu["texte"])
 
@@ -243,7 +243,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 
         if (numLigne, numColonne) != self.last_survol :
             self.last_survol = (numLigne, numColonne)
-            if numLigne < 0 or numColonne < 0 or self.dictCases.has_key((numLigne, numColonne)) == False :
+            if numLigne < 0 or numColonne < 0 or ((numLigne, numColonne) in self.dictCases) == False :
                 self.GetGridWindow().SetToolTip(None)
             else :
                 case = self.dictCases[(numLigne, numColonne)]
@@ -257,7 +257,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         numLigne = self.GetGridCursorRow()
         numColonne = self.GetGridCursorCol()
         keycode = event.GetKeyCode()
-        if self.dictCases.has_key((numLigne, numColonne)):
+        if (numLigne, numColonne) in self.dictCases:
             case = self.dictCases[(numLigne, numColonne)]
             # Copier
             if keycode == 3 :
@@ -270,7 +270,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
     def OnCellRightClick(self, event):
         numLigne = event.GetRow()
         numColonne = event.GetCol()
-        if self.dictCases.has_key((numLigne, numColonne)):
+        if (numLigne, numColonne) in self.dictCases:
             case = self.dictCases[(numLigne, numColonne)]
 
             menuPop = UTILS_Adaptations.Menu()
@@ -342,7 +342,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         dictDonnees["menus"] = {}
         for IDmenu, IDcategorie, date, texte in listeDonnees :
             date = UTILS_Dates.DateEngEnDateDD(date)
-            if dictDonnees["menus"].has_key(date) == False :
+            if (date in dictDonnees["menus"]) == False :
                 dictDonnees["menus"][date] = {}
             dictDonnees["menus"][date][IDcategorie] = {"IDmenu" : IDmenu, "texte" : texte}
 
@@ -407,7 +407,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 IDcategorie = dictCategorie["IDcategorie"]
 
                 # Recherche si une valeur existe
-                if self.dictDonnees["menus"].has_key(date) and self.dictDonnees["menus"][date].has_key(IDcategorie):
+                if date in self.dictDonnees["menus"] and IDcategorie in self.dictDonnees["menus"][date]:
                     dictMenu = self.dictDonnees["menus"][date][IDcategorie]
                 else :
                     dictMenu = None
@@ -423,7 +423,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         x, y = self.CalcUnscrolledPosition(event.GetPosition())
         numLigne = self.YToRow(y)
         numColonne = self.XToCol(x)
-        if self.dictCases.has_key((numLigne, numColonne)) == False :
+        if ((numLigne, numColonne) in self.dictCases) == False :
             return False
         case = self.dictCases[(numLigne, numColonne)]
         dlg = DLG_Saisie_texte(self, texte=case.texte)
@@ -432,7 +432,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         dlg.Destroy()
 
     def RAZ(self, event=None):
-        for case in self.dictCases.values():
+        for case in list(self.dictCases.values()):
             case.RAZ()
 
 # -------------------------------------------------------------------------------------------------------

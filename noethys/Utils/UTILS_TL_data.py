@@ -29,7 +29,7 @@ from datetime import datetime as dt
 from datetime import time
 import calendar
 import base64
-import StringIO
+import six
 import os.path
 import locale
 
@@ -328,14 +328,14 @@ class IconEventDataPlugin(EventDataPlugin):
 
     def encode(self, data):
         """Data is wx.Bitmap."""
-        output = StringIO.StringIO()
+        output = six.BytesIO()
         image = wx.ImageFromBitmap(data)
         image.SaveStream(output, wx.BITMAP_TYPE_PNG)
         return base64.b64encode(output.getvalue())
 
     def decode(self, string):
         """Return is wx.Bitmap."""
-        input = StringIO.StringIO(base64.b64decode(string))
+        input = six.BytesIO(base64.b64decode(string))
         image = wx.ImageFromStream(input, wx.BITMAP_TYPE_PNG)
         return image.ConvertToBitmap()
 

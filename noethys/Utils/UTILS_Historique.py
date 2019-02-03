@@ -74,23 +74,23 @@ def InsertActions(listeActions=[], DB=None):
     # Traitement des actions
     listeAjouts = []
     for dictAction in listeActions :
-        if dictAction.has_key("IDutilisateur") : 
+        if "IDutilisateur" in dictAction : 
             IDutilisateur = dictAction["IDutilisateur"]
         else : 
             IDutilisateur = UTILS_Identification.GetIDutilisateur()
-        if dictAction.has_key("IDfamille") : 
+        if "IDfamille" in dictAction : 
             IDfamille = dictAction["IDfamille"]
         else : 
             IDfamille = None
-        if dictAction.has_key("IDindividu") : 
+        if "IDindividu" in dictAction : 
             IDindividu = dictAction["IDindividu"]
         else : 
             IDindividu = None
-        if dictAction.has_key("IDcategorie") : 
+        if "IDcategorie" in dictAction : 
             IDcategorie = dictAction["IDcategorie"]
         else : 
             IDcategorie = None
-        if dictAction.has_key("action") : 
+        if "action" in dictAction : 
             action = dictAction["action"]
         else : 
             action = u""

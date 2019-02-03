@@ -70,7 +70,7 @@ class CTRL_Choix_modele(wx.Choice):
         return listeItems
 
     def SetID(self, ID=None):
-        for index, values in self.dictDonnees.iteritems():
+        for index, values in self.dictDonnees.items():
             if values != None and values["ID"] == ID :
                  self.SetSelection(index)
 

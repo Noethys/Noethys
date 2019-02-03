@@ -10,9 +10,10 @@
 
 
 import wx
-from Ctrl import CTRL_Bouton_image
 import os
 import UTILS_Fichiers
+import six
+import shelve
 
 
 def GetNomFichierConfig(nomFichier="Config.dat"):
@@ -58,6 +59,11 @@ def SupprimerFichierTemporaire():
         pass
 
 
+def OuvrirFichier(nomFichier="", flag="r"):
+    if six.PY2:
+        nomFichier = nomFichier.encode("iso-8859-15")
+    db = shelve.open(nomFichier, flag)
+    return db
 
 
 class FichierConfig():
@@ -67,10 +73,9 @@ class FichierConfig():
         
     def GetDictConfig(self):
         """ Recupere une copie du dictionnaire du fichier de config """
-        import shelve
-        db = shelve.open(self.nomFichier.encode("iso-8859-15"), "r")
+        db = OuvrirFichier(self.nomFichier, "r")
         dictDonnees = {}
-        for key in db.keys():
+        for key in list(db.keys()):
             try :
                 dictDonnees[key] = db[key]
             except :
@@ -80,17 +85,15 @@ class FichierConfig():
     
     def SetDictConfig(self, dictConfig={} ):
         """ Remplace le fichier de config présent sur le disque dur par le dict donné """
-        import shelve
-        db = shelve.open(self.nomFichier.encode("iso-8859-15"), "n")
-        for key in dictConfig.keys():
+        db = OuvrirFichier(self.nomFichier, "n")
+        for key in list(dictConfig.keys()):
             db[key] = dictConfig[key]
         db.close()
         
     def GetItemConfig(self, key, defaut=None):
         """ Récupère une valeur du dictionnaire du fichier de config """
-        import shelve
-        db = shelve.open(self.nomFichier.encode("iso-8859-15"), "r")
-        if db.has_key(key) :
+        db = OuvrirFichier(self.nomFichier, "r")
+        if key in db :
             valeur = db[key]
         else:
             valeur = defaut
@@ -99,24 +102,21 @@ class FichierConfig():
     
     def SetItemConfig(self, key, valeur ):
         """ Remplace une valeur dans le fichier de config """
-        import shelve
-        db = shelve.open(self.nomFichier.encode("iso-8859-15"), "w")
+        db = OuvrirFichier(self.nomFichier, "w")
         db[key] = valeur
         db.close()
 
     def SetItemsConfig(self, dictParametres={}):
         """ Remplace plusieurs valeur dans le fichier de config """
         """ dictParametres = {nom : valeur, nom : valeur...} """
-        import shelve
-        db = shelve.open(self.nomFichier.encode("iso-8859-15"), "w")
-        for key, valeur in dictParametres.iteritems() :
+        db = OuvrirFichier(self.nomFichier, "w")
+        for key, valeur in dictParametres.items() :
             db[key] = valeur
         db.close()
 
     def DelItemConfig(self, key ):
         """ Supprime une valeur dans le fichier de config """
-        import shelve
-        db = shelve.open(self.nomFichier.encode("iso-8859-15"), "w")
+        db = OuvrirFichier(self.nomFichier, "w")
         del db[key]
         db.close()
 
@@ -131,7 +131,7 @@ def GetParametre(nomParametre="", defaut=None):
         nomWindow = None
     if nomWindow == "general" : 
         # Si la frame 'General' est chargée, on y récupère le dict de config
-        if topWindow.userConfig.has_key(nomParametre) :
+        if nomParametre in topWindow.userConfig :
             parametre = topWindow.userConfig[nomParametre]
         else :
             parametre = defaut
@@ -176,8 +176,8 @@ def GetParametres(dictParametres={}):
         dictSource = cfg.GetDictConfig()
         
     # Lit les données
-    for nom, valeur in dictParametres.iteritems() :
-        if dictSource.has_key(nom) :
+    for nom, valeur in dictParametres.items() :
+        if nom in dictSource :
             dictFinal[nom] = dictSource[nom]
         else :
             dictFinal[nom] = valeur
@@ -194,7 +194,7 @@ def SetParametres(dictParametres={}):
         nomWindow = None
     if nomWindow == "general" : 
         # Si la frame 'General' est chargée, on y récupère le dict de config
-        for nom, valeur in dictParametres.iteritems() :
+        for nom, valeur in dictParametres.items() :
             topWindow.userConfig[nom] = valeur
     else:
         # Enregistrement dans le fichier de config sur le disque dur
@@ -206,6 +206,6 @@ def SetParametres(dictParametres={}):
 
 # --------------- TESTS ----------------------------------------------------------------------------------------------------------
 if __name__ == u"__main__":
-    print "GET :", GetParametres( {"impression_factures_impayes" : 0} ) 
-    print "SET :", SetParametres( {"test1" : True, "test2" : True} )
+    print("GET :", GetParametres( {"impression_factures_impayes" : 0} )) 
+    #print("SET :", SetParametres( {"test1" : True, "test2" : True} ))
     

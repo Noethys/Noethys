@@ -38,8 +38,8 @@ try :
     import matplotlib.mlab as mlab
     import matplotlib.pyplot as plt
     from matplotlib.ticker import FormatStrFormatter
-except Exception, err :
-    print "Erreur d'import : ", Exception, err
+except Exception as err :
+    print("Erreur d'import : ", Exception, err)
 
 
 
@@ -83,7 +83,7 @@ class CTRL_Modele(BitmapComboBox):
         return listeItems
 
     def SetID(self, ID=0):
-        for index, values in self.dictDonnees.iteritems():
+        for index, values in self.dictDonnees.items():
             if values["ID"] == ID :
                  self.SetSelection(index)
 
@@ -135,7 +135,7 @@ class CTRL_Exercice(wx.Choice):
         return listeItems
 
     def SetID(self, ID=0):
-        for index, values in self.dictDonnees.iteritems():
+        for index, values in self.dictDonnees.items():
             if values["ID"] == ID :
                  self.SetSelection(index)
 
@@ -188,7 +188,7 @@ class CTRL_Analytique(wx.Choice):
         return listeItems
 
     def SetID(self, ID=0):
-        for index, values in self.dictDonnees.iteritems():
+        for index, values in self.dictDonnees.items():
             if values["ID"] == ID :
                  self.SetSelection(index)
 
@@ -298,7 +298,7 @@ class CTRL_Graphique(wx.Panel):
             DB.ExecuterReq(req)
             listeDonnees = DB.ResultatReq()
             for IDcategorie, nom, montant in listeDonnees :
-                if dictDonnees.has_key(IDcategorie) == False :
+                if (IDcategorie in dictDonnees) == False :
                     dictDonnees[IDcategorie] = {"nom" : nom, "montant" : 0.0}
                 dictDonnees[IDcategorie]["montant"] += montant
         
@@ -312,7 +312,7 @@ class CTRL_Graphique(wx.Panel):
             DB.ExecuterReq(req)
             listeDonnees = DB.ResultatReq()
             for IDcategorie, nom, montant in listeDonnees :
-                if dictDonnees.has_key(IDcategorie) == False :
+                if (IDcategorie in dictDonnees) == False :
                     dictDonnees[IDcategorie] = {"nom" : nom, "montant" : 0.0}
                 dictDonnees[IDcategorie]["montant"] += montant
 
@@ -325,11 +325,11 @@ class CTRL_Graphique(wx.Panel):
         listeCouleurs = []
         
         montantTotal = 0.0
-        for IDcategorie, dictTemp in dictDonnees.iteritems() :
+        for IDcategorie, dictTemp in dictDonnees.items() :
             montantTotal += dictTemp["montant"]
             
         index = 1
-        for IDcategorie, dictTemp in dictDonnees.iteritems() :
+        for IDcategorie, dictTemp in dictDonnees.items() :
             listeValeurs.append(dictTemp["montant"])
             label = dictTemp["nom"]
             if self.afficher_valeurs == True :

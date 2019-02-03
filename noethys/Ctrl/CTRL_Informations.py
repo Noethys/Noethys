@@ -243,7 +243,7 @@ class CTRL(wx.TreeCtrl):
             self.SetItemImage(niveauCategorie, self.img_pieces, which=wx.TreeItemIcon_Normal)
             niveauParent = niveauCategorie
                     
-            for IDfamille, valeurs in dictCotisations.iteritems() :
+            for IDfamille, valeurs in dictCotisations.items() :
                 
                 # Niveau 1 : Titulaires des familles
                 if nbreFamilles > 1 :
@@ -310,9 +310,9 @@ class CTRL(wx.TreeCtrl):
         # Création des branches
         try :
             listeRenseignementsManquants = self.GetRenseignements() 
-        except Exception, err:
+        except Exception as err:
             listeRenseignementsManquants = []
-            print "Erreur dans la recherche des renseignements à fournir : ", err
+            print("Erreur dans la recherche des renseignements à fournir : ", err)
             
         nbreRenseignementsManquants = len(listeRenseignementsManquants)
         if nbreRenseignementsManquants > 0 : 
@@ -374,7 +374,7 @@ class CTRL(wx.TreeCtrl):
             self.SetItemImage(niveauCategorie, self.img_pieces, which=wx.TreeItemIcon_Normal)
             niveauParent = niveauCategorie
                     
-            for IDfamille, valeurs in dictPieces.iteritems() :
+            for IDfamille, valeurs in dictPieces.items() :
                 
                 # Niveau 1 : Titulaires des familles
                 if nbreFamilles > 1 :
@@ -479,7 +479,7 @@ class CTRL(wx.TreeCtrl):
             # Pour un individu
             if self.dictFamillesRattachees != None :
                 listeIDfamille = []
-                for IDfamille, dictFamille in self.dictFamillesRattachees.iteritems() :
+                for IDfamille, dictFamille in self.dictFamillesRattachees.items() :
                     if dictFamille["IDcategorie"] in (1, 2) :
                         listeIDfamille.append(IDfamille)
                 if len(listeIDfamille) == 0 : conditionIDfamille = "()"
@@ -544,7 +544,7 @@ class CTRL(wx.TreeCtrl):
             # Mémorise pour la fenêtre de saisie d'une pièce
             self.listePiecesObligatoires.append((IDfamille, IDtype_piece, IDindividu))
             
-            if dictPiecesFournies.has_key( (IDfamille, IDtype_piece, IDindividu) ) :
+            if (IDfamille, IDtype_piece, IDindividu) in dictPiecesFournies :
                 date_debut, date_fin = dictPiecesFournies[(IDfamille, IDtype_piece, IDindividu)]
                 nbreJoursRestants = (date_fin - datetime.date.today()).days
                 if nbreJoursRestants > 15 :
@@ -561,9 +561,9 @@ class CTRL(wx.TreeCtrl):
         dictPieces = {}
         nbreFamilles = 0
         nbrePieces = len(dictDonnees)
-        for key, valeurs in dictDonnees.iteritems() :
+        for key, valeurs in dictDonnees.items() :
             IDfamille = valeurs[0]
-            if dictPieces.has_key(IDfamille) == False :
+            if (IDfamille in dictPieces) == False :
                 dictPieces[IDfamille] = []
                 if IDfamille != None : 
                     nbreFamilles += 1
@@ -647,7 +647,7 @@ class CTRL(wx.TreeCtrl):
             dictTemp = {"IDfamille":IDfamille, "IDindividu":IDindividu, "IDtype_renseignement":IDtype_renseignement, "prenom" : prenom}
             
             # Date de naissance
-            if IDtype_renseignement == 1 and dictDonneesIndividus.has_key(IDindividu) :
+            if IDtype_renseignement == 1 and IDindividu in dictDonneesIndividus :
                 valeur = dictDonneesIndividus[IDindividu]["date_naiss"]
                 if self.IDindividu != None and self.GetGrandParent().GetName() == "notebook_individu" :
                     panel = self.GetGrandParent().GetPageAvecCode("identite")
@@ -657,7 +657,7 @@ class CTRL(wx.TreeCtrl):
                     listeRenseignementsManquants.append(dictTemp)
             
             # Lieu de naissance
-            if IDtype_renseignement == 2 and dictDonneesIndividus.has_key(IDindividu) :
+            if IDtype_renseignement == 2 and IDindividu in dictDonneesIndividus :
                 valeur = dictDonneesIndividus[IDindividu]["ville_naiss"]
                 if self.IDindividu != None and self.GetGrandParent().GetName() == "notebook_individu" :
                     panel = self.GetGrandParent().GetPageAvecCode("identite")
@@ -667,7 +667,7 @@ class CTRL(wx.TreeCtrl):
                     listeRenseignementsManquants.append(dictTemp)
             
             # Numéro de sécu
-            if IDtype_renseignement == 3 and dictDonneesIndividus.has_key(IDindividu) :
+            if IDtype_renseignement == 3 and IDindividu in dictDonneesIndividus :
                 valeur = dictDonneesIndividus[IDindividu]["num_secu"]
                 if self.IDindividu != None and self.GetGrandParent().GetName() == "notebook_individu" :
                     panel = self.GetGrandParent().GetPageAvecCode("identite")
@@ -689,7 +689,7 @@ class CTRL(wx.TreeCtrl):
 ##                    listeRenseignementsManquants.append(dictTemp)
 
             # Médecin traitant
-            if IDtype_renseignement == 6 and dictDonneesIndividus.has_key(IDindividu) :
+            if IDtype_renseignement == 6 and IDindividu in dictDonneesIndividus :
                 valeur = dictDonneesIndividus[IDindividu]["IDmedecin"]
 ##                if self.IDindividu != None and self.GetGrandParent().GetName() == "notebook_individu" :
 ##                    panel = self.GetGrandParent().GetPageAvecCode("medical")
@@ -833,9 +833,9 @@ class CTRL(wx.TreeCtrl):
         for IDindividu, IDvaccin, IDtype_vaccin, date, IDtype_maladie, nomVaccin, duree_validite, nomMaladie in listeVaccins :
             dateDD = datetime.date(int(date[:4]), int(date[5:7]), int(date[8:10]))
             dateFinValidite, nbreJoursRestants = self.CalcValiditeVaccin(dateDD, duree_validite)
-            if dictMaladiesIndividus.has_key(IDindividu) == False :
+            if (IDindividu in dictMaladiesIndividus) == False :
                 dictMaladiesIndividus[IDindividu] = {}
-            if dictMaladiesIndividus[IDindividu].has_key(IDtype_maladie) :
+            if IDtype_maladie in dictMaladiesIndividus[IDindividu] :
                 if dictMaladiesIndividus[IDindividu][IDtype_maladie] < nbreJoursRestants :
                     dictMaladiesIndividus[IDindividu][IDtype_maladie] = nbreJoursRestants
             else:
@@ -846,8 +846,8 @@ class CTRL(wx.TreeCtrl):
             for IDindividu in listeIDindividus :
                 prenom = dictPrenoms[IDindividu]
                 etat = "pasok"
-                if dictMaladiesIndividus.has_key(IDindividu) :
-                    if dictMaladiesIndividus[IDindividu].has_key(IDtype_maladie) :
+                if IDindividu in dictMaladiesIndividus :
+                    if IDtype_maladie in dictMaladiesIndividus[IDindividu] :
                         if dictMaladiesIndividus[IDindividu][IDtype_maladie] <= 0 :
                             etat = "pasok"
                         elif dictMaladiesIndividus[IDindividu][IDtype_maladie] > 0 and dictMaladiesIndividus[IDindividu][IDtype_maladie] <= 15 :
@@ -895,7 +895,7 @@ class CTRL(wx.TreeCtrl):
 
         dictCotisationObligatoires = {}
         for IDfamille, IDactivite, IDtype_cotisation, nomCotisation, typeCotisation, prenom, IDindividu in listeCotisationsObligatoiresTemp :
-            if dictCotisationObligatoires.has_key(IDactivite) == False :
+            if (IDactivite in dictCotisationObligatoires) == False :
                 dictCotisationObligatoires[IDactivite] = []
             dictCotisationObligatoires[IDactivite].append((IDfamille, IDtype_cotisation, nomCotisation, typeCotisation, prenom, IDindividu))
         
@@ -906,7 +906,7 @@ class CTRL(wx.TreeCtrl):
             # Pour un individu
             if self.dictFamillesRattachees != None :
                 listeIDfamille = []
-                for IDfamille, dictFamille in self.dictFamillesRattachees.iteritems() :
+                for IDfamille, dictFamille in self.dictFamillesRattachees.items() :
                     if dictFamille["IDcategorie"] in (1, 2) :
                         listeIDfamille.append(IDfamille)
                 if len(listeIDfamille) == 0 : conditionIDfamille = "()"
@@ -961,7 +961,7 @@ class CTRL(wx.TreeCtrl):
         
         # Comparaison de la liste des cotisations à fournir et la liste des cotisations fournies
         dictDonnees = {}
-        for IDactivite, listeCotisationsActivite in dictCotisationObligatoires.iteritems() :
+        for IDactivite, listeCotisationsActivite in dictCotisationObligatoires.items() :
             activiteValide = False
             
             listeTemp = []
@@ -977,7 +977,7 @@ class CTRL(wx.TreeCtrl):
                 # Mémorise pour la fenêtre de saisie d'une cotisation
                 self.listeCotisationsObligatoires.append((IDfamille, IDtype_cotisation, IDindividu))
                 
-                if dictCotisationsFournies.has_key( (IDfamille, IDtype_cotisation, IDindividu) ) :
+                if (IDfamille, IDtype_cotisation, IDindividu) in dictCotisationsFournies :
                     date_debut, date_fin = dictCotisationsFournies[(IDfamille, IDtype_cotisation, IDindividu)]
                     nbreJoursRestants = (date_fin - datetime.date.today()).days
                     if nbreJoursRestants > 15 :
@@ -1002,9 +1002,9 @@ class CTRL(wx.TreeCtrl):
         dictCotisations = {}
         nbreFamilles = 0
         nbreCotisations = len(dictDonnees)
-        for key, valeurs in dictDonnees.iteritems() :
+        for key, valeurs in dictDonnees.items() :
             IDfamille = valeurs[0]
-            if dictCotisations.has_key(IDfamille) == False :
+            if (IDfamille in dictCotisations) == False :
                 dictCotisations[IDfamille] = []
                 if IDfamille != None : 
                     nbreFamilles += 1
@@ -1040,6 +1040,6 @@ if __name__ == '__main__':
     heure_debut = time.time()
     frame_1 = MyFrame(None, -1, _(u"TEST"), size=(800, 400))
     app.SetTopWindow(frame_1)
-    print "Temps de chargement CTRL_Informations =", time.time() - heure_debut
+    print("Temps de chargement CTRL_Informations =", time.time() - heure_debut)
     frame_1.Show()
     app.MainLoop()

@@ -113,14 +113,14 @@ class CTRL_Voix(wx.Choice):
         self.SetItems(listeItems)
         # Sélectionne la voix par défaut
         voixActuelle = self.vocal.GetVoixActuelle()
-        if voixActuelle in self.dictDonnees.values() :
+        if voixActuelle in list(self.dictDonnees.values()) :
             self.SetID(voixActuelle)
         else :
             self.Select(0)
             self.parent.MemoriseVoix(self.dictDonnees[0])
 
     def SetID(self, id=""):
-        for index, idTemp in self.dictDonnees.iteritems():
+        for index, idTemp in self.dictDonnees.items():
             if idTemp == id :
                  self.SetSelection(index)
 

@@ -815,7 +815,7 @@ class CTRL_Filtres(wx.Treebook):
         index = 0
         for type in self.listeTypes :
 
-            if self.dictQuestions.has_key(type) == True :
+            if (type in self.dictQuestions) == True :
                 
                 # Création de la page TYPE
                 panel = CTRL_Page_vide(self, texte=_(u"Veuillez sélectionner une question dans la liste !"))
@@ -859,7 +859,7 @@ class CTRL_Filtres(wx.Treebook):
         dictQuestions = {}
         for IDquestion, IDcategorie, type, visible, label, controle in listeQuestions :
             dictTemp = {"IDquestion":IDquestion, "IDcategorie":IDcategorie, "type":type, "visible":visible, "label":label, "controle":controle}
-            if dictQuestions.has_key(type) == False :
+            if (type in dictQuestions) == False :
                 dictQuestions[type] = []
             dictQuestions[type].append(dictTemp)
             
@@ -867,13 +867,13 @@ class CTRL_Filtres(wx.Treebook):
         
     def GetQuestion(self):
         indexSelection = self.GetSelection() 
-        for IDquestion, index in self.dictItems.iteritems() :
+        for IDquestion, index in self.dictItems.items() :
             if index == indexSelection :
                 return IDquestion
         return None
     
     def SetQuestion(self, IDquestion=None):
-        if self.dictItems.has_key(IDquestion) :
+        if IDquestion in self.dictItems :
             self.SetSelection(self.dictItems[IDquestion])
 
     def OnPageChanged(self, event):

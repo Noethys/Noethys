@@ -14,6 +14,7 @@ from UTILS_Traduction import _
 import datetime
 import time
 import wx
+import six
 
 LISTE_JOURS = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
 LISTE_MOIS = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
@@ -75,7 +76,7 @@ def HeuresEnDecimal(texteHeure="07:00"):
     if type(texteHeure) == datetime.time :
         heures = str(texteHeure.hour)
         minutes = int(texteHeure.minute)
-    if type(texteHeure) in (str, unicode) :
+    if type(texteHeure) in (str, six.text_type) :
         posTemp = texteHeure.index(":")
         heures = str(texteHeure[0:posTemp])
         minutes = int(texteHeure[posTemp+1:5])
@@ -262,8 +263,12 @@ def ArrondirDT(dt=None, dateDelta=datetime.timedelta(minutes=1)):
     rounding = (seconds+roundTo/2) // roundTo * roundTo
     return dt + datetime.timedelta(0,rounding-seconds,-dt.microsecond)
 
-def FormateMois((annee, mois)):
-    return u"%s %d" % (LISTE_MOIS[mois-1].capitalize(), annee)
+def FormateMois(donnee):
+    if donnee in ("", None):
+        return ""
+    else:
+        annee, mois = donnee
+        return u"%s %d" % (LISTE_MOIS[mois-1].capitalize(), annee)
 
 def ConvertDateWXenDT(datewx=None):
     """ Convertit une date WX.datetime en datetime """
@@ -314,5 +319,5 @@ if __name__ == "__main__":
     # Tests
     #print CalculerArrondi(arrondi_type="tranche_horaire", arrondi_delta=15, heure_debut=datetime.time(9, 25), heure_fin=datetime.time(9, 35))
     #print ArrondirDT(datetime.datetime.now(), datetime.timedelta(minutes=5))
-    print FormatDelta(datetime.timedelta(hours=48, minutes=30))
+    print(FormatDelta(datetime.timedelta(hours=48, minutes=30)))
 

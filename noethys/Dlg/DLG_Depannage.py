@@ -58,7 +58,7 @@ def Autodetection(parent=None):
     d = UTILS_Depannage.Depannage(parent)
     listeResultats = d.GetResultats()
     nbreAnomalies = d.GetNbreAnomalies() 
-    print "Processus d'auto-detection des anomalies : %d anomalies detectees" % nbreAnomalies
+    print("Processus d'auto-detection des anomalies : %d anomalies detectees" % nbreAnomalies)
     if nbreAnomalies == 0 :
         return None
     # Propose une correction des anomalies

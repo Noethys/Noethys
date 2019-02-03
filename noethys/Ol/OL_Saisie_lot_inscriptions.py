@@ -58,7 +58,7 @@ class ListView(FastObjectListView):
         self.Bind(wx.EVT_CONTEXT_MENU, self.OnContextMenu)
         
     def OnItemActivated(self,event):
-        print "ok"
+        print("ok")
                 
     def InitModel(self):
         self.donnees = self.GetTracks()
@@ -214,7 +214,7 @@ class ListView(FastObjectListView):
         listeTemp = []
         for track in self.donnees :
             key = (track.IDindividu, track.IDfamille, IDactivite)
-            if self.dictInscriptions.has_key(key) :
+            if key in self.dictInscriptions :
                 track.inscrit = "oui"
             else :
                 track.inscrit = "non"

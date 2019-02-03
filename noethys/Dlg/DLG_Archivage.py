@@ -230,7 +230,7 @@ class CTRL_Notebook(wx.Notebook):
     def GetDonnees(self):
         dictDonnees = {}
         for dictPage in self.listePages :
-            for key, valeur in dictPage["ctrl"].GetDonnees().iteritems() :
+            for key, valeur in dictPage["ctrl"].GetDonnees().items() :
                 dictDonnees[key] = valeur
         return dictDonnees
 

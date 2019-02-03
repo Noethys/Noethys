@@ -42,8 +42,8 @@ def InitCamera(port=0):
         DEFAULT_DEVICE_HEIGHT = frame.height
         CASCADE = cv.Load(Chemins.GetStaticPath("Divers/haarcascade_frontalface_alt2.xml"))
         return True
-    except Exception, err :
-        print err
+    except Exception as err :
+        print(err)
         return False
 
 

@@ -40,7 +40,7 @@ class Track_famille(object):
         self.solde = 0.0
         self.IDcompte_payeur = None
 
-        if parent.dict_soldes.has_key(self.IDfamille):
+        if self.IDfamille in parent.dict_soldes:
             track_solde = parent.dict_soldes[self.IDfamille]
             self.solde = track_solde.solde
             self.IDcompte_payeur = track_solde.IDcompte_payeur

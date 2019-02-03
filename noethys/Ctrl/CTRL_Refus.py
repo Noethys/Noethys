@@ -148,16 +148,16 @@ class CTRL(HTL.HyperTreeList):
             date_saisie = DateEngEnDateDD(date_saisie)
             
             # Date
-            if dictConso.has_key(date) == False :
+            if (date in dictConso) == False :
                 dictConso[date] = {}
             # Activité
-            if dictConso[date].has_key(IDactivite) == False :
+            if (IDactivite in dictConso[date]) == False :
                 dictConso[date][IDactivite] = {}
             # Groupe
-            if dictConso[date][IDactivite].has_key(IDgroupe) == False :
+            if (IDgroupe in dictConso[date][IDactivite]) == False :
                 dictConso[date][IDactivite][IDgroupe] = {}
             # Individu
-            if dictConso[date][IDactivite][IDgroupe].has_key(IDindividu) == False :
+            if (IDindividu in dictConso[date][IDactivite][IDgroupe]) == False :
                 dictConso[date][IDactivite][IDgroupe][IDindividu] = []
                 
             dictTemp = {
@@ -168,11 +168,11 @@ class CTRL(HTL.HyperTreeList):
                 }
             dictConso[date][IDactivite][IDgroupe][IDindividu].append(dictTemp)
             
-            if dictActivites.has_key(IDactivite) == False :
+            if (IDactivite in dictActivites) == False :
                 dictActivites[IDactivite] = nomActivite
-            if dictGroupes.has_key(IDgroupe) == False :
+            if (IDgroupe in dictGroupes) == False :
                 dictGroupes[IDgroupe] = nomGroupe
-            if dictIndividus.has_key(IDindividu) == False :
+            if (IDindividu in dictIndividus) == False :
                 dictIndividus[IDindividu] = {"nomIndividu" : u"%s %s" % (nomIndividu, prenomIndividu), "IDfamille" : IDfamille }
         
         return dictConso, dictActivites, dictGroupes, dictIndividus
@@ -195,7 +195,7 @@ class CTRL(HTL.HyperTreeList):
         self.listeImpression = []
         
         # Branches DATE
-        listeDates = dictConso.keys()
+        listeDates = list(dictConso.keys())
         listeDates.sort() 
         
         for date in listeDates :
@@ -205,7 +205,7 @@ class CTRL(HTL.HyperTreeList):
             self.SetItemBackgroundColour(niveauDate, wx.Colour(*COULEUR_FOND_REGROUPEMENT))
             
             # Branches Activités
-            listeActivites = dictConso[date].keys()
+            listeActivites = list(dictConso[date].keys())
             listeActivites.sort() 
             
             for IDactivite in listeActivites :
@@ -219,7 +219,7 @@ class CTRL(HTL.HyperTreeList):
                 
                 # Branches Groupe
                 listeImpressionGroupes = []
-                listeGroupes = dictConso[date][IDactivite].keys()
+                listeGroupes = list(dictConso[date][IDactivite].keys())
                 listeGroupes.sort() 
                 
                 for IDgroupe in listeGroupes :
@@ -231,7 +231,7 @@ class CTRL(HTL.HyperTreeList):
                     # Branches Individus
                     listeImpressionIndividus = []
                     listeIndividus = []
-                    for IDindividu, listeConso in dictConso[date][IDactivite][IDgroupe].iteritems() :
+                    for IDindividu, listeConso in dictConso[date][IDactivite][IDgroupe].items() :
                         listeIDconso = []
                         for dictConsoIndividu in listeConso :
                             listeIDconso.append(dictConsoIndividu["IDconso"])
@@ -261,11 +261,11 @@ class CTRL(HTL.HyperTreeList):
                                 dateSaisie = date_saisie
                                 
                             # Etat des places
-                            if self.dictUnitesRemplissage.has_key(IDunite) :
+                            if IDunite in self.dictUnitesRemplissage :
                                 listePlacesRestantes = []
                                 for IDuniteRemplissage in self.dictUnitesRemplissage[IDunite] :
                                     key = (date, IDactivite, IDgroupe, IDuniteRemplissage)
-                                    if dictPlacesRestantes.has_key(key) :
+                                    if key in dictPlacesRestantes :
                                         nbrePlacesRestantes = dictPlacesRestantes[key]
                                     else :
                                         nbrePlacesRestantes = self.dictEtatPlaces[key]["remplissage"]["nbrePlacesRestantes"]
@@ -279,7 +279,7 @@ class CTRL(HTL.HyperTreeList):
                         if placeDispo == True :
                             for dictUnite in dictConso[date][IDactivite][IDgroupe][IDindividu] :
                                 IDunite = dictUnite["IDunite"]
-                                if self.dictUnitesRemplissage.has_key(IDunite) :
+                                if IDunite in self.dictUnitesRemplissage :
                                     for IDuniteRemplissage in self.dictUnitesRemplissage[IDunite] :
                                         key = (date, IDactivite, IDgroupe, IDuniteRemplissage)
                                         # self.dictEtatPlaces[key]["nbrePlacesRestantes"] -= 1

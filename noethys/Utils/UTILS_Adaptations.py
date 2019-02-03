@@ -34,7 +34,7 @@ class ToolBar(wx.ToolBar):
 
     def AddLabelTool(self, *args, **kw):
         if 'phoenix' in wx.PlatformInfo:
-            if kw.has_key("longHelp"):
+            if "longHelp" in kw:
                 kw.pop("longHelp")
             super(ToolBar, self).AddTool(*args, **kw)
         else :
@@ -42,7 +42,7 @@ class ToolBar(wx.ToolBar):
 
     def AddSimpleTool(self, *args, **kw):
         if 'phoenix' in wx.PlatformInfo:
-            if kw.has_key("longHelp"):
+            if "longHelp" in kw:
                 kw.pop("longHelp")
             super(ToolBar, self).AddTool(*args, **kw)
         else :

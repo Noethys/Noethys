@@ -102,7 +102,7 @@ class ListView(FastObjectListView):
                 valeur = u"%.2f" % valeur
             if dictDonnee["format"] == "duree" :
                 valeur = UTILS_Dates.DeltaEnStr(valeur)
-            if dictDonnee.has_key("suffixe") and dictDonnee["suffixe"] != "" :
+            if "suffixe" in dictDonnee and dictDonnee["suffixe"] != "" :
                 valeur += " " + dictDonnee["suffixe"]
             self.donnees.append(Track(index, dictDonnee["label"], valeur))
             index += 1

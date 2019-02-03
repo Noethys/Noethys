@@ -423,7 +423,7 @@ class Track(object):
     def __init__(self, dictLigne={}, ligneValide=True):
         self.dictLigne = dictLigne
         self.ligneValide = ligneValide
-        for code, dictValeurs in dictLigne.iteritems() :
+        for code, dictValeurs in dictLigne.items() :
             valeur = dictValeurs["valeur"]
             anomalie = dictValeurs["anomalie"]
             label = dictValeurs["label"]    
@@ -479,18 +479,18 @@ class CTRL_Donnees(FastObjectListView):
                 if self.typeImportation == "familles" :
                     valide = True
 
-                    if dictTemp.has_key("pere_nom") == False and dictTemp.has_key("mere_nom") == False :
+                    if ("pere_nom" in dictTemp) == False and ("mere_nom" in dictTemp) == False :
                         valide = False
 
-                    if dictTemp.has_key("pere_nom") == True and dictTemp.has_key("mere_nom") == False :
+                    if ("pere_nom" in dictTemp) == True and ("mere_nom" in dictTemp) == False :
                         if dictTemp["pere_nom"]["anomalie"] != None :
                             valide = False
                         
-                    if dictTemp.has_key("mere_nom") == True and dictTemp.has_key("pere_nom") == False :
+                    if ("mere_nom" in dictTemp) == True and ("pere_nom" in dictTemp) == False :
                         if dictTemp["mere_nom"]["anomalie"] != None :
                             valide = False
 
-                    if dictTemp.has_key("mere_nom") == True and dictTemp.has_key("pere_nom") == True :
+                    if ("mere_nom" in dictTemp) == True and ("pere_nom" in dictTemp) == True :
                         if dictTemp["mere_nom"]["anomalie"] != None and dictTemp["pere_nom"]["anomalie"] != None :
                             valide = False
                     
@@ -507,7 +507,7 @@ class CTRL_Donnees(FastObjectListView):
             if track.ligneValide == False :
                 return self.imgNon
             # Vérifie s'il ya une anomalie dans le track
-            for code, dictValeurs in track.dictLigne.iteritems() :
+            for code, dictValeurs in track.dictLigne.items() :
                 if dictValeurs["anomalie"] != None :
                     return self.imgAttention
             return self.imgOk
@@ -811,7 +811,7 @@ class Page_colonnes(wx.Panel):
         listeTemp = []
         dictTemp = {}
         for colonne in listeColonnes :
-            if dictTemp.has_key(colonne["donnee"]) == False :
+            if (colonne["donnee"] in dictTemp) == False :
                 dictTemp[colonne["donnee"]] = 1
             else :
                 dictTemp[colonne["donnee"]] += 1
@@ -824,7 +824,7 @@ class Page_colonnes(wx.Panel):
             return False
         
         # Vérifie si pas de doublons dans les types de données
-        for code, nbre in dictTemp.iteritems() :
+        for code, nbre in dictTemp.items() :
             if nbre > 1 :
                 dlg = wx.MessageDialog(self, _(u"Un type de donnée ne peut pas être sélectionné plus d'une fois !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
@@ -837,7 +837,7 @@ class Page_colonnes(wx.Panel):
         for dictColonne in DICT_COLONNES[typeImportation] :
             code = dictColonne["code"]
             if dictColonne["obligatoire"] == True :
-                if dictTemp.has_key(code) == False :
+                if (code in dictTemp) == False :
                     listeOublis.append(u"   - %s\n" % dictColonne["label"])
         if len(listeOublis) > 0 :
             texte = "".join(listeOublis)
@@ -1117,7 +1117,7 @@ class Dialog(wx.Dialog):
                 code = dictColonne["code"]
                 
                 # Récupération de la valeur
-                if track.dictLigne.has_key(code) :
+                if code in track.dictLigne :
                     valeur = track.dictLigne[code]["valeur"]
                 else :
                     ligneValideTmp, code, valeur, anomalie, label = validation.Validation(code, None)
@@ -1136,12 +1136,12 @@ class Dialog(wx.Dialog):
         def CreationIndividu(dictValeurs):
             # Vérification des données
             valide = True
-            if dictValeurs.has_key("individu_nom") == True :
+            if ("individu_nom" in dictValeurs) == True :
                 if dictValeurs["individu_nom"] in ("", None) :
                     valide = False
             else :
                 valide = False
-            if dictValeurs.has_key("individu_civilite") == True :
+            if ("individu_civilite" in dictValeurs) == True :
                 if dictValeurs["individu_civilite"] not in (1, 2, 3, 4, 5, 6, 7, 8, 9) :
                     valide = False
             else :
@@ -1161,7 +1161,7 @@ class Dialog(wx.Dialog):
                 ]
             
             def AjouteChamp(key, champ, defaut):
-                if dictValeurs.has_key(key) :
+                if key in dictValeurs :
                     valeur = dictValeurs[key]
                 else :
                     valeur = defaut
@@ -1302,7 +1302,7 @@ class Dialog(wx.Dialog):
                 
                 # Autres infos de la fiche FAMILLE
                 def AjouteChamp2(key, champ, defaut):
-                    if dictValeurs.has_key(key) :
+                    if key in dictValeurs :
                         valeur = dictValeurs[key]
                         
                         # Spécificité de l'allocataire titulaire

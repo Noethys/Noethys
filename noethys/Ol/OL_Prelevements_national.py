@@ -83,7 +83,7 @@ class Track(object):
             self.titulaires = self.dictTitulaires[self.IDfamille]["titulairesSansCivilite"]
     
     def MAJnomBanque(self):
-        if DICT_BANQUES.has_key(self.prelevement_banque) :
+        if self.prelevement_banque in DICT_BANQUES :
             self.nomBanque = DICT_BANQUES[self.prelevement_banque]
         else :
             self.nomBanque = u""
@@ -614,7 +614,7 @@ class ListView(FastObjectListView):
             nbreTotal += 1
             montantTotal += track.montant
             # Regroupement par statut
-            if dictDetails.has_key(track.statut) == False :
+            if (track.statut in dictDetails) == False :
                 dictDetails[track.statut] = {"nbre" : 0, "montant" : 0.0}
             dictDetails[track.statut]["nbre"] += 1
             dictDetails[track.statut]["montant"] += track.montant
@@ -623,7 +623,7 @@ class ListView(FastObjectListView):
                 reglement = "regle"
             else :
                 reglement = "pasregle"
-            if dictDetails.has_key(reglement) == False :
+            if (reglement in dictDetails) == False :
                 dictDetails[reglement] = {"nbre" : 0, "montant" : 0.0}
             dictDetails[reglement]["nbre"] += 1
             dictDetails[reglement]["montant"] += track.montant
@@ -637,7 +637,7 @@ class ListView(FastObjectListView):
             texte = _(u"<B>%d prélèvements (%.2f %s) : </B>") % (nbreTotal, montantTotal, SYMBOLE)
         
         for key in ("attente", "valide", "refus", "regle", "pasregle") :
-            if dictDetails.has_key(key) :
+            if key in dictDetails :
                 dictDetail = dictDetails[key]
                 if dictDetail["nbre"] == 1 :
                     if key == "attente" : label = _(u"en attente")
@@ -720,7 +720,7 @@ class ListView(FastObjectListView):
         listeDonnees = DB.ResultatReq()
         dictPayeurs = {}
         for IDpayeur, IDcompte_payeur, nom in listeDonnees :
-            if dictPayeurs.has_key(IDcompte_payeur) == False :
+            if (IDcompte_payeur in dictPayeurs) == False :
                 dictPayeurs[IDcompte_payeur] = []
             dictPayeurs[IDcompte_payeur].append({"nom" : nom, "IDpayeur" : IDpayeur})
 
@@ -754,7 +754,7 @@ class ListView(FastObjectListView):
             ventilation = decimal.Decimal(ventilation)
             aventiler = montant - ventilation
             if aventiler > decimal.Decimal(0.0) :
-                if dictFactures.has_key(IDfacture) == False :
+                if (IDfacture in dictFactures) == False :
                     dictFactures[IDfacture] = []
                 dictFactures[IDfacture].append({"IDprestation" : IDprestation, "IDcompte_payeur" : IDcompte_payeur, "montant" : montant, "ventilation" : ventilation, "aventiler" : aventiler})
                         
@@ -767,7 +767,7 @@ class ListView(FastObjectListView):
                 
                 # Recherche du payeur
                 IDpayeur = None
-                if dictPayeurs.has_key(track.IDcompte_payeur) :
+                if track.IDcompte_payeur in dictPayeurs :
                     for dictPayeur in dictPayeurs[track.IDcompte_payeur] :
                         if dictPayeur["nom"] == track.titulaire :
                             IDpayeur = dictPayeur["IDpayeur"]
@@ -806,7 +806,7 @@ class ListView(FastObjectListView):
                 track.dateReglement = date
                 
                 # ----------- Sauvegarde de la ventilation ---------
-                if dictFactures.has_key(track.IDfacture) :
+                if track.IDfacture in dictFactures :
                     for dictFacture in dictFactures[track.IDfacture] :
                         listeDonnees = [    
                                 ("IDreglement", track.IDreglement),
@@ -899,7 +899,7 @@ class MyFrame(wx.Frame):
         self.CenterOnScreen()
         
     def OnBoutonTest(self, event):
-        print "Test de la sauvegarde des reglements :"
+        print("Test de la sauvegarde des reglements :")
         self.myOlv.SauvegardeReglements(date=datetime.date.today(), IDcompte=99)
         
         

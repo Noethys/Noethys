@@ -16,7 +16,7 @@ import wx
 from Ctrl import CTRL_Bouton_image
 from Ol import OL_Inscriptions
 import GestionDB
-import cPickle
+from six.moves import cPickle
 from Utils import UTILS_Dates
 from Utils import UTILS_Config
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
@@ -67,7 +67,7 @@ class CTRL_Modeles(wx.Choice):
         return listeItems
 
     def SetID(self, ID=0):
-        for index, values in self.dictDonnees.iteritems():
+        for index, values in self.dictDonnees.items():
             if values["ID"] == ID :
                  self.SetSelection(index)
 
@@ -136,7 +136,7 @@ class CTRL_Contrats(wx.Choice):
         return listeItems
 
     def SetID(self, ID=0):
-        for index, values in self.dictDonnees.iteritems():
+        for index, values in self.dictDonnees.items():
             if values["ID"] == ID :
                  self.SetSelection(index)
 

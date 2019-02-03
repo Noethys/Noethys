@@ -68,7 +68,7 @@ class CTRL_Membre(wx.ListBox):
         return listeItems
 
     def SetAdresse(self, IDindividu=None, categorie=None):
-        for index, values in self.dictDonnees.iteritems():
+        for index, values in self.dictDonnees.items():
             if values["IDindividu"] == IDindividu and values["categorie"] == categorie :
                  self.SetSelection(index)
 
@@ -132,13 +132,13 @@ class CTRL_Membres(wx.CheckListBox):
             index += 1
 
     def SetAdresse(self, IDindividu=None, categorie=None):
-        for index, valeurs in self.dictDonnees.iteritems():
+        for index, valeurs in self.dictDonnees.items():
             if valeurs["IDindividu"] == IDindividu and valeurs["categorie"] == categorie :
                 self.Check(index)
 
     def GetAdresses(self):
         listeCoches = []
-        for index, valeurs in self.dictDonnees.iteritems():
+        for index, valeurs in self.dictDonnees.items():
             if self.IsChecked(index):
                 listeCoches.append(valeurs)
         return listeCoches

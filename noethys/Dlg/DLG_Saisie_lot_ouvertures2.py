@@ -61,7 +61,7 @@ class CTRL_Unite(wx.Choice):
         return listeItems
 
     def SetID(self, ID=0):
-        for index, values in self.dictDonnees.iteritems():
+        for index, values in self.dictDonnees.items():
             if values["ID"] == ID :
                  self.SetSelection(index)
 
@@ -108,7 +108,7 @@ class CTRL_Groupe(wx.Choice):
         return listeItems
 
     def SetID(self, ID=0):
-        for index, values in self.dictDonnees.iteritems():
+        for index, values in self.dictDonnees.items():
             if values["ID"] == ID:
                 self.SetSelection(index)
 
@@ -365,11 +365,11 @@ class Page_dates(wx.Panel):
             self.dictDonnees["action"] = "schema"
             self.dictDonnees["dictOuvertures"] = {}
             self.dictDonnees["dictRemplissage"] = {}
-            if len(self.ctrl_calendrier.dictOuvertures.keys()) > 0 :
-                date = self.ctrl_calendrier.dictOuvertures.keys()[0]
-                if self.ctrl_calendrier.dictOuvertures.has_key(date) :
+            if len(list(self.ctrl_calendrier.dictOuvertures.keys())) > 0 :
+                date = list(self.ctrl_calendrier.dictOuvertures.keys())[0]
+                if date in self.ctrl_calendrier.dictOuvertures :
                     self.dictDonnees["dictOuvertures"] = self.ctrl_calendrier.dictOuvertures[date]
-                if self.ctrl_calendrier.dictRemplissage.has_key(date) :
+                if date in self.ctrl_calendrier.dictRemplissage :
                     self.dictDonnees["dictRemplissage"] = self.ctrl_calendrier.dictRemplissage[date]
 
         if self.radio_renitialisation.GetValue() == True :
@@ -549,9 +549,9 @@ class Page_evenements(wx.Panel):
 
             liste_tracks_trouves = []
             listeID = []
-            for dateDD, dictGroupes in self.ctrl_calendrier.dictOuvertures.iteritems():
-                for IDgroupe, dictUnites in dictGroupes.iteritems():
-                    for IDunite, dictValeurs in dictUnites.iteritems():
+            for dateDD, dictGroupes in self.ctrl_calendrier.dictOuvertures.items():
+                for IDgroupe, dictUnites in dictGroupes.items():
+                    for IDunite, dictValeurs in dictUnites.items():
                         liste_evenements = dictValeurs["liste_evenements"]
                         for track_evenement in liste_evenements :
                             if expression == None or expression.lower() in track_evenement.nom.lower() :
@@ -574,7 +574,7 @@ class Page_evenements(wx.Panel):
                 listeConso = DB.ResultatReq()
                 DB.Close()
                 for IDconso, IDevenement in listeConso :
-                    if dictNbreConso.has_key(IDevenement) == False :
+                    if (IDevenement in dictNbreConso) == False :
                         dictNbreConso[IDevenement] = 0
                     dictNbreConso[IDevenement] += 1
 
@@ -584,7 +584,7 @@ class Page_evenements(wx.Panel):
             listeLabelsEvenements = []
             listeID = []
             for date, nom, track in listeTemp :
-                if dictNbreConso.has_key(track.IDevenement) == False :
+                if (track.IDevenement in dictNbreConso) == False :
                     listeLabelsEvenements.append(u"%s : %s" % (UTILS_Dates.DateDDEnFr(date), nom))
                     if track.IDevenement != None :
                         listeID.append(track.IDevenement)

@@ -282,7 +282,7 @@ class ListView(GroupListView):
             
             # Adresse auto ou manuelle
             adresse_auto = dictTemp["adresse_auto"]
-            if adresse_auto != None and DICT_INFOS_INDIVIDUS.has_key(adresse_auto) :
+            if adresse_auto != None and adresse_auto in DICT_INFOS_INDIVIDUS :
                 dictTemp["rue_resid"] = DICT_INFOS_INDIVIDUS[adresse_auto]["rue_resid"]
                 dictTemp["cp_resid"] = DICT_INFOS_INDIVIDUS[adresse_auto]["cp_resid"]
                 dictTemp["ville_resid"] = DICT_INFOS_INDIVIDUS[adresse_auto]["ville_resid"]
@@ -292,7 +292,7 @@ class ListView(GroupListView):
             totalRegle = decimal.Decimal(str(0.0))
             totalSolde = decimal.Decimal(str(0.0))
             key = (dictTemp["IDfamille"], dictTemp["IDindividu"])
-            if dictFacturation.has_key(key) :
+            if key in dictFacturation :
                 totalFacture = decimal.Decimal(str(dictFacturation[key]["prestations"]))
                 if totalFacture == None : totalFacture = decimal.Decimal(str(0.0))
                 totalRegle = decimal.Decimal(str(dictFacturation[key]["ventilation"]))
@@ -370,7 +370,7 @@ class ListView(GroupListView):
         for dictChamp in LISTE_CHAMPS :
             if dictChamp["afficher"] == True :
                 # stringConverter
-                if dictChamp.has_key("stringConverter") :
+                if "stringConverter" in dictChamp :
                     stringConverter = dictChamp["stringConverter"]
                     if stringConverter == "date" : stringConverter=FormateDate
                     elif stringConverter == "age" : stringConverter=FormateAge
@@ -380,7 +380,7 @@ class ListView(GroupListView):
                 else:
                     stringConverter = None
                 # Image Getter
-                if dictChamp.has_key("imageGetter") :
+                if "imageGetter" in dictChamp :
                     imageGetter = dictChamp["imageGetter"]
                     if imageGetter == "civilite" : imageGetter = GetImageCivilite
                     elif imageGetter == "ventilation" : imageGetter = GetImageVentilation
@@ -430,8 +430,8 @@ class ListView(GroupListView):
         self.SetObjects(self.donnees)
 
     def GetReponse(self, IDquestion=None, ID=None):
-        if self.dict_questionnaires.has_key(IDquestion):
-            if self.dict_questionnaires[IDquestion].has_key(ID):
+        if IDquestion in self.dict_questionnaires:
+            if ID in self.dict_questionnaires[IDquestion]:
                 return self.dict_questionnaires[IDquestion][ID]
         return u""
 

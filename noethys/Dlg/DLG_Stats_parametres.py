@@ -488,15 +488,15 @@ class Dialog(wx.Dialog):
         UTILS_Aide.Aide("Statistiques")
 
     def SetParametres(self, dictParametres={}) :
-        if dictParametres.has_key("mode") :
+        if "mode" in dictParametres :
             mode = dictParametres["mode"]
         else :
             mode = "inscrits"
-        if dictParametres.has_key("periode") :
+        if "periode" in dictParametres :
             periode = dictParametres["periode"]
         else :
             periode = None
-        if dictParametres.has_key("listeActivites") :
+        if "listeActivites" in dictParametres :
             listeActivites = dictParametres["listeActivites"]
         else :
             listeActivites = []

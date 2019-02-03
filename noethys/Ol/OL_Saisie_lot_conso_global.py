@@ -103,12 +103,12 @@ class ListView(FastObjectListView):
 
             dict_conso = {}
             for IDinscription, IDunite in listeConso :
-                if dict_conso.has_key(IDinscription) == False :
+                if (IDinscription in dict_conso) == False :
                     dict_conso[IDinscription] = []
                 dict_conso[IDinscription].append(IDunite)
 
             liste_inscriptions = []
-            for IDinscription, unites in dict_conso.iteritems() :
+            for IDinscription, unites in dict_conso.items() :
                 unites.sort()
                 if unites == liste_unites :
                     liste_inscriptions.append(IDinscription)

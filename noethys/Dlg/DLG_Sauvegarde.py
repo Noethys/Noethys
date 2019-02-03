@@ -18,7 +18,7 @@ import datetime
 import os
 import wx.lib.agw.customtreectrl as CT
 import base64
-
+import six
 from Ctrl import CTRL_Bandeau
 import GestionDB
 from Utils import UTILS_Sauvegarde
@@ -186,11 +186,11 @@ class CTRL_Donnees(CT.CustomTreeCtrl):
         
     def AfficheNbreElements(self):
         dictDonnees = self.GetCoches() 
-        if dictDonnees.has_key("locaux") and len(dictDonnees["locaux"]) > 0 :
+        if "locaux" in dictDonnees and len(dictDonnees["locaux"]) > 0 :
             listeFichiersLocaux = len(dictDonnees["locaux"])
         else:
             listeFichiersLocaux = 0
-        if dictDonnees.has_key("reseau") and len(dictDonnees["reseau"]) > 0 :
+        if "reseau" in dictDonnees and len(dictDonnees["reseau"]) > 0 :
             listeFichiersReseau = len(dictDonnees["reseau"])
         else:
             listeFichiersReseau = 0
@@ -474,6 +474,8 @@ class CTRL_Parametres(wx.Panel) :
                 dlg.Destroy()
                 self.ctrl_confirmation.SetFocus()
                 return False
+            if six.PY3:
+                motdepasse = six.binary_type(motdepasse, "utf-8")
             motdepasse = base64.b64encode(motdepasse)
         else:
             motdepasse = None
@@ -519,11 +521,11 @@ class CTRL_Parametres(wx.Panel) :
         
         # Données à sauver
         dictDonnees = self.ctrl_donnees.GetCoches() 
-        if dictDonnees.has_key("locaux") and len(dictDonnees["locaux"]) > 0 :
+        if "locaux" in dictDonnees and len(dictDonnees["locaux"]) > 0 :
             listeFichiersLocaux = ";".join(dictDonnees["locaux"])
         else:
             listeFichiersLocaux = None
-        if dictDonnees.has_key("reseau") and len(dictDonnees["reseau"]) > 0 :
+        if "reseau" in dictDonnees and len(dictDonnees["reseau"]) > 0 :
             listeFichiersReseau = ";".join(dictDonnees["reseau"])
         else:
             listeFichiersReseau = None

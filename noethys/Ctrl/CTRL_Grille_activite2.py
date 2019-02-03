@@ -118,12 +118,12 @@ class CTRL_Activites(ULC.UltimateListCtrl):
             listeSelections = self.GetIDcoches()
             self.GetGrandParent().SetListeSelectionActivites(listeSelections)
         except :
-            print "Erreur dans le SetListeSelectionIndividus du ultimatelistctrl."
+            print("Erreur dans le SetListeSelectionIndividus du ultimatelistctrl.")
     
     def Importation(self, listeIDindividus=[]):
         # Récupération des activités
         listeActivites = []
-        for IDindividu, dictIndividu in self.dictIndividus.iteritems() :
+        for IDindividu, dictIndividu in self.dictIndividus.items() :
             if IDindividu in self.listeSelectionIndividus :
                 listeInscriptions = dictIndividu["inscriptions"]
                 for dictInscription in listeInscriptions :
@@ -184,7 +184,7 @@ class CTRL_Activites(ULC.UltimateListCtrl):
     
     def GetIDgroupe(self, IDactivite=None, IDindividu=None):
         """ Permet de récupérer l'IDgroupe de l'individu à partir de la grille """
-        if self.dictControles.has_key((IDactivite, IDindividu)) :
+        if (IDactivite, IDindividu) in self.dictControles :
             controle = self.dictControles[(IDactivite, IDindividu)]
             return controle.GetIDgroupe() 
         else:
@@ -192,7 +192,7 @@ class CTRL_Activites(ULC.UltimateListCtrl):
     
     def GetListeGroupes(self, IDactivite=None):
         listeGroupes = []
-        for IDgroupe, dictGroupe in self.dictGroupes.iteritems():
+        for IDgroupe, dictGroupe in self.dictGroupes.items():
             if dictGroupe["IDactivite"] == IDactivite :
                 listeGroupes.append( (dictGroupe["ordre"], dictGroupe["nom"], IDgroupe) )
         listeGroupes.sort() 
@@ -200,7 +200,7 @@ class CTRL_Activites(ULC.UltimateListCtrl):
     
     def GetListeIndividus(self):
         listeNomsIndividus = []
-        for IDindividu, dictInfos in self.dictIndividus.iteritems() :
+        for IDindividu, dictInfos in self.dictIndividus.items() :
             if IDindividu in self.listeSelectionIndividus :
                 if len(dictInfos["inscriptions"]) > 0  :
                     nomIndividu = dictInfos["prenom"]
@@ -210,11 +210,11 @@ class CTRL_Activites(ULC.UltimateListCtrl):
     
     def GetDictInscriptions(self):
         dictInscriptions = {}
-        for IDindividu, dictInfos in self.dictIndividus.iteritems() :
+        for IDindividu, dictInfos in self.dictIndividus.items() :
             listeInscriptions = dictInfos["inscriptions"]
             for dictInscription in listeInscriptions :
                 IDactivite = dictInscription["IDactivite"]
-                if dictInscriptions.has_key(IDactivite) == False :
+                if (IDactivite in dictInscriptions) == False :
                     dictInscriptions[IDactivite] = []
                 dictInscriptions[IDactivite].append(IDindividu)
         return dictInscriptions
@@ -232,7 +232,7 @@ class CTRL_Activites(ULC.UltimateListCtrl):
             self.GetGrandParent().SetListeSelectionActivites(listeSelections)
             self.GetGrandParent().MAJ_grille(autoCocheActivites=False)
         except :
-            print "Erreur dans le Check du ultimatelistctrl.", listeSelections
+            print("Erreur dans le Check du ultimatelistctrl.", listeSelections)
         # Déselectionne l'item après la coche
         if event != None :
             itemIndex = event.m_itemIndex

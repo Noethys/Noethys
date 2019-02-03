@@ -183,5 +183,5 @@ if __name__ == '__main__':
     dlg = Dialog(None, listeUtilisateurs=[])
     app.SetTopWindow(dlg)
     dlg.ShowModal()
-    print dlg.GetDictUtilisateur()
+    print(dlg.GetDictUtilisateur())
     app.MainLoop()

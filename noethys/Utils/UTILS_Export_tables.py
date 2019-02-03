@@ -12,20 +12,20 @@
 import Chemins
 from UTILS_Traduction import _
 import wx
-from Ctrl import CTRL_Bouton_image
 import shelve
 import os
-import cStringIO
+import six
 import GestionDB
+
 
 def InfosFichier(fichier=""):
     """ Récupère les infos principales sur un fichier """
     if os.path.isfile(fichier) == False :
-        print "Pas de fichier a cet emplacement !"
+        print("Pas de fichier a cet emplacement !")
         return None
     dictInfos = {}
     fichier = shelve.open(fichier.encode("iso-8859-15"), "r")
-    for key, valeur in fichier.iteritems() :
+    for key, valeur in fichier.items() :
         dictInfos[key] = valeur
     fichier.close()
     return dictInfos
@@ -127,7 +127,7 @@ class Exporter():
                 
                 # Pour les champs BLOB
                 if (typeChamp == "BLOB" or typeChamp == "LONGBLOB") and donnee != None :
-                    buffer = cStringIO.StringIO(donnee)
+                    buffer = six.BytesIO(donnee)
                     donnee = buffer.read()
                 
                 # Remplacement
@@ -194,7 +194,7 @@ class Importer():
         importation = self.contenu[index]
         nom = importation["nom"]  
         listeTables = importation["tables"]
-        if importation.has_key("correspondances_speciales") :
+        if "correspondances_speciales" in importation :
             correspondances_speciales = importation["correspondances_speciales"]
         else :
             correspondances_speciales = []
@@ -235,7 +235,7 @@ class Importer():
                         valeur_remplacement = None
 
                         # Colonnes
-                        for nomChamp, valeur in ligne.iteritems() :
+                        for nomChamp, valeur in ligne.items() :
 
                             # Get newID de la ligne
                             if nomChamp == champCle :
@@ -243,10 +243,10 @@ class Importer():
 
                             # recherche le champ à remplacer
                             if nomChamp == champ and valeur != None :
-                                if self.dictID[champ_reference].has_key(valeur) :
+                                if valeur in self.dictID[champ_reference] :
                                     valeur_remplacement = self.dictID[champ_reference][valeur]
                                 else :
-                                    print "valeur non trouvee =", champ_reference, "avec la valeur", valeur
+                                    print("valeur non trouvee =", champ_reference, "avec la valeur", valeur)
 
                         # Remplacement de la valeur
                         if newIDligne != None and valeur_remplacement != None :
@@ -275,9 +275,9 @@ class Importer():
             ancienID = None
             newID = prochainID
 
-            for nomChamp, valeur in ligne.iteritems() :
+            for nomChamp, valeur in ligne.items() :
                 
-                if dictTypesChamps.has_key(nomChamp) :
+                if nomChamp in dictTypesChamps :
 
                     if nomChamp == champCle :
                         ancienID = valeur
@@ -288,8 +288,8 @@ class Importer():
                         valeur = None
                     
                     # Remplacement des ID avec le dict des correspondances
-                    if self.dictID.has_key(nomChamp) :
-                        if self.dictID[nomChamp].has_key(valeur) :
+                    if nomChamp in self.dictID :
+                        if valeur in self.dictID[nomChamp] :
                             valeur = self.dictID[nomChamp][valeur]
 
                     # Remplacement d'un champ 'parent' (Prévu pour les étiquettes dans les activités)
@@ -307,8 +307,8 @@ class Importer():
                                 listeTemp = []
                                 for chaine in valeur.split(separateur) :
                                     donnee = int(chaine)
-                                    if self.dictID.has_key(champRemplacement) :
-                                        if self.dictID[champRemplacement].has_key(donnee) :
+                                    if champRemplacement in self.dictID :
+                                        if donnee in self.dictID[champRemplacement] :
                                             donnee = self.dictID[champRemplacement][donnee]
                                     listeTemp.append(str(donnee))
                                 valeur = separateur.join(listeTemp)
@@ -322,14 +322,14 @@ class Importer():
             # Formatage des données pour executermany
             listeDonnees = []
             for nomChamp in liste_champs :
-                if dictDonnees.has_key(nomChamp) :
+                if nomChamp in dictDonnees :
                     listeDonnees.append(dictDonnees[nomChamp])
 
             # Enregistrement
             liste_ajouts.append(listeDonnees)
 
             # Mémorisation de L'ID dans la table des correspondances
-            if self.dictID.has_key(champCle) == False :
+            if (champCle in self.dictID) == False :
                 self.dictID[champCle] = {}
             self.dictID[champCle][ancienID] = newID
 
@@ -364,9 +364,9 @@ class Importer():
             listeDonnees = []
             dictBlobs = {}
             ancienID = None
-            for nomChamp, valeur in ligne.iteritems() :
+            for nomChamp, valeur in ligne.items() :
 
-                if dictTypesChamps.has_key(nomChamp) :
+                if nomChamp in dictTypesChamps :
 
                     if nomChamp == champCle :
                         ancienID = valeur
@@ -377,8 +377,8 @@ class Importer():
                         valeur = None
 
                     # Remplacement des ID avec le dict des correspondances
-                    if self.dictID.has_key(nomChamp) :
-                        if self.dictID[nomChamp].has_key(valeur) :
+                    if nomChamp in self.dictID :
+                        if valeur in self.dictID[nomChamp] :
                             valeur = self.dictID[nomChamp][valeur]
 
                     # Remplacement d'un champ 'parent' (Prévu pour les étiquettes dans les activités)
@@ -396,8 +396,8 @@ class Importer():
                                 listeTemp = []
                                 for chaine in valeur.split(separateur) :
                                     donnee = int(chaine)
-                                    if self.dictID.has_key(champRemplacement) :
-                                        if self.dictID[champRemplacement].has_key(donnee) :
+                                    if champRemplacement in self.dictID :
+                                        if donnee in self.dictID[champRemplacement] :
                                             donnee = self.dictID[champRemplacement][donnee]
                                     listeTemp.append(str(donnee))
                                 valeur = separateur.join(listeTemp)
@@ -410,11 +410,11 @@ class Importer():
             newID = self.DB.ReqInsert(nomTable, listeDonnees)
 
             # Enregistrement des blobs à part
-            for nomChampBlob, blob in dictBlobs.iteritems() :
+            for nomChampBlob, blob in dictBlobs.items() :
                 self.DB.MAJimage(table=nomTable, key=champCle, IDkey=newID, blobImage=blob, nomChampBlob=nomChampBlob)
 
             # Mémorisation de L'ID dans la table des correspondances
-            if self.dictID.has_key(champCle) == False :
+            if (champCle in self.dictID) == False :
                 self.dictID[champCle] = {}
             self.dictID[champCle][ancienID] = newID
 

@@ -20,6 +20,7 @@ import pickle
 import sys, getopt
 import getpass
 import base64
+import six
 
 
 class CypherText:
@@ -48,6 +49,8 @@ class CypherText:
 	
 def hashPassword_MD5(Password):
 	m = hashlib.md5()
+	if six.PY3:
+		Password = str(Password).encode('utf-8')
 	m.update(Password)
 	return m.hexdigest()
 	
@@ -69,12 +72,17 @@ def encrypt(message, key):
 	TrailLen = 0
 	#AES requires blocks of 16
 	while (len(message) % 16) != 0:
-		message  = message + '_'
+		if six.PY2:
+			message  = message + '_'
+		else :
+			message = message + b'_'
 		TrailLen = TrailLen + 1
 	
 	CypherOut = CypherText()
 	CypherOut.setTrail(TrailLen)
-	
+
+	if six.PY3:
+		key = key.encode("utf8")
 	cryptu = AES.new(key, AES.MODE_ECB)
 
 	#Try to delete the key from memory
@@ -84,6 +92,8 @@ def encrypt(message, key):
 	return CypherOut
 	
 def decrypt(ciphertext, key):
+	if six.PY3:
+		key = key.encode("utf8")
 	cryptu = AES.new(key, AES.MODE_ECB)
 	
 	#Try to delete the key from memory
@@ -135,10 +145,10 @@ System exit code:
 def parseCommandLine():
 	try:
 		opts, args = getopt.getopt(sys.argv[1:], "hed", ["help","encrypt","decrypt"])
-	except getopt.error, msg:
-		print 'Cannot parse arguments:'
-		print msg
-		print '\n' + getManual()
+	except getopt.error as msg:
+		print('Cannot parse arguments:')
+		print(msg)
+		print('\n' + getManual())
 		sys.exit(2)
 	
 	method = ''
@@ -146,7 +156,7 @@ def parseCommandLine():
 	#Process options
 	for o, a in opts:
 		if o in ("-h", "--help"):
-			print getManual()
+			print(getManual())
 			sys.exit(0)
 			
 		elif o in ("-d", "--decrypt"):
@@ -154,18 +164,18 @@ def parseCommandLine():
 		elif o in ("-e", "--encrypt"):
 			method = 'encrypt'
 		else:
-			print 'Invalid option.'
-			print getManual()
+			print('Invalid option.')
+			print(getManual())
 			sys.exit(2)
 	
 	if len(opts) > 1:
-		print 'Too many options'
-		print getManual()
+		print('Too many options')
+		print(getManual())
 		sys.exit(2)
 		
 	if len(args) > 3:
-		print 'Too many arguments'
-		print getManual()
+		print('Too many arguments')
+		print(getManual())
 		sys.exit(2)
 	
 	#If -e -d?
@@ -175,11 +185,11 @@ def parseCommandLine():
 		menu +="1: Encrypt a file\n"
 		menu +="2: Decrypt a file\n"
 		menu +="(1,2)?"
-		print menu
+		print(menu)
 		choice = raw_input()
 		
 		while (choice != '1') and (choice != '2'):
-			print menu
+			print(menu)
 			choice = raw_input()
 		
 		if choice == '1':
@@ -213,7 +223,7 @@ def parseCommandLine():
 
 def checkProgArgs(method, filename_in, filename_out, password):
 	if (method != 'encrypt') and (method != 'decrypt'):
-		print 'ERROR: invalid method: ' + method
+		print('ERROR: invalid method: ' + method)
 		sys.exit(-1)
 	
 	#Should it be allowed?
@@ -311,5 +321,5 @@ if (__name__ == '__main__'):
 
     cryptage = AESCipher("motdepasse", bs=32, prefixe="#x#")
     data = cryptage.encrypt(u"Ceci est le texte codé")
-    print len(data), data
-    print cryptage.decrypt(data)
+    print(len(data), data)
+    print(cryptage.decrypt(data))

@@ -18,7 +18,7 @@ import datetime
 import GestionDB
 from Utils import UTILS_Dates
 from Dlg import DLG_Saisie_contrat_conso_detail
-import cPickle
+from six.moves import cPickle
 import copy
 
 from Utils import UTILS_Interface
@@ -59,10 +59,10 @@ class Track(object):
         # Texte unités
         listeTemp = []
         for dictUnite in self.unites :
-            if self.parent.dictUnites.has_key(dictUnite["IDunite"]) :
+            if dictUnite["IDunite"] in self.parent.dictUnites :
                 nomUnite = self.parent.dictUnites[dictUnite["IDunite"]]["nom"]
-                if dictUnite.has_key("options") :
-                    if dictUnite["options"].has_key("heure_debut") :
+                if "options" in dictUnite :
+                    if "heure_debut" in dictUnite["options"] :
                         nomUnite += u" (%s-%s)" % (dictUnite["options"]["heure_debut"].replace(":", "h"), dictUnite["options"]["heure_fin"].replace(":", "h"))
                 listeTemp.append(nomUnite)
         self.unites_txt = " + ".join(listeTemp)
@@ -414,16 +414,16 @@ class ListView(FastObjectListView):
                     IDunite = dictUnite["IDunite"]
                     options = dictUnite["options"]
 
-                    if options.has_key("heure_debut"):
+                    if "heure_debut" in options:
                         heure_debut = options["heure_debut"]
                     else :
                         heure_debut = self.dictUnites[IDunite]["heure_debut"]
-                    if options.has_key("heure_fin"):
+                    if "heure_fin" in options:
                         heure_fin = options["heure_fin"]
                     else :
                         heure_fin = self.dictUnites[IDunite]["heure_fin"]
 
-                    if options.has_key("quantite"):
+                    if "quantite" in options:
                         quantite = options["quantite"]
                     else :
                         quantite = None
@@ -509,7 +509,7 @@ class MyFrame(wx.Frame):
         self.Bind(wx.EVT_BUTTON, self.OnTest, self.bouton_test)
         
     def OnTest(self, event):
-        print "ok"
+        print("ok")
         
 
 if __name__ == '__main__':

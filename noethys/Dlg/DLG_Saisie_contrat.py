@@ -23,7 +23,7 @@ from Utils import UTILS_Dates
 import copy
 from Utils import UTILS_Identification
 from Ol import OL_Activites
-import cPickle
+from six.moves import cPickle
 import wx.lib.dialogs as dialogs
 
 
@@ -86,7 +86,7 @@ class CTRL_Tarif(CTRL_Ultrachoice.CTRL):
             listeNomsCategories = []
             for IDcategorie_tarif in listeCategoriesTarifs :
                 nomCategorieTarif = _(u"Categorie de tarif inconnue")
-                if dictCategoriesTarifs.has_key(IDcategorie_tarif) :
+                if IDcategorie_tarif in dictCategoriesTarifs :
                     nomCategorieTarif = dictCategoriesTarifs[IDcategorie_tarif]
                 listeNomsCategories.append(nomCategorieTarif)
             
@@ -392,7 +392,7 @@ class Dialog(wx.Dialog):
                 "IDconso" : IDconso, "IDindividu" : IDindividu, "IDinscription" : IDinscription, "IDactivite" : IDactivite, "date" : date, "IDunite" : IDunite, "IDgroupe" : IDgroupe, "heure_debut" : heure_debut, "heure_fin" : heure_fin, "quantite" : quantite,
                 "etat" : etat, "verrouillage" : verrouillage, "date_saisie" : date_saisie, "IDutilisateur" : IDutilisateur, "IDcategorie_tarif" : IDcategorie_tarif, "IDcompte_payeur" : IDcompte_payeur, "IDprestation" : IDprestation, 
                 }
-            if dictConso.has_key(IDprestation) == False :
+            if (IDprestation in dictConso) == False :
                 dictConso[IDprestation] = []
             if mode_copie == True :
                 dictTemp["IDconso"] = None
@@ -423,7 +423,7 @@ class Dialog(wx.Dialog):
             else :
                 numFacture = u"%06d" % numFacture
 
-            if dictConso.has_key(IDprestation) and copie_conso == True :
+            if IDprestation in dictConso and copie_conso == True :
                 listeConso = dictConso[IDprestation]
             else :
                 listeConso = []
@@ -629,7 +629,7 @@ class Dialog(wx.Dialog):
                         listeAjouts.append(dictConsoTemp)
 
             if len(listeAjouts) > 0 :
-                listeChamps = listeAjouts[0].keys() 
+                listeChamps = list(listeAjouts[0].keys()) 
                 listeDonnees = []
                 listeInterrogations = []
                 for champ in listeChamps :
@@ -669,8 +669,8 @@ class Dialog(wx.Dialog):
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         for IDunite_incompat, IDunite, IDunite_incompatible in listeDonnees :
-            if dictUnites.has_key(IDunite) : dictUnites[IDunite]["unites_incompatibles"].append(IDunite_incompatible)
-            if dictUnites.has_key(IDunite_incompatible) : dictUnites[IDunite_incompatible]["unites_incompatibles"].append(IDunite)
+            if IDunite in dictUnites : dictUnites[IDunite]["unites_incompatibles"].append(IDunite_incompatible)
+            if IDunite_incompatible in dictUnites : dictUnites[IDunite_incompatible]["unites_incompatibles"].append(IDunite)
         
         # Récupération des ouvertures des unités
         req = """SELECT IDouverture, IDunite, IDgroupe, date
@@ -695,7 +695,7 @@ class Dialog(wx.Dialog):
         for IDconso, date, IDunite, heure_debut, heure_fin, etat in listeDonnees :
             date = UTILS_Dates.DateEngEnDateDD(date)
             if IDconso not in self.listeSuppressionConso :
-                if dictConsommations.has_key(date) == False :
+                if (date in dictConsommations) == False :
                     dictConsommations[date] = []
                 dictConsommations[date].append({"IDconso" : IDconso, "IDunite" : IDunite, "heure_debut" : heure_debut, "heure_fin" : heure_fin, "etat" : etat})
         
@@ -709,12 +709,12 @@ class Dialog(wx.Dialog):
                     valide = True
                     
                     # Vérifie si unité ouverte
-                    if dictOuvertures.has_key((dictConso["date"], dictConso["IDunite"], self.IDgroupe)) == False :
+                    if ((dictConso["date"], dictConso["IDunite"], self.IDgroupe) in dictOuvertures) == False :
                         listeAnomalies.append(_(u"%s : Unité %s fermée pour le groupe %s") % (dateFr, dictUnites[dictConso["IDunite"]]["nom"], self.nomGroupe))
                         valide = False
                     
                     # Recherche si pas d'incompatibilités avec les conso déjà saisies
-                    if dictConsommations.has_key(dictConso["date"]) :
+                    if dictConso["date"] in dictConsommations :
                         for dictConsoTemp in dictConsommations[dictConso["date"]] :
                             nomUnite1 = dictUnites[dictConso["IDunite"]]["nom"]
                             nomUnite2 = dictUnites[dictConsoTemp["IDunite"]]["nom"]

@@ -44,7 +44,7 @@ class CTRL_Question(wx.Choice):
         self.SetSelection(0)
 
     def SetID(self, ID=None):
-        for indexTemp, IDtemp in self.dictDonnees.iteritems():
+        for indexTemp, IDtemp in self.dictDonnees.items():
             if IDtemp == ID:
                 self.SetSelection(indexTemp)
 
@@ -260,7 +260,7 @@ class MyFrame(wx.Frame):
         
     def OnBoutonTest(self, event):
         """ Bouton Test """
-        print self.ctrl.GetOptions() 
+        print(self.ctrl.GetOptions()) 
 
 if __name__ == '__main__':
     app = wx.App(0)

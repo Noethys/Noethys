@@ -71,7 +71,7 @@ class CTRL_document(wx.Choice):
         return listeChoix
     
     def SetValeurDefaut(self):
-        for index, dictDocument in self.dictChoix.iteritems() :
+        for index, dictDocument in self.dictChoix.items() :
             retardMin, retardMax = dictDocument["retardDefaut"]
             if self.nbreJoursRetard >= retardMin and self.nbreJoursRetard <= retardMax :
                 self.SetSelection(index)
@@ -231,7 +231,7 @@ class CTRL(HTL.HyperTreeList):
                                                                                 prestations=self.dictParametres["prestations"],
                                                                                 )            
             del dlgAttente
-        except Exception, err:
+        except Exception as err:
             del dlgAttente
             traceback.print_exc(file=sys.stdout)
             dlg = wx.MessageDialog(self, _(u"Désolé, le problème suivant a été rencontré dans la recherche des rappels : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
@@ -242,7 +242,7 @@ class CTRL(HTL.HyperTreeList):
         # Condition famille unique
         if self.dictParametres["IDcompte_payeur"] != None :
             IDcompte_payeur = self.dictParametres["IDcompte_payeur"]
-            if self.dictComptes.has_key(IDcompte_payeur) :
+            if IDcompte_payeur in self.dictComptes :
                 self.dictComptes = { IDcompte_payeur : self.dictComptes[IDcompte_payeur],}
             else :
                 self.dictComptes = {}
@@ -250,7 +250,7 @@ class CTRL(HTL.HyperTreeList):
         # Branches COMPTE
         listeNomsSansCivilite = []
         self.dictControles = {}
-        for IDcompte_payeur, dictCompte in self.dictComptes.iteritems() :
+        for IDcompte_payeur, dictCompte in self.dictComptes.items() :
             listeNomsSansCivilite.append((dictCompte["nomSansCivilite"], IDcompte_payeur))
         listeNomsSansCivilite.sort() 
         
@@ -373,7 +373,7 @@ class CTRL(HTL.HyperTreeList):
         try :
             UTILS_Impression_rappel.Impression({IDcompte_payeur : dictCompte}, dictOptions, IDmodele=dictOptions["IDmodele"])
             del dlgAttente
-        except Exception, err:
+        except Exception as err:
             del dlgAttente
             traceback.print_exc(file=sys.stdout)
             dlg = wx.MessageDialog(self, _(u"Désolé, le problème suivant a été rencontré dans la création de l'aperçu de la lettre de rappel : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)

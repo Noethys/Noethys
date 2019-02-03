@@ -86,7 +86,7 @@ class CTRL_Groupes(wx.CheckListBox):
             listeTemp = (nomGroupe, IDtype_groupe_activite)
             if listeTemp not in listeDonnees : 
                 listeDonnees.append(listeTemp)
-            if self.dictDonnees.has_key(IDtype_groupe_activite) == False :
+            if (IDtype_groupe_activite in self.dictDonnees) == False :
                 self.dictDonnees[IDtype_groupe_activite] = []
             self.dictDonnees[IDtype_groupe_activite].append(IDactivite)            
         return listeDonnees

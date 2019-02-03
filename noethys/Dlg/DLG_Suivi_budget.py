@@ -38,8 +38,8 @@ try :
     import matplotlib.mlab as mlab
     import matplotlib.pyplot as plt
     from matplotlib.ticker import FormatStrFormatter
-except Exception, err :
-    print "Erreur d'import : ", Exception, err
+except Exception as err :
+    print("Erreur d'import : ", Exception, err)
 
 
 
@@ -98,7 +98,7 @@ class CTRL_Budget(wx.Choice):
         return listeItems
 
     def SetID(self, ID=0):
-        for index, values in self.dictDonnees.iteritems():
+        for index, values in self.dictDonnees.items():
             if values["IDbudget"] == ID :
                  self.SetSelection(index)
 

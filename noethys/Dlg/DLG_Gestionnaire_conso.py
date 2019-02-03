@@ -438,7 +438,7 @@ class PanelGrille(wx.Panel):
                 if IDindividu in self.grille.dictConsoIndividus:
                     if self.date in self.grille.dictConsoIndividus[IDindividu]:
                         # Vérifie que l'individu a des conso pour la ou les groupes sélectionnés
-                        for IDunite, listeConso in self.grille.dictConsoIndividus[IDindividu][self.date].iteritems():
+                        for IDunite, listeConso in self.grille.dictConsoIndividus[IDindividu][self.date].items():
                             for conso in listeConso:
                                 if conso.IDgroupe in self.listeGroupes:
                                     valide = True
@@ -525,7 +525,7 @@ class Dialog(wx.Dialog):
         taille_fenetre = UTILS_Config.GetParametre("taille_fenetre_tableau_presences")
         if taille_fenetre is None:
             self.SetSize((900, 600))
-        if taille_fenetre == (0, 0):
+        if taille_fenetre == (0, 0) or taille_fenetre == None:
             self.Maximize(True)
         else:
             self.SetSize(taille_fenetre)
@@ -1133,7 +1133,7 @@ if __name__ == "__main__":
     app = wx.App(0)
     heure_debut = time.time()
     dlg = Dialog(None)
-    print("Temps de chargement = {0}".format(time.time() - heure_debut))
+    print(("Temps de chargement = {0}".format(time.time() - heure_debut)))
     app.SetTopWindow(dlg)
     dlg.ShowModal()
     app.MainLoop()

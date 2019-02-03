@@ -123,8 +123,8 @@ class ListView(FastObjectListView):
         self.selectionTrack = None
 
     def GetReponse(self, IDquestion=None, ID=None):
-        if self.dict_questionnaires.has_key(IDquestion) :
-            if self.dict_questionnaires[IDquestion].has_key(ID) :
+        if IDquestion in self.dict_questionnaires :
+            if ID in self.dict_questionnaires[IDquestion] :
                 return self.dict_questionnaires[IDquestion][ID]
         return u""
 

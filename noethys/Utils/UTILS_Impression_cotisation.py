@@ -133,7 +133,7 @@ class Impression():
         
         # ----------- Insertion du contenu des frames --------------
         listeLabels = []
-        for IDcotisation, dictValeur in dictValeurs.iteritems() :
+        for IDcotisation, dictValeur in dictValeurs.items() :
             listeLabels.append((dictValeur["{FAMILLE_NOM}"], IDcotisation))
         listeLabels.sort() 
         

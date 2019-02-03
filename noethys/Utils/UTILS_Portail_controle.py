@@ -48,18 +48,18 @@ class ServeurConnecthys():
             ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
             ssh.connect(self.dict_parametres["ssh_serveur"], port=int(self.dict_parametres["ssh_port"]), username=self.dict_parametres["ssh_utilisateur"], password=self.dict_parametres["ssh_mdp"])
             return ssh
-        except Exception, err:
+        except Exception as err:
             self.parent.EcritLog(_(u"PROBLEME..."))
             self.parent.EcritLog(err)
-            print ("Connection SSH/SFTP impossible :", err)
+            print(("Connection SSH/SFTP impossible :", err))
 
     def CloseSSHConnect(self, ssh=None) :
         try :
             ssh.close()
-        except Exception, err:
+        except Exception as err:
             self.parent.EcritLog(_(u"PROBLEME..."))
             self.parent.EcritLog(err)
-            print ("Deconnection SSH/SFTP impossible :", err)
+            print(("Deconnection SSH/SFTP impossible :", err))
 
 
     def GetServerStatus(self):
@@ -73,8 +73,8 @@ class ServeurConnecthys():
                             for nom in p.cmdline() :
                                 if "run.py" in nom :
                                     server_is_running = True
-                except Exception, err :
-                    print "Erreur dans detection processus serveur Connecthys :", err
+                except Exception as err :
+                    print("Erreur dans detection processus serveur Connecthys :", err)
         elif self.dict_parametres["hebergement_type"] == 1 :
             return False
         elif self.dict_parametres["hebergement_type"] == 2 and self.ssh != None:
@@ -135,9 +135,9 @@ class ServeurConnecthys():
                 p = subprocess.Popen(args, shell=True, cwd=rep)
                 process_ok = True
                 break
-            except Exception, err :
-                print "Erreur lancement Connecthys :", err
-                print "args =", args
+            except Exception as err :
+                print("Erreur lancement Connecthys :", err)
+                print("args =", args)
                 self.EcritLog(_(u"Erreur dans le lancement du serveur Connecthys :"))
                 self.EcritLog(err)
                 process_ok = False

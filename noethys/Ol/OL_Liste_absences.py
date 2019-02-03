@@ -41,11 +41,11 @@ class Track(object):
             
             # Tri des consommations par date
             date = dictTemp["date"]
-            if dictDates.has_key(date) == False :
+            if (date in dictDates) == False :
                 dictDates[date] = []
             dictDates[date].append(dictTemp["abregeUnite"])
         
-        listeDates = dictDates.keys()
+        listeDates = list(dictDates.keys())
         listeDates.sort() 
         self.nbreDates = len(listeDates)
         
@@ -106,12 +106,12 @@ class ListView(FastObjectListView):
         
         dictIndividus = {}
         for IDconso, date, IDunite, IDindividu, nom, prenom, nomUnite, abregeUnite in listeDonnees :
-            if dictIndividus.has_key(IDindividu) == False :
+            if (IDindividu in dictIndividus) == False :
                 dictIndividus[IDindividu] = {"IDindividu" : IDindividu, "nom" : nom, "prenom" : prenom, "consommations" : [] }
             dictIndividus[IDindividu]["consommations"].append(({"IDconso" : IDconso, "date" : UTILS_Dates.DateEngEnDateDD(date), "IDunite" : IDunite, "nomUnite" : nomUnite, "abregeUnite" : abregeUnite}))
         
         listeListeView = []
-        for IDindividu, dictTemp in dictIndividus.iteritems() :
+        for IDindividu, dictTemp in dictIndividus.items() :
             track = Track(dictTemp)
             listeListeView.append(track)
             if self.selectionID == IDindividu :

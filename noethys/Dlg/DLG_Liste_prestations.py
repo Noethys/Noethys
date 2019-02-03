@@ -43,10 +43,10 @@ class CTRL_Annee(wx.Choice):
         for IDreglement, date in listeDonnees :
             dateDD = UTILS_Dates.DateEngEnDateDD(date)
             if dateDD != None :
-                if dictAnnees.has_key(dateDD.year) == False :
+                if (dateDD.year in dictAnnees) == False :
                     dictAnnees[dateDD.year] = 0
                 dictAnnees[dateDD.year] += 1
-        listeAnnees = dictAnnees.keys() 
+        listeAnnees = list(dictAnnees.keys()) 
         listeAnnees.sort() 
         for annee in listeAnnees :
             nbreReglements = dictAnnees[annee]
@@ -254,7 +254,7 @@ class Dialog(wx.Dialog):
         if IDactivite != None :
             self.ctrl_listview.dictFiltres["prestations.IDactivite"] = IDactivite
         else :
-            if self.ctrl_listview.dictFiltres.has_key("prestations.IDactivite") :
+            if "prestations.IDactivite" in self.ctrl_listview.dictFiltres :
                 del self.ctrl_listview.dictFiltres["prestations.IDactivite"]
 
         # Filtre Facturé
@@ -300,7 +300,7 @@ if __name__ == "__main__":
     dlg = Dialog(None)
     dlg.ctrl_annee.SetSelection(0)
     dlg.MAJ()
-    print "Temps de chargement =", time.time() - heure_debut
+    print("Temps de chargement =", time.time() - heure_debut)
     app.SetTopWindow(dlg)
     dlg.ShowModal()
     app.MainLoop()

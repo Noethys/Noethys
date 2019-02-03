@@ -13,11 +13,8 @@ import Chemins
 from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
-import CTRL_Bouton_image
-from PIL import Image
 import os
-import cStringIO
-
+import six
 import GestionDB
 
 
@@ -57,7 +54,7 @@ class CTRL(wx.StaticBitmap):
                 # Si une image est trouvée
                 self.bmpBuffer = listeDonnees[0][0]
                 if self.bmpBuffer != None :
-                    io = cStringIO.StringIO(self.bmpBuffer)
+                    io = six.BytesIO(self.bmpBuffer)
                     if 'phoenix' in wx.PlatformInfo:
                         img = wx.Image(io, wx.BITMAP_TYPE_JPEG)
                     else :

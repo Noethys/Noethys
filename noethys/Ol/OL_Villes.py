@@ -186,7 +186,7 @@ class ListView(FastObjectListView):
                     valide = False
             
             # Traitement des corrections
-            if dictCorrections.has_key(IDville) :
+            if IDville in dictCorrections :
                 mode = dictCorrections[IDville]["mode"]
                 if mode == "modif" :
                     nom = dictCorrections[IDville]["nom"]

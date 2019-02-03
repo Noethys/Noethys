@@ -34,7 +34,7 @@ def Activer_rapport_erreurs(version=""):
         bug = ''.join(traceback.format_exception(exctype, value, tb))
 
         # Affichage dans le journal
-        print bug
+        print(bug)
 
         # Affichage dans une DLG
         try :
@@ -210,7 +210,7 @@ class DLG_Rapport(wx.Dialog):
             messagerie.Connecter()
             messagerie.Envoyer(message)
             messagerie.Fermer()
-        except Exception, err :
+        except Exception as err :
             dlg = wx.MessageDialog(self, _(u"Le message n'a pas pu être envoyé. Merci de poster votre rapport de bug sur le forum de Noethys.\n\nErreur : %s !") % err, _(u"Envoi impossible"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()

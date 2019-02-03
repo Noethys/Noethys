@@ -60,7 +60,7 @@ class CTRL_famille(html.HtmlWindow):
     def GetNomsTitulaires(self):
         listeTitulaires = []
         nbreTitulaires = 0
-        for IDindividu, dictIndividu in self.dictIndividus.iteritems():
+        for IDindividu, dictIndividu in self.dictIndividus.items():
             if dictIndividu["titulaire"] == 1 :
                 nom = dictIndividu["nom"]
                 prenom = dictIndividu["prenom"]
@@ -128,7 +128,7 @@ class CTRL_individus(ULC.UltimateListCtrl):
         
         # Création de la liste d'individus à afficher
         listeIndividus = []
-        for IDindividu, dictIndividu in self.dictIndividus.iteritems() :
+        for IDindividu, dictIndividu in self.dictIndividus.items() :
             nbreInscriptions = len(dictIndividu["inscriptions"])
             age = dictIndividu["age"]
             prenom = dictIndividu["prenom"]

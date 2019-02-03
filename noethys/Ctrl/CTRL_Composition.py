@@ -53,7 +53,7 @@ class GetValeurs() :
                 if self.dictInfosIndividus[IDindividu]["categorie"] == numCol :
                     listeLiensIndividus = self.RechercheLien(IDindividu)
                     for IDindividu_objet, IDtype_lien, typeRelation in listeLiensIndividus :
-                        if self.dictInfosIndividus.has_key(IDindividu_objet) :
+                        if IDindividu_objet in self.dictInfosIndividus :
                             # Relations de couple
                             if (typeRelation == "couple" or typeRelation == "ex-couple") and (IDindividu_objet, IDindividu) not in dictRelations[numCol][typeRelation] :
                                 dictRelations[numCol][typeRelation].append( (IDindividu, IDindividu_objet) )
@@ -61,7 +61,7 @@ class GetValeurs() :
                             if typeRelation == "enfant" :
                                 IDenfant = IDindividu
                                 IDparent = IDindividu_objet
-                                if dictRelations[numCol]["filiation"].has_key(IDenfant) == False :
+                                if (IDenfant in dictRelations[numCol]["filiation"]) == False :
                                     dictRelations[numCol]["filiation"][IDenfant] = [IDparent,]
                                 else:
                                     if IDparent not in dictRelations[numCol]["filiation"][IDenfant] :
@@ -121,7 +121,7 @@ class GetValeurs() :
         DB.ExecuterReq(req)
         listeInscriptions = DB.ResultatReq()
         for IDinscription, IDindividu, dateInscription, parti, nomActivite, activiteDebut, activiteFin, nomGroupe, nomCategorie in listeInscriptions :
-            if dictInscriptions.has_key(IDindividu) == False :
+            if (IDindividu in dictInscriptions) == False :
                 dictInscriptions[IDindividu] = []
             dictTemp = {
                 "IDinscription":IDinscription, "dateInscription":dateInscription, "parti":parti, 
@@ -175,7 +175,7 @@ class GetValeurs() :
         
         # Recherche des photos
         listeIndividusTemp = []
-        for IDindividu, dictValeursTemp in dictInfos.iteritems() :
+        for IDindividu, dictValeursTemp in dictInfos.items() :
             nomFichier = Chemins.GetStaticPath("Images/128x128/%s" % dictValeursTemp["nomImage"])
             listeIndividusTemp.append((IDindividu, nomFichier))
         dictPhotos = CTRL_Photo.GetPhotos(listeIndividus=listeIndividusTemp, taillePhoto=(128, 128), qualite=wx.IMAGE_QUALITY_HIGH)
@@ -201,7 +201,7 @@ class GetValeurs() :
             
             # Adresse
             adresse_auto = dictInfos[IDindividu]["adresse_auto"] 
-            if adresse_auto != None and dictInfos.has_key(adresse_auto) :
+            if adresse_auto != None and adresse_auto in dictInfos :
                 rue_resid = dictInfos[adresse_auto]["rue_resid"] 
                 cp_resid = dictInfos[adresse_auto]["cp_resid"] 
                 ville_resid = dictInfos[adresse_auto]["ville_resid"] 
@@ -237,7 +237,7 @@ class GetValeurs() :
                 dictInfos[IDindividu]["travail_tel_complet"] = None            
             
             # Infos sur les activités inscrites
-            if dictInscriptions.has_key(IDindividu) == True :
+            if (IDindividu in dictInscriptions) == True :
                 dictInfos[IDindividu]["inscriptions"] = True
                 dictInfos[IDindividu]["listeInscriptions"] = dictInscriptions[IDindividu]
             else:
@@ -245,7 +245,7 @@ class GetValeurs() :
                 dictInfos[IDindividu]["listeInscriptions"] = []
             
             # Photo
-            if dictPhotos.has_key(IDindividu) :
+            if IDindividu in dictPhotos :
                 bmp = dictPhotos[IDindividu]["bmp"]
             else :
                 bmp = None
@@ -396,7 +396,7 @@ class CadreIndividu():
         hauteur = self.hauteur
         
         # Création de l'ID pour le dictionnaire d'objets
-        if self.parent.dictIDs.has_key(self.IDobjet) : 
+        if self.IDobjet in self.parent.dictIDs : 
             self.dc.RemoveId(self.IDobjet)
         self.dc.SetId(self.IDobjet)
         
@@ -699,7 +699,7 @@ class CTRL_Graphique(wx.ScrolledWindow):
         
         # Création des colonnes
         dictColonnes = { 1 : [], 2 : [], 3 : [] }
-        for IDindividu, valeurs in self.dictCadres.iteritems() :
+        for IDindividu, valeurs in self.dictCadres.items() :
             if valeurs["categorie"] == 1 : dictColonnes[1].append(IDindividu)
             if valeurs["categorie"] == 2 : dictColonnes[2].append(IDindividu)
             if valeurs["categorie"] == 3 : dictColonnes[3].append(IDindividu)
@@ -734,7 +734,7 @@ class CTRL_Graphique(wx.ScrolledWindow):
                 2 : { "couleurFond" : self.couleurFondCol2, "x" : posSeparationCol1, "width" : posSeparationCol2-posSeparationCol1, "bmp" : self.bmp_enfants},
                 3 : { "couleurFond" : self.couleurFondCol3, "x" : posSeparationCol2, "width" : tailleDC[0]-posSeparationCol2, "bmp" : self.bmp_contacts},
             }
-            if paramFond.has_key(numCol) : 
+            if numCol in paramFond : 
                 dc.SetBrush(wx.Brush(paramFond[numCol]["couleurFond"]))
                 dc.SetPen(wx.Pen(paramFond[numCol]["couleurFond"], 0))
                 dc.DrawRectangle(x=paramFond[numCol]["x"], y=0, width=paramFond[numCol]["width"], height=tailleDC[1])
@@ -769,7 +769,7 @@ class CTRL_Graphique(wx.ScrolledWindow):
     def DrawLiensCouple(self, dc, listeLiensCouple, type=""):
         nbreLiensCouple = len(listeLiensCouple)
         for IDindividu1, IDindividu2 in listeLiensCouple :
-            if self.dictCadres.has_key(IDindividu1) and self.dictCadres.has_key(IDindividu2) :
+            if IDindividu1 in self.dictCadres and IDindividu2 in self.dictCadres :
                 dc.SetId(wx.NewId())
                 decalage = 20 # Décalage de la ligne de lien par rapport au bord du cadre
                 listePoints = []
@@ -809,9 +809,9 @@ class CTRL_Graphique(wx.ScrolledWindow):
             # Recherche des liens de filiation
             dictLiensFiliation = self.dictLiensCadres[numCol]["filiation"]            
             dictParents = {}
-            for IDenfant, listeParents in dictLiensFiliation.iteritems() :
+            for IDenfant, listeParents in dictLiensFiliation.items() :
                 listeParents = tuple(listeParents)
-                if dictParents.has_key(listeParents) == False :
+                if (listeParents in dictParents) == False :
                     dictParents[listeParents] = [IDenfant,]
                 else:
                     dictParents[listeParents].append(IDenfant)
@@ -826,7 +826,7 @@ class CTRL_Graphique(wx.ScrolledWindow):
             
             # Dessin des liens de filiation
             index = 0
-            for listeParents, listeEnfants in dictParents.iteritems() :
+            for listeParents, listeEnfants in dictParents.items() :
                 posXLigneParents = posCentrale[index]
                 posXLigneEnfants = posXLigneParents
                 
@@ -883,7 +883,7 @@ class CTRL_Graphique(wx.ScrolledWindow):
         listeObjets = self.pdc.FindObjectsByBBox(x, y)
         if len(listeObjets) != 0 :
             IDobjet = listeObjets[0]
-            if self.dictIDs.has_key(IDobjet) :
+            if IDobjet in self.dictIDs :
                 if self.dictIDs[IDobjet][0] == "individu" :
                     IDindividu = self.dictIDs[IDobjet][1]
                     return IDindividu
@@ -891,7 +891,7 @@ class CTRL_Graphique(wx.ScrolledWindow):
     
     def DeselectionneTout(self, ExcepteIDindividu=None):
         """ Désélectionne tous les cadres du dc """
-        for IDindividuTmp, valeurs in self.dictCadres.iteritems() :
+        for IDindividuTmp, valeurs in self.dictCadres.items() :
             if ExcepteIDindividu != IDindividuTmp :
                 cadre = self.dictCadres[IDindividuTmp]["ctrl"]
                 if cadre.selectionCadre == True :
@@ -899,7 +899,7 @@ class CTRL_Graphique(wx.ScrolledWindow):
 
     def DezoomTout(self, ExcepteIDindividu=None):
         """ Désélectionne tous les cadres du dc """
-        for IDindividuTmp, valeurs in self.dictCadres.iteritems() :
+        for IDindividuTmp, valeurs in self.dictCadres.items() :
             if ExcepteIDindividu != IDindividuTmp :
                 cadre = self.dictCadres[IDindividuTmp]["ctrl"]
                 if cadre != None and cadre.zoom != 1 :
@@ -1242,7 +1242,7 @@ class CTRL_Graphique(wx.ScrolledWindow):
         if self.dictCadres[self.IDindividu_menu]["titulaire"] == 1 :
             # Recherche s'il restera au moins un titulaire dans cette famille
             nbreTitulaires = 0
-            for IDindividu, dictCadre in self.dictCadres.iteritems() :
+            for IDindividu, dictCadre in self.dictCadres.items() :
                 if dictCadre["titulaire"] == 1 : 
                     nbreTitulaires += 1
             if nbreTitulaires == 1 :
@@ -1475,7 +1475,7 @@ class CTRL_Liste(HTL.HyperTreeList):
     def CreationBranches(self):
         """ Création des branches """
         dictCategories = {1 : [], 2 : [], 3:[] }
-        for IDindividu, dictIndividu in self.donnees.dictInfosIndividus.iteritems() :
+        for IDindividu, dictIndividu in self.donnees.dictInfosIndividus.items() :
             dictCategories[dictIndividu["categorie"]].append((IDindividu, dictIndividu))
             
         # Création des branche CATEGORIES
@@ -1795,7 +1795,7 @@ class CTRL_Liste(HTL.HyperTreeList):
         if self.donnees.dictInfosIndividus[IDindividu]["titulaire"] == 1 :
             # Recherche s'il restera au moins un titulaire dans cette famille
             nbreTitulaires = 0
-            for IDindividu, dictIndividu in self.donnees.dictInfosIndividus.iteritems() :
+            for IDindividu, dictIndividu in self.donnees.dictInfosIndividus.items() :
                 if dictIndividu["titulaire"] == 1 : 
                     nbreTitulaires += 1
             if nbreTitulaires == 1 :
@@ -2096,6 +2096,6 @@ if __name__ == '__main__':
     #wx.InitAllImageHandlers()
     frame_1 = MyFrame(None, -1, "ObjectListView", size=(900, 400))
     app.SetTopWindow(frame_1)
-    print "Temps de chargement CTRL_Composition =", time.time() - heure_debut
+    print("Temps de chargement CTRL_Composition =", time.time() - heure_debut)
     frame_1.Show()
     app.MainLoop()

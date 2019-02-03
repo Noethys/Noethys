@@ -10,7 +10,7 @@
 
 import wx
 import os
-import ConfigParser
+from six.moves import configparser
 import UTILS_Fichiers
 
 
@@ -48,7 +48,7 @@ def GetNomFichier(nomFichier="Customize.ini"):
 class Customize():
     def __init__(self):
         self.nomFichier = GetNomFichier()
-        self.cfg = ConfigParser.ConfigParser()
+        self.cfg = configparser.ConfigParser()
         self.InitFichier()
 
 
@@ -136,6 +136,6 @@ def SetValeur(section="", cle="", valeur=""):
 
 # --------------- TESTS ----------------------------------------------------------------------------------------------------------
 if __name__ == u"__main__":
-    print "GET :", GetValeur("interface", "theme", "Vert")
+    print("GET :", GetValeur("interface", "theme", "Vert"))
     #print "SET :", GetValeur("interface", "theme", "Rouge")
     

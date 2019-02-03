@@ -13,13 +13,11 @@ import Chemins
 from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
-import CTRL_Bouton_image
 import wx.lib.newevent
 import calendar
 import datetime
-import time
 import GestionDB
-import FonctionsPerso
+import six
 import sys
 
 try :
@@ -617,7 +615,7 @@ class Calendrier(wx.ScrolledWindow):
 
 
         # Dessin texte
-        if unicode(texteDate) in self.listeJoursAvecPresents :
+        if six.text_type(texteDate) in self.listeJoursAvecPresents :
             dc.SetTextForeground(self.couleurFontJoursAvecPresents)
         else:
             dc.SetTextForeground(self.couleurFontJours)
@@ -865,7 +863,7 @@ class Calendrier(wx.ScrolledWindow):
 
     def OnPopup2(self, event):
         """ Aide sur le calendrier """
-        print "Aide..."
+        print("Aide...")
         # FonctionsPerso.Aide(51)
 
 

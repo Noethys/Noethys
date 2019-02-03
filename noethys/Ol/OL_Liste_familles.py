@@ -90,7 +90,7 @@ def GetListe(listeActivites=None, presents=None, archives=False):
         
         if presents == None or (presents != None and IDfamille in listePresents) :
             
-            if IDfamille != None and titulaires.has_key(IDfamille) :
+            if IDfamille != None and IDfamille in titulaires :
                 nomTitulaires = titulaires[IDfamille]["titulairesSansCivilite"]
                 rue = titulaires[IDfamille]["adresse"]["rue"]
                 cp = titulaires[IDfamille]["adresse"]["cp"]
@@ -160,7 +160,7 @@ class ListView(FastObjectListView):
         """ Récupération des données """
         dictDonnees = GetListe(self.listeActivites, self.presents, self.archives)
         listeListeView = []
-        for IDfamille, dictTemp in dictDonnees.iteritems() :
+        for IDfamille, dictTemp in dictDonnees.items() :
             track = Track(dictTemp)
             listeListeView.append(track)
             if self.selectionID == IDfamille :
@@ -327,8 +327,8 @@ class MyFrame(wx.Frame):
         import time
         t = time.time()
         self.myOlv.MAJ(listeActivites=(1, 2, 3), presents=(datetime.date(2015, 1, 1), datetime.date(2015, 12, 31))) 
-        print len(self.myOlv.donnees)
-        print "Temps d'execution =", time.time() - t
+        print(len(self.myOlv.donnees))
+        print("Temps d'execution =", time.time() - t)
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.myOlv, 1, wx.ALL|wx.EXPAND, 4)
         panel.SetSizer(sizer_2)

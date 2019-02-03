@@ -20,6 +20,7 @@ from Ctrl import CTRL_Saisie_date
 from Utils import UTILS_Dates
 import wx.lib.agw.hyperlink as Hyperlink
 import GestionDB
+import six
 
 
 def FormateDate(date):
@@ -323,10 +324,10 @@ class Dialog(wx.Dialog):
                 quantite = 1
 
             # Période
-            if isinstance(date_debut, str) or isinstance(date_debut, unicode):
+            if isinstance(date_debut, str) or isinstance(date_debut, six.text_type):
                 date_debut = datetime.datetime.strptime(date_debut, "%Y-%m-%d %H:%M:%S")
 
-            if isinstance(date_fin, str) or isinstance(date_fin, unicode):
+            if isinstance(date_fin, str) or isinstance(date_fin, six.text_type):
                 date_fin = datetime.datetime.strptime(date_fin, "%Y-%m-%d %H:%M:%S")
                 duree = date_fin - date_debut
                 duree_str = UTILS_Dates.FormatDelta(duree)

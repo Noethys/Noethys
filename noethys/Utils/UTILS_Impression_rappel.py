@@ -158,7 +158,7 @@ class MyPageTemplate(PageTemplate):
             canvas.drawString(y+2*mm, -x-9*mm, u"%s - %.02f %s" % (numero, solde, SYMBOLE))
             canvas.drawString(y+2*mm, -x-12*mm, u"%s" % nom)
             # Code-barres
-            if DICT_OPTIONS["codeBarre"] == True and dictCompte.has_key("{CODEBARRES_NUM_RAPPEL}") :
+            if DICT_OPTIONS["codeBarre"] == True and "{CODEBARRES_NUM_RAPPEL}" in dictCompte :
                 barcode = code39.Extended39(dictCompte["{CODEBARRES_NUM_RAPPEL}"], humanReadable=False)
                 barcode.drawOn(canvas, y+36*mm, -x-13*mm)
             canvas.restoreState()
@@ -183,7 +183,7 @@ class MyPageTemplate(PageTemplate):
             canvas.drawString(x+2*mm, y+hauteur-9*mm, u"%s - %.02f %s" % (numero, solde, SYMBOLE))
             canvas.drawString(x+2*mm, y+hauteur-12*mm, u"%s" % nom)
             # Code-barres
-            if DICT_OPTIONS["codeBarre"] == True and dictCompte.has_key("{CODEBARRES_NUM_RAPPEL}") :
+            if DICT_OPTIONS["codeBarre"] == True and "{CODEBARRES_NUM_RAPPEL}" in dictCompte :
                 barcode = code39.Extended39(dictCompte["{CODEBARRES_NUM_RAPPEL}"], humanReadable=False)
                 barcode.drawOn(canvas, x+36*mm, y+hauteur-13*mm)
             # Ciseaux
@@ -274,7 +274,7 @@ class Impression():
         
         # ----------- Insertion du contenu des frames --------------
         listeNomsSansCivilite = []
-        for IDcompte_payeur, dictCompte in dictComptes.iteritems() :
+        for IDcompte_payeur, dictCompte in dictComptes.items() :
             listeNomsSansCivilite.append((dictCompte["nomSansCivilite"], IDcompte_payeur))
         listeNomsSansCivilite.sort() 
         

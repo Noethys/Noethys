@@ -218,7 +218,7 @@ class CTRL_Choix_arrets(wx.Choice):
     def SetID(self, ID=0):
         if ID == None :
             self.SetSelection(0)
-        for index, values in self.dictDonnees.iteritems():
+        for index, values in self.dictDonnees.items():
             if values["ID"] == ID :
                  self.SetSelection(index)
 
@@ -328,7 +328,7 @@ class CTRL_Choix_lignes(wx.Choice):
     def SetID(self, ID=0):
         if ID == None :
             self.SetSelection(0)
-        for index, values in self.dictDonnees.iteritems():
+        for index, values in self.dictDonnees.items():
             if values["ID"] == ID :
                  self.SetSelection(index)
 
@@ -484,7 +484,7 @@ class CTRL_Choix_activite(wx.Choice):
     def SetID(self, ID=0):
         if ID == None :
             self.SetSelection(0)
-        for index, values in self.dictDonnees.iteritems():
+        for index, values in self.dictDonnees.items():
             if values["ID"] == ID :
                  self.SetSelection(index)
 
@@ -571,7 +571,7 @@ class CTRL_Choix_ecole(wx.Choice):
     def SetID(self, ID=0):
         if ID == None :
             self.SetSelection(0)
-        for index, values in self.dictDonnees.iteritems():
+        for index, values in self.dictDonnees.items():
             if values["ID"] == ID :
                  self.SetSelection(index)
 
@@ -951,7 +951,7 @@ class CTRL_Choix_compagnies(wx.Choice):
     def SetID(self, ID=0):
         if ID == None :
             self.SetSelection(0)
-        for index, values in self.dictDonnees.iteritems():
+        for index, values in self.dictDonnees.items():
             if values["ID"] == ID :
                  self.SetSelection(index)
 
@@ -1056,7 +1056,7 @@ class CTRL_Choix_lieux(wx.Choice):
     def SetID(self, ID=0):
         if ID == None :
             self.SetSelection(0)
-        for index, values in self.dictDonnees.iteritems():
+        for index, values in self.dictDonnees.items():
             if values["ID"] == ID :
                  self.SetSelection(index)
 
@@ -1151,7 +1151,7 @@ class CTRL_Categorie(BitmapComboBox):
             
     def GetListeDonnees(self):
         listeItems = []
-        for categorie, dictValeurs in DICT_CATEGORIES.iteritems() :
+        for categorie, dictValeurs in DICT_CATEGORIES.items() :
             label = dictValeurs["label"]
             bmp = wx.Bitmap(Chemins.GetStaticPath("Images/32x32/%s.png" % dictValeurs["image"]), wx.BITMAP_TYPE_ANY)
             listeItems.append((label, bmp, categorie))
@@ -1159,7 +1159,7 @@ class CTRL_Categorie(BitmapComboBox):
         return listeItems
 
     def SetCategorie(self, categorie="bus"):
-        for index, values in self.dictDonnees.iteritems():
+        for index, values in self.dictDonnees.items():
             if values["categorie"] == categorie :
                 self.SetSelection(index)
 
@@ -1312,7 +1312,7 @@ class CTRL(wx.Panel):
             resultat = self.RechercheControle(codeControle, self.categorie)
             if resultat == True :
                 if ctrl.Validation() == False :
-                    print "ca coince sur le contrôle", codeControle, ctrl.rubrique
+                    print("ca coince sur le contrôle", codeControle, ctrl.rubrique)
                     return False
         return True
     
@@ -1329,7 +1329,7 @@ class CTRL(wx.Panel):
             resultat = self.RechercheControle(codeControle, self.categorie)
             if resultat == True :
                 dictData = ctrl.GetData()
-                for key, data in dictData.iteritems() :
+                for key, data in dictData.items() :
                     dictDonnees[key] = data
         
         # Ajout de la catégorie
@@ -1354,7 +1354,7 @@ class CTRL(wx.Panel):
             
             # Conversion en liste
             listeDonnees = []
-            for key, valeur in dictDonnees.iteritems() :
+            for key, valeur in dictDonnees.items() :
                 listeDonnees.append((key, valeur))
                 
             # Sauvegarde
@@ -1416,7 +1416,7 @@ class CTRL(wx.Panel):
                     # Vérifie que ce jour de la semaine est bien demandé par l'utilisateur
                     if joursSpeciaux.RechercheJourVacances(date) == True :
                         if date.weekday() not in parametres["jours_vacances"] :
-                            print date.weekday(), parametres["jours_vacances"]
+                            print(date.weekday(), parametres["jours_vacances"])
                             valide = False
                     else :
                         if date.weekday() not in parametres["jours_scolaires"] :
@@ -1461,7 +1461,7 @@ class CTRL(wx.Panel):
             
                 # Conversion en liste
                 listeDonnees = []
-                for key, valeur in dictDonnees.iteritems() :
+                for key, valeur in dictDonnees.items() :
                     listeDonnees.append((key, valeur))
                     
                 # Sauvegarde
@@ -1486,7 +1486,7 @@ class CTRL(wx.Panel):
             
             # Conversion en liste
             listeDonnees = []
-            for key, valeur in dictDonnees.iteritems() :
+            for key, valeur in dictDonnees.items() :
                 listeDonnees.append((key, valeur))
                 
             # Sauvegarde
@@ -1538,7 +1538,7 @@ class CTRL(wx.Panel):
     
     def ImportationVirtuelle(self):
         listeDonnees = []
-        for key, valeur in self.dictDonnees.iteritems() :
+        for key, valeur in self.dictDonnees.items() :
             listeDonnees.append((key, valeur))
         self.RemplitChamps(listeDonnees)
     

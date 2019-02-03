@@ -135,7 +135,7 @@ class Choix_individu(wx.Choice):
     def SetListeDonnees(self, dictIndividus):
         self.listeIndividus = []
         self.listeNoms = []
-        for IDindividu, dictIndividu in dictIndividus.iteritems() :
+        for IDindividu, dictIndividu in dictIndividus.items() :
             nomIndividu = u"%s %s" % (dictIndividu["nom"], dictIndividu["prenom"])
             self.listeIndividus.append((nomIndividu, IDindividu))
         self.listeIndividus.sort()

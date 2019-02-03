@@ -37,7 +37,7 @@ class Track(object):
         self.formule = donnees["formule"]
         
         # Largeur de colonne
-        if donnees.has_key("largeur") :
+        if "largeur" in donnees :
             self.largeur = donnees["largeur"]
         else :
             self.largeur = 100
@@ -95,7 +95,7 @@ class ListView(FastObjectListView):
         
         listeListeView = []
         for IDselection, IDprofil, code, ordre in listeSelectionChamps :
-            if self.dictChamps.has_key(code) :
+            if code in self.dictChamps :
                 # Champ disponible
                 trackInfo = self.dictChamps[code]
                 dictTemp = {"IDselection":IDselection, "IDprofil":IDprofil, "code":code, "ordre":ordre, "label":trackInfo.label, "type":trackInfo.type, "categorie":trackInfo.categorie, "formule":trackInfo.formule, "titre":trackInfo.titre, "largeur":trackInfo.largeur}
@@ -400,7 +400,7 @@ class MyFrame(wx.Frame):
         sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
         self.SetSizer(sizer_1)
         self.myOlv = ListView(panel, id=-1, name="OL_test", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
-        self.myOlv.SetParametres(IDprofil=3, dateMin=datetime.date(2012, 01, 01), dateMax=datetime.date(2012, 12, 31), listeActivites=[1, 2, 3, 4])
+        self.myOlv.SetParametres(IDprofil=3, dateMin=datetime.date(2012, 1, 1), dateMax=datetime.date(2012, 12, 31), listeActivites=[1, 2, 3, 4])
         self.myOlv.MAJ() 
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.myOlv, 1, wx.ALL|wx.EXPAND, 4)

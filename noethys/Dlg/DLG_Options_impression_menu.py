@@ -23,7 +23,8 @@ import wx.propgrid as wxpg
 import copy
 import GestionDB
 from PIL import Image
-import cStringIO
+import six
+
 
 LISTE_MODELES = [
     # Arc-en-ciel
@@ -884,7 +885,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
 
     def Validation(self):
         """ Validation des données saisies """
-        for nom, valeur in self.GetPropertyValues().iteritems() :
+        for nom, valeur in self.GetPropertyValues().items() :
             propriete = self.GetPropertyByName(nom)
             if self.GetPropertyAttribute(propriete, "obligatoire") == True :
                 if valeur == "" or valeur == None :
@@ -901,7 +902,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         # Recherche les paramètres mémorisés
         dictParametres = UTILS_Parametres.ParametresCategorie(mode="get", categorie=self.categorie, dictParametres=dictValeurs)
         # Envoie les paramètres dans le contrôle
-        for nom, valeur in dictParametres.iteritems() :
+        for nom, valeur in dictParametres.items() :
             propriete = self.GetPropertyByName(nom)
             ancienneValeur = propriete.GetValue() 
             propriete.SetValue(valeur)
@@ -915,7 +916,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         return self.GetPropertyValues()
 
     def SetValeurs(self, dictDonnees={}):
-        for nom, valeur in dictDonnees.iteritems() :
+        for nom, valeur in dictDonnees.items() :
             propriete = self.GetPropertyByName(nom)
             if propriete != None :
                 propriete.SetValue(valeur)
@@ -951,7 +952,7 @@ class CTRL_Modeles(CTRL_Vignettes_documents.CTRL):
 
     def ChargeImage(self, fichier):
         """Read a file into PIL Image object. Return the image and file size"""
-        buf = cStringIO.StringIO()
+        buf = six.BytesIO()
         f = open(fichier, "rb")
         while 1:
             rdbuf = f.read(8192)
@@ -1067,7 +1068,7 @@ class CTRL(wx.Panel):
         # Récupération des paramètres
         if self.ctrl_parametres.Validation() == False :
             return False
-        for nom, valeur in self.ctrl_parametres.GetValeurs().iteritems()  :
+        for nom, valeur in self.ctrl_parametres.GetValeurs().items()  :
             dictOptions[nom] = valeur
 
         # Récupération de la période
@@ -1174,8 +1175,8 @@ class Dialog(wx.Dialog):
     def GetProfilOptions(self):
         dictModifications = {}
         dictDonnees = self.ctrl_parametres.GetOptions()
-        for code, valeur in VALEURS_DEFAUT.iteritems() :
-            if dictDonnees.has_key(code):
+        for code, valeur in VALEURS_DEFAUT.items() :
+            if code in dictDonnees:
                 if dictDonnees[code] != valeur :
                     dictModifications[code] = dictDonnees[code]
         return dictModifications

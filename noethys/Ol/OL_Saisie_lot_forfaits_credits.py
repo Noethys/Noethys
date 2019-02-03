@@ -56,12 +56,12 @@ class Track(object):
         self.montant = donnees["montant"]
         
         # Unités de conso
-        for IDunite, temp in parent.dictUnitesConso.iteritems() :
+        for IDunite, temp in parent.dictUnitesConso.items() :
             setattr(self, "unite%d" % IDunite, 0)
             
         # Consommations
         self.conso = donnees["conso"]
-        for IDunite, quantite in self.conso.iteritems() :
+        for IDunite, quantite in self.conso.items() :
             setattr(self, "unite%d" % IDunite, quantite)
         
         
@@ -142,15 +142,15 @@ class ListView(FastObjectListView):
         for IDconso, IDindividu, IDfamille, IDcompte_payeur, date, IDunite, nomUnite, abregeUnite, ordreUnite in listeConso :
             
             # Mémorisation de l'unité de conso
-            if self.dictUnitesConso.has_key(IDunite) == False :
+            if (IDunite in self.dictUnitesConso) == False :
                 self.dictUnitesConso[IDunite] = {"nom" : nomUnite, "abrege" : abregeUnite, "ordre" : ordreUnite, "quantite" : 0}
             self.dictUnitesConso[IDunite]["quantite"] += 1
                 
             # Mémorisation de la conso
             key = (IDindividu, IDfamille)
-            if dictConso.has_key(key) == False :
+            if (key in dictConso) == False :
                 dictConso[key] = {}
-            if dictConso[key].has_key(IDunite) == False :
+            if (IDunite in dictConso[key]) == False :
                 dictConso[key][IDunite] = 0
             dictConso[key][IDunite] += 1
         
@@ -160,13 +160,13 @@ class ListView(FastObjectListView):
         for IDindividu, nom, prenom, IDfamille, IDcompte_payeur, IDcategorie_tarif, nomCategorieTarif in listeInscrits :
             
             # Recherche les prestations
-            if dictPrestations.has_key((IDindividu, IDfamille)) :
+            if (IDindividu, IDfamille) in dictPrestations :
                 montant = dictPrestations[(IDindividu, IDfamille)]
             else :
                 montant = FloatToDecimal(0.0)
             
             # Recherche les consommations
-            if dictConso.has_key((IDindividu, IDfamille)) :
+            if (IDindividu, IDfamille) in dictConso :
                 dictConsoIndividu = dictConso[(IDindividu, IDfamille)]
             else :
                 dictConsoIndividu = {}
@@ -221,7 +221,7 @@ class ListView(FastObjectListView):
         
         # Ajout des colonnes unités de conso
         listeUnites = []
-        for IDunite, dictTemp in self.dictUnitesConso.iteritems() :
+        for IDunite, dictTemp in self.dictUnitesConso.items() :
             listeUnites.append((dictTemp["ordre"], dictTemp["nom"], dictTemp["abrege"], dictTemp["quantite"], IDunite))
         listeUnites.sort() 
         

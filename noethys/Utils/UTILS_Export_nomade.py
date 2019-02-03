@@ -15,7 +15,7 @@ import wx
 from Ctrl import CTRL_Bouton_image
 import GestionDB
 import sqlite3
-import datetime
+import six
 import time
 import traceback
 import sys
@@ -24,8 +24,6 @@ import base64
 import zipfile
 import shutil
 import ftplib
-import random
-
 import UTILS_Cryptage_fichier
 import UTILS_Config
 import UTILS_Titulaires
@@ -169,9 +167,9 @@ class Export():
             infos = UTILS_Infos_individus.Informations()
             dictValeurs = infos.GetDictValeurs(mode="individu", formatChamp=False)
             listeDonnees = []
-            for ID, dictTemp in dictValeurs.iteritems() :
-                for champ, valeur in dictTemp.iteritems() :
-                    if type(valeur) in (str, unicode) and valeur not in ("", None) :
+            for ID, dictTemp in dictValeurs.items() :
+                for champ, valeur in dictTemp.items() :
+                    if type(valeur) in (str, six.text_type) and valeur not in ("", None) :
                         listeDonnees.append((ID, champ, valeur))
             
             self.Enregistrer(dbdest, nomTable="informations", listeChamps=["IDindividu", "champ", "valeur"], listeDonnees=listeDonnees)
@@ -193,7 +191,7 @@ class Export():
             db.Close()
             listeDonnees = []
             for IDindividu, IDcivilite, nom, prenom in listeIndividus :
-                if dictPhotos.has_key(IDindividu) :
+                if IDindividu in dictPhotos :
                     photo = sqlite3.Binary(dictPhotos[IDindividu])
                 else :
                     photo = None
@@ -204,7 +202,7 @@ class Export():
             # Données Titulaires de dossier
             dictTitulaires = UTILS_Titulaires.GetTitulaires()
             listeDonnees = []
-            for IDfamille, dictTemp in dictTitulaires.iteritems() :
+            for IDfamille, dictTemp in dictTitulaires.items() :
                 nom = dictTitulaires[IDfamille]["titulairesSansCivilite"]
                 listeDonnees.append((IDfamille, nom))
             
@@ -252,8 +250,8 @@ class Export():
             else :
                 nomFichierFinal = self.nomFichier + EXTENSION_DECRYPTE
         
-        except Exception, err :
-            print "Erreur dans UTILS_Export_nomade.Run :", err
+        except Exception as err :
+            print("Erreur dans UTILS_Export_nomade.Run :", err)
             traceback.print_exc(file=sys.stdout)
             if afficherDlgAttente == True :
                 del dlgAttente
@@ -293,7 +291,7 @@ class Export():
             ftp.storbinary("STOR %s" % os.path.basename(nomFichier), fichier)
             fichier.close()
             ftp.quit()
-        except Exception, err :
+        except Exception as err :
             del dlgAttente
             dlg = wx.MessageDialog(None, _(u"Le fichier n'a pas pu être envoyé !\n\nVérifiez les paramètres de connexion FTP dans les paramètres de synchronisation."), "Erreur ", wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
@@ -312,8 +310,8 @@ if __name__ == '__main__':
     app = wx.App(0)
     export = Export()
     nomFichier = export.Run(afficherDlgAttente=False)
-    print "nomFichier =", nomFichier
-    print "fini"
+    print("nomFichier =", nomFichier)
+    print("fini")
     # Envoi vers un répertoire
 ##    export.EnvoyerVersRepertoire(nomFichier) 
 ##    export.EnvoyerVersFTP(nomFichier)

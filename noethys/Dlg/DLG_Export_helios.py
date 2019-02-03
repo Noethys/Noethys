@@ -453,22 +453,22 @@ class Dialog(wx.Dialog):
         dictTotaux = {}
         for IDprestation, IDfacture, label, montant, IDindividu, nom, prenom, IDactivite, nomActivite in listePrestations :
 
-            if dictActivites != None and dictActivites.has_key(IDactivite) == False :
+            if dictActivites != None and (IDactivite in dictActivites) == False :
                 dictActivites[IDactivite] = nomActivite
 
-            if IDindividu != None and dictIndividus.has_key(IDindividu) == False and prenom != None :
+            if IDindividu != None and (IDindividu in dictIndividus) == False and prenom != None :
                 dictIndividus[IDindividu] = u"%s %s" % (nom, prenom)
             
-            if dictPrestations.has_key(IDfacture) == False :
+            if (IDfacture in dictPrestations) == False :
                 dictPrestations[IDfacture] = {}
-            if dictPrestations[IDfacture].has_key(IDindividu) == False :
+            if (IDindividu in dictPrestations[IDfacture]) == False :
                 dictPrestations[IDfacture][IDindividu] = {}
-            if dictPrestations[IDfacture][IDindividu].has_key(label) == False :
+            if (label in dictPrestations[IDfacture][IDindividu]) == False :
                 dictPrestations[IDfacture][IDindividu][label] = {"quantite" : 0, "montant" : 0.0, "IDactivite" : IDactivite}
             
-            if dictTotaux.has_key(IDactivite) == False :
+            if (IDactivite in dictTotaux) == False :
                 dictTotaux[IDactivite] = {}
-            if dictTotaux[IDactivite].has_key(label) == False :
+            if (label in dictTotaux[IDactivite]) == False :
                 dictTotaux[IDactivite][label] = {"quantite" : 0, "montant" : 0.0}
             
             dictTotaux[IDactivite][label]["quantite"] += 1
@@ -588,14 +588,14 @@ class Dialog(wx.Dialog):
                 story.append(tableau)
                 
                 # Détail des prestations
-                if typeImpression == "detail" and dictPrestations.has_key(track.IDfacture) :
+                if typeImpression == "detail" and track.IDfacture in dictPrestations :
                     
                     dataTableau = [(Paragraph(_(u"Individu"), styleLabel), Paragraph(_(u"Activité"), styleLabel), Paragraph(_(u"Prestation"), styleLabel), Paragraph(_(u"Quantité"), styleLabel), Paragraph(_(u"Montant total"), styleLabel)),]
                     largeursColonnes = [130, 120, 185, 35, 50]
                     
-                    for IDindividu, dictLabels in dictPrestations[track.IDfacture].iteritems() :
+                    for IDindividu, dictLabels in dictPrestations[track.IDfacture].items() :
                         
-                        if dictIndividus.has_key(IDindividu) :
+                        if IDindividu in dictIndividus :
                             labelIndividu = dictIndividus[IDindividu]
                         else :
                             labelIndividu = u""
@@ -604,9 +604,9 @@ class Dialog(wx.Dialog):
                         listeLabels = []
                         listeQuantites = []
                         listeMontants = []
-                        for labelPrestation, dictTemp in dictLabels.iteritems() :
+                        for labelPrestation, dictTemp in dictLabels.items() :
 
-                            if dictTemp["IDactivite"] != None and dictActivites.has_key(dictTemp["IDactivite"]) :
+                            if dictTemp["IDactivite"] != None and dictTemp["IDactivite"] in dictActivites :
                                 labelActivite = dictActivites[dictTemp["IDactivite"]]
                             else :
                                 labelActivite = u""
@@ -647,7 +647,7 @@ class Dialog(wx.Dialog):
             ]
         largeursColonnes = [200, 240, 30, 50]
 
-        for IDactivite, dictLabels in dictTotaux.iteritems() :
+        for IDactivite, dictLabels in dictTotaux.items() :
             
             if IDactivite == None :
                 nomActivite = _(u"Prestations diverses")
@@ -659,7 +659,7 @@ class Dialog(wx.Dialog):
             listeMontants = []
             quantiteActivite = 0
             totalActivite = 0.0
-            for label, dictTemp in dictLabels.iteritems() :
+            for label, dictTemp in dictLabels.items() :
                 listeLabels.append(Paragraph(label, styleTexte2)) 
                 listeQuantites.append(Paragraph(str(dictTemp["quantite"]), styleTexte2)) 
                 listeMontants.append(Paragraph(u"%.2f %s" % (dictTemp["montant"], SYMBOLE), styleMontant))
@@ -699,8 +699,8 @@ class Dialog(wx.Dialog):
         # Enregistrement et ouverture du PDF
         try :
             doc.build(story)
-        except Exception, err :
-            print "Erreur dans ouverture PDF :", err
+        except Exception as err :
+            print("Erreur dans ouverture PDF :", err)
             if "Permission denied" in err :
                 dlg = wx.MessageDialog(None, _(u"Noethys ne peut pas créer le PDF.\n\nVeuillez vérifier qu'un autre PDF n'est pas déjà ouvert en arrière-plan..."), _(u"Erreur d'édition"), wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()

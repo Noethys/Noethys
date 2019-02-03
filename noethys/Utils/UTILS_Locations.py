@@ -14,9 +14,8 @@ import wx
 import GestionDB
 import traceback
 import datetime
-import copy
+import six
 import sys
-import cStringIO
 from Utils import UTILS_Dates
 from Utils import UTILS_Texte
 from Utils import UTILS_Filtres_questionnaires
@@ -136,14 +135,14 @@ class Location():
             date_debut = item[4]
             date_fin = item[5]
 
-            if isinstance(date_debut, str) or isinstance(date_debut, unicode):
+            if isinstance(date_debut, str) or isinstance(date_debut, six.text_type):
                 date_debut = datetime.datetime.strptime(date_debut, "%Y-%m-%d %H:%M:%S")
             date_debut_texte = datetime.datetime.strftime(date_debut, "%d/%m/%Y")
             heure_debut_texte = datetime.datetime.strftime(date_debut, "%Hh%M")
 
             date_fin_texte = ""
             heure_fin_texte = ""
-            if isinstance(date_fin, str) or isinstance(date_fin, unicode):
+            if isinstance(date_fin, str) or isinstance(date_fin, six.text_type):
                 date_fin = datetime.datetime.strptime(date_fin, "%Y-%m-%d %H:%M:%S")
                 date_fin_texte = datetime.datetime.strftime(date_fin, "%d/%m/%Y")
                 heure_fin_texte = datetime.datetime.strftime(date_fin, "%Hh%M")
@@ -259,7 +258,7 @@ class Location():
 
             # Champs de fusion pour Email
             dictChampsFusion[IDlocation] = {}
-            for key, valeur in dictDonnee.iteritems():
+            for key, valeur in dictDonnee.items():
                 if key[0] == "{":
                     dictChampsFusion[IDlocation][key] = valeur
 
@@ -296,7 +295,7 @@ class Location():
             dlgAttente = wx.BusyInfo(_(u"Génération des PDF à l'unité en cours..."), None)
             try:
                 index = 0
-                for IDlocation, dictLocation in dictLocations.iteritems():
+                for IDlocation, dictLocation in dictLocations.items():
                     if dictLocation["select"] == True:
                         nomTitulaires = self.Supprime_accent(dictLocation["{FAMILLE_NOM}"])
                         nomFichier = _(u"Location %d - %s") % (IDlocation, nomTitulaires)
@@ -309,7 +308,7 @@ class Location():
                 self.EcritStatusbar("")
                 del dlgAttente
                 return dictPieces
-            except Exception, err:
+            except Exception as err:
                 del dlgAttente
                 traceback.print_exc(file=sys.stdout)
                 dlg = wx.MessageDialog(None, _(u"Désolé, le problème suivant a été rencontré dans l'édition des locations : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
@@ -351,15 +350,15 @@ class Location():
                 dictReponses[IDlocation] = IDreponse
 
             DB = GestionDB.DB(suffixe="DOCUMENTS")
-            for IDlocation, cheminFichier in dictPieces.iteritems():
+            for IDlocation, cheminFichier in dictPieces.items():
                 # Préparation du blob
                 fichier = open(cheminFichier, "rb")
                 data = fichier.read()
                 fichier.close()
-                buffer = cStringIO.StringIO(data)
+                buffer = six.BytesIO(data)
                 blob = buffer.read()
                 # Recherche l'IDreponse
-                if dictReponses.has_key(IDlocation):
+                if IDlocation in dictReponses:
                     IDreponse = dictReponses[IDlocation]
                 else :
                     # Création d'une réponse de questionnaire
@@ -386,7 +385,7 @@ class Location():
                 UTILS_Impression_location.Impression(dictLocations, dictOptions, IDmodele=dictOptions["IDmodele"], ouverture=afficherDoc, nomFichier=nomDoc)
                 self.EcritStatusbar("")
                 del dlgAttente
-            except Exception, err:
+            except Exception as err:
                 del dlgAttente
                 traceback.print_exc(file=sys.stdout)
                 dlg = wx.MessageDialog(None, u"Désolé, le problème suivant a été rencontré dans l'édition des locations : \n\n%s" % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
@@ -490,7 +489,7 @@ def GetProduitsLoues(DB=None, date_reference=None):
         date_fin = UTILS_Dates.DateEngEnDateDDT(date_fin)
         if quantite == None :
             quantite = 1
-        if dictLocations.has_key(IDproduit) == False:
+        if (IDproduit in dictLocations) == False:
             dictLocations[IDproduit] = []
         dictLocations[IDproduit].append({"IDlocation": IDlocation, "IDfamille": IDfamille, "date_debut": date_debut, "date_fin": date_fin, "quantite" : quantite})
 
@@ -513,7 +512,7 @@ def GetPropositionsLocations(dictFiltresSelection={}, dictDemandeSelection=None,
     dictReponses = {}
     for IDreponse, IDquestion, reponse, IDproduit in listeReponses :
         dictTemp = {"IDreponse" : IDreponse, "IDquestion" : IDquestion, "reponse" : reponse}
-        if dictReponses.has_key(IDproduit) == False :
+        if (IDproduit in dictReponses) == False :
             dictReponses[IDproduit] = []
         dictReponses[IDproduit].append(dictTemp)
 
@@ -533,13 +532,13 @@ def GetPropositionsLocations(dictFiltresSelection={}, dictDemandeSelection=None,
             quantite = 1
 
         # Recherche les réponses au questionnaire du produit
-        if dictReponses.has_key(IDproduit) :
+        if IDproduit in dictReponses :
             reponses = dictReponses[IDproduit]
         else :
             reponses = []
 
         # Recherche les locations en cours du produit
-        if dictLocations.has_key(IDproduit):
+        if IDproduit in dictLocations:
             disponible = quantite
             for dictLocation in dictLocations[IDproduit] :
                 disponible -= dictLocation["quantite"]
@@ -551,7 +550,7 @@ def GetPropositionsLocations(dictFiltresSelection={}, dictDemandeSelection=None,
             listeProduits.append(dictTemp)
             dictProduits[IDproduit] = dictTemp
 
-            if dictProduitsByCategories.has_key(IDcategorie) == False :
+            if (IDcategorie in dictProduitsByCategories) == False :
                 dictProduitsByCategories[IDcategorie] = []
             dictProduitsByCategories[IDcategorie].append(dictTemp)
 
@@ -566,13 +565,13 @@ def GetPropositionsLocations(dictFiltresSelection={}, dictDemandeSelection=None,
     listeFiltres = DB.ResultatReq()
     dictFiltres = {}
     for IDfiltre, IDquestion, choix, criteres, IDdemande, type, controle in listeFiltres :
-        if dictFiltres.has_key(IDdemande) == False :
+        if (IDdemande in dictFiltres) == False :
             dictFiltres[IDdemande] = []
         dictFiltres[IDdemande].append({"IDfiltre":IDfiltre, "IDquestion":IDquestion, "choix":choix, "criteres":criteres, "type":type, "controle":controle})
 
     # Ajoute ou remplace avec le dictDemandeSelection
     if dictFiltresSelection != None :
-        for IDdemande, listeFiltres in dictFiltresSelection.iteritems() :
+        for IDdemande, listeFiltres in dictFiltresSelection.items() :
             dictFiltres[IDdemande] = listeFiltres
 
     # Importation des demandes de locations
@@ -623,13 +622,13 @@ def GetPropositionsLocations(dictFiltresSelection={}, dictDemandeSelection=None,
 
         if dictDemandeTemp["categories"] != [] :
             for IDcategorie in dictDemandeTemp["categories"] :
-                if dictProduitsByCategories.has_key(IDcategorie) :
+                if IDcategorie in dictProduitsByCategories :
                     listeProduitsTemp.extend(dictProduitsByCategories[IDcategorie])
 
         if dictDemandeTemp["produits"] != []:
             for IDproduit in dictDemandeTemp["produits"]:
                 dictProduit = dictProduits[IDproduit]
-                if dictProduits.has_key(IDproduit) and dictProduit not in listeProduitsTemp :
+                if IDproduit in dictProduits and dictProduit not in listeProduitsTemp :
                     if dictDemandeTemp["categories"] == [] or dictProduit["IDcategorie"] in dictDemandeTemp["categories"] :
                         listeProduitsTemp.append(dictProduit)
 
@@ -649,7 +648,7 @@ def GetPropositionsLocations(dictFiltresSelection={}, dictDemandeSelection=None,
             #     valide = False
 
             # Vérifie si le produit répond aux filtres de la demande
-            if valide == True and dictFiltres.has_key(IDdemande):
+            if valide == True and IDdemande in dictFiltres:
                 for dictFiltre in dictFiltres[IDdemande]:
                     for dictReponse in dictProduit["reponses"]:
                         resultat = UTILS_Filtres_questionnaires.Filtre(controle=dictFiltre["controle"], choix=dictFiltre["choix"], criteres=dictFiltre["criteres"], reponse=dictReponse["reponse"], dictControles=dictControles)
@@ -660,14 +659,14 @@ def GetPropositionsLocations(dictFiltresSelection={}, dictDemandeSelection=None,
             if valide == True :
 
                 # Position dans la liste du produit
-                if dictPositions.has_key(dictProduit["IDproduit"]) == False :
+                if (dictProduit["IDproduit"] in dictPositions) == False :
                     dictPositions[dictProduit["IDproduit"]] = 0
                 dictPositions[dictProduit["IDproduit"]] += 1
                 position = dictPositions[dictProduit["IDproduit"]]
 
                 # Proposition
                 dictProduit = dict(dictProduit)
-                if dictPropositions.has_key(IDdemande) == False :
+                if (IDdemande in dictPropositions) == False :
                     dictPropositions[IDdemande] = []
                 dictProduit["position"] = position
                 dictPropositions[IDdemande].append(dictProduit)
@@ -676,7 +675,7 @@ def GetPropositionsLocations(dictFiltresSelection={}, dictDemandeSelection=None,
 
 def GetMeilleurePosition(dictPropositions={}, IDdemande=None):
     position = None
-    if dictPropositions.has_key(IDdemande):
+    if IDdemande in dictPropositions:
         for dictProduit in dictPropositions[IDdemande] :
             if position == None or dictProduit["position"] < position :
                 position = dictProduit["position"]
@@ -692,6 +691,6 @@ if __name__=='__main__':
     #dictPropositions = GetPropositionsLocations(uniquement_disponibles=False)
     #print "dictPropositions =", len(dictPropositions)
 
-    print GetStockDisponible(IDproduit=2, date_debut=datetime.datetime(2017, 1, 1), date_fin=datetime.datetime(2017, 12, 31), IDlocation_exception=0)
+    print(GetStockDisponible(IDproduit=2, date_debut=datetime.datetime(2017, 1, 1), date_fin=datetime.datetime(2017, 12, 31), IDlocation_exception=0))
 
-    print "Temps execution =", time.time() - heure_debut
+    print("Temps execution =", time.time() - heure_debut)

@@ -118,7 +118,7 @@ class Attestations_fiscales():
             dictEnfants = {}
             for prestation in track.listePrestations :
                 IDindividu = prestation["IDindividu"]
-                if dictEnfants.has_key(IDindividu) == False : 
+                if (IDindividu in dictEnfants) == False : 
                     if prestation["prenom"] == None : 
                         prenom = ""
                     else :
@@ -137,7 +137,7 @@ class Attestations_fiscales():
                 dictEnfants[IDindividu]["regle"] += prestation["regle"]
             
             listeIndividus = []
-            for IDindividu, dictTemp in dictEnfants.iteritems() :
+            for IDindividu, dictTemp in dictEnfants.items() :
                 listeIndividus.append((dictTemp["nomComplet"], dictTemp))
             listeIndividus.sort() 
                             
@@ -215,7 +215,7 @@ class Attestations_fiscales():
             
             # Champs de fusion pour Email
             dictChampsFusion[IDcompte_payeur] = {}
-            for key, valeur in dictDonnee.iteritems() :
+            for key, valeur in dictDonnee.items() :
                 if key[0] == "{" :
                     dictChampsFusion[IDcompte_payeur][key] = valeur
 
@@ -252,7 +252,7 @@ class Attestations_fiscales():
             wx.Yield() 
             try :
                 index = 0
-                for IDcompte_payeur, dictAttestation in dictDonnees.iteritems() :
+                for IDcompte_payeur, dictAttestation in dictDonnees.items() :
                     nomTitulaires = self.Supprime_accent(dictAttestation["{FAMILLE_NOM}"])
                     nomFichier = u"%s" % nomTitulaires
                     cheminFichier = u"%s/%s.pdf" % (repertoireCible, nomFichier)
@@ -264,7 +264,7 @@ class Attestations_fiscales():
                 self.EcritStatusbar("")
                 del dlgAttente
                 return dictPieces
-            except Exception, err:
+            except Exception as err:
                 del dlgAttente
                 traceback.print_exc(file=sys.stdout)
                 dlg = wx.MessageDialog(None, _(u"Désolé, le problème suivant a été rencontré dans l'édition des attestations fiscales : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
@@ -297,7 +297,7 @@ class Attestations_fiscales():
                 UTILS_Impression_attestation_fiscale.Impression(dictDonnees, dictOptions, IDmodele=dictOptions["IDmodele"], ouverture=afficherDoc, nomFichier=nomDoc)
                 self.EcritStatusbar("")
                 del dlgAttente
-            except Exception, err:
+            except Exception as err:
                 del dlgAttente
                 traceback.print_exc(file=sys.stdout)
                 dlg = wx.MessageDialog(None, _(u"Désolé, le problème suivant a été rencontré dans l'édition des attestations fiscales : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)

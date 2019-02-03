@@ -77,25 +77,25 @@ class Track(object):
         self.InitTitulaireHelios()
         
         # Autres données Hélios
-        if donnees["dictAutresDonnees"].has_key("idtiers_helios") :
+        if "idtiers_helios" in donnees["dictAutresDonnees"] :
             self.idtiers_helios = donnees["dictAutresDonnees"]["idtiers_helios"]
             if self.idtiers_helios == None :
                 self.idtiers_helios = ""
         else :
             self.idtiers_helios = ""
-        if donnees["dictAutresDonnees"].has_key("natidtiers_helios") :
+        if "natidtiers_helios" in donnees["dictAutresDonnees"] :
             self.natidtiers_helios = donnees["dictAutresDonnees"]["natidtiers_helios"]
             if self.natidtiers_helios in (9999, None) :
                 self.natidtiers_helios = ""
         else :
             self.natidtiers_helios = ""
-        if donnees["dictAutresDonnees"].has_key("reftiers_helios") :
+        if "reftiers_helios" in donnees["dictAutresDonnees"] :
             self.reftiers_helios = donnees["dictAutresDonnees"]["reftiers_helios"]
             if self.reftiers_helios == None :
                 self.reftiers_helios = ""
         else :
             self.reftiers_helios = ""
-        if donnees["dictAutresDonnees"].has_key("cattiers_helios") :
+        if "cattiers_helios" in donnees["dictAutresDonnees"] :
             self.cattiers_helios = donnees["dictAutresDonnees"]["cattiers_helios"]
             if self.cattiers_helios == None :
                 self.cattiers_helios = "01"
@@ -103,7 +103,7 @@ class Track(object):
                 self.cattiers_helios = "%02d" % self.cattiers_helios
         else :
             self.cattiers_helios = "01"
-        if donnees["dictAutresDonnees"].has_key("natjur_helios") :
+        if "natjur_helios" in donnees["dictAutresDonnees"] :
             self.natjur_helios = donnees["dictAutresDonnees"]["natjur_helios"]
             if self.natjur_helios == None :
                 self.natjur_helios = "01"
@@ -117,7 +117,7 @@ class Track(object):
         self.AnalysePiece() 
         
     def InitTitulaireHelios(self):
-        if self.dictIndividus.has_key(self.titulaire_helios) :
+        if self.titulaire_helios in self.dictIndividus :
             self.titulaireCivilite = self.dictIndividus[self.titulaire_helios]["civiliteAbrege"] 
             self.titulaireNom = self.dictIndividus[self.titulaire_helios]["nom"]
             self.titulairePrenom = self.dictIndividus[self.titulaire_helios]["prenom"]
@@ -214,7 +214,7 @@ def GetTracks(IDlot=None, IDmandat=None):
     DB.Close()
     listeListeView = []
     for IDpiece, IDlot, IDfamille, prelevement, prelevement_iban, prelevement_bic, prelevement_IDmandat, prelevement_rum, prelevement_date_mandat, prelevement_sequence, prelevement_titulaire, prelevement_statut, type_piece, IDfacture, libelle, montant, IDreglement, dateReglement, IDdepot, IDcompte_payeur, titulaire_helios, numero in listeDonnees :
-        if dictAutresDonnees.has_key(IDfamille) :
+        if IDfamille in dictAutresDonnees :
             dictTempAutresDonnees = dictAutresDonnees[IDfamille]
         else :
             dictTempAutresDonnees = {}
@@ -553,7 +553,7 @@ class ListView(FastObjectListView):
                 IDmandat = None
             
             if IDmandat == None :
-                if dictTitulaires.has_key(track.IDfamille) :
+                if track.IDfamille in dictTitulaires :
                     nomTitulaires = dictTitulaires[track.IDfamille]["titulairesSansCivilite"]
                 else :
                     nomTitulaires = _(u"Titulaires inconnus")
@@ -583,7 +583,7 @@ class ListView(FastObjectListView):
                 analyse = mandats.AnalyseMandat(prelevement_IDmandat)
                 prelevement_sequence = analyse["prochaineSequence"]
                 
-            if dictAutresDonnees.has_key(track.IDfamille) :
+            if track.IDfamille in dictAutresDonnees :
                 dictTempAutresDonnees = dictAutresDonnees[track.IDfamille]
             else :
                 dictTempAutresDonnees = {}
@@ -850,7 +850,7 @@ class ListView(FastObjectListView):
             nbreTotal += 1
             montantTotal += track.montant
             # Regroupement par statut
-            if dictDetails.has_key(track.prelevement_statut) == False :
+            if (track.prelevement_statut in dictDetails) == False :
                 dictDetails[track.prelevement_statut] = {"nbre" : 0, "montant" : 0.0}
             dictDetails[track.prelevement_statut]["nbre"] += 1
             dictDetails[track.prelevement_statut]["montant"] += track.montant
@@ -859,7 +859,7 @@ class ListView(FastObjectListView):
                 reglement = "regle"
             else :
                 reglement = "pasregle"
-            if dictDetails.has_key(reglement) == False :
+            if (reglement in dictDetails) == False :
                 dictDetails[reglement] = {"nbre" : 0, "montant" : 0.0}
             dictDetails[reglement]["nbre"] += 1
             dictDetails[reglement]["montant"] += track.montant
@@ -873,7 +873,7 @@ class ListView(FastObjectListView):
             texte = _(u"<B>%d pièces (%.2f %s) : </B>") % (nbreTotal, montantTotal, SYMBOLE)
         
         for key in ("attente", "valide", "refus", "regle", "pasregle") :
-            if dictDetails.has_key(key) :
+            if key in dictDetails :
                 dictDetail = dictDetails[key]
                 if dictDetail["nbre"] == 1 :
                     if key == "attente" : label = _(u"en attente")
@@ -956,7 +956,7 @@ class ListView(FastObjectListView):
         listeDonnees = DB.ResultatReq()
         dictPayeurs = {}
         for IDpayeur, IDcompte_payeur, nom in listeDonnees :
-            if dictPayeurs.has_key(IDcompte_payeur) == False :
+            if (IDcompte_payeur in dictPayeurs) == False :
                 dictPayeurs[IDcompte_payeur] = []
             dictPayeurs[IDcompte_payeur].append({"nom" : nom, "IDpayeur" : IDpayeur})
 
@@ -993,12 +993,12 @@ class ListView(FastObjectListView):
             if aventiler > decimal.Decimal(0.0) :
 
                 # Mémorisation des prestations à ventiler
-                if dictFactures.has_key(IDfacture) == False :
+                if (IDfacture in dictFactures) == False :
                     dictFactures[IDfacture] = []
                 dictFactures[IDfacture].append({"IDprestation" : IDprestation, "IDcompte_payeur" : IDcompte_payeur, "montant" : montant, "ventilation" : ventilation, "aventiler" : aventiler})
 
                 # Mémorisation des montants à ventiler pour chaque facture
-                if dictAventiler.has_key(IDfacture) == False :
+                if (IDfacture in dictAventiler) == False :
                     dictAventiler[IDfacture] = decimal.Decimal(0.0)
                 dictAventiler[IDfacture] += aventiler
                         
@@ -1009,11 +1009,11 @@ class ListView(FastObjectListView):
             # Ajouts et modifications
             if track.reglement == True :
 
-                if dictAventiler.has_key(track.IDfacture) :
+                if track.IDfacture in dictAventiler :
 
                     # Recherche du payeur
                     IDpayeur = None
-                    if dictPayeurs.has_key(track.IDcompte_payeur) :
+                    if track.IDcompte_payeur in dictPayeurs :
                         for dictPayeur in dictPayeurs[track.IDcompte_payeur] :
                             if dictPayeur["nom"] == track.prelevement_titulaire :
                                 IDpayeur = dictPayeur["IDpayeur"]
@@ -1054,7 +1054,7 @@ class ListView(FastObjectListView):
                     track.dateReglement = date
 
                     # ----------- Sauvegarde de la ventilation ---------
-                    if dictFactures.has_key(track.IDfacture) :
+                    if track.IDfacture in dictFactures :
                         for dictFacture in dictFactures[track.IDfacture] :
                             listeDonnees = [
                                     ("IDreglement", track.IDreglement),
@@ -1155,7 +1155,7 @@ class MyFrame(wx.Frame):
         self.CenterOnScreen()
     
     def OnBoutonTest(self, event):
-        print "Test de la sauvegarde des reglements :"
+        print("Test de la sauvegarde des reglements :")
         self.myOlv.SauvegardeReglements(date=datetime.date.today(), IDcompte=99)
         
         

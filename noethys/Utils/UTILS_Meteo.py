@@ -8,7 +8,7 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
-import urllib2
+from six.moves.urllib.request import urlopen
 
 
 def RechercheData(xml, nom="", positionDebut=0):
@@ -26,7 +26,7 @@ def Meteo(ville="", cp=""):
         # Récupère le fichier xml de Google
         url = "http://www.google.fr/ig/api?weather=%s%%20%s&lang=fr" % (ville, cp)
         url = url.replace(' ','%20')
-        f = urllib2.urlopen(url, timeout=5)
+        f = urlopen(url, timeout=5)
         xml = f.read()
         
         if "problem_cause" in xml : 
@@ -49,7 +49,7 @@ def Meteo(ville="", cp=""):
             posG, posD, dictTemp["condition"] = RechercheData(xml, "condition data", posD)
             dictMeteo["previsions"].append(dictTemp)
 
-    except Exception, err:
+    except Exception as err:
         #print "Probleme dans la recherche du bulletin meteo. \nErreur detectee :%s" % err
         return None
         
@@ -58,6 +58,6 @@ def Meteo(ville="", cp=""):
     
             
 if __name__ == '__main__':
-    print Meteo("Lannilis", "29870")
+    print(Meteo("Lannilis", "29870"))
     
     

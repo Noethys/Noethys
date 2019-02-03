@@ -35,8 +35,8 @@ def FormateStr(valeur=u""):
         return u""
 
 def GetReponse(dictReponses={}, IDquestion=None, ID=None):
-    if dictReponses.has_key(IDquestion) :
-        if dictReponses[IDquestion].has_key(ID) :
+    if IDquestion in dictReponses :
+        if ID in dictReponses[IDquestion] :
             return dictReponses[IDquestion][ID]
     return u""
 
@@ -116,7 +116,7 @@ class Questionnaires():
                 for IDchoix in listeTemp :
                     try :
                         IDchoix = int(IDchoix)
-                        if self.dictChoix.has_key(IDchoix) :
+                        if IDchoix in self.dictChoix :
                             listeTemp2.append(self.dictChoix[IDchoix])
                     except :
                         pass
@@ -187,9 +187,9 @@ class Questionnaires():
                     ID = IDfamille
                 else :
                     ID = IDdonnee
-                if dictReponses.has_key(IDquestion) == False :
+                if (IDquestion in dictReponses) == False :
                     dictReponses[IDquestion] = {}
-                if dictReponses[IDquestion].has_key(ID) == False :
+                if (ID in dictReponses[IDquestion]) == False :
                     dictReponses[IDquestion][ID] = texteReponse
             
         return dictReponses

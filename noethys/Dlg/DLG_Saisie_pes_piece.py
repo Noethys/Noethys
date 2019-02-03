@@ -45,7 +45,7 @@ class CTRL_Famille(wx.Choice):
     def GetListeDonnees(self):
         titulaires = UTILS_Titulaires.GetTitulaires() 
         listeFamilles = []
-        for IDfamille, dictTemp in titulaires.iteritems() :
+        for IDfamille, dictTemp in titulaires.items() :
             listeFamilles.append((dictTemp["titulairesSansCivilite"], IDfamille, dictTemp["IDcompte_payeur"]))
         listeFamilles.sort()
         listeItems = [u"",]
@@ -61,7 +61,7 @@ class CTRL_Famille(wx.Choice):
     def SetIDfamille(self, ID=0):
         if ID == None :
             self.SetSelection(0)
-        for index, values in self.dictDonnees.iteritems():
+        for index, values in self.dictDonnees.items():
             if values["IDfamille"] == ID :
                  self.SetSelection(index)
 
@@ -122,7 +122,7 @@ class CTRL_Titulaire_helios(wx.Choice):
     def SetID(self, ID=0):
         if ID == None :
             self.SetSelection(0)
-        for index, values in self.dictDonnees.iteritems():
+        for index, values in self.dictDonnees.items():
             if values["IDindividu"] == ID :
                  self.SetSelection(index)
 
@@ -335,7 +335,7 @@ class Dialog(wx.Dialog):
         self.CenterOnScreen() 
     
     def OnChoixFamille(self, event):
-        print "A CODER"
+        print("A CODER")
         return
 ##        IDfamille = self.ctrl_famille.GetIDfamille() 
 ##        if IDfamille == None :

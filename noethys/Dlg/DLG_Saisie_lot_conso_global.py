@@ -83,7 +83,7 @@ class Traitement(Thread):
                 time.sleep(0.2)
 
                 # Affichage du journal d'erreur
-                if journal.has_key(track.IDindividu) :
+                if track.IDindividu in journal :
                     nbreErreurs = len(journal[track.IDindividu])
                 else :
                     nbreErreurs = 0
@@ -108,7 +108,7 @@ class Traitement(Thread):
             self.succes = True
             raise Abort
         
-        except Abort, KeyBoardInterrupt: 
+        except Abort as KeyBoardInterrupt: 
             if self.succes == True :
                 self.parent.EcritLog(_(u"Traitement terminé")) 
                 self.parent.Arreter(forcer=True) 
@@ -117,7 +117,7 @@ class Traitement(Thread):
             self.parent.bouton_fermer.Enable(True)
             self.parent.Layout()
             
-        except Exception, err : 
+        except Exception as err : 
             self.parent.EcritLog("Erreur : " + str(err))
             self.stop = True 
             self.parent.bouton_ok.SetImageEtTexte(cheminImage="Images/32x32/Valider.png", texte=u"Commencer")
@@ -160,7 +160,7 @@ class CTRL_Activite(wx.Choice):
         return listeItems
 
     def SetID(self, ID=0):
-        for index, values in self.dictDonnees.iteritems():
+        for index, values in self.dictDonnees.items():
             if values["ID"] == ID :
                  self.SetSelection(index)
 
@@ -451,7 +451,7 @@ class Dialog(wx.Dialog):
             # Traitement
             # Ajout de la liste des individus dans l'action sinon problème dans CTRL_Grille.TraitementLot_processus
             for track in tracks :
-                self.dictAction["individus"].append(dict((key, value) for key, value in track.__dict__.iteritems() 
+                self.dictAction["individus"].append(dict((key, value) for key, value in track.__dict__.items() 
                                                          if not callable(value) and not key.startswith('__')))
             self.traitement = Traitement(self, IDactivite=IDactivite, dictAction=self.dictAction, tracks=tracks) 
             self.traitement.start()

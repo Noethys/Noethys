@@ -244,8 +244,8 @@ class Parametres(wx.Panel):
         try :
             self.MAJprestations() 
             del dlgAttente
-        except Exception, err :
-            print err
+        except Exception as err :
+            print(err)
             del dlgAttente
     
     def OnCheckActivites(self):

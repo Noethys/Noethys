@@ -85,7 +85,7 @@ class ListView(FastObjectListView):
                                                         date_anterieure=self.dictParametres["date_anterieure"],
                                                         )
             del dlgAttente
-        except Exception, err:
+        except Exception as err:
             del dlgAttente
             traceback.print_exc(file=sys.stdout)
             dlg = wx.MessageDialog(self, _(u"Désolé, le problème suivant a été rencontré dans la recherche de factures : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
@@ -96,14 +96,14 @@ class ListView(FastObjectListView):
         # Condition famille unique
         if self.dictParametres["IDcompte_payeur"] != None :
             IDcompte_payeur = self.dictParametres["IDcompte_payeur"]
-            if self.dictComptes.has_key(IDcompte_payeur) :
+            if IDcompte_payeur in self.dictComptes :
                 self.dictComptes = { IDcompte_payeur : self.dictComptes[IDcompte_payeur],}
             else :
                 self.dictComptes = {}
             
         # Branches COMPTE
         listeListeView = []
-        for IDcompte_payeur, dictCompte in self.dictComptes.iteritems() :
+        for IDcompte_payeur, dictCompte in self.dictComptes.items() :
             track = Track(IDcompte_payeur, dictCompte)
             listeListeView.append(track)
         return listeListeView
@@ -360,7 +360,7 @@ class ListView(FastObjectListView):
         try:
             UTILS_Impression_facture.Impression(dictComptes, dictOptions, IDmodele=dictOptions["IDmodele"])
             del dlgAttente
-        except Exception, err:
+        except Exception as err:
             del dlgAttente
             traceback.print_exc(file=sys.stdout)
             dlg = wx.MessageDialog(self, _(u"Désolé, le problème suivant a été rencontré dans la création de l'aperçu des factures : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
@@ -369,7 +369,7 @@ class ListView(FastObjectListView):
             return False
 
     def GetListeComptes(self):
-        return self.dictComptes.keys() 
+        return list(self.dictComptes.keys()) 
 
 
 
@@ -420,7 +420,7 @@ class MyFrame(wx.Frame):
         import time
         h = time.time()
         self.ctrl.SetParametres(dictParametres) 
-        print time.time() - h
+        print(time.time() - h)
         
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.listviewAvecFooter, 1, wx.ALL|wx.EXPAND, 4)

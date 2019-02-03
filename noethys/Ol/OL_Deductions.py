@@ -101,7 +101,7 @@ class ListView(FastObjectListView):
         """ Récupération des données """
         listeID = None
         listeListeView = []
-        for IDdeduction, item in self.dictDeductions.iteritems() :
+        for IDdeduction, item in self.dictDeductions.items() :
             valide = True
             
             if item["etat"] == "SUPPR" : valide = False
@@ -336,7 +336,7 @@ class ListView(FastObjectListView):
     def GetTotalDeductions(self):
         """ Est utilisée par la DLG_Saisie_prestation pour connaître le montant total des déductions """
         total = 0.0
-        for IDdeduction, dictDeduction in self.dictDeductions.iteritems() :
+        for IDdeduction, dictDeduction in self.dictDeductions.items() :
             if dictDeduction["etat"] != "SUPPR" :
                 total += dictDeduction["montant"]
         return total
@@ -346,7 +346,7 @@ class ListView(FastObjectListView):
         """ Effectue une sauvegarde des données SI on est en mode MODIFICATIONS VIRTUELLES """
         DB = GestionDB.DB()
         
-        for IDdeduction, dictDeduction in self.dictDeductions.iteritems() :
+        for IDdeduction, dictDeduction in self.dictDeductions.items() :
             IDcompte_payeur = dictDeduction["IDcompte_payeur"]
             date = dictDeduction["date"]
             label = dictDeduction["label"]

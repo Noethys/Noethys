@@ -40,7 +40,7 @@ class Track_prestation(object):
 
         # Insertion des données
         for nom, defaut in champs :
-            if donnees.has_key(nom):
+            if nom in donnees:
                 valeur = donnees[nom]
             else:
                 valeur = defaut

@@ -63,14 +63,14 @@ def ConvertirToutesImagesPNG():
         for fichier in listeFichiers :
             if fichier.endswith(".png") :
                 listeFichiersPNG.append(repertoire.replace("\\", "/") + "/" + fichier)
-    print "Nbre fichiers PNG trouvees :", len(listeFichiersPNG)
+    print("Nbre fichiers PNG trouvees :", len(listeFichiersPNG))
     # Convertit les PNG
     nbreConversions = 0
     for fichier in listeFichiersPNG :
         resultat = ConvertirImagePNG(fichier)
         if resultat == True :
             nbreConversions += 1
-    print "%d images PNG ont ete converties" % nbreConversions
+    print("%d images PNG ont ete converties" % nbreConversions)
     
 
 def hex_to_rgb(value):

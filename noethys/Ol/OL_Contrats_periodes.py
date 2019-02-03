@@ -41,7 +41,7 @@ class Track(object):
         self.montant_prestation = dictValeurs["montant_prestation"]
         self.date_prestation = dictValeurs["date_prestation"]
         self.IDfacture = dictValeurs["IDfacture"]
-        if dictValeurs.has_key("numFacture") :
+        if "numFacture" in dictValeurs :
             self.numFacture = dictValeurs["numFacture"]
         else :
             self.numFacture = None

@@ -26,15 +26,15 @@ from Utils import UTILS_Titulaires
 from Dlg import DLG_Messagebox
 
 import smtplib
-from email.MIMEMultipart import MIMEMultipart
-from email.MIMEBase import MIMEBase
-from email.MIMEText import MIMEText
-from email.MIMEImage import MIMEImage
-from email.MIMEAudio import MIMEAudio
-from email.Utils import COMMASPACE, formatdate
+import six
+from six.moves.email_mime_multipart import MIMEMultipart
+from six.moves.email_mime_base import MIMEBase
+from six.moves.email_mime_text import MIMEText
+from six.moves.email_mime_image import MIMEImage
+from email.utils import COMMASPACE, formatdate
 from email.header import Header
 from email.utils import formatdate, formataddr
-from email import Encoders
+from email import encoders
 import mimetypes
 
 from Outils import mail
@@ -146,7 +146,7 @@ def GetAdresseFamille(IDfamille=None, choixMultiple=True, muet=False, nomTitulai
     # Récupération du nom de la famille
     if nomTitulaires == None :
         dictTitulaires = UTILS_Titulaires.GetTitulaires([IDfamille,])
-        if dictTitulaires.has_key(IDfamille):
+        if IDfamille in dictTitulaires:
             nomTitulaires = dictTitulaires[IDfamille]["titulairesSansCivilite"]
         else :
             nomTitulaires = _(u"Famille inconnue")
@@ -267,20 +267,16 @@ class Message():
                 fp = open(fichier, 'rb')
                 part = MIMEImage(fp.read(), _subtype=subtype)
                 fp.close()
-            elif maintype == 'audio':
-                fp = open(fichier, 'rb')
-                part = MIMEAudio(fp.read(), _subtype=subtype)
-                fp.close()
             else:
                 fp = open(fichier, 'rb')
                 part = MIMEBase(maintype, subtype)
                 part.set_payload(fp.read())
                 fp.close()
                 # Encode the payload using Base64
-                Encoders.encode_base64(part)
+                encoders.encode_base64(part)
             # Set the filename parameter
             nomFichier = os.path.basename(fichier)
-            if type(nomFichier) == unicode:
+            if type(nomFichier) == six.text_type:
                 nomFichier = FonctionsPerso.Supprime_accent(nomFichier)
             # changement cosmetique pour ajouter les guillements autour du filename
             part.add_header('Content-Disposition', "attachment; filename=\"%s\"" % nomFichier)
@@ -479,10 +475,10 @@ class SmtpV2(Base_messagerie):
                 try:
                     self.Envoyer(message)
                     listeSucces.append(message)
-                except Exception, err:
+                except Exception as err:
                     err = str(err).decode("iso-8859-15")
                     listeAnomalies.append((message, err))
-                    print ("Erreur dans l'envoi d'un mail : %s...", err)
+                    print(("Erreur dans l'envoi d'un mail : %s...", err))
                     traceback.print_exc(file=sys.stdout)
 
                     if ne_pas_signaler_erreurs == False:
@@ -573,7 +569,7 @@ class Mailjet(Base_messagerie):
         try:
             from mailjet_rest import Client
             self.connection = Client(auth=(api_key, api_secret), version='v3.1')
-        except Exception, err:
+        except Exception as err:
             raise
 
     def Envoyer(self, message=None, afficher_confirmation_envoi=False):

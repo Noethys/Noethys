@@ -112,7 +112,7 @@ class ListView(FastObjectListView):
             montant = FloatToDecimal(montant)
             
             key = (IDindividu, IDfamille)
-            if dictResultats.has_key(key) == False :
+            if (key in dictResultats) == False :
                 dictResultats[key] = {"IDindividu" : IDindividu, "nomIndividu" : nomIndividu, "prenomIndividu" : prenomIndividu, "IDfamille" : IDfamille, "IDcompte_payeur" : IDcompte_payeur, "nbre_conso" : 0, "prestations" : [], "nbre_prestations" : 0, "montant" : FloatToDecimal(0.0)}
             dictResultats[key]["prestations"].append({"IDprestation" : IDprestation, "montant" : montant})
             dictResultats[key]["montant"] += montant
@@ -123,12 +123,12 @@ class ListView(FastObjectListView):
             date = UTILS_Dates.DateEngEnDateDD(date)
 
             key = (IDindividu, IDfamille)
-            if dictResultats.has_key(key) == False :
+            if (key in dictResultats) == False :
                 dictResultats[key] = {"IDindividu" : IDindividu, "nomIndividu" : nomIndividu, "prenomIndividu" : prenomIndividu, "IDfamille" : IDfamille, "IDcompte_payeur" : IDcompte_payeur, "nbre_conso" : 0, "prestations" : [], "nbre_prestations" : 0, "montant" : FloatToDecimal(0.0)}
             dictResultats[key]["nbre_conso"] += 1
 
         listeListeView = []
-        for key, dictTemp in dictResultats.iteritems() :
+        for key, dictTemp in dictResultats.items() :
             track = Track(self, dictTemp)
             listeListeView.append(track)
         return listeListeView

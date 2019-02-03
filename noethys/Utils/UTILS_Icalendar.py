@@ -12,7 +12,7 @@
 import Chemins
 from UTILS_Traduction import _
 import icalendar
-import urllib2
+from six.moves.urllib.request import urlopen
 import datetime
 
 
@@ -21,7 +21,7 @@ class Calendrier():
         try :
             # Ouverture du calendrier
             if url != None :
-                fichier = urllib2.urlopen(url, timeout=5)
+                fichier = urlopen(url, timeout=5)
             if nomFichier != None :
                 fichier = open(nomFichier, "rb")
             # Lecture du fichier
@@ -43,7 +43,7 @@ class Calendrier():
     
     def RechercheElement(self, component=None, nom="DTSTART", type="date"):
         """ Recherche un élément dans un Event """
-        if component.has_key(nom) :
+        if nom in component :
             if type == "date" : return component.decoded(nom)
             if type == "texte" : return u"%s" % component[nom]
         else :
@@ -84,14 +84,14 @@ class Calendrier():
         for dictEvent in listeEvents :
             if u"élèves" or u"été" in dictEvent["description"] :
                 annee = dictEvent["date_debut"].year
-                if dictTemp.has_key(annee) == False :
+                if (annee in dictTemp) == False :
                     dictTemp[annee] = {"date_debut" : None, "date_fin" : None}
                 if u"été" in dictEvent["description"] :
                     dictTemp[annee]["date_debut"] = dictEvent["date_debut"] + datetime.timedelta(days=1)
                 if u"élèves" in dictEvent["description"] :
                     dictTemp[annee]["date_fin"] = dictEvent["date_debut"] - datetime.timedelta(days=1)
 
-        for annee, dictDates in dictTemp.iteritems() :
+        for annee, dictDates in dictTemp.items() :
             if dictDates["date_debut"] != None and dictDates["date_fin"] != None :
                 listeResultats.append({"annee" : annee, "nom" : _(u"Eté"), "date_debut" : dictDates["date_debut"], "date_fin" : dictDates["date_fin"]})
 
@@ -107,9 +107,9 @@ class Calendrier():
 
 if __name__ == "__main__":
     cal = Calendrier(url="http://media.education.gouv.fr/ics/Calendrier_Scolaire_Zone_A.ics")
-    print ">>", cal.GetTitre()
+    print(">>", cal.GetTitre())
 ##    for event in cal.GetEvents() :
 ##        print event
     for x in cal.GetVacances() :
-        print x
+        print(x)
         

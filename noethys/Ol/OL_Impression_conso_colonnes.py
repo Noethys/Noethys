@@ -243,7 +243,7 @@ class ListView(FastObjectListView):
     def SetParametres(self, dictParametres={}):
         if dictParametres == None :
             return False
-        if dictParametres.has_key("colonnes"):
+        if "colonnes" in dictParametres:
             self.liste_donnees = dictParametres["colonnes"]
             self.MAJ()
 
@@ -403,11 +403,11 @@ class DLG_Saisie_colonne(wx.Dialog):
 
     def SetDonnees(self, dictDonnees={}):
         self.SetTitle(_(u"Modification d'une colonne"))
-        if dictDonnees.has_key("nom") and dictDonnees["nom"] != None :
+        if "nom" in dictDonnees and dictDonnees["nom"] != None :
             self.ctrl_nom.SetValue(dictDonnees["nom"])
-        if dictDonnees.has_key("donnee_code") and dictDonnees["donnee_code"] != None :
+        if "donnee_code" in dictDonnees and dictDonnees["donnee_code"] != None :
             self.ctrl_donnee.SetID(dictDonnees["donnee_code"])
-        if dictDonnees.has_key("largeur") and dictDonnees["largeur"] != None :
+        if "largeur" in dictDonnees and dictDonnees["largeur"] != None :
             self.ctrl_largeur.SetID(dictDonnees["largeur"])
 
     def GetDonnees(self):

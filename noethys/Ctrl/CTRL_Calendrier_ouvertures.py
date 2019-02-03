@@ -59,27 +59,27 @@ class Calendrier(HTL.HyperTreeList):
         # Analyse et traitement des données dans un dictionnaire
         self.dictDonnees = {}
         dictTotaux = {}
-        for dateDD, dictGroupes in self.dictOuvertures.iteritems() :
-            for IDgroupe, dictUnites in dictGroupes.iteritems() :
-                for IDunite, valeurs in dictUnites.iteritems() :
+        for dateDD, dictGroupes in self.dictOuvertures.items() :
+            for IDgroupe, dictUnites in dictGroupes.items() :
+                for IDunite, valeurs in dictUnites.items() :
                     annee = dateDD.year
                     mois = dateDD.month
                     
-                    if self.dictDonnees.has_key(annee) == False :
+                    if (annee in self.dictDonnees) == False :
                         self.dictDonnees[annee] = {}
-                    if self.dictDonnees[annee].has_key(mois) == False :
+                    if (mois in self.dictDonnees[annee]) == False :
                         self.dictDonnees[annee][mois] = {}
-                    if self.dictDonnees[annee][mois].has_key(IDgroupe) == False :
+                    if (IDgroupe in self.dictDonnees[annee][mois]) == False :
                         self.dictDonnees[annee][mois][IDgroupe] = {}
-                    if self.dictDonnees[annee][mois][IDgroupe].has_key(IDunite) == False :
+                    if (IDunite in self.dictDonnees[annee][mois][IDgroupe]) == False :
                         self.dictDonnees[annee][mois][IDgroupe][IDunite] = 0
                     self.dictDonnees[annee][mois][IDgroupe][IDunite] += 1
                     
-                    if dictTotaux.has_key(annee) == False :
+                    if (annee in dictTotaux) == False :
                         dictTotaux[annee] = {"toutes" : [], "unites" : {} }
                     if dateDD not in dictTotaux[annee]["toutes"] :
                         dictTotaux[annee]["toutes"].append(dateDD)
-                    if dictTotaux[annee]["unites"].has_key(IDunite) == False :
+                    if (IDunite in dictTotaux[annee]["unites"]) == False :
                         dictTotaux[annee]["unites"][IDunite] = []
                     if dateDD not in dictTotaux[annee]["unites"][IDunite] :
                         dictTotaux[annee]["unites"][IDunite].append(dateDD)
@@ -99,12 +99,12 @@ class Calendrier(HTL.HyperTreeList):
         self.root = self.AddRoot(_(u"Racine"))
 
         # Création des branches
-        listeAnnees = self.dictDonnees.keys()
+        listeAnnees = list(self.dictDonnees.keys())
         listeAnnees.sort()
         for annee in listeAnnees :
             # Année
             label = _(u"Année %d") % annee
-            if dictTotaux.has_key(annee) :
+            if annee in dictTotaux :
                 total = len(dictTotaux[annee]["toutes"])
                 if total == 1 :
                     label = _(u"Année %d (1 date)") % annee
@@ -115,7 +115,7 @@ class Calendrier(HTL.HyperTreeList):
             branche1 = self.AppendItem(self.root, label)
             self.SetItemBold(branche1, True)
             self.SetItemBackgroundColour(branche1, wx.Colour(220, 220, 220))
-            listeMois = dictMois.keys()
+            listeMois = list(dictMois.keys())
             listeMois.sort()
             for mois in listeMois :
                 
@@ -126,8 +126,8 @@ class Calendrier(HTL.HyperTreeList):
                 
                 # tri des groupes
                 listeGroupesTemp = []
-                for IDgroupe, dictUnites in dictGroupes.iteritems() :
-                    if dictNomsGroupes.has_key(IDgroupe):
+                for IDgroupe, dictUnites in dictGroupes.items() :
+                    if IDgroupe in dictNomsGroupes:
                         ordre = dictNomsGroupes[IDgroupe]["ordre"]
                     else :
                         ordre = None
@@ -141,8 +141,8 @@ class Calendrier(HTL.HyperTreeList):
                         # Groupes
                         branche3 = self.AppendItem(branche2, dictNomsGroupes[IDgroupe]["nom"])
 
-                        for IDunite, nbreOuvertures in dictUnites.iteritems() :
-                            if dictColonnes.has_key(IDunite) :
+                        for IDunite, nbreOuvertures in dictUnites.items() :
+                            if IDunite in dictColonnes :
                                 numColonne = dictColonnes[IDunite]
                                 if nbreOuvertures == 1 :
                                     texte = _(u"1 date")
@@ -151,8 +151,8 @@ class Calendrier(HTL.HyperTreeList):
                                 self.SetItemText(branche3, texte, numColonne)
 
                             # Totaux par année
-                            if dictTotaux.has_key(annee) :
-                                if dictTotaux[annee]["unites"].has_key(IDunite) :
+                            if annee in dictTotaux :
+                                if IDunite in dictTotaux[annee]["unites"] :
                                     total = len(dictTotaux[annee]["unites"][IDunite])
                                     if total == 1 :
                                         label = _(u"1 date")
@@ -250,11 +250,11 @@ class Calendrier(HTL.HyperTreeList):
         for IDouverture, IDunite, IDgroupe, date in listeDonnees :
             dateDD = DateEngEnDateDD(date)
             dictValeurs = { "IDouverture" : IDouverture, "etat" : True, "initial" : True}
-            if self.dictOuvertures.has_key(dateDD) == False :
+            if (dateDD in self.dictOuvertures) == False :
                 self.dictOuvertures[dateDD] = {}
-            if self.dictOuvertures[dateDD].has_key(IDgroupe) == False :
+            if (IDgroupe in self.dictOuvertures[dateDD]) == False :
                 self.dictOuvertures[dateDD][IDgroupe] = {}
-            if self.dictOuvertures[dateDD][IDgroupe].has_key(IDunite) == False :
+            if (IDunite in self.dictOuvertures[dateDD][IDgroupe]) == False :
                 self.dictOuvertures[dateDD][IDgroupe][IDunite] = {}
             self.dictOuvertures[dateDD][IDgroupe][IDunite] = dictValeurs
 
@@ -270,11 +270,11 @@ class Calendrier(HTL.HyperTreeList):
         for IDremplissage, IDunite_remplissage, IDgroupe, date, places in listeDonnees :
             dateDD = DateEngEnDateDD(date)
             dictValeurs = { "IDremplissage" : IDremplissage, "places" : places, "initial" : places}
-            if self.dictRemplissage.has_key(dateDD) == False :
+            if (dateDD in self.dictRemplissage) == False :
                 self.dictRemplissage[dateDD] = {}
-            if self.dictRemplissage[dateDD].has_key(IDgroupe) == False :
+            if (IDgroupe in self.dictRemplissage[dateDD]) == False :
                 self.dictRemplissage[dateDD][IDgroupe] = {}
-            if self.dictRemplissage[dateDD][IDgroupe].has_key(IDunite_remplissage) == False :
+            if (IDunite_remplissage in self.dictRemplissage[dateDD][IDgroupe]) == False :
                 self.dictRemplissage[dateDD][IDgroupe][IDunite_remplissage] = {}
             self.dictRemplissage[dateDD][IDgroupe][IDunite_remplissage] = dictValeurs
 

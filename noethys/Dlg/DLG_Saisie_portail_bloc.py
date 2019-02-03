@@ -53,7 +53,7 @@ class CTRL_Page(wx.Choice):
         self.SetItems(listeItems)
 
     def SetID(self, ID=0):
-        for index, values in self.dictDonnees.iteritems():
+        for index, values in self.dictDonnees.items():
             if values["ID"] == ID:
                 self.SetSelection(index)
 
@@ -570,7 +570,7 @@ class Dialog(wx.Dialog):
         DB.Close()
 
     def GetParametre(self, dictTemp={}, code=""):
-        if dictTemp.has_key(code):
+        if code in dictTemp:
             return dictTemp[code]
         else:
             return None

@@ -59,7 +59,7 @@ class CTRL_Utilisateur(wx.Choice):
         return listeItems
 
     def SetID(self, ID=0):
-        for index, values in self.dictDonnees.iteritems():
+        for index, values in self.dictDonnees.items():
             if values["ID"] == ID :
                  self.SetSelection(index)
 
@@ -92,14 +92,14 @@ class CTRL_Categorie(wx.Choice):
         listeItems = [ _(u"<< Toutes les catégories >>"),]
         self.dictDonnees = { 0 : {"ID":None}, }
         index = 1
-        for IDcategorie, label in UTILS_Historique.CATEGORIES.iteritems() :
+        for IDcategorie, label in UTILS_Historique.CATEGORIES.items() :
             self.dictDonnees[index] = { "ID" : IDcategorie }
             listeItems.append(label)
             index += 1
         return listeItems
 
     def SetID(self, ID=0):
-        for index, values in self.dictDonnees.iteritems():
+        for index, values in self.dictDonnees.items():
             if values["ID"] == ID :
                  self.SetSelection(index)
 
@@ -132,7 +132,7 @@ class CTRL_Famille(wx.Choice):
         self.dictDonnees = { 0 : {"ID":None}, }
         index = 1
         listeTitulaires = []
-        for IDfamille, dictFamille in self.parent.ctrl_listview.titulaires.iteritems() :
+        for IDfamille, dictFamille in self.parent.ctrl_listview.titulaires.items() :
             nomsTitulaires = dictFamille["titulairesSansCivilite"]
             listeTitulaires.append((nomsTitulaires, IDfamille))
         listeTitulaires.sort()
@@ -143,7 +143,7 @@ class CTRL_Famille(wx.Choice):
         return listeItems
 
     def SetID(self, ID=0):
-        for index, values in self.dictDonnees.iteritems():
+        for index, values in self.dictDonnees.items():
             if values["ID"] == ID :
                  self.SetSelection(index)
 
@@ -189,7 +189,7 @@ class CTRL_Individu(wx.Choice):
         return listeItems
 
     def SetID(self, ID=0):
-        for index, values in self.dictDonnees.iteritems():
+        for index, values in self.dictDonnees.items():
             if values["ID"] == ID :
                  self.SetSelection(index)
 

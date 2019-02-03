@@ -46,7 +46,7 @@ class Track():
 
     def Importer_variables(self, dictDonnees, liste_variables):
         for attribut in liste_variables:
-            if dictDonnees.has_key(attribut):
+            if attribut in dictDonnees:
                 valeur = dictDonnees[attribut]
             else:
                 valeur = None
@@ -76,7 +76,7 @@ class Track():
     def MAJ(self, donnees=None):
         # Si on reçoit un dict
         if type(donnees) == dict :
-            for key, valeur in donnees.iteritems() :
+            for key, valeur in donnees.items() :
                 setattr(self, key, valeur)
         # Si on reçoit une liste
         if type(donnees) == list :
@@ -135,12 +135,12 @@ class Track_tarif(Track):
 
         # Autres données
         self.filtres = []
-        if dictDonnees.has_key("filtres"):
+        if "filtres" in dictDonnees:
             for dictFiltre in dictDonnees["filtres"] :
                 self.filtres.append(Track_filtre(dictFiltre))
 
         self.lignes = []
-        if dictDonnees.has_key("lignes"):
+        if "lignes" in dictDonnees:
             for dictLigne in dictDonnees["lignes"] :
                 self.lignes.append(Track_ligne(dictLigne))
 
@@ -614,9 +614,9 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         listeSuppressionsOuvertures = []
         listeFinaleEvenements = []
 
-        for dateDD, dictGroupes in self.dictOuvertures.iteritems() :
-            for IDgroupe, dictUnites in dictGroupes.iteritems() :
-                for IDunite, dictValeurs in dictUnites.iteritems() :
+        for dateDD, dictGroupes in self.dictOuvertures.items() :
+            for IDgroupe, dictUnites in dictGroupes.items() :
+                for IDunite, dictValeurs in dictUnites.items() :
                     etat = dictValeurs["etat"]
                     initial = dictValeurs["initial"]
                     IDouverture = dictValeurs["IDouverture"]
@@ -782,7 +782,7 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 DB.Executermany("UPDATE %s SET %s WHERE %s=?" % (track.nom_table, track.Get_interrogations_et_variables_pour_db(), track.champ_cle), listeDonnees, commit=False)
 
         # Recherche les suppressions à effectuer
-        for nom_table, dictTemp in dict_suppressions.iteritems() :
+        for nom_table, dictTemp in dict_suppressions.items() :
             liste_suppressions = []
             for ID in self.dict_donnees_initiales[nom_table] :
                 if ID not in dictTemp["listeID"] :
@@ -802,9 +802,9 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         listeAjouts = []
         listeModifications = []
         listeSuppressions = []
-        for dateDD, dictGroupes in self.dictRemplissage.iteritems() :
-            for IDgroupe, dictUnites in dictGroupes.iteritems() :
-                for IDunite_remplissage, dictValeurs in dictUnites.iteritems() :
+        for dateDD, dictGroupes in self.dictRemplissage.items() :
+            for IDgroupe, dictUnites in dictGroupes.items() :
+                for IDunite_remplissage, dictValeurs in dictUnites.items() :
                     places = dictValeurs["places"]
                     initial = dictValeurs["initial"]
                     IDremplissage = dictValeurs["IDremplissage"]
@@ -959,7 +959,7 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                     date_debut = dictUnite["date_debut"]
                     date_fin = dictUnite["date_fin"]
                     typeUnite = dictUnite["type"]
-                    if self.dictUnitesGroupes.has_key(IDunite) == False :
+                    if (IDunite in self.dictUnitesGroupes) == False :
                         self.dictUnitesGroupes[IDunite] = []
 
                     liste_evenements = []
@@ -983,9 +983,9 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 
                     # Ecrit le nombre de consommations dans la case
                     nbreConso = 0
-                    if self.dictConso.has_key(dateDD) :
-                        if self.dictConso[dateDD].has_key(IDgroupe) :
-                            if self.dictConso[dateDD][IDgroupe].has_key(IDunite) :
+                    if dateDD in self.dictConso :
+                        if IDgroupe in self.dictConso[dateDD] :
+                            if IDunite in self.dictConso[dateDD][IDgroupe] :
                                 nbreConso = self.dictConso[dateDD][IDgroupe][IDunite]
 
                     # Création de la case
@@ -1058,7 +1058,7 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 
     def OnLabelRightClick(self, event):
         numLigne = event.GetRow()
-        if numLigne == -1 or self.listeLignesDates.has_key(numLigne) == False : return
+        if numLigne == -1 or (numLigne in self.listeLignesDates) == False : return
         dateDD = self.listeLignesDates[numLigne]
         
         # Création du menu contextuel
@@ -1159,7 +1159,7 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 wx.Yield() 
                 self.TraitementLot(dictDonnees)
                 del dlgAttente
-            except Exception, err:
+            except Exception as err:
                 del dlgAttente
                 traceback.print_exc(file=sys.stdout)
                 dlg2 = wx.MessageDialog(self, _(u"Désolé, le problème suivant a été rencontré dans le traitement par lot : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
@@ -1182,7 +1182,7 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         date_debut_temp = date_debut
         date_fin_temp = date_fin
 
-        if dictDonnees.has_key("date") :
+        if "date" in dictDonnees :
             date = dictDonnees["date"]
             if date < date_debut_temp :
                 date_debut_temp = date
@@ -1427,7 +1427,7 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         event.Skip()
     
     def OnChangeRemplissage(self, numLigne, numColonne, nbrePlaces) :
-        if self.dictCases.has_key((numLigne, numColonne)) :
+        if (numLigne, numColonne) in self.dictCases :
             infoCase = self.dictCases[(numLigne, numColonne)]
             if infoCase["type"] == "remplissage" and infoCase["actif"] == True :
                 nbrePlaces = int(nbrePlaces)
@@ -1437,11 +1437,11 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 
     def ModifieRemplissage(self, numLigne, numColonne, dateDD, IDgroupe, IDunite_remplissage, nbrePlaces):        
         # Modifie le dictionnaire de données
-        if self.dictRemplissage.has_key(dateDD) == False :
+        if (dateDD in self.dictRemplissage) == False :
             self.dictRemplissage[dateDD] = {}
-        if self.dictRemplissage[dateDD].has_key(IDgroupe) == False :
+        if (IDgroupe in self.dictRemplissage[dateDD]) == False :
             self.dictRemplissage[dateDD][IDgroupe] = {}
-        if self.dictRemplissage[dateDD][IDgroupe].has_key(IDunite_remplissage) == False :
+        if (IDunite_remplissage in self.dictRemplissage[dateDD][IDgroupe]) == False :
             self.dictRemplissage[dateDD][IDgroupe][IDunite_remplissage] = { "IDremplissage" : None, "places" : nbrePlaces, "initial" : None}
         else:
             self.dictRemplissage[dateDD][IDgroupe][IDunite_remplissage]["places"] = nbrePlaces
@@ -1457,7 +1457,7 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         numColonne = self.XToCol(x)
 
         caseSurvolee = None
-        for coords, infoCase in self.dictCases.iteritems() :
+        for coords, infoCase in self.dictCases.items() :
             if infoCase["type"] == "ouverture" and infoCase["actif"] == True :
                 case = infoCase["case"]
                 if case.SetSurvol(x, y) == True :
@@ -1505,7 +1505,7 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 
 
     def RechercheCaseOuverture(self, numLigne, numColonne):
-        if self.dictCases.has_key((numLigne, numColonne)) :
+        if (numLigne, numColonne) in self.dictCases :
             infoCase = self.dictCases[(numLigne, numColonne)]
             if infoCase["type"] == "ouverture" and infoCase["actif"] == True :
                 case = infoCase["case"]
@@ -1513,7 +1513,7 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         return None
 
     def OnChangeOuverture(self, numLigne, numColonne, etat=None, liste_evenements=[], silencieux=False):
-        if self.dictCases.has_key((numLigne, numColonne)) :
+        if (numLigne, numColonne) in self.dictCases :
             infoCase = self.dictCases[(numLigne, numColonne)]
             if infoCase["type"] == "ouverture" and infoCase["actif"] == True :
                 case = infoCase["case"]
@@ -1556,13 +1556,13 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
     
     def ModifieOuverture(self, case=None, ouvert=False, liste_evenements=[]):
         # Modifie le dictionnaire de données
-        if self.dictOuvertures.has_key(case.date) == False :
+        if (case.date in self.dictOuvertures) == False :
             self.dictOuvertures[case.date] = {}
-        if self.dictOuvertures[case.date].has_key(case.IDgroupe) == False :
+        if (case.IDgroupe in self.dictOuvertures[case.date]) == False :
             self.dictOuvertures[case.date][case.IDgroupe] = {}
-        if self.dictOuvertures[case.date][case.IDgroupe].has_key(case.IDunite) == False :
+        if (case.IDunite in self.dictOuvertures[case.date][case.IDgroupe]) == False :
             self.dictOuvertures[case.date][case.IDgroupe][case.IDunite] = {}
-        if self.dictOuvertures[case.date][case.IDgroupe][case.IDunite].has_key("etat") == False :
+        if ("etat" in self.dictOuvertures[case.date][case.IDgroupe][case.IDunite]) == False :
             self.dictOuvertures[case.date][case.IDgroupe][case.IDunite] = { "IDouverture" : None, "etat" : ouvert, "initial" : None, "liste_evenements" : liste_evenements}
         else:
             self.dictOuvertures[case.date][case.IDgroupe][case.IDunite]["etat"] = ouvert
@@ -1574,31 +1574,31 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         case.Refresh()
 
     def RechercheOuverture(self, dateDD, IDgroupe, IDunite):
-        if self.dictOuvertures.has_key(dateDD) :
-            if self.dictOuvertures[dateDD].has_key(IDgroupe) :
-                if self.dictOuvertures[dateDD][IDgroupe].has_key(IDunite) :
+        if dateDD in self.dictOuvertures :
+            if IDgroupe in self.dictOuvertures[dateDD] :
+                if IDunite in self.dictOuvertures[dateDD][IDgroupe] :
                     return self.dictOuvertures[dateDD][IDgroupe][IDunite]
         return None
 
     def GetOuverture(self, dateDD, IDgroupe, IDunite):
-        if self.dictOuvertures.has_key(dateDD) :
-            if self.dictOuvertures[dateDD].has_key(IDgroupe) :
-                if self.dictOuvertures[dateDD][IDgroupe].has_key(IDunite) :
+        if dateDD in self.dictOuvertures :
+            if IDgroupe in self.dictOuvertures[dateDD] :
+                if IDunite in self.dictOuvertures[dateDD][IDgroupe] :
                     return self.dictOuvertures[dateDD][IDgroupe][IDunite]
         return None
 
     def RechercheRemplissage(self, dateDD, IDgroupe, IDunite_remplissage):
-        if self.dictRemplissage.has_key(dateDD) :
-            if self.dictRemplissage[dateDD].has_key(IDgroupe) :
-                if self.dictRemplissage[dateDD][IDgroupe].has_key(IDunite_remplissage) :
+        if dateDD in self.dictRemplissage :
+            if IDgroupe in self.dictRemplissage[dateDD] :
+                if IDunite_remplissage in self.dictRemplissage[dateDD][IDgroupe] :
                     if self.dictRemplissage[dateDD][IDgroupe][IDunite_remplissage]["places"] > 0 :
                         return self.dictRemplissage[dateDD][IDgroupe][IDunite_remplissage]["places"]
         return 0
 
     def GetRemplissage(self, dateDD, IDgroupe, IDunite_remplissage):
-        if self.dictRemplissage.has_key(dateDD) :
-            if self.dictRemplissage[dateDD].has_key(IDgroupe) :
-                if self.dictRemplissage[dateDD][IDgroupe].has_key(IDunite_remplissage) :
+        if dateDD in self.dictRemplissage :
+            if IDgroupe in self.dictRemplissage[dateDD] :
+                if IDunite_remplissage in self.dictRemplissage[dateDD][IDgroupe] :
                     return self.dictRemplissage[dateDD][IDgroupe][IDunite_remplissage]
         return None
 
@@ -1630,7 +1630,7 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         listeDonnees = DB.ResultatReq()
         dictDonnees = {}
         for IDunite_groupe, IDunite, IDgroupe in listeDonnees :
-            if dictDonnees.has_key(IDunite) == False :
+            if (IDunite in dictDonnees) == False :
                 dictDonnees[IDunite] = [IDgroupe,]
             else:
                 dictDonnees[IDunite].append(IDgroupe)
@@ -1740,7 +1740,7 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             listeDonneesFiltres = DB.ResultatReq()
             dictFiltres = {}
             for IDtarif, IDfiltre, IDquestion, categorie, choix, criteres in listeDonneesFiltres :
-                if dictFiltres.has_key(IDtarif) == False :
+                if (IDtarif in dictFiltres) == False :
                     dictFiltres[IDtarif] = []
                 dictTemp = {"IDfiltre" : IDfiltre, "IDquestion" : IDquestion, "categorie" : categorie, "choix" : choix, "criteres" : criteres, "IDtarif" : IDtarif}
                 dictFiltres[IDtarif].append(dictTemp)
@@ -1757,7 +1757,7 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 for valeur in ligne :
                     dictLigne[CHAMPS_TABLE_LIGNES[index]] = valeur
                     index += 1
-                if dictLignes.has_key(dictLigne["IDtarif"]) == False :
+                if (dictLigne["IDtarif"] in dictLignes) == False :
                     dictLignes[dictLigne["IDtarif"]] = []
                 dictLignes[dictLigne["IDtarif"]].append(dictLigne)
                 self.dict_donnees_initiales["tarifs_lignes"].append(dictLigne["IDligne"])
@@ -1766,13 +1766,13 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             for IDtarif, IDactivite, date_debut, date_fin, methode, type, categories_tarifs, groupes, etiquettes, cotisations, caisses, description, jours_scolaires, jours_vacances, observations, tva, code_compta, IDtype_quotient, label_prestation, IDevenement in listeDonneesTarifs :
 
                 # Récupération des filtres du tarif
-                if dictFiltres.has_key(IDtarif):
+                if IDtarif in dictFiltres:
                     liste_filtres = dictFiltres[IDtarif]
                 else :
                     liste_filtres = []
 
                 # Récupération des lignes du tarif
-                if dictLignes.has_key(IDtarif):
+                if IDtarif in dictLignes:
                     liste_lignes = dictLignes[IDtarif]
                 else :
                     liste_lignes = []
@@ -1785,7 +1785,7 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                     "filtres" : liste_filtres, "lignes" : liste_lignes,
                     }
 
-                if dict_tarifs.has_key(IDevenement) == False :
+                if (IDevenement in dict_tarifs) == False :
                     dict_tarifs[IDevenement] = []
                 dict_tarifs[IDevenement].append(dictTemp)
 
@@ -1794,13 +1794,13 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         for dictEvenement in liste_evenements :
 
             # Récupération des tarifs associé à l'évènement
-            if dict_tarifs.has_key(dictEvenement["IDevenement"]) :
+            if dictEvenement["IDevenement"] in dict_tarifs :
                 dictEvenement["tarifs"] = dict_tarifs[dictEvenement["IDevenement"]]
 
             # Stockage des l'évènement
             track_evenement = Track_evenement(dictEvenement)
             key = (dictEvenement["IDunite"], dictEvenement["IDgroupe"], dictEvenement["date"])
-            if dictEvenements.has_key(key) == False :
+            if (key in dictEvenements) == False :
                 dictEvenements[key] = []
             dictEvenements[key].append(track_evenement)
 
@@ -1811,7 +1811,7 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             # Recherche des évènements associés
             key = (IDunite, IDgroupe, date)
 
-            if dictEvenements.has_key(key):
+            if key in dictEvenements:
                 liste_evenements = dictEvenements[key]
             else :
                 liste_evenements = []
@@ -1821,11 +1821,11 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             
     def MemoriseOuverture(self, dateDD=None, IDouverture=None, IDunite=None, IDgroupe=None, etat=True, initial=True, liste_evenements=[], forcer=False) :
             dictValeurs = { "IDouverture" : IDouverture, "etat" : etat, "initial" : initial, "liste_evenements" : liste_evenements}
-            if self.dictOuvertures.has_key(dateDD) == False :
+            if (dateDD in self.dictOuvertures) == False :
                 self.dictOuvertures[dateDD] = {}
-            if self.dictOuvertures[dateDD].has_key(IDgroupe) == False :
+            if (IDgroupe in self.dictOuvertures[dateDD]) == False :
                 self.dictOuvertures[dateDD][IDgroupe] = {}
-            if self.dictOuvertures[dateDD][IDgroupe].has_key(IDunite) == False :
+            if (IDunite in self.dictOuvertures[dateDD][IDgroupe]) == False :
                 self.dictOuvertures[dateDD][IDgroupe][IDunite] = {}
             if self.dictOuvertures[dateDD][IDgroupe][IDunite] == {} or forcer == True :
                 self.dictOuvertures[dateDD][IDgroupe][IDunite] = dictValeurs
@@ -1845,11 +1845,11 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
     
     def MemoriseRemplissage(self, dateDD=None, IDremplissage=None, IDunite_remplissage=None, IDgroupe=None, places=None, initial=None, forcer=False):
         dictValeurs = { "IDremplissage" : IDremplissage, "places" : places, "initial" : initial}
-        if self.dictRemplissage.has_key(dateDD) == False :
+        if (dateDD in self.dictRemplissage) == False :
             self.dictRemplissage[dateDD] = {}
-        if self.dictRemplissage[dateDD].has_key(IDgroupe) == False :
+        if (IDgroupe in self.dictRemplissage[dateDD]) == False :
             self.dictRemplissage[dateDD][IDgroupe] = {}
-        if self.dictRemplissage[dateDD][IDgroupe].has_key(IDunite_remplissage) == False :
+        if (IDunite_remplissage in self.dictRemplissage[dateDD][IDgroupe]) == False :
             self.dictRemplissage[dateDD][IDgroupe][IDunite_remplissage] = {}
         if self.dictRemplissage[dateDD][IDgroupe][IDunite_remplissage] == {} or forcer == True :
             self.dictRemplissage[dateDD][IDgroupe][IDunite_remplissage] = dictValeurs
@@ -1864,11 +1864,11 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         listeDonnees = DB.ResultatReq()
         for date, IDgroupe, IDunite, nbreConso in listeDonnees :
             date = DateEngEnDateDD(date)
-            if self.dictConso.has_key(date) == False :
+            if (date in self.dictConso) == False :
                 self.dictConso[date] = {}
-            if self.dictConso[date].has_key(IDgroupe) == False :
+            if (IDgroupe in self.dictConso[date]) == False :
                 self.dictConso[date][IDgroupe] = {}
-            if self.dictConso[date][IDgroupe].has_key(IDunite) == False :
+            if (IDunite in self.dictConso[date][IDgroupe]) == False :
                 self.dictConso[date][IDgroupe][IDunite] = {}
             self.dictConso[date][IDgroupe][IDunite] = nbreConso
 
@@ -1895,7 +1895,7 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         font = self.GetFont()
         self.tip.SetHyperlinkFont(wx.Font(8, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, 'Arial'))
 
-        if dictDonnees.has_key("couleur"):
+        if "couleur" in dictDonnees:
             couleur = dictDonnees["couleur"]
             self.tip.SetTopGradientColour(couleur)
             self.tip.SetMiddleGradientColour(wx.Colour(255, 255, 255))
@@ -1907,12 +1907,12 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 
         # Titre du tooltip
         bmp = None
-        if dictDonnees.has_key("bmp"):
+        if "bmp" in dictDonnees:
             bmp = dictDonnees["bmp"]
         self.tip.SetHeaderBitmap(bmp)
 
         titre = None
-        if dictDonnees.has_key("titre"):
+        if "titre" in dictDonnees:
             titre = dictDonnees["titre"]
             self.tip.SetHeaderFont(wx.Font(10, font.GetFamily(), font.GetStyle(), wx.BOLD, font.GetUnderlined(), font.GetFaceName()))
             self.tip.SetHeader(titre)
@@ -1924,7 +1924,7 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 
         # Pied du tooltip
         pied = None
-        if dictDonnees.has_key("pied") and dictDonnees["pied"] != None :
+        if "pied" in dictDonnees and dictDonnees["pied"] != None :
             pied = dictDonnees["pied"]
             self.tip.SetDrawFooterLine(True)
             self.tip.SetFooterBitmap(wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Aide.png"), wx.BITMAP_TYPE_ANY))
@@ -2170,7 +2170,7 @@ class Dialog(wx.Dialog):
             wx.Yield() 
             self.ctrl_calendrier.Sauvegarde()
             del dlgAttente
-        except Exception, err:
+        except Exception as err:
             del dlgAttente
             traceback.print_exc(file=sys.stdout)
             dlg = wx.MessageDialog(self, _(u"Désolé, le problème suivant a été rencontré dans la sauvegarde des ouvertures : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)

@@ -16,7 +16,7 @@ import wx.html as html
 import GestionDB
 import datetime
 import os
-import subprocess
+import six
 import webbrowser
 import shutil
 import random
@@ -181,7 +181,7 @@ def Recup_liste_pb_personnes(recalc=False):
 ##    print ">>>", nomWindow
     # Si Recalcul des données obligatoire :
     if recalc == True :
-        print _(u"Recalcul obligatoire des donnees")
+        print(_(u"Recalcul obligatoire des donnees"))
         topWindow.dictNomsPersonnes, topWindow.dictProblemesPersonnes = Creation_liste_pb_personnes()
         return topWindow.dictNomsPersonnes, topWindow.dictProblemesPersonnes
     
@@ -293,7 +293,7 @@ def Recherche_problemes_personnes(listeIDpersonnes = (), infosPersonne=[]):
         
         # Met les données dans le dictionnaire
         if len(problemesFiche) != 0 : 
-            if dictProblemes.has_key(IDpersonne) == False : dictProblemes[IDpersonne] = {}
+            if (IDpersonne in dictProblemes) == False : dictProblemes[IDpersonne] = {}
             if len(problemesFiche) == 1 : 
                 categorie = _(u"1 information manquante")
             else:
@@ -353,7 +353,7 @@ def Recherche_problemes_personnes(listeIDpersonnes = (), infosPersonne=[]):
         
         # Passe en revue toutes les pièces à fournir et regarde si la personne possède les pièces correspondantes
         for IDtype_piece, nom_piece in listePiecesAFournir :
-            if dictTmpPieces.has_key(IDtype_piece) == True :
+            if (IDtype_piece in dictTmpPieces) == True :
                 date_debut = dictTmpPieces[IDtype_piece][0]
                 date_fin = dictTmpPieces[IDtype_piece][1]
                 # Recherche la validité
@@ -374,7 +374,7 @@ def Recherche_problemes_personnes(listeIDpersonnes = (), infosPersonne=[]):
             DictPieces[IDtype_piece] = (etat, nom_piece)
         
 
-        for IDtype_piece, donnees in DictPieces.iteritems() :
+        for IDtype_piece, donnees in DictPieces.items() :
             etat, nom_piece = donnees
             if etat == "Ok": continue
             if etat == "PasOk" :
@@ -385,7 +385,7 @@ def Recherche_problemes_personnes(listeIDpersonnes = (), infosPersonne=[]):
     
         # Met les listes de problèmes dans un dictionnaire
         if len(piecesManquantes) != 0 : 
-            if dictProblemes.has_key(IDpersonne) == False : dictProblemes[IDpersonne] = {}
+            if (IDpersonne in dictProblemes) == False : dictProblemes[IDpersonne] = {}
             if len(piecesManquantes) == 1 : 
                 categorie = _(u"1 pièce manquante")
             else:
@@ -393,7 +393,7 @@ def Recherche_problemes_personnes(listeIDpersonnes = (), infosPersonne=[]):
             dictProblemes[IDpersonne][categorie] = piecesManquantes
 
         if len(piecesPerimees) != 0 : 
-            if dictProblemes.has_key(IDpersonne) == False : dictProblemes[IDpersonne] = {}
+            if (IDpersonne in dictProblemes) == False : dictProblemes[IDpersonne] = {}
             if len(piecesPerimees) == 1 : 
                 categorie = _(u"1 pièce bientôt périmée")
             else:
@@ -425,7 +425,7 @@ def Recherche_problemes_personnes(listeIDpersonnes = (), infosPersonne=[]):
         
         # Met les données dans le dictionnaire
         if len(problemesContrats) != 0 : 
-            if dictProblemes.has_key(IDpersonne) == False : dictProblemes[IDpersonne] = {}
+            if (IDpersonne in dictProblemes) == False : dictProblemes[IDpersonne] = {}
             if len(problemesContrats) == 1 : 
                 categorie = _(u"1 contrat à voir")
             else:
@@ -583,9 +583,9 @@ def sendTextMail():
         msg = msg + MAIL_CONTENT
         server.sendmail( sourceAddress, addressTarget, msg )
         server.quit()
-        print "Envoi mail Ok"
-    except smtplib.SMTPException, msg:
-        print msg
+        print("Envoi mail Ok")
+    except smtplib.SMTPException as msg:
+        print(msg)
 
 
 def EnvoyerMail(adresses = [], sujet="", message=""):
@@ -623,7 +623,7 @@ class FichierConfig():
         import shelve
         db = shelve.open(self.nomFichier, "r")
         dictDonnees = {}
-        for key in db.keys():
+        for key in list(db.keys()):
             dictDonnees[key] = db[key]
         db.close()
         return dictDonnees
@@ -632,7 +632,7 @@ class FichierConfig():
         """ Remplace le fichier de config présent sur le disque dur par le dict donné """
         import shelve
         db = shelve.open(self.nomFichier, "n")
-        for key in dictConfig.keys():
+        for key in list(dictConfig.keys()):
             db[key] = dictConfig[key]
         db.close()
         
@@ -841,7 +841,7 @@ def Parametres(mode="get", categorie="", nom="", valeur=None):
     if type_parametre == int : valeurTmp = str(valeur)
     elif type_parametre == float : valeurTmp = str(valeur)
     elif type_parametre == str : valeurTmp = valeur
-    elif type_parametre == unicode : valeurTmp = valeur
+    elif type_parametre == six.text_type : valeurTmp = valeur
     elif type_parametre == tuple : valeurTmp = str(valeur)
     elif type_parametre == list : valeurTmp = str(valeur)
     elif type_parametre == dict : valeurTmp = str(valeur)
@@ -866,7 +866,7 @@ def Parametres(mode="get", categorie="", nom="", valeur=None):
             if type_parametre == int : valeurTmp = int(valeurTmp)
             if type_parametre == float : valeurTmp = float(valeurTmp)
             if type_parametre == str : valeurTmp = valeurTmp
-            if type_parametre == unicode : valeurTmp = valeurTmp
+            if type_parametre == six.text_type : valeurTmp = valeurTmp
             if type_parametre == tuple : exec("valeurTmp = " + valeurTmp)
             if type_parametre == list : exec("valeurTmp = " + valeurTmp)
             if type_parametre == dict : exec("valeurTmp = " + valeurTmp)
@@ -976,8 +976,8 @@ def VideRepertoireTemp():
                         shutil.rmtree(nomComplet)
                     else :
                         os.remove(nomComplet)
-                except Exception, err :
-                    print err
+                except Exception as err :
+                    print(err)
 
 def VideRepertoireUpdates(forcer=False):
     """ Supprimer les fichiers temporaires du répertoire Updates """
@@ -994,8 +994,8 @@ def VideRepertoireUpdates(forcer=False):
                 else:
                     # La version est égale : on la laisse pour l'instant
                     pass
-    except Exception, err:
-        print err
+    except Exception as err:
+        print(err)
         pass
         
 def ListeImprimantes():
@@ -1029,8 +1029,9 @@ def ListeImprimantes():
 def EnleveAccents(chaineUnicode):
     """ Enlève les accents d'une chaine unicode """
     import unicodedata
-    if type(chaineUnicode) == str : 
-        chaineUnicode = chaineUnicode.decode("iso-8859-15")
+    if type(chaineUnicode) == str :
+        if six.PY2:
+            chaineUnicode = chaineUnicode.decode("iso-8859-15")
     resultat = unicodedata.normalize('NFKD', chaineUnicode).encode('ascii','ignore')
     return resultat
 
@@ -1046,7 +1047,7 @@ def AfficheStatsProgramme():
     nbreFonctions = 0
     
     # Recherche les fichiers python
-    print "Lancement de l'analyse..."
+    print("Lancement de l'analyse...")
     listeFichiers = os.listdir(os.getcwd())
     for nomFichier in listeFichiers :
         if nomFichier.endswith(".py") :
@@ -1073,22 +1074,22 @@ def AfficheStatsProgramme():
     
     # Nbre tables
     from DATA_Tables import DB_DATA
-    nbreTables = len(DB_DATA.keys()) + 2
+    nbreTables = len(list(DB_DATA.keys())) + 2
     
     # Affiche les résultats
     for nomFichier, nbreLignes in listeResultats :
-        print "%s ---> %d lignes" % (nomFichier, nbreLignes)
-    print "----------------------------------------"
-    print "Nbre total de lignes = %d lignes" % nbreLignesTotal
-    print "Nbre total de modules = %s modules" % len(listeResultats)
-    print "Nbre total de fonctions = %d" % nbreFonctions 
-    print "----------------------------------------"
-    print "Nbre total de wx.Dialog = %d" % nbreDialogs
-    print "Nbre total d'impressions ObjectlistView = %d" % nbreImpressionsOL 
-    print "Nbre total d'impressions PDF = %d" % nbreImpressionsPDF 
-    print "Nbre total de boites de dialogue = %d" % nbreBoitesDialogue 
-    print "----------------------------------------"
-    print "Nbre tables de données = %d" % nbreTables
+        print("%s ---> %d lignes" % (nomFichier, nbreLignes))
+    print("----------------------------------------")
+    print("Nbre total de lignes = %d lignes" % nbreLignesTotal)
+    print("Nbre total de modules = %s modules" % len(listeResultats))
+    print("Nbre total de fonctions = %d" % nbreFonctions) 
+    print("----------------------------------------")
+    print("Nbre total de wx.Dialog = %d" % nbreDialogs)
+    print("Nbre total d'impressions ObjectlistView = %d" % nbreImpressionsOL) 
+    print("Nbre total d'impressions PDF = %d" % nbreImpressionsPDF) 
+    print("Nbre total de boites de dialogue = %d" % nbreBoitesDialogue) 
+    print("----------------------------------------")
+    print("Nbre tables de données = %d" % nbreTables)
 
 def GetRepertoireProjet(fichier=""):
     frozen = getattr(sys, 'frozen', '')
@@ -1197,7 +1198,7 @@ def RemplacerContenuFichier():
                 for line in fichier :
                     for old, new in listeRemplacements :
                         if old in line :
-                            print nomFichier
+                            print(nomFichier)
                             line = line.replace(old, new)
                     nouveauFichier.write(line)
                 nouveauFichier.close()
@@ -1231,7 +1232,7 @@ def PreparationFichierDefaut(nomFichier=""):
     connexion.commit()
     # Fermeture base
     connexion.close() 
-    print "Procedure terminee."
+    print("Procedure terminee.")
 
 ##if __name__ == "__main__":
 ##    RemplacerContenuFichier()
@@ -1297,7 +1298,7 @@ def RechercherAideManquante():
                 
             fichier.close()
     fichierResultats.close()
-    print len(listeFichiersTrouves), "fichier trouves."
+    print(len(listeFichiersTrouves), "fichier trouves.")
 
 
 def RemplacerDeprecatedWxpython():
@@ -1305,7 +1306,7 @@ def RemplacerDeprecatedWxpython():
     listeFichiersTrouves = []
     for nomFichier in listeFichiers :
         if nomFichier.endswith(".py") and "FonctionsPerso.py" not in nomFichier :
-            print "%s..." % nomFichier
+            print("%s..." % nomFichier)
             fichier = open(nomFichier, 'r')
             nouveauFichier = open("New/%s" % nomFichier, 'w')
             numLigne = 1
@@ -1326,7 +1327,7 @@ def RemplacerDeprecatedWxpython():
                                 #print nomFichier, ligne
                             else :
                                 newValeurs = valeurs
-                                print "ERREUR !!!!!!!! ---------> ", nomFichier, numLigne, valeurs, "-->", newValeurs
+                                print("ERREUR !!!!!!!! ---------> ", nomFichier, numLigne, valeurs, "-->", newValeurs)
                     
                     # wx.PySimpleApp
                     chaine = "wx.PySimpleApp"
@@ -1341,11 +1342,11 @@ def RemplacerDeprecatedWxpython():
                     # Ecriture
                     nouveauFichier.write(ligne)
                     numLigne += 1
-            except Exception, err:
-                print nomFichier, err
+            except Exception as err:
+                print(nomFichier, err)
             fichier.close()
             nouveauFichier.close()
-            print "fini !!!!!!!!!!!!!!!!!"
+            print("fini !!!!!!!!!!!!!!!!!")
 
 
 def ReplacementChaine(chaine="", avant="", apres="", remplacement=""):
@@ -1370,7 +1371,7 @@ def RechercheModules(nomFichier="Noethys.py") :
     finder = ModuleFinder()
     finder.run_script(nomFichier)
     listeModules = []
-    for nom, mod in finder.modules.iteritems():
+    for nom, mod in finder.modules.items():
         cheminFichier = mod.__file__
         if cheminFichier != None and "Noethys" in cheminFichier :
             cheminFichier = cheminFichier.replace(os.getcwd(), "")
@@ -1440,7 +1441,7 @@ def InsertUnicodeLiterals():
             
         indexFichier += 1
             
-    print "Fini !!!!!!!!!!!!!!!!!"
+    print("Fini !!!!!!!!!!!!!!!!!")
 
 
 def InsertThemeDansOL():
@@ -1484,7 +1485,7 @@ def InsertThemeDansOL():
 
         indexFichier += 1
 
-    print "Fini !!!!!!!!!!!!!!!!!"
+    print("Fini !!!!!!!!!!!!!!!!!")
 
 
 def RechercheWhere():
@@ -1500,12 +1501,12 @@ def RechercheWhere():
                 if "WHERE" in ligne :
                     ligne = ligne.replace("\n", "")
                     ligne = ligne.replace("  ", "")
-                    print ligne
+                    print(ligne)
                 
             # Clôture des fichiers
             fichier.close()
             
-    print "Fini !!!!!!!!!!!!!!!!!"
+    print("Fini !!!!!!!!!!!!!!!!!")
 
 
 def CreerDonneesVirtuelles(nbreFamilles=0):
@@ -1513,7 +1514,7 @@ def CreerDonneesVirtuelles(nbreFamilles=0):
     DB = GestionDB.DB()
     for x in range(0, nbreFamilles) :
         
-        print "Creation de la famille %d/%d..." % (x+1, nbreFamilles)
+        print("Creation de la famille %d/%d..." % (x+1, nbreFamilles))
         
         # Famille
         IDfamille = DB.ReqInsert("familles", [("date_creation", datetime.date.today()), ("IDcompte_payeur", None)])
@@ -1568,11 +1569,11 @@ def CreerDonneesVirtuellesLocations(nbreFamilles=0):
     # Saisie des données
     for x in range(0, nbreFamilles):
 
-        print "-----  Creation de la famille %d/%d... -----" % (x + 1, nbreFamilles)
+        print("-----  Creation de la famille %d/%d... -----" % (x + 1, nbreFamilles))
 
         # Famille
         IDfamille = DB.ReqInsert("familles", [("date_creation", datetime.date.today()), ("IDcompte_payeur", None)])
-        print "IDfamille = %d" % IDfamille
+        print("IDfamille = %d" % IDfamille)
 
         # Compte payeur
         IDcompte_payeur = DB.ReqInsert("comptes_payeurs", [("IDfamille", IDfamille), ])
@@ -1592,7 +1593,7 @@ def CreerDonneesVirtuellesLocations(nbreFamilles=0):
             # Création d'une location
             IDproduit = listeProduits[x]["IDproduit"]
             IDlocation = DB.ReqInsert("locations", [("IDfamille", IDfamille), ("IDproduit", IDproduit), ("observations", ""), ("date_saisie", datetime.date.today()), ("date_debut", aujourdhui)])
-            print "Location ID%d du produit ID%d" % (IDlocation, IDproduit)
+            print("Location ID%d du produit ID%d" % (IDlocation, IDproduit))
         else :
 
             # Création d'une demande de location
@@ -1602,7 +1603,7 @@ def CreerDonneesVirtuellesLocations(nbreFamilles=0):
             statut = "attente"
             motif_refus = ""
             IDdemande = DB.ReqInsert("locations_demandes", [("date", aujourdhui),("IDfamille", IDfamille), ("observations", ""), ("categories", categories), ("produits", produits), ("statut", statut), ("motif_refus", motif_refus)])
-            print "Demande ID%d" % IDdemande
+            print("Demande ID%d" % IDdemande)
 
             # Création d'un filtre pour la demande
             liste_choix = ["6", "12", "18", "24", "30", "36", "48"]
@@ -1697,7 +1698,7 @@ def InsertCode():
 
             indexFichier += 1
 
-    print "Fini !!!!!!!!!!!!!!!!!"
+    print("Fini !!!!!!!!!!!!!!!!!")
 
 
 def InsertCodeToolTip():
@@ -1716,7 +1717,7 @@ def InsertCodeToolTip():
         indexFichier = 0
         for nomFichier in listeFichiers :
             if nomFichier.endswith("py") :
-                print "%d/%d :  %s..." % (indexFichier, len(listeFichiers), nomFichier)
+                print("%d/%d :  %s..." % (indexFichier, len(listeFichiers), nomFichier))
 
                 # Ouverture des fichiers
                 fichier = open(os.path.join(repertoire, nomFichier), "r")
@@ -1731,7 +1732,7 @@ def InsertCodeToolTip():
                         #chaine = m.group(1)
                         ligne = ligne.replace('))"))', ')")))')
                         dirty = True
-                        print ("      > ", ligne)
+                        print(("      > ", ligne))
 
                     listeLignes.append(ligne)
 
@@ -1747,7 +1748,7 @@ def InsertCodeToolTip():
 
             indexFichier += 1
 
-    print "Fini !!!!!!!!!!!!!!!!!"
+    print("Fini !!!!!!!!!!!!!!!!!")
 
 
 

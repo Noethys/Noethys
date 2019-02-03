@@ -100,7 +100,7 @@ class MyPageTemplate(PageTemplate):
         
         # Dessin du coupon-réponse vertical
         coupon_vertical = doc.modeleDoc.FindObjet("coupon_vertical")
-        if DICT_OPTIONS.has_key("afficher_coupon_reponse") and DICT_OPTIONS["afficher_coupon_reponse"] == True and coupon_vertical != None :
+        if "afficher_coupon_reponse" in DICT_OPTIONS and DICT_OPTIONS["afficher_coupon_reponse"] == True and coupon_vertical != None :
             x, y, largeur, hauteur = doc.modeleDoc.GetCoordsObjet(coupon_vertical)
             canvas.saveState() 
             # Ciseaux
@@ -123,14 +123,14 @@ class MyPageTemplate(PageTemplate):
             canvas.drawString(y+2*mm, -x-9*mm, u"%s - %.02f %s" % (numero, solde, SYMBOLE))
             canvas.drawString(y+2*mm, -x-12*mm, u"%s" % nom)
             # Code-barres
-            if DICT_OPTIONS["afficher_codes_barres"] == True and dictValeur.has_key("{CODEBARRES_NUM_FACTURE}") :
+            if DICT_OPTIONS["afficher_codes_barres"] == True and "{CODEBARRES_NUM_FACTURE}" in dictValeur :
                 barcode = code39.Extended39(dictValeur["{CODEBARRES_NUM_FACTURE}"], humanReadable=False)
                 barcode.drawOn(canvas, y+36*mm, -x-13*mm)
             canvas.restoreState()
 
         # Dessin du coupon-réponse horizontal
         coupon_horizontal = doc.modeleDoc.FindObjet("coupon_horizontal")
-        if DICT_OPTIONS.has_key("afficher_coupon_reponse") and DICT_OPTIONS["afficher_coupon_reponse"] == True and coupon_horizontal != None :
+        if "afficher_coupon_reponse" in DICT_OPTIONS and DICT_OPTIONS["afficher_coupon_reponse"] == True and coupon_horizontal != None :
             x, y, largeur, hauteur = doc.modeleDoc.GetCoordsObjet(coupon_horizontal)
             canvas.saveState() 
             # Rectangle
@@ -161,7 +161,7 @@ class MyPageTemplate(PageTemplate):
         canvas.saveState() 
         
         # Insertion du code39
-        if DICT_OPTIONS.has_key("afficher_codes_barres") and DICT_OPTIONS["afficher_codes_barres"] == True :
+        if "afficher_codes_barres" in DICT_OPTIONS and DICT_OPTIONS["afficher_codes_barres"] == True :
             doc.modeleDoc.DessineCodesBarres(canvas, dictChamps=dictValeur)
         
         # Insertion des lignes de textes
@@ -246,7 +246,7 @@ class Impression():
         
         # ----------- Insertion du contenu des frames --------------
         listeNomsSansCivilite = []
-        for IDcompte_payeur, dictValeur in dictValeurs.iteritems() :
+        for IDcompte_payeur, dictValeur in dictValeurs.items() :
             listeNomsSansCivilite.append((dictValeur["nomSansCivilite"], IDcompte_payeur))
         listeNomsSansCivilite.sort() 
         
@@ -263,7 +263,7 @@ class Impression():
                     if titre == None :
                         if mode == "facture" : titre = _(u"Facture")
                         if mode == "attestation" : titre = _(u"Attestation de présence")
-                        if dictValeur.has_key("texte_titre") : 
+                        if "texte_titre" in dictValeur : 
                             titre = dictValeur["texte_titre"]
                     dataTableau = []
                     largeursColonnes = [ CADRE_CONTENU[2], ]
@@ -336,16 +336,16 @@ class Impression():
 
                 # Recherche si TVA utilisée
                 activeTVA = False
-                for IDindividu, dictIndividus in dictValeur["individus"].iteritems() :
-                    for IDactivite, dictActivites in dictIndividus["activites"].iteritems() :
-                        for date, dictDates in dictActivites["presences"].iteritems() :
+                for IDindividu, dictIndividus in dictValeur["individus"].items() :
+                    for IDactivite, dictActivites in dictIndividus["activites"].items() :
+                        for date, dictDates in dictActivites["presences"].items() :
                             for dictPrestation in dictDates["unites"] :
                                 if dictPrestation["tva"] != None and dictPrestation["tva"] != 0.0 :
                                     activeTVA = True
 
                 # Remplissage
                 listeIndividusTemp = []
-                for IDindividu, dictIndividus in dictValeur["individus"].iteritems() :
+                for IDindividu, dictIndividus in dictValeur["individus"].items() :
                     listeIndividusTemp.append((dictIndividus["texte"], IDindividu, dictIndividus))
                 listeIndividusTemp.sort() 
                 
@@ -399,7 +399,7 @@ class Impression():
                         
                         # Insertion du nom de l'activité
                         listeIDactivite = []
-                        for IDactivite, dictActivites in dictIndividus["activites"].iteritems() :
+                        for IDactivite, dictActivites in dictIndividus["activites"].items() :
                             listeIDactivite.append((dictActivites["texte"], IDactivite, dictActivites))
                         listeIDactivite.sort() 
                         
@@ -444,7 +444,7 @@ class Impression():
                                 
                                 # Regroupement par prestations identiques
                                 dictRegroupement = {}
-                                for date, dictDates in dictActivites["presences"].iteritems() :
+                                for date, dictDates in dictActivites["presences"].items() :
                                     total = dictDates["total"]
                                     for dictPrestation in dictDates["unites"] :
                                         label = dictPrestation["label"]
@@ -462,7 +462,7 @@ class Impression():
                                             nbre_total_prestations_anterieures += 1
                                             label += u"*"
 
-                                        if dictRegroupement.has_key(labelkey) == False :
+                                        if (labelkey in dictRegroupement) == False :
                                             dictRegroupement[labelkey] = {"labelpresta" : label, "total" : 0, "nbre" : 0, "base" : 0, "dates_forfait" : None}
                                             dictRegroupement[labelkey]["base"] = montant
                                         
@@ -480,7 +480,7 @@ class Impression():
                                             dictRegroupement[labelkey]["dates_forfait"] = _(u"<BR/><font size=5>Du %s au %s soit %d jours</font>") % (DateEngFr(str(date_debut)), DateEngFr(str(date_fin)), nbreDates)
         
                                 # Insertion des prestations regroupées
-                                listeLabels = dictRegroupement.keys() 
+                                listeLabels = list(dictRegroupement.keys()) 
                                 listeLabels.sort() 
 
                                 dataTableau = [(
@@ -497,9 +497,9 @@ class Impression():
                                     base = dictRegroupement[labelkey]["base"]
 
                                     # recherche d'un commentaire
-                                    if dictOptions.has_key("dictCommentaires") :
+                                    if "dictCommentaires" in dictOptions :
                                         key = (label, IDactivite)
-                                        if dictOptions["dictCommentaires"].has_key(key) :
+                                        if key in dictOptions["dictCommentaires"] :
                                             commentaire = dictOptions["dictCommentaires"][key]
                                             label = "%s <i><font color='#939393'>%s</font></i>" % (label, commentaire)
                                             
@@ -520,7 +520,7 @@ class Impression():
 
                                 # Insertion de la date
                                 listeDates = []
-                                for date, dictDates in dictActivites["presences"].iteritems() :
+                                for date, dictDates in dictActivites["presences"].items() :
                                     listeDates.append(date)
                                 listeDates.sort() 
                                 
@@ -577,9 +577,9 @@ class Impression():
                                         texteDate = Paragraph("<para align='center'>%s</para>" % dateFr, paraStyle)
                                         
                                         # recherche d'un commentaire
-                                        if dictOptions.has_key("dictCommentaires") :
+                                        if "dictCommentaires" in dictOptions :
                                             key = (label, IDactivite)
-                                            if dictOptions["dictCommentaires"].has_key(key) :
+                                            if key in dictOptions["dictCommentaires"] :
                                                 commentaire = dictOptions["dictCommentaires"][key]
                                                 label = "%s <i><font color='#939393'>%s</font></i>" % (label, commentaire)
 
@@ -714,7 +714,7 @@ class Impression():
                 # QF aux dates de facture
                 if mode == "facture" and dictOptions["afficher_qf_dates"] == True :
                     dictQfdates = dictValeur["qfdates"]
-                    listeDates = dictQfdates.keys() 
+                    listeDates = list(dictQfdates.keys()) 
                     listeDates.sort() 
                     if len(listeDates) > 0 :
                         for dates in listeDates :
@@ -725,7 +725,7 @@ class Impression():
                 # Reports
                 if mode == "facture" and dictOptions["afficher_impayes"] == True :
                     dictReports = dictValeur["reports"]
-                    listePeriodes = dictReports.keys() 
+                    listePeriodes = list(dictReports.keys()) 
                     listePeriodes.sort() 
                     if len(listePeriodes) > 0 :
                         if dictOptions["integrer_impayes"] == True :
@@ -745,7 +745,7 @@ class Impression():
                     dictReglements = dictValeur["reglements"]
                     if len(dictReglements) > 0 :
                         listeTextesReglements = []
-                        for IDreglement, dictTemp in dictReglements.iteritems() :
+                        for IDreglement, dictTemp in dictReglements.items() :
                             if dictTemp["emetteur"] not in ("", None) :
                                 emetteur = u" (%s) " % dictTemp["emetteur"]
                             else :
@@ -837,7 +837,7 @@ class Impression():
                 story.append(tableau)
                 
                 # ------------------------- PRELEVEMENTS --------------------
-                if dictOptions.has_key("afficher_avis_prelevements") and dictValeur.has_key("prelevement") :
+                if "afficher_avis_prelevements" in dictOptions and "prelevement" in dictValeur :
                     if dictValeur["prelevement"] != None and dictOptions["afficher_avis_prelevements"] == True :
                         paraStyle = ParagraphStyle(name="intro",
                               fontName="Helvetica",

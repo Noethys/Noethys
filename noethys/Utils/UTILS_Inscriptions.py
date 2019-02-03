@@ -14,9 +14,8 @@ import wx
 import GestionDB
 import traceback
 import datetime
-import copy
+import six
 import sys
-import cStringIO
 from Utils import UTILS_Dates
 from Utils import UTILS_Texte
 from Utils import UTILS_Filtres_questionnaires
@@ -149,7 +148,7 @@ class Inscription():
             "familles.num_allocataire": "FAMILLE_NUMALLOC",
         }
 
-        listeChamps = dictChamps.keys()
+        listeChamps = list(dictChamps.keys())
 
         DB = GestionDB.DB()
         req = """SELECT %s
@@ -250,7 +249,7 @@ class Inscription():
 
             # Champs de fusion pour Email
             dictChampsFusion[IDinscription] = {}
-            for key, valeur in dictDonnee.iteritems():
+            for key, valeur in dictDonnee.items():
                 if key[0] == "{":
                     dictChampsFusion[IDinscription][key] = valeur
 
@@ -287,7 +286,7 @@ class Inscription():
             dlgAttente = wx.BusyInfo(_(u"Génération des PDF à l'unité en cours..."), None)
             try:
                 index = 0
-                for IDinscription, dictInscription in dictInscriptions.iteritems():
+                for IDinscription, dictInscription in dictInscriptions.items():
                     if dictInscription["select"] == True:
                         nomTitulaires = self.Supprime_accent(dictInscription["{FAMILLE_NOM}"])
                         nomFichier = _(u"Inscription %d - %s") % (IDinscription, nomTitulaires)
@@ -300,7 +299,7 @@ class Inscription():
                 self.EcritStatusbar("")
                 del dlgAttente
                 return dictPieces
-            except Exception, err:
+            except Exception as err:
                 del dlgAttente
                 traceback.print_exc(file=sys.stdout)
                 dlg = wx.MessageDialog(None, _(u"Désolé, le problème suivant a été rencontré dans l'édition des inscriptions : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
@@ -342,15 +341,15 @@ class Inscription():
                 dictReponses[IDinscription] = IDreponse
 
             DB = GestionDB.DB(suffixe="DOCUMENTS")
-            for IDinscription, cheminFichier in dictPieces.iteritems():
+            for IDinscription, cheminFichier in dictPieces.items():
                 # Préparation du blob
                 fichier = open(cheminFichier, "rb")
                 data = fichier.read()
                 fichier.close()
-                buffer = cStringIO.StringIO(data)
+                buffer = six.BytesIO(data)
                 blob = buffer.read()
                 # Recherche l'IDreponse
-                if dictReponses.has_key(IDinscription):
+                if IDinscription in dictReponses:
                     IDreponse = dictReponses[IDinscription]
                 else :
                     # Création d'une réponse de questionnaire
@@ -377,7 +376,7 @@ class Inscription():
                 UTILS_Impression_inscription.Impression(dictInscriptions, dictOptions, IDmodele=dictOptions["IDmodele"], ouverture=afficherDoc, nomFichier=nomDoc)
                 self.EcritStatusbar("")
                 del dlgAttente
-            except Exception, err:
+            except Exception as err:
                 del dlgAttente
                 traceback.print_exc(file=sys.stdout)
                 dlg = wx.MessageDialog(None, u"Désolé, le problème suivant a été rencontré dans l'édition des inscriptions : \n\n%s" % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)

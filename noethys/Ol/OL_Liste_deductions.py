@@ -369,7 +369,7 @@ class ListView(FastObjectListView):
         listeModifications = []
         dictMontantsPrestations = {}
         for track in listeSelections :
-            if dictMontantsPrestations.has_key(track.IDprestation) :
+            if track.IDprestation in dictMontantsPrestations :
                 montantPrestation = dictMontantsPrestations[track.IDprestation]
             else :
                 montantPrestation = track.montantPrestation
@@ -403,7 +403,7 @@ class ListView(FastObjectListView):
     def GetTotalDeductions(self):
         """ Est utilisée par la DLG_Saisie_prestation pour connaître le montant total des déductions """
         total = 0.0
-        for IDdeduction, dictDeduction in self.dictDeductions.iteritems() :
+        for IDdeduction, dictDeduction in self.dictDeductions.items() :
             total += dictDeduction["montant"]
         return total
 

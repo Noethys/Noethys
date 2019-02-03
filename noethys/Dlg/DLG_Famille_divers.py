@@ -172,10 +172,10 @@ class CTRL_Parametres(wxpg.PropertyGrid) :
                 }
             }
 
-        for nom_property, dict_conditions in dict_switch.iteritems() :
+        for nom_property, dict_conditions in dict_switch.items() :
             propriete = self.GetProperty(nom_property)
             valeur = propriete.GetValue()
-            for condition, liste_proprietes in dict_conditions.iteritems() :
+            for condition, liste_proprietes in dict_conditions.items() :
                 for dict_propriete in liste_proprietes :
                     propriete = self.GetPropertyByName(dict_propriete["propriete"])
                     if valeur == condition :
@@ -248,7 +248,7 @@ class CTRL_Parametres(wxpg.PropertyGrid) :
 
     def Validation(self):
         """ Validation des données saisies """
-        for nom, valeur in self.GetPropertyValues().iteritems() :
+        for nom, valeur in self.GetPropertyValues().items() :
             propriete = self.GetPropertyByName(nom)
             if self.GetPropertyAttribute(propriete, "obligatoire") == True :
                 if valeur == "" or valeur == None :
@@ -450,7 +450,7 @@ class Panel(wx.Panel):
         titulaires = UTILS_Titulaires.GetTitulaires(listefamilles)
         nom_famille = None
         for id in titulaires:
-            if titulaires[id].has_key("titulairesAvecCivilite"):
+            if "titulairesAvecCivilite" in titulaires[id]:
                 nom_famille = titulaires[id]["titulairesAvecCivilite"]
                 break
         if nom_famille == None:

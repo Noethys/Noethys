@@ -47,15 +47,15 @@ def Appliquer():
             label = u"%s" % label
         else :
             label = u"%s (%s)" % (label, nomActivite)
-        if dictPrestations.has_key(label) == False :
+        if (label in dictPrestations) == False :
             dictPrestations[label] = []
         dictPrestations[label].append(IDprestation)
     
-    dlg = wx.MultiChoiceDialog(None, _(u"Sélectionnez les prestations à modifier :"), _(u"Selection des prestations"), dictPrestations.keys())
+    dlg = wx.MultiChoiceDialog(None, _(u"Sélectionnez les prestations à modifier :"), _(u"Selection des prestations"), list(dictPrestations.keys()))
     dlg.SetSize((500, 400))
     if dlg.ShowModal() == wx.ID_OK :
         selections = dlg.GetSelections()
-        selectionsLabels = [dictPrestations.keys()[x] for x in selections]
+        selectionsLabels = [list(dictPrestations.keys())[x] for x in selections]
         dlg.Destroy()
     else :
         dlg.Destroy()
@@ -92,7 +92,7 @@ def Appliquer():
     dlgAttente = wx.BusyInfo(_(u"Traitement en cours..."), None)
     wx.Yield() 
     DB = GestionDB.DB()
-    for label, listePrestations in dictPrestations.iteritems() :
+    for label, listePrestations in dictPrestations.items() :
         if label in selectionsLabels :
             for IDprestation in listePrestations :
                 DB.ReqMAJ("prestations", [("tva", tva),], "IDprestation", IDprestation)

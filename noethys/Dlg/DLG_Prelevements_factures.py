@@ -97,7 +97,7 @@ class Dialog(wx.Dialog):
         dictFacturesPrelevees = {}
         for IDprelevement, IDlot, IDfacture, statut, datePrelevement, nomPrelevement in listeDonnees :
             datePrelevement = UTILS_Dates.DateEngEnDateDD(datePrelevement)
-            if dictFacturesPrelevees.has_key(IDfacture) == False :
+            if (IDfacture in dictFacturesPrelevees) == False :
                 dictFacturesPrelevees[IDfacture] = []
             dictFacturesPrelevees[IDfacture].append({"IDprelevement":IDprelevement, "IDlot":IDlot, "statut":statut, "datePrelevement":datePrelevement, "nomPrelevement":nomPrelevement})
         return dictFacturesPrelevees
@@ -127,7 +127,7 @@ class Dialog(wx.Dialog):
             
             # Recherche si la facture n'est pas déjà dans un autre prélèvement
             listeAutresLots = []
-            if dictFacturesPrelevees.has_key(track.IDfacture) :
+            if track.IDfacture in dictFacturesPrelevees :
                 for dictTemp in dictFacturesPrelevees[track.IDfacture] :
                     if dictTemp["IDlot"] != self.IDlot :
                         nomPrelevement = dictTemp["nomPrelevement"]

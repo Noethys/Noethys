@@ -205,7 +205,7 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                     IDunite = dictUnite["IDunite"]
                     date_debut = dictUnite["date_debut"]
                     date_fin = dictUnite["date_fin"]
-                    if self.dictUnitesGroupes.has_key(IDunite) == False :
+                    if (IDunite in self.dictUnitesGroupes) == False :
                         self.dictUnitesGroupes[IDunite] = []
                     if (IDgroupe in self.dictUnitesGroupes[IDunite] or len(self.dictUnitesGroupes[IDunite]) == 0) and(str(dateDD) >= date_debut and str(dateDD) <= date_fin) and (str(dateDD) >= self.datesValiditeActivite[0] and str(dateDD) <= self.datesValiditeActivite[1]) :
                         # Si date ouverte pour cette unité 
@@ -261,7 +261,7 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 
     def OnLabelRightClick(self, event):
         numLigne = event.GetRow()
-        if numLigne == -1 or self.listeLignesDates.has_key(numLigne) == False : return
+        if numLigne == -1 or (numLigne in self.listeLignesDates) == False : return
         dateDD = self.listeLignesDates[numLigne]
         
         # Création du menu contextuel
@@ -346,7 +346,7 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 wx.Yield() 
                 self.TraitementLot(mode, date, date_debut, date_fin, jours_scolaires, jours_vacances, feries)
                 del dlgAttente
-            except Exception, err:
+            except Exception as err:
                 del dlgAttente
                 traceback.print_exc(file=sys.stdout)
                 dlg2 = wx.MessageDialog(self, _(u"Désolé, le problème suivant a été rencontré dans le traitement par lot des ouvertures : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
@@ -442,7 +442,7 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         event.Skip()
         
     def OnChangeSelection(self, numLigne, numColonne, etat=None):
-        if self.dictCases.has_key((numLigne, numColonne)) :
+        if (numLigne, numColonne) in self.dictCases :
             infoCase = self.dictCases[(numLigne, numColonne)]
             if infoCase["type"] == "ouverture" and infoCase["actif"] == True :
                 dateDD = infoCase["date"]
@@ -490,9 +490,9 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 return
     
     def MemoriseSelection(self, dateDD, IDgroupe, IDunite, etat=True):
-        if self.dictSelections.has_key(dateDD) == False :
+        if (dateDD in self.dictSelections) == False :
             self.dictSelections[dateDD] = {}
-        if self.dictSelections[dateDD].has_key(IDgroupe) == False :
+        if (IDgroupe in self.dictSelections[dateDD]) == False :
             self.dictSelections[dateDD][IDgroupe] = []
         if etat == True :
             if IDunite not in self.dictSelections[dateDD][IDgroupe] :
@@ -506,27 +506,27 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 del self.dictSelections[dateDD]
 
     def RechercheSelection(self, dateDD, IDgroupe, IDunite):
-        if self.dictSelections.has_key(dateDD) :
-            if self.dictSelections[dateDD].has_key(IDgroupe) :
+        if dateDD in self.dictSelections :
+            if IDgroupe in self.dictSelections[dateDD] :
                 if IDunite in self.dictSelections[dateDD][IDgroupe] :
                     return True
         return False
 
     def MemoriseOuverture(self, dateDD=None, IDouverture=None, IDunite=None, IDgroupe=None, etat=True, initial=True, forcer=False) :
             dictValeurs = { "IDouverture" : IDouverture, "etat" : etat, "initial" : initial}
-            if self.dictOuvertures.has_key(dateDD) == False :
+            if (dateDD in self.dictOuvertures) == False :
                 self.dictOuvertures[dateDD] = {}
-            if self.dictOuvertures[dateDD].has_key(IDgroupe) == False :
+            if (IDgroupe in self.dictOuvertures[dateDD]) == False :
                 self.dictOuvertures[dateDD][IDgroupe] = {}
-            if self.dictOuvertures[dateDD][IDgroupe].has_key(IDunite) == False :
+            if (IDunite in self.dictOuvertures[dateDD][IDgroupe]) == False :
                 self.dictOuvertures[dateDD][IDgroupe][IDunite] = {}
             if self.dictOuvertures[dateDD][IDgroupe][IDunite] == {} or forcer == True :
                 self.dictOuvertures[dateDD][IDgroupe][IDunite] = dictValeurs
 
     def RechercheOuverture(self, dateDD, IDgroupe, IDunite):
-        if self.dictOuvertures.has_key(dateDD) :
-            if self.dictOuvertures[dateDD].has_key(IDgroupe) :
-                if self.dictOuvertures[dateDD][IDgroupe].has_key(IDunite) :
+        if dateDD in self.dictOuvertures :
+            if IDgroupe in self.dictOuvertures[dateDD] :
+                if IDunite in self.dictOuvertures[dateDD][IDgroupe] :
                     if self.dictOuvertures[dateDD][IDgroupe][IDunite]["etat"] == True :
                         return True
         return False
@@ -574,7 +574,7 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         db.Close()
         dictDonnees = {}
         for IDunite_groupe, IDunite, IDgroupe in listeDonnees :
-            if dictDonnees.has_key(IDunite) == False :
+            if (IDunite in dictDonnees) == False :
                 dictDonnees[IDunite] = [IDgroupe,]
             else:
                 dictDonnees[IDunite].append(IDgroupe)

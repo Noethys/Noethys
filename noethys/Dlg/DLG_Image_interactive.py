@@ -45,7 +45,7 @@ class Track(object):
         #         self.statut = "disponible"
 
         # Recherche si le produit est en cours de location
-        if parent.dictLocations.has_key(self.IDproduit):
+        if self.IDproduit in parent.dictLocations:
             self.liste_locations = parent.dictLocations[self.IDproduit]
             for dictLocation in self.liste_locations:
                 self.disponible -= dictLocation["quantite"]
@@ -70,7 +70,7 @@ class Track(object):
 
             for dictLocation in self.liste_locations:
                 IDfamille = dictLocation["IDfamille"]
-                if self.parent.dict_titulaires.has_key(IDfamille):
+                if IDfamille in self.parent.dict_titulaires:
                     nomTitulaires = self.parent.dict_titulaires[IDfamille]["titulairesSansCivilite"]
                 else :
                     nomTitulaires = _("Titulaires inconnus")
@@ -136,8 +136,8 @@ class Data():
             self.MAJ()
 
     def GetReponse(self, IDquestion=None, ID=None):
-        if self.dict_questionnaires.has_key(IDquestion) :
-            if self.dict_questionnaires[IDquestion].has_key(ID) :
+        if IDquestion in self.dict_questionnaires :
+            if ID in self.dict_questionnaires[IDquestion] :
                 return self.dict_questionnaires[IDquestion][ID]
         return u""
 
@@ -184,7 +184,7 @@ class Data():
         return self.dictTracks
 
     def GetTrack(self, IDproduit=None):
-        if self.dictTracks.has_key(IDproduit):
+        if IDproduit in self.dictTracks:
             return self.dictTracks[IDproduit]
         else :
             return None

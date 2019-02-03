@@ -1213,7 +1213,7 @@ class ISpeechGrammarRuleStateTransitions(DispatchBaseClass):
 		return win32com.client.util.WrapEnum(self._oleobj_.InvokeTypes(-4,LCID,2,(13, 10),()),'{CAFD1DB1-41D1-4A06-9863-E2E81DA17A9A}')
 	def __getitem__(self, index):
 		"Allow this class to be accessed as a collection"
-		if not self.__dict__.has_key('_enum_'):
+		if '_enum_' not in self.__dict__:
 			self.__dict__['_enum_'] = self._NewEnum()
 		return self._enum_.__getitem__(index)
 	#This class has Count() property - allow len(ob) to provide this
@@ -1298,7 +1298,7 @@ class ISpeechGrammarRules(DispatchBaseClass):
 		return win32com.client.util.WrapEnum(self._oleobj_.InvokeTypes(-4,LCID,2,(13, 10),()),'{AFE719CF-5DD1-44F2-999C-7A399F1CFCCC}')
 	def __getitem__(self, index):
 		"Allow this class to be accessed as a collection"
-		if not self.__dict__.has_key('_enum_'):
+		if '_enum_' not in self.__dict__:
 			self.__dict__['_enum_'] = self._NewEnum()
 		return self._enum_.__getitem__(index)
 	#This class has Count() property - allow len(ob) to provide this
@@ -1422,7 +1422,7 @@ class ISpeechLexiconPronunciations(DispatchBaseClass):
 		return win32com.client.util.WrapEnum(self._oleobj_.InvokeTypes(-4,LCID,2,(13, 10),()),'{95252C5D-9E43-4F4A-9899-48EE73352F9F}')
 	def __getitem__(self, index):
 		"Allow this class to be accessed as a collection"
-		if not self.__dict__.has_key('_enum_'):
+		if '_enum_' not in self.__dict__:
 			self.__dict__['_enum_'] = self._NewEnum()
 		return self._enum_.__getitem__(index)
 	#This class has Count() property - allow len(ob) to provide this
@@ -1494,7 +1494,7 @@ class ISpeechLexiconWords(DispatchBaseClass):
 		return win32com.client.util.WrapEnum(self._oleobj_.InvokeTypes(-4,LCID,2,(13, 10),()),'{4E5B933C-C9BE-48ED-8842-1EE51BB1D4FF}')
 	def __getitem__(self, index):
 		"Allow this class to be accessed as a collection"
-		if not self.__dict__.has_key('_enum_'):
+		if '_enum_' not in self.__dict__:
 			self.__dict__['_enum_'] = self._NewEnum()
 		return self._enum_.__getitem__(index)
 	#This class has Count() property - allow len(ob) to provide this
@@ -1747,7 +1747,7 @@ class ISpeechObjectTokens(DispatchBaseClass):
 		return win32com.client.util.WrapEnum(self._oleobj_.InvokeTypes(-4,LCID,2,(13, 10),()),'{C74A3ADC-B727-4500-A84A-B526721C8B8C}')
 	def __getitem__(self, index):
 		"Allow this class to be accessed as a collection"
-		if not self.__dict__.has_key('_enum_'):
+		if '_enum_' not in self.__dict__:
 			self.__dict__['_enum_'] = self._NewEnum()
 		return self._enum_.__getitem__(index)
 	#This class has Count() property - allow len(ob) to provide this
@@ -1847,7 +1847,7 @@ class ISpeechPhraseAlternates(DispatchBaseClass):
 		return win32com.client.util.WrapEnum(self._oleobj_.InvokeTypes(-4,LCID,2,(13, 10),()),'{27864A2A-2B9F-4CB8-92D3-0D2722FD1E73}')
 	def __getitem__(self, index):
 		"Allow this class to be accessed as a collection"
-		if not self.__dict__.has_key('_enum_'):
+		if '_enum_' not in self.__dict__:
 			self.__dict__['_enum_'] = self._NewEnum()
 		return self._enum_.__getitem__(index)
 	#This class has Count() property - allow len(ob) to provide this
@@ -1927,7 +1927,7 @@ class ISpeechPhraseElements(DispatchBaseClass):
 		return win32com.client.util.WrapEnum(self._oleobj_.InvokeTypes(-4,LCID,2,(13, 10),()),'{E6176F96-E373-4801-B223-3B62C068C0B4}')
 	def __getitem__(self, index):
 		"Allow this class to be accessed as a collection"
-		if not self.__dict__.has_key('_enum_'):
+		if '_enum_' not in self.__dict__:
 			self.__dict__['_enum_'] = self._NewEnum()
 		return self._enum_.__getitem__(index)
 	#This class has Count() property - allow len(ob) to provide this
@@ -2045,7 +2045,7 @@ class ISpeechPhraseProperties(DispatchBaseClass):
 		return win32com.client.util.WrapEnum(self._oleobj_.InvokeTypes(-4,LCID,2,(13, 10),()),'{CE563D48-961E-4732-A2E1-378A42B430BE}')
 	def __getitem__(self, index):
 		"Allow this class to be accessed as a collection"
-		if not self.__dict__.has_key('_enum_'):
+		if '_enum_' not in self.__dict__:
 			self.__dict__['_enum_'] = self._NewEnum()
 		return self._enum_.__getitem__(index)
 	#This class has Count() property - allow len(ob) to provide this
@@ -2150,7 +2150,7 @@ class ISpeechPhraseReplacements(DispatchBaseClass):
 		return win32com.client.util.WrapEnum(self._oleobj_.InvokeTypes(-4,LCID,2,(13, 10),()),'{2890A410-53A7-4FB5-94EC-06D4998E3D02}')
 	def __getitem__(self, index):
 		"Allow this class to be accessed as a collection"
-		if not self.__dict__.has_key('_enum_'):
+		if '_enum_' not in self.__dict__:
 			self.__dict__['_enum_'] = self._NewEnum()
 		return self._enum_.__getitem__(index)
 	#This class has Count() property - allow len(ob) to provide this
@@ -2227,7 +2227,7 @@ class ISpeechPhraseRules(DispatchBaseClass):
 		return win32com.client.util.WrapEnum(self._oleobj_.InvokeTypes(-4,LCID,2,(13, 10),()),'{A7BFE112-A4A0-48D9-B602-C313843F6964}')
 	def __getitem__(self, index):
 		"Allow this class to be accessed as a collection"
-		if not self.__dict__.has_key('_enum_'):
+		if '_enum_' not in self.__dict__:
 			self.__dict__['_enum_'] = self._NewEnum()
 		return self._enum_.__getitem__(index)
 	#This class has Count() property - allow len(ob) to provide this

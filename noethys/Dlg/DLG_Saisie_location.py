@@ -160,7 +160,7 @@ class CTRL_Parametres(wx.Notebook):
     def GetDonnees(self):
         dictDonnees = {}
         for dictPage in self.listePages :
-            for key, valeur in dictPage["ctrl"].GetDonnees().iteritems() :
+            for key, valeur in dictPage["ctrl"].GetDonnees().items() :
                 dictDonnees[key] = valeur
         return dictDonnees
 
@@ -256,7 +256,7 @@ class Page_Facturation(wx.Panel):
         return dictDonnees
 
     def SetDonnees(self, dictDonnees={}):
-        if dictDonnees.has_key("prestations") and len(dictDonnees["prestations"]) > 0:
+        if "prestations" in dictDonnees and len(dictDonnees["prestations"]) > 0:
             self.ctrl_prestations.SetPrestations(dictDonnees["prestations"])
 
 
@@ -622,7 +622,7 @@ class Dialog(wx.Dialog):
         # Vérifie que la quantité demandée est disponible
         dictPeriodes = UTILS_Locations.GetStockDisponible(IDproduit=IDproduit, date_debut=date_debut, date_fin=date_fin, IDlocation_exception=self.IDlocation)
         liste_periode_non_dispo = []
-        for periode, valeurs in dictPeriodes.iteritems() :
+        for periode, valeurs in dictPeriodes.items() :
             if valeurs["disponible"] < quantite :
                 debut = datetime.datetime.strftime(periode[0], "%d/%m/%Y-%Hh%M")
                 if periode[1].year == 2999 :

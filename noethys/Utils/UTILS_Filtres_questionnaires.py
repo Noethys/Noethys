@@ -100,5 +100,5 @@ def Filtre(controle=None, choix="", criteres="", reponse="", dictControles=None)
             
             
 if __name__ == '__main__':
-    print Filtre(controle="ligne_texte", choix="EGAL", criteres="bonjour", reponse="bonjour")
+    print(Filtre(controle="ligne_texte", choix="EGAL", criteres="bonjour", reponse="bonjour"))
     

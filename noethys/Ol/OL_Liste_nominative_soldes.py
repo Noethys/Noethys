@@ -180,7 +180,7 @@ class ListView(FastObjectListView):
         DB.ExecuterReq(req)
         listePrestations = DB.ResultatReq()
         for IDfamille, IDindividu, total_prestations in listePrestations :
-            if dictFacturation.has_key(IDindividu) == False :
+            if (IDindividu in dictFacturation) == False :
                 dictFacturation[IDindividu] = {"prestations":0.0, "ventilation":0.0}
             dictFacturation[IDindividu]["prestations"] += total_prestations
             
@@ -194,7 +194,7 @@ class ListView(FastObjectListView):
         DB.ExecuterReq(req)
         listeVentilations = DB.ResultatReq()
         for IDfamille, IDindividu, total_ventilation in listeVentilations :
-            if dictFacturation.has_key(IDindividu) == True :
+            if (IDindividu in dictFacturation) == True :
                 dictFacturation[IDindividu]["ventilation"] = total_ventilation
 
         # Récupération des données sur les individus
@@ -259,7 +259,7 @@ class ListView(FastObjectListView):
             
             # Adresse auto ou manuelle
             adresse_auto = dictTemp["adresse_auto"]
-            if adresse_auto != None and DICT_INFOS_INDIVIDUS.has_key(adresse_auto) :
+            if adresse_auto != None and adresse_auto in DICT_INFOS_INDIVIDUS :
                 dictTemp["rue_resid"] = DICT_INFOS_INDIVIDUS[adresse_auto]["rue_resid"]
                 dictTemp["cp_resid"] = DICT_INFOS_INDIVIDUS[adresse_auto]["cp_resid"]
                 dictTemp["ville_resid"] = DICT_INFOS_INDIVIDUS[adresse_auto]["ville_resid"]
@@ -270,7 +270,7 @@ class ListView(FastObjectListView):
             totalSolde = 0.0 
 ##            key = (dictTemp["IDfamille"], dictTemp["IDindividu"])
             key = dictTemp["IDindividu"]
-            if dictFacturation.has_key(key) :
+            if key in dictFacturation :
                 totalFacture = decimal.Decimal(str(dictFacturation[key]["prestations"]))
                 if totalFacture == None : totalFacture = 0.0
                 totalRegle = decimal.Decimal(str(dictFacturation[key]["ventilation"]))
@@ -345,7 +345,7 @@ class ListView(FastObjectListView):
         for dictChamp in LISTE_CHAMPS :
             if dictChamp["code"] in selection_champs :
                 # stringConverter
-                if dictChamp.has_key("stringConverter") :
+                if "stringConverter" in dictChamp :
                     stringConverter = dictChamp["stringConverter"]
                     if stringConverter == "date" : stringConverter=FormateDate
                     elif stringConverter == "age" : stringConverter=FormateAge
@@ -355,7 +355,7 @@ class ListView(FastObjectListView):
                 else:
                     stringConverter = None
                 # Image Getter
-                if dictChamp.has_key("imageGetter") :
+                if "imageGetter" in dictChamp :
                     imageGetter = dictChamp["imageGetter"]
                     if imageGetter == "civilite" : imageGetter = GetImageCivilite
                     elif imageGetter == "ventilation" : imageGetter = GetImageVentilation

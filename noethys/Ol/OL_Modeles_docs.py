@@ -49,7 +49,7 @@ class Track(object):
         self.defaut = donnees[8]
         
         if self.IDfond != None :
-            if DICT_FONDS.has_key(self.IDfond):
+            if self.IDfond in DICT_FONDS:
                 self.nomFond = DICT_FONDS[self.IDfond]
         else:
             self.nomFond = u""

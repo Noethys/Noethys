@@ -20,7 +20,8 @@ import ftplib
 import zipfile
 import shutil
 import json
-import urllib2
+import six
+from six.moves.urllib.request import Request, urlopen
 import sys
 import importlib
 import platform
@@ -145,7 +146,7 @@ class Synchro():
         ]
 
         def Ecrit_ligne(key="", valeur="", type_valeur=None):
-            if type_valeur == unicode :
+            if type_valeur == six.text_type :
                 valeur = u'u"%s"' % valeur
             elif type_valeur == str :
                 valeur = u'"%s"' % valeur
@@ -320,8 +321,8 @@ class Synchro():
 
             try :
                 ftp = ftplib.FTP(self.dict_parametres["ftp_serveur"], self.dict_parametres["ftp_utilisateur"], self.dict_parametres["ftp_mdp"])
-            except Exception, err :
-                print "Connexion FTP du serveur", str(err)
+            except Exception as err :
+                print("Connexion FTP du serveur", str(err))
                 self.log.EcritLog(_(u"[ERREUR] Connexion FTP impossible."))
                 return False
 
@@ -336,8 +337,8 @@ class Synchro():
                 ssh.connect(self.dict_parametres["ssh_serveur"], port=int(self.dict_parametres["ssh_port"]), username=self.dict_parametres["ssh_utilisateur"], password=self.dict_parametres["ssh_mdp"])
                 ftp = ssh.open_sftp()
                 ftp.chdir("/" + self.dict_parametres["ssh_repertoire"])
-            except Exception, err :
-                print "Erreur connexion SSH/SFTP au serveur : ", str(err)
+            except Exception as err :
+                print("Erreur connexion SSH/SFTP au serveur : ", str(err))
                 self.log.EcritLog(_(u"[ERREUR] Connexion SSH/SFTP impossible."))
                 self.log.EcritLog(_(u"[ERREUR] err: %s") % err.encode('ascii', 'ignore'))
                 return False
@@ -482,7 +483,7 @@ class Synchro():
             if dict_organisateur["logo_update"] > last_synchro or full_synchro == True :
                 cheminLogo = UTILS_Fichiers.GetRepTemp(fichier=nomFichier)
                 logo.SaveFile(cheminLogo, type=wx.BITMAP_TYPE_PNG)
-                print "Upload du logo"
+                print("Upload du logo")
                 self.UploadFichier(ftp=ftp, nomFichierComplet=cheminLogo, repDest="application/static")
 
         else :
@@ -502,15 +503,15 @@ class Synchro():
             session.add(models.Parametre(nom="PAIEMENT_EN_LIGNE_SYSTEME", parametre=str(self.dict_parametres["paiement_ligne_systeme"])))
             session.add(models.Parametre(nom="PAIEMENT_EN_LIGNE_MULTI_FACTURES", parametre=str(self.dict_parametres["paiement_ligne_multi_factures"])))
             session.add(models.Parametre(nom="PAIEMENT_EN_LIGNE_MONTANT_MINIMAL", parametre=str(self.dict_parametres["paiement_ligne_montant_minimal"])))
-            if self.dict_parametres.has_key("paiement_ligne_tipi_saisie"):
+            if "paiement_ligne_tipi_saisie" in self.dict_parametres:
                 session.add(models.Parametre(nom="PAIEMENT_EN_LIGNE_TIPI_SAISIE", parametre=str(self.dict_parametres["paiement_ligne_tipi_saisie"])))
-            if self.dict_parametres.has_key("payzen_site_id"):
+            if "payzen_site_id" in self.dict_parametres:
                 session.add(models.Parametre(nom="PAYZEN_SITE_ID", parametre=str(self.dict_parametres["payzen_site_id"])))
-            if self.dict_parametres.has_key("payzen_mode"):
+            if "payzen_mode" in self.dict_parametres:
                 session.add(models.Parametre(nom="PAYZEN_MODE", parametre=str(self.dict_parametres["payzen_mode"])))
-            if self.dict_parametres.has_key("payzen_certificat_test"):
+            if "payzen_certificat_test" in self.dict_parametres:
                 session.add(models.Parametre(nom="PAYZEN_CERTIFICAT_TEST", parametre=str(self.dict_parametres["payzen_certificat_test"])))
-            if self.dict_parametres.has_key("payzen_certificat_production"):
+            if "payzen_certificat_production" in self.dict_parametres:
                 session.add(models.Parametre(nom="PAYZEN_CERTIFICAT_PRODUCTION", parametre=str(self.dict_parametres["payzen_certificat_production"])))
 
         session.add(models.Parametre(nom="ACCUEIL_BIENVENUE", parametre=self.dict_parametres["accueil_bienvenue"]))
@@ -565,7 +566,7 @@ class Synchro():
         listeEmails = DB.ResultatReq()
         dictEmailsFamilles = {}
         for IDindividu, IDfamille, mail in listeEmails:
-            if dictEmailsFamilles.has_key(IDfamille) == False :
+            if (IDfamille in dictEmailsFamilles) == False :
                 dictEmailsFamilles[IDfamille] = []
             dictEmailsFamilles[IDfamille].append(mail)
 
@@ -618,7 +619,7 @@ class Synchro():
 
                     # Récupération de l email de recu
                     email = ""
-                    if dictEmailsFamilles.has_key(IDfamille):
+                    if IDfamille in dictEmailsFamilles:
                         # Sélectionne les 3 premières adresses email de la famille
                         email = ";".join(dictEmailsFamilles[IDfamille][:3])
                         email = cryptage.encrypt(email)
@@ -706,7 +707,7 @@ class Synchro():
                 if numero == None : numero = 0
                 if IDprefixe != None :
                     # On supprime le tiret séparateur du préfixe et du numéro de facture pour TIPI (le tiret est proscrit)
-                    if self.dict_parametres.has_key("paiement_ligne_systeme") and (self.dict_parametres["paiement_ligne_systeme"] == 1 or self.dict_parametres["paiement_ligne_systeme"] == 2) :
+                    if "paiement_ligne_systeme" in self.dict_parametres and (self.dict_parametres["paiement_ligne_systeme"] == 1 or self.dict_parametres["paiement_ligne_systeme"] == 2) :
                         numero = u"%s%06d" % (prefixe, numero)
                     else :
                         numero = u"%s-%06d" % (prefixe, numero)
@@ -718,11 +719,11 @@ class Synchro():
                 date_fin = UTILS_Dates.DateEngEnDateDD(date_fin)
                 date_echeance = UTILS_Dates.DateEngEnDateDD(date_echeance)
                 total = FloatToDecimal(total)
-                if dictVentilation.has_key(IDfacture) :
+                if IDfacture in dictVentilation :
                     totalVentilation = FloatToDecimal(dictVentilation[IDfacture])
                 else :
                     totalVentilation = FloatToDecimal(0.0)
-                if dictPrestations.has_key(IDfacture) :
+                if IDfacture in dictPrestations :
                     totalPrestations = FloatToDecimal(dictPrestations[IDfacture])
                 else :
                     totalPrestations = FloatToDecimal(0.0)
@@ -774,7 +775,7 @@ class Synchro():
         self.Pulse_gauge()
 
         dictPieces = UTILS_Pieces_manquantes.GetListePiecesManquantes(dateReference=datetime.date.today(), concernes=True)
-        for IDfamille, dictValeurs in dictPieces.iteritems() :
+        for IDfamille, dictValeurs in dictPieces.items() :
             for IDfamille, IDtype_piece, nomPiece, publicPiece, prenom, IDindividu, valide, label in dictValeurs["liste"] :
                 m = models.Piece_manquante(IDfamille=IDfamille, IDtype_piece=IDtype_piece, IDindividu=IDindividu, nom=cryptage.encrypt(label))
                 session.add(m)
@@ -792,7 +793,7 @@ class Synchro():
         DB2.Close()
         dictDocuments = {}
         for IDdocument, IDtype_piece, document, extension, label, last_update in listeDocuments :
-            if not dictDocuments.has_key(IDtype_piece) :
+            if IDtype_piece not in dictDocuments :
                 dictDocuments[IDtype_piece] = []
             dictDocuments[IDtype_piece].append({"IDdocument" : IDdocument, "document" : document, "extension" : extension, "label" : label, "last_update" : last_update})
 
@@ -806,7 +807,7 @@ class Synchro():
 
             # Recherche de documents associés
             fichiers = []
-            if dictDocuments.has_key(IDtype_piece) :
+            if IDtype_piece in dictDocuments :
                 for dict_document in dictDocuments[IDtype_piece] :
 
                     nomFichier = "document%d.%s" % (dict_document["IDdocument"], dict_document["extension"])
@@ -820,7 +821,7 @@ class Synchro():
                         fichier.close()
 
                         # Upload de la pièce
-                        print "Upload du fichier", nomFichier
+                        print("Upload du fichier", nomFichier)
                         self.UploadFichier(ftp=ftp, nomFichierComplet=cheminFichier, repDest="application/static/pieces")
 
             m = models.Type_piece(IDtype_piece=IDtype_piece, nom=nom, public=public, fichiers=u"##".join(fichiers))
@@ -832,7 +833,7 @@ class Synchro():
         self.Pulse_gauge()
 
         dictCotisations = UTILS_Cotisations_manquantes.GetListeCotisationsManquantes(dateReference=datetime.date.today(), concernes=True)
-        for IDfamille, dictValeurs in dictCotisations.iteritems() :
+        for IDfamille, dictValeurs in dictCotisations.items() :
             for IDfamille, IDtype_cotisation, nomCotisation, typeCotisation, prenom, IDindividu, valide, label in dictValeurs["liste"] :
                 m = models.Cotisation_manquante(IDfamille=IDfamille, IDindividu=IDindividu, IDtype_cotisation=IDtype_cotisation, nom=label)
                 session.add(m)
@@ -1003,7 +1004,7 @@ class Synchro():
         DB.ExecuterReq(req)
         listeUnites = DB.ResultatReq()
         for IDunite, IDactivite, nom, unites_principales, unites_secondaires, ordre in listeUnites :
-            if dict_activites.has_key(IDactivite):
+            if IDactivite in dict_activites:
                 m = models.Unite(IDunite=IDunite, nom=nom, IDactivite=IDactivite, unites_principales=unites_principales, \
                           unites_secondaires=unites_secondaires, ordre=ordre)
                 session.add(m)
@@ -1033,7 +1034,7 @@ class Synchro():
 
             # Mémorise les activités pour lesquelles il y a des périodes...
             if affichage_date_fin == None or date_fin >= datetime.date.today() or affichage_date_fin >= datetime.datetime.now():
-                if not dict_dates_activites.has_key(IDactivite) :
+                if IDactivite not in dict_dates_activites :
                     dict_dates_activites[IDactivite] = {"date_min" : None, "date_max" : None}
                 if dict_dates_activites[IDactivite]["date_min"] == None or dict_dates_activites[IDactivite]["date_min"] > date_debut :
                     dict_dates_activites[IDactivite]["date_min"] = date_debut
@@ -1042,7 +1043,7 @@ class Synchro():
 
             # Mémorise période pour préfacturation
             if prefacturation == 1 :
-                if dict_periodes.has_key(IDactivite) == False :
+                if (IDactivite in dict_periodes) == False :
                     dict_periodes[IDactivite] = []
                 dict_periodes[IDactivite].append({"date_debut": date_debut, "date_fin": date_fin, "IDperiode": IDperiode})
 
@@ -1050,7 +1051,7 @@ class Synchro():
 
         # Création de la condition pour les ouvertures et les consommations
         listeConditions = []
-        for IDactivite, periode in dict_dates_activites.iteritems() :
+        for IDactivite, periode in dict_dates_activites.items() :
             listeConditions.append("(IDactivite=%d AND date>='%s' AND date<='%s')" % (IDactivite, periode["date_min"], periode["date_max"]))
         texteConditions = " OR ".join(listeConditions)
 
@@ -1109,8 +1110,8 @@ class Synchro():
                 date = UTILS_Dates.DateEngEnDateDD(date)
                 try :
                     m = models.Consommation(date=date, IDunite=IDunite, IDinscription=IDinscription, etat=etat, IDevenement=IDevenement)
-                except Exception, err:
-                    print (err,)
+                except Exception as err:
+                    print((err,))
                     m = models.Consommation(date=date, IDunite=IDunite, IDinscription=IDinscription, etat=etat)
                 session.add(m)
 
@@ -1142,26 +1143,26 @@ class Synchro():
             date = UTILS_Dates.DateEngEnDateDD(date)
             montant = FloatToDecimal(montant)
 
-            if dict_prestations.has_key(IDfamille) == False :
+            if (IDfamille in dict_prestations) == False :
                 dict_prestations[IDfamille] = {}
 
             # Recherche la période correspondante
             IDperiode = None
-            if dict_periodes.has_key(IDactivite):
+            if IDactivite in dict_periodes:
                 for dictPeriode in dict_periodes[IDactivite]:
                     if date >= dictPeriode["date_debut"] and date <= dictPeriode["date_fin"]:
                         IDperiode = dictPeriode["IDperiode"]
 
             if IDperiode != None :
-                if dict_prestations[IDfamille].has_key(IDperiode) == False :
+                if (IDperiode in dict_prestations[IDfamille]) == False :
                     dict_prestations[IDfamille][IDperiode] = {"montant" : FloatToDecimal(0.0), "montant_regle" : FloatToDecimal(0.0), "montant_solde" : FloatToDecimal(0.0)}
                 dict_prestations[IDfamille][IDperiode]["montant"] += montant
                 dict_prestations[IDfamille][IDperiode]["montant_regle"] += dict_ventilation.get(IDprestation, FloatToDecimal(0.0))
                 dict_prestations[IDfamille][IDperiode]["montant_solde"] = dict_prestations[IDfamille][IDperiode]["montant"] - dict_prestations[IDfamille][IDperiode]["montant_regle"]
 
         # Enregistrement de la table prefacturation
-        for IDfamille, dictPeriode in dict_prestations.iteritems():
-            for IDperiode, dict_montants in dictPeriode.iteritems():
+        for IDfamille, dictPeriode in dict_prestations.items():
+            for IDperiode, dict_montants in dictPeriode.items():
                 m = models.Prefacturation(IDfamille=IDfamille, IDperiode=IDperiode, montant=float(dict_montants["montant"]),
                                           montant_regle=float(dict_montants["montant_regle"]), montant_solde=float(dict_montants["montant_solde"]))
                 session.add(m)
@@ -1325,14 +1326,14 @@ class Synchro():
             if self.dict_parametres["serveur_type"] == 2 :
                 url = self.dict_parametres["url_connecthys"]
             url += ("" if url[-1] == "/" else "/") + "syncup/%d" % secret
-            print "URL syncup =", url
+            print("URL syncup =", url)
 
-            req = urllib2.Request(url)
-            reponse = urllib2.urlopen(req)
+            req = Request(url)
+            reponse = urlopen(req)
             page = reponse.read()
 
-        except Exception, err :
-            print err
+        except Exception as err :
+            print(err)
             self.log.EcritLog(_(u"[ERREUR] Erreur dans le traitement du fichier"))
 
         # Suppression du fichier
@@ -1343,7 +1344,7 @@ class Synchro():
 
         if page != None and page != "True" :
             # Affichage erreur
-            print "Erreur dans le traitement du fichier :", page
+            print("Erreur dans le traitement du fichier :", page)
             self.log.EcritLog(_(u"[ERREUR] Erreur dans le traitement du fichier. Réponse reçue :"))
             self.log.EcritLog(page)
 
@@ -1351,7 +1352,7 @@ class Synchro():
             # Mémorisation horodatage synchro
             UTILS_Parametres.Parametres(mode="set", categorie="portail", nom="last_synchro", valeur=str(datetime.datetime.now()))
 
-        print "Temps upload_data = ", time.time() - t1
+        print("Temps upload_data = ", time.time() - t1)
         self.Pulse_gauge(0)
         time.sleep(0.5)
 
@@ -1414,11 +1415,11 @@ class Synchro():
             if self.dict_parametres["serveur_type"] == 2 :
                 url = self.dict_parametres["url_connecthys"]
             url += ("" if url[-1] == "/" else "/") + "syncdown/%d/%d" % (int(secret), last)
-            print "URL syncdown =", url
+            print("URL syncdown =", url)
 
             # Récupération des données au format json
-            req = urllib2.Request(url)
-            reponse = urllib2.urlopen(req)
+            req = Request(url)
+            reponse = urlopen(req)
             page = reponse.read()
             liste_actions = json.loads(page)
 
@@ -1429,8 +1430,8 @@ class Synchro():
             else :
                 self.log.EcritLog(_(u"%s demandes non traitées trouvées...") % len(liste_actions))
 
-        except Exception, err :
-            print err
+        except Exception as err :
+            print(err)
             self.log.EcritLog(_(u"Téléchargement des demandes impossible"))
             liste_actions = []
 
@@ -1471,7 +1472,7 @@ class Synchro():
 
                 if valide == True :
 
-                    if not action.has_key("IDutilisateur") :
+                    if "IDutilisateur" not in action :
                         action["IDutilisateur"] = None
 
                     # Modification de compte
@@ -1504,7 +1505,7 @@ class Synchro():
                                     ])
 
                     # Mémorisation des renseignements
-                    if action.has_key("renseignements"):
+                    if "renseignements" in action:
                         if len(action["renseignements"]) > 0 :
                             for renseignement in action["renseignements"] :
                                 valeur = cryptage.decrypt(renseignement["valeur"])
@@ -1568,21 +1569,21 @@ class Synchro():
             version_noethys = FonctionsPerso.GetVersionLogiciel().replace(".", "")
             mode = self.dict_parametres["serveur_type"]
             url += "update/%d/%d/%d" % (int(secret), int(version_noethys), mode)
-            print "URL update =", url
+            print("URL update =", url)
 
             # Récupération des données au format json
-            req = urllib2.Request(url)
-            reponse = urllib2.urlopen(req)
+            req = Request(url)
+            reponse = urlopen(req)
             page = reponse.read()
             data = json.loads(page)
 
             if data["resultat"] != False :
                 self.log.EcritLog(data["resultat"])
 
-        except Exception, err :
+        except Exception as err :
             self.log.EcritLog(_(u"[Erreur] Erreur dans la demande d'update"))
             self.log.EcritLog(str(err))
-            print "Erreur dans la demande d'update :", str(err)
+            print("Erreur dans la demande d'update :", str(err))
             return False
 
         return True
@@ -1603,21 +1604,21 @@ class Synchro():
             if self.dict_parametres["serveur_type"] == 2 :
                 url = self.dict_parametres["url_connecthys"]
             url += ("" if url[-1] == "/" else "/") + "upgrade/%d" % int(secret)
-            print "URL upgrade =", url
+            print("URL upgrade =", url)
 
             # Récupération des données au format json
-            req = urllib2.Request(url)
-            reponse = urllib2.urlopen(req)
+            req = Request(url)
+            reponse = urlopen(req)
             page = reponse.read()
             data = json.loads(page)
 
-            print "Resultat :", data
+            print("Resultat :", data)
 
-        except Exception, err :
+        except Exception as err :
             self.log.EcritLog(_(u"[Erreur] Erreur dans la demande d'upgrade"))
-            print "Erreur dans la demande d'upgrade :", err
+            print("Erreur dans la demande d'upgrade :", err)
             self.log.EcritLog(err)
-            print "Erreur dans la demande d'upgrade :", str(err)
+            print("Erreur dans la demande d'upgrade :", str(err))
             return False
 
         return True
@@ -1638,21 +1639,21 @@ class Synchro():
             if self.dict_parametres["serveur_type"] == 2 :
                 url = self.dict_parametres["url_connecthys"]
             url += ("" if url[-1] == "/" else "/") + "repairdb/%d" % int(secret)
-            print "URL repair =", url
+            print("URL repair =", url)
 
             # Récupération des données au format json
-            req = urllib2.Request(url)
-            reponse = urllib2.urlopen(req)
+            req = Request(url)
+            reponse = urlopen(req)
             page = reponse.read()
             data = json.loads(page)
 
-            print "Resultat :", data
+            print("Resultat :", data)
 
-        except Exception, err :
+        except Exception as err :
             self.log.EcritLog(_(u"[Erreur] Erreur dans la demande de réparation DB"))
-            print "Erreur dans la demande de repairdb :", err
+            print("Erreur dans la demande de repairdb :", err)
             self.log.EcritLog(err)
-            print "Erreur dans la demande de repairdb :", str(err)
+            print("Erreur dans la demande de repairdb :", str(err))
             return False
 
         return True
@@ -1678,10 +1679,10 @@ class Synchro():
             infile = os.path.join(infilepath, nomFichier)
             try :
                 shutil.copy2(infile, repDestination)
-            except Exception, err :
+            except Exception as err :
                 self.log.EcritLog(_(u"Récupération locale impossible du fichier '%s'") % nomFichier)
                 self.log.EcritLog(_(u"err: %s") % err)
-                print "Erreur dans telechargement du fichier '%s' : %s" % (nomFichier, str(err))
+                print("Erreur dans telechargement du fichier '%s' : %s" % (nomFichier, str(err)))
                 return False
 
         elif self.dict_parametres["hebergement_type"] == 1 :
@@ -1696,10 +1697,10 @@ class Synchro():
                 fichier = open(os.path.join(repDestination, nomFichier), 'wb')
                 ftp.retrbinary('RETR ' + nomFichier, fichier.write)
                 fichier.close()
-            except Exception, err :
+            except Exception as err :
                 self.log.EcritLog(_(u"Téléchargement FTP impossible du fichier '%s'") % nomFichier)
                 self.log.EcritLog(_(u"err: %s") % err)
-                print u"Erreur dans telechargement du fichier '%s' : %s" % (nomFichier, str(err))
+                print(u"Erreur dans telechargement du fichier '%s' : %s" % (nomFichier, str(err)))
                 return False
 
         elif self.dict_parametres["hebergement_type"] == 2 :
@@ -1716,13 +1717,13 @@ class Synchro():
                 ftp.get(nomFichier, os.path.join(repDestination, nomFichier))
                 if repFichier != None and "/" in repFichier :
                     ftp.chdir("../" * len(repFichier.split("/")))
-            except Exception, err :
+            except Exception as err :
                 if nomFichier == "config.py" :
                     self.log.EcritLog(_(u"Aucun fichier de configuration à télécharger"))
                 else :
                     self.log.EcritLog(_(u"Téléchargement SSH/SFTP impossible du fichier '%s'") % nomFichier)
                     self.log.EcritLog(_(u"err: %s") % err)
-                    print "Erreur dans telechargement du fichier '%s' : %s" % (nomFichier, str(err))
+                    print("Erreur dans telechargement du fichier '%s' : %s" % (nomFichier, str(err)))
                 return False
         else:
             raise()
@@ -1739,8 +1740,8 @@ class Synchro():
                 try :
                     destfilepath = os.path.join(self.dict_parametres["hebergement_local_repertoire"], repDest)
                     shutil.copy2(os.path.join(repFichier, nomFichier), destfilepath)
-                except Exception, err :
-                    print "Erreur upload fichier '%s' en local : %s" % (nomFichier, str(err))
+                except Exception as err :
+                    print("Erreur upload fichier '%s' en local : %s" % (nomFichier, str(err)))
                     self.log.EcritLog(_(u"[ERREUR] Envoi du fichier '%s' par copie locale impossible.") % nomFichier)
                     return False
 
@@ -1758,9 +1759,9 @@ class Synchro():
                     fichier = open(os.path.join(repFichier, nomFichier), "rb")
                     ftp.storbinary('STOR ' + nomFichier, fichier)
                     fichier.close()
-                except Exception, err :
-                    print "Erreur upload fichier par FTP :"
-                    print err
+                except Exception as err :
+                    print("Erreur upload fichier par FTP :")
+                    print(err)
                     self.log.EcritLog(_(u"[ERREUR] Envoi du fichier '%s' par FTP impossible.") % nomFichier)
                     return False
 
@@ -1778,9 +1779,9 @@ class Synchro():
                     ftp.put(os.path.join(repFichier, nomFichier), nomFichier)
                     if "/" in repDest :
                         ftp.chdir("../" * len(repDest.split("/")))
-                except Exception, err :
-                    print u"Erreur upload fichier '%s' par SSH/SFTP :" % nomFichier
-                    print err
+                except Exception as err :
+                    print(u"Erreur upload fichier '%s' par SSH/SFTP :" % nomFichier)
+                    print(err)
                     self.log.EcritLog(_(u"[ERREUR] Envoi du fichier '%s' par SSH/SFTP impossible.") % nomFichier)
                     return False
 

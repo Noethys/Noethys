@@ -223,7 +223,7 @@ class CTRL_Listes_diffusion(wx.CheckListBox):
         DB.ExecuterReq(req)
         listeAbonnes = DB.ResultatReq()   
         for IDabonnement, IDliste, IDindividu, mail in listeAbonnes :
-            if dictAbonnements.has_key(IDliste) == False :
+            if (IDliste in dictAbonnements) == False :
                 dictAbonnements[IDliste] = []
             dictAbonnements[IDliste].append(mail)
         # Recherche les listes de diffusion
@@ -235,7 +235,7 @@ class CTRL_Listes_diffusion(wx.CheckListBox):
         DB.Close() 
         for IDliste, nom in listeListes :
             dictDiff[IDliste] = nom
-            if dictAbonnements.has_key(IDliste) :
+            if IDliste in dictAbonnements :
                 txtAbonnements = _(u"(%d abonnés)") % len(dictAbonnements[IDliste])
             else:
                 txtAbonnements = _(u"(Aucun abonné)")
@@ -284,7 +284,7 @@ class CTRL_Listes_diffusion(wx.CheckListBox):
     def GetListeMails(self):
         listeMails = []
         for IDliste in self.GetIDcoches() :
-            if self.dictAbonnements.has_key(IDliste) :
+            if IDliste in self.dictAbonnements :
                 for mail in self.dictAbonnements[IDliste] :
                     if mail not in listeMails :
                         listeMails.append(mail)
@@ -549,7 +549,7 @@ class CTRL_Pages(wx.Notebook):
 
     def GetListeAdressesUniques(self):
         listeAdressesUniques = []
-        for code, dictDonnees in self.donnees.iteritems() :
+        for code, dictDonnees in self.donnees.items() :
             for adresse in dictDonnees["liste_adresses"] :
                 if adresse not in listeAdressesUniques :
                     listeAdressesUniques.append(adresse)
@@ -565,7 +565,7 @@ class CTRL_Pages(wx.Notebook):
         return self.donnees, self.GetListeAdressesUniques()
     
     def SetDonnees(self, donnees={}):
-        for code, dictDonnees in donnees.iteritems() :
+        for code, dictDonnees in donnees.items() :
             page = self.GetPageByCode(code)
             page.SetDonnees(dictDonnees)
             

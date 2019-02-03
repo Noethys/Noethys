@@ -363,7 +363,7 @@ class Case():
                         nom_categorie = None
 
                     texte = None
-                    if dictTextes.has_key(dictCategorie["IDcategorie"]):
+                    if dictCategorie["IDcategorie"] in dictTextes:
                         texte = dictTextes[dictCategorie["IDcategorie"]]["texte"]
                     self.Dessine_texte(texte=texte, nom_categorie=nom_categorie, y=y, hauteur=hauteur_categorie)
                     y += hauteur_categorie
@@ -391,7 +391,7 @@ class Case():
             liste_legendes = REGEX_LEGENDES.findall(texte_paragraphe)
             for chaine in liste_legendes :
                 IDlegende = int(chaine[1:-1])
-                if self.parent.dictDonnees["legendes"].has_key(IDlegende) and self.parent.dictNumerosLegendes.has_key(IDlegende):
+                if IDlegende in self.parent.dictDonnees["legendes"] and IDlegende in self.parent.dictNumerosLegendes:
                     couleur = UTILS_Images.rgb_to_hex(self.parent.dictDonnees["legendes"][IDlegende]["couleur"])
                     if self.parent.dictDonnees["legende_type"] == "numero":
                         numero = self.parent.dictNumerosLegendes[IDlegende]
@@ -597,7 +597,7 @@ class Impression():
         self.dictDonnees["menus"] = {}
         for IDmenu, IDcategorie, date, texte in listeDonnees:
             date = UTILS_Dates.DateEngEnDateDD(date)
-            if self.dictDonnees["menus"].has_key(date) == False:
+            if (date in self.dictDonnees["menus"]) == False:
                 self.dictDonnees["menus"][date] = {}
             if texte != None and len(texte) == 0:
                 texte = None
@@ -690,12 +690,12 @@ class Impression():
                 for num_colonne in range(0, nbre_colonnes):
                     for num_ligne in range(0, nbre_lignes):
                         date, dictTextes = self.GetDateAndTextes(num_ligne=num_ligne, num_colonne=num_colonne, dict_page=dict_page, calendrier=calendrier)
-                        for IDcategorie, dictTexte in dictTextes.iteritems():
+                        for IDcategorie, dictTexte in dictTextes.items():
                             for chaine in REGEX_LEGENDES.findall(dictTexte["texte"]):
                                 try :
                                     IDlegende = int(chaine[1:-1])
                                     dictLegende = self.dictDonnees["legendes"][IDlegende]
-                                    if dictLegende not in liste_legendes and self.dictDonnees["legendes"].has_key(IDlegende) :
+                                    if dictLegende not in liste_legendes and IDlegende in self.dictDonnees["legendes"] :
                                         liste_legendes.append(dictLegende)
                                 except :
                                     pass
@@ -743,7 +743,7 @@ class Impression():
         try:
             FonctionsPerso.LanceFichierExterne(nomDoc)
         except:
-            print "Probleme dans l'edition du menu"
+            print("Probleme dans l'edition du menu")
 
     def GetDateAndTextes(self, num_ligne=0, num_colonne=0, dict_page={}, calendrier={}):
         # Recherche la date
@@ -757,7 +757,7 @@ class Impression():
 
         # Dessine la case
         dictTextes = {}
-        if self.dictDonnees["menus"].has_key(date):
+        if date in self.dictDonnees["menus"]:
             dictTextes = self.dictDonnees["menus"][date]
 
         return date, dictTextes

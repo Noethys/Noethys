@@ -14,7 +14,7 @@ from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
 from Ctrl import CTRL_Bouton_image
-import datetime
+import six
 import GestionDB
 from Data import DATA_Civilites as Civilites
 from Ol import OL_Commandes_colonnes
@@ -51,7 +51,7 @@ class CTRL_Restaurateur(wx.Choice):
         return listeItems
 
     def SetID(self, ID=0):
-        for index, values in self.dictDonnees.iteritems():
+        for index, values in self.dictDonnees.items():
             if values["ID"] == ID:
                 self.SetSelection(index)
 
@@ -120,7 +120,7 @@ class Page_Colonnes(wx.Panel):
         return {"colonnes" : self.ctrl_colonnes.GetParametres()}
 
     def SetParametres(self, dictParametres={}):
-        if type(dictParametres) in (unicode, str):
+        if type(dictParametres) in (six.text_type, str):
             exec (u"dictParametres = %s" % dictParametres)
         self.ctrl_colonnes.SetParametres(dictParametres)
 
@@ -248,9 +248,9 @@ class Dialog(wx.Dialog):
 
     def SetDonnees(self, dictDonnees={}):
         self.SetTitle(_(u"Modification d'une colonne"))
-        if dictDonnees.has_key("nom") :
+        if "nom" in dictDonnees :
             self.ctrl_nom.SetValue(dictDonnees["nom"])
-        if dictDonnees.has_key("IDrestaurateur") :
+        if "IDrestaurateur" in dictDonnees :
             self.ctrl_restaurateur.SetID(dictDonnees["IDrestaurateur"])
         self.ctrl_colonnes.SetParametres(dictDonnees)
 
@@ -284,7 +284,7 @@ class Dialog(wx.Dialog):
         listeColonnes = []
         if len(listeDonnees) > 0:
             for IDcolonne, ordre, nom, largeur, categorie, parametres, nbre_valeurs in listeDonnees :
-                if type(parametres) in (str, unicode):
+                if type(parametres) in (str, six.text_type):
                     exec (u"parametres = %s" % parametres)
                 if nbre_valeurs == None :
                     nbre_valeurs = 0
@@ -362,7 +362,7 @@ class Dialog(wx.Dialog):
         # Echange l'IDnégatif contre IDpositif dans les paramètres des colonnes de total
         if len(dictCorrespondancesID) > 0 :
             for dictColonne in colonnes:
-                if dictColonne["categorie"] == "numerique_total" and dictColonne["parametres"].has_key("colonnes") == True :
+                if dictColonne["categorie"] == "numerique_total" and ("colonnes" in dictColonne["parametres"]) == True :
                     listeID = dictColonne["parametres"]["colonnes"]
                     listeNewID = []
                     for IDcolonne in listeID:

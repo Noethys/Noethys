@@ -19,6 +19,7 @@ from Ctrl import CTRL_Bandeau
 from Ctrl import CTRL_Liste_fichiers
 from Data import DATA_Tables as Tables
 import GestionDB
+import six
 
 
 
@@ -220,7 +221,7 @@ class Dialog(wx.Dialog):
         """ Récupération des codes réseau saisis """
         try :
             port = int(self.ctrl_port.GetValue())
-        except Exception, err:
+        except Exception as err:
             port = ""
         hote = self.ctrl_hote.GetValue()
         utilisateur = self.ctrl_utilisateur.GetValue()
@@ -314,7 +315,8 @@ class Dialog(wx.Dialog):
         # Version LOCAL
         if modeLocal == True :
             nomFichier = dictItem["titre"]
-            nomFichier = nomFichier.decode("iso-8859-15")
+            if six.PY2:
+                nomFichier = nomFichier.decode("iso-8859-15")
     
         # Version RESEAU
         if modeLocal == False :
@@ -374,12 +376,12 @@ class Dialog(wx.Dialog):
         DB = GestionDB.DB() 
         for nomTable in listeTables :
             # Réinitialisation de la table
-            print "Reinitialisation de la table %s..." % nomTable
+            print("Reinitialisation de la table %s..." % nomTable)
             DB.ExecuterReq("DROP TABLE %s;" % nomTable)
             DB.Commit() 
             DB.CreationTable(nomTable, Tables.DB_DATA)
             # Importation des données
-            print "Importation de la table %s..." % nomTable
+            print("Importation de la table %s..." % nomTable)
             if self.radio_local.GetValue() == True :
                 DB.Importation_table(nomTable=nomTable, nomFichierdefault=UTILS_Fichiers.GetRepData(u"%s_DATA.dat" % nomFichier))
             else :

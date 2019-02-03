@@ -292,7 +292,7 @@ class CTRL_Choix(wx.Panel):
         IDselection = event.GetId() 
         if self.multiSelection == False :
             self.dictBoutons[IDselection].Selection()
-            for ID, ctrl in self.dictBoutons.iteritems() :
+            for ID, ctrl in self.dictBoutons.items() :
                 if ID != IDselection :
                     ctrl.Deselection() 
         else :
@@ -308,7 +308,7 @@ class CTRL_Choix(wx.Panel):
     
     def GetSelections(self):
         listeID = []
-        for ID, ctrl in self.dictBoutons.iteritems() :
+        for ID, ctrl in self.dictBoutons.items() :
             if ctrl.selection == True :
                 listeID.append(ID-1)
         return listeID
@@ -331,7 +331,7 @@ class DLG_Question(wx.Dialog):
         # Regarde si un thème existe dans l'interface
         if interface != None :
             dictTheme = interface.GetTheme() 
-            if dictTheme.has_key("dlg") :
+            if "dlg" in dictTheme :
                 couleurClaire = dictTheme["dlg"]["couleurClaire"]
                 couleurFoncee = dictTheme["dlg"]["couleurFoncee"]
         
@@ -491,7 +491,7 @@ class DLG_Question(wx.Dialog):
             if self.interface != None :
                 if self.interface.dictProcedure["parametres"]["vocal"] == 1 :
                     self.interface.vocal.Parle(self.message)
-        except Exception, err:
+        except Exception as err:
             pass
             
 # --------------------------------------------------------------------------------------------------------------------------------------
@@ -550,7 +550,7 @@ if __name__ == "__main__":
     listeItems = [_(u"Choix 1"), _(u"Choix 2"), _(u"Choix 3")]
     dlg = DLG_Choix(None, message=_(u"Quel choix ?"), listeItems=listeItems, multiSelection=False)
     if dlg.ShowModal() == wx.ID_YES :
-        print dlg.GetSelections()  
+        print(dlg.GetSelections())  
     dlg.Destroy()
 
     app.MainLoop()

@@ -125,7 +125,7 @@ def GetFamillesSansCaisse(listeActivites=None, date_debut=None, date_fin=None):
     """ Permet de récupérer la liste des familles n'ayant pas de caisse renseignée """
     dictDonnees = GetListe(listeActivites=listeActivites, presents=(date_debut, date_fin))
     listeFamillesSansCaisse = []
-    for IDfamille, dictFamille in dictDonnees.iteritems() :
+    for IDfamille, dictFamille in dictDonnees.items() :
         if dictFamille["nomCaisse"] == None :
             listeFamillesSansCaisse.append({"IDfamille" : IDfamille, "titulaires" : dictFamille["titulaires"]})
     return listeFamillesSansCaisse
@@ -170,7 +170,7 @@ class ListView(FastObjectListView):
         """ Récupération des données """
         dictDonnees = GetListe(self.listeActivites, self.presents)
         listeListeView = []
-        for IDfamille, dictTemp in dictDonnees.iteritems() :
+        for IDfamille, dictTemp in dictDonnees.items() :
             track = Track(dictTemp)
             listeListeView.append(track)
             if self.selectionID == IDfamille :
@@ -314,8 +314,8 @@ class MyFrame(wx.Frame):
         import time
         t = time.time()
         self.myOlv.MAJ(listeActivites=(1, 2, 3), presents=(datetime.date(2015, 1, 1), datetime.date(2015, 12, 31))) 
-        print len(self.myOlv.donnees)
-        print "Temps d'execution =", time.time() - t
+        print(len(self.myOlv.donnees))
+        print("Temps d'execution =", time.time() - t)
 ##        print "Nbre familles sans caisse =", GetNbreSansCaisse(listeActivites=(1, 2, 3), date_debut=datetime.date(2010, 1, 5), date_fin=datetime.date(2011, 1, 5))
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.myOlv, 1, wx.ALL|wx.EXPAND, 4)

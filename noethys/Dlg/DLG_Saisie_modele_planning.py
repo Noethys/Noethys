@@ -140,7 +140,7 @@ class Dialog(wx.Dialog):
         self.bouton_supprimer.Enable(self.radio_planning_detail.GetValue())
         
     def OnBoutonModele(self, event):  
-        print "Event handler 'OnBoutonModele' not implemented!"
+        print("Event handler 'OnBoutonModele' not implemented!")
         event.Skip()
 
     def OnBoutonAide(self, event): 
@@ -279,5 +279,5 @@ if __name__ == u"__main__":
 ##    dialog_1 = Dialog_selection_activite(None)
     app.SetTopWindow(dialog_1)
     dialog_1.ShowModal()
-    print dialog_1.GetResultats() 
+    print(dialog_1.GetResultats()) 
     app.MainLoop()

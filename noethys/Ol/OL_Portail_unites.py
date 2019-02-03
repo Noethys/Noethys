@@ -40,7 +40,7 @@ class Track(object):
         listeNoms = []
         for IDunite in texte.split(";") :
             IDunite = int(IDunite)
-            if self.dictUnitesConso.has_key(IDunite) :
+            if IDunite in self.dictUnitesConso :
                 listeNoms.append(self.dictUnitesConso[IDunite])
         return " + ".join(listeNoms)
 

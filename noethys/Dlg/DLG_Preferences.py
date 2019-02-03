@@ -171,8 +171,8 @@ class Interface_mysql(wx.Panel):
             topWindow = wx.GetApp().GetTopWindow()
             topWindow.userConfig["interface_mysql"] = interface_mysql
             GestionDB.SetInterfaceMySQL(interface_mysql)
-        except Exception, err :
-            print "Erreur dans changement de l'interface mySQL depuis les preferences :", err
+        except Exception as err :
+            print("Erreur dans changement de l'interface mySQL depuis les preferences :", err)
 
 # ------------------------------------------------------------------------------------------------------------------------
 

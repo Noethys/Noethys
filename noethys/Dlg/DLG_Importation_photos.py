@@ -16,12 +16,10 @@ import wx
 from Ctrl import CTRL_Bouton_image
 from Ctrl import CTRL_Bandeau
 import GestionDB
-
+import six
 from Utils import UTILS_Interface
 from Ctrl.CTRL_ObjectListView import FastObjectListView, ColumnDefn, Filter
-
 from PIL import Image
-import cStringIO
 import numpy as np
 import cv2
 from Ol import OL_Individus_grille_ajouter
@@ -443,7 +441,7 @@ class Dialog(wx.Dialog):
             image = track.bmp.ConvertToImage()
             pil = Image.new('RGB', (image.GetWidth(), image.GetHeight()))
             pil.frombytes(image.GetData())
-            buffer = cStringIO.StringIO()
+            buffer = six.BytesIO()
             pil.save(buffer, format="JPEG", quality=100)
             buffer.seek(0)
             buffer = buffer.read()

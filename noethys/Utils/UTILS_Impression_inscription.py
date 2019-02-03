@@ -120,7 +120,7 @@ class Impression():
 
         # ----------- Insertion du contenu des frames --------------
         listeLabels = []
-        for IDinscription, dictValeur in dictValeurs.iteritems():
+        for IDinscription, dictValeur in dictValeurs.items():
             listeLabels.append((dictValeur["{FAMILLE_NOM}"], IDinscription))
         listeLabels.sort()
 
@@ -135,7 +135,7 @@ class Impression():
                 cadre_principal = doc.modeleDoc.FindObjet("cadre_principal")
                 if cadre_principal != None:
 
-                    if DICT_OPTIONS.has_key("intro") and DICT_OPTIONS["intro"] != None or DICT_OPTIONS.has_key("tableau" ) and DICT_VALEURS["tableau"] == True:
+                    if "intro" in DICT_OPTIONS and DICT_OPTIONS["intro"] != None or "tableau" in DICT_OPTIONS and DICT_VALEURS["tableau"] == True:
                         # ------------------- TITRE -----------------
                         dataTableau = []
                         largeursColonnes = [TAILLE_CADRE_CONTENU[2], ]
@@ -165,12 +165,12 @@ class Impression():
                                                         alignment=0,
                                                         )
 
-                    if DICT_OPTIONS.has_key("intro") and DICT_OPTIONS["intro"] != None:
+                    if "intro" in DICT_OPTIONS and DICT_OPTIONS["intro"] != None:
                         texteIntro = DICT_VALEURS["intro"]
                         story.append(Paragraph(u"<i>%s</i>" % texteIntro, paraStyleIntro))
                         story.append(Spacer(0, 20))
 
-                    if DICT_OPTIONS.has_key("tableau") and DICT_OPTIONS["tableau"] == True:
+                    if "tableau" in DICT_OPTIONS and DICT_OPTIONS["tableau"] == True:
                         # ------------------- TABLEAU CONTENU -----------------
                         dataTableau = []
                         largeursColonnes = [80, 280]

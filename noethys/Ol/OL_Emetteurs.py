@@ -13,21 +13,13 @@ import Chemins
 from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
-from Ctrl import CTRL_Bouton_image
-import datetime
+import six
 import os
-import cStringIO
-
 import GestionDB
-
 from Dlg import DLG_Saisie_emetteur
-
-
 from Utils import UTILS_Interface
 from Ctrl.CTRL_ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
-
 from Utils import UTILS_Utilisateurs
-
 
 TAILLE_IMAGE = (132/2.0, 72/2.0)
 IMAGE_DEFAUT = Chemins.GetStaticPath("Images/Special/Image_non_disponible.png")
@@ -47,7 +39,7 @@ class Track(object):
         """ Récupère une image """            
         # Recherche de l'image
         if self.bufferImage != None :
-            io = cStringIO.StringIO(self.bufferImage)
+            io = six.BytesIO(self.bufferImage)
             if 'phoenix' in wx.PlatformInfo:
                 img = wx.Image(io, wx.BITMAP_TYPE_JPEG)
             else :

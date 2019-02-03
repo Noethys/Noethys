@@ -16,8 +16,7 @@ import os
 import os.path
 import ftplib
 import time
-import urllib
-import urllib2
+from six.moves.urllib.request import Request, urlopen, urlretrieve
 import zipfile
 import shutil
 from Utils import UTILS_Fichiers
@@ -54,7 +53,7 @@ def GetNbreFichiers(rep="") :
 
 def AffichetailleFichier(url):
     try :
-        fichier = urllib2.urlopen(url)
+        fichier = urlopen(url)
         infoFichier = (fichier.info().getheaders('Content-Length'))
         if len(infoFichier) > 0 :
             tailleFichier = infoFichier[0]
@@ -92,17 +91,17 @@ def GetExclusions(liste_versions=[], version_ancienne=""):
             # Recherche les exclusions à partir de la version trouvée
             if nbre_versions != None :
 
-                if dictVersion.has_key("exclusions") :
+                if "exclusions" in dictVersion :
                     liste_exclusions = dictVersion["exclusions"].split(",")
                     for exclusion in liste_exclusions :
-                        if not dict_exclusions.has_key(exclusion) :
+                        if exclusion not in dict_exclusions :
                             dict_exclusions[exclusion] = 0
                         dict_exclusions[exclusion] += 1
 
                 nbre_versions += 1
 
     liste_exclusions = []
-    for exclusion, nbre in dict_exclusions.iteritems() :
+    for exclusion, nbre in dict_exclusions.items() :
         if nbre == nbre_versions :
             liste_exclusions.append(exclusion)
 
@@ -155,7 +154,7 @@ class Installer():
                 if keepGoing == False :
                     raise Abort(u"Téléchargement interrompu")
 
-        urllib.urlretrieve(self.url_telechargement, self.nom_fichier_dest, _hook)
+        urlretrieve(self.url_telechargement, self.nom_fichier_dest, _hook)
 
         return True
 
@@ -201,7 +200,7 @@ class Installer():
                     pourcentage = GetPourcentage(self.index, nbre_total)
                     try :
                         keepGoing, skip = self.dlgprogress.Update(pourcentage, _(u"Installation : Transfert du fichier %s...") % name)
-                    except Exception, err :
+                    except Exception as err :
                         keepGoing = True
 
                     # Stoppe la procédure
@@ -224,13 +223,13 @@ class Installer():
                         if self.dict_parametres["serveur_type"] == 1 and name == self.dict_parametres["serveur_cgi_file"] :
                             try :
                                 ftp.sendcmd("chmod 0755 %s" % self.dict_parametres["serveur_cgi_file"])
-                            except Exception, err :
-                                print "CHMOD 755 sur %s impossible :" % self.dict_parametres["serveur_cgi_file"], err
+                            except Exception as err :
+                                print("CHMOD 755 sur %s impossible :" % self.dict_parametres["serveur_cgi_file"], err)
 
                             if "mode=0755" not in ftp.sendcmd("MLST %s" % self.dict_parametres["serveur_cgi_file"]) :
                                 message = u"Attention, le fichier %s n'a pas les bonnes permissions." % self.dict_parametres["serveur_cgi_file"]
                                 self.parent.EcritLog(message)
-                                print message
+                                print(message)
 
 
                     # Transfert SSH/SFTP
@@ -241,15 +240,15 @@ class Installer():
                         if self.dict_parametres["serveur_type"] == 1 and name == self.dict_parametres["serveur_cgi_file"] :
                             try :
                                 ftp.chmod(os.path.join(destpath, name), mode=0755)
-                            except Exception, err :
-                                print "CHMOD 0755 sur %s impossible :" % self.dict_parametres["serveur_cgi_file"], err
+                            except Exception as err :
+                                print("CHMOD 0755 sur %s impossible :" % self.dict_parametres["serveur_cgi_file"], err)
 
                             # Vérifie les droits du fichier cgi (connecthys.cgi par défaut)
                             mode = int(oct(stat.S_IMODE(ftp.stat(os.path.join(destpath, name)).st_mode)))
                             if mode != 755 :
                                 message = u"Attention, le fichier %s n'a pas les bonnes permissions : %d au lieu de 0755." % (self.dict_parametres["serveur_cgi_file"], mode)
                                 self.parent.EcritLog(message)
-                                print message
+                                print(message)
 
                 # Envoi des répertoires
                 elif os.path.isdir(localpath):
@@ -262,7 +261,7 @@ class Installer():
                             fulldestpath = os.path.join(destpath, name)
                             try:
                                 os.makedirs(fulldestpath)
-                            except Exception, err :
+                            except Exception as err :
                                 pass
 
                             self.TransfertRepertoire(path=localpath, destpath=fulldestpath, nbre_total=nbre_total, liste_exclusions=liste_exclusions)
@@ -271,7 +270,7 @@ class Installer():
                         if self.dict_parametres["hebergement_type"] == 1 :
                             try :
                                 ftp.mkd(name)
-                            except Exception, e:
+                            except Exception as e:
                                 # ignore "directory already exists"
                                 if not e.args[0].startswith('550'):
                                     raise
@@ -285,7 +284,7 @@ class Installer():
                         if self.dict_parametres["hebergement_type"] == 2 :
                             try :
                                 ftp.mkdir(name)
-                            except Exception, e:
+                            except Exception as e:
                                 pass
                                 # ignore "directory already exists"
                                 #if not e.args[0].startswith('550'):
@@ -308,8 +307,8 @@ class Installer():
             localrep = self.dict_parametres["hebergement_local_repertoire"]
             try:
                 os.makedirs(localrep)
-            except Exception, e:
-                print e
+            except Exception as e:
+                print(e)
 
             keepGoing, skip = self.dlgprogress.Update(2, _(u"La copie va commencer..."))
             ftp = None
@@ -322,7 +321,7 @@ class Installer():
             # Création du répertoire s'il n'existe pas
             try:
                 ftp.mkd(self.dict_parametres["ftp_repertoire"])
-            except Exception, e:
+            except Exception as e:
                 # ignore "directory already exists"
                 if not e.args[0].startswith('550'):
                     raise
@@ -336,15 +335,15 @@ class Installer():
 
             try :
                 ftp = self.server_ctrl.ssh.open_sftp()
-            except Exception, err:
-                print err
+            except Exception as err:
+                print(err)
                 self.parent.EcritLog(_(u"[ERREUR] %s") % err)
                 raise
 
             # Création du répertoire s'il n'existe pas
             try:
                 ftp.mkdir("/" + self.dict_parametres["ssh_repertoire"])
-            except Exception, e:
+            except Exception as e:
                 pass
                 # ignore "directory already exists"
                 #if not e.args[0].startswith('550'):
@@ -365,13 +364,13 @@ class Installer():
             url += "/get_version"
 
             # Récupération des données au format json
-            req = urllib2.Request(url)
-            reponse = urllib2.urlopen(req)
+            req = Request(url)
+            reponse = urlopen(req)
             page = reponse.read()
             data = json.loads(page)
             version_ancienne = data["version_str"]
-        except Exception, err :
-            print "ERREUR dans recuperation du numero de version :", err
+        except Exception as err :
+            print("ERREUR dans recuperation du numero de version :", err)
             version_ancienne = None
 
         # Recherche des exclusions
@@ -384,7 +383,7 @@ class Installer():
             fichier.close()
             liste_versions = LectureFichierVersion(lignes)
             liste_exclusions = GetExclusions(liste_versions=liste_versions, version_ancienne=version_ancienne)
-            print "liste_exclusions=", liste_exclusions
+            print("liste_exclusions=", liste_exclusions)
 
             # nomFichier = "versions.py"
             # chemin = os.path.join(source_repertoire, "application")
@@ -482,15 +481,15 @@ class Installer():
             dlg.Destroy()
             return False
 
-        except Exception, err :
+        except Exception as err :
             wx.Yield()
             if self.dlgprogress != None :
                 self.dlgprogress.Destroy()
                 del self.dlgprogress
 
             traceback.print_exc()
-            print "Erreur dans l'installation de l'application : "
-            print err
+            print("Erreur dans l'installation de l'application : ")
+            print(err)
 
             time.sleep(2)
             dlg = wx.MessageDialog(None, _(u"Une erreur a été rencontrée !"), "Erreur", wx.OK | wx.ICON_ERROR)

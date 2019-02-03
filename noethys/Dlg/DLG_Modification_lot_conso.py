@@ -316,14 +316,14 @@ class Dialog(wx.Dialog):
             "etats" : selectionEtats,
             }
         
-        print "selectionPeriodes =", selectionPeriodes
-        print "selectionIndividus =", selectionIndividus
-        print "selectionActivite =", selectionActivite
-        print "selectionGroupes =", selectionGroupes
-        print "selectionUnites =", selectionUnites
-        print "selectionModes =", selectionModes
-        print "selectionEtats =", selectionEtats
-        print "--------------------"
+        print("selectionPeriodes =", selectionPeriodes)
+        print("selectionIndividus =", selectionIndividus)
+        print("selectionActivite =", selectionActivite)
+        print("selectionGroupes =", selectionGroupes)
+        print("selectionUnites =", selectionUnites)
+        print("selectionModes =", selectionModes)
+        print("selectionEtats =", selectionEtats)
+        print("--------------------")
         
         # Récupération des paramètres de modification
         modificationGroupe = self.ctrl_modifications.GetGroupe()
@@ -336,11 +336,11 @@ class Dialog(wx.Dialog):
             "etat" : modificationEtat,
             }
             
-        print "modificationGroupe =", modificationGroupe
-        print "modificationMode =", modificationMode
-        print "modificationEtat =", modificationEtat
+        print("modificationGroupe =", modificationGroupe)
+        print("modificationMode =", modificationMode)
+        print("modificationEtat =", modificationEtat)
         
-        print "--------------------------------------------------------------------------------------------------"
+        print("--------------------------------------------------------------------------------------------------")
         
         
         

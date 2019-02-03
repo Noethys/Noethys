@@ -103,7 +103,7 @@ class ListView(FastObjectListView):
         dictVentilation = {}
         for IDventilation, IDreglement, IDprestation, montant, IDmode in listeVentilation :
             montant = FloatToDecimal(montant)
-            if dictVentilation.has_key(IDprestation) == False :
+            if (IDprestation in dictVentilation) == False :
                 dictVentilation[IDprestation] = FloatToDecimal(0.0)
             dictVentilation[IDprestation] += montant
         
@@ -142,14 +142,14 @@ class ListView(FastObjectListView):
             
             if valide == True :
                 montant = FloatToDecimal(montant)
-                if dictVentilation.has_key(IDprestation) :
+                if IDprestation in dictVentilation :
                     regle = dictVentilation[IDprestation] 
                 else :
                     regle = FloatToDecimal(0.0)
                 impaye = montant - regle
                     
                 # Mémorisation
-                if dictPrestations.has_key(label) == False :
+                if (label in dictPrestations) == False :
                     dictPrestations[label] = {
                         "nomActivite" : nomActivite, "IDactivite" : IDactivite, 
                         "nbre_total" : 0, "montant_total" : FloatToDecimal(0.0), 
@@ -176,7 +176,7 @@ class ListView(FastObjectListView):
         
         # Regroupement des prestations par label
         listeListeView = []
-        for label, dictValeurs in dictPrestations.iteritems() :
+        for label, dictValeurs in dictPrestations.items() :
             track = Track(label, dictValeurs)
             listeListeView.append(track)
         return listeListeView
@@ -247,7 +247,7 @@ class ListView(FastObjectListView):
         listeDonnees = []
         for track in self.GetTracksCoches() :
             dictTemp = track.GetDict()
-            for code, valeur in self.dictOrganisme.iteritems() :
+            for code, valeur in self.dictOrganisme.items() :
                 dictTemp[code] = valeur
             listeDonnees.append(dictTemp)
         return listeDonnees

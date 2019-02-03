@@ -14,13 +14,12 @@ from UTILS_Traduction import _
 import wx
 from Ctrl import CTRL_Bouton_image
 import wx.html
-import cStringIO
 from PIL import Image
 import datetime
 import calendar
 import GestionDB
 import UTILS_Dates
-import UTILS_Fichiers
+import six
 
 from numpy import arange, sqrt, array, asarray, ones, exp, convolve, linspace
 
@@ -135,7 +134,7 @@ def Ligne_moyenne(x, n, type='simple'):
 
 def GetDatesPeriode(dictParametres={}):
     """ Renvoie les dates de début et de fin de période de référence """
-    if dictParametres.has_key("mode") :
+    if "mode" in dictParametres :
         if dictParametres["mode"] == "inscrits" :
             date_debut = datetime.date(1977, 1, 1)
             date_fin = datetime.date(2999, 1, 1)
@@ -150,7 +149,7 @@ def GetDatesPeriode(dictParametres={}):
 def GetConditionActivites(dictParametres={}):
     """ Renvoie les conditions d'activités pour les req SQL """
     conditionsActivites = ""
-    if dictParametres.has_key("listeActivites"):
+    if "listeActivites" in dictParametres:
         if len(dictParametres["listeActivites"]) == 0 : 
             conditionsActivites = "()"
         elif len(dictParametres["listeActivites"]) == 1 : 
@@ -520,7 +519,7 @@ class Graphe(Objet):
         inchesV = 1.0 * self.taille[1] / dpi
         
         # Convert figure matplotlib to python.Image object 
-        imgdata = cStringIO.StringIO()
+        imgdata = six.BytesIO()
         figure.set_size_inches(inchesH, inchesV)
         figure.savefig(imgdata, format='png', dpi=dpi)#, facecolor='r')
         imgdata.seek(0)
@@ -661,10 +660,10 @@ if __name__ == "__main__":
     
     # Test des dates de début et de fin des activités
     for x in GetInfosActivites(DB, listeActivites=[1, 2, 3, 4]) :
-        print x
+        print(x)
     
     # Tests de dates extremes d'un ensemble d'activités
-    print GetDateExtremeActivites(DB, listeActivites=[1, 2, 3, 4], typeDate="date_milieu", mode="max")
+    print(GetDateExtremeActivites(DB, listeActivites=[1, 2, 3, 4], typeDate="date_milieu", mode="max"))
     
         
     DB.Close() 

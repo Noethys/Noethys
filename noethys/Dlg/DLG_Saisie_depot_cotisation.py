@@ -101,7 +101,7 @@ class Track(object):
             listeTemp = []
             listeIDactivites = UTILS_Divers.ConvertChaineEnListe(self.activites)
             for IDactivite in listeIDactivites :
-                if parent.dictActivites.has_key(IDactivite) :
+                if IDactivite in parent.dictActivites :
                     nomActivite = parent.dictActivites[IDactivite]["nom"]
                     listeTemp.append(nomActivite)
             if len(listeTemp) > 0 :
@@ -110,7 +110,7 @@ class Track(object):
 
         self.nomCotisation = u"%s - %s" % (self.nomTypeCotisation, self.nomUniteCotisation)
         
-        if parent.titulaires.has_key(self.IDfamille) :
+        if self.IDfamille in parent.titulaires :
             self.nomTitulaires = parent.titulaires[self.IDfamille]["titulairesSansCivilite"]
         else:
             self.nomTitulaires = u""

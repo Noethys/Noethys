@@ -95,7 +95,7 @@ class CTRL_Parametres(wx.html.HtmlWindow):
         """ Création de la source HTML """
         html = ""
         
-        if self.dictParametres.has_key("mode") == False or len(self.dictParametres["listeActivites"]) == 0 :
+        if ("mode" in self.dictParametres) == False or len(self.dictParametres["listeActivites"]) == 0 :
             return
         
         # Période
@@ -439,7 +439,7 @@ class Dialog(wx.Dialog):
         
         il = wx.ImageList(16, 16)
         index =0
-        for code, dictImage in self.dictImages.iteritems() :
+        for code, dictImage in self.dictImages.items() :
             il.Add(dictImage["img"])
             dictImage["index"] = index
             index += 1
@@ -486,7 +486,7 @@ class Dialog(wx.Dialog):
         
         # Ajoute le notebook au labelbook
         self.Bind(FNB.EVT_FLATNOTEBOOK_PAGE_CHANGED, self.OnChangeNotebook, flatNoteBook)
-        if self.dictImages.has_key(dictRubrique["code"]):
+        if dictRubrique["code"] in self.dictImages:
             indexImage = self.dictImages[dictRubrique["code"]]["index"]
         else:
             indexImage = -1

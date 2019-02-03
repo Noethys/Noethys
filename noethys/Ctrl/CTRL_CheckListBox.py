@@ -47,21 +47,21 @@ class CTRL(wx.CheckListBox):
 
     def GetIDcoches(self):
         listeIDcoches = []
-        for index, dictItem in self.dictDonnees.iteritems() :
+        for index, dictItem in self.dictDonnees.items() :
             if self.IsChecked(index):
                 listeIDcoches.append(dictItem["ID"])
         return listeIDcoches
 
     def CocherTout(self):
-        for index, dictItem in self.dictDonnees.iteritems() :
+        for index, dictItem in self.dictDonnees.items() :
             self.Check(index)
 
     def CocherRien(self):
-        for index, dictItem in self.dictDonnees.iteritems() :
+        for index, dictItem in self.dictDonnees.items() :
             self.Check(index, False)
 
     def SetIDcoches(self, listeIDcoches=[]):
-        for index, dictItem in self.dictDonnees.iteritems() :
+        for index, dictItem in self.dictDonnees.items() :
             if dictItem["ID"] in listeIDcoches :
                 self.Check(index)
 
@@ -69,7 +69,7 @@ class CTRL(wx.CheckListBox):
         """ Renvoie un texte de type 'label1, label2, label3, ...' """
         listeLabels = []
         listeID = self.GetIDcoches()
-        for index, dictItem in self.dictDonnees.iteritems() :
+        for index, dictItem in self.dictDonnees.items() :
             if dictItem["ID"] in listeID :
                 listeLabels.append(dictItem["label"])
         return ", ".join(listeLabels)
@@ -173,7 +173,7 @@ class MyFrame(wx.Frame):
         self.ctrl.SetDonnees(listeDonnees)
 
     def OnBoutonTest(self, event):
-        print self.ctrl.GetLabelsCoches()
+        print(self.ctrl.GetLabelsCoches())
         
 
 if __name__ == '__main__':

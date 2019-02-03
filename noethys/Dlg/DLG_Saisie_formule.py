@@ -204,7 +204,7 @@ def ResolveurCalcul(texte=u"", dictValeurs={}):
     resultat = ""
     resultatEuros = False
     # Remplacement des valeurs
-    for motcle, valeur in dictValeurs.iteritems() :
+    for motcle, valeur in dictValeurs.items() :
         if motcle in texte :
             # Conversion de la valeur
             if u"¤" in valeur :
@@ -251,7 +251,7 @@ def ResolveurFormule(formule=u"", listeChamps=[], dictValeurs={}):
     listeConditions = condition.split(" OU ")
     
     # Recherche la solution
-    if dictValeurs.has_key(champ):
+    if champ in dictValeurs:
         valeurChamp = dictValeurs[champ]
         
         # Essaye de convertir les données
@@ -332,8 +332,8 @@ if __name__ == u"__main__":
                 texte=_(u"Ceci est [[SI {FAMILLE_VILLE}<>->Bonjour brest !]] et voilà et aussi [[SI {FAMILLE_VILLE}=QUIMPER ->Salut quimper !]]. Je veux aussi résoudre le calcul suivant : [[1+2.0]] Euros"), 
                 listeChamps=listeChamps, 
                 dictValeurs=dictValeurs)
-    print (resultat,)
+    print((resultat,))
     
     # Test des formules de calcul
     resultat = ResolveurCalcul(texte=_(u"({MONTANT}*10)+2"), dictValeurs=dictValeurs)
-    print (resultat,)
+    print((resultat,))

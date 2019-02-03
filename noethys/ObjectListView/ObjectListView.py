@@ -2342,7 +2342,7 @@ class AbstractVirtualObjectListView(ObjectListView):
         self.listItemAttr = None
         #self.cacheHit = 0
         #self.cacheMiss = 0
-        print 1
+        print(1)
         self.SetObjectGetter(kwargs.pop("getter", None))
 
         # We have to set the item count after the list has been created
@@ -2980,7 +2980,7 @@ class GroupListView(FastObjectListView):
                     groupingColumn.GetGroupKeyAsString(key))
             group.Add(model)
 
-        groups = groupMap.values()
+        groups = list(groupMap.values())
 
         if self.GetShowItemCounts():
             self._BuildGroupTitles(groups, groupingColumn)

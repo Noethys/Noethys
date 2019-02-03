@@ -76,7 +76,7 @@ class Facturation():
         self.dictMessageFamiliaux = {}
         for IDmessage, IDcategorie, date_parution, priorite, IDfamille, nom, texte in listeMessagesFamiliaux :
             date_parution = UTILS_Dates.DateEngEnDateDD(date_parution)
-            if self.dictMessageFamiliaux.has_key(IDfamille) == False :
+            if (IDfamille in self.dictMessageFamiliaux) == False :
                 self.dictMessageFamiliaux[IDfamille] = []
             self.dictMessageFamiliaux[IDfamille].append({"IDmessage":IDmessage, "IDcategorie":IDcategorie, "date_parution":date_parution, "priorite":priorite, "nom":nom, "texte":texte})
 
@@ -143,7 +143,7 @@ class Facturation():
     def RemplaceMotsCles(self, texte="", dictValeurs={}):
         if texte == None :
             texte = ""
-        for key, valeur, in dictValeurs.iteritems() :
+        for key, valeur, in dictValeurs.items() :
             if key in texte and key.startswith("{"):
                 texte = texte.replace(key, valeur)
         return texte
@@ -236,14 +236,14 @@ class Facturation():
             montant_ventilation = FloatToDecimal(montant_ventilation)
             
             # Mémorisation des règlements
-            if dictReglements.has_key(IDcompte_payeur) == False :
+            if (IDcompte_payeur in dictReglements) == False :
                 dictReglements[IDcompte_payeur] = {}
-            if dictReglements[IDcompte_payeur].has_key(IDreglement) == False :
+            if (IDreglement in dictReglements[IDcompte_payeur]) == False :
                 dictReglements[IDcompte_payeur][IDreglement] = {"date" : date, "montant" : montant, "mode" : mode, "emetteur" : emetteur, "numero" : numero_piece, "payeur" : payeur, "ventilation" : FloatToDecimal(0.0)}
             dictReglements[IDcompte_payeur][IDreglement]["ventilation"] += montant_ventilation
             
             # Mémorisation de la ventilation
-            if dictVentilationPrestations.has_key(IDprestation) == False :
+            if (IDprestation in dictVentilationPrestations) == False :
                 dictVentilationPrestations[IDprestation] = FloatToDecimal(0.0)
             dictVentilationPrestations[IDprestation] += montant_ventilation
 
@@ -346,7 +346,7 @@ class Facturation():
         listeDeductionsTemp = DB.ResultatReq()  
         dictDeductions = {}
         for IDdeduction, IDprestation, date, montant, label, IDaide in listeDeductionsTemp :
-            if dictDeductions.has_key(IDprestation) == False :
+            if (IDprestation in dictDeductions) == False :
                 dictDeductions[IDprestation] = []
             dictDeductions[IDprestation].append({"IDdeduction":IDdeduction, "date":date, "montant":montant, "label":label, "IDaide":IDaide})
         
@@ -365,7 +365,7 @@ class Facturation():
         listeConsommations = DB.ResultatReq()  
         dictConsommations = {}
         for IDconso, date, IDprestation, etat in listeConsommations :
-            if dictConsommations.has_key(IDprestation) == False :
+            if (IDprestation in dictConsommations) == False :
                 dictConsommations[IDprestation] = []
             dictConsommations[IDprestation].append({"date" : UTILS_Dates.DateEngEnDateDD(date), "etat" : etat})
 
@@ -403,11 +403,11 @@ class Facturation():
 
         dict_soldes_comptes = {}
         for IDcompte_payeur in listeComptesPayeurs:
-            if dict_prestations.has_key(IDcompte_payeur):
+            if IDcompte_payeur in dict_prestations:
                 total_prestations = FloatToDecimal(dict_prestations[IDcompte_payeur])
             else :
                 total_prestations = FloatToDecimal(0.0)
-            if dict_reglements.has_key(IDcompte_payeur):
+            if IDcompte_payeur in dict_reglements:
                 total_reglements = FloatToDecimal(dict_reglements[IDcompte_payeur])
             else :
                 total_reglements = FloatToDecimal(0.0)
@@ -429,7 +429,7 @@ class Facturation():
         for IDprestation, IDcompte_payeur, date, categorie, label, montant_initial, montant, tva, IDactivite, nomActivite, abregeActivite, IDtarif, nomTarif, nomCategorieTarif, IDfacture, IDindividu, IDfamille in listePrestations :
             montant = FloatToDecimal(montant) 
             
-            if dictComptesPayeursFactures.has_key(IDcompte_payeur) == False :
+            if (IDcompte_payeur in dictComptesPayeursFactures) == False :
                 dictComptesPayeursFactures[IDcompte_payeur] = []
             if IDfacture not in dictComptesPayeursFactures[IDcompte_payeur] :
                 dictComptesPayeursFactures[IDcompte_payeur].append(IDfacture)
@@ -444,7 +444,7 @@ class Facturation():
                 date_echeance = dictFactures[IDfacture]["date_echeance"]
                             
             # Regroupement par compte payeur
-            if dictComptes.has_key(ID) == False and self.dictNomsTitulaires.has_key(IDfamille) :
+            if (ID in dictComptes) == False and IDfamille in self.dictNomsTitulaires :
                 
                 # Recherche des titulaires
                 dictInfosTitulaires = self.dictNomsTitulaires[IDfamille]
@@ -455,13 +455,13 @@ class Facturation():
                 ville_resid = dictInfosTitulaires["adresse"]["ville"]
 
                 # Recherche des règlements
-                if dictReglements.has_key(IDcompte_payeur) :
+                if IDcompte_payeur in dictReglements :
                     dictReglementsCompte = dictReglements[IDcompte_payeur]
                 else :
                     dictReglementsCompte = {}
 
                 # Recherche du solde du compte
-                if dict_soldes_comptes.has_key(IDcompte_payeur) :
+                if IDcompte_payeur in dict_soldes_comptes :
                     solde_compte = dict_soldes_comptes[IDcompte_payeur]
                 else :
                     solde_compte = u"0.00 %s" % SYMBOLE
@@ -547,12 +547,12 @@ class Facturation():
                         dictComptes[ID]["{CODEBARRES_QUESTION_%d}" % dictReponse["IDquestion"]] = dictReponse["reponse"]
                 
                 # Ajoute les messages familiaux
-                if self.dictMessageFamiliaux.has_key(IDfamille) :
+                if IDfamille in self.dictMessageFamiliaux :
                     dictComptes[ID]["messages_familiaux"] = self.dictMessageFamiliaux[IDfamille]
                     
                     
             # Insert les montants pour le compte payeur
-            if dictVentilationPrestations.has_key(IDprestation) :
+            if IDprestation in dictVentilationPrestations :
                 montant_ventilation = FloatToDecimal(dictVentilationPrestations[IDprestation])
             else :
                 montant_ventilation = FloatToDecimal(0.0)
@@ -572,8 +572,8 @@ class Facturation():
                 IDactivite = 0
             
             # Ajout d'un individu
-            if dictComptes[ID]["individus"].has_key(IDindividu) == False :
-                if self.dictIndividus.has_key(IDindividu) :
+            if (IDindividu in dictComptes[ID]["individus"]) == False :
+                if IDindividu in self.dictIndividus :
 
                     # Si c'est bien un individu
                     IDcivilite = self.dictIndividus[IDindividu]["IDcivilite"]
@@ -598,7 +598,7 @@ class Facturation():
                 dictComptes[ID]["individus"][IDindividu] = { "texte" : texteIndividu, "activites" : {}, "total" : FloatToDecimal(0.0), "ventilation" : FloatToDecimal(0.0), "total_reports" : FloatToDecimal(0.0), "nom" : nom, "select" : True }
             
             # Ajout de l'activité
-            if dictComptes[ID]["individus"][IDindividu]["activites"].has_key(IDactivite) == False :
+            if (IDactivite in dictComptes[ID]["individus"][IDindividu]["activites"]) == False :
                 texteActivite = nomActivite
                 agrement = self.RechercheAgrement(IDactivite, date)
                 if agrement != None :
@@ -606,17 +606,17 @@ class Facturation():
                 dictComptes[ID]["individus"][IDindividu]["activites"][IDactivite] = { "texte" : texteActivite, "presences" : {} }
             
             # Ajout de la présence
-            if dictComptes[ID]["individus"][IDindividu]["activites"][IDactivite]["presences"].has_key(date) == False :
+            if (date in dictComptes[ID]["individus"][IDindividu]["activites"][IDactivite]["presences"]) == False :
                 dictComptes[ID]["individus"][IDindividu]["activites"][IDactivite]["presences"][date] = { "texte" : UTILS_Dates.DateEngFr(str(date)), "unites" : [], "total" : FloatToDecimal(0.0) }
 
             # Recherche du nbre de dates pour cette prestation
-            if dictConsommations.has_key(IDprestation) :
+            if IDprestation in dictConsommations :
                 listeDates = dictConsommations[IDprestation]
             else:
                 listeDates = []
 
             # Recherche des déductions
-            if dictDeductions.has_key(IDprestation) :
+            if IDprestation in dictDeductions :
                 deductions = dictDeductions[IDprestation]
             else :
                 deductions = []
@@ -631,7 +631,7 @@ class Facturation():
             if typeLabel == 3 and IDtarif != None :
                 label = nomActivite
             if typeLabel == 1 and IDtarif != None :
-                if dictConsommations.has_key(IDprestation) :
+                if IDprestation in dictConsommations :
                     nbreAbsences = 0
                     for dictTemp in dictConsommations[IDprestation] :
                         if dictTemp["etat"] == "absenti" :
@@ -679,7 +679,7 @@ class Facturation():
                 
         
         # Intégration des total des déductions
-        for ID, valeurs in dictComptes.iteritems() :
+        for ID, valeurs in dictComptes.items() :
             totalDeductions = 0.0
             for dictDeduction in dictComptes[ID]["listeDeductions"] :
                 totalDeductions += dictDeduction["montant"]
@@ -689,7 +689,7 @@ class Facturation():
         for IDprestation, IDcompte_payeur, date, categorie, label, montant, IDactivite, nomActivite, abregeActivite, IDtarif, nomTarif, nomCategorieTarif, IDfacture, IDindividu, IDfamille in listeReports :
             montant = FloatToDecimal(montant) 
             
-            if dictVentilationReports.has_key(IDprestation) :
+            if IDprestation in dictVentilationReports :
                 montant_ventilation = FloatToDecimal(dictVentilationReports[IDprestation])
             else :
                 montant_ventilation = FloatToDecimal(0.0)
@@ -705,8 +705,8 @@ class Facturation():
                 if len(listeFactures) == 0 :
                     
                     #if dictComptes.has_key(IDcompte_payeur) :
-                    if dictComptes.has_key(IDcompte_payeur) and IDprestation not in dictComptes[IDcompte_payeur]["listeIDprestations"] :
-                        if dictComptes[IDcompte_payeur]["reports"].has_key(periode) == False :
+                    if IDcompte_payeur in dictComptes and IDprestation not in dictComptes[IDcompte_payeur]["listeIDprestations"] :
+                        if (periode in dictComptes[IDcompte_payeur]["reports"]) == False :
                             dictComptes[IDcompte_payeur]["reports"][periode] = FloatToDecimal(0.0)
                         dictComptes[IDcompte_payeur]["reports"][periode] += montant_impaye
                         dictComptes[IDcompte_payeur]["total_reports"] += montant_impaye
@@ -714,18 +714,18 @@ class Facturation():
                 
                 else :
                     
-                    if dictComptesPayeursFactures.has_key(IDcompte_payeur) :
+                    if IDcompte_payeur in dictComptesPayeursFactures :
                         for IDfacture in dictComptesPayeursFactures[IDcompte_payeur] :
                             if date < dictComptes[IDfacture]["date_debut"] and IDprestation not in dictComptes[IDfacture]["listeIDprestations"] :
                                 
-                                if dictComptes[IDfacture]["reports"].has_key(periode) == False :
+                                if (periode in dictComptes[IDfacture]["reports"]) == False :
                                     dictComptes[IDfacture]["reports"][periode] = FloatToDecimal(0.0)
                                 dictComptes[IDfacture]["reports"][periode] += montant_impaye
                                 dictComptes[IDfacture]["total_reports"] += montant_impaye
                                 dictComptes[IDfacture]["{TOTAL_REPORTS}"] = u"%.02f %s" % (dictComptes[IDfacture]["total_reports"], SYMBOLE)
         
         # Ajout des impayés au solde
-        for ID, dictValeurs in dictComptes.iteritems() :
+        for ID, dictValeurs in dictComptes.items() :
             dictComptes[ID]["solde_avec_reports"] = dictComptes[ID]["solde"] + dictComptes[ID]["total_reports"]
             dictComptes[ID]["{SOLDE_AVEC_REPORTS}"] = u"%.02f %s" % (dictComptes[ID]["solde_avec_reports"], SYMBOLE)
 
@@ -860,7 +860,7 @@ class Facturation():
 
         # Récupération des données de facturation
         typeLabel = 0
-        if dictOptions != None and dictOptions.has_key("intitules") :
+        if dictOptions != None and "intitules" in dictOptions :
             typeLabel = dictOptions["intitules"]
             
         dictComptes = self.GetDonnees(listeFactures=listeFactures, typeLabel=typeLabel)
@@ -872,7 +872,7 @@ class Facturation():
             regle = FloatToDecimal(regle)
             solde = FloatToDecimal(solde)
 
-            if dictComptes.has_key(IDfacture) :
+            if IDfacture in dictComptes :
                 
                 dictCompte = dictComptes[IDfacture]
                 dictCompte["select"] = True
@@ -908,11 +908,11 @@ class Facturation():
                     nomLot = ""
                 dictCompte["{NOM_LOT}"] = nomLot
                 
-                for IDindividu, dictIndividu in dictCompte["individus"].iteritems() :
+                for IDindividu, dictIndividu in dictCompte["individus"].items() :
                     dictIndividu["select"] = True
 
                 # Recherche de prélèvements
-                if dictPrelevements.has_key(IDfacture) :
+                if IDfacture in dictPrelevements :
                     if datePrelevement < dictCompte["date_edition"] :
                         verbe = _(u"a été")
                     else :
@@ -934,7 +934,7 @@ class Facturation():
                     dictCompte["{DATE_PRELEVEMENT}"] = ""
 
                 # Infos PES ORMC
-                if dictPes.has_key(IDfacture) :
+                if IDfacture in dictPes :
                     dictCompte["{PES_IDLOT}"] = dictPes[IDfacture]["pes_IDlot"]
                     dictCompte["{PES_NOM_LOT}"] = dictPes[IDfacture]["pes_nom_lot"]
                     dictCompte["{PES_LOT_EXERCICE}"] = dictPes[IDfacture]["pes_lot_exercice"]
@@ -1023,7 +1023,7 @@ class Facturation():
                 pass
             try :
                 index = 0
-                for IDfacture, dictFacture in dictFactures.iteritems() :
+                for IDfacture, dictFacture in dictFactures.items() :
                     if dictFacture["select"] == True :
                         num_facture = dictFacture["num_facture"]
                         nomTitulaires = self.Supprime_accent(dictFacture["nomSansCivilite"])
@@ -1045,7 +1045,7 @@ class Facturation():
                 self.EcritStatusbar("")
                 dlgProgress.Destroy()
                 return dictPieces
-            except Exception, err:
+            except Exception as err:
                 dlgProgress.Destroy()
                 traceback.print_exc(file=sys.stdout)
                 dlg = wx.MessageDialog(None, _(u"Désolé, le problème suivant a été rencontré dans l'édition des factures : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
@@ -1078,7 +1078,7 @@ class Facturation():
                 UTILS_Impression_facture.Impression(dictFactures, dictOptions, IDmodele=dictOptions["IDmodele"], ouverture=afficherDoc, nomFichier=nomDoc)
                 self.EcritStatusbar("")
                 del dlgAttente
-            except Exception, err:
+            except Exception as err:
                 del dlgAttente
                 traceback.print_exc(file=sys.stdout)
                 err = str(err).decode("iso-8859-15")
@@ -1126,15 +1126,15 @@ def ModificationFacture(listeFactures=[], dict_valeurs={}):
     for IDfacture in listeFactures:
 
         # Modification IDlot
-        if dict_valeurs.has_key("IDlot") :
+        if "IDlot" in dict_valeurs :
             DB.ReqMAJ("factures", [("IDlot", dict_valeurs["IDlot"]), ], "IDfacture", IDfacture)
 
         # Modification Date émission
-        if dict_valeurs.has_key("date_emission") :
+        if "date_emission" in dict_valeurs :
             DB.ReqMAJ("factures", [("date_emission", dict_valeurs["date_emission"]), ], "IDfacture", IDfacture)
 
         # Modification Date_échéance
-        if dict_valeurs.has_key("date_echeance") :
+        if "date_echeance" in dict_valeurs :
             DB.ReqMAJ("factures", [("date_echeance", dict_valeurs["date_echeance"]), ], "IDfacture", IDfacture)
 
     DB.Close()
@@ -1163,6 +1163,6 @@ if __name__ == '__main__':
     #print "Nbre factures trouvees =", len(liste_factures)
 
     # Affichage d'une facture
-    print "resultats =", facturation.Impression(listeFactures=[8063,])
+    print("resultats =", facturation.Impression(listeFactures=[8063,]))
 
     app.MainLoop()

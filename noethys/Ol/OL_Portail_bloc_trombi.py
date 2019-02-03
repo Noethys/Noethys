@@ -340,11 +340,11 @@ class DLG_Saisie_element(wx.Dialog):
     def SetDonnees(self, dictDonnees={}):
         self.dictDonnees = dictDonnees
         self.SetTitle(_(u"Modification d'un individu"))
-        if self.dictDonnees.has_key("titre") :
+        if "titre" in self.dictDonnees :
             self.ctrl_nom.SetValue(self.dictDonnees["titre"])
-        if self.dictDonnees.has_key("parametres") :
+        if "parametres" in self.dictDonnees :
             self.ctrl_description.SetValue(self.dictDonnees["parametres"])
-        if self.dictDonnees.has_key("texte_html") :
+        if "texte_html" in self.dictDonnees :
             self.ctrl_photo.SetPhoto(imgbase64=self.dictDonnees["texte_html"])
 
 

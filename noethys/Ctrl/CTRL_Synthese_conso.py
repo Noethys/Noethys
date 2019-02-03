@@ -44,8 +44,12 @@ def DateComplete(dateDD):
     dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + LISTE_MOIS[dateDD.month-1] + " " + str(dateDD.year)
     return dateComplete
 
-def FormateMois((annee, mois)):
-    return u"%s %d" % (LISTE_MOIS[mois-1].capitalize(), annee)
+def FormateMois(donnee):
+    if donnee in ("", None):
+        return ""
+    else:
+        annee, mois = donnee
+        return u"%s %d" % (LISTE_MOIS[mois-1].capitalize(), annee)
     
 def DateEngEnDateDD(dateEng):
     return datetime.date(int(dateEng[:4]), int(dateEng[5:7]), int(dateEng[8:10]))
@@ -181,7 +185,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             wx.Yield() 
             self.InitGrid() 
             del dlgAttente
-        except Exception, err:
+        except Exception as err:
             del dlgAttente
             traceback.print_exc(file=sys.stdout)
             dlg = wx.MessageDialog(self, _(u"Désolé, le problème suivant a été rencontré dans la recherche des données de la synthèse des consommations : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
@@ -320,7 +324,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                     if len(etiquettes) > 0 :
                         temp = []
                         for IDetiquette in etiquettes :
-                            if self.dictEtiquettes.has_key(IDetiquette) :
+                            if IDetiquette in self.dictEtiquettes :
                                 temp.append(self.dictEtiquettes[IDetiquette]["label"])
                         regroupement = temp
                     else :
@@ -383,11 +387,11 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 listeRegroupements = [regroupement,]
             
             for regroupement in listeRegroupements :
-                if dictResultats.has_key(groupe) == False :
+                if (groupe in dictResultats) == False :
                     dictResultats[groupe] = {}
-                if dictResultats[groupe].has_key(IDunite) == False :
+                if (IDunite in dictResultats[groupe]) == False :
                     dictResultats[groupe][IDunite] = {}
-                if dictResultats[groupe][IDunite].has_key(regroupement) == False :
+                if (regroupement in dictResultats[groupe][IDunite]) == False :
                     dictResultats[groupe][IDunite][regroupement] = defaut
                 dictResultats[groupe][IDunite][regroupement] += valeur
                 
@@ -416,21 +420,21 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         listeUnitesUtilises = []
         listeRegroupement = []
         dictTotaux = { "lignes" : {}, "colonnes" : {} }
-        for IDgroupe, dictGroupe in dictResultats.iteritems() :
+        for IDgroupe, dictGroupe in dictResultats.items() :
             if IDgroupe not in listeGroupesUtilises :
                 listeGroupesUtilises.append(IDgroupe)
-            for IDunite, dictUnite in dictGroupe.iteritems() :
+            for IDunite, dictUnite in dictGroupe.items() :
                 if IDunite not in listeUnitesUtilises :
                     listeUnitesUtilises.append(IDunite)
-                for regroupement, valeur in dictUnite.iteritems() :
+                for regroupement, valeur in dictUnite.items() :
                     if regroupement not in listeRegroupement :
                         listeRegroupement.append(regroupement)
                     
                     # Calcul des totaux
-                    if dictTotaux["lignes"].has_key((IDgroupe, IDunite)) == False :
+                    if ((IDgroupe, IDunite) in dictTotaux["lignes"]) == False :
                         dictTotaux["lignes"][(IDgroupe, IDunite)] = defaut
                     dictTotaux["lignes"][(IDgroupe, IDunite)] += valeur
-                    if dictTotaux["colonnes"].has_key(regroupement) == False :
+                    if (regroupement in dictTotaux["colonnes"]) == False :
                         dictTotaux["colonnes"][regroupement] = defaut
                     dictTotaux["colonnes"][regroupement] += valeur
         
@@ -477,9 +481,9 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 label = FormateMois(regroupement)
             elif self.affichage_regroupement == "annee" : 
                 label = str(regroupement)
-            elif self.affichage_regroupement == "evenement" and self.dictEvenements.has_key(regroupement) :
+            elif self.affichage_regroupement == "evenement" and regroupement in self.dictEvenements :
                 label = self.dictEvenements[regroupement]["nom"]
-            elif self.affichage_regroupement == "evenement_date" and self.dictEvenements.has_key(regroupement) :
+            elif self.affichage_regroupement == "evenement_date" and regroupement in self.dictEvenements :
                 label = u"%s (%s)" % (self.dictEvenements[regroupement]["nom"], UTILS_Dates.DateDDEnFr(self.dictEvenements[regroupement]["date"]))
             elif self.affichage_regroupement == "qf" and type(regroupement) == tuple : 
                 label = u"%d-%d" % regroupement
@@ -498,9 +502,9 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         dictLignes["total"] = index
         
         # Remplissage des valeurs
-        for IDgroupe, dictGroupe in dictResultats.iteritems() :
-            for IDunite, dictUnite in dictGroupe.iteritems() :
-                for regroupement, valeur in dictUnite.iteritems() :
+        for IDgroupe, dictGroupe in dictResultats.items() :
+            for IDunite, dictUnite in dictGroupe.items() :
+                for regroupement, valeur in dictUnite.items() :
                     label = FormateValeur(valeur, self.affichage_donnees)
                     numLigne = dictLignes[regroupement]
                     numColonne = dictColonnes[(IDgroupe, IDunite)]
@@ -509,7 +513,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                     self.SetReadOnly(numLigne, numColonne, True)
         
         # Remplissage des totaux        
-        for (IDgroupe, IDunite), valeur in dictTotaux["lignes"].iteritems() :
+        for (IDgroupe, IDunite), valeur in dictTotaux["lignes"].items() :
             label = FormateValeur(valeur, self.affichage_donnees)
             numLigne = dictLignes["total"]
             numColonne = dictColonnes[(IDgroupe, IDunite)]
@@ -518,7 +522,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             self.SetReadOnly(numLigne, numColonne, True)
         
         total_general = defaut
-        for regroupement, valeur in dictTotaux["colonnes"].iteritems() :
+        for regroupement, valeur in dictTotaux["colonnes"].items() :
             total_general += valeur
             label = FormateValeur(valeur, self.affichage_donnees)
             numLigne = dictLignes[regroupement]

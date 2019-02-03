@@ -325,7 +325,7 @@ class EmailMessage(object):
         if 'message-id' not in header_names:
             # Use cached DNS_NAME for performance
             msg['Message-ID'] = make_msgid(domain=DNS_NAME)
-        for name, value in self.extra_headers.items():
+        for name, value in list(self.extra_headers.items()):
             if name.lower() in ('from', 'to'):  # From and To are already handled
                 continue
             msg[name] = value

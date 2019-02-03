@@ -136,16 +136,17 @@ Version 0.9
 import wx
 import os
 import time
-import cStringIO
 import zlib
 
-import thread
+import six
+if six.PY3:
+    import _thread as thread
+else:
+    import thread
 from math import pi
 
 import PIL.Image as Image
 
-try: import psyco; psyco.full()
-except: pass
 
 
 #----------------------------------------------------------------------
@@ -154,7 +155,7 @@ except: pass
 
 def GetMondrianData():
     return \
-'\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x00 \x00\x00\x00 \x08\x06\x00\
+b'\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x00 \x00\x00\x00 \x08\x06\x00\
 \x00\x00szz\xf4\x00\x00\x00\x04sBIT\x08\x08\x08\x08|\x08d\x88\x00\x00\x00qID\
 ATX\x85\xed\xd6;\n\x800\x10E\xd1{\xc5\x8d\xb9r\x97\x16\x0b\xad$\x8a\x82:\x16\
 o\xda\x84pB2\x1f\x81Fa\x8c\x9c\x08\x04Z{\xcf\xa72\xbcv\xfa\xc5\x08 \x80r\x80\
@@ -166,13 +167,13 @@ def GetMondrianBitmap():
     return wx.BitmapFromImage(GetMondrianImage())
 
 def GetMondrianImage():
-    stream = cStringIO.StringIO(GetMondrianData())
+    stream = six.BytesIO(GetMondrianData())
     return wx.ImageFromStream(stream)
 
 
 def getDataSH():
     return zlib.decompress(
-'x\xda\xeb\x0c\xf0s\xe7\xe5\x92\xe2b``\xe0\xf5\xf4p\t\x02\xd2_A\x98\x83\rHvl\
+b'x\xda\xeb\x0c\xf0s\xe7\xe5\x92\xe2b``\xe0\xf5\xf4p\t\x02\xd2_A\x98\x83\rHvl\
 \xdc\x9c\n\xa4X\x8a\x9d<C8\x80\xa0\x86#\xa5\x83\x81\x81y\x96\xa7\x8bcH\xc5\
 \x9c\xb7\xd7\xd7\xf6\x85D2\xb4^\xbc\x1b\xd0\xd0p\xa6\x85\x9d\xa1\xf1\xc0\xc7\
 \x7f\xef\x8d\x98\xf89_:p]\xaew\x0c\xe9\x16[\xbc\x8bSt\xdf\x9aT\xad\xef\xcb\
@@ -191,7 +192,7 @@ Y\xcb\xbd\x8b\xdfs\xe3[\xd6\xed\xe5\x9b}\x99\xe6=:\xbd\xed\xfc\xedu|\xfcq\
 
 def getDataBL():
     return zlib.decompress(
-"x\xda\xeb\x0c\xf0s\xe7\xe5\x92\xe2b``\xe0\xf5\xf4p\t\x02\xd2\xac \xcc\xc1\
+b"x\xda\xeb\x0c\xf0s\xe7\xe5\x92\xe2b``\xe0\xf5\xf4p\t\x02\xd2\xac \xcc\xc1\
 \x06${\xf3\xd5\x9e\x02)\x96b'\xcf\x10\x0e \xa8\xe1H\xe9\x00\xf2\xed=]\x1cC8f\
 \xea\x9e\xde\xcb\xd9` \xc2\xf0P\xdf~\xc9y\xaeu\x0f\xfe1\xdf\xcc\x14\x1482A\
 \xe9\xfd\x83\x1d\xaf\x84\xac\xf8\xe6\\\x8c3\xfc\x98\xf8\xa0\xb1\xa9K\xec\x9f\
@@ -200,7 +201,7 @@ def getDataBL():
 
 def getDataTR():
     return zlib.decompress(
-'x\xda\xeb\x0c\xf0s\xe7\xe5\x92\xe2b``\xe0\xf5\xf4p\t\x02\xd2\xac \xcc\xc1\
+b'x\xda\xeb\x0c\xf0s\xe7\xe5\x92\xe2b``\xe0\xf5\xf4p\t\x02\xd2\xac \xcc\xc1\
 \x06${\xf3\xd5\x9e\x02)\x96b\'\xcf\x10\x0e \xa8\xe1H\xe9\x00\xf2m=]\x1cC8f\
 \xe6\x9e\xd9\xc8\xd9` \xc2p\x91\xbd\xaei\xeeL\x85\xdcUo\xf6\xf7\xd6\xb2\x88\
 \x0bp\x9a\x89i\x16=-\x94\xe16\x93\xb9!\xb8y\xcd\t\x0f\x89\n\xe6\xb7\xfcV~6\
@@ -212,9 +213,9 @@ def getShadow():
         fonction = wx.Image
     else :
         fonction = wx.ImageFromStream
-    sh_tr = fonction(cStringIO.StringIO(getDataTR())).ConvertToBitmap()
-    sh_bl = fonction(cStringIO.StringIO(getDataBL())).ConvertToBitmap()
-    sh_sh = fonction(cStringIO.StringIO(getDataSH())).Rescale(500, 500, wx.IMAGE_QUALITY_HIGH)
+    sh_tr = fonction(six.BytesIO(getDataTR())).ConvertToBitmap()
+    sh_bl = fonction(six.BytesIO(getDataBL())).ConvertToBitmap()
+    sh_sh = fonction(six.BytesIO(getDataSH())).Rescale(500, 500, wx.IMAGE_QUALITY_HIGH)
     return (sh_tr, sh_bl, sh_sh.ConvertToBitmap())
 
 
@@ -1399,7 +1400,7 @@ class ScrolledThumbnail(wx.ScrolledWindow):
         selectedfname = []
         selecteditemid = []
         
-        for ii in xrange(len(self._selectedarray)):
+        for ii in range(len(self._selectedarray)):
             selectedfname.append(self.GetSelectedItem(ii).GetFileName())
             selecteditemid.append(self.GetSelectedItem(ii).GetId())
             
@@ -1407,8 +1408,8 @@ class ScrolledThumbnail(wx.ScrolledWindow):
         
         if len(selected) > 0:
             self._selectedarray = []            
-            for ii in xrange(len(self._items)):
-                for jj in xrange(len(selected)):
+            for ii in range(len(self._items)):
+                for jj in range(len(selected)):
                     if self._items[ii].GetFileName() == selectedfname[jj] and \
                        self._items[ii].GetId() == selecteditemid[jj]:
                   
@@ -1477,7 +1478,7 @@ class ScrolledThumbnail(wx.ScrolledWindow):
         """
         
         capHeight = 0
-        for ii in xrange(begRow, begRow + count):
+        for ii in range(int(begRow), int(begRow + count)):
             if ii < len(self._tCaptionHeight):
                 capHeight = capHeight + self._tCaptionHeight[ii]
 
@@ -1531,15 +1532,15 @@ class ScrolledThumbnail(wx.ScrolledWindow):
             self._cols = 1
 
         tmpvar = (len(self._items)%self._cols and [1] or [0])[0]
-        self._rows = len(self._items)/self._cols + tmpvar
+        self._rows = len(self._items)//self._cols + tmpvar
         
         self._tCaptionHeight = []
 
-        for row in xrange(self._rows):
+        for row in range(int(self._rows)):
 
             capHeight = 0
             
-            for col in xrange(self._cols):
+            for col in range(len(self._cols)):
 
                 ii = row*self._cols + col
                 
@@ -1835,7 +1836,7 @@ class ScrolledThumbnail(wx.ScrolledWindow):
         row = -1
         xwhite = self._tBorder
 
-        for ii in xrange(len(self._items)):
+        for ii in range(len(self._items)):
 
             col = ii%self._cols
             if col == 0:
@@ -1930,7 +1931,7 @@ class ScrolledThumbnail(wx.ScrolledWindow):
                     endindex = self._selected
                 self._selectedarray = []
 
-                for ii in xrange(begindex, endindex+1):
+                for ii in range(begindex, endindex+1):
                     self._selectedarray.append(ii)
 
                 update = True
@@ -2027,7 +2028,7 @@ class ScrolledThumbnail(wx.ScrolledWindow):
         if self._dragging and event.Dragging() and len(self._selectedarray) > 0:
 
             files = wx.FileDataObject()
-            for ii in xrange(len(self._selectedarray)):
+            for ii in range(len(self._selectedarray)):
                 files.AddFile(opj(self.GetSelectedItem(ii).GetFullFileName()))
                 
             source = wx.DropSource(self)
@@ -2101,7 +2102,7 @@ class ScrolledThumbnail(wx.ScrolledWindow):
         :param `event`: a L{ThumbnailEvent} event to be processed.
         """
         
-        for ii in xrange(len(self._items)):
+        for ii in range(len(self._items)):
             if self._items[ii].GetFileName() == event.GetString():
 
                 self._items[ii].SetFilename(self._items[ii].GetFileName())
@@ -2157,7 +2158,7 @@ class ScrolledThumbnail(wx.ScrolledWindow):
         count = 0
         selected = []
         
-        for ii in xrange(len(self._items)):
+        for ii in range(len(self._items)):
             if self.IsSelected(ii):
                 selected.append(self._items[ii])
 
@@ -2210,7 +2211,7 @@ class ScrolledThumbnail(wx.ScrolledWindow):
             
             wx.BeginBusyCursor()
             
-            for ii in xrange(len(self._items)):
+            for ii in range(len(self._items)):
                 if self.IsSelected(ii):
                     thumb = self._items[ii]
                     files = self._items[ii].GetFullFileName()

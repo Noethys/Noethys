@@ -143,7 +143,7 @@ class Cotisation():
         DB.ExecuterReq(req)
         listeVentilations = DB.ResultatReq()
         for IDcotisation, ventilation, dateReglement, modeReglement in listeVentilations :
-            if dictFacturation.has_key(IDcotisation) :
+            if IDcotisation in dictFacturation :
                 dictFacturation[IDcotisation]["ventilation"] = ventilation
                 dictFacturation[IDcotisation]["dateReglement"] = dateReglement
                 dictFacturation[IDcotisation]["modeReglement"] = modeReglement
@@ -205,7 +205,7 @@ class Cotisation():
                 listeTemp = []
                 listeIDactivites = UTILS_Divers.ConvertChaineEnListe(activites)
                 for IDactivite in listeIDactivites :
-                    if dictActivites.has_key(IDactivite) :
+                    if IDactivite in dictActivites :
                         nomActivite = dictActivites[IDactivite]["nom"]
                         listeTemp.append(nomActivite)
                 if len(listeTemp) > 0 :
@@ -238,7 +238,7 @@ class Cotisation():
                 cp = self.dictTitulaires[IDfamille]["adresse"]["cp"]
                 ville = self.dictTitulaires[IDfamille]["adresse"]["ville"]
             
-            if IDindividu != None and self.dictIndividus.has_key(IDindividu) :
+            if IDindividu != None and IDindividu in self.dictIndividus :
                 beneficiaires = self.dictIndividus[IDindividu]["nom_complet"]
                 rue = self.dictIndividus[IDindividu]["rue"]
                 cp = self.dictIndividus[IDindividu]["cp"]
@@ -262,7 +262,7 @@ class Cotisation():
             dateReglement = None
             modeReglement = None
             
-            if dictFacturation.has_key(IDcotisation):
+            if IDcotisation in dictFacturation:
                 montant = dictFacturation[IDcotisation]["montant"]
                 ventilation = dictFacturation[IDcotisation]["ventilation"]
                 dateReglement = dictFacturation[IDcotisation]["dateReglement"]
@@ -353,7 +353,7 @@ class Cotisation():
             
             # Champs de fusion pour Email
             dictChampsFusion[IDcotisation] = {}
-            for key, valeur in dictDonnee.iteritems() :
+            for key, valeur in dictDonnee.items() :
                 if key[0] == "{" :
                     dictChampsFusion[IDcotisation][key] = valeur
 
@@ -390,7 +390,7 @@ class Cotisation():
             wx.Yield() 
             try :
                 index = 0
-                for IDcotisation, dictCotisation in dictCotisations.iteritems() :
+                for IDcotisation, dictCotisation in dictCotisations.items() :
                     if dictCotisation["select"] == True :
                         numero_cotisation = str(dictCotisation["{NUMERO_CARTE}"])
                         nomTitulaires = self.Supprime_accent(dictCotisation["{FAMILLE_NOM}"])
@@ -404,7 +404,7 @@ class Cotisation():
                 self.EcritStatusbar("")
                 del dlgAttente
                 return dictPieces
-            except Exception, err:
+            except Exception as err:
                 del dlgAttente
                 traceback.print_exc(file=sys.stdout)
                 dlg = wx.MessageDialog(None, _(u"Désolé, le problème suivant a été rencontré dans l'édition des cotisations : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
@@ -434,7 +434,7 @@ class Cotisation():
                 UTILS_Impression_cotisation.Impression(dictCotisations, dictOptions, IDmodele=dictOptions["IDmodele"], ouverture=afficherDoc, nomFichier=nomDoc)
                 self.EcritStatusbar("")
                 del dlgAttente
-            except Exception, err:
+            except Exception as err:
                 del dlgAttente
                 traceback.print_exc(file=sys.stdout)
                 dlg = wx.MessageDialog(None, u"Désolé, le problème suivant a été rencontré dans l'édition des cotisations : \n\n%s" % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)

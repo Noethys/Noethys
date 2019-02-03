@@ -13,7 +13,6 @@ from Utils import UTILS_Adaptations
 import wx
 import datetime
 import sqlite3
-import urllib2
 from Utils import UTILS_Interface
 from wx.lib.wordwrap import wordwrap
 

@@ -23,4 +23,4 @@ def FloatToDecimal(montant=0.0, plusProche=False):
 
 
 if __name__ == "__main__":
-    print FloatToDecimal(3.1359, plusProche=True)
+    print(FloatToDecimal(3.1359, plusProche=True))

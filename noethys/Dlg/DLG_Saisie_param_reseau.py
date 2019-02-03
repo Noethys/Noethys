@@ -105,7 +105,7 @@ class Dialog(wx.Dialog):
         # Vérification des infos saisies
         try :
             port = int(port)
-        except Exception, err:
+        except Exception as err:
             dlg = wx.MessageDialog(self, _(u"Le numéro de port n'est pas valide. \n\nErreur : %s") % err, _(u"Erreur de saisie"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()

@@ -301,7 +301,7 @@ class ListView(FastObjectListView):
                 dictDonnees["totalOperationsCredit"] += track.montant
             
             if track.IDmode != None :
-                if dictDonnees["modes"].has_key(track.IDmode) == False :
+                if (track.IDmode in dictDonnees["modes"]) == False :
                     dictDonnees["modes"][track.IDmode] = {"nom" : track.nomMode, "nbre" : 0, "total" : 0.0}
                 dictDonnees["modes"][track.IDmode]["nbre"] += 1
                 dictDonnees["modes"][track.IDmode]["total"] += track.montant
@@ -329,7 +329,7 @@ class ListView(FastObjectListView):
                 texte += _(u"<BR>%d opérations au crédit : %.2f %s") % (dictDonnees["nbreOperationsCredit"], dictDonnees["totalOperationsCredit"], SYMBOLE)
         
         # Modes
-        for IDmode, donnees in dictDonnees["modes"].iteritems() :
+        for IDmode, donnees in dictDonnees["modes"].items() :
             if donnees["nbre"] == 1 :
                 texte += _(u"<BR>1 opération de type '%s' : %.2f %s") % (donnees["nom"], donnees["total"], SYMBOLE)
             else :
@@ -338,7 +338,7 @@ class ListView(FastObjectListView):
         try :
             self.GetParent().SetInformations(texte) 
         except :
-            print (texte,)
+            print((texte,))
         
         
         

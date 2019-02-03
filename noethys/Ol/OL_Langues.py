@@ -64,7 +64,7 @@ class ListView(FastObjectListView):
                     nbreTextes = len(fichier) - 1
                     fichier.close()
 
-                    if dictLangues.has_key(code) == False :
+                    if (code in dictLangues) == False :
                         dictLangues[code] = {"nom" : nom, "initial" : 0, "perso" : 0}
 
                     if extension == "lang" :
@@ -74,7 +74,7 @@ class ListView(FastObjectListView):
 
         # Remplissage
         listeListeView = []
-        for code, valeurs in dictLangues.iteritems() :
+        for code, valeurs in dictLangues.items() :
             dictDonnees = {"code" : code, "initial" : valeurs["initial"], "perso" : valeurs["perso"], "nom" : valeurs["nom"]}
             listeListeView.append(Track(dictDonnees))
         
@@ -281,7 +281,7 @@ class ListView(FastObjectListView):
                 dictDonnees = {}
                 for nomFichier in [UTILS_Fichiers.GetRepLang(nomFichierCourt), nomFichierLong] :
                     fichier = shelve.open(nomFichier, "r")
-                    for key, valeur in fichier.iteritems() :
+                    for key, valeur in fichier.items() :
                         dictDonnees[key] = valeur
                     fichier.close()
                 
@@ -293,7 +293,7 @@ class ListView(FastObjectListView):
                     flag = "n"
                 fichier = shelve.open(nomFichier, flag)
                 fichier.clear() 
-                for key, valeur in dictDonnees.iteritems() :
+                for key, valeur in dictDonnees.items() :
                     fichier[key] = valeur
                 fichier.close()
                 self.MAJ()

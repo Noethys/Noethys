@@ -759,7 +759,7 @@ class City(object):
         sun = self.astral.sun_utc(date, self.latitude, self.longitude)
 
         if local:
-            for key, dt in sun.items():
+            for key, dt in list(sun.items()):
                 sun[key] = dt.astimezone(self.tz)
 
         return sun
@@ -786,7 +786,7 @@ class City(object):
             self.latitude, self.longitude)
 
         if local:
-            for key, dt in rahukaalam.items():
+            for key, dt in list(rahukaalam.items()):
                 rahukaalam[key] = dt.astimezone(self.tz)
             
         return rahukaalam
@@ -885,7 +885,7 @@ class CityGroup(object):
         city_name = city_name.strip('"\'')
         country_name = country_name.strip('"\'')
 
-        for (name, city_list) in self._cities.items():
+        for (name, city_list) in list(self._cities.items()):
             if name.replace(' ', '_') == city_name:
                 if len(city_list) == 1 or country_name == '':
                     return city_list[0]
@@ -906,30 +906,30 @@ class CityGroup(object):
 
     def __contains__(self, key):
         key = str(key).lower()
-        for name in self._cities.keys():
+        for name in list(self._cities.keys()):
             if name == key:
                 return True
             
         return False
     
     def __iter__(self):
-        for city_list in self._cities.values():
+        for city_list in list(self._cities.values()):
             for city in city_list:
                 yield city
     
     def keys(self):
-        return self._cities.keys()
+        return list(self._cities.keys())
     
     def values(self):
-        return self._cities.values()
+        return list(self._cities.values())
     
     def items(self):
-        return self._cities.items()
+        return list(self._cities.items())
     
     def cities():
         def fget(self):
             k = []
-            for city_list in self._cities.values():
+            for city_list in list(self._cities.values()):
                 for city in city_list:
                     k.append(city.name)
                 
@@ -971,7 +971,7 @@ class CityDB(object):
         Attribute lookup is case insensitive"""
         
         key = str(key).lower()
-        for name, value in self._groups.items():
+        for name, value in list(self._groups.items()):
             if name == key:
                 return value
         
@@ -983,7 +983,7 @@ class CityDB(object):
         Item lookup is case insensitive."""
         
         key = str(key).lower()
-        for group in self._groups.values():
+        for group in list(self._groups.values()):
             try:
                 return group[key]
             except KeyError:
@@ -996,7 +996,7 @@ class CityDB(object):
 
     def __contains__(self, key):
         key = str(key).lower()
-        for name, group in self._groups.items():
+        for name, group in list(self._groups.items()):
             if name == key:
                 return True
             
@@ -1008,7 +1008,7 @@ class CityDB(object):
     def cities():
         def fget(self):
             k = []
-            for group in self._groups.values():
+            for group in list(self._groups.values()):
                 k.extend(group.cities)
                 
             return k

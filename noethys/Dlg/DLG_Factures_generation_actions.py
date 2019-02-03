@@ -328,7 +328,7 @@ class MyFrame(wx.Frame):
         
     def OnBoutonTest(self, event):
         """ Bouton Test """
-        print "Validation =", self.ctrl.Validation()
+        print("Validation =", self.ctrl.Validation())
 
 if __name__ == '__main__':
     app = wx.App(0)

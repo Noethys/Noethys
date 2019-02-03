@@ -114,9 +114,9 @@ class Timeline(TL.TimelinePerso):
         from Utils.UTILS_Historique import CATEGORIES as dictCategories
         from Utils.UTILS_Historique import DICT_COULEURS as dictCouleurs
         dictCategorieTemp = {}
-        for IDcategorie, nomCategorie in dictCategories.iteritems() :
+        for IDcategorie, nomCategorie in dictCategories.items() :
             couleur = (255, 255, 255)
-            for couleurTmp, listeIDcat in dictCouleurs.iteritems() :
+            for couleurTmp, listeIDcat in dictCouleurs.items() :
                 for IDcat in listeIDcat :
                     if IDcategorie == IDcat : 
                         couleur = couleurTmp

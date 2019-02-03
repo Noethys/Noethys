@@ -37,19 +37,19 @@ class CTRL(object):
     def __init__(self, parent, *args, **kwds):
         self.parent = parent
         self.code = kwds["code"]
-        if kwds.has_key("obligatoire"):
+        if "obligatoire" in kwds:
             self.obligatoire = kwds["obligatoire"]
         else :
             self.obligatoire = False
-        if kwds.has_key("on_reponse"):
+        if "on_reponse" in kwds:
             self.on_reponse = kwds["on_reponse"]
         else :
             self.on_reponse = None
-        if kwds.has_key("defaut"):
+        if "defaut" in kwds:
             self.defaut = kwds["defaut"]
         else :
             self.defaut = None
-        if kwds.has_key("titre"):
+        if "titre" in kwds:
             self.titre = kwds["titre"]
         else:
             self.titre = ""
@@ -162,7 +162,7 @@ class CTRL_Oui_non(CTRL, wx.Panel):
 class CTRL_Radio(CTRL, wx.Panel):
     def __init__(self, parent, *args, **kwds):
         CTRL.__init__(self, parent, *args, **kwds)
-        if kwds.has_key("choix"):
+        if "choix" in kwds:
             self.choix = kwds["choix"]
         else :
             self.choix = []
@@ -275,11 +275,11 @@ class CTRL_Renseignements(CTRL, DLG_Activite_obligations.CheckListBoxRenseigneme
 class CTRL_Choix(CTRL, wx.Choice):
     def __init__(self, parent, *args, **kwds):
         CTRL.__init__(self, parent, *args, **kwds)
-        if kwds.has_key("choix"):
+        if "choix" in kwds:
             self.liste_choix = kwds["choix"]
         else :
             self.liste_choix = []
-        if kwds.has_key("on_reponse"):
+        if "on_reponse" in kwds:
             on_reponse = kwds["on_reponse"]
         else :
             on_reponse = None
@@ -329,11 +329,11 @@ class CTRL_Tarif(CTRL, CTRL_Tarification_calcul.Panel):
 class CTRL_Html(CTRL, html.HtmlWindow):
     def __init__(self, parent, *args, **kwds):
         CTRL.__init__(self, parent, *args, **kwds)
-        if kwds.has_key("size"):
+        if "size" in kwds:
             size = kwds["size"]
         else :
             size = (-1, 100)
-        if kwds.has_key("texte"):
+        if "texte" in kwds:
             texte = kwds["texte"]
         else :
             texte = ""
@@ -394,7 +394,7 @@ class Page(scrolled.ScrolledPanel):
             self.sizer.Add((5, 7), 0, 0, 0)
 
             # Importation de la valeur
-            if self.parent.dict_valeurs.has_key(code) :
+            if code in self.parent.dict_valeurs :
                 ctrl_valeur.SetValeur(self.parent.dict_valeurs[code])
 
         # Commentaire
@@ -414,7 +414,7 @@ class Page(scrolled.ScrolledPanel):
         pass
 
     def Validation(self):
-        for code, ctrl in self.dict_ctrl.iteritems() :
+        for code, ctrl in self.dict_ctrl.items() :
             if ctrl.Validation() == False :
                 return False
 
@@ -427,17 +427,17 @@ class Page(scrolled.ScrolledPanel):
 
     def GetValeurs(self):
         dict_valeurs = {}
-        for code, ctrl in self.dict_ctrl.iteritems() :
+        for code, ctrl in self.dict_ctrl.items() :
             dict_valeurs[code] = ctrl.GetValeur()
         return dict_valeurs
 
     def SetValeurs(self, dict_valeurs={}):
-        for code, ctrl in self.dict_ctrl.iteritems():
-            if dict_valeurs.has_key(code):
+        for code, ctrl in self.dict_ctrl.items():
+            if code in dict_valeurs:
                 ctrl.SetValeur(dict_valeurs[code])
 
     def Memorise_valeurs(self):
-        for code, valeur in self.GetValeurs().iteritems() :
+        for code, valeur in self.GetValeurs().items() :
             self.parent.dict_valeurs[code] = valeur
 
     def Chercher_position(self, code=""):
@@ -487,7 +487,7 @@ class Page_responsable(Page):
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         DB.Close()
-        if len(listeDonnees) > 0 and not self.parent.dict_valeurs.has_key("responsable_nom"):
+        if len(listeDonnees) > 0 and "responsable_nom" not in self.parent.dict_valeurs:
             self.parent.dict_valeurs["responsable_sexe"] = listeDonnees[0][0]
             self.parent.dict_valeurs["responsable_nom"] = listeDonnees[0][1]
             self.parent.dict_valeurs["responsable_fonction"] = listeDonnees[0][2]
@@ -672,17 +672,17 @@ class Dialog(wx.Dialog):
         """ Sauvegarde des données """
         nom = self.dict_valeurs["nom"]
         abrege = CreationAbrege(self.dict_valeurs["nom"])
-        if self.dict_valeurs.has_key("date_debut"):
+        if "date_debut" in self.dict_valeurs:
             date_debut = self.dict_valeurs["date_debut"]
         else :
             date_debut = datetime.date(1977, 1, 1)
-        if self.dict_valeurs.has_key("date_fin"):
+        if "date_fin" in self.dict_valeurs:
             date_fin = self.dict_valeurs["date_fin"]
         else :
             date_fin = datetime.date(2999, 1, 1)
 
         # Nbre inscrits max
-        if not self.dict_valeurs.has_key("nbre_inscrits_max") or self.dict_valeurs["nbre_inscrits_max"] == 0:
+        if "nbre_inscrits_max" not in self.dict_valeurs or self.dict_valeurs["nbre_inscrits_max"] == 0:
             nbre_inscrits_max = None
         else:
             nbre_inscrits_max = self.dict_valeurs["nbre_inscrits_max"]
@@ -702,13 +702,13 @@ class Dialog(wx.Dialog):
         self.dict_valeurs["IDactivite"] = IDactivite
 
         # Groupes d'activités
-        if self.dict_valeurs.has_key("groupes_activites"):
+        if "groupes_activites" in self.dict_valeurs:
             for IDtype_groupe_activite in self.dict_valeurs["groupes_activites"]:
                 listeDonnees = [("IDtype_groupe_activite", IDtype_groupe_activite), ("IDactivite", IDactivite)]
                 DB.ReqInsert("groupes_activites", listeDonnees)
 
         # Agrément
-        if self.dict_valeurs.has_key("num_agrement") and self.dict_valeurs["num_agrement"] != "" :
+        if "num_agrement" in self.dict_valeurs and self.dict_valeurs["num_agrement"] != "" :
             listeDonnees = [
                 ("IDactivite", IDactivite),
                 ("agrement", self.dict_valeurs["num_agrement"]),
@@ -718,7 +718,7 @@ class Dialog(wx.Dialog):
             DB.ReqInsert("agrements", listeDonnees)
 
         # Responsable d'activité
-        if self.dict_valeurs.has_key("responsable_nom") and self.dict_valeurs["responsable_nom"] != "" :
+        if "responsable_nom" in self.dict_valeurs and self.dict_valeurs["responsable_nom"] != "" :
             listeDonnees = [
                 ("IDactivite", IDactivite),
                 ("sexe", self.dict_valeurs["responsable_sexe"]),
@@ -731,7 +731,7 @@ class Dialog(wx.Dialog):
         # Groupes
         listeIDgroupe = []
 
-        if self.dict_valeurs.has_key("has_groupes"):
+        if "has_groupes" in self.dict_valeurs:
 
             # Groupe unique
             if self.dict_valeurs["has_groupes"] == False:
@@ -745,7 +745,7 @@ class Dialog(wx.Dialog):
                 for index in range(1, nbreGroupes+1):
                     nom_groupe = self.dict_valeurs["nom_groupe#%d" % index]
                     abrege_groupe = CreationAbrege(nom_groupe)
-                    if self.dict_valeurs.has_key("capacite_max_groupe#%d" % index):
+                    if "capacite_max_groupe#%d" % index in self.dict_valeurs:
                         nbre_inscrits_max_groupe = self.dict_valeurs["capacite_max_groupe#%d" % index]
                     else :
                         nbre_inscrits_max_groupe = None
@@ -756,19 +756,19 @@ class Dialog(wx.Dialog):
         self.dict_valeurs["listeIDgroupe"] = listeIDgroupe
 
         # Pièces
-        if self.dict_valeurs.has_key("pieces"):
+        if "pieces" in self.dict_valeurs:
             for IDtype_piece in self.dict_valeurs["pieces"] :
                 listeDonnees = [("IDactivite", IDactivite), ("IDtype_piece", IDtype_piece)]
                 DB.ReqInsert("pieces_activites", listeDonnees)
 
         # Cotisations
-        if self.dict_valeurs.has_key("cotisations"):
+        if "cotisations" in self.dict_valeurs:
             for IDtype_cotisation in self.dict_valeurs["cotisations"]:
                 listeDonnees = [("IDactivite", IDactivite), ("IDtype_cotisation", IDtype_cotisation)]
                 DB.ReqInsert("cotisations_activites", listeDonnees)
 
         # Renseignements
-        if self.dict_valeurs.has_key("renseignements"):
+        if "renseignements" in self.dict_valeurs:
             for IDtype_renseignement in self.dict_valeurs["renseignements"]:
                 listeDonnees = [("IDactivite", IDactivite), ("IDtype_renseignement", IDtype_renseignement)]
                 DB.ReqInsert("renseignements_activites", listeDonnees)
@@ -808,7 +808,7 @@ class Dialog(wx.Dialog):
                 dict_requetes["tarifs_lignes"].append(track_ligne)
 
         # Sauvegardes des tarifs et des lignes de tarifs
-        for nom_table in dict_requetes.keys() :
+        for nom_table in list(dict_requetes.keys()) :
             if len(dict_requetes[nom_table]) > 0 :
                 listeDonnees = []
                 for track in dict_requetes[nom_table] :

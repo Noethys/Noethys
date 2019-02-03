@@ -310,7 +310,7 @@ if __name__ == "__main__":
     #wx.InitAllImageHandlers()
     heure_debut = time.time()
     dialog_1 = Dialog(None)
-    print "Temps de chargement =", time.time() - heure_debut
+    print("Temps de chargement =", time.time() - heure_debut)
     app.SetTopWindow(dialog_1)
     dialog_1.ShowModal()
     app.MainLoop()

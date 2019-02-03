@@ -74,7 +74,7 @@ class CTRL_Ecole(wx.Choice):
         return listeItems
 
     def SetEcole(self, IDecole=None):
-        for index, IDecoleTemp in self.dictEcoles.iteritems() :
+        for index, IDecoleTemp in self.dictEcoles.items() :
             if IDecoleTemp == IDecole :
                 self.SetSelection(index)
 
@@ -150,7 +150,7 @@ class CTRL_Classe(wx.Choice):
                 txtTemp = []
                 for niveau in listeTemp :
                     IDniveau = int(niveau)
-                    if self.parent.dictNiveaux.has_key(IDniveau) :
+                    if IDniveau in self.parent.dictNiveaux :
                         nomNiveau = self.parent.dictNiveaux[IDniveau]["abrege"]
                         ordreNiveau = self.parent.dictNiveaux[IDniveau]["ordre"]
                         listeNiveaux.append(IDniveau)
@@ -179,7 +179,7 @@ class CTRL_Classe(wx.Choice):
         return listeItems
 
     def SetClasse(self, IDclasse=None):
-        for index, dictClasse in self.dictClasses.iteritems() :
+        for index, dictClasse in self.dictClasses.items() :
             if dictClasse != None :
                 if dictClasse["IDclasse"] == IDclasse :
                     self.SetSelection(index)
@@ -266,7 +266,7 @@ class CTRL_Niveau(wx.Choice):
         return listeItems
 
     def SetNiveau(self, IDniveau=None):
-        for index, IDniveauTemp in self.dictNiveaux.iteritems() :
+        for index, IDniveauTemp in self.dictNiveaux.items() :
             if IDniveauTemp == IDniveau :
                 self.SetSelection(index)
                 return True

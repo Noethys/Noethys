@@ -16,6 +16,7 @@ import wx
 from Ctrl import CTRL_Bouton_image
 import datetime
 import GestionDB
+import six
 from Ctrl import CTRL_Saisie_date
 from Ctrl import CTRL_Saisie_euros
 from Ctrl import CTRL_Selection_activites
@@ -729,7 +730,7 @@ class CTRL_Page_inscrits(wx.Panel):
             self.ctrl_date_debut.SetDate(criteres["date_debut"]) 
             self.ctrl_date_fin.SetDate(criteres["date_fin"])
 
-        if criteres.has_key("date_debut_inscription") :
+        if "date_debut_inscription" in criteres :
             self.check_inscription.SetValue(True)
             self.ctrl_date_debut_inscription.SetDate(criteres["date_debut_inscription"])
             self.ctrl_date_fin_inscription.SetDate(criteres["date_fin_inscription"])
@@ -1124,13 +1125,13 @@ class CTRL_Filtres_archive(wx.Treebook):
         
     def GetCode(self):
         indexSelection = self.GetSelection() 
-        for code, index in self.dictItems.iteritems() :
+        for code, index in self.dictItems.items() :
             if index == indexSelection :
                 return code
         return None
     
     def SetCode(self, code=""):
-        if self.dictItems.has_key(code) :
+        if code in self.dictItems :
             self.SetSelection(self.dictItems[code])
 
     def OnPageChanged(self, event):
@@ -1315,7 +1316,7 @@ class CTRL_Champs(wx.TreeCtrl):
                 titre = colonne.title
                 if titre == "" :
                     titre = codeColonne
-                if type(titre) in (str, unicode) :
+                if type(titre) in (str, six.text_type) :
                     self.dictChamps["colonnes"].append({"code" : codeColonne, "typeDonnee" : typeDonnee, "titre" : titre})
 
         # Remplissage
@@ -1361,7 +1362,7 @@ class CTRL_Champs(wx.TreeCtrl):
             return dictChamp["code"]
         
     def SetCode(self, code=""):
-        if self.dictItems.has_key(code) :
+        if code in self.dictItems :
             self.SelectItem(self.dictItems[code])
     
     def GetTitre(self):
@@ -1538,6 +1539,6 @@ if __name__ == "__main__":
     #dlg.SetValeur("CONTIENT", _(u"Ceci est un test  !"))
 
     if dlg.ShowModal() == wx.ID_OK :
-        print "Code =", dlg.GetCode()
-        print "Valeur =", dlg.GetValeur()
+        print("Code =", dlg.GetCode())
+        print("Valeur =", dlg.GetValeur())
     app.MainLoop()

@@ -253,9 +253,9 @@ class Panel(wx.Panel):
                     texteActivites = texteActivites[:-1]
                 # Liste des individus
                 texteIndividus = ""
-                for IDindividu in dictCompte["individus"].keys() :
+                for IDindividu in list(dictCompte["individus"].keys()) :
                     texteIndividus += "%d;" % IDindividu
-                if len(dictCompte["individus"].keys()) > 0 :
+                if len(list(dictCompte["individus"].keys())) > 0 :
                     texteIndividus = texteIndividus[:-1]
 
                 # Sauvegarde de la facture
@@ -293,7 +293,7 @@ class Panel(wx.Panel):
             self.EcritStatusbar(u"")
             dlgProgress.Destroy()
 
-        except Exception, err:
+        except Exception as err:
             DB.Close()
             dlgProgress.Destroy()
             traceback.print_exc(file=sys.stdout)
@@ -331,7 +331,7 @@ class MyFrame(wx.Frame):
         
     def OnBoutonTest(self, event):
         """ Bouton Test """
-        print "Validation =", self.ctrl.Validation()
+        print("Validation =", self.ctrl.Validation())
 
 if __name__ == '__main__':
     app = wx.App(0)

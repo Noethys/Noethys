@@ -146,11 +146,11 @@ class Evenement():
         self.case.Refresh()
 
     def MemoriseValeurs(self):
-        if self.case.grid.dictConsoIndividus.has_key(self.case.IDindividu) == False:
+        if (self.case.IDindividu in self.case.grid.dictConsoIndividus) == False:
             self.case.grid.dictConsoIndividus[self.case.IDindividu] = {}
-        if self.case.grid.dictConsoIndividus[self.case.IDindividu].has_key(self.case.date) == False:
+        if (self.case.date in self.case.grid.dictConsoIndividus[self.case.IDindividu]) == False:
             self.case.grid.dictConsoIndividus[self.case.IDindividu][self.case.date] = {}
-        if self.case.grid.dictConsoIndividus[self.case.IDindividu][self.case.date].has_key(self.case.IDunite) == False:
+        if (self.case.IDunite in self.case.grid.dictConsoIndividus[self.case.IDindividu][self.case.date]) == False:
             self.case.grid.dictConsoIndividus[self.case.IDindividu][self.case.date][self.case.IDunite] = []
 
         listeConso = self.case.grid.dictConsoIndividus[self.case.IDindividu][self.case.date][self.case.IDunite]
@@ -196,11 +196,11 @@ class Evenement():
         nbrePlacesRestantes, nbrePlacesPrises = None, None
 
         if self.capacite_max != None:
-            if self.case.grid.dictRemplissageEvenements.has_key(self.IDevenement) :
+            if self.IDevenement in self.case.grid.dictRemplissageEvenements :
                 nbrePlacesPrises = self.case.grid.dictRemplissageEvenements[self.IDevenement]["reservation"] + self.case.grid.dictRemplissageEvenements[self.IDevenement]["present"]
                 nbrePlacesRestantes = self.capacite_max - nbrePlacesPrises
 
-        if self.case.grid.dictRemplissageEvenements.has_key(self.IDevenement) :
+        if self.IDevenement in self.case.grid.dictRemplissageEvenements :
             nbrePlacesAttente = self.case.grid.dictRemplissageEvenements[self.IDevenement]["attente"]
         else :
             nbrePlacesAttente = 0
@@ -274,7 +274,7 @@ class Case():
         """ Génère les évènements """
         # Recherche les évènements dans toutes les unités de conso associées à l'unité de remplissage
         liste_donnees = []
-        for IDunite, listeUnitesRemplissage in self.grid.dictUnitesRemplissage.iteritems() :
+        for IDunite, listeUnitesRemplissage in self.grid.dictUnitesRemplissage.items() :
             if self.IDunite in listeUnitesRemplissage :
                 try :
                     liste_donnees.extend(self.grid.dictOuvertures[self.date][self.IDgroupe][IDunite]["liste_evenements"])
@@ -321,7 +321,7 @@ class Case():
         if nbrePlacesInitialTousGroupes > 0 :
             nbrePlacesPrisesTousGroupes = 0
             try :
-                for IDgroupe, d in self.grid.dictRemplissage[IDunite_remplissage][self.date].iteritems() :
+                for IDgroupe, d in self.grid.dictRemplissage[IDunite_remplissage][self.date].items() :
                     nbrePlacesPrisesTousGroupes += d["nbrePlacesPrises"]
             except :
                 pass
@@ -363,8 +363,8 @@ class Case():
     def EstOuvert(self):
         """ Recherche si l'unité est ouverte à cette date """
         ouvert = False
-        if self.grid.dictOuvertures.has_key(self.date):
-            if self.grid.dictOuvertures[self.date].has_key(self.IDgroupe):
+        if self.date in self.grid.dictOuvertures:
+            if self.IDgroupe in self.grid.dictOuvertures[self.date]:
                 ouvert = True
         
         date_debut = self.grid.dictRemplissage[self.IDunite]["date_debut"]
@@ -483,7 +483,7 @@ class Case():
         
         # Changement de Groupe
         listeGroupes = []
-        for IDgroupe, dictGroupe in self.grid.dictGroupes.iteritems():
+        for IDgroupe, dictGroupe in self.grid.dictGroupes.items():
             if dictGroupe["IDactivite"] == self.IDactivite :
                 listeGroupes.append( (dictGroupe["nom"], IDgroupe) )
         listeGroupes.sort() 
@@ -560,19 +560,19 @@ class Ligne():
         for IDactivite in self.grid.listeActivites :
             
             # Création de la colonne activité
-            if len(self.grid.listeActivites) > 1 and dictGroupeTemp.has_key(IDactivite) :
+            if len(self.grid.listeActivites) > 1 and IDactivite in dictGroupeTemp :
                 case = CaseSeparationActivite(self, self.grid, self.numLigne, numColonne, IDactivite)
                 self.dictCases[numColonne] = case
                 numColonne += 1
                 
             # Création des cases unités de remplissage
-            if dictGroupeTemp.has_key(IDactivite):
+            if IDactivite in dictGroupeTemp:
                 for IDgroupe in dictGroupeTemp[IDactivite] :
-                    if dictListeRemplissage.has_key(IDactivite) :
+                    if IDactivite in dictListeRemplissage :
                         for ordre, IDunite_remplissage in dictListeRemplissage[IDactivite] :
                             case = Case(self, self.grid, self.numLigne, numColonne, self.date, IDunite_remplissage, IDactivite, IDgroupe)
                             nbre_evenements += case.GetNbreEvenements()
-                            if self.dictTotaux.has_key(IDunite_remplissage) == False :
+                            if (IDunite_remplissage in self.dictTotaux) == False :
                                 self.dictTotaux[IDunite_remplissage] = 0
                             if case.valeurCase != u"" and case.valeurCase != None :
                                 self.dictTotaux[IDunite_remplissage] += case.valeurCase
@@ -580,10 +580,10 @@ class Ligne():
                             numColonne += 1
                         
             # Création des colonnes totaux
-            if AFFICHE_TOTAUX == 1 and dictListeRemplissage.has_key(IDactivite) and dictGroupeTemp.has_key(IDactivite) :
+            if AFFICHE_TOTAUX == 1 and IDactivite in dictListeRemplissage and IDactivite in dictGroupeTemp :
                 if len(dictListeRemplissage[IDactivite]) > 0 and len(dictGroupeTemp[IDactivite]) > 0 :
                     for ordre, IDunite_remplissage in dictListeRemplissage[IDactivite] :
-                        if self.dictTotaux.has_key(IDunite_remplissage) :
+                        if IDunite_remplissage in self.dictTotaux :
                             total = self.dictTotaux[IDunite_remplissage]
                         else:
                             total = None
@@ -633,7 +633,7 @@ class Ligne():
         
         # Etat des consommations de la ligne
         nbreCasesReservations = 0
-        for numColonne, case in self.dictCases.iteritems() :
+        for numColonne, case in self.dictCases.items() :
             if case.typeCase == "consommation" :
                 if case.etat in ("reservation", "present", "absent") :
                     nbreCasesReservations += 1
@@ -1008,7 +1008,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         self.dictDonnees = dictDonnees
         self.listeActivites = self.dictDonnees["listeActivites"]
         self.listePeriodes = self.dictDonnees["listePeriodes"]
-        if self.dictDonnees.has_key("modeAffichage") :
+        if "modeAffichage" in self.dictDonnees :
             self.SetModeAffichage(self.dictDonnees["modeAffichage"])
                         
     def Tests(self):
@@ -1063,15 +1063,15 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         
         # Récupération des groupes
         dictGroupeTemp = {}
-        for IDgroupe, dictGroupe in self.dictGroupes.iteritems() : 
+        for IDgroupe, dictGroupe in self.dictGroupes.items() : 
             IDactivite = dictGroupe["IDactivite"]
             ordre = dictGroupe["ordre"]
-            if dictGroupeTemp.has_key(IDactivite) == False :
+            if (IDactivite in dictGroupeTemp) == False :
                 dictGroupeTemp[IDactivite] = []
             dictGroupeTemp[IDactivite].append((ordre, IDgroupe))
             dictGroupeTemp[IDactivite].sort()
         
-        for IDactivite, listeGroupesTemp in dictGroupeTemp.iteritems() :
+        for IDactivite, listeGroupesTemp in dictGroupeTemp.items() :
             listeTemp = []
             for ordre, IDgroupe in listeGroupesTemp :
                 listeTemp.append(IDgroupe)
@@ -1079,12 +1079,12 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             
         # Récupération des unités de remplissage
         dictListeRemplissage = {}
-        for IDunite_remplissage, dictRemplissage in self.dictRemplissage.iteritems() :
-            if dictRemplissage.has_key("IDactivite") :
+        for IDunite_remplissage, dictRemplissage in self.dictRemplissage.items() :
+            if "IDactivite" in dictRemplissage :
                 IDactivite = dictRemplissage["IDactivite"]
                 ordre = dictRemplissage["ordre"]
                 donnees = (ordre, IDunite_remplissage)
-                if dictListeRemplissage.has_key(IDactivite) == True :
+                if (IDactivite in dictListeRemplissage) == True :
                     dictListeRemplissage[IDactivite].append(donnees)
                 else:
                     dictListeRemplissage[IDactivite] = [(donnees),]
@@ -1093,14 +1093,14 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         nbreColonnes = 0
         for IDactivite in self.listeActivites :
             # Compte colonne titre activité
-            if len(self.listeActivites) > 1 and dictGroupeTemp.has_key(IDactivite) :
+            if len(self.listeActivites) > 1 and IDactivite in dictGroupeTemp :
                 nbreColonnes += 1
-            if dictGroupeTemp.has_key(IDactivite) :
+            if IDactivite in dictGroupeTemp :
                 for IDgroupe in dictGroupeTemp[IDactivite] :
-                    if dictListeRemplissage.has_key(IDactivite) :
+                    if IDactivite in dictListeRemplissage :
                         for ordre, IDunite_remplissage in dictListeRemplissage[IDactivite] :
                             nbreColonnes += 1
-                if AFFICHE_TOTAUX == 1 and dictListeRemplissage.has_key(IDactivite) and len(dictListeRemplissage[IDactivite]) > 0 and len(dictGroupeTemp[IDactivite]) > 0 :
+                if AFFICHE_TOTAUX == 1 and IDactivite in dictListeRemplissage and len(dictListeRemplissage[IDactivite]) > 0 and len(dictGroupeTemp[IDactivite]) > 0 :
                     nbreColonnes += len(dictListeRemplissage[IDactivite])
         self.AppendCols(nbreColonnes)
         
@@ -1111,7 +1111,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         for IDactivite in self.listeActivites :
 
             # Création de la colonne activité
-            if len(self.listeActivites) > 1 and dictGroupeTemp.has_key(IDactivite) :
+            if len(self.listeActivites) > 1 and IDactivite in dictGroupeTemp :
                 renderer = MyColLabelRenderer("activite", COULEUR_COLONNE_ACTIVITE)
                 self.SetColLabelRenderer(numColonne, renderer)
                 self.SetColSize(numColonne, LARGEUR_COLONNE_ACTIVITE)
@@ -1120,10 +1120,10 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 numColonne += 1
 
             # Création des colonnes unités
-            if dictGroupeTemp.has_key(IDactivite):
+            if IDactivite in dictGroupeTemp:
 
                 # Parcours des groupes
-                if dictListeRemplissage.has_key(IDactivite) :
+                if IDactivite in dictListeRemplissage :
                     for IDgroupe in dictGroupeTemp[IDactivite] :
                         for ordre, IDunite_remplissage in dictListeRemplissage[IDactivite] :
                             renderer = MyColLabelRenderer("unite", None)
@@ -1156,7 +1156,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         # ------------------ Création des lignes -----------------------------
         
         # Tri des dates
-        listeDatesTmp = self.dictOuvertures.keys()
+        listeDatesTmp = list(self.dictOuvertures.keys())
         listeDates = []
         for dateDD in listeDatesTmp :
             listeDates.append(dateDD)
@@ -1273,7 +1273,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         listeDonnees = self.DB.ResultatReq()
         for IDunite, IDactivite, nom, abrege, type, heure_debut, heure_fin, date_debut, date_fin, ordre, touche_raccourci in listeDonnees :
             dictTemp = { "unites_incompatibles" : [], "IDunite" : IDunite, "IDactivite" : IDactivite, "nom" : nom, "abrege" : abrege, "type" : type, "heure_debut" : heure_debut, "heure_fin" : heure_fin, "date_debut" : date_debut, "date_fin" : date_fin, "ordre" : ordre, "touche_raccourci" : touche_raccourci}
-            if dictListeUnites.has_key(IDactivite) :
+            if IDactivite in dictListeUnites :
                 dictListeUnites[IDactivite].append(dictTemp)
             else:
                 dictListeUnites[IDactivite] = [dictTemp,]
@@ -1319,7 +1319,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                               "heure_debut": heure_debut, "heure_fin" : heure_fin}
 
             key = (IDunite, IDgroupe, date)
-            if dictEvenements.has_key(key) == False:
+            if (key in dictEvenements) == False:
                 dictEvenements[key] = []
             dictEvenements[key].append(dict_evenement)
 
@@ -1338,17 +1338,17 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             date = UTILS_Dates.DateEngEnDateDD(date)
 
             key = (IDunite, IDgroupe, date)
-            if dictEvenements.has_key(key):
+            if key in dictEvenements:
                 liste_evenements = dictEvenements[key]
             else :
                 liste_evenements = []
 
             dictValeurs = {"IDouverture": IDouverture, "etat": True, "initial": True, "liste_evenements": liste_evenements}
-            if dictOuvertures.has_key(date) == False :
+            if (date in dictOuvertures) == False :
                 dictOuvertures[date] = {}
-            if dictOuvertures[date].has_key(IDgroupe) == False :
+            if (IDgroupe in dictOuvertures[date]) == False :
                 dictOuvertures[date][IDgroupe] = {}
-            if dictOuvertures[date][IDgroupe].has_key(IDunite) == False :
+            if (IDunite in dictOuvertures[date][IDgroupe]) == False :
                 dictOuvertures[date][IDgroupe][IDunite] = dictValeurs
 
         return dictOuvertures, listeUnitesUtilisees, listeGroupesUtilises
@@ -1382,7 +1382,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         self.DB.ExecuterReq(req)
         listeUnites = self.DB.ResultatReq()
         for IDunite_remplissage_unite, IDunite_remplissage, IDunite in listeUnites :
-            if dictUnitesRemplissage.has_key(IDunite) == False :
+            if (IDunite in dictUnitesRemplissage) == False :
                 dictUnitesRemplissage[IDunite] = [IDunite_remplissage,]
             else:
                 dictUnitesRemplissage[IDunite].append(IDunite_remplissage)
@@ -1423,11 +1423,11 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             if places == 0 : places = None
             dateDD = DateEngEnDateDD(date)
             dictValeursTemp = { "nbrePlacesInitial" : places, "nbrePlacesPrises" : 0, "nbrePlacesAttente" : 0, "listeConsoPresents" : []}
-            if dictRemplissage.has_key(IDunite_remplissage) == False:
+            if (IDunite_remplissage in dictRemplissage) == False:
                 dictRemplissage[IDunite_remplissage] = {}
-            if dictRemplissage[IDunite_remplissage].has_key(dateDD) == False:
+            if (dateDD in dictRemplissage[IDunite_remplissage]) == False:
                 dictRemplissage[IDunite_remplissage][dateDD] = {}
-            if dictRemplissage[IDunite_remplissage][dateDD].has_key(IDgroupe) == False:
+            if (IDgroupe in dictRemplissage[IDunite_remplissage][dateDD]) == False:
                 dictRemplissage[IDunite_remplissage][dateDD][IDgroupe] = dictValeursTemp
 
         # Récupération des consommations existantes 
@@ -1442,7 +1442,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 
             # Mémorisation spéciale si c'est un évènement
             if IDevenement != None and etat in ["reservation", "present", "attente"] :
-                if dictRemplissageEvenements.has_key(IDevenement) == False:
+                if (IDevenement in dictRemplissageEvenements) == False:
                     dictRemplissageEvenements[IDevenement] = {"reservation": 0, "present": 0, "attente": 0}
                 dictRemplissageEvenements[IDevenement][etat] += 1
 
@@ -1451,15 +1451,15 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 quantite = 1
                         
             # Mémorisation des nbre de places
-            if dictUnitesRemplissage.has_key(IDunite) :
+            if IDunite in dictUnitesRemplissage :
                 for IDunite_remplissage in dictUnitesRemplissage[IDunite] :
-                    if dictRemplissage.has_key(IDunite_remplissage) == False :
+                    if (IDunite_remplissage in dictRemplissage) == False :
                         dictRemplissage[IDunite_remplissage] = {}
-                    if dictRemplissage[IDunite_remplissage].has_key(dateDD) == False :
+                    if (dateDD in dictRemplissage[IDunite_remplissage]) == False :
                         dictRemplissage[IDunite_remplissage][dateDD] = {}
-                    if dictRemplissage[IDunite_remplissage][dateDD].has_key(IDgroupe) == False :
+                    if (IDgroupe in dictRemplissage[IDunite_remplissage][dateDD]) == False :
                         dictRemplissage[IDunite_remplissage][dateDD][IDgroupe] = {}
-                    if dictRemplissage[IDunite_remplissage][dateDD][IDgroupe].has_key("nbrePlacesPrises") == False :
+                    if ("nbrePlacesPrises" in dictRemplissage[IDunite_remplissage][dateDD][IDgroupe]) == False :
                         dictRemplissage[IDunite_remplissage][dateDD][IDgroupe]["nbrePlacesPrises"] = 0
                         dictRemplissage[IDunite_remplissage][dateDD][IDgroupe]["listeConsoPresents"] = []
 
@@ -1485,7 +1485,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                             pass
                         
                         # Vérifie si condition étiquettes
-                        if dictRemplissage[IDunite_remplissage].has_key("etiquettes") :
+                        if "etiquettes" in dictRemplissage[IDunite_remplissage] :
                             etiquettes = dictRemplissage[IDunite_remplissage]["etiquettes"]
                             if len(etiquettes) > 0 :
                                 etiquettesCommunes = set(etiquettes) & set(etiquettesConso)
@@ -1499,11 +1499,11 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 
                     # Mémorisation des places sur liste d'attente
                     if etat == "attente" :
-                        if dictConsoAttente.has_key(dateDD) == False :
+                        if (dateDD in dictConsoAttente) == False :
                             dictConsoAttente[dateDD] = {}
-                        if dictConsoAttente[dateDD].has_key(IDgroupe) == False :
+                        if (IDgroupe in dictConsoAttente[dateDD]) == False :
                             dictConsoAttente[dateDD][IDgroupe] = {}
-                        if dictConsoAttente[dateDD][IDgroupe].has_key(IDunite_remplissage) == False :
+                        if (IDunite_remplissage in dictConsoAttente[dateDD][IDgroupe]) == False :
                             dictConsoAttente[dateDD][IDgroupe][IDunite_remplissage] = quantite
                         else:
                             dictConsoAttente[dateDD][IDgroupe][IDunite_remplissage] += quantite
@@ -1570,9 +1570,9 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         """ Fonction qui sert au DLG_Attente pour savoir si des places se sont libérées """
         dictEtatPlaces = {}
         # Parcours les lignes
-        for numLigne, ligne in self.dictLignes.iteritems() :
+        for numLigne, ligne in self.dictLignes.items() :
             # Parcours les cases :
-            for numColonne, case in ligne.dictCases.iteritems() :
+            for numColonne, case in ligne.dictCases.items() :
                 if case.typeCase == "consommation" :
                     dictInfosPlaces = case.dictInfosPlaces
                     liste_evenements = case.liste_evenements
@@ -1666,11 +1666,11 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             prt.SetCellColour(0, numCol, (210, 210, 210) )
             
         # Colore les entetes de lignes
-        for numLigne, couleur in listeCouleursEntetes.iteritems() :
+        for numLigne, couleur in listeCouleursEntetes.items() :
             prt.SetCellColour(numLigne+1, 0, couleur)
         
         # Colore les cases du contenu
-        for coords, couleur in dictCouleurs.iteritems() :
+        for coords, couleur in dictCouleurs.items() :
             numLigne, numCol = coords
             prt.SetCellColour(numLigne+1, numCol+1, couleur)
             

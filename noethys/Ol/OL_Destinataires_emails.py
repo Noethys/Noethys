@@ -33,18 +33,18 @@ class Track(object):
         self.pieces = dictDonnees["pieces"]
         self.champs = dictDonnees["champs"]
         
-        if dictDonnees.has_key("IDfamille") :
+        if "IDfamille" in dictDonnees :
             self.IDfamille = dictDonnees["IDfamille"]
         else :
             self.IDfamille = None
-        if dictDonnees.has_key("IDindividu") :
+        if "IDindividu" in dictDonnees :
             self.IDindividu = dictDonnees["IDindividu"]
         else :
             self.IDindividu = None
             
-        if self.parent.memoire_pieces.has_key(self.adresse) :
+        if self.adresse in self.parent.memoire_pieces :
             self.pieces = self.parent.memoire_pieces[self.adresse]
-        if self.parent.memoire_champs.has_key(self.adresse) :
+        if self.adresse in self.parent.memoire_champs :
             self.champs = self.parent.memoire_champs[self.adresse]
 
         self.TraitementPieces() 
@@ -127,11 +127,11 @@ class ListView(FastObjectListView):
         
         # Mémorise les pièces jointes personnelles et les champs
         for track in self.donnees :
-            if self.memoire_pieces.has_key(track.adresse) == False :
+            if (track.adresse in self.memoire_pieces) == False :
                 self.memoire_pieces[track.adresse] = []
             self.memoire_pieces[track.adresse] = track.pieces
             
-            if self.memoire_champs.has_key(track.adresse) == False :
+            if (track.adresse in self.memoire_champs) == False :
                 self.memoire_champs[track.adresse] = []
             self.memoire_champs[track.adresse] = track.champs
             

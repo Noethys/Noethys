@@ -1847,7 +1847,7 @@ DB_INDEX = {
 if __name__ == "__main__":
     """ Affichage de stats sur les tables """
     nbreChamps = 0
-    for nomTable, listeChamps in DB_DATA.iteritems() :
+    for nomTable, listeChamps in DB_DATA.items() :
         nbreChamps += len(listeChamps)
-    print "Nbre de champs DATA =", nbreChamps
-    print "Nbre de tables DATA =", len(DB_DATA.keys())
+    print("Nbre de champs DATA =", nbreChamps)
+    print("Nbre de tables DATA =", len(list(DB_DATA.keys())))

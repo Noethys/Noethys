@@ -172,7 +172,7 @@ class Panel(wx.Panel):
         # Vérifie que l'individu est rattaché comme REPRESENTANT ou ENFANT à une famille
         if self.dictFamillesRattachees != None :
             valide = False
-            for IDfamille, dictFamille in self.dictFamillesRattachees.iteritems() :
+            for IDfamille, dictFamille in self.dictFamillesRattachees.items() :
                 if dictFamille["IDcategorie"] in (1, 2) :
                     valide = True
             if valide == False :
@@ -182,12 +182,12 @@ class Panel(wx.Panel):
                 return
         
         if len(self.dictFamillesRattachees) == 1 :
-            IDfamille = self.dictFamillesRattachees.keys()[0]
+            IDfamille = list(self.dictFamillesRattachees.keys())[0]
             listeFamille.append(IDfamille)
             listeNoms.append(self.dictFamillesRattachees[IDfamille]["nomsTitulaires"])
         else:
             # Si rattachée à plusieurs familles
-            for IDfamille, dictFamille in self.dictFamillesRattachees.iteritems() :
+            for IDfamille, dictFamille in self.dictFamillesRattachees.items() :
                 IDcategorie = dictFamille["IDcategorie"]
                 if IDcategorie in (1, 2) :
                     listeFamille.append(IDfamille)
@@ -220,7 +220,7 @@ class Panel(wx.Panel):
         """ MAJ integrale du controle avec MAJ des donnees """
         self.IDindividu = self.GetGrandParent().IDindividu
         if self.IDindividu == None :
-            print "pas de IDindividu !"
+            print("pas de IDindividu !")
             return
         self.ctrl_inscriptions.MAJ() 
         self.ctrl_contrats.MAJ() 

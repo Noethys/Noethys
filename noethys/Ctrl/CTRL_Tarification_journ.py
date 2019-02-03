@@ -84,14 +84,14 @@ class ListBoxCombinaisons(wx.ListBox):
         for IDcombi_tarif_unite, IDcombi_tarif, IDunite in listeUnites :
             self.listeAnciennesUnites.append(IDcombi_tarif_unite)
             dictTemp = {"IDcombi_tarif_unite":IDcombi_tarif_unite, "IDunite":IDunite}
-            if dictDonnees.has_key(IDcombi_tarif) :
+            if IDcombi_tarif in dictDonnees :
                 dictDonnees[IDcombi_tarif].append(dictTemp)
             else:
                 dictDonnees[IDcombi_tarif] = [dictTemp,]
         # Création de la liste des données
         listeDonnees = []
         for IDcombi_tarif, IDtarif in listeCombinaisons :
-            if dictDonnees.has_key(IDcombi_tarif) :
+            if IDcombi_tarif in dictDonnees :
                 listeValeurs = []
                 for dictValeurs in dictDonnees[IDcombi_tarif] :
                     listeValeurs.append([dictValeurs["IDcombi_tarif_unite"], dictValeurs["IDunite"]])

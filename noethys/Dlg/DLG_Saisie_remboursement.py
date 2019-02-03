@@ -274,7 +274,7 @@ class Dialog(wx.Dialog):
         self.CenterOnScreen()
 
     def SelectModeRemboursement(self):
-        for index, dictTemp in self.ctrl_mode.dictDonnees.iteritems() :
+        for index, dictTemp in self.ctrl_mode.dictDonnees.items() :
             if "remboursement" in UTILS_Texte.Supprime_accent(dictTemp["label"].lower()) :
                 self.ctrl_mode.SetID(dictTemp["ID"])
 

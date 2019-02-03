@@ -2660,7 +2660,7 @@ class Bucket(object):
         self.__dict__.update(kwargs)
 
     def __repr__(self):
-        strs = ["%s=%r" % kv for kv in self.__dict__.items()]
+        strs = ["%s=%r" % kv for kv in list(self.__dict__.items())]
         return "Bucket(" + ", ".join(strs) + ")"
 
 #----------------------------------------------------------------------------

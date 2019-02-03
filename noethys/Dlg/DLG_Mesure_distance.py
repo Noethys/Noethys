@@ -34,7 +34,7 @@ class CTRL_Lieu(wx.Choice):
         liste_champs = []
 
         # Recherche adresse du loueur
-        if self.dictParametres.has_key("IDfamille") and self.dictParametres["IDfamille"] != None :
+        if "IDfamille" in self.dictParametres and self.dictParametres["IDfamille"] != None :
             IDfamille = self.dictParametres["IDfamille"]
             dict_titulaires = UTILS_Titulaires.GetTitulaires([IDfamille,])
             rue = dict_titulaires[IDfamille]["adresse"]["rue"]
@@ -43,14 +43,14 @@ class CTRL_Lieu(wx.Choice):
             liste_champs.append({"code" : "adresse_famille", "label" : _(u"Lieu de résidence du loueur"), "adresse" : "%s %s %s" % (rue, cp, ville)})
 
         # Questionnaire produits
-        if self.dictParametres.has_key("IDproduit") and self.dictParametres["IDproduit"] != None :
+        if "IDproduit" in self.dictParametres and self.dictParametres["IDproduit"] != None :
             IDproduit = self.dictParametres["IDproduit"]
             questionnaires = UTILS_Questionnaires.ChampsEtReponses(type="produit")
             for dictQuestion in questionnaires.GetDonnees(ID=IDproduit):
                 liste_champs.append({"code" : dictQuestion["champ"], "label" : _(u"%s (produit)") % dictQuestion["label"], "adresse" : dictQuestion["reponse"]})
 
         # Questionnaire catégories de produits
-        if self.dictParametres.has_key("IDcategorie") and self.dictParametres["IDcategorie"] != None:
+        if "IDcategorie" in self.dictParametres and self.dictParametres["IDcategorie"] != None:
             IDcategorie = self.dictParametres["IDcategorie"]
             questionnaires = UTILS_Questionnaires.ChampsEtReponses(type="categorie_produit")
             for dictQuestion in questionnaires.GetDonnees(ID=IDcategorie):
@@ -72,7 +72,7 @@ class CTRL_Lieu(wx.Choice):
     def SetCode(self, code=None):
         if code == None :
             self.SetSelection(0)
-        for index, values in self.dictDonnees.iteritems():
+        for index, values in self.dictDonnees.items():
             if values["code"] == code :
                  self.SetSelection(index)
 
@@ -148,11 +148,11 @@ class Dialog(wx.Dialog):
         # Récupération des paramètres mémorisés
         dictParametres = {"origine" : None, "destination" : None, "moyen" : None}
         dictParametres = UTILS_Parametres.ParametresCategorie(mode="get", categorie="locations_mesure_distance", dictParametres=dictParametres)
-        if dictParametres.has_key("origine") :
+        if "origine" in dictParametres :
             self.ctrl_origine.SetCode(dictParametres["origine"])
-        if dictParametres.has_key("destination") :
+        if "destination" in dictParametres :
             self.ctrl_destination.SetCode(dictParametres["destination"])
-        if dictParametres.has_key("moyen") :
+        if "moyen" in dictParametres :
             self.SetMoyen(dictParametres["moyen"])
 
         # Calcule les résultats

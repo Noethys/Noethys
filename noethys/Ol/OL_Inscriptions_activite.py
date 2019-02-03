@@ -33,14 +33,14 @@ class Track(object):
         self.nbre_inscrits_max = donnees[5]
 
         # Recherche les inscrits
-        if dictInscriptions.has_key(self.IDactivite) :
+        if self.IDactivite in dictInscriptions :
             self.dict_inscrits_groupes = dictInscriptions[self.IDactivite]
         else :
             self.dict_inscrits_groupes = {}
 
         # Recherche le nombre d'inscrits total de l'activité
         self.nbre_inscrits = 0
-        for IDgroupe, nbre_inscrits in self.dict_inscrits_groupes.iteritems() :
+        for IDgroupe, nbre_inscrits in self.dict_inscrits_groupes.items() :
             self.nbre_inscrits += nbre_inscrits
 
         # Recherche du nombre de places disponibles
@@ -50,7 +50,7 @@ class Track(object):
             self.nbre_places_disponibles = None
 
         # Recherche les groupes
-        if dictGroupes.has_key(self.IDactivite) :
+        if self.IDactivite in dictGroupes :
             self.liste_groupes = dictGroupes[self.IDactivite]
         else :
             self.liste_groupes = []
@@ -68,7 +68,7 @@ class Track(object):
             if dictGroupe["nbre_inscrits_max"] not in (None, 0) :
 
                 # Recherche le nombre d'inscrits sur chaque groupe qui a une limite de places
-                if self.dict_inscrits_groupes.has_key(dictGroupe["IDgroupe"]) :
+                if dictGroupe["IDgroupe"] in self.dict_inscrits_groupes :
                     nbre_inscrits_groupes = self.dict_inscrits_groupes[dictGroupe["IDgroupe"]]
                 else :
                     nbre_inscrits_groupes = 0
@@ -130,7 +130,7 @@ class ListView(FastObjectListView):
         listeGroupes = DB.ResultatReq()
         dictGroupes = {}
         for IDactivite, IDgroupe, nom, nbre_inscrits_max in listeGroupes :
-            if dictGroupes.has_key(IDactivite) == False :
+            if (IDactivite in dictGroupes) == False :
                 dictGroupes[IDactivite] = []
             dictGroupes[IDactivite].append({"IDgroupe" : IDgroupe, "nom" : nom, "nbre_inscrits_max" : nbre_inscrits_max})
 
@@ -143,7 +143,7 @@ class ListView(FastObjectListView):
         listeInscriptions = DB.ResultatReq()
         dictInscriptions = {}
         for IDactivite, IDgroupe, nbre_inscrits in listeInscriptions :
-            if dictInscriptions.has_key(IDactivite) == False :
+            if (IDactivite in dictInscriptions) == False :
                 dictInscriptions[IDactivite] = {}
             dictInscriptions[IDactivite][IDgroupe] = nbre_inscrits
 

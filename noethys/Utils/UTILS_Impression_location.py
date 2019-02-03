@@ -119,7 +119,7 @@ class Impression():
         
         # ----------- Insertion du contenu des frames --------------
         listeLabels = []
-        for IDlocation, dictValeur in dictValeurs.iteritems() :
+        for IDlocation, dictValeur in dictValeurs.items() :
             listeLabels.append((dictValeur["{FAMILLE_NOM}"], IDlocation))
         listeLabels.sort() 
         

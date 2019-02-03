@@ -306,9 +306,9 @@ class Dialog(wx.Dialog):
         if len(donnees) == 0 :
             req = u"CREATE USER '%s'@'%s' IDENTIFIED BY '%s';" % (nom, hote, motdepasse)
             DB.ExecuterReq(req)
-            print "L'utilisateur a ete cree."
+            print("L'utilisateur a ete cree.")
         else:
-            print "L'utilisateur existe deja."
+            print("L'utilisateur existe deja.")
             DB.Close()
             dlg = wx.MessageDialog(self, _(u"Cet utilisateur avec cet hôte existe déjà !"), "Information", wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()

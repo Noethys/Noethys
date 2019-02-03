@@ -124,19 +124,19 @@ class CTRL_Banque(CTRL_Ultrachoice.CTRL):
         return listeItems
 
     def SetID(self, ID=0):
-        for index, values in self.dictDonnees.iteritems():
+        for index, values in self.dictDonnees.items():
             if values["ID"] == ID :
                  self.SetSelection2(index)
 
     def GetID(self):
         index = self.GetSelection2()
-        if index == -1 or self.dictDonnees.has_key(index) == False : 
+        if index == -1 or (index in self.dictDonnees) == False : 
             return None
         return self.dictDonnees[index]["ID"]
     
     def GetNomBanque(self):
         index = self.GetSelection2()
-        if index == -1 or self.dictDonnees.has_key(index) == False : 
+        if index == -1 or (index in self.dictDonnees) == False : 
             return ""
         return self.dictDonnees[index]["nom"]
         
@@ -191,7 +191,7 @@ class CTRL_Titulaire(wx.Choice):
     def SetID(self, ID=0):
         if ID == None :
             self.SetSelection(0)
-        for index, values in self.dictDonnees.iteritems():
+        for index, values in self.dictDonnees.items():
             if values["ID"] == ID :
                  self.SetSelection(index)
 
@@ -1002,8 +1002,8 @@ class Impression():
         # Enregistrement du PDF
         try :
             doc.build(story)
-        except Exception, err :
-            print "Erreur dans ouverture PDF :", err
+        except Exception as err :
+            print("Erreur dans ouverture PDF :", err)
             if "Permission denied" in err :
                 dlg = wx.MessageDialog(None, _(u"Noethys ne peut pas créer le PDF.\n\nVeuillez vérifier qu'un autre PDF n'est pas déjà ouvert en arrière-plan..."), _(u"Erreur d'édition"), wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()

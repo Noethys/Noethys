@@ -213,7 +213,7 @@ class ListView(GroupListView):
         total = 0.0
         for IDprestation, IDcompte_payeur, date, categorie, label, montant, IDactivite, nomActivite, nomAbregeActivite, IDtarif, nomTarif, nomCategorieTarif, IDfacture, IDprefixe, prefixe, num_facture, date_facture, forfait, IDcategorie_tarif, IDfamille, IDindividu, nomIndividu, prenomIndividu, montant_deduction, nbre_deductions, reglement_frais in listeDonnees :
             date = DateEngEnDateDD(date)  
-            if dictVentilation.has_key(IDprestation) :
+            if IDprestation in dictVentilation :
                 montant_ventilation = FloatToDecimal(dictVentilation[IDprestation])
             else :
                 montant_ventilation = FloatToDecimal(0.0)
@@ -358,7 +358,7 @@ class ListView(GroupListView):
     
     def GetFiltres(self):
         filtreSQL = ""
-        for champFiltre, valeur in self.dictFiltres.iteritems() :
+        for champFiltre, valeur in self.dictFiltres.items() :
             if "COMPLEXE" in champFiltre and valeur != None :
                 filtreSQL += " AND %s" % valeur
             else :
@@ -747,7 +747,7 @@ class MyFrame(wx.Frame):
         import time
         t = time.time()
         self.myOlv.MAJ() 
-        print time.time() - t
+        print(time.time() - t)
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.myOlv, 1, wx.ALL|wx.EXPAND, 4)
         panel.SetSizer(sizer_2)

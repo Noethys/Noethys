@@ -466,7 +466,7 @@ class CTRL_Profil(wx.Choice):
         return listeItems
 
     def SetID(self, ID=None):
-        for index, values in self.dictDonnees.iteritems():
+        for index, values in self.dictDonnees.items():
             if values != None and values["ID"] == ID :
                  self.SetSelection(index)
 
@@ -777,7 +777,7 @@ class CTRL_Filtres(wx.Notebook):
     def GetDonnees(self):
         dictDonnees = {}
         for dictPage in self.listePages :
-            for key, valeur in dictPage["ctrl"].GetDonnees().iteritems() :
+            for key, valeur in dictPage["ctrl"].GetDonnees().items() :
                 dictDonnees[key] = valeur
         return dictDonnees
 

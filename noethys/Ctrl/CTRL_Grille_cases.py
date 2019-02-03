@@ -70,7 +70,7 @@ class CaseSeparationActivite():
         self.renderer = CTRL_Grille_renderers.CaseActivite(self)
         if self.IDactivite != None :
             if grid.dictActivites != None :
-                if grid.dictActivites.has_key(IDactivite) :
+                if IDactivite in grid.dictActivites :
                     labelActivite = grid.dictActivites[IDactivite]["nom"]
                 else :
                     labelActivite = _(u"Activité inconnue")
@@ -138,7 +138,7 @@ class CaseMemo():
         if texte == "" and self.IDmemo == None : self.statut = None
         if texte == "" and self.IDmemo != None : self.statut = "suppression"
         self.texte = texte
-        if self.grid.dictMemos.has_key((self.IDindividu, self.date)) :
+        if (self.IDindividu, self.date) in self.grid.dictMemos :
             self.grid.dictMemos[(self.IDindividu, self.date)]["texte"] = self.texte
             self.grid.dictMemos[(self.IDindividu, self.date)]["statut"] = self.statut
         else:
@@ -223,7 +223,7 @@ class CaseTransports():
     
     def OnClick(self):
         # Récupère la liste des IDtransport actuels
-        listeIDinitiale = self.dictTransports.keys()
+        listeIDinitiale = list(self.dictTransports.keys())
         
         # Label de la ligne
         if self.ligne.modeLabel == "date" :
@@ -238,9 +238,9 @@ class CaseTransports():
             dictTransports = dlg.GetDictTransports()
             # Actualise la liste des transports de la grille
             listeNewID = []
-            for IDtransport, dictTemp in dictTransports.iteritems() :
+            for IDtransport, dictTemp in dictTransports.items() :
                 listeNewID.append(IDtransport)
-                if self.grid.dict_transports.has_key(self.IDindividu) == False :
+                if (self.IDindividu in self.grid.dict_transports) == False :
                     self.grid.dict_transports[self.IDindividu] = {}
                 self.grid.dict_transports[self.IDindividu][IDtransport] = dictTemp
             self.dictTransports = dictTransports
@@ -274,9 +274,9 @@ class CaseTransports():
                 
             # Analyse du départ
             depart_nom = u""
-            if dictTemp["depart_IDarret"] != None and CTRL_Grille.DICT_ARRETS.has_key(dictTemp["depart_IDarret"]) :
+            if dictTemp["depart_IDarret"] != None and dictTemp["depart_IDarret"] in CTRL_Grille.DICT_ARRETS :
                 depart_nom = CTRL_Grille.DICT_ARRETS[dictTemp["depart_IDarret"]]
-            if dictTemp["depart_IDlieu"] != None and CTRL_Grille.DICT_LIEUX.has_key(dictTemp["depart_IDlieu"]) :
+            if dictTemp["depart_IDlieu"] != None and dictTemp["depart_IDlieu"] in CTRL_Grille.DICT_LIEUX :
                 depart_nom = CTRL_Grille.DICT_LIEUX[dictTemp["depart_IDlieu"]]
             if dictTemp["depart_localisation"] != None :
                 depart_nom = self.AnalyseLocalisation(dictTemp["depart_localisation"])
@@ -287,9 +287,9 @@ class CaseTransports():
 
             # Analyse de l'arrivée
             arrivee_nom = u""
-            if dictTemp["arrivee_IDarret"] != None and CTRL_Grille.DICT_ARRETS.has_key(dictTemp["arrivee_IDarret"]) :
+            if dictTemp["arrivee_IDarret"] != None and dictTemp["arrivee_IDarret"] in CTRL_Grille.DICT_ARRETS :
                 arrivee_nom = CTRL_Grille.DICT_ARRETS[dictTemp["arrivee_IDarret"]]
-            if dictTemp["arrivee_IDlieu"] != None and CTRL_Grille.DICT_LIEUX.has_key(dictTemp["arrivee_IDlieu"]) :
+            if dictTemp["arrivee_IDlieu"] != None and dictTemp["arrivee_IDlieu"] in CTRL_Grille.DICT_LIEUX :
                 arrivee_nom = CTRL_Grille.DICT_LIEUX[dictTemp["arrivee_IDlieu"]]
             if dictTemp["arrivee_localisation"] != None :
                 arrivee_nom = self.AnalyseLocalisation(dictTemp["arrivee_localisation"])
@@ -301,13 +301,13 @@ class CaseTransports():
             # Création du label du schedule
             label = u"%s %s > %s %s" % (depart_heure, depart_nom, arrivee_heure, arrivee_nom)
             
-            if dictTransports.has_key(labelCategorie) == False :
+            if (labelCategorie in dictTransports) == False :
                 dictTransports[labelCategorie] = []
             dictTransports[labelCategorie].append(label)
         
         # Regroupement par moyen de transport
         texte = u""
-        for labelCategorie, listeTextes in dictTransports.iteritems() :
+        for labelCategorie, listeTextes in dictTransports.items() :
             texte += u"</b>%s\n" % labelCategorie
             for texteLigne in listeTextes :
                 texte += u"%s\n" % texteLigne
@@ -326,11 +326,11 @@ class CaseTransports():
             return _(u"Domicile")
         if code == "ECOL" :
             IDecole = int(texte.split(";")[1])
-            if CTRL_Grille.DICT_ECOLES.has_key(IDecole):
+            if IDecole in CTRL_Grille.DICT_ECOLES:
                 return CTRL_Grille.DICT_ECOLES[IDecole]
         if code == "ACTI" :
             IDactivite = int(texte.split(";")[1])
-            if CTRL_Grille.DICT_ACTIVITES.has_key(IDactivite):
+            if IDactivite in CTRL_Grille.DICT_ACTIVITES:
                 return CTRL_Grille.DICT_ACTIVITES[IDactivite]
         if code == "AUTR" :
             code, nom, rue, cp, ville = texte.split(";")
@@ -362,8 +362,8 @@ class Case():
         self.badgeage_fin = None
 
         # Récupération du groupe en mode INDIVIDU
-        if grid.dictInfosInscriptions.has_key(self.IDindividu) :
-            if grid.dictInfosInscriptions[self.IDindividu].has_key(self.IDactivite) :
+        if self.IDindividu in grid.dictInfosInscriptions :
+            if self.IDactivite in grid.dictInfosInscriptions[self.IDindividu] :
                 if self.grid.mode == "individu" :
                     self.IDgroupe = grid.GetGrandParent().panel_activites.ctrl_activites.GetIDgroupe(self.IDactivite, self.IDindividu)
                 if self.IDgroupe == None :
@@ -383,9 +383,9 @@ class Case():
     def EstOuvert(self):
         """ Recherche si l'unité est ouverte à cette date """
         ouvert = False
-        if self.grid.dictOuvertures.has_key(self.date):
-            if self.grid.dictOuvertures[self.date].has_key(self.IDgroupe):
-                if self.grid.dictOuvertures[self.date][self.IDgroupe].has_key(self.IDunite):
+        if self.date in self.grid.dictOuvertures:
+            if self.IDgroupe in self.grid.dictOuvertures[self.date]:
+                if self.IDunite in self.grid.dictOuvertures[self.date][self.IDgroupe]:
                     ouvert = True
         return ouvert
 
@@ -406,11 +406,11 @@ class Case():
             if evenement == None or conso.IDevenement == evenement.IDevenement :
                 IDprestation = conso.IDprestation
                 listeEtiquettes.extend(conso.etiquettes)
-                if self.grid.dictPrestations.has_key(IDprestation) :
+                if IDprestation in self.grid.dictPrestations :
                     if self.grid.dictPrestations[IDprestation]["IDfacture"] != None :
                         nomUnite = self.grid.dictUnites[self.IDunite]["nom"]
                         dateComplete = UTILS_Dates.DateComplete(self.date)
-                        if self.grid.dictInfosIndividus.has_key(self.IDindividu) :
+                        if self.IDindividu in self.grid.dictInfosIndividus :
                             nom = self.grid.dictInfosIndividus[self.IDindividu]["nom"]
                             prenom = self.grid.dictInfosIndividus[self.IDindividu]["prenom"]
                             if prenom == None :
@@ -458,7 +458,7 @@ class Case():
                 else :
                     texte += _(u"%d étiquettes : \n" % nbreEtiquettes)
                 for IDetiquette in conso.etiquettes :
-                    if self.grid.dictEtiquettes.has_key(IDetiquette) :
+                    if IDetiquette in self.grid.dictEtiquettes :
                         dictEtiquette = self.grid.dictEtiquettes[IDetiquette]
                         texte += u"   - %s \n" % dictEtiquette["label"]
                 texte += u"\n"
@@ -469,7 +469,7 @@ class Case():
                     texte += _(u"Horaire de la consommation non spécifié\n")
                 else:
                     texte += _(u"De %s à %s\n") % (conso.heure_debut.replace(":","h"), conso.heure_fin.replace(":","h"))
-                if self.grid.dictGroupes.has_key(conso.IDgroupe) :
+                if conso.IDgroupe in self.grid.dictGroupes :
                     texte += _(u"Sur le groupe %s \n") % self.grid.dictGroupes[conso.IDgroupe]["nom"]
                 else:
                     texte += _(u"Groupe non spécifié\n")
@@ -591,7 +591,7 @@ class Case():
                     texte += _(u"Par l'utilisateur ID%d\n") % conso.IDutilisateur
             texte += "\n"
         # Infos Individu
-        if self.grid.dictInfosIndividus.has_key(self.IDindividu) :
+        if self.IDindividu in self.grid.dictInfosIndividus :
             nom = self.grid.dictInfosIndividus[self.IDindividu]["nom"]
             prenom = self.grid.dictInfosIndividus[self.IDindividu]["prenom"]
         else :
@@ -614,7 +614,7 @@ class Case():
             texte += _(u"Catégorie de tarif : '%s'\n") % nom_categorie_tarif
         # Déductions
         if conso != None :
-            if self.grid.dictDeductions.has_key(conso.IDprestation) :
+            if conso.IDprestation in self.grid.dictDeductions :
                 listeDeductions = self.grid.dictDeductions[conso.IDprestation]
                 if len(listeDeductions) == 1 :
                     texte += _(u"1 déduction sur la prestation :\n")
@@ -739,7 +739,7 @@ class Case():
         
         # Changement de Groupe
         listeGroupes = []
-        for IDgroupe, dictGroupe in self.grid.dictGroupes.iteritems():
+        for IDgroupe, dictGroupe in self.grid.dictGroupes.items():
             if dictGroupe["IDactivite"] == self.IDactivite :
                 listeGroupes.append( (dictGroupe["ordre"], dictGroupe["nom"], IDgroupe) )
         listeGroupes.sort() 
@@ -778,7 +778,7 @@ class Case():
         self.grid.GetGrandParent().panel_forfaits.Ajouter(date_debut=self.date, IDfamille=self.IDfamille)
         
     def GetInfosPlaces(self):
-        if self.grid.dictUnitesRemplissage.has_key(self.IDunite) == False :
+        if (self.IDunite in self.grid.dictUnitesRemplissage) == False :
             return None
         
         try :
@@ -809,9 +809,9 @@ class Case():
             nbreAttente = 0
             try :
                 d = self.grid.dictRemplissage2[IDunite_remplissage][self.date][self.IDgroupe]
-                if d.has_key("reservation") : nbrePlacesPrises += d["reservation"]
-                if d.has_key("present") : nbrePlacesPrises += d["present"]
-                if d.has_key("attente") : nbreAttente += d["attente"]
+                if "reservation" in d : nbrePlacesPrises += d["reservation"]
+                if "present" in d : nbrePlacesPrises += d["present"]
+                if "attente" in d : nbreAttente += d["attente"]
             except :
                 nbrePlacesPrises = 0
                 nbreAttente = 0
@@ -830,9 +830,9 @@ class Case():
             if nbrePlacesInitialTousGroupes > 0 :
                 nbrePlacesPrisesTousGroupes = 0
                 try :
-                    for IDgroupe, d in self.grid.dictRemplissage2[IDunite_remplissage][self.date].iteritems() :
-                        if d.has_key("reservation") : nbrePlacesPrisesTousGroupes += d["reservation"]
-                        if d.has_key("present") : nbrePlacesPrisesTousGroupes += d["present"]
+                    for IDgroupe, d in self.grid.dictRemplissage2[IDunite_remplissage][self.date].items() :
+                        if "reservation" in d : nbrePlacesPrisesTousGroupes += d["reservation"]
+                        if "present" in d : nbrePlacesPrisesTousGroupes += d["present"]
                 except :
                     nbrePlacesPrisesTousGroupes = 0
                 
@@ -878,14 +878,14 @@ class Case():
             #self.ligne.MAJcouleurCases(saufCase=self) # Cette ligne ne mettait pas à jour si fraterie affichée
 
             # Met à jour l'affichage de toutes les lignes de la même date (pour prendre en charge les frateries)
-            for numLigne, ligne in self.grid.dictLignes.iteritems() :
+            for numLigne, ligne in self.grid.dictLignes.items() :
                 if ligne.estSeparation == False and ligne.date == self.date :
                     ligne.MAJcouleurCases()
 
 
     def VerifieCompatibilitesUnites(self):
         listeIncompatibilites = self.grid.dictUnites[self.IDunite]["unites_incompatibles"]
-        for numCol, case in self.ligne.dictCases.iteritems():
+        for numCol, case in self.ligne.dictCases.items():
             if case.typeCase == "consommation" :
                 IDunite = case.IDunite
                 for conso in case.GetListeConso() :
@@ -932,7 +932,7 @@ class Case():
             return False
 
         # Regarde si la prestation apparaît déjà sur une facture
-        if self.grid.dictPrestations.has_key(conso.IDprestation) :
+        if conso.IDprestation in self.grid.dictPrestations :
             IDfacture = self.grid.dictPrestations[conso.IDprestation]["IDfacture"]
             if IDfacture != None :
                 dlg = wx.MessageDialog(self.grid, _(u"La prestation correspondant à cette consommation apparaît déjà sur une facture.\n\nIl est donc impossible de la modifier ou de la supprimer."), _(u"Consommation verrouillée"), wx.OK | wx.ICON_ERROR)
@@ -941,7 +941,7 @@ class Case():
                 return False
 
         # Regarde si la prestation correspondante est déja payée
-        if self.grid.dictPrestations.has_key(conso.IDprestation) and modeSilencieux == False :
+        if conso.IDprestation in self.grid.dictPrestations and modeSilencieux == False :
             montantPrestation = self.grid.dictPrestations[conso.IDprestation]["montant"]
             montantVentilation = self.grid.dictPrestations[conso.IDprestation]["montantVentilation"]
             if montantVentilation > 0.0 :
@@ -959,7 +959,7 @@ class Case():
             if IDunite != self.IDunite :
                 if wx.GetKeyState(Touches.DICT_TOUCHES[code][1]) == True :
                     # Création d'une conso supp
-                    for numColonne, case in self.ligne.dictCases.iteritems() :
+                    for numColonne, case in self.ligne.dictCases.items() :
                         if case.typeCase == "consommation" :
                             if case.IDunite == IDunite :
                                 if case.CategorieCase == "multihoraires" :
@@ -970,9 +970,9 @@ class Case():
     def SupprimeForfaitDate(self, IDprestationForfait=None):
         """ Suppression de toutes les conso d'un forfait """
         listeCases = []
-        for IDindividu, dictDates in self.grid.dictConsoIndividus.iteritems() :
-            for date, dictUnites in dictDates.iteritems() :
-                for IDunite, listeConso in dictUnites.iteritems() :
+        for IDindividu, dictDates in self.grid.dictConsoIndividus.items() :
+            for date, dictUnites in dictDates.items() :
+                for IDunite, listeConso in dictUnites.items() :
                     for conso in listeConso :
                         case = conso.case
                         if case != None : 
@@ -1060,7 +1060,7 @@ class CaseStandard(Case):
             self.etiquettes = self.conso.etiquettes
             self.verrouillage = verrouillage
 
-            if self.IDprestation != None and self.grid.dictPrestations.has_key(self.IDprestation) :
+            if self.IDprestation != None and self.IDprestation in self.grid.dictPrestations :
                 self.IDfacture = self.grid.dictPrestations[self.IDprestation]["IDfacture"]
             
             self.grid.dictConsoIndividus[self.IDindividu][self.date][self.IDunite][0].case = self
@@ -1186,7 +1186,7 @@ class CaseStandard(Case):
 
                 elif wx.GetKeyState(99) == True :
                     # Raccourci touche C pour copier les horaires
-                    if self.grid.memoireHoraires.has_key(self.IDunite) :
+                    if self.IDunite in self.grid.memoireHoraires :
                         heure_debut = self.grid.memoireHoraires[self.IDunite]["heure_debut"]
                         heure_fin = self.grid.memoireHoraires[self.IDunite]["heure_fin"]
                         reponse = wx.ID_OK
@@ -1244,7 +1244,7 @@ class CaseStandard(Case):
 
                 elif wx.GetKeyState(99) == True :
                     # Raccourci touche C pour copier
-                    if self.grid.memoireHoraires.has_key(self.IDunite) :
+                    if self.IDunite in self.grid.memoireHoraires :
                         quantite = self.grid.memoireHoraires[self.IDunite]["quantite"]
                         reponse = wx.ID_OK
                     else:
@@ -1348,7 +1348,7 @@ class CaseStandard(Case):
 
                     if wx.GetKeyState(99) == True :
                         # Raccourci touche C pour copier les horaires
-                        if self.grid.memoireHoraires.has_key(self.IDunite) :
+                        if self.IDunite in self.grid.memoireHoraires :
                             heure_debut = self.grid.memoireHoraires[self.IDunite]["heure_debut"]
                             heure_fin = self.grid.memoireHoraires[self.IDunite]["heure_fin"]
                             reponse = wx.ID_OK
@@ -1382,7 +1382,7 @@ class CaseStandard(Case):
 
                     if wx.GetKeyState(99) == True :
                         # Raccourci touche C pour copier la quantité
-                        if self.grid.memoireHoraires.has_key(self.IDunite) :
+                        if self.IDunite in self.grid.memoireHoraires :
                             quantite = self.grid.memoireHoraires[self.IDunite]["quantite"]
                             reponse = wx.ID_OK
                         else:
@@ -1426,7 +1426,7 @@ class CaseStandard(Case):
                 self.IDcompte_payeur = self.dictInfosInscriptions["IDcompte_payeur"]
                 self.IDinscription = self.dictInfosInscriptions["IDinscription"]
                 self.IDutilisateur = self.grid.IDutilisateur
-                if self.grid.dictInfosInscriptions[self.IDindividu].has_key(self.IDactivite) :
+                if self.IDactivite in self.grid.dictInfosInscriptions[self.IDindividu] :
                     if self.grid.mode == "individu" :
                         self.IDgroupe = self.grid.GetGrandParent().panel_activites.ctrl_activites.GetIDgroupe(self.IDactivite, self.IDindividu)
                     if self.IDgroupe == None :
@@ -1474,11 +1474,11 @@ class CaseStandard(Case):
         if self.IDconso != None and self.statut != "suppression" : 
             self.statut = "modification"
 
-        if self.grid.dictConsoIndividus.has_key(self.IDindividu) == False :
+        if (self.IDindividu in self.grid.dictConsoIndividus) == False :
             self.grid.dictConsoIndividus[self.IDindividu] = {}
-        if self.grid.dictConsoIndividus[self.IDindividu].has_key(self.date) == False :
+        if (self.date in self.grid.dictConsoIndividus[self.IDindividu]) == False :
             self.grid.dictConsoIndividus[self.IDindividu][self.date] = {}
-        if self.grid.dictConsoIndividus[self.IDindividu][self.date].has_key(self.IDunite) == False :
+        if (self.IDunite in self.grid.dictConsoIndividus[self.IDindividu][self.date]) == False :
             self.grid.dictConsoIndividus[self.IDindividu][self.date][self.IDunite] = []
         listeConso = self.grid.dictConsoIndividus[self.IDindividu][self.date][self.IDunite]
         
@@ -1528,8 +1528,8 @@ class CaseStandard(Case):
     def GetTexteInfobulle(self):
         try :
             texte = self.GetTexteInfobulleConso(self.conso)
-        except Exception, err :
-            print err
+        except Exception as err :
+            print(err)
             texte = ""
         return texte
     
@@ -1570,7 +1570,7 @@ class CaseStandard(Case):
         if self.grid.gestion.Verification("consommations", self.date) == False : return False
 
         # Vérifie si prestation correspondante déjà facturée
-        if self.grid.dictPrestations.has_key(self.IDprestation) :
+        if self.IDprestation in self.grid.dictPrestations :
             IDfacture = self.grid.dictPrestations[self.IDprestation]["IDfacture"]
             if IDfacture != None :
                 changementPossible = True
@@ -1746,11 +1746,11 @@ class Barre():
         self.conso.barre = self
 
         ajout = False
-        if self.case.grid.dictConsoIndividus.has_key(self.case.IDindividu) == False :
+        if (self.case.IDindividu in self.case.grid.dictConsoIndividus) == False :
             self.case.grid.dictConsoIndividus[self.case.IDindividu] = {}
-        if self.case.grid.dictConsoIndividus[self.case.IDindividu].has_key(self.case.date) == False :
+        if (self.case.date in self.case.grid.dictConsoIndividus[self.case.IDindividu]) == False :
             self.case.grid.dictConsoIndividus[self.case.IDindividu][self.case.date] = {}
-        if self.case.grid.dictConsoIndividus[self.case.IDindividu][self.case.date].has_key(self.case.IDunite) == False :
+        if (self.case.IDunite in self.case.grid.dictConsoIndividus[self.case.IDindividu][self.case.date]) == False :
             self.case.grid.dictConsoIndividus[self.case.IDindividu][self.case.date][self.case.IDunite] = []
         
         listeConso = self.case.grid.dictConsoIndividus[self.case.IDindividu][self.case.date][self.case.IDunite]
@@ -1830,9 +1830,9 @@ class CaseMultihoraires(Case):
     
     def GetListeBarres(self):
         listeBarres = []
-        if self.grid.dictConsoIndividus.has_key(self.IDindividu) :
-            if self.grid.dictConsoIndividus[self.IDindividu].has_key(self.date) :
-                if self.grid.dictConsoIndividus[self.IDindividu][self.date].has_key(self.IDunite) :
+        if self.IDindividu in self.grid.dictConsoIndividus :
+            if self.date in self.grid.dictConsoIndividus[self.IDindividu] :
+                if self.IDunite in self.grid.dictConsoIndividus[self.IDindividu][self.date] :
                     for conso in self.grid.dictConsoIndividus[self.IDindividu][self.date][self.IDunite] :
                         barre = Barre(case=self, calque=1, conso=conso)
                         listeBarres.append(barre)
@@ -1923,7 +1923,7 @@ class CaseMultihoraires(Case):
         if self.grid.gestion.Verification("consommations", self.date) == False : return False
 
         # Vérifie si prestation correspondante déjà facturée
-        if self.grid.dictPrestations.has_key(conso.IDprestation) :
+        if conso.IDprestation in self.grid.dictPrestations :
             IDfacture = self.grid.dictPrestations[conso.IDprestation]["IDfacture"]
             if IDfacture != None :
                 changementPossible = True
@@ -2050,7 +2050,7 @@ class CaseMultihoraires(Case):
         conso.statut = "ajout"
         conso.IDunite = self.IDunite
 
-        if self.grid.dictInfosInscriptions[self.IDindividu].has_key(self.IDactivite) :
+        if self.IDactivite in self.grid.dictInfosInscriptions[self.IDindividu] :
             if self.grid.mode == "individu" :
                 conso.IDgroupe = self.grid.GetGrandParent().panel_activites.ctrl_activites.GetIDgroupe(self.IDactivite, self.IDindividu)
             if self.IDgroupe == None :
@@ -2101,7 +2101,7 @@ class CaseMultihoraires(Case):
 
         # Copie de la conso précédemment saisie
         if wx.GetKeyState(99) == True : 
-            if self.grid.memoireHoraires.has_key(self.IDunite) :
+            if self.IDunite in self.grid.memoireHoraires :
                 heure_debut = UTILS_Dates.HeureStrEnTime(self.grid.memoireHoraires[self.IDunite]["heure_debut"])
                 heure_fin = UTILS_Dates.HeureStrEnTime(self.grid.memoireHoraires[self.IDunite]["heure_fin"])
 
@@ -2213,7 +2213,7 @@ class CaseMultihoraires(Case):
             return
 
         if barre.conso.etat != None and barre.conso.forfait == 2 :
-            print "forfait 2"
+            print("forfait 2")
             return
 
         # Suppression
@@ -2279,7 +2279,7 @@ class CaseMultihoraires(Case):
         """ Regarde si place disponible selon le remplissage """
         dictInfosPlaces = self.GetInfosPlaces()
         if dictInfosPlaces != None :
-            for IDunite_remplissage, valeurs in dictInfosPlaces.iteritems() :
+            for IDunite_remplissage, valeurs in dictInfosPlaces.items() :
                 heure_min_remplissage = self.grid.dictRemplissage[IDunite_remplissage]["heure_min"]
                 heure_max_remplissage = self.grid.dictRemplissage[IDunite_remplissage]["heure_max"]
                 nbrePlacesInitial = valeurs["nbrePlacesInitial"]
@@ -2368,11 +2368,11 @@ class Evenement():
         self.case.Refresh()
 
     def MemoriseValeurs(self):
-        if self.case.grid.dictConsoIndividus.has_key(self.case.IDindividu) == False:
+        if (self.case.IDindividu in self.case.grid.dictConsoIndividus) == False:
             self.case.grid.dictConsoIndividus[self.case.IDindividu] = {}
-        if self.case.grid.dictConsoIndividus[self.case.IDindividu].has_key(self.case.date) == False:
+        if (self.case.date in self.case.grid.dictConsoIndividus[self.case.IDindividu]) == False:
             self.case.grid.dictConsoIndividus[self.case.IDindividu][self.case.date] = {}
-        if self.case.grid.dictConsoIndividus[self.case.IDindividu][self.case.date].has_key(self.case.IDunite) == False:
+        if (self.case.IDunite in self.case.grid.dictConsoIndividus[self.case.IDindividu][self.case.date]) == False:
             self.case.grid.dictConsoIndividus[self.case.IDindividu][self.case.date][self.case.IDunite] = []
 
         listeConso = self.case.grid.dictConsoIndividus[self.case.IDindividu][self.case.date][self.case.IDunite]
@@ -2435,11 +2435,11 @@ class Evenement():
         nbrePlacesRestantes, nbrePlacesPrises = None, None
 
         if self.capacite_max != None:
-            if self.case.grid.dictRemplissageEvenements.has_key(self.IDevenement) :
+            if self.IDevenement in self.case.grid.dictRemplissageEvenements :
                 nbrePlacesPrises = self.case.grid.dictRemplissageEvenements[self.IDevenement]["reservation"] + self.case.grid.dictRemplissageEvenements[self.IDevenement]["present"]
                 nbrePlacesRestantes = self.capacite_max - nbrePlacesPrises
 
-        if self.case.grid.dictRemplissageEvenements.has_key(self.IDevenement) :
+        if self.IDevenement in self.case.grid.dictRemplissageEvenements :
             nbrePlacesAttente = self.case.grid.dictRemplissageEvenements[self.IDevenement]["attente"]
         else :
             nbrePlacesAttente = 0
@@ -2483,9 +2483,9 @@ class CaseEvenement(Case):
         return liste_evenements
 
     def RechercheConsoMemorisee(self, evenement=None):
-        if self.grid.dictConsoIndividus.has_key(self.IDindividu):
-            if self.grid.dictConsoIndividus[self.IDindividu].has_key(self.date):
-                if self.grid.dictConsoIndividus[self.IDindividu][self.date].has_key(self.IDunite):
+        if self.IDindividu in self.grid.dictConsoIndividus:
+            if self.date in self.grid.dictConsoIndividus[self.IDindividu]:
+                if self.IDunite in self.grid.dictConsoIndividus[self.IDindividu][self.date]:
                     for conso in self.grid.dictConsoIndividus[self.IDindividu][self.date][self.IDunite]:
                         if conso.IDevenement == evenement.IDevenement :
                             return conso
@@ -2500,7 +2500,7 @@ class CaseEvenement(Case):
 
     def RechercheEvenement(self, x, y):
         """ Recherche un évènement à la position x, y """
-        for evenement, rect in self.renderer.dict_boutons.iteritems():
+        for evenement, rect in self.renderer.dict_boutons.items():
             rect = wx.Rect(rect.x + self.GetRect().x, rect.y + self.GetRect().y, rect.GetWidth(), rect.GetHeight())
             if 'phoenix' in wx.PlatformInfo:
                 contains = rect.Contains(x, y)
@@ -2601,7 +2601,7 @@ class CaseEvenement(Case):
         conso.statut = "ajout"
         conso.IDunite = self.IDunite
 
-        if self.grid.dictInfosInscriptions[self.IDindividu].has_key(self.IDactivite):
+        if self.IDactivite in self.grid.dictInfosInscriptions[self.IDindividu]:
             if self.grid.mode == "individu":
                 conso.IDgroupe = self.grid.GetGrandParent().panel_activites.ctrl_activites.GetIDgroupe(self.IDactivite, self.IDindividu)
             if self.IDgroupe == None:
@@ -2646,7 +2646,7 @@ class CaseEvenement(Case):
             return
 
         if evenement.conso.etat != None and evenement.conso.forfait == 2:
-            print "forfait 2"
+            print("forfait 2")
             return
 
         # Suppression
@@ -2741,7 +2741,7 @@ class CaseEvenement(Case):
         if self.grid.gestion.Verification("consommations", self.date) == False : return False
 
         # Vérifie si prestation correspondante déjà facturée
-        if self.grid.dictPrestations.has_key(conso.IDprestation):
+        if conso.IDprestation in self.grid.dictPrestations:
             IDfacture = self.grid.dictPrestations[conso.IDprestation]["IDfacture"]
             if IDfacture != None:
                 changementPossible = True

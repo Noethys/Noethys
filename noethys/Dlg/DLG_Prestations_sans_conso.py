@@ -102,16 +102,16 @@ class CTRL(HTL.HyperTreeList):
         # Analyse
         dictPrestations = {}
         for IDconso, IDprestation in listeConsommations :
-            if dictPrestations.has_key(IDprestation) == False :
+            if (IDprestation in dictPrestations) == False :
                 dictPrestations[IDprestation] = []
             dictPrestations[IDprestation].append(IDconso)
         
         dictResultats = {}
         listeDebug = []
         for IDprestation, label, date, IDfamille, IDindividu, nom, prenom in listePrestations :
-            if dictPrestations.has_key(IDprestation) == False :
+            if (IDprestation in dictPrestations) == False :
                 # Si aucune prestation :
-                if dictResultats.has_key(label) == False :
+                if (label in dictResultats) == False :
                     dictResultats[label] = []
                 if nom != None and prenom != None :
                     nomIndividu = u"%s %s" % (nom, prenom)
@@ -123,7 +123,7 @@ class CTRL(HTL.HyperTreeList):
                 listeDebug.append((IDprestation, date, label, IDfamille, IDindividu, nomIndividu))
                 
         listeDonnees = []
-        for label, listePrestationsTemp in dictResultats.iteritems() :
+        for label, listePrestationsTemp in dictResultats.items() :
             texte = _(u"%s (%d prestations)") % (label, len(listePrestationsTemp))
             listeDonnees.append((texte, label, listePrestationsTemp))
         listeDonnees.sort() 

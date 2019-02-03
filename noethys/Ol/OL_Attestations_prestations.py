@@ -159,7 +159,7 @@ class ListView(FastObjectListView):
         listeDonnees = []
         for track in self.GetTracksCoches() :
             dictTemp = track.GetDict()
-            for code, valeur in self.dictOrganisme.iteritems() :
+            for code, valeur in self.dictOrganisme.items() :
                 dictTemp[code] = valeur
             listeDonnees.append(dictTemp)
         return listeDonnees

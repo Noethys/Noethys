@@ -67,7 +67,7 @@ class Mandats():
                 "nomIndividu" : nomIndividu, "prenomIndividu" : prenomIndividu, "titulaire" : titulaire,
                 }
             dictMandats[IDmandat] = dictTemp
-            if dictMandatsFamilles.has_key(IDfamille) == False :
+            if (IDfamille in dictMandatsFamilles) == False :
                 dictMandatsFamilles[IDfamille] = []
             dictMandatsFamilles[IDfamille].append(IDmandat)
         return dictMandats, dictMandatsFamilles
@@ -99,20 +99,20 @@ class Mandats():
         for listeDonnees in (listePrelevements, listePieces) :
             for IDprelevement, IDfamille, IDmandat, statut, date in listeDonnees :
                 date = UTILS_Dates.DateEngEnDateDD(date)
-                if dictPrelevements.has_key(IDmandat) == False :
+                if (IDmandat in dictPrelevements) == False :
                     dictPrelevements[IDmandat] = []
                 dictPrelevements[IDmandat].append({"IDprelevement":IDprelevement, "IDfamille":IDfamille, "IDmandat":IDmandat, "statut":statut, "date":date})
         return dictPrelevements
     
     def GetDictMandat(self, IDmandat=None):
-        if self.dictMandats.has_key(IDmandat) == True :
+        if (IDmandat in self.dictMandats) == True :
             return self.dictMandats[IDmandat]
         else :
             return None
         
     def RechercheMandatFamille(self, IDfamille=None):
         """ Recherche le mandat valide d'une famille """
-        if self.dictMandatsFamilles.has_key(IDfamille) == True :
+        if (IDfamille in self.dictMandatsFamilles) == True :
             listeMandats = self.dictMandatsFamilles[IDfamille]
             for IDmandat in listeMandats :
                 dictAnalyse = self.AnalyseMandat(IDmandat)
@@ -125,7 +125,7 @@ class Mandats():
         valide = True
         prochaineSequence = None
         
-        if self.dictMandats.has_key(IDmandat) == False :
+        if (IDmandat in self.dictMandats) == False :
             return False
         
         dictMandat = self.dictMandats[IDmandat]
@@ -140,7 +140,7 @@ class Mandats():
         # Recherche les prélèvements associés à ce mandat
         listePrelevements = []
         nbrePrelevementsValides = 0
-        if self.dictPrelevements.has_key(IDmandat) :
+        if IDmandat in self.dictPrelevements :
             listePrelevements = self.dictPrelevements[IDmandat]
             for dictPrelevement in listePrelevements :
                 if dictPrelevement["statut"] == "valide" : 
@@ -209,7 +209,7 @@ class CTRL_Sequence(wx.Choice):
     def SetCode(self, code="auto"):
         if code == None :
             self.SetSelection(0)
-        for index, codeTemp in self.dictDonnees.iteritems():
+        for index, codeTemp in self.dictDonnees.items():
             if codeTemp == code :
                  self.SetSelection(index)
 
@@ -226,5 +226,5 @@ class CTRL_Sequence(wx.Choice):
             
 if __name__ == '__main__':
     mandats = Mandats() 
-    print mandats.AnalyseMandat(IDmandat=2)
+    print(mandats.AnalyseMandat(IDmandat=2))
     

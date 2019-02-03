@@ -25,7 +25,7 @@ import wx.lib.agw.hyperlink as Hyperlink
 from Utils import UTILS_Interface
 from Ctrl.CTRL_ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
-import urllib2
+from six.moves import urllib2
 import re
 
 
@@ -103,7 +103,7 @@ class ListView(FastObjectListView):
         listeListeView = []
         for item in listePeriodes :
             track = Track(item)
-            if self.dictVacances.has_key((track.annee, track.nom)) == False :
+            if ((track.annee, track.nom) in self.dictVacances) == False :
                 listeListeView.append(track)
         return listeListeView
             
@@ -160,7 +160,7 @@ class ListView(FastObjectListView):
         anneeActuelle = datetime.date.today().year
         nbre = 0
         for track in self.donnees :
-            if self.dictVacances.has_key((track.annee, track.nom)) == False and track.annee >= anneeActuelle :
+            if ((track.annee, track.nom) in self.dictVacances) == False and track.annee >= anneeActuelle :
                 self.Check(track)
                 self.RefreshObject(track)
                 nbre += 1

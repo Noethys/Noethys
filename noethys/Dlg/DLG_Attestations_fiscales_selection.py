@@ -78,7 +78,7 @@ class CTRL_Signataires(wx.Choice):
         
         # Recherche le nom de l'utilisateur parmi la liste des signataires
         dictUtilisateur = UTILS_Identification.GetDictUtilisateur()
-        for index, dictDonnees in self.dictDonnees.iteritems() :
+        for index, dictDonnees in self.dictDonnees.items() :
             if dictUtilisateur != None :
                 texte1 = u"%s %s" % (dictUtilisateur["prenom"], dictUtilisateur["nom"])
                 texte2 = u"%s %s" % (dictUtilisateur["nom"], dictUtilisateur["prenom"])
@@ -110,7 +110,7 @@ class CTRL_Signataires(wx.Choice):
         return listeItems, indexDefaut
 
     def SetID(self, ID=0):
-        for index, values in self.dictDonnees.iteritems():
+        for index, values in self.dictDonnees.items():
             if values["ID"] == ID :
                  self.SetSelection(index)
 
@@ -609,8 +609,8 @@ class Panel(wx.Panel):
             listePrestations = self.GetParent().page1.GetPrestations() 
             self.ctrl_attestations.MAJ(listePrestations) 
             del dlgAttente
-        except Exception, err :
-            print err
+        except Exception as err :
+            print(err)
             del dlgAttente
 
 
@@ -636,7 +636,7 @@ class Panel(wx.Panel):
         DB = GestionDB.DB()
         
         try :
-            for IDcompte_payeur, dictCompte in self.donnees.iteritems() :
+            for IDcompte_payeur, dictCompte in self.donnees.items() :
                 if dictCompte["select"] == True :
                     numero = dictCompte["num_attestation"]
                     IDfamille = dictCompte["IDfamille"] 
@@ -653,9 +653,9 @@ class Panel(wx.Panel):
                         texteActivites = texteActivites[:-1]
                     # Liste des individus
                     texteIndividus = ""
-                    for IDindividu in dictCompte["individus"].keys() :
+                    for IDindividu in list(dictCompte["individus"].keys()) :
                         texteIndividus += "%d;" % IDindividu
-                    if len(dictCompte["individus"].keys()) > 0 :
+                    if len(list(dictCompte["individus"].keys())) > 0 :
                         texteIndividus = texteIndividus[:-1]
                     
                     IDutilisateur = UTILS_Identification.GetIDutilisateur()
@@ -687,7 +687,7 @@ class Panel(wx.Panel):
             DB.Close() 
             del dlgAttente
 
-        except Exception, err:
+        except Exception as err:
             DB.Close() 
             del dlgAttente
             traceback.print_exc(file=sys.stdout)
@@ -747,7 +747,7 @@ class Panel(wx.Panel):
         dictChampsFusion, dictPieces = resultat
         
         def SupprimerFichiersTemp():
-            for IDcompte_payeur, fichier in dictPieces.iteritems() :
+            for IDcompte_payeur, fichier in dictPieces.items() :
                 os.remove(fichier)  
 
         # Récupération de toutes les adresses Emails
@@ -770,7 +770,7 @@ class Panel(wx.Panel):
             
             # Mémorisation des données
             if adresse not in (None, "", []) : 
-                if dictPieces.has_key(track.IDcompte_payeur) :
+                if track.IDcompte_payeur in dictPieces :
                     fichier = dictPieces[track.IDcompte_payeur]
                     champs = dictChampsFusion[track.IDcompte_payeur]
                     listeDonnees.append({"adresse" : adresse, "pieces" : [fichier,], "champs" : champs})
@@ -836,7 +836,7 @@ class MyFrame(wx.Frame):
     def OnBoutonTest(self, event):
         """ Bouton Test """
         self.ctrl.Validation()
-        print self.panel.dictParametres
+        print(self.panel.dictParametres)
 
 if __name__ == '__main__':
     app = wx.App(0)

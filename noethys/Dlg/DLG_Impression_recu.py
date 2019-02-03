@@ -104,7 +104,7 @@ class CTRL_Signataires(wx.Choice):
         
         # Recherche le nom de l'utilisateur parmi la liste des signataires
         dictUtilisateur = UTILS_Identification.GetDictUtilisateur()
-        for index, dictDonnees in self.dictDonnees.iteritems() :
+        for index, dictDonnees in self.dictDonnees.items() :
             if dictUtilisateur != None :
                 texte1 = u"%s %s" % (dictUtilisateur["prenom"], dictUtilisateur["nom"])
                 texte2 = u"%s %s" % (dictUtilisateur["nom"], dictUtilisateur["prenom"])
@@ -136,7 +136,7 @@ class CTRL_Signataires(wx.Choice):
         return listeItems, indexDefaut
 
     def SetID(self, ID=0):
-        for index, values in self.dictDonnees.iteritems():
+        for index, values in self.dictDonnees.items():
             if values["ID"] == ID :
                  self.SetSelection(index)
 
@@ -207,7 +207,7 @@ class CTRL_Donnees(gridlib.Grid):
             for dictChamp in dictCategorie["champs"] :
                 code = dictChamp["code"]
                 label = dictChamp["label"]
-                if DICT_DONNEES.has_key(code):
+                if code in DICT_DONNEES:
                     valeur = DICT_DONNEES[code]
                 else:
                     valeur = u""
@@ -247,7 +247,7 @@ class CTRL_Donnees(gridlib.Grid):
         evt.Skip()
 
     def GetValeur(self, code=""):
-        if DICT_DONNEES.has_key(code) :
+        if code in DICT_DONNEES :
             return DICT_DONNEES[code]
         else:
             return None
@@ -750,7 +750,7 @@ class Dialog(wx.Dialog):
             dictValeurs["intro"] = None
     
         # Envoi des informations sur le règlement
-        for key, valeur in self.dictReglement.iteritems() :
+        for key, valeur in self.dictReglement.items() :
             dictValeurs[key] = valeur
         
         dictValeurs["{IDREGLEMENT}"] = str(dictValeurs["IDreglement"])

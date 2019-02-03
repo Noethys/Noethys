@@ -19,12 +19,10 @@ import os
 import GestionDB
 import datetime
 from PIL import Image
-import cStringIO
-
+import six
 from Ctrl import CTRL_Saisie_date
 from Utils import UTILS_Dates
 from Utils import UTILS_Historique
-
 from Ol import OL_Prelevements_national
 from Ol import OL_Prelevements_sepa
 from Utils import UTILS_Prelevements
@@ -82,13 +80,13 @@ class CTRL_Compte(wx.Choice):
         return listeItems
     
     def SetDefaut(self):
-        for index, dictTemp in self.dictDonnees.iteritems() :
+        for index, dictTemp in self.dictDonnees.items() :
             if dictTemp["code_nne"] not in (None, "") :
                 self.SetID(dictTemp["ID"])
                 return
 
     def SetID(self, ID=0):
-        for index, values in self.dictDonnees.iteritems():
+        for index, values in self.dictDonnees.items():
             if values["ID"] == ID :
                  self.SetSelection(index)
 
@@ -165,13 +163,13 @@ class CTRL_Mode(wx.Choice):
         return listeItems
     
     def SetDefaut(self):
-        for index, dictTemp in self.dictDonnees.iteritems() :
+        for index, dictTemp in self.dictDonnees.items() :
             if "prelevement" in Supprime_accent(dictTemp["label"].lower()) :
                 self.SetID(dictTemp["ID"])
                 return
 
     def SetID(self, ID=0):
-        for index, values in self.dictDonnees.iteritems():
+        for index, values in self.dictDonnees.items():
             if values["ID"] == ID :
                  self.SetSelection(index)
 
@@ -559,7 +557,7 @@ class Dialog(wx.Dialog):
         IDmode = DB.ReqInsert("modes_reglements", listeDonnees)
         
         # Sauvegarde de l'image
-        buffer = cStringIO.StringIO()
+        buffer = six.BytesIO()
         img = Image.open(Chemins.GetStaticPath("Images/Special/Prelevement.png"))
         img = img.convert("RGB")
         img.save(buffer, format='JPEG', quality=100)

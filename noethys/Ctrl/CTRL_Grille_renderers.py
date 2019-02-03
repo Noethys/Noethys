@@ -42,7 +42,7 @@ def TriTransports(dictTransports={}):
     """ Tri les transports en fonction de l'heure de départ """
     listeID = []
     listeTemp = []
-    for IDtransport, dictTransport in dictTransports.iteritems() :
+    for IDtransport, dictTransport in dictTransports.items() :
         listeTemp.append((dictTransport["depart_heure"], IDtransport))
     listeTemp.sort() 
     for depart_heure, IDtransport in listeTemp :
@@ -147,7 +147,7 @@ class CaseStandard(GridCellRenderer):
             dc.DrawBitmap(bmp, rect[0]+paddingImage, rect[1]+paddingImage)
 
         # Dessin de l'image FORFAIT CREDIT
-        if self.case.etat in ("reservation", "present", "absenti", "absentj") and self.case.IDprestation in self.grid.dictForfaits.keys() :
+        if self.case.etat in ("reservation", "present", "absenti", "absentj") and self.case.IDprestation in list(self.grid.dictForfaits.keys()) :
             couleurForfait = self.grid.dictForfaits[self.case.IDprestation]["couleur"]
             dc.SetBrush(wx.Brush(couleurForfait, wx.SOLID))
             dc.SetPen(wx.TRANSPARENT_PEN)
@@ -184,7 +184,7 @@ class CaseStandard(GridCellRenderer):
         # Ecrit le nom du groupe
         if CTRL_Grille.AFFICHE_NOM_GROUPE == True and self.grid.dictUnites[self.case.IDunite]["type"] != "Horaire":
             if self.case.IDgroupe != None and self.case.IDgroupe != 0 and self.case.etat in ("reservation", "present", "absenti", "absentj", "attente", "refus") :
-                if self.grid.dictGroupes.has_key(self.case.IDgroupe) :
+                if self.case.IDgroupe in self.grid.dictGroupes :
                     nomGroupe = self.grid.dictGroupes[self.case.IDgroupe]["nom"]
                     nbreGroupesActivite = self.grid.dictGroupes[self.case.IDgroupe]["nbreGroupesActivite"]
                 else :
@@ -205,7 +205,7 @@ class CaseStandard(GridCellRenderer):
             largeurEtiquette = (rect.width - 3) / nbreEtiquettes * 1.0
             index = 0
             for IDetiquette in conso.etiquettes :
-                if self.grid.dictEtiquettes.has_key(IDetiquette) :
+                if IDetiquette in self.grid.dictEtiquettes :
                     dictEtiquette = self.grid.dictEtiquettes[IDetiquette]
                     # Dessine l'étiquette
                     dc.SetBrush(wx.Brush(dictEtiquette["couleur"], wx.SOLID))
@@ -457,7 +457,7 @@ class CaseMultihoraires(GridCellRenderer):
             # Dessin du remplissage
             dictInfosPlaces = self.case.GetInfosPlaces() 
             if dictInfosPlaces != None :
-                for IDunite_remplissage, valeurs in dictInfosPlaces.iteritems() :
+                for IDunite_remplissage, valeurs in dictInfosPlaces.items() :
                     
                     heure_min = UTILS_Dates.HeureStrEnTime(grid.dictRemplissage[IDunite_remplissage]["heure_min"])
                     if heure_min < self.case.heure_min :
@@ -542,7 +542,7 @@ class CaseMultihoraires(GridCellRenderer):
                 gc.DrawBitmap(imageTemp, 2, rect.height-10, largeurBmp, hauteurBmp)
 
             # Dessin de l'image FORFAIT CREDIT
-            if conso.etat in ("reservation", "present", "absenti", "absentj") and conso.IDprestation in grid.dictForfaits.keys() :
+            if conso.etat in ("reservation", "present", "absenti", "absentj") and conso.IDprestation in list(grid.dictForfaits.keys()) :
                 couleurForfait = grid.dictForfaits[conso.IDprestation]["couleur"]
                 gc.SetBrush(wx.Brush(couleurForfait, wx.SOLID))
                 gc.SetPen(wx.TRANSPARENT_PEN)
@@ -597,7 +597,7 @@ class CaseMultihoraires(GridCellRenderer):
             if conso.etat != None and nbreEtiquettes > 0 :
                 index = 0
                 for IDetiquette in conso.etiquettes :
-                    if grid.dictEtiquettes.has_key(IDetiquette) :
+                    if IDetiquette in grid.dictEtiquettes :
                         dictEtiquette = grid.dictEtiquettes[IDetiquette]
                         # Dessine l'étiquette
                         gc.SetBrush(wx.Brush(dictEtiquette["couleur"], wx.SOLID))
@@ -756,7 +756,7 @@ class CaseEvenement(GridCellRenderer):
                     gc.DrawBitmap(imageTemp, 2, rectEvenement.height - 10, largeurBmp, hauteurBmp)
 
                 # Dessin de l'image FORFAIT CREDIT
-                if conso.etat in ("reservation", "present", "absenti", "absentj") and conso.IDprestation in grid.dictForfaits.keys():
+                if conso.etat in ("reservation", "present", "absenti", "absentj") and conso.IDprestation in list(grid.dictForfaits.keys()):
                     couleurForfait = grid.dictForfaits[conso.IDprestation]["couleur"]
                     gc.SetBrush(wx.Brush(couleurForfait, wx.SOLID))
                     gc.SetPen(wx.TRANSPARENT_PEN)
@@ -798,7 +798,7 @@ class CaseEvenement(GridCellRenderer):
                 if conso.etat != None and nbreEtiquettes > 0:
                     index = 0
                     for IDetiquette in conso.etiquettes:
-                        if grid.dictEtiquettes.has_key(IDetiquette):
+                        if IDetiquette in grid.dictEtiquettes:
                             dictEtiquette = grid.dictEtiquettes[IDetiquette]
                             # Dessine l'étiquette
                             gc.SetBrush(wx.Brush(dictEtiquette["couleur"], wx.SOLID))

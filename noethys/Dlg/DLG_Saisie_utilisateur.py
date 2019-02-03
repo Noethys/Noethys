@@ -232,7 +232,7 @@ class CTRL_Modeles_droits(wx.Choice):
         return listeItems
 
     def SetID(self, IDmodele=None):
-        for index, IDmodeleTemp in self.dictDonnees.iteritems() :
+        for index, IDmodeleTemp in self.dictDonnees.items() :
             if IDmodeleTemp == IDmodele :
                 self.SetSelection(index)
 

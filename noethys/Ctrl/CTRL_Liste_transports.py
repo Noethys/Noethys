@@ -74,12 +74,12 @@ class CTRL(HTL.HyperTreeList):
             "ligne" : {"img" : wx.Bitmap(Chemins.GetStaticPath('Images/16x16/Ligne.png'), wx.BITMAP_TYPE_PNG), "index" : None, "nomFichier":"Ligne"},
             "arret" : {"img" : wx.Bitmap(Chemins.GetStaticPath('Images/16x16/Drapeau.png'), wx.BITMAP_TYPE_PNG), "index" : None, "nomFichier":"Drapeau"},
             }
-        for code, valeurs in DICT_CATEGORIES.iteritems() :
+        for code, valeurs in DICT_CATEGORIES.items() :
             self.dictImages[code] = {"img" : wx.Bitmap(Chemins.GetStaticPath('Images/16x16/%s.png' % valeurs["image"]), wx.BITMAP_TYPE_PNG), "index" : None, "nomFichier":valeurs["image"]}
         
         il = wx.ImageList(16, 16)
         index =0
-        for code, dictImage in self.dictImages.iteritems() :
+        for code, dictImage in self.dictImages.items() :
             il.Add(dictImage["img"])
             dictImage["index"] = index
             index += 1
@@ -208,7 +208,7 @@ class CTRL(HTL.HyperTreeList):
             listeTransports.append(dictTemp)
         
         def VerifieFiltre(rubrique, code):
-            if dictFiltres.has_key(rubrique) :
+            if rubrique in dictFiltres :
                 if code in dictFiltres[rubrique] or code == None :
                     return True
             return False
@@ -221,7 +221,7 @@ class CTRL(HTL.HyperTreeList):
             if VerifieFiltre("categories", categorie) == True :
             
                 # Catégorie
-                if dictDonnees.has_key(categorie) == False :
+                if (categorie in dictDonnees) == False :
                     dictDonnees[categorie] = {"lignes":{}, "lieux":{}, "localisations":{}}
                 
                 typeTransports = DICT_CATEGORIES[categorie]["type"]
@@ -316,7 +316,7 @@ class CTRL(HTL.HyperTreeList):
         def InsertionBranchesHeures(dictDonnees, niveauParent, marge=0):
             # Heures
             listeheures = []
-            for heure, dictHeure in dictDonnees.iteritems() :
+            for heure, dictHeure in dictDonnees.items() :
                 listeheures.append((heure, dictHeure))
             listeheures.sort() 
             
@@ -330,7 +330,7 @@ class CTRL(HTL.HyperTreeList):
                 
                 # Totaux par heure
                 dictImpressionColonnes = {}
-                for date, listeIndividus in dictHeure.iteritems() :
+                for date, listeIndividus in dictHeure.items() :
                     indexColonne = self.dictIndexColonnes[date]
                     labelTotal = str(len(listeIndividus))
                     self.SetItemText(niveauHeure, labelTotal, indexColonne)
@@ -340,17 +340,17 @@ class CTRL(HTL.HyperTreeList):
                 
                 # Individus
                 dictIndividusTemp = {}
-                for date, listeIndividus in dictHeure.iteritems() :
+                for date, listeIndividus in dictHeure.items() :
                     for dictIndividu in listeIndividus :
                         IDindividu = dictIndividu["IDindividu"]
                         sens = dictIndividu["sens"]
-                        if dictIndividusTemp.has_key(IDindividu) == False :
+                        if (IDindividu in dictIndividusTemp) == False :
                             dictIndividusTemp[IDindividu] = {}
                         dictIndividusTemp[IDindividu][date] = sens
                 
                 listeIndividusTemp = []
-                for IDindividu, dictDates in dictIndividusTemp.iteritems() :
-                    if dictIndividus.has_key(IDindividu) :
+                for IDindividu, dictDates in dictIndividusTemp.items() :
+                    if IDindividu in dictIndividus :
                         label = dictIndividus[IDindividu]
                     else :
                         label = _(u"Individu inconnu")
@@ -364,9 +364,9 @@ class CTRL(HTL.HyperTreeList):
                     
                     # Dates
                     dictImpressionColonnes = {}
-                    for date, sens in dictDates.iteritems() :
+                    for date, sens in dictDates.items() :
                         # Recherche la colonne date
-                        if self.dictIndexColonnes.has_key(date) :
+                        if date in self.dictIndexColonnes :
                             indexColonne = self.dictIndexColonnes[date]
                             if sens == "depart" : label = _(u"Départ")
                             elif sens == "arrivee" : label = _(u"Arrivée")
@@ -381,7 +381,7 @@ class CTRL(HTL.HyperTreeList):
         
         listeCategories = []
         if len(dictDonnees) > 0 :
-            listeCategories = dictDonnees.keys() 
+            listeCategories = list(dictDonnees.keys()) 
         listeCategories.sort() 
 
         # Remplissage
@@ -399,8 +399,8 @@ class CTRL(HTL.HyperTreeList):
             
             # Lignes
             listeLignes = []
-            for IDligne, dictLigne in dictDonnees[categorie]["lignes"].iteritems() :
-                if dictLignes.has_key(IDligne) :
+            for IDligne, dictLigne in dictDonnees[categorie]["lignes"].items() :
+                if IDligne in dictLignes :
                     label = dictLignes[IDligne]
                 else :
                     label = _(u"Ligne inconnue")
@@ -414,8 +414,8 @@ class CTRL(HTL.HyperTreeList):
                 
                 # Arrêts
                 listeArrets = []
-                for IDarret, dictArret in dictDonnees[categorie]["lignes"][IDligne].iteritems() :
-                    if dictArrets.has_key(IDarret) :
+                for IDarret, dictArret in dictDonnees[categorie]["lignes"][IDligne].items() :
+                    if IDarret in dictArrets :
                         label = dictArrets[IDarret]["nom"]
                     else :
                         label = _(u"Arrêt inconnu")
@@ -433,8 +433,8 @@ class CTRL(HTL.HyperTreeList):
             
             # Lieux
             listeLieux = []
-            for IDlieu, dictLieu in dictDonnees[categorie]["lieux"].iteritems() :
-                if dictLieux.has_key(IDlieu) :
+            for IDlieu, dictLieu in dictDonnees[categorie]["lieux"].items() :
+                if IDlieu in dictLieux :
                     label = dictLieux[IDlieu]
                 else :
                     label = _(u"Lieu inconnu")
@@ -451,7 +451,7 @@ class CTRL(HTL.HyperTreeList):
 
             # Localisations
             listeLocalisations = []
-            for localisation, dictLocalisation in dictDonnees[categorie]["localisations"].iteritems() :
+            for localisation, dictLocalisation in dictDonnees[categorie]["localisations"].items() :
                 label = modLocalisation.Analyse(localisation=localisation)
                 listeLocalisations.append((label, localisation, dictLocalisation))
             listeLocalisations.sort() 
@@ -507,7 +507,7 @@ class CTRL(HTL.HyperTreeList):
             dlg.Destroy()
             return
         IDindividu = dictItem["code"]
-        print IDindividu # Fonction pas terminée ici
+        print(IDindividu) # Fonction pas terminée ici
 ##        from Dlg import DLG_Famille
 ##        dlg = DLG_Famille.Dialog(self, IDfamille=IDfamille)
 ##        dlg.ShowModal()
@@ -622,15 +622,15 @@ class CTRL(HTL.HyperTreeList):
 
                 # Ajout d'une marge
                 label = element["texte"]
-                if element.has_key("marge") :
+                if "marge" in element :
                     label = u"%s%s" % ((element["marge"]-1) * "      ", label)
                 ligne = [label,]
                 
                 # Ajout des colonnes
                 for indexColonne in range(1, len(largeursColonnes)) :
                     label = u""
-                    if element.has_key("colonnes"):
-                        if element["colonnes"].has_key(indexColonne) :
+                    if "colonnes" in element:
+                        if indexColonne in element["colonnes"] :
                             label = element["colonnes"][indexColonne]
                     ligne.append(label)
                 

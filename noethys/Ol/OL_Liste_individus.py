@@ -167,7 +167,7 @@ class Track(object):
         self.adresse_auto = donnees["adresse_auto"]
         
         # Adresse auto ou manuelle
-        if self.adresse_auto != None and DICT_INFOS_INDIVIDUS.has_key(self.adresse_auto) :
+        if self.adresse_auto != None and self.adresse_auto in DICT_INFOS_INDIVIDUS :
             self.rue_resid = DICT_INFOS_INDIVIDUS[self.adresse_auto]["rue_resid"]
             self.cp_resid = DICT_INFOS_INDIVIDUS[self.adresse_auto]["cp_resid"]
             self.ville_resid = DICT_INFOS_INDIVIDUS[self.adresse_auto]["ville_resid"]
@@ -391,8 +391,8 @@ class MyFrame(wx.Frame):
         import time
         t = time.time()
         self.myOlv.MAJ(listeActivites=(1, 2, 3), presents=(datetime.date(2015, 1, 1), datetime.date(2015, 12, 31)))
-        print len(self.myOlv.donnees)
-        print "Temps d'execution =", time.time() - t
+        print(len(self.myOlv.donnees))
+        print("Temps d'execution =", time.time() - t)
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.myOlv, 1, wx.ALL|wx.EXPAND, 4)
         panel.SetSizer(sizer_2)

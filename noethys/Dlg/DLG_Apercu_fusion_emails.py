@@ -152,11 +152,11 @@ class Dialog(wx.Dialog):
         if xml == None :
             return
         # Remplacement des champs standards
-        for motcle, valeur in CTRL_Editeur_email.GetChampsStandards().iteritems() :
+        for motcle, valeur in CTRL_Editeur_email.GetChampsStandards().items() :
             xml = xml.replace(motcle, valeur)
         # Remplacement des champs spécifiques
         dictDonnee = self.donnees[index]
-        for motcle, valeur in dictDonnee["champs"].iteritems() :
+        for motcle, valeur in dictDonnee["champs"].items() :
             if valeur == None or valeur == "//None" :
                 valeur = ""
             if type(valeur) == int :

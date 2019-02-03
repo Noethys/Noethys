@@ -136,7 +136,7 @@ class Dialog(wx.Dialog):
                 self.IDbadge = self.ListToHex(data)
                 self.Stop()
                 self.EndModal(wx.ID_OK)        
-        except Exception, err :
+        except Exception as err :
             #print Exception, err
             pass
 

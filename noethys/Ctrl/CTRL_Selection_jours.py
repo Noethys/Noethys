@@ -190,9 +190,9 @@ class CTRL(wx.Panel):
         return {"vacances" : jours_vacances, "scolaires" : jours_scolaires}
 
     def SetDonnees(self, donnees=None):
-        if donnees.has_key("vacances"):
+        if "vacances" in donnees:
             self.ctrl_vacances.SetJours(donnees["vacances"])
-        if donnees.has_key("scolaires"):
+        if "scolaires" in donnees:
             self.ctrl_scolaires.SetJours(donnees["scolaires"])
             
         
@@ -218,9 +218,9 @@ class MyFrame(wx.Frame):
     def OnBouton(self, event):
         self.ctrl.SetDonnees({"vacances" : [0, 1], "scolaires" : "5;6"})
         donnees = self.ctrl.GetDonnees()
-        print donnees
-        print ConvertNumEnDateutil(donnees["vacances"])
-        print GetDates(jours=donnees, date_min=datetime.date(2018, 1, 1), date_max=datetime.date(2018, 12, 31))
+        print(donnees)
+        print(ConvertNumEnDateutil(donnees["vacances"]))
+        print(GetDates(jours=donnees, date_min=datetime.date(2018, 1, 1), date_max=datetime.date(2018, 12, 31)))
         
 
 if __name__ == '__main__':

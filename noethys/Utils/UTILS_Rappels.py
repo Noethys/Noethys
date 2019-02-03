@@ -160,7 +160,7 @@ class Facturation():
         dictComptes = {}
         for IDcompte_payeur, IDfamille, date_min, date_max, montant in listePrestations :
             
-            if dictVentilation.has_key(IDcompte_payeur) :
+            if IDcompte_payeur in dictVentilation :
                 montant_ventilation = dictVentilation[IDcompte_payeur]
             else:
                 montant_ventilation = 0.0
@@ -396,7 +396,7 @@ class Facturation():
             wx.Yield() 
             try :
                 index = 0
-                for IDrappel, dictRappel in dictRappels.iteritems() :
+                for IDrappel, dictRappel in dictRappels.items() :
                     if dictRappel["select"] == True :
                         num_rappel = dictRappel["num_rappel"]
                         nomTitulaires = self.Supprime_accent(dictRappel["nomSansCivilite"])
@@ -410,7 +410,7 @@ class Facturation():
                 self.EcritStatusbar("")
                 del dlgAttente
                 return dictPieces
-            except Exception, err:
+            except Exception as err:
                 del dlgAttente
                 traceback.print_exc(file=sys.stdout)
                 dlg = wx.MessageDialog(None, _(u"Désolé, le problème suivant a été rencontré dans l'édition des lettres de rappel : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
@@ -440,7 +440,7 @@ class Facturation():
                 UTILS_Impression_rappel.Impression(dictRappels, dictOptions, IDmodele=dictOptions["IDmodele"], ouverture=afficherDoc, nomFichier=nomDoc)
                 self.EcritStatusbar("")
                 del dlgAttente
-            except Exception, err:
+            except Exception as err:
                 del dlgAttente
                 traceback.print_exc(file=sys.stdout)
                 err = str(err).decode("iso-8859-15")

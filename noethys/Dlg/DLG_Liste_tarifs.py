@@ -56,7 +56,7 @@ class CTRL_Activites(wx.ListBox):
         self.SetItems(listeLabels)
 
     def SetID(self, IDactivite=None):
-        for index, IDactiviteTmp in self.dictDonnees.iteritems() :
+        for index, IDactiviteTmp in self.dictDonnees.items() :
             if IDactiviteTmp == IDactivite :
                 self.SetSelection(index)
 

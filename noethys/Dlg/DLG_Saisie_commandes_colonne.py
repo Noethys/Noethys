@@ -18,6 +18,7 @@ from Ctrl import CTRL_Bouton_image
 import GestionDB
 import wx.lib.agw.hypertreelist as HTL
 from wx.lib.agw.customtreectrl import EVT_TREE_ITEM_CHECKED
+import six
 
 
 DICT_LABELS_CATEGORIES = {
@@ -81,10 +82,10 @@ class CTRL_Unites(HTL.HyperTreeList):
             if date_fin != None: date_fin = UTILS_Dates.DateEngEnDateDD(date_fin)
 
             # Mémorisation de l'activité, du groupe et de l'unité
-            if dictActivites.has_key(IDactivite) == False:
+            if (IDactivite in dictActivites) == False:
                 dictActivites[IDactivite] = {"nom": nom, "abrege": abrege, "date_debut": date_debut, "date_fin": date_fin, "groupes": {}}
 
-            if dictActivites[IDactivite]["groupes"].has_key(IDgroupe) == False:
+            if (IDgroupe in dictActivites[IDactivite]["groupes"]) == False:
                 dictActivites[IDactivite]["groupes"][IDgroupe] = {"IDgroupe" : IDgroupe, "nom": nomGroupe, "unites": []}
 
             dictActivites[IDactivite]["groupes"][IDgroupe]["unites"].append({"IDunite": IDunite, "nom": nomUnite, "ordre": ordreUnite})
@@ -94,7 +95,7 @@ class CTRL_Unites(HTL.HyperTreeList):
     def Remplissage(self):
         # Tri des activités par nom
         listeActivites = []
-        for IDactivite, dictActivite in self.dictActivites.iteritems():
+        for IDactivite, dictActivite in self.dictActivites.items():
             listeActivites.append((dictActivite["nom"], IDactivite))
         #listeActivites.sort()
 
@@ -108,7 +109,7 @@ class CTRL_Unites(HTL.HyperTreeList):
             self.SetItemBold(niveauActivite, True)
 
             # Niveau Groupes
-            for IDgroupe, dictGroupe in dictActivite["groupes"].iteritems():
+            for IDgroupe, dictGroupe in dictActivite["groupes"].items():
                 niveauGroupe = self.AppendItem(niveauActivite, dictGroupe["nom"])
                 self.SetPyData(niveauGroupe, {"type": "groupe", "ID": dictGroupe["IDgroupe"], "nom": dictGroupe["nom"]})
 
@@ -197,7 +198,7 @@ class CTRL_Groupes(HTL.HyperTreeList):
             if date_fin != None: date_fin = UTILS_Dates.DateEngEnDateDD(date_fin)
 
             # Mémorisation de l'activité, du groupe et de l'unité
-            if dictActivites.has_key(IDactivite) == False:
+            if (IDactivite in dictActivites) == False:
                 dictActivites[IDactivite] = {"nom": nom, "abrege": abrege, "date_debut": date_debut, "date_fin": date_fin, "groupes": []}
 
             dictActivites[IDactivite]["groupes"].append({"IDgroupe" : IDgroupe, "nom": nomGroupe})
@@ -207,7 +208,7 @@ class CTRL_Groupes(HTL.HyperTreeList):
     def Remplissage(self):
         # Tri des activités par nom
         listeActivites = []
-        for IDactivite, dictActivite in self.dictActivites.iteritems():
+        for IDactivite, dictActivite in self.dictActivites.items():
             listeActivites.append((dictActivite["nom"], IDactivite))
         #listeActivites.sort()
 
@@ -342,7 +343,7 @@ class PAGE_Unites(wx.Panel):
         return {"unites" : listeUnites}
 
     def SetParametres(self, dictParametres={}):
-        if type(dictParametres) in (unicode, str) :
+        if type(dictParametres) in (six.text_type, str) :
             exec(u"dictParametres = %s" % dictParametres)
         self.ctrl_unites.SetCoches(dictParametres["unites"])
 
@@ -422,13 +423,13 @@ class PAGE_Informations(wx.Panel):
         return dictParametres
 
     def SetParametres(self, dictParametres={}):
-        if type(dictParametres) in (unicode, str) :
+        if type(dictParametres) in (six.text_type, str) :
             exec(u"dictParametres = %s" % dictParametres)
-        if dictParametres.has_key("infos_medicales") == True :
+        if ("infos_medicales" in dictParametres) == True :
             self.check_infos_medicales.SetValue(True)
-        if dictParametres.has_key("messages_individuels") == True :
+        if ("messages_individuels" in dictParametres) == True :
             self.check_messages.SetValue(True)
-        if dictParametres.has_key("groupes") == True :
+        if ("groupes" in dictParametres) == True :
             self.radio_groupes_choix.SetValue(True)
             self.ctrl_groupes.SetCoches(dictParametres["groupes"])
         self.OnRadioGroupes()
@@ -481,9 +482,9 @@ class PAGE_Total(wx.Panel):
         return dictParametres
 
     def SetParametres(self, dictParametres={}):
-        if type(dictParametres) in (unicode, str) :
+        if type(dictParametres) in (six.text_type, str) :
             exec(u"dictParametres = %s" % dictParametres)
-        if dictParametres.has_key("colonnes") == True :
+        if ("colonnes" in dictParametres) == True :
             self.radio_colonnes_choix.SetValue(True)
             self.ctrl_colonnes.SetCoches(dictParametres["colonnes"])
         self.OnRadioColonnes()
@@ -686,24 +687,24 @@ class Dialog(wx.Dialog):
         self.dictDonnees["largeur"] = self.ctrl_largeur.GetValue()
         self.dictDonnees["categorie"] = self.ctrl_parametres.GetCodePageActive()
         self.dictDonnees["parametres"] = self.ctrl_parametres.GetParametres()
-        if type(self.dictDonnees["parametres"]) in (unicode, str):
+        if type(self.dictDonnees["parametres"]) in (six.text_type, str):
             exec(u"dictDonnees['parametres'] = %s" % self.dictDonnees["parametres"])
         return self.dictDonnees
 
     def SetDonnees(self, dictDonnees={}):
         self.dictDonnees = dictDonnees
         self.SetTitle(_(u"Modification d'une colonne"))
-        if self.dictDonnees.has_key("IDcolonne") :
+        if "IDcolonne" in self.dictDonnees :
             self.IDcolonne = self.dictDonnees["IDcolonne"]
-        if self.dictDonnees.has_key("nom") :
+        if "nom" in self.dictDonnees :
             self.ctrl_nom.SetValue(self.dictDonnees["nom"])
-        if self.dictDonnees.has_key("largeur") :
+        if "largeur" in self.dictDonnees :
             self.ctrl_largeur.SetValue(self.dictDonnees["largeur"])
-        if self.dictDonnees.has_key("categorie") :
+        if "categorie" in self.dictDonnees :
             self.ctrl_largeur.SetValue(self.dictDonnees["largeur"])
-        if self.dictDonnees.has_key("parametres") :
+        if "parametres" in self.dictDonnees :
             self.ctrl_parametres.SetPageByCode(self.dictDonnees["categorie"])
-            if type(self.dictDonnees["parametres"]) in (str, unicode) :
+            if type(self.dictDonnees["parametres"]) in (str, six.text_type) :
                 exec(u"dictDonnees['parametres'] = %s" % self.dictDonnees["parametres"])
             self.ctrl_parametres.SetParametres(self.dictDonnees["parametres"])
 
@@ -717,5 +718,5 @@ if __name__ == "__main__":
     dlg = Dialog(None)
     app.SetTopWindow(dlg)
     dlg.ShowModal()
-    print dlg.GetDonnees()
+    print(dlg.GetDonnees())
     app.MainLoop()

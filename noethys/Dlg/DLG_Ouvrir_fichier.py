@@ -217,7 +217,7 @@ class MyDialog(wx.Dialog):
         """ Récupération des codes réseau saisis """
         try :
             port = int(self.ctrl_port.GetValue())
-        except Exception, err:
+        except Exception as err:
             port = ""
         hote = self.ctrl_hote.GetValue()
         utilisateur = self.ctrl_utilisateur.GetValue()
@@ -240,7 +240,7 @@ class MyDialog(wx.Dialog):
             dlg.Destroy()
             dictInfos = {}
             fichier = shelve.open(nomFichierLong, "r")
-            for key, valeur in fichier.iteritems():
+            for key, valeur in fichier.items():
                 dictInfos[key] = valeur
             fichier.close()
             self.ctrl_hote.SetValue(dictInfos["host"])
@@ -407,6 +407,6 @@ if __name__ == "__main__":
     app = wx.App(0)
     dlg = MyDialog(None)
     if dlg.ShowModal() == wx.ID_OK :
-        print dlg.GetNomFichier() 
+        print(dlg.GetNomFichier()) 
     dlg.Destroy() 
     app.MainLoop()

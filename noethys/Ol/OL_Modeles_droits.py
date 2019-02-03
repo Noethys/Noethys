@@ -47,7 +47,7 @@ class Track(object):
         nbreAutorisations = 0
         nbreInterdictions = 0
         nbreRestrictions = 0
-        if dictDroits.has_key(self.IDmodele) :
+        if self.IDmodele in dictDroits :
             for etat in dictDroits[self.IDmodele] : 
                 if etat == "autorisation" : nbreAutorisations += 1
                 if etat == "interdiction" : nbreInterdictions += 1
@@ -100,7 +100,7 @@ class ListView(FastObjectListView):
         listeDroits = DB.ResultatReq()
         self.dictDroits = {}
         for IDdroit, IDmodele, categorie, action, etat in listeDroits :
-            if self.dictDroits.has_key(IDmodele) == False :
+            if (IDmodele in self.dictDroits) == False :
                 self.dictDroits[IDmodele] = []
             self.dictDroits[IDmodele].append(etat)
         

@@ -541,13 +541,13 @@ class Dialog(wx.Dialog):
                 # Nbre total
                 montantTotal += track.montant
                 # Détail
-                if dictDetails.has_key(track.IDmode) == False :
+                if (track.IDmode in dictDetails) == False :
                     dictDetails[track.IDmode] = { "label" : track.nom_mode, "nbre" : 0, "montant" : 0.0}
                 dictDetails[track.IDmode]["nbre"] += 1
                 dictDetails[track.IDmode]["montant"] += track.montant
         # Création du texte
         texte = _(u"<B>%d règlements (%.2f %s) : </B>") % (nbreTotal, montantTotal, SYMBOLE)
-        for IDmode, dictDetail in dictDetails.iteritems() :
+        for IDmode, dictDetail in dictDetails.items() :
             texteDetail = u"%d %s (%.2f %s), " % (dictDetail["nbre"], dictDetail["label"], dictDetail["montant"], SYMBOLE)
             texte += texteDetail
         if len(dictDetails) > 0 :
@@ -631,7 +631,7 @@ class Dialog(wx.Dialog):
                 IDindividu, categorie, adresse = track.email_depots.split(";")
                 if IDindividu != "" :
                     try :
-                        if dictAdressesIndividus.has_key(int(IDindividu)) :
+                        if int(IDindividu) in dictAdressesIndividus :
                             adresse = dictAdressesIndividus[int(IDindividu)][categorie]
                     except :
                         adresse = u""

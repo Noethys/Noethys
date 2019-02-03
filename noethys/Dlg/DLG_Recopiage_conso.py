@@ -72,7 +72,7 @@ class CTRL_Unite(wx.Choice):
         if ID == None :
             self.SetSelection(0)
         else :
-            for index, values in self.dictDonnees.iteritems():
+            for index, values in self.dictDonnees.items():
                 if values != None and values["ID"] == ID :
                     self.SetSelection(index)
                     return

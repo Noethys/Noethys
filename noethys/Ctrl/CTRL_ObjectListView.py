@@ -331,10 +331,10 @@ class ObjectListView(OLV.ObjectListView):
     def AjouteLigneTotal(self, listeNomsColonnes=[]):
         return
         for (iCol, col) in enumerate(self.columns):
-            print col, col.__dict__
+            print(col, col.__dict__)
             colWidth = self.GetColumnWidth(iCol)
             boundedWidth = col.CalcBoundedWidth(colWidth)
-            print colWidth, boundedWidth
+            print(colWidth, boundedWidth)
 
 
         # Récupération des totaux des colonnes souhaitées
@@ -343,7 +343,7 @@ class ObjectListView(OLV.ObjectListView):
         for track in self.modelObjects :
             for nomColonne in listeNomsColonnes :
                 valeur = getattr(track, nomColonne)
-                if dictTotaux.has_key(nomColonne) == False :
+                if (nomColonne in dictTotaux) == False :
                     dictTotaux[nomColonne] = 0
                 else :
                     dictTotaux[nomColonne] += valeur
@@ -528,7 +528,7 @@ class ObjectListView(OLV.ObjectListView):
 
         # Condition Date inscription
         conditionDateInscription = ""
-        if criteres.has_key("date_debut_inscription"):
+        if "date_debut_inscription" in criteres:
             conditionDateInscription = " AND (inscriptions.date_inscription>='%s' AND inscriptions.date_inscription<='%s')" % (str(criteres["date_debut_inscription"]), str(criteres["date_fin_inscription"]))
 
         # Choix de la key
@@ -585,10 +585,10 @@ class ObjectListView(OLV.ObjectListView):
 
     def GenerationContextMenu(self, menu=None, intro="", total="", titre=None, orientation=wx.PORTRAIT, dictParametres=None):
         if dictParametres != None :
-            if dictParametres.has_key("titre") : titre = dictParametres["titre"]
-            if dictParametres.has_key("intro"): intro = dictParametres["intro"]
-            if dictParametres.has_key("total"): total = dictParametres["total"]
-            if dictParametres.has_key("orientation"): orientation = dictParametres["orientation"]
+            if "titre" in dictParametres : titre = dictParametres["titre"]
+            if "intro" in dictParametres: intro = dictParametres["intro"]
+            if "total" in dictParametres: total = dictParametres["total"]
+            if "orientation" in dictParametres: orientation = dictParametres["orientation"]
 
         # Met à jour le titre de la liste si besoin
         if titre != None :
@@ -666,10 +666,10 @@ class ObjectListView(OLV.ObjectListView):
     def Apercu(self, event=None):
         if hasattr(self, "GetParametresImpression") :
             dictParametres = self.GetParametresImpression()
-            if dictParametres.has_key("titre"): self.titre = dictParametres["titre"]
-            if dictParametres.has_key("intro"): self.impression_intro = dictParametres["intro"]
-            if dictParametres.has_key("total"): self.impression_total = dictParametres["total"]
-            if dictParametres.has_key("orientation"): self.orientation = dictParametres["orientation"]
+            if "titre" in dictParametres: self.titre = dictParametres["titre"]
+            if "intro" in dictParametres: self.impression_intro = dictParametres["intro"]
+            if "total" in dictParametres: self.impression_total = dictParametres["total"]
+            if "orientation" in dictParametres: self.orientation = dictParametres["orientation"]
 
         from Utils import UTILS_Printer
         prt = UTILS_Printer.ObjectListViewPrinter(self, titre=self.titre, intro=self.impression_intro, total=self.impression_total, format="A", orientation=self.orientation)
@@ -678,10 +678,10 @@ class ObjectListView(OLV.ObjectListView):
     def Imprimer(self, event=None):
         if hasattr(self, "GetParametresImpression") :
             dictParametres = self.GetParametresImpression()
-            if dictParametres.has_key("titre"): self.titre = dictParametres["titre"]
-            if dictParametres.has_key("intro"): self.impression_intro = dictParametres["intro"]
-            if dictParametres.has_key("total"): self.impression_total = dictParametres["total"]
-            if dictParametres.has_key("orientation"): self.orientation = dictParametres["orientation"]
+            if "titre" in dictParametres: self.titre = dictParametres["titre"]
+            if "intro" in dictParametres: self.impression_intro = dictParametres["intro"]
+            if "total" in dictParametres: self.impression_total = dictParametres["total"]
+            if "orientation" in dictParametres: self.orientation = dictParametres["orientation"]
 
         from Utils import UTILS_Printer
         prt = UTILS_Printer.ObjectListViewPrinter(self, titre=self.titre, intro=self.impression_intro, total=self.impression_total, format="A", orientation=self.orientation)
@@ -707,7 +707,7 @@ class ObjectListView(OLV.ObjectListView):
 
 class Track():
     def __init__(self, dictTotaux):
-        for nomColonne, total in dictTotaux.iteritems() :
+        for nomColonne, total in dictTotaux.items() :
             setattr(self, nomColonne, total)
 
 
@@ -1085,8 +1085,8 @@ class PanelAvecFooter(wx.Panel):
         # Contrôles
         kwargs["parent"] = self
 ##        if kwargs.has_key("parent") == False : kwargs["parent"] = self # BUG ICI
-        if kwargs.has_key("id") == False : kwargs["id"] = -1
-        if kwargs.has_key("style") == False : kwargs["style"] = wx.LC_REPORT|wx.NO_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES
+        if ("id" in kwargs) == False : kwargs["id"] = -1
+        if ("style" in kwargs) == False : kwargs["style"] = wx.LC_REPORT|wx.NO_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES
         
         self.ctrl_listview = listview(**kwargs)
         self.ctrl_listview.SetMinSize((10, 10)) 

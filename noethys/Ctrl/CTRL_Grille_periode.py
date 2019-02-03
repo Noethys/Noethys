@@ -104,7 +104,7 @@ class CTRL_ListBox(wx.ListBox):
         try :
             self.Select(indexSelection)
             self.EnsureVisible(indexSelection)
-        except Exception, err :
+        except Exception as err :
             pass
     
     def SetVisibleSelection(self):
@@ -112,7 +112,7 @@ class CTRL_ListBox(wx.ListBox):
             indexSelection = self.GetSelections()[0]
             self.Select(indexSelection)
             self.EnsureVisible(indexSelection)
-        except Exception, err :
+        except Exception as err :
             pass
         
 

@@ -100,7 +100,7 @@ class CTRL_Procedure(wx.Choice):
     def SetID(self, ID=0):
         if ID == None :
             self.SetSelection(0)
-        for index, values in self.dictDonnees.iteritems():
+        for index, values in self.dictDonnees.items():
             if values["ID"] == ID :
                  self.SetSelection(index)
 
@@ -379,8 +379,8 @@ class Dialog(wx.Dialog):
                     dlg.Destroy()
                     if reponse == wx.ID_YES:
                         self.OnBoutonVocal(None)
-        except Exception, err:
-            print "Erreur dans module vocal depuis badgeage :", err
+        except Exception as err:
+            print("Erreur dans module vocal depuis badgeage :", err)
         
         # Envoi l'info de lancement au log
         nomProcedure = self.ctrl_procedure.GetNom() 

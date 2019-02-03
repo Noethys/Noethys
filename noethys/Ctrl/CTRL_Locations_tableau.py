@@ -18,7 +18,7 @@ import random
 import logging
 import GestionDB
 from dateutil import rrule
-
+import six
 import wx.lib.wordwrap as wordwrap
 import wx.lib.agw.supertooltip as STT
 
@@ -49,7 +49,7 @@ class Barre(object):
                        "date_debut", "date_fin", "quantite"]
 
         for champ in liste_champs:
-            if donnees.has_key(champ):
+            if champ in donnees:
                 setattr(self, champ, donnees[champ])
             else :
                 setattr(self, champ, None)
@@ -59,13 +59,13 @@ class Barre(object):
             self.quantite = 1
 
         # Période
-        if isinstance(self.date_debut, str) or isinstance(self.date_debut, unicode) :
+        if isinstance(self.date_debut, str) or isinstance(self.date_debut, six.text_type) :
             self.date_debut = datetime.datetime.strptime(self.date_debut, "%Y-%m-%d %H:%M:%S")
 
         if self.date_fin == None:
             self.date_fin = datetime.datetime(2999, 1, 1)
 
-        if isinstance(self.date_fin, str) or isinstance(self.date_fin, unicode) :
+        if isinstance(self.date_fin, str) or isinstance(self.date_fin, six.text_type) :
             self.date_fin = datetime.datetime.strptime(self.date_fin, "%Y-%m-%d %H:%M:%S")
 
         # Récupération des réponses des questionnaires
@@ -173,7 +173,7 @@ class Barre(object):
                 if rect.Intersects(rect_fenetre) == True :
 
                     # Sélection de la couleur de barre
-                    if self.parent.dict_couleurs.has_key(self.IDfamille):
+                    if self.IDfamille in self.parent.dict_couleurs:
                         self.couleur_barre = self.parent.dict_couleurs[self.IDfamille]
                     else:
                         self.couleur_barre = wx.Colour(random.randint(128, 255), random.randint(128, 255), random.randint(128, 255))
@@ -258,7 +258,7 @@ class Barre(object):
 
                         dc.SetBrush(wx.Brush("BLACK", wx.SOLID))
                         dc.SetPen(wx.Pen("BLACK", 1, wx.SOLID))
-                        for nom, rect_poignee in self.poignees.iteritems() :
+                        for nom, rect_poignee in self.poignees.items() :
                             radius = 0
                             if 'phoenix' in wx.PlatformInfo:
                                 dc.DrawRoundedRectangle(rect_poignee, radius)
@@ -269,7 +269,7 @@ class Barre(object):
 
     def FindPoignee(self, x=None, y=None):
         if self.poignees != None :
-            for nom, rect_poignee in self.poignees.iteritems():
+            for nom, rect_poignee in self.poignees.items():
                 rect_poignee.Inflate(5, 5)
                 if 'phoenix' in wx.PlatformInfo:
                     contains = rect_poignee.Contains(x, y)
@@ -387,7 +387,7 @@ class CTRL(wx.Panel):
             nbre_lignes_total = 0
             for ligne in self.ctrl_tableau.liste_lignes:
                 # Recherche s'il existe des souslignes
-                if self.ctrl_tableau.dict_lignes_barres.has_key(ligne.dict_produit["IDproduit"]):
+                if ligne.dict_produit["IDproduit"] in self.ctrl_tableau.dict_lignes_barres:
                     nbre = len(self.ctrl_tableau.dict_lignes_barres[ligne.dict_produit["IDproduit"]])
                 else:
                     nbre = 1
@@ -592,8 +592,8 @@ class CTRL_Tableau(wx.Panel):
 
 
     def GetReponse(self, IDquestion=None, ID=None):
-        if self.dict_questionnaires.has_key(IDquestion) :
-            if self.dict_questionnaires[IDquestion].has_key(ID) :
+        if IDquestion in self.dict_questionnaires :
+            if ID in self.dict_questionnaires[IDquestion] :
                 return self.dict_questionnaires[IDquestion][ID]
         return u""
 
@@ -761,7 +761,7 @@ class CTRL_Tableau(wx.Panel):
             else :
                 date_fin = self.barre_selectionnee.date_fin.strftime("%d/%m/%Y %Hh%M")
                 duree = u"(%s) " % UTILS_Dates.FormatDelta(self.barre_selectionnee.date_fin - self.barre_selectionnee.date_debut)
-            if self.dict_produits.has_key(self.barre_selectionnee.IDproduit):
+            if self.barre_selectionnee.IDproduit in self.dict_produits:
                 nom_produit = self.dict_produits[self.barre_selectionnee.IDproduit]["nom"]
             else :
                 nom_produit = ""
@@ -1039,25 +1039,25 @@ class CTRL_Tableau(wx.Panel):
         # Regroupe les barres par produit
         dict_barres_par_produit = {}
         for barre in self.liste_barres :
-            if dict_barres_par_produit.has_key(barre.IDproduit) == False :
+            if (barre.IDproduit in dict_barres_par_produit) == False :
                 dict_barres_par_produit[barre.IDproduit] = []
             dict_barres_par_produit[barre.IDproduit].append(barre)
 
         # Place les barres sur chaque ligne
         dict_barres = {}
-        for IDproduit, liste_barres in dict_barres_par_produit.iteritems() :
+        for IDproduit, liste_barres in dict_barres_par_produit.items() :
             dict_barres[IDproduit] = {}
             liste_barres_traitees = []
             for num_ligne in range(1, len(liste_barres)+1):
                 for barre in liste_barres:
                     if barre not in liste_barres_traitees:
                         overlap = False
-                        if dict_barres[IDproduit].has_key(num_ligne):
+                        if num_ligne in dict_barres[IDproduit]:
                             for barre_temp in dict_barres[IDproduit][num_ligne]:
                                 if barre.date_debut < barre_temp.date_fin and barre.date_fin > barre_temp.date_debut:
                                     overlap = True
                         if overlap == False:
-                            if dict_barres[IDproduit].has_key(num_ligne) == False:
+                            if (num_ligne in dict_barres[IDproduit]) == False:
                                 dict_barres[IDproduit][num_ligne] = []
                             dict_barres[IDproduit][num_ligne].append(barre)
                             liste_barres_traitees.append(barre)
@@ -1105,8 +1105,8 @@ class CTRL_Tableau(wx.Panel):
 
         # Dessine les barres
         #for barre in self.parent.liste_barres :
-        for IDproduit, dict_souslignes in self.dict_lignes_barres.iteritems():
-            for num_sousligne, liste_barres in dict_souslignes.iteritems():
+        for IDproduit, dict_souslignes in self.dict_lignes_barres.items():
+            for num_sousligne, liste_barres in dict_souslignes.items():
                 for barre in liste_barres :
                     barre.Draw(dc, num_sousligne, rect_cadre_central)
 
@@ -1192,7 +1192,7 @@ class CTRL_Tableau(wx.Panel):
         y = self.delta[1]
         for ligne in self.liste_lignes :
             # Recherche s'il existe des souslignes
-            if self.dict_lignes_barres.has_key(ligne.dict_produit["IDproduit"]):
+            if ligne.dict_produit["IDproduit"] in self.dict_lignes_barres:
                 nbre_souslignes = len(self.dict_lignes_barres[ligne.dict_produit["IDproduit"]])
             else :
                 nbre_souslignes = 1

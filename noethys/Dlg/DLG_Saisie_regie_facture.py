@@ -56,7 +56,7 @@ class CTRL_compte_bancaire(wx.Choice):
         return listeItems
 
     def SetID(self, ID=0):
-        for index, values in self.dictDonnees.iteritems():
+        for index, values in self.dictDonnees.items():
             if values["ID"] == ID :
                 self.SetSelection(index)
 

@@ -48,7 +48,7 @@ def Incrementer(s):
     return s
 
 def T(_):
-    print _, ">", Incrementer(_)
+    print(_, ">", Incrementer(_))
 if __name__=='__main__':
     T("10dsc_0010.jpg")
     T("10dsc_0099.jpg")

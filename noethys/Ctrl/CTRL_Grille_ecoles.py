@@ -159,7 +159,7 @@ class CTRL(HTL.HyperTreeList):
         self.cocheInconnue = False
         self.cochesEcolesActives.clear()
         self.cochesActives = {
-            ID: set() for ID in self.dictEcoles.keys()
+            ID: set() for ID in list(self.dictEcoles.keys())
         }
 
     def MAJ(self):
@@ -215,7 +215,7 @@ class CTRL(HTL.HyperTreeList):
     def Remplissage(self):
         # Tri des écoles par nom
         listeEcoles = []
-        for IDecole, dictEcole in self.dictEcoles.iteritems():
+        for IDecole, dictEcole in self.dictEcoles.items():
             listeEcoles.append((dictEcole["nom"], IDecole))
         listeEcoles.sort()
 

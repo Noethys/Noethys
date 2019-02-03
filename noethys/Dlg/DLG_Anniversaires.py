@@ -150,7 +150,7 @@ class Page_Generalites(wx.Panel):
         return self.ctrl_parametres.GetParametres()
 
     def SetParametres(self, dictParametres={}):
-        if dictParametres.has_key("mode"):
+        if "mode" in dictParametres:
             self.ctrl_parametres.SetModePresents(dictParametres["mode"] == "presents")
 
 
@@ -168,7 +168,7 @@ class Page_Options(wx.Panel):
         self.check_theme = wx.CheckBox(self, -1, u"")
         self.check_theme.SetValue(True)
         self.label_theme = wx.StaticText(self, -1, _(u"Inclure le thème :"))
-        self.ctrl_theme = wx.Choice(self, -1, choices=THEMES.keys())
+        self.ctrl_theme = wx.Choice(self, -1, choices=list(THEMES.keys()))
         self.ctrl_theme.SetStringSelection(_(u"Feuille d'été"))
 
         # Binds
@@ -239,14 +239,14 @@ class Page_Options(wx.Panel):
 
     def SetParametres(self, dictParametres={}):
         # Thème
-        if dictParametres.has_key("theme"):
+        if "theme" in dictParametres:
             if dictParametres["theme"] != None :
                 self.ctrl_theme.SetStringSelection(dictParametres["theme"])
             self.check_theme.SetValue(dictParametres["theme"] != None)
             self.OnCheckTheme()
 
         # Photo
-        if dictParametres.has_key("taille_photo"):
+        if "taille_photo" in dictParametres:
             if dictParametres["taille_photo"] != 0 :
                 if dictParametres["taille_photo"] == 16 : self.ctrl_photos.SetSelection(0)
                 if dictParametres["taille_photo"] == 32 : self.ctrl_photos.SetSelection(1)
@@ -465,7 +465,7 @@ class Dialog(wx.Dialog):
             listeOuvertures = DB.ResultatReq()
             dictOuvertures = {}
             for IDouverture, IDactivite, IDunite, IDgroupe in listeOuvertures:
-                if dictOuvertures.has_key(IDactivite) == False:
+                if (IDactivite in dictOuvertures) == False:
                     dictOuvertures[IDactivite] = []
                 if IDgroupe not in dictOuvertures[IDactivite]:
                     dictOuvertures[IDactivite].append(IDgroupe)
@@ -487,9 +487,9 @@ class Dialog(wx.Dialog):
         if dictParametres["mode"] == "inscrits":
 
             dictOuvertures = {}
-            for IDgroupe, dictGroupe in dictGroupes.iteritems():
+            for IDgroupe, dictGroupe in dictGroupes.items():
                 IDactivite = dictGroupe["IDactivite"]
-                if dictOuvertures.has_key(IDactivite) == False:
+                if (IDactivite in dictOuvertures) == False:
                     dictOuvertures[IDactivite] = []
                 if IDgroupe not in dictOuvertures[IDactivite]:
                     dictOuvertures[IDactivite].append(IDgroupe)
@@ -534,9 +534,9 @@ class Dialog(wx.Dialog):
                 }
 
                 # Mémorisation du IDindividu
-                if dictAnniversaires.has_key(mois) == False:
+                if (mois in dictAnniversaires) == False:
                     dictAnniversaires[mois] = {}
-                if dictAnniversaires[mois].has_key(jour) == False:
+                if (jour in dictAnniversaires[mois]) == False:
                     dictAnniversaires[mois][jour] = []
                 dictAnniversaires[mois][jour].append(IDindividu)
 
@@ -573,7 +573,7 @@ class Dialog(wx.Dialog):
         story = []
 
         # Mois
-        listeMois = dictAnniversaires.keys()
+        listeMois = list(dictAnniversaires.keys())
         listeMois.sort()
         for numMois in listeMois:
 
@@ -583,7 +583,7 @@ class Dialog(wx.Dialog):
 
             # Jours
             dictJours = dictAnniversaires[numMois]
-            listeJours = dictJours.keys()
+            listeJours = list(dictJours.keys())
             listeJours.sort()
             for numJour in listeJours:
                 # Initialisation du tableau

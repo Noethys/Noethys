@@ -13,7 +13,7 @@ import Chemins
 from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
-from Ctrl import CTRL_Bouton_image
+import six
 import GestionDB
 from Dlg import DLG_Saisie_compte_comptable
 
@@ -317,7 +317,8 @@ def ImportationComptes():
     # Enregistrement dans la base
     DB = GestionDB.DB()
     for numero, nom in listeComptes :
-        nom = nom.decode("iso-8859-15")
+        if six.PY2:
+            nom = nom.decode("iso-8859-15")
         nom = nom.capitalize()
         listeDonnees = [ ("nom", nom), ("numero", numero)]
         DB.ReqInsert("compta_comptes_comptables", listeDonnees)

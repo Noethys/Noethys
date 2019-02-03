@@ -30,11 +30,11 @@ def GetListeUtilisateurs(nomFichier=""):
     for IDdroit, IDutilisateur, IDmodele, categorie, action, etat in listeDonnees :
         key = (categorie, action)
         if IDutilisateur != None :
-            if dictDroitsUtilisateurs.has_key(IDutilisateur) == False :
+            if (IDutilisateur in dictDroitsUtilisateurs) == False :
                 dictDroitsUtilisateurs[IDutilisateur] = {}
             dictDroitsUtilisateurs[IDutilisateur][key] = etat
         if IDmodele != None :
-            if dictDroitsModeles.has_key(IDmodele) == False :
+            if (IDmodele in dictDroitsModeles) == False :
                 dictDroitsModeles[IDmodele] = {}
             dictDroitsModeles[IDmodele][key] = etat
 
@@ -80,14 +80,14 @@ def GetListeUtilisateurs(nomFichier=""):
             droits = None
         if profil.startswith("modele") :
             IDmodele = int(profil.split(":")[1])
-            if dictDroitsModeles.has_key(IDmodele) :
+            if IDmodele in dictDroitsModeles :
                 droits = dictDroitsModeles[IDmodele]
         if profil.startswith("perso") :
-            if dictDroitsUtilisateurs.has_key(IDutilisateur) :
+            if IDutilisateur in dictDroitsUtilisateurs :
                 droits = dictDroitsUtilisateurs[IDutilisateur]
         
         # Avatar
-        if dictAvatars.has_key(IDutilisateur) :
+        if IDutilisateur in dictAvatars :
             image = dictAvatars[IDutilisateur]
         else :
             image = "Automatique"
@@ -101,13 +101,13 @@ def GetListeUtilisateurs(nomFichier=""):
 
 def VerificationDroits(dictUtilisateur=None, categorie="", action="", IDactivite=""):
     """ Vérifie si un utilisateur peut accéder à une action """
-    if dictUtilisateur == None or dictUtilisateur.has_key("droits") == False :
+    if dictUtilisateur == None or ("droits" in dictUtilisateur) == False :
         return True
     
     dictDroits = dictUtilisateur["droits"]
     key = (categorie, action)
         
-    if dictDroits != None and dictDroits.has_key(key) :
+    if dictDroits != None and key in dictDroits :
         etat = dictDroits[key]
         # Autorisation
         if etat.startswith("autorisation") :
@@ -172,5 +172,5 @@ def AfficheDLGInterdiction():
             
 if __name__ == '__main__':
     listeUtilisateurs = GetListeUtilisateurs() 
-    print VerificationDroits(listeUtilisateurs[0], "parametrage_modes_reglements", "supprimer")
-    print VerificationDroitsUtilisateurActuel("parametrage_modes_reglements", "supprimer")
+    print(VerificationDroits(listeUtilisateurs[0], "parametrage_modes_reglements", "supprimer"))
+    print(VerificationDroitsUtilisateurActuel("parametrage_modes_reglements", "supprimer"))

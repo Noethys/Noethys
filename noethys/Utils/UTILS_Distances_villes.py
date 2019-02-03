@@ -9,6 +9,10 @@
 #------------------------------------------------------------------------
 
 
+from six.moves.urllib.parse import quote
+from six.moves.urllib.request import urlopen
+
+
 def GetDistances(origine="", destinations=[], moyen="voiture") :
     """ Récupère sur Googlemaps les distances entre les villes """
     dictResultats = {}
@@ -48,12 +52,11 @@ def GetDistances(origine="", destinations=[], moyen="voiture") :
         url = """http://maps.googleapis.com/maps/api/distancematrix/json?origins=%s&destinations=%s&sensor=false&mode=%s&language=fr-FR&userip=192.168.1.1""" % (texteOrigine, texteDestinations, mode)
 
         # Récupère les distances sur Google maps
-        import urllib2
         # Conversion des accents
-        url = urllib2.quote(url.encode('utf8'), ":/?=.-%&,")
+        url = quote(url.encode('utf8'), ":/?=.-%&,")
 
         # Ouverture de l'url
-        f = urllib2.urlopen(url, timeout=10)
+        f = urlopen(url, timeout=10)
         texteReponse = f.read()
         
         # Transforme le résultat en dictionnaire Python
@@ -94,5 +97,5 @@ if __name__ == '__main__':
     #dictResultats = GetDistances(origine=("29870", "LANNILIS"), destinations=[("29200", "BREST"), ("29000", "QUIMPER")], moyen="voiture")
 
     # Affichage des résultats
-    for key, resultat in dictResultats.iteritems() :
-        print key, " ->", resultat
+    for key, resultat in dictResultats.items() :
+        print(key, " ->", resultat)

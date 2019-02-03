@@ -323,7 +323,7 @@ class Dialog(wx.Dialog):
             wx.Yield() 
             try :
                 index = 0
-                for IDcompte_payeur, dictCompte in dictComptes.iteritems() :
+                for IDcompte_payeur, dictCompte in dictComptes.items() :
                     IDattestation = dictCompte["num_attestation"]
                     nomTitulaires = Supprime_accent(dictCompte["nomSansCivilite"])
                     nomFichier = _(u"Attestation %d - %s") % (IDattestation, nomTitulaires)
@@ -334,7 +334,7 @@ class Dialog(wx.Dialog):
                     index += 1
                 self.EcritStatusbar("")
                 del dlgAttente
-            except Exception, err:
+            except Exception as err:
                 del dlgAttente
                 traceback.print_exc(file=sys.stdout)
                 dlg = wx.MessageDialog(self, _(u"Désolé, le problème suivant a été rencontré dans la génération des attestations : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
@@ -350,7 +350,7 @@ class Dialog(wx.Dialog):
             UTILS_Impression_facture.Impression(dictComptes, dictOptions, IDmodele=dictOptions["IDmodele"], mode="attestation")
             self.EcritStatusbar("")
             del dlgAttente
-        except Exception, err:
+        except Exception as err:
             del dlgAttente
             traceback.print_exc(file=sys.stdout)
             dlg = wx.MessageDialog(self, _(u"Désolé, le problème suivant a été rencontré dans la génération des attestations : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
@@ -376,7 +376,7 @@ class Dialog(wx.Dialog):
         DB = GestionDB.DB()
         
         try :
-            for IDcompte_payeur, dictCompte in self.donnees.iteritems() :
+            for IDcompte_payeur, dictCompte in self.donnees.items() :
                 if dictCompte["select"] == True :
                     numero = dictCompte["num_attestation"]
                     IDfamille = dictCompte["IDfamille"] 
@@ -393,9 +393,9 @@ class Dialog(wx.Dialog):
                         texteActivites = texteActivites[:-1]
                     # Liste des individus
                     texteIndividus = ""
-                    for IDindividu in dictCompte["individus"].keys() :
+                    for IDindividu in list(dictCompte["individus"].keys()) :
                         texteIndividus += "%d;" % IDindividu
-                    if len(dictCompte["individus"].keys()) > 0 :
+                    if len(list(dictCompte["individus"].keys())) > 0 :
                         texteIndividus = texteIndividus[:-1]
                     
                     IDutilisateur = UTILS_Identification.GetIDutilisateur()
@@ -427,7 +427,7 @@ class Dialog(wx.Dialog):
             DB.Close() 
             del dlgAttente
 
-        except Exception, err:
+        except Exception as err:
             DB.Close() 
             del dlgAttente
             traceback.print_exc(file=sys.stdout)

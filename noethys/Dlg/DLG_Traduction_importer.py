@@ -47,7 +47,7 @@ class CTRL_Langue(wx.Choice):
 
                     # Lecture des textes
                     listeTextes = []
-                    for texte, traduction in fichier.iteritems() :
+                    for texte, traduction in fichier.items() :
                         if texte != "###INFOS###" :
                             listeTextes.append(texte)
 
@@ -223,7 +223,7 @@ class Dialog(wx.Dialog):
         # Lecture du fichier dat
         fichier = shelve.open(Chemins.GetStaticPath("DatabasesTextes.dat"), "r")
         listeTextes = []
-        for texte, listeFichiers in fichier.iteritems() :
+        for texte, listeFichiers in fichier.items() :
             listeTextes.append(texte)
         fichier.close()
         listeTextes.sort() 
@@ -311,10 +311,10 @@ class Dialog(wx.Dialog):
         
         # Remplissage du fichier
         fichier["###INFOS###"] = {"nom_langue" : nom_langue, "code_langue" : code_langue}
-        for texte, traduction in dictTraductions.iteritems() :
+        for texte, traduction in dictTraductions.items() :
             fichier[texte] = traduction
             if "Bienvenue" in texte :
-                print texte, " --> ", (traduction,)
+                print(texte, " --> ", (traduction,))
         # Clôture du fichier
         fichier.close()
         

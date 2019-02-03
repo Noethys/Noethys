@@ -126,7 +126,7 @@ class CTRL(HTL.HyperTreeList):
             dictInscriptions[IDactivite][IDgroupe].append(dictTemp)
 
             # Mémorisation des groupes
-            if dictGroupes.has_key(IDgroupe) == False :
+            if (IDgroupe in dictGroupes) == False :
                 dictGroupes[IDgroupe] = nomGroupe
 
         # Recherche des places disponibles
@@ -163,7 +163,7 @@ class CTRL(HTL.HyperTreeList):
         for IDgroupe, IDactivite, nom, nbre_inscrits_max in listeGroupes :
 
             # Recherche le nombre d'inscrits sur chaque groupe
-            if dictInscrits.has_key(IDgroupe) :
+            if IDgroupe in dictInscrits :
                 nbre_inscrits = dictInscrits[IDgroupe]
             else :
                 nbre_inscrits = 0
@@ -177,11 +177,11 @@ class CTRL(HTL.HyperTreeList):
             # Mémorise le groupe
             dictActivites[IDactivite]["groupes"][IDgroupe] = {"nom" : nom, "nbre_places_disponibles" : nbre_places_disponibles, "nbre_inscrits" : nbre_inscrits, "nbre_inscrits_max" : nbre_inscrits_max}
 
-        for IDactivite in dictActivites.keys():
+        for IDactivite in list(dictActivites.keys()):
             # Recherche le nombre d'inscrits total de l'activité
             dictActivites[IDactivite]["nbre_inscrits"] = 0
             for IDgroupe in dictActivites[IDactivite]["groupes"] :
-                if dictInscrits.has_key(IDgroupe):
+                if IDgroupe in dictInscrits:
                     dictActivites[IDactivite]["nbre_inscrits"] += dictInscrits[IDgroupe]
 
             # Recherche du nombre de places disponibles sur l'activité
@@ -200,7 +200,7 @@ class CTRL(HTL.HyperTreeList):
         self.listeImpression = []
         
         # Branches Activités
-        listeActivites = dictInscriptions.keys()
+        listeActivites = list(dictInscriptions.keys())
         listeActivites.sort()
         
         for IDactivite in listeActivites :
@@ -211,7 +211,7 @@ class CTRL(HTL.HyperTreeList):
 
             # Branches Groupes
             listeImpressionGroupes = []
-            listeGroupes = dictInscriptions[IDactivite].keys()
+            listeGroupes = list(dictInscriptions[IDactivite].keys())
             listeGroupes.sort()
 
             for IDgroupe in listeGroupes :
@@ -276,7 +276,7 @@ class CTRL(HTL.HyperTreeList):
         if dictActivite["nbre_places_disponibles"] != None:
             nbre_places_disponibles.append(dictActivite["nbre_places_disponibles"])
 
-        for IDgroupeTmp, dictGroupe in dictActivite["groupes"].iteritems():
+        for IDgroupeTmp, dictGroupe in dictActivite["groupes"].items():
             if IDgroupeTmp == IDgroupe and dictGroupe["nbre_places_disponibles"] != None:
                 nbre_places_disponibles.append(dictGroupe["nbre_places_disponibles"])
 

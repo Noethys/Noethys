@@ -43,7 +43,7 @@ class Track(object):
             listeID = self.secteurs.split(";")
             for IDsecteur in listeID :
                 IDsecteur = int(IDsecteur) 
-                if DICT_SECTEURS.has_key(IDsecteur) :
+                if IDsecteur in DICT_SECTEURS :
                     listeNoms.append(DICT_SECTEURS[IDsecteur])
         self.txtSecteurs = ";".join(listeNoms)
         

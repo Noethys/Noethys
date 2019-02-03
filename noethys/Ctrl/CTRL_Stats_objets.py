@@ -43,7 +43,7 @@ class CTRL_Objets(CT.CustomTreeCtrl):
         
         il = wx.ImageList(16, 16)
         index =0
-        for code, dictImage in self.dictImages.iteritems() :
+        for code, dictImage in self.dictImages.items() :
             il.Add(dictImage["img"])
             dictImage["index"] = index
             index += 1

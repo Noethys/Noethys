@@ -32,7 +32,7 @@ def AdaptationsDemarrage():
         if os.path.isdir(rep) == False :
             try :
                 os.mkdir(rep)
-            except Exception, err:
+            except Exception as err:
                 pass
 
 

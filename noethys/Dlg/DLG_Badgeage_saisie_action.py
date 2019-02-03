@@ -154,13 +154,13 @@ class Dialog(wx.Dialog):
         self.IDaction = dictDonnees["IDaction"]
         # Conditions
         dictTemp = {}
-        for code, valeur in dictDonnees.iteritems() :
+        for code, valeur in dictDonnees.items() :
             if code.startswith("condition_") :
                 dictTemp[code[10:]] = valeur
         self.ctrl_conditions.SetDonnees(dictTemp)
         # Action
         dictTemp = {}
-        for code, valeur in dictDonnees.iteritems() :
+        for code, valeur in dictDonnees.items() :
             if code.startswith("action_") :
                 dictTemp[code[7:]] = valeur
         self.ctrl_action.SetDonnees(dictDonnees["action"], dictTemp)

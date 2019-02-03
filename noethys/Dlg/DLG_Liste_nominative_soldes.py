@@ -55,7 +55,7 @@ class CTRL_Activite(wx.Choice):
         self.SetItems(listeLabels)
 
     def SetActivite(self, IDactivite=None):
-        for index, IDactiviteTmp in self.dictDonnees.iteritems() :
+        for index, IDactiviteTmp in self.dictDonnees.items() :
             if IDactiviteTmp == IDactivite :
                 self.SetSelection(index)
 

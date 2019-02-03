@@ -109,7 +109,7 @@ class ListView(FastObjectListView):
 
         # Génération des tracks
         self.donnees = []
-        for date, dict_date in track_mensualite.dict_dates.iteritems() :
+        for date, dict_date in track_mensualite.dict_dates.items() :
             track = Track(date=date, dict_date=dict_date)
             self.donnees.append(track)
 

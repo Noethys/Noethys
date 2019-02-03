@@ -73,7 +73,7 @@ class ListView(FastObjectListView):
             nomFichier = os.path.join(rep, u"%s.%s" % (self.code, extension))
             if os.path.isfile(nomFichier) :
                 fichier = shelve.open(nomFichier, "r")
-                for key, valeur in fichier.iteritems() :
+                for key, valeur in fichier.items() :
                     dictTemp[key] = valeur
                 fichier.close()
         return dictTraductionsInitiales, dictTraductionsPerso
@@ -83,7 +83,7 @@ class ListView(FastObjectListView):
         # Récupération des textes originaux
         dictTextes = {}
         fichier = shelve.open(Chemins.GetStaticPath("Databases/Textes.dat"), "r")
-        for texte, listeFichiers in fichier.iteritems() :
+        for texte, listeFichiers in fichier.items() :
             dictTextes[texte] = listeFichiers
         fichier.close()
         
@@ -92,12 +92,12 @@ class ListView(FastObjectListView):
         
         # Regroupement des prestations par label
         listeListeView = []
-        for texte, listeFichiers in dictTextes.iteritems() :
+        for texte, listeFichiers in dictTextes.items() :
             traduction_initiale = ""
             traduction_perso = ""
-            if dictTraductionsInitiales.has_key(texte) : 
+            if texte in dictTraductionsInitiales : 
                 traduction_initiale = dictTraductionsInitiales[texte]
-            if dictTraductionsPerso.has_key(texte) : 
+            if texte in dictTraductionsPerso : 
                 traduction_perso = dictTraductionsPerso[texte]
             dictDonnees = {"texte" : texte, "traduction_initiale" : traduction_initiale, "traduction_perso" : traduction_perso, "listeFichiers" : listeFichiers}
             track = Track(dictDonnees)
@@ -261,14 +261,14 @@ class MyFrame(wx.Frame):
         dictFichiers = {}
         for track in tracks :
             for nomFichier in track.listeFichiers :
-                if dictFichiers.has_key(nomFichier) == False :
+                if (nomFichier in dictFichiers) == False :
                     dictFichiers[nomFichier] = []
                 if track.chaine not in dictFichiers[nomFichier] :
                     dictFichiers[nomFichier].append(track.chaine)
         
         indexFichier = 0
-        for nomFichier, listeChaines in dictFichiers.iteritems() :
-            print "%d/%d  : %s..." % (indexFichier, len(dictFichiers), nomFichier)
+        for nomFichier, listeChaines in dictFichiers.items() :
+            print("%d/%d  : %s..." % (indexFichier, len(dictFichiers), nomFichier))
                 
             # Ouverture des fichiers
             fichier = open(nomFichier, "r")
@@ -290,7 +290,7 @@ class MyFrame(wx.Frame):
             
             indexFichier += 1
             
-        print "fini !!!!!!!!!!!!!!!!!"
+        print("fini !!!!!!!!!!!!!!!!!")
 
 
 
@@ -299,7 +299,7 @@ def AjoutImport():
     indexFichier = 0
     for nomFichier in listeFichiers :
         if nomFichier.endswith("py") and nomFichier.startswith("DATA_") == False and nomFichier not in ("CreateurMAJ.py", "CreateurANNONCES.py") :
-            print "%d/%d :  %s..." % (indexFichier, len(listeFichiers), nomFichier)
+            print("%d/%d :  %s..." % (indexFichier, len(listeFichiers), nomFichier))
             
             # Ouverture des fichiers
             fichier = open("New/" + nomFichier, "r")
@@ -326,7 +326,7 @@ def AjoutImport():
             
         indexFichier += 1
             
-    print "fini !!!!!!!!!!!!!!!!!"
+    print("fini !!!!!!!!!!!!!!!!!")
 
 # -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 

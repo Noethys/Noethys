@@ -163,7 +163,7 @@ class ListView(FastObjectListView):
             
             if self.dict_parametres["presents"] == None or (self.dict_parametres["presents"] != None and IDfamille in listePresents) :
                 
-                if dictQuotients.has_key(IDfamille) :
+                if IDfamille in dictQuotients :
                     dictQuotient = dictQuotients[IDfamille]
                 else :
                     dictQuotient = None

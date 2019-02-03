@@ -123,9 +123,9 @@ class CTRL(HTL.HyperTreeList):
 
                 # Mémorisation de l'évènement
                 key = (nomActivite, IDactivite)
-                if dictDonnees.has_key(key) == False :
+                if (key in dictDonnees) == False :
                     dictDonnees[key] = {}
-                if dictDonnees[key].has_key(date) == False :
+                if (date in dictDonnees[key]) == False :
                     dictDonnees[key][date] = []
                 dictDonnees[key][date].append(IDevenement)
 
@@ -137,7 +137,7 @@ class CTRL(HTL.HyperTreeList):
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         for IDconso, IDevenement, etat in listeDonnees :
-            if dictEvenements.has_key(IDevenement) :
+            if IDevenement in dictEvenements :
                 if etat in ("reservation", "present") :
                     dictEvenements[IDevenement]["nbre_inscrits"] += 1
                 if etat == "attente" :
@@ -159,7 +159,7 @@ class CTRL(HTL.HyperTreeList):
         self.dictImpression["coloration"] = []
 
         # Tri par activités
-        listeActivites = dictDonnees.keys()
+        listeActivites = list(dictDonnees.keys())
         listeActivites.sort()
 
         # Niveau Activité
@@ -172,7 +172,7 @@ class CTRL(HTL.HyperTreeList):
             self.dictImpression["coloration"].append((len(self.dictImpression["contenu"]) - 1, "regroup"))
 
             # Dates
-            listeDates = dictDonnees[key].keys()
+            listeDates = list(dictDonnees[key].keys())
             listeDates.sort()
 
             for date in listeDates :
@@ -588,7 +588,7 @@ class Panel(wx.Panel):
         if dlg.ShowModal() == wx.ID_OK:
             newDictDonnees = dlg.GetDictDonnees()
             # Envoi les données au ctrl remplissage
-            for key, valeur in newDictDonnees.iteritems() :
+            for key, valeur in newDictDonnees.items() :
                 dictDonnees[key] = valeur
             self.GetParent().ctrl_remplissage.SetDictDonnees(dictDonnees)
             # MAJ
@@ -691,7 +691,7 @@ class MyFrame(wx.Frame):
         self.ctrl = Panel(panel)
         t1 = time.time()
         self.ctrl.MAJ()
-        print "Temps MAJ =", time.time() - t1
+        print("Temps MAJ =", time.time() - t1)
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.ctrl, 1, wx.ALL|wx.EXPAND, 4)
         panel.SetSizer(sizer_2)

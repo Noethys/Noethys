@@ -170,13 +170,13 @@ class GetValeurs() :
         for IDrattachement, IDindividu, IDfamille, IDcategorie, titulaire in self.listeIndividusRattaches :
             
             # Création de la clé IDfamille
-            if dictLiens.has_key(IDfamille) == False :
+            if (IDfamille in dictLiens) == False :
                 dictLiens[IDfamille] = {}
             # Création de la clé IDindividu
-            if dictLiens[IDfamille].has_key(IDindividu) == False :
+            if (IDindividu in dictLiens[IDfamille]) == False :
                 dictLiens[IDfamille][IDindividu] = {}
             # Création de la catégorie de rattachement
-            for IDcategorieTmp, labelCategorie in self.dictCategories.iteritems():
+            for IDcategorieTmp, labelCategorie in self.dictCategories.items():
                 dictLiens[IDfamille][IDindividu][IDcategorieTmp] = {}
                 
             for IDindividu_sujet in self.GetListeIDindividusRattaches(IDfamille) :
@@ -195,10 +195,10 @@ class GetValeurs() :
  
     def GetDataPourSauvegarde(self):
         listeLiensAsauver = []
-        for IDfamille, dictIndividusObjet in self.dictLiens.iteritems() :
-            for IDindividu_objet, dictCategorieSujet in dictIndividusObjet.iteritems() :
-                for IDcategorieSujet, dictIndividusCategorie in dictCategorieSujet.iteritems() :
-                    for IDindividu_sujet, dictIndividusSujet in dictIndividusCategorie.iteritems() :
+        for IDfamille, dictIndividusObjet in self.dictLiens.items() :
+            for IDindividu_objet, dictCategorieSujet in dictIndividusObjet.items() :
+                for IDcategorieSujet, dictIndividusCategorie in dictCategorieSujet.items() :
+                    for IDindividu_sujet, dictIndividusSujet in dictIndividusCategorie.items() :
                         if dictIndividusSujet["modif"] == True :
                             dictAsauver = {
                                 "IDlien" : dictIndividusSujet["IDlien"], 
@@ -321,7 +321,7 @@ class Choice_liens(wx.Choice):
     def GetListeTypesLiens(self):
         listeChoix = []
         self.dictChoix = {}
-        for IDtypeLien, valeurs in DICT_TYPES_LIENS.iteritems() :
+        for IDtypeLien, valeurs in DICT_TYPES_LIENS.items() :
             if self.typeIndividu in valeurs["public"] :
                 if self.sexeIndividu != None :
                     texte = valeurs["texte"][self.sexeIndividu]
@@ -354,7 +354,7 @@ class Choice_liens(wx.Choice):
             return self.dictChoix[self.GetSelection()]
     
     def SetIDtypeLien(self, IDtypeLien=None):
-        for index, IDtypeLienTmp in self.dictChoix.iteritems() :
+        for index, IDtypeLienTmp in self.dictChoix.items() :
             if IDtypeLien == IDtypeLienTmp :
                 self.SetSelection(index)
 
@@ -383,7 +383,7 @@ class Choice_autorisations(BitmapComboBox):
     def GetListe(self):
         listeChoix = []
         self.dictChoix = {}
-        for IDautorisation, valeurs in DICT_AUTORISATIONS.iteritems() :
+        for IDautorisation, valeurs in DICT_AUTORISATIONS.items() :
             if self.sexeIndividu == None : 
                 texte = valeurs["M"] # Si c'est un organisme
             else:
@@ -413,7 +413,7 @@ class Choice_autorisations(BitmapComboBox):
             return self.dictChoix[self.GetSelection()]
     
     def SetIDautorisation(self, IDautorisation=None):
-        for index, IDautorisationTmp in self.dictChoix.iteritems() :
+        for index, IDautorisationTmp in self.dictChoix.items() :
             if IDautorisation == IDautorisationTmp :
                 self.SetSelection(index)
                 
@@ -443,7 +443,7 @@ class Choice_autorisations_archive(wx.Choice):
     def GetListe(self):
         listeChoix = []
         self.dictChoix = {}
-        for IDautorisation, valeurs in DICT_AUTORISATIONS.iteritems() :
+        for IDautorisation, valeurs in DICT_AUTORISATIONS.items() :
             if self.sexeIndividu == None : 
                 texte = valeurs["M"] # Si c'est un organisme
             else:
@@ -472,7 +472,7 @@ class Choice_autorisations_archive(wx.Choice):
             return self.dictChoix[self.GetSelection()]
     
     def SetIDautorisation(self, IDautorisation=None):
-        for index, IDautorisationTmp in self.dictChoix.iteritems() :
+        for index, IDautorisationTmp in self.dictChoix.items() :
             if IDautorisation == IDautorisationTmp :
                 self.SetSelection(index)
                 
@@ -627,11 +627,11 @@ class CTRL_Saisie_Liens(HTL.HyperTreeList):
                 self.SetItemBold(categorie, True)
                 
                 # Création des branche INDIVIDUS
-                if self.donnees.dictLiens[IDfamille].has_key(self.IDindividu) :
-                    if self.donnees.dictLiens[IDfamille][self.IDindividu].has_key(IDcategorie) :
+                if self.IDindividu in self.donnees.dictLiens[IDfamille] :
+                    if IDcategorie in self.donnees.dictLiens[IDfamille][self.IDindividu] :
                         dictIndividus = self.donnees.dictLiens[IDfamille][self.IDindividu][IDcategorie]
 
-                        for IDindividu, dictIndividu in dictIndividus.iteritems()  :
+                        for IDindividu, dictIndividu in dictIndividus.items()  :
                             IDlien = dictIndividu["IDlien"]
                             nom = self.donnees.dictInfosIndividus[IDindividu]["nom"]
                             prenom = self.donnees.dictInfosIndividus[IDindividu]["prenom"]
@@ -730,7 +730,7 @@ class CTRL_Saisie_Liens(HTL.HyperTreeList):
                 # C'est une femme , alors on recherche ses enfants
                 listeFreresSoeurs = []
                 dictEnfants = self.donnees.dictLiens[IDfamille][IDindividu_objet][2]
-                for IDindividu_enfant, dictEnfants in dictEnfants.iteritems() :
+                for IDindividu_enfant, dictEnfants in dictEnfants.items() :
                     # On vérifie que c'est son enfant :
                     if dictEnfants["IDtypeLien"] == 2 :
                         listeFreresSoeurs.append(IDindividu_enfant)

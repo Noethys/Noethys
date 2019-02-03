@@ -13,7 +13,7 @@ import Chemins
 from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
-import cPickle
+from six.moves import cPickle
 import copy
 import CTRL_Bouton_image
 import wx.grid as gridlib
@@ -452,14 +452,14 @@ class Tableau(gridlib.Grid):
             index += 1
         
     def Remplissage(self):
-        if self.dictDonnees.has_key(self.code) : 
+        if self.code in self.dictDonnees : 
             # Création des lignes
             dictLignes = self.dictDonnees[self.code]
-            for numLigne in dictLignes.keys() :
+            for numLigne in list(dictLignes.keys()) :
                 self.AjouterLigne()
                 # Remplissage des lignes
                 dictColonnes = self.dictDonnees[self.code][numLigne]
-                for numColonne in dictColonnes.keys() :
+                for numColonne in list(dictColonnes.keys()) :
                     if numColonne != "IDligne" :
                         valeur = dictColonnes[numColonne]
                         valeur = unicode(valeur)
@@ -478,9 +478,9 @@ class Tableau(gridlib.Grid):
         self.SetRowLabelValue(numLigne, str(numLigne+1))
         self.SetRowSize(numLigne, 20)
         # Mémorisation de la ligne
-        if self.dictDonnees.has_key(self.code) == False : 
+        if (self.code in self.dictDonnees) == False : 
             self.dictDonnees[self.code] = {}
-        if self.dictDonnees[self.code].has_key(numLigne) == False : 
+        if (numLigne in self.dictDonnees[self.code]) == False : 
             self.dictDonnees[self.code][numLigne] = {}
         # Configuration des cases
         numColonne = 0
@@ -584,7 +584,7 @@ class Tableau(gridlib.Grid):
 
         # Décalage des lignes en mémoire
         dict_temp = {}
-        liste_num_lignes = self.dictDonnees[self.code].keys()
+        liste_num_lignes = list(self.dictDonnees[self.code].keys())
         liste_num_lignes.sort()
 
         for numLigne in liste_num_lignes :
@@ -602,9 +602,9 @@ class Tableau(gridlib.Grid):
             self.SetRowSize(numLigne, 20)
 
             # Mémorisation de la ligne
-            if self.dictDonnees.has_key(self.code) == False:
+            if (self.code in self.dictDonnees) == False:
                 self.dictDonnees[self.code] = {}
-            if self.dictDonnees[self.code].has_key(numLigne) == False:
+            if (numLigne in self.dictDonnees[self.code]) == False:
                 self.dictDonnees[self.code][numLigne] = {}
 
             # Configuration des cases
@@ -653,7 +653,7 @@ class Tableau(gridlib.Grid):
     def Supprimer(self, event=None):
         """ Supprimer les lignes sélectionnées """
         mode, selections = self.GetSelectionUtilisateur()
-        if mode == None or self.dictDonnees.has_key(self.code) == False:
+        if mode == None or (self.code in self.dictDonnees) == False:
             dlg = wx.MessageDialog(self, _(u"Aucune ligne à supprimer."), u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
@@ -698,7 +698,7 @@ class Tableau(gridlib.Grid):
     def SupprimerLignes(self, num_ligne_debut=0, nbre_lignes=1):
         """ Supprimer des lignes de la ligne num_ligne_debut à num_ligne_fin """
         dict_temp = {}
-        liste_num_lignes = self.dictDonnees[self.code].keys()
+        liste_num_lignes = list(self.dictDonnees[self.code].keys())
         liste_num_lignes.sort()
 
         nouveau_num_ligne = 0
@@ -718,11 +718,11 @@ class Tableau(gridlib.Grid):
     def MemoriseValeur(self, numLigne, numColonne, valeur=False, IDligne=None):
         if valeur == False :
             valeur = self.GetCellValue(numLigne, numColonne)
-        if self.dictDonnees.has_key(self.code) == False : 
+        if (self.code in self.dictDonnees) == False : 
             self.dictDonnees[self.code] = {}
-        if self.dictDonnees[self.code].has_key(numLigne) == False : 
+        if (numLigne in self.dictDonnees[self.code]) == False : 
             self.dictDonnees[self.code][numLigne] = {}
-        if self.dictDonnees[self.code][numLigne].has_key(numColonne) == False : 
+        if (numColonne in self.dictDonnees[self.code][numLigne]) == False : 
             self.dictDonnees[self.code][numLigne][numColonne] = None
         # Formatage de la valeur
         editeur = None
@@ -812,19 +812,19 @@ class Tableau(gridlib.Grid):
     
     def Validation(self):
         """ Vérification des donnéees """
-        if self.dictDonnees.has_key(self.code) == False : 
+        if (self.code in self.dictDonnees) == False : 
             dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner une méthode de calcul !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
-        for numLigne, dictColonnes in self.dictDonnees[self.code].iteritems() :
+        for numLigne, dictColonnes in self.dictDonnees[self.code].items() :
             numColonne = 0
             for indexChamp in self.listeColonnes :
                 codeChamp = LISTE_COLONNES[indexChamp]["code"]
                 label = LISTE_COLONNES[indexChamp]["label"]
                 if codeChamp in self.champs_obligatoires :
                     # Vérifie la valeur
-                    if dictColonnes.has_key(numColonne) == False :
+                    if (numColonne in dictColonnes) == False :
                         dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement renseigner la colonne '%s' de la ligne n°%d !") % (label, numLigne+1), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
                         dlg.ShowModal()
                         dlg.Destroy()
@@ -849,10 +849,10 @@ class Tableau(gridlib.Grid):
             DB = GestionDB.DB()
 
         listeFinaleID = []
-        if self.dictDonnees.has_key(self.code) == False : return False
+        if (self.code in self.dictDonnees) == False : return False
 
         liste_lignes = []
-        for numLigne, dictColonnes in self.dictDonnees[self.code].iteritems() :
+        for numLigne, dictColonnes in self.dictDonnees[self.code].items() :
             dictValeurs = {
                 "IDactivite" : self.parent.IDactivite,
                 "IDtarif" : self.parent.IDtarif,
@@ -863,7 +863,7 @@ class Tableau(gridlib.Grid):
             numColonne = 0
             for indexChamp in self.listeColonnes :
                 codeChamp = LISTE_COLONNES[indexChamp]["code"]
-                if dictColonnes.has_key(numColonne) :
+                if numColonne in dictColonnes :
                     valeur = dictColonnes[numColonne]
                 else:
                     valeur = None
@@ -876,7 +876,7 @@ class Tableau(gridlib.Grid):
             # Création de la liste de champs pour la sauvegarde
             listeDonnees = []
             for codeChamp in CHAMPS_TABLE_LIGNES[1:] :
-                if codeChamp in dictValeurs.keys() :
+                if codeChamp in list(dictValeurs.keys()) :
                     valeur = dictValeurs[codeChamp]
                 else:
                     valeur = None
@@ -884,7 +884,7 @@ class Tableau(gridlib.Grid):
                 listeDonnees.append(champ)
 
             # Sauvegarde
-            if dictColonnes.has_key("IDligne") :
+            if "IDligne" in dictColonnes :
                 IDligne = dictColonnes["IDligne"]
                 listeFinaleID.append(IDligne)
             else:
@@ -956,7 +956,7 @@ class Tableau(gridlib.Grid):
     def Copier(self, event=None):
         """ Copie les cases sélectionnées dans le presse-papiers """
         mode, selections = self.GetSelectionUtilisateur()
-        if mode == None or self.dictDonnees.has_key(self.code) == False:
+        if mode == None or (self.code in self.dictDonnees) == False:
             dlg = wx.MessageDialog(self, _(u"Aucune donnée à copier."), u"Presse-papiers", wx.OK | wx.ICON_INFORMATION)
             dlg.ShowModal()
             dlg.Destroy()
@@ -964,14 +964,14 @@ class Tableau(gridlib.Grid):
 
         # Parcours les cases du tableau
         data_lignes = []
-        for numLigne, dictColonnes in self.dictDonnees[self.code].iteritems():
+        for numLigne, dictColonnes in self.dictDonnees[self.code].items():
             dict_ligne = {}
             numColonne = 0
             for indexChamp in self.listeColonnes:
 
                 # Recherche la valeur de la case
                 code = LISTE_COLONNES[indexChamp]["code"]
-                if dictColonnes.has_key(numColonne):
+                if numColonne in dictColonnes:
                     valeur = dictColonnes[numColonne]
                 else:
                     valeur = None
@@ -1060,7 +1060,7 @@ class Tableau(gridlib.Grid):
 
         # Remplissage des cases
         for dict_ligne in data_lignes :
-            for code, valeur in dict_ligne.iteritems() :
+            for code, valeur in dict_ligne.items() :
                 # Recherche le numéro de colonne
                 index = 0
                 numColonne = None
@@ -1213,7 +1213,7 @@ class CTRL_Methode(wx.Choice):
 
 
     def SetCode(self, code=None):
-        for index, dictValeurs in self.dictDonnees.iteritems() :
+        for index, dictValeurs in self.dictDonnees.items() :
             if dictValeurs["code"] == code :
                 self.SetSelection(index)
 
@@ -1264,7 +1264,7 @@ class CTRL_Type_quotient(wx.Choice):
     def SetID(self, ID=0):
         if ID == None:
             self.SetSelection(0)
-        for index, values in self.dictDonnees.iteritems():
+        for index, values in self.dictDonnees.items():
             if values["ID"] == ID:
                 self.SetSelection(index)
 

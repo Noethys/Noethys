@@ -250,9 +250,9 @@ class Frame(wx.Frame):
         self.bouton_ok.Enable(False)
 
         # Remplissage des champs
-        if dictDonnees.has_key("nom_allocataire") :
+        if "nom_allocataire" in dictDonnees :
             self.ctrl_nom.SetValue(dictDonnees["nom_allocataire"])
-        if dictDonnees.has_key("numero_allocataire") :
+        if "numero_allocataire" in dictDonnees :
             self.ctrl_numero.SetValue(dictDonnees["numero_allocataire"])
 
     def __set_properties(self):

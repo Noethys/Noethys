@@ -144,7 +144,7 @@ class CTRL(HTL.HyperTreeList):
             # Pour un individu
             if self.dictFamillesRattachees != None :
                 listeIDfamille = []
-                for IDfamille, dictFamille in self.dictFamillesRattachees.iteritems() :
+                for IDfamille, dictFamille in self.dictFamillesRattachees.items() :
                     if dictFamille["IDcategorie"] in (1, 2) :
                         listeIDfamille.append(IDfamille)
                 if len(listeIDfamille) == 0 : conditionIDfamille = "()"
@@ -225,7 +225,7 @@ class CTRL(HTL.HyperTreeList):
             # Mémorise pour la fenêtre de saisie d'une pièce
             self.listePiecesObligatoires.append((IDfamille, IDtype_piece, IDindividu))
             
-            if dictPiecesFournies.has_key( (IDfamille, IDtype_piece, IDindividu) ) :
+            if (IDfamille, IDtype_piece, IDindividu) in dictPiecesFournies :
                 date_debut, date_fin = dictPiecesFournies[(IDfamille, IDtype_piece, IDindividu)]
                 nbreJoursRestants = (date_fin - datetime.date.today()).days
                 if nbreJoursRestants > 15 :
@@ -239,9 +239,9 @@ class CTRL(HTL.HyperTreeList):
         # Répartition par famille
         dictPieces = {}
         nbreFamilles = 0
-        for key, valeurs in dictDonnees.iteritems() :
+        for key, valeurs in dictDonnees.items() :
             IDfamille = valeurs[0]
-            if dictPieces.has_key(IDfamille) == False :
+            if (IDfamille in dictPieces) == False :
                 dictPieces[IDfamille] = []
                 if IDfamille != None : 
                     nbreFamilles += 1
@@ -252,7 +252,7 @@ class CTRL(HTL.HyperTreeList):
         self.root = self.AddRoot(_(u"Racine"))
         
         # Création des branches
-        for IDfamille, valeurs in dictPieces.iteritems() :
+        for IDfamille, valeurs in dictPieces.items() :
             
             # Niveau 1 : Titulaires des familles
             if nbreFamilles > 1 :
@@ -288,7 +288,7 @@ class CTRL(HTL.HyperTreeList):
         self.ExpandAllChildren(self.root)
         
     def SelectPiece(self, IDfamille=None, IDtype_piece=None, IDindividu=None):
-        if self.dictItems.has_key((IDfamille, IDtype_piece, IDindividu)) :
+        if (IDfamille, IDtype_piece, IDindividu) in self.dictItems :
             item = self.dictItems[(IDfamille, IDtype_piece, IDindividu)]
             self.SelectItem(item)
             return True

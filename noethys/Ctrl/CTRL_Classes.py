@@ -135,7 +135,7 @@ class CTRL(HTL.HyperTreeList):
                 txtTemp = []
                 for niveau in listeTemp :
                     IDniveau = int(niveau)
-                    if self.dictNiveaux.has_key(IDniveau) :
+                    if IDniveau in self.dictNiveaux :
                         nomNiveau = self.dictNiveaux[IDniveau]["abrege"]
                         ordreNiveau = self.dictNiveaux[IDniveau]["ordre"]
                         listeNiveaux.append(IDniveau)
@@ -144,14 +144,14 @@ class CTRL(HTL.HyperTreeList):
                 txtNiveaux = ", ".join(txtTemp)
             
             # Création du dict Classes
-            if dictClasses.has_key(saison) == False :
+            if (saison in dictClasses) == False :
                 dictClasses[saison] = []
             
             donnees = (listeOrdresNiveaux, nom, txtNiveaux, IDclasse) 
             dictClasses[saison].append(donnees)
         
         # Tri des saisons par date
-        listeSaisons = dictClasses.keys() 
+        listeSaisons = list(dictClasses.keys()) 
         listeSaisons.sort() 
         
         

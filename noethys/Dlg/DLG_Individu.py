@@ -103,7 +103,7 @@ class Notebook(wx.Notebook):
         self.Bind(wx.EVT_NOTEBOOK_PAGE_CHANGED, self.OnPageChanged)
         
     def GetPageAvecCode(self, codePage=""):
-        if self.dictPages.has_key(codePage):
+        if codePage in self.dictPages:
             return self.dictPages[codePage]["ctrl"]
         else:
             return None
@@ -126,7 +126,7 @@ class Notebook(wx.Notebook):
         parametres = UTILS_Config.GetParametre("fiche_individu_pages", defaut={})
         dictParametres = {}
         for codePage, labelPage, ctrlPage, imgPage in self.listePages:
-            if parametres.has_key(codePage):
+            if codePage in parametres:
                 afficher = parametres[codePage]
             else :
                 afficher = True
@@ -143,7 +143,7 @@ class Notebook(wx.Notebook):
         for codePage, labelPage, ctrlPage, imgPage in self.listePages:
             if codePage not in self.pagesObligatoires :
                 listeLabels.append(labelPage)
-                if dictParametres.has_key(codePage):
+                if codePage in dictParametres:
                     if dictParametres[codePage] == True :
                         listeSelections.append(index)
                 listeCodes.append(codePage)
@@ -406,7 +406,7 @@ class Dialog(wx.Dialog):
             dictFamilles[IDfamille] = {"nomsTitulaires" : u"", "listeNomsTitulaires" : [], "IDcategorie" : IDcategorie, "nomCategorie" : nomCategorie, "IDcompte_payeur" : IDcompte_payeur }
         # Recherche des noms des titulaires
         if len(dictFamilles) == 0 : condition = "()"
-        if len(dictFamilles) == 1 : condition = "(%d)" % dictFamilles.keys()[0]
+        if len(dictFamilles) == 1 : condition = "(%d)" % list(dictFamilles.keys())[0]
         else : condition = str(tuple(dictFamilles))
         req = """SELECT IDrattachement, individus.IDindividu, IDfamille, IDcategorie, titulaire, nom, prenom
         FROM rattachements 
@@ -437,7 +437,7 @@ class Dialog(wx.Dialog):
         else:
             nbreFamilles = len(self.dictFamillesRattachees)
             texte = u""
-            for IDfamille, dictFamille in self.dictFamillesRattachees.iteritems() :
+            for IDfamille, dictFamille in self.dictFamillesRattachees.items() :
                 nomsTitulaires = dictFamille["nomsTitulaires"]
                 nomCategorie = dictFamille["nomCategorie"]
                 texte += _(u"Est rattaché à la famille de <A HREF='%s'>%s</A> en tant que %s.<BR>") % (str(IDfamille), nomsTitulaires, nomCategorie)
@@ -614,6 +614,6 @@ if __name__ == "__main__":
     heure_debut = time.time()
     fiche_individu = Dialog(None, IDindividu=45)
     app.SetTopWindow(fiche_individu)
-    print "Temps de chargement fiche individuelle =", time.time() - heure_debut
+    print("Temps de chargement fiche individuelle =", time.time() - heure_debut)
     fiche_individu.ShowModal()
     app.MainLoop()

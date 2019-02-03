@@ -186,7 +186,7 @@ class CTRL(HTL.HyperTreeList):
         for IDgroupe, statut, nbre_inscriptions in listeInscrits :
             if statut == None :
                 statut = "ok"
-            if dictInscrits.has_key(IDgroupe) == False :
+            if (IDgroupe in dictInscrits) == False :
                 dictInscrits[IDgroupe] = {"ok" : 0, "attente" : 0, "refus" : 0}
             dictInscrits[IDgroupe][statut] += nbre_inscriptions
 
@@ -205,7 +205,7 @@ class CTRL(HTL.HyperTreeList):
             if nom == None : nom = _(u"Sans nom !")
             if abrege == None : abrege = ""
 
-            if dictInscrits.has_key(IDgroupe) :
+            if IDgroupe in dictInscrits :
                 nbre_inscrits = dictInscrits[IDgroupe]["ok"]
                 nbre_attente = dictInscrits[IDgroupe]["attente"]
                 nbre_refus = dictInscrits[IDgroupe]["refus"]
@@ -219,7 +219,7 @@ class CTRL(HTL.HyperTreeList):
             else :
                 nbre_places_libres = None
 
-            if dictGroupes.has_key(IDactivite) == False :
+            if (IDactivite in dictGroupes) == False :
                 dictGroupes[IDactivite] = []
             dictGroupes[IDactivite].append({"IDgroupe" : IDgroupe, "nom" : nom, "abrege" : abrege, "nbre_inscrits_max" : nbre_inscrits_max, "nbre_inscrits" : nbre_inscrits, "nbre_places_libres" : nbre_places_libres, "nbre_attente" : nbre_attente, "nbre_refus" : nbre_refus, "IDactivite" : IDactivite})
 
@@ -247,7 +247,7 @@ class CTRL(HTL.HyperTreeList):
             if abrege == None : abrege = ""
 
             liste_groupes = []
-            if dictGroupes.has_key(IDactivite) :
+            if IDactivite in dictGroupes :
                 liste_groupes = dictGroupes[IDactivite]
             nbre_inscrits = 0
             nbre_attente = 0
@@ -288,15 +288,15 @@ class CTRL(HTL.HyperTreeList):
             dictGroupesActivites = {}
             for IDtype_groupe_activite, nom, IDactivite in listeDonnees :
 
-                if not dictGroupeParActivite.has_key(IDactivite) :
+                if IDactivite not in dictGroupeParActivite :
                     dictGroupeParActivite[IDactivite] = []
                 dictGroupeParActivite[IDactivite].append(IDtype_groupe_activite)
 
-                if not dictGroupesActivites.has_key(IDtype_groupe_activite) :
+                if IDtype_groupe_activite not in dictGroupesActivites :
                     dictGroupesActivites[IDtype_groupe_activite] = nom
 
             liste_groupes_activites = []
-            for IDtype_groupe_activite, nom in dictGroupesActivites.iteritems() :
+            for IDtype_groupe_activite, nom in dictGroupesActivites.items() :
                 if listeFiltreGroupesActivites == None or IDtype_groupe_activite in listeFiltreGroupesActivites :
                     if nom != None :
                         liste_groupes_activites.append((nom.upper(), IDtype_groupe_activite))
@@ -330,7 +330,7 @@ class CTRL(HTL.HyperTreeList):
                 if self.filtre == None or (self.filtre.lower() in dictActivite["infos"].lower()) :
 
                     IDactivite = dictActivite["IDactivite"]
-                    if self.regroupement_groupe_activites == 0 or (self.regroupement_groupe_activites == 1 and dictGroupeParActivite.has_key(IDactivite) and IDtype_groupe_activite in dictGroupeParActivite[IDactivite]) :
+                    if self.regroupement_groupe_activites == 0 or (self.regroupement_groupe_activites == 1 and IDactivite in dictGroupeParActivite and IDtype_groupe_activite in dictGroupeParActivite[IDactivite]) :
 
                         # Ligne Activité
                         label = u" " + dictActivite["nom"]
@@ -922,7 +922,7 @@ class MyFrame(wx.Frame):
         self.ctrl = Panel(panel)
         t1 = time.time()
         self.ctrl.MAJ()
-        print "Temps MAJ =", time.time() - t1
+        print("Temps MAJ =", time.time() - t1)
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.ctrl, 1, wx.ALL|wx.EXPAND, 4)
         panel.SetSizer(sizer_2)

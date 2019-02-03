@@ -36,14 +36,14 @@ class Track(object):
         self.disponible = int(self.quantite)
 
         # Recherche si le produit est en cours de location
-        if parent.dictLocations.has_key(self.IDproduit):
+        if self.IDproduit in parent.dictLocations:
             liste_locations = parent.dictLocations[self.IDproduit]
             for dictLocation in liste_locations :
                 self.disponible -= dictLocation["quantite"]
 
                 if len(liste_locations) == 1 :
                     self.IDfamille = dictLocation["IDfamille"]
-                    if parent.dict_titulaires.has_key(self.IDfamille):
+                    if self.IDfamille in parent.dict_titulaires:
                         self.nomTitulaires = parent.dict_titulaires[self.IDfamille]["titulairesSansCivilite"]
                     self.date_debut = dictLocation["date_debut"]
                     self.date_fin = dictLocation["date_fin"]
@@ -136,7 +136,7 @@ class ListView(FastObjectListView):
                     valide = False
 
             # Mémorisation position
-            if self.dictPositions != None and self.dictPositions.has_key(track.IDproduit):
+            if self.dictPositions != None and track.IDproduit in self.dictPositions:
                 track.position = self.dictPositions[track.IDproduit]
 
             # Coche afficher uniquement les disponibles
@@ -242,8 +242,8 @@ class ListView(FastObjectListView):
         self.selectionTrack = None
 
     def GetReponse(self, IDquestion=None, ID=None):
-        if self.dict_questionnaires.has_key(IDquestion) :
-            if self.dict_questionnaires[IDquestion].has_key(ID) :
+        if IDquestion in self.dict_questionnaires :
+            if ID in self.dict_questionnaires[IDquestion] :
                 return self.dict_questionnaires[IDquestion][ID]
         return u""
 
@@ -393,7 +393,7 @@ class ListView(FastObjectListView):
     def SetDictPropositions(self, dictPropositions={}, IDdemande=False):
         listeID = []
         self.dictPositions = {}
-        for IDdemandeTemp, liste_produits in dictPropositions.iteritems():
+        for IDdemandeTemp, liste_produits in dictPropositions.items():
             if IDdemande == False or IDdemande == IDdemandeTemp :
                 for dictProduit in liste_produits:
                     if dictProduit["disponible"] > 0 or self.afficher_uniquement_disponibles == False :

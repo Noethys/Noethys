@@ -26,8 +26,8 @@ class Vocal() :
         self.defaut = None
         try :
             self.engine = pyttsx.init() 
-        except Exception, err: 
-            print "Erreur dans l'initialisation de la synthese vocale :", err
+        except Exception as err: 
+            print("Erreur dans l'initialisation de la synthese vocale :", err)
             self.echec = True
         
         if self.echec == False :
@@ -98,7 +98,7 @@ class Vocal() :
         if self.echec == True :
             return
         # Recherche de corrections
-        for mot, correction in self.dictCorrections.iteritems() :
+        for mot, correction in self.dictCorrections.items() :
             if mot.lower() in texte.lower() :
                 texte = texte.replace(mot, correction)
         # Parle

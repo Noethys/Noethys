@@ -128,9 +128,9 @@ class Dialog(wx.Dialog):
         self.CenterOnScreen() 
     
     def Importation(self, dictValeurs={}):
-        if dictValeurs.has_key("date_debut") :
+        if "date_debut" in dictValeurs :
             self.ctrl_date_debut.SetDate(dictValeurs["date_debut"])
-        if dictValeurs.has_key("date_fin") :
+        if "date_fin" in dictValeurs :
             self.ctrl_date_fin.SetDate(dictValeurs["date_fin"])
     
     def GetParametres(self):
@@ -291,5 +291,5 @@ if __name__ == u"__main__":
     app.SetTopWindow(dlg)
     dlg.ShowModal()
     for x in dlg.GetResultats() :
-        print x
+        print(x)
     app.MainLoop()

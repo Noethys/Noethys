@@ -98,7 +98,7 @@ class CTRL(HTL.HyperTreeList):
         
         # tri des groupes par ordre
         listeGroupes = []
-        for IDgroupe, dictGroupe in self.dictGroupes.iteritems() :
+        for IDgroupe, dictGroupe in self.dictGroupes.items() :
             listeGroupes.append((dictGroupe["ordre"], IDgroupe))
         listeGroupes.sort()
         
@@ -107,23 +107,23 @@ class CTRL(HTL.HyperTreeList):
         for ordre, IDgroupe in listeGroupes :
             dictGroupe = self.dictGroupes[IDgroupe]
             IDactivite = dictGroupe["IDactivite"]
-            if self.dictGroupeTmp.has_key(IDactivite) == False :
+            if (IDactivite in self.dictGroupeTmp) == False :
                 self.dictGroupeTmp[IDactivite] = []
             self.dictGroupeTmp[IDactivite].append((IDgroupe, dictGroupe["nom"]))
         
         # Si groupe unique
         for IDactivite in self.listeActivites :
-            if self.dictGroupeTmp.has_key(IDactivite) == False :
+            if (IDactivite in self.dictGroupeTmp) == False :
                 self.dictGroupeTmp[IDactivite] = [(0, _(u"Groupe unique")),]
         
         # Récupération des unités de remplissage
         self.dictUnitesRemplissageTemp = {}
-        for IDunite_remplissage, dictUniteRemplissage in self.dictRemplissage.iteritems() :
-            if dictUniteRemplissage.has_key("IDactivite") :
+        for IDunite_remplissage, dictUniteRemplissage in self.dictRemplissage.items() :
+            if "IDactivite" in dictUniteRemplissage :
                 IDactivite = dictUniteRemplissage["IDactivite"]
                 abrege = dictUniteRemplissage["abrege"]
                 ordre = dictUniteRemplissage["ordre"]
-                if self.dictUnitesRemplissageTemp.has_key(IDactivite) == False :
+                if (IDactivite in self.dictUnitesRemplissageTemp) == False :
                     self.dictUnitesRemplissageTemp[IDactivite] = []
                 self.dictUnitesRemplissageTemp[IDactivite].append((ordre, IDunite_remplissage, abrege))
                 self.dictUnitesRemplissageTemp[IDactivite].sort()
@@ -135,9 +135,9 @@ class CTRL(HTL.HyperTreeList):
         listeNbreUnites = []
         for IDactivite in self.listeActivites :
             nbre = 0
-            if self.dictListeUnites.has_key(IDactivite) :
+            if IDactivite in self.dictListeUnites :
                 nbre += len(self.dictListeUnites[IDactivite])
-            if self.dictUnitesRemplissageTemp.has_key(IDactivite) :
+            if IDactivite in self.dictUnitesRemplissageTemp :
                 nbre += len(self.dictUnitesRemplissageTemp[IDactivite])
             listeNbreUnites.append(nbre)
         
@@ -171,14 +171,14 @@ class CTRL(HTL.HyperTreeList):
             
             # Entete de colonnes : UNITES
             indexColonne = 1
-            if self.dictListeUnites.has_key(IDactivite):
+            if IDactivite in self.dictListeUnites:
                 for dictUnite in self.dictListeUnites[IDactivite] :
                     nomUnite = dictUnite["abrege"]
                     self.SetItemText(activite, nomUnite, indexColonne)
                     indexColonne += 1
             
             # Entete de colones : UNITES DE REMPLISSAGE
-            if self.dictUnitesRemplissageTemp.has_key(IDactivite) : 
+            if IDactivite in self.dictUnitesRemplissageTemp : 
                 for ordre, IDunite_remplissage, nomUniteRemplissage in self.dictUnitesRemplissageTemp[IDactivite] :
                     self.SetItemText(activite, nomUniteRemplissage, indexColonne)
                     indexColonne += 1
@@ -224,12 +224,12 @@ class CTRL(HTL.HyperTreeList):
                 
                 # Nbre d'unités
                 indexColonne = 1
-                if self.dictListeUnites.has_key(IDactivite):
+                if IDactivite in self.dictListeUnites:
                     for dictUnite in self.dictListeUnites[IDactivite] :
                         IDunite = dictUnite["IDunite"]
                         try :
                             nbre = self.dictConsoUnites[IDunite][IDgroupe]
-                            if dictTotaux.has_key(indexColonne) == False :
+                            if (indexColonne in dictTotaux) == False :
                                 dictTotaux[indexColonne] = 0
                             dictTotaux[indexColonne] += nbre
                         except :
@@ -241,16 +241,16 @@ class CTRL(HTL.HyperTreeList):
                         indexColonne += 1
                     
                 # Total par unité de remplissage
-                if self.dictUnitesRemplissageTemp.has_key(IDactivite) : 
+                if IDactivite in self.dictUnitesRemplissageTemp : 
                     for ordre, IDunite_remplissage, nomUniteRemplissage in self.dictUnitesRemplissageTemp[IDactivite] :
                         nbre = 0
-                        if self.dictRemplissage2.has_key(IDunite_remplissage) :
-                            if self.dictRemplissage2[IDunite_remplissage].has_key(self.date) :
-                                if self.dictRemplissage2[IDunite_remplissage][self.date].has_key(IDgroupe) :
+                        if IDunite_remplissage in self.dictRemplissage2 :
+                            if self.date in self.dictRemplissage2[IDunite_remplissage] :
+                                if IDgroupe in self.dictRemplissage2[IDunite_remplissage][self.date] :
                                     d = self.dictRemplissage2[IDunite_remplissage][self.date][IDgroupe]
-                                    if d.has_key("reservation") : nbre += d["reservation"]
-                                    if d.has_key("present") : nbre += d["present"]
-                                    if dictTotaux.has_key(indexColonne) == False :
+                                    if "reservation" in d : nbre += d["reservation"]
+                                    if "present" in d : nbre += d["present"]
+                                    if (indexColonne in dictTotaux) == False :
                                         dictTotaux[indexColonne] = 0
                                     dictTotaux[indexColonne] += nbre
                                     
@@ -264,7 +264,7 @@ class CTRL(HTL.HyperTreeList):
             # Ligne TOTAL
             total = self.dictBranches["totaux"][IDactivite]
             for indexColonne in range(1, self.GetColumnCount()) :
-                if dictTotaux.has_key(indexColonne) :
+                if indexColonne in dictTotaux :
                     nbre = dictTotaux[indexColonne]
                     if nbre != 0 :
                         self.SetItemText(total, str(nbre), indexColonne)

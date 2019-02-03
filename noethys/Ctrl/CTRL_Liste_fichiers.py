@@ -12,21 +12,16 @@
 import Chemins
 from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
-
 import wx
-import CTRL_Bouton_image
 if wx.VERSION < (2, 9, 0, 0) :
     from Outils import ultimatelistctrl as ULC
 else :
     from wx.lib.agw import ultimatelistctrl as ULC
 
-import sys
 import os
-import time
+import six
 import datetime
-import operator
 import sqlite3
-import cStringIO
 import GestionDB
 from Utils import UTILS_Utilisateurs
 from Utils import UTILS_Fichiers
@@ -220,7 +215,7 @@ class CTRL(ULC.UltimateListCtrl):
         self.InsertColumn(1, "Column 2") 
         
         for dictFichier in self.listeFichiers :
-            index = self.InsertStringItem(sys.maxint, "")
+            index = self.InsertStringItem(six.MAXSIZE, "")
 
             klass = FirstColumnRenderer(self, titre=dictFichier["titre"], image=dictFichier["image"], description=dictFichier["description"])
             self.SetItemCustomRenderer(index, 0, klass)
@@ -282,7 +277,7 @@ class CTRL(ULC.UltimateListCtrl):
 
                 if logo != None :
                     try :
-                        io = cStringIO.StringIO(logo)
+                        io = six.BytesIO(logo)
                         if 'phoenix' in wx.PlatformInfo:
                             img = wx.Image(io, wx.BITMAP_TYPE_ANY)
                         else :
@@ -380,7 +375,7 @@ class CTRL(ULC.UltimateListCtrl):
 
                 if logo != None :
                     try :
-                        io = cStringIO.StringIO(logo)
+                        io = six.BytesIO(logo)
                         if 'phoenix' in wx.PlatformInfo:
                             img = wx.Image(io, wx.BITMAP_TYPE_ANY)
                         else :
@@ -445,8 +440,8 @@ class CTRL(ULC.UltimateListCtrl):
                 source = UTILS_Fichiers.GetRepData(u"%s_%s.dat" % (titre, suffixe))
                 destination = UTILS_Fichiers.GetRepData(u"%s_%s.dat" % (nouveauTitre, suffixe))
                 os.rename(source, destination)
-            except Exception, err :
-                print suffixe, "Erreur dans le renommage de fichier : ", err
+            except Exception as err :
+                print(suffixe, "Erreur dans le renommage de fichier : ", err)
         self.Remplissage() 
         
 
@@ -472,7 +467,7 @@ class CTRL(ULC.UltimateListCtrl):
             for suffixe in ("DATA", "DOCUMENTS", "PHOTOS") :
                 try :
                     os.remove(UTILS_Fichiers.GetRepData(u"%s_%s.dat" % (titre, suffixe)))
-                except Exception, err :
+                except Exception as err :
                     pass
         
         # Supprime un fichier réseau
@@ -519,7 +514,7 @@ class MyFrame(wx.Frame):
     
     def OnSelection(self, event):
         index = self.ctrl.GetFirstSelected()
-        print self.ctrl.GetItemPyData(index)
+        print(self.ctrl.GetItemPyData(index))
         
         
 

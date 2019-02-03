@@ -276,7 +276,7 @@ class CTRL(ULC.UltimateListCtrl):
             if nbre_inscrits == None : nbre_inscrits = 0
             if nom == None : nom = _(u"Sans nom !")
 
-            if dictGroupes.has_key(IDactivite) == False :
+            if (IDactivite in dictGroupes) == False :
                 dictGroupes[IDactivite] = []
             dictGroupes[IDactivite].append({"IDgroupe" : IDgroupe, "nom" : nom, "nbre_inscrits_max" : nbre_inscrits_max, "nbre_inscrits" : nbre_inscrits, "IDactivite" : IDactivite})
 
@@ -304,7 +304,7 @@ class CTRL(ULC.UltimateListCtrl):
             if nom == None : nom = _(u"Sans nom !")
 
             liste_groupes = []
-            if dictGroupes.has_key(IDactivite) :
+            if IDactivite in dictGroupes :
                 liste_groupes = dictGroupes[IDactivite]
             nbre_inscrits = 0
             liste_infos = [nom,]
@@ -545,7 +545,7 @@ class MyFrame(wx.Frame):
         self.ctrl = Panel(panel)
         t1 = time.time()
         self.ctrl.MAJ()
-        print "Temps MAJ =", time.time() - t1
+        print("Temps MAJ =", time.time() - t1)
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.ctrl, 1, wx.ALL|wx.EXPAND, 4)
         panel.SetSizer(sizer_2)

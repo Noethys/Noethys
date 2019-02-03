@@ -19,11 +19,6 @@ if 'phoenix' in wx.PlatformInfo:
     from wx.adv import BitmapComboBox
 else :
     from wx.combo import BitmapComboBox
-from PIL import Image
-import os
-import cStringIO
-
-
 from Utils import UTILS_Interface
 from Ctrl.CTRL_ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
@@ -290,7 +285,7 @@ class CTRL_Categorie(wx.Choice):
         return listeItems
 
     def SetID(self, ID=0):
-        for index, values in self.dictDonnees.iteritems():
+        for index, values in self.dictDonnees.items():
             if values["IDcategorie"] == ID :
                  self.SetSelection(index)
 
@@ -339,32 +334,32 @@ class CTRL_Controle(BitmapComboBox):
         index = self.GetSelection()
         if index == -1 : return {}
         dictControle = CTRL_Questionnaire.LISTE_CONTROLES[index]
-        if dictControle.has_key("options") :
+        if "options" in dictControle :
             return dictControle["options"]
         else:
             return {}
         
     def OnChoix(self, event=None, MAJ=True, insereValeursDefaut=True):
         dictOptions = self.GetDictOptions() 
-        if dictOptions.has_key("hauteur") :
+        if "hauteur" in dictOptions :
             self.parent.ctrl_hauteur.Enable(True) 
             if insereValeursDefaut == True :
                 self.parent.ctrl_hauteur.SetValue(dictOptions["hauteur"])
         else:
             self.parent.ctrl_hauteur.Enable(False) 
-        if dictOptions.has_key("min") :
+        if "min" in dictOptions :
             self.parent.ctrl_valmin.Enable(True) 
             if insereValeursDefaut == True :
                 self.parent.ctrl_valmin.SetValue(dictOptions["min"])
         else:
             self.parent.ctrl_valmin.Enable(False) 
-        if dictOptions.has_key("max") :
+        if "max" in dictOptions :
             self.parent.ctrl_valmax.Enable(True) 
             if insereValeursDefaut == True :
                 self.parent.ctrl_valmax.SetValue(dictOptions["max"])
         else:
             self.parent.ctrl_valmax.Enable(False) 
-        if dictOptions.has_key("choix") :
+        if "choix" in dictOptions :
             self.parent.ActiveCtrlChoix(True)
         else:
             self.parent.ActiveCtrlChoix(False)
@@ -631,7 +626,7 @@ class Dialog(wx.Dialog):
         """ Récupère les options au format str pour l'enregistrement dans la base """
         listeOptions = []
         dictOptions = self.GetDictOptions() 
-        for code, valeur in dictOptions.iteritems() :
+        for code, valeur in dictOptions.items() :
             listeOptions.append("%s=%s" % (code, str(valeur)))
         texte = ";".join(listeOptions) 
         return texte
@@ -686,9 +681,9 @@ class Dialog(wx.Dialog):
             for option in listeOptions :
                 codeOption, valeurOption = option.split("=")
                 dictOptions[codeOption] = valeurOption
-        if dictOptions.has_key("hauteur") : self.ctrl_hauteur.SetValue(int(dictOptions["hauteur"]))
-        if dictOptions.has_key("min") : self.ctrl_valmin.SetValue(int(dictOptions["min"]))
-        if dictOptions.has_key("max") : self.ctrl_valmax.SetValue(int(dictOptions["max"]))
+        if "hauteur" in dictOptions : self.ctrl_hauteur.SetValue(int(dictOptions["hauteur"]))
+        if "min" in dictOptions : self.ctrl_valmin.SetValue(int(dictOptions["min"]))
+        if "max" in dictOptions : self.ctrl_valmax.SetValue(int(dictOptions["max"]))
     
     def GetIDquestion(self):
         return self.IDquestion 

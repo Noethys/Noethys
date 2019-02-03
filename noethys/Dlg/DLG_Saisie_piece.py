@@ -50,8 +50,8 @@ class Choix_Piece_autre(wx.Choice):
                 
                 # S'il y a une seule famille rattachée :
                 if len(self.parent.dictFamillesRattachees) == 1 :
-                    IDfamille = self.parent.dictFamillesRattachees.keys()[0]
-                    for IDtype_piece, dictTypePiece in self.dictTypesPieces.iteritems() :
+                    IDfamille = list(self.parent.dictFamillesRattachees.keys())[0]
+                    for IDtype_piece, dictTypePiece in self.dictTypesPieces.items() :
                         nomPiece = dictTypePiece["nom"]
                         public = dictTypePiece["public"]
                         if public == "famille" : 
@@ -65,14 +65,14 @@ class Choix_Piece_autre(wx.Choice):
                         
                 else:
                     # S'il y a plusieurs familles rattachées :
-                    for IDtype_piece, dictTypePiece in self.dictTypesPieces.iteritems() :
+                    for IDtype_piece, dictTypePiece in self.dictTypesPieces.items() :
                         nomPiece = dictTypePiece["nom"]
                         public = dictTypePiece["public"]
                         if public == "famille" : 
                             IDindividuTmp = None
                         else:
                             IDindividuTmp = IDindividu
-                        for IDfamille, dictFamille in self.parent.dictFamillesRattachees.iteritems() :
+                        for IDfamille, dictFamille in self.parent.dictFamillesRattachees.items() :
                             nomTitulaires = dictFamille["nomsTitulaires"]
                             if (IDfamille, IDtype_piece, IDindividuTmp) not in self.listePiecesObligatoires :
                                 self.listeNoms.append( _(u"%s (Famille de %s)") % (nomPiece, nomTitulaires))
@@ -94,7 +94,7 @@ class Choix_Piece_autre(wx.Choice):
             listeMembres = DB.ResultatReq()
             DB.Close()
             
-            for IDtype_piece, dictTypePiece in self.dictTypesPieces.iteritems() :
+            for IDtype_piece, dictTypePiece in self.dictTypesPieces.items() :
                 nomPiece = dictTypePiece["nom"]
                 public = dictTypePiece["public"]
                 if public == "famille" :
@@ -121,9 +121,9 @@ class Choix_Piece_autre(wx.Choice):
     
     def SelectPiece(self, IDfamille=None, IDtype_piece=None, IDindividu=None):
         index = 0
-        print IDfamille, IDtype_piece, IDindividu
+        print(IDfamille, IDtype_piece, IDindividu)
         for dictPiece in self.listeDonnees :
-            print dictPiece
+            print(dictPiece)
             if dictPiece["IDfamille"] == IDfamille and dictPiece["IDtype_piece"] == IDtype_piece and dictPiece["IDindividu"] == IDindividu :
                 self.Select(index)
                 break
@@ -427,7 +427,7 @@ class Dialog(wx.Dialog):
 
         # Recherche de la durée de validité par défaut de la pièce
         IDtype_piece = selection["IDtype_piece"]
-        if self.dictTypesPieces.has_key(IDtype_piece) :
+        if IDtype_piece in self.dictTypesPieces :
             validite = self.dictTypesPieces[IDtype_piece]["duree_validite"]
         else :
             validite = None

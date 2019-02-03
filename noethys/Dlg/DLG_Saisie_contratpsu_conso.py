@@ -242,16 +242,16 @@ class Panel_calendrier(wx.Panel):
                 IDunite = dictUnite["IDunite"]
                 options = dictUnite["options"]
 
-                if options.has_key("heure_debut"):
+                if "heure_debut" in options:
                     heure_debut = options["heure_debut"]
                 else :
                     heure_debut = self.dictUnites[IDunite]["heure_debut"]
-                if options.has_key("heure_fin"):
+                if "heure_fin" in options:
                     heure_fin = options["heure_fin"]
                 else :
                     heure_fin = self.dictUnites[IDunite]["heure_fin"]
 
-                if options.has_key("quantite"):
+                if "quantite" in options:
                     quantite = options["quantite"]
                 else :
                     quantite = None

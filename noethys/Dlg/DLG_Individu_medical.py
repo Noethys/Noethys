@@ -256,7 +256,7 @@ class Panel(wx.Panel):
             self.ctrl_medecin.SetIDmedecin(None)
         
         if self.IDindividu == None :
-            print "Pas de IDindividu"
+            print("Pas de IDindividu")
             return
         self.ctrl_maladies.MAJ()
         self.ctrl_vaccins.MAJ()

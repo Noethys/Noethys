@@ -16,7 +16,7 @@ import wx
 from Ctrl import CTRL_Bouton_image
 import datetime
 import wx.lib.agw.hypertreelist as HTL
-
+import six
 from Ctrl import CTRL_Bandeau
 from Utils import UTILS_Identification
 from Utils import UTILS_Gestion
@@ -25,6 +25,9 @@ from Utils import UTILS_Texte
 from Ctrl import CTRL_Saisie_date
 import GestionDB
 from Ctrl.CTRL_Tarification_calcul import CHAMPS_TABLE_LIGNES
+
+if six.PY3:
+    import functools
 
 
 
@@ -107,10 +110,10 @@ class Forfaits():
         dictOuvertures = {}
         for IDouverture, IDactivite, IDunite, IDgroupe, date in listeOuvertures :
             date = UTILS_Dates.DateEngEnDateDD(date)
-            if dictActivites.has_key(IDactivite) :
-                if dictActivites[IDactivite]["ouvertures"].has_key(IDgroupe) == False :
+            if IDactivite in dictActivites :
+                if (IDgroupe in dictActivites[IDactivite]["ouvertures"]) == False :
                     dictActivites[IDactivite]["ouvertures"][IDgroupe] = {}
-                if dictActivites[IDactivite]["ouvertures"][IDgroupe].has_key(date) == False :
+                if (date in dictActivites[IDactivite]["ouvertures"][IDgroupe]) == False :
                     dictActivites[IDactivite]["ouvertures"][IDgroupe][date] = []
                 dictActivites[IDactivite]["ouvertures"][IDgroupe][date].append((date, IDunite, IDgroupe))
                         
@@ -125,9 +128,9 @@ class Forfaits():
         dictCombiUnites = {}
         for IDcombi_tarif_unite, IDcombi_tarif, IDtarif, IDunite, date, type, IDgroupe in listeUnites :
             date = UTILS_Dates.DateEngEnDateDD(date)
-            if dictCombiUnites.has_key(IDtarif) == False :
+            if (IDtarif in dictCombiUnites) == False :
                 dictCombiUnites[IDtarif] = {}
-            if dictCombiUnites[IDtarif].has_key(IDcombi_tarif) == False :
+            if (IDcombi_tarif in dictCombiUnites[IDtarif]) == False :
                 dictCombiUnites[IDtarif][IDcombi_tarif] = []
             dictCombiUnites[IDtarif][IDcombi_tarif].append((date, IDunite, IDgroupe),)
         
@@ -146,7 +149,7 @@ class Forfaits():
                 if valeur == "None" : valeur = None
                 dictTemp[CHAMPS_TABLE_LIGNES[indexValeur]] = valeur
                 indexValeur += 1
-            if dictLignesCalcul.has_key(dictTemp["IDtarif"]) == False :
+            if (dictTemp["IDtarif"] in dictLignesCalcul) == False :
                 dictLignesCalcul[dictTemp["IDtarif"]] = [dictTemp,]
             else:
                 dictLignesCalcul[dictTemp["IDtarif"]].append(dictTemp)
@@ -184,9 +187,9 @@ class Forfaits():
                 }
                 
             # Recherche si ce tarif a des combinaisons d'unités
-            if dictCombiUnites.has_key(IDtarif) :
+            if IDtarif in dictCombiUnites :
                 listeCombinaisons = []
-                for IDcombi, listeCombis in dictCombiUnites[IDtarif].iteritems() :
+                for IDcombi, listeCombis in dictCombiUnites[IDtarif].items() :
                     listeCombinaisons.append(tuple(listeCombis))
                 listeCombinaisons.sort() 
                 dictTemp["combinaisons"] = listeCombinaisons
@@ -201,8 +204,8 @@ class Forfaits():
                 elif options != None and "calendrier" in options:
                     # Selon le calendrier des ouvertures
                     date_debut_forfait, date_fin_forfait = None, None
-                    if dictActivites[IDactivite]["ouvertures"].has_key(IDgroupe):
-                        dates = dictActivites[IDactivite]["ouvertures"][IDgroupe].keys()
+                    if IDgroupe in dictActivites[IDactivite]["ouvertures"]:
+                        dates = list(dictActivites[IDactivite]["ouvertures"][IDgroupe].keys())
                         dates.sort()
                         if len(dates) > 0:
                             date_debut_forfait, date_fin_forfait = dates[0], dates[-1]
@@ -216,11 +219,11 @@ class Forfaits():
                     inclure = False
 
             # Recherche si ce tarif a des lignes de calcul
-            if dictLignesCalcul.has_key(IDtarif):
+            if IDtarif in dictLignesCalcul:
                 dictTemp["lignes_calcul"] = dictLignesCalcul[IDtarif]
             
             # Mémorisation de ce tarif
-            if dictActivites.has_key(IDactivite) == True and inclure == True :
+            if (IDactivite in dictActivites) == True and inclure == True :
                 dictActivites[IDactivite]["tarifs"].append(dictTemp)
 
         # Cloture de la base de données
@@ -231,7 +234,7 @@ class Forfaits():
     def RechercheQF(self, dictQuotientsFamiliaux=None, dictTarif=None, IDfamille=None, date=None):
         """ Pour Facturation Recherche du QF de la famille """
         # Si la famille a un QF :
-        if dictQuotientsFamiliaux.has_key(IDfamille) :
+        if IDfamille in dictQuotientsFamiliaux :
             listeQuotientsFamiliaux = dictQuotientsFamiliaux[IDfamille]
             for date_debut, date_fin, quotient, IDtype_quotient in listeQuotientsFamiliaux :
                 if date >= date_debut and date <= date_fin and (dictTarif["IDtype_quotient"] == None or dictTarif["IDtype_quotient"] == IDtype_quotient) :
@@ -259,7 +262,7 @@ class Forfaits():
         nbre_forfaits_saisis = 0
 
         for IDindividu in self.listeIndividus :
-            for IDactivite, dictActivite in dictActivites.iteritems() :
+            for IDactivite, dictActivite in dictActivites.items() :
                 nomActivite = dictActivite["nom"]
                 date_debut_activite = dictActivite["date_debut"]
                 date_fin_activite = dictActivite["date_fin"]
@@ -267,7 +270,7 @@ class Forfaits():
                 
                 # Récupération des informations sur l'inscription
                 IDcategorie_tarif_temp = None
-                if dictInscriptions.has_key(IDindividu):
+                if IDindividu in dictInscriptions:
                     for dictInscription in dictInscriptions[IDindividu]["inscriptions"] :
                         if dictInscription["IDactivite"] == IDactivite :
                             IDinscription = dictInscription["IDinscription"]
@@ -293,8 +296,8 @@ class Forfaits():
                             options = dictTarif["options"]
                             if options != None and "calendrier" in options :
                                 combinaisons = []
-                                if dictActivites[IDactivite]["ouvertures"].has_key(IDgroupe) :
-                                    for dateTemp, listeCombis in dictActivites[IDactivite]["ouvertures"][IDgroupe].iteritems() :
+                                if IDgroupe in dictActivites[IDactivite]["ouvertures"] :
+                                    for dateTemp, listeCombis in dictActivites[IDactivite]["ouvertures"][IDgroupe].items() :
                                         if dateTemp >= dictTarif["date_debut"] and (dictTarif["date_fin"] == None or dateTemp <= dictTarif["date_fin"]) :
                                             combinaisons.append(tuple(listeCombis))
                                     combinaisons.sort()
@@ -459,7 +462,7 @@ class Forfaits():
 
                                     # Recherche si une aide est valable à cette date et pour cet individu et pour cette activité
                                     listeAidesRetenues = []
-                                    for IDaide, dictAide in dictAides.iteritems() :
+                                    for IDaide, dictAide in dictAides.items() :
                                         IDfamilleTemp = dictAide["IDfamille"]
                                         listeBeneficiaires = dictAide["beneficiaires"]
                                         IDactiviteTemp = dictAide["IDactivite"]
@@ -485,9 +488,9 @@ class Forfaits():
 
                                                 # On recherche si des combinaisons sont présentes sur cette ligne
                                                 dictMontants = dictAide["montants"]
-                                                for IDaide_montant, dictMontant in dictMontants.iteritems() :
+                                                for IDaide_montant, dictMontant in dictMontants.items() :
                                                     montant = dictMontant["montant"]
-                                                    for IDaide_combi, combinaison in dictMontant["combinaisons"].iteritems() :
+                                                    for IDaide_combi, combinaison in dictMontant["combinaisons"].items() :
                                                         resultat = self.RechercheCombinaison(listeUnitesUtilisees, combinaison)
                                                         if resultat == True :
                                                             dictTmp = {
@@ -500,7 +503,10 @@ class Forfaits():
                                                             listeCombiValides.append(dictTmp)
 
                                                     # Tri des combinaisons par nombre d'unités max dans les combinaisons
-                                                    listeCombiValides.sort(cmp=self.TriTarifs)
+                                                    if six.PY2:
+                                                        listeCombiValides.sort(cmp=self.TriTarifs)
+                                                    else:
+                                                        listeCombiValides.sort(key=functools.cmp_to_key(self.TriTarifs))
 
                                                     # On conserve le combi qui a le plus grand nombre d'unités dedans
                                                     if len(listeCombiValides) > 0 :
@@ -621,8 +627,8 @@ class Forfaits():
         listeDonnees = DB.ResultatReq()
         DB.Close()
         for IDunite_incompat, IDunite, IDunite_incompatible in listeDonnees :
-            if dictUnites.has_key(IDunite) : dictUnites[IDunite]["unites_incompatibles"].append(IDunite_incompatible)
-            if dictUnites.has_key(IDunite_incompatible) : dictUnites[IDunite_incompatible]["unites_incompatibles"].append(IDunite)
+            if IDunite in dictUnites : dictUnites[IDunite]["unites_incompatibles"].append(IDunite_incompatible)
+            if IDunite_incompatible in dictUnites : dictUnites[IDunite_incompatible]["unites_incompatibles"].append(IDunite)
         return dictUnites
     
     def GetInscriptions(self):
@@ -645,7 +651,7 @@ class Forfaits():
         
         dictIndividus = {}
         for IDinscription, IDindividu, IDfamille, IDactivite, IDgroupe, IDcategorie_tarif, IDcompte_payeur, nom, prenom in listeInscriptions :
-            if dictIndividus.has_key(IDindividu) == False :
+            if (IDindividu in dictIndividus) == False :
                 dictIndividus[IDindividu] = {"nom" : nom, "prenom" : prenom, "inscriptions" : []}
             dictTemp = { "IDinscription" : IDinscription, "IDfamille" : IDfamille, "IDactivite" : IDactivite, "IDgroupe" : IDgroupe, "IDcategorie_tarif" : IDcategorie_tarif, "IDcompte_payeur" : IDcompte_payeur}
             dictIndividus[IDindividu]["inscriptions"].append(dictTemp)
@@ -681,7 +687,7 @@ class Forfaits():
         for IDquotient, IDfamille, date_debut, date_fin, quotient, IDtype_quotient in listeDonnees :
             date_debut = UTILS_Dates.DateEngEnDateDD(date_debut)
             date_fin = UTILS_Dates.DateEngEnDateDD(date_fin)
-            if dictQuotientsFamiliaux.has_key(IDfamille) == False :
+            if (IDfamille in dictQuotientsFamiliaux) == False :
                 dictQuotientsFamiliaux[IDfamille] = []
             dictQuotientsFamiliaux[IDfamille].append((date_debut, date_fin, quotient, IDtype_quotient))
         DB.Close() 
@@ -727,7 +733,7 @@ class Forfaits():
         DB.ExecuterReq(req)
         listeBeneficiaires = DB.ResultatReq()
         for IDaide_beneficiaire, IDaide, IDindividu in listeBeneficiaires :
-            if dictAides.has_key(IDaide) :
+            if IDaide in dictAides :
                 dictAides[IDaide]["beneficiaires"].append(IDindividu)
         
         # Importation des montants, combinaisons et unités de combi
@@ -742,12 +748,12 @@ class Forfaits():
         listeUnites = DB.ResultatReq()
         
         for IDaide, IDaide_combi_unite, IDaide_combi, IDunite, IDaide_montant, montant in listeUnites :
-            if dictAides.has_key(IDaide) :
+            if IDaide in dictAides :
                 # Mémorisation du montant
-                if dictAides[IDaide]["montants"].has_key(IDaide_montant) == False :
+                if (IDaide_montant in dictAides[IDaide]["montants"]) == False :
                     dictAides[IDaide]["montants"][IDaide_montant] = {"montant":montant, "combinaisons":{}}
                 # Mémorisation de la combinaison
-                if dictAides[IDaide]["montants"][IDaide_montant]["combinaisons"].has_key(IDaide_combi) == False :
+                if (IDaide_combi in dictAides[IDaide]["montants"][IDaide_montant]["combinaisons"]) == False :
                     dictAides[IDaide]["montants"][IDaide_montant]["combinaisons"][IDaide_combi] = []
                 # Mémorisation des unités de combinaison
                 dictAides[IDaide]["montants"][IDaide_montant]["combinaisons"][IDaide_combi].append(IDunite)
@@ -839,7 +845,7 @@ class CTRL(HTL.HyperTreeList):
         dictIndividus = f.GetInscriptions()
         
         # Création des branches
-        for IDindividu, dictIndividu in dictIndividus.iteritems() :
+        for IDindividu, dictIndividu in dictIndividus.items() :
             
             nom = dictIndividu["nom"]
             prenom = dictIndividu["prenom"]
@@ -859,7 +865,7 @@ class CTRL(HTL.HyperTreeList):
                 IDcategorie_tarif = dictInscription["IDcategorie_tarif"]
                 
                 # Recherche s'il y a un forfait disponible dans l'activité correspondant à cette inscription
-                if dictForfaits.has_key(IDactivite) and len(dictForfaits[IDactivite]["tarifs"])> 0 :
+                if IDactivite in dictForfaits and len(dictForfaits[IDactivite]["tarifs"])> 0 :
                     
                     dictActivite = dictForfaits[IDactivite]
                     niveau2 = self.AppendItem(niveau1, dictActivite["nom"], ct_type=1)
@@ -885,8 +891,8 @@ class CTRL(HTL.HyperTreeList):
                             elif options != None and "calendrier" in options :
                                 # Selon le calendrier des ouvertures
                                 date_debut_forfait, date_fin_forfait = "?", "?"
-                                if dictActivite["ouvertures"].has_key(IDgroupe) :
-                                    dates = dictActivite["ouvertures"][IDgroupe].keys()
+                                if IDgroupe in dictActivite["ouvertures"] :
+                                    dates = list(dictActivite["ouvertures"][IDgroupe].keys())
                                     dates.sort()
                                     if len(dates) > 0 :
                                         date_debut_forfait, date_fin_forfait = UTILS_Dates.DateComplete(dates[0]), UTILS_Dates.DateComplete(dates[-1])

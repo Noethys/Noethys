@@ -109,7 +109,7 @@ class TrackIndividu(object):
         self.adresse_auto = donnees["adresse_auto"]
         
         # Adresse auto ou manuelle
-        if self.adresse_auto != None and DICT_INFOS_INDIVIDUS.has_key(self.adresse_auto) :
+        if self.adresse_auto != None and self.adresse_auto in DICT_INFOS_INDIVIDUS :
             self.rue_resid = DICT_INFOS_INDIVIDUS[self.adresse_auto]["rue_resid"]
             self.cp_resid = DICT_INFOS_INDIVIDUS[self.adresse_auto]["cp_resid"]
             self.ville_resid = DICT_INFOS_INDIVIDUS[self.adresse_auto]["ville_resid"]
@@ -360,7 +360,7 @@ def GetListeFamilles(listview=None, listeActivites=None, presents=None, IDfamill
     titulaires = UTILS_Titulaires.GetTitulaires() 
     for IDfamille, nomRegime, nomCaisse, numAlloc in listeFamilles :
         dictTemp = {}
-        if IDfamille != None and titulaires.has_key(IDfamille) :
+        if IDfamille != None and IDfamille in titulaires :
             nomTitulaires = titulaires[IDfamille]["titulairesSansCivilite"]
             rue = titulaires[IDfamille]["adresse"]["rue"]
             cp = titulaires[IDfamille]["adresse"]["cp"]
@@ -502,8 +502,8 @@ class ListView(FastObjectListView):
         self.InitObjectListView()
 
     def GetReponse(self, IDquestion=None, ID=None):
-        if self.DICT_QUESTIONNAIRES.has_key(IDquestion) :
-            if self.DICT_QUESTIONNAIRES[IDquestion].has_key(ID) :
+        if IDquestion in self.DICT_QUESTIONNAIRES :
+            if ID in self.DICT_QUESTIONNAIRES[IDquestion] :
                 return self.DICT_QUESTIONNAIRES[IDquestion][ID]
         return u""
 
@@ -517,7 +517,7 @@ class ListView(FastObjectListView):
         listeDonnees = []
         for track in self.GetTracksCoches() :
             dictTemp = track.GetDict()
-            for code, valeur in self.dictOrganisme.iteritems() :
+            for code, valeur in self.dictOrganisme.items() :
                 dictTemp[code] = valeur
             listeDonnees.append(dictTemp)
         return listeDonnees

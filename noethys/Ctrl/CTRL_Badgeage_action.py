@@ -447,7 +447,7 @@ class CTRL_Choix_activite(wx.Choice):
         return listeItems
 
     def SetID(self, ID=0):
-        for index, values in self.dictDonnees.iteritems():
+        for index, values in self.dictDonnees.items():
             if values["ID"] == ID :
                  self.SetSelection(index)
 
@@ -493,7 +493,7 @@ class CTRL_Choix_unite(wx.Choice):
         return listeItems
 
     def SetID(self, ID=0):
-        for index, values in self.dictDonnees.iteritems():
+        for index, values in self.dictDonnees.items():
             if values["ID"] == ID :
                  self.SetSelection(index)
 
@@ -569,7 +569,7 @@ class CTRL_Choix_ticket(wx.Choice):
         return listeItems
 
     def SetID(self, ID=0):
-        for index, values in self.dictDonnees.iteritems():
+        for index, values in self.dictDonnees.items():
             if values["ID"] == ID :
                  self.SetSelection(index)
 
@@ -1235,13 +1235,13 @@ class Panel(wx.Panel):
     
     def SelectPage(self, code=""):
         """ Sélection d'une page d'après son code """
-        if self.dictPages.has_key(code):
+        if code in self.dictPages:
             self.ctrl.SetSelection(self.dictPages[code]["index"])
     
     def GetCodePage(self):
         """ Retourne le code de la page sélectionnée """
         selection = self.ctrl.GetSelection()
-        for code, dictTemp in self.dictPages.iteritems() :
+        for code, dictTemp in self.dictPages.items() :
             if dictTemp["index"] == selection :
                 return code
         return None        
@@ -1268,7 +1268,7 @@ class Panel(wx.Panel):
     
     def GetDonnees(self):
         dictDonnees = {}
-        for code, valeur in self.GetValeur().iteritems() :
+        for code, valeur in self.GetValeur().items() :
             dictDonnees["action_%s" % code] = valeur
         dictDonnees["action"] = self.GetCodePage() 
         return dictDonnees

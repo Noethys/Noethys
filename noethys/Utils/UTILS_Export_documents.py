@@ -11,9 +11,8 @@
 
 import Chemins
 from UTILS_Traduction import _
-
+import six
 import shelve
-import cStringIO
 import GestionDB
 
     
@@ -62,7 +61,7 @@ def Exporter(IDmodele=None, fichier="", depuisFichierDefaut=False):
             
             # Pour les champs BLOB
             if (typeChamp == "BLOB" or typeChamp == "LONGBLOB") and donnee != None :
-                buffer = cStringIO.StringIO(donnee)
+                buffer = six.BytesIO(donnee)
                 donnee = buffer.read()
             
             # Mémorisation
@@ -101,7 +100,7 @@ def InfosFichier(fichier=""):
     """ Récupère les infos principales sur un fichier """
     dictInfos = {}
     fichier = shelve.open(fichier.encode("iso-8859-15"), "r")
-    for key, valeur in fichier.iteritems() :
+    for key, valeur in fichier.items() :
         dictInfos[key] = valeur
     fichier.close()
     return dictInfos
@@ -135,7 +134,7 @@ def Importer(fichier="", dictDonnees={}, IDfond=None, defaut=0):
         dictObjet["IDmodele"] = IDmodele
         
         listeDonnees = []
-        for champ, donnee in dictObjet.iteritems() :
+        for champ, donnee in dictObjet.items() :
             if champ == "image" :
                 blob = donnee
                 donnee = None
@@ -186,8 +185,8 @@ def ImporterDepuisFichierDefaut(IDmodele=None, nom=None, IDfond=1, defaut=0):
         dictDonnees = Exporter(IDmodele=IDmodele, depuisFichierDefaut=True)
         if nom != None : dictDonnees["nom"] = nom
         Importer(dictDonnees=dictDonnees, IDfond=IDfond, defaut=defaut)
-    except Exception, err :
-        print "Erreur dans l'importation d'un modele depuis le fichier defaut :", err
+    except Exception as err :
+        print("Erreur dans l'importation d'un modele depuis le fichier defaut :", err)
         return False
 
 

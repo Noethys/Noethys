@@ -16,7 +16,7 @@ import traceback
 import datetime
 import copy
 import sys
-import cStringIO
+import six
 from Utils import UTILS_Dates
 from Utils import UTILS_Texte
 from Utils import UTILS_Filtres_questionnaires
@@ -175,7 +175,7 @@ class Demande():
             IDlocation = item[8]
 
             # Date de la demande
-            if isinstance(date, str) or isinstance(date, unicode):
+            if isinstance(date, str) or isinstance(date, six.text_type):
                 date = datetime.datetime.strptime(date, "%Y-%m-%d %H:%M:%S")
             date_texte = datetime.datetime.strftime(date, "%d/%m/%Y")
             heure_texte = datetime.datetime.strftime(date, "%Hh%M")
@@ -184,7 +184,7 @@ class Demande():
             categories = UTILS_Texte.ConvertStrToListe(categories, siVide=[])
             liste_labels = []
             for IDcategorie in categories:
-                if self.dictCategories.has_key(IDcategorie):
+                if IDcategorie in self.dictCategories:
                     liste_labels.append(self.dictCategories[IDcategorie])
             texte_categories = ", ".join(liste_labels)
 
@@ -192,7 +192,7 @@ class Demande():
             produits = UTILS_Texte.ConvertStrToListe(produits, siVide=[])
             liste_labels = []
             for IDproduit in produits:
-                if self.dictProduits.has_key(IDproduit):
+                if IDproduit in self.dictProduits:
                     liste_labels.append(self.dictProduits[IDproduit])
             texte_produits = ", ".join(liste_labels)
 
@@ -261,7 +261,7 @@ class Demande():
 
             # Champs de fusion pour Email
             dictChampsFusion[IDdemande] = {}
-            for key, valeur in dictDonnee.iteritems():
+            for key, valeur in dictDonnee.items():
                 if key[0] == "{":
                     dictChampsFusion[IDdemande][key] = valeur
 
@@ -298,7 +298,7 @@ class Demande():
             dlgAttente = wx.BusyInfo(_(u"Génération des PDF à l'unité en cours..."), None)
             try:
                 index = 0
-                for IDdemande, dictDemande in dictDemandes.iteritems():
+                for IDdemande, dictDemande in dictDemandes.items():
                     if dictDemande["select"] == True:
                         nomTitulaires = self.Supprime_accent(dictDemande["{FAMILLE_NOM}"])
                         nomFichier = _(u"Demande %d - %s") % (IDdemande, nomTitulaires)
@@ -311,7 +311,7 @@ class Demande():
                 self.EcritStatusbar("")
                 del dlgAttente
                 return dictPieces
-            except Exception, err:
+            except Exception as err:
                 del dlgAttente
                 traceback.print_exc(file=sys.stdout)
                 dlg = wx.MessageDialog(None, _(u"Désolé, le problème suivant a été rencontré dans l'édition des demandes : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
@@ -353,15 +353,15 @@ class Demande():
                 dictReponses[IDdemande] = IDreponse
 
             DB = GestionDB.DB(suffixe="DOCUMENTS")
-            for IDdemande, cheminFichier in dictPieces.iteritems():
+            for IDdemande, cheminFichier in dictPieces.items():
                 # Préparation du blob
                 fichier = open(cheminFichier, "rb")
                 data = fichier.read()
                 fichier.close()
-                buffer = cStringIO.StringIO(data)
+                buffer = six.BytesIO(data)
                 blob = buffer.read()
                 # Recherche l'IDreponse
-                if dictReponses.has_key(IDdemande):
+                if IDdemande in dictReponses:
                     IDreponse = dictReponses[IDdemande]
                 else :
                     # Création d'une réponse de questionnaire
@@ -388,7 +388,7 @@ class Demande():
                 UTILS_Impression_location.Impression(dictDemandes, dictOptions, IDmodele=dictOptions["IDmodele"], ouverture=afficherDoc, nomFichier=nomDoc)
                 self.EcritStatusbar("")
                 del dlgAttente
-            except Exception, err:
+            except Exception as err:
                 del dlgAttente
                 traceback.print_exc(file=sys.stdout)
                 dlg = wx.MessageDialog(None, u"Désolé, le problème suivant a été rencontré dans l'édition des demandes : \n\n%s" % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)

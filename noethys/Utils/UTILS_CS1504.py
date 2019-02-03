@@ -136,10 +136,10 @@ class CS1504:
         connected = True
       except serial.SerialException:
         if attempts <= 2:
-          print >> sys.stderr, 'connection on', port, 'failed, retrying'
+          print('connection on', port, 'failed, retrying', file=sys.stderr)
           time.sleep(2.0)
         else:
-          print >> sys.stderr, 'giving up'
+          print('giving up', file=sys.stderr)
           raise
     self.delta = datetime.timedelta(0)
     self.serial = None
@@ -148,7 +148,7 @@ class CS1504:
 
   def interrogate(self):
     """Initiate communications with the scanner"""
-    print >> sys.stderr, 'Using device', self.ser.portstr + '... ',
+    print('Using device', self.ser.portstr + '... ', end=' ', file=sys.stderr)
     count = 0
     while count < 50:
       self.send('\x01\x02\x00')
@@ -161,35 +161,35 @@ class CS1504:
         count += 1
         time.sleep(0.2)
         continue
-      print >> sys.stderr, 'connected'
+      print('connected', file=sys.stderr)
       break
     if not data:
       raise IOError
     version, status = map(ord, data[2:4])
     assert status in [0, 22]
     if status == 22:
-      print >> sys.stderr, 'WARNING: Battery low'
+      print('WARNING: Battery low', file=sys.stderr)
     self.serial = data[4:12]
     self.sw_ver = data[12:20]
     assert data[20] == '\0'
-    print >> sys.stderr, 'serial#', self.serial.encode('hex')
-    print >> sys.stderr, 'SW version', self.sw_ver
+    print('serial#', self.serial.encode('hex'), file=sys.stderr)
+    print('SW version', self.sw_ver, file=sys.stderr)
 
   def get_time(self):
     """Get the time set in the scanner and calculate drift"""
-    print >> sys.stderr, 'reading clock for drift'
+    print('reading clock for drift', file=sys.stderr)
     self.send('\x0a\x02\x00')
     self.time_response(True)
 
   def set_time(self):
     """Reset the time in the scanner"""
-    print >> sys.stderr, 'resetting scanner clock...',
+    print('resetting scanner clock...', end=' ', file=sys.stderr)
     now = list(datetime.datetime.now().timetuple()[0:6])
     now[0] -= 2000
     now.reverse()
     self.send('\x09\x02\x06' + ''.join(map(chr, now)) + '\0')
     self.time_response()
-    print >> sys.stderr, 'done'
+    print('done', file=sys.stderr)
 
   def time_response(self, calculate_drift=False):
     now = datetime.datetime.now()
@@ -201,16 +201,16 @@ class CS1504:
     # determine the clock drift so we can correct timestamps
     if calculate_drift:
       self.delta = now - ts
-      print >> sys.stderr, 'clock drift', self.delta
+      print('clock drift', self.delta, file=sys.stderr)
       if abs(self.delta).seconds > 60:
-        print >> sys.stderr, 'WARNING: big gap between host & scanner clocks',
-        print >> sys.stderr, self.delta
+        print('WARNING: big gap between host & scanner clocks', end=' ', file=sys.stderr)
+        print(self.delta, file=sys.stderr)
 
   def get_barcodes(self):
     """Retrieve the bar codes and timestamps from the scanner's memory, and
     correct for clock drift
     """
-    print >> sys.stderr, 'reading barcodes...',
+    print('reading barcodes...', end=' ', file=sys.stderr)
     count = 0
     # retry up to 5 times
     while count < 5:
@@ -252,22 +252,22 @@ class CS1504:
       ts = datetime.datetime(y, m, d, h, mi, s) + self.delta
       symbology, code = expand(symbology, code)
       self.last_barcodes.append((symbology, code, ts))
-    print >> sys.stderr, 'done (%d read)' % len(self.last_barcodes)
+    print('done (%d read)' % len(self.last_barcodes), file=sys.stderr)
     return self.last_barcodes
 
   def clear_barcodes(self):
     """Clear the bar codes in the scanner's memory"""
-    print >> sys.stderr, 'clearing barcodes...',
+    print('clearing barcodes...', end=' ', file=sys.stderr)
     self.send('\x02\x02\x00')
     data = self.recv(5)
-    print >> sys.stderr, 'done'
+    print('done', file=sys.stderr)
       
   def power_down(self):
     """Shut the scanner down to conserve battery life"""
-    print >> sys.stderr, 'powering down...',
+    print('powering down...', end=' ', file=sys.stderr)
     self.send('\x05\x02\x00')
     data = self.recv(5)
-    print >> sys.stderr, 'done'
+    print('done', file=sys.stderr)
       
   def send(self, cmd):
     """Send a command to the scanner"""
@@ -334,7 +334,7 @@ if __name__ == '__main__':
       scanner.set_time()
       barcodes = scanner.get_barcodes()
       for symbology, code, timestamp in barcodes:
-        print '%s,%s,%s' % (symbology, code, str(timestamp).split('.')[0])
+        print('%s,%s,%s' % (symbology, code, str(timestamp).split('.')[0]))
     ##  if barcodes:
     ##    scanner.clear_barcodes()
       scanner.power_down()

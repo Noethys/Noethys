@@ -51,7 +51,7 @@ class CTRL_Restaurateur(wx.Choice):
         return listeItems
 
     def SetID(self, ID=0):
-        for index, values in self.dictDonnees.iteritems():
+        for index, values in self.dictDonnees.items():
             if values["ID"] == ID :
                  self.SetSelection(index)
 
@@ -87,7 +87,7 @@ class CTRL_Raccourci(wx.Choice):
         return listeItems
 
     def SetCode(self, code=None):
-        for index, values in self.dictDonnees.iteritems():
+        for index, values in self.dictDonnees.items():
             if values["code"] == code :
                  self.SetSelection(index)
 

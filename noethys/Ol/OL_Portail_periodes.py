@@ -15,6 +15,7 @@ from Utils.UTILS_Traduction import _
 import wx
 import datetime
 import GestionDB
+import six
 from Utils import UTILS_Interface
 from Utils import UTILS_Dates
 from Ctrl.CTRL_ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
@@ -35,10 +36,10 @@ class Track(object):
         # Affichage
         self.affichage = bool(donnees[5])
         self.affichage_date_debut = donnees[6]
-        if isinstance(self.affichage_date_debut, str) or isinstance(self.affichage_date_debut, unicode) :
+        if isinstance(self.affichage_date_debut, str) or isinstance(self.affichage_date_debut, six.text_type) :
             self.affichage_date_debut = datetime.datetime.strptime(self.affichage_date_debut, "%Y-%m-%d %H:%M:%S")
         self.affichage_date_fin = donnees[7]
-        if isinstance(self.affichage_date_fin, str) or isinstance(self.affichage_date_fin, unicode) :
+        if isinstance(self.affichage_date_fin, str) or isinstance(self.affichage_date_fin, six.text_type) :
             self.affichage_date_fin = datetime.datetime.strptime(self.affichage_date_fin, "%Y-%m-%d %H:%M:%S")
 
         if self.affichage == True :

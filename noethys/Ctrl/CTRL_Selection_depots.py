@@ -85,7 +85,7 @@ class CTRL(HTL.HyperTreeList):
     def GetDepots(self) :
         dictCoches = self.GetCoches() 
         listeDepots = []
-        for annee, listeDepotsTemp in dictCoches.iteritems() :
+        for annee, listeDepotsTemp in dictCoches.items() :
             for IDdepot in listeDepotsTemp :
                 listeDepots.append(IDdepot)
         return listeDepots
@@ -109,11 +109,11 @@ class CTRL(HTL.HyperTreeList):
                 annee = None
             else:
                 annee = date.year
-            if dictDepots.has_key(annee) == False :
+            if (annee in dictDepots) == False :
                 dictDepots[annee] = []
             dictDepots[annee].append(dictDepot)
         
-        listeAnnees = dictDepots.keys() 
+        listeAnnees = list(dictDepots.keys()) 
         listeAnnees.sort()
         
         # Remplissage

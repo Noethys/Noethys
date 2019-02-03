@@ -146,12 +146,12 @@ def Sauvegarde(listeFichiersLocaux=[], listeFichiersReseau=[], nom="", repertoir
             #         ]
 
             args = u""""%sbin/mysqldump" --defaults-extra-file="%s" --single-transaction --opt --databases %s > "%s" """ % (repMySQL, nomFichierLoginTemp, nomFichier, fichierSave)
-            print ("Chemin mysqldump =", args)
+            print(("Chemin mysqldump =", args))
             proc = subprocess.Popen(args.encode('utf8'), shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, stdin=subprocess.PIPE)
             out, temp = proc.communicate()
             
             if out != "" :
-                print (out,)
+                print((out,))
                 try :
                     out = str(out).decode("iso-8859-15")
                 except :
@@ -165,9 +165,9 @@ def Sauvegarde(listeFichiersLocaux=[], listeFichiersReseau=[], nom="", repertoir
             # Insère le fichier Sql dans le ZIP
             try :
                 fichierZip.write(fichierSave.encode('utf8'), u"%s.sql" % nomFichier)
-            except Exception, err :
+            except Exception as err :
                 dlgprogress.Destroy()
-                print ("insertion sql dans zip : ", err,)
+                print(("insertion sql dans zip : ", err,))
                 try :
                     err = str(err).decode("iso-8859-15")
                 except :
@@ -199,7 +199,7 @@ def Sauvegarde(listeFichiersLocaux=[], listeFichiersReseau=[], nom="", repertoir
         try :
             shutil.copy2(UTILS_Fichiers.GetRepTemp(fichier=nomFichierTemp), fichierDest)
         except :
-            print "Le repertoire de destination de sauvegarde n'existe pas."
+            print("Le repertoire de destination de sauvegarde n'existe pas.")
 
     # Préparation du message
     message = UTILS_Envoi_email.Message(destinataires=listeEmails, sujet=_(u"Sauvegarde Noethys : %s") % nom,
@@ -216,9 +216,9 @@ def Sauvegarde(listeFichiersLocaux=[], listeFichiersReseau=[], nom="", repertoir
             messagerie.Connecter()
             messagerie.Envoyer(message)
             messagerie.Fermer()
-        except Exception, err:
+        except Exception as err:
             dlgprogress.Destroy()
-            print (err,)
+            print((err,))
             err = str(err).decode("iso-8859-15")
             dlgErreur = wx.MessageDialog(None, _(u"Une erreur a été détectée dans l'envoi par Email !\n\nErreur : %s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
             dlgErreur.ShowModal() 
@@ -293,9 +293,9 @@ def Restauration(parent=None, fichier="", listeFichiersLocaux=[], listeFichiersR
                 # f.write(buffer)
                 # f.close()
                 fichierZip.extract(fichier, UTILS_Fichiers.GetRepData())
-            except Exception, err:
+            except Exception as err:
                 dlgprogress.Destroy()
-                print err
+                print(err)
                 dlg = wx.MessageDialog(None, _(u"La restauration du fichier '%s' a rencontré l'erreur suivante : \n%s") % (fichier, err), "Erreur", wx.OK| wx.ICON_ERROR)  
                 dlg.ShowModal()
                 dlg.Destroy()
@@ -371,12 +371,12 @@ def Restauration(parent=None, fichier="", listeFichiersLocaux=[], listeFichiersR
             dlgprogress.Update(numEtape, _(u"Restauration du fichier %s...") % fichier);numEtape += 1
 
             args = u""""%sbin/mysql" --defaults-extra-file="%s" %s < "%s" """ % (repMySQL, nomFichierLoginTemp, fichier, fichierRestore)
-            print ("Chemin mysql =", args)
+            print(("Chemin mysql =", args))
             proc = subprocess.Popen(args.encode("iso-8859-15"), shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, stdin=subprocess.PIPE)
             out, temp = proc.communicate()
 
             if out != "" :
-                print ("subprocess de restauration mysql :", out)
+                print(("subprocess de restauration mysql :", out))
                 out = str(out).decode("iso-8859-15")
                 dlgprogress.Destroy()
                 dlgErreur = wx.MessageDialog(None, _(u"Une erreur a été détectée dans la procédure de restauration !\n\nErreur : %s") % out, _(u"Erreur"), wx.OK | wx.ICON_ERROR)

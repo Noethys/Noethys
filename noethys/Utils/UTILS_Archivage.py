@@ -172,11 +172,11 @@ class Archivage():
         liste_individus_concernes = []
         for IDrattachement, IDindividu, IDfamille, IDcategorie in listeDonnees :
 
-            if dict_rattachements_familles.has_key(IDfamille) == False :
+            if (IDfamille in dict_rattachements_familles) == False :
                 dict_rattachements_familles[IDfamille] = []
             dict_rattachements_familles[IDfamille].append((IDindividu, IDcategorie))
 
-            if dict_rattachements_individus.has_key(IDindividu) == False :
+            if (IDindividu in dict_rattachements_individus) == False :
                 dict_rattachements_individus[IDindividu] = []
             dict_rattachements_individus[IDindividu].append((IDfamille, IDcategorie))
 
@@ -206,19 +206,19 @@ class Archivage():
             for IDfamille in self.liste_familles:
                 nomTitulaires = self.dict_titulaires[IDfamille]["titulairesSansCivilite"]
                 liste_rattaches = []
-                if dict_rattachements_familles.has_key(IDfamille):
+                if IDfamille in dict_rattachements_familles:
                     for IDindividu, IDcategorie in dict_rattachements_familles[IDfamille]:
                         nom_complet = dict_individus[IDindividu]["nom_complet"]
                         nom_categorie = GetNomCategorie(IDcategorie).capitalize()
                         infos = []
 
                         # Recherche si l'individu est rattaché à d'autres familles non inclues
-                        if dict_rattachements_individus.has_key(IDindividu):
+                        if IDindividu in dict_rattachements_individus:
                             for IDfamilleTemp, IDcategorieTemp in dict_rattachements_individus[IDindividu]:
                                 if IDfamilleTemp not in self.liste_familles:
                                     infos.append(_(u"Rattaché également à la famille de %s en tant que %s") % (self.dict_titulaires[IDfamilleTemp]["titulairesSansCivilite"], GetNomCategorie(IDcategorieTemp)))
 
-                        if dictPrestations.has_key((IDindividu, IDfamille)):
+                        if (IDindividu, IDfamille) in dictPrestations:
                             infos.append(_(u"Des prestations futures sont déjà enregistrées"))
 
                         liste_rattaches.append({"IDcategorie" : IDcategorie, "nom_complet" : nom_complet, "IDindividu" : IDindividu, "nom_categorie" : nom_categorie, "infos" : infos})
@@ -236,13 +236,13 @@ class Archivage():
                 nom_complet = dict_individus[IDindividu]["nom_complet"]
                 liste_rattaches = []
 
-                if dict_rattachements_individus.has_key(IDindividu):
+                if IDindividu in dict_rattachements_individus:
                     for IDfamille, IDcategorie in dict_rattachements_individus[IDindividu]:
                         nomTitulaires = self.dict_titulaires[IDfamille]["titulairesSansCivilite"]
                         nom_categorie = GetNomCategorie(IDcategorie).capitalize()
                         infos = []
 
-                        if dictPrestations.has_key((IDindividu, IDfamille)):
+                        if (IDindividu, IDfamille) in dictPrestations:
                             infos.append(_(u"Des prestations futures sont déjà enregistrées"))
 
                         liste_rattaches.append({"IDcategorie": IDcategorie, "nomTitulaires": nomTitulaires, "IDfamille": IDfamille, "nom_categorie": nom_categorie, "infos": infos})

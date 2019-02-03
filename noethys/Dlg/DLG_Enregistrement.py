@@ -18,7 +18,7 @@ from Ctrl import CTRL_Bouton_image
 from Ctrl import CTRL_Bandeau
 import wx.lib.masked as masked
 import wx.html as html
-import urllib2
+from six.moves.urllib.request import urlopen
 import traceback
 import datetime
 from Utils import UTILS_Config
@@ -69,7 +69,7 @@ def DateEngEnDateDD(dateEng):
 def GetValidite(identifiant="", code=""):
     try :
         url = "https://www.noethys.com/aide/html/testcode.php?identifiant=%s&code=%s" % (identifiant, code)
-        h = urllib2.urlopen(url, timeout=5)
+        h = urlopen(url, timeout=5)
         html = h.read()
         h.close()
     except :
@@ -253,13 +253,13 @@ class Dialog(wx.Dialog):
         
         try :
             url = "https://www.noethys.com/aide/html/testcode.php?identifiant=%s&code=%s" % (identifiant, code)
-            h = urllib2.urlopen(url, timeout=5)
+            h = urlopen(url, timeout=5)
             html = h.read()
             h.close()
-        except Exception, err:
+        except Exception as err:
             self.AfficheEtatValidite(texte=u"Vérification impossible. Vérifiez votre connexion internet !", image="attention")
             del dlgAttente
-            print "pb dans verification code enregistrement."
+            print("pb dans verification code enregistrement.")
             traceback.print_exc(file=sys.stdout)
             return False
         

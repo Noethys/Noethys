@@ -495,7 +495,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         texte = u""
         if mode == "groupes" :
             for ID in listeID :
-                if self.dictGroupesActivites.has_key(ID) :
+                if ID in self.dictGroupesActivites :
                     listeNoms.append(self.dictGroupesActivites[ID])
             if len(listeNoms) == 0 : texte = u""
             if len(listeNoms) == 1 : texte = _(u"au groupe d'activités %s") % listeNoms[0]
@@ -503,7 +503,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             if len(listeNoms) > 2 : texte = _(u"aux groupes d'activités %s et %s") % (", ".join(listeNoms[:-1]), listeNoms[-1])
         if mode == "activites" :
             for ID in listeID :
-                if self.dictActivites.has_key(ID) :
+                if ID in self.dictActivites :
                     listeNoms.append(self.dictActivites[ID])
             if len(listeNoms) == 0 : texte = u""
             if len(listeNoms) == 1 : texte = u"à l'activité %s" % listeNoms[0]
@@ -559,7 +559,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             key = (categorie, action)
             listeDonnees = [("IDutilisateur", self.IDutilisateur), ("IDmodele", self.IDmodele), ("categorie", categorie), ("action", action), ("etat", etat)]
             
-            if self.dictDroits.has_key(key) :
+            if key in self.dictDroits :
                 # Modification d'un état existant
                 ancienEtat = self.dictDroits[key]["etat"]
                 IDdroit = self.dictDroits[key]["IDdroit"]
@@ -575,7 +575,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             DB.Commit() 
         
         # Recherche des suppressions à réaliser
-        for key, dictValeurs in self.dictDroits.iteritems() :
+        for key, dictValeurs in self.dictDroits.items() :
             found = False
             for categorie, action, etat in listeValeurs :
                 if categorie == key[0] and action == key[1] : 
@@ -588,7 +588,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
     def GetValeurs(self):
         """ Récupère les valeurs des cases """
         listeValeurs = []
-        for coords, case in self.dictCases.iteritems() :
+        for coords, case in self.dictCases.items() :
             if case.typeLigne == "categorie" :
                 codeCategorie = case.dictCategorie["code"]
                 codeAction = case.dictAction["code"]
@@ -668,7 +668,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                     else :
                         etat = "autorisation"
                         key = (dictCategorie["code"], dictAction["code"])
-                        if self.dictDroits.has_key(key) :
+                        if key in self.dictDroits :
                             etat = self.dictDroits[key]["etat"]
                 
                 # Création de la case
@@ -686,7 +686,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         x, y = self.CalcUnscrolledPosition(event.GetPosition())
         numLigne = self.YToRow(y)
         numColonne = self.XToCol(x)
-        if self.dictCases.has_key((numLigne, numColonne)) :
+        if (numLigne, numColonne) in self.dictCases :
             case = self.dictCases[(numLigne, numColonne)]
         else :
             case = None
@@ -706,7 +706,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         numLigne = event.GetRow()
         numColonne = event.GetCol()
         self.ActiveTooltip(actif=False)
-        if self.dictCases.has_key((numLigne, numColonne)) :
+        if (numLigne, numColonne) in self.dictCases :
             case = self.dictCases[(numLigne, numColonne)]
             case.OnClickGauche()
         event.Skip()
@@ -716,7 +716,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         numColonne = event.GetCol()
         self.ActiveTooltip(actif=False)
         self.case_selection = None
-        if self.dictCases.has_key((numLigne, numColonne)) :
+        if (numLigne, numColonne) in self.dictCases :
             case = self.dictCases[(numLigne, numColonne)]
             if case.typeLigne == "categorie" and case.etat != "inactif" :
                 self.case_selection = case
@@ -805,27 +805,27 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 listeCases.append(caseReference)
         # Toute la ligne
         if IDcommande == 2 :
-            for coords, case in self.dictCases.iteritems() :
+            for coords, case in self.dictCases.items() :
                 if caseReference.numLigne == case.numLigne and case.etat not in ("inactif", "groupe") :
                     listeCases.append(case)
         # Toute la colonne
         if IDcommande == 3 :
-            for coords, case in self.dictCases.iteritems() :
+            for coords, case in self.dictCases.items() :
                 if caseReference.numColonne == case.numColonne and case.etat not in ("inactif", "groupe") :
                     listeCases.append(case)
         # Toute le tableau
         if IDcommande == 4 :
-            for coords, case in self.dictCases.iteritems() :
+            for coords, case in self.dictCases.items() :
                 if case.etat not in ("inactif", "groupe") :
                     listeCases.append(case)
         # Toute les lignes du groupe
         if IDcommande == 5 :
-            for coords, case in self.dictCases.iteritems() :
+            for coords, case in self.dictCases.items() :
                 if caseReference.numGroupe == case.numGroupe and case.etat not in ("inactif", "groupe") :
                     listeCases.append(case)
         # Toute la colonne du groupe
         if IDcommande == 6 :
-            for coords, case in self.dictCases.iteritems() :
+            for coords, case in self.dictCases.items() :
                 if caseReference.numColonne == case.numColonne and caseReference.numGroupe == case.numGroupe and case.etat not in ("inactif", "groupe") :
                     listeCases.append(case)
         return listeCases
@@ -844,7 +844,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         font = self.GetFont()
         self.tip.SetHyperlinkFont(wx.Font(8, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, 'Arial'))
         
-        if dictDonnees.has_key("couleur") :
+        if "couleur" in dictDonnees :
             couleur = dictDonnees["couleur"]
             self.tip.SetTopGradientColour(couleur)
             self.tip.SetMiddleGradientColour(wx.Colour(255,255,255))
@@ -856,12 +856,12 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             
         # Titre du tooltip
         bmp = None
-        if dictDonnees.has_key("bmp") :
+        if "bmp" in dictDonnees :
             bmp = dictDonnees["bmp"]
         self.tip.SetHeaderBitmap(bmp)
         
         titre = None
-        if dictDonnees.has_key("titre") :
+        if "titre" in dictDonnees :
             titre = dictDonnees["titre"]
             self.tip.SetHeaderFont(wx.Font(10, font.GetFamily(), font.GetStyle(), wx.BOLD, font.GetUnderlined(), font.GetFaceName()))
             self.tip.SetHeader(titre)
@@ -873,7 +873,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 
         # Pied du tooltip
         pied = None
-        if dictDonnees.has_key("pied") :
+        if "pied" in dictDonnees :
             pied = dictDonnees["pied"]
         self.tip.SetDrawFooterLine(True)
         self.tip.SetFooterBitmap(wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Aide.png"), wx.BITMAP_TYPE_ANY))
@@ -1024,7 +1024,7 @@ class MyFrame(wx.Frame):
     
     def OnBouton1(self, event):
         for x in self.ctrl.GetValeurs() :
-            print x
+            print(x)
         
 
 if __name__ == '__main__':

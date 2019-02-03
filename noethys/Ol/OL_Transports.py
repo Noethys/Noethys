@@ -150,14 +150,14 @@ class ListView(FastObjectListView):
                 
                 # Filtres
                 valide = True
-                if self.dictFiltres.has_key("individu") and track.IDindividu != self.dictFiltres["individu"] : valide = False
-                if self.dictFiltres.has_key("transport") and track.categorie != self.dictFiltres["transport"] : valide = False
-                if self.dictFiltres.has_key("depart_date") and track.depart_dateDD != self.dictFiltres["depart_date"] : valide = False
-                if self.dictFiltres.has_key("depart_heure") and track.depart_heure != self.dictFiltres["depart_heure"] : valide = False
-                if self.dictFiltres.has_key("depart_lieu") and track.depart_nom != self.dictFiltres["depart_lieu"] : valide = False
-                if self.dictFiltres.has_key("arrivee_date") and track.arrivee_dateDD != self.dictFiltres["arrivee_date"] : valide = False
-                if self.dictFiltres.has_key("arrivee_heure") and track.arrivee_heure != self.dictFiltres["arrivee_heure"] : valide = False
-                if self.dictFiltres.has_key("arrivee_lieu") and track.arrivee_nom != self.dictFiltres["arrivee_lieu"] : valide = False
+                if "individu" in self.dictFiltres and track.IDindividu != self.dictFiltres["individu"] : valide = False
+                if "transport" in self.dictFiltres and track.categorie != self.dictFiltres["transport"] : valide = False
+                if "depart_date" in self.dictFiltres and track.depart_dateDD != self.dictFiltres["depart_date"] : valide = False
+                if "depart_heure" in self.dictFiltres and track.depart_heure != self.dictFiltres["depart_heure"] : valide = False
+                if "depart_lieu" in self.dictFiltres and track.depart_nom != self.dictFiltres["depart_lieu"] : valide = False
+                if "arrivee_date" in self.dictFiltres and track.arrivee_dateDD != self.dictFiltres["arrivee_date"] : valide = False
+                if "arrivee_heure" in self.dictFiltres and track.arrivee_heure != self.dictFiltres["arrivee_heure"] : valide = False
+                if "arrivee_lieu" in self.dictFiltres and track.arrivee_nom != self.dictFiltres["arrivee_lieu"] : valide = False
                 
                 if valide == True :
                     listeListeView.append(track)
@@ -173,7 +173,7 @@ class ListView(FastObjectListView):
         self.useExpansionColumn = True
         
         # Image list
-        for code, valeurs in DICT_CATEGORIES.iteritems() :
+        for code, valeurs in DICT_CATEGORIES.items() :
             img = self.AddNamedImages(code, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/%s.png" % valeurs["image"]), wx.BITMAP_TYPE_PNG))
         
         def GetImageCategorie(track):

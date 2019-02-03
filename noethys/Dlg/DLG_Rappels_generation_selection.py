@@ -217,8 +217,8 @@ class Panel(wx.Panel):
         listeComptes = []
         listeAnomalies = []
         dictCoches = self.ctrl_rappels.GetCoches()
-        for IDcompte_payeur, dictCompte in self.ctrl_rappels.dictComptes.iteritems() :
-            if dictCompte["select"] == True and dictCoches.has_key(IDcompte_payeur) :
+        for IDcompte_payeur, dictCompte in self.ctrl_rappels.dictComptes.items() :
+            if dictCompte["select"] == True and IDcompte_payeur in dictCoches :
                 # Insertion du document dans le dictCompte
                 dictDocument = self.ctrl_rappels.GetDictDocument(IDcompte_payeur)
                 if dictDocument["IDtexte"] == 0 :
@@ -278,7 +278,7 @@ class Panel(wx.Panel):
             self.EcritStatusbar(u"")
             del dlgAttente
 
-        except Exception, err:
+        except Exception as err:
             DB.Close() 
             del dlgAttente
             traceback.print_exc(file=sys.stdout)

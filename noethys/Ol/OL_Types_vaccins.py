@@ -76,7 +76,7 @@ class Track(object):
         self.txt_duree_validite = FormatDuree(self.duree_validite)
         # Maladies associées
         self.txt_maladies_associees = ""
-        if DICT_LIENS_MALADIES.has_key(self.IDtype_vaccin) :
+        if self.IDtype_vaccin in DICT_LIENS_MALADIES :
             self.listeMaladiesAssociees = DICT_LIENS_MALADIES[self.IDtype_vaccin]
             for IDtype_maladie in self.listeMaladiesAssociees :
                 self.txt_maladies_associees += DICT_MALADIES[IDtype_maladie]["nom"] + ", "
@@ -157,7 +157,7 @@ class ListView(FastObjectListView):
         db.Close()
         dictLiensMaladies = {}
         for IDvaccins_maladies, IDtype_vaccin, IDtype_maladie in listeDonnees :
-            if dictLiensMaladies.has_key(IDtype_vaccin) == False :
+            if (IDtype_vaccin in dictLiensMaladies) == False :
                 dictLiensMaladies[IDtype_vaccin] = [IDtype_maladie,]
             else:
                 dictLiensMaladies[IDtype_vaccin].append(IDtype_maladie)

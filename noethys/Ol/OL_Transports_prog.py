@@ -77,18 +77,18 @@ class Track(object):
 
         # Analyse du départ
         self.depart_nom = u""
-        if self.depart_IDarret != None and DICT_ARRETS.has_key(self.depart_IDarret) :
+        if self.depart_IDarret != None and self.depart_IDarret in DICT_ARRETS :
             self.depart_nom = DICT_ARRETS[self.depart_IDarret]
-        if self.depart_IDlieu != None and DICT_LIEUX.has_key(self.depart_IDlieu) :
+        if self.depart_IDlieu != None and self.depart_IDlieu in DICT_LIEUX :
             self.depart_nom = DICT_LIEUX[self.depart_IDlieu]
         if self.depart_localisation != None :
             self.depart_nom = self.AnalyseLocalisation(self.depart_localisation)
 
         # Analyse de l'arrivée
         self.arrivee_nom = u""
-        if self.arrivee_IDarret != None and DICT_ARRETS.has_key(self.arrivee_IDarret) :
+        if self.arrivee_IDarret != None and self.arrivee_IDarret in DICT_ARRETS :
             self.arrivee_nom = DICT_ARRETS[self.arrivee_IDarret]
-        if self.arrivee_IDlieu != None and DICT_LIEUX.has_key(self.arrivee_IDlieu) :
+        if self.arrivee_IDlieu != None and self.arrivee_IDlieu in DICT_LIEUX :
             self.arrivee_nom = DICT_LIEUX[self.arrivee_IDlieu]
         if self.arrivee_localisation != None :
             self.arrivee_nom = self.AnalyseLocalisation(self.arrivee_localisation)
@@ -99,11 +99,11 @@ class Track(object):
             return _(u"Domicile")
         if code == "ECOL" :
             IDecole = int(texte.split(";")[1])
-            if DICT_ECOLES.has_key(IDecole):
+            if IDecole in DICT_ECOLES:
                 return DICT_ECOLES[IDecole]
         if code == "ACTI" :
             IDactivite = int(texte.split(";")[1])
-            if DICT_ACTIVITES.has_key(IDactivite):
+            if IDactivite in DICT_ACTIVITES:
                 return DICT_ACTIVITES[IDactivite]
         if code == "AUTR" :
             code, nom, rue, cp, ville = texte.split(";")
@@ -215,7 +215,7 @@ class ListView(FastObjectListView):
         self.useExpansionColumn = True
         
         # Image list
-        for code, valeurs in DICT_CATEGORIES.iteritems() :
+        for code, valeurs in DICT_CATEGORIES.items() :
             img = self.AddNamedImages(code, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/%s.png" % valeurs["image"]), wx.BITMAP_TYPE_PNG))
 
         def rowFormatter(listItem, track):

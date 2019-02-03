@@ -175,7 +175,7 @@ class CTRL_titre(html.HtmlWindow):
     def GetNomsTitulaires(self):
         listeTitulaires = []
         nbreTitulaires = 0
-        for IDindividu, dictIndividu in self.dictIndividus.iteritems():
+        for IDindividu, dictIndividu in self.dictIndividus.items():
             if dictIndividu["titulaire"] == 1 :
                 nom = dictIndividu["nom"]
                 prenom = dictIndividu["prenom"]
@@ -270,7 +270,7 @@ class PanelGrille(wx.Panel):
     def MAJ_grille(self):
         # Recherche des individus de la famille ayant des inscriptions
         self.listeIndividusFamille = []
-        for IDindividu, dictIndividu in self.parent.dictIndividus.iteritems() :
+        for IDindividu, dictIndividu in self.parent.dictIndividus.items() :
             if len(dictIndividu["inscriptions"]) > 0 :
                 self.listeIndividusFamille.append(IDindividu)
         self.listeIndividusFamille.sort()
@@ -354,11 +354,11 @@ class Dialog(wx.Dialog):
         # Récupère les perspectives
         cfg = UTILS_Config.FichierConfig()
         self.userConfig = cfg.GetDictConfig()
-        if self.userConfig.has_key("grille_perspectives") == True :
+        if ("grille_perspectives" in self.userConfig) == True :
             self.perspectives = self.userConfig["grille_perspectives"]
         else:
             self.perspectives = []
-        if self.userConfig.has_key("grille_perspective_active") == True :
+        if ("grille_perspective_active" in self.userConfig) == True :
             self.perspective_active = self.userConfig["grille_perspective_active"]
         else:
             self.perspective_active = None
@@ -446,7 +446,7 @@ class Dialog(wx.Dialog):
         taille_fenetre = UTILS_Config.GetParametre("taille_fenetre_grille")
         if taille_fenetre == None :
             self.SetSize((900, 670))
-        if taille_fenetre == (0, 0) :
+        if taille_fenetre == (0, 0) or taille_fenetre == None :
             self.Maximize(True)
         else:
             self.SetSize(taille_fenetre)
@@ -808,7 +808,7 @@ if __name__ == "__main__":
     import time
     heure_debut = time.time()
     dialog_1 = Dialog(None, IDfamille=14, selectionIndividus=[46,])
-    print "Temps de chargement DLG_Grille =", time.time() - heure_debut
+    print("Temps de chargement DLG_Grille =", time.time() - heure_debut)
     app.SetTopWindow(dialog_1)
     dialog_1.ShowModal()
     app.MainLoop()    

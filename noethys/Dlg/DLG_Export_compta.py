@@ -55,7 +55,7 @@ def FormateLibelle(texte="", valeurs=[]):
 def GetKeysDictTries(dictValeurs={}, key=""):
     """ Renvoie une liste de keys de dictionnaire triés selon la sous key indiquée """
     listeKeys = []
-    for ID, dictTemp in dictValeurs.iteritems() :
+    for ID, dictTemp in dictValeurs.items() :
         listeKeys.append((dictTemp[key], ID))
     listeKeys.sort()
     listeResultats = []
@@ -246,7 +246,7 @@ class Donnees():
                         intituleTemp = dictPrestation["label"]
                     
                 # Mémorisation de la prestation
-                if dictCodesPrestations.has_key(intituleTemp) == False :
+                if (intituleTemp in dictCodesPrestations) == False :
                     
                     # Recherche le code compta de la prestation
                     code_compta = dictPrestation["code_compta_prestation"]
@@ -278,11 +278,11 @@ class Donnees():
             else :
                 dlg.Destroy() 
                 return False
-            for intitule, code_compta in dictCodesTemp.iteritems() :
+            for intitule, code_compta in dictCodesTemp.items() :
                 dictCodesPrestations[intitule]["code_compta"] = code_compta
             
         # Mémorisation des lignes prestations
-        listeIntitules = dictCodesPrestations.keys() 
+        listeIntitules = list(dictCodesPrestations.keys()) 
         listeIntitules.sort() 
         
         for intitule in listeIntitules :
@@ -307,7 +307,7 @@ class Donnees():
 
         # -------------- Ventes débit : Total de la facturation ---------------
         montantTotal = FloatToDecimal(0.0)
-        for labelPrestation, dictTemp in dictCodesPrestations.iteritems() :
+        for labelPrestation, dictTemp in dictCodesPrestations.items() :
             if dictTemp["code_compta"] != "" :
                 montantTotal += dictTemp["montant"]
             
@@ -368,7 +368,7 @@ class Donnees():
                 code_compta = self.dictParametres["code_%s" % typeComptable]
             else :
                 code_compta = code_compta_mode
-            if dictModesReglements.has_key(IDmode) == False :
+            if (IDmode in dictModesReglements) == False :
                 dictModesReglements[IDmode] = {
                     "IDmode" : IDmode, "label" : labelMode, "code_compta" : code_compta, "montant" : FloatToDecimal(0.0), 
                     "nbreReglements" : 0, "numeroCompte" : numeroCompte, "nomCompte" : nomCompte,
@@ -385,12 +385,12 @@ class Donnees():
             else :
                 dlg.Destroy() 
                 return False
-            for ID, code_compta in dictCodesTemp.iteritems() :
+            for ID, code_compta in dictCodesTemp.items() :
                 dictModesReglements[int(ID)]["code_compta"] = code_compta
 
         # Analyse
         listeLignes = []
-        for IDmode, dictMode in dictModesReglements.iteritems() :
+        for IDmode, dictMode in dictModesReglements.items() :
             
             if dictMode["code_compta"] != "" :
             
@@ -420,7 +420,7 @@ class Donnees():
         if len(listeLignes) > 0 :
 
             montantTotal = FloatToDecimal(0.0)
-            for IDmode, dictTemp in dictModesReglements.iteritems() :
+            for IDmode, dictTemp in dictModesReglements.items() :
                 if dictTemp["code_compta"] != "" :
                     montantTotal += dictTemp["montant"]
 
@@ -486,13 +486,13 @@ class Donnees():
             else :
                 dlg.Destroy() 
                 return False
-            for ID, code_compta in dictCodesTemp.iteritems() :
+            for ID, code_compta in dictCodesTemp.items() :
                 dictDepots[int(ID)]["code_compta"] = code_compta
 
         # Analyse
         listeLignes = []
 
-        for IDdepot, dictDepot in dictDepots.iteritems() :
+        for IDdepot, dictDepot in dictDepots.items() :
 
             if dictDepot["code_compta"] != "" :
 
@@ -526,7 +526,7 @@ class Donnees():
         if len(listeLignes) > 0 :
             
             montantTotal = FloatToDecimal(0.0)
-            for IDdepot, dictTemp in dictDepots.iteritems() :
+            for IDdepot, dictTemp in dictDepots.items() :
                 if dictTemp["code_compta"] != "" :
                     montantTotal += dictTemp["montant"]
 
@@ -1150,7 +1150,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL):#(wxpg.PropertyGrid) :
         # Recherche les paramètres mémorisés
         dictParametres = UTILS_Parametres.ParametresCategorie(mode="get", categorie="export_compta", dictParametres=dictValeurs)
         # Envoie les paramètres dans le contrôle
-        for nom, valeur in dictParametres.iteritems() :
+        for nom, valeur in dictParametres.items() :
             propriete = self.GetPropertyByName(nom)
             ancienneValeur = propriete.GetValue()
             if "EnumProperty" in str(propriete) :
@@ -1648,7 +1648,7 @@ class CTRL_Codes(wxpg.PropertyGrid) :
         
         # Remplissage des valeurs
         if keyStr == True :
-            listeIntitules = dictCodes.keys() 
+            listeIntitules = list(dictCodes.keys()) 
             listeIntitules.sort() 
             for intitule in listeIntitules :
                 valeur = dictCodes[intitule]["code_compta"]
@@ -1656,22 +1656,22 @@ class CTRL_Codes(wxpg.PropertyGrid) :
                 propriete = wxpg.StringProperty(label=intitule, name=intitule, value=valeur)
                 self.Append(propriete)
         else :
-            for ID, dictValeurs in dictCodes.iteritems() :
+            for ID, dictValeurs in dictCodes.items() :
                 valeur = dictValeurs["code_compta"]
                 if valeur == None : valeur = ""
-                if dictValeurs.has_key("label") : intitule = dictValeurs["label"]
-                if dictValeurs.has_key("intitule") : intitule = dictValeurs["intitule"]
+                if "label" in dictValeurs : intitule = dictValeurs["label"]
+                if "intitule" in dictValeurs : intitule = dictValeurs["intitule"]
                 propriete = wxpg.StringProperty(label=intitule, name=str(ID), value=valeur)
                 self.Append(propriete)
                 
 
     def Validation(self):
-        for label, valeur in self.GetPropertyValues().iteritems() :
+        for label, valeur in self.GetPropertyValues().items() :
             if valeur == "" :
                 if self.keyStr == False :
                     ID = int(label)
-                    if self.dictCodes[ID].has_key("label") : label = self.dictCodes[ID]["label"]
-                    if self.dictCodes[ID].has_key("intitule") : label = self.dictCodes[ID]["intitule"]
+                    if "label" in self.dictCodes[ID] : label = self.dictCodes[ID]["label"]
+                    if "intitule" in self.dictCodes[ID] : label = self.dictCodes[ID]["intitule"]
                 dlg = wx.MessageDialog(None, _(u"Vous n'avez pas renseigné le code comptable de la ligne '%s'.\n\nSouhaitez-vous tout de même continuer ? (Si oui, cette ligne ne sera pas exportée)") % label, _(u"Information manquante"), wx.YES_NO|wx.YES_DEFAULT|wx.ICON_EXCLAMATION)
                 reponse = dlg.ShowModal()
                 dlg.Destroy()

@@ -93,7 +93,7 @@ class CTRL(HTL.HyperTreeList):
         for IDprestation in listeNouvellesPrestations :
             dictPrestation = dictPrestations[IDprestation]
             categorie = dictPrestation["categorie"]
-            if DICT_LABELS_CATEGORIES.has_key(categorie) :
+            if categorie in DICT_LABELS_CATEGORIES :
                 labelCategorie = DICT_LABELS_CATEGORIES[categorie][1]
             else:
                 labelCategorie = categorie # TEMPORAIRE ICI !!!!!!!!!!!!
@@ -111,12 +111,12 @@ class CTRL(HTL.HyperTreeList):
             if montant == None :
                 montant = 0.0
             IDactivite = dictPrestation["IDactivite"]
-            if dictPrestation.has_key("montantVentilation") :
+            if "montantVentilation" in dictPrestation :
                 montantVentilation = dictPrestation["montantVentilation"]
             else:
                 montantVentilation = 0.0
             
-            if dictDeductions.has_key(IDprestation) :
+            if IDprestation in dictDeductions :
                 if len(dictDeductions[IDprestation]) > 0 :
                     label += u"*"
             
@@ -198,7 +198,7 @@ class CTRL(HTL.HyperTreeList):
                     
         # Suppression des anciennes prestations
         for IDprestation, categorie in listeAnciennesPrestations :
-            if self.dictBranchesPrestations.has_key(IDprestation) :
+            if IDprestation in self.dictBranchesPrestations :
                 branchePrestation = self.dictBranchesPrestations[IDprestation]["branche"]
                 date = self.dictBranchesPrestations[IDprestation]["date"]
                 IDindividu = self.dictBranchesPrestations[IDprestation]["IDindividu"]
@@ -225,13 +225,13 @@ class CTRL(HTL.HyperTreeList):
         # Calcul du total par catégorie
         totalCategorie = 0.0
         dictTotaux = {}
-        for IDprestation, dictValeurs in self.dictBranchesPrestations.iteritems() :
+        for IDprestation, dictValeurs in self.dictBranchesPrestations.items() :
             categorie = dictValeurs["categorie"]
-            if dictTotaux.has_key(categorie) :
+            if categorie in dictTotaux :
                 dictTotaux[categorie] += dictValeurs["montant"]
             else:
                 dictTotaux[categorie] = dictValeurs["montant"]
-        for categorie, total in dictTotaux.iteritems() :
+        for categorie, total in dictTotaux.items() :
             self.SetItemText(self.dictBranches[categorie]["branche"], u"%.2f %s " % (total, SYMBOLE), 1)
         
         self.ExpandAllChildren(self.root)
@@ -270,17 +270,17 @@ class CTRL(HTL.HyperTreeList):
 ##            index += 1
             
     def RechercheBranche(self, type=None, date=None, IDindividu=None, IDprestation=None):
-        if self.dictBranches.has_key(type) :
+        if type in self.dictBranches :
             # Renvoie la branche du type
             if date == None : return self.dictBranches[type]["branche"]
-            if self.dictBranches[type].has_key(date) :
+            if date in self.dictBranches[type] :
                 # Renvoie la branche de la date
                 if IDindividu == None : return self.dictBranches[type][date]["branche"]
-                if self.dictBranches[type][date].has_key(IDindividu) :
+                if IDindividu in self.dictBranches[type][date] :
                     # Renvoie la branche de l'individu
                     if IDprestation == None : return self.dictBranches[type][date][IDindividu]["branche"]
                     # Renvoie la branche de la prestation
-                    if self.dictBranches[type][date][IDindividu].has_key(IDprestation) :
+                    if IDprestation in self.dictBranches[type][date][IDindividu] :
                         return self.dictBranches[type][date][IDindividu][IDprestation]["branche"]
         return None
         
@@ -348,7 +348,7 @@ class CTRL(HTL.HyperTreeList):
         self.parent.panel_grille.grille.SupprimerPrestation(IDprestation, categorie)
     
     def RechercherIDprestation(self, item):
-        for IDprestation, dictValeurs in self.dictBranchesPrestations.iteritems() :
+        for IDprestation, dictValeurs in self.dictBranchesPrestations.items() :
             if dictValeurs["branche"] == item :
                 return IDprestation
         return None
@@ -356,7 +356,7 @@ class CTRL(HTL.HyperTreeList):
     def ModifiePrestation(self, date, IDindividu, IDprestation, montantVentilation=0.0, nouveauMontant=0.0, nouveauLabel=None):
         """ Fontion qui sert au tarif basé sur le nbre d'individus de la famille présents """
         # Modifie le montant
-        if self.dictBranchesPrestations.has_key(IDprestation) :
+        if IDprestation in self.dictBranchesPrestations :
             self.dictBranchesPrestations[IDprestation]["montant"] = nouveauMontant
         # Recherche de la branche Prestation
         branchePrestation = self.RechercheBranche("consommation", date, IDindividu, IDprestation)

@@ -44,7 +44,7 @@ class Track(object):
         # Droits
         if self.profil.startswith("modele:") :
             IDmodele = int(self.profil.replace("modele:", ""))
-            if dictModeles.has_key(IDmodele) :
+            if IDmodele in dictModeles :
                 self.texteDroits = dictModeles[IDmodele]
             else :
                 self.texteDroits = _(u"Modèle de droits inconnu")

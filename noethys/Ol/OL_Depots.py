@@ -60,14 +60,14 @@ class Track(object):
         self.observations = donnees[7]
         
         # Détails
-        if DICT_DETAILS_DEPOTS.has_key(self.IDdepot) :
+        if self.IDdepot in DICT_DETAILS_DEPOTS :
             dictDetails = DICT_DETAILS_DEPOTS[self.IDdepot]
             # Totaux du dépôt
             self.nbre = dictDetails["nbre"]
             self.total = dictDetails["montant"]
             # Création du texte du détail
             texte = u""
-            for IDmode, dictDetail in dictDetails.iteritems() :
+            for IDmode, dictDetail in dictDetails.items() :
                 if IDmode != "nbre" and IDmode != "montant" :
                     texteDetail = u"%d %s (%.2f %s), " % (dictDetail["nbre"], dictDetail["nom"], dictDetail["montant"], SYMBOLE)
                     texte += texteDetail
@@ -121,9 +121,9 @@ class ListView(FastObjectListView):
         
         for IDdepot, IDmode, nom_mode, montant, nbre in listeDonnees :
             if IDmode != None :
-                if DICT_DETAILS_DEPOTS.has_key(IDdepot) == False :
+                if (IDdepot in DICT_DETAILS_DEPOTS) == False :
                     DICT_DETAILS_DEPOTS[IDdepot] = {"nbre" : 0, "montant" : 0.0} 
-                if DICT_DETAILS_DEPOTS[IDdepot].has_key(IDmode) == False :
+                if (IDmode in DICT_DETAILS_DEPOTS[IDdepot]) == False :
                     DICT_DETAILS_DEPOTS[IDdepot][IDmode] = {"nom" : nom_mode, "nbre" : 0, "montant" : 0.0} 
                 DICT_DETAILS_DEPOTS[IDdepot][IDmode]["nbre"] += nbre
                 DICT_DETAILS_DEPOTS[IDdepot][IDmode]["montant"] += montant

@@ -92,7 +92,7 @@ def GetListeEtatsMaladies(IDindividu):
     for IDvaccin, IDtype_vaccin, date, IDtype_maladie, nomVaccin, duree_validite, nomMaladie, vaccin_obligatoire in listeVaccins :
         dateDD = datetime.date(int(date[:4]), int(date[5:7]), int(date[8:10]))
         dateFinValidite, nbreJoursRestants = CalcValidite(dateDD, duree_validite)
-        if dictMaladiesIndividus.has_key(IDtype_maladie) :
+        if IDtype_maladie in dictMaladiesIndividus :
             if dictMaladiesIndividus[IDtype_maladie] < nbreJoursRestants :
                 dictMaladiesIndividus[IDtype_maladie] = nbreJoursRestants
         else:
@@ -100,7 +100,7 @@ def GetListeEtatsMaladies(IDindividu):
     
     listeMaladiesFinal = []
     for nom, IDtype_maladie in listeMaladies :
-        if dictMaladiesIndividus.has_key(IDtype_maladie) :
+        if IDtype_maladie in dictMaladiesIndividus :
             if dictMaladiesIndividus[IDtype_maladie] <= 0 :
                 etat = "pasok"
             elif dictMaladiesIndividus[IDtype_maladie] > 0 and dictMaladiesIndividus[IDtype_maladie] <= 15 :

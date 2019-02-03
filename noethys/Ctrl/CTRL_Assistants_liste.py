@@ -158,7 +158,7 @@ class MyFrame(wx.Frame):
     
     def OnSelection(self, event):
         index = self.ctrl.GetFirstSelected()
-        print self.ctrl.GetItemPyData(index)
+        print(self.ctrl.GetItemPyData(index))
         
         
 

@@ -73,7 +73,7 @@ def GetCondition(filtre="", choix="", criteres=""):
         listeIDchoix = criteres.split(";")
         for IDchoix in listeIDchoix :
             IDchoix = int(IDchoix)
-            if DICT_CHOIX.has_key(IDchoix) :
+            if IDchoix in DICT_CHOIX :
                 listeLabelsChoix.append("'%s'" % DICT_CHOIX[IDchoix]["label"])
         description = _(u"Doit être %s") % _(u" ou ").join(listeLabelsChoix)
 

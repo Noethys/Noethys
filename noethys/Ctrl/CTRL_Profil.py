@@ -11,7 +11,7 @@
 
 import Chemins
 from Utils import UTILS_Adaptations
-import datetime
+import six
 import wx
 import GestionDB
 from Utils.UTILS_Traduction import _
@@ -60,7 +60,7 @@ class CTRL_Choix_profil(wx.Choice):
         return listeItems
 
     def SetID(self, ID=None):
-        for index, IDprofil in self.dictDonnees.iteritems():
+        for index, IDprofil in self.dictDonnees.items():
             if IDprofil != None and IDprofil == ID:
                 self.SetSelection(index)
                 return
@@ -222,16 +222,16 @@ def SetParametres(categorie="", dictParametres={}, IDprofil=None):
     # On boucle sur chaque valeur
     listeAjouts = []
     listeModifications = []
-    for nom, valeur in dictParametres.iteritems():
+    for nom, valeur in dictParametres.items():
         type_donnee = type(valeur)
-        if type_donnee in (str, unicode) :
+        if type_donnee in (str, six.text_type) :
             type_donnee = "texte"
             valeur = valeur
         else :
             type_donnee = "autre"
-            valeur = unicode(valeur)
+            valeur = six.text_type(valeur)
 
-        if dictDonnees.has_key(nom):
+        if nom in dictDonnees:
             # Si valeur existe déjà dans DB
             if dictDonnees[nom] != valeur :
                 listeModifications.append((valeur, type_donnee, nom, IDprofil))

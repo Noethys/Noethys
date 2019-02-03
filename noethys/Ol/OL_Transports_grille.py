@@ -112,7 +112,7 @@ class ListView(FastObjectListView):
         modLocalisation = UTILS_Transports.AnalyseLocalisation() 
         
         listeListeView = []
-        for IDtransport, item in self.dictTransports.iteritems() :
+        for IDtransport, item in self.dictTransports.items() :
             track = Track(item, modLocalisation)
             listeListeView.append(track)
             if self.selectionID == IDtransport :
@@ -126,7 +126,7 @@ class ListView(FastObjectListView):
         self.useExpansionColumn = True
         
         # Image list
-        for code, valeurs in DICT_CATEGORIES.iteritems() :
+        for code, valeurs in DICT_CATEGORIES.items() :
             img = self.AddNamedImages(code, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/%s.png" % valeurs["image"]), wx.BITMAP_TYPE_PNG))
         
         def GetImageCategorie(track):

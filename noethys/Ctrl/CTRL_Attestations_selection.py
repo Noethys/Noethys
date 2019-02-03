@@ -144,7 +144,7 @@ def Importation(liste_activites=[], date_debut=None, date_fin=None, date_edition
     listeDeductionsTemp = DB.ResultatReq()  
     dictDeductions = {}
     for IDdeduction, IDprestation, date, montant, label, IDaide in listeDeductionsTemp :
-        if dictDeductions.has_key(IDprestation) == False :
+        if (IDprestation in dictDeductions) == False :
             dictDeductions[IDprestation] = []
         dictDeductions[IDprestation].append({"IDdeduction":IDdeduction, "date":date, "montant":montant, "label":label, "IDaide":IDaide})
 
@@ -161,7 +161,7 @@ def Importation(liste_activites=[], date_debut=None, date_fin=None, date_edition
     dictConsommations = {}
     for IDconso, date, IDprestation in listeConsommations :
         date = DateEngEnDateDD(date)
-        if dictConsommations.has_key(IDprestation) == False :
+        if (IDprestation in dictConsommations) == False :
             dictConsommations[IDprestation] = []
         if date not in dictConsommations[IDprestation] :
             dictConsommations[IDprestation].append(date)
@@ -220,7 +220,7 @@ def Importation(liste_activites=[], date_debut=None, date_fin=None, date_edition
         if isPrestationSelection(label, IDactivite) == True :
             
             # Regroupement par compte payeur
-            if dictComptes.has_key(IDcompte_payeur) == False :
+            if (IDcompte_payeur in dictComptes) == False :
                 
                 # Recherche des titulaires
                 dictInfosTitulaires = dictNomsTitulaires[IDfamille]
@@ -283,7 +283,7 @@ def Importation(liste_activites=[], date_debut=None, date_fin=None, date_edition
                 dictComptes[IDcompte_payeur].update(infosIndividus.GetDictValeurs(mode="famille", ID=IDfamille, formatChamp=True))
 
             # Insert les montants pour le compte payeur
-            if dictVentilation.has_key(IDprestation) :
+            if IDprestation in dictVentilation :
                 montant_ventilation = FloatToDecimal(dictVentilation[IDprestation])
             else :
                 montant_ventilation = FloatToDecimal(0.0)
@@ -304,8 +304,8 @@ def Importation(liste_activites=[], date_debut=None, date_fin=None, date_edition
                 IDactivite = 0
             
             # Ajout d'un individu
-            if dictComptes[IDcompte_payeur]["individus"].has_key(IDindividu) == False :
-                if dictIndividus.has_key(IDindividu) :
+            if (IDindividu in dictComptes[IDcompte_payeur]["individus"]) == False :
+                if IDindividu in dictIndividus :
                     
                     # Si c'est bien un individu
                     IDcivilite = dictIndividus[IDindividu]["IDcivilite"]
@@ -333,7 +333,7 @@ def Importation(liste_activites=[], date_debut=None, date_fin=None, date_edition
                 dictComptes[IDcompte_payeur]["individus"][IDindividu] = { "texte" : texteIndividu, "activites" : {}, "total" : FloatToDecimal(0.0), "ventilation" : FloatToDecimal(0.0), "total_reports" : FloatToDecimal(0.0), "nom" : nom, "select" : True }
             
             # Ajout de l'activité
-            if dictComptes[IDcompte_payeur]["individus"][IDindividu]["activites"].has_key(IDactivite) == False :
+            if (IDactivite in dictComptes[IDcompte_payeur]["individus"][IDindividu]["activites"]) == False :
                 texteActivite = nomActivite
                 agrement = RechercheAgrement(listeAgrements, IDactivite, date)
                 if agrement != None :
@@ -341,17 +341,17 @@ def Importation(liste_activites=[], date_debut=None, date_fin=None, date_edition
                 dictComptes[IDcompte_payeur]["individus"][IDindividu]["activites"][IDactivite] = { "texte" : texteActivite, "presences" : {} }
             
             # Ajout de la présence
-            if dictComptes[IDcompte_payeur]["individus"][IDindividu]["activites"][IDactivite]["presences"].has_key(date) == False :
+            if (date in dictComptes[IDcompte_payeur]["individus"][IDindividu]["activites"][IDactivite]["presences"]) == False :
                 dictComptes[IDcompte_payeur]["individus"][IDindividu]["activites"][IDactivite]["presences"][date] = { "texte" : DateEngFr(str(date)), "unites" : [], "total" : FloatToDecimal(0.0) }
             
             # Recherche du nbre de dates pour cette prestation
-            if dictConsommations.has_key(IDprestation) :
+            if IDprestation in dictConsommations :
                 listeDates = dictConsommations[IDprestation]
             else:
                 listeDates = []
 
             # Recherche des déductions
-            if dictDeductions.has_key(IDprestation) :
+            if IDprestation in dictDeductions :
                 deductions = dictDeductions[IDprestation]
             else :
                 deductions = []
@@ -526,8 +526,8 @@ class CTRL(HTL.HyperTreeList):
             num_attestation = 1
         else:
             num_attestation = listeDonnees[0][0] + 1
-        for IDcompte_payeur, dictCompte in self.dictComptes.iteritems() :
-            if dictCoches.has_key(IDcompte_payeur) :
+        for IDcompte_payeur, dictCompte in self.dictComptes.items() :
+            if IDcompte_payeur in dictCoches :
                 dictCompte["select"] = True
                 # Attribue un numéro de facture
                 dictCompte["numero"] = _(u"Attestation n°%06d") % num_attestation
@@ -561,7 +561,7 @@ class CTRL(HTL.HyperTreeList):
                 dictCompte["texte_conclusion"] = CTRL_Attestations_options.RemplaceMotsCles(dictOptions["texte_conclusion"], dictCompte)
 
                 # Sélectionne uniquement les individus cochés dans la liste
-                for IDindividu, dictIndividu in dictCompte["individus"].iteritems() :
+                for IDindividu, dictIndividu in dictCompte["individus"].items() :
                     if IDindividu in dictCoches[IDcompte_payeur] :
                         dictIndividu["select"] = True
                     else:
@@ -571,7 +571,7 @@ class CTRL(HTL.HyperTreeList):
         return self.dictComptes
 
     def GetListeComptes(self):
-        return self.dictComptes.keys() 
+        return list(self.dictComptes.keys()) 
     
     def MAJ(self):
         """ Met à jour (redessine) tout le contrôle """
@@ -600,7 +600,7 @@ class CTRL(HTL.HyperTreeList):
     
         # Branches COMPTE
         listeNomsSansCivilite = []
-        for IDcompte_payeur, dictCompte in self.dictComptes.iteritems() :
+        for IDcompte_payeur, dictCompte in self.dictComptes.items() :
             listeNomsSansCivilite.append((dictCompte["nomSansCivilite"], IDcompte_payeur))
         listeNomsSansCivilite.sort() 
         
@@ -619,7 +619,7 @@ class CTRL(HTL.HyperTreeList):
             
             # Branches INDIVIDUS
             listeIndividus = []
-            for IDindividu, dictIndividu in dictCompte["individus"].iteritems() :
+            for IDindividu, dictIndividu in dictCompte["individus"].items() :
                 nomIndividu = dictIndividu["nom"]
                 listeIndividus.append((nomIndividu, IDindividu))
             listeIndividus.sort() 

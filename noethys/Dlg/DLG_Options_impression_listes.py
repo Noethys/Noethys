@@ -353,7 +353,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
 
     def Validation(self):
         """ Validation des données saisies """
-        for nom, valeur in self.GetPropertyValues().iteritems() :
+        for nom, valeur in self.GetPropertyValues().items() :
             propriete = self.GetPropertyByName(nom)
             if self.GetPropertyAttribute(propriete, "obligatoire") == True :
                 if valeur == "" or valeur == None :
@@ -370,7 +370,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         # Recherche les paramètres mémorisés
         dictParametres = UTILS_Parametres.ParametresCategorie(mode="get", categorie="impression_facture", dictParametres=dictValeurs)
         # Envoie les paramètres dans le contrôle
-        for nom, valeur in dictParametres.iteritems() :
+        for nom, valeur in dictParametres.items() :
             propriete = self.GetPropertyByName(nom)
             ancienneValeur = propriete.GetValue() 
             propriete.SetValue(valeur)
@@ -431,13 +431,13 @@ class CTRL(wx.Panel):
         self.ctrl_image_paysage.Bind(wx.EVT_LEFT_DOWN, self.OnLeftDownPaysage)
         
         # Init contrôle
-        if dictOptions.has_key("titre") and dictOptions["titre"] != None : 
+        if "titre" in dictOptions and dictOptions["titre"] != None : 
             self.ctrl_titre.SetValue(dictOptions["titre"])
-        if dictOptions.has_key("introduction") and dictOptions["introduction"] != None : 
+        if "introduction" in dictOptions and dictOptions["introduction"] != None : 
             self.ctrl_introduction.SetValue(dictOptions["introduction"])
-        if dictOptions.has_key("conclusion") and dictOptions["conclusion"] != None : 
+        if "conclusion" in dictOptions and dictOptions["conclusion"] != None : 
             self.ctrl_conclusion.SetValue(dictOptions["conclusion"])
-        if dictOptions.has_key("orientation") and dictOptions["orientation"] != None : 
+        if "orientation" in dictOptions and dictOptions["orientation"] != None : 
             self.SetOrientation(dictOptions["orientation"])
             
         
@@ -527,7 +527,7 @@ class CTRL(wx.Panel):
         # Récupération des paramètres
         if self.ctrl_parametres.Validation() == False :
             return False
-        for nom, valeur in self.ctrl_parametres.GetValeurs().iteritems()  :
+        for nom, valeur in self.ctrl_parametres.GetValeurs().items()  :
             dictOptions[nom] = valeur
 
         return dictOptions

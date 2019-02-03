@@ -95,7 +95,7 @@ class Dialog(wx.Dialog):
         DB.Close()
         dictFactures = {}
         for IDpiece, IDlot, IDfacture, statut, nomLot in listeDonnees :
-            if dictFactures.has_key(IDfacture) == False :
+            if (IDfacture in dictFactures) == False :
                 dictFactures[IDfacture] = []
             dictFactures[IDfacture].append({"IDpiece":IDpiece, "IDlot":IDlot, "statut":statut, "nomLot":nomLot})
         return dictFactures
@@ -125,7 +125,7 @@ class Dialog(wx.Dialog):
             
             # Recherche si la facture n'est pas déjà dans un autre prélèvement
             listeAutresLots = []
-            if dictFactures.has_key(track.IDfacture) :
+            if track.IDfacture in dictFactures :
                 for dictTemp in dictFactures[track.IDfacture] :
                     if dictTemp["IDlot"] != self.IDlot :
                         nomLot = dictTemp["nomLot"]

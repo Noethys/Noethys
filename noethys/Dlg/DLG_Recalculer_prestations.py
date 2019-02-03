@@ -84,7 +84,7 @@ class Traitement(Thread):
             self.succes = True
             raise Abort
         
-        except Abort, KeyBoardInterrupt: 
+        except Abort as KeyBoardInterrupt: 
             if self.succes == True :
                 self.parent.EcritLog(_(u"Traitement terminé")) 
                 self.parent.Arreter(forcer=True) 
@@ -93,7 +93,7 @@ class Traitement(Thread):
             self.parent.bouton_fermer.Enable(True)
             self.parent.Layout()
             
-        except Exception, err : 
+        except Exception as err : 
             self.parent.EcritLog("Erreur : " + str(err))
             self.stop = True 
             self.parent.bouton_ok.SetImageEtTexte(cheminImage="Images/32x32/Valider.png", texte=u"Commencer")
@@ -136,7 +136,7 @@ class CTRL_Activite(wx.Choice):
         return listeItems
 
     def SetID(self, ID=0):
-        for index, values in self.dictDonnees.iteritems():
+        for index, values in self.dictDonnees.items():
             if values["ID"] == ID :
                  self.SetSelection(index)
 

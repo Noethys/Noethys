@@ -124,10 +124,10 @@ class CTRL(wx.Panel):
         dictTemp = {}
         listeActivites = []
         for IDactivite, nomActivite, IDgroupe, nomGroupe, ordreGroupe, nbreConso, quantite in listeConso :
-            if dictTemp.has_key(IDactivite) == False :
+            if (IDactivite in dictTemp) == False :
                 dictTemp[IDactivite] = {"nom" : nomActivite, "nbre" : 0, "groupes" : {} }
                 listeActivites.append(IDactivite)
-            if dictTemp[IDactivite]["groupes"].has_key(IDgroupe) == False  :
+            if (IDgroupe in dictTemp[IDactivite]["groupes"]) == False  :
                 dictTemp[IDactivite]["groupes"][IDgroupe] = {"nom" : nomGroupe, "ordre" : ordreGroupe, "nbre" : 0}
             dictTemp[IDactivite]["groupes"][IDgroupe]["nbre"] += 1
             dictTemp[IDactivite]["nbre"] += 1
@@ -137,7 +137,7 @@ class CTRL(wx.Panel):
             nomActivite = dictTemp[IDactivite]["nom"]
             
             listeGroupes = []
-            for IDgroupe, dictGroupe in dictTemp[IDactivite]["groupes"].iteritems() :
+            for IDgroupe, dictGroupe in dictTemp[IDactivite]["groupes"].items() :
                 label = u"%d %s" % (dictGroupe["nbre"], dictGroupe["nom"])
                 listeGroupes.append((dictGroupe["ordre"], label))
             listeGroupes.sort() 
@@ -171,7 +171,7 @@ class MyFrame(wx.Frame):
         self.Layout()
 
         # Init contrôles
-        print (self.ctrl.GetTexte([1,]),)
+        print((self.ctrl.GetTexte([1,]),))
         self.ctrl.MAJ() 
         self.ctrl.Start()
 

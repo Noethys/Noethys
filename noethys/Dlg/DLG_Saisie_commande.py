@@ -18,6 +18,7 @@ from Ctrl import CTRL_Bouton_image
 import datetime
 import FonctionsPerso
 import sys
+import six
 import GestionDB
 from Utils import UTILS_Organisateur
 from Utils import UTILS_Divers
@@ -63,7 +64,7 @@ class OL_Totaux(FastObjectListView):
     def SetValeurs(self, dictValeurs={}):
         listeTracksModifies = []
         for track in self.donnees :
-            if dictValeurs.has_key(track.IDcolonne):
+            if track.IDcolonne in dictValeurs:
                 if track.valeur != dictValeurs[track.IDcolonne]:
                     track.valeur = dictValeurs[track.IDcolonne]
                     listeTracksModifies.append(listeTracksModifies)
@@ -120,7 +121,7 @@ class CTRL_Infos(html.HtmlWindow):
     def MAJ(self):
         listeTemp = []
 
-        if self.parent.dictDonnees.has_key("restaurateur_nom") == True :
+        if ("restaurateur_nom" in self.parent.dictDonnees) == True :
             restaurateur_nom = self.parent.dictDonnees["restaurateur_nom"]
             restaurateur_tel = self.parent.dictDonnees["restaurateur_tel"]
             restaurateur_mail = self.parent.dictDonnees["restaurateur_mail"]
@@ -394,7 +395,7 @@ class Dialog(wx.Dialog):
         listeDonnees = DB.ResultatReq()
         if len(listeDonnees) > 0:
             nom_modele, IDrestaurateur, parametres, restaurateur_nom, restaurateur_tel, restaurateur_mail = listeDonnees[0]
-            if type(parametres) in (str, unicode) :
+            if type(parametres) in (str, six.text_type) :
                 exec(u"parametres = %s" % parametres)
 
             self.dictDonnees["modele_nom"] = nom_modele
@@ -414,7 +415,7 @@ class Dialog(wx.Dialog):
         listeColonnes = []
         if len(listeDonnees) > 0:
             for IDcolonne, ordre, nom, largeur, categorie, parametres in listeDonnees :
-                if type(parametres) in (str, unicode):
+                if type(parametres) in (str, six.text_type):
                     exec (u"parametres = %s" % parametres)
                 listeColonnes.append({"IDcolonne" : IDcolonne, "ordre" : ordre, "nom" : nom, "largeur" : largeur, "categorie" : categorie, "parametres" : parametres})
         self.dictDonnees["colonnes"] = listeColonnes
@@ -599,7 +600,7 @@ class Dialog(wx.Dialog):
         for dictColonne in dictDonnees["liste_colonnes"] :
             valeur = dictColonne["nom_colonne"]
             ligne.append(Paragraph(valeur, style_entete))
-            if dictLargeurs.has_key(dictColonne["IDcolonne"]):
+            if dictColonne["IDcolonne"] in dictLargeurs:
                 largeur = dictLargeurs[dictColonne["IDcolonne"]]
             else :
                 largeur = dictColonne["largeur"] / 1.5
@@ -632,7 +633,7 @@ class Dialog(wx.Dialog):
 
                     # Recherche la valeur
                     valeur = ""
-                    if dictDonnees["cases"].has_key((numLigne, numColonne)):
+                    if (numLigne, numColonne) in dictDonnees["cases"]:
                         case = dictDonnees["cases"][(numLigne, numColonne)]
                         valeur = case.GetValeur()
 
@@ -649,7 +650,7 @@ class Dialog(wx.Dialog):
                                 valeur = dict_totaux_colonnes.get(numColonne, 0)
                             else :
                                 # Mémorise total de la colonne numérique
-                                if dict_totaux_colonnes.has_key(numColonne) == False:
+                                if (numColonne in dict_totaux_colonnes) == False:
                                     dict_totaux_colonnes[numColonne] = 0
                                 dict_totaux_colonnes[numColonne] += valeur
 

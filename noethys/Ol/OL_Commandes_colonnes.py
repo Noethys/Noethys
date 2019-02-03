@@ -29,11 +29,11 @@ class Track(object):
         self.IDcolonne = donnees["IDcolonne"]
         self.nom = donnees["nom"]
         self.categorie = donnees["categorie"]
-        if donnees.has_key("nbre_valeurs"):
+        if "nbre_valeurs" in donnees:
             self.nbre_valeurs = donnees["nbre_valeurs"]
         else :
             self.nbre_valeurs = 0
-        if DLG_Saisie_commandes_colonne.DICT_LABELS_CATEGORIES.has_key(self.categorie):
+        if self.categorie in DLG_Saisie_commandes_colonne.DICT_LABELS_CATEGORIES:
             self.categorie_texte = DLG_Saisie_commandes_colonne.DICT_LABELS_CATEGORIES[self.categorie]
         else :
             self.categorie_texte = _(u"Catégorie inconnue")

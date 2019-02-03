@@ -63,7 +63,7 @@ class CTRL_Activite(wx.Choice):
         return listeItems
 
     def SetID(self, ID=0):
-        for index, values in self.dictDonnees.iteritems():
+        for index, values in self.dictDonnees.items():
             if values["ID"] == ID :
                  self.SetSelection(index)
 
@@ -108,7 +108,7 @@ class CTRL_Caisse(wx.Choice):
         return listeItems
 
     def SetID(self, ID=0):
-        for index, values in self.dictDonnees.iteritems():
+        for index, values in self.dictDonnees.items():
             if values["ID"] == ID :
                  self.SetSelection(index)
 
@@ -515,9 +515,9 @@ class Dialog(wx.Dialog):
         dictCombinaisons = {}
         for IDaide_combi_unite, IDaide_combi, IDunite, IDaide_montant in listeUnites :
             dictUnite = {"IDaide_combi_unite" : IDaide_combi_unite, "IDunite" : IDunite}
-            if dictCombinaisons.has_key(IDaide_montant) == False :
+            if (IDaide_montant in dictCombinaisons) == False :
                 dictCombinaisons[IDaide_montant] = {}
-            if dictCombinaisons[IDaide_montant].has_key(IDaide_combi) == False :
+            if (IDaide_combi in dictCombinaisons[IDaide_montant]) == False :
                 dictCombinaisons[IDaide_montant][IDaide_combi] = { "IDaide_combi" : IDaide_combi, "listeUnites" : [] }
             if dictUnite not in dictCombinaisons[IDaide_montant][IDaide_combi]["listeUnites"] :
                 dictCombinaisons[IDaide_montant][IDaide_combi]["listeUnites"].append(dictUnite)
@@ -534,8 +534,8 @@ class Dialog(wx.Dialog):
         listeMontants = []
         for IDaide_montant, montant in listeDonnees :
             listeCombinaisons = []
-            if dictCombinaisons.has_key(IDaide_montant) :
-                for IDaide_combi, dictCombi in dictCombinaisons[IDaide_montant].iteritems() :
+            if IDaide_montant in dictCombinaisons :
+                for IDaide_combi, dictCombi in dictCombinaisons[IDaide_montant].items() :
                     listeCombinaisons.append(dictCombi)
             dictMontant = { "IDaide_montant" : IDaide_montant, "montant" : montant , "combinaisons" : listeCombinaisons }
             listeMontants.append(dictMontant)

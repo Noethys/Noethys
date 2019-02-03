@@ -54,7 +54,7 @@ class CTRL_Categories(wx.CheckListBox):
 
     def GetIDcoches(self):
         listeIDcoches = []
-        for index, IDcategorie in self.dictCategories.iteritems():
+        for index, IDcategorie in self.dictCategories.items():
             if self.IsChecked(index):
                 listeIDcoches.append(IDcategorie)
         return listeIDcoches
@@ -62,7 +62,7 @@ class CTRL_Categories(wx.CheckListBox):
     def SetIDcoches(self, listeIDcoches=[]):
         if type(listeIDcoches) == str :
             listeIDcoches = UTILS_Texte.ConvertStrToListe(listeIDcoches)
-        for index, IDcategorie in self.dictCategories.iteritems():
+        for index, IDcategorie in self.dictCategories.items():
             if IDcategorie in listeIDcoches:
                 self.Check(index)
 
@@ -125,14 +125,14 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL):
         event.Skip()
 
     def AppliquerParametres(self):
-        for code, valeur in self.GetParametres().iteritems():
+        for code, valeur in self.GetParametres().items():
             self.parent.ctrl_tableau.SetOption(code, valeur)
         self.parent.ctrl_tableau.MAJ(reinit_scroll_h=True, reinit_scroll_v=True)
 
     def Validation(self):
         """ Validation des données saisies """
         # Vérifie que les données obligatoires ont été saisies
-        for nom, valeur in self.GetPropertyValues().iteritems():
+        for nom, valeur in self.GetPropertyValues().items():
             propriete = self.GetPropertyByName(nom)
             if self.GetPropertyAttribute(propriete, "obligatoire") == True:
                 if valeur == "" or valeur == None:
@@ -152,7 +152,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL):
         # Recherche les paramètres mémorisés
         dictParametres = UTILS_Parametres.ParametresCategorie(mode="get", categorie="dlg_locations_tableau", dictParametres=dictValeurs)
         # Envoie les paramètres dans le contrôle
-        for nom, valeur in dictParametres.iteritems():
+        for nom, valeur in dictParametres.items():
             if valeur not in ("", None):
                 propriete = self.GetPropertyByName(nom)
                 ancienneValeur = propriete.GetValue()
@@ -228,9 +228,9 @@ class CTRL(wx.Panel):
 
         # Configuration
         dict_parametres = UTILS_Config.GetParametre("dlg_locations_tableau", {})
-        if dict_parametres.has_key("periode") :
+        if "periode" in dict_parametres :
             self.ctrl_periode.SetModePeriode(dict_parametres["periode"])
-        if dict_parametres.has_key("case_largeur") :
+        if "case_largeur" in dict_parametres :
             self.ctrl_tableau.slider_largeur.SetValue(dict_parametres["case_largeur"])
             self.ctrl_tableau.OnSliderLargeur()
 

@@ -117,14 +117,14 @@ class Choix_donateur(wx.Choice):
         """ Permet d'obtenir l'adresse de l'item sélectionné dans la liste """
         index = self.GetSelection()
         if index == -1 : return u""
-        if self.dictDonnees.has_key(index) == False : return u""
+        if (index in self.dictDonnees) == False : return u""
         IDindividu = self.dictDonnees[index]
         adresse_auto = self.dictAdresses[IDindividu]["adresse_auto"]
         adresseComplete = self.dictAdresses[IDindividu]["adresseComplete"]
         
         if adresse_auto != None :
             # Recherche une adresse liée
-            for IDindividuTmp, dictAdresse in self.dictAdresses.iteritems() :
+            for IDindividuTmp, dictAdresse in self.dictAdresses.items() :
                 if IDindividuTmp == adresse_auto :
                     return dictAdresse["adresseComplete"]
         else:
@@ -180,7 +180,7 @@ class CTRL_Mode(wx.Choice):
         return listeItems
 
     def SetID(self, ID=0):
-        for index, values in self.dictDonnees.iteritems():
+        for index, values in self.dictDonnees.items():
             if values["ID"] == ID :
                  self.SetSelection(index)
 
@@ -757,8 +757,8 @@ class Impression():
         # Enregistrement du PDF
         try :
             doc.build(story)
-        except Exception, err :
-            print "Erreur dans ouverture PDF :", err
+        except Exception as err :
+            print("Erreur dans ouverture PDF :", err)
             if "Permission denied" in err :
                 dlg = wx.MessageDialog(None, _(u"Noethys ne peut pas créer le PDF.\n\nVeuillez vérifier qu'un autre PDF n'est pas déjà ouvert en arrière-plan..."), _(u"Erreur d'édition"), wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()

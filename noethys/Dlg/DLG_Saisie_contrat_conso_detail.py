@@ -451,7 +451,7 @@ class CTRL_Unites(HTL.HyperTreeList):
                 self.EnableChildren(item, True)
 
             if itemData["type"] == "Multihoraires" :
-                if dictTempMultihoraires.has_key(IDunite) == False :
+                if (IDunite in dictTempMultihoraires) == False :
                     dictTempMultihoraires[IDunite] = 0
                 index = dictTempMultihoraires[IDunite]
                 if index > len(itemData["controles"]) -1 :
@@ -459,7 +459,7 @@ class CTRL_Unites(HTL.HyperTreeList):
                 ctrl = itemData["controles"][index]
                 ctrl.SetHeureDebut(options["heure_debut"])
                 ctrl.SetHeureFin(options["heure_fin"])
-                if options.has_key("interdit_ajout") and options["interdit_ajout"] == True :
+                if "interdit_ajout" in options and options["interdit_ajout"] == True :
                     ctrl.bouton_ajouter.Show(False)
                     ctrl.bouton_retirer.Show(False)
                 dictTempMultihoraires[IDunite] += 1
@@ -512,7 +512,7 @@ class CTRL_Unites(HTL.HyperTreeList):
 
                     # Récupération des données
                     dictOptions = {}
-                    for key, valeur in ctrl.GetDonnees().iteritems() :
+                    for key, valeur in ctrl.GetDonnees().items() :
                         dictOptions[key] = valeur
 
                     listeUnites.append({"IDunite":IDunite, "options":dictOptions})
@@ -530,9 +530,9 @@ class CTRL_Unites(HTL.HyperTreeList):
         dictUnites = {}
         for dictUnite in listeUnites :
             IDunite = dictUnite["IDunite"]
-            if dictUnites.has_key(IDunite) == False :
+            if (IDunite in dictUnites) == False :
                 dictUnites[IDunite] = []
-            if dictUnite["options"].has_key("heure_debut") and dictUnite["options"].has_key("heure_fin") :
+            if "heure_debut" in dictUnite["options"] and "heure_fin" in dictUnite["options"] :
                 for heure_debut, heure_fin in dictUnites[IDunite] :
                     if heure_debut <= dictUnite["options"]["heure_fin"] and heure_fin >= dictUnite["options"]["heure_debut"] :
                         return True
@@ -692,11 +692,11 @@ class Dialog(wx.Dialog):
 ##            ]
 ##        self.ctrl_unites.SetDonnees(listeUnites) 
         
-        if donnees.has_key("jours_scolaires") : self.ctrl_scolaires.SetJours(donnees["jours_scolaires"])
-        if donnees.has_key("jours_vacances") : self.ctrl_vacances.SetJours(donnees["jours_vacances"])
-        if donnees.has_key("semaines") : self.ctrl_semaines.SetValeur(donnees["semaines"]) 
-        if donnees.has_key("feries") : self.ctrl_feries.SetValue(donnees["feries"])
-        if donnees.has_key("unites") : self.ctrl_unites.SetDonnees(donnees["unites"]) 
+        if "jours_scolaires" in donnees : self.ctrl_scolaires.SetJours(donnees["jours_scolaires"])
+        if "jours_vacances" in donnees : self.ctrl_vacances.SetJours(donnees["jours_vacances"])
+        if "semaines" in donnees : self.ctrl_semaines.SetValeur(donnees["semaines"]) 
+        if "feries" in donnees : self.ctrl_feries.SetValue(donnees["feries"])
+        if "unites" in donnees : self.ctrl_unites.SetDonnees(donnees["unites"]) 
 
 
 if __name__ == u"__main__":

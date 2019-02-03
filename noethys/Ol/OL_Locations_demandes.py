@@ -16,6 +16,7 @@ import wx
 import datetime
 import copy
 import GestionDB
+import six
 from Utils import UTILS_Titulaires
 from Utils import UTILS_Interface
 from Utils import UTILS_Questionnaires
@@ -38,7 +39,7 @@ class Track(object):
         self.categories = UTILS_Texte.ConvertStrToListe(donnees[4], siVide=[])
         liste_labels = []
         for IDcategorie in self.categories :
-            if listview.dictCategories.has_key(IDcategorie) :
+            if IDcategorie in listview.dictCategories :
                 liste_labels.append(listview.dictCategories[IDcategorie])
         self.texte_categories = ", ".join(liste_labels)
 
@@ -46,7 +47,7 @@ class Track(object):
         self.produits = UTILS_Texte.ConvertStrToListe(donnees[5], siVide=[])
         liste_labels = []
         for IDproduit in self.produits :
-            if listview.dictProduits.has_key(IDproduit) :
+            if IDproduit in listview.dictProduits :
                 liste_labels.append(listview.dictProduits[IDproduit])
         self.texte_produits = ", ".join(liste_labels)
 
@@ -62,7 +63,7 @@ class Track(object):
         elif self.statut == "attribuee" :
             self.texte_statut = _(u"Demande satisfaite")
         elif self.statut == "attente" :
-            if listview.dictPropositions.has_key(self.IDdemande) :
+            if self.IDdemande in listview.dictPropositions :
 
                 # Recherche disponibilités
                 listeProduitsProposes = listview.dictPropositions[self.IDdemande]
@@ -80,7 +81,7 @@ class Track(object):
                 self.texte_statut = _(u"En attente")
 
         # Formatage date
-        if isinstance(self.date, str) or isinstance(self.date, unicode) :
+        if isinstance(self.date, str) or isinstance(self.date, six.text_type) :
             self.date = datetime.datetime.strptime(self.date, "%Y-%m-%d %H:%M:%S")
 
         # Récupération des réponses des questionnaires
@@ -308,8 +309,8 @@ class ListView(FastObjectListView):
         self.selectionTrack = None
 
     def GetReponse(self, IDquestion=None, ID=None):
-        if self.dict_questionnaires.has_key(IDquestion) :
-            if self.dict_questionnaires[IDquestion].has_key(ID) :
+        if IDquestion in self.dict_questionnaires :
+            if ID in self.dict_questionnaires[IDquestion] :
                 return self.dict_questionnaires[IDquestion][ID]
         return u""
 

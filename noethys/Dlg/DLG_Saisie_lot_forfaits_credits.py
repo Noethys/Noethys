@@ -95,7 +95,7 @@ class CTRL_Forfait(CTRL_Ultrachoice.CTRL):
             listeNomsCategories = []
             for IDcategorie_tarif in listeCategoriesTarifs :
                 nomCategorieTarif = _(u"Categorie de tarif inconnue")
-                if dictCategoriesTarifs.has_key(IDcategorie_tarif) :
+                if IDcategorie_tarif in dictCategoriesTarifs :
                     nomCategorieTarif = dictCategoriesTarifs[IDcategorie_tarif]
                 listeNomsCategories.append(nomCategorieTarif)
             
@@ -150,7 +150,7 @@ class CTRL_Forfait(CTRL_Ultrachoice.CTRL):
     def GetID(self):
         index = self.GetSelection2()
         if index == -1 or index == None : return None
-        print index, len(self.listeTarifs)
+        print(index, len(self.listeTarifs))
         return self.listeTarifs[index]["IDtarif"]
     
     def GetDictTarif(self):
@@ -256,7 +256,7 @@ class Traitement(Thread):
             self.succes = True
             raise Abort
         
-        except Abort, KeyBoardInterrupt: 
+        except Abort as KeyBoardInterrupt: 
             if self.succes == True :
                 self.parent.EcritLog(_(u"Traitement terminé")) 
                 self.parent.Arreter(forcer=True) 
@@ -265,7 +265,7 @@ class Traitement(Thread):
             self.parent.bouton_fermer.Enable(True)
             self.parent.Layout()
             
-        except Exception, err : 
+        except Exception as err : 
             self.parent.EcritLog("Erreur : " + str(err))
             self.stop = True 
             self.parent.bouton_ok.SetImageEtTexte(cheminImage="Images/32x32/Valider.png", texte=u"Commencer")
@@ -308,7 +308,7 @@ class CTRL_Activite(wx.Choice):
         return listeItems
 
     def SetID(self, ID=0):
-        for index, values in self.dictDonnees.iteritems():
+        for index, values in self.dictDonnees.items():
             if values["ID"] == ID :
                  self.SetSelection(index)
 

@@ -13,7 +13,7 @@ import Chemins
 from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
-from wx.lib.masked import BaseMaskedTextCtrl, TextCtrl
+import six
 import datetime
 from Utils import UTILS_Dates
 
@@ -129,7 +129,7 @@ class CTRL(wx.TextCtrl):
         """ duree = float, str ou timedelta """
         if type(duree) == float :
             td = datetime.timedelta(hours=duree)
-        elif type(duree) in (str, unicode)  :
+        elif type(duree) in (str, six.text_type):
             td = UTILS_Dates.HeureStrEnDelta(duree)
         elif type(duree) == datetime.timedelta :
             td = duree
@@ -177,7 +177,7 @@ class MyFrame(wx.Frame):
         #print self.ctrl.GetDuree(format=datetime.timedelta)
         #print self.ctrl.GetDuree(format=str)
         #print self.ctrl.GetDuree(format=float)
-        print self.ctrl.GetValue()
+        print(self.ctrl.GetValue())
 
 
 if __name__ == '__main__':
