@@ -2323,7 +2323,7 @@ def GetConnexionReseau(nomFichier=""):
         if CERTIFICATS_SSL.has_key("ca"):
             ssl_ca = CERTIFICATS_SSL["ca"]
         else :
-            ssl_ca = None
+            ssl_ca = ""
         if "_" in nomFichier :
             suffixe = nomFichier.split("_")[-1]
         else :
