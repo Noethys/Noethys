@@ -41,8 +41,6 @@ class Serveur(Thread):
         if self.IsRunning() == False :
             self.keepGoing = self.active = True
             self.start()
-        else :
-            self.active = True
 
     def Stop(self):
         self.keepGoing = False
@@ -50,8 +48,11 @@ class Serveur(Thread):
     def Pause(self):
         self.active = False
 
+    def Reprise(self):
+        self.active = True
+
     def IsRunning(self):
-        if hasattr(self, "keepGoing") :
+        if hasattr(self, "keepGoing") and self.keepGoing == True:
             return True
         else :
             return False
@@ -70,7 +71,6 @@ class Serveur(Thread):
         while self.keepGoing:
 
             if self.active == True :
-
                 try :
 
                     if self.parent.last_synchro == None :
@@ -274,10 +274,16 @@ class Panel(wx.Panel):
                 return False
             self.serveur.Start()
             return self.EcritLog(_(u"Client de synchronisation prêt"))
+        else :
+            self.serveur.Start()
 
     def PauseServeur(self):
         if hasattr(self, "serveur") :
             self.serveur.Pause()
+
+    def RepriseServeur(self):
+        if hasattr(self, "serveur") :
+            self.serveur.Reprise()
 
     def StopServeur(self):
         if hasattr(self, "serveur") :

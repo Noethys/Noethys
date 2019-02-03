@@ -32,7 +32,7 @@ from Utils import UTILS_Fichiers
 
 #------------------------------------------------------------------------------------------
 # Pour les tests, mettre sur True
-DEBUG = False
+DEBUG = True
 #------------------------------------------------------------------------------------------
 
 
@@ -804,7 +804,7 @@ class Page_installation(wx.Panel):
 
 class Dialog(wx.Dialog):
     def __init__(self, parent):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
+        wx.Dialog.__init__(self, parent, -1, name="DLG_Updater", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         self.installation = False
         
@@ -819,6 +819,12 @@ class Dialog(wx.Dialog):
 
         # Vider répertoire Updates
         FonctionsPerso.VideRepertoireUpdates(forcer=True)
+
+        # Met en pause le serveur Connecthys si besoin
+        try :
+            self.parent.ctrl_serveur_portail.PauseServeur()
+        except:
+            pass
 
         # Fichiers
         if "linux" in sys.platform :
@@ -860,8 +866,8 @@ class Dialog(wx.Dialog):
         self.SetSizer(self.sizer_base)
         self.Layout()
         
-        self.SetMinSize((480, 400))
-        self.SetSize((480, 400))
+        self.SetMinSize((600, 500))
+        self.SetSize((600, 500))
         self.CentreOnScreen()
         
         self.Bind(wx.EVT_CLOSE, self.OnClose)
@@ -894,20 +900,32 @@ class Dialog(wx.Dialog):
     def Aide(self):
         from Utils import UTILS_Aide
         UTILS_Aide.Aide("Rechercherunemisejourdulogiciel")
-        
+
+    def SurFermeture(self):
+        # Relance serveur Connecthys si besoin
+        if self.GetEtat() == False :
+            try :
+                self.parent.ctrl_serveur_portail.RepriseServeur()
+            except:
+                pass
+
     def Fermer(self):
+        self.SurFermeture()
+
         # Fermeture de la fenêtre
         self.EndModal(wx.ID_OK)
 
     def OnClose(self, event):
+        self.SurFermeture()
+
         if self.page_active == "page_telechargement" :
             self.page_telechargement.Arreter_telechargement()
         elif self.page_active == "page_installation" :
             pass
         else:
             self.Fermer()
-            #event.Skip()
-        
+
+
                
 if __name__ == "__main__":
     app = wx.App(0)
