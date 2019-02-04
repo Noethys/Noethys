@@ -15,7 +15,7 @@ from Utils.UTILS_Traduction import _
 import wx
 from Ctrl import CTRL_Bouton_image
 from Ol import OL_Documents_champs
-import DLG_Saisie_formule
+from Dlg import DLG_Saisie_formule
 import wx.lib.agw.hyperlink as Hyperlink
 
 

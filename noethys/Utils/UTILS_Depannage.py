@@ -10,13 +10,13 @@
 
 
 import Chemins
-from UTILS_Traduction import _
+from Utils.UTILS_Traduction import _
 import wx
 from Ctrl import CTRL_Bouton_image
 import datetime
 import GestionDB
-import UTILS_Dates
-from UTILS_Decimal import FloatToDecimal as FloatToDecimal
+from Utils import UTILS_Dates
+from Utils.UTILS_Decimal import FloatToDecimal as FloatToDecimal
 
 
 def EcritStatusbar(texte=u""):

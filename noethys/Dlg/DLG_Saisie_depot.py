@@ -19,7 +19,7 @@ import wx.html as html
 
 from Ctrl import CTRL_Saisie_date
 from Ol import OL_Reglements_depots
-import DLG_Saisie_depot_ajouter
+from Dlg import DLG_Saisie_depot_ajouter
 from Utils import UTILS_Titulaires
 from Utils import UTILS_Gestion
 from Utils import UTILS_Dates
@@ -654,7 +654,7 @@ class Dialog(wx.Dialog):
                 
                 listeDonnees.append({"nomTitulaires": nomTitulaires, "IDreglement" : track.IDreglement, "avis_depot" : track.avis_depot, "IDfamille" : track.IDfamille, "adresse" : adresse, "pieces" : [], "champs" : dictChamps})
         
-        import DLG_Selection_avis_depots
+        from Dlg import DLG_Selection_avis_depots
         dlg = DLG_Selection_avis_depots.Dialog(self, listeDonnees=listeDonnees)
         reponse = dlg.ShowModal()
         listeSelections = dlg.GetListeSelections() 
@@ -667,7 +667,7 @@ class Dialog(wx.Dialog):
             listeDonnees2.append(listeDonnees[index])
         
         # Chargement du Mailer
-        import DLG_Mailer
+        from Dlg import DLG_Mailer
         dlg = DLG_Mailer.Dialog(self, categorie="reglement")
         dlg.SetDonnees(listeDonnees2, modificationAutorisee=True)
         dlg.ChargerModeleDefaut()

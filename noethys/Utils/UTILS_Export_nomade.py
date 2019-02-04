@@ -10,7 +10,7 @@
 
 
 import Chemins
-from UTILS_Traduction import _
+from Utils.UTILS_Traduction import _
 import wx
 from Ctrl import CTRL_Bouton_image
 import GestionDB
@@ -24,10 +24,10 @@ import base64
 import zipfile
 import shutil
 import ftplib
-import UTILS_Cryptage_fichier
-import UTILS_Config
-import UTILS_Titulaires
-import UTILS_Fichiers
+from Utils import UTILS_Cryptage_fichier
+from Utils import UTILS_Config
+from Utils import UTILS_Titulaires
+from Utils import UTILS_Fichiers
 
 from Data import DATA_Tables as TABLES
 
@@ -163,7 +163,7 @@ class Export():
             self.Enregistrer(dbdest, nomTable="parametres", listeChamps=["nom", "valeur"], listeDonnees=listeParametres)
             
             # Données du dictIndividus
-            import UTILS_Infos_individus
+            from Utils import UTILS_Infos_individus
             infos = UTILS_Infos_individus.Informations()
             dictValeurs = infos.GetDictValeurs(mode="individu", formatChamp=False)
             listeDonnees = []

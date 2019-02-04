@@ -393,7 +393,7 @@ class Dialog(wx.Dialog):
     
     def OnBoutonBanques(self, event):
         IDbanque = self.ctrl_banque.GetID()
-        import DLG_Banques
+        from Dlg import DLG_Banques
         dlg = DLG_Banques.Dialog(self)
         dlg.ShowModal() 
         dlg.Destroy()

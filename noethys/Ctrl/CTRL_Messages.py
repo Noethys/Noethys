@@ -13,8 +13,6 @@ import Chemins
 from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
-import CTRL_Bouton_image
-
 from Ol import OL_Messages
 
 

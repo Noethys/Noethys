@@ -27,7 +27,7 @@ the `draw` method.
 """
 
 import Chemins
-from UTILS_Traduction import _
+from Utils.UTILS_Traduction import _
 
 import math
 import logging
@@ -39,10 +39,10 @@ import wx
 from Ctrl import CTRL_Bouton_image
 
 from Ctrl.CTRL_Timeline import sort_categories
-import UTILS_TL_drawing as drawing
-from UTILS_TL_drawing import DrawingAlgorithm
-from UTILS_TL_drawing import Metrics
-from UTILS_TL_data import TimePeriod
+from Utils import UTILS_TL_drawing as drawing
+from Utils.UTILS_TL_drawing import DrawingAlgorithm
+from Utils.UTILS_TL_drawing import Metrics
+from Utils.UTILS_TL_data import TimePeriod
 
 OUTER_PADDING = 2      # Space between event boxes (pixels)  >>>>> 5 PAR DEFAUT
 INNER_PADDING = 3      # Space inside event box to text (pixels)

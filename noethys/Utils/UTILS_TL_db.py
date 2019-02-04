@@ -25,7 +25,7 @@ Implementation of Timeline with flat file storage.
 The class FileTimeline implements the Timeline interface.
 """
 import Chemins
-from UTILS_Traduction import _
+from Utils.UTILS_Traduction import _
 
 import wx
 from Ctrl import CTRL_Bouton_image
@@ -37,14 +37,14 @@ import os.path
 from os.path import abspath
 import datetime
 
-from UTILS_TL_data import TimelineIOError
-from UTILS_TL_data import Timeline
-from UTILS_TL_data import TimePeriod
-from UTILS_TL_data import Event
-from UTILS_TL_data import Category
-from UTILS_TL_data import time_period_center
-from UTILS_TL_data import get_event_data_plugins
-from UTILS_TL_data import get_event_data_plugin
+from Utils.UTILS_TL_data import TimelineIOError
+from Utils.UTILS_TL_data import Timeline
+from Utils.UTILS_TL_data import TimePeriod
+from Utils.UTILS_TL_data import Event
+from Utils.UTILS_TL_data import Category
+from Utils.UTILS_TL_data import time_period_center
+from Utils.UTILS_TL_data import get_event_data_plugins
+from Utils.UTILS_TL_data import get_event_data_plugin
 
 
 def DateEngEnDateDD(dateEng):
@@ -166,7 +166,7 @@ class TimelinePerso(Timeline):
 ##        self.preferred_period = TimePeriod(dateDebut, dateFin)
 
         import GestionDB
-        from UTILS_Historique import CATEGORIES as dictCategories
+        from Utils.UTILS_Historique import CATEGORIES as dictCategories
         
 ##        # Récupération des catégories
 ##        dictCategorieTemp = {}

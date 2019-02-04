@@ -21,7 +21,7 @@ from Ctrl import CTRL_Selection_activites
 from Utils import UTILS_Titulaires
 from Utils import UTILS_Utilisateurs
 
-from DLG_Factures_generation_parametres import CTRL_Lot_factures
+from Dlg.DLG_Factures_generation_parametres import CTRL_Lot_factures
 
 import GestionDB
 
@@ -288,7 +288,7 @@ class Panel(wx.Panel):
 
     def OnBoutonLots(self, event):
         IDlot = self.ctrl_lot.GetID()
-        import DLG_Lots_rappels
+        from Dlg import DLG_Lots_rappels
         dlg = DLG_Lots_rappels.Dialog(self)
         dlg.ShowModal()
         dernierLotCree = dlg.GetDernierLotCree()

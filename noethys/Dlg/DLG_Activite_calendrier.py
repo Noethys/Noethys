@@ -62,7 +62,7 @@ class Panel(wx.Panel):
         grid_sizer_base.AddGrowableCol(0)
 
     def OnBoutonOuvertures_Modifier(self, event):
-        import DLG_Ouvertures
+        from Dlg import DLG_Ouvertures
         dlg = DLG_Ouvertures.Dialog(self, IDactivite=self.IDactivite)
         if dlg.ShowModal() == wx.ID_OK:
             self.ctrl_ouvertures.MAJ()

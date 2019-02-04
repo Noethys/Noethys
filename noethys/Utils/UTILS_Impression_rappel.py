@@ -10,7 +10,7 @@
 
 
 import Chemins
-from UTILS_Traduction import _
+from Utils.UTILS_Traduction import _
 import wx
 from Ctrl import CTRL_Bouton_image
 import os
@@ -19,7 +19,7 @@ import FonctionsPerso
 
 from Dlg import DLG_Noedoc
 
-import UTILS_Config
+from Utils import UTILS_Config
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 
 from reportlab.platypus.doctemplate import PageTemplate, BaseDocTemplate, NextPageTemplate

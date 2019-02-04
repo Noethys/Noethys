@@ -17,7 +17,7 @@ from Ctrl import CTRL_Bouton_image
 import socket
 import six
 
-import DLG_Sauvegarde
+from Dlg import DLG_Sauvegarde
 from Ctrl import CTRL_Saisie_heure
 from Utils import UTILS_Identification
 import GestionDB

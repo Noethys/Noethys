@@ -394,7 +394,7 @@ class Panel(wx.Panel):
 
     def OnBoutonLots(self, event):
         IDlot = self.ctrl_lot.GetID()
-        import DLG_Lots_factures
+        from Dlg import DLG_Lots_factures
         dlg = DLG_Lots_factures.Dialog(self)
         dlg.ShowModal()
         dernierLotCree = dlg.GetDernierLotCree()
@@ -411,7 +411,7 @@ class Panel(wx.Panel):
 
     def OnBoutonPrefixes(self, event):
         IDprefixe = self.ctrl_prefixe.GetID()
-        import DLG_Prefixes_factures
+        from Dlg import DLG_Prefixes_factures
         dlg = DLG_Prefixes_factures.Dialog(self)
         dlg.ShowModal()
         dlg.Destroy()

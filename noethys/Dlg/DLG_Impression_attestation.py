@@ -822,7 +822,7 @@ class Dialog(wx.Dialog):
         self.MAJlistes() 
 
     def OnBoutonDateDebut(self, event):
-        import DLG_calendrier_simple
+        from Dlg import DLG_calendrier_simple
         dlg = DLG_calendrier_simple.Dialog(self)
         if dlg.ShowModal() == wx.ID_OK :
             date = dlg.GetDate()
@@ -834,7 +834,7 @@ class Dialog(wx.Dialog):
         self.MAJlistes() 
 
     def OnBoutonDateFin(self, event):
-        import DLG_calendrier_simple
+        from Dlg import DLG_calendrier_simple
         dlg = DLG_calendrier_simple.Dialog(self)
         if dlg.ShowModal() == wx.ID_OK :
             date = dlg.GetDate()

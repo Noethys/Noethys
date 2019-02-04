@@ -86,7 +86,7 @@ class Hyperlien_periodes(Hyperlink.HyperLinkCtrl):
         self.Bind(Hyperlink.EVT_HYPERLINK_LEFT, self.OnLeftLink)
         
     def OnLeftLink(self, event):
-        import DLG_Choix_periodes
+        from Dlg import DLG_Choix_periodes
         dlg = DLG_Choix_periodes.Dialog(self)
         if dlg.ShowModal() == wx.ID_OK:
             listePeriodes = dlg.GetListePeriodes()

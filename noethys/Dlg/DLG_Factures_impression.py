@@ -112,7 +112,7 @@ class Dialog(wx.Dialog):
             dlg.Destroy()
             return
 
-        import DLG_Impression_recap_factures
+        from Dlg import DLG_Impression_recap_factures
         dlg = DLG_Impression_recap_factures.Dialog(self, dictOptions={}, tracks=tracks)
         dlg.ShowModal() 
         dlg.Destroy()

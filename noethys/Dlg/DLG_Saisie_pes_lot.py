@@ -270,13 +270,13 @@ class CTRL_Parametres(wxpg.PropertyGrid) :
     def OnBoutonParametres(self, propriete=None):
         ancienneValeur = propriete.GetValue() 
         if propriete.GetName() == "IDcompte" :
-            import DLG_Comptes_bancaires
+            from Dlg import DLG_Comptes_bancaires
             dlg = DLG_Comptes_bancaires.Dialog(self)
             dlg.ShowModal()
             dlg.Destroy()
             self.MAJ_comptes() 
         if propriete.GetName() == "IDmode" :
-            import DLG_Modes_reglements
+            from Dlg import DLG_Modes_reglements
             dlg = DLG_Modes_reglements.Dialog(self)
             dlg.ShowModal()
             dlg.Destroy()

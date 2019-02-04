@@ -15,7 +15,7 @@ from Utils.UTILS_Traduction import _
 import wx
 from Ctrl import CTRL_Bouton_image
 import wx.html as html
-import DLG_Messagebox
+from Dlg import DLG_Messagebox
 
 
 

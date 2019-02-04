@@ -10,10 +10,10 @@
 
 
 import Chemins
-from UTILS_Traduction import _
+from Utils.UTILS_Traduction import _
 import datetime
 import GestionDB
-import UTILS_Identification
+from Utils import UTILS_Identification
 
 CATEGORIES = {
     1 : _(u"Ouverture d'un fichier"),

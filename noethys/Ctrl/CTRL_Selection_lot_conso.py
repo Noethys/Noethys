@@ -13,11 +13,11 @@ import Chemins
 from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
-import CTRL_Bouton_image
+from Ctrl import CTRL_Bouton_image
 import datetime
 
 import GestionDB
-import CTRL_Grille_periode
+from Ctrl import CTRL_Grille_periode
 
 try: import psyco; psyco.full()
 except: pass

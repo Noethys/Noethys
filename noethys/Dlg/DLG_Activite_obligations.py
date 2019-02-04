@@ -314,23 +314,23 @@ class Hyperlien(Hyperlink.HyperLinkCtrl):
         
     def OnLeftLink(self, event):
         if self.URL == "pieces" :
-            import DLG_Types_pieces
+            from Dlg import DLG_Types_pieces
             dlg = DLG_Types_pieces.Dialog(self)
             dlg.ShowModal() 
             dlg.Destroy()
             self.parent.ctrl_pieces.MAJ()
         if self.URL == "vaccins" :
-            import DLG_Types_vaccins
+            from Dlg import DLG_Types_vaccins
             dlg = DLG_Types_vaccins.Dialog(self)
             dlg.ShowModal() 
             dlg.Destroy()
         if self.URL == "maladies" :
-            import DLG_Types_maladies
+            from Dlg import DLG_Types_maladies
             dlg = DLG_Types_maladies.Dialog(self)
             dlg.ShowModal() 
             dlg.Destroy()
         if self.URL == "cotisations" :
-            import DLG_Types_cotisations
+            from Dlg import DLG_Types_cotisations
             dlg = DLG_Types_cotisations.Dialog(self)
             dlg.ShowModal() 
             dlg.Destroy()

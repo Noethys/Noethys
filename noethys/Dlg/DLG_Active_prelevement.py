@@ -191,7 +191,7 @@ class Dialog(wx.Dialog):
         self.EndModal(wx.ID_OK)
 
     def OnBoutonRib(self, event):
-        import DLG_Saisie_rib
+        from Dlg import DLG_Saisie_rib
         dlg = DLG_Saisie_rib.Dialog(self, IDfamille=self.IDfamille) 
         dlg.ShowModal() 
         dlg.Destroy()

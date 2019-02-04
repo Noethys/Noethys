@@ -1148,7 +1148,7 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             numLigne += 1
     
     def SaisieLot(self):
-        import DLG_Saisie_lot_ouvertures2
+        from Dlg import DLG_Saisie_lot_ouvertures2
         dlg = DLG_Saisie_lot_ouvertures2.Dialog(self, IDactivite=self.IDactivite, ctrl_calendrier=self)
         if self.clipboard != None :
             dlg.SetDate(self.clipboard)

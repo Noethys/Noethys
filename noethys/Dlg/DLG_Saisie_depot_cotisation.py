@@ -19,7 +19,7 @@ import wx.html as html
 
 from Ctrl import CTRL_Saisie_date
 from Ol import OL_Cotisations_depots
-import DLG_Saisie_depot_cotisation_ajouter
+from Dlg import DLG_Saisie_depot_cotisation_ajouter
 from Utils import UTILS_Titulaires
 from Utils import UTILS_Divers
 

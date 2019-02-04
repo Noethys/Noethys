@@ -16,7 +16,7 @@ import wx
 from Ctrl import CTRL_Bouton_image
 from Ctrl import CTRL_Bandeau
 import GestionDB
-from DLG_Saisie_contrat import CTRL_Tarif
+from Dlg.DLG_Saisie_contrat import CTRL_Tarif
 
 
 

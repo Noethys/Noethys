@@ -13,8 +13,8 @@ import Chemins
 from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
-import CTRL_Bouton_image
-import CTRL_Choix_modele
+from Ctrl import CTRL_Bouton_image
+from Ctrl import CTRL_Choix_modele
 import GestionDB
 import os
 from Utils import UTILS_Questionnaires

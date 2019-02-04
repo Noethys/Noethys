@@ -18,15 +18,15 @@ import datetime
 import GestionDB
 from Ctrl import CTRL_Bandeau
 
-from DLG_Activite_generalites import Panel as Page1
-from DLG_Activite_agrements import Panel as Page2
-from DLG_Activite_groupes import Panel as Page3
-from DLG_Activite_obligations import Panel as Page4
-from DLG_Activite_unites import Panel as Page5
-from DLG_Activite_calendrier import Panel as Page6
-from DLG_Activite_tarification import Panel as Page7
-from DLG_Activite_etiquettes import Panel as Page8
-from DLG_Activite_portail import Panel as Page9
+from Dlg.DLG_Activite_generalites import Panel as Page1
+from Dlg.DLG_Activite_agrements import Panel as Page2
+from Dlg.DLG_Activite_groupes import Panel as Page3
+from Dlg.DLG_Activite_obligations import Panel as Page4
+from Dlg.DLG_Activite_unites import Panel as Page5
+from Dlg.DLG_Activite_calendrier import Panel as Page6
+from Dlg.DLG_Activite_tarification import Panel as Page7
+from Dlg.DLG_Activite_etiquettes import Panel as Page8
+from Dlg.DLG_Activite_portail import Panel as Page9
 
 
 def Supprimer_activite(IDactivite=None, nouvelleActivite=False):
@@ -276,7 +276,7 @@ class ClsCommune():
         menuPop.Destroy()
 
     def ParametresPSU(self, event):
-        import DLG_Activite_psu
+        from Dlg import DLG_Activite_psu
         dlg = DLG_Activite_psu.Dialog(self, self.IDactivite, clsParametres=self.clsParametres)
         dlg.ShowModal()
         dlg.Destroy()

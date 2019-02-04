@@ -19,7 +19,7 @@ if rows == [-1] : return
 """
 
 import wx
-import CTRL_Bouton_image
+from Ctrl import CTRL_Bouton_image
 import wx.grid as gridlib
 import datetime
 import copy
@@ -28,14 +28,14 @@ import textwrap
 import operator
 
 from Data import DATA_Touches as Touches
-import CTRL_Grille_renderers
-import CTRL_Grille
+from Ctrl import CTRL_Grille_renderers
+from Ctrl import CTRL_Grille
 from Utils import UTILS_Dates
 from Utils import UTILS_Identification
 from Utils import UTILS_Divers
 from Utils import UTILS_Utilisateurs
 
-from CTRL_Saisie_transport import DICT_CATEGORIES as DICT_CATEGORIES_TRANSPORTS
+from Ctrl.CTRL_Saisie_transport import DICT_CATEGORIES as DICT_CATEGORIES_TRANSPORTS
 
 
 class CaseSeparationDate():
@@ -1675,7 +1675,7 @@ class CaseStandard(Case):
         if self.grid.gestion.Verification("consommations", self.date) == False : return False
 
         listeCoches = self.conso.etiquettes
-        import CTRL_Etiquettes
+        from Ctrl import CTRL_Etiquettes
         dlg = CTRL_Etiquettes.DialogSelection(self.grid, listeActivites=[self.IDactivite,])
         dlg.SetCoches(listeCoches)
         if dlg.ShowModal() == wx.ID_OK :
@@ -2309,7 +2309,7 @@ class CaseMultihoraires(Case):
 
         barre = self.barreContextMenu
         listeCoches = barre.conso.etiquettes
-        import CTRL_Etiquettes
+        from Ctrl import CTRL_Etiquettes
         dlg = CTRL_Etiquettes.DialogSelection(self.grid, listeActivites=[self.IDactivite,])
         dlg.SetCoches(listeCoches)
         if dlg.ShowModal() == wx.ID_OK :
@@ -2782,7 +2782,7 @@ class CaseEvenement(Case):
 
         evenement = self.evenementContextMenu
         listeCoches = evenement.conso.etiquettes
-        import CTRL_Etiquettes
+        from Ctrl import CTRL_Etiquettes
         dlg = CTRL_Etiquettes.DialogSelection(self.grid, listeActivites=[self.IDactivite, ])
         dlg.SetCoches(listeCoches)
         if dlg.ShowModal() == wx.ID_OK:

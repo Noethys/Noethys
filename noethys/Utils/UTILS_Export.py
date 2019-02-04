@@ -10,7 +10,7 @@
 
 
 import Chemins
-from UTILS_Traduction import _
+from Utils.UTILS_Traduction import _
 import wx
 from Ctrl import CTRL_Bouton_image
 import os
@@ -21,12 +21,11 @@ from Dlg import DLG_Selection_liste
 import FonctionsPerso
 from Ctrl import CTRL_Bandeau
 from Utils import UTILS_Fichiers
-import UTILS_Dates
-import UTILS_Config
+from Utils import UTILS_Dates
+from Utils import UTILS_Config
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 
-
-import UTILS_Interface
+from Utils import UTILS_Interface
 from Ctrl.CTRL_ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
 

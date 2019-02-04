@@ -19,7 +19,7 @@ if rows == [-1] : return
 """
 
 import wx
-import CTRL_Bouton_image
+from Ctrl import CTRL_Bouton_image
 import wx.grid as gridlib
 import wx.lib.wordwrap as wordwrap
 import Outils.gridlabelrenderer as glr

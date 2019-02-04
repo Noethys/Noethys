@@ -21,7 +21,7 @@ from Ctrl import CTRL_Bandeau
 from Ctrl import CTRL_Saisie_date
 from Ctrl import CTRL_Selection_activites
 from Ol import OL_Etat_nomin_selections
-import DLG_Etat_nomin_resultats
+from Dlg import DLG_Etat_nomin_resultats
 from Utils import UTILS_Parametres
 
 
@@ -596,7 +596,7 @@ class CTRL_Champs(wx.Panel):
         self.MAJlisteChamps()
 
     def OnBoutonProfils(self, event):
-        import DLG_Etat_nomin_profils
+        from Dlg import DLG_Etat_nomin_profils
         dlg = DLG_Etat_nomin_profils.Dialog(self)
         dlg.ShowModal()
         dlg.Destroy()

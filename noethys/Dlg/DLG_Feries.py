@@ -138,7 +138,7 @@ class Dialog(wx.Dialog):
         UTILS_Aide.Aide("Joursfris")
 
     def OnBoutonSaisieAuto(self, event):
-        import DLG_Saisie_feries_auto
+        from Dlg import DLG_Saisie_feries_auto
         dlg = DLG_Saisie_feries_auto.MyDialog(self)
         if dlg.ShowModal() == wx.ID_OK :
             self.panel_variables.ctrl_listview.MAJ()

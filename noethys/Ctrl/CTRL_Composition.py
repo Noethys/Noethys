@@ -14,7 +14,7 @@ from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 
 import wx
-import CTRL_Bouton_image
+from Ctrl import CTRL_Bouton_image
 import sys
 import datetime
 
@@ -24,7 +24,7 @@ import wx.lib.agw.hypertreelist as HTL
 import GestionDB
 from Data import DATA_Civilites as Civilites
 from Data import DATA_Liens as Liens
-import CTRL_Photo
+from Ctrl import CTRL_Photo
 from Dlg import DLG_Individu
 from Utils import UTILS_Interface
 

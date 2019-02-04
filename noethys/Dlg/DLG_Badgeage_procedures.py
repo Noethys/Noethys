@@ -115,7 +115,7 @@ class Dialog(wx.Dialog):
         self.ctrl_listview.SetDefaut(None)
 
     def OnBoutonVocal(self, event):
-        import DLG_Vocal
+        from Dlg import DLG_Vocal
         dlg = DLG_Vocal.Dialog(self)
         dlg.ShowModal() 
         dlg.Destroy()

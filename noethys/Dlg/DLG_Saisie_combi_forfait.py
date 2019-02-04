@@ -110,7 +110,7 @@ class Dialog(wx.Dialog):
         self.CenterOnScreen()
 
     def OnBoutonCalendrier(self, event): 
-        import DLG_calendrier_simple
+        from Dlg import DLG_calendrier_simple
         dlg = DLG_calendrier_simple.Dialog(self)
         if dlg.ShowModal() == wx.ID_OK :
             date = dlg.GetDate()

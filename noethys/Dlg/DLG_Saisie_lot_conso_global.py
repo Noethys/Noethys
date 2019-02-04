@@ -22,14 +22,14 @@ from Ctrl import CTRL_Saisie_date
 
 import GestionDB
 from Ol import OL_Saisie_lot_conso_global
-import DLG_Saisie_lot_conso
+from Dlg import DLG_Saisie_lot_conso
 from Utils import UTILS_Identification
 from Utils import UTILS_Dates
 from Utils import UTILS_Config
 from Utils import UTILS_Gestion
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 
-import DLG_Badgeage_grille
+from Dlg import DLG_Badgeage_grille
 from threading import Thread 
 import time
 

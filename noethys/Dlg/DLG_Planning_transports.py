@@ -21,7 +21,7 @@ import datetime
 
 from Ctrl.CTRL_Saisie_transport import DICT_CATEGORIES
 from Data.DATA_Tables import DB_DATA as DICT_TABLES
-import DLG_Saisie_transport
+from Dlg import DLG_Saisie_transport
 from Utils import UTILS_Schedule
 from Utils import UTILS_Transports
 

@@ -64,7 +64,7 @@ class MyHtml(html.HtmlWindow):
         
         </FONT>
         """
-        import DLG_Message_html
+        from Dlg import DLG_Message_html
         dlg = DLG_Message_html.Dialog(self, texte=texte, titre=_(u"Télécharger la voix française"), size=(360, 500))
         dlg.ShowModal()
         dlg.Destroy()

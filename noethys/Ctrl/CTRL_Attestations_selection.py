@@ -13,7 +13,7 @@ import Chemins
 from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
-import CTRL_Bouton_image
+from Ctrl import CTRL_Bouton_image
 import wx.lib.agw.hypertreelist as HTL
 from wx.lib.agw.customtreectrl import EVT_TREE_ITEM_CHECKED
 import datetime
@@ -27,9 +27,9 @@ SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 
 import GestionDB
 from Data import DATA_Civilites as Civilites
-import CTRL_Saisie_euros
+from Ctrl import CTRL_Saisie_euros
 import FonctionsPerso
-import CTRL_Attestations_options
+from Ctrl import CTRL_Attestations_options
 
 from Utils import UTILS_Titulaires
 from Utils import UTILS_Utilisateurs

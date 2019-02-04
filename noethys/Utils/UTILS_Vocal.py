@@ -10,14 +10,14 @@
 
 
 import Chemins
-from UTILS_Traduction import _
+from Utils.UTILS_Traduction import _
 try :
     import pyttsx
 except :
     pass
 import GestionDB
-import UTILS_Parametres
-import UTILS_Config
+from Utils import UTILS_Parametres
+from Utils import UTILS_Config
 
 
 class Vocal() :

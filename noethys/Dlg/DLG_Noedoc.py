@@ -37,7 +37,7 @@ import re
 
 from Utils import UTILS_Dialogs
 
-import DLG_Saisie_formule
+from Dlg import DLG_Saisie_formule
 from Utils import UTILS_Questionnaires
 from Utils import UTILS_Codesbarres
 from Utils import UTILS_Dates
@@ -69,7 +69,7 @@ from reportlab.graphics.barcode.usps import FIM, POSTNET
 from reportlab.graphics.barcode.usps4s import USPS_4State
 from reportlab.graphics.barcode import createBarcodeDrawing 
 
-import DLG_Saisie_texte_doc
+from Dlg import DLG_Saisie_texte_doc
 from PIL import Image
 from Utils import UTILS_Images
 

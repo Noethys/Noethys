@@ -13,7 +13,7 @@ import Chemins
 from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
-import CTRL_Bouton_image
+from Ctrl import CTRL_Bouton_image
 import sys
 import FonctionsPerso
 import wx.lib.agw.hypertreelist as HTL
@@ -26,7 +26,7 @@ from Utils import UTILS_Utilisateurs
 from Data import DATA_Civilites
 DICT_CIVILITES = DATA_Civilites.GetDictCivilites() 
 from Data.DATA_Tables import DB_DATA as DICT_TABLES
-from CTRL_Saisie_transport import DICT_CATEGORIES
+from Ctrl.CTRL_Saisie_transport import DICT_CATEGORIES
 
 COULEUR_FOND_REGROUPEMENT = (220, 220, 220)
 

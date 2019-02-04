@@ -112,7 +112,7 @@ class ToolBar(wx.ToolBar):
 
     def Parametres(self, event):
         global AFFICHE_PRESENTS
-        import DLG_Parametres_remplissage
+        from Dlg import DLG_Parametres_remplissage
         dictDonnees = self.GetParent().dictDonnees
         if "modeAffichage" in dictDonnees :
             modeAffichage = dictDonnees["modeAffichage"]
@@ -293,7 +293,7 @@ class Panel(wx.Panel):
     def OuvrirListeAttente(self):
         dictEtatPlaces = self.ctrl_remplissage.GetEtatPlaces()
         dictUnitesRemplissage = self.ctrl_remplissage.dictUnitesRemplissage
-        import DLG_Attente
+        from Dlg import DLG_Attente
         dlg = DLG_Attente.Dialog(self, dictDonnees=self.dictDonnees, dictEtatPlaces=dictEtatPlaces, dictUnitesRemplissage=dictUnitesRemplissage)
         dlg.ShowModal()
         dlg.Destroy() 
@@ -301,7 +301,7 @@ class Panel(wx.Panel):
     def OuvrirListeRefus(self):
         dictEtatPlaces = self.ctrl_remplissage.GetEtatPlaces()
         dictUnitesRemplissage = self.ctrl_remplissage.dictUnitesRemplissage
-        import DLG_Refus
+        from Dlg import DLG_Refus
         dlg = DLG_Refus.Dialog(self, dictDonnees=self.dictDonnees, dictEtatPlaces=dictEtatPlaces, dictUnitesRemplissage=dictUnitesRemplissage)
         dlg.ShowModal()
         dlg.Destroy() 

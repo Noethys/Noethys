@@ -860,7 +860,7 @@ class MyFrame(wx.Frame):
         dateMax = datetime.date(2012, 9, 30)
         
         # Récupération de tous les champs disponibles
-        import OL_Etat_nomin_champs
+        from Ol import OL_Etat_nomin_champs
         champs = OL_Etat_nomin_champs.Champs(listeActivites=listeActivites, dateMin=dateMin, dateMax=dateMax)
         dictChamps = champs.GetDictChamps() 
         listeChampsDispo = champs.GetChamps() 
@@ -876,7 +876,7 @@ class MyFrame(wx.Frame):
         listeSelectionChamps = DB.ResultatReq()     
         DB.Close() 
         listeChamps = []
-        import OL_Etat_nomin_selections
+        from Ol import OL_Etat_nomin_selections
         for IDselection, IDprofil, code, ordre in listeSelectionChamps :
             if code in dictChamps :
                 # Champ disponible

@@ -10,7 +10,7 @@
 
 
 import Chemins
-from UTILS_Traduction import _
+from Utils.UTILS_Traduction import _
 import wx
 import datetime
 import GestionDB
@@ -329,7 +329,7 @@ def A5134():
 
 def A5200():
     """ Arrondi de toutes les prestations et ventilations de la base de données !!! """
-    from UTILS_Decimal import FloatToDecimal as FloatToDecimal
+    from Utils.UTILS_Decimal import FloatToDecimal as FloatToDecimal
     DB = GestionDB.DB() 
 
     dlgAttente = wx.BusyInfo(_(u"Veuillez patienter durant la procédure... Celle-ci peut nécessiter quelques minutes..."), None)
@@ -403,7 +403,7 @@ def A5400():
     
 def A5500():
     """ Réparation des liens prestations/factures """
-    import UTILS_Dates
+    from Utils import UTILS_Dates
     import time
     from Dlg import DLG_Selection_dates
     
@@ -695,8 +695,8 @@ def A8941():
 
 def A8956():
     """ Réparation des factures : Rapprochement des factures et des prestations détachées """
-    from UTILS_Decimal import FloatToDecimal
-    import UTILS_Dates
+    from Utils.UTILS_Decimal import FloatToDecimal
+    from Utils import UTILS_Dates
     import copy
 
     DB = GestionDB.DB()
@@ -1063,8 +1063,8 @@ def A9120():
 
 def A9122():
     """ Réparation des prestations : Rapprochement des prestations et des consommations détachées """
-    from UTILS_Decimal import FloatToDecimal
-    from UTILS_Divers import DictionnaireImbrique
+    from Utils.UTILS_Decimal import FloatToDecimal
+    from Utils.UTILS_Divers import DictionnaireImbrique
     DB = GestionDB.DB()
 
     # Importation des individus

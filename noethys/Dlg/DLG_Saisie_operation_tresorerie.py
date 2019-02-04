@@ -332,7 +332,7 @@ class Dialog(wx.Dialog):
 
     def OnBoutonTiers(self, event): 
         IDtiers = self.ctrl_tiers.GetID()
-        import DLG_Tiers
+        from Dlg import DLG_Tiers
         dlg = DLG_Tiers.Dialog(self)
         dlg.ShowModal()
         dlg.Destroy()
@@ -341,7 +341,7 @@ class Dialog(wx.Dialog):
 
     def OnBoutonModes(self, event):  
         IDmode = self.ctrl_mode.GetID()
-        import DLG_Modes_reglements
+        from Dlg import DLG_Modes_reglements
         dlg = DLG_Modes_reglements.Dialog(self)
         dlg.ShowModal()
         dlg.Destroy()
@@ -383,7 +383,7 @@ class Dialog(wx.Dialog):
 
     def OnBoutonReleves(self, event):  
         IDreleve = self.ctrl_releve.GetID()
-        import DLG_Releves_compta
+        from Dlg import DLG_Releves_compta
         dlg = DLG_Releves_compta.Dialog(self)
         dlg.ShowModal()
         dlg.Destroy()

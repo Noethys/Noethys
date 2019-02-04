@@ -256,7 +256,7 @@ class Dialog(wx.Dialog):
         UTILS_Aide.Aide("Modlesdedocuments")
 
     def OnBoutonFonds(self, event): 
-        import DLG_Modeles_fonds
+        from Dlg import DLG_Modeles_fonds
         dlg = DLG_Modeles_fonds.Dialog(self)
         dlg.ShowModal()
         dlg.Destroy()

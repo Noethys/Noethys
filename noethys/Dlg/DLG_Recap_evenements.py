@@ -582,7 +582,7 @@ class Panel(wx.Panel):
         self.ctrl_evenements.MAJ()
 
     def OnBoutonParametres(self, event):
-        import DLG_Parametres_remplissage
+        from Dlg import DLG_Parametres_remplissage
         dictDonnees = self.GetParent().ctrl_remplissage.dictDonnees
         dlg = DLG_Parametres_remplissage.Dialog(None, dictDonnees, afficheAbregeGroupes=False, afficheLargeurColonneUnite=False, afficheTotaux=False)
         if dlg.ShowModal() == wx.ID_OK:

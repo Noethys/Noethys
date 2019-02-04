@@ -179,7 +179,7 @@ class Dialog(wx.Dialog):
 
     def OnBoutonTypesQuotients(self, event):
         IDtype_quotient = self.ctrl_type_quotient.GetID()
-        import DLG_Types_quotients
+        from Dlg import DLG_Types_quotients
         dlg = DLG_Types_quotients.Dialog(self)
         dlg.ShowModal()
         dlg.Destroy()

@@ -1423,7 +1423,7 @@ def InsertUnicodeLiterals():
             listeLignes = []
             for ligne in fichier :
                 # Insertion de l'import
-                if "from UTILS_Traduction import _" in ligne :
+                if "from Utils.UTILS_Traduction import _" in ligne :
                     listeLignes.append("\n")
                     dirty = True
                 

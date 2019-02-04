@@ -192,7 +192,7 @@ class Dialog(wx.Dialog):
 
     def OnBoutonGestion(self, event): 
         IDligne = self.ctrl_ligne.GetID()
-        import DLG_Lignes
+        from Dlg import DLG_Lignes
         dlg = DLG_Lignes.Dialog(self, categorie=self.categorie, mode="gestion")
         dlg.ShowModal() 
         dlg.Destroy()

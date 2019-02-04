@@ -21,15 +21,15 @@ Defines the interface for drawing algorithms and provides common utilities for
 drawing.
 """
 import Chemins
-from UTILS_Traduction import _
+from Utils.UTILS_Traduction import _
 
 import wx
 from Ctrl import CTRL_Bouton_image
 import logging
 
-from UTILS_TL_data import div_timedeltas
-from UTILS_TL_data import microseconds_to_delta
-from UTILS_TL_data import delta_to_microseconds
+from Utils.UTILS_TL_data import div_timedeltas
+from Utils.UTILS_TL_data import microseconds_to_delta
+from Utils.UTILS_TL_data import delta_to_microseconds
 
 
 class DrawingAlgorithm(object):
@@ -172,7 +172,7 @@ def get_algorithm():
 
     Return the drawing algorithm that should be used by the application.
     """
-    from UTILS_TL_drawing_default import DefaultDrawingAlgorithm
+    from Utils.UTILS_TL_drawing_default import DefaultDrawingAlgorithm
     return DefaultDrawingAlgorithm()
 
 

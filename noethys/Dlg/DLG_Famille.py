@@ -25,17 +25,17 @@ import GestionDB
 import FonctionsPerso
 
 from Ctrl import CTRL_Composition
-import DLG_Famille_informations
-import DLG_Famille_prestations
-import DLG_Famille_reglements
-import DLG_Famille_quotients
-import DLG_Famille_caisse
-import DLG_Famille_pieces
-import DLG_Famille_cotisations
-import DLG_Famille_divers
-import DLG_Famille_factures
-import DLG_Famille_questionnaire
-import DLG_Famille_locations
+from Dlg import DLG_Famille_informations
+from Dlg import DLG_Famille_prestations
+from Dlg import DLG_Famille_reglements
+from Dlg import DLG_Famille_quotients
+from Dlg import DLG_Famille_caisse
+from Dlg import DLG_Famille_pieces
+from Dlg import DLG_Famille_cotisations
+from Dlg import DLG_Famille_divers
+from Dlg import DLG_Famille_factures
+from Dlg import DLG_Famille_questionnaire
+from Dlg import DLG_Famille_locations
 
 
 
@@ -389,7 +389,7 @@ class Dialog(wx.Dialog):
         self.ctrl_composition.Supprimer_selection()
     
     def OnBoutonLiens(self, event):
-        import DLG_Individu_liens
+        from Dlg import DLG_Individu_liens
         dlg = DLG_Individu_liens.Dialog_liens(self, IDfamille=self.IDfamille)
         dlg.ShowModal() 
         dlg.Destroy()
@@ -553,7 +553,7 @@ class Dialog(wx.Dialog):
         # Récupération du IDcompte_payeur
         IDcompte_payeur = self.GetIDcomptePayeur()
         # Vérification de la ventilation
-        import DLG_Verification_ventilation
+        from Dlg import DLG_Verification_ventilation
         tracks = DLG_Verification_ventilation.Verification(IDcompte_payeur)
         if len(tracks) > 0 :
             dlg = wx.MessageDialog(self, _(u"Un ou plusieurs règlements sont encore à ventiler.\n\nVous devez obligatoirement effectuer cela avant d'éditer un relevé des prestations..."), _(u"Ventilation"), wx.OK | wx.ICON_EXCLAMATION)
@@ -561,7 +561,7 @@ class Dialog(wx.Dialog):
             dlg.Destroy()
             return
         # Ouverture de la facturation
-        import DLG_Releve_prestations
+        from Dlg import DLG_Releve_prestations
         dlg = DLG_Releve_prestations.Dialog(self, IDfamille=self.IDfamille)
         dlg.ShowModal()
         dlg.Destroy()
@@ -571,7 +571,7 @@ class Dialog(wx.Dialog):
         # Récupération du IDcompte_payeur
         IDcompte_payeur = self.GetIDcomptePayeur()
         # Vérification de la ventilation
-        import DLG_Verification_ventilation
+        from Dlg import DLG_Verification_ventilation
         tracks = DLG_Verification_ventilation.Verification(IDcompte_payeur)
         if len(tracks) > 0 :
             dlg = wx.MessageDialog(self, _(u"Un ou plusieurs règlements sont encore à ventiler.\n\nVous devez obligatoirement effectuer cela avant d'éditer une attestation..."), _(u"Ventilation"), wx.OK | wx.ICON_EXCLAMATION)
@@ -579,13 +579,13 @@ class Dialog(wx.Dialog):
             dlg.Destroy()
             return
         # Ouverture de la facturation
-        import DLG_Impression_attestation
+        from Dlg import DLG_Impression_attestation
         dlg = DLG_Impression_attestation.Dialog(self, IDfamille=self.IDfamille)
         dlg.ShowModal()
         dlg.Destroy()
 
     def MenuListeAttestations(self, event):
-        import DLG_Liste_attestations
+        from Dlg import DLG_Liste_attestations
         dlg = DLG_Liste_attestations.Dialog(self, IDfamille=self.IDfamille)
         dlg.ShowModal() 
         dlg.Destroy()
@@ -595,7 +595,7 @@ class Dialog(wx.Dialog):
         # Récupération du IDcompte_payeur
         IDcompte_payeur = self.GetIDcomptePayeur()
         # Vérification de la ventilation
-        import DLG_Verification_ventilation
+        from Dlg import DLG_Verification_ventilation
         tracks = DLG_Verification_ventilation.Verification(IDcompte_payeur)
         if len(tracks) > 0 :
             dlg = wx.MessageDialog(self, _(u"Un ou plusieurs règlements sont encore à ventiler.\n\nVous devez obligatoirement effectuer cela avant d'éditer une attestation..."), _(u"Ventilation"), wx.OK | wx.ICON_EXCLAMATION)
@@ -603,26 +603,26 @@ class Dialog(wx.Dialog):
             dlg.Destroy()
             return
         # Ouverture de la facturation
-        import DLG_Rappels_generation
+        from Dlg import DLG_Rappels_generation
         dlg = DLG_Rappels_generation.Dialog(self)
         dlg.SetFamille(self.IDfamille)
         dlg.ShowModal()
         dlg.Destroy()
 
     def MenuListeRappels(self, event):
-        import DLG_Liste_rappels
+        from Dlg import DLG_Liste_rappels
         dlg = DLG_Liste_rappels.Dialog(self, IDcompte_payeur=self.GetIDcomptePayeur())
         dlg.ShowModal() 
         dlg.Destroy()
 
     def MenuListeRecus(self, event):
-        import DLG_Liste_recus
+        from Dlg import DLG_Liste_recus
         dlg = DLG_Liste_recus.Dialog(self, IDfamille=self.IDfamille)
         dlg.ShowModal() 
         dlg.Destroy()
 
     def MenuRepartitionVentilation(self, event):
-        import DLG_Repartition
+        from Dlg import DLG_Repartition
         dlg = DLG_Repartition.Dialog(self, IDfamille=self.IDfamille)
         dlg.ShowModal()
         dlg.Destroy()
@@ -630,7 +630,7 @@ class Dialog(wx.Dialog):
     def OnBoutonConsommations(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("consommations_conso", "consulter") == False : return
         self.Sauvegarde()
-        import DLG_Grille
+        from Dlg import DLG_Grille
         dlg = DLG_Grille.Dialog(self, IDfamille=self.IDfamille, selectionTous=True)
         if dlg.ShowModal() == wx.ID_OK:
             self.MAJpageActive() 
@@ -642,7 +642,7 @@ class Dialog(wx.Dialog):
     def OuvrirGrilleIndividu(self, IDindividu=None):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("consommations_conso", "consulter") == False : return
         self.Sauvegarde()
-        import DLG_Grille
+        from Dlg import DLG_Grille
         dlg = DLG_Grille.Dialog(self, IDfamille=self.IDfamille, selectionIndividus=[IDindividu,])
         if dlg.ShowModal() == wx.ID_OK:
             self.MAJpageActive() 
@@ -815,28 +815,28 @@ class Dialog(wx.Dialog):
         DB.Close()
 
     def MenuEditionEtiquettes(self, event):
-        import DLG_Impression_etiquettes
+        from Dlg import DLG_Impression_etiquettes
         dlg = DLG_Impression_etiquettes.Dialog(self, IDfamille=self.IDfamille)
         dlg.ShowModal() 
         dlg.Destroy()        
         
     def MenuHistorique(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_historique", "consulter") == False : return
-        import DLG_Historique
+        from Dlg import DLG_Historique
         dlg = DLG_Historique.Dialog(self, IDfamille=self.IDfamille)
         dlg.ShowModal() 
         dlg.Destroy()
 
     def MenuChronologie(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_chronologie", "consulter") == False : return
-        import DLG_Chronologie
+        from Dlg import DLG_Chronologie
         dlg = DLG_Chronologie.Dialog(self, IDfamille=self.IDfamille)
         dlg.ShowModal() 
         dlg.Destroy()
 
     def MenuExporter(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_export", "creer") == False: return
-        import DLG_Export_familles
+        from Dlg import DLG_Export_familles
         dlg = DLG_Export_familles.Dialog(self, IDfamille=self.IDfamille)
         dlg.ShowModal()
         dlg.Destroy()
@@ -850,7 +850,7 @@ class Dialog(wx.Dialog):
         
         # Depuis l'éditeur d'Emails de Noethys
         if event.GetId() == 200 :
-            import DLG_Mailer
+            from Dlg import DLG_Mailer
             dlg = DLG_Mailer.Dialog(self)
             listeDonnees = []
             for adresse in listeAdresses :

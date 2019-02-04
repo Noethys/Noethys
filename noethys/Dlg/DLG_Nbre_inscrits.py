@@ -202,7 +202,7 @@ class CTRL(ULC.UltimateListCtrl):
             return
         data = self.GetItemPyData(index)
         IDactivite = data["IDactivite"]
-        import DLG_Liste_tarifs
+        from Dlg import DLG_Liste_tarifs
         dlg = DLG_Liste_tarifs.DLG_Tarifs(self, IDactivite=IDactivite)
         dlg.ShowModal()
         dlg.Destroy()
@@ -445,7 +445,7 @@ class Panel(wx.Panel):
         self.ctrl_inscriptions.MAJ()
 
     def OnBoutonParametres(self, event):
-        import DLG_Parametres_nbre_inscrits
+        from Dlg import DLG_Parametres_nbre_inscrits
         dlg = DLG_Parametres_nbre_inscrits.Dialog(self)
         reponse = dlg.ShowModal()
         if reponse == wx.ID_OK :

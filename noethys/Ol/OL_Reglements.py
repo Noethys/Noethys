@@ -550,7 +550,7 @@ class ListView(FastObjectListView):
     def VentilationAuto(self, event):
         if self.IDcompte_payeur != None and UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_reglements", "modifier") == False : return
         
-        from OL_Verification_ventilation import VentilationAuto
+        from Ol.OL_Verification_ventilation import VentilationAuto
         ID = event.GetId() 
         if ID == 201 :
             # Uniquement la ligne sélectionnée

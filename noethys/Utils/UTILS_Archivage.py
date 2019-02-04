@@ -10,7 +10,7 @@
 
 
 import Chemins
-from UTILS_Traduction import _
+from Utils.UTILS_Traduction import _
 from Utils import UTILS_Titulaires
 import GestionDB
 import wx

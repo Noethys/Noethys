@@ -10,19 +10,19 @@
 
 
 import Chemins
-from UTILS_Traduction import _
+from Utils.UTILS_Traduction import _
 import GestionDB
 import sqlite3
 import datetime
 import base64
 from six.moves import cPickle
 import six
-import UTILS_Dates
-import UTILS_Titulaires
-import UTILS_Cotisations_manquantes
-import UTILS_Pieces_manquantes
-import UTILS_Questionnaires
-import UTILS_Fichiers
+from Utils import UTILS_Dates
+from Utils import UTILS_Titulaires
+from Utils import UTILS_Cotisations_manquantes
+from Utils import UTILS_Pieces_manquantes
+from Utils import UTILS_Questionnaires
+from Utils import UTILS_Fichiers
 
 from Data.DATA_Liens import DICT_TYPES_LIENS, DICT_AUTORISATIONS
 from Data import DATA_Civilites as Civilites

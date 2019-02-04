@@ -13,7 +13,7 @@ import Chemins
 from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
-import CTRL_Bouton_image
+from Ctrl import CTRL_Bouton_image
 import GestionDB
 import os
 
@@ -22,7 +22,7 @@ from Utils import UTILS_Config
 from Utils import UTILS_Parametres
 
 from Dlg import DLG_Filtres_factures
-import CTRL_Propertygrid
+from Ctrl import CTRL_Propertygrid
 import wx.propgrid as wxpg
 import copy
 

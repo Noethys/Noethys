@@ -180,7 +180,7 @@ class Dialog(wx.Dialog):
             return
 
         # Transfert des données vers DLG Mailer
-        import DLG_Mailer
+        from Dlg import DLG_Mailer
         dlg = DLG_Mailer.Dialog(self, categorie="cotisation")
         dlg.SetDonnees(listeDonnees, modificationAutorisee=False)
         dlg.ChargerModeleDefaut()

@@ -327,7 +327,7 @@ class Dialog(wx.Dialog):
         date_debut = self.ctrl_date_debut.GetDate()
         date_fin = self.ctrl_date_fin.GetDate()
         listePeriodes = self.ctrl_periodes.GetDonnees() 
-        import DLG_Saisie_contrat_conso
+        from Dlg import DLG_Saisie_contrat_conso
         dlg = DLG_Saisie_contrat_conso.Dialog(self, IDactivite=self.IDactivite, date_debut=date_debut, date_fin=date_fin, IDgroupe=self.IDgroupe, listePeriodes=listePeriodes)
         if dlg.ShowModal() == wx.ID_OK:
             listePeriodes = dlg.GetListePeriodes()

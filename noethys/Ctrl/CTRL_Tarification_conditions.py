@@ -13,14 +13,14 @@ import Chemins
 from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
-import CTRL_Bouton_image
+from Ctrl import CTRL_Bouton_image
 import datetime
 import wx.lib.agw.flatnotebook as FNB
 import copy
 
 import GestionDB
 from Ol import OL_Filtres_questionnaire
-import CTRL_Etiquettes
+from Ctrl import CTRL_Etiquettes
 from Utils import UTILS_Texte
 
 

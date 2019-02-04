@@ -211,7 +211,7 @@ class CTRL(HTL.HyperTreeList):
 
     def OuvrirFicheFamille(self, IDfamille=None):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_fiche", "consulter") == False : return
-        import DLG_Famille
+        from Dlg import DLG_Famille
         dlg = DLG_Famille.Dialog(None, IDfamille=IDfamille)
         dlg.ShowModal()
         dlg.Destroy()

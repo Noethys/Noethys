@@ -570,7 +570,7 @@ class Panel_coords(wx.Panel):
     
     def OnGestionSecteurs(self, event):
         IDsecteur = self.ctrl_secteur.GetID()
-        import DLG_Secteurs
+        from Dlg import DLG_Secteurs
         dlg = DLG_Secteurs.Dialog(self)
         dlg.ShowModal() 
         dlg.Destroy()
@@ -613,7 +613,7 @@ class Panel_coords(wx.Panel):
         
         # Depuis l'éditeur d'Emails de Noethys
         if event.GetId() in (801, 901) :
-            import DLG_Mailer
+            from Dlg import DLG_Mailer
             dlg = DLG_Mailer.Dialog(self)
             listeDonnees = [{"adresse" : adresse, "pieces" : [], "champs" : {},},]
             dlg.SetDonnees(listeDonnees, modificationAutorisee=False)

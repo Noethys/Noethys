@@ -20,7 +20,7 @@ import GestionDB
 from Ctrl import CTRL_Bandeau
 from Ctrl import CTRL_Saisie_date
 from Ol import OL_Badgeage_log
-import DLG_Badgeage_interface
+from Dlg import DLG_Badgeage_interface
 from Utils import UTILS_Vocal
 import wx.lib.agw.hyperlink as Hyperlink
 from Utils import UTILS_Parametres
@@ -44,13 +44,13 @@ class Hyperlien(Hyperlink.HyperLinkCtrl):
         
     def OnLeftLink(self, event):
         if self.URL == "consommations" :
-            import DLG_Badgeage_consommations
+            from Dlg import DLG_Badgeage_consommations
             dlg = DLG_Badgeage_consommations.Dialog(self)
             dlg.ShowModal()
             dlg.Destroy()
 
         if self.URL == "historique" :
-            import DLG_Badgeage_journal
+            from Dlg import DLG_Badgeage_journal
             dlg = DLG_Badgeage_journal.Dialog(self)
             dlg.ShowModal() 
             dlg.Destroy()
@@ -288,7 +288,7 @@ class Dialog(wx.Dialog):
         
     def OnBoutonProcedures(self, event): 
         IDprocedure = self.ctrl_procedure.GetID()
-        import DLG_Badgeage_procedures
+        from Dlg import DLG_Badgeage_procedures
         dlg = DLG_Badgeage_procedures.Dialog(self)
         dlg.ShowModal() 
         dlg.Destroy()
@@ -313,7 +313,7 @@ class Dialog(wx.Dialog):
         UTILS_Aide.Aide("Badgeage")
     
     def OnBoutonVocal(self, event):
-        import DLG_Vocal
+        from Dlg import DLG_Vocal
         dlg = DLG_Vocal.Dialog(self)
         dlg.ShowModal() 
         dlg.Destroy()
@@ -422,7 +422,7 @@ class Dialog(wx.Dialog):
             return
 
         # Recherche des badgeages à importer
-        import DLG_Badgeage_importation
+        from Dlg import DLG_Badgeage_importation
         dlg = DLG_Badgeage_importation.Dialog(self)
         if dlg.ShowModal() == wx.ID_OK:
             listeDonnees = dlg.GetDonnees()
@@ -476,7 +476,7 @@ class Dialog(wx.Dialog):
         if UTILS_Parametres.Parametres(mode="get", categorie="ne_plus_afficher", nom="infos_badgeage", valeur=False) == True :
             return
         
-        import DLG_Message_html
+        from Dlg import DLG_Message_html
         texte = u"""
 <CENTER><IMG SRC="Static/Images/32x32/Information.png">
 <BR><BR>

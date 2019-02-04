@@ -437,7 +437,7 @@ class Dialog(wx.Dialog):
 
     def OnBoutonImporter(self, event): 
         """ Importer un modèle d'aide """
-        import DLG_Choix_modele_aide
+        from Dlg import DLG_Choix_modele_aide
         dlg = DLG_Choix_modele_aide.Dialog(self)
         if dlg.ShowModal() == wx.ID_OK:
             self.IDaide = dlg.GetIDaide()

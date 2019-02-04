@@ -21,7 +21,7 @@ import GestionDB
 from Ctrl import CTRL_Bandeau
 from Ctrl import CTRL_Saisie_date
 from Ctrl import CTRL_Saisie_euros
-from DLG_Factures_generation_parametres import CTRL_Lot_factures
+from Dlg.DLG_Factures_generation_parametres import CTRL_Lot_factures
 
 from Utils import UTILS_Dates
 from Utils import UTILS_Config

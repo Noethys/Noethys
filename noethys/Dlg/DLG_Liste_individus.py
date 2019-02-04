@@ -20,7 +20,7 @@ import GestionDB
 from Ctrl import CTRL_Bandeau
 from Ol import OL_Liste_individus
 from Ctrl import CTRL_Saisie_date
-import DLG_calendrier_simple
+from Dlg import DLG_calendrier_simple
 from Ctrl import CTRL_Selection_activites
 
 

@@ -25,7 +25,7 @@ from Ctrl import CTRL_Selection_activites
 from Ctrl import CTRL_Saisie_date
 from Ol import OL_Attestations_prestations
 from Ol import OL_Liste_regimes
-import DLG_Attestations_selection
+from Dlg import DLG_Attestations_selection
 
 import FonctionsPerso
 from Utils import UTILS_Utilisateurs

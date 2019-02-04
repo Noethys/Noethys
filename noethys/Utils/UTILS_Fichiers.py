@@ -14,7 +14,7 @@ import sys
 import shutil
 import platform
 import subprocess
-import UTILS_Customize
+from Utils import UTILS_Customize
 import appdirs
 import six
 

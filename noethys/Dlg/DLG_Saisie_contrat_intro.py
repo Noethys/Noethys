@@ -281,7 +281,7 @@ class Dialog(wx.Dialog):
 
     def OnBoutonModeles(self, event):
         ID = self.ctrl_modele.GetID() 
-        import DLG_Modeles_contrats
+        from Dlg import DLG_Modeles_contrats
         dlg = DLG_Modeles_contrats.Dialog(self)
         dlg.ShowModal()
         dlg.Destroy()

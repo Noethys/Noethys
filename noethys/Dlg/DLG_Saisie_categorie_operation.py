@@ -157,7 +157,7 @@ class Dialog(wx.Dialog):
 
     def OnBoutonComptes(self, event):  
         IDmode = self.ctrl_compte.GetID()
-        import DLG_Comptes_comptables
+        from Dlg import DLG_Comptes_comptables
         dlg = DLG_Comptes_comptables.Dialog(self)
         dlg.ShowModal()
         dlg.Destroy()

@@ -25,11 +25,11 @@ from Utils import UTILS_Texte
 from Utils import UTILS_Identification
 from Utils.UTILS_Decimal import FloatToDecimal as FloatToDecimal
 
-import DLG_Contratpsu_generalites
-import DLG_Contratpsu_calendrier
-import DLG_Contratpsu_tarification
-import DLG_Contratpsu_mensualisation
-import DLG_Contratpsu_recapitulatif
+from Dlg import DLG_Contratpsu_generalites
+from Dlg import DLG_Contratpsu_calendrier
+from Dlg import DLG_Contratpsu_tarification
+from Dlg import DLG_Contratpsu_mensualisation
+from Dlg import DLG_Contratpsu_recapitulatif
 
 from Ol.OL_Contratspsu_previsions import Track as Track_conso
 from Ol.OL_Contratspsu_tarifs import Track as Track_tarif
@@ -288,7 +288,7 @@ class Base(object) :
         # Si mode test, renvoie la liste des anomalies
         if mode_test == True :
             if len(listeAnomalies) > 0 :
-                import DLG_Messagebox
+                from Dlg import DLG_Messagebox
                 introduction =_(u"Votre saisie ne peut pas être validée en raison des erreurs suivantes :")
                 detail = "\n".join(listeAnomalies)
                 conclusion =_(u"Veuillez modifier les données saisies.")

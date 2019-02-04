@@ -23,7 +23,7 @@ import wx.lib.agw.hyperlink as Hyperlink
 from Utils.UTILS_Decimal import FloatToDecimal as FloatToDecimal
 
 from Ol.OL_Verification_ventilation import VentilationAuto
-from DLG_Saisie_reglement import CTRL_Mode, CTRL_Compte
+from Dlg.DLG_Saisie_reglement import CTRL_Mode, CTRL_Compte
 
 from Utils import UTILS_Texte
 from Utils import UTILS_Config
@@ -320,7 +320,7 @@ class Dialog(wx.Dialog):
 
     def OnBoutonModes(self, event):
         IDmode = self.ctrl_mode.GetID()
-        import DLG_Modes_reglements
+        from Dlg import DLG_Modes_reglements
         dlg = DLG_Modes_reglements.Dialog(self)
         dlg.ShowModal()
         dlg.Destroy()
@@ -329,7 +329,7 @@ class Dialog(wx.Dialog):
 
     def OnBoutonPayeurs(self, event):
         IDpayeur = self.ctrl_payeur.GetID()
-        import DLG_Payeurs
+        from Dlg import DLG_Payeurs
         dlg = DLG_Payeurs.Dialog(self, self.IDcompte_payeur)
         dlg.ShowModal()
         dlg.Destroy()

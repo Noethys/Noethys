@@ -23,7 +23,7 @@ from Ctrl import CTRL_Bandeau
 import GestionDB
 from Utils import UTILS_Sauvegarde
 from Utils import UTILS_Config
-import DLG_Saisie_param_reseau
+from Dlg import DLG_Saisie_param_reseau
 from Utils import UTILS_Fichiers
 
 

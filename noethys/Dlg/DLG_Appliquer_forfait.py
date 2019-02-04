@@ -444,7 +444,7 @@ class Forfaits():
                                     if methode_calcul == "choix" :
                                         # Nouvelle saisie si clic sur la case
                                         lignes_calcul = dictTarif["lignes_calcul"]
-                                        import DLG_Selection_montant_prestation
+                                        from Dlg import DLG_Selection_montant_prestation
                                         dlg = DLG_Selection_montant_prestation.Dialog(None, lignes_calcul=lignes_calcul, label=nom_tarif, montant=0.0, titre=labelTarif)
                                         if dlg.ShowModal() == wx.ID_OK:
                                             nom_tarif = dlg.GetLabel()

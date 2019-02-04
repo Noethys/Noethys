@@ -22,16 +22,16 @@ from Utils import UTILS_Config
 import datetime
 
 from Ctrl import CTRL_Photo
-import DLG_Individu_informations
-import DLG_Individu_identite
-import DLG_Individu_coords
-import DLG_Individu_liens
-import DLG_Individu_pieces
-import DLG_Individu_medical
-import DLG_Individu_inscriptions
-import DLG_Individu_questionnaire
-import DLG_Individu_scolarite
-import DLG_Individu_transports
+from Dlg import DLG_Individu_informations
+from Dlg import DLG_Individu_identite
+from Dlg import DLG_Individu_coords
+from Dlg import DLG_Individu_liens
+from Dlg import DLG_Individu_pieces
+from Dlg import DLG_Individu_medical
+from Dlg import DLG_Individu_inscriptions
+from Dlg import DLG_Individu_questionnaire
+from Dlg import DLG_Individu_scolarite
+from Dlg import DLG_Individu_transports
 
 
 
@@ -587,21 +587,21 @@ class Dialog(wx.Dialog):
                 pass
 
     def MenuEditionEtiquettes(self, event):
-        import DLG_Impression_etiquettes
+        from Dlg import DLG_Impression_etiquettes
         dlg = DLG_Impression_etiquettes.Dialog(self, IDindividu=self.IDindividu)
         dlg.ShowModal() 
         dlg.Destroy()        
 
     def MenuHistorique(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("individus_historique", "consulter") == False : return
-        import DLG_Historique
+        from Dlg import DLG_Historique
         dlg = DLG_Historique.Dialog(self, IDindividu=self.IDindividu)
         dlg.ShowModal() 
         dlg.Destroy()
 
     def MenuChronologie(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("individus_chronologie", "consulter") == False : return
-        import DLG_Chronologie
+        from Dlg import DLG_Chronologie
         dlg = DLG_Chronologie.Dialog(self, IDindividu=self.IDindividu)
         dlg.ShowModal() 
         dlg.Destroy()

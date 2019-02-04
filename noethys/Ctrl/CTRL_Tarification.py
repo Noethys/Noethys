@@ -13,15 +13,13 @@ import Chemins
 from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
-import CTRL_Bouton_image
+from Ctrl import CTRL_Bouton_image
 import wx.lib.agw.hypertreelist as HTL
 import wx.lib.agw.hyperlink as Hyperlink
 import datetime
-from CTRL_Tarification_calcul import LISTE_METHODES
+from Ctrl.CTRL_Tarification_calcul import LISTE_METHODES
 import GestionDB
 
-try: import psyco; psyco.full()
-except: pass
 
 def DateEngEnDateDD(dateEng):
     return datetime.date(int(dateEng[:4]), int(dateEng[5:7]), int(dateEng[8:10]))

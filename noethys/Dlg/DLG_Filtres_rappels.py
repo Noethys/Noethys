@@ -21,7 +21,7 @@ import GestionDB
 from Ctrl import CTRL_Bandeau
 from Ctrl import CTRL_Saisie_date
 from Ctrl import CTRL_Saisie_euros
-from DLG_Rappels_generation_parametres import CTRL_Lot_rappels
+from Dlg.DLG_Rappels_generation_parametres import CTRL_Lot_rappels
 
 from Utils import UTILS_Config
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")

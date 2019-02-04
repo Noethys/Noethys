@@ -29,15 +29,15 @@ import time
 from dateutil import relativedelta
 import paramiko
 
-import UTILS_Dates
-import UTILS_Parametres
-import UTILS_Fichiers
-import UTILS_Titulaires
-import UTILS_Pieces_manquantes
-import UTILS_Cotisations_manquantes
-import UTILS_Organisateur
-import UTILS_Cryptage_fichier
-import UTILS_Config
+from Utils import UTILS_Dates
+from Utils import UTILS_Parametres
+from Utils import UTILS_Fichiers
+from Utils import UTILS_Titulaires
+from Utils import UTILS_Pieces_manquantes
+from Utils import UTILS_Cotisations_manquantes
+from Utils import UTILS_Organisateur
+from Utils import UTILS_Cryptage_fichier
+from Utils import UTILS_Config
 import FonctionsPerso
 import GestionDB
 

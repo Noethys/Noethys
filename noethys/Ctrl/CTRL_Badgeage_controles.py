@@ -13,7 +13,7 @@ import Chemins
 from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
-import CTRL_Bouton_image
+from Ctrl import CTRL_Bouton_image
 import os, sys
 import time
 import datetime
@@ -30,7 +30,7 @@ else :
     from wx.lib.agw import ultimatelistctrl as ULC
 
 from Data import DATA_Civilites as Civilites
-import CTRL_Photo
+from Ctrl import CTRL_Photo
 from Dlg import DLG_Badgeage_dlg as DIALOGUES
 
 DICT_CIVILITES = Civilites.GetDictCivilites()

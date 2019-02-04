@@ -14,7 +14,7 @@ from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
 import sys
-import DLG_Categories_produits_images
+from Dlg import DLG_Categories_produits_images
 from Dlg import DLG_Produits_liste
 from Dlg import DLG_Locations
 from Dlg import DLG_Locations_demandes

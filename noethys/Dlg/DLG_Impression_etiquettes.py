@@ -18,7 +18,7 @@ from wx.lib.floatcanvas import FloatCanvas
 import numpy
 import wx.lib.agw.hyperlink as Hyperlink
 
-import DLG_Noedoc
+from Dlg import DLG_Noedoc
 from Ctrl import CTRL_Bandeau
 from Ctrl import CTRL_Choix_modele
 from Utils import UTILS_Config
@@ -533,7 +533,7 @@ class Dialog(wx.Dialog):
         self.ctrl_apercu.MAJ() 
 
     def OnBoutonModele(self, event): 
-        import DLG_Modeles_docs
+        from Dlg import DLG_Modeles_docs
         dlg = DLG_Modeles_docs.Dialog(self, categorie=self.categorie)
         dlg.ShowModal() 
         dlg.Destroy()

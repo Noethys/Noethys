@@ -66,7 +66,7 @@ class CTRL_Prelevement(wx.Panel):
                 
     def OnClic(self):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_prelevement", "modifier") == False : return
-        import DLG_Active_prelevement
+        from Dlg import DLG_Active_prelevement
         dlg = DLG_Active_prelevement.Dialog(self, IDfamille=self.IDfamille)
         dlg.ShowModal() 
         dlg.Destroy()
@@ -108,7 +108,7 @@ class CTRL_Recu(wx.Panel):
                 
     def OnClic(self):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_recu_email", "modifier") == False : return
-        import DLG_Selection_email
+        from Dlg import DLG_Selection_email
         intro = _(u"Sélectionnez ici l'adresse Email à laquelle envoyer les reçus de règlements. Noethys proposera ainsi juste après la saisie d'un règlement l'envoi du reçu correspondant.")
         titre = _(u"Activation de l'envoi des reçus par Email")
         dlg = DLG_Selection_email.Dialog(self, IDfamille=self.IDfamille, champ="email_recus", intro=intro, titre=titre)
@@ -149,7 +149,7 @@ class CTRL_Depot(wx.Panel):
                 
     def OnClic(self):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_depot_email", "modifier") == False : return
-        import DLG_Selection_email
+        from Dlg import DLG_Selection_email
         intro = _(u"Sélectionnez ici l'adresse Email à laquelle envoyer les avis de dépôt des règlements. Noethys enverra ainsi un avis de dépôt après la validation d'un dépôt de règlements.")
         titre = _(u"Activation de l'envoi des avis de dépôt par Email")
         dlg = DLG_Selection_email.Dialog(self, IDfamille=self.IDfamille, champ="email_depots", intro=intro, titre=titre)
@@ -316,7 +316,7 @@ class Panel(wx.Panel):
         self.ctrl_reglements.Apercu(None)
         
     def OnBoutonRepartition(self, event):
-        import DLG_Repartition
+        from Dlg import DLG_Repartition
         dlg = DLG_Repartition.Dialog(self, IDfamille=self.IDfamille)
         dlg.ShowModal()
         dlg.Destroy()

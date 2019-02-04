@@ -64,7 +64,7 @@ def Purger():
         return False
 
     # Sélection d'une date
-    import DLG_calendrier_simple
+    from Dlg import DLG_calendrier_simple
     dlg = DLG_calendrier_simple.Dialog(None)
     if dlg.ShowModal() == wx.ID_OK :
         date = dlg.GetDate()

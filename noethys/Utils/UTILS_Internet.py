@@ -10,9 +10,9 @@
 
 
 import Chemins
-from UTILS_Traduction import _
+from Utils.UTILS_Traduction import _
 import GestionDB
-import UTILS_CryptageMD5
+from Utils import UTILS_CryptageMD5
 import six
 import random
 from six.moves.urllib.request import urlopen

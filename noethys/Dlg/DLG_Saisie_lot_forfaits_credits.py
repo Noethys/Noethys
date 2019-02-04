@@ -28,7 +28,7 @@ from Utils import UTILS_Gestion
 from Utils import UTILS_Config
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 
-import DLG_Badgeage_grille
+from Dlg import DLG_Badgeage_grille
 from threading import Thread 
 import time
 

@@ -275,7 +275,7 @@ class Dialog(wx.Dialog):
             dlg.Destroy()
             
             if reponse == wx.ID_YES :
-                import DLG_Sauvegarde
+                from Dlg import DLG_Sauvegarde
                 dlg2 = DLG_Sauvegarde.Dialog(self)
                 dlg2.ShowModal() 
                 dlg2.Destroy()

@@ -75,7 +75,7 @@ class Panel(wx.Panel):
     
     def OnBoutonAjouter(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("individus_messages", "creer") == False : return
-        import DLG_Saisie_message
+        from Dlg import DLG_Saisie_message
         dlg = DLG_Saisie_message.Dialog(self, IDmessage=None, IDindividu=self.IDindividu, mode="individu")
         if dlg.ShowModal() == wx.ID_OK:
             self.MAJ()
@@ -94,7 +94,7 @@ class Panel(wx.Panel):
             dlg.Destroy()
             return
         IDmessage = dataItem["IDmessage"]
-        import DLG_Saisie_message
+        from Dlg import DLG_Saisie_message
         dlg = DLG_Saisie_message.Dialog(self, IDmessage=IDmessage, mode="individu")
         if dlg.ShowModal() == wx.ID_OK:
             self.MAJ()

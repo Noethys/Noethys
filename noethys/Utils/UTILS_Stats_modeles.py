@@ -10,7 +10,7 @@
 
 
 import Chemins
-from UTILS_Traduction import _
+from Utils.UTILS_Traduction import _
 import wx
 from Ctrl import CTRL_Bouton_image
 import wx.html
@@ -18,7 +18,7 @@ from PIL import Image
 import datetime
 import calendar
 import GestionDB
-import UTILS_Dates
+from Utils import UTILS_Dates
 import six
 
 from numpy import arange, sqrt, array, asarray, ones, exp, convolve, linspace

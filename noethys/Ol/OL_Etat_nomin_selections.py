@@ -20,7 +20,7 @@ import GestionDB
 
 from Utils import UTILS_Interface
 from Ctrl.CTRL_ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
-import OL_Etat_nomin_champs
+from Ol import OL_Etat_nomin_champs
 
 
 

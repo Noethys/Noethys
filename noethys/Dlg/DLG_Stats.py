@@ -32,7 +32,7 @@ import wx.lib.wxpTag
 
 from Ctrl import CTRL_Bandeau
 from Ctrl import CTRL_Stats_objets
-import DLG_Stats_parametres
+from Dlg import DLG_Stats_parametres
 
 from Utils import UTILS_Stats_modeles as MODELES
 from Utils import UTILS_Stats_individus as INDIVIDUS
@@ -136,7 +136,7 @@ class MyHtml(html.HtmlWindow):
     def OnLinkClicked(self, linkinfo):
         code = linkinfo.GetHref()
         figure = self.parent.GetGrandParent().baseHTML.GetFigure(code)
-        import DLG_Zoom_graphe
+        from Dlg import DLG_Zoom_graphe
         dlg = DLG_Zoom_graphe.Dialog(self, figure=figure)
         dlg.ShowModal() 
         dlg.Destroy()

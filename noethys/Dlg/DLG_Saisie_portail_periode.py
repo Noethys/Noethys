@@ -285,7 +285,7 @@ class Dialog(wx.Dialog):
         self.bouton_gestion_modeles.Enable(etat)
 
     def OnBoutonModeles(self, event):
-        import DLG_Modeles_emails
+        from Dlg import DLG_Modeles_emails
         dlg = DLG_Modeles_emails.Dialog(self, categorie="portail_demande_reservation")
         dlg.ShowModal()
         dlg.Destroy()

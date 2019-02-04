@@ -220,7 +220,7 @@ class CTRL_Graphique(wx.Panel):
         self.Layout()
 
     def OnBoutonZoom(self, event):
-        import DLG_Zoom_graphe
+        from Dlg import DLG_Zoom_graphe
         dlg = DLG_Zoom_graphe.Dialog(self, figure=self.figure)
         dlg.ShowModal() 
         dlg.Destroy()

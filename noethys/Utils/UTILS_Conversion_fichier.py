@@ -10,12 +10,12 @@
 
 
 import Chemins
-from UTILS_Traduction import _
+from Utils.UTILS_Traduction import _
 import wx
 from Ctrl import CTRL_Bouton_image
 import os
 import GestionDB
-import UTILS_Fichiers
+from Utils import UTILS_Fichiers
 
 
 # ------------------------------------ CONVERSION LOCAL -> RESEAU -------------------------------

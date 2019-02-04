@@ -16,7 +16,7 @@ import wx
 from Ctrl import CTRL_Bouton_image
 from Ctrl import CTRL_Bandeau
 
-from DLG_Saisie_reglement import CTRL_Payeurs
+from Dlg.DLG_Saisie_reglement import CTRL_Payeurs
 
 
 

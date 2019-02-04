@@ -331,7 +331,7 @@ class CTRL_Options(wx.Panel):
         self.ctrl_texte_intro.Enable(self.ctrl_intro.GetValue())
 
     def OnBoutonModeles(self, event): 
-        import DLG_Modeles_docs
+        from Dlg import DLG_Modeles_docs
         dlg = DLG_Modeles_docs.Dialog(self, categorie="attestation_fiscale")
         dlg.ShowModal() 
         dlg.Destroy()
@@ -797,7 +797,7 @@ class Panel(wx.Panel):
             return
 
         # Transfert des données vers DLG Mailer
-        import DLG_Mailer
+        from Dlg import DLG_Mailer
         dlg = DLG_Mailer.Dialog(self, categorie="attestation_fiscale")
         dlg.SetDonnees(listeDonnees, modificationAutorisee=False)
         dlg.ChargerModeleDefaut()

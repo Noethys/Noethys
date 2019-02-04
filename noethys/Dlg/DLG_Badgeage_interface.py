@@ -25,8 +25,8 @@ import traceback
 from Data import DATA_Civilites
 from Ctrl import CTRL_Badgeage_objets as OBJETS
 from Ctrl import CTRL_Badgeage_controles as CONTROLES
-import DLG_Badgeage_dlg as DIALOGUES
-import DLG_Badgeage_grille
+from Dlg import DLG_Badgeage_dlg as DIALOGUES
+from Dlg import DLG_Badgeage_grille
 from Utils import UTILS_Titulaires
 from Utils import UTILS_Filtres_questionnaires
 from Utils import UTILS_Vocal

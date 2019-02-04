@@ -162,7 +162,7 @@ class Dialog(wx.Dialog):
         UTILS_Aide.Aide("Listedesoperationsdetresorerie")
     
     def OnBoutonTresorerie(self, event):
-        import DLG_Tresorerie
+        from Dlg import DLG_Tresorerie
         dlg = DLG_Tresorerie.Dialog(self, IDcompte_bancaire=self.ctrl_comptes.GetID())
         dlg.ShowModal() 
         dlg.Destroy()

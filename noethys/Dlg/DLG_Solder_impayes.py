@@ -333,7 +333,7 @@ class Dialog(wx.Dialog):
 
     def OnBoutonCompte(self, event): 
         IDcompte = self.ctrl_compte.GetID()
-        import DLG_Comptes_bancaires
+        from Dlg import DLG_Comptes_bancaires
         dlg = DLG_Comptes_bancaires.Dialog(self)
         dlg.ShowModal()
         dlg.Destroy()
@@ -342,7 +342,7 @@ class Dialog(wx.Dialog):
 
     def OnBoutonMode(self, event):
         IDmode = self.ctrl_mode.GetID()
-        import DLG_Modes_reglements
+        from Dlg import DLG_Modes_reglements
         dlg = DLG_Modes_reglements.Dialog(self)
         dlg.ShowModal()
         dlg.Destroy()
@@ -351,7 +351,7 @@ class Dialog(wx.Dialog):
 
     def OnBoutonEmetteur(self, event): 
         IDemetteur = self.ctrl_emetteur.GetID()
-        import DLG_Emetteurs
+        from Dlg import DLG_Emetteurs
         dlg = DLG_Emetteurs.Dialog(self)
         dlg.ShowModal()
         dlg.Destroy()

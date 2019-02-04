@@ -20,7 +20,7 @@ import GestionDB
 from Ctrl import CTRL_Bandeau
 from Ctrl import CTRL_Saisie_date
 from Ol import OL_Badgeage_log
-import DLG_Badgeage_interface
+from Dlg import DLG_Badgeage_interface
 
 
 

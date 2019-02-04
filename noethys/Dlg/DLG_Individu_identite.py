@@ -356,7 +356,7 @@ class Panel_identite(wx.Panel):
     
     def OnGestionSieste(self, event):
         IDtype_sieste = self.ctrl_sieste.GetID()
-        import DLG_Types_sieste
+        from Dlg import DLG_Types_sieste
         dlg = DLG_Types_sieste.Dialog(self)
         dlg.ShowModal() 
         dlg.Destroy()

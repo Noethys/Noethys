@@ -33,7 +33,7 @@ from Utils import UTILS_Config
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 
 import GestionDB
-import CTRL_Saisie_euros
+from Ctrl import CTRL_Saisie_euros
 
 COULEUR_FOND_REGROUPEMENT = (200, 200, 200)
 COULEUR_TEXTE_REGROUPEMENT = (140, 140, 140)

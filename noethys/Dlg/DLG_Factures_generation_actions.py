@@ -182,7 +182,7 @@ class Panel(wx.Panel):
         if reponse == wx.ID_CANCEL :
             return
         # Ouverture DLG
-        import DLG_Lots_prelevements
+        from Dlg import DLG_Lots_prelevements
         dlg = DLG_Lots_prelevements.Dialog(self)
         if reponse == wx.ID_YES :
             filtre_numeros, filtre_prefixe = self.GetFiltreNumerosFactures()
@@ -207,7 +207,7 @@ class Panel(wx.Panel):
         if choix == "rolmre" :
             
             if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("facturation_helios", "creer") == False : return
-            import DLG_Export_helios
+            from Dlg import DLG_Export_helios
             filtre_numeros, filtre_prefixe = self.GetFiltreNumerosFactures()
             filtres = [
                 filtre_numeros,
@@ -231,7 +231,7 @@ class Panel(wx.Panel):
             if reponse == wx.ID_CANCEL :
                 return
             # Ouverture DLG
-            import DLG_Lots_pes
+            from Dlg import DLG_Lots_pes
             dlg = DLG_Lots_pes.Dialog(self)
             if reponse == wx.ID_YES :
                 filtre_numeros, filtre_prefixe = self.GetFiltreNumerosFactures()
@@ -262,7 +262,7 @@ class Panel(wx.Panel):
         if reponse == wx.ID_YES :
             filtres.append({"type" : "email", "choix" : True})
         # Ouverture DLG
-        import DLG_Factures_email
+        from Dlg import DLG_Factures_email
         dlg = DLG_Factures_email.Dialog(self, filtres=filtres)
         dlg.ShowModal() 
         dlg.Destroy()
@@ -284,7 +284,7 @@ class Panel(wx.Panel):
         if reponse == wx.ID_YES :
             filtres.append({"type" : "email", "choix" : False})
         # Ouverture DLG
-        import DLG_Factures_impression
+        from Dlg import DLG_Factures_impression
         dlg = DLG_Factures_impression.Dialog(self, filtres=filtres)
         dlg.ShowModal() 
         dlg.Destroy()

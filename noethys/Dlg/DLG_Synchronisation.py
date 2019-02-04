@@ -768,7 +768,7 @@ class Dialog(wx.Dialog):
         for track in tracks :
             listeFichiers.append(track.nom_fichier)
             
-        import DLG_Synchronisation_donnees
+        from Dlg import DLG_Synchronisation_donnees
         dlg = DLG_Synchronisation_donnees.Dialog(self, listeFichiers=listeFichiers)
         dlg.ShowModal() 
         dlg.Destroy()
@@ -804,7 +804,7 @@ class Dialog(wx.Dialog):
         if UTILS_Parametres.Parametres(mode="get", categorie="ne_plus_afficher", nom="synchronisation_nomadhys", valeur=False) == True :
             return
 
-        import DLG_Message_html
+        from Dlg import DLG_Message_html
         texte = u"""
 <CENTER><IMG SRC="Static/Images/32x32/Information.png">
 <BR><BR>

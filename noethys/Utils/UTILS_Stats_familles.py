@@ -10,7 +10,7 @@
 
 
 import Chemins
-from UTILS_Traduction import _
+from Utils.UTILS_Traduction import _
 import wx
 from Ctrl import CTRL_Bouton_image
 import datetime
@@ -21,7 +21,7 @@ import matplotlib.pyplot
 
 from numpy import arange 
 
-import UTILS_Stats_modeles as MODELES
+from Utils import UTILS_Stats_modeles as MODELES
 
 try: import psyco; psyco.full()
 except: pass

@@ -13,9 +13,9 @@ import Chemins
 from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
-import CTRL_Bouton_image
+from Ctrl import CTRL_Bouton_image
 import sys
-import CTRL_Newsticker
+from Ctrl import CTRL_Newsticker
 import wx.lib.analogclock as clock
 import GestionDB
 

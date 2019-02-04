@@ -11,7 +11,7 @@
 
 import wx
 import os
-import UTILS_Fichiers
+from Utils import UTILS_Fichiers
 import six
 import shelve
 

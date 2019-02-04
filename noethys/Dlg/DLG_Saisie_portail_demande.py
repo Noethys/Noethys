@@ -564,7 +564,7 @@ class Dialog(wx.Dialog):
         self.panel_bandeau.Refresh()
 
     def OnBoutonModeles(self, event):
-        import DLG_Modeles_emails
+        from Dlg import DLG_Modeles_emails
         dlg = DLG_Modeles_emails.Dialog(self, categorie=self.categorie_email)
         dlg.ShowModal()
         dlg.Destroy()
@@ -1603,7 +1603,7 @@ class Traitement():
             return reponse
 
     def Verifier_ventilation(self):
-        import DLG_Verification_ventilation
+        from Dlg import DLG_Verification_ventilation
         tracks = DLG_Verification_ventilation.Verification(self.track.IDcompte_payeur)
         if len(tracks) > 0 :
             dlg = wx.MessageDialog(None, _(u"Un ou plusieurs règlements peuvent être ventilés.\n\nSouhaitez-vous le faire maintenant (conseillé) ?"), _(u"Ventilation"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)

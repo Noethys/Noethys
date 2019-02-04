@@ -302,7 +302,7 @@ class Dialog(wx.Dialog):
             self.ctrl_texte_intro.Enable(False)
 
     def OnBoutonModeles(self, event): 
-        import DLG_Modeles_docs
+        from Dlg import DLG_Modeles_docs
         dlg = DLG_Modeles_docs.Dialog(self, categorie="inscription")
         dlg.ShowModal() 
         dlg.Destroy()

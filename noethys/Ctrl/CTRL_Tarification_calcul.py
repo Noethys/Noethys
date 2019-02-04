@@ -15,11 +15,11 @@ from Utils.UTILS_Traduction import _
 import wx
 from six.moves import cPickle
 import copy
-import CTRL_Bouton_image
+from Ctrl import CTRL_Bouton_image
 import wx.grid as gridlib
 import datetime
-import CTRL_Saisie_heure
-import CTRL_Saisie_date
+from Ctrl import CTRL_Saisie_heure
+from Ctrl import CTRL_Saisie_date
 import GestionDB
 from Utils import UTILS_Questionnaires
 import wx.lib.wordwrap as wordwrap

@@ -17,7 +17,7 @@ from Ctrl import CTRL_Bouton_image
 import sys
 from wx.lib.mixins.listctrl import CheckListCtrlMixin
 import GestionDB
-import DLG_Saisie_utilisateur_reseau
+from Dlg import DLG_Saisie_utilisateur_reseau
 from Ctrl import CTRL_Bandeau
 from Utils import UTILS_Utilisateurs
 import six
@@ -86,7 +86,7 @@ class Panel(wx.Panel):
         
     def OnBoutonAjouter(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_utilisateurs_reseau", "creer") == False : return
-        import DLG_Saisie_utilisateur_reseau
+        from Dlg import DLG_Saisie_utilisateur_reseau
         dlg = DLG_Saisie_utilisateur_reseau.Dialog(self, nomUtilisateur="", nomHote="", nomBase=self.nomBase)
         dlg.ShowModal() 
         dlg.Destroy()

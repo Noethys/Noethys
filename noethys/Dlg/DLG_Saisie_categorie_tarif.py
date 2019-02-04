@@ -38,7 +38,7 @@ class CTRL_Villes(wx.ListBox):
         self.Set(listeItems)
     
     def Ajouter(self):
-        import DLG_Villes
+        from Dlg import DLG_Villes
         dlg = DLG_Villes.Dialog(None, modeImportation=True)
         if dlg.ShowModal() == wx.ID_OK:
             cp, nom = dlg.GetVille()

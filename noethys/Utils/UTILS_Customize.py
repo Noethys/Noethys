@@ -11,7 +11,7 @@
 import wx
 import os
 from six.moves import configparser
-import UTILS_Fichiers
+from Utils import UTILS_Fichiers
 
 
 LISTE_DONNEES = [

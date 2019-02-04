@@ -9,7 +9,7 @@
 #------------------------------------------------------------------------
 
 import Chemins
-from UTILS_Traduction import _
+from Utils.UTILS_Traduction import _
 import wx
 import GestionDB
 import traceback
@@ -20,21 +20,21 @@ from Utils import UTILS_Dates
 from Utils import UTILS_Texte
 from Utils import UTILS_Filtres_questionnaires
 
-from UTILS_Decimal import FloatToDecimal as FloatToDecimal
+from Utils.UTILS_Decimal import FloatToDecimal as FloatToDecimal
 
 from Data import DATA_Civilites as Civilites
 DICT_CIVILITES = Civilites.GetDictCivilites()
 
 import GestionDB
 import FonctionsPerso
-import UTILS_Titulaires
-import UTILS_Questionnaires
-import UTILS_Dates
+from Utils import UTILS_Titulaires
+from Utils import UTILS_Questionnaires
+from Utils import UTILS_Dates
 from Dlg import DLG_Apercu_location
-import UTILS_Conversion
-import UTILS_Infos_individus
-import UTILS_Divers
-import UTILS_Fichiers
+from Utils import UTILS_Conversion
+from Utils import UTILS_Infos_individus
+from Utils import UTILS_Divers
+from Utils import UTILS_Fichiers
 
 
 
@@ -267,7 +267,7 @@ class Location():
 
     def Impression(self, listeLocations=[], nomDoc=None, afficherDoc=True, dictOptions=None, repertoire=None, repertoireTemp=False):
         """ Impression des locations """
-        import UTILS_Impression_location
+        from Utils import UTILS_Impression_location
 
         # Récupération des données à partir des IDlocation
         resultat = self.GetDonneesImpression(listeLocations)

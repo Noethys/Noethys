@@ -271,7 +271,7 @@ class Panel(wx.Panel):
         
     def Selectionner_medecin(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("individus_medecin", "modifier") == False : return
-        import DLG_Medecins
+        from Dlg import DLG_Medecins
         dlg = DLG_Medecins.Dialog(self, mode="selection")
         etat = dlg.ShowModal() 
         if etat == wx.ID_OK :

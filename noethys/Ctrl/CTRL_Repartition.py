@@ -13,12 +13,12 @@ import Chemins
 from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
-import CTRL_Bouton_image
+from Ctrl import CTRL_Bouton_image
 import wx.lib.agw.hypertreelist as HTL
 import datetime
 
 import GestionDB
-import CTRL_Saisie_euros
+from Ctrl import CTRL_Saisie_euros
 from Ol import OL_Prestations_repartition
 
 try: import psyco; psyco.full()

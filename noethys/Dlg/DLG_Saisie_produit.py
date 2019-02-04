@@ -467,7 +467,7 @@ class Dialog(wx.Dialog):
 
     def OnBoutonCategories(self, event):
         IDcategorie = self.ctrl_categorie.GetID()
-        import DLG_Categories_produits
+        from Dlg import DLG_Categories_produits
         dlg = DLG_Categories_produits.Dialog(self)
         dlg.ShowModal()
         dlg.Destroy()

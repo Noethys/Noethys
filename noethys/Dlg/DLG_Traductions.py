@@ -161,7 +161,7 @@ class Dialog(wx.Dialog):
         self.EndModal(wx.ID_CANCEL)        
 
     def Importer(self):
-        import DLG_Traduction_importer
+        from Dlg import DLG_Traduction_importer
         dlg = DLG_Traduction_importer.Dialog(self)      
         if dlg.ShowModal() == wx.ID_OK:
             self.ctrl_langues.MAJ() 

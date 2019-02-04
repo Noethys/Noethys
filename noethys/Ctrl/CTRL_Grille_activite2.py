@@ -13,7 +13,7 @@ import Chemins
 from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
-import CTRL_Bouton_image
+from Ctrl import CTRL_Bouton_image
 
 if wx.VERSION < (2, 9, 0, 0) :
     from Outils import ultimatelistctrl as ULC

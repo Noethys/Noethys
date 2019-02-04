@@ -372,7 +372,7 @@ class MyFrame(wx.Frame):
         self.SetSizer(sizer_1)
 
         # Chargement d'un contrat pour les tests
-        from DLG_Saisie_contratpsu import Base
+        from Dlg.DLG_Saisie_contratpsu import Base
         self.clsbase = Base(IDcontrat=8)
 
         self.ctrl = Panel(panel, clsbase=self.clsbase)

@@ -18,9 +18,9 @@ import datetime
 import GestionDB
 from Ctrl import CTRL_Bandeau
 
-from DLG_Factures_generation_parametres import Panel as Page1
-from DLG_Factures_generation_selection import Panel as Page2
-from DLG_Factures_generation_actions import Panel as Page3
+from Dlg.DLG_Factures_generation_parametres import Panel as Page1
+from Dlg.DLG_Factures_generation_selection import Panel as Page2
+from Dlg.DLG_Factures_generation_actions import Panel as Page3
 
 
 class Dialog(wx.Dialog):

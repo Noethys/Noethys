@@ -165,7 +165,7 @@ class Panel(wx.Panel):
         if reponse == wx.ID_YES :
             filtres.append({"type" : "email", "choix" : True})
         # Ouverture DLG
-        import DLG_Rappels_email
+        from Dlg import DLG_Rappels_email
         dlg = DLG_Rappels_email.Dialog(self, filtres=filtres)
         dlg.ShowModal() 
         dlg.Destroy()
@@ -182,7 +182,7 @@ class Panel(wx.Panel):
         if reponse == wx.ID_YES :
             filtres.append({"type" : "email", "choix" : False})
         # Ouverture DLG
-        import DLG_Rappels_impression
+        from Dlg import DLG_Rappels_impression
         dlg = DLG_Rappels_impression.Dialog(self, filtres=filtres)
         dlg.ShowModal() 
         dlg.Destroy()

@@ -13,11 +13,11 @@ import Chemins
 from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
-import CTRL_Bouton_image
+from Ctrl import CTRL_Bouton_image
 import wx.lib.agw.hypertreelist as HTL
 import datetime
 import GestionDB
-import CTRL_Saisie_heure
+from Ctrl import CTRL_Saisie_heure
 import wx.combo
 import six
 

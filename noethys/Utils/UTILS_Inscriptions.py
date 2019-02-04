@@ -9,7 +9,7 @@
 #------------------------------------------------------------------------
 
 import Chemins
-from UTILS_Traduction import _
+from Utils.UTILS_Traduction import _
 import wx
 import GestionDB
 import traceback
@@ -20,19 +20,19 @@ from Utils import UTILS_Dates
 from Utils import UTILS_Texte
 from Utils import UTILS_Filtres_questionnaires
 
-from UTILS_Decimal import FloatToDecimal as FloatToDecimal
+from Utils.UTILS_Decimal import FloatToDecimal as FloatToDecimal
 
 from Data import DATA_Civilites as Civilites
 DICT_CIVILITES = Civilites.GetDictCivilites()
 
 import GestionDB
 import FonctionsPerso
-import UTILS_Titulaires
-import UTILS_Questionnaires
-import UTILS_Dates
+from Utils import UTILS_Titulaires
+from Utils import UTILS_Questionnaires
+from Utils import UTILS_Dates
 from Dlg import DLG_Apercu_inscription
-import UTILS_Infos_individus
-import UTILS_Fichiers
+from Utils import UTILS_Infos_individus
+from Utils import UTILS_Fichiers
 
 
 
@@ -258,7 +258,7 @@ class Inscription():
 
     def Impression(self, listeInscriptions=[], nomDoc=None, afficherDoc=True, dictOptions=None, repertoire=None, repertoireTemp=False):
         """ Impression des inscriptions """
-        import UTILS_Impression_inscription
+        from Utils import UTILS_Impression_inscription
 
         # Récupération des données à partir des IDinscription
         resultat = self.GetDonneesImpression(listeInscriptions)

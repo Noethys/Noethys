@@ -23,7 +23,7 @@ import wx.lib.dialogs as dialogs
 import copy
 
 from Ctrl import CTRL_Calendrier
-from DLG_Saisie_contrat_conso_detail import CTRL_Unites
+from Dlg.DLG_Saisie_contrat_conso_detail import CTRL_Unites
 
 
 
@@ -550,7 +550,7 @@ if __name__ == u"__main__":
     app = wx.App(0)
     #wx.InitAllImageHandlers()
     # Importation d'un contrat pour les tests
-    from DLG_Saisie_contratpsu import Base
+    from Dlg.DLG_Saisie_contratpsu import Base
     clsbase = Base(IDcontrat=8)
     clsbase.Calculer()
     # Ouverture DLG

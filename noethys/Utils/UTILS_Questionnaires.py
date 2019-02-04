@@ -10,7 +10,7 @@
 
 
 import Chemins
-from UTILS_Traduction import _
+from Utils.UTILS_Traduction import _
 import GestionDB
 import datetime
 from Utils import UTILS_Dates

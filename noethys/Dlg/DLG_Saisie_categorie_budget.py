@@ -222,7 +222,7 @@ class Dialog(wx.Dialog):
         
     def OnBoutonCategories(self, event):  
         IDcategorie = self.ctrl_categorie.GetID()
-        import DLG_Categories_operations
+        from Dlg import DLG_Categories_operations
         dlg = DLG_Categories_operations.Dialog(self)
         dlg.SetType(self.typeCategorie, verrouillage=True)
         dlg.ShowModal()

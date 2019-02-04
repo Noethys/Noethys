@@ -455,7 +455,7 @@ class Panel(wx.Panel):
                 break
         if nom_famille == None:
             raise
-        import DLG_Mailer
+        from Dlg import DLG_Mailer
         dlg = DLG_Mailer.Dialog(self, categorie="portail")
         listeDonnees = []
         champs = {

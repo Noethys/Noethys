@@ -13,10 +13,10 @@ import Chemins
 from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
-import CTRL_Bouton_image
+from Ctrl import CTRL_Bouton_image
 import datetime
 #import wx.calendar
-import CTRL_Calendrier     
+from Ctrl import CTRL_Calendrier
 
 class CTRL(wx.Panel):
     def __init__(self, parent):

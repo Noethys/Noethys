@@ -26,7 +26,7 @@ from Utils import UTILS_Fichiers
 from Utils import UTILS_Cryptage_fichier
 sys.modules['UTILS_Cryptage_fichier'] = UTILS_Cryptage_fichier
 
-import DLG_Saisie_param_reseau
+from Dlg import DLG_Saisie_param_reseau
 
 try: import psyco; psyco.full()
 except: pass

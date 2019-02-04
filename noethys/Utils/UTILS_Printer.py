@@ -10,18 +10,18 @@
 
 
 import Chemins
-from UTILS_Traduction import _
+from Utils.UTILS_Traduction import _
 import wx
 from Ctrl import CTRL_Bouton_image
 import datetime
 import copy
 
-import UTILS_Interface
+from Utils import UTILS_Interface
 from Ctrl.CTRL_ObjectListView import ReportFormat
 from Outils import ListCtrlPrinter
 import GestionDB
 from Dlg import DLG_Options_impression_listes
-import UTILS_Dates
+from Utils import UTILS_Dates
 
 
 

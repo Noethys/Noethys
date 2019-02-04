@@ -24,7 +24,7 @@ from Ctrl import CTRL_Bandeau
 from Ctrl import CTRL_Selection_activites
 from Ctrl import CTRL_Saisie_date
 from Ol import OL_Attestations_fiscales_prestations
-import DLG_Attestations_fiscales_selection
+from Dlg import DLG_Attestations_fiscales_selection
 
 import FonctionsPerso
 from Utils import UTILS_Utilisateurs

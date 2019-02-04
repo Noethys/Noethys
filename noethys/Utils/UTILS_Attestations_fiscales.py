@@ -10,7 +10,7 @@
 
 
 import Chemins
-from UTILS_Traduction import _
+from Utils.UTILS_Traduction import _
 
 import wx
 from Ctrl import CTRL_Bouton_image
@@ -20,26 +20,26 @@ import copy
 import sys
 import traceback
 
-import UTILS_Config
+from Utils import UTILS_Config
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 MONNAIE_SINGULIER = UTILS_Config.GetParametre("monnaie_singulier", _(u"Euro"))
 MONNAIE_DIVISION = UTILS_Config.GetParametre("monnaie_division", _(u"Centime"))
 
-from UTILS_Decimal import FloatToDecimal as FloatToDecimal
+from Utils.UTILS_Decimal import FloatToDecimal as FloatToDecimal
 
 from Data import DATA_Civilites as Civilites
 DICT_CIVILITES = Civilites.GetDictCivilites()
 
 import GestionDB
 import FonctionsPerso
-import UTILS_Titulaires
-import UTILS_Questionnaires
-import UTILS_Impression_attestation_fiscale
-import UTILS_Dates
+from Utils import UTILS_Titulaires
+from Utils import UTILS_Questionnaires
+from Utils import UTILS_Impression_attestation_fiscale
+from Utils import UTILS_Dates
 from Dlg import DLG_Apercu_attestation_fiscale
-import UTILS_Conversion
-import UTILS_Infos_individus
-import UTILS_Fichiers
+from Utils import UTILS_Conversion
+from Utils import UTILS_Infos_individus
+from Utils import UTILS_Fichiers
 
 from Data import DATA_Civilites
 DICT_CIVILITES = DATA_Civilites.GetDictCivilites()

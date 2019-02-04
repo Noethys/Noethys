@@ -449,7 +449,7 @@ class PanelGrille(wx.Panel):
 
     def AjouterIndividu(self, event=None):
         IDindividu = None
-        import DLG_Grille_ajouter_individu
+        from Dlg import DLG_Grille_ajouter_individu
         dlg = DLG_Grille_ajouter_individu.Dialog(self)
         if dlg.ShowModal() == wx.ID_OK:
             IDindividu = dlg.GetIDindividu()
@@ -879,7 +879,7 @@ class Dialog(wx.Dialog):
 
         # Impression PDF
         date = self.GetDate()
-        import DLG_Impression_conso
+        from Dlg import DLG_Impression_conso
         dlg = DLG_Impression_conso.Dialog(self, date=date)
         dlg.ShowModal()
         dlg.Destroy()

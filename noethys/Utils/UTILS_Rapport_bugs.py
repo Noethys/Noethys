@@ -10,7 +10,7 @@
 
 
 import Chemins
-from UTILS_Traduction import _
+from Utils.UTILS_Traduction import _
 import wx
 from Ctrl import CTRL_Bouton_image
 import sys
@@ -20,9 +20,9 @@ import datetime
 import GestionDB
 import webbrowser
 import wx.lib.dialogs
-import UTILS_Config
-import UTILS_Customize
-import UTILS_Fichiers
+from Utils import UTILS_Config
+from Utils import UTILS_Customize
+from Utils import UTILS_Fichiers
 
 
 

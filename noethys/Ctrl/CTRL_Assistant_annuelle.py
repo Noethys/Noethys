@@ -17,7 +17,7 @@ import GestionDB
 from Ctrl import CTRL_Assistant_base as Assistant
 from Utils import UTILS_Export_tables
 from Utils import UTILS_Dates
-import CTRL_Selection_jours
+from Ctrl import CTRL_Selection_jours
 
 # ----------------------------------------
 # GENERATION D'UNE ACTIVITE ANNUELLE

@@ -407,7 +407,7 @@ class CTRL_Frais(Hyperlink.HyperLinkCtrl):
         self.Bind(Hyperlink.EVT_HYPERLINK_LEFT, self.OnLeftLink)
     
     def OnLeftLink(self, event):
-        import DLG_Saisie_frais_gestion
+        from Dlg import DLG_Saisie_frais_gestion
         dlg = DLG_Saisie_frais_gestion.Dialog(self, self.dictFrais)
         if dlg.ShowModal() == wx.ID_OK :
             self.dictFrais = dlg.GetDictFrais()
@@ -1005,7 +1005,7 @@ class Dialog(wx.Dialog):
         self.ctrl_image.SetPhotoEmetteur(IDemetteur)
         
     def OnBoutonCalendrier(self, event): 
-        import DLG_calendrier_simple
+        from Dlg import DLG_calendrier_simple
         dlg = DLG_calendrier_simple.Dialog(self)
         if dlg.ShowModal() == wx.ID_OK :
             date = dlg.GetDate()
@@ -1014,7 +1014,7 @@ class Dialog(wx.Dialog):
 
     def OnBoutonMode(self, event): 
         IDmode = self.ctrl_mode.GetID()
-        import DLG_Modes_reglements
+        from Dlg import DLG_Modes_reglements
         dlg = DLG_Modes_reglements.Dialog(self)
         dlg.ShowModal()
         dlg.Destroy()
@@ -1025,7 +1025,7 @@ class Dialog(wx.Dialog):
     def OnBoutonEmetteur(self, event): 
         IDemetteur = self.ctrl_emetteur.GetID()
         IDmode = self.ctrl_mode.GetID()
-        import DLG_Emetteurs
+        from Dlg import DLG_Emetteurs
         dlg = DLG_Emetteurs.Dialog(self)
         dlg.SelectMode(IDmode)
         dlg.ShowModal()
@@ -1113,7 +1113,7 @@ class Dialog(wx.Dialog):
             self.ctrl_differe.SetInsertionPoint(0)
 
     def OnBoutonCalendrierDiffere(self, event): 
-        import DLG_calendrier_simple
+        from Dlg import DLG_calendrier_simple
         dlg = DLG_calendrier_simple.Dialog(self)
         if dlg.ShowModal() == wx.ID_OK :
             date = dlg.GetDate()
@@ -1198,7 +1198,7 @@ class Dialog(wx.Dialog):
                 else :
                     
                     # Ouverture du Mailer
-                    import DLG_Impression_recu
+                    from Dlg import DLG_Impression_recu
                     dlg1 = DLG_Impression_recu.Dialog(self, IDreglement=self.IDreglement) 
                     dlg1.listeAdresses = [adresse,]
                     
@@ -1218,7 +1218,7 @@ class Dialog(wx.Dialog):
 
                         try :
                             listeDonnees = [{"adresse" : adresse, "pieces" : [nomDoc,], "champs" : dictChamps,}]
-                            import DLG_Mailer
+                            from Dlg import DLG_Mailer
                             dlg2 = DLG_Mailer.Dialog(self, categorie=categorie, afficher_confirmation_envoi=False)
                             dlg2.SetDonnees(listeDonnees, modificationAutorisee=False)
                             dlg2.ChargerModeleDefaut()
@@ -1246,7 +1246,7 @@ class Dialog(wx.Dialog):
 
         # Edition d'un reçu
         if self.ctrl_recu.GetValue() == True and email_envoye == False :
-            import DLG_Impression_recu
+            from Dlg import DLG_Impression_recu
             dlg = DLG_Impression_recu.Dialog(self, IDreglement=self.IDreglement) 
             dlg.ShowModal()
             dlg.Destroy()

@@ -11,7 +11,7 @@
 import wx
 import Chemins
 from Utils import UTILS_Adaptations
-import CTRL_Bouton_image
+from Ctrl import CTRL_Bouton_image
 
 def RedimensionneImage(bmp, largeur, hauteur):
     image = bmp.ConvertToImage()

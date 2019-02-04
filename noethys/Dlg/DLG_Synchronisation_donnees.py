@@ -22,8 +22,8 @@ import GestionDB
 from Ol import OL_Synchronisation_donnees
 
 from threading import Thread 
-import DLG_Badgeage_grille
-import DLG_Messagebox
+from Dlg import DLG_Badgeage_grille
+from Dlg import DLG_Messagebox
 from Utils import UTILS_Fichiers
 
 

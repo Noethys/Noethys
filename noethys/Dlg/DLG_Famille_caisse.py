@@ -19,7 +19,7 @@ import GestionDB
 import wx.lib.agw.hyperlink as Hyperlink
 from Utils import UTILS_Utilisateurs
 from Utils import UTILS_Parametres
-import DLG_Message_html
+from Dlg import DLG_Message_html
 
 
 class Hyperlien(Hyperlink.HyperLinkCtrl):
@@ -42,7 +42,7 @@ class Hyperlien(Hyperlink.HyperLinkCtrl):
         self.Bind(Hyperlink.EVT_HYPERLINK_LEFT, self.OnLeftLink)
         
     def OnLeftLink(self, event):
-        import DLG_Detail_aides
+        from Dlg import DLG_Detail_aides
         dlg = DLG_Detail_aides.Dialog(self, IDfamille=self.parent.IDfamille)
         dlg.ShowModal()
         dlg.Destroy() 
@@ -339,7 +339,7 @@ class Panel(wx.Panel):
 
     def OnBoutonCaisse(self, event): 
         IDcaisse = self.ctrl_caisse.GetID()
-        import DLG_Caisses
+        from Dlg import DLG_Caisses
         dlg = DLG_Caisses.Dialog(self)
         dlg.ShowModal() 
         dlg.Destroy()

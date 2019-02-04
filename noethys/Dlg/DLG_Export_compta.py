@@ -1621,7 +1621,7 @@ Merci de signaler tout bug rencontré dans la rubrique "Signaler un bug " du foru
 </FONT>
 </CENTER>
 """
-        import DLG_Message_html
+        from Dlg import DLG_Message_html
         dlg = DLG_Message_html.Dialog(self, texte=texte, titre=_(u"Information"), nePlusAfficher=True)
         dlg.ShowModal()
         nePlusAfficher = dlg.GetEtatNePlusAfficher()

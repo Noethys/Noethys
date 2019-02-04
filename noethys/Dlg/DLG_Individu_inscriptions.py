@@ -210,7 +210,7 @@ class Panel(wx.Panel):
         listeActivites = self.ctrl_inscriptions.GetListeActivites()
         
         # Affiche la fenêtre de saisie d'un forfait daté
-        import DLG_Appliquer_forfait
+        from Dlg import DLG_Appliquer_forfait
         dlg = DLG_Appliquer_forfait.Dialog(self, IDfamille=IDfamille, listeActivites=listeActivites, listeIndividus=[self.IDindividu,])
         if dlg.ShowModal() == wx.ID_OK :
             pass

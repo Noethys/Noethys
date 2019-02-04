@@ -20,7 +20,7 @@ import GestionDB
 import  wx.lib.filebrowsebutton as filebrowse
 
 from Ol import OL_Badgeage_actions
-from DLG_Badgeage_interface import LISTE_STYLES, LISTE_THEMES
+from Dlg.DLG_Badgeage_interface import LISTE_STYLES, LISTE_THEMES
 from Data.DATA_Tables import DB_DATA as DICT_TABLES
 
 

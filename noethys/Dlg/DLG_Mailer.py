@@ -297,7 +297,7 @@ class Dialog(wx.Dialog):
             return
         # Aperçu de la fusion
         texte_xml = self.ctrl_editeur.GetXML() 
-        import DLG_Apercu_fusion_emails
+        from Dlg import DLG_Apercu_fusion_emails
         dlg = DLG_Apercu_fusion_emails.Dialog(self, donnees=donnees, texte_xml=texte_xml)
         dlg.ShowModal() 
         dlg.Destroy()
@@ -347,7 +347,7 @@ class Dialog(wx.Dialog):
         self.ctrl_exp.SetID(IDadresse)
     
     def GestionModeles(self, event):
-        import DLG_Modeles_emails
+        from Dlg import DLG_Modeles_emails
         dlg = DLG_Modeles_emails.Dialog(self, categorie=self.categorie)
         dlg.ShowModal() 
         dlg.Destroy()

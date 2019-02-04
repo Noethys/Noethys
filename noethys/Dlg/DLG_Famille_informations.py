@@ -157,7 +157,7 @@ class Panel(wx.Panel):
     
     def OnBoutonAjouter(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_messages", "creer") == False : return
-        import DLG_Saisie_message
+        from Dlg import DLG_Saisie_message
         dlg = DLG_Saisie_message.Dialog(self, IDmessage=None, IDfamille=self.IDfamille, mode="famille")
         if dlg.ShowModal() == wx.ID_OK:
             self.MAJ()
@@ -172,7 +172,7 @@ class Panel(wx.Panel):
             dlg.Destroy()
             return
         IDmessage = self.ctrl_infos.GetPyData(item)["IDmessage"]
-        import DLG_Saisie_message
+        from Dlg import DLG_Saisie_message
         dlg = DLG_Saisie_message.Dialog(self, IDmessage=IDmessage, mode="famille")
         if dlg.ShowModal() == wx.ID_OK:
             self.MAJ()

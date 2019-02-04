@@ -23,7 +23,7 @@ import GestionDB
 from Ctrl import CTRL_Bandeau
 from Ctrl import CTRL_Selection_activites
 from Ctrl import CTRL_Saisie_date
-import DLG_calendrier_simple
+from Dlg import DLG_calendrier_simple
 from Ctrl import CTRL_Synthese_impayes
 
 try: import psyco; psyco.full()

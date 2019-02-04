@@ -18,8 +18,8 @@ import datetime
 import GestionDB
 from Ctrl import CTRL_Bandeau
 
-from DLG_Attestations_fiscales_parametres import Panel as Page1
-from DLG_Attestations_fiscales_selection import Panel as Page2
+from Dlg.DLG_Attestations_fiscales_parametres import Panel as Page1
+from Dlg.DLG_Attestations_fiscales_selection import Panel as Page2
 
 
 class Dialog(wx.Dialog):

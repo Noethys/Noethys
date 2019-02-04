@@ -17,7 +17,7 @@ from Ctrl import CTRL_Bouton_image
 from Ctrl import CTRL_Bandeau
 from Ol import OL_Modeles_tickets
 
-from DLG_Saisie_modele_ticket import CATEGORIES
+from Dlg.DLG_Saisie_modele_ticket import CATEGORIES
     
 
 

@@ -181,7 +181,7 @@ class Dialog(wx.Dialog):
         self.EndModal(wx.ID_OK)
     
     def OnBoutonImporter(self, event):
-        import DLG_Traduction_importer
+        from Dlg import DLG_Traduction_importer
 ##        dlg = DLG_Traduction_importer.Dialog(self, texte=track.texte, traduction=track.traduction)      
 ##        if dlg.ShowModal() == wx.ID_OK:
 ##            traduction = dlg.GetTraduction() 

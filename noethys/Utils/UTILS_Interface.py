@@ -9,9 +9,9 @@
 #------------------------------------------------------------------------
 
 import Chemins
-from UTILS_Traduction import _
+from Utils.UTILS_Traduction import _
 import wx
-import UTILS_Customize
+from Utils import UTILS_Customize
 
 THEMES = [
     ("Vert", _(u"Vert (Par défaut)")),

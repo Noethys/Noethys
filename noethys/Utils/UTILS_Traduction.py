@@ -13,7 +13,7 @@ import shelve
 import os
 import re
 import six
-import UTILS_Fichiers
+from Utils import UTILS_Fichiers
 
 
 DICT_TRADUCTIONS = None

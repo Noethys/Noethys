@@ -559,7 +559,7 @@ class Dialog(wx.Dialog):
             self.bouton_restaurateur.Enable(True)
 
     def OnBoutonRestaurateur(self, event): 
-        import DLG_Restaurateurs
+        from Dlg import DLG_Restaurateurs
         dlg = DLG_Restaurateurs.Dialog(self)
         dlg.ShowModal() 
         dlg.Destroy()
@@ -577,7 +577,7 @@ class Dialog(wx.Dialog):
         self.bouton_autogen.Enable(self.check_autogen.GetValue())
 
     def OnBoutonAutogen(self, event):
-        import DLG_Saisie_conso_autogen
+        from Dlg import DLG_Saisie_conso_autogen
         dlg = DLG_Saisie_conso_autogen.Dialog(self, IDactivite=self.IDactivite, IDunite=self.IDunite)
         dlg.SetConditions(self.autogen_conditions)
         dlg.SetParametres(self.autogen_parametres)

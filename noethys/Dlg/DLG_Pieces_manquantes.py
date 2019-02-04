@@ -20,7 +20,7 @@ import GestionDB
 from Ctrl import CTRL_Bandeau
 from Ol import OL_Pieces_manquantes
 from Ctrl import CTRL_Saisie_date
-import DLG_calendrier_simple
+from Dlg import DLG_calendrier_simple
 from Ctrl import CTRL_Selection_activites
 from Utils import UTILS_Envoi_email
 
@@ -426,7 +426,7 @@ class Dialog(wx.Dialog):
             return
 
         # Transfert des données vers DLG Mailer
-        import DLG_Mailer
+        from Dlg import DLG_Mailer
         dlg = DLG_Mailer.Dialog(self, categorie="rappel_pieces_manquantes")
         dlg.SetDonnees(listeDonnees, modificationAutorisee=False)
         dlg.ChargerModeleDefaut()

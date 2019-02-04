@@ -66,7 +66,7 @@ class CTRL_Email(wx.Panel):
         self.Layout()
                 
     def OnClic(self):
-        import DLG_Selection_email
+        from Dlg import DLG_Selection_email
         intro = _(u"Sélectionnez ici l'adresse Email à laquelle envoyer les factures.")
         titre = _(u"Activation de l'envoi des factures par Email")
         dlg = DLG_Selection_email.Dialog(self, IDfamille=self.IDfamille, champ="email_factures", intro=intro, titre=titre, adresses_multiples=True)
@@ -170,7 +170,7 @@ class Panel(wx.Panel):
         """ Créer une facture """
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_factures", "creer") == False : return
         
-        import DLG_Verification_ventilation
+        from Dlg import DLG_Verification_ventilation
         tracks = DLG_Verification_ventilation.Verification(self.IDcompte_payeur)
         if len(tracks) > 0 :
             dlg = wx.MessageDialog(self, _(u"Un ou plusieurs règlements peuvent être ventilés.\n\nSouhaitez-vous le faire maintenant (conseillé) ?"), _(u"Ventilation"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
@@ -183,7 +183,7 @@ class Panel(wx.Panel):
             if reponse == wx.ID_CANCEL :
                 return False
 
-        import DLG_Factures_generation
+        from Dlg import DLG_Factures_generation
         dlg = DLG_Factures_generation.Dialog(self)
         dlg.SetFamille(self.IDfamille)
         dlg.ShowModal() 

@@ -10,7 +10,7 @@
 
 
 import Chemins
-from UTILS_Traduction import _
+from Utils.UTILS_Traduction import _
 from xml.dom.minidom import Document
 import GestionDB
 from Utils import UTILS_Infos_individus

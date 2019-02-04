@@ -226,7 +226,7 @@ class Panel_Graphe(wx.Panel):
         return [c/255. for c in couleur]
         
     def Apercu(self, event):
-        import DLG_Zoom_graphe
+        from Dlg import DLG_Zoom_graphe
         dlg = DLG_Zoom_graphe.Dialog(self, figure=self.figure)
         dlg.ShowModal() 
         dlg.Destroy()
@@ -492,7 +492,7 @@ class Dialog(wx.Dialog):
 
     def OnBoutonBudget(self, event):  
         IDbudget = self.ctrl_budget.GetID()
-        import DLG_Budgets
+        from Dlg import DLG_Budgets
         dlg = DLG_Budgets.Dialog(self)
         dlg.ShowModal()
         dlg.Destroy()

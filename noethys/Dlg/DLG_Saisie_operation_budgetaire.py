@@ -226,7 +226,7 @@ class Dialog(wx.Dialog):
 
     def OnBoutonCategories(self, event):  
         IDcategorie = self.ctrl_categorie.GetID()
-        import DLG_Categories_operations
+        from Dlg import DLG_Categories_operations
         dlg = DLG_Categories_operations.Dialog(self)
         dlg.SetType(self.typeOperation, verrouillage=True)
         dlg.ShowModal()
@@ -236,7 +236,7 @@ class Dialog(wx.Dialog):
 
     def OnBoutonAnalytiques(self, event):  
         IDanalytique = self.ctrl_analytique.GetID()
-        import DLG_Analytiques
+        from Dlg import DLG_Analytiques
         dlg = DLG_Analytiques.Dialog(self)
         dlg.ShowModal()
         dlg.Destroy()

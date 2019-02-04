@@ -10,7 +10,7 @@
 
 
 import Chemins
-from UTILS_Traduction import _
+from Utils.UTILS_Traduction import _
 import wx
 from Ctrl import CTRL_Bouton_image
 import datetime
@@ -21,7 +21,7 @@ import matplotlib.pyplot
 
 from numpy import arange 
 
-import UTILS_Stats_modeles as MODELES
+from Utils import UTILS_Stats_modeles as MODELES
 
 try: import psyco; psyco.full()
 except: pass
@@ -215,7 +215,7 @@ def GetDistancesVilles(dictParametres, origine="", destinations=[]):
         return DICT_DISTANCES_VILLES["dictDistances"]
     
     # Sinon on les recherche
-    import UTILS_Distances_villes
+    from Utils import UTILS_Distances_villes
     dictDistances = UTILS_Distances_villes.GetDistances(origine, destinations) 
     
     # Mémorisation des résultats
@@ -236,7 +236,7 @@ def GetDictVilles(DB, dictParametres):
     date_debut, date_fin = MODELES.GetDatesPeriode(dictParametres)
     conditionsActivites = MODELES.GetConditionActivites(dictParametres)
 
-    import UTILS_Titulaires
+    from Utils import UTILS_Titulaires
     dictTitulaires = UTILS_Titulaires.GetTitulaires() 
     
     # Récupère les adresses de tous les individus de la base

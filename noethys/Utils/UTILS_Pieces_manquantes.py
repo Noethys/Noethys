@@ -10,11 +10,11 @@
 
 
 import Chemins
-from UTILS_Traduction import _
+from Utils.UTILS_Traduction import _
 import GestionDB
 import datetime
 
-import UTILS_Titulaires
+from Utils import UTILS_Titulaires
 
 
 def DateEngEnDateDD(dateEng):

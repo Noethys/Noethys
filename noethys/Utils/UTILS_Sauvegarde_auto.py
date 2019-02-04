@@ -10,7 +10,7 @@
 
 
 import Chemins
-from UTILS_Traduction import _
+from Utils.UTILS_Traduction import _
 import wx
 from Ctrl import CTRL_Bouton_image
 import datetime
@@ -22,11 +22,11 @@ import random
 import wx.lib.dialogs as dialogs
 
 import GestionDB
-import UTILS_Sauvegarde
-from UTILS_Divers import ConvertChaineEnListe, ConvertListeEnChaine
-import UTILS_Dates
-import UTILS_Identification
-import UTILS_Parametres
+from Utils import UTILS_Sauvegarde
+from Utils.UTILS_Divers import ConvertChaineEnListe, ConvertListeEnChaine
+from Utils import UTILS_Dates
+from Utils import UTILS_Identification
+from Utils import UTILS_Parametres
 
 
 class Sauvegarde_auto():

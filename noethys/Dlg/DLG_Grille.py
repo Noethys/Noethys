@@ -742,7 +742,7 @@ class Dialog(wx.Dialog):
             self.panel_grille.grille.InitDonnees()
             self.panel_grille.MAJ_grille() 
         
-        import DLG_Appliquer_forfait
+        from Dlg import DLG_Appliquer_forfait
         dlg = DLG_Appliquer_forfait.Dialog(self, IDfamille=self.IDfamille, listeActivites=listeActivites, listeIndividus=listeIndividus)
         dlg.ShowModal()
         dlg.Destroy()
@@ -773,7 +773,7 @@ class Dialog(wx.Dialog):
             activites = None
         listeIndividus = self.panel_grille.listeSelectionIndividus
         # Ouverture de la DLG
-        import DLG_Modification_lot_conso
+        from Dlg import DLG_Modification_lot_conso
         dlg = DLG_Modification_lot_conso.Dialog(self, 
                     IDfamille=self.IDfamille, 
                     selectionPeriode=periodes, 
