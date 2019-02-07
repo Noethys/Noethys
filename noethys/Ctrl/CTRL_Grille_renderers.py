@@ -22,7 +22,8 @@ import wx.grid as gridlib
 import wx.lib.wordwrap as wordwrap
 ##import Outils.gridlabelrenderer as glr
 import wx.lib.mixins.gridlabelrenderer as glr
-from Ctrl import CTRL_Grille
+#from Ctrl import CTRL_Grille
+CTRL_Grille = UTILS_Adaptations.Import("Ctrl.CTRL_Grille")
 import datetime
 
 if 'phoenix' in wx.PlatformInfo:

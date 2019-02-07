@@ -173,9 +173,9 @@ class CTRL_Apercu(wx.Panel):
         numColonne = 0
         numLigne = 0
         y = self.hauteurPage - self.margeHaut- self.hauteurEtiquette
-        for numLigne in range(0, nbreLignes) :
+        for numLigne in range(0, int(nbreLignes)) :
             x = self.margeGauche
-            for numColonne in range(0, nbreColonnes) :
+            for numColonne in range(0, int(nbreColonnes)) :
                 rect = FloatCanvas.Rectangle(numpy.array([x, y]), numpy.array([self.largeurEtiquette, self.hauteurEtiquette]), LineWidth=0.25, LineColor=COULEUR_BORD_ETIQUETTE, FillColor=COULEUR_FOND_ETIQUETTE, InForeground=True)
                 self.canvas.AddObject(rect)
                 x += (self.largeurEtiquette + self.espaceHorizontal)

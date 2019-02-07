@@ -53,7 +53,7 @@ class Impression():
                 # Repères de colonnes
                 for y1, y2 in [(hauteurPage*mm-4*mm, hauteurPage*mm-margeHaut*mm+2*mm), (4*mm, margeBas-2*mm)] :
                     x = margeGauche*mm
-                    for numColonne in range(0, nbreColonnes):
+                    for numColonne in range(0, int(nbreColonnes)):
                         canvas.line(x, y1, x, y2)
                         x += largeurEtiquette*mm
                         canvas.line(x, y1, x, y2)
@@ -61,7 +61,7 @@ class Impression():
                 # Repères de lignes
                 for x1, x2 in [(4*mm, margeGauche*mm-2*mm), (largeurPage*mm-4*mm, largeurPage*mm-margeDroite*mm+2*mm)] :
                     y = hauteurPage*mm - margeHaut*mm
-                    for numLigne in range(0, nbreLignes):
+                    for numLigne in range(0, int(nbreLignes)):
                         canvas.line(x1, y, x2, y)
                         y -= hauteurEtiquette*mm
                         canvas.line(x1, y, x2, y)

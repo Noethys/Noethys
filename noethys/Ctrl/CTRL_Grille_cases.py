@@ -29,7 +29,8 @@ import operator
 
 from Data import DATA_Touches as Touches
 from Ctrl import CTRL_Grille_renderers
-from Ctrl import CTRL_Grille
+#from Ctrl import CTRL_Grille
+CTRL_Grille = UTILS_Adaptations.Import("Ctrl.CTRL_Grille")
 from Utils import UTILS_Dates
 from Utils import UTILS_Identification
 from Utils import UTILS_Divers

@@ -10,8 +10,11 @@
 
 import wx
 import os
+import sys
 from six.moves import configparser
-from Utils import UTILS_Fichiers
+from Utils import UTILS_Adaptations
+UTILS_Fichiers = UTILS_Adaptations.Import("Utils.UTILS_Fichiers")
+
 
 
 LISTE_DONNEES = [

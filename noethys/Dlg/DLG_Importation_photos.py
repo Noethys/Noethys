@@ -347,7 +347,9 @@ class Dialog(wx.Dialog):
         wx.Yield() 
         
         cascade = cv2.CascadeClassifier(Chemins.GetStaticPath("Divers/haarcascade_frontalface_alt2.xml"))
-        img = cv2.imread(nom_fichier.encode("iso-8859-15"))
+        if six.PY2:
+            nom_fichier = nom_fichier.encode("iso-8859-15")
+        img = cv2.imread(nom_fichier)
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         
         frame = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)

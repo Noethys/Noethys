@@ -300,7 +300,7 @@ class Export():
             for key, valeur in infos.dictFamilles[IDfamille].items():
                 if key.startswith("FAMILLE_"):
                     node = doc.createElement(key.replace("FAMILLE_", "").lower())
-                    node.setAttribute("valeur", unicode(valeur))
+                    node.setAttribute("valeur", six.text_type(valeur))
                     node_famille.appendChild(node)
 
             # Famille : Quotients
@@ -338,7 +338,7 @@ class Export():
                 for dictQuestionnaire in infos.dictFamilles[IDfamille]["questionnaires"]:
                     node = doc.createElement(u"questionnaire")
                     node.setAttribute("question", dictQuestionnaire["label"])
-                    node.setAttribute("reponse", unicode(dictQuestionnaire["reponse"]))
+                    node.setAttribute("reponse", six.text_type(dictQuestionnaire["reponse"]))
                     node_questionnaires.appendChild(node)
 
             # Famille : Pièces
@@ -498,7 +498,7 @@ class Export():
                         for dictQuestionnaire in infos.dictIndividus[IDindividu]["questionnaires"]:
                             node = doc.createElement(u"questionnaire")
                             node.setAttribute("question", dictQuestionnaire["label"])
-                            node.setAttribute("reponse", unicode(dictQuestionnaire["reponse"]))
+                            node.setAttribute("reponse", six.text_type(dictQuestionnaire["reponse"]))
                             node_questionnaires.appendChild(node)
 
                     # Individu : Scolarité
@@ -572,7 +572,11 @@ class Export():
     def Enregistrer(self, nomFichier=""):
         """ Enregistre le fichier XML """
         pretty_xml = self.GetPrettyXML()
-        f = open(nomFichier, "w")
+        if six.PY2:
+            flag = "w"
+        else:
+            flag = "wb"
+        f = open(nomFichier, flag)
         try:
             f.write(pretty_xml)
         finally:

@@ -9,6 +9,17 @@
 #------------------------------------------------------------------------
 
 import wx
+import sys
+from importlib import import_module
+
+
+def Import(nom_module=""):
+    try :
+        module = import_module(nom_module)
+    except ImportError:
+        module = sys.modules[nom_module]
+    return module
+
 
 
 class Menu(wx.Menu):
