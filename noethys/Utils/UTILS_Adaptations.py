@@ -14,11 +14,27 @@ from importlib import import_module
 
 
 def Import(nom_module=""):
+    # Essaye d'importer
     try :
         module = import_module(nom_module)
+        return module
     except ImportError:
+        pass
+
+    # Recherche si le module est déjà chargé
+    if nom_module in sys.modules:
         module = sys.modules[nom_module]
-    return module
+        return module
+
+    # Essaye d'importer sans le module_path
+    module_path, class_name = nom_module.rsplit('.', 1)
+    try :
+        module = import_module(class_name)
+        return module
+    except ImportError:
+        pass
+
+    return None
 
 
 

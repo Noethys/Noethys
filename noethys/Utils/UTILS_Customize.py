@@ -10,9 +10,11 @@
 
 import wx
 import os
-import sys
 from six.moves import configparser
-from Utils import UTILS_Adaptations
+try :
+    from Utils import UTILS_Adaptations
+except:
+    import UTILS_Adaptations
 UTILS_Fichiers = UTILS_Adaptations.Import("Utils.UTILS_Fichiers")
 
 
@@ -141,4 +143,4 @@ def SetValeur(section="", cle="", valeur=""):
 if __name__ == u"__main__":
     print("GET :", GetValeur("interface", "theme", "Vert"))
     #print "SET :", GetValeur("interface", "theme", "Rouge")
-    
+
