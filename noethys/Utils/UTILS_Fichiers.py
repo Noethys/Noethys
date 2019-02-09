@@ -102,7 +102,7 @@ def DeplaceFichiers():
     """ Vérifie si des fichiers du répertoire Data ou du répertoire Utilisateur sont à déplacer vers le répertoire Utilisateur>AppData>Roaming """
 
     # Déplace les fichiers de config et le journal
-    for nom in ("journal.log", "Config.dat", "Customize.ini") :
+    for nom in ("journal.log", "Config.json", "Customize.ini") :
         for rep in ("", Chemins.GetMainPath("Data"), os.path.join(os.path.expanduser("~"), "noethys")) :
             fichier = os.path.join(rep, nom)
             if os.path.isfile(fichier) :

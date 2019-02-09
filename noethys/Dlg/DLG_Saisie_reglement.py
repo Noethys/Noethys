@@ -903,7 +903,7 @@ class Dialog(wx.Dialog):
         if taille_fenetre == None :
             self.SetSize((840, 700))
         else :
-            if taille_fenetre == (0, 0) :
+            if taille_fenetre == (0, 0) or taille_fenetre == [0, 0]:
                 self.Maximize(True)
             else:
                 self.SetSize(taille_fenetre)

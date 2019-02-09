@@ -131,11 +131,9 @@ class MainFrame(wx.Frame):
 
     def Initialisation(self):
         # Vérifie que le fichier de configuration existe bien
+        self.nouveauFichierConfig = False
         if UTILS_Config.IsFichierExists() == False :
-            UTILS_Config.GenerationFichierConfig()
-            self.nouveauFichierConfig = True
-        else:
-            self.nouveauFichierConfig = False
+            self.nouveauFichierConfig = UTILS_Config.GenerationFichierConfig()
 
         # Récupération des fichiers de configuration
         self.userConfig = self.GetFichierConfig() # Fichier de config de l'utilisateur
@@ -224,7 +222,7 @@ class MainFrame(wx.Frame):
         if ("taille_fenetre" in self.userConfig) == False :
             self.userConfig["taille_fenetre"] = (0, 0)
         taille_fenetre = self.userConfig["taille_fenetre"]
-        if taille_fenetre == (0, 0) :
+        if taille_fenetre == (0, 0) or taille_fenetre == [0, 0]:
             self.Maximize(True)
         else:
             self.SetSize(taille_fenetre)
@@ -4223,9 +4221,6 @@ class MyApp(wx.App):
             if dlg.ShowModal() == wx.ID_YES :
                 UTILS_Config.SupprimerFichier()
             dlg.Destroy()
-        
-        # Suppression du fichier temporaire s'il existe pour éviter bugs
-        UTILS_Config.SupprimerFichierTemporaire()
 
         # Lit les paramètres de l'interface
         theme = CUSTOMIZE.GetValeur("interface", "theme", "Vert")

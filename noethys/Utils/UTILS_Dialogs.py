@@ -26,7 +26,7 @@ def AjusteSizePerso(parent=None, chemin_module=""):
     nom_module = GetNomModule(chemin_module)
     taille_fenetre = UTILS_Config.GetParametre(nom_module)
     if taille_fenetre != None :
-        if taille_fenetre == (0, 0) :
+        if taille_fenetre == (0, 0) or taille_fenetre == [0, 0]:
             parent.Maximize(True)
         else:
             parent.SetSize(taille_fenetre)

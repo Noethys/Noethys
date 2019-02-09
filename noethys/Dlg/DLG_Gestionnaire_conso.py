@@ -525,7 +525,7 @@ class Dialog(wx.Dialog):
         taille_fenetre = UTILS_Config.GetParametre("taille_fenetre_tableau_presences")
         if taille_fenetre is None:
             self.SetSize((900, 600))
-        if taille_fenetre == (0, 0) or taille_fenetre == None:
+        if taille_fenetre == (0, 0) or taille_fenetre == [0, 0] or taille_fenetre == None:
             self.Maximize(True)
         else:
             self.SetSize(taille_fenetre)

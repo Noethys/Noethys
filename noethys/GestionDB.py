@@ -85,7 +85,7 @@ class DB:
             self.IDconnexion = IDconnexion
         DICT_CONNEXIONS[self.IDconnexion] = []
         
-        # Si aucun nom de fichier n'est spécifié, on recherche celui par défaut dans le Config.dat
+        # Si aucun nom de fichier n'est spécifié, on recherche celui par défaut dans le Config
         if self.nomFichier == "" :
             self.nomFichier = self.GetNomFichierDefaut()
         

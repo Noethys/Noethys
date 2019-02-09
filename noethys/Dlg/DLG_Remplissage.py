@@ -260,7 +260,7 @@ class Panel(wx.Panel):
             self.dictDonnees = dictDonnees
         # Mémorisation du dict de Données de sélection
         self.ctrl_remplissage.SetDictDonnees(self.dictDonnees)
-        # Mémorisation du dict de données dans le config.dat
+        # Mémorisation du dict de données dans le config
         UTILS_Config.SetParametre("dict_selection_periodes_activites", self.dictDonnees)
     
     def MAJ(self):

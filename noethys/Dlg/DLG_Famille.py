@@ -358,7 +358,7 @@ class Dialog(wx.Dialog):
         taille_fenetre = UTILS_Config.GetParametre("taille_fenetre_famille")
         if taille_fenetre == None :
             self.SetSize((840, 700))
-        elif taille_fenetre == (0, 0) :
+        elif taille_fenetre == (0, 0) or taille_fenetre == [0, 0]:
             self.Maximize(True)
         else:
             self.SetSize(taille_fenetre)        

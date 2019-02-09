@@ -446,7 +446,7 @@ class Dialog(wx.Dialog):
         taille_fenetre = UTILS_Config.GetParametre("taille_fenetre_grille")
         if taille_fenetre == None :
             self.SetSize((900, 670))
-        if taille_fenetre == (0, 0) or taille_fenetre == None :
+        if taille_fenetre == (0, 0) or taille_fenetre == [0, 0] or taille_fenetre == None :
             self.Maximize(True)
         else:
             self.SetSize(taille_fenetre)
