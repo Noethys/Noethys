@@ -13,11 +13,10 @@ import Chemins
 from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
-from Ctrl import CTRL_Bouton_image
 import os
-import shelve
 from Utils import UTILS_Fichiers
 from Utils import UTILS_Interface
+from Utils import UTILS_Json
 from Ctrl.CTRL_ObjectListView import ObjectListView, FastObjectListView, ColumnDefn, Filter, CTRL_Outils, PanelAvecFooter
 
 
@@ -72,21 +71,19 @@ class ListView(FastObjectListView):
         for extension, rep, dictTemp in [("lang", Chemins.GetStaticPath("Lang"), dictTraductionsInitiales), ("xlang", UTILS_Fichiers.GetRepLang(), dictTraductionsPerso)] :
             nomFichier = os.path.join(rep, u"%s.%s" % (self.code, extension))
             if os.path.isfile(nomFichier) :
-                fichier = shelve.open(nomFichier, "r")
-                for key, valeur in fichier.items() :
+                data = UTILS_Json.Lire(nomFichier, conversion_auto=True)
+                for key, valeur in data.items():
                     dictTemp[key] = valeur
-                fichier.close()
         return dictTraductionsInitiales, dictTraductionsPerso
 
     def GetTracks(self):
         """ Récupération des données """
         # Récupération des textes originaux
         dictTextes = {}
-        fichier = shelve.open(Chemins.GetStaticPath("Databases/Textes.dat"), "r")
-        for texte, listeFichiers in fichier.items() :
+        data = UTILS_Json.Lire(Chemins.GetStaticPath("Databases/Textes.dat"), conversion_auto=True)
+        for texte, listeFichiers in data.items() :
             dictTextes[texte] = listeFichiers
-        fichier.close()
-        
+
         # Récupération des traductions existantes
         dictTraductionsInitiales, dictTraductionsPerso = self.GetTraductionsExistantes() 
         

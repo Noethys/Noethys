@@ -15,7 +15,6 @@ from Utils.UTILS_Traduction import _
 import wx
 from Ctrl import CTRL_Bouton_image
 import os
-import shelve
 from Ctrl import CTRL_Bandeau
 
 import GestionDB
@@ -24,6 +23,7 @@ from Utils import UTILS_Utilisateurs
 from Utils import UTILS_Interface
 from Utils import UTILS_Fichiers
 from Utils import UTILS_Parametres
+from Utils import UTILS_Json
 
 
 
@@ -54,11 +54,10 @@ class Interface(wx.Panel):
             for nomFichier in os.listdir(rep) :
                 if nomFichier.endswith("lang") :
                     code, extension = nomFichier.split(".")
-                    fichier = shelve.open(os.path.join(rep, nomFichier), "r")
-                    dictInfos = fichier["###INFOS###"]
+                    data = UTILS_Json.Lire(os.path.join(rep, nomFichier), conversion_auto=True)
+                    dictInfos = data["###INFOS###"]
                     nom = dictInfos["nom_langue"]
                     code = dictInfos["code_langue"]
-                    fichier.close()
 
                     if code not in self.liste_codes_langue :
                         self.liste_codes_langue.append(code)

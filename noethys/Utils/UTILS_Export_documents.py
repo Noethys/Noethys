@@ -12,10 +12,10 @@
 import Chemins
 from Utils.UTILS_Traduction import _
 import six
-import shelve
 import GestionDB
+from Utils import UTILS_Json
 
-    
+
 def Exporter(IDmodele=None, fichier="", depuisFichierDefaut=False):
     """ Exportation d'un modèle de document """
     # Ouverture Base
@@ -23,7 +23,7 @@ def Exporter(IDmodele=None, fichier="", depuisFichierDefaut=False):
         DB = GestionDB.DB()
     else :
         DB = GestionDB.DB(nomFichier=Chemins.GetStaticPath("Databases/Defaut.dat"), suffixe=None)
-    
+
     # Récupération des infos sur le modèle
     req = """SELECT nom, categorie, largeur, hauteur, IDfond, defaut
     FROM documents_modeles
@@ -37,8 +37,8 @@ def Exporter(IDmodele=None, fichier="", depuisFichierDefaut=False):
     listeColonnes = DB.GetListeChamps2("documents_objets")
     listeChamps = []
     for nomChamp, typeChamp in listeColonnes :
-        listeChamps.append(nomChamp) 
-    
+        listeChamps.append(nomChamp)
+
     # Récupération des données à exporter
     req = """SELECT %s
     FROM documents_objets
@@ -46,110 +46,101 @@ def Exporter(IDmodele=None, fichier="", depuisFichierDefaut=False):
     ;""" % (", ".join(listeChamps), IDmodele)
     DB.ExecuterReq(req)
     listeDonnees = DB.ResultatReq()
-    
+
     # Fermeture Base
-    DB.Close() 
-    
+    DB.Close()
+
     # Mémorisation des objets
     listeObjets = []
     for donnees in listeDonnees :
-        dictObjet = {} 
+        dictObjet = {}
         index = 0
         for donnee in donnees :
             nomChamp = listeColonnes[index][0]
             typeChamp = listeColonnes[index][1]
-            
+
             # Pour les champs BLOB
             if (typeChamp == "BLOB" or typeChamp == "LONGBLOB") and donnee != None :
                 buffer = six.BytesIO(donnee)
                 donnee = buffer.read()
-            
+
             # Mémorisation
             if nomChamp not in ("IDmodele", "IDobjet") :
                 dictObjet[nomChamp] = donnee
-                
+
             index += 1
         listeObjets.append(dictObjet)
-    
-    # Enregistrement dans un fichier Shelve
+
+    # Mémorisation dans un dict
+    data = {
+        "nom": nom,
+        "categorie": categorie,
+        "largeur": largeur,
+        "hauteur": hauteur,
+        "IDfond": IDfond,
+        "defaut": defaut,
+        "objets": listeObjets,
+    }
+
+    # Enregistrement dans un fichier Json
     if fichier != "" :
-        doc = shelve.open(fichier.encode("iso-8859-15"), "n")
-        doc["nom"] = nom
-        doc["categorie"] = categorie
-        doc["largeur"] = largeur
-        doc["hauteur"] = hauteur
-        doc["IDfond"] = IDfond
-        doc["defaut"] = defaut
-        doc["objets"] = listeObjets
-        doc.close()
-    
-    # Mémorise également les résultats dans un dictionnaire
-    dictDonnees = {}
-    dictDonnees["nom"] = nom
-    dictDonnees["categorie"] = categorie
-    dictDonnees["largeur"] = largeur
-    dictDonnees["hauteur"] = hauteur
-    dictDonnees["IDfond"] = IDfond
-    dictDonnees["defaut"] = defaut
-    dictDonnees["objets"] = listeObjets
-    
-    return dictDonnees
-    
+        if six.PY2:
+            fichier = fichier.encode("iso-8859-15")
+        UTILS_Json.Ecrire(nom_fichier=fichier, data=data)
+
+    return data
+
 
 def InfosFichier(fichier=""):
     """ Récupère les infos principales sur un fichier """
-    dictInfos = {}
-    fichier = shelve.open(fichier.encode("iso-8859-15"), "r")
-    for key, valeur in fichier.items() :
-        dictInfos[key] = valeur
-    fichier.close()
-    return dictInfos
+    if six.PY2:
+        fichier = fichier.encode("iso-8859-15")
+    data = UTILS_Json.Lire(fichier)
+    return data
 
-    
+
 def Importer(fichier="", dictDonnees={}, IDfond=None, defaut=0):
-    """ Importation d'un modèle de document depuis un fichier SHELVE ou un DICTIONNAIRE """
+    """ Importation d'un modèle de document depuis un fichier JSON ou un DICTIONNAIRE """
     DB = GestionDB.DB()
-    
+
     if fichier != "" :
-        doc = shelve.open(fichier.encode("iso-8859-15"), "r")
+        if six.PY2:
+            fichier = fichier.encode("iso-8859-15")
+        data = UTILS_Json.Lire(fichier)
     else :
-        doc = dictDonnees
-    
+        data = dictDonnees
+
     # Saisie dans la table documents_modeles
-    listeDonnees = [    
-            ("nom", doc["nom"]),
-            ("categorie", doc["categorie"]),
+    listeDonnees = [
+            ("nom", data["nom"]),
+            ("categorie", data["categorie"]),
             ("supprimable", 1),
-            ("largeur", doc["largeur"]),
-            ("hauteur", doc["hauteur"]),
+            ("largeur", data["largeur"]),
+            ("hauteur", data["hauteur"]),
             ("observations", ""),
             ("IDfond", IDfond),
             ("defaut", defaut),
             ]
     IDmodele = DB.ReqInsert("documents_modeles", listeDonnees)
-    
+
     # Saisie dans la table documents_objets
-    listeObjets = doc["objets"]
+    listeObjets = data["objets"]
     for dictObjet in listeObjets :
         dictObjet["IDmodele"] = IDmodele
-        
+
         listeDonnees = []
         for champ, donnee in dictObjet.items() :
             if champ == "image" :
                 blob = donnee
                 donnee = None
             listeDonnees.append((champ, donnee))
-            
+
         IDobjet = DB.ReqInsert("documents_objets", listeDonnees)
-        
+
         if blob != None :
             DB.MAJimage(table="documents_objets", key="IDobjet", IDkey=IDobjet, blobImage=blob, nomChampBlob="image")
-    
+
     DB.Close()
-    
-    if fichier != "" :
-        doc.close()
-    
     return IDmodele
 
 
@@ -160,20 +151,20 @@ def Importer(fichier="", dictDonnees={}, IDfond=None, defaut=0):
 def DupliquerModele(IDmodele=None, nom="", categorie=None) :
     """ Dupliquer un modèle de doc """
     DB = GestionDB.DB()
-    
+
     # Duplication du modèle
     conditions = "IDmodele=%d" % IDmodele
     dictModifications = {"nom" : nom}
     if categorie != None :
         dictModifications["categorie"] = categorie
     newIDmodele = DB.Dupliquer("documents_modeles", "IDmodele", conditions, dictModifications)
-    
+
     # Duplication des objets
     conditions = "IDmodele=%d" % IDmodele
     dictModifications = {"IDmodele" : newIDmodele}
     newIDobjet = DB.Dupliquer("documents_objets", "IDobjet", conditions, dictModifications)
 
-    DB.Close() 
+    DB.Close()
 
 
 
@@ -193,13 +184,13 @@ def ImporterDepuisFichierDefaut(IDmodele=None, nom=None, IDfond=1, defaut=0):
 
 if __name__ == "__main__":
     # Avec un fichier
-##    Exporter(IDmodele=5, fichier="Temp/TestExport.ndc")
-##    Importer(fichier="Temp/TestExport.ndc")
-    
-    # Avec un dictionnaire depuis le fichier defaut.dat
-    ImporterDepuisFichierDefaut(IDmodele=13, nom=None, IDfond=1, defaut=0)
-    
-    # Dupliquer un modèle
-##    DupliquerModele(IDmodele=5, nom=_(u"Attestation fiscale par défaut 2"), categorie="attestation_fiscale")
+    # Exporter(IDmodele=5, fichier="Tests/TestExport.ndc")
+    # Importer(fichier="Tests/TestExport.ndc")
 
-    
+    # Avec un dictionnaire depuis le fichier defaut.dat
+    # ImporterDepuisFichierDefaut(IDmodele=13, nom=None, IDfond=1, defaut=0)
+
+    # Dupliquer un modèle
+    # DupliquerModele(IDmodele=5, nom=_(u"Attestation fiscale par défaut 2"), categorie="attestation_fiscale")
+
+    pass

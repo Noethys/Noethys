@@ -17,7 +17,7 @@ from Ctrl import CTRL_Bouton_image
 from Ctrl import CTRL_Bandeau
 from Ol import OL_Traductions
 import os
-import shelve
+from Utils import UTILS_Json
 from Utils import UTILS_Fichiers
 
 
@@ -162,20 +162,11 @@ class Dialog(wx.Dialog):
         
         # Création du fichier de traduction perso
         nomFichier = UTILS_Fichiers.GetRepLang(u"%s.xlang" % code_langue)
-        if os.path.isfile(nomFichier) :
-            flag = "w"
-        else :
-            flag = "n"
-        fichier = shelve.open(nomFichier, flag)
-        fichier.clear() 
-        
-        # Remplissage du fichier
-        fichier["###INFOS###"] = {"nom_langue" : nom_langue, "code_langue" : code_langue}
-        for texte, traduction in dictTraductions.items() :
-            fichier[texte] = traduction
-        
-        # Clôture du fichier
-        fichier.close()
+        data = {}
+        data["###INFOS###"] = {"nom_langue" : nom_langue, "code_langue" : code_langue}
+        for texte, traduction in dictTraductions.items():
+            data[texte] = traduction
+        UTILS_Json.Ecrire(nomFichier, data=data)
         
         # Fermeture
         self.EndModal(wx.ID_OK)

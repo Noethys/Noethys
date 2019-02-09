@@ -9,11 +9,11 @@
 #------------------------------------------------------------------------
 
 import Chemins
-import shelve
 import os
 import re
 import six
 from Utils import UTILS_Fichiers
+from Utils import UTILS_Json
 
 
 DICT_TRADUCTIONS = None
@@ -28,13 +28,10 @@ def ChargeTraduction(nom=""):
         for extension in ("lang", "xlang") :
             nomFichier = os.path.join(rep, u"%s.%s" % (nom, extension))
             if os.path.isfile(nomFichier) :
-                fichier = shelve.open(nomFichier, "r")
-                for key, valeur in fichier.items() :
-                    if six.PY2:
-                        key = key.decode("iso-8859-15")
+                data = UTILS_Json.Lire(nomFichier, conversion_auto=True)
+                for key, valeur in data.items():
                     dictTraductions[key] = valeur
-                fichier.close()
-            
+
     # Mémorise les traductions
     DICT_TRADUCTIONS = dictTraductions
     
@@ -50,18 +47,6 @@ def _(chaine) :
     # Sinon renvoie la chaine par défaut
     return chaine
 
-
-##def CreationFichierTest():
-##    nomFichier = "Lang/anglais.xlang"
-##    if os.path.isfile(nomFichier) :
-##        flag = "w"
-##    else :
-##        flag = "n"
-##    fichier = shelve.open(nomFichier, flag)
-##    fichier["##NOM_LANGUE"] = u"Anglais"
-##    fichier["##CODE_LANGUE"] = "anglais"
-##    fichier["Régler une facture"] = u"Régler une facture2"
-##    fichier.close()
 
 
 def GenerationFichierTextes() :
@@ -99,55 +84,46 @@ def GenerationFichierTextes() :
                             dictTextes[chaine] = []
                         dictTextes[chaine].append(nomFichier)
     
-    # Génération du fichier Shelve
+    # Génération du fichier
     nomFichier = Chemins.GetStaticPath("Databases/Textes.dat")
-    if os.path.isfile(nomFichier) :
-        flag = "w"
-    else :
-        flag = "n"
-    fichier = shelve.open(nomFichier, flag)
-    for texte, listeFichiers in dictTextes.items() :
-        fichier[texte] = listeFichiers
-    fichier.close()
+    UTILS_Json.Ecrire(nomFichier, data=dictTextes)
     print("Generation du fichier de textes terminee.")
 
-def ConvertShelveEnTexte():
+def ConvertJsonEnTexte():
     """ Convertit le fichier Textes.dat en fichier Textes.txt """
     # Lecture du fichier dat
-    fichier = shelve.open(Chemins.GetStaticPath("Databases/Textes.dat"), "r")
+    data = UTILS_Json.Lire(Chemins.GetStaticPath("Databases/Textes.dat"), conversion_auto=True)
     listeTextes = []
-    for texte, listeFichiers in fichier.items() :
+    for texte, listeFichiers in data.items():
         listeTextes.append(texte)
-    fichier.close()
-    listeTextes.sort() 
+    listeTextes.sort()
     
     # Enregistrement du fichier texte
     fichier = open(UTILS_Fichiers.GetRepTemp(fichier="Textes.txt"), "w")
     for texte in listeTextes :
         fichier.write(texte + "\n")
-    fichier.close() 
+    fichier.close()
     print("Fini !")
 
 def FusionneFichiers(code="en_GB"):
     # Lecture du fichier xlang
-    fichier = shelve.open(UTILS_Fichiers.GetRepLang(u"%s.xlang" % code), "r")
+    data = UTILS_Json.Lire(UTILS_Fichiers.GetRepLang(u"%s.xlang" % code), conversion_auto=True)
     dictDonnees = {}
-    for texte, traduction in fichier.items() :
+    for texte, traduction in data.items() :
         if texte != "###INFOS###" :
             dictDonnees[texte] = traduction
-    fichier.close()
-    
+
     # Lecture du fichier lang
-    fichier = shelve.open("Lang/%s.lang" % code, "w")
-    for texte, traduction in dictDonnees.items() :
-        fichier[texte] = traduction
-    fichier.close()
+    data = UTILS_Json.Lire("Lang/%s.lang" % code)
+    for texte, traduction in dictDonnees.items():
+        data[texte] = traduction
+    UTILS_Json.Ecrire("Lang/%s.lang" % code, data=data)
     print("Fusion de %d traductions terminee !" % len(dictDonnees))
 
 
 
 
 if __name__ == "__main__":
-##    GenerationFichierTextes() 
-##    ConvertShelveEnTexte()
+    # GenerationFichierTextes()
+    # ConvertJsonEnTexte()
     FusionneFichiers("en_GB")

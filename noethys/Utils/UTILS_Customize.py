@@ -8,6 +8,7 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+import Chemins
 import wx
 import os
 from six.moves import configparser

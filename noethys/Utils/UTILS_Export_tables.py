@@ -12,10 +12,10 @@
 import Chemins
 from Utils.UTILS_Traduction import _
 import wx
-import shelve
 import os
 import six
 import GestionDB
+from Utils import UTILS_Json
 
 
 def InfosFichier(fichier=""):
@@ -23,12 +23,12 @@ def InfosFichier(fichier=""):
     if os.path.isfile(fichier) == False :
         print("Pas de fichier a cet emplacement !")
         return None
-    dictInfos = {}
-    fichier = shelve.open(fichier.encode("iso-8859-15"), "r")
-    for key, valeur in fichier.items() :
-        dictInfos[key] = valeur
-    fichier.close()
-    return dictInfos
+
+    if six.PY2:
+        fichier = fichier.encode("iso-8859-15")
+    data = UTILS_Json.Lire(fichier)
+    return data
+
 
 
 
@@ -143,11 +143,14 @@ class Exporter():
         self.dictID[nomTable] = listeID
     
     def Enregistrer(self, fichier=""):
-        # Enregistrement dans un fichier Shelve
-        fichier = shelve.open(fichier.encode("iso-8859-15"), "n")
-        fichier["categorie"] = self.categorie
-        fichier["contenu"] = self.contenu
-        fichier.close()
+        data = {
+            "categorie": self.categorie,
+            "contenu": self.contenu,
+        }
+        if six.PY2:
+            fichier = fichier.encode("iso-8859-15")
+        UTILS_Json.Ecrire(nom_fichier=fichier, data=data)
+
     
     def GetContenu(self):
         return self.contenu
@@ -432,15 +435,12 @@ class Importer():
 if __name__ == "__main__":
     app = wx.App(0)
     
-##    print "Exportation..."
-##    exportation = Exporter(categorie="activite")
-##    exportation.Ajouter(ID=2, nom=_(u"Activité1"))
-##    exportation.Enregistrer(fichier="Temp/test.npa")
-    
-##    print "Importation..."
-##    importation = Importer(fichier="Temp/test.npa")
-##    importation.DemandeChoix() 
-##    #importation.Ajouter(index=0)
-##    print "Fin."
-    
-    
+    # print "Exportation..."
+    # exportation = Exporter(categorie="activite")
+    # exportation.Ajouter(ID=2, nom=_(u"Activité1"))
+    # exportation.Enregistrer(fichier="Tests/test.npa")
+
+    # print "Importation..."
+    # importation = Importer(fichier="Tests/test.npa")
+    # importation.DemandeChoix()
+    # importation.Ajouter(index=0)

@@ -7,21 +7,19 @@
 # Copyright:       (c) 2010-13 Ivan LUCAS
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
-import shelve
+
 
 import Chemins
 from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
 from Ctrl import CTRL_Bouton_image
-import FonctionsPerso
-import os
 import wx.lib.agw.hyperlink as Hyperlink
 import webbrowser
-
 from Ctrl import CTRL_Bandeau
 from Ctrl import CTRL_Liste_fichiers
 from Utils import UTILS_Utilisateurs
+from Utils import UTILS_Json
 
 
 class Hyperlien(Hyperlink.HyperLinkCtrl):
@@ -238,15 +236,11 @@ class MyDialog(wx.Dialog):
             nomFichierCourt = dlg.GetFilename()
             nomFichierLong = dlg.GetPath()
             dlg.Destroy()
-            dictInfos = {}
-            fichier = shelve.open(nomFichierLong, "r")
-            for key, valeur in fichier.items():
-                dictInfos[key] = valeur
-            fichier.close()
-            self.ctrl_hote.SetValue(dictInfos["host"])
-            self.ctrl_utilisateur.SetValue(dictInfos["user"])
-            self.ctrl_motdepasse.SetValue(dictInfos["pwd"])
-            self.ctrl_port.SetValue(dictInfos["port"])
+            data = UTILS_Json.Lire(nomFichierLong)
+            self.ctrl_hote.SetValue(data["host"])
+            self.ctrl_utilisateur.SetValue(data["user"])
+            self.ctrl_motdepasse.SetValue(data["pwd"])
+            self.ctrl_port.SetValue(data["port"])
             self.OnBoutonValiderCodes(event)
         else:
             dlg.Destroy()
@@ -268,13 +262,13 @@ class MyDialog(wx.Dialog):
             nomFichierCourt = dlg.GetFilename()
             nomFichierLong = dlg.GetPath()
             dlg.Destroy()
-            dictInfos = {}
-            fichier = shelve.open(nomFichierLong, "n")
-            fichier["host"]=self.ctrl_hote.GetValue()
-            fichier["user"] =self.ctrl_utilisateur.GetValue()
-            fichier["pwd"] =self.ctrl_motdepasse.GetValue()
-            fichier["port"] =self.ctrl_port.GetValue()
-            fichier.close()
+            data = {
+                "host": self.ctrl_hote.GetValue(),
+                "user": self.ctrl_utilisateur.GetValue(),
+                "pwd": self.ctrl_motdepasse.GetValue(),
+                "port": self.ctrl_port.GetValue(),
+            }
+            UTILS_Json.Ecrire(nomFichierLong, data=data)
         else:
             dlg.Destroy()
             return

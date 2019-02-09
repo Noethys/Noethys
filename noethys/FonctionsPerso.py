@@ -614,50 +614,6 @@ def EnvoyerMail(adresses = [], sujet="", message=""):
     webbrowser.open(commande)
 
 
-class FichierConfig():
-    def __init__(self, nomFichier="" ):
-        self.nomFichier = nomFichier
-        
-    def GetDictConfig(self):
-        """ Récupère une copie du dictionnaire du fichier de config """
-        import shelve
-        db = shelve.open(self.nomFichier, "r")
-        dictDonnees = {}
-        for key in list(db.keys()):
-            dictDonnees[key] = db[key]
-        db.close()
-        return dictDonnees
-    
-    def SetDictConfig(self, dictConfig={} ):
-        """ Remplace le fichier de config présent sur le disque dur par le dict donné """
-        import shelve
-        db = shelve.open(self.nomFichier, "n")
-        for key in list(dictConfig.keys()):
-            db[key] = dictConfig[key]
-        db.close()
-        
-    def GetItemConfig(self, key ):
-        """ Récupère une valeur du dictionnaire du fichier de config """
-        import shelve
-        db = shelve.open(self.nomFichier, "r")
-        valeur = db[key]
-        db.close()
-        return valeur
-    
-    def SetItemConfig(self, key, valeur ):
-        """ Remplace une valeur dans le fichier de config """
-        import shelve
-        db = shelve.open(self.nomFichier, "w")
-        db[key] = valeur
-        db.close()
-
-    def DelItemConfig(self, key ):
-        """ Supprime une valeur dans le fichier de config """
-        import shelve
-        db = shelve.open(self.nomFichier, "w")
-        del db[key]
-        db.close()
-                
 # -----------------------------------------  Affiche l'aide -----------------------------------------------------------------------------------
 
 

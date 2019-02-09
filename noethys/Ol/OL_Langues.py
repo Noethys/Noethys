@@ -14,14 +14,12 @@ from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
 from Ctrl import CTRL_Bouton_image
-
 from Utils import UTILS_Interface
+from Utils import UTILS_Json
 from Ctrl.CTRL_ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
-import shelve
 import os
 import shutil
 from Dlg import DLG_Messagebox
-
 from wx.lib import langlistctrl
 from Utils import UTILS_Fichiers
 
@@ -57,12 +55,11 @@ class ListView(FastObjectListView):
             for nomFichier in os.listdir(rep) :
                 if nomFichier.endswith("lang") :
                     code, extension = nomFichier.split(".")
-                    fichier = shelve.open(os.path.join(rep, nomFichier), "r")
-                    dictInfos = fichier["###INFOS###"]
+                    data = UTILS_Json.Lire(os.path.join(rep, nomFichier), conversion_auto=True)
+                    dictInfos = data["###INFOS###"]
                     nom = dictInfos["nom_langue"]
                     code = dictInfos["code_langue"]
-                    nbreTextes = len(fichier) - 1
-                    fichier.close()
+                    nbreTextes = len(data) - 1
 
                     if (code in dictLangues) == False :
                         dictLangues[code] = {"nom" : nom, "initial" : 0, "perso" : 0}
@@ -280,22 +277,13 @@ class ListView(FastObjectListView):
                 # Lecture des 2 fichiers
                 dictDonnees = {}
                 for nomFichier in [UTILS_Fichiers.GetRepLang(nomFichierCourt), nomFichierLong] :
-                    fichier = shelve.open(nomFichier, "r")
-                    for key, valeur in fichier.items() :
+                    data = UTILS_Json.Lire(nomFichier, conversion_auto=True)
+                    for key, valeur in data.items() :
                         dictDonnees[key] = valeur
-                    fichier.close()
-                
+
                 # Ecriture du fichier final
                 nomFichier = UTILS_Fichiers.GetRepLang(nomFichierCourt)
-                if os.path.isfile(nomFichier) :
-                    flag = "w"
-                else :
-                    flag = "n"
-                fichier = shelve.open(nomFichier, flag)
-                fichier.clear() 
-                for key, valeur in dictDonnees.items() :
-                    fichier[key] = valeur
-                fichier.close()
+                UTILS_Json.Ecrire(nomFichier, data=dictDonnees)
                 self.MAJ()
 
                 dlg = wx.MessageDialog(self, _(u"Le fichier a été importé avec succès !"), _(u"Confirmation"), wx.OK | wx.ICON_INFORMATION)

@@ -17,7 +17,7 @@ from Ctrl import CTRL_Bouton_image
 from Ctrl import CTRL_Bandeau
 import wx.lib.filebrowsebutton as filebrowse
 import os
-import shelve
+from Utils import UTILS_Json
 from Utils import UTILS_Fichiers
 
 
@@ -38,21 +38,18 @@ class CTRL_Langue(wx.Choice):
             for nomFichier in os.listdir(rep) :
                 if nomFichier.endswith("lang") :
                     code, extension = nomFichier.split(".")
-                    fichier = shelve.open(os.path.join(rep, nomFichier), "r")
+                    data = UTILS_Json.Lire(os.path.join(rep, nomFichier), conversion_auto=True)
 
                     # Lecture des caractéristiques
-                    dictInfos = fichier["###INFOS###"]
+                    dictInfos = data["###INFOS###"]
                     nom = dictInfos["nom_langue"]
                     code = dictInfos["code_langue"]
 
                     # Lecture des textes
                     listeTextes = []
-                    for texte, traduction in fichier.items() :
+                    for texte, traduction in data.items() :
                         if texte != "###INFOS###" :
                             listeTextes.append(texte)
-
-                    # Fermeture du fichier
-                    fichier.close()
 
                     label = u"%s (%s)" % (nom, code)
                     if code not in listeCodes :
@@ -221,12 +218,11 @@ class Dialog(wx.Dialog):
                 dlg.Destroy()
         
         # Lecture du fichier dat
-        fichier = shelve.open(Chemins.GetStaticPath("DatabasesTextes.dat"), "r")
+        data = UTILS_Json.Lire(Chemins.GetStaticPath("Databases/Textes.dat"), conversion_auto=True)
         listeTextes = []
-        for texte, listeFichiers in fichier.items() :
+        for texte, listeFichiers in data.items():
             listeTextes.append(texte)
-        fichier.close()
-        listeTextes.sort() 
+        listeTextes.sort()
         
         # Enregistrement du fichier texte
         fichier = open(cheminFichier, "w")
@@ -303,20 +299,11 @@ class Dialog(wx.Dialog):
         
         # Création du fichier de traduction perso
         nomFichier = UTILS_Fichiers.GetRepLang(u"%s.xlang" % code_langue)
-        if os.path.isfile(nomFichier) :
-            flag = "w"
-        else :
-            flag = "n"
-        fichier = shelve.open(nomFichier, flag)
-        
-        # Remplissage du fichier
-        fichier["###INFOS###"] = {"nom_langue" : nom_langue, "code_langue" : code_langue}
+        data = {}
+        data["###INFOS###"] = {"nom_langue" : nom_langue, "code_langue" : code_langue}
         for texte, traduction in dictTraductions.items() :
-            fichier[texte] = traduction
-            if "Bienvenue" in texte :
-                print(texte, " --> ", (traduction,))
-        # Clôture du fichier
-        fichier.close()
+            data[texte] = traduction
+        UTILS_Json.Ecrire(nomFichier, data=data)
         
         # Confirmation
         dlg = wx.MessageDialog(self, _(u"L'importation des traductions s'est déroulée avec succès !"), _(u"Succès"), wx.OK | wx.ICON_INFORMATION)

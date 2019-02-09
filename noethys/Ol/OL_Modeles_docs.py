@@ -417,7 +417,14 @@ class ListView(FastObjectListView):
             return
         
         # Demande confirmation
-        dictInfos = UTILS_Export_documents.InfosFichier(nomFichierLong)
+        try:
+            dictInfos = UTILS_Export_documents.InfosFichier(nomFichierLong)
+        except:
+            dlg = wx.MessageDialog(self, _(u"Ce modèle ne peut pas être importé ! Il a peut-être été créé avec une version obsolète de Noethys."), _(u"Importation"), wx.OK | wx.ICON_ERROR)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return False
+
         nom = dictInfos["nom"]
         categorie = dictInfos["categorie"]
         labelCategorie = categorie

@@ -9,49 +9,14 @@
 #------------------------------------------------------------------------
 
 
+import Chemins
 import wx
 import os
-try :
-    from Utils import UTILS_Adaptations
-except:
-    import UTILS_Adaptations
-UTILS_Fichiers = UTILS_Adaptations.Import("Utils.UTILS_Fichiers")
-UTILS_Dates = UTILS_Adaptations.Import("Utils.UTILS_Dates")
 import six
-import datetime
-import decimal
-import json
+import shutil
+from Utils import UTILS_Fichiers
+from Utils import UTILS_Json
 
-
-
-class MyEncoder(json.JSONEncoder):
-    def default(self, objet):
-        # Si datetime.date
-        if isinstance(objet, datetime.date):
-            return {'__type__': "datetime.date", 'data': str(objet)}
-        # Si datetime.datetime
-        elif isinstance(objet, datetime.datetime):
-            return {'__type__': "datetime.datetime", 'data': str(objet)}
-        # Si decimal
-        elif isinstance(objet, decimal.Decimal):
-            return {'__type__': "decimal.Decimal", 'data': str(objet)}
-        # Si autre
-        return json.JSONEncoder.default(self, objet)
-
-
-def MyDecoder(objet):
-    # Si datetime.date
-    if objet.get('__type__') == 'datetime.date':
-        return UTILS_Dates.DateEngEnDateDD(objet['data'])
-    # Si datetime.datetime
-    elif objet.get('__type__') == 'datetime.datetime':
-        return UTILS_Dates.DateEngEnDateDDT(objet['data'])
-    # Si decimal
-    elif objet.get('__type__') == 'decimal.Decimal':
-        return decimal.Decimal(objet['data'])
-    # Si autre
-    else:
-        return objet
 
 
 
@@ -130,14 +95,25 @@ class FichierConfig():
         
     def GetDictConfig(self):
         """ Recupere une copie du dictionnaire du fichier de config """
-        with open(self.nomFichier) as json_file:
-            data = json.load(json_file, object_hook=MyDecoder)
+        data = {}
+        try :
+            data = UTILS_Json.Lire(self.nomFichier)
+        except:
+            nom_fichier_bak = self.nomFichier + ".bak"
+            if os.path.isfile(nom_fichier_bak):
+                print("Recuperation de config.json.bak")
+                data = UTILS_Json.Lire(nom_fichier_bak)
         return data
-    
-    def SetDictConfig(self, dictConfig={} ):
+
+    def SetDictConfig(self, dictConfig={}):
         """ Remplace le fichier de config présent sur le disque dur par le dict donné """
-        with open(self.nomFichier, 'w') as outfile:
-            json.dump(dictConfig, outfile, cls=MyEncoder)
+        try :
+            UTILS_Json.Ecrire(nom_fichier=self.nomFichier, data=dictConfig)
+
+            # Création d'une copie de sauvegarde du config
+            shutil.copyfile(self.nomFichier, self.nomFichier + ".bak")
+        except:
+            pass
 
     def GetItemConfig(self, key, defaut=None):
         """ Récupère une valeur du dictionnaire du fichier de config """
