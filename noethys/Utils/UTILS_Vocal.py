@@ -11,12 +11,24 @@
 
 import Chemins
 from Utils.UTILS_Traduction import _
+IMPORT_PYTTSX = False
+
+# Essaye d'importer pyttsx
 try :
     import pyttsx
+    IMPORT_PYTTSX = True
 except :
     pass
+
+# Sinon, essaye d'importer pyttsx3
+if IMPORT_PYTTSX == False:
+    try :
+        import pyttsx3 as pyttsx
+        IMPORT_PYTTSX = True
+    except :
+        pass
+
 import GestionDB
-from Utils import UTILS_Parametres
 from Utils import UTILS_Config
 
 

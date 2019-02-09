@@ -258,7 +258,8 @@ class Depannage():
         EcritStatusbar(_(u"Recherche d'anomalies en cours...   Veuillez patienter..."))
         try :
             dlgAttente = wx.BusyInfo(_(u"Recherche d'anomalies en cours. Veuillez patienter..."), self.parent)
-            wx.Yield()
+            if 'phoenix' not in wx.PlatformInfo:
+                wx.Yield()
         except :
             dlgAttente = None
         

@@ -187,6 +187,7 @@ import bisect
 import types
 import zlib
 from wx.lib.expando import ExpandoTextCtrl
+from six.moves import range
 
 # Version Info
 __version__ = "0.6"
@@ -669,7 +670,7 @@ class PyImageList(object):
                bitmap.GetHeight() >= self._height:
                 
                 numImages = bitmap.GetWidth()/self._width
-                for subIndex in xrange(numImages):
+                for subIndex in range(numImages):
                     rect = wx.Rect(self._width * subIndex, 0, self._width, self._height)
                     tmpBmp = bitmap.GetSubBitmap(rect)
                     self._images.append(tmpBmp)
@@ -972,11 +973,11 @@ class SelectionStore(object):
                 # TODO: it should be possible to optimize the searches a bit
                 #       knowing the possible range
 
-                for item in xrange(itemFrom):
+                for item in range(itemFrom):
                     if item not in selOld:
                         self._itemsSel.append(item)
                 
-                for item in xrange(itemTo + 1, self._count):
+                for item in range(itemTo + 1, self._count):
                     if item not in selOld:
                         self._itemsSel.append(item)
 
@@ -996,7 +997,7 @@ class SelectionStore(object):
                 if start <= end:
                 
                     # delete all of them (from end to avoid changing indices)
-                    for i in xrange(end, start-1, -1):
+                    for i in range(end, start-1, -1):
                         if itemsChanged:
                             if len(itemsChanged) > MANY_ITEMS:
                                 # stop counting (see comment below)
@@ -1014,7 +1015,7 @@ class SelectionStore(object):
                 itemsChanged = []
 
             # just add the items to the selection
-            for item in xrange(itemFrom, itemTo+1):
+            for item in range(itemFrom, itemTo+1):
                 if self.SelectItem(item, select) and itemsChanged:
                     itemsChanged.append(item)
                     if len(itemsChanged) > MANY_ITEMS:
@@ -1060,7 +1061,7 @@ class SelectionStore(object):
         # forget about all items whose indices are now invalid if the size
         # decreased
         if count < self._count:
-            for i in xrange(len(self._itemsSel), 0, -1):
+            for i in range(len(self._itemsSel), 0, -1):
                 if self._itemsSel[i - 1] >= count:
                     self._itemsSel.pop(i - 1)
             
@@ -3970,7 +3971,7 @@ class UltimateListLineData(object):
         :param `num`: the initial number of items to store.
         """
 
-        for i in xrange(num):
+        for i in range(num):
             self._items.append(UltimateListItemData(self._owner))
 
 
@@ -4643,7 +4644,7 @@ class UltimateListLineData(object):
 
         rf, gf, bf = 0, 0, 0
         
-        for y in xrange(rect.y, rect.y + rect.height):
+        for y in range(rect.y, rect.y + rect.height):
             currCol = (r1 + rf, g1 + gf, b1 + bf)                
             dc.SetBrush(wx.Brush(currCol, wx.SOLID))
             dc.DrawRectangle(rect.x, y, rect.width, 1)
@@ -4691,7 +4692,7 @@ class UltimateListLineData(object):
 
         rf, gf, bf = 0, 0, 0
 
-        for x in xrange(rect.x, rect.x + rect.width):
+        for x in range(rect.x, rect.x + rect.width):
             currCol = (int(r1 + rf), int(g1 + gf), int(b1 + bf))
             dc.SetBrush(wx.Brush(currCol, wx.SOLID))
             dc.DrawRectangle(x, rect.y, 1, rect.height)
@@ -4750,7 +4751,7 @@ class UltimateListLineData(object):
         rf, gf, bf = 0, 0, 0
         dc.SetPen(wx.TRANSPARENT_PEN)
         
-        for y in xrange(filRect.y, filRect.y + filRect.height):
+        for y in range(filRect.y, filRect.y + filRect.height):
             currCol = (r1 + rf, g1 + gf, b1 + bf)
             dc.SetBrush(wx.Brush(currCol, wx.SOLID))
             dc.DrawRectangle(filRect.x, y, filRect.width, 1)
@@ -4952,7 +4953,7 @@ class UltimateListHeaderWindow(wx.PyControl):
         maxH = 0
         numColumns = self._owner.GetColumnCount()
         dc = wx.ClientDC(self)
-        for i in xrange(numColumns):
+        for i in range(numColumns):
             
             if not self.IsColumnShown(i):
                 continue
@@ -4999,7 +5000,7 @@ class UltimateListHeaderWindow(wx.PyControl):
         virtual = self._owner.IsVirtual()
         isFooter = self._isFooter
 
-        for i in xrange(numColumns):
+        for i in range(numColumns):
             
             # Reset anything in the dc that a custom renderer might have changed
             dc.SetTextForeground(self.GetForegroundColour())
@@ -5288,7 +5289,7 @@ class UltimateListHeaderWindow(wx.PyControl):
             countCol = self._owner.GetColumnCount()
             broken = False
 
-            for col in xrange(countCol):
+            for col in range(countCol):
 
                 if not self.IsColumnShown(col):
                     continue
@@ -5337,7 +5338,7 @@ class UltimateListHeaderWindow(wx.PyControl):
                      # record the selected state of the columns
                     if event.LeftDown():
                         
-                        for i in xrange(self._owner.GetColumnCount()):
+                        for i in range(self._owner.GetColumnCount()):
 
                             if not self.IsColumnShown(col):
                                 continue
@@ -5418,7 +5419,7 @@ class UltimateListHeaderWindow(wx.PyControl):
 
         x = HEADER_OFFSET_X
         
-        for i in xrange(self._owner.GetColumnCount()):
+        for i in range(self._owner.GetColumnCount()):
 
             if not self.IsColumnShown(i):
                 continue
@@ -5507,7 +5508,7 @@ class UltimateListHeaderWindow(wx.PyControl):
         
         xOld = 0
         
-        for i in xrange(self._owner.GetColumnCount()):
+        for i in range(self._owner.GetColumnCount()):
             if not self.IsColumnShown(i):
                 continue
                             
@@ -6190,7 +6191,7 @@ class UltimateListMainWindow(wx.PyScrolledWindow):
         """
 
         if (self.HasAGWFlag(ULC_REPORT) and self.HasAGWFlag(ULC_HAS_VARIABLE_ROW_HEIGHT) and not self.IsVirtual()) or force:
-            for l in xrange(self.GetItemCount()):
+            for l in range(self.GetItemCount()):
                 line = self.GetLine(l)
                 line.ResetDimensions()
         
@@ -6319,7 +6320,7 @@ class UltimateListMainWindow(wx.PyScrolledWindow):
         ld = self.GetDummyLine()
 
         countCol = self.GetColumnCount()
-        for col in xrange(countCol):
+        for col in range(countCol):
             ld.SetText(col, listctrl.OnGetItemText(line, col))
             ld.SetImage(col, listctrl.OnGetItemColumnImage(line, col))
             kind = listctrl.OnGetItemColumnKind(line, col)
@@ -6442,7 +6443,7 @@ class UltimateListMainWindow(wx.PyScrolledWindow):
             return lineY
         
         lineY = 0
-        for l in xrange(line):
+        for l in range(line):
             lineY += self.GetLineHeight(l)
 
         lineItem.SetY(LINE_SPACING + lineY)
@@ -6664,12 +6665,12 @@ class UltimateListMainWindow(wx.PyScrolledWindow):
 
             else: # only a few items changed state, refresh only them
 
-                for n in xrange(len(linesChanged)):
+                for n in range(len(linesChanged)):
                     self.RefreshLine(linesChanged[n])
 
         else: # iterate over all items in non report view
 
-            for line in xrange(lineFrom, lineTo+1):
+            for line in range(lineFrom, lineTo+1):
                 if self.HighlightLine(line, highlight):
                     self.RefreshLine(line)
 
@@ -6748,7 +6749,7 @@ class UltimateListMainWindow(wx.PyScrolledWindow):
         else: # !report
 
             # TODO: this should be optimized...
-            for line in xrange(lineFrom, lineTo+1):
+            for line in range(lineFrom, lineTo+1):
                 self.RefreshLine(line)
 
 
@@ -6804,7 +6805,7 @@ class UltimateListMainWindow(wx.PyScrolledWindow):
         if self.HasCurrent() and self._current >= fromm and self._current <= to:
             self.RefreshLine(self._current)
 
-        for line in xrange(fromm, to+1):
+        for line in range(fromm, to+1):
             # NB: the test works as expected even if self._current == -1
             if line != self._current and self.IsHighlighted(line):
                 self.RefreshLine(line)
@@ -6878,7 +6879,7 @@ class UltimateListMainWindow(wx.PyScrolledWindow):
 
             no_highlight = self.HasAGWFlag(ULC_NO_HIGHLIGHT)
 
-            for line in xrange(visibleFrom, visibleTo+1):
+            for line in range(visibleFrom, visibleTo+1):
                 rectLine = self.GetLineRect(line)
 
                 if not self.IsExposed(rectLine.x + xOrig, rectLine.y + yOrig, rectLine.width, rectLine.height):
@@ -6902,7 +6903,7 @@ class UltimateListMainWindow(wx.PyScrolledWindow):
 
                 dc.SetPen(pen)
                 dc.SetBrush(wx.TRANSPARENT_BRUSH)
-                for i in xrange(start, visibleTo+1):
+                for i in range(start, visibleTo+1):
                     lineY = self.GetLineY(i)
                     dc.DrawLine(0 - dev_x, lineY, clientSize.x - dev_x, lineY)
 
@@ -6922,7 +6923,7 @@ class UltimateListMainWindow(wx.PyScrolledWindow):
                 x = firstItemRect.GetX()
                 dc.SetPen(pen)
                 dc.SetBrush(wx.TRANSPARENT_BRUSH)
-                for col in xrange(self.GetColumnCount()):
+                for col in range(self.GetColumnCount()):
                     
                     if not self.IsColumnShown(col):
                         continue
@@ -6939,7 +6940,7 @@ class UltimateListMainWindow(wx.PyScrolledWindow):
 
         else: # !report
 
-            for i in xrange(self.GetItemCount()):
+            for i in range(self.GetItemCount()):
                 self.GetLine(i).Draw(i, dc)
 
         if wx.Platform not in ["__WXMAC__", "__WXGTK__"]:
@@ -7268,14 +7269,14 @@ class UltimateListMainWindow(wx.PyScrolledWindow):
                 else:
                     return
             else:
-                for current in xrange(count):
+                for current in range(count):
                     newItem, hitResult = self.HitTestLine(current, x, y)
                     if hitResult:
                         break
         else:
             # TODO: optimize it too! this is less simple than for report view but
             #       enumerating all items is still not a way to do it!!
-            for current in xrange(count):
+            for current in range(count):
                 newItem, hitResult = self.HitTestLine(current, x, y)
                 if hitResult:
                     break
@@ -8140,7 +8141,7 @@ class UltimateListMainWindow(wx.PyScrolledWindow):
             self._normal_image_list = imageList
             self._normal_grayed_image_list = cls(width, height, True, 0)
 
-            for ii in xrange(imageList.GetImageCount()):
+            for ii in range(imageList.GetImageCount()):
                 bmp = imageList.GetBitmap(ii)
                 newbmp = MakeDisabledBitmap(bmp)
                 self._normal_grayed_image_list.Add(newbmp)
@@ -8153,7 +8154,7 @@ class UltimateListMainWindow(wx.PyScrolledWindow):
 
             self._small_grayed_image_list = cls(width, height, True, 0)
 
-            for ii in xrange(imageList.GetImageCount()):
+            for ii in range(imageList.GetImageCount()):
                 bmp = imageList.GetBitmap(ii)
                 newbmp = MakeDisabledBitmap(bmp)
                 self._small_grayed_image_list.Add(newbmp)
@@ -8219,7 +8220,7 @@ class UltimateListMainWindow(wx.PyScrolledWindow):
             sizex, sizey = imglist.GetSize(0)
             self._image_list_check = imglist
 
-            for ii in xrange(self._image_list_check.GetImageCount()):
+            for ii in range(self._image_list_check.GetImageCount()):
                 
                 bmp = self._image_list_check.GetBitmap(ii)
                 newbmp = MakeDisabledBitmap(bmp)
@@ -8393,7 +8394,7 @@ class UltimateListMainWindow(wx.PyScrolledWindow):
                 #  if the cached column width isn't valid then recalculate it
                 if self._aColWidths[col]._bNeedsUpdate:
 
-                    for i in xrange(count):
+                    for i in range(count):
 
                         line = self.GetLine(i)
                         itemData = line._items[col]
@@ -8426,7 +8427,7 @@ class UltimateListMainWindow(wx.PyScrolledWindow):
         if not self._headerWidth:
 
             count = self.GetColumnCount()
-            for col in xrange(count):
+            for col in range(count):
 
                 if not self.IsColumnShown(col):
                     continue
@@ -8558,7 +8559,7 @@ class UltimateListMainWindow(wx.PyScrolledWindow):
             elif state & ULC_STATE_SELECTED:
 
                 count = self.GetItemCount()
-                for i in xrange(count):
+                for i in range(count):
                     self.SetItemState(i, ULC_STATE_SELECTED, ULC_STATE_SELECTED)
                     
             else:
@@ -8768,7 +8769,7 @@ class UltimateListMainWindow(wx.PyScrolledWindow):
         :note: This method is meaningful only for checkbox-like and radiobutton-like items.
         """ 
 
-        for indx in xrange(self.GetItemCount()):
+        for indx in range(self.GetItemCount()):
             item = CreateListItem(indx, column)
             newItem = self.GetItem(item, column)
             self.CheckItem(newItem, not isChecked, False)
@@ -8783,7 +8784,7 @@ class UltimateListMainWindow(wx.PyScrolledWindow):
         :note: This method is meaningful only for checkbox-like and radiobutton-like items.
         """ 
 
-        for indx in xrange(self.GetItemCount()):
+        for indx in range(self.GetItemCount()):
             item = CreateListItem(indx, column)
             newItem = self.GetItem(item, column)
 
@@ -9194,7 +9195,7 @@ class UltimateListMainWindow(wx.PyScrolledWindow):
         #       non virtual controls as enumerating all lines is really slow...
         countSel = 0
         count = self.GetItemCount()
-        for line in xrange(count):
+        for line in range(count):
             if self.GetLine(line).IsHighlighted():
                 countSel += 1
 
@@ -9223,7 +9224,7 @@ class UltimateListMainWindow(wx.PyScrolledWindow):
         count = self.GetItemCount()
         
         if count:
-            for i in xrange(count):
+            for i in range(count):
                 # we need logical, not physical, coordinates here, so use
                 # GetLineRect() instead of GetItemRect()
                 r = self.GetLineRect(i)
@@ -9279,7 +9280,7 @@ class UltimateListMainWindow(wx.PyScrolledWindow):
             if subItem < 0 or subItem >= self.GetColumnCount():
                 raise Exception("invalid subItem in GetSubItemRect")
 
-            for i in xrange(subItem):
+            for i in range(subItem):
                 rect.x += self.GetColumnWidth(i)
 
             rect.width = self.GetColumnWidth(subItem)
@@ -9410,7 +9411,7 @@ class UltimateListMainWindow(wx.PyScrolledWindow):
                 y = EXTRA_BORDER_Y
                 widthMax = 0
 
-                for i in xrange(count):
+                for i in range(count):
 
                     line = self.GetLine(i)
                     line.CalculateSize(dc, iconSpacing)
@@ -9433,7 +9434,7 @@ class UltimateListMainWindow(wx.PyScrolledWindow):
 
                     # traverse the items again and tweak their sizes so that they are
                     # all the same in a row
-                    for i in xrange(count):
+                    for i in range(count):
 
                         line = self.GetLine(i)
                         line._gi.ExtendWidth(widthMax)
@@ -9453,7 +9454,7 @@ class UltimateListMainWindow(wx.PyScrolledWindow):
 
                 entireWidth = 0
 
-                for tries in xrange(2):
+                for tries in range(2):
 
                     entireWidth = 2*EXTRA_BORDER_X
 
@@ -9470,7 +9471,7 @@ class UltimateListMainWindow(wx.PyScrolledWindow):
                     self._linesPerPage = 0
                     currentlyVisibleLines = 0
 
-                    for i in xrange(count):
+                    for i in range(count):
 
                         currentlyVisibleLines += 1
                         line = self.GetLine(i)
@@ -9614,7 +9615,7 @@ class UltimateListMainWindow(wx.PyScrolledWindow):
             # any will do
             return ret
 
-        for line in xrange(ret, maxI):
+        for line in range(ret, maxI):
             if state & ULC_STATE_FOCUSED and line == self._current:
                 return line
 
@@ -9658,7 +9659,7 @@ class UltimateListMainWindow(wx.PyScrolledWindow):
             line = self.GetLine(lindex)
             item = UltimateListItem()
             
-            for i in xrange(len(self._columns)):
+            for i in range(len(self._columns)):
                 itemData = line._items[i]
                 item = itemData.GetItem(item)
                 itemWidth = self.GetItemWidthWithImage(item)
@@ -9701,7 +9702,7 @@ class UltimateListMainWindow(wx.PyScrolledWindow):
 
         if not self.IsVirtual():
             # update all the items
-            for i in xrange(len(self._lines)):
+            for i in range(len(self._lines)):
                 line = self.GetLine(i)
                 line._items.pop(col)
 
@@ -9736,7 +9737,7 @@ class UltimateListMainWindow(wx.PyScrolledWindow):
 
         if self.InReportView():
             self.ResetVisibleLinesRange(True)
-            for i in xrange(len(self._aColWidths)):
+            for i in range(len(self._aColWidths)):
                 self._aColWidths[i]._bNeedsUpdate = True
 
         for item in self._itemWithWindow:
@@ -9810,7 +9811,7 @@ class UltimateListMainWindow(wx.PyScrolledWindow):
         str_upper = string.upper()
         count = self.GetItemCount()
 
-        for i in xrange(start, count):
+        for i in range(start, count):
             line = self.GetLine(i)
             text = line.GetText(0)
             line_upper = text.upper()
@@ -9838,7 +9839,7 @@ class UltimateListMainWindow(wx.PyScrolledWindow):
 
         count = self.GetItemCount()
         
-        for i in xrange(start, count):
+        for i in range(start, count):
             line = self.GetLine(i)
             item = UltimateListItem()
             item = line.GetItem(0, item)
@@ -9891,7 +9892,7 @@ class UltimateListMainWindow(wx.PyScrolledWindow):
                     if flags:
                         return current, flags
             else:
-                for current in xrange(self._lineFrom, count):
+                for current in range(self._lineFrom, count):
                     newItem, flags = self.HitTestLine(current, x, y)
                     if flags:
                         return current, flags
@@ -9899,7 +9900,7 @@ class UltimateListMainWindow(wx.PyScrolledWindow):
         else:
             # TODO: optimize it too! this is less simple than for report view but
             #       enumerating all items is still not a way to do it!!
-            for current in xrange(count):
+            for current in range(count):
                 newItem, flags = self.HitTestLine(current, x, y)
                 if flags:
                     return current, flags
@@ -9995,7 +9996,7 @@ class UltimateListMainWindow(wx.PyScrolledWindow):
             if not self.IsVirtual():
 
                 # update all the items
-                for i in xrange(len(self._lines)):
+                for i in range(len(self._lines)):
                     line = self.GetLine(i)
                     data = UltimateListItemData(self)
                     if insert:
@@ -10223,7 +10224,7 @@ class UltimateListMainWindow(wx.PyScrolledWindow):
                     view_x, view_y = self.GetViewStart()
                     view_y *= SCROLL_UNIT_Y
 
-                    for i in xrange(0, count):
+                    for i in range(0, count):
                         rc = self.GetLineY(i)
                         if rc > view_y:
                             self._lineFrom = i - 1
@@ -10235,7 +10236,7 @@ class UltimateListMainWindow(wx.PyScrolledWindow):
                     self._lineTo = self._lineFrom                        
                     clientWidth, clientHeight = self.GetClientSize()
                     
-                    for i in xrange(self._lineFrom, count):
+                    for i in range(self._lineFrom, count):
                         rc = self.GetLineY(i) + self.GetLineHeight(i)
                         if rc > view_y + clientHeight - 5:
                             break
@@ -11580,7 +11581,7 @@ class UltimateListCtrl(wx.PyControl):
         """ Deletes all the column in L{UltimateListCtrl}. """
 
         count = len(self._mainWin._columns)
-        for n in xrange(count):
+        for n in range(count):
             self.DeleteColumn(0)
 
         return True

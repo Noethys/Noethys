@@ -85,17 +85,17 @@ class ObjectListView(OLV.ObjectListView):
 
     def AddColumnDefn(self, defn):
         # Enlève l'espace gauche sur tous les headers du listctrl sous Phoenix en ajoutant une image transparente
-        if 'phoenix' in wx.PlatformInfo:
-            if defn.headerImage == -1 :
-                smallImage = wx.Bitmap(16, 16)
-                mask = wx.Mask(smallImage, wx.BLACK)
-                smallImage.SetMask(mask)
-                self.smallImageList.AddNamedImage("vide", smallImage)
-                normalImage = wx.Bitmap(32, 32)
-                mask = wx.Mask(normalImage, wx.BLACK)
-                normalImage.SetMask(mask)
-                self.normalImageList.AddNamedImage("vide", normalImage)
-                defn.headerImage = "vide"
+        # if 'phoenix' in wx.PlatformInfo:
+        #     if defn.headerImage == -1 :
+        #         smallImage = wx.Bitmap(16, 16)
+        #         mask = wx.Mask(smallImage, wx.BLACK)
+        #         smallImage.SetMask(mask)
+        #         self.smallImageList.AddNamedImage("vide", smallImage)
+        #         normalImage = wx.Bitmap(32, 32)
+        #         mask = wx.Mask(normalImage, wx.BLACK)
+        #         normalImage.SetMask(mask)
+        #         self.normalImageList.AddNamedImage("vide", normalImage)
+        #         defn.headerImage = "vide"
 
         super(ObjectListView, self).AddColumnDefn(defn)
 

@@ -250,7 +250,7 @@ def DateEngEnDateDD(dateEng):
 def hex_to_rgb(value):
     value = value.lstrip('#')
     lv = len(value)
-    return tuple(int(value[i:i+lv/3], 16) for i in range(0, lv, lv/3))
+    return tuple(int(value[i:i+lv//3], 16) for i in range(0, lv, lv//3))
 
 def CreationImage(largeur, hauteur, couleur=None):
     """ couleur peut être RGB ou HEXA """
@@ -1156,7 +1156,8 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             dictDonnees = dlg.GetDonnees()
             try :
                 dlgAttente = wx.BusyInfo(_(u"Veuillez patienter durant l'opération..."), None)
-                wx.Yield() 
+                if 'phoenix' not in wx.PlatformInfo:
+                    wx.Yield()
                 self.TraitementLot(dictDonnees)
                 del dlgAttente
             except Exception as err:
@@ -2167,7 +2168,8 @@ class Dialog(wx.Dialog):
         # Mémoriser calendrier
         try :
             dlgAttente = wx.BusyInfo(_(u"Veuillez patienter durant la sauvegarde des données..."), None) # .PyBusyInfo(_(u"Veuillez patienter durant la sauvegarde des données..."), parent=None, title=_(u"Enregistrement"), icon=wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Logo.png"), wx.BITMAP_TYPE_ANY))
-            wx.Yield() 
+            if 'phoenix' not in wx.PlatformInfo:
+                wx.Yield()
             self.ctrl_calendrier.Sauvegarde()
             del dlgAttente
         except Exception as err:

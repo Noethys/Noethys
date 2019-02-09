@@ -258,7 +258,8 @@ def E4072():
     if dlg.ShowModal() == wx.ID_OK:
         message = _(u"Veuillez patienter durant la procédure...")
         dlgAttente = wx.BusyInfo(message, None)
-        wx.Yield() 
+        if 'phoenix' not in wx.PlatformInfo:
+            wx.Yield()
         selections = dlg.GetSelections()
         DB = GestionDB.DB()
         for index in selections :
@@ -333,7 +334,8 @@ def A5200():
     DB = GestionDB.DB() 
 
     dlgAttente = wx.BusyInfo(_(u"Veuillez patienter durant la procédure... Celle-ci peut nécessiter quelques minutes..."), None)
-    wx.Yield() 
+    if 'phoenix' not in wx.PlatformInfo:
+        wx.Yield()
 
     # Récupère les prestations
     req = """SELECT IDprestation, montant FROM prestations;"""

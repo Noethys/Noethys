@@ -3,7 +3,7 @@
 
 from wxSchedulerConstants import *
 from wxScheduleUtils import copyDateTime
-
+from six.moves import range
 import wx
 
 
@@ -231,7 +231,7 @@ class wxDrawer(object):
 		for startHour, endHour in workingHours:
 			totalTime += copyDateTime(endHour).Subtract(startHour).GetMinutes() / 60.0
 
-		for dayNumber in xrange(dayCount):
+		for dayNumber in range(dayCount):
 			currentDay = copyDateTime(firstDay)
 			currentDay.AddDS(wx.DateSpan(days=dayNumber))
 

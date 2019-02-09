@@ -741,7 +741,8 @@ class Facturation():
         """ Impression des factures """
         dlgAttente = wx.BusyInfo(_(u"Recherche des données de facturation..."), None)
         try :
-            wx.Yield() 
+            if 'phoenix' not in wx.PlatformInfo:
+                wx.Yield()
         except :
             pass
         
@@ -1018,7 +1019,8 @@ class Facturation():
             dictPieces = {}
             dlgProgress = wx.ProgressDialog(_(u"Génération des factures au format PDF"), _(u"Initialisation..."), maximum=len(dictFactures), parent=None, style=wx.PD_SMOOTH | wx.PD_AUTO_HIDE | wx.PD_APP_MODAL)
             try :
-                wx.Yield() 
+                if 'phoenix' not in wx.PlatformInfo:
+                    wx.Yield()
             except :
                 pass
             try :
@@ -1070,7 +1072,8 @@ class Facturation():
         if repertoireTemp == False :
             dlgAttente = wx.BusyInfo(_(u"Création du PDF des factures..."), None)
             try :
-                wx.Yield() 
+                if 'phoenix' not in wx.PlatformInfo:
+                    wx.Yield()
             except :
                 pass
             self.EcritStatusbar(_(u"Création du PDF des factures en cours... veuillez patienter..."))
@@ -1097,7 +1100,8 @@ class Facturation():
 def SuppressionFacture(listeFactures=[], mode="suppression"):
     """ Suppression d'une facture """
     dlgAttente = wx.BusyInfo(_(u"%s des factures en cours...") % mode.capitalize(), None)
-    wx.Yield() 
+    if 'phoenix' not in wx.PlatformInfo:
+        wx.Yield()
     DB = GestionDB.DB()
     
     # Suppression
@@ -1120,7 +1124,8 @@ def SuppressionFacture(listeFactures=[], mode="suppression"):
 def ModificationFacture(listeFactures=[], dict_valeurs={}):
     """ Modification des caractéristique d'une facture """
     dlgAttente = wx.BusyInfo(_(u"Modification des factures en cours..."), None)
-    wx.Yield()
+    if 'phoenix' not in wx.PlatformInfo:
+        wx.Yield()
     DB = GestionDB.DB()
 
     for IDfacture in listeFactures:

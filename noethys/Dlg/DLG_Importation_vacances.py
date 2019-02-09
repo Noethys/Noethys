@@ -25,8 +25,6 @@ import wx.lib.agw.hyperlink as Hyperlink
 from Utils import UTILS_Interface
 from Ctrl.CTRL_ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
-from six.moves import urllib2
-import re
 
 
 

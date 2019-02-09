@@ -240,7 +240,8 @@ class Parametres(wx.Panel):
         
         # MAJ de la liste des prestations
         dlgAttente = wx.BusyInfo(_(u"Recherche des données..."), None)
-        wx.Yield() 
+        if 'phoenix' not in wx.PlatformInfo:
+            wx.Yield()
         try :
             self.MAJprestations() 
             del dlgAttente

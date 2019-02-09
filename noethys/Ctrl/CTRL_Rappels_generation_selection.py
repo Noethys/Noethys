@@ -220,7 +220,8 @@ class CTRL(HTL.HyperTreeList):
     
     def Remplissage(self):
         dlgAttente = wx.BusyInfo(_(u"Recherche des impayés en cours..."), None)
-        wx.Yield() 
+        if 'phoenix' not in wx.PlatformInfo:
+            wx.Yield()
         
         try :
             facturation = UTILS_Rappels.Facturation()
@@ -369,7 +370,8 @@ class CTRL(HTL.HyperTreeList):
                    
         # Fabrication du PDF
         dlgAttente = wx.BusyInfo(_(u"Création de l'aperçu au format PDF..."), None)
-        wx.Yield() 
+        if 'phoenix' not in wx.PlatformInfo:
+            wx.Yield()
         try :
             UTILS_Impression_rappel.Impression({IDcompte_payeur : dictCompte}, dictOptions, IDmodele=dictOptions["IDmodele"])
             del dlgAttente

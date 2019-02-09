@@ -358,7 +358,8 @@ class Traitement(Thread):
 
                         # Initialisation de la grille
                         self.parent.ctrl_grille.InitGrille(IDindividu=track.IDindividu, IDfamille=track.IDfamille, IDactivite=track.IDactivite, date=track.date)
-                        wx.Yield()
+                        if 'phoenix' not in wx.PlatformInfo:
+                            wx.Yield()
 
                         if track.etat == "reservation" : mode, etat = "reservation", "reservation"
                         if track.etat == "attente" : mode, etat = "attente", "reservation"

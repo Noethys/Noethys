@@ -36,7 +36,10 @@ class MyDialog(wx.Dialog):
         self.label_jours = wx.StaticText(self, -1, _(u"Cochez les fériés à générer :"))
         listeJours = [_(u"Lundi de Pâques"), _(u"Jeudi de l'ascension"), _(u"Lundi de Pentecôte")]
         self.ctrl_jours = wx.CheckListBox(self, -1, (-1, -1), wx.DefaultSize, listeJours)
-        self.ctrl_jours.SetChecked((0, 1, 2))
+        if 'phoenix' in wx.PlatformInfo:
+            self.ctrl_jours.SetCheckedItems((0, 1, 2))
+        else:
+            self.ctrl_jours.SetChecked((0, 1, 2))
         self.ctrl_jours.SetMinSize((-1, 80))
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
         self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")

@@ -41,14 +41,19 @@ apache_md5_crypt() provides a function compatible with Apache's
 MAGIC = '$1$'			# Magic string
 ITOA64 = "./0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
 
-import md5
+import six
+if six.PY2:
+    import md5
+if six.PY3:
+    import hashlib as md5
+
 
 def to64 (v, n):
     ret = ''
     while (n - 1 >= 0):
         n = n - 1
-	ret = ret + ITOA64[v & 0x3f]
-	v = v >> 6
+    ret = ret + ITOA64[v & 0x3f]
+    v = v >> 6
     return ret
 
 
@@ -68,10 +73,10 @@ def unix_md5_crypt(pw, salt, magic=None):
         
 
     # salt can have up to 8 characters:
-    import string
-    salt = string.split(salt, '$', 1)[0]
+    if six.PY2:
+        import string
+        salt = string.split(salt, '$', 1)[0]
     salt = salt[:8]
-
     ctx = pw + magic + salt
 
     final = md5.md5(pw + salt + pw).digest()

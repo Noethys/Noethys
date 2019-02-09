@@ -13,10 +13,8 @@ import Chemins
 from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
-from Ctrl import CTRL_Bouton_image
 import wx.lib.agw.gradientbutton as GB
-import wx.lib.platebtn as PB
-import textwrap
+from six.moves import range
 from wx.lib.wordwrap import wordwrap
 
 if 'phoenix' in wx.PlatformInfo:
@@ -523,8 +521,9 @@ class DLG_Message(object):
         self.dlg = DLG_Question(interface, message, icone, bouton_oui=False, bouton_non=False)
         self.dlg.SetCursor(wx.HOURGLASS_CURSOR)
         self.dlg.Show()
-        wx.Yield()
-        for indx in xrange(secondes):
+        if 'phoenix' not in wx.PlatformInfo:
+            wx.Yield()
+        for indx in range(secondes):
             wx.MilliSleep(1000)
         self.dlg.Show(False)
         self.dlg.Destroy() 

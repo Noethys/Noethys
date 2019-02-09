@@ -104,7 +104,8 @@ class Attestations_fiscales():
         """ Impression des factures """
         dlgAttente = wx.BusyInfo(_(u"Recherche des données..."), None)
         try :
-            wx.Yield()
+            if 'phoenix' not in wx.PlatformInfo:
+                wx.Yield()
         except :
             pass
         
@@ -249,7 +250,8 @@ class Attestations_fiscales():
         def CreationPDFunique(repertoireCible=""):
             dictPieces = {}
             dlgAttente = wx.BusyInfo(_(u"Génération des attestations fiscales à l'unité au format PDF..."), None)
-            wx.Yield() 
+            if 'phoenix' not in wx.PlatformInfo:
+                wx.Yield()
             try :
                 index = 0
                 for IDcompte_payeur, dictAttestation in dictDonnees.items() :
@@ -289,7 +291,8 @@ class Attestations_fiscales():
         if repertoireTemp == False :
             dlgAttente = wx.BusyInfo(_(u"Création du PDF des attestations fiscales..."), None)
             try :
-                wx.Yield()
+                if 'phoenix' not in wx.PlatformInfo:
+                    wx.Yield()
             except :
                 pass
             self.EcritStatusbar(_(u"Création du PDF des attestations fiscales en cours... veuillez patienter..."))

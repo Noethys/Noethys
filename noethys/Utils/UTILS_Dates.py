@@ -15,6 +15,7 @@ import datetime
 import time
 import wx
 import six
+from six.moves import range
 
 LISTE_JOURS = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
 LISTE_MOIS = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
@@ -113,7 +114,7 @@ def Additionne_intervalles_temps(intervals=[]):
     def tparse(timestring):
         return datetime.datetime.strptime(timestring, '%H:%M')
 
-    START, END = xrange(2)
+    START, END = range(2)
     times = []
     for interval in intervals:
         times.append((tparse(interval[START]), START))

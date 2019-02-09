@@ -39,13 +39,15 @@ DEBUG = True
 
 
 def AffichetailleFichier(fichierURL):
+    tailleFichier = 0
     try :
         fichier = urlopen(fichierURL)
-        infoFichier = (fichier.info().getheaders('Content-Length'))
-        if len(infoFichier) > 0 :
-            tailleFichier = infoFichier[0]
-        else :
-            tailleFichier = 0
+        if six.PY3:
+            tailleFichier = fichier.headers['Content-Length']
+        else:
+            infoFichier = (fichier.info().getheaders('Content-Length'))
+            if len(infoFichier) > 0 :
+                tailleFichier = infoFichier[0]
     except IOError :
         tailleFichier = 0
     return tailleFichier
@@ -59,9 +61,9 @@ def FormateTailleFichier(taille):
     if 0 <= taille <1000 :
         texte = str(taille) + " octets"
     elif 1000 <= taille < 1000000 :
-        texte = str(taille/1000) + " Ko"
+        texte = str(taille//1000) + " Ko"
     else :
-        texte = str(taille/1000000) + " Mo"
+        texte = str(taille//1000000) + " Mo"
     return texte
 
 
@@ -299,8 +301,10 @@ class Page_recherche(wx.Panel):
         except :
             self.Suite(etat="erreur") 
             return
-        
+
         # Recherche du numéro de version
+        if six.PY3:
+            self.texteNouveautes = self.texteNouveautes.decode("iso-8859-15")
         pos_debut_numVersion = self.texteNouveautes.find("n")
         pos_fin_numVersion = self.texteNouveautes.find("(")
         self.versionFichier = self.texteNouveautes[pos_debut_numVersion+1:pos_fin_numVersion].strip()

@@ -583,7 +583,8 @@ class CTRL(HTL.HyperTreeList):
     def Remplissage(self):
         dlgAttente = wx.BusyInfo(_(u"Recherche des prestations en cours..."), None)
         try :
-            wx.Yield() 
+            if 'phoenix' not in wx.PlatformInfo:
+                wx.Yield()
         except :
             pass
         

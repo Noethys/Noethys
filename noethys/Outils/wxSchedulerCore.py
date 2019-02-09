@@ -6,6 +6,7 @@ from wxSchedulerConstants import *
 from wxSchedulerPaint import *
 import wx
 import wxScheduleUtils as utils
+from six.moves import range
 
 if sys.version.startswith( "2.3" ):
 	from sets import Set as set
@@ -264,7 +265,7 @@ class wxSchedulerCore( wxSchedulerPaint ):
 	def Next( self, steps=1 ):
 		self.Freeze()
 		try:
-			for step in xrange( steps ):
+			for step in range( steps ):
 				self.SetViewType( wxSCHEDULER_NEXT )
 			self.InvalidateMinSize()
 		finally:
@@ -273,7 +274,7 @@ class wxSchedulerCore( wxSchedulerPaint ):
 	def Previous( self, steps=1 ):
 		self.Freeze()
 		try:
-			for step in xrange( steps ):
+			for step in range( steps ):
 				self.SetViewType( wxSCHEDULER_PREV )
 			self.InvalidateMinSize()
 		finally:

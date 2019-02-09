@@ -657,7 +657,7 @@ class Dialog(wx.Dialog):
                         else :
                             style = style_texte
                             valeur = valeur.replace("\n", "<br/>")
-                    ligne.append(Paragraph(unicode(valeur), style))
+                    ligne.append(Paragraph(six.text_type(valeur), style))
                     numColonne += 1
 
                 # Ajout de la ligne au tableau

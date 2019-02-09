@@ -320,7 +320,8 @@ class Dialog(wx.Dialog):
         repertoire = dictOptions["repertoire_copie"]
         if repertoire not in (None, "") :
             dlgAttente = wx.BusyInfo(_(u"Génération des attestations à l'unité au format PDF..."), None)
-            wx.Yield() 
+            if 'phoenix' not in wx.PlatformInfo:
+                wx.Yield()
             try :
                 index = 0
                 for IDcompte_payeur, dictCompte in dictComptes.items() :
@@ -344,7 +345,8 @@ class Dialog(wx.Dialog):
 
         # Fabrication du PDF global
         dlgAttente = wx.BusyInfo(_(u"Génération du lot d'attestations au format PDF..."), None)
-        wx.Yield() 
+        if 'phoenix' not in wx.PlatformInfo:
+            wx.Yield()
         self.EcritStatusbar(_(u"Génération du lot d'attestations de rappel en cours... veuillez patienter..."))
         try :
             UTILS_Impression_facture.Impression(dictComptes, dictOptions, IDmodele=dictOptions["IDmodele"], mode="attestation")
@@ -371,7 +373,8 @@ class Dialog(wx.Dialog):
             return
 
         dlgAttente = wx.BusyInfo(_(u"Sauvegarde des attestations en cours..."), None)
-        wx.Yield() 
+        if 'phoenix' not in wx.PlatformInfo:
+            wx.Yield()
 
         DB = GestionDB.DB()
         

@@ -13,11 +13,9 @@ import Chemins
 from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
-from Ctrl import CTRL_Bouton_image
 import datetime
 import GestionDB
-
-
+from six.moves import range
 from Utils import UTILS_Interface
 from Ctrl.CTRL_ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 from Ctrl.CTRL_Questionnaire import LISTE_CONTROLES
@@ -55,7 +53,7 @@ LISTE_CHAMPS_STANDARDS = [
 def FormateLabelPrestation(label=u""):
     liste1 = [u"é", u"è", u"ê", u"à", u"ù", u"û", u"ç", u"ô", u"î", u"ï", u"â", u" ",]
     liste2 = [u"e", u"e", u"e", u"a", u"u", u"u", u"c", u"o", u"i", u"i", u"a", u"_"]
-    for i in xrange(len(liste1)):
+    for i in range(len(liste1)):
         label = label.replace(liste1[i], liste2[i])
     for i in ("'", "(", ")", "{", "}", ",", ".", "!", "+", "-", "[", "]", "/", "*", "#") :
         label = label.replace(i, "")

@@ -82,7 +82,8 @@ def Appliquer():
     
     # Application
     dlgAttente = wx.BusyInfo(_(u"Veuillez patienter..."), None)
-    wx.Yield() 
+    if 'phoenix' not in wx.PlatformInfo:
+        wx.Yield()
     DB = GestionDB.DB()
     for label, listePrestations in dictPrestations.items() :
         if label in selectionsLabels :

@@ -8,6 +8,7 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+import Chemins
 import wx
 import six
 import GestionDB
@@ -69,11 +70,11 @@ def ParametresCategorie(mode="get", categorie="", dictParametres={}, nomFichier=
                     if type_parametre == float : valeur = float(valeur)
                     if type_parametre == str : valeur = valeur
                     if type_parametre == six.text_type : valeur = valeur
-                    if type_parametre == tuple : exec("valeur = " + valeur)
-                    if type_parametre == list : exec("valeur = " + valeur)
-                    if type_parametre == dict : exec("valeur = " + valeur)
-                    if type_parametre == bool : exec("valeur = " + valeur)
-                    if type_parametre == TYPE_COULEUR and valeur != "" : exec("valeur = " + valeur)
+                    if type_parametre == tuple : valeur = eval(valeur)
+                    if type_parametre == list : valeur = eval(valeur)
+                    if type_parametre == dict : valeur = eval(valeur)
+                    if type_parametre == bool : valeur = eval(valeur)
+                    if type_parametre == TYPE_COULEUR and valeur != "" : valeur = eval(valeur)
                 except :
                     valeur = None
                 dictFinal[nom] = valeur
@@ -146,10 +147,10 @@ def Parametres(mode="get", categorie="", nom="", valeur=None, nomFichier=""):
             if type_parametre == float : valeurTmp = float(valeurTmp)
             if type_parametre == str : valeurTmp = valeurTmp
             if type_parametre == six.text_type : valeurTmp = valeurTmp
-            if type_parametre == tuple : exec("valeurTmp = " + valeurTmp)
-            if type_parametre == list : exec("valeurTmp = " + valeurTmp)
-            if type_parametre == dict : exec("valeurTmp = " + valeurTmp)
-            if type_parametre == bool : exec("valeurTmp = " + valeurTmp)
+            if type_parametre == tuple : valeurTmp = eval(valeurTmp)
+            if type_parametre == list : valeurTmp = eval(valeurTmp)
+            if type_parametre == dict : valeurTmp = eval(valeurTmp)
+            if type_parametre == bool : valeurTmp = eval(valeurTmp)
         else:
             # On modifie la valeur du paramètre
             IDparametre = listeDonnees[0][0]
@@ -180,7 +181,8 @@ def TestParametre(categorie="", nom="", valeur=None, nomFichier=""):
 
 # ----------------------- TESTS --------------------------------------------------------------------------------------------------------------------------------------------------------------------
 if __name__ == u"__main__":
-    print(ParametresCategorie(mode="get", categorie="parametres_grille_conso", dictParametres={"affiche_colonne_memo":True, "test":u"ça marche !"}, nomFichier=""))
-    
+    #print(ParametresCategorie(mode="get", categorie="parametres_grille_conso", dictParametres={"affiche_colonne_memo":True, "test":u"ça marche !"}, nomFichier=""))
+    reponse = Parametres(mode="get", categorie="dlg_ouvertures", nom="afficher_tous_groupes", valeur=False)
+    print(reponse, type(reponse))
     
     

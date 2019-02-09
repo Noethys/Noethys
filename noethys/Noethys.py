@@ -30,6 +30,7 @@ if "linux" in sys.platform :
 import time
 HEUREDEBUT = time.time()
 
+from Utils import UTILS_Adaptations
 from Utils import UTILS_Config
 from Utils import UTILS_Customize
 from Utils import UTILS_Historique
@@ -38,6 +39,7 @@ from Utils import UTILS_Rapport_bugs
 from Utils import UTILS_Utilisateurs
 from Utils import UTILS_Interface
 from Utils import UTILS_Fichiers
+from Utils import UTILS_Json
 
 import GestionDB
 
@@ -58,12 +60,6 @@ from Ctrl import CTRL_Toaster
 from Ctrl import CTRL_Portail_serveur
 from Ctrl import CTRL_TaskBarIcon
 
-import shelve
-try :
-    import dbhash
-    import anydbm
-except:
-    pass
 import random 
 from six.moves.urllib.request import urlopen
 
@@ -85,12 +81,12 @@ ID_PREMIERE_PERSPECTIVE = 500
 ID_AFFICHAGE_PANNEAUX = 600
 
 # ID pour la barre d'outils
-ID_TB_GESTIONNAIRE = wx.NewId()
-ID_TB_LISTE_CONSO = wx.NewId()
-ID_TB_BADGEAGE = wx.NewId()
-ID_TB_REGLER_FACTURE = wx.NewId()
-ID_TB_CALCULATRICE = wx.NewId()
-ID_TB_UTILISATEUR = wx.NewId()
+ID_TB_GESTIONNAIRE = wx.Window.NewControlId()
+ID_TB_LISTE_CONSO = wx.Window.NewControlId()
+ID_TB_BADGEAGE = wx.Window.NewControlId()
+ID_TB_REGLER_FACTURE = wx.Window.NewControlId()
+ID_TB_CALCULATRICE = wx.Window.NewControlId()
+ID_TB_UTILISATEUR = wx.Window.NewControlId()
 
 
 
@@ -269,15 +265,12 @@ class MainFrame(wx.Frame):
             for nomFichier in os.listdir(rep) :
                 if nomFichier.endswith("lang") :
                     code, extension = nomFichier.split(".")
-                    fichier = shelve.open(os.path.join(rep, nomFichier), "r")
+                    data = UTILS_Json.Lire(os.path.join(rep, nomFichier), conversion_auto=True)
 
                     # Lecture des caractéristiques
-                    dictInfos = fichier["###INFOS###"]
+                    dictInfos = data["###INFOS###"]
                     nom = dictInfos["nom_langue"]
                     code = dictInfos["code_langue"]
-
-                    # Fermeture du fichier
-                    fichier.close()
 
                     label = u"%s (%s)" % (nom, code)
                     if code not in listeCodes :
@@ -1094,7 +1087,7 @@ class MainFrame(wx.Frame):
 
         # Création du menu
         def CreationItem(menuParent, item):
-            id = wx.NewId()
+            id = wx.Window.NewControlId()
             if "genre" in item:
                 genre = item["genre"]
             else :
@@ -1115,8 +1108,8 @@ class MainFrame(wx.Frame):
             self.dictInfosMenu[item["code"]] = {"id" : id, "ctrl" : itemMenu}
             
         def CreationMenu(menuParent, item, sousmenu=False):
-            menu = wx.Menu()
-            id = wx.NewId()
+            menu = UTILS_Adaptations.Menu()
+            id = wx.Window.NewControlId()
             for sousitem in item["items"] :
                 if sousitem == "-" :
                     menu.AppendSeparator()
@@ -1125,10 +1118,7 @@ class MainFrame(wx.Frame):
                 else :
                     CreationItem(menu, sousitem)
             if sousmenu == True :
-                try :
-                    menuParent.Append(id, item["label"], menu)
-                except :
-                    menuParent.AppendMenu(id, item["label"], menu)
+                menuParent.AppendMenu(id, item["label"], menu)
             else :
                 menuParent.Append(menu, item["label"])
             self.dictInfosMenu[item["code"]] = {"id" : id, "ctrl" : menu}
@@ -3794,7 +3784,8 @@ class MainFrame(wx.Frame):
             try :
                 message = _(u"Mise à jour de la base de données en cours... Veuillez patienter...")
                 dlgAttente = wx.BusyInfo(message, None)
-                wx.Yield() 
+                if 'phoenix' not in wx.PlatformInfo:
+                    wx.Yield()
                 
                 DB = GestionDB.DB(nomFichier = nomFichier)        
                 resultat = DB.ConversionDB(versionFichier)
@@ -4237,7 +4228,8 @@ class MyApp(wx.App):
             frame.SetTextColour(couleur_texte)
             frame.Refresh()
             frame.Update()
-            wx.Yield()
+            if 'phoenix' not in wx.PlatformInfo:
+                wx.Yield()
 
         # Création de la frame principale
         frame = MainFrame(None)

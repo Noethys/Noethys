@@ -169,7 +169,8 @@ class Installer():
 
         index = 0
         for i in liste_fichiers:
-            wx.Yield()
+            if 'phoenix' not in wx.PlatformInfo:
+                wx.Yield()
             pourcentage = GetPourcentage(index, nbre_fichiers)
             keepGoing, skip = self.dlgprogress.Update(pourcentage, _(u"Décompression de Connecthys en cours... %s %%") % pourcentage)
             if os.path.isdir(os.path.join(chemin_dest, i)) or "2.5" in i or "." not in i :
@@ -188,7 +189,8 @@ class Installer():
 
     def TransfertRepertoire(self, path="", ftp=None, destpath="", nbre_total=0, liste_exclusions=[]):
         for name in os.listdir(path):
-            wx.Yield()
+            if 'phoenix' not in wx.PlatformInfo:
+                wx.Yield()
 
             # Envoi des fichiers
             if IsException(name) == False :
@@ -469,7 +471,8 @@ class Installer():
             self.Upload(source_repertoire)
 
         except Abort :
-            wx.Yield()
+            if 'phoenix' not in wx.PlatformInfo:
+                wx.Yield()
             if self.dlgprogress != None :
                 self.dlgprogress.Destroy()
                 del self.dlgprogress
@@ -482,7 +485,8 @@ class Installer():
             return False
 
         except Exception as err :
-            wx.Yield()
+            if 'phoenix' not in wx.PlatformInfo:
+                wx.Yield()
             if self.dlgprogress != None :
                 self.dlgprogress.Destroy()
                 del self.dlgprogress

@@ -535,7 +535,8 @@ class Dialog(wx.Dialog):
         
         # Fenêtre d'attente
         dlgAttente = wx.BusyInfo(_(u"Veuillez patienter durant la procédure d'inscription..."), None)
-        wx.Yield() 
+        if 'phoenix' not in wx.PlatformInfo:
+            wx.Yield()
 
         # Récupère infos pour historique
         DB = GestionDB.DB()

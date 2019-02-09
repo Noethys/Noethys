@@ -255,7 +255,8 @@ class Dialog(wx.Dialog):
         # DLG Attente
         dlgAttente = wx.BusyInfo(_(u"Veuillez patienter durant l'initialisation de l'éditeur..."), None)
         try :
-            wx.Yield()
+            if 'phoenix' not in wx.PlatformInfo:
+                wx.Yield()
         except :
             pass
 

@@ -512,7 +512,8 @@ class ListView(FastObjectListView):
             listeIDrappels.append(track.IDrappel)
 
         dlgAttente = wx.BusyInfo(_(u"Suppression des lettres de rappel en cours..."), None)
-        wx.Yield() 
+        if 'phoenix' not in wx.PlatformInfo:
+            wx.Yield()
         DB = GestionDB.DB()
         for IDrappel in listeIDrappels :
             DB.ReqDEL("rappels", "IDrappel", IDrappel)

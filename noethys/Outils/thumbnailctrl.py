@@ -1493,7 +1493,7 @@ class ScrolledThumbnail(wx.ScrolledWindow):
         :param `y`: the mouse y position.
         """
         
-        col = (x - self._tBorder)/(self._tWidth + self._tBorder)
+        col = (x - self._tBorder)//(self._tWidth + self._tBorder)
 
         if col >= self._cols:
             col = self._cols - 1
@@ -1526,7 +1526,7 @@ class ScrolledThumbnail(wx.ScrolledWindow):
         """
 
         width = self.GetClientSize().GetWidth()
-        self._cols = (width - self._tBorder)/(self._tWidth + self._tBorder)
+        self._cols = (width - self._tBorder)//(self._tWidth + self._tBorder)
         
         if self._cols == 0:
             self._cols = 1
@@ -1536,14 +1536,14 @@ class ScrolledThumbnail(wx.ScrolledWindow):
         
         self._tCaptionHeight = []
 
-        for row in range(int(self._rows)):
+        for row in range(self._rows):
 
             capHeight = 0
             
-            for col in range(len(self._cols)):
+            for col in range(self._cols):
 
                 ii = row*self._cols + col
-                
+
                 if len(self._items) > ii and \
                    self._items[ii].GetCaptionLinesCount(self._tWidth - self._tCaptionBorder) > capHeight:
                     

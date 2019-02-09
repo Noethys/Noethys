@@ -381,7 +381,8 @@ class Dialog(wx.Dialog):
         
         # Imprimer tout
         dlgAttente = wx.BusyInfo(_(u"Création du rapport..."), None)
-        wx.Yield() 
+        if 'phoenix' not in wx.PlatformInfo:
+            wx.Yield()
         
         if ID == 10 : 
             html = self.baseHTML.GetHTML(mode="impression", selectionsCodes=listeCodes)
@@ -527,7 +528,8 @@ class Dialog(wx.Dialog):
     def MAJpage(self, indexRubrique=None, indexPage=None):
         """ Met à jour le contenu d'une page """
         dlgAttente = wx.BusyInfo(_(u"Actualisation des données..."), None)
-        wx.Yield() 
+        if 'phoenix' not in wx.PlatformInfo:
+            wx.Yield()
         
         codeRubrique = None
         codePage = None

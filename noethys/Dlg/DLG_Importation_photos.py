@@ -344,7 +344,8 @@ class Dialog(wx.Dialog):
         self.Layout()
         
         dlgAttente = wx.BusyInfo(_(u"Analyse de l'image en cours..."), None)
-        wx.Yield() 
+        if 'phoenix' not in wx.PlatformInfo:
+            wx.Yield()
         
         cascade = cv2.CascadeClassifier(Chemins.GetStaticPath("Divers/haarcascade_frontalface_alt2.xml"))
         if six.PY2:

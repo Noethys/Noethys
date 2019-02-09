@@ -308,7 +308,8 @@ class CTRL(HTL.HyperTreeList):
         # Affiche d'une fenêtre d'attente
         message = _(u"Calcul des données en cours... Veuillez patienter...")
         dlgAttente = wx.BusyInfo(message, None)
-        wx.Yield() 
+        if 'phoenix' not in wx.PlatformInfo:
+            wx.Yield()
 
         # Importation des données
         dictResultats, listeModes = self.Importation()

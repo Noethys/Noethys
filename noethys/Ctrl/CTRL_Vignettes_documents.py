@@ -250,7 +250,7 @@ Tous les fichiers (*.*)|*.*"
             defaultDir=cheminDefaut, 
             defaultFile="", 
             wildcard=wildcard,
-            style=wx.FD_OPEN | wx.MULTIPLE
+            style=wx.FD_OPEN | wx.FD_MULTIPLE
             )
         if dlg.ShowModal() == wx.ID_OK:
             listeFichiers = dlg.GetPaths()

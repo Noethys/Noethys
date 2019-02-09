@@ -191,7 +191,8 @@ class Panel(wx.Panel):
     def SauvegardeRappels(self):
         """ Sauvegarde des rappels """
         dlgAttente = wx.BusyInfo(_(u"Génération des rappels en cours..."), None)
-        wx.Yield() 
+        if 'phoenix' not in wx.PlatformInfo:
+            wx.Yield()
 
         # Recherche numéro de facture suivant
         DB = GestionDB.DB()

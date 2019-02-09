@@ -135,7 +135,8 @@ class ListView(FastObjectListView):
 
     def InitModel(self):
         dlgAttente = wx.BusyInfo(_(u"Recherche des prestations en cours..."), None)
-        wx.Yield() 
+        if 'phoenix' not in wx.PlatformInfo:
+            wx.Yield()
         self.donnees = self.GetTracks()
         del dlgAttente
     

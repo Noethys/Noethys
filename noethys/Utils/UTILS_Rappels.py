@@ -238,7 +238,8 @@ class Facturation():
         """ Impression des factures """
         dlgAttente = wx.BusyInfo(_(u"Recherche des données de facturation..."), None)
         try :
-            wx.Yield()
+            if 'phoenix' not in wx.PlatformInfo:
+                wx.Yield()
         except :
             pass
         
@@ -393,7 +394,8 @@ class Facturation():
         def CreationPDFunique(repertoireCible=""):
             dictPieces = {}
             dlgAttente = wx.BusyInfo(_(u"Génération des lettres de rappel à l'unité au format PDF..."), None)
-            wx.Yield() 
+            if 'phoenix' not in wx.PlatformInfo:
+                wx.Yield()
             try :
                 index = 0
                 for IDrappel, dictRappel in dictRappels.items() :
@@ -434,7 +436,8 @@ class Facturation():
         # Fabrication du PDF global
         if repertoireTemp == False :
             dlgAttente = wx.BusyInfo(_(u"Création du PDF des lettres de rappel..."), None)
-            wx.Yield() 
+            if 'phoenix' not in wx.PlatformInfo:
+                wx.Yield()
             self.EcritStatusbar(_(u"Création du PDF des lettres de rappel en cours... veuillez patienter..."))
             try :
                 UTILS_Impression_rappel.Impression(dictRappels, dictOptions, IDmodele=dictOptions["IDmodele"], ouverture=afficherDoc, nomFichier=nomDoc)

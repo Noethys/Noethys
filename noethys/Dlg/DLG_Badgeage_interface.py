@@ -1028,7 +1028,8 @@ class Dialog(wx.Dialog):
             else :
                 texte = _(u"Veuillez patienter durant l'importation des badgeages...")
             dlgAttente = wx.BusyInfo(_(u"Initialisation..."), None)
-            wx.Yield() 
+            if 'phoenix' not in wx.PlatformInfo:
+                wx.Yield()
             
             if self.mode_debug == True :
                 montrerGrille = True

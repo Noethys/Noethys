@@ -21,6 +21,7 @@ import wx.html as html
 from six.moves.urllib.request import urlopen
 import traceback
 import datetime
+import six
 from Utils import UTILS_Config
 from Utils import UTILS_Utilisateurs
 
@@ -249,7 +250,8 @@ class Dialog(wx.Dialog):
     def VerifieEtat(self, identifiant="", code=""):
         """ Vérifie la validité du code en ligne """
         dlgAttente = wx.BusyInfo(_(u"Vérification du code en cours..."), None)
-        wx.Yield() 
+        if 'phoenix' not in wx.PlatformInfo:
+            wx.Yield()
         
         try :
             url = "https://www.noethys.com/aide/html/testcode.php?identifiant=%s&code=%s" % (identifiant, code)
@@ -262,7 +264,10 @@ class Dialog(wx.Dialog):
             print("pb dans verification code enregistrement.")
             traceback.print_exc(file=sys.stdout)
             return False
-        
+
+        if six.PY3:
+            html = html.decode("iso-8859-15")
+
         # Analyse l'état
         if html.startswith("codeok") :
             try :

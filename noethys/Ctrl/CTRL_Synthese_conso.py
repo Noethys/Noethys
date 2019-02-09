@@ -182,7 +182,8 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         # init grid
         try :
             dlgAttente = wx.BusyInfo(_(u"Veuillez patienter durant la recherche des données..."), None)
-            wx.Yield() 
+            if 'phoenix' not in wx.PlatformInfo:
+                wx.Yield()
             self.InitGrid() 
             del dlgAttente
         except Exception as err:

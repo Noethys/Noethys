@@ -449,7 +449,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             index = 0
             for IDcolonne, ordre, nom_colonne, largeur, categorie, parametres in listeDonnees:
                 if type(parametres) in (str, six.text_type):
-                    exec (u"parametres = %s" % parametres)
+                    parametres = eval(parametres)
                 dictColonne = {"IDcolonne": IDcolonne, "ordre": ordre, "nom_colonne": nom_colonne, "largeur": largeur, "categorie": categorie, "parametres": parametres}
                 dictDonnees["liste_colonnes"].append(dictColonne)
 

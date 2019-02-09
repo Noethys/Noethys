@@ -356,7 +356,8 @@ class ListView(FastObjectListView):
 
         # Fabrication du PDF
         dlgAttente = wx.BusyInfo(_(u"Création de l'aperçu au format PDF..."), None)
-        wx.Yield()
+        if 'phoenix' not in wx.PlatformInfo:
+            wx.Yield()
         try:
             UTILS_Impression_facture.Impression(dictComptes, dictOptions, IDmodele=dictOptions["IDmodele"])
             del dlgAttente

@@ -312,7 +312,10 @@ class CTRL_Modes(wx.CheckListBox):
     
     def OnCoche(self, event):
         if self.parent.mode == "ajout" :
-            self.SetChecked([])
+            if 'phoenix' in wx.PlatformInfo:
+                self.SetCheckedItems([])
+            else:
+                self.SetChecked([])
             index = event.GetSelection()
             self.Check(index)
 
@@ -372,7 +375,10 @@ class CTRL_Etats(wx.CheckListBox):
     
     def OnCoche(self, event):
         if self.parent.mode == "ajout" :
-            self.SetChecked([])
+            if 'phoenix' in wx.PlatformInfo:
+                self.SetCheckedItems([])
+            else:
+                self.SetChecked([])
             index = event.GetSelection()
             self.Check(index)
 

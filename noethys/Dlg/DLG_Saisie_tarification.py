@@ -52,7 +52,7 @@ class Notebook(wx.Notebook):
         index = 0
         for code, label, ctrl, img in self.listePages :
             if choix_pages == None or code in choix_pages :
-                exec("ctrl = " + ctrl)
+                ctrl = eval(ctrl)
                 self.AddPage(ctrl, label)
                 self.SetPageImage(index, dictImages[code])
                 self.dictPages[code] = {'ctrl' : ctrl, 'index' : index}

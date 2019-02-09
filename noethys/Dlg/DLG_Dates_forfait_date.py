@@ -343,7 +343,8 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             feries = dlg.GetFeries()
             try :
                 dlgAttente = wx.BusyInfo(_(u"Veuillez patienter durant l'opération..."), None)
-                wx.Yield() 
+                if 'phoenix' not in wx.PlatformInfo:
+                    wx.Yield()
                 self.TraitementLot(mode, date, date_debut, date_fin, jours_scolaires, jours_vacances, feries)
                 del dlgAttente
             except Exception as err:

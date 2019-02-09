@@ -604,7 +604,8 @@ class Panel(wx.Panel):
         self.ctrl_options.ctrl_signataire.MAJ(listeActivites)
 
         dlgAttente = wx.BusyInfo(_(u"Recherche des données..."), None)
-        wx.Yield() 
+        if 'phoenix' not in wx.PlatformInfo:
+            wx.Yield()
         try :
             listePrestations = self.GetParent().page1.GetPrestations() 
             self.ctrl_attestations.MAJ(listePrestations) 
@@ -631,7 +632,8 @@ class Panel(wx.Panel):
             return
 
         dlgAttente = wx.BusyInfo(_(u"Sauvegarde des attestations en cours..."), None)
-        wx.Yield() 
+        if 'phoenix' not in wx.PlatformInfo:
+            wx.Yield()
 
         DB = GestionDB.DB()
         
