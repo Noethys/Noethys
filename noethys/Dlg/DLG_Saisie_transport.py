@@ -309,13 +309,13 @@ class CTRL_Saisie_prog(wx.Panel):
 
     def CheckJours(self, periode="scolaire"):
         for jour in self.liste_jours[:5] :
-            exec("self.check_%s_%s.SetValue(True)" % (periode, jour))
+            getattr(self, "check_%s_%s" % (periode, jour)).SetValue(True)
 
     def GetJours(self, periode="scolaire"):
         listeTemp = []
         index = 0
         for jour in self.liste_jours :
-            exec("etat = self.check_%s_%s.GetValue()" % (periode, jour))
+            etat = getattr(self, "check_%s_%s" % (periode, jour)).GetValue()
             if etat == True :
                 listeTemp.append(str(index))
             index += 1
@@ -331,10 +331,10 @@ class CTRL_Saisie_prog(wx.Panel):
         index = 0
         for jour in self.liste_jours :
             if index in listeJours :
-                etat = "True"
+                etat = True
             else :
-                etat = "False"
-            exec("self.check_%s_%s.SetValue(%s)" % (periode, jour, etat))
+                etat = False
+            getattr(self, "check_%s_%s" % (periode, jour)).SetValue(etat)
             index += 1
 
     def GetData(self):
@@ -503,13 +503,13 @@ class CTRL_Planning(wx.Panel):
     
     def CheckJours(self, periode="scolaire"):
         for jour in self.liste_jours[:5] :
-            exec("self.check_%s_%s.SetValue(True)" % (periode, jour))
+            getattr(self, "check_%s_%s" % (periode, jour)).SetValue(True)
         
     def GetJours(self, periode="scolaire"):
         listeTemp = []
         index = 0
         for jour in self.liste_jours :
-            exec("etat = self.check_%s_%s.GetValue()" % (periode, jour))
+            etat = getattr(self, "check_%s_%s" % (periode, jour)).GetValue()
             if etat == True :
                 listeTemp.append(index)
             index += 1

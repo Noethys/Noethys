@@ -106,8 +106,8 @@ class TrackIndividu(object):
 
         # Récupération des réponses des questionnaires
         for dictQuestion in self.listview.LISTE_QUESTIONS :
-            exec(u"self.question_%d = self.listview.GetReponse(%d, %s)" % (dictQuestion["IDquestion"], dictQuestion["IDquestion"], self.IDindividu))
-            
+            setattr(self, "question_%d" % dictQuestion["IDquestion"], self.listview.GetReponse(dictQuestion["IDquestion"], self.IDindividu))
+
 
 
 def GetListeIndividus(listview=None, infosIndividus=None):
@@ -219,7 +219,7 @@ class TrackFamille(object):
 
         # Récupération des réponses des questionnaires
         for dictQuestion in self.listview.LISTE_QUESTIONS :
-            exec(u"self.question_%d = self.listview.GetReponse(%d, %s)" % (dictQuestion["IDquestion"], dictQuestion["IDquestion"], self.IDfamille))
+            setattr(self, "question_%d" % dictQuestion["IDquestion"], self.listview.GetReponse(dictQuestion["IDquestion"], self.IDfamille))
 
 
 def GetListeFamilles(listview=None, infosIndividus=None):

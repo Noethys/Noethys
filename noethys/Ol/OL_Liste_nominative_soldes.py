@@ -113,8 +113,8 @@ def GetDictInfosIndividus():
 class Track(object):
     def __init__(self, donnees):
         for dictChamp in LISTE_CHAMPS :
-            exec("""self.%s = donnees["%s"]""" % (dictChamp["code"], dictChamp["code"]))
-            
+            setattr(self, dictChamp["code"], donnees[dictChamp["code"]])
+
         
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):

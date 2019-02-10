@@ -32,7 +32,7 @@ class CTRL_profil_perso(CTRL_Profil.CTRL):
         listeFiltres = []
         if dictParametres != None :
             for index, dictFiltreStr in dictParametres.items() :
-                exec ("dictFiltre = " + dictFiltreStr)
+                dictFiltre = eval(dictFiltreStr)
                 listeFiltres.append(dictFiltre)
         self.dlg.SetDonnees(listeFiltres)
 

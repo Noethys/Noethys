@@ -53,17 +53,14 @@ class Dialog(wx.Dialog):
         self.bouton_retour.Enable(False)
         self.pageVisible = 1
                         
-        # Création des pages
 
-        
-            
     def Creation_Pages(self):
         """ Creation des pages """
         for numPage in range(1, self.nbrePages+1) :
-            exec( "self.page" + str(numPage) + " = " + self.listePages[numPage-1] + "(self)" )
-            exec( "self.sizer_pages.Add(self.page" + str(numPage) + ", 1, wx.EXPAND, 0)" )
+            setattr(self, "page%d" % numPage, eval(self.listePages[numPage-1] + "(self)"))
+            self.sizer_pages.Add(getattr(self, "page%d" % numPage), 1, wx.EXPAND, 0)
             self.sizer_pages.Layout()
-            exec( "self.page" + str(numPage) + ".Show(False)" )
+            getattr(self, "page%d" % numPage).Show(False)
         self.page1.Show(True)
         self.sizer_pages.Layout()
 
@@ -164,7 +161,7 @@ class Dialog(wx.Dialog):
 
     def ValidationPages(self) :
         """ Validation des données avant changement de pages """
-        exec( "validation = self.page" + str(self.pageVisible) + ".Validation()" )
+        validation = getattr(self, "page%s" % self.pageVisible).Validation()
         return validation
     
     def Terminer(self):

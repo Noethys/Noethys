@@ -396,7 +396,7 @@ class ObjectListView(OLV.ObjectListView):
         
         # Filtres de colonnes
         for texteFiltre in self.formatageFiltres(self.listeFiltresColonnes) :
-            exec("filtre = Filter.Predicate(lambda track: %s)" % texteFiltre)
+            filtre = Filter.Predicate(lambda track: eval(texteFiltre))
             listeFiltres.append(filtre)
             
         self.SetFilter(Filter.Chain(*listeFiltres))

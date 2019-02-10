@@ -247,7 +247,7 @@ class CTRL_Periodes(wx.Panel):
 
         grid_sizer_scolaire = wx.FlexGridSizer(rows=1, cols=7, vgap=5, hgap=5)
         for jour in self.liste_jours :
-            exec("grid_sizer_scolaire.Add(self.check_scolaire_%s, 0, 0, 0)" % jour)
+            grid_sizer_scolaire.Add(getattr(self, "check_scolaire_%s" % jour), 0, 0, 0)
         grid_sizer_base.Add(grid_sizer_scolaire, 1, wx.EXPAND|wx.LEFT|wx.RIGHT, 10)
         
         # Périodes de vacances
@@ -255,7 +255,7 @@ class CTRL_Periodes(wx.Panel):
         
         grid_sizer_vacances = wx.FlexGridSizer(rows=1, cols=7, vgap=5, hgap=5)
         for jour in self.liste_jours :
-            exec("grid_sizer_vacances.Add(self.check_vacances_%s, 0, 0, 0)" % jour)
+            grid_sizer_vacances.Add(getattr(self, "check_vacances_%s" % jour), 0, 0, 0)
         grid_sizer_base.Add(grid_sizer_vacances, 1, wx.EXPAND|wx.LEFT|wx.RIGHT, 10)
                 
         self.SetSizer(grid_sizer_base)
@@ -264,14 +264,14 @@ class CTRL_Periodes(wx.Panel):
     
     def CreationCaseJours(self, periode="scolaire"):
         for jour in self.liste_jours :
-            exec("self.check_%s_%s = wx.CheckBox(self, -1,u'%s')" % (periode, jour, jour[0].upper()) )
-            exec("self.check_%s_%s.SetToolTip(wx.ToolTip(u'%s'))" % (periode, jour, jour.capitalize()) )
+            setattr(self, "check_%s_%s" % (periode, jour), wx.CheckBox(self, -1, jour[0].upper()))
+            getattr(self, "check_%s_%s" % (periode, jour)).SetToolTip(wx.ToolTip(jour.capitalize()))
 
     def GetJours(self, periode="scolaire"):
         listeTemp = []
         index = 0
         for jour in self.liste_jours :
-            exec("etat = self.check_%s_%s.GetValue()" % (periode, jour))
+            etat = getattr(self, "check_%s_%s" % (periode, jour)).GetValue()
             if etat == True :
                 listeTemp.append(str(index))
             index += 1
@@ -291,10 +291,10 @@ class CTRL_Periodes(wx.Panel):
         index = 0
         for jour in self.liste_jours :
             if index in listeJours :
-                etat = "True"
+                etat = True
             else :
-                etat = "False"
-            exec("self.check_%s_%s.SetValue(%s)" % (periode, jour, etat))
+                etat = False
+            getattr(self, "check_%s_%s" % (periode, jour)).SetValue(etat)
             index += 1
             
         

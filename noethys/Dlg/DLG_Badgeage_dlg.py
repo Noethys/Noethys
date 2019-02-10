@@ -262,7 +262,7 @@ class CTRL_Choix(wx.Panel):
             self.Bind(wx.EVT_MENU, self.OnLeftDown, id=ID)
             ctrl.Bind(wx.EVT_LEFT_DOWN, self.OnLeftDown)
             listeRaccourcis.append((0, ord(str(ID)), ID))
-            exec("listeRaccourcis.append((0, wx.WXK_NUMPAD%d, ID))" % ID)
+            listeRaccourcis.append((0, getattr(wx, "WXK_NUMPAD%d" % ID), ID))
             ID += 1
         
         listeCommandes = [

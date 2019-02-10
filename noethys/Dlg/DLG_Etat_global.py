@@ -346,7 +346,7 @@ class Dialog(wx.Dialog):
 
         # Calcule de la formule
         resultat = datetime.timedelta(minutes=0)
-        exec("""resultat = %s""" % formule)
+        resultat = eval(formule)
         if resultat == None :
             resultat = datetime.timedelta(minutes=0)
         if type(resultat) == int :

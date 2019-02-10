@@ -1074,7 +1074,7 @@ class Dialog(wx.Dialog):
             if nbre_chiffres != None:
                 try :
                     numero = int(self.ctrl_numero.GetValue())
-                    exec("self.ctrl_numero.SetValue('%0" + str(nbre_chiffres) + "d' % numero)")
+                    self.ctrl_numero.SetValue(("%0" + str(nbre_chiffres) + "d") % numero)
                 except :
                     pass
 

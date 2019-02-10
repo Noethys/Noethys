@@ -47,7 +47,10 @@ class CTRL(wx.ComboBox) :
                 self.ignoreEvtText = True
                 self.SetValue(choice)
                 self.SetInsertionPoint(len(currentText))
-                self.SetMark(len(currentText), len(choice))
+                if 'phoenix' in wx.PlatformInfo:
+                    self.SetTextSelection(len(currentText), len(choice))
+                else:
+                    self.SetMark(len(currentText), len(choice))
                 found = True
                 break
         if not found:

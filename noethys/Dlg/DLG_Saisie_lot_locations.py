@@ -98,8 +98,8 @@ class CTRL_Jours(wx.Panel):
         self.liste_jours = ("lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche")
         
         for jour in self.liste_jours :
-            exec("self.check_%s = wx.CheckBox(self, -1, u'%s')" % (jour, jour[0].upper()) )
-            exec("self.check_%s.SetToolTip(wx.ToolTip(u'%s'))" % (jour, jour.capitalize()) )
+            setattr(self, "check_%s" % jour, wx.CheckBox(self, -1, jour[0].upper()))
+            getattr(self, "check_%s" % jour).SetToolTip(wx.ToolTip(jour.capitalize()))
 
         self.hyper_tout = Hyperlien(self, label=_(u"Tout"), infobulle=_(u"Cliquez ici pour tout cocher"), URL="tout")
         self.label_separation = wx.StaticText(self, -1, u"|")
@@ -108,7 +108,7 @@ class CTRL_Jours(wx.Panel):
         # Layout
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=10, vgap=0, hgap=0)
         for jour in self.liste_jours :
-            exec("grid_sizer_base.Add(self.check_%s, 0, 0, 0)" % jour)
+            grid_sizer_base.Add(getattr(self, "check_%s" % jour), 0, 0, 0)
 
         grid_sizer_options = wx.FlexGridSizer(rows=1, cols=5, vgap=0, hgap=3)
         grid_sizer_options.Add(self.hyper_tout, 0, wx.ALIGN_CENTER_VERTICAL, 0)
@@ -126,7 +126,7 @@ class CTRL_Jours(wx.Panel):
         listeTemp = []
         index = 0
         for jour in self.liste_jours :
-            exec("etat = self.check_%s.GetValue()" % jour)
+            etat = getattr(self, "check_%s" % jour).GetValue()
             if etat == True :
                 listeTemp.append(index)
             index += 1
@@ -144,10 +144,10 @@ class CTRL_Jours(wx.Panel):
         index = 0
         for jour in self.liste_jours :
             if index in listeJours :
-                etat = "True"
+                etat = True
             else :
-                etat = "False"
-            exec("self.check_%s.SetValue(%s)" % (jour, etat))
+                etat = False
+            getattr(self, "check_%s" % jour).SetValue(etat)
             index += 1
 
     def CocherTout(self):

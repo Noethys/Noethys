@@ -338,7 +338,7 @@ class CTRL_Conditions(wx.Panel) :
     def OnCheckJour(self, event):  
         for periode in ("scolaire", "vacances") :
             for jour in self.liste_jours :
-                exec("self.check_%s_%s.Enable(self.check_jour.GetValue())" % (periode, jour))
+                getattr(self, "check_%s_%s" % (periode, jour)).Enable(self.check_jour.GetValue())
 
     def OnCheckHeure(self, event):  
         self.ctrl_heure_debut.Enable(self.check_heure.GetValue())
@@ -363,7 +363,7 @@ class CTRL_Conditions(wx.Panel) :
         listeTemp = []
         index = 0
         for jour in self.liste_jours :
-            exec("etat = self.check_%s_%s.GetValue()" % (periode, jour))
+            etat = getattr(self, "check_%s_%s" % (periode, jour)).GetValue()
             if etat == True :
                 listeTemp.append(index)
             index += 1
@@ -378,10 +378,10 @@ class CTRL_Conditions(wx.Panel) :
         index = 0
         for jour in self.liste_jours :
             if index in listeJours :
-                etat = "True"
+                etat = True
             else :
-                etat = "False"
-            exec("self.check_%s_%s.SetValue(%s)" % (periode, jour, etat))
+                etat = False
+            getattr(self, "check_%s_%s" % (periode, jour)).SetValue(etat)
             index += 1
 
     def OnRadioPoste(self, event):

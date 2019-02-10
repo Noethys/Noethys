@@ -219,7 +219,7 @@ def ResolveurCalcul(texte=u"", dictValeurs={}):
             
     # Réalisation du calcul
     try :
-        exec("resultat = %s" % texte)
+        resultat = eval(texte)
         if resultatEuros == True :
             resultat = u"%.02f %s" % (resultat, SYMBOLE)
         else :

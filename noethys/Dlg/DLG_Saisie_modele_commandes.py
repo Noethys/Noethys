@@ -121,7 +121,7 @@ class Page_Colonnes(wx.Panel):
 
     def SetParametres(self, dictParametres={}):
         if type(dictParametres) in (six.text_type, str):
-            exec (u"dictParametres = %s" % dictParametres)
+            dictParametres = eval(dictParametres)
         self.ctrl_colonnes.SetParametres(dictParametres)
 
     def Validation(self):
@@ -285,7 +285,7 @@ class Dialog(wx.Dialog):
         if len(listeDonnees) > 0:
             for IDcolonne, ordre, nom, largeur, categorie, parametres, nbre_valeurs in listeDonnees :
                 if type(parametres) in (str, six.text_type):
-                    exec (u"parametres = %s" % parametres)
+                    parametres = eval(parametres)
                 if nbre_valeurs == None :
                     nbre_valeurs = 0
                 listeColonnes.append({"IDcolonne" : IDcolonne, "ordre" : ordre, "nom" : nom, "largeur" : largeur, "categorie" : categorie, "parametres" : parametres, "nbre_valeurs" : nbre_valeurs})

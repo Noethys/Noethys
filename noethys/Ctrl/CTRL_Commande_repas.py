@@ -427,7 +427,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         if len(listeDonnees) > 0:
             nom_modele, IDrestaurateur, parametres, restaurateur_nom, restaurateur_tel, restaurateur_mail = listeDonnees[0]
             if type(parametres) in (str, six.text_type):
-                exec (u"parametres = %s" % parametres)
+                parametres = eval(parametres)
 
             dictDonnees["modele_nom"] = nom_modele
             dictDonnees["modele_parametres"] = parametres

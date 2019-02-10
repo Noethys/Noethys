@@ -84,7 +84,7 @@ class Notebook(wx.Notebook):
         il = wx.ImageList(16, 16)
         index = 0
         for codePage, labelPage, ctrlPage, imgPage in self.listePages :
-            exec("self.img%d = il.Add(wx.Bitmap(Chemins.GetStaticPath('Images/16x16/%s'), wx.BITMAP_TYPE_PNG))" % (index, imgPage))
+            setattr(self, "img%d" % index, il.Add(wx.Bitmap(Chemins.GetStaticPath('Images/16x16/%s') % imgPage, wx.BITMAP_TYPE_PNG)))
             index += 1
         self.AssignImageList(il)
 
@@ -94,12 +94,12 @@ class Notebook(wx.Notebook):
         index = 0
         for codePage, labelPage, ctrlPage, imgPage in self.listePages :
             if dictParametres[codePage] == True:
-                exec("self.page%d = %s" % (index, ctrlPage))
-                exec("self.AddPage(self.page%d, u'%s')" % (index, labelPage))
-                exec("self.SetPageImage(%d, self.img%d)" % (index, index))
-                exec("self.dictPages['%s'] = {'ctrl' : self.page%d, 'index' : %d}" % (codePage, index, index))
+                setattr(self, "page%s" % index, eval(ctrlPage))
+                self.AddPage(getattr(self, "page%s" % index), labelPage)
+                self.SetPageImage(index, getattr(self, "img%d" % index))
+                self.dictPages[codePage] = {'ctrl': getattr(self, "page%d" % index), 'index': index}
                 index += 1
-        
+
         self.Bind(wx.EVT_NOTEBOOK_PAGE_CHANGED, self.OnPageChanged)
         
     def GetPageAvecCode(self, codePage=""):

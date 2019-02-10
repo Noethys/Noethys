@@ -1419,8 +1419,8 @@ class CTRL_Liste(HTL.HyperTreeList):
         self.dictImages = {}
         for categorie, civilites in Civilites.LISTE_CIVILITES :
             for IDcivilite, label, abrege, img, sexe in civilites :
-                exec("self.img%d = il.Add(wx.Bitmap(Chemins.GetStaticPath('Images/16x16/%s'), wx.BITMAP_TYPE_PNG))" % (index, img))
-                exec("self.dictImages[%d] = self.img%d" % (IDcivilite, index))
+                setattr(self, "img%d" % index, il.Add(wx.Bitmap(Chemins.GetStaticPath('Images/16x16/%s') % img, wx.BITMAP_TYPE_PNG)))
+                self.dictImages[IDcivilite] = getattr(self, "img%d" % index)
                 index += 1
         self.dictImages[100] = il.Add(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Titulaire.png"), wx.BITMAP_TYPE_PNG))
         self.AssignImageList(il)
@@ -1993,20 +1993,20 @@ class Notebook(wx.Notebook):
         index = 0
         for codePage, labelPage, ctrlPage, imgPage in self.listePages :
             if imgPage != None :
-                exec("self.img%d = il.Add(wx.Bitmap(Chemins.GetStaticPath('Images/16x16/%s'), wx.BITMAP_TYPE_PNG))" % (index, imgPage))
+                setattr(self, "img%d" % index, il.Add(wx.Bitmap(Chemins.GetStaticPath('Images/16x16/%s') % imgPage, wx.BITMAP_TYPE_PNG)))
                 index += 1
         self.AssignImageList(il)
 
         # Création des pages
         index = 0
         for codePage, labelPage, ctrlPage, imgPage in self.listePages :
-            exec("self.page%d = %s" % (index, ctrlPage))
-            exec("self.AddPage(self.page%d, u'%s')" % (index, labelPage))
-            if imgPage != None :
-                exec("self.SetPageImage(%d, self.img%d)" % (index, index))
-            exec("self.dictPages['%s'] = {'ctrl' : self.page%d, 'index' : %d}" % (codePage, index, index))
+            setattr(self, "page%s" % index, eval(ctrlPage))
+            self.AddPage(getattr(self, "page%s" % index), labelPage)
+            if imgPage != None:
+                self.SetPageImage(index, getattr(self, "img%d" % index))
+            self.dictPages[codePage] = {'ctrl': getattr(self, "page%d" % index), 'index': index}
             index += 1
-        
+
         self.Bind(wx.EVT_NOTEBOOK_PAGE_CHANGED, self.OnPageChanged)
         
     def GetPageAvecCode(self, codePage=""):

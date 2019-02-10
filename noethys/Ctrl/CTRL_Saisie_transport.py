@@ -1237,7 +1237,7 @@ class CTRL(wx.Panel):
             
             # contrôle
             nomControle = dictControle["ctrl"]
-            exec("ctrl = %s" % nomControle)
+            ctrl = eval(nomControle)
             ctrl.SetName(code)
             ctrl.rubrique = rubrique
             grid_sizer.Add(ctrl, 0, wx.EXPAND, 0)

@@ -535,8 +535,8 @@ class CTRL_Saisie_Liens(HTL.HyperTreeList):
         self.dictImages = {}
         for categorie, civilites in Civilites.LISTE_CIVILITES :
             for IDcivilite, label, abrege, img, sexe in civilites :
-                exec("self.img%d = il.Add(wx.Bitmap(Chemins.GetStaticPath('Images/16x16/%s'), wx.BITMAP_TYPE_PNG))" % (index, img))
-                exec("self.dictImages[%d] = self.img%d" % (IDcivilite, index))
+                setattr(self, "img%d" % index, il.Add(wx.Bitmap(Chemins.GetStaticPath('Images/16x16/%s') % img, wx.BITMAP_TYPE_PNG)))
+                self.dictImages[IDcivilite] = getattr(self, "img%d" % index)
                 index += 1
         self.AssignImageList(il)
         

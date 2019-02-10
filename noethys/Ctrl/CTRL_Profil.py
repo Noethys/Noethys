@@ -273,7 +273,7 @@ def GetParametres(IDprofil=None):
         if type_donnee == "texte":
             parametre = parametre
         else :
-            exec("parametre = " + parametre)
+            parametre = eval(parametre)
         dictResultats[nom] = parametre
 
     return dictResultats

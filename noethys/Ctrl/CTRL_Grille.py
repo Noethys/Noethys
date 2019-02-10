@@ -5102,7 +5102,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         formule = re.sub(r'\"([0-9][0-9]):([0-9][0-9])\"', sub, formule)
         # Résolution de la formule
         try :
-            exec("""resultat = %s""" % formule)
+            resultat = eval(formule)
         except Exception as err :
             resultat = None
         #print "Formule : ", formule, " -> resultat =", resultat
