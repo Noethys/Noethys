@@ -14,7 +14,6 @@ from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
 from Ctrl import CTRL_Bouton_image
-import sys
 from wx.lib.mixins.listctrl import CheckListCtrlMixin
 import GestionDB
 from Dlg import DLG_Saisie_utilisateur_reseau
@@ -202,7 +201,7 @@ class ListCtrl(wx.ListCtrl, CheckListCtrlMixin):
                 autorisationStr = "Oui"
             else:
                 autorisationStr = "Non"
-            index = self.InsertStringItem(sys.maxint, autorisationStr)
+            index = self.InsertStringItem(six.MAXSIZE, autorisationStr)
             
             if user == "root" :
                 user = _(u"root (Administrateur)")

@@ -170,7 +170,7 @@ class Dialog(wx.Dialog):
 if __name__ == u"__main__":
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    dialog_1 = Dialog(None, dateMin=datetime.date(2012, 01, 01), dateMax=datetime.date(2012, 12, 31), listeActivites=[1, 2, 3])
+    dialog_1 = Dialog(None, dateMin=datetime.date(2012, 1, 1), dateMax=datetime.date(2012, 12, 31), listeActivites=[1, 2, 3])
     app.SetTopWindow(dialog_1)
     dialog_1.ShowModal()
     app.MainLoop()

@@ -15,6 +15,7 @@ from Utils.UTILS_Traduction import _
 import wx
 from Ctrl import CTRL_Bouton_image
 import os
+import six
 import datetime
 from Ctrl import CTRL_Bandeau
 from Ctrl import CTRL_Ultrachoice
@@ -257,6 +258,8 @@ class Page_ftp(wx.Panel):
     def GetParametres(self, encoder_mdp=True):
         mdp = self.ctrl_mdp.GetValue()
         if encoder_mdp == True :
+            if six.PY3:
+                mdp = mdp.encode("utf-8")
             mdp = base64.b64encode(mdp)
         return {"synchro_ftp_hote" : self.ctrl_hote.GetValue(), "synchro_ftp_identifiant" : self.ctrl_identifiant.GetValue(), "synchro_ftp_mdp" : mdp, "synchro_ftp_repertoire" : self.ctrl_repertoire.GetValue()}
     
@@ -312,7 +315,10 @@ class Page_cryptage(wx.Panel):
         sizer.Fit(self)
         
     def GetParametres(self):
-        mdp = base64.b64encode(self.ctrl_mdp.GetValue())
+        mdp = self.ctrl_mdp.GetValue()
+        if six.PY3:
+            mdp = mdp.encode("utf-8")
+        mdp = base64.b64encode(mdp)
         return {"synchro_cryptage_activer" : self.check_activer.GetValue(), "synchro_cryptage_mdp" : mdp}
     
     def SetParametres(self, dictDonnees={}):
@@ -511,7 +517,7 @@ class Dialog(wx.Dialog):
         self.ctrl_mode.SetMode(UTILS_Config.GetParametre("synchro_mode_favori", defaut="ftp"))
         self.ctrl_fichiers.MAJ() 
         
-        wx.CallAfter(self.AfficheAvertissement)
+        #wx.CallAfter(self.AfficheAvertissement)
 
     def __set_properties(self):
         self.ctrl_mode.SetToolTip(wx.ToolTip(_(u"Sélectionnez le mode de transfert souhaité pour envoyer/recevoir des données manuellement")))
@@ -806,7 +812,7 @@ class Dialog(wx.Dialog):
 
         from Dlg import DLG_Message_html
         texte = u"""
-<CENTER><IMG SRC="Static/Images/32x32/Information.png">
+<CENTER><IMG SRC="%s">
 <BR><BR>
 <FONT SIZE=2>
 <B>Avertissement</B>
@@ -818,7 +824,7 @@ Il est conseillé de tester son efficacité et sa stabilité dans un fichier test a
 Merci de signaler tout bug rencontré dans la rubrique "Signaler un bug " du forum de Noethys.
 </FONT>
 </CENTER>
-"""
+""" % Chemins.GetStaticPath("Images/32x32/Information.png")
         dlg = DLG_Message_html.Dialog(self, texte=texte, titre=_(u"Information"), nePlusAfficher=True)
         dlg.ShowModal()
         nePlusAfficher = dlg.GetEtatNePlusAfficher()

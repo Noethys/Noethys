@@ -1340,7 +1340,7 @@ class CTRL_Tableau(wx.Panel):
         printout_preview  = TableauPrintout(self, True)
         printout = TableauPrintout(self, False)
         self.preview = wx.PrintPreview(printout_preview, printout, data)
-        if not self.preview.Ok():
+        if not self.preview.IsOk():
             logging.debug(_(u"Impossible d'afficher l'aperçu avant impression...\n"))
             return
         frame = wx.GetApp().GetTopWindow()

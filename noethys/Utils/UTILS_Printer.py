@@ -454,7 +454,13 @@ class MyPreviewFrame(wx.PreviewFrame):
         self.Initialize()
 
         # Récupération de la bar de contrôle
-        controlBar = self.GetControlBar()
+        if 'phoenix' not in wx.PlatformInfo:
+            controlBar = self.GetControlBar()
+        else:
+            for ctrl in self.GetChildren():
+                if "ControlBar" in str(ctrl):
+                    controlBar = ctrl
+
         liste_controles = controlBar.GetChildren()
 
         # Traduction des contrôles en français

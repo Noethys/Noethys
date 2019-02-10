@@ -195,7 +195,7 @@ class Analyse():
             valeur = valeur.replace(nomChamp, str(valChamp))
         # Calcul et formatage de la valeur
         try :
-            exec("""resultat = float(%s)""" % valeur)
+            resultat = float(eval(valeur))
         except Exception as err :
             resultat = 0.0
             print("Erreur dans categorie budgetaire : ", err)

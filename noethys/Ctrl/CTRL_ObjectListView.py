@@ -207,18 +207,25 @@ class ObjectListView(OLV.ObjectListView):
 
             # Pour contrer bug sur comparaison datetime et NoneType
             if type(primary) == datetime.date :
-                primary = str(primary)
+                primary = six.text_type(primary)
+            if six.PY3:
+                if primary == None:
+                    primary = ""
+                if type(primary) in (int, float):
+                    primary = six.text_type(primary)
 
             try:
                 primary = primary.lower()
             except AttributeError:
                 pass
+
             if secondarySortColumn:
                 secondary = secondarySortColumn.GetValue(x)
                 try:
                     secondary = secondary.lower()
                 except AttributeError:
                     pass
+
                 return (primary, secondary)
             else:
                 return primary

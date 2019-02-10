@@ -29,3 +29,7 @@ def GetStaticPath(fichier=""):
     """ Retourne le chemin du répertoire Static """
     chemin = os.path.join(REP_PARENT, "Static")
     return os.path.join(chemin, fichier)
+
+def GetMainPath(fichier=""):
+    """ Retourne le chemin du répertoire principal """
+    return os.path.join(REP_PARENT, fichier)

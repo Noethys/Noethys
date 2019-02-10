@@ -478,7 +478,7 @@ class Dialog(wx.Dialog):
         
         from Dlg import DLG_Message_html
         texte = u"""
-<CENTER><IMG SRC="Static/Images/32x32/Information.png">
+<CENTER><IMG SRC="%s">
 <BR><BR>
 <FONT SIZE=2>
 <B>Avertissement</B>
@@ -491,7 +491,7 @@ Vous pouvez découvrir un petit aperçu des nombreuses possibilités offertes par c
 <I>Pensez à configurer la synthèse vocale pour bénéficier au maximum de l'interface de badgeage !</I>
 </FONT>
 </CENTER>
-"""
+""" % Chemins.GetStaticPath("Images/32x32/Information.png")
         dlg = DLG_Message_html.Dialog(self, texte=texte, titre=_(u"Information"), nePlusAfficher=True)
         dlg.ShowModal()
         nePlusAfficher = dlg.GetEtatNePlusAfficher()

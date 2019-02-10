@@ -607,7 +607,7 @@ class Thumb(object):
         if len(self._caption) == 0:
             return
 
-        pos = width/16
+        pos = width//16
         beg = 0
         end = 0
 

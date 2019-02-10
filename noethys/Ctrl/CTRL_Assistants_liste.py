@@ -13,7 +13,7 @@ import Chemins
 from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
-import sys
+import six
 if wx.VERSION < (2, 9, 0, 0) :
     from Outils import ultimatelistctrl as ULC
 else :
@@ -124,7 +124,7 @@ class CTRL(ULC.UltimateListCtrl):
         self.InsertColumn(0, "Column 1") 
 
         for dictItem in LISTE_ASSISTANTS:
-            index = self.InsertStringItem(sys.maxint, "")
+            index = self.InsertStringItem(six.MAXSIZE, "")
 
             klass = FirstColumnRenderer(self, dictItem)
             self.SetItemCustomRenderer(index, 0, klass)

@@ -1405,6 +1405,8 @@ class Block(object):
                 return RectUtils.Top(r)
 
         # Draw any image
+        if imageIndex == None :
+            imageIndex = 0
         if image:
             y = _CalcBitmapPosition(bounds, image.Height)
             dc.DrawBitmap(image, RectUtils.Left(bounds), y)
@@ -2619,11 +2621,20 @@ class ImageDecoration(Decoration):
         """
         self.horizontalAlign = horizontalAlign
         self.verticalAlign = verticalAlign
-        self.over = True
+        self.over = over
 
         self.bitmap = image
         if isinstance(image, wx.Image):
-            self.bitmap = wx.BitmapFromImage(image)
+            if 'phoenix' in wx.PlatformInfo:
+                self.bitmap = wx.Bitmap(image)
+            else:
+                self.bitmap = wx.BitmapFromImage(image)
+
+    def IsDrawOver(self):
+        """
+        Should this decoration be drawn over the rest of page?
+        """
+        return self.over
 
     def DrawDecoration(self, dc, bounds, block):
         """
@@ -2646,7 +2657,16 @@ class ImageDecoration(Decoration):
         else:
             y = RectUtils.CenterY(bounds) - self.bitmap.Height/2
 
-        dc.DrawBitmap(self.bitmap, x, y, True)
+        if isinstance(dc, (wx.PrinterDC, wx.PostScriptDC)):
+            # as suggested by G. Papadopoulos on ovl discussion list
+            # nicer handling of e.g. .png images, but doesn't work on preview
+            mdc = wx.MemoryDC()
+            mdc.SelectObject(self.bitmap)
+            dc.Blit(x, y, self.bitmap.GetWidth(), self.bitmap.GetHeight(),
+                    mdc, xsrc=0, ysrc=0, useMask=True)
+            mdc.SelectObject(wx.NullBitmap)
+        else:
+            dc.DrawBitmap(self.bitmap, x, y, True)
 
 
 #----------------------------------------------------------------------------

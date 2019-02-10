@@ -1606,7 +1606,7 @@ class Dialog(wx.Dialog):
             return
 
         texte = u"""
-<CENTER><IMG SRC="Static/Images/32x32/Information.png">
+<CENTER><IMG SRC="%s">
 <BR><BR>
 <FONT SIZE=2>
 <B>Avertissement</B>
@@ -1620,7 +1620,7 @@ Dans tous les cas, effectuez par mesure de sécurité une sauvegarde du fichier de
 Merci de signaler tout bug rencontré dans la rubrique "Signaler un bug " du forum de Noethys.
 </FONT>
 </CENTER>
-"""
+""" % Chemins.GetStaticPath("Images/32x32/Information.png")
         from Dlg import DLG_Message_html
         dlg = DLG_Message_html.Dialog(self, texte=texte, titre=_(u"Information"), nePlusAfficher=True)
         dlg.ShowModal()

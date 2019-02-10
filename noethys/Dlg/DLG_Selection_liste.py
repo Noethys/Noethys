@@ -14,13 +14,9 @@ from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
 from Ctrl import CTRL_Bouton_image
-import FonctionsPerso
-import os
 import wx.lib.agw.hyperlink as hl
-import GestionDB
 from wx.lib.mixins.listctrl import CheckListCtrlMixin
-import sys
-import datetime
+import six
 
 
 class Dialog(wx.Dialog):
@@ -185,10 +181,16 @@ class ListCtrl(wx.ListCtrl, CheckListCtrlMixin):
                 ID = 0
             else :
                 ID = int(valeurs[0])
-            index = self.InsertStringItem(sys.maxint, str(ID))
+            if 'phoenix' in wx.PlatformInfo:
+                index = self.InsertItem(six.MAXSIZE, str(ID))
+            else:
+                index = self.InsertStringItem(six.MAXSIZE, str(ID))
             x = 1
             for valeur in valeurs[1:] :
-                self.SetStringItem(index, x, valeur)
+                if 'phoenix' in wx.PlatformInfo:
+                    self.SetItem(index, x, valeur)
+                else:
+                    self.SetStringItem(index, x, valeur)
                 x += 1
 
             self.SetItemData(index, ID)

@@ -431,7 +431,7 @@ if __name__ == "__main__":
     app = wx.App(0)
     dlg = Dialog(None)
     dlg.ctrl_date_debut.SetDate(datetime.date(2015, 1, 1))
-    dlg.ctrl_date_fin.SetDate(datetime.date(2015, 06, 30))
+    dlg.ctrl_date_fin.SetDate(datetime.date(2015, 6, 30))
     dlg.ctrl_activite.SetID(1)
     dlg.OnBoutonActualiser(None)
     app.SetTopWindow(dlg)

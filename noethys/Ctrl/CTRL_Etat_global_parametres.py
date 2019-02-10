@@ -18,7 +18,10 @@ import wx.lib.agw.hypertreelist as HTL
 import datetime
 import GestionDB
 from Ctrl import CTRL_Saisie_heure
-import wx.combo
+try:
+    from wx.combo import ComboCtrl
+except:
+    from wx import ComboCtrl
 import six
 
 COULEUR_FOND_REGROUPEMENT = (200, 200, 200)
@@ -277,13 +280,16 @@ class CTRL_Heure(CTRL_Saisie_heure.Heure):
 
 # -------------------------------------------------------------------------------------------------------------------
 
-class CTRL_Formule(wx.combo.ComboCtrl):
+class CTRL_Formule(ComboCtrl):
     def __init__(self, *args, **kw):
-        wx.combo.ComboCtrl.__init__(self, *args, **kw)
+        ComboCtrl.__init__(self, *args, **kw)
 
         # make a custom bitmap showing "..."
         bw, bh = 14, 16
-        bmp = wx.EmptyBitmap(bw, bh)
+        if 'phoenix' in wx.PlatformInfo:
+            bmp = wx.Bitmap(bw, bh)
+        else:
+            bmp = wx.EmptyBitmap(bw, bh)
         dc = wx.MemoryDC(bmp)
         bgcolor = wx.Colour(255, 254, 255)
         dc.SetBackground(wx.Brush(bgcolor))
