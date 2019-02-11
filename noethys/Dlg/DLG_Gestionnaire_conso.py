@@ -168,6 +168,8 @@ class Commandes(wx.Panel):
         self.parent.panel_grille.grille.SauvegardeTransports()
         self.parent.MemoriseParametres()
         # Fermeture de la fenêtre
+        if 'phoenix' in wx.PlatformInfo:
+            self.parent._mgr.UnInit()
         self.parent.EndModal(wx.ID_OK)
 
     def OnBoutonAide(self, event):
@@ -181,6 +183,8 @@ class Commandes(wx.Panel):
         etat = self.parent.Annuler()
         if etat is False:
             return
+        if 'phoenix' in wx.PlatformInfo:
+            self.parent._mgr.UnInit()
         self.parent.EndModal(wx.ID_CANCEL)
 
     def OnBoutonOptions(self, event):

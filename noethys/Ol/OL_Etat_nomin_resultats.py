@@ -274,8 +274,8 @@ class Track(object):
                 IDquestion = int(champ.code[len(champ.type):])
                 if champ.categorie == "Individu" : IDtemp = "IDindividu"
                 if champ.categorie == "Famille" : IDtemp = "IDfamille"
-                exec(u"self.%s = GetReponse(IDquestion, %s)" % (champ.code, IDtemp))
-        
+                setattr(self, champ.code, GetReponse(IDquestion, IDtemp))
+
         # Regroupement des conso par UNITE puis PERIODE
         dictConso = {}
         for dictTemp in listeConso :
@@ -311,7 +311,7 @@ class Track(object):
                             else :
                                 if prefixe == "NBRE" : valeur = 0
                                 if prefixe == "TEMPS" : valeur = datetime.timedelta(hours=0, minutes=0)
-                            exec(u"self.%s = valeur" % champ.code)
+                            setattr(self, champ.code, valeur)
                 
         # Champs PERSONNALISES
         listeChampsAbsents = []
@@ -330,16 +330,7 @@ class Track(object):
                 if etat == "ok" : 
                     break
         
-        # AIDES CAISSES
-##        for champ in listeChamps :
-##            if champ.type == "AIDE_CAISSE" :
-##                IDcaisse = int(champ.code[len(champ.type):])
-##                
-##                try :
-##                    exec("""self.%s = %s""" % (champ.code, formule))
-##                except :
-##                    exec("self.%s = None" % champ.code)
-                
+
         
     def CalcChampPerso(self, champ):
         def SI(condition, sivrai=None, sifaux=None):
@@ -353,11 +344,11 @@ class Track(object):
         formule = formule.replace("}", "")
         
         try :
-            exec("""self.%s = %s""" % (champ.code, formule))
+            setattr(self, champ.code, eval(formule))
             return "ok"
         except Exception as err :
             if champ.code != "" :
-                exec("self.%s = None" % champ.code)
+                setattr(self, champ.code, None)
                 self.listeErreurs.append("Probleme dans le champ %s : %s" % (champ.code, err))
                 return err
 
@@ -899,6 +890,7 @@ class MyFrame(wx.Frame):
             "activites" : [1, 2, 3, 4],
             "qf" : None,
             "categories" : [6, 5, 1, 3, 2, 4],
+            "etats": ["present",]
             }
         
         self.myOlv = ListView(panel, id=-1, dictParametres=dictParametres, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)

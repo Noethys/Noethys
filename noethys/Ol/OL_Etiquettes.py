@@ -136,8 +136,8 @@ class TrackIndividu(object):
         
         # Récupération des réponses des questionnaires
         for dictQuestion in self.listview.LISTE_QUESTIONS :
-            exec(u"self.question_%d = self.listview.GetReponse(%d, %s)" % (dictQuestion["IDquestion"], dictQuestion["IDquestion"], self.IDindividu))
-            
+            setattr(self, "question_%d" % dictQuestion["IDquestion"], self.listview.GetReponse(dictQuestion["IDquestion"], self.IDindividu))
+
 
     def GetDict(self):
         dictTemp = {
@@ -169,10 +169,10 @@ class TrackIndividu(object):
         
         # Questionnaires
         for dictQuestion in self.listview.LISTE_QUESTIONS :
-            exec(u"dictTemp['{QUESTION_%d}'] = FormateStr(self.question_%d)" % (dictQuestion["IDquestion"], dictQuestion["IDquestion"]))
+            dictTemp["{QUESTION_%d}" % dictQuestion["IDquestion"]] = FormateStr(getattr(self, "question_%d" % dictQuestion["IDquestion"]))
             if dictQuestion["controle"] == "codebarres" :
-                exec(u"dictTemp['{CODEBARRES_QUESTION_%d}'] = FormateStr(self.question_%d)" % (dictQuestion["IDquestion"], dictQuestion["IDquestion"]))
-        
+                dictTemp["{CODEBARRES_QUESTION_%d}" % dictQuestion["IDquestion"]] = FormateStr(getattr(self, "question_%d" % dictQuestion["IDquestion"]))
+
         # Infos de base individus
         dictTemp.update(self.infosIndividus.GetDictValeurs(mode="individu", ID=self.IDindividu, formatChamp=True))
         
@@ -286,7 +286,7 @@ class TrackFamille(object):
         
         # Récupération des réponses des questionnaires
         for dictQuestion in self.listview.LISTE_QUESTIONS :
-            exec(u"self.question_%d = self.listview.GetReponse(%d, %s)" % (dictQuestion["IDquestion"], dictQuestion["IDquestion"], self.IDfamille))
+            setattr(self, "question_%d" % dictQuestion["IDquestion"], self.listview.GetReponse(dictQuestion["IDquestion"], self.IDfamille))
 
     def GetDict(self):
         dictTemp = {
@@ -303,10 +303,10 @@ class TrackFamille(object):
         
         # Questionnaires
         for dictQuestion in self.listview.LISTE_QUESTIONS :
-            exec(u"dictTemp['{QUESTION_%d}'] = FormateStr(self.question_%d)" % (dictQuestion["IDquestion"], dictQuestion["IDquestion"]))
+            dictTemp["{QUESTION_%d}" % dictQuestion["IDquestion"]] = FormateStr(getattr(self, "question_%d" % dictQuestion["IDquestion"]))
             if dictQuestion["controle"] == "codebarres" :
-                exec(u"dictTemp['{CODEBARRES_QUESTION_%d}'] = FormateStr(self.question_%d)" % (dictQuestion["IDquestion"], dictQuestion["IDquestion"]))
-        
+                dictTemp["{CODEBARRES_QUESTION_%d}" % dictQuestion["IDquestion"]] = FormateStr(getattr(self, "question_%d" % dictQuestion["IDquestion"]))
+
         # Infos de base individus
         dictTemp.update(self.infosIndividus.GetDictValeurs(mode="famille", ID=self.IDfamille, formatChamp=True))
 

@@ -267,9 +267,6 @@ class Dialog(wx.Dialog):
             nom, IDrestaurateur, parametres = listeDonnees[0]
             self.ctrl_nom.SetValue(nom)
             self.ctrl_restaurateur.SetID(IDrestaurateur)
-            #if type(parametres) in (str, unicode) :
-            #    exec(u"parametres = %s" % parametres)
-            #self.GetPage("options").SetParametres(parametres)
 
         # Colonnes
         req = """SELECT modeles_commandes_colonnes.IDcolonne, ordre, nom, largeur, categorie, parametres,

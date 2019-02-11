@@ -85,7 +85,7 @@ def Procedure(code=""):
     # Lancement
     print("Lancement de la procedure '%s'..." % code)
     try :
-        exec("%s()" % code)
+        globals()[code]()
     except Exception as err :
         dlg = wx.MessageDialog(None, _(u"Désolé, une erreur a été rencontrée :\n\n-> %s  ") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
         dlg.ShowModal()

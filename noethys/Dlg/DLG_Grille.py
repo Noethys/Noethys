@@ -74,6 +74,7 @@ class Commandes(wx.Panel):
         """ Boutons de commande en bas de la fenêtre """
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
         self.parent = parent
+
         # Boutons
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
         self.bouton_options = CTRL_Bouton_image.CTRL(self, texte=_(u"Options"), cheminImage="Images/32x32/Configuration2.png")
@@ -81,6 +82,7 @@ class Commandes(wx.Panel):
         self.bouton_lot = CTRL_Bouton_image.CTRL(self, texte=_(u"Traitement par lot"), cheminImage="Images/32x32/Magique.png")
         self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
         self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
+
         # Layout
         sizer_base = wx.BoxSizer(wx.VERTICAL)
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=7, vgap=10, hgap=10)
@@ -96,6 +98,7 @@ class Commandes(wx.Panel):
         self.SetSizer(sizer_base)
         self.SetMinSize((-1, 50))
         self.Layout()
+
         # Binds
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
@@ -103,6 +106,7 @@ class Commandes(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOutils, self.bouton_outils)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonLot, self.bouton_lot)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
+
         # Infosbulles
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
@@ -117,8 +121,10 @@ class Commandes(wx.Panel):
         self.parent.panel_grille.grille.SauvegardeTransports()
         self.parent.MemoriseParametres()
         # Fermeture de la fenêtre
+        if 'phoenix' in wx.PlatformInfo:
+            self.parent._mgr.UnInit()
         try :
-            self.parent.EndModal(wx.ID_OK)      
+            self.parent.EndModal(wx.ID_OK)
         except :
             pass
 
@@ -132,6 +138,8 @@ class Commandes(wx.Panel):
             if reponse != wx.ID_YES :
                 return
         # Fermeture de la fenêtre
+        if 'phoenix' in wx.PlatformInfo:
+            self.parent._mgr.UnInit()
         self.parent.EndModal(wx.ID_CANCEL)
         
     def OnBoutonAide(self, event):
@@ -475,6 +483,7 @@ class Dialog(wx.Dialog):
         wx.CallAfter(self._mgr.Update)
         wx.CallAfter(self.panel_grille.grille.SetFocus)
 
+
     def SetListesPeriodes(self, listePeriodes=[]):
         self.panel_grille.SetListesPeriodes(listePeriodes)
 
@@ -499,7 +508,7 @@ class Dialog(wx.Dialog):
 ##        self.MemoriseTailleFenetre() 
 ##        self.MemorisePerspectives()
 ##        event.Skip() 
-        
+
     def MemoriseParametres(self):
         # Mémorisation du paramètre de la taille d'écran
         if self.IsMaximized() == True :

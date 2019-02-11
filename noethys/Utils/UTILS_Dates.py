@@ -81,7 +81,7 @@ def HeuresEnDecimal(texteHeure="07:00"):
         posTemp = texteHeure.index(":")
         heures = str(texteHeure[0:posTemp])
         minutes = int(texteHeure[posTemp+1:5])
-    minutes = str(minutes * 100 /60)
+    minutes = str(minutes * 100 //60)
     if len(minutes) == 1 : minutes = "0" + minutes
     heure = str(heures + minutes)
     return int(heure)
@@ -147,8 +147,8 @@ def DeltaEnStr(heureDelta, separateur="h"):
     else :
         signe = ""
 
-    heures = (heureDelta.days*24) + (heureDelta.seconds/3600)
-    minutes = heureDelta.seconds%3600/60
+    heures = (heureDelta.days*24) + (heureDelta.seconds//3600)
+    minutes = heureDelta.seconds%3600//60
     valeur = "{}{}{}{:0>2}".format(signe, heures, separateur, minutes)
     return valeur
 
@@ -223,7 +223,7 @@ def ArrondirTime(heure=datetime.time(hour=10, minute=25), delta_minutes=15, sens
     return datetime.time(hour=resultat.hour, minute=resultat.minute)
 
 def ArrondirDelta(duree=datetime.timedelta(hours=1, minutes=25), delta_minutes=15, sens="sup"):
-    duree_minutes = duree.seconds / 60
+    duree_minutes = duree.seconds // 60
     if duree_minutes % delta_minutes :
         if sens == "sup" :
             resultat = duree + datetime.timedelta(minutes = delta_minutes - duree_minutes % delta_minutes)
@@ -261,7 +261,7 @@ def ArrondirDT(dt=None, dateDelta=datetime.timedelta(minutes=1)):
     roundTo = dateDelta.total_seconds()
     if dt == None : dt = datetime.datetime.now()
     seconds = (dt - dt.min).seconds
-    rounding = (seconds+roundTo/2) // roundTo * roundTo
+    rounding = (seconds+roundTo//2) // roundTo * roundTo
     return dt + datetime.timedelta(0,rounding-seconds,-dt.microsecond)
 
 def FormateMois(donnee):

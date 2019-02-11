@@ -1253,9 +1253,13 @@ class Panel_commandes(wx.Panel):
         if etat == False : 
             return
         # Fermeture de la fenêtre
+        if 'phoenix' in wx.PlatformInfo:
+            self.parent._mgr.UnInit()
         self.parent.OnBoutonOk()
 
     def OnBoutonAnnuler(self, event):
+        if 'phoenix' in wx.PlatformInfo:
+            self.parent._mgr.UnInit()
         self.parent.OnBoutonAnnuler()
         
     def OnBoutonAide(self, event):

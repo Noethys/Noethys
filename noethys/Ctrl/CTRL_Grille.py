@@ -2858,7 +2858,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 
                     # Supprime si nécessaire l'ancienne prestation
                     valeur = (conso.IDprestation, "consommation")
-                    if IDprestation < 0 or IDprestation in list(self.dictForfaits.keys()) :
+                    if (IDprestation == None or IDprestation < 0) or IDprestation in list(self.dictForfaits.keys()) :
                         if conso.IDprestation != None and valeur not in listeAnciennesPrestations and conso.IDprestation not in list(self.dictForfaits.keys()) :
                             listeAnciennesPrestations.append(valeur)
 
@@ -5404,7 +5404,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 
                         # Recherche s'il y a une prestation
                         IDprestation = conso.IDprestation
-                        if IDprestation < 0 and (IDprestation in dictNewIDprestation) == True :
+                        if (IDprestation == None or IDprestation < 0) and (IDprestation in dictNewIDprestation) == True :
                             IDprestation = dictNewIDprestation[IDprestation]
 
                         # Récupération des données
