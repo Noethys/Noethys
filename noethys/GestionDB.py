@@ -15,7 +15,7 @@ import sys
 import sqlite3
 import wx
 import os
-import traceback
+import base64
 import datetime
 import random
 import six
@@ -2312,6 +2312,12 @@ def GetConnexionReseau(nomFichier=""):
     nomFichier = nomFichier[pos:].replace("[RESEAU]", "")
     nomFichier = nomFichier.lower()
 
+    if passwd not in (None, "") and passwd.startswith("#64#"):
+        try:
+            passwd = base64.b64decode(passwd[4:])
+        except:
+            pass
+
     if INTERFACE_MYSQL == "mysqldb":
         my_conv = conversions
         my_conv[FIELD_TYPE.LONG] = int
@@ -2556,6 +2562,19 @@ def AfficheConnexionOuvertes():
             print(">> IDconnexion = %d (%d requetes) :" % (IDconnexion, len(requetes)))
             for requete in requetes :
                 print(requete)
+
+
+def EncodeMdpReseau(mdp=None):
+    mdp = u"#64#%s" % base64.b64encode(mdp)
+    return mdp
+
+def EncodeNomFichierReseau(nom_fichier=None):
+    if "[RESEAU]" in nom_fichier and "#64#" not in nom_fichier:
+        donnees = nom_fichier.split(";")
+        mdp = donnees[3].split("[RESEAU]")[0]
+        nouveau_mdp = EncodeMdpReseau(mdp)
+        nom_fichier = nom_fichier.replace(mdp, nouveau_mdp)
+    return nom_fichier
 
 
 

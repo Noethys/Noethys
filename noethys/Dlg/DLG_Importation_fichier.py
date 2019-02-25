@@ -23,7 +23,6 @@ import six
 
 
 
-
 class CTRL_Options(wx.CheckListBox):
     def __init__(self, parent):
         wx.CheckListBox.__init__(self, parent, -1)
@@ -325,6 +324,8 @@ class Dialog(wx.Dialog):
             hote = dictCodes["hote"]
             utilisateur = dictCodes["utilisateur"]
             motdepasse = dictCodes["motdepasse"]
+            if motdepasse not in (None, "") and motdepasse.startswith("#64#") == False :
+                motdepasse = GestionDB.EncodeMdpReseau(motdepasse)
             fichier = dictItem["titre"]
             nomFichier = u"%s;%s;%s;%s[RESEAU]%s" % (port, hote, utilisateur, motdepasse, fichier)
         

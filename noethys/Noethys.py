@@ -353,6 +353,18 @@ class MainFrame(wx.Frame):
             self.userConfig["perspective_ctrl_effectifs"] = self.ctrl_remplissage.SavePerspective()
             self.userConfig["page_ctrl_effectifs"] = self.ctrl_remplissage.GetPageActive()
 
+        # Codage du mdp réseau si besoin
+        if "[RESEAU]" in self.userConfig["nomFichier"] and "#64#" not in self.userConfig["nomFichier"]:
+            nom = GestionDB.EncodeNomFichierReseau(self.userConfig["nomFichier"])
+            self.userConfig["nomFichier"] = nom
+
+        derniersFichiers = []
+        for nom in self.userConfig["derniersFichiers"]:
+            if "[RESEAU]" in nom and "#64#" not in nom:
+                nom = GestionDB.EncodeNomFichierReseau(nom)
+            derniersFichiers.append(nom)
+        self.userConfig["derniersFichiers"] = derniersFichiers
+
         # Sauvegarde du fichier de configuration
         self.SaveFichierConfig()
 

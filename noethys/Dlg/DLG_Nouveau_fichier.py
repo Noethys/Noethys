@@ -18,8 +18,6 @@ from Ctrl import CTRL_Bouton_image
 import GestionDB
 from Data import DATA_Tables as Tables
 from Ctrl import CTRL_Bandeau
-
-import FonctionsPerso
 import wx.lib.agw.hyperlink as hl
 from Crypto.Hash import SHA256
 
@@ -439,9 +437,11 @@ class MyDialog(wx.Dialog):
             port = self.panelReseau.ctrl_port.GetValue()
             hote = self.panelReseau.ctrl_hote.GetValue()
             user = self.panelReseau.ctrl_user.GetValue()
-            mdp = self.panelReseau.ctrl_mdp.GetValue()
+            motdepasse = self.panelReseau.ctrl_mdp.GetValue()
+            if motdepasse not in (None, "") and motdepasse.startswith("#64#") == False :
+                motdepasse = GestionDB.EncodeMdpReseau(motdepasse)
             fichier = self.text_nomFichier.GetValue()
-            nomFichier = u"%s;%s;%s;%s[RESEAU]%s" % (port, hote, user, mdp, fichier)
+            nomFichier = u"%s;%s;%s;%s[RESEAU]%s" % (port, hote, user, motdepasse, fichier)
             return nomFichier
     
     def GetListeTables(self):

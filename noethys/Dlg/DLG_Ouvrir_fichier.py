@@ -16,6 +16,7 @@ import wx
 from Ctrl import CTRL_Bouton_image
 import wx.lib.agw.hyperlink as Hyperlink
 import webbrowser
+import GestionDB
 from Ctrl import CTRL_Bandeau
 from Ctrl import CTRL_Liste_fichiers
 from Utils import UTILS_Utilisateurs
@@ -373,6 +374,8 @@ class MyDialog(wx.Dialog):
             hote = dictCodes["hote"]
             utilisateur = dictCodes["utilisateur"]
             motdepasse = dictCodes["motdepasse"]
+            if motdepasse not in (None, "") and motdepasse.startswith("#64#") == False :
+                motdepasse = GestionDB.EncodeMdpReseau(motdepasse)
             fichier = dictItem["titre"]
             nomFichier = u"%s;%s;%s;%s[RESEAU]%s" % (port, hote, utilisateur, motdepasse, fichier)
         
