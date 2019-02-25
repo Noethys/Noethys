@@ -25,7 +25,12 @@ try :
     import xlrd
 except :
     pass
-from Outils import unicodecsv as csv
+
+try:
+    import unicodecsv as csv
+except:
+    from Outils import unicodecsvpy2 as csv
+
 import GestionDB
 from Ctrl import CTRL_Saisie_date
 
@@ -325,8 +330,8 @@ class CTRL_Choix_appareil(wx.Choice):
 
 # -------------------------------------------------------------------------------------------------------------------------
 
-ID_VIDER_MEMOIRE = wx.NewId() 
-ID_REGLER_HEURE = wx.NewId() 
+ID_VIDER_MEMOIRE = wx.Window.NewControlId()
+ID_REGLER_HEURE = wx.Window.NewControlId()
 
 class Page_scanner(wx.Panel):
     def __init__(self, parent):
@@ -820,17 +825,17 @@ class Notebook(wx.Notebook):
         il = wx.ImageList(16, 16)
         index = 0
         for codePage, labelPage, ctrlPage, imgPage in self.listePages :
-            exec("self.img%d = il.Add(wx.Bitmap(Chemins.GetStaticPath('Images/16x16/%s'), wx.BITMAP_TYPE_PNG))" % (index, imgPage))
+            setattr(self, "img%d" % index, il.Add(wx.Bitmap(Chemins.GetStaticPath('Images/16x16/%s') % imgPage, wx.BITMAP_TYPE_PNG)))
             index += 1
         self.AssignImageList(il)
 
         # Création des pages
         index = 0
         for codePage, labelPage, ctrlPage, imgPage in self.listePages :
-            exec("self.page%d = %s" % (index, ctrlPage))
-            exec("self.AddPage(self.page%d, u'%s')" % (index, labelPage))
-            exec("self.SetPageImage(%d, self.img%d)" % (index, index))
-            exec("self.dictPages['%s'] = {'ctrl' : self.page%d, 'index' : %d}" % (codePage, index, index))
+            setattr(self, "page%s" % index, eval(ctrlPage))
+            self.AddPage(getattr(self, "page%s" % index), labelPage)
+            self.SetPageImage(index, getattr(self, "img%d" % index))
+            self.dictPages[codePage] = {'ctrl': getattr(self, "page%d" % index), 'index': index}
             index += 1
     
     def GetPageActive(self):

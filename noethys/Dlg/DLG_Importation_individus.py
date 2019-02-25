@@ -25,7 +25,10 @@ else :
 import wx.lib.agw.hyperlink as Hyperlink
 
 import xlrd
-from Outils import unicodecsv as csv
+try:
+    import unicodecsv as csv
+except:
+    from Outils import unicodecsvpy2 as csv
 import os
 import datetime
 import GestionDB
@@ -427,7 +430,7 @@ class Track(object):
             valeur = dictValeurs["valeur"]
             anomalie = dictValeurs["anomalie"]
             label = dictValeurs["label"]    
-            exec("self.%s = label" % code)
+            setattr(self, code, label)
 
 class CTRL_Donnees(FastObjectListView):
     def __init__(self, *args, **kwds):
@@ -663,12 +666,12 @@ class Page_fichier(wx.Panel):
             label = dictType["label"]
             infos = dictType["infos"]
             if index == 0 :
-                style = ", style=wx.RB_GROUP"
+                style = wx.RB_GROUP
             else :
-                style = ""
-            exec(u"""self.radio_type_%d = wx.RadioButton(self, %d, label %s)""" % (index, 10000 + index, style))
-            exec(u"""self.label_type_%d = wx.StaticText(self, -1, infos)""" % index)
-            exec(u"""self.label_type_%d.SetForegroundColour(wx.Colour(128, 128, 128))""" % index)
+                style = 0
+            setattr(self, "radio_type_%d" % index, wx.RadioButton(self, 10000 + index, label, style=style))
+            setattr(self, "label_type_%d" % index, wx.StaticText(self, -1, infos))
+            getattr(self, "label_type_%d" % index).SetForegroundColour(wx.Colour(128, 128, 128))
             index += 1
         
         self.box_fichier_staticbox = wx.StaticBox(self, -1, _(u"2. Sélection du fichier"))
@@ -689,8 +692,8 @@ class Page_fichier(wx.Panel):
 
         index = 0
         for dictType in TYPES_IMPORTATION :
-            exec("""sizer_type.Add(self.radio_type_%d, 0, wx.TOP, 10)""" % index)
-            exec("""sizer_type.Add(self.label_type_%d, 0, wx.LEFT, 22)""" % index)
+            sizer_type.Add(getattr(self, "radio_type_%d" % index), 0, wx.TOP, 10)
+            sizer_type.Add(getattr(self, "label_type_%d" % index), 0,  wx.LEFT, 22)
             index += 1
             
         box_type.Add(sizer_type, 1, wx.ALL|wx.EXPAND, 10)
@@ -709,7 +712,8 @@ class Page_fichier(wx.Panel):
         reponse = None
         for dictType in TYPES_IMPORTATION :
             code = dictType["code"]
-            exec("""if self.radio_type_%d.GetValue() == True : reponse = code """ % index)
+            if getattr(self, "radio_type_%d" % index).GetValue() == True :
+                reponse = code
             index += 1
         return reponse
         
@@ -975,10 +979,10 @@ class Dialog(wx.Dialog):
     def Creation_Pages(self):
         """ Creation des pages """
         for numPage in range(1, self.nbrePages+1) :
-            exec( "self.page" + str(numPage) + " = " + self.listePages[numPage-1] + "(self)" )
-            exec( "self.sizer_pages.Add(self.page" + str(numPage) + ", 1, wx.EXPAND, 0)" )
+            setattr(self, "page%s" % numPage, eval(self.listePages[numPage-1] + "(self)"))
+            self.sizer_pages.Add(getattr(self, "page%s" % numPage), 1, wx.EXPAND, 0)
             self.sizer_pages.Layout()
-            exec( "self.page" + str(numPage) + ".Show(False)" )
+            getattr(self, "page%s" % numPage).Show(False)
         self.page1.Show(True)
         self.sizer_pages.Layout()
 
@@ -1084,7 +1088,7 @@ class Dialog(wx.Dialog):
 
     def ValidationPages(self) :
         """ Validation des données avant changement de pages """
-        exec( "validation = self.page" + str(self.pageVisible) + ".Validation()" )
+        validation = getattr(self, "page%s" % self.pageVisible).Validation()
         return validation
     
     def Terminer(self):
@@ -1341,7 +1345,7 @@ class Dialog(wx.Dialog):
 
         from Dlg import DLG_Message_html
         texte = u"""
-<CENTER><IMG SRC="Static/Images/32x32/Information.png">
+<CENTER><IMG SRC="%s">
 <BR><BR>
 <FONT SIZE=2>
 <B>Avertissement</B>
@@ -1353,7 +1357,7 @@ Il est conseillé de tester son efficacité et sa stabilité dans un fichier test a
 Merci de signaler tout bug rencontré dans la rubrique "Signaler un bug " du forum de Noethys.
 </FONT>
 </CENTER>
-"""
+""" % Chemins.GetStaticPath("Images/32x32/Information.png")
         dlg = DLG_Message_html.Dialog(self, texte=texte, titre=_(u"Information"), nePlusAfficher=True)
         dlg.ShowModal()
         nePlusAfficher = dlg.GetEtatNePlusAfficher()
