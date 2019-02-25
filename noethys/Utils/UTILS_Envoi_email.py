@@ -218,12 +218,13 @@ def GetAdresseFamille(IDfamille=None, choixMultiple=True, muet=False, nomTitulai
 
 
 class Message():
-    def __init__(self, destinataires=[], sujet="", texte_html="", fichiers=[], images=[]):
+    def __init__(self, destinataires=[], sujet="", texte_html="", fichiers=[], images=[], champs={}):
         self.destinataires = destinataires
         self.sujet = sujet
         self.fichiers = fichiers
         self.images = images
         self.texte_html = texte_html
+        self.champs = champs
 
         # Corrige le pb des images embarquées
         index = 0

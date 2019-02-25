@@ -482,6 +482,7 @@ class Dialog(wx.Dialog):
                 texte_html=texte,
                 fichiers=listePieces,
                 images=listeImages,
+                champs=dictChamps,
             )
             liste_messages.append(message)
 
