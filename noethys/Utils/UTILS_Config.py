@@ -105,13 +105,9 @@ class FichierConfig():
 
     def SetDictConfig(self, dictConfig={}):
         """ Remplace le fichier de config présent sur le disque dur par le dict donné """
-        try :
-            UTILS_Json.Ecrire(nom_fichier=self.nomFichier, data=dictConfig)
-
-            # Création d'une copie de sauvegarde du config
-            shutil.copyfile(self.nomFichier, self.nomFichier + ".bak")
-        except:
-            pass
+        UTILS_Json.Ecrire(nom_fichier=self.nomFichier, data=dictConfig)
+        # Création d'une copie de sauvegarde du config
+        shutil.copyfile(self.nomFichier, self.nomFichier + ".bak")
 
     def GetItemConfig(self, key, defaut=None):
         """ Récupère une valeur du dictionnaire du fichier de config """
