@@ -369,13 +369,10 @@ class ObjectListView(wx.ListCtrl):
 
         if 'phoenix' in wx.PlatformInfo:
             info.Mask = wx.LIST_MASK_TEXT | wx.LIST_MASK_FORMAT
-            if isinstance(
-                    defn.headerImage,
-                    six.string_types) and self.smallImageList is not None:
-                info.Image = self.smallImageList.GetImageIndex(
-                    defn.headerImage)
+            if isinstance(defn.headerImage, six.string_types) and self.smallImageList is not None:
+                info.Image = self.smallImageList.GetImageIndex(defn.headerImage)
             else:
-                info.Image = defn.headerImage
+                pass#info.Image = defn.headerImage # MODIF PERSO ICI POUR EVITER ESPACE DANS HEADER
             if info.Image != -1:
                 info.Mask = info.Mask | wx.LIST_MASK_IMAGE
             info.Align = defn.GetAlignment()

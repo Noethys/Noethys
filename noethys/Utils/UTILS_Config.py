@@ -33,24 +33,19 @@ def GenerationFichierConfig():
 
     # Importe l'ancien fichier 'config' s'il existe
     nom_fichier_dat = UTILS_Fichiers.GetRepUtilisateur("Config.dat")
-    if os.path.isfile(nom_fichier_dat):
-        if six.PY2:
-            nom_fichier_dat = nom_fichier_dat.encode("iso-8859-15")
-        try:
-            import shelve
-            db = shelve.open(nom_fichier_dat, "r")
-            for key in list(db.keys()):
-                dictDonnees[key] = db[key]
-            db.close()
-            nouveau_fichier = False
-        except:
-            pass
+    if os.path.isfile(nom_fichier_dat) and six.PY2:
+        print("Importation de l'ancien config de config dat")
+        nom_fichier_dat = nom_fichier_dat.encode("iso-8859-15")
+
+        import shelve
+        db = shelve.open(nom_fichier_dat, "r")
+        for key in list(db.keys()):
+            dictDonnees[key] = db[key]
+        db.close()
+        nouveau_fichier = False
 
         # Supprime l'ancien fichier dat
-        try :
-            os.remove(nom_fichier_dat)
-        except:
-            pass
+        os.remove(nom_fichier_dat)
 
     # Crée les nouvelles données
     if nouveau_fichier == True :
@@ -75,9 +70,12 @@ def GenerationFichierConfig():
             "autodeconnect": None,
             "interface_mysql": "mysqldb",
             }
+
     # Création d'un nouveau fichier json
     cfg = FichierConfig()
     cfg.SetDictConfig(dictConfig=dictDonnees)
+
+    print("nouveau_fichier = %s" % nouveau_fichier)
     return nouveau_fichier
 
 def SupprimerFichier():

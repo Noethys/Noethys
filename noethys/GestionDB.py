@@ -2315,6 +2315,8 @@ def GetConnexionReseau(nomFichier=""):
     if passwd not in (None, "") and passwd.startswith("#64#"):
         try:
             passwd = base64.b64decode(passwd[4:])
+            if six.PY3:
+                passwd = passwd.decode('utf-8')
         except:
             pass
 

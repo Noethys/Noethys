@@ -129,6 +129,7 @@ class MainFrame(wx.Frame):
         # Vérifie que le fichier de configuration existe bien
         self.nouveauFichierConfig = False
         if UTILS_Config.IsFichierExists() == False :
+            print("Generation d'un nouveau fichier de config")
             self.nouveauFichierConfig = UTILS_Config.GenerationFichierConfig()
 
         # Récupération des fichiers de configuration
@@ -4026,7 +4027,7 @@ class MainFrame(wx.Frame):
         if "annonce" in self.userConfig :
             versionAnnonce = self.userConfig["annonce"]
             if versionAnnonce != None :
-                return versionAnnonce
+                return tuple(versionAnnonce)
         return (0, 0, 0, 0)
         
     def Annonce(self):
