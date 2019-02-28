@@ -60,6 +60,13 @@ from Ctrl import CTRL_Toaster
 from Ctrl import CTRL_Portail_serveur
 from Ctrl import CTRL_TaskBarIcon
 
+import shelve
+try :
+    import dbhash
+    import anydbm
+except:
+    pass
+
 import random 
 from six.moves.urllib.request import urlopen
 
