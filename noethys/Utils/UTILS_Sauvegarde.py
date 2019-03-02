@@ -504,6 +504,7 @@ def GetRepertoireMySQL(dictValeurs={}):
     return None
 
 def CreationFichierLoginTemp(host="", user="", port="3306", password="", nomFichier=""):
+    password = GestionDB.DecodeMdpReseau(password)
     if os.path.isfile(nomFichier) == True :
         os.remove(nomFichier)
     fichier = open(nomFichier, "w")

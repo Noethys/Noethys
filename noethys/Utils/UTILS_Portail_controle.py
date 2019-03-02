@@ -138,12 +138,12 @@ class ServeurConnecthys():
             except Exception as err :
                 print("Erreur lancement Connecthys :", err)
                 print("args =", args)
-                self.EcritLog(_(u"Erreur dans le lancement du serveur Connecthys :"))
-                self.EcritLog(err)
+                self.parent.EcritLog(_(u"Erreur dans le lancement du serveur Connecthys :"))
+                self.parent.EcritLog(err)
                 process_ok = False
 
         if process_ok == False :
-            self.EcritLog(_(u"[ERREUR] Le serveur n'a pas pu être démarré"))
+            self.parent.EcritLog(_(u"[ERREUR] Le serveur n'a pas pu être démarré"))
             dlg = wx.MessageDialog(None, _(u"Le serveur Connecthys n'a pas pu être démarré !"), _(u"Serveur Connecthys"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()

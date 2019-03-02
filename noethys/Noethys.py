@@ -4035,6 +4035,7 @@ class MainFrame(wx.Frame):
             versionAnnonce = self.userConfig["annonce"]
             if versionAnnonce != None :
                 return tuple(versionAnnonce)
+
         return (0, 0, 0, 0)
         
     def Annonce(self):

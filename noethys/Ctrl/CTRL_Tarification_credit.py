@@ -17,8 +17,8 @@ from Ctrl import CTRL_Bouton_image
 import datetime
 
 import GestionDB
-from Ctrl import CTRL_Tarification_type
-
+#from Ctrl import CTRL_Tarification_type
+CTRL_Tarification_type = UTILS_Adaptations.Import("Ctrl.CTRL_Tarification_type")
 
 
 def DateEngFr(textDate):

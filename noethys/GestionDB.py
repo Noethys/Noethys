@@ -2312,13 +2312,7 @@ def GetConnexionReseau(nomFichier=""):
     nomFichier = nomFichier[pos:].replace("[RESEAU]", "")
     nomFichier = nomFichier.lower()
 
-    if passwd not in (None, "") and passwd.startswith("#64#"):
-        try:
-            passwd = base64.b64decode(passwd[4:])
-            if six.PY3:
-                passwd = passwd.decode('utf-8')
-        except:
-            pass
+    passwd = DecodeMdpReseau(passwd)
 
     if INTERFACE_MYSQL == "mysqldb":
         my_conv = conversions
@@ -2565,6 +2559,16 @@ def AfficheConnexionOuvertes():
             for requete in requetes :
                 print(requete)
 
+
+def DecodeMdpReseau(mdp=None):
+    if mdp not in (None, "") and mdp.startswith("#64#"):
+        try:
+            mdp = base64.b64decode(mdp[4:])
+            if six.PY3:
+                mdp = mdp.decode('utf-8')
+        except:
+            pass
+    return mdp
 
 def EncodeMdpReseau(mdp=None):
     mdp = u"#64#%s" % base64.b64encode(mdp)
