@@ -129,7 +129,7 @@ class ListView(FastObjectListView):
         self.SetObjects(self.donnees)
 
     def MAJ(self, ID=None):
-        self.dict_titulaires = UTILS_Titulaires.GetTitulaires()
+        self.dict_titulaires = UTILS_Titulaires.GetTitulaires(inclure_archives=True, afficher_tag_archive=True)
         if ID != None :
             self.selectionID = ID
             self.selectionTrack = None

@@ -17,7 +17,7 @@ from Data import DATA_Civilites as Civilites
 DICT_CIVILITES = Civilites.GetDictCivilites()
 
 
-def GetTitulaires(listeIDfamille=[], mode_adresse_facturation=False, inclure_telephones=False, inclure_archives=False):
+def GetTitulaires(listeIDfamille=[], mode_adresse_facturation=False, inclure_telephones=False, inclure_archives=False, afficher_tag_archive=False):
     """ si listeIDfamille == [] alors renvoie toutes les familles """
     dictFamilles = {}
     
@@ -74,7 +74,7 @@ def GetTitulaires(listeIDfamille=[], mode_adresse_facturation=False, inclure_tel
         conditionArchives = "individus.etat IS NULL"
     else :
         conditionArchives = "IDrattachement>0"
-    req = """SELECT IDrattachement, rattachements.IDindividu, IDfamille, IDcategorie, titulaire
+    req = """SELECT IDrattachement, rattachements.IDindividu, IDfamille, IDcategorie, titulaire, etat
     FROM rattachements
     LEFT JOIN individus ON individus.IDindividu = rattachements.IDindividu
     WHERE %s %s;""" % (conditionArchives, conditionFamilles)
@@ -82,11 +82,11 @@ def GetTitulaires(listeIDfamille=[], mode_adresse_facturation=False, inclure_tel
     listeDonnees = DB.ResultatReq()
     DB.Close() 
     dictRattachements = {}
-    for IDrattachement, IDindividu, IDfamille, IDcategorie, titulaire in listeDonnees :
+    for IDrattachement, IDindividu, IDfamille, IDcategorie, titulaire, etat in listeDonnees :
         if (IDfamille in dictRattachements) == False :
-            dictRattachements[IDfamille] = [(IDrattachement, IDindividu, IDfamille, IDcategorie, titulaire),]
+            dictRattachements[IDfamille] = [(IDrattachement, IDindividu, IDfamille, IDcategorie, titulaire, etat),]
         else:
-            dictRattachements[IDfamille].append((IDrattachement, IDindividu, IDfamille, IDcategorie, titulaire))
+            dictRattachements[IDfamille].append((IDrattachement, IDindividu, IDfamille, IDcategorie, titulaire, etat))
     
     # Recherche des noms des titulaires
     for IDfamille, dictFamille in dictFamilles.items() :
@@ -95,7 +95,7 @@ def GetTitulaires(listeIDfamille=[], mode_adresse_facturation=False, inclure_tel
         if IDfamille in dictRattachements:
             listeIndividusFamilles = dictRattachements[IDfamille]
             listeTitulaires = []
-            for IDrattachement, IDindividuTmp, IDfamilleTmp, IDcategorie, titulaire in listeIndividusFamilles :
+            for IDrattachement, IDindividuTmp, IDfamilleTmp, IDcategorie, titulaire, etat in listeIndividusFamilles :
                 if IDindividuTmp in dictIndividus :
                     if titulaire == 1 :
                         nom = dictIndividus[IDindividuTmp]["nom"]
@@ -108,12 +108,17 @@ def GetTitulaires(listeIDfamille=[], mode_adresse_facturation=False, inclure_tel
                             nomCivilite = u""
                         mail = dictIndividus[IDindividuTmp]["mail"]
                         dictTemp = {
-                        "IDindividu":IDindividuTmp, "IDcivilite":IDcivilite,"nom":nom, "prenom":prenom, "mail":mail,
-                        "nomSansCivilite": u"%s %s" % (nom, prenom),
-                        "nomAvecCivilite": u"%s%s %s" % (nomCivilite, nom, prenom),
-                        }
+                            "IDindividu":IDindividuTmp, "IDcivilite":IDcivilite,"nom":nom, "prenom":prenom, "mail":mail,
+                            "nomSansCivilite": u"%s %s" % (nom, prenom),
+                            "nomAvecCivilite": u"%s%s %s" % (nomCivilite, nom, prenom),
+                            }
                         if inclure_telephones == True:
                             dictTemp["telephones"] = dictIndividus[IDindividuTmp]["telephones"]
+
+                        if afficher_tag_archive == True and etat == "archive":
+                            dictTemp["nomSansCivilite"] += u" [archivé]"
+                            dictTemp["prenom"] += u" [archivé]"
+
                         listeTitulaires.append(dictTemp)
                         nbreTitulaires += 1
                     
