@@ -99,7 +99,7 @@ def Importation(date=None, afficherDebit=True, afficherCredit=True, afficherNul=
     DB.Close()
     
     # Récupération des titulaires de familles
-    dictTitulaires = UTILS_Titulaires.GetTitulaires() 
+    dictTitulaires = UTILS_Titulaires.GetTitulaires(inclure_archives=True)
     
     # Traitement des données
     listeListeView = []
