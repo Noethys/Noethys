@@ -66,7 +66,7 @@ def MyDecoder(objet):
         return decimal.Decimal(objet['data'])
     # Si wx.Colour
     elif objet.get('__type__') == 'wx.Colour':
-        return wx.Colour().Set(objet['data'])
+        return wx.Colour(*objet['data'])
     # Si wx.Point
     elif objet.get('__type__') == 'wx.Point':
         return wx.Point(objet['data'][0], objet['data'][1])
@@ -91,23 +91,33 @@ def Lire(nom_fichier="", conversion_auto=False):
             with open(nom_fichier) as json_file:
                 data = json.load(json_file, object_hook=MyDecoder)
         except Exception as err:
+            print("Impossible d'ouvrir le fichier Json")
+            print(err,)
             is_json = False
+
+    if is_json == False :
+        print("Ce n'est pas un fichier Json")
 
     # Essaye d'ouvrir le fichier au format shelve
     if is_json == False:
-        fichier = shelve.open(nom_fichier, "r")
-        data = {}
-        for key, valeur in fichier.items():
-            if type(key) == str:
-                key = key.decode("iso-8859-15")
-            if type(valeur) == str:
-                valeur = valeur.decode("iso-8859-15")
-            data[key] = valeur
-        fichier.close()
+        try:
+            fichier = shelve.open(nom_fichier, "r")
+            data = {}
+            for key, valeur in fichier.items():
+                if type(key) == str:
+                    key = key.decode("iso-8859-15")
+                if type(valeur) == str:
+                    valeur = valeur.decode("iso-8859-15")
+                data[key] = valeur
+            fichier.close()
 
-        # Convertit le fichier shelve au format Json
-        if conversion_auto == True :
-            Ecrire(nom_fichier=nom_fichier, data=data)
+            # Convertit le fichier shelve au format Json
+            if conversion_auto == True :
+                Ecrire(nom_fichier=nom_fichier, data=data)
+        except Exception as err:
+            print("Conversion du shelve en Json impossible :")
+            print(err,)
+
     return data
 
 def Ecrire(nom_fichier="", data={}):
