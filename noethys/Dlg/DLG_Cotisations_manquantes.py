@@ -23,8 +23,6 @@ from Ctrl import CTRL_Saisie_date
 from Dlg import DLG_calendrier_simple
 from Ctrl import CTRL_Selection_activites
 
-try: import psyco; psyco.full()
-except: pass
 
 def DateEngFr(textDate):
     text = str(textDate[8:10]) + "/" + str(textDate[5:7]) + "/" + str(textDate[:4])

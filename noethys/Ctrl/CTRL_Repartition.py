@@ -21,8 +21,6 @@ import GestionDB
 from Ctrl import CTRL_Saisie_euros
 from Ol import OL_Prestations_repartition
 
-try: import psyco; psyco.full()
-except: pass
 
 COULEUR_FOND_REGROUPEMENT = (200, 200, 200)
 COULEUR_TEXTE_REGROUPEMENT = (140, 140, 140)

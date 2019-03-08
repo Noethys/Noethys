@@ -19,9 +19,6 @@ import wx.lib.agw.hyperlink as Hyperlink
 import GestionDB
 from Data import DATA_Renseignements as Renseignements
 
-try: import psyco; psyco.full()
-except: pass
-
 
 LISTE_TYPES_RENSEIGNEMENTS = Renseignements.LISTE_TYPES_RENSEIGNEMENTS
 

@@ -18,9 +18,6 @@ from Ctrl import CTRL_Bandeau
 from Ctrl import CTRL_Classes
 import GestionDB
 
-try: import psyco; psyco.full()
-except: pass
-
 
 class CTRL_Ecole(wx.Choice):
     def __init__(self, parent):

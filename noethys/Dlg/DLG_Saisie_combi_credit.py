@@ -18,10 +18,6 @@ import datetime
 import GestionDB
 
 
-try: import psyco; psyco.full()
-except: pass
-
-
 
 class CTRL_Unites(wx.CheckListBox):
     def __init__(self, parent, listeUnites=[]):

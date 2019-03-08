@@ -22,8 +22,6 @@ from Ol import OL_Liste_nominative_soldes
 from Ctrl import CTRL_Saisie_date
 from Ctrl import CTRL_Selection_activites
 
-try: import psyco; psyco.full()
-except: pass
 
 
 

@@ -23,8 +23,6 @@ from reportlab.lib.pagesizes import A4
 from reportlab.lib.units import cm, mm
 from reportlab.pdfgen.canvas import Canvas
 
-try: import psyco; psyco.full()
-except: pass
 
 
 class Impression():

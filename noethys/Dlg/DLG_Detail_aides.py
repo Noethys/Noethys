@@ -17,8 +17,6 @@ from Ctrl import CTRL_Bouton_image
 from Ctrl import CTRL_Bandeau
 from Ctrl import CTRL_Detail_aides
 
-try: import psyco; psyco.full()
-except: pass
 
 
 class Dialog(wx.Dialog):

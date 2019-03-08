@@ -18,8 +18,6 @@ from Ctrl import CTRL_Calendrier_ouvertures
 
 import GestionDB
 
-try: import psyco; psyco.full()
-except: pass
 
 
 

@@ -19,8 +19,6 @@ from Ctrl import CTRL_Bandeau
 from Ol import OL_Historique
 from Utils import UTILS_Historique
 
-try: import psyco; psyco.full()
-except: pass
 
 
 

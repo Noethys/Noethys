@@ -21,9 +21,6 @@ from Ctrl import CTRL_Saisie_heure
 
 import GestionDB
 
-try: import psyco; psyco.full()
-except: pass
-
 
 
 class Groupe(wx.Choice):

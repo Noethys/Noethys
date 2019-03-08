@@ -23,8 +23,6 @@ SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 import GestionDB
 from Ol import OL_Detail_aides
 
-try: import psyco; psyco.full()
-except: pass
 
 DICT_INDIVIDUS = {}
 

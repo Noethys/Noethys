@@ -19,8 +19,6 @@ import datetime
 from Ctrl import CTRL_Bandeau
 from Ol import OL_Transports_grille
 
-try: import psyco; psyco.full()
-except: pass
 
 
 class Dialog(wx.Dialog):

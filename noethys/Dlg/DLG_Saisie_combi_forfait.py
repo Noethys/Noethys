@@ -19,8 +19,6 @@ import GestionDB
 
 from Ctrl import CTRL_Saisie_date
 
-try: import psyco; psyco.full()
-except: pass
 
 
 

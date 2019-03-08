@@ -20,10 +20,6 @@ from Ctrl import CTRL_Bandeau
 from Ol import OL_Individus
 import GestionDB
 
-try: import psyco; psyco.full()
-except: pass
-
-
 from Utils import UTILS_Interface
 from Ctrl.CTRL_ObjectListView import Filter
 

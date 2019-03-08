@@ -22,8 +22,6 @@ import GestionDB
 from Utils import UTILS_Config
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 
-try: import psyco; psyco.full()
-except: pass
 
 DICT_LABELS_CATEGORIES = {
     "consommation" : (_(u"Consommation"), _(u"Consommations")),

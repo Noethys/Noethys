@@ -16,9 +16,6 @@ import wx
 from Ctrl import CTRL_Bouton_image
 import wx.lib.agw.customtreectrl as CT
 
-try: import psyco; psyco.full()
-except: pass
-
 
 
 class CTRL_Objets(CT.CustomTreeCtrl):

@@ -18,8 +18,6 @@ from Ctrl import CTRL_Bouton_image
 from Ol import OL_Groupes
 import GestionDB
 
-try: import psyco; psyco.full()
-except: pass
 
 class Panel(wx.Panel):
     def __init__(self, parent, IDactivite=None, nouvelleActivite=False):

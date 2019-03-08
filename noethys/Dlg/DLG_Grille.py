@@ -33,8 +33,6 @@ from Ol import OL_Legende_grille
 from Ol import OL_Raccourcis_grille
 from Ctrl import CTRL_Etiquettes
 
-try: import psyco; psyco.full()
-except: pass
 
 ID_AFFICHAGE_PERSPECTIVE_DEFAUT = wx.NewId()
 ID_PREMIERE_PERSPECTIVE = 500

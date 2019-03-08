@@ -26,8 +26,6 @@ from Ctrl import CTRL_Saisie_date
 from Dlg import DLG_calendrier_simple
 from Ctrl import CTRL_Synthese_impayes
 
-try: import psyco; psyco.full()
-except: pass
 
 
 def DateEngEnDateDD(dateEng):

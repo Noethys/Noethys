@@ -24,8 +24,6 @@ from Dlg import DLG_Saisie_texte_rappel
 from Utils import UTILS_Interface
 from Ctrl.CTRL_ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
-try: import psyco; psyco.full()
-except: pass
 
 
 def FormateCouleur(texte):

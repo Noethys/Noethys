@@ -20,8 +20,6 @@ from Ol import OL_Unites_remplissage
 
 import GestionDB
 
-try: import psyco; psyco.full()
-except: pass
 
 
 

@@ -23,8 +23,6 @@ from numpy import arange
 
 from Utils import UTILS_Stats_modeles as MODELES
 
-try: import psyco; psyco.full()
-except: pass
 
 
 DICT_COMPARATIF_NOMBRE = {"dictParametres" : {}, "dictResultats" : {} }

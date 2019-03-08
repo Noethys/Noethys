@@ -27,8 +27,6 @@ SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 
 import GestionDB
 
-try: import psyco; psyco.full()
-except: pass
 
 
 

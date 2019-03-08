@@ -19,9 +19,6 @@ from Ol import OL_Categories_tarifs
 
 import GestionDB
 
-try: import psyco; psyco.full()
-except: pass
-
 
 
 class Panel(wx.Panel):

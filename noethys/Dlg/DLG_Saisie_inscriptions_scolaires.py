@@ -21,8 +21,6 @@ from Ctrl import CTRL_Saisie_date
 from Ol import OL_Inscriptions_scolaires_2
 from Utils import UTILS_Historique
 
-try: import psyco; psyco.full()
-except: pass
 
 
 def DateEngEnDateDD(dateEng):

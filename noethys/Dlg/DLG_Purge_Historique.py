@@ -20,8 +20,6 @@ from Utils import UTILS_Historique
 from Ctrl import CTRL_Saisie_date
 import wx.lib.agw.hyperlink as Hyperlink
 
-try: import psyco; psyco.full()
-except: pass
 
 
 

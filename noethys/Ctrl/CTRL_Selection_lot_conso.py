@@ -19,8 +19,6 @@ import datetime
 import GestionDB
 from Ctrl import CTRL_Grille_periode
 
-try: import psyco; psyco.full()
-except: pass
 
 
 class CTRL_Individus(wx.CheckListBox):

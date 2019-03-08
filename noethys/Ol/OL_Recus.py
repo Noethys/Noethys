@@ -26,8 +26,6 @@ SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 from Utils import UTILS_Interface
 from Ctrl.CTRL_ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
-try: import psyco; psyco.full()
-except: pass
 
 
 def DateEngFr(textDate):

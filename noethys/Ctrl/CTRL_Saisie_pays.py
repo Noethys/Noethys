@@ -17,8 +17,6 @@ from Ctrl import CTRL_Bouton_image
 import sys
 import sqlite3
 
-try: import psyco; psyco.full()
-except: pass
 
     
 class SaisiePays(wx.Panel):

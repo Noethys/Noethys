@@ -18,8 +18,6 @@ import datetime
 import GestionDB
 from Utils import UTILS_Historique
 
-try: import psyco; psyco.full()
-except: pass
 
 ID_BOUTON_DETACHER = 1
 ID_BOUTON_SUPPRIMER = 2

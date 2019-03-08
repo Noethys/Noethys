@@ -24,8 +24,6 @@ from Utils import UTILS_Divers
 from Utils import UTILS_Titulaires
 import GestionDB
 
-try: import psyco; psyco.full()
-except: pass
 
 
 def DateEngFr(textDate):

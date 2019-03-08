@@ -28,8 +28,6 @@ from Data import DATA_Civilites
 DICT_CIVILITES = DATA_Civilites.GetDictCivilites() 
 import FonctionsPerso
 
-try: import psyco; psyco.full()
-except: pass
 
 COULEUR_FOND_REGROUPEMENT = (220, 220, 220)
 
@@ -63,7 +61,7 @@ class CTRL(HTL.HyperTreeList):
         self.listeImpression = []
         
         # Récupère les noms et adresses de tous les titulaires
-        self.dictTitulaires = UTILS_Titulaires.GetTitulaires() 
+        self.dictTitulaires = UTILS_Titulaires.GetTitulaires(inclure_archives=True)
         
         # Adapte taille Police pour Linux
         from Utils import UTILS_Linux

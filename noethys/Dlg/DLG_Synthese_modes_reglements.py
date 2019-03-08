@@ -26,8 +26,6 @@ from Ctrl import CTRL_Synthese_modes_reglements
 from Ctrl import CTRL_Selection_activites
 from Utils import UTILS_Dates
 
-try: import psyco; psyco.full()
-except: pass
 
 
 def DateEngEnDateDD(dateEng):

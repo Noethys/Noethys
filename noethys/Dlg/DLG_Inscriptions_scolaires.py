@@ -20,8 +20,6 @@ from Ol import OL_Inscriptions_scolaires
 
 import GestionDB
 
-try: import psyco; psyco.full()
-except: pass
 
 
 class CTRL_Ecole(wx.Choice):

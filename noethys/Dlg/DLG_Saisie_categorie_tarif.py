@@ -16,9 +16,6 @@ import wx
 from Ctrl import CTRL_Bouton_image
 import GestionDB
 
-try: import psyco; psyco.full()
-except: pass
-
 
 class CTRL_Villes(wx.ListBox):
     def __init__(self, parent, IDcategorie_tarif=None):

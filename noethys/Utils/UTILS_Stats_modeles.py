@@ -27,8 +27,6 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot
 
-try: import psyco; psyco.full()
-except: pass
 
 COULEUR_VERT_POMME = (151, 253, 79)
 COULEUR_BLEU_CIEL = (174, 212, 253)

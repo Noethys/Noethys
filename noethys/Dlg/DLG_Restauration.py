@@ -28,8 +28,6 @@ sys.modules['UTILS_Cryptage_fichier'] = UTILS_Cryptage_fichier
 
 from Dlg import DLG_Saisie_param_reseau
 
-try: import psyco; psyco.full()
-except: pass
 
 LISTE_CATEGORIES = UTILS_Sauvegarde.LISTE_CATEGORIES
 
