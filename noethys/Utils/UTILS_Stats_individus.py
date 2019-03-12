@@ -8,17 +8,12 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
-
 import Chemins
 from Utils.UTILS_Traduction import _
 import wx
-from Ctrl import CTRL_Bouton_image
 import datetime
-import GestionDB
-
 import matplotlib
 import matplotlib.pyplot
-
 from numpy import arange 
 
 from Utils import UTILS_Stats_modeles as MODELES
@@ -640,7 +635,7 @@ class Graphe_nombre_individus(MODELES.Graphe):
         indexPeriodeReference = dictResultats["indexPeriodeReference"]
         
         # Création du graph
-        ind = arange(len(listeLabels)) + 0.25  # the x locations for the groups
+        ind = arange(len(listeLabels)) + self.decalage_x
         width = 0.5
         for x in range(len(listeLabels)) :
             if x == indexPeriodeReference :
@@ -670,7 +665,7 @@ class Graphe_nombre_individus(MODELES.Graphe):
         figure.subplots_adjust(left=None, bottom=0.4, right=None, wspace=None, hspace=None)
         
         # Affiche les grilles
-        ax.grid(True)
+        ax.grid(True, linestyle=":")
         
         return figure
 
@@ -798,7 +793,7 @@ class Graphe_repartition_ages(MODELES.Graphe):
             listeValeurs.append(nbreIndividus)
         
         # Création du graph
-        ind = arange(len(listeLabels)) + 0.25  # the x locations for the groups
+        ind = arange(len(listeLabels)) + self.decalage_x
         width = 0.5
         barres = ax.bar(ind, listeValeurs, width, color=MODELES.ConvertitCouleur2(MODELES.COULEUR_VERT_POMME))
         
@@ -823,7 +818,7 @@ class Graphe_repartition_ages(MODELES.Graphe):
         figure.subplots_adjust(left=None, bottom=0.12, right=None, wspace=None, hspace=None)
         
         # Affiche les grilles
-        ax.grid(True)
+        ax.grid(True, linestyle=":")
         
         return figure
 
@@ -890,7 +885,7 @@ class Graphe_repartition_annees_naiss(MODELES.Graphe):
             listeValeurs.append(nbreIndividus)
         
         # Création du graph
-        ind = arange(len(listeLabels)) + 0.25  # the x locations for the groups
+        ind = arange(len(listeLabels)) + self.decalage_x
         width = 0.5
         barres = ax.bar(ind, listeValeurs, width, color=MODELES.ConvertitCouleur2(MODELES.COULEUR_BLEU_CIEL))
         
@@ -917,7 +912,7 @@ class Graphe_repartition_annees_naiss(MODELES.Graphe):
         figure.subplots_adjust(left=None, bottom=0.2, right=None, wspace=None, hspace=None)
         
         # Affiche les grilles
-        ax.grid(True)
+        ax.grid(True, linestyle=":")
         
         return figure
     
@@ -1216,7 +1211,7 @@ class Graphe_nouveaux_individus(MODELES.Graphe):
             listeValeurs.append(nbreIndividus)
         
         # Création du graph
-        ind = arange(len(listeLabels)) + 0.25  # the x locations for the groups
+        ind = arange(len(listeLabels)) + self.decalage_x
         width = 0.5
         barres = ax.bar(ind, listeValeurs, width, color=MODELES.ConvertitCouleur2(MODELES.COULEUR_VERT_POMME))
         
@@ -1241,7 +1236,7 @@ class Graphe_nouveaux_individus(MODELES.Graphe):
         figure.subplots_adjust(left=None, bottom=0.3, right=None, wspace=None, hspace=None)
         
         # Affiche les grilles
-        ax.grid(True)
+        ax.grid(True, linestyle=":")
         
         return figure
 
@@ -1278,7 +1273,7 @@ class Graphe_arrivee_individus(MODELES.Graphe):
         ax.plot(listeX, listeY)
         
         # Affiche les grilles
-        ax.grid(True)
+        ax.grid(True, linestyle=":")
 
         # Axe horizontal
         datemin = datetime.date(date_debut.year, 1, 1)
@@ -1447,7 +1442,8 @@ if __name__ == '__main__':
         "listeActivites" : [1, 2, 3, 4, 5], 
         "dictActivites" : {1 : _(u"Centre de Loisirs"), 2 : _(u"Action 10-14 ans"), 3 : _(u"Camp 4-6 ans"), 4 : _(u"Camp 6-9 ans"), 5 : _(u"Camp 10-14 ans"), 6 : _(u"Art floral"), 7 : _(u"Yoga")}, 
         }
-    frame_1 = MODELES.FrameTest(objet=Graphe_repartition_niveaux_scolaires(), dictParametres=dictParametres)
+    frame_1 = MODELES.FrameTest(objet=Graphe_repartition_ages(), dictParametres=dictParametres)
+    frame_1.SetSize((600, 400))
     app.SetTopWindow(frame_1)
     frame_1.Show()
     app.MainLoop()

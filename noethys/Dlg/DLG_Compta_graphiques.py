@@ -429,7 +429,7 @@ class CTRL_Graphique(wx.Panel):
 
         # Finalisation
         ax.autoscale_view('tight')
-##        ax.grid(True)
+##        ax.grid(True, linestyle=":")
         ax.figure.canvas.draw()
         wx.CallAfter(self.SendSizeEvent)
         return
@@ -538,7 +538,7 @@ class CTRL_Graphique(wx.Panel):
 
         # Finalisation
         ax.autoscale_view('tight')
-        ax.grid(True)
+        ax.grid(True, linestyle=":")
         ax.figure.canvas.draw()
         wx.CallAfter(self.SendSizeEvent)
         return

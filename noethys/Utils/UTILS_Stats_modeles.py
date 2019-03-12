@@ -492,8 +492,11 @@ class Graphe(Objet):
         self.categorie = "graphe"
         self.taille = (300, 300)
         self.bitmap = None
-##        self.figure = None
-    
+        if six.PY2:
+            self.decalage_x = 0.25
+        else:
+            self.decalage_x = 0.5
+
     def MemoriseImage(self, figure=None):
         self.nomImage = "image-%s" % self.code
         if self.bitmap != None :
@@ -528,7 +531,6 @@ class Graphe(Objet):
         else :
             self.wximage = wx.EmptyImage(im.size[0], im.size[1])
         self.wximage.SetData(im.convert("RGB").tobytes())
-##        self.wximage = self.wximage.Rescale(self.taille[0], self.taille[1], quality=wx.IMAGE_QUALITY_HIGH)
         if 'phoenix' in wx.PlatformInfo:
             self.wximbmp = wx.Bitmap(self.wximage)
         else :

@@ -237,7 +237,7 @@ class CTRL(wx.Panel):
         
         self.figure.autofmt_xdate()
 
-        ax.grid(True)
+        ax.grid(True, linestyle=":")
         ax.figure.canvas.draw()
         wx.CallAfter(self.SendSizeEvent)
         return
@@ -252,7 +252,7 @@ class CTRL(wx.Panel):
         y = [0, 10, 2, 3, 4]
 
         ax.fill(x, y, 'r')
-        ax.grid(True)
+        ax.grid(True, linestyle=":")
         ax.figure.canvas.draw()
         
         return
@@ -284,7 +284,7 @@ class CTRL(wx.Panel):
         self.figure.subplots_adjust(left=None, bottom=0.4, right=None, wspace=None, hspace=None)
         
         # Affiche les grilles
-        ax.grid(True)
+        ax.grid(True, linestyle=":")
 
         # Re-dessine le canvas
         ax.figure.canvas.draw()
@@ -331,7 +331,7 @@ class CTRL2():
         figure.subplots_adjust(left=None, bottom=0.4, right=None, wspace=None, hspace=None)
         
         # Affiche les grilles
-        ax.grid(True)
+        ax.grid(True, linestyle=":")
         
         return figure
 
