@@ -50,6 +50,9 @@ class MyEncoder(json.JSONEncoder):
         # Si wx.Point
         elif isinstance(objet, wx.Point):
             return {'__type__': "wx.Point", 'data': objet.Get()}
+        # Si bytes
+        elif isinstance(objet, bytes):
+            return {'__type__': "bytes", 'data': objet.decode('utf8')}
         # Si autre
         return json.JSONEncoder.default(self, objet)
 
@@ -70,13 +73,16 @@ def MyDecoder(objet):
     # Si wx.Point
     elif objet.get('__type__') == 'wx.Point':
         return wx.Point(objet['data'][0], objet['data'][1])
+    # Si bytes
+    elif objet.get('__type__') == 'bytes':
+        return bytes(objet['data'], 'utf-8')
     # Si autre
     else:
         return objet
 
 
 def Lire(nom_fichier="", conversion_auto=False):
-    data = {}
+    data = None
     is_json = True
 
     # Essaye d'ouvrir un fichier Json
@@ -117,6 +123,10 @@ def Lire(nom_fichier="", conversion_auto=False):
         except Exception as err:
             print("Conversion du shelve en Json impossible :")
             print(err,)
+
+    # Si aucune donnée trouvée, on lève une erreur
+    if data == None :
+        raise
 
     return data
 

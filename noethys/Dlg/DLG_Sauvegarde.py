@@ -676,7 +676,7 @@ class Dialog(wx.Dialog):
 
     def MemoriseParametres(self):
         if self.dictDonnees == None :
-            dictDonnees = self.ctrl_parametres.GetDonnees() 
+            dictDonnees = self.ctrl_parametres.GetDonnees()
             UTILS_Config.SetParametre("sauvegarde_mdp", dictDonnees["sauvegarde_motdepasse"])
             UTILS_Config.SetParametre("sauvegarde_repertoire", dictDonnees["sauvegarde_repertoire"])
             UTILS_Config.SetParametre("sauvegarde_emails", dictDonnees["sauvegarde_emails"])

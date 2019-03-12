@@ -11,7 +11,7 @@
 import Chemins
 from Utils.UTILS_Traduction import _
 import wx
-from Ctrl import CTRL_Bouton_image
+import six
 import os
 import sys
 import base64
@@ -187,7 +187,10 @@ def Sauvegarde(listeFichiersLocaux=[], listeFichiersReseau=[], nom="", repertoir
     if motdepasse != None :
         dlgprogress.Update(numEtape, _(u"Cryptage du fichier..."));numEtape += 1
         fichierCrypte = u"%s.%s" % (nom, EXTENSIONS["crypte"])
-        UTILS_Cryptage_fichier.CrypterFichier(UTILS_Fichiers.GetRepTemp(fichier=nomFichierTemp), UTILS_Fichiers.GetRepTemp(fichier=fichierCrypte), base64.b64decode(motdepasse))
+        motdepasse = base64.b64decode(motdepasse)
+        if six.PY3:
+            motdepasse = motdepasse.decode('utf8')
+        UTILS_Cryptage_fichier.CrypterFichier(UTILS_Fichiers.GetRepTemp(fichier=nomFichierTemp), UTILS_Fichiers.GetRepTemp(fichier=fichierCrypte), motdepasse)
         nomFichierTemp = fichierCrypte
         extension = EXTENSIONS["crypte"]
     else:
