@@ -1520,7 +1520,7 @@ class Astral(object):
         zone = -dateandtime.utcoffset().seconds / 3600.0
         utc_datetime = dateandtime.astimezone(pytz.utc)
         timenow = utc_datetime.hour + (utc_datetime.minute / 60.0) + \
-            (utc_datetime.second / 3600)
+            (utc_datetime.second // 3600)
 
         JD = self._julianday(dateandtime)
         t = self._jday_to_jcentury(JD + timenow / 24.0)
@@ -1605,7 +1605,7 @@ class Astral(object):
         zone = -dateandtime.utcoffset().seconds / 3600.0
         utc_datetime = dateandtime.astimezone(pytz.utc)
         timenow = utc_datetime.hour + (utc_datetime.minute / 60.0) + \
-            (utc_datetime.second / 3600)
+            (utc_datetime.second // 3600)
     
         JD = self._julianday(dateandtime)
         t = self._jday_to_jcentury(JD + timenow / 24.0)

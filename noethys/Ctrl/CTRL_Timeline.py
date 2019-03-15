@@ -261,7 +261,7 @@ class CTRL(wx.Panel):
     def _navigate_smart_step(self, direction):
 
         def months_to_year_and_month(months):
-            years = int(months / 12)
+            years = int(months // 12)
             month = months - years * 12
             if month == 0:
                 month = 12

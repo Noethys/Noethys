@@ -306,15 +306,6 @@ class CTRL(ULC.UltimateListCtrl):
             return DB.erreur
         DB.Close()
         return True
-    
-##        try :
-##            connexion = MySQLdb.connect(host=hote, user=utilisateur, passwd=motdepasse, port=int(port), use_unicode=True) 
-##            connexion.set_character_set('utf8')
-##            cursor = connexion.cursor()
-##            connexion.close()
-##        except Exception, err :
-##            return err
-##        return True
 
     def GetListeFichiersReseau(self) :
         """ Récupère la liste des fichiers réseau à afficher """
@@ -352,7 +343,7 @@ class CTRL(ULC.UltimateListCtrl):
 ##                for suffixe in ("data", "documents", "photos") :
 ##                    base = u"%s_%s" % (titre, suffixe)
 ##                    try :
-##                        cursor.execute("""SELECT table_schema, sum( data_length + index_length) /1024 FROM information_schema.TABLES WHERE table_schema = "%s";""" % base) 
+##                        cursor.execute("""SELECT table_schema, sum( data_length + index_length) /1024 FROM information_schema.TABLES WHERE table_schema = "%s";""" % base)
 ##                        nom, tailleBase = cursor.fetchone()
 ##                        taille += tailleBase
 ##                    except :

@@ -135,9 +135,9 @@ class Base(object) :
             moy_heures_semaine = datetime.timedelta(0)
             moy_heures_mois = datetime.timedelta(0)
         else :
-            moy_heures_jour = duree_heures_brut / nbre_dates
-            moy_heures_semaine = duree_heures_brut / nbre_semaines
-            moy_heures_mois = duree_heures_brut / nbre_mois
+            moy_heures_jour = duree_heures_brut // nbre_dates
+            moy_heures_semaine = duree_heures_brut // nbre_semaines
+            moy_heures_mois = duree_heures_brut // nbre_mois
 
         # Calcul du nbre d'heures du contrat
         duree_heures_contrat = duree_heures_brut - duree_absences_prevues + duree_heures_regularisation

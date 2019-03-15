@@ -3806,9 +3806,10 @@ class MainFrame(wx.Frame):
                 dlgAttente = wx.BusyInfo(message, None)
                 if 'phoenix' not in wx.PlatformInfo:
                     wx.Yield()
-                
-                DB = GestionDB.DB(nomFichier = nomFichier)        
-                resultat = DB.ConversionDB(versionFichier)
+
+                import UpgradeDB
+                DB = UpgradeDB.DB(nomFichier=nomFichier)
+                resultat = DB.Upgrade(versionFichier)
                 DB.Close()
                 
                 # Fermeture de la fenêtre d'attente

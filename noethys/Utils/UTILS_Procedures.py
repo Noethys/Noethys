@@ -592,9 +592,11 @@ def A8574():
         return False
     
     print("Procedure manuelle de mise a niveau de la base de donnee depuis la version : ", version)
-    DB = GestionDB.DB()        
-    resultat = DB.ConversionDB(version)
+    import UpgradeDB
+    DB = UpgradeDB.DB()
+    resultat = DB.Upgrade(version)
     DB.Close()
+
     print(resultat)
     
 def A8623():

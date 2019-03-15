@@ -268,7 +268,7 @@ class CTRL(HTL.HyperTreeList):
             if nbreJoursRetard < 31 :
                 texteRetard = _(u"%d jours") % nbreJoursRetard
             else :
-                nbreMois = nbreJoursRetard / 30
+                nbreMois = nbreJoursRetard // 30
                 nbreJours = nbreJoursRetard - (nbreMois*30)
                 texteRetard = _(u"%d jours") % nbreJoursRetard
                 

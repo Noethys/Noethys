@@ -114,7 +114,7 @@ def GetCle_modulo11(elements=[]):
 ##    elements = ("39", "01", "13", "0", "0000000000303")
 ##    elements = ("453267")
     nombre = "".join(elements)[::-1]
-    listeCoeff = [2, 3, 4, 5, 6, 7] * (len(nombre) / 6 + 1)
+    listeCoeff = [2, 3, 4, 5, 6, 7] * (len(nombre) // 6 + 1)
     total = 0
     index = 0
     for chiffre in nombre :

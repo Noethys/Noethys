@@ -626,6 +626,9 @@ class Mailjet(Base_messagerie):
             # Mémorisation du message
             data["Messages"].append(dict_message)
 
+        print("Appel API Mailjet :")
+        print((data,))
+
         # Envoi de la requête à Mailjet
         resultats = self.connection.send.create(data=data)
         # print resultats.status_code
