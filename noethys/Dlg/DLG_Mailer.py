@@ -14,18 +14,14 @@ from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
 from Ctrl import CTRL_Bouton_image
-import sys
-import os
+import six
 import re
 import traceback
 import copy
 import datetime
 import GestionDB
 from Ctrl import CTRL_Bandeau
-import wx.lib.filebrowsebutton as filebrowse
 import  wx.lib.dialogs
-import FonctionsPerso
-import time
 from Dlg import DLG_Messagebox
 from Utils import UTILS_Envoi_email
 from Utils import UTILS_Parametres
@@ -467,6 +463,9 @@ class Dialog(wx.Dialog):
             # Traitement des champs pour la fusion
             texte = copy.deepcopy(texteHTML)
             for motcle, valeur in CTRL_Editeur_email.GetChampsStandards().items():
+                if six.PY3:
+                    motcle = motcle.encode()
+                    valeur = valeur.encode()
                 texte = texte.replace(motcle, valeur)
             for motcle, valeur in dictChamps.items():
                 if valeur == None: valeur = u""
@@ -525,9 +524,9 @@ class Dialog(wx.Dialog):
         handler.DeleteTemporaryImages()
 
         # Mémorisation dans l'historique
-        for message in self.listeSucces :
-            self.MemorisationHistorique(message.GetLabelDestinataires(), message.sujet)
-
+        if self.listeSucces != False:
+            for message in self.listeSucces :
+                self.MemorisationHistorique(message.GetLabelDestinataires(), message.sujet)
 
     def MemorisationHistorique(self, adresse="", sujet=""):
         DB = GestionDB.DB()
@@ -554,7 +553,10 @@ class Dialog(wx.Dialog):
             
             # Remplacement des champs pour la fusion
             texte = copy.deepcopy(texteHTML)
-            for motcle, valeur in CTRL_Editeur_email.GetChampsStandards().items() :
+            for motcle, valeur in CTRL_Editeur_email.GetChampsStandards().items():
+                if six.PY3:
+                    motcle = motcle.encode()
+                    valeur = valeur.encode()
                 texte = texte.replace(motcle, valeur)
             for motcle, valeur in dictChamps.items() :
                 try :
@@ -565,7 +567,10 @@ class Dialog(wx.Dialog):
                     pass
             
             # Vérifie si champs non remplacés
-            regex = re.compile(r"\{[A-Za-z0-9_]*?\}") 
+            x = r"\{[A-Za-z0-9_]*?\}"
+            if six.PY3:
+                x = x.encode()
+            regex = re.compile(x)
             listeAnomalies = regex.findall(texte)
             if len(listeAnomalies) > 0 :
                 listeResultats.append((track.adresse, listeAnomalies))
@@ -598,22 +603,10 @@ if __name__ == u"__main__":
     app = wx.App(0)
     dlg = Dialog(None)
     listeDonnees = [
-##        {"adresse" : "test@gmail.com", "pieces" : [], "champs" : {} },
+        {"adresse" : "test@gmail.com", "pieces" : [], "champs" : {} },
         ]
     dlg.SetDonnees(listeDonnees, modificationAutorisee=True)
+    dlg.ctrl_objet.SetValue(u"Test")
     app.SetTopWindow(dlg)
     dlg.ShowModal()
     app.MainLoop()
-    
-
-##    app = wx.App(0)
-##    try :
-##        raise NameError("été")
-##    except Exception, err :
-##        err = str(err).decode("iso-8859-15")
-##        dlgErreur = wx.MessageDialog(None, _(u"%s\n\nL'erreur suivante a été détectée :\n%s.\n\nSouhaitez-vous quand même continuer le processus ?") % ("label", err), _(u"Erreur"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_ERROR)
-##        traceback.print_exc(file=sys.stdout)
-##        dlgErreur.ShowModal() 
-##        dlgErreur.Destroy()
-##    app.MainLoop()
-##    

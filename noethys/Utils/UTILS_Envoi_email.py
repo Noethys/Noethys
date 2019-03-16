@@ -23,6 +23,7 @@ import traceback
 import base64
 from Utils import UTILS_Html2text
 from Utils import UTILS_Titulaires
+from Utils import UTILS_Fichiers
 from Dlg import DLG_Messagebox
 
 import smtplib
@@ -235,7 +236,10 @@ class Message():
             index += 1
 
         # Conversion du html en texte plain
-        self.texte_plain = UTILS_Html2text.html2text(self.texte_html)
+        texte = self.texte_html
+        if six.PY3:
+            texte = texte.decode("utf-8")
+        self.texte_plain = UTILS_Html2text.html2text(texte)
 
     def AttacheImagesIncluses(self, email=None):
         index = 0
@@ -626,8 +630,10 @@ class Mailjet(Base_messagerie):
             # Mémorisation du message
             data["Messages"].append(dict_message)
 
-        print("Appel API Mailjet :")
-        print((data,))
+        if wx.GetKeyState(wx.WXK_CONTROL) == True:
+            from Utils import UTILS_Json
+            UTILS_Json.Ecrire(nom_fichier=UTILS_Fichiers.GetRepTemp(fichier="appel_mailjet.txt"), data=data)
+            return False
 
         # Envoi de la requête à Mailjet
         resultats = self.connection.send.create(data=data)
