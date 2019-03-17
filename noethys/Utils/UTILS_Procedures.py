@@ -62,6 +62,7 @@ DICT_PROCEDURES = {
     "A9120" : _(u"Effacement de toutes les actions du portail"),
     "A9122" : _(u"Réparation des prestations : Rapprochement des prestations et des consommations détachées"),
     "A9130" : _(u"Remplissage du champ moteur de la table adresses_mail"),
+    "A9135" : _(u"Vérifie le total des factures"),
 }
 
 
@@ -1185,91 +1186,45 @@ def A9130():
     DB.Commit()
     DB.Close()
 
+def A9135():
+    """ Vérifie le total des factures """
+    from Utils.UTILS_Decimal import FloatToDecimal as FloatToDecimal
+    from Utils import UTILS_Titulaires
+    titulaires = UTILS_Titulaires.GetTitulaires()
+
+    DB = GestionDB.DB()
+    req = """SELECT factures.IDfacture, comptes_payeurs.IDfamille, date_debut, date_fin, total,
+    COUNT(prestations.IDprestation), SUM(prestations.montant)
+    FROM factures
+    LEFT JOIN prestations ON prestations.IDfacture = factures.IDfacture
+    LEFT JOIN comptes_payeurs ON comptes_payeurs.IDcompte_payeur = factures.IDcompte_payeur
+    WHERE factures.etat IS NULL
+    GROUP BY factures.IDfacture
+    ;"""
+    DB.ExecuterReq(req)
+    listeFactures = DB.ResultatReq()
+    DB.Close()
+    liste_anomalies = []
+    for IDfacture, IDfamille, date_debut, date_fin, total, nbre_prestations, total_prestations in listeFactures:
+        total = FloatToDecimal(total)
+        total_prestations = FloatToDecimal(total_prestations)
+        if IDfamille in titulaires:
+            famille = titulaires[IDfamille]["titulairesSansCivilite"]
+        else:
+            famille = u"Titulaires inconnus"
+        if total != total_prestations:
+            texte = u"Famille %s : Facture du %s au %s (Montant initial = %s / Montant actuel = %s)" % (famille, date_debut, date_fin, total, total_prestations)
+            liste_anomalies.append((IDfacture, IDfamille, famille, date_debut, date_fin, total, total_prestations, nbre_prestations, texte))
+
+    for item in liste_anomalies:
+        print(item[8])
+    print(len(liste_anomalies))
 
 
 
-##def A8360():
-##    """ Importation des familles d'un fichier local """
-##    from Data import DATA_Tables as Tables
-##    
-##    # Recherche des fichiers importables
-##    listeNomsFichiers = []
-##    for fichier in os.listdir("Data/") :
-##        if fichier.endswith("_DATA.dat") :
-##            listeNomsFichiers.append(fichier[:-9])
-##    listeNomsFichiers.sort() 
-##    
-##    # Demande le fichier à importer
-##    dlg = wx.SingleChoiceDialog(None, _(u"Sélectionnez le fichier contenant les données à importer :"), _(u"Importation"), listeNomsFichiers)
-##    dlg.SetSize((500, 400))
-##    dlg.CenterOnScreen() 
-##    nomExtension = None
-##    if dlg.ShowModal() == wx.ID_OK :
-##        nomFichier = dlg.GetStringSelection()
-##        dlg.Destroy()
-##    else :
-##        dlg.Destroy()
-##        return
-##    
-##    # Demande les options
-##    listeOptions = [
-##        ("abonnements", _(u"Listes de diffusion et abonnements")),
-##        ("scolarite", _(u"Données de scolarité : étapes, écoles, classes...")),
-##        ("questionnaire", _(u"Questionnaires familiaux et individuels")),
-##        ("pieces", _(u"Pièces et types de pièces")),
-##        ("messages", _(u"Messages de type famille, individuel ou accueil")),
-##        ("quotients", _(u"Quotients familiaux des familles")),
-##        ("mandats", _(u"Mandats SEPA des familles")),
-##        ]
-##        
-##    dlg = wx.MultiChoiceDialog(None, _(u"Cochez les données optionnelles à inclure :"), _(u"Importation"), [x[1] for x in listeOptions])
-##    if dlg.ShowModal() == wx.ID_OK :
-##        selections = dlg.GetSelections()
-##        options = [listeOptions[x][0] for x in selections]
-##        dlg.Destroy()
-##    else :
-##        dlg.Destroy()
-##        return
-##
-##    # Demande de confirmation
-##    dlg = wx.MessageDialog(None, _(u"Souhaitez-vous vraiment lancer l'importation des familles du fichier '%s' ?\n\nAttention, toutes les données actuelles seront écrasées !") % nomFichier, _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
-##    if dlg.ShowModal() != wx.ID_YES :
-##        dlg.Destroy()
-##        return
-##    dlg.Destroy()
-##    
-##    # Importation des tables
-##    listeTables = [
-##        "comptes_payeurs", "familles", "individus", "liens", 
-##        "medecins", "payeurs", "categories_travail", "caisses", 
-##        "rattachements", "regimes", "secteurs", "types_sieste", 
-##        "problemes_sante", "types_maladies", "types_vaccins", "vaccins", "vaccins_maladies",
-##        ]
-##        
-##    if "abonnements" in options : listeTables.extend(["abonnements", "listes_diffusion"])
-##    if "scolarite" in options : listeTables.extend(["classes", "ecoles", "niveaux_scolaires", "scolarite"])
-##    if "questionnaire" in options : listeTables.extend(["questionnaire_categories", "questionnaire_choix", "questionnaire_filtres", "questionnaire_questions", "questionnaire_reponses"])
-##    if "pieces" in options : listeTables.extend(["pieces", "types_pieces"])
-##    if "messages" in options : listeTables.extend(["messages", "messages_categories"])
-##    if "quotients" in options : listeTables.extend(["quotients",])
-##    if "mandats" in options : listeTables.extend(["mandats",])
-##        
-##    DB = GestionDB.DB() 
-##    for nomTable in listeTables :
-##        # Réinitialisation de la table
-##        print "Reinitialisation de la table %s..." % nomTable
-##        DB.ExecuterReq("DROP TABLE %s;" % nomTable)
-##        DB.Commit() 
-##        DB.CreationTable(nomTable, Tables.DB_DATA)
-##        # Importation des données
-##        print "Importation de la table %s..." % nomTable
-##        DB.Importation_table(nomTable=nomTable, nomFichierdefault=u"Data/%s_DATA.dat" % nomFichier)
-##    DB.Close()
-##    print "Importation terminee."
-    
 
 if __name__ == u"__main__":
     app = wx.App(0)
     # TEST D'UNE PROCEDURE :
-    E4072()
+    A9135()
     app.MainLoop()
