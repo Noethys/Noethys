@@ -947,29 +947,36 @@ def AfficheStatsProgramme():
     
     # Recherche les fichiers python
     print("Lancement de l'analyse...")
-    listeFichiers = os.listdir(os.getcwd())
-    for nomFichier in listeFichiers :
-        if nomFichier.endswith(".py") :
-            fichier = open(nomFichier, 'r')
-            nbreLignes = 0
-            for line in fichier :
-                # Compte le nombre de lignes
-                nbreLignes += 1
-                # Recherche d'un wx.Dialog
-                if "wx.Dialog.__init__" in line : nbreDialogs += 1
-                # Recherche une impression ObjectListview
-                if "prt.Print()" in line : nbreImpressionsOL += 1
-                # Recherche une impression PDF avec reportlab
-                if "doc.build(story)" in line : nbreImpressionsPDF += 1
-                # Recherche des boîtes de dialogue
-                if "wx.MessageDialog(" in line : nbreBoitesDialogue += 1
-                # Recherche le nbre de fonctions
-                if " def " in line : nbreFonctions += 1
-                
-            fichier.close()
-            # Mémorise les résultats
-            listeResultats.append((nomFichier, nbreLignes))
-            nbreLignesTotal += nbreLignes
+
+    listeFichiers = {}
+    for rep in ("Dlg", "Ctrl", "Ol", "Utils"):
+        if rep not in listeFichiers:
+            listeFichiers[rep] = []
+        listeFichiers[rep] = os.listdir(os.getcwd() + "/" + rep)
+
+    for rep, liste in listeFichiers.items() :
+        for nomFichier in liste:
+            if nomFichier.endswith(".py") :
+                fichier = open(rep + "/" + nomFichier, 'r')
+                nbreLignes = 0
+                for line in fichier :
+                    # Compte le nombre de lignes
+                    nbreLignes += 1
+                    # Recherche d'un wx.Dialog
+                    if "wx.Dialog.__init__" in line : nbreDialogs += 1
+                    # Recherche une impression ObjectListview
+                    if "prt.Print()" in line : nbreImpressionsOL += 1
+                    # Recherche une impression PDF avec reportlab
+                    if "doc.build(story)" in line : nbreImpressionsPDF += 1
+                    # Recherche des boîtes de dialogue
+                    if "wx.MessageDialog(" in line : nbreBoitesDialogue += 1
+                    # Recherche le nbre de fonctions
+                    if " def " in line : nbreFonctions += 1
+
+                fichier.close()
+                # Mémorise les résultats
+                listeResultats.append((nomFichier, nbreLignes))
+                nbreLignesTotal += nbreLignes
     
     # Nbre tables
     from DATA_Tables import DB_DATA
@@ -1654,9 +1661,8 @@ def InsertCodeToolTip():
 
 
 if __name__ == "__main__":
-##    RemplacerContenuFichier() 
     # ------- Affiche les stats -------
-##    AfficheStatsProgramme()
+    AfficheStatsProgramme()
     
 ##    InsertUnicodeLiterals() 
 
