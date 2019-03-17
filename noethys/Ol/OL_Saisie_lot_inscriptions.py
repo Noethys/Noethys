@@ -266,6 +266,7 @@ class ListView(FastObjectListView):
                     ("IDcategorie_tarif", IDcategorie_tarif),
                     ("IDcompte_payeur", track.IDcompte_payeur),
                     ("date_inscription", str(datetime.date.today()) ),
+                    ("statut", "ok"),
                     ("parti", 0),
                     ]
                 IDinscription = DB.ReqInsert("inscriptions", listeDonnees)
