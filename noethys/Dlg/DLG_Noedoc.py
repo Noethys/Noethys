@@ -142,13 +142,15 @@ class Facture():
             (_(u"Solde du compte"), u"-35.80 ¤", "{SOLDE_COMPTE}"),
             (_(u"Total des déductions"), u"20.50 ¤", "{TOTAL_DEDUCTIONS}"),
 
+            (_(u"PES ORMC ID de la pièce"), u"12345", "{PES_IDPIECE}"),
             (_(u"PES ORMC Nom du lot"), u"Cantine janv 2016", "{PES_NOM_LOT}"),
             (_(u"PES ORMC Exercice"), u"2016", "{PES_LOT_EXERCICE}"),
+            (_(u"PES ORMC Mois"), u"12", "{PES_LOT_MOIS}"),
             (_(u"PES ORMC Objet du lot"), u"Accueil périscolaire", "{PES_LOT_OBJET}"),
             (_(u"PES ORMC ID Bordereau"), u"17", "{PES_LOT_ID_BORDEREAU}"),
             (_(u"PES ORMC Code produit"), u"87", "{PES_LOT_CODE_PRODUIT}"),
             ]
-        
+
         self.champs.extend(UTILS_Infos_individus.GetNomsChampsPossibles(mode="famille"))
         
         self.codesbarres = [ 
@@ -2897,9 +2899,11 @@ class MovingObjectMixin:
         if self.categorie in ("bloc_texte", "ligne") :
             return (None, None)
         elif self.categorie == "image" :
-            return (None, self.GetTaille()[1])
+            hauteur = self.GetTaille()[1]
+            return (None, float(hauteur))
         else:
-            return self.GetTaille()
+            largeur, hauteur = self.GetTaille()
+            return (float(largeur), float(hauteur))
         
     def GetTexte(self):
         if hasattr(self, "String"): 
@@ -6048,9 +6052,9 @@ class Impression():
 if __name__ == u"__main__":
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    dialog_1 = Dialog(None, IDmodele=17,
+    dialog_1 = Dialog(None, IDmodele=5,
             nom="test", observations=u"", 
-            IDfond=None, categorie="cotisation", taille_page=(210, 297))
+            IDfond=None, categorie="facture", taille_page=(210, 297))
     app.SetTopWindow(dialog_1)
     dialog_1.ShowModal()
     app.MainLoop()
