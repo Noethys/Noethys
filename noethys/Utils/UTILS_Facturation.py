@@ -247,26 +247,6 @@ class Facturation():
                 dictVentilationPrestations[IDprestation] = FloatToDecimal(0.0)
             dictVentilationPrestations[IDprestation] += montant_ventilation
 
-        # Ancienne version (sans détail des règlements)
-##        if len(listeFactures) == 0 :
-##            conditions = "WHERE (prestations.IDactivite IN %s OR prestations.IDactivite IS NULL) AND %s" % (conditionActivites, conditionDates)
-##        else :
-##            conditions = "WHERE prestations.IDfacture IN %s" % conditionFactures
-##        req = """
-##        SELECT ventilation.IDprestation, SUM(ventilation.montant) AS montant_ventilation
-##        FROM ventilation
-##        LEFT JOIN prestations ON prestations.IDprestation = ventilation.IDprestation
-##        LEFT JOIN activites ON prestations.IDactivite = activites.IDactivite
-##        %s
-##        GROUP BY prestations.IDprestation
-##        ORDER BY prestations.date
-##        ;""" % conditions
-##        DB.ExecuterReq(req)
-##        listeVentilationPrestations = DB.ResultatReq()  
-##        dictVentilationPrestations = {}
-##        for IDprestation, montant_ventilation in listeVentilationPrestations :
-##            dictVentilationPrestations[IDprestation] = montant_ventilation
-            
         # Recherche des QF aux dates concernées
         if len(listeFactures) == 0 :
             date_min = date_debut
@@ -782,6 +762,7 @@ class Facturation():
         ;""" % conditions
         DB.ExecuterReq(req)
         listePrelevements = DB.ResultatReq()
+
         # Pièces PES ORMC
         req = """SELECT
         pes_pieces.IDpiece, pes_pieces.numero, pes_pieces.prelevement_iban, pes_pieces.IDfacture,
@@ -889,6 +870,7 @@ class Facturation():
                 else :
                     numeroStr = u"%06d" % numero
 
+                dictCompte["{IDFACTURE}"] = str(IDfacture)
                 dictCompte["num_facture"] = numeroStr
                 dictCompte["num_codeBarre"] = numeroStr #"%07d" % numero
                 dictCompte["numero"] = _(u"Facture n°%s") % numeroStr
@@ -936,6 +918,7 @@ class Facturation():
 
                 # Infos PES ORMC
                 if IDfacture in dictPes :
+                    dictCompte["{PES_IDPIECE}"] = str(IDfacture)
                     dictCompte["{PES_IDLOT}"] = dictPes[IDfacture]["pes_IDlot"]
                     dictCompte["{PES_NOM_LOT}"] = dictPes[IDfacture]["pes_nom_lot"]
                     dictCompte["{PES_LOT_EXERCICE}"] = dictPes[IDfacture]["pes_lot_exercice"]
@@ -944,6 +927,7 @@ class Facturation():
                     dictCompte["{PES_LOT_ID_BORDEREAU}"] = dictPes[IDfacture]["pes_lot_id_bordereau"]
                     dictCompte["{PES_LOT_CODE_PRODUIT}"] = dictPes[IDfacture]["pes_lot_code_produit"]
                 else:
+                    dictCompte["{PES_IDPIECE}"] = ""
                     dictCompte["{PES_IDLOT}"] = ""
                     dictCompte["{PES_NOM_LOT}"] = ""
                     dictCompte["{PES_LOT_EXERCICE}"] = ""
