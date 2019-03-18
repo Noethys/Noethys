@@ -109,6 +109,20 @@ class Track(object):
             self.cp = listview.dict_titulaires[self.IDfamille]["adresse"]["cp"]
             self.ville = listview.dict_titulaires[self.IDfamille]["adresse"]["ville"]
 
+        # Durée
+        self.duree = None
+        if self.date_debut != None and self.date_fin != None:
+            self.duree = (self.date_fin.date() - self.date_debut.date()).days
+
+        # jours restants
+        self.temps_restant = None
+        if self.date_debut != None and self.date_fin != None:
+            self.temps_restant = (self.date_fin.date() - datetime.date.today()).days
+
+
+
+
+
 
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
@@ -194,11 +208,28 @@ class ListView(FastObjectListView):
         self.evenRowsBackColor = wx.Colour(255, 255, 255)
         self.useExpansionColumn = True
 
+        self.AddNamedImages("attention", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Reservation.png"), wx.BITMAP_TYPE_PNG))
+        self.AddNamedImages("pasok", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Refus.png"), wx.BITMAP_TYPE_PNG))
+
         def FormateDate(date):
             if date == None :
                 return _(u"Non définie")
             else :
                 return datetime.datetime.strftime(date, "%d/%m/%Y - %Hh%M")
+
+        def FormateJoursRestants(temps_restant):
+            if temps_restant == None:
+                return ""
+            else:
+                return int(temps_restant)
+
+        def GetImageReste(track):
+            if track.temps_restant != None:
+                if track.temps_restant < 0:
+                    return "pasok"
+                elif track.temps_restant < track.duree * 10 // 100:
+                    return "attention"
+            return None
 
         dict_colonnes = {
             "IDlocation" : ColumnDefn(u"", "left", 0, "IDlocation", typeDonnee="entier"),
@@ -207,19 +238,20 @@ class ListView(FastObjectListView):
             "nomProduit" : ColumnDefn(_(u"Nom du produit"), 'left', 200, "nomProduit", typeDonnee="texte"),
             "nomCategorie" : ColumnDefn(_(u"Catégorie du produit"), 'left', 200, "nomCategorie", typeDonnee="texte"),
             "quantite": ColumnDefn(u"Qté", "left", 60, "quantite", typeDonnee="entier"),
-            "nomTitulaires" : ColumnDefn(_(u"Nom"), 'left', 270, "nomTitulaires", typeDonnee="texte"),
+            "nomTitulaires" : ColumnDefn(_(u"Loueur"), 'left', 270, "nomTitulaires", typeDonnee="texte"),
             "rue" : ColumnDefn(_(u"Rue"), 'left', 200, "rue", typeDonnee="texte"),
             "cp" : ColumnDefn(_(u"C.P."), 'left', 70, "cp", typeDonnee="texte"),
             "ville" : ColumnDefn(_(u"Ville"), 'left', 150, "ville", typeDonnee="texte"),
+            "nbre_jours_restants": ColumnDefn(u"Jours restants", "left", 60, "temps_restant", typeDonnee="entier", imageGetter=GetImageReste, stringConverter=FormateJoursRestants),
             }
 
-        liste_temp = ["IDlocation", "date_debut", "date_fin", "nomProduit", "nomCategorie", "quantite", "nomTitulaires", "rue", "cp", "ville"]
+        liste_temp = ["IDlocation", "date_debut", "date_fin", "nomProduit", "nomCategorie", "quantite", "nomTitulaires", "rue", "cp", "ville", "nbre_jours_restants"]
 
         if self.IDfamille != None :
-            liste_temp = ["IDlocation", "date_debut", "date_fin", "nomProduit", "nomCategorie", "quantite"]
+            liste_temp = ["IDlocation", "date_debut", "date_fin", "nomProduit", "nomCategorie", "quantite", "nbre_jours_restants"]
 
         if self.IDproduit != None :
-            liste_temp = ["IDlocation", "date_debut", "date_fin", "quantite", "nomTitulaires", "rue", "cp", "ville"]
+            liste_temp = ["IDlocation", "date_debut", "date_fin", "quantite", "nomTitulaires", "rue", "cp", "ville", "nbre_jours_restants"]
 
         liste_Colonnes = []
         for code in liste_temp :
@@ -228,7 +260,9 @@ class ListView(FastObjectListView):
         # Ajout des questions des questionnaires
         liste_Colonnes.extend(UTILS_Questionnaires.GetColonnesForOL(self.liste_questions))
 
-        self.SetColumns(liste_Colonnes)
+        # self.SetColumns(liste_Colonnes)
+        self.SetColumns2(colonnes=liste_Colonnes, nomListe="OL_Locations")
+
         if self.checkColonne == True :
             self.CreateCheckStateColumn(1)
             self.SetSortColumn(self.columns[2])
@@ -323,6 +357,9 @@ class ListView(FastObjectListView):
 
         # Génération automatique des fonctions standards
         self.GenerationContextMenu(menuPop, titre=_(u"Liste des locations"))
+
+        # Commandes standards
+        self.AjouterCommandesMenuContext(menuPop)
 
         self.PopupMenu(menuPop)
         menuPop.Destroy()
@@ -429,7 +466,7 @@ class MyFrame(wx.Frame):
         sizer_1 = wx.BoxSizer(wx.VERTICAL)
         sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
         self.SetSizer(sizer_1)
-        self.myOlv = ListView(panel, id=-1, afficher_uniquement_actives=True, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
+        self.myOlv = ListView(panel, id=-1, afficher_uniquement_actives=False, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.myOlv.MAJ() 
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.myOlv, 1, wx.ALL|wx.EXPAND, 4)
