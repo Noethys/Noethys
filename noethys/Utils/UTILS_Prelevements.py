@@ -188,8 +188,8 @@ def ControleBIC(bic):
         return False
 
     # First 4 letters are A - Z.
-    for x in bic[:4] :
-        if x not in string.uppercase:
+    for x in bic[:4]:
+        if x not in string.ascii_uppercase:
             return False
 
     return True
