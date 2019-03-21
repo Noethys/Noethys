@@ -1,3 +1,16 @@
+Version 1.2.6.0 (21/03/2019) :
+
+- 5200 adaptations pour la compatibilité avec Python 3
+- Ajout du champ PES_IDPIECE dans les factures
+- Ajout de la configuration de liste dans la liste des locations
+- Adaptations pour wxPython Phoenix
+- Conversion des fichiers shelve en json
+- Mise à jour de la librairie unicodecsv
+- Correction de la connexion SSL avec mysql.connector
+- Correction sur l'envoi d'emails Mailjet avec pièces jointes
+- Correction sur la saisie d'inscriptions par lot
+- Correction de petits bugs
+
 Version 1.2.5.7 (27/01/2019) :
 
 - Nouveau moteur d'envoi des emails

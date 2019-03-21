@@ -51,7 +51,7 @@ def _(chaine) :
 
 
 def GenerationFichierTextes() :
-    chemin_noethys = os.path.abspath(os.path.join(os.getcwd(), os.pardir))
+    chemin_noethys = Chemins.GetMainPath()
     dictTextes = {}
     # Recherche des textes
     exp = re.compile(r"_\(u\".*?\"\)")
