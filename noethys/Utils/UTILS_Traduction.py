@@ -14,6 +14,7 @@ import re
 import six
 from Utils import UTILS_Fichiers
 from Utils import UTILS_Json
+import codecs
 
 
 DICT_TRADUCTIONS = None
@@ -50,26 +51,32 @@ def _(chaine) :
 
 
 def GenerationFichierTextes() :
-    listeFichiers = os.listdir(os.getcwd())
-    listeFichiersTrouves = []
+    chemin_noethys = os.path.abspath(os.path.join(os.getcwd(), os.pardir))
     dictTextes = {}
-    
     # Recherche des textes
     exp = re.compile(r"_\(u\".*?\"\)")
-    
-    for nomFichier in listeFichiers :
+
+    listeFichiers = {}
+    for rep in ("Dlg", "Ctrl", "Ol", "Utils"):
+        if rep not in listeFichiers:
+            listeFichiers[rep] = []
+        listeFichiers[rep] = os.listdir(chemin_noethys + "/" + rep)
+
+    for rep, liste in listeFichiers.items() :
+        for nomFichier in liste :
+            chemin_fichier = chemin_noethys + "/" + rep + "/" + nomFichier
     
             if nomFichier.endswith("py") and nomFichier.startswith("DATA_") == False and nomFichier not in ("CreateurMAJ.py", "CreateurANNONCES.py") :
                 # Ouverture du fichier
-                fichier = open(nomFichier, "r")
+                fichier = codecs.open(chemin_fichier, encoding='iso-8859-15', mode='r')
                 texte = "\n".join(fichier.readlines())
-                fichier.close() 
-                
+                fichier.close()
+
                 # Analyse du fichier
                 listeChaines = re.findall(exp, texte)
-                for chaine in listeChaines :      
+                for chaine in listeChaines :
                     chaine = chaine [4:-2]
-                                  
+
                     valide = False
                     for caract in "abceghijklmopqrtvwxyz" :
                         if caract in chaine.lower() :
@@ -78,12 +85,12 @@ def GenerationFichierTextes() :
                         valide = False
                     if "Images/" in chaine :
                         valide = False
-                    
+
                     if valide == True :
                         if (chaine in dictTextes) == False :
                             dictTextes[chaine] = []
                         dictTextes[chaine].append(nomFichier)
-    
+
     # Génération du fichier
     nomFichier = Chemins.GetStaticPath("Databases/Textes.dat")
     UTILS_Json.Ecrire(nomFichier, data=dictTextes)
@@ -124,6 +131,10 @@ def FusionneFichiers(code="en_GB"):
 
 
 if __name__ == "__main__":
-    # GenerationFichierTextes()
     # ConvertJsonEnTexte()
-    FusionneFichiers("en_GB")
+    # FusionneFichiers("en_GB")
+
+    GenerationFichierTextes()
+    data = UTILS_Json.Lire(Chemins.GetStaticPath("Databases/Textes.dat"), conversion_auto=True)
+    print(data)
+    print(len(data))
