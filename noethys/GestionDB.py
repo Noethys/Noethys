@@ -1223,10 +1223,12 @@ def EncodeMdpReseau(mdp=None):
 
 def EncodeNomFichierReseau(nom_fichier=None):
     if "[RESEAU]" in nom_fichier and "#64#" not in nom_fichier:
-        donnees = nom_fichier.split(";")
-        mdp = donnees[3].split("[RESEAU]")[0]
-        nouveau_mdp = EncodeMdpReseau(mdp)
-        nom_fichier = nom_fichier.replace(mdp, nouveau_mdp)
+        pos = nom_fichier.index("[RESEAU]")
+        parametres = nom_fichier[:pos]
+        port, hote, utilisateur, motdepasse = parametres.split(";")
+        fichier = nom_fichier[pos:].replace("[RESEAU]", "")
+        nouveau_motdepasse = EncodeMdpReseau(motdepasse)
+        nom_fichier = u"%s;%s;%s;%s[RESEAU]%s" % (port, hote, utilisateur, nouveau_motdepasse, fichier)
     return nom_fichier
 
 
