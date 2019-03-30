@@ -507,7 +507,7 @@ class Dialog(wx.Dialog):
         handler = wx.richtext.RichTextXMLHandler()
         buffer = self.ctrl_texte.GetBuffer()
         buffer.AddHandler(handler)
-        out.write(texteXml)
+        out.write(texteXml.encode("utf8"))
         out.seek(0)
         if 'phoenix' in wx.PlatformInfo:
             handler.LoadFile(buffer, out)
