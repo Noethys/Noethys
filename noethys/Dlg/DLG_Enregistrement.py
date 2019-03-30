@@ -75,7 +75,10 @@ def GetValidite(identifiant="", code=""):
         h.close()
     except :
         return False
-    
+
+    if six.PY3:
+        html = html.decode("iso-8859-15")
+
     # Analyse l'état
     if html.startswith("codeok") :
         try :
