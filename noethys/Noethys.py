@@ -1644,7 +1644,6 @@ class MainFrame(wx.Frame):
         self.ActiveBarreMenus(False) 
 
         # Désactive la commande FERMER du menu Fichier
-        menuBar = self.GetMenuBar()
         self.dictInfosMenu["fermer_fichier"]["ctrl"].Enable(False)
         self.dictInfosMenu["fichier_informations"]["ctrl"].Enable(False) 
         self.dictInfosMenu["convertir_fichier_reseau"]["ctrl"].Enable(False) 
@@ -4142,16 +4141,17 @@ Merci pour votre participation !
                     else :
                         nbreJoursDepuisRappel = None
                     if nbreJoursDepuisRappel == None or nbreJoursDepuisRappel >= 10 :
-                        import wx.lib.dialogs as dialogs
+                        from Dlg import DLG_Messagebox
                         image = wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Cle.png"), wx.BITMAP_TYPE_ANY)
-                        message1 = _(u"Votre licence d'accès au manuel de référence en ligne se termine dans %d jours. \n\nSi vous le souhaitez, vous pouvez continuer à bénéficier de cet accès et prolonger votre soutien financier au projet Noethys en renouvelant votre abonnement Classic ou Premium.") % nbreJoursRestants
-                        dlg = dialogs.MultiMessageDialog(self, message1, caption = _(u"Enregistrement"), msg2=None, style = wx.ICON_INFORMATION | wx.YES|wx.CANCEL|wx.CANCEL_DEFAULT, icon=image, btnLabels={wx.ID_YES : _(u"Renouveler mon abonnement"), wx.ID_CANCEL : _(u"Fermer")})
+                        introduction = _(u"Votre licence d'accès au manuel de référence en ligne se termine dans %d jours. \n\nSi vous le souhaitez, vous pouvez continuer à bénéficier de cet accès et prolonger votre soutien financier au projet Noethys en renouvelant votre abonnement Classic ou Premium.") % nbreJoursRestants
+                        dlg = DLG_Messagebox.Dialog(self, titre=_(u"Enregistrement"),
+                                                    introduction=introduction, detail=None,
+                                                    icone=image, boutons=[(u"Renouveler mon abonnement"), _(u"Fermer")], defaut=0)
                         reponse = dlg.ShowModal()
                         dlg.Destroy()
-                        if reponse == wx.ID_YES :
+                        if reponse == 0:
                             FonctionsPerso.LanceFichierExterne(Chemins.GetStaticPath("Images/Special/Bon_commande_documentation.pdf"))
                         return True
-
                 else :
                     # Licence valide
                     if dateDernierRappel != None :
