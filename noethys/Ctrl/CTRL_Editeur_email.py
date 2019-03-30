@@ -1055,6 +1055,7 @@ class CTRL(wx.Panel):
         handler = rt.RichTextHTMLHandler()
         handler.SetFlags(rt.RICHTEXT_HANDLER_SAVE_IMAGES_TO_BASE64)
         handler.SetFontSizeMapping([7, 9, 11, 12, 14, 22, 100])
+        stream = six.BytesIO()
         if not handler.SaveStream(self.ctrl_editeur.GetBuffer(), stream):
             return False
         source = stream.getvalue()
