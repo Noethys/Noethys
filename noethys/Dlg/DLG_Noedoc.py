@@ -1031,22 +1031,6 @@ COULEUR_OMBRE_PAGE = (0, 0, 0)
 COULEUR_CADRE_SELECTION = (255, 0, 0)
 COULEUR_DEFAUT_OBJET = (193, 222, 245)
 
-# Menu contextuel Objet
-ID_MENU_MODIFIER_TEXTE = wx.Window.NewControlId()
-ID_MENU_ROTATION_GAUCHE = wx.Window.NewControlId()
-ID_MENU_ROTATION_DROITE = wx.Window.NewControlId()
-ID_MENU_RECULER = wx.Window.NewControlId()
-ID_MENU_AVANCER = wx.Window.NewControlId()
-ID_MENU_ARRIEREPLAN = wx.Window.NewControlId()
-ID_MENU_AVANTPLAN = wx.Window.NewControlId()
-ID_MENU_DUPLIQUER = wx.Window.NewControlId()
-ID_MENU_SUPPRIMER = wx.Window.NewControlId()
-
-# Menu contextuel Poignée
-ID_MENU_SUPPRIMER_POINT = wx.Window.NewControlId()
-
-# Menu contextuel Ligne
-ID_MENU_AJOUTER_POINT = wx.Window.NewControlId()
 
 
 # Astuces
@@ -4144,7 +4128,25 @@ class Panel_canvas(wx.Panel):
     def MenuContextuel(self, objet=None):
         """ Création du menu contextuel """
         menu = UTILS_Adaptations.Menu()
-        
+
+        # Menu contextuel Objet
+        ID_MENU_MODIFIER_TEXTE = wx.Window.NewControlId()
+        ID_MENU_ROTATION_GAUCHE = wx.Window.NewControlId()
+        ID_MENU_ROTATION_DROITE = wx.Window.NewControlId()
+        ID_MENU_RECULER = wx.Window.NewControlId()
+        ID_MENU_AVANCER = wx.Window.NewControlId()
+        ID_MENU_ARRIEREPLAN = wx.Window.NewControlId()
+        ID_MENU_AVANTPLAN = wx.Window.NewControlId()
+        ID_MENU_DUPLIQUER = wx.Window.NewControlId()
+        ID_MENU_SUPPRIMER = wx.Window.NewControlId()
+
+        # Menu contextuel Poignée
+        ID_MENU_SUPPRIMER_POINT = wx.Window.NewControlId()
+
+        # Menu contextuel Ligne
+        ID_MENU_AJOUTER_POINT = wx.Window.NewControlId()
+
+
         if "texte" in objet.categorie :
             # Modifier le texte
             item = wx.MenuItem(menu, ID_MENU_MODIFIER_TEXTE, _(u"Modifier le texte"), _(u"Modifier le texte"), wx.ITEM_NORMAL)
