@@ -264,7 +264,7 @@ class ListCtrlPrinter(object):
         """
         Print the given page on the given device context.
         """
-        self.engine.PrintPage(dc, pageNumber, bounds)
+        return self.engine.PrintPage(dc, pageNumber, bounds)
 
 #----------------------------------------------------------------------------
 
