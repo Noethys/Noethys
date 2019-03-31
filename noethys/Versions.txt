@@ -1,3 +1,8 @@
+Version 1.2.6.1 (31/03/2019) :
+
+- Ajout des champs individuels dans le récapitulatif pdf des factures
+- Correction de plusieurs bugs
+
 Version 1.2.6.0 (21/03/2019) :
 
 - 5200 adaptations pour la compatibilité avec Python 3
