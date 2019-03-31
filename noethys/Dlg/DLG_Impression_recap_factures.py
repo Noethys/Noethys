@@ -16,8 +16,6 @@ import wx
 import sys
 from Ctrl import CTRL_Bouton_image
 import GestionDB
-
-from Utils import UTILS_Config
 from Utils import UTILS_Parametres
 
 from Ctrl import CTRL_Bandeau
@@ -109,28 +107,58 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         self.Append(propriete)
 
         # --------------------------- FAMILLES ------------------------------------------
-        self.Append( wxpg.PropertyCategory(_(u"Champs personnalisés")) )
+        self.Append( wxpg.PropertyCategory(_(u"Champs familiaux")) )
 
-        liste_choix = []
+        liste_choix = [("non", _(u"Non")),]
         for dictQuestion in self.GetGrandParent().Questionnaires.listeQuestions:
             liste_choix.append(("{QUESTION_%d}" % dictQuestion["IDquestion"], dictQuestion["label"]))
 
         # Question 1
-        propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Champ 1"), name="question_1", liste_choix=liste_choix, valeur=None)
+        propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Champ 1"), name="question_1", liste_choix=liste_choix, valeur="non")
         propriete.SetEditor("EditeurChoix")
         propriete.SetHelpString(_(u"Sélectionnez un item du questionnaire famille à inclure dans le document"))
         self.Append(propriete)
 
         # Question 2
-        propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Champ 2"), name="question_2", liste_choix=liste_choix, valeur=None)
+        propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Champ 2"), name="question_2", liste_choix=liste_choix, valeur="non")
         propriete.SetEditor("EditeurChoix")
         propriete.SetHelpString(_(u"Sélectionnez un item du questionnaire famille à inclure dans le document"))
         self.Append(propriete)
 
         # Question 3
-        propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Champ 3"), name="question_3", liste_choix=liste_choix, valeur=None)
+        propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Champ 3"), name="question_3", liste_choix=liste_choix, valeur="non")
         propriete.SetEditor("EditeurChoix")
         propriete.SetHelpString(_(u"Sélectionnez un item du questionnaire famille à inclure dans le document"))
+        self.Append(propriete)
+
+        # --------------------------- INDIVIDUS ------------------------------------------
+        self.Append( wxpg.PropertyCategory(_(u"Champs individuels")) )
+
+        liste_choix = [("non", _(u"Non")),
+                       ("ecole_debut_facture", _(u"Ecole à la date de début de la facture")),
+                       ("ecole_fin_facture", _(u"Ecole à la date de fin de la facture")),
+                       ("classe_debut_facture", _(u"Classe à la date de début de la facture")),
+                       ("classe_fin_facture", _(u"Classe à la date de fin de la facture")),
+                       ("niveau_debut_facture", _(u"Niveau scolaire à la date de début de la facture")),
+                       ("niveau_fin_facture", _(u"Niveau scolaire à la date de fin de la facture")),
+                       ]
+
+        # Champ individuel 1
+        propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Champ 1"), name="champ_ind_1", liste_choix=liste_choix, valeur="non")
+        propriete.SetEditor("EditeurChoix")
+        propriete.SetHelpString(_(u"Sélectionnez un champ individuel à intégrer dans le document"))
+        self.Append(propriete)
+
+        # Champ individuel 2
+        propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Champ 2"), name="champ_ind_2", liste_choix=liste_choix, valeur="non")
+        propriete.SetEditor("EditeurChoix")
+        propriete.SetHelpString(_(u"Sélectionnez un champ individuel à intégrer dans le document"))
+        self.Append(propriete)
+
+        # Champ individuel 3
+        propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Champ 3"), name="champ_ind_3", liste_choix=liste_choix, valeur="non")
+        propriete.SetEditor("EditeurChoix")
+        propriete.SetHelpString(_(u"Sélectionnez un champ individuel à intégrer dans le document"))
         self.Append(propriete)
 
         # --------------------------- INTRODUCTION ------------------------------------------
@@ -375,8 +403,8 @@ class Dialog(wx.Dialog):
     def OnBoutonOk(self, event): 
         dictOptions = self.ctrl_parametres.GetOptions() 
         if dictOptions == False :
-            return        
-        
+            return
+
         # Récupération des paramètres
         listeIDfactures = []
         montantTotal = FloatToDecimal(0.0)
@@ -532,7 +560,7 @@ class Dialog(wx.Dialog):
         if dictOptions["type_document"] in (0, 1) :
             
             for track in self.tracks :
-                
+
                 numero = track.numero
                 if track.etat == "annulation" :
                     numero = u"%s (Annulée)" % numero
@@ -623,9 +651,24 @@ class Dialog(wx.Dialog):
 
                 # Détail des prestations
                 if dictOptions["type_document"] == 0 and track.IDfacture in dictPrestations :
-                    
-                    dataTableau = [(Paragraph(_(u"Individu"), styleLabel), Paragraph(_(u"Activité"), styleLabel), Paragraph(_(u"Prestation"), styleLabel), Paragraph(_(u"Quantité"), styleLabel), Paragraph(_(u"Montant total"), styleLabel)),]
-                    largeursColonnes = [130, 120, 185, 35, 50]
+
+                    # Préparation des champs individuels supplémentaires
+                    liste_champs_ind = []
+                    for key in ("champ_ind_1", "champ_ind_2", "champ_ind_3"):
+                        if dictOptions[key] not in ("non", "", None):
+                            liste_champs_ind.append(dictOptions[key])
+
+                    if len(liste_champs_ind) == 0 :
+                        dataTableau = [(Paragraph(_(u"Individu"), styleLabel), Paragraph(_(u"Activité"), styleLabel),
+                                        Paragraph(_(u"Prestation"), styleLabel), Paragraph(_(u"Quantité"), styleLabel),
+                                        Paragraph(_(u"Montant total"), styleLabel)), ]
+                        largeursColonnes = [130, 120, 185, 35, 50]
+                    else:
+                        # On rajoute la colonne Infos individuelles :
+                        dataTableau = [(Paragraph(_(u"Individu"), styleLabel), Paragraph(_(u"Informations"), styleLabel), Paragraph(_(u"Activité"), styleLabel),
+                                        Paragraph(_(u"Prestation"), styleLabel), Paragraph(_(u"Quantité"), styleLabel),
+                                        Paragraph(_(u"Montant total"), styleLabel)), ]
+                        largeursColonnes = [120, 110, 100, 105, 35, 50]
                     
                     for IDindividu, dictLabels in dictPrestations[track.IDfacture].items() :
                         
@@ -649,14 +692,45 @@ class Dialog(wx.Dialog):
                             listeLabels.append(Paragraph(labelPrestation[:40], styleTexte2)) 
                             listeQuantites.append(Paragraph(str(dictTemp["quantite"]), styleTexte2)) 
                             listeMontants.append(Paragraph(u"%.2f %s" % (dictTemp["montant"], SYMBOLE), styleMontant))
-                        
-                        dataTableau.append((
-                            Paragraph(labelIndividu, styleTexte2), 
+
+                        ligne = [
+                            Paragraph(labelIndividu, styleTexte2),
                             listeActivites,
                             listeLabels,
                             listeQuantites,
                             listeMontants,
-                            ))
+                            ]
+
+                        # Récupération des infos individuelles
+                        if len(liste_champs_ind) > 0 :
+                            liste_textes_ind = []
+                            for key in liste_champs_ind :
+                                # Ecole
+                                if "ecole" in key or "classe" in key or "niveau" in key:
+                                    if "date_debut" in key:
+                                        date_reference = track.date_debut
+                                    else:
+                                        date_reference = track.date_fin
+                                    infosIndividus = UTILS_Infos_individus.Informations(date_reference=date_reference, qf=False,
+                                                                                        inscriptions=False, messages=False,
+                                                                                        infosMedicales=False,
+                                                                                        cotisationsManquantes=False,
+                                                                                        piecesManquantes=False,
+                                                                                        questionnaires=False, scolarite=True)
+                                    dictInfosIndividus = infosIndividus.GetDictValeurs(mode="individu", ID=IDindividu, formatChamp=False)
+                                    texte = ""
+                                    if "ecole" in key and "SCOLARITE_NOM_ECOLE" in dictInfosIndividus:
+                                        texte = dictInfosIndividus["SCOLARITE_NOM_ECOLE"]
+                                    if "classe" in key and "SCOLARITE_NOM_CLASSE" in dictInfosIndividus:
+                                        texte = dictInfosIndividus["SCOLARITE_NOM_CLASSE"]
+                                    if "niveau" in key and "SCOLARITE_NOM_NIVEAU" in dictInfosIndividus:
+                                        texte = dictInfosIndividus["SCOLARITE_NOM_NIVEAU"]
+                                    liste_textes_ind.append(Paragraph(texte, styleTexte2))
+
+                            ligne.insert(1, liste_textes_ind)
+
+                        # Insertion de la ligne dans le tableau
+                        dataTableau.append(ligne)
                             
                     tableau = Table(dataTableau, largeursColonnes)
                     listeStyles = [
