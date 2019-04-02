@@ -319,7 +319,7 @@ class Dialog(wx.Dialog):
         self.Layout()
         self.CenterOnScreen()
 
-    def OnChoixZone(self, event): 
+    def OnChoixZone(self, event=None):
         zone = self.GetZone() 
         self.ctrl_periodes.MAJ(zone)
 
@@ -358,6 +358,7 @@ class Dialog(wx.Dialog):
         if zone == "A" : self.ctrl_zone.SetSelection(0)
         if zone == "B" : self.ctrl_zone.SetSelection(1)
         if zone == "C" : self.ctrl_zone.SetSelection(2)
+        self.OnChoixZone()
     
     def GetZone(self):
         if self.ctrl_zone.GetSelection() == 0 : return "A"
