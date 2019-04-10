@@ -12,13 +12,12 @@
 import Chemins
 from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
-
 import wx
 from Ctrl import CTRL_Bouton_image
 import datetime
 import os
-import  wx.grid as gridlib
-
+import wx.grid as gridlib
+import six
 from Utils import UTILS_Config
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 
@@ -763,7 +762,7 @@ class Dialog(wx.Dialog):
         dictValeurs["{NUM_PIECE}"] = dictValeurs["numPiece"]
         dictValeurs["{MONTANT_REGLEMENT}"] = u"%.2f %s" % (dictValeurs["montant"], SYMBOLE)
         dictValeurs["{NOM_PAYEUR}"] = dictValeurs["nomPayeur"]
-        dictValeurs["{NUM_QUITTANCIER}"] = str(dictValeurs["numQuittancier"])
+        dictValeurs["{NUM_QUITTANCIER}"] = six.text_type(dictValeurs["numQuittancier"])
         dictValeurs["{DATE_SAISIE}"] = DateEngFr(dictValeurs["date_saisie"])
         dictValeurs["{OBSERVATIONS}"] = u"%s" % dictValeurs["observations"]
 
