@@ -12,7 +12,7 @@
 import Chemins
 from Utils.UTILS_Traduction import _
 import wx
-from Ctrl import CTRL_Bouton_image
+import socket
 import os
 import sys
 import time
@@ -23,7 +23,7 @@ import traceback
 import base64
 from Utils import UTILS_Html2text
 from Utils import UTILS_Titulaires
-from Utils import UTILS_Fichiers
+from Utils import UTILS_Parametres
 from Dlg import DLG_Messagebox
 
 import smtplib
@@ -42,8 +42,6 @@ from Outils import mail
 
 # Import pour permettre compilation windows
 from Outils.mail import base, smtp
-
-
 
 
 
@@ -323,6 +321,11 @@ class Base_messagerie():
         if self.utilisateur == "" : self.utilisateur = None
         if self.motdepasse == "" : self.motdepasse = None
 
+        # Timeout
+        timeout = UTILS_Parametres.Parametres(mode="get", categorie="email", nom="timeout", valeur=None)
+        if timeout not in ("", None):
+            self.timeout = int(timeout)
+
         # Préparation de l'adresse d'expédition
         if self.nom_exp not in ("", None):
             self.from_email = u"%s <%s>" % (self.nom_exp, self.email_exp)
@@ -477,11 +480,28 @@ class SmtpV2(Base_messagerie):
                 dlg_progress.Update(index, label)
 
                 # Envoi
+                erreur = None
                 try:
                     self.Envoyer(message)
                     listeSucces.append(message)
+                except smtplib.SMTPServerDisconnected:
+                    erreur = "deconnexion"
                 except Exception as err:
-                    err = str(err).decode("iso-8859-15")
+                    erreur = err
+
+                # Tentative de reconnexion du serveur de messagerie puis renvoi du mail
+                if erreur == "deconnexion":
+                    print("Reconnexion au serveur de messagerie...")
+                    try:
+                        self.Connecter()
+                        self.Envoyer(message)
+                        listeSucces.append(message)
+                        erreur = None
+                    except Exception as err:
+                        erreur = err
+
+                if erreur != None:
+                    err = str(erreur).decode("iso-8859-15")
                     listeAnomalies.append((message, err))
                     print(("Erreur dans l'envoi d'un mail : %s...", err))
                     traceback.print_exc(file=sys.stdout)

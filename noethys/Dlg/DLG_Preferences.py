@@ -705,12 +705,77 @@ class Comptes_internet(wx.Panel):
 
 # ---------------------------------------------------------------------------------------------------------------------------
 
+class Email(wx.Panel):
+    def __init__(self, parent):
+        wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
 
+        self.staticbox_staticbox = wx.StaticBox(self, -1, _(u"Envoi d'emails"))
+        self.check_timeout = wx.CheckBox(self, -1, _(u"Durée maximale de l'envoi personnalisée :"))
+        self.listeValeurs = [(5, u"5 secondes"), (10, u"10 secondes"), (20, u"20 secondes"), (30, u"30 secondes"),
+            (40, u"40 secondes"), (50, u"50 secondes"), (60, u"1 minute"), (120, u"2 minutes"), (180, u"3 minutes"),
+            (240, u"4 minutes"), (300, u"5 minutes")]
+        listeLabels = []
+        for temps, label in self.listeValeurs:
+            listeLabels.append(label)
+        self.ctrl_temps = wx.Choice(self, -1, choices=listeLabels)
+        self.ctrl_temps.SetSelection(0)
 
+        self.__set_properties()
+        self.__do_layout()
 
+        self.Bind(wx.EVT_CHECKBOX, self.OnCheck, self.check_timeout)
 
+        self.Importation()
 
+    def __set_properties(self):
+        self.check_timeout.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour activer la durée maximale d'envoi personnalisée")))
+        self.ctrl_temps.SetToolTip(wx.ToolTip(_(u"Sélectionnez une durée")))
 
+    def __do_layout(self):
+        staticbox = wx.StaticBoxSizer(self.staticbox_staticbox, wx.VERTICAL)
+        grid_sizer_base = wx.FlexGridSizer(rows=2, cols=5, vgap=0, hgap=0)
+        grid_sizer_base.Add(self.check_timeout, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_base.Add(self.ctrl_temps, 0, wx.EXPAND, 0)
+        grid_sizer_base.AddGrowableCol(1)
+        staticbox.Add(grid_sizer_base, 1, wx.ALL | wx.EXPAND, 5)
+        self.SetSizer(staticbox)
+        staticbox.Fit(self)
+
+    def OnCheck(self, event=None):
+        self.ctrl_temps.Enable(self.check_timeout.GetValue())
+
+    def GetValeur(self):
+        if self.check_timeout.GetValue() == True:
+            index = self.ctrl_temps.GetSelection()
+            temps = self.listeValeurs[index][0]
+            return temps
+        else:
+            return None
+
+    def SetValeur(self, valeur=None):
+        if valeur == None:
+            self.check_timeout.SetValue(False)
+        else:
+            self.check_timeout.SetValue(True)
+            index = 0
+            for temps, label in self.listeValeurs:
+                if temps == valeur:
+                    self.ctrl_temps.SetSelection(index)
+                index += 1
+        self.OnCheck(None)
+
+    def Importation(self):
+        valeur = UTILS_Parametres.Parametres(mode="get", categorie="email", nom="timeout", valeur=None)
+        if valeur == "":
+            valeur = None
+        self.SetValeur(valeur)
+
+    def Validation(self):
+        return True
+
+    def Sauvegarde(self):
+        valeur = self.GetValeur()
+        UTILS_Parametres.Parametres(mode="set", categorie="email", nom="timeout", valeur=valeur)
 
 
 
@@ -743,6 +808,7 @@ class Dialog(wx.Dialog):
         self.ctrl_autodeconnect = Autodeconnect(self) 
         self.ctrl_interface_mysql = Interface_mysql(self) 
         self.ctrl_comptes_internet = Comptes_internet(self)
+        self.ctrl_email = Email(self)
 
         # Redémarrage
         self.label_redemarrage = wx.StaticText(self, -1, _(u"* Le changement sera effectif au redémarrage du logiciel"))
@@ -772,17 +838,6 @@ class Dialog(wx.Dialog):
         
         grid_sizer_contenu = wx.FlexGridSizer(rows=10, cols=2, vgap=10, hgap=10)
         
-##        grid_sizer_contenu.Add(self.ctrl_interface, 1, wx.EXPAND, 0)
-##        grid_sizer_contenu.Add(self.ctrl_propose_maj, 1, wx.EXPAND, 0)
-##        grid_sizer_contenu.Add(self.ctrl_telephones, 1, wx.EXPAND, 0)
-##        grid_sizer_contenu.Add(self.ctrl_rapport_bugs, 1, wx.EXPAND, 0)
-##        grid_sizer_contenu.Add(self.ctrl_adresses, 1, wx.EXPAND, 0)
-##        grid_sizer_contenu.Add(self.ctrl_derniers_fichiers, 1, wx.EXPAND, 0)
-##        grid_sizer_contenu.Add(self.ctrl_codesPostaux, 1, wx.EXPAND, 0)
-##        grid_sizer_contenu.Add(self.ctrl_monnaie, 1, wx.EXPAND, 0)
-##        grid_sizer_contenu.Add(self.ctrl_autodeconnect, 1, wx.EXPAND, 0)
-        
-        
         grid_sizer_gauche = wx.FlexGridSizer(rows=7, cols=1, vgap=10, hgap=10)
         grid_sizer_gauche.Add(self.ctrl_interface, 1, wx.EXPAND, 0)
         grid_sizer_gauche.Add(self.ctrl_interface_mysql, 1, wx.EXPAND, 0)
@@ -792,13 +847,14 @@ class Dialog(wx.Dialog):
         grid_sizer_gauche.Add(self.ctrl_adresses, 1, wx.EXPAND, 0)
         grid_sizer_gauche.Add(self.label_redemarrage, 1, wx.EXPAND, 0)
 
-        grid_sizer_droit = wx.FlexGridSizer(rows=6, cols=1, vgap=10, hgap=10)
+        grid_sizer_droit = wx.FlexGridSizer(rows=7, cols=1, vgap=10, hgap=10)
         grid_sizer_droit.Add(self.ctrl_propose_maj, 1, wx.EXPAND, 0)
         grid_sizer_droit.Add(self.ctrl_rapport_bugs, 1, wx.EXPAND, 0)
         grid_sizer_droit.Add(self.ctrl_derniers_fichiers, 1, wx.EXPAND, 0)
         grid_sizer_droit.Add(self.ctrl_monnaie, 1, wx.EXPAND, 0)
         grid_sizer_droit.Add(self.ctrl_autodeconnect, 1, wx.EXPAND, 0)
         grid_sizer_droit.Add(self.ctrl_comptes_internet, 1, wx.EXPAND, 0)
+        grid_sizer_droit.Add(self.ctrl_email, 1, wx.EXPAND, 0)
 
         grid_sizer_contenu = wx.FlexGridSizer(rows=10, cols=2, vgap=10, hgap=10)
         grid_sizer_contenu.Add(grid_sizer_gauche, 1, wx.EXPAND, 0)
@@ -807,12 +863,9 @@ class Dialog(wx.Dialog):
         grid_sizer_base.Add(grid_sizer_contenu, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
         
         # Ligne vide pour agrandir la fenêtre
-##        grid_sizer_base.Add( (20, 20), 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
         grid_sizer_base.AddGrowableRow(2)
         grid_sizer_base.AddGrowableCol(0)
-        
-##        grid_sizer_base.Add(self.label_redemarrage, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
-        
+
         grid_sizer_boutons = wx.FlexGridSizer(rows=1, cols=4, vgap=10, hgap=10)
         grid_sizer_boutons.Add(self.bouton_aide, 0, 0, 0)
         grid_sizer_boutons.Add((20, 20), 0, wx.EXPAND, 0)
@@ -823,8 +876,7 @@ class Dialog(wx.Dialog):
         
         self.SetSizer(grid_sizer_base)
         grid_sizer_base.Fit(self)
-##        self.SetMinSize((400, 300))
-        
+
         self.Layout()
         self.CenterOnScreen()
 
@@ -848,6 +900,7 @@ class Dialog(wx.Dialog):
         if self.ctrl_autodeconnect.Validation() == False : return
         if self.ctrl_interface_mysql.Validation() == False : return
         if self.ctrl_comptes_internet.Validation() == False : return
+        if self.ctrl_email.Validation() == False : return
 
         # Sauvegarde
         self.ctrl_interface.Sauvegarde()
@@ -861,7 +914,7 @@ class Dialog(wx.Dialog):
         self.ctrl_derniers_fichiers.Sauvegarde()
         self.ctrl_autodeconnect.Sauvegarde()
         self.ctrl_interface_mysql.Sauvegarde()
-        self.ctrl_comptes_internet.Sauvegarde()
+        self.ctrl_email.Sauvegarde()
         
         # Fermeture de la fenêtre
         self.EndModal(wx.ID_OK)
