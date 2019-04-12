@@ -218,6 +218,22 @@ def GetNomsChampsPossibles(mode="individu+famille"):
     if "individu" in mode :
         listeChamps.extend(listeLiens)
 
+    # Questionnaires
+    DB = GestionDB.DB()
+    req = """SELECT IDquestion, questionnaire_questions.label, type, controle, defaut
+    FROM questionnaire_questions
+    LEFT JOIN questionnaire_categories ON questionnaire_categories.IDcategorie = questionnaire_questions.IDcategorie
+    WHERE questionnaire_categories.type IN ('famille', 'individu')
+    ORDER BY questionnaire_questions.ordre
+    ;"""
+    DB.ExecuterReq(req)
+    listeQuestions = DB.ResultatReq()
+    DB.Close()
+    for IDquestion, label, public, controle, defaut in listeQuestions:
+        if public in mode:
+            code = "{QUESTION_%d}" % IDquestion
+            listeChamps.append((label, u"", code))
+
     return listeChamps
 
 
