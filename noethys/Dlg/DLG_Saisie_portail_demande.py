@@ -852,10 +852,16 @@ class Dialog(wx.Dialog):
             for type_impaye in ("facture", "periode"):
                 for ID, montant in dict_paiements[type_impaye].items():
                     texte = u""
-                    if type_impaye == "periode" :
-                        texte = dict_periodes[ID]
-                    if type_impaye == "facture" :
-                        texte = dict_factures[ID]
+                    if type_impaye == "periode":
+                        if ID in dict_periodes:
+                            texte = dict_periodes[ID]
+                        else:
+                            texte = _(u"Période inconnue")
+                    if type_impaye == "facture":
+                        if ID in dict_factures:
+                            texte = dict_factures[ID]
+                        else:
+                            texte = _(u"Facture inconnue")
                     texte += u" (%.2f %s)" % (montant, SYMBOLE)
                     liste_textes.append(texte)
             texte = _(u"En règlement de : %s") % u", ".join(liste_textes)
