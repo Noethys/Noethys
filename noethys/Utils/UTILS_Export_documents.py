@@ -14,6 +14,7 @@ from Utils.UTILS_Traduction import _
 import six
 import GestionDB
 from Utils import UTILS_Json
+import base64
 
 
 def Exporter(IDmodele=None, fichier="", depuisFichierDefaut=False):
@@ -60,9 +61,12 @@ def Exporter(IDmodele=None, fichier="", depuisFichierDefaut=False):
             typeChamp = listeColonnes[index][1]
 
             # Pour les champs BLOB
-            if (typeChamp == "BLOB" or typeChamp == "LONGBLOB") and donnee != None :
+            if "BLOB" in typeChamp.upper() and donnee != None :
                 buffer = six.BytesIO(donnee)
                 donnee = buffer.read()
+
+            if nomChamp == "image" and donnee != None:
+                donnee = base64.b64encode(donnee)
 
             # Mémorisation
             if nomChamp not in ("IDmodele", "IDobjet") :
@@ -131,6 +135,10 @@ def Importer(fichier="", dictDonnees={}, IDfond=None, defaut=0):
         listeDonnees = []
         for champ, donnee in dictObjet.items() :
             if champ == "image" :
+                try :
+                    donnee = base64.b64decode(donnee)
+                except:
+                    pass
                 blob = donnee
                 donnee = None
             listeDonnees.append((champ, donnee))
@@ -184,7 +192,7 @@ def ImporterDepuisFichierDefaut(IDmodele=None, nom=None, IDfond=1, defaut=0):
 
 if __name__ == "__main__":
     # Avec un fichier
-    # Exporter(IDmodele=5, fichier="Tests/TestExport.ndc")
+    Exporter(IDmodele=5, fichier="C:/Users/Test/Desktop/TestExport.ndc")
     # Importer(fichier="Tests/TestExport.ndc")
 
     # Avec un dictionnaire depuis le fichier defaut.dat
