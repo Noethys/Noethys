@@ -3267,7 +3267,11 @@ class MovingPolygon(FloatCanvas.Polygon, MovingObjectMixin):
         return self.Points[0]
     
     def GetTaille(self):
-        return (None, None)
+        min = numpy.min(self.Points, axis=0)
+        max = numpy.max(self.Points, axis=0)
+        hauteur = max[1] - min[1]
+        largeur = max[0] - min[0]
+        return (largeur, hauteur)
 
 
 class MovingRectangle(FloatCanvas.Rectangle, MovingObjectMixin):
