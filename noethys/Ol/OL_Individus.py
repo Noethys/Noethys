@@ -27,6 +27,12 @@ from Ctrl.CTRL_ObjectListView import FastObjectListView, ColumnDefn, Filter, CTR
 
 from Utils import UTILS_Utilisateurs
 
+try :
+    import smartcard
+except :
+    pass
+
+
 
 def GetRattachements(IDindividu):
     # Récupération des rattachements dans la base
@@ -195,6 +201,12 @@ class ListView(FastObjectListView):
             self.dictParametres["effaces"] = True
         else :
             self.dictParametres["effaces"] = False
+
+        if "rfid" in dictParametres:
+            if dictParametres["rfid"] == "oui":
+                self.InitialisationRFID()
+            else:
+                self.StopRFID()
 
     def OnItemActivated(self,event):
         self.Modifier(None)
@@ -668,17 +680,115 @@ class ListView(FastObjectListView):
         self.MAJ()
 
         # MAJ du listView
-##        self.MAJ()
         # MAJ du remplissage
         try :
             if self.GetGrandParent().GetName() == "general" :
                 self.GetGrandParent().MAJ() 
-##                self.GetGrandParent().ctrl_remplissage.MAJ() 
             else:
                 self.MAJ() 
 
         except : pass
-        
+
+
+    def InitialisationRFID(self):
+        self.connexion = None
+        self.dernierRFID = None
+        self.delai = 0
+
+        # Connexion du lecteur RFID
+        try :
+            self.lecteurs = smartcard.System.readers()
+            if len(self.lecteurs) > 0 :
+                self.lecteur = self.lecteurs[0]
+                self.connexion = self.lecteur.createConnection()
+        except :
+            pass
+
+        # Préparation du timer
+        self.timer_rfid = wx.Timer(self, -1)
+        self.Bind(wx.EVT_TIMER, self.OnTimerRFID, self.timer_rfid)
+        self.Bind(wx.EVT_WINDOW_DESTROY, self.OnDestroy)
+        if not self.timer_rfid.IsRunning():
+            self.timer_rfid.Start(500)
+
+    def OnDestroy(self, event):
+        self.StopRFID()
+
+    def StopRFID(self):
+        try:
+            self.timer_rfid.Stop()
+        except:
+            pass
+
+    def RechercherSiDlgOuverte(self, widget=None):
+        for child in widget.GetChildren():
+            if "wxDialog" in child.__str__():
+                return True
+            if len(child.GetChildren()) > 0:
+                tmp = self.RechercherSiDlgOuverte(child)
+                if tmp != False: return tmp
+        return False
+
+    def OnTimerRFID(self, event):
+        dlg_ouverte = self.RechercherSiDlgOuverte(wx.GetApp().GetTopWindow())
+        if dlg_ouverte == True:
+            return False
+
+        self.delai += 0.5
+        if self.delai > 8:
+            self.delai = 0
+            self.dernierRFID = None
+
+        def ListToHex(data):
+            string = ''
+            for d in data:
+                string += '%02X' % d
+            return string
+
+        if self.connexion != None:
+            try:
+                self.connexion.connect()
+                apdu = [0xFF, 0xCA, 0x00, 0x00, 0x00]
+                data, sw1, sw2 = self.connexion.transmit(apdu)
+                if sw1 == 144:
+                    IDbadge = ListToHex(data)
+                    self.connexion.disconnect()
+                    if self.dernierRFID != IDbadge :
+                        self.dernierRFID = IDbadge
+
+                    # Recherche du badge RFID dans les questionnaires
+                    DB = GestionDB.DB()
+                    req = """SELECT IDindividu
+                    FROM questionnaire_reponses
+                    LEFT JOIN questionnaire_questions ON questionnaire_questions.IDquestion = questionnaire_reponses.IDquestion
+                    WHERE controle='rfid' AND reponse='%s'
+                    ;""" % IDbadge
+                    DB.ExecuterReq(req)
+                    listeDonnees = DB.ResultatReq()
+                    DB.Close()
+                    if len(listeDonnees) == 0 :
+                        return False
+                    IDindividu = listeDonnees[0][0]
+
+                    # On stoppe le timer de détection RFID
+                    self.timer_rfid.Stop()
+
+                    # Ouverture de la fiche famille
+                    track = self.dictTracks[IDindividu]
+                    self.SelectObject(track)
+                    self.OuvrirFicheFamille(track)
+
+                    # On relance le timer de détection RFID
+                    self.timer_rfid.Start()
+
+            except Exception as err:
+                pass
+
+
+
+
+
+
 # -------------------------------------------------------------------------------------------------------------------------------------------
 
 class BarreRecherche(wx.SearchCtrl):
@@ -836,12 +946,12 @@ class BarreRecherche(wx.SearchCtrl):
         return menu
 
     def OnItemMenu(self, event):
-##        self.OnCancel(None)
         index = event.GetId()
         IDindividu = self.listView.historique[index]
         track = self.listView.dictTracks[IDindividu]
         self.listView.SelectObject(track)
         self.listView.OuvrirFicheFamille(track)
+
 
 
 # -------------------------------------------------------------------------------------------------------------------------------------------

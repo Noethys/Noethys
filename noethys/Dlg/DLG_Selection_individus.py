@@ -48,6 +48,9 @@ class Dialog(wx.Dialog):
         self.check_archives = wx.CheckBox(self, -1, _(u"Afficher les individus archivés"))
         self.check_effaces = wx.CheckBox(self, -1, _(u"Afficher les individus effacés"))
 
+        # RFID
+        self.check_rfid = wx.CheckBox(self, -1, _(u"Activer la détection des badges RFID"))
+
         self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
         self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
@@ -72,6 +75,7 @@ class Dialog(wx.Dialog):
         self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de fin de période")))
         self.check_archives.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour inclure les individus archivés")))
         self.check_effaces.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour inclure les individus effacés")))
+        self.check_rfid.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour activer la détection des badges RFID")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
         self.SetMinSize((490, 510))
@@ -102,9 +106,10 @@ class Dialog(wx.Dialog):
 
         # Options
         staticbox_options = wx.StaticBoxSizer(self.staticbox_options, wx.VERTICAL)
-        grid_sizer_options = wx.FlexGridSizer(rows=2, cols=1, vgap=10, hgap=10)
+        grid_sizer_options = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
         grid_sizer_options.Add(self.check_archives, 0, 0, 0)
         grid_sizer_options.Add(self.check_effaces, 0, 0, 0)
+        grid_sizer_options.Add(self.check_rfid, 0, 0, 0)
         staticbox_options.Add(grid_sizer_options, 1, wx.ALL | wx.EXPAND, 10)
 
         grid_sizer_base.Add(staticbox_options, 1, wx.LEFT | wx.RIGHT | wx.EXPAND, 10)
@@ -218,8 +223,14 @@ class Dialog(wx.Dialog):
         # Options
         if self.check_archives.GetValue() == True :
             listeParametres.append("archives===1")
+
         if self.check_effaces.GetValue() == True :
             listeParametres.append("effaces===1")
+
+        if self.check_rfid.GetValue() == True :
+            listeParametres.append("rfid===oui")
+        else:
+            listeParametres.append("rfid===non")
 
         return "###".join(listeParametres)
 
@@ -252,6 +263,12 @@ class Dialog(wx.Dialog):
 
         if "effaces" in dictParametres:
             self.check_effaces.SetValue(True)
+
+        if "rfid" in dictParametres:
+            if dictParametres["rfid"] == "oui":
+                self.check_rfid.SetValue(True)
+            else:
+                self.check_rfid.SetValue(False)
 
         self.OnRadio(None)
 
