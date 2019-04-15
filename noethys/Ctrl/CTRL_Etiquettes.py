@@ -408,7 +408,7 @@ class CTRL(CT.CustomTreeCtrl):
     def Supprimer(self, event):
         item = self.GetSelection()
         dictData = self.GetPyData(item)
-        if dictData == None :
+        if dictData == None or dictData["IDetiquette"] == None:
             dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner une étiquette à supprimer !"), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
@@ -568,6 +568,8 @@ class CTRL(CT.CustomTreeCtrl):
         return None
         
     def GetNbreEnfants(self, item):
+        if item == None:
+            return 0
         nbre = self.GetChildrenCount(item, recursively=False)
         return nbre
 
