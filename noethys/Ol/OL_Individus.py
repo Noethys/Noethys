@@ -14,7 +14,7 @@ from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 
 import wx
-from Ctrl import CTRL_Bouton_image
+import time
 import datetime
 import GestionDB
 from Data import DATA_Civilites as Civilites
@@ -529,6 +529,7 @@ class ListView(FastObjectListView):
     def OuvrirFicheFamille(self, track=None, ouvrirGrille=False, ouvrirFicheInd=False, IDfamille=None):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_fiche", "consulter") == False : return
 
+        IDindividu = None
         if IDfamille == None:
 
             IDindividu = track.IDindividu
@@ -768,12 +769,14 @@ class ListView(FastObjectListView):
                     DB.ExecuterReq(req)
                     listeDonnees = DB.ResultatReq()
                     DB.Close()
-                    if len(listeDonnees) == 0 :
-                        return
-                    IDindividu, IDfamille = listeDonnees[0]
+                    IDindividu, IDfamille = None, None
+                    if len(listeDonnees) > 0 :
+                        IDindividu, IDfamille = listeDonnees[0]
 
                     # On stoppe le timer de détection RFID
                     self.timer_rfid.Stop()
+
+                    time.sleep(2)
 
                     # Ouverture de la fiche famille
                     if IDindividu != None:
