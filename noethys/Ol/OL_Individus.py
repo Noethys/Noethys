@@ -526,56 +526,58 @@ class ListView(FastObjectListView):
         # Ouverture de la fiche famille
         self.OuvrirFicheFamille(track, ouvrirGrille, ouvrirFicheInd)
     
-    def OuvrirFicheFamille(self, track=None, ouvrirGrille=False, ouvrirFicheInd=False):
+    def OuvrirFicheFamille(self, track=None, ouvrirGrille=False, ouvrirFicheInd=False, IDfamille=None):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_fiche", "consulter") == False : return
-        
-        IDindividu = track.IDindividu
-        
-        rattachements, dictTitulaires, txtTitulaires = track.GetRattachements() 
-        if rattachements != None :
-            rattachements.sort()
-            
-        # Rattaché à aucune famille
-        if rattachements == None :
-            dlg = wx.MessageDialog(self, _(u"Cet individu n'est rattaché à aucune famille.\n\nSouhaitez-vous ouvrir sa fiche individuelle ?"), _(u"Confirmation"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
-            reponse = dlg.ShowModal()
-            dlg.Destroy()
-            if reponse !=  wx.ID_YES :
-                return False
+
+        if IDfamille == None:
+
+            IDindividu = track.IDindividu
+
+            rattachements, dictTitulaires, txtTitulaires = track.GetRattachements()
+            if rattachements != None :
+                rattachements.sort()
+
+            # Rattaché à aucune famille
+            if rattachements == None :
+                dlg = wx.MessageDialog(self, _(u"Cet individu n'est rattaché à aucune famille.\n\nSouhaitez-vous ouvrir sa fiche individuelle ?"), _(u"Confirmation"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+                reponse = dlg.ShowModal()
+                dlg.Destroy()
+                if reponse !=  wx.ID_YES :
+                    return False
+                else:
+                    # Ouverture de la fiche individuelle
+                    from Dlg import DLG_Individu
+                    dlg = DLG_Individu.Dialog(None, IDindividu=IDindividu)
+                    if dlg.ShowModal() == wx.ID_OK:
+                        pass
+                    dlg.Destroy()
+                    self.MAJ()
+                    return
+
+            # Rattachée à une seule famille
+            elif len(rattachements) == 1 :
+                IDcategorie, IDfamille, titulaire = rattachements[0]
+            # Rattachée à plusieurs familles
             else:
-                # Ouverture de la fiche individuelle
-                from Dlg import DLG_Individu
-                dlg = DLG_Individu.Dialog(None, IDindividu=IDindividu)
+                listeNoms = []
+                for IDcategorie, IDfamille, titulaire in rattachements :
+                    nomTitulaires = dictTitulaires[IDfamille]
+                    if IDcategorie == 1 :
+                        nomCategorie = _(u"représentant")
+                        if titulaire == 1 :
+                            nomCategorie += _(u" titulaire")
+                    if IDcategorie == 2 : nomCategorie = _(u"enfant")
+                    if IDcategorie == 3 : nomCategorie = _(u"contact")
+                    listeNoms.append(_(u"%s (en tant que %s)") % (nomTitulaires, nomCategorie))
+                dlg = wx.SingleChoiceDialog(self, _(u"Cet individu est rattaché à %d familles.\nLa fiche de quelle famille souhaitez-vous ouvrir ?") % len(listeNoms), _(u"Rattachements multiples"), listeNoms, wx.CHOICEDLG_STYLE)
+                IDfamilleSelection = None
                 if dlg.ShowModal() == wx.ID_OK:
-                    pass
-                dlg.Destroy()
-                self.MAJ() 
-                return
-                
-        # Rattachée à une seule famille
-        elif len(rattachements) == 1 :
-            IDcategorie, IDfamille, titulaire = rattachements[0]
-        # Rattachée à plusieurs familles
-        else:
-            listeNoms = []
-            for IDcategorie, IDfamille, titulaire in rattachements :
-                nomTitulaires = dictTitulaires[IDfamille]
-                if IDcategorie == 1 : 
-                    nomCategorie = _(u"représentant")
-                    if titulaire == 1 : 
-                        nomCategorie += _(u" titulaire")
-                if IDcategorie == 2 : nomCategorie = _(u"enfant")
-                if IDcategorie == 3 : nomCategorie = _(u"contact")
-                listeNoms.append(_(u"%s (en tant que %s)") % (nomTitulaires, nomCategorie))
-            dlg = wx.SingleChoiceDialog(self, _(u"Cet individu est rattaché à %d familles.\nLa fiche de quelle famille souhaitez-vous ouvrir ?") % len(listeNoms), _(u"Rattachements multiples"), listeNoms, wx.CHOICEDLG_STYLE)
-            IDfamilleSelection = None
-            if dlg.ShowModal() == wx.ID_OK:
-                indexSelection = dlg.GetSelection()
-                IDcategorie, IDfamille, titulaire = rattachements[indexSelection]
-                dlg.Destroy()
-            else:
-                dlg.Destroy()
-                return
+                    indexSelection = dlg.GetSelection()
+                    IDcategorie, IDfamille, titulaire = rattachements[indexSelection]
+                    dlg.Destroy()
+                else:
+                    dlg.Destroy()
+                    return
             
         # Ouverture de la fiche famille
         if IDfamille != None and IDfamille != -1 :
@@ -758,7 +760,7 @@ class ListView(FastObjectListView):
 
                     # Recherche du badge RFID dans les questionnaires
                     DB = GestionDB.DB()
-                    req = """SELECT IDindividu
+                    req = """SELECT IDindividu, IDfamille
                     FROM questionnaire_reponses
                     LEFT JOIN questionnaire_questions ON questionnaire_questions.IDquestion = questionnaire_reponses.IDquestion
                     WHERE controle='rfid' AND reponse='%s'
@@ -767,16 +769,20 @@ class ListView(FastObjectListView):
                     listeDonnees = DB.ResultatReq()
                     DB.Close()
                     if len(listeDonnees) == 0 :
-                        return False
-                    IDindividu = listeDonnees[0][0]
+                        return
+                    IDindividu, IDfamille = listeDonnees[0]
 
                     # On stoppe le timer de détection RFID
                     self.timer_rfid.Stop()
 
                     # Ouverture de la fiche famille
-                    track = self.dictTracks[IDindividu]
-                    self.SelectObject(track)
-                    self.OuvrirFicheFamille(track)
+                    if IDindividu != None:
+                        track = self.dictTracks[IDindividu]
+                        self.SelectObject(track)
+                        self.OuvrirFicheFamille(track)
+
+                    if IDfamille != None:
+                        self.OuvrirFicheFamille(IDfamille=IDfamille)
 
                     # On relance le timer de détection RFID
                     self.timer_rfid.Start()
