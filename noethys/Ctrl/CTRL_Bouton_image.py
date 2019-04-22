@@ -98,7 +98,8 @@ class Dialog(wx.Dialog):
         self.bouton_ok1 = CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
         self.bouton_ok2 = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(Chemins.GetStaticPath(u"Images/BoutonsImages/Ok_L72.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_annuler1 = CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Fermer.png")
-        self.bouton_annuler2 = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(Chemins.GetStaticPath(u"Images/BoutonsImages/Annuler_L72.png"), wx.BITMAP_TYPE_ANY))
+        self.bouton_annuler2 = CTRL(self, texte=_(u"Enregistrer sous"), cheminImage="Images/48x48/Sauvegarder.png", tailleImage=(48, 48), margesImage=(40, 20, 40, 0), positionImage=wx.TOP, margesTexte=(10, 10))
+
 
         self.__set_properties()
         self.__do_layout()

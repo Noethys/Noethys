@@ -1087,6 +1087,7 @@ class MainFrame(wx.Frame):
                     {"code" : "tutoriels_videos", "label" : _(u"Visionner des tutoriels vidéos"), "infobulle" : _(u"Visionner des tutoriels vidéos"), "image" : "Images/16x16/Film.png", "action" : self.On_aide_videos},
                     {"code" : "telechargements_communautaires", "label" : _(u"Télécharger des ressources communautaires"), "infobulle" : _(u"Télécharger des ressources communautaires"), "image" : "Images/16x16/Updater.png", "action" : self.On_aide_telechargements},
                     "-",
+                    {"code" : "services", "label": _(u"L'offre de services de Noethys"), "infobulle": _(u"L'offre de services de Noethys"), "image": "Images/16x16/Assistance.png", "action": self.On_aide_services},
                     {"code" : "email_auteur", "label" : _(u"Envoyer un Email à l'auteur"), "infobulle" : _(u"Envoyer un Email à l'auteur"), "image" : "Images/16x16/Mail.png", "action" : self.On_aide_auteur},
                     ],
             },
@@ -3486,6 +3487,13 @@ class MainFrame(wx.Frame):
         """ Accéder à la plate-forme de téléchargements communautaire """
         FonctionsPerso.LanceFichierExterne("https://www.noethys.com/index.php?option=com_phocadownload&view=section&id=2&Itemid=21")
 
+    def On_aide_services(self, event):
+        """ L'offre de services de Noethys """
+        from Dlg import DLG_Financement
+        dlg = DLG_Financement.Dialog(None, code="documentation")
+        dlg.ShowModal()
+        dlg.Destroy()
+
     def On_aide_auteur(self, event):
         """ Envoyer un email à l'auteur """
         FonctionsPerso.LanceFichierExterne("https://www.noethys.com/index.php?option=com_contact&view=contact&id=1&Itemid=13")
@@ -3888,7 +3896,12 @@ class MainFrame(wx.Frame):
                 dlg.ShowModal()
                 dlg.Destroy()
 
-
+            if versionFichier < (1, 2, 6, 3):
+                from Dlg import DLG_Financement
+                if DLG_Financement.Affiche_assistance() == True:
+                    dlg = DLG_Financement.Dialog(None, code="assistance")
+                    dlg.ShowModal()
+                    dlg.Destroy()
 
 
 
@@ -4150,7 +4163,7 @@ Merci pour votre participation !
                         reponse = dlg.ShowModal()
                         dlg.Destroy()
                         if reponse == 0:
-                            FonctionsPerso.LanceFichierExterne(Chemins.GetStaticPath("Images/Special/Bon_commande_documentation.pdf"))
+                            FonctionsPerso.LanceFichierExterne("https://noethys.com/public/bon_commande_documentation.pdf")
                         return True
                 else :
                     # Licence valide
@@ -4270,7 +4283,7 @@ class MyApp(wx.App):
 
         # Propose mise à jour immédiate
         etat_maj = frame.ProposeMAJ()
-        
+
         # Après ouverture d'un fichier :
         if fichierOuvert == True and frame.EstFichierExemple() == False and etat_maj == False :
 
