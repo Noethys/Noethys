@@ -21,13 +21,22 @@ import datetime
 
 
 def Affiche_assistance():
-    IDfichier = FonctionsPerso.GetIDfichier()
+    try :
+        topWindow = wx.GetApp().GetTopWindow()
+        if topWindow.GetName() == "general":
+            if topWindow.EstFichierExemple() == True:
+                return False
+    except :
+        pass
+
     try:
+        IDfichier = FonctionsPerso.GetIDfichier()
         anciennete = datetime.datetime.today() - datetime.datetime.strptime(IDfichier[:8], "%Y%m%d")
         if anciennete.days / 365 >= 4:
             return True
     except:
         pass
+
     return False
 
 
