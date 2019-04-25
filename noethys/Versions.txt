@@ -1,3 +1,15 @@
+Version 1.2.6.3 (25/04/2019) :
+
+- Ajout de la détection RFID dans la liste des individus
+- Ajout des questionnaires dans la configuration de listes
+- Ajout du timeout sur l'envoi des emails dans les préférences
+- Autorise la saisie de textes unicode dans le champs quittancier des règlements
+- Correction d'un bug de connexion sur l'envoi d'emails
+- Correction de l'import datetime sur les profils de configuration
+- Correction sur la sauvegarde des polygones dans Noedoc
+- Correction de l'export des modèles de documents avec image intégrée
+- Correction de petits bugs
+
 Version 1.2.6.1 (31/03/2019) :
 
 - Ajout des champs individuels dans le récapitulatif pdf des factures

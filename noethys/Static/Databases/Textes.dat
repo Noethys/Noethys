@@ -659,6 +659,9 @@
     "S\u00e9lectionnez une langue :": [
         "OL_Langues.py"
     ], 
+    "Facture inconnue": [
+        "DLG_Saisie_portail_demande.py"
+    ], 
     "Modification d'un nom de prestation": [
         "CTRL_Tarification.py"
     ], 
@@ -704,7 +707,8 @@
     ], 
     "Enregistrer sous": [
         "UTILS_Export.py", 
-        "DLG_Export_familles.py"
+        "DLG_Export_familles.py", 
+        "CTRL_Bouton_image.py"
     ], 
     "Cliquez ici pour acc\u00e9der \u00e0 l'envoi des factures par Email": [
         "DLG_Factures_generation_actions.py"
@@ -3356,6 +3360,7 @@
     ], 
     "Cliquez ici pour imprimer le bon de commande et les conditions g\u00e9n\u00e9rales de vente": [
         "DLG_Financement.py", 
+        "DLG_Financement.py", 
         "DLG_Financement.py"
     ], 
     "Erreur dans la cr\u00e9ation du fichier de photos.\\n\\nErreur : %s": [
@@ -3571,9 +3576,6 @@
     ], 
     "Astuce : Effectuez un clic droit sur l'une des poign\u00e9es d'un polygone pour supprimer le point correspondant": [
         "DLG_Noedoc.py"
-    ], 
-    "La documentation": [
-        "DLG_Financement.py"
     ], 
     "Cliquez ici pour modifier le profil s\u00e9lectionn\u00e9": [
         "DLG_Profils_parametres.py"
@@ -6284,6 +6286,7 @@
         "DLG_Export_helios.py", 
         "DLG_Importation_photos.py", 
         "DLG_Impression_recap_factures.py", 
+        "DLG_Impression_recap_factures.py", 
         "DLG_Individu_liens.py", 
         "DLG_Modeles_docs.py", 
         "DLG_Noedoc.py", 
@@ -7472,8 +7475,8 @@
         "DLG_Export_compta.py", 
         "DLG_Export_compta.py"
     ], 
-    "Couleur ligne de total": [
-        "CTRL_Impression_conso_options.py"
+    "P\u00e9riode inconnue": [
+        "DLG_Saisie_portail_demande.py"
     ], 
     "Aucun profil": [
         "OL_Profils_parametres.py"
@@ -9018,9 +9021,6 @@
         "DLG_Saisie_contrat.py", 
         "DLG_Saisie_contratpsu_conso.py", 
         "DLG_Saisie_contrat_conso.py"
-    ], 
-    "Les formations": [
-        "DLG_Financement.py"
     ], 
     "Code APE :": [
         "DLG_Organisateur.py"
@@ -13836,6 +13836,9 @@
     "Cliquez ici pour supprimer la programmation s\u00e9lectionn\u00e9e dans la liste": [
         "DLG_Individu_transports.py"
     ], 
+    "Champs individuels": [
+        "DLG_Impression_recap_factures.py"
+    ], 
     "Souhaitez-vous vraiment supprimer cette op\u00e9ration budg\u00e9taire ?": [
         "OL_Operations_budgetaires.py"
     ], 
@@ -14026,6 +14029,11 @@
     ], 
     "Etat des places": [
         "OL_Inscriptions_activite.py"
+    ], 
+    "S\u00e9lectionnez un champ individuel \u00e0 int\u00e9grer dans le document": [
+        "DLG_Impression_recap_factures.py", 
+        "DLG_Impression_recap_factures.py", 
+        "DLG_Impression_recap_factures.py"
     ], 
     "Vous devez d\u00e9sactiver le compte internet si vous souhaitez d\u00e9sactiver cet utilisateur !": [
         "DLG_Saisie_utilisateur.py"
@@ -14235,6 +14243,8 @@
         "DLG_Factures_impression.py", 
         "DLG_Feries.py", 
         "DLG_Fiche_produit.py", 
+        "DLG_Financement.py", 
+        "DLG_Financement.py", 
         "DLG_Financement.py", 
         "DLG_Financement.py", 
         "DLG_Financement.py", 
@@ -14519,8 +14529,8 @@
         "DLG_Saisie_frais_gestion.py", 
         "DLG_Saisie_mode_reglement.py"
     ], 
-    "Afficher l'ann\u00e9e": [
-        "CTRL_Timeline.py"
+    "Classe \u00e0 la date de d\u00e9but de la facture": [
+        "DLG_Impression_recap_factures.py"
     ], 
     "D\u00e9p\u00f4t de cotisations :": [
         "DLG_Filtres_cotisations.py"
@@ -16356,6 +16366,7 @@
         "DLG_Detail_conso.py", 
         "DLG_Famille.py", 
         "DLG_Impression_conso.py", 
+        "DLG_Impression_recap_factures.py", 
         "DLG_Individu.py", 
         "DLG_Saisie_email_exp.py", 
         "DLG_Saisie_reglement.py", 
@@ -17095,6 +17106,9 @@
     ], 
     "Saisissez ici la date de d\u00e9but de la p\u00e9riode": [
         "OL_Vacances.py"
+    ], 
+    "%d familles dont les membres sont %ss.": [
+        "UTILS_Stats_familles.py"
     ], 
     "Ajouter une op\u00e9ration au cr\u00e9dit": [
         "OL_Operations_budgetaires.py", 
@@ -19475,6 +19489,9 @@
     "Cliquez ici pour faire monter l'action s\u00e9lectionn\u00e9e": [
         "DLG_Badgeage_saisie_procedure.py"
     ], 
+    "Classe \u00e0 la date de fin de la facture": [
+        "DLG_Impression_recap_factures.py"
+    ], 
     "Cochez une ou plusieurs adresses de destination": [
         "DLG_Selection_email.py"
     ], 
@@ -19515,11 +19532,15 @@
     ], 
     "Bon de commande": [
         "DLG_Financement.py", 
+        "DLG_Financement.py", 
         "DLG_Financement.py"
     ], 
     "Souhaitez-vous vraiment supprimer cet \u00e9v\u00e8nement ?": [
         "OL_Evenements.py", 
         "OL_Portail_bloc_calendrier.py"
+    ], 
+    "Champs familiaux": [
+        "DLG_Impression_recap_factures.py"
     ], 
     "Qt\u00e9 %s": [
         "OL_Etat_nomin_champs.py"
@@ -20321,6 +20342,7 @@
         "DLG_Export_helios.py", 
         "DLG_Impression_recap_factures.py", 
         "DLG_Impression_recap_factures.py", 
+        "DLG_Impression_recap_factures.py", 
         "DLG_Recopiage_conso.py", 
         "DLG_Saisie_conso_autogen.py", 
         "DLG_Saisie_location.py", 
@@ -20403,6 +20425,10 @@
     ], 
     "Autre organisme social": [
         "DLG_Famille_divers.py"
+    ], 
+    "Plus": [
+        "DLG_Planning_transports.py", 
+        "CTRL_Agenda.py"
     ], 
     "Nom du d\u00e9p\u00f4t : %s": [
         "DLG_Saisie_depot.py", 
@@ -21135,6 +21161,9 @@
     ], 
     "Souhaitez-vous vraiment retirer les %d pr\u00e9l\u00e8vements coch\u00e9s ?": [
         "OL_Prelevements_sepa.py"
+    ], 
+    "Activer la d\u00e9tection des badges RFID": [
+        "DLG_Selection_individus.py"
     ], 
     "Vous devez cr\u00e9er au moins un individu pour ce trombinoscope !": [
         "DLG_Saisie_portail_bloc.py"
@@ -22607,6 +22636,9 @@
     "Saisissez ici l'ann\u00e9e de la p\u00e9riode. Ex. : '2011'": [
         "OL_Vacances.py"
     ], 
+    "D\u00e9veloppement": [
+        "DLG_Financement.py"
+    ], 
     "Saisissez ici la date de fin d'inscription": [
         "DLG_Saisie_filtre_listes.py"
     ], 
@@ -22959,12 +22991,14 @@
         "DLG_Individu.py"
     ], 
     "Champ 2": [
+        "DLG_Impression_recap_factures.py", 
         "DLG_Impression_recap_factures.py"
     ], 
     "Autre adresse de facturation": [
         "DLG_Famille_divers.py"
     ], 
     "Champ 1": [
+        "DLG_Impression_recap_factures.py", 
         "DLG_Impression_recap_factures.py"
     ], 
     "S\u00e9lectionnez ici le type": [
@@ -24501,6 +24535,8 @@
         "DLG_Filtres_factures.py", 
         "DLG_Filtres_rappels.py", 
         "DLG_Impression_infos_medicales.py", 
+        "DLG_Impression_recap_factures.py", 
+        "DLG_Impression_recap_factures.py", 
         "DLG_Inscription.py", 
         "DLG_Liste_envoi_email.py", 
         "DLG_Liste_prestations.py", 
@@ -24540,9 +24576,6 @@
     "S\u00e9lectionnez ici la cat\u00e9gorie de la prestation": [
         "DLG_Saisie_modele_prestation.py", 
         "DLG_Saisie_prestation.py"
-    ], 
-    "Les services de Noethys": [
-        "DLG_Financement.py"
     ], 
     "Cliquez ici pour modifier l'\u00e9v\u00e8nement s\u00e9lectionn\u00e9 dans la liste": [
         "DLG_Evenements.py", 
@@ -24841,6 +24874,9 @@
         "DLG_Saisie_lieu.py", 
         "DLG_Saisie_medecin.py", 
         "DLG_Saisie_restaurateur.py"
+    ], 
+    "Assistance": [
+        "DLG_Financement.py"
     ], 
     "Cochez ici pour que tous les groupes b\u00e9n\u00e9ficient de cette unit\u00e9": [
         "DLG_Saisie_unite.py"
@@ -25714,6 +25750,7 @@
         "DLG_Export_compta.py", 
         "DLG_Export_compta.py", 
         "DLG_Famille.py", 
+        "DLG_Financement.py", 
         "DLG_Importation_individus.py", 
         "DLG_Impression_conso.py", 
         "DLG_Individu.py", 
@@ -26902,6 +26939,7 @@
     ], 
     "Montant total": [
         "DLG_Export_helios.py", 
+        "DLG_Impression_recap_factures.py", 
         "DLG_Impression_recap_factures.py"
     ], 
     "Saisissez la largeur pour la colonne date (110 par d\u00e9faut)": [
@@ -28653,6 +28691,10 @@
     "Activer": [
         "DLG_Saisie_unite.py"
     ], 
+    "Cliquez ici pour en savoir plus": [
+        "DLG_Financement.py", 
+        "DLG_Financement.py"
+    ], 
     "Cat\u00e9gorie socio-professionnelle": [
         "DLG_Importation_individus.py"
     ], 
@@ -28680,6 +28722,9 @@
     ], 
     "Vous n'avez pas renseign\u00e9 le code comptable de la ligne '%s'.\\n\\nSouhaitez-vous tout de m\u00eame continuer ? (Si oui, cette ligne ne sera pas export\u00e9e)": [
         "DLG_Export_compta.py"
+    ], 
+    "Envoi d'emails": [
+        "DLG_Preferences.py"
     ], 
     "Vous n'avez pas l'autorisation de g\u00e9n\u00e9rer des attestations pour l'ensemble des activit\u00e9s s\u00e9lectionn\u00e9es !": [
         "DLG_Attestations_annuelles.py", 
@@ -30115,6 +30160,9 @@
         "DLG_Saisie_pes_piece.py", 
         "DLG_Saisie_prelevement_sepa.py"
     ], 
+    "Pour en savoir davantage sur les d\u00e9veloppements, consultez le concepteur de Noethys depuis le menu Aide > Envoyer un email \u00e0 l'auteur.": [
+        "DLG_Financement.py"
+    ], 
     "R\u00e9server des consommations": [
         "CTRL_Badgeage_action.py"
     ], 
@@ -30577,9 +30625,8 @@
     "Code postal de la ville de r\u00e9sidence": [
         "DLG_Importation_individus.py"
     ], 
-    "Plus": [
-        "DLG_Planning_transports.py", 
-        "CTRL_Agenda.py"
+    "Ecole \u00e0 la date de d\u00e9but de la facture": [
+        "DLG_Impression_recap_factures.py"
     ], 
     "Vous n'avez pas l'autorisation de g\u00e9n\u00e9rer des factures pour l'ensemble des activit\u00e9s s\u00e9lectionn\u00e9es !": [
         "DLG_Factures_generation_parametres.py"
@@ -30876,6 +30923,9 @@
     ], 
     "Cr\u00e9er une nouvelle cat\u00e9gorie": [
         "CTRL_Questionnaire.py"
+    ], 
+    "Formations": [
+        "DLG_Financement.py"
     ], 
     "Cliquez ici pour ajouter un tiers": [
         "DLG_Tiers.py"
@@ -31699,6 +31749,9 @@
         "CTRL_Bouton_image.py", 
         "CTRL_Serveur_nomade.py"
     ], 
+    "Cochez cette case pour activer la dur\u00e9e maximale d'envoi personnalis\u00e9e": [
+        "DLG_Preferences.py"
+    ], 
     "Vous devez obligatoirement renseigner la colonne '%s' de la ligne n\u00b0%d !": [
         "CTRL_Tarification_calcul.py"
     ], 
@@ -31949,6 +32002,9 @@
     ], 
     "Vous avez effectu\u00e9 %d modification(s) dans la grille.\\n\\nSouhaitez-vous vraiment les annuler ?": [
         "DLG_Grille.py"
+    ], 
+    "Ecole \u00e0 la date de fin de la facture": [
+        "DLG_Impression_recap_factures.py"
     ], 
     "Pour acc\u00e9der \u00e0 la liste des fichiers r\u00e9seau disponibles, un acc\u00e8s MySQL \\nest n\u00e9cessaire. Veuillez saisir vos param\u00e8tres de connexion r\u00e9seau :": [
         "UTILS_Sauvegarde_auto.py", 
@@ -32381,6 +32437,7 @@
         "UTILS_Procedures.py"
     ], 
     "Champ 3": [
+        "DLG_Impression_recap_factures.py", 
         "DLG_Impression_recap_factures.py"
     ], 
     "Texte original :": [
@@ -33694,6 +33751,9 @@
     "Inscrits/Pr\u00e9sents": [
         "DLG_Saisie_filtre_listes.py"
     ], 
+    "S\u00e9lectionnez une dur\u00e9e": [
+        "DLG_Preferences.py"
+    ], 
     "Cliquez ici pour modifier la ligne s\u00e9lectionn\u00e9e dans la liste": [
         "DLG_Saisie_question.py"
     ], 
@@ -33869,6 +33929,9 @@
     ], 
     "S\u00e9lectionnez une adresse d'exp\u00e9dition d'emails qui sera utilis\u00e9e pour envoyer les emails de r\u00e9initialisation des mots de passe": [
         "DLG_Portail_config.py"
+    ], 
+    "Documentation": [
+        "DLG_Financement.py"
     ], 
     "Zoom": [
         "UTILS_Printer.py", 
@@ -35841,6 +35904,7 @@
         "DLG_Conso_sans_prestations.py", 
         "DLG_Export_helios.py", 
         "DLG_Impression_recap_factures.py", 
+        "DLG_Impression_recap_factures.py", 
         "DLG_Inscription.py", 
         "DLG_Liste_inscriptions.py", 
         "DLG_Saisie_forfait_credit.py", 
@@ -37796,6 +37860,7 @@
         "DLG_Famille_divers.py", 
         "DLG_Financement.py", 
         "DLG_Financement.py", 
+        "DLG_Financement.py", 
         "DLG_Importation_fichier.py", 
         "DLG_Importation_fichier.py", 
         "DLG_Importation_individus.py", 
@@ -38434,6 +38499,9 @@
     "Veuillez l'imprimer et l'envoyer par courrier.": [
         "DLG_Saisie_portail_demande.py", 
         "DLG_Saisie_portail_demande.py"
+    ], 
+    "Afficher l'ann\u00e9e": [
+        "CTRL_Timeline.py"
     ], 
     "Le code postal saisi ne figure pas dans la base de donn\u00e9es": [
         "CTRL_Saisie_adresse.py"
@@ -39127,8 +39195,8 @@
         "CTRL_Droits.py", 
         "CTRL_Droits.py"
     ], 
-    "%d familles dont les membres sont %ss.": [
-        "UTILS_Stats_familles.py"
+    "L'offre de services de Noethys": [
+        "DLG_Financement.py"
     ], 
     "Quantit\u00e9 de '%s (%s)' hors vacances": [
         "OL_Etat_nomin_champs.py"
@@ -42087,6 +42155,9 @@
     "Vous devez obligatoirement saisir un nom d'administrateur !": [
         "DLG_Nouveau_fichier.py"
     ], 
+    "Cochez cette case pour activer la d\u00e9tection des badges RFID": [
+        "DLG_Selection_individus.py"
+    ], 
     "Ajout": [
         "DLG_Saisie_portail_demande.py"
     ], 
@@ -43128,6 +43199,9 @@
     "Cotisations sans familles associ\u00e9es": [
         "UTILS_Depannage.py"
     ], 
+    "Niveau scolaire \u00e0 la date de d\u00e9but de la facture": [
+        "DLG_Impression_recap_factures.py"
+    ], 
     "Camp 4-6 ans": [
         "UTILS_Stats_familles.py", 
         "UTILS_Stats_individus.py"
@@ -43957,6 +44031,7 @@
         "DLG_Export_compta.py", 
         "DLG_Export_compta.py", 
         "DLG_Export_helios.py", 
+        "DLG_Impression_recap_factures.py", 
         "DLG_Impression_recap_factures.py", 
         "DLG_Releve_prestations.py", 
         "DLG_Saisie_contrat_periode.py", 
@@ -46182,6 +46257,9 @@
     "<b>Votre quotient familial : </b>Votre QF est de %s sur la p\u00e9riode %s.": [
         "UTILS_Impression_facture.py"
     ], 
+    "Couleur ligne de total": [
+        "CTRL_Impression_conso_options.py"
+    ], 
     "La date suivante": [
         "CTRL_Tarification_type.py"
     ], 
@@ -46406,6 +46484,8 @@
         "DLG_Financement.py", 
         "DLG_Financement.py", 
         "DLG_Financement.py", 
+        "DLG_Financement.py", 
+        "DLG_Financement.py", 
         "DLG_Geolocalisation.py", 
         "DLG_Gestionnaire_conso.py", 
         "DLG_Groupes_activites.py", 
@@ -46596,6 +46676,9 @@
     "Sur toute la colonne du groupe '%s'": [
         "CTRL_Droits.py"
     ], 
+    "Dur\u00e9e maximale de l'envoi personnalis\u00e9e :": [
+        "DLG_Preferences.py"
+    ], 
     "Modifiez le nom du groupe d'activit\u00e9s :": [
         "OL_Groupes_activites.py"
     ], 
@@ -46633,6 +46716,8 @@
         "DLG_Famille_reglements.py"
     ], 
     "En savoir plus": [
+        "DLG_Financement.py", 
+        "DLG_Financement.py", 
         "DLG_Financement.py", 
         "DLG_Financement.py", 
         "DLG_Financement.py"
@@ -47527,6 +47612,9 @@
     "Cliquez ici pour acc\u00e9der \u00e0 l'export HELIOS des factures": [
         "DLG_Factures_generation_actions.py"
     ], 
+    "Aller\\nplus loin\\navec\\nNoethys": [
+        "DLG_Financement.py"
+    ], 
     "Nbre de rappels": [
         "OL_Lots_rappels.py"
     ], 
@@ -48158,8 +48246,8 @@
         "DLG_Archivage.py", 
         "DLG_Comptes_internet.py"
     ], 
-    "Saisissez le chemin du r\u00e9pertoire. Exemple : 'www/mesfichiers": [
-        "DLG_Synchronisation.py"
+    "Niveau scolaire \u00e0 la date de fin de la facture": [
+        "DLG_Impression_recap_factures.py"
     ], 
     "Vous devez saisir un nom pour cette proc\u00e9dure de sauvegarde !": [
         "DLG_Saisie_procedure_sauvegarde.py"
@@ -49274,9 +49362,6 @@
     ], 
     "Votre fichier n'est pas valide car il manque les colonnes obligatoires suivantes : \\n\\n%s": [
         "DLG_Importation_individus.py"
-    ], 
-    "Vous ne pouvez pas d\u00e9tacher cette fiche car %d cotisation(s) individuelle(s) existe(nt) d\u00e9j\u00e0 pour cet individu sur cette fiche famille !": [
-        "DLG_Supprimer_fiche.py"
     ], 
     "Souhaitez-vous vraiment supprimer ce type de sieste ?": [
         "OL_Types_sieste.py"
@@ -51464,6 +51549,9 @@
         "DLG_Liste_deductions.py", 
         "DLG_Synthese_modes_reglements.py"
     ], 
+    "Saisissez le chemin du r\u00e9pertoire. Exemple : 'www/mesfichiers": [
+        "DLG_Synchronisation.py"
+    ], 
     "Cliquez ici pour supprimer le type de cotisation s\u00e9lectionn\u00e9 dans la liste": [
         "DLG_Types_cotisations.py"
     ], 
@@ -51852,8 +51940,8 @@
     "Saisie d'un responsable": [
         "OL_Responsables_activite.py"
     ], 
-    "Champs personnalis\u00e9s": [
-        "DLG_Impression_recap_factures.py"
+    "Vous ne pouvez pas d\u00e9tacher cette fiche car %d cotisation(s) individuelle(s) existe(nt) d\u00e9j\u00e0 pour cet individu sur cette fiche famille !": [
+        "DLG_Supprimer_fiche.py"
     ], 
     "Vous devez obligatoirement s\u00e9lectionner un mod\u00e8le !": [
         "DLG_Apercu_attestation_fiscale.py", 
@@ -52219,6 +52307,7 @@
         "CTRL_Factures_options.py"
     ], 
     "Noethys ne peut pas ouvrir le PDF !\\n\\nVeuillez v\u00e9rifier qu'un autre PDF n'est pas d\u00e9j\u00e0 ouvert en arri\u00e8re-plan...": [
+        "DLG_Financement.py", 
         "DLG_Financement.py", 
         "DLG_Financement.py"
     ], 
