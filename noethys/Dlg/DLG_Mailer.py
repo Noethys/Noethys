@@ -28,7 +28,6 @@ from Utils import UTILS_Parametres
 from Utils import UTILS_Historique
 from Utils import UTILS_Dates
 from Ctrl import CTRL_Editeur_email
-from Ctrl import CTRL_Pieces_jointes_emails
 from Ol import OL_Destinataires_emails
 from Ol import OL_Pieces_jointes_emails
 
@@ -429,7 +428,7 @@ class Dialog(wx.Dialog):
             self.ctrl_editeur.SetFocus()
             return
         texteHTML, listeImages, handler = self.ctrl_editeur.GetHTML(imagesIncluses=True)
-        
+
         # Vérifie la fusion des mots-clés
         if self.VerifieFusion(texteHTML, listeDestinataires) == False :
             if self.IsShown() == False : self.ShowModal()
@@ -463,9 +462,6 @@ class Dialog(wx.Dialog):
             # Traitement des champs pour la fusion
             texte = copy.deepcopy(texteHTML)
             for motcle, valeur in CTRL_Editeur_email.GetChampsStandards().items():
-                if six.PY3:
-                    motcle = motcle.encode()
-                    valeur = valeur.encode()
                 texte = texte.replace(motcle, valeur)
             for motcle, valeur in dictChamps.items():
                 if valeur == None: valeur = u""
@@ -554,9 +550,6 @@ class Dialog(wx.Dialog):
             # Remplacement des champs pour la fusion
             texte = copy.deepcopy(texteHTML)
             for motcle, valeur in CTRL_Editeur_email.GetChampsStandards().items():
-                if six.PY3:
-                    motcle = motcle.encode()
-                    valeur = valeur.encode()
                 texte = texte.replace(motcle, valeur)
             for motcle, valeur in dictChamps.items() :
                 try :
@@ -568,8 +561,6 @@ class Dialog(wx.Dialog):
             
             # Vérifie si champs non remplacés
             x = r"\{[A-Za-z0-9_]*?\}"
-            if six.PY3:
-                x = x.encode()
             regex = re.compile(x)
             listeAnomalies = regex.findall(texte)
             if len(listeAnomalies) > 0 :
@@ -606,6 +597,7 @@ if __name__ == u"__main__":
         {"adresse" : "test@gmail.com", "pieces" : [], "champs" : {} },
         ]
     dlg.SetDonnees(listeDonnees, modificationAutorisee=True)
+    dlg.ctrl_editeur.EcritTexte(u"Ceci est un texte de test.")
     dlg.ctrl_objet.SetValue(u"Test")
     app.SetTopWindow(dlg)
     dlg.ShowModal()

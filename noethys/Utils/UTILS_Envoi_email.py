@@ -230,14 +230,11 @@ class Message():
         for img in images:
             img = img.replace(u"\\", u"/")
             img = img.replace(u":", u"%3a")
-            self.texte_html = self.texte_html.replace(_(u"file:/%s") % img, u"cid:image%d" % index)
+            self.texte_html = self.texte_html.replace(u"file:/%s" % img, u"cid:image%d" % index)
             index += 1
 
         # Conversion du html en texte plain
-        texte = self.texte_html
-        if six.PY3:
-            texte = texte.decode("utf-8")
-        self.texte_plain = UTILS_Html2text.html2text(texte)
+        self.texte_plain = UTILS_Html2text.html2text(self.texte_html)
 
     def AttacheImagesIncluses(self, email=None):
         index = 0
@@ -445,6 +442,7 @@ class SmtpV2(Base_messagerie):
             to=message.destinataires,
             connection=self.connection,
         )
+
         email.attach_alternative(message.texte_html, "text/html")
 
         message.AttacheImagesIncluses(email)
@@ -498,13 +496,16 @@ class SmtpV2(Base_messagerie):
                         listeSucces.append(message)
                         erreur = None
                     except Exception as err:
+                        traceback.print_exc(file=sys.stdout)
                         erreur = err
 
                 if erreur != None:
-                    err = str(erreur).decode("iso-8859-15")
+                    if six.PY2:
+                        err = str(erreur).decode("iso-8859-15")
+                    else:
+                        err = six.text_type(erreur)
                     listeAnomalies.append((message, err))
                     print(("Erreur dans l'envoi d'un mail : %s...", err))
-                    traceback.print_exc(file=sys.stdout)
 
                     if ne_pas_signaler_erreurs == False:
 

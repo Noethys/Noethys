@@ -971,7 +971,11 @@ class CTRL(wx.Panel):
         if nomFichierLong.lower().endswith(".jpg") : typeBMP = wx.BITMAP_TYPE_JPEG
         if nomFichierLong.lower().endswith(".png") : typeBMP = wx.BITMAP_TYPE_PNG
         if nomFichierLong.lower().endswith(".gif") : typeBMP = wx.BITMAP_TYPE_GIF
-        self.ctrl_editeur.WriteBitmap(bmp, bitmapType=typeBMP)
+
+        if 'phoenix' in wx.PlatformInfo:
+            self.ctrl_editeur.WriteImage(bmp, bitmapType=typeBMP)
+        else:
+            self.ctrl_editeur.WriteBitmap(bmp, bitmapType=typeBMP)
 
     def AddRTCHandlers(self):
         # make sure we haven't already added them.
@@ -1045,8 +1049,7 @@ class CTRL(wx.Panel):
             if not handler.SaveStream(self.ctrl_editeur.GetBuffer(), stream):
                 return False
         source = stream.getvalue()
-        if six.PY2:
-            source = source.decode("utf-8")
+        source = source.decode("utf-8")
         listeImages = handler.GetTemporaryImageLocations()
         return source, listeImages, handler
 
