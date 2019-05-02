@@ -251,7 +251,10 @@ def AjouteTexteImage(image=None, texte="", alignement="droite-bas", padding=0, t
     if "haut" in alignement: yRond = 1
     if "bas" in alignement: yRond = hauteurImage - hauteurRond - 1
 
-    dc.DrawRoundedRectangleRect(wx.Rect(xRond, yRond, largeurRond, hauteurRond), hauteurRond / 2.0)
+    if 'phoenix' in wx.PlatformInfo:
+        dc.DrawRoundedRectangle(wx.Rect(xRond, yRond, largeurRond, hauteurRond), hauteurRond / 2.0)
+    else:
+        dc.DrawRoundedRectangleRect(wx.Rect(xRond, yRond, largeurRond, hauteurRond), hauteurRond / 2.0)
 
     # Texte
     xTexte = xRond + largeurRond / 2.0 - largeurTexte / 2.0

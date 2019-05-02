@@ -617,7 +617,9 @@ class Editeur(rt.RichTextCtrl):
         handler = wx.richtext.RichTextXMLHandler()
         buffer = self.GetBuffer()
         buffer.AddHandler(handler)
-        out.write(texteXml.encode("utf8"))
+        if six.PY2:
+            texteXml = texteXml.encode("utf8")
+        out.write(texteXml)
         out.seek(0)
         if 'phoenix' in wx.PlatformInfo:
             handler.LoadFile(buffer, out)
