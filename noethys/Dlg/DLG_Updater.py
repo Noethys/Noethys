@@ -924,7 +924,7 @@ class Dialog(wx.Dialog):
         self.SurFermeture()
 
         if self.page_active == "page_telechargement" :
-            self.page_telechargement.Arreter_telechargement()
+            self.GetPage("page_telechargement").Arreter_telechargement()
         elif self.page_active == "page_installation" :
             pass
         else:

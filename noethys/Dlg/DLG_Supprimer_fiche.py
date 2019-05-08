@@ -432,7 +432,7 @@ class Dialog(wx.Dialog):
             dernierTitulaire = False
         if dernierTitulaire == True :
             if nbreAutresIndividus > 0 :
-            # S'il s'agit du dernier titulaire mais qu'il y a d'autres membres dans la fiche famille
+                # S'il s'agit du dernier titulaire mais qu'il y a d'autres membres dans la fiche famille
                 dlg = wx.MessageDialog(self, _(u"Il s'agit du dernier titulaire du dossier, vous ne pouvez donc pas le supprimer !\n\n(Si vous souhaitez supprimer la fiche famille, commencez pas détacher ou supprimer tous les autres membres de cette fiche)"), _(u"Suppression impossible"), wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
                 dlg.Destroy()
@@ -447,6 +447,7 @@ class Dialog(wx.Dialog):
                     dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas supprimer le dernier membre d'une famille sans supprimer la fiche famille !"), _(u"Suppression impossible"), wx.OK | wx.ICON_ERROR)
                     dlg.ShowModal()
                     dlg.Destroy()
+                    DB.Close()
                     return False
                 
                 # Vérifie qu'il est possible de supprimer la fiche famille
@@ -457,6 +458,7 @@ class Dialog(wx.Dialog):
                     dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas supprimer la fiche famille car il y a déjà %d aide(s) journalière(s) enregistrée(s) dans cette fiche.") % len(listeDonnees), _(u"Suppression impossible"), wx.OK | wx.ICON_ERROR)
                     dlg.ShowModal()
                     dlg.Destroy()
+                    DB.Close()
                     return False
                 
                 req = """SELECT IDcotisation, IDfamille FROM cotisations WHERE IDfamille=%d""" % self.IDfamille
@@ -466,6 +468,7 @@ class Dialog(wx.Dialog):
                     dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas supprimer la fiche famille car il y a déjà %d cotisation(s) enregistrée(s) dans cette fiche.") % len(listeDonnees), _(u"Suppression impossible"), wx.OK | wx.ICON_ERROR)
                     dlg.ShowModal()
                     dlg.Destroy()
+                    DB.Close()
                     return False
                 
                 req = """SELECT IDreglement, date FROM reglements 
@@ -477,6 +480,7 @@ class Dialog(wx.Dialog):
                     dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas supprimer la fiche famille car il y a déjà %d règlement(s) enregistré(s) dans cette fiche.") % len(listeDonnees), _(u"Suppression impossible"), wx.OK | wx.ICON_ERROR)
                     dlg.ShowModal()
                     dlg.Destroy()
+                    DB.Close()
                     return False
                 
                 DB.Close()
@@ -493,8 +497,10 @@ class Dialog(wx.Dialog):
             reponse = dlg.ShowModal()
             dlg.Destroy()
             if reponse !=  wx.ID_YES :
+                DB.Close()
                 return False
-            
+
+            DB.Close()
             self.SupprimerIndividu() 
             return True
     

@@ -1602,7 +1602,7 @@ if __name__ == u"__main__":
     #wx.InitAllImageHandlers()
     import time
     heure_debut = time.time()
-    dialog_1 = Dialog(None, IDcompte_payeur=71, IDreglement=None)
+    dialog_1 = Dialog(None, IDcompte_payeur=14, IDreglement=None)
     print("Temps de chargement =", time.time() - heure_debut)
     app.SetTopWindow(dialog_1)
     dialog_1.ShowModal()

@@ -346,7 +346,7 @@ class Ligne_prestation(object):
         # Attribue le montant
         if etat == False :
             montant = 0.0 
-            
+
         if montant != None :
             # Tout ventiler
             self.ventilationActuelle = montant
@@ -365,7 +365,7 @@ class Ligne_prestation(object):
             montant = self.grid.GetCreditAventiler()
             if montant > self.resteAVentiler or self.grid.bloquer_ventilation == False :
                 montant = self.resteAVentiler
-                
+
         # Modifie la ligne
         self.SetEtat(etat, montant)
         
@@ -1069,8 +1069,8 @@ class MyFrame(wx.Frame):
         sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
         self.SetSizer(sizer_1)
         
-        self.ctrl = CTRL(panel, IDcompte_payeur=71, IDreglement=None)
-        self.ctrl.SetMontantReglement(10.00)
+        self.ctrl = CTRL(panel, IDcompte_payeur=14, IDreglement=None)
+        self.ctrl.SetMontantReglement(30.00)
     
         self.bouton_test = wx.Button(panel, -1, _(u"Bouton de test"))
         self.Bind(wx.EVT_BUTTON, self.OnBoutonTest, self.bouton_test)

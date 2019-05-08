@@ -13,7 +13,7 @@ import Chemins
 from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
-from Ctrl import CTRL_Bouton_image
+import copy
 import GestionDB
 import datetime
 from Utils import UTILS_Titulaires
@@ -193,10 +193,22 @@ class ListView(FastObjectListView):
 
         listeChamps = UTILS_Infos_individus.GetNomsChampsPossibles(mode="famille")
         for titre, exemple, code in listeChamps :
-            if u"n°" not in titre and "_x_" not in code:
-                typeDonnee = UTILS_Infos_individus.GetTypeChamp(code)
-                code = code.replace("{", "").replace("}", "")
-                liste_Colonnes.append(ColumnDefn(titre, "left", 100, code, typeDonnee=typeDonnee, visible=False))
+            if "_x_" in code:
+                nbre = 4
+            else:
+                nbre = 1
+            for x in range(1, nbre+1):
+                titre2 = copy.copy(titre)
+                code2 = copy.copy(code)
+                typeDonnee = UTILS_Infos_individus.GetTypeChamp(code2)
+                code2 = code2.replace("{", "").replace("}", "").replace(u"_x_", u"_%d_" % x)
+                titre2 = titre2.replace(u"n°x", u"n°%d" % x)
+                liste_Colonnes.append(ColumnDefn(titre2, "left", 100, code2, typeDonnee=typeDonnee, visible=False))
+
+            # if u"n°" not in titre and "_x_" not in code:
+            #     typeDonnee = UTILS_Infos_individus.GetTypeChamp(code)
+            #     code = code.replace("{", "").replace("}", "")
+            #     liste_Colonnes.append(ColumnDefn(titre, "left", 100, code, typeDonnee=typeDonnee, visible=False))
 
         self.SetColumns2(colonnes=liste_Colonnes, nomListe="OL_Liste_familles")
         self.SetEmptyListMsg(_(u"Aucune famille"))
