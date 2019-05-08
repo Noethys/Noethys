@@ -2808,7 +2808,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                                 aideRetenue = None
 
                         # Mémorisation de l'aide retenue
-                        if aideRetenue != None :
+                        if aideRetenue != None and montant_tarif > 0:
                             listeAidesRetenues.append(aideRetenue)
 
 
