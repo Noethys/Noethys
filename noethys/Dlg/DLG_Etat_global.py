@@ -623,6 +623,7 @@ class Dialog(wx.Dialog):
         dict_resultats = {}
 
         listePrestationsTraitees = []
+        dict_temps_journalier_individu = {}
         for IDconso, date, IDindividu, IDunite, IDgroupe, IDactivite, etiquettes, heure_debut, heure_fin, etat, quantite, IDevenement, IDprestation, temps_facture, IDfamille, nomActivite, nomGroupe, nomCategorie, IDcaisse, IDregime, date_naiss in listeDonnees:
             date = UTILS_Dates.DateEngEnDateDD(date)
             mois = date.month
@@ -845,6 +846,14 @@ class Dialog(wx.Dialog):
                         dlg.ShowModal()
                         dlg.Destroy()
                         return False
+
+                # Options plafond journalier par individu (valable pour l'ensemble des activités)
+                plafond_journalier_individu = dict_options["plafond_journalier_individu"]
+                if plafond_journalier_individu > 0:
+                    dict_temps_journalier_individu = UTILS_Divers.DictionnaireImbrique(dictionnaire=dict_temps_journalier_individu, cles=[IDindividu, date], valeur=datetime.timedelta(hours=0, minutes=0))
+                    if dict_temps_journalier_individu[IDindividu][date] + valeur > datetime.timedelta(minutes=plafond_journalier_individu):
+                        valeur = datetime.timedelta(minutes=plafond_journalier_individu) - dict_temps_journalier_individu[IDindividu][date]
+                    dict_temps_journalier_individu[IDindividu][date] += valeur
 
                 # Calcule l'âge de l'individu
                 if date_naiss != None :

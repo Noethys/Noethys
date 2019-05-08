@@ -125,6 +125,12 @@ class CTRL(CTRL_Propertygrid.CTRL):
         propriete.SetAttribute("obligatoire", False)
         self.Append(propriete)
 
+        # Plafond journalier par individu
+        propriete = wxpg.IntProperty(label=_(u"Plafond journalier par individu (en minutes)"), name="plafond_journalier_individu", value=0)
+        propriete.SetHelpString(_(u"Saisissez un plafond journalier (en minutes) par individu, toutes activités confondues (0 = désactivé). Exemple : une valeur de 120 (minutes) plafonnera le temps retenu pour chaque individu à hauteur de 2 heures."))
+        propriete.SetAttribute("obligatoire", True)
+        self.Append(propriete)
+
         # Filtres
         self.Append(wxpg.PropertyCategory(_(u"Filtres")))
 
