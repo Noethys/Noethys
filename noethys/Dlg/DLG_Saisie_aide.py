@@ -57,7 +57,8 @@ class CTRL_Activite(wx.Choice):
         self.dictDonnees = {}
         index = 0
         for IDactivite, nom in listeDonnees :
-            self.dictDonnees[index] = { "ID" : IDactivite, "nom " : nom}
+            if nom == None: nom = ""
+            self.dictDonnees[index] = {"ID": IDactivite, "nom ": nom}
             listeItems.append(nom)
             index += 1
         return listeItems

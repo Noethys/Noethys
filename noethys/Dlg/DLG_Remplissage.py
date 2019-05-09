@@ -291,6 +291,7 @@ class Panel(wx.Panel):
         UTILS_Aide.Aide("Leseffectifs")
 
     def OuvrirListeAttente(self):
+        self.ctrl_remplissage.MAJ()
         dictEtatPlaces = self.ctrl_remplissage.GetEtatPlaces()
         dictUnitesRemplissage = self.ctrl_remplissage.dictUnitesRemplissage
         from Dlg import DLG_Attente
@@ -299,6 +300,7 @@ class Panel(wx.Panel):
         dlg.Destroy() 
 
     def OuvrirListeRefus(self):
+        self.ctrl_remplissage.MAJ()
         dictEtatPlaces = self.ctrl_remplissage.GetEtatPlaces()
         dictUnitesRemplissage = self.ctrl_remplissage.dictUnitesRemplissage
         from Dlg import DLG_Refus
