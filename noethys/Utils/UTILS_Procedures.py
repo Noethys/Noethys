@@ -63,6 +63,7 @@ DICT_PROCEDURES = {
     "A9122" : _(u"Réparation des prestations : Rapprochement des prestations et des consommations détachées"),
     "A9130" : _(u"Remplissage du champ moteur de la table adresses_mail"),
     "A9135" : _(u"Vérifie le total des factures"),
+    "A9006" : _(u"Custom 1"),
 }
 
 
@@ -93,9 +94,9 @@ def Procedure(code=""):
         dlg.Destroy()
         return
     # Fin
-    dlg = wx.MessageDialog(None, _(u"La procédure s'est terminée avec succès."), _(u"Procédure terminée"), wx.OK | wx.ICON_INFORMATION)
-    dlg.ShowModal()
-    dlg.Destroy()
+    # dlg = wx.MessageDialog(None, _(u"La procédure s'est terminée avec succès."), _(u"Procédure terminée"), wx.OK | wx.ICON_INFORMATION)
+    # dlg.ShowModal()
+    # dlg.Destroy()
     print("Fin de la procedure '%s'." % code)
     return
 
@@ -1219,6 +1220,23 @@ def A9135():
     for item in liste_anomalies:
         print(item[8])
     print(len(liste_anomalies))
+
+
+def A9006():
+    """ Custom 1 """
+    from Dlg import DLG_Custom_1
+    dlg = DLG_Custom_1.Dialog(None)
+    dlg.ShowModal()
+    dlg.Destroy()
+
+
+
+
+
+
+
+
+
 
 
 
