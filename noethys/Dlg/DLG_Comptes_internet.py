@@ -208,14 +208,46 @@ class Dialog(wx.Dialog):
             dlg.Destroy()
             return False
 
-        # Récupération des données
-        listeDonnees = []
-        listeAnomalies = []
-        listeEnvoiNonDemande = []
-        for track in tracks :
-            adresse = UTILS_Envoi_email.GetAdresseFamille(track.IDfamille, choixMultiple=False, muet=True, nomTitulaires=track.nomTitulaires)
+        # Sélection des adresses mail
+        listeLabels = [
+            _(u"Toutes les adresses de la famille"),
+            _(u"Toutes les adresses personnelles"),
+            _(u"Toutes les adresses professionnelles"),
+            _(u"Je veux sélectionner chaque adresse"),
+        ]
+        dlg = wx.SingleChoiceDialog(self, u"Quelles adresses internet souhaitez-vous utiliser ?", u"Sélection des adresses", listeLabels, wx.CHOICEDLG_STYLE)
+        dlg.SetSize((350, 220))
+        dlg.CenterOnScreen()
+        if dlg.ShowModal() == wx.ID_OK:
+            selection_action = dlg.GetSelection()
+            dlg.Destroy()
+        else:
+            dlg.Destroy()
+            return False
 
-            # Mémorisation des données
+        # Importation des toutes les adresses existantes
+        DB = GestionDB.DB()
+        req = """
+        SELECT IDfamille, rattachements.IDindividu,
+        individus.nom, individus.prenom, individus.mail, individus.travail_mail
+        FROM rattachements 
+        LEFT JOIN individus ON individus.IDindividu = rattachements.IDindividu
+        WHERE IDcategorie=1 AND titulaire=1
+        ;"""
+        DB.ExecuterReq(req)
+        liste_adresses = DB.ResultatReq()
+        DB.Close()
+        dict_adresses = {}
+        for IDfamille, IDindividu, nom, prenom, mail_perso, mail_pro in liste_adresses:
+            if IDfamille not in dict_adresses:
+                dict_adresses[IDfamille] = []
+            dict_adresses[IDfamille].append({"IDindividu": IDindividu, "nom": nom, "prenom": prenom, "mail_perso": mail_perso, "mail_pro": mail_pro})
+
+        listeDonnees = []
+        listeFamillesAvecAdresses = []
+        listeAnomalies = []
+
+        def Ajouter_adresse(track, adresse):
             if adresse not in (None, "", []):
                 champs = {
                     "{NOM_FAMILLE}" : track.nomTitulaires,
@@ -223,13 +255,46 @@ class Dialog(wx.Dialog):
                     "{MOTDEPASSE_INTERNET}" : track.internet_mdp,
                 }
                 listeDonnees.append({"adresse" : adresse, "pieces" : [], "champs" : champs})
-            else :
-                listeAnomalies.append(track.nomTitulaires)
+                if track.IDfamille not in listeFamillesAvecAdresses:
+                    listeFamillesAvecAdresses.append(track.IDfamille)
+
+        # Toutes les adresses
+        if selection_action == 0:
+            for track in tracks:
+                if track.IDfamille in dict_adresses:
+                    for dict_adresse in dict_adresses[track.IDfamille]:
+                        Ajouter_adresse(track, dict_adresse["mail_perso"])
+                        Ajouter_adresse(track, dict_adresse["mail_pro"])
+
+        # Toutes les adresses perso
+        if selection_action == 1:
+            for track in tracks:
+                if track.IDfamille in dict_adresses:
+                    for dict_adresse in dict_adresses[track.IDfamille]:
+                        Ajouter_adresse(track, dict_adresse["mail_perso"])
+
+        # Toutes les adresses pro
+        if selection_action == 2:
+            for track in tracks:
+                if track.IDfamille in dict_adresses:
+                    for dict_adresse in dict_adresses[track.IDfamille]:
+                        Ajouter_adresse(track, dict_adresse["mail_pro"])
+
+        # Je veux sélectionner les adresses
+        if selection_action == 3:
+            for track in tracks :
+                adresses = UTILS_Envoi_email.GetAdresseFamille(track.IDfamille, choixMultiple=True, muet=True, nomTitulaires=track.nomTitulaires)
+                for adresse in adresses:
+                    Ajouter_adresse(track, adresse)
 
         # Annonce les anomalies trouvées
+        for track in tracks:
+            if track.IDfamille not in listeFamillesAvecAdresses:
+                listeAnomalies.append(track.nomTitulaires)
+
         if len(listeAnomalies) > 0 :
             texte = _(u"%d des familles sélectionnées n'ont pas d'adresse Email.\n\n") % len(listeAnomalies)
-            texte += _(u"Souhaitez-vous quand même continuer avec les %d autres familles ?") % len(listeDonnees)
+            texte += _(u"Souhaitez-vous quand même continuer avec les autres destinataires ?") 
             dlg = wx.MessageDialog(self, texte, _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
             reponse = dlg.ShowModal()
             dlg.Destroy()

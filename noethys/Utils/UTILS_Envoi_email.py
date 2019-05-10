@@ -157,7 +157,7 @@ def GetAdresseFamille(IDfamille=None, choixMultiple=True, muet=False, nomTitulai
     individus.nom, individus.prenom, individus.mail, individus.travail_mail
     FROM rattachements 
     LEFT JOIN individus ON individus.IDindividu = rattachements.IDindividu
-    WHERE IDcategorie IN (1, 2) AND IDfamille=%d
+    WHERE IDcategorie=1 AND titulaire=1 AND IDfamille=%d
     ;""" % IDfamille
     DB.ExecuterReq(req)
     listeDonnees = DB.ResultatReq()
@@ -173,7 +173,7 @@ def GetAdresseFamille(IDfamille=None, choixMultiple=True, muet=False, nomTitulai
             listeTemp.append(mailTravail)
     if len(listeAdresses) == 0 :
         if muet == False :
-            dlg = wx.MessageDialog(None, _(u"Aucun membre de la famille de %s ne dispose d'adresse mail !") % nomTitulaires, "Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(None, _(u"Aucun titulaire de la famille de %s ne dispose d'adresse mail !") % nomTitulaires, "Erreur", wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
         return []
