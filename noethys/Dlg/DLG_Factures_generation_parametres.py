@@ -545,10 +545,11 @@ class Panel(wx.Panel):
         # Vérifie les activités sélectionnées
         listeActivites = self.ctrl_activites.GetActivites() 
         if len(listeActivites) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune activité !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
-            dlg.ShowModal()
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune activité.\n\nSouhaitez-vous quand même continuer ?"), _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+            resultat = dlg.ShowModal()
             dlg.Destroy()
-            return False
+            if resultat != wx.ID_YES :
+                return False
 
         # Date antérieure
         date_anterieure = None
@@ -570,6 +571,7 @@ class Panel(wx.Panel):
                 return False
         
         # Vérifie la compatibilité des régies des activités sélectionnées
+        IDregie = None
         if len(listeActivites) >= 1 :
             listeAllRegies = []
             for IDactivite in listeActivites :
