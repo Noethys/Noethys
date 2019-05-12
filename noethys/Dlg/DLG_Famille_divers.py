@@ -438,7 +438,7 @@ class Panel(wx.Panel):
         # Envoyer un email à la famille
         from Utils import UTILS_Envoi_email
         listeAdresses = UTILS_Envoi_email.GetAdresseFamille(self.IDfamille)
-        if len(listeAdresses) == 0 :
+        if listeAdresses == False or len(listeAdresses) == 0 :
             dlg = wx.MessageDialog(self, _(u"Il n'y a aucune adresse email !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()

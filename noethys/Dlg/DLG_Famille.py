@@ -845,7 +845,7 @@ class Dialog(wx.Dialog):
         """ Envoyer un Email """
         from Utils import UTILS_Envoi_email
         listeAdresses = UTILS_Envoi_email.GetAdresseFamille(self.IDfamille)
-        if len(listeAdresses) == 0 :
+        if listeAdresses == False or len(listeAdresses) == 0 :
             return
         
         # Depuis l'éditeur d'Emails de Noethys

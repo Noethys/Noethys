@@ -157,7 +157,7 @@ class Dialog(wx.Dialog):
         if self.IDfamille != None :
             from Utils import UTILS_Envoi_email
             listeAdresses = UTILS_Envoi_email.GetAdresseFamille(self.IDfamille)
-            if len(listeAdresses) == 0 :
+            if listeAdresses == False or len(listeAdresses) == 0 :
                 return
 
         from Dlg import DLG_Mailer

@@ -195,6 +195,8 @@ class Dialog(wx.Dialog):
             else :
                 # Si famille non inscrite à l'envoi par Email
                 adresse = UTILS_Envoi_email.GetAdresseFamille(track.IDfamille, choixMultiple=False, muet=True, nomTitulaires=track.nomsTitulaires)
+                if adresse == False:
+                    return False
                 liste_adresses.append(adresse)
 
             # Mémorisation des données

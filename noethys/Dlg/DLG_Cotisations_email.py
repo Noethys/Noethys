@@ -133,56 +133,23 @@ class Dialog(wx.Dialog):
             for IDcotisation, fichier in dictPieces.items() :
                 os.remove(fichier)  
 
-        # Récupération de toutes les adresses Emails
-        DB = GestionDB.DB()
-        req = """SELECT IDindividu, mail, travail_mail
-        FROM individus;"""
-        DB.ExecuterReq(req)
-        listeAdressesIndividus = DB.ResultatReq()
-        DB.Close() 
-        dictAdressesIndividus = {}
-        for IDindividu, mail, travail_mail in listeAdressesIndividus :
-            dictAdressesIndividus[IDindividu] = {"perso" : mail, "travail" : travail_mail}
-                
-        # Récupération des données adresse + champs + pièces
-        listeDonnees = []
-        listeAnomalies = []
-        listeEnvoiNonDemande = []
-        for track in tracks :
-            adresse = UTILS_Envoi_email.GetAdresseFamille(track.IDfamille, choixMultiple=False, muet=True, nomTitulaires=track.nomsTitulaires)
-            
-            # Mémorisation des données
-            if adresse not in (None, "", []) : 
-                if track.IDcotisation in dictPieces :
+        # Récupération des adresses Emails
+        dict_adresses = UTILS_Envoi_email.GetAdressesFamilles([track.IDfamille for track in tracks])
+        if dict_adresses == False:
+            return False
+
+        liste_donnees = []
+        for track in tracks:
+            if track.IDcotisation in dictPieces:
+                for adresse in dict_adresses.get(track.IDfamille, []):
                     fichier = dictPieces[track.IDcotisation]
                     champs = dictChampsFusion[track.IDcotisation]
-                    listeDonnees.append({"adresse" : adresse, "pieces" : [fichier,], "champs" : champs})
-            else :
-                listeAnomalies.append(track.nomsTitulaires)
-        
-        # Annonce les anomalies trouvées
-        if len(listeAnomalies) > 0 :
-            texte = _(u"%d des familles sélectionnées n'ont pas d'adresse Email.\n\n") % len(listeAnomalies)
-            texte += _(u"Souhaitez-vous quand même continuer avec les %d autres familles ?") % len(listeDonnees)
-            dlg = wx.MessageDialog(self, texte, _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
-            reponse = dlg.ShowModal() 
-            dlg.Destroy()
-            if reponse != wx.ID_YES :
-                SupprimerFichiersTemp()
-                return        
-        
-        # Dernière vérification avant transfert
-        if len(listeDonnees) == 0 : 
-            dlg = wx.MessageDialog(self, _(u"Il ne reste finalement aucune cotisation à envoyer par Email !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
-            dlg.ShowModal()
-            dlg.Destroy()
-            SupprimerFichiersTemp()
-            return
+                    liste_donnees.append({"adresse" : adresse, "pieces" : [fichier,], "champs" : champs})
 
         # Transfert des données vers DLG Mailer
         from Dlg import DLG_Mailer
         dlg = DLG_Mailer.Dialog(self, categorie="cotisation")
-        dlg.SetDonnees(listeDonnees, modificationAutorisee=False)
+        dlg.SetDonnees(liste_donnees, modificationAutorisee=False)
         dlg.ChargerModeleDefaut()
         dlg.ShowModal() 
         dlg.Destroy()

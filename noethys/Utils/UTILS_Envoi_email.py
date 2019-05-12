@@ -63,7 +63,7 @@ def EnvoiEmailFamille(parent=None, IDfamille=None, nomDoc="", categorie="", list
     # Recherche adresse famille
     if len(listeAdresses) == 0 :
         listeAdresses = GetAdresseFamille(IDfamille)
-        if len(listeAdresses) == 0 :
+        if listeAdresses == False or len(listeAdresses) == 0 :
             return False
     
     # DLG Mailer
@@ -205,15 +205,172 @@ def GetAdresseFamille(IDfamille=None, choixMultiple=True, muet=False, nomTitulai
                 listeMails.append(listeAdresses[index][1])
         else:
             dlg.Destroy()
-            return []
+            return False
     
     if choixMultiple == True :
         return listeMails
     else :
         return listeMails[0]
 
+# -------------------------------------------------------------------------------------------------------
+
+def GetAdressesFamilles(liste_IDfamille=[]):
+    dictTitulaires = UTILS_Titulaires.GetTitulaires()
+
+    # Sélection des adresses mail
+    liste_actions = [
+        ("all", _(u"Toutes les adresses de la famille")),
+        ("one_perso_first", _(u"Une seule adresse par famille (perso en priorité)")),
+        ("one_pro_first", _(u"Une seule adresse par famille (pro en priorité)")),
+        ("all_perso", _(u"Toutes les adresses personnelles de la famille")),
+        ("all_pro", _(u"Toutes les adresses professionnelles de la famille")),
+        ("all_perso_first", _(u"Toutes les adresses personnelles de la famille en priorité")),
+        ("all_pro_first", _(u"Toutes les adresses professionnelles de la famille en priorité")),
+        ("selection", _(u"Je veux sélectionner les adresses pour chaque famille")),
+        ]
+    dlg = wx.SingleChoiceDialog(None, u"Quelles adresses internet souhaitez-vous utiliser ?", u"Sélection des adresses", [label for code, label in liste_actions], wx.CHOICEDLG_STYLE)
+    dlg.SetSize((350, 240))
+    dlg.CenterOnScreen()
+    if dlg.ShowModal() == wx.ID_OK:
+        code_action = liste_actions[dlg.GetSelection()][0]
+        dlg.Destroy()
+    else:
+        dlg.Destroy()
+        return False
+
+    # Importation des toutes les adresses existantes
+    DB = GestionDB.DB()
+    req = """
+    SELECT IDfamille, rattachements.IDindividu,
+    individus.nom, individus.prenom, individus.mail, individus.travail_mail
+    FROM rattachements 
+    LEFT JOIN individus ON individus.IDindividu = rattachements.IDindividu
+    WHERE IDcategorie=1 AND titulaire=1
+    ;"""
+    DB.ExecuterReq(req)
+    liste_adresses = DB.ResultatReq()
+    DB.Close()
+    dict_individus = {}
+    for IDfamille, IDindividu, nom, prenom, mail_perso, mail_pro in liste_adresses:
+        if IDfamille not in dict_individus:
+            dict_individus[IDfamille] = []
+        dict_individus[IDfamille].append({"IDindividu": IDindividu, "nom": nom, "prenom": prenom, "mail_perso": mail_perso, "mail_pro": mail_pro})
+
+    # Création du dict de résultats
+    dict_adresses = {}
+    listeFamillesAvecAdresses = []
+    liste_anomalies = []
+
+    def Ajouter_adresse(IDfamille, adresse):
+        if adresse not in (None, ""):
+            if IDfamille not in dict_adresses:
+                dict_adresses[IDfamille] = []
+            if adresse not in dict_adresses[IDfamille]:
+                dict_adresses[IDfamille].append(adresse)
+                if IDfamille not in listeFamillesAvecAdresses:
+                    listeFamillesAvecAdresses.append(IDfamille)
+
+    # Toutes les adresses
+    if code_action == "all":
+        for IDfamille, liste_individus in dict_individus.items():
+            for dict_individu in liste_individus:
+                Ajouter_adresse(IDfamille, dict_individu["mail_perso"])
+                Ajouter_adresse(IDfamille, dict_individu["mail_pro"])
+
+    # Toutes les adresses perso
+    if code_action == "all_perso":
+        for IDfamille, liste_individus in dict_individus.items():
+            for dict_individu in liste_individus:
+                Ajouter_adresse(IDfamille, dict_individu["mail_perso"])
+
+    # Toutes les adresses pro
+    if code_action == "all_pro":
+        for IDfamille, liste_individus in dict_individus.items():
+            for dict_individu in liste_individus:
+                Ajouter_adresse(IDfamille, dict_individu["mail_pro"])
+
+    # L'adresse personnelle en priorité
+    if code_action == "all_perso_first":
+        for IDfamille, liste_individus in dict_individus.items():
+            for dict_individu in liste_individus:
+                if dict_individu["mail_perso"] not in ("", None):
+                    Ajouter_adresse(IDfamille, dict_individu["mail_perso"])
+                else:
+                    Ajouter_adresse(IDfamille, dict_individu["mail_pro"])
+
+    # L'adresse professionnelle en priorité
+    if code_action == "all_pro_first":
+        for IDfamille, liste_individus in dict_individus.items():
+            for dict_individu in liste_individus:
+                if dict_individu["mail_pro"] not in ("", None):
+                    Ajouter_adresse(IDfamille, dict_individu["mail_pro"])
+                else:
+                    Ajouter_adresse(IDfamille, dict_individu["mail_perso"])
+
+    # Une adresse par famille (perso en priorité)
+    if code_action == "one_perso_first":
+        for IDfamille, liste_individus in dict_individus.items():
+            liste_temp = []
+            for dict_individu in liste_individus:
+                if dict_individu["mail_perso"] not in ("", None): liste_temp.append((1, dict_individu["mail_perso"]))
+                if dict_individu["mail_pro"] not in ("", None): liste_temp.append((2, dict_individu["mail_pro"]))
+            liste_temp.sort()
+            if len(liste_temp) > 0:
+                Ajouter_adresse(IDfamille, liste_temp[0][1])
+
+    # Une adresse par famille (pro en priorité)
+    if code_action == "one_pro_first":
+        for IDfamille, liste_individus in dict_individus.items():
+            liste_temp = []
+            for dict_individu in liste_individus:
+                if dict_individu["mail_perso"] not in ("", None): liste_temp.append((2, dict_individu["mail_perso"]))
+                if dict_individu["mail_pro"] not in ("", None): liste_temp.append((1, dict_individu["mail_pro"]))
+            liste_temp.sort()
+            if len(liste_temp) > 0:
+                Ajouter_adresse(IDfamille, liste_temp[0][1])
+
+    # Je veux sélectionner les adresses
+    if code_action == "selection":
+        for IDfamille in liste_IDfamille :
+            nom_titulaires = dictTitulaires[IDfamille]["titulairesSansCivilite"]
+            adresses = GetAdresseFamille(IDfamille, choixMultiple=True, muet=True, nomTitulaires=nom_titulaires)
+            if adresses == False:
+                return False
+            for adresse in adresses:
+                Ajouter_adresse(IDfamille, adresse)
+
+    # Annonce les anomalies trouvées
+    for IDfamille in liste_IDfamille:
+        if IDfamille not in listeFamillesAvecAdresses:
+            nom_titulaires = dictTitulaires[IDfamille]["titulairesSansCivilite"]
+            liste_anomalies.append(nom_titulaires)
+
+    if len(liste_anomalies) > 0 and len(liste_anomalies) != len(liste_IDfamille):
+        intro = _(u"%d des familles sélectionnées n'ont pas d'adresse Email :") % len(liste_anomalies)
+        conclusion = _(u"Souhaitez-vous quand même continuer avec les autres destinataires ?")
+        detail = u"\n".join([nom for nom in liste_anomalies])
+        dlgErreur = DLG_Messagebox.Dialog(None, titre=_(u"Avertissement"), introduction=intro, detail=detail, conclusion=conclusion, icone=wx.ICON_EXCLAMATION, boutons=[_(u"Oui"), _(u"Non"), _(u"Annuler")])
+        reponse = dlgErreur.ShowModal()
+        dlgErreur.Destroy()
+        if reponse != 0:
+            return False
+
+    # Dernière vérification avant transfert
+    if len(dict_adresses) == 0 :
+        dlg = wx.MessageDialog(None, _(u"Il ne reste finalement aucune adresse internet !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+        dlg.ShowModal()
+        dlg.Destroy()
+        return False
+
+    # Renvoie le dict des adresses
+    return dict_adresses
 
 
+
+
+
+
+# -------------------------------------------------------------------------------------------------------
 
 
 class Message():
@@ -292,11 +449,13 @@ def Messagerie(backend='smtp', **kwds):
     if backend == "smtp_obsolete":
         klass = SmtpV1(**kwds)
     # Nouveau moteur SMTP
-    if backend == "smtp":
+    elif backend == "smtp":
         klass = SmtpV2(**kwds)
     # Mailjet
-    if backend == "mailjet":
+    elif backend == "mailjet":
         klass = Mailjet(**kwds)
+    else:
+        klass = SmtpV2(**kwds)
     return klass
 
 
