@@ -235,16 +235,18 @@ class Dialog(wx.Dialog):
 
         # Validation
         if len(dictDonnees["internet_identifiant"]) < 7 and dictDonnees["internet_identifiant"] != "demo" :
-            dlg = wx.MessageDialog(self, _(u"L'identifiant est trop court !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
-            dlg.ShowModal()
+            dlg = wx.MessageDialog(self, _(u"L'identifiant est vraiment court.\n\nSouhaitez-vous tout de même le valider ?"), _(u"Avertissement"), wx.YES_NO | wx.NO_DEFAULT | wx.CANCEL | wx.ICON_EXCLAMATION)
+            reponse = dlg.ShowModal()
             dlg.Destroy()
-            return False
+            if reponse != wx.ID_YES:
+                return False
 
         if len(dictDonnees["internet_mdp"]) < 7 and dictDonnees["internet_mdp"] != "demo" :
-            dlg = wx.MessageDialog(self, _(u"Le mot de passe est trop court !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
-            dlg.ShowModal()
+            dlg = wx.MessageDialog(self, _(u"Le mot de passe est vraiment court.\n\nSouhaitez-vous tout de même le valider ?"), _(u"Avertissement"), wx.YES_NO | wx.NO_DEFAULT | wx.CANCEL | wx.ICON_EXCLAMATION)
+            reponse = dlg.ShowModal()
             dlg.Destroy()
-            return False
+            if reponse != wx.ID_YES:
+                return False
 
         # Vérifie que l'identifiant n'a pas déjà été attribué à un autre utilisateur ou une autre famille
         DB = GestionDB.DB()
