@@ -1229,13 +1229,16 @@ def A9006():
     dlg.ShowModal()
     dlg.Destroy()
 
-
-
-
-
-
-
-
+def A9007():
+    """ Custom 1 """
+    DB = GestionDB.DB()
+    DB.ExecuterReq("""UPDATE individus SET deces=0 WHERE deces IS NULL;""")
+    DB.Commit()
+    DB.ExecuterReq("""UPDATE individus SET IDnationalite=73 WHERE IDnationalite IS NULL;""")
+    DB.Commit()
+    DB.ExecuterReq("""UPDATE individus SET IDpays_naiss=73 WHERE IDpays_naiss IS NULL;""")
+    DB.Commit()
+    DB.Close()
 
 
 
@@ -1244,5 +1247,5 @@ def A9006():
 if __name__ == u"__main__":
     app = wx.App(0)
     # TEST D'UNE PROCEDURE :
-    A9135()
+    A9007()
     app.MainLoop()

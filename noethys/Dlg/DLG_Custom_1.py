@@ -882,6 +882,7 @@ class Synchronisation(Thread):
                 # self.ctrl_log.Ecrit(u"Création de l'individu %s %s..." % (dict_ad["nom"], dict_ad["prenom"]))
                 ID_ad = DB.ReqInsert("individus", [("IDcivilite", dict_ad["IDcivilite"]), ("nom", dict_ad["nom"]),
                                                    ("prenom", dict_ad["prenom"]), ("date_naiss", dict_ad["date_naiss"]),
+                                                   ("deces", 0), ("IDnationalite", 73), ("IDpays_naiss", 73),
                                                    ("adresse_auto", ID_od), ("date_creation", datetime.date.today()), ])
                 # Rattachement
                 DB.ReqInsert("rattachements", [("IDindividu", ID_ad), ("IDfamille", IDfamille), ("IDcategorie", 2), ("titulaire", 0)])
@@ -900,7 +901,6 @@ class Synchronisation(Thread):
                 #                               ("IDgroupe", 1), ("IDcategorie_tarif", 1),
                 #                               ("IDcompte_payeur", IDcompte_payeur),
                 #                               ("date_inscription", datetime.date.today()), ("parti", 0)])
-
 
             # Modifier une donnée
             if track_modification.action == "modifier":
@@ -939,6 +939,9 @@ class Synchronisation(Thread):
                                                     ("tel_mobile", getattr(track_excel, "od_telephone_2", None)),
                                                     ("mail", getattr(track_excel, "od_mail_perso", None)),
                                                     ("travail_mail", getattr(track_excel, "od_mail_travail", None)),
+                                                    ("deces", 0),
+                                                    ("IDnationalite", 73),
+                                                    ("IDpays_naiss", 73),
                                                     ("date_creation", datetime.date.today()),
                                                      ])
 
