@@ -64,6 +64,7 @@ DICT_PROCEDURES = {
     "A9130" : _(u"Remplissage du champ moteur de la table adresses_mail"),
     "A9135" : _(u"Vérifie le total des factures"),
     "A9006" : _(u"Custom 1"),
+    "A9007" : _(u"Correction Module Custom 1"),
 }
 
 
@@ -1230,7 +1231,7 @@ def A9006():
     dlg.Destroy()
 
 def A9007():
-    """ Custom 1 """
+    """ Correction Module Custom 1 """
     DB = GestionDB.DB()
     DB.ExecuterReq("""UPDATE individus SET deces=0 WHERE deces IS NULL;""")
     DB.Commit()
