@@ -423,6 +423,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL):
         liste_choix = [
             ("contact_everyone", _(u"Contact Everyone By Orange Business")),
             ("cleversms", _(u"Clever SMS")),
+            ("clevermultimedias", _(u"Clever Multimedias")),
             ]
 
         propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Plateforme"), name="plateforme", liste_choix=liste_choix, valeur=None)
@@ -454,6 +455,11 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL):
         propriete.SetHelpString(_(u"Saisissez l'adresse de destination de l'email"))
         self.Append(propriete)
 
+        # Adresse de destination
+        propriete = wxpg.StringProperty(label=_(u"Adresse de destination"), name="clevermultimedias_adresse_destination_email", value="multimediasattachedfile@cleversaas.fr")
+        propriete.SetHelpString(_(u"Saisissez l'adresse de destination de l'email"))
+        self.Append(propriete)
+
         # Nbre caractères max
         propriete = wxpg.IntProperty(label=_(u"Nombre maximal de caractères du message"), name="nbre_caracteres_max", value=160)
         propriete.SetHelpString(_(u"Nombre maximal de caractères du message"))
@@ -480,7 +486,11 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL):
                     {"propriete": "cleversms_adresse_destination_email", "obligatoire": True},
                     {"propriete": "nbre_caracteres_max", "obligatoire": True},
                 ],
-
+                "clevermultimedias": [
+                    {"propriete": "adresse_expedition_email", "obligatoire": True},
+                    {"propriete": "clevermultimedias_adresse_destination_email", "obligatoire": True},
+                    {"propriete": "nbre_caracteres_max", "obligatoire": True},
+                ],
             }
             }
 
@@ -814,7 +824,7 @@ class Dialog(wx.Dialog, Base):
         if reponse != wx.ID_YES :
             return False
 
-        # CONTACT EVERYONE BY ORANGE BUSINESS
+        # --------------------- CONTACT EVERYONE BY ORANGE BUSINESS ---------------------
         if self.dictDonnees["plateforme"] == "contact_everyone" :
 
             # Récupération adresse d'expédition
@@ -843,24 +853,11 @@ class Dialog(wx.Dialog, Base):
                                                 sujet=self.dictDonnees["objet"], texte_html=_(u"Envoi de SMS"), fichiers=[cheminFichier,])
 
             # Envoi de l'email
-            try :
-                messagerie = UTILS_Envoi_email.Messagerie(backend=dictAdresse["moteur"], hote=dictAdresse["smtp"], port=dictAdresse["port"], utilisateur=dictAdresse["utilisateur"],
-                                                          motdepasse=dictAdresse["motdepasse"], email_exp=dictAdresse["adresse"],
-                                                          use_tls=dictAdresse["startTLS"], parametres=dictAdresse["parametres"])
-                messagerie.Connecter()
-                messagerie.Envoyer(message)
-                messagerie.Fermer()
-            except Exception as err:
-                print((err,))
-                err = str(err).decode("iso-8859-15")
-                dlgErreur = wx.MessageDialog(None, _(u"Une erreur a été détectée dans l'envoi de l'Email !\n\nErreur : %s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
-                dlgErreur.ShowModal()
-                dlgErreur.Destroy()
+            resultat = self.EnvoyerEmail(message=message, dictAdresse=dictAdresse)
+            if resultat == False:
                 return False
 
-
-
-        # CLEVER SMS
+        # --------------------- CLEVER SMS ---------------------
         if self.dictDonnees["plateforme"] == "cleversms" :
 
             # Récupération adresse d'expédition
@@ -885,26 +882,46 @@ class Dialog(wx.Dialog, Base):
             # Préparation du message
             message = UTILS_Envoi_email.Message(destinataires=[self.dictDonnees["cleversms_adresse_destination_email"],],
                                                 sujet=self.dictDonnees["objet"], texte_html=_(u"Envoi de SMS"), fichiers=[cheminFichier,])
-
             # Envoi de l'email
-            try :
-                messagerie = UTILS_Envoi_email.Messagerie(backend=dictAdresse["moteur"], hote=dictAdresse["smtp"], port=dictAdresse["port"], utilisateur=dictAdresse["utilisateur"],
-                                                          motdepasse=dictAdresse["motdepasse"], email_exp=dictAdresse["adresse"],
-                                                          use_tls=dictAdresse["startTLS"], parametres=dictAdresse["parametres"])
-                messagerie.Connecter()
-                messagerie.Envoyer(message)
-                messagerie.Fermer()
-            except Exception as err:
-                print((err,))
-                err = str(err).decode("iso-8859-15")
-                dlgErreur = wx.MessageDialog(None, _(u"Une erreur a été détectée dans l'envoi de l'Email !\n\nErreur : %s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
-                dlgErreur.ShowModal()
-                dlgErreur.Destroy()
+            resultat = self.EnvoyerEmail(message=message, dictAdresse=dictAdresse)
+            if resultat == False:
+                return False
+
+        # --------------------- CLEVER MULTIMEDIAS ---------------------
+        if self.dictDonnees["plateforme"] == "clevermultimedias" :
+
+            # Récupération adresse d'expédition
+            IDadresse = self.dictDonnees["adresse_expedition_email"]
+            dictAdresse = UTILS_Envoi_email.GetAdresseExp(IDadresse=IDadresse)
+
+            # Génération de la pièce jointe
+            liste_lignes = ["NUM;MESSAGE",]
+
+            message = self.dictDonnees["message"].replace("\n", "")
+            for numero in self.dictDonnees["liste_telephones"] :
+                numero = numero.replace(".", "")
+                numero = "+33" + numero[1:]
+                liste_lignes.append(u"%s;%s" % (numero, message))
+
+            texte = "\n".join(liste_lignes)
+
+            cheminFichier = UTILS_Fichiers.GetRepTemp(fichier="sms.txt")
+            fichier = open(cheminFichier, 'w')
+            fichier.write(texte.encode("iso-8859-15"))
+            fichier.close()
+
+            # Préparation du message
+            message = UTILS_Envoi_email.Message(destinataires=[self.dictDonnees["clevermultimedias_adresse_destination_email"],],
+                                                sujet=self.dictDonnees["objet"], texte_html=_(u"Envoi de SMS"), fichiers=[cheminFichier,])
+            # Envoi de l'email
+            resultat = self.EnvoyerEmail(message=message, dictAdresse=dictAdresse)
+            if resultat == False:
                 return False
 
 
 
-        # Information
+
+        # Confirmation d'envoi
         dlg = wx.MessageDialog(self, _(u"Envoi des SMS effectué avec succès."), _(u"Confirmation"), wx.OK | wx.ICON_INFORMATION)
         dlg.ShowModal()
         dlg.Destroy()
@@ -912,8 +929,26 @@ class Dialog(wx.Dialog, Base):
         return True
 
 
+    def EnvoyerEmail(self, message=None, dictAdresse={}):
+        # Envoi de l'email
+        try:
+            messagerie = UTILS_Envoi_email.Messagerie(backend=dictAdresse["moteur"], hote=dictAdresse["smtp"],
+                                                      port=dictAdresse["port"], utilisateur=dictAdresse["utilisateur"],
+                                                      motdepasse=dictAdresse["motdepasse"],
+                                                      email_exp=dictAdresse["adresse"], use_tls=dictAdresse["startTLS"],
+                                                      parametres=dictAdresse["parametres"])
+            messagerie.Connecter()
+            messagerie.Envoyer(message)
+            messagerie.Fermer()
+        except Exception as err:
+            print((err,))
+            err = str(err).decode("iso-8859-15")
+            dlgErreur = wx.MessageDialog(None, _(u"Une erreur a été détectée dans l'envoi de l'Email !\n\nErreur : %s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
+            dlgErreur.ShowModal()
+            dlgErreur.Destroy()
+            return False
 
-
+        return True
 
 
 if __name__ == "__main__":
