@@ -77,6 +77,10 @@ def GetRepSync(fichier=""):
     chemin = GetRepUtilisateur("Sync")
     return os.path.join(chemin, fichier)
 
+def GetRepExtensions(fichier=""):
+    chemin = GetRepUtilisateur("Extensions")
+    return os.path.join(chemin, fichier)
+
 def GetRepUtilisateur(fichier=""):
     """ Recherche le répertoire Utilisateur pour stockage des fichiers de config et provisoires """
     chemin = None

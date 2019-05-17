@@ -848,6 +848,12 @@ class MainFrame(wx.Frame):
                     "-",
                     {"code" : "messages", "label" : _(u"Messages"), "infobulle" : _(u"Liste des messages"), "image" : "Images/16x16/Mail.png", "action" : self.On_outils_messages},
                     {"code" : "historique", "label" : _(u"Historique"), "infobulle" : _(u"Historique"), "image" : "Images/16x16/Historique.png", "action" : self.On_outils_historique},
+                    "-",
+                    {"code": "extensions", "label": _(u"Extensions"), "infobulle": _(u"Extensions"), "image": "Images/16x16/Terminal.png", "action": self.On_outils_extensions},
+                    "-",
+                    {"code": "traductions", "label": _(u"Traduire le logiciel"), "infobulle": _(u"Traduire le logiciel"), "image": "Images/16x16/Traduction.png", "action": self.On_outils_traductions},
+                    {"code": "updater", "label": _(u"Rechercher une mise à jour du logiciel"), "infobulle": _(u"Rechercher une mise à jour du logiciel"), "image": "Images/16x16/Updater.png", "action": self.On_outils_updater},
+                    "-",
                     {"code" : "menu_outils_utilitaires", "label" : _(u"Utilitaires administrateur"), "items" : [
                             {"code" : "correcteur", "label" : _(u"Correcteur d'anomalies"), "infobulle" : _(u"Correcteur d'anomalies"), "image" : "Images/16x16/Depannage.png", "action" : self.On_outils_correcteur},
                             "-",
@@ -859,7 +865,6 @@ class MainFrame(wx.Frame):
                             {"code" : "ouvrir_rep_utilisateur", "label" : _(u"Ouvrir le répertoire utilisateur"), "infobulle" : _(u"Ouvrir le répertoire utilisateur"), "image" : "Images/16x16/Dossier.png", "action" : self.On_outils_ouvrir_rep_utilisateur},
                             {"code" : "ouvrir_rep_donnees", "label" : _(u"Ouvrir le répertoire des données"), "infobulle" : _(u"Ouvrir le répertoire des données"), "image" : "Images/16x16/Dossier.png", "action" : self.On_outils_ouvrir_rep_donnees},
                             "-",
-                            {"code" : "extensions", "label" : _(u"Extensions"), "infobulle" : _(u"Extensions"), "image" : "Images/16x16/Terminal.png", "action" : self.On_outils_extensions},
                             {"code" : "procedures", "label" : _(u"Procédures"), "infobulle" : _(u"Procédures"), "image" : "Images/16x16/Outils.png", "action" : self.On_outils_procedures},
                             {"code" : "reinitialisation", "label" : _(u"Réinitialisation du fichier de configuration"), "infobulle" : _(u"Réinitialisation du fichier de configuration"), "image" : "Images/16x16/Outils.png", "action" : self.On_outils_reinitialisation},
                             {"code" : "transfert_tables", "label" : _(u"Transférer des tables"), "infobulle" : _(u"Transférer des tables de données"), "image" : "Images/16x16/Outils.png", "action" : self.On_outils_transfert_tables},
@@ -879,9 +884,6 @@ class MainFrame(wx.Frame):
                             {"code" : "liste_perso", "label" : _(u"Liste personnalisée SQL"), "infobulle" : _(u"Liste personnalisée SQL"), "image" : "Images/16x16/Sql.png", "action" : self.On_outils_liste_perso},
                             ],
                     },
-                    "-",
-                    {"code" : "traductions", "label" : _(u"Traduire le logiciel"), "infobulle" : _(u"Traduire le logiciel"), "image" : "Images/16x16/Traduction.png", "action" : self.On_outils_traductions},
-                    {"code" : "updater", "label" : _(u"Rechercher une mise à jour du logiciel"), "infobulle" : _(u"Rechercher une mise à jour du logiciel"), "image" : "Images/16x16/Updater.png", "action" : self.On_outils_updater},
                     ],
             },
 
@@ -2651,8 +2653,10 @@ class MainFrame(wx.Frame):
 
     def On_outils_extensions(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("outils_utilitaires", "consulter") == False : return
-        from Utils import UTILS_Extensions
-        UTILS_Extensions.Extensions()
+        from Dlg import DLG_Extensions
+        dlg = DLG_Extensions.Dialog(self)
+        dlg.ShowModal()
+        dlg.Destroy()
 
     def On_outils_procedures(self, event):
         """ Commande spéciale """
@@ -4328,7 +4332,7 @@ class Redirect(object):
 if __name__ == "__main__":
 
     # Vérifie l'existence des répertoires dans le répertoire Utilisateur
-    for rep in ("Temp", "Updates", "Sync", "Lang") :
+    for rep in ("Temp", "Updates", "Sync", "Lang", "Extensions") :
         rep = UTILS_Fichiers.GetRepUtilisateur(rep)
         if os.path.isdir(rep) == False :
             os.makedirs(rep)
