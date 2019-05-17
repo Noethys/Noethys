@@ -914,11 +914,16 @@ class Mailjet(Base_messagerie):
 
         # Envoi de la requête à Mailjet
         resultats = self.connection.send.create(data={"Messages": [dict_message,]})
-        # print resultats.status_code
-        # print resultats.json()
 
         # Analyse du résultat
-        resultat = resultats.json()["Messages"][0][u'Status']
+        try:
+            resultat = resultats.json()["Messages"][0][u'Status']
+        except Exception as err:
+            print(err)
+            print(resultats.status_code)
+            print(resultats.json())
+            raise Exception(err)
+
         if resultat != u'success':
             raise Exception(resultat)
 

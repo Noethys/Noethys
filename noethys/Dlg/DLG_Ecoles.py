@@ -29,6 +29,7 @@ class Dialog(wx.Dialog):
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Ecole.png")
         self.ctrl_listview = OL_Ecoles.ListView(self, id=-1, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
+        self.ctrl_listview.SetMinSize((50, 50))
         self.ctrl_listview.MAJ()
         self.ctrl_recherche = OL_Ecoles.CTRL_Outils(self, listview=self.ctrl_listview)
         
