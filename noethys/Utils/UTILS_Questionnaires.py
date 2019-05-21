@@ -122,7 +122,7 @@ class Questionnaires():
                         pass
                 texteReponse = ", ".join(listeTemp2)
         if filtre == "coche" : 
-            if reponse == 1 : 
+            if reponse in (1, "1") :
                 texteReponse = _(u"Oui")
             else :
                 texteReponse = _(u"Non")
