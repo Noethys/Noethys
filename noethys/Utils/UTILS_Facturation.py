@@ -490,6 +490,7 @@ class Facturation():
                     "num_facture" : num_facture,
                     "{NUM_FACTURE}" : u"%06d" % num_facture,
                     "{CODEBARRES_NUM_FACTURE}" :"F%06d" % num_facture,
+                    "{INDIVIDUS_CONCERNES}" : [],
 
                     "{ORGANISATEUR_NOM}" : self.dictOrganisme["nom"],
                     "{ORGANISATEUR_RUE}" : self.dictOrganisme["rue"],
@@ -569,14 +570,16 @@ class Facturation():
                         texteDateNaiss = u""
                     texteIndividu = _(u"<b>%s %s</b><font size=7>%s</font>") % (nomIndividu, prenomIndividu, texteDateNaiss)
                     nom = u"%s %s" % (nomIndividu, prenomIndividu)
+
+                    dictComptes[ID]["{INDIVIDUS_CONCERNES}"].append(u"%s %s" % (nomIndividu, prenomIndividu))
                     
                 else:
                     # Si c'est pour une prestation familiale on créé un individu ID 0 :
                     nom = _(u"Prestations diverses")
                     texteIndividu = u"<b>%s</b>" % nom
-                    
+
                 dictComptes[ID]["individus"][IDindividu] = { "texte" : texteIndividu, "activites" : {}, "total" : FloatToDecimal(0.0), "ventilation" : FloatToDecimal(0.0), "total_reports" : FloatToDecimal(0.0), "nom" : nom, "select" : True }
-            
+
             # Ajout de l'activité
             if (IDactivite in dictComptes[ID]["individus"][IDindividu]["activites"]) == False :
                 texteActivite = nomActivite
@@ -708,6 +711,7 @@ class Facturation():
         for ID, dictValeurs in dictComptes.items() :
             dictComptes[ID]["solde_avec_reports"] = dictComptes[ID]["solde"] + dictComptes[ID]["total_reports"]
             dictComptes[ID]["{SOLDE_AVEC_REPORTS}"] = u"%.02f %s" % (dictComptes[ID]["solde_avec_reports"], SYMBOLE)
+            dictComptes[ID]["{INDIVIDUS_CONCERNES}"] = ", ".join(dictComptes[ID]["{INDIVIDUS_CONCERNES}"])
 
         return dictComptes
 

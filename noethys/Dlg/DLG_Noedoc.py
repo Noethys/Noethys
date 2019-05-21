@@ -111,6 +111,7 @@ class Facture():
             (_(u"Rue de la famille"), _(u"10 rue des oiseaux"), "{FAMILLE_RUE}"),
             (_(u"Code postal de la famille"), u"29200", "{FAMILLE_CP}"),
             (_(u"Ville de la famille"), _(u"BREST"), "{FAMILLE_VILLE}"),
+            (_(u"Individus concernés"), _(u"Kévin ALLIBERT"), "{INDIVIDUS_CONCERNES}"),
             
             (_(u"Nom de l'organisateur"), _(u"Association Noethys"), "{ORGANISATEUR_NOM}"),
             (_(u"Rue de l'organisateur"), _(u"Avenue des Lilas"), "{ORGANISATEUR_RUE}"),
