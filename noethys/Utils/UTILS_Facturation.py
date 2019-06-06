@@ -827,8 +827,9 @@ class Facturation():
                 prestations = ["consommation", "cotisation", "location", "autre"]
 
             liste_activites = []
-            for IDactivite in activites.split(";") :
-                liste_activites.append(int(IDactivite))
+            if len(activites) > 0:
+                for IDactivite in activites.split(";") :
+                    liste_activites.append(int(IDactivite))
                 
             liste_individus = []
             for IDindividu in individus.split(";") :
