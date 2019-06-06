@@ -4372,7 +4372,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 
         # ---- Création d'un dict au format Individu>Activite>Date>Conso
         dictDonnees = {}
-        
+
         # Parcours des individus
         for IDindividu, dictDates in self.dictConsoIndividus.items() :
             if IDindividu in self.listeSelectionIndividus :
@@ -4389,7 +4389,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                         for IDunite, listeConso in dictUnites.items() :
                             for conso in listeConso :
                                 IDactivite = conso.IDactivite
-                                if IDactivite in self.listeActivites :
+                                if IDactivite in self.listeActivites and conso.IDfamille == self.IDfamille:
                                     nomActivite = self.dictActivites[IDactivite]["nom"]
                                     agrement = RechercheAgrement(IDactivite, date)
                                     if agrement != None :
