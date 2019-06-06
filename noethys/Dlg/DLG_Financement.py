@@ -32,7 +32,7 @@ def Affiche_assistance():
     try:
         IDfichier = FonctionsPerso.GetIDfichier()
         anciennete = datetime.datetime.today() - datetime.datetime.strptime(IDfichier[:8], "%Y%m%d")
-        if anciennete.days / 365 >= 4:
+        if anciennete.days / 365 >= 2:
             return True
     except:
         pass
