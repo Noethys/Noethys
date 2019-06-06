@@ -262,6 +262,7 @@ class Parametres(wx.Panel):
         # Groupes
         self.box_groupes_staticbox = wx.StaticBox(self, -1, _(u"Groupes"))
         self.ctrl_groupes = CTRL_Groupes(self)
+        self.ctrl_groupes.SetMinSize((200, 50))
         self.check_detail_groupes = wx.CheckBox(self, -1, _(u"Afficher détail par groupe"))
         
         # Affichage
