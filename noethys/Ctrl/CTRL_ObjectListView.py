@@ -395,10 +395,16 @@ class ObjectListView(OLV.ObjectListView):
             listeFiltres.append(filtre)
         
         # Filtres de colonnes
-        for texteFiltre in self.formatageFiltres(self.listeFiltresColonnes) :
+        # for texteFiltre in self.formatageFiltres(self.listeFiltresColonnes) :
+        #     filtre = Filter.Predicate(lambda track: eval(texteFiltre))
+        #     listeFiltres.append(filtre)
+
+        filtres_colonnes = self.formatageFiltres(self.listeFiltresColonnes)
+        if len(filtres_colonnes) > 0:
+            texteFiltre = u" and ".join(filtres_colonnes)
             filtre = Filter.Predicate(lambda track: eval(texteFiltre))
             listeFiltres.append(filtre)
-            
+
         self.SetFilter(Filter.Chain(*listeFiltres))
         self.RepopulateList()
         self.Refresh() 
