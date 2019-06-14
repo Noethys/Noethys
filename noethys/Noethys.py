@@ -3903,7 +3903,7 @@ class MainFrame(wx.Frame):
             if versionFichier < (1, 2, 6, 5):
                 from Dlg import DLG_Financement
                 if DLG_Financement.Affiche_assistance() == True:
-                    dlg = DLG_Financement.Dialog(None, code="assistance")
+                    dlg = DLG_Financement.Dialog(self, code="assistance")
                     dlg.ShowModal()
                     dlg.Destroy()
 
