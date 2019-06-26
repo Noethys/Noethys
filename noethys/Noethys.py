@@ -1052,6 +1052,7 @@ class MainFrame(wx.Frame):
                     "-",
                     {"code" : "liste_recus_reglements", "label" : _(u"Liste des reçus de règlements"), "infobulle" : _(u"Consulter la liste des reçus de règlements"), "image" : "Images/16x16/Note.png", "action" : self.On_reglements_recus},
                     {"code" : "liste_reglements", "label" : _(u"Liste des règlements"), "infobulle" : _(u"Consulter la liste des règlements"), "image" : "Images/16x16/Reglement.png", "action" : self.On_reglements_recherche},
+                    {"code": "liste_reglements_detail", "label": _(u"Liste détaillée des règlements"), "infobulle": _(u"Consulter la liste détaillée des règlements"), "image": "Images/16x16/Reglement.png", "action": self.On_reglements_detail},
                     "-",
                     {"code" : "reglements_verification_ventilation", "label" : _(u"Vérifier la ventilation"), "infobulle" : _(u"Vérifier la ventilation des règlements"), "image" : "Images/16x16/Repartition.png", "action" : self.On_reglements_ventilation},
                     {"code" : "analyse_ventilation", "label" : _(u"Tableau d'analyse croisée ventilation/dépôts"), "infobulle" : _(u"Tableau d'analyse croisée ventilation/dépôts"), "image" : "Images/16x16/Diagramme.png", "action" : self.On_reglements_analyse_ventilation},
@@ -2790,7 +2791,14 @@ class MainFrame(wx.Frame):
         dlg = DLG_Liste_reglements.Dialog(self)
         dlg.ShowModal() 
         dlg.Destroy()
-        
+
+    def On_reglements_detail(self, event):
+        if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("reglements_detail", "consulter") == False: return
+        from Dlg import DLG_Liste_reglements_detail
+        dlg = DLG_Liste_reglements_detail.Dialog(self)
+        dlg.ShowModal()
+        dlg.Destroy()
+
     def On_reglements_ventilation(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("facturation_ventilation", "consulter") == False : return
         from Dlg import DLG_Verification_ventilation
