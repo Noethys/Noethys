@@ -1055,6 +1055,7 @@ class MainFrame(wx.Frame):
                     {"code": "liste_reglements_detail", "label": _(u"Liste détaillée des règlements"), "infobulle": _(u"Consulter la liste détaillée des règlements"), "image": "Images/16x16/Reglement.png", "action": self.On_reglements_detail},
                     "-",
                     {"code" : "reglements_verification_ventilation", "label" : _(u"Vérifier la ventilation"), "infobulle" : _(u"Vérifier la ventilation des règlements"), "image" : "Images/16x16/Repartition.png", "action" : self.On_reglements_ventilation},
+                    {"code" : "depot_prestations", "label": _(u"Détail des prestations d'un dépôt"), "infobulle": _(u"Détail des prestations d'un dépôt"), "image": "Images/16x16/Diagramme.png", "action": self.On_reglements_depot_prestations},
                     {"code" : "analyse_ventilation", "label" : _(u"Tableau d'analyse croisée ventilation/dépôts"), "infobulle" : _(u"Tableau d'analyse croisée ventilation/dépôts"), "image" : "Images/16x16/Diagramme.png", "action" : self.On_reglements_analyse_ventilation},
                     {"code" : "syntheses_modes_reglements", "label" : _(u"Synthèse des modes de règlements"), "infobulle" : _(u"Synthèse des modes de règlements"), "image" : "Images/16x16/Diagramme.png", "action" : self.On_reglements_synthese_modes},
                     "-",
@@ -2804,6 +2805,13 @@ class MainFrame(wx.Frame):
         from Dlg import DLG_Verification_ventilation
         dlg = DLG_Verification_ventilation.Dialog(self)
         dlg.ShowModal() 
+        dlg.Destroy()
+
+    def On_reglements_depot_prestations(self, event):
+        if self.VerificationVentilation() == False : return
+        from Dlg import DLG_Depots_prestations
+        dlg = DLG_Depots_prestations.Dialog(self)
+        dlg.ShowModal()
         dlg.Destroy()
 
     def On_reglements_analyse_ventilation(self, event):
