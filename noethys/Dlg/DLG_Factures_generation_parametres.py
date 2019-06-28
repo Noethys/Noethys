@@ -586,7 +586,7 @@ class Panel(wx.Panel):
                 DB.Close()
             listeRegies = list(set(listeAllRegies))
             if len(listeRegies) > 1 :
-                dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas générer des factures pour l'ensemble des activités sélectionnées !\n Certaines activités sont liées à des régies diffÃ©rentes"), _(u"Régies diffÃ©rentes"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas générer des factures pour l'ensemble des activités sélectionnées !\n\nCertaines activités sont liées à des régies différentes"), _(u"Régies différentes"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
