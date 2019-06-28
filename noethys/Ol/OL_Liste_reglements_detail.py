@@ -75,7 +75,16 @@ class Track(object):
 
             # Mémorisation des factures associées
             if dict_ventilation["IDfacture"] != None:
-                key = (dict_ventilation["IDfacture"], dict_ventilation["num_facture"])
+
+                IDprefixe = dict_ventilation["IDprefixe"]
+                prefixe = dict_ventilation["prefixe"]
+                num_facture = dict_ventilation["num_facture"]
+                if IDprefixe != None:
+                    numeroStr = u"%s-%06d" % (prefixe, num_facture)
+                else:
+                    numeroStr = num_facture
+
+                key = (dict_ventilation["IDfacture"], numeroStr)
                 if key not in dict_factures:
                     dict_factures[key] = 0.0
                 dict_factures[key] += dict_ventilation["montant"]
@@ -138,19 +147,23 @@ class ListView(FastObjectListView):
         DB = GestionDB.DB()
 
         req = """SELECT IDventilation, ventilation.IDreglement, ventilation.IDprestation, ventilation.montant,
-        prestations.IDfacture, prestations.label, factures.numero
+        prestations.IDfacture, prestations.label, factures.numero,
+        factures.IDprefixe, factures_prefixes.prefixe
         FROM ventilation
         LEFT JOIN prestations ON prestations.IDprestation = ventilation.IDprestation 
         LEFT JOIN reglements ON reglements.IDreglement = ventilation.IDreglement
         LEFT JOIN factures ON factures.IDfacture = prestations.IDfacture
+        LEFT JOIN factures_prefixes ON factures_prefixes.IDprefixe = factures.IDprefixe
+
         %s;""" % criteres
         DB.ExecuterReq(req)
         listeVentilation = DB.ResultatReq()
         dict_ventilation = {}
-        for IDventilation, IDreglement, IDprestation, montant, IDfacture, label, num_facture in listeVentilation:
+        for IDventilation, IDreglement, IDprestation, montant, IDfacture, label, num_facture, IDprefixe, prefixe in listeVentilation:
             if IDreglement not in dict_ventilation:
                 dict_ventilation[IDreglement] = []
-            dict_ventilation[IDreglement].append({"IDprestation": IDprestation, "label": label, "montant": montant, "IDfacture": IDfacture, "num_facture": num_facture})
+            dict_ventilation[IDreglement].append({"IDprestation": IDprestation, "label": label, "montant": montant, "IDfacture": IDfacture, "num_facture": num_facture,
+                                                  "IDprefixe": IDprefixe, "prefixe": prefixe})
 
         req = """SELECT 
         reglements.IDreglement, date_saisie, reglements.IDcompte_payeur, reglements.date, reglements.encaissement_attente,
