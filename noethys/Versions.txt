@@ -1,3 +1,19 @@
+Version 1.2.6.6 (19/07/2019) :
+
+- Ajout du plafond journalier par individu dans l'état global
+- Ajout de la liste détaillée des règlements dans le menu Règlements
+- Ajout du détail des prestations d'un dépôt dans le menu Règlements
+- Ajout du mot-clé INDIVIDUS_CONCERNES dans l'édition des factures
+- Amélioration de la sélection des adresses mail des familles
+- Permet la génération de factures sans sélectionner d'activités
+- Nouveau système de gestion des extensions
+- Permet l'envoi de SMS avec Clever Multimedias
+- Adaptations pour wxPython et Python 3
+- Permet la facturation des locations uniquement
+- Correction des aides journalières sur les conso gratuites
+- Correction sur les filtres de listes multiples
+- Correction de petits bugs
+
 Version 1.2.6.3 (25/04/2019) :
 
 - Ajout de la détection RFID dans la liste des individus
