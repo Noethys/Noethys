@@ -623,7 +623,7 @@ class ListView(FastObjectListView):
         DB = GestionDB.DB()
 
         for track in listeTracks :
-            listeDonnees = (
+            listeDonnees = [
                 ("IDcompte_payeur", track.clsbase.GetValeur("IDcompte_payeur", None)),
                 ("date", track.date_facturation),
                 ("categorie", "consommation"),
@@ -641,7 +641,7 @@ class ListView(FastObjectListView):
                 ("forfait_date_debut", track.forfait_date_debut),
                 ("forfait_date_fin", track.forfait_date_fin),
                 ("IDcontrat", track.clsbase.IDcontrat),
-            )
+            ]
             if track.IDprestation == None :
                 listeDonnees.append(("date_valeur", str(datetime.date.today())))
                 IDprestation = DB.ReqInsert("prestations", listeDonnees)
