@@ -15,8 +15,8 @@ from Utils.UTILS_Traduction import _
 import wx
 from Ctrl import CTRL_Bouton_image
 import GestionDB
-
 from Ctrl import CTRL_Saisie_date
+from Utils import UTILS_Dates
 
 
 class CTRL_Niveaux(wx.CheckListBox):
@@ -81,9 +81,12 @@ class CTRL_Niveaux(wx.CheckListBox):
 
 
 class Dialog(wx.Dialog):
-    def __init__(self, parent):
+    def __init__(self, parent, IDecole=None, IDclasse=None):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
-        self.parent = parent   
+        self.parent = parent
+        self.IDecole = IDecole
+        self.IDclasse = IDclasse
+        self.niveaux_bloques = {}
 
         self.label_nom = wx.StaticText(self, -1, _(u"Nom :"), style=wx.ALIGN_RIGHT)
         self.ctrl_nom = wx.TextCtrl(self, -1, u"")
@@ -108,8 +111,24 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
 
+        # Importation
+        if self.IDclasse == None:
+            self.SetTitle(_(u"Saisie d'une classe"))
+            DB = GestionDB.DB()
+            req = """SELECT date_debut, date_fin
+            FROM classes 
+            ORDER BY IDclasse DESC LIMIT 1;"""
+            DB.ExecuterReq(req)
+            listeDonnees = DB.ResultatReq()
+            DB.Close()
+            if len(listeDonnees) > 0 :
+                self.ctrl_date_debut.SetDate(UTILS_Dates.DateEngEnDateDD(listeDonnees[0][0]))
+                self.ctrl_date_fin.SetDate(UTILS_Dates.DateEngEnDateDD(listeDonnees[0][1]))
+        else:
+            self.SetTitle(_(u"Modification d'une classe"))
+            self.Importation()
+
     def __set_properties(self):
-        self.SetTitle(_(u"Saisie d'une classe"))
         self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez ici le nom de la classe. Ex : 'CP - Mme PICHON'...")))
         self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de début de saison")))
         self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de fin de saison")))
@@ -157,37 +176,53 @@ class Dialog(wx.Dialog):
     def OnBoutonAnnuler(self, event): 
         self.EndModal(wx.ID_CANCEL)
 
-    def GetNom(self):
-        return self.ctrl_nom.GetValue()
+    def Importation(self):
+        DB = GestionDB.DB()
+        req = """SELECT nom, date_debut, date_fin, niveaux
+        FROM classes 
+        WHERE IDclasse=%d;""" % self.IDclasse
+        DB.ExecuterReq(req)
+        listeDonnees = DB.ResultatReq()
 
-    def GetDateDebut(self):
-        return self.ctrl_date_debut.GetDate()   
-    
-    def GetDateFin(self):
-        return self.ctrl_date_fin.GetDate()
-    
-    def GetNiveaux(self):
-        listeID = self.ctrl_niveaux.GetIDcoches(modeTexte=True) 
-        txt = ";".join(listeID)
-        return txt
+        nom = listeDonnees[0][0]
+        date_debut = listeDonnees[0][1]
+        date_fin = listeDonnees[0][2]
+        niveaux = listeDonnees[0][3]
 
-    def SetNom(self, nom=""):
         self.ctrl_nom.SetValue(nom)
+        self.ctrl_date_debut.SetDate(date_debut)
+        self.ctrl_date_fin.SetDate(date_fin)
+        self.ctrl_niveaux.SetIDcoches(niveaux.split(";"))
 
-    def SetDateDebut(self, date=None):
-        self.ctrl_date_debut.SetDate(date)   
-    
-    def SetDateFin(self, date=None):
-        self.ctrl_date_fin.SetDate(date)   
-        
-    def SetNiveaux(self, txt=""):
-        listeID = txt.split(";")
-        self.ctrl_niveaux.SetIDcoches(listeID) 
+        # Vérifie que cette classe n'a pas été attribuée à un individu
+        req = """SELECT IDscolarite, niveaux_scolaires.IDniveau, niveaux_scolaires.abrege
+        FROM scolarite 
+        LEFT JOIN niveaux_scolaires ON niveaux_scolaires.IDniveau = scolarite.IDniveau
+        WHERE IDclasse=%d
+        ;""" % self.IDclasse
+        DB.ExecuterReq(req)
+        listeDonnees = DB.ResultatReq()
+        DB.Close()
+        self.niveaux_bloques = {}
+        for IDscolarite, IDniveau, nom_niveau in listeDonnees:
+            if IDniveau not in self.niveaux_bloques:
+                self.niveaux_bloques[IDniveau] = {"nom": nom_niveau, "nombre": 0}
+            self.niveaux_bloques[IDniveau]["nombre"] += 1
+
+        if len(listeDonnees) > 0:
+            liste_noms_niveaux = [niveau["nom"] for IDniveau, niveau in self.niveaux_bloques.items()]
+            dlg = wx.MessageDialog(self, _(u"Cette classe a déjà été attribuée à %d individus.\n\nVous ne pourrez donc pas modifier la période ni les niveaux suivants : %s.") % (len(listeDonnees), ", ".join(liste_noms_niveaux)), _(u"Avertissement"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+
+            # Blocage des dates
+            self.ctrl_date_debut.Enable(False)
+            self.ctrl_date_fin.Enable(False)
 
     def OnBoutonOk(self, event):
-        nom = self.GetNom()
-        dateDebut = self.GetDateDebut() 
-        dateFin = self.GetDateFin() 
+        nom = self.ctrl_nom.GetValue()
+        date_debut = self.ctrl_date_debut.GetDate()
+        date_fin = self.ctrl_date_fin.GetDate()
         listeNiveaux = self.ctrl_niveaux.GetIDcoches(modeTexte=False) 
         
         if nom == "" :
@@ -197,21 +232,21 @@ class Dialog(wx.Dialog):
             self.ctrl_nom.SetFocus()
             return
 
-        if dateDebut == None :
+        if date_debut == None :
             dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner une date de début de saison !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_debut.SetFocus()
             return
 
-        if dateFin == None :
+        if date_fin == None :
             dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner une date de fin de saison !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_fin.SetFocus()
             return
 
-        if dateDebut > dateFin :
+        if date_debut > date_fin :
             dlg = wx.MessageDialog(self, _(u"La date de début ne peut pas être supérieure à celle de fin !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
@@ -224,8 +259,39 @@ class Dialog(wx.Dialog):
                 return
             dlg.Destroy()
 
+        if len(self.niveaux_bloques):
+            for IDniveau, niveau in self.niveaux_bloques.items():
+                if IDniveau not in listeNiveaux:
+                    dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas décocher le niveau '%s' car il est déjà utilisé par un individu !") % niveau["nom"], _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                    dlg.ShowModal()
+                    dlg.Destroy()
+                    return False
+
+        niveaux = ";".join(self.ctrl_niveaux.GetIDcoches(modeTexte=True))
+
+        # Sauvegarde
+        listeDonnees = [
+            ("IDecole", self.IDecole),
+            ("nom", nom),
+            ("date_debut", date_debut),
+            ("date_fin", date_fin),
+            ("niveaux", niveaux),
+        ]
+        DB = GestionDB.DB()
+        if self.IDclasse == None:
+            self.IDclasse = DB.ReqInsert("classes", listeDonnees)
+        else:
+            DB.ReqMAJ("classes", listeDonnees, "IDclasse", self.IDclasse)
+        DB.Close()
+
         # Valide la saisie
         self.EndModal(wx.ID_OK)
+
+    def GetIDecole(self):
+        return self.IDecole
+
+    def GetIDclasse(self):
+        return self.IDclasse
 
 
 

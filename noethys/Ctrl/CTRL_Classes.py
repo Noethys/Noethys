@@ -227,44 +227,12 @@ class CTRL(HTL.HyperTreeList):
 
     def Ajouter(self, event=None):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_classes", "creer") == False : return
-        # Recherche des dernières dates de saison saisies
-        DB = GestionDB.DB()
-        req = """SELECT date_debut, date_fin
-        FROM classes 
-        ORDER BY IDclasse DESC LIMIT 1;"""
-        DB.ExecuterReq(req)
-        listeDonnees = DB.ResultatReq()
-        DB.Close()
-        if len(listeDonnees) > 0 :
-            date_debut = DateEngEnDateDD(listeDonnees[0][0])
-            date_fin = DateEngEnDateDD(listeDonnees[0][1])
-        else:
-            date_debut = None
-            date_fin = None
-
-        # DLG saisie
         from Dlg import DLG_Saisie_classe
-        dlg = DLG_Saisie_classe.Dialog(self)
-        dlg.SetDateDebut(date_debut)
-        dlg.SetDateFin(date_fin)
+        dlg = DLG_Saisie_classe.Dialog(self, IDecole=self.IDecole)
         if dlg.ShowModal() == wx.ID_OK:
-            nom = dlg.GetNom()
-            date_debut = dlg.GetDateDebut()
-            date_fin = dlg.GetDateFin()
-            niveaux = dlg.GetNiveaux()
-            DB = GestionDB.DB()
-            listeDonnees = [
-                ("IDecole", self.IDecole),
-                ("nom", nom),
-                ("date_debut", date_debut),
-                ("date_fin", date_fin),
-                ("niveaux", niveaux),
-                ]
-            IDclasse = DB.ReqInsert("classes", listeDonnees)
-            DB.Close()
+            IDclasse = dlg.GetIDclasse()
             self.MAJ(IDecole=self.IDecole, selection=IDclasse)
         dlg.Destroy()
-        
 
     def Modifier(self, event=None):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_classes", "modifier") == False : return
@@ -279,61 +247,10 @@ class CTRL(HTL.HyperTreeList):
             dlg.Destroy()
             return        
 
-        # Vérifie que cette classe n'a pas été attribuée à un individu
-        DB = GestionDB.DB()
-        req = """SELECT COUNT(IDindividu)
-        FROM scolarite 
-        WHERE IDclasse=%d
-        ;""" % IDclasse
-        DB.ExecuterReq(req)
-        nbreIndividus = int(DB.ResultatReq()[0][0])
-        DB.Close()
-
-        if nbreIndividus > 0 :
-            dlg = wx.MessageDialog(self, _(u"Cette classe a déjà été attribuée à %d individus.\nVous ne pourrez donc modifier que son nom.") % nbreIndividus, _(u"Avertissement"), wx.OK | wx.ICON_EXCLAMATION)
-            dlg.ShowModal()
-            dlg.Destroy()
-
-        DB = GestionDB.DB()
-        req = """SELECT nom, date_debut, date_fin, niveaux
-        FROM classes 
-        WHERE IDclasse=%d;""" % IDclasse
-        DB.ExecuterReq(req)
-        listeDonnees = DB.ResultatReq()
-        DB.Close()
-        nom = listeDonnees[0][0]
-        date_debut = listeDonnees[0][1]
-        date_fin = listeDonnees[0][2]
-        niveaux = listeDonnees[0][3]
-        
         from Dlg import DLG_Saisie_classe
-        dlg = DLG_Saisie_classe.Dialog(self)
-        dlg.SetTitle(_(u"Modification d'une classe"))
-        
-        dlg.SetNom(nom)
-        dlg.SetDateDebut(date_debut)
-        dlg.SetDateFin(date_fin)
-        dlg.SetNiveaux(niveaux)
-        
-        if nbreIndividus > 0 :
-            dlg.ctrl_date_debut.Enable(False)
-            dlg.ctrl_date_fin.Enable(False)
-            dlg.ctrl_niveaux.Enable(False)
-            
+        dlg = DLG_Saisie_classe.Dialog(self, IDecole=self.IDecole, IDclasse=IDclasse)
         if dlg.ShowModal() == wx.ID_OK:
-            nom = dlg.GetNom()
-            date_debut = dlg.GetDateDebut()
-            date_fin = dlg.GetDateFin()
-            niveaux = dlg.GetNiveaux()
-            DB = GestionDB.DB()
-            listeDonnees = [
-                ("nom", nom),
-                ("date_debut", date_debut),
-                ("date_fin", date_fin),
-                ("niveaux", niveaux),
-                ]
-            DB.ReqMAJ("classes", listeDonnees, "IDclasse", IDclasse)
-            DB.Close()
+            IDclasse = dlg.GetIDclasse()
             self.MAJ(IDecole=self.IDecole, selection=IDclasse)
         dlg.Destroy()
 
