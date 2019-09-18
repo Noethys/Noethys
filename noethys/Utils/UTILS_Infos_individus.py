@@ -764,7 +764,7 @@ class Informations() :
             if niveau_nom == None : niveau_nom = u""
             if niveau_abrege == None : niveau_abrege = u""
             if IDindividu in self.dictIndividus :
-                if date_debut < str(self.date_reference) and date_fin > str(self.date_reference) :
+                if date_debut <= str(self.date_reference) and date_fin >= str(self.date_reference) :
                     self.dictIndividus[IDindividu]["SCOLARITE_DATE_DEBUT"] = UTILS_Dates.DateEngFr(date_debut)
                     self.dictIndividus[IDindividu]["SCOLARITE_DATE_FIN"] = UTILS_Dates.DateEngFr(date_fin)
                     self.dictIndividus[IDindividu]["SCOLARITE_NOM_ECOLE"] = ecole_nom
