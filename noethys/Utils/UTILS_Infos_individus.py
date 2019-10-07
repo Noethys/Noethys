@@ -434,32 +434,33 @@ class Informations() :
                         2 : {"code" : "ENFANT_RATTACHE", "key" : "NBRE_ENFANTS_RATTACHES"},
                         3 : {"code" : "CONTACT_RATTACHE", "key" : "NBRE_CONTACTS_RATTACHES"},
                         }
-                    
-                    self.dictFamilles[IDfamille][dictCibles[IDcategorie]["key"]] += 1
-                    index = self.dictFamilles[IDfamille][dictCibles[IDcategorie]["key"]]
-                    codeCible = dictCibles[IDcategorie]["code"] + "_%d" % index
-                    
-                    # Récupération des infos sur l'individu pour transfert vers dictFamilles
-                    for code, valeur in self.dictIndividus[IDindividu].items() :
-                        if code.startswith("INDIVIDU") :
-                            self.dictFamilles[IDfamille][code.replace("INDIVIDU", codeCible)] = valeur
-                    self.dictFamilles[IDfamille][codeCible + "_TITULAIRE"] = titulaireStr
-                    
-                    # Récupération du lien de l'individu rattaché dans les liens
-                    listeLiens = []
-                    nom_sujet = self.dictIndividus[IDindividu]["INDIVIDU_PRENOM"]
-                    for dictLien in self.dictFamilles[IDfamille]["liens"] :
-                        if dictLien["IDindividu_sujet"] == IDindividu :
-                            nom_objet = self.dictIndividus[dictLien["IDindividu_objet"]]["INDIVIDU_PRENOM"]
-                            listeLiens.append(_(u"%s de %s") % (dictLien["lien"].lower(), nom_objet))
-                    texte = ""
-                    if len(listeLiens) == 1 :
-                        texte = _(u"%s est %s") % (nom_sujet, listeLiens[0])
-                    if len(listeLiens) > 1 :
-                        texte = _(u"%s est ") % nom_sujet
-                        texte += ", ".join(listeLiens[:-1])
-                        texte += " et %s" % listeLiens[-1]
-                    self.dictFamilles[IDfamille][codeCible + "_LIENS"] = texte
+
+                    if IDfamille in self.dictFamilles and dictCibles[IDcategorie]["key"] in self.dictFamilles[IDfamille]:
+                        self.dictFamilles[IDfamille][dictCibles[IDcategorie]["key"]] += 1
+                        index = self.dictFamilles[IDfamille][dictCibles[IDcategorie]["key"]]
+                        codeCible = dictCibles[IDcategorie]["code"] + "_%d" % index
+
+                        # Récupération des infos sur l'individu pour transfert vers dictFamilles
+                        for code, valeur in self.dictIndividus[IDindividu].items() :
+                            if code.startswith("INDIVIDU") :
+                                self.dictFamilles[IDfamille][code.replace("INDIVIDU", codeCible)] = valeur
+                        self.dictFamilles[IDfamille][codeCible + "_TITULAIRE"] = titulaireStr
+
+                        # Récupération du lien de l'individu rattaché dans les liens
+                        listeLiens = []
+                        nom_sujet = self.dictIndividus[IDindividu]["INDIVIDU_PRENOM"]
+                        for dictLien in self.dictFamilles[IDfamille]["liens"] :
+                            if dictLien["IDindividu_sujet"] == IDindividu :
+                                nom_objet = self.dictIndividus[dictLien["IDindividu_objet"]]["INDIVIDU_PRENOM"]
+                                listeLiens.append(_(u"%s de %s") % (dictLien["lien"].lower(), nom_objet))
+                        texte = ""
+                        if len(listeLiens) == 1 :
+                            texte = _(u"%s est %s") % (nom_sujet, listeLiens[0])
+                        if len(listeLiens) > 1 :
+                            texte = _(u"%s est ") % nom_sujet
+                            texte += ", ".join(listeLiens[:-1])
+                            texte += " et %s" % listeLiens[-1]
+                        self.dictFamilles[IDfamille][codeCible + "_LIENS"] = texte
 
         return dictRattachements
 
