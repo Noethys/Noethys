@@ -435,7 +435,7 @@ class Informations() :
                         3 : {"code" : "CONTACT_RATTACHE", "key" : "NBRE_CONTACTS_RATTACHES"},
                         }
 
-                    if IDfamille in self.dictFamilles and dictCibles[IDcategorie]["key"] in self.dictFamilles[IDfamille]:
+                    if IDfamille in self.dictFamilles and IDcategorie and dictCibles[IDcategorie]["key"] in self.dictFamilles[IDfamille]:
                         self.dictFamilles[IDfamille][dictCibles[IDcategorie]["key"]] += 1
                         index = self.dictFamilles[IDfamille][dictCibles[IDcategorie]["key"]]
                         codeCible = dictCibles[IDcategorie]["code"] + "_%d" % index

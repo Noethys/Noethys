@@ -567,8 +567,9 @@ class ListView(FastObjectListView):
                         nomCategorie = _(u"représentant")
                         if titulaire == 1 :
                             nomCategorie += _(u" titulaire")
-                    if IDcategorie == 2 : nomCategorie = _(u"enfant")
-                    if IDcategorie == 3 : nomCategorie = _(u"contact")
+                    elif IDcategorie == 2 : nomCategorie = _(u"enfant")
+                    elif IDcategorie == 3 : nomCategorie = _(u"contact")
+                    else: nomCategorie = _(u"Catégorie inconnue")
                     listeNoms.append(_(u"%s (en tant que %s)") % (nomTitulaires, nomCategorie))
                 dlg = wx.SingleChoiceDialog(self, _(u"Cet individu est rattaché à %d familles.\nLa fiche de quelle famille souhaitez-vous ouvrir ?") % len(listeNoms), _(u"Rattachements multiples"), listeNoms, wx.CHOICEDLG_STYLE)
                 IDfamilleSelection = None
