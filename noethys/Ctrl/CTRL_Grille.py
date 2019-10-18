@@ -2519,7 +2519,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         for IDunite, listeConso in dictUnites.items() :
             for conso in listeConso :
                 if conso.IDactivite == IDactivite and conso.forfait == None : # and dictUnitesUtilisees.has_key(IDunite) == False  # and conso.etat in ("reservation", "present", "absenti")
-                    if (IDunite in dictUnitesUtilisees) == False or dictUnitesUtilisees[IDunite] == None :
+                    if (IDunite in dictUnitesUtilisees) == False or dictUnitesUtilisees[IDunite] in (None, "attente", "refus"):#== None :
                         dictUnitesUtilisees[IDunite] = conso.etat
 
                     dictQuantites[IDunite] = conso.quantite
