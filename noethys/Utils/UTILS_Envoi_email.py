@@ -76,7 +76,7 @@ def EnvoiEmailFamille(parent=None, IDfamille=None, nomDoc="", categorie="", list
             })
     from Dlg import DLG_Mailer
     dlg = DLG_Mailer.Dialog(parent, categorie=categorie, afficher_confirmation_envoi=visible)
-    dlg.SetDonnees(listeDonnees, modificationAutorisee=False)
+    dlg.SetDonnees(listeDonnees, modificationAutorisee=True)
     if IDmodele == None :
         dlg.ChargerModeleDefaut()
     else :
