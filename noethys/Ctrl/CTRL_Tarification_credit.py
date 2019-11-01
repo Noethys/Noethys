@@ -352,6 +352,7 @@ class Panel(wx.Panel):
         self.label_date_facturation = wx.StaticText(self, -1, _(u"Date de facturation :"))
         listeChoix = [
             ("date_debut_forfait", _(u"Date de début du forfait")),
+            ("date_fin_forfait", _(u"Date de fin du forfait")),
             ("date_saisie", _(u"Date de la saisie du forfait")),
             ]
         self.ctrl_date_facturation = CTRL_Tarification_type.CTRL_Date_facturation(self, listeChoix=listeChoix)

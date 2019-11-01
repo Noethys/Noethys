@@ -357,6 +357,8 @@ class Dialog(wx.Dialog):
             date_facturation_tarif = dictTarif["date_facturation"]
             if date_facturation_tarif == "date_debut_forfait" : 
                 date_facturation = date_debut_forfait
+            elif date_facturation_tarif == "date_fin_forfait" :
+                date_facturation = self.ctrl_date_fin.GetDate()
             elif date_facturation_tarif == "date_saisie" : 
                 date_facturation = datetime.date.today()
             elif date_facturation_tarif != None and date_facturation_tarif.startswith("date:") : 
@@ -388,33 +390,6 @@ class Dialog(wx.Dialog):
             if mois != 0 : dateFin = dateFin + relativedelta.relativedelta(months=+mois)
             if annees != 0 : dateFin = dateFin + relativedelta.relativedelta(years=+annees)
 
-##            # Calcul des jours
-##            if jours != 0:
-##                dateFin = dateDebut + (datetime.timedelta(days = jours))
-##                dateJour = dateFin.day
-##                dateMois = dateFin.month
-##                dateAnnee = dateFin.year
-##
-##            # Calcul des mois
-##            if mois != 0:
-##                dateMois = dateMois + mois
-##                if dateMois > 12:
-##                    division = divmod(dateMois, 12)
-##                    dateAnnee = dateAnnee + division[0]
-##                    dateMois = division[1]
-##                nbreJoursMois = calendar.monthrange(dateAnnee, dateMois)[1]
-##                if dateJour > nbreJoursMois :
-##                    dateJour = nbreJoursMois
-##                dateFin = datetime.date(dateAnnee, dateMois, dateJour)
-##                dateJour = dateFin.day
-##                dateMois = dateFin.month
-##                dateAnnee = dateFin.year
-##
-##            # Calcul des années
-##            if annees != 0:
-##                dateAnnee = dateAnnee + annees
-##                dateFin = datetime.date(dateAnnee, dateMois, dateJour)
-            
             self.ctrl_date_fin.SetDate(dateFin)
 
     def OnDoubleClicForfait(self, event=None):
