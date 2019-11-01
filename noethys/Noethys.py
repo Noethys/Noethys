@@ -831,7 +831,9 @@ class MainFrame(wx.Frame):
                     {"code": "menus", "label": _(u"Menus des repas"), "infobulle": _(u"Menus des repas"), "image": "Images/16x16/Menu.png", "action": self.On_conso_menus},
                     "-",
                     {"code" : "nomadhys_synchro", "label" : _(u"Nomadhys - L'application nomade"), "infobulle" : _(u"Synchroniser et configurer Nomadhys, l'application nomade de Noethys"), "image" : "Images/16x16/Nomadhys.png", "action" : self.On_outils_nomadhys_synchro},
+                    "-",
                     {"code" : "connecthys_synchro", "label" : _(u"Connecthys - Le portail internet"), "infobulle" : _(u"Synchroniser et configurer Connecthys, le portail internet de Noethys"), "image" : "Images/16x16/Connecthys.png", "action" : self.On_outils_connecthys_synchro},
+                    {"code" : "connecthys_traiter", "label": _(u"Traiter les demandes du portail"), "infobulle": _(u"Traiter les demandes du portail"), "image": "Images/16x16/Connecthys.png", "action": self.On_outils_connecthys_traiter},
                     "-",
                     {"code" : "editeur_emails", "label" : _(u"Editeur d'Emails"), "infobulle" : _(u"Editeur d'Emails"), "image" : "Images/16x16/Editeur_email.png", "action" : self.On_outils_emails},
                     {"code" : "envoi_sms", "label": _(u"Envoi de SMS"), "infobulle": _(u"Envoi de SMS"), "image": "Images/16x16/Sms.png", "action": self.On_outils_sms},
@@ -2531,6 +2533,15 @@ class MainFrame(wx.Frame):
         dlg.Destroy()
         self.AfficherServeurConnecthys()
         self.ctrl_remplissage.MAJ()
+
+    def On_outils_connecthys_traiter(self, event):
+        from Dlg import DLG_Portail_demandes
+        dlg = DLG_Portail_demandes.Dialog(self)
+        dlg.ShowModal()
+        dlg.Destroy()
+        self.ctrl_remplissage.MAJ()
+        if hasattr(self, "ctrl_serveur_portail"):
+            self.ctrl_serveur_portail.MAJ()
 
     def On_outils_villes(self, event):
         from Dlg import DLG_Villes
