@@ -20,3 +20,4 @@ setuptools==19.2
 pyscard>=1.6.12
 matplotlib==1.1.0
 pyopencv>=2.1.0
+sqlalchemy
