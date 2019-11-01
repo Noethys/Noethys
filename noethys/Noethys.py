@@ -191,7 +191,11 @@ class MainFrame(wx.Frame):
         # Sélection de l'interface MySQL
         if "interface_mysql" in self.userConfig:
             interface_mysql = self.userConfig["interface_mysql"]
-            GestionDB.SetInterfaceMySQL(interface_mysql)
+            if "pool_mysql" in self.userConfig:
+                pool_mysql = self.userConfig["pool_mysql"]
+            else:
+                pool_mysql = 0
+            GestionDB.SetInterfaceMySQL(interface_mysql, pool_mysql)
         
         # Affiche le titre du fichier en haut de la frame
         self.SetTitleFrame(nomFichier="")

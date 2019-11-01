@@ -132,6 +132,9 @@ class Interface_mysql(wx.Panel):
         self.staticbox_staticbox = wx.StaticBox(self, -1, _(u"MySQL"))
         self.label_interface = wx.StaticText(self, -1, _(u"Interface :"))
         self.ctrl_interface = wx.Choice(self, -1, choices=self.listeLabels)
+        self.label_pool_mysql = wx.StaticText(self, -1, _(u"Pool :"))
+        self.ctrl_pool_mysql = wx.SpinCtrl(self, -1)
+        self.ctrl_pool_mysql.SetRange(0, 20)
 
         self.__set_properties()
         self.__do_layout()
@@ -141,12 +144,15 @@ class Interface_mysql(wx.Panel):
 
     def __set_properties(self):
         self.ctrl_interface.SetToolTip(wx.ToolTip(_(u"Sélectionnez l'interface MySQL à utiliser pour les fichiers réseau. 'Mysqldb' est conseillé mais il est possible que 'mysql.connector' soit parfois plus rapide pour certaines connexions distantes (par internet). Vous pouvez tester les deux pour choisir le plus rapide.")))
+        self.ctrl_pool_mysql.SetToolTip(wx.ToolTip(_(u"Sélectionnez une valeur de pool pour l'interface mysql.connector (0 par défaut)")))
 
     def __do_layout(self):
         staticbox = wx.StaticBoxSizer(self.staticbox_staticbox, wx.VERTICAL)
-        grid_sizer_base = wx.FlexGridSizer(rows=2, cols=5, vgap=10, hgap=10)
+        grid_sizer_base = wx.FlexGridSizer(rows=2, cols=2, vgap=10, hgap=10)
         grid_sizer_base.Add(self.label_interface, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_base.Add(self.ctrl_interface, 1, wx.EXPAND, 0)
+        grid_sizer_base.Add(self.label_pool_mysql, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_base.Add(self.ctrl_pool_mysql, 1, wx.EXPAND, 0)
         grid_sizer_base.AddGrowableCol(1)
         staticbox.Add(grid_sizer_base, 1, wx.ALL|wx.EXPAND, 5)
         self.SetSizer(staticbox)
@@ -154,11 +160,13 @@ class Interface_mysql(wx.Panel):
     
     def Importation(self):
         code = UTILS_Config.GetParametre("interface_mysql", None)
+        pool = UTILS_Config.GetParametre("pool_mysql", 0)
         index = 0
         for codeTemp in self.listeCodes :
             if codeTemp == code :
                 self.ctrl_interface.SetSelection(index)
             index += 1
+        self.ctrl_pool_mysql.SetValue(pool)
             
     def Validation(self):
         return True
@@ -166,10 +174,14 @@ class Interface_mysql(wx.Panel):
     def Sauvegarde(self):
         interface_mysql = self.listeCodes[self.ctrl_interface.GetSelection()]
         UTILS_Config.SetParametre("interface_mysql", interface_mysql)
+        pool_mysql = self.ctrl_pool_mysql.GetValue()
+        UTILS_Config.SetParametre("pool_mysql", pool_mysql)
+
         try :
             topWindow = wx.GetApp().GetTopWindow()
             topWindow.userConfig["interface_mysql"] = interface_mysql
-            GestionDB.SetInterfaceMySQL(interface_mysql)
+            topWindow.userConfig["pool_mysql"] = pool_mysql
+            GestionDB.SetInterfaceMySQL(interface_mysql, pool_mysql)
         except Exception as err :
             print("Erreur dans changement de l'interface mySQL depuis les preferences :", err)
 

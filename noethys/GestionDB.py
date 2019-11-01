@@ -47,14 +47,16 @@ except Exception as err :
 # Est modifié automatiquement lors du lancement de Noethys selon les préférences (Menu Paramétrage > Préférences)
 # Peut être également modifié manuellement ici dans le cadre de tests sur des fichiers indépendamment de l'interface principale 
 INTERFACE_MYSQL = "mysqldb"
+POOL_MYSQL = 0
 
-def SetInterfaceMySQL(nom="mysqldb"):
+def SetInterfaceMySQL(nom="mysqldb", pool_mysql=0):
     """ Permet de sélectionner une interface MySQL """
-    global INTERFACE_MYSQL
+    global INTERFACE_MYSQL, POOL_MYSQL
     if nom == "mysqldb" and IMPORT_MYSQLDB_OK == True :
         INTERFACE_MYSQL = "mysqldb"
     if nom == "mysql.connector" and IMPORT_MYSQLCONNECTOR_OK == True :
         INTERFACE_MYSQL = "mysql.connector"
+    POOL_MYSQL = pool_mysql
 
 # Vérifie si les certificats SSL sont présents dans le répertoire utilisateur
 def GetCertificatsSSL():
@@ -971,8 +973,10 @@ def GetConnexionReseau(nomFichier=""):
             suffixe = nomFichier.split("_")[-1]
         else :
             suffixe = ""
-        connexion = mysql.connector.connect(host=host, user=user, passwd=passwd, port=int(port), use_unicode=True, ssl_ca=ssl_ca, pool_name="mypool2%s" % suffixe, pool_size=3)
-
+        if POOL_MYSQL == 0:
+            connexion = mysql.connector.connect(host=host, user=user, passwd=passwd, port=int(port), use_unicode=True, ssl_ca=ssl_ca)
+        else:
+            connexion = mysql.connector.connect(host=host, user=user, passwd=passwd, port=int(port), use_unicode=True, ssl_ca=ssl_ca, pool_name="mypool2%s" % suffixe, pool_size=POOL_MYSQL)
     return connexion, nomFichier
 
 
