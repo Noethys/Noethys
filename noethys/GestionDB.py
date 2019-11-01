@@ -149,27 +149,38 @@ class DB:
 
     def OuvertureFichierReseau(self, nomFichier, suffixe):
         """ Version RESEAU avec MYSQL """
+        self.echec = 0
+
         try :
             self.connexion, nomFichier = GetConnexionReseau(nomFichier)
             self.cursor = self.connexion.cursor()
-
-            # Création
-            if self.modeCreation == True :
-                self.cursor.execute("CREATE DATABASE IF NOT EXISTS %s CHARSET utf8 COLLATE utf8_unicode_ci;" % nomFichier)
-            
-            # Utilisation
-            if nomFichier not in ("", None, "_data") :
-                self.cursor.execute("USE %s;" % nomFichier)
-            
         except Exception as err:
-            print("La connexion avec la base de donnees MYSQL a echouee. Erreur :")
+            print("La connexion a MYSQL a echouee. Erreur :")
             print((err,))
             self.erreur = err
             self.echec = 1
-            #AfficheConnexionOuvertes() 
-        else:
-            self.echec = 0
-    
+
+        # Création
+        if self.modeCreation == True :
+            try:
+                self.cursor.execute("CREATE DATABASE IF NOT EXISTS %s CHARSET utf8 COLLATE utf8_unicode_ci;" % nomFichier)
+            except Exception as err:
+                print("La creation de la base MYSQL a echouee. Erreur :")
+                print((err,))
+                self.erreur = err
+                self.echec = 1
+
+        # Utilisation
+        if nomFichier not in ("", None, "_data") :
+            try:
+                self.cursor.execute("USE %s;" % nomFichier)
+            except Exception as err:
+                print("L'ouverture de la base MYSQL a echouee. Erreur :")
+                print((err,))
+                self.erreur = err
+                self.echec = 1
+                self.Close()
+
     def GetNomFichierDefaut(self):
         nomFichier = ""
         try :
