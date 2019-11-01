@@ -978,18 +978,30 @@ def GetConnexionReseau(nomFichier=""):
         connexion.set_character_set('utf8')
 
     if INTERFACE_MYSQL == "mysql.connector":
-        if "ca" in CERTIFICATS_SSL:
-            ssl_ca = CERTIFICATS_SSL["ca"]
-        else :
-            ssl_ca = ""
         if "_" in nomFichier :
             suffixe = nomFichier.split("_")[-1]
         else :
             suffixe = ""
-        if POOL_MYSQL == 0:
-            connexion = mysql.connector.connect(host=host, user=user, passwd=passwd, port=int(port), use_unicode=True, ssl_ca=ssl_ca)
-        else:
-            connexion = mysql.connector.connect(host=host, user=user, passwd=passwd, port=int(port), use_unicode=True, ssl_ca=ssl_ca, pool_name="mypool2%s" % suffixe, pool_size=POOL_MYSQL)
+
+        params = {
+            "host": host,
+            "user": user,
+            "passwd": passwd,
+            "port": int(port),
+            "use_unicode": True,
+        }
+
+        # Activation du SSL
+        if "ca" in CERTIFICATS_SSL:
+            params["ssl_ca"] = CERTIFICATS_SSL["ca"]
+
+        # Activation du pooling
+        if POOL_MYSQL > 0:
+            params["pool_name"] = "mypool2%s" % suffixe
+            params["pool_size"] = POOL_MYSQL
+
+        connexion = mysql.connector.connect(**params)
+
     return connexion, nomFichier
 
 
