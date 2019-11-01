@@ -13,6 +13,7 @@ import Chemins
 from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
+import six
 from six.moves import cPickle
 import copy
 from Ctrl import CTRL_Bouton_image
@@ -462,7 +463,7 @@ class Tableau(gridlib.Grid):
                 for numColonne in list(dictColonnes.keys()) :
                     if numColonne != "IDligne" :
                         valeur = dictColonnes[numColonne]
-                        valeur = unicode(valeur)
+                        valeur = six.text_type(valeur)
                         self.SetCellValue(numLigne, numColonne, valeur)
 
         else:

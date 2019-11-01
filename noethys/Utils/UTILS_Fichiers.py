@@ -150,9 +150,6 @@ def DeplaceExemples():
                 shutil.copy(os.path.join(chemin, nomFichier), GetRepData(nomFichier))
 
 def OuvrirRepertoire(rep):
-    if type(rep) == unicode:
-        rep = rep.encode("utf8")
-
     if platform.system() == "Windows":
         subprocess.Popen(["explorer", rep])
     elif platform.system() == "Darwin":

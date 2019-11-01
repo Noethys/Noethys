@@ -303,8 +303,10 @@ class CTRL(wx.TreeCtrl):
                 niveau1 = self.AppendItem(niveauParent, labelVaccination)
                 if etat == "pasok" : self.SetItemImage(niveau1, self.img_pasok, which=wx.TreeItemIcon_Normal)
                 if etat == "attention" : self.SetItemImage(niveau1, self.img_attention, which=wx.TreeItemIcon_Normal)
-                self.SetPyData(niveau1, {"type":"vaccination", "IDindividu":IDindividu, "IDtype_maladie":IDtype_maladie} )
-
+                if 'phoenix' in wx.PlatformInfo:
+                    self.SetItemData(niveau1, {"type":"vaccination", "IDindividu":IDindividu, "IDtype_maladie":IDtype_maladie})
+                else:
+                    self.SetPyData(niveau1, {"type":"vaccination", "IDindividu":IDindividu, "IDtype_maladie":IDtype_maladie})
 
     def Branches_renseignements(self, niveauParent=None):
         # Création des branches

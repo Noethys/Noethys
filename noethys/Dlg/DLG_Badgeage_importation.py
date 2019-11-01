@@ -330,8 +330,8 @@ class CTRL_Choix_appareil(wx.Choice):
 
 # -------------------------------------------------------------------------------------------------------------------------
 
-ID_VIDER_MEMOIRE = wx.Window.NewControlId()
-ID_REGLER_HEURE = wx.Window.NewControlId()
+
+
 
 class Page_scanner(wx.Panel):
     def __init__(self, parent):
@@ -384,10 +384,12 @@ class Page_scanner(wx.Panel):
     def OnBoutonOutils(self, event): 
         # Création du menu Outils
         menuPop = UTILS_Adaptations.Menu()
-        
+
+        ID_VIDER_MEMOIRE = wx.Window.NewControlId()
         menuPop.AppendItem(wx.MenuItem(menuPop, ID_VIDER_MEMOIRE, _(u"Vider la mémoire"), _(u"Vider la mémoire du scanner")))
         self.Bind(wx.EVT_MENU, self.OnOutil, id=ID_VIDER_MEMOIRE)
-        
+
+        ID_REGLER_HEURE = wx.Window.NewControlId()
         menuPop.AppendItem(wx.MenuItem(menuPop, ID_REGLER_HEURE, _(u"Régler l'horloge du scanner"), _(u"Régler l'horloge du scanner")))
         self.Bind(wx.EVT_MENU, self.OnOutil, id=ID_REGLER_HEURE)
         

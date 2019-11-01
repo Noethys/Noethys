@@ -50,7 +50,10 @@ class CustomTaskBarIcon():
             self.Cacher()
 
     def SetIcone(self, bmp=None, texte=""):
-        icon = wx.EmptyIcon()
+        if 'phoenix' in wx.PlatformInfo:
+            icon = wx.Icon()
+        else:
+            icon = wx.EmptyIcon()
         icon.CopyFromBitmap(bmp)
         self.tbicon.SetIcon(icon, texte)
 
@@ -58,7 +61,10 @@ class CustomTaskBarIcon():
         """ Ajoute un texte sur une image bitmap """
         # Création du bitmap
         largeurImage, hauteurImage = image.GetSize()
-        bmp = wx.EmptyBitmap(largeurImage, hauteurImage)
+        if 'phoenix' in wx.PlatformInfo:
+            bmp = wx.Bitmap(largeurImage, hauteurImage)
+        else:
+            bmp = wx.EmptyBitmap(largeurImage, hauteurImage)
         mdc = wx.MemoryDC(bmp)
         dc = wx.GCDC(mdc)
         mdc.SetBackground(wx.Brush("black"))

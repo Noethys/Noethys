@@ -514,7 +514,7 @@ class CTRL_Conditions(wx.Panel) :
         # Utilisateur
         utilisateur = dictDonnees["condition_utilisateur"]
         if utilisateur != None :
-            if utilisateur == unicode(self.GetUtilisateur()[1]) :
+            if utilisateur == six.text_type(self.GetUtilisateur()[1]) :
                 self.radio_utilisateur_1.SetValue(True) 
             else :
                 self.radio_utilisateur_2.SetValue(True)

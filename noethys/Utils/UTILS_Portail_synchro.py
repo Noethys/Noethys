@@ -105,7 +105,7 @@ class Synchro():
 
         # Téléchargement des données en ligne
         self.Download_data(full_synchro=full_synchro)
-
+        
         # Recherche de mises à jours logicielles Connecthys
         if self.dict_parametres["client_rechercher_updates"] == True :
 
@@ -231,7 +231,7 @@ class Synchro():
                 if MAIL_PASSWORD in ("", None):
                     liste_lignes.append(Ecrit_ligne("MAIL_PASSWORD", None))
                 else :
-                    liste_lignes.append(Ecrit_ligne("MAIL_PASSWORD", MAIL_PASSWORD, type_valeur=unicode))
+                    liste_lignes.append(Ecrit_ligne("MAIL_PASSWORD", MAIL_PASSWORD, type_valeur=six.text_type))
 
             else :
                 self.dict_parametres["mdp_autoriser_reinitialisation"] = False
@@ -1342,7 +1342,7 @@ class Synchro():
         #ftp.delete(os.path.basename(nomFichierDB))
         #ftp.quit()
 
-        if page != None and page != "True" :
+        if page != None and page != "True" and page != b"True" :
             # Affichage erreur
             print("Erreur dans le traitement du fichier :", page)
             self.log.EcritLog(_(u"[ERREUR] Erreur dans le traitement du fichier. Réponse reçue :"))
