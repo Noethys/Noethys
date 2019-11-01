@@ -32,6 +32,7 @@ class Anomalie():
     def __init__(self, *args, **kwds):
         self.kwds = kwds
         self.label = kwds["label"]
+        self.correction_manuelle = kwds.get("correction_manuelle", False)
         self.corrige = False
 
     def Correction(self, DB=None):
@@ -214,7 +215,8 @@ class PrestationsFantomes(Anomalie):
         DB.ReqDEL("prestations", "IDprestation", IDprestation)
         self.corrige = True
 
-
+class MySQL8(Anomalie):
+    correction_manuelle = True
 
 
 
@@ -283,6 +285,7 @@ class Depannage():
         self.LiensErrones() 
         self.VentilationExcessive()
         self.PrestationsFantomes()
+        self.MySQL8()
                 
         # Fermeture DB
         self.DB.Close()
@@ -670,6 +673,20 @@ class Depannage():
 
         self.listeResultats.append((labelProbleme, labelCorrection, listeTemp))
 
+    def MySQL8(self):
+        labelProbleme = _(u"MySQL 8 Server détecté")
+        labelCorrection = _(u"Correction manuelle requise : L'utilisation de la version 8 de MySQL est déconseillée. Faites une sauvegarde, désinstallez MySQL 8, installez MySQL 5.7 et restaurez la sauvegarde.")
+
+        # Recherche si le serveur MySQL est une version 8
+        nomFichier = self.DB.GetNomFichierDefaut()
+        if "[RESEAU]" in nomFichier:
+            req = """SHOW VARIABLES LIKE "version";"""
+            self.DB.ExecuterReq(req)
+            listeTemp = self.DB.ResultatReq()
+            if len(listeTemp) > 0:
+                num_serveur = listeTemp[0][1]
+                if num_serveur.startswith("8"):
+                    self.listeResultats.append((labelProbleme, labelCorrection, [MySQL8(label=labelCorrection),]))
 
 
 

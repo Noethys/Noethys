@@ -136,11 +136,13 @@ class CTRL(CT.CustomTreeCtrl):
             if len(listeAnomalies) > 0 :
                 niveauRubrique = self.AppendItem(self.root, u"%s (%d)" % (labelAnomalie, len(listeAnomalies)), ct_type=1)
                 self.SetItemBold(niveauRubrique, True)
-                
-                for anomalie in listeAnomalies :
-                    niveauAnomalie = self.AppendItem(niveauRubrique, anomalie.label, ct_type=1)
-                    self.SetPyData(niveauAnomalie, {"type" : "anomalie", "anomalie" : anomalie})
 
+                for anomalie in listeAnomalies :
+                    if anomalie.correction_manuelle == True:
+                        niveauAnomalie = self.AppendItem(niveauRubrique, anomalie.label, ct_type=1)
+                        self.SetPyData(niveauAnomalie, {"type" : "anomalie", "anomalie" : anomalie})
+                    else:
+                        niveauAnomalie = self.AppendItem(niveauRubrique, anomalie.label)
                     if anomalie.corrige == True :
                         img = self.img_ok
                     else :

@@ -159,6 +159,7 @@ class DB:
             print((err,))
             self.erreur = err
             self.echec = 1
+            return
 
         # Création
         if self.modeCreation == True :
@@ -169,6 +170,7 @@ class DB:
                 print((err,))
                 self.erreur = err
                 self.echec = 1
+                return
 
         # Utilisation
         if nomFichier not in ("", None, "_data") :
