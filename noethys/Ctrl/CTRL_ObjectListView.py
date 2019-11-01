@@ -544,6 +544,11 @@ class ObjectListView(OLV.ObjectListView):
         if "date_debut_inscription" in criteres:
             conditionDateInscription = " AND (inscriptions.date_inscription>='%s' AND inscriptions.date_inscription<='%s')" % (str(criteres["date_debut_inscription"]), str(criteres["date_fin_inscription"]))
 
+        # Condition Date naissance
+        conditionDateNaissance = ""
+        if "date_debut_naissance" in criteres:
+            conditionDateNaissance = " AND (individus.date_naiss>='%s' AND individus.date_naiss<='%s')" % (str(criteres["date_debut_naissance"]), str(criteres["date_fin_naissance"]))
+
         # Choix de la key
         if mode == "individu" :
             key = "inscriptions.IDindividu"
@@ -554,10 +559,11 @@ class ObjectListView(OLV.ObjectListView):
         DB = GestionDB.DB()
         req = """SELECT %s
         FROM inscriptions 
+        LEFT JOIN individus ON individus.IDindividu = inscriptions.IDindividu
         %s
-        WHERE inscriptions.statut='ok' AND (inscriptions.date_desinscription IS NULL OR inscriptions.date_desinscription>='%s')  %s %s %s %s
+        WHERE inscriptions.statut='ok' AND (inscriptions.date_desinscription IS NULL OR inscriptions.date_desinscription>='%s')  %s %s %s %s %s
         GROUP BY %s
-        ;""" % (key, jointurePresents, datetime.date.today(), conditionActivites, conditionGroupes, conditionPresents, conditionDateInscription, key)
+        ;""" % (key, jointurePresents, datetime.date.today(), conditionActivites, conditionGroupes, conditionPresents, conditionDateInscription, conditionDateNaissance, key)
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         DB.Close() 

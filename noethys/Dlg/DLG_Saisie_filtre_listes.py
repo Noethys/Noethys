@@ -665,6 +665,16 @@ class CTRL_Page_inscrits(wx.Panel):
         self.ctrl_date_debut_inscription.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de début d'inscription")))
         self.ctrl_date_fin_inscription.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de fin d'inscription")))
 
+        # Date de naissance
+        self.check_naissance = wx.CheckBox(self, -1, _(u"Et nés entre le"))
+        self.ctrl_date_debut_naissance = CTRL_Saisie_date.Date2(self)
+        self.label_au_naissance = wx.StaticText(self, -1, _(u" et le"))
+        self.ctrl_date_fin_naissance = CTRL_Saisie_date.Date2(self)
+
+        self.check_naissance.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour sélectionner les individus suivant leur date de naissance")))
+        self.ctrl_date_debut_naissance.SetToolTip(wx.ToolTip(_(u"Saisissez ici une date minimale")))
+        self.ctrl_date_fin_naissance.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date maximale")))
+
         self.__do_layout()
 
         self.Bind(wx.EVT_CHECKBOX, self.OnCheckPresents, self.check_presents)
@@ -673,11 +683,14 @@ class CTRL_Page_inscrits(wx.Panel):
         self.Bind(wx.EVT_CHECKBOX, self.OnCheckInscription, self.check_inscription)
         self.OnCheckInscription(None)
 
+        self.Bind(wx.EVT_CHECKBOX, self.OnCheckNaissance, self.check_naissance)
+        self.OnCheckNaissance(None)
+
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=5, cols=1, vgap=10, hgap=10)
         grid_sizer_base.Add(self.label_intro, 0, wx.EXPAND, 0)
 
-        grid_sizer_activites = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
+        grid_sizer_activites = wx.FlexGridSizer(rows=4, cols=1, vgap=10, hgap=10)
         grid_sizer_activites.Add(self.ctrl_activites, 0, wx.EXPAND, 0)
         
         grid_sizer_presents = wx.FlexGridSizer(rows=1, cols=5, vgap=2, hgap=2)
@@ -693,6 +706,13 @@ class CTRL_Page_inscrits(wx.Panel):
         grid_sizer_inscription.Add(self.label_au_inscription, 0, wx.ALIGN_CENTER_VERTICAL|wx.LEFT|wx.RIGHT, 5)
         grid_sizer_inscription.Add(self.ctrl_date_fin_inscription, 0, 0, 0)
         grid_sizer_activites.Add(grid_sizer_inscription, 1, wx.EXPAND, 0)
+
+        grid_sizer_naissance = wx.FlexGridSizer(rows=1, cols=5, vgap=2, hgap=2)
+        grid_sizer_naissance.Add(self.check_naissance, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_naissance.Add(self.ctrl_date_debut_naissance, 0, 0, 0)
+        grid_sizer_naissance.Add(self.label_au_naissance, 0, wx.ALIGN_CENTER_VERTICAL|wx.LEFT|wx.RIGHT, 5)
+        grid_sizer_naissance.Add(self.ctrl_date_fin_naissance, 0, 0, 0)
+        grid_sizer_activites.Add(grid_sizer_naissance, 1, wx.EXPAND, 0)
 
         grid_sizer_activites.AddGrowableRow(0)
         grid_sizer_activites.AddGrowableCol(0)
@@ -713,6 +733,11 @@ class CTRL_Page_inscrits(wx.Panel):
         etat = self.check_inscription.GetValue()
         self.ctrl_date_debut_inscription.Enable(etat)
         self.ctrl_date_fin_inscription.Enable(etat)
+
+    def OnCheckNaissance(self, event):
+        etat = self.check_naissance.GetValue()
+        self.ctrl_date_debut_naissance.Enable(etat)
+        self.ctrl_date_fin_naissance.Enable(etat)
 
     def SetValeur(self, choix=None, criteres=None):
         if choix == "INSCRITS" : 
@@ -735,8 +760,14 @@ class CTRL_Page_inscrits(wx.Panel):
             self.ctrl_date_debut_inscription.SetDate(criteres["date_debut_inscription"])
             self.ctrl_date_fin_inscription.SetDate(criteres["date_fin_inscription"])
 
+        if "date_debut_naissance" in criteres :
+            self.check_naissance.SetValue(True)
+            self.ctrl_date_debut_naissance.SetDate(criteres["date_debut_naissance"])
+            self.ctrl_date_fin_naissance.SetDate(criteres["date_fin_naissance"])
+
         self.OnCheckPresents(None) 
         self.OnCheckInscription(None)
+        self.OnCheckNaissance(None)
 
     def GetValeur(self):
         choix, criteres = "", ""
@@ -752,6 +783,10 @@ class CTRL_Page_inscrits(wx.Panel):
         if self.check_inscription.GetValue() == True :
             criteres["date_debut_inscription"] = self.ctrl_date_debut_inscription.GetDate()
             criteres["date_fin_inscription"] = self.ctrl_date_fin_inscription.GetDate()
+
+        if self.check_naissance.GetValue() == True :
+            criteres["date_debut_naissance"] = self.ctrl_date_debut_naissance.GetDate()
+            criteres["date_fin_naissance"] = self.ctrl_date_fin_naissance.GetDate()
 
         return choix, criteres
 
@@ -796,6 +831,26 @@ class CTRL_Page_inscrits(wx.Panel):
 
             if self.ctrl_date_debut_inscription.GetDate() > self.ctrl_date_fin_inscription.GetDate():
                 dlg = wx.MessageDialog(self, _(u"La date de début est supérieure à la date de fin d'inscription!"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg.ShowModal()
+                dlg.Destroy()
+                return False
+
+        # Date de naissance
+        if self.check_naissance.GetValue() == True:
+            if self.ctrl_date_debut_naissance.GetDate() == None or self.ctrl_date_debut_naissance.Validation() == False:
+                dlg = wx.MessageDialog(self, _(u"Vous n'avez saisi aucune date minimale pour la date de naissance !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg.ShowModal()
+                dlg.Destroy()
+                return False
+
+            if self.ctrl_date_fin_naissance.GetDate() == None or self.ctrl_date_fin_naissance.Validation() == False:
+                dlg = wx.MessageDialog(self, _(u"Vous n'avez saisi aucune date minimale pour la date de naissance !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg.ShowModal()
+                dlg.Destroy()
+                return False
+
+            if self.ctrl_date_debut_naissance.GetDate() > self.ctrl_date_fin_naissance.GetDate():
+                dlg = wx.MessageDialog(self, _(u"La date de minimale est supérieure à la date maximale de naissance!"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
