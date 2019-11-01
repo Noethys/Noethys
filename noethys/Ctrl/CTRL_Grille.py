@@ -3389,7 +3389,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         listeQF = []
         for ligneCalcul in dictTarif["lignes_calcul"] :
             listeQF.append(ligneCalcul["qf_max"])
-        listeQF.sort() 
+        listeQF.sort()
         if len(listeQF) > 0 :
             if listeQF[-1] != None :
                 return listeQF[-1]

@@ -652,7 +652,10 @@ class Inscription():
             (_(u"Numéro d'agrément de l'organisateur"), u"0256ORG234", "{ORGANISATEUR_AGREMENT}"),
             (_(u"Numéro SIRET de l'organisateur"), u"123456789123", "{ORGANISATEUR_SIRET}"),
             (_(u"Code APE de l'organisateur"), _(u"NO123"), "{ORGANISATEUR_APE}"),
-            ]
+
+            (_(u"Date d'édition (long)"), _(u"Lundi 9 septembre 2011"), "{DATE_EDITION_LONG}"),
+            (_(u"Date d'édition (court)"), u"19/09/2011", "{DATE_EDITION_COURT}"),
+        ]
         
         self.champs.extend(UTILS_Infos_individus.GetNomsChampsPossibles(mode="individu+famille"))
         

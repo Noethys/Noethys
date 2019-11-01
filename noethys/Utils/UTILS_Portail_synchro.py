@@ -105,7 +105,7 @@ class Synchro():
 
         # Téléchargement des données en ligne
         self.Download_data(full_synchro=full_synchro)
-        
+
         # Recherche de mises à jours logicielles Connecthys
         if self.dict_parametres["client_rechercher_updates"] == True :
 
