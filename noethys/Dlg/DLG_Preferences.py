@@ -160,7 +160,7 @@ class Interface_mysql(wx.Panel):
     
     def Importation(self):
         code = UTILS_Config.GetParametre("interface_mysql", None)
-        pool = UTILS_Config.GetParametre("pool_mysql", 0)
+        pool = UTILS_Config.GetParametre("pool_mysql", 5)
         index = 0
         for codeTemp in self.listeCodes :
             if codeTemp == code :

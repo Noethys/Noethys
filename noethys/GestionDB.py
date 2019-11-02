@@ -47,9 +47,9 @@ except Exception as err :
 # Est modifié automatiquement lors du lancement de Noethys selon les préférences (Menu Paramétrage > Préférences)
 # Peut être également modifié manuellement ici dans le cadre de tests sur des fichiers indépendamment de l'interface principale 
 INTERFACE_MYSQL = "mysqldb"
-POOL_MYSQL = 0
+POOL_MYSQL = 5
 
-def SetInterfaceMySQL(nom="mysqldb", pool_mysql=0):
+def SetInterfaceMySQL(nom="mysqldb", pool_mysql=5):
     """ Permet de sélectionner une interface MySQL """
     global INTERFACE_MYSQL, POOL_MYSQL
     if nom == "mysqldb" and IMPORT_MYSQLDB_OK == True :

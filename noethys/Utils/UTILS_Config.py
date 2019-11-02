@@ -69,7 +69,7 @@ def GenerationFichierConfig():
             "annonce": None,
             "autodeconnect": None,
             "interface_mysql": "mysqldb",
-            "pool_mysql": 0,
+            "pool_mysql": 5,
             }
 
     # Création d'un nouveau fichier json
