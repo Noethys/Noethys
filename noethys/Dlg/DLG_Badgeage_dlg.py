@@ -22,8 +22,8 @@ if 'phoenix' in wx.PlatformInfo:
 else :
     from wx import PyControl as Control
 
-ID_OUI = wx.NewId()
-ID_NON = wx.NewId()
+ID_OUI = wx.Window.NewControlId()
+ID_NON = wx.Window.NewControlId()
 
 
 class CTRL_Bouton_toggle_archive(Control):

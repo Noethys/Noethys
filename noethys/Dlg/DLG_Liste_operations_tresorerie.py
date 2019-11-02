@@ -20,9 +20,9 @@ from Ctrl import CTRL_Saisie_compte
 import GestionDB
 
 
-ID_AJOUTER_DEBIT = wx.NewId()
-ID_AJOUTER_CREDIT = wx.NewId()
-ID_AJOUTER_VIREMENT = wx.NewId()
+ID_AJOUTER_DEBIT = wx.Window.NewControlId()
+ID_AJOUTER_CREDIT = wx.Window.NewControlId()
+ID_AJOUTER_VIREMENT = wx.Window.NewControlId()
 
 
 

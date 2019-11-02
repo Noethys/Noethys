@@ -140,20 +140,18 @@ def decryptFile2(filename_in, filename_out, key):
 
 # -----------------------------------------------------------
 
-def CrypterFichier(fichierDecrypte="", fichierCrypte="", motdepasse="", methode=1):
-	# Méthode 1 pour PY2 et méthode 2 pour PY3
-	if methode == 1:
-		fonction = cryptFile
-	else:
+def CrypterFichier(fichierDecrypte="", fichierCrypte="", motdepasse=""):
+	if six.PY3:
 		fonction = cryptFile2
+	else:
+		fonction = cryptFile
 	fonction(fichierDecrypte, fichierCrypte, hashPassword_MD5(motdepasse))
 
-def DecrypterFichier(fichierCrypte="", fichierDecrypte="", motdepasse="", methode=1):
-	# Méthode 1 pour PY2 et méthode 2 pour PY3
-	if methode == 1:
-		fonction = decryptFile
-	else:
+def DecrypterFichier(fichierCrypte="", fichierDecrypte="", motdepasse=""):
+	if six.PY3:
 		fonction = decryptFile2
+	else:
+		fonction = decryptFile
 	fonction(fichierCrypte, fichierDecrypte, hashPassword_MD5(motdepasse))
 
 

@@ -364,7 +364,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             menuPop = UTILS_Adaptations.Menu()
 
             # Importer les suggestions
-            id = wx.NewId()
+            id = wx.Window.NewControlId()
             item = wx.MenuItem(menuPop, id, _(u"Convertir la suggestion"))
             item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Magique.png"), wx.BITMAP_TYPE_PNG))
             menuPop.AppendItem(item)
@@ -375,14 +375,14 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             menuPop.AppendSeparator()
 
             # Copier
-            id = wx.NewId()
+            id = wx.Window.NewControlId()
             item = wx.MenuItem(menuPop, id, _(u"Copier\tCtrl+C"))
             item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Copier.png"), wx.BITMAP_TYPE_PNG))
             menuPop.AppendItem(item)
             self.Bind(wx.EVT_MENU, case.Copier, id=id)
 
             # Coller
-            id = wx.NewId()
+            id = wx.Window.NewControlId()
             item = wx.MenuItem(menuPop, id, _(u"Coller\tCtrl+V"))
             item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Coller.png"), wx.BITMAP_TYPE_PNG))
             menuPop.AppendItem(item)
@@ -393,7 +393,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             menuPop.AppendSeparator()
 
             # RAZ
-            id = wx.NewId()
+            id = wx.Window.NewControlId()
             item = wx.MenuItem(menuPop, id, _(u"Vider la donnée"))
             item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Gomme.png"), wx.BITMAP_TYPE_PNG))
             menuPop.AppendItem(item)

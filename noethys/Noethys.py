@@ -610,14 +610,14 @@ class MainFrame(wx.Frame):
             elif code.startswith("label:"):
                 # Ne fonctionne pas : Il y a un bug sur agw.aui avec la largeur du label
                 label = code.replace("label:", "")
-                tb.AddSimpleTool(wx.NewId(), label, wx.NullBitmap, kind=aui.ITEM_LABEL)
+                tb.AddSimpleTool(wx.Window.NewControlId(), label, wx.NullBitmap, kind=aui.ITEM_LABEL)
             else :
                 item = dictItems[code]
                 if "image" in item and style != "texteseul" :
                     image = wx.Bitmap(Chemins.GetStaticPath(item["image"]), wx.BITMAP_TYPE_PNG)
                 else :
                     image = wx.NullBitmap
-                id = wx.NewId() 
+                id = wx.Window.NewControlId()
                 tb.AddSimpleTool(id, item["infobulle"], image, item["infobulle"])
                 self.Bind(wx.EVT_TOOL, item["action"], id=id)
         
@@ -1246,7 +1246,7 @@ class MainFrame(wx.Frame):
         
         # -------------------------- AJOUT MISE A JOUR INTERNET -----------------------------
         if self.MAJexiste == True :
-            id = wx.NewId()
+            id = wx.Window.NewControlId()
             menu_maj = wx.Menu()
             item = wx.MenuItem(menu_maj, id, _(u"Télécharger la mise à jour"), _(u"Télécharger la nouvelle mise à jour"))
             item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Updater.png"), wx.BITMAP_TYPE_PNG))

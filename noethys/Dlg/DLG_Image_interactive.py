@@ -270,32 +270,32 @@ class Data():
 #         tbar = aui.AuiToolBar(self, -1, wx.DefaultPosition, wx.DefaultSize, agwStyle=aui.AUI_TB_DEFAULT_STYLE | aui.AUI_TB_OVERFLOW)
 #         tbar.SetToolBitmapSize(wx.Size(32, 32))
 #
-#         ID_OUTIL_CURSEUR = wx.NewId()
+#         ID_OUTIL_CURSEUR = wx.Window.NewControlId()
 #         tbar.AddSimpleTool(ID_OUTIL_CURSEUR, _(u"Curseur"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Curseur.png"), wx.BITMAP_TYPE_ANY), _(u"Curseur"), aui.ITEM_RADIO)
 #         self.Bind(wx.EVT_TOOL, self.ctrl_canvas.OnOutil_curseur, id=ID_OUTIL_CURSEUR)
 #         tbar.ToggleTool(ID_OUTIL_CURSEUR, True)
 #
-#         ID_OUTIL_DEPLACER = wx.NewId()
+#         ID_OUTIL_DEPLACER = wx.Window.NewControlId()
 #         tbar.AddSimpleTool(ID_OUTIL_DEPLACER, _(u"Déplacer"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Main.png"), wx.BITMAP_TYPE_ANY), _(u"Déplacer"), aui.ITEM_RADIO)
 #         self.Bind(wx.EVT_TOOL, self.ctrl_canvas.OnOutil_deplacer, id=ID_OUTIL_DEPLACER)
 #
-#         ID_OUTIL_ZOOM_OUT = wx.NewId()
+#         ID_OUTIL_ZOOM_OUT = wx.Window.NewControlId()
 #         tbar.AddSimpleTool(ID_OUTIL_ZOOM_OUT, _(u"Zoom arrière"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/zoom_moins.png"), wx.BITMAP_TYPE_ANY), _(u"Zoom arrière"), aui.ITEM_RADIO)
 #         self.Bind(wx.EVT_TOOL, self.ctrl_canvas.OnOutil_zoom_moins, id=ID_OUTIL_ZOOM_OUT)
 #
-#         ID_OUTIL_ZOOM_IN = wx.NewId()
+#         ID_OUTIL_ZOOM_IN = wx.Window.NewControlId()
 #         tbar.AddSimpleTool(ID_OUTIL_ZOOM_IN, _(u"Zoom avant"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/zoom_plus.png"), wx.BITMAP_TYPE_ANY), _(u"Zoom avant"), aui.ITEM_RADIO)
 #         self.Bind(wx.EVT_TOOL, self.ctrl_canvas.OnOutil_zoom_plus, id=ID_OUTIL_ZOOM_IN)
 #
 #         tbar.AddSeparator()
 #
-#         ID_OUTIL_ZOOM_AJUSTER = wx.NewId()
+#         ID_OUTIL_ZOOM_AJUSTER = wx.Window.NewControlId()
 #         tbar.AddSimpleTool(ID_OUTIL_ZOOM_AJUSTER, _(u"Ajuster et centrer l'affichage"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Ajuster.png"), wx.BITMAP_TYPE_ANY), _(u"Ajuster et centrer l'affichage"))
 #         self.Bind(wx.EVT_TOOL, self.ctrl_canvas.OnOutil_ajuster, id=ID_OUTIL_ZOOM_AJUSTER)
 #
 #         tbar.AddSeparator()
 #
-#         ID_OUTIL_AFFICHAGE_APERCU = wx.NewId()
+#         ID_OUTIL_AFFICHAGE_APERCU = wx.Window.NewControlId()
 #         tbar.AddSimpleTool(ID_OUTIL_AFFICHAGE_APERCU, _(u"Afficher un aperçu PDF"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Pdf.png"), wx.BITMAP_TYPE_ANY), _(u"Afficher un aperçu PDF"))
 #         self.Bind(wx.EVT_TOOL, self.ctrl_canvas.OnAffichage_apercu, id=ID_OUTIL_AFFICHAGE_APERCU)
 #
@@ -306,22 +306,22 @@ class Data():
 #         tbar = aui.AuiToolBar(self, -1, wx.DefaultPosition, wx.DefaultSize, agwStyle=aui.AUI_TB_DEFAULT_STYLE | aui.AUI_TB_OVERFLOW)
 #         tbar.SetToolBitmapSize(wx.Size(32, 32))
 #
-#         ID_OUTIL_AFFICHAGE_LABELS = wx.NewId()
+#         ID_OUTIL_AFFICHAGE_LABELS = wx.Window.NewControlId()
 #         tbar.AddSimpleTool(ID_OUTIL_AFFICHAGE_LABELS, _(u"Afficher les labels associés aux données"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Calque_label.png"), wx.BITMAP_TYPE_ANY), _(u"Afficher les labels associés aux données"), aui.ITEM_CHECK)
 #         self.Bind(wx.EVT_TOOL, self.ctrl_canvas.OnAffichage_labels, id=ID_OUTIL_AFFICHAGE_LABELS)
 #         tbar.ToggleTool(ID_OUTIL_AFFICHAGE_LABELS, True)
 #
-#         ID_OUTIL_AFFICHAGE_REMPLISSAGE = wx.NewId()
+#         ID_OUTIL_AFFICHAGE_REMPLISSAGE = wx.Window.NewControlId()
 #         tbar.AddSimpleTool(ID_OUTIL_AFFICHAGE_REMPLISSAGE, _(u"Afficher le remplissage des objets associés aux données"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Calque_fond.png"), wx.BITMAP_TYPE_ANY), _(u"Afficher le remplissage des objets associés aux données"), aui.ITEM_CHECK)
 #         self.Bind(wx.EVT_TOOL, self.ctrl_canvas.OnAffichage_remplissage, id=ID_OUTIL_AFFICHAGE_REMPLISSAGE)
 #         tbar.ToggleTool(ID_OUTIL_AFFICHAGE_REMPLISSAGE, True)
 #
-#         ID_OUTIL_AFFICHAGE_COULEURS = wx.NewId()
+#         ID_OUTIL_AFFICHAGE_COULEURS = wx.Window.NewControlId()
 #         tbar.AddSimpleTool(ID_OUTIL_AFFICHAGE_COULEURS, _(u"Synchroniser les couleurs du remplissage avec les données"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Calque_couleurs.png"), wx.BITMAP_TYPE_ANY), _(u"Synchroniser les couleurs du remplissage avec les données"), aui.ITEM_CHECK)
 #         self.Bind(wx.EVT_TOOL, self.ctrl_canvas.OnAffichage_couleurs, id=ID_OUTIL_AFFICHAGE_COULEURS)
 #         tbar.ToggleTool(ID_OUTIL_AFFICHAGE_COULEURS, True)
 #
-#         ID_OUTIL_AFFICHAGE_BORDS = wx.NewId()
+#         ID_OUTIL_AFFICHAGE_BORDS = wx.Window.NewControlId()
 #         tbar.AddSimpleTool(ID_OUTIL_AFFICHAGE_BORDS, _(u"Afficher les bords des objets associés aux données"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Calque_bords.png"), wx.BITMAP_TYPE_ANY), _(u"Afficher les bords des objets associés aux données"), aui.ITEM_CHECK)
 #         self.Bind(wx.EVT_TOOL, self.ctrl_canvas.OnAffichage_bords, id=ID_OUTIL_AFFICHAGE_BORDS)
 #         tbar.ToggleTool(ID_OUTIL_AFFICHAGE_BORDS, True)
@@ -413,32 +413,32 @@ class CTRL(wx.Panel):
         tbar = aui.AuiToolBar(self, -1, wx.DefaultPosition, wx.DefaultSize, agwStyle=aui.AUI_TB_DEFAULT_STYLE | aui.AUI_TB_OVERFLOW)
         tbar.SetToolBitmapSize(wx.Size(32, 32))
 
-        ID_OUTIL_CURSEUR = wx.NewId()
+        ID_OUTIL_CURSEUR = wx.Window.NewControlId()
         tbar.AddSimpleTool(ID_OUTIL_CURSEUR, _(u"Curseur"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Curseur.png"), wx.BITMAP_TYPE_ANY), _(u"Curseur"), aui.ITEM_RADIO)
         self.Bind(wx.EVT_TOOL, self.ctrl_canvas.OnOutil_curseur, id=ID_OUTIL_CURSEUR)
         tbar.ToggleTool(ID_OUTIL_CURSEUR, True)
 
-        ID_OUTIL_DEPLACER = wx.NewId()
+        ID_OUTIL_DEPLACER = wx.Window.NewControlId()
         tbar.AddSimpleTool(ID_OUTIL_DEPLACER, _(u"Déplacer"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Main.png"), wx.BITMAP_TYPE_ANY), _(u"Déplacer"), aui.ITEM_RADIO)
         self.Bind(wx.EVT_TOOL, self.ctrl_canvas.OnOutil_deplacer, id=ID_OUTIL_DEPLACER)
 
-        ID_OUTIL_ZOOM_OUT = wx.NewId()
+        ID_OUTIL_ZOOM_OUT = wx.Window.NewControlId()
         tbar.AddSimpleTool(ID_OUTIL_ZOOM_OUT, _(u"Zoom arrière"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/zoom_moins.png"), wx.BITMAP_TYPE_ANY), _(u"Zoom arrière"), aui.ITEM_RADIO)
         self.Bind(wx.EVT_TOOL, self.ctrl_canvas.OnOutil_zoom_moins, id=ID_OUTIL_ZOOM_OUT)
 
-        ID_OUTIL_ZOOM_IN = wx.NewId()
+        ID_OUTIL_ZOOM_IN = wx.Window.NewControlId()
         tbar.AddSimpleTool(ID_OUTIL_ZOOM_IN, _(u"Zoom avant"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/zoom_plus.png"), wx.BITMAP_TYPE_ANY), _(u"Zoom avant"), aui.ITEM_RADIO)
         self.Bind(wx.EVT_TOOL, self.ctrl_canvas.OnOutil_zoom_plus, id=ID_OUTIL_ZOOM_IN)
 
         tbar.AddSeparator()
 
-        ID_OUTIL_ZOOM_AJUSTER = wx.NewId()
+        ID_OUTIL_ZOOM_AJUSTER = wx.Window.NewControlId()
         tbar.AddSimpleTool(ID_OUTIL_ZOOM_AJUSTER, _(u"Ajuster et centrer l'affichage"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Ajuster.png"), wx.BITMAP_TYPE_ANY), _(u"Ajuster et centrer l'affichage"))
         self.Bind(wx.EVT_TOOL, self.ctrl_canvas.OnOutil_ajuster, id=ID_OUTIL_ZOOM_AJUSTER)
 
         tbar.AddSeparator()
 
-        ID_OUTIL_AFFICHAGE_APERCU = wx.NewId()
+        ID_OUTIL_AFFICHAGE_APERCU = wx.Window.NewControlId()
         tbar.AddSimpleTool(ID_OUTIL_AFFICHAGE_APERCU, _(u"Afficher un aperçu PDF"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Pdf.png"), wx.BITMAP_TYPE_ANY), _(u"Afficher un aperçu PDF"))
         self.Bind(wx.EVT_TOOL, self.ctrl_canvas.OnAffichage_apercu, id=ID_OUTIL_AFFICHAGE_APERCU)
 
@@ -449,22 +449,22 @@ class CTRL(wx.Panel):
         tbar = aui.AuiToolBar(self, -1, wx.DefaultPosition, wx.DefaultSize, agwStyle=aui.AUI_TB_DEFAULT_STYLE | aui.AUI_TB_OVERFLOW)
         tbar.SetToolBitmapSize(wx.Size(32, 32))
 
-        ID_OUTIL_AFFICHAGE_LABELS = wx.NewId()
+        ID_OUTIL_AFFICHAGE_LABELS = wx.Window.NewControlId()
         tbar.AddSimpleTool(ID_OUTIL_AFFICHAGE_LABELS, _(u"Afficher les labels associés aux données"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Calque_label.png"), wx.BITMAP_TYPE_ANY), _(u"Afficher les labels associés aux données"), aui.ITEM_CHECK)
         self.Bind(wx.EVT_TOOL, self.ctrl_canvas.OnAffichage_labels, id=ID_OUTIL_AFFICHAGE_LABELS)
         tbar.ToggleTool(ID_OUTIL_AFFICHAGE_LABELS, True)
 
-        ID_OUTIL_AFFICHAGE_REMPLISSAGE = wx.NewId()
+        ID_OUTIL_AFFICHAGE_REMPLISSAGE = wx.Window.NewControlId()
         tbar.AddSimpleTool(ID_OUTIL_AFFICHAGE_REMPLISSAGE, _(u"Afficher le remplissage des objets associés aux données"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Calque_fond.png"), wx.BITMAP_TYPE_ANY), _(u"Afficher le remplissage des objets associés aux données"), aui.ITEM_CHECK)
         self.Bind(wx.EVT_TOOL, self.ctrl_canvas.OnAffichage_remplissage, id=ID_OUTIL_AFFICHAGE_REMPLISSAGE)
         tbar.ToggleTool(ID_OUTIL_AFFICHAGE_REMPLISSAGE, True)
 
-        ID_OUTIL_AFFICHAGE_COULEURS = wx.NewId()
+        ID_OUTIL_AFFICHAGE_COULEURS = wx.Window.NewControlId()
         tbar.AddSimpleTool(ID_OUTIL_AFFICHAGE_COULEURS, _(u"Synchroniser les couleurs du remplissage avec les données"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Calque_couleurs.png"), wx.BITMAP_TYPE_ANY), _(u"Synchroniser les couleurs du remplissage avec les données"), aui.ITEM_CHECK)
         self.Bind(wx.EVT_TOOL, self.ctrl_canvas.OnAffichage_couleurs, id=ID_OUTIL_AFFICHAGE_COULEURS)
         tbar.ToggleTool(ID_OUTIL_AFFICHAGE_COULEURS, True)
 
-        ID_OUTIL_AFFICHAGE_BORDS = wx.NewId()
+        ID_OUTIL_AFFICHAGE_BORDS = wx.Window.NewControlId()
         tbar.AddSimpleTool(ID_OUTIL_AFFICHAGE_BORDS, _(u"Afficher les bords des objets associés aux données"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Calque_bords.png"), wx.BITMAP_TYPE_ANY), _(u"Afficher les bords des objets associés aux données"), aui.ITEM_CHECK)
         self.Bind(wx.EVT_TOOL, self.ctrl_canvas.OnAffichage_bords, id=ID_OUTIL_AFFICHAGE_BORDS)
         tbar.ToggleTool(ID_OUTIL_AFFICHAGE_BORDS, True)

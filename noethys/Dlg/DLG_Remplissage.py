@@ -22,20 +22,20 @@ from Utils import UTILS_Config
 
 AFFICHE_PRESENTS = 1
 
-ID_MODE_PLACES_INITIALES = wx.NewId()
-ID_MODE_PLACES_PRISES = wx.NewId()
-ID_MODE_PLACES_RESTANTES = wx.NewId()
-ID_MODE_PLACES_ATTENTE = wx.NewId()
-ID_LISTE_ATTENTE = wx.NewId()
-ID_PARAMETRES = wx.NewId()
-ID_OUTILS = wx.NewId()
+ID_MODE_PLACES_INITIALES = wx.Window.NewControlId()
+ID_MODE_PLACES_PRISES = wx.Window.NewControlId()
+ID_MODE_PLACES_RESTANTES = wx.Window.NewControlId()
+ID_MODE_PLACES_ATTENTE = wx.Window.NewControlId()
+ID_LISTE_ATTENTE = wx.Window.NewControlId()
+ID_PARAMETRES = wx.Window.NewControlId()
+ID_OUTILS = wx.Window.NewControlId()
 
-ID_ACTUALISER = wx.NewId()
-ID_IMPRIMER = wx.NewId()
-ID_APERCU = wx.NewId()
-ID_EXPORT_EXCEL = wx.NewId()
-ID_EXPORT_TEXTE = wx.NewId()
-ID_AIDE = wx.NewId()
+ID_ACTUALISER = wx.Window.NewControlId()
+ID_IMPRIMER = wx.Window.NewControlId()
+ID_APERCU = wx.Window.NewControlId()
+ID_EXPORT_EXCEL = wx.Window.NewControlId()
+ID_EXPORT_TEXTE = wx.Window.NewControlId()
+ID_AIDE = wx.Window.NewControlId()
 
 
 class ToolBar(wx.ToolBar):

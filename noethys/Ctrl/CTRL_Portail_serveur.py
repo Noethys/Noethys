@@ -313,7 +313,7 @@ class Panel(wx.Panel):
         menuPop = UTILS_Adaptations.Menu()
 
         # Afficher heure prochaine synchro
-        id = wx.NewId()
+        id = wx.Window.NewControlId()
         texte_next_synchro = _(u"Prochaine synchronisation prévue à %s") % self.serveur.GetHeureProchaineSynchro().strftime("%Hh%M")
         item = wx.MenuItem(menuPop, id, texte_next_synchro, texte_next_synchro)
         menuPop.AppendItem(item)
@@ -322,7 +322,7 @@ class Panel(wx.Panel):
         menuPop.AppendSeparator()
 
         # Synchroniser maintenant les données
-        id = wx.NewId()
+        id = wx.Window.NewControlId()
         item = wx.MenuItem(menuPop, id, _(u"Synchroniser maintenant"), _(u"Synchroniser maintenant les données entre Noethys et Connecthys"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Actualiser2.png"), wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
@@ -337,7 +337,7 @@ class Panel(wx.Panel):
             self.lock.release()
 
         # Configuration du portail
-        id = wx.NewId()
+        id = wx.Window.NewControlId()
         item = wx.MenuItem(menuPop, id, _(u"Configuration"), _(u"Accéder à la configuration de Connecthys"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Mecanisme.png"), wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)

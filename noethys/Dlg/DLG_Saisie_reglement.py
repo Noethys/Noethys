@@ -39,7 +39,7 @@ from Ctrl import CTRL_Ventilation
 
 from Dlg import DLG_Messagebox
 
-ID_OPTION_BLOQUER_VENTILATION = wx.NewId() 
+ID_OPTION_BLOQUER_VENTILATION = wx.Window.NewControlId()
 
 
 

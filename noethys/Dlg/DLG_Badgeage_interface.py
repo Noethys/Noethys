@@ -1048,7 +1048,7 @@ class Dialog(wx.Dialog):
             self.CentreOnScreen()
             
             # Touches de raccourcis
-            ID_FERMER = wx.NewId()
+            ID_FERMER = wx.Window.NewControlId()
             self.Bind(wx.EVT_MENU, self.Fermer, id=ID_FERMER)
             accel_tbl = wx.AcceleratorTable([
                 (wx.ACCEL_CTRL|wx.ACCEL_SHIFT,  ord('Q'), ID_FERMER),

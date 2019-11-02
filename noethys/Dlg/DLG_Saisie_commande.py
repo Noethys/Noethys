@@ -337,7 +337,7 @@ class Dialog(wx.Dialog):
         menuPop = UTILS_Adaptations.Menu()
 
         # Importer les suggestions
-        id = wx.NewId()
+        id = wx.Window.NewControlId()
         item = wx.MenuItem(menuPop, id, _(u"Convertir les suggestions"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Magique.png"), wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
@@ -346,7 +346,7 @@ class Dialog(wx.Dialog):
         menuPop.AppendSeparator()
 
         # RAZ
-        id = wx.NewId()
+        id = wx.Window.NewControlId()
         item = wx.MenuItem(menuPop, id, _(u"Vider les données"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Gomme.png"), wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)

@@ -49,7 +49,7 @@ class Objet():
             if 'phoenix' not in wx.PlatformInfo:
                 self.dc.BeginDrawing()
             # Init objet pseudoDC
-            self.id = wx.NewId()
+            self.id = wx.Window.NewControlId()
             self.dc.SetId(self.id)
             # Dessine l'objet
             self.Draw() 
@@ -145,7 +145,7 @@ class Bouton(Objet):
         # Dessin de l'image
         if 'phoenix' not in wx.PlatformInfo:
             self.dc.BeginDrawing()
-        id = wx.NewId()
+        id = wx.Window.NewControlId()
         self.dc.SetId(id)
         
         self.dc.DrawBitmap(bmp, self.position[0], self.position[1])

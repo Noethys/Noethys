@@ -17,20 +17,20 @@ from Ctrl import CTRL_Bouton_image
 from Ol import OL_Individus
 from Utils import UTILS_Config
 
-ID_CREER_FAMILLE = wx.NewId()
-ID_MODIFIER_FAMILLE = wx.NewId()
-ID_SUPPRIMER_FAMILLE = wx.NewId()
+ID_CREER_FAMILLE = wx.Window.NewControlId()
+ID_MODIFIER_FAMILLE = wx.Window.NewControlId()
+ID_SUPPRIMER_FAMILLE = wx.Window.NewControlId()
 ID_OUVRIR_GRILLE = 60
 ID_OUVRIR_FICHE_IND = 70
-ID_PARAMETRES = wx.NewId()
-ID_OUTILS = wx.NewId()
+ID_PARAMETRES = wx.Window.NewControlId()
+ID_OUTILS = wx.Window.NewControlId()
 
-ID_ACTUALISER = wx.NewId()
-ID_IMPRIMER = wx.NewId()
-ID_APERCU = wx.NewId()
-ID_EXPORT_EXCEL = wx.NewId()
-ID_EXPORT_TEXTE = wx.NewId()
-ID_AIDE = wx.NewId()
+ID_ACTUALISER = wx.Window.NewControlId()
+ID_IMPRIMER = wx.Window.NewControlId()
+ID_APERCU = wx.Window.NewControlId()
+ID_EXPORT_EXCEL = wx.Window.NewControlId()
+ID_EXPORT_TEXTE = wx.Window.NewControlId()
+ID_AIDE = wx.Window.NewControlId()
 
 
 class ToolBar(wx.ToolBar):

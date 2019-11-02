@@ -377,7 +377,7 @@ class CadreIndividu():
         
         self.IDindividu = IDindividu
         self.dc = dc
-        self.IDobjet = wx.NewId()
+        self.IDobjet = wx.Window.NewControlId()
         self.listeTextes = listeTextes
         self.genre = genre
         self.photo = photo
@@ -760,7 +760,7 @@ class CTRL_Graphique(wx.ScrolledWindow):
             if numCol == 2 : xCentre += largeurCase + self.espaceHorizontalDefautCol2
         
         # Dessin des liens de cadres
-        dc.SetId(wx.NewId())
+        dc.SetId(wx.Window.NewControlId())
         self.DrawLiens(dc)
 
         if 'phoenix' not in wx.PlatformInfo:
@@ -770,7 +770,7 @@ class CTRL_Graphique(wx.ScrolledWindow):
         nbreLiensCouple = len(listeLiensCouple)
         for IDindividu1, IDindividu2 in listeLiensCouple :
             if IDindividu1 in self.dictCadres and IDindividu2 in self.dictCadres :
-                dc.SetId(wx.NewId())
+                dc.SetId(wx.Window.NewControlId())
                 decalage = 20 # Décalage de la ligne de lien par rapport au bord du cadre
                 listePoints = []
                 for IDindividu in (IDindividu1, IDindividu2) :
@@ -1164,7 +1164,7 @@ class CTRL_Graphique(wx.ScrolledWindow):
         menu = UTILS_Adaptations.Menu()
                         
         # Ajouter
-        id = wx.NewId()
+        id = wx.Window.NewControlId()
         item = wx.MenuItem(menu, id, _(u"Rattacher un individu"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Ajouter.png"), wx.BITMAP_TYPE_PNG))
         menu.AppendItem(item)
@@ -1175,14 +1175,14 @@ class CTRL_Graphique(wx.ScrolledWindow):
             menu.AppendSeparator()
             
             # Modifier
-            id = wx.NewId()
+            id = wx.Window.NewControlId()
             item = wx.MenuItem(menu, id, _(u"Modifier"))
             item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Modifier.png"), wx.BITMAP_TYPE_PNG))
             menu.AppendItem(item)
             self.Bind(wx.EVT_MENU, self.Modifier_menu, id=id)
             
             # Détacher ou supprimer
-            id = wx.NewId()
+            id = wx.Window.NewControlId()
             item = wx.MenuItem(menu, id, _(u"Détacher ou supprimer"))
             item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Supprimer.png"), wx.BITMAP_TYPE_PNG))
             menu.AppendItem(item)
@@ -1208,11 +1208,11 @@ class CTRL_Graphique(wx.ScrolledWindow):
             self.Bind(wx.EVT_MENU, self.Changer_categorie, id=603)
             if self.dictCadres[self.IDindividu_menu]["categorie"] == 3 : item.Check(True)
             
-            menu.AppendMenu(wx.NewId(), _(u"Changer de catégorie"), sousMenuCategorie)
+            menu.AppendMenu(wx.Window.NewControlId(), _(u"Changer de catégorie"), sousMenuCategorie)
             
             # Définir comme titulaire
             if self.dictCadres[self.IDindividu_menu]["categorie"] == 1 :
-                id = wx.NewId()
+                id = wx.Window.NewControlId()
                 item = wx.MenuItem(menu, id, _(u"Définir comme titulaire"), kind=wx.ITEM_CHECK)
                 menu.AppendItem(item)
                 self.Bind(wx.EVT_MENU, self.On_SetTitulaire, id=id)
@@ -1554,7 +1554,7 @@ class CTRL_Liste(HTL.HyperTreeList):
         menu = UTILS_Adaptations.Menu()
 
         # Ajouter
-        id = wx.NewId()
+        id = wx.Window.NewControlId()
         item = wx.MenuItem(menu, id, _(u"Rattacher un individu"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Ajouter.png"), wx.BITMAP_TYPE_PNG))
         menu.AppendItem(item)
@@ -1565,14 +1565,14 @@ class CTRL_Liste(HTL.HyperTreeList):
             menu.AppendSeparator()
             
             # Modifier
-            id = wx.NewId()
+            id = wx.Window.NewControlId()
             item = wx.MenuItem(menu, id, _(u"Modifier"))
             item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Modifier.png"), wx.BITMAP_TYPE_PNG))
             menu.AppendItem(item)
             self.Bind(wx.EVT_MENU, self.Modifier, id=id)
             
             # Détacher ou supprimer
-            id = wx.NewId()
+            id = wx.Window.NewControlId()
             item = wx.MenuItem(menu, id, _(u"Détacher ou supprimer"))
             item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Supprimer.png"), wx.BITMAP_TYPE_PNG))
             menu.AppendItem(item)
@@ -1598,11 +1598,11 @@ class CTRL_Liste(HTL.HyperTreeList):
             self.Bind(wx.EVT_MENU, self.Changer_categorie, id=603)
             if self.donnees.dictInfosIndividus[IDindividu]["categorie"] == 3 : item.Check(True)
             
-            menu.AppendMenu(wx.NewId(), _(u"Changer de catégorie"), sousMenuCategorie)
+            menu.AppendMenu(wx.Window.NewControlId(), _(u"Changer de catégorie"), sousMenuCategorie)
 
             # Définir comme titulaire
             if self.donnees.dictInfosIndividus[IDindividu]["categorie"] == 1 :
-                id = wx.NewId()
+                id = wx.Window.NewControlId()
                 item = wx.MenuItem(menu, id, _(u"Définir comme titulaire"), kind=wx.ITEM_CHECK)
                 menu.AppendItem(item)
                 self.Bind(wx.EVT_MENU, self.OnSetTitulaire, id=id)
@@ -1612,7 +1612,7 @@ class CTRL_Liste(HTL.HyperTreeList):
             if self.donnees.dictInfosIndividus[IDindividu]["inscriptions"] == True :
                 menu.AppendSeparator()
                 
-                id = wx.NewId()
+                id = wx.Window.NewControlId()
                 item = wx.MenuItem(menu, id, _(u"Grille des consommations"))
                 item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Calendrier.png"), wx.BITMAP_TYPE_PNG))
                 menu.AppendItem(item)

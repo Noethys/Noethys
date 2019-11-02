@@ -177,7 +177,7 @@ class ListView(FastObjectListView):
         menuPop = UTILS_Adaptations.Menu()
 
         # Aperçu sélection
-        id = wx.NewId()
+        id = wx.Window.NewControlId()
         item = wx.MenuItem(menuPop, id, _(u"Aperçu de la facture sélectionnée"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
@@ -185,14 +185,14 @@ class ListView(FastObjectListView):
         if ID == None : item.Enable(False)
 
         # Aperçu factures cochées
-        id = wx.NewId()
+        id = wx.Window.NewControlId()
         item = wx.MenuItem(menuPop, id, _(u"Aperçu des factures cochées"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.ApercuCoches, id=id)
 
         # Aperçu Toutes les factures
-        id = wx.NewId()
+        id = wx.Window.NewControlId()
         item = wx.MenuItem(menuPop, id, _(u"Aperçu de toutes les factures"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)

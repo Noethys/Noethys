@@ -53,22 +53,22 @@ else :
 # border is needed)
 BORDER = 5
 # Used by dialogs as a return code when a TimelineIOError has been raised
-ID_ERROR = wx.NewId()
+ID_ERROR = wx.Window.NewControlId()
 # Used by Sizer and Mover classes to detect when to go into action
 HIT_REGION_PX_WITH = 5
 
 
 
-ID_IMPRIMER = wx.NewId()
-ID_APERCU = wx.NewId()
-ID_IMAGE = wx.NewId()
-ID_GO_TODAY = wx.NewId()
-ID_GO_DATE = wx.NewId()
-ID_GO_ARRIERE = wx.NewId()
-ID_GO_AVANT = wx.NewId()
-ID_AFFICHE_ANNEE = wx.NewId()
-ID_AFFICHE_MOIS = wx.NewId()
-ID_AFFICHE_JOUR = wx.NewId()
+ID_IMPRIMER = wx.Window.NewControlId()
+ID_APERCU = wx.Window.NewControlId()
+ID_IMAGE = wx.Window.NewControlId()
+ID_GO_TODAY = wx.Window.NewControlId()
+ID_GO_DATE = wx.Window.NewControlId()
+ID_GO_ARRIERE = wx.Window.NewControlId()
+ID_GO_AVANT = wx.Window.NewControlId()
+ID_AFFICHE_ANNEE = wx.Window.NewControlId()
+ID_AFFICHE_MOIS = wx.Window.NewControlId()
+ID_AFFICHE_JOUR = wx.Window.NewControlId()
 
 
 class ToolBar(UTILS_Adaptations.ToolBar):
@@ -855,7 +855,7 @@ class DrawingArea(wx.Panel):
         menu = UTILS_Adaptations.Menu()
         for menu_definition in menu_definitions:
             text, method = menu_definition
-            menu_item = wx.MenuItem(menu, wx.NewId(), text)
+            menu_item = wx.MenuItem(menu, wx.Window.NewControlId(), text)
             self.Bind(wx.EVT_MENU, method, id=menu_item.GetId())
             menu.AppendItem(menu_item)
         self.PopupMenu(menu)
@@ -1006,7 +1006,7 @@ class DrawingArea(wx.Panel):
     def _slider_on_context_menu(self, evt):
         """A right click has occured in the divider-line slider."""
         menu = UTILS_Adaptations.Menu()
-        menu_item = wx.MenuItem(menu, wx.NewId(), "Center")
+        menu_item = wx.MenuItem(menu, wx.Window.NewControlId(), "Center")
         self.Bind(wx.EVT_MENU, self._context_menu_on_menu_center,
                   id=menu_item.GetId())
         menu.AppendItem(menu_item)

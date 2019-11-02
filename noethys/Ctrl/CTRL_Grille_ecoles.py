@@ -23,8 +23,8 @@ import GestionDB
 from Utils import UTILS_Dates
 from Utils.UTILS_Traduction import _
 
-ID_COCHER_TOUTES = wx.NewId()
-ID_COCHER_AUCUNE = wx.NewId()
+ID_COCHER_TOUTES = wx.Window.NewControlId()
+ID_COCHER_AUCUNE = wx.Window.NewControlId()
 
 
 class CTRL(HTL.HyperTreeList):

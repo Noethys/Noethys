@@ -25,12 +25,12 @@ from Outils import thumbnailctrl as TC
 import GestionDB
 
 
-ID_AJOUTER = wx.NewId() 
-ID_ROTATION_GAUCHE = wx.NewId() 
-ID_ROTATION_DROITE = wx.NewId() 
-ID_MODIFIER_LABEL = wx.NewId() 
-ID_SUPPRIMER = wx.NewId() 
-ID_VISUALISER = wx.NewId() 
+ID_AJOUTER = wx.Window.NewControlId()
+ID_ROTATION_GAUCHE = wx.Window.NewControlId()
+ID_ROTATION_DROITE = wx.Window.NewControlId()
+ID_MODIFIER_LABEL = wx.Window.NewControlId()
+ID_SUPPRIMER = wx.Window.NewControlId()
+ID_VISUALISER = wx.Window.NewControlId()
 
 
 DICT_TYPES = {

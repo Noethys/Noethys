@@ -32,15 +32,15 @@ def FormateCouleur(texte):
     return (r, v, b)
 
 
-ID_GRAS = wx.NewId()
-ID_ITALIQUE = wx.NewId()
-ID_SOULIGNE = wx.NewId()
-ID_COULEUR_POLICE = wx.NewId()
-ID_ALIGNER_GAUCHE = wx.NewId()
-ID_ALIGNER_CENTRE = wx.NewId()
-ID_ALIGNER_DROIT = wx.NewId()
-ID_RETRAIT_GAUCHE = wx.NewId()
-ID_RETRAIT_DROIT = wx.NewId()
+ID_GRAS = wx.Window.NewControlId()
+ID_ITALIQUE = wx.Window.NewControlId()
+ID_SOULIGNE = wx.Window.NewControlId()
+ID_COULEUR_POLICE = wx.Window.NewControlId()
+ID_ALIGNER_GAUCHE = wx.Window.NewControlId()
+ID_ALIGNER_CENTRE = wx.Window.NewControlId()
+ID_ALIGNER_DROIT = wx.Window.NewControlId()
+ID_RETRAIT_GAUCHE = wx.Window.NewControlId()
+ID_RETRAIT_DROIT = wx.Window.NewControlId()
 
 MOTSCLES = [
     ( "{ID_FAMILLE}", "IDfamille" ),
@@ -483,9 +483,15 @@ class Dialog(wx.Dialog):
         stream = six.BytesIO()
         if self.ctrl_texte == None and self.nb.GetPageCount()>0 :
             self.ctrl_texte = self.nb.GetPage(self.nb.GetSelection())
-        if not handler.SaveStream(self.ctrl_texte.GetBuffer(), stream):
-            return False
-        source = stream.getvalue() 
+
+        if 'phoenix' in wx.PlatformInfo:
+            if not handler.SaveFile(self.ctrl_texte.GetBuffer(), stream):
+                return False
+        else :
+            if not handler.SaveStream(self.ctrl_texte.GetBuffer(), stream):
+                return False
+
+        source = stream.getvalue()
         if six.PY2:
             source = source.decode("utf-8")
         return source

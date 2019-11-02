@@ -28,18 +28,18 @@ from Utils import UTILS_Transports
 from Outils import wxScheduler
 from Outils import wxReportScheduler
 
-ID_OUTIL_JOUR = wx.NewId()
-ID_OUTIL_SEMAINE = wx.NewId()
-ID_OUTIL_MOIS = wx.NewId()
-ID_OUTIL_HORIZONTAL = wx.NewId()
-ID_OUTIL_VERTICAL = wx.NewId()
-ID_OUTIL_RECULER = wx.NewId()
-ID_OUTIL_AVANCER = wx.NewId()
-ID_OUTIL_MOINS = wx.NewId()
-ID_OUTIL_PLUS = wx.NewId()
-ID_OUTIL_AUJOURDHUI = wx.NewId()
-ID_OUTIL_CHERCHER = wx.NewId()
-ID_OUTIL_APERCU = wx.NewId()
+ID_OUTIL_JOUR = wx.Window.NewControlId()
+ID_OUTIL_SEMAINE = wx.Window.NewControlId()
+ID_OUTIL_MOIS = wx.Window.NewControlId()
+ID_OUTIL_HORIZONTAL = wx.Window.NewControlId()
+ID_OUTIL_VERTICAL = wx.Window.NewControlId()
+ID_OUTIL_RECULER = wx.Window.NewControlId()
+ID_OUTIL_AVANCER = wx.Window.NewControlId()
+ID_OUTIL_MOINS = wx.Window.NewControlId()
+ID_OUTIL_PLUS = wx.Window.NewControlId()
+ID_OUTIL_AUJOURDHUI = wx.Window.NewControlId()
+ID_OUTIL_CHERCHER = wx.Window.NewControlId()
+ID_OUTIL_APERCU = wx.Window.NewControlId()
 
 
 def ConvertDateWXenDT(datewx=None):

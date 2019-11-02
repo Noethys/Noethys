@@ -1133,14 +1133,14 @@ class Tableau(gridlib.Grid):
         # Création du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
-        id = wx.NewId()
+        id = wx.Window.NewControlId()
         item = wx.MenuItem(menuPop, id, _(u"Insérer des lignes"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Ajouter_ligne.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Inserer, id=id)
 
-        id = wx.NewId()
+        id = wx.Window.NewControlId()
         item = wx.MenuItem(menuPop, id, _(u"Supprimer des lignes"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Supprimer_ligne.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
@@ -1150,7 +1150,7 @@ class Tableau(gridlib.Grid):
         menuPop.AppendSeparator()
 
         # Item Copier
-        id = wx.NewId()
+        id = wx.Window.NewControlId()
         item = wx.MenuItem(menuPop, id, _(u"Copier les cases"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Copier.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
@@ -1158,7 +1158,7 @@ class Tableau(gridlib.Grid):
         self.Bind(wx.EVT_MENU, self.Copier, id=id)
 
         # Item Coller
-        id = wx.NewId()
+        id = wx.Window.NewControlId()
         item = wx.MenuItem(menuPop, id, _(u"Coller les cases"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Coller.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)

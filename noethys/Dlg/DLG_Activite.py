@@ -266,7 +266,7 @@ class ClsCommune():
         # Création du menu Options
         menuPop = UTILS_Adaptations.Menu()
 
-        id = wx.NewId()
+        id = wx.Window.NewControlId()
         item = wx.MenuItem(menuPop, id, _(u"Paramètres P.S.U."), _(u"Renseigner les paramètres P.S.U."))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Contrat.png"), wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)

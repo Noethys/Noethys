@@ -15,7 +15,7 @@ class wxScheduler( wxSchedulerCore, scrolled.ScrolledPanel ):
 
         super( wxScheduler, self ).__init__( *args, **kwds )
 
-        timerId = wx.NewId()
+        timerId = wx.Window.NewControlId()
         self._sizeTimer = wx.Timer(self, timerId)
 
         self._frozen = False

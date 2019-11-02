@@ -1616,28 +1616,28 @@ class Dialog(wx.Dialog):
 
 
         # Installer
-        id = wx.NewId()
+        id = wx.Window.NewControlId()
         item = wx.MenuItem(menu, id, _(u"Installer"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Fleche_haut.png"), wx.BITMAP_TYPE_PNG))
         menu.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Installer, id=id)
 
         # Mettre à jour
-        id = wx.NewId()
+        id = wx.Window.NewControlId()
         item = wx.MenuItem(menu, id, _(u"Mettre à jour"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Actualiser2.png"), wx.BITMAP_TYPE_PNG))
         menu.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Update, id=id)
 
         # Upgrade DB
-        id = wx.NewId()
+        id = wx.Window.NewControlId()
         item = wx.MenuItem(menu, id, _(u"Forcer l'upgrade de la base de données"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Database.png"), wx.BITMAP_TYPE_PNG))
         menu.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.DemandeUpgradeDB, id=id)
 
         # Repair DB
-        id = wx.NewId()
+        id = wx.Window.NewControlId()
         item = wx.MenuItem(menu, id, _(u"Réparation de la base de données"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Database.png"), wx.BITMAP_TYPE_PNG))
         menu.AppendItem(item)
@@ -1647,13 +1647,13 @@ class Dialog(wx.Dialog):
 
         # AutoReload WSGI
         if dict_parametres["serveur_type"] == 2 :
-            id = wx.NewId()
+            id = wx.Window.NewControlId()
             item = wx.MenuItem(menu, id, _(u"AutoReload WSGI"))
             item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Actualiser.png"), wx.BITMAP_TYPE_PNG))
             menu.AppendItem(item)
             self.Bind(wx.EVT_MENU, self.AutoReloadWSGI, id=id)
 
-        id = wx.NewId()
+        id = wx.Window.NewControlId()
         item = wx.MenuItem(menu, id, _(u"Consulter le log du portail"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Log.png"), wx.BITMAP_TYPE_PNG))
         menu.AppendItem(item)
@@ -1662,14 +1662,14 @@ class Dialog(wx.Dialog):
         menu.AppendSeparator()
 
         # Importer config
-        id = wx.NewId()
+        id = wx.Window.NewControlId()
         item = wx.MenuItem(menu, id, _(u"Importer la configuration"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Document_import.png"), wx.BITMAP_TYPE_PNG))
         menu.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.ctrl_notebook.GetCtrlParametres().Importation_config, id=id)
 
         # Exporter config
-        id = wx.NewId()
+        id = wx.Window.NewControlId()
         item = wx.MenuItem(menu, id, _(u"Exporter la configuration"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Document_export.png"), wx.BITMAP_TYPE_PNG))
         menu.AppendItem(item)
@@ -1680,7 +1680,7 @@ class Dialog(wx.Dialog):
         if dict_parametres["serveur_type"] == 0 and self.server_ctrl != None :
 
             # Démarrer
-            id = wx.NewId()
+            id = wx.Window.NewControlId()
             item = wx.MenuItem(menu, id, _(u"Démarrer le serveur"))
             item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Play.png"), wx.BITMAP_TYPE_PNG))
             menu.AppendItem(item)
@@ -1695,7 +1695,7 @@ class Dialog(wx.Dialog):
                 item.Enable(False)
 
             # Arrêter
-            id = wx.NewId()
+            id = wx.Window.NewControlId()
             item = wx.MenuItem(menu, id, _(u"Arrêter le serveur"))
             item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Stop.png"), wx.BITMAP_TYPE_PNG))
             menu.AppendItem(item)
@@ -1712,14 +1712,14 @@ class Dialog(wx.Dialog):
             menu.AppendSeparator()
 
         # Synchroniser
-        id = wx.NewId()
+        id = wx.Window.NewControlId()
         item = wx.MenuItem(menu, id, _(u"Synchroniser les données"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Actualiser2.png"), wx.BITMAP_TYPE_PNG))
         menu.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Synchroniser, id=id)
 
         # Synchronisation complète
-        id = wx.NewId()
+        id = wx.Window.NewControlId()
         item = wx.MenuItem(menu, id, _(u"Forcer la synchronisation complète"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Actualiser2.png"), wx.BITMAP_TYPE_PNG))
         menu.AppendItem(item)
@@ -1728,7 +1728,7 @@ class Dialog(wx.Dialog):
         menu.AppendSeparator()
 
         # Traiter les données
-        id = wx.NewId()
+        id = wx.Window.NewControlId()
         item = wx.MenuItem(menu, id, _(u"Traiter les demandes"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Loupe.png"), wx.BITMAP_TYPE_PNG))
         menu.AppendItem(item)
@@ -1737,14 +1737,14 @@ class Dialog(wx.Dialog):
         menu.AppendSeparator()
 
         # Ouvrir Connecthys
-        id = wx.NewId()
+        id = wx.Window.NewControlId()
         item = wx.MenuItem(menu, id, _(u"Afficher Connecthys dans le navigateur"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Planete.png"), wx.BITMAP_TYPE_PNG))
         menu.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.OuvrirNavigateur, id=id)
 
         # Ouvrir les stats de Connecthys Easy
-        id = wx.NewId()
+        id = wx.Window.NewControlId()
         item = wx.MenuItem(menu, id, _(u"Afficher les statistiques dans le navigateur"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Barres.png"), wx.BITMAP_TYPE_PNG))
         menu.AppendItem(item)
