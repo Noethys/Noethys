@@ -28,7 +28,7 @@ import math
 import FonctionsPerso
 import sys
 import traceback
-
+import six
 import GestionDB
 from Utils import UTILS_Config
 from Utils import UTILS_Organisateur
@@ -489,7 +489,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             elif self.affichage_regroupement == "qf" and type(regroupement) == tuple : 
                 label = u"%d-%d" % regroupement
             else :
-                label = unicode(regroupement)
+                label = six.text_type(regroupement)
             
             self.SetRowLabelValue(index, label)
             self.SetRowSize(index, 30)

@@ -16,14 +16,11 @@ import wx
 from Ctrl import CTRL_Bouton_image
 import wx.html
 import wx.lib.filebrowsebutton as filebrowse
-
 if wx.VERSION < (2, 9, 0, 0) :
     from Outils import ultimatelistctrl as ULC
 else :
     from wx.lib.agw import ultimatelistctrl as ULC
-    
 import wx.lib.agw.hyperlink as Hyperlink
-
 import xlrd
 try:
     import unicodecsv as csv
@@ -33,12 +30,10 @@ import os
 import datetime
 import GestionDB
 from Ctrl import CTRL_Bandeau
-
 from Ctrl import CTRL_Saisie_adresse
 from Dlg import DLG_Famille
 from Utils import UTILS_Parametres
-
-
+import six
 from Utils import UTILS_Interface
 from Ctrl.CTRL_ObjectListView import ObjectListView, FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
@@ -203,7 +198,7 @@ class Importation_Excel() :
                         valeur = datetime.date(*dateTuple[:3])
                     # Nombre
                     if case.ctype == 2 :
-                        valeur = unicode(valeur)[:-2]
+                        valeur = six.text_type(valeur)[:-2]
                     ligne.append(valeur)
                 listeDonnees.append(ligne)
         except :

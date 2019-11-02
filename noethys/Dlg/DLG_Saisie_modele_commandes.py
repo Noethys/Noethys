@@ -345,7 +345,7 @@ class Dialog(wx.Dialog):
                 ("nom", dictColonne["nom"]),
                 ("largeur", dictColonne["largeur"]),
                 ("categorie", dictColonne["categorie"]),
-                ("parametres", unicode(dictColonne["parametres"])),
+                ("parametres", six.text_type(dictColonne["parametres"])),
                 ]
             if IDcolonne == None or IDcolonne < 0 :
                 newIDcolonne = DB.ReqInsert("modeles_commandes_colonnes", listeDonnees)
@@ -368,7 +368,7 @@ class Dialog(wx.Dialog):
                         listeNewID.append(IDcolonne)
                     if listeID != listeNewID :
                         dictColonne["parametres"]["colonnes"] = listeNewID
-                        listeDonnees = [("parametres", unicode(dictColonne["parametres"])),]
+                        listeDonnees = [("parametres", six.text_type(dictColonne["parametres"])),]
                         DB.ReqMAJ("modeles_commandes_colonnes", listeDonnees, "IDcolonne", dictColonne["IDcolonne"])
 
         # Suppression des colonnes obsolètes

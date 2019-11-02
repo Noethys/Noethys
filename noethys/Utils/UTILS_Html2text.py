@@ -27,7 +27,7 @@ except ImportError: #Python3
     from six.moves.urllib import parse as urlparse
     import html.parser as HTMLParser
 from six.moves import urllib
-import optparse, re, sys, codecs, types
+import optparse, re, sys, codecs, types, six
 
 try: from textwrap import wrap
 except: pass
@@ -243,7 +243,7 @@ class _html2text(HTMLParser.HTMLParser):
         else: self.out = out
         self.outtextlist = [] # empty list to store output characters before they are  "joined"
         try:
-            self.outtext = unicode()
+            self.outtext = six.text_type()
         except NameError: # Python3
             self.outtext = str()
         self.quiet = 0

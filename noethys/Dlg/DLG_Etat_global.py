@@ -15,7 +15,7 @@ import wx
 from Ctrl import CTRL_Bouton_image
 import datetime
 import sys
-
+import six
 import GestionDB
 from Ctrl import CTRL_Bandeau
 from Ctrl import CTRL_Selection_activites
@@ -842,7 +842,7 @@ class Dialog(wx.Dialog):
                     try :
                         valeur = self.Calcule_formule(formule=dictCalcul["formule"], debut=heure_debut, fin=heure_fin)
                     except Exception as err:
-                        dlg = wx.MessageDialog(self, unicode(err), _(u"Erreur de formule"), wx.OK | wx.ICON_ERROR)
+                        dlg = wx.MessageDialog(self, six.text_type(err), _(u"Erreur de formule"), wx.OK | wx.ICON_ERROR)
                         dlg.ShowModal()
                         dlg.Destroy()
                         return False
@@ -1002,7 +1002,7 @@ class Dialog(wx.Dialog):
             elif regroupement_principal == "age" :
                 label_regroupement = "%d ans" % regroupement
             else :
-                label_regroupement = unicode(regroupement)
+                label_regroupement = six.text_type(regroupement)
 
             if regroupement_principal != "aucun" and label_regroupement in ("None", "") :
                 label_regroupement = _(u"- Non renseigné -")

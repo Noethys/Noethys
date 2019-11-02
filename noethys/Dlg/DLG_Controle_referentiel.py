@@ -17,7 +17,7 @@ from Ctrl import CTRL_Bouton_image
 from Ctrl import CTRL_Bandeau
 from Utils import UTILS_Titulaires
 from Utils import UTILS_Customize
-
+import six
 import requests
 from xml.etree import ElementTree
 from difflib import SequenceMatcher
@@ -190,7 +190,7 @@ class Dialog(wx.Dialog):
         try :
             reponse = requests.get(url)
         except Exception as error :
-            self.ctrl_resultats.SetTexte(unicode(error))
+            self.ctrl_resultats.SetTexte(six.text_type(error))
             return
 
         # Si erreur

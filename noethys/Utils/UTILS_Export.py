@@ -68,7 +68,7 @@ def GetValeursGrid(grid=None):
         for numCol in range(0, grid.GetNumberCols()) :
             valeur = grid.GetCellValue(numLigne, numCol)
             if type(valeur) not in ("str", "unicode") :
-                valeur = unicode(valeur)
+                valeur = six.text_type(valeur)
             valeursLigne.append(valeur)
         listeValeurs.append(valeursLigne)
         
@@ -135,7 +135,7 @@ def ExportTexte(listview=None, grid=None, titre=u"", listeColonnes=None, listeVa
     separateur = ";"
     for labelCol, alignement, largeur, code in listeColonnes :
         try :
-            if "CheckState" in unicode(code) :
+            if "CheckState" in six.text_type(code) :
                 code = "Coche"
         except :
             pass
@@ -285,7 +285,7 @@ def ExportExcel(listview=None, grid=None, titre=_(u"Liste"), listeColonnes=None,
     y = 0
     for labelCol, alignement, largeur, nomChamp in listeColonnes :
         try :
-            if "CheckState" in unicode(nomChamp) :
+            if "CheckState" in six.text_type(nomChamp) :
                 nomChamp = "Coche"
         except :
             pass
@@ -347,7 +347,7 @@ def ExportExcel(listview=None, grid=None, titre=_(u"Liste"), listeColonnes=None,
         except :
             pass
 
-        return unicode(valeur), None
+        return six.text_type(valeur), None
 
     # -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -395,7 +395,7 @@ def ExportExcel(listview=None, grid=None, titre=_(u"Liste"), listeColonnes=None,
                 if valeur[2] == "/" and valeur[5] == "/" : return (valeur, styleDate)
                 if valeur[4] == "-" and valeur[7] == "-" : return (UTILS_Dates.DateEngFr(valeur), styleDate)
                 
-        return unicode(valeur), None
+        return six.text_type(valeur), None
 
     # -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 

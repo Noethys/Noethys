@@ -26,6 +26,7 @@ from Utils import UTILS_Dates
 from Utils import UTILS_Infos_individus
 from Utils import UTILS_Texte
 from Utils import UTILS_Titulaires
+import six
 
 
 def PeriodeComplete(mois, annee):
@@ -339,12 +340,12 @@ class CTRL(HTL.HyperTreeList):
                 # Questionnaires
                 if key_code.startswith("question_") and "famille" in key_code:
                     key = self.dictInfosFamilles[IDfamille]["QUESTION_%s" % key_code[17:]]
-                    key_label = unicode(key)
+                    key_label = six.text_type(key)
                     key_tri = key_label
 
                 if key_code.startswith("question_") and "individu" in key_code and IDindividu not in (0, None) :
                     key = self.dictInfosIndividus[IDindividu]["QUESTION_%s" % key_code[18:]]
-                    key_label = unicode(key)
+                    key_label = six.text_type(key)
                     key_tri = key_label
 
                 if key in ("", None) :

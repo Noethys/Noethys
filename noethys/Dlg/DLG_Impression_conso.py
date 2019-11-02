@@ -15,11 +15,9 @@ from Utils.UTILS_Traduction import _
 import wx
 from Ctrl import CTRL_Bouton_image
 import datetime
-
 import wx.lib.agw.hypertreelist as HTL
 from wx.lib.agw.customtreectrl import EVT_TREE_ITEM_CHECKED
 import wx.lib.platebtn as platebtn
-
 import FonctionsPerso
 import sys
 import operator
@@ -2428,7 +2426,7 @@ class Dialog(wx.Dialog):
                                                 donnee = ""
 
                                         if type_donnee == "unicode" :
-                                            ligne.append(Paragraph(unicode(donnee), styleNormal))
+                                            ligne.append(Paragraph(six.text_type(donnee), styleNormal))
                                         else :
                                             ligne.append(donnee)
 

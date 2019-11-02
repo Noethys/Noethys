@@ -790,11 +790,11 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                     if (numLigne, numColonne) in self.dictCases:
                         case = self.dictCases[(numLigne, numColonne)]
                         if case.ouvert == True :
-                            if unicode(case.GetValeur()) not in ("", "0"):
+                            if six.text_type(case.GetValeur()) not in ("", "0"):
                                 if case.IDvaleur == None :
-                                    listeAjouts.append((self.IDcommande, str(case.date), case.IDcolonne, unicode(case.GetValeur())))
+                                    listeAjouts.append((self.IDcommande, str(case.date), case.IDcolonne, six.text_type(case.GetValeur())))
                                 else :
-                                    listeModifications.append((str(case.date), case.IDcolonne, unicode(case.GetValeur()), case.IDvaleur))
+                                    listeModifications.append((str(case.date), case.IDcolonne, six.text_type(case.GetValeur()), case.IDvaleur))
                             else :
                                 if case.IDvaleur != None :
                                     listeSuppressions.append(case.IDvaleur)
@@ -963,7 +963,7 @@ class DLG_Saisie_valeur(wx.Dialog):
         # Init
         self.ctrl_valeur.SetValue(valeur)
         self.ctrl_valeur.SetFocus()
-        self.ctrl_valeur.SetSelection(0, len(unicode(valeur)))
+        self.ctrl_valeur.SetSelection(0, len(six.text_type(valeur)))
 
 
     def __set_properties(self):

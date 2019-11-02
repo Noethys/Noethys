@@ -23,7 +23,7 @@ from Utils import UTILS_Fichiers
 from Utils import UTILS_Customize
 from Utils import UTILS_Portail_synchro
 from Dlg.DLG_Portail_config import LISTE_DELAIS_SYNCHRO
-
+import six
 CUSTOMIZE = UTILS_Customize.Customize()
 
 class Abort(Exception):
@@ -412,10 +412,10 @@ class Panel(wx.Panel):
             if self.lock.acquire(block) == True:
                 try :
                     texte += u"[%s] %s" % (horodatage, message)
-                    file_log.write(unicode(texte).encode('UTF-8'))
+                    file_log.write(six.text_type(texte).encode('UTF-8'))
                 except :
                     texte += u"[%s] %s" % (horodatage, str(message).decode('iso-8859-1'))
-                    file_log.write(unicode(texte).encode('UTF-8'))
+                    file_log.write(six.text_type(texte).encode('UTF-8'))
 
                 file_log.close()
                 self.lock.release()

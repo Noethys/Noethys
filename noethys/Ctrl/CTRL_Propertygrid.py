@@ -19,7 +19,7 @@ from Ctrl import CTRL_Saisie_date
 import sys
 import datetime
 import wx.propgrid as wxpg
-
+import six
 import GestionDB
 from Utils import UTILS_Dates
 from Utils import UTILS_Parametres
@@ -236,7 +236,7 @@ class Propriete_liste(ArrayStringProperty):
             if not delim:
                 delim = ','
 
-        ls = [unicode(x) for x in self.GetValue()]
+        ls = [six.text_type(x) for x in self.GetValue()]
         if delim == '"' or delim == "'":
             text = ' '.join(['%s%s%s'%(delim,a,delim) for a in ls])
         else:

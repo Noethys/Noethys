@@ -274,7 +274,7 @@ def GetParametres(IDprofil=None):
         if type_donnee == "texte":
             parametre = parametre
         else :
-            parametre = eval(parametre)
+            parametre = eval(six.text_type(parametre))
         dictResultats[nom] = parametre
 
     return dictResultats

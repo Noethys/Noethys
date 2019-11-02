@@ -1161,7 +1161,7 @@ class Dialog(wx.Dialog):
 
     def OnBoutonAide(self, event):
         # Envoie les modification  dans le clipboard
-        texte = unicode(self.GetProfilOptions())
+        texte = six.text_type(self.GetProfilOptions())
         clipdata = wx.TextDataObject()
         clipdata.SetText(texte)
         wx.TheClipboard.Open()
