@@ -131,29 +131,18 @@ def Sauvegarde(listeFichiersLocaux=[], listeFichiersReseau=[], nom="", repertoir
             dlgprogress.Update(numEtape, _(u"Compression du fichier %s...") % nomFichier);numEtape += 1
             fichierSave = u"%s/%s.sql" % (repTemp, nomFichier)
 
-            # if "linux" in sys.platform :
-            #     args = u""""%sbin/mysqldump" --defaults-extra-file=%s --single-transaction --opt --databases %s > %s""" % (repMySQL, nomFichierLoginTemp, nomFichier, fichierSave)
-            # else :
-            #     args = [
-            #         "%sbin/mysqldump" % repMySQL,
-            #         "--defaults-extra-file=%s" % nomFichierLoginTemp,
-            #         "--single-transaction",
-            #         "--opt",
-            #         "--databases",
-            #         nomFichier,
-            #         ">",
-            #         fichierSave,
-            #         ]
-
             args = u""""%sbin/mysqldump" --defaults-extra-file="%s" --single-transaction --opt --databases %s > "%s" """ % (repMySQL, nomFichierLoginTemp, nomFichier, fichierSave)
             print(("Chemin mysqldump =", args))
-            proc = subprocess.Popen(args.encode('utf8'), shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, stdin=subprocess.PIPE)
+            if six.PY2:
+                args = args.encode('utf8')
+            proc = subprocess.Popen(args, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, stdin=subprocess.PIPE)
             out, temp = proc.communicate()
-            
-            if out != "" :
+
+            if out not in ("", b""):
                 print((out,))
                 try :
-                    out = str(out).decode("iso-8859-15")
+                    if six.PY2:
+                        out = str(out).decode("iso-8859-15")
                 except :
                     pass
                 dlgprogress.Destroy()
@@ -169,7 +158,8 @@ def Sauvegarde(listeFichiersLocaux=[], listeFichiersReseau=[], nom="", repertoir
                 dlgprogress.Destroy()
                 print(("insertion sql dans zip : ", err,))
                 try :
-                    err = str(err).decode("iso-8859-15")
+                    if six.PY2:
+                        err = str(err).decode("iso-8859-15")
                 except :
                     pass
                 dlgErreur = wx.MessageDialog(None, _(u"Une erreur est survenue dans la sauvegarde !\n\nErreur : %s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
@@ -222,7 +212,8 @@ def Sauvegarde(listeFichiersLocaux=[], listeFichiersReseau=[], nom="", repertoir
         except Exception as err:
             dlgprogress.Destroy()
             print((err,))
-            err = str(err).decode("iso-8859-15")
+            if six.PY2:
+                err = str(err).decode("iso-8859-15")
             dlgErreur = wx.MessageDialog(None, _(u"Une erreur a été détectée dans l'envoi par Email !\n\nErreur : %s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
             dlgErreur.ShowModal() 
             dlgErreur.Destroy()
@@ -263,7 +254,7 @@ def Restauration(parent=None, fichier="", listeFichiersLocaux=[], listeFichiersR
     fichierZip = zipfile.ZipFile(fichier, "r")
     #fichierZip = MyZipFile(fichier, "r")
 
-    # Restauration des fichiers locaux Sqlite --------------------------------------------------------------------------------------------------------------------------------------
+    # Restauration des fichiers locaux Sqlite ------------------------------------------------------------------------------
     if len(listeFichiersLocaux) > 0 :
 
         # Vérifie qu'on les remplace bien
@@ -353,7 +344,7 @@ def Restauration(parent=None, fichier="", listeFichiersLocaux=[], listeFichiersR
         dlgprogress = wx.ProgressDialog(_(u"Merci de patienter"), _(u"Lancement de la restauration..."), maximum=nbreEtapes, parent=parent, style= wx.PD_SMOOTH | wx.PD_AUTO_HIDE | wx.PD_APP_MODAL)
         numEtape = 1
 
-        for fichier in listeFichiersReseau :
+        for fichier in listeFichiersReseau:
             fichier = fichier[:-4]
             
             # Création de la base si elle n'existe pas
@@ -375,12 +366,15 @@ def Restauration(parent=None, fichier="", listeFichiersLocaux=[], listeFichiersR
 
             args = u""""%sbin/mysql" --defaults-extra-file="%s" %s < "%s" """ % (repMySQL, nomFichierLoginTemp, fichier, fichierRestore)
             print(("Chemin mysql =", args))
-            proc = subprocess.Popen(args.encode("iso-8859-15"), shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, stdin=subprocess.PIPE)
+            if six.PY2:
+                args = args.encode("iso-8859-15")
+            proc = subprocess.Popen(args, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, stdin=subprocess.PIPE)
             out, temp = proc.communicate()
 
-            if out != "" :
+            if out not in ("", b"") :
                 print(("subprocess de restauration mysql :", out))
-                out = str(out).decode("iso-8859-15")
+                if six.PY2:
+                    out = str(out).decode("iso-8859-15")
                 dlgprogress.Destroy()
                 dlgErreur = wx.MessageDialog(None, _(u"Une erreur a été détectée dans la procédure de restauration !\n\nErreur : %s") % out, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
                 dlgErreur.ShowModal() 
