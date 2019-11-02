@@ -173,9 +173,9 @@ def GetNomsChampsPossibles(mode="individu+famille"):
 
     # Rattachements
     listeRattachements = [
-            ("REPRESENTANT_RATTACHE_x", _(u"le représentant rattaché n°x")),
-            ("ENFANT_RATTACHE_x", _(u"l'enfant rattaché n°x")),
-            ("CONTACT_RATTACHE_x", _(u"le contact rattaché n°x")),
+            ("REPRESENTANT_RATTACHE_x", _(u"représentant rattaché n°x")),
+            ("ENFANT_RATTACHE_x", _(u"enfant rattaché n°x")),
+            ("CONTACT_RATTACHE_x", _(u"contact rattaché n°x")),
             ]
     listeChampsRattachements = [
             (_(u"Nombre de représentants rattachés à la famille"), u"2", "{NBRE_REPRESENTANTS_RATTACHES}"),
