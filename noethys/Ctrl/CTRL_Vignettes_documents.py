@@ -25,12 +25,6 @@ from Outils import thumbnailctrl as TC
 import GestionDB
 
 
-ID_AJOUTER = wx.Window.NewControlId()
-ID_ROTATION_GAUCHE = wx.Window.NewControlId()
-ID_ROTATION_DROITE = wx.Window.NewControlId()
-ID_MODIFIER_LABEL = wx.Window.NewControlId()
-ID_SUPPRIMER = wx.Window.NewControlId()
-ID_VISUALISER = wx.Window.NewControlId()
 
 
 DICT_TYPES = {
@@ -366,6 +360,13 @@ Tous les fichiers (*.*)|*.*"
         
     def ContextMenu(self):
         menu = UTILS_Adaptations.Menu()
+
+        ID_AJOUTER = wx.Window.NewControlId()
+        ID_ROTATION_GAUCHE = wx.Window.NewControlId()
+        ID_ROTATION_DROITE = wx.Window.NewControlId()
+        ID_MODIFIER_LABEL = wx.Window.NewControlId()
+        ID_SUPPRIMER = wx.Window.NewControlId()
+        ID_VISUALISER = wx.Window.NewControlId()
 
         item = wx.MenuItem(menu, ID_AJOUTER, _(u"Ajouter des documents"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Ajouter.png"), wx.BITMAP_TYPE_PNG))

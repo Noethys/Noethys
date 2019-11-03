@@ -34,36 +34,6 @@ from Ol import OL_Raccourcis_grille
 from Ctrl import CTRL_Etiquettes
 
 
-ID_AFFICHAGE_PERSPECTIVE_DEFAUT = wx.Window.NewControlId()
-ID_PREMIERE_PERSPECTIVE = 500
-ID_AFFICHAGE_PERSPECTIVE_SAVE = wx.Window.NewControlId()
-ID_AFFICHAGE_PERSPECTIVE_SUPPR = wx.Window.NewControlId()
-ID_AFFICHAGE_PANNEAUX = 600
-ID_AFFICHAGE_PARAMETRES = wx.Window.NewControlId()
-ID_AFFICHE_COLONNE_MEMO = wx.Window.NewControlId()
-ID_AFFICHE_COLONNE_TRANSPORTS = wx.Window.NewControlId()
-ID_BLOCAGE_SI_COMPLET = wx.Window.NewControlId()
-ID_AFFICHE_SANS_PRESTATION = wx.Window.NewControlId()
-
-ID_OUTILS_SAISIE_FORFAIT = wx.Window.NewControlId()
-ID_OUTILS_RECALCUL = wx.Window.NewControlId()
-ID_OUTILS_LOT = wx.Window.NewControlId()
-ID_OUTILS_LOT_SAISIE = wx.Window.NewControlId()
-ID_OUTILS_LOT_MODIF = wx.Window.NewControlId()
-ID_OUTILS_LOT_SUPPR = wx.Window.NewControlId()
-ID_OUTILS_IMPRIMER_CONSO = wx.Window.NewControlId()
-ID_OUTILS_ENVOYER_CONSO = wx.Window.NewControlId()
-ID_OUTILS_TOUT_SELECTIONNER = wx.Window.NewControlId()
-ID_OUTILS_TOUT_DESELECTIONNER = wx.Window.NewControlId()
-ID_OUTILS_CONVERTIR_ETAT = wx.Window.NewControlId()
-ID_OUTILS_RECOPIAGE = wx.Window.NewControlId()
-
-ID_MODE_RESERVATION = wx.Window.NewControlId()
-ID_MODE_ATTENTE = wx.Window.NewControlId()
-ID_MODE_REFUS = wx.Window.NewControlId()
-
-
-
 
 
 
@@ -231,10 +201,14 @@ class PanelGrille(wx.Panel):
         except :
             self.barreOutils.AddSeparator()
 
+        self.ID_MODE_RESERVATION = wx.Window.NewControlId()
+        self.ID_MODE_ATTENTE = wx.Window.NewControlId()
+        self.ID_MODE_REFUS = wx.Window.NewControlId()
+
         liste_tools = [
-            (ID_MODE_RESERVATION, _(u"Réservation"), CTRL_Grille.COULEUR_RESERVATION, _(u"Mode de saisie 'Réservation'")),
-            (ID_MODE_ATTENTE, _(u"Attente"), CTRL_Grille.COULEUR_ATTENTE, _(u"Mode de saisie 'Attente'")),
-            (ID_MODE_REFUS, _(u"Refus"), CTRL_Grille.COULEUR_REFUS, _(u"Mode de saisie 'Refus'")),
+            (self.ID_MODE_RESERVATION, _(u"Réservation"), CTRL_Grille.COULEUR_RESERVATION, _(u"Mode de saisie 'Réservation'")),
+            (self.ID_MODE_ATTENTE, _(u"Attente"), CTRL_Grille.COULEUR_ATTENTE, _(u"Mode de saisie 'Attente'")),
+            (self.ID_MODE_REFUS, _(u"Refus"), CTRL_Grille.COULEUR_REFUS, _(u"Mode de saisie 'Refus'")),
         ]
         for ID, label, couleur, help in liste_tools :
             if 'phoenix' in wx.PlatformInfo:
@@ -293,9 +267,9 @@ class PanelGrille(wx.Panel):
         self.listeSelectionActivites = listeActivites
 
     def GetMode(self):
-        if self.barreOutils.GetToolState(ID_MODE_RESERVATION) == True : return "reservation"
-        if self.barreOutils.GetToolState(ID_MODE_ATTENTE) == True : return "attente"
-        if self.barreOutils.GetToolState(ID_MODE_REFUS) == True : return "refus"
+        if self.barreOutils.GetToolState(self.ID_MODE_RESERVATION) == True : return "reservation"
+        if self.barreOutils.GetToolState(self.ID_MODE_ATTENTE) == True : return "attente"
+        if self.barreOutils.GetToolState(self.ID_MODE_REFUS) == True : return "refus"
 
 
 
@@ -523,7 +497,18 @@ class Dialog(wx.Dialog):
     def MenuOptions(self):
         # Création du menu Options
         menuPop = UTILS_Adaptations.Menu()
-    
+
+        ID_AFFICHAGE_PERSPECTIVE_DEFAUT = wx.Window.NewControlId()
+        ID_PREMIERE_PERSPECTIVE = 500
+        ID_AFFICHAGE_PERSPECTIVE_SAVE = wx.Window.NewControlId()
+        ID_AFFICHAGE_PERSPECTIVE_SUPPR = wx.Window.NewControlId()
+        ID_AFFICHAGE_PANNEAUX = 600
+        ID_AFFICHAGE_PARAMETRES = wx.Window.NewControlId()
+        ID_AFFICHE_COLONNE_MEMO = wx.Window.NewControlId()
+        ID_AFFICHE_COLONNE_TRANSPORTS = wx.Window.NewControlId()
+        ID_BLOCAGE_SI_COMPLET = wx.Window.NewControlId()
+        ID_AFFICHE_SANS_PRESTATION = wx.Window.NewControlId()
+
         item = wx.MenuItem(menuPop, ID_AFFICHAGE_PERSPECTIVE_DEFAUT, _(u"Disposition par défaut"), _(u"Afficher la disposition par défaut"), wx.ITEM_CHECK)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.On_affichage_perspective_defaut, id=ID_AFFICHAGE_PERSPECTIVE_DEFAUT)
@@ -607,7 +592,16 @@ class Dialog(wx.Dialog):
     def MenuOutils(self):
         # Création du menu Outils
         menuPop = UTILS_Adaptations.Menu()
-            
+
+        ID_OUTILS_SAISIE_FORFAIT = wx.Window.NewControlId()
+        ID_OUTILS_RECALCUL = wx.Window.NewControlId()
+        ID_OUTILS_IMPRIMER_CONSO = wx.Window.NewControlId()
+        ID_OUTILS_ENVOYER_CONSO = wx.Window.NewControlId()
+        ID_OUTILS_TOUT_SELECTIONNER = wx.Window.NewControlId()
+        ID_OUTILS_TOUT_DESELECTIONNER = wx.Window.NewControlId()
+        ID_OUTILS_CONVERTIR_ETAT = wx.Window.NewControlId()
+        ID_OUTILS_RECOPIAGE = wx.Window.NewControlId()
+
         item = wx.MenuItem(menuPop, ID_OUTILS_SAISIE_FORFAIT, _(u"Appliquer des forfaits datés"), _(u"Appliquer des forfaits datés"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Forfait.png"), wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)

@@ -23,8 +23,6 @@ import GestionDB
 from Utils import UTILS_Dates
 from Utils.UTILS_Traduction import _
 
-ID_COCHER_TOUTES = wx.Window.NewControlId()
-ID_COCHER_AUCUNE = wx.Window.NewControlId()
 
 
 class CTRL(HTL.HyperTreeList):
@@ -90,9 +88,12 @@ class CTRL(HTL.HyperTreeList):
     def OnContextMenu(self, event):
         menu = UTILS_Adaptations.Menu()
 
+        self.ID_COCHER_TOUTES = wx.Window.NewControlId()
+        self.ID_COCHER_AUCUNE = wx.Window.NewControlId()
+
         # Ajouter les éléments au menu
         item = wx.MenuItem(
-            menu, ID_COCHER_TOUTES, u"Tout cocher",
+            menu, self.ID_COCHER_TOUTES, u"Tout cocher",
             u"Cocher toutes les écoles et classes",
         )
         item.SetBitmap(wx.Bitmap(
@@ -101,7 +102,7 @@ class CTRL(HTL.HyperTreeList):
         ))
         menu.AppendItem(item)
         item = wx.MenuItem(
-            menu, ID_COCHER_AUCUNE, u"Tout décocher",
+            menu, self.ID_COCHER_AUCUNE, u"Tout décocher",
             u"Décocher toutes les écoles et classes",
         )
         item.SetBitmap(wx.Bitmap(
@@ -111,8 +112,8 @@ class CTRL(HTL.HyperTreeList):
         menu.AppendItem(item)
 
         # Attache les événements
-        wx.EVT_MENU(menu, ID_COCHER_TOUTES, self.OnCocher)
-        wx.EVT_MENU(menu, ID_COCHER_AUCUNE, self.OnCocher)
+        wx.EVT_MENU(menu, self.ID_COCHER_TOUTES, self.OnCocher)
+        wx.EVT_MENU(menu, self.ID_COCHER_AUCUNE, self.OnCocher)
 
         # Affiche le menu
         self.PopupMenu(menu, event.GetPoint())
@@ -120,9 +121,9 @@ class CTRL(HTL.HyperTreeList):
 
     def OnCocher(self, event):
         ID = event.GetId()
-        if ID == ID_COCHER_TOUTES:
+        if ID == self.ID_COCHER_TOUTES:
             self.CocheListeTout()
-        elif ID == ID_COCHER_AUCUNE:
+        elif ID == self.ID_COCHER_AUCUNE:
             self.CocheListeRien()
         else:
             return

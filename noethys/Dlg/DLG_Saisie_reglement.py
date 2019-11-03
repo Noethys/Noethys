@@ -39,9 +39,6 @@ from Ctrl import CTRL_Ventilation
 
 from Dlg import DLG_Messagebox
 
-ID_OPTION_BLOQUER_VENTILATION = wx.Window.NewControlId()
-
-
 
 def DateEngFr(textDate):
     text = str(textDate[8:10]) + u"/" + str(textDate[5:7]) + u"/" + str(textDate[:4])
@@ -1127,7 +1124,9 @@ class Dialog(wx.Dialog):
     def OnBoutonOptions(self, event):
         # Création du menu Options
         menuPop = UTILS_Adaptations.Menu()
-    
+
+        ID_OPTION_BLOQUER_VENTILATION = wx.Window.NewControlId()
+
         item = wx.MenuItem(menuPop, ID_OPTION_BLOQUER_VENTILATION, _(u"Bloquer la ventilation lorsque le crédit est épuisé"), _(u"Bloquer la ventilation lorsque le crédit est épuisé"), wx.ITEM_CHECK)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.On_option_bloquer_ventilation, id=ID_OPTION_BLOQUER_VENTILATION)

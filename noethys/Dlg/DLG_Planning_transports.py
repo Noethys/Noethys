@@ -28,18 +28,6 @@ from Utils import UTILS_Transports
 from Outils import wxScheduler
 from Outils import wxReportScheduler
 
-ID_OUTIL_JOUR = wx.Window.NewControlId()
-ID_OUTIL_SEMAINE = wx.Window.NewControlId()
-ID_OUTIL_MOIS = wx.Window.NewControlId()
-ID_OUTIL_HORIZONTAL = wx.Window.NewControlId()
-ID_OUTIL_VERTICAL = wx.Window.NewControlId()
-ID_OUTIL_RECULER = wx.Window.NewControlId()
-ID_OUTIL_AVANCER = wx.Window.NewControlId()
-ID_OUTIL_MOINS = wx.Window.NewControlId()
-ID_OUTIL_PLUS = wx.Window.NewControlId()
-ID_OUTIL_AUJOURDHUI = wx.Window.NewControlId()
-ID_OUTIL_CHERCHER = wx.Window.NewControlId()
-ID_OUTIL_APERCU = wx.Window.NewControlId()
 
 
 def ConvertDateWXenDT(datewx=None):
@@ -72,7 +60,20 @@ class ToolBar(wx.ToolBar):
         wx.ToolBar.__init__(self, parent, style=wx.TB_FLAT|wx.TB_TEXT)
         self.parent = parent
         self.periodCount = 1
-        
+
+        ID_OUTIL_JOUR = wx.Window.NewControlId()
+        ID_OUTIL_SEMAINE = wx.Window.NewControlId()
+        ID_OUTIL_MOIS = wx.Window.NewControlId()
+        ID_OUTIL_HORIZONTAL = wx.Window.NewControlId()
+        ID_OUTIL_VERTICAL = wx.Window.NewControlId()
+        ID_OUTIL_RECULER = wx.Window.NewControlId()
+        ID_OUTIL_AVANCER = wx.Window.NewControlId()
+        ID_OUTIL_MOINS = wx.Window.NewControlId()
+        ID_OUTIL_PLUS = wx.Window.NewControlId()
+        ID_OUTIL_AUJOURDHUI = wx.Window.NewControlId()
+        ID_OUTIL_CHERCHER = wx.Window.NewControlId()
+        ID_OUTIL_APERCU = wx.Window.NewControlId()
+
         # Boutons
         self.AddLabelTool(ID_OUTIL_JOUR, _(u"Jour"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Calendrier_jour.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_RADIO, _(u"Affichage quotidien"), "")
         self.AddLabelTool(ID_OUTIL_SEMAINE, _(u"Semaine"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Calendrier_semaine.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_RADIO, _(u"Affichage hebdomadaire"), "")

@@ -19,10 +19,6 @@ from Ol import OL_Operations_budgetaires
 import GestionDB
 
 
-ID_AJOUTER_DEBIT = wx.Window.NewControlId()
-ID_AJOUTER_CREDIT = wx.Window.NewControlId()
-
-
 
 class Dialog(wx.Dialog):
     def __init__(self, parent):
@@ -43,6 +39,9 @@ class Dialog(wx.Dialog):
             | wx.TB_HORZ_LAYOUT
             | wx.TB_NODIVIDER
             )
+
+        ID_AJOUTER_DEBIT = wx.Window.NewControlId()
+        ID_AJOUTER_CREDIT = wx.Window.NewControlId()
 
         self.barreOutils.AddLabelTool(ID_AJOUTER_DEBIT, label=_(u"Ajouter un débit"), bitmap=wx.Bitmap(Chemins.GetStaticPath("Images/22x22/Addition.png"), wx.BITMAP_TYPE_PNG), shortHelp=_(u"Ajouter une opération au débit"), longHelp=_(u"Ajouter une opération au débit"))
         self.barreOutils.AddLabelTool(ID_AJOUTER_CREDIT, label=_(u"Ajouter un crédit"), bitmap=wx.Bitmap(Chemins.GetStaticPath("Images/22x22/Addition.png"), wx.BITMAP_TYPE_PNG), shortHelp=_(u"Ajouter une opération au crédit"), longHelp=_(u"Ajouter une opération au crédit"))

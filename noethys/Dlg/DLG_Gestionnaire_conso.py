@@ -34,38 +34,6 @@ from Ctrl import CTRL_Etiquettes
 from Ol import OL_Legende_grille
 from Ol import OL_Raccourcis_grille
 
-ID_AJOUTER_INDIVIDU = wx.Window.NewControlId()
-ID_AFFICHER_TOUS_INSCRITS = wx.Window.NewControlId()
-ID_MODE_RESERVATION = wx.Window.NewControlId()
-ID_MODE_ATTENTE = wx.Window.NewControlId()
-ID_MODE_REFUS = wx.Window.NewControlId()
-
-ID_AFFICHAGE_PERSPECTIVE_DEFAUT = wx.Window.NewControlId()
-ID_PREMIERE_PERSPECTIVE = 500
-ID_AFFICHAGE_PERSPECTIVE_SAVE = wx.Window.NewControlId()
-ID_AFFICHAGE_PERSPECTIVE_SUPPR = wx.Window.NewControlId()
-ID_AFFICHAGE_PANNEAUX = 600
-ID_AFFICHAGE_LARGEUR_UNITE = wx.Window.NewControlId()
-ID_AFFICHAGE_PARAMETRES = wx.Window.NewControlId()
-ID_AFFICHE_COLONNE_MEMO = wx.Window.NewControlId()
-ID_AFFICHE_COLONNE_TRANSPORTS = wx.Window.NewControlId()
-ID_BLOCAGE_SI_COMPLET = wx.Window.NewControlId()
-ID_AFFICHE_SANS_PRESTATION = wx.Window.NewControlId()
-ID_COCHER_ACTIVITES = wx.Window.NewControlId()
-ID_AFFICHE_SANS_PRESTATION = wx.Window.NewControlId()
-ID_FORMAT_LABEL_LIGNE_MENU = wx.Window.NewControlId()
-ID_FORMAT_LABEL_LIGNE_1 = wx.Window.NewControlId()
-ID_FORMAT_LABEL_LIGNE_2 = wx.Window.NewControlId()
-ID_FORMAT_LABEL_LIGNE_3 = wx.Window.NewControlId()
-ID_FORMAT_LABEL_LIGNE_4 = wx.Window.NewControlId()
-
-ID_OUTILS_SAISIE_FORFAIT = wx.Window.NewControlId()
-ID_OUTILS_RECALCUL = wx.Window.NewControlId()
-ID_OUTILS_IMPRIMER_CONSO = wx.Window.NewControlId()
-ID_OUTILS_CONVERTIR_ETAT = wx.Window.NewControlId()
-ID_OUTILS_RECOPIAGE = wx.Window.NewControlId()
-ID_OUTILS_TOUT_SELECTIONNER = wx.Window.NewControlId()
-ID_OUTILS_TOUT_DESELECTIONNER = wx.Window.NewControlId()
 
 
 def DateComplete(dateDD):
@@ -317,6 +285,12 @@ class PanelGrille(wx.Panel):
         self.ctrl_recherche = CTRL_Grille.BarreRecherche(self.barreOutils, ctrl_grille=self.grille)
         self.barreOutils.AddControl(self.ctrl_recherche)
 
+        ID_AJOUTER_INDIVIDU = wx.Window.NewControlId()
+        ID_AFFICHER_TOUS_INSCRITS = wx.Window.NewControlId()
+        self.ID_MODE_RESERVATION = wx.Window.NewControlId()
+        self.ID_MODE_ATTENTE = wx.Window.NewControlId()
+        self.ID_MODE_REFUS = wx.Window.NewControlId()
+
         AddTool(self.barreOutils, ID_AJOUTER_INDIVIDU, label=_(u"Ajouter un individu"), bitmap=wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Femme.png"), wx.BITMAP_TYPE_PNG))
         AddTool(self.barreOutils, ID_AFFICHER_TOUS_INSCRITS, label=_(u"Afficher tous les inscrits"), bitmap=wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Famille.png"), wx.BITMAP_TYPE_PNG))
 
@@ -325,9 +299,9 @@ class PanelGrille(wx.Panel):
         except:
             self.barreOutils.AddSeparator()
 
-        AddTool(self.barreOutils, ID_MODE_RESERVATION, label=_(u"Réservation"), bitmap=CTRL_Grille.CreationImage(10, 20, CTRL_Grille.COULEUR_RESERVATION), kind=wx.ITEM_RADIO)
-        AddTool(self.barreOutils, ID_MODE_ATTENTE, label=_(u"Attente"), bitmap=CTRL_Grille.CreationImage(10, 20, CTRL_Grille.COULEUR_ATTENTE), kind=wx.ITEM_RADIO)
-        AddTool(self.barreOutils, ID_MODE_REFUS, label=_(u"Refus"), bitmap=CTRL_Grille.CreationImage(10, 20, CTRL_Grille.COULEUR_REFUS), kind=wx.ITEM_RADIO)
+        AddTool(self.barreOutils, self.ID_MODE_RESERVATION, label=_(u"Réservation"), bitmap=CTRL_Grille.CreationImage(10, 20, CTRL_Grille.COULEUR_RESERVATION), kind=wx.ITEM_RADIO)
+        AddTool(self.barreOutils, self.ID_MODE_ATTENTE, label=_(u"Attente"), bitmap=CTRL_Grille.CreationImage(10, 20, CTRL_Grille.COULEUR_ATTENTE), kind=wx.ITEM_RADIO)
+        AddTool(self.barreOutils, self.ID_MODE_REFUS, label=_(u"Refus"), bitmap=CTRL_Grille.CreationImage(10, 20, CTRL_Grille.COULEUR_REFUS), kind=wx.ITEM_RADIO)
 
         self.Bind(wx.EVT_TOOL, self.AjouterIndividu, id=ID_AJOUTER_INDIVIDU)
         self.Bind(wx.EVT_TOOL, self.AfficherTousInscrits, id=ID_AFFICHER_TOUS_INSCRITS)
@@ -508,11 +482,11 @@ class PanelGrille(wx.Panel):
         self.grille.SetModeDate(self.listeActivites, self.listeSelectionIndividus, self.date)
 
     def GetMode(self):
-        if self.barreOutils.GetToolState(ID_MODE_RESERVATION) == True:
+        if self.barreOutils.GetToolState(self.ID_MODE_RESERVATION) == True:
             return "reservation"
-        if self.barreOutils.GetToolState(ID_MODE_ATTENTE) == True:
+        if self.barreOutils.GetToolState(self.ID_MODE_ATTENTE) == True:
             return "attente"
-        if self.barreOutils.GetToolState(ID_MODE_REFUS) == True:
+        if self.barreOutils.GetToolState(self.ID_MODE_REFUS) == True:
             return "refus"
 
 
@@ -803,7 +777,15 @@ class Dialog(wx.Dialog):
         # Création du menu Outils
         menuPop = UTILS_Adaptations.Menu()
 
-#        item = wx.MenuItem(menuPop, ID_OUTILS_SAISIE_FORFAIT, _(u"Appliquer un forfait daté"), _(u"Appliquer un forfait daté"))
+        ID_OUTILS_SAISIE_FORFAIT = wx.Window.NewControlId()
+        ID_OUTILS_RECALCUL = wx.Window.NewControlId()
+        ID_OUTILS_IMPRIMER_CONSO = wx.Window.NewControlId()
+        ID_OUTILS_CONVERTIR_ETAT = wx.Window.NewControlId()
+        ID_OUTILS_RECOPIAGE = wx.Window.NewControlId()
+        ID_OUTILS_TOUT_SELECTIONNER = wx.Window.NewControlId()
+        ID_OUTILS_TOUT_DESELECTIONNER = wx.Window.NewControlId()
+
+        #        item = wx.MenuItem(menuPop, ID_OUTILS_SAISIE_FORFAIT, _(u"Appliquer un forfait daté"), _(u"Appliquer un forfait daté"))
 #        item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Forfait.png"), wx.BITMAP_TYPE_PNG))
 #        menuPop.AppendItem(item)
 #        self.Bind(wx.EVT_MENU, self.On_outils_saisie_forfait, id=ID_OUTILS_SAISIE_FORFAIT)
@@ -901,6 +883,24 @@ class Dialog(wx.Dialog):
     def MenuOptions(self):
         # Création du menu Options
         menuPop = UTILS_Adaptations.Menu()
+
+        ID_AFFICHAGE_PERSPECTIVE_DEFAUT = wx.Window.NewControlId()
+        ID_PREMIERE_PERSPECTIVE = 500
+        ID_AFFICHAGE_PERSPECTIVE_SAVE = wx.Window.NewControlId()
+        ID_AFFICHAGE_PERSPECTIVE_SUPPR = wx.Window.NewControlId()
+        ID_AFFICHAGE_PANNEAUX = 600
+        ID_AFFICHAGE_LARGEUR_UNITE = wx.Window.NewControlId()
+        ID_AFFICHAGE_PARAMETRES = wx.Window.NewControlId()
+        ID_AFFICHE_COLONNE_MEMO = wx.Window.NewControlId()
+        ID_AFFICHE_COLONNE_TRANSPORTS = wx.Window.NewControlId()
+        ID_BLOCAGE_SI_COMPLET = wx.Window.NewControlId()
+        ID_AFFICHE_SANS_PRESTATION = wx.Window.NewControlId()
+        ID_COCHER_ACTIVITES = wx.Window.NewControlId()
+        ID_FORMAT_LABEL_LIGNE_MENU = wx.Window.NewControlId()
+        ID_FORMAT_LABEL_LIGNE_1 = wx.Window.NewControlId()
+        ID_FORMAT_LABEL_LIGNE_2 = wx.Window.NewControlId()
+        ID_FORMAT_LABEL_LIGNE_3 = wx.Window.NewControlId()
+        ID_FORMAT_LABEL_LIGNE_4 = wx.Window.NewControlId()
 
         item = wx.MenuItem(menuPop, ID_AFFICHAGE_PERSPECTIVE_DEFAUT, _(u"Disposition par défaut"), _(u"Afficher la disposition par défaut"), wx.ITEM_CHECK)
         menuPop.AppendItem(item)

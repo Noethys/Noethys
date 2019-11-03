@@ -144,8 +144,8 @@ class Dialog(wx.Dialog):
         if dictOptions == False :
             return False
         
-##        for nom, valeur in dictOptions.iteritems() :
-##            print (nom, valeur) 
+        # for nom, valeur in dictOptions.items() :
+        #     print (nom, valeur)
             
         # Impression des factures sélectionnées
         facturation = UTILS_Facturation.Facturation()

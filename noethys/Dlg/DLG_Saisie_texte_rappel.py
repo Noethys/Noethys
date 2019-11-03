@@ -32,15 +32,6 @@ def FormateCouleur(texte):
     return (r, v, b)
 
 
-ID_GRAS = wx.Window.NewControlId()
-ID_ITALIQUE = wx.Window.NewControlId()
-ID_SOULIGNE = wx.Window.NewControlId()
-ID_COULEUR_POLICE = wx.Window.NewControlId()
-ID_ALIGNER_GAUCHE = wx.Window.NewControlId()
-ID_ALIGNER_CENTRE = wx.Window.NewControlId()
-ID_ALIGNER_DROIT = wx.Window.NewControlId()
-ID_RETRAIT_GAUCHE = wx.Window.NewControlId()
-ID_RETRAIT_DROIT = wx.Window.NewControlId()
 
 MOTSCLES = [
     ( "{ID_FAMILLE}", "IDfamille" ),
@@ -75,7 +66,14 @@ class BarreOutils(wx.ToolBar):
     def __init__(self, *args, **kwds):
         kwds["style"] = wx.TB_FLAT
         wx.ToolBar.__init__(self, *args, **kwds)
-        self.parent = self.GetParent() 
+        self.parent = self.GetParent()
+
+        ID_GRAS = wx.Window.NewControlId()
+        ID_ITALIQUE = wx.Window.NewControlId()
+        ID_SOULIGNE = wx.Window.NewControlId()
+        ID_ALIGNER_GAUCHE = wx.Window.NewControlId()
+        ID_ALIGNER_CENTRE = wx.Window.NewControlId()
+        ID_ALIGNER_DROIT = wx.Window.NewControlId()
 
         # Boutons
         AddTool(self, ID_ALIGNER_GAUCHE, "Images/Teamword/aligner_gauche.png", kind=wx.ITEM_CHECK, label=_(u"Aligner à gauche"), handler=self.parent.OnAlignLeft, updateUI=self.parent.OnUpdateAlignLeft)

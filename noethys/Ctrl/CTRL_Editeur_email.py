@@ -397,27 +397,6 @@ def DateComplete(dateDD):
     return dateComplete
 
 
-ID_SAUVEGARDER = wx.Window.NewControlId()
-ID_OUVRIR = wx.Window.NewControlId()
-ID_IMPRIMER = wx.Window.NewControlId()
-ID_APERCU = wx.Window.NewControlId()
-ID_GRAS = wx.Window.NewControlId()
-ID_ITALIQUE = wx.Window.NewControlId()
-ID_SOULIGNE = wx.Window.NewControlId()
-ID_COULEUR_POLICE = wx.Window.NewControlId()
-ID_ALIGNER_GAUCHE = wx.Window.NewControlId()
-ID_ALIGNER_CENTRE = wx.Window.NewControlId()
-ID_ALIGNER_DROIT = wx.Window.NewControlId()
-ID_RETRAIT_GAUCHE = wx.Window.NewControlId()
-ID_RETRAIT_DROIT = wx.Window.NewControlId()
-ID_PARA_MOINS = wx.Window.NewControlId()
-ID_PARA_PLUS = wx.Window.NewControlId()
-ID_INTER_SIMPLE = wx.Window.NewControlId()
-ID_INTER_DEMI = wx.Window.NewControlId()
-ID_INTER_DOUBLE = wx.Window.NewControlId()
-ID_URL = wx.Window.NewControlId()
-ID_IMAGE = wx.Window.NewControlId()
-ID_GOMME = wx.Window.NewControlId()
 
 
 class CTRL_Expediteur(wx.Choice):
@@ -542,6 +521,19 @@ class BarreOutils1(wx.ToolBar):
         wx.ToolBar.__init__(self, parent, style=wx.TB_FLAT | wx.TB_NODIVIDER)
         self.parent = parent
 
+        ID_SAUVEGARDER = wx.Window.NewControlId()
+        ID_OUVRIR = wx.Window.NewControlId()
+        ID_IMPRIMER = wx.Window.NewControlId()
+        ID_APERCU = wx.Window.NewControlId()
+        ID_GRAS = wx.Window.NewControlId()
+        ID_ITALIQUE = wx.Window.NewControlId()
+        ID_SOULIGNE = wx.Window.NewControlId()
+        ID_COULEUR_POLICE = wx.Window.NewControlId()
+        ID_ALIGNER_GAUCHE = wx.Window.NewControlId()
+        ID_ALIGNER_CENTRE = wx.Window.NewControlId()
+        ID_ALIGNER_DROIT = wx.Window.NewControlId()
+        ID_GOMME = wx.Window.NewControlId()
+
         AddTool(self, ID_SAUVEGARDER, "Images/Teamword/sauvegarder.png", label=_(u"Sauvegarder le texte"), handler=self.parent.OnFileSave)
         AddTool(self, ID_OUVRIR, "Images/Teamword/ouvrir.png", label=_(u"Ouvrir un texte sauvegardé"), handler=self.parent.OnFileOpen)
         self.AddSeparator()
@@ -571,7 +563,17 @@ class BarreOutils2(wx.ToolBar):
     def __init__(self, parent):
         wx.ToolBar.__init__(self, parent, style=wx.TB_FLAT | wx.TB_NODIVIDER)
         self.parent = parent
-        
+
+        ID_RETRAIT_GAUCHE = wx.Window.NewControlId()
+        ID_RETRAIT_DROIT = wx.Window.NewControlId()
+        ID_PARA_MOINS = wx.Window.NewControlId()
+        ID_PARA_PLUS = wx.Window.NewControlId()
+        ID_INTER_SIMPLE = wx.Window.NewControlId()
+        ID_INTER_DEMI = wx.Window.NewControlId()
+        ID_INTER_DOUBLE = wx.Window.NewControlId()
+        ID_URL = wx.Window.NewControlId()
+        ID_IMAGE = wx.Window.NewControlId()
+
         AddTool(self, wx.ID_CUT, "Images/Teamword/couper.png", label=_(u"Couper"), handler=self.parent.ForwardEvent, updateUI=self.parent.ForwardEvent)
         AddTool(self, wx.ID_COPY, "Images/Teamword/copier.png", label=_(u"Copier"), handler=self.parent.ForwardEvent, updateUI=self.parent.ForwardEvent)
         AddTool(self, wx.ID_PASTE, "Images/Teamword/coller.png", label=_(u"Coller"), handler=self.parent.ForwardEvent, updateUI=self.parent.ForwardEvent)

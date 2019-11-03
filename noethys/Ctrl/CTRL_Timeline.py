@@ -22,14 +22,11 @@ import Chemins
 from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 
-import calendar
 import logging
 import os.path
 from datetime import datetime as dt
-from datetime import time
-
+import six
 import wx
-from Ctrl import CTRL_Bouton_image
 import wx.html
 import wx.lib.colourselect as colourselect
 from wx.lib.masked import TimeCtrl
@@ -48,6 +45,8 @@ if 'phoenix' in wx.PlatformInfo:
 else :
     import wx.lib.hyperlink as HL
 
+if six.PY3:
+    import functools
 
 # Border, in pixels, between controls in a window (should always be used when
 # border is needed)
@@ -59,23 +58,22 @@ HIT_REGION_PX_WITH = 5
 
 
 
-ID_IMPRIMER = wx.Window.NewControlId()
-ID_APERCU = wx.Window.NewControlId()
-ID_IMAGE = wx.Window.NewControlId()
-ID_GO_TODAY = wx.Window.NewControlId()
-ID_GO_DATE = wx.Window.NewControlId()
-ID_GO_ARRIERE = wx.Window.NewControlId()
-ID_GO_AVANT = wx.Window.NewControlId()
-ID_AFFICHE_ANNEE = wx.Window.NewControlId()
-ID_AFFICHE_MOIS = wx.Window.NewControlId()
-ID_AFFICHE_JOUR = wx.Window.NewControlId()
-
-
 class ToolBar(UTILS_Adaptations.ToolBar):
     def __init__(self, *args, **kwds):
         UTILS_Adaptations.ToolBar.__init__(self, *args, **kwds)
-        self.parent = self.GetParent() 
-        
+        self.parent = self.GetParent()
+
+        ID_IMPRIMER = wx.Window.NewControlId()
+        ID_APERCU = wx.Window.NewControlId()
+        ID_IMAGE = wx.Window.NewControlId()
+        ID_GO_TODAY = wx.Window.NewControlId()
+        ID_GO_DATE = wx.Window.NewControlId()
+        ID_GO_ARRIERE = wx.Window.NewControlId()
+        ID_GO_AVANT = wx.Window.NewControlId()
+        ID_AFFICHE_ANNEE = wx.Window.NewControlId()
+        ID_AFFICHE_MOIS = wx.Window.NewControlId()
+        ID_AFFICHE_JOUR = wx.Window.NewControlId()
+
         # Boutons
         self.AddLabelTool(ID_IMPRIMER,           _(u"Imprimer"), wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Imprimante.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Imprimer"), "")
         self.AddLabelTool(ID_APERCU,              _(u"Aperçu"), wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Aperçu avant impression"), "")
@@ -1870,7 +1868,11 @@ class TxtException(ValueError):
 
 def sort_categories(categories):
     sorted_categories = list(categories)
-    sorted_categories.sort(cmp, lambda x: x.name.lower())
+    if six.PY2:
+        sorted_categories.sort(cmp, lambda x: x.name.lower())
+    else:
+        sorted_categories.sort(key=(lambda x: x.name.lower()))
+
     return sorted_categories
 
 
@@ -1891,7 +1893,7 @@ def _parse_text_from_textbox(txt, name):
     """
     data = txt.GetValue().strip()
     if len(data) == 0:
-        raise TxtException, ("Field '%s' can't be empty." % name, txt)
+        raise TxtException("Field '%s' can't be empty." % name, txt)
     return data
 
 
