@@ -82,8 +82,12 @@ class ListView(FastObjectListView):
 
     def CreationImage(self, couleur=(255, 255, 255)):
         """ Création des images pour le TreeCtrl """
-        bmp = wx.EmptyImage(16, 16, True)
-        bmp.SetRGBRect((0, 0, 16, 16), couleur[0], couleur[1], couleur[2])
+        if 'phoenix' in wx.PlatformInfo:
+            bmp = wx.Image(16, 16, True)
+            bmp.SetRGB((0, 0, 16, 16), couleur[0], couleur[1], couleur[2])
+        else:
+            bmp = wx.EmptyImage(16, 16, True)
+            bmp.SetRGBRect((0, 0, 16, 16), couleur[0], couleur[1], couleur[2])
         return bmp.ConvertToBitmap()
 
     def InitObjectListView(self):            

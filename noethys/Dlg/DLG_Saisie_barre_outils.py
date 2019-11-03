@@ -141,7 +141,10 @@ class CTRL_elements_dispo(CTRL_elements):
 
     def OnDoubleClick(self, event):
         item = event.GetItem()
-        dictItem = self.GetPyData(item)
+        if 'phoenix' in wx.PlatformInfo:
+            dictItem = self.GetItemData(item)
+        else:
+            dictItem = self.GetPyData(item)
         if dictItem != None :
             self.Ajouter(dictItem["code"])
     

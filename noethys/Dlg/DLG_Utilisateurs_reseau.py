@@ -201,16 +201,27 @@ class ListCtrl(wx.ListCtrl, CheckListCtrlMixin):
                 autorisationStr = "Oui"
             else:
                 autorisationStr = "Non"
-            index = self.InsertStringItem(six.MAXSIZE, autorisationStr)
-            
+            if 'phoenix' in wx.PlatformInfo:
+                index = self.InsertItem(six.MAXSIZE, autorisationStr)
+            else:
+                index = self.InsertStringItem(six.MAXSIZE, autorisationStr)
             if user == "root" :
                 user = _(u"root (Administrateur)")
-            self.SetStringItem(index, 1, user)
-
+            if 'phoenix' in wx.PlatformInfo:
+                self.SetItem(index, 1, user)
+            else:
+                self.SetStringItem(index, 1, user)
+            if 'phoenix' in wx.PlatformInfo:
+                self.SetItem(index, 1, user)
+            else:
+                self.SetStringItem(index, 1, user)
             if host == "%" : host = _(u"Connexion depuis n'importe quel hôte")
             elif host == "localhost" : host = _(u"Connexion uniquement depuis le serveur principal")
             else : host = _(u"Connexion uniquement depuis l'hôte %s") % host
-            self.SetStringItem(index, 2, host)
+            if 'phoenix' in wx.PlatformInfo:
+                self.SetItem(index, 2, host)
+            else:
+                self.SetStringItem(index, 2, host)
 
             self.SetItemData(index, indexListe)
                 

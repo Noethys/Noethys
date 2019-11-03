@@ -162,7 +162,7 @@ class wxSchedulerPaint( object ):
 			if a.start.IsEarlierThan(b.start):
 				return -1
 			return 1
-		schedules.sort(compare)
+		schedules.sort(key=(compare))
 
 		def findNext(schedule):
 			# Among schedules that start after this one ends, find the "nearest".

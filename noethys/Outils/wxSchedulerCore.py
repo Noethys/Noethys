@@ -77,7 +77,7 @@ class wxSchedulerCore( wxSchedulerPaint ):
 		if self._showOnlyWorkHour:
 			morningWorkTime = range( self._startingHour.GetHour(), self._startingPauseHour.GetHour() )
 			afternoonWorkTime = range( self._endingPauseHour.GetHour(), self._endingHour.GetHour() )
-			rangeWorkHour = morningWorkTime + afternoonWorkTime
+			rangeWorkHour = list(morningWorkTime) + list(afternoonWorkTime)
 		else:
 			# Show all the hours
 			rangeWorkHour = range( self._startingHour.GetHour(), self._endingHour.GetHour() )
@@ -130,7 +130,7 @@ class wxSchedulerCore( wxSchedulerPaint ):
 			#Control the schedule(s) passed
 			for sc in schedules:
 				if not isinstance( sc, wxSchedule ):
-					raise InvalidSchedule, "Not a valid schedule"
+					raise InvalidSchedule("Not a valid schedule")
 				
 				self._schedules.append( sc )
 				
@@ -151,7 +151,7 @@ class wxSchedulerCore( wxSchedulerPaint ):
 			self._schedules.remove( index )
 			schedule = index
 		else:
-			raise ValueError, "Passme only int or wxSchedule istances"
+			raise ValueError("Passme only int or wxSchedule istances")
 		
 		#Remove from our bind list and unbind the event
 		self._schBind.remove( schedule )
@@ -221,7 +221,7 @@ class wxSchedulerCore( wxSchedulerPaint ):
 		# Make the control
 		if not ( date or schedule ) or not ( isinstance( date, ( wx.DateTime, wxSchedule ) ) or  
 										  isinstance( schedule, wxSchedule ) ):
-			raise ValueError, "Pass me at least one value"
+			raise ValueError("Pass me at least one value")
 		
 		# Do a bad, but very useful hack that leave the developer pass an schedule at the first parameter
 		if isinstance( date, wxSchedule ):
@@ -300,7 +300,7 @@ class wxSchedulerCore( wxSchedulerPaint ):
 	def SetShowWorkHour( self, value ):
 		#Set the show work hour value
 		if not isinstance( value, ( bool, int ) ):
-			raise ValueError, "Passme a bool at SetShowWorkHour"
+			raise ValueError("Passme a bool at SetShowWorkHour")
 		
 		self._showOnlyWorkHour = value
 		self._calculateWorkHour()
@@ -315,7 +315,7 @@ class wxSchedulerCore( wxSchedulerPaint ):
 		if not view in ( wxSCHEDULER_DAILY, wxSCHEDULER_WEEKLY,
 							wxSCHEDULER_MONTHLY, wxSCHEDULER_TODAY,
 							wxSCHEDULER_PREV, wxSCHEDULER_NEXT ):
-				raise ValueError, "Pass me a valid view value"
+				raise ValueError("Pass me a valid view value")
 		
 		if view in ( wxSCHEDULER_TODAY, wxSCHEDULER_NEXT, wxSCHEDULER_PREV ):
 			if view == wxSCHEDULER_TODAY:
