@@ -15,6 +15,7 @@ import datetime
 import sqlite3
 from Utils import UTILS_Interface
 from wx.lib.wordwrap import wordwrap
+import six
 
 
 def ConvertVersionTuple(texteVersion=""):
@@ -114,7 +115,10 @@ class Panel(wx.Panel):
 
         # Récupération des données de l'interface
         theme = UTILS_Interface.GetTheme()
-        self.image_fond = wx.Bitmap(Chemins.GetStaticPath("Images/Interface/%s/Fond.jpg" % theme), wx.BITMAP_TYPE_ANY)
+        nom_fichier = "Fond.jpg"
+        if six.PY3 and theme == "Vert":
+            nom_fichier = "Fond_2019.jpg"
+        self.image_fond = wx.Bitmap(Chemins.GetStaticPath("Images/Interface/%s/%s" % (theme, nom_fichier)), wx.BITMAP_TYPE_ANY)
 
         # Binds
         self.Bind(wx.EVT_PAINT, self.OnPaint)
@@ -149,7 +153,10 @@ class Panel(wx.Panel):
             x, y = 20, 20
             taille_police = 8
             largeurTexte = 300
-            dc.SetTextForeground((255, 255, 255))
+            if six.PY2:
+                dc.SetTextForeground((255, 255, 255))
+            if six.PY3:
+                dc.SetTextForeground("#6A9742")
 
             # Dessine l'image
             dc.DrawBitmap(bmp, x, y)
