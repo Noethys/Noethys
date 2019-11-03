@@ -75,7 +75,11 @@ def MyDecoder(objet):
         return wx.Point(objet['data'][0], objet['data'][1])
     # Si bytes
     elif objet.get('__type__') == 'bytes':
-        return bytes(objet['data'], 'utf-8')
+        try:
+            resultat = bytes(objet['data'], 'utf-8')
+        except:
+            resultat = bytes(objet['data'])
+        return resultat
     # Si autre
     else:
         return objet
@@ -86,7 +90,7 @@ def Lire(nom_fichier="", conversion_auto=False):
     is_json = True
 
     # Essaye d'ouvrir un fichier Json
-    if 'phoenix' in wx.PlatformInfo:
+    if six.PY3:
         try:
             with open(nom_fichier) as json_file:
                 data = json.load(json_file, object_hook=MyDecoder)
@@ -138,14 +142,20 @@ def Ecrire(nom_fichier="", data={}):
 
 
 if __name__ == u"__main__":
-    # Test d'importation depuis un ancien fichier dat
     from Utils import UTILS_Fichiers
-    nom_fichier_dat = UTILS_Fichiers.GetRepUtilisateur("Config_test.dat")
-    dictDonnees = {}
-    import shelve
-    db = shelve.open(nom_fichier_dat, "r")
-    for key in list(db.keys()):
-        dictDonnees[key] = db[key]
-    db.close()
-    Ecrire(nom_fichier=UTILS_Fichiers.GetRepUtilisateur("Config_test.json"), data=dictDonnees)
 
+    # Test d'importation depuis un ancien fichier dat
+    # nom_fichier_dat = UTILS_Fichiers.GetRepUtilisateur("Config_test.dat")
+    # dictDonnees = {}
+    # import shelve
+    # db = shelve.open(nom_fichier_dat, "r")
+    # for key in list(db.keys()):
+    #     dictDonnees[key] = db[key]
+    # db.close()
+    # Ecrire(nom_fichier=UTILS_Fichiers.GetRepUtilisateur("Config_test.json"), data=dictDonnees)
+
+    # Test de lecture du Config.json
+    chemin_fichier = UTILS_Fichiers.GetRepUtilisateur("Config.json")
+    with open(chemin_fichier) as json_file:
+        data = json.load(json_file, object_hook=MyDecoder)
+    print("data=", data)
