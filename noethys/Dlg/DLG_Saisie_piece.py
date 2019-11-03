@@ -121,9 +121,7 @@ class Choix_Piece_autre(wx.Choice):
     
     def SelectPiece(self, IDfamille=None, IDtype_piece=None, IDindividu=None):
         index = 0
-        print(IDfamille, IDtype_piece, IDindividu)
         for dictPiece in self.listeDonnees :
-            print(dictPiece)
             if dictPiece["IDfamille"] == IDfamille and dictPiece["IDtype_piece"] == IDtype_piece and dictPiece["IDindividu"] == IDindividu :
                 self.Select(index)
                 break
