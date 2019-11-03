@@ -2281,8 +2281,8 @@ class CaseMultihoraires(Case):
         dictInfosPlaces = self.GetInfosPlaces()
         if dictInfosPlaces != None :
             for IDunite_remplissage, valeurs in dictInfosPlaces.items() :
-                heure_min_remplissage = self.grid.dictRemplissage[IDunite_remplissage]["heure_min"]
-                heure_max_remplissage = self.grid.dictRemplissage[IDunite_remplissage]["heure_max"]
+                heure_min_remplissage = self.grid.dictRemplissage[IDunite_remplissage]["heure_min"] or ""
+                heure_max_remplissage = self.grid.dictRemplissage[IDunite_remplissage]["heure_max"] or ""
                 nbrePlacesInitial = valeurs["nbrePlacesInitial"]
                 nbrePlacesRestantes = valeurs["nbrePlacesRestantes"]
                 if heure_min_remplissage < str(heure_fin) and heure_max_remplissage > str(heure_debut) and nbrePlacesRestantes <= 0 and nbrePlacesInitial not in (0, None) :

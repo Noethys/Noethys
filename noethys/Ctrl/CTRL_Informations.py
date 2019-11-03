@@ -291,7 +291,10 @@ class CTRL(wx.TreeCtrl):
             else:
                 labelBranche = _(u"%d vaccinations à réaliser") % nbreMaladies
             niveauCategorie = self.AppendItem(niveauParent, labelBranche)
-            self.SetPyData(niveauCategorie, {"type":"categorie"} )
+            if 'phoenix' in wx.PlatformInfo:
+                self.SetItemData(niveauCategorie, {"type":"categorie"} )
+            else:
+                self.SetPyData(niveauCategorie, {"type":"categorie"} )
             self.SetItemBold(niveauCategorie, True)
             self.SetItemImage(niveauCategorie, self.img_vaccins, which=wx.TreeItemIcon_Normal)
             niveauParent = niveauCategorie
