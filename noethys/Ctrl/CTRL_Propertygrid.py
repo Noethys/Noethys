@@ -726,7 +726,10 @@ class CTRL_TEST(CTRL) :
         self.Append(propriete)
 
         # Répertoire de sauvegarde
-        propriete = wxpg.DirProperty(label=_(u"Répertoire pour copie unique"), name="repertoire_copie", value="")
+        if 'phoenix' in wx.PlatformInfo:
+            propriete = wxpg.DirProperty(name=_(u"Répertoire pour copie unique"), label="repertoire_copie", value="")
+        else:
+            propriete = wxpg.DirProperty(label=_(u"Répertoire pour copie unique"), name="repertoire_copie", value="")
         propriete.SetHelpString(_(u"Enregistrer une copie unique de chaque document dans le répertoire sélectionné")) 
         self.Append(propriete)
 
