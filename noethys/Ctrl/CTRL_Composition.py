@@ -1083,7 +1083,8 @@ class CTRL_Graphique(wx.ScrolledWindow):
         x, y = wx.GetMousePosition()
         self.tipFrame.SetPosition((x+15, y+17))
         self.tipFrame.DropShadow(True)
-        self.tipFrame.StartAlpha(True) # ou .Show() pour un affichage immédiat
+        self.tipFrame.Show()
+        #self.tipFrame.StartAlpha(True) # ou .Show() pour un affichage immédiat
         
         # Arrêt du timer
         self.timerTip.Stop()
@@ -1932,7 +1933,8 @@ class CTRL_Liste(HTL.HyperTreeList):
         x, y = wx.GetMousePosition()
         self.tipFrame.SetPosition((x+15, y+17))
         self.tipFrame.DropShadow(True)
-        self.tipFrame.StartAlpha(True) # ou .Show() pour un affichage immédiat
+        self.tipFrame.Show()
+        #self.tipFrame.StartAlpha(True) # ou .Show() pour un affichage immédiat
         
         # Arrêt du timer
         self.timerTip.Stop()

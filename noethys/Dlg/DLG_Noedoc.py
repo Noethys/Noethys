@@ -5099,7 +5099,8 @@ class Panel_canvas(wx.Panel):
         x, y = wx.GetMousePosition()
         self.tipFrame.SetPosition((x + 15, y + 17))
         self.tipFrame.DropShadow(True)
-        self.tipFrame.StartAlpha(True)  # ou .Show() pour un affichage immédiat
+        self.tipFrame.Show()
+        #self.tipFrame.StartAlpha(True)  # ou .Show() pour un affichage immédiat
 
         # Arrêt du timer
         self.timerTip.Stop()
@@ -5570,7 +5571,10 @@ def ImportationObjets(IDmodele=None, InForeground=True):
             if objet["typeImage"].startswith("fichier") :
                 if objet["image"] != None :
                     io = six.BytesIO(objet["image"])
-                    bmp = wx.ImageFromStream(io, wx.BITMAP_TYPE_ANY)
+                    if 'phoenix' in wx.PlatformInfo:
+                        bmp = wx.Image(io, wx.BITMAP_TYPE_ANY)
+                    else:
+                        bmp = wx.ImageFromStream(io, wx.BITMAP_TYPE_ANY)
             # Photo
             if objet["typeImage"] == "photo" :
                 bmp = wx.Bitmap(Chemins.GetStaticPath("Images/128x128/Femme.png"), wx.BITMAP_TYPE_ANY)
