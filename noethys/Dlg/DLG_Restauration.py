@@ -18,7 +18,7 @@ import datetime
 import os
 import sys
 import wx.lib.agw.customtreectrl as CT
-
+import six
 from Ctrl import CTRL_Bandeau
 import GestionDB
 from Utils import UTILS_Sauvegarde
@@ -54,22 +54,34 @@ def SelectionFichier():
             dlg.Destroy()
             return None
         dlg.Destroy()
-        fichierTemp = UTILS_Fichiers.GetRepTemp(fichier="savedecrypte.zip")
-        resultat = UTILS_Cryptage_fichier.DecrypterFichier(fichier, fichierTemp, motdepasse)
-        fichier = fichierTemp
-        messageErreur = _(u"Le mot de passe que vous avez saisi semble erroné !")
+
+        # Décryptage du fichier
+        nom_fichier_decrypte = UTILS_Fichiers.GetRepTemp(fichier="savedecrypte.zip")
+        UTILS_Cryptage_fichier.DecrypterFichier(fichier, nom_fichier_decrypte, motdepasse)
+
+        # Vérifie que le ZIP est ok
+        valide = UTILS_Sauvegarde.VerificationZip(nom_fichier_decrypte)
+
+        # Si non valide on teste avec l'ancienne méthode de décryptage
+        if not valide and six.PY3:
+            UTILS_Cryptage_fichier.DecrypterFichier(fichier, nom_fichier_decrypte, motdepasse, ancien_cryptage=True)
+            valide = UTILS_Sauvegarde.VerificationZip(nom_fichier_decrypte)
+
+        if valide == False :
+            dlg = wx.MessageDialog(None, _(u"Le mot de passe que vous avez saisi semble erroné !"), _(u"Erreur"), wx.OK | wx.ICON_ERROR)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return None
+
+        return nom_fichier_decrypte
+
     else:
-        messageErreur = _(u"Le fichier de sauvegarde semble corrompu !")
-                
-    # Vérifie que le ZIP est ok
-    valide = UTILS_Sauvegarde.VerificationZip(fichier)
-    if valide == False :
-        dlg = wx.MessageDialog(None, messageErreur, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
+        dlg = wx.MessageDialog(None, _(u"Le fichier de sauvegarde semble corrompu !"), _(u"Erreur"), wx.OK | wx.ICON_ERROR)
         dlg.ShowModal()
         dlg.Destroy()
         return None
 
-    return fichier
+
 
     
 

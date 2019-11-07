@@ -72,7 +72,7 @@ class CTRL(wx.Panel):
         
         # Horloge
         self.ctrl_horloge = clock.AnalogClock(self, size=(80, 80), 
-                            hoursStyle=clock.TICKS_SQUARE,
+                            hoursStyle=clock.TICKS_CIRCLE,
                             minutesStyle=clock.TICKS_CIRCLE,
                             clockStyle=clock.SHOW_HOURS_TICKS| \
                                        clock.SHOW_MINUTES_TICKS|

@@ -223,10 +223,10 @@ class Archivage():
 
                         liste_rattaches.append({"IDcategorie" : IDcategorie, "nom_complet" : nom_complet, "IDindividu" : IDindividu, "nom_categorie" : nom_categorie, "infos" : infos})
                         liste_rattaches = sorted(liste_rattaches, key=operator.itemgetter("IDcategorie"))
-                liste_rattaches.sort()
+                #liste_rattaches.sort()
                 liste_familles_temp.append({"nomTitulaires" : nomTitulaires, "IDfamille" : IDfamille, "liste_rattaches" : liste_rattaches})
             liste_familles_temp = sorted(liste_familles_temp, key=operator.itemgetter("nomTitulaires"))
-            liste_familles_temp.sort()
+            #liste_familles_temp.sort()
 
         # Version INDIVIDUS
         if self.liste_individus != [] :
@@ -250,7 +250,7 @@ class Archivage():
                 liste_rattaches.sort()
                 liste_individus_temp.append({"nom_complet": nom_complet, "IDindividu": IDindividu, "liste_rattaches": liste_rattaches})
             liste_individus_temp = sorted(liste_individus_temp, key=operator.itemgetter("nom_complet"))
-            liste_individus_temp.sort()
+            #liste_individus_temp.sort()
 
         # Affiche dlg de sélection
         dlg = DLG_Selection(None, intro=intro, liste_familles=liste_familles_temp, liste_individus=liste_individus_temp)

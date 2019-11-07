@@ -92,7 +92,10 @@ def cryptFile(filename_in, filename_out, key):
 	
 def decryptFile(filename_in, filename_out, key):
 	fr = open(filename_in, 'rb')
-	cyphertext = pickle.load(fr)
+	if six.PY2:
+		cyphertext = pickle.load(fr)
+	else:
+		cyphertext = pickle.load(fr, encoding="bytes")
 	message = decrypt(cyphertext, key)
 	fw = open(filename_out, 'wb')
 	fw.write(message)
@@ -147,11 +150,11 @@ def CrypterFichier(fichierDecrypte="", fichierCrypte="", motdepasse=""):
 		fonction = cryptFile
 	fonction(fichierDecrypte, fichierCrypte, hashPassword_MD5(motdepasse))
 
-def DecrypterFichier(fichierCrypte="", fichierDecrypte="", motdepasse=""):
-	if six.PY3:
-		fonction = decryptFile2
-	else:
+def DecrypterFichier(fichierCrypte="", fichierDecrypte="", motdepasse="", ancien_cryptage=False):
+	if six.PY2 or ancien_cryptage:
 		fonction = decryptFile
+	else:
+		fonction = decryptFile2
 	fonction(fichierCrypte, fichierDecrypte, hashPassword_MD5(motdepasse))
 
 
