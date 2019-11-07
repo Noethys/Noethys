@@ -36,12 +36,14 @@ def GetDictInfosIndividus():
     global DICT_INFOS_INDIVIDUS
     dictInfos = {}
     db = GestionDB.DB()
-    req = """SELECT IDindividu, nom, prenom, rue_resid, cp_resid, ville_resid FROM individus;"""
+    req = """SELECT IDindividu, individus.nom, prenom, rue_resid, cp_resid, ville_resid, secteurs.nom
+    FROM individus
+    LEFT JOIN secteurs ON secteurs.IDsecteur = individus.IDsecteur;"""
     db.ExecuterReq(req)
     listeDonnees = db.ResultatReq()
     db.Close()
-    for IDindividu, nom, prenom, rue_resid, cp_resid, ville_resid in listeDonnees :
-        dictInfos[IDindividu] = { "nom" : nom, "prenom" : prenom, "rue_resid" : rue_resid, "cp_resid" : cp_resid, "ville_resid" : ville_resid}
+    for IDindividu, nom, prenom, rue_resid, cp_resid, ville_resid, nom_secteur in listeDonnees :
+        dictInfos[IDindividu] = { "nom" : nom, "prenom" : prenom, "rue_resid" : rue_resid, "cp_resid" : cp_resid, "ville_resid" : ville_resid, "nom_secteur": nom_secteur}
     DICT_INFOS_INDIVIDUS = dictInfos
 
 def GetInfosOrganisme():
@@ -98,7 +100,7 @@ class TrackIndividu(object):
         self.infosIndividus = infosIndividus
         self.IDindividu = donnees["IDindividu"]
         self.IDcivilite = donnees["IDcivilite"]
-        self.nom = donnees["nom"]
+        self.nom = donnees["individus.nom"]
         self.prenom = donnees["prenom"]
         self.IDnationalite = donnees["IDnationalite"]
         self.date_naiss = donnees["date_naiss"]
@@ -113,10 +115,12 @@ class TrackIndividu(object):
             self.rue_resid = DICT_INFOS_INDIVIDUS[self.adresse_auto]["rue_resid"]
             self.cp_resid = DICT_INFOS_INDIVIDUS[self.adresse_auto]["cp_resid"]
             self.ville_resid = DICT_INFOS_INDIVIDUS[self.adresse_auto]["ville_resid"]
+            self.secteur = DICT_INFOS_INDIVIDUS[self.adresse_auto]["nom_secteur"]
         else:
             self.rue_resid = donnees["rue_resid"]
             self.cp_resid = donnees["cp_resid"]
             self.ville_resid = donnees["ville_resid"]
+            self.secteur = donnees["secteurs.nom"]
         
         self.profession = donnees["profession"]
         self.employeur = donnees["employeur"]
@@ -202,17 +206,18 @@ def GetListeIndividus(listview=None, listeActivites=None, presents=None, IDindiv
         
     # Récupération des individus
     listeChamps = (
-        "individus.IDindividu", "IDcivilite", "nom", "prenom", "num_secu","IDnationalite", 
+        "individus.IDindividu", "IDcivilite", "individus.nom", "prenom", "num_secu","IDnationalite",
         "date_naiss", "IDpays_naiss", "cp_naiss", "ville_naiss",
         "adresse_auto", "rue_resid", "cp_resid", "ville_resid", 
         "IDcategorie_travail", "profession", "employeur", "travail_tel", "travail_fax", "travail_mail", 
-        "tel_domicile", "tel_mobile", "tel_fax", "mail"
+        "tel_domicile", "tel_mobile", "tel_fax", "mail", "secteurs.nom",
         )
     DB = GestionDB.DB()
     req = """
     SELECT %s
     FROM individus 
     LEFT JOIN inscriptions ON inscriptions.IDindividu = individus.IDindividu
+    LEFT JOIN secteurs ON secteurs.IDsecteur = individus.IDsecteur
     %s
     WHERE individus.IDindividu>0 %s %s %s
     GROUP BY individus.IDindividu
@@ -273,6 +278,7 @@ class TrackFamille(object):
         self.rue = donnees["rue"]
         self.cp = donnees["cp"]
         self.ville = donnees["ville"]
+        self.secteur = donnees["secteur"]
         self.regime = donnees["nomRegime"]
         self.caisse = donnees["nomCaisse"]
         self.numAlloc = donnees["numAlloc"]
@@ -296,6 +302,7 @@ class TrackFamille(object):
             "{FAMILLE_RUE}" : FormateStr(self.rue),
             "{FAMILLE_CP}" : FormateStr(self.cp),
             "{FAMILLE_VILLE}" : FormateStr(self.ville),
+            "{FAMILLE_SECTEUR}": FormateStr(self.secteur),
             "{FAMILLE_REGIME}" : FormateStr(self.regime),
             "{FAMILLE_CAISSE}" : FormateStr(self.caisse),
             "{FAMILLE_NUMALLOC}" : FormateStr(self.numAlloc),
@@ -366,6 +373,7 @@ def GetListeFamilles(listview=None, listeActivites=None, presents=None, IDfamill
             cp = titulaires[IDfamille]["adresse"]["cp"]
             ville = titulaires[IDfamille]["adresse"]["ville"]
             listeMails = titulaires[IDfamille]["listeMails"]
+            secteur = titulaires[IDfamille]["adresse"]["nomSecteur"]
         else :
             nomTitulaires = _(u"Aucun titulaire")
             rue = u""
@@ -374,7 +382,7 @@ def GetListeFamilles(listview=None, listeActivites=None, presents=None, IDfamill
             listeMails = []
         dictTemp = {
             "IDfamille" : IDfamille, "titulaires" : nomTitulaires, "nomRegime" : nomRegime, 
-            "nomCaisse" : nomCaisse, "numAlloc" : numAlloc,
+            "nomCaisse" : nomCaisse, "numAlloc" : numAlloc, "secteur": secteur,
             "rue" : rue, "cp" : cp, "ville" : ville, "listeMails" : listeMails,
             }
     
@@ -455,6 +463,7 @@ class ListView(FastObjectListView):
                 ColumnDefn(_(u"Rue"), "left", 150, "rue_resid", typeDonnee="texte"),
                 ColumnDefn(_(u"C.P."), "left", 50, "cp_resid", typeDonnee="texte"),
                 ColumnDefn(_(u"Ville"), "left", 120, "ville_resid", typeDonnee="texte"),
+                ColumnDefn(_(u"Secteur"), "left", 120, "secteur", typeDonnee="texte"),
 ##                ColumnDefn(_(u"Tél. domicile"), "left", 100, "tel_domicile"),
 ##                ColumnDefn(_(u"Tél. mobile"), "left", 100, "tel_mobile"),
                 ColumnDefn(_(u"Email"), "left", 150, "mail", typeDonnee="texte"),
@@ -472,6 +481,7 @@ class ListView(FastObjectListView):
                 ColumnDefn(_(u"Rue"), "left", 160, "rue", typeDonnee="texte"),
                 ColumnDefn(_(u"C.P."), "left", 45, "cp", typeDonnee="texte"),
                 ColumnDefn(_(u"Ville"), "left", 120, "ville", typeDonnee="texte"),
+                ColumnDefn(_(u"Secteur"), "left", 120, "secteur", typeDonnee="texte"),
                 ColumnDefn(_(u"Email"), "left", 100, "mail", typeDonnee="texte"),
                 ColumnDefn(_(u"Régime"), "left", 130, "regime", typeDonnee="texte"),
                 ColumnDefn(_(u"Caisse"), "left", 130, "caisse", typeDonnee="texte"),
