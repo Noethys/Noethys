@@ -2017,7 +2017,7 @@ class CaseMultihoraires(Case):
         # Touches de raccourci
         if TouchesRaccourciActives == True :
             self.OnTouchesRaccourcisPerso() 
-        
+
         # Création d'une conso
         conso = CTRL_Grille.Conso() 
         conso.IDconso = None
@@ -2053,14 +2053,14 @@ class CaseMultihoraires(Case):
 
         if self.IDactivite in self.grid.dictInfosInscriptions[self.IDindividu] :
             if self.grid.mode == "individu" :
-                conso.IDgroupe = self.grid.GetGrandParent().panel_activites.ctrl_activites.GetIDgroupe(self.IDactivite, self.IDindividu)
+                IDgroupe_temp = self.grid.GetGrandParent().panel_activites.ctrl_activites.GetIDgroupe(self.IDactivite, self.IDindividu)
+                if IDgroupe_temp:
+                    conso.IDgroupe = IDgroupe_temp
             if self.IDgroupe == None :
                 conso.IDgroupe = self.grid.dictInfosInscriptions[self.IDindividu][self.IDactivite]["IDgroupe"]
-        else:
-            conso.IDgroupe = None
-        
+
         self.grid.memoireHoraires[self.IDunite] = {"heure_debut":conso.heure_debut, "heure_fin":conso.heure_fin}
-        
+
         barre = Barre(case=self, calque=1, conso=conso)
         barre.MemoriseValeurs() 
         self.listeBarres.append(barre)
