@@ -1028,7 +1028,9 @@ class Dialog(wx.Dialog):
             else :
                 texte = _(u"Veuillez patienter durant l'importation des badgeages...")
             dlgAttente = wx.BusyInfo(_(u"Initialisation..."), None)
-            if 'phoenix' not in wx.PlatformInfo:
+            if 'phoenix' in wx.PlatformInfo:
+                wx.SafeYield(self, True)
+            else:
                 wx.Yield()
             
             if self.mode_debug == True :

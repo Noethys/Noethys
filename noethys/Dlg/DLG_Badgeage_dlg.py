@@ -521,12 +521,14 @@ class DLG_Message(object):
         self.dlg = DLG_Question(interface, message, icone, bouton_oui=False, bouton_non=False)
         self.dlg.SetCursor(wx.HOURGLASS_CURSOR)
         self.dlg.Show()
-        if 'phoenix' not in wx.PlatformInfo:
+        if 'phoenix' in wx.PlatformInfo:
+            wx.SafeYield(interface, True)
+        else:
             wx.Yield()
         for indx in range(secondes):
             wx.MilliSleep(1000)
         self.dlg.Show(False)
-        self.dlg.Destroy() 
+        self.dlg.Destroy()
 
 # --------------------------------------------------------------------------------------------------------------------------------------
 

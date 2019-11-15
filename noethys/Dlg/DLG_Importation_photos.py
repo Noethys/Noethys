@@ -443,7 +443,10 @@ class Dialog(wx.Dialog):
             # Transforme l'image en buffer
             image = track.bmp.ConvertToImage()
             pil = Image.new('RGB', (image.GetWidth(), image.GetHeight()))
-            pil.frombytes(image.GetData())
+            data = image.GetData()
+            if 'phoenix' in wx.PlatformInfo:
+                data = bytes(data)
+            pil.frombytes(data)
             buffer = six.BytesIO()
             pil.save(buffer, format="JPEG", quality=100)
             buffer.seek(0)

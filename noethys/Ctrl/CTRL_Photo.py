@@ -339,8 +339,11 @@ class CTRL_Photo(wx.StaticBitmap):
 
     def wxtopil(self, image):
         """Convert wx.Image to PIL Image."""
+        data = image.GetData()
+        if 'phoenix' in wx.PlatformInfo:
+            data = bytes(data)
         pil = Image.new('RGB', (image.GetWidth(), image.GetHeight()))
-        pil.frombytes(image.GetData())
+        pil.frombytes(data)
         return pil
 
 

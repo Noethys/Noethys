@@ -255,6 +255,8 @@ class Dialog(wx.Dialog):
         dlgAttente = wx.BusyInfo(_(u"Vérification du code en cours..."), None)
         if 'phoenix' not in wx.PlatformInfo:
             wx.Yield()
+        else:
+            wx.SafeYield(self, True)
         
         try :
             url = "https://www.noethys.com/aide/html/testcode.php?identifiant=%s&code=%s" % (identifiant, code)

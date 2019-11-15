@@ -12,15 +12,13 @@
 import Chemins
 from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
-
 import wx
 from Ctrl import CTRL_Bouton_image
 import time
-import threading
-##from PIL import Image
-import cv2
-import cv2.cv as cv
-
+try:
+    import cv2.cv as cv
+except:
+    import cv2 as cv
 from Ctrl import CTRL_Bandeau
 
 
@@ -34,96 +32,32 @@ def InitCamera(port=0):
     """ Initialisation de la webcam """
     global CAMERA, CASCADE, DEFAULT_DEVICE_WIDTH, DEFAULT_DEVICE_HEIGHT
     try :
-        CAMERA = cv.CreateCameraCapture(port)
-        frame = cv.QueryFrame(CAMERA)
-        if frame == None :
-            return False
-        DEFAULT_DEVICE_WIDTH = frame.width
-        DEFAULT_DEVICE_HEIGHT = frame.height
-        CASCADE = cv.Load(Chemins.GetStaticPath("Divers/haarcascade_frontalface_alt2.xml"))
+        if hasattr(cv, "CreateCameraCapture"):
+            CAMERA = cv.CreateCameraCapture(port)
+            frame = cv.QueryFrame(CAMERA)
+            if frame == None:
+                return False
+            DEFAULT_DEVICE_WIDTH = frame.width
+            DEFAULT_DEVICE_HEIGHT = frame.height
+            CASCADE = cv.Load(Chemins.GetStaticPath("Divers/haarcascade_frontalface_alt2.xml"))
+
+        else:
+            CAMERA = cv.VideoCapture(port)
+            ret, frame = CAMERA.read()
+            if not ret:
+                return False
+            DEFAULT_DEVICE_HEIGHT, DEFAULT_DEVICE_WIDTH = frame.shape[:2]
+            CASCADE = cv.CascadeClassifier(Chemins.GetStaticPath("Divers/haarcascade_frontalface_alt2.xml"))
+
         return True
     except Exception as err :
-        print(err)
+        print("Connexion camera impossible :", err)
         return False
 
 
 
-
-##class VideoCaptureThread(threading.Thread):
-##    def __init__(self, control):
-##        self.width = DEFAULT_DEVICE_WIDTH
-##        self.height = DEFAULT_DEVICE_HEIGHT
-##        self.control = control
-##        self.isRunning =True
-##        self.bmp = wx.NullBitmap
-##
-##        threading.Thread.__init__(self)
-##
-##    def stop(self):
-##        self.isRunning = False
-##
-##    def run(self):
-##        while self.isRunning:
-##            
-##            # Capture de l'image
-##            frame = cv.QueryFrame(CAMERA)
-##            cv.CvtColor(frame, frame, cv.CV_BGR2RGB)
-##            Img = wx.EmptyImage(frame.width, frame.height)
-##            Img.SetData(frame.tobytes())
-##            self.bmp = wx.BitmapFromImage(Img)
-##            width, height = frame.width, frame.height
-##            
-##            # Détection des visages
-##            min_size = (20, 20)
-##            image_scale = 2
-##            haar_scale = 1.2
-##            min_neighbors = 2
-##            haar_flags = 0
-##
-##            gray = cv.CreateImage((frame.width, frame.height), 8, 1)
-##            small_img = cv.CreateImage((cv.Round(frame.width / image_scale), cv.Round (frame.height / image_scale)), 8, 1)
-##            cv.CvtColor(frame, gray, cv.CV_BGR2GRAY)
-##            cv.Resize(gray, small_img, cv.CV_INTER_LINEAR)
-##            cv.EqualizeHist(small_img, small_img)
-##            
-##            listeVisages = cv.HaarDetectObjects(small_img, CASCADE, cv.CreateMemStorage(0), haar_scale, min_neighbors, haar_flags, min_size)
-##
-##            # Affichage de l'image
-##            x, y = (0, 0)
-##            try:
-##                width, height = self.control.GetSize()
-##                if width > self.width:
-##                    x = (width - self.width) / 2
-##                if height > self.height:
-##                    y = (height - self.height) / 2
-##                dc = wx.BufferedDC(wx.ClientDC(self.control), wx.NullBitmap, wx.BUFFER_VIRTUAL_AREA)
-##        
-##                try :
-##                    dc.SetBackground(wx.Brush(wx.Colour(0, 0, 0)))
-##                except :
-##                    pass
-##                dc.Clear()
-##                dc.DrawBitmap(self.bmp, x, y)
-##                
-##                # Dessin des rectangles des visages
-##                if listeVisages :
-##                    for ((x, y, w, h), n) in listeVisages :
-##                        dc.SetBrush(wx.TRANSPARENT_BRUSH)
-##                        dc.SetPen(wx.Pen(wx.Colour(255, 0, 0), 2))
-##                        dc.DrawRectangle(x* image_scale, y* image_scale, w* image_scale, h* image_scale)
-##                    
-##                del dc
-##                del Img
-##                
-##            except TypeError:
-##                pass
-##            except wx.PyDeadObjectError:
-##                pass
-##                
-##        self.isRunning = False
-
-
 # -----------------------------------------------------------------------------------------------------------------------------
+
 
 class CTRL_Video(wx.Panel):
     def __init__(self, parent, id=-1, pos=wx.DefaultPosition, size=wx.DefaultSize, style=wx.SUNKEN_BORDER):
@@ -172,29 +106,43 @@ class CTRL_Video(wx.Panel):
             dc = wx.BufferedDC(wx.ClientDC(self), wx.NullBitmap, wx.BUFFER_VIRTUAL_AREA)
             dc.SetBackground(wx.Brush(wx.Colour(0, 0, 0)))
             return
-            
-        # Capture de l'image
-        frame = cv.QueryFrame(CAMERA)
-        cv.CvtColor(frame, frame, cv.CV_BGR2RGB)
-        Img = wx.EmptyImage(frame.width, frame.height)
-        Img.SetData(frame.tostring())
-        self.bmp = wx.BitmapFromImage(Img)
-        width, height = frame.width, frame.height
-        
-        # Détection des visages
-        min_size = (20, 20)
-        image_scale = 2
-        haar_scale = 1.2
-        min_neighbors = 2
-        haar_flags = 0
 
-        gray = cv.CreateImage((frame.width, frame.height), 8, 1)
-        small_img = cv.CreateImage((cv.Round(frame.width / image_scale), cv.Round (frame.height / image_scale)), 8, 1)
-        cv.CvtColor(frame, gray, cv.CV_BGR2GRAY)
-        cv.Resize(gray, small_img, cv.CV_INTER_LINEAR)
-        cv.EqualizeHist(small_img, small_img)
-        
-        listeVisages = cv.HaarDetectObjects(small_img, CASCADE, cv.CreateMemStorage(0), haar_scale, min_neighbors, haar_flags, min_size)
+        # Capture de l'image
+        if hasattr(cv, "QueryFrame"):
+
+            # Ancienne version OpenCV
+            image_scale = 2
+            min_size = (20, 20)
+            haar_scale = 1.2
+            min_neighbors = 2
+            haar_flags = 0
+
+            frame = cv.QueryFrame(CAMERA)
+            cv.CvtColor(frame, frame, cv.CV_BGR2RGB)
+            Img = wx.EmptyImage(frame.width, frame.height)
+            Img.SetData(frame.tostring())
+            self.bmp = wx.BitmapFromImage(Img)
+            del Img
+            largeur, hauteur = frame.width, frame.height
+
+            gray = cv.CreateImage((largeur, hauteur), 8, 1)
+            small_img = cv.CreateImage((cv.Round(frame.width / image_scale), cv.Round(hauteur / image_scale)), 8, 1)
+            cv.CvtColor(frame, gray, cv.CV_BGR2GRAY)
+            cv.Resize(gray, small_img, cv.CV_INTER_LINEAR)
+            cv.EqualizeHist(small_img, small_img)
+            listeVisages = cv.HaarDetectObjects(small_img, CASCADE, cv.CreateMemStorage(0), haar_scale, min_neighbors, haar_flags, min_size)
+
+        else:
+            # Nouvelle version OpenCV
+            image_scale = 1
+            ret, frame = CAMERA.read()
+            hauteur, largeur = frame.shape[:2]
+            frame = cv.resize(frame, (largeur, hauteur), cv.INTER_LINEAR)
+            frame = cv.cvtColor(frame, cv.COLOR_BGR2RGB)
+            self.bmp = wx.Bitmap.FromBuffer(largeur, hauteur, frame)
+
+            gray = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
+            listeVisages = CASCADE.detectMultiScale(gray, 1.3, 5)
 
         # Affichage de l'image
         x, y = (0, 0)
@@ -208,19 +156,15 @@ class CTRL_Video(wx.Panel):
             dc.DrawBitmap(self.bmp, x, y)
             
             # Dessin des rectangles des visages
-            if listeVisages :
-                for ((x, y, w, h), n) in listeVisages :
-                    dc.SetBrush(wx.TRANSPARENT_BRUSH)
-                    dc.SetPen(wx.Pen(wx.Colour(255, 0, 0), 2))
-                    dc.DrawRectangle(x* image_scale, y* image_scale, w* image_scale, h* image_scale)
+            for (x, y, w, h) in listeVisages:
+                dc.SetBrush(wx.TRANSPARENT_BRUSH)
+                dc.SetPen(wx.Pen(wx.Colour(255, 0, 0), 2))
+                dc.DrawRectangle(x* image_scale, y* image_scale, w* image_scale, h* image_scale)
             
             self.listeVisages = listeVisages
             del dc
-            del Img
-            
-        except TypeError:
-            pass
-        except wx.PyDeadObjectError:
+
+        except:
             pass
 
     def OnErase(self, evt):

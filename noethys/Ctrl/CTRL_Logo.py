@@ -33,8 +33,11 @@ def ChargeImage(fichier):
 
 def wxtopil( image):
     """Convert wx.Image to PIL Image."""
+    data = image.GetData()
+    if 'phoenix' in wx.PlatformInfo:
+        data = bytes(data)
     pil = Image.new('RGB', (image.GetWidth(), image.GetHeight()))
-    pil.paste(pil.frombytes(image.GetData()), (10, 10))
+    pil.paste(pil.frombytes(data), (10, 10))
     return pil
 
 def piltowx(image):

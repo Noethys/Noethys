@@ -60,8 +60,11 @@ def save_image_file(fn,buf):
 
 def wxtopil(image):
     """Convert wx.Image to PIL Image."""
+    data = image.GetData()
+    if 'phoenix' in wx.PlatformInfo:
+        data = bytes(data)
     pil = Image.new('RGB', (image.GetWidth(), image.GetHeight()))
-    pil.frombytes(image.GetData())
+    pil.frombytes(data)
     return pil
 
 
@@ -242,23 +245,31 @@ class ImgBox(wx.Window):
         newLargeur = largeurImg * self.zoom
         newHauteur = hauteurImg * self.zoom
         source = self.source.Scale(newLargeur, newHauteur)
-        self.bmp=wx.BitmapFromImage(source)
+        if 'phoenix' in wx.PlatformInfo:
+            self.bmp = wx.Bitmap(source)
+        else:
+            self.bmp = wx.BitmapFromImage(source)
         # MAJ de l'affichage de la photo
         self.UpdateDrawing()
 
     def evt_mouse(self,event):
         """ Gestion du déplacement de la photo """
+        if 'phoenix' in wx.PlatformInfo:
+            cursor = wx.Cursor
+        else :
+            cursor = wx.StockCursor
+
         eventType=event.GetEventType()
         posx, posy = event.GetPosition()
         # Left Down
         if eventType == wx.wxEVT_LEFT_DOWN:
             self.dragging = True
             self.posxDrag, self.posyDrag = self.posxPhoto - posx, self.posyPhoto - posy
-            self.SetCursor(wx.StockCursor(wx.CURSOR_SIZING))
+            self.SetCursor(cursor(wx.CURSOR_SIZING))
         # Left Up
         elif eventType == wx.wxEVT_LEFT_UP:
             self.dragging = False
-            self.SetCursor(wx.StockCursor(wx.CURSOR_ARROW))
+            self.SetCursor(cursor(wx.CURSOR_ARROW))
         # Motion
         elif eventType == wx.wxEVT_MOTION:
             if self.dragging == True :

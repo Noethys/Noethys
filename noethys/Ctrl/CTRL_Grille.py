@@ -4268,7 +4268,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                         nom_tarif = label
                         
                     break
-        
+
         # Si unité de type QUANTITE
         if quantite != None :
             montant_tarif = montant_tarif * quantite

@@ -3851,6 +3851,8 @@ class MainFrame(wx.Frame):
                 dlgAttente = wx.BusyInfo(message, None)
                 if 'phoenix' not in wx.PlatformInfo:
                     wx.Yield()
+                else:
+                    wx.SafeYield(self, True)
 
                 import UpgradeDB
                 DB = UpgradeDB.DB(nomFichier=nomFichier)
