@@ -110,6 +110,9 @@ class Propriete_multichoix(ArrayStringProperty):
         # Importation des sélections
         self.SetValue(self.liste_selections)
 
+    def DoGetEditorClass(self):
+        return wxpg.PropertyGridInterface.GetEditorByName("TextCtrlAndButton")
+
     def GetEditor(self):
         return "TextCtrlAndButton"
 
@@ -121,7 +124,10 @@ class Propriete_multichoix(ArrayStringProperty):
 
     def DoSetAttribute(self, name, value):
         if 'phoenix' in wx.PlatformInfo:
-            return False
+            retval = super(Propriete_multichoix, self).DoSetAttribute(name, value)
+            if name == "Delimiter":
+                self.GenerateValueAsString(delim=value)
+            return retval
 
         # Proper way to call same method from super class
         retval = self.CallSuperMethod("DoSetAttribute", name, value)
@@ -140,7 +146,15 @@ class Propriete_multichoix(ArrayStringProperty):
                 delim = ','
 
         selections = self.GetValue()
-        ls = [x[1] for x in self.liste_choix if x[0] in selections]
+        #ls = [x[1] for x in self.liste_choix if x[0] in selections]
+
+        ls = []
+        index = 0
+        for id, label in self.liste_choix:
+            if index in selections:
+                ls.append(label)
+            index += 1
+
         if delim == '"' or delim == "'":
             text = ' '.join(['%s%s%s'%(delim,a,delim) for a in ls])
         else:
@@ -151,16 +165,20 @@ class Propriete_multichoix(ArrayStringProperty):
         """ If failed, return False or (False, None). If success, return tuple (True, newValue) """
         delim = self.GetAttribute("Delimiter")
         if delim == '"' or delim == "'":
-            # Proper way to call same method from super class
-            return self.CallSuperMethod("StringToValue", text, 0)
+            if 'phoenix' in wx.PlatformInfo:
+                return super(Propriete_multichoix, self).StringToValue(text, 0)
+            else:
+                return self.CallSuperMethod("StringToValue", text, 0)
         valeurs_saisies = [a.strip() for a in text.split(delim)]
         liste_id = []
         for valeur in valeurs_saisies :
             found = False
+            index = 0
             for id, label in self.liste_choix :
                 if valeur.lower() == label.lower() :
-                    liste_id.append(id)
+                    liste_id.append(index)
                     found = True
+                index += 1
             if not found :
                 liste_id = self.m_value
                 break
@@ -169,18 +187,21 @@ class Propriete_multichoix(ArrayStringProperty):
     def OnEvent(self, propgrid, primaryEditor, event):
         if event.GetEventType() == wx.wxEVT_COMMAND_BUTTON_CLICKED:
             dlg = wx.MultiChoiceDialog(propgrid, _(u"Cochez les éléments à sélectionner :"), _(u"Sélection"), [x[1] for x in self.liste_choix])
+
             liste_index = []
             index = 0
             for id, valeur in self.liste_choix :
-                if id in self.m_value :
+                if index in (self.m_value or []):
                     liste_index.append(index)
                 index += 1
             dlg.SetSelections(liste_index)
+
             if dlg.ShowModal() == wx.ID_OK:
                 liste_id = []
                 for index in dlg.GetSelections() :
                     liste_id.append(self.liste_choix[index][0])
-                self.SetValueInEvent(liste_id)
+                    liste_index.append(index)
+                self.SetValueInEvent(liste_index)
                 retval = True
             else:
                 retval = False
