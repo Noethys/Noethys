@@ -22,7 +22,8 @@ import wx
 from Ctrl import CTRL_Bouton_image
 import wx.grid as gridlib
 import wx.lib.wordwrap as wordwrap
-import Outils.gridlabelrenderer as glr
+#import Outils.gridlabelrenderer as glr
+import wx.lib.mixins.gridlabelrenderer as glr
 import datetime
 import math
 import FonctionsPerso
