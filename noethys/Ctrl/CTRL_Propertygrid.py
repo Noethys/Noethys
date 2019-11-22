@@ -110,9 +110,6 @@ class Propriete_multichoix(ArrayStringProperty):
         # Importation des sélections
         self.SetValue(self.liste_selections)
 
-    def DoGetEditorClass(self):
-        return wxpg.PropertyGridInterface.GetEditorByName("TextCtrlAndButton")
-
     def GetEditor(self):
         return "TextCtrlAndButton"
 
@@ -125,12 +122,8 @@ class Propriete_multichoix(ArrayStringProperty):
     def DoSetAttribute(self, name, value):
         if 'phoenix' in wx.PlatformInfo:
             retval = super(Propriete_multichoix, self).DoSetAttribute(name, value)
-            if name == "Delimiter":
-                self.GenerateValueAsString(delim=value)
-            return retval
-
-        # Proper way to call same method from super class
-        retval = self.CallSuperMethod("DoSetAttribute", name, value)
+        else:
+            retval = self.CallSuperMethod("DoSetAttribute", name, value)
 
         # Must re-generate cached string when delimiter changes
         if name == "Delimiter":
@@ -146,15 +139,7 @@ class Propriete_multichoix(ArrayStringProperty):
                 delim = ','
 
         selections = self.GetValue()
-        #ls = [x[1] for x in self.liste_choix if x[0] in selections]
-
-        ls = []
-        index = 0
-        for id, label in self.liste_choix:
-            if index in selections:
-                ls.append(label)
-            index += 1
-
+        ls = [x[1] for x in self.liste_choix if x[0] in selections]
         if delim == '"' or delim == "'":
             text = ' '.join(['%s%s%s'%(delim,a,delim) for a in ls])
         else:
@@ -173,12 +158,10 @@ class Propriete_multichoix(ArrayStringProperty):
         liste_id = []
         for valeur in valeurs_saisies :
             found = False
-            index = 0
             for id, label in self.liste_choix :
                 if valeur.lower() == label.lower() :
-                    liste_id.append(index)
+                    liste_id.append(id)
                     found = True
-                index += 1
             if not found :
                 liste_id = self.m_value
                 break
@@ -187,21 +170,18 @@ class Propriete_multichoix(ArrayStringProperty):
     def OnEvent(self, propgrid, primaryEditor, event):
         if event.GetEventType() == wx.wxEVT_COMMAND_BUTTON_CLICKED:
             dlg = wx.MultiChoiceDialog(propgrid, _(u"Cochez les éléments à sélectionner :"), _(u"Sélection"), [x[1] for x in self.liste_choix])
-
             liste_index = []
             index = 0
             for id, valeur in self.liste_choix :
-                if index in (self.m_value or []):
+                if id in (self.m_value or []):
                     liste_index.append(index)
                 index += 1
             dlg.SetSelections(liste_index)
-
             if dlg.ShowModal() == wx.ID_OK:
                 liste_id = []
                 for index in dlg.GetSelections() :
                     liste_id.append(self.liste_choix[index][0])
-                    liste_index.append(index)
-                self.SetValueInEvent(liste_index)
+                self.SetValueInEvent(liste_id)
                 retval = True
             else:
                 retval = False
@@ -477,18 +457,6 @@ class CTRL(wxpg.PropertyGrid) :
             # ensure we only do it once
             sys._PropGridEditorsRegistered = True
         
-        # Remplissage des valeurs               
-##        for nom, listeProprietes in self.listeDonnees :
-##            self.Append( wxpg.PropertyCategory(nom) )
-##        
-##            for dictTemp in listeProprietes :
-##                propriete = wxpg.IntProperty(label=dictTemp["label"], name=dictTemp["code"], value=dictTemp["valeur"])
-##                self.Append(propriete)
-##                self.SetPropertyAttribute(propriete, "Min", 0)
-##                self.SetPropertyAttribute(propriete, "Max", 800)
-##                self.SetPropertyEditor(propriete, "EditeurAvecBoutons")
-        
-##        self.SetVerticalSpacing(3) 
         self.SetExtraStyle(wxpg.PG_EX_HELP_AS_TOOLTIPS)
         
         couleurFond = "#e5ecf3"
@@ -506,166 +474,10 @@ class CTRL(wxpg.PropertyGrid) :
         # Importation des valeurs
         self.Importation() 
         
-##        # Bordereau
-##        self.Append( wxpg.PropertyCategory(_(u"Bordereau")) )
-##        
-##        propriete = wxpg.IntProperty(label=_(u"Exercice"), name="exercice", value=datetime.date.today().year)
-##        propriete.SetHelpString(_(u"Saisissez l'année de l'exercice")) 
-##        self.Append(propriete)
-##        self.SetPropertyEditor("exercice", "SpinCtrl")
-##        
-##        listeMois = [_(u"Janvier"), _(u"Février"), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"Août"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"Décembre")]
-##        propriete = wxpg.EnumProperty(label=_(u"Mois"), name="mois", labels=listeMois, values=range(1, 13) , value=datetime.date.today().month)
-##        propriete.SetHelpString(_(u"Sélectionnez le mois")) 
-##        self.Append(propriete)
-##        
-##        propriete = wxpg.StringProperty(label=_(u"Objet"), name="objet_dette", value=u"")
-##        propriete.SetHelpString(_(u"Saisissez l'objet du bordereau (Ex : 'Centre de Loisirs')")) 
-##        self.Append(propriete)
-##
-##        # Dates
-##        self.Append( wxpg.PropertyCategory(_(u"Dates")) )
-##        
-##        propriete = wxpg.DateProperty(label=_(u"Date d'émission"), name="date_emission", value=wx.DateTime_Now())
-##        propriete.SetAttribute(wxpg.PG_DATE_PICKER_STYLE, wx.DP_DROPDOWN|wx.DP_SHOWCENTURY )
-##        self.Append(propriete)
-##        
-##        propriete = wxpg.DateProperty(label=_(u"Date du prélèvement"), name="date_prelevement", value=wx.DateTime_Now())
-##        propriete.SetAttribute(wxpg.PG_DATE_PICKER_STYLE, wx.DP_DROPDOWN|wx.DP_SHOWCENTURY )
-##        self.Append(propriete)
-##        
-##        propriete = wxpg.DateProperty(label=_(u"Avis d'envoi"), name="date_envoi", value=wx.DateTime_Now())
-##        propriete.SetAttribute(wxpg.PG_DATE_PICKER_STYLE, wx.DP_DROPDOWN|wx.DP_SHOWCENTURY )
-##        self.Append(propriete)
-##
-##        # Collectivité
-##        self.Append( wxpg.PropertyCategory(_(u"Identification")) )
-##        
-##        propriete = wxpg.StringProperty(label=_(u"ID Bordereau"), name="id_bordereau", value=u"")
-##        propriete.SetHelpString(_(u"Saisissez l'ID du bordereau")) 
-##        self.Append(propriete)
-####        propriete.SetAttribute("Hint", _(u"Coucou !"))
-####        self.SetPropertyCell("id_bordereau", 0, bitmap = wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Mecanisme.png"), wx.BITMAP_TYPE_ANY))
-##        
-##        propriete = wxpg.StringProperty(label=_(u"ID Poste"), name="id_poste", value=u"")
-##        propriete.SetHelpString(_(u"Saisissez l'ID du bordereau")) 
-##        self.Append(propriete)
-##        
-##        propriete = wxpg.StringProperty(label=_(u"ID Collectivité"), name="id_collectivite", value=u"")
-##        propriete.SetHelpString(_(u"Saisissez l'ID de la collectivité")) 
-##        self.Append(propriete)
-##        
-##        propriete = wxpg.StringProperty(label=_(u"Code Collectivité"), name="code_collectivite", value=u"")
-##        propriete.SetHelpString(_(u"Saisissez le code Collectivité")) 
-##        self.Append(propriete)
-##        
-##        propriete = wxpg.StringProperty(label=_(u"Code Budget"), name="code_budget", value=u"")
-##        propriete.SetHelpString(_(u"Saisissez le code Budget")) 
-##        self.Append(propriete)
-##        
-##        propriete = wxpg.StringProperty(label=_(u"Code Produit Local"), name="code_prodloc", value=u"")
-##        propriete.SetHelpString(_(u"Saisissez le code Produit Local")) 
-##        self.Append(propriete)
-##
-##        # Libellés
-##        self.Append( wxpg.PropertyCategory(_(u"Libellés")) )
-##
-##        propriete = wxpg.StringProperty(label=_(u"Objet de la pièce"), name="objet_piece", value=_(u"FACTURE_NUM{NUM_FACTURE}_{MOIS_LETTRES}_{ANNEE}"))
-##        propriete.SetHelpString(_(u"Saisissez l'objet de la pièce (en majuscules et sans accents). Vous pouvez personnaliser ce libellé grâce aux mots-clés suivants : {NOM_ORGANISATEUR} {NUM_FACTURE} {LIBELLE_FACTURE} {MOIS} {MOIS_LETTRES} {ANNEE}.")) 
-##        self.Append(propriete)
-##
-##        propriete = wxpg.StringProperty(label=_(u"Libellé du prélèvement"), name="prelevement_libelle", value=u"{NOM_ORGANISATEUR} - {OBJET_PIECE}")
-##        propriete.SetHelpString(_(u"Saisissez le libellé du prélèvement qui apparaîtra sur le relevé de compte de la famille. Vous pouvez personnaliser ce libellé grâce aux mots-clés suivants : {NOM_ORGANISATEUR} {OBJET_PIECE} {NUM_FACTURE} {LIBELLE_FACTURE} {MOIS} {MOIS_LETTRES} {ANNEE}.")) 
-##        self.Append(propriete)
-##
-##        # Règlement automatique
-##        self.Append( wxpg.PropertyCategory(_(u"Règlement automatique")) )
-##        
-##        propriete = wxpg.BoolProperty(label=_(u"Régler automatiquement"), name="reglement_auto", value=False)
-##        propriete.SetHelpString(_(u"Cochez cette case si vous souhaitez que Noethys créé un règlement automatiquement pour les prélèvements")) 
-##        propriete.SetAttribute("UseCheckbox", True)
-##        self.Append(propriete)
-##        
-##        propriete = wxpg.EnumProperty(label=_(u"Compte à créditer"), name="IDcompte")
-##        propriete.SetHelpString(_(u"Sélectionnez le compte bancaire à créditer dans le cadre du règlement automatique"))
-##        propriete.SetEditor("EditeurComboBoxAvecBoutons")
-##        self.Append(propriete)
-##        self.MAJ_comptes() 
-##
-##        propriete = wxpg.EnumProperty(label=_(u"Mode de règlement"), name="IDmode")
-##        propriete.SetHelpString(_(u"Sélectionnez le mode de règlement à utiliser dans le cadre du règlement automatique"))
-##        propriete.SetEditor("EditeurComboBoxAvecBoutons")
-##        self.Append(propriete)
-####        self.MAJ_modes() 
-##                            
-##                            
-##    def MAJ_comptes(self):
-##        DB = GestionDB.DB()
-##        req = """SELECT IDcompte, nom, numero, defaut, raison, code_etab, code_guichet, code_nne, cle_rib, cle_iban, iban, bic, code_ics
-##        FROM comptes_bancaires
-##        ORDER BY nom;"""
-##        DB.ExecuterReq(req)
-##        listeDonnees = DB.ResultatReq()
-##        DB.Close()
-##        self.dictComptes = {}
-##        choix = wxpg.PGChoices()
-##        for IDcompte, nom, numero, defaut, raison, code_etab, code_guichet, code_nne, cle_rib, cle_iban, iban, bic, code_ics in listeDonnees :
-##            self.dictComptes[IDcompte] = { 
-##                "nom" : nom, "numero" : numero, "defaut" : defaut,
-##                "raison" : raison, "code_etab" : code_etab, "code_guichet" : code_guichet, 
-##                "code_nne" : code_nne, "cle_rib" : cle_rib, "cle_iban" : cle_iban,
-##                "iban" : iban, "bic" : bic, "code_ics" : code_ics,
-##                }
-##            choix.Add(nom, IDcompte)
-##        propriete = self.GetPropertyByName("IDcompte")
-##        propriete.SetChoices(choix)
-##
-##    def MAJ_modes(self):
-##        DB = GestionDB.DB()
-##        req = """SELECT IDmode, label, numero_piece, nbre_chiffres, 
-##        frais_gestion, frais_montant, frais_pourcentage, frais_arrondi, frais_label, image
-##        FROM modes_reglements
-##        ORDER BY label;"""
-##        DB.ExecuterReq(req)
-##        listeDonnees = DB.ResultatReq()
-##        DB.Close()
-##        self.dictModes = {}
-##        choix = wxpg.PGChoices()
-##        for IDmode, label, numero_piece, nbre_chiffres, frais_gestion, frais_montant, frais_pourcentage, frais_arrondi, frais_label, image in listeDonnees :
-##            self.dictModes[IDmode] = { 
-##                "label" : label, "numero_piece" : numero_piece, "nbre_chiffres" : nbre_chiffres,
-##                "frais_gestion" : frais_gestion, "frais_montant" : frais_montant, "frais_pourcentage" : frais_pourcentage, 
-##                "frais_arrondi" : frais_arrondi, "frais_label" : frais_label, "image" : image,
-##                }
-##            bmp = OL_Modes_reglements.GetImage(image)
-##            choix.Add(label, bmp, IDmode)
-##        propriete = self.GetPropertyByName("IDmode")
-##        propriete.SetChoices(choix)
-##
-##
-##    def OnBoutonParametres(self, propriete=None):
-##        ancienneValeur = propriete.GetValue() 
-##        if propriete.GetName() == "compte" :
-##            from Dlg import DLG_Comptes_bancaires
-##            dlg = DLG_Comptes_bancaires.Dialog(self)
-##            dlg.ShowModal()
-##            dlg.Destroy()
-##            self.MAJ_comptes() 
-##        if propriete.GetName() == "mode" :
-##            from Dlg import DLG_Modes_reglements
-##            dlg = DLG_Modes_reglements.Dialog(self)
-##            dlg.ShowModal()
-##            dlg.Destroy()
-##            self.MAJ_modes() 
-##        
-##        propriete.SetValue(ancienneValeur)
 
     def OnPropGridChange(self, event):
         event.Skip() 
-##        propriete = event.GetProperty()
-##        if propriete.GetName() == "reglement_auto" :
-##            self.parent.ctrl_pieces.reglement_auto = propriete.GetValue()
-    
+
     def Reinitialisation(self, afficher_dlg=True):
         # Demande confirmation
         if afficher_dlg == True :
@@ -682,12 +494,6 @@ class CTRL(wxpg.PropertyGrid) :
                 propriete.SetValue(valeur)
 
 
-
-##    def Sauvegarde(self):
-##        # Récupération des noms et valeurs par défaut du contrôle
-##        dictValeurs = copy.deepcopy(self.GetPropertyValues())
-##        # Sauvegarde des valeurs
-##        UTILS_Parametres.ParametresCategorie(mode="set", categorie="impression_facture", dictParametres=dictValeurs)
 
 
 

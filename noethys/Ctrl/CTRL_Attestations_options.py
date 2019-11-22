@@ -382,7 +382,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         selectionDefaut = None
         for IDmodele, nom, largeur, hauteur, observations, defaut in listeDonnees :
             self.dictDonnees["modeles"][IDmodele] = { "nom" : nom, "largeur" : largeur, "hauteur" : hauteur, "observations" : observations, "defaut" : defaut}
-            choix.Add(nom, IDmodele)
+            choix.Add(label=nom, value=IDmodele)
             if defaut != None : 
                 selectionDefaut = IDmodele
         propriete.SetChoices(choix)
@@ -414,7 +414,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         index = 0
         for IDresponsable, IDactivite, nom, fonction, defaut, sexe in listeDonnees :
             self.dictDonnees["signataires"][index] = { "ID" : IDresponsable, "IDactivite" : IDactivite, "nom" : nom, "fonction" : fonction, "defaut" : defaut, "sexe" : sexe}
-            choix.Add(nom, index)
+            choix.Add(label=nom, value=index)
             if defaut == 1 : 
                 selectionDefaut = index
             index += 1

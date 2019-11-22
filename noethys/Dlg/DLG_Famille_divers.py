@@ -210,7 +210,7 @@ class CTRL_Parametres(wxpg.PropertyGrid) :
             nomIndividu = u"%s %s" % (nom, prenom)
             if IDindividu == ancienneValeur :
                 ancienChoixValide = True
-            choix.Add(nomIndividu, IDindividu)
+            choix.Add(label=nomIndividu, value=IDindividu)
         propriete.SetChoices(choix)
         self.RefreshProperty(propriete) 
         if ancienChoixValide == False :

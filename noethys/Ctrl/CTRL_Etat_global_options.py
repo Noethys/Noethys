@@ -148,8 +148,9 @@ class CTRL(CTRL_Propertygrid.CTRL):
         self.Append(propriete)
 
         # Etat des consommations
-        liste_etats = [("reservation", _(u"Pointage en attente")), ("present", _(u"Présent")), ("absentj", _(u"Absence justifiée")), ("absenti", _(u"Absence injustifiée"))]
-        propriete = CTRL_Propertygrid.Propriete_multichoix(label=_(u"Etat des consommations"), name="etat_consommations", liste_choix=liste_etats, liste_selections=["reservation", "present", "absentj", "absenti"])
+        self.liste_codes_etats = ["reservation", "present", "absentj", "absenti"]
+        liste_etats = [(0, _(u"Pointage en attente")), (1, _(u"Présent")), (2, _(u"Absence justifiée")), (3, _(u"Absence injustifiée"))]
+        propriete = CTRL_Propertygrid.Propriete_multichoix(label=_(u"Etat des consommations"), name="etat_consommations", liste_choix=liste_etats, liste_selections=[0, 1, 2, 3])
         propriete.SetHelpString(_(u"Sélectionnez les états de consommations à inclure dans les calculs. Cliquez sur le bouton à droite du champ de saisie pour accéder à la fenêtre de sélection."))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
@@ -217,7 +218,9 @@ class CTRL(CTRL_Propertygrid.CTRL):
         return False
 
     def GetParametres(self):
-        return copy.deepcopy(self.GetPropertyValues())
+        parametres = copy.deepcopy(self.GetPropertyValues())
+        parametres["etat_consommations"] = [self.liste_codes_etats[index] for index in parametres["etat_consommations"]]
+        return parametres
 
     def SetParametres(self, dictParametres={}):
         # Réinitialisation
@@ -227,6 +230,9 @@ class CTRL(CTRL_Propertygrid.CTRL):
 
         # Envoi des paramètres au Ctrl
         for nom, valeur in dictParametres.items():
+            if valeur and nom == "etat_consommations":
+                valeur = [self.liste_codes_etats.index(x) for x in valeur]
+
             try :
                 propriete = self.GetPropertyByName(nom)
                 propriete.SetValue(valeur)
@@ -253,7 +259,7 @@ class MyFrame(wx.Frame):
         
     def OnBoutonTest(self, event):
         """ Bouton Test """
-        self.ctrl.Sauvegarde()
+        print(self.ctrl.GetParametres())
 
 if __name__ == '__main__':
     app = wx.App(0)

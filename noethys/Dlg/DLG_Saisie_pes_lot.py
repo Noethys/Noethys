@@ -24,7 +24,7 @@ import shutil
 import base64
 import os.path
 import wx.propgrid as wxpg
-
+from Ctrl import CTRL_Propertygrid
 from Utils import UTILS_Dates
 from Ol import OL_Modes_reglements
 from Ol import OL_PES_pieces
@@ -68,51 +68,53 @@ def GetMoisStr(numMois, majuscules=False, sansAccents=False) :
     return nom    
 
 
-class EditeurComboBoxAvecBoutons(ChoiceEditor):
-    def __init__(self):
-        ChoiceEditor.__init__(self)
+# class EditeurComboBoxAvecBoutons(ChoiceEditor):
+#     def __init__(self):
+#         ChoiceEditor.__init__(self)
+#
+#     def CreateControls(self, propGrid, property, pos, sz):
+#         # Create and populate buttons-subwindow
+#         buttons = wxpg.PGMultiButton(propGrid, sz)
+#
+#         # Add two regular buttons
+#         buttons.AddBitmapButton(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Mecanisme.png"), wx.BITMAP_TYPE_PNG))
+#         buttons.GetButton(0).SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à la gestion des paramètres")))
+#
+#         # Create the 'primary' editor control (textctrl in this case)
+#         wnd = self.CallSuperMethod("CreateControls", propGrid, property, pos, buttons.GetPrimarySize())
+#         buttons.Finalize(propGrid, pos);
+#         self.buttons = buttons
+#         return (wnd, buttons)
+#
+#     def OnEvent(self, propGrid, prop, ctrl, event):
+#         if event.GetEventType() == wx.wxEVT_COMMAND_BUTTON_CLICKED:
+#             buttons = self.buttons
+#             evtId = event.GetId()
+#             if evtId == buttons.GetButtonId(0):
+#                 propGrid.GetPanel().OnBoutonParametres(prop)
+#
+#         return self.CallSuperMethod("OnEvent", propGrid, prop, ctrl, event)
 
-    def CreateControls(self, propGrid, property, pos, sz):
-        # Create and populate buttons-subwindow
-        buttons = wxpg.PGMultiButton(propGrid, sz)
-
-        # Add two regular buttons
-        buttons.AddBitmapButton(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Mecanisme.png"), wx.BITMAP_TYPE_PNG))
-        buttons.GetButton(0).SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à la gestion des paramètres")))
-        
-        # Create the 'primary' editor control (textctrl in this case)
-        wnd = self.CallSuperMethod("CreateControls", propGrid, property, pos, buttons.GetPrimarySize())
-        buttons.Finalize(propGrid, pos);
-        self.buttons = buttons
-        return (wnd, buttons)
-
-    def OnEvent(self, propGrid, prop, ctrl, event):
-        if event.GetEventType() == wx.wxEVT_COMMAND_BUTTON_CLICKED:
-            buttons = self.buttons
-            evtId = event.GetId()
-            if evtId == buttons.GetButtonId(0):
-                propGrid.GetPanel().OnBoutonParametres(prop)
-                
-        return self.CallSuperMethod("OnEvent", propGrid, prop, ctrl, event)
 
 
-
-class CTRL_Parametres(wxpg.PropertyGrid) :
-    def __init__(self, parent):
-        wxpg.PropertyGrid.__init__(self, parent, -1, style=wxpg.PG_SPLITTER_AUTO_CENTER )
+class CTRL_Parametres(CTRL_Propertygrid.CTRL):
+    def __init__(self, parent, IDlot=None):
         self.parent = parent
-        
+        self.IDlot = IDlot
+        CTRL_Propertygrid.CTRL.__init__(self, parent)
+
         # Définition des éditeurs personnalisés
-        if not getattr(sys, '_PropGridEditorsRegistered', False):
-            self.RegisterEditor(EditeurComboBoxAvecBoutons)
-            # ensure we only do it once
-            sys._PropGridEditorsRegistered = True
+        # if not getattr(sys, '_PropGridEditorsRegistered', False):
+        #     self.RegisterEditor(EditeurComboBoxAvecBoutons)
+        #     # ensure we only do it once
+        #     sys._PropGridEditorsRegistered = True
         
         self.SetExtraStyle(wxpg.PG_EX_HELP_AS_TOOLTIPS)
         couleurFond = "#dcf7d4"
         self.SetCaptionBackgroundColour(couleurFond)
         self.Bind( wxpg.EVT_PG_CHANGED, self.OnPropGridChange )
-        
+
+    def Remplissage(self):
         # Bordereau
         self.Append( wxpg.PropertyCategory(_(u"Bordereau")) )
         
@@ -218,9 +220,12 @@ class CTRL_Parametres(wxpg.PropertyGrid) :
         propriete.SetHelpString(_(u"Sélectionnez le mode de règlement à utiliser dans le cadre du règlement automatique"))
         propriete.SetEditor("EditeurComboBoxAvecBoutons")
         self.Append(propriete)
-        self.MAJ_modes() 
-                            
-                            
+        self.MAJ_modes()
+
+    def Importation(self):
+        """ Importation des données """
+        pass
+
     def MAJ_comptes(self):
         DB = GestionDB.DB()
         req = """SELECT IDcompte, nom, numero, defaut, raison, code_etab, code_guichet, code_nne, cle_rib, cle_iban, iban, bic, code_ics
@@ -238,7 +243,7 @@ class CTRL_Parametres(wxpg.PropertyGrid) :
                 "code_nne" : code_nne, "cle_rib" : cle_rib, "cle_iban" : cle_iban,
                 "iban" : iban, "bic" : bic, "code_ics" : code_ics,
                 }
-            choix.Add(nom, IDcompte)
+            choix.Add(label=nom, value=IDcompte)
         propriete = self.GetPropertyByName("IDcompte")
         propriete.SetChoices(choix)
         self.RefreshProperty(propriete) 
@@ -261,7 +266,7 @@ class CTRL_Parametres(wxpg.PropertyGrid) :
                 "frais_arrondi" : frais_arrondi, "frais_label" : frais_label, "image" : image,
                 }
             bmp = OL_Modes_reglements.GetImage(image)
-            choix.Add(label, bmp, IDmode)
+            choix.Add(label=label, bitmap=bmp, value=IDmode)
         propriete = self.GetPropertyByName("IDmode")
         propriete.SetChoices(choix)
         self.RefreshProperty(propriete) 
@@ -372,7 +377,7 @@ class Dialog(wx.Dialog):
         
         # Paramètres
         self.box_parametres_staticbox = wx.StaticBox(self, -1, _(u"Paramètres"))
-        self.ctrl_parametres = CTRL_Parametres(self)
+        self.ctrl_parametres = CTRL_Parametres(self, IDlot=self.IDlot)
 
         # Pièces
         self.box_pieces_staticbox = wx.StaticBox(self, -1, _(u"Pièces"))
@@ -456,8 +461,8 @@ class Dialog(wx.Dialog):
         # Généralités
         box_generalites = wx.StaticBoxSizer(self.box_generalites_staticbox, wx.VERTICAL)
         
-        grid_sizer_generalites = wx.FlexGridSizer(rows=3, cols=2, vgap=5, hgap=5)
-        grid_sizer_date = wx.FlexGridSizer(rows=1, cols=4, vgap=5, hgap=5)
+        grid_sizer_generalites = wx.FlexGridSizer(rows=3, cols=2, vgap=10, hgap=10)
+        grid_sizer_date = wx.FlexGridSizer(rows=1, cols=4, vgap=10, hgap=10)
         grid_sizer_generalites.Add(self.label_nom, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_generalites.Add(self.ctrl_nom, 0, wx.EXPAND, 0)
 
@@ -843,13 +848,18 @@ class Dialog(wx.Dialog):
             verrouillage = 1
         else :
             verrouillage = 0
-        
+
         exercice = self.ctrl_parametres.GetPropertyValue("exercice")
         mois = self.ctrl_parametres.GetPropertyValue("mois")
         objet_dette = self.ctrl_parametres.GetPropertyValue("objet_dette")
-        date_emission = self.ctrl_parametres.GetPropertyValue("date_emission").strftime("%Y-%m-%d")
-        date_prelevement = self.ctrl_parametres.GetPropertyValue("date_prelevement").strftime("%Y-%m-%d")
-        date_envoi = self.ctrl_parametres.GetPropertyValue("date_envoi").strftime("%Y-%m-%d")
+        if 'phoenix' in wx.PlatformInfo:
+            date_emission = self.ctrl_parametres.GetPropertyValue("date_emission").FormatISODate()
+            date_prelevement = self.ctrl_parametres.GetPropertyValue("date_prelevement").FormatISODate()
+            date_envoi = self.ctrl_parametres.GetPropertyValue("date_envoi").FormatISODate()
+        else:
+            date_emission = self.ctrl_parametres.GetPropertyValue("date_emission").strftime("%Y-%m-%d")
+            date_prelevement = self.ctrl_parametres.GetPropertyValue("date_prelevement").strftime("%Y-%m-%d")
+            date_envoi = self.ctrl_parametres.GetPropertyValue("date_envoi").strftime("%Y-%m-%d")
         id_bordereau = self.ctrl_parametres.GetPropertyValue("id_bordereau")
         id_poste = self.ctrl_parametres.GetPropertyValue("id_poste")
         id_collectivite = self.ctrl_parametres.GetPropertyValue("id_collectivite")
