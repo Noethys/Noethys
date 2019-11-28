@@ -25,7 +25,7 @@ class CypherText:
 	def __init__(self):
 		self.__CypherText = ''
 		self.__trailLen = 0
-		
+
 	def getCypherText(self):
 		return self.__CypherText
 		
@@ -60,8 +60,6 @@ def encrypt(message, key):
 	CypherOut = CypherText()
 	CypherOut.setTrail(TrailLen)
 
-	# if six.PY3:
-	# 	key = key.encode("utf8")
 	cryptu = AES.new(key, AES.MODE_ECB)
 
 	#Try to delete the key from memory
@@ -72,7 +70,7 @@ def encrypt(message, key):
 
 
 def decrypt(ciphertext, key):
-	if six.PY3:
+	if six.PY3 and not isinstance(key, bytes):
 		key = key.encode("utf8")
 	cryptu = AES.new(key, AES.MODE_ECB)
 	
@@ -90,15 +88,15 @@ def cryptFile(filename_in, filename_out, key):
 	fw = open(filename_out, 'wb')
 	pickle.dump( cyphertext, fw, -1 )
 	
-def decryptFile(filename_in, filename_out, key):
-	fr = open(filename_in, 'rb')
-	if six.PY2:
-		cyphertext = pickle.load(fr)
-	else:
-		cyphertext = pickle.load(fr, encoding="bytes")
-	message = decrypt(cyphertext, key)
-	fw = open(filename_out, 'wb')
-	fw.write(message)
+# def decryptFile(filename_in, filename_out, key):
+# 	fr = open(filename_in, 'rb')
+# 	if six.PY2:
+# 		cyphertext = pickle.load(fr)
+# 	else:
+# 		cyphertext = pickle.load(fr, encoding="bytes")
+# 	message = decrypt(cyphertext, key)
+# 	fw = open(filename_out, 'wb')
+# 	fw.write(message)
 
 
 # --------------------------------------------------------------------------
@@ -113,13 +111,19 @@ def encrypt2(message, key, key_size=256):
 	message, padding_size = pad(message)
 	iv = Random.new().read(AES.block_size)
 	cipher = AES.new(key, AES.MODE_CFB, iv)
-	enc_bytes = iv + cipher.encrypt(message) + bytes([padding_size])
+	enc_bytes = iv + cipher.encrypt(message)
+	if six.PY2:
+		enc_bytes += bytearray([padding_size])
+	else:
+		enc_bytes += bytes([padding_size])
 	return enc_bytes
 
 def decrypt2(ciphertext, key):
 	iv = ciphertext[:AES.block_size]
 	cipher = AES.new(key, AES.MODE_CFB, iv)
 	plaintext = cipher.decrypt(ciphertext[AES.block_size:-1])
+	if six.PY2:
+		ciphertext = bytearray(ciphertext)
 	padding_size = ciphertext[-1] * (-1)
 	return plaintext[:padding_size]
 
@@ -127,35 +131,59 @@ def cryptFile2(filename_in, filename_out, key):
 	if six.PY3:
 		key = key.encode("utf8")
 	with open(filename_in, 'rb') as fo:
-		plaintext = fo.read()
-	enc = encrypt2(plaintext, key)
+		contenu = fo.read()
+	enc = encrypt2(contenu, key)
+	enc = b"SV2" + enc
 	with open(filename_out, 'wb') as fo:
 		fo.write(enc)
 
-def decryptFile2(filename_in, filename_out, key):
-	if six.PY3:
-		key = key.encode("utf8")
-	with open(filename_in, 'rb') as fo:
-		ciphertext = fo.read()
-	dec = decrypt2(ciphertext, key)
-	with open(filename_out, 'wb') as fo:
-		fo.write(dec)
+# def decryptFile2(filename_in, filename_out, key):
+# 	if six.PY3:
+# 		key = key.encode("utf8")
+# 	with open(filename_in, 'rb') as fo:
+# 		ciphertext = fo.read()
+# 	ciphertext = ciphertext[2:]
+# 	dec = decrypt2(ciphertext, key)
+# 	with open(filename_out, 'wb') as fo:
+# 		fo.write(dec)
 
-# -----------------------------------------------------------
 
-def CrypterFichier(fichierDecrypte="", fichierCrypte="", motdepasse=""):
+def DecrypterFichier(fichierCrypte="", fichierDecrypte="", motdepasse=""):
+	# Formatage du mot de passe
+	motdepasse = hashPassword_MD5(motdepasse)
 	if six.PY3:
+		motdepasse = motdepasse.encode("utf8")
+
+	# Lecture du fichier
+	with open(fichierCrypte, 'rb') as fo:
+		contenu = fo.read()
+
+	# Analyse du fichier
+	if contenu[:3] == b"SV2":
+		# Nouvelle version
+		contenu = contenu[3:]
+		dec = decrypt2(contenu, motdepasse)
+	else:
+		# Ancienne version
+		with open(fichierCrypte, 'rb') as fo:
+			if six.PY2:
+				contenu2 = pickle.load(fo)
+			else:
+				contenu2 = pickle.load(fo, encoding="bytes")
+			dec = decrypt(contenu2, motdepasse)
+
+	# Enregistrement du fichier décrypté
+	with open(fichierDecrypte, 'wb') as fr:
+		fr.write(dec)
+
+
+def CrypterFichier(fichierDecrypte="", fichierCrypte="", motdepasse="", ancienne_methode=False):
+	if not ancienne_methode or six.PY3:
 		fonction = cryptFile2
 	else:
 		fonction = cryptFile
 	fonction(fichierDecrypte, fichierCrypte, hashPassword_MD5(motdepasse))
 
-def DecrypterFichier(fichierCrypte="", fichierDecrypte="", motdepasse="", ancien_cryptage=False):
-	if six.PY2 or ancien_cryptage:
-		fonction = decryptFile
-	else:
-		fonction = decryptFile2
-	fonction(fichierCrypte, fichierDecrypte, hashPassword_MD5(motdepasse))
 
 
 

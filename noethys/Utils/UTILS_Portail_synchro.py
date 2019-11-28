@@ -1285,7 +1285,7 @@ class Synchro():
 
         cryptage_mdp = self.dict_parametres["secret_key"][:10] #base64.b64decode(password)
         nomFichierCRYPT = nomFichierZIP.replace(".zip", ".crypt")
-        UTILS_Cryptage_fichier.CrypterFichier(nomFichierZIP, nomFichierCRYPT, cryptage_mdp)
+        UTILS_Cryptage_fichier.CrypterFichier(nomFichierZIP, nomFichierCRYPT, cryptage_mdp, ancienne_methode=True)
         os.remove(nomFichierZIP)
 
         # Pour contrer le bug de Pickle dans le cryptage
