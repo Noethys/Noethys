@@ -45,7 +45,7 @@ def SelectionFichier():
         return None
     dlg.Destroy()
     
-    # Décryptage du fichier
+    # Fichier NOC : Décryptage du fichier
     if fichier.endswith(".noc") == True :
         dlg = wx.PasswordEntryDialog(None, _(u"Veuillez saisir le mot de passe :"), _(u"Ouverture d'une sauvegarde cryptée"))
         if dlg.ShowModal() == wx.ID_OK:
@@ -62,11 +62,6 @@ def SelectionFichier():
         # Vérifie que le ZIP est ok
         valide = UTILS_Sauvegarde.VerificationZip(nom_fichier_decrypte)
 
-        # Si non valide on teste avec l'ancienne méthode de décryptage
-        if not valide and six.PY3:
-            UTILS_Cryptage_fichier.DecrypterFichier(fichier, nom_fichier_decrypte, motdepasse, ancien_cryptage=True)
-            valide = UTILS_Sauvegarde.VerificationZip(nom_fichier_decrypte)
-
         if valide == False :
             dlg = wx.MessageDialog(None, _(u"Le mot de passe que vous avez saisi semble erroné !"), _(u"Erreur"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
@@ -76,11 +71,15 @@ def SelectionFichier():
         return nom_fichier_decrypte
 
     else:
-        dlg = wx.MessageDialog(None, _(u"Le fichier de sauvegarde semble corrompu !"), _(u"Erreur"), wx.OK | wx.ICON_ERROR)
-        dlg.ShowModal()
-        dlg.Destroy()
-        return None
+        # Fichier NOD : Vérifie que le ZIP est ok
+        valide = UTILS_Sauvegarde.VerificationZip(fichier)
+        if valide == False:
+            dlg = wx.MessageDialog(None, _(u"Le fichier de sauvegarde semble corrompu !"), _(u"Erreur"), wx.OK | wx.ICON_ERROR)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return None
 
+        return fichier
 
 
     
