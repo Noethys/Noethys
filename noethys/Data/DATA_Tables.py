@@ -605,6 +605,8 @@ DB_DATA = {
                                     ("iban", "VARCHAR(400)", u"Numéro IBAN pour prélèvements auto."),
                                     ("bic", "VARCHAR(400)", u"Numéro BIC pour prélèvements auto."),
                                     ("code_ics", "VARCHAR(400)", u"Code NNE pour prélèvements auto."),
+                                    ("dft_titulaire", "VARCHAR(400)", u"Titulaire du compte DFT"),
+                                    ("dft_iban", "VARCHAR(400)", u"Numéro IBAN du compte DFT"),
                                     ], # Comptes bancaires de l'organisateur
                                     
     "reglements":[            ("IDreglement", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID Règlement"),
@@ -1264,6 +1266,10 @@ DB_DATA = {
                                     ("reglement_auto", "INTEGER", u"Règlement automatique (0/1)"),
                                     ("observations", "VARCHAR(500)", u"Observations"),
                                     ("type", "VARCHAR(100)", u"Type (national ou SEPA)"),
+                                    ("format", "VARCHAR(200)", u"Format du prélèvement"),
+                                    ("encodage", "VARCHAR(200)", u"Encodage du fichier"),
+                                    ("IDperception", "INTEGER", u"ID de la perception"),
+                                    ("motif", "VARCHAR(300)", u"Motif du prélèvement"),
                                     ], # Lots de prélèvements
 
     "modeles_tickets":[ ("IDmodele", "INTEGER PRIMARY KEY AUTOINCREMENT", u"IDmodele"),
@@ -1774,8 +1780,12 @@ DB_DATA = {
                                      ("couleur", "VARCHAR(100)", u"Couleur"),
                                      ],  # Légendes des menus
 
-
-
+    "perceptions":                  [("IDperception", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID de la perception"),
+                                    ("nom", "VARCHAR(200)", u"Nom de la perception"),
+                                    ("rue_resid", "VARCHAR(255)", u"Adresse de la perception"),
+                                    ("cp_resid", "VARCHAR(10)", u"Code postal de la perception"),
+                                    ("ville_resid", "VARCHAR(100)", u"Ville de la perception"), ],
+                                    # Les perceptions pour le prélèvement automatique
 
 }
 

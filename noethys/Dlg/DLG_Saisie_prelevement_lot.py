@@ -4,7 +4,7 @@
 # Application :    Noethys, gestion multi-activités
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
-# Copyright:       (c) 2010-13 Ivan LUCAS
+# Copyright:       (c) 2010-19 Ivan LUCAS
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
@@ -18,22 +18,23 @@ import wx.html as html
 import os
 import GestionDB
 import datetime
-from PIL import Image
 import six
 from Ctrl import CTRL_Saisie_date
 from Utils import UTILS_Dates
 from Utils import UTILS_Historique
+from Dlg import DLG_Messagebox
 from Ol import OL_Prelevements_national
 from Ol import OL_Prelevements_sepa
+from Ol import OL_Modes_reglements
 from Utils import UTILS_Prelevements
 import FonctionsPerso
-import wx.lib.dialogs as dialogs
 import wx.lib.agw.hyperlink as Hyperlink
-
+import wx.propgrid as wxpg
+from Ctrl import CTRL_Propertygrid
 from Utils import UTILS_Config
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
-
 from Utils.UTILS_Decimal import FloatToDecimal as FloatToDecimal
+
 
 
 def Supprime_accent(texte):
@@ -44,66 +45,183 @@ def Supprime_accent(texte):
     return texte
 
 
-
-
-class CTRL_Compte(wx.Choice):
-    def __init__(self, parent):
-        wx.Choice.__init__(self, parent, -1) 
+class CTRL_Parametres(CTRL_Propertygrid.CTRL):
+    def __init__(self, parent, IDlot=None):
         self.parent = parent
-        self.MAJ() 
-        self.SetDefaut() 
-    
-    def MAJ(self):
-        listeItems = self.GetListeDonnees()
-        self.SetItems(listeItems)
-                                        
-    def GetListeDonnees(self):
-        db = GestionDB.DB()
-        req = """SELECT IDcompte, nom, numero, defaut, raison, code_etab, code_guichet, code_nne, cle_rib, cle_iban, iban, bic, code_ics
+        self.IDlot = IDlot
+        CTRL_Propertygrid.CTRL.__init__(self, parent)
+
+        self.SetExtraStyle(wxpg.PG_EX_HELP_AS_TOOLTIPS)
+        couleurFond = "#dcf7d4"
+        self.SetCaptionBackgroundColour(couleurFond)
+        self.Bind(wxpg.EVT_PG_CHANGED, self.OnPropGridChange)
+
+    def Remplissage(self):
+        # Généralités
+        self.Append(wxpg.PropertyCategory(_(u"Généralités")))
+
+        propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Format"), name="format", liste_choix=[("prive", _(u"Secteur privé")), ("public_dft", _(u"Secteur public DFT"))], valeur="prive")
+        propriete.SetEditor("EditeurChoix")
+        propriete.SetHelpString(_(u"Sélectionnez le format"))
+        propriete.SetAttribute("obligatoire", True)
+        self.Append(propriete)
+
+        propriete = wxpg.EnumProperty(label=_(u"Compte à créditer"), name="IDcompte")
+        propriete.SetHelpString(_(u"Sélectionnez le compte bancaire à créditer dans le cadre du règlement automatique"))
+        propriete.SetEditor("EditeurComboBoxAvecBoutons")
+        self.Append(propriete)
+        self.MAJ_comptes()
+
+        propriete = wxpg.EnumProperty(label=_(u"Perception"), name="perception")
+        propriete.SetHelpString(_(u"Sélectionnez une perception (uniquement pour le secteur public)"))
+        propriete.SetEditor("EditeurComboBoxAvecBoutons")
+        self.Append(propriete)
+        self.MAJ_perceptions()
+
+        propriete = wxpg.StringProperty(label=_(u"Motif du prélèvement"), name="motif", value=u"")
+        propriete.SetHelpString(_(u"Saisissez le motif du prélèvement. Ex : 'Garderie Novembre 2019' (uniquement pour le secteur public)"))
+        self.Append(propriete)
+
+        # Règlement auto
+        self.Append(wxpg.PropertyCategory(_(u"Règlement automatique")))
+
+        propriete = wxpg.BoolProperty(label=_(u"Régler automatiquement"), name="reglement_auto", value=False)
+        propriete.SetHelpString(_(u"Cochez cette case si vous souhaitez que Noethys enregistre un règlement dans Noethys pour chaque prélèvement valide"))
+        propriete.SetAttribute("UseCheckbox", True)
+        self.Append(propriete)
+
+        propriete = wxpg.EnumProperty(label=_(u"Mode de règlement"), name="IDmode")
+        propriete.SetHelpString(_(u"Sélectionnez le mode de règlement à utiliser dans le cadre du règlement automatique"))
+        propriete.SetEditor("EditeurComboBoxAvecBoutons")
+        self.Append(propriete)
+        self.MAJ_modes()
+
+        # Options
+        self.Append(wxpg.PropertyCategory(_(u"Options")))
+
+        propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Encodage"), name="encodage", liste_choix=[("utf-8", _(u"utf-8")), ("iso-8859-15", _(u"iso-8859-15"))], valeur="utf-8")
+        propriete.SetEditor("EditeurChoix")
+        propriete.SetHelpString(_(u"Sélectionnez l'encodage du fichier"))
+        propriete.SetAttribute("obligatoire", True)
+        self.Append(propriete)
+
+
+    def Importation(self):
+        """ Importation des données """
+        pass
+
+    def MAJ_comptes(self):
+        DB = GestionDB.DB()
+        req = """SELECT IDcompte, nom, numero, defaut, raison, code_etab, code_guichet, code_nne, cle_rib, cle_iban, iban, bic, code_ics, dft_titulaire, dft_iban
         FROM comptes_bancaires
         ORDER BY nom;"""
-        db.ExecuterReq(req)
-        listeDonnees = db.ResultatReq()
-        db.Close()
-        listeItems = []
-        self.dictDonnees = {}
-        index = 0
-        for IDcompte, nom, numero, defaut, raison, code_etab, code_guichet, code_nne, cle_rib, cle_iban, iban, bic, code_ics in listeDonnees :
-            self.dictDonnees[index] = { 
-                "ID" : IDcompte, "nom" : nom, "numero" : numero, "defaut" : defaut,
-                "raison" : raison, "code_etab" : code_etab, "code_guichet" : code_guichet, 
-                "code_nne" : code_nne, "cle_rib" : cle_rib, "cle_iban" : cle_iban,
-                "iban" : iban, "bic" : bic, "code_ics" : code_ics,
+        DB.ExecuterReq(req)
+        listeDonnees = DB.ResultatReq()
+        DB.Close()
+        self.dictComptes = {}
+        choix = wxpg.PGChoices()
+        for IDcompte, nom, numero, defaut, raison, code_etab, code_guichet, code_nne, cle_rib, cle_iban, iban, bic, code_ics, dft_titulaire, dft_iban in listeDonnees:
+            self.dictComptes[IDcompte] = {
+                "nom": nom, "numero": numero, "defaut": defaut, "raison": raison, "code_etab": code_etab, "code_guichet": code_guichet, "code_nne": code_nne,
+                "cle_rib": cle_rib, "cle_iban": cle_iban, "iban": iban, "bic": bic, "code_ics": code_ics, "dft_titulaire": dft_titulaire, "dft_iban": dft_iban,
                 }
-            listeItems.append(nom)
-            index += 1
-        return listeItems
-    
-    def SetDefaut(self):
-        for index, dictTemp in self.dictDonnees.items() :
-            if dictTemp["code_nne"] not in (None, "") :
-                self.SetID(dictTemp["ID"])
-                return
+            choix.Add(label=nom, value=IDcompte)
+        propriete = self.GetPropertyByName("IDcompte")
+        propriete.SetChoices(choix)
+        self.RefreshProperty(propriete)
 
-    def SetID(self, ID=0):
-        for index, values in self.dictDonnees.items():
-            if values["ID"] == ID :
-                 self.SetSelection(index)
+    def MAJ_modes(self):
+        DB = GestionDB.DB()
+        req = """SELECT IDmode, label, numero_piece, nbre_chiffres, 
+        frais_gestion, frais_montant, frais_pourcentage, frais_arrondi, frais_label, image
+        FROM modes_reglements
+        ORDER BY label;"""
+        DB.ExecuterReq(req)
+        listeDonnees = DB.ResultatReq()
+        DB.Close()
+        self.dictModes = {}
+        choix = wxpg.PGChoices()
+        for IDmode, label, numero_piece, nbre_chiffres, frais_gestion, frais_montant, frais_pourcentage, frais_arrondi, frais_label, image in listeDonnees:
+            self.dictModes[
+                IDmode] = {"label": label, "numero_piece": numero_piece, "nbre_chiffres": nbre_chiffres, "frais_gestion": frais_gestion, "frais_montant": frais_montant, "frais_pourcentage": frais_pourcentage, "frais_arrondi": frais_arrondi, "frais_label": frais_label, "image": image, }
+            bmp = OL_Modes_reglements.GetImage(image)
+            choix.Add(label=label, bitmap=bmp, value=IDmode)
+        propriete = self.GetPropertyByName("IDmode")
+        propriete.SetChoices(choix)
+        self.RefreshProperty(propriete)
 
-    def GetID(self):
-        index = self.GetSelection()
-        if index == -1 : return None
-        return self.dictDonnees[index]["ID"]
-    
-    def GetInfos(self):
-        """ Récupère les infos sur le compte sélectionné """
-        index = self.GetSelection()
-        if index == -1 : return None
-        return self.dictDonnees[index]
-        
+    def MAJ_comptes(self):
+        DB = GestionDB.DB()
+        req = """SELECT IDcompte, nom, numero, defaut, raison, code_etab, code_guichet, code_nne, cle_rib, cle_iban, iban, bic, code_ics, dft_titulaire, dft_iban
+        FROM comptes_bancaires
+        ORDER BY nom;"""
+        DB.ExecuterReq(req)
+        listeDonnees = DB.ResultatReq()
+        DB.Close()
+        self.dictComptes = {}
+        choix = wxpg.PGChoices()
+        for IDcompte, nom, numero, defaut, raison, code_etab, code_guichet, code_nne, cle_rib, cle_iban, iban, bic, code_ics, dft_titulaire, dft_iban in listeDonnees:
+            self.dictComptes[IDcompte] = {
+                "nom": nom, "numero": numero, "defaut": defaut, "raison": raison, "code_etab": code_etab, "code_guichet": code_guichet, "code_nne": code_nne,
+                "cle_rib": cle_rib, "cle_iban": cle_iban, "iban": iban, "bic": bic, "code_ics": code_ics, "dft_titulaire": dft_titulaire, "dft_iban": dft_iban,
+                }
+            choix.Add(label=nom, value=IDcompte)
+        propriete = self.GetPropertyByName("IDcompte")
+        propriete.SetChoices(choix)
+        self.RefreshProperty(propriete)
 
-# -----------------------------------------------------------------------------------------------------------------------
+    def MAJ_perceptions(self):
+        DB = GestionDB.DB()
+        req = """SELECT IDperception, nom, rue_resid, cp_resid, ville_resid
+        FROM perceptions
+        ORDER BY nom;"""
+        DB.ExecuterReq(req)
+        listeDonnees = DB.ResultatReq()
+        DB.Close()
+        self.dictPerceptions = {}
+        choix = wxpg.PGChoices()
+        for IDperception, nom, rue_resid, cp_resid, ville_resid in listeDonnees:
+            self.dictPerceptions[IDperception] = {"IDperception" : IDperception, "nom" : nom, "rue_resid" : rue_resid, "cp_resid" : cp_resid, "ville_resid" : ville_resid}
+            choix.Add(label=nom, value=IDperception)
+        propriete = self.GetPropertyByName("perception")
+        propriete.SetChoices(choix)
+        self.RefreshProperty(propriete)
 
+    def OnBoutonParametres(self, propriete=None):
+        ancienneValeur = propriete.GetValue()
+        if propriete.GetName() == "IDcompte":
+            from Dlg import DLG_Comptes_bancaires
+            dlg = DLG_Comptes_bancaires.Dialog(self)
+            dlg.ShowModal()
+            dlg.Destroy()
+            self.MAJ_comptes()
+        if propriete.GetName() == "IDmode":
+            from Dlg import DLG_Modes_reglements
+            dlg = DLG_Modes_reglements.Dialog(self)
+            dlg.ShowModal()
+            dlg.Destroy()
+            self.MAJ_modes()
+        if propriete.GetName() == "perception":
+            from Dlg import DLG_Perceptions
+            dlg = DLG_Perceptions.Dialog(self)
+            dlg.ShowModal()
+            dlg.Destroy()
+            self.MAJ_perceptions()
+
+        try:
+            propriete.SetValue(ancienneValeur)
+        except:
+            pass
+
+    def OnPropGridChange(self, event):
+        propriete = event.GetProperty()
+        if propriete.GetName() == "reglement_auto":
+            self.parent.ctrl_prelevements.reglement_auto = propriete.GetValue()
+
+
+
+
+# ------------------------------------------------------------------------------------------------------------------------
 
 
 class CTRL_Infos(html.HtmlWindow):
@@ -125,67 +243,6 @@ class CTRL_Infos(html.HtmlWindow):
     
 
 # ---------------------------------------------------------------------------------------------------------------------------------------
-
-
-class CTRL_Mode(wx.Choice):
-    def __init__(self, parent):
-        wx.Choice.__init__(self, parent, -1) 
-        self.parent = parent
-        self.MAJ() 
-        self.SetDefaut() 
-    
-    def MAJ(self):
-        listeItems = self.GetListeDonnees()
-        if len(listeItems) == 0 :
-            self.Enable(False)
-        self.SetItems(listeItems)
-                                        
-    def GetListeDonnees(self):
-        db = GestionDB.DB()
-        req = """SELECT IDmode, label, numero_piece, nbre_chiffres, 
-        frais_gestion, frais_montant, frais_pourcentage, frais_arrondi, frais_label
-        FROM modes_reglements
-        ORDER BY label;"""
-        db.ExecuterReq(req)
-        listeDonnees = db.ResultatReq()
-        db.Close()
-        listeItems = []
-        self.dictDonnees = {}
-        index = 0
-        for IDmode, label, numero_piece, nbre_chiffres, frais_gestion, frais_montant, frais_pourcentage, frais_arrondi, frais_label in listeDonnees :
-            self.dictDonnees[index] = { 
-                "ID" : IDmode, "label" : label, "numero_piece" : numero_piece, "nbre_chiffres" : nbre_chiffres,
-                "frais_gestion" : frais_gestion, "frais_montant" : frais_montant, "frais_pourcentage" : frais_pourcentage, 
-                "frais_arrondi" : frais_arrondi, "frais_label" : frais_label, 
-                }
-            listeItems.append(label)
-            index += 1
-        return listeItems
-    
-    def SetDefaut(self):
-        for index, dictTemp in self.dictDonnees.items() :
-            if "prelevement" in Supprime_accent(dictTemp["label"].lower()) :
-                self.SetID(dictTemp["ID"])
-                return
-
-    def SetID(self, ID=0):
-        for index, values in self.dictDonnees.items():
-            if values["ID"] == ID :
-                 self.SetSelection(index)
-
-    def GetID(self):
-        index = self.GetSelection()
-        if index == -1 : return None
-        return self.dictDonnees[index]["ID"]
-    
-    def GetInfosMode(self):
-        """ Récupère les infos sur le mode sélectionné """
-        index = self.GetSelection()
-        if index == -1 : return None
-        return self.dictDonnees[index]
-        
-
-# -----------------------------------------------------------------------------------------------------------------------
 
 
 class Hyperlien(Hyperlink.HyperLinkCtrl):
@@ -218,8 +275,6 @@ class Hyperlien(Hyperlink.HyperLinkCtrl):
             self.parent.ctrl_prelevements.SetRegle(True)
         if self.URL == "reglements_rien" :
             self.parent.ctrl_prelevements.SetRegle(False)
-        if self.URL == "creer_mode" :
-            self.parent.CreerMode()
         self.UpdateLink()
             
         
@@ -240,31 +295,19 @@ class Dialog(wx.Dialog):
         self.label_nom = wx.StaticText(self, -1, _(u"Nom du lot :"))
         self.ctrl_nom = wx.TextCtrl(self, -1, u"")
         self.ctrl_nom.SetMinSize((230, -1))
+        self.label_observations = wx.StaticText(self, -1, _(u"Observations :"))
+        self.ctrl_observations = wx.TextCtrl(self, -1, u"", style=wx.TE_MULTILINE)
+        self.ctrl_observations.SetMinSize((-1, 50))
+
         self.label_date = wx.StaticText(self, -1, _(u"Date du prélèv. :"))
         self.ctrl_date = CTRL_Saisie_date.Date2(self)
         self.ctrl_date.SetDate(datetime.date.today())
         self.label_verrouillage = wx.StaticText(self, -1, _(u"Verrouillage :"))
         self.ctrl_verrouillage = wx.CheckBox(self, -1, u"")
-        
-        self.label_observations = wx.StaticText(self, -1, _(u"Observations :"))
-        self.ctrl_observations = wx.TextCtrl(self, -1, u"", style=wx.TE_MULTILINE)
-        
+
         # Paramètres
         self.box_parametres_staticbox = wx.StaticBox(self, -1, _(u"Paramètres"))
-        
-        self.label_compte = wx.StaticText(self, -1, _(u"Compte à créditer :"))
-        self.ctrl_compte = CTRL_Compte(self)
-        self.bouton_comptes = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Mecanisme.png"), wx.BITMAP_TYPE_ANY))
-        
-        self.label_reglement_auto = wx.StaticText(self, -1, _(u"Règlement auto. :"))
-        self.ctrl_reglement_auto = wx.CheckBox(self, -1, _(u"Créer le règlement automatiquement si prélèvement valide"))
-        self.ctrl_reglement_auto.SetValue(True) 
-        
-        self.label_mode = wx.StaticText(self, -1, _(u"Mode de règlement :"))
-        self.ctrl_mode = CTRL_Mode(self)
-        self.bouton_modes = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Mecanisme.png"), wx.BITMAP_TYPE_ANY))
-
-        self.hyper_creer_mode = Hyperlien(self, label=_(u"Créer un mode 'Prélèvement automatique'"), infobulle=_(u"Si vous n'avez pas de mode 'Prélèvement automatique' dans la liste des modes, cliquez ici pour en créer automatiquement."), URL="creer_mode")
+        self.ctrl_parametres = CTRL_Parametres(self, IDlot=self.IDlot)
 
         # Prélèvements
         self.box_prelevements_staticbox = wx.StaticBox(self, -1, _(u"Prélèvements"))
@@ -310,7 +353,7 @@ class Dialog(wx.Dialog):
         self.bouton_fichier_SEPA = CTRL_Bouton_image.CTRL(self, texte=_(u"Générer un fichier SEPA"), cheminImage="Images/32x32/Disk.png")
         self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
         self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
-        
+
         if self.typePrelevement == "sepa" : self.bouton_fichier_national.Show(False)
         if self.typePrelevement == "national" : self.bouton_fichier_SEPA.Show(False)
 
@@ -327,14 +370,10 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonFichierSEPA, self.bouton_fichier_SEPA)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
-        self.Bind(wx.EVT_BUTTON, self.OnBoutonComptes, self.bouton_comptes)
-        self.Bind(wx.EVT_BUTTON, self.OnBoutonModes, self.bouton_modes)
-        self.Bind(wx.EVT_CHECKBOX, self.OnCheckReglementAuto, self.ctrl_reglement_auto)
-        
+
         # Init contrôles
         self.Importation() 
         
-        self.OnCheckReglementAuto(None)
         self.tracks = MODULE.GetTracks(self.IDlot)
         self.ctrl_prelevements.MAJ(tracks=self.tracks) 
         self.ctrl_prelevements.MAJtotaux() 
@@ -348,11 +387,6 @@ class Dialog(wx.Dialog):
         self.ctrl_date.SetToolTip(wx.ToolTip(_(u"Saisissez la date prévue du prélèvement")))
         self.ctrl_verrouillage.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour verrouiller le lot lorsqu'il a été communiqué à la banque")))
         self.ctrl_observations.SetToolTip(wx.ToolTip(_(u"Saisissez ici des observations sur ce lot de prélèvements")))
-        self.ctrl_compte.SetToolTip(wx.ToolTip(_(u"Sélectionnez le compte à créditer")))
-        self.bouton_comptes.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à la gestion des comptes")))
-        self.ctrl_reglement_auto.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour que Noethys créée automatiquement le règlement correspondant au solde de la facture lors de la validation du prélèvement")))
-        self.ctrl_mode.SetToolTip(wx.ToolTip(_(u"Sélectionnez le mode de règlement à utiliser pour le règlement des prestations")))
-        self.bouton_modes.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à la gestion des modes de règlements")))
         self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter un prélèvement")))
         self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le prélèvement sélectionné dans la liste")))
         self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour retirer le prélèvement sélectionné dans la liste")))
@@ -373,18 +407,15 @@ class Dialog(wx.Dialog):
         # Généralités
         box_generalites = wx.StaticBoxSizer(self.box_generalites_staticbox, wx.VERTICAL)
         
-        grid_sizer_generalites = wx.FlexGridSizer(rows=3, cols=2, vgap=5, hgap=5)
-        grid_sizer_date = wx.FlexGridSizer(rows=1, cols=4, vgap=5, hgap=5)
+        grid_sizer_generalites = wx.FlexGridSizer(rows=5, cols=2, vgap=5, hgap=5)
         grid_sizer_generalites.Add(self.label_nom, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_generalites.Add(self.ctrl_nom, 0, wx.EXPAND, 0)
-        grid_sizer_generalites.Add(self.label_date, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_date.Add(self.ctrl_date, 0, 0, 0)
-        grid_sizer_date.Add((20, 20), 0, wx.EXPAND, 0)
-        grid_sizer_date.Add(self.label_verrouillage, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_date.Add(self.ctrl_verrouillage, 0, wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_generalites.Add(grid_sizer_date, 1, wx.EXPAND, 0)
         grid_sizer_generalites.Add(self.label_observations, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_generalites.Add(self.ctrl_observations, 0, wx.EXPAND, 0)
+        grid_sizer_generalites.Add(self.label_date, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_generalites.Add(self.ctrl_date, 0, 0, 0)
+        grid_sizer_generalites.Add(self.label_verrouillage, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_generalites.Add(self.ctrl_verrouillage, 0, wx.ALIGN_CENTER_VERTICAL, 0)
         box_generalites.Add(grid_sizer_generalites, 1, wx.ALL|wx.EXPAND, 10)
         
         grid_sizer_generalites.AddGrowableRow(2)        
@@ -392,34 +423,7 @@ class Dialog(wx.Dialog):
         
         # Paramètres
         box_parametres = wx.StaticBoxSizer(self.box_parametres_staticbox, wx.VERTICAL)
-        
-        grid_sizer_parametres = wx.FlexGridSizer(rows=4, cols=2, vgap=0, hgap=5)
-        
-        grid_sizer_compte = wx.FlexGridSizer(rows=1, cols=4, vgap=5, hgap=5)
-        grid_sizer_compte.Add(self.ctrl_compte, 0, wx.EXPAND, 0)
-        grid_sizer_compte.Add(self.bouton_comptes, 0, wx.EXPAND, 0)
-        grid_sizer_compte.AddGrowableCol(0)
-        
-        grid_sizer_parametres.Add(self.label_compte, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL|wx.BOTTOM, 5)
-        grid_sizer_parametres.Add(grid_sizer_compte, 1, wx.EXPAND|wx.BOTTOM, 5)
-
-
-        grid_sizer_mode = wx.FlexGridSizer(rows=1, cols=4, vgap=5, hgap=5)
-        grid_sizer_mode.Add(self.ctrl_mode, 0, wx.EXPAND, 0)
-        grid_sizer_mode.Add(self.bouton_modes, 0, wx.EXPAND, 0)
-        grid_sizer_mode.AddGrowableCol(0)
-
-        grid_sizer_parametres.Add(self.label_mode, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_parametres.Add(grid_sizer_mode, 1, wx.EXPAND, 0)
-
-        grid_sizer_parametres.Add( (5, 5), 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_parametres.Add(self.hyper_creer_mode, 0, wx.ALIGN_RIGHT | wx.RIGHT, 30)
-        
-        grid_sizer_parametres.Add(self.label_reglement_auto, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL|wx.TOP, 5)
-        grid_sizer_parametres.Add(self.ctrl_reglement_auto, 1, wx.EXPAND|wx.TOP, 5)
-
-        grid_sizer_parametres.AddGrowableCol(1)
-        box_parametres.Add(grid_sizer_parametres, 1, wx.ALL|wx.EXPAND, 10)
+        box_parametres.Add(self.ctrl_parametres, 1, wx.ALL | wx.EXPAND, 10)
         grid_sizer_haut.Add(box_parametres, 1, wx.EXPAND, 0)
 
         grid_sizer_haut.AddGrowableCol(1)
@@ -500,79 +504,10 @@ class Dialog(wx.Dialog):
         self.CenterOnScreen()
         
         wx.CallLater(0, self.Layout) # Contre pb d'affichage du wx.Choice
-    
-    def OnBoutonComptes(self, event):
-        IDcompte = self.ctrl_compte.GetID()
-        from Dlg import DLG_Comptes_bancaires
-        dlg = DLG_Comptes_bancaires.Dialog(self)
-        dlg.ShowModal()
-        dlg.Destroy()
-        self.ctrl_compte.MAJ()
-        self.ctrl_compte.SetID(IDcompte)
 
-    def OnBoutonModes(self, event):
-        IDmode = self.ctrl_mode.GetID()
-        from Dlg import DLG_Modes_reglements
-        dlg = DLG_Modes_reglements.Dialog(self)
-        dlg.ShowModal()
-        dlg.Destroy()
-        self.ctrl_mode.MAJ()
-        self.ctrl_mode.SetID(IDmode)
-    
     def GetVerrouillage(self):
         return self.ctrl_verrouillage.GetValue() 
-    
-    def CreerMode(self):
-        """ Créer un mode 'Prélèvement automatique' """
-        # Vérifie si un mode Préllèvment n'existe pas déjà
-        DB = GestionDB.DB()
-        req = """SELECT IDmode, label FROM modes_reglements;"""
-        DB.ExecuterReq(req)
-        listeDonnees = DB.ResultatReq()
-        DB.Close()
-        present = False
-        for IDmode, label in listeDonnees :
-            if "prelevement" in Supprime_accent(label.lower()) :
-                present = True
-        
-        if present == True :
-            dlg = wx.MessageDialog(self, _(u"Il semblerait qu'un mode 'Prélèvement automatique' soit déjà présent.\n\nSouhaitez-vous quand même créer un nouveau mode ?"), _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
-            reponse = dlg.ShowModal() 
-            dlg.Destroy()
-            if reponse != wx.ID_YES :
-                return
 
-        # Confirmation
-        dlg = wx.MessageDialog(self, _(u"Confirmez-vous la création d'un mode de règlement 'Prélèvement automatique' ?"), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
-        reponse = dlg.ShowModal() 
-        dlg.Destroy()
-        if reponse != wx.ID_YES :
-            return
-
-        # Sauvegarde
-        DB = GestionDB.DB()
-        listeDonnees = [    
-                ("label", _(u"Prélèvement automatique")),
-            ]
-        IDmode = DB.ReqInsert("modes_reglements", listeDonnees)
-        
-        # Sauvegarde de l'image
-        buffer = six.BytesIO()
-        img = Image.open(Chemins.GetStaticPath("Images/Special/Prelevement.png"))
-        img = img.convert("RGB")
-        img.save(buffer, format='JPEG', quality=100)
-        buffer.seek(0)
-        DB.MAJimage("modes_reglements", "IDmode", IDmode, buffer.read())
-        
-        DB.Close()
-        
-        # MAJ Contrôle Modes
-        self.ctrl_mode.MAJ()
-        self.ctrl_mode.SetID(IDmode)
-    
-    def OnCheckReglementAuto(self, event=None):
-        self.ctrl_prelevements.reglement_auto = self.ctrl_reglement_auto.GetValue()
-        
     def OnBoutonAjouter(self, event): 
 ##        self.ctrl_prelevements.Saisie_factures()
         
@@ -611,16 +546,16 @@ class Dialog(wx.Dialog):
     def OnBoutonAnnuler(self, event): 
         self.EndModal(wx.ID_CANCEL)
 
-    def OnBoutonFichierNational(self, event): 
+    def OnBoutonFichierNational(self, event):
         """ Génération d'un fichier normalisé format NATIONAL """
         # Validation des données
         if self.ValidationDonnees() == False :
             return
 
         listeLignes = []
-                
+
         # Ligne 1 : Emetteur
-        date_prelevement = self.ctrl_date.GetDate() 
+        date_prelevement = self.ctrl_date.GetDate()
         dictCompte = self.ctrl_compte.GetInfos()
         numero_emetteur = dictCompte["code_nne"]
         raison_sociale = dictCompte["raison"]
@@ -641,7 +576,7 @@ class Dialog(wx.Dialog):
             }
         ligne = UTILS_Prelevements.GetLigneEmetteur(dictDonnees)
         listeLignes.append(ligne)
-            
+
         # Lignes des prélèvements
         index = 0
         total = 0
@@ -658,13 +593,13 @@ class Dialog(wx.Dialog):
                 "montant" : str(montant),
                 "libelle" : track.libelle,
                 "numero_etablissement" : track.prelevement_etab,
-                }        
+                }
             ligne = UTILS_Prelevements.GetLigneDestinataire(dictDonnees)
             listeLignes.append(ligne)
             total += montant
-            
+
             index += 1
-        
+
         # Ligne de total
         dictDonnees = {
             "type_prelevement" : u"0808",
@@ -673,10 +608,10 @@ class Dialog(wx.Dialog):
             }
         ligne = UTILS_Prelevements.GetLigneTotal(dictDonnees)
         listeLignes.append(ligne)
-        
+
         # Finalisation du texte
         texte = "".join(listeLignes)
-    
+
         # Demande à l'utilisateur le nom de fichier et le répertoire de destination
         nomFichier = "Prelevements.txt"
         wildcard = "Fichier texte (*.txt)|*.txt|" \
@@ -684,9 +619,9 @@ class Dialog(wx.Dialog):
         sp = wx.StandardPaths.Get()
         cheminDefaut = sp.GetDocumentsDir()
         dlg = wx.FileDialog(
-            None, message = _(u"Veuillez sélectionner le répertoire de destination et le nom du fichier"), defaultDir=cheminDefaut, 
-            defaultFile = nomFichier, 
-            wildcard = wildcard, 
+            None, message = _(u"Veuillez sélectionner le répertoire de destination et le nom du fichier"), defaultDir=cheminDefaut,
+            defaultFile = nomFichier,
+            wildcard = wildcard,
             style = wx.FD_SAVE
             )
         dlg.SetFilterIndex(0)
@@ -696,7 +631,7 @@ class Dialog(wx.Dialog):
         else:
             dlg.Destroy()
             return
-        
+
         # Le fichier de destination existe déjà :
         if os.path.isfile(cheminFichier) == True :
             dlg = wx.MessageDialog(None, _(u"Un fichier portant ce nom existe déjà. \n\nVoulez-vous le remplacer ?"), "Attention !", wx.YES_NO | wx.NO_DEFAULT | wx.ICON_EXCLAMATION)
@@ -710,7 +645,7 @@ class Dialog(wx.Dialog):
         f = open(cheminFichier, "w")
         f.write(texte.encode("iso-8859-15"))
         f.close()
-        
+
         # Confirmation de création du fichier et demande d'ouverture directe
         txtMessage = _(u"Le fichier a été créé avec succès.\n\nSouhaitez-vous l'ouvrir dès maintenant ?")
         dlgConfirm = wx.MessageDialog(None, txtMessage, _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.ICON_QUESTION)
@@ -720,7 +655,7 @@ class Dialog(wx.Dialog):
             return
         else:
             FonctionsPerso.LanceFichierExterne(cheminFichier)
-    
+
     def OnBoutonFichierSEPA(self, event): 
         """ Génération d'un fichier normalisé format SEPA """
         # Validation des données
@@ -742,11 +677,17 @@ class Dialog(wx.Dialog):
         creancier_rue, creancier_cp, creancier_ville, creancier_siret = listeDonnees[0]
 
         # Récupération des infos sur le compte créditeur
-        dictCompte = self.ctrl_compte.GetInfos()
+        parametres = self.ctrl_parametres.GetParametres()
+        IDcompte = parametres["IDcompte"]
+        motif = parametres["motif"]
+        dictCompte = self.ctrl_parametres.dictComptes[IDcompte]
         paiement_ics = dictCompte["code_ics"]
         creancier_nom = dictCompte["raison"]
         paiement_iban = dictCompte["iban"]
         paiement_bic = dictCompte["bic"]
+        dft_titulaire = dictCompte["dft_titulaire"]
+        dft_iban = dictCompte["dft_iban"]
+        perception = self.ctrl_parametres.dictPerceptions.get(parametres["perception"], None)
         
         # Création des lots
         listeSequences = ["OOFF", "FRST", "RCUR", "FNAL"]        
@@ -809,6 +750,9 @@ class Dialog(wx.Dialog):
                     "lot_iban" : paiement_iban,
                     "lot_bic" : paiement_bic,
                     "lot_ics" : paiement_ics,
+                    "dft_titulaire": dft_titulaire,
+                    "dft_iban" : dft_iban,
+                    "motif": motif,
                     "lot_sequence" : sequence,
                     "transactions" : listeTransactions,
                     }
@@ -817,17 +761,17 @@ class Dialog(wx.Dialog):
             
         
         if len(listeAnomalies) > 0 :
-            import wx.lib.dialogs as dialogs
-            message = "\n".join(listeAnomalies)
-            dlg = dialogs.MultiMessageDialog(self, _(u"Le fichier SEPA ne peut être généré en raison des anomalies suivantes :"), caption = _(u"Génération impossible"), msg2=message, style = wx.ICON_ERROR | wx.OK, icon=None, btnLabels={wx.ID_OK : _(u"Fermer")})
-            dlg.ShowModal() 
+            intro = _(u"Le fichier SEPA ne peut être généré en raison des anomalies suivantes :")
+            detail = "\n".join(listeAnomalies)
+            dlg = DLG_Messagebox.Dialog(self, titre=_(u"Génération impossible"), introduction=intro, detail=detail, icone=wx.ICON_ERROR, boutons=[_(u"Ok"), ], defaut=0)
+            dlg.ShowModal()
             dlg.Destroy() 
             return
             
         # Mémorisation de tous les données
         dictDonnees = {
             "remise_nom" : remise_nom,
-            "remise_date_heure" : datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S") ,
+            "remise_date_heure" : datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
             "remise_nbre" : str(nbreTotal),
             "remise_montant" : str(montantTotal),
             
@@ -837,13 +781,16 @@ class Dialog(wx.Dialog):
             "creancier_ville" : creancier_ville,
             "creancier_pays" : _(u"FR"),
             "creancier_siret" : creancier_siret,
+
+            "type_remise": parametres["format"],
+            "perception": perception,
             
             "lots" : listeLots,
             }
         
         # Génération du fichier XML
         doc = UTILS_Prelevements.GetXMLSepa(dictDonnees)
-        xml = doc.toprettyxml(encoding="utf-8")
+        xml = doc.toprettyxml(encoding=parametres["encodage"])
         
         # Demande à l'utilisateur le nom de fichier et le répertoire de destination
         nomFichier = u"%s.xml" % remise_nom # "Prelevements.xml"
@@ -866,17 +813,21 @@ class Dialog(wx.Dialog):
         
         # Le fichier de destination existe déjà :
         if os.path.isfile(cheminFichier) == True :
-            dlg = wx.MessageDialog(None, _(u"Un fichier portant ce nom existe déjà. \n\nVoulez-vous le remplacer ?"), "Attention !", wx.YES_NO | wx.NO_DEFAULT | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(None, _(u"Un fichier portant ce nom existe déjà.\n\nVoulez-vous le remplacer ?"), "Attention !", wx.YES_NO | wx.NO_DEFAULT | wx.ICON_EXCLAMATION)
             if dlg.ShowModal() == wx.ID_NO :
-                return False
                 dlg.Destroy()
+                return False
             else:
                 dlg.Destroy()
 
         # Création du fichier texte
-        f = open(cheminFichier, "w")
+        if six.PY2:
+            flag = "w"
+        else:
+            flag = "wb"
+        f = open(cheminFichier, flag)
         try:
-            f.write(doc.toxml(encoding="utf-8"))
+            f.write(xml)
         finally:
             f.close()
 
@@ -896,11 +847,6 @@ class Dialog(wx.Dialog):
         else:
             FonctionsPerso.LanceFichierExterne(cheminFichier)
         
-        
-        
-        
-        
-
 
     def GetLabelParametres(self):
         """ Renvoie les paramètres pour impression """
@@ -915,7 +861,7 @@ class Dialog(wx.Dialog):
         if self.IDlot == None :
             # Données du dernier lot
             DB = GestionDB.DB()
-            req = """SELECT nom, date, verrouillage, IDcompte, observations, IDmode, reglement_auto
+            req = """SELECT nom, date, verrouillage, IDcompte, observations, IDmode, reglement_auto, format, encodage, IDperception, motif
             FROM lots_prelevements
             ORDER BY IDlot;"""
             DB.ExecuterReq(req)
@@ -923,7 +869,7 @@ class Dialog(wx.Dialog):
             DB.Close()
             if len(listeDonnees) == 0 :
                 return
-            nom, date, verrouillage, IDcompte, observations, IDmode, reglement_auto = listeDonnees[-1]
+            nom, date, verrouillage, IDcompte, observations, IDmode, reglement_auto, format_lot, encodage, IDperception, motif = listeDonnees[-1]
             nom = u""
             date = datetime.date.today() 
             verrouillage = False
@@ -932,7 +878,7 @@ class Dialog(wx.Dialog):
         else :
             # Importation
             DB = GestionDB.DB()
-            req = """SELECT nom, date, verrouillage, IDcompte, observations, IDmode, reglement_auto
+            req = """SELECT nom, date, verrouillage, IDcompte, observations, IDmode, reglement_auto, format, encodage, IDperception, motif
             FROM lots_prelevements
             WHERE IDlot=%d
             ;""" % self.IDlot
@@ -941,22 +887,32 @@ class Dialog(wx.Dialog):
             DB.Close()
             if len(listeDonnees) == 0 :
                 return
-            nom, date, verrouillage, IDcompte, observations, IDmode, reglement_auto = listeDonnees[0]
+            nom, date, verrouillage, IDcompte, observations, IDmode, reglement_auto, format_lot, encodage, IDperception, motif = listeDonnees[0]
         
         # Attribution des données aux contrôles
         self.ctrl_nom.SetValue(nom)
         self.ctrl_date.SetDate(date)
         self.ctrl_verrouillage.SetValue(verrouillage)
-        self.ctrl_compte.SetID(IDcompte) 
         self.ctrl_observations.SetValue(observations)
-        self.ctrl_mode.SetID(IDmode) 
-        if reglement_auto == 1 :
-            self.ctrl_reglement_auto.SetValue(True)
-        else :
-            self.ctrl_reglement_auto.SetValue(False)
-    
+
+        listeValeurs = [
+            ("IDcompte", IDcompte),
+            ("IDmode", IDmode),
+            ("reglement_auto", reglement_auto),
+            ("format", format_lot),
+            ("encodage", encodage),
+            ("perception", IDperception),
+            ("motif", motif),
+            ]
+        for code, valeur in listeValeurs:
+            propriete = self.ctrl_parametres.GetPropertyByName(code)
+            propriete.SetValue(valeur)
+
+
     def ValidationDonnees(self):
         """ Vérifie que les données saisies sont exactes """
+        parametres = self.ctrl_parametres.GetParametres()
+
         # Généralités
         nom = self.ctrl_nom.GetValue()
         if nom == "" :
@@ -1008,14 +964,15 @@ class Dialog(wx.Dialog):
             verrouillage = 0
         
         # Vérification du compte créditeur
-        IDcompte = self.ctrl_compte.GetID() 
+        IDcompte = parametres["IDcompte"]
         if IDcompte == None :
             dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner un compte à créditer !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
 
-        dictCompte = self.ctrl_compte.GetInfos() 
+        type_remise = parametres["format"]
+        dictCompte = self.ctrl_parametres.dictComptes[IDcompte]
         nomCompte = dictCompte["nom"]
         numero = dictCompte["numero"]
         raison = dictCompte["raison"]
@@ -1025,9 +982,11 @@ class Dialog(wx.Dialog):
         code_ics = dictCompte["code_ics"]
         iban = dictCompte["iban"]
         bic = dictCompte["bic"]
+        dft_titulaire = dictCompte["dft_titulaire"]
+        dft_iban = dictCompte["dft_iban"]
 
         if raison == "" or raison == None :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez pas renseigné la raison sociale du compte créditeur ! \nModifiez les paramètres du compte bancaire."), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez pas renseigné la raison sociale du compte créditeur !\n\nModifiez les paramètres du compte bancaire."), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -1035,51 +994,79 @@ class Dialog(wx.Dialog):
         if self.typePrelevement == "sepa" :
 
             if iban == "" or iban == None :
-                dlg = wx.MessageDialog(self, _(u"Vous n'avez pas renseigné le IBAN du compte créditeur ! \nModifiez les paramètres du compte bancaire."), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous n'avez pas renseigné le IBAN du compte créditeur !\n\nModifiez les paramètres du compte bancaire."), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
             
             if bic == "" or bic == None :
-                dlg = wx.MessageDialog(self, _(u"Vous n'avez pas renseigné le BIC du compte créditeur ! \nModifiez les paramètres du compte bancaire."), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous n'avez pas renseigné le BIC du compte créditeur !\n\nModifiez les paramètres du compte bancaire."), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
             
             if code_ics == "" or code_ics == None :
-                dlg = wx.MessageDialog(self, _(u"Vous n'avez pas renseigné le ICS du compte créditeur ! \nModifiez les paramètres du compte bancaire."), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous n'avez pas renseigné le ICS du compte créditeur !\n\nModifiez les paramètres du compte bancaire."), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
-            
+
         if self.typePrelevement == "national" :
 
             if numero == "" or numero == None :
-                dlg = wx.MessageDialog(self, _(u"Vous n'avez pas renseigné le numéro du compte créditeur ! \nModifiez les paramètres du compte bancaire."), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous n'avez pas renseigné le numéro du compte créditeur !\n\nModifiez les paramètres du compte bancaire."), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
 
             if code_etab == "" or code_etab == None :
-                dlg = wx.MessageDialog(self, _(u"Vous n'avez pas renseigné le code Etablissement créditeur ! \nModifiez les paramètres du compte bancaire."), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous n'avez pas renseigné le code Etablissement créditeur !\n\nModifiez les paramètres du compte bancaire."), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
 
             if code_guichet == "" or code_guichet == None :
-                dlg = wx.MessageDialog(self, _(u"Vous n'avez pas renseigné le code Guichet du compte créditeur ! \nModifiez les paramètres du compte bancaire."), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous n'avez pas renseigné le code Guichet du compte créditeur !\n\nModifiez les paramètres du compte bancaire."), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
 
             if code_nne == "" or code_nne == None :
-                dlg = wx.MessageDialog(self, _(u"Vous n'avez pas renseigné le code NNE du compte créditeur ! \nModifiez les paramètres du compte bancaire."), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous n'avez pas renseigné le code NNE du compte créditeur !\n\nModifiez les paramètres du compte bancaire."), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
-        
-        IDmode = self.ctrl_mode.GetID() 
-        reglement_auto = int(self.ctrl_reglement_auto.GetValue())
+
+        # Si remise de type publique DFT
+        if type_remise == "public_dft":
+
+            if not dft_titulaire:
+                dlg = wx.MessageDialog(self, _(u"Vous n'avez pas renseigné le nom du titulaire du compte DFT !\n\nModifiez les paramètres du compte bancaire."), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg.ShowModal()
+                dlg.Destroy()
+                return False
+
+            if not dft_iban:
+                dlg = wx.MessageDialog(self, _(u"Vous n'avez pas renseigné le nom du titulaire du compte DFT !\n\nModifiez les paramètres du compte bancaire."), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg.ShowModal()
+                dlg.Destroy()
+                return False
+
+            if not parametres["motif"]:
+                dlg = wx.MessageDialog(self, _(u"Vous n'avez pas renseigné le motif du prélèvement !\n\nModifiez les paramètres du lot."), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg.ShowModal()
+                dlg.Destroy()
+                return False
+
+            if not parametres["perception"]:
+                dlg = wx.MessageDialog(self, _(u"Vous n'avez pas sélectionné de perception !\n\nModifiez les paramètres du lot."), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg.ShowModal()
+                dlg.Destroy()
+                return False
+
+
+        IDmode = parametres["IDmode"]
+        reglement_auto = int(parametres["reglement_auto"])
 
         # Vérification des prélèvements
         listeErreurs = []
@@ -1099,10 +1086,10 @@ class Dialog(wx.Dialog):
             
         if len(listeErreurs) > 0 :
             message1 = _(u"Le lot de prélèvements ne peut être validé en raison des erreurs suivantes :")
-            message2 = "\n".join(listeErreurs)
-            dlg = dialogs.MultiMessageDialog(self, message1, caption=_(u"Erreur"), msg2=message2, style = wx.ICON_EXCLAMATION |wx.OK, icon=None, btnLabels={wx.ID_OK : _(u"Ok")})
-            reponse = dlg.ShowModal() 
-            dlg.Destroy() 
+            detail = "\n".join(listeErreurs)
+            dlg = DLG_Messagebox.Dialog(self, titre=_(u"Erreur"), introduction=message1, detail=detail, icone=wx.ICON_EXCLAMATION, boutons=[_(u"Ok"), ], defaut=0)
+            dlg.ShowModal()
+            dlg.Destroy()
             return False
 
         return True
@@ -1121,35 +1108,27 @@ class Dialog(wx.Dialog):
                 return
 
         # Récupération des données
+        parametres = self.ctrl_parametres.GetParametres()
         nom = self.ctrl_nom.GetValue()
         date = self.ctrl_date.GetDate()
         observations = self.ctrl_observations.GetValue()
-        if self.ctrl_verrouillage.GetValue() == True :
-            verrouillage = 1
-        else :
-            verrouillage = 0
-        IDcompte = self.ctrl_compte.GetID() 
-        dictCompte = self.ctrl_compte.GetInfos() 
-        nomCompte = dictCompte["nom"]
-        numero = dictCompte["numero"]
-        raison = dictCompte["raison"]
-        code_etab = dictCompte["code_etab"]
-        code_guichet = dictCompte["code_guichet"]
-        code_nne = dictCompte["code_nne"]
-        IDmode = self.ctrl_mode.GetID() 
-        reglement_auto = int(self.ctrl_reglement_auto.GetValue())
+        verrouillage = int(self.ctrl_verrouillage.GetValue())
 
         # Sauvegarde du lot
         listeDonnees = [
             ("nom", nom ),
             ("date", date),
             ("verrouillage", verrouillage),
-            ("IDcompte", IDcompte),
+            ("IDcompte", parametres["IDcompte"]),
             ("observations", observations),
-            ("IDmode", IDmode),
-            ("reglement_auto", reglement_auto),
+            ("IDmode", parametres["IDmode"]),
+            ("reglement_auto", int(parametres["reglement_auto"])),
             ("type", self.typePrelevement),
-            ]
+            ("format", parametres["format"]),
+            ("encodage", parametres["encodage"]),
+            ("IDperception", parametres["perception"]),
+            ("motif", parametres["motif"]),
+        ]
 
         DB = GestionDB.DB()
         if self.IDlot == None :
@@ -1161,7 +1140,7 @@ class Dialog(wx.Dialog):
         DB.Close() 
         
         # Sauvegarde des prélèvements du lot
-        self.ctrl_prelevements.Sauvegarde(IDlot=self.IDlot, datePrelevement=date, IDcompte=IDcompte, IDmode=IDmode) 
+        self.ctrl_prelevements.Sauvegarde(IDlot=self.IDlot, datePrelevement=date, IDcompte=parametres["IDcompte"], IDmode=parametres["IDmode"])
         
         # Fermeture
         self.EndModal(wx.ID_OK)
@@ -1195,7 +1174,7 @@ class Dialog(wx.Dialog):
 if __name__ == u"__main__":
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    dlg = Dialog(None, IDlot=None, typePrelevement="sepa")
+    dlg = Dialog(None, IDlot=1, typePrelevement="sepa")
     filtres = [
         #{"type": "numero_intervalle", "numero_min": 6862, "numero_max": 7022},
         {"type": "solde_actuel", "operateur": "<", "montant": 0.0},

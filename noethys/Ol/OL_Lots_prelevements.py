@@ -13,12 +13,9 @@ import Chemins
 from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
-from Ctrl import CTRL_Bouton_image
 import GestionDB
 from Utils import UTILS_Dates
 from Utils import UTILS_Utilisateurs
-
-
 from Utils import UTILS_Interface
 from Ctrl.CTRL_ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
@@ -111,7 +108,7 @@ class ListView(FastObjectListView):
             ColumnDefn(_(u"Nom"), "left", 290, "nom", typeDonnee="texte"), 
             ColumnDefn(_(u"Date"), "left", 80, "date", typeDonnee="date", stringConverter=FormateDate),
             ColumnDefn(_(u"Nbre Prélèv."), "center", 80, "nbrePrelevements", typeDonnee="entier"), 
-            ColumnDefn(_(u"Type"), "left", 70, "typePrelevementStr", typeDonnee="texte"), 
+            ColumnDefn(_(u"Type"), "left", 70, "typePrelevementStr", typeDonnee="texte"),
             ColumnDefn(_(u"Observations"), "left", 200, "observations", typeDonnee="texte"), 
             ]
         

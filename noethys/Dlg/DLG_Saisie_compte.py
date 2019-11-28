@@ -32,9 +32,8 @@ class Dialog(wx.Dialog):
         self.label_numero = wx.StaticText(self, -1, _(u"Numéro :"))
         self.ctrl_numero = wx.TextCtrl(self, -1, u"")
         
-        # Infos complémentaires
-        self.box_infos_staticbox = wx.StaticBox(self, -1, _(u"Infos complémentaires"))
-        self.label_info = wx.StaticText(self, -1, _(u"(Ces informations sont uniquement nécessaires pour les prélèvements automatiques)"))
+        # Coordonnées bancaires
+        self.box_infos_staticbox = wx.StaticBox(self, -1, _(u"Coordonnées bancaires"))
         self.label_raison = wx.StaticText(self, -1, _(u"Raison sociale :"))
         self.ctrl_raison = wx.TextCtrl(self, -1, u"")
         
@@ -63,7 +62,18 @@ class Dialog(wx.Dialog):
         self.ctrl_nne = wx.TextCtrl(self, -1, u"")
         self.label_ics = wx.StaticText(self, -1, _(u"N° ICS :"))
         self.ctrl_ics = wx.TextCtrl(self, -1, u"")
-        
+
+        # Compte DFT
+        self.box_dft_staticbox = wx.StaticBox(self, -1, _(u"Compte DFT"))
+        self.label_dft_titulaire = wx.StaticText(self, -1, _(u"Titulaire du compte :"))
+        self.ctrl_dft_titulaire = wx.TextCtrl(self, -1, u"")
+        self.label_dft_iban = wx.StaticText(self, -1, _(u"N° IBAN DFT :"))
+        self.ctrl_dft_iban = wx.TextCtrl(self, -1, u"")
+
+        self.dft_image_valide = wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Ok4.png"), wx.BITMAP_TYPE_ANY)
+        self.dft_image_nonvalide = wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Interdit2.png"), wx.BITMAP_TYPE_ANY)
+        self.ctrl_controle_dft_iban = wx.StaticBitmap(self, -1, self.dft_image_nonvalide)
+
         # Boutons
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
         self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
@@ -79,20 +89,18 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_TEXT, self.MAJ_IBAN, self.ctrl_guichet)
         self.Bind(wx.EVT_TEXT, self.MAJ_IBAN, self.ctrl_cle_rib)
         self.Bind(wx.EVT_TEXT, self.MAJ_IBAN, self.ctrl_cle_iban)
-        
+        self.Bind(wx.EVT_TEXT, self.MAJ_DFT_IBAN, self.ctrl_dft_iban)
+
         # Init contrôles
         if self.IDcompte != None :
             self.Importation() 
             
-        self.MAJ_IBAN() 
+        self.MAJ_IBAN()
+        self.MAJ_DFT_IBAN()
         
     def __set_properties(self):
         self.SetTitle(_(u"Saisie d'un compte bancaire"))
-        
         self.ctrl_numero.SetMinSize((200, -1))
-        self.label_info.SetForegroundColour(wx.Colour(180, 180, 180))
-        self.label_info.SetFont(wx.Font(7, wx.DEFAULT, wx.NORMAL, wx.NORMAL, 0, u""))
-        
         self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez un intitulé pour ce compte (Ex : 'Compte crèche')")))
         self.ctrl_numero.SetToolTip(wx.ToolTip(_(u"Saisissez le numéro de compte")))
         self.ctrl_raison.SetToolTip(wx.ToolTip(_(u"Saisissez la raison sociale de l'organisme (Ex : 'Centre social'")))
@@ -103,14 +111,16 @@ class Dialog(wx.Dialog):
         self.ctrl_bic.SetToolTip(wx.ToolTip(_(u"Saisissez le numéro BIC du compte")))
         self.ctrl_iban.SetToolTip(wx.ToolTip(_(u"Saisissez le numéro IBAN du compte")))
         self.ctrl_controle_iban.SetToolTip(wx.ToolTip(_(u"Une coche verte apparaît si les coordonnées bancaires sont valides")))
-        self.ctrl_nne.SetToolTip(wx.ToolTip(_(u"Saisissez le code NNE de l'organisme (pour les prélèvements automatiques NATIONAUX)")))
+        self.ctrl_nne.SetToolTip(wx.ToolTip(_(u"Saisissez le code NNE de l'organisme (pour les prélèvements automatiques NATIONAUX - OBSOLETE)")))
         self.ctrl_ics.SetToolTip(wx.ToolTip(_(u"Saisissez le code ICS de l'organisme (pour les prélèvements automatiques SEPA)")))
+        self.ctrl_dft_titulaire.SetToolTip(wx.ToolTip(_(u"Saisissez le nom du titulaire du compte DFT")))
+        self.ctrl_dft_iban.SetToolTip(wx.ToolTip(_(u"Saisissez le numéro IBAN du compte DFT")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
 
     def __do_layout(self):
-        grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
+        grid_sizer_base = wx.FlexGridSizer(rows=4, cols=1, vgap=10, hgap=10)
 
         box_generalites = wx.StaticBoxSizer(self.box_generalites_staticbox, wx.VERTICAL)
         grid_sizer_generalites = wx.FlexGridSizer(rows=2, cols=2, vgap=10, hgap=10)
@@ -125,7 +135,6 @@ class Dialog(wx.Dialog):
         box_infos = wx.StaticBoxSizer(self.box_infos_staticbox, wx.VERTICAL)
         grid_sizer_infos = wx.FlexGridSizer(rows=6, cols=2, vgap=10, hgap=10)
         
-        box_infos.Add(self.label_info, 0, wx.LEFT|wx.RIGHT|wx.TOP, 10)
         grid_sizer_infos.Add(self.label_raison, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_infos.Add(self.ctrl_raison, 0, wx.EXPAND, 0)
         
@@ -169,7 +178,23 @@ class Dialog(wx.Dialog):
         grid_sizer_infos.AddGrowableCol(1)
         box_infos.Add(grid_sizer_infos, 1, wx.ALL|wx.EXPAND, 10)
         grid_sizer_base.Add(box_infos, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
-        
+
+        box_dft = wx.StaticBoxSizer(self.box_dft_staticbox, wx.VERTICAL)
+        grid_sizer_dft = wx.FlexGridSizer(rows=2, cols=2, vgap=10, hgap=10)
+        grid_sizer_dft.Add(self.label_dft_titulaire, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_dft.Add(self.ctrl_dft_titulaire, 0, wx.EXPAND, 0)
+        grid_sizer_dft.Add(self.label_dft_iban, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
+
+        grid_sizer_dft_iban = wx.FlexGridSizer(rows=1, cols=4, vgap=5, hgap=5)
+        grid_sizer_dft_iban.Add(self.ctrl_dft_iban, 0, wx.EXPAND, 0)
+        grid_sizer_dft_iban.Add(self.ctrl_controle_dft_iban, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_dft_iban.AddGrowableCol(0)
+        grid_sizer_dft.Add(grid_sizer_dft_iban, 1, wx.EXPAND, 0)
+
+        grid_sizer_dft.AddGrowableCol(1)
+        box_dft.Add(grid_sizer_dft, 1, wx.ALL|wx.EXPAND, 10)
+        grid_sizer_base.Add(box_dft, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
+
         grid_sizer_boutons = wx.FlexGridSizer(rows=1, cols=4, vgap=10, hgap=10)
         grid_sizer_boutons.Add(self.bouton_aide, 0, 0, 0)
         grid_sizer_boutons.Add((20, 20), 0, wx.EXPAND, 0)
@@ -201,8 +226,17 @@ class Dialog(wx.Dialog):
             self.ctrl_controle_iban.SetBitmap(self.image_valide)
         else :
             self.ctrl_controle_iban.SetBitmap(self.image_nonvalide)
-        if event != None : event.Skip() 
-    
+        if event != None : event.Skip()
+
+    def MAJ_DFT_IBAN(self, event=None):
+        """ Actualise le code IBAN du comte DFT """
+        iban = self.ctrl_dft_iban.GetValue()
+        if UTILS_Prelevements.ControleIBAN(iban) == False:
+            self.ctrl_controle_dft_iban.SetBitmap(self.dft_image_nonvalide)
+        else:
+            self.ctrl_controle_dft_iban.SetBitmap(self.dft_image_valide)
+        if event != None: event.Skip()
+
     def OnBoutonAide(self, event): 
         from Utils import UTILS_Aide
         UTILS_Aide.Aide("Comptesbancaires")
@@ -228,7 +262,9 @@ class Dialog(wx.Dialog):
         cle_iban = self.ctrl_cle_iban.GetValue() 
         iban = self.ctrl_iban.GetValue() 
         bic = self.ctrl_bic.GetValue() 
-        code_ics = self.ctrl_ics.GetValue() 
+        code_ics = self.ctrl_ics.GetValue()
+        dft_titulaire = self.ctrl_dft_titulaire.GetValue()
+        dft_iban = self.ctrl_dft_iban.GetValue()
         
         # Validation des données saisies
         if nom == "" :
@@ -261,6 +297,8 @@ class Dialog(wx.Dialog):
             ("iban", iban),
             ("bic", bic),
             ("code_ics", code_ics),
+            ("dft_titulaire", dft_titulaire),
+            ("dft_iban", dft_iban),
             ]
         if self.IDcompte == None :
             self.IDcompte = DB.ReqInsert("comptes_bancaires", listeDonnees)
@@ -271,13 +309,13 @@ class Dialog(wx.Dialog):
     def Importation(self):
         """ Importation des valeurs """
         DB = GestionDB.DB()
-        req = """SELECT nom, numero, defaut, raison, code_etab, code_guichet, code_nne, cle_rib, cle_iban, iban, bic, code_ics
+        req = """SELECT nom, numero, defaut, raison, code_etab, code_guichet, code_nne, cle_rib, cle_iban, iban, bic, code_ics, dft_titulaire, dft_iban
         FROM comptes_bancaires WHERE IDcompte=%d;""" % self.IDcompte
         DB.ExecuterReq(req)
         listeTemp = DB.ResultatReq()
         DB.Close()
         if len(listeTemp) == 0 : return
-        nom, numero, self.defaut, raison, code_etab, code_guichet, code_nne, cle_rib, cle_iban, iban, bic, code_ics = listeTemp[0]
+        nom, numero, self.defaut, raison, code_etab, code_guichet, code_nne, cle_rib, cle_iban, iban, bic, code_ics, dft_titulaire, dft_iban = listeTemp[0]
 
         if nom == None : nom = ""
         if numero == None : numero = ""
@@ -290,7 +328,9 @@ class Dialog(wx.Dialog):
         if iban == None : iban = ""
         if bic == None : bic = ""
         if code_ics == None : code_ics = ""
-        
+        if dft_titulaire == None : dft_titulaire = ""
+        if dft_iban == None : dft_iban = ""
+
         self.ctrl_nom.SetValue(nom) 
         self.ctrl_numero.SetValue(numero) 
         self.ctrl_raison.SetValue(raison) 
@@ -303,9 +343,12 @@ class Dialog(wx.Dialog):
         self.ctrl_cle_iban.SetValue(cle_iban) 
         self.ctrl_iban.SetValue(iban) 
         self.ctrl_bic.SetValue(bic) 
-        self.ctrl_ics.SetValue(code_ics) 
+        self.ctrl_ics.SetValue(code_ics)
+        self.ctrl_dft_titulaire.SetValue(dft_titulaire)
+        self.ctrl_dft_iban.SetValue(dft_iban)
         
-        self.MAJ_IBAN() 
+        self.MAJ_IBAN()
+        self.MAJ_DFT_IBAN()
         
     def GetIDcompte(self):
         return self.IDcompte

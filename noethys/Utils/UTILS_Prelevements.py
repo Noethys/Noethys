@@ -199,7 +199,8 @@ def GetXMLSepa(dictDonnees):
     """ Génération du fichier XML SEPA """
     doc = Document()
     
-    # Variables principales    
+    # Variables principales
+    type_remise = dictDonnees["type_remise"]
     remise_nom = dictDonnees["remise_nom"]
     remise_date_heure = dictDonnees["remise_date_heure"]
     remise_nbre = dictDonnees["remise_nbre"]
@@ -263,30 +264,6 @@ def GetXMLSepa(dictDonnees):
     InitgPty.appendChild(Nm)
     Nm.appendChild(doc.createTextNode(creancier_nom[:70]))
 
-##    # PstlAdr
-##    PstlAdr = doc.createElement("PstlAdr")
-##    InitgPty.appendChild(PstlAdr)
-##
-##    # StrtNm
-##    StrtNm = doc.createElement("StrtNm")
-##    PstlAdr.appendChild(StrtNm)
-##    StrtNm.appendChild(doc.createTextNode(creancier_rue))
-##
-##    # PstCd
-##    PstCd = doc.createElement("PstCd")
-##    PstlAdr.appendChild(PstCd)
-##    PstCd.appendChild(doc.createTextNode(creancier_cp))
-##
-##    # TwnNm
-##    TwnNm = doc.createElement("TwnNm")
-##    PstlAdr.appendChild(TwnNm)
-##    TwnNm.appendChild(doc.createTextNode(creancier_ville))
-##
-##    # Ctry
-##    Ctry = doc.createElement("Ctry")
-##    PstlAdr.appendChild(Ctry)
-##    Ctry.appendChild(doc.createTextNode(creancier_pays))
-
     # Id
     Id = doc.createElement("Id")
     InitgPty.appendChild(Id)
@@ -324,6 +301,9 @@ def GetXMLSepa(dictDonnees):
         lot_iban = dictLot["lot_iban"]
         lot_bic = dictLot["lot_bic"]
         lot_ics = dictLot["lot_ics"]
+        lot_dft_titulaire = dictLot["dft_titulaire"]
+        lot_dft_iban = dictLot["dft_iban"]
+        lot_motif = dictLot["motif"]
         lot_sequence = dictLot["lot_sequence"]
         listeTransactions = dictLot["transactions"]
 
@@ -386,11 +366,39 @@ def GetXMLSepa(dictDonnees):
         # Cdtr
         Cdtr = doc.createElement("Cdtr")
         PmtInf.appendChild(Cdtr)
-        
-        # Cdtr
-        Nm = doc.createElement("Nm")
-        Cdtr.appendChild(Nm)
-        Nm.appendChild(doc.createTextNode(creancier_nom))
+
+        if type_remise == "prive":
+            # Cdtr
+            Nm = doc.createElement("Nm")
+            Cdtr.appendChild(Nm)
+            Nm.appendChild(doc.createTextNode(creancier_nom))
+
+        if type_remise == "public_dft":
+            perception = dictDonnees["perception"]
+
+            # Cdtr
+            Nm = doc.createElement("Nm")
+            Cdtr.appendChild(Nm)
+            Nm.appendChild(doc.createTextNode(perception["nom"]))
+
+            # PstlAdr
+            PstlAdr = doc.createElement("PstlAdr")
+            Cdtr.appendChild(PstlAdr)
+
+            # Ctry
+            Ctry = doc.createElement("Ctry")
+            PstlAdr.appendChild(Ctry)
+            Ctry.appendChild(doc.createTextNode("FR"))
+
+            # AdrLine
+            AdrLine = doc.createElement("AdrLine")
+            PstlAdr.appendChild(AdrLine)
+            AdrLine.appendChild(doc.createTextNode(perception["rue_resid"]))
+
+            # AdrLine
+            AdrLine = doc.createElement("AdrLine")
+            PstlAdr.appendChild(AdrLine)
+            AdrLine.appendChild(doc.createTextNode(u"%s %s" % (perception["cp_resid"], perception["ville_resid"])))
 
         # CdtrAcct
         CdtrAcct = doc.createElement("CdtrAcct")
@@ -417,6 +425,34 @@ def GetXMLSepa(dictDonnees):
         BIC = doc.createElement("BIC")
         FinInstnId.appendChild(BIC)
         BIC.appendChild(doc.createTextNode(lot_bic))
+
+        if type_remise == "public_dft":
+
+            # UltmtCdtr
+            UltmtCdtr = doc.createElement("UltmtCdtr")
+            PmtInf.appendChild(UltmtCdtr)
+
+            # Nm
+            Nm = doc.createElement("Nm")
+            UltmtCdtr.appendChild(Nm)
+            Nm.appendChild(doc.createTextNode(lot_dft_titulaire))
+
+            # Id
+            Id = doc.createElement("Id")
+            UltmtCdtr.appendChild(Id)
+
+            # OrgId
+            OrgId = doc.createElement("OrgId")
+            Id.appendChild(OrgId)
+
+            # Othr
+            Othr = doc.createElement("Othr")
+            OrgId.appendChild(Othr)
+
+            # Id
+            Id = doc.createElement("Id")
+            Othr.appendChild(Id)
+            Id.appendChild(doc.createTextNode(lot_dft_iban))
 
         # CdtrSchmeId
         CdtrSchmeId = doc.createElement("CdtrSchmeId")
@@ -532,6 +568,17 @@ def GetXMLSepa(dictDonnees):
             IBAN = doc.createElement("IBAN")
             Id.appendChild(IBAN)
             IBAN.appendChild(doc.createTextNode(transaction_iban))
+
+            if type_remise == "public_dft":
+
+                # RmtInf
+                RmtInf = doc.createElement("RmtInf")
+                DrctDbtTxInf.appendChild(RmtInf)
+
+                # Ustrd
+                Ustrd = doc.createElement("Ustrd")
+                RmtInf.appendChild(Ustrd)
+                Ustrd.appendChild(doc.createTextNode(lot_motif))
 
     return doc
 

@@ -711,6 +711,7 @@ class MainFrame(wx.Frame):
                     },
                     {"code" : "menu_parametrage_prelevements", "label" : _(u"Prélèvement automatique"), "items" : [
                             {"code" : "etablissements_bancaires", "label" : _(u"Etablissements bancaires"), "infobulle" : _(u"Paramétrage des établissements bancaires"), "image" : "Images/16x16/Banque.png", "action" : self.On_param_banques},
+                            {"code" : "perceptions", "label": _(u"Perceptions"), "infobulle": _(u"Paramétrage des perceptions"), "image": "Images/16x16/Banque.png", "action": self.On_param_perceptions},
                             ],
                     },
                     {"code": "menu_parametrage_locations", "label": _(u"Locations"), "items": [
@@ -2034,6 +2035,13 @@ class MainFrame(wx.Frame):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_banques", "consulter") == False : return
         from Dlg import DLG_Banques
         dlg = DLG_Banques.Dialog(self)
+        dlg.ShowModal()
+        dlg.Destroy()
+
+    def On_param_perceptions(self, event):
+        if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_perceptions", "consulter") == False : return
+        from Dlg import DLG_Perceptions
+        dlg = DLG_Perceptions.Dialog(self)
         dlg.ShowModal()
         dlg.Destroy()
 
