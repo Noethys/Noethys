@@ -411,9 +411,15 @@ class DB:
         if self.isNetwork == True :
             # Version MySQL
             if INTERFACE_MYSQL == "mysqldb" :
-                blob = MySQLdb.escape_string(blobImage)
-                sql = "UPDATE %s SET %s='%s' WHERE %s=%d" % (table, nomChampBlob, blob, key, IDkey)
-                self.cursor.execute(sql)
+                if six.PY2:
+                    blob = MySQLdb.escape_string(blobImage)
+                    sql = "UPDATE %s SET %s='%s' WHERE %s=%d" % (table, nomChampBlob, blob, key, IDkey)
+                    self.cursor.execute(sql)
+                else:
+                    req = "UPDATE %s SET %s=XXBLOBXX WHERE %s=%s" % (table, nomChampBlob, key, IDkey)
+                    req = req.replace("XXBLOBXX", "%s")
+                    self.cursor.execute(req, (blobImage,))
+            # Version Connector
             if INTERFACE_MYSQL == "mysql.connector" :
                 req = "UPDATE %s SET %s=XXBLOBXX WHERE %s=%s" % (table, nomChampBlob, key, IDkey)
                 req = req.replace("XXBLOBXX", "%s")
@@ -1266,7 +1272,7 @@ if __name__ == "__main__":
                 
     # Création d'une table données
     # db = DB(suffixe="DATA")
-    # listeTables = ("menus_legendes",)
+    # listeTables = ("perceptions",)
     # for nomTable in listeTables :
     #     db.CreationTable(nomTable, Tables.DB_DATA)
     # db.Close()
@@ -1301,7 +1307,7 @@ if __name__ == "__main__":
         
     # # Ajouter un champ
     # db = DB(suffixe="DATA")
-    # db.AjoutChamp("consommations", "badgeage_fin", "DATETIME")
+    # db.AjoutChamp("lots_prelevements", "motif", "VARCHAR(300)")
     # db.Close()
 
     # # Exportation d'une table dans la base DEFAUT

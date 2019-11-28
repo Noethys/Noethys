@@ -220,7 +220,10 @@ class CTRL(wx.StaticBitmap):
         """ Récupère le buffer de l'image """
         if self.imagewx == None : return None
         buffer = six.BytesIO()
-        self.imagewx.SaveStream(buffer, wx.BITMAP_TYPE_PNG)
+        if 'phoenix' in wx.PlatformInfo:
+            self.imagewx.SaveFile(buffer, wx.BITMAP_TYPE_PNG)
+        else:
+            self.imagewx.SaveStream(buffer, wx.BITMAP_TYPE_PNG)
         buffer.seek(0)
         blob = buffer.read()
         return blob
