@@ -808,7 +808,7 @@ if __name__ == "__main__":
     #wx.InitAllImageHandlers()
     import time
     heure_debut = time.time()
-    dialog_1 = Dialog(None, IDfamille=1, selectionIndividus=[3,])
+    dialog_1 = Dialog(None, IDfamille=233, selectionIndividus=[892,])
     print("Temps de chargement DLG_Grille =", time.time() - heure_debut)
     app.SetTopWindow(dialog_1)
     dialog_1.ShowModal()

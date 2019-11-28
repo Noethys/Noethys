@@ -493,6 +493,8 @@ class CTRL(wxpg.PropertyGrid) :
             if self.GetPropertyAttribute(propriete, "reinitialisation_interdite") != True :
                 propriete.SetValue(valeur)
 
+    def GetParametres(self):
+        return copy.deepcopy(self.GetPropertyValues())
 
 
 

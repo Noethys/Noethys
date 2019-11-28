@@ -1376,7 +1376,20 @@ class DB(GestionDB.DB):
 
         # =============================================================
 
+        versionFiltre = (1, 2, 7, 0)
+        if versionFichier < versionFiltre:
+            try:
+                if self.IsTableExists("perceptions") == False: self.CreationTable("perceptions", Tables.DB_DATA)
+                self.AjoutChamp("comptes_bancaires", "dft_titulaire", "VARCHAR(400)")
+                self.AjoutChamp("comptes_bancaires", "dft_iban", "VARCHAR(400)")
+                self.AjoutChamp("lots_prelevements", "format", "VARCHAR(200)")
+                self.AjoutChamp("lots_prelevements", "encodage", "VARCHAR(200)")
+                self.AjoutChamp("lots_prelevements", "IDperception", "INTEGER")
+                self.AjoutChamp("lots_prelevements", "motif", "VARCHAR(300)")
+            except Exception as err:
+                return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
+        # =============================================================
 
 
 
