@@ -210,7 +210,10 @@ class CTRL_Parametres(wxpg.PropertyGrid) :
             nomIndividu = u"%s %s" % (nom, prenom)
             if IDindividu == ancienneValeur :
                 ancienChoixValide = True
-            choix.Add(label=nomIndividu, value=IDindividu)
+            if 'phoenix' in wx.PlatformInfo:
+                choix.Add(label=nomIndividu, value=IDindividu)
+            else:
+                choix.Add(nomIndividu, IDindividu)
         propriete.SetChoices(choix)
         self.RefreshProperty(propriete) 
         if ancienChoixValide == False :

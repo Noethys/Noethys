@@ -243,7 +243,10 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL):
                 "code_nne" : code_nne, "cle_rib" : cle_rib, "cle_iban" : cle_iban,
                 "iban" : iban, "bic" : bic, "code_ics" : code_ics,
                 }
-            choix.Add(label=nom, value=IDcompte)
+            if 'phoenix' in wx.PlatformInfo:
+                choix.Add(label=nom, value=IDcompte)
+            else:
+                choix.Add(nom, IDcompte)
         propriete = self.GetPropertyByName("IDcompte")
         propriete.SetChoices(choix)
         self.RefreshProperty(propriete) 
@@ -266,7 +269,10 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL):
                 "frais_arrondi" : frais_arrondi, "frais_label" : frais_label, "image" : image,
                 }
             bmp = OL_Modes_reglements.GetImage(image)
-            choix.Add(label=label, bitmap=bmp, value=IDmode)
+            if 'phoenix' in wx.PlatformInfo:
+                choix.Add(label=label, bitmap=bmp, value=IDmode)
+            else:
+                choix.Add(label, bmp, IDmode)
         propriete = self.GetPropertyByName("IDmode")
         propriete.SetChoices(choix)
         self.RefreshProperty(propriete) 

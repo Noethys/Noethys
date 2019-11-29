@@ -411,7 +411,10 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         selectionDefaut = None
         for IDmodele, nom, largeur, hauteur, observations, defaut in listeDonnees :
             self.dictDonnees[IDmodele] = { "nom" : nom, "largeur" : largeur, "hauteur" : hauteur, "observations" : observations, "defaut" : defaut}
-            choix.Add(label=nom, value=IDmodele)
+            if 'phoenix' in wx.PlatformInfo:
+                choix.Add(label=nom, value=IDmodele)
+            else:
+                choix.Add(nom, IDmodele)
             if defaut != None : 
                 selectionDefaut = IDmodele
         propriete = self.GetPropertyByName("IDmodele")
