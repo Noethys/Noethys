@@ -3,21 +3,22 @@
 #------------------------------------------------------------------------
 # Application :    Noethys, gestion multi-activités
 # Site internet :  www.noethys.com
-# Auteur:           Ivan LUCAS
-# Copyright:       (c) 2010-16 Ivan LUCAS
+# Auteur:          Ivan LUCAS
+# Copyright:       (c) 2010-19 Ivan LUCAS
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+import os, sys
+chemin = os.path.dirname(os.path.abspath(__file__))
+if chemin not in sys.path:
+    sys.path.insert(1, chemin)
 
 import Chemins
 from Utils.UTILS_Traduction import _
 from Utils import UTILS_Traduction
-
 import six
 import wx
-import sys
 import platform
-import os
 import datetime
 import traceback
 
@@ -4376,8 +4377,7 @@ class Redirect(object):
 
 
 
-if __name__ == "__main__":
-
+def main():
     # Vérifie l'existence des répertoires dans le répertoire Utilisateur
     for rep in ("Temp", "Updates", "Sync", "Lang", "Extensions") :
         rep = UTILS_Fichiers.GetRepUtilisateur(rep)
@@ -4388,6 +4388,7 @@ if __name__ == "__main__":
     UTILS_Fichiers.DeplaceFichiers()
 
     # Initialisation du fichier de customisation
+    global CUSTOMIZE
     CUSTOMIZE = UTILS_Customize.Customize()
 
     # Crash report
@@ -4402,13 +4403,6 @@ if __name__ == "__main__":
         if taille > 5000000 :
             os.remove(nomJournal)
 
-    # Lancement de l'application
-    # nomFichier = sys.executable
-    # if nomFichier.endswith("python.exe") or CUSTOMIZE.GetValeur("journal", "actif", "1") == "0" or os.path.isfile("nolog.txt") :
-    #     app = MyApp(redirect=False)
-    # else :
-    #     app = MyApp(redirect=True, filename=nomJournal)
-
     # Redirection vers un fichier
     nomFichier = sys.executable
     if nomFichier.endswith("python.exe") == False and CUSTOMIZE.GetValeur("journal", "actif", "1") != "0" and os.path.isfile("nolog.txt") == False :
@@ -4416,6 +4410,8 @@ if __name__ == "__main__":
 
     # Lancement de l'application
     app = MyApp(redirect=False)
-
-
     app.MainLoop()
+
+
+if __name__ == "__main__":
+    main()

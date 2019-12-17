@@ -181,7 +181,10 @@ def ConvertStrToListe(texte=None, siVide=None):
     if texte in (None, "") :
         return siVide
     listeResultats = []
-    temp = texte.split(";")
+    if type(texte) == int:
+        temp = [texte,]
+    else:
+        temp = texte.split(";")
     for ID in temp :
         listeResultats.append(int(ID))
     return listeResultats

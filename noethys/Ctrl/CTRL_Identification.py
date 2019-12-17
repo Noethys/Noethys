@@ -51,7 +51,7 @@ class CTRL(wx.SearchCtrl):
         event.Skip() 
     
     def GetPasse(self, txtSearch=""):
-        passe = str(int(datetime.datetime.today().strftime("%d%m%Y"))/3)
+        passe = str(int(datetime.datetime.today().strftime("%d%m%Y"))//3)
         return passe
         
     def Recherche(self):

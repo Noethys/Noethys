@@ -111,7 +111,10 @@ class Questionnaires():
         if filtre == "montant" : texteReponse = float(reponse)#decimal.Decimal(reponse)
         if filtre == "choix" :
             if reponse != None :
-                listeTemp = reponse.split(";")
+                if type(reponse) == int:
+                    listeTemp = [reponse,]
+                else:
+                    listeTemp = reponse.split(";")
                 listeTemp2 = []
                 for IDchoix in listeTemp :
                     try :
