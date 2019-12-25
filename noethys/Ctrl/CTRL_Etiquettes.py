@@ -45,6 +45,8 @@ class CTRL(CT.CustomTreeCtrl):
         listeDonnees = DB.ResultatReq()
         self.listeActivitesTemp = []
         for IDactivite, nom in listeDonnees :
+            if not nom:
+                nom = ""
             self.listeActivitesTemp.append((nom, IDactivite)) 
         self.listeActivitesTemp.sort() 
         DB.Close() 

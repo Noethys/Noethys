@@ -9,9 +9,9 @@
 #------------------------------------------------------------------------
 
 import os, sys
-chemin = os.path.dirname(os.path.abspath(__file__))
-if chemin not in sys.path:
-    sys.path.insert(1, chemin)
+# chemin = os.path.dirname(os.path.abspath(__file__))
+# if chemin not in sys.path:
+#     sys.path.insert(1, chemin)
 
 import Chemins
 from Utils.UTILS_Traduction import _
