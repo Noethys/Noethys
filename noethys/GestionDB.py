@@ -1253,7 +1253,12 @@ def DecodeMdpReseau(mdp=None):
     return mdp
 
 def EncodeMdpReseau(mdp=None):
-    mdp = u"#64#%s" % base64.b64encode(mdp)
+    if six.PY3:
+        mdp = mdp.encode()
+    mdp = base64.b64encode(mdp)
+    if six.PY3:
+        mdp = mdp.decode('utf-8')
+    mdp = u"#64#%s" % mdp
     return mdp
 
 def EncodeNomFichierReseau(nom_fichier=None):
