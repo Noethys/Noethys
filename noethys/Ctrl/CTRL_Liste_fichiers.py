@@ -319,19 +319,19 @@ class CTRL(ULC.UltimateListCtrl):
         
         if hote == "" or utilisateur == "" :
             return listeFichiers
-        
-        DB = GestionDB.DB(nomFichier=u"%s;%s;%s;%s[RESEAU]" % (port, hote, utilisateur, motdepasse))
+
+        DB = GestionDB.DB(nomFichier=u"%s;%s;%s;%s[RESEAU]" % (port, hote, utilisateur, motdepasse), pooling=False)
         if DB.echec == 1 :
             DB.Close()
             return listeFichiers
-        
+
         # Test de connexion à une base de données
         listeDatabases = []
         DB.ExecuterReq("SHOW DATABASES;")
         listeValeurs = DB.ResultatReq()
         for valeurs in listeValeurs :
             listeDatabases.append(valeurs[0])
-        
+
         # Récupération des infos
         for nomFichier in listeDatabases :
             if (self.prefixe == None and nomFichier.endswith("_data")) or (self.prefixe != None and nomFichier.endswith("_data") and nomFichier.startswith(self.prefixe)) :

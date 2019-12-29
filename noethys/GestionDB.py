@@ -74,11 +74,12 @@ CERTIFICATS_SSL = GetCertificatsSSL()
 
 
 class DB:
-    def __init__(self, suffixe="DATA", nomFichier="", modeCreation=False, IDconnexion=None):
+    def __init__(self, suffixe="DATA", nomFichier="", modeCreation=False, IDconnexion=None, pooling=True):
         """ Utiliser GestionDB.DB(suffixe="PHOTOS") pour accéder à un fichier utilisateur """
         """ Utiliser GestionDB.DB(nomFichier=Chemins.GetStaticPath("Databases/Geographie.dat"), suffixe=None) pour ouvrir un autre type de fichier """
         self.nomFichier = nomFichier
         self.modeCreation = modeCreation
+        self.pooling = pooling
         
         # Mémorisation de l'ouverture de la connexion et des requêtes
         if IDconnexion == None :
@@ -152,7 +153,7 @@ class DB:
         self.echec = 0
 
         try :
-            self.connexion, nomFichier = GetConnexionReseau(nomFichier)
+            self.connexion, nomFichier = GetConnexionReseau(nomFichier, self.pooling)
             self.cursor = self.connexion.cursor()
         except Exception as err:
             print("La connexion a MYSQL a echouee. Erreur :")
@@ -968,7 +969,7 @@ class DB:
 
 
 
-def GetConnexionReseau(nomFichier=""):
+def GetConnexionReseau(nomFichier="", pooling=True):
     pos = nomFichier.index("[RESEAU]")
     paramConnexions = nomFichier[:pos]
     port, host, user, passwd = paramConnexions.split(";")
@@ -1002,7 +1003,7 @@ def GetConnexionReseau(nomFichier=""):
             params["ssl_ca"] = CERTIFICATS_SSL["ca"]
 
         # Activation du pooling
-        if POOL_MYSQL > 0:
+        if POOL_MYSQL > 0 and pooling == True:
             params["pool_name"] = "mypool2%s" % suffixe
             params["pool_size"] = POOL_MYSQL
 
