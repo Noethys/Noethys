@@ -1138,7 +1138,7 @@ def TestConnexionMySQL(typeTest="fichier", nomFichier=""):
 
     # Test de connexion au réseau MySQL
     try :
-        connexion, nomFichier = GetConnexionReseau(nomFichier)
+        connexion, nomFichier = GetConnexionReseau(nomFichier, pooling=False)
         cursor = connexion.cursor()
         dictResultats["connexion"] =  (True, None)
         connexion_ok = True

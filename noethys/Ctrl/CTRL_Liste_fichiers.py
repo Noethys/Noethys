@@ -300,7 +300,7 @@ class CTRL(ULC.UltimateListCtrl):
         motdepasse = self.codesReseau["motdepasse"]
         port = self.codesReseau["port"]
 
-        DB = GestionDB.DB(nomFichier=u"%s;%s;%s;%s[RESEAU]" % (port, hote, utilisateur, motdepasse))
+        DB = GestionDB.DB(nomFichier=u"%s;%s;%s;%s[RESEAU]" % (port, hote, utilisateur, motdepasse), pooling=False)
         if DB.echec == 1 :
             DB.Close()
             return DB.erreur
