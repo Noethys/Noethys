@@ -15,7 +15,7 @@ from Utils.UTILS_Traduction import _
 import wx
 from Ctrl import CTRL_Bouton_image
 import os
-import datetime
+import codecs
 import copy
 import GestionDB
 from Ctrl import CTRL_Bandeau
@@ -27,7 +27,7 @@ import FonctionsPerso
 from Utils import UTILS_Config
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 from Utils import UTILS_Parametres
-
+import six
 import wx.lib.agw.labelbook as LB
 import wx.propgrid as wxpg
 import wx.lib.dialogs as dialogs
@@ -36,7 +36,6 @@ if 'phoenix' in wx.PlatformInfo:
 else :
     from wx.combo import BitmapComboBox
 from Ctrl import CTRL_Propertygrid
-
 from Utils import UTILS_XImport
 
 
@@ -70,7 +69,7 @@ def Export_ebp_compta(ligne, dictParametres, numLigne, typeComptable=None):
     montant = ligne["montant"]
     
     def GetSens(montant, sens):
-        if montant < FloatToDecimal(0.0) :
+        if FloatToDecimal(montant) < FloatToDecimal(0.0) :
             montant = -montant
             if sens == "D" : 
                 sens = "C"
@@ -1227,8 +1226,12 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL):#(wxpg.PropertyGrid) :
                 dlg.Destroy()
 
         # Création du fichier texte
-        f = open(cheminFichier, "w")
-        f.write(texte.encode("iso-8859-15"))
+        if six.PY2:
+            f = open(cheminFichier, "w")
+            texte = texte.encode("iso-8859-15")
+        else:
+            f = codecs.open(cheminFichier, encoding='utf-8', mode='w')
+        f.write(texte)
         f.close()
         
         # Confirmation de création du fichier et demande d'ouverture directe dans Excel
@@ -1240,136 +1243,6 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL):#(wxpg.PropertyGrid) :
             return
         else:
             FonctionsPerso.LanceFichierExterne(cheminFichier)
-
-# --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-##class CTRL_Parametres_ebp(CTRL_Parametres) :
-##    def __init__(self, parent):
-##        self.listeDonnees = [
-##            _(u"Codes journaux"),
-##            {"type":"chaine", "label":_(u"Ventes"), "description":_(u"Code journal des ventes"), "code":"journal_ventes", "tip":_(u"Saisissez le code journal des ventes"), "defaut":_(u"VE")},
-##            {"type":"chaine", "label":_(u"Banque"), "description":_(u"Code journal de la banque"), "code":"journal_banque", "tip":_(u"Saisissez le code journal de la banque"), "defaut":_(u"BP")},
-##            {"type":"chaine", "label":_(u"Caisse"), "description":_(u"Code journal de la caisse"), "code":"journal_caisse", "tip":_(u"Saisissez le code journal de la caisse"), "defaut":_(u"CA")},
-##            _(u"Codes comptables"),
-##            {"type":"chaine", "label":_(u"Ventes"), "description":_(u"Code comptable des ventes"), "code":"code_ventes", "tip":_(u"Saisissez le code comptable des ventes (Peut être ajusté en détail dans le paramétrage des activités, des cotisations, des tarifs et des prestations)"), "defaut":u"706"},
-##            {"type":"chaine", "label":_(u"Clients"), "description":_(u"Code comptable des clients"), "code":"code_clients", "tip":_(u"Saisissez le code comptable des clients (Peut- être ajusté en détail dans la fiche famille)"), "defaut":u"411"},
-##            {"type":"chaine", "label":_(u"Banque"), "description":_(u"Code comptable de la banque"), "code":"code_banque", "tip":_(u"Saisissez le code comptable de la banque"), "defaut":u"512"},
-##            {"type":"chaine", "label":_(u"Caisse"), "description":_(u"Code comptable de la caisse"), "code":"code_caisse", "tip":_(u"Saisissez le code comptable de la caisse"), "defaut":u"531"},
-##            _(u"Formats libellés"),
-##            {"type":"chaine", "label":_(u"Facture"), "description":_(u"Format du libellé des factures"), "code":"format_facture", "tip":_(u"Saisissez le format du libellé des factures. Vous pouvez utiliser les mots-clés suivants : {IDFACTURE} {NOM_FAMILLE} {NUMERO} {DATE_EDITION} {DATE_ECHEANCE} {DATE_DEBUT} {DATE_FIN} {NOM_LOT}."), "defaut":_(u"Facture {NOM_FAMILLE}")},
-##            {"type":"chaine", "label":_(u"Prestation"), "description":_(u"Format du libellé des prestations"), "code":"format_prestation", "tip":_(u"Saisissez le format du libellé des prestations. Vous pouvez utiliser les mots-clés suivants : {IDPRESTATION} {DATE} {LIBELLE} {ACTIVITE} {ACTIVITE_ABREGE} {TARIF} {INDIVIDU_NOM} {INDIVIDU_PRENOM}"), "defaut":u"{LIBELLE} {INDIVIDU_NOM} {INDIVIDU_PRENOM}"},
-##            {"type":"chaine", "label":_(u"Dépôt"), "description":_(u"Format du libellé des dépôts"), "code":"format_depot", "tip":_(u"Saisissez le format du libellé des dépôts. Vous pouvez utiliser les mots-clés suivants : {IDDEPOT} {NOM_DEPOT} {DATE_DEPOT} {MODE_REGLEMENT} {TYPE_COMPTABLE} {NBRE_REGLEMENTS}."), "defaut":u"{NOM_DEPOT}"},
-##            {"type":"chaine", "label":_(u"Règlement"), "description":_(u"Format du libellé des règlements"), "code":"format_reglement", "tip":_(u"Saisissez le format du libellé des règlements. Vous pouvez utiliser les mots-clés suivants : {IDREGLEMENT} {DATE} {MODE_REGLEMENT} {NOM_FAMILLE} {NUMERO_PIECE} {NOM_PAYEUR} {NUMERO_QUITTANCIER} {DATE_DEPOT} {NOM_DEPOT}."), "defaut":u"{MODE_REGLEMENT} {NOM_FAMILLE}"},
-##            ]
-##        CTRL_Parametres.__init__(self, parent, self.listeDonnees)
-##
-##    def Generation(self):
-##        if self.Validation() == False : return False
-##        
-##        # Récupération des paramètres
-##        dictParametres = self.GetParametres() 
-##        donnees = Donnees(dictParametres)
-##        lignesVentes = donnees.GetVentes() 
-##        if lignesVentes == False : 
-##            return False
-##    
-##        numLigne = 1
-##        listeLignesTxt = []
-##        
-##        # Ventes
-##        for ligne in lignesVentes :
-##            
-##            # Facture
-##            if ligne["type"] == "facture" :
-##
-##                if ligne["code_comptable_famille"] not in ("", None):
-##                    code_comptable = ligne["code_comptable_famille"]
-##                else :
-##                    code_comptable = dictParametres["code_clients"]
-##                
-##                ligneTemp = [
-##                    str(numLigne),
-##                    FormateDate(ligne["date_edition"], "%d%m%Y"),
-##                    dictParametres["journal_ventes"],
-##                    code_comptable,
-##                    "",
-##                    u'"%s"' % ligne["libelle_facture"],
-##                    u'"%s"' % ligne["numero"],
-##                    str(ligne["montant"]),
-##                    "D",
-##                    FormateDate(ligne["date_echeance"], "%d%m%Y"),
-##                    "EUR",
-##                    ]
-##                listeLignesTxt.append(",".join(ligneTemp))
-##                numLigne += 1
-##
-##            # Prestation
-##            if ligne["type"] == "prestation" :
-##
-##                ligneTemp = [
-##                    str(numLigne),
-##                    FormateDate(ligne["date_facture"], "%d%m%Y"),
-##                    dictParametres["journal_ventes"],
-##                    ligne["code_compta"],
-##                    "",
-##                    u'"%s"' % ligne["libelle_prestation"],
-##                    u'"%s"' % ligne["numero_facture"],
-##                    str(ligne["montant"]),
-##                    "C",
-##                    FormateDate(ligne["date_echeance"], "%d%m%Y"),
-##                    "EUR",
-##                    ]
-##                listeLignesTxt.append(",".join(ligneTemp))
-##                numLigne += 1
-##        
-##        # Banque
-##        for typeComptable in ("banque", "caisse") :
-##            
-##            lignesTemp = donnees.GetReglements(typeComptable=typeComptable) 
-##            for ligne in lignesTemp :
-##                
-##                # Dépôts
-##                if ligne["type"] == "depot" :
-##
-##                    ligneTemp = [
-##                        str(numLigne),
-##                        FormateDate(ligne["date_depot"], "%d%m%Y"),
-##                        dictParametres["journal_%s" % typeComptable],
-##                        dictParametres["code_%s" % typeComptable],
-##                        "",
-##                        u'"%s"' % ligne["libelle_depot"],
-##                        u'""',
-##                        str(ligne["montant"]),
-##                        "D",
-##                        "",
-##                        "EUR",
-##                        ]
-##                    listeLignesTxt.append(",".join(ligneTemp))
-##                    numLigne += 1
-##            
-##                # Règlements
-##                if ligne["type"] == "reglement" :
-##                        
-##                    ligneTemp = [
-##                        str(numLigne),
-##                        FormateDate(ligne["date_depot"], "%d%m%Y"),
-##                        dictParametres["journal_%s" % typeComptable],
-##                        dictParametres["code_clients"],
-##                        "",
-##                        u'"%s"' % ligne["libelle_reglement"],
-##                        u'"%s"' % ligne["IDreglement"],
-##                        str(ligne["montant"]),
-##                        "C",
-##                        "",
-##                        "EUR",
-##                        ]
-##                    listeLignesTxt.append(",".join(ligneTemp))
-##                    numLigne += 1
-##        
-##        # Finalisation du texte
-##        texte = "\n".join(listeLignesTxt)
-##        self.CreationFichier(nomFichier=_(u"Export.txt"), texte=texte)
-
 
 
 
@@ -1412,9 +1285,7 @@ class CTRL_Parametres_defaut(CTRL_Parametres) :
     
         numLigne = 1
         listeLignesTxt = []
-##        if format in ["ebp_compta","ciel_compta_ebp"]:
-##            listeLignesTxt = ["",]
-        
+
         # Ligne d'entête
         if dictParametres["ligne_noms_champs"] == True :
             listeLignesTxt.append("numligne,date,journal,compte,libelleauto,libellemanuel,piece,montant,sens,echeance,devise")
@@ -1487,9 +1358,7 @@ class Dialog(wx.Dialog):
         # Paramètres
         self.box_parametres_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Paramètres"))
         self.ctrl_parametres = CTRL_Parametres_defaut(self)
-##        self.ctrl_labelbook = LB.FlatImageBook(self, -1, agwStyle=LB.INB_LEFT | LB.INB_BORDER | LB.INB_BOLD_TAB_SELECTION)
-##        self.InitLabelbook() 
-        
+
         self.bouton_reinitialisation = CTRL_Propertygrid.Bouton_reinitialisation(self, self.ctrl_parametres)
         self.bouton_sauvegarde = CTRL_Propertygrid.Bouton_sauvegarde(self, self.ctrl_parametres)
 
@@ -1554,7 +1423,6 @@ class Dialog(wx.Dialog):
         grid_sizer_parametres.AddGrowableRow(0)
         grid_sizer_parametres.AddGrowableCol(0)
         box_parametres.Add(grid_sizer_parametres, 1, wx.ALL | wx.EXPAND, 10) 
-##        box_parametres.Add(self.ctrl_labelbook, 1, wx.ALL | wx.EXPAND, 10) 
         grid_sizer_base.Add(box_parametres, 1, wx.LEFT | wx.RIGHT | wx.EXPAND, 10)
         
         grid_sizer_boutons = wx.FlexGridSizer(1, 4, 10, 10)
@@ -1571,20 +1439,6 @@ class Dialog(wx.Dialog):
         self.Layout()
         self.CenterOnScreen() 
 
-    def InitLabelbook(self):
-        self.listePages = [
-            {"index":0, "label":_(u"EBP Compta"), "ctrl":CTRL_Parametres_ebp(self), "image":wx.Bitmap(Chemins.GetStaticPath('Images/48x48/Logiciel_ebp.png'), wx.BITMAP_TYPE_PNG)},
-            {"index":1, "label":_(u"CIEL Compta"), "ctrl":CTRL_Parametres_ebp(self), "image":wx.Bitmap(Chemins.GetStaticPath('Images/48x48/Logiciel_ciel.png'), wx.BITMAP_TYPE_PNG)},
-            ]
-        # Création de l'ImageList
-        il = wx.ImageList(48, 48)
-        for dictPage in self.listePages:
-            il.Add(dictPage["image"])
-        self.ctrl_labelbook.AssignImageList(il)
-        # Création des pages
-        for dictPage in self.listePages:
-            self.ctrl_labelbook.AddPage(dictPage["ctrl"], dictPage["label"], imageId=dictPage["index"])
-
     def OnBoutonAide(self, event):  
         from Utils import UTILS_Aide
         UTILS_Aide.Aide("")
@@ -1595,10 +1449,7 @@ class Dialog(wx.Dialog):
         self.EndModal(wx.ID_CANCEL)
 
     def OnBoutonOk(self, event): 
-##        indexPage = self.ctrl_labelbook.GetSelection()
-##        ctrl = self.listePages[indexPage]["ctrl"]
-##        ctrl.Generation()
-        format = self.ctrl_logiciel.GetCode() 
+        format = self.ctrl_logiciel.GetCode()
         self.ctrl_parametres.Generation(format)
 
     def AfficheAvertissement(self):
@@ -1753,12 +1604,3 @@ if __name__ == u"__main__":
     dlg.ShowModal()
     app.MainLoop()
 
-
-##    donnees = {
-##        _(u"journée sans repas") : None,
-##        _(u"Demi-journée avec repas") : _(u"706ALSH"),
-##        }
-##    dlg = Dialog_codes(None, donnees=donnees)
-##    app.SetTopWindow(dlg)
-##    dlg.ShowModal()
-##    app.MainLoop()
