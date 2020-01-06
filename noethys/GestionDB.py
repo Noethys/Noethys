@@ -1003,7 +1003,7 @@ def GetConnexionReseau(nomFichier="", pooling=True):
             params["ssl_ca"] = CERTIFICATS_SSL["ca"]
 
         # Activation du pooling
-        if POOL_MYSQL > 0 and pooling == True:
+        if POOL_MYSQL > 0 :#and pooling == True:
             params["pool_name"] = "mypool2%s" % suffixe
             params["pool_size"] = POOL_MYSQL
 
