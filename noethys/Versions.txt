@@ -1,3 +1,20 @@
+Version 1.2.7.1 (05/01/2020) :
+
+- Ajout de la prise en charge des prélèvements SEPA pour les comptes DFT
+- Ajout de la colonne Secteur dans la liste étiquettes
+- Remplacement de MySQLdb par mysqlclient
+- Adaptations pour wxPython et Python 3
+- Corrections de divers petits bugs
+
+Version 1.2.6.8 (07/11/2019) :
+
+- Ajout de la commande Traiter les demandes dans le menu Outils
+- Ajout de la sélection du pool de connector dans les préférences
+- Correction sur la modification d'une classe
+- Correction d'un bug sur la validation des contrats PSU
+- Adaptations pour wxPython et Python 3
+- Divers petits bugs
+
 Version 1.2.6.6 (19/07/2019) :
 
 - Ajout du plafond journalier par individu dans l'état global
