@@ -84,7 +84,13 @@ Pour lancer Noethys, lancez le terminal de Linux, placez-vous dans le répertoir
 
 
 
-Dans le cas contraire, où votre version de debian ou d'ubuntu ne proposerait pas python-wxgtk3.0 (ce qui est le cas pour ubuntu LTS 14.04 et toute distribution basée sur cette version), la commande précédente retourne une erreur.
+- - - -
+
+
+
+## Obsolète: instructions à suivre uniquement sur d'anciennes versions de debian ou ubuntu ##
+
+Dans le cas où votre version de debian ou d'ubuntu ne proposerait pas python-wxgtk3.0 (ce qui est le cas pour ubuntu LTS 14.04 et toute distribution basée sur cette version), la commande précédente retourne une erreur.
 
 Exécutez alors la commande suivante:
 ```
