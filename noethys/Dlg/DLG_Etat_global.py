@@ -493,6 +493,7 @@ class Dialog(wx.Dialog):
         listePeriodesDetail = []
         index = 0
         for dictTemp in listeVacances :
+
             # Vacances
             if dictTemp["nom"] == _(u"Février") : 
                 nom = "vacances_fevrier"
@@ -506,9 +507,10 @@ class Dialog(wx.Dialog):
                 nom = "vacances_noel"
             else :
                 nom = "?"
-            dictTemp["code"] = nom + "_%d" % annee
+            dictTemp["code"] = nom + "_%d" % dictTemp["annee"]
             dictTemp["label"] = _(u"Vacances %s %d") % (dictTemp["nom"], dictTemp["annee"])
             listePeriodesDetail.append(dictTemp)
+
             # Hors vacances
             date_debut_temp = dictTemp["date_fin"] + datetime.timedelta(days=1)
             if len(listeVacances) > index + 1 :
@@ -859,7 +861,7 @@ class Dialog(wx.Dialog):
                 if date_naiss != None :
                     age = (date.year - date_naiss.year) - int((date.month, date.day) < (date_naiss.month, date_naiss.day))
                 else :
-                    age = None
+                    age = -1
 
                 # ----- Recherche du regroupement par âge ou date de naissance  -----
                 if len(dict_tranches_age) == 0 :
@@ -874,7 +876,7 @@ class Dialog(wx.Dialog):
                             if dictTemp["min"] != None and dictTemp["max"] != None and age >= dictTemp["min"] and age < dictTemp["max"] :
                                 index_tranche_age = key
 
-                if age == None :
+                if age == -1 :
                     index_tranche_age = None
 
                 # Mémorisation du résultat
@@ -1034,7 +1036,7 @@ class Dialog(wx.Dialog):
             # Création des lignes
             index = 1
             for index_tranche_age, dict_resultats_periode in dict_resultats_age.items() :
-                
+
                 dataTableau = []
 
                 # Création des niveaux de regroupement
@@ -1070,14 +1072,14 @@ class Dialog(wx.Dialog):
                             ligne.append(dictPeriode["label"])
                         else :
                             date_debut_temp = dictPeriode["date_debut"]
-                            if date_debut_temp < date_debut : 
+                            if date_debut_temp < date_debut :
                                 date_debut_temp = date_debut
                             date_fin_temp = dictPeriode["date_fin"]
                             if date_fin_temp > date_fin : 
                                 date_fin_temp = date_fin
                             label = _(u"<para align='center'>%s<br/><font size=5>Du %s au %s</font></para>") % (dictPeriode["label"], UTILS_Dates.DateEngFr(str(date_debut_temp)), UTILS_Dates.DateEngFr(str(date_fin_temp)))
                             ligne.append(Paragraph(label, paraStyle))
-                            
+
                         # Valeurs
                         totalLigne = datetime.timedelta(hours=0, minutes=0)
                         for IDregime, labelColonne, largeurColonne in listeColonnes :

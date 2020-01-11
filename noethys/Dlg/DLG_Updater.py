@@ -295,7 +295,10 @@ class Page_recherche(wx.Panel):
                 fichierVersions = urlopen('https://raw.githubusercontent.com/Noethys/Noethys/master/noethys/Versions.txt', timeout=10)
             else:
                 # Version Windows
-                fichierVersions = urlopen('http://www.noethys.com/fichiers/windows/Versions.txt', timeout=10)
+                if six.PY2:
+                    fichierVersions = urlopen('http://www.noethys.com/fichiers/windows/Versions.txt', timeout=10)
+                else:
+                    fichierVersions = urlopen('http://www.noethys.com/fichiers/windows/phoenix/Versions.txt', timeout=10)
             self.texteNouveautes= fichierVersions.read()
             fichierVersions.close()
         except :
@@ -839,7 +842,10 @@ class Dialog(wx.Dialog):
         else:
             # Version Windows
             self.nomFichier = "Noethys.exe"
-            self.fichierURL = "http://www.noethys.com/fichiers/windows/" + self.nomFichier
+            if six.PY2:
+                self.fichierURL = "http://www.noethys.com/fichiers/windows/" + self.nomFichier
+            else:
+                self.fichierURL = "http://www.noethys.com/fichiers/windows/phoenix/" + self.nomFichier
             
         self.fichierDest = ""
         self.tailleFichier = 0

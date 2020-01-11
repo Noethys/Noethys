@@ -13,7 +13,10 @@ import decimal
 
 def FloatToDecimal(montant=0.0, plusProche=False):
     """ Transforme un float en decimal """
-    if montant == None : montant = 0.0
+    if montant == None :
+        montant = 0.0
+    if type(montant) == str:
+        montant = float(montant)
     x = decimal.Decimal(u"%.2f" % montant)
     # Arrondi au centime le plus proche
     if plusProche == True :
