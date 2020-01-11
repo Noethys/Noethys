@@ -1672,20 +1672,20 @@ class CTRL_Parametres_quadracompta(CTRL_Parametres) :
                 return False
 
         # Création d'un classeur et d'une feuille
-        workbook = xlsxwriter.Workbook(cheminFichier)
-        worksheet = workbook.add_worksheet()
+        classeur = xlsxwriter.Workbook(cheminFichier)
+        feuille = classeur.add_worksheet()
 
         # Formats
-        date_format = workbook.add_format({'num_format': 'dd/mm/yyyy'})
-        money_format = workbook.add_format({'num_format': '# ##0.00'})
-        label_format = workbook.add_format({'align': 'center', 'bold': True})
+        format_date = classeur.add_format({'num_format': 'dd/mm/yyyy'})
+        format_money = classeur.add_format({'num_format': '# ##0.00'})
+        format_label = classeur.add_format({'align': 'center', 'bold': True})
 
         # Création des labels de colonnes
         x, y = 0, 0
         for colonne in colonnes:
             if dictParametres["quadra_ligne_noms_champs"]:
-                worksheet.write(x, y, colonne["label"], label_format)
-            worksheet.set_column(y, y, colonne["largeur"])
+                feuille.write(x, y, colonne["label"], format_label)
+            feuille.set_column(y, y, colonne["largeur"])
             y += 1
 
         # Création des lignes
@@ -1694,18 +1694,18 @@ class CTRL_Parametres_quadracompta(CTRL_Parametres) :
             if valeurs :
                 for valeur in valeurs:
                     if isinstance(valeur, datetime.date):
-                        worksheet.write_datetime(x, y, valeur, date_format)
+                        feuille.write_datetime(x, y, valeur, format_date)
                     elif isinstance(valeur, decimal.Decimal):
-                        worksheet.write(x, y, valeur, money_format)
+                        feuille.write(x, y, valeur, format_money)
                     else:
-                        worksheet.write(x, y, valeur)
+                        feuille.write(x, y, valeur)
                     y += 1
             x += 1
             y = 0
 
         # Finalisation du fichier xlsx
         try:
-            workbook.close()
+            classeur.close()
         except Exception as err:
             if "Permission denied" in six.text_type(err):
                 texte = _(u"Impossible de créer le fichier !\n\nVérifiez qu'un fichier du même nom n'est pas déjà ouvert en arrière-plan.")

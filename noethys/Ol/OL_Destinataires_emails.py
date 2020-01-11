@@ -474,8 +474,8 @@ class ListView(FastObjectListView):
             dlg.Destroy()
             return
         # Demande à l'utilisateur le nom de fichier et le répertoire de destination
-        nomFichier = "ExportExcel_%s.xls" % datetime.datetime.now().strftime("%Y%m%d%H%M%S")
-        wildcard = "Fichier Excel (*.xls)|*.xls|" \
+        nomFichier = "ExportExcel_%s.xlsx" % datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+        wildcard = "Fichier Excel (*.xlsx)|*.xlsx|" \
                         "All files (*.*)|*.*"
         sp = wx.StandardPaths.Get()
         cheminDefaut = sp.GetDocumentsDir()
@@ -500,19 +500,18 @@ class ListView(FastObjectListView):
                 dlg.Destroy()
             else:
                 dlg.Destroy()
+
         # Export
-        import pyExcelerator
+        import xlsxwriter
         # Création d'un classeur
-        wb = pyExcelerator.Workbook()
-        # Création d'une feuille
-        ws1 = wb.add_sheet(titre)
-        # Remplissage de la feuille
+        classeur = xlsxwriter.Workbook(cheminFichier)
+        feuille = classeur.add_worksheet(titre)
         x = 0
-        for track in self.donnees :
-            ws1.write(x, 0, track.adresse)
+        for track in self.donnees:
+            feuille.write(x, 0, track.adresse)
             x += 1                    
-        # Finalisation du fichier xls
-        wb.save(cheminFichier)
+        classeur.close()
+
         # Confirmation de création du fichier et demande d'ouverture directe dans Excel
         txtMessage = _(u"Le fichier Excel a été créé avec succès. Souhaitez-vous l'ouvrir dès maintenant ?")
         dlgConfirm = wx.MessageDialog(None, txtMessage, _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.ICON_QUESTION)

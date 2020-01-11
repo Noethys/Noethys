@@ -1278,8 +1278,8 @@ class Dialog(wx.Dialog):
         listeExport, largeursColonnes = donnees
         
         # Demande à l'utilisateur le nom de fichier et le répertoire de destination
-        nomFichier = "ExportExcel_%s.xls" % datetime.datetime.now().strftime("%Y%m%d%H%M%S")
-        wildcard = "Fichier Excel (*.xls)|*.xls|" \
+        nomFichier = "ExportExcel_%s.xlsx" % datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+        wildcard = "Fichier Excel (*.xlsx)|*.xlsx|" \
                         "All files (*.*)|*.*"
         sp = wx.StandardPaths.Get()
         cheminDefaut = sp.GetDocumentsDir()
@@ -1306,32 +1306,9 @@ class Dialog(wx.Dialog):
             else:
                 dlg.Destroy()
 
-        import pyExcelerator
-        classeur = pyExcelerator.Workbook()
+        import xlsxwriter
+        classeur = xlsxwriter.Workbook(cheminFichier)
 
-        al = pyExcelerator.Alignment()
-        al.horz = pyExcelerator.Alignment.HORZ_LEFT
-        al.vert = pyExcelerator.Alignment.VERT_CENTER
-        
-        ar = pyExcelerator.Alignment()
-        ar.horz = pyExcelerator.Alignment.HORZ_RIGHT
-        ar.vert = pyExcelerator.Alignment.VERT_CENTER
-
-        ac = pyExcelerator.Alignment()
-        ac.horz = pyExcelerator.Alignment.HORZ_CENTER
-        ac.vert = pyExcelerator.Alignment.VERT_CENTER
-
-        styleDefaut = pyExcelerator.XFStyle()
-        styleDefaut.alignment = ac
-
-        styleDate = pyExcelerator.XFStyle()
-        styleDate.num_format_str = 'DD/MM/YYYY'
-        styleDate.alignment = ar
-
-        styleHeure = pyExcelerator.XFStyle()
-        styleHeure.num_format_str = "[hh]:mm"
-        styleHeure.alignment = ar
-        
         numFeuille = 1
         for dictFeuille in listeExport :
             activite = dictFeuille["activite"]
@@ -1344,7 +1321,7 @@ class Dialog(wx.Dialog):
             
             # Nom de la feuille
             titre = _(u"Page %d") % numFeuille
-            feuille = classeur.add_sheet(titre)
+            feuille = classeur.add_worksheet(titre)
             
             # Titre de la page
             listeLabels = []
@@ -1367,13 +1344,13 @@ class Dialog(wx.Dialog):
                         valeur = valeur.text
                     # Largeur colonne
                     if type(valeur) == six.text_type and (_(u"Nom - ") in valeur or valeur == "Informations") :
-                        feuille.col(numColonne).width = 10000
+                        feuille.set_column(numColonne, numColonne, 50)
                     # Valeur case
                     if type(valeur) in (str, six.text_type, int) :
                         # Formatage des heures
                         if type(valeur) == six.text_type and len(valeur) == 11 and valeur[2] == "h" and valeur[8] == "h" :
                             valeur = valeur.replace(u"\n", u"-")
-                        feuille.write(numLigne, numColonne, valeur, styleDefaut)
+                        feuille.write(numLigne, numColonne, valeur)
                     # Si c'est une liste
                     if type(valeur) == list :
                         listeInfos = []
@@ -1389,14 +1366,14 @@ class Dialog(wx.Dialog):
                             texte = int(valeur)
                         else :
                             texte = " - ".join(listeInfos)
-                        feuille.write(numLigne, numColonne, texte, styleDefaut)
+                        feuille.write(numLigne, numColonne, texte)
                     
                     numColonne += 1
                 numLigne += 1
             numFeuille += 1
             
-        # Finalisation du fichier xls
-        classeur.save(cheminFichier)
+        # Finalisation du fichier xlsx
+        classeur.close()
         
         # Confirmation de création du fichier et demande d'ouverture directe dans Excel
         txtMessage = _(u"Le fichier Excel a été créé avec succès. Souhaitez-vous l'ouvrir dès maintenant ?")

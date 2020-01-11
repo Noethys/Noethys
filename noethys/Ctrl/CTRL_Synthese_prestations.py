@@ -740,8 +740,8 @@ class CTRL(HTL.HyperTreeList):
         titre = _(u"Synthèse des prestations")
         
         # Demande à l'utilisateur le nom de fichier et le répertoire de destination
-        nomFichier = "ExportExcel_%s.xls" % datetime.datetime.now().strftime("%Y%m%d%H%M%S")
-        wildcard = "Fichier Excel (*.xls)|*.xls|" \
+        nomFichier = "ExportExcel_%s.xlsx" % datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+        wildcard = "Fichier Excel (*.xlsx)|*.xlsx|" \
                         "All files (*.*)|*.*"
         sp = wx.StandardPaths.Get()
         cheminDefaut = sp.GetDocumentsDir()
@@ -769,102 +769,22 @@ class CTRL(HTL.HyperTreeList):
                 dlg.Destroy()
                 
         # Export
-        import pyExcelerator
-        # Création d'un classeur
-        wb = pyExcelerator.Workbook()
-        # Création d'une feuille
-        ws1 = wb.add_sheet(titre)
-        # Remplissage de la feuille
-        
-        fntLabel = pyExcelerator.Font()
-        fntLabel.name = 'Verdana'
-        fntLabel.bold = True
-        
-        al = pyExcelerator.Alignment()
-        al.horz = pyExcelerator.Alignment.HORZ_LEFT
-        al.vert = pyExcelerator.Alignment.VERT_CENTER
-        
-        ar = pyExcelerator.Alignment()
-        ar.horz = pyExcelerator.Alignment.HORZ_RIGHT
-        ar.vert = pyExcelerator.Alignment.VERT_CENTER
+        import xlsxwriter
+        classeur = xlsxwriter.Workbook(cheminFichier)
+        feuille = classeur.add_worksheet(titre)
 
-        pat = pyExcelerator.Pattern()
-        pat.pattern = pyExcelerator.Pattern.SOLID_PATTERN
-        pat.pattern_fore_colour = 0x01F
-        
-        styleLabel = pyExcelerator.XFStyle()
-        styleLabel.alignment = al
-        styleLabel.pattern = pat
-        
-        styleTotal = pyExcelerator.XFStyle()
-        styleTotal.alignment = al
-        styleTotal.pattern = pat
-        styleTotal.font.bold = True
-
-        styleTotalNbre = pyExcelerator.XFStyle()
-        styleTotalNbre.alignment = ar
-        styleTotalNbre.pattern = pat
-        styleTotalNbre.font.bold = True
-        
-##        styleEuros = pyExcelerator.XFStyle()
-##        styleEuros.num_format_str = "#,##0.00 ¤"
-##    
-##        # Création des labels de colonnes
-##        x = 0
-##        y = 0
-##        for valeur in self.dictImpression["entete"] :
-##            ws1.write(x, y, valeur)
-##            ws1.col(y).width = 3000
-##            y += 1
-##        ws1.col(0).width = 10000
-##        
-##        # Contenu
-##        x = 1
-##        y = 0
-##        for ligne in self.dictImpression["contenu"] :
-##            for valeur in ligne :
-##                if x-1 in self.dictImpression["coloration"] :
-##                    ws1.write(x, y, valeur, styleTotal)
-##                else:
-##                    ws1.write(x, y, valeur)
-##                y += 1
-##            x += 1
-##            y = 0
-##        
-##        # Total
-##        premiereLigne = True
-##        for ligne in self.dictImpression["total"] :
-##            for valeur in ligne :
-##                if premiereLigne == True :
-##                    ws1.write(x, y, valeur, styleTotal)
-##                else:
-##                    ws1.write(x, y, valeur)
-##                y += 1
-##            premiereLigne = False
-##            x += 1
-##            y = 0
-##            
-##        # Finalisation du fichier xls
-##        wb.save(cheminFichier)
-
-        styleEuros = pyExcelerator.XFStyle()
-        styleEuros.num_format_str = '"$"#,##0.00_);("$"#,##'
-        styleEuros.alignment = ar
-        
-        styleTotalEuros = pyExcelerator.XFStyle()
-        styleTotalEuros.num_format_str = '"$"#,##0.00_);("$"#,##'
-        styleTotalEuros.alignment = ar
-        styleTotalEuros.pattern = pat
-        styleTotalEuros.font.bold = True
+        format_money = classeur.add_format({'num_format': '# ##0.00'})
+        format_money_titre = classeur.add_format({'num_format': '# ##0.00', 'bold': True, 'bg_color': '#E7EAED'})
+        format_titre = classeur.add_format({'align': 'center', 'bold': True, 'bg_color': '#E7EAED'})
 
         # Création des labels de colonnes
         x = 0
         y = 0
         for valeur in self.dictImpression["entete"] :
-            ws1.write(x, y, valeur)
-            ws1.col(y).width = 3000
+            feuille.write(x, y, valeur)
+            feuille.set_column(y, y, 15)
             y += 1
-        ws1.col(0).width = 10000
+        feuille.set_column(0, 0, 40)
         
         def RechercheFormat(valeur, titre):
             """ Recherche si la valeur est un nombre """
@@ -874,9 +794,9 @@ class CTRL(HTL.HyperTreeList):
                 try :
                     nbre = float(valeur[:-1]) 
                     if titre == True :
-                        format = styleTotalEuros
+                        format = format_money_titre
                     else:
-                        format = styleEuros
+                        format = format_money
                     return (nbre, format)
                 except :
                     pass
@@ -886,7 +806,7 @@ class CTRL(HTL.HyperTreeList):
                 try :
                     nbre = float(valeur)
                     if titre == True :
-                        format = styleTotalNbre
+                        format = format_titre
                     return (nbre, format)
                 except :
                     pass
@@ -912,13 +832,13 @@ class CTRL(HTL.HyperTreeList):
                     valeur = nbre
                     
                 if nbre == False and titre == True and format == None :
-                    format = styleTotal
+                    format = format_titre
 
                 # Enregistre la valeur
                 if format != None :
-                    ws1.write(x, y, valeur, format)
+                    feuille.write(x, y, valeur, format)
                 else:
-                    ws1.write(x, y, valeur)
+                    feuille.write(x, y, valeur)
                     
                 y += 1
             x += 1
@@ -941,21 +861,21 @@ class CTRL(HTL.HyperTreeList):
                     valeur = nbre
                     
                 if nbre == False and titre == True and format == None :
-                    format = styleTotal
+                    format = format_titre
 
                 # Enregistre la valeur
                 if format != None :
-                    ws1.write(x, y, valeur, format)
+                    feuille.write(x, y, valeur, format)
                 else:
-                    ws1.write(x, y, valeur)
+                    feuille.write(x, y, valeur)
 
                 y += 1
             premiereLigne = False
             x += 1
             y = 0
             
-        # Finalisation du fichier xls
-        wb.save(cheminFichier)
+        # Finalisation du fichier xlsx
+        classeur.close()
 
         # Confirmation de création du fichier et demande d'ouverture directe dans Excel
         txtMessage = _(u"Le fichier Excel a été créé avec succès. Souhaitez-vous l'ouvrir dès maintenant ?")

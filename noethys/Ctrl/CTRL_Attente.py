@@ -545,8 +545,8 @@ class CTRL(HTL.HyperTreeList):
         titre = _(u"Liste d'attente")
 
         # Demande à l'utilisateur le nom de fichier et le répertoire de destination
-        nomFichier = "ExportExcel_%s.xls" % datetime.datetime.now().strftime("%Y%m%d%H%M%S")
-        wildcard = "Fichier Excel (*.xls)|*.xls|" \
+        nomFichier = "ExportExcel_%s.xlsx" % datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+        wildcard = "Fichier Excel (*.xlsx)|*.xlsx|" \
                         "All files (*.*)|*.*"
         sp = wx.StandardPaths.Get()
         cheminDefaut = sp.GetDocumentsDir()
@@ -574,41 +574,21 @@ class CTRL(HTL.HyperTreeList):
                 dlg.Destroy()
 
         # Export
-        import pyExcelerator
-        # Création d'un classeur
-        wb = pyExcelerator.Workbook()
-        # Création d'une feuille
-        ws1 = wb.add_sheet(titre)
+        import xlsxwriter
+        classeur = xlsxwriter.Workbook(cheminFichier)
+        feuille = classeur.add_worksheet()
 
-        fntLabel = pyExcelerator.Font()
-        fntLabel.name = 'Verdana'
-        fntLabel.bold = True
-
-        al = pyExcelerator.Alignment()
-        al.horz = pyExcelerator.Alignment.HORZ_LEFT
-        al.vert = pyExcelerator.Alignment.VERT_CENTER
-
-        ar = pyExcelerator.Alignment()
-        ar.horz = pyExcelerator.Alignment.HORZ_RIGHT
-        ar.vert = pyExcelerator.Alignment.VERT_CENTER
-
-        pat = pyExcelerator.Pattern()
-        pat.pattern = pyExcelerator.Pattern.SOLID_PATTERN
-        pat.pattern_fore_colour = 0x01F
-
-        styleDate = pyExcelerator.XFStyle()
-        styleDate.alignment = al
-        styleDate.font.bold = True
+        format_date = classeur.add_format({'num_format': 'dd/mm/yyyy'})
 
         # Entetes et largeurs des colonnes
         colonnes = [
-            (_(u"Date"), 8000), (_(u"Groupe"), 8000), (_(u"Dispo"), 2000), (_(u"N°"), 2000),
-            (_(u"Individu"), 10000), (_(u"Unités"), 10000), (_(u"Date de saisie"), 10000),
+            (_(u"Date"), 30), (_(u"Groupe"), 20), (_(u"Dispo"), 15), (_(u"N°"), 15),
+            (_(u"Individu"), 30), (_(u"Unités"), 30), (_(u"Date de saisie"), 30),
             ]
         index = 0
         for label, largeur in colonnes :
-            ws1.col(index).width = largeur
-            ws1.write(0, index, label)
+            feuille.set_column(index, index, largeur)
+            feuille.write(0, index, label)
             index += 1
 
         # Contenu
@@ -620,20 +600,20 @@ class CTRL(HTL.HyperTreeList):
                     if placeDispo == True :
                         placeDispoTxt = _(u"Oui")
                     else :
-                        placeDispo = ""
+                        placeDispoTxt = ""
 
-                    ws1.write(x, 0, date, styleDate)
-                    ws1.write(x, 1, nomGroupe)
-                    ws1.write(x, 2, placeDispo)
-                    ws1.write(x, 3, dictIndividu["num"])
-                    ws1.write(x, 4, dictIndividu["nomIndividu"])
-                    ws1.write(x, 5, dictIndividu["texteUnites"])
-                    ws1.write(x, 6, dictIndividu["texteDateSaisie"])
+                    feuille.write(x, 0, date, format_date)
+                    feuille.write(x, 1, nomGroupe)
+                    feuille.write(x, 2, placeDispoTxt)
+                    feuille.write(x, 3, dictIndividu["num"])
+                    feuille.write(x, 4, dictIndividu["nomIndividu"])
+                    feuille.write(x, 5, dictIndividu["texteUnites"])
+                    feuille.write(x, 6, dictIndividu["texteDateSaisie"])
 
                     x += 1
 
-        # Finalisation du fichier xls
-        wb.save(cheminFichier)
+        # Finalisation du fichier xlsx
+        classeur.close()
 
         # Confirmation de création du fichier et demande d'ouverture directe dans Excel
         txtMessage = _(u"Le fichier Excel a été créé avec succès. Souhaitez-vous l'ouvrir dès maintenant ?")

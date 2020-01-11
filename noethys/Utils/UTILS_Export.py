@@ -214,13 +214,13 @@ def ExportExcel(listview=None, grid=None, titre=_(u"Liste"), listeColonnes=None,
         return
 
     # Définit le nom et le chemin du fichier
-    nomFichier = "ExportExcel_%s.xls" % datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+    nomFichier = "ExportExcel_%s.xlsx" % datetime.datetime.now().strftime("%Y%m%d%H%M%S")
 
     # Mode Enregistrer
     if mode == "enregistrer" :
 
         # Demande à l'utilisateur le nom de fichier et le répertoire de destination
-        wildcard = "Fichier Excel (*.xls)|*.xls|" \
+        wildcard = "Fichier Excel (*.xlsx)|*.xlsx|" \
                         "All files (*.*)|*.*"
         sp = wx.StandardPaths.Get()
         cheminDefaut = sp.GetDocumentsDir()
@@ -253,32 +253,14 @@ def ExportExcel(listview=None, grid=None, titre=_(u"Liste"), listeColonnes=None,
 
 
     # Export
-    import pyExcelerator
-    # Création d'un classeur
-    wb = pyExcelerator.Workbook()
-    # Création d'une feuille
-    ws1 = wb.add_sheet(titre)
-    # Remplissage de la feuille
+    import xlsxwriter
+    classeur = xlsxwriter.Workbook(cheminFichier)
+    feuille = classeur.add_worksheet()
 
-    al = pyExcelerator.Alignment()
-    al.horz = pyExcelerator.Alignment.HORZ_LEFT
-    al.vert = pyExcelerator.Alignment.VERT_CENTER
-    
-    ar = pyExcelerator.Alignment()
-    ar.horz = pyExcelerator.Alignment.HORZ_RIGHT
-    ar.vert = pyExcelerator.Alignment.VERT_CENTER
-
-    styleEuros = pyExcelerator.XFStyle()
-    styleEuros.num_format_str = '"$"#,##0.00_);("$"#,##'
-    styleEuros.alignment = ar
-
-    styleDate = pyExcelerator.XFStyle()
-    styleDate.num_format_str = 'DD/MM/YYYY'
-    styleDate.alignment = ar
-
-    styleHeure = pyExcelerator.XFStyle()
-    styleHeure.num_format_str = "[hh]:mm"
-    styleHeure.alignment = ar
+    format_money = classeur.add_format({'num_format': '# ##0.00'})
+    format_titre = classeur.add_format({'align': 'center', 'bold': True, 'bg_color': '#E7EAED'})
+    format_date = classeur.add_format({'num_format': 'dd/mm/yyyy'})
+    format_heure = classeur.add_format({'num_format': '[hh]:mm'})
 
     # Création des labels de colonnes
     x = 0
@@ -289,8 +271,8 @@ def ExportExcel(listview=None, grid=None, titre=_(u"Liste"), listeColonnes=None,
                 nomChamp = "Coche"
         except :
             pass
-        ws1.write(x, y, labelCol)
-        ws1.col(y).width = largeur*42
+        feuille.write(x, y, labelCol)
+        feuille.set_column(y, y, largeur // 4)
         y += 1
 
     # -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -306,7 +288,7 @@ def ExportExcel(listview=None, grid=None, titre=_(u"Liste"), listeColonnes=None,
                 if valeur.startswith("+ ") :
                     valeur = valeur.replace("+ ", "")
                 nbre = float(valeur[:-1]) 
-                return (nbre, styleEuros)
+                return (nbre, format_money)
             except :
                 pass
                 
@@ -323,12 +305,12 @@ def ExportExcel(listview=None, grid=None, titre=_(u"Liste"), listeColonnes=None,
         try :
             if len(valeur) == 10 :
                 if valeur[2] == "/" and valeur[5] == "/" :
-                    return (valeur, styleDate)
+                    return (valeur, format_date)
         except :
             pass
 
         if type(valeur) == datetime.timedelta :
-            return (valeur, styleHeure)
+            return (valeur, format_heure)
 
         # Si c'est une heure
         try :
@@ -342,8 +324,7 @@ def ExportExcel(listview=None, grid=None, titre=_(u"Liste"), listeColonnes=None,
                 if separateur != None :
                     heures, minutes = valeur.split(separateur)
                     valeur = datetime.timedelta(minutes= int(heures)*60 + int(minutes))
-                    # valeur = datetime.time(hour=int(valeur.split(separateur)[0]), minute=int(valeur.split(separateur)[1]))
-                    return (valeur, styleHeure)
+                    return (valeur, format_heure)
         except :
             pass
 
@@ -355,7 +336,7 @@ def ExportExcel(listview=None, grid=None, titre=_(u"Liste"), listeColonnes=None,
         """ Recherche le type de la donnée """
         if type(valeur) == decimal.Decimal :
             valeur = float(valeur)
-            return (valeur, styleEuros)
+            return (valeur, format_money)
                 
         if type(valeur) == float :
             return (valeur, None)
@@ -365,10 +346,10 @@ def ExportExcel(listview=None, grid=None, titre=_(u"Liste"), listeColonnes=None,
         
         if type(valeur) == datetime.date :
             valeur = UTILS_Dates.DateDDEnFr(valeur)
-            return (valeur, styleDate)
+            return (valeur, format_date)
 
         if type(valeur) == datetime.timedelta :
-            return (valeur, styleHeure)
+            return (valeur, format_heure)
 
         try :
             if len(valeur) > 3 :
@@ -385,15 +366,14 @@ def ExportExcel(listview=None, grid=None, titre=_(u"Liste"), listeColonnes=None,
                     if len(donnees) == 3 :
                         heures, minutes, secondes = donnees
                     valeur = datetime.timedelta(minutes= int(heures)*60 + int(minutes))
-                    # valeur = datetime.time(hour=int(valeur.split(separateur)[0]), minute=int(valeur.split(separateur)[1]))
-                    return (valeur, styleHeure)
+                    return (valeur, format_heure)
         except :
             pass
 
         if type(valeur) in (str, six.text_type) :
             if len(valeur) == 10 :
-                if valeur[2] == "/" and valeur[5] == "/" : return (valeur, styleDate)
-                if valeur[4] == "-" and valeur[7] == "-" : return (UTILS_Dates.DateEngFr(valeur), styleDate)
+                if valeur[2] == "/" and valeur[5] == "/" : return (valeur, format_date)
+                if valeur[4] == "-" and valeur[7] == "-" : return (UTILS_Dates.DateEngFr(valeur), format_date)
                 
         return six.text_type(valeur), None
 
@@ -409,15 +389,15 @@ def ExportExcel(listview=None, grid=None, titre=_(u"Liste"), listeColonnes=None,
                     
                 # Recherche s'il y a un format de nombre ou de montant
                 if listview != None :
-                    valeur, format = RechercheFormat(valeur) #RechercheFormatFromChaine(valeur)
+                    valeur, format = RechercheFormat(valeur)
                 else :
                     valeur, format = RechercheFormatFromChaine(valeur)
                         
                 # Enregistre la valeur
                 if format != None :
-                    ws1.write(x, y, valeur, format)
+                    feuille.write(x, y, valeur, format)
                 else:
-                    ws1.write(x, y, valeur)
+                    feuille.write(x, y, valeur)
 
                 y += 1
             x += 1
@@ -425,7 +405,7 @@ def ExportExcel(listview=None, grid=None, titre=_(u"Liste"), listeColonnes=None,
             
     # Finalisation du fichier xls
     try :
-        wb.save(cheminFichier)
+        classeur.close()
     except :
         dlg = wx.MessageDialog(None, _(u"Il est impossible d'enregistrer le fichier Excel. Veuillez vérifier que ce fichier n'est pas déjà ouvert en arrière-plan."), "Erreur", wx.OK | wx.ICON_ERROR)
         dlg.ShowModal()
