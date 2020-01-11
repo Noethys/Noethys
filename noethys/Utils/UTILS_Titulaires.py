@@ -34,13 +34,13 @@ def GetTitulaires(listeIDfamille=[], mode_adresse_facturation=False, inclure_tel
 
     # Récupération de toutes les familles de la base
     req = """
-    SELECT IDfamille, IDcompte_payeur, autre_adresse_facturation
+    SELECT IDfamille, IDcompte_payeur, autre_adresse_facturation, code_comptable
     FROM familles
     WHERE IDfamille>0 %s;""" % conditionFamilles
     DB.ExecuterReq(req)
     listeFamilles = DB.ResultatReq()  
-    for IDfamille, IDcompte_payeur, autre_adresse_facturation in listeFamilles :
-        dictFamilles[IDfamille] = {"IDcompte_payeur":IDcompte_payeur, "autre_adresse_facturation":autre_adresse_facturation}
+    for IDfamille, IDcompte_payeur, autre_adresse_facturation, code_comptable in listeFamilles :
+        dictFamilles[IDfamille] = {"IDcompte_payeur":IDcompte_payeur, "autre_adresse_facturation":autre_adresse_facturation, "code_comptable": code_comptable}
 
     if inclure_telephones == True :
         champs_telephones = ", travail_tel, travail_tel_sms, tel_domicile, tel_domicile_sms, tel_mobile, tel_mobile_sms"

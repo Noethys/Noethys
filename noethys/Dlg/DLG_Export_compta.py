@@ -15,6 +15,7 @@ from Utils.UTILS_Traduction import _
 import wx
 from Ctrl import CTRL_Bouton_image
 import os
+import datetime
 import codecs
 import copy
 import GestionDB
@@ -28,16 +29,16 @@ from Utils import UTILS_Config
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 from Utils import UTILS_Parametres
 import six
-import wx.lib.agw.labelbook as LB
 import wx.propgrid as wxpg
-import wx.lib.dialogs as dialogs
 if 'phoenix' in wx.PlatformInfo:
     from wx.adv import BitmapComboBox
 else :
     from wx.combo import BitmapComboBox
 from Ctrl import CTRL_Propertygrid
 from Utils import UTILS_XImport
-
+import xlsxwriter
+import decimal
+from Dlg import DLG_Messagebox
 
 
 def FormateDate(dateDD=None, format="%d/%m/%Y") :
@@ -1083,10 +1084,11 @@ class CTRL_Logiciel(BitmapComboBox):
         BitmapComboBox.__init__(self, parent, size=size, style=wx.CB_READONLY)
         self.parent = parent
         self.listeFormats = [
-            {"code" : "ebp_compta", "label" : _(u"EBP Compta"), "image" : wx.Bitmap(Chemins.GetStaticPath('Images/48x48/Logiciel_ebp.png'), wx.BITMAP_TYPE_PNG)},
-            {"code" : "ciel_compta_ebp", "label" : _(u"CIEL Compta (Format EBP)"), "image" : wx.Bitmap(Chemins.GetStaticPath('Images/48x48/Logiciel_ciel.png'), wx.BITMAP_TYPE_PNG)},
-            {"code" : "ciel_compta_ximport", "label" : _(u"CIEL Compta (Format XImport)"), "image" : wx.Bitmap(Chemins.GetStaticPath('Images/48x48/Logiciel_ciel.png'), wx.BITMAP_TYPE_PNG)},
-            ]
+            {"code": "ebp_compta", "label" : _(u"EBP Compta"), "image" : wx.Bitmap(Chemins.GetStaticPath('Images/48x48/Logiciel_ebp.png'), wx.BITMAP_TYPE_PNG)},
+            {"code": "ciel_compta_ebp", "label" : _(u"CIEL Compta (Format EBP)"), "image" : wx.Bitmap(Chemins.GetStaticPath('Images/48x48/Logiciel_ciel.png'), wx.BITMAP_TYPE_PNG)},
+            {"code": "ciel_compta_ximport", "label" : _(u"CIEL Compta (Format XImport)"), "image" : wx.Bitmap(Chemins.GetStaticPath('Images/48x48/Logiciel_ciel.png'), wx.BITMAP_TYPE_PNG)},
+            {"code": "quadracompta", "label": _(u"QuadraCOMPTA"), "image": wx.Bitmap(Chemins.GetStaticPath('Images/48x48/Logiciel_quadra.png'), wx.BITMAP_TYPE_PNG)},
+        ]
         for dictFormat in self.listeFormats :
             self.Append(dictFormat["label"], dictFormat["image"], dictFormat["label"])
         self.SetSelection(0)
@@ -1114,9 +1116,9 @@ class CTRL_Logiciel(BitmapComboBox):
 # -------------------------------------------------------------------------------------------------------------------------------------------
 
 
-class CTRL_Parametres(CTRL_Propertygrid.CTRL):#(wxpg.PropertyGrid) :
+class CTRL_Parametres(CTRL_Propertygrid.CTRL):
     def __init__(self, parent, listeDonnees=[]):
-        CTRL_Propertygrid.CTRL.__init__(self, parent, style=wxpg.PG_STATIC_SPLITTER )
+        CTRL_Propertygrid.CTRL.__init__(self, parent, style=wxpg.PG_STATIC_SPLITTER)
         self.parent = parent
         self.listeDonnees = listeDonnees
         self.SetExtraStyle(wxpg.PG_EX_HELP_AS_TOOLTIPS)
@@ -1125,7 +1127,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL):#(wxpg.PropertyGrid) :
         self.SetMarginColour(couleurFond)
         self.SetSplitterPosition(220)
     
-    def Remplissage(self):        
+    def Remplissage(self):
         # Autres lignes
         for valeur in self.listeDonnees :
             if type(valeur) == dict :
@@ -1136,11 +1138,15 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL):#(wxpg.PropertyGrid) :
                 if valeur["type"] == "check" :
                     propriete = wxpg.BoolProperty(label=valeur["label"], name=valeur["code"], value=valeur["defaut"])
                     propriete.SetAttribute("UseCheckbox", True)
-                propriete.SetHelpString(valeur["tip"]) 
+                if valeur["type"] == "repertoire":
+                    if 'phoenix' in wx.PlatformInfo:
+                        propriete = wxpg.DirProperty(name=valeur["label"], label=valeur["code"], value=valeur["defaut"])
+                    else:
+                        propriete = wxpg.DirProperty(label=valeur["label"], name=valeur["code"], value=valeur["defaut"])
+                propriete.SetHelpString(valeur["tip"])
                 self.Append(propriete)
             else :
                 self.Append(wxpg.PropertyCategory(valeur))
-
 
     def Importation(self):
         """ Importation des valeurs dans le contrôle """
@@ -1168,13 +1174,13 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL):#(wxpg.PropertyGrid) :
 
     def Validation(self):
         # Période
-        if self.parent.ctrl_date_debut.GetDate() == None :
+        if self.GetGrandParent().ctrl_date_debut.GetDate() == None :
             dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement renseigner la date de début de période !"), _(u"Information"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
 
-        if self.parent.ctrl_date_fin.GetDate() == None :
+        if self.GetGrandParent().ctrl_date_fin.GetDate() == None :
             dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement renseigner la date de fin de période !"), _(u"Information"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
@@ -1192,22 +1198,18 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL):#(wxpg.PropertyGrid) :
 
     def GetParametres(self):
         dictParametres = self.GetPropertyValues()
-        dictParametres["date_debut"] = self.parent.ctrl_date_debut.GetDate() 
-        dictParametres["date_fin"] = self.parent.ctrl_date_fin.GetDate() 
+        dictParametres["date_debut"] = self.GetGrandParent().ctrl_date_debut.GetDate()
+        dictParametres["date_fin"] = self.GetGrandParent().ctrl_date_fin.GetDate()
         return dictParametres
 
-    def CreationFichier(self, nomFichier="", texte=""):
+    def CreationFichierTxt(self, nomFichier="", texte=""):
         # Demande à l'utilisateur le nom de fichier et le répertoire de destination
         wildcard = "Fichier texte (*.txt)|*.txt|" \
-                        "All files (*.*)|*.*"
+                   "All files (*.*)|*.*"
         sp = wx.StandardPaths.Get()
         cheminDefaut = sp.GetDocumentsDir()
-        dlg = wx.FileDialog(
-            None, message = _(u"Veuillez sélectionner le répertoire de destination et le nom du fichier"), defaultDir=cheminDefaut, 
-            defaultFile = nomFichier, 
-            wildcard = wildcard, 
-            style = wx.FD_SAVE
-            )
+        dlg = wx.FileDialog(None, message=_(u"Veuillez sélectionner le répertoire de destination et le nom du fichier"),
+            defaultDir=cheminDefaut, defaultFile=nomFichier, wildcard=wildcard, style=wx.FD_SAVE)
         dlg.SetFilterIndex(0)
         if dlg.ShowModal() == wx.ID_OK:
             cheminFichier = dlg.GetPath()
@@ -1215,13 +1217,13 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL):#(wxpg.PropertyGrid) :
         else:
             dlg.Destroy()
             return
-        
+
         # Le fichier de destination existe déjà :
-        if os.path.isfile(cheminFichier) == True :
+        if os.path.isfile(cheminFichier) == True:
             dlg = wx.MessageDialog(None, _(u"Un fichier portant ce nom existe déjà. \n\nVoulez-vous le remplacer ?"), "Attention !", wx.YES_NO | wx.NO_DEFAULT | wx.ICON_EXCLAMATION)
-            if dlg.ShowModal() == wx.ID_NO :
-                return False
+            if dlg.ShowModal() == wx.ID_NO:
                 dlg.Destroy()
+                return False
             else:
                 dlg.Destroy()
 
@@ -1233,16 +1235,42 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL):#(wxpg.PropertyGrid) :
             f = codecs.open(cheminFichier, encoding='utf-8', mode='w')
         f.write(texte)
         f.close()
-        
+
         # Confirmation de création du fichier et demande d'ouverture directe dans Excel
         txtMessage = _(u"Le fichier a été créé avec succès.\n\nSouhaitez-vous l'ouvrir dès maintenant ?")
-        dlgConfirm = wx.MessageDialog(None, txtMessage, _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.ICON_QUESTION)
+        dlgConfirm = wx.MessageDialog(None, txtMessage, _(u"Confirmation"), wx.YES_NO | wx.NO_DEFAULT | wx.ICON_QUESTION)
         reponse = dlgConfirm.ShowModal()
         dlgConfirm.Destroy()
         if reponse == wx.ID_NO:
             return
         else:
             FonctionsPerso.LanceFichierExterne(cheminFichier)
+
+
+
+class Panel_parametres(wx.Panel):
+    def __init__(self, parent, classe=None):
+        wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
+        self.parent = parent
+
+        # Contrôles
+        self.ctrl_parametres = classe(self)
+        self.bouton_reinitialisation = CTRL_Propertygrid.Bouton_reinitialisation(self, self.ctrl_parametres)
+        self.bouton_sauvegarde = CTRL_Propertygrid.Bouton_sauvegarde(self, self.ctrl_parametres)
+
+        # Layout
+        sizer_base = wx.BoxSizer(wx.VERTICAL)
+        grid_sizer_parametres = wx.FlexGridSizer(1, 2, 5, 5)
+        grid_sizer_parametres.Add(self.ctrl_parametres, 1, wx.ALL | wx.EXPAND, 0)
+        grid_sizer_parametres_boutons = wx.FlexGridSizer(5, 1, 5, 5)
+        grid_sizer_parametres_boutons.Add(self.bouton_reinitialisation, 1, wx.ALL | wx.EXPAND, 0)
+        grid_sizer_parametres_boutons.Add(self.bouton_sauvegarde, 1, wx.ALL | wx.EXPAND, 0)
+        grid_sizer_parametres.Add(grid_sizer_parametres_boutons, 1, wx.ALL | wx.EXPAND, 0)
+        grid_sizer_parametres.AddGrowableRow(0)
+        grid_sizer_parametres.AddGrowableCol(0)
+        sizer_base.Add(grid_sizer_parametres, 1, wx.ALL | wx.EXPAND, 0)
+        self.SetSizer(sizer_base)
+        self.Layout()
 
 
 
@@ -1277,52 +1305,54 @@ class CTRL_Parametres_defaut(CTRL_Parametres) :
         CTRL_Parametres.__init__(self, parent, self.listeDonnees)
 
     def Generation(self, format="ciel_compta"):
-        if self.Validation() == False : return False
-        
+        if self.Validation() == False: return False
+
         # Récupération des paramètres
-        dictParametres = self.GetParametres() 
+        dictParametres = self.GetParametres()
         donnees = Donnees(dictParametres)
-    
+
         numLigne = 1
         listeLignesTxt = []
 
         # Ligne d'entête
-        if dictParametres["ligne_noms_champs"] == True :
-            listeLignesTxt.append("numligne,date,journal,compte,libelleauto,libellemanuel,piece,montant,sens,echeance,devise")
-        
+        if dictParametres["ligne_noms_champs"] == True:
+            listeLignesTxt.append(
+                "numligne,date,journal,compte,libelleauto,libellemanuel,piece,montant,sens,echeance,devise")
+
         # Ventes
-        lignesVentes = donnees.GetVentes() 
-        if lignesVentes == False : 
+        lignesVentes = donnees.GetVentes()
+        if lignesVentes == False:
             return False
 
-        for ligne in lignesVentes :
-            if ligne["montant"] != FloatToDecimal(0.0) :
+        for ligne in lignesVentes:
+            if ligne["montant"] != FloatToDecimal(0.0):
                 listeLignesTxt.append(self.FormateLigne(format, ligne, dictParametres, numLigne))
                 numLigne += 1
 
         # Banque
-        for typeComptable in ("banque", "caisse") :
-            
-            if dictParametres["journal_%s" % typeComptable] != "" :
-                
-                if dictParametres["option_regroupement_reglements"] == 0 :
-                    lignesTemp = donnees.GetReglements_Modes(typeComptable=typeComptable) 
-                if dictParametres["option_regroupement_reglements"] == 1 :
-                    lignesTemp = donnees.GetReglements_Depots(typeComptable=typeComptable) 
+        for typeComptable in ("banque", "caisse"):
 
-                if lignesTemp == False : 
+            if dictParametres["journal_%s" % typeComptable] != "":
+
+                if dictParametres["option_regroupement_reglements"] == 0:
+                    lignesTemp = donnees.GetReglements_Modes(typeComptable=typeComptable)
+                if dictParametres["option_regroupement_reglements"] == 1:
+                    lignesTemp = donnees.GetReglements_Depots(typeComptable=typeComptable)
+
+                if lignesTemp == False:
                     return False
 
-                for ligne in lignesTemp :
-                    if ligne["montant"] != FloatToDecimal(0.0) :
+                for ligne in lignesTemp:
+                    if ligne["montant"] != FloatToDecimal(0.0):
                         listeLignesTxt.append(self.FormateLigne(format, ligne, dictParametres, numLigne, typeComptable))
                         numLigne += 1
-        
+
         # Finalisation du texte
         texte = "\n".join(listeLignesTxt)
-        nomFichier = _(u"Export_%s_%s_%s") % (format, dictParametres["date_debut"].strftime("%d-%m-%Y"), dictParametres["date_fin"].strftime("%d-%m-%Y"))
-        self.CreationFichier(nomFichier=nomFichier, texte=texte)
-    
+        nomFichier = _(u"Export_%s_%s_%s") % (
+        format, dictParametres["date_debut"].strftime("%d-%m-%Y"), dictParametres["date_fin"].strftime("%d-%m-%Y"))
+        self.CreationFichierTxt(nomFichier=nomFichier, texte=texte)
+
     def FormateLigne(self, format, ligne, dictParametres, numLigne, typeComptable=None):
         if format == "ebp_compta" :
             return Export_ebp_compta(ligne, dictParametres, numLigne, typeComptable)
@@ -1330,6 +1360,363 @@ class CTRL_Parametres_defaut(CTRL_Parametres) :
             return Export_ebp_compta(ligne, dictParametres, numLigne, typeComptable)
         if format == "ciel_compta_ximport" :
             return UTILS_XImport.XImportLine(ligne, dictParametres, numLigne, typeComptable).getData()
+
+# --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+class CTRL_Parametres_quadracompta(CTRL_Parametres) :
+    def __init__(self, parent):
+        sp = wx.StandardPaths.Get()
+        cheminDefaut = sp.GetDocumentsDir()
+
+        self.listeDonnees = [
+            _(u"Options générales"),
+            {"type": "check", "label": _(u"Mémoriser les paramètres"), "description": _(u"Mémoriser les paramètres"), "code": "memoriser_parametres", "tip": _(u"Cochez cette case pour mémoriser les paramètres"), "defaut": True, "obligatoire": True},
+            {"type": "repertoire", "label": _(u"Répertoire de destination"), "description": _(u"Répertoire de destination"), "code": "quadra_repertoire", "tip": _(u"Sélectionnez un répertoire de destination"), "defaut": cheminDefaut, "obligatoire": True},
+            _(u"Données"),
+            {"type":"choix", "label":_(u"Ventes"), "description": _(u"Type de données à afficher"), "code": "quadra_type_ventes", "tip": _(u"Sélectionnez le type de données à afficher"), "choix": [_(u"Factures de la période"), _(u"Prestations de la période")], "defaut": 0, "obligatoire": True},
+            {"type":"choix", "label":_(u"Règlements"), "description": _(u"Type de données à afficher"), "code": "quadra_type_reglements", "tip": _(u"Sélectionnez le type de données à afficher"), "choix": [_(u"Règlements déposés sur la période"), _(u"Règlements saisis sur la période")], "defaut": 0, "obligatoire": True},
+            _(u"Affichage"),
+            {"type": "check", "label": _(u"Insérer entête noms des champs"), "description": _(u"Insérer ligne noms des champs"), "code": "quadra_ligne_noms_champs", "tip": _(u"Cochez cette case pour insérer en début de fichier une ligne avec les noms des champs"), "defaut": True, "obligatoire": True},
+            {"type": "check", "label": _(u"Séparer les écritures avec ligne vide"), "description": _(u"Séparer les écritures par une ligne vide"), "code": "quadra_ligne_vide", "tip": _(u"Séparer les écritures par une ligne vide"), "defaut": True, "obligatoire": True},
+            _(u"Codes journaux par défaut"),
+            {"type": "chaine", "label":_(u"Ventes"), "description":_(u"Code journal des ventes"), "code":"quadra_journal_ventes", "tip":_(u"Saisissez le code journal des ventes"), "defaut":_(u"VT"), "obligatoire":True},
+            {"type": "chaine", "label": _(u"Règlements"), "description": _(u"Code journal des règlements"), "code": "quadra_journal_reglements", "tip": _(u"Saisissez le code journal des règlements"), "defaut": _(u"OD1"), "obligatoire": True},
+            ]
+        CTRL_Parametres.__init__(self, parent, self.listeDonnees)
+
+    def Generation(self, format=None):
+        if self.Validation() == False: return False
+
+        # Récupération des paramètres
+        dictParametres = self.GetParametres()
+
+        # Importation des prestations
+        if dictParametres["quadra_type_ventes"] == 0:
+            condition = "factures.date_debut>='%s' AND factures.date_fin<='%s'" % (dictParametres["date_debut"], dictParametres["date_fin"])
+        else:
+            condition = "prestations.date_valeur>='%s' AND prestations.date_valeur<='%s'" % (dictParametres["date_debut"], dictParametres["date_fin"])
+
+        DB = GestionDB.DB()
+        req = """
+        SELECT prestations.IDprestation, prestations.date, prestations.code_compta, prestations.IDfacture, prestations.label,
+        prestations.montant, prestations.IDactivite, prestations.IDtarif, prestations.IDfamille, prestations.IDindividu, 
+        activites.nom, activites.code_comptable,
+        tarifs.code_compta,
+        noms_tarifs.nom, 
+        types_cotisations.code_comptable, types_cotisations.nom,
+        factures.numero, factures.date_edition
+        FROM prestations
+        LEFT JOIN activites ON prestations.IDactivite = activites.IDactivite
+        LEFT JOIN tarifs ON prestations.IDtarif = tarifs.IDtarif
+        LEFT JOIN noms_tarifs ON tarifs.IDnom_tarif = noms_tarifs.IDnom_tarif
+        LEFT JOIN categories_tarifs ON prestations.IDcategorie_tarif = categories_tarifs.IDcategorie_tarif
+        LEFT JOIN cotisations ON cotisations.IDprestation = prestations.IDprestation
+        LEFT JOIN types_cotisations ON types_cotisations.IDtype_cotisation = cotisations.IDtype_cotisation
+        LEFT JOIN factures ON factures.IDfacture = prestations.IDfacture
+        WHERE %s
+        GROUP BY prestations.IDprestation
+        ORDER BY prestations.date
+        ;""" % condition
+        DB.ExecuterReq(req)
+        listeDonnees = DB.ResultatReq()
+        DB.Close()
+        listePrestations = []
+        for IDprestation, date, code_compta_prestation, IDfacture, label, montant, IDactivite, IDtarif, IDfamille, IDindividu, nom_activite, code_compta_activite, code_compta_tarif, nom_tarif, code_compta_type_cotisation, nom_type_cotisation, num_facture, date_edition in listeDonnees :
+            if nom_activite == None: nom_activite = ""
+            if nom_tarif == None: nom_tarif = ""
+            dictTemp = {
+                "IDprestation": IDprestation, "date_prestation": UTILS_Dates.DateEngEnDateDD(date), "label": label, "montant": FloatToDecimal(montant),
+                "code_compta_prestation": code_compta_prestation, "code_compta_tarif": code_compta_tarif,
+                "IDactivite": IDactivite, "nom_activite": nom_activite, "code_compta_activite": code_compta_activite,
+                "IDtarif": IDtarif, "nom_tarif": nom_tarif, "IDfacture": IDfacture, "num_facture": num_facture, "date_edition_facture": UTILS_Dates.DateEngEnDateDD(date_edition),
+                "code_compta_type_cotisation": code_compta_type_cotisation, "nom_type_cotisation": nom_type_cotisation,
+                "IDfamille": IDfamille, "IDindividu": IDindividu,
+                }
+            listePrestations.append(dictTemp)
+
+        # Importation des familles
+        dictTitulaires = UTILS_Titulaires.GetTitulaires()
+
+        # Regroupement des prestations
+        anomalies = []
+        dict_resultats = {}
+
+        # Si mode FACTURES, on regroupe par IDFACTURE
+        for prestation in listePrestations:
+
+            if dictParametres["quadra_type_ventes"] == 0:
+                cle_primaire = prestation["IDfacture"]
+            else:
+                cle_primaire = prestation["IDfamille"]
+
+            if cle_primaire:
+
+                # Regroupement primaire
+                if cle_primaire not in dict_resultats:
+                    code_comptable_famille = dictTitulaires[prestation["IDfamille"]]["code_comptable"]
+                    noms_titulaires = dictTitulaires[prestation["IDfamille"]]["titulairesSansCivilite"]
+                    dict_resultats[cle_primaire] = {
+                        "IDfamille": prestation["IDfamille"], "code_comptable_famille": code_comptable_famille, "num_facture": prestation["num_facture"],
+                        "date_edition_facture": prestation["date_edition_facture"], "montant_debit": FloatToDecimal(0.0), "lignes_credit": {},
+                        "noms_titulaires": noms_titulaires,
+                        }
+
+                    # Si code compta famille manquant
+                    if code_comptable_famille in ("", None):
+                        txt = u"Le code comptable de la famille %s est manquant." % noms_titulaires
+                        if txt not in anomalies:
+                            anomalies.append(txt)
+
+                # Recherche le code compta de la prestation
+                code_compta = prestation["code_compta_prestation"]
+                label_compta = ""
+                if code_compta == None:
+                    code_compta = ""
+                if prestation["IDactivite"]:
+                    label_compta = prestation["nom_activite"]
+                if code_compta in (None, ""):
+                    if prestation["code_compta_tarif"] not in (None, ""):
+                        code_compta = prestation["code_compta_tarif"]
+                        label_compta = prestation["nom_tarif"]
+                    else:
+                        if prestation["code_compta_activite"] not in (None, ""):
+                            code_compta = prestation["code_compta_activite"]
+                            label_compta = prestation["nom_activite"]
+                        else:
+                            if prestation["code_compta_type_cotisation"] not in (None, ""):
+                                code_compta = prestation["code_compta_type_cotisation"]
+                                label_compta = prestation["nom_type_cotisation"]
+                if code_compta == "":
+                    code_compta = ""
+                    label_compta = ""
+
+                if not code_compta:
+                    if prestation["IDactivite"]:
+                        txt = u"Le code comptable de l'activité %s est manquant." % prestation["nom_activite"]
+                    else:
+                        txt = u"Le code comptable de la prestation %s est manquant." % prestation["label"]
+                    if txt not in anomalies:
+                        anomalies.append(txt)
+
+                # Regroupement secondaire
+                cle_secondaire = code_compta
+
+                if cle_secondaire not in dict_resultats[cle_primaire]["lignes_credit"]:
+                    dict_resultats[cle_primaire]["lignes_credit"][cle_secondaire] = {"code_compta": code_compta, "label_compta": label_compta, "prestation": prestation, "montant_credit": FloatToDecimal(0.0)}
+                dict_resultats[cle_primaire]["lignes_credit"][cle_secondaire]["montant_credit"] += prestation["montant"]
+                dict_resultats[cle_primaire]["montant_debit"] += prestation["montant"]
+
+        # Tri par IDfacture
+        liste_clesprimaires = list(dict_resultats.keys())
+        liste_clesprimaires.sort()
+
+        # Création du fichier des ventes
+        lignes = []
+        for cle_primaire in liste_clesprimaires:
+            IDfamille = dict_resultats[cle_primaire]["IDfamille"]
+            code_comptable_famille = dict_resultats[cle_primaire]["code_comptable_famille"]
+            code_journal_ventes = dictParametres["quadra_journal_ventes"]
+            noms_titulaires = dict_resultats[cle_primaire]["noms_titulaires"]
+            montant_debit = dict_resultats[cle_primaire]["montant_debit"]
+
+            if dictParametres["quadra_type_ventes"] == 0:
+                date = dict_resultats[cle_primaire]["date_edition_facture"]
+                num_piece = dict_resultats[cle_primaire]["num_facture"]
+            else:
+                date = dictParametres["date_fin"]
+                num_piece = ""
+
+            # Ligne de débit
+            lignes.append([code_journal_ventes, date, code_comptable_famille, noms_titulaires, noms_titulaires, montant_debit, "", num_piece])
+
+            # Lignes de crédit
+            for cle_secondaire, valeurs in dict_resultats[cle_primaire]["lignes_credit"].items():
+                lignes.append([code_journal_ventes, date, valeurs["code_compta"], valeurs["label_compta"], noms_titulaires, "", valeurs["montant_credit"], num_piece])
+
+            # Ligne vide
+            if dictParametres["quadra_ligne_vide"]:
+                lignes.append(None)
+
+        # Création du fichier des ventes
+        colonnes = [
+            {"label": u"Code journal", "largeur": 12},
+            {"label": u"Date", "largeur": 15},
+            {"label": u"Compte", "largeur": 15},
+            {"label": u"Intitulé", "largeur": 40},
+            {"label": u"Libellé", "largeur": 40},
+            {"label": u"Débit", "largeur": 12},
+            {"label": u"Crédit", "largeur": 12},
+            {"label": u"Num. Pièce", "largeur": 12},
+            ]
+
+        if not anomalies:
+            succes = self.CreationFichierExcel(nom_fichier="ventes.xlsx", colonnes=colonnes, lignes=lignes)
+            if not succes:
+                return False
+
+        # ----------------- Règlements -------------------
+
+        # Condition de sélection des règlements
+        if dictParametres["quadra_type_reglements"] == 0 :
+            condition = "reglements.IDdepot IS NOT NULL AND depots.date IS NOT NULL AND depots.date>='%s' AND depots.date<='%s' " % (dictParametres["date_debut"], dictParametres["date_fin"])
+        else :
+            condition = "reglements.date>='%s' AND reglements.date<='%s' " % (dictParametres["date_debut"], dictParametres["date_fin"])
+
+        # Récupération des règlements
+        DB = GestionDB.DB()
+        req = """SELECT 
+        reglements.IDreglement, reglements.date, 
+        modes_reglements.label, 
+        reglements.numero_piece, reglements.montant, 
+        depots.date, depots.nom,  
+        date_saisie, comptes_payeurs.IDfamille,
+        modes_reglements.code_compta,
+        comptes_bancaires.numero, comptes_bancaires.nom,
+        payeurs.nom
+        FROM reglements
+        LEFT JOIN modes_reglements ON reglements.IDmode=modes_reglements.IDmode
+        LEFT JOIN depots ON reglements.IDdepot=depots.IDdepot
+        LEFT JOIN payeurs ON payeurs.IDpayeur = reglements.IDpayeur
+        LEFT JOIN comptes_payeurs ON comptes_payeurs.IDcompte_payeur = reglements.IDcompte_payeur
+        LEFT JOIN comptes_bancaires ON comptes_bancaires.IDcompte = reglements.IDcompte
+        WHERE %s
+        GROUP BY reglements.IDreglement
+        ORDER BY modes_reglements.label;
+        """ % condition
+        DB.ExecuterReq(req)
+        listeDonnees = DB.ResultatReq()
+        DB.Close()
+        lignes = []
+        for IDreglement, date_reglement, label_mode, numero_piece, montant, date_depot, nom_depot, date_saisie, IDfamille, code_compta_mode, numero_compte, nom_compte, nom_payeur in listeDonnees :
+            date_reglement = UTILS_Dates.DateEngEnDateDD(date_reglement)
+            date_depot = UTILS_Dates.DateEngEnDateDD(date_depot)
+
+            code_journal = dictParametres["quadra_journal_reglements"]
+            code_comptable_famille = dictTitulaires[IDfamille]["code_comptable"]
+            noms_titulaires = dictTitulaires[IDfamille]["titulairesSansCivilite"]
+
+            # Ligne débit
+            lignes.append([code_journal, date_reglement, code_compta_mode, label_mode, noms_titulaires, numero_piece, FloatToDecimal(montant), ""])
+
+            # Ligne crédit
+            lignes.append([code_journal, date_reglement, code_comptable_famille, nom_payeur, noms_titulaires, numero_piece, "", FloatToDecimal(montant)])
+
+            # Ligne vide
+            if dictParametres["quadra_ligne_vide"]:
+                lignes.append(None)
+
+            # Anomalies
+            if code_comptable_famille in ("", None):
+                txt = u"Le code comptable de la famille %s est manquant." % noms_titulaires
+                if txt not in anomalies:
+                    anomalies.append(txt)
+
+            if code_compta_mode in ("", None):
+                txt = u"Le code comptable du mode de règlement %s est manquant." % label_mode
+                if txt not in anomalies:
+                    anomalies.append(txt)
+
+        # Création du fichier des ventes
+        colonnes = [
+            {"label": u"Code journal", "largeur": 12},
+            {"label": u"Date", "largeur": 15},
+            {"label": u"Compte", "largeur": 15},
+            {"label": u"Intitulé", "largeur": 40},
+            {"label": u"Libellé", "largeur": 40},
+            {"label": u"Num. Pièce", "largeur": 12},
+            {"label": u"Débit", "largeur": 12},
+            {"label": u"Crédit", "largeur": 12},
+            ]
+        if not anomalies:
+            succes = self.CreationFichierExcel(nom_fichier="reglements.xlsx", colonnes=colonnes, lignes=lignes)
+            if not succes:
+                return False
+
+        # Anomalies
+        if anomalies:
+            dlg = DLG_Messagebox.Dialog(self, titre=_(u"Anomalies"), introduction=_("Veuillez corriger les %d anomalies suivantes avant de pouvoir continuer :" % len(anomalies)), detail="\n".join(anomalies), icone=wx.ICON_ERROR, boutons=[_(u"Fermer"), ], defaut=0)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return False
+
+        # Succès
+        dlg = wx.MessageDialog(self, _(u"Les fichiers ont été générés avec succès dans le répertoire %s.") % dictParametres["quadra_repertoire"], _(u"Succès"), wx.OK | wx.ICON_INFORMATION)
+        dlg.ShowModal()
+        dlg.Destroy()
+        return True
+
+    def CreationFichierExcel(self, nom_fichier="", colonnes=[], lignes=[]):
+        dictParametres = self.GetParametres()
+
+        cheminFichier = os.path.join(dictParametres["quadra_repertoire"], nom_fichier)
+
+        # # Demande à l'utilisateur le nom de fichier et le répertoire de destination
+        # wildcard = "Fichiers Excel (*.xlsx)|*.xlsx|Tous les fichiers (*.*)|*.*"
+        # cheminDefaut = dictParametres["quadra_repertoire"]
+        # print("cheminDefaut=", cheminDefaut)
+        # dlg = wx.FileDialog(None, message=_(u"Veuillez sélectionner le répertoire de destination et le nom du fichier"), defaultDir=cheminDefaut, defaultFile=nom_fichier, wildcard=wildcard, style=wx.FD_SAVE)
+        # dlg.SetFilterIndex(0)
+        # if dlg.ShowModal() == wx.ID_OK:
+        #     cheminFichier = dlg.GetPath()
+        #     dlg.Destroy()
+        # else:
+        #     dlg.Destroy()
+        #     return
+
+        # Le fichier de destination existe déjà :
+        if os.path.isfile(cheminFichier) == True:
+            dlg = wx.MessageDialog(None, _(u"Un fichier portant ce nom existe déjà. \n\nVoulez-vous le remplacer ?"),"Attention !", wx.YES_NO | wx.NO_DEFAULT | wx.ICON_EXCLAMATION)
+            reponse = dlg.ShowModal()
+            dlg.Destroy()
+            if reponse == wx.ID_NO:
+                return False
+
+        # Création d'un classeur et d'une feuille
+        workbook = xlsxwriter.Workbook(cheminFichier)
+        worksheet = workbook.add_worksheet()
+
+        # Formats
+        date_format = workbook.add_format({'num_format': 'dd/mm/yyyy'})
+        money_format = workbook.add_format({'num_format': '# ##0.00'})
+        label_format = workbook.add_format({'align': 'center', 'bold': True})
+
+        # Création des labels de colonnes
+        x, y = 0, 0
+        for colonne in colonnes:
+            if dictParametres["quadra_ligne_noms_champs"]:
+                worksheet.write(x, y, colonne["label"], label_format)
+            worksheet.set_column(y, y, colonne["largeur"])
+            y += 1
+
+        # Création des lignes
+        x, y = 1, 0
+        for valeurs in lignes:
+            if valeurs :
+                for valeur in valeurs:
+                    if isinstance(valeur, datetime.date):
+                        worksheet.write_datetime(x, y, valeur, date_format)
+                    elif isinstance(valeur, decimal.Decimal):
+                        worksheet.write(x, y, valeur, money_format)
+                    else:
+                        worksheet.write(x, y, valeur)
+                    y += 1
+            x += 1
+            y = 0
+
+        # Finalisation du fichier xlsx
+        try:
+            workbook.close()
+        except Exception as err:
+            if "Permission denied" in six.text_type(err):
+                texte = _(u"Impossible de créer le fichier !\n\nVérifiez qu'un fichier du même nom n'est pas déjà ouvert en arrière-plan.")
+            else:
+                texte = _(u"Erreur: %s" % err)
+            dlg = wx.MessageDialog(self, texte, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return False
+
+        return True
 
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -1357,10 +1744,10 @@ class Dialog(wx.Dialog):
 
         # Paramètres
         self.box_parametres_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Paramètres"))
-        self.ctrl_parametres = CTRL_Parametres_defaut(self)
-
-        self.bouton_reinitialisation = CTRL_Propertygrid.Bouton_reinitialisation(self, self.ctrl_parametres)
-        self.bouton_sauvegarde = CTRL_Propertygrid.Bouton_sauvegarde(self, self.ctrl_parametres)
+        self.pages = [
+            {"code": "defaut", "logiciels": ["ebp_compta", "ciel_compta_ebp", "ciel_compta_ximport"], "ctrl": Panel_parametres(self, CTRL_Parametres_defaut)},
+            {"code": "quadracompta", "logiciels": ["quadracompta"], "ctrl": Panel_parametres(self, CTRL_Parametres_quadracompta)},
+        ]
 
         # Boutons
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
@@ -1370,12 +1757,13 @@ class Dialog(wx.Dialog):
         self.__set_properties()
         self.__do_layout()
 
+        self.Bind(wx.EVT_COMBOBOX, self.OnChoixLogiciel, self.ctrl_logiciel)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonFermer, self.bouton_fermer)
         self.Bind(wx.EVT_CLOSE, self.OnBoutonFermer)
-        
-        wx.CallAfter(self.AfficheAvertissement)
+
+        self.OnChoixLogiciel()
         wx.CallAfter(self.ctrl_date_debut.SetFocus)
 
     def __set_properties(self):
@@ -1412,19 +1800,11 @@ class Dialog(wx.Dialog):
         grid_sizer_base.Add(grid_sizer_haut, 1, wx.LEFT | wx.RIGHT | wx.EXPAND, 10)
         
         box_parametres = wx.StaticBoxSizer(self.box_parametres_staticbox, wx.VERTICAL)
-        grid_sizer_parametres = wx.FlexGridSizer(1, 2, 5, 5)
-        grid_sizer_parametres.Add(self.ctrl_parametres, 1, wx.ALL | wx.EXPAND, 0) 
+        for page in self.pages:
+            box_parametres.Add(page["ctrl"], 1, wx.ALL | wx.EXPAND, 10)
 
-        grid_sizer_parametres_boutons = wx.FlexGridSizer(5, 1, 5, 5)
-        grid_sizer_parametres_boutons.Add(self.bouton_reinitialisation, 1, wx.ALL | wx.EXPAND, 0) 
-        grid_sizer_parametres_boutons.Add(self.bouton_sauvegarde, 1, wx.ALL | wx.EXPAND, 0) 
-        grid_sizer_parametres.Add(grid_sizer_parametres_boutons, 1, wx.ALL | wx.EXPAND, 0) 
-        
-        grid_sizer_parametres.AddGrowableRow(0)
-        grid_sizer_parametres.AddGrowableCol(0)
-        box_parametres.Add(grid_sizer_parametres, 1, wx.ALL | wx.EXPAND, 10) 
         grid_sizer_base.Add(box_parametres, 1, wx.LEFT | wx.RIGHT | wx.EXPAND, 10)
-        
+
         grid_sizer_boutons = wx.FlexGridSizer(1, 4, 10, 10)
         grid_sizer_boutons.Add(self.bouton_aide, 0, 0, 0)
         grid_sizer_boutons.Add((20, 20), 0, wx.EXPAND, 0)
@@ -1437,48 +1817,36 @@ class Dialog(wx.Dialog):
         grid_sizer_base.AddGrowableRow(2)
         grid_sizer_base.AddGrowableCol(0)
         self.Layout()
-        self.CenterOnScreen() 
+        self.CenterOnScreen()
+        self.grid_sizer_base = grid_sizer_base
+
+    def OnChoixLogiciel(self, event=None):
+        code = self.ctrl_logiciel.GetCode()
+        for page in self.pages:
+            if code in page["logiciels"]:
+                page["ctrl"].Show(True)
+            else:
+                page["ctrl"].Show(False)
+        self.grid_sizer_base.Layout()
+
+    def GetPageActive(self):
+        for page in self.pages:
+            if page["ctrl"].IsShown():
+                return page["ctrl"]
+        return None
 
     def OnBoutonAide(self, event):  
         from Utils import UTILS_Aide
         UTILS_Aide.Aide("")
 
-    def OnBoutonFermer(self, event): 
-        self.ctrl_parametres.Sauvegarde() 
+    def OnBoutonFermer(self, event):
+        self.GetPageActive().ctrl_parametres.Sauvegarde()
         self.ctrl_logiciel.Sauvegarde()
         self.EndModal(wx.ID_CANCEL)
 
-    def OnBoutonOk(self, event): 
+    def OnBoutonOk(self, event):
         format = self.ctrl_logiciel.GetCode()
-        self.ctrl_parametres.Generation(format)
-
-    def AfficheAvertissement(self):
-        if UTILS_Parametres.Parametres(mode="get", categorie="ne_plus_afficher", nom="export_compta", valeur=False) == True :
-            return
-
-        texte = u"""
-<CENTER><IMG SRC="%s">
-<BR><BR>
-<FONT SIZE=2>
-<B>Avertissement</B>
-<BR><BR>
-Cette nouvelle fonctionnalité est expérimentale.
-<BR><BR>
-Il est fortement conseillé de tester son efficacité et sa stabilité dans un fichier test avant de l'utiliser en situation réelle. 
-Vous pourrez ainsi vérifier que les lignes importées correspondent bien au résultat attendu. 
-Dans tous les cas, effectuez par mesure de sécurité une sauvegarde du fichier de votre logiciel de comptabilité avant toute importation.
-<BR><BR>
-Merci de signaler tout bug rencontré dans la rubrique "Signaler un bug " du forum de Noethys.
-</FONT>
-</CENTER>
-""" % Chemins.GetStaticPath("Images/32x32/Information.png")
-        from Dlg import DLG_Message_html
-        dlg = DLG_Message_html.Dialog(self, texte=texte, titre=_(u"Information"), nePlusAfficher=True)
-        dlg.ShowModal()
-        nePlusAfficher = dlg.GetEtatNePlusAfficher()
-        dlg.Destroy()
-        if nePlusAfficher == True :
-            UTILS_Parametres.Parametres(mode="set", categorie="ne_plus_afficher", nom="export_compta", valeur=nePlusAfficher)
+        self.GetPageActive().ctrl_parametres.Generation(format)
 
 
 
@@ -1598,8 +1966,8 @@ if __name__ == u"__main__":
     app = wx.App(0)
     #wx.InitAllImageHandlers()
     dlg = Dialog(None)
-    dlg.ctrl_date_debut.SetDate("2014-01-01")
-    dlg.ctrl_date_fin.SetDate("2014-12-31")
+    dlg.ctrl_date_debut.SetDate("2019-01-01")
+    dlg.ctrl_date_fin.SetDate("2019-12-31")
     app.SetTopWindow(dlg)
     dlg.ShowModal()
     app.MainLoop()
