@@ -243,6 +243,8 @@ class Export():
             # Cryptage
             cryptage_actif = UTILS_Config.GetParametre("synchro_cryptage_activer", defaut=False)
             cryptage_mdp = base64.b64decode(UTILS_Config.GetParametre("synchro_cryptage_mdp", defaut=""))
+            if six.PY3:
+                cryptage_mdp = cryptage_mdp.decode()
             if cryptage_actif == True and cryptage_mdp != "" :
                 UTILS_Cryptage_fichier.CrypterFichier(self.nomFichier + EXTENSION_DECRYPTE, self.nomFichier + EXTENSION_CRYPTE, cryptage_mdp, ancienne_methode=True)
                 os.remove(self.nomFichier + EXTENSION_DECRYPTE)

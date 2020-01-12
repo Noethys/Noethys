@@ -56,6 +56,8 @@ def AnalyserFichier(nomFichier="", tailleFichier=None, typeTransfert=None):
     if nomFichier.endswith(UTILS_Export_nomade.EXTENSION_CRYPTE) :
         nouveauCheminFichier = cheminFichier.replace(UTILS_Export_nomade.EXTENSION_CRYPTE, UTILS_Export_nomade.EXTENSION_DECRYPTE)
         mdp = base64.b64decode(UTILS_Config.GetParametre("synchro_cryptage_mdp", defaut=""))
+        if six.PY3:
+            mdp = mdp.decode()
         resultat = UTILS_Cryptage_fichier.DecrypterFichier(cheminFichier, nouveauCheminFichier, mdp)
         os.remove(cheminFichier)
     else :

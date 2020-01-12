@@ -19,13 +19,13 @@ import re
 import json
 import socket 
 import time
-from urllib2 import urlopen
+from six.moves.urllib.request import urlopen
 from threading import Thread 
 import FonctionsPerso
 from Utils import UTILS_Fichiers
 from Utils import UTILS_Config
 from Utils import UTILS_Export_nomade
-
+import six
 from Dlg.DLG_Synchronisation import AnalyserFichier
 
 
@@ -119,24 +119,27 @@ class Echo(Protocol):
     def EnvoyerInfosSurFichierAEnvoyer(self, nomFichier=""):
         self.nomFichierAEnvoyer = nomFichier
         self.log.SetImage("upload")
-        tailleFichier = os.path.getsize(nomFichier) 
-        self.transport.write(json.dumps({"action":"envoyer", "nom":os.path.basename(nomFichier), "taille":tailleFichier}))
+        tailleFichier = os.path.getsize(nomFichier)
+        texte = json.dumps({"action": "envoyer", "nom": os.path.basename(nomFichier), "taille": tailleFichier})
+        if six.PY3:
+            texte = texte.encode('utf-8')
+        self.transport.write(texte)
         self.EcritLog(_(u"Envoi du fichier (%s)") % FonctionsPerso.Formate_taille_octets(tailleFichier))
         self.log.SetImage("on")
         
     def dataReceived(self, data):
         # Envoi d'un fichier - init
-        if data == "recevoir" :
+        if data in ("recevoir", b"recevoir"):
             self.GenerationFichierAEnvoyer() 
             return
 
         # Envoi du fichier si client pret a recevoir
-        if data == "pret_pour_reception" :
+        if data in ("pret_pour_reception", b"pret_pour_reception"):
             self.Envoyer()
             return
         
         # Fin de l'envoi
-        if data == "fin_envoi" :
+        if data in ("fin_envoi", b"fin_envoi"):
             self.FinEnvoi() 
             return
         
@@ -151,7 +154,7 @@ class Echo(Protocol):
                 nomInitial = message["nom"]
                 nomFinal = UTILS_Fichiers.GetRepSync(nomInitial)
                 self.EcritLog(_(u"Prêt à recevoir de l'appareil ") + nom_appareil + " le fichier " + nomInitial + " (" + FonctionsPerso.Formate_taille_octets(tailleFichier) + ")")
-                fichier = open(nomFinal,"wb")
+                fichier = open(nomFinal, "wb")
                 self.dictFichierReception = {
                     "nom_initial" : nomInitial,
                     "nom_final" : nomFinal,
@@ -159,7 +162,10 @@ class Echo(Protocol):
                     "taille_actuelle" : 0,
                     "fichier" : fichier,
                     }
-                self.transport.write("pret_pour_reception")
+                texte = "pret_pour_reception"
+                if six.PY3:
+                    texte = texte.encode('utf-8')
+                self.transport.write(texte)
                 self.EcritLog(_(u"Réception en cours")) 
                 self.log.SetImage("download")
                 return
@@ -211,8 +217,8 @@ class Echo(Protocol):
             
             # Analyse du fichier
             resultat = AnalyserFichier(nomFichier)
-            self.log.MAJ() 
-            
+            self.log.MAJ()
+
             
 
 def StartServer(log=None):
@@ -288,14 +294,12 @@ class Panel(wx.Panel):
         
         self.bouton_analyse = wx.Button(self, -1, _(u"Analyser"))
         self.couleur_defaut = self.bouton_analyse.GetBackgroundColour()
-##        self.bouton_options = wx.Button(self, -1, _(u"Options"))
-        
+
         self.__do_layout()
         
         # Binds
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnalyse, self.bouton_analyse)
-##        self.Bind(wx.EVT_BUTTON, self.OnBoutonOptions, self.bouton_options)
-        
+
         # Init
         self.SetGauge(0)
         
@@ -312,7 +316,6 @@ class Panel(wx.Panel):
         
         grid_sizer_commandes = wx.FlexGridSizer(rows=2, cols=1, vgap=5, hgap=5)
         grid_sizer_commandes.Add(self.bouton_analyse, 1, wx.EXPAND, 0)
-##        grid_sizer_commandes.Add(self.bouton_options, 0, wx.EXPAND, 0)
         grid_sizer_commandes.AddGrowableRow(0)
         grid_sizer_commandes.AddGrowableCol(0)
         grid_sizer.Add(grid_sizer_commandes, 0, wx.EXPAND|wx.ALL, 0)
