@@ -222,7 +222,7 @@ class Traitement(Thread):
                     IDprestation = grille.MemorisePrestation(track.IDcompte_payeur, date_facturation, self.IDactivite, dictTarif["IDtarif"], self.dictTarif["nomTarif"], 
                                                                                     dictTarif["resultat"]["montant_tarif"], dictTarif["resultat"]["montant_tarif"], track.IDfamille, track.IDindividu, 
                                                                                     listeDeductions=[], temps_facture=dictTarif["resultat"]["temps_facture"], IDcategorie_tarif=dictTarif["resultat"]["IDcategorie_tarif"],
-                                                                                    forfait_date_debut=self.date_debut, forfait_date_fin=self.date_fin)
+                                                                                    forfait_date_debut=self.date_debut, forfait_date_fin=self.date_fin, dictTarif=dictTarif)
                     
                     # Affichage dans la liste des forfaits
                     dictTemp = grille.dictPrestations[IDprestation].copy()

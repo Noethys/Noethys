@@ -199,7 +199,6 @@ def CompareDict(dict1={}, dict2={}, keys=[]):
     for key in keys:
         if dict1[key] != dict2[key] :
             isIdem = False
-            #print key, dict1[key], type(dict1[key]), dict2[key], type(dict2[key])
     return isIdem
 
 def CreationImage(largeur, hauteur, couleur=None):
@@ -2687,10 +2686,12 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                     if evenement.conso != None :
                         liste_evenements.append(evenement)
 
+            # Mémorise le tarif initial pour les évènements
+            mem_dictTarif = copy.copy(dictTarif)
             for evenement in liste_evenements :
-
                 # Recherche un tarif spécial évènement
                 if evenement != None and IDactivite in self.dictActivites and IDcategorie_tarif in self.dictActivites[IDactivite]["tarifs"]:
+                    dictTarif = copy.copy(mem_dictTarif)
                     for dictTarifEvent in self.dictActivites[IDactivite]["tarifs"][IDcategorie_tarif] :
                         if dictTarifEvent["IDevenement"] == evenement.IDevenement and self.RechercheTarifValide(dictTarifEvent, IDgroupe, date, IDindividu, IDfamille, etiquettes) == True:
                             dictTarif = dictTarifEvent
@@ -2829,7 +2830,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 
                     # -------------------------Mémorisation de la prestation ---------------------------------------------
                     IDcompte_payeur = self.dictComptesPayeurs[IDfamille]
-                    IDprestation = self.MemorisePrestation(IDcompte_payeur, date, IDactivite, IDtarif, nom_tarif, montant_initial, montant_final, IDfamille, IDindividu, listeDeductions=listeAidesRetenues, temps_facture=temps_facture, IDcategorie_tarif=IDcategorie_tarif, code_compta=dictTarif["code_compta"], tva=dictTarif["tva"])
+                    IDprestation = self.MemorisePrestation(IDcompte_payeur, date, IDactivite, IDtarif, nom_tarif, montant_initial, montant_final, IDfamille, IDindividu, listeDeductions=listeAidesRetenues, temps_facture=temps_facture, IDcategorie_tarif=IDcategorie_tarif, dictTarif=dictTarif, evenement=evenement)
                     if IDprestation < 0 :
                         listeNouvellesPrestations.append(IDprestation)
 
@@ -3230,9 +3231,9 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 
 
     def MemorisePrestation(self, IDcompte_payeur, date, IDactivite, IDtarif, nom_tarif, montant_initial, montant_final, IDfamille, IDindividu, categorie="consommation", listeDeductions=[], 
-                                                temps_facture=None, IDcategorie_tarif=None, forfait_date_debut=None, forfait_date_fin=None, code_compta=None, tva=None):
+                                                temps_facture=None, IDcategorie_tarif=None, forfait_date_debut=None, forfait_date_fin=None, dictTarif=None, evenement=None):
         """ Mémorisation de la prestation """
-        
+
         # Préparation des valeurs à mémoriser
         if IDindividu != None :
             nomIndividu = u"%s %s" % (self.dictIndividus[IDindividu]["nom"], self.dictIndividus[IDindividu]["prenom"])
@@ -3256,27 +3257,27 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 "IDcategorie_tarif" : IDcategorie_tarif,
                 "forfait_date_debut" : forfait_date_debut,
                 "forfait_date_fin" : forfait_date_fin,
-                "code_compta" : code_compta,
-                "tva" : tva,
+                "code_compta" : dictTarif["code_compta"],
+                "tva" : dictTarif["tva"],
                 "forfait" : None,
                 }
-        #print dictPrestation["date"], " #############################"
+
         # Recherche si une prestation identique existe déjà en mémoire
         for IDprestation, dictTemp1 in self.dictPrestations.items() :
-            dictTemp2 = dictTemp1.copy()
-
             if IDprestation > 0 :
+                dictTemp2 = dictTemp1.copy()
+
                 # Renvoie prestation existante si la prestation apparaît déjà sur une facture même si le montant est différent
-                if dictTemp2["IDfacture"] != None and CompareDict(dictPrestation, dictTemp2, keys=["date", "IDindividu", "IDtarif", "IDcompte_payeur"]) == True :
-                    #print "trouvee1"
+                keys = ["date", "IDindividu", "IDtarif", "IDcompte_payeur"]
+                if evenement:
+                    keys.append("label")
+                if dictTemp2["IDfacture"] != None and CompareDict(dictPrestation, dictTemp2, keys=keys) == True :
                     return IDprestation
 
                 # Renvoie prestation existante si la prestation semble identique avec montants identiques
-                if CompareDict(dictPrestation, dictTemp2, keys=["date", "IDindividu", "IDtarif", "montant_initial", "montant", "IDcategorie_tarif", "IDcompte_payeur", "label", "temps_facture"]) == True :
-                    #print "trouvee2"
+                keys = ["date", "IDindividu", "IDtarif", "montant_initial", "montant", "IDcategorie_tarif", "IDcompte_payeur", "label", "temps_facture"]
+                if CompareDict(dictPrestation, dictTemp2, keys=keys) == True :
                     return IDprestation
-
-        #print "pas trouvee"
 
         # Recherche le prochain numéro dans la liste des prestations
         IDprestation = self.prochainIDprestation
@@ -3392,7 +3393,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         # Si la famille n'a pas de QF, on attribue le QF le plus élevé :
         listeQF = []
         for ligneCalcul in dictTarif["lignes_calcul"] :
-            listeQF.append(ligneCalcul["qf_max"])
+            listeQF.append(float(ligneCalcul["qf_max"]))
         listeQF.sort()
         if len(listeQF) > 0 :
             if listeQF[-1] != None :
@@ -3466,8 +3467,8 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             tarifFound = False
             lignes_calcul = dictTarif["lignes_calcul"]
             for ligneCalcul in lignes_calcul :
-                qf_min = ligneCalcul["qf_min"]
-                qf_max = ligneCalcul["qf_max"]
+                qf_min = float(ligneCalcul["qf_min"])
+                qf_max = float(ligneCalcul["qf_max"])
                 montant_tarif = ligneCalcul["montant_unique"]
 
                 QFfamille = self.RechercheQF(dictTarif, IDfamille, date)

@@ -239,7 +239,7 @@ class CTRL_Forfait(HTL.HyperTreeList):
             IDprestation = self.grille.MemorisePrestation(IDcompte_payeur, datePrestation, dictTarif["IDactivite"], dictTarif["IDtarif"], label, 
                                                                             montant, dictTarif["resultat"]["montant_tarif"], IDfamille, IDindividu, 
                                                                             listeDeductions=[], temps_facture=dictTarif["resultat"]["temps_facture"], IDcategorie_tarif=dictTarif["resultat"]["IDcategorie_tarif"],
-                                                                            forfait_date_debut=date_debut, forfait_date_fin=date_fin)
+                                                                            forfait_date_debut=date_debut, forfait_date_fin=date_fin, dictTarif=dictTarif)
             
             # Affichage de la prestation
             try :
