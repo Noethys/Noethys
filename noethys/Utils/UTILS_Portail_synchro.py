@@ -1628,7 +1628,6 @@ class Synchro():
         # Codage de la clé de sécurité
         secret = self.GetSecretInteger()
 
-        liste_actions = []
         try :
 
             # Création de l'url de syncdown
@@ -1654,6 +1653,40 @@ class Synchro():
             print("Erreur dans la demande de repairdb :", err)
             self.log.EcritLog(err)
             print("Erreur dans la demande de repairdb :", str(err))
+            return False
+
+        return True
+
+    def Clear_application(self):
+        """ Demande un effacement total des tables de la base de données """
+        # Codage de la clé de sécurité
+        secret = self.GetSecretInteger()
+
+        try :
+
+            # Création de l'url de syncdown
+            if self.dict_parametres["serveur_type"] == 0 :
+                url = self.dict_parametres["url_connecthys"]
+            if self.dict_parametres["serveur_type"] == 1 :
+                url = self.dict_parametres["url_connecthys"] + ("" if self.dict_parametres["url_connecthys"][-1] == "/" else "/") + self.dict_parametres["serveur_cgi_file"]
+            if self.dict_parametres["serveur_type"] == 2 :
+                url = self.dict_parametres["url_connecthys"]
+            url += ("" if url[-1] == "/" else "/") + "cleardb/%d" % int(secret)
+            print("URL repair =", url)
+
+            # Récupération des données au format json
+            req = Request(url)
+            reponse = urlopen(req)
+            page = reponse.read()
+            data = json.loads(page)
+
+            print("Resultat :", data)
+
+        except Exception as err :
+            self.log.EcritLog(_(u"[Erreur] Erreur dans la demande d'effacement de la DB"))
+            print("Erreur dans la demande de cleardb :", err)
+            self.log.EcritLog(err)
+            print("Erreur dans la demande de cleardb :", str(err))
             return False
 
         return True

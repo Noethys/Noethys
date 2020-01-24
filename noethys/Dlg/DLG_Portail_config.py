@@ -1638,10 +1638,17 @@ class Dialog(wx.Dialog):
 
         # Repair DB
         id = wx.Window.NewControlId()
-        item = wx.MenuItem(menu, id, _(u"Réparation de la base de données"))
+        item = wx.MenuItem(menu, id, _(u"Réparer la base de données"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Database.png"), wx.BITMAP_TYPE_PNG))
         menu.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.DemandeRepairDB, id=id)
+
+        # Clear DB
+        id = wx.Window.NewControlId()
+        item = wx.MenuItem(menu, id, _(u"Vider la base de données"))
+        item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Database.png"), wx.BITMAP_TYPE_PNG))
+        menu.AppendItem(item)
+        self.Bind(wx.EVT_MENU, self.DemandeClearDB, id=id)
 
         menu.AppendSeparator()
 
@@ -1902,6 +1909,26 @@ class Dialog(wx.Dialog):
         if synchro.Repair_application() == True :
             self.EcritLog(_(u"Réparation effectuée."))
 
+    def DemandeClearDB(self, event):
+        if self.ctrl_notebook.Validation() == False:
+            return False
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment vider la base de données du portail ?\n\nLes données seront effacées des tables !"), _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+        reponse = dlg.ShowModal()
+        dlg.Destroy()
+        if reponse != wx.ID_YES :
+            return
+        dlg = wx.MessageDialog(self, _(u"Vous êtes vraiment sûr de vouloir vider la base de données du portail ?\n\nAttention, cette opération est irréversible !"), _(u"Dernier avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+        reponse = dlg.ShowModal()
+        dlg.Destroy()
+        if reponse != wx.ID_YES :
+            return
+
+        dict_parametres = self.ctrl_notebook.GetCtrlParametres().GetValeurs()
+        self.EcritLog(_(u"Demande d'effacement de la base de données..."))
+        synchro = Synchro(self, dict_parametres)
+        if synchro.Clear_application() == True :
+            self.EcritLog(_(u"Effacement effectué."))
+
     def OuvrirNavigateur(self, event):
         dict_parametres = self.ctrl_notebook.GetCtrlParametres().GetValeurs()
         url = dict_parametres["url_connecthys"]
@@ -2056,6 +2083,11 @@ class Synchro():
         from Utils import UTILS_Portail_synchro
         synchro = UTILS_Portail_synchro.Synchro(dict_parametres=self.dict_parametres, log=self)
         synchro.Repair_application()
+
+    def Clear_application(self):
+        from Utils import UTILS_Portail_synchro
+        synchro = UTILS_Portail_synchro.Synchro(dict_parametres=self.dict_parametres, log=self)
+        synchro.Clear_application()
 
     def ConnectEtTelechargeFichier(self, nomFichier="", repFichier=None):
         from Utils import UTILS_Portail_synchro
