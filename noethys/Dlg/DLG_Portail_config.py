@@ -116,6 +116,7 @@ VALEURS_DEFAUT = {
     "payzen_mode" : "TEST",
     "payzen_certificat_test" : "",
     "payzen_certificat_production" : "",
+    "accueil_titre" : u"Le <strong>Portail</strong> Famille",
     "accueil_bienvenue" : _(u"Bienvenue sur le portail Famille"),
     "accueil_messages_afficher" : True,
     "accueil_etat_dossier_afficher" : True,
@@ -721,6 +722,12 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
 
         # Catégorie
         self.Append( wxpg.PropertyCategory(_(u"Page 'Accueil'")) )
+
+        # Titre du portail
+        nom = "accueil_titre"
+        propriete = wxpg.LongStringProperty(label=_(u"Titre du portail"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Saisissez le titre du portail (les balises HTML sont acceptées)"))
+        self.Append(propriete)
 
         # Texte de bienvenue
         nom = "accueil_bienvenue"
