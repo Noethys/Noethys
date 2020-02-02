@@ -131,7 +131,7 @@ class ListView(FastObjectListView):
             if periode == True :
                 return _(u"Toujours afficher")
             elif periode == False :
-                _(u"Ne pas afficher")
+                return _(u"Ne pas afficher")
             else :
                 return _(u"Du %s au %s") % (datetime.datetime.strftime(periode[1], "%d/%m/%Y-%Hh%M"), datetime.datetime.strftime(periode[0], "%d/%m/%Y-%Hh%M"))
 
