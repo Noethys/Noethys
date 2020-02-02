@@ -340,12 +340,14 @@ class Track(object):
                 return sifaux
         
         formule = champ.formule
-        formule = formule.replace("{", "self.")
-        formule = formule.replace("}", "")
-        
+
+        # Remplacements
+        remplacements = [("{", "self."), ("}", ""), ("\n", ""), ("ET", "and"), ("OU", "or")]
+        for expression, remplacement in remplacements:
+            formule = formule.replace(expression, remplacement)
+
         try :
             setattr(self, champ.code, eval(formule))
-            return "ok"
         except Exception as err :
             if champ.code != "" :
                 setattr(self, champ.code, None)
