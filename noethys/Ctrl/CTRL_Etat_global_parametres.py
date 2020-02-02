@@ -17,6 +17,7 @@ from Ctrl import CTRL_Bouton_image
 import wx.lib.agw.hypertreelist as HTL
 import datetime
 import GestionDB
+import wx.lib.agw.hyperlink as Hyperlink
 from Ctrl import CTRL_Saisie_heure
 try:
     from wx.combo import ComboCtrl
@@ -27,6 +28,21 @@ import six
 COULEUR_FOND_REGROUPEMENT = (200, 200, 200)
 COULEUR_TEXTE_REGROUPEMENT = (140, 140, 140)
 
+
+class Hyperlien(Hyperlink.HyperLinkCtrl):
+    def __init__(self, parent, id=-1, label="", infobulle="", URL=""):
+        Hyperlink.HyperLinkCtrl.__init__(self, parent, id, label, URL=URL)
+        self.parent = parent
+
+        self.URL = URL
+        self.AutoBrowse(False)
+        self.SetColours("BLUE", "BLUE", "BLUE")
+        self.SetUnderlines(False, False, True)
+        self.SetBold(False)
+        self.EnableRollover(True)
+        self.SetToolTip(wx.ToolTip(infobulle))
+        self.UpdateLink()
+        self.DoPopup(False)
 
 
 class Track(object):
@@ -282,6 +298,7 @@ class CTRL_Heure(CTRL_Saisie_heure.Heure):
 
 class CTRL_Formule(ComboCtrl):
     def __init__(self, *args, **kw):
+        self.listeTracks = kw.pop("listeTracks")
         ComboCtrl.__init__(self, *args, **kw)
 
         # make a custom bitmap showing "..."
@@ -329,15 +346,20 @@ class DLG_Saisie_formule(wx.Dialog):
         # Texte
         self.staticbox_texte_staticbox = wx.StaticBox(self, -1, _(u"Formule python"))
         self.ctrl_texte = wx.TextCtrl(self, -1, "", style=wx.TE_MULTILINE )
-        self.ctrl_texte.SetMinSize((600, 250))
+        self.ctrl_texte.SetMinSize((600, 200))
+        self.hyper_formule = Hyperlien(self, label=_(u"Insérer une unité"), infobulle=_(u"Cliquez ici pour insérer une unité de consommation"), URL="")
 
         formule_exemple = u"""Exemples de variables et de fonctions spéciales :
         debut, fin, duree, HEURE(), SI(condition, alors, sinon), ET, OU
+        unite1, unite1.debut, unite1.fin, unite1.duree
         
-Exemple de formule :
+Exemples de formule :
         SI(debut <= HEURE("9h") ET fin >= HEURE("7h00"), HEURE("2h"))
-        + SI(debut <= HEURE("12h") ET fin >= HEURE("9h00"), HEURE("3h"))
-        + SI(debut <= HEURE("14h") ET fin >= HEURE("12h00"), HEURE("2h00"))"""
+        SI(debut <= HEURE("12h") ET fin >= HEURE("9h00"), HEURE("3h"), HEURE("2h"))
+        SI(unite1, HEURE("5h30"), HEURE("4h30"))
+        SI(unite24.duree > HEURE("9h"), HEURE("8h"))
+        duree + HEURE("1h") + unite32.duree"""
+
         self.ctrl_exemple = wx.StaticText(self, -1, formule_exemple)
 
         # Boutons
@@ -352,6 +374,7 @@ Exemple de formule :
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonSupprimer, self.bouton_supprimer)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
+        self.Bind(Hyperlink.EVT_HYPERLINK_LEFT, self.OnLeftLink)
 
         # Init
         self.ctrl_texte.SetValue(texte)
@@ -370,6 +393,7 @@ Exemple de formule :
         # Texte
         staticbox_texte = wx.StaticBoxSizer(self.staticbox_texte_staticbox, wx.VERTICAL)
         staticbox_texte.Add(self.ctrl_texte, 1, wx.ALL|wx.EXPAND, 5)
+        staticbox_texte.Add(self.hyper_formule, 0, wx.ALIGN_RIGHT | wx.RIGHT, 5)
         staticbox_texte.Add(self.ctrl_exemple, 0, wx.ALL | wx.EXPAND, 5)
         grid_sizer_base.Add(staticbox_texte, 1, wx.TOP | wx.LEFT | wx.RIGHT | wx.EXPAND, 10)
 
@@ -408,6 +432,25 @@ Exemple de formule :
         if texte.endswith("\n"):
             texte = texte[:-1]
         return texte
+
+    def InsertTexte(self, texte=u""):
+        positionCurseur = self.ctrl_texte.GetInsertionPoint()
+        self.ctrl_texte.WriteText(texte)
+        self.ctrl_texte.SetInsertionPoint(positionCurseur+len(texte))
+        self.ctrl_texte.SetFocus()
+
+    def OnLeftLink(self, event):
+        listeLabels = []
+        for track in self.parent.listeTracks:
+            listeLabels.append(u"unite%d = %s (%s)" % (track.IDunite, track.nomUnite, track.nomActivite))
+        dlg = wx.SingleChoiceDialog(None, _(u"Sélectionnez une unité de consommation à insérer :"), _(u"Insérer une unité"), listeLabels, wx.CHOICEDLG_STYLE)
+        dlg.SetSize((580, 450))
+        dlg.CenterOnScreen()
+        if dlg.ShowModal() == wx.ID_OK:
+            track = self.parent.listeTracks[dlg.GetSelection()]
+            self.InsertTexte("unite%d" % track.IDunite)
+        dlg.Destroy()
+        self.hyper_formule.UpdateLink()
 
 
 # -------------------------------------------------------------------------------------------------------------------
@@ -543,7 +586,7 @@ class CTRL(HTL.HyperTreeList):
                     track.ctrl_coeff = ctrl_coeff
 
                     # CTRL de la formule
-                    ctrl_formule = CTRL_Formule(self.GetMainWindow(), size=(94, -1))
+                    ctrl_formule = CTRL_Formule(self.GetMainWindow(), listeTracks=listeTracks, size=(94, -1))
                     self.SetItemWindow(brancheUnite, ctrl_formule, 3)
                     track.ctrl_formule = ctrl_formule
 

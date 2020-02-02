@@ -32,9 +32,10 @@ from Utils import UTILS_Texte
 from Utils import UTILS_Divers
 from Utils import UTILS_Dialogs
 from Utils.UTILS_Dates import HeureStrEnDelta as HEURE
-
 import FonctionsPerso
 import wx.lib.dialogs as dialogs
+import re
+REGEX_UNITES = re.compile(r"unite[0-9]+")
 
 LISTE_MOIS= (_(u"Janvier"), _(u"Février"), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"Août"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"Décembre"))
 
@@ -64,6 +65,22 @@ def GetQF(dictQuotientsFamiliaux={}, IDfamille=None, date=None):
             if date >= date_debut and date <= date_fin :
                 return quotient
     return None
+
+
+class Unite():
+    def __init__(self, IDunite=None, heure_debut=None, heure_fin=None, etat=None, quantite=1):
+        # Formatage des heures
+        if heure_debut != None and heure_debut != "":
+            h, m = heure_debut.split(":")
+            heure_debut = datetime.time(int(h), int(m))
+        if heure_fin != None and heure_fin != "":
+            h, m = heure_fin.split(":")
+            heure_fin = datetime.time(int(h), int(m))
+
+        # Mémorisation des variables de l'unité
+        self.debut = UTILS_Dates.TimeEnDelta(heure_debut)
+        self.fin = UTILS_Dates.TimeEnDelta(heure_fin)
+        self.duree = self.fin - self.debut
 
 
 # ---------------------------------------------------------------------------------------
@@ -328,7 +345,7 @@ class Dialog(wx.Dialog):
         self.ctrl_parametres.SetParametres(dictParametres)
         self.ctrl_options.SetParametres(dictParametres)
 
-    def Calcule_formule(self, formule="", debut=None, fin=None):
+    def Calcule_formule(self, formule="", date=None, debut=None, fin=None):
         debut = UTILS_Dates.TimeEnDelta(debut)
         fin = UTILS_Dates.TimeEnDelta(fin)
         duree = fin - debut
@@ -344,7 +361,14 @@ class Dialog(wx.Dialog):
         for expression, remplacement in remplacements:
             formule = formule.replace(expression, remplacement)
 
-        # Calcule de la formule
+        # Unités
+        dict_unites_date = self.dict_unites.get(date)
+        for code_unite in REGEX_UNITES.findall(formule):
+            unite = dict_unites_date.get(code_unite, None)
+            setattr(self, code_unite, unite)
+            formule = formule.replace(code_unite, "self.%s" % code_unite)
+
+        # Calcul de la formule
         resultat = datetime.timedelta(minutes=0)
         resultat = eval(formule)
         if resultat == None :
@@ -622,8 +646,14 @@ class Dialog(wx.Dialog):
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
 
-        dict_resultats = {}
+        self.dict_unites = {}
+        for IDconso, date, IDindividu, IDunite, IDgroupe, IDactivite, etiquettes, heure_debut, heure_fin, etat, quantite, IDevenement, IDprestation, temps_facture, IDfamille, nomActivite, nomGroupe, nomCategorie, IDcaisse, IDregime, date_naiss in listeDonnees:
+            date = UTILS_Dates.DateEngEnDateDD(date)
+            if date not in self.dict_unites:
+                self.dict_unites[date] = {}
+            self.dict_unites[date]["unite%d" % IDunite] = Unite(IDunite, heure_debut, heure_fin, etat, quantite)
 
+        dict_resultats = {}
         listePrestationsTraitees = []
         dict_temps_journalier_individu = {}
         for IDconso, date, IDindividu, IDunite, IDgroupe, IDactivite, etiquettes, heure_debut, heure_fin, etat, quantite, IDevenement, IDprestation, temps_facture, IDfamille, nomActivite, nomGroupe, nomCategorie, IDcaisse, IDregime, date_naiss in listeDonnees:
@@ -842,7 +872,7 @@ class Dialog(wx.Dialog):
                 elif dictCalcul["typeCalcul"] == 3:
                     # Calcul selon une formule
                     try :
-                        valeur = self.Calcule_formule(formule=dictCalcul["formule"], debut=heure_debut, fin=heure_fin)
+                        valeur = self.Calcule_formule(formule=dictCalcul["formule"], date=date, debut=heure_debut, fin=heure_fin)
                     except Exception as err:
                         dlg = wx.MessageDialog(self, six.text_type(err), _(u"Erreur de formule"), wx.OK | wx.ICON_ERROR)
                         dlg.ShowModal()
