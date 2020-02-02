@@ -2273,7 +2273,7 @@ class Proprietes_trait(wx.Panel):
         return valeur
     
     def MAJtrait(self):
-        self.objet.SetPen(self.objet.LineColor, self.objet.LineStyle, self.objet.LineWidth)
+        self.objet.SetPen(tuple(self.objet.LineColor), self.objet.LineStyle, self.objet.LineWidth)
         self.canvas.canvas.Draw(True)
     
     def SetObjet(self, objet):
@@ -2373,7 +2373,7 @@ class Proprietes_remplissage(wx.Panel):
         self.ctrl_style.SetValeur(style)
 
     def MAJremplissage(self):
-        self.objet.SetBrush(self.objet.FillColor, self.objet.FillStyle)
+        self.objet.SetBrush(tuple(self.objet.FillColor), self.objet.FillStyle)
         self.canvas.canvas.Draw(True)
 
     def SetObjet(self, objet):
@@ -3528,10 +3528,11 @@ class Panel_canvas(wx.Panel):
                     couleur = self.interactive_data.GetCouleur(objet.IDdonnee)
                     if couleur != None :
                         objet.FillColor = couleur
-                        objet.SetBrush(objet.FillColor, objet.FillStyle)
+                        objet.SetBrush(tuple(objet.FillColor), objet.FillStyle)
 
                 # Si remplissage caché
                 if self.afficher_remplissage_donnees == False :
+                    objet.FillColor = (0, 0, 0)
                     objet.SetFillStyle("Transparent")
 
                 # Si bords cachés
@@ -3607,7 +3608,7 @@ class Panel_canvas(wx.Panel):
 
         # Assombrit le remplissage de l'objet
         objet.SetBrush(UTILS_Couleurs.ModifierLuminosite(objet.FillColor, -20), objet.FillStyle)
-        objet.SetPen(wx.WHITE, "Solid", objet.LineWidth)
+        objet.SetPen(tuple(wx.WHITE), "Solid", objet.LineWidth)
         self.canvas.Draw(True)
 
         # Tooltip
@@ -3618,8 +3619,8 @@ class Panel_canvas(wx.Panel):
             objet = objet.ObjectList[0]
 
         # Rend sa couleur d'originie à l'objet
-        objet.SetBrush(objet.FillColor, objet.FillStyle)
-        objet.SetPen(objet.LineColor, objet.LineStyle, objet.LineWidth)
+        objet.SetBrush(tuple(objet.FillColor), objet.FillStyle)
+        objet.SetPen(tuple(objet.LineColor), objet.LineStyle, objet.LineWidth)
         self.canvas.Draw(True)
 
         # Tooltip

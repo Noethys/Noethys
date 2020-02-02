@@ -512,7 +512,10 @@ class Page_telechargement(wx.Panel):
         self.timer.Start(1)
 
     def __del__(self):
-        self.timer.Stop()
+        try:
+            self.timer.Stop()
+        except:
+            pass
 
     def TimerHandler(self, event):
         self.count = self.count + 1

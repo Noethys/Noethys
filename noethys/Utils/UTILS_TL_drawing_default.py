@@ -106,7 +106,7 @@ class StripDecade(Strip):
         return time.replace(year=time.year+10)
 
     def _decade_start_year(self, year):
-        return (int(year) / 10) * 10
+        return (int(year) // 10) * 10
 
 
 class StripYear(Strip):

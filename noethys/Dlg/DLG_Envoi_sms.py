@@ -222,7 +222,10 @@ def AjouteTexteImage(image=None, texte="", alignement="droite-bas", padding=0, t
     """ Ajoute un texte sur une image bitmap """
     # Création du bitmap
     largeurImage, hauteurImage = image.GetSize()
-    bmp = wx.EmptyBitmap(largeurImage, hauteurImage)
+    if 'phoenix' in wx.PlatformInfo:
+        bmp = wx.Bitmap(largeurImage, hauteurImage)
+    else:
+        bmp = wx.EmptyBitmap(largeurImage, hauteurImage)
     mdc = wx.MemoryDC(bmp)
     dc = wx.GCDC(mdc)
     mdc.SetBackgroundMode(wx.TRANSPARENT)

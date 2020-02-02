@@ -237,7 +237,10 @@ class TimelinePrintout(wx.Printout):
             x_max = panel_width  + (2 * x_margin)
             y_max = panel_height + (2 * y_margin)
             # Get the size of the DC in pixels
-            (dc_width, dc_heighth) = dc.GetSizeTuple()
+            if 'phoenix' in wx.PlatformInfo:
+                (dc_width, dc_heighth) = dc.GetSize()
+            else:
+                (dc_width, dc_heighth) = dc.GetSizeTuple()
             # Calculate a suitable scaling factor
             x_scale = float(dc_width) / x_max
             y_scale = float(dc_heighth) / y_max
@@ -252,7 +255,9 @@ class TimelinePrintout(wx.Printout):
         logging.debug("TimelinePrintout.OnPrintPage: %d\n" % page)
         dc = self.GetDC()
         SetScaleAndDeviceOrigin(dc)
-        dc.BeginDrawing()
+        if 'phoenix' not in wx.PlatformInfo:
+            dc.BeginDrawing()
         dc.DrawBitmap(self.panel.bgbuf, 0, 0, True)
-        dc.EndDrawing()
+        if 'phoenix' not in wx.PlatformInfo:
+            dc.EndDrawing()
         return True

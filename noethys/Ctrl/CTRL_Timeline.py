@@ -42,8 +42,10 @@ from Utils import UTILS_TL_drawing as drawing
 
 if 'phoenix' in wx.PlatformInfo:
     import wx.lib.agw.hyperlink as HL
+    from wx.adv import GenericDatePickerCtrl, DP_DROPDOWN, DP_SHOWCENTURY, EVT_DATE_CHANGED
 else :
     import wx.lib.hyperlink as HL
+    from wx import GenericDatePickerCtrl, DP_DROPDOWN, DP_SHOWCENTURY, EVT_DATE_CHANGED
 
 if six.PY3:
     import functools
@@ -222,7 +224,10 @@ class CTRL(wx.Panel):
                 if reponse == False :
                     return
             bitmap = self.drawing_area.bgbuf
-            image = wx.ImageFromBitmap(bitmap)
+            if 'phoenix' in wx.PlatformInfo:
+                image = bitmap.ConvertToImage()
+            else:
+                image = wx.ImageFromBitmap(bitmap)
             image.SaveFile(path, extension_map[extension])
         dialog.Destroy()
 
@@ -672,7 +677,11 @@ class DrawingArea(wx.Panel):
         printout_preview  = drawing.TimelinePrintout(self, True)
         printout = drawing.TimelinePrintout(self, False)
         self.preview = wx.PrintPreview(printout_preview, printout, data)
-        if not self.preview.Ok():
+        if 'phoenix' in wx.PlatformInfo:
+            etat = self.preview.IsOk()
+        else:
+            etat = self.preview.Ok()
+        if not etat:
             logging.debug(_(u"Impossible d'afficher l'aperçu avant impression...\n"))
             return
         frame = wx.GetApp().GetTopWindow()
@@ -1801,11 +1810,13 @@ class DateTimePicker(wx.Panel):
     def get_value(self):
         """Return the selected date time as a Python datetime object."""
         date = self.date_picker.GetValue()
-        date_time = dt(date.Year, date.Month+1, date.Day)
+        if 'phoenix' in wx.PlatformInfo:
+            date_time = dt(date.year, date.month+1, date.day)
+        else:
+            date_time = dt(date.Year, date.Month+1, date.Day)
         if self.time_picker.IsShown():
             time = self.time_picker.GetValue(as_wxDateTime=True)
-            date_time = date_time.replace(hour=time.Hour,
-                                          minute=time.Minute)
+            date_time = date_time.replace(hour=time.Hour, minute=time.Minute)
         return date_time
 
     def set_value(self, value):
@@ -1817,10 +1828,8 @@ class DateTimePicker(wx.Panel):
         self.time_picker.SetValue(wx_date_time)
 
     def _create_gui(self):
-        self.date_picker = wx.GenericDatePickerCtrl(self,
-                               style=wx.DP_DROPDOWN|wx.DP_SHOWCENTURY)
-        self.Bind(wx.EVT_DATE_CHANGED, self._date_picker_on_date_changed,
-                  self.date_picker)
+        self.date_picker = GenericDatePickerCtrl(self, style=DP_DROPDOWN|DP_SHOWCENTURY)
+        self.Bind(EVT_DATE_CHANGED, self._date_picker_on_date_changed, self.date_picker)
         self.time_picker = TimeCtrl(self, format="24HHMM")
         # Layout
         sizer = wx.BoxSizer(wx.HORIZONTAL)
@@ -1838,9 +1847,10 @@ class DateTimePicker(wx.Panel):
             self.set_value(TimePeriod.MAX_TIME)
 
     def _python_date_to_wx_date(self, py_date):
-        return wx.DateTimeFromDMY(py_date.day, py_date.month-1, py_date.year,
-                                  py_date.hour, py_date.minute,
-                                  py_date.second)
+        if 'phoenix' in wx.PlatformInfo:
+            return wx.DateTime.FromDMY(py_date.day, py_date.month-1, py_date.year, py_date.hour, py_date.minute, py_date.second)
+        else:
+            return wx.DateTimeFromDMY(py_date.day, py_date.month-1, py_date.year, py_date.hour, py_date.minute, py_date.second)
 
 
 class HyperlinkButton(HL.HyperLinkCtrl):
