@@ -186,7 +186,10 @@ class CTRL(wx.TreeCtrl):
         for dictPage in self.listePages :
             item_page = self.AppendItem(self.root, dictPage["titre"])
             self.SetItemBold(item_page)
-            self.SetPyData(item_page, {"type" : "page", "ID" : dictPage["IDpage"], "ordre" : dictPage["ordre"]})
+            if 'phoenix' in wx.PlatformInfo:
+                self.SetItemData(item_page, {"type" : "page", "ID" : dictPage["IDpage"], "ordre" : dictPage["ordre"]})
+            else:
+                self.SetPyData(item_page, {"type" : "page", "ID" : dictPage["IDpage"], "ordre" : dictPage["ordre"]})
             if dictPage["IDpage"] in self.dictImages["pages"]:
                 self.SetItemImage(item_page, self.dictImages["pages"][dictPage["IDpage"]], wx.TreeItemIcon_Normal)
             self.dictItems["pages"][dictPage["IDpage"]] = item_page
@@ -194,7 +197,10 @@ class CTRL(wx.TreeCtrl):
             # Création des branches blocs
             for dictBloc in dictPage["listeBlocs"]:
                 item_bloc = self.AppendItem(item_page, dictBloc["titre"])
-                self.SetPyData(item_bloc, {"type": "bloc", "ID": dictBloc["IDbloc"], "ordre": dictBloc["ordre"]})
+                if 'phoenix' in wx.PlatformInfo:
+                    self.SetItemData(item_bloc, {"type": "bloc", "ID": dictBloc["IDbloc"], "ordre": dictBloc["ordre"]})
+                else:
+                    self.SetPyData(item_bloc, {"type": "bloc", "ID": dictBloc["IDbloc"], "ordre": dictBloc["ordre"]})
                 if dictBloc["IDbloc"] in self.dictImages["blocs"]:
                     self.SetItemImage(item_bloc, self.dictImages["blocs"][dictBloc["IDbloc"]], wx.TreeItemIcon_Normal)
                 self.dictItems["blocs"][dictBloc["IDbloc"]] = item_bloc
@@ -299,7 +305,10 @@ class CTRL(wx.TreeCtrl):
     def Modifier(self, event):
         """ Modifier une page ou un bloc """
         item = self.GetSelection()
-        dictData = self.GetPyData(item)
+        if 'phoenix' in wx.PlatformInfo:
+            dictData = self.GetItemData(item)
+        else:
+            dictData = self.GetPyData(item)
         if item == None or dictData == None :
             dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner une page ou un bloc à modifier !"), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
@@ -326,7 +335,10 @@ class CTRL(wx.TreeCtrl):
     def GetItemsEnfants(self, liste=[], item=None, recursif=True):
         itemTemp, cookie = self.GetFirstChild(item)
         for index in range(0, self.GetChildrenCount(item, recursively=False)) :
-            dictDataTemp = self.GetPyData(itemTemp)
+            if 'phoenix' in wx.PlatformInfo:
+                dictDataTemp = self.GetItemData(itemTemp)
+            else:
+                dictDataTemp = self.GetPyData(itemTemp)
             liste.append(dictDataTemp)
             if recursif == True and self.GetChildrenCount(itemTemp, recursively=False) > 0 :
                 self.GetItemsEnfants(liste, itemTemp, recursif)

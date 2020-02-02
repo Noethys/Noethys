@@ -1063,13 +1063,23 @@ class CTRL(wx.Panel):
         handler.SetFlags(rt.RICHTEXT_HANDLER_SAVE_IMAGES_TO_BASE64)
         handler.SetFontSizeMapping([7, 9, 11, 12, 14, 22, 100])
         stream = six.BytesIO()
-        if not handler.SaveStream(self.ctrl_editeur.GetBuffer(), stream):
-            return False
+
+        if 'phoenix' in wx.PlatformInfo:
+            if not handler.SaveFile(self.ctrl_editeur.GetBuffer(), stream):
+                return False
+        else:
+            if not handler.SaveStream(self.ctrl_editeur.GetBuffer(), stream):
+                return False
+
         source = stream.getvalue()
         if six.PY2:
             source = source.decode("utf-8")
-        for balise in ("<html>", "</html>", "<head>", "</head>", "<body>", "</body>"):
-            source = source.replace(balise, "")
+        for balise in (u"<html>", u"</html>", u"<head>", u"</head>", u"<body>", u"</body>"):
+            if six.PY3 and isinstance(balise, str):
+                balise = balise.encode("utf-8")
+                source = source.replace(balise, b"")
+            else:
+                source = source.replace(balise, "")
         return source
 
     def GetValue(self):

@@ -1307,7 +1307,9 @@ class Page_Conditions(wx.Panel):
         handler = wx.richtext.RichTextXMLHandler()
         buffer = self.ctrl_html.GetBuffer()
         buffer.AddHandler(handler)
-        out.write(texte_xml.encode("utf8"))
+        if six.PY3 and isinstance(texte_xml, str):
+            texte_xml = texte_xml.encode("utf8")
+        out.write(texte_xml)
         out.seek(0)
         if 'phoenix' in wx.PlatformInfo:
             handler.LoadFile(buffer, out)

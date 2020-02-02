@@ -14,7 +14,7 @@ from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
 from Ctrl import CTRL_Bouton_image
-import datetime
+import six
 import GestionDB
 from Ctrl import CTRL_Editeur_email
 
@@ -131,6 +131,8 @@ class Dialog(wx.Dialog):
         if len(listeDonnees) == 0 : return
         self.IDelement, self.categorie, texte_xml = listeDonnees[0]
         if texte_xml != None :
+            if six.PY3 and isinstance(texte_xml, str):
+                texte_xml = texte_xml.encode("utf8")
             self.ctrl_editeur.SetXML(texte_xml)
 
 

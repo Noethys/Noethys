@@ -687,7 +687,10 @@ class CTRL_Ventilation(gridlib.Grid):
             if self.KeyRegroupement == "periode" : 
                 key = ligne_prestation.periode
                 label = ligne_prestation.periode_complete
-            
+
+            if six.PY3 and key == None:
+                key = 0
+
             if (key in self.dictRegroupements) == False :
                 self.dictRegroupements[key] = { "label" : label, "total" : FloatToDecimal(0.0), "prestations" : [], "ligne_regroupement" : None}
                 listeKeys.append(key)

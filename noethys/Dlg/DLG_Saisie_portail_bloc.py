@@ -13,7 +13,7 @@ import Chemins
 from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
-import datetime
+import six
 from Utils import UTILS_Dates
 from Ctrl import CTRL_Bouton_image
 import GestionDB
@@ -23,7 +23,6 @@ from Ol import OL_Portail_bloc_onglets
 from Ol import OL_Portail_bloc_blog
 from Ol import OL_Portail_bloc_calendrier
 from Ol import OL_Portail_bloc_trombi
-
 import wx.lib.agw.labelbook as LB
 
 
@@ -99,7 +98,10 @@ class PAGE_Texte(wx.Panel):
         if len(dictParametres["elements"]) > 0 :
             dictElement = dictParametres["elements"][0]
             self.IDelement = dictElement["IDelement"]
-            self.ctrl_editeur.SetXML(dictElement["texte_xml"])
+            xml = dictElement["texte_xml"]
+            if six.PY3 and isinstance(xml, str):
+                xml = xml.encode("utf8")
+            self.ctrl_editeur.SetXML(xml)
 
     def Validation(self):
         if len(self.ctrl_editeur.GetValue()) == 0 :

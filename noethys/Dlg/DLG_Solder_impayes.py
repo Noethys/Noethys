@@ -390,7 +390,7 @@ class Dialog(wx.Dialog):
     def OnBoutonAnnuler(self, event): 
         self.EndModal(wx.ID_CANCEL)        
         
-    def OnBoutonOk(self, event): 
+    def OnBoutonOk(self, event):
         # compte
         IDcompte = self.ctrl_compte.GetID() 
         if IDcompte == None :
@@ -445,7 +445,7 @@ class Dialog(wx.Dialog):
                                 
         # Sauvegarde des règlements + ventilation
         for track in tracks :
-                
+
             # Recherche du payeur
             IDpayeur = None
             if track.IDcompte_payeur in dictPayeurs :
