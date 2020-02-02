@@ -122,6 +122,7 @@ class ListView(FastObjectListView):
             if track.categorie == _(u"Famille") : return "famille"
             if track.type == _(u"NBRE_UNITE") : return "unite"
             if track.type == _(u"TEMPS_UNITE") : return "temps"
+            if track.type == _(u"TEMPS_FACTURE_UNITE"): return "euro"
             if track.type == _(u"MONTANT_PRESTATION") : return "euro"
             if track.type == _(u"NBRE_AIDES") : return "unite"
             if track.type == _(u"MONTANT_AIDES") : return "euro"

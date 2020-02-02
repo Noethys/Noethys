@@ -118,22 +118,23 @@ class Champs():
         listeUnites = self.ImportationUnites() 
         for IDunite, IDactivite, nomUnite, typeUnite, nomActivite, abregeActivite in listeUnites :
             listeListeView.append(Track({"IDchamp":None, "code":"NBRE_UNITE%d" % IDunite, "label":_(u"Quantité de '%s (%s)'") % (nomUnite, abregeActivite), "type":"NBRE_UNITE", "categorie":_(u"Consommation"), "titre":_(u"Qté %s") % nomUnite ,"formule":None}))
-            # Grandes vacances
             listeListeView.append(Track({"IDchamp":None, "code":"NBRE_GV_UNITE%d" % IDunite, "label":_(u"Quantité de '%s (%s)' durant les grandes vacances") % (nomUnite, abregeActivite), "type":"NBRE_UNITE", "categorie":_(u"Consommation"), "titre":_(u"Qté %s GV") % nomUnite ,"formule":None}))
-            # Petites vacances
             listeListeView.append(Track({"IDchamp":None, "code":"NBRE_PV_UNITE%d" % IDunite, "label":_(u"Quantité de '%s (%s)' durant les petites vacances") % (nomUnite, abregeActivite), "type":"NBRE_UNITE", "categorie":_(u"Consommation"), "titre":_(u"Qté %s PV") % nomUnite ,"formule":None}))
-            # Hors vacances
             listeListeView.append(Track({"IDchamp":None, "code":"NBRE_HV_UNITE%d" % IDunite, "label":_(u"Quantité de '%s (%s)' hors vacances") % (nomUnite, abregeActivite), "type":"NBRE_UNITE", "categorie":_(u"Consommation"), "titre":_(u"Qté %s HV") % nomUnite ,"formule":None}))
 
         # Temps UNITES
         for IDunite, IDactivite, nomUnite, typeUnite, nomActivite, abregeActivite in listeUnites :
             listeListeView.append(Track({"IDchamp":None, "code":"TEMPS_UNITE%d" % IDunite, "label":_(u"Temps de '%s (%s)'") % (nomUnite, abregeActivite), "type":"TEMPS_UNITE", "categorie":_(u"Consommation"), "titre":_(u"Temps %s") % nomUnite ,"formule":None}))
-            # Grandes vacances
             listeListeView.append(Track({"IDchamp":None, "code":"TEMPS_GV_UNITE%d" % IDunite, "label":_(u"Temps de '%s (%s)' durant les grandes vacances") % (nomUnite, abregeActivite), "type":"TEMPS_UNITE", "categorie":_(u"Consommation"), "titre":_(u"Temps %s GV") % nomUnite ,"formule":None}))
-            # Petites vacances
             listeListeView.append(Track({"IDchamp":None, "code":"TEMPS_PV_UNITE%d" % IDunite, "label":_(u"Temps de '%s (%s)' durant les petites vacances") % (nomUnite, abregeActivite), "type":"TEMPS_UNITE", "categorie":_(u"Consommation"), "titre":_(u"Temps %s PV") % nomUnite ,"formule":None}))
-            # Hors vacances
             listeListeView.append(Track({"IDchamp":None, "code":"TEMPS_HV_UNITE%d" % IDunite, "label":_(u"Temps de '%s (%s)' hors vacances") % (nomUnite, abregeActivite), "type":"TEMPS_UNITE", "categorie":_(u"Consommation"), "titre":_(u"Temps %s HV") % nomUnite ,"formule":None}))
+
+        # Temps facturé UNITES
+        for IDunite, IDactivite, nomUnite, typeUnite, nomActivite, abregeActivite in listeUnites :
+            listeListeView.append(Track({"IDchamp":None, "code":"TEMPS_FACTURE_UNITE%d" % IDunite, "label":_(u"Temps facturé de '%s (%s)'") % (nomUnite, abregeActivite), "type":"TEMPS_FACTURE_UNITE", "categorie":_(u"Consommation"), "titre":_(u"Temps facturé %s") % nomUnite ,"formule":None}))
+            listeListeView.append(Track({"IDchamp":None, "code":"TEMPS_FACTURE_GV_UNITE%d" % IDunite, "label":_(u"Temps facturé de '%s (%s)' durant les grandes vacances") % (nomUnite, abregeActivite), "type":"TEMPS_FACTURE_UNITE", "categorie":_(u"Consommation"), "titre":_(u"Temps facturé %s GV") % nomUnite ,"formule":None}))
+            listeListeView.append(Track({"IDchamp":None, "code":"TEMPS_FACTURE_PV_UNITE%d" % IDunite, "label":_(u"Temps facturé de '%s (%s)' durant les petites vacances") % (nomUnite, abregeActivite), "type":"TEMPS_FACTURE_UNITE", "categorie":_(u"Consommation"), "titre":_(u"Temps facturé %s PV") % nomUnite ,"formule":None}))
+            listeListeView.append(Track({"IDchamp":None, "code":"TEMPS_FACTURE_HV_UNITE%d" % IDunite, "label":_(u"Temps facturé de '%s (%s)' hors vacances") % (nomUnite, abregeActivite), "type":"TEMPS_FACTURE_UNITE", "categorie":_(u"Consommation"), "titre":_(u"Temps facturé %s HV") % nomUnite ,"formule":None}))
 
         # Montant PRESTATIONS
 ##        listePrestations = self.ImportationPrestations() 
@@ -291,6 +292,7 @@ class ListView(FastObjectListView):
             if track.categorie == _(u"Famille") : return "famille"
             if track.type == _(u"NBRE_UNITE") : return "unite"
             if track.type == _(u"TEMPS_UNITE") : return "temps"
+            if track.type == _(u"TEMPS_FACTURE_UNITE"): return "euro"
             if track.type == _(u"MONTANT_PRESTATION") : return "euro"
             if track.type == _(u"NBRE_AIDES") : return "unite"
             if track.type == _(u"MONTANT_AIDES") : return "euro"

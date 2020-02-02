@@ -278,14 +278,26 @@ class Track(object):
 
         # Regroupement des conso par UNITE puis PERIODE
         dictConso = {}
+        listePrestationsTraitees = []
         for dictTemp in listeConso :
             IDunite = dictTemp["IDunite"]
             quantite = dictTemp["quantite"]
+
             if (IDunite in dictConso) == False :
                 dictConso[IDunite] = {
-                    "NBRE_UNITE":0, "NBRE_HV_UNITE":0, "NBRE_PV_UNITE":0, "NBRE_GV_UNITE":0,
-                    "TEMPS_UNITE":datetime.timedelta(hours=0, minutes=0), "TEMPS_HV_UNITE":datetime.timedelta(hours=0, minutes=0), "TEMPS_PV_UNITE":datetime.timedelta(hours=0, minutes=0), "TEMPS_GV_UNITE":datetime.timedelta(hours=0, minutes=0),
-                    }
+                    "NBRE_UNITE": 0,
+                    "NBRE_HV_UNITE": 0,
+                    "NBRE_PV_UNITE": 0,
+                    "NBRE_GV_UNITE": 0,
+                    "TEMPS_UNITE": datetime.timedelta(hours=0, minutes=0),
+                    "TEMPS_HV_UNITE": datetime.timedelta(hours=0, minutes=0),
+                    "TEMPS_PV_UNITE": datetime.timedelta(hours=0, minutes=0),
+                    "TEMPS_GV_UNITE": datetime.timedelta(hours=0, minutes=0),
+                    "TEMPS_FACTURE_UNITE": datetime.timedelta(hours=0, minutes=0),
+                    "TEMPS_FACTURE_HV_UNITE": datetime.timedelta(hours=0, minutes=0),
+                    "TEMPS_FACTURE_PV_UNITE": datetime.timedelta(hours=0, minutes=0),
+                    "TEMPS_FACTURE_GV_UNITE": datetime.timedelta(hours=0, minutes=0),
+                }
                     
             # Nbre
             dictConso[IDunite]["NBRE_UNITE"] += quantite
@@ -293,14 +305,27 @@ class Track(object):
             if dictTemp["periode"] == "PV" : dictConso[IDunite]["NBRE_PV_UNITE"] += quantite
             if dictTemp["periode"] == "GV" : dictConso[IDunite]["NBRE_GV_UNITE"] += quantite
             
-            # Temps
+            # Temps de présence
             dictConso[IDunite]["TEMPS_UNITE"] += dictTemp["temps"]
             if dictTemp["periode"] == "HV" : dictConso[IDunite]["TEMPS_HV_UNITE"] += dictTemp["temps"]
             if dictTemp["periode"] == "PV" : dictConso[IDunite]["TEMPS_PV_UNITE"] += dictTemp["temps"]
             if dictTemp["periode"] == "GV" : dictConso[IDunite]["TEMPS_GV_UNITE"] += dictTemp["temps"]
-            
+
+            # Temps facturé
+            temps_facture = dictTemp["temps_facture"]
+            IDprestation = dictTemp["IDprestation"]
+            if temps_facture not in (None, "") and IDprestation not in listePrestationsTraitees:
+                hr, mn = temps_facture.split(":")
+                temps_facture = datetime.timedelta(hours=int(hr), minutes=int(mn))
+
+                dictConso[IDunite]["TEMPS_FACTURE_UNITE"] += temps_facture
+                if dictTemp["periode"] == "HV" : dictConso[IDunite]["TEMPS_FACTURE_HV_UNITE"] += temps_facture
+                if dictTemp["periode"] == "PV" : dictConso[IDunite]["TEMPS_FACTURE_PV_UNITE"] += temps_facture
+                if dictTemp["periode"] == "GV" : dictConso[IDunite]["TEMPS_FACTURE_GV_UNITE"] += temps_facture
+                listePrestationsTraitees.append(IDprestation)
+
         # Unités
-        for prefixe in ("NBRE", "TEMPS") :
+        for prefixe in ("NBRE", "TEMPS", "TEMPS_FACTURE") :
             for champ in listeChamps :
                 if champ.type == "%s_UNITE" % prefixe :
                     for categorie in ("%s_UNITE" % prefixe, "%s_HV_UNITE" % prefixe, "%s_PV_UNITE" % prefixe, "%s_GV_UNITE" % prefixe) :
@@ -309,8 +334,10 @@ class Track(object):
                             if IDunite in dictConso :
                                 valeur = dictConso[IDunite][categorie]
                             else :
-                                if prefixe == "NBRE" : valeur = 0
-                                if prefixe == "TEMPS" : valeur = datetime.timedelta(hours=0, minutes=0)
+                                if prefixe == "NBRE":
+                                    valeur = 0
+                                if prefixe in ("TEMPS", "TEMPS_FACTURE"):
+                                    valeur = datetime.timedelta(hours=0, minutes=0)
                             setattr(self, champ.code, valeur)
                 
         # Champs PERSONNALISES
