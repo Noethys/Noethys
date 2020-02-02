@@ -1054,8 +1054,8 @@ class Synchro():
         listeConditions = []
         for IDactivite, periode in dict_dates_activites.items() :
             listeConditions.append("(IDactivite=%d AND date>='%s' AND date<='%s')" % (IDactivite, periode["date_min"], periode["date_max"]))
-        texteConditions = " OR ".join(listeConditions)
-
+        texteConditions = "(%s)" % " OR ".join(listeConditions)
+        
         # Création des ouvertures
         self.Pulse_gauge()
 
@@ -1143,7 +1143,6 @@ class Synchro():
         for IDprestation, IDfamille, IDactivite, date, montant in listePrestations:
             date = UTILS_Dates.DateEngEnDateDD(date)
             montant = FloatToDecimal(montant)
-
             if (IDfamille in dict_prestations) == False :
                 dict_prestations[IDfamille] = {}
 
@@ -1248,7 +1247,12 @@ class Synchro():
                 date_debut = UTILS_Dates.DateEngEnDateDDT(date_debut)
                 date_fin = UTILS_Dates.DateEngEnDateDDT(date_fin)
                 if texte_html != None :
-                    texte_html = texte_html.replace("<img ", "<img class='img-responsive' ")
+                    if six.PY3:
+                        if isinstance(texte_html, str):
+                            texte_html = texte_html.encode('utf-8')
+                        texte_html = texte_html.replace(b"<img ", b"<img class='img-responsive' ")
+                    else:
+                        texte_html = texte_html.replace("<img ", "<img class='img-responsive' ")
                 m = models.Element(IDelement=IDelement, IDbloc=IDbloc, ordre=ordre, titre=titre, categorie=categorie, date_debut=date_debut, date_fin=date_fin,
                                 parametres=parametres, texte_html=texte_html)
                 session.add(m)
