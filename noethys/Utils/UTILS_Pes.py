@@ -496,7 +496,7 @@ def EnregistrerXML(doc=None, nomFichier=""):
 def GetCle_modulo11(elements=[]):
     """ Calcul de la clé Modulo 11 """
     nombre = "".join(elements)[::-1]
-    listeCoeff = [2, 3, 4, 5, 6, 7] * (len(nombre) / 6 + 1)
+    listeCoeff = [2, 3, 4, 5, 6, 7] * (len(nombre) // 6 + 1)
     total = 0
     index = 0
     for chiffre in nombre :

@@ -271,6 +271,16 @@ def FormateMois(donnee):
         annee, mois = donnee
         return u"%s %d" % (LISTE_MOIS[mois-1].capitalize(), annee)
 
+def ConvertDateWXenDate(datewx=None):
+    """ Convertit une date WX.datetime en datetime """
+    if datewx == None :
+        return None
+    jour = datewx.GetDay()
+    mois = datewx.GetMonth()+1
+    annee = datewx.GetYear()
+    date = datetime.date(annee, mois, jour)
+    return date
+
 def ConvertDateWXenDT(datewx=None):
     """ Convertit une date WX.datetime en datetime """
     if datewx == None :

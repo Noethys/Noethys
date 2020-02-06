@@ -1055,7 +1055,7 @@ class Synchro():
         for IDactivite, periode in dict_dates_activites.items() :
             listeConditions.append("(IDactivite=%d AND date>='%s' AND date<='%s')" % (IDactivite, periode["date_min"], periode["date_max"]))
         texteConditions = "(%s)" % " OR ".join(listeConditions)
-        
+
         # Création des ouvertures
         self.Pulse_gauge()
 

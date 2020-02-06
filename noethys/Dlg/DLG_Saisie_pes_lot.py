@@ -1032,9 +1032,9 @@ class Dialog(wx.Dialog):
         # Mémorisation de tous les données
         dictDonnees = {
             "nom_fichier": nom_fichier,
-            "date_emission": self.ctrl_parametres.GetPropertyValue("date_emission").strftime("%Y-%m-%d"),
-            "date_envoi": self.ctrl_parametres.GetPropertyValue("date_envoi").strftime("%Y-%m-%d"),
-            "date_prelevement": self.ctrl_parametres.GetPropertyValue("date_prelevement").strftime("%Y-%m-%d"),
+            "date_emission": UTILS_Dates.ConvertDateWXenDate(self.ctrl_parametres.GetPropertyValue("date_emission")).strftime("%Y-%m-%d"),
+            "date_envoi": UTILS_Dates.ConvertDateWXenDate(self.ctrl_parametres.GetPropertyValue("date_envoi")).strftime("%Y-%m-%d"),
+            "date_prelevement": UTILS_Dates.ConvertDateWXenDate(self.ctrl_parametres.GetPropertyValue("date_prelevement")).strftime("%Y-%m-%d"),
             "id_poste": self.ctrl_parametres.GetPropertyValue("id_poste"),
             "id_collectivite": self.ctrl_parametres.GetPropertyValue("id_collectivite"),
             "code_collectivite": self.ctrl_parametres.GetPropertyValue("code_collectivite"),
@@ -1174,7 +1174,7 @@ class Dialog(wx.Dialog):
 if __name__ == u"__main__":
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    dlg = Dialog(None, IDlot=None)
+    dlg = Dialog(None, IDlot=1)
     filtres = [
         {"type": "numero_intervalle", "numero_min": 1983, "numero_max": 2051},
     ]

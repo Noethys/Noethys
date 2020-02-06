@@ -619,7 +619,7 @@ class Editeur(rt.RichTextCtrl):
         handler = wx.richtext.RichTextXMLHandler()
         buffer = self.GetBuffer()
         buffer.AddHandler(handler)
-        if six.PY2:
+        if six.PY2 or (six.PY3 and isinstance(texteXml, str)):
             texteXml = texteXml.encode("utf8")
         out.write(texteXml)
         out.seek(0)

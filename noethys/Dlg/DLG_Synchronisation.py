@@ -249,6 +249,7 @@ class Page_ftp(wx.Panel):
             ftp.cwd(dictParametres["synchro_ftp_repertoire"])
             ftp.quit()
         except Exception as err :
+            print(err)
             dlg = wx.MessageDialog(self, _(u"La connexion n'a pas pu être établie !\n\nVérifiez les paramètres de connexion FTP dans les paramètres de synchronisation."), "Erreur", wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
@@ -622,7 +623,9 @@ class Dialog(wx.Dialog):
         mdp = base64.b64decode(UTILS_Config.GetParametre("synchro_ftp_mdp", defaut=""))
         repertoire = UTILS_Config.GetParametre("synchro_ftp_repertoire", defaut="")
         IDfichier = FonctionsPerso.GetIDfichier()
-        
+        if six.PY3:
+            mdp = mdp.decode("utf-8")
+
         nbreFichiersSupprimes = 0
         try :
             ftp = ftplib.FTP(hote, identifiant, mdp)
@@ -713,6 +716,8 @@ class Dialog(wx.Dialog):
         mdp = base64.b64decode(UTILS_Config.GetParametre("synchro_ftp_mdp", defaut=""))
         repertoire = UTILS_Config.GetParametre("synchro_ftp_repertoire", defaut="")
         IDfichier = FonctionsPerso.GetIDfichier()
+        if six.PY3:
+            mdp = mdp.decode("utf-8")
         
         # Récupération des fichiers
         listeFichiersRecus = []
@@ -722,7 +727,7 @@ class Dialog(wx.Dialog):
             ftp.cwd(repertoire)
             # Récupère la liste des fichiers de synchronisation présents sur le répertoire FTP
             for nomFichier in ftp.nlst() :
-                if nomFichier.startswith("actions_%s" % IDfichier) and (nomFichier.endswith(UTILS_Export_nomade.EXTENSION_CRYPTE) or nomFichier.endswith(UTILS_Export_nomade.EXTENSION_DECRYPTE)) :
+                if "actions_%s" % IDfichier in nomFichier and (nomFichier.endswith(UTILS_Export_nomade.EXTENSION_CRYPTE) or nomFichier.endswith(UTILS_Export_nomade.EXTENSION_DECRYPTE)) :
                     try :
                         tailleFichier = ftp.size(nomFichier)
                     except :
@@ -746,10 +751,9 @@ class Dialog(wx.Dialog):
         ftp.cwd(repertoire)
 
         for nomFichier, tailleFichier in listeFichiersRecus :
-            
             # Analyse du fichier
             dlgAttente = wx.BusyInfo(_(u"Analyse du fichier synchronisation..."), self)
-            resultat = AnalyserFichier(nomFichier=nomFichier, tailleFichier=tailleFichier, typeTransfert="ftp") 
+            resultat = AnalyserFichier(nomFichier=nomFichier, tailleFichier=tailleFichier, typeTransfert="ftp")
             del dlgAttente
             
             # Suppression du fichier dans le répertoire FTP
@@ -795,7 +799,7 @@ class Dialog(wx.Dialog):
         
         # Lecture des fichiers du répertoire SYNC
         for nomFichier in os.listdir(UTILS_Fichiers.GetRepSync()) :
-            if nomFichier.startswith("actions_") and nomFichier.endswith(".archive") :
+            if "actions_" in nomFichier and nomFichier.endswith(".archive") :
                 nomFichierCourt = nomFichier.replace(".dat", "").replace(".archive", "")
                 
                 # Lecture Horodatage

@@ -283,7 +283,9 @@ class Export():
         identifiant = UTILS_Config.GetParametre("synchro_ftp_identifiant", defaut="")
         mdp = base64.b64decode(UTILS_Config.GetParametre("synchro_ftp_mdp", defaut=""))
         repertoire = UTILS_Config.GetParametre("synchro_ftp_repertoire", defaut="")
-        
+        if six.PY3:
+            mdp = mdp.decode("utf-8")
+
         # Envoyer le fichier
         dlgAttente = wx.BusyInfo(_(u"Envoi du fichier de données vers un répertoire FTP..."), None)
         try :
@@ -294,6 +296,7 @@ class Export():
             fichier.close()
             ftp.quit()
         except Exception as err :
+            print(err)
             del dlgAttente
             dlg = wx.MessageDialog(None, _(u"Le fichier n'a pas pu être envoyé !\n\nVérifiez les paramètres de connexion FTP dans les paramètres de synchronisation."), "Erreur ", wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
