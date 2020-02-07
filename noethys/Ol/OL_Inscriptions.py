@@ -457,8 +457,8 @@ class ListView(FastObjectListView):
         # Recherche si des prestations existent
         req = """SELECT IDprestation, prestations.date, prestations.forfait
         FROM prestations
-        WHERE IDactivite=%d AND IDindividu=%d
-        ;""" % (IDactivite, IDindividu)
+        WHERE IDactivite=%d AND IDindividu=%d AND IDfamille=%d
+        ;""" % (IDactivite, IDindividu, IDfamille)
         DB.ExecuterReq(req)
         listePrestations = DB.ResultatReq()
         listePrestationsForfait = []
