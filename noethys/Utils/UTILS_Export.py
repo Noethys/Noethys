@@ -155,7 +155,9 @@ def ExportTexte(listview=None, grid=None, titre=u"", listeColonnes=None, listeVa
 
     # Création du fichier texte
     f = open(cheminFichier, "w")
-    f.write(texte.encode("utf8"))
+    if six.PY2:
+        texte = texte.encode("utf8")
+    f.write(texte)
     f.close()
     
     # Confirmation de création du fichier et demande d'ouverture directe dans Excel

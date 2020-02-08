@@ -1301,23 +1301,20 @@ class Page_Conditions(wx.Panel):
         DB.Close()
         if len(listeDonnees) == 0 : return
         IDelement, texte_xml = listeDonnees[0]
-        
+
         # Insertion du texte
-        try:
-            out = six.BytesIO()
-            handler = wx.richtext.RichTextXMLHandler()
-            buffer = self.ctrl_html.GetBuffer()
-            buffer.AddHandler(handler)
-            if six.PY3 and isinstance(texte_xml, str):
-                texte_xml = texte_xml.encode("utf8")
-            out.write(texte_xml)
-            out.seek(0)
-            if 'phoenix' in wx.PlatformInfo:
-                handler.LoadFile(buffer, out)
-            else:
-                handler.LoadStream(buffer, out)
-        except:
-            pass
+        out = six.BytesIO()
+        handler = wx.richtext.RichTextXMLHandler()
+        buf = self.ctrl_html.GetBuffer()
+        buf.AddHandler(handler)
+        if (six.PY3 and not isinstance(texte_xml, bytes)) or (six.PY2 and not isinstance(texte_xml, buffer)):
+            texte_xml = texte_xml.encode("utf8")
+        out.write(texte_xml)
+        out.seek(0)
+        if 'phoenix' in wx.PlatformInfo:
+            handler.LoadFile(buf, out)
+        else:
+            handler.LoadStream(buf, out)
         self.ctrl_html.Refresh()
 
     def OnModifier(self, event):
