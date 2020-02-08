@@ -1303,7 +1303,7 @@ class Page_Conditions(wx.Panel):
         IDelement, texte_xml = listeDonnees[0]
         
         # Insertion du texte
-        if texte_xml:
+        try:
             out = six.BytesIO()
             handler = wx.richtext.RichTextXMLHandler()
             buffer = self.ctrl_html.GetBuffer()
@@ -1316,6 +1316,8 @@ class Page_Conditions(wx.Panel):
                 handler.LoadFile(buffer, out)
             else:
                 handler.LoadStream(buffer, out)
+        except:
+            pass
         self.ctrl_html.Refresh()
 
     def OnModifier(self, event):
