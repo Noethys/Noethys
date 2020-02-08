@@ -1,8 +1,16 @@
-Version 1.2.7.1 (05/01/2020) :
+Version 1.2.7.3 (08/02/2020) :
 
+- Ajout de l'export des écritures comptables vers QuadraCOMPTA
+- Ajout de la liste des codes comptables dans le menu Individus
 - Ajout de la prise en charge des prélèvements SEPA pour les comptes DFT
+- Ajout des unités de consommation dans les formules de l'état global
+- Ajout du temps facturé dans l'état nominatif des consommations
+- Ajout de la personnalisation du nom du portail
+- Ajout de la réinitialisation des tables de la base du portail
 - Ajout de la colonne Secteur dans la liste étiquettes
+- Remplacement de PyExcelerator par XlsxWriter
 - Remplacement de MySQLdb par mysqlclient
+- Adaptations de Nomadhys pour Python 3
 - Adaptations pour wxPython et Python 3
 - Corrections de divers petits bugs
 
