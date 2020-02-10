@@ -275,6 +275,8 @@ def ConvertDateWXenDate(datewx=None):
     """ Convertit une date WX.datetime en datetime """
     if datewx == None :
         return None
+    if isinstance(datewx, datetime.datetime):
+        return datetime.date(datewx.year, datewx.month, datewx.day)
     jour = datewx.GetDay()
     mois = datewx.GetMonth()+1
     annee = datewx.GetYear()
