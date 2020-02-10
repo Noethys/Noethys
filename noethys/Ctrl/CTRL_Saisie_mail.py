@@ -54,7 +54,7 @@ class Mail(wx.TextCtrl):
         if mail == "" :
             return None
         else:
-            return mail
+            return mail.strip()
         
         
         
