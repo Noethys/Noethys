@@ -478,9 +478,16 @@ Tous les fichiers (*.*)|*.*"
             # Création du doc dans le répertoire Temp et ouverture
             nomFichier = UTILS_Fichiers.GetRepTemp(fichier="document.%s" % track.type)
             buffer = track.buffer
-            file = open(nomFichier,"wb")
-            file.write(buffer)
-            file.close()
+            try:
+                file = open(nomFichier, "wb")
+                file.write(buffer)
+                file.close()
+            except Exception as err:
+                print(err)
+                dlg = wx.MessageDialog(self, _(u"Ouverture du document impossible !\n\nVérifiez si le document n'est pas déjà ouvert en arrière-plan."), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg.ShowModal()
+                dlg.Destroy()
+                return
             FonctionsPerso.LanceFichierExterne(nomFichier)
     
     def ZoomPlus(self, event=None):
