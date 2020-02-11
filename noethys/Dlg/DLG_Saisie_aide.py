@@ -44,11 +44,8 @@ class CTRL_Activite(wx.Choice):
             ORDER BY activites.nom;"""
         else:
             # Pour les aides aux familles
-            req = """SELECT inscriptions.IDactivite, activites.nom
-            FROM inscriptions
-            LEFT JOIN activites ON activites.IDactivite = inscriptions.IDactivite
-            WHERE inscriptions.statut='ok'
-            GROUP BY inscriptions.IDactivite
+            req = """SELECT IDactivite, activites.nom
+            FROM activites
             ORDER BY activites.date_fin DESC;"""
         db.ExecuterReq(req)
         listeDonnees = db.ResultatReq()
