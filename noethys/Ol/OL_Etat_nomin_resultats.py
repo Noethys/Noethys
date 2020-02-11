@@ -16,13 +16,11 @@ import wx
 import datetime
 import time
 import six
+import math
 import GestionDB
-
-
 from Utils import UTILS_Interface
 from Ctrl.CTRL_ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 from Ctrl.CTRL_Questionnaire import LISTE_CONTROLES
-
 from Utils import UTILS_Titulaires
 from Data import DATA_Civilites as Civilites
 
