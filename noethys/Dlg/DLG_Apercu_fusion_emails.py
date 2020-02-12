@@ -18,7 +18,7 @@ import GestionDB
 import datetime
 from Ctrl import CTRL_Editeur_email
 from Utils import UTILS_Dates
-
+import six
 
 
 class Dialog(wx.Dialog):
@@ -151,8 +151,10 @@ class Dialog(wx.Dialog):
         xml = self.texte_xml
         if xml == None :
             return
+        if six.PY3:
+            xml = xml.decode("utf-8")
         # Remplacement des champs standards
-        for motcle, valeur in CTRL_Editeur_email.GetChampsStandards().items() :
+        for motcle, valeur in CTRL_Editeur_email.GetChampsStandards().items():
             xml = xml.replace(motcle, valeur)
         # Remplacement des champs spécifiques
         dictDonnee = self.donnees[index]
