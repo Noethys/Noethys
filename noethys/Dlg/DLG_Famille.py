@@ -441,7 +441,23 @@ class Dialog(wx.Dialog):
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.MenuListeAttestations, id=20)
 
-        menuPop.AppendSeparator() 
+        menuPop.AppendSeparator()
+
+        # Item Editer Devis
+        item = wx.MenuItem(menuPop, 10, _(u"Générer un devis"))
+        bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Generation.png"), wx.BITMAP_TYPE_PNG)
+        item.SetBitmap(bmp)
+        menuPop.AppendItem(item)
+        self.Bind(wx.EVT_MENU, self.MenuGenererDevis, id=10)
+
+        # Item Liste Devis
+        item = wx.MenuItem(menuPop, 20, _(u"Liste des devis générés"))
+        bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Facture.png"), wx.BITMAP_TYPE_PNG)
+        item.SetBitmap(bmp)
+        menuPop.AppendItem(item)
+        self.Bind(wx.EVT_MENU, self.MenuListeDevis, id=20)
+
+        menuPop.AppendSeparator()
 
         # Item Editer Lettre de rappel
         item = wx.MenuItem(menuPop, 110, _(u"Générer une lettre de rappel"))
@@ -588,6 +604,30 @@ class Dialog(wx.Dialog):
         from Dlg import DLG_Liste_attestations
         dlg = DLG_Liste_attestations.Dialog(self, IDfamille=self.IDfamille)
         dlg.ShowModal() 
+        dlg.Destroy()
+
+    def MenuGenererDevis(self, event):
+        if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_devis", "creer") == False : return
+        # Récupération du IDcompte_payeur
+        IDcompte_payeur = self.GetIDcomptePayeur()
+        # Vérification de la ventilation
+        from Dlg import DLG_Verification_ventilation
+        tracks = DLG_Verification_ventilation.Verification(IDcompte_payeur)
+        if len(tracks) > 0 :
+            dlg = wx.MessageDialog(self, _(u"Un ou plusieurs règlements sont encore à ventiler.\n\nVous devez obligatoirement effectuer cela avant d'éditer un devis..."), _(u"Ventilation"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return
+        # Ouverture de la facturation
+        from Dlg import DLG_Impression_devis
+        dlg = DLG_Impression_devis.Dialog(self, IDfamille=self.IDfamille)
+        dlg.ShowModal()
+        dlg.Destroy()
+
+    def MenuListeDevis(self, event):
+        from Dlg import DLG_Liste_devis
+        dlg = DLG_Liste_devis.Dialog(self, IDfamille=self.IDfamille)
+        dlg.ShowModal()
         dlg.Destroy()
 
     def MenuGenererRappel(self, event):

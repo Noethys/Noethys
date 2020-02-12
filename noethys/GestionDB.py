@@ -1278,11 +1278,11 @@ if __name__ == "__main__":
                 
     # Création d'une table données
     # db = DB(suffixe="DATA")
-    # listeTables = ("perceptions",)
+    # listeTables = ("devis",)
     # for nomTable in listeTables :
     #     db.CreationTable(nomTable, Tables.DB_DATA)
     # db.Close()
-    # print "creation tables ok."
+    # print("creation tables ok.")
 
     ## ----------------------------------------------------------------------
 
@@ -1318,7 +1318,7 @@ if __name__ == "__main__":
 
     # # Exportation d'une table dans la base DEFAUT
     # db = DB(suffixe="DATA")
-    # db.Exportation_vers_base_defaut(nomTable="portail_elements")
+    # db.Exportation_vers_base_defaut(nomTable="documents_objets")
     # db.Close()
     
     # Réparation d'une table

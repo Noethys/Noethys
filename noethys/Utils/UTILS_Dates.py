@@ -56,6 +56,12 @@ def DateEngEnDateDDT(dateEng):
     else :
         return datetime.datetime.strptime(dateEng, "%Y-%m-%d %H:%M:%S.%f")
 
+def DateFrEng(textDate):
+    if textDate in ("", None):
+        return None
+    text = str(textDate[6:10]) + "-" + str(textDate[3:5]) + "-" + str(textDate[:2])
+    return text
+
 def PeriodeComplete(mois, annee):
     listeMois = (_(u"Janvier"), _(u"Février"), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"Août"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"Décembre"))
     periodeComplete = u"%s %d" % (listeMois[mois-1], annee)

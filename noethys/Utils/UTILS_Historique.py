@@ -51,6 +51,7 @@ CATEGORIES = {
     33 : _(u"Envoi d'un Email"),
     34 : _(u"Edition d'une confirmation d'inscription"),
     35 : _(u"Génération d'un fichier XML SEPA"),
+    36 : _(u"Edition d'un devis"),
     }
 
 DICT_COULEURS = {

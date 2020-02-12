@@ -1787,6 +1787,20 @@ DB_DATA = {
                                     ("ville_resid", "VARCHAR(100)", u"Ville de la perception"), ],
                                     # Les perceptions pour le prélèvement automatique
 
+    "devis":                        [("IDdevis", "INTEGER PRIMARY KEY AUTOINCREMENT", u"IDdevis"),
+                                     ("numero", "INTEGER", u"Numéro de devis"), ("IDfamille", "INTEGER", u"ID du devis"),
+                                     ("date_edition", "DATE", u"Date d'édition du devis"),
+                                     ("activites", "VARCHAR(450)", u"Liste des IDactivité séparées par ;"),
+                                     ("individus", "VARCHAR(450)", u"Liste des IDindividus séparées par ;"),
+                                     ("IDutilisateur", "INTEGER", u"Utilisateur qui a créé l'attestation"),
+                                     ("date_debut", "DATE", u"Date de début de période"),
+                                     ("date_fin", "DATE", u"Date de fin de période"),
+                                     ("total", "FLOAT", u"Montant total de la période"),
+                                     ("regle", "FLOAT", u"Montant réglé pour la période"),
+                                     ("solde", "FLOAT", u"Solde à régler pour la période"), ],
+                                     # Devis
+
+
 }
 
 

@@ -74,7 +74,7 @@ def ConvertCouleurPDFpourWX(couleurpdf=(0, 0, 0)):
     return (couleurpdf[0]*255.0, couleurpdf[1]*255.0, couleurpdf[2]*255.0)
 
 def Template(canvas, doc):
-    """ Première page de l'attestation """
+    """ Première page """
     doc.modeleDoc.DessineFond(canvas) 
     doc.modeleDoc.DessineFormes(canvas) 
 
@@ -172,7 +172,7 @@ class MyPageTemplate(PageTemplate):
 
         
 def Template_PagesSuivantes(canvas, doc):
-    """ Première page de l'attestation """
+    """ Première page """
     canvas.saveState()
 
     canvas.setFont('Times-Roman', 12)
@@ -263,6 +263,7 @@ class Impression():
                     if titre == None :
                         if mode == "facture" : titre = _(u"Facture")
                         if mode == "attestation" : titre = _(u"Attestation de présence")
+                        if mode == "devis": titre = _(u"Devis")
                         if "texte_titre" in dictValeur : 
                             titre = dictValeur["texte_titre"]
                     dataTableau = []
@@ -285,22 +286,6 @@ class Impression():
                     tableau.setStyle(TableStyle(styles))
                     story.append(tableau)
                     story.append(Spacer(0,20))
-                
-                # TEXTE D'INTRODUCTION pour Attestation
-##                if mode == "attestation" and dictValeur["intro"] != None :
-##                    texteIntro = dictValeur["intro"]
-##                    paraStyle = ParagraphStyle(name="intro",
-##                                          fontName="Helvetica",
-##                                          fontSize=9,
-##                                          leading=14,
-##                                          spaceBefore=0,
-##                                          spaceafter=0,
-##                                          leftIndent=20,
-##                                          rightIndent=20,
-##                                          alignment=1,
-##                                        )
-##                    story.append(Paragraph(u"<i>%s</i>" % texteIntro, paraStyle))
-##                    story.append(Spacer(0,20))
 
                 if dictOptions["texte_introduction"] != "" :
                     paraStyle = ParagraphStyle(name="introduction",

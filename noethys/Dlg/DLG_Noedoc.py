@@ -991,8 +991,58 @@ class Location_demande():
 
 # ----------------------------------------------------------------------------------------------------------------------------------
 
+class Devis():
+    def __init__(self):
+        self.nom = _(u"Devis")
+        self.code = "devis"
+
+        self.photosIndividuelles = False
+
+        self.champs = [
+            (_(u"Numéro ID de la famille"), u"2582", "{IDFAMILLE}"),
+
+            (_(u"Nom du destinataire"), _(u"M. DUPOND Gérard"), "{DESTINATAIRE_NOM}"),
+            (_(u"Rue de l'adresse du destinataire"), _(u"10 rue des oiseaux"), "{DESTINATAIRE_RUE}"),
+            (_(u"Ville de l'adresse du destinataire"), _(u"29000 QUIMPER"), "{DESTINATAIRE_VILLE}"),
+
+            (_(u"Nom des individus concernés"), u"Xavier DUPOND et Lucie DUPOND", "{NOMS_INDIVIDUS}"),
+            (_(u"Date de début de la période"), u"01/01/2011", "{DATE_DEBUT}"),
+            (_(u"Date de fin de la période"), u"31/01/2011", "{DATE_FIN}"),
+
+            (_(u"Nom de l'organisateur"), _(u"Association Noethys"), "{ORGANISATEUR_NOM}"),
+            (_(u"Rue de l'organisateur"), _(u"Avenue des Lilas"), "{ORGANISATEUR_RUE}"),
+            (_(u"Code postal de l'organisateur"), u"29870", "{ORGANISATEUR_CP}"),
+            (_(u"Ville de l'organisateur"), _(u"LANNILIS"), "{ORGANISATEUR_VILLE}"),
+            (_(u"Téléphone de l'organisateur"), u"01.98.01.02.03", "{ORGANISATEUR_TEL}"),
+            (_(u"Fax de l'organisateur"), u"01.04.05.06.", "{ORGANISATEUR_FAX}"),
+            (_(u"Mail de l'organisateur"), _(u"noethys") + u"@gmail.com", "{ORGANISATEUR_MAIL}"),
+            (_(u"Site internet de l'organisateur"), u"www.noethys.com", "{ORGANISATEUR_SITE}"),
+            (_(u"Numéro d'agrément de l'organisateur"), u"0256ORG234", "{ORGANISATEUR_AGREMENT}"),
+            (_(u"Numéro SIRET de l'organisateur"), u"123456789123", "{ORGANISATEUR_SIRET}"),
+            (_(u"Code APE de l'organisateur"), _(u"NO123"), "{ORGANISATEUR_APE}"),
+
+            (_(u"Numéro du devis"), u"1234567", "{NUM_DEVIS}"),
+            (_(u"Date d'édition du devis (long)"), _(u"Lundi 9 septembre 2011"), "{DATE_EDITION_LONG}"),
+            (_(u"Date d'édition du devis (court)"), u"19/09/2011", "{DATE_EDITION_COURT}"),
+
+            (_(u"Total des prestations de la période"), u"10.00 ¤", "{TOTAL_PERIODE}"),
+            (_(u"Total déjà réglé pour la période"), u"6.00 ¤", "{TOTAL_REGLE}"),
+            (_(u"Solde dû pour la période"), u"4.00 ¤", "{SOLDE_DU}"),
+            (_(u"Total des déductions"), u"20.50 ¤", "{TOTAL_DEDUCTIONS}"), ]
+
+        self.champs.extend(UTILS_Infos_individus.GetNomsChampsPossibles(mode="famille"))
+
+        self.codesbarres = []
+
+        self.speciaux = [{"nom": _(u"Cadre principal"), "champ": _(
+            u"cadre_principal"), "obligatoire": True, "nbreMax": 1, "x": None, "y": None, "verrouillageX": False, "verrouillageY": False, "Xmodifiable": True, "Ymodifiable": True, "largeur": 100, "hauteur": 150, "largeurModifiable": True, "hauteurModifiable": True, "largeurMin": 80, "largeurMax": 1000, "hauteurMin": 80, "hauteurMax": 1000, "verrouillageLargeur": False, "verrouillageHauteur": False, "verrouillageProportions": False, "interditModifProportions": False, }]
+
+        # Questionnaires
+        self.champs.extend(GetQuestions("famille"))
+        self.codesbarres.extend(GetCodesBarresQuestionnaires("famille"))
 
 
+# ----------------------------------------------------------------------------------------------------------------------------------
 
 
 
@@ -5157,6 +5207,7 @@ class Dialog(wx.Dialog):
         if categorie == "attestation_fiscale" : self.infosCategorie = Attestation_fiscale()
         if categorie == "location" : self.infosCategorie = Location()
         if categorie == "location_demande" : self.infosCategorie = Location_demande()
+        if categorie == "devis": self.infosCategorie = Devis()
 
         self._mgr = aui.AuiManager()
         self._mgr.SetManagedWindow(self)

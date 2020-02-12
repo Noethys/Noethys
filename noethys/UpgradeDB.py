@@ -1391,7 +1391,16 @@ class DB(GestionDB.DB):
 
         # =============================================================
 
+        versionFiltre = (1, 2, 7, 5)
+        if versionFichier < versionFiltre:
+            try:
+                if self.IsTableExists("devis") == False: self.CreationTable("devis", Tables.DB_DATA)
+                from Utils import UTILS_Export_documents
+                UTILS_Export_documents.ImporterDepuisFichierDefaut(IDmodele=14, nom=None, IDfond=1, defaut=1) # import modèle doc devis par défaut
+            except Exception as err:
+                return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
+        # =============================================================
 
 
         return True

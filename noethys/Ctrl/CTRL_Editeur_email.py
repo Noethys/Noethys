@@ -31,7 +31,7 @@ CATEGORIES = [
     ("recu_don_oeuvres", _(u"Reçu de don aux oeuvres")),
     ("facture", _(u"Facture")),
     ("rappel", _(u"Rappel")),
-    ("attestation_presence", _(u"Attestation de présence")), 
+    ("attestation_presence", _(u"Attestation de présence")),
     ("attestation_fiscale", _(u"Attestation fiscale")), 
     ("reservations", _(u"Liste des réservations")), 
     ("cotisation", _(u"Cotisation")),
@@ -46,6 +46,7 @@ CATEGORIES = [
     ("location_demande", _(u"Demande de location")),
     ("commande_repas", _(u"Commande de repas")),
     ("inscription", _(u"Inscription")),
+    ("devis", _(u"Devis")),
 ]
 
 
@@ -270,6 +271,15 @@ MOTSCLES = {
                 ("{INDIVIDU_PRENOM}", _(u"Prénom de l'individu")),
                 ("{INDIVIDU_DATE_NAISS}", _(u"Date de naissance de l'individu")),
                 ],
+
+    "devis": [
+        ("{DATE_EDITION_DEVIS}", _(u"Date d'édition du devis")),
+        ("{NUMERO_DEVIS}", _(u"Numéro du devis")),
+        ("{DATE_DEBUT}", _(u"Date de début de la période")),
+        ("{DATE_FIN}", _(u"Date de fin de la période")),
+        ("{INDIVIDUS_CONCERNES}", _(u"Liste des individus concernés")),
+        ("{SOLDE}", _(u"Solde du devis")),
+        ],
 
 }
 
