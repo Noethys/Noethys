@@ -77,6 +77,8 @@ class CTRL(HTL.HyperTreeList):
         DB.ExecuterReq(req)
         liste_donnees = DB.ResultatReq()
         montant_depot = liste_donnees[0][0]
+        if not montant_depot:
+            montant_depot = 0.0
 
         req = """SELECT 
         ventilation.IDventilation, ventilation.IDprestation, ventilation.montant,
@@ -93,6 +95,8 @@ class CTRL(HTL.HyperTreeList):
 
         total = 0.0
         for IDventilation, IDprestation, montant, label, IDactivite, categorie in liste_prestations:
+            if not montant:
+                montant = 0.0
 
             if categorie == "cotisation":
                 IDactivite = 90001

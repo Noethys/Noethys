@@ -444,11 +444,11 @@ class Dialog(wx.Dialog):
         menuPop.AppendSeparator()
 
         # Item Editer Devis
-        item = wx.MenuItem(menuPop, 10, _(u"Générer un devis"))
+        item = wx.MenuItem(menuPop, 15, _(u"Générer un devis"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Generation.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
-        self.Bind(wx.EVT_MENU, self.MenuGenererDevis, id=10)
+        self.Bind(wx.EVT_MENU, self.MenuGenererDevis, id=15)
 
         # Item Liste Devis
         item = wx.MenuItem(menuPop, 20, _(u"Liste des devis générés"))

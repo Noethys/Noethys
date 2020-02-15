@@ -762,7 +762,6 @@ class Dialog(wx.Dialog):
 
     def Annuler(self):
         if len(self.panel_grille.grille.listeHistorique) > 0:
-#            texteHistorique = self.panel_grille.grille.GetTexteHistorique()
             dlg = wx.MessageDialog(self, _(u"Des modifications ont été effectuées dans la grille.\n\nSouhaitez-vous enregistrer ces modifications avant de fermer cette fenêtre ?"), _(u"Sauvegarde des modifications"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
             reponse = dlg.ShowModal()
             dlg.Destroy()
@@ -851,7 +850,6 @@ class Dialog(wx.Dialog):
 
     def On_outils_imprimer(self, event):
         if len(self.panel_grille.grille.listeHistorique) > 0:
-##            texteHistorique = self.panel_grille.grille.GetTexteHistorique()
             dlg = wx.MessageDialog(self, _(u"Des modifications ont été effectuées dans la grille.\n\nSouhaitez-vous les enregistrer maintenant afin qu'elles apparaissent dans le document ?"), _(u"Sauvegarde des modifications"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
             reponse = dlg.ShowModal()
             dlg.Destroy()
@@ -885,11 +883,10 @@ class Dialog(wx.Dialog):
         menuPop = UTILS_Adaptations.Menu()
 
         ID_AFFICHAGE_PERSPECTIVE_DEFAUT = wx.Window.NewControlId()
-        ID_PREMIERE_PERSPECTIVE = 500
+        self.ID_PREMIERE_PERSPECTIVE = 500
         ID_AFFICHAGE_PERSPECTIVE_SAVE = wx.Window.NewControlId()
         ID_AFFICHAGE_PERSPECTIVE_SUPPR = wx.Window.NewControlId()
-        ID_AFFICHAGE_PANNEAUX = 600
-        ID_AFFICHAGE_LARGEUR_UNITE = wx.Window.NewControlId()
+        self.ID_AFFICHAGE_PANNEAUX = 600
         ID_AFFICHAGE_PARAMETRES = wx.Window.NewControlId()
         ID_AFFICHE_COLONNE_MEMO = wx.Window.NewControlId()
         ID_AFFICHE_COLONNE_TRANSPORTS = wx.Window.NewControlId()
@@ -897,10 +894,10 @@ class Dialog(wx.Dialog):
         ID_AFFICHE_SANS_PRESTATION = wx.Window.NewControlId()
         ID_COCHER_ACTIVITES = wx.Window.NewControlId()
         ID_FORMAT_LABEL_LIGNE_MENU = wx.Window.NewControlId()
-        ID_FORMAT_LABEL_LIGNE_1 = wx.Window.NewControlId()
-        ID_FORMAT_LABEL_LIGNE_2 = wx.Window.NewControlId()
-        ID_FORMAT_LABEL_LIGNE_3 = wx.Window.NewControlId()
-        ID_FORMAT_LABEL_LIGNE_4 = wx.Window.NewControlId()
+        self.ID_FORMAT_LABEL_LIGNE_1 = wx.Window.NewControlId()
+        self.ID_FORMAT_LABEL_LIGNE_2 = wx.Window.NewControlId()
+        self.ID_FORMAT_LABEL_LIGNE_3 = wx.Window.NewControlId()
+        self.ID_FORMAT_LABEL_LIGNE_4 = wx.Window.NewControlId()
 
         item = wx.MenuItem(menuPop, ID_AFFICHAGE_PERSPECTIVE_DEFAUT, _(u"Disposition par défaut"), _(u"Afficher la disposition par défaut"), wx.ITEM_CHECK)
         menuPop.AppendItem(item)
@@ -911,12 +908,12 @@ class Dialog(wx.Dialog):
         index = 0
         for dictPerspective in self.perspectives:
             label = dictPerspective["label"]
-            item = wx.MenuItem(menuPop, ID_PREMIERE_PERSPECTIVE + index, label, _(u"Afficher la disposition '%s'") % label, wx.ITEM_CHECK)
+            item = wx.MenuItem(menuPop, self.ID_PREMIERE_PERSPECTIVE + index, label, _(u"Afficher la disposition '%s'") % label, wx.ITEM_CHECK)
             menuPop.AppendItem(item)
             if self.perspective_active == index:
                 item.Check(True)
             index += 1
-        self.Bind(wx.EVT_MENU_RANGE, self.On_affichage_perspective_perso, id=ID_PREMIERE_PERSPECTIVE, id2=ID_PREMIERE_PERSPECTIVE+99 )
+        self.Bind(wx.EVT_MENU_RANGE, self.On_affichage_perspective_perso, id=self.ID_PREMIERE_PERSPECTIVE, id2=self.ID_PREMIERE_PERSPECTIVE+99 )
 
         menuPop.AppendSeparator()
 
@@ -946,7 +943,7 @@ class Dialog(wx.Dialog):
             {"label": _(u"Écoles"),
              "code": "ecoles", "IDmenu": None},
         ]
-        ID = ID_AFFICHAGE_PANNEAUX
+        ID = self.ID_AFFICHAGE_PANNEAUX
         for dictPanneau in self.listePanneaux:
             dictPanneau["IDmenu"] = ID
             label = dictPanneau["label"]
@@ -956,31 +953,31 @@ class Dialog(wx.Dialog):
             if panneau.IsShown() == True:
                 item.Check(True)
             ID += 1
-        self.Bind(wx.EVT_MENU_RANGE, self.On_affichage_panneau_afficher, id=ID_AFFICHAGE_PANNEAUX, id2=ID_AFFICHAGE_PANNEAUX+len(self.listePanneaux))
+        self.Bind(wx.EVT_MENU_RANGE, self.On_affichage_panneau_afficher, id=self.ID_AFFICHAGE_PANNEAUX, id2=self.ID_AFFICHAGE_PANNEAUX+len(self.listePanneaux))
 
         menuPop.AppendSeparator()
 
         sousMenuLabelLigne = UTILS_Adaptations.Menu()
 
-        item = wx.MenuItem(sousMenuLabelLigne, ID_FORMAT_LABEL_LIGNE_1, _(u"Nom Prénom"), _(u"Format du label : 'Nom Prénom'"), wx.ITEM_RADIO)
+        item = wx.MenuItem(sousMenuLabelLigne, self.ID_FORMAT_LABEL_LIGNE_1, _(u"Nom Prénom"), _(u"Format du label : 'Nom Prénom'"), wx.ITEM_RADIO)
         sousMenuLabelLigne.AppendItem(item)
         item.Check(self.panel_grille.grille.GetFormatLabelLigne() == "nom_prenom")
-        self.Bind(wx.EVT_MENU, self.On_format_label_ligne, id=ID_FORMAT_LABEL_LIGNE_1)
+        self.Bind(wx.EVT_MENU, self.On_format_label_ligne, id=self.ID_FORMAT_LABEL_LIGNE_1)
 
-        item = wx.MenuItem(sousMenuLabelLigne, ID_FORMAT_LABEL_LIGNE_2, _(u"Prénom Nom"), _(u"Format du label : 'Prénom Nom'"), wx.ITEM_RADIO)
+        item = wx.MenuItem(sousMenuLabelLigne, self.ID_FORMAT_LABEL_LIGNE_2, _(u"Prénom Nom"), _(u"Format du label : 'Prénom Nom'"), wx.ITEM_RADIO)
         sousMenuLabelLigne.AppendItem(item)
         item.Check(self.panel_grille.grille.GetFormatLabelLigne() == "prenom_nom")
-        self.Bind(wx.EVT_MENU, self.On_format_label_ligne, id=ID_FORMAT_LABEL_LIGNE_2)
+        self.Bind(wx.EVT_MENU, self.On_format_label_ligne, id=self.ID_FORMAT_LABEL_LIGNE_2)
 
-        item = wx.MenuItem(sousMenuLabelLigne, ID_FORMAT_LABEL_LIGNE_3, _(u"Nom Prénom (ID)"), _(u"Format du label : 'Nom Prénom (ID)'"), wx.ITEM_RADIO)
+        item = wx.MenuItem(sousMenuLabelLigne, self.ID_FORMAT_LABEL_LIGNE_3, _(u"Nom Prénom (ID)"), _(u"Format du label : 'Nom Prénom (ID)'"), wx.ITEM_RADIO)
         sousMenuLabelLigne.AppendItem(item)
         item.Check(self.panel_grille.grille.GetFormatLabelLigne() == "nom_prenom_id")
-        self.Bind(wx.EVT_MENU, self.On_format_label_ligne, id=ID_FORMAT_LABEL_LIGNE_3)
+        self.Bind(wx.EVT_MENU, self.On_format_label_ligne, id=self.ID_FORMAT_LABEL_LIGNE_3)
 
-        item = wx.MenuItem(sousMenuLabelLigne, ID_FORMAT_LABEL_LIGNE_4, _(u"Prénom Nom (ID)"), _(u"Format du label : 'Prénom Nom (ID)'"), wx.ITEM_RADIO)
+        item = wx.MenuItem(sousMenuLabelLigne, self.ID_FORMAT_LABEL_LIGNE_4, _(u"Prénom Nom (ID)"), _(u"Format du label : 'Prénom Nom (ID)'"), wx.ITEM_RADIO)
         sousMenuLabelLigne.AppendItem(item)
         item.Check(self.panel_grille.grille.GetFormatLabelLigne() == "prenom_nom_id")
-        self.Bind(wx.EVT_MENU, self.On_format_label_ligne, id=ID_FORMAT_LABEL_LIGNE_4)
+        self.Bind(wx.EVT_MENU, self.On_format_label_ligne, id=self.ID_FORMAT_LABEL_LIGNE_4)
 
         item = menuPop.AppendMenu(ID_FORMAT_LABEL_LIGNE_MENU, _(u"Format du label de la ligne"), sousMenuLabelLigne)
 
@@ -1026,7 +1023,7 @@ class Dialog(wx.Dialog):
         self.perspective_active = None
 
     def On_affichage_perspective_perso(self, event):
-        index = event.GetId() - ID_PREMIERE_PERSPECTIVE
+        index = event.GetId() - self.ID_PREMIERE_PERSPECTIVE
         self._mgr.LoadPerspective(self.perspectives[index]["perspective"])
         self.perspective_active = index
 
@@ -1062,7 +1059,7 @@ class Dialog(wx.Dialog):
         dlg.Destroy()
 
     def On_affichage_panneau_afficher(self, event):
-        index = event.GetId() - ID_AFFICHAGE_PANNEAUX
+        index = event.GetId() - self.ID_AFFICHAGE_PANNEAUX
         code = self.listePanneaux[index]["code"]
         panneau = self._mgr.GetPane(code)
         if panneau.IsShown():
@@ -1123,13 +1120,13 @@ class Dialog(wx.Dialog):
         self.panel_grille.grille.MAJ_affichage()
 
     def On_format_label_ligne(self, event):
-        if event.GetId() == ID_FORMAT_LABEL_LIGNE_1:
+        if event.GetId() == self.ID_FORMAT_LABEL_LIGNE_1:
             self.panel_grille.grille.SetFormatLabelLigne("nom_prenom")
-        if event.GetId() == ID_FORMAT_LABEL_LIGNE_2:
+        if event.GetId() == self.ID_FORMAT_LABEL_LIGNE_2:
             self.panel_grille.grille.SetFormatLabelLigne("prenom_nom")
-        if event.GetId() == ID_FORMAT_LABEL_LIGNE_3:
+        if event.GetId() == self.ID_FORMAT_LABEL_LIGNE_3:
             self.panel_grille.grille.SetFormatLabelLigne("nom_prenom_id")
-        if event.GetId() == ID_FORMAT_LABEL_LIGNE_4:
+        if event.GetId() == self.ID_FORMAT_LABEL_LIGNE_4:
             self.panel_grille.grille.SetFormatLabelLigne("prenom_nom_id")
 
 

@@ -603,13 +603,10 @@ class Dialog(wx.Dialog):
         self.ctrl_stats.key_colonne = self.ctrl_colonnes.GetValeur()
         self.ctrl_stats.key_ligne1 = self.ctrl_lignes_1.GetValeur()
         self.ctrl_stats.key_ligne2 = self.ctrl_lignes_2.GetValeur()
-        self.ctrl_stats.mode_affichage = self.ctrl_mode.GetID()
+        if self.ctrl_mode.GetID():
+            self.ctrl_stats.mode_affichage = self.ctrl_mode.GetID()
 
         # Options
-##        if self.ctrl_parametres.options_cotisations.GetEtat() == True :
-##            self.ctrl_stats.filtreCotisations = True
-##            self.ctrl_stats.filtreCotisations_dateDebut = self.ctrl_parametres.options_cotisations.GetDateDebut()
-##            self.ctrl_stats.filtreCotisations_dateFin = self.ctrl_parametres.options_cotisations.GetDateFin()
         if self.ctrl_parametres.options_reglements.GetEtat() == True :
             self.ctrl_stats.filtreReglements = True
             self.ctrl_stats.filtreReglements_dateDebut = self.ctrl_parametres.options_reglements.GetDateDebut()

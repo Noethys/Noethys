@@ -34,8 +34,10 @@ class Track(object):
         if self.internet_mdp.startswith("custom"):
             self.internet_mdp = "********"
 
-        self.nomTitulaires = parent.dict_titulaires[self.IDfamille]["titulairesSansCivilite"]
-
+        if self.IDfamille in parent.dict_titulaires:
+            self.nomTitulaires = parent.dict_titulaires[self.IDfamille]["titulairesSansCivilite"]
+        else:
+            self.nomTitulaires = _(u"Titulaires inconnus")
 
 
 class ListView(FastObjectListView):

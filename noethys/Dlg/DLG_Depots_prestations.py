@@ -177,6 +177,8 @@ class Dialog(wx.Dialog):
         listeDonnees = []
         listeLabels = []
         for IDdepot, date, nom, total, quantite in listeDepots:
+            if not total:
+                total = 0.0
             nom = u"%s (%s - %.2f %s - %d règlements)" % (nom, UTILS_Dates.DateEngFr(date), total, SYMBOLE, quantite)
             listeDonnees.append({"IDdepot": IDdepot, "nom": nom})
             listeLabels.append(nom)

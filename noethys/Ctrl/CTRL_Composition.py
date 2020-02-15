@@ -462,10 +462,13 @@ class CadreIndividu():
         
         # Intégration de la photo
         if self.photo != None :
-            img = self.photo.ConvertToImage()
-            img = img.Rescale(width=taillePhoto, height=taillePhoto, quality=wx.IMAGE_QUALITY_HIGH) 
-            self.bmp = img.ConvertToBitmap()
-            self.dc.DrawBitmap(self.bmp, x+paddingCadre, y+paddingCadre)
+            try:
+                img = self.photo.ConvertToImage()
+                img = img.Rescale(width=taillePhoto, height=taillePhoto, quality=wx.IMAGE_QUALITY_HIGH)
+                self.bmp = img.ConvertToBitmap()
+                self.dc.DrawBitmap(self.bmp, x+paddingCadre, y+paddingCadre)
+            except:
+                pass
         
         # Dessin du texte
         largeurMaxiTexte = largeur - paddingCadre*3- taillePhoto

@@ -779,22 +779,23 @@ class Impression():
                 largeurColonneLabel = 110
                 largeursColonnes = [ CADRE_CONTENU[2] - largeurColonneMontantTTC - largeurColonneLabel, largeurColonneLabel, largeurColonneMontantTTC]
 
-                dataTableau.append((listeMessages, _(u"Total période :"), u"%.02f %s" % (dictValeur["total"], SYMBOLE)))
-                dataTableau.append(("", _(u"Montant déjà réglé :"), u"%.02f %s" % (dictValeur["ventilation"], SYMBOLE)))
+                if mode == "devis":
+                    dataTableau.append((listeMessages, _(u"Total :"), u"%.02f %s" % (dictValeur["total"], SYMBOLE)))
+                else:
+                    dataTableau.append((listeMessages, _(u"Total période :"), u"%.02f %s" % (dictValeur["total"], SYMBOLE)))
+                    dataTableau.append(("", _(u"Montant déjà réglé :"), u"%.02f %s" % (dictValeur["ventilation"], SYMBOLE)))
                 
-                if mode == "facture" and dictOptions["integrer_impayes"] == True and dictValeur["total_reports"] > 0.0 :
-                    dataTableau.append(("", _(u"Report impayés :"), u"%.02f %s" % (dictValeur["total_reports"], SYMBOLE) ))
-                    dataTableau.append(("", _(u"Reste à régler :"), u"%.02f %s" % (dictValeur["solde"] + dictValeur["total_reports"], SYMBOLE) ))
-                    rowHeights=[10, 10, 10, None]
-                else :
-                    dataTableau.append(("", _(u"Reste à régler :"), u"%.02f %s" % (dictValeur["solde"], SYMBOLE) ))
-                    rowHeights=[18, 18, None]
+                    if mode == "facture" and dictOptions["integrer_impayes"] == True and dictValeur["total_reports"] > 0.0 :
+                        dataTableau.append(("", _(u"Report impayés :"), u"%.02f %s" % (dictValeur["total_reports"], SYMBOLE) ))
+                        dataTableau.append(("", _(u"Reste à régler :"), u"%.02f %s" % (dictValeur["solde"] + dictValeur["total_reports"], SYMBOLE) ))
+                        rowHeights=[10, 10, 10, None]
+                    else :
+                        dataTableau.append(("", _(u"Reste à régler :"), u"%.02f %s" % (dictValeur["solde"], SYMBOLE) ))
+                        rowHeights=[18, 18, None]
                     
                 style = [
                         ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'), 
-##                        ('FONT', (1, 0), (1, -1), "Helvetica", 7),#dictOptions["taille_texte_labels_totaux"]), 
-##                        ('FONT', (2, 0), (2, -1), "Helvetica-Bold", 7),#dictOptions["taille_texte_montants_totaux"]), 
-                        
+
                         # Lignes Période, avoir, impayés
                         ('FONT', (1, 0), (1, -2), "Helvetica", 8),#dictOptions["taille_texte_labels_totaux"]), 
                         ('FONT', (2, 0), (2, -2), "Helvetica-Bold", 8),#dictOptions["taille_texte_montants_totaux"]), 
