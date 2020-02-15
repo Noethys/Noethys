@@ -310,6 +310,8 @@ def ConvertDateDTenWX(date=None):
     return datewx
 
 def DatetimeEnFr(date=None):
+    if date in ("", "None", None):
+        return None
     if type(date) == str :
         date = datetime.datetime.strptime(date, "%Y-%m-%d %H:%M:%S")
     return date.strftime("%d/%m/%Y %H:%M:%S")

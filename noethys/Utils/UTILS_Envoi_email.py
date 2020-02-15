@@ -342,7 +342,10 @@ def GetAdressesFamilles(liste_IDfamille=[]):
     # Annonce les anomalies trouvées
     for IDfamille in liste_IDfamille:
         if IDfamille not in listeFamillesAvecAdresses:
-            nom_titulaires = dictTitulaires[IDfamille]["titulairesSansCivilite"]
+            if IDfamille in dictTitulaires:
+                nom_titulaires = dictTitulaires[IDfamille]["titulairesSansCivilite"]
+            else:
+                nom_titulaires = _(u"Titulaires inconnus")
             liste_anomalies.append(nom_titulaires)
 
     if len(liste_anomalies) > 0 and len(liste_anomalies) != len(liste_IDfamille):

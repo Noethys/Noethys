@@ -47,7 +47,7 @@ class CTRL(wx.Panel):
 
         self.Bind(wx.EVT_BUTTON, self.OnBoutonApercu, self.bouton_apercu)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonEmail, self.bouton_email)
-        self.Bind(wx.EVT_BUTTON, self.OnBoutonSupprimer, self.bouton_supprimer)
+        # self.Bind(wx.EVT_BUTTON, self.OnBoutonSupprimer, self.bouton_supprimer)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonListeApercu, self.bouton_liste_apercu)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonListeImprimer, self.bouton_liste_imprimer)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonListeExportTexte, self.bouton_liste_export_texte)
@@ -74,8 +74,8 @@ class CTRL(wx.Panel):
         grid_sizer_commandes.Add(self.bouton_email, 0, 0, 0)
         grid_sizer_commandes.Add((5, 5), 0, wx.EXPAND, 0)
 
-        grid_sizer_commandes.Add(self.bouton_supprimer, 0, 0, 0)
-        grid_sizer_commandes.Add((5, 5), 0, wx.EXPAND, 0)
+        # grid_sizer_commandes.Add(self.bouton_supprimer, 0, 0, 0)
+        # grid_sizer_commandes.Add((5, 5), 0, wx.EXPAND, 0)
 
         grid_sizer_commandes.Add(self.bouton_liste_apercu, 0, 0, 0)
         grid_sizer_commandes.Add(self.bouton_liste_imprimer, 0, 0, 0)

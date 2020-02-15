@@ -387,7 +387,10 @@ class CTRL(wx.TreeCtrl):
                         label = _(u"Pièces indépendantes")
                     else:
                         if self.dictFamillesRattachees != None and len(self.dictFamillesRattachees) > 0 :
-                            label = self.dictFamillesRattachees[IDfamille]["nomsTitulaires"]
+                            if IDfamille in self.dictFamillesRattachees:
+                                label = self.dictFamillesRattachees[IDfamille]["nomsTitulaires"]
+                            else:
+                                label = _(u"Titulaires inconnus")
                         else:
                             label = _(u"IDfamille=%d") % IDfamille
                     niveau1 = self.AppendItem(niveauParent, label)
