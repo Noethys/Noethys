@@ -25,13 +25,6 @@ ID_OUVRIR_FICHE_IND = 70
 ID_PARAMETRES = wx.Window.NewControlId()
 ID_OUTILS = wx.Window.NewControlId()
 
-ID_ACTUALISER = wx.Window.NewControlId()
-ID_IMPRIMER = wx.Window.NewControlId()
-ID_APERCU = wx.Window.NewControlId()
-ID_EXPORT_EXCEL = wx.Window.NewControlId()
-ID_EXPORT_TEXTE = wx.Window.NewControlId()
-ID_AIDE = wx.Window.NewControlId()
-
 
 class ToolBar(wx.ToolBar):
     def __init__(self, *args, **kwds):
@@ -103,7 +96,14 @@ class ToolBar(wx.ToolBar):
     def MenuOutils(self, event):
         # Création du menu Outils
         menuPop = UTILS_Adaptations.Menu()
-            
+
+        ID_ACTUALISER = wx.Window.NewControlId()
+        ID_IMPRIMER = wx.Window.NewControlId()
+        ID_APERCU = wx.Window.NewControlId()
+        ID_EXPORT_EXCEL = wx.Window.NewControlId()
+        ID_EXPORT_TEXTE = wx.Window.NewControlId()
+        ID_AIDE = wx.Window.NewControlId()
+
         item = wx.MenuItem(menuPop, ID_APERCU, _(u"Aperçu avant impression"), _(u"Imprimer la liste des effectifs affichée"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
