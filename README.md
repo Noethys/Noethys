@@ -32,9 +32,10 @@ rechercher et installer les bibliothèques suivantes.
 - ReportLab (http://www.reportlab.com/software/opensource/rl-toolkit/download/)
 - MatPlotLib (http://matplotlib.sourceforge.net/)
 - ObjectListView (http://objectlistview.sourceforge.net/python/)
-- pyExcelerator (http://sourceforge.net/projects/pyexcelerator/)
+- ~~pyExcelerator (http://sourceforge.net/projects/pyexcelerator/)~~ obsolète depuis la version 1.2.7.3
+- XlsxWriter (https://pypi.org/project/XlsxWriter/) depuis la version 1.2.7.3
 - videoCapture (http://videocapture.sourceforge.net/)
-- Pyttsx (http://pypi.python.org/pypi/pyttsx)
+- Pyttsx (https://pypi.python.org/pypi/pyttsx)
 - Appdirs (https://pypi.python.org/pypi/appdirs)
 - Psutil (https://pypi.python.org/pypi/psutil)
 - Paramiko (https://pypi.python.org/pypi/paramiko)
@@ -55,7 +56,8 @@ Dépendances pour Linux
 - python-matplotlib (Création de graphes)
 - python-xlrd (Traitement de fichiers Excel)
 - python-crypto (pour crypter les sauvegardes)
-- python-excelerator (pour les exports format excel)
+- ~~python-excelerator (pour les exports format excel)~~ obsolète depuis la version 1.2.7.3
+- python-xlsxwriter (pour les exports format excel)
 - python-pyscard (pour pouvoir configurer les procédures de badgeage)
 - python-opencv (pour la détection automatique des visages)
 - python-pip (qui permet d'installer pyttsx et icalendar)
@@ -69,7 +71,7 @@ Ils s'installent depuis le terminal tout simplement avec la commande (**à exéc
 
 ```
 apt-get install python-mysqldb python-dateutil python-numpy python-pil python-reportlab python-matplotlib 
-python-xlrd python-excelerator python-pip python-espeak python-pyscard python-opencv python-crypto python-appdirs
+python-xlrd python-xlsxwriter python-pip python-espeak python-pyscard python-opencv python-crypto python-appdirs
 python-wxgtk3.0 python-sqlalchemy libcanberra-gtk-module python-psutil python-paramiko python-lxml
 ```
 
