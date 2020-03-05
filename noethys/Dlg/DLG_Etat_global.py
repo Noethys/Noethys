@@ -591,17 +591,17 @@ class Dialog(wx.Dialog):
 
         # Préparation des tranches d'âge
         if len(liste_regroupements) == 0 :
-            dict_tranches_age = { 0 : {"label" : u"", "min" : None, "max" : None} }
+            dict_tranches_age = { 0 : {"label" : u"", "min" : -1, "max" : -1} }
         else :
             dict_tranches_age = {}
             indexRegroupement = 0
             for regroupement in liste_regroupements :
                 if indexRegroupement == 0 :
-                    dict_tranches_age[indexRegroupement] = {"label" : _(u"Âge < %d ans") % regroupement, "min" : None, "max" : regroupement}
+                    dict_tranches_age[indexRegroupement] = {"label" : _(u"Âge < %d ans") % regroupement, "min" : -1, "max" : regroupement}
                 else :
                     dict_tranches_age[indexRegroupement] = {"label" : _(u"Âge >= %d et < %d ans") % (liste_regroupements[indexRegroupement-1], regroupement), "min" : liste_regroupements[indexRegroupement-1], "max" : regroupement}
                 indexRegroupement += 1
-                dict_tranches_age[indexRegroupement] = {"label" : _(u"Âge >= %d ans") % regroupement, "min" : regroupement, "max" : None}
+                dict_tranches_age[indexRegroupement] = {"label" : _(u"Âge >= %d ans") % regroupement, "min" : regroupement, "max" : -1}
 
 
         # Récupère le QF de la famille
@@ -656,6 +656,7 @@ class Dialog(wx.Dialog):
         dict_resultats = {}
         listePrestationsTraitees = []
         dict_temps_journalier_individu = {}
+        dict_stats = {"individus": [], "familles": []}
         for IDconso, date, IDindividu, IDunite, IDgroupe, IDactivite, etiquettes, heure_debut, heure_fin, etat, quantite, IDevenement, IDprestation, temps_facture, IDfamille, nomActivite, nomGroupe, nomCategorie, IDcaisse, IDregime, date_naiss in listeDonnees:
             date = UTILS_Dates.DateEngEnDateDD(date)
             mois = date.month
@@ -899,11 +900,11 @@ class Dialog(wx.Dialog):
                 else :
                     for key, dictTemp in dict_tranches_age.items() :
                         if "min" in dictTemp :
-                            if dictTemp["min"] == None and age < dictTemp["max"] :
+                            if dictTemp["min"] == -1 and age < dictTemp["max"] :
                                 index_tranche_age = key
-                            if dictTemp["max"] == None and age >= dictTemp["min"] :
+                            if dictTemp["max"] == -1 and age >= dictTemp["min"] :
                                 index_tranche_age = key
-                            if dictTemp["min"] != None and dictTemp["max"] != None and age >= dictTemp["min"] and age < dictTemp["max"] :
+                            if dictTemp["min"] != -1 and dictTemp["max"] != -1 and age >= dictTemp["min"] and age < dictTemp["max"] :
                                 index_tranche_age = key
 
                 if age == -1 :
@@ -918,6 +919,12 @@ class Dialog(wx.Dialog):
                     # Mémoriser les régimes à afficher
                     if IDregime not in listeRegimesUtilises :
                         listeRegimesUtilises.append(IDregime)
+
+                    # Stats globales
+                    if IDindividu not in dict_stats["individus"]:
+                        dict_stats["individus"].append(IDindividu)
+                    if IDfamille not in dict_stats["familles"]:
+                        dict_stats["familles"].append(IDfamille)
 
                     # Mémorisation du résultat
                     dict_resultats = UTILS_Divers.DictionnaireImbrique(dictionnaire=dict_resultats, cles=[regroupement, index_tranche_age, periode, IDregime], valeur=datetime.timedelta(hours=0, minutes=0))
@@ -975,8 +982,13 @@ class Dialog(wx.Dialog):
         story.append(Spacer(0, 10))
 
         # Insertion du label Paramètres
+
+        styleA = ParagraphStyle(name="A", fontName="Helvetica", fontSize=6, spaceAfter=0)
+        story.append(Paragraph(u"<b>Critères :</b> %s" % labelParametres, styleA))
+
+        txt_stats_globales = u"%d individus | %d familles" % (len(dict_stats["individus"]), len(dict_stats["familles"]))
         styleA = ParagraphStyle(name="A", fontName="Helvetica", fontSize=6, spaceAfter=20)
-        story.append(Paragraph(labelParametres, styleA))       
+        story.append(Paragraph(u"<b>Résultats :</b> %s" % txt_stats_globales, styleA))
 
         # Tri du niveau de regroupement principal
         regroupements = list(dict_resultats.keys())
