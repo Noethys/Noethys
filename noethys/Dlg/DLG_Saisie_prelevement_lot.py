@@ -384,7 +384,11 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
 
         # Init contrôles
-        self.Importation() 
+        self.Importation()
+
+        # Définit le reglement_auto
+        parametres = self.ctrl_parametres.GetParametres()
+        self.ctrl_prelevements.reglement_auto = bool(parametres["reglement_auto"])
         
         self.tracks = MODULE.GetTracks(self.IDlot)
         self.ctrl_prelevements.MAJ(tracks=self.tracks) 
