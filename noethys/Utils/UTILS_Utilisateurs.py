@@ -54,7 +54,7 @@ def GetListeUtilisateurs(nomFichier=""):
         listeDonneesTemp = DB.ResultatReq()
         listeDonnees = []
         for IDutilisateur, sexe, nom, prenom, mdp, profil, actif in listeDonneesTemp :
-            if mdp < 60 :
+            if len(mdp) < 60 :
                 mdpcrypt = SHA256.new(mdp.encode('utf-8')).hexdigest()
             else :
                 mdpcrypt = mdp
