@@ -11,14 +11,11 @@
 
 import Chemins
 from Utils.UTILS_Traduction import _
-
 import wx
-from Ctrl import CTRL_Bouton_image
 import datetime
-import copy
+import six
 import sys
 import traceback
-
 from Utils import UTILS_Conversion
 from Utils import UTILS_Config
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
@@ -145,7 +142,7 @@ class Facturation():
             texte = ""
         for key, valeur, in dictValeurs.items() :
             if key in texte and key.startswith("{"):
-                texte = texte.replace(key, valeur)
+                texte = texte.replace(key, six.text_type(valeur))
         return texte
 
     def GetDonnees(self, listeFactures=[], liste_activites=[], date_debut=None, date_fin=None, date_edition=None, date_echeance=None, prestations=["consommation", "cotisation", "location", "autre"], typeLabel=0, date_anterieure=None):
