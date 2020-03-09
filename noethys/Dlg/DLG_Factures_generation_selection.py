@@ -90,7 +90,10 @@ class Panel(wx.Panel):
         # Paramètres
         self.ctrl_factures.SetParametres(self.parent.dictParametres)
         # Montant
-        montant = UTILS_Parametres.Parametres(mode="get", categorie="generation_factures", nom="cocher_montant_sup", valeur=0.0)
+        try:
+            montant = UTILS_Parametres.Parametres(mode="get", categorie="generation_factures", nom="cocher_montant_sup", valeur=0.0)
+        except:
+            montant = 0.0
         self.ctrl_option_montant.SetMontant(montant)
 
     def CocherMontant(self, event=None):
