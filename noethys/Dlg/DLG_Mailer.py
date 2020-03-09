@@ -60,8 +60,7 @@ class Dialog(wx.Dialog):
         self.box_param_staticbox = wx.StaticBox(self, -1, _(u"Paramètres"))
         self.label_exp = wx.StaticText(self, -1, _(u"Exp. :"))
         self.ctrl_exp = CTRL_Editeur_email.Panel_Expediteur(self)
-        self.check_accuseReception = wx.CheckBox(self, -1, _(u"Accusé de réception"))
-        
+
         # Pièces jointes
         self.box_pieces_staticbox = wx.StaticBox(self, -1, _(u"Pièces jointes communes"))
         self.ctrl_pieces = OL_Pieces_jointes_emails.ListView(self, id=-1, style=wx.LC_NO_HEADER|wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
@@ -108,7 +107,6 @@ class Dialog(wx.Dialog):
         self.bouton_retirer_piece_spec.SetToolTip(wx.ToolTip(_(u"Cliquez pour retirer une pièce jointe personnelle au destinataire sélectionné dans la liste")))
         self.bouton_ajouter_piece.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter une pièce jointe")))
         self.bouton_suppr_piece.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour retirer la pièce jointe sélectionnée dans la liste")))
-        self.check_accuseReception.SetToolTip(wx.ToolTip(_(u"Cochez cette option pour demander un accusé de réception")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez pour obtenir de l'aide")))
         self.bouton_outils.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder aux outils")))
         self.bouton_envoyer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour envoyer le mail")))
@@ -143,8 +141,6 @@ class Dialog(wx.Dialog):
         grid_sizer_param = wx.FlexGridSizer(rows=2, cols=2, vgap=5, hgap=5)
         grid_sizer_param.Add(self.label_exp, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_param.Add(self.ctrl_exp, 1, wx.EXPAND, 0)
-        grid_sizer_param.Add( (5, 5), 1, wx.EXPAND, 0)
-        grid_sizer_param.Add(self.check_accuseReception, 1, wx.EXPAND, 0)
         grid_sizer_param.AddGrowableCol(1)
         box_param.Add(grid_sizer_param, 1, wx.ALL|wx.EXPAND, 5)
         grid_sizer_haut_droit.Add(box_param, 1, wx.EXPAND, 0)        
@@ -161,6 +157,8 @@ class Dialog(wx.Dialog):
         grid_sizer_pieces.AddGrowableCol(0)
         box_pieces.Add(grid_sizer_pieces, 1, wx.ALL|wx.EXPAND, 5)
         grid_sizer_haut_droit.Add(box_pieces, 1, wx.EXPAND, 0)
+
+        grid_sizer_haut_droit.AddGrowableRow(1)
         grid_sizer_haut_droit.AddGrowableCol(0)
         grid_sizer_haut.Add(grid_sizer_haut_droit, 1, wx.EXPAND, 0)
         grid_sizer_haut.AddGrowableRow(0)
@@ -388,9 +386,6 @@ class Dialog(wx.Dialog):
             if self.IsShown() == False : self.ShowModal()
             return
 
-        # Accusé de réception
-        accuseReception = self.check_accuseReception.GetValue()
-        
         # Objet
         sujet = self.ctrl_objet.GetValue()
         if len(sujet) == 0 :
