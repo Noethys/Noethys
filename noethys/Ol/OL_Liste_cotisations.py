@@ -559,8 +559,11 @@ class ListView(FastObjectListView):
         if self.checkColonne == True :
             self.CreateCheckStateColumn(1)
         if tri != None :
-            if self.checkColonne == True : tri += 1
-            self.SetSortColumn(self.columns[tri])
+            try:
+                if self.checkColonne == True : tri += 1
+                self.SetSortColumn(self.columns[tri])
+            except:
+                pass
             
         self.SetEmptyListMsg(_(u"Aucune cotisation"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
