@@ -51,6 +51,7 @@ LISTE_SELECTION_FACTURES = [(0, u"Toutes les factures"), (3, u"Datant de moins d
 LISTE_SELECTION_REGLEMENTS = [(0, u"Tous les règlements"), (3, u"Datant de moins de 3 mois"), (6, u"Datant de moins de 6 mois"), (12, u"Datant de moins de 1 an"), (24, u"Datant de moins de 2 ans"), (36, u"Datant de moins de 3 ans"), (60, u"Datant de moins de 5 ans")]
 LISTE_SELECTION_COTISATIONS = [(0, u"Toutes les cotisations"), (3, u"Datant de moins de 3 mois"), (6, u"Datant de moins de 6 mois"), (12, u"Datant de moins de 1 an"), (24, u"Datant de moins de 2 ans"), (36, u"Datant de moins de 3 ans"), (60, u"Datant de moins de 5 ans")]
 LISTE_SELECTION_RENSEIGNEMENTS = [("masquer", u"Ne pas afficher"), ("consultation", u"Consultation uniquement"), ("modification", u"Consultation et modification autorisées")]
+LISTE_SELECTION_LOCATIONS = [(0, u"Toutes les locations"), (3, u"Datant de moins de 3 mois"), (6, u"Datant de moins de 6 mois"), (12, u"Datant de moins de 1 an"), (24, u"Datant de moins de 2 ans"), (36, u"Datant de moins de 3 ans"), (60, u"Datant de moins de 5 ans")]
 
 
 
@@ -153,6 +154,10 @@ VALEURS_DEFAUT = {
     "cotisations_afficher" : True,
     "cotisations_intro" : _(u"Vous pouvez consulter ici la liste des cotisations."),
     "cotisations_selection" : 0,
+    "locations_afficher": False,
+    "locations_intro": _(u"Vous pouvez consulter ici la liste des locations et emprunts."),
+    "locations_selection": 3,
+    "planning_locations_intro" : _(u"Saisissez des réservations avec la souris directement dans le calendrier avant de valider l'envoi des demandes."),
     "historique_afficher" : True,
     "historique_intro" : _(u"Vous pouvez consulter ici l'historique de vos demandes."),
     "historique_delai" : 0,
@@ -1002,6 +1007,35 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         propriete = wxpg.EnumProperty(label=_(u"Sélection des cotisations à afficher"), labels=[y for x, y in LISTE_SELECTION_COTISATIONS], values=[x for x, y in LISTE_SELECTION_COTISATIONS], name=nom, value=VALEURS_DEFAUT[nom])
         propriete.SetHelpString(_(u"Sélectionnez un critère d'ancienneté pour les cotisations à afficher"))
         propriete.SetAttribute("obligatoire", True)
+        self.Append(propriete)
+
+        # Catégorie
+        self.Append( wxpg.PropertyCategory(_(u"Page 'Locations'")) )
+
+        # Afficher
+        nom = "locations_afficher"
+        propriete = wxpg.BoolProperty(label=_(u"Afficher la page"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Cochez cette case pour afficher cette page"))
+        propriete.SetAttribute("UseCheckbox", True)
+        self.Append(propriete)
+
+        # Intro de la page locations
+        nom = "locations_intro"
+        propriete = wxpg.LongStringProperty(label=_(u"Texte d'introduction"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Saisissez un texte d'introduction"))
+        self.Append(propriete)
+
+        # Sélection des locations à afficher
+        nom = "locations_selection"
+        propriete = wxpg.EnumProperty(label=_(u"Sélection des locations à afficher"), labels=[y for x, y in LISTE_SELECTION_LOCATIONS], values=[x for x, y in LISTE_SELECTION_LOCATIONS], name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Sélectionnez un critère d'ancienneté pour les locations à afficher"))
+        propriete.SetAttribute("obligatoire", True)
+        self.Append(propriete)
+
+        # Intro de la page planning
+        nom = "planning_locations_intro"
+        propriete = wxpg.LongStringProperty(label=_(u"Texte d'introduction du calendrier des locations"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Saisissez un texte d'introduction pour le calendrier des locations"))
         self.Append(propriete)
 
         # Catégorie

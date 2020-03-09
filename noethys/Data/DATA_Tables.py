@@ -1605,6 +1605,15 @@ DB_DATA = {
                                      ("IDaction", "INTEGER", u"ID de l'action"),
                                      ],  # Renseignements enregistrés sur le portail
 
+    "portail_reservations_locations":[("IDreservation", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID réservation"),
+                                    ("date_debut", "DATETIME", u"Date de début de la réservation"),
+                                    ("date_fin", "DATETIME", u"Date de fin de la réservation"),
+                                    ("IDlocation", "VARCHAR(255)", u"ID de la location"),
+                                    ("IDproduit", "INTEGER", u"ID du produit associé"),
+                                    ("IDaction", "INTEGER", u"ID de l'action"),
+                                    ("etat", "VARCHAR(100)", u"ajouter, modifier ou supprimer"),
+                                    ("resultat", "VARCHAR(100)", u"Résultat du traitement"),
+                                    ], # Réservations de locations enregistrées sur le portail
 
     "portail_messages":             [("IDmessage", "INTEGER PRIMARY KEY AUTOINCREMENT", u"IDmessage"),
                                     ("titre", "VARCHAR(255)", u"Titre du message"),
@@ -1675,6 +1684,7 @@ DB_DATA = {
                                     ("date_debut", "DATETIME", u"Date et heure de début de location"),
                                     ("date_fin", "DATETIME", u"Date et heure de fin de location"),
                                     ("quantite", "INTEGER", u"Quantité du produit"),
+                                    ("IDlocation_portail", "VARCHAR(100)", u"IDlocation sur le portail"),
                                     ],  # Locations
 
 

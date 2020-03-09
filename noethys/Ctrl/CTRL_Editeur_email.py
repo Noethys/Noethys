@@ -42,6 +42,7 @@ CATEGORIES = [
     ("portail_demande_renseignement", _(u"Portail - Demande de modification d'un renseignement")),
     ("portail_demande_facture", _(u"Portail - Demande d'une facture")),
     ("portail_demande_recu_reglement", _(u"Portail - Demande d'un reçu de règlement")),
+    ("portail_demande_location", _(u"Portail - Demande d'une location")),
     ("location", _(u"Location")),
     ("location_demande", _(u"Demande de location")),
     ("commande_repas", _(u"Commande de repas")),
@@ -194,6 +195,14 @@ MOTSCLES = {
                 ],
 
     "portail_demande_renseignement": [
+        ("{DEMANDE_HORODATAGE}", _(u"Date et heure de la demande")),
+        ("{DEMANDE_DESCRIPTION}", _(u"Description de la demande")),
+        ("{DEMANDE_COMMENTAIRE}", _(u"Commentaire de la demande")),
+        ("{DEMANDE_TRAITEMENT_DATE}", _(u"Date de traitement")),
+        ("{DEMANDE_REPONSE}", _(u"Réponse à la demande")),
+    ],
+
+    "portail_demande_location": [
         ("{DEMANDE_HORODATAGE}", _(u"Date et heure de la demande")),
         ("{DEMANDE_DESCRIPTION}", _(u"Description de la demande")),
         ("{DEMANDE_COMMENTAIRE}", _(u"Commentaire de la demande")),

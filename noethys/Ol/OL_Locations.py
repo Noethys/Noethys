@@ -221,7 +221,7 @@ class ListView(FastObjectListView):
             if temps_restant == None:
                 return ""
             else:
-                return int(temps_restant)
+                return str(temps_restant)
 
         def GetImageReste(track):
             if track.temps_restant != None:

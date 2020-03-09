@@ -459,9 +459,12 @@ class DB:
         except Exception as err:
             print(_(u"Requete sql de mise a jour incorrecte :\n%s\nErreur detectee:\n%s") % (req, err))
         
-    def ReqDEL(self, nomTable="", nomChampID="", ID="", commit=True):
+    def ReqDEL(self, nomTable="", nomChampID="", ID="", commit=True, IDestChaine=False):
         """ Suppression d'un enregistrement """
-        req = "DELETE FROM %s WHERE %s=%d" % (nomTable, nomChampID, ID)
+        if IDestChaine == False:
+            req = "DELETE FROM %s WHERE %s=%d" % (nomTable, nomChampID, ID)
+        else:
+            req = "DELETE FROM %s WHERE %s='%s'" % (nomTable, nomChampID, ID)
         try:
             self.cursor.execute(req)
             if commit == True :
@@ -1278,7 +1281,7 @@ if __name__ == "__main__":
                 
     # Création d'une table données
     # db = DB(suffixe="DATA")
-    # listeTables = ("devis",)
+    # listeTables = ("portail_reservations_locations",)
     # for nomTable in listeTables :
     #     db.CreationTable(nomTable, Tables.DB_DATA)
     # db.Close()
@@ -1313,13 +1316,13 @@ if __name__ == "__main__":
         
     # # Ajouter un champ
     # db = DB(suffixe="DATA")
-    # db.AjoutChamp("lots_prelevements", "motif", "VARCHAR(300)")
+    # db.AjoutChamp("portail_reservations_locations", "resultat", "VARCHAR(100)")
     # db.Close()
 
     # # Exportation d'une table dans la base DEFAUT
-    # db = DB(suffixe="DATA")
-    # db.Exportation_vers_base_defaut(nomTable="documents_objets")
-    # db.Close()
+    db = DB(suffixe="DATA")
+    db.Exportation_vers_base_defaut(nomTable="modeles_emails")
+    db.Close()
     
     # Réparation d'une table
 ##    db = DB(suffixe="DATA")

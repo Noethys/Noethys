@@ -10,6 +10,7 @@
 
 
 import re
+from Utils.UTILS_Traduction import _
 
 
 def Supprime_accent(texte):
@@ -31,11 +32,20 @@ def ConvertStrToListe(texte=None, siVide=[], separateur=";", typeDonnee="entier"
         listeResultats.append(ID)
     return listeResultats
 
-
 def ConvertListeToStr(liste=[], separateur=";"):
     """ Convertit une liste en texte """
     if liste == None : liste = []
     return separateur.join([str(x) for x in liste])
+
+def ConvertListeToPhrase(liste):
+    if len(liste) == 0:
+        return _(u"")
+    elif len(liste) == 1:
+        return liste[0]
+    elif len(liste) == 2:
+        return _(u" et ").join(liste)
+    else:
+        return _(u"%s et %s") % (u", ".join(liste[:-1]), liste[-1])
 
 def Incrementer(s):
     """ look for the last sequence of number(s) in a string and increment """

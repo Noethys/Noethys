@@ -625,6 +625,7 @@ class Dialog(wx.Dialog):
             "inscriptions" : "Activite.png",
             "reservations" : "Calendrier_modifier.png",
             "renseignements": "Cotisation.png",
+            "locations": "Location.png",
             "compte": "Mecanisme.png",
             }
         self.ctrl_image.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/32x32/%s" % dict_images[self.track.categorie]), wx.BITMAP_TYPE_PNG))
@@ -739,6 +740,34 @@ class Dialog(wx.Dialog):
             # Rajout du détail des renseignements
             description += u"<p><ul>%s</ul></p>" % "".join(liste_lignes)
 
+        if self.track.categorie == "locations" :
+
+            # Recherche le détail des réservations associées
+            DB = GestionDB.DB()
+            req = """SELECT IDreservation, date_debut, date_fin, IDlocation, portail_reservations_locations.IDproduit, etat, produits.nom
+            FROM portail_reservations_locations
+            LEFT JOIN produits ON produits.IDproduit = portail_reservations_locations.IDproduit
+            WHERE IDaction=%d ORDER BY date_debut;""" % self.track.IDaction
+            DB.ExecuterReq(req)
+            listeDonnees = DB.ResultatReq()
+            DB.Close()
+            liste_lignes = []
+            for IDreservation, date_debut, date_fin, IDlocation, IDproduit, etat, nom_produit in listeDonnees :
+                date_debut = UTILS_Dates.DateEngEnDateDDT(date_debut)
+                date_fin = UTILS_Dates.DateEngEnDateDDT(date_fin)
+                if etat == "ajouter":
+                    action = _(u"Ajout")
+                elif etat == "modifier":
+                    action = _(u"Modification")
+                else :
+                    action = _(u"Suppression")
+                ligne = _(u"<li>%s du %s au %s (%s)</li>") % (action, date_debut.strftime("%d/%m/%Y %H:%M"), date_fin.strftime("%d/%m/%Y %H:%M"), nom_produit)
+                liste_lignes.append(ligne)
+
+            description += u" :"
+
+            # Rajout du détail des réservations
+            description += u"<p><ul>%s</ul></p>" % "".join(liste_lignes)
 
         self.ctrl_description.SetTexte(description)
 
@@ -765,6 +794,7 @@ class Dialog(wx.Dialog):
         elif self.track.categorie == "factures" : self.categorie_email = "portail_demande_facture"
         elif self.track.categorie == "inscriptions" : self.categorie_email = "portail_demande_inscription"
         elif self.track.categorie == "renseignements": self.categorie_email = "portail_demande_renseignement"
+        elif self.track.categorie == "locations": self.categorie_email = "portail_demande_location"
         else : self.categorie_email = None
         self.ctrl_modele_email.SetCategorie(self.categorie_email)
 
@@ -1051,6 +1081,10 @@ class Traitement():
         # Traitement des renseignements
         if self.track.categorie == "renseignements" :
             resultat = self.Traitement_renseignements()
+
+        # Traitement des locations
+        if self.track.categorie == "locations" :
+            resultat = self.Traitement_locations()
 
         # Traitement du compte
         if self.track.categorie == "compte" :
@@ -1408,6 +1442,35 @@ class Traitement():
 
             else :
                 dlg.Destroy()
+                return {"etat": True, "reponse": reponse}
+
+    def Traitement_locations(self):
+        if self.mode == "manuel":
+            from Dlg import DLG_Portail_locations
+            dlg = DLG_Portail_locations.Dialog(self, track=self.track)
+            reponse_modal = dlg.ShowModal()
+            reponse = dlg.GetReponse()
+            dlg.Destroy()
+            if reponse_modal == wx.ID_OK :
+                self.EcritLog(_(u"Enregistrement des locations"))
+                if reponse == "":
+                    return {"etat": False, "reponse": reponse}
+                else :
+                    return {"etat": True, "reponse": reponse}
+            else :
+                self.EcritLog(_(u"Traitement annulé par l'utilisateur"))
+                return {"etat": False}
+
+        if self.mode == "automatique":
+            from Dlg import DLG_Portail_locations
+            dlg = DLG_Portail_locations.Dialog(self, track=self.track)
+            dlg.OnBoutonTraiter()
+            reponse = dlg.GetReponse()
+            dlg.OnBoutonFermer()
+            self.EcritLog(_(u"Enregistrement des locations"))
+            if reponse == "":
+                return {"etat": False, "reponse": reponse}
+            else :
                 return {"etat": True, "reponse": reponse}
 
     def Traitement_compte(self):

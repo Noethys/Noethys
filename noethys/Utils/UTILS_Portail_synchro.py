@@ -100,7 +100,7 @@ class Synchro():
 
     def Synchro_totale(self, full_synchro=False):
         t1 = time.time()
-        self.nbre_etapes = 25
+        self.nbre_etapes = 26
         self.log.EcritLog(_(u"Lancement de la synchronisation..."))
 
         # Téléchargement des données en ligne
@@ -551,6 +551,9 @@ class Synchro():
         session.add(models.Parametre(nom="PIECES_AUTORISER_TELECHARGEMENT", parametre=str(self.dict_parametres["pieces_autoriser_telechargement"])))
         session.add(models.Parametre(nom="COTISATIONS_AFFICHER", parametre=str(self.dict_parametres["cotisations_afficher"])))
         session.add(models.Parametre(nom="COTISATIONS_INTRO", parametre=self.dict_parametres["cotisations_intro"]))
+        session.add(models.Parametre(nom="LOCATIONS_AFFICHER", parametre=str(self.dict_parametres["locations_afficher"])))
+        session.add(models.Parametre(nom="LOCATIONS_INTRO", parametre=self.dict_parametres["locations_intro"]))
+        session.add(models.Parametre(nom="PLANNING_LOCATIONS_INTRO", parametre=self.dict_parametres["planning_locations_intro"]))
         session.add(models.Parametre(nom="HISTORIQUE_AFFICHER", parametre=str(self.dict_parametres["historique_afficher"])))
         session.add(models.Parametre(nom="HISTORIQUE_INTRO", parametre=self.dict_parametres["historique_intro"]))
         session.add(models.Parametre(nom="HISTORIQUE_DELAI", parametre=str(self.dict_parametres["historique_delai"])))
@@ -874,6 +877,56 @@ class Synchro():
         liste_tables_modifiees.append("cotisations")
 
 
+        # Création des locations
+        self.Pulse_gauge()
+
+        if self.dict_parametres["locations_afficher"]:
+
+            # Création de la liste des catégories de produits
+            req = """SELECT IDcategorie, nom FROM produits_categories;"""
+            DB.ExecuterReq(req)
+            listeCatProduits = DB.ResultatReq()
+            for IDcategorie, nom in listeCatProduits:
+                m = models.Categorie_produit(IDcategorie=IDcategorie, nom=nom)
+                session.add(m)
+
+            liste_tables_modifiees.append("categories_produits")
+
+            # Création de la liste des produits
+            req = """SELECT IDproduit, produits.IDcategorie, produits.nom, quantite, montant, produits_categories.nom
+            FROM produits
+            LEFT JOIN produits_categories ON produits_categories.IDcategorie = produits.IDcategorie
+            ;"""
+            DB.ExecuterReq(req)
+            listeProduits = DB.ResultatReq()
+            for IDproduit, IDcategorie, nom, quantite, montant, nom_categorie in listeProduits:
+                m = models.Produit(IDproduit=IDproduit, IDcategorie=IDcategorie, nom=nom, quantite=quantite, montant=montant, nom_categorie=nom_categorie)
+                session.add(m)
+
+            liste_tables_modifiees.append("produits")
+
+            # Création de la liste des locations
+            if self.dict_parametres["locations_selection"] == 0 :
+                conditions_locations = ""
+            else :
+                nbre_mois = self.dict_parametres["locations_selection"]
+                date_limite = datetime.date.today() + relativedelta.relativedelta(months=-nbre_mois)
+                conditions_locations = "WHERE locations.date_fin >= '%s'" % date_limite
+
+            req = """SELECT IDlocation, IDfamille, IDproduit, date_saisie, date_debut, date_fin, quantite
+            FROM locations 
+            %s
+            ;""" % conditions_locations
+            DB.ExecuterReq(req)
+            listeLocations = DB.ResultatReq()
+            for IDlocation, IDfamille, IDproduit, date_saisie, date_debut, date_fin, quantite in listeLocations:
+                date_debut = UTILS_Dates.DateEngEnDateDDT(date_debut)
+                date_fin = UTILS_Dates.DateEngEnDateDDT(date_fin)
+                m = models.Location(IDlocation=IDlocation, IDfamille=IDfamille, IDproduit=IDproduit, date_debut=date_debut, date_fin=date_fin, quantite=quantite)
+                session.add(m)
+
+            liste_tables_modifiees.append("locations")
+
         # Création des activités
         self.Pulse_gauge()
 
@@ -1122,55 +1175,55 @@ class Synchro():
             liste_tables_modifiees.append("consommations")
 
 
-        # Création de la pré-facturation
+            # Création de la pré-facturation
 
-        # Récupère la ventilation
-        req = """SELECT ventilation.IDprestation, SUM(ventilation.montant)
-        FROM ventilation
-        LEFT JOIN prestations ON prestations.IDprestation = ventilation.IDprestation
-        WHERE IDfacture IS NULL AND %s
-        GROUP BY prestations.IDPrestation;""" % texteConditions
-        DB.ExecuterReq(req)
-        listeVentilations = DB.ResultatReq()
-        dict_ventilation = {}
-        for IDprestation, montant in listeVentilations:
-            dict_ventilation[IDprestation] = FloatToDecimal(montant)
+            # Récupère la ventilation
+            req = """SELECT ventilation.IDprestation, SUM(ventilation.montant)
+            FROM ventilation
+            LEFT JOIN prestations ON prestations.IDprestation = ventilation.IDprestation
+            WHERE IDfacture IS NULL AND %s
+            GROUP BY prestations.IDPrestation;""" % texteConditions
+            DB.ExecuterReq(req)
+            listeVentilations = DB.ResultatReq()
+            dict_ventilation = {}
+            for IDprestation, montant in listeVentilations:
+                dict_ventilation[IDprestation] = FloatToDecimal(montant)
 
-        # Récupère les prestations
-        req = """SELECT IDprestation, IDfamille, IDactivite, date, montant
-        FROM prestations
-        WHERE IDfacture IS NULL AND %s;""" % texteConditions
-        DB.ExecuterReq(req)
-        listePrestations = DB.ResultatReq()
-        dict_prestations = {}
-        for IDprestation, IDfamille, IDactivite, date, montant in listePrestations:
-            date = UTILS_Dates.DateEngEnDateDD(date)
-            montant = FloatToDecimal(montant)
-            if (IDfamille in dict_prestations) == False :
-                dict_prestations[IDfamille] = {}
+            # Récupère les prestations
+            req = """SELECT IDprestation, IDfamille, IDactivite, date, montant
+            FROM prestations
+            WHERE IDfacture IS NULL AND %s;""" % texteConditions
+            DB.ExecuterReq(req)
+            listePrestations = DB.ResultatReq()
+            dict_prestations = {}
+            for IDprestation, IDfamille, IDactivite, date, montant in listePrestations:
+                date = UTILS_Dates.DateEngEnDateDD(date)
+                montant = FloatToDecimal(montant)
+                if (IDfamille in dict_prestations) == False :
+                    dict_prestations[IDfamille] = {}
 
-            # Recherche la période correspondante
-            IDperiode = None
-            if IDactivite in dict_periodes:
-                for dictPeriode in dict_periodes[IDactivite]:
-                    if date >= dictPeriode["date_debut"] and date <= dictPeriode["date_fin"]:
-                        IDperiode = dictPeriode["IDperiode"]
+                # Recherche la période correspondante
+                IDperiode = None
+                if IDactivite in dict_periodes:
+                    for dictPeriode in dict_periodes[IDactivite]:
+                        if date >= dictPeriode["date_debut"] and date <= dictPeriode["date_fin"]:
+                            IDperiode = dictPeriode["IDperiode"]
 
-            if IDperiode != None :
-                if (IDperiode in dict_prestations[IDfamille]) == False :
-                    dict_prestations[IDfamille][IDperiode] = {"montant" : FloatToDecimal(0.0), "montant_regle" : FloatToDecimal(0.0), "montant_solde" : FloatToDecimal(0.0)}
-                dict_prestations[IDfamille][IDperiode]["montant"] += montant
-                dict_prestations[IDfamille][IDperiode]["montant_regle"] += dict_ventilation.get(IDprestation, FloatToDecimal(0.0))
-                dict_prestations[IDfamille][IDperiode]["montant_solde"] = dict_prestations[IDfamille][IDperiode]["montant"] - dict_prestations[IDfamille][IDperiode]["montant_regle"]
+                if IDperiode != None :
+                    if (IDperiode in dict_prestations[IDfamille]) == False :
+                        dict_prestations[IDfamille][IDperiode] = {"montant" : FloatToDecimal(0.0), "montant_regle" : FloatToDecimal(0.0), "montant_solde" : FloatToDecimal(0.0)}
+                    dict_prestations[IDfamille][IDperiode]["montant"] += montant
+                    dict_prestations[IDfamille][IDperiode]["montant_regle"] += dict_ventilation.get(IDprestation, FloatToDecimal(0.0))
+                    dict_prestations[IDfamille][IDperiode]["montant_solde"] = dict_prestations[IDfamille][IDperiode]["montant"] - dict_prestations[IDfamille][IDperiode]["montant_regle"]
 
-        # Enregistrement de la table prefacturation
-        for IDfamille, dictPeriode in dict_prestations.items():
-            for IDperiode, dict_montants in dictPeriode.items():
-                m = models.Prefacturation(IDfamille=IDfamille, IDperiode=IDperiode, montant=float(dict_montants["montant"]),
-                                          montant_regle=float(dict_montants["montant_regle"]), montant_solde=float(dict_montants["montant_solde"]))
-                session.add(m)
+            # Enregistrement de la table prefacturation
+            for IDfamille, dictPeriode in dict_prestations.items():
+                for IDperiode, dict_montants in dictPeriode.items():
+                    m = models.Prefacturation(IDfamille=IDfamille, IDperiode=IDperiode, montant=float(dict_montants["montant"]),
+                                              montant_regle=float(dict_montants["montant_regle"]), montant_solde=float(dict_montants["montant_solde"]))
+                    session.add(m)
 
-        liste_tables_modifiees.append("prefacturation")
+            liste_tables_modifiees.append("prefacturation")
 
         # Création des actions
         self.Pulse_gauge()
@@ -1467,6 +1520,7 @@ class Synchro():
             listeActions = []
             listeReservations = []
             listeRenseignements = []
+            listeLocations = []
             listePasswordsFamilles = []
             listePasswordsUtilisateurs = []
 
@@ -1507,10 +1561,7 @@ class Synchro():
                     # Mémorisation des réservations
                     if len(action["reservations"]) > 0 :
                         for reservation in action["reservations"] :
-                            listeReservations.append([
-                                    reservation["date"], reservation["IDinscription"],
-                                    reservation["IDunite"], prochainIDaction, reservation["etat"],
-                                    ])
+                            listeReservations.append([reservation["date"], reservation["IDinscription"], reservation["IDunite"], prochainIDaction, reservation["etat"]])
 
                     # Mémorisation des renseignements
                     if "renseignements" in action:
@@ -1518,6 +1569,11 @@ class Synchro():
                             for renseignement in action["renseignements"] :
                                 valeur = cryptage.decrypt(renseignement["valeur"])
                                 listeRenseignements.append([renseignement["champ"], valeur, prochainIDaction])
+
+                    # Mémorisation des locations
+                    if len(action["locations"]) > 0 :
+                        for location in action["locations"] :
+                            listeLocations.append([location["date_debut"], location["date_fin"], location["IDlocation"], location["IDproduit"], prochainIDaction, location["etat"]])
 
                     prochainIDaction += 1
 
@@ -1528,6 +1584,8 @@ class Synchro():
                 DB.Executermany("INSERT INTO portail_reservations (date, IDinscription, IDunite, IDaction, etat) VALUES (?, ?, ?, ?, ?)", listeReservations, commit=False)
             if len(listeRenseignements) > 0 :
                 DB.Executermany("INSERT INTO portail_renseignements (champ, valeur, IDaction) VALUES (?, ?, ?)", listeRenseignements, commit=False)
+            if len(listeLocations) > 0 :
+                DB.Executermany("INSERT INTO portail_reservations_locations (date_debut, date_fin, IDlocation, IDproduit, IDaction, etat) VALUES (?, ?, ?, ?, ?, ?)", listeLocations, commit=False)
             if len(listePasswordsFamilles) > 0 :
                 DB.Executermany("UPDATE familles SET internet_mdp=? WHERE IDfamille=?", listePasswordsFamilles, commit=False)
                 if len(listePasswordsFamilles) == 1:

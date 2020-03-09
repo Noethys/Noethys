@@ -397,7 +397,7 @@ class Location():
 
 # -------------------------------------------------------------------------------------------------------------------------------------------
 
-def GetStockDisponible(DB=None, IDproduit=None, date_debut=None, date_fin=None, IDlocation_exception=None):
+def GetStockDisponible(DB=None, IDproduit=None, date_debut=None, date_fin=None, IDlocation_exception=None, IDlocation_portail_exception=None):
     """ Recherche si un produit est disponible sur une période donnée """
     if DB == None:
         DBT = GestionDB.DB()
@@ -424,10 +424,13 @@ def GetStockDisponible(DB=None, IDproduit=None, date_debut=None, date_fin=None, 
         stock_initial = 1
 
     # Recherche les locations du produit sur la période
+    condition = ""
+    if IDlocation_portail_exception:
+        condition = "AND IDlocation_portail<>'%s'" % IDlocation_portail_exception
     req = """SELECT IDlocation, IDfamille, date_debut, date_fin, quantite
     FROM locations
-    WHERE locations.IDproduit=%d AND date_debut<='%s' AND (date_fin IS NULL OR date_fin>='%s') AND IDlocation<>%d
-    ;""" % (IDproduit, date_fin, date_debut, IDlocation_exception)
+    WHERE locations.IDproduit=%d AND date_debut<='%s' AND (date_fin IS NULL OR date_fin>='%s') AND IDlocation<>%d %s
+    ;""" % (IDproduit, date_fin, date_debut, IDlocation_exception, condition)
     DBT.ExecuterReq(req)
     listeDonnees = DBT.ResultatReq()
     listeLocations = []

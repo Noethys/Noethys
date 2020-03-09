@@ -1395,8 +1395,14 @@ class DB(GestionDB.DB):
         if versionFichier < versionFiltre:
             try:
                 if self.IsTableExists("devis") == False: self.CreationTable("devis", Tables.DB_DATA)
+                if self.IsTableExists("portail_reservations_locations") == False: self.CreationTable("portail_reservations_locations", Tables.DB_DATA)
+                self.AjoutChamp("locations", "IDlocation_portail", "VARCHAR(100)")
+                # import modèle doc devis par défaut
                 from Utils import UTILS_Export_documents
-                UTILS_Export_documents.ImporterDepuisFichierDefaut(IDmodele=14, nom=None, IDfond=1, defaut=1) # import modèle doc devis par défaut
+                UTILS_Export_documents.ImporterDepuisFichierDefaut(IDmodele=14, nom=None, IDfond=1, defaut=1)
+                # Importation du modèle d'emails 'Réservation location portail'
+                from Utils import UTILS_Procedures
+                UTILS_Procedures.A9054()
             except Exception as err:
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
