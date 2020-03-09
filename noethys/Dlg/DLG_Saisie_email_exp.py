@@ -13,6 +13,7 @@ import Chemins
 from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
+import six
 from Ctrl import CTRL_Bouton_image
 import GestionDB
 import datetime
@@ -54,7 +55,7 @@ class Page_SMTP(wx.Panel):
         for fai, smtp, port, auth, startTLS in self.listeServeurs:
             listeServeursChoices.append(fai)
 
-        self.static_sizer_adresse_staticbox = wx.StaticBox(self, -1, _(u"Adresse de messagerie"))
+        # Serveur
         self.static_sizer_serveur_staticbox = wx.StaticBox(self, -1, _(u"Serveur de messagerie"))
         self.radio_predefini = wx.RadioButton(self, -1, "")
         self.label_predefini = wx.StaticText(self, -1, _(u"Serveur prédéfini :"))
@@ -69,6 +70,9 @@ class Page_SMTP(wx.Panel):
         self.ctrl_authentification = wx.CheckBox(self, -1, "")
         self.label_startTLS = wx.StaticText(self, -1, _(u"TLS :"))
         self.ctrl_startTLS = wx.CheckBox(self, -1, "")
+
+        # Adresse
+        self.static_sizer_adresse_staticbox = wx.StaticBox(self, -1, _(u"Adresse de messagerie"))
         self.label_adresse = wx.StaticText(self, -1, _(u"Adresse d'envoi :"))
         self.ctrl_adresse = wx.TextCtrl(self, -1, "")
         self.label_nom_adresse = wx.StaticText(self, -1, _(u"Nom affiché :"))
@@ -78,6 +82,10 @@ class Page_SMTP(wx.Panel):
         self.label_mdp = wx.StaticText(self, -1, _(u"Mot de passe :"))
         self.ctrl_mdp = wx.TextCtrl(self, -1, "", style=wx.TE_PASSWORD)
         self.ctrl_mdp.Enable(False)
+
+        # Options
+        self.static_sizer_options_staticbox = wx.StaticBox(self, -1, _(u"Options"))
+        self.ctrl_notification = wx.CheckBox(self, -1, _(u"Accusé de réception"))
 
         # Binds
         self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioServeur, self.radio_predefini )
@@ -98,6 +106,7 @@ class Page_SMTP(wx.Panel):
         self.ctrl_utilisateur.SetToolTip(wx.ToolTip(_(u"Saisissez ici votre nom d'utilisateur (il s'agit souvent de l'adresse d'envoi)")))
         self.ctrl_mdp.SetToolTip(wx.ToolTip(_(u"Saisissez ici le mot de passe s'il s'agit d'une connexion authentifiée")))
         self.ctrl_startTLS.SetToolTip(wx.ToolTip(_(u"Cochez cette case si votre messagerie utilise le protocole TLS")))
+        self.ctrl_notification.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour demander à recevoir un accusé de réception (Attention : Ne fonctionne qu'avec certaines messageries)")))
 
         # Layout
         grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
@@ -157,6 +166,11 @@ class Page_SMTP(wx.Panel):
         static_sizer_adresse = wx.StaticBoxSizer(self.static_sizer_adresse_staticbox, wx.VERTICAL)
         static_sizer_adresse.Add(grid_sizer_adresse, 1, wx.ALL|wx.EXPAND, 10)
         grid_sizer_base.Add(static_sizer_adresse, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
+
+        # Options
+        static_sizer_options = wx.StaticBoxSizer(self.static_sizer_options_staticbox, wx.VERTICAL)
+        static_sizer_options.Add(self.ctrl_notification, 1, wx.ALL|wx.EXPAND, 10)
+        grid_sizer_base.Add(static_sizer_options, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
 
         self.SetSizer(grid_sizer_base)
         grid_sizer_base.Fit(self)
@@ -260,10 +274,13 @@ class Page_SMTP(wx.Panel):
             else:
                 startTLS = 0
 
+        # Options
+        parametres = "notification==%d" % int(self.ctrl_notification.GetValue())
+
         # Renvoie un dict des données
         dict_donnees = {
             "moteur": "smtp", "adresse": adresse, "nom_adresse": nom_adresse, "motdepasse": motdepasse, "smtp": smtp, "port": port,
-            "auth": auth, "startTLS": startTLS, "utilisateur": utilisateur, "parametres":None}
+            "auth": auth, "startTLS": startTLS, "utilisateur": utilisateur, "parametres":parametres}
         return dict_donnees
 
     def SetDonnees(self, dictDonnees={}):
@@ -275,6 +292,18 @@ class Page_SMTP(wx.Panel):
 
         if dictDonnees["utilisateur"] != None:
             self.ctrl_utilisateur.SetValue(dictDonnees["utilisateur"])
+
+        # Paramètres
+        parametres = dictDonnees.get("parametres", None)
+        dict_parametres = {}
+        if parametres not in ("", None):
+            liste_parametres = parametres.split("##")
+            for texte in liste_parametres:
+                nom, valeur = texte.split("==")
+                dict_parametres[nom] = valeur
+
+        # Options
+        self.ctrl_notification.SetValue(int(dict_parametres.get("notification", 0)))
 
         # Recherche si les paramètres correspondent à un serveur prédéfini
         index = 0
@@ -388,9 +417,10 @@ class Page_MAILJET(wx.Panel):
         self.ctrl_infos = CTRL_Infos(self)
 
         self.ctrl_infos.SetLabel(u"""<FONT SIZE=2><IMG SRC="%s">
-        Mailjet est un service d'envoi d'emails que vous pouvez découvrir sur https://fr.mailjet.com.
-        Vous pouvez récupérer votre clé API et votre clé secrète sur la page 'Paramètres SMTP' de votre compte Mailjet.
-        N'oubliez pas de saisir sur la page 'Domaines et adresses d'expéditeur' de votre compte l'adresse d'expédition que vous renseignez ici.
+        Mailjet est un service d'envoi d'emails qui facilite l'envoi et le suivi de vos emails.
+        Vous devez créer un compte Mailjet gratuit ou payant puis récupérer votre clé API et votre clé secrète sur la page 'Paramètres SMTP' de votre compte Mailjet. <br><br>
+        N'oubliez pas de saisir sur la page 'Domaines et adresses d'expéditeur' de votre compte Mailjet l'adresse d'expédition que vous renseignez ici.<br><br>
+        Pour en savoir davantage sur Mailjet, consultez la page <A HREF="https://fr.mailjet.com">https://fr.mailjet.com</A>
         """ % Chemins.GetStaticPath(u"Images/16x16/Astuce.png"))
 
         # Properties
@@ -670,7 +700,9 @@ class Dialog(wx.Dialog):
             messagerie.Envoyer(message)
             messagerie.Fermer()
         except Exception as err:
-            err = str(err).decode("iso-8859-15")
+            err = str(err)
+            if six.PY2:
+                err = err.decode("iso-8859-15")
             intro = _(u"L'envoi de l'email de test est impossible :")
             conclusion = _(u"Vérifiez votre connexion internet ou les paramètres de votre adresse d'expédition.")
             dlgErreur = DLG_Messagebox.Dialog(self, titre=_(u"Erreur"), introduction=intro, detail=err, conclusion=conclusion, icone=wx.ICON_ERROR, boutons=[_(u"Ok"),])

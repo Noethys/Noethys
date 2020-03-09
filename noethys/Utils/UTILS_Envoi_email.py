@@ -597,12 +597,21 @@ class SmtpV2(Base_messagerie):
 
 
     def Envoyer(self, message=None):
+        headers = {}
+
+        # Accusé de réception
+        notification = self.dict_parametres.get("notification", 0)
+        if notification == "1":
+            headers["Return-Receipt-To"] = self.from_email
+            headers["Disposition-Notification-To"] = self.from_email
+
         email = mail.EmailMultiAlternatives(
             subject=message.sujet,
             body=message.texte_plain,
             from_email=self.from_email,
             to=message.destinataires,
             connection=self.connection,
+            headers=headers,
         )
 
         email.attach_alternative(message.texte_html, "text/html")
