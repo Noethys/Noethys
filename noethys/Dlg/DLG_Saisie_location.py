@@ -341,6 +341,8 @@ class Dialog(wx.Dialog):
 
         if IDfamille != None :
             self.ctrl_loueur.SetIDfamille(IDfamille)
+
+        if self.liste_initiale_IDprestation:
             self.bouton_loueur.Show(False)
 
         if IDproduit != None :
