@@ -138,7 +138,7 @@ class CTRL(CT.CustomTreeCtrl):
                 self.SetItemBold(niveauRubrique, True)
 
                 for anomalie in listeAnomalies :
-                    if anomalie.correction_manuelle == True:
+                    if anomalie.correction_manuelle == False:
                         niveauAnomalie = self.AppendItem(niveauRubrique, anomalie.label, ct_type=1)
                         self.SetPyData(niveauAnomalie, {"type" : "anomalie", "anomalie" : anomalie})
                     else:
