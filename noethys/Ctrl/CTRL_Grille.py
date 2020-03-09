@@ -3393,7 +3393,10 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         # Si la famille n'a pas de QF, on attribue le QF le plus élevé :
         listeQF = []
         for ligneCalcul in dictTarif["lignes_calcul"] :
-            listeQF.append(float(ligneCalcul["qf_max"]))
+            qf = ligneCalcul["qf_max"]
+            if qf:
+                qf = float(qf)
+            listeQF.append(qf)
         listeQF.sort()
         if len(listeQF) > 0 :
             if listeQF[-1] != None :
