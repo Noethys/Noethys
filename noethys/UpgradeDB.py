@@ -1408,6 +1408,19 @@ class DB(GestionDB.DB):
 
         # =============================================================
 
+        versionFiltre = (1, 2, 7, 6)
+        if versionFichier < versionFiltre:
+            try:
+                self.AjoutChamp("lots_prelevements", "identifiant_service", "VARCHAR(200)")
+                self.AjoutChamp("lots_prelevements", "poste_comptable", "VARCHAR(200)")
+            except Exception as err:
+                return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
+
+        # =============================================================
+
+
+
+
 
         return True
 

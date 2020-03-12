@@ -13,7 +13,12 @@ import Chemins
 from Utils.UTILS_Traduction import _
 import datetime
 import string
+import six
 from xml.dom.minidom import Document
+from six.moves.urllib.request import urlretrieve
+from Utils import UTILS_Fichiers
+import zipfile
+from lxml import etree
 
 
 def GetLigneEmetteur(dictDonnees={}) :
@@ -201,6 +206,7 @@ def GetXMLSepa(dictDonnees):
     
     # Variables principales
     type_remise = dictDonnees["type_remise"]
+    nom_fichier = dictDonnees["nom_fichier"]
     remise_nom = dictDonnees["remise_nom"]
     remise_date_heure = dictDonnees["remise_date_heure"]
     remise_nbre = dictDonnees["remise_nbre"]
@@ -236,7 +242,10 @@ def GetXMLSepa(dictDonnees):
     # MsgId
     MsgId = doc.createElement("MsgId")
     GrpHdr.appendChild(MsgId)
-    MsgId.appendChild(doc.createTextNode(remise_nom))
+    if type_remise == "public_dft":
+        MsgId.appendChild(doc.createTextNode(nom_fichier))
+    else:
+        MsgId.appendChild(doc.createTextNode(remise_nom))
 
     # CreDtTm
     CreDtTm = doc.createElement("CreDtTm")
@@ -454,6 +463,11 @@ def GetXMLSepa(dictDonnees):
             Othr.appendChild(Id)
             Id.appendChild(doc.createTextNode(lot_dft_iban))
 
+            # ChrgBr
+            ChrgBr = doc.createElement("ChrgBr")
+            PmtInf.appendChild(ChrgBr)
+            ChrgBr.appendChild(doc.createTextNode("SLEV"))
+
         # CdtrSchmeId
         CdtrSchmeId = doc.createElement("CdtrSchmeId")
         PmtInf.appendChild(CdtrSchmeId)
@@ -508,8 +522,12 @@ def GetXMLSepa(dictDonnees):
             # EndToEndId
             EndToEndId = doc.createElement("EndToEndId")
             PmtId.appendChild(EndToEndId)
-            EndToEndId.appendChild(doc.createTextNode(transaction_id))
-            
+            if type_remise == "public_dft":
+                endtoend = "1D%s0%s" % (dictDonnees["poste_comptable"], transaction_id)
+                EndToEndId.appendChild(doc.createTextNode(endtoend))
+            else:
+                EndToEndId.appendChild(doc.createTextNode(transaction_id))
+
             # InstdAmt
             InstdAmt = doc.createElement("InstdAmt")
             DrctDbtTxInf.appendChild(InstdAmt)
@@ -590,7 +608,45 @@ def EnregistrerXML(doc=None, nomFichier=""):
         f.write(doc.toprettyxml(indent="  "))
     finally:
         f.close()
-    
+
+
+def ValidationXSD(xml=""):
+    try :
+
+        # Téléchargement du fichier XSD
+        url = "http://www.noethys.com/fichiers/sepa/schema_sepa.zip"
+        fichier_dest = UTILS_Fichiers.GetRepTemp(fichier="schema_sepa.zip")
+        urlretrieve(url, fichier_dest)
+
+        # Décompression du zip XSD
+        z = zipfile.ZipFile(fichier_dest, 'r')
+        rep_dest = UTILS_Fichiers.GetRepTemp() + "/schema_sepa"
+        z.extractall(rep_dest)
+        z.close()
+
+        # Lecture du XSD
+        fichier = rep_dest + "/pain.008.001.02.xsd"
+        xmlschema_doc = etree.parse(fichier)
+        xsd = etree.XMLSchema(xmlschema_doc)
+
+        # Lecture du XML
+        doc = etree.parse(six.BytesIO(xml))
+
+        # Validation du XML avec le XSD
+        if xsd.validate(doc) == True :
+            return True
+
+        # Affichage des erreurs
+        liste_erreurs = []
+        for error in xsd.error_log :
+            liste_erreurs.append(u"Ligne %d : %s" % (error.line, error.message))
+        return liste_erreurs
+
+    except Exception as err:
+        print("Erreur dans validation XSD :")
+        print(err)
+        return True
+
     
     
 if __name__ == "__main__":

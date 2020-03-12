@@ -1270,6 +1270,8 @@ DB_DATA = {
                                     ("encodage", "VARCHAR(200)", u"Encodage du fichier"),
                                     ("IDperception", "INTEGER", u"ID de la perception"),
                                     ("motif", "VARCHAR(300)", u"Motif du prélèvement"),
+                                    ("identifiant_service", "VARCHAR(200)", u"Identifiant du service"),
+                                    ("poste_comptable", "VARCHAR(200)", u"Poste comptable ou codique"),
                                     ], # Lots de prélèvements
 
     "modeles_tickets":[ ("IDmodele", "INTEGER PRIMARY KEY AUTOINCREMENT", u"IDmodele"),

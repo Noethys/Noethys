@@ -72,6 +72,9 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL):
         self.Append(propriete)
         self.MAJ_comptes()
 
+        # Secteur public
+        self.Append(wxpg.PropertyCategory(_(u"Secteur public")))
+
         propriete = wxpg.EnumProperty(label=_(u"Perception"), name="perception")
         propriete.SetHelpString(_(u"Sélectionnez une perception (uniquement pour le secteur public)"))
         propriete.SetEditor("EditeurComboBoxAvecBoutons")
@@ -80,6 +83,20 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL):
 
         propriete = wxpg.StringProperty(label=_(u"Motif du prélèvement"), name="motif", value=u"")
         propriete.SetHelpString(_(u"Saisissez le motif du prélèvement. Ex : 'Garderie Novembre 2019' (uniquement pour le secteur public)"))
+        self.Append(propriete)
+
+        propriete = wxpg.StringProperty(label=_(u"Identifiant de service"), name="identifiant_service", value=u"")
+        propriete.SetHelpString(_(u"Saisissez l'identifiant de service (uniquement pour compte DFT). Exemple : TGDFT027 (numéro de département sur 3 chiffres)"))
+        self.Append(propriete)
+
+        propriete = wxpg.StringProperty(label=_(u"Codique DDFiP"), name="poste_comptable", value=u"")
+        propriete.SetHelpString(_(u"Saisissez le codique de la DDFiP de rattachement sur 6 caractères (uniquement pour compte DFT). Exemple : 027000"))
+        self.Append(propriete)
+
+        propriete = wxpg.IntProperty(label=_(u"Numéro de séquence dans la journée"), name="numero_sequence", value=1)
+        propriete.SetEditor("SpinCtrl")
+        propriete.SetHelpString(_(u"Numéro de séquence du fichier dans une même journée. Exemple: 1 = premier fichier de la journée"))
+        propriete.SetAttribute("Min", 1)
         self.Append(propriete)
 
         # Règlement auto
@@ -774,8 +791,16 @@ class Dialog(wx.Dialog):
                     }
                 
                 listeLots.append(dictLot)
-            
-        
+
+        # Création du nom du fichier
+        if parametres["format"] == "public_dft":
+            today = datetime.date.today()
+            quantieme = (today - datetime.date(today.year, 1, 1)).days + 1
+            nom_fichier = "%s-DFT-SDD-%s%03d-%03d" % (parametres["identifiant_service"], str(today.year)[2:], quantieme, parametres["numero_sequence"])
+        else:
+            nom_fichier = remise_nom
+
+        # Affiche anomalies
         if len(listeAnomalies) > 0 :
             intro = _(u"Le fichier SEPA ne peut être généré en raison des anomalies suivantes :")
             detail = "\n".join(listeAnomalies)
@@ -787,6 +812,8 @@ class Dialog(wx.Dialog):
         # Mémorisation de tous les données
         dictDonnees = {
             "remise_nom" : remise_nom,
+            "nom_fichier" : nom_fichier,
+            "poste_comptable": parametres["poste_comptable"],
             "remise_date_heure" : datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
             "remise_nbre" : str(nbreTotal),
             "remise_montant" : str(montantTotal),
@@ -806,10 +833,22 @@ class Dialog(wx.Dialog):
         
         # Génération du fichier XML
         doc = UTILS_Prelevements.GetXMLSepa(dictDonnees)
-        xml = doc.toprettyxml(encoding=parametres["encodage"])
-        
+        xml = doc.toprettyxml(encoding=parametres["encodage"].upper())
+
+        # Validation XSD
+        valide = UTILS_Prelevements.ValidationXSD(xml)
+        if valide != True :
+            liste_erreurs = valide
+            dlg = DLG_Messagebox.Dialog(self, titre=_(u"Validation XSD"), introduction=_(u"Les %d anomalies suivantes ont été détectées :") % len(liste_erreurs),
+                                        detail=u"\n".join(liste_erreurs), conclusion=_(u"Le fichier ne semble pas valide. Souhaitez-vous continuer quand même ?"),
+                                        icone=wx.ICON_EXCLAMATION, boutons=[_(u"Oui"), _(u"Non"), _(u"Annuler")])
+            reponse = dlg.ShowModal()
+            dlg.Destroy()
+            if reponse in (1, 2):
+                return False
+
         # Demande à l'utilisateur le nom de fichier et le répertoire de destination
-        nomFichier = u"%s.xml" % remise_nom # "Prelevements.xml"
+        nomFichier = u"%s.xml" % nom_fichier
         wildcard = "Fichier XML (*.xml)|*.xml| All files (*.*)|*.*"
         sp = wx.StandardPaths.Get()
         cheminDefaut = sp.GetDocumentsDir()
@@ -877,7 +916,7 @@ class Dialog(wx.Dialog):
         if self.IDlot == None :
             # Données du dernier lot
             DB = GestionDB.DB()
-            req = """SELECT nom, date, verrouillage, IDcompte, observations, IDmode, reglement_auto, format, encodage, IDperception, motif
+            req = """SELECT nom, date, verrouillage, IDcompte, observations, IDmode, reglement_auto, format, encodage, IDperception, motif, identifiant_service, poste_comptable
             FROM lots_prelevements
             ORDER BY IDlot;"""
             DB.ExecuterReq(req)
@@ -885,7 +924,7 @@ class Dialog(wx.Dialog):
             DB.Close()
             if len(listeDonnees) == 0 :
                 return
-            nom, date, verrouillage, IDcompte, observations, IDmode, reglement_auto, format_lot, encodage, IDperception, motif = listeDonnees[-1]
+            nom, date, verrouillage, IDcompte, observations, IDmode, reglement_auto, format_lot, encodage, IDperception, motif, identifiant_service, poste_comptable = listeDonnees[-1]
             nom = u""
             date = datetime.date.today() 
             verrouillage = False
@@ -894,7 +933,7 @@ class Dialog(wx.Dialog):
         else :
             # Importation
             DB = GestionDB.DB()
-            req = """SELECT nom, date, verrouillage, IDcompte, observations, IDmode, reglement_auto, format, encodage, IDperception, motif
+            req = """SELECT nom, date, verrouillage, IDcompte, observations, IDmode, reglement_auto, format, encodage, IDperception, motif, identifiant_service, poste_comptable
             FROM lots_prelevements
             WHERE IDlot=%d
             ;""" % self.IDlot
@@ -903,7 +942,7 @@ class Dialog(wx.Dialog):
             DB.Close()
             if len(listeDonnees) == 0 :
                 return
-            nom, date, verrouillage, IDcompte, observations, IDmode, reglement_auto, format_lot, encodage, IDperception, motif = listeDonnees[0]
+            nom, date, verrouillage, IDcompte, observations, IDmode, reglement_auto, format_lot, encodage, IDperception, motif, identifiant_service, poste_comptable = listeDonnees[0]
         
         # Attribution des données aux contrôles
         self.ctrl_nom.SetValue(nom)
@@ -925,6 +964,8 @@ class Dialog(wx.Dialog):
             ("encodage", encodage),
             ("perception", IDperception),
             ("motif", motif),
+            ("identifiant_service", identifiant_service),
+            ("poste_comptable", poste_comptable),
             ]
         for code, valeur in listeValeurs:
             propriete = self.ctrl_parametres.GetPropertyByName(code)
@@ -1081,7 +1122,19 @@ class Dialog(wx.Dialog):
                 return False
 
             if not parametres["perception"]:
-                dlg = wx.MessageDialog(self, _(u"Vous n'avez pas sélectionné de perception !\n\nModifiez les paramètres du lot."), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous n'avez pas sélectionné de perception.\n\nModifiez les paramètres du lot."), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg.ShowModal()
+                dlg.Destroy()
+                return False
+
+            if not parametres["identifiant_service"] or parametres["identifiant_service"] == "":
+                dlg = wx.MessageDialog(self, _(u"Vous devez renseigner l'identifiant de service dans le cadre Paramètres."), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg.ShowModal()
+                dlg.Destroy()
+                return False
+
+            if not parametres["poste_comptable"] or len(parametres["poste_comptable"]) != 6:
+                dlg = wx.MessageDialog(self, _(u"Vous devez saisir un codique DFiP valide (sur 6 caractères) dans le cadre Paramètres."), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
@@ -1150,6 +1203,8 @@ class Dialog(wx.Dialog):
             ("encodage", parametres["encodage"]),
             ("IDperception", parametres["perception"]),
             ("motif", parametres["motif"]),
+            ("identifiant_service", parametres["identifiant_service"]),
+            ("poste_comptable", parametres["poste_comptable"]),
         ]
 
         DB = GestionDB.DB()

@@ -1316,13 +1316,13 @@ if __name__ == "__main__":
         
     # # Ajouter un champ
     # db = DB(suffixe="DATA")
-    # db.AjoutChamp("portail_reservations_locations", "resultat", "VARCHAR(100)")
+    # db.AjoutChamp("lots_prelevements", "poste_comptable", "VARCHAR(200)")
     # db.Close()
 
     # # Exportation d'une table dans la base DEFAUT
-    db = DB(suffixe="DATA")
-    db.Exportation_vers_base_defaut(nomTable="modeles_emails")
-    db.Close()
+    # db = DB(suffixe="DATA")
+    # db.Exportation_vers_base_defaut(nomTable="modeles_emails")
+    # db.Close()
     
     # Réparation d'une table
 ##    db = DB(suffixe="DATA")
