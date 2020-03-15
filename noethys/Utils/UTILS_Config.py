@@ -14,6 +14,7 @@ import wx
 import os
 import six
 import shutil
+import random
 from Utils import UTILS_Fichiers
 from Utils import UTILS_Json
 
@@ -108,7 +109,9 @@ class FichierConfig():
         """ Remplace le fichier de config présent sur le disque dur par le dict donné """
         UTILS_Json.Ecrire(nom_fichier=self.nomFichier, data=dictConfig)
         # Création d'une copie de sauvegarde du config
-        shutil.copyfile(self.nomFichier, self.nomFichier + ".bak")
+        nom_fichier_bak = self.nomFichier + ".bak"
+        if not os.path.isfile(nom_fichier_bak) or random.randint(0, 5) == 0:
+            shutil.copyfile(self.nomFichier, nom_fichier_bak)
 
     def GetItemConfig(self, key, defaut=None):
         """ Récupère une valeur du dictionnaire du fichier de config """
