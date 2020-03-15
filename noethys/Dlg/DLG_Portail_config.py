@@ -117,6 +117,7 @@ VALEURS_DEFAUT = {
     "payzen_mode" : "TEST",
     "payzen_certificat_test" : "",
     "payzen_certificat_production" : "",
+    "paiement_off_si_prelevement": False,
     "accueil_titre" : u"Le <strong>Portail</strong> Famille",
     "accueil_bienvenue" : _(u"Bienvenue sur le portail Famille"),
     "accueil_messages_afficher" : True,
@@ -215,6 +216,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
             ("paiement_ligne_mode_reglement", "p('paiement_ligne_actif') == True"),
             ("paiement_ligne_multi_factures", "p('paiement_ligne_actif') == True"),
             ("paiement_ligne_montant_minimal", "p('paiement_ligne_actif') == True"),
+            ("paiement_off_si_prelevement", "p('paiement_ligne_actif') == True"),
 
             ("payzen_site_id", "p('paiement_ligne_systeme') == 3"),
             ("payzen_mode", "p('paiement_ligne_systeme') == 3"),
@@ -723,6 +725,13 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         nom = "payzen_certificat_production"
         propriete = wxpg.StringProperty(label=_(u"Certificat de production"), name=nom, value=VALEURS_DEFAUT[nom])
         propriete.SetHelpString(_(u"Saisissez le certificat de production attribué par Payzen"))
+        self.Append(propriete)
+
+        # Désactiver le paiement en ligne pour les familles abonnées au prélèvement automatique
+        nom = "paiement_off_si_prelevement"
+        propriete = wxpg.BoolProperty(label=_(u"Désactiver paiement en ligne si prélèvement auto."), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Cochez cette case pour désactiver le paiement en ligne pour les familles abonnées au prélèvement automatique"))
+        propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
         # Catégorie

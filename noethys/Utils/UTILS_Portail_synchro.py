@@ -506,6 +506,7 @@ class Synchro():
             session.add(models.Parametre(nom="PAIEMENT_EN_LIGNE_SYSTEME", parametre=str(self.dict_parametres["paiement_ligne_systeme"])))
             session.add(models.Parametre(nom="PAIEMENT_EN_LIGNE_MULTI_FACTURES", parametre=str(self.dict_parametres["paiement_ligne_multi_factures"])))
             session.add(models.Parametre(nom="PAIEMENT_EN_LIGNE_MONTANT_MINIMAL", parametre=str(self.dict_parametres["paiement_ligne_montant_minimal"])))
+            session.add(models.Parametre(nom="PAIEMENT_OFF_SI_PRELEVEMENT", parametre=str(self.dict_parametres["paiement_off_si_prelevement"])))
             if "paiement_ligne_tipi_saisie" in self.dict_parametres:
                 session.add(models.Parametre(nom="PAIEMENT_EN_LIGNE_TIPI_SAISIE", parametre=str(self.dict_parametres["paiement_ligne_tipi_saisie"])))
             if "payzen_site_id" in self.dict_parametres:
@@ -580,14 +581,15 @@ class Synchro():
         # Création des users
         dictTitulaires = UTILS_Titulaires.GetTitulaires()
 
-        req = """SELECT IDfamille, internet_actif, internet_identifiant, internet_mdp, email_recus, etat
+        req = """SELECT IDfamille, internet_actif, internet_identifiant, internet_mdp, email_recus, etat, prelevement_activation
         FROM familles;"""
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         listeFamilles = []
-        for IDfamille, internet_actif, internet_identifiant, internet_mdp, email_recus, etat in listeDonnees:
+        for IDfamille, internet_actif, internet_identifiant, internet_mdp, email_recus, etat, prelevement_activation in listeDonnees:
             listeFamilles.append({"ID" : IDfamille, "internet_actif" : internet_actif, "internet_identifiant" : internet_identifiant,
-                                  "internet_mdp" : internet_mdp, "email_recus" : email_recus, "etat" : etat})
+                                  "internet_mdp" : internet_mdp, "email_recus" : email_recus, "etat" : etat,
+                                  "prelevement_activation": prelevement_activation})
 
         req = """SELECT IDutilisateur, internet_actif, internet_identifiant, internet_mdp, nom, prenom
         FROM utilisateurs;"""
@@ -631,6 +633,15 @@ class Synchro():
                         email = ";".join(dictEmailsFamilles[IDfamille][:3])
                         email = cryptage.encrypt(email)
 
+                    # Autre paramètres
+                    liste_parametres = []
+                    if profil == "famille":
+                        prelevement_auto = dictDonnee.get("prelevement_activation", 0)
+                        if not prelevement_auto:
+                            prelevement_auto = 0
+                        liste_parametres.append("prelevement_auto==%d" % prelevement_auto)
+                    parametres = "##".join(liste_parametres)
+
                     # Si famille archivée ou effacée
                     if dictDonnee["etat"] != None:
                         dictDonnee["internet_actif"] = 0
@@ -647,6 +658,8 @@ class Synchro():
                     m = models.User(IDuser=None, identifiant=dictDonnee["internet_identifiant"], cryptpassword=dictDonnee["internet_mdp"],
                                     nom=nomDossier, email=email, role=profil, IDfamille=IDfamille, IDutilisateur=IDutilisateur, actif=dictDonnee["internet_actif"],
                                     session_token=session_token)
+                    if hasattr(models.User, "parametres"):
+                        m.parametres = parametres
                     session.add(m)
 
 
