@@ -22,6 +22,7 @@ LISTE_NORMES = [
     {"code" : "Extended93", "label" : "Extended 93"},
     {"code" : "Standard93", "label" : "Standard 93"},
     {"code" : "POSTNET", "label" : "USPS POSTNET"},
+    {"code" : "datamatrix", "label" : "Datamatrix"},
     ]
 
 

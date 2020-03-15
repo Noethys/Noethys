@@ -505,7 +505,6 @@ def GetCle_modulo11(elements=[]):
         index += 1
     if total % 11 == 0 : 
         pass
-##        return 0
     cle = 11 - (total % 11)
     if cle > 9 : cle = 1
     return cle

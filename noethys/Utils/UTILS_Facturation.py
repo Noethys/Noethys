@@ -22,6 +22,7 @@ SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 MONNAIE_SINGULIER = UTILS_Config.GetParametre("monnaie_singulier", _(u"Euro"))
 MONNAIE_DIVISION = UTILS_Config.GetParametre("monnaie_division", _(u"Centime"))
 
+from Data import DATA_Codes_etab
 from Data import DATA_Civilites as Civilites
 DICT_CIVILITES = Civilites.GetDictCivilites()
 
@@ -36,6 +37,7 @@ from Utils.UTILS_Decimal import FloatToDecimal as FloatToDecimal
 from Utils import UTILS_Infos_individus
 from Utils import UTILS_Fichiers
 from Utils import UTILS_Texte
+from Utils.UTILS_Pes import GetCle_modulo23
 
 
 def FormateMaj(nom_titulaires):
@@ -786,9 +788,11 @@ class Facturation():
                     "statut": statut, "IDcompte_payeur": IDcompte_payeur, "datePrelevement": datePrelevement,
                     "iban": iban, "rum": rum, "code_ics": code_ics,
                 }
+
         # Infos PES ORMC
         req = """SELECT
-        pes_pieces.IDlot, pes_pieces.IDfacture, pes_lots.nom, pes_lots.exercice, pes_lots.mois, pes_lots.objet_dette, pes_lots.id_bordereau, pes_lots.code_prodloc
+        pes_pieces.IDlot, pes_pieces.IDfacture, pes_lots.nom, pes_lots.exercice, pes_lots.mois, pes_lots.objet_dette, pes_lots.id_bordereau, pes_lots.code_prodloc,
+        pes_lots.code_collectivite, pes_lots.id_collectivite, pes_lots.id_poste
         FROM pes_pieces
         LEFT JOIN pes_lots ON pes_lots.IDlot = pes_pieces.IDlot
         WHERE pes_pieces.IDfacture IN %s
@@ -796,10 +800,12 @@ class Facturation():
         DB.ExecuterReq(req)
         listeInfosPes = DB.ResultatReq()
         dictPes = {}
-        for IDlot_pes, IDfacture, nom_lot_pes, exercice, mois, objet, id_bordereau, code_produit in (listeInfosPes):
+        for IDlot_pes, IDfacture, nom_lot_pes, exercice, mois, objet, id_bordereau, code_produit, code_collectivite, id_collectivite, id_poste in (listeInfosPes):
             dictPes[IDfacture] = {
                 "pes_IDlot": IDlot_pes, "pes_nom_lot": nom_lot_pes, "pes_lot_exercice": exercice, "pes_lot_mois": mois,
                 "pes_lot_objet": objet, "pes_lot_id_bordereau": id_bordereau, "pes_lot_code_produit": code_produit,
+                "pes_lot_code_collectivite": code_collectivite, "pes_lot_id_collectivite": id_collectivite,
+                "pes_lot_id_poste": id_poste,
             }
         if len(listeDonnees) == 0 :
             del dlgAttente
@@ -920,6 +926,8 @@ class Facturation():
 
                 # Infos PES ORMC
                 if IDfacture in dictPes :
+                    dictCompte["dict_pes"] = dictPes[IDfacture]
+                    dictCompte["{PES_DATAMATRIX}"] = Calculer_datamatrix(dictCompte)
                     dictCompte["{PES_IDPIECE}"] = str(IDfacture)
                     dictCompte["{PES_IDLOT}"] = dictPes[IDfacture]["pes_IDlot"]
                     dictCompte["{PES_NOM_LOT}"] = dictPes[IDfacture]["pes_nom_lot"]
@@ -929,6 +937,8 @@ class Facturation():
                     dictCompte["{PES_LOT_ID_BORDEREAU}"] = dictPes[IDfacture]["pes_lot_id_bordereau"]
                     dictCompte["{PES_LOT_CODE_PRODUIT}"] = dictPes[IDfacture]["pes_lot_code_produit"]
                 else:
+                    dictCompte["dict_pes"] = {}
+                    dictCompte["{PES_DATAMATRIX}"] = ""
                     dictCompte["{PES_IDPIECE}"] = ""
                     dictCompte["{PES_IDLOT}"] = ""
                     dictCompte["{PES_NOM_LOT}"] = ""
@@ -1070,7 +1080,9 @@ class Facturation():
             except Exception as err:
                 del dlgAttente
                 traceback.print_exc(file=sys.stdout)
-                err = str(err).decode("iso-8859-15")
+                err = str(err)
+                if six.PY2:
+                    err = err.decode("iso-8859-15")
                 dlg = wx.MessageDialog(None, _(u"Désolé, le problème suivant a été rencontré dans l'édition des factures : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
                 dlg.Destroy()
@@ -1133,6 +1145,96 @@ def ModificationFacture(listeFactures=[], dict_valeurs={}):
     return True
 
 
+def Calculer_datamatrix(dictCompte):
+    dict_pes = dictCompte["dict_pes"]
+    elements = []
+
+    # 1-40 : Données métiers (40 caractères)
+    elements.append(" " * 40)
+
+    # 41-64 : Zone d'espaces (24 caractères)
+    elements.append(" " * 24)
+
+    # 65-67 : Code établissement (3 caractères)
+    code_etab = DATA_Codes_etab.Rechercher(str(dict_pes["pes_lot_code_collectivite"]))
+    elements.append("%03d" % int(code_etab))
+
+    # 68 : Code période (1 caractère)
+    elements.append(str(dict_pes["pes_lot_mois"])[:1])
+
+    # 69-71 : Deux derniers chiffres du CodProdLoc (3 caractères)
+    elements.append("%03d" % int(dict_pes["pes_lot_code_produit"][:2]))
+
+    # 72-73 : deux zéros
+    elements.append("00")
+
+    # 74-75 : Deux derniers chiffres de la balise Exerc (2 caractères)
+    elements.append(str(dict_pes["pes_lot_exercice"])[-2:])
+
+    # 76 : Clé 5 (modulo 11)
+    base = int("".join(elements[-5:]))
+    cle = str(11 - (base % 11))[-1:]
+    elements.append(cle)
+
+    # 77-82 : Code émetteur (6 caractères)
+    elements.append("%06d" % int(dict_pes["pes_lot_id_collectivite"][:6]))
+
+    # 83-86 : Code établissement (=0001)
+    elements.append("0001")
+
+    # 87-88 : Clé 3 (Modulo 100)
+    base = "".join(elements[-2:])
+    cle = sum([rang * int(valeur) for rang, valeur in enumerate(base[::-1], 1)]) % 100
+    elements.append("%02d" % cle)
+
+    # 89 : Espace
+    elements.append(" ")
+
+    # 92-115 : Référence de l'opération (24 caractères)
+    id_poste = "%06d" % int(dict_pes["pes_lot_id_poste"])
+
+    num_dette = "%015d" % int(dictCompte["num_facture"])
+
+    cle2 = GetCle_modulo23((str(dict_pes["pes_lot_exercice"])[-2:], str(dict_pes["pes_lot_mois"]), "00", u"{:0>13}".format(dictCompte["num_facture"])))
+    alphabet = "ABCDEFGHJKLMNPQRSTUVWXY"
+    cle2 = "%02d" % (alphabet.index(cle2) + 1)
+
+    elements.append("".join([num_dette, cle2, id_poste, "4"]))
+
+    # 116 : Code document (=9)
+    elements.append("9")
+
+    # 90-91 : Clé 2 (Modulo 100)
+    base = "".join(elements[-2:])
+    cle = sum([rang * int(valeur) for rang, valeur in enumerate(base[::-1], 1)]) % 100
+    elements.insert(len(elements)-2, "%02d" % cle)
+
+    # 119 : Code nature (=8)
+    elements.append("8")
+
+    # 120-121 : Code de traitement BDF (=06)
+    elements.append("06")
+
+    # 122 : Espace
+    elements.append(" ")
+
+    # 123-130 : Montant (8 caractères)
+    montant = "{: >8}".format(("%.2f" % dictCompte["solde"]).replace(".", ""))
+    elements.append(montant)
+
+    # 117-118 : Clé 1 (Modulo 100)
+    base1 = "".join(elements[-4:-2]).replace(" ", "0")
+    somme1 = sum([rang * int(valeur) for rang, valeur in enumerate(base1[::-1], 9)])
+
+    base2 = "".join(elements[-1]).replace(" ", "0")
+    somme2 = sum([rang * int(valeur) for rang, valeur in enumerate(base2[::-1], 1)])
+
+    cle = (somme1 + somme2) % 100
+    elements.insert(len(elements)-4, "%02d" % cle)
+
+    # Finalisation du datamatrix
+    datamatrix = "".join(elements)
+    return datamatrix
 
 
 
@@ -1154,6 +1256,6 @@ if __name__ == '__main__':
     #print "Nbre factures trouvees =", len(liste_factures)
 
     # Affichage d'une facture
-    print("resultats =", facturation.Impression(listeFactures=[8063,]))
+    print("resultats =", facturation.Impression(listeFactures=[76,]))
 
     app.MainLoop()

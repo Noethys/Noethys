@@ -16,7 +16,7 @@ import wx
 from Ctrl import CTRL_Bouton_image
 import wx.html as html
 import os
-import sys
+import six
 import GestionDB
 import datetime
 import gzip
@@ -1104,7 +1104,11 @@ class Dialog(wx.Dialog):
         # Création du fichier texte
         f = open(cheminFichier, "w")
         try:
-            f.write(doc.toxml(encoding="ISO-8859-1"))
+            if six.PY2:
+                f.write(doc.toxml(encoding="ISO-8859-1"))
+            else:
+                #f.write(doc.toprettyxml(indent="  "))
+                f.write(doc.toxml())
         finally:
             f.close()
 

@@ -67,7 +67,8 @@ from reportlab.graphics.barcode.code39 import Extended39, Standard39
 from reportlab.graphics.barcode.code93 import Extended93, Standard93
 from reportlab.graphics.barcode.usps import FIM, POSTNET
 from reportlab.graphics.barcode.usps4s import USPS_4State
-from reportlab.graphics.barcode import createBarcodeDrawing 
+from reportlab.graphics.barcode import createBarcodeDrawing
+from reportlab.graphics.barcode import ecc200datamatrix
 
 from Dlg import DLG_Saisie_texte_doc
 from PIL import Image
@@ -156,6 +157,7 @@ class Facture():
         
         self.codesbarres = [ 
             (_(u"Numéro de facture"), u"1234567", "{CODEBARRES_NUM_FACTURE}"),
+            (_(u"Datamatrix PESV2"), u"1234567", "{PES_DATAMATRIX}"),
             ]
             
         self.speciaux = [ 
@@ -4744,17 +4746,28 @@ class Panel_canvas(wx.Panel):
         index = event.GetId() - 10000
         nom, exemple, champ = self.infosCategorie.codesbarres[index]
         nom = _(u"Code-barres - %s") % nom
+        norme = None
 
         # Conversion de la taille px en mm
         largeur, hauteur = (109, 60)
         largeur, hauteur = Arrondir(largeur * 0.264583333), Arrondir(hauteur * 0.264583333)
+
+        # Si Datamatrix
+        if "DATAMATRIX" in champ:
+            norme = "datamatrix"
+            largeur, hauteur = 22, 22
 
         # Recherche le centre de l'objet
         tailleDC = wx.ClientDC(self.canvas).GetSize()
         x, y = self.canvas.PixelToWorld((tailleDC[0] / 2, tailleDC[1] / 2))
         x, y = Arrondir(x - largeur / 2), Arrondir(y - hauteur / 2)
 
-        objet = AjouterBarcode((x, y), largeur, hauteur, nom=nom, champ=champ, afficheNumero=False)
+        objet = AjouterBarcode((x, y), largeur, hauteur, nom=nom, champ=champ, norme=norme, afficheNumero=False)
+
+        if "DATAMATRIX" in champ:
+            objet.verrouillageLargeur = True
+            objet.verrouillageHauteur = True
+
         self.AjouterObjet(objet)
         self.Selection(objet, forceDraw=True)
         self.canvas.SetFocus()
@@ -6064,7 +6077,13 @@ def DessineObjetPDF(objet, canvas, valeur=None):
             if objet.norme == "Extended93" : barcode = Extended93(valeur, barHeight=hauteur, humanReadable=objet.afficheNumero)
             if objet.norme == "Standard93" : barcode = Standard93(valeur, barHeight=hauteur, humanReadable=objet.afficheNumero)
             if objet.norme == "POSTNET" : barcode = POSTNET(valeur, barHeight=hauteur, humanReadable=objet.afficheNumero)
-            
+            if objet.norme == "datamatrix":
+                barcode = ecc200datamatrix.ECC200DataMatrix(valeur)
+                barcode.barWidth = 1.45
+                barcode.x, barcode.y = 18, 0
+                barcode.validate()
+                barcode.encode()
+
             barcode.drawOn(canvas, x-18, y)
 
     # ------- SPECIAL ------

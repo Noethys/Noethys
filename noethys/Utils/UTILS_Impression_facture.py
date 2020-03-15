@@ -163,7 +163,7 @@ class MyPageTemplate(PageTemplate):
         # Insertion du code39
         if "afficher_codes_barres" in DICT_OPTIONS and DICT_OPTIONS["afficher_codes_barres"] == True :
             doc.modeleDoc.DessineCodesBarres(canvas, dictChamps=dictValeur)
-        
+
         # Insertion des lignes de textes
         doc.modeleDoc.DessineImages(canvas, dictChamps=dictValeur)
         doc.modeleDoc.DessineTextes(canvas, dictChamps=dictValeur)
