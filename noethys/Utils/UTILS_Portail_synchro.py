@@ -1577,14 +1577,13 @@ class Synchro():
                             listeReservations.append([reservation["date"], reservation["IDinscription"], reservation["IDunite"], prochainIDaction, reservation["etat"]])
 
                     # Mémorisation des renseignements
-                    if "renseignements" in action:
-                        if len(action["renseignements"]) > 0 :
+                    if "renseignements" in action and len(action["renseignements"]) > 0:
                             for renseignement in action["renseignements"] :
                                 valeur = cryptage.decrypt(renseignement["valeur"])
                                 listeRenseignements.append([renseignement["champ"], valeur, prochainIDaction])
 
                     # Mémorisation des locations
-                    if len(action["locations"]) > 0 :
+                    if "locations" in action and len(action["locations"]) > 0:
                         for location in action["locations"] :
                             listeLocations.append([location["date_debut"], location["date_fin"], location["IDlocation"], location["IDproduit"], prochainIDaction, location["etat"]])
 
