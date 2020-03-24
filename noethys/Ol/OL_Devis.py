@@ -246,7 +246,7 @@ class ListView(FastObjectListView):
             dlg.Destroy()
             return
         IDfamille = self.Selection()[0].IDfamille
-        IDdevis = self.Selection()[0].devis
+        IDdevis = self.Selection()[0].IDdevis
         from Dlg import DLG_Famille
         dlg = DLG_Famille.Dialog(self, IDfamille)
         if dlg.ShowModal() == wx.ID_OK:

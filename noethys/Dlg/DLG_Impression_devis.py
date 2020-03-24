@@ -146,7 +146,6 @@ class CTRL_Individus(wx.CheckListBox):
         self.parent.ctrl_activites.SetDonnees(listeIndividus, self.date_debut, self.date_fin)
         listeActivites = self.parent.ctrl_activites.GetListeActivites()
         self.parent.ctrl_unites.SetDonnees(listeIndividus, listeActivites, self.date_debut, self.date_fin)
-        self.parent.MAJ_signataires()
 
     def GetListeIndividus(self):
         return self.GetIDcoches() 
@@ -264,8 +263,7 @@ class CTRL_Activites(wx.CheckListBox):
         """ Quand une sélection d'activités est effectuée... """
         listeSelections = self.GetIDcoches()
         self.parent.ctrl_unites.SetDonnees(self.listeIndividus, listeSelections, self.date_debut, self.date_fin)
-        self.parent.MAJ_signataires()
-    
+
     def GetListeActivites(self):
         return self.GetIDcoches() 
     
