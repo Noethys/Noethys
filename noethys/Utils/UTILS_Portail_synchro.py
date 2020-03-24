@@ -1578,9 +1578,9 @@ class Synchro():
 
                     # Mémorisation des renseignements
                     if "renseignements" in action and len(action["renseignements"]) > 0:
-                            for renseignement in action["renseignements"] :
-                                valeur = cryptage.decrypt(renseignement["valeur"])
-                                listeRenseignements.append([renseignement["champ"], valeur, prochainIDaction])
+                        for renseignement in action["renseignements"] :
+                            valeur = cryptage.decrypt(renseignement["valeur"])
+                            listeRenseignements.append([renseignement["champ"], valeur, prochainIDaction])
 
                     # Mémorisation des locations
                     if "locations" in action and len(action["locations"]) > 0:
