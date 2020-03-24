@@ -154,7 +154,7 @@ class ListView(FastObjectListView):
         def Formate_nbre(nbre):
             if nbre == 0 :
                 return "0"
-            return nbre
+            return str(nbre)
 
         def rowFormatter(listItem, track):
             if track.valide == False :
