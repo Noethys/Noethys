@@ -79,6 +79,7 @@ class CTRL(HTL.HyperTreeList):
         self.date_fin = None
         self.afficher_consommations = True
         self.afficher_cotisations = True
+        self.afficher_locations = True
         self.afficher_autres = True
         self.listeActivites = []
         self.affichage_details = True
@@ -163,6 +164,7 @@ class CTRL(HTL.HyperTreeList):
         # Condition Afficher Cotisations et/ou Consommations ?
         listeAffichage = []
         if self.afficher_cotisations == True : listeAffichage.append("cotisation")
+        if self.afficher_locations == True: listeAffichage.append("location")
         if self.afficher_consommations == True : listeAffichage.append("consommation")
         if self.afficher_locations == True: listeAffichage.append("locations")
         if self.afficher_autres == True : listeAffichage.append("autre")

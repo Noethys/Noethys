@@ -50,6 +50,7 @@ class CTRL(HTL.HyperTreeList):
         self.date_fin = None
         self.afficher_consommations = True
         self.afficher_cotisations = True
+        self.afficher_locations = True
         self.afficher_autres = True
         self.listeActivites = []
         self.affichage_details_total = True
@@ -155,6 +156,7 @@ class CTRL(HTL.HyperTreeList):
         # Condition Afficher Cotisations et/ou Consommations ?
         listeAffichage = []
         if self.afficher_cotisations == True : listeAffichage.append("cotisation")
+        if self.afficher_locations == True: listeAffichage.append("location")
         if self.afficher_consommations == True : listeAffichage.append("consommation")
         if self.afficher_autres == True : listeAffichage.append("autre")
         
@@ -904,6 +906,7 @@ class MyFrame(wx.Frame):
         self.ctrl_stats.date_fin = datetime.date(2011, 12, 31)
         self.ctrl_stats.afficher_consommations = True
         self.ctrl_stats.afficher_cotisations = True
+        self.ctrl_stats.afficher_locations = True
         self.ctrl_stats.listeActivites = [1, 2]
         self.ctrl_stats.MAJ()
         
