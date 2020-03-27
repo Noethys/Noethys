@@ -241,7 +241,7 @@ class Dialog(wx.Dialog):
 
     def OnBoutonAide(self, event): 
         from Utils import UTILS_Aide
-        UTILS_Aide.Aide("")
+        UTILS_Aide.Aide("Menusdesrepas")
 
     def GetPeriode(self):
         return {"mois" : self.ctrl_mois.GetSelection()+1, "annee" : self.ctrl_annee.GetValue()}

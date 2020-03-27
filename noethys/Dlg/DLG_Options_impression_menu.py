@@ -1170,7 +1170,7 @@ class Dialog(wx.Dialog):
 
         # Aide
         from Utils import UTILS_Aide
-        UTILS_Aide.Aide("")
+        UTILS_Aide.Aide("Menusdesrepas")
 
     def GetProfilOptions(self):
         dictModifications = {}

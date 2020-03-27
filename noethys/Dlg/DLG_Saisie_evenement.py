@@ -202,7 +202,7 @@ class Dialog(wx.Dialog):
 
     def OnBoutonAide(self, event):
         from Utils import UTILS_Aide
-        UTILS_Aide.Aide("")
+        UTILS_Aide.Aide("Calendrier")
 
     def OnRadioTarification(self, event=None):
         self.label_montant.Enable(self.radio_tarification_montant.GetValue())

@@ -640,7 +640,7 @@ class DLG_Selection(wx.Dialog):
 
     def OnBoutonAide(self, event):
         from Utils import UTILS_Aide
-        UTILS_Aide.Aide("")
+        UTILS_Aide.Aide("Archivereteffacerdesindividus")
 
     def OnBoutonOk(self, event):
         if self.GetCoches(afficher_avertissements=True) == False :

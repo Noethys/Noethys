@@ -95,7 +95,7 @@ class Dialog(wx.Dialog):
 
     def OnBoutonAide(self, event):
         from Utils import UTILS_Aide
-        UTILS_Aide.Aide("")
+        UTILS_Aide.Aide("Tableaudeslocations")
 
     def OnClose(self, event):
         self.ctrl_options.MemoriseConfig()

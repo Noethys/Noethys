@@ -99,7 +99,7 @@ class Dialog(wx.Dialog):
 
     def OnBoutonAide(self, event): 
         from Utils import UTILS_Aide
-        UTILS_Aide.Aide("")
+        UTILS_Aide.Aide("TransmettredeslocationsparEmail")
 
     def OnBoutonAnnuler(self, event): 
         self.ctrl_options.MemoriserParametres() 

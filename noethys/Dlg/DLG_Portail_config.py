@@ -1600,7 +1600,7 @@ class Dialog(wx.Dialog):
 
     def OnBoutonAide(self, event):
         from Utils import UTILS_Aide
-        UTILS_Aide.Aide("")
+        UTILS_Aide.Aide("Connecthys")
 
     def OnBoutonFermer(self, event):
         if self.ctrl_notebook.Validation() == False :

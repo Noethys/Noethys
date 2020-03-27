@@ -431,7 +431,7 @@ class DLG_Saisie_colonne(wx.Dialog):
 
     def OnBoutonAide(self, event):
         from Utils import UTILS_Aide
-        UTILS_Aide.Aide("")
+        UTILS_Aide.Aide("Listedesconsommations")
 
 
 

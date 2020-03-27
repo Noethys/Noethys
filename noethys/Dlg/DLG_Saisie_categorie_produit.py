@@ -139,7 +139,7 @@ class Dialog(wx.Dialog):
 
     def OnBoutonAide(self, event):
         from Utils import UTILS_Aide
-        UTILS_Aide.Aide("")
+        UTILS_Aide.Aide("Categoriesdeproduits")
 
     def OnBoutonOk(self, event):
         nom = self.ctrl_nom.GetValue()

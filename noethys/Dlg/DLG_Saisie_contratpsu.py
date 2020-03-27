@@ -810,7 +810,7 @@ class Assistant(wx.Dialog, Base):
 
     def Onbouton_aide(self, event):
         from Utils import UTILS_Aide
-        UTILS_Aide.Aide("")
+        UTILS_Aide.Aide("Contrats")
 
     def AfficherPage(self, numPage=0):
         # rend invisible la page affichée
@@ -1030,7 +1030,7 @@ class Dialog(wx.Dialog):
 
     def OnBoutonAide(self, event): 
         from Utils import UTILS_Aide
-        UTILS_Aide.Aide("")
+        UTILS_Aide.Aide("Contrats")
         
     def OnBoutonOk(self, event):
         if self.ctrl_notebook.GetPageActuelle().Validation() == False :

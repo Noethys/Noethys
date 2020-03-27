@@ -320,7 +320,7 @@ class Dialog(wx.Dialog):
 
     def OnBoutonAide(self, event): 
         from Utils import UTILS_Aide
-        UTILS_Aide.Aide("")
+        UTILS_Aide.Aide("Archivereteffacerdesindividus")
 
     def OnBoutonArchiver(self, event=None):
         self.ctrl_notebook.GetPageActive().ctrl_listview.Archiver()

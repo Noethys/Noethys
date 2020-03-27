@@ -574,7 +574,7 @@ class DLG_Choix_creation(wx.Dialog):
 
     def OnBoutonAide(self, event):
         from Utils import UTILS_Aide
-        UTILS_Aide.Aide("")
+        UTILS_Aide.Aide("Connecthys")
 
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -645,7 +645,7 @@ class DLG_Saisie_page(wx.Dialog):
 
     def OnBoutonAide(self, event):
         from Utils import UTILS_Aide
-        UTILS_Aide.Aide("")
+        UTILS_Aide.Aide("Connecthys")
 
     def OnBoutonAnnuler(self, event):
         self.EndModal(wx.ID_CANCEL)
@@ -789,7 +789,7 @@ class DLG_Saisie_bloc(wx.Dialog):
 
     def OnBoutonAide(self, event):
         from Utils import UTILS_Aide
-        UTILS_Aide.Aide("")
+        UTILS_Aide.Aide("Connecthys")
 
     def OnBoutonAnnuler(self, event):
         self.EndModal(wx.ID_CANCEL)

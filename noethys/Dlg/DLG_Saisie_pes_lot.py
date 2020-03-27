@@ -599,7 +599,7 @@ class Dialog(wx.Dialog):
 
     def OnBoutonAide(self, event=None): 
         from Utils import UTILS_Aide
-        UTILS_Aide.Aide("")
+        UTILS_Aide.Aide("ExportversHelios")
 
     def OnBoutonAnnuler(self, event): 
         self.EndModal(wx.ID_CANCEL)

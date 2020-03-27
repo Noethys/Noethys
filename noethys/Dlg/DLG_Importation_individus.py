@@ -1020,7 +1020,7 @@ class Dialog(wx.Dialog):
     
     def Onbouton_aide(self, event):
         from Utils import UTILS_Aide
-        UTILS_Aide.Aide("Importerdesindividus")
+        UTILS_Aide.Aide("Importerdesfamillesoudesindividu")
 
     def Onbouton_retour(self, event):
         # rend invisible la page affichée

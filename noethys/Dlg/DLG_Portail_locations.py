@@ -119,7 +119,7 @@ class Dialog(wx.Dialog):
 
     def OnBoutonAide(self, event): 
         from Utils import UTILS_Aide
-        UTILS_Aide.Aide("")
+        UTILS_Aide.Aide("Traiterlesdemandesduportail")
 
     def OnBoutonTraiter(self, event=None):
         self.parent.EcritLog(_(u"Application de la demande de locations"), self.ctrl_log)

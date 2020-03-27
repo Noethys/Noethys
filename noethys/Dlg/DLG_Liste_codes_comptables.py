@@ -319,7 +319,7 @@ class Dialog(wx.Dialog):
 
     def OnBoutonAide(self, event): 
         from Utils import UTILS_Aide
-        UTILS_Aide.Aide("")
+        UTILS_Aide.Aide("Listedescodescomptables")
 
     def MAJ(self, listeActivites=None, presents=None, familles=None):
         self.ctrl_listview.SetParametre("liste_activites", listeActivites)

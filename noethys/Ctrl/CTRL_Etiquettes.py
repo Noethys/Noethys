@@ -660,7 +660,7 @@ class DialogSelection(wx.Dialog):
         
     def OnBoutonAide(self, event): 
         from Utils import UTILS_Aide
-        UTILS_Aide.Aide("")
+        UTILS_Aide.Aide("Etiquettes")
 
     def OnBoutonOk(self, event): 
         # Fermeture de la fenêtre

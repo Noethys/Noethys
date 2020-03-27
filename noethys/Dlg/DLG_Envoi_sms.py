@@ -748,7 +748,7 @@ class Dialog(wx.Dialog, Base):
 
     def Onbouton_aide(self, event):
         from Utils import UTILS_Aide
-        UTILS_Aide.Aide("")
+        UTILS_Aide.Aide("EnvoideSMS")
 
     def AfficherPage(self, numPage=0):
         # rend invisible la page affichée

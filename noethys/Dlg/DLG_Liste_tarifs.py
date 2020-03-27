@@ -319,7 +319,7 @@ class DLG_Tarifs(wx.Dialog):
 
     def OnBoutonAide(self, event):
         from Utils import UTILS_Aide
-        UTILS_Aide.Aide("")
+        UTILS_Aide.Aide("Listedestarifs")
 
     def OnBouton_ok(self, event):
         self.EndModal(wx.ID_OK)
@@ -422,7 +422,7 @@ class Dialog(wx.Dialog):
 
     def OnBoutonAide(self, event): 
         from Utils import UTILS_Aide
-        UTILS_Aide.Aide("")
+        UTILS_Aide.Aide("Listedestarifs")
         
     def OnBoutonFermer(self, event): 
         self.EndModal(wx.ID_CANCEL)

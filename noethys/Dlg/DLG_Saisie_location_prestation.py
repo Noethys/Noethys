@@ -292,7 +292,7 @@ class Dialog(wx.Dialog):
         
     def OnBoutonAide(self, event=None):
         from Utils import UTILS_Aide
-        UTILS_Aide.Aide("")
+        UTILS_Aide.Aide("Listedeslocations")
 
     def OnBoutonOk(self, event=None):
         # Validation label prestation

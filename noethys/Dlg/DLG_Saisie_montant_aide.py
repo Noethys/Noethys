@@ -335,7 +335,7 @@ class Dialog(wx.Dialog):
 
     def OnBoutonAide(self, event): 
         from Utils import UTILS_Aide
-        UTILS_Aide.Aide("")
+        UTILS_Aide.Aide("Caisse")
     
     def GetDictMontant(self):
         self.ctrl_combinaisons.dictMontant["montant"] = self.ctrl_montant.GetMontant() 
