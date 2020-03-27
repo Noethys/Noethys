@@ -353,7 +353,10 @@ class CTRL(wx.TreeCtrl):
             dlg.Destroy()
             return
 
-        dictData = self.GetPyData(item)
+        if 'phoenix' in wx.PlatformInfo:
+            dictData = self.GetItemData(item)
+        else:
+            dictData = self.GetPyData(item)
 
         # Suppression d'une page
         if dictData["type"] == "page" :
