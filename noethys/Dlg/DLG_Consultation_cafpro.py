@@ -149,7 +149,10 @@ class CTRL_Drop(wx.StaticBitmap):
         """ Création d'une image pour la réception drop de données """
         # Création du bitmap
         largeurImage, hauteurImage = self.taille
-        bmp = wx.EmptyBitmap(largeurImage, hauteurImage)
+        if 'phoenix' in wx.PlatformInfo:
+            bmp = wx.Bitmap(largeurImage, hauteurImage)
+        else:
+            bmp = wx.EmptyBitmap(largeurImage, hauteurImage)
         mdc = wx.MemoryDC(bmp)
         dc = wx.GCDC(mdc)
         mdc.SetBackgroundMode(wx.TRANSPARENT)
