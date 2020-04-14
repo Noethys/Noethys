@@ -551,7 +551,12 @@ def GetXMLSepa(dictDonnees):
             DtOfSgntr = doc.createElement("DtOfSgntr")
             MndtRltdInf.appendChild(DtOfSgntr)
             DtOfSgntr.appendChild(doc.createTextNode(transaction_mandat_date))
-            
+
+            # AmdmntInd
+            AmdmntInd = doc.createElement("AmdmntInd")
+            MndtRltdInf.appendChild(AmdmntInd)
+            AmdmntInd.appendChild(doc.createTextNode("false"))
+
             # DbtrAgt
             DbtrAgt = doc.createElement("DbtrAgt")
             DrctDbtTxInf.appendChild(DbtrAgt)
@@ -572,6 +577,7 @@ def GetXMLSepa(dictDonnees):
             # Nm
             Nm = doc.createElement("Nm")
             Dbtr.appendChild(Nm)
+            transaction_debiteur = transaction_debiteur.replace(u"ç", u"c")
             Nm.appendChild(doc.createTextNode(transaction_debiteur[:70]))
 
             # DbtrAcct
@@ -650,6 +656,11 @@ def ValidationXSD(xml=""):
     
     
 if __name__ == "__main__":
-    rib = "20041010011505203J02242"
-    print(ControleIBAN(iban="FR76"+rib))
-    print(CalcCleBAN(rib))
+    # rib = "20041010011505203J02242"
+    # print(ControleIBAN(iban="FR76"+rib))
+    # print(CalcCleBAN(rib))
+
+    from xml.dom import minidom
+    doc = minidom.parse("")
+    xml = doc.toprettyxml(encoding="UTF-8")
+    print(ValidationXSD(xml))
