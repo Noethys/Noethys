@@ -144,46 +144,7 @@ class Impression():
                 story.append(DocAssign("IDcotisation", IDcotisation))
                 nomSansCivilite = dictValeur["{FAMILLE_NOM}"]
                 story.append(Bookmark(nomSansCivilite, str(IDcotisation)))
-                
-##                # ------------------- TITRE -----------------
-##                dataTableau = []
-##                largeursColonnes = [ TAILLE_CADRE_CONTENU[2], ]
-##                dataTableau.append((dictCompte["titre"],))
-##                texteDateReference = UTILS_Dates.DateEngFr(str(datetime.date.today()))
-##                dataTableau.append((_(u"Situation au %s") % texteDateReference,))
-##                style = TableStyle([
-##                        ('VALIGN', (0,0), (-1,-1), 'MIDDLE'), 
-##                        ('FONT',(0,0),(0,0), "Helvetica-Bold", 19), 
-##                        ('FONT',(0,1),(0,1), "Helvetica", 8), 
-##                        ('LINEBELOW', (0,0), (0,0), 0.25, colors.black), 
-##                        ('ALIGN', (0,0), (-1,-1), 'LEFT'), 
-##                        ])
-##                tableau = Table(dataTableau, largeursColonnes)
-##                tableau.setStyle(style)
-##                story.append(tableau)
-##                story.append(Spacer(0,30))
-##                
-##                    
-##                couleurFond = (0.8, 0.8, 1)
-##                couleurFondActivite = (0.92, 0.92, 1)
-##                        
-##                # TEXTE CONTENU
-##                paraStyle = ParagraphStyle(name="contenu",
-##                              fontName="Helvetica",
-##                              fontSize=11,
-##                              #leading=7,
-##                              spaceBefore=0,
-##                              spaceafter=0,
-##                              leftIndent=6,
-##                              rightIndent=6,
-##                            )
-##                
-##                texte = dictCompte["texte"]
-##                listeParagraphes = texte.split("</para>")
-##                for paragraphe in listeParagraphes :
-##                    textePara = Paragraph(u"%s</para>" % paragraphe, paraStyle)
-##                    story.append(textePara)
-                
+
                 # Saut de page
                 story.append(PageBreak())
         
@@ -193,7 +154,6 @@ class Impression():
         # Ouverture du PDF
         if ouverture == True :
             FonctionsPerso.LanceFichierExterne(nomDoc)
-
 
 
 

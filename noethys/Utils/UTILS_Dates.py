@@ -158,14 +158,6 @@ def DeltaEnStr(heureDelta, separateur="h"):
     valeur = "{}{}{}{:0>2}".format(signe, heures, separateur, minutes)
     return valeur
 
-    # heures = (heureDelta.days*24) + (heureDelta.seconds/3600)
-    # minutes = heureDelta.seconds%3600/60
-    # return "%d%s%02d" % (heures, separateur, minutes)
-
-    # texte = time.strftime("%Hh%M", time.gmtime(heureDelta.seconds))
-    # texte = texte.replace("h", separateur)
-    # return texte
-
 def TimeEnDelta(heureTime):
     if heureTime == None :
         return datetime.timedelta(0)

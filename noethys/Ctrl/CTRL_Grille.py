@@ -1329,7 +1329,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 dictUnitesRemplissage[IDunite] = [IDunite_remplissage,]
             else:
                 dictUnitesRemplissage[IDunite].append(IDunite_remplissage)
-                                
+
         # Récupération des unités de remplissage
         req = """SELECT IDunite_remplissage, IDactivite, ordre, nom, abrege, date_debut, date_fin, seuil_alerte, heure_min, heure_max, etiquettes
         FROM unites_remplissage 
@@ -3123,7 +3123,6 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
     def RechercheCombinaisonDict(self, dictUnitesUtilisees={}, combinaison=[], dictTarif={}):
         """ Recherche une combinaison donnée dans une ligne de la grille """
         for IDunite_combi in combinaison :
-##            if IDunite_combi not in listeUnites :
             # Vérifie si chaque unité est dans la combinaison
             if (IDunite_combi in dictUnitesUtilisees) == False :
                 return False
