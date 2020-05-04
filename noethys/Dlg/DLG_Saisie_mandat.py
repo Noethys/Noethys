@@ -790,8 +790,17 @@ class Dialog(wx.Dialog):
         listeDonnees = DB.ResultatReq()
         DB.Close()       
         ics = ""
-        if len(listeDonnees) > 0 :
+        if len(listeDonnees) > 0:
             IDcompte, nomCompte, numeroCompte, ics = listeDonnees[0]
+            if len(listeDonnees) > 1:
+                listeReponses = [u"%s  (%s - %s)" % (donnees[3], donnees[1], donnees[2]) for donnees in listeDonnees]
+                dlg = wx.SingleChoiceDialog(self, _(u"Plusieurs numéros ICS sont disponibles, veuillez en sélectionner un dans la liste:"), _(u"Choix de l'ICS"), listeReponses, wx.CHOICEDLG_STYLE)
+                if dlg.ShowModal() == wx.ID_OK:
+                    ics = listeDonnees[dlg.GetSelection()][3]
+                    dlg.Destroy()
+                else:
+                    dlg.Destroy()
+                    return False
 
         # Récupère données du mandat        
         titulaire_nom = ""
