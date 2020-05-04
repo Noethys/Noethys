@@ -1800,7 +1800,8 @@ DB_DATA = {
                                     # Les perceptions pour le prélèvement automatique
 
     "devis":                        [("IDdevis", "INTEGER PRIMARY KEY AUTOINCREMENT", u"IDdevis"),
-                                     ("numero", "INTEGER", u"Numéro de devis"), ("IDfamille", "INTEGER", u"ID du devis"),
+                                     ("numero", "INTEGER", u"Numéro de devis"),
+                                     ("IDfamille", "INTEGER", u"ID du devis"),
                                      ("date_edition", "DATE", u"Date d'édition du devis"),
                                      ("activites", "VARCHAR(450)", u"Liste des IDactivité séparées par ;"),
                                      ("individus", "VARCHAR(450)", u"Liste des IDindividus séparées par ;"),
