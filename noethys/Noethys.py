@@ -651,6 +651,8 @@ class MainFrame(wx.Frame):
                     "-",
                     {"code" : "convertir_fichier_reseau", "label" : _(u"Convertir en fichier réseau"), "infobulle" : _(u"Convertir le fichier en mode réseau"), "image" : "Images/16x16/Conversion_reseau.png", "action" : self.On_fichier_Convertir_reseau, "actif" : False},
                     {"code" : "convertir_fichier_local", "label" : _(u"Convertir en fichier local"), "infobulle" : _(u"Convertir le fichier en mode local"), "image" : "Images/16x16/Conversion_local.png", "action" : self.On_fichier_Convertir_local, "actif" : False},
+                    # "-",
+                    # {"code" : "export_noethysweb", "label": _(u"Exporter vers Noethysweb"), "infobulle": _(u"Convertir le fichier au format Noethysweb"), "image": "Images/16x16/Document_export.png", "action": self.On_fichier_export_noethysweb, "actif": True},
                     "-",
                     {"code" : "quitter", "label" : _(u"Quitter"), "infobulle" : _(u"Quitter Noethys"), "image" : "Images/16x16/Quitter.png", "action" : self.On_fichier_Quitter},
                     ],
@@ -1716,6 +1718,12 @@ class MainFrame(wx.Frame):
         nomFichier = self.userConfig["nomFichier"]
         from Utils import UTILS_Conversion_fichier
         UTILS_Conversion_fichier.ConversionReseauLocal(self, nomFichier)
+
+    def On_fichier_export_noethysweb(self, event):
+        from Dlg import DLG_Export_noethysweb
+        dlg = DLG_Export_noethysweb.Dialog(self)
+        dlg.ShowModal()
+        dlg.Destroy()
 
     def On_fichier_Quitter(self, event):
         if self.Quitter() == False :
