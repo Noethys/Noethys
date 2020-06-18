@@ -65,6 +65,8 @@ DICT_PROCEDURES = {
     "A9135" : _(u"Vérifie le total des factures"),
     "A9006" : _(u"Custom 1"),
     "A9007" : _(u"Correction Module Custom 1"),
+    "A9011" : _(u"Custom SMDH - Suppression inscriptions"),
+    "A9012" : _(u"Custom SMDH - Saisie inscriptions"),
 }
 
 
@@ -1241,12 +1243,48 @@ def A9007():
     DB.Commit()
     DB.Close()
 
+def A9011():
+    """ Custom SMDH - Suppression inscriptions """
+    DB = GestionDB.DB()
+    DB.ReqDEL("inscriptions", "IDactivite", 72)
+    DB.Close()
 
+def A9012():
+    """ Custom SMDH - Saisie inscriptions """
+    DB = GestionDB.DB()
 
+    # Lecture des inscriptions existantes
+    req = """SELECT IDinscription, IDindividu, IDfamille, IDactivite, IDgroupe, IDcategorie_tarif, IDcompte_payeur, date_inscription, parti, date_desinscription, statut
+    FROM inscriptions WHERE IDactivite=29;"""
+    DB.ExecuterReq(req)
+    listeInscriptions = DB.ResultatReq()
 
+    # Reproduit les inscriptions sur la nouvelle activité
+    index = 1
+    for IDinscription, IDindividu, IDfamille, IDactivite, IDgroupe, IDcategorie_tarif, IDcompte_payeur, date_inscription, parti, date_desinscription, statut in listeInscriptions:
+        # Modifications
+        IDactivite = 72
+        IDcategorie_tarif = 64
+        if IDgroupe == 29: IDgroupe = 101
+        if IDgroupe == 30: IDgroupe = 102
+        if IDgroupe == 31: IDgroupe = 103
+        if IDgroupe == 56: IDgroupe = 106
+        if IDgroupe == 47: IDgroupe = 104
+        if IDgroupe == 48: IDgroupe = 105
+        # Enregistrement
+        data = [("IDindividu", IDindividu), ("IDfamille", IDfamille), ("IDactivite", IDactivite), ("IDgroupe", IDgroupe),
+                ("IDcategorie_tarif", IDcategorie_tarif), ("IDcompte_payeur", IDcompte_payeur), ("date_inscription", date_inscription),
+                ("parti", parti), ("date_desinscription", date_desinscription), ("statut", statut),
+                ]
+        DB.ReqInsert("inscriptions", data)
+        EcritStatusbar("Veuillez patienter durant le traitement. %d / %d inscriptions..." % (index, len(listeInscriptions)))
+        index += 1
+
+    EcritStatusbar("")
+    DB.Close()
 
 if __name__ == u"__main__":
     app = wx.App(0)
     # TEST D'UNE PROCEDURE :
-    A9007()
+    A9012()
     app.MainLoop()
