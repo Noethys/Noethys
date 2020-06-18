@@ -260,13 +260,13 @@ class Impression():
         doc.addPageTemplates(MyPageTemplate(pageSize=TAILLE_PAGE, doc=doc))
         
         story = []
-        styleSheet = getSampleStyleSheet()
-        h3 = styleSheet['Heading3']
-        styleTexte = styleSheet['BodyText'] 
-        styleTexte.fontName = "Helvetica"
-        styleTexte.fontSize = 9
-        styleTexte.borderPadding = 9
-        styleTexte.leading = 12
+        # styleSheet = getSampleStyleSheet()
+        # h3 = styleSheet['Heading3']
+        # styleTexte = styleSheet['BodyText']
+        # styleTexte.fontName = "Helvetica"
+        # styleTexte.fontSize = 9
+        # styleTexte.borderPadding = 9
+        # styleTexte.leading = 12
         
 ##        # Définit le template des pages suivantes
 ##        story.append(NextPageTemplate("suivante"))

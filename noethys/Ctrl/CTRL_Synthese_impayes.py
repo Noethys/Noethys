@@ -129,10 +129,6 @@ class CTRL(HTL.HyperTreeList):
         """ Importation des données """
         DB = GestionDB.DB()
 
-##        self.filtreCotisations = False
-##        self.filtreCotisations_dateDebut = None
-##        self.filtreCotisations_dateFin = None
-        
         # Récupèration de la ventilation des prestations de la période
         conditionDepots = ""
         if self.filtreDepots == True and self.filtreDepots_dateDebut != None and self.filtreDepots_dateFin !=None :
@@ -462,51 +458,7 @@ class CTRL(HTL.HyperTreeList):
         impressionLigne.append(texte)
         
         self.dictImpression["total"].append(impressionLigne)
-        
-##        if self.affichage_details == True :
-##            
-##            # Tri des catégories
-##            listeCategories = []
-##            for IDcategorie_tarif in dictTotal.keys() :
-##                if IDcategorie_tarif == None : 
-##                    nomCategorie = _(u"Sans catégorie")
-##                else: 
-##                    nomCategorie = u"%s - %s" % (dictCategoriesTarifs[IDcategorie_tarif]["nomActivite"], dictCategoriesTarifs[IDcategorie_tarif]["nomCategorie"])
-##                listeCategories.append((nomCategorie, IDcategorie_tarif))
-##            listeCategories.sort()
-##            
-##            for nomCategorie, IDcategorie_tarif in listeCategories :
-##                niveauCategorie = self.AppendItem(niveauTotal, nomCategorie)
-##                self.SetItemFont(niveauCategorie, wx.Font(7, wx.SWISS, wx.NORMAL, wx.NORMAL))
-##                self.SetItemTextColour(niveauCategorie, wx.Colour(120, 120, 120) )
-##                self.SetItemBackgroundColour(niveauCategorie, (210, 210, 210) )
-##                
-##                impressionLigne = [nomCategorie,]
-##                
-##                totalLigne = 0.0
-##                for periode in listePeriodes :
-##                    texte = None
-##                    if dictTotal.has_key(IDcategorie_tarif) :
-##                        if dictTotal[IDcategorie_tarif].has_key(periode) :
-##                            valeur = dictTotal[IDcategorie_tarif][periode]
-##                            totalLigne += valeur
-##                            if self.mode_affichage == "nbre" : 
-##                                texte = str(int(valeur))
-##                            else:
-##                                texte = u"%.2f %s" % (valeur, SYMBOLE)
-##                            self.SetItemText(niveauCategorie, texte, dictColonnes[periode])
-##                            impressionLigne.append(texte)
-##                    if texte == None : impressionLigne.append("")
-##                
-##                if self.mode_affichage == "nbre" : 
-##                    texte = str(int(totalLigne))
-##                else:
-##                    texte = u"%.2f %s" % (totalLigne, SYMBOLE)
-##                self.SetItemText(niveauCategorie, texte, dictColonnes["total"])
-##                impressionLigne.append(texte)
-##                
-##                self.dictImpression["total"].append(impressionLigne)
-        
+
         self.ExpandAllChildren(self.root)   
         
     def RAZ(self):

@@ -930,8 +930,8 @@ class Dialog(wx.Dialog):
                     dict_resultats = UTILS_Divers.DictionnaireImbrique(dictionnaire=dict_resultats, cles=[regroupement, index_tranche_age, periode, IDregime], valeur=datetime.timedelta(hours=0, minutes=0))
                     dict_resultats[regroupement][index_tranche_age][periode][IDregime] += valeur * quantite
 
-        DB.Close() 
-        
+        DB.Close()
+
         # Affichage d'anomalies
         if len(listeAnomalies) > 0 :
             messageDetail = u"\n".join(listeAnomalies)
