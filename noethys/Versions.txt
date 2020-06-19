@@ -1,4 +1,4 @@
-Version 1.2.7.6 (12/03/2020) :
+Version 1.2.7.7 (19/06/2020) :
 
 - Intégration des locations dans Connecthys
 - Ajout des devis dans le menu Outils de la fiche famille
@@ -6,6 +6,7 @@ Version 1.2.7.6 (12/03/2020) :
 - Correction des prélèvements DFT
 - Ajout des stats globales dans l'état global
 - Adaptations pour python 3
+- Mise à jour de l'aide intégrée
 - Correction de divers bugs
 
 Version 1.2.7.3 (08/02/2020) :
