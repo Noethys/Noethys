@@ -243,14 +243,17 @@ class CTRL(HTL.HyperTreeList):
                     self.SetPyData(niveauGroupe, {"type" : "groupe", "valeur" : IDgroupe})
                     self.SetItemBold(niveauGroupe, True)
 
+                    listeImpressionEvenements = []
+
                     # Parcourt les évènements
                     for IDevenement, dictTemp in dictConso[date][IDactivite][IDgroupe].items() :
 
                         if IDevenement != None :
-                            parent = self.AppendItem(niveauGroupe, dictEvenements[IDevenement])
+                            nom_evenement = dictEvenements[IDevenement]
+                            parent = self.AppendItem(niveauGroupe, nom_evenement)
                             self.SetPyData(parent, {"type": "groupe", "valeur": IDgroupe})
-                            # self.SetItemBold(parent, True)
                         else :
+                            nom_evenement = None
                             parent = niveauGroupe
 
                         # Branches Individus
@@ -338,9 +341,11 @@ class CTRL(HTL.HyperTreeList):
                             listeImpressionIndividus.append({"placeDispo" : placeDispo, "nomIndividu" : nomIndividu, "num" : num, "texteIndividu" : texteIndividu, "texteUnites" : texteUnites, "texteDateSaisie" : texteDateSaisie} )
 
                             num += 1
-                    
+
+                        listeImpressionEvenements.append((nom_evenement, listeImpressionIndividus))
+
                     # Mémorisation pour impression
-                    listeImpressionGroupes.append( (nomGroupe, listeImpressionIndividus) )
+                    listeImpressionGroupes.append( (nomGroupe, listeImpressionEvenements) )
 
             # Mémorisation pour impression
             self.listeImpression.append( (DateComplete(date), listeImpressionGroupes) )
@@ -488,20 +493,26 @@ class CTRL(HTL.HyperTreeList):
             # Groupes
             listeIndexGroupes = []
             indexLigne = 0
-            for nomGroupe, listeIndividus in listeGroupes :
+            for nomGroupe, listeEvenements in listeGroupes :
                 indexLigne += 1
-                listeIndexGroupes.append(indexLigne)
-                
                 dataTableau.append( (nomGroupe, "", "") )
-                
-                # Individus
-                for dictIndividu in listeIndividus :
-                    placeDispo = dictIndividu["placeDispo"]
-                    texteIndividu = dictIndividu["texteIndividu"]
-                    texteUnites = dictIndividu["texteUnites"]
-                    texteDateSaisie = _(u"Saisie le %s") % dictIndividu["texteDateSaisie"]
-                    dataTableau.append( (texteIndividu, texteUnites, texteDateSaisie) ) # Paragraph(memo_journee, paraStyle)
-                    indexLigne += 1
+                listeIndexGroupes.append(indexLigne)
+
+                # Evenements
+                for nomEvenement, listeIndividus in listeEvenements:
+                    if nomEvenement:
+                        dataTableau.append( ("     " + nomEvenement, "", ""))
+                        listeIndexGroupes.append(indexLigne+1)
+                        indexLigne += 1
+
+                    # Individus
+                    for dictIndividu in listeIndividus :
+                        placeDispo = dictIndividu["placeDispo"]
+                        texteIndividu = dictIndividu["texteIndividu"]
+                        texteUnites = dictIndividu["texteUnites"]
+                        texteDateSaisie = _(u"Saisie le %s") % dictIndividu["texteDateSaisie"]
+                        dataTableau.append( (texteIndividu, texteUnites, texteDateSaisie) ) # Paragraph(memo_journee, paraStyle)
+                        indexLigne += 1
                     
             couleurFond = (0.8, 0.8, 1) # Vert -> (0.5, 1, 0.2)
             
@@ -594,23 +605,24 @@ class CTRL(HTL.HyperTreeList):
         # Contenu
         x = 1
         for date, listeGroupes in self.listeImpression :
-            for nomGroupe, listeIndividus in listeGroupes :
-                for dictIndividu in listeIndividus :
-                    placeDispo = dictIndividu["placeDispo"]
-                    if placeDispo == True :
-                        placeDispoTxt = _(u"Oui")
-                    else :
-                        placeDispoTxt = ""
+            for nomGroupe, listeEvenements in listeGroupes :
+                for nomEvenement, listeIndividus in listeEvenements:
+                    for dictIndividu in listeIndividus :
+                        placeDispo = dictIndividu["placeDispo"]
+                        if placeDispo == True :
+                            placeDispoTxt = _(u"Oui")
+                        else :
+                            placeDispoTxt = ""
 
-                    feuille.write(x, 0, date, format_date)
-                    feuille.write(x, 1, nomGroupe)
-                    feuille.write(x, 2, placeDispoTxt)
-                    feuille.write(x, 3, dictIndividu["num"])
-                    feuille.write(x, 4, dictIndividu["nomIndividu"])
-                    feuille.write(x, 5, dictIndividu["texteUnites"])
-                    feuille.write(x, 6, dictIndividu["texteDateSaisie"])
+                        feuille.write(x, 0, date, format_date)
+                        feuille.write(x, 1, nomGroupe)
+                        feuille.write(x, 2, placeDispoTxt)
+                        feuille.write(x, 3, dictIndividu["num"])
+                        feuille.write(x, 4, dictIndividu["nomIndividu"])
+                        feuille.write(x, 5, dictIndividu["texteUnites"])
+                        feuille.write(x, 6, dictIndividu["texteDateSaisie"])
 
-                    x += 1
+                        x += 1
 
         # Finalisation du fichier xlsx
         classeur.close()
@@ -638,11 +650,11 @@ class MyFrame(wx.Frame):
         
         dictDonnees = {
             "page" : 0,
-            "listeSelections" : [2, 3, 5],
-            "annee" : 2009,
+            "listeSelections" : [3, 4, 4],
+            "annee" : 2019,
             "dateDebut" : None,
             "dateFin" : None,
-            "listePeriodes" : [ (datetime.date(2010, 1, 1), datetime.date(2010, 12, 31)), ],
+            "listePeriodes" : [ (datetime.date(2019, 1, 1), datetime.date(2019, 12, 31)), ],
             "listeActivites" : [1,],
             }
 
