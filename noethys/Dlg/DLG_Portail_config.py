@@ -88,6 +88,7 @@ VALEURS_DEFAUT = {
     "stats_mdp": "",
     "secret_key" : GetSecretKey(),
     "mode_debug" : False,
+    "talisman": True,
     "crypter_transferts" : True,
     "image_identification" : "",
     "theme" : 0,
@@ -496,6 +497,13 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         nom = "mode_debug"
         propriete = wxpg.BoolProperty(label=_(u"Mode debug"), name=nom, value=VALEURS_DEFAUT[nom])
         propriete.SetHelpString(_(u"Cochez cette case pour activer le mode debug (Ne surtout pas utiliser en production !)"))
+        propriete.SetAttribute("UseCheckbox", True)
+        self.Append(propriete)
+
+        # Sécurité avancée
+        nom = "talisman"
+        propriete = wxpg.BoolProperty(label=_(u"Sécurité avancée"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Cochez cette case pour activer les paramètres de sécurité avancés"))
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
