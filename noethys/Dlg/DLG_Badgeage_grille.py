@@ -199,13 +199,19 @@ class CTRL(wx.Panel):
         heure_debut_defaut = self.grille.dictUnites[IDunite]["heure_debut"]
         heure_fin_defaut = self.grille.dictUnites[IDunite]["heure_fin"]
         typeUnite = self.grille.dictUnites[IDunite]["type"]
-        
+
+        if typeUnite == "Evenement":
+            evenement = case.liste_evenements[0] if case.liste_evenements else None
+            conditions = (evenement,)
+        else:
+            conditions = (heure_debut, heure_fin)
+
         if heure_debut == "defaut" : heure_debut = heure_debut_defaut
         if heure_fin == "defaut" : heure_fin = heure_fin_defaut
 
         # Vérifie qu'il reste des places disponibles
         hasPlaces = True
-        if case.HasPlaceDisponible(heure_debut, heure_fin) == False :
+        if case.HasPlaceDisponible(*conditions) == False :
             hasPlaces = False
             if mode == "reservation" :
                 return _(u"Il n'y a plus de place le %s.") % UTILS_Dates.DateDDEnFr(date)
@@ -220,7 +226,7 @@ class CTRL(wx.Panel):
         self.mode = mode
                 
         # Si la conso n'existe pas déjà :
-        if case.IsCaseDisponible(heure_debut, heure_fin) == True :
+        if case.IsCaseDisponible(*conditions) == True :
             if typeUnite == "Quantite" :
                 quantiteTmp = 1
             else :
@@ -231,6 +237,10 @@ class CTRL(wx.Panel):
                 barre = case.SaisieBarre(UTILS_Dates.HeureStrEnTime(heure_debut), UTILS_Dates.HeureStrEnTime(heure_fin), badgeage_debut=badgeage_debut, badgeage_fin=badgeage_fin)
                 if mode == "reservation" :
                     case.ModifieEtat(barre.conso, etat)
+            elif typeUnite == "Evenement" :
+                case.Ajouter_evenement(evenement=evenement)
+                if mode == "reservation" :
+                    case.ModifieEtat(evenement.conso, etat)
             else :
                 case.OnClick(saisieHeureDebut=heure_debut, saisieHeureFin=heure_fin, saisieQuantite=quantiteTmp, modeSilencieux=True, badgeage_debut=badgeage_debut, badgeage_fin=badgeage_fin)
                 if mode == "reservation" :

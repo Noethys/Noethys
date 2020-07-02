@@ -150,10 +150,11 @@ class Dialog(wx.Dialog):
 
     def DeplacerTout(self, inclus=True):
         listeTracks = []
-        for track in self.tracks :
-            track.inclus = inclus
-            listeTracks.append(track)
-        self.MAJListes(listeTracks)
+        if self.tracks:
+            for track in self.tracks :
+                track.inclus = inclus
+                listeTracks.append(track)
+            self.MAJListes(listeTracks)
 
     def GetTracks(self):
         return self.tracks

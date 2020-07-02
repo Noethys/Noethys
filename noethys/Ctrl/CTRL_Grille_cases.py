@@ -2680,7 +2680,7 @@ class CaseEvenement(Case):
 
     def HasPlaceDisponible(self, evenement=None):
         """ Regarde si place disponible selon le remplissage """
-        if evenement.GetCouleur() == CTRL_Grille.COULEUR_COMPLET :
+        if evenement and evenement.GetCouleur() == CTRL_Grille.COULEUR_COMPLET :
             return False
         return True
 

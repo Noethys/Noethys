@@ -482,10 +482,11 @@ class CTRL_Donnees(gridlib.Grid):
         FROM devis
         ;""" 
         DB.ExecuterReq(req)
-        listeDonnees = DB.ResultatReq()     
+        listeDonnees = DB.ResultatReq()
+        numero = 1
         if len(listeDonnees) > 0 : 
             numero = listeDonnees[0][0]
-            if numero == None :
+            if numero == None:
                 numero = 1
             else:
                 numero += 1
