@@ -92,6 +92,6 @@ def Rechercher(code=""):
 
 
 if __name__ == "__main__":
-    print(Rechercher("ZW"))
+    print(Rechercher("RS"))
 
 

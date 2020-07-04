@@ -927,12 +927,7 @@ class Facturation():
                 # Infos PES ORMC
                 if IDfacture in dictPes :
                     dictCompte["dict_pes"] = dictPes[IDfacture]
-                    try:
-                        dictCompte["{PES_DATAMATRIX}"] = Calculer_datamatrix(dictCompte)
-                    except Exception as err:
-                        print("Erreur dans la generation du datamatrix :")
-                        print(err)
-                        dictCompte["{PES_DATAMATRIX}"] = ""
+                    dictCompte["{PES_DATAMATRIX}"] = Calculer_datamatrix(dictCompte)
                     dictCompte["{PES_IDPIECE}"] = str(IDfacture)
                     dictCompte["{PES_IDLOT}"] = dictPes[IDfacture]["pes_IDlot"]
                     dictCompte["{PES_NOM_LOT}"] = dictPes[IDfacture]["pes_nom_lot"]
@@ -1167,8 +1162,8 @@ def Calculer_datamatrix(dictCompte):
     # 68 : Code période (1 caractère)
     elements.append(str(dict_pes["pes_lot_mois"])[:1])
 
-    # 69-71 : Deux derniers chiffres du CodProdLoc (3 caractères)
-    elements.append("%03d" % int(dict_pes["pes_lot_code_produit"][:2]))
+    # 69-71 : Deux premiers caractères du CodProdLoc (3 caractères)
+    elements.append("%03d" % int(DATA_Codes_etab.Rechercher(str(dict_pes["pes_lot_code_produit"])[:2])))
 
     # 72-73 : deux zéros
     elements.append("00")
