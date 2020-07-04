@@ -927,7 +927,12 @@ class Facturation():
                 # Infos PES ORMC
                 if IDfacture in dictPes :
                     dictCompte["dict_pes"] = dictPes[IDfacture]
-                    dictCompte["{PES_DATAMATRIX}"] = Calculer_datamatrix(dictCompte)
+                    try:
+                        dictCompte["{PES_DATAMATRIX}"] = Calculer_datamatrix(dictCompte)
+                    except Exception as err:
+                        print("Erreur dans la generation du datamatrix :")
+                        print(err)
+                        dictCompte["{PES_DATAMATRIX}"] = ""
                     dictCompte["{PES_IDPIECE}"] = str(IDfacture)
                     dictCompte["{PES_IDLOT}"] = dictPes[IDfacture]["pes_IDlot"]
                     dictCompte["{PES_NOM_LOT}"] = dictPes[IDfacture]["pes_nom_lot"]
