@@ -12,17 +12,14 @@
 import Chemins
 from Utils.UTILS_Traduction import _
 import wx
-from Ctrl import CTRL_Bouton_image
+import six
 import datetime
-import GestionDB
-
 import matplotlib
 import matplotlib.pyplot
-
-from numpy import arange 
-
+from numpy import arange
 from Utils import UTILS_Stats_modeles as MODELES
-
+if six.PY3:
+    import functools
 
 
 DICT_COMPARATIF_NOMBRE = {"dictParametres" : {}, "dictResultats" : {} }
@@ -284,6 +281,20 @@ def GetDictQuotients(DB, dictParametres):
     DICT_QUOTIENTS["dictParametres"] = dictParametres
     DICT_QUOTIENTS["dictResultats"] = {"dictTranchesTarifs" : dictTranchesTarifs, "dictTranchesDefaut" : dictTranchesDefaut}
     return DICT_QUOTIENTS["dictResultats"]
+
+
+def TrierQF(listeTranches=[]):
+    def Tri(tranche1, tranche2):
+        if type(tranche1) != tuple or type(tranche2) != tuple:
+            return -1
+        if tranche1 < tranche2: return -1
+        elif tranche1 > tranche2: return 1
+        else: return 0
+    if six.PY2:
+        listeTranches.sort(cmp=Tri)
+    else:
+        listeTranches.sort(key=functools.cmp_to_key(Tri))
+    return listeTranches
 
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -641,8 +652,8 @@ class Tableau_qf_tarifs(MODELES.Tableau):
         # Tri des tranches par ordre croissant
         listeTranches = []
         listeTranches = list(dictTranches.keys())
-        print(dictTranches.keys())
-        listeTranches.sort() 
+        # listeTranches.sort()
+        listeTranches = TrierQF(listeTranches)
         
         # Création du tableau des valeurs
         for tranche in listeTranches :
@@ -676,9 +687,9 @@ class Graphe_qf_tarifs(MODELES.Graphe):
         listeCouleurs = []
         
         # Tri des tranches par ordre croissant
-        listeTranches = []
         listeTranches = list(dictTranches.keys())
-        listeTranches.sort() 
+        # listeTranches.sort()
+        listeTranches = TrierQF(listeTranches)
         
         nbreTotal = 0
         for tranche in listeTranches :
@@ -738,9 +749,9 @@ class Tableau_qf_defaut(MODELES.Tableau):
         self.lignes = []
         
         # Tri des tranches par ordre croissant
-        listeTranches = []
         listeTranches = list(dictTranches.keys())
-        listeTranches.sort() 
+        # listeTranches.sort()
+        listeTranches = TrierQF(listeTranches)
         
         # Création du tableau des valeurs
         for tranche in listeTranches :
@@ -774,9 +785,9 @@ class Graphe_qf_defaut2(MODELES.Graphe):
         listeCouleurs = []
         
         # Tri des tranches par ordre croissant
-        listeTranches = []
         listeTranches = list(dictTranches.keys())
-        listeTranches.sort() 
+        # listeTranches.sort()
+        listeTranches = TrierQF(listeTranches)
         
         nbreTotal = 0
         for tranche in listeTranches :
@@ -832,9 +843,9 @@ class Graphe_qf_defaut(MODELES.Graphe):
         listeLabels = []
         
         # Tri des tranches par ordre croissant
-        listeTranches = []
         listeTranches = list(dictTranches.keys())
-        listeTranches.sort() 
+        # listeTranches.sort()
+        listeTranches = TrierQF(listeTranches)
         
         # Création du tableau des valeurs
         index = 1
@@ -907,87 +918,3 @@ if __name__ == '__main__':
     app.SetTopWindow(frame_1)
     frame_1.Show()
     app.MainLoop()
-    
-##    listeActivites = (1,)
-##    conditionsActivites = "(1)"
-##
-##
-##    DB = GestionDB.DB() 
-##
-##
-##    if True : #dictParametres["mode"] == "presents" :
-##        date_debut = datetime.date(2014, 7, 7)
-##        date_fin = datetime.date(2014, 7, 7)
-##        req = """SELECT familles.IDfamille, IDquotient, date_debut, date_fin, quotient
-##        FROM familles
-##        LEFT JOIN quotients ON quotients.IDfamille = familles.IDfamille
-##        LEFT JOIN comptes_payeurs ON comptes_payeurs.IDfamille = familles.IDfamille
-##        LEFT JOIN consommations ON consommations.IDcompte_payeur = comptes_payeurs.IDcompte_payeur
-##        WHERE date>='%s' AND date<='%s' 
-##        AND etat IN ('reservation', 'present')
-##        AND IDactivite IN %s
-##        GROUP BY familles.IDfamille, IDquotient
-##        ;""" % (date_debut, date_fin, conditionsActivites)
-##    else:
-##        date_debut = MODELES.GetDateExtremeActivites(DB, listeActivites=dictParametres["listeActivites"], typeDate="date_debut", mode="min")
-##        date_fin = MODELES.GetDateExtremeActivites(DB, listeActivites=dictParametres["listeActivites"], typeDate="date_fin", mode="max")
-##        req = """SELECT familles.IDfamille, IDquotient, date_debut, date_fin, quotient
-##        FROM familles
-##        LEFT JOIN quotients ON quotients.IDfamille = familles.IDfamille
-##        LEFT JOIN comptes_payeurs ON comptes_payeurs.IDfamille = familles.IDfamille
-##        LEFT JOIN inscriptions ON inscriptions.IDcompte_payeur = comptes_payeurs.IDcompte_payeur
-##        WHERE IDactivite IN %s
-##        GROUP BY familles.IDfamille, IDquotient
-##        ;""" % conditionsActivites
-##
-##    DB.ExecuterReq(req)
-##    listeDonnees = DB.ResultatReq()
-##    dictQuotients = {}
-##    for IDfamille, IDquotient, date_debut_qf, date_fin_qf, quotient in listeDonnees :
-##        if IDquotient == None or (date_debut_qf <= str(date_fin) and date_fin_qf >= str(date_debut)) :
-##            dictQuotients[IDfamille] = quotient
-##        else :
-##            dictQuotients[IDfamille] = None
-##    
-##    # Recherche des tranches de QF existantes
-##    req = """SELECT IDligne, qf_min, qf_max
-##    FROM tarifs_lignes
-##    WHERE IDactivite IN %s
-##    AND qf_min IS NOT NULL AND qf_max IS NOT NULL
-##    ;""" % conditionsActivites
-##    DB.ExecuterReq(req)
-##    listeDonnees = DB.ResultatReq()
-##    dictTranchesTarifs = {"pasqf" : 0, "autre" : 0}
-##    for IDligne, qf_min, qf_max in listeDonnees : 
-##        tranche = (qf_min, qf_max)
-##        if dictTranchesTarifs.has_key(tranche) == False :
-##            dictTranchesTarifs[tranche] = 0
-##    
-##    # Création des tranches de 100
-##    dictTranchesDefaut = {"pasqf" : 0, "autre" : 0}
-##    for x in range(0, 3000, 100) :
-##        tranche = (x+1, x+100)
-##        if x == 0 : tranche = (0, 100)
-##        dictTranchesDefaut[tranche] = 0    
-##    dictTranchesDefaut[(3001, 99999)] = 0
-##    
-##    # Répartition des QF par tranche
-##    for IDfamille, quotient in dictQuotients.iteritems() :
-##        if quotient == None :
-##            dictTranchesTarifs["pasqf"] += 1
-##        else :
-##            found = False
-##            for dictTranches in (dictTranchesDefaut, dictTranchesTarifs) :
-##                for tranche in dictTranches.keys() :
-##                    if tranche not in ("pasqf", "autre") and quotient >= tranche[0] and quotient <= tranche[1] :
-##                        dictTranches[tranche] += 1
-##                        found = True
-##                if found == False :
-##                    dictTranches["autre"] += 1
-##    
-##    print dictTranchesDefaut
-##    print dictTranchesTarifs
-##    DB.Close() 
-    
-    
-    

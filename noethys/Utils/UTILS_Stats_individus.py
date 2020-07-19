@@ -918,6 +918,7 @@ class Graphe_repartition_annees_naiss(MODELES.Graphe):
     
 
 
+
 class Tableau_repartition_villes(MODELES.Tableau):
     """ Répartition des individus par villes de résidence """
     def __init__(self):
@@ -943,11 +944,13 @@ class Tableau_repartition_villes(MODELES.Tableau):
             cpVille, nomVille = key
             nbreIndividus = valeurs["nbreIndividus"]
             distance = valeurs["distance"]
+            if not nomVille:
+                nomVille = ""
             listeVilles.append((nbreIndividus, nomVille, distance))
         listeVilles.sort(reverse=True)
         
         for nbreIndividus, nomVille, distance in listeVilles :
-            if nomVille == None : 
+            if not nomVille:
                 nomVille = _(u"Ville inconnue")
             self.lignes.append((nomVille, distance, nbreIndividus))
 
@@ -976,6 +979,8 @@ class Graphe_repartition_villes(MODELES.Graphe):
         for key, valeurs in dictVilles.items() :
             cpVille, nomVille = key
             nbreIndividus = valeurs["nbreIndividus"]
+            if not nomVille:
+                nomVille = ""
             listeVilles.append((nbreIndividus, nomVille))
             nbreTotalIndividus += nbreIndividus
         listeVilles.sort(reverse=True)
@@ -991,7 +996,7 @@ class Graphe_repartition_villes(MODELES.Graphe):
         
         index = 1
         for nbreIndividus, nomVille in listeVilles :
-            if nomVille == None : 
+            if not nomVille:
                 nomVille = _(u"N.C.")
 
             listeValeurs.append(nbreIndividus)
@@ -1002,11 +1007,7 @@ class Graphe_repartition_villes(MODELES.Graphe):
             listeCouleurs.append(couleur)
             
             index += 1
-            
-##            couleurRGB = HSVToRGB(couleurHSV)
-##            listeCouleurs.append(ConvertitCouleur2(couleurRGB))
-##            couleurHSV = (couleurHSV[0], couleurHSV[1]-20, couleurHSV[2])
-        
+
         cam = ax.pie(listeValeurs, labels=listeLabels, colors=listeCouleurs, autopct='%1.1f%%', shadow=False)
         title = ax.set_title(_(u"Répartition par ville"), weight="bold", horizontalalignment = 'center')#, position=(0.5, 0.97))
         matplotlib.pyplot.setp(title, rotation=0, fontsize=9)
