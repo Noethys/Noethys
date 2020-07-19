@@ -791,7 +791,7 @@ class Facturation():
 
         # Infos PES ORMC
         req = """SELECT
-        pes_pieces.IDlot, pes_pieces.IDfacture, pes_lots.nom, pes_lots.exercice, pes_lots.mois, pes_lots.objet_dette, pes_lots.id_bordereau, pes_lots.code_prodloc,
+        pes_pieces.IDlot, pes_pieces.IDfacture, pes_lots.nom, pes_lots.exercice, pes_lots.mois, pes_lots.objet_dette, pes_lots.id_bordereau, pes_lots.code_prodloc, pes_lots.code_etab,
         pes_lots.code_collectivite, pes_lots.id_collectivite, pes_lots.id_poste
         FROM pes_pieces
         LEFT JOIN pes_lots ON pes_lots.IDlot = pes_pieces.IDlot
@@ -800,12 +800,12 @@ class Facturation():
         DB.ExecuterReq(req)
         listeInfosPes = DB.ResultatReq()
         dictPes = {}
-        for IDlot_pes, IDfacture, nom_lot_pes, exercice, mois, objet, id_bordereau, code_produit, code_collectivite, id_collectivite, id_poste in (listeInfosPes):
+        for IDlot_pes, IDfacture, nom_lot_pes, exercice, mois, objet, id_bordereau, code_produit, code_etab, code_collectivite, id_collectivite, id_poste in (listeInfosPes):
             dictPes[IDfacture] = {
                 "pes_IDlot": IDlot_pes, "pes_nom_lot": nom_lot_pes, "pes_lot_exercice": exercice, "pes_lot_mois": mois,
                 "pes_lot_objet": objet, "pes_lot_id_bordereau": id_bordereau, "pes_lot_code_produit": code_produit,
                 "pes_lot_code_collectivite": code_collectivite, "pes_lot_id_collectivite": id_collectivite,
-                "pes_lot_id_poste": id_poste,
+                "pes_lot_id_poste": id_poste, "pes_lot_code_etab": code_etab,
             }
         if len(listeDonnees) == 0 :
             del dlgAttente
@@ -927,7 +927,12 @@ class Facturation():
                 # Infos PES ORMC
                 if IDfacture in dictPes :
                     dictCompte["dict_pes"] = dictPes[IDfacture]
-                    dictCompte["{PES_DATAMATRIX}"] = Calculer_datamatrix(dictCompte)
+                    try:
+                        datamatrix = Calculer_datamatrix(dictCompte)
+                    except Exception as err:
+                        datamatrix = ""
+                        print("ERREUR dans la generation du datamatrix :", err)
+                    dictCompte["{PES_DATAMATRIX}"] = datamatrix
                     dictCompte["{PES_IDPIECE}"] = str(IDfacture)
                     dictCompte["{PES_IDLOT}"] = dictPes[IDfacture]["pes_IDlot"]
                     dictCompte["{PES_NOM_LOT}"] = dictPes[IDfacture]["pes_nom_lot"]
@@ -1156,7 +1161,9 @@ def Calculer_datamatrix(dictCompte):
     elements.append(" " * 24)
 
     # 65-67 : Code établissement (3 caractères)
-    code_etab = DATA_Codes_etab.Rechercher(str(dict_pes["pes_lot_code_collectivite"]))
+    if not dict_pes["pes_lot_code_etab"]:
+        return ""
+    code_etab = DATA_Codes_etab.Rechercher(str(dict_pes["pes_lot_code_etab"]))
     elements.append("%03d" % int(code_etab))
 
     # 68 : Code période (1 caractère)
@@ -1177,7 +1184,7 @@ def Calculer_datamatrix(dictCompte):
     elements.append(cle)
 
     # 77-82 : Code émetteur (6 caractères)
-    elements.append("%06d" % int(dict_pes["pes_lot_id_collectivite"][:6]))
+    elements.append("940033")
 
     # 83-86 : Code établissement (=0001)
     elements.append("0001")
@@ -1198,8 +1205,7 @@ def Calculer_datamatrix(dictCompte):
     cle2 = GetCle_modulo23((str(dict_pes["pes_lot_exercice"])[-2:], str(dict_pes["pes_lot_mois"]), "00", u"{:0>13}".format(dictCompte["num_facture"])))
     alphabet = "ABCDEFGHJKLMNPQRSTUVWXY"
     cle2 = "%02d" % (alphabet.index(cle2) + 1)
-
-    elements.append("".join([num_dette, cle2, id_poste, "4"]))
+    elements.append("".join([cle2, num_dette, id_poste, "4"]))
 
     # 116 : Code document (=9)
     elements.append("9")
@@ -1256,6 +1262,6 @@ if __name__ == '__main__':
     #print "Nbre factures trouvees =", len(liste_factures)
 
     # Affichage d'une facture
-    print("resultats =", facturation.Impression(listeFactures=[76,]))
+    print("resultats =", facturation.Impression(listeFactures=[1,]))
 
     app.MainLoop()

@@ -179,6 +179,10 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL):
         propriete.SetHelpString(_(u"Saisissez le code Produit Local")) 
         self.Append(propriete)
 
+        propriete = wxpg.StringProperty(label=_(u"Code Etablissement"), name="code_etab", value=u"")
+        propriete.SetHelpString(_(u"Saisissez le code Etablissement (3 caractères max). Nécessaire pour le datamatrix. Ce code apparaît dans les paramètres de flux dans Hélios."))
+        self.Append(propriete)
+
         # Libellés
         self.Append( wxpg.PropertyCategory(_(u"Libellés")) )
 
@@ -615,7 +619,7 @@ class Dialog(wx.Dialog):
         if self.IDlot == None :
             # Données du dernier lot
             DB = GestionDB.DB()
-            req = """SELECT reglement_auto, IDcompte, IDmode, exercice, mois, objet_dette, date_emission, date_prelevement, date_envoi, id_bordereau, id_poste, id_collectivite, code_collectivite, code_budget, code_prodloc, prelevement_libelle, objet_piece
+            req = """SELECT reglement_auto, IDcompte, IDmode, exercice, mois, objet_dette, date_emission, date_prelevement, date_envoi, id_bordereau, id_poste, id_collectivite, code_collectivite, code_budget, code_prodloc, code_etab, prelevement_libelle, objet_piece
             FROM pes_lots
             ORDER BY IDlot;"""
             DB.ExecuterReq(req)
@@ -623,7 +627,7 @@ class Dialog(wx.Dialog):
             DB.Close()
             if len(listeDonnees) == 0 :
                 return
-            reglement_auto, IDcompte, IDmode, exercice, mois, objet_dette, date_emission, date_prelevement, date_envoi, id_bordereau, id_poste, id_collectivite, code_collectivite, code_budget, code_prodloc, prelevement_libelle, objet_piece  = listeDonnees[-1]
+            reglement_auto, IDcompte, IDmode, exercice, mois, objet_dette, date_emission, date_prelevement, date_envoi, id_bordereau, id_poste, id_collectivite, code_collectivite, code_budget, code_prodloc, code_etab, prelevement_libelle, objet_piece  = listeDonnees[-1]
             nom = u""
             verrouillage = False
             observations = u""
@@ -631,7 +635,7 @@ class Dialog(wx.Dialog):
         else :
             # Importation
             DB = GestionDB.DB()
-            req = """SELECT nom, verrouillage, observations, reglement_auto, IDcompte, IDmode, exercice, mois, objet_dette, date_emission, date_prelevement, date_envoi, id_bordereau, id_poste, id_collectivite, code_collectivite, code_budget, code_prodloc, prelevement_libelle, objet_piece 
+            req = """SELECT nom, verrouillage, observations, reglement_auto, IDcompte, IDmode, exercice, mois, objet_dette, date_emission, date_prelevement, date_envoi, id_bordereau, id_poste, id_collectivite, code_collectivite, code_budget, code_prodloc, code_etab, prelevement_libelle, objet_piece 
             FROM pes_lots
             WHERE IDlot=%d
             ;""" % self.IDlot
@@ -640,7 +644,7 @@ class Dialog(wx.Dialog):
             DB.Close()
             if len(listeDonnees) == 0 :
                 return
-            nom, verrouillage, observations, reglement_auto, IDcompte, IDmode, exercice, mois, objet_dette, date_emission, date_prelevement, date_envoi, id_bordereau, id_poste, id_collectivite, code_collectivite, code_budget, code_prodloc, prelevement_libelle, objet_piece = listeDonnees[0]
+            nom, verrouillage, observations, reglement_auto, IDcompte, IDmode, exercice, mois, objet_dette, date_emission, date_prelevement, date_envoi, id_bordereau, id_poste, id_collectivite, code_collectivite, code_budget, code_prodloc, code_etab, prelevement_libelle, objet_piece = listeDonnees[0]
         
         # Attribution des données aux contrôles
         self.ctrl_nom.SetValue(nom)
@@ -667,6 +671,7 @@ class Dialog(wx.Dialog):
             ("code_collectivite", code_collectivite),
             ("code_budget", code_budget),
             ("code_prodloc", code_prodloc),
+            ("code_etab", code_etab),
             ("reglement_auto", reglement_auto),
             ("IDcompte", IDcompte),
             ("IDmode", IDmode),
@@ -745,6 +750,7 @@ class Dialog(wx.Dialog):
         code_collectivite = self.ctrl_parametres.GetPropertyValue("code_collectivite")
         code_budget = self.ctrl_parametres.GetPropertyValue("code_budget")
         code_prodloc = self.ctrl_parametres.GetPropertyValue("code_prodloc")
+        code_etab = self.ctrl_parametres.GetPropertyValue("code_etab")
         reglement_auto = int(self.ctrl_parametres.GetPropertyValue("reglement_auto"))
         IDcompte = self.ctrl_parametres.GetPropertyValue("IDcompte")
         IDmode = self.ctrl_parametres.GetPropertyValue("IDmode")
@@ -776,6 +782,7 @@ class Dialog(wx.Dialog):
             (code_collectivite, "code_collectivite", _(u"le Code Collectivité")),
             (code_budget, "code_budget", _(u"le Code Bugdet")),
             (code_prodloc, "code_prodloc", _(u"le code Produit Local")),
+            (code_etab, "code_etab", _(u"le code Etablissement")),
             ]
             
         for donnee, code, label in listeVerifications :
@@ -872,6 +879,7 @@ class Dialog(wx.Dialog):
         code_collectivite = self.ctrl_parametres.GetPropertyValue("code_collectivite")
         code_budget = self.ctrl_parametres.GetPropertyValue("code_budget")
         code_prodloc = self.ctrl_parametres.GetPropertyValue("code_prodloc")
+        code_etab = self.ctrl_parametres.GetPropertyValue("code_etab")
         reglement_auto = int(self.ctrl_parametres.GetPropertyValue("reglement_auto"))
         IDcompte = self.ctrl_parametres.GetPropertyValue("IDcompte")
         IDmode = self.ctrl_parametres.GetPropertyValue("IDmode")
@@ -898,6 +906,7 @@ class Dialog(wx.Dialog):
             ("code_collectivite", code_collectivite),
             ("code_budget", code_budget),
             ("code_prodloc", code_prodloc),
+            ("code_etab", code_etab),
             ("prelevement_libelle", prelevement_libelle),
             ("objet_piece", objet_piece),
             ]
@@ -1045,6 +1054,7 @@ class Dialog(wx.Dialog):
             "montant_total": str(montantTotal),
             "objet_dette": self.ctrl_parametres.GetPropertyValue("objet_dette"),
             "code_prodloc": self.ctrl_parametres.GetPropertyValue("code_prodloc"),
+            "code_etab": self.ctrl_parametres.GetPropertyValue("code_etab"),
             "pieces": listePieces,
             "pieces_jointes" : dict_pieces_jointes,
         }

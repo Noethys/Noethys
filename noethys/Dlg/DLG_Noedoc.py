@@ -6063,7 +6063,8 @@ def DessineObjetPDF(objet, canvas, valeur=None):
                         dlg.ShowModal()
                         dlg.Destroy()
                         return False
-            
+
+            barcode = None
             if objet.norme == None : objet.norme = "Extended39"
             if objet.norme == "Codabar" : barcode = Codabar(valeur, barHeight=hauteur, humanReadable=objet.afficheNumero)
             if objet.norme == "Code11" : barcode = Code11(valeur, barHeight=hauteur, humanReadable=objet.afficheNumero)
@@ -6078,13 +6079,22 @@ def DessineObjetPDF(objet, canvas, valeur=None):
             if objet.norme == "Standard93" : barcode = Standard93(valeur, barHeight=hauteur, humanReadable=objet.afficheNumero)
             if objet.norme == "POSTNET" : barcode = POSTNET(valeur, barHeight=hauteur, humanReadable=objet.afficheNumero)
             if objet.norme == "datamatrix":
-                barcode = ecc200datamatrix.ECC200DataMatrix(valeur)
-                barcode.barWidth = 1.45
-                barcode.x, barcode.y = 18, 0
-                barcode.validate()
-                barcode.encode()
+                # Utilisation de Reportlab
+                # barcode = ecc200datamatrix.ECC200DataMatrix(valeur)
+                # barcode.barWidth = 1.45
+                # barcode.x, barcode.y = 18, 0
+                # barcode.validate()
+                # barcode.encode()
 
-            barcode.drawOn(canvas, x-18, y)
+                # Utilisation de pystrich
+                from pystrich.datamatrix import DataMatrixEncoder
+                encoder = DataMatrixEncoder(valeur)
+                png = encoder.get_imagedata()
+                buf = six.BytesIO(png)
+                canvas.drawImage(ImageReader(buf), x-3, y-3, largeur*1.11, hauteur*1.11, mask="auto", preserveAspectRatio=objet.verrouillageProportions)
+
+            if barcode:
+                barcode.drawOn(canvas, x-18, y)
 
     # ------- SPECIAL ------
     if objet.categorie == "special" :

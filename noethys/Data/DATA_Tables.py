@@ -1378,6 +1378,7 @@ DB_DATA = {
                                     ("code_collectivite", "VARCHAR(200)", u"Code Collectivité"),
                                     ("code_budget", "VARCHAR(200)", u"Code Budget"),
                                     ("code_prodloc", "VARCHAR(200)", u"Code Produit Local"),
+                                    ("code_etab", "VARCHAR(100)", u"Code Etablissement"),
                                     ("prelevement_libelle", "VARCHAR(450)", u"Libellé du prélèvement"),
                                     ("objet_piece", "VARCHAR(450)", u"Objet de la pièce"),
                                     ], # Lots PESV2 ORMC
