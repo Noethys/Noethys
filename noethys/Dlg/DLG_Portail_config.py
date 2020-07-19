@@ -58,7 +58,7 @@ LISTE_SELECTION_LOCATIONS = [(0, u"Toutes les locations"), (3, u"Datant de moins
 VALEURS_DEFAUT = {
     "portail_activation" : False,
     "client_synchro_portail_activation" : False,
-    "client_synchro_portail_delai" : 1,
+    "client_synchro_portail_delai" : 2,
     "client_synchro_portail_ouverture" : False,
     "client_rechercher_updates" : True,
     "serveur_type": 0,
