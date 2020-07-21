@@ -447,6 +447,9 @@ class Dialog(wx.Dialog):
         self.ctrl_pieces.MAJ(tracks=self.tracks) 
         self.ctrl_pieces.MAJtotaux() 
 
+        # Affichage avertissement
+        wx.CallAfter(self.Afficher_avertissement)
+
     def __set_properties(self):
         self.SetTitle(_(u"Saisie d'un bordereau PES ORMC"))
         self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez un nom pour ce bordereau (Ex : 'Janvier 2013', etc...). Nom interne à Noethys.")))
@@ -1178,6 +1181,34 @@ class Dialog(wx.Dialog):
         return dict_pieces_jointes
 
 
+    def Afficher_avertissement(self):
+        if UTILS_Parametres.Parametres(mode="get", categorie="ne_plus_afficher", nom="datamatrix", valeur=False) == True :
+            return
+
+        texte = u"""
+<CENTER><IMG SRC="%s">
+<BR><BR>
+<FONT SIZE=3>
+A partir du 28 juillet 2020, les collectivités qui génèrent un bordereau PES v2 (pour Hélios) doivent proposer à 
+leurs usagers un paiement possible par espèces ou par carte bancaire chez un buraliste agréé. Il existe deux conditions 
+pour répondre à cette obligation : faire apparaître sur chaque facture un code-barre à la norme datamatrix, que le 
+buraliste pourra scanner, et un texte mentionnant la possibilité de payer par ce moyen.
+<BR><BR>
+Pour découvrir comment adapter Noethys à cet usage, consultez la page d'information suivante :
+<A HREF="https://noethys.com/index.php/actualites/264-paiement-des-factures-chez-le-buraliste">Paiement des factures Noethys chez le buraliste</A>.
+</FONT>
+</CENTER>
+""" % Chemins.GetStaticPath("Images/Special/Annonce_datamatrix.jpg")
+
+        from Dlg import DLG_Message_html
+        dlg = DLG_Message_html.Dialog(self, texte=texte, titre=_(u"Information importante"), size=(510, 490), nePlusAfficher=True)
+        dlg.CenterOnScreen()
+        dlg.ShowModal()
+        nePlusAfficher = dlg.GetEtatNePlusAfficher()
+        dlg.Destroy()
+        if nePlusAfficher == True :
+            UTILS_Parametres.Parametres(mode="set", categorie="ne_plus_afficher", nom="datamatrix", valeur=nePlusAfficher)
+        return True
 
 
 
