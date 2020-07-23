@@ -799,6 +799,9 @@ DB_DATA = {
                                     ("etat", "VARCHAR(100)", u"Etat de la facture"),
                                     ("IDprefixe", "INTEGER", u"ID du préfixe"),
                                     ("IDregie", "INTEGER", u"ID de la régie"),
+                                    ("mention1", "VARCHAR(300)", u"Mention 1"),
+                                    ("mention2", "VARCHAR(300)", u"Mention 2"),
+                                    ("mention3", "VARCHAR(300)", u"Mention 3"),
                                     ], # Factures éditées
 
     "textes_rappels":[      ("IDtexte", "INTEGER PRIMARY KEY AUTOINCREMENT", u"IDtexte"),

@@ -83,6 +83,9 @@ class ListView(FastObjectListView):
                                                         date_echeance=self.dictParametres["date_echeance"],
                                                         prestations=self.dictParametres["prestations"],
                                                         date_anterieure=self.dictParametres["date_anterieure"],
+                                                        mention1=self.dictParametres["mention1"],
+                                                        mention2=self.dictParametres["mention2"],
+                                                        mention3=self.dictParametres["mention3"],
                                                         )
             del dlgAttente
         except Exception as err:

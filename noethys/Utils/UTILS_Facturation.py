@@ -147,7 +147,7 @@ class Facturation():
                 texte = texte.replace(key, six.text_type(valeur))
         return texte
 
-    def GetDonnees(self, listeFactures=[], liste_activites=[], date_debut=None, date_fin=None, date_edition=None, date_echeance=None, prestations=["consommation", "cotisation", "location", "autre"], typeLabel=0, date_anterieure=None):
+    def GetDonnees(self, listeFactures=[], liste_activites=[], date_debut=None, date_fin=None, date_edition=None, date_echeance=None, prestations=["consommation", "cotisation", "location", "autre"], typeLabel=0, date_anterieure=None, mention1="", mention2="", mention3=""):
         """ Recherche des factures à créer """      
         
         dictFactures = {}
@@ -421,6 +421,9 @@ class Facturation():
                 date_fin = dictFactures[IDfacture]["date_fin"]
                 date_edition = dictFactures[IDfacture]["date_edition"]
                 date_echeance = dictFactures[IDfacture]["date_echeance"]
+                mention1 = dictFactures[IDfacture]["mention1"]
+                mention2 = dictFactures[IDfacture]["mention2"]
+                mention3 = dictFactures[IDfacture]["mention3"]
                             
             # Regroupement par compte payeur
             if (ID in dictComptes) == False and IDfamille in self.dictNomsTitulaires :
@@ -529,8 +532,12 @@ class Facturation():
                 # Ajoute les messages familiaux
                 if IDfamille in self.dictMessageFamiliaux :
                     dictComptes[ID]["messages_familiaux"] = self.dictMessageFamiliaux[IDfamille]
-                    
-                    
+
+                # Ajoute les mentions
+                dictComptes[ID]["{MENTION1}"] = mention1
+                dictComptes[ID]["{MENTION2}"] = mention2
+                dictComptes[ID]["{MENTION3}"] = mention3
+
             # Insert les montants pour le compte payeur
             if IDprestation in dictVentilationPrestations :
                 montant_ventilation = FloatToDecimal(dictVentilationPrestations[IDprestation])
@@ -740,7 +747,8 @@ class Facturation():
         factures.IDfacture, factures.IDprefixe, factures_prefixes.prefixe, factures.numero, factures.IDcompte_payeur, factures.activites, factures.individus,
         factures.date_edition, factures.date_echeance, factures.IDutilisateur,
         factures.date_debut, factures.date_fin, factures.total, factures.regle, factures.solde,
-        factures.prestations, lots_factures.nom
+        factures.prestations, lots_factures.nom,
+        factures.mention1, factures.mention2, factures.mention3
         FROM factures
         LEFT JOIN lots_factures ON lots_factures.IDlot = factures.IDlot
         LEFT JOIN factures_prefixes ON factures_prefixes.IDprefixe = factures.IDprefixe
@@ -814,7 +822,7 @@ class Facturation():
         
         listeFactures = []
         index = 0
-        for IDfacture, IDprefixe, prefixe, numero, IDcompte_payeur, activites, individus, date_edition, date_echeance, IDutilisateur, date_debut, date_fin, total, regle, solde, typesPrestations, nomLot in listeDonnees :
+        for IDfacture, IDprefixe, prefixe, numero, IDcompte_payeur, activites, individus, date_edition, date_echeance, IDutilisateur, date_debut, date_fin, total, regle, solde, typesPrestations, nomLot, mention1, mention2, mention3 in listeDonnees :
             
             self.EcritStatusbar(_(u"Recherche de la facture %d sur %d") % (index+1, len(listeDonnees)))
 
@@ -838,10 +846,14 @@ class Facturation():
             for IDindividu in individus.split(";") :
                 liste_individus.append(int(IDindividu))
 
+            if not mention1 : mention1 = ""
+            if not mention2 : mention2 = ""
+            if not mention3 : mention3 = ""
+
             dictFacture = {
                 "IDfacture" : IDfacture, "IDprefixe" : IDprefixe, "prefixe" : prefixe, "numero" : numero, "IDcompte_payeur" : IDcompte_payeur, "date_edition" : date_edition, "date_echeance" : date_echeance,
                 "IDutilisateur" : IDutilisateur, "date_debut" : date_debut, "date_fin" : date_fin, "total" : total, "regle" : regle, "solde" : solde, 
-                "activites" : liste_activites, "individus" : liste_individus, "prestations" : prestations,
+                "activites" : liste_activites, "individus" : liste_individus, "prestations" : prestations, "mention1": mention1, "mention2": mention2, "mention3": mention3,
                 }
             listeFactures.append(dictFacture) 
             index +=1
@@ -857,7 +869,7 @@ class Facturation():
         
         dictFactures = {}
         dictChampsFusion = {}
-        for IDfacture, IDprefixe, prefixe, numero, IDcompte_payeur, activites, individus, date_edition, date_echeance, IDutilisateur, date_debut, date_fin, total, regle, solde, typesPrestations, nomLot in listeDonnees :
+        for IDfacture, IDprefixe, prefixe, numero, IDcompte_payeur, activites, individus, date_edition, date_echeance, IDutilisateur, date_debut, date_fin, total, regle, solde, typesPrestations, nomLot, mention1, mention2, mention3 in listeDonnees :
             total = FloatToDecimal(total) 
             regle = FloatToDecimal(regle)
             solde = FloatToDecimal(solde)
@@ -1144,6 +1156,14 @@ def ModificationFacture(listeFactures=[], dict_valeurs={}):
         # Modification Date_échéance
         if "date_echeance" in dict_valeurs :
             DB.ReqMAJ("factures", [("date_echeance", dict_valeurs["date_echeance"]), ], "IDfacture", IDfacture)
+
+        # Modification Mentions
+        if "mention1" in dict_valeurs :
+            DB.ReqMAJ("factures", [("mention1", dict_valeurs["mention1"]), ], "IDfacture", IDfacture)
+        if "mention2" in dict_valeurs :
+            DB.ReqMAJ("factures", [("mention2", dict_valeurs["mention2"]), ], "IDfacture", IDfacture)
+        if "mention3" in dict_valeurs :
+            DB.ReqMAJ("factures", [("mention3", dict_valeurs["mention3"]), ], "IDfacture", IDfacture)
 
     DB.Close()
     del dlgAttente
