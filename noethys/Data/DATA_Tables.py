@@ -1800,8 +1800,8 @@ DB_DATA = {
                                     ("nom", "VARCHAR(200)", u"Nom de la perception"),
                                     ("rue_resid", "VARCHAR(255)", u"Adresse de la perception"),
                                     ("cp_resid", "VARCHAR(10)", u"Code postal de la perception"),
-                                    ("ville_resid", "VARCHAR(100)", u"Ville de la perception"), ],
-                                    # Les perceptions pour le prélèvement automatique
+                                    ("ville_resid", "VARCHAR(100)", u"Ville de la perception"),
+                                     ], # Les perceptions pour le prélèvement automatique
 
     "devis":                        [("IDdevis", "INTEGER PRIMARY KEY AUTOINCREMENT", u"IDdevis"),
                                      ("numero", "INTEGER", u"Numéro de devis"),
@@ -1814,9 +1814,21 @@ DB_DATA = {
                                      ("date_fin", "DATE", u"Date de fin de période"),
                                      ("total", "FLOAT", u"Montant total de la période"),
                                      ("regle", "FLOAT", u"Montant réglé pour la période"),
-                                     ("solde", "FLOAT", u"Solde à régler pour la période"), ],
-                                     # Devis
+                                     ("solde", "FLOAT", u"Solde à régler pour la période"),
+                                     ], # Devis
 
+    "contacts":                     [("IDcontact", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID du contact"),
+                                     ("nom", "VARCHAR(100)", u"Nom du contact"),
+                                     ("prenom", "VARCHAR(100)", u"Prénom du contact"),
+                                     ("rue_resid", "VARCHAR(255)", u"Adresse du contact"),
+                                     ("cp_resid", "VARCHAR(10)", u"Code postal du contact"),
+                                     ("ville_resid", "VARCHAR(100)", u"Ville du contact"),
+                                     ("tel_domicile", "VARCHAR(50)", u"Tel de domicile du contact"),
+                                     ("tel_mobile", "VARCHAR(50)", u"Tel du mobile du contact"),
+                                     ("mail", "VARCHAR(200)", u"Email perso du contact"),
+                                     ("site", "VARCHAR(100)", u"Adresse site internet"),
+                                     ("memo", "VARCHAR(2000)", u"Mémo concernant le contact"),
+                                     ], # Les contacts du carnet d'adresses
 
 }
 

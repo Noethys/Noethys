@@ -843,6 +843,7 @@ class MainFrame(wx.Frame):
                     {"code" : "connecthys_synchro", "label" : _(u"Connecthys - Le portail internet"), "infobulle" : _(u"Synchroniser et configurer Connecthys, le portail internet de Noethys"), "image" : "Images/16x16/Connecthys.png", "action" : self.On_outils_connecthys_synchro},
                     {"code" : "connecthys_traiter", "label": _(u"Traiter les demandes du portail"), "infobulle": _(u"Traiter les demandes du portail"), "image": "Images/16x16/Connecthys.png", "action": self.On_outils_connecthys_traiter},
                     "-",
+                    {"code" : "carnet_adresses", "label": _(u"Carnet d'adresses"), "infobulle": _(u"Carnet d'adresses"), "image": "Images/16x16/Carnet.png", "action": self.On_outils_carnet},
                     {"code" : "editeur_emails", "label" : _(u"Editeur d'Emails"), "infobulle" : _(u"Editeur d'Emails"), "image" : "Images/16x16/Editeur_email.png", "action" : self.On_outils_emails},
                     {"code" : "envoi_sms", "label": _(u"Envoi de SMS"), "infobulle": _(u"Envoi de SMS"), "image": "Images/16x16/Sms.png", "action": self.On_outils_sms},
                     "-",
@@ -2603,7 +2604,14 @@ class MainFrame(wx.Frame):
         dlg = DLG_Geolocalisation.Dialog(self)
         dlg.ShowModal() 
         dlg.Destroy()
-    
+
+    def On_outils_carnet(self, event):
+        if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("outils_carnet", "consulter") == False : return
+        from Dlg import DLG_Contacts
+        dlg = DLG_Contacts.Dialog(self)
+        dlg.ShowModal()
+        dlg.Destroy()
+
     def On_outils_emails(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("outils_editeur_emails", "consulter") == False : return
         from Dlg import DLG_Mailer

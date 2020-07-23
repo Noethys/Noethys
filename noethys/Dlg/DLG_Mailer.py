@@ -64,7 +64,7 @@ class Dialog(wx.Dialog):
         # Pièces jointes
         self.box_pieces_staticbox = wx.StaticBox(self, -1, _(u"Pièces jointes communes"))
         self.ctrl_pieces = OL_Pieces_jointes_emails.ListView(self, id=-1, style=wx.LC_NO_HEADER|wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
-        self.ctrl_pieces.SetMinSize((200, 70))
+        self.ctrl_pieces.SetMinSize((250, 70))
         self.ctrl_pieces.MAJ() 
         
         self.bouton_ajouter_piece = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Ajouter.png"), wx.BITMAP_TYPE_ANY))
@@ -111,7 +111,7 @@ class Dialog(wx.Dialog):
         self.bouton_outils.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder aux outils")))
         self.bouton_envoyer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour envoyer le mail")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
-        self.SetMinSize((750, 680))
+        self.SetMinSize((800, 680))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=4, cols=1, vgap=10, hgap=10)

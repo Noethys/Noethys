@@ -547,26 +547,7 @@ class ListView(FastObjectListView):
             self.GetParent().OnCheck(track)
         except :
             pass
-        
-##    def FiltrerPresents(self, event=None):
-##        from Dlg import DLG_Selection_individus
-##        dlg = DLG_Selection_individus.Dialog(self)
-##        if dlg.ShowModal() == wx.ID_OK:
-##            self.listeActivites = dlg.GetActivites() 
-##            self.presents = dlg.GetPeriodePresents() 
-##            self.MAJ() 
-##            self.CocheTout() 
-##            dlg.Destroy()
-##        else:
-##            dlg.Destroy()
-##            return
-    
-    def OnCheck(self, track):
-        try :
-            self.GetParent().OnCheck(track)
-        except :
-            pass
-        
+
     def OnContextMenu(self, event):
         """Ouverture du menu contextuel """            
         # Création du menu contextuel
