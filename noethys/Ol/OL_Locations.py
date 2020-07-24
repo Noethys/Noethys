@@ -22,15 +22,34 @@ from Utils import UTILS_Interface
 from Utils import UTILS_Questionnaires
 from Utils import UTILS_Dates
 from Utils import UTILS_Gestion
+from Utils import UTILS_Historique
 from Ctrl.CTRL_ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils, PanelAvecFooter
 
 
 
 def Supprimer_location(parent, IDlocation=None):
     gestion = UTILS_Gestion.Gestion(None)
+    DB = GestionDB.DB()
+
+    # Récupère les infos sur cette location
+    req = """SELECT IDfamille, date_debut, date_fin, produits.nom, produits_categories.nom
+    FROM locations 
+    LEFT JOIN produits ON produits.IDproduit = locations.IDproduit
+    LEFT JOIN produits_categories ON produits_categories.IDcategorie = produits.IDcategorie
+    WHERE IDlocation=%d;""" % IDlocation
+    DB.ExecuterReq(req)
+    listeDonnees = DB.ResultatReq()
+    IDfamille, date_debut, date_fin, nom_produit, nom_categorie = listeDonnees[0]
+    if isinstance(date_debut, str) or isinstance(date_debut, six.text_type):
+        date_debut = datetime.datetime.strptime(date_debut, "%Y-%m-%d %H:%M:%S")
+    if date_fin == None:
+        date_fin = datetime.datetime(2999, 1, 1)
+    if isinstance(date_fin, str) or isinstance(date_fin, six.text_type):
+        date_fin = datetime.datetime.strptime(date_fin, "%Y-%m-%d %H:%M:%S")
+    periode = _(u"%s - %s") % (date_debut.strftime("%d/%m/%Y %H:%M:%S"), date_fin.strftime("%d/%m/%Y %H:%M:%S") if (date_fin and date_fin.year != 2999) else _(u"Illimitée"))
+    label_produit = u"%s (%s)" % (nom_produit, nom_categorie)
 
     # Vérifie si les prestations de cette location sont déjà facturées
-    DB = GestionDB.DB()
     req = """SELECT
     IDprestation, date, IDfacture
     FROM prestations 
@@ -62,6 +81,7 @@ def Supprimer_location(parent, IDlocation=None):
     dlg = wx.MessageDialog(parent, _(u"Souhaitez-vous vraiment supprimer cette location ?"), _(u"Suppression"), wx.YES_NO | wx.NO_DEFAULT | wx.CANCEL | wx.ICON_INFORMATION)
     if dlg.ShowModal() == wx.ID_YES:
         DB = GestionDB.DB()
+        # Suppression
         DB.ReqDEL("locations", "IDlocation", IDlocation)
         DB.ExecuterReq("DELETE FROM questionnaire_reponses WHERE type='location' AND IDdonnee=%d;" % IDlocation)
         DB.ReqMAJ("locations_demandes", [("statut", "attente"), ], "IDlocation", IDlocation)
@@ -69,6 +89,9 @@ def Supprimer_location(parent, IDlocation=None):
         DB.ExecuterReq("DELETE FROM prestations WHERE categorie='location' AND IDdonnee=%d;" % IDlocation)
         for IDprestation in listeIDprestations:
             DB.ReqDEL("ventilation", "IDprestation", IDprestation)
+        # Historique
+        texte_historique = _(u"Suppression de la location ID%d : %s %s") % (IDlocation, label_produit, periode)
+        UTILS_Historique.InsertActions([{"IDfamille": IDfamille, "IDcategorie": 39, "action": texte_historique, }], DB=DB)
         DB.Close()
     dlg.Destroy()
 

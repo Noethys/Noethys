@@ -18,6 +18,7 @@ import GestionDB
 import datetime
 from Utils import UTILS_Dialogs
 from Utils import UTILS_Texte
+from Utils import UTILS_Historique
 from Ctrl import CTRL_Bouton_image
 from Ctrl import CTRL_Bandeau
 from Dlg.DLG_Portail_demandes import CTRL_Log
@@ -142,8 +143,9 @@ class Dialog(wx.Dialog):
                         listeDonnees.append(("date_saisie", datetime.date.today()))
                         listeDonnees.append(("IDlocation_portail", track.IDlocation))
                         IDlocation = DB.ReqInsert("locations", listeDonnees)
-                        resultat = _(u"Ajout de %s du %s") % (track.nom_produit, track.date_debut_txt)
+                        resultat = _(u"Ajout de la location %s du %s") % (track.nom_produit, track.date_debut_txt)
                         DB.ReqMAJ("portail_reservations_locations", [("resultat", "ok")], "IDreservation", track.IDreservation)
+                        UTILS_Historique.InsertActions([{"IDfamille": self.track.IDfamille, "IDcategorie": 37, "action": resultat, }], DB=DB)
                     else:
                         resultat = _(u"%s du %s : %s") % (track.nom_produit, track.date_debut_txt, track.statut)
                     self.parent.EcritLog(resultat, self.ctrl_log)
@@ -154,8 +156,9 @@ class Dialog(wx.Dialog):
                             DB.ReqMAJ("locations", listeDonnees, "IDlocation_portail", track.IDlocation, IDestChaine=True)
                         else:
                             DB.ReqMAJ("locations", listeDonnees, "IDlocation", int(track.IDlocation))
-                        resultat = _(u"Modification de %s du %s") % (track.nom_produit, track.date_debut_txt)
+                        resultat = _(u"Modification de la location %s du %s") % (track.nom_produit, track.date_debut_txt)
                         DB.ReqMAJ("portail_reservations_locations", [("resultat", "ok")], "IDreservation", track.IDreservation)
+                        UTILS_Historique.InsertActions([{"IDfamille": self.track.IDfamille, "IDcategorie": 38, "action": resultat, }], DB=DB)
                     else:
                         resultat = _(u"%s du %s : %s") % (track.nom_produit, track.date_debut_txt, track.statut)
                     self.parent.EcritLog(resultat, self.ctrl_log)
@@ -166,8 +169,9 @@ class Dialog(wx.Dialog):
                             DB.ReqDEL("locations", "IDlocation_portail", track.IDlocation, IDestChaine=True)
                         else:
                             DB.ReqDEL("locations", "IDlocation", int(track.IDlocation))
-                        resultat = _(u"Suppression de %s du %s") % (track.nom_produit, track.date_debut_txt)
+                        resultat = _(u"Suppression de la location %s du %s") % (track.nom_produit, track.date_debut_txt)
                         DB.ReqMAJ("portail_reservations_locations", [("resultat", "ok")], "IDreservation", track.IDreservation)
+                        UTILS_Historique.InsertActions([{"IDfamille": self.track.IDfamille, "IDcategorie": 39, "action": resultat, }], DB=DB)
                     else:
                         resultat = _(u"%s du %s : %s") % (track.nom_produit, track.date_debut_txt, track.statut)
                     self.parent.EcritLog(resultat, self.ctrl_log)

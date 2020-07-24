@@ -23,6 +23,7 @@ from Utils import UTILS_Dates
 from Utils import UTILS_Customize
 from Utils import UTILS_Locations
 from Utils import UTILS_Gestion
+from Utils import UTILS_Historique
 from Dlg import DLG_Messagebox
 import GestionDB
 from Ol import OL_Locations_prestations
@@ -91,6 +92,8 @@ class CTRL_Produit(wx.TextCtrl):
         # Logo
         self.parent.ctrl_logo.ChargeFromBuffer(image)
 
+    def GetNomProduit(self):
+        return self.GetValue()
 
     def GetIDproduit(self):
         return self.IDproduit
@@ -559,6 +562,7 @@ class Dialog(wx.Dialog):
 
         # Produit
         IDproduit = self.ctrl_produit.GetIDproduit()
+        nom_produit = self.ctrl_produit.GetNomProduit()
         if IDproduit == None :
             dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner un produit !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
@@ -660,11 +664,17 @@ class Dialog(wx.Dialog):
             ("quantite", quantite),
             ]
 
+        periode = _(u"%s - %s") % (date_debut.strftime("%d/%m/%Y %H:%M:%S"), date_fin.strftime("%d/%m/%Y %H:%M:%S") if (date_fin and date_fin.year != 2999) else _(u"Illimitée"))
+
         if self.IDlocation == None :
             listeDonnees.append(("date_saisie", datetime.date.today()))
             self.IDlocation = DB.ReqInsert("locations", listeDonnees)
+            texte_historique = _(u"Saisie de la location ID%d : %s %s") % (self.IDlocation, nom_produit, periode)
+            UTILS_Historique.InsertActions([{"IDfamille": IDfamille, "IDcategorie": 37, "action": texte_historique,}], DB=DB)
         else:
             DB.ReqMAJ("locations", listeDonnees, "IDlocation", self.IDlocation)
+            texte_historique = _(u"Modification de la location ID%d : %s %s") % (self.IDlocation, nom_produit, periode)
+            UTILS_Historique.InsertActions([{"IDfamille": IDfamille, "IDcategorie": 38, "action": texte_historique,}], DB=DB)
 
         # Sauvegarde des prestations
         listeID = []
