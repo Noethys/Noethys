@@ -24,76 +24,144 @@ from Utils import UTILS_Dates
 from Utils import UTILS_Gestion
 from Utils import UTILS_Historique
 from Ctrl.CTRL_ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils, PanelAvecFooter
-
+from Dlg import DLG_Messagebox
 
 
 def Supprimer_location(parent, IDlocation=None):
     gestion = UTILS_Gestion.Gestion(None)
-    DB = GestionDB.DB()
 
-    # Récupère les infos sur cette location
-    req = """SELECT IDfamille, date_debut, date_fin, produits.nom, produits_categories.nom
-    FROM locations 
-    LEFT JOIN produits ON produits.IDproduit = locations.IDproduit
-    LEFT JOIN produits_categories ON produits_categories.IDcategorie = produits.IDcategorie
-    WHERE IDlocation=%d;""" % IDlocation
-    DB.ExecuterReq(req)
-    listeDonnees = DB.ResultatReq()
-    IDfamille, date_debut, date_fin, nom_produit, nom_categorie = listeDonnees[0]
-    if isinstance(date_debut, str) or isinstance(date_debut, six.text_type):
-        date_debut = datetime.datetime.strptime(date_debut, "%Y-%m-%d %H:%M:%S")
-    if date_fin == None:
-        date_fin = datetime.datetime(2999, 1, 1)
-    if isinstance(date_fin, str) or isinstance(date_fin, six.text_type):
-        date_fin = datetime.datetime.strptime(date_fin, "%Y-%m-%d %H:%M:%S")
-    periode = _(u"%s - %s") % (date_debut.strftime("%d/%m/%Y %H:%M:%S"), date_fin.strftime("%d/%m/%Y %H:%M:%S") if (date_fin and date_fin.year != 2999) else _(u"Illimitée"))
-    label_produit = u"%s (%s)" % (nom_produit, nom_categorie)
+    def GetLocations(condition=""):
+        DB = GestionDB.DB()
+        # Récupère les infos sur cette location
+        req = """SELECT IDlocation, IDfamille, date_debut, date_fin, serie, produits.nom, produits_categories.nom
+        FROM locations 
+        LEFT JOIN produits ON produits.IDproduit = locations.IDproduit
+        LEFT JOIN produits_categories ON produits_categories.IDcategorie = produits.IDcategorie
+        WHERE %s;""" % condition
+        DB.ExecuterReq(req)
+        listeDonnees = DB.ResultatReq()
+        DB.Close()
+
+        liste_resultats = []
+        for IDlocation, IDfamille, date_debut, date_fin, serie, nom_produit, nom_categorie in listeDonnees:
+            if isinstance(date_debut, str) or isinstance(date_debut, six.text_type):
+                date_debut = datetime.datetime.strptime(date_debut, "%Y-%m-%d %H:%M:%S")
+            if date_fin == None:
+                date_fin = datetime.datetime(2999, 1, 1)
+            if isinstance(date_fin, str) or isinstance(date_fin, six.text_type):
+                date_fin = datetime.datetime.strptime(date_fin, "%Y-%m-%d %H:%M:%S")
+            periode = _(u"%s - %s") % (date_debut.strftime("%d/%m/%Y %H:%M:%S"), date_fin.strftime("%d/%m/%Y %H:%M:%S") if (date_fin and date_fin.year != 2999) else _(u"Illimitée"))
+            label_produit = u"%s (%s)" % (nom_produit, nom_categorie)
+            liste_resultats.append({"IDlocation": IDlocation, "IDfamille": IDfamille, "date_debut": date_debut, "date_fin": date_fin, "periode": periode, "label_produit": label_produit, "serie": serie, "prestations": []})
+        return liste_resultats
+
+    # Importe de la location cliquée
+    liste_locations = GetLocations(condition="IDlocation=%d" % IDlocation)
+
+    # Vérifie si la location est dans une série
+    if liste_locations[0]["serie"]:
+        num_serie = liste_locations[0]["serie"]
+        liste_locations_serie = GetLocations(condition="serie='%s'" % num_serie)
+
+        introduction = _(u"Cette location fait partie d'une série de %d occurences.") % len(liste_locations_serie)
+        conclusion = _(u"Que souhaitez-vous supprimer ?")
+        dlg = DLG_Messagebox.Dialog(None, titre=_(u"Confirmation"), introduction=introduction, conclusion=conclusion,
+                                    icone=wx.ICON_QUESTION, boutons=[_(u"L'occurence sélectionnée"), _(u"Toutes les occurences de la série"), _(u"Annuler")])
+        reponse = dlg.ShowModal()
+        dlg.Destroy()
+        if reponse == 2:
+            return False
+        if reponse == 1:
+            liste_locations = liste_locations_serie
 
     # Vérifie si les prestations de cette location sont déjà facturées
-    req = """SELECT
-    IDprestation, date, IDfacture
-    FROM prestations 
-    WHERE categorie="location" and IDdonnee=%d;""" % IDlocation
-    DB.ExecuterReq(req)
-    listeDonnees = DB.ResultatReq()
+    liste_anomalies = []
+    liste_valides = []
+
+    DB = GestionDB.DB()
+    index = 0
+    for dict_location in liste_locations:
+        valide = True
+
+        req = """SELECT
+        IDprestation, date, IDfacture
+        FROM prestations 
+        WHERE categorie="location" and IDdonnee=%d;""" % dict_location["IDlocation"]
+        DB.ExecuterReq(req)
+        listeDonnees = DB.ResultatReq()
+        listeIDprestations = []
+        listePrestations = []
+        nbrePrestationsFacturees = 0
+        for IDprestation, date, IDfacture in listeDonnees:
+            date = UTILS_Dates.DateEngEnDateDD(date)
+            listePrestations.append({"IDprestation" : IDprestation, "date" : date, "IDfacture" : IDfacture})
+            listeIDprestations.append(IDprestation)
+
+            # Vérifie la période de gestion
+            if gestion.Verification("prestations", date) == False:
+                liste_anomalies.append(u"Location du %s : Impossible à supprimer car une prestation associée est comprise dans une période de gestion verrouillée")
+                valide = False
+
+            if IDfacture != None :
+                nbrePrestationsFacturees += 1
+
+        liste_locations[index]["prestations"] = listeIDprestations
+
+        if nbrePrestationsFacturees > 0:
+            liste_anomalies.append(u"Location du %s : Impossible à supprimer car %d prestations y sont déjà associées" % (dict_location["periode"], nbrePrestationsFacturees))
+            valide = False
+
+        if valide:
+            liste_valides.append(dict_location)
+        index += 1
+
     DB.Close()
-    listeIDprestations = []
-    listePrestations = []
-    nbrePrestationsFacturees = 0
-    for IDprestation, date, IDfacture in listeDonnees:
-        date = UTILS_Dates.DateEngEnDateDD(date)
-        listePrestations.append({"IDprestation" : IDprestation, "date" : date, "IDfacture" : IDfacture})
-        listeIDprestations.append(IDprestation)
 
-        # Vérifie la période de gestion
-        if gestion.Verification("prestations", date) == False: return False
-
-        if IDfacture != None :
-            nbrePrestationsFacturees += 1
-
-    if nbrePrestationsFacturees > 0:
-        dlg = wx.MessageDialog(parent, _(u"Vous ne pouvez pas supprimer cette location car elle est déjà associée à %d prestations facturées !") % nbrePrestationsFacturees, _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
-        dlg.ShowModal()
-        dlg.Destroy()
-        return False
+    # Annonce les anomalies trouvées
+    if len(liste_anomalies) > 0:
+        introduction = _(u"%d anomalies ont été détectées :") % len(liste_anomalies)
+        if len(liste_valides) > 0:
+            conclusion = _(u"Souhaitez-vous continuer avec les %d autres locations ?") % len(liste_valides)
+            dlg = DLG_Messagebox.Dialog(None, titre=_(u"Anomalies"), introduction=introduction, detail=u"\n".join(liste_anomalies), conclusion=conclusion, icone=wx.ICON_EXCLAMATION, boutons=[_(u"Oui"), _(u"Non"), _(u"Annuler")])
+            reponse = dlg.ShowModal()
+            dlg.Destroy()
+            if reponse in (1, 2):
+                return False
+        else:
+            dlg = DLG_Messagebox.Dialog(None, titre=_(u"Anomalies"), introduction=introduction, detail=u"\n".join(liste_anomalies), icone=wx.ICON_EXCLAMATION, boutons=[_(u"Fermer")])
+            reponse = dlg.ShowModal()
+            dlg.Destroy()
+            return False
 
     # Suppression
-    dlg = wx.MessageDialog(parent, _(u"Souhaitez-vous vraiment supprimer cette location ?"), _(u"Suppression"), wx.YES_NO | wx.NO_DEFAULT | wx.CANCEL | wx.ICON_INFORMATION)
-    if dlg.ShowModal() == wx.ID_YES:
-        DB = GestionDB.DB()
+    if len(liste_valides) == 1:
+        dlg = wx.MessageDialog(parent, _(u"Souhaitez-vous vraiment supprimer la location ?"), _(u"Confirmation de suppression"), wx.YES_NO | wx.NO_DEFAULT | wx.CANCEL | wx.ICON_INFORMATION)
+        reponse = dlg.ShowModal()
+        dlg.Destroy()
+    else:
+        introduction = _(u"Confirmez-vous la suppression des %d locations suivantes :") % len(liste_valides)
+        liste_locations_temp = [dict_location["periode"] for dict_location in liste_valides]
+        dlg = DLG_Messagebox.Dialog(None, titre=_(u"Confirmation de suppression"), introduction=introduction, detail=u"\n".join(liste_locations_temp), icone=wx.ICON_EXCLAMATION, boutons=[_(u"Oui"), _(u"Non"), _(u"Annuler")])
+        reponse = dlg.ShowModal()
+        dlg.Destroy()
+
+    if reponse not in (0, wx.ID_YES):
+        return False
+
+    DB = GestionDB.DB()
+    for dict_location in liste_valides:
         # Suppression
-        DB.ReqDEL("locations", "IDlocation", IDlocation)
-        DB.ExecuterReq("DELETE FROM questionnaire_reponses WHERE type='location' AND IDdonnee=%d;" % IDlocation)
-        DB.ReqMAJ("locations_demandes", [("statut", "attente"), ], "IDlocation", IDlocation)
-        DB.ReqMAJ("locations_demandes", [("IDlocation", None), ], "IDlocation", IDlocation)
-        DB.ExecuterReq("DELETE FROM prestations WHERE categorie='location' AND IDdonnee=%d;" % IDlocation)
-        for IDprestation in listeIDprestations:
+        DB.ReqDEL("locations", "IDlocation", dict_location["IDlocation"])
+        DB.ExecuterReq("DELETE FROM questionnaire_reponses WHERE type='location' AND IDdonnee=%d;" % dict_location["IDlocation"])
+        DB.ReqMAJ("locations_demandes", [("statut", "attente"), ], "IDlocation", dict_location["IDlocation"])
+        DB.ReqMAJ("locations_demandes", [("IDlocation", None), ], "IDlocation", dict_location["IDlocation"])
+        DB.ExecuterReq("DELETE FROM prestations WHERE categorie='location' AND IDdonnee=%d;" % dict_location["IDlocation"])
+        for IDprestation in dict_location["prestations"]:
             DB.ReqDEL("ventilation", "IDprestation", IDprestation)
         # Historique
-        texte_historique = _(u"Suppression de la location ID%d : %s %s") % (IDlocation, label_produit, periode)
-        UTILS_Historique.InsertActions([{"IDfamille": IDfamille, "IDcategorie": 39, "action": texte_historique, }], DB=DB)
-        DB.Close()
-    dlg.Destroy()
+        texte_historique = _(u"Suppression de la location ID%d : %s %s") % (dict_location["IDlocation"], dict_location["label_produit"], dict_location["periode"])
+        UTILS_Historique.InsertActions([{"IDfamille": dict_location["IDfamille"], "IDcategorie": 39, "action": texte_historique, }], DB=DB)
+    DB.Close()
 
     return True
 

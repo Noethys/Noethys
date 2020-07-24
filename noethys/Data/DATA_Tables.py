@@ -1691,6 +1691,7 @@ DB_DATA = {
                                     ("date_fin", "DATETIME", u"Date et heure de fin de location"),
                                     ("quantite", "INTEGER", u"Quantité du produit"),
                                     ("IDlocation_portail", "VARCHAR(100)", u"IDlocation sur le portail"),
+                                    ("serie", "VARCHAR(100)", u"uuid de la série"),
                                     ],  # Locations
 
 

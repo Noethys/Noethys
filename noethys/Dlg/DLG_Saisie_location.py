@@ -11,8 +11,7 @@
 import Chemins
 from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
-import wx
-import datetime
+import wx, copy, datetime, uuid
 from Ctrl import CTRL_Bouton_image
 from Ctrl import CTRL_Questionnaire
 from Ctrl import CTRL_Logo
@@ -272,6 +271,8 @@ class Dialog(wx.Dialog):
         self.parent = parent
         self.IDlocation = IDlocation
         self.liste_initiale_IDprestation = []
+        self.recurrence = None
+        self.serie = None
 
         if self.IDlocation == None :
             self.SetTitle(_(u"Saisie d'une location"))
@@ -307,6 +308,12 @@ class Dialog(wx.Dialog):
         self.ctrl_date_fin = CTRL_Saisie_date.Date2(self)
         self.ctrl_heure_fin = CTRL_Saisie_heure.Heure(self)
 
+        self.check_recurrence = wx.CheckBox(self, -1, _(u"Récurrence"))
+        self.bouton_recurrence = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Mecanisme.png"), wx.BITMAP_TYPE_ANY))
+        if self.IDlocation:
+            self.check_recurrence.Show(False)
+            self.bouton_recurrence.Show(False)
+
         # Quantité
         self.staticbox_quantite_staticbox = wx.StaticBox(self, -1, _(u"Quantité"))
         self.ctrl_quantite = wx.SpinCtrl(self, -1, min=1, max=99999)
@@ -326,6 +333,7 @@ class Dialog(wx.Dialog):
         self.__set_properties()
         self.__do_layout()
 
+        self.Bind(wx.EVT_CHECKBOX, self.OnCheckRecurrence, self.check_recurrence)
         self.Bind(wx.EVT_CHECKBOX, self.OnCheckDateFin, self.check_date_fin)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOutils, self.bouton_outils)
@@ -333,6 +341,7 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.ctrl_logo.Visualiser, self.bouton_visualiser)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonLoueur, self.bouton_loueur)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonProduit, self.bouton_produit)
+        self.Bind(wx.EVT_BUTTON, self.OnBoutonRecurrence, self.bouton_recurrence)
 
         # Init contrôles
         maintenant = datetime.datetime.now()
@@ -353,6 +362,7 @@ class Dialog(wx.Dialog):
 
         self.ctrl_parametres.GetPageAvecCode("questionnaire").ctrl_questionnaire.MAJ()
         self.OnCheckDateFin()
+        self.OnCheckRecurrence()
 
     def __set_properties(self):
         self.ctrl_loueur.SetToolTip(wx.ToolTip(_(u"Nom du loueur")))
@@ -369,6 +379,7 @@ class Dialog(wx.Dialog):
         self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez la date de fin de location")))
         self.ctrl_heure_fin.SetToolTip(wx.ToolTip(_(u"Saisissez l'heure de fin de location")))
         self.ctrl_quantite.SetToolTip(wx.ToolTip(_(u"Saisissez une quantité")))
+        self.bouton_recurrence.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour définir les paramètres de la récurrence")))
 
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_outils.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder aux outils")))
@@ -427,15 +438,21 @@ class Dialog(wx.Dialog):
 
         # Période
         staticbox_periode = wx.StaticBoxSizer(self.staticbox_periode_staticbox, wx.VERTICAL)
-        grid_sizer_periode = wx.FlexGridSizer(rows=1, cols=8, vgap=5, hgap=5)
+        grid_sizer_periode = wx.FlexGridSizer(rows=1, cols=10, vgap=5, hgap=5)
         grid_sizer_periode.Add(self.label_date_debut, 0, wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_periode.Add(self.ctrl_date_debut, 0, 0, 0)
         grid_sizer_periode.Add(self.ctrl_heure_debut, 0, 0, 0)
-        grid_sizer_periode.Add( (10, 5), 0, 0, 0)
+        grid_sizer_periode.Add((10, 5), 0, 0, 0)
         grid_sizer_periode.Add(self.check_date_fin, 0, wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_periode.Add(self.ctrl_date_fin, 0, 0, 0)
         grid_sizer_periode.Add(self.ctrl_heure_fin, 0, 0, 0)
+        grid_sizer_periode.Add((10, 5), 0, 0, 0)
+        grid_sizer_periode.Add(self.check_recurrence, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_periode.Add(self.bouton_recurrence, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+
         staticbox_periode.Add(grid_sizer_periode, 1, wx.ALL|wx.EXPAND, 10)
+
+
         grid_sizer_milieu.Add(staticbox_periode, 1, wx.EXPAND, 0)
 
         # Quantité
@@ -488,6 +505,16 @@ class Dialog(wx.Dialog):
         self.ctrl_heure_fin.Enable(self.check_date_fin.GetValue())
         self.ctrl_date_fin.SetFocus()
 
+    def OnCheckRecurrence(self, event=None):
+        self.ctrl_date_debut.Enable(not self.check_recurrence.GetValue())
+        self.ctrl_heure_debut.Enable(not self.check_recurrence.GetValue())
+        self.check_date_fin.Enable(not self.check_recurrence.GetValue())
+        self.ctrl_date_fin.Enable(not self.check_recurrence.GetValue())
+        self.ctrl_heure_fin.Enable(not self.check_recurrence.GetValue())
+        self.bouton_recurrence.Enable(self.check_recurrence.GetValue())
+        if not self.check_recurrence.GetValue():
+            self.OnCheckDateFin()
+
     def OnBoutonAide(self, event):
         from Utils import UTILS_Aide
         UTILS_Aide.Aide("Listedeslocations")
@@ -511,6 +538,13 @@ class Dialog(wx.Dialog):
 
         self.PopupMenu(menuPop)
         menuPop.Destroy()
+
+    def OnBoutonRecurrence(self, event=None):
+        from Dlg import DLG_Saisie_location_recurrence
+        dlg = DLG_Saisie_location_recurrence.Dialog(self, donnees=self.recurrence)
+        if dlg.ShowModal() == wx.ID_OK:
+            self.recurrence = dlg.GetDonnees()
+        dlg.Destroy()
 
     def Mesurer_distance(self, event):
         from Dlg import DLG_Mesure_distance
@@ -572,145 +606,216 @@ class Dialog(wx.Dialog):
         # Observations
         observations = self.ctrl_observations.GetValue()
 
-        # Date de début
-        date_debut = self.ctrl_date_debut.GetDate()
-        if date_debut == None:
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de début de location !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
-            dlg.ShowModal()
-            dlg.Destroy()
-            self.ctrl_date_debut.SetFocus()
-            return
+        # Quantité
+        quantite = int(self.ctrl_quantite.GetValue())
 
-        heure_debut = self.ctrl_heure_debut.GetHeure()
-        if heure_debut == None or self.ctrl_heure_debut.Validation() == False:
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une heure de début valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
-            dlg.ShowModal()
-            dlg.Destroy()
-            self.ctrl_heure_debut.SetFocus()
-            return
+        liste_locations = []
 
-        date_debut = datetime.datetime(year=date_debut.year, month=date_debut.month, day=date_debut.day, hour=int(heure_debut[:2]), minute=int(heure_debut[3:]))
+        if self.check_recurrence.GetValue() == False:
 
-        # Date de fin
-        if self.check_date_fin.GetValue() == True :
+            # Date de début
+            date_debut = self.ctrl_date_debut.GetDate()
+            if date_debut == None:
+                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de début de location !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg.ShowModal()
+                dlg.Destroy()
+                self.ctrl_date_debut.SetFocus()
+                return
 
-            date_fin = self.ctrl_date_fin.GetDate()
-            if date_fin == None:
-                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de fin de location !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            heure_debut = self.ctrl_heure_debut.GetHeure()
+            if heure_debut == None or self.ctrl_heure_debut.Validation() == False:
+                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une heure de début valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg.ShowModal()
+                dlg.Destroy()
+                self.ctrl_heure_debut.SetFocus()
+                return
+
+            date_debut = datetime.datetime(year=date_debut.year, month=date_debut.month, day=date_debut.day, hour=int(heure_debut[:2]), minute=int(heure_debut[3:]))
+
+            # Date de fin
+            if self.check_date_fin.GetValue() == True :
+
+                date_fin = self.ctrl_date_fin.GetDate()
+                if date_fin == None:
+                    dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de fin de location !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                    dlg.ShowModal()
+                    dlg.Destroy()
+                    self.ctrl_date_fin.SetFocus()
+                    return
+
+                heure_fin = self.ctrl_heure_fin.GetHeure()
+                if heure_fin == None or self.ctrl_heure_fin.Validation() == False:
+                    dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une heure de fin valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                    dlg.ShowModal()
+                    dlg.Destroy()
+                    self.ctrl_heure_fin.SetFocus()
+                    return
+
+                date_fin = datetime.datetime(year=date_fin.year, month=date_fin.month, day=date_fin.day, hour=int(heure_fin[:2]), minute=int(heure_fin[3:]))
+
+            else :
+                date_fin = None
+
+            if date_fin != None and date_debut > date_fin:
+                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de fin supérieure à la date de début !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_date_fin.SetFocus()
                 return
 
-            heure_fin = self.ctrl_heure_fin.GetHeure()
-            if heure_fin == None or self.ctrl_heure_fin.Validation() == False:
-                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une heure de fin valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            liste_locations.append({"date_debut": date_debut, "date_fin": date_fin})
+
+        # Récurrence
+        num_serie = None
+        if self.check_recurrence.GetValue() == True:
+            num_serie = str(uuid.uuid4())
+
+            if not self.recurrence:
+                dlg = wx.MessageDialog(self, _(u"Vous n'avez pas renseigné les paramètres de la récurrence !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
-                self.ctrl_heure_fin.SetFocus()
                 return
 
-            date_fin = datetime.datetime(year=date_fin.year, month=date_fin.month, day=date_fin.day, hour=int(heure_fin[:2]), minute=int(heure_fin[3:]))
+            # Calcule les occurences
+            liste_locations = self.Calcule_occurences(self.recurrence)
 
-        else :
-            date_fin = None
-
-        if date_fin != None and date_debut > date_fin:
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de fin supérieure à la date de début !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
-            dlg.ShowModal()
+            # Demande confirmation
+            introduction = _(u"Confirmez-vous la création des %d locations suivantes :") % len(liste_locations)
+            liste_locations_txt = []
+            for dict_location in liste_locations:
+                date_debut = dict_location["date_debut"]
+                date_fin = dict_location["date_fin"]
+                liste_locations_txt.append(_(u"%s - %s") % (date_debut.strftime("%d/%m/%Y %H:%M:%S"), date_fin.strftime("%d/%m/%Y %H:%M:%S") if (date_fin and date_fin.year != 2999) else _(u"Illimitée")))
+            dlg = DLG_Messagebox.Dialog(self, titre=_(u"Confirmation"), introduction=introduction, detail=u"\n".join(liste_locations_txt), icone=wx.ICON_EXCLAMATION, boutons=[_(u"Oui"), _(u"Non"), _(u"Annuler")])
+            reponse = dlg.ShowModal()
             dlg.Destroy()
-            self.ctrl_date_fin.SetFocus()
-            return
+            if reponse in (1, 2):
+                return False
 
-        # Quantité
-        quantite = int(self.ctrl_quantite.GetValue())
 
-        # Vérifie que la quantité demandée est disponible
-        dictPeriodes = UTILS_Locations.GetStockDisponible(IDproduit=IDproduit, date_debut=date_debut, date_fin=date_fin, IDlocation_exception=self.IDlocation)
-        liste_periode_non_dispo = []
-        for periode, valeurs in dictPeriodes.items() :
-            if valeurs["disponible"] < quantite :
-                debut = datetime.datetime.strftime(periode[0], "%d/%m/%Y-%Hh%M")
-                if periode[1].year == 2999 :
-                    fin = _(u"Illimité")
-                else :
-                    fin = datetime.datetime.strftime(periode[1], "%d/%m/%Y-%Hh%M")
-                liste_periode_non_dispo.append(_(u"Stock disponible du %s au %s : %d produits") % (debut, fin, valeurs["disponible"]))
-        if len(liste_periode_non_dispo) > 0 :
-            introduction = _(u"La quantité souhaitée n'est pas disponible sur les périodes suivantes :")
-            conclusion = _(u"Vous ne pouvez pas valider la location.")
-            dlg = DLG_Messagebox.Dialog(None, titre=_(u"Information"), introduction=introduction, detail=u"\n".join(liste_periode_non_dispo), conclusion=conclusion, icone=wx.ICON_EXCLAMATION, boutons=[_(u"Ok"), ])
-            dlg.ShowModal()
-            dlg.Destroy()
-            return
+        liste_anomalies = []
+        liste_valides = []
+        for dict_location in liste_locations:
+            valide = True
+            date_debut = dict_location["date_debut"]
+            date_fin = dict_location["date_fin"]
+            periode_str = _(u"%s - %s") % (date_debut.strftime("%d/%m/%Y %H:%M:%S"), date_fin.strftime("%d/%m/%Y %H:%M:%S") if (date_fin and date_fin.year != 2999) else _(u"Illimitée"))
 
-        # Périodes de gestion
-        liste_prestations = self.ctrl_parametres.GetPageAvecCode("facturation").GetDonnees()["prestations"]
+            # Vérifie que la quantité demandée est disponible
+            dictPeriodes = UTILS_Locations.GetStockDisponible(IDproduit=IDproduit, date_debut=date_debut, date_fin=date_fin, IDlocation_exception=self.IDlocation)
+            liste_periode_non_dispo = []
+            for periode, valeurs in dictPeriodes.items() :
+                if valeurs["disponible"] < quantite :
+                    debut = datetime.datetime.strftime(periode[0], "%d/%m/%Y-%Hh%M")
+                    if periode[1].year == 2999 :
+                        fin = _(u"Illimité")
+                    else :
+                        fin = datetime.datetime.strftime(periode[1], "%d/%m/%Y-%Hh%M")
+                    liste_periode_non_dispo.append(_(u"Stock disponible du %s au %s : %d produits") % (debut, fin, valeurs["disponible"]))
+            if len(liste_periode_non_dispo) > 0:
+                liste_anomalies.append(u"Location du %s : Produit indisponible. %s." % (periode_str, u", ".join(liste_periode_non_dispo)))
+                valide = False
 
-        gestion = UTILS_Gestion.Gestion(None)
-        for track_prestation in liste_prestations:
-            if gestion.Verification("prestations", track_prestation.date) == False: return False
+            # Périodes de gestion
+            liste_prestations = self.ctrl_parametres.GetPageAvecCode("facturation").GetDonnees()["prestations"]
+            gestion = UTILS_Gestion.Gestion(None)
+            for track_prestation in liste_prestations:
+                if gestion.Verification("prestations", track_prestation.date) == False:
+                    valide = False
+                    liste_anomalies.append(u"Location du %s : la période de gestion est verrouillée." % periode_str)
+
+            # Mémorise la location valide
+            if valide:
+                liste_valides.append(dict_location)
+
+
+        # Annonce les anomalies trouvées
+        if len(liste_anomalies) > 0:
+            introduction = _(u"%d anomalies ont été détectées :") % len(liste_anomalies)
+            if len(liste_valides) > 0:
+                conclusion = _(u"Souhaitez-vous quand même continuer avec les %d locations possibles ?") % len(liste_valides)
+                dlg = DLG_Messagebox.Dialog(self, titre=_(u"Anomalies"), introduction=introduction, detail=u"\n".join(liste_anomalies), conclusion=conclusion, icone=wx.ICON_EXCLAMATION, boutons=[_(u"Oui"), _(u"Non"), _(u"Annuler")])
+                reponse = dlg.ShowModal()
+                dlg.Destroy()
+                if reponse in (1, 2):
+                    return False
+            else:
+                dlg = DLG_Messagebox.Dialog(self, titre=_(u"Anomalies"), introduction=introduction, detail=u"\n".join(liste_anomalies), icone=wx.ICON_EXCLAMATION, boutons=[_(u"Fermer")])
+                reponse = dlg.ShowModal()
+                dlg.Destroy()
+                return False
 
         # Sauvegarde
         DB = GestionDB.DB()
 
-        # Sauvegarde de la location
-        listeDonnees = [    
-            ("IDfamille", IDfamille),
-            ("IDproduit", IDproduit),
-            ("observations", observations),
-            ("date_debut", date_debut),
-            ("date_fin", date_fin),
-            ("quantite", quantite),
-            ]
+        for dict_location in liste_valides:
+            date_debut = dict_location["date_debut"]
+            date_fin =  dict_location["date_fin"]
 
-        periode = _(u"%s - %s") % (date_debut.strftime("%d/%m/%Y %H:%M:%S"), date_fin.strftime("%d/%m/%Y %H:%M:%S") if (date_fin and date_fin.year != 2999) else _(u"Illimitée"))
-
-        if self.IDlocation == None :
-            listeDonnees.append(("date_saisie", datetime.date.today()))
-            self.IDlocation = DB.ReqInsert("locations", listeDonnees)
-            texte_historique = _(u"Saisie de la location ID%d : %s %s") % (self.IDlocation, nom_produit, periode)
-            UTILS_Historique.InsertActions([{"IDfamille": IDfamille, "IDcategorie": 37, "action": texte_historique,}], DB=DB)
-        else:
-            DB.ReqMAJ("locations", listeDonnees, "IDlocation", self.IDlocation)
-            texte_historique = _(u"Modification de la location ID%d : %s %s") % (self.IDlocation, nom_produit, periode)
-            UTILS_Historique.InsertActions([{"IDfamille": IDfamille, "IDcategorie": 38, "action": texte_historique,}], DB=DB)
-
-        # Sauvegarde des prestations
-        listeID = []
-        for track_prestation in liste_prestations :
-            IDprestation = track_prestation.IDprestation
-
+            # Sauvegarde de la location
             listeDonnees = [
-                ("IDcompte_payeur", self.ctrl_loueur.GetIDcomptePayeur()),
-                ("date", track_prestation.date),
-                ("categorie", "location"),
-                ("label", track_prestation.label),
-                ("montant_initial", track_prestation.montant),
-                ("montant", track_prestation.montant),
-                ("IDfamille", self.ctrl_loueur.GetIDfamille()),
-                ("IDindividu", None),
-                ("code_compta", None),
-                ("tva", None),
-                ("IDdonnee", self.IDlocation),
+                ("IDfamille", IDfamille),
+                ("IDproduit", IDproduit),
+                ("observations", observations),
+                ("date_debut", date_debut),
+                ("date_fin", date_fin),
+                ("quantite", quantite),
+                ("serie", num_serie),
                 ]
 
-            if IDprestation == None :
-                listeDonnees.append(("date_valeur", str(datetime.date.today())))
-                IDprestation = DB.ReqInsert("prestations", listeDonnees)
+            periode = _(u"%s - %s") % (date_debut.strftime("%d/%m/%Y %H:%M:%S"), date_fin.strftime("%d/%m/%Y %H:%M:%S") if (date_fin and date_fin.year != 2999) else _(u"Illimitée"))
+
+            IDlocation = self.IDlocation
+
+            if self.IDlocation == None :
+                listeDonnees.append(("date_saisie", datetime.date.today()))
+                IDlocation = DB.ReqInsert("locations", listeDonnees)
+                texte_historique = _(u"Saisie de la location ID%d : %s %s") % (IDlocation, nom_produit, periode)
+                UTILS_Historique.InsertActions([{"IDfamille": IDfamille, "IDcategorie": 37, "action": texte_historique,}], DB=DB)
             else:
-                if track_prestation.dirty == True :
-                    DB.ReqMAJ("prestations", listeDonnees, "IDprestation", IDprestation)
-            listeID.append(IDprestation)
 
-        # Suppression des prestations obsolètes
-        for IDprestation in self.liste_initiale_IDprestation :
-            if IDprestation not in listeID :
-                DB.ReqDEL("prestations", "IDprestation", IDprestation)
-                DB.ReqDEL("ventilation", "IDprestation", IDprestation)
+                DB.ReqMAJ("locations", listeDonnees, "IDlocation", IDlocation)
+                texte_historique = _(u"Modification de la location ID%d : %s %s") % (IDlocation, nom_produit, periode)
+                UTILS_Historique.InsertActions([{"IDfamille": IDfamille, "IDcategorie": 38, "action": texte_historique,}], DB=DB)
 
-        # Sauvegarde du questionnaire
-        self.ctrl_parametres.GetPageAvecCode("questionnaire").ctrl_questionnaire.Sauvegarde(DB=DB, IDdonnee=self.IDlocation)
+            # Sauvegarde des prestations
+            listeID = []
+            for track_prestation in liste_prestations :
+                IDprestation = track_prestation.IDprestation
+
+                listeDonnees = [
+                    ("IDcompte_payeur", self.ctrl_loueur.GetIDcomptePayeur()),
+                    ("date", track_prestation.date),
+                    ("categorie", "location"),
+                    ("label", track_prestation.label),
+                    ("montant_initial", track_prestation.montant),
+                    ("montant", track_prestation.montant),
+                    ("IDfamille", self.ctrl_loueur.GetIDfamille()),
+                    ("IDindividu", None),
+                    ("code_compta", None),
+                    ("tva", None),
+                    ("IDdonnee", IDlocation),
+                    ]
+
+                if IDprestation == None :
+                    listeDonnees.append(("date_valeur", str(datetime.date.today())))
+                    IDprestation = DB.ReqInsert("prestations", listeDonnees)
+                else:
+                    if track_prestation.dirty == True :
+                        DB.ReqMAJ("prestations", listeDonnees, "IDprestation", IDprestation)
+                listeID.append(IDprestation)
+
+            # Suppression des prestations obsolètes
+            for IDprestation in self.liste_initiale_IDprestation :
+                if IDprestation not in listeID :
+                    DB.ReqDEL("prestations", "IDprestation", IDprestation)
+                    DB.ReqDEL("ventilation", "IDprestation", IDprestation)
+
+            # Sauvegarde du questionnaire
+            self.ctrl_parametres.GetPageAvecCode("questionnaire").ctrl_questionnaire.Sauvegarde(DB=DB, IDdonnee=IDlocation)
+
+        # Mémorise l'IDlocation
+        self.IDlocation = IDlocation
 
         DB.Close()
 
@@ -725,14 +830,14 @@ class Dialog(wx.Dialog):
         DB = GestionDB.DB()
 
         # Importation de la location
-        req = """SELECT IDfamille, IDproduit, observations, date_debut, date_fin, quantite
+        req = """SELECT IDfamille, IDproduit, observations, date_debut, date_fin, quantite, serie
         FROM locations WHERE IDlocation=%d;""" % self.IDlocation
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         if len(listeDonnees) == 0 :
             DB.Close()
             return
-        IDfamille, IDproduit, observations, date_debut, date_fin, quantite = listeDonnees[0]
+        IDfamille, IDproduit, observations, date_debut, date_fin, quantite, self.serie = listeDonnees[0]
 
         # Généralités
         self.ctrl_loueur.SetIDfamille(IDfamille)
@@ -777,15 +882,121 @@ class Dialog(wx.Dialog):
 
         self.ctrl_parametres.GetPageAvecCode("facturation").SetDonnees({"prestations" : liste_tracks_prestations})
 
+    def Calcule_occurences(self, dictDonnees={}):
+        """ Calcule les occurences """
+        liste_resultats = []
+        date_debut = dictDonnees["date_debut"]
+        date_fin = dictDonnees["date_fin"]
+        heure_debut = dictDonnees["heure_debut"]
+        heure_fin = dictDonnees["heure_fin"]
+        jours_vacances = dictDonnees["jours_vacances"]
+        jours_scolaires = dictDonnees["jours_scolaires"]
+        semaines = dictDonnees["semaines"]
+        feries = dictDonnees["feries"]
 
+        # Importation vacances et fériés
+        DB = GestionDB.DB()
+        req = """SELECT date_debut, date_fin, nom, annee FROM vacances ORDER BY date_debut;"""
+        DB.ExecuterReq(req)
+        listeVacances = DB.ResultatReq()
+        req = """SELECT type, nom, jour, mois, annee FROM jours_feries;"""
+        DB.ExecuterReq(req)
+        listeFeries = DB.ResultatReq()
+        DB.Close()
 
+        def EstEnVacances( dateDD):
+            date = str(dateDD)
+            for valeurs in listeVacances:
+                date_debut = valeurs[0]
+                date_fin = valeurs[1]
+                if date >= date_debut and date <= date_fin:
+                    return True
+            return False
 
+        def EstFerie(dateDD):
+            jour = dateDD.day
+            mois = dateDD.month
+            annee = dateDD.year
+            for type, nom, jourTmp, moisTmp, anneeTmp in listeFeries:
+                jourTmp = int(jourTmp)
+                moisTmp = int(moisTmp)
+                anneeTmp = int(anneeTmp)
+                if type == "fixe":
+                    if jourTmp == jour and moisTmp == mois:
+                        return True
+                else:
+                    if jourTmp == jour and moisTmp == mois and anneeTmp == annee:
+                        return True
+            return False
+
+        # Init calendrier
+        date_debut_temp = date_debut
+        date_fin_temp = date_fin
+
+        if "date" in dictDonnees:
+            date = dictDonnees["date"]
+            if date < date_debut_temp:
+                date_debut_temp = date
+            if date > date_fin_temp:
+                date_fin_temp = date
+
+        # Liste dates
+        listeDates = [date_debut, ]
+        tmp = date_debut
+        while tmp < date_fin:
+            tmp += datetime.timedelta(days=1)
+            listeDates.append(tmp)
+
+        date = date_debut
+        numSemaine = copy.copy(semaines)
+        dateTemp = date
+        for date in listeDates:
+
+            # Vérifie période et jour
+            valide = False
+            if EstEnVacances(date):
+                if date.weekday() in jours_vacances:
+                    valide = True
+            else:
+                if date.weekday() in jours_scolaires:
+                    valide = True
+
+            # Calcul le numéro de semaine
+            if len(listeDates) > 0:
+                if date.weekday() < dateTemp.weekday():
+                    numSemaine += 1
+
+            # Fréquence semaines
+            if semaines in (2, 3, 4):
+                if numSemaine % semaines != 0:
+                    valide = False
+
+            # Semaines paires et impaires
+            if valide == True and semaines in (5, 6):
+                numSemaineAnnee = date.isocalendar()[1]
+                if numSemaineAnnee % 2 == 0 and semaines == 6:
+                    valide = False
+                if numSemaineAnnee % 2 != 0 and semaines == 5:
+                    valide = False
+
+            # Vérifie si férié
+            if feries == False and EstFerie(date) == True:
+                valide = False
+
+            # Application
+            if valide == True:
+                date_debut_final = datetime.datetime(year=date.year, month=date.month, day=date.day, hour=int(heure_debut[:2]), minute=int(heure_debut[3:]))
+                date_fin_final = datetime.datetime(year=date.year, month=date.month, day=date.day, hour=int(heure_fin[:2]), minute=int(heure_fin[3:]))
+                liste_resultats.append({"date_debut": date_debut_final, "date_fin": date_fin_final})
+
+            dateTemp = date
+        return liste_resultats
 
 
 if __name__ == u"__main__":
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    dialog_1 = Dialog(None, IDlocation=1, IDfamille=1)
+    dialog_1 = Dialog(None, IDlocation=None, IDfamille=1)
     app.SetTopWindow(dialog_1)
     dialog_1.ShowModal()
     app.MainLoop()
