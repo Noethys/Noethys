@@ -52,7 +52,7 @@ LISTE_SELECTION_REGLEMENTS = [(0, u"Tous les règlements"), (3, u"Datant de moins
 LISTE_SELECTION_COTISATIONS = [(0, u"Toutes les cotisations"), (3, u"Datant de moins de 3 mois"), (6, u"Datant de moins de 6 mois"), (12, u"Datant de moins de 1 an"), (24, u"Datant de moins de 2 ans"), (36, u"Datant de moins de 3 ans"), (60, u"Datant de moins de 5 ans")]
 LISTE_SELECTION_RENSEIGNEMENTS = [("masquer", u"Ne pas afficher"), ("consultation", u"Consultation uniquement"), ("modification", u"Consultation et modification autorisées")]
 LISTE_SELECTION_LOCATIONS = [(0, u"Toutes les locations"), (3, u"Datant de moins de 3 mois"), (6, u"Datant de moins de 6 mois"), (12, u"Datant de moins de 1 an"), (24, u"Datant de moins de 2 ans"), (36, u"Datant de moins de 3 ans"), (60, u"Datant de moins de 5 ans")]
-
+LISTE_SAISIE_LOCATIONS = [(0, u"Jamais"), (2, u"2 mois avant"), (3, u"3 mois avant"), (4, u"4 mois avant"), (5, u"5 mois avant"),(6, u"6 mois avant"), (12, u"1 an avant"), (24, u"2 ans avant"), (36, u"3 ans avant"), (60, u"5 ans avant")]
 
 
 VALEURS_DEFAUT = {
@@ -159,6 +159,7 @@ VALEURS_DEFAUT = {
     "locations_afficher": False,
     "locations_intro": _(u"Vous pouvez consulter ici la liste des locations et emprunts."),
     "locations_selection": 3,
+    "locations_periode_saisie": 6,
     "planning_locations_intro" : _(u"Saisissez des réservations avec la souris directement dans le calendrier avant de valider l'envoi des demandes."),
     "historique_afficher" : True,
     "historique_intro" : _(u"Vous pouvez consulter ici l'historique de vos demandes."),
@@ -1046,6 +1047,13 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         nom = "locations_selection"
         propriete = wxpg.EnumProperty(label=_(u"Sélection des locations à afficher"), labels=[y for x, y in LISTE_SELECTION_LOCATIONS], values=[x for x, y in LISTE_SELECTION_LOCATIONS], name=nom, value=VALEURS_DEFAUT[nom])
         propriete.SetHelpString(_(u"Sélectionnez un critère d'ancienneté pour les locations à afficher"))
+        propriete.SetAttribute("obligatoire", True)
+        self.Append(propriete)
+
+        # Ouverture des réservations
+        nom = "locations_periode_saisie"
+        propriete = wxpg.EnumProperty(label=_(u"Ouverture de la saisie des locations"), labels=[y for x, y in LISTE_SAISIE_LOCATIONS], values=[x for x, y in LISTE_SAISIE_LOCATIONS], name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Sélectionnez une période d'ouverture des réservations des locations"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 

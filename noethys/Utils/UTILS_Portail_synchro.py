@@ -555,6 +555,7 @@ class Synchro():
         session.add(models.Parametre(nom="COTISATIONS_INTRO", parametre=self.dict_parametres["cotisations_intro"]))
         session.add(models.Parametre(nom="LOCATIONS_AFFICHER", parametre=str(self.dict_parametres["locations_afficher"])))
         session.add(models.Parametre(nom="LOCATIONS_INTRO", parametre=self.dict_parametres["locations_intro"]))
+        session.add(models.Parametre(nom="LOCATIONS_PERIODE_SAISIE", parametre=self.dict_parametres["locations_periode_saisie"]))
         session.add(models.Parametre(nom="PLANNING_LOCATIONS_INTRO", parametre=self.dict_parametres["planning_locations_intro"]))
         session.add(models.Parametre(nom="HISTORIQUE_AFFICHER", parametre=str(self.dict_parametres["historique_afficher"])))
         session.add(models.Parametre(nom="HISTORIQUE_INTRO", parametre=self.dict_parametres["historique_intro"]))
