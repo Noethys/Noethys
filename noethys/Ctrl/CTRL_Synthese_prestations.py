@@ -34,7 +34,7 @@ def PeriodeComplete(mois, annee):
     periodeComplete = u"%s %d" % (listeMois[mois-1], annee)
     return periodeComplete
 
-            
+
 class CTRL(HTL.HyperTreeList):
     def __init__(self, parent): 
         HTL.HyperTreeList.__init__(self, parent, -1)
@@ -200,7 +200,7 @@ class CTRL(HTL.HyperTreeList):
         listeDonnees = DB.ResultatReq()
         liste_tranches = []
         for IDligne, qf_min, qf_max in listeDonnees:
-            tranche = qf_min, qf_max
+            tranche = float(qf_min), float(qf_max)
             if tranche not in liste_tranches :
                 liste_tranches.append(tranche)
         liste_tranches.sort()
