@@ -843,6 +843,7 @@ class MainFrame(wx.Frame):
                     {"code" : "connecthys_synchro", "label" : _(u"Connecthys - Le portail internet"), "infobulle" : _(u"Synchroniser et configurer Connecthys, le portail internet de Noethys"), "image" : "Images/16x16/Connecthys.png", "action" : self.On_outils_connecthys_synchro},
                     {"code" : "connecthys_traiter", "label": _(u"Traiter les demandes du portail"), "infobulle": _(u"Traiter les demandes du portail"), "image": "Images/16x16/Connecthys.png", "action": self.On_outils_connecthys_traiter},
                     "-",
+                    {"code" : "carnet_adresses", "label": _(u"Carnet d'adresses"), "infobulle": _(u"Carnet d'adresses"), "image": "Images/16x16/Carnet.png", "action": self.On_outils_carnet},
                     {"code" : "editeur_emails", "label" : _(u"Editeur d'Emails"), "infobulle" : _(u"Editeur d'Emails"), "image" : "Images/16x16/Editeur_email.png", "action" : self.On_outils_emails},
                     {"code" : "envoi_sms", "label": _(u"Envoi de SMS"), "infobulle": _(u"Envoi de SMS"), "image": "Images/16x16/Sms.png", "action": self.On_outils_sms},
                     "-",
@@ -973,6 +974,8 @@ class MainFrame(wx.Frame):
                 {"code": "locations_planning", "label": _(u"Planning des locations"), "infobulle": _(u"Consultation du planning des locations"), "image": "Images/16x16/Calendrier.png", "action": self.On_locations_planning},
                 {"code": "locations_chronologie", "label": _(u"Chronologie des locations"), "infobulle": _(u"Consultation de la chronologie des locations"), "image": "Images/16x16/Timeline.png", "action": self.On_locations_chronologie},
                 {"code": "locations_tableau", "label": _(u"Tableau des locations"), "infobulle": _(u"Consultation du tableau des locations"), "image": "Images/16x16/Tableau_ligne.png", "action": self.On_locations_tableau},
+                "-",
+                {"code": "synthese_locations", "label": _(u"Synthèse des locations"), "infobulle": _(u"Synthèse des locations"), "image": "Images/16x16/Diagramme.png", "action": self.On_locations_synthese},
                 "-",
                 {"code": "locations_images", "label": _(u"Images interactives"), "infobulle": _(u"Consultation des images interactives"), "image": "Images/16x16/Image_interactive.png", "action": self.On_locations_images},
                 ],
@@ -2603,7 +2606,14 @@ class MainFrame(wx.Frame):
         dlg = DLG_Geolocalisation.Dialog(self)
         dlg.ShowModal() 
         dlg.Destroy()
-    
+
+    def On_outils_carnet(self, event):
+        if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("outils_carnet", "consulter") == False : return
+        from Dlg import DLG_Contacts
+        dlg = DLG_Contacts.Dialog(self)
+        dlg.ShowModal()
+        dlg.Destroy()
+
     def On_outils_emails(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("outils_editeur_emails", "consulter") == False : return
         from Dlg import DLG_Mailer
@@ -3222,6 +3232,13 @@ class MainFrame(wx.Frame):
         dlg.ShowModal()
         dlg.Destroy()
         self.ctrl_remplissage.MAJ()
+
+    def On_locations_synthese(self, event):
+        if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("locations_synthese", "consulter") == False : return
+        from Dlg import DLG_Synthese_locations
+        dlg = DLG_Synthese_locations.Dialog(self)
+        dlg.ShowModal()
+        dlg.Destroy()
 
     def On_locations_images(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("locations_images", "consulter") == False : return

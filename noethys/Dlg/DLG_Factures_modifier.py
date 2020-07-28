@@ -42,6 +42,15 @@ class Dialog(wx.Dialog):
         self.check_echeance = wx.CheckBox(self, -1, _(u"Date d'échéance :"))
         self.ctrl_echeance = CTRL_Saisie_date.Date2(self)
 
+        self.check_mention1 = wx.CheckBox(self, -1, _(u"Mention 1 :"))
+        self.ctrl_mention1 = wx.TextCtrl(self, -1, u"")
+
+        self.check_mention2 = wx.CheckBox(self, -1, _(u"Mention 2 :"))
+        self.ctrl_mention2 = wx.TextCtrl(self, -1, u"")
+
+        self.check_mention3 = wx.CheckBox(self, -1, _(u"Mention 3 :"))
+        self.ctrl_mention3 = wx.TextCtrl(self, -1, u"")
+
         # Boutons
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
         self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
@@ -53,6 +62,9 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_CHECKBOX, self.OnCheck, self.check_lot)
         self.Bind(wx.EVT_CHECKBOX, self.OnCheck, self.check_emission)
         self.Bind(wx.EVT_CHECKBOX, self.OnCheck, self.check_echeance)
+        self.Bind(wx.EVT_CHECKBOX, self.OnCheck, self.check_mention1)
+        self.Bind(wx.EVT_CHECKBOX, self.OnCheck, self.check_mention2)
+        self.Bind(wx.EVT_CHECKBOX, self.OnCheck, self.check_mention3)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
@@ -68,6 +80,12 @@ class Dialog(wx.Dialog):
         self.ctrl_emission.SetToolTip(wx.ToolTip(_(u"Sélectionnez une date d'émission")))
         self.check_echeance.SetToolTip(wx.ToolTip(_(u"Cochez pour modifier cette caractéristique")))
         self.ctrl_echeance.SetToolTip(wx.ToolTip(_(u"Sélectionnez une date d'échéance")))
+        self.check_mention1.SetToolTip(wx.ToolTip(_(u"Cochez pour modifier cette caractéristique")))
+        self.ctrl_mention1.SetToolTip(wx.ToolTip(_(u"Saisissez une mention")))
+        self.check_mention2.SetToolTip(wx.ToolTip(_(u"Cochez pour modifier cette caractéristique")))
+        self.ctrl_mention2.SetToolTip(wx.ToolTip(_(u"Saisissez une mention")))
+        self.check_mention3.SetToolTip(wx.ToolTip(_(u"Cochez pour modifier cette caractéristique")))
+        self.ctrl_mention3.SetToolTip(wx.ToolTip(_(u"Saisissez une mention")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
@@ -94,6 +112,24 @@ class Dialog(wx.Dialog):
         grid_sizer_echeance.Add(self.check_echeance, 0, wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_echeance.Add(self.ctrl_echeance, 0, 0, 0)
         grid_sizer_contenu.Add(grid_sizer_echeance, 1, wx.EXPAND, 0)
+
+        grid_sizer_mention1 = wx.FlexGridSizer(rows=1, cols=4, vgap=5, hgap=5)
+        grid_sizer_mention1.Add(self.check_mention1, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_mention1.Add(self.ctrl_mention1, 0, wx.EXPAND, 0)
+        grid_sizer_mention1.AddGrowableCol(1)
+        grid_sizer_contenu.Add(grid_sizer_mention1, 1, wx.EXPAND, 0)
+
+        grid_sizer_mention2 = wx.FlexGridSizer(rows=1, cols=4, vgap=5, hgap=5)
+        grid_sizer_mention2.Add(self.check_mention2, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_mention2.Add(self.ctrl_mention2, 0, wx.EXPAND, 0)
+        grid_sizer_mention2.AddGrowableCol(1)
+        grid_sizer_contenu.Add(grid_sizer_mention2, 1, wx.EXPAND, 0)
+
+        grid_sizer_mention3 = wx.FlexGridSizer(rows=1, cols=4, vgap=5, hgap=5)
+        grid_sizer_mention3.Add(self.check_mention3, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_mention3.Add(self.ctrl_mention3, 0, wx.EXPAND, 0)
+        grid_sizer_mention3.AddGrowableCol(1)
+        grid_sizer_contenu.Add(grid_sizer_mention3, 1, wx.EXPAND, 0)
 
         grid_sizer_contenu.AddGrowableCol(0)
         grid_sizer_base.Add(grid_sizer_contenu, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
@@ -124,6 +160,9 @@ class Dialog(wx.Dialog):
         self.ctrl_lot.Enable(self.check_lot.GetValue())
         self.ctrl_emission.Enable(self.check_emission.GetValue())
         self.ctrl_echeance.Enable(self.check_echeance.GetValue())
+        self.ctrl_mention1.Enable(self.check_mention1.GetValue())
+        self.ctrl_mention2.Enable(self.check_mention2.GetValue())
+        self.ctrl_mention3.Enable(self.check_mention3.GetValue())
     
     def OnBoutonOk(self, event): 
         # Validation
@@ -166,6 +205,14 @@ class Dialog(wx.Dialog):
                 dlg.Destroy()
                 return False
             dict_valeurs["date_echeance"] = date_echeance
+
+        # Mentions
+        if self.check_mention1.GetValue() == True:
+            dict_valeurs["mention1"] = self.ctrl_mention1.GetValue()
+        if self.check_mention2.GetValue() == True:
+            dict_valeurs["mention2"] = self.ctrl_mention2.GetValue()
+        if self.check_mention3.GetValue() == True:
+            dict_valeurs["mention3"] = self.ctrl_mention3.GetValue()
 
         if len(dict_valeurs) == 0 :
             dlg = wx.MessageDialog(self, _(u"Vous devez choisir au moins une caractéristique à modifier !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)

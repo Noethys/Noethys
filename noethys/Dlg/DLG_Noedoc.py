@@ -135,6 +135,9 @@ class Facture():
             (_(u"Date d'édition de la facture (long)"), _(u"Lundi 9 septembre 2011"), "{DATE_EDITION_LONG}"),
             (_(u"Date d'édition de la facture (court)"), u"19/09/2011", "{DATE_EDITION_COURT}"),
             (_(u"Date du prélèvement si facture prélevée"), u"15/10/2011", "{DATE_PRELEVEMENT}"),
+            (_(u"Mention 1"), u"Mention libre", "{MENTION1}"),
+            (_(u"Mention 2"), u"Mention libre", "{MENTION2}"),
+            (_(u"Mention 3"), u"Mention libre", "{MENTION3}"),
             
             (_(u"Total des prestations de la période"), u"10.00 ¤", "{TOTAL_PERIODE}"),
             (_(u"Total déjà réglé pour la période"), u"6.00 ¤", "{TOTAL_REGLE}"),

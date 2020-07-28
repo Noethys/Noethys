@@ -21,7 +21,7 @@ from dateutil import rrule
 import six
 import wx.lib.wordwrap as wordwrap
 import wx.lib.agw.supertooltip as STT
-
+from Utils import UTILS_Historique
 from Utils import UTILS_Dates
 from Utils import UTILS_Titulaires
 from Utils import UTILS_Questionnaires
@@ -1321,6 +1321,10 @@ class CTRL_Tableau(wx.Panel):
             ("date_fin", barre.date_fin),
             ]
         DB.ReqMAJ("locations", listeDonnees, "IDlocation", barre.IDlocation)
+        label_produit = u"%s (%s)" % (self.dict_produits[barre.IDproduit]["nom"], self.dict_produits[barre.IDproduit]["nom_categorie"])
+        periode = _(u"%s - %s") % (barre.date_debut.strftime("%d/%m/%Y %H:%M:%S"), barre.date_fin.strftime("%d/%m/%Y %H:%M:%S") if (barre.date_fin and barre.date_fin.year != 2999) else _(u"Illimitée"))
+        texte_historique = _(u"Modification de la location ID%d : %s %s") % (barre.IDlocation, label_produit, periode)
+        UTILS_Historique.InsertActions([{"IDfamille": barre.IDfamille, "IDcategorie": 38, "action": texte_historique, }], DB=DB)
         DB.Close()
 
     def Imprimer(self, event):

@@ -5047,7 +5047,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                                                         if conso.quantite == None :
                                                             quantite = 1
                                                         quantite += 1
-                                                        case.OnClick(saisieHeureDebut=heure_debut, saisieHeureFin=heure_fin, saisieQuantite=quantite, modeSilencieux=True, etiquettes=resultats["etiquettes"])
+                                                        case.OnClick(saisieQuantite=quantite, modeSilencieux=True, etiquettes=resultats["etiquettes"])
 
                                                     # Modifie Multihoraires
                                                     if dictUnite["type"] == "Multihoraires" :

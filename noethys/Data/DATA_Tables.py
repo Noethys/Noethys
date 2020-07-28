@@ -799,6 +799,9 @@ DB_DATA = {
                                     ("etat", "VARCHAR(100)", u"Etat de la facture"),
                                     ("IDprefixe", "INTEGER", u"ID du préfixe"),
                                     ("IDregie", "INTEGER", u"ID de la régie"),
+                                    ("mention1", "VARCHAR(300)", u"Mention 1"),
+                                    ("mention2", "VARCHAR(300)", u"Mention 2"),
+                                    ("mention3", "VARCHAR(300)", u"Mention 3"),
                                     ], # Factures éditées
 
     "textes_rappels":[      ("IDtexte", "INTEGER PRIMARY KEY AUTOINCREMENT", u"IDtexte"),
@@ -1616,6 +1619,7 @@ DB_DATA = {
                                     ("IDaction", "INTEGER", u"ID de l'action"),
                                     ("etat", "VARCHAR(100)", u"ajouter, modifier ou supprimer"),
                                     ("resultat", "VARCHAR(100)", u"Résultat du traitement"),
+                                    ("partage", "INTEGER", u"Partage du produit (0/1)"),
                                     ], # Réservations de locations enregistrées sur le portail
 
     "portail_messages":             [("IDmessage", "INTEGER PRIMARY KEY AUTOINCREMENT", u"IDmessage"),
@@ -1677,6 +1681,7 @@ DB_DATA = {
                                     ("image", "LONGBLOB", u"Image du produit en binaire"),
                                     ("quantite", "INTEGER", u"Quantité du produit"),
                                     ("montant", "FLOAT", u"Montant fixe de la prestation"),
+                                    ("activation_partage", "INTEGER", u"Activer le partage de la ressource (0/1)"),
                                     ],  # Produits
 
         "locations":                [("IDlocation", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID location"),
@@ -1688,6 +1693,8 @@ DB_DATA = {
                                     ("date_fin", "DATETIME", u"Date et heure de fin de location"),
                                     ("quantite", "INTEGER", u"Quantité du produit"),
                                     ("IDlocation_portail", "VARCHAR(100)", u"IDlocation sur le portail"),
+                                    ("serie", "VARCHAR(100)", u"uuid de la série"),
+                                    ("partage", "INTEGER", u"Autoriser le partage de la ressource (0/1)"),
                                     ],  # Locations
 
 
@@ -1797,8 +1804,8 @@ DB_DATA = {
                                     ("nom", "VARCHAR(200)", u"Nom de la perception"),
                                     ("rue_resid", "VARCHAR(255)", u"Adresse de la perception"),
                                     ("cp_resid", "VARCHAR(10)", u"Code postal de la perception"),
-                                    ("ville_resid", "VARCHAR(100)", u"Ville de la perception"), ],
-                                    # Les perceptions pour le prélèvement automatique
+                                    ("ville_resid", "VARCHAR(100)", u"Ville de la perception"),
+                                     ], # Les perceptions pour le prélèvement automatique
 
     "devis":                        [("IDdevis", "INTEGER PRIMARY KEY AUTOINCREMENT", u"IDdevis"),
                                      ("numero", "INTEGER", u"Numéro de devis"),
@@ -1811,9 +1818,21 @@ DB_DATA = {
                                      ("date_fin", "DATE", u"Date de fin de période"),
                                      ("total", "FLOAT", u"Montant total de la période"),
                                      ("regle", "FLOAT", u"Montant réglé pour la période"),
-                                     ("solde", "FLOAT", u"Solde à régler pour la période"), ],
-                                     # Devis
+                                     ("solde", "FLOAT", u"Solde à régler pour la période"),
+                                     ], # Devis
 
+    "contacts":                     [("IDcontact", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID du contact"),
+                                     ("nom", "VARCHAR(100)", u"Nom du contact"),
+                                     ("prenom", "VARCHAR(100)", u"Prénom du contact"),
+                                     ("rue_resid", "VARCHAR(255)", u"Adresse du contact"),
+                                     ("cp_resid", "VARCHAR(10)", u"Code postal du contact"),
+                                     ("ville_resid", "VARCHAR(100)", u"Ville du contact"),
+                                     ("tel_domicile", "VARCHAR(50)", u"Tel de domicile du contact"),
+                                     ("tel_mobile", "VARCHAR(50)", u"Tel du mobile du contact"),
+                                     ("mail", "VARCHAR(200)", u"Email perso du contact"),
+                                     ("site", "VARCHAR(100)", u"Adresse site internet"),
+                                     ("memo", "VARCHAR(2000)", u"Mémo concernant le contact"),
+                                     ], # Les contacts du carnet d'adresses
 
 }
 

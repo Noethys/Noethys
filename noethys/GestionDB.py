@@ -1281,7 +1281,7 @@ if __name__ == "__main__":
                 
     # Création d'une table données
     # db = DB(suffixe="DATA")
-    # listeTables = ("portail_reservations_locations",)
+    # listeTables = ("contacts",)
     # for nomTable in listeTables :
     #     db.CreationTable(nomTable, Tables.DB_DATA)
     # db.Close()
@@ -1315,9 +1315,9 @@ if __name__ == "__main__":
 ##    db.Close()
         
     # # Ajouter un champ
-    db = DB(suffixe="DATA")
-    db.AjoutChamp("pes_lots", "code_etab", "VARCHAR(100)")
-    db.Close()
+    # db = DB(suffixe="DATA")
+    # db.AjoutChamp("locations", "serie", "VARCHAR(100)")
+    # db.Close()
 
     # # Exportation d'une table dans la base DEFAUT
     # db = DB(suffixe="DATA")

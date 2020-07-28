@@ -744,7 +744,7 @@ class Dialog(wx.Dialog):
 
             # Recherche le détail des réservations associées
             DB = GestionDB.DB()
-            req = """SELECT IDreservation, date_debut, date_fin, IDlocation, portail_reservations_locations.IDproduit, etat, produits.nom
+            req = """SELECT IDreservation, date_debut, date_fin, partage, IDlocation, portail_reservations_locations.IDproduit, etat, produits.nom
             FROM portail_reservations_locations
             LEFT JOIN produits ON produits.IDproduit = portail_reservations_locations.IDproduit
             WHERE IDaction=%d ORDER BY date_debut;""" % self.track.IDaction
@@ -752,7 +752,7 @@ class Dialog(wx.Dialog):
             listeDonnees = DB.ResultatReq()
             DB.Close()
             liste_lignes = []
-            for IDreservation, date_debut, date_fin, IDlocation, IDproduit, etat, nom_produit in listeDonnees :
+            for IDreservation, date_debut, date_fin, partage, IDlocation, IDproduit, etat, nom_produit in listeDonnees :
                 date_debut = UTILS_Dates.DateEngEnDateDDT(date_debut)
                 date_fin = UTILS_Dates.DateEngEnDateDDT(date_fin)
                 if etat == "ajouter":
@@ -761,6 +761,8 @@ class Dialog(wx.Dialog):
                     action = _(u"Modification")
                 else :
                     action = _(u"Suppression")
+                if partage:
+                    nom_produit += u" - Partage autorisé"
                 ligne = _(u"<li>%s du %s au %s (%s)</li>") % (action, date_debut.strftime("%d/%m/%Y %H:%M"), date_fin.strftime("%d/%m/%Y %H:%M"), nom_produit)
                 liste_lignes.append(ligne)
 

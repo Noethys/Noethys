@@ -221,7 +221,13 @@ class Panel(wx.Panel):
         self.ctrl_date_emission = CTRL_Saisie_date.Date2(self)
         self.label_date_echeance = wx.StaticText(self, -1, _(u"Date d'échéance :"))
         self.ctrl_date_echeance = CTRL_Saisie_date.Date2(self)
-        
+        self.label_mention1 = wx.StaticText(self, -1, _(u"Mention 1 :"))
+        self.ctrl_mention1 = wx.TextCtrl(self, -1, u"")
+        self.label_mention2 = wx.StaticText(self, -1, _(u"Mention 2 :"))
+        self.ctrl_mention2 = wx.TextCtrl(self, -1, u"")
+        self.label_mention3 = wx.StaticText(self, -1, _(u"Mention 3 :"))
+        self.ctrl_mention3 = wx.TextCtrl(self, -1, u"")
+
         # Elements
         self.box_elements_staticbox = wx.StaticBox(self, -1, _(u"Prestations à facturer"))
         self.check_consommations = wx.CheckBox(self, -1, _(u"Consommations"))
@@ -282,6 +288,9 @@ class Panel(wx.Panel):
         self.check_numero_auto.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour laisser Noethys sélectionner automatiquement le prochain numéro de facture")))
         self.ctrl_date_emission.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date d'émission la date des factures (Par défaut la date du jour)")))
         self.ctrl_date_echeance.SetToolTip(wx.ToolTip(_(u"Saisissez la date d'échéance de paiement qui apparaîtra sur la facture [Optionnel]")))
+        self.ctrl_mention1.SetToolTip(wx.ToolTip(_(u"Saisissez une mention libre")))
+        self.ctrl_mention2.SetToolTip(wx.ToolTip(_(u"Saisissez une mention libre")))
+        self.ctrl_mention3.SetToolTip(wx.ToolTip(_(u"Saisissez une mention libre")))
         self.check_consommations.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour inclure les prestations de consommations")))
         self.check_cotisations.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour inclure les prestations de cotisations")))
         self.check_locations.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour inclure les prestations de locations")))
@@ -295,7 +304,7 @@ class Panel(wx.Panel):
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=2, vgap=10, hgap=10)
 
         grid_sizer_gauche = wx.FlexGridSizer(rows=5, cols=1, vgap=10, hgap=10)
-        grid_sizer_droit = wx.FlexGridSizer(rows=2, cols=1, vgap=10, hgap=10)
+        grid_sizer_droit = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
 
         # Période
         box_periode = wx.StaticBoxSizer(self.box_periode_staticbox, wx.VERTICAL)
@@ -319,7 +328,7 @@ class Panel(wx.Panel):
 
         # Paramètres
         box_parametres = wx.StaticBoxSizer(self.box_parametres_staticbox, wx.VERTICAL)
-        grid_sizer_parametres = wx.FlexGridSizer(rows=4, cols=2, vgap=5, hgap=5)
+        grid_sizer_parametres = wx.FlexGridSizer(rows=7, cols=2, vgap=5, hgap=5)
 
         grid_sizer_parametres.Add(self.label_prefixe, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
 
@@ -341,20 +350,17 @@ class Panel(wx.Panel):
         grid_sizer_parametres.Add(self.ctrl_date_emission, 0, 0, 0)
         grid_sizer_parametres.Add(self.label_date_echeance, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_parametres.Add(self.ctrl_date_echeance, 0, 0, 0)
+        grid_sizer_parametres.Add(self.label_mention1, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_parametres.Add(self.ctrl_mention1, 0, wx.EXPAND, 0)
+        grid_sizer_parametres.Add(self.label_mention2, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_parametres.Add(self.ctrl_mention2, 0, wx.EXPAND, 0)
+        grid_sizer_parametres.Add(self.label_mention3, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_parametres.Add(self.ctrl_mention3, 0, wx.EXPAND, 0)
+
         grid_sizer_parametres.AddGrowableCol(1)
         box_parametres.Add(grid_sizer_parametres, 1, wx.ALL|wx.EXPAND, 10)
         grid_sizer_gauche.Add(box_parametres, 1, wx.EXPAND, 0)
 
-        # Elements
-        box_elements = wx.StaticBoxSizer(self.box_elements_staticbox, wx.VERTICAL)
-        grid_sizer_elements = wx.FlexGridSizer(rows=1, cols=4, vgap=5, hgap=5)
-        grid_sizer_elements.Add(self.check_consommations, 0, 0, 0)
-        grid_sizer_elements.Add(self.check_cotisations, 0, 0, 0)
-        grid_sizer_elements.Add(self.check_locations, 0, 0, 0)
-        grid_sizer_elements.Add(self.check_autres, 0, 0, 0)
-        grid_sizer_gauche.Add(box_elements, 1, wx.EXPAND, 0)
-        box_elements.Add(grid_sizer_elements, 1, wx.ALL|wx.EXPAND, 10)
-        
         # Familles
         box_familles = wx.StaticBoxSizer(self.box_familles_staticbox, wx.VERTICAL)
         grid_sizer_familles = wx.FlexGridSizer(rows=3, cols=1, vgap=5, hgap=5)
@@ -373,6 +379,16 @@ class Panel(wx.Panel):
 
         box_activites.Add(self.ctrl_activites, 1, wx.ALL|wx.EXPAND, 10)
         grid_sizer_droit.Add(box_activites, 1, wx.EXPAND, 0)
+
+        # Elements
+        box_elements = wx.StaticBoxSizer(self.box_elements_staticbox, wx.VERTICAL)
+        grid_sizer_elements = wx.FlexGridSizer(rows=1, cols=4, vgap=5, hgap=5)
+        grid_sizer_elements.Add(self.check_consommations, 0, 0, 0)
+        grid_sizer_elements.Add(self.check_cotisations, 0, 0, 0)
+        grid_sizer_elements.Add(self.check_locations, 0, 0, 0)
+        grid_sizer_elements.Add(self.check_autres, 0, 0, 0)
+        box_elements.Add(grid_sizer_elements, 1, wx.ALL|wx.EXPAND, 10)
+        grid_sizer_droit.Add(box_elements, 1, wx.EXPAND, 0)
 
         # Inclure prestations antérieures
         box_anterieures = wx.StaticBoxSizer(self.box_anterieures_staticbox, wx.VERTICAL)
@@ -609,6 +625,9 @@ class Panel(wx.Panel):
             "prefixe" : prefixe,
             "date_anterieure" : date_anterieure,
             "IDregie" : IDregie,
+            "mention1" : self.ctrl_mention1.GetValue(),
+            "mention2" : self.ctrl_mention2.GetValue(),
+            "mention3" : self.ctrl_mention3.GetValue(),
             }
 
         return True
