@@ -1619,6 +1619,7 @@ DB_DATA = {
                                     ("IDaction", "INTEGER", u"ID de l'action"),
                                     ("etat", "VARCHAR(100)", u"ajouter, modifier ou supprimer"),
                                     ("resultat", "VARCHAR(100)", u"Résultat du traitement"),
+                                    ("partage", "INTEGER", u"Partage du produit (0/1)"),
                                     ], # Réservations de locations enregistrées sur le portail
 
     "portail_messages":             [("IDmessage", "INTEGER PRIMARY KEY AUTOINCREMENT", u"IDmessage"),
@@ -1680,6 +1681,7 @@ DB_DATA = {
                                     ("image", "LONGBLOB", u"Image du produit en binaire"),
                                     ("quantite", "INTEGER", u"Quantité du produit"),
                                     ("montant", "FLOAT", u"Montant fixe de la prestation"),
+                                    ("activation_partage", "INTEGER", u"Activer le partage de la ressource (0/1)"),
                                     ],  # Produits
 
         "locations":                [("IDlocation", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID location"),
@@ -1692,6 +1694,7 @@ DB_DATA = {
                                     ("quantite", "INTEGER", u"Quantité du produit"),
                                     ("IDlocation_portail", "VARCHAR(100)", u"IDlocation sur le portail"),
                                     ("serie", "VARCHAR(100)", u"uuid de la série"),
+                                    ("partage", "INTEGER", u"Autoriser le partage de la ressource (0/1)"),
                                     ],  # Locations
 
 

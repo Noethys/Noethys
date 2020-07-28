@@ -135,6 +135,7 @@ class Dialog(wx.Dialog):
                 ("date_debut", track.date_debut),
                 ("date_fin", track.date_fin),
                 ("quantite", track.quantite),
+                ("partage", track.partage),
             ]
 
             if track.resultat != "ok":

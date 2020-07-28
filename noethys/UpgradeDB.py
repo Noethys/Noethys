@@ -1434,6 +1434,9 @@ class DB(GestionDB.DB):
                 self.AjoutChamp("factures", "mention2", "VARCHAR(300)")
                 self.AjoutChamp("factures", "mention3", "VARCHAR(300)")
                 self.AjoutChamp("locations", "serie", "VARCHAR(100)")
+                self.AjoutChamp("locations", "partage", "INTEGER")
+                self.AjoutChamp("produits", "activation_partage", "INTEGER")
+                self.AjoutChamp("portail_reservations_locations", "partage", "INTEGER")
                 if self.IsTableExists("contacts") == False: self.CreationTable("contacts", Tables.DB_DATA)
             except Exception as err:
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)

@@ -176,12 +176,18 @@ class Page_Stock(wx.Panel):
         self.ctrl_quantite.SetToolTip(wx.ToolTip(_(u"Saisissez une quantité")))
         self.ctrl_quantite.SetValue(1)
 
+        self.label_partage = wx.StaticText(self, -1, _(u"Autoriser partage :"))
+        self.ctrl_partage = wx.CheckBox(self, -1)
+        self.ctrl_partage.SetToolTip(wx.ToolTip(_(u"Autoriser le partage de la ressource entre plusieurs usagers")))
+
         # Layout
         sizer_base = wx.BoxSizer(wx.VERTICAL)
-        grid_sizer_base = wx.FlexGridSizer(rows=2, cols=2, vgap=5, hgap=5)
+        grid_sizer_base = wx.FlexGridSizer(rows=2, cols=2, vgap=10, hgap=10)
 
         grid_sizer_base.Add(self.label_quantite, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_base.Add(self.ctrl_quantite, 1, wx.EXPAND, 0)
+        grid_sizer_base.Add(self.label_partage, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_base.Add(self.ctrl_partage, 1, wx.EXPAND, 0)
 
         sizer_base.Add(grid_sizer_base, 1, wx.EXPAND | wx.ALL, 10)
         self.SetSizer(sizer_base)
@@ -191,14 +197,14 @@ class Page_Stock(wx.Panel):
         return True
 
     def GetDonnees(self):
-        dictDonnees = {"quantite" : int(self.ctrl_quantite.GetValue())}
+        dictDonnees = {"quantite" : int(self.ctrl_quantite.GetValue()), "partage": int(self.ctrl_partage.GetValue())}
         return dictDonnees
 
     def SetDonnees(self, dictDonnees={}):
-        if "quantite" in dictDonnees:
-            if dictDonnees["quantite"] != None :
-                self.ctrl_quantite.SetValue(dictDonnees["quantite"])
-
+        if "quantite" in dictDonnees and dictDonnees["quantite"] != None :
+            self.ctrl_quantite.SetValue(dictDonnees["quantite"])
+        if "partage" in dictDonnees and dictDonnees["partage"] != None :
+            self.ctrl_partage.SetValue(dictDonnees["partage"])
 
 
 class Page_Tarification(wx.Panel):
@@ -512,6 +518,7 @@ class Dialog(wx.Dialog):
             ("observations", observations),
             ("quantite", dictParametres["quantite"]),
             ("montant", dictParametres["montant"]),
+            ("activation_partage", dictParametres["partage"]),
             ]
 
         if self.IDproduit == None :
@@ -650,14 +657,14 @@ class Dialog(wx.Dialog):
     def Importation(self):
         """ Importation des données """
         DB = GestionDB.DB()
-        req = """SELECT nom, observations, image, IDcategorie, quantite, montant
+        req = """SELECT nom, observations, image, IDcategorie, quantite, montant, activation_partage
         FROM produits WHERE IDproduit=%d;""" % self.IDproduit
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         if len(listeDonnees) == 0 :
             DB.Close()
             return
-        nom, observations, image, IDcategorie, quantite, montant = listeDonnees[0]
+        nom, observations, image, IDcategorie, quantite, montant, activation_partage = listeDonnees[0]
 
         # Généralités
         self.ctrl_nom.SetValue(nom)
@@ -741,7 +748,7 @@ class Dialog(wx.Dialog):
         DB.Close()
 
         # Paramètres
-        dictDonnees = {"quantite" : quantite, "montant" : montant, "tarifs" : liste_tarifs}
+        dictDonnees = {"quantite" : quantite, "partage": activation_partage, "montant" : montant, "tarifs" : liste_tarifs}
         self.ctrl_parametres.SetDonnees(dictDonnees)
 
         # Logo

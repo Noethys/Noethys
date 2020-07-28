@@ -42,11 +42,12 @@ class Track(object):
         self.IDreservation = donnees[0]
         self.date_debut = UTILS_Dates.DateEngEnDateDDT(donnees[1])
         self.date_fin = UTILS_Dates.DateEngEnDateDDT(donnees[2])
-        self.IDlocation = donnees[3]
-        self.IDproduit = donnees[4]
-        self.etat = donnees[5]
-        self.resultat = donnees[6]
-        self.nom_produit = donnees[7]
+        self.partage = donnees[3]
+        self.IDlocation = donnees[4]
+        self.IDproduit = donnees[5]
+        self.etat = donnees[6]
+        self.resultat = donnees[7]
+        self.nom_produit = donnees[8]
         self.quantite = 1
         self.action_possible = False
         self.date_debut_txt = self.date_debut.strftime("%d/%m/%Y-%H:%M")
@@ -95,6 +96,9 @@ class Track(object):
                 self.action_possible = False
                 self.statut = _(u"La location à supprimer est inexistante")
 
+        if self.partage:
+            self.action += u" (Partage autorisé)"
+
         if self.resultat == "ok":
             self.action_possible = False
             if self.etat == "ajouter": self.statut = _(u"Ajout effectué")
@@ -117,7 +121,7 @@ class ListView(FastObjectListView):
     def GetTracks(self):
         """ Récupération des données """
         DB = GestionDB.DB()
-        req = """SELECT IDreservation, date_debut, date_fin, IDlocation, portail_reservations_locations.IDproduit, etat, resultat, produits.nom
+        req = """SELECT IDreservation, date_debut, date_fin, partage, IDlocation, portail_reservations_locations.IDproduit, etat, resultat, produits.nom
         FROM portail_reservations_locations
         LEFT JOIN produits ON produits.IDproduit = portail_reservations_locations.IDproduit
         WHERE IDaction=%d ORDER BY date_debut;""" % self.track_demande.IDaction
@@ -127,10 +131,10 @@ class ListView(FastObjectListView):
         # Importe locations existantes
         liste_IDlocation = []
         for item in listeDonnees:
-            if "-" not in item[3]:
-                liste_IDlocation.append(int(item[3]))
+            if "-" not in item[4]:
+                liste_IDlocation.append(int(item[4]))
             else:
-                liste_IDlocation.append(item[3])
+                liste_IDlocation.append(item[4])
 
         if len(liste_IDlocation) == 0:
             condition = "()"

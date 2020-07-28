@@ -60,13 +60,14 @@ class CTRL_Produit(wx.TextCtrl):
         self.parent = parent
         self.IDproduit = None
         self.IDcategorie = None
+        self.activation_partage = False
 
     def SetIDproduit(self, IDproduit=None):
         self.IDproduit = IDproduit
 
         # Recherche des caractéristiques du produit
         db = GestionDB.DB()
-        req = """SELECT produits.nom, produits.IDcategorie, produits.observations, produits.image, produits_categories.nom
+        req = """SELECT produits.nom, produits.IDcategorie, produits.observations, produits.image, produits_categories.nom, produits.activation_partage
         FROM produits 
         LEFT JOIN produits_categories ON produits_categories.IDcategorie = produits.IDcategorie
         WHERE IDproduit=%d;""" % self.IDproduit
@@ -74,16 +75,25 @@ class CTRL_Produit(wx.TextCtrl):
         listeDonnees = db.ResultatReq()
         db.Close()
         if len(listeDonnees) > 0 :
-            nomProduit, IDcategorie, observations, image, nomCategorie = listeDonnees[0]
+            nomProduit, IDcategorie, observations, image, nomCategorie, self.activation_partage = listeDonnees[0]
             label = u"%s (%s)" % (nomProduit, nomCategorie)
         else :
             IDcategorie = None
             label = ""
             observations = ""
             image = None
+            partage = False
 
         # Nom
         self.SetValue(label)
+
+        # Partage
+        if not self.activation_partage: self.activation_partage = 0
+        self.parent.label_partage.Show(self.activation_partage)
+        self.parent.ctrl_partage.Show(self.activation_partage)
+        self.parent.grid_sizer_haut.Layout()
+        self.parent.grid_sizer_base.Layout()
+        self.parent.Layout()
 
         # Mémorise IDcategorie (sert pour mesure de la distance)
         self.IDcategorie = IDcategorie
@@ -294,6 +304,11 @@ class Dialog(wx.Dialog):
         self.label_observations = wx.StaticText(self, -1, _(u"Notes :"))
         self.ctrl_observations = wx.TextCtrl(self, -1, u"", style=wx.TE_MULTILINE)
 
+        self.label_partage = wx.StaticText(self, -1, _(u"Partage :"))
+        self.ctrl_partage = wx.CheckBox(self, -1, _(u"Le loueur autorise le partage du produit avec d'autres loueurs"))
+        self.label_partage.Show(False)
+        self.ctrl_partage.Show(False)
+
         # Logo
         self.staticbox_logo_staticbox = wx.StaticBox(self, -1, _(u"Image du produit"))
         self.ctrl_logo = CTRL_Logo.CTRL(self, qualite=100, couleurFond=wx.Colour(255, 255, 255), size=(110, 110), mode="lecture")
@@ -370,6 +385,7 @@ class Dialog(wx.Dialog):
         self.bouton_loueur.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sélectionner un loueur")))
         self.bouton_produit.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sélectionner un produit")))
         self.ctrl_observations.SetToolTip(wx.ToolTip(_(u"Saisissez ici des observations éventuelles")))
+        self.ctrl_partage.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour autoriser le partage entre plusieurs usagers")))
         self.ctrl_logo.SetToolTip(wx.ToolTip(_(u"Image du produit")))
         self.bouton_visualiser.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour visualiser l'image actuelle en taille réelle")))
 
@@ -393,7 +409,7 @@ class Dialog(wx.Dialog):
 
         # Généralités
         staticbox_generalites = wx.StaticBoxSizer(self.staticbox_generalites_staticbox, wx.VERTICAL)
-        grid_sizer_generalites = wx.FlexGridSizer(rows=3, cols=2, vgap=10, hgap=10)
+        grid_sizer_generalites = wx.FlexGridSizer(rows=4, cols=2, vgap=10, hgap=10)
 
         grid_sizer_generalites.Add(self.label_loueur, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL, 0)
 
@@ -413,6 +429,10 @@ class Dialog(wx.Dialog):
 
         grid_sizer_generalites.Add(self.label_observations, 0, wx.ALIGN_RIGHT, 0)
         grid_sizer_generalites.Add(self.ctrl_observations, 0, wx.EXPAND, 0)
+
+        grid_sizer_generalites.Add(self.label_partage, 0, wx.ALIGN_RIGHT, 0)
+        grid_sizer_generalites.Add(self.ctrl_partage, 0, wx.EXPAND, 0)
+
         grid_sizer_generalites.AddGrowableCol(1)
         grid_sizer_generalites.AddGrowableRow(2)
         staticbox_generalites.Add(grid_sizer_generalites, 1, wx.ALL|wx.EXPAND, 10)
@@ -481,8 +501,13 @@ class Dialog(wx.Dialog):
         grid_sizer_base.AddGrowableCol(0)
         grid_sizer_base.AddGrowableRow(2)
         self.Layout()
-        self.SetMinSize(self.GetSize())
+        taille = self.GetSize()
+        self.SetMinSize((taille[0], taille[1]+30))
         self.CenterOnScreen()
+
+        self.grid_sizer_base = grid_sizer_base
+        self.grid_sizer_haut = grid_sizer_haut
+
 
     def OnBoutonLoueur(self, event):
         from Dlg import DLG_Selection_famille
@@ -745,6 +770,12 @@ class Dialog(wx.Dialog):
                 dlg.Destroy()
                 return False
 
+        # Partage
+        if self.ctrl_partage.IsShown() and self.ctrl_partage.GetValue() == True:
+            partage = 1
+        else:
+            partage = 0
+
         # Sauvegarde
         DB = GestionDB.DB()
 
@@ -761,6 +792,7 @@ class Dialog(wx.Dialog):
                 ("date_fin", date_fin),
                 ("quantite", quantite),
                 ("serie", num_serie),
+                ("partage", partage),
                 ]
 
             periode = _(u"%s - %s") % (date_debut.strftime("%d/%m/%Y %H:%M:%S"), date_fin.strftime("%d/%m/%Y %H:%M:%S") if (date_fin and date_fin.year != 2999) else _(u"Illimitée"))
@@ -830,14 +862,14 @@ class Dialog(wx.Dialog):
         DB = GestionDB.DB()
 
         # Importation de la location
-        req = """SELECT IDfamille, IDproduit, observations, date_debut, date_fin, quantite, serie
+        req = """SELECT IDfamille, IDproduit, observations, date_debut, date_fin, quantite, serie, partage
         FROM locations WHERE IDlocation=%d;""" % self.IDlocation
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         if len(listeDonnees) == 0 :
             DB.Close()
             return
-        IDfamille, IDproduit, observations, date_debut, date_fin, quantite, self.serie = listeDonnees[0]
+        IDfamille, IDproduit, observations, date_debut, date_fin, quantite, self.serie, partage = listeDonnees[0]
 
         # Généralités
         self.ctrl_loueur.SetIDfamille(IDfamille)
@@ -859,6 +891,10 @@ class Dialog(wx.Dialog):
         # Quantité
         if quantite != None :
             self.ctrl_quantite.SetValue(quantite)
+
+        # Partage
+        if partage == 1:
+            self.ctrl_partage.SetValue(True)
 
         # Importation des prestations
         req = """SELECT

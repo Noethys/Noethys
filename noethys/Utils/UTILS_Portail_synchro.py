@@ -908,14 +908,14 @@ class Synchro():
             liste_tables_modifiees.append("categories_produits")
 
             # Création de la liste des produits
-            req = """SELECT IDproduit, produits.IDcategorie, produits.nom, quantite, montant, produits_categories.nom
+            req = """SELECT IDproduit, produits.IDcategorie, produits.nom, quantite, montant, produits_categories.nom, activation_partage
             FROM produits
             LEFT JOIN produits_categories ON produits_categories.IDcategorie = produits.IDcategorie
             ;"""
             DB.ExecuterReq(req)
             listeProduits = DB.ResultatReq()
-            for IDproduit, IDcategorie, nom, quantite, montant, nom_categorie in listeProduits:
-                m = models.Produit(IDproduit=IDproduit, IDcategorie=IDcategorie, nom=nom, quantite=quantite, montant=montant, nom_categorie=nom_categorie)
+            for IDproduit, IDcategorie, nom, quantite, montant, nom_categorie, activation_partage in listeProduits:
+                m = models.Produit(IDproduit=IDproduit, IDcategorie=IDcategorie, nom=nom, quantite=quantite, montant=montant, nom_categorie=nom_categorie, activation_partage=activation_partage)
                 session.add(m)
 
             liste_tables_modifiees.append("produits")
@@ -928,16 +928,16 @@ class Synchro():
                 date_limite = datetime.date.today() + relativedelta.relativedelta(months=-nbre_mois)
                 conditions_locations = "WHERE locations.date_fin >= '%s'" % date_limite
 
-            req = """SELECT IDlocation, IDfamille, IDproduit, date_saisie, date_debut, date_fin, quantite
+            req = """SELECT IDlocation, IDfamille, IDproduit, date_saisie, date_debut, date_fin, quantite, partage
             FROM locations 
             %s
             ;""" % conditions_locations
             DB.ExecuterReq(req)
             listeLocations = DB.ResultatReq()
-            for IDlocation, IDfamille, IDproduit, date_saisie, date_debut, date_fin, quantite in listeLocations:
+            for IDlocation, IDfamille, IDproduit, date_saisie, date_debut, date_fin, quantite, partage in listeLocations:
                 date_debut = UTILS_Dates.DateEngEnDateDDT(date_debut)
                 date_fin = UTILS_Dates.DateEngEnDateDDT(date_fin)
-                m = models.Location(IDlocation=IDlocation, IDfamille=IDfamille, IDproduit=IDproduit, date_debut=date_debut, date_fin=date_fin, quantite=quantite)
+                m = models.Location(IDlocation=IDlocation, IDfamille=IDfamille, IDproduit=IDproduit, date_debut=date_debut, date_fin=date_fin, quantite=quantite, partage=partage)
                 session.add(m)
 
             liste_tables_modifiees.append("locations")
@@ -1587,7 +1587,7 @@ class Synchro():
                     # Mémorisation des locations
                     if "locations" in action and len(action["locations"]) > 0:
                         for location in action["locations"] :
-                            listeLocations.append([location["date_debut"], location["date_fin"], location["IDlocation"], location["IDproduit"], prochainIDaction, location["etat"]])
+                            listeLocations.append([location["date_debut"], location["date_fin"], location["IDlocation"], location["IDproduit"], prochainIDaction, location["etat"], location["partage"]])
 
                     prochainIDaction += 1
 
@@ -1599,7 +1599,7 @@ class Synchro():
             if len(listeRenseignements) > 0 :
                 DB.Executermany("INSERT INTO portail_renseignements (champ, valeur, IDaction) VALUES (?, ?, ?)", listeRenseignements, commit=False)
             if len(listeLocations) > 0 :
-                DB.Executermany("INSERT INTO portail_reservations_locations (date_debut, date_fin, IDlocation, IDproduit, IDaction, etat) VALUES (?, ?, ?, ?, ?, ?)", listeLocations, commit=False)
+                DB.Executermany("INSERT INTO portail_reservations_locations (date_debut, date_fin, IDlocation, IDproduit, IDaction, etat, partage) VALUES (?, ?, ?, ?, ?, ?, ?)", listeLocations, commit=False)
             if len(listePasswordsFamilles) > 0 :
                 DB.Executermany("UPDATE familles SET internet_mdp=? WHERE IDfamille=?", listePasswordsFamilles, commit=False)
                 if len(listePasswordsFamilles) == 1:
