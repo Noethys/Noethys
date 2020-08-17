@@ -144,3 +144,12 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+# Debian build
+debian/noethys/
+debian/files
+.pc
+build-stamp
+configure-stamp
+debian/.debhelper/
+debian/noethys.substvars
