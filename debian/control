@@ -1,0 +1,15 @@
+Source: noethys
+Section: python
+Priority: extra
+Maintainer: Olivier Bitsch <olivier.b@iabsis.com>
+Build-Depends: debhelper (>= 5)
+Standards-Version: 3.7.2
+
+Package: noethys
+Architecture: all
+Depends: python, python-mysqldb, python-dateutil, python-numpy, python-imaging,
+ python-reportlab (>= 3.2.0), python-matplotlib, python-xlrd, python-crypto, python-excelerator,
+ python-pyscard, python-opencv, python-icalendar, python-pyttsx, python-wxgtk3.0,
+ python-paramiko, python-psutil, python-appdirs, python-espeak, python-lxml
+Description: Multi activity management software
+ Multi activity management software
