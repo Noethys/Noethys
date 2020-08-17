@@ -1,0 +1,239 @@
+--- a/noethys/Ctrl/CTRL_Composition.py
++++ b/noethys/Ctrl/CTRL_Composition.py
+@@ -982,116 +982,7 @@
+         self.ActiveTooltip(False) 
+ 
+     def AfficheTooltip(self):
+-        styleTooltip = "Office 2007 Blue"
+-        taillePhoto = 30
+-        font = self.GetFont()
+-        
+-        # Récupération des infos sur l'individu
+-        IDindividu = self.tip.IDindividu
+-        cadreIndividu = self.dictCadres[IDindividu]["ctrl"]
+-        dictInfoIndividu = self.dictValeurs.dictInfosIndividus[IDindividu]
+-        
+-        # Paramétrage du tooltip
+-        self.tip.SetHyperlinkFont(wx.Font(8, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, 'Arial'))
+-        
+-        if dictInfoIndividu["genre"] == "F" :
+-            # Couleur du toolTip version FILLE
+-            self.tip.SetTopGradientColour(wx.Colour(255,255,255))
+-            self.tip.SetMiddleGradientColour(wx.Colour(251,229,243))
+-            self.tip.SetBottomGradientColour(wx.Colour(255,210,226))
+-            self.tip.SetTextColor(wx.Colour(76,76,76))
+-        else:
+-            # Couleur du toolTip version GARCON
+-            self.tip.SetTopGradientColour(wx.Colour(255,255,255))
+-            self.tip.SetMiddleGradientColour(wx.Colour(242,246,251))
+-            self.tip.SetBottomGradientColour(wx.Colour(202,218,239))
+-            self.tip.SetTextColor(wx.Colour(76,76,76))
+-        
+-        # Adaptation pour wxPython >= 2.9
+-        if wx.VERSION > (2, 9, 0, 0) :
+-            qualite = wx.IMAGE_QUALITY_BICUBIC
+-        else :
+-            qualite = 100
+-            
+-        # Titre du tooltip
+-        bmp = cadreIndividu.bmp
+-        if bmp != None :
+-            bmp = bmp.ConvertToImage()
+-            bmp = bmp.Rescale(width=taillePhoto, height=taillePhoto, quality=qualite)
+-            bmp = bmp.ConvertToBitmap()
+-            self.tip.SetHeaderBitmap(bmp)
+-        self.tip.SetHeaderFont(wx.Font(10, font.GetFamily(), font.GetStyle(), wx.BOLD, font.GetUnderlined(), font.GetFaceName()))
+-        self.tip.SetHeader(dictInfoIndividu["nomComplet2"])
+-        self.tip.SetDrawHeaderLine(True)
+-
+-        # Corps du tooltip
+-        message = u""
+-
+-        # Décès
+-        if dictInfoIndividu["deces"] in (True, 1):
+-            message += _(u"</b>######### Individu décédé #########\n\n")
+-        # Archive
+-        if dictInfoIndividu["etat"] == "archive":
+-            message += _(u"</b>######### Individu archivé #########\n\n")
+-        # Effacé
+-        if dictInfoIndividu["etat"] == "efface":
+-            message += _(u"</b>######### Individu effacé #########\n\n")
+-
+-        if dictInfoIndividu["datenaissComplet"] != None : message += u"%s\n" % dictInfoIndividu["datenaissComplet"]
+-        
+-        adresse = u""
+-        if dictInfoIndividu["adresse_ligne1"] not in (None, u"") : adresse += u"</b>%s\n" % dictInfoIndividu["adresse_ligne1"]
+-        if dictInfoIndividu["adresse_ligne2"] not in (None, u"") : adresse += u"</b>%s\n" % dictInfoIndividu["adresse_ligne2"]
+-        if len(adresse) > 3 : 
+-            message += "\n" + adresse
+-        
+-        coords = u""
+-        if dictInfoIndividu["tel_domicile_complet"] not in (None, u"") : coords += u"%s\n" % dictInfoIndividu["tel_domicile_complet"] 
+-        if dictInfoIndividu["tel_mobile_complet"] not in (None, u"") : coords += u"%s\n" % dictInfoIndividu["tel_mobile_complet"] 
+-        if dictInfoIndividu["travail_tel_complet"] not in (None, u"") : coords += u"%s\n" % dictInfoIndividu["travail_tel_complet"]
+-        if len(coords) > 3 : 
+-            message += "\n" + coords
+-        if dictInfoIndividu["mail_complet"] != None : message += u"\n%s \n" % dictInfoIndividu["mail_complet"]
+-        
+-        # Liste des inscriptions de l'individu
+-        if dictInfoIndividu["genre"] == "F" :
+-            lettreGenre = "e"
+-        else:
+-            lettreGenre = ""
+-        if dictInfoIndividu["prenom"] != None :
+-            prenom = dictInfoIndividu["prenom"]
+-        else:
+-            prenom = u""
+-        if dictInfoIndividu["inscriptions"] == True :
+-            nbreInscriptions = len(dictInfoIndividu["listeInscriptions"])
+-            message += "\n"
+-            if nbreInscriptions == 1 :
+-                message += _(u"%s est inscrit%s à 1 activité : \n") % (prenom, lettreGenre)
+-            else:
+-                message += _(u"%s est inscrit%s à %d activités : \n") % (prenom, lettreGenre, nbreInscriptions)
+-            for dictInscription in dictInfoIndividu["listeInscriptions"] :
+-                message += "> %s (%s - %s) \n" % (dictInscription["nomActivite"], dictInscription["nomGroupe"], dictInscription["nomCategorie"])
+-
+-        self.tip.SetMessage(message)
+-        
+-        # Pied du tooltip
+-        self.tip.SetDrawFooterLine(True)
+-        self.tip.SetFooterBitmap(wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Aide.png"), wx.BITMAP_TYPE_ANY))
+-        self.tip.SetFooterFont(wx.Font(7, font.GetFamily(), font.GetStyle(), wx.LIGHT, font.GetUnderlined(), font.GetFaceName()))
+-        self.tip.SetFooter(_(u"Double-cliquez pour ouvrir sa fiche"))
+-        
+-        # Affichage du Frame tooltip
+-        self.tipFrame = STT.ToolTipWindow(self, self.tip)
+-        self.tipFrame.CalculateBestSize()
+-        x, y = wx.GetMousePosition()
+-        self.tipFrame.SetPosition((x+15, y+17))
+-        self.tipFrame.DropShadow(True)
+-        self.tipFrame.Show()
+-        #self.tipFrame.StartAlpha(True) # ou .Show() pour un affichage immédiat
+-        
+-        # Arrêt du timer
+-        self.timerTip.Stop()
+-        del self.timerTip
++        return True
+                     
+     def CacheTooltip(self):
+         # Fermeture du tooltip
+@@ -1842,106 +1733,7 @@
+         self.ActiveTooltip(False) 
+ 
+     def AfficheTooltip(self):
+-        styleTooltip = "Office 2007 Blue"
+-        taillePhoto = 30
+-        font = self.GetFont()
+-        
+-        # Récupération des infos sur l'individu
+-        IDindividu = self.tip.IDindividu
+-        dictInfoIndividu = self.donnees.dictInfosIndividus[IDindividu]
+-        
+-        # Paramétrage du tooltip
+-        self.tip.SetHyperlinkFont(wx.Font(8, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, 'Arial'))
+-        
+-        if dictInfoIndividu["genre"] == "F" :
+-            # Couleur du toolTip version FILLE
+-            self.tip.SetTopGradientColour(wx.Colour(255,255,255))
+-            self.tip.SetMiddleGradientColour(wx.Colour(251,229,243))
+-            self.tip.SetBottomGradientColour(wx.Colour(255,210,226))
+-            self.tip.SetTextColor(wx.Colour(76,76,76))
+-        else:
+-            # Couleur du toolTip version GARCON
+-            self.tip.SetTopGradientColour(wx.Colour(255,255,255))
+-            self.tip.SetMiddleGradientColour(wx.Colour(242,246,251))
+-            self.tip.SetBottomGradientColour(wx.Colour(202,218,239))
+-            self.tip.SetTextColor(wx.Colour(76,76,76))
+-        
+-        # Adaptation pour wxPython >= 2.9
+-        if wx.VERSION > (2, 9, 0, 0) :
+-            qualite = wx.IMAGE_QUALITY_BICUBIC
+-        else :
+-            qualite = 100
+-            
+-        # Titre du tooltip
+-        nomImage = Civilites.GetDictCivilites()[self.donnees.dictInfosIndividus[IDindividu]["IDcivilite"]]["nomImage"]
+-        if nomImage == None : nomImage = "Personne.png"
+-        nomFichier = Chemins.GetStaticPath("Images/128x128/%s" % nomImage)
+-        IDphoto, bmp = CTRL_Photo.GetPhoto(IDindividu=IDindividu, nomFichier=nomFichier, taillePhoto=(taillePhoto, taillePhoto), qualite=100)
+-        bmp = bmp.ConvertToImage()
+-        bmp = bmp.Rescale(width=taillePhoto, height=taillePhoto, quality=qualite) 
+-        bmp = bmp.ConvertToBitmap()
+-        self.tip.SetHeaderBitmap(bmp)
+-        self.tip.SetHeaderFont(wx.Font(10, font.GetFamily(), font.GetStyle(), wx.BOLD, font.GetUnderlined(), font.GetFaceName()))
+-        self.tip.SetHeader(dictInfoIndividu["nomComplet2"])
+-        self.tip.SetDrawHeaderLine(True)
+-        
+-        # Corps du tooltip
+-        message = u""
+-        if dictInfoIndividu["datenaissComplet"] != None : message += u"%s\n" % dictInfoIndividu["datenaissComplet"]
+-        
+-        adresse = u""
+-        if dictInfoIndividu["adresse_ligne1"] not in (None, u"") : adresse += u"</b>%s\n" % dictInfoIndividu["adresse_ligne1"]
+-        if dictInfoIndividu["adresse_ligne2"] not in (None, u"") : adresse += u"</b>%s\n" % dictInfoIndividu["adresse_ligne2"]
+-        if len(adresse) > 3 : 
+-            message += "\n" + adresse
+-        
+-        coords = u""
+-        if dictInfoIndividu["tel_domicile_complet"] not in (None, u"") : coords += u"%s\n" % dictInfoIndividu["tel_domicile_complet"] 
+-        if dictInfoIndividu["tel_mobile_complet"] not in (None, u"") : coords += u"%s\n" % dictInfoIndividu["tel_mobile_complet"] 
+-        if dictInfoIndividu["travail_tel_complet"] not in (None, u"") : coords += u"%s\n" % dictInfoIndividu["travail_tel_complet"]
+-        if len(coords) > 3 : 
+-            message += "\n" + coords
+-        if dictInfoIndividu["mail_complet"] != None : message += u"\n%s \n" % dictInfoIndividu["mail_complet"]
+-        
+-        # Liste des inscriptions de l'individu
+-        if dictInfoIndividu["genre"] == "F" :
+-            lettreGenre = "e"
+-        else:
+-            lettreGenre = ""
+-        if dictInfoIndividu["prenom"] != None :
+-            prenom = dictInfoIndividu["prenom"]
+-        else:
+-            prenom = u""
+-        if dictInfoIndividu["inscriptions"] == True :
+-            nbreInscriptions = len(dictInfoIndividu["listeInscriptions"])
+-            message += "\n"
+-            if nbreInscriptions == 1 :
+-                message += _(u"%s est inscrit%s à 1 activité : \n") % (prenom, lettreGenre)
+-            else:
+-                message += _(u"%s est inscrit%s à %d activités : \n") % (prenom, lettreGenre, nbreInscriptions)
+-            for dictInscription in dictInfoIndividu["listeInscriptions"] :
+-                message += "> %s (%s - %s) \n" % (dictInscription["nomActivite"], dictInscription["nomGroupe"], dictInscription["nomCategorie"])
+-
+-        self.tip.SetMessage(message)
+-        
+-        # Pied du tooltip
+-        self.tip.SetDrawFooterLine(True)
+-        self.tip.SetFooterBitmap(wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Aide.png"), wx.BITMAP_TYPE_ANY))
+-        self.tip.SetFooterFont(wx.Font(7, font.GetFamily(), font.GetStyle(), wx.LIGHT, font.GetUnderlined(), font.GetFaceName()))
+-        self.tip.SetFooter(_(u"Double-cliquez pour ouvrir sa fiche"))
+-        
+-        # Affichage du Frame tooltip
+-        self.tipFrame = STT.ToolTipWindow(self, self.tip)
+-        self.tipFrame.CalculateBestSize()
+-        x, y = wx.GetMousePosition()
+-        self.tipFrame.SetPosition((x+15, y+17))
+-        self.tipFrame.DropShadow(True)
+-        self.tipFrame.Show()
+-        #self.tipFrame.StartAlpha(True) # ou .Show() pour un affichage immédiat
+-        
+-        # Arrêt du timer
+-        self.timerTip.Stop()
+-        del self.timerTip
++        return True
+                     
+     def CacheTooltip(self):
+         # Fermeture du tooltip
+--- a/noethys/Dlg/DLG_Famille.py
++++ b/noethys/Dlg/DLG_Famille.py
+@@ -277,7 +277,7 @@
+         self.notebook.GetPageAvecCode("informations").MAJ() 
+         
+         # MAJ CTRL composition
+-        code = UTILS_Config.GetParametre("affichage_composition_famille", defaut="graphique")
++        code = UTILS_Config.GetParametre("affichage_composition_famille", defaut="liste")
+         self.ctrl_composition.AffichePage(code)
+         self.ctrl_composition.MAJ()
+ 
