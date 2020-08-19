@@ -63,21 +63,6 @@ def HeureStrEnTime(heureStr):
     if heureStr == None or heureStr == "" : return datetime.time(0, 0)
     heures, minutes = heureStr.split(":")
     return datetime.time(int(heures), int(minutes))
-    
-##def FormateValeur(valeur, mode="quantite"):
-##    if mode == "quantite" :
-##        return str(valeur)
-##    if "temps" in mode :
-##        if "." not in str(valeur) :
-##            valeur = float(valeur)
-##        hr, dec = str(valeur).split(".")
-##        if len(dec) == 1 : 
-##            mn = int(dec) * 0.1
-##        else:
-##            mn = int(dec) * 0.01
-##        mn = mn * 60 #int(dec)*60/100.0
-##        mn = math.ceil(mn)
-##        return u"%sh%02d" % (hr, mn)
 
 def FormateValeur(valeur, mode="quantite"):
     if mode == "quantite" :
@@ -143,7 +128,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         self.GetGridWindow().SetToolTip(wx.ToolTip(""))
         self.CreateGrid(0, 0)
         self.SetRowLabelSize(200)
-        self.SetColLabelSize(45)
+        self.SetColLabelSize(50)
         self.DisableDragColSize()
         self.DisableDragRowSize()
         
@@ -151,16 +136,16 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         self.date_debut = None
         self.date_fin = None
         self.IDactivite = []
-        self.detail_groupes = False
-        self.affichage_regroupement = "jour"
-        self.affichage_donnees = "quantite"
+        self.affichage_lignes = "jour"
+        self.affichage_valeurs = "quantite"
+        self.affichage_colonnes = "unites"
         self.affichage_mode = "reservation"
         self.affichage_etat = ["reservation", "present"]
         self.labelParametres = ""
                 
 
-    def MAJ(self, date_debut=None, date_fin=None, IDactivite=None, listeGroupes=[], detail_groupes=False, affichage_donnees="quantite", 
-                        affichage_regroupement="jour", affichage_mode="reservation", affichage_etat=["reservation", "present"], labelParametres=u""):     
+    def MAJ(self, date_debut=None, date_fin=None, IDactivite=None, listeGroupes=[], affichage_valeurs="quantite",  affichage_lignes="jour",
+            affichage_colonnes="unites", affichage_mode="reservation", affichage_etat=["reservation", "present"], labelParametres=u""):
 
         # Chargement des informations individuelles
         if self.date_debut != date_debut :
@@ -173,9 +158,9 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         self.date_fin = date_fin
         self.IDactivite = IDactivite
         self.listeGroupes = listeGroupes
-        self.detail_groupes = detail_groupes
-        self.affichage_donnees = affichage_donnees
-        self.affichage_regroupement = affichage_regroupement
+        self.affichage_valeurs = affichage_valeurs
+        self.affichage_lignes = affichage_lignes
+        self.affichage_colonnes = affichage_colonnes
         self.affichage_mode = affichage_mode
         self.affichage_etat = affichage_etat
         self.labelParametres = labelParametres
@@ -234,16 +219,16 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 
         # Evènements
         self.dictEvenements = {}
-        req = """SELECT IDevenement, nom, date
+        req = """SELECT IDevenement, nom, date, IDunite
         FROM evenements
         WHERE IDactivite=%d
         AND date>='%s' AND date<='%s'
         ;""" % (self.IDactivite, self.date_debut, self.date_fin)
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
-        for IDevenement, nom, date in listeDonnees :
+        for IDevenement, nom, date, IDunite in listeDonnees :
             date = UTILS_Dates.DateEngEnDateDD(date)
-            self.dictEvenements[IDevenement] = {"nom" : nom, "date" : date}
+            self.dictEvenements[IDevenement] = {"nom" : nom, "date" : date, "IDunite": IDunite}
 
         # Etiquettes
         self.dictEtiquettes = {}
@@ -287,32 +272,32 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             
             # Recherche du regroupement
             try :
-                if self.affichage_regroupement == "jour" : regroupement = date
-                if self.affichage_regroupement == "mois" : regroupement = (annee, mois)
-                if self.affichage_regroupement == "annee" : regroupement = annee
-                if self.affichage_regroupement == "activite" : regroupement = nomActivite
-                if self.affichage_regroupement == "groupe" : regroupement = nomGroupe
-                if self.affichage_regroupement == "evenement" : regroupement = IDevenement
-                if self.affichage_regroupement == "evenement_date": regroupement = IDevenement
-                if self.affichage_regroupement == "categorie_tarif" : regroupement = nomCategorie
-                if self.affichage_regroupement == "ville_residence" : regroupement = self.dictInfosIndividus[IDindividu]["INDIVIDU_VILLE"]
-                if self.affichage_regroupement == "secteur" : regroupement = self.dictInfosIndividus[IDindividu]["INDIVIDU_SECTEUR"]
-                if self.affichage_regroupement == "genre" : regroupement = self.dictInfosIndividus[IDindividu]["INDIVIDU_SEXE"]
-                if self.affichage_regroupement == "age" : regroupement = self.dictInfosIndividus[IDindividu]["INDIVIDU_AGE_INT"]
-                if self.affichage_regroupement == "ville_naissance" : regroupement = self.dictInfosIndividus[IDindividu]["INDIVIDU_VILLE_NAISS"]
-                if self.affichage_regroupement == "nom_ecole" : regroupement = self.dictInfosIndividus[IDindividu]["SCOLARITE_NOM_ECOLE"]
-                if self.affichage_regroupement == "nom_classe" : regroupement = self.dictInfosIndividus[IDindividu]["SCOLARITE_NOM_CLASSE"]
-                if self.affichage_regroupement == "nom_niveau_scolaire" : regroupement = self.dictInfosIndividus[IDindividu]["SCOLARITE_NOM_NIVEAU"]
-                if self.affichage_regroupement == "famille" : regroupement = self.dictInfosFamilles[IDfamille]["FAMILLE_NOM"]
-                if self.affichage_regroupement == "individu" : regroupement = self.dictInfosIndividus[IDindividu]["INDIVIDU_NOM_COMPLET"]
-                if self.affichage_regroupement == "regime" : regroupement = self.dictInfosFamilles[IDfamille]["FAMILLE_NOM_REGIME"]
-                if self.affichage_regroupement == "caisse" : regroupement = self.dictInfosFamilles[IDfamille]["FAMILLE_NOM_CAISSE"]
-                if self.affichage_regroupement == "categorie_travail" : regroupement = self.dictInfosIndividus[IDindividu]["INDIVIDU_CATEGORIE_TRAVAIL"]
-                if self.affichage_regroupement == "categorie_travail_pere" : regroupement = self.dictInfosIndividus[IDindividu]["PERE_CATEGORIE_TRAVAIL"]
-                if self.affichage_regroupement == "categorie_travail_mere" : regroupement = self.dictInfosIndividus[IDindividu]["MERE_CATEGORIE_TRAVAIL"]
+                if self.affichage_lignes == "jour" : regroupement = date
+                if self.affichage_lignes == "mois" : regroupement = (annee, mois)
+                if self.affichage_lignes == "annee" : regroupement = annee
+                if self.affichage_lignes == "activite" : regroupement = nomActivite
+                if self.affichage_lignes == "groupe" : regroupement = nomGroupe
+                if self.affichage_lignes == "evenement" : regroupement = IDevenement
+                if self.affichage_lignes == "evenement_date": regroupement = IDevenement
+                if self.affichage_lignes == "categorie_tarif" : regroupement = nomCategorie
+                if self.affichage_lignes == "ville_residence" : regroupement = self.dictInfosIndividus[IDindividu]["INDIVIDU_VILLE"]
+                if self.affichage_lignes == "secteur" : regroupement = self.dictInfosIndividus[IDindividu]["INDIVIDU_SECTEUR"]
+                if self.affichage_lignes == "genre" : regroupement = self.dictInfosIndividus[IDindividu]["INDIVIDU_SEXE"]
+                if self.affichage_lignes == "age" : regroupement = self.dictInfosIndividus[IDindividu]["INDIVIDU_AGE_INT"]
+                if self.affichage_lignes == "ville_naissance" : regroupement = self.dictInfosIndividus[IDindividu]["INDIVIDU_VILLE_NAISS"]
+                if self.affichage_lignes == "nom_ecole" : regroupement = self.dictInfosIndividus[IDindividu]["SCOLARITE_NOM_ECOLE"]
+                if self.affichage_lignes == "nom_classe" : regroupement = self.dictInfosIndividus[IDindividu]["SCOLARITE_NOM_CLASSE"]
+                if self.affichage_lignes == "nom_niveau_scolaire" : regroupement = self.dictInfosIndividus[IDindividu]["SCOLARITE_NOM_NIVEAU"]
+                if self.affichage_lignes == "famille" : regroupement = self.dictInfosFamilles[IDfamille]["FAMILLE_NOM"]
+                if self.affichage_lignes == "individu" : regroupement = self.dictInfosIndividus[IDindividu]["INDIVIDU_NOM_COMPLET"]
+                if self.affichage_lignes == "regime" : regroupement = self.dictInfosFamilles[IDfamille]["FAMILLE_NOM_REGIME"]
+                if self.affichage_lignes == "caisse" : regroupement = self.dictInfosFamilles[IDfamille]["FAMILLE_NOM_CAISSE"]
+                if self.affichage_lignes == "categorie_travail" : regroupement = self.dictInfosIndividus[IDindividu]["INDIVIDU_CATEGORIE_TRAVAIL"]
+                if self.affichage_lignes == "categorie_travail_pere" : regroupement = self.dictInfosIndividus[IDindividu]["PERE_CATEGORIE_TRAVAIL"]
+                if self.affichage_lignes == "categorie_travail_mere" : regroupement = self.dictInfosIndividus[IDindividu]["MERE_CATEGORIE_TRAVAIL"]
                 
                 # QF
-                if self.affichage_regroupement == "qf" :
+                if self.affichage_lignes == "qf" :
                     regroupement = None
                     qf = self.dictInfosFamilles[IDfamille]["FAMILLE_QF_ACTUEL_INT"]
                     for x in range(0, 10000, 100) :
@@ -321,7 +306,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                             regroupement = (min, max)
                 
                 # Etiquettes
-                if self.affichage_regroupement == "etiquette" : 
+                if self.affichage_lignes == "etiquette" :
                     etiquettes = UTILS_Texte.ConvertStrToListe(etiquettes)
                     if len(etiquettes) > 0 :
                         temp = []
@@ -333,13 +318,13 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                         regroupement = _(u"- Aucune étiquette -")
                     
                 # Questionnaires
-                if self.affichage_regroupement.startswith("question_") and "famille" in self.affichage_regroupement : regroupement = self.dictInfosFamilles[IDfamille]["QUESTION_%s" % self.affichage_regroupement[17:]]
-                if self.affichage_regroupement.startswith("question_") and "individu" in self.affichage_regroupement : regroupement = self.dictInfosIndividus[IDindividu]["QUESTION_%s" % self.affichage_regroupement[18:]]
+                if self.affichage_lignes.startswith("question_") and "famille" in self.affichage_lignes : regroupement = self.dictInfosFamilles[IDfamille]["QUESTION_%s" % self.affichage_lignes[17:]]
+                if self.affichage_lignes.startswith("question_") and "individu" in self.affichage_lignes : regroupement = self.dictInfosIndividus[IDindividu]["QUESTION_%s" % self.affichage_lignes[18:]]
                 
             except :
                 regroupement = None
             
-            if regroupement in ("", None) :
+            if regroupement in ("", None):
                 regroupement = _(u"- Non renseigné -")
             
             # Quantité
@@ -367,17 +352,20 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                     hr, mn = tempsFacture.split(":")
                     temps_facture += datetime.timedelta(hours=int(hr), minutes=int(mn))
                     listePrestationsTraitees.append(IDprestation)
-                
-            if self.detail_groupes == True :
+
+            # Colonnes
+            if self.affichage_colonnes == "unites_groupes" :
                 groupe = IDgroupe
-            else :
+            elif self.affichage_colonnes == "unites_evenements" :
+                groupe = IDevenement
+            else:
                 groupe = None
-                
-            if self.affichage_donnees == "quantite" : valeur = quantite
-            if self.affichage_donnees == "temps_presence" : valeur = temps_presence
-            if self.affichage_donnees == "temps_facture" : valeur = temps_facture
-            
-            if self.affichage_donnees == "quantite" :
+
+            # Valeurs
+            if self.affichage_valeurs == "quantite" : valeur = quantite
+            if self.affichage_valeurs == "temps_presence" : valeur = temps_presence
+            if self.affichage_valeurs == "temps_facture" : valeur = temps_facture
+            if self.affichage_valeurs == "quantite" :
                 defaut = 0
             else :
                 defaut = datetime.timedelta(hours=0, minutes=0)
@@ -413,7 +401,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         # Récupération des données
         dictResultats, listeUnites, listeGroupes = self.Importation() 
         
-        if self.affichage_donnees == "quantite" :
+        if self.affichage_valeurs == "quantite" :
             defaut = 0
         else :
             defaut = datetime.timedelta(hours=0, minutes=0)
@@ -439,11 +427,11 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                     if (regroupement in dictTotaux["colonnes"]) == False :
                         dictTotaux["colonnes"][regroupement] = defaut
                     dictTotaux["colonnes"][regroupement] += valeur
-        
+
         # Création des colonnes
         largeur_colonne = 80
         dictColonnes = {}
-        if self.detail_groupes == True :
+        if self.affichage_colonnes == "unites_groupes":
             self.AppendCols(len(listeGroupes) * len(listeUnites))
             index = 0
             for IDunite, nomUnite, abregeUnite in listeUnites :
@@ -454,6 +442,27 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                     self.SetColLabelValue(index, u"%s\n%s" % (abregeGroupe, abregeUnite))
                     dictColonnes[(IDgroupe, IDunite)] = index
                     index += 1
+
+        elif self.affichage_colonnes == "unites_evenements":
+            index = 0
+            for IDunite, nomUnite, abregeUnite in listeUnites:
+                liste_events = [(dict_evenement["date"], dict_evenement["nom"], IDevenement) for IDevenement, dict_evenement in self.dictEvenements.items() if dict_evenement["IDunite"] == IDunite]
+                if liste_events:
+                    liste_events.sort()
+                    self.AppendCols(len(liste_events))
+                    for date, nomEvent, IDevenement in liste_events:
+                        if len(nomEvent) > 15:
+                            nomEvent = nomEvent[:15] + "."
+                        self.SetColSize(index, largeur_colonne + 25)
+                        self.SetColLabelValue(index, u"%s\n%s\n%s" % (nomEvent, UTILS_Dates.DateEngFr(date), abregeUnite))
+                        dictColonnes[(IDevenement, IDunite)] = index
+                        index += 1
+                else:
+                    self.AppendCols(1)
+                    self.SetColLabelValue(index, u"%s" % abregeUnite)
+                    dictColonnes[(None, IDunite)] = index
+                    index += 1
+
         else :
             self.AppendCols(len(listeUnites))
             index = 0
@@ -477,17 +486,17 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         index = 0
         dictLignes = {}
         for regroupement in listeRegroupement :
-            if self.affichage_regroupement == "jour" : 
+            if self.affichage_lignes == "jour" :
                 label = DateComplete(regroupement)
-            elif self.affichage_regroupement == "mois" : 
+            elif self.affichage_lignes == "mois" :
                 label = FormateMois(regroupement)
-            elif self.affichage_regroupement == "annee" : 
+            elif self.affichage_lignes == "annee" :
                 label = str(regroupement)
-            elif self.affichage_regroupement == "evenement" and regroupement in self.dictEvenements :
+            elif self.affichage_lignes == "evenement" and regroupement in self.dictEvenements :
                 label = self.dictEvenements[regroupement]["nom"]
-            elif self.affichage_regroupement == "evenement_date" and regroupement in self.dictEvenements :
+            elif self.affichage_lignes == "evenement_date" and regroupement in self.dictEvenements :
                 label = u"%s (%s)" % (self.dictEvenements[regroupement]["nom"], UTILS_Dates.DateDDEnFr(self.dictEvenements[regroupement]["date"]))
-            elif self.affichage_regroupement == "qf" and type(regroupement) == tuple : 
+            elif self.affichage_lignes == "qf" and type(regroupement) == tuple :
                 label = u"%d-%d" % regroupement
             else :
                 label = six.text_type(regroupement)
@@ -506,8 +515,8 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         # Remplissage des valeurs
         for IDgroupe, dictGroupe in dictResultats.items() :
             for IDunite, dictUnite in dictGroupe.items() :
-                for regroupement, valeur in dictUnite.items() :
-                    label = FormateValeur(valeur, self.affichage_donnees)
+                for regroupement, valeur in dictUnite.items():
+                    label = FormateValeur(valeur, self.affichage_valeurs)
                     numLigne = dictLignes[regroupement]
                     numColonne = dictColonnes[(IDgroupe, IDunite)]
                     self.SetCellValue(numLigne, numColonne, label)
@@ -516,7 +525,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         
         # Remplissage des totaux        
         for (IDgroupe, IDunite), valeur in dictTotaux["lignes"].items() :
-            label = FormateValeur(valeur, self.affichage_donnees)
+            label = FormateValeur(valeur, self.affichage_valeurs)
             numLigne = dictLignes["total"]
             numColonne = dictColonnes[(IDgroupe, IDunite)]
             self.SetCellValue(numLigne, numColonne, label)
@@ -526,7 +535,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         total_general = defaut
         for regroupement, valeur in dictTotaux["colonnes"].items() :
             total_general += valeur
-            label = FormateValeur(valeur, self.affichage_donnees)
+            label = FormateValeur(valeur, self.affichage_valeurs)
             numLigne = dictLignes[regroupement]
             numColonne = dictColonnes["total"]
             self.SetCellValue(numLigne, numColonne, label)
@@ -534,7 +543,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             self.SetReadOnly(numLigne, numColonne, True)
         
         # Total général
-        label = FormateValeur(total_general, self.affichage_donnees)
+        label = FormateValeur(total_general, self.affichage_valeurs)
         numLigne = dictLignes["total"]
         numColonne = dictColonnes["total"]
         self.SetCellValue(numLigne, numColonne, label)
@@ -685,7 +694,7 @@ class MyFrame(wx.Frame):
         self.SetSizer(sizer_1)
         self.grille = CTRL(panel)
         self.grille.MAJ(IDactivite=1, date_debut=datetime.date(2015, 11, 1), date_fin=datetime.date(2015, 12, 20), listeGroupes=[1,2],
-                                detail_groupes=False, affichage_donnees="temps_presence", affichage_regroupement="individu")
+                        affichage_valeurs="temps_presence", affichage_colonnes="unites", affichage_lignes="individu")
         self.bouton_test = wx.Button(panel, -1, u"Test export Excel")
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.grille, 1, wx.EXPAND, 0)
