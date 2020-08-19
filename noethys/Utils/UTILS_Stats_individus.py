@@ -505,8 +505,8 @@ def GetListeNiveauxScolaires(DB, dictParametres) :
     
     dictNiveaux = {}
     for IDniveau, ordre, nomNiveau, IDindividu in listeDonnees :
-        if nomNiveau == None :
-            nomNiveau = _(u"Niveau inconnu")
+        if nomNiveau == None : nomNiveau = _(u"Niveau inconnu")
+        if ordre == None: ordre = 0
         if (IDniveau in dictNiveaux) == False :
             dictNiveaux[IDniveau] = {"nom" : nomNiveau, "nbre" : 0, "ordre": ordre}
         dictNiveaux[IDniveau]["nbre"] += 1
