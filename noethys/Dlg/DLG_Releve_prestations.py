@@ -591,8 +591,8 @@ class Impression():
                         valide = True
                         
                         date = dictPrestation["date"]
-                        montant = dictPrestation["montant"]
-                        montant_ventilation = dictPrestation["montant_ventilation"]
+                        montant = dictPrestation["montant"] if dictPrestation["montant"] else 0.0
+                        montant_ventilation = dictPrestation["montant_ventilation"] if dictPrestation["montant_ventilation"] else 0.0
                         reste_du = montant - montant_ventilation
                             
                         # Filtre impayes
