@@ -179,9 +179,13 @@ class Page_categories_tarifs(Assistant.Page):
     def __init__(self, parent):
         Assistant.Page.__init__(self, parent)
         self.Ajouter_rubrique(titre=_(u"Tarifs"))
+        self.Ajouter_question(code="gratuit", titre=_(u"Cette activité est-elle gratuite ?"), ctrl=Assistant.CTRL_Oui_non, defaut=False)
         self.Ajouter_question(code="has_categories_tarifs", titre=_(u"Avez-vous plusieurs catégories de tarifs ?"), commentaire=_(u"On retrouve par exemple souvent 'Commune' et 'Hors commune'."), ctrl=Assistant.CTRL_Oui_non, defaut=False)
 
     def Suite(self):
+        if self.parent.dict_valeurs["gratuit"] == True:
+            self.parent.dict_valeurs["has_categories_tarifs"] = False
+            return Page_conclusion
         if self.parent.dict_valeurs["has_categories_tarifs"] == True :
             return Page_categories_tarifs_nombre
         else :
@@ -301,19 +305,21 @@ class Page_conclusion(Assistant.Page):
         # Saisie d'une tarification
         if self.parent.dict_valeurs["recopier_tarifs"] == None :
             # Nom de tarif
-            nom_tarif = self.parent.dict_valeurs["nom"]
-            listeDonnees = [("IDactivite", IDactivite), ("nom", nom_tarif)]
-            IDnom_tarif = DB.ReqInsert("noms_tarifs", listeDonnees)
+            if self.parent.dict_valeurs["gratuit"] == False:
+                nom_tarif = self.parent.dict_valeurs["nom"]
+                listeDonnees = [("IDactivite", IDactivite), ("nom", nom_tarif)]
+                IDnom_tarif = DB.ReqInsert("noms_tarifs", listeDonnees)
 
             # Catégories de tarifs
             listeCategoriesEtTarifs = []
 
             # Si catégorie unique
-            if self.parent.dict_valeurs["has_categories_tarifs"] == False :
+            if self.parent.dict_valeurs["has_categories_tarifs"] == False:
                 listeDonnees = [("IDactivite", IDactivite), ("nom", _(u"Catégorie unique"))]
                 IDcategorie_tarif = DB.ReqInsert("categories_tarifs", listeDonnees)
-                track_tarif = self.parent.dict_valeurs["tarif"]
-                listeCategoriesEtTarifs.append((IDcategorie_tarif, track_tarif))
+                if self.parent.dict_valeurs["gratuit"] == False:
+                    track_tarif = self.parent.dict_valeurs["tarif"]
+                    listeCategoriesEtTarifs.append((IDcategorie_tarif, track_tarif))
 
             # Si plusieurs catégories
             if self.parent.dict_valeurs["has_categories_tarifs"] == True :
@@ -332,23 +338,23 @@ class Page_conclusion(Assistant.Page):
                 options = None
 
             # Tarifs
-            listeTarifs = []
-            for IDcategorie_tarif, track_tarif in listeCategoriesEtTarifs :
-                track_tarif.MAJ({
-                    "IDactivite": IDactivite,
-                    "IDnom_tarif": IDnom_tarif,
-                    "type": "FORFAIT",
-                    "date_debut" : self.parent.dict_valeurs["date_debut"],
-                    "categories_tarifs" : str(IDcategorie_tarif),
-                    "forfait_saisie_manuelle" : 0,
-                    "forfait_saisie_auto" : 1,
-                    "forfait_suppression_auto" : 1,
-                    "label_prestation" : "nom_tarif",
-                    "options": options,
-                    })
-                listeTarifs.append(track_tarif)
-
-            self.parent.Sauvegarde_tarifs(DB, listeTarifs)
+            if self.parent.dict_valeurs["gratuit"] == False:
+                listeTarifs = []
+                for IDcategorie_tarif, track_tarif in listeCategoriesEtTarifs :
+                    track_tarif.MAJ({
+                        "IDactivite": IDactivite,
+                        "IDnom_tarif": IDnom_tarif,
+                        "type": "FORFAIT",
+                        "date_debut" : self.parent.dict_valeurs["date_debut"],
+                        "categories_tarifs" : str(IDcategorie_tarif),
+                        "forfait_saisie_manuelle" : 0,
+                        "forfait_saisie_auto" : 1,
+                        "forfait_suppression_auto" : 1,
+                        "label_prestation" : "nom_tarif",
+                        "options": options,
+                        })
+                    listeTarifs.append(track_tarif)
+                self.parent.Sauvegarde_tarifs(DB, listeTarifs)
 
             DB.Close()
 
