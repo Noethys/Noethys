@@ -776,7 +776,11 @@ class Case():
         self.MAJ_facturation() 
         
     def AppliquerForfaitCredit(self, event=None):
-        self.grid.GetGrandParent().panel_forfaits.Ajouter(date_debut=self.date, IDfamille=self.IDfamille)
+        if self.grid.GetGrandParent().GetName() == "grille":
+            parent = self.grid.GetGrandParent()
+        else:
+            parent = self.grid.GetGrandParent().GetParent()
+        parent.panel_forfaits.Ajouter(date_debut=self.date, IDfamille=self.IDfamille)
         
     def GetInfosPlaces(self):
         if (self.IDunite in self.grid.dictUnitesRemplissage) == False :
