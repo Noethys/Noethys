@@ -130,6 +130,7 @@ class Questionnaires():
             else :
                 texteReponse = _(u"Non")
         if filtre == "date" : texteReponse = DateEngEnDateDD(reponse)
+        if filtre == "decimal": texteReponse = reponse
         return texteReponse
 
 
