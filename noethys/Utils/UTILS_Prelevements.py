@@ -16,7 +16,7 @@ import string
 import six
 from xml.dom.minidom import Document
 from six.moves.urllib.request import urlretrieve
-from Utils import UTILS_Fichiers
+from Utils import UTILS_Fichiers, UTILS_Texte
 import zipfile
 from lxml import etree
 
@@ -577,8 +577,7 @@ def GetXMLSepa(dictDonnees):
             # Nm
             Nm = doc.createElement("Nm")
             Dbtr.appendChild(Nm)
-            transaction_debiteur = transaction_debiteur.replace(u"ç", u"c")
-            Nm.appendChild(doc.createTextNode(transaction_debiteur[:70]))
+            Nm.appendChild(doc.createTextNode(UTILS_Texte.Supprime_accent(transaction_debiteur[:70])))
 
             # DbtrAcct
             DbtrAcct = doc.createElement("DbtrAcct")
