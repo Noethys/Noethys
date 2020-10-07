@@ -69,7 +69,7 @@ class Page_groupes(Assistant.Page):
     def __init__(self, parent):
         Assistant.Page.__init__(self, parent)
         self.Ajouter_rubrique(titre=_(u"Groupes"))
-        self.Ajouter_question(code="has_groupes", titre=_(u"Cette activité est-elle composée de plusieurs groupes ou plusieurs séances ?"), commentaire=_(u"Exemple : Groupe du 'lundi soir', 'jeudi 18h15', 'Séniors', etc..."), ctrl=Assistant.CTRL_Oui_non, defaut=False)
+        self.Ajouter_question(code="has_groupes", titre=_(u"Cette activité est-elle composée de plusieurs groupes ou plusieurs séances ?"), commentaire=_(u"Exemples : Groupe du 'lundi soir', 'jeudi 18h15', 'Séniors', etc..."), ctrl=Assistant.CTRL_Oui_non, defaut=False)
         self.Ajouter_question(code="has_consommations", titre=_(u"Souhaitez-vous pouvoir faire du pointage à chaque séance ?"), commentaire=_(u"Noethys enregistrera alors des consommations pour chaque séance. Si vous ne savez pas, sélectionnez Non."), ctrl=Assistant.CTRL_Oui_non, defaut=False)
 
     def Suite(self):
