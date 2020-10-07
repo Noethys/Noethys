@@ -188,6 +188,7 @@ class CTRL_Choix_lignes(wx.Choice):
         for public in ("famille", "individu") :
             for dictTemp in q.GetQuestions(public) :
                 label = _(u"Question %s. : %s") % (public[:3], dictTemp["label"])
+                if len(label) > 45: label = label[:45] + "..."
                 code = "question_%s_%d" % (public, dictTemp["IDquestion"])
                 self.listeDonnees.append({"label" : label, "code" : code})
 
