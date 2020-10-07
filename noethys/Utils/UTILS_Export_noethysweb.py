@@ -74,13 +74,13 @@ class Table():
                     if hasattr(self, nom_champ):
                         valeur = getattr(self, nom_champ)(valeur=valeur)
 
-                    # Changement du type de valeur
-                    if nom_champ in self.dict_types_champs:
-                        valeur = self.dict_types_champs[nom_champ](valeur)
-
                     # Changement du nom du champ
                     if nom_champ in self.nouveaux_noms_champs:
                         nom_champ = self.nouveaux_noms_champs[nom_champ]
+
+                    # Changement du type de valeur
+                    if nom_champ in self.dict_types_champs:
+                        valeur = self.dict_types_champs[nom_champ](valeur)
 
                     # Si image
                     if valeur and nom_champ in self.champs_images:
@@ -238,7 +238,7 @@ class Export_all(Export):
 
         self.Ajouter(Table_classes(self, nom_table="classes", nouveau_nom_table="core.Classe", nouveaux_noms_champs={"IDecole": "ecole"}))
 
-        self.Ajouter(Table(self, nom_table="types_cotisations", nouveau_nom_table="core.TypeCotisation", exclure_champs=["defaut"], dict_types_champs={"carte": bool}))
+        self.Ajouter(Table(self, nom_table="types_cotisations", nouveau_nom_table="core.TypeCotisation", dict_types_champs={"carte": bool, "defaut": bool}))
 
         self.Ajouter(Table(self, nom_table="unites_cotisations", nouveau_nom_table="core.UniteCotisation", nouveaux_noms_champs={"IDtype_cotisation": "type_cotisation"}, dict_types_champs={"defaut": bool}))
 
@@ -303,11 +303,12 @@ class Export_all(Export):
 
         self.Ajouter(Table_familles(self, nom_table="familles", nouveau_nom_table="core.Famille",
                             nouveaux_noms_champs={"IDcaisse": "caisse", "code_comptable": "code_compta"},
-                           exclure_champs=["IDcompte_payeur", "internet_actif", "internet_identifiant", "internet_mdp", "prelevement_activation", "prelevement_etab", "prelevement_guichet", "prelevement_numero", "prelevement_cle",
-                                           "prelevement_banque", "prelevement_individu", "prelevement_nom", "prelevement_rue", "prelevement_cp", "prelevement_ville", "email_factures", "email_recus", "email_depots",
-                                           "prelevement_cle_iban", "prelevement_iban", "prelevement_bic", "prelevement_reference_mandat", "prelevement_date_mandat", "prelevement_memo", "titulaire_helios", "idtiers_helios",
-                                           "natidtiers_helios", "reftiers_helios", "cattiers_helios", "natjur_helios", "autre_adresse_facturation"],
-                           dict_types_champs={"autorisation_cafpro": bool}))
+                           exclure_champs=["IDcompte_payeur", "prelevement_activation", "prelevement_etab", "prelevement_guichet", "prelevement_numero", "prelevement_cle",
+                                           "prelevement_banque", "prelevement_individu", "prelevement_nom", "prelevement_rue", "prelevement_cp", "prelevement_ville",
+                                           "prelevement_cle_iban", "prelevement_iban", "prelevement_bic", "prelevement_reference_mandat", "prelevement_date_mandat", "prelevement_memo",
+                                           "autre_adresse_facturation"],
+                            nouveaux_champs=["email_factures_adresses", "email_recus_adresses", "email_depots_adresses"],
+                           dict_types_champs={"autorisation_cafpro": bool, "internet_actif": bool}))
 
         self.Ajouter(Table(self, nom_table="evenements", nouveau_nom_table="core.Evenement", nouveaux_noms_champs={"IDactivite": "activite", "IDgroupe": "groupe", "IDunite": "unite"}))
 
@@ -343,12 +344,12 @@ class Export_all(Export):
         self.Ajouter(Table(self, nom_table="pieces", nouveau_nom_table="core.Piece", nouveaux_noms_champs={"IDindividu": "individu", "IDfamille": "famille", "IDtype_piece": "type_piece"}))
 
         self.Ajouter(Table_factures(self, nom_table="factures", nouveau_nom_table="core.Facture", nouveaux_noms_champs={"IDfamille": "famille", "IDregie": "regie", "IDlot": "lot", "IDprefixe": "prefixe"},
-                            exclure_champs=["IDcompte_payeur", "IDutilisateur", "etat"],
+                            exclure_champs=["IDcompte_payeur", "IDutilisateur", "etat", "mention1", "mention2", "mention3"],
                             nouveaux_champs=["famille"]))
 
         self.Ajouter(Table_prestations(self, nom_table="prestations", nouveau_nom_table="core.Prestation", nouveaux_noms_champs={"IDactivite": "activite", "IDtarif": "tarif", "IDfacture": "facture", "IDfamille": "famille",
                            "IDindividu": "individu", "IDcategorie_tarif": "categorie_tarif", "code_comptable": "code_compta"},
-                           exclure_champs=["IDcompte_payeur", "forfait", "forfait_date_debut", "forfait_date_fin", "reglement_frais", "IDcontrat", "date_valeur", "IDdonnee"]))
+                           exclure_champs=["IDcompte_payeur", "forfait_date_debut", "forfait_date_fin", "reglement_frais", "IDcontrat", "IDdonnee"]))
 
         self.Ajouter(Table(self, nom_table="depots_cotisations", nouveau_nom_table="core.DepotCotisations", dict_types_champs={"verrouillage": bool}, nouveaux_noms_champs={"IDdepot_cotisation": "iddepot"})),
 
@@ -417,6 +418,16 @@ class Export_all(Export):
                                             dict_types_champs={"defaut": bool},
                                             exclure_champs=["IDadresse", "texte_xml"],
                                             nouveaux_champs=["html"]))
+
+        self.Ajouter(Table(self, nom_table="liens", nouveau_nom_table="core.Lien", dict_types_champs={"responsable": bool},
+                                            nouveaux_noms_champs={"IDfamille": "famille", "IDindividu_sujet": "individu_sujet", "IDindividu_objet": "individu_objet",
+                                                                  "IDtype_lien": "idtype_lien", "IDautorisation": "autorisation"})),
+
+        self.Ajouter(Table(self, nom_table="adresses_mail", nouveau_nom_table="core.AdresseMail", dict_types_champs={"use_ssl": bool, "defaut": bool, "use_tls": bool},
+                                            nouveaux_noms_champs={"smtp": "hote", "connexionssl": "use_ssl", "startTLS": "use_tls"},
+                                            exclure_champs=["connexionAuthentifiee"])),
+
+        self.Ajouter(Table(self, nom_table="contacts", nouveau_nom_table="core.Contact")),
 
         self.DB.Close()
         self.Finaliser()
@@ -515,6 +526,12 @@ class Table_tarifs(Table):
                 liste_caisses.append(int(IDcaisse))
         return liste_caisses
 
+    def etats(self, valeur=None):
+        if valeur:
+            valeur = valeur.replace(";", ",")
+        return valeur
+
+
 class Table_combi_tarifs(Table):
     def unites(self, data={}):
         """ Champ ManyToMany"""
@@ -540,6 +557,32 @@ class Table_familles(Table):
         if valeur and valeur in self.liste_individus:
             return valeur
         return None
+
+    def email_factures(self, valeur=None):
+        if valeur:
+            return True
+        return False
+
+    def email_recus(self, valeur=None):
+        if valeur:
+            return True
+        return False
+
+    def email_depots(self, valeur=None):
+        if valeur:
+            return True
+        return False
+
+    def email_factures_adresses(self, data={}):
+        return data["email_factures"]
+
+    def email_recus_adresses(self, data={}):
+        return data["email_recus"]
+
+    def email_depots_adresses(self, data={}):
+        return data["email_depots"]
+
+
 
 
 class Table_individus(Table):
