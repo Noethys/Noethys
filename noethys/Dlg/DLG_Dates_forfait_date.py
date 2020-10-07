@@ -49,14 +49,18 @@ def DateEngEnDateDD(dateEng):
 def hex_to_rgb(value):
     value = value.lstrip('#')
     lv = len(value)
-    return tuple(int(value[i:i+lv/3], 16) for i in range(0, lv, lv/3))
+    return tuple(int(value[i:i+lv//3], 16) for i in range(0, lv, lv//3))
 
 def CreationImage(largeur, hauteur, couleur=None):
     """ couleur peut être RGB ou HEXA """
     if type(couleur) == str : r, v, b = hex_to_rgb(couleur)
     if type(couleur) == tuple : r, v, b = couleur
-    bmp = wx.EmptyImage(largeur, hauteur, True)
-    bmp.SetRGBRect((0, 0, largeur, hauteur), r, v, b)
+    if 'phoenix' in wx.PlatformInfo:
+        bmp = wx.Image(largeur, hauteur, True)
+        bmp.SetRGB((0, 0, largeur, hauteur), r, v, b)
+    else:
+        bmp = wx.EmptyImage(largeur, hauteur, True)
+        bmp.SetRGBRect((0, 0, largeur, hauteur), r, v, b)
     return bmp.ConvertToBitmap()
 
 
