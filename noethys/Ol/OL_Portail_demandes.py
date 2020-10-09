@@ -63,9 +63,11 @@ class Track(object):
             if self.IDfamille in dictTitulaires :
                 self.nom = dictTitulaires[self.IDfamille]["titulairesAvecCivilite"]
                 self.IDcompte_payeur = dictTitulaires[self.IDfamille]["IDcompte_payeur"]
+                self.ville = dictTitulaires[self.IDfamille]["adresse"]["ville"]
             else :
                 self.nom = "?"
                 self.IDcompte_payeur = None
+                self.ville = None
 
         if self.IDutilisateur != None :
             if self.IDutilisateur in dictUtilisateurs :
@@ -235,15 +237,16 @@ class ListView(GroupListView):
             "commentaire" : ColumnDefn(_(u"Commentaire"), "left", 200, "commentaire", typeDonnee="texte"),
             "email_date": ColumnDefn(_(u"Email"), "left", 95, "email_date", typeDonnee="date", stringConverter=FormateDate, imageGetter=GetImageEmail),
             "reponse" : ColumnDefn(_(u"Réponse"), "left", 200, "reponse", typeDonnee="texte"),
+            "ville": ColumnDefn(_(u"Ville de résidence"), "left", 150, "ville", typeDonnee="texte"),
             }
 
         # Regroupement
         if self.regroupement != None :
-            liste_colonnes = ["horodatage", "etat", "traitement_date", "categorie", "nom", "description", "periode", "commentaire", "email_date", "reponse"]
+            liste_colonnes = ["horodatage", "etat", "traitement_date", "categorie", "nom", "description", "periode", "commentaire", "email_date", "reponse", "ville"]
             self.SetAlwaysGroupByColumn(liste_colonnes.index(self.regroupement))
             self.SetShowGroups(True)
         else :
-            liste_colonnes = ["IDaction", "horodatage", "etat", "traitement_date", "categorie", "nom", "description", "periode", "commentaire", "email_date", "reponse"]
+            liste_colonnes = ["IDaction", "horodatage", "etat", "traitement_date", "categorie", "nom", "description", "periode", "commentaire", "email_date", "reponse", "ville"]
             self.SetShowGroups(False)
         self.useExpansionColumn = False
         self.showItemCounts = False
