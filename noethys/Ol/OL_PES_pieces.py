@@ -87,6 +87,8 @@ class Track(object):
             self.natidtiers_helios = donnees["dictAutresDonnees"]["natidtiers_helios"]
             if self.natidtiers_helios in (9999, None) :
                 self.natidtiers_helios = ""
+            else:
+                self.natidtiers_helios = "0%d" % self.natidtiers_helios
         else :
             self.natidtiers_helios = ""
         if "reftiers_helios" in donnees["dictAutresDonnees"] :
