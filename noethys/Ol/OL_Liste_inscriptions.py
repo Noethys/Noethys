@@ -16,7 +16,6 @@ import wx
 from Ctrl import CTRL_Bouton_image
 import GestionDB
 import datetime
-import decimal
 import FonctionsPerso
 
 from Utils import UTILS_Titulaires
@@ -28,7 +27,7 @@ DICT_CIVILITES = Civilites.GetDictCivilites()
 
 from Utils import UTILS_Config
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
-
+from Utils.UTILS_Decimal import FloatToDecimal as FloatToDecimal
 DICT_INFOS_INDIVIDUS = {}
 
 from Utils import UTILS_Interface
@@ -191,25 +190,27 @@ class ListView(GroupListView):
         dictFacturation = {}
 
         # Récupère les prestations
+        condition = ("WHERE IDactivite=%d" % self.IDactivite) if self.IDactivite != 0 else ""
         req = """SELECT IDfamille, IDindividu, SUM(montant)
         FROM prestations
-        WHERE IDactivite=%d
+        %s
         GROUP BY IDfamille, IDindividu
-        ;""" % self.IDactivite
+        ;""" % condition
         DB.ExecuterReq(req)
         listePrestations = DB.ResultatReq()
         for IDfamille, IDindividu, total_prestations in listePrestations :
             if total_prestations == None :
                 total_prestations = 0.0
             dictFacturation[(IDfamille, IDindividu)] = {"prestations":total_prestations, "ventilation":0.0}
-        
+
         # Récupère la ventilation
+        condition = ("WHERE prestations.IDactivite=%d" % self.IDactivite) if self.IDactivite != 0 else ""
         req = """SELECT IDfamille, IDindividu, SUM(ventilation.montant)
         FROM ventilation
         LEFT JOIN prestations ON prestations.IDprestation = ventilation.IDprestation
-        WHERE prestations.IDactivite=%d
+        %s
         GROUP BY IDfamille, IDindividu
-        ;""" % self.IDactivite
+        ;""" % condition
         DB.ExecuterReq(req)
         listeVentilations = DB.ResultatReq()
         for IDfamille, IDindividu, total_ventilation in listeVentilations :
@@ -288,15 +289,15 @@ class ListView(GroupListView):
                 dictTemp["ville_resid"] = DICT_INFOS_INDIVIDUS[adresse_auto]["ville_resid"]
             
             # Facturation
-            totalFacture = decimal.Decimal(str(0.0))
-            totalRegle = decimal.Decimal(str(0.0))
-            totalSolde = decimal.Decimal(str(0.0))
+            totalFacture = FloatToDecimal(0.0)
+            totalRegle = FloatToDecimal(0.0)
+            totalSolde = FloatToDecimal(0.0)
             key = (dictTemp["IDfamille"], dictTemp["IDindividu"])
             if key in dictFacturation :
-                totalFacture = decimal.Decimal(str(dictFacturation[key]["prestations"]))
-                if totalFacture == None : totalFacture = decimal.Decimal(str(0.0))
-                totalRegle = decimal.Decimal(str(dictFacturation[key]["ventilation"]))
-                if totalRegle == None : totalRegle = decimal.Decimal(str(0.0))
+                totalFacture = FloatToDecimal(dictFacturation[key]["prestations"])
+                if totalFacture == None : totalFacture = FloatToDecimal(0.0)
+                totalRegle = FloatToDecimal(dictFacturation[key]["ventilation"])
+                if totalRegle == None : totalRegle = FloatToDecimal(0.0)
                 totalSolde = totalFacture - totalRegle
             dictTemp["totalFacture"] = totalFacture
             dictTemp["totalRegle"] = totalRegle
@@ -330,7 +331,7 @@ class ListView(GroupListView):
         def GetImageVentilation(track):
             if track.totalFacture == track.totalRegle :
                 return self.imgVert
-            if track.totalRegle == 0.0 or track.totalRegle == None :
+            if track.totalRegle == FloatToDecimal(0.0) or track.totalRegle == None :
                 return self.imgRouge
             if track.totalRegle < track.totalFacture :
                 return self.imgOrange
@@ -345,10 +346,10 @@ class ListView(GroupListView):
             return u"%.2f %s" % (montant, SYMBOLE)
 
         def FormateSolde(montant):
-            if montant == None : decimal.Decimal("0.0")
-            if montant == decimal.Decimal("0.0") :
+            if montant == None : FloatToDecimal(0.0)
+            if montant == FloatToDecimal(0.0):
                 return u"%.2f %s" % (montant, SYMBOLE)
-            elif montant > decimal.Decimal(str("0.0")) :
+            elif montant > FloatToDecimal(0.0):
                 return u"- %.2f %s" % (montant, SYMBOLE)
             else:
                 return u"+ %.2f %s" % (montant, SYMBOLE)
