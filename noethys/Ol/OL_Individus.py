@@ -725,6 +725,8 @@ class ListView(FastObjectListView):
             pass
 
     def RechercherSiDlgOuverte(self, widget=None):
+        if not widget:
+            return False
         for child in widget.GetChildren():
             if "wxDialog" in child.__str__():
                 return True

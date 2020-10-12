@@ -2454,7 +2454,10 @@ class AbstractVirtualObjectListView(ObjectListView):
         # We have to keep a reference to the ListItemAttr or the garbage collector
         # will clear it up immeditately, before the ListCtrl has time to
         # process it.
-        self.listItemAttr = wx.ListItemAttr()
+        try:
+            self.listItemAttr = wx.ItemAttr()
+        except:
+            self.listItemAttr = wx.ListItemAttr()
         self._FormatOneItem(
             self.listItemAttr,
             itemIdx,
@@ -3088,8 +3091,10 @@ class GroupListView(FastObjectListView):
         """
         Return the display attributes that should be used for the given row
         """
-        self.listItemAttr = wx.ListItemAttr()
-
+        try:
+            self.listItemAttr = wx.ItemAttr()
+        except:
+            self.listItemAttr = wx.ListItemAttr()
         modelObject = self.innerList[itemIdx]
 
         if modelObject is None:
