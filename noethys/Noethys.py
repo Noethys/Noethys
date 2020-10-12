@@ -988,7 +988,8 @@ class MainFrame(wx.Frame):
                     "-",
                     {"code" : "traitement_lot_conso", "label" : _(u"Traitement par lot"), "infobulle" : _(u"Traitement par lot"), "image" : "Images/16x16/Calendrier_modification.png", "action" : self.On_conso_traitement_lot},
                     "-",
-                    {"code" : "liste_attente", "label" : _(u"Liste d'attente"), "infobulle" : _(u"Liste d'attente"), "image" : "Images/16x16/Liste_attente.png", "action" : self.On_conso_attente},
+                {"code" : "liste_detail_consommations", "label": _(u"Liste détaillée des consommations"), "infobulle": _(u"Liste détaillée des consommations"), "image": "Images/16x16/Calendrier.png", "action": self.On_conso_liste_detail_conso},
+                {"code" : "liste_attente", "label" : _(u"Liste d'attente"), "infobulle" : _(u"Liste d'attente"), "image" : "Images/16x16/Liste_attente.png", "action" : self.On_conso_attente},
                     {"code" : "liste_refus", "label" : _(u"Liste des places refusées"), "infobulle" : _(u"Liste des places refusées"), "image" : "Images/16x16/Places_refus.png", "action" : self.On_conso_refus},
                     {"code" : "liste_absences", "label" : _(u"Liste des absences"), "infobulle" : _(u"Liste des absences"), "image" : "Images/16x16/absenti.png", "action" : self.On_conso_absences},
                     "-",
@@ -3269,7 +3270,14 @@ class MainFrame(wx.Frame):
         dlg.ShowModal() 
         dlg.Destroy()
         self.ctrl_remplissage.MAJ()
-        
+
+    def On_conso_liste_detail_conso(self, event):
+        from Dlg import DLG_Liste_consommations
+        dlg = DLG_Liste_consommations.Dialog(self)
+        dlg.ShowModal()
+        dlg.Destroy()
+        self.ctrl_remplissage.MAJ()
+
     def On_conso_attente(self, event):
         self.ctrl_remplissage.OuvrirListeAttente() 
 
