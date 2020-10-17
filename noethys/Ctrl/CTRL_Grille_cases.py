@@ -408,7 +408,8 @@ class Case():
                 IDprestation = conso.IDprestation
                 listeEtiquettes.extend(conso.etiquettes)
                 if IDprestation in self.grid.dictPrestations :
-                    if self.grid.dictPrestations[IDprestation]["IDfacture"] != None :
+                    prestation = self.grid.dictPrestations[IDprestation]
+                    if prestation["IDfacture"] and not prestation["forfait_date_debut"]:
                         nomUnite = self.grid.dictUnites[self.IDunite]["nom"]
                         dateComplete = UTILS_Dates.DateComplete(self.date)
                         if self.IDindividu in self.grid.dictInfosIndividus :
@@ -938,8 +939,8 @@ class Case():
 
         # Regarde si la prestation apparaît déjà sur une facture
         if conso.IDprestation in self.grid.dictPrestations :
-            IDfacture = self.grid.dictPrestations[conso.IDprestation]["IDfacture"]
-            if IDfacture != None :
+            prestation = self.grid.dictPrestations[conso.IDprestation]
+            if prestation["IDfacture"] and not prestation["forfait_date_debut"]:
                 dlg = wx.MessageDialog(self.grid, _(u"La prestation correspondant à cette consommation apparaît déjà sur une facture.\n\nIl est donc impossible de la modifier ou de la supprimer."), _(u"Consommation verrouillée"), wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
                 dlg.Destroy()
@@ -1576,8 +1577,8 @@ class CaseStandard(Case):
 
         # Vérifie si prestation correspondante déjà facturée
         if self.IDprestation in self.grid.dictPrestations :
-            IDfacture = self.grid.dictPrestations[self.IDprestation]["IDfacture"]
-            if IDfacture != None :
+            prestation = self.grid.dictPrestations[self.IDprestation]
+            if prestation["IDfacture"] and not prestation["forfait_date_debut"]:
                 changementPossible = True
                 if etat in ("reservation", "present", "absenti") and ancienEtat in ("attente", "refus", "absentj") : 
                     changementPossible = False
@@ -1929,8 +1930,8 @@ class CaseMultihoraires(Case):
 
         # Vérifie si prestation correspondante déjà facturée
         if conso.IDprestation in self.grid.dictPrestations :
-            IDfacture = self.grid.dictPrestations[conso.IDprestation]["IDfacture"]
-            if IDfacture != None :
+            prestation = self.grid.dictPrestations[conso.IDprestation]
+            if prestation["IDfacture"] and not prestation["forfait_date_debut"]:
                 changementPossible = True
                 if etat in ("reservation", "present", "absenti") and ancienEtat in ("attente", "refus", "absentj") : 
                     changementPossible = False
@@ -2747,8 +2748,8 @@ class CaseEvenement(Case):
 
         # Vérifie si prestation correspondante déjà facturée
         if conso.IDprestation in self.grid.dictPrestations:
-            IDfacture = self.grid.dictPrestations[conso.IDprestation]["IDfacture"]
-            if IDfacture != None:
+            prestation = self.grid.dictPrestations[conso.IDprestation]
+            if prestation["IDfacture"] and not prestation["forfait_date_debut"]:
                 changementPossible = True
                 if etat in ("reservation", "present", "absenti") and ancienEtat in ("attente", "refus", "absentj"):
                     changementPossible = False
