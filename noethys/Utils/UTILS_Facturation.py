@@ -193,7 +193,8 @@ class Facturation():
         label, prestations.montant_initial, prestations.montant, prestations.tva, 
         prestations.IDactivite, activites.nom, activites.abrege,
         prestations.IDtarif, noms_tarifs.nom, categories_tarifs.nom, IDfacture, 
-        prestations.IDindividu, prestations.IDfamille
+        prestations.IDindividu, prestations.IDfamille,
+        forfait_date_debut, forfait_date_fin
         FROM prestations
         LEFT JOIN activites ON prestations.IDactivite = activites.IDactivite
         LEFT JOIN tarifs ON prestations.IDtarif = tarifs.IDtarif
@@ -253,7 +254,7 @@ class Facturation():
         else :
             date_min = datetime.date(9999, 12, 31)
             date_max = datetime.date(1, 1, 1)
-            for IDprestation, IDcompte_payeur, date, categorie, label, montant_initial, montant, tva, IDactivite, nomActivite, abregeActivite, IDtarif, nomTarif, nomCategorieTarif, IDfacture, IDindividu, IDfamille in listePrestations :
+            for IDprestation, IDcompte_payeur, date, categorie, label, montant_initial, montant, tva, IDactivite, nomActivite, abregeActivite, IDtarif, nomTarif, nomCategorieTarif, IDfacture, IDindividu, IDfamille, forfait_date_debut, forfait_date_fin in listePrestations :
                 if dictFactures[IDfacture]["date_debut"] < date_min :
                     date_min = dictFactures[IDfacture]["date_debut"]
                 if dictFactures[IDfacture]["date_fin"] > date_max :
@@ -278,7 +279,8 @@ class Facturation():
         label, prestations.montant, 
         prestations.IDactivite, activites.nom, activites.abrege,
         prestations.IDtarif, noms_tarifs.nom, categories_tarifs.nom, IDfacture, 
-        prestations.IDindividu, prestations.IDfamille
+        prestations.IDindividu, prestations.IDfamille,
+        forfait_date_debut, forfait_date_fin
         FROM prestations
         LEFT JOIN activites ON prestations.IDactivite = activites.IDactivite
         LEFT JOIN tarifs ON prestations.IDtarif = tarifs.IDtarif
@@ -405,7 +407,7 @@ class Facturation():
         num_facture = 0
         dictComptes = {}
         dictComptesPayeursFactures = {}
-        for IDprestation, IDcompte_payeur, date, categorie, label, montant_initial, montant, tva, IDactivite, nomActivite, abregeActivite, IDtarif, nomTarif, nomCategorieTarif, IDfacture, IDindividu, IDfamille in listePrestations :
+        for IDprestation, IDcompte_payeur, date, categorie, label, montant_initial, montant, tva, IDactivite, nomActivite, abregeActivite, IDtarif, nomTarif, nomCategorieTarif, IDfacture, IDindividu, IDfamille, forfait_date_debut, forfait_date_fin in listePrestations :
             montant = FloatToDecimal(montant) 
             
             if (IDcompte_payeur in dictComptesPayeursFactures) == False :
@@ -635,7 +637,7 @@ class Facturation():
                 "montant_initial" : montant_initial, "montant" : montant, "tva" : tva, 
                 "IDtarif" : IDtarif, "nomTarif" : nomTarif, "nomCategorieTarif" : nomCategorieTarif, 
                 "montant_ventilation" : montant_ventilation, "listeDatesConso" : listeDates,
-                "deductions" : deductions,
+                "deductions" : deductions, "forfait_date_debut": UTILS_Dates.DateEngEnDateDD(forfait_date_debut), "forfait_date_fin": UTILS_Dates.DateEngEnDateDD(forfait_date_fin),
                 }
 
             dictComptes[ID]["individus"][IDindividu]["activites"][IDactivite]["presences"][date]["unites"].append(dictPrestation)
@@ -675,7 +677,7 @@ class Facturation():
             dictComptes[ID]["{TOTAL_DEDUCTIONS}"] = u"%.02f %s" % (totalDeductions, SYMBOLE)
 
         # Intégration du REPORT des anciennes prestations NON PAYEES
-        for IDprestation, IDcompte_payeur, date, categorie, label, montant, IDactivite, nomActivite, abregeActivite, IDtarif, nomTarif, nomCategorieTarif, IDfacture, IDindividu, IDfamille in listeReports :
+        for IDprestation, IDcompte_payeur, date, categorie, label, montant, IDactivite, nomActivite, abregeActivite, IDtarif, nomTarif, nomCategorieTarif, IDfacture, IDindividu, IDfamille, forfait_date_debut, forfait_date_fin in listeReports :
             montant = FloatToDecimal(montant) 
             
             if IDprestation in dictVentilationReports :
