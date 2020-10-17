@@ -171,7 +171,7 @@ def GetDictMembres(DB, dictParametres):
         WHERE inscriptions.statut='ok' AND IDactivite IN %s
         GROUP BY comptes_payeurs.IDfamille, inscriptions.IDindividu
         ;""" % conditionsActivites
-        
+
     DB.ExecuterReq(req)
     listeDonnees = DB.ResultatReq()
     if len(listeDonnees) == 0 : 
