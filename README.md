@@ -40,6 +40,7 @@ rechercher et installer les bibliothèques suivantes.
 - Psutil (https://pypi.python.org/pypi/psutil)
 - Paramiko (https://pypi.python.org/pypi/paramiko)
 - Lxml (https://pypi.python.org/pypi/lxml)
+- pystrich (https://pypi.org/project/pyStrich/)
 
 
 Dépendances pour Linux
@@ -66,6 +67,7 @@ Dépendances pour Linux
 - python-psutil (infos système)
 - python-paramiko (Prise en charge SSH)
 - python-lxml (Validation XSD des bordereaux PES)
+- python-pystrich (Génération de datamatrix)
 
 Ils s'installent depuis le terminal tout simplement avec la commande (**à exécuter si besoin avec sudo**):
 
