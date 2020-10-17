@@ -4326,6 +4326,9 @@ Merci pour votre participation !
 # -----------------------------------------------------------------------------------------------------------------
 
 class MyApp(wx.App):
+    # def InitLocale(self):
+    #     self.ResetLocale()
+
     def OnInit(self):
         # Adaptation pour rétrocompatibilité wx2.8
         if wx.VERSION < (2, 9, 0, 0) :

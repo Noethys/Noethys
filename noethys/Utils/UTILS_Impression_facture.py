@@ -21,7 +21,7 @@ from Dlg import DLG_Noedoc
 
 from Utils import UTILS_Config
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
-
+from Utils import UTILS_Dates
 from reportlab.platypus.doctemplate import PageTemplate, BaseDocTemplate, NextPageTemplate
 from reportlab.platypus import Paragraph, Spacer, Table, TableStyle, PageBreak
 from reportlab.platypus.flowables import ParagraphAndImage, Image
@@ -456,8 +456,10 @@ class Impression():
                                         
                                         if detail == 1 :
                                             dictRegroupement[labelkey]["base"] = dictRegroupement[labelkey]["total"] / dictRegroupement[labelkey]["nbre"]
- 
-                                        if len(listeDatesUnite) > 1 :
+
+                                        if dictPrestation.get("forfait_date_debut"):
+                                            dictRegroupement[labelkey]["dates_forfait"] = _(u"<font size=5>Du %s au %s</font>") % (UTILS_Dates.DateDDEnFr(dictPrestation["forfait_date_debut"]), UTILS_Dates.DateDDEnFr(dictPrestation["forfait_date_fin"]))
+                                        elif len(listeDatesUnite) > 1 :
                                             listeDatesUnite.sort()
                                             date_debut = listeDatesUnite[0]
                                             date_fin = listeDatesUnite[-1]
@@ -578,13 +580,18 @@ class Impression():
                                         listeIntitules.append(Paragraph(label, paraStyle)) 
                                         
                                         # Recherche si c'est un forfait
-                                        if len(listeDatesUnite) > 1 :
+                                        if dictPrestation.get("forfait_date_debut"):
+                                            label = _(u"<font size=5>Du %s au %s</font>") % (UTILS_Dates.DateDDEnFr(dictPrestation["forfait_date_debut"]), UTILS_Dates.DateDDEnFr(dictPrestation["forfait_date_fin"]))
+                                            listeIntitules.append(Paragraph(label, paraStyle))
+                                            listeMontantsTTC.append(Paragraph("&nbsp;", paraStyle))
+                                        elif len(listeDatesUnite) > 1 :
                                             listeDatesUnite.sort()
                                             date_debut = listeDatesUnite[0]
                                             date_fin = listeDatesUnite[-1]
                                             nbreDates = len(listeDatesUnite)
-                                            label = _(u"<BR/><font size=5>Du %s au %s soit %d jours</font>") % (DateEngFr(str(date_debut)), DateEngFr(str(date_fin)), nbreDates)
-                                            listeIntitules.append(Paragraph(label, paraStyle)) 
+                                            label = _(u"<font size=5>Du %s au %s soit %d jours</font>") % (DateEngFr(str(date_debut)), DateEngFr(str(date_fin)), nbreDates)
+                                            listeIntitules.append(Paragraph(label, paraStyle))
+                                            listeMontantsTTC.append(Paragraph("&nbsp;", paraStyle))
                                                                                 
                                         # TVA
                                         if activeTVA == True :

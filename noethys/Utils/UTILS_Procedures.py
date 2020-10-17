@@ -1286,5 +1286,5 @@ def A9012():
 if __name__ == u"__main__":
     app = wx.App(0)
     # TEST D'UNE PROCEDURE :
-    A9012()
+    A9122()
     app.MainLoop()

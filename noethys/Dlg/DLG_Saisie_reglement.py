@@ -1215,6 +1215,7 @@ class Dialog(wx.Dialog):
                             dlg1.Destroy()
                             #return False
 
+                        succes = False
                         try :
                             listeDonnees = [{"adresse" : adresse, "pieces" : [nomDoc,], "champs" : dictChamps,}]
                             from Dlg import DLG_Mailer
@@ -1224,8 +1225,6 @@ class Dialog(wx.Dialog):
                             dlg2.OnBoutonEnvoyer(None)
                             if len(dlg2.listeAnomalies) == 0 :
                                 succes = True
-                            else :
-                                succes = False
                             dlg2.Destroy()
                         except :
                             pass

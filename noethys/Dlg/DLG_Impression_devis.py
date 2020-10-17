@@ -834,7 +834,8 @@ class Dialog(wx.Dialog):
         prestations.IDtarif, noms_tarifs.nom, categories_tarifs.nom, IDfacture, 
         prestations.IDindividu, 
         individus.IDcivilite, individus.nom, individus.prenom, individus.date_naiss, 
-        SUM(ventilation.montant) AS montant_ventilation
+        SUM(ventilation.montant) AS montant_ventilation,
+        forfait_date_debut, forfait_date_fin
         FROM prestations
         LEFT JOIN ventilation ON prestations.IDprestation = ventilation.IDprestation
         LEFT JOIN activites ON prestations.IDactivite = activites.IDactivite
@@ -946,7 +947,7 @@ class Dialog(wx.Dialog):
         # Analyse et regroupement des données
         dictValeurs = {}
         listeActivitesUtilisees = []
-        for IDprestation, IDcompte_payeur, IDfamille, date, categorie, label, montant_initial, montant, tva, IDactivite, nomActivite, abregeActivite, IDtarif, nomTarif, nomCategorieTarif, IDfacture, IDindividu, IDcivilite, nomIndividu, prenomIndividu, dateNaiss, montant_ventilation in listePrestations :
+        for IDprestation, IDcompte_payeur, IDfamille, date, categorie, label, montant_initial, montant, tva, IDactivite, nomActivite, abregeActivite, IDtarif, nomTarif, nomCategorieTarif, IDfacture, IDindividu, IDcivilite, nomIndividu, prenomIndividu, dateNaiss, montant_ventilation, forfait_date_debut, forfait_date_fin in listePrestations :
             montant_initial = FloatToDecimal(montant_initial) 
             montant = FloatToDecimal(montant) 
             montant_ventilation = FloatToDecimal(montant_ventilation) 
@@ -1096,7 +1097,7 @@ class Dialog(wx.Dialog):
                 "montant_initial" : montant_initial, "montant" : montant, "tva" : tva, 
                 "IDtarif" : IDtarif, "nomTarif" : nomTarif, "nomCategorieTarif" : nomCategorieTarif, 
                 "montant_ventilation" : montant_ventilation, "listeDatesConso" : listeDates,
-                "deductions" : deductions,
+                "deductions" : deductions, "forfait_date_debut": UTILS_Dates.DateEngEnDateDD(forfait_date_debut), "forfait_date_fin": UTILS_Dates.DateEngEnDateDD(forfait_date_fin),
                 }
 
             dictValeurs[IDcompte_payeur]["individus"][IDindividu]["activites"][IDactivite]["presences"][date]["unites"].append(dictPrestation)
