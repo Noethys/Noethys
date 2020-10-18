@@ -1324,7 +1324,7 @@ class CTRL_Tableau(wx.Panel):
         label_produit = u"%s (%s)" % (self.dict_produits[barre.IDproduit]["nom"], self.dict_produits[barre.IDproduit]["nom_categorie"])
         periode = _(u"%s - %s") % (barre.date_debut.strftime("%d/%m/%Y %H:%M:%S"), barre.date_fin.strftime("%d/%m/%Y %H:%M:%S") if (barre.date_fin and barre.date_fin.year != 2999) else _(u"Illimitée"))
         texte_historique = _(u"Modification de la location ID%d : %s %s") % (barre.IDlocation, label_produit, periode)
-        UTILS_Historique.InsertActions([{"IDfamille": barre.IDfamille, "IDcategorie": 38, "action": texte_historique, }], DB=DB)
+        UTILS_Historique.InsertActions([{"IDfamille": barre.IDfamille, "IDcategorie": 38, "action": texte_historique, "IDdonnee": barre.IDlocation}], DB=DB)
         DB.Close()
 
     def Imprimer(self, event):

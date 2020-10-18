@@ -26,6 +26,7 @@ from Utils import UTILS_Historique
 from Dlg import DLG_Messagebox
 import GestionDB
 from Ol import OL_Locations_prestations
+from Ol import OL_Historique
 
 
 
@@ -123,6 +124,7 @@ class CTRL_Parametres(wx.Notebook):
         self.listePages = [
             {"code": "questionnaire", "ctrl": Page_Questionnaire(self, self.IDlocation), "label": _(u"Questionnaire"), "image": "Questionnaire.png"},
             {"code": "facturation", "ctrl": Page_Facturation(self, self.IDlocation), "label": _(u"Prestations"), "image": "Euro.png"},
+            {"code": "historique", "ctrl": Page_Historique(self, self.IDlocation), "label": _(u"Historique"), "image": "Historique.png"},
         ]
 
         # ImageList pour le NoteBook
@@ -273,6 +275,44 @@ class Page_Facturation(wx.Panel):
 
 
 
+
+class Page_Historique(wx.Panel):
+    def __init__(self, parent, IDlocation=None):
+        wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
+        self.parent = parent
+        self.IDlocation = IDlocation
+
+        if not IDlocation:
+            IDlocation = 0
+        self.ctrl_listview = OL_Historique.ListView(self, id=-1, IDdonnee=IDlocation, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
+        self.ctrl_listview.SetMinSize((50, 50))
+
+        # Layout
+        sizer_base = wx.BoxSizer(wx.VERTICAL)
+
+        grid_sizer_base = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
+        grid_sizer_base.Add(self.ctrl_listview, 0, wx.EXPAND, 0)
+        grid_sizer_base.AddGrowableCol(0)
+        grid_sizer_base.AddGrowableRow(0)
+
+        sizer_base.Add(grid_sizer_base, 1, wx.EXPAND | wx.ALL, 10)
+        self.SetSizer(sizer_base)
+        self.Layout()
+
+    def MAJ(self):
+        self.ctrl_listview.MAJ()
+
+    def Validation(self):
+        return True
+
+    def GetDonnees(self):
+        return {}
+
+    def SetDonnees(self, dictDonnees={}):
+        pass
+
+
+
 # -----------------------------------------------------------------------------------------------------------------
 
 class Dialog(wx.Dialog):
@@ -376,6 +416,7 @@ class Dialog(wx.Dialog):
             self.ctrl_produit.SetIDproduit(IDproduit)
 
         self.ctrl_parametres.GetPageAvecCode("questionnaire").ctrl_questionnaire.MAJ()
+        self.ctrl_parametres.GetPageAvecCode("historique").MAJ()
         self.OnCheckDateFin()
         self.OnCheckRecurrence()
 
@@ -803,12 +844,11 @@ class Dialog(wx.Dialog):
                 listeDonnees.append(("date_saisie", datetime.date.today()))
                 IDlocation = DB.ReqInsert("locations", listeDonnees)
                 texte_historique = _(u"Saisie de la location ID%d : %s %s") % (IDlocation, nom_produit, periode)
-                UTILS_Historique.InsertActions([{"IDfamille": IDfamille, "IDcategorie": 37, "action": texte_historique,}], DB=DB)
+                UTILS_Historique.InsertActions([{"IDfamille": IDfamille, "IDcategorie": 37, "action": texte_historique, "IDdonnee": IDlocation}], DB=DB)
             else:
-
                 DB.ReqMAJ("locations", listeDonnees, "IDlocation", IDlocation)
                 texte_historique = _(u"Modification de la location ID%d : %s %s") % (IDlocation, nom_produit, periode)
-                UTILS_Historique.InsertActions([{"IDfamille": IDfamille, "IDcategorie": 38, "action": texte_historique,}], DB=DB)
+                UTILS_Historique.InsertActions([{"IDfamille": IDfamille, "IDcategorie": 38, "action": texte_historique, "IDdonnee": IDlocation}], DB=DB)
 
             # Sauvegarde des prestations
             listeID = []

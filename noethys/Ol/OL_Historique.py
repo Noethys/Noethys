@@ -94,6 +94,7 @@ class ListView(FastObjectListView):
         self.IDindividu = kwds.pop("IDindividu", None)
         self.IDutilisateur = kwds.pop("IDutilisateur", None)
         self.IDcategorie = kwds.pop("IDcategorie", None)
+        self.IDdonnee = kwds.pop("IDdonnee", None)
         self.selectionID = None
         self.selectionTrack = None
         self.criteres = ""
@@ -122,6 +123,7 @@ class ListView(FastObjectListView):
         if self.IDindividu != None : listeCriteres.append("historique.IDindividu=%d" % self.IDindividu)
         if self.IDutilisateur != None : listeCriteres.append("historique.IDutilisateur=%d" % self.IDutilisateur)
         if self.IDcategorie != None : listeCriteres.append("historique.IDcategorie=%d" % self.IDcategorie)
+        if self.IDdonnee != None: listeCriteres.append("historique.IDdonnee=%d" % self.IDdonnee)
         if len(listeCriteres) == 0 :
             criteres = ""
         elif len(listeCriteres) == 1 :

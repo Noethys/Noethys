@@ -160,7 +160,7 @@ def Supprimer_location(parent, IDlocation=None):
             DB.ReqDEL("ventilation", "IDprestation", IDprestation)
         # Historique
         texte_historique = _(u"Suppression de la location ID%d : %s %s") % (dict_location["IDlocation"], dict_location["label_produit"], dict_location["periode"])
-        UTILS_Historique.InsertActions([{"IDfamille": dict_location["IDfamille"], "IDcategorie": 39, "action": texte_historique, }], DB=DB)
+        UTILS_Historique.InsertActions([{"IDfamille": dict_location["IDfamille"], "IDcategorie": 39, "action": texte_historique, "IDdonnee": dict_location["IDlocation"]}], DB=DB)
     DB.Close()
 
     return True
