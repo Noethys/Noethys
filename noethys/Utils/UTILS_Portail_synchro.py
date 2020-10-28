@@ -175,6 +175,7 @@ class Synchro():
         liste_lignes.append(Ecrit_ligne("PREFIXE_TABLES", self.dict_parametres["prefixe_tables"], type_valeur=str))
         liste_lignes.append(Ecrit_ligne("DEBUG", self.dict_parametres["mode_debug"], type_valeur=bool))
         liste_lignes.append(Ecrit_ligne("TALISMAN", self.dict_parametres["talisman"], type_valeur=bool))
+        liste_lignes.append(Ecrit_ligne("CAPTCHA", self.dict_parametres["captcha"], type_valeur=int))
 
         # Paramètres SMTP pour Flask-mail
         if self.dict_parametres["email_type_adresse"] > 0 :
