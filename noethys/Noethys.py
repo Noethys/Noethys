@@ -3796,8 +3796,11 @@ class MainFrame(wx.Frame):
         self.SetStatusText(_(u"Le fichier '%s' a été ouvert avec succès.") % nomFichier)  
         
         # Mémorise dans l'historique l'ouverture du fichier
-        UTILS_Historique.InsertActions([{"IDcategorie":1, "action":_(u"Ouverture du fichier %s") % nomFichier},])
-        
+        try:
+            UTILS_Historique.InsertActions([{"IDcategorie":1, "action":_(u"Ouverture du fichier %s") % nomFichier},])
+        except:
+            pass
+
         # Affiche les messages importants
         wx.CallLater(2000, self.AfficheMessagesOuverture)
 
