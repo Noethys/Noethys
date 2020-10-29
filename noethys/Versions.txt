@@ -1,4 +1,19 @@
-Version 1.2.8.0 (28/07/2020) :
+Version 1.2.8.2 (28/10/2020) :
+
+- Ajout du captcha dans Connecthys
+- Ajout des événements dans la synthèse des consommations
+- Ajout de la liste détaillée des consommations dans le menu Consommations
+- Ajout de la ville de résidence dans la liste des demandes du portail
+- Intégration des forfaits-crédits dans les demandes du portail
+- Amélioration de l'affichage des forfaits crédits dans les factures
+- Déblocage des consommations associées à des forfaits crédits facturés
+- Correction de nombres décimaux dans les exports Excel [David Gabison]
+- Correction des places prises des événements dans le tableau de bord
+- Correction de l'IDtiers dans le XML pour Hélios
+- Correction des accents dans les prélèvements
+- Correction de petits bugs
+
+Version 1.2.8.0 (12/08/2020) :
 
 - Finalisation des datamatrix
 - Ajout des mentions dans les factures
