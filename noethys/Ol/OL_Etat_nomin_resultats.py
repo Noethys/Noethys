@@ -118,12 +118,19 @@ def GetDictIndividus():
             dictTemp[nomChamp] = valeurs[index]
             
         # Infos sur la civilité
-        dictTemp["genre"] = dictCivilites[dictTemp["IDcivilite"]]["sexe"]
-        dictTemp["categorieCivilite"] = dictCivilites[dictTemp["IDcivilite"]]["categorie"]
-        dictTemp["civiliteLong"]  = dictCivilites[dictTemp["IDcivilite"]]["civiliteLong"]
-        dictTemp["civiliteAbrege"] = dictCivilites[dictTemp["IDcivilite"]]["civiliteAbrege"] 
-        dictTemp["nomImage"] = dictCivilites[dictTemp["IDcivilite"]]["nomImage"] 
-        
+        if dictTemp["IDcivilite"] != None and dictTemp["IDcivilite"] != "":
+            dictTemp["genre"] = dictCivilites[dictTemp["IDcivilite"]]["sexe"]
+            dictTemp["categorieCivilite"] = dictCivilites[dictTemp["IDcivilite"]]["categorie"]
+            dictTemp["civiliteLong"] = dictCivilites[dictTemp["IDcivilite"]]["civiliteLong"]
+            dictTemp["civiliteAbrege"] = dictCivilites[dictTemp["IDcivilite"]]["civiliteAbrege"]
+            dictTemp["nomImage"] = dictCivilites[dictTemp["IDcivilite"]]["nomImage"]
+        else:
+            dictTemp["genre"] = ""
+            dictTemp["categorieCivilite"] = ""
+            dictTemp["civiliteLong"] = ""
+            dictTemp["civiliteAbrege"] = ""
+            dictTemp["nomImage"] = None
+
         # Age
         if dictTemp["date_naiss"] == None :
             dictTemp["age"] = None

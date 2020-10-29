@@ -67,6 +67,7 @@ DICT_PROCEDURES = {
     "A9007" : _(u"Correction Module Custom 1"),
     "A9011" : _(u"Custom SMDH - Suppression inscriptions"),
     "A9012" : _(u"Custom SMDH - Saisie inscriptions"),
+    "A9038" : _(u"Mise à jour de l'historique des locations"),
 }
 
 
@@ -1283,8 +1284,31 @@ def A9012():
     EcritStatusbar("")
     DB.Close()
 
+def A9038():
+    """ Mise à jour de l'historique des locations : Ajout de l'IDdonnee """
+    import re
+    regex = re.compile(r"ID([0-9]+)")
+    DB = GestionDB.DB()
+    # Lecture des actions liées à des locations
+    req = """SELECT IDaction, action FROM historique
+    WHERE IDcategorie IN (37, 38, 39) AND IDdonnee IS NULL;"""
+    DB.ExecuterReq(req)
+    listeDonnees = DB.ResultatReq()
+    liste_modifications = []
+    for IDaction, action in listeDonnees:
+        IDlocation = int(regex.findall(action)[0])
+        liste_modifications.append((IDaction, IDlocation))
+    EcritStatusbar(u"%s actions de l'historique à modifier" % len(liste_modifications))
+    # Modification du IDdonnee dans l'historique
+    for IDaction, IDlocation in liste_modifications:
+        DB.ReqMAJ("historique", [("IDdonnee", IDlocation),], "IDaction", IDaction)
+    DB.Close()
+    EcritStatusbar("")
+
+
+
 if __name__ == u"__main__":
     app = wx.App(0)
     # TEST D'UNE PROCEDURE :
-    A9122()
+    A9038()
     app.MainLoop()

@@ -877,6 +877,7 @@ DB_DATA = {
                                     ("IDindividu", "INTEGER", u"ID de l'individu"),
                                     ("IDcategorie", "INTEGER", u"ID de la catégorie d'action"),
                                     ("action", "VARCHAR(500)", u"Action"),
+                                    ("IDdonnee", "INTEGER", u"Donnée associée à l'action"),
                                     ], # Historique
 
     "attestations":[           ("IDattestation", "INTEGER PRIMARY KEY AUTOINCREMENT", u"IDattestation"),

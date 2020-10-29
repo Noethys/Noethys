@@ -89,6 +89,7 @@ VALEURS_DEFAUT = {
     "secret_key" : GetSecretKey(),
     "mode_debug" : False,
     "talisman": True,
+    "captcha": 1,
     "crypter_transferts" : True,
     "image_identification" : "",
     "theme" : 0,
@@ -506,6 +507,13 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         propriete = wxpg.BoolProperty(label=_(u"Sécurité avancée"), name=nom, value=VALEURS_DEFAUT[nom])
         propriete.SetHelpString(_(u"Cochez cette case pour activer les paramètres de sécurité avancés"))
         propriete.SetAttribute("UseCheckbox", True)
+        self.Append(propriete)
+
+        # Captcha
+        nom = "captcha"
+        # propriete = wxpg.EnumProperty(label=_(u"Captcha"), labels=[_(u"Aucun"), _(u"Captcha par défaut"), _(u"Google Recaptcha")], values=[0, 1, 2], name=nom, value=VALEURS_DEFAUT[nom])
+        propriete = wxpg.EnumProperty(label=_(u"Captcha"), labels=[_(u"Aucun"), _(u"Captcha par défaut")], values=[0, 1], name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Choisissez un captcha pour la page de connexion afin de réduire l'impact des attaques automatisées de robots"))
         self.Append(propriete)
 
         # Gestion des mots de passe

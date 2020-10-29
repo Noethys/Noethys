@@ -71,12 +71,13 @@ def EnvoiEmailFamille(parent=None, IDfamille=None, nomDoc="", categorie="", list
     for adresse in listeAdresses :
         listeDonnees.append({
             "adresse" : adresse, 
-            "pieces" : liste_pieces,
+            # "pieces" : liste_pieces,
             "champs" : dictChamps,
             })
     from Dlg import DLG_Mailer
     dlg = DLG_Mailer.Dialog(parent, categorie=categorie, afficher_confirmation_envoi=visible)
     dlg.SetDonnees(listeDonnees, modificationAutorisee=True)
+    dlg.SetPiecesJointes(liste_pieces)
     if IDmodele == None :
         dlg.ChargerModeleDefaut()
     else :

@@ -1443,6 +1443,18 @@ class DB(GestionDB.DB):
 
         # =============================================================
 
+        versionFiltre = (1, 2, 8, 2)
+        if versionFichier < versionFiltre:
+            try:
+                self.AjoutChamp("historique", "IDdonnee", "INTEGER")
+                from Utils import UTILS_Procedures
+                UTILS_Procedures.A9038()
+            except Exception as err:
+                return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
+
+        # =============================================================
+
+
 
 
         return True
