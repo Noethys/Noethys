@@ -1181,7 +1181,7 @@ class Traitement():
         IDpaiement = self.track.IDpaiement
         #factures_ID = self.dict_parametres["factures_ID"]
         systeme_paiement = self.dict_parametres.get("systeme_paiement", u"Système inconnu")
-        IDtransaction = self.dict_parametres["IDtransaction"].split("_")[1]
+        IDtransaction = self.dict_parametres["IDtransaction"].split("_")[1] if "_" in self.dict_parametres["IDtransaction"] else self.dict_parametres["IDtransaction"]
         montant_reglement = float(self.dict_parametres["montant"])
         ventilation = self.track.ventilation
 
