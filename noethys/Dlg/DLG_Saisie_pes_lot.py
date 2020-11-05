@@ -1186,8 +1186,7 @@ class Dialog(wx.Dialog):
             return
 
         texte = u"""
-<CENTER><IMG SRC="%s">
-<BR><BR>
+<CENTER>
 <FONT SIZE=3>
 A partir du 28 juillet 2020, les collectivités qui génèrent un bordereau PES v2 (pour Hélios) doivent proposer à 
 leurs usagers un paiement possible par espèces ou par carte bancaire chez un buraliste agréé. Il existe deux conditions 
@@ -1198,10 +1197,10 @@ Pour découvrir comment adapter Noethys à cet usage, consultez la page d'informat
 <A HREF="https://noethys.com/index.php/actualites/264-paiement-des-factures-chez-le-buraliste">Paiement des factures Noethys chez le buraliste</A>.
 </FONT>
 </CENTER>
-""" % Chemins.GetStaticPath("Images/Special/Annonce_datamatrix.jpg")
+"""
 
         from Dlg import DLG_Message_html
-        dlg = DLG_Message_html.Dialog(self, texte=texte, titre=_(u"Information importante"), size=(510, 490), nePlusAfficher=True)
+        dlg = DLG_Message_html.Dialog(self, texte=texte, titre=_(u"Information importante"), size=(510, 290), nePlusAfficher=True)
         dlg.CenterOnScreen()
         dlg.ShowModal()
         nePlusAfficher = dlg.GetEtatNePlusAfficher()
