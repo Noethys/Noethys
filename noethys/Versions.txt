@@ -1,9 +1,10 @@
-Version 1.2.8.2 (28/10/2020) :
+Version 1.2.8.3 (05/11/2020) :
 
 - Ajout du captcha dans Connecthys
 - Ajout des événements dans la synthèse des consommations
 - Ajout de la liste détaillée des consommations dans le menu Consommations
 - Ajout de la ville de résidence dans la liste des demandes du portail
+- Ajout de nouveaux types de dates limites pour les réservations du portail
 - Intégration des forfaits-crédits dans les demandes du portail
 - Amélioration de l'affichage des forfaits crédits dans les factures
 - Déblocage des consommations associées à des forfaits crédits facturés
