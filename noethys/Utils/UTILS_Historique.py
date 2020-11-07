@@ -94,7 +94,11 @@ def InsertActions(listeActions=[], DB=None):
         req = u"INSERT INTO historique (date, heure, IDutilisateur, IDfamille, IDindividu, IDcategorie, action, IDdonnee) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
         if DB == None :
             DB = GestionDB.DB()
-            DB.Executermany(req, listeAjouts, commit=False)
+            try:
+                DB.Executermany(req, listeAjouts, commit=False)
+            except:
+                req = u"INSERT INTO historique (date, heure, IDutilisateur, IDfamille, IDindividu, IDcategorie, action) VALUES (?, ?, ?, ?, ?, ?, ?)"
+                DB.Executermany(req, listeAjouts[:-1], commit=False)
             DB.Commit()
             DB.Close()
         else :
