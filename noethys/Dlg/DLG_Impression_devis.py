@@ -87,7 +87,7 @@ class CTRL_Individus(wx.CheckListBox):
         self.SetListeChoix()
     
     def Importation(self):
-        listeIndividus = []
+        listeIndividus = [(_(u"Prestations familiales"), 0)]
         dictIndividus = {}
         if self.date_debut == None or self.date_fin == None :
             return listeIndividus, dictIndividus 
@@ -101,7 +101,7 @@ class CTRL_Individus(wx.CheckListBox):
         GROUP BY individus.IDindividu
         ;""" % (self.parent.IDfamille, self.date_debut, self.date_fin)
         DB.ExecuterReq(req)
-        listeDonnees = DB.ResultatReq()      
+        listeDonnees = DB.ResultatReq()
         DB.Close() 
         for IDindividu, nom, prenom in listeDonnees :
             dictTemp = {"IDindividu": IDindividu, "nom": nom, "prenom": prenom}
@@ -223,6 +223,8 @@ class CTRL_Activites(wx.CheckListBox):
         listeDonnees = DB.ResultatReq()      
         DB.Close() 
         for IDactivite, nom, abrege in listeDonnees :
+            if not IDactivite:
+                IDactivite = 0
             dictTemp = {"nom": nom, "abrege": abrege}
             dictActivites[IDactivite] = dictTemp
             listeActivites.append((nom, IDactivite))
@@ -234,6 +236,8 @@ class CTRL_Activites(wx.CheckListBox):
         listeItems = []
         index = 0
         for nom, IDactivite in self.listeActivites :
+            if not nom:
+                nom = _(u"Autre")
             self.Append(nom)
             index += 1
                             
@@ -246,18 +250,14 @@ class CTRL_Activites(wx.CheckListBox):
         return listeIDcoches
     
     def CocheTout(self):
-        index = 0
         for index in range(0, len(self.listeActivites)):
             self.Check(index)
-            index += 1
 
     def SetIDcoches(self, listeIDcoches=[]):
-        index = 0
         for index in range(0, len(self.listeActivites)):
             ID = self.listeActivites[index][1]
             if ID in listeIDcoches :
                 self.Check(index)
-            index += 1
 
     def OnCheck(self, event):
         """ Quand une sélection d'activités est effectuée... """
@@ -314,14 +314,14 @@ class CTRL_Unites(wx.CheckListBox):
         req = """SELECT prestations.label
         FROM prestations
         WHERE (IDindividu IN %s OR IDindividu IS NULL)
-        AND (prestations.IDactivite IN %s or prestations.IDactivite IS NULL)
+        AND (prestations.IDactivite IN %s OR prestations.IDactivite IS NULL)
         AND prestations.date>='%s' AND prestations.date<='%s'
         AND prestations.IDfamille=%d
         GROUP BY prestations.label
         ;""" % (conditionIndividus, conditionActivites, self.date_debut, self.date_fin, self.parent.IDfamille)
         DB.ExecuterReq(req)
-        listeDonnees = DB.ResultatReq()      
-        DB.Close() 
+        listeDonnees = DB.ResultatReq()
+        DB.Close()
         for label, in listeDonnees :
             listeUnites.append(label)
         listeUnites.sort()
@@ -1162,7 +1162,7 @@ class Dialog(wx.Dialog):
 if __name__ == u"__main__":
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    dialog_1 = Dialog(None, IDfamille=14, date_debut=datetime.date(2013, 7, 1), date_fin=datetime.date(2014, 7, 30))
+    dialog_1 = Dialog(None, IDfamille=291, date_debut=datetime.date(2020, 11, 1), date_fin=datetime.date(2020, 11, 30))
     app.SetTopWindow(dialog_1)
     dialog_1.ShowModal()
     app.MainLoop()
