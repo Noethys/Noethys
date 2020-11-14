@@ -918,6 +918,8 @@ class Dialog(wx.Dialog):
 
                     # Mémoriser les régimes à afficher
                     if IDregime not in listeRegimesUtilises :
+                        if not IDregime:
+                            IDregime = 0
                         listeRegimesUtilises.append(IDregime)
 
                     # Stats globales

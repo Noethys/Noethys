@@ -1553,7 +1553,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         for date_debut, date_fin in listePeriodes :
             listeTemp.append(date_debut)
             listeTemp.append(date_fin)
-        if len(listeTemp) > 0 :
+        if len(listeTemp) > 0 and listeTemp[0]:
             return min(listeTemp), max(listeTemp)
         else :
             return datetime.date(1970, 1, 1), datetime.date(1970, 1, 1)
@@ -3974,7 +3974,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                             dictValeurs["forfait_date_fin"] < date))):
                     listeIndividusPresents.add(dictValeurs["IDindividu"])
             nbreIndividus = len(listeIndividusPresents) + 1
-            
+
             # Recherche le tarif à appliquer à chaque individu
             if "degr" in methode_calcul :
                 # Si tarif dégressif différent pour chaque individu

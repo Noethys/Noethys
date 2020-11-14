@@ -61,7 +61,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         
         # Mémorisation des paramètres
         propriete = wxpg.BoolProperty(label=_(u"Mémoriser les paramètres"), name="memoriser_parametres", value=True)
-        propriete.SetHelpString(_(u"Cochez cette case si vous souhaitez mémoriser les paramètres de cette liste")) 
+        propriete.SetHelpString(_(u"Cochez cette case si vous souhaitez mémoriser les paramètres de cette liste"))
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
@@ -385,6 +385,8 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         for nom, valeur in dictParametres.items() :
             propriete = self.GetPropertyByName(nom)
             ancienneValeur = propriete.GetValue()
+            if nom == "memoriser_parametres" and valeur == "":
+                valeur = True
             propriete.SetValue(valeur)
 
     def Sauvegarde(self, forcer=False):
