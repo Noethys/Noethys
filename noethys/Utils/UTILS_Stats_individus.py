@@ -493,7 +493,7 @@ def GetListeNiveauxScolaires(DB, dictParametres) :
         WHERE date>='%s' AND date<='%s' 
         AND consommations.etat IN ('reservation', 'present')
         AND IDactivite IN %s
-        GROUP BY scolarite.IDecole, consommations.IDindividu
+        GROUP BY scolarite.IDecole, consommations.IDindividu, scolarite.IDniveau
         ;""" % (date_debut, date_debut, date_debut, date_fin, conditionsActivites)
     else :
         return []

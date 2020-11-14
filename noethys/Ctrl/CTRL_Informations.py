@@ -601,7 +601,7 @@ class CTRL(wx.TreeCtrl):
         LEFT JOIN individus ON individus.IDindividu = inscriptions.IDindividu
         LEFT JOIN activites ON activites.IDactivite = inscriptions.IDactivite
         WHERE inscriptions.statut='ok' AND (inscriptions.date_desinscription IS NULL OR inscriptions.date_desinscription>='%s') %s AND activites.date_fin>='%s'
-        GROUP BY individus.IDindividu, renseignements_activites.IDtype_renseignement;
+        GROUP BY individus.IDindividu, renseignements_activites.IDtype_renseignement, inscriptions.IDfamille;
         """ % (datetime.date.today(), condition, datetime.date.today())
         self.DB.ExecuterReq(req)
         listeRenseignementsObligatoires = self.DB.ResultatReq()
@@ -896,7 +896,7 @@ class CTRL(wx.TreeCtrl):
         LEFT JOIN individus ON individus.IDindividu = inscriptions.IDindividu
         LEFT JOIN activites ON activites.IDactivite = inscriptions.IDactivite
         WHERE inscriptions.statut='ok' AND (inscriptions.date_desinscription IS NULL OR inscriptions.date_desinscription>='%s') AND types_cotisations.IDtype_cotisation IS NOT NULL %s AND activites.date_fin>='%s'
-        GROUP BY inscriptions.IDfamille, cotisations_activites.IDtype_cotisation, individus.IDindividu;
+        GROUP BY inscriptions.IDfamille, cotisations_activites.IDtype_cotisation, individus.IDindividu, cotisations_activites.IDactivite;
         """ % (datetime.date.today(), condition, datetime.date.today())
         self.DB.ExecuterReq(req)
         listeCotisationsObligatoiresTemp = self.DB.ResultatReq()

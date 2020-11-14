@@ -71,7 +71,7 @@ def GetListe(listeActivites=None, presents=None):
     # Récupération des présents
     listePresents = []
     if presents != None :
-        req = """SELECT IDfamille, inscriptions.IDinscription
+        req = """SELECT IDfamille
         FROM consommations
         LEFT JOIN inscriptions ON inscriptions.IDinscription = consommations.IDinscription
         WHERE inscriptions.statut='ok' AND date>='%s' AND date<='%s' AND consommations.etat IN ('reservation', 'present') %s
@@ -79,7 +79,7 @@ def GetListe(listeActivites=None, presents=None):
         ;"""  % (str(presents[0]), str(presents[1]), conditionActivites.replace("inscriptions", "consommations"))
         DB.ExecuterReq(req)
         listeIndividusPresents = DB.ResultatReq()
-        for IDfamille, IDinscription in listeIndividusPresents :
+        for IDfamille in listeIndividusPresents :
             listePresents.append(IDfamille)
 
     req = """
@@ -92,7 +92,7 @@ def GetListe(listeActivites=None, presents=None):
     LEFT JOIN caisses ON caisses.IDcaisse = familles.IDcaisse
     LEFT JOIN regimes ON regimes.IDregime = caisses.IDregime
     WHERE inscriptions.statut='ok' AND (inscriptions.date_desinscription IS NULL OR inscriptions.date_desinscription>='%s') %s
-    GROUP BY familles.IDfamille
+    GROUP BY inscriptions.IDfamille
     ;""" % (datetime.date.today(), conditionActivites)
 
     DB.ExecuterReq(req)

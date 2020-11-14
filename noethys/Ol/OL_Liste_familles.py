@@ -76,7 +76,7 @@ def GetListe(listeActivites=None, presents=None, archives=False):
     LEFT JOIN caisses ON caisses.IDcaisse = familles.IDcaisse
     LEFT JOIN regimes ON regimes.IDregime = caisses.IDregime
     WHERE inscriptions.statut='ok' AND (inscriptions.date_desinscription IS NULL OR inscriptions.date_desinscription>='%s') %s %s
-    GROUP BY familles.IDfamille
+    GROUP BY inscriptions.IDfamille
     ;""" % (datetime.date.today(), conditionArchives, conditionActivites)
 
     DB.ExecuterReq(req)

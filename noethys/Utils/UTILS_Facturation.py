@@ -223,7 +223,7 @@ class Facturation():
         LEFT JOIN emetteurs ON emetteurs.IDemetteur = reglements.IDemetteur
         LEFT JOIN payeurs ON payeurs.IDpayeur = reglements.IDpayeur
         %s
-        GROUP BY ventilation.IDprestation, ventilation.IDreglement
+        GROUP BY ventilation.IDprestation, ventilation.IDreglement, ventilation.IDcompte_payeur
         ORDER BY prestations.date
         ;""" % conditions
         DB.ExecuterReq(req)
@@ -304,7 +304,7 @@ class Facturation():
         LEFT JOIN prestations ON prestations.IDprestation = ventilation.IDprestation
         LEFT JOIN activites ON prestations.IDactivite = activites.IDactivite
         %s 
-        GROUP BY prestations.IDprestation
+        GROUP BY ventilation.IDprestation
         ;""" % conditions
         DB.ExecuterReq(req)
         listeVentilationReports = DB.ResultatReq()  

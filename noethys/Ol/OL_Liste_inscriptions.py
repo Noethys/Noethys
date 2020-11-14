@@ -237,7 +237,7 @@ class ListView(GroupListView):
         LEFT JOIN categories_tarifs ON categories_tarifs.IDcategorie_tarif = inscriptions.IDcategorie_tarif
         LEFT JOIN categories_travail ON categories_travail.IDcategorie = individus.IDcategorie_travail
         WHERE inscriptions.statut='ok' %s
-        GROUP BY individus.IDindividu
+        GROUP BY individus.IDindividu, inscriptions.IDinscription
         ;""" % (",".join(listeChamps2), conditions)
         # LEFT JOIN prestations ON prestations.IDactivite = inscriptions.IDactivite a été supprimé pour accélérer le traitement
         DB.ExecuterReq(req)
