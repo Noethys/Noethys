@@ -468,7 +468,7 @@ class Dialog_Traitement(wx.Dialog):
         self.label_intro = wx.StaticText(self, -1, _(u"Initialisation..."))
         self.ctrl_gauge = wx.Gauge(self, -1, style=wx.GA_SMOOTH)
         self.ctrl_gauge.SetRange(len(listeTracks))
-        self.ctrl_grille = DLG_Badgeage_grille.CTRL(self)
+        self.ctrl_grille = DLG_Badgeage_grille.CTRL(self, usage="nomadhys")
         if self.debug == False :
             self.ctrl_grille.Show(False) 
             
