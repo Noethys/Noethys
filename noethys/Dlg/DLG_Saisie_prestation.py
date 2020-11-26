@@ -113,7 +113,7 @@ class Choix_individu(wx.Choice):
             }
             dictIndividus[IDindividu] = dictTemp
 
-            # Recherche des inscriptions pour chaque membre de la famille
+        # Recherche des inscriptions pour chaque membre de la famille
         req = """SELECT inscriptions.IDinscription, IDindividu, inscriptions.IDactivite, IDgroupe, inscriptions.IDcategorie_tarif, categories_tarifs.nom
         FROM inscriptions 
         LEFT JOIN categories_tarifs ON categories_tarifs.IDcategorie_tarif = inscriptions.IDcategorie_tarif
@@ -125,7 +125,8 @@ class Choix_individu(wx.Choice):
                 "IDinscription": IDinscription, "IDactivite": IDactivite, "IDgroupe": IDgroupe,
                 "IDcategorie_tarif": IDcategorie_tarif, "nomCategorie_tarif": nomCategorie_tarif,
             }
-            dictIndividus[IDindividu]["inscriptions"].append(dictTemp)
+            if IDindividu in dictIndividus:
+                dictIndividus[IDindividu]["inscriptions"].append(dictTemp)
 
         # Cloture de la base de données
         DB.Close()

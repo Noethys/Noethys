@@ -285,7 +285,7 @@ class Depannage():
         self.LiensErrones() 
         self.VentilationExcessive()
         self.PrestationsFantomes()
-        # self.MySQL8()
+        self.MySQL8()
                 
         # Fermeture DB
         self.DB.Close()

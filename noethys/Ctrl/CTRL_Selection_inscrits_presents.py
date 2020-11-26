@@ -335,10 +335,12 @@ class CTRL(wx.Panel):
         if self.radio_inscrits.GetValue() == True:
             dictParametres["mode"] = "inscrits"
             dictParametres["liste_activites"] = self.ctrl_activites_inscrits.GetActivites()
+            dictParametres["dict_activites"] = self.ctrl_activites_inscrits.GetDictActivites()
 
         if self.radio_presents.GetValue() == True:
             dictParametres["mode"] = "presents"
             dictParametres["liste_activites"] = self.ctrl_activites_presents.GetListeActivites()
+            dictParametres["dict_activites"] = self.ctrl_activites_presents.GetDictActivites()
 
         dictParametres["liste_groupes"] = self.ctrl_groupes.GetListeGroupes()
         dictParametres["dict_groupes"] = self.ctrl_groupes.GetDictGroupes()
