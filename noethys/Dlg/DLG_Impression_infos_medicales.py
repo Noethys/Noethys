@@ -496,6 +496,13 @@ class Dialog(wx.Dialog):
             dlg.Destroy()
             return False
 
+        # Vérification qu'il y a des colonnes
+        if not dictParametres["colonnes"]:
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement créer au moins une colonne !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return False
+
         # Recherche les catégories utilisées
         liste_categories_utilisees = []
         for nom_categorie, categories in dictParametres["colonnes"]:
@@ -531,6 +538,7 @@ class Dialog(wx.Dialog):
                 
         # Récupération des noms des groupes
         dictGroupes = dictParametres["dict_groupes"]
+        dictActivites = dictParametres["dict_activites"]
 
         DB = GestionDB.DB()
 
@@ -560,7 +568,7 @@ class Dialog(wx.Dialog):
             LEFT JOIN individus ON individus.IDindividu = consommations.IDindividu
             WHERE consommations.etat IN ("reservation", "present")
             AND IDactivite IN %s AND %s
-            GROUP BY individus.IDindividu
+            GROUP BY individus.IDindividu, IDactivite, IDgroupe
             ORDER BY nom, prenom
             ;""" % (conditionActivites, conditionsPeriodes)
             DB.ExecuterReq(req)
@@ -585,7 +593,7 @@ class Dialog(wx.Dialog):
             FROM individus 
             LEFT JOIN inscriptions ON inscriptions.IDindividu = individus.IDindividu
             WHERE inscriptions.statut='ok' AND IDactivite IN %s
-            GROUP BY individus.IDindividu
+            GROUP BY individus.IDindividu, IDactivite, IDgroupe
             ORDER BY nom, prenom
             ;""" % conditionActivites
             DB.ExecuterReq(req)
@@ -690,7 +698,11 @@ class Dialog(wx.Dialog):
                 indexGroupe = 1
                 for IDgroupe in dictOuvertures[IDactivite] :
                     nomGroupe = dictGroupes[IDgroupe]["nom"]
-                    
+                    if isinstance(dictActivites[IDactivite], dict):
+                        nomActivite = dictActivites[IDactivite]["nom"]
+                    else:
+                        nomActivite = dictActivites[IDactivite]
+
                     # Initialisation du tableau
                     dataTableau = []
                     largeursColonnes = []
@@ -724,7 +736,7 @@ class Dialog(wx.Dialog):
                         largeursColonnes.append(largeurColonnes)
 
                     # Création de l'entete de groupe
-                    ligne = [nomGroupe,]
+                    ligne = [u"%s - %s" % (nomActivite, nomGroupe),]
                     for x in range(0, len(labelsColonnes)-1):
                         ligne.append("")
                     dataTableau.append(ligne)

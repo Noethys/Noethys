@@ -37,9 +37,11 @@ LISTE_CHAMPS = [
     {"label":_(u"IDindividu"), "code":"IDindividu", "champ":"inscriptions.IDindividu", "typeDonnee":"entier", "align":"left", "largeur":0, "stringConverter":None, "actif":False, "afficher":False},
     {"label":_(u"Nom complet"), "code":"nomComplet", "champ":None, "typeDonnee":"texte", "align":"left", "largeur":200, "stringConverter":None, "imageGetter":"civilite", "actif":True, "afficher":True},
 
-    {"label":_(u"Groupe"), "code":"nomGroupe", "champ":"groupes.nom", "typeDonnee":"texte", "align":"left", "largeur":85, "stringConverter":None, "actif":True, "afficher":True},
-    {"label":_(u"Catégorie"), "code":"nomCategorie", "champ":"categories_tarifs.nom", "typeDonnee":"texte", "align":"left", "largeur":95, "stringConverter":None, "actif":True, "afficher":True},
-    {"label":_(u"Date inscrip."), "code":"dateInscription", "champ":"inscriptions.date_inscription", "typeDonnee":"date", "align":"left", "largeur":75, "stringConverter":"date", "actif":True, "afficher":False},
+    {"label": _(u"Famille"), "code": "noms_titulaires", "champ": "inscriptions.IDfamille", "typeDonnee": "texte", "align": "left", "largeur": 180, "stringConverter": None, "actif": True, "afficher": True},
+
+    # {"label":_(u"Groupe"), "code":"nomGroupe", "champ":"groupes.nom", "typeDonnee":"texte", "align":"left", "largeur":85, "stringConverter":None, "actif":True, "afficher":True},
+    # {"label":_(u"Catégorie"), "code":"nomCategorie", "champ":"categories_tarifs.nom", "typeDonnee":"texte", "align":"left", "largeur":95, "stringConverter":None, "actif":True, "afficher":True},
+    # {"label":_(u"Date inscrip."), "code":"dateInscription", "champ":"inscriptions.date_inscription", "typeDonnee":"date", "align":"left", "largeur":75, "stringConverter":"date", "actif":True, "afficher":False},
     
     {"label":_(u"Facturé"), "code":"totalFacture", "champ":None, "typeDonnee":"montant", "align":"right", "largeur":65, "stringConverter":"montant", "actif":True, "afficher":True},
     {"label":_(u"Réglé"), "code":"totalRegle", "champ":None, "typeDonnee":"montant", "align":"right", "largeur":65, "stringConverter":"montant", "actif":True, "afficher":True},
@@ -77,8 +79,8 @@ LISTE_CHAMPS = [
     {"label":_(u"nomImage"), "code":"nomImage", "champ":None, "typeDonnee":"texte", "align":"left", "largeur":45, "stringConverter":None, "actif":False, "afficher":False},
     
     {"label":_(u"IDfamille"), "code":"IDfamille", "champ":"inscriptions.IDfamille", "typeDonnee":"entier", "align":"left", "largeur":45, "stringConverter":None, "actif":False, "afficher":False},
-    
-    ]
+
+]
 
 
 def DateEngFr(textDate):
@@ -142,7 +144,10 @@ class ListView(FastObjectListView):
     
     def GetTracks(self):
         listeListeView = []
-        
+
+        # Importation des titulaires
+        dict_titulaires = UTILS_Titulaires.GetTitulaires()
+
         DB = GestionDB.DB()
 
         # Condition Activités
@@ -217,7 +222,7 @@ class ListView(FastObjectListView):
         AND prestations.IDactivite IN %s %s
         AND inscriptions.IDgroupe IN %s
         AND inscriptions.IDcategorie_tarif IN %s
-        GROUP BY individus.IDindividu
+        GROUP BY individus.IDindividu, inscriptions.IDfamille
         ;""" % (",".join(listeChamps2), conditionActivites, conditionPresents, conditionGroupes, conditionCategories)
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
@@ -280,7 +285,13 @@ class ListView(FastObjectListView):
             dictTemp["totalFacture"] = totalFacture
             dictTemp["totalRegle"] = totalRegle
             dictTemp["totalSolde"] = totalSolde
-            
+
+            # Titulaires
+            try:
+                dictTemp["noms_titulaires"] = dict_titulaires[dictTemp["IDfamille"]]["titulairesSansCivilite"]
+            except:
+                dictTemp["noms_titulaires"] = _(u"Famille inconnue")
+
             # Formatage sous forme de TRACK
             track = Track(dictTemp)
             listeListeView.append(track)
@@ -339,7 +350,7 @@ class ListView(FastObjectListView):
         self.evenRowsBackColor = "#FFFFFF" # Vert
         
         # Champs à afficher : 
-        selection_champs = ["IDindividu", "nomComplet", "nomGroupe", "nomCategorie", "totalFacture", "totalRegle", "totalSolde"]
+        selection_champs = ["IDindividu", "nomComplet", "noms_titulaires", "totalFacture", "totalRegle", "totalSolde"]
         
         # Création des colonnes
         listeColonnes = []

@@ -455,7 +455,7 @@ class PanelGrille(wx.Panel):
                           " date_desinscription>='{0}')".format(self.date))
 
         DB = GestionDB.DB()
-        req = """SELECT IDinscription, inscriptions.IDindividu
+        req = """SELECT inscriptions.IDindividu
         FROM inscriptions"""
         if self.filtrerClasses:
             req += """
@@ -470,7 +470,7 @@ class PanelGrille(wx.Panel):
         listeDonnees = DB.ResultatReq()
         DB.Close()
 
-        for IDinscription, IDindividu in listeDonnees:
+        for IDindividu, in listeDonnees:
             if IDindividu not in self.listeSelectionIndividus:
                 self.listeSelectionIndividus.append(IDindividu)
                 # Ajout de l'individu dans une liste pour le garder afficher lors d'une MAJ de l'affichage
