@@ -202,14 +202,14 @@ class CTRL(CT.CustomTreeCtrl):
         itemx.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Modifier.png"), wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(itemx)
         self.Bind(wx.EVT_MENU, self.Modifier, id=20)
-        if dictData["type"] is not "etiquette" : itemx.Enable(False)
+        if dictData["type"] != "etiquette" : itemx.Enable(False)
 
         # Item Supprimer
         itemx = wx.MenuItem(menuPop, 30, _(u"Supprimer"))
         itemx.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Supprimer.png"), wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(itemx)
         self.Bind(wx.EVT_MENU, self.Supprimer, id=30)
-        if dictData["type"] is not "etiquette" : itemx.Enable(False)
+        if dictData["type"] != "etiquette" : itemx.Enable(False)
 
         self.PopupMenu(menuPop)
         menuPop.Destroy()

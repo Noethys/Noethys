@@ -248,14 +248,14 @@ class CTRL(CT.CustomTreeCtrl):
         itemx.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Modifier.png"), wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(itemx)
         self.Bind(wx.EVT_MENU, self.Modifier, id=20)
-        if dictData["type"] is not "etiquette" : itemx.Enable(False)
+        if dictData["type"] != "etiquette" : itemx.Enable(False)
 
         # Item Supprimer
         itemx = wx.MenuItem(menuPop, 30, _(u"Supprimer"))
         itemx.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Supprimer.png"), wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(itemx)
         self.Bind(wx.EVT_MENU, self.Supprimer, id=30)
-        if dictData["type"] is not "etiquette" : itemx.Enable(False)
+        if dictData["type"] != "etiquette" : itemx.Enable(False)
 
         menuPop.AppendSeparator()
 
@@ -264,14 +264,14 @@ class CTRL(CT.CustomTreeCtrl):
         itemx.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Fleche_haut.png"), wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(itemx)
         self.Bind(wx.EVT_MENU, self.Monter, id=40)
-        if dictData["type"] is not "etiquette" : itemx.Enable(False)
+        if dictData["type"] != "etiquette" : itemx.Enable(False)
 
         # Item Déplacer vers le bas
         itemx = wx.MenuItem(menuPop, 50, _(u"Déplacer vers le bas"))
         itemx.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Fleche_bas.png"), wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(itemx)
         self.Bind(wx.EVT_MENU, self.Descendre, id=50)
-        if dictData["type"] is not "etiquette" : itemx.Enable(False)
+        if dictData["type"] != "etiquette" : itemx.Enable(False)
         
         menuPop.AppendSeparator()
         
@@ -280,7 +280,7 @@ class CTRL(CT.CustomTreeCtrl):
         itemx.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Tri_za.png"), wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(itemx)
         self.Bind(wx.EVT_MENU, self.TrierOrdreAlpha, id=60)
-        if dictData["type"] is not "etiquette" : itemx.Enable(False)        
+        if dictData["type"] != "etiquette" : itemx.Enable(False)
         
         self.PopupMenu(menuPop)
         menuPop.Destroy()

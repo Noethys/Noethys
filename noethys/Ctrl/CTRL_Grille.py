@@ -737,7 +737,10 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         self.prochainIDtransport = -1
         self.listeTransportsInitiale = []
         self.moveTo = None
-        self.GetGridWindow().SetToolTip(wx.ToolTip(""))
+        try:
+            self.GetGridWindow().SetToolTip(wx.ToolTip(""))
+        except:
+            pass
         self.caseSurvolee = None
         self.listeHistorique = []
         self.dictLignes = {}

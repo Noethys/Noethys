@@ -281,7 +281,10 @@ class EditeurComboBoxAvecBoutons(ChoiceEditor):
         # Create the 'primary' editor control (textctrl in this case)
         if 'phoenix' in wx.PlatformInfo:
             wnd = super(EditeurComboBoxAvecBoutons, self).CreateControls(propGrid, property, pos, buttons.GetPrimarySize())
-            wnd = wnd.m_primary
+            try:
+                wnd = wnd.GetPrimary()
+            except:
+                wnd = wnd.m_primary
             buttons.Finalize(propGrid, pos)
             self.buttons = buttons
             return wxpg.PGWindowList(wnd, buttons)

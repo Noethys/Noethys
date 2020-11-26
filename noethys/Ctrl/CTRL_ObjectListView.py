@@ -63,7 +63,7 @@ class ObjectListView(OLV.ObjectListView):
             self.Enable(False)
             couleur = wx.SystemSettings.GetColour(wx.SYS_COLOUR_FRAMEBK)# self.stEmptyListMsg.GetBackgroundColour()
             self.stEmptyListMsg.SetBackgroundColour(couleur)
-        self.stEmptyListMsg.Refresh() 
+        self.stEmptyListMsg.Refresh()
 
     def SetColumns(self, columns, repopulate=True):
         self.listeColonnes = columns
@@ -166,7 +166,13 @@ class ObjectListView(OLV.ObjectListView):
             self.stEmptyListMsg.SetSize(0, sz.GetHeight()/proportion, sz.GetWidth(), sz.GetHeight()) # J'ai mis 2 a la place de 3
         except :
             self.stEmptyListMsg.SetDimensions(0, sz.GetHeight() / proportion, sz.GetWidth(), sz.GetHeight())  # J'ai mis 2 a la place de 3
-        #self.stEmptyListMsg.Wrap(sz.GetWidth())
+
+        # Masque le texte "Aucun" si version phoenix (à cause des colonnes bleues)
+        if 'phoenix' in wx.PlatformInfo:
+            self.stEmptyListMsg.Hide()
+
+        # Pour un centrage du texte
+        # self.stEmptyListMsg.SetPosition((sz.GetWidth() / 2 - self.stEmptyListMsg.GetSize()[0]/2, sz.GetHeight() / proportion))
 
     def _SortObjects(
             self,
@@ -723,7 +729,6 @@ class ObjectListView(OLV.ObjectListView):
 
 
 
-
 class Track():
     def __init__(self, dictTotaux):
         for nomColonne, total in dictTotaux.items() :
@@ -982,6 +987,15 @@ class AbstractVirtualObjectListView(Abstract, ObjectListView):
         kwargs["style"] = kwargs.get("style", 0) | wx.LC_REPORT | wx.LC_VIRTUAL
 
         ObjectListView.__init__(self, *args, **kwargs)
+
+    def SetItemCount(self, count):
+        """
+        Change the number of items visible in the list
+        """
+        wx.ListCtrl.SetItemCount(self, count)
+        if 'phoenix' not in wx.PlatformInfo:
+            self.stEmptyListMsg.Show(count == 0)
+        self.lastGetObjectIndex = -1
 
 
 

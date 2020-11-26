@@ -567,7 +567,7 @@ class Calendrier(wx.ScrolledWindow):
 
 
     def DrawCase(self, dc, texteDate, x, y, l, h, survol=False):
-        
+
         IDobjet = self.DateEnIDobjet(texteDate)
         dc.SetId(IDobjet)
         
@@ -627,7 +627,7 @@ class Calendrier(wx.ScrolledWindow):
 
         # Traitement pour le PseudoDC
         r = wx.Rect(x, y, l, h)
-        dc.SetIdBounds(IDobjet,r) 
+        dc.SetIdBounds(IDobjet,r)
         
         
     def tailleFont(self, l, h):
