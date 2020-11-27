@@ -27,7 +27,7 @@ from Utils import UTILS_Config
 from Utils import UTILS_Cryptage_fichier
 from Utils import UTILS_Fichiers
 from Utils import UTILS_Envoi_email
-
+from Utils import UTILS_Customize
 
 LISTE_CATEGORIES = [
     (_(u"Données de base"), "DATA"),
@@ -180,7 +180,8 @@ def Sauvegarde(listeFichiersLocaux=[], listeFichiersReseau=[], nom="", repertoir
         motdepasse = base64.b64decode(motdepasse)
         if six.PY3:
             motdepasse = motdepasse.decode('utf8')
-        UTILS_Cryptage_fichier.CrypterFichier(UTILS_Fichiers.GetRepTemp(fichier=nomFichierTemp), UTILS_Fichiers.GetRepTemp(fichier=fichierCrypte), motdepasse, ancienne_methode=True)
+        ancienne_methode = UTILS_Customize.GetValeur("cryptage", "version", "1", ajouter_si_manquant=False) in ("1", None)
+        UTILS_Cryptage_fichier.CrypterFichier(UTILS_Fichiers.GetRepTemp(fichier=nomFichierTemp), UTILS_Fichiers.GetRepTemp(fichier=fichierCrypte), motdepasse, ancienne_methode=ancienne_methode)
         nomFichierTemp = fichierCrypte
         extension = EXTENSIONS["crypte"]
     else:

@@ -38,6 +38,7 @@ from Utils import UTILS_Cotisations_manquantes
 from Utils import UTILS_Organisateur
 from Utils import UTILS_Cryptage_fichier
 from Utils import UTILS_Config
+from Utils import UTILS_Customize
 import FonctionsPerso
 import GestionDB
 
@@ -1362,7 +1363,8 @@ class Synchro():
 
         cryptage_mdp = self.dict_parametres["secret_key"][:10] #base64.b64decode(password)
         nomFichierCRYPT = nomFichierZIP.replace(".zip", ".crypt")
-        UTILS_Cryptage_fichier.CrypterFichier(nomFichierZIP, nomFichierCRYPT, cryptage_mdp, ancienne_methode=True)
+        ancienne_methode = UTILS_Customize.GetValeur("cryptage", "version", "1", ajouter_si_manquant=False) in ("1", None)
+        UTILS_Cryptage_fichier.CrypterFichier(nomFichierZIP, nomFichierCRYPT, cryptage_mdp, ancienne_methode=ancienne_methode)
         os.remove(nomFichierZIP)
 
         # Pour contrer le bug de Pickle dans le cryptage
