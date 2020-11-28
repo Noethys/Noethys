@@ -247,7 +247,7 @@ class Export():
             if six.PY3:
                 cryptage_mdp = cryptage_mdp.decode()
             if cryptage_actif == True and cryptage_mdp != "" :
-                ancienne_methode = UTILS_Customize.GetValeur("cryptage", "version", "1", ajouter_si_manquant=False) in ("1", None)
+                ancienne_methode = UTILS_Customize.GetValeur("version_cryptage", "nomadhys", "1", ajouter_si_manquant=False) in ("1", None)
                 UTILS_Cryptage_fichier.CrypterFichier(self.nomFichier + EXTENSION_DECRYPTE, self.nomFichier + EXTENSION_CRYPTE, cryptage_mdp, ancienne_methode=ancienne_methode)
                 os.remove(self.nomFichier + EXTENSION_DECRYPTE)
                 nomFichierFinal = self.nomFichier + EXTENSION_CRYPTE

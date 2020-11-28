@@ -180,7 +180,7 @@ def Sauvegarde(listeFichiersLocaux=[], listeFichiersReseau=[], nom="", repertoir
         motdepasse = base64.b64decode(motdepasse)
         if six.PY3:
             motdepasse = motdepasse.decode('utf8')
-        ancienne_methode = UTILS_Customize.GetValeur("cryptage", "version", "1", ajouter_si_manquant=False) in ("1", None)
+        ancienne_methode = UTILS_Customize.GetValeur("version_cryptage", "sauvegarde", "1", ajouter_si_manquant=False) in ("1", None)
         UTILS_Cryptage_fichier.CrypterFichier(UTILS_Fichiers.GetRepTemp(fichier=nomFichierTemp), UTILS_Fichiers.GetRepTemp(fichier=fichierCrypte), motdepasse, ancienne_methode=ancienne_methode)
         nomFichierTemp = fichierCrypte
         extension = EXTENSIONS["crypte"]
