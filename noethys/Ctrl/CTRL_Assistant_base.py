@@ -366,7 +366,7 @@ class Page(scrolled.ScrolledPanel):
         if titre != None :
             ctrl_titre = wx.StaticText(self, -1, titre)
             ctrl_titre.SetFont(wx.Font(8, wx.DEFAULT, wx.NORMAL, wx.BOLD, 0, ""))
-            self.sizer.Add(ctrl_titre, 0, wx.ALIGN_CENTER_VERTICAL | wx.EXPAND | wx.RIGHT, 5)
+            self.sizer.Add(ctrl_titre, 0, wx.EXPAND | wx.RIGHT, 5)
             self.sizer.Add((5, 2), 0, 0, 0)
 
         ctrl_ligne = wx.StaticLine(self, -1)
@@ -382,7 +382,7 @@ class Page(scrolled.ScrolledPanel):
         # Titre
         if titre != None :
             ctrl_titre = wx.StaticText(self, -1, titre)
-            self.sizer.Add(ctrl_titre, 0, wx.ALIGN_CENTER_VERTICAL | wx.EXPAND | wx.RIGHT, 5)
+            self.sizer.Add(ctrl_titre, 0, wx.EXPAND | wx.RIGHT, 5)
             self.sizer.Add((5, 7), 0, 0, 0)
 
         # Saisie
@@ -390,7 +390,7 @@ class Page(scrolled.ScrolledPanel):
             ctrl_valeur = ctrl(self, code=code, titre=titre, *args, **kwds)
             if code != None :
                 self.dict_ctrl[code] = ctrl_valeur
-            self.sizer.Add(ctrl_valeur, 0, wx.ALIGN_CENTER_VERTICAL | wx.EXPAND | wx.RIGHT, 5)
+            self.sizer.Add(ctrl_valeur, 0, wx.EXPAND | wx.RIGHT, 5)
             self.sizer.Add((5, 7), 0, 0, 0)
 
             # Importation de la valeur
@@ -402,7 +402,7 @@ class Page(scrolled.ScrolledPanel):
             ctrl_commentaire = wx.StaticText(self, -1, commentaire)
             ctrl_commentaire.SetFont(wx.Font(7, wx.DEFAULT, wx.NORMAL, wx.NORMAL, 0, ''))
             ctrl_commentaire.SetForegroundColour((120, 120, 120))
-            self.sizer.Add(ctrl_commentaire, 0, wx.ALIGN_CENTER_VERTICAL | wx.ALIGN_RIGHT | wx.RIGHT, 5)
+            self.sizer.Add(ctrl_commentaire, 0, wx.ALIGN_RIGHT | wx.RIGHT, 5)
 
         # Spacer
         self.sizer.Add((5, 10), 0, 0, 0)
