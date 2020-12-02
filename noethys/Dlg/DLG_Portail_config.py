@@ -350,6 +350,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         propriete = wxpg.StringProperty(label=_(u"Mot de passe"), name=nom, value=VALEURS_DEFAUT[nom])
         propriete.SetHelpString(_(u"Saisissez le mot de passe FTP"))
         self.Append(propriete)
+        propriete.SetAttribute("Password", True)
 
         # Répertoire FTP
         nom = "ftp_repertoire"
@@ -386,6 +387,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         propriete = wxpg.StringProperty(label=_(u"Mot de passe"), name=nom, value=VALEURS_DEFAUT[nom])
         propriete.SetHelpString(_(u"Saisissez le mot de passe de l utilisateur SSH"))
         self.Append(propriete)
+        propriete.SetAttribute("Password", True)
 
         # Répertoire SSH
         nom = "ssh_repertoire"
@@ -445,6 +447,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         propriete.SetHelpString(_(u"Saisissez le mot de passe"))
         propriete.SetAttribute("obligatoire", False)
         self.Append(propriete)
+        propriete.SetAttribute("Password", True)
 
         # Nom de la base
         nom = "db_nom"
@@ -476,7 +479,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         propriete.SetHelpString(_(u"Saisissez le mot de passe pour accéder aux statistiques [Uniquement pour les abonnés à Connecthys Easy]"))
         propriete.SetAttribute("obligatoire", False)
         self.Append(propriete)
-
+        propriete.SetAttribute("Password", True)
 
         # Catégorie
         self.Append( wxpg.PropertyCategory(_(u"Sécurité")) )
@@ -605,7 +608,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         propriete.SetHelpString(_(u"Saisissez le mot de passe s'il s'agit d'une connexion authentifiée"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
-
+        propriete.SetAttribute("Password", True)
 
         # Catégorie
         self.Append( wxpg.PropertyCategory(_(u"Affichage")) )
