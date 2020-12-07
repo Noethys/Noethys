@@ -1904,6 +1904,11 @@ class Synchro():
                     self.log.EcritLog(_(u"[ERREUR] Envoi du fichier '%s' par SSH/SFTP impossible.") % nomFichier)
                     return False
 
+                try:
+                    ftp.chmod(rep + "/" + nomFichier, mode=0o644)
+                except Exception as err:
+                    print("CHMOD 0644 sur %s impossible :" % nomFichier, err)
+
         return True
 
 
