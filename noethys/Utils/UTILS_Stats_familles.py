@@ -909,12 +909,12 @@ if __name__ == '__main__':
     #wx.InitAllImageHandlers()
     annee = 2014
     dictParametres = {
-        "mode" : "presents",
+        "mode" : "inscrits",
         "periode" : {"type":"annee", "annee":annee, "date_debut":datetime.date(annee, 1, 1), "date_fin":datetime.date(annee, 12, 31)}, 
         "listeActivites" : [1, 2, 3, 4, 5], 
         "dictActivites" : {1 : _(u"Centre de Loisirs"), 2 : _(u"Action 10-14 ans"), 3 : _(u"Camp 4-6 ans"), 4 : _(u"Camp 6-9 ans"), 5 : _(u"Camp 10-14 ans"), 6 : _(u"Art floral"), 7 : _(u"Yoga")}, 
         }
-    frame_1 = MODELES.FrameTest(objet=Graphe_qf_defaut(), dictParametres=dictParametres)
+    frame_1 = MODELES.FrameTest(objet=Tableau_nombre_familles(), dictParametres=dictParametres)
     app.SetTopWindow(frame_1)
     frame_1.Show()
     app.MainLoop()

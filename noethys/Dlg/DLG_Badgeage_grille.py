@@ -216,7 +216,7 @@ class CTRL(wx.Panel):
             hasPlaces = False
             if mode == "reservation" and self.usage != "nomadhys":
                 return _(u"Il n'y a plus de place le %s.") % UTILS_Dates.DateDDEnFr(date)
-        
+
         # Vérifie la compatibilité avec les autres unités
         incompatibilite = case.VerifieCompatibilitesUnites()
         if incompatibilite != None :

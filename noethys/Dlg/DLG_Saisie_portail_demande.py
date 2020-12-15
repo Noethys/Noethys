@@ -602,6 +602,12 @@ class Dialog(wx.Dialog):
         DB.ReqMAJ("portail_actions", [("etat", etat), ("reponse", reponse), ("traitement_date", traitement_date), ("email_date", self.track.email_date)], "IDaction", self.track.IDaction)
         DB.Close()
 
+    def GetEtat(self):
+        if self.radio_attente.GetValue() == True:
+            return "attente"
+        else:
+            return "validation"
+
     def SetEtat(self, etat="attente", traitement_date=None):
         if etat == "attente" :
             self.radio_attente.SetValue(True)
@@ -956,6 +962,19 @@ class Dialog(wx.Dialog):
         # Réactualise le solde
         self.ctrl_solde.MAJ(IDfamille=self.track.IDfamille)
         self.MAJ_informations()
+
+        # Automatique : Tout traiter
+        # index = self.tracks.index(self.track)
+        # if index < len(self.tracks) - 1:
+        #     # Passage à la demande suivante
+        #     self.track = self.tracks[index + 1]
+        #     self.MAJ()
+        #     # Traitement automatique de la demande
+        #     self.Traitement(mode="automatique")
+        #     # Envoi par email
+        #     self.Envoyer(visible=False)
+
+
 
     def OnBoutonEnvoyer(self, event=None):
         self.Envoyer(visible=False)

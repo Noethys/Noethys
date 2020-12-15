@@ -259,7 +259,7 @@ class CTRL_Interface(wx.Panel):
         self.infosIndividus = InfosIndividus()
         
         # Création des contrôles
-        self.ctrl_grille = DLG_Badgeage_grille.CTRL(self)
+        self.ctrl_grille = DLG_Badgeage_grille.CTRL(self, usage="badgeage")
         self.ctrl_grille.SetSize((800, 120))
         self.ctrl_grille.SetPosition((20, 20))
         self.ctrl_grille.Show(montrerGrille) # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< ICI AFFICHAGE DU CTRL_GRILLE
