@@ -1,3 +1,13 @@
+Version 1.2.8.5 (15/12/2020) :
+
+- Ajout de l'export vers Magnus Berger-Levrault
+- Amélioration de la suppression des locations récurrentes
+- Adaptations pour python 3.9
+- Correction de la numérotation des cotisations
+- Correction des requêtes group by
+- Correction des sélections dans les devis
+- Correction de petits bugs
+
 Version 1.2.8.3 (05/11/2020) :
 
 - Ajout du captcha dans Connecthys
