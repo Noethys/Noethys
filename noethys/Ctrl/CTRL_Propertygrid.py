@@ -47,7 +47,10 @@ class EditeurChoix(ChoiceEditor):
     def CreateControls(self, propGrid, property, pos, size):
         if 'phoenix' in wx.PlatformInfo:
             ctrl = super(EditeurChoix, self).CreateControls(propGrid, property, pos, size)
-            ctrl = ctrl.m_primary
+            try:
+                ctrl = ctrl.GetPrimary()
+            except:
+                ctrl = ctrl.m_primary
             self.SetControlIntValue(property, ctrl, 0)
             return wxpg.PGWindowList(ctrl)
         else :
