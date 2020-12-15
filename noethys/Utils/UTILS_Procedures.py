@@ -68,6 +68,7 @@ DICT_PROCEDURES = {
     "A9011" : _(u"Custom SMDH - Suppression inscriptions"),
     "A9012" : _(u"Custom SMDH - Saisie inscriptions"),
     "A9038" : _(u"Mise à jour de l'historique des locations"),
+    "A9045" : _(u"Mise à jour du format des lots PES"),
 }
 
 
@@ -1306,9 +1307,18 @@ def A9038():
     EcritStatusbar("")
 
 
+def A9045():
+    """ Mise à jour du format dans les lots PES : Ajout du champ format """
+    DB = GestionDB.DB()
+    DB.ExecuterReq("UPDATE pes_lots SET format='pes' WHERE format IS NULL")
+    DB.Commit()
+    DB.Close()
+
+
+
 
 if __name__ == u"__main__":
     app = wx.App(0)
     # TEST D'UNE PROCEDURE :
-    A9038()
+    A9045()
     app.MainLoop()

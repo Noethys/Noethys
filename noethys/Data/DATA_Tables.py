@@ -1385,6 +1385,8 @@ DB_DATA = {
                                     ("code_etab", "VARCHAR(100)", u"Code Etablissement"),
                                     ("prelevement_libelle", "VARCHAR(450)", u"Libellé du prélèvement"),
                                     ("objet_piece", "VARCHAR(450)", u"Objet de la pièce"),
+                                    ("format", "VARCHAR(100)", u"Format du lot"),
+                                    ("options", "VARCHAR(1000)", u"Options diverses"),
                                     ], # Lots PESV2 ORMC
 
     "contrats":[               ("IDcontrat", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID contrat"),

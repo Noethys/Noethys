@@ -1316,7 +1316,7 @@ if __name__ == "__main__":
         
     # # Ajouter un champ
     # db = DB(suffixe="DATA")
-    # db.AjoutChamp("historique", "IDdonnee", "INTEGER")
+    # db.AjoutChamp("pes_lots", "options", "VARCHAR(1000)")
     # db.Close()
 
     # # Exportation d'une table dans la base DEFAUT

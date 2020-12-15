@@ -1454,6 +1454,18 @@ class DB(GestionDB.DB):
 
         # =============================================================
 
+        versionFiltre = (1, 2, 8, 5)
+        if versionFichier < versionFiltre:
+            try:
+                self.AjoutChamp("pes_lots", "format", "VARCHAR(100)")
+                self.AjoutChamp("pes_lots", "options", "VARCHAR(1000)")
+                from Utils import UTILS_Procedures
+                UTILS_Procedures.A9045()
+            except Exception as err:
+                return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
+
+        # =============================================================
+
 
 
 

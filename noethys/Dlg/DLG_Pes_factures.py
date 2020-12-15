@@ -28,8 +28,8 @@ class Dialog(wx.Dialog):
         self.parent = parent
         self.IDlot = IDlot
         
-        intro = _(u"Cochez les factures que vous souhaitez ajouter au bordereau PES ORMC puis cliquez sur le bouton 'Ok'.")
-        titre = _(u"Ajouter des factures au bordereau PES ORMC")
+        intro = _(u"Cochez les factures que vous souhaitez ajouter au lot puis cliquez sur le bouton 'Ok'.")
+        titre = _(u"Ajouter des factures")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Facture.png")
         
@@ -104,7 +104,7 @@ class Dialog(wx.Dialog):
         # Validation des données
         tracks = self.ctrl_factures.GetTracksCoches()
         if len(tracks) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune facture à inclure dans votre bordereau !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune facture à inclure dans votre lot !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -133,7 +133,7 @@ class Dialog(wx.Dialog):
                         listeAutresLots.append(_(u"- %s (avec le statut '%s')") % (nomLot, statut.capitalize()))
                         
             if len(listeAutresLots) > 0 :
-                message1 = _(u"La facture n°%s est déjà présente dans les autres bordereaux suivants. Souhaitez-vous tout de même l'inclure de votre bordereau actuel ?") % track.numero
+                message1 = _(u"La facture n°%s est déjà présente dans les autres lots suivants. Souhaitez-vous tout de même l'inclure de votre lot actuel ?") % track.numero
                 message2 = "\n".join(listeAutresLots)
                 dlg = dialogs.MultiMessageDialog(self, message1, caption=_(u"Avertissement"), msg2=message2, style = wx.ICON_QUESTION |wx.NO | wx.CANCEL | wx.YES | wx.YES_DEFAULT, icon=None, btnLabels={wx.ID_YES : _(u"Oui"), wx.ID_NO : _(u"Non"), wx.ID_CANCEL : _(u"Annuler")})
                 reponse = dlg.ShowModal() 
@@ -142,7 +142,7 @@ class Dialog(wx.Dialog):
                     return False
                     
         if len(listeErreursSoldes) > 0 :
-            dlg = wx.MessageDialog(None, _(u"Vous avez sélectionné %d factures qui ont déjà été payées.\n\nSouhaitez-vous tout de même les inclure dans le bordereau ?") % len(listeErreursSoldes), _(u"Réinitialisation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+            dlg = wx.MessageDialog(None, _(u"Vous avez sélectionné %d factures qui ont déjà été payées.\n\nSouhaitez-vous tout de même les inclure dans le lot ?") % len(listeErreursSoldes), _(u"Réinitialisation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
             reponse = dlg.ShowModal() 
             dlg.Destroy()
             if reponse != wx.ID_YES :

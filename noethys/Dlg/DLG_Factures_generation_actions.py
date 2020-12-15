@@ -50,7 +50,7 @@ class Panel(wx.Panel):
         self.image_fleche2 = wx.StaticBitmap(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Fleche_droite.png"), wx.BITMAP_TYPE_ANY))
         self.image_fleche3 = wx.StaticBitmap(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Fleche_droite.png"), wx.BITMAP_TYPE_ANY))
         
-        self.bouton_helios = CTRL_Bouton_image.CTRL(self, texte=_(u"Exporter\nvers Hélios"), tailleImage=(32, 32), margesImage=(4, 0, 0, 0), margesTexte=(-5, 1), cheminImage="Images/32x32/Helios.png")
+        self.bouton_helios = CTRL_Bouton_image.CTRL(self, texte=_(u"Exporter vers\nTrésor Public"), tailleImage=(32, 32), margesImage=(4, 0, 0, 0), margesTexte=(-5, 1), cheminImage="Images/32x32/Helios.png")
         self.bouton_prelevements = CTRL_Bouton_image.CTRL(self, texte=_(u"Prélèvement\nautomatique"), tailleImage=(32, 32), margesImage=(4, 0, 0, 0), margesTexte=(-5, 1), cheminImage="Images/32x32/Prelevement.png")
         self.bouton_email = CTRL_Bouton_image.CTRL(self, texte=_(u"Transmettre\npar Email"), tailleImage=(32, 32), margesImage=(4, 4, 0, 0), margesTexte=(-5, 1), cheminImage="Images/32x32/Emails_exp.png")
         self.bouton_imprimer = CTRL_Bouton_image.CTRL(self, texte=_(u"Imprimer"), tailleImage=(32, 32), margesImage=(4, 0, 0, 0), margesTexte=(-5, 1), cheminImage="Images/32x32/Imprimante.png")
@@ -225,7 +225,7 @@ class Panel(wx.Panel):
             if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("facturation_helios", "creer") == False : return
             
             # Demande d'application automatique de filtres
-            dlg = wx.MessageDialog(self, _(u"Souhaitez-vous utiliser l'assistant de préparation des bordereaux PES (Conseillé) ?\n\nSinon, le gestionnaire des bordereaux PES sera simplement ouvert."), _(u"Hélios"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+            dlg = wx.MessageDialog(self, _(u"Souhaitez-vous utiliser l'assistant de préparation des bordereaux (Conseillé) ?\n\nSinon, le gestionnaire des bordereaux sera simplement ouvert."), _(u"Trésor public"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
             reponse = dlg.ShowModal() 
             dlg.Destroy()
             if reponse == wx.ID_CANCEL :

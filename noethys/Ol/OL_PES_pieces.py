@@ -44,6 +44,8 @@ class Track(object):
         self.IDfamille = donnees["IDfamille"]
         self.IDcompte_payeur = donnees["IDcompte_payeur"]
 
+        self.alias_famille = u"FAM%06d" % self.IDfamille
+
         self.prelevement = donnees["prelevement"]
         self.prelevement_iban =  donnees["prelevement_iban"]
         self.prelevement_bic =  donnees["prelevement_bic"]
@@ -836,7 +838,7 @@ class ListView(FastObjectListView):
 
     def MAJtotaux(self):
         """ Créé le texte infos avec les stats du lot """
-        if self.GetParent().GetName() != "DLG_Saisie_pes_lot" :
+        if self.GetParent().GetName() != "DLG_Saisie_lot_tresor_public" :
             return
         # Label de staticbox
         texte = self.GetTexteTotaux()

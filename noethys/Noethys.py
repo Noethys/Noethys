@@ -22,6 +22,12 @@ import platform
 import datetime
 import traceback
 
+# import ctypes
+# try:
+#     ctypes.windll.shcore.SetProcessDpiAwareness(True)
+# except:
+#     pass
+
 from time import sleep 
 
 from Utils import UTILS_Linux
@@ -1008,7 +1014,7 @@ class MainFrame(wx.Frame):
                     {"code" : "menu_facturation_factures", "label" : _(u"Factures"), "items" : [
                             {"code" : "factures_generation", "label" : _(u"Génération"), "infobulle" : _(u"Génération des factures"), "image" : "Images/16x16/Generation.png", "action" : self.On_facturation_factures_generation},
                             "-",
-                            {"code" : "factures_helios", "label" : _(u"Export vers Hélios"), "infobulle" : _(u"Exporter les factures vers Hélios"), "image" : "Images/16x16/Helios.png", "action" : self.On_facturation_factures_helios},
+                            {"code" : "factures_helios", "label" : _(u"Export vers le Trésor Public"), "infobulle" : _(u"Exporter les factures vers le Trésor Public"), "image" : "Images/16x16/Helios.png", "action" : self.On_facturation_factures_helios},
                             {"code" : "factures_prelevement", "label" : _(u"Prélèvement automatique"), "infobulle" : _(u"Gestion du prélèvement automatique"), "image" : "Images/16x16/Prelevement.png", "action" : self.On_facturation_factures_prelevement},
                             {"code" : "factures_email", "label" : _(u"Transmettre par Email"), "infobulle" : _(u"Transmettre les factures par Email"), "image" : "Images/16x16/Emails_exp.png", "action" : self.On_facturation_factures_email},
                             {"code" : "factures_imprimer", "label" : _(u"Imprimer"), "infobulle" : _(u"Imprimer des factures"), "image" : "Images/16x16/Imprimante.png", "action" : self.On_facturation_factures_imprimer},

@@ -13,15 +13,14 @@ import Chemins
 from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
-from Ctrl import CTRL_Bouton_image
 import GestionDB
 from Utils import UTILS_Dates
 from Utils import UTILS_Utilisateurs
-
-
 from Utils import UTILS_Interface
 from Ctrl.CTRL_ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
-
+from Dlg import DLG_Saisie_lot_tresor_public
+from Dlg import DLG_Saisie_lot_tresor_public_pes
+from Dlg import DLG_Saisie_lot_tresor_public_magnus
 
 
 class Track(object):
@@ -30,9 +29,12 @@ class Track(object):
         self.nom = donnees[1]
         self.verrouillage = donnees[2]
         self.observations = donnees[3]
-        self.exercice = donnees[4]
-        self.mois = donnees[5]
-        self.nbrePieces = donnees[6]
+        self.format = donnees[4]
+        self.exercice = donnees[5]
+        self.mois = donnees[6]
+        self.nbrePieces = donnees[7]
+
+        self.nom_format = DLG_Saisie_lot_tresor_public.GetFormatByCode(self.format)["label"]
         self.periode = "%d-%d" % (self.exercice, self.mois)
         
     
@@ -62,7 +64,7 @@ class ListView(FastObjectListView):
         """ Récupération des données """
         listeID = None
         db = GestionDB.DB()
-        req = """SELECT pes_lots.IDlot, pes_lots.nom, pes_lots.verrouillage, pes_lots.observations, exercice, mois, Count(pes_pieces.IDlot) AS nbrePieces
+        req = """SELECT pes_lots.IDlot, pes_lots.nom, pes_lots.verrouillage, pes_lots.observations, pes_lots.format, exercice, mois, Count(pes_pieces.IDlot) AS nbrePieces
         FROM pes_lots
         LEFT JOIN pes_pieces ON pes_pieces.IDlot = pes_lots.IDlot
         GROUP BY pes_lots.IDlot;"""
@@ -111,13 +113,14 @@ class ListView(FastObjectListView):
         liste_Colonnes = [
             ColumnDefn(_(u"ID"), "left", 42, "IDlot", typeDonnee="entier", imageGetter=GetImageVerrouillage),
             ColumnDefn(_(u"Période"), "left", 150, "periode", typeDonnee="texte", stringConverter=FormatePeriode), 
-            ColumnDefn(_(u"Nom"), "left", 190, "nom", typeDonnee="texte"), 
+            ColumnDefn(_(u"Nom du lot"), "left", 190, "nom", typeDonnee="texte"),
+            ColumnDefn(_(u"Format"), "left", 170, "nom_format", typeDonnee="texte"),
             ColumnDefn(_(u"Nbre pièces"), "center", 80, "nbrePieces", typeDonnee="entier"), 
             ColumnDefn(_(u"Observations"), "left", 200, "observations", typeDonnee="texte"), 
             ]
         
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(_(u"Aucun bordereau"))
+        self.SetEmptyListMsg(_(u"Aucun lot"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
         self.SetSortColumn(self.columns[1])
         self.SetObjects(self.donnees)
@@ -208,8 +211,11 @@ class ListView(FastObjectListView):
 
     def Ajouter(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("facturation_helios", "creer") == False : return
-        from Dlg import DLG_Saisie_pes_lot
-        dlg = DLG_Saisie_pes_lot.Dialog(self)
+        reponse = self.Get_classe()
+        if not reponse:
+            return False
+        format, classe = reponse
+        dlg = classe(self, format=format)
         if dlg.ShowModal() == wx.ID_OK:
             IDlot = dlg.GetIDlot()
             self.MAJ(IDlot)
@@ -223,8 +229,10 @@ class ListView(FastObjectListView):
             dlg.Destroy()
             return
         track = self.Selection()[0]
-        from Dlg import DLG_Saisie_pes_lot
-        dlg = DLG_Saisie_pes_lot.Dialog(self, IDlot=track.IDlot)
+        format, classe = self.Get_classe(format=track.format)
+        if not format:
+            return False
+        dlg = classe(self, IDlot=track.IDlot, format=track.format)
         if dlg.ShowModal() == wx.ID_OK:
             self.MAJ(track.IDlot)
         dlg.Destroy()
@@ -257,55 +265,30 @@ class ListView(FastObjectListView):
         dlg.Destroy()
 
     def Assistant(self, filtres=[], nomLot=None):
-        from Dlg import DLG_Saisie_pes_lot
-        dlg = DLG_Saisie_pes_lot.Dialog(self)
+        format, classe = self.Get_classe()
+        if not format:
+            return False
+        dlg = classe(self, format=format)
         dlg.Assistant(filtres=filtres, nomLot=nomLot)
         if dlg.ShowModal() == wx.ID_OK:
             IDlot = dlg.GetIDlot()
             self.MAJ(IDlot)
         dlg.Destroy()
-            
 
-# -------------------------------------------------------------------------------------------------------------------------------------------
-
-class BarreRecherche(wx.SearchCtrl):
-    def __init__(self, parent):
-        wx.SearchCtrl.__init__(self, parent, size=(-1, -1), style=wx.TE_PROCESS_ENTER)
-        self.parent = parent
-        self.rechercheEnCours = False
-        
-        self.SetDescriptiveText(_(u"Rechercher..."))
-        self.ShowSearchButton(True)
-        
-        self.listView = self.parent.ctrl_listview
-        nbreColonnes = self.listView.GetColumnCount()
-        self.listView.SetFilter(Filter.TextSearch(self.listView, self.listView.columns[0:nbreColonnes]))
-        
-        self.SetCancelBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Interdit.png"), wx.BITMAP_TYPE_PNG))
-        self.SetSearchBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Loupe.png"), wx.BITMAP_TYPE_PNG))
-        
-        self.Bind(wx.EVT_SEARCHCTRL_SEARCH_BTN, self.OnSearch)
-        self.Bind(wx.EVT_SEARCHCTRL_CANCEL_BTN, self.OnCancel)
-        self.Bind(wx.EVT_TEXT_ENTER, self.OnDoSearch)
-        self.Bind(wx.EVT_TEXT, self.OnDoSearch)
-
-    def OnSearch(self, evt):
-        self.Recherche()
-            
-    def OnCancel(self, evt):
-        self.SetValue("")
-        self.Recherche()
-
-    def OnDoSearch(self, evt):
-        self.Recherche()
-        
-    def Recherche(self):
-        txtSearch = self.GetValue()
-        self.ShowCancelButton(len(txtSearch))
-        self.listView.GetFilter().SetText(txtSearch)
-        self.listView.RepopulateList()
-        self.Refresh() 
-
+    def Get_classe(self, format=None):
+        if not format:
+            dlg = DLG_Saisie_lot_tresor_public.DLG_Choix_format(self)
+            if dlg.ShowModal() == wx.ID_OK:
+                format = dlg.GetFormat()
+                dlg.Destroy()
+            else:
+                dlg.Destroy()
+                return False
+        if format == "pes":
+            classe = DLG_Saisie_lot_tresor_public_pes.Dialog
+        if format == "magnus":
+            classe = DLG_Saisie_lot_tresor_public_magnus.Dialog
+        return (format, classe)
 
 # -------------------------------------------------------------------------------------------------------------------------------------------
 
