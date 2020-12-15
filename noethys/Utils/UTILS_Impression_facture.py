@@ -550,7 +550,7 @@ class Impression():
                                     listeDictPrestations = []
                                     for dictPrestation in prestations :
                                         listeDictPrestations.append((dictPrestation["label"], dictPrestation))
-                                    listeDictPrestations.sort() 
+                                    listeDictPrestations.sort(key=lambda e: e[0])
                                     
                                     for labelTemp, dictPrestation in listeDictPrestations :
                                         label = dictPrestation["label"]
