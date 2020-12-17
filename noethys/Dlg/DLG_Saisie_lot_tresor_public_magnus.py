@@ -755,7 +755,19 @@ class Dialog(DLG_Saisie_lot_tresor_public.Dialog):
 
                 # ICS - Texte (13)
                 IDcompte = self.ctrl_parametres.GetPropertyValue("IDcompte")
+                if not IDcompte:
+                    dlg = wx.MessageDialog(self, _(u"Au moins un prélèvement SEPA est demandé. Vous devez donc sélectionner un compte bancaire créditeur dans les paramètres !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+                    dlg.ShowModal()
+                    dlg.Destroy()
+                    return False
+
                 dict_compte = self.ctrl_parametres.dictComptes[IDcompte]
+                if not dict_compte["code_ics"]:
+                    dlg = wx.MessageDialog(self, _(u"Au moins un prélèvement SEPA est demandé. Vous devez donc renseigner le numéro ICS dans les paramètres du compte bancaire créditeur !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+                    dlg.ShowModal()
+                    dlg.Destroy()
+                    return False
+
                 ligne[74] = ConvertToTexte(dict_compte["code_ics"]) if dict_compte["code_ics"] else ""
 
                 # RUM - Texte (35)
@@ -789,7 +801,7 @@ class Dialog(DLG_Saisie_lot_tresor_public.Dialog):
             ligne[84] = ConvertToTexte("N")
 
             # Version - Numérique (3)
-            ligne[90] = "18"
+            ligne[90] = ConvertToTexte("18")
 
             # CategorieTiersPES - Numérique (2)
             ligne[91] = ConvertToTexte(piece["cattiers_helios"])
@@ -844,7 +856,7 @@ class Dialog(DLG_Saisie_lot_tresor_public.Dialog):
                         ligne_detail = {}
 
                         # Version - Numérique (3)
-                        ligne_detail[1] = "18"
+                        ligne_detail[1] = ConvertToTexte("18")
 
                         # RefIdEcriture - Texte (50)
                         ligne_detail[2] = ligne[1]
@@ -893,7 +905,7 @@ class Dialog(DLG_Saisie_lot_tresor_public.Dialog):
                 ligne_pj[7] = ConvertToTexte("06")
 
                 # Version - Numérique (3)
-                ligne_pj[8] = "18"
+                ligne_pj[8] = ConvertToTexte("18")
 
                 # Formatage de la ligne PJ
                 texte_ligne_pj = ['""' for x in range(0, 8)]
