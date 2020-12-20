@@ -286,6 +286,8 @@ class Dialog(wx.Dialog):
         self.ctrl_date_prestation.SetDate(datetime.date.today())
         self.ctrl_label.SetValue(track.label)
         self.ctrl_montant.SetMontant(track.montant)
+        self.track.tva = track.tva
+        self.track.code_compta = track.code_compta
 
     def OnDoubleClick(self, event=None):
         self.OnBoutonOk()

@@ -864,8 +864,8 @@ class Dialog(wx.Dialog):
                     ("montant", track_prestation.montant),
                     ("IDfamille", self.ctrl_loueur.GetIDfamille()),
                     ("IDindividu", None),
-                    ("code_compta", None),
-                    ("tva", None),
+                    ("code_compta", track_prestation.code_compta),
+                    ("tva", track_prestation.tva),
                     ("IDdonnee", IDlocation),
                     ]
 
@@ -938,7 +938,7 @@ class Dialog(wx.Dialog):
 
         # Importation des prestations
         req = """SELECT
-        IDprestation, date, label, montant, IDfacture
+        IDprestation, date, label, montant, IDfacture, tva
         FROM prestations 
         WHERE categorie="location" and IDdonnee=%d;""" % self.IDlocation
         DB.ExecuterReq(req)
@@ -946,11 +946,11 @@ class Dialog(wx.Dialog):
         DB.Close()
 
         liste_tracks_prestations = []
-        for IDprestation, date, label, montant, IDfacture in listePrestations :
+        for IDprestation, date, label, montant, IDfacture, tva in listePrestations :
             date = UTILS_Dates.DateEngEnDateDD(date)
             dictPrestation = {
                 "IDprestation" : IDprestation, "date" : date, "label" : label,
-                "montant": montant, "IDfacture" : IDfacture,
+                "montant": montant, "IDfacture" : IDfacture, "tva": tva,
                 }
             track_prestation = OL_Locations_prestations.Track_prestation(dictPrestation)
             liste_tracks_prestations.append(track_prestation)
