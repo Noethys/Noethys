@@ -44,8 +44,6 @@ class Track(object):
         self.IDfamille = donnees["IDfamille"]
         self.IDcompte_payeur = donnees["IDcompte_payeur"]
 
-        self.alias_famille = u"FAM%06d" % self.IDfamille
-
         self.prelevement = donnees["prelevement"]
         self.prelevement_iban =  donnees["prelevement_iban"]
         self.prelevement_bic =  donnees["prelevement_bic"]
@@ -115,10 +113,16 @@ class Track(object):
                 self.natjur_helios = "%02d" % self.natjur_helios
         else :
             self.natjur_helios = "01"
-        
+
+        self.code_tiers = u"FAM%06d" % self.IDfamille
+
+        self.code_compta = ""
+        if "code_compta" in donnees["dictAutresDonnees"] and donnees["dictAutresDonnees"]["code_compta"]:
+            self.code_compta = donnees["dictAutresDonnees"]["code_compta"]
+
         # Etat de la pièce
         self.etat = donnees["etat"] # "ajout", "modif"
-        self.AnalysePiece() 
+        self.AnalysePiece()
         
     def InitTitulaireHelios(self):
         if self.titulaire_helios in self.dictIndividus :
@@ -175,13 +179,16 @@ class Track(object):
 
 def GetDictAutresDonnees():
     DB = GestionDB.DB()
-    req = """SELECT IDfamille, idtiers_helios, natidtiers_helios, reftiers_helios, cattiers_helios, natjur_helios
+    req = """SELECT IDfamille, idtiers_helios, natidtiers_helios, reftiers_helios, cattiers_helios, natjur_helios, code_comptable
     FROM familles;"""
     DB.ExecuterReq(req)
     listeAutresDonnees = DB.ResultatReq()
     dictAutresDonnees = {}
-    for IDfamille, idtiers_helios, natidtiers_helios, reftiers_helios, cattiers_helios, natjur_helios in listeAutresDonnees :
-        dictAutresDonnees[IDfamille] = {"idtiers_helios":idtiers_helios, "natidtiers_helios":natidtiers_helios, "reftiers_helios":reftiers_helios, "cattiers_helios":cattiers_helios, "natjur_helios":natjur_helios}
+    for IDfamille, idtiers_helios, natidtiers_helios, reftiers_helios, cattiers_helios, natjur_helios, code_compta in listeAutresDonnees :
+        dictAutresDonnees[IDfamille] = {
+            "idtiers_helios": idtiers_helios, "natidtiers_helios": natidtiers_helios, "reftiers_helios": reftiers_helios,
+            "cattiers_helios": cattiers_helios, "natjur_helios": natjur_helios, "code_compta": code_compta
+        }
     DB.Close() 
     return dictAutresDonnees
 
@@ -359,6 +366,7 @@ class ListView(FastObjectListView):
             ColumnDefn(_(u"Ref. Tiers"), 'left', 70, "reftiers_helios", typeDonnee="texte"),
             ColumnDefn(_(u"Cat. Tiers"), 'left', 70, "cattiers_helios", typeDonnee="texte"),
             ColumnDefn(_(u"Nat. Jur."), 'left', 70, "natjur_helios", typeDonnee="texte"),
+            ColumnDefn(_(u"Code compta."), 'left', 95, "code_compta", typeDonnee="texte"),
             ]
         
 

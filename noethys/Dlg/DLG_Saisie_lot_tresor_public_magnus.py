@@ -141,6 +141,11 @@ class CTRL_Parametres(DLG_Saisie_lot_tresor_public.CTRL_Parametres):
         self.SetPropertyMaxLength(propriete, 100)
         self.Append(propriete)
 
+        propriete = wxpg.BoolProperty(label=_(u"Utiliser code comptable familial comme code tiers"), name="code_compta_as_alias", value=True)
+        propriete.SetHelpString(_(u"Utiliser le code comptable de la famille (Fiche famille > Onglet Divers) comme code tiers (ou alias). Sinon un code de type FAM000001 sera généré automatiquement."))
+        propriete.SetAttribute("UseCheckbox", True)
+        self.Append(propriete)
+
         # Libellés
         self.Append( wxpg.PropertyCategory(_(u"Libellés")) )
 
@@ -178,6 +183,7 @@ class CTRL_Parametres(DLG_Saisie_lot_tresor_public.CTRL_Parametres):
         self.SetPropertyValue("inclure_pieces_jointes", UTILS_Parametres.Parametres(mode="get", categorie="export_magnus", nom="inclure_pieces_jointes", valeur=False))
         self.SetPropertyValue("inclure_detail", UTILS_Parametres.Parametres(mode="get", categorie="export_magnus", nom="inclure_detail", valeur=False))
         self.SetPropertyValue("tribunal", UTILS_Parametres.Parametres(mode="get", categorie="export_magnus", nom="tribunal", valeur=u"le tribunal administratif"))
+        self.SetPropertyValue("code_compta_as_alias", UTILS_Parametres.Parametres(mode="get", categorie="export_magnus", nom="code_compta_as_alias", valeur=True))
 
 
 
@@ -336,7 +342,7 @@ class Dialog(DLG_Saisie_lot_tresor_public.Dialog):
 
     def Memorisation_parametres(self):
         # Mémorisation des préférences
-        for code in ("tipi", "edition_asap", "inclure_detail", "inclure_pieces_jointes", "tribunal"):
+        for code in ("tipi", "edition_asap", "inclure_detail", "inclure_pieces_jointes", "tribunal", "code_compta_as_alias"):
             UTILS_Parametres.Parametres(mode="set", categorie="export_magnus", nom=code, valeur=self.ctrl_parametres.GetPropertyValue(code))
 
     def OnBoutonFichier(self, event):
@@ -427,7 +433,8 @@ class Dialog(DLG_Saisie_lot_tresor_public.Dialog):
                 "cattiers_helios": track.cattiers_helios,
                 "natjur_helios": track.natjur_helios,
                 "IDfacture" : track.IDfacture,
-                "alias_famille" : track.alias_famille,
+                "code_compta" : track.code_compta,
+                "code_tiers": track.code_tiers,
             }
             listePieces.append(dictPiece)
             montantTotal += montant
@@ -611,10 +618,10 @@ class Dialog(DLG_Saisie_lot_tresor_public.Dialog):
             ligne[3] = ConvertToTexte("O")
 
             # Collectivité - Texte (10)
-            ligne[4] = ConvertToTexte(dict_donnees["code_collectivite"])
+            ligne[4] = ConvertToTexte(dict_donnees["code_collectivite"][:10])
 
             # Budget - Texte (10)
-            ligne[5] = ConvertToTexte(dict_donnees["code_budget"])
+            ligne[5] = ConvertToTexte(dict_donnees["code_budget"][:10])
 
             # Exercice - Entier
             ligne[6] = dict_donnees["exercice"]
@@ -623,28 +630,30 @@ class Dialog(DLG_Saisie_lot_tresor_public.Dialog):
             ligne[7] = ConvertToTexte("M")
 
             # CodeTiers - Texte (15)
-            ligne[8] = ConvertToTexte(piece["alias_famille"])
+            ligne[8] = ConvertToTexte(piece["code_tiers"][:15])
+            if self.ctrl_parametres.GetPropertyValue("code_compta_as_alias") == True and piece["code_compta"]:
+                ligne[8] = ConvertToTexte(piece["code_compta"][:15])
 
             # Designation1 - Texte (50)
-            ligne[10] = ConvertToTexte(piece["titulaire_nom"])
+            ligne[10] = ConvertToTexte(piece["titulaire_nom"][:50])
 
             # Designation2 - Texte (50)
-            ligne[11] = ConvertToTexte(piece["titulaire_prenom"])
+            ligne[11] = ConvertToTexte(piece["titulaire_prenom"][:50])
 
             # AdrLig1 - Texte (50)
-            ligne[12] = ConvertToTexte(piece["titulaire_rue"])
+            ligne[12] = ConvertToTexte(piece["titulaire_rue"][:50])
 
             # Codepostal - Texte (10)
-            ligne[15] = ConvertToTexte(piece["titulaire_cp"])
+            ligne[15] = ConvertToTexte(piece["titulaire_cp"][:10])
 
             # Ville - Texte (50)
-            ligne[16] = ConvertToTexte(piece["titulaire_ville"])
+            ligne[16] = ConvertToTexte(piece["titulaire_ville"][:50])
 
             # Libelle1 - Texte (50)
-            ligne[18] = ConvertToTexte(dict_donnees["objet_dette"])
+            ligne[18] = ConvertToTexte(dict_donnees["objet_dette"][:50])
 
             # PièceJustificative1 - Texte (50)
-            ligne[20] = ConvertToTexte(piece["objet_piece"])
+            ligne[20] = ConvertToTexte(piece["objet_piece"][:50])
 
             # Numéro - Entier
             ligne[23] = "0"  # Nécessaire ?
@@ -656,7 +665,7 @@ class Dialog(DLG_Saisie_lot_tresor_public.Dialog):
             ligne[25] = ConvertToTexte(UTILS_Dates.DateEngFr(dict_donnees["date_emission"]))
 
             # Article - Texte (10)
-            ligne[26] = ConvertToTexte(dict_donnees["id_poste"])
+            ligne[26] = ConvertToTexte(dict_donnees["id_poste"][:10])
 
             # Montant HT - Monétaire (,4)
             ligne[30] = piece["montant"] + "00"
@@ -677,7 +686,7 @@ class Dialog(DLG_Saisie_lot_tresor_public.Dialog):
             ligne[36] = "0"
 
             # NJ - Texte (2)
-            ligne[38] = ConvertToTexte(piece["natjur_helios"])
+            ligne[38] = ConvertToTexte(piece["natjur_helios"][:2])
 
             # TvaTaux - Reel Simple (5)
             ligne[40] = "0.000000"
@@ -724,16 +733,16 @@ class Dialog(DLG_Saisie_lot_tresor_public.Dialog):
                 ligne[63] = ConvertToTexte(nom_banque[:24])
 
                 # TitCpte - Texte (32)
-                ligne[64] = ConvertToTexte(piece["prelevement_titulaire"])
+                ligne[64] = ConvertToTexte(piece["prelevement_titulaire"][:32])
 
                 # IBAN - Texte (34)
-                ligne[65] = ConvertToTexte(piece["prelevement_iban"])
+                ligne[65] = ConvertToTexte(piece["prelevement_iban"][:34])
 
                 # BIC - Texte (11)
-                ligne[66] = ConvertToTexte(piece["prelevement_bic"])
+                ligne[66] = ConvertToTexte(piece["prelevement_bic"][:11])
 
             # Tribunal - Texte (100)
-            ligne[68] = ConvertToTexte(dict_donnees["tribunal"])
+            ligne[68] = ConvertToTexte(dict_donnees["tribunal"][:100])
 
             # Civilité - Texte (32)
             if piece["titulaire_civilite"] == u"M.": ligne[69] = ConvertToTexte("M")
@@ -818,7 +827,7 @@ class Dialog(DLG_Saisie_lot_tresor_public.Dialog):
             ligne[94] = ConvertToTexte(piece["natidtiers_helios"])
 
             # IdentifiantTiers - Texte (18)
-            ligne[95] = ConvertToTexte(piece["idtiers_helios"])
+            ligne[95] = ConvertToTexte(piece["idtiers_helios"][:18])
 
             # CodeResident - Numérique (3)
             ligne[97] = ConvertToTexte("0")
@@ -893,7 +902,7 @@ class Dialog(DLG_Saisie_lot_tresor_public.Dialog):
                 ligne_pj[2] = ConvertToTexte(pj["NomPJ"][:100])
 
                 # DescriptionPJ - Texte (255)
-                ligne_pj[3] = ConvertToTexte(piece["objet_piece"])
+                ligne_pj[3] = ConvertToTexte(piece["objet_piece"][:255])
 
                 # TypPJPES - Texte (3)
                 ligne_pj[4] = ConvertToTexte("006")
