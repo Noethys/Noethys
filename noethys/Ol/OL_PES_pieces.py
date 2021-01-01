@@ -114,8 +114,10 @@ class Track(object):
         else :
             self.natjur_helios = "01"
 
+        # Code tiers de la famille
         self.code_tiers = u"FAM%06d" % self.IDfamille
 
+        # Code compta de la famille
         self.code_compta = ""
         if "code_compta" in donnees["dictAutresDonnees"] and donnees["dictAutresDonnees"]["code_compta"]:
             self.code_compta = donnees["dictAutresDonnees"]["code_compta"]
@@ -730,10 +732,12 @@ class ListView(FastObjectListView):
         for track in listeSelections :
             if prelevement == 0 :
                 track.prelevement = 0
-                track.etat = "modif"
+                if track.etat != "ajout":
+                    track.etat = "modif"
             if prelevement == 1 and track.prelevement_iban != "" :
                 track.prelevement = 1
-                track.etat = "modif"
+                if track.etat != "ajout":
+                    track.etat = "modif"
         self.RefreshObjects(listeSelections)
 
 
