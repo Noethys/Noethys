@@ -13,7 +13,7 @@ import Chemins
 from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
-import time
+import time, codecs
 import GestionDB
 from Ctrl import CTRL_Bouton_image
 from Ctrl import CTRL_Bandeau
@@ -88,7 +88,7 @@ class CTRL_Log(wx.TextCtrl):
         dlg.Destroy()
         if nomFichier == None :
             return
-        fichier = open(nomFichier, "w")
+        fichier = codecs.open(nomFichier, encoding='utf-8', mode='w')
         fichier.write(self.GetValue())
         fichier.close()
 

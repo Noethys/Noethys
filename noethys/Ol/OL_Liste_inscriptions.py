@@ -214,7 +214,8 @@ class ListView(GroupListView):
         DB.ExecuterReq(req)
         listeVentilations = DB.ResultatReq()
         for IDfamille, IDindividu, total_ventilation in listeVentilations :
-            dictFacturation[(IDfamille, IDindividu)]["ventilation"] = total_ventilation
+            if (IDfamille, IDindividu) in dictFacturation:
+                dictFacturation[(IDfamille, IDindividu)]["ventilation"] = total_ventilation
 
         # Récupération des données sur les individus
         listeChamps2 = []
