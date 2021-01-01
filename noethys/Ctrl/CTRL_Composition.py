@@ -440,7 +440,7 @@ class CadreIndividu():
             self.dc.SetBrush(wx.Brush((0, 0, 0), style=wx.TRANSPARENT))
             self.dc.SetPen(wx.Pen(couleurSelectionCadre, 1, wx.DOT))
             if 'phoenix' in wx.PlatformInfo:
-                self.dc.DrawRoundedRectangle(wx.Rect(x-ecart, y-ecart, largeur+(ecart*2), hauteur+(ecart*2)), radius=5*self.zoom)
+                self.dc.DrawRoundedRectangle(wx.Rect(int(x-ecart), int(y-ecart), int(largeur+(ecart*2)), int(hauteur+(ecart*2))), radius=int(5*self.zoom))
             else :
                 self.dc.DrawRoundedRectangleRect(wx.Rect(x-ecart, y-ecart, largeur+(ecart*2), hauteur+(ecart*2)), radius=5*self.zoom)
 
@@ -448,23 +448,28 @@ class CadreIndividu():
         self.dc.SetBrush(wx.Brush(couleurFondBasCadre))
         self.dc.SetPen(wx.Pen(couleurBordCadre, 1))
         if 'phoenix' in wx.PlatformInfo:
-            self.dc.DrawRoundedRectangle(wx.Rect(int(x), int(y), int(largeur), int(hauteur)), radius=5*self.zoom)
+            if "linux" in sys.platform:
+                self.dc.DrawRectangle(wx.Rect(int(x), int(y), int(largeur), int(hauteur)))
+            else:
+                self.dc.DrawRoundedRectangle(wx.Rect(int(x), int(y), int(largeur), int(hauteur)), radius=5*self.zoom)
         else :
             self.dc.DrawRoundedRectangleRect(wx.Rect(x, y, largeur, hauteur), radius=5*self.zoom)
-        coordsSpline = [(int(x+1), int(y+(hauteur/3))), (int(x+(largeur/2.5)), int(y+(hauteur/4.1))), (int(x+largeur-1), int(y+(hauteur/1.8)))]
-        self.dc.DrawSpline(coordsSpline)
-        
-        self.dc.SetBrush(wx.Brush(couleurFondHautCadre) )
-        self.dc.FloodFill(int(x+5), int(y+5), couleurBordCadre, style=wx.FLOOD_BORDER )
-        
-        self.dc.SetPen(wx.Pen(couleurFondBasCadre, 1))
-        self.dc.DrawSpline(coordsSpline)
+
+        if "linux" not in sys.platform:
+            coordsSpline = [(int(x+1), int(y+(hauteur/3))), (int(x+(largeur/2.5)), int(y+(hauteur/4.1))), (int(x+largeur-1), int(y+(hauteur/1.8)))]
+            self.dc.DrawSpline(coordsSpline)
+
+            self.dc.SetBrush(wx.Brush(couleurFondHautCadre) )
+            self.dc.FloodFill(int(x+5), int(y+5), couleurBordCadre, style=wx.FLOOD_BORDER )
+
+            self.dc.SetPen(wx.Pen(couleurFondBasCadre, 1))
+            self.dc.DrawSpline(coordsSpline)
         
         # Intégration de la photo
         if self.photo != None :
             try:
                 img = self.photo.ConvertToImage()
-                img = img.Rescale(width=taillePhoto, height=taillePhoto, quality=wx.IMAGE_QUALITY_HIGH)
+                img = img.Rescale(width=int(taillePhoto), height=int(taillePhoto), quality=wx.IMAGE_QUALITY_HIGH)
                 self.bmp = img.ConvertToBitmap()
                 self.dc.DrawBitmap(self.bmp, int(x+paddingCadre), int(y+paddingCadre))
             except:
@@ -478,7 +483,7 @@ class CadreIndividu():
         for texte, tailleFont, styleFont in self.listeTextes :
             # Font
             font = self.parent.GetFont()
-            font.SetPointSize(tailleFont*self.zoomContenuRatio)
+            font.SetPointSize(int(tailleFont*self.zoomContenuRatio))
             if styleFont == "normal" : font.SetWeight(wx.FONTWEIGHT_NORMAL)
             if styleFont == "light" : font.SetWeight(wx.FONTWEIGHT_LIGHT)
             if styleFont == "bold" : font.SetWeight(wx.FONTWEIGHT_BOLD)
@@ -501,7 +506,7 @@ class CadreIndividu():
             else:
                 bmpConso = wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Calendrier.png"), wx.BITMAP_TYPE_ANY) 
             xBmpConso, yBmpConso = x+largeur-5-32, y+5
-            self.dc.DrawBitmap(bmpConso, xBmpConso, yBmpConso)
+            self.dc.DrawBitmap(bmpConso, int(xBmpConso), int(yBmpConso))
         
         # Symboles de l'individu
         xSymbole = x + paddingCadre
