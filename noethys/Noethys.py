@@ -21,6 +21,7 @@ import wx
 import platform
 import datetime
 import traceback
+import codecs
 
 # import ctypes
 # try:
@@ -3594,29 +3595,21 @@ class MainFrame(wx.Frame):
     def On_propos_versions(self, event):
         """ A propos : Notes de versions """
         # Lecture du fichier
-        txtLicence = open(FonctionsPerso.GetRepertoireProjet("Versions.txt"), "r")
-        msg = txtLicence.read()
-        txtLicence.close()
-        # Dlg
+        fichier = codecs.open(FonctionsPerso.GetRepertoireProjet("Versions.txt"), encoding='utf-8', mode='r')
+        msg = fichier.read()
+        fichier.close()
         from Dlg import DLG_Messagebox
-        if six.PY2:
-            msg = msg.decode("iso-8859-15")
         dlg = DLG_Messagebox.Dialog(self, titre=_(u"Notes de versions"), introduction=_("Liste des versions du logiciel :"), detail=msg, icone=wx.ICON_INFORMATION, boutons=[_(u"Fermer"),], defaut=0)
         dlg.ShowModal()
         dlg.Destroy()
-        # import  wx.lib.dialogs
-        # dlg = wx.lib.dialogs.ScrolledMessageDialog(self, msg.decode("iso-8859-15"), _(u"Notes de versions"), size=(500, 500))
-        # dlg.ShowModal()
-        
+
     def On_propos_licence(self, event):
         """ A propos : Licence """
-        import  wx.lib.dialogs
-        txtLicence = open(FonctionsPerso.GetRepertoireProjet("Licence.txt"), "r")
-        msg = txtLicence.read()
-        txtLicence.close()
-        if six.PY2:
-            msg = msg.decode("iso-8859-15")
-        dlg = wx.lib.dialogs.ScrolledMessageDialog(self, msg, _(u"A propos"), size=(500, 500))
+        import wx.lib.dialogs
+        fichier = codecs.open(FonctionsPerso.GetRepertoireProjet("Licence.txt"), encoding='utf-8', mode='r')
+        msg = fichier.read()
+        fichier.close()
+        dlg = wx.lib.dialogs.ScrolledMessageDialog(self, msg, _(u"Licence"), size=(500, 500))
         dlg.ShowModal()
 
     def On_propos_soutenir(self, event):
