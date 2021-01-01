@@ -22,16 +22,16 @@ Sur Windows, vous devez aller sur les sites des auteurs pour
 rechercher et installer les bibliothèques suivantes.
 
 - Python 2.7 (http://www.python.org/)
-- wxPython 3.0 - version unicode (http://www.wxpython.org/)
+- wxPython **3.0** - version unicode (https://sourceforge.net/projects/wxpython/files/wxPython/3.0.1.0/)
 - dateutil (http://pypi.python.org/pypi/python-dateutil)
 - MySQLdb (http://sourceforge.net/projects/mysql-python/)
-- NumPy (http://new.scipy.org/download.html)
+- NumPy (https://numpy.org/install/)
 - PIL (http://www.pythonware.com/products/pil/)
 - PyCrypto (https://www.dlitz.net/software/pycrypto/)
-- PyCrypt (https://sites.google.com/site/reachmeweb/pycrypt)
+- PyCrypt (https://pypi.org/project/pycrypt/)
 - ReportLab (http://www.reportlab.com/software/opensource/rl-toolkit/download/)
 - MatPlotLib (http://matplotlib.sourceforge.net/)
-- ObjectListView (http://objectlistview.sourceforge.net/python/)
+- ObjectListView (https://pypi.org/project/ObjectListView/)
 - ~~pyExcelerator (http://sourceforge.net/projects/pyexcelerator/)~~ obsolète depuis la version 1.2.7.3
 - XlsxWriter (https://pypi.org/project/XlsxWriter/) depuis la version 1.2.7.3
 - videoCapture (http://videocapture.sourceforge.net/)
