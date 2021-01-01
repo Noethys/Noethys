@@ -276,6 +276,7 @@ DB_DATA = {
                                     ("portail_reservations_absenti", "VARCHAR(100)", u"Application d'une absence injustifiée"),
                                     ("portail_unites_multiples", "INTEGER", u"Sélection multiple d'unités autorisée (0/1)"),
                                     ("regie", "INTEGER", u"ID de la régie associée"),
+                                    ("code_produit_local", "VARCHAR(200)", u"Code produit local pour export compta"),
                                     ], # Activités
 
     "agrements":[            ("IDagrement", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID Agrément"),
@@ -560,6 +561,7 @@ DB_DATA = {
                                     ("IDcontrat", "INTEGER", u"ID du contrat associé"),
                                     ("date_valeur", "DATE", u"Date de valeur comptable de la prestation"),
                                     ("IDdonnee", "INTEGER", u"ID d'une donnée associée"),
+                                    ("code_produit_local", "VARCHAR(200)", u"Code produit local pour export compta"),
                                     ], # Prestations
 
     "comptes_payeurs":[  ("IDcompte_payeur", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID compte_payeur"),
@@ -715,6 +717,7 @@ DB_DATA = {
                                     ("carte", "INTEGER", u"(0/1) Est une carte d'adhérent"),
                                     ("defaut", "INTEGER", u"(0/1) Cotisation sélectionnée par défaut"),
                                     ("code_comptable", "VARCHAR(450)", u"Code comptable pour facturation et export logiciels compta"),
+                                    ("code_produit_local", "VARCHAR(200)", u"Code produit local pour export compta"),
                                     ], # Types de cotisations
 
     "unites_cotisations":[ ("IDunite_cotisation", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID unité cotisation"),

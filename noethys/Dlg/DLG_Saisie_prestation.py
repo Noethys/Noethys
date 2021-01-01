@@ -319,11 +319,16 @@ class Dialog(wx.Dialog):
         self.ctrl_tva = FS.FloatSpin(self, -1, min_val=0, max_val=100, increment=0.1, agwStyle=FS.FS_RIGHT)
         self.ctrl_tva.SetFormat("%f")
         self.ctrl_tva.SetDigits(2)
-        
+        self.ctrl_tva.SetMinSize((70, -1))
+
         # Code comptable
         self.label_code_comptable = wx.StaticText(self, -1, _(u"Code compta :"))
-        self.ctrl_code_comptable = wx.TextCtrl(self, -1, u"") 
-        
+        self.ctrl_code_comptable = wx.TextCtrl(self, -1, u"")
+        self.ctrl_code_comptable.SetMinSize((50, -1))
+        self.label_code_produit_local = wx.StaticText(self, -1, _(u"Code produit local :"))
+        self.ctrl_code_produit_local = wx.TextCtrl(self, -1, "")
+        self.ctrl_code_produit_local.SetMinSize((50, -1))
+
         # Montants
         self.label_montant_avant_deduc = wx.StaticText(self, -1, _(u"Montant TTC (%s) :") % SYMBOLE)
         self.ctrl_montant_avant_deduc = CTRL_Saisie_euros.CTRL(self)
@@ -476,12 +481,16 @@ class Dialog(wx.Dialog):
 
         # TVA + code comptable
         grid_sizer_facturation.Add(self.label_tva, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_tva = wx.FlexGridSizer(rows=1, cols=4, vgap=5, hgap=5)
+        grid_sizer_tva = wx.FlexGridSizer(rows=1, cols=7, vgap=5, hgap=5)
         grid_sizer_tva.Add(self.ctrl_tva, 0, wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_tva.Add( (5, 5), 1, wx.EXPAND, 0)
+        grid_sizer_tva.Add((5, 5), 1, wx.EXPAND, 0)
         grid_sizer_tva.Add(self.label_code_comptable, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_tva.Add( self.ctrl_code_comptable, 0, 0, 0)
-        grid_sizer_tva.AddGrowableCol(1)
+        grid_sizer_tva.Add( self.ctrl_code_comptable, 0, wx.EXPAND, 0)
+        grid_sizer_tva.Add((5, 5), 1, wx.EXPAND, 0)
+        grid_sizer_tva.Add(self.label_code_produit_local, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_tva.Add( self.ctrl_code_produit_local, 0, wx.EXPAND, 0)
+        grid_sizer_tva.AddGrowableCol(3)
+        grid_sizer_tva.AddGrowableCol(6)
         grid_sizer_facturation.Add(grid_sizer_tva, 1, wx.EXPAND, 0)
 
         # Montants
@@ -594,7 +603,7 @@ class Dialog(wx.Dialog):
         """ Importation des données """
         DB = GestionDB.DB()
         req = """SELECT IDprestation, prestations.IDcompte_payeur, date, categorie, label, montant_initial, montant, prestations.IDactivite, 
-        prestations.IDtarif, prestations.IDfacture, IDfamille, IDindividu, temps_facture, categories_tarifs, prestations.IDcategorie_tarif, prestations.code_compta, prestations.tva,
+        prestations.IDtarif, prestations.IDfacture, IDfamille, IDindividu, temps_facture, categories_tarifs, prestations.IDcategorie_tarif, prestations.code_compta, prestations.code_produit_local, prestations.tva,
         factures.IDprefixe, factures_prefixes.prefixe, factures.numero
         FROM prestations 
         LEFT JOIN tarifs ON prestations.IDtarif = tarifs.IDtarif
@@ -607,7 +616,7 @@ class Dialog(wx.Dialog):
         DB.Close()
         if len(listeDonnees) == 0 : return
         prestation = listeDonnees[0]
-        IDprestation, IDcompte_payeur, date, categorie, label, montant_initial, montant, IDactivite, IDtarif, IDfacture, IDfamille, IDindividu, temps_facture, categories_tarifs, IDcategorie_tarif, code_compta, tva, IDprefixe, prefixe, numFacture = prestation
+        IDprestation, IDcompte_payeur, date, categorie, label, montant_initial, montant, IDactivite, IDtarif, IDfacture, IDfamille, IDindividu, temps_facture, categories_tarifs, IDcategorie_tarif, code_compta, code_produit_local, tva, IDprefixe, prefixe, numFacture = prestation
         date = UTILS_Dates.DateEngEnDateDD(date)
 
         # Date
@@ -631,9 +640,11 @@ class Dialog(wx.Dialog):
         # Tarif
         self.OnChoixCategorieTarif(None)
         self.ctrl_tarif.SetID(IDtarif)
-        # Code comptable
+        # Comptabilité
         if code_compta != None :
             self.ctrl_code_comptable.SetValue(code_compta)
+        if code_produit_local != None:
+            self.ctrl_code_produit_local.SetValue(code_produit_local)
         # TVA
         if tva != None :
             self.ctrl_tva.SetValue(tva)
@@ -799,6 +810,11 @@ class Dialog(wx.Dialog):
         code_comptable = self.ctrl_code_comptable.GetValue() 
         if code_comptable == "" :
             code_comptable = None
+
+        code_produit_local = self.ctrl_code_produit_local.GetValue()
+        if code_produit_local == "" :
+            code_produit_local = None
+
         tva = self.ctrl_tva.GetValue()
         if tva == 0.0 :
             tva = None
@@ -868,6 +884,7 @@ class Dialog(wx.Dialog):
                 ("IDcategorie_tarif", IDcategorie_tarif),
                 ("code_compta", code_comptable),
                 ("tva", tva),
+                ("code_produit_local", code_produit_local),
             ]
         if self.IDprestation == None :
             listeDonnees.append(("date_valeur", str(datetime.date.today())))
@@ -889,7 +906,7 @@ class Dialog(wx.Dialog):
 if __name__ == u"__main__":
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    dialog_1 = Dialog(None, IDprestation=26675, IDfamille=399)
+    dialog_1 = Dialog(None, IDprestation=1, IDfamille=1)
     app.SetTopWindow(dialog_1)
     dialog_1.ShowModal()
     app.MainLoop()

@@ -65,6 +65,8 @@ class Dialog(wx.Dialog):
         self.staticbox_options_staticbox = wx.StaticBox(self, -1, _(u"Options"))
         self.label_code_comptable = wx.StaticText(self, -1, _(u"Code comptable :"))
         self.ctrl_code_comptable = wx.TextCtrl(self, -1, u"")
+        self.label_code_produit_local = wx.StaticText(self, -1, _(u"Code produit local :"))
+        self.ctrl_code_produit_local = wx.TextCtrl(self, -1, "")
 
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
         self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
@@ -134,10 +136,14 @@ class Dialog(wx.Dialog):
         grid_sizer_base.Add(staticbox_unites, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
 
         staticbox_options = wx.StaticBoxSizer(self.staticbox_options_staticbox, wx.VERTICAL)
-        grid_sizer_options = wx.FlexGridSizer(rows=3, cols=2, vgap=5, hgap=5)
+        grid_sizer_options = wx.FlexGridSizer(rows=1, cols=5, vgap=5, hgap=5)
         grid_sizer_options.Add(self.label_code_comptable, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_options.Add(self.ctrl_code_comptable, 1, wx.EXPAND, 0)
+        grid_sizer_options.Add(self.ctrl_code_comptable, 1, wx.ALIGN_CENTER_VERTICAL|wx.EXPAND, 0)
+        grid_sizer_options.Add((5, 5), 0, 0, 0)
+        grid_sizer_options.Add(self.label_code_produit_local, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_options.Add(self.ctrl_code_produit_local, 1, wx.ALIGN_CENTER_VERTICAL|wx.EXPAND, 0)
         grid_sizer_options.AddGrowableCol(1)
+        grid_sizer_options.AddGrowableCol(4)
         staticbox_options.Add(grid_sizer_options, 1, wx.ALL|wx.EXPAND, 10)
         grid_sizer_base.Add(staticbox_options, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
 
@@ -159,13 +165,13 @@ class Dialog(wx.Dialog):
     def Importation(self):
         """ Importation des donnees de la base """
         DB = GestionDB.DB()
-        req = """SELECT nom, type, carte, defaut, code_comptable
+        req = """SELECT nom, type, carte, defaut, code_comptable, code_produit_local
         FROM types_cotisations 
         WHERE IDtype_cotisation=%d;""" % self.IDtype_cotisation
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         if len(listeDonnees) == 0 : return
-        nom, type, carte, defaut, code_comptable = listeDonnees[0]
+        nom, type, carte, defaut, code_comptable, code_produit_local = listeDonnees[0]
         # Insertion du nom
         self.ctrl_nom.SetValue(nom)
         # Insertion du type
@@ -176,6 +182,9 @@ class Dialog(wx.Dialog):
         # Code comptable
         if code_comptable != None :
             self.ctrl_code_comptable.SetValue(code_comptable)
+        # Code produit local
+        if code_produit_local != None :
+            self.ctrl_code_produit_local.SetValue(code_produit_local)
         # Mémorisation du DEFAUT
         self.defaut = defaut
         
@@ -254,7 +263,8 @@ class Dialog(wx.Dialog):
             return False
         
         code_comptable = self.ctrl_code_comptable.GetValue() 
-        
+        code_produit_local = self.ctrl_code_produit_local.GetValue()
+
         # Sauvegarde du type de cotisation
         DB = GestionDB.DB()
         listeDonnees = [    
@@ -263,6 +273,7 @@ class Dialog(wx.Dialog):
                 ("carte", carte),
                 ("defaut", self.defaut),
                 ("code_comptable", code_comptable),
+                ("code_produit_local", code_produit_local),
             ]
         if self.IDtype_cotisation == None :
             self.IDtype_cotisation = DB.ReqInsert("types_cotisations", listeDonnees)
