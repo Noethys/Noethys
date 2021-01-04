@@ -1,7 +1,7 @@
-LICENCE ET CONDITIONS D'UTILISATION
+﻿LICENCE ET CONDITIONS D'UTILISATION
 
 "Noethys, gestion Multi-activités"
-Copyright © 2010-2020 Ivan LUCAS
+Copyright © 2010-2021 Ivan LUCAS
 
 Ce programme est un logiciel libre ; vous pouvez le redistribuer 
 et/ou le modifier conformément aux dispositions de la Licence Publique
