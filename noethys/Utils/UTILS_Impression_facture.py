@@ -342,6 +342,7 @@ class Impression():
                         listeIndexActivites = []
                         montantPeriode += dictIndividus["total"]
                         montantVentilation += dictIndividus["ventilation"]
+                        total_montantHT = 0.0
                         
                         # Initialisation des largeurs de tableau
                         largeurColonneDate = dictOptions["largeur_colonne_date"]
@@ -597,6 +598,7 @@ class Impression():
                                         if activeTVA == True :
                                             if tva == None : tva = 0.0
                                             montantHT = (100.0 * float(montant)) / (100 + float(tva)) #montant - montant * 1.0 * float(tva) / 100
+                                            total_montantHT += montantHT
                                             listeMontantsHT.append(Paragraph(u"<para align='center'>%.02f %s</para>" % (montantHT, SYMBOLE), paraStyle))
                                             listeTVA.append(Paragraph(u"<para align='center'>%.02f %%</para>" % tva, paraStyle))
                                         else :
@@ -658,7 +660,7 @@ class Impression():
                         # Insertion des totaux
                         dataTableau = []
                         if activeTVA == True and detail == 0 :
-                            dataTableau.append([texte_prestations_anterieures, "", "", "", Paragraph("<para align='center'>%.02f %s</para>" % (dictIndividus["total"], SYMBOLE) , paraStyle)])
+                            dataTableau.append([texte_prestations_anterieures, "", Paragraph("<para align='center'>%.02f %s</para>" % (total_montantHT, SYMBOLE), paraStyle), "", Paragraph("<para align='center'>%.02f %s</para>" % (dictIndividus["total"], SYMBOLE), paraStyle)])
                         else :
                             if detail != 0 :
                                 dataTableau.append([texte_prestations_anterieures, "", "", Paragraph("<para align='center'>%.02f %s</para>" % (dictIndividus["total"], SYMBOLE) , paraStyle)])
@@ -673,9 +675,13 @@ class Impression():
                                 ('BACKGROUND', (-1, -1), (-1, -1), couleurFond), 
                                 ('TOPPADDING', (0, 0), (-1, -1), 1), 
                                 ('BOTTOMPADDING', (0, 0), (-1, -1), 3),
-                                ('SPAN', (0, -1), (-2, -1)), # Fusion de la dernière ligne pour le texte_prestations_anterieures
+                                ('SPAN', (0, -1), (1, -1)), # Fusion de la dernière ligne pour le texte_prestations_anterieures
                                 ('FONT', (0, -1), (0, -1), "Helvetica", dictOptions["taille_texte_prestations_anterieures"]),
                             ]
+
+                        if activeTVA == True and detail == 0:
+                            listeStyles.append(('BACKGROUND', (-3, -1), (-3, -1), couleurFond))
+                            listeStyles.append(('GRID', (-3, -1), (-3, -1), 0.25, colors.black))
                             
                         # Création du tableau
                         tableau = Table(dataTableau, largeursColonnes)
