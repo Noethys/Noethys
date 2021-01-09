@@ -918,7 +918,7 @@ class Facturation():
 
                 # Recherche de prélèvements
                 if IDfacture in dictPrelevements :
-                    if datePrelevement < dictCompte["date_edition"] :
+                    if datePrelevement and datePrelevement < dictCompte["date_edition"]:
                         verbe = _(u"a été")
                     else :
                         verbe = _(u"sera")
