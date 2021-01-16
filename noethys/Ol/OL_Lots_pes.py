@@ -21,6 +21,7 @@ from Ctrl.CTRL_ObjectListView import FastObjectListView, ColumnDefn, Filter, CTR
 from Dlg import DLG_Saisie_lot_tresor_public
 from Dlg import DLG_Saisie_lot_tresor_public_pes
 from Dlg import DLG_Saisie_lot_tresor_public_magnus
+from Dlg import DLG_Saisie_lot_tresor_public_jvs
 
 
 class Track(object):
@@ -288,6 +289,8 @@ class ListView(FastObjectListView):
             classe = DLG_Saisie_lot_tresor_public_pes.Dialog
         if format == "magnus":
             classe = DLG_Saisie_lot_tresor_public_magnus.Dialog
+        if format == "jvs":
+            classe = DLG_Saisie_lot_tresor_public_jvs.Dialog
         return (format, classe)
 
 # -------------------------------------------------------------------------------------------------------------------------------------------

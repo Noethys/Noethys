@@ -43,8 +43,9 @@ else :
     from wx import CommandLinkButton
 
 FORMATS = [
-    {"code": "pes", "label": _(u"PES v2 ORMC Recette"), "description": _(u"Export vers le logiciel Hélios du Trésor Public de la DGFIP.")},
+    {"code": "pes", "label": _(u"PES v2 ORMC Recette"), "description": _(u"Export vers le logiciel Hélios du Trésor Public diffusé par la DGFIP.")},
     {"code": "magnus", "label": _(u"Magnus Berger-Levrault"), "description": _(u"Export vers le logiciel Magnus de la société Berger-Levrault.")},
+    {"code": "jvs", "label": _(u"Millesime Online JVS"), "description": _(u"Export vers le logiciel Millesime Online de la société JVS-MAIRISTEM.")},
 ]
 
 def GetFormatByCode(code=""):
