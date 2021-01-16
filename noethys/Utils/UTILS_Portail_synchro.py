@@ -520,6 +520,8 @@ class Synchro():
                 session.add(models.Parametre(nom="PAYZEN_CERTIFICAT_TEST", parametre=str(self.dict_parametres["payzen_certificat_test"])))
             if "payzen_certificat_production" in self.dict_parametres:
                 session.add(models.Parametre(nom="PAYZEN_CERTIFICAT_PRODUCTION", parametre=str(self.dict_parametres["payzen_certificat_production"])))
+            if "payzen_echelonnement" in self.dict_parametres:
+                session.add(models.Parametre(nom="PAYZEN_ECHELONNEMENT", parametre=str(self.dict_parametres["payzen_echelonnement"])))
 
         session.add(models.Parametre(nom="ACCUEIL_TITRE", parametre=self.dict_parametres["accueil_titre"]))
         session.add(models.Parametre(nom="ACCUEIL_BIENVENUE", parametre=self.dict_parametres["accueil_bienvenue"]))

@@ -119,6 +119,7 @@ VALEURS_DEFAUT = {
     "payzen_mode" : "TEST",
     "payzen_certificat_test" : "",
     "payzen_certificat_production" : "",
+    "payzen_echelonnement" : False,
     "paiement_off_si_prelevement": False,
     "accueil_titre" : u"Le <strong>Portail</strong> Famille",
     "accueil_bienvenue" : _(u"Bienvenue sur le portail Famille"),
@@ -225,6 +226,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
             ("payzen_mode", "p('paiement_ligne_systeme') == 3"),
             ("payzen_certificat_test", "p('paiement_ligne_systeme') == 3"),
             ("payzen_certificat_production", "p('paiement_ligne_systeme') == 3"),
+            ("payzen_echelonnement", "p('paiement_ligne_systeme') == 3"),
 
             ("paiement_ligne_tipi_saisie", "p('paiement_ligne_systeme') == 1"),
         ]
@@ -745,6 +747,13 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         nom = "payzen_certificat_production"
         propriete = wxpg.StringProperty(label=_(u"Certificat de production"), name=nom, value=VALEURS_DEFAUT[nom])
         propriete.SetHelpString(_(u"Saisissez le certificat de production attribué par Payzen"))
+        self.Append(propriete)
+
+        # Paiement échelonné
+        nom = "payzen_echelonnement"
+        propriete = wxpg.BoolProperty(label=_(u"Proposer le paiement en 3 fois"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Cochez cette case pour activer le paiement en 3 fois. Cette option doit également être activée sur votre compte Payzen (Contacter service client Payzen)."))
+        propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
         # Désactiver le paiement en ligne pour les familles abonnées au prélèvement automatique

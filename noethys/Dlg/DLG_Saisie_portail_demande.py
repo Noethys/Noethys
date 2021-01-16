@@ -14,7 +14,7 @@ from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
 import wx.html as html
-import datetime
+import datetime, re
 import GestionDB
 import FonctionsPerso
 from Ctrl import CTRL_Bouton_image
@@ -1229,9 +1229,14 @@ class Traitement():
         # On récupère l'ID du compte bancaire de la régie si la facture est liée a une régie
         IDcompte_bancaire = None
         num_piece = ""
+        liste_paiements = [(montant_reglement, datetime.date.today())]
 
         if "payzen" in systeme_paiement :
             num_piece = IDtransaction
+            vads_payment_config = self.dict_parametres.get("config", u"SINGLE")
+            if vads_payment_config.startswith("MULTI"):
+                # Paiement en plusieurs fois
+                liste_paiements = [(float(montant)/100, datetime.datetime.strptime(date, "%Y%m%d")) for date, montant in re.findall(r"([0-9]+)>([0-9]+)", vads_payment_config)]
 
         if "tipi" in systeme_paiement :
             IDfacture = list(dict_paiements.keys())[0]
@@ -1245,31 +1250,54 @@ class Traitement():
 
         DB.Close()
 
-        # Traitement manuel
+        if len(liste_paiements) > 1:
+            dlg = wx.MessageDialog(None, _(u"Il s'agit d'un paiement en %d fois. Noethys va donc vous demander de saisir successivement %d règlements.") % (len(liste_paiements), len(liste_paiements)), _(u"Information"), wx.OK | wx.ICON_INFORMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+
         if self.mode == "manuel" :
             from Dlg import DLG_Saisie_reglement
-            dlg = DLG_Saisie_reglement.Dialog(None, IDcompte_payeur=IDcompte_payeur, IDreglement=None)
-            dlg.SelectionneFacture(liste_IDfacture=list(dict_paiements["facture"].keys()))
-            dlg.ctrl_montant.SetMontant(montant_reglement)
-            dlg.ctrl_numero.SetValue(num_piece)
-            dlg.ctrl_mode.SetID(IDmode_reglement)
-            dlg.OnChoixMode(None)
-            dlg.ctrl_observations.SetValue(_(u"Transaction n°%s sur %s (IDpaiement %d)" % (IDtransaction, systeme_paiement, IDpaiement)))
-            if IDcompte_bancaire not in (0, None):
-                dlg.ctrl_compte.SetID(IDcompte_bancaire)
+            for index, (montant_paiement, date_paiement) in enumerate(liste_paiements, start=1):
+                dlg = DLG_Saisie_reglement.Dialog(None, IDcompte_payeur=IDcompte_payeur, IDreglement=None)
+                # dlg.SelectionneFacture(liste_IDfacture=list(dict_paiements["facture"].keys()))
+                dlg.ctrl_date.SetDate(str(date_paiement))
+                dlg.ctrl_montant.SetMontant(montant_paiement)
+                dlg.ctrl_numero.SetValue(num_piece)
+                dlg.ctrl_mode.SetID(IDmode_reglement)
+                dlg.OnChoixMode(None)
+                observations = _(u"Transaction n°%s sur %s (IDpaiement %d).") % (IDtransaction, systeme_paiement, IDpaiement)
+                if len(liste_paiements) > 1:
+                    observations += _(u" Paiement en %d fois du %s (%d/%d).") % (len(liste_paiements), UTILS_Dates.DateDDEnFr(datetime.date.today()), index, len(liste_paiements))
+                dlg.ctrl_observations.SetValue(observations)
+                if IDcompte_bancaire not in (0, None):
+                    dlg.ctrl_compte.SetID(IDcompte_bancaire)
 
-            # Coche les périodes à ventiler
-            if len(dict_paiements["periode"]) > 0:
+                # Coche les prestations à ventiler
+                resteVentilation = FloatToDecimal(montant_paiement)
                 for ligne_prestation in dlg.ctrl_ventilation.ctrl_ventilation.listeLignesPrestations:
-                    for IDperiode, dict_periode in dict_periodes.items():
-                        if ligne_prestation.IDactivite == dict_periode["IDactivite"] and ligne_prestation.date >= dict_periode["date_debut"] and ligne_prestation.date <= dict_periode["date_fin"]:
-                            ligne_prestation.SetEtat(True, majTotaux=False)
+                    valide = False
+                    if ligne_prestation.IDfacture in list(dict_paiements["facture"].keys()):
+                        valide = True
+                    else:
+                        for IDperiode, dict_periode in dict_periodes.items():
+                            if ligne_prestation.IDactivite == dict_periode["IDactivite"] and ligne_prestation.date >= dict_periode["date_debut"] and ligne_prestation.date <= dict_periode["date_fin"]:
+                                valide = True
+                    if valide:
+                        aVentiler = resteVentilation
+                        if aVentiler > FloatToDecimal(ligne_prestation.resteAVentiler):
+                            aVentiler = FloatToDecimal(ligne_prestation.resteAVentiler)
+                        if aVentiler > FloatToDecimal(0.0):
+                            montant = aVentiler + ligne_prestation.ventilationActuelle
+                            ligne_prestation.SetEtat(etat=True, montant=montant, majTotaux=False)
+                            resteVentilation -= FloatToDecimal(aVentiler)
+
+                # MAJ des totaux de ventilation
                 dlg.ctrl_ventilation.ctrl_ventilation.MAJtotaux()
 
-            reponse = dlg.ShowModal()
-            dlg.Destroy()
-            if reponse != wx.ID_OK:
-                return False
+                reponse = dlg.ShowModal()
+                dlg.Destroy()
+                if reponse != wx.ID_OK:
+                    return False
 
             reponse = ""
             return {"etat" : True, "reponse" : reponse}
