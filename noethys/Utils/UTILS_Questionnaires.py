@@ -107,7 +107,7 @@ class Questionnaires():
         filtre = self.GetFiltre(controle)
         texteReponse = u""
         if filtre == "texte" : texteReponse = reponse
-        if filtre == "entier" : texteReponse = int(reponse)
+        if filtre == "entier" : texteReponse = int(float(reponse))
         if filtre == "montant" : texteReponse = float(reponse)#decimal.Decimal(reponse)
         if filtre == "choix" :
             if reponse != None :

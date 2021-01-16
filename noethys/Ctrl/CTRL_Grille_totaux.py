@@ -162,7 +162,7 @@ class CTRL(HTL.HyperTreeList):
         for IDactivite in self.listeActivites :
             
             # Label activité
-            label = self.dictActivites[IDactivite]["nom"]
+            label = self.dictActivites[IDactivite]["nom"] if IDactivite in self.dictActivites else u"?"
             activite = self.AppendItem(self.root, label)
             self.dictBranches["activites"][IDactivite] = activite
             self.SetPyData(activite, IDactivite)
