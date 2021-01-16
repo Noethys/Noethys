@@ -1,8 +1,11 @@
-Version 1.2.8.6 (21/12/2020) :
+Version 1.2.8.7 (16/01/2021) :
 
 - Ajout de l'export vers Magnus de Berger-Levrault
+- Ajout de l'export vers Millesime Online de JVS-Mairistem
+- Ajout du paiement en 3 fois par carte bancaire sur Connecthys
 - Amélioration de la suppression des locations récurrentes
 - Ajout du code produit local dans les prestations
+- Ajout du total de la TVA sur les factures
 - Intégration de la TVA dans les locations
 - Adaptations pour Linux
 - Adaptations pour python 3.9
