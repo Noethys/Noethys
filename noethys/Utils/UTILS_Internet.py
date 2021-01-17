@@ -19,7 +19,8 @@ from six.moves.urllib.request import urlopen
 import datetime
 import string
 import ftplib
-
+import FonctionsPerso
+from Utils import UTILS_Cryptage_fichier
 
 
 def DateEngEnDateDD(dateEng):
@@ -49,14 +50,40 @@ def CreationIdentifiant(IDfamille=None, IDutilisateur=None, nbreCaract=8):
         identifiant = u"U%d" % (int(identifiant) + IDutilisateur)
     return identifiant
 
-def CreationMDP(nbreCaract=8):
+def CreationMDP(nbreCaract=8, IDfichier=None, cryptage=True):
     """ Création d'un mot de passe aléatoire """
+    # Génération du mot de passe
     mdp = ""
     for x in range(0, nbreCaract) :
         mdp += random.choice("bcdfghjkmnprstvwxzBCDFGHJKLMNPRSTVWXZ123456789")
+    # Cryptage du mot de passe
+    if cryptage:
+        if not IDfichier:
+            IDfichier = FonctionsPerso.GetIDfichier()
+        cryptage = UTILS_Cryptage_fichier.AESCipher(IDfichier[-10:], bs=16, prefixe=u"#@#")
+        mdp = cryptage.encrypt(mdp)
     return mdp
 
-def CrypteMDP(motdepasse=""):
+def DecrypteMDP(mdp="", IDfichier=None):
+    if mdp.startswith("#@#"):
+        if not IDfichier:
+            IDfichier = FonctionsPerso.GetIDfichier()
+        cryptage = UTILS_Cryptage_fichier.AESCipher(IDfichier[-10:], bs=16, prefixe=u"#@#")
+        mdp = cryptage.decrypt(mdp)
+    return mdp
+
+def CrypteMDP(mdp="", IDfichier=None):
+    """ Crypte un mot de passe donné """
+    if not mdp.startswith("#@#"):
+        if not IDfichier:
+            IDfichier = FonctionsPerso.GetIDfichier()
+        cryptage = UTILS_Cryptage_fichier.AESCipher(IDfichier[-10:], bs=16, prefixe=u"#@#")
+        mdp = cryptage.encrypt(mdp)
+    return mdp
+
+
+
+def CrypteMDP_archive(motdepasse=""):
     """ Crypte un mot de passe donné """
     mdpCrypte = UTILS_CryptageMD5.unix_md5_crypt(motdepasse, 'ab')
     return mdpCrypte
@@ -285,7 +312,7 @@ def UploadFichierIdentites():
         txtIdentite = ""
         
         identifiant = internet_identifiant
-        mdpCrypte = CrypteMDP(internet_mdp)
+        mdpCrypte = CrypteMDP_archive(internet_mdp)
         
         # Enfants
         txtEnfants = ""

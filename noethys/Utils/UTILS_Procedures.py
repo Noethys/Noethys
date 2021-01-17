@@ -69,6 +69,7 @@ DICT_PROCEDURES = {
     "A9012" : _(u"Custom SMDH - Saisie inscriptions"),
     "A9038" : _(u"Mise à jour de l'historique des locations"),
     "A9045" : _(u"Mise à jour du format des lots PES"),
+    "A9050" : _(u"Cryptage des mots de passe des utilisateurs du portail"),
 }
 
 
@@ -1306,7 +1307,6 @@ def A9038():
     DB.Close()
     EcritStatusbar("")
 
-
 def A9045():
     """ Mise à jour du format dans les lots PES : Ajout du champ format """
     DB = GestionDB.DB()
@@ -1314,11 +1314,41 @@ def A9045():
     DB.Commit()
     DB.Close()
 
+def A9050():
+    """ Cryptage des mots de passe des utilisateurs du portail """
+    from Utils import UTILS_Internet
+    import FonctionsPerso
+    IDfichier = FonctionsPerso.GetIDfichier()
+    DB = GestionDB.DB()
+
+    # Familles
+    req = """SELECT IDfamille, internet_mdp FROM familles;"""
+    DB.ExecuterReq(req)
+    listeFamilles = DB.ResultatReq()
+    liste_modifications = []
+    for IDfamille, internet_mdp in listeFamilles:
+        if not internet_mdp.startswith("custom") and not internet_mdp.startswith("#@#"):
+            internet_mdp = UTILS_Internet.CrypteMDP(internet_mdp, IDfichier=IDfichier)
+            liste_modifications.append((internet_mdp, IDfamille))
+    DB.Executermany("UPDATE familles SET internet_mdp=? WHERE IDfamille=?", liste_modifications, commit=True)
+
+    # Utilisateurs
+    req = """SELECT IDutilisateur, internet_mdp FROM utilisateurs;"""
+    DB.ExecuterReq(req)
+    listeUtilisateurs = DB.ResultatReq()
+    liste_modifications = []
+    for IDutilisateur, internet_mdp in listeUtilisateurs:
+        if not internet_mdp.startswith("custom") and not internet_mdp.startswith("#@#"):
+            internet_mdp = UTILS_Internet.CrypteMDP(internet_mdp, IDfichier=IDfichier)
+            liste_modifications.append((internet_mdp, IDutilisateur))
+    DB.Executermany("UPDATE utilisateurs SET internet_mdp=? WHERE IDutilisateur=?", liste_modifications, commit=True)
+
+    DB.Close()
 
 
 
 if __name__ == u"__main__":
     app = wx.App(0)
     # TEST D'UNE PROCEDURE :
-    A9045()
+    A9050()
     app.MainLoop()

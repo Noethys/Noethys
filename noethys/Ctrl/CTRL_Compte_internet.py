@@ -14,7 +14,7 @@ from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
 import wx.html as html
-
+from Utils import UTILS_Internet
 
 
 
@@ -54,6 +54,8 @@ class CTRL(html.HtmlWindow):
         mdp = self.dictDonnees["internet_mdp"]
         if mdp == None :
             mdp = ""
+        if mdp.startswith("#@#"):
+            mdp = UTILS_Internet.DecrypteMDP(mdp)
 
         if mdp.startswith("custom"):
             mdp = _(u"********<BR><FONT SIZE=1>(Mot de passe personnalisé)</FONT>")
@@ -74,10 +76,11 @@ class CTRL(html.HtmlWindow):
         return self.dictDonnees["internet_identifiant"]
 
     def GetMdp(self):
-        if self.dictDonnees["internet_mdp"].startswith("custom"):
+        internet_mdp = self.dictDonnees["internet_mdp"]
+        if internet_mdp.startswith("custom"):
             internet_mdp = "********"
-        else :
-            internet_mdp = self.dictDonnees["internet_mdp"]
+        if internet_mdp.startswith("#@#"):
+            internet_mdp = UTILS_Internet.DecrypteMDP(internet_mdp)
         return internet_mdp
 
     def Modifier(self, event):

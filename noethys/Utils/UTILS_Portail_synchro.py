@@ -39,6 +39,7 @@ from Utils import UTILS_Organisateur
 from Utils import UTILS_Cryptage_fichier
 from Utils import UTILS_Config
 from Utils import UTILS_Customize
+from Utils import UTILS_Internet
 import FonctionsPerso
 import GestionDB
 
@@ -626,8 +627,11 @@ class Synchro():
                         nomDossier = u"%s %s" % (dictDonnee["prenom"], dictDonnee["nom"])
 
                     # Cryptage du mot de passe
-                    if "custom" not in dictDonnee["internet_mdp"] :
-                        dictDonnee["internet_mdp"] = SHA256.new(dictDonnee["internet_mdp"].encode('utf-8')).hexdigest()
+                    if "custom" not in dictDonnee["internet_mdp"]:
+                        mdp = dictDonnee["internet_mdp"]
+                        if mdp.startswith("#@#"):
+                            mdp = UTILS_Internet.DecrypteMDP(mdp, IDfichier=IDfichier)
+                        dictDonnee["internet_mdp"] = SHA256.new(mdp.encode('utf-8')).hexdigest()
 
                     # Génération du session_token
                     session_token = "%s-%d-%s-%s-%d" % (profil, dictDonnee["ID"], dictDonnee["internet_identifiant"], dictDonnee["internet_mdp"][:20], dictDonnee["internet_actif"])

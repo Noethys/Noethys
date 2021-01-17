@@ -22,7 +22,7 @@ from Utils import UTILS_Interface
 from Utils import UTILS_Internet
 from Utils import UTILS_Parametres
 from Ctrl.CTRL_ObjectListView import FastObjectListView, ColumnDefn, Filter,  CTRL_Outils, PanelAvecFooter
-
+import FonctionsPerso
 
 
 class Track(object):
@@ -33,6 +33,8 @@ class Track(object):
         self.internet_mdp = donnees[3]
         if self.internet_mdp.startswith("custom"):
             self.internet_mdp = "********"
+        if self.internet_mdp.startswith("#@#"):
+            self.internet_mdp = UTILS_Internet.DecrypteMDP(self.internet_mdp, IDfichier=parent.IDfichier)
 
         if self.IDfamille in parent.dict_titulaires:
             self.nomTitulaires = parent.dict_titulaires[self.IDfamille]["titulairesSansCivilite"]
@@ -51,6 +53,7 @@ class ListView(FastObjectListView):
         self.popupIndex = -1
         self.listeFiltres = []
         self.filtre_familles = None
+        self.IDfichier = FonctionsPerso.GetIDfichier()
         # Initialisation du listCtrl
         self.nom_fichier_liste = __file__
         FastObjectListView.__init__(self, *args, **kwds)
@@ -275,7 +278,7 @@ class ListView(FastObjectListView):
         # Regénération des mots de passe
         listeModifications = []
         for track in listeCoches :
-            mdp = UTILS_Internet.CreationMDP(nbreCaract=taille)
+            mdp = UTILS_Internet.CreationMDP(nbreCaract=taille, IDfichier=self.IDfichier)
             listeModifications.append((mdp, track.IDfamille))
 
         DB = GestionDB.DB()
