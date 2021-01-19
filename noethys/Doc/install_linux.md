@@ -9,7 +9,7 @@ Installation facile sur Ubuntu 20.04
 
 Lancez dans votre console Linux les commandes suivantes :
 ```
-sudo apt-get install git curl libsdl2-mixer-2.0-0 libsdl2-image-2.0-0 libsdl2-2.0-0 python3-pip python3-pyscard
+sudo apt-get install git curl libsdl2-mixer-2.0-0 libsdl2-image-2.0-0 libsdl2-2.0-0 python3-pip python3-pyscard python3-dev default-libmysqlclient-dev build-essential
 pip3 install -U -f https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-20.04 wxPython
 git clone https://github.com/Noethys/Noethys
 pip3 install -r Noethys/requirements.txt

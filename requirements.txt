@@ -19,3 +19,4 @@ matplotlib
 opencv-python
 sqlalchemy
 pystrich
+mysqlclient
