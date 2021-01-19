@@ -19,10 +19,12 @@ from Ctrl import CTRL_Bandeau
 from Ctrl import CTRL_Propertygrid
 from Utils import UTILS_Parametres
 from Ol import OL_Selection_sms
+from Dlg import DLG_Messagebox
 import wx.propgrid as wxpg
 import copy
 from Utils import UTILS_Envoi_email
 from Utils import UTILS_Fichiers
+import requests, json
 
 
 
@@ -427,6 +429,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL):
             ("contact_everyone", _(u"Contact Everyone By Orange Business")),
             ("cleversms", _(u"Clever SMS")),
             ("clevermultimedias", _(u"Clever Multimedias")),
+            ("mailjet", _(u"Mailjet")),
             ]
 
         propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Plateforme"), name="plateforme", liste_choix=liste_choix, valeur=None)
@@ -463,6 +466,16 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL):
         propriete.SetHelpString(_(u"Saisissez l'adresse de destination de l'email"))
         self.Append(propriete)
 
+        # Token Mailjet
+        propriete = wxpg.StringProperty(label=_(u"Token Mailjet"), name="token_sms_mailjet", value="")
+        propriete.SetHelpString(_(u"Saisissez le token que vous avez généré sur votre compte Mailjet"))
+        self.Append(propriete)
+
+        # Sender ID Mailjet
+        propriete = wxpg.StringProperty(label=_(u"Nom de l'expéditeur"), name="sender_sms_mailjet", value="")
+        propriete.SetHelpString(_(u"Saisissez le nom de l'expéditeur. Exemples : 'MJC', 'ALSH', 'MAIRIE'..."))
+        self.Append(propriete)
+
         # Nbre caractères max
         propriete = wxpg.IntProperty(label=_(u"Nombre maximal de caractères du message"), name="nbre_caracteres_max", value=160)
         propriete.SetHelpString(_(u"Nombre maximal de caractères du message"))
@@ -494,8 +507,13 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL):
                     {"propriete": "clevermultimedias_adresse_destination_email", "obligatoire": True},
                     {"propriete": "nbre_caracteres_max", "obligatoire": True},
                 ],
+                "mailjet": [
+                    {"propriete": "token_sms_mailjet", "obligatoire": True},
+                    {"propriete": "sender_sms_mailjet", "obligatoire": True},
+                    {"propriete": "nbre_caracteres_max", "obligatoire": True},
+                ],
             }
-            }
+        }
 
         # Cache toutes les propriétés
         for nom_property, dict_conditions in dict_switch.items():
@@ -534,11 +552,11 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL):
                     dlg.Destroy()
                     return False
 
-        if self.GetPropertyByName("adresse_expedition_email").GetValue() == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner une adresse d'expédition !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
-            dlg.ShowModal()
-            dlg.Destroy()
-            return False
+        # if self.GetPropertyByName("adresse_expedition_email").GetValue() == 0 :
+        #     dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner une adresse d'expédition !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+        #     dlg.ShowModal()
+        #     dlg.Destroy()
+        #     return False
 
         self.Sauvegarde()
 
@@ -921,11 +939,50 @@ class Dialog(wx.Dialog, Base):
             if resultat == False:
                 return False
 
+        # --------------------- MAILJET ---------------------
+        if self.dictDonnees["plateforme"] == "mailjet":
 
+            # Récupération token
+            api_token = self.dictDonnees["token_sms_mailjet"]
+            sender_id = self.dictDonnees["sender_sms_mailjet"]
 
+            # Préparation de l'envoi
+            headers = {
+                "Authorization": "Bearer {api_token}".format(api_token=api_token),
+                "Content-Type": "application/json"
+            }
+            api_url = "https://api.mailjet.com/v4/sms-send"
+
+            # Envoi des SMS
+            message = self.dictDonnees["message"].replace("\n", "")
+            nbre_envois_reussis = 0
+            for numero in self.dictDonnees["liste_telephones"]:
+                numero = numero.replace(".", "")
+                numero = "+33" + numero[1:]
+
+                # Création du message JSON
+                message_data = {
+                    "From": sender_id,
+                    "To": numero,
+                    "Text": message
+                }
+                reponse = requests.post(api_url, headers=headers, json=message_data)
+                if reponse.ok:
+                    nbre_envois_reussis += 1
+                else:
+                    print("Erreur envoi SMS :", reponse.text)
+                    dict_erreur = json.loads(reponse.text)
+                    texte_erreur = u"Code erreur : %s. Erreur : %s" % (dict_erreur["ErrorCode"], dict_erreur["ErrorMessage"])
+                    dlg = DLG_Messagebox.Dialog(self, titre=_(u"Envoi de SMS"), introduction=_(u"L'envoi du SMS vers le numéro %s a rencontré une erreur :") % numero,
+                                                detail=texte_erreur, conclusion=_(u"Que souhaitez-vous faire ?"),
+                                                icone=wx.ICON_ERROR, boutons=[_(u"Continuer l'envoi"), _(u"Arrêter")])
+                    reponse = dlg.ShowModal()
+                    dlg.Destroy()
+                    if reponse == 1:
+                        return False
 
         # Confirmation d'envoi
-        dlg = wx.MessageDialog(self, _(u"Envoi des SMS effectué avec succès."), _(u"Confirmation"), wx.OK | wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Envoi des SMS terminé."), _(u"Confirmation"), wx.OK | wx.ICON_INFORMATION)
         dlg.ShowModal()
         dlg.Destroy()
 
