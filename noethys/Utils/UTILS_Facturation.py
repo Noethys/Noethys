@@ -1153,7 +1153,7 @@ def ModificationFacture(listeFactures=[], dict_valeurs={}):
 
         # Modification Date émission
         if "date_emission" in dict_valeurs :
-            DB.ReqMAJ("factures", [("date_emission", dict_valeurs["date_emission"]), ], "IDfacture", IDfacture)
+            DB.ReqMAJ("factures", [("date_edition", dict_valeurs["date_emission"]), ], "IDfacture", IDfacture)
 
         # Modification Date_échéance
         if "date_echeance" in dict_valeurs :
