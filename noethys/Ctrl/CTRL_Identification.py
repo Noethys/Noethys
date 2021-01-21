@@ -25,7 +25,7 @@ class CTRL(wx.SearchCtrl):
         self.listeUtilisateurs = listeUtilisateurs
         self.modeDLG = modeDLG
         self.SetDescriptiveText(u"   ")
-        
+
         # Options
         self.ShowSearchButton(True)
         self.SetCancelBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Interdit.png"), wx.BITMAP_TYPE_PNG))

@@ -107,8 +107,16 @@ class Questionnaires():
         filtre = self.GetFiltre(controle)
         texteReponse = u""
         if filtre == "texte" : texteReponse = reponse
-        if filtre == "entier" : texteReponse = int(float(reponse))
-        if filtre == "montant" : texteReponse = float(reponse)#decimal.Decimal(reponse)
+        if filtre == "entier" :
+            try:
+                texteReponse = int(float(reponse))
+            except:
+                pass
+        if filtre == "montant" :
+            try:
+                texteReponse = float(reponse)#decimal.Decimal(reponse)
+            except:
+                pass
         if filtre == "choix" :
             if reponse != None :
                 if type(reponse) == int:
@@ -129,8 +137,16 @@ class Questionnaires():
                 texteReponse = _(u"Oui")
             else :
                 texteReponse = _(u"Non")
-        if filtre == "date" : texteReponse = DateEngEnDateDD(reponse)
-        if filtre == "decimal": texteReponse = float(reponse)
+        if filtre == "date" :
+            try:
+                texteReponse = DateEngEnDateDD(reponse)
+            except:
+                pass
+        if filtre == "decimal":
+            try:
+                texteReponse = float(reponse)
+            except:
+                pass
         return texteReponse
 
 
