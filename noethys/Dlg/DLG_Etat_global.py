@@ -917,9 +917,9 @@ class Dialog(wx.Dialog):
                         IDregime = dict_options["associer_regime_inconnu"]
 
                     # Mémoriser les régimes à afficher
+                    if not IDregime:
+                        IDregime = 0
                     if IDregime not in listeRegimesUtilises :
-                        if not IDregime:
-                            IDregime = 0
                         listeRegimesUtilises.append(IDregime)
 
                     # Stats globales
