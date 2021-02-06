@@ -16,7 +16,7 @@ import wx
 import os
 import six
 import GestionDB
-import datetime
+import datetime, calendar
 import shutil
 import os.path
 import wx.propgrid as wxpg
@@ -469,6 +469,11 @@ class Dialog(DLG_Saisie_lot_tresor_public.Dialog):
             "pieces_jointes" : dict_pieces_jointes,
         }
 
+        # Calcul des dates extrêmes du mois
+        nbreJoursMois = calendar.monthrange(int(dictDonnees["exercice"]), int(dictDonnees["mois"]))[1]
+        dictDonnees["date_min"] = datetime.date(int(dictDonnees["exercice"]), int(dictDonnees["mois"]), 1)
+        dictDonnees["date_max"] = datetime.date(int(dictDonnees["exercice"]), int(dictDonnees["mois"]), nbreJoursMois)
+
         # Récupération du détail des factures
         detail_factures, dict_prestations_factures = self.Get_detail_pieces(dictDonnees)
         dictDonnees["detail"] = detail_factures
@@ -907,6 +912,12 @@ class Dialog(DLG_Saisie_lot_tresor_public.Dialog):
                         # RefIdEcriture - Texte (50)
                         ligne_detail[2] = ligne[1]
 
+                        # DateDebut - Date
+                        ligne_detail[3] = ConvertToTexte(UTILS_Dates.DateEngFr(dict_donnees["date_min"]))
+
+                        # DateFin - Date
+                        ligne_detail[4] = ConvertToTexte(UTILS_Dates.DateEngFr(dict_donnees["date_max"]))
+
                         # Libelle - Texte (200)
                         ligne_detail[5] = ConvertToTexte(dict_detail["libelle"][:200])
 
@@ -915,6 +926,9 @@ class Dialog(DLG_Saisie_lot_tresor_public.Dialog):
 
                         # MtUnitaire - Monétaire
                         ligne_detail[10] = str(dict_detail["montant"])
+
+                        # MtHTaxe - Monétaire
+                        ligne_detail[13] = str(dict_detail["montant"] * dict_detail["quantite"])
 
                         # MtTTC - Monétaire
                         ligne_detail[16] = str(dict_detail["montant"] * dict_detail["quantite"])
