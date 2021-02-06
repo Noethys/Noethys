@@ -1,8 +1,15 @@
-Version 1.2.8.7 (16/01/2021) :
+Version 1.2.9.0 (06/02/2021) :
+
+- Ajout des balises de la période dans l'export vers Magnus de Berger-Levrault
+- Correction de la balise MtHTaxe dans l'export vers Magnus de Berger-Levrault
+- Correction de l'affichage des colonnes sans régime dans l'état global
+
+Version 1.2.8.8 (22/01/2021) :
 
 - Ajout de l'export vers Magnus de Berger-Levrault
 - Ajout de l'export vers Millesime Online de JVS-Mairistem
 - Ajout du paiement en 3 fois par carte bancaire sur Connecthys
+- Ajout de l'envoi de SMS avec Mailjet
 - Amélioration de la suppression des locations récurrentes
 - Ajout du code produit local dans les prestations
 - Ajout du total de la TVA sur les factures
