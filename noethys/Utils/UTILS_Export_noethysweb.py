@@ -256,12 +256,13 @@ class Export_all(Export):
 
         self.Ajouter(Table(self, nom_table="factures_regies", nouveau_nom_table="core.FactureRegie", nouveaux_noms_champs={"IDcompte_bancaire": "compte_bancaire"}))
 
-        self.Ajouter(Table(self, nom_table="responsables_activite", nouveau_nom_table="core.ResponsableActivite", nouveaux_noms_champs={"IDactivite": "activite"}, dict_types_champs={"defaut": bool}))
-
         self.Ajouter(Table_activites(self, nom_table="activites", nouveau_nom_table="core.Activite",
                            exclure_champs=["public", "psu_activation", "psu_unite_prevision", "psu_unite_presence", "psu_tarif_forfait", "psu_etiquette_rtt"],
-                           dict_types_champs={"coords_org": bool, "logo_org": bool, "vaccins_obligatoires": bool, "portail_inscriptions_affichage": bool, "portail_reservations_affichage": bool, "portail_unites_multiples": bool},
+                           dict_types_champs={"coords_org": bool, "logo_org": bool, "vaccins_obligatoires": bool, "portail_inscriptions_affichage": bool,
+                                              "portail_reservations_affichage": bool, "portail_unites_multiples": bool, "inscriptions_multiples": bool},
                            nouveaux_champs=["pieces", "groupes_activites", "cotisations"], champs_images=["logo"]))
+
+        self.Ajouter(Table(self, nom_table="responsables_activite", nouveau_nom_table="core.ResponsableActivite", nouveaux_noms_champs={"IDactivite": "activite"}, dict_types_champs={"defaut": bool}))
 
         self.Ajouter(Table(self, nom_table="agrements", nouveau_nom_table="core.Agrement", nouveaux_noms_champs={"IDactivite": "activite"}))
 
@@ -314,18 +315,19 @@ class Export_all(Export):
 
         self.Ajouter(Table(self, nom_table="inscriptions",
                            nouveau_nom_table="core.Inscription",
-                           nouveaux_noms_champs={"IDindividu": "individu", "IDfamille": "famille", "IDactivite": "activite", "IDgroupe": "groupe", "IDcategorie_tarif": "categorie_tarif"},
-                           exclure_champs=["IDcompte_payeur", "date_desinscription"],
-                           dict_types_champs={"parti": bool}))
+                           nouveaux_noms_champs={"IDindividu": "individu", "IDfamille": "famille", "IDactivite": "activite", "IDgroupe": "groupe", "IDcategorie_tarif": "categorie_tarif",
+                                                 "date_inscription": "date_debut", "date_desinscription": "date_fin"},
+                           exclure_champs=["IDcompte_payeur", "parti"]))
 
         self.Ajouter(Table_consommations(self, nom_table="consommations",
                            nouveau_nom_table="core.Consommation",
                            nouveaux_noms_champs={"IDindividu": "individu", "IDinscription": "inscription", "IDactivite": "activite", "IDunite": "unite", "IDgroupe": "groupe", "IDcategorie_tarif": "categorie_tarif", "IDprestation": "prestation", "IDevenement": "evenement"},
                            exclure_champs=["verrouillage", "IDutilisateur", "IDcompte_payeur", "etiquettes"]))
 
-        self.Ajouter(Table(self, nom_table="memo_journee",
-                           nouveau_nom_table="core.MemoJournee",
-                           nouveaux_noms_champs={"IDindividu": "individu"}))
+        # Les mémo ne sont plus compatibles car associés désormais à l'inscription
+        # self.Ajouter(Table(self, nom_table="memo_journee",
+        #                    nouveau_nom_table="core.MemoJournee",
+        #                    nouveaux_noms_champs={"IDindividu": "individu"}))
 
         self.Ajouter(Table_problemes_sante(self, nom_table="problemes_sante",
                            nouveau_nom_table="core.ProblemeSante",
@@ -454,11 +456,23 @@ class Table_classes(Table):
 
 
 class Table_activites(Table):
+    def __init__(self, parent, **kwds):
+        self.parent = parent
+
+        # Récupération des types de groupes d'activités
+        req = """SELECT IDtype_groupe_activite, nom FROM types_groupes_activites;"""
+        self.parent.DB.ExecuterReq(req)
+        self.liste_types_groupes_activites = []
+        for IDtype_groupe_activite, nom in self.parent.DB.ResultatReq():
+            self.liste_types_groupes_activites.append(IDtype_groupe_activite)
+
+        Table.__init__(self, parent, **kwds)
+
     def groupes_activites(self, data={}):
         """ Champ ManyToMany"""
         req = """SELECT IDtype_groupe_activite, IDactivite FROM groupes_activites WHERE IDactivite=%d;""" % data["pk"]
         self.parent.DB.ExecuterReq(req)
-        return [IDtype_groupe_activite for IDtype_groupe_activite, IDactivite in self.parent.DB.ResultatReq()]
+        return [IDtype_groupe_activite for IDtype_groupe_activite, IDactivite in self.parent.DB.ResultatReq() if IDtype_groupe_activite in self.liste_types_groupes_activites]
 
     def pieces(self, data={}):
         """ Champ ManyToMany"""
@@ -471,6 +485,11 @@ class Table_activites(Table):
         req = """SELECT IDactivite, IDtype_cotisation FROM cotisations_activites WHERE IDactivite=%d;""" % data["pk"]
         self.parent.DB.ExecuterReq(req)
         return [IDtype_cotisation for IDactivite, IDtype_cotisation in self.parent.DB.ResultatReq()]
+
+    def inscriptions_multiples(self, valeur=None):
+        if valeur:
+            return True
+        return False
 
 
 class Table_unites(Table):

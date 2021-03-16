@@ -54,7 +54,7 @@ class Track(object):
             self.IDcompte_payeur = donnees["IDcompte_payeur"]
             self.quantite = donnees["quantite"]
             self.IDfamille = donnees["IDfamille"]
-            self.nomUnite = dictUnites[self.IDunite]
+            self.nomUnite = dictUnites.get(self.IDunite, u"<Unité supprimée>")
             if self.IDindividu in dictIndividus :
                 self.nomIndividu = dictIndividus[self.IDindividu]
             else :

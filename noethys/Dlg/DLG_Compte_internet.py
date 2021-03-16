@@ -279,8 +279,8 @@ class Dialog(wx.Dialog):
 
         # Cryptage du mot de passe
         internet_mdp = dictDonnees["internet_mdp"]
-        if not internet_mdp.startswith("custom") and not internet_mdp.startswith("#@#"):
-            internet_mdp = UTILS_Internet.CrypteMDP(internet_mdp)
+        # if not internet_mdp.startswith("custom") and not internet_mdp.startswith("#@#"):
+        #     internet_mdp = UTILS_Internet.CrypteMDP(internet_mdp)
 
         # Sauvegarde
         if self.mode_virtuel == False :
