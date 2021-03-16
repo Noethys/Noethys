@@ -217,10 +217,6 @@ class CTRL_Activite(wx.Panel):
 # -----------------------------------------------------------------------------------------------------------------------------------------------
 
 
-
-
-
-
 class CTRL_Parametres(wx.Notebook):
     def __init__(self, parent, mode="saisie", IDindividu=None, IDinscription=None, IDfamille=None, cp=None, ville=None):
         wx.Notebook.__init__(self, parent, id=-1, style=wx.BK_DEFAULT | wx.NB_MULTILINE)
@@ -548,7 +544,7 @@ class Page_Activite(wx.Panel):
             return False
 
         # Vérifie que l'individu n'est pas déjà inscrit à cette activite
-        if self.parent.mode == "saisie" :
+        if self.parent.mode == "saisie" and self.dictActivite["inscriptions_multiples"] != 1:
             req = """SELECT IDinscription, IDindividu, IDfamille
             FROM inscriptions
             WHERE IDindividu=%d AND IDfamille=%d AND IDactivite=%d;""" % (self.parent.IDindividu, IDfamille, IDactivite)
@@ -689,7 +685,7 @@ class Page_Activite(wx.Panel):
         #if self.parent.mode == "saisie" :
         if statut == "ok" and self.ancien_statut != "ok" :
             f = DLG_Appliquer_forfait.Forfaits(IDfamille=IDfamille, listeActivites=[IDactivite,], listeIndividus=[self.parent.IDindividu,], saisieManuelle=False, saisieAuto=True)
-            resultat = f.Applique_forfait(selectionIDcategorie_tarif=IDcategorie_tarif, inscription=True, selectionIDactivite=IDactivite)
+            resultat = f.Applique_forfait(selectionIDcategorie_tarif=IDcategorie_tarif, inscription=True, selectionIDactivite=IDactivite, IDinscription=self.IDinscription)
             if resultat == False :
                 dlg = wx.MessageDialog(self, _(u"Cet individu a bien été inscrit mais le forfait associé n'a pas été créé !"), _(u"Information"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
@@ -760,14 +756,15 @@ class Page_Activite(wx.Panel):
         DB = GestionDB.DB()
 
         # Recherche des activités
-        req = """SELECT nom, abrege, date_debut, date_fin, nbre_inscrits_max
+        req = """SELECT nom, abrege, date_debut, date_fin, nbre_inscrits_max, inscriptions_multiples
         FROM activites
         WHERE IDactivite=%d;""" % IDactivite
         DB.ExecuterReq(req)
         listeActivites = DB.ResultatReq()
 
-        nom, abrege, date_debut, date_fin, nbre_inscrits_max = listeActivites[0]
-        dictActivite = {"IDactivite" : IDactivite, "nom" : nom, "abrege" : abrege, "date_debut" : date_debut, "date_fin" : date_fin, "nbre_inscrits_max" : nbre_inscrits_max}
+        nom, abrege, date_debut, date_fin, nbre_inscrits_max, inscriptions_multiples = listeActivites[0]
+        dictActivite = {"IDactivite" : IDactivite, "nom" : nom, "abrege" : abrege, "date_debut" : date_debut, "date_fin" : date_fin,
+                        "nbre_inscrits_max" : nbre_inscrits_max, "inscriptions_multiples": inscriptions_multiples}
 
         # Recherche des inscriptions existantes
         req = """SELECT IDgroupe, COUNT(IDinscription)

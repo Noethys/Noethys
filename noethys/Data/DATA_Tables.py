@@ -277,6 +277,7 @@ DB_DATA = {
                                     ("portail_unites_multiples", "INTEGER", u"Sélection multiple d'unités autorisée (0/1)"),
                                     ("regie", "INTEGER", u"ID de la régie associée"),
                                     ("code_produit_local", "VARCHAR(200)", u"Code produit local pour export compta"),
+                                    ("inscriptions_multiples", "INTEGER", u"Autoriser les inscriptions multiples (0/1)"),
                                     ], # Activités
 
     "agrements":[            ("IDagrement", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID Agrément"),
