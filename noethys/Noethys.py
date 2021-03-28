@@ -1050,6 +1050,7 @@ class MainFrame(wx.Frame):
                     {"code" : "recalcul_prestations", "label" : _(u"Recalculer des prestations"), "infobulle" : _(u"Recalculer des prestations"), "image" : "Images/16x16/Euro.png", "action" : self.On_facturation_recalculer_prestations},
                     {"code" : "verrou_prestations", "label": _(u"Verrouiller les prestations"), "infobulle": _(u"Verrouillage des prestations grâce aux périodes de gestion"), "image": "Images/16x16/Cadenas.png", "action": self.On_param_periodes_gestion},
                     "-",
+                    {"code" : "synthese_deductions", "label": _(u"Synthèse des déductions"), "infobulle": _(u"Synthèse des déductions"), "image": "Images/16x16/Diagramme.png", "action": self.On_facturation_synthese_deductions},
                     {"code" : "liste_deductions", "label" : _(u"Liste des déductions"), "infobulle" : _(u"Liste des déductions"), "image" : "Images/16x16/Euro.png", "action" : self.On_facturation_liste_deductions},
                     {"code" : "saisir_lot_deductions", "label" : _(u"Saisir un lot de déductions"), "infobulle" : _(u"Saisir un lot de déductions"), "image" : "Images/16x16/Impayes.png", "action" : self.On_facturation_saisir_deductions},
                     "-",
@@ -3049,6 +3050,12 @@ class MainFrame(wx.Frame):
         from Dlg import DLG_Recalculer_prestations
         dlg = DLG_Recalculer_prestations.Dialog(self)
         dlg.ShowModal() 
+        dlg.Destroy()
+
+    def On_facturation_synthese_deductions(self, event):
+        from Dlg import DLG_Synthese_deductions
+        dlg = DLG_Synthese_deductions.Dialog(self)
+        dlg.ShowModal()
         dlg.Destroy()
 
     def On_facturation_liste_deductions(self, event):
