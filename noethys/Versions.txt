@@ -1,4 +1,4 @@
-Version 1.2.9.2 (28/03/2021) :
+Version 1.2.9.3 (01/04/2021) :
 
 - Ajout de la synthèse des déductions dans le menu facturation
 - Ajout de l'option inscriptions multiples dans le paramétrage de l'activité
