@@ -255,26 +255,10 @@ Tous les fichiers (*.*)|*.*"
         
         # Recadre l'image
         for fichier in listeFichiers :
-            extension = os.path.splitext(fichier)[1].replace(".", "")
-            nomFichierCourt = os.path.basename(fichier)
-            
-            if extension in ("jpeg", "jpg", "png", "bmp", "gif", "PNG", "JPG", "JPEG"):
-                # Si c'est une image :
-                imgPIL, poidsImg = ChargeImage(fichier)
-                blob = self.GetBufferImage(imgPIL)
-            
-            else :
-                # Si c'est un document :
-                file = open(fichier, "rb")
-                data = file.read()
-                file.close() 
-                
-                # Met le fichier dans un buffer
-                buffer = six.BytesIO(data)
-                blob = buffer.read()
+            blob, extension = self.ChargeBlob(fichier)
 
             # Demande le titre du document
-            label = self.SaisirLabel(nomFichier=nomFichierCourt)
+            label = self.SaisirLabel(nomFichier=os.path.basename(fichier))
             
             # Conserve l'image en mémoire
             track = Track(IDdocument=0, IDpiece=self.IDpiece, IDreponse=self.IDreponse, IDtype_piece=self.IDtype_piece, buffer=blob, type=extension, label=label)
@@ -282,7 +266,31 @@ Tous les fichiers (*.*)|*.*"
         
         # MAJ de l'affichage
         self.MAJ() 
-    
+
+    def ChargeBlob(self, fichier=None):
+        extension = os.path.splitext(fichier)[1].replace(".", "")
+        if extension in ("jpeg", "jpg", "png", "bmp", "gif", "PNG", "JPG", "JPEG"):
+            # Si c'est une image :
+            imgPIL, poidsImg = ChargeImage(fichier)
+            blob = self.GetBufferImage(imgPIL)
+
+        else :
+            # Si c'est un document :
+            file = open(fichier, "rb")
+            data = file.read()
+            file.close()
+
+            # Met le fichier dans un buffer
+            buffer = six.BytesIO(data)
+            blob = buffer.read()
+        return blob, extension
+
+    def AjouterPageManuellement(self, fichier=None, titre=""):
+        blob, extension = self.ChargeBlob(fichier)
+        track = Track(IDdocument=0, IDpiece=self.IDpiece, IDreponse=self.IDreponse, IDtype_piece=self.IDtype_piece, buffer=blob, type=extension, label=titre)
+        self.listePages.append(track)
+        self.MAJ()
+
     def GetBufferImage(self, imgPIL=None):
         # Redimensionne l'image si besoin
         tailleMaxi = 1000

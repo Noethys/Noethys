@@ -216,6 +216,7 @@ DB_DATA = {
                                     ("IDfamille", "INTEGER", u"IDfamille"),
                                     ("date_debut", "DATE", u"Date de début"),
                                     ("date_fin", "DATE", u"Date de fin"),
+                                    ("titre", "VARCHAR(200)", u"Titre de la pièce"),
                                     ], # Pièces rattachées aux individus ou familles
 
     "organisateur":[          ("IDorganisateur", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID Organisateur"),

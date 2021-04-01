@@ -556,6 +556,7 @@ class Synchro():
         session.add(models.Parametre(nom="PIECES_AFFICHER", parametre=str(self.dict_parametres["pieces_afficher"])))
         session.add(models.Parametre(nom="PIECES_INTRO", parametre=self.dict_parametres["pieces_intro"]))
         session.add(models.Parametre(nom="PIECES_AUTORISER_TELECHARGEMENT", parametre=str(self.dict_parametres["pieces_autoriser_telechargement"])))
+        session.add(models.Parametre(nom="PIECES_AUTORISER_UPLOAD", parametre=str(self.dict_parametres["pieces_autoriser_upload"])))
         session.add(models.Parametre(nom="COTISATIONS_AFFICHER", parametre=str(self.dict_parametres["cotisations_afficher"])))
         session.add(models.Parametre(nom="COTISATIONS_INTRO", parametre=self.dict_parametres["cotisations_intro"]))
         session.add(models.Parametre(nom="LOCATIONS_AFFICHER", parametre=str(self.dict_parametres["locations_afficher"])))
@@ -1918,7 +1919,7 @@ class Synchro():
         return True
 
 
-    def ConnectEtTelechargeFichier(self, nomFichier="", repFichier=None):
+    def ConnectEtTelechargeFichier(self, nomFichier="", repFichier=None, lecture=True):
         resultats = self.Connexion()
         if resultats == False :
             return False
@@ -1929,14 +1930,16 @@ class Synchro():
         resultat = self.TelechargeFichier(ftp=ftp, nomFichier=nomFichier, repFichier=repFichier)
         if resultat == False :
             return False
-        cheminFichier = os.path.join(resultat[0], resultat[1])
-        fichier = codecs.open(cheminFichier, encoding='utf-8', mode='r')
-        contenu_fichier = fichier.read()
-        fichier.close()
-
         self.Deconnexion(ftp)
+        cheminFichier = os.path.join(resultat[0], resultat[1])
 
-        return contenu_fichier
+        if lecture:
+            fichier = codecs.open(cheminFichier, encoding='utf-8', mode='r')
+            contenu_fichier = fichier.read()
+            fichier.close()
+            return contenu_fichier
+
+        return cheminFichier
 
 
 if __name__ == '__main__':

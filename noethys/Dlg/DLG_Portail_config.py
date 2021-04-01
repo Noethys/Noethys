@@ -155,6 +155,7 @@ VALEURS_DEFAUT = {
     "pieces_afficher" : True,
     "pieces_intro" : _(u"Vous pouvez consulter ici la liste des pièces à fournir."),
     "pieces_autoriser_telechargement" : True,
+    "pieces_autoriser_upload" : True,
     "cotisations_afficher" : True,
     "cotisations_intro" : _(u"Vous pouvez consulter ici la liste des cotisations."),
     "cotisations_selection" : 0,
@@ -1023,6 +1024,12 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
+        # Envoi de pièces
+        nom = "pieces_autoriser_upload"
+        propriete = wxpg.BoolProperty(label=_(u"Autoriser l'envoi de pièces"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Cochez cette case pour autoriser les familles à envoyer des pièces par le portail"))
+        propriete.SetAttribute("UseCheckbox", True)
+        self.Append(propriete)
 
         # Catégorie
         self.Append( wxpg.PropertyCategory(_(u"Page 'Cotisations'")) )

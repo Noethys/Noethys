@@ -83,6 +83,7 @@ class Track(object):
         elif self.categorie == "reservations" : self.categorie_label = _(u"Réservations")
         elif self.categorie == "renseignements": self.categorie_label = _(u"Renseignements")
         elif self.categorie == "locations": self.categorie_label = _(u"Locations")
+        elif self.categorie == "pieces": self.categorie_label = _(u"Pièces")
         elif self.categorie == "compte":self.categorie_label = _(u"Compte")
         else : self.categorie_label = _(u"")
 
@@ -191,6 +192,7 @@ class ListView(GroupListView):
         self.image_reservation = self.AddNamedImages("reservations", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Calendrier_modification.png"), wx.BITMAP_TYPE_PNG))
         self.image_renseignement = self.AddNamedImages("renseignements", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Etiquette2.png"), wx.BITMAP_TYPE_PNG))
         self.image_location = self.AddNamedImages("locations", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Location.png"), wx.BITMAP_TYPE_PNG))
+        self.image_piece = self.AddNamedImages("pieces", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Piece.png"), wx.BITMAP_TYPE_PNG))
         self.image_compte = self.AddNamedImages("compte", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Mecanisme.png"), wx.BITMAP_TYPE_PNG))
         self.image_email = self.AddNamedImages("email", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Emails_exp.png"), wx.BITMAP_TYPE_PNG))
 

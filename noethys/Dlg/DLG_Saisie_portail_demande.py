@@ -14,7 +14,7 @@ from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
 import wx.html as html
-import datetime, re
+import datetime, re, os
 import GestionDB
 import FonctionsPerso
 from Ctrl import CTRL_Bouton_image
@@ -632,6 +632,7 @@ class Dialog(wx.Dialog):
             "reservations" : "Calendrier_modifier.png",
             "renseignements": "Cotisation.png",
             "locations": "Location.png",
+            "pieces": "Piece.png",
             "compte": "Mecanisme.png",
             }
         self.ctrl_image.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/32x32/%s" % dict_images[self.track.categorie]), wx.BITMAP_TYPE_PNG))
@@ -803,6 +804,7 @@ class Dialog(wx.Dialog):
         elif self.track.categorie == "inscriptions" : self.categorie_email = "portail_demande_inscription"
         elif self.track.categorie == "renseignements": self.categorie_email = "portail_demande_renseignement"
         elif self.track.categorie == "locations": self.categorie_email = "portail_demande_location"
+        elif self.track.categorie == "pieces": self.categorie_email = "portail_demande_piece"
         else : self.categorie_email = None
         self.ctrl_modele_email.SetCategorie(self.categorie_email)
 
@@ -1106,6 +1108,10 @@ class Traitement():
         # Traitement des locations
         if self.track.categorie == "locations" :
             resultat = self.Traitement_locations()
+
+        # Traitement des pièces
+        if self.track.categorie == "pieces" :
+            resultat = self.Traitement_pieces()
 
         # Traitement du compte
         if self.track.categorie == "compte" :
@@ -1521,6 +1527,62 @@ class Traitement():
                 return {"etat": False, "reponse": reponse}
             else :
                 return {"etat": True, "reponse": reponse}
+
+    def Traitement_pieces(self):
+        chemin = self.dict_parametres.get("chemin", "")
+        IDtype_piece = int(self.dict_parametres.get("IDtype_piece", 0))
+        titre_piece = self.track.description.replace(u"Envoi de la pièce ", u"")
+
+        # Téléchargement du fichier
+        from Utils import UTILS_Portail_synchro
+        dlgAttente = wx.BusyInfo(_(u"Téléchargement de la pièce en cours..."), None)
+        if 'phoenix' not in wx.PlatformInfo:
+            wx.Yield()
+        else:
+            wx.SafeYield(self, True)
+        synchro = UTILS_Portail_synchro.Synchro(log=self.track)
+        chemin_fichier = synchro.ConnectEtTelechargeFichier(nomFichier=os.path.basename(chemin), repFichier="pieces/", lecture=False)
+        del dlgAttente
+
+        if chemin_fichier == False:
+            dlg = wx.MessageDialog(self.parent, _(u"Le fichier ne peut pas être téléchargé !\n\nIl n'est pas accessible ou a été supprimé du serveur."), "Erreur", wx.OK | wx.ICON_ERROR)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return {"etat": False}
+
+        # Décryptage du fichier
+        from Utils import UTILS_Cryptage_fichier
+        cryptage_mdp = synchro.dict_parametres["secret_key"][:10]
+        UTILS_Cryptage_fichier.DecrypterFichier(chemin_fichier, chemin_fichier, cryptage_mdp)
+
+        # Ouverture de la DLG
+        from Dlg import DLG_Saisie_piece
+        dlg = DLG_Saisie_piece.Dialog(self.parent, IDpiece=None, IDfamille=self.track.IDfamille)
+        dlg.SetValeurs(IDfamille=self.track.IDfamille, IDtype_piece=IDtype_piece, IDindividu=self.track.IDindividu, titre=titre_piece)
+        dlg.CalcValiditeDefaut()
+        dlg.ctrl_pages.AjouterPageManuellement(fichier=chemin_fichier, titre=titre_piece)
+
+        if self.mode == "manuel":
+            if dlg.ShowModal() == wx.ID_OK:
+                IDpiece = dlg.GetIDpiece()
+                dlg.Destroy()
+                self.EcritLog(_(u"Enregistrement manuel de la pièce ID%d") % IDpiece)
+                return {"etat": True, "reponse": _(u"La pièce %s a bien été enregistrée") % titre_piece}
+
+        if self.mode == "automatique":
+            if dlg.Sauvegarde() == True:
+                IDpiece = dlg.GetIDpiece()
+                dlg.Destroy()
+                self.EcritLog(_(u"Enregistrement automatique de la pièce ID%d") % IDpiece)
+                return {"etat": True, "reponse": _(u"La pièce %s a bien été enregistrée") % titre_piece}
+            else:
+                if dlg.ShowModal() == wx.ID_OK:
+                    IDpiece = dlg.GetIDpiece()
+                    self.EcritLog(_(u"Enregistrement manuel de la pièce ID%d") % IDpiece)
+                    return {"etat": True, "reponse": _(u"La pièce %s a bien été enregistrée") % titre_piece}
+                dlg.Destroy()
+
+        return {"etat": False}
 
     def Traitement_compte(self):
         # Traitement manuel ou automatique

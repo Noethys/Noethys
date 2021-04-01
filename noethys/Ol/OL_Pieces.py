@@ -54,6 +54,7 @@ class Track(object):
         self.valide_rattachement = donnees[9]
         self.individu_nom = donnees[10]
         self.individu_prenom = donnees[11]
+        self.titre = donnees[12]
         
         # Nbre documents scannés
         if self.IDpiece in DICT_DOCUMENTS :
@@ -68,11 +69,14 @@ class Track(object):
             self.valide = False
             
         # Nom complet de l'individu
-        self.individu_nomComplet = ""
-        if parent.IDfamille != None and self.public != "famille" :
-            self.individu_nomComplet = u"%s %s" % (self.individu_prenom, self.individu_nom)
-            self.nom += _(u" de ") + self.individu_nomComplet
-        
+        if self.titre:
+            self.nom = self.titre
+        else:
+            self.individu_nomComplet = ""
+            if parent.IDfamille != None and self.public != "famille" :
+                self.individu_nomComplet = u"%s %s" % (self.individu_prenom, self.individu_nom)
+                self.nom += _(u" de ") + self.individu_nomComplet
+
         # Nom des titulaires de famille
         if self.IDfamille != None :
             self.nomTitulaires = _(u"IDfamille n°%d") % self.IDfamille
@@ -133,7 +137,7 @@ class ListView(FastObjectListView):
             SELECT 
             IDpiece, pieces.IDtype_piece, pieces.IDindividu, pieces.IDfamille, date_debut, date_fin, 
             types_pieces.nom, public, duree_validite, valide_rattachement, 
-            individus.nom, individus.prenom
+            individus.nom, individus.prenom, titre
             FROM pieces 
             LEFT JOIN types_pieces ON types_pieces.IDtype_piece = pieces.IDtype_piece
             LEFT JOIN individus ON pieces.IDindividu = individus.IDindividu
@@ -159,7 +163,7 @@ class ListView(FastObjectListView):
             SELECT 
             IDpiece, pieces.IDtype_piece, pieces.IDindividu, pieces.IDfamille, date_debut, date_fin, 
             types_pieces.nom, public, duree_validite, valide_rattachement, 
-            individus.nom, individus.prenom
+            individus.nom, individus.prenom, titre
             FROM pieces 
             LEFT JOIN types_pieces ON types_pieces.IDtype_piece = pieces.IDtype_piece
             LEFT JOIN individus ON pieces.IDindividu = individus.IDindividu
