@@ -155,7 +155,7 @@ VALEURS_DEFAUT = {
     "pieces_afficher" : True,
     "pieces_intro" : _(u"Vous pouvez consulter ici la liste des pièces à fournir."),
     "pieces_autoriser_telechargement" : True,
-    "pieces_autoriser_upload" : True,
+    "pieces_autoriser_upload" : False,
     "cotisations_afficher" : True,
     "cotisations_intro" : _(u"Vous pouvez consulter ici la liste des cotisations."),
     "cotisations_selection" : 0,

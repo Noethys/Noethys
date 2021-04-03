@@ -65,7 +65,7 @@ class CTRL_Individus(wx.CheckListBox):
         for IDinscription, IDactivite, IDindividu in listeInscriptions :
             if (IDindividu in dictInscriptions) == False :
                 dictInscriptions[IDindividu] = []
-            if IDindividu not in dictInscriptions[IDindividu] :
+            if IDactivite not in dictInscriptions[IDindividu] :
                 dictInscriptions[IDindividu].append(IDactivite)
         
         DB.Close()
