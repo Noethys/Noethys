@@ -1001,8 +1001,10 @@ class CTRL(wx.Panel):
 ##            return 
         # Insère l'image dans l'éditeur
         if nomFichierLong.lower().endswith(".jpg") : typeBMP = wx.BITMAP_TYPE_JPEG
-        if nomFichierLong.lower().endswith(".png") : typeBMP = wx.BITMAP_TYPE_PNG
-        if nomFichierLong.lower().endswith(".gif") : typeBMP = wx.BITMAP_TYPE_GIF
+        elif nomFichierLong.lower().endswith(".png") : typeBMP = wx.BITMAP_TYPE_PNG
+        elif nomFichierLong.lower().endswith(".gif") : typeBMP = wx.BITMAP_TYPE_GIF
+        elif nomFichierLong.lower().endswith(".bmp"): typeBMP = wx.BITMAP_TYPE_BMP
+        else: typeBMP = wx.BITMAP_TYPE_ANY
 
         if 'phoenix' in wx.PlatformInfo:
             self.ctrl_editeur.WriteImage(bmp, bitmapType=typeBMP)
