@@ -744,6 +744,8 @@ class Facturation():
         else : conditions = str(tuple(listeFactures))
         
         DB = GestionDB.DB()
+
+        # Importation des factures
         req = """
         SELECT 
         factures.IDfacture, factures.IDprefixe, factures_prefixes.prefixe, factures.numero, factures.IDcompte_payeur, factures.activites, factures.individus,
@@ -759,7 +761,23 @@ class Facturation():
         ORDER BY factures.date_edition
         ;""" % conditions
         DB.ExecuterReq(req)
-        listeDonnees = DB.ResultatReq()     
+        listeDonnees = DB.ResultatReq()
+
+        # Importation des classes
+        dict_scolarites = {}
+        if dictOptions.get("afficher_classes"):
+            req = """SELECT scolarite.IDindividu, ecoles.nom, classes.nom, classes.date_debut, classes.date_fin
+            FROM scolarite 
+            LEFT JOIN ecoles ON ecoles.IDecole = scolarite.IDecole
+            LEFT JOIN classes ON classes.IDclasse = scolarite.IDclasse;"""
+            DB.ExecuterReq(req)
+            listeScolarites = DB.ResultatReq()
+            for IDindividu, nom_ecole, nom_classe, date_debut, date_fin in listeScolarites:
+                dict_scolarites.setdefault(IDindividu, [])
+                dict_scolarites[IDindividu].append({
+                    "nom_classe": nom_classe, "nom_ecole": nom_ecole,
+                    "date_debut": UTILS_Dates.DateEngEnDateDD(date_debut), "date_fin": UTILS_Dates.DateEngEnDateDD(date_fin),
+                })
 
         # Récupération des prélèvements
         req = """SELECT 
@@ -915,6 +933,7 @@ class Facturation():
                 
                 for IDindividu, dictIndividu in dictCompte["individus"].items() :
                     dictIndividu["select"] = True
+                    dictIndividu["scolarites"] = dict_scolarites.get(IDindividu, [])
 
                 # Recherche de prélèvements
                 if IDfacture in dictPrelevements :

@@ -361,7 +361,15 @@ class Impression():
                             else :
                                 largeurColonneIntitule = CADRE_CONTENU[2] - largeurColonneDate - largeurColonneMontantTTC
                                 largeursColonnes = [ largeurColonneDate, largeurColonneIntitule, largeurColonneMontantTTC]
-                        
+
+                        # Recherche de la classe de l'individu
+                        nom_classe = ""
+                        if dictIndividus["scolarites"]:
+                            for dict_scolarite in dictIndividus["scolarites"]:
+                                if dict_scolarite["date_fin"] >= dictValeur["date_debut"] and dict_scolarite["date_debut"] >= dictValeur["date_fin"]:
+                                    nom_classe = u"<font size=7> (%s - %s)</font>" % (dict_scolarite["nom_classe"], dict_scolarite["nom_ecole"])
+                                    break
+
                         # Insertion du nom de l'individu
                         paraStyle = ParagraphStyle(name="individu",
                                               fontName="Helvetica",
@@ -370,7 +378,7 @@ class Impression():
                                               spaceBefore=0,
                                               spaceafter=0,
                                             )
-                        texteIndividu = Paragraph(dictIndividus["texte"], paraStyle)
+                        texteIndividu = Paragraph(dictIndividus["texte"] + nom_classe, paraStyle)
                         dataTableau = []
                         dataTableau.append([texteIndividu,])
                         tableau = Table(dataTableau, [CADRE_CONTENU[2],])
@@ -438,9 +446,9 @@ class Impression():
                                         montant = dictPrestation["montant"]
                                         deductions = dictPrestation["deductions"]
                                         tva = dictPrestation["tva"]
-                                        
-                                        if detail == 1 : labelkey = label
-                                        if detail == 2 : labelkey = label + " P.U. " + "%.2f %s" % (montant, SYMBOLE)
+
+                                        if detail in (1, 3): labelkey = label
+                                        if detail in (2, 4): labelkey = label + " P.U. " + "%.2f %s" % (montant, SYMBOLE)
 
                                         # Si c'est une prestation antérieure
                                         if date < str(dictValeur["date_debut"]) :
@@ -449,13 +457,14 @@ class Impression():
                                             label += u"*"
 
                                         if (labelkey in dictRegroupement) == False :
-                                            dictRegroupement[labelkey] = {"labelpresta" : label, "total" : 0, "nbre" : 0, "base" : 0, "dates_forfait" : None}
+                                            dictRegroupement[labelkey] = {"labelpresta" : label, "total" : 0, "nbre" : 0, "base" : 0, "dates_forfait" : None, "dates": []}
                                             dictRegroupement[labelkey]["base"] = montant
                                         
                                         dictRegroupement[labelkey]["total"] += montant
                                         dictRegroupement[labelkey]["nbre"] += 1
+                                        dictRegroupement[labelkey]["dates"] += listeDatesUnite
                                         
-                                        if detail == 1 :
+                                        if detail in (1, 3):
                                             dictRegroupement[labelkey]["base"] = dictRegroupement[labelkey]["total"] / dictRegroupement[labelkey]["nbre"]
 
                                         if dictPrestation.get("forfait_date_debut"):
@@ -466,10 +475,10 @@ class Impression():
                                             date_fin = listeDatesUnite[-1]
                                             nbreDates = len(listeDatesUnite)
                                             dictRegroupement[labelkey]["dates_forfait"] = _(u"<BR/><font size=5>Du %s au %s soit %d jours</font>") % (DateEngFr(str(date_debut)), DateEngFr(str(date_fin)), nbreDates)
-        
+
                                 # Insertion des prestations regroupées
                                 listeLabels = list(dictRegroupement.keys()) 
-                                listeLabels.sort() 
+                                listeLabels.sort()
 
                                 dataTableau = [(
                                     Paragraph(_(u"<para align='center'>Quantité</para>"), paraLabelsColonnes), 
@@ -484,12 +493,17 @@ class Impression():
                                     total = dictRegroupement[labelkey]["total"]
                                     base = dictRegroupement[labelkey]["base"]
 
+                                    # Ajout des dates
+                                    if detail in (3, 4) and dictRegroupement[labelkey]["dates"]:
+                                        dictRegroupement[labelkey]["dates"].sort()
+                                        label += u"<br/><font size=5>(%s)</font>" % ", ".join([UTILS_Dates.DateDDEnFr(date) for date in dictRegroupement[labelkey]["dates"]])
+
                                     # recherche d'un commentaire
                                     if "dictCommentaires" in dictOptions :
                                         key = (label, IDactivite)
                                         if key in dictOptions["dictCommentaires"] :
                                             commentaire = dictOptions["dictCommentaires"][key]
-                                            label = "%s <i><font color='#939393'>%s</font></i>" % (label, commentaire)
+                                            label = u"%s <i><font color='#939393'>%s</font></i>" % (label, commentaire)
                                             
                                     # Formatage du label
                                     intitule = Paragraph(label, paraStyle)
