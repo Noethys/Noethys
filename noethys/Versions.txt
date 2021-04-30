@@ -1,4 +1,13 @@
-Version 1.2.9.4 (15/04/2021) :
+Version 1.2.9.6 (30/04/2021) :
+
+- Ajout des dates pour chaque prestation en mode condensé sur la facture
+- Ajout de la classe de l'individu sur la facture
+- Ajout de l'option afficher les activités ouvertes dans la liste des activités
+- Ajout du parsage de la voie dans les adresses individuelles et familiales
+- Correction des espaces dans les noms et prénoms des individus
+- Correction de petits bugs
+
+Version 1.2.9.4 (17/04/2021) :
 
 - Ajout de la synthèse des déductions dans le menu facturation
 - Ajout de l'option inscriptions multiples dans le paramétrage de l'activité
