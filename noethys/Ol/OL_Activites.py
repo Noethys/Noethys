@@ -12,11 +12,9 @@
 import Chemins
 from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
-import wx
-import os
+import wx, os, datetime, importlib
 import GestionDB
 from Utils import UTILS_Export_tables
-import importlib
 
 
 from Utils import UTILS_Interface
@@ -139,6 +137,7 @@ class ListView(FastObjectListView):
         self.itemSelected = False
         self.popupIndex = -1
         self.listeFiltres = []
+        self.activites_ouvertes = False
         # Initialisation du listCtrl
         self.nom_fichier_liste = __file__
         FastObjectListView.__init__(self, *args, **kwds)
@@ -156,10 +155,18 @@ class ListView(FastObjectListView):
     def GetTracks(self):
         """ Récupération des données """
         listeID = None
+
+        if self.activites_ouvertes:
+            conditionDate = "WHERE date_fin >= '%s' " % str(datetime.date.today())
+        else:
+            conditionDate = ""
+
         db = GestionDB.DB()
         req = """SELECT IDactivite, nom, abrege, coords_org, rue, cp, ville, tel, fax, mail, site, 
         logo_org, date_debut, date_fin, public, date_creation, vaccins_obligatoires
-        FROM activites ORDER BY date_fin, nom;"""
+        FROM activites 
+        %s
+        ORDER BY date_fin, nom;""" % conditionDate
         db.ExecuterReq(req)
         listeDonnees = db.ResultatReq()
         db.Close()
@@ -195,7 +202,7 @@ class ListView(FastObjectListView):
         liste_Colonnes = [
             ColumnDefn(_(u"ID"), "left", 0, "IDactivite", typeDonnee="entier"),
             ColumnDefn(_(u"Nom de l'activité"), 'left', 220, "nom", typeDonnee="texte", isSpaceFilling=True),
-            ColumnDefn(_(u"Abrégé"), 'left', 80, "abrege", typeDonnee="texte"),
+            ColumnDefn(_(u"Abrégé"), 'left', 90, "abrege", typeDonnee="texte"),
             ColumnDefn(_(u"Période de validité"), 'left', 200, "periode", typeDonnee="texte", stringConverter=FormatePeriode),
             ]
         

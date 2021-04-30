@@ -63,9 +63,8 @@ class Dialog(wx.Dialog):
         self.bouton_importer = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Document_import.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_exporter = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Document_export.png"), wx.BITMAP_TYPE_ANY))
 
-        # Commande télécharger
-        self.ctrl_image = wx.StaticBitmap(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Updater.png"), wx.BITMAP_TYPE_ANY))
-        self.hyper_telecharger = Hyperlien(self, label=_(u"Télécharger des paramétrages d'activités"), infobulle=_(u"Cliquez ici pour télécharger et importer des paramétrages d'activités"), URL="telecharger")
+        self.ctrl_activites_ouvertes = wx.CheckBox(self, -1, _(u"Afficher uniquement les activités ouvertes"))
+        self.ctrl_activites_ouvertes.SetFont(wx.Font(8, wx.FONTFAMILY_DEFAULT, wx.NORMAL, wx.NORMAL))
 
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
         self.bouton_fermer = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
@@ -80,6 +79,7 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonImporter, self.bouton_importer)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonExporter, self.bouton_exporter)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
+        self.Bind(wx.EVT_CHECKBOX, self.OnCocheActivitesOuvertes, self.ctrl_activites_ouvertes)
 
     def __set_properties(self):
         self.SetTitle(_(u"Gestion des activités"))
@@ -91,7 +91,7 @@ class Dialog(wx.Dialog):
         self.bouton_exporter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter un ou plusieurs paramétrages d'activités (.nxa)")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
-        self.SetMinSize((700, 600))
+        self.SetMinSize((800, 700))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
@@ -102,7 +102,6 @@ class Dialog(wx.Dialog):
         grid_sizer_base.Add(self.ctrl_bandeau, 0, wx.EXPAND, 0)
         grid_sizer_gauche.Add(self.ctrl_listview, 0, wx.EXPAND, 0)
 
-##        grid_sizer_gauche.Add(self.ctrl_recherche, 0, wx.EXPAND, 0)
         grid_sizer_gauche.AddGrowableRow(0)
         grid_sizer_gauche.AddGrowableCol(0)
         grid_sizer_contenu.Add(grid_sizer_gauche, 1, wx.EXPAND, 0)
@@ -116,12 +115,10 @@ class Dialog(wx.Dialog):
         grid_sizer_droit.Add(self.bouton_exporter, 0, 0, 0)
         grid_sizer_contenu.Add(grid_sizer_droit, 1, wx.EXPAND, 0)
 
-        grid_sizer_commandes = wx.FlexGridSizer(rows=1, cols=4, vgap=3, hgap=3)
-        grid_sizer_commandes.Add(self.ctrl_image, 1, wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_commandes.Add(self.hyper_telecharger, 1, wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_commandes.Add( (70, 10), 1, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_commandes = wx.FlexGridSizer(rows=1, cols=5, vgap=3, hgap=3)
         grid_sizer_commandes.Add(self.ctrl_recherche, 1, wx.ALIGN_CENTER_VERTICAL|wx.EXPAND, 0)
-        grid_sizer_commandes.AddGrowableCol(3)
+        grid_sizer_commandes.Add(self.ctrl_activites_ouvertes, 0, wx.ALIGN_CENTER_VERTICAL|wx.LEFT, 30)
+        grid_sizer_commandes.AddGrowableCol(0)
         grid_sizer_contenu.Add(grid_sizer_commandes, 1, wx.EXPAND, 10)
 
         grid_sizer_contenu.AddGrowableRow(0)
@@ -138,6 +135,10 @@ class Dialog(wx.Dialog):
         grid_sizer_base.AddGrowableCol(0)
         self.Layout()
         self.CenterOnScreen()
+
+    def OnCocheActivitesOuvertes(self, event):
+        self.ctrl_listview.activites_ouvertes = self.ctrl_activites_ouvertes.GetValue()
+        self.ctrl_listview.MAJ()
 
     def Ajouter(self, event):
         self.ctrl_listview.Ajouter(None)
