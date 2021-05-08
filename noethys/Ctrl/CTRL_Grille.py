@@ -66,6 +66,7 @@ AFFICHE_NOM_GROUPE = True
 AFFICHE_COLONNE_MEMO = True
 AFFICHE_COLONNE_TRANSPORTS = True
 FORMAT_LABEL_LIGNE = "nom_prenom"
+MASQUER_UNITES_FERMEES = False
 
 # Colonnes unités
 HAUTEUR_LIGNE = 30
@@ -643,7 +644,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         self.SetDefaultCellBackgroundColour(self.GetBackgroundColour())
         
         # Récupération des paramètres
-        global AFFICHE_COLONNE_MEMO, AFFICHE_COLONNE_TRANSPORTS, FORMAT_LABEL_LIGNE
+        global AFFICHE_COLONNE_MEMO, AFFICHE_COLONNE_TRANSPORTS, FORMAT_LABEL_LIGNE, MASQUER_UNITES_FERMEES
         
         parametresDefaut = {
             "affiche_colonne_memo" : AFFICHE_COLONNE_MEMO,
@@ -654,6 +655,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             "hauteur_lignes" : HAUTEUR_LIGNE,
             "largeur_colonne_memo" : LARGEUR_COLONNE_MEMO,
             "largeur_colonne_transports" : LARGEUR_COLONNE_TRANSPORTS,
+            "masquer_unites_fermees": MASQUER_UNITES_FERMEES,
             }
         dictParametres = UTILS_Parametres.ParametresCategorie(mode="get", categorie="parametres_grille_conso", dictParametres=parametresDefaut)
         
@@ -663,6 +665,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         FORMAT_LABEL_LIGNE = dictParametres["format_label_ligne"]
         self.blocageSiComplet = dictParametres["blocage_si_complet"]
         self.afficheSansPrestation = dictParametres["affiche_sans_prestation"]
+        MASQUER_UNITES_FERMEES = dictParametres["masquer_unites_fermees"]
 
         # Hauteur lignes et largeurs colonne
         self.dictParametres = { 
@@ -673,20 +676,6 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 "transports" : dictParametres["largeur_colonne_transports"],
             } }
 
-##        global AFFICHE_COLONNE_MEMO, AFFICHE_COLONNE_TRANSPORTS
-##        AFFICHE_COLONNE_MEMO = UTILS_Parametres.Parametres(mode="get", categorie="parametres_grille_conso", nom="affiche_colonne_memo", valeur=AFFICHE_COLONNE_MEMO)
-##        AFFICHE_COLONNE_TRANSPORTS = UTILS_Parametres.Parametres(mode="get", categorie="parametres_grille_conso", nom="affiche_colonne_transports", valeur=AFFICHE_COLONNE_TRANSPORTS)
-##        self.blocageSiComplet = UTILS_Parametres.Parametres(mode="get", categorie="parametres_grille_conso", nom="blocage_si_complet", valeur=True)
-##
-##        # Hauteur lignes et largeurs colonne
-##        self.dictParametres = { 
-##            "hauteur" : UTILS_Parametres.Parametres(mode="get", categorie="parametres_grille_conso", nom="hauteur_lignes", valeur=HAUTEUR_LIGNE), 
-##            "largeurs" : { 
-##                "unites" : {}, 
-##                "memo" : UTILS_Parametres.Parametres(mode="get", categorie="parametres_grille_conso", nom="largeur_colonne_memo", valeur=LARGEUR_COLONNE_MEMO), 
-##                "transports" : UTILS_Parametres.Parametres(mode="get", categorie="parametres_grille_conso", nom="largeur_colonne_transports", valeur=LARGEUR_COLONNE_TRANSPORTS)
-##            } }
-                
         # Binds
         self.barreMoving = None
         self.casesSurvolees = None
@@ -796,8 +785,8 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
     def MAJ_donnees(self):
         # Récupération des données
         self.DB = GestionDB.DB()
-        self.dictOuvertures, self.listeUnitesUtilisees = self.GetDictOuvertures(self.listeActivites, self.listePeriodes)
-        self.dictListeUnites, self.dictUnites = self.GetListeUnites(self.listeUnitesUtilisees)
+        self.dictOuvertures, self.listeUnitesOuvertes = self.GetDictOuvertures(self.listeActivites, self.listePeriodes)
+        self.dictListeUnites, self.dictUnites = self.GetListeUnites(self.listeUnitesOuvertes)
         self.listeTouchesRaccourcis = self.GetListeTouchesRaccourcis()
         self.listeVacances = self.GetListeVacances() 
         self.listeFeries = self.GetListeFeries() 
@@ -1196,7 +1185,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 listeTouchesRaccourcis.append( (touche_raccourci, IDunite) )
         return listeTouchesRaccourcis
         
-    def GetListeUnites(self, listeUnitesUtilisees=None):
+    def GetListeUnites(self, listeUnitesOuvertes=None):
         dates_extremes = self.GetDatesExtremes(self.listePeriodes)
         dictListeUnites = {}
         dictUnites = {}
@@ -1214,10 +1203,11 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             # Mémorisation des unités
             dictUnites[IDunite] = dictTemp
 
-            if date_fin == None or (date_debut <= str(dates_extremes[1]) and date_fin >= str(dates_extremes[0])):
-                if (IDactivite in dictListeUnites) == False :
-                    dictListeUnites[IDactivite] = []
-                dictListeUnites[IDactivite].append(dictTemp)
+            if IDunite in listeUnitesOuvertes or MASQUER_UNITES_FERMEES == False:
+                if date_fin == None or (date_debut <= str(dates_extremes[1]) and date_fin >= str(dates_extremes[0])):
+                    if (IDactivite in dictListeUnites) == False :
+                        dictListeUnites[IDactivite] = []
+                    dictListeUnites[IDactivite].append(dictTemp)
 
             # Mémorisation des largeurs
             if (IDunite in self.dictParametres["largeurs"]["unites"]) == False :
@@ -1242,7 +1232,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         
     def GetDictOuvertures(self, listeActivites=[], listePeriodes=[]):
         dictOuvertures = {}
-        listeUnitesUtilisees = []
+        listeUnitesOuvertes = []
         # Get Conditions
         conditions = self.GetSQLdates(listePeriodes)
         if len(conditions) > 0 :
@@ -1282,8 +1272,8 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         self.DB.ExecuterReq(req)
         listeDonnees = self.DB.ResultatReq()
         for IDouverture, IDunite, IDgroupe, date in listeDonnees :
-            if IDunite not in listeUnitesUtilisees :
-                listeUnitesUtilisees.append(IDunite)
+            if IDunite not in listeUnitesOuvertes :
+                listeUnitesOuvertes.append(IDunite)
             date = DateEngEnDateDD(date)
 
             key = (IDunite, IDgroupe, date)
@@ -1299,7 +1289,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 dictOuvertures[date][IDgroupe] = {}
             if (IDunite in dictOuvertures[date][IDgroupe]) == False :
                 dictOuvertures[date][IDgroupe][IDunite] = dictValeurs
-        return dictOuvertures, listeUnitesUtilisees
+        return dictOuvertures, listeUnitesOuvertes
 
     def GetDictRemplissage(self, listeActivites=[], listePeriodes=[], listeIndividus=[]):
         dictRemplissage = {}
@@ -2766,7 +2756,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                         for IDaide_montant, dictMontant in dictMontants.items() :
                             montant = dictMontant["montant"]
                             for IDaide_combi, combinaison in dictMontant["combinaisons"].items() :
-                                resultat = self.RechercheCombinaisonTuple(combinaisons_unites, combinaison) # listeUnitesUtilisees
+                                resultat = self.RechercheCombinaisonTuple(combinaisons_unites, combinaison)
 
                                 # Regarde si la combinaison est bonne
                                 combiAideTemp = combinaison
@@ -4310,20 +4300,6 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         elif dictTarif1[key] > dictTarif2[key] : return 1
         else: return 0
 
-
-##    def TestCombinaisons(self, listeUnitesUtilisees, combinaison) :
-##        """ Recherche si des combinaisons d'unités sont identiques """
-##        if len(listeUnitesUtilisees) != len(combinaison) :
-##            return False
-##        for IDunite in listeUnitesUtilisees :
-##            if IDunite not in combinaison :
-##                return False
-##        return True
-    
-    
-
-
-
     def ModifierPrestation(self, IDprestation=None):
         print(IDprestation)
         
@@ -5674,16 +5650,10 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             "hauteur_lignes" : self.dictParametres["hauteur"],
             "largeur_colonne_memo" : self.dictParametres["largeurs"]["memo"],
             "largeur_colonne_transports" : self.dictParametres["largeurs"]["transports"],
+            "masquer_unites_fermees": MASQUER_UNITES_FERMEES,
             }
         dictParametres = UTILS_Parametres.ParametresCategorie(mode="set", categorie="parametres_grille_conso", dictParametres=dictValeurs)
 
-##        UTILS_Parametres.Parametres(mode="set", categorie="parametres_grille_conso", nom="affiche_colonne_memo", valeur=AFFICHE_COLONNE_MEMO)
-##        UTILS_Parametres.Parametres(mode="set", categorie="parametres_grille_conso", nom="affiche_colonne_transports", valeur=AFFICHE_COLONNE_TRANSPORTS)
-##        UTILS_Parametres.Parametres(mode="set", categorie="parametres_grille_conso", nom="hauteur_lignes", valeur=self.dictParametres["hauteur"])
-##        UTILS_Parametres.Parametres(mode="set", categorie="parametres_grille_conso", nom="largeur_colonne_memo", valeur=self.dictParametres["largeurs"]["memo"])
-##        UTILS_Parametres.Parametres(mode="set", categorie="parametres_grille_conso", nom="largeur_colonne_transports", valeur=self.dictParametres["largeurs"]["transports"])
-##        UTILS_Parametres.Parametres(mode="set", categorie="parametres_grille_conso", nom="blocage_si_complet", valeur=self.blocageSiComplet)
-        
         # Largeurs colonnes
         listeDonnees = []
         for IDunite, largeur in self.dictParametres["largeurs"]["unites"].items() :
@@ -5747,7 +5717,15 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
     def SetAfficheColonneMemo(self, etat=True):
         global AFFICHE_COLONNE_MEMO
         AFFICHE_COLONNE_MEMO = etat
-        self.MAJ_affichage() 
+        self.MAJ_affichage()
+
+    def GetMasquerUnitesFermees(self):
+        return MASQUER_UNITES_FERMEES
+
+    def SetMasquerUnitesFermees(self, etat=True):
+        global MASQUER_UNITES_FERMEES
+        MASQUER_UNITES_FERMEES = etat
+        self.MAJ()
 
     def GetFormatLabelLigne(self):
         return FORMAT_LABEL_LIGNE
