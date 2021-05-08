@@ -219,7 +219,7 @@ def GetListeIndividus(listview=None, listeActivites=None, presents=None, IDindiv
     LEFT JOIN inscriptions ON inscriptions.IDindividu = individus.IDindividu
     LEFT JOIN secteurs ON secteurs.IDsecteur = individus.IDsecteur
     %s
-    WHERE individus.IDindividu>0 %s %s %s
+    WHERE individus.IDindividu>0 AND individus.deces != 1 AND individus.etat IS NULL %s %s %s
     GROUP BY individus.IDindividu
     ;""" % (",".join(listeChamps), jointurePresents, conditionActivites, conditionPresents, conditionIndividus)
     
@@ -354,7 +354,7 @@ def GetListeFamilles(listview=None, listeActivites=None, presents=None, IDfamill
     AND inscriptions.IDfamille = familles.IDfamille
     LEFT JOIN caisses ON caisses.IDcaisse = familles.IDcaisse
     LEFT JOIN regimes ON regimes.IDregime = caisses.IDregime
-    WHERE inscriptions.statut='ok' AND (inscriptions.date_desinscription IS NULL OR inscriptions.date_desinscription>='%s') %s %s %s
+    WHERE familles.etat IS NULL AND inscriptions.statut='ok' AND (inscriptions.date_desinscription IS NULL OR inscriptions.date_desinscription>='%s') %s %s %s
     GROUP BY familles.IDfamille
     ;""" % (jointurePresents, datetime.date.today(), conditionActivites, conditionPresents, conditionFamilles)
 
