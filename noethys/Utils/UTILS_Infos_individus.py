@@ -315,7 +315,7 @@ class Informations() :
     def GetListeChampsIndividus(self):
             return [
                 ("IDINDIVIDU" , "IDindividu"), ("individu_IDcivilite" , "IDcivilite"), ("INDIVIDU_NOM" , "individus.nom"), ("INDIVIDU_PRENOM" , "individus.prenom"), 
-                ("INDIVIDU_NUM_SECU" , "num_secu"), ("INDIVIDU_DATE_NAISS" , "date_naiss"), ("INDIVIDU_CP_NAISS" , "cp_naiss"), ("INDIVIDU_VILLE_NAISS" , "ville_naiss"), ("INDIVIDU_ANNEE_DECES", "annee_deces"),
+                ("INDIVIDU_NUM_SECU" , "num_secu"), ("INDIVIDU_DATE_NAISS" , "date_naiss"), ("INDIVIDU_CP_NAISS" , "cp_naiss"), ("INDIVIDU_VILLE_NAISS" , "ville_naiss"), ("INDIVIDU_ANNEE_DECES", "annee_deces"), ("INDIVIDU_DECEDE", "deces"),
                 ("individu_adresse_auto" , "adresse_auto"), ("INDIVIDU_RUE" , "individus.rue_resid"), ("INDIVIDU_CP" , "individus.cp_resid"), ("INDIVIDU_VILLE" , "individus.ville_resid"), ("INDIVIDU_SECTEUR" , "secteurs.nom"), 
                 ("INDIVIDU_CATEGORIE_TRAVAIL" , "categories_travail.nom"), ("INDIVIDU_PROFESSION" , "profession"), ("INDIVIDU_EMPLOYEUR" , "employeur"),
                 ("INDIVIDU_TEL_PRO" , "travail_tel"), ("INDIVIDU_FAX_PRO" , "travail_fax"), ("INDIVIDU_MAIL_PRO" , "travail_mail"), ("INDIVIDU_TEL_DOMICILE" , "tel_domicile"),
@@ -355,6 +355,10 @@ class Informations() :
                         dictTemp[IDindividu]["INDIVIDU_AGE"] = ""
                         dictTemp[IDindividu]["INDIVIDU_AGE_INT"] = ""
                     valeur = UTILS_Dates.DateEngFr(valeur)
+                if code == "INDIVIDU_DECEDE":
+                    if valeur == 1:
+                        dictTemp[IDindividu]["INDIVIDU_AGE"] = ""
+                        dictTemp[IDindividu]["INDIVIDU_AGE_INT"] = ""
                 if code == "INDIVIDU_DATE_CREATION" : valeur = UTILS_Dates.DateEngFr(valeur)
                 dictTemp[IDindividu][code] = valeur
                 index += 1
