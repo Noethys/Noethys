@@ -1,4 +1,4 @@
-Version 1.2.9.7 (30/05/2021) :
+Version 1.2.9.8 (30/05/2021) :
 
 - Ajout des dates pour chaque prestation en mode condensé sur la facture
 - Ajout de la classe de l'individu sur la facture
