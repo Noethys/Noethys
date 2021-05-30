@@ -341,6 +341,9 @@ class Dialog(wx.Dialog):
         self.ctrl_produit.SetFont(wx.Font(10, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, 'Arial'))
         self.bouton_produit = wx.Button(self, -1, _(u"Sélectionner"))
 
+        self.label_description = wx.StaticText(self, -1, _(u"Description :"))
+        self.ctrl_description = wx.TextCtrl(self, -1, u"")
+
         self.label_observations = wx.StaticText(self, -1, _(u"Notes :"))
         self.ctrl_observations = wx.TextCtrl(self, -1, u"", style=wx.TE_MULTILINE)
 
@@ -425,6 +428,7 @@ class Dialog(wx.Dialog):
         self.ctrl_produit.SetToolTip(wx.ToolTip(_(u"Nom du produit")))
         self.bouton_loueur.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sélectionner un loueur")))
         self.bouton_produit.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sélectionner un produit")))
+        self.ctrl_description.SetToolTip(wx.ToolTip(_(u"Saisissez ici une description pour cette location (Ex : Location de salle pour mariage...)")))
         self.ctrl_observations.SetToolTip(wx.ToolTip(_(u"Saisissez ici des observations éventuelles")))
         self.ctrl_partage.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour autoriser le partage entre plusieurs usagers")))
         self.ctrl_logo.SetToolTip(wx.ToolTip(_(u"Image du produit")))
@@ -450,7 +454,7 @@ class Dialog(wx.Dialog):
 
         # Généralités
         staticbox_generalites = wx.StaticBoxSizer(self.staticbox_generalites_staticbox, wx.VERTICAL)
-        grid_sizer_generalites = wx.FlexGridSizer(rows=4, cols=2, vgap=10, hgap=10)
+        grid_sizer_generalites = wx.FlexGridSizer(rows=5, cols=2, vgap=10, hgap=10)
 
         grid_sizer_generalites.Add(self.label_loueur, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL, 0)
 
@@ -467,6 +471,9 @@ class Dialog(wx.Dialog):
         grid_sizer_produit.Add(self.bouton_produit, 0, 0, 0)
         grid_sizer_produit.AddGrowableCol(0)
         grid_sizer_generalites.Add(grid_sizer_produit, 1, wx.EXPAND, 0)
+
+        grid_sizer_generalites.Add(self.label_description, 0, wx.ALIGN_RIGHT| wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_generalites.Add(self.ctrl_description, 0, wx.EXPAND, 0)
 
         grid_sizer_generalites.Add(self.label_observations, 0, wx.ALIGN_RIGHT, 0)
         grid_sizer_generalites.Add(self.ctrl_observations, 0, wx.EXPAND, 0)
@@ -669,6 +676,9 @@ class Dialog(wx.Dialog):
             dlg.Destroy()
             return
 
+        # Description
+        description = self.ctrl_description.GetValue()
+
         # Observations
         observations = self.ctrl_observations.GetValue()
 
@@ -828,6 +838,7 @@ class Dialog(wx.Dialog):
             listeDonnees = [
                 ("IDfamille", IDfamille),
                 ("IDproduit", IDproduit),
+                ("description", description),
                 ("observations", observations),
                 ("date_debut", date_debut),
                 ("date_fin", date_fin),
@@ -902,21 +913,22 @@ class Dialog(wx.Dialog):
         DB = GestionDB.DB()
 
         # Importation de la location
-        req = """SELECT IDfamille, IDproduit, observations, date_debut, date_fin, quantite, serie, partage
+        req = """SELECT IDfamille, IDproduit, description, observations, date_debut, date_fin, quantite, serie, partage
         FROM locations WHERE IDlocation=%d;""" % self.IDlocation
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         if len(listeDonnees) == 0 :
             DB.Close()
             return
-        IDfamille, IDproduit, observations, date_debut, date_fin, quantite, self.serie, partage = listeDonnees[0]
+        IDfamille, IDproduit, description, observations, date_debut, date_fin, quantite, self.serie, partage = listeDonnees[0]
 
         # Généralités
         self.ctrl_loueur.SetIDfamille(IDfamille)
         self.ctrl_produit.SetIDproduit(IDproduit)
-        if observations == None :
-            observations = ""
-        self.ctrl_observations.SetValue(observations)
+        if observations:
+            self.ctrl_observations.SetValue(observations)
+        if description:
+            self.ctrl_description.SetValue(description)
 
         # Date de début
         if date_debut != None:

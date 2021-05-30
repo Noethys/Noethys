@@ -563,6 +563,8 @@ class Synchro():
         session.add(models.Parametre(nom="LOCATIONS_INTRO", parametre=self.dict_parametres["locations_intro"]))
         session.add(models.Parametre(nom="LOCATIONS_PERIODE_SAISIE", parametre=self.dict_parametres["locations_periode_saisie"]))
         session.add(models.Parametre(nom="PLANNING_LOCATIONS_INTRO", parametre=self.dict_parametres["planning_locations_intro"]))
+        session.add(models.Parametre(nom="LOCATIONS_HEURE_MIN", parametre=self.dict_parametres["locations_heure_min"]))
+        session.add(models.Parametre(nom="LOCATIONS_HEURE_MAX", parametre=self.dict_parametres["locations_heure_max"]))
         session.add(models.Parametre(nom="HISTORIQUE_AFFICHER", parametre=str(self.dict_parametres["historique_afficher"])))
         session.add(models.Parametre(nom="HISTORIQUE_INTRO", parametre=self.dict_parametres["historique_intro"]))
         session.add(models.Parametre(nom="HISTORIQUE_DELAI", parametre=str(self.dict_parametres["historique_delai"])))
@@ -937,16 +939,16 @@ class Synchro():
                 date_limite = datetime.date.today() + relativedelta.relativedelta(months=-nbre_mois)
                 conditions_locations = "WHERE locations.date_fin >= '%s'" % date_limite
 
-            req = """SELECT IDlocation, IDfamille, IDproduit, date_saisie, date_debut, date_fin, quantite, partage
+            req = """SELECT IDlocation, IDfamille, IDproduit, date_saisie, date_debut, date_fin, quantite, partage, description
             FROM locations 
             %s
             ;""" % conditions_locations
             DB.ExecuterReq(req)
             listeLocations = DB.ResultatReq()
-            for IDlocation, IDfamille, IDproduit, date_saisie, date_debut, date_fin, quantite, partage in listeLocations:
+            for IDlocation, IDfamille, IDproduit, date_saisie, date_debut, date_fin, quantite, partage, description in listeLocations:
                 date_debut = UTILS_Dates.DateEngEnDateDDT(date_debut)
                 date_fin = UTILS_Dates.DateEngEnDateDDT(date_fin)
-                m = models.Location(IDlocation=IDlocation, IDfamille=IDfamille, IDproduit=IDproduit, date_debut=date_debut, date_fin=date_fin, quantite=quantite, partage=partage)
+                m = models.Location(IDlocation=IDlocation, IDfamille=IDfamille, IDproduit=IDproduit, date_debut=date_debut, date_fin=date_fin, quantite=quantite, partage=partage, description=description)
                 session.add(m)
 
             liste_tables_modifiees.append("locations")
@@ -1600,7 +1602,7 @@ class Synchro():
                     # Mémorisation des locations
                     if "locations" in action and len(action["locations"]) > 0:
                         for location in action["locations"] :
-                            listeLocations.append([location["date_debut"], location["date_fin"], location["IDlocation"], location["IDproduit"], prochainIDaction, location["etat"], location["partage"]])
+                            listeLocations.append([location["date_debut"], location["date_fin"], location["IDlocation"], location["IDproduit"], prochainIDaction, location["etat"], location["partage"], location["description"]])
 
                     prochainIDaction += 1
 
@@ -1612,7 +1614,7 @@ class Synchro():
             if len(listeRenseignements) > 0 :
                 DB.Executermany("INSERT INTO portail_renseignements (champ, valeur, IDaction) VALUES (?, ?, ?)", listeRenseignements, commit=False)
             if len(listeLocations) > 0 :
-                DB.Executermany("INSERT INTO portail_reservations_locations (date_debut, date_fin, IDlocation, IDproduit, IDaction, etat, partage) VALUES (?, ?, ?, ?, ?, ?, ?)", listeLocations, commit=False)
+                DB.Executermany("INSERT INTO portail_reservations_locations (date_debut, date_fin, IDlocation, IDproduit, IDaction, etat, partage, description) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", listeLocations, commit=False)
             if len(listePasswordsFamilles) > 0 :
                 DB.Executermany("UPDATE familles SET internet_mdp=? WHERE IDfamille=?", listePasswordsFamilles, commit=False)
                 if len(listePasswordsFamilles) == 1:

@@ -46,7 +46,7 @@ class Barre(object):
         self.parent = parent
 
         liste_champs =["IDlocation", "IDfamille", "IDproduit", "observations",
-                       "date_debut", "date_fin", "quantite"]
+                       "date_debut", "date_fin", "quantite", "description"]
 
         for champ in liste_champs:
             if champ in donnees:
@@ -195,6 +195,8 @@ class Barre(object):
                     dc.SetTextForeground((0, 0, 0))
 
                     texte = self.nomTitulaires
+                    if self.description:
+                        texte += u" - %s" % self.description
 
                     texte_largeur_max = rect.width
                     padding_h = 3
@@ -636,7 +638,7 @@ class CTRL_Tableau(wx.Panel):
         if date_debut == None or date_fin == None :
             return
 
-        req = """SELECT locations.IDlocation, locations.IDfamille, locations.IDproduit, 
+        req = """SELECT locations.IDlocation, locations.IDfamille, locations.IDproduit, locations.description, 
         locations.observations, locations.date_debut, locations.date_fin, locations.quantite
         FROM locations
         LEFT JOIN produits ON produits.IDproduit = locations.IDproduit
@@ -648,9 +650,9 @@ class CTRL_Tableau(wx.Panel):
         DB.Close()
         self.liste_barres = []
 
-        for IDlocation, IDfamille, IDproduit, observations, date_debut, date_fin, quantite in listeDonnees :
+        for IDlocation, IDfamille, IDproduit, description, observations, date_debut, date_fin, quantite in listeDonnees :
             item = {"IDlocation" : IDlocation, "IDfamille" : IDfamille, "IDproduit" : IDproduit, "observations" : observations,
-                    "date_debut" : date_debut, "date_fin": date_fin, "quantite" : quantite}
+                    "date_debut" : date_debut, "date_fin": date_fin, "quantite" : quantite, "description": description}
 
             barre = Barre(self, donnees=item)
             self.liste_barres.append(barre)
@@ -1272,7 +1274,8 @@ class CTRL_Tableau(wx.Panel):
         # Corps du message
         if barre != None:
             texte = u""
-            texte += u"Produit : %s" % self.dict_produits[barre.IDproduit]["nom"]
+            texte += u"Description : %s" % (barre.description or "")
+            texte += u"\nProduit : %s" % self.dict_produits[barre.IDproduit]["nom"]
             texte += u"\nCatégorie : %s" % self.dict_produits[barre.IDproduit]["nom_categorie"]
             texte += u"\n"
             texte += u"\nDébut : %s" % UTILS_Dates.DatetimeEnFr(barre.date_debut)

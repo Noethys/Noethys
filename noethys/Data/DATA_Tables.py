@@ -1628,6 +1628,7 @@ DB_DATA = {
                                     ("etat", "VARCHAR(100)", u"ajouter, modifier ou supprimer"),
                                     ("resultat", "VARCHAR(100)", u"Résultat du traitement"),
                                     ("partage", "INTEGER", u"Partage du produit (0/1)"),
+                                    ("description", "VARCHAR(200)", u"Description"),
                                     ], # Réservations de locations enregistrées sur le portail
 
     "portail_messages":             [("IDmessage", "INTEGER PRIMARY KEY AUTOINCREMENT", u"IDmessage"),
@@ -1703,6 +1704,7 @@ DB_DATA = {
                                     ("IDlocation_portail", "VARCHAR(100)", u"IDlocation sur le portail"),
                                     ("serie", "VARCHAR(100)", u"uuid de la série"),
                                     ("partage", "INTEGER", u"Autoriser le partage de la ressource (0/1)"),
+                                    ("description", "VARCHAR(200)", u"Description"),
                                     ],  # Locations
 
 

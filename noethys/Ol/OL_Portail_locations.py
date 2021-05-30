@@ -48,6 +48,7 @@ class Track(object):
         self.etat = donnees[6]
         self.resultat = donnees[7]
         self.nom_produit = donnees[8]
+        self.description = donnees[9]
         self.quantite = 1
         self.action_possible = False
         self.date_debut_txt = self.date_debut.strftime("%d/%m/%Y-%H:%M")
@@ -121,7 +122,7 @@ class ListView(FastObjectListView):
     def GetTracks(self):
         """ Récupération des données """
         DB = GestionDB.DB()
-        req = """SELECT IDreservation, date_debut, date_fin, partage, IDlocation, portail_reservations_locations.IDproduit, etat, resultat, produits.nom
+        req = """SELECT IDreservation, date_debut, date_fin, partage, IDlocation, portail_reservations_locations.IDproduit, etat, resultat, produits.nom, description
         FROM portail_reservations_locations
         LEFT JOIN produits ON produits.IDproduit = portail_reservations_locations.IDproduit
         WHERE IDaction=%d ORDER BY date_debut;""" % self.track_demande.IDaction
