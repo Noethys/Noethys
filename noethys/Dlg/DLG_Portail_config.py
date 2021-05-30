@@ -53,6 +53,7 @@ LISTE_SELECTION_COTISATIONS = [(0, u"Toutes les cotisations"), (3, u"Datant de m
 LISTE_SELECTION_RENSEIGNEMENTS = [("masquer", u"Ne pas afficher"), ("consultation", u"Consultation uniquement"), ("modification", u"Consultation et modification autorisées")]
 LISTE_SELECTION_LOCATIONS = [(0, u"Toutes les locations"), (3, u"Datant de moins de 3 mois"), (6, u"Datant de moins de 6 mois"), (12, u"Datant de moins de 1 an"), (24, u"Datant de moins de 2 ans"), (36, u"Datant de moins de 3 ans"), (60, u"Datant de moins de 5 ans")]
 LISTE_SAISIE_LOCATIONS = [(0, u"Jamais"), (2, u"2 mois avant"), (3, u"3 mois avant"), (4, u"4 mois avant"), (5, u"5 mois avant"),(6, u"6 mois avant"), (12, u"1 an avant"), (24, u"2 ans avant"), (36, u"3 ans avant"), (60, u"5 ans avant")]
+HEURES = [("%02d:00" % x, "%02d:00" % x) for x in range(0, 25)]
 
 
 VALEURS_DEFAUT = {
@@ -164,6 +165,8 @@ VALEURS_DEFAUT = {
     "locations_selection": 3,
     "locations_periode_saisie": 6,
     "planning_locations_intro" : _(u"Saisissez des réservations avec la souris directement dans le calendrier avant de valider l'envoi des demandes."),
+    "locations_heure_min": "00:00",
+    "locations_heure_max": "24:00",
     "historique_afficher" : True,
     "historique_intro" : _(u"Vous pouvez consulter ici l'historique de vos demandes."),
     "historique_delai" : 0,
@@ -1088,6 +1091,20 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         nom = "planning_locations_intro"
         propriete = wxpg.LongStringProperty(label=_(u"Texte d'introduction du calendrier des locations"), name=nom, value=VALEURS_DEFAUT[nom])
         propriete.SetHelpString(_(u"Saisissez un texte d'introduction pour le calendrier des locations"))
+        self.Append(propriete)
+
+        # Heure affichée min
+        nom = "locations_heure_min"
+        propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Heure affichée minimale"), name=nom, liste_choix=HEURES, valeur=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Sélectionnez l'heure minimale affichée dans le planning des locations"))
+        propriete.SetAttribute("obligatoire", True)
+        self.Append(propriete)
+
+        # Heure affichée max
+        nom = "locations_heure_max"
+        propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Heure affichée maximale"), name=nom, liste_choix=HEURES, valeur=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Sélectionnez l'heure maximale affichée dans le planning des locations"))
+        propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
         # Catégorie
