@@ -10,7 +10,9 @@ import sys
 import wx
 import wxScheduleUtils as utils
 from six.moves import range as xrange
-
+import six
+if six.PY3:
+    import functools
 
 if sys.version.startswith( "2.3" ):
 	from sets import Set as set
@@ -162,7 +164,10 @@ class wxSchedulerPaint( object ):
 			if a.start.IsEarlierThan(b.start):
 				return -1
 			return 1
-		schedules.sort(key=(compare))
+		if six.PY2:
+			schedules.sort(cmp=(compare))
+		else:
+			schedules.sort(key=functools.cmp_to_key(compare))
 
 		def findNext(schedule):
 			# Among schedules that start after this one ends, find the "nearest".
