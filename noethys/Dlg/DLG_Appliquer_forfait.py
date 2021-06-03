@@ -251,7 +251,7 @@ class Forfaits():
 
         return None
 
-    def Applique_forfait(self, selectionIDcategorie_tarif=None, selectionIDtarif=None, inscription=False, selectionIDactivite=None, labelTarif=None, IDinscription=None):
+    def Applique_forfait(self, selectionIDcategorie_tarif=None, selectionIDtarif=None, inscription=False, selectionIDactivite=None, labelTarif=None, selectionIDinscription=None):
         """ Recherche et applique les forfaits auto à l'inscription """
         dictUnites = self.GetDictUnites() 
         dictInscriptions = self.GetInscriptions() 
@@ -272,7 +272,7 @@ class Forfaits():
                 IDcategorie_tarif_temp = None
                 if IDindividu in dictInscriptions:
                     for dictInscription in dictInscriptions[IDindividu]["inscriptions"] :
-                        if dictInscription["IDactivite"] == IDactivite and (not IDinscription or dictInscription["IDinscription"] == IDinscription):
+                        if dictInscription["IDactivite"] == IDactivite and (not selectionIDinscription or dictInscription["IDinscription"] == selectionIDinscription):
                             IDinscription = dictInscription["IDinscription"]
                             IDgroupe = dictInscription["IDgroupe"]
                             IDcategorie_tarif_temp = dictInscription["IDcategorie_tarif"]

@@ -685,7 +685,7 @@ class Page_Activite(wx.Panel):
         #if self.parent.mode == "saisie" :
         if statut == "ok" and self.ancien_statut != "ok" :
             f = DLG_Appliquer_forfait.Forfaits(IDfamille=IDfamille, listeActivites=[IDactivite,], listeIndividus=[self.parent.IDindividu,], saisieManuelle=False, saisieAuto=True)
-            resultat = f.Applique_forfait(selectionIDcategorie_tarif=IDcategorie_tarif, inscription=True, selectionIDactivite=IDactivite, IDinscription=self.IDinscription)
+            resultat = f.Applique_forfait(selectionIDcategorie_tarif=IDcategorie_tarif, inscription=True, selectionIDactivite=IDactivite, selectionIDinscription=self.IDinscription)
             if resultat == False :
                 dlg = wx.MessageDialog(self, _(u"Cet individu a bien été inscrit mais le forfait associé n'a pas été créé !"), _(u"Information"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
