@@ -173,34 +173,37 @@ def Impression(dictDonnees={}, nomDoc=FonctionsPerso.GenerationNomDoc("RESERVATI
                 listeEtats = []
                 listeConso = []
                 listePrestations = []
-                for IDunite, dictUnite in dictDate.items() :
-                    nomUnite = dictUnite["nomUnite"]
-                    etat = dictUnite["etat"]
+                for IDunite, liste_unites in dictDate["unites"].items():
+                    for dictUnite in liste_unites:
+                        etat = dictUnite["etat"]
+                        nomUnite = dictUnite["nomUnite"]
+                        if dictUnite["evenement"]:
+                            nomUnite = dictUnite["evenement"].nom
+
+                        if etat != None :
+                            labelUnite = nomUnite
+                            if dictUnite["type"] == "Horaire" or (dictUnite["type"] == "Evenement" and dictUnite["heure_debut"] and dictUnite["heure_fin"]and dictUnite["heure_debut"] != "00:00" and dictUnite["heure_fin"] != "00:00"):
+                                heure_debut = dictUnite["heure_debut"]
+                                if heure_debut == None : heure_debut = u"?"
+                                heure_debut = heure_debut.replace(":", "h")
+                                heure_fin = dictUnite["heure_fin"]
+                                if heure_fin == None : heure_fin = u"?"
+                                heure_fin = heure_fin.replace(":", "h")
+                                labelUnite += _(u" (%s-%s)") % (heure_debut, heure_fin)
+                            listeConso.append(labelUnite)
+
+                            if etat not in listeEtats :
+                                listeEtats.append(etat)
+
+                            IDprestation = dictUnite["IDprestation"]
+                            if dictUnite["prestation"] != None and IDprestation not in listePrestationsUtilisees :
+                                listePrestations.append(dictUnite["prestation"])
+                                listePrestationsUtilisees.append(IDprestation)
                     
-                    if etat != None :
-                        labelUnite = nomUnite
-                        if dictUnite["type"] == "Horaire" :
-                            heure_debut = dictUnite["heure_debut"]
-                            if heure_debut == None : heure_debut = u"?"
-                            heure_debut = heure_debut.replace(":", "h")
-                            heure_fin = dictUnite["heure_fin"]
-                            if heure_fin == None : heure_fin = u"?"
-                            heure_fin = heure_fin.replace(":", "h")
-                            labelUnite += _(u" (de %s à %s)") % (heure_debut, heure_fin)
-                        listeConso.append(labelUnite)
-                        
-                        if etat not in listeEtats :
-                            listeEtats.append(etat)
-                        
-                        IDprestation = dictUnite["IDprestation"]
-                        if dictUnite["prestation"] != None and IDprestation not in listePrestationsUtilisees :
-                            listePrestations.append(dictUnite["prestation"])
-                            listePrestationsUtilisees.append(IDprestation)
-                    
-                texteConsos = Paragraph(" + ".join(listeConso), paraStyle)
+                texteConsos = Paragraph("<br/>".join(listeConso), paraStyle)
                 
                 # Insertion de l'état
-                texteEtat = Paragraph(" / ".join(listeEtats), paraStyle)
+                texteEtat = Paragraph("<br/>".join(listeEtats), paraStyle)
                 
                 # Insertion des prestations et montants
                 textePrestations = []

@@ -4382,13 +4382,15 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                                         agrement = _(u" - n° agrément : %s") % agrement
                     
                                     # Mémorisation des données
-                                    if (IDindividu in dictDonnees) == False :
+                                    if IDindividu not in dictDonnees:
                                         dictDonnees[IDindividu] = { "nom":nom, "prenom":prenom, "date_naiss":date_naiss, "sexe":sexe, "activites":{}}
-                                    if (IDactivite in dictDonnees[IDindividu]["activites"]) == False :
+                                    if IDactivite not in dictDonnees[IDindividu]["activites"]:
                                         dictDonnees[IDindividu]["activites"][IDactivite] = {"nom":nomActivite, "agrement":agrement, "dates":{}}
-                                    if (date in dictDonnees[IDindividu]["activites"][IDactivite]["dates"]) == False :
-                                        dictDonnees[IDindividu]["activites"][IDactivite]["dates"][date] = {}
-                                        
+                                    if date not in dictDonnees[IDindividu]["activites"][IDactivite]["dates"]:
+                                        dictDonnees[IDindividu]["activites"][IDactivite]["dates"][date] = {"unites": {}}
+                                    if not IDunite in dictDonnees[IDindividu]["activites"][IDactivite]["dates"][date]["unites"]:
+                                        dictDonnees[IDindividu]["activites"][IDactivite]["dates"][date]["unites"][IDunite] = []
+
                                     # Récupération des consommations
                                     nomUnite = self.dictUnites[IDunite]["nom"]
                                     ordreUnite = self.dictUnites[IDunite]["ordre"]
@@ -4419,9 +4421,10 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                                         "nomUnite":nomUnite, "ordreUnite":ordreUnite, "etat":etat, 
                                         "IDgroupe":IDgroupe, "IDprestation":IDprestation, "prestation":prestation,
                                         "type":typeUnite, "heure_debut":heure_debut, "heure_fin":heure_fin,
-                                        }
-                                    dictDonnees[IDindividu]["activites"][IDactivite]["dates"][date][IDunite] = dictTemp
-                
+                                        "evenement": getattr(conso, "evenement", None),
+                                    }
+                                    dictDonnees[IDindividu]["activites"][IDactivite]["dates"][date]["unites"][IDunite].append(dictTemp)
+
         # Lancement de la création du PDF
         from Utils import UTILS_Impression_reservations
         dictChamps = UTILS_Impression_reservations.Impression(dictDonnees, nomDoc=nomDoc, afficherDoc=afficherDoc)
