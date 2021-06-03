@@ -422,15 +422,6 @@ def GetRepertoireMySQL(dictValeurs={}):
          dictValeurs = valeurs de connexion
     """
     # Récupération du chemin de MySQL à partir de la base de données
-##    import MySQLdb
-##    connexion = MySQLdb.connect(host=dictValeurs["hote"],user=dictValeurs["utilisateur"], passwd=dictValeurs["mdp"], port=dictValeurs["port"], use_unicode=True) 
-##    connexion.set_character_set('utf8')
-##    cursor = connexion.cursor()
-##    cursor.execute("SELECT @@basedir;")
-##    donnees = cursor.fetchall()
-##    if len(donnees) == 0 : 
-##        return None
-##    return donnees[0][0]
 
     # 1- Recherche automatique
     if "linux" in sys.platform :
