@@ -2608,7 +2608,9 @@ class CaseEvenement(Case):
 
         if self.IDactivite in self.grid.dictInfosInscriptions[self.IDindividu]:
             if self.grid.mode == "individu":
-                conso.IDgroupe = self.grid.GetGrandParent().panel_activites.ctrl_activites.GetIDgroupe(self.IDactivite, self.IDindividu)
+                IDgroupe = self.grid.GetGrandParent().panel_activites.ctrl_activites.GetIDgroupe(self.IDactivite, self.IDindividu)
+                if IDgroupe:
+                    conso.IDgroupe = IDgroupe
             if self.IDgroupe == None:
                 conso.IDgroupe = self.grid.dictInfosInscriptions[self.IDindividu][self.IDactivite]["IDgroupe"]
         else:
