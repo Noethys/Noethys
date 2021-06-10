@@ -1,10 +1,12 @@
-Version 1.2.9.8 (30/05/2021) :
+Version 1.2.9.9 (10/06/2021) :
 
 - Ajout des dates pour chaque prestation en mode condensé sur la facture
 - Ajout de la classe de l'individu sur la facture
 - Ajout de l'option afficher les activités ouvertes dans la liste des activités
 - Ajout du parsage de la voie dans les adresses individuelles et familiales
+- Ajout de l'intégration des événements dans l'impression des conso
 - Ajout de la description dans les locations
+- Correction sur l'application de forfaits datés
 - Correction des espaces dans les noms et prénoms des individus
 - Correction de petits bugs
 
