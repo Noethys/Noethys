@@ -70,6 +70,7 @@ DICT_PROCEDURES = {
     "A9038" : _(u"Mise à jour de l'historique des locations"),
     "A9045" : _(u"Mise à jour du format des lots PES"),
     "A9050" : _(u"Cryptage des mots de passe des utilisateurs du portail"),
+    "A9052" : _(u"Validation des actions du portail en doublon"),
 }
 
 
@@ -1345,10 +1346,43 @@ def A9050():
 
     DB.Close()
 
+def A9052():
+    """
+    Validation des actions du portail en doublon
+    """
+    DB = GestionDB.DB()
+    req = """SELECT IDaction, IDpaiement
+    FROM portail_actions
+    WHERE IDpaiement IS NOT NULL AND etat='attente'
+    ORDER BY IDaction
+    ;"""
+    DB.ExecuterReq(req)
+    listeLignes = DB.ResultatReq()
+
+    # Analyse
+    dict_resultats = {}
+    for IDaction, IDpaiement in listeLignes:
+        if IDpaiement not in dict_resultats:
+            dict_resultats[IDpaiement] = []
+        else:
+            dict_resultats[IDpaiement].append(IDaction)
+
+    # Applique l'état Validation
+    for IDpaiement, liste_actions in dict_resultats.items():
+        if liste_actions:
+            print("Modification des actions :", liste_actions)
+            if len(liste_actions) == 0: condition = "()"
+            elif len(liste_actions) == 1: condition = "(%d)" % liste_actions[0]
+            else: condition = str(tuple(liste_actions))
+            DB.ExecuterReq("UPDATE portail_actions SET etat='validation' WHERE IDaction IN %s" % condition)
+            DB.Commit()
+    DB.Close()
+
+
 
 
 if __name__ == u"__main__":
     app = wx.App(0)
     # TEST D'UNE PROCEDURE :
-    A9050()
+    A9052()
     app.MainLoop()

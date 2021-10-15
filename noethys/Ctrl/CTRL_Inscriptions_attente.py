@@ -175,7 +175,10 @@ class CTRL(HTL.HyperTreeList):
                 nbre_places_disponibles = None
 
             # Mémorise le groupe
-            dictActivites[IDactivite]["groupes"][IDgroupe] = {"nom" : nom, "nbre_places_disponibles" : nbre_places_disponibles, "nbre_inscrits" : nbre_inscrits, "nbre_inscrits_max" : nbre_inscrits_max}
+            try:
+                dictActivites[IDactivite]["groupes"][IDgroupe] = {"nom" : nom, "nbre_places_disponibles" : nbre_places_disponibles, "nbre_inscrits" : nbre_inscrits, "nbre_inscrits_max" : nbre_inscrits_max}
+            except:
+                pass
 
         for IDactivite in list(dictActivites.keys()):
             # Recherche le nombre d'inscrits total de l'activité

@@ -69,7 +69,10 @@ def DecrypteMDP(mdp="", IDfichier=None):
         if not IDfichier:
             IDfichier = FonctionsPerso.GetIDfichier()
         cryptage = UTILS_Cryptage_fichier.AESCipher(IDfichier[-10:], bs=16, prefixe=u"#@#")
-        mdp = cryptage.decrypt(mdp)
+        try:
+            mdp = cryptage.decrypt(mdp)
+        except:
+            pass
     return mdp
 
 def CrypteMDP(mdp="", IDfichier=None):

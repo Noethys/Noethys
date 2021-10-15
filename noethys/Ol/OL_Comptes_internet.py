@@ -31,9 +31,9 @@ class Track(object):
         self.internet_actif = donnees[1]
         self.internet_identifiant = donnees[2]
         self.internet_mdp = donnees[3]
-        if self.internet_mdp.startswith("custom"):
+        if self.internet_mdp and self.internet_mdp.startswith("custom"):
             self.internet_mdp = "********"
-        if self.internet_mdp.startswith("#@#"):
+        if self.internet_mdp and self.internet_mdp.startswith("#@#"):
             self.internet_mdp = UTILS_Internet.DecrypteMDP(self.internet_mdp, IDfichier=parent.IDfichier)
 
         if self.IDfamille in parent.dict_titulaires:

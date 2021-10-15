@@ -644,303 +644,304 @@ class Dialog(DLG_Saisie_lot_tresor_public.Dialog):
         lignes_detail = []
         for IdEcriture, piece in enumerate(dict_donnees["pieces"], start=1):
             num_sous_ligne = 1
-            for (IDposte, code_produit_local), montant in dict_donnees["codes"][piece["IDfacture"]].items():
-                ligne = {}
+            if piece["IDfacture"] in dict_donnees["codes"]:
+                for (IDposte, code_produit_local), montant in dict_donnees["codes"][piece["IDfacture"]].items():
+                    ligne = {}
 
-                # IDEcriture - Texte (50)
-                ligne[1] = ConvertToTexte(IdEcriture)
+                    # IDEcriture - Texte (50)
+                    ligne[1] = ConvertToTexte(IdEcriture)
 
-                # Type - Texte (1)
-                ligne[2] = ConvertToTexte("T")
+                    # Type - Texte (1)
+                    ligne[2] = ConvertToTexte("T")
 
-                # Reelle - Texte (1)
-                ligne[3] = ConvertToTexte("O")
+                    # Reelle - Texte (1)
+                    ligne[3] = ConvertToTexte("O")
 
-                # Collectivité - Texte (10)
-                ligne[4] = ConvertToTexte(dict_donnees["code_collectivite"][:10])
+                    # Collectivité - Texte (10)
+                    ligne[4] = ConvertToTexte(dict_donnees["code_collectivite"][:10])
 
-                # Budget - Texte (10)
-                ligne[5] = ConvertToTexte(dict_donnees["code_budget"][:10])
+                    # Budget - Texte (10)
+                    ligne[5] = ConvertToTexte(dict_donnees["code_budget"][:10])
 
-                # Exercice - Entier
-                ligne[6] = dict_donnees["exercice"]
+                    # Exercice - Entier
+                    ligne[6] = dict_donnees["exercice"]
 
-                # Multiple - Texte (1)
-                ligne[7] = ConvertToTexte("M" if num_sous_ligne == 1 else "S")
+                    # Multiple - Texte (1)
+                    ligne[7] = ConvertToTexte("M" if num_sous_ligne == 1 else "S")
 
-                # CodeTiers - Texte (15)
-                ligne[8] = ConvertToTexte(piece["code_tiers"][:15])
-                if self.ctrl_parametres.GetPropertyValue("code_compta_as_alias") == True and piece["code_compta"]:
-                    ligne[8] = ConvertToTexte(piece["code_compta"][:15])
+                    # CodeTiers - Texte (15)
+                    ligne[8] = ConvertToTexte(piece["code_tiers"][:15])
+                    if self.ctrl_parametres.GetPropertyValue("code_compta_as_alias") == True and piece["code_compta"]:
+                        ligne[8] = ConvertToTexte(piece["code_compta"][:15])
 
-                # Designation1 - Texte (50)
-                ligne[10] = ConvertToTexte(piece["titulaire_nom"][:50])
+                    # Designation1 - Texte (50)
+                    ligne[10] = ConvertToTexte(piece["titulaire_nom"][:50])
 
-                # Designation2 - Texte (50)
-                ligne[11] = ConvertToTexte(piece["titulaire_prenom"][:50])
+                    # Designation2 - Texte (50)
+                    ligne[11] = ConvertToTexte(piece["titulaire_prenom"][:50])
 
-                # AdrLig1 - Texte (50)
-                ligne[12] = ConvertToTexte(piece["titulaire_rue"][:50])
+                    # AdrLig1 - Texte (50)
+                    ligne[12] = ConvertToTexte(piece["titulaire_rue"][:50])
 
-                # Codepostal - Texte (10)
-                ligne[15] = ConvertToTexte(piece["titulaire_cp"][:10])
+                    # Codepostal - Texte (10)
+                    ligne[15] = ConvertToTexte(piece["titulaire_cp"][:10])
 
-                # Ville - Texte (50)
-                ligne[16] = ConvertToTexte(piece["titulaire_ville"][:50])
+                    # Ville - Texte (50)
+                    ligne[16] = ConvertToTexte(piece["titulaire_ville"][:50])
 
-                # Libelle1 - Texte (50)
-                ligne[18] = ConvertToTexte(dict_donnees["objet_dette"][:50])
+                    # Libelle1 - Texte (50)
+                    ligne[18] = ConvertToTexte(dict_donnees["objet_dette"][:50])
 
-                # PièceJustificative1 - Texte (50)
-                ligne[20] = ConvertToTexte(piece["objet_piece"][:50])
+                    # PièceJustificative1 - Texte (50)
+                    ligne[20] = ConvertToTexte(piece["objet_piece"][:50])
 
-                # Numéro - Entier
-                ligne[23] = "0"  # Nécessaire ?
+                    # Numéro - Entier
+                    ligne[23] = "0"  # Nécessaire ?
 
-                # Sens - Texte (1)
-                ligne[24] = ConvertToTexte("R")
+                    # Sens - Texte (1)
+                    ligne[24] = ConvertToTexte("R")
 
-                # Date - Texte (10)
-                ligne[25] = ConvertToTexte(UTILS_Dates.DateEngFr(dict_donnees["date_emission"]))
+                    # Date - Texte (10)
+                    ligne[25] = ConvertToTexte(UTILS_Dates.DateEngFr(dict_donnees["date_emission"]))
 
-                # Article - Texte (10)
-                ligne[26] = IDposte[:10] # ConvertToTexte(dict_donnees["id_poste"][:10])
+                    # Article - Texte (10)
+                    ligne[26] = IDposte[:10] # ConvertToTexte(dict_donnees["id_poste"][:10])
 
-                # Montant HT - Monétaire (,4)
-                ligne[30] = str(montant) + "00" # str(piece["montant"]) + "00"
+                    # Montant HT - Monétaire (,4)
+                    ligne[30] = str(montant) + "00" # str(piece["montant"]) + "00"
 
-                # Montant TVA - Monétaire (,4)
-                ligne[31] = "0.0000"
+                    # Montant TVA - Monétaire (,4)
+                    ligne[31] = "0.0000"
 
-                # Solder - O/N
-                ligne[32] = "0"
+                    # Solder - O/N
+                    ligne[32] = "0"
 
-                # Priorité - Entier
-                ligne[33] = "0"
+                    # Priorité - Entier
+                    ligne[33] = "0"
 
-                # Accepté - O/N
-                ligne[35] = "0"
+                    # Accepté - O/N
+                    ligne[35] = "0"
 
-                # Erroné - O/N
-                ligne[36] = "0"
+                    # Erroné - O/N
+                    ligne[36] = "0"
 
-                # NJ - Texte (2)
-                ligne[38] = ConvertToTexte(piece["natjur_helios"][:2])
+                    # NJ - Texte (2)
+                    ligne[38] = ConvertToTexte(piece["natjur_helios"][:2])
 
-                # TvaTaux - Reel Simple (5)
-                ligne[40] = "0.000000"
+                    # TvaTaux - Reel Simple (5)
+                    ligne[40] = "0.000000"
 
-                # Mixte - Texte (1)
-                ligne[44] = ConvertToTexte("N")
+                    # Mixte - Texte (1)
+                    ligne[44] = ConvertToTexte("N")
 
-                # Imprévisible - Texte (1)
-                ligne[45] = ConvertToTexte("N")
+                    # Imprévisible - Texte (1)
+                    ligne[45] = ConvertToTexte("N")
 
-                # CodeAlim - Texte (1)
-                ligne[46] = ConvertToTexte("N")
+                    # CodeAlim - Texte (1)
+                    ligne[46] = ConvertToTexte("N")
 
-                # MarcheSim - Texte (1)
-                ligne[47] = ConvertToTexte("N")
+                    # MarcheSim - Texte (1)
+                    ligne[47] = ConvertToTexte("N")
 
-                # SuiviDelai - Texte (1)
-                ligne[50] = ConvertToTexte("N")
+                    # SuiviDelai - Texte (1)
+                    ligne[50] = ConvertToTexte("N")
 
-                # DelaiPaiement - Entier
-                ligne[51] = "0"
+                    # DelaiPaiement - Entier
+                    ligne[51] = "0"
 
-                # CPL - Texte (4)
-                ligne[54] = code_produit_local[:4] # ConvertToTexte(dict_donnees["code_prodloc"][:4])
+                    # CPL - Texte (4)
+                    ligne[54] = code_produit_local[:4] # ConvertToTexte(dict_donnees["code_prodloc"][:4])
 
-                # Prélèvement :
-                if piece["prelevement"] == 1:
+                    # Prélèvement :
+                    if piece["prelevement"] == 1:
 
-                    # CodeEtab - Texte (5)
-                    ligne[59] = ConvertToTexte(piece["prelevement_iban"][4:9])
+                        # CodeEtab - Texte (5)
+                        ligne[59] = ConvertToTexte(piece["prelevement_iban"][4:9])
 
-                    # CodeGuic - Texte (5)
-                    ligne[60] = ConvertToTexte(piece["prelevement_iban"][9:14])
+                        # CodeGuic - Texte (5)
+                        ligne[60] = ConvertToTexte(piece["prelevement_iban"][9:14])
 
-                    # IdCpte - Texte (11)
-                    ligne[61] = ConvertToTexte(piece["prelevement_iban"][14:25])
+                        # IdCpte - Texte (11)
+                        ligne[61] = ConvertToTexte(piece["prelevement_iban"][14:25])
 
-                    # CleRib - Texte (2)
-                    ligne[62] = ConvertToTexte(piece["prelevement_iban"][25:27])
+                        # CleRib - Texte (2)
+                        ligne[62] = ConvertToTexte(piece["prelevement_iban"][25:27])
 
-                    # LibBanc - Texte (24)
-                    infos_banque = DATA_Bic.RechercherBIC(piece["prelevement_bic"])
-                    nom_banque = infos_banque[0] if infos_banque else ""
-                    ligne[63] = ConvertToTexte(nom_banque[:24])
+                        # LibBanc - Texte (24)
+                        infos_banque = DATA_Bic.RechercherBIC(piece["prelevement_bic"])
+                        nom_banque = infos_banque[0] if infos_banque else ""
+                        ligne[63] = ConvertToTexte(nom_banque[:24])
 
-                    # TitCpte - Texte (32)
-                    ligne[64] = ConvertToTexte(piece["prelevement_titulaire"][:32])
+                        # TitCpte - Texte (32)
+                        ligne[64] = ConvertToTexte(piece["prelevement_titulaire"][:32])
 
-                    # IBAN - Texte (34)
-                    ligne[65] = ConvertToTexte(piece["prelevement_iban"][:34])
+                        # IBAN - Texte (34)
+                        ligne[65] = ConvertToTexte(piece["prelevement_iban"][:34])
 
-                    # BIC - Texte (11)
-                    ligne[66] = ConvertToTexte(piece["prelevement_bic"][:11])
+                        # BIC - Texte (11)
+                        ligne[66] = ConvertToTexte(piece["prelevement_bic"][:11])
 
-                # Tribunal - Texte (100)
-                ligne[68] = ConvertToTexte(dict_donnees["tribunal"][:100])
+                    # Tribunal - Texte (100)
+                    ligne[68] = ConvertToTexte(dict_donnees["tribunal"][:100])
 
-                # Civilité - Texte (32)
-                if piece["titulaire_civilite"] == u"M.": ligne[69] = ConvertToTexte("M")
-                if piece["titulaire_civilite"] == u"Mme": ligne[69] = ConvertToTexte("MME")
-                if piece["titulaire_civilite"] == u"Melle": ligne[69] = ConvertToTexte("MLLE")
+                    # Civilité - Texte (32)
+                    if piece["titulaire_civilite"] == u"M.": ligne[69] = ConvertToTexte("M")
+                    if piece["titulaire_civilite"] == u"Mme": ligne[69] = ConvertToTexte("MME")
+                    if piece["titulaire_civilite"] == u"Melle": ligne[69] = ConvertToTexte("MLLE")
 
-                # TIPI - O/N
-                ligne[70] = ConvertToTexte("O" if dict_donnees["tipi"] else "N")
+                    # TIPI - O/N
+                    ligne[70] = ConvertToTexte("O" if dict_donnees["tipi"] else "N")
 
-                # PrelevementSEPA - O/N
-                ligne[71] = ConvertToTexte("O" if piece["prelevement"] == 1 else "N")
+                    # PrelevementSEPA - O/N
+                    ligne[71] = ConvertToTexte("O" if piece["prelevement"] == 1 else "N")
 
-                # DatePrel - Texte (10)
-                if piece["prelevement"] == 1:
-                    ligne[72] = ConvertToTexte(UTILS_Dates.DateEngFr(dict_donnees["date_prelevement"]))
+                    # DatePrel - Texte (10)
+                    if piece["prelevement"] == 1:
+                        ligne[72] = ConvertToTexte(UTILS_Dates.DateEngFr(dict_donnees["date_prelevement"]))
 
-                    # PeriodicitePrel - Texte (2)
-                    ligne[73] = ConvertToTexte("02") # Mensuel
+                        # PeriodicitePrel - Texte (2)
+                        ligne[73] = ConvertToTexte("02") # Mensuel
 
-                    # ICS - Texte (13)
-                    IDcompte = self.ctrl_parametres.GetPropertyValue("IDcompte")
-                    if not IDcompte:
-                        dlg = wx.MessageDialog(self, _(u"Au moins un prélèvement SEPA est demandé. Vous devez donc sélectionner un compte bancaire créditeur dans les paramètres !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
-                        dlg.ShowModal()
-                        dlg.Destroy()
-                        return False
+                        # ICS - Texte (13)
+                        IDcompte = self.ctrl_parametres.GetPropertyValue("IDcompte")
+                        if not IDcompte:
+                            dlg = wx.MessageDialog(self, _(u"Au moins un prélèvement SEPA est demandé. Vous devez donc sélectionner un compte bancaire créditeur dans les paramètres !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+                            dlg.ShowModal()
+                            dlg.Destroy()
+                            return False
 
-                    dict_compte = self.ctrl_parametres.dictComptes[IDcompte]
-                    if not dict_compte["code_ics"]:
-                        dlg = wx.MessageDialog(self, _(u"Au moins un prélèvement SEPA est demandé. Vous devez donc renseigner le numéro ICS dans les paramètres du compte bancaire créditeur !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
-                        dlg.ShowModal()
-                        dlg.Destroy()
-                        return False
+                        dict_compte = self.ctrl_parametres.dictComptes[IDcompte]
+                        if not dict_compte["code_ics"]:
+                            dlg = wx.MessageDialog(self, _(u"Au moins un prélèvement SEPA est demandé. Vous devez donc renseigner le numéro ICS dans les paramètres du compte bancaire créditeur !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+                            dlg.ShowModal()
+                            dlg.Destroy()
+                            return False
 
-                    ligne[74] = ConvertToTexte(dict_compte["code_ics"]) if dict_compte["code_ics"] else ""
+                        ligne[74] = ConvertToTexte(dict_compte["code_ics"]) if dict_compte["code_ics"] else ""
+
+                        # RUM - Texte (35)
+                        ligne[75] = ConvertToTexte(piece["prelevement_rum"])
+
+                    # RUMMigre - O/N
+                    ligne[76] = ConvertToTexte("N")
 
                     # RUM - Texte (35)
-                    ligne[75] = ConvertToTexte(piece["prelevement_rum"])
+                    if piece["prelevement"] == 1:
+                        ligne[77] = ConvertToTexte(UTILS_Dates.DateEngFr(piece["prelevement_date_mandat"]))
 
-                # RUMMigre - O/N
-                ligne[76] = ConvertToTexte("N")
+                        # LibellePrel - Texte (140)
+                        ligne[78] = ConvertToTexte(piece["prelevement_libelle"][:140])
 
-                # RUM - Texte (35)
-                if piece["prelevement"] == 1:
-                    ligne[77] = ConvertToTexte(UTILS_Dates.DateEngFr(piece["prelevement_date_mandat"]))
+                        # SequencePrel - Texte (02)
+                        if piece["sequence"] == "FRST":
+                            sequence = "02"
+                        elif piece["sequence"] == "RCUR":
+                            sequence = "03"
+                        elif piece["sequence"] == "FNAL":
+                            sequence = "04"
+                        else:
+                            sequence = "01"
+                        ligne[79] = ConvertToTexte(sequence)
 
-                    # LibellePrel - Texte (140)
-                    ligne[78] = ConvertToTexte(piece["prelevement_libelle"][:140])
+                    # TitCpteDiff - O/N
+                    ligne[80] = ConvertToTexte("N")
 
-                    # SequencePrel - Texte (02)
-                    if piece["sequence"] == "FRST":
-                        sequence = "02"
-                    elif piece["sequence"] == "RCUR":
-                        sequence = "03"
-                    elif piece["sequence"] == "FNAL":
-                        sequence = "04"
-                    else:
-                        sequence = "01"
-                    ligne[79] = ConvertToTexte(sequence)
+                    # AncienBanque - O/N
+                    ligne[84] = ConvertToTexte("N")
 
-                # TitCpteDiff - O/N
-                ligne[80] = ConvertToTexte("N")
+                    # Version - Numérique (3)
+                    ligne[90] = ConvertToTexte("18")
 
-                # AncienBanque - O/N
-                ligne[84] = ConvertToTexte("N")
+                    # CategorieTiersPES - Numérique (2)
+                    ligne[91] = ConvertToTexte(piece["cattiers_helios"])
 
-                # Version - Numérique (3)
-                ligne[90] = ConvertToTexte("18")
+                    # NatJuridiqueTiersPES - Numérique (2)
+                    ligne[92] = ConvertToTexte(piece["natjur_helios"])
 
-                # CategorieTiersPES - Numérique (2)
-                ligne[91] = ConvertToTexte(piece["cattiers_helios"])
+                    # Civilité - Texte (32)
+                    if piece["titulaire_civilite"] == u"M.": ligne[93] = ConvertToTexte("M")
+                    if piece["titulaire_civilite"] == u"Mme": ligne[93] = ConvertToTexte("MME")
+                    if piece["titulaire_civilite"] == u"Melle": ligne[93] = ConvertToTexte("MLLE")
 
-                # NatJuridiqueTiersPES - Numérique (2)
-                ligne[92] = ConvertToTexte(piece["natjur_helios"])
+                    # NatIdentifiantTiers - Numérique (2)
+                    ligne[94] = ConvertToTexte(piece["natidtiers_helios"])
 
-                # Civilité - Texte (32)
-                if piece["titulaire_civilite"] == u"M.": ligne[93] = ConvertToTexte("M")
-                if piece["titulaire_civilite"] == u"Mme": ligne[93] = ConvertToTexte("MME")
-                if piece["titulaire_civilite"] == u"Melle": ligne[93] = ConvertToTexte("MLLE")
+                    # IdentifiantTiers - Texte (18)
+                    ligne[95] = ConvertToTexte(piece["idtiers_helios"][:18])
 
-                # NatIdentifiantTiers - Numérique (2)
-                ligne[94] = ConvertToTexte(piece["natidtiers_helios"])
+                    # CodeResident - Numérique (3)
+                    ligne[97] = ConvertToTexte("0")
 
-                # IdentifiantTiers - Texte (18)
-                ligne[95] = ConvertToTexte(piece["idtiers_helios"][:18])
+                    # TypeTiersPES - Numérique (2)
+                    ligne[98] = ConvertToTexte("01")
 
-                # CodeResident - Numérique (3)
-                ligne[97] = ConvertToTexte("0")
+                    # TitreASAP - O/N
+                    ligne[108] = ConvertToTexte("O")
 
-                # TypeTiersPES - Numérique (2)
-                ligne[98] = ConvertToTexte("01")
+                    # TIP ASAP - O/N
+                    ligne[109] = ConvertToTexte("N")
 
-                # TitreASAP - O/N
-                ligne[108] = ConvertToTexte("O")
+                    # NumeroFacture - Texte (50)
+                    ligne[111] = ConvertToTexte(piece["num_dette"])
 
-                # TIP ASAP - O/N
-                ligne[109] = ConvertToTexte("N")
+                    # EditionASAP - Numérique (2)
+                    ligne[112] = ConvertToTexte(dict_donnees["edition_asap"])
 
-                # NumeroFacture - Texte (50)
-                ligne[111] = ConvertToTexte(piece["num_dette"])
+                    # DateEnvoiASAP - Texte (10)
+                    ligne[113] = ConvertToTexte(dict_donnees["date_envoi"].replace("-", ""))
 
-                # EditionASAP - Numérique (2)
-                ligne[112] = ConvertToTexte(dict_donnees["edition_asap"])
+                    # Formatage de la ligne
+                    texte_ligne = ['""' for x in range(0, 123)]
+                    for index, valeur in ligne.items():
+                        texte_ligne[index-1] = valeur
+                    lignes.append(";".join(texte_ligne))
 
-                # DateEnvoiASAP - Texte (10)
-                ligne[113] = ConvertToTexte(dict_donnees["date_envoi"].replace("-", ""))
-
-                # Formatage de la ligne
-                texte_ligne = ['""' for x in range(0, 123)]
-                for index, valeur in ligne.items():
-                    texte_ligne[index-1] = valeur
-                lignes.append(";".join(texte_ligne))
-
-                # Incrémente sous-ligne
-                num_sous_ligne += 1
+                    # Incrémente sous-ligne
+                    num_sous_ligne += 1
 
 
-            # Création de la ligne de détail
-            if self.ctrl_parametres.GetPropertyValue("inclure_detail") == True:
-                detail = dict_donnees["detail"].get(piece["IDfacture"], None)
-                if detail:
-                    for index, dict_detail in enumerate(detail, start=1):
-                        ligne_detail = {}
+                # Création de la ligne de détail
+                if self.ctrl_parametres.GetPropertyValue("inclure_detail") == True:
+                    detail = dict_donnees["detail"].get(piece["IDfacture"], None)
+                    if detail:
+                        for index, dict_detail in enumerate(detail, start=1):
+                            ligne_detail = {}
 
-                        # Version - Numérique (3)
-                        ligne_detail[1] = ConvertToTexte("18")
+                            # Version - Numérique (3)
+                            ligne_detail[1] = ConvertToTexte("18")
 
-                        # RefIdEcriture - Texte (50)
-                        ligne_detail[2] = ligne[1]
+                            # RefIdEcriture - Texte (50)
+                            ligne_detail[2] = ligne[1]
 
-                        # DateDebut - Date
-                        ligne_detail[3] = ConvertToTexte(UTILS_Dates.DateEngFr(dict_donnees["date_min"]))
+                            # DateDebut - Date
+                            ligne_detail[3] = ConvertToTexte(UTILS_Dates.DateEngFr(dict_donnees["date_min"]))
 
-                        # DateFin - Date
-                        ligne_detail[4] = ConvertToTexte(UTILS_Dates.DateEngFr(dict_donnees["date_max"]))
+                            # DateFin - Date
+                            ligne_detail[4] = ConvertToTexte(UTILS_Dates.DateEngFr(dict_donnees["date_max"]))
 
-                        # Libelle - Texte (200)
-                        ligne_detail[5] = ConvertToTexte(dict_detail["libelle"][:200])
+                            # Libelle - Texte (200)
+                            ligne_detail[5] = ConvertToTexte(dict_detail["libelle"][:200])
 
-                        # Quantite - Numérique (5)
-                        ligne_detail[6] = str(dict_detail["quantite"])
+                            # Quantite - Numérique (5)
+                            ligne_detail[6] = str(dict_detail["quantite"])
 
-                        # MtUnitaire - Monétaire
-                        ligne_detail[10] = str(dict_detail["montant"])
+                            # MtUnitaire - Monétaire
+                            ligne_detail[10] = str(dict_detail["montant"])
 
-                        # MtHTaxe - Monétaire
-                        ligne_detail[13] = str(dict_detail["montant"] * dict_detail["quantite"])
+                            # MtHTaxe - Monétaire
+                            ligne_detail[13] = str(dict_detail["montant"] * dict_detail["quantite"])
 
-                        # MtTTC - Monétaire
-                        ligne_detail[16] = str(dict_detail["montant"] * dict_detail["quantite"])
+                            # MtTTC - Monétaire
+                            ligne_detail[16] = str(dict_detail["montant"] * dict_detail["quantite"])
 
-                        # Ordre - Numérique (3)
-                        ligne_detail[17] = str(index)
+                            # Ordre - Numérique (3)
+                            ligne_detail[17] = str(index)
 
-                        # Formatage de la ligne de détail
-                        texte_ligne_detail = ['""' for x in range(0, 17)]
-                        for index, valeur in ligne_detail.items():
-                            texte_ligne_detail[index-1] = valeur
-                        lignes_detail.append(";".join(texte_ligne_detail))
+                            # Formatage de la ligne de détail
+                            texte_ligne_detail = ['""' for x in range(0, 17)]
+                            for index, valeur in ligne_detail.items():
+                                texte_ligne_detail[index-1] = valeur
+                            lignes_detail.append(";".join(texte_ligne_detail))
 
             # Création de la pièce jointe
             ligne_pj = {}

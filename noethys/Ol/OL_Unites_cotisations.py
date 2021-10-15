@@ -305,19 +305,20 @@ class ListView(FastObjectListView):
         dictDonnees = self.listeDonnees[index]
         
         # Vérifie que l'unité n'est pas déjà attribuée à une cotisation
-        DB = GestionDB.DB()
-        req = """SELECT COUNT(IDcotisation)
-        FROM cotisations 
-        WHERE IDunite_cotisation=%d
-        ;""" % IDunite_cotisation
-        DB.ExecuterReq(req)
-        nbreCotisations = int(DB.ResultatReq()[0][0])
-        DB.Close()
-        if nbreCotisations > 0 :
-            dlg = wx.MessageDialog(self, _(u"Cette unité de cotisation a déjà été attribuée à %d cotisations(s).\n\nVous ne pouvez donc pas la supprimer !") % nbreCotisations, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
-            dlg.ShowModal()
-            dlg.Destroy()
-            return
+        if IDunite_cotisation:
+            DB = GestionDB.DB()
+            req = """SELECT COUNT(IDcotisation)
+            FROM cotisations 
+            WHERE IDunite_cotisation=%d
+            ;""" % IDunite_cotisation
+            DB.ExecuterReq(req)
+            nbreCotisations = int(DB.ResultatReq()[0][0])
+            DB.Close()
+            if nbreCotisations > 0 :
+                dlg = wx.MessageDialog(self, _(u"Cette unité de cotisation a déjà été attribuée à %d cotisations(s).\n\nVous ne pouvez donc pas la supprimer !") % nbreCotisations, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg.ShowModal()
+                dlg.Destroy()
+                return
         
         # Confirmation de suppression
         dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer cette unité de cotisation ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
