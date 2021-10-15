@@ -1,3 +1,7 @@
+Version 1.3.0.0 (15/10/2021) :
+
+- Correction de divers bugs
+
 Version 1.2.9.9 (10/06/2021) :
 
 - Ajout des dates pour chaque prestation en mode condensé sur la facture
