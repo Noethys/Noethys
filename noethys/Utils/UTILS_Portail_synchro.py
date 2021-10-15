@@ -565,6 +565,7 @@ class Synchro():
         session.add(models.Parametre(nom="PLANNING_LOCATIONS_INTRO", parametre=self.dict_parametres["planning_locations_intro"]))
         session.add(models.Parametre(nom="LOCATIONS_HEURE_MIN", parametre=self.dict_parametres["locations_heure_min"]))
         session.add(models.Parametre(nom="LOCATIONS_HEURE_MAX", parametre=self.dict_parametres["locations_heure_max"]))
+        session.add(models.Parametre(nom="LOCATIONS_AFFICHER_AUTRES_LOUEURS", parametre=str(self.dict_parametres["locations_afficher_autres_loueurs"])))
         session.add(models.Parametre(nom="HISTORIQUE_AFFICHER", parametre=str(self.dict_parametres["historique_afficher"])))
         session.add(models.Parametre(nom="HISTORIQUE_INTRO", parametre=self.dict_parametres["historique_intro"]))
         session.add(models.Parametre(nom="HISTORIQUE_DELAI", parametre=str(self.dict_parametres["historique_delai"])))

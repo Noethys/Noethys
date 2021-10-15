@@ -167,6 +167,7 @@ VALEURS_DEFAUT = {
     "planning_locations_intro" : _(u"Saisissez des réservations avec la souris directement dans le calendrier avant de valider l'envoi des demandes."),
     "locations_heure_min": "00:00",
     "locations_heure_max": "24:00",
+    "locations_afficher_autres_loueurs": False,
     "historique_afficher" : True,
     "historique_intro" : _(u"Vous pouvez consulter ici l'historique de vos demandes."),
     "historique_delai" : 0,
@@ -1105,6 +1106,13 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Heure affichée maximale"), name=nom, liste_choix=HEURES, valeur=VALEURS_DEFAUT[nom])
         propriete.SetHelpString(_(u"Sélectionnez l'heure maximale affichée dans le planning des locations"))
         propriete.SetAttribute("obligatoire", True)
+        self.Append(propriete)
+
+        # Afficher
+        nom = "locations_afficher_autres_loueurs"
+        propriete = wxpg.BoolProperty(label=_(u"Afficher le nom des autres loueurs"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Cochez cette case pour afficher le nom des autres loueurs dans le planning des locations"))
+        propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
         # Catégorie
