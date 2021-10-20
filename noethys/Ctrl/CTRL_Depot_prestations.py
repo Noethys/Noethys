@@ -225,15 +225,15 @@ class CTRL(HTL.HyperTreeList):
                         dict_montant = dict_label["detail"][montant]
 
                         niveauPrestation = self.AppendItem(niveauActivite, label)
-                        self.SetItemText(niveauPrestation, u"%.2f %s" % (montant, SYMBOLE), 1)
+                        self.SetItemText(niveauPrestation, u"%.2f %s" % (montant or 0.0, SYMBOLE), 1)
                         self.SetItemText(niveauPrestation, str(dict_montant["quantite"]), 2)
-                        self.SetItemText(niveauPrestation, u"%.2f %s" % (dict_montant["total"], SYMBOLE), 3)
+                        self.SetItemText(niveauPrestation, u"%.2f %s" % (dict_montant["total"] or 0.0, SYMBOLE), 3)
                         self.SetItemFont(niveauPrestation, wx.Font(7, wx.SWISS, wx.NORMAL, wx.NORMAL))
                         self.SetItemTextColour(niveauPrestation, wx.Colour(160, 160, 160))
 
                         impression_ligne = [label, str(dict_montant["quantite"]), u"%.2f %s" % (dict_montant["total"], SYMBOLE)]
                         if self.afficher_detail:
-                            impression_ligne.insert(1, u"%.2f %s" % (montant, SYMBOLE))
+                            impression_ligne.insert(1, u"%.2f %s" % (montant or 0.0, SYMBOLE))
                         self.dictImpression["contenu"].append(impression_ligne)
 
                 else:

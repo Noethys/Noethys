@@ -1391,7 +1391,7 @@ class CTRL_Champs(wx.TreeCtrl):
                         self.SetItemData(item, dictChamp)
                     else :
                         self.SetPyData(item, dictChamp)
-                    if dictChamp["typeDonnee"] != None :
+                    if dictChamp["typeDonnee"] != None and dictChamp["typeDonnee"] in self.dictImages:
                         self.SetItemImage(item, self.dictImages[dictChamp["typeDonnee"]], which=wx.TreeItemIcon_Normal)
                     self.dictItems[dictChamp["code"]] = item
         
