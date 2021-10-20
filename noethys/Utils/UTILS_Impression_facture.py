@@ -366,7 +366,7 @@ class Impression():
                         nom_classe = ""
                         if "scolarites" in dictIndividus and dictIndividus["scolarites"]:
                             for dict_scolarite in dictIndividus["scolarites"]:
-                                if dict_scolarite["date_fin"] >= dictValeur["date_debut"] and dict_scolarite["date_debut"] >= dictValeur["date_fin"]:
+                                if dict_scolarite["date_fin"] >= dictValeur["date_debut"] and dict_scolarite["date_debut"] <= dictValeur["date_fin"]:
                                     nom_classe = u"<font size=7> (%s - %s)</font>" % (dict_scolarite["nom_classe"], dict_scolarite["nom_ecole"])
                                     break
 
