@@ -741,8 +741,12 @@ class Dialog(wx.Dialog):
 
             liste_locations.append({"date_debut": date_debut, "date_fin": date_fin})
 
+        # Prestations
+        liste_prestations = self.ctrl_parametres.GetPageAvecCode("facturation").GetDonnees()["prestations"]
+
         # Récurrence
         num_serie = None
+        modifier_date_prestation = False
         if self.check_recurrence.GetValue() == True:
             num_serie = str(uuid.uuid4())
 
@@ -768,6 +772,12 @@ class Dialog(wx.Dialog):
             if reponse in (1, 2):
                 return False
 
+            # Demande si la date de prestation doit devenir la date de début de chaque location
+            if liste_prestations:
+                dlg = wx.MessageDialog(self, _(u"Souhaitez-vous que la date de chaque prestation soit la date de début de chaque location ?"), _(u"Question"), wx.YES_NO | wx.NO_DEFAULT | wx.CANCEL | wx.ICON_QUESTION)
+                reponse = dlg.ShowModal()
+                dlg.Destroy()
+                modifier_date_prestation = reponse == wx.ID_YES
 
         liste_anomalies = []
         liste_valides = []
@@ -793,7 +803,6 @@ class Dialog(wx.Dialog):
                 valide = False
 
             # Périodes de gestion
-            liste_prestations = self.ctrl_parametres.GetPageAvecCode("facturation").GetDonnees()["prestations"]
             gestion = UTILS_Gestion.Gestion(None)
             for track_prestation in liste_prestations:
                 if gestion.Verification("prestations", track_prestation.date) == False:
@@ -865,10 +874,11 @@ class Dialog(wx.Dialog):
             listeID = []
             for track_prestation in liste_prestations :
                 IDprestation = track_prestation.IDprestation
+                date_prestation = dict_location["date_debut"] if modifier_date_prestation else track_prestation.date
 
                 listeDonnees = [
                     ("IDcompte_payeur", self.ctrl_loueur.GetIDcomptePayeur()),
-                    ("date", track_prestation.date),
+                    ("date", date_prestation),
                     ("categorie", "location"),
                     ("label", track_prestation.label),
                     ("montant_initial", track_prestation.montant),
