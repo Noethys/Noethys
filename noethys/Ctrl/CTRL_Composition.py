@@ -1496,7 +1496,7 @@ class CTRL_Liste(HTL.HyperTreeList):
             self.SetPyData(brancheCategorie, {"type" : "categorie", "IDcategorie" : IDcategorie} )
             self.SetItemBold(brancheCategorie, True)
             self.SetItemBackgroundColour(brancheCategorie, wx.Colour(227, 227, 227))
-            
+
             # Création des branche INDIVIDUS
             for IDindividu, dictIndividu in dictCategories[IDcategorie] :
 

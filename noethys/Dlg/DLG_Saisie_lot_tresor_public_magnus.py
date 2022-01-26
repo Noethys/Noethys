@@ -637,7 +637,10 @@ class Dialog(DLG_Saisie_lot_tresor_public.Dialog):
 
     def Generer_fichier(self, dict_donnees={}, repertoire=""):
         def ConvertToTexte(valeur):
-            return u'"%s"' % valeur
+            valeur = u'"%s"' % valeur
+            valeur = valeur.replace("\n", " ")
+            valeur = valeur.replace("\r", " ")
+            return valeur
 
         lignes = []
         lignes_pj = []

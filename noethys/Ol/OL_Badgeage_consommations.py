@@ -88,6 +88,8 @@ class ListView(FastObjectListView):
             return UTILS_Dates.DateEngFr(str(dateDD))
 
         def FormateHeure(heure):
+            if not heure:
+                return ""
             heure = heure.replace(":", "h")
             return heure
 

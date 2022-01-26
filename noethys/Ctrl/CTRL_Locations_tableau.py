@@ -454,6 +454,8 @@ class Colonne(object):
 
         dtmin = self.AssembleDateEtHeure(self.date, self.dict_options["heure_min"])
         dtmax = self.AssembleDateEtHeure(self.date, self.dict_options["heure_max"])
+        if dtmin > dtmax:
+            dtmax = dtmin
 
         listeGraduations = list(rrule.rrule(rrule.MINUTELY, byminute=(0, 15, 30, 45), dtstart=dtmin, until=dtmax))
         ecartGraduations = 1.0 * self.dict_options["case_largeur"] / len(listeGraduations)
@@ -1110,7 +1112,10 @@ class CTRL_Tableau(wx.Panel):
         for IDproduit, dict_souslignes in self.dict_lignes_barres.items():
             for num_sousligne, liste_barres in dict_souslignes.items():
                 for barre in liste_barres :
-                    barre.Draw(dc, num_sousligne, rect_cadre_central)
+                    try:
+                        barre.Draw(dc, num_sousligne, rect_cadre_central)
+                    except:
+                        pass
 
         dc.DestroyClippingRegion()
 
