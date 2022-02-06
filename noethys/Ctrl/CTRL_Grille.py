@@ -2983,7 +2983,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                                             self.dictPrestations[IDprestation]["montant"] = montantFinal
                                             
                                             self.listePrestationsModifiees.append(IDprestation)
-                                            
+
                                             # Modifie le montant affiché dans le volet Facturation
                                             if self.mode == "individu" :
                                                 self.GetGrandParent().panel_facturation.ModifiePrestation(
@@ -3988,7 +3988,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 if nbreIndividus == 4 and montant_enfant_4 != None and montant_enfant_4 != 0.0 : montant_tarif = montant_enfant_4
                 if nbreIndividus == 5 and montant_enfant_5 != None and montant_enfant_5 != 0.0 : montant_tarif = montant_enfant_5
                 if nbreIndividus >= 6 and montant_enfant_6 != None and montant_enfant_6 != 0.0 : montant_tarif = montant_enfant_6
-            
+
             # Modifie le tarif des autres individus de la famille
             index = 0
             for IDprestation, dictValeurs in self.dictPrestations.items() :
@@ -4004,13 +4004,13 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                         except : pass
                     else:
                         montantTmp = montant_tarif
-                        
+
                     montantInitial = self.dictPrestations[IDprestation]["montant_initial"]
                     montantDeduction = montantInitial - self.dictPrestations[IDprestation]["montant"]
                     montantFinal = montantTmp - montantDeduction
                     self.dictPrestations[IDprestation]["montant_initial"] = montantTmp
                     self.dictPrestations[IDprestation]["montant"] = montantFinal
-                    
+
                     self.listePrestationsModifiees.append(IDprestation)
                     
                     # Modifie le montant affiché dans le volet Facturation
@@ -4025,7 +4025,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                     
                     index += 1
             
-            
+
 
         # Recherche du montant du tarif : AU PRORATA DE LA DUREE (Montant unique + QF)
         if methode_calcul in ("duree_coeff_montant_unique", "duree_coeff_qf") :

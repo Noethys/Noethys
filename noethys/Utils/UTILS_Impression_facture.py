@@ -90,9 +90,9 @@ class MyPageTemplate(PageTemplate):
         x, y, l, h = doc.modeleDoc.GetCoordsObjet(cadre_principal)
         global CADRE_CONTENU
         CADRE_CONTENU = (x, y, l, h)
-        
+
         frame1 = Frame(x, y, l, h, id='F1', leftPadding=0, topPadding=0, rightPadding=0, bottomPadding=0)
-        PageTemplate.__init__(self, id, [frame1], Template) 
+        PageTemplate.__init__(self, id, [frame1], Template)
 
     def afterDrawPage(self, canvas, doc):
         IDcompte_payeur = doc._nameSpace["IDcompte_payeur"]
