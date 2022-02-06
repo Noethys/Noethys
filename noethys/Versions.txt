@@ -1,5 +1,14 @@
+Version 1.3.0.3 (06/02/2022) :
+
+- Changement de la date de prestation pour les locations récurrentes
+- Correction des adresses avec sauts à la ligne dans l'export vers Magnus
+- Correction du menu contextuel sur les événements
+- Correction de divers bugs
+
 Version 1.3.0.0 (15/10/2021) :
 
+- Ajout de l'affichage des autres loueurs sur le portail
+- Ajout du refus des demandes de locations depuis le portail
 - Correction de divers bugs
 
 Version 1.2.9.9 (10/06/2021) :
