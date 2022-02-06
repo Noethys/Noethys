@@ -255,7 +255,7 @@ class ListView(GroupListView):
             "email_date": ColumnDefn(_(u"Email"), "left", 95, "email_date", typeDonnee="date", stringConverter=FormateDate, imageGetter=GetImageEmail),
             "reponse" : ColumnDefn(_(u"Réponse"), "left", 200, "reponse", typeDonnee="texte"),
             "ville": ColumnDefn(_(u"Ville de résidence"), "left", 150, "ville", typeDonnee="texte"),
-            "nom_groupe": ColumnDefn(_(u"Groupe"), "left", 150, "nom_groupe", typeDonnee="texte"),
+            "nom_groupe": ColumnDefn(_(u"Groupe"), "left", 120, "nom_groupe", typeDonnee="texte"),
             }
 
         # Liste des colonnes par défaut
