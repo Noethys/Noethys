@@ -2781,7 +2781,7 @@ class CaseEvenement(Case):
             self.evenementContextMenu = evenement
             return self.ContextMenu(evenement.conso)
         else:
-            return self.ContextMenu()
+            return False
 
     def SelectionnerEtiquettes(self, event):
         # Vérifie la période de gestion
