@@ -72,7 +72,7 @@ class ListView(FastObjectListView):
     def GetTracks(self):
         """ Récupération des données """
         # Conditions
-        conditions = []
+        conditions = ["individus.etat IS NULL"]
         if self.IDecole != None :
             conditions.append("scolarite.IDecole=%d " % self.IDecole)
         if self.IDclasse != None :
