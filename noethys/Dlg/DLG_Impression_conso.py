@@ -1722,7 +1722,7 @@ class Dialog(wx.Dialog):
                 dictIndividus[IDindividu] = { "IDcivilite" : IDcivilite, "IDfamille" : IDfamille }
 
         # Récupération des mémo-journées
-        req = """SELECT IDmemo, IDindividu, date, texte
+        req = """SELECT IDmemo, IDindividu, date, texte, couleur
         FROM memo_journee
         WHERE date IN %s
         ORDER BY date
@@ -1730,11 +1730,11 @@ class Dialog(wx.Dialog):
         DB.ExecuterReq(req)
         listeMemos = DB.ResultatReq()
         dictMemos = {}
-        for IDmemo, IDindividu, date, texte in listeMemos :
+        for IDmemo, IDindividu, date, texte, couleur in listeMemos :
             date = UTILS_Dates.DateEngEnDateDD(date)
             if (IDindividu in dictMemos) == False :
                 dictMemos[IDindividu] = {}
-            dictMemos[IDindividu][date] = texte
+            dictMemos[IDindividu][date] = {"texte": texte, "couleur": couleur}
 
         # Récupération des photos individuelles
         dictPhotos = {}
@@ -2417,11 +2417,12 @@ class Dialog(wx.Dialog):
                                     if IDindividu in dictMemos :
                                         for date in listeDates :
                                             if date in dictMemos[IDindividu] :
-                                                memo_journee = dictMemos[IDindividu][date]
+                                                memo_texte = dictMemos[IDindividu][date]["texte"]
+                                                memo_couleur = dictMemos[IDindividu][date]["couleur"]
                                                 if typeListe == "period" :
-                                                    memo_journee = u"%02d/%02d/%04d : %s" % (date.day, date.month, date.year, memo_journee)
-                                                if len(memo_journee) > 0 and memo_journee[-1] != "." : memo_journee += u"."
-                                                listeInfos.append(ParagraphAndImage(Paragraph(memo_journee, paraStyle), Image(Chemins.GetStaticPath("Images/16x16/Information.png"),width=8, height=8), xpad=1, ypad=0, side="left"))
+                                                    memo_texte = u"%02d/%02d/%04d : %s" % (date.day, date.month, date.year, memo_texte)
+                                                if len(memo_texte) > 0 and memo_texte[-1] != "." : memo_texte += u"."
+                                                listeInfos.append(ParagraphAndImage(Paragraph("<FONT color='%s'>%s</FONT>" % (memo_couleur or "black", memo_texte), paraStyle), Image(Chemins.GetStaticPath("Images/16x16/Information.png"),width=8, height=8), xpad=1, ypad=0, side="left"))
 
                                     # Messages individuels
                                     if IDindividu in dictMessagesIndividus:

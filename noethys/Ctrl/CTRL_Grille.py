@@ -448,13 +448,15 @@ class Ligne():
             if (self.IDindividu, self.date) in self.grid.dictMemos :
                 texteMemo = self.grid.dictMemos[(self.IDindividu, self.date)]["texte"]
                 IDmemo = self.grid.dictMemos[(self.IDindividu, self.date)]["IDmemo"]
+                couleur = self.grid.dictMemos[(self.IDindividu, self.date)]["couleur"]
             else:
                 texteMemo = ""
                 IDmemo = None
+                couleur = None
             if self.estSeparation == True :
                 case = CTRL_Grille_cases.CaseSeparationDate(self, self.grid, self.numLigne, numColonne, couleurCase)
             else:
-                case = CTRL_Grille_cases.CaseMemo(self, self.grid, self.numLigne, numColonne, self.IDindividu, self.date, texteMemo, IDmemo)
+                case = CTRL_Grille_cases.CaseMemo(self, self.grid, self.numLigne, numColonne, self.IDindividu, self.date, texteMemo, IDmemo, couleur)
             self.dictCases[numColonne] = case
             numColonne += 1
 
@@ -1521,14 +1523,14 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         elif len(listeActivites) == 1 : conditionActivites = "(%d)" % listeActivites[0]
         else : conditionActivites = str(tuple(listeActivites))
         # Récupération des mémos
-        req = """SELECT IDmemo, IDindividu, date, texte
+        req = """SELECT IDmemo, IDindividu, date, texte, couleur
         FROM memo_journee; """ 
         self.DB.ExecuterReq(req)
         listeMemos = self.DB.ResultatReq()
-        for IDmemo, IDindividu, date, texte in listeMemos :
+        for IDmemo, IDindividu, date, texte, couleur in listeMemos :
             if date != None and date != "None" : date = DateEngEnDateDD(date)
             if ((IDindividu, date) in dictMemos) == False :
-                dictMemos[(IDindividu, date)] = {"texte" : texte, "IDmemo" : IDmemo, "statut" : None }
+                dictMemos[(IDindividu, date)] = {"texte" : texte, "IDmemo" : IDmemo, "statut" : None, "couleur": couleur}
         return dictMemos
     
     def GetSQLdates(self, listePeriodes=[]):
@@ -5530,12 +5532,14 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             date = key[1]
             IDmemo = valeurs["IDmemo"]
             texte = valeurs["texte"]
+            couleur = valeurs["couleur"]
             statut = valeurs["statut"]
         
             listeDonnees = [
                     ("IDindividu", IDindividu), 
                     ("date", str(date)),
-                    ("texte", texte), 
+                    ("texte", texte),
+                    ("couleur", couleur),
                     ]
             # Ajout
             if statut == "ajout" :

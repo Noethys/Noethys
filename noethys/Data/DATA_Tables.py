@@ -539,6 +539,7 @@ DB_DATA = {
                                     ("IDindividu", "INTEGER", u"ID de l'individu"),
                                     ("date", "DATE", u"Date"),
                                     ("texte", "VARCHAR(200)", u"Texte du mémo"),
+                                    ("couleur", "VARCHAR(50)", u"Couleur"),
                                     ], # Mémo journées
 
     "prestations":[           ("IDprestation", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID prestation"),

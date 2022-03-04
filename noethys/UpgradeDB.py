@@ -1514,7 +1514,14 @@ class DB(GestionDB.DB):
 
         # =============================================================
 
+        versionFiltre = (1, 3, 0, 6)
+        if versionFichier < versionFiltre:
+            try:
+                self.AjoutChamp("memo_journee", "couleur", "VARCHAR(50)")
+            except Exception as err:
+                return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
+        # =============================================================
 
 
 

@@ -39,6 +39,122 @@ from Utils import UTILS_Utilisateurs
 from Ctrl.CTRL_Saisie_transport import DICT_CATEGORIES as DICT_CATEGORIES_TRANSPORTS
 
 
+class CTRL_Couleur(wx.Choice):
+    def __init__(self, parent):
+        wx.Choice.__init__(self, parent, -1)
+        self.parent = parent
+        self.couleurs = [
+            {"code": None, "label": _(u"Noir (par défaut)")},
+            {"code": "red", "label": _(u"Rouge")},
+            {"code": "blue", "label": _(u"Bleu")},
+            {"code": "green", "label": _(u"Vert")},
+            {"code": "purple", "label": _(u"Violet")},
+            {"code": "yellow", "label": _(u"Jaune")},
+            {"code": "pink", "label": _(u"Rose")},
+            {"code": "gray", "label": _(u"Gris")},
+            {"code": "orange", "label": _(u"Orange")},
+            {"code": "brown", "label": _(u"Marron")},
+        ]
+        self.MAJ()
+        self.Select(0)
+
+    def MAJ(self):
+        listeItems = []
+        self.dictDonnees = {}
+        index = 0
+        for dictCouleur in self.couleurs:
+            self.dictDonnees[index] = {"code": dictCouleur["code"], "label": dictCouleur["label"]}
+            listeItems.append(dictCouleur["label"])
+            index += 1
+        self.SetItems(listeItems)
+
+    def SetCode(self, code=None):
+        for index, values in self.dictDonnees.items():
+            if values["code"] == code:
+                self.SetSelection(index)
+
+    def GetCode(self):
+        index = self.GetSelection()
+        if index == -1 : return None
+        return self.dictDonnees[index]["code"]
+
+
+class DLG_Saisie_memo(wx.Dialog):
+    def __init__(self, parent, texte="", couleur=None):
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE)
+        self.parent = parent
+
+        self.label_texte = wx.StaticText(self, wx.ID_ANY, _(u"Texte :"))
+        self.ctrl_texte = wx.TextCtrl(self, wx.ID_ANY, u"", style=wx.TE_PROCESS_ENTER)
+        self.ctrl_texte.SetMinSize((300, -1))
+
+        self.label_couleur = wx.StaticText(self, wx.ID_ANY, _(u"Couleur :"))
+        self.ctrl_couleur = CTRL_Couleur(self)
+
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
+
+        self.__set_properties()
+        self.__do_layout()
+
+        self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
+        self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
+        self.ctrl_texte.Bind(wx.EVT_KEY_DOWN, self.OnKey)
+
+        # Init contrôles
+        if texte:
+            self.SetTitle(_(u"Modification d'un mémo journalier"))
+            self.ctrl_texte.SetValue(texte)
+            self.ctrl_couleur.SetCode(couleur)
+        else:
+            self.SetTitle(_(u"Saisie d'un mémo journalier"))
+        self.ctrl_texte.SetFocus()
+
+    def __set_properties(self):
+        self.ctrl_texte.SetToolTip(wx.ToolTip(_(u"Saisissez le texte du mémo")))
+        self.ctrl_couleur.SetToolTip(wx.ToolTip(_(u"Sélectionnez une couleur (Noir par défaut). Cette couleur sera utilisée dans l'édition de la liste des consommations au format PDF).")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
+
+    def __do_layout(self):
+        grid_sizer_base = wx.FlexGridSizer(2, 1, 10, 10)
+        grid_sizer_haut = wx.FlexGridSizer(3, 2, 10, 10)
+
+        grid_sizer_haut.Add(self.label_texte, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_haut.Add(self.ctrl_texte, 0, wx.EXPAND, 0)
+
+        grid_sizer_haut.Add(self.label_couleur, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_haut.Add(self.ctrl_couleur, 0, 0, 0)
+
+        grid_sizer_haut.AddGrowableCol(1)
+        grid_sizer_base.Add(grid_sizer_haut, 1, wx.ALL | wx.EXPAND, 10)
+
+        grid_sizer_boutons = wx.FlexGridSizer(1, 3, 10, 10)
+        grid_sizer_boutons.Add((20, 20), 0, 0, 0)
+        grid_sizer_boutons.Add(self.bouton_ok, 0, 0, 0)
+        grid_sizer_boutons.Add(self.bouton_annuler, 0, 0, 0)
+        grid_sizer_boutons.AddGrowableCol(0)
+        grid_sizer_base.Add(grid_sizer_boutons, 1, wx.LEFT | wx.RIGHT | wx.BOTTOM | wx.EXPAND, 10)
+        self.SetSizer(grid_sizer_base)
+        grid_sizer_base.Fit(self)
+        grid_sizer_base.AddGrowableCol(0)
+        self.Layout()
+        self.CenterOnScreen()
+
+    def OnKey(self, event):
+        if event.GetKeyCode() in (wx.WXK_RETURN, wx.WXK_NUMPAD_ENTER):
+            self.OnBoutonOk()
+        event.Skip()
+
+    def OnBoutonAnnuler(self, event):
+        self.EndModal(wx.ID_CANCEL)
+
+    def OnBoutonOk(self, event=None):
+        self.texte = self.ctrl_texte.GetValue()
+        self.couleur = self.ctrl_couleur.GetCode()
+        self.EndModal(wx.ID_OK)
+
+
 class CaseSeparationDate():
     def __init__(self, ligne, grid, numLigne=None, numColonne=None, couleurFond=(255, 255, 255)):
         self.typeCase = "date"
@@ -102,7 +218,7 @@ class CaseSeparationActivite():
 
 
 class CaseMemo():
-    def __init__(self, ligne, grid, numLigne=None, numColonne=None, IDindividu=None, date=None, texte="", IDmemo=None):
+    def __init__(self, ligne, grid, numLigne=None, numColonne=None, IDindividu=None, date=None, texte="", IDmemo=None, couleur=None):
         self.typeCase = "memo"
         self.grid = grid
         self.ligne = ligne
@@ -113,7 +229,8 @@ class CaseMemo():
         self.texte = texte
         self.IDmemo = IDmemo
         self.statut = None
-        
+        self.couleur = couleur
+
         # Dessin de la case
         self.renderer = CTRL_Grille_renderers.CaseMemo(self)
 ##        self.renderer = gridlib.GridCellAutoWrapStringRenderer()
@@ -142,8 +259,9 @@ class CaseMemo():
         if (self.IDindividu, self.date) in self.grid.dictMemos :
             self.grid.dictMemos[(self.IDindividu, self.date)]["texte"] = self.texte
             self.grid.dictMemos[(self.IDindividu, self.date)]["statut"] = self.statut
+            self.grid.dictMemos[(self.IDindividu, self.date)]["couleur"] = self.couleur
         else:
-            self.grid.dictMemos[(self.IDindividu, self.date)] = {"texte" : self.texte, "IDmemo" : None, "statut" : self.statut }
+            self.grid.dictMemos[(self.IDindividu, self.date)] = {"texte" : self.texte, "IDmemo" : None, "statut" : self.statut, "couleur": self.couleur}
 
     def OnClick(self):
         pass
@@ -172,15 +290,16 @@ class CaseMemo():
         texte = self.grid.GetCellValue(self.numLigne, self.numColonne)
         
         # Boîte de dialogue pour modification du mémo
-        dlg = wx.TextEntryDialog(None, _(u"Mémo du %s") % UTILS_Dates.DateComplete(self.date), _(u"Saisie d'un mémo"), texte)
+        dlg = DLG_Saisie_memo(None, texte=texte, couleur=self.couleur)
         if dlg.ShowModal() == wx.ID_OK:
-            texte = dlg.GetValue()
+            self.texte = dlg.texte
+            self.couleur = dlg.couleur
             dlg.Destroy()
-        else :
+        else:
             dlg.Destroy()
-        
+
         # Mémorisation du mémo
-        self.grid.SetCellValue(self.numLigne, self.numColonne, texte)
+        self.grid.SetCellValue(self.numLigne, self.numColonne, self.texte)
         self.MemoriseValeurs()
         
     def GetStatutTexte(self, x, y):
