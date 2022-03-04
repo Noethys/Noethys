@@ -1,3 +1,7 @@
+Version 1.3.0.6 (04/03/2022) :
+
+- Ajout de la couleur aux mémos journaliers
+
 Version 1.3.0.5 (28/02/2022) :
 
 - Ajout du code produit local dans les tarifs
