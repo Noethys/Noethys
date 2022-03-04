@@ -42,15 +42,8 @@ class CTRL(wx.SearchCtrl):
     def OnText(self, event):
         txtSearch = self.GetValue()
         self.ShowCancelButton(len(txtSearch))
-        if len(txtSearch) > 6 and txtSearch.startswith("F") :
+        if len(txtSearch) > 6 and txtSearch.startswith("F") and "-" not in txtSearch:
             numFacture = txtSearch[1:]
-            # try :
-            #     numFacture = int(txtSearch)
-            # except :
-            #     dlg = wx.MessageDialog(self, _(u"Ce numéro de facture n'est pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
-            #     dlg.ShowModal()
-            #     dlg.Destroy()
-            #     return
             self.ReglerFacture(numFacture)
             self.SetValue("")
 
