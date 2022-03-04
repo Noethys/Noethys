@@ -155,13 +155,12 @@ class ListView(GroupListView):
             conditions = ""
 
         # Lecture des réservations
-        req = """SELECT portail_reservations.IDaction, MIN(groupes.nom)
+        req = """SELECT portail_reservations.IDaction, groupes.nom
         FROM portail_reservations
         LEFT JOIN portail_actions ON portail_actions.IDaction = portail_reservations.IDaction
         LEFT JOIN inscriptions ON inscriptions.IDinscription = portail_reservations.IDinscription
-        LEFT JOIN groupes ON inscriptions.IDgroupe = inscriptions.IDgroupe
-        %s
-        GROUP BY portail_reservations.IDaction;""" % conditions
+        LEFT JOIN groupes ON groupes.IDgroupe = inscriptions.IDgroupe
+        %s;""" % conditions
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         dict_inscriptions = {IDaction: nom_groupe for IDaction, nom_groupe in listeDonnees}
