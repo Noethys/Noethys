@@ -1648,13 +1648,13 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         IDtarif, tarifs.IDactivite, tarifs.IDnom_tarif, nom, date_debut, date_fin, 
         condition_nbre_combi, condition_periode, condition_nbre_jours, condition_conso_facturees,
         condition_dates_continues, methode, categories_tarifs, groupes, etiquettes, type, forfait_duree, forfait_beneficiaire, cotisations, caisses, jours_scolaires, jours_vacances,
-        code_compta, tva, date_facturation, etats, IDtype_quotient, description, label_prestation, options, IDevenement
+        code_compta, code_produit_local, tva, date_facturation, etats, IDtype_quotient, description, label_prestation, options, IDevenement
         FROM tarifs
         LEFT JOIN noms_tarifs ON noms_tarifs.IDnom_tarif = tarifs.IDnom_tarif
         ORDER BY date_debut;"""
         self.DB.ExecuterReq(req)
         listeTarifs = self.DB.ResultatReq()      
-        for IDtarif, IDactivite, IDnom_tarif, nom, date_debut, date_fin, condition_nbre_combi, condition_periode, condition_nbre_jours, condition_conso_facturees, condition_dates_continues, methode, categories_tarifs, groupes, etiquettes, type, forfait_duree, forfait_beneficiaire, cotisations, caisses, jours_scolaires, jours_vacances, code_compta, tva, date_facturation, etats, IDtype_quotient, description, label_prestation, options, IDevenement in listeTarifs :
+        for IDtarif, IDactivite, IDnom_tarif, nom, date_debut, date_fin, condition_nbre_combi, condition_periode, condition_nbre_jours, condition_conso_facturees, condition_dates_continues, methode, categories_tarifs, groupes, etiquettes, type, forfait_duree, forfait_beneficiaire, cotisations, caisses, jours_scolaires, jours_vacances, code_compta, code_produit_local, tva, date_facturation, etats, IDtype_quotient, description, label_prestation, options, IDevenement in listeTarifs :
             if date_debut != None : date_debut = DateEngEnDateDD(date_debut)
             if date_fin != None : date_fin = DateEngEnDateDD(date_fin)
             if options == None : options=""
@@ -1678,7 +1678,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 "lignes_calcul" : [], "type":type, "forfait_duree":forfait_duree, "forfait_beneficiaire":forfait_beneficiaire, 
                 "cotisations" : listeCotisations, "filtres" : [], "caisses" : listeCaisses, 
                 "jours_scolaires" : jours_scolaires, "jours_vacances" : jours_vacances,
-                "code_compta" : code_compta, "tva" : tva, "date_facturation" : date_facturation,
+                "code_compta" : code_compta, "code_produit_local": code_produit_local, "tva" : tva, "date_facturation" : date_facturation,
                 "quantitesMax" : [], "etats" : listeEtats, "IDtype_quotient" : IDtype_quotient, "description_tarif" : description,
                 "label_prestation" : label_prestation, "options" : options, "IDevenement" : IDevenement,
                 }
@@ -1758,13 +1758,13 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         # Importation des prestations
         req = """SELECT prestations.IDprestation, prestations.IDcompte_payeur, date, categorie, label, 
         prestations.montant_initial, prestations.montant, IDactivite, IDtarif, IDfacture, IDfamille, IDindividu, forfait, temps_facture, IDcategorie_tarif,
-        forfait_date_debut, forfait_date_fin, code_compta, tva
+        forfait_date_debut, forfait_date_fin, code_compta, code_produit_local, tva
         FROM prestations
         %s;""" % conditions
         self.DB.ExecuterReq(req)
         listeDonnees = self.DB.ResultatReq()
 
-        for IDprestation, IDcompte_payeur, date, categorie, label, montant_initial, montant, IDactivite, IDtarif, IDfacture, IDfamille, IDindividu, forfait, temps_facture, IDcategorie_tarif, forfait_date_debut, forfait_date_fin, code_compta, tva in listeDonnees:
+        for IDprestation, IDcompte_payeur, date, categorie, label, montant_initial, montant, IDactivite, IDtarif, IDfacture, IDfamille, IDindividu, forfait, temps_facture, IDcategorie_tarif, forfait_date_debut, forfait_date_fin, code_compta, code_produit_local, tva in listeDonnees:
             date = DateEngEnDateDD(date)
             forfait_date_debut = DateEngEnDateDD(forfait_date_debut)
             forfait_date_fin = DateEngEnDateDD(forfait_date_fin)
@@ -1785,6 +1785,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 "IDfamille": IDfamille, "IDindividu": IDindividu, "nomIndividu": nomIndividu, "forfait": forfait,
                 "montantVentilation": montantVentilation, "temps_facture": temps_facture, "IDcategorie_tarif": IDcategorie_tarif,
                 "forfait_date_debut": forfait_date_debut, "forfait_date_fin": forfait_date_fin, "code_compta": code_compta, "tva": tva,
+                "code_produit_local": code_produit_local,
             }
 
             if IDprestation not in self.listePrestationsSupprimees and IDprestation not in self.listePrestationsModifiees:
@@ -1821,7 +1822,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         
         req = """SELECT prestations.IDprestation, prestations.IDcompte_payeur, date, categorie, label, 
         prestations.montant_initial, prestations.montant, IDactivite, IDtarif, IDfacture, IDfamille, IDindividu, forfait, temps_facture, IDcategorie_tarif,
-        SUM(ventilation.montant), forfait_date_debut, forfait_date_fin, code_compta, tva
+        SUM(ventilation.montant), forfait_date_debut, forfait_date_fin, code_compta, code_produit_local, tva
         FROM prestations
         LEFT JOIN ventilation ON ventilation.IDprestation = prestations.IDprestation
         %s
@@ -1830,7 +1831,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         listeDonnees = self.DB.ResultatReq()     
         
         index = 0
-        for IDprestation, IDcompte_payeur, date, categorie, label, montant_initial, montant, IDactivite, IDtarif, IDfacture, IDfamille, IDindividu, forfait, temps_facture, IDcategorie_tarif, montantVentilation, forfait_date_debut, forfait_date_fin, code_compta, tva in listeDonnees :
+        for IDprestation, IDcompte_payeur, date, categorie, label, montant_initial, montant, IDactivite, IDtarif, IDfacture, IDfamille, IDindividu, forfait, temps_facture, IDcategorie_tarif, montantVentilation, forfait_date_debut, forfait_date_fin, code_compta, code_produit_local, tva in listeDonnees :
             date = DateEngEnDateDD(date)
             forfait_date_debut = DateEngEnDateDD(forfait_date_debut)
             forfait_date_fin = DateEngEnDateDD(forfait_date_fin)
@@ -1849,7 +1850,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 "IDfamille" : IDfamille, "IDindividu" : IDindividu, "nomIndividu" : nomIndividu, "forfait" : forfait,
                 "montantVentilation" : montantVentilation, "temps_facture":temps_facture, "IDcategorie_tarif":IDcategorie_tarif,
                 "forfait_date_debut":forfait_date_debut, "forfait_date_fin":forfait_date_fin, "couleur":couleur, "code_compta":code_compta, "tva":tva,
-                "dict_conso" : {},
+                "code_produit_local": code_produit_local, "dict_conso" : {},
                 }
             
             # Mémorisation dans le dict des forfaits
@@ -3250,6 +3251,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 "forfait_date_debut" : forfait_date_debut,
                 "forfait_date_fin" : forfait_date_fin,
                 "code_compta" : dictTarif["code_compta"],
+                "code_produit_local": dictTarif["code_produit_local"],
                 "tva" : dictTarif["tva"],
                 "forfait" : None,
                 }
@@ -5280,6 +5282,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                     ("forfait_date_debut", dictValeurs["forfait_date_debut"]),
                     ("forfait_date_fin", dictValeurs["forfait_date_fin"]),
                     ("code_compta", dictValeurs["code_compta"]),
+                    ("code_produit_local", dictValeurs["code_produit_local"]),
                     ("tva", dictValeurs["tva"]),
                     ("date_valeur", str(datetime.date.today())),
                     ]
@@ -5346,12 +5349,12 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 # Sauvegarde de la prestation
                 dictValeurs = self.dictPrestations[IDPrestationModif]                
                 # Version optimisée
-                listeModifications.append((dictValeurs["label"], dictValeurs["montant_initial"], dictValeurs["montant"], dictValeurs["forfait_date_debut"], dictValeurs["forfait_date_fin"], dictValeurs["code_compta"], dictValeurs["tva"], IDPrestationModif))
+                listeModifications.append((dictValeurs["label"], dictValeurs["montant_initial"], dictValeurs["montant"], dictValeurs["forfait_date_debut"], dictValeurs["forfait_date_fin"], dictValeurs["code_compta"], dictValeurs["code_produit_local"], dictValeurs["tva"], IDPrestationModif))
                 listeSuppressions.append(IDPrestationModif)
 
         # Modifications
         if len(listeModifications) > 0 :
-            DB.Executermany("UPDATE prestations SET label=?, montant_initial=?, montant=?, forfait_date_debut=?, forfait_date_fin=?, code_compta=?, tva=? WHERE IDprestation=?", listeModifications, commit=False)
+            DB.Executermany("UPDATE prestations SET label=?, montant_initial=?, montant=?, forfait_date_debut=?, forfait_date_fin=?, code_compta=?, code_produit_local=?, tva=? WHERE IDprestation=?", listeModifications, commit=False)
 
         # Suppression
         if len(listeSuppressions) > 0 :

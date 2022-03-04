@@ -442,6 +442,7 @@ DB_DATA = {
                                     ("label_prestation", "VARCHAR(300)", u"Label de la prestation"),
                                     ("IDevenement", "INTEGER", u"ID de l'évènement associé"),
                                     ("IDproduit", "INTEGER", u"ID du produit associé"),
+                                    ("code_produit_local", "VARCHAR(200)", u"Code produit local pour export compta"),
                                     ], # Tarifs
 
     "combi_tarifs":          [("IDcombi_tarif", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID combinaison de tarif"),

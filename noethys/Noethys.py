@@ -894,7 +894,9 @@ class MainFrame(wx.Frame):
                             "-",
                             {"code" : "appliquer_tva", "label" : _(u"Appliquer un taux de TVA à un lot de prestations"), "infobulle" : _(u"Appliquer un taux de TVA à un lot de prestations"), "image" : "Images/16x16/Outils.png", "action" : self.On_outils_appliquer_tva},
                             {"code" : "appliquer_code_comptable", "label" : _(u"Appliquer un code comptable à un lot de prestations"), "infobulle" : _(u"Appliquer un code comptable à des prestations"), "image" : "Images/16x16/Outils.png", "action" : self.On_outils_appliquer_code_comptable},
-                            {"code" : "conversion_rib_sepa", "label" : _(u"Convertir les RIB nationaux en mandats SEPA"), "infobulle" : _(u"Convertir les RIB nationaux en mandats SEPA"), "image" : "Images/16x16/Outils.png", "action" : self.On_outils_conversion_rib_sepa},
+                            {"code" : "appliquer_code_produit_local", "label": _( u"Appliquer un code produit local à un lot de prestations"), "infobulle": _(u"Appliquer un code produit local à des prestations"), "image": "Images/16x16/Outils.png", "action": self.On_outils_appliquer_code_produit_local},
+
+                        {"code" : "conversion_rib_sepa", "label" : _(u"Convertir les RIB nationaux en mandats SEPA"), "infobulle" : _(u"Convertir les RIB nationaux en mandats SEPA"), "image" : "Images/16x16/Outils.png", "action" : self.On_outils_conversion_rib_sepa},
                             {"code" : "creation_titulaires_helios", "label" : _(u"Création automatique des titulaires Hélios"), "infobulle" : _(u"Création automatique des titulaires Hélios"), "image" : "Images/16x16/Outils.png", "action" : self.On_outils_creation_titulaires_helios},
                             "-",
                             {"code" : "console_python", "label" : _(u"Console Python"), "infobulle" : _(u"Console Python"), "image" : "Images/16x16/Python.png", "action" : self.On_outils_console_python},
@@ -2780,6 +2782,11 @@ class MainFrame(wx.Frame):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("outils_utilitaires", "consulter") == False : return
         from Utils import UTILS_Appliquer_code_compta
         UTILS_Appliquer_code_compta.Appliquer()
+
+    def On_outils_appliquer_code_produit_local(self, event):
+        if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("outils_utilitaires", "consulter") == False : return
+        from Utils import UTILS_Appliquer_code_produit_local
+        UTILS_Appliquer_code_produit_local.Appliquer()
 
     def On_outils_conversion_rib_sepa(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("outils_utilitaires", "consulter") == False : return
