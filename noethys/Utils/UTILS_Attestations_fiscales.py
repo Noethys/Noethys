@@ -134,8 +134,9 @@ class Attestations_fiscales():
                         if sexe == "F" :
                             genre = "e"
                     nomComplet = u"%s %s" % (prestation["nom"], prenom)
-                    dictEnfants[IDindividu] = {"nomComplet" : nomComplet, "nom" : prestation["nom"], "prenom" : prenom, "date_naiss" : date_naiss, "genre" : genre, "regle" : FloatToDecimal(0.0)}
+                    dictEnfants[IDindividu] = {"nomComplet" : nomComplet, "nom" : prestation["nom"], "prenom" : prenom, "date_naiss" : date_naiss, "genre" : genre, "regle" : FloatToDecimal(0.0), "facture": FloatToDecimal(0.0)}
                 dictEnfants[IDindividu]["regle"] += prestation["regle"]
+                dictEnfants[IDindividu]["facture"] += prestation["montant"]
             
             listeIndividus = []
             for IDindividu, dictTemp in dictEnfants.items() :
