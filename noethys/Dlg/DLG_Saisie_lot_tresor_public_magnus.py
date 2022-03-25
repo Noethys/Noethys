@@ -21,8 +21,7 @@ import shutil
 import os.path
 import wx.propgrid as wxpg
 from Ctrl import CTRL_Propertygrid
-from Utils import UTILS_Dates
-from Utils import UTILS_Fichiers
+from Utils import UTILS_Dates, UTILS_Texte, UTILS_Fichiers
 from Data import DATA_Bic
 import FonctionsPerso
 import wx.lib.dialogs as dialogs
@@ -104,6 +103,18 @@ class CTRL_Parametres(DLG_Saisie_lot_tresor_public.CTRL_Parametres):
 
         propriete = wxpg.StringProperty(label=_(u"Code Produit Local par défaut"), name="code_prodloc", value=u"")
         propriete.SetHelpString(_(u"Saisissez le code Produit Local. C'est celui qui sera utilisé si le champ 'code produit local' n'est pas renseigné dans la prestation ou dans le paramétrage de l'activité."))
+        self.Append(propriete)
+
+        propriete = wxpg.StringProperty(label=_(u"Opération"), name="operation", value=u"")
+        propriete.SetHelpString(_(u"Saisissez le code de l'opération."))
+        self.Append(propriete)
+
+        propriete = wxpg.StringProperty(label=_(u"Service"), name="service", value=u"")
+        propriete.SetHelpString(_(u"Saisissez le code du service."))
+        self.Append(propriete)
+
+        propriete = wxpg.StringProperty(label=_(u"Fonction"), name="fonction", value=u"")
+        propriete.SetHelpString(_(u"Saisissez le code de la fonction."))
         self.Append(propriete)
 
         # Options
@@ -253,6 +264,9 @@ class Dialog(DLG_Saisie_lot_tresor_public.Dialog):
         code_collectivite = self.ctrl_parametres.GetPropertyValue("code_collectivite")
         code_budget = self.ctrl_parametres.GetPropertyValue("code_budget")
         code_prodloc = self.ctrl_parametres.GetPropertyValue("code_prodloc")
+        operation = self.ctrl_parametres.GetPropertyValue("operation")
+        service = self.ctrl_parametres.GetPropertyValue("service")
+        fonction = self.ctrl_parametres.GetPropertyValue("fonction")
         reglement_auto = int(self.ctrl_parametres.GetPropertyValue("reglement_auto"))
         IDcompte = self.ctrl_parametres.GetPropertyValue("IDcompte")
         IDmode = self.ctrl_parametres.GetPropertyValue("IDmode")
@@ -448,7 +462,7 @@ class Dialog(DLG_Saisie_lot_tresor_public.Dialog):
             dlg.Destroy()
             return
 
-        # Mémorisation de tous les données
+        # Mémorisation de toutes les données
         dictDonnees = {
             "nom_fichier": nom_fichier,
             "date_emission": UTILS_Dates.ConvertDateWXenDate(self.ctrl_parametres.GetPropertyValue("date_emission")).strftime("%Y-%m-%d"),
@@ -457,6 +471,9 @@ class Dialog(DLG_Saisie_lot_tresor_public.Dialog):
             "id_poste": self.ctrl_parametres.GetPropertyValue("id_poste"),
             "code_collectivite": self.ctrl_parametres.GetPropertyValue("code_collectivite"),
             "code_budget": self.ctrl_parametres.GetPropertyValue("code_budget"),
+            "operation": self.ctrl_parametres.GetPropertyValue("operation"),
+            "service": self.ctrl_parametres.GetPropertyValue("service"),
+            "fonction": self.ctrl_parametres.GetPropertyValue("fonction"),
             "exercice": str(self.ctrl_parametres.GetPropertyValue("exercice")),
             "mois": str(self.ctrl_parametres.GetPropertyValue("mois")),
             "montant_total": str(montantTotal),
@@ -636,7 +653,10 @@ class Dialog(DLG_Saisie_lot_tresor_public.Dialog):
         return dict_pieces_jointes
 
     def Generer_fichier(self, dict_donnees={}, repertoire=""):
-        def ConvertToTexte(valeur):
+
+        def ConvertToTexte(valeur, majuscules=False):
+            if majuscules and valeur:
+                valeur = UTILS_Texte.Supprime_accent(valeur.upper())
             valeur = u'"%s"' % valeur
             valeur = valeur.replace("\n", " ")
             valeur = valeur.replace("\r", " ")
@@ -678,13 +698,16 @@ class Dialog(DLG_Saisie_lot_tresor_public.Dialog):
                         ligne[8] = ConvertToTexte(piece["code_compta"][:15])
 
                     # Designation1 - Texte (50)
-                    ligne[10] = ConvertToTexte(piece["titulaire_nom"][:50])
+                    ligne[10] = ConvertToTexte(piece["titulaire_nom"][:50], majuscules=True)
 
                     # Designation2 - Texte (50)
-                    ligne[11] = ConvertToTexte(piece["titulaire_prenom"][:50])
+                    ligne[11] = ConvertToTexte(piece["titulaire_prenom"][:50], majuscules=True)
 
-                    # AdrLig1 - Texte (50)
-                    ligne[12] = ConvertToTexte(piece["titulaire_rue"][:50])
+                    # AdrLig1, AdrLig2, et AdrLig3 - Texte (50)
+                    if piece["titulaire_rue"]:
+                        lignes_rue = piece["titulaire_rue"].split("\n")
+                        for idx, valeur in enumerate(lignes_rue[:3], 12):
+                            ligne[idx] = ConvertToTexte(valeur[:50], majuscules=True)
 
                     # Codepostal - Texte (10)
                     ligne[15] = ConvertToTexte(piece["titulaire_cp"][:10])
@@ -698,9 +721,6 @@ class Dialog(DLG_Saisie_lot_tresor_public.Dialog):
                     # PièceJustificative1 - Texte (50)
                     ligne[20] = ConvertToTexte(piece["objet_piece"][:50])
 
-                    # Numéro - Entier
-                    ligne[23] = "0"  # Nécessaire ?
-
                     # Sens - Texte (1)
                     ligne[24] = ConvertToTexte("R")
 
@@ -709,6 +729,15 @@ class Dialog(DLG_Saisie_lot_tresor_public.Dialog):
 
                     # Article - Texte (10)
                     ligne[26] = IDposte[:10] # ConvertToTexte(dict_donnees["id_poste"][:10])
+
+                    # Opération - Texte (10)
+                    ligne[27] = ConvertToTexte(dict_donnees["operation"][:10])
+
+                    # Service - Texte (15)
+                    ligne[28] = ConvertToTexte(dict_donnees["service"][:15])
+
+                    # Fonction - Texte (10)
+                    ligne[29] = ConvertToTexte(dict_donnees["fonction"][:10])
 
                     # Montant HT - Monétaire (,4)
                     ligne[30] = str(montant) + "00" # str(piece["montant"]) + "00"
@@ -776,7 +805,7 @@ class Dialog(DLG_Saisie_lot_tresor_public.Dialog):
                         ligne[63] = ConvertToTexte(nom_banque[:24])
 
                         # TitCpte - Texte (32)
-                        ligne[64] = ConvertToTexte(piece["prelevement_titulaire"][:32])
+                        ligne[64] = ConvertToTexte(piece["prelevement_titulaire"][:32], majuscules=True)
 
                         # IBAN - Texte (34)
                         ligne[65] = ConvertToTexte(piece["prelevement_iban"][:34])
