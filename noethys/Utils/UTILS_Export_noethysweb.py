@@ -34,7 +34,9 @@ class Table():
                  nouveaux_noms_champs={},
                  dict_types_champs={},
                  nouveaux_champs=[],
-                 champs_images=[]):
+                 champs_images=[],
+                 condition_sql=None,
+                 sql=None):
         self.parent = parent
         self.nom_table = nom_table
         self.nouveau_nom_table = nouveau_nom_table
@@ -43,6 +45,8 @@ class Table():
         self.dict_types_champs = dict_types_champs
         self.nouveaux_champs = nouveaux_champs
         self.champs_images = champs_images
+        self.condition_sql = condition_sql
+        self.sql = sql
 
         # Recherche des données
         self.liste_objets = self.Get_data()
@@ -54,7 +58,12 @@ class Table():
             listeChamps.append(nom)
 
         # Lecture table
-        req = "SELECT %s FROM %s;" % (", ".join(listeChamps), self.nom_table)
+        if self.sql:
+            req = self.sql
+        else:
+            req = "SELECT %s FROM %s" % (", ".join(listeChamps), self.nom_table)
+            if self.condition_sql:
+                req += " " + self.condition_sql
         self.parent.DB.ExecuterReq(req)
         liste_donnees = self.parent.DB.ResultatReq()
         liste_objets = []
@@ -158,7 +167,7 @@ class Export:
         # Création du fichier json
         nom_fichier_json = os.path.join(self.rep, "core.json")
         with open(nom_fichier_json, 'w') as outfile:
-            json.dump(self.liste_objets, outfile, cls=MyEncoder)
+            json.dump(self.liste_objets, outfile, indent=4, cls=MyEncoder)
 
         # with io.open(self.nom_fichier, encoding='utf-8') as f:
         #     f.write(json.dumps(self.liste_objets, cls=MyEncoder, ensure_ascii=False))
@@ -190,7 +199,9 @@ class Export_all(Export):
             self.dictComptesPayeurs[IDcompte_payeur] = IDfamille
 
         # Tables à exporter
-        self.Ajouter(Table(self, nom_table="categories_medicales", nouveau_nom_table="core.CategorieMedicale"))
+        self.Ajouter(Table_structures(self))
+
+        self.Ajouter(Table(self, nom_table="categories_medicales", nouveau_nom_table="core.CategorieInformation"))
 
         self.Ajouter(Table(self, nom_table="categories_travail", nouveau_nom_table="core.CategorieTravail"))
 
@@ -242,7 +253,7 @@ class Export_all(Export):
 
         self.Ajouter(Table(self, nom_table="unites_cotisations", nouveau_nom_table="core.UniteCotisation", nouveaux_noms_champs={"IDtype_cotisation": "type_cotisation"}, dict_types_champs={"defaut": bool}))
 
-        self.Ajouter(Table(self, nom_table="messages_categories", nouveau_nom_table="core.MessageCategorie", dict_types_champs={"afficher_accueil": bool, "afficher_liste": bool}))
+        self.Ajouter(Table(self, nom_table="messages_categories", nouveau_nom_table="core.NoteCategorie", dict_types_champs={"afficher_accueil": bool, "afficher_liste": bool}))
 
         self.Ajouter(Table(self, nom_table="listes_diffusion", nouveau_nom_table="core.ListeDiffusion"))
 
@@ -252,15 +263,17 @@ class Export_all(Export):
 
         self.Ajouter(Table(self, nom_table="menus_legendes", nouveau_nom_table="core.MenuLegende"))
 
-        self.Ajouter(Table(self, nom_table="types_groupes_activites", nouveau_nom_table="core.TypeGroupeActivite"))
+        self.Ajouter(Table_types_groupes_activites(self, nom_table="types_groupes_activites", nouveau_nom_table="core.TypeGroupeActivite",
+                                                   nouveaux_champs=["structure"]))
 
         self.Ajouter(Table(self, nom_table="factures_regies", nouveau_nom_table="core.FactureRegie", nouveaux_noms_champs={"IDcompte_bancaire": "compte_bancaire"}))
 
         self.Ajouter(Table_activites(self, nom_table="activites", nouveau_nom_table="core.Activite",
-                           exclure_champs=["public", "psu_activation", "psu_unite_prevision", "psu_unite_presence", "psu_tarif_forfait", "psu_etiquette_rtt"],
+                           exclure_champs=["public", "psu_activation", "psu_unite_prevision", "psu_unite_presence", "psu_tarif_forfait", "psu_etiquette_rtt", "portail_unites_multiples",
+                                           "portail_reservations_absenti"],
                            dict_types_champs={"coords_org": bool, "logo_org": bool, "vaccins_obligatoires": bool, "portail_inscriptions_affichage": bool,
                                               "portail_reservations_affichage": bool, "portail_unites_multiples": bool, "inscriptions_multiples": bool},
-                           nouveaux_champs=["pieces", "groupes_activites", "cotisations"], champs_images=["logo"]))
+                           nouveaux_champs=["pieces", "groupes_activites", "cotisations", "structure"], champs_images=["logo"]))
 
         self.Ajouter(Table(self, nom_table="responsables_activite", nouveau_nom_table="core.ResponsableActivite", nouveaux_noms_champs={"IDactivite": "activite"}, dict_types_champs={"defaut": bool}))
 
@@ -283,7 +296,8 @@ class Export_all(Export):
                            exclure_champs=["IDcategorie_tarif"]))
 
         self.Ajouter(Table_tarifs(self, nom_table="tarifs", nouveau_nom_table="core.Tarif", nouveaux_noms_champs={"IDactivite": "activite", "IDnom_tarif": "nom_tarif", "IDtype_quotient": "type_quotient"},
-                                  exclure_champs=["IDcategorie_tarif", "condition_nbre_combi", "condition_periode", "condition_nbre_jours", "condition_conso_facturees", "condition_dates_continues", "etiquettes", "IDevenement", "IDproduit"],
+                                  exclure_champs=["IDcategorie_tarif", "condition_nbre_combi", "condition_periode", "condition_nbre_jours", "condition_conso_facturees",
+                                                  "condition_dates_continues", "etiquettes", "IDevenement", "IDproduit", "code_produit_local"],
                                   dict_types_champs={"forfait_saisie_manuelle": bool, "forfait_saisie_auto": bool, "forfait_suppression_auto": bool}))
 
         self.Ajouter(Table(self, nom_table="tarifs_lignes", nouveau_nom_table="core.TarifLigne", nouveaux_noms_champs={"IDactivite": "activite", "IDtarif": "tarif"},
@@ -292,9 +306,11 @@ class Export_all(Export):
         self.Ajouter(Table_combi_tarifs(self, nom_table="combi_tarifs", nouveau_nom_table="core.CombiTarif", nouveaux_noms_champs={"IDtarif": "tarif", "IDgroupe": "groupe"},
                                         nouveaux_champs=["unites"]))
 
-        self.Ajouter(Table(self, nom_table="ouvertures", nouveau_nom_table="core.Ouverture", nouveaux_noms_champs={"IDactivite": "activite", "IDunite": "unite", "IDgroupe": "groupe"}))
+        self.Ajouter(Table(self, nom_table="ouvertures", nouveau_nom_table="core.Ouverture", condition_sql="WHERE IDgroupe!=0",
+                                nouveaux_noms_champs={"IDactivite": "activite", "IDunite": "unite", "IDgroupe": "groupe"}))
 
-        self.Ajouter(Table(self, nom_table="remplissage", nouveau_nom_table="core.Remplissage", nouveaux_noms_champs={"IDactivite": "activite", "IDunite_remplissage": "unite_remplissage", "IDgroupe": "groupe"}))
+        self.Ajouter(Table(self, nom_table="remplissage", nouveau_nom_table="core.Remplissage", nouveaux_noms_champs={"IDactivite": "activite", "IDunite_remplissage": "unite_remplissage", "IDgroupe": "groupe"},
+                           sql="SELECT IDremplissage, remplissage.IDactivite, remplissage.IDunite_remplissage, IDgroupe, date, places FROM remplissage LEFT JOIN unites_remplissage on unites_remplissage.IDunite_remplissage = remplissage.IDunite_remplissage WHERE unites_remplissage.IDunite_remplissage IS NOT NULL"))
 
         self.Ajouter(Table_individus(self, nom_table="individus", nouveau_nom_table="core.Individu", nouveaux_noms_champs={"IDcivilite": "civilite", "IDnationalite": "idnationalite", "IDsecteur": "secteur", "IDcategorie_travail": "categorie_travail", "IDmedecin": "medecin", "IDtype_sieste": "type_sieste"},
                                      exclure_champs=["num_secu"], dict_types_champs={"deces": bool, "travail_tel_sms": bool, "tel_domicile_sms": bool, "tel_mobile_sms": bool},
@@ -324,20 +340,15 @@ class Export_all(Export):
                            nouveaux_noms_champs={"IDindividu": "individu", "IDinscription": "inscription", "IDactivite": "activite", "IDunite": "unite", "IDgroupe": "groupe", "IDcategorie_tarif": "categorie_tarif", "IDprestation": "prestation", "IDevenement": "evenement"},
                            exclure_champs=["verrouillage", "IDutilisateur", "IDcompte_payeur", "etiquettes"]))
 
-        # Les mémo ne sont plus compatibles car associés désormais à l'inscription
-        # self.Ajouter(Table(self, nom_table="memo_journee",
-        #                    nouveau_nom_table="core.MemoJournee",
-        #                    nouveaux_noms_champs={"IDindividu": "individu"}))
-
         self.Ajouter(Table_problemes_sante(self, nom_table="problemes_sante",
-                           nouveau_nom_table="core.ProblemeSante",
-                           nouveaux_noms_champs={"IDindividu": "individu", "IDtype": "categorie"},
+                            nouveau_nom_table="core.Information",
+                            nouveaux_noms_champs={"IDprobleme": "idinformation", "IDindividu": "individu", "IDtype": "categorie"},
                             dict_types_champs={"traitement_medical": bool, "eviction": bool, "diffusion_listing_enfants": bool, "diffusion_listing_conso": bool, "diffusion_listing_repas": bool}))
 
         self.Ajouter(Table(self, nom_table="vaccins", nouveau_nom_table="core.Vaccin", nouveaux_noms_champs={"IDindividu": "individu", "IDtype_vaccin": "type_vaccin"}))
 
-        self.Ajouter(Table(self, nom_table="messages", nouveau_nom_table="core.Message", nouveaux_noms_champs={"IDcategorie": "categorie", "IDindividu": "individu", "IDfamille": "famille"},
-                           exclure_champs=["IDutilisateur"],
+        self.Ajouter(Table(self, nom_table="messages", nouveau_nom_table="core.Note", nouveaux_noms_champs={"IDmessage": "idnote", "IDcategorie": "categorie", "IDindividu": "individu", "IDfamille": "famille"},
+                           exclure_champs=["IDutilisateur", "nom"],
                            dict_types_champs={"afficher_accueil": bool, "afficher_liste": bool, "rappel": bool, "afficher_facture": bool, "rappel_famille": bool, "afficher_commande": bool}))
 
         self.Ajouter(Table(self, nom_table="rattachements", nouveau_nom_table="core.Rattachement", nouveaux_noms_champs={"IDindividu": "individu", "IDfamille": "famille", "IDcategorie": "categorie"},
@@ -427,13 +438,21 @@ class Export_all(Export):
 
         self.Ajouter(Table(self, nom_table="adresses_mail", nouveau_nom_table="core.AdresseMail", dict_types_champs={"use_ssl": bool, "defaut": bool, "use_tls": bool},
                                             nouveaux_noms_champs={"smtp": "hote", "connexionssl": "use_ssl", "startTLS": "use_tls"},
-                                            exclure_champs=["connexionAuthentifiee"])),
+                                            exclure_champs=["connexionAuthentifiee", "defaut"])),
 
         self.Ajouter(Table(self, nom_table="contacts", nouveau_nom_table="core.Contact")),
+
+        self.Ajouter(Table(self, nom_table="mandats", nouveau_nom_table="core.Mandat", dict_types_champs={"actif": bool},
+                                            nouveaux_noms_champs={"IDfamille": "famille", "IDindividu": "individu"},
+                                            exclure_champs=["IDbanque"])),
 
         self.DB.Close()
         self.Finaliser()
 
+
+class Table_structures(Table):
+    def Get_data(self):
+        return [{"model": "core.Structure", "pk": 1, "fields": {"nom": u"Structure par défaut"}},]
 
 
 class Table_ecoles(Table):
@@ -445,6 +464,7 @@ class Table_ecoles(Table):
                 liste_secteurs.append(int(IDsecteur))
         return liste_secteurs
 
+
 class Table_classes(Table):
     def niveaux(self, valeur=None):
         """ Champ ManyToMany"""
@@ -453,6 +473,11 @@ class Table_classes(Table):
             for IDniveau in valeur.split(";"):
                 liste_niveaux.append(int(IDniveau))
         return liste_niveaux
+
+
+class Table_types_groupes_activites(Table):
+    def structure(self, data=None):
+        return 1
 
 
 class Table_activites(Table):
@@ -491,6 +516,9 @@ class Table_activites(Table):
             return True
         return False
 
+    def structure(self, data=None):
+        return 1
+
 
 class Table_unites(Table):
     def groupes(self, data={}):
@@ -505,12 +533,14 @@ class Table_unites(Table):
         self.parent.DB.ExecuterReq(req)
         return [IDunite_incompatible for IDunite, IDunite_incompatible in self.parent.DB.ResultatReq()]
 
+
 class Table_unites_remplissage(Table):
     def unites(self, data={}):
         """ Champ ManyToMany"""
         req = """SELECT IDunite_remplissage, IDunite FROM unites_remplissage_unites WHERE IDunite=%d;""" % data["pk"]
         self.parent.DB.ExecuterReq(req)
         return [IDunite for IDunite_remplissage, IDunite in self.parent.DB.ResultatReq()]
+
 
 class Table_tarifs(Table):
     def categories_tarifs(self, valeur=None):
@@ -602,8 +632,6 @@ class Table_familles(Table):
         return data["email_depots"]
 
 
-
-
 class Table_individus(Table):
     def __init__(self, parent, **kwds):
         self.parent = parent
@@ -649,7 +677,6 @@ class Table_factures(Table):
         return self.parent.dictComptesPayeurs[data["IDcompte_payeur"]]
 
 
-
 class Table_prestations(Table):
     def __init__(self, parent, **kwds):
         # Importe les factures
@@ -671,6 +698,7 @@ class Table_prestations(Table):
         if valeur and valeur in self.dictFactures:
             return valeur
         return None
+
 
 class Table_consommations(Table):
     def __init__(self, parent, **kwds):
@@ -762,7 +790,6 @@ class Table_combi_aides(Table):
         if IDaide_combi in self.dictUnites:
             return self.dictUnites[IDaide_combi]
         return []
-
 
 
 class Table_documents_modeles(Table):
@@ -987,6 +1014,7 @@ class Table_questions(Table):
     def options(self, valeur=None):
         return None
 
+
 class Table_reponses(Table):
     def __init__(self, parent, **kwds):
         self.parent = parent
@@ -1050,7 +1078,6 @@ class Table_reglements(Table):
         return valeur
 
 
-
 class Table_ventilation(Table):
     def famille(self, data={}):
         return self.parent.dictComptesPayeurs[data["IDcompte_payeur"]]
@@ -1072,7 +1099,6 @@ class Table_recus(Table):
         if valeur not in self.liste_reglements:
             return None
         return valeur
-
 
 
 class Table_textes_rappels(Table):
@@ -1121,4 +1147,3 @@ class Table_modeles_emails(Table):
                 html = html.replace(balise, "")
             html = re.sub('<font.*?>', '', html)
         return html
-
