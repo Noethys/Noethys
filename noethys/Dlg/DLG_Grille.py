@@ -705,7 +705,7 @@ class Dialog(wx.Dialog):
         dlg.Destroy()
         
     def On_affichage_panneau_afficher(self, event):
-        index = event.GetId() - ID_AFFICHAGE_PANNEAUX
+        index = event.GetId() - 600
         panneau = self._mgr.GetPane(self.listePanneaux[index]["code"])
         if panneau.IsShown() :
             panneau.Hide()
