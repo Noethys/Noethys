@@ -125,7 +125,7 @@ class Track_tarif(Track):
         Track.__init__(self)
         self.liste_variables = ["IDtarif", "IDactivite", "date_debut", "date_fin", "methode", "type", "categories_tarifs", "groupes",
                            "etiquettes", "cotisations", "caisses", "description", "jours_scolaires",
-                           "jours_vacances", "observations", "tva", "code_compta", "IDtype_quotient",
+                           "jours_vacances", "observations", "tva", "code_compta", "code_produit_local", "IDtype_quotient",
                            "label_prestation", "IDevenement", "IDproduit", "IDnom_tarif", "options",
                             "forfait_saisie_manuelle", "forfait_saisie_auto", "forfait_suppression_auto",
                             "etats",]
@@ -1721,7 +1721,7 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             else: condition = str(tuple(listeIDevenements))
 
             req = """SELECT IDtarif, IDactivite, date_debut, date_fin, methode, type, categories_tarifs, groupes, etiquettes, cotisations, 
-            caisses, description, jours_scolaires, jours_vacances, observations, tva, code_compta, 
+            caisses, description, jours_scolaires, jours_vacances, observations, tva, code_compta, code_produit_local,
             IDtype_quotient, label_prestation, IDevenement
             FROM tarifs WHERE IDevenement IN %s;""" % condition
             DB.ExecuterReq(req)
@@ -1764,7 +1764,7 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 self.dict_donnees_initiales["tarifs_lignes"].append(dictLigne["IDligne"])
 
             # Mémorisation des tarifs
-            for IDtarif, IDactivite, date_debut, date_fin, methode, type, categories_tarifs, groupes, etiquettes, cotisations, caisses, description, jours_scolaires, jours_vacances, observations, tva, code_compta, IDtype_quotient, label_prestation, IDevenement in listeDonneesTarifs :
+            for IDtarif, IDactivite, date_debut, date_fin, methode, type, categories_tarifs, groupes, etiquettes, cotisations, caisses, description, jours_scolaires, jours_vacances, observations, tva, code_compta, code_produit_local, IDtype_quotient, label_prestation, IDevenement in listeDonneesTarifs :
 
                 # Récupération des filtres du tarif
                 if IDtarif in dictFiltres:
@@ -1782,7 +1782,7 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                     "IDtarif": IDtarif, "IDactivite":IDactivite, "date_debut" : date_debut, "date_fin" : date_fin, "methode" : methode, "type" : type, "categories_tarifs" : categories_tarifs,
                     "groupes": groupes,"etiquettes" : etiquettes, "cotisations" : cotisations, "caisses" : caisses, "description" : description,
                     "jours_scolaires": jours_scolaires, "jours_vacances" : jours_vacances, "observations" : observations, "tva" : tva,
-                    "code_compta" : code_compta, "IDtype_quotient": IDtype_quotient,"label_prestation" : label_prestation, "IDevenement" : IDevenement,
+                    "code_compta" : code_compta, "code_produit_local" : code_produit_local, "IDtype_quotient": IDtype_quotient,"label_prestation" : label_prestation, "IDevenement" : IDevenement,
                     "filtres" : liste_filtres, "lignes" : liste_lignes,
                     }
 
