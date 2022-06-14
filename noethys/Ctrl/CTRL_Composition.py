@@ -1502,7 +1502,7 @@ class CTRL_Liste(HTL.HyperTreeList):
 
                 nom = dictIndividu["nom"]
                 prenom = dictIndividu["prenom"]
-                IDcivilite = dictIndividu["IDcivilite"]
+                IDcivilite = dictIndividu["IDcivilite"] or 1
                 categorieCivilite = Civilites.GetDictCivilites()[IDcivilite]["categorie"]
                 if categorieCivilite == "ENFANT" :
                     type = "E"

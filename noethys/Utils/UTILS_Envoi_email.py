@@ -677,7 +677,7 @@ class SmtpV2(Base_messagerie):
                     else:
                         err = six.text_type(erreur)
                     listeAnomalies.append((message, err))
-                    print(("Erreur dans l'envoi d'un mail : %s...", err))
+                    print(("Erreur dans l'envoi d'un mail : %s..." % err))
 
                     if ne_pas_signaler_erreurs == False:
 
@@ -938,6 +938,8 @@ class Mailjet(Base_messagerie):
             raise Exception(err)
 
         if resultat != u'success':
+            print("Erreur envoi avec Mailjet")
+            print(resultats.json())
             raise Exception(resultat)
 
         return resultat
@@ -975,7 +977,7 @@ class Mailjet(Base_messagerie):
                 except Exception as err:
                     err = str(err).decode("iso-8859-15")
                     listeAnomalies.append((message, err))
-                    print(("Erreur dans l'envoi d'un mail : %s...", err))
+                    print(("Erreur dans l'envoi d'un mail : %s..." % err))
                     traceback.print_exc(file=sys.stdout)
 
                     if ne_pas_signaler_erreurs == False:
