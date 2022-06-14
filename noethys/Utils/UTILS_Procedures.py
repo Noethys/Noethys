@@ -71,6 +71,7 @@ DICT_PROCEDURES = {
     "A9045" : _(u"Mise à jour du format des lots PES"),
     "A9050" : _(u"Cryptage des mots de passe des utilisateurs du portail"),
     "A9052" : _(u"Validation des actions du portail en doublon"),
+    "A9055" : _(u"Création d'une table"),
 }
 
 
@@ -1379,6 +1380,25 @@ def A9052():
     DB.Close()
 
 
+def A9055():
+    """
+    Création d'une table
+    """
+    dlg = wx.TextEntryDialog(None, _(u"Saisissez le nom de la table à créer :"), _(u"Création d'une table"), "")
+    reponse = dlg.ShowModal()
+    nom_table = dlg.GetValue()
+    dlg.Destroy()
+    if reponse != wx.ID_OK:
+        return
+    DB = GestionDB.DB()
+    if DB.IsTableExists(nom_table) == False:
+        DB.CreationTable(nom_table, DB.DB_DATA)
+    else:
+        dlg = wx.MessageDialog(None, _(u"Cette table existe déjà !"), _(u"Erreur"), wx.OK | wx.ICON_ERROR)
+        dlg.ShowModal()
+        dlg.Destroy()
+        return
+    DB.Close()
 
 
 if __name__ == u"__main__":
