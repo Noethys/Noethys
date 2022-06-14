@@ -874,11 +874,11 @@ class Dialog(wx.Dialog):
             listeID = []
             for track_prestation in liste_prestations :
                 IDprestation = track_prestation.IDprestation
-                date_prestation = dict_location["date_debut"] if modifier_date_prestation else track_prestation.date
+                date_prestation = dict_location["date_debut"].date() if modifier_date_prestation else track_prestation.date
 
                 listeDonnees = [
                     ("IDcompte_payeur", self.ctrl_loueur.GetIDcomptePayeur()),
-                    ("date", date_prestation),
+                    ("date", str(date_prestation)),
                     ("categorie", "location"),
                     ("label", track_prestation.label),
                     ("montant_initial", track_prestation.montant),
@@ -889,7 +889,7 @@ class Dialog(wx.Dialog):
                     ("tva", track_prestation.tva),
                     ("IDdonnee", IDlocation),
                     ]
-
+                
                 if IDprestation == None :
                     listeDonnees.append(("date_valeur", str(datetime.date.today())))
                     IDprestation = DB.ReqInsert("prestations", listeDonnees)
