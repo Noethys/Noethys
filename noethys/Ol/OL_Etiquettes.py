@@ -13,15 +13,14 @@ import Chemins
 from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
-from Ctrl import CTRL_Bouton_image
+import FonctionsPerso
 import GestionDB
 import datetime
 from Utils import UTILS_Titulaires
 from Utils import UTILS_Questionnaires
 from Data import DATA_Civilites as Civilites
 from Utils import UTILS_Infos_individus
-
-
+from Utils import UTILS_Internet
 from Utils import UTILS_Interface
 from Ctrl.CTRL_ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
@@ -282,7 +281,14 @@ class TrackFamille(object):
         self.regime = donnees["nomRegime"]
         self.caisse = donnees["nomCaisse"]
         self.numAlloc = donnees["numAlloc"]
-        
+
+        self.internet_identifiant = donnees["internet_identifiant"]
+        self.internet_mdp = donnees["internet_mdp"]
+        if self.internet_mdp and self.internet_mdp.startswith("custom"):
+            self.internet_mdp = "********"
+        if self.internet_mdp and self.internet_mdp.startswith("#@#"):
+            self.internet_mdp = UTILS_Internet.DecrypteMDP(self.internet_mdp, IDfichier=donnees["IDfichier"])
+
         # Ajout des adresses Emails des titulaires
         self.listeMails = donnees["listeMails"]
         if len(self.listeMails) > 0 :
@@ -306,6 +312,8 @@ class TrackFamille(object):
             "{FAMILLE_REGIME}" : FormateStr(self.regime),
             "{FAMILLE_CAISSE}" : FormateStr(self.caisse),
             "{FAMILLE_NUMALLOC}" : FormateStr(self.numAlloc),
+            "{FAMILLE_INTERNET_IDENTIFIANT}": FormateStr(self.internet_identifiant),
+            "{FAMILLE_INTERNET_MDP}": FormateStr(self.internet_mdp),
             }
         
         # Questionnaires
@@ -346,7 +354,7 @@ def GetListeFamilles(listview=None, listeActivites=None, presents=None, IDfamill
     DB = GestionDB.DB()
     req = """
     SELECT 
-    familles.IDfamille, regimes.nom, caisses.nom, num_allocataire
+    familles.IDfamille, regimes.nom, caisses.nom, num_allocataire, internet_identifiant, internet_mdp
     FROM familles 
     LEFT JOIN inscriptions ON inscriptions.IDfamille = familles.IDfamille
     LEFT JOIN individus ON individus.IDindividu = inscriptions.IDindividu
@@ -360,12 +368,14 @@ def GetListeFamilles(listview=None, listeActivites=None, presents=None, IDfamill
 
     DB.ExecuterReq(req)
     listeFamilles = DB.ResultatReq()
-    DB.Close() 
+    DB.Close()
+
+    IDfichier = FonctionsPerso.GetIDfichier()
     
     # Formatage des données
     listeListeView = []
     titulaires = UTILS_Titulaires.GetTitulaires() 
-    for IDfamille, nomRegime, nomCaisse, numAlloc in listeFamilles :
+    for IDfamille, nomRegime, nomCaisse, numAlloc, internet_identifiant, internet_mdp in listeFamilles :
         dictTemp = {}
         if IDfamille != None and IDfamille in titulaires :
             nomTitulaires = titulaires[IDfamille]["titulairesSansCivilite"]
@@ -383,7 +393,8 @@ def GetListeFamilles(listview=None, listeActivites=None, presents=None, IDfamill
         dictTemp = {
             "IDfamille" : IDfamille, "titulaires" : nomTitulaires, "nomRegime" : nomRegime, 
             "nomCaisse" : nomCaisse, "numAlloc" : numAlloc, "secteur": secteur,
-            "rue" : rue, "cp" : cp, "ville" : ville, "listeMails" : listeMails,
+            "rue" : rue, "cp" : cp, "ville" : ville, "listeMails" : listeMails, "IDfichier": IDfichier,
+            "internet_identifiant": internet_identifiant, "internet_mdp": internet_mdp,
             }
     
         # Formatage sous forme de TRACK
