@@ -149,6 +149,8 @@ VALEURS_DEFAUT = {
     "factures_selection" : 0,
     "factures_demande_facture" : True,
     "factures_prefacturation" : True,
+    "factures_afficher_solde_total" : True,
+    "factures_afficher_solde_detail" : True,
     "reglements_afficher" : True,
     "reglements_intro" : _(u"Vous pouvez consulter ici la liste des règlements et demander des reçus."),
     "reglements_selection" : 0,
@@ -970,6 +972,20 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         nom = "factures_prefacturation"
         propriete = wxpg.BoolProperty(label=_(u"Afficher la préfacturation"), name=nom, value=VALEURS_DEFAUT[nom])
         propriete.SetHelpString(_(u"Cochez cette case pour afficher la préfacturation"))
+        propriete.SetAttribute("UseCheckbox", True)
+        self.Append(propriete)
+
+        # Afficher le solde total des factures
+        nom = "factures_afficher_solde_total"
+        propriete = wxpg.BoolProperty(label=_(u"Afficher le solde total à régler"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Cochez cette case pour afficher le solde total à régler"))
+        propriete.SetAttribute("UseCheckbox", True)
+        self.Append(propriete)
+
+        # Afficher le solde pour chaque facture
+        nom = "factures_afficher_solde_detail"
+        propriete = wxpg.BoolProperty(label=_(u"Afficher le solde à régler pour chaque facture"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Cochez cette case pour afficher le solde à régler pour chaque facture"))
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 

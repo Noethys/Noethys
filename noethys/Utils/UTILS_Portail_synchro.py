@@ -550,6 +550,8 @@ class Synchro():
         session.add(models.Parametre(nom="FACTURES_INTRO", parametre=self.dict_parametres["factures_intro"]))
         session.add(models.Parametre(nom="FACTURES_DEMANDE_FACTURE", parametre=str(self.dict_parametres["factures_demande_facture"])))
         session.add(models.Parametre(nom="FACTURES_PREFACTURATION", parametre=str(self.dict_parametres["factures_prefacturation"])))
+        session.add(models.Parametre(nom="FACTURES_AFFICHER_SOLDE_TOTAL", parametre=str(self.dict_parametres["factures_afficher_solde_total"])))
+        session.add(models.Parametre(nom="FACTURES_AFFICHER_SOLDE_DETAIL", parametre=str(self.dict_parametres["factures_afficher_solde_detail"])))
         session.add(models.Parametre(nom="REGLEMENTS_AFFICHER", parametre=str(self.dict_parametres["reglements_afficher"])))
         session.add(models.Parametre(nom="REGLEMENTS_INTRO", parametre=self.dict_parametres["reglements_intro"]))
         session.add(models.Parametre(nom="REGLEMENTS_DEMANDE_RECU", parametre=str(self.dict_parametres["reglements_demande_recu"])))
