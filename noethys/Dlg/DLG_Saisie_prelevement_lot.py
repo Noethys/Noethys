@@ -723,7 +723,7 @@ class Dialog(wx.Dialog):
         perception = self.ctrl_parametres.dictPerceptions.get(parametres["perception"], None)
         
         # Création des lots
-        listeSequences = ["OOFF", "FRST", "RCUR", "FNAL"]        
+        listeSequences = ["OOFF", "FRST", "RCUR", "FNAL"]
         
         # Récupération des transactions à effectuer
         montantTotal = FloatToDecimal(0.0)

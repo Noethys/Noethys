@@ -163,7 +163,10 @@ class CTRL(wx.StaticBitmap):
             self.SetBitmap(wx.NullBitmap)
             return
         # Recadre l'image en fonction de la taille du staticBitmap
-        img = self.imagewx.Copy()       
+        try:
+            img = self.imagewx.Copy()
+        except:
+            return
         largeurCadre, hauteurCadre = self.GetSize()
         largeurImage, hauteurImage = img.GetSize()
         ratioCadre = 1.0 * largeurCadre / hauteurCadre

@@ -889,7 +889,7 @@ class Dialog(wx.Dialog):
                     ("tva", track_prestation.tva),
                     ("IDdonnee", IDlocation),
                     ]
-                
+
                 if IDprestation == None :
                     listeDonnees.append(("date_valeur", str(datetime.date.today())))
                     IDprestation = DB.ReqInsert("prestations", listeDonnees)
