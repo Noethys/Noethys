@@ -105,6 +105,7 @@ class CTRL(HTL.HyperTreeList):
         # Paramètres
         self.mode_affichage = "mois" # "mois", "annee"
         self.affichage_details = True
+        self.affichage_code_compta = False
         self.type = "depots"
         self.date_debut = None
         self.date_fin = None
@@ -130,7 +131,10 @@ class CTRL(HTL.HyperTreeList):
     
     def SetAffichageDetails(self, etat=True):
         self.affichage_details = etat
-        
+
+    def SetAffichageCodeCompta(self, etat=True):
+        self.affichage_code_compta = etat
+
     def SetTypeDepots(self, listeDepots=[]):
         self.type = "depots"
         self.listeDepots = listeDepots
@@ -191,10 +195,12 @@ class CTRL(HTL.HyperTreeList):
         req = """SELECT 
         ventilation.IDventilation, ventilation.IDreglement, ventilation.IDprestation, ventilation.montant,
         reglements.date, reglements.date_saisie, depots.IDdepot, depots.date,
-        prestations.date, prestations.label, prestations.IDactivite, activites.nom, activites.abrege
+        prestations.date, prestations.label, prestations.IDactivite, activites.nom, activites.abrege,
+        prestations.code_compta, activites.code_comptable, tarifs.code_compta
         FROM ventilation
         LEFT JOIN reglements ON reglements.IDreglement = ventilation.IDreglement
         LEFT JOIN prestations ON prestations.IDprestation = ventilation.IDprestation
+        LEFT JOIN tarifs ON prestations.IDtarif = tarifs.IDtarif
         LEFT JOIN depots ON depots.IDdepot = reglements.IDdepot
         LEFT JOIN activites ON activites.IDactivite = prestations.IDactivite
         WHERE %s
@@ -204,7 +210,7 @@ class CTRL(HTL.HyperTreeList):
         dictVentilation = {}
         listePeriodes = []
         dictIDreglements = {}
-        for IDventilation, IDreglement, IDprestation, montantVentilation, dateReglement, dateSaisieReglement, IDdepot, dateDepotReglement, datePrestation, labelPrestation, IDactivite, nomActivite, abregeActivite in listeVentilation :
+        for IDventilation, IDreglement, IDprestation, montantVentilation, dateReglement, dateSaisieReglement, IDdepot, dateDepotReglement, datePrestation, labelPrestation, IDactivite, nomActivite, abregeActivite, code_compta_prestation, code_compta_activite, code_compta_tarif in listeVentilation :
             dateReglement = UTILS_Dates.DateEngEnDateDD(dateReglement)
             dateSaisieReglement = UTILS_Dates.DateEngEnDateDD(dateSaisieReglement)
             dateDepotReglement = UTILS_Dates.DateEngEnDateDD(dateDepotReglement)
@@ -219,6 +225,11 @@ class CTRL(HTL.HyperTreeList):
             # Rajoute le nom de l'activité dans le label de la prestation
             if nomActivite != None :
                 labelPrestation = u"%s - %s" % (nomActivite, labelPrestation)
+
+            # Rajoute le code comptable dans le label de la prestation
+            code_compta = code_compta_prestation or code_compta_tarif or code_compta_activite or None
+            if self.affichage_code_compta and code_compta:
+                labelPrestation += u" - %s" % code_compta
             
             # Retient la période de ventilation
             if datePrestation != None :

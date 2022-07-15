@@ -225,7 +225,10 @@ class Dialog(wx.Dialog):
         
         self.check_details = wx.CheckBox(self, -1, _(u"Afficher détails"))
         self.check_details.SetValue(True) 
-        
+
+        self.check_code_compta = wx.CheckBox(self, -1, _(u"Afficher code comptable"))
+        self.check_code_compta.SetValue(False)
+
         self.hyper_developper = Hyperlien(self, label=_(u"Développer"), infobulle=_(u"Cliquez ici pour développer l'arborescence"), URL="developper")
         self.label_barre = wx.StaticText(self, -1, u"|")
         self.hyper_reduire = Hyperlien(self, label=_(u"Réduire"), infobulle=_(u"Cliquez ici pour réduire l'arborescence"), URL="reduire")
@@ -240,6 +243,7 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioMois, self.radio_mois)
         self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioAnnee, self.radio_annee)
         self.Bind(wx.EVT_CHECKBOX, self.OnCheckDetails, self.check_details)
+        self.Bind(wx.EVT_CHECKBOX, self.OnCheckCodeCompta, self.check_code_compta)
         self.Bind(wx.EVT_BUTTON, self.MAJ, self.bouton_actualiser)
 
         self.__set_properties()
@@ -256,6 +260,7 @@ class Dialog(wx.Dialog):
         self.radio_mois.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher les résultats par mois")))
         self.radio_annee.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher les résultats par années")))
         self.check_details.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher les détails dans les résultats")))
+        self.check_code_compta.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher le code comptable de la prestation dans les résultats")))
         self.bouton_actualiser.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour actualiser les résultats")))
         self.SetMinSize((1100, 750))
 
@@ -284,17 +289,19 @@ class Dialog(wx.Dialog):
         grid_sizer_resultats.Add(grid_sizer_commandes, 1, wx.EXPAND, 0)
         
         # Commandes de liste
-        grid_sizer_commandes2 = wx.FlexGridSizer(rows=1, cols=9, vgap=5, hgap=5)
+        grid_sizer_commandes2 = wx.FlexGridSizer(rows=1, cols=11, vgap=5, hgap=5)
         grid_sizer_commandes2.Add(self.label_mode_affichage, 0, wx.EXPAND, 0)
         grid_sizer_commandes2.Add(self.radio_mois, 0, wx.EXPAND, 0) 
         grid_sizer_commandes2.Add(self.radio_annee, 0, wx.EXPAND, 0)
         grid_sizer_commandes2.Add( (30, 5), 0, wx.EXPAND, 0)
         grid_sizer_commandes2.Add(self.check_details, 0, wx.EXPAND, 0)
         grid_sizer_commandes2.Add( (5, 5), 0, wx.EXPAND, 0)
+        grid_sizer_commandes2.Add(self.check_code_compta, 0, wx.EXPAND, 0)
+        grid_sizer_commandes2.Add( (5, 5), 0, wx.EXPAND, 0)
         grid_sizer_commandes2.Add(self.hyper_developper, 0, wx.EXPAND, 0)
         grid_sizer_commandes2.Add(self.label_barre, 0, wx.EXPAND, 0)
         grid_sizer_commandes2.Add(self.hyper_reduire, 0, wx.EXPAND, 0)
-        grid_sizer_commandes2.AddGrowableCol(5)
+        grid_sizer_commandes2.AddGrowableCol(7)
         grid_sizer_resultats.Add(grid_sizer_commandes2, 1, wx.EXPAND, 0)
         
         grid_sizer_resultats.AddGrowableRow(0)
@@ -334,6 +341,14 @@ class Dialog(wx.Dialog):
         etat = self.check_details.GetValue()
         self.ctrl_resultats.SetAffichageDetails(etat)
         self.MAJ() 
+        self.hyper_developper.Enable(-etat)
+        self.label_barre.Enable(-etat)
+        self.hyper_reduire.Enable(-etat)
+
+    def OnCheckCodeCompta(self, event):
+        etat = self.check_code_compta.GetValue()
+        self.ctrl_resultats.SetAffichageCodeCompta(etat)
+        self.MAJ()
         self.hyper_developper.Enable(-etat)
         self.label_barre.Enable(-etat)
         self.hyper_reduire.Enable(-etat)
