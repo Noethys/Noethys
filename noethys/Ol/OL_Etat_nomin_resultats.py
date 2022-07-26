@@ -21,7 +21,7 @@ import GestionDB
 from Utils import UTILS_Interface
 from Ctrl.CTRL_ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 from Ctrl.CTRL_Questionnaire import LISTE_CONTROLES
-from Utils import UTILS_Titulaires
+from Utils import UTILS_Titulaires, UTILS_Infos_individus
 from Data import DATA_Civilites as Civilites
 
 
@@ -73,7 +73,7 @@ DICT_FAMILLES = {}
 DICT_QUESTIONNAIRES = {}
 
 
-def GetDictIndividus():
+def GetDictIndividus(parametres={}):
     """ Récupération des infos sur les individus """
     # Récupération des adresses
     DB = GestionDB.DB()
@@ -104,7 +104,14 @@ def GetDictIndividus():
     
     # Récupération des civilités
     dictCivilites = Civilites.GetDictCivilites()
-        
+
+    # Récupération des infos individuelles
+    infosIndividus = UTILS_Infos_individus.Informations(date_reference=parametres["date_debut"], qf=False, inscriptions=False,
+                                                             messages=False, infosMedicales=False,
+                                                             cotisationsManquantes=False, piecesManquantes=False,
+                                                             questionnaires=False, scolarite=True)
+    dictInfosIndividus = infosIndividus.GetDictValeurs(mode="individu", ID=None, formatChamp=False)
+
     dictResultats = {}
     for valeurs in listeIndividus :
         dictTemp = {}
@@ -151,7 +158,7 @@ def GetDictIndividus():
             dictTemp["ville_resid"] = dictAdresses[dictTemp["adresse_auto"]]["ville_resid"]
             dictTemp["secteur"] = dictAdresses[dictTemp["adresse_auto"]]["secteur"]
         
-        
+        dictTemp.update(dictInfosIndividus[dictTemp["IDindividu"]])
         dictResultats[dictTemp["IDindividu"]] = dictTemp
         
     return dictResultats
@@ -260,7 +267,10 @@ class Track(object):
         self.INDIVIDU_VILLE = DICT_INDIVIDUS[IDindividu]["ville_resid"]
         self.INDIVIDU_SECTEUR = DICT_INDIVIDUS[IDindividu]["secteur"]
         self.INDIVIDU_NOM = DICT_INDIVIDUS[IDindividu]["nom"]
-        
+        self.SCOLARITE_NOM_ECOLE = DICT_INDIVIDUS[IDindividu]["SCOLARITE_NOM_ECOLE"]
+        self.SCOLARITE_NOM_CLASSE = DICT_INDIVIDUS[IDindividu]["SCOLARITE_NOM_CLASSE"]
+        self.SCOLARITE_ABREGE_NIVEAU = DICT_INDIVIDUS[IDindividu]["SCOLARITE_ABREGE_NIVEAU"]
+
         # Infos sur la famille
         self.FAMILLE_ID = IDfamille
         self.FAMILLE_TITULAIRES = DICT_TITULAIRES[IDfamille]["titulairesSansCivilite"]
@@ -409,7 +419,7 @@ class ListView(FastObjectListView):
 
         # Récupération de tous les individus
         global DICT_INDIVIDUS
-        DICT_INDIVIDUS = GetDictIndividus()
+        DICT_INDIVIDUS = GetDictIndividus(parametres=self.dictParametres)
     
         # Récupération des titulaires
         global DICT_TITULAIRES

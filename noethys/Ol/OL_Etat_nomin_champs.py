@@ -36,6 +36,9 @@ LISTE_CHAMPS_STANDARDS = [
     ("INDIVIDU_CP", _(u"Adresse de l'individu - CP"), _(u"Individu"), _(u"C.P."), 80),
     ("INDIVIDU_VILLE", _(u"Adresse de l'individu - Ville"), _(u"Individu"), _(u"Ville"), 80),
     ("INDIVIDU_SECTEUR", _(u"Adresse de l'individu - Secteur"), _(u"Individu"), _(u"Secteur"), 80),
+    ("SCOLARITE_NOM_ECOLE", _(u"Nom de l'école de l'individu"), _(u"Individu"), _(u"Ecole"), 80),
+    ("SCOLARITE_NOM_CLASSE", _(u"Nom de la classe de l'individu"), _(u"Individu"), _(u"Classe"), 80),
+    ("SCOLARITE_ABREGE_NIVEAU", _(u"Nom du niveau scolaire de l'individu"), _(u"Individu"), _(u"Niveau"), 80),
 
     ("FAMILLE_ID", _(u"ID de la famille"), _(u"Famille"), _(u"IDfamille"), 50),
     ("FAMILLE_TITULAIRES", _(u"Nom des titulaires"), _(u"Famille"), _(u"Représentants"), 200),
