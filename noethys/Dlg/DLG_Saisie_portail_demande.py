@@ -227,6 +227,8 @@ class CTRL_Solde(wx.TextCtrl):
         self.Layout()
         self.Refresh()
 
+    def GetSolde(self):
+        return self.GetValue()
 
 
 # -------------------------------------------------------------------------------------------------------------------------------------------
@@ -1042,6 +1044,7 @@ class Dialog(wx.Dialog):
             dict_champs["{TOTAL}"] = u"%.2f %s" % (montants["total"], SYMBOLE)
             dict_champs["{REGLE}"] = u"%.2f %s" % (montants["regle"], SYMBOLE)
             dict_champs["{SOLDE}"] = u"%.2f %s" % (montants["solde"], SYMBOLE)
+            dict_champs["{SOLDE_FAMILLE}"] = self.ctrl_solde.GetSolde()
 
         return dict_champs
 

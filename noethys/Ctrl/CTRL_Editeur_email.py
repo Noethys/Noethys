@@ -231,6 +231,7 @@ MOTSCLES = {
                 ( "{TOTAL}", _(u"Total des prestations de la période") ),
                 ( "{REGLE}", _(u"Total déjà réglé pour la période") ),
                 ( "{SOLDE}", _(u"Solde de la période") ),
+                ( "{SOLDE_FAMILLE}", _(u"Solde de la fiche famille") ),
                 ],
 
     "portail_demande_facture" : [
