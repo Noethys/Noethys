@@ -1,3 +1,16 @@
+Version 1.3.1.1 (26/07/2022) :
+
+- Ajout de la procédure de création manuelle de table
+- Ajout du code comptable dans l'analyse croisée des règlements
+- Ajout de l'option d'affichage des soldes des factures dans Connecthys
+- Ajout d'une icône dans l'impression des conso pour les attentes
+- Ajout de la scolarité dans l'état nominatif
+- Ajout du champ SOLDE_FAMILLE dans l'email de réponse du portail
+- Ajout du lien Assistant familial dans la fiche individuelle
+- Correction des prestations dans les locations avec récurrence
+- Correction des vignettes sans civilité
+- Correction de divers petits bugs
+
 Version 1.3.0.8 (30/03/2022) :
 
 - Correction du code produit local dans les tarifs
