@@ -171,6 +171,7 @@ def Impression(dictDonnees={}, nomDoc=FonctionsPerso.GenerationNomDoc("RESERVATI
                 
                 # Insertion des consommations
                 listeEtats = []
+                listeEtatsTemp = []
                 listeConso = []
                 listePrestations = []
                 for IDunite, liste_unites in dictDate["unites"].items():
@@ -192,8 +193,12 @@ def Impression(dictDonnees={}, nomDoc=FonctionsPerso.GenerationNomDoc("RESERVATI
                                 labelUnite += _(u" (%s-%s)") % (heure_debut, heure_fin)
                             listeConso.append(labelUnite)
 
-                            if etat not in listeEtats :
-                                listeEtats.append(etat)
+                            if etat not in listeEtatsTemp:
+                                if etat == "Attente":
+                                    listeEtats.append(ParagraphAndImage(Paragraph(etat, paraStyle), Image(Chemins.GetStaticPath("Images/16x16/Attention.png"), width=8, height=8), xpad=1, ypad=1, side="left"))
+                                else:
+                                    listeEtats.append(Paragraph(etat, paraStyle))
+                                listeEtatsTemp.append(etat)
 
                             IDprestation = dictUnite["IDprestation"]
                             if dictUnite["prestation"] != None and IDprestation not in listePrestationsUtilisees :
@@ -203,7 +208,7 @@ def Impression(dictDonnees={}, nomDoc=FonctionsPerso.GenerationNomDoc("RESERVATI
                 texteConsos = Paragraph("<br/>".join(listeConso), paraStyle)
                 
                 # Insertion de l'état
-                texteEtat = Paragraph("<br/>".join(listeEtats), paraStyle)
+                texteEtat = listeEtats
                 
                 # Insertion des prestations et montants
                 textePrestations = []
