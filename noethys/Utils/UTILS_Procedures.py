@@ -72,6 +72,7 @@ DICT_PROCEDURES = {
     "A9050" : _(u"Cryptage des mots de passe des utilisateurs du portail"),
     "A9052" : _(u"Validation des actions du portail en doublon"),
     "A9055" : _(u"Création d'une table"),
+    "A9062" : _(u"Modification du type d'un champ"),
 }
 
 
@@ -1399,6 +1400,24 @@ def A9055():
         dlg.Destroy()
         return
     DB.Close()
+
+
+def A9062():
+    """ Modification du type d'un champ """
+    dlg = wx.TextEntryDialog(None, _(u"Saisissez les paramètres au format suivant :\nnom_table;nom_champ;type\nExemple : parametres;nom;varchar(50)"), _(u"Modification du type d'un champ"), "")
+    reponse = dlg.ShowModal()
+    parametres = dlg.GetValue()
+    if reponse != wx.ID_OK:
+        return
+    try:
+        nom_table, nom_champ, type_champ = parametres.split(";")
+    except:
+        return
+    DB = GestionDB.DB()
+    DB.ExecuterReq("ALTER TABLE %s MODIFY %s %s" % (nom_table, nom_champ, type_champ))
+    DB.Commit()
+    DB.Close()
+
 
 
 if __name__ == u"__main__":
