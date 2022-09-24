@@ -1,4 +1,4 @@
-Version 1.3.1.1 (26/07/2022) :
+Version 1.3.1.2 (24/09/2022) :
 
 - Ajout de la procédure de création manuelle de table
 - Ajout du code comptable dans l'analyse croisée des règlements
@@ -7,6 +7,8 @@ Version 1.3.1.1 (26/07/2022) :
 - Ajout de la scolarité dans l'état nominatif
 - Ajout du champ SOLDE_FAMILLE dans l'email de réponse du portail
 - Ajout du lien Assistant familial dans la fiche individuelle
+- Ajout de la procédure de modification du type d'un champ
+- Correction de l'affichage des activités terminées dans Connecthys
 - Correction des prestations dans les locations avec récurrence
 - Correction des vignettes sans civilité
 - Correction de divers petits bugs
