@@ -4533,7 +4533,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         listeDejaFactures = []
         for numLigne, ligne in self.dictLignes.items() :
             for numColonne, case in ligne.dictCases.items() :
-                if case.typeCase == "consommation" and case.ouvert == True :
+                if case.typeCase == "consommation":# and case.ouvert == True :
                     dejaFacture = False
                     verrouillee = False
                     for conso in case.GetListeConso() :
