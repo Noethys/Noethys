@@ -1410,6 +1410,10 @@ class Traitement():
                     age = _(u"%d ans") % ((today.year - date_naiss.year) - int((today.month, today.day) < (date_naiss.month, date_naiss.day)))
                 else :
                     age = _(u"Âge inconnu")
+            else:
+                self.EcritLog(_(u"L'individu ID%s n'existe pas dans la base de données.") % self.track.IDindividu)
+                return False
+
             intro = _(u"Confirmez l'inscription de %s (%s) à l'activité sélectionnée et sur le groupe demandé par la famille." % (prenom, age))
 
             from Dlg import DLG_Inscription

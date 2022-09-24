@@ -1466,6 +1466,7 @@ class Synchro():
         cryptage = UTILS_Cryptage_fichier.AESCipher(self.dict_parametres["secret_key"][10:20], bs=16, prefixe=u"#@#")
 
         # Recherche la dernière demande téléchargée
+        last = 0
         DB = GestionDB.DB()
         req = """
         SELECT ref_unique
@@ -1477,9 +1478,10 @@ class Synchro():
         result = DB.ResultatReq()
         listeDonnees = [x[0] for x in result]
         if len(listeDonnees) > 0 :
-            last = int(listeDonnees[0])
-        else :
-            last = 0
+            try:
+                last = int(listeDonnees[0])
+            except:
+                pass
 
         # Téléchargement des demandes non enregistrées
         if full_synchro == True :

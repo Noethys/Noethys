@@ -1117,7 +1117,7 @@ class MainFrame(wx.Frame):
                     {"code" : "telechargements_communautaires", "label" : _(u"Télécharger des ressources communautaires"), "infobulle" : _(u"Télécharger des ressources communautaires"), "image" : "Images/16x16/Updater.png", "action" : self.On_aide_telechargements},
                     "-",
                     {"code" : "services", "label": _(u"L'offre de services de Noethys"), "infobulle": _(u"L'offre de services de Noethys"), "image": "Images/16x16/Assistance.png", "action": self.On_aide_services},
-                    {"code" : "email_auteur", "label" : _(u"Envoyer un Email à l'auteur"), "infobulle" : _(u"Envoyer un Email à l'auteur"), "image" : "Images/16x16/Mail.png", "action" : self.On_aide_auteur},
+                    #{"code" : "email_auteur", "label" : _(u"Envoyer un Email à l'auteur"), "infobulle" : _(u"Envoyer un Email à l'auteur"), "image" : "Images/16x16/Mail.png", "action" : self.On_aide_auteur},
                     ],
             },
 

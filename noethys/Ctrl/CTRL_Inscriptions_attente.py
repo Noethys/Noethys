@@ -117,6 +117,7 @@ class CTRL(HTL.HyperTreeList):
             date_inscription = UTILS_Dates.DateEngEnDateDD(date_inscription)
             if prenomIndividu == None : prenomIndividu = ""
             nom_individu = u"%s %s" % (nomIndividu, prenomIndividu)
+            if nomCategorie == None: nomCategorie = ""
 
             UTILS_Divers.DictionnaireImbrique(dictionnaire=dictInscriptions, cles=[IDactivite, IDgroupe], valeur=[])
             dictTemp = {
