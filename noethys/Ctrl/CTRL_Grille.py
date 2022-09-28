@@ -4524,7 +4524,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
     def GetHistorique(self):
         return self.listeHistorique
     
-    def RecalculerToutesPrestations(self, modeSilencieux=True):
+    def RecalculerToutesPrestations(self, modeSilencieux=True, inclure_dates_fermees=False):
         """ Recalcule les prestations de toutes les cases """
         # Vérifie que la période sélectionnée n'est pas dans une période de gestion
         date_debut, date_fin = self.GetDatesExtremes(self.listePeriodes)
@@ -4533,7 +4533,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         listeDejaFactures = []
         for numLigne, ligne in self.dictLignes.items() :
             for numColonne, case in ligne.dictCases.items() :
-                if case.typeCase == "consommation":# and case.ouvert == True :
+                if case.typeCase == "consommation" and (case.ouvert == True or inclure_dates_fermees == True) :
                     dejaFacture = False
                     verrouillee = False
                     for conso in case.GetListeConso() :
