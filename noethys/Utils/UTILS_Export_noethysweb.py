@@ -1032,7 +1032,14 @@ class Table_reponses(Table):
         liste_reponse = []
         if valeur and ";" in valeur:
             for IDchoix in valeur.split(";"):
-                liste_reponse.append(self.dict_choix[int(IDchoix)])
+                try:
+                    IDchoix = int(IDchoix)
+                except:
+                    pass
+                if IDchoix in self.dict_choix:
+                    liste_reponse.append(self.dict_choix[IDchoix])
+                else:
+                    liste_reponse.append(IDchoix)
             valeur = ";".join(liste_reponse)
         return valeur
 
