@@ -22,6 +22,7 @@ from Dlg import DLG_Saisie_lot_tresor_public
 from Dlg import DLG_Saisie_lot_tresor_public_pes
 from Dlg import DLG_Saisie_lot_tresor_public_magnus
 from Dlg import DLG_Saisie_lot_tresor_public_jvs
+from Dlg import DLG_Saisie_lot_tresor_public_corail
 
 
 class Track(object):
@@ -291,6 +292,8 @@ class ListView(FastObjectListView):
             classe = DLG_Saisie_lot_tresor_public_magnus.Dialog
         if format == "jvs":
             classe = DLG_Saisie_lot_tresor_public_jvs.Dialog
+        if format == "corail":
+            classe = DLG_Saisie_lot_tresor_public_corail.Dialog
         return (format, classe)
 
 # -------------------------------------------------------------------------------------------------------------------------------------------

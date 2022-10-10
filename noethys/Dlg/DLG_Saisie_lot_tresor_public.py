@@ -46,6 +46,7 @@ FORMATS = [
     {"code": "pes", "label": _(u"PES v2 ORMC Recette"), "description": _(u"Export vers le logiciel Hélios du Trésor Public diffusé par la DGFIP.")},
     {"code": "magnus", "label": _(u"Magnus Berger-Levrault"), "description": _(u"Export vers le logiciel Magnus de la société Berger-Levrault.")},
     {"code": "jvs", "label": _(u"Millesime Online JVS"), "description": _(u"Export vers le logiciel Millesime Online de la société JVS-MAIRISTEM.")},
+    {"code": "corail", "label": _(u"Corail Cosoluce"), "description": _(u"Export vers le logiciel Corail de la société Cosoluce.")},
 ]
 
 def GetFormatByCode(code=""):
@@ -774,11 +775,17 @@ class Dialog(wx.Dialog):
         if 'phoenix' in wx.PlatformInfo:
             date_emission = self.ctrl_parametres.GetPropertyValue("date_emission").FormatISODate()
             date_prelevement = self.ctrl_parametres.GetPropertyValue("date_prelevement").FormatISODate()
-            date_envoi = self.ctrl_parametres.GetPropertyValue("date_envoi").FormatISODate()
+            try:
+                date_envoi = self.ctrl_parametres.GetPropertyValue("date_envoi").FormatISODate()
+            except:
+                date_envoi = None
         else:
             date_emission = self.ctrl_parametres.GetPropertyValue("date_emission").strftime("%Y-%m-%d")
             date_prelevement = self.ctrl_parametres.GetPropertyValue("date_prelevement").strftime("%Y-%m-%d")
-            date_envoi = self.ctrl_parametres.GetPropertyValue("date_envoi").strftime("%Y-%m-%d")
+            try:
+                date_envoi = self.ctrl_parametres.GetPropertyValue("date_envoi").strftime("%Y-%m-%d")
+            except:
+                date_envoi = None
         try:
             id_bordereau = self.ctrl_parametres.GetPropertyValue("id_bordereau")
         except:
@@ -788,8 +795,14 @@ class Dialog(wx.Dialog):
             id_collectivite = self.ctrl_parametres.GetPropertyValue("id_collectivite")
         except:
             id_collectivite = None
-        code_collectivite = self.ctrl_parametres.GetPropertyValue("code_collectivite")
-        code_budget = self.ctrl_parametres.GetPropertyValue("code_budget")
+        try:
+            code_collectivite = self.ctrl_parametres.GetPropertyValue("code_collectivite")
+        except:
+            code_collectivite = None
+        try:
+            code_budget = self.ctrl_parametres.GetPropertyValue("code_budget")
+        except:
+            code_budget = None
         code_prodloc = self.ctrl_parametres.GetPropertyValue("code_prodloc")
         try:
             code_etab = self.ctrl_parametres.GetPropertyValue("code_etab")

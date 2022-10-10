@@ -387,7 +387,7 @@ class EditeurDate(Editor):
 
     def CreateControls(self, propgrid, property, pos, size):
         try:
-            ctrl = ctrl = CTRL_Saisie_date.Date2(propgrid.GetPanel(), pos=pos, size=(-1, 25))
+            ctrl = CTRL_Saisie_date.Date2(propgrid.GetPanel(), pos=pos, size=(-1, 25))
             ctrl.SetDate(property.GetDisplayedString())
             if 'phoenix' in wx.PlatformInfo:
                 return wxpg.PGWindowList(ctrl)
