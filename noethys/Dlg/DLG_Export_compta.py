@@ -71,6 +71,8 @@ def Export_ebp_compta(ligne, dictParametres, numLigne, typeComptable=None):
     
     def GetSens(montant, sens):
         if FloatToDecimal(montant) < FloatToDecimal(0.0) :
+            if isinstance(montant, str):
+                montant = FloatToDecimal(montant)
             montant = -montant
             if sens == "D" : 
                 sens = "C"
