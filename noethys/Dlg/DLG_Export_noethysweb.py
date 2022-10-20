@@ -20,6 +20,42 @@ from Ctrl import CTRL_Editeur_email
 import os, datetime
 
 
+class CTRL_Options(wx.CheckListBox):
+    def __init__(self, parent):
+        wx.CheckListBox.__init__(self, parent, -1)
+        self.parent = parent
+        self.dictDonnees = {}
+        self.dictIndex = {}
+        self.listeOptions = [
+            ("individus", _(u"Individus et familles")),
+            ("questionnaires", _(u"Questionnaires familiaux et individuels")),
+            ("pieces", _(u"Pièces et types de pièces")),
+            ("cotisations", _(u"Cotisations")),
+            ("activites", _(u"Activités")),
+            ("inscriptions", _(u"Inscriptions")),
+            ("consommations", _(u"Consommations et prestations")),
+            ("facturation", _(u"Facturation : factures, attestations, devis...")),
+        ]
+        self.MAJ()
+
+    def MAJ(self):
+        self.Clear()
+        self.dictIndex = {}
+        index = 0
+        for code, label in self.listeOptions:
+            self.Append(label)
+            self.dictIndex[index] = code
+            self.Check(index)
+            index += 1
+
+    def GetIDcoches(self):
+        listeIDcoches = []
+        NbreItems = len(self.listeOptions)
+        for index in range(0, NbreItems):
+            if self.IsChecked(index):
+                listeIDcoches.append(self.dictIndex[index])
+        return listeIDcoches
+
 
 class Dialog(wx.Dialog):
     def __init__(self, parent):
@@ -51,6 +87,11 @@ class Dialog(wx.Dialog):
         self.label_confirmation = wx.StaticText(self, -1, _(u"Confirmation :"))
         self.ctrl_confirmation = wx.TextCtrl(self, -1, u"", style=wx.TE_PASSWORD)
 
+        # Options
+        self.box_options_staticbox = wx.StaticBox(self, -1, _(u"Données à transférer"))
+        self.ctrl_options = CTRL_Options(self)
+        self.ctrl_options.SetMinSize((-1, 140))
+
         # CTRL Editeur d'Emails pour récupérer la version HTML d'un texte XML
         self.ctrl_editeur = CTRL_Editeur_email.CTRL(self)
         self.ctrl_editeur.Show(False)
@@ -78,7 +119,7 @@ class Dialog(wx.Dialog):
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Annuler")))
 
     def __do_layout(self):
-        grid_sizer_base = wx.FlexGridSizer(rows=4, cols=1, vgap=10, hgap=10)
+        grid_sizer_base = wx.FlexGridSizer(rows=5, cols=1, vgap=10, hgap=10)
         grid_sizer_base.Add(self.ctrl_bandeau, 0, wx.EXPAND, 0)
         grid_sizer_base.Add(self.ctrl_editeur, 0, wx.EXPAND, 0)
 
@@ -117,6 +158,11 @@ class Dialog(wx.Dialog):
 
         grid_sizer_contenu.AddGrowableCol(0)
         grid_sizer_base.Add(grid_sizer_contenu, 1, wx.LEFT | wx.RIGHT | wx.EXPAND, 10)
+
+        # Options
+        box_options = wx.StaticBoxSizer(self.box_options_staticbox, wx.VERTICAL)
+        box_options.Add(self.ctrl_options, 1, wx.ALL|wx.EXPAND, 10)
+        grid_sizer_base.Add(box_options, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
 
         # Boutons
         grid_sizer_boutons = wx.FlexGridSizer(rows=1, cols=4, vgap=10, hgap=10)
@@ -195,9 +241,12 @@ class Dialog(wx.Dialog):
             self.ctrl_repertoire.SetFocus()
             return False
 
+        # Options
+        options = self.ctrl_options.GetIDcoches()
+
         # Générer du fichier de données
         dlgAttente = wx.BusyInfo(_(u"Cette opération peut prendre quelques minutes. Veuillez patienter..."), self)
-        UTILS_Export_noethysweb.Export_all(dlg=self, nom_fichier=os.path.join(repertoire, nom + ".nweb"), mdp=motdepasse)
+        UTILS_Export_noethysweb.Export_all(dlg=self, nom_fichier=os.path.join(repertoire, nom + ".nweb"), mdp=motdepasse, options=options)
         del dlgAttente
 
         # Confirmation de réussite

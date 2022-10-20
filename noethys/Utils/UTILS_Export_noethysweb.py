@@ -144,10 +144,11 @@ class MyEncoder(json.JSONEncoder):
 
 
 class Export:
-    def __init__(self, dlg=None, nom_fichier="", mdp=None):
+    def __init__(self, dlg=None, nom_fichier="", mdp=None, options=None):
         self.dlg = dlg
         self.nom_fichier = nom_fichier
         self.mdp = mdp
+        self.options = options
         self.liste_objets = []
 
         # Création du répertoire de travail
@@ -160,8 +161,9 @@ class Export:
         if not os.path.exists(self.rep_medias):
             os.makedirs(self.rep_medias)
 
-    def Ajouter(self, table=None):
-        self.liste_objets.extend(table.Get_objets())
+    def Ajouter(self, categorie=None, table=None):
+        if not categorie or not self.options or categorie in self.options:
+            self.liste_objets.extend(table.Get_objets())
 
     def Finaliser(self):
         # Création du fichier json
@@ -199,126 +201,126 @@ class Export_all(Export):
             self.dictComptesPayeurs[IDcompte_payeur] = IDfamille
 
         # Tables à exporter
-        self.Ajouter(Table_structures(self))
+        self.Ajouter(categorie=None, table=Table_structures(self))
 
-        self.Ajouter(Table(self, nom_table="categories_medicales", nouveau_nom_table="core.CategorieInformation"))
+        self.Ajouter(categorie=None, table=Table(self, nom_table="categories_medicales", nouveau_nom_table="core.CategorieInformation"))
 
-        self.Ajouter(Table(self, nom_table="categories_travail", nouveau_nom_table="core.CategorieTravail"))
+        self.Ajouter(categorie=None, table=Table(self, nom_table="categories_travail", nouveau_nom_table="core.CategorieTravail"))
 
-        self.Ajouter(Table(self, nom_table="lots_factures", nouveau_nom_table="core.LotFactures"))
+        self.Ajouter(categorie="facturation", table=Table(self, nom_table="lots_factures", nouveau_nom_table="core.LotFactures"))
 
-        self.Ajouter(Table(self, nom_table="lots_rappels", nouveau_nom_table="core.LotRappels"))
+        self.Ajouter(categorie="facturation", table=Table(self, nom_table="lots_rappels", nouveau_nom_table="core.LotRappels"))
 
-        self.Ajouter(Table(self, nom_table="factures_prefixes", nouveau_nom_table="core.PrefixeFacture"))
+        self.Ajouter(categorie="facturation", table=Table(self, nom_table="factures_prefixes", nouveau_nom_table="core.PrefixeFacture"))
 
-        self.Ajouter(Table(self, nom_table="factures_messages", nouveau_nom_table="core.MessageFacture"))
+        self.Ajouter(categorie="facturation", table=Table(self, nom_table="factures_messages", nouveau_nom_table="core.MessageFacture"))
 
-        self.Ajouter(Table(self, nom_table="comptes_bancaires", nouveau_nom_table="core.CompteBancaire", dict_types_champs={"defaut": bool}))
+        self.Ajouter(categorie="facturation", table=Table(self, nom_table="comptes_bancaires", nouveau_nom_table="core.CompteBancaire", dict_types_champs={"defaut": bool}))
 
-        self.Ajouter(Table(self, nom_table="modes_reglements", nouveau_nom_table="core.ModeReglement", champs_images=["image"]))
+        self.Ajouter(categorie="facturation", table=Table(self, nom_table="modes_reglements", nouveau_nom_table="core.ModeReglement", champs_images=["image"]))
 
-        self.Ajouter(Table(self, nom_table="emetteurs", nouveau_nom_table="core.Emetteur", nouveaux_noms_champs={"IDmode": "mode"}, champs_images=["image"]))
+        self.Ajouter(categorie="facturation", table=Table(self, nom_table="emetteurs", nouveau_nom_table="core.Emetteur", nouveaux_noms_champs={"IDmode": "mode"}, champs_images=["image"]))
 
-        self.Ajouter(Table(self, nom_table="medecins", nouveau_nom_table="core.Medecin"))
+        self.Ajouter(categorie="individus", table=Table(self, nom_table="medecins", nouveau_nom_table="core.Medecin"))
 
-        self.Ajouter(Table(self, nom_table="niveaux_scolaires", nouveau_nom_table="core.NiveauScolaire"))
+        self.Ajouter(categorie="individus", table=Table(self, nom_table="niveaux_scolaires", nouveau_nom_table="core.NiveauScolaire"))
 
-        self.Ajouter(Table(self, nom_table="organisateur", nouveau_nom_table="core.Organisateur", champs_images=["logo"]))
+        self.Ajouter(categorie=None, table=Table(self, nom_table="organisateur", nouveau_nom_table="core.Organisateur", champs_images=["logo"]))
 
-        self.Ajouter(Table(self, nom_table="regimes", nouveau_nom_table="core.Regime"))
+        self.Ajouter(categorie="individus", table=Table(self, nom_table="regimes", nouveau_nom_table="core.Regime"))
 
-        self.Ajouter(Table(self, nom_table="caisses", nouveau_nom_table="core.Caisse", nouveaux_noms_champs={"IDregime": "regime"}))
+        self.Ajouter(categorie="individus", table=Table(self, nom_table="caisses", nouveau_nom_table="core.Caisse", nouveaux_noms_champs={"IDregime": "regime"}))
 
-        self.Ajouter(Table(self, nom_table="types_pieces", nouveau_nom_table="core.TypePiece", dict_types_champs={"valide_rattachement": bool}))
+        self.Ajouter(categorie="pieces", table=Table(self, nom_table="types_pieces", nouveau_nom_table="core.TypePiece", dict_types_champs={"valide_rattachement": bool}))
 
-        self.Ajouter(Table(self, nom_table="types_quotients", nouveau_nom_table="core.TypeQuotient"))
+        self.Ajouter(categorie="individus", table=Table(self, nom_table="types_quotients", nouveau_nom_table="core.TypeQuotient"))
 
-        self.Ajouter(Table(self, nom_table="vacances", nouveau_nom_table="core.Vacance"))
+        self.Ajouter(categorie=None, table=Table(self, nom_table="vacances", nouveau_nom_table="core.Vacance"))
 
-        self.Ajouter(Table(self, nom_table="jours_feries", nouveau_nom_table="core.Ferie"))
+        self.Ajouter(categorie=None, table=Table(self, nom_table="jours_feries", nouveau_nom_table="core.Ferie"))
 
-        self.Ajouter(Table(self, nom_table="secteurs", nouveau_nom_table="core.Secteur"))
+        self.Ajouter(categorie=None, table=Table(self, nom_table="secteurs", nouveau_nom_table="core.Secteur"))
 
-        self.Ajouter(Table(self, nom_table="types_maladies", nouveau_nom_table="core.TypeMaladie"))
+        self.Ajouter(categorie="individus", table=Table(self, nom_table="types_maladies", nouveau_nom_table="core.TypeMaladie"))
 
-        self.Ajouter(Table(self, nom_table="types_sieste", nouveau_nom_table="core.TypeSieste"))
+        self.Ajouter(categorie="individus", table=Table(self, nom_table="types_sieste", nouveau_nom_table="core.TypeSieste"))
 
-        self.Ajouter(Table(self, nom_table="types_vaccins", nouveau_nom_table="core.TypeVaccin"))
+        self.Ajouter(categorie="individus", table=Table(self, nom_table="types_vaccins", nouveau_nom_table="core.TypeVaccin"))
 
-        self.Ajouter(Table_ecoles(self, nom_table="ecoles", nouveau_nom_table="core.Ecole"))
+        self.Ajouter(categorie="individus", table=Table_ecoles(self, nom_table="ecoles", nouveau_nom_table="core.Ecole"))
 
-        self.Ajouter(Table_classes(self, nom_table="classes", nouveau_nom_table="core.Classe", nouveaux_noms_champs={"IDecole": "ecole"}))
+        self.Ajouter(categorie="individus", table=Table_classes(self, nom_table="classes", nouveau_nom_table="core.Classe", nouveaux_noms_champs={"IDecole": "ecole"}))
 
-        self.Ajouter(Table(self, nom_table="types_cotisations", nouveau_nom_table="core.TypeCotisation", dict_types_champs={"carte": bool, "defaut": bool}))
+        self.Ajouter(categorie="cotisations", table=Table(self, nom_table="types_cotisations", nouveau_nom_table="core.TypeCotisation", dict_types_champs={"carte": bool, "defaut": bool}))
 
-        self.Ajouter(Table(self, nom_table="unites_cotisations", nouveau_nom_table="core.UniteCotisation", nouveaux_noms_champs={"IDtype_cotisation": "type_cotisation"}, dict_types_champs={"defaut": bool}))
+        self.Ajouter(categorie="cotisations", table=Table(self, nom_table="unites_cotisations", nouveau_nom_table="core.UniteCotisation", nouveaux_noms_champs={"IDtype_cotisation": "type_cotisation"}, dict_types_champs={"defaut": bool}))
 
-        self.Ajouter(Table(self, nom_table="messages_categories", nouveau_nom_table="core.NoteCategorie", dict_types_champs={"afficher_accueil": bool, "afficher_liste": bool}))
+        self.Ajouter(categorie=None, table=Table(self, nom_table="messages_categories", nouveau_nom_table="core.NoteCategorie", dict_types_champs={"afficher_accueil": bool, "afficher_liste": bool}))
 
-        self.Ajouter(Table(self, nom_table="listes_diffusion", nouveau_nom_table="core.ListeDiffusion"))
+        self.Ajouter(categorie=None, table=Table(self, nom_table="listes_diffusion", nouveau_nom_table="core.ListeDiffusion"))
 
-        self.Ajouter(Table(self, nom_table="restaurateurs", nouveau_nom_table="core.Restaurateur"))
+        self.Ajouter(categorie=None, table=Table(self, nom_table="restaurateurs", nouveau_nom_table="core.Restaurateur"))
 
-        self.Ajouter(Table(self, nom_table="menus_categories", nouveau_nom_table="core.MenuCategorie"))
+        self.Ajouter(categorie=None, table=Table(self, nom_table="menus_categories", nouveau_nom_table="core.MenuCategorie"))
 
-        self.Ajouter(Table(self, nom_table="menus_legendes", nouveau_nom_table="core.MenuLegende"))
+        self.Ajouter(categorie=None, table=Table(self, nom_table="menus_legendes", nouveau_nom_table="core.MenuLegende"))
 
-        self.Ajouter(Table_types_groupes_activites(self, nom_table="types_groupes_activites", nouveau_nom_table="core.TypeGroupeActivite",
+        self.Ajouter(categorie="activites", table=Table_types_groupes_activites(self, nom_table="types_groupes_activites", nouveau_nom_table="core.TypeGroupeActivite",
                                                    nouveaux_champs=["structure"]))
 
-        self.Ajouter(Table(self, nom_table="factures_regies", nouveau_nom_table="core.FactureRegie", nouveaux_noms_champs={"IDcompte_bancaire": "compte_bancaire"}))
+        self.Ajouter(categorie=None, table=Table(self, nom_table="factures_regies", nouveau_nom_table="core.FactureRegie", nouveaux_noms_champs={"IDcompte_bancaire": "compte_bancaire"}))
 
-        self.Ajouter(Table_activites(self, nom_table="activites", nouveau_nom_table="core.Activite",
+        self.Ajouter(categorie="activites", table=Table_activites(self, nom_table="activites", nouveau_nom_table="core.Activite",
                            exclure_champs=["public", "psu_activation", "psu_unite_prevision", "psu_unite_presence", "psu_tarif_forfait", "psu_etiquette_rtt", "portail_unites_multiples",
                                            "portail_reservations_absenti"],
                            dict_types_champs={"coords_org": bool, "logo_org": bool, "vaccins_obligatoires": bool, "portail_inscriptions_affichage": bool,
                                               "portail_reservations_affichage": bool, "portail_unites_multiples": bool, "inscriptions_multiples": bool},
                            nouveaux_champs=["pieces", "groupes_activites", "cotisations", "structure"], champs_images=["logo"]))
 
-        self.Ajouter(Table(self, nom_table="responsables_activite", nouveau_nom_table="core.ResponsableActivite", nouveaux_noms_champs={"IDactivite": "activite"}, dict_types_champs={"defaut": bool}))
+        self.Ajouter(categorie="activites", table=Table(self, nom_table="responsables_activite", nouveau_nom_table="core.ResponsableActivite", nouveaux_noms_champs={"IDactivite": "activite"}, dict_types_champs={"defaut": bool}))
 
-        self.Ajouter(Table(self, nom_table="agrements", nouveau_nom_table="core.Agrement", nouveaux_noms_champs={"IDactivite": "activite"}))
+        self.Ajouter(categorie="activites", table=Table(self, nom_table="agrements", nouveau_nom_table="core.Agrement", nouveaux_noms_champs={"IDactivite": "activite"}))
 
-        self.Ajouter(Table(self, nom_table="groupes", nouveau_nom_table="core.Groupe", nouveaux_noms_champs={"IDactivite": "activite"}))
+        self.Ajouter(categorie="activites", table=Table(self, nom_table="groupes", nouveau_nom_table="core.Groupe", nouveaux_noms_champs={"IDactivite": "activite"}))
 
-        self.Ajouter(Table_unites(self, nom_table="unites", nouveau_nom_table="core.Unite", nouveaux_noms_champs={"IDactivite": "activite", "IDrestaurateur": "restaurateur"},
+        self.Ajouter(categorie="activites", table=Table_unites(self, nom_table="unites", nouveau_nom_table="core.Unite", nouveaux_noms_champs={"IDactivite": "activite", "IDrestaurateur": "restaurateur"},
                                   dict_types_champs={"heure_debut_fixe": bool, "heure_fin_fixe": bool, "repas": bool, "autogen_active": bool},
                                   nouveaux_champs=["groupes", "incompatibilites"]))
 
-        self.Ajouter(Table_unites_remplissage(self, nom_table="unites_remplissage", nouveau_nom_table="core.UniteRemplissage", nouveaux_noms_champs={"IDactivite": "activite"},
+        self.Ajouter(categorie="activites", table=Table_unites_remplissage(self, nom_table="unites_remplissage", nouveau_nom_table="core.UniteRemplissage", nouveaux_noms_champs={"IDactivite": "activite"},
                                   exclure_champs=["etiquettes"],
                                   dict_types_champs={"afficher_page_accueil": bool, "afficher_grille_conso": bool},
                                   nouveaux_champs=["unites"]))
 
-        self.Ajouter(Table(self, nom_table="categories_tarifs", nouveau_nom_table="core.CategorieTarif", nouveaux_noms_champs={"IDactivite": "activite"}))
+        self.Ajouter(categorie="activites", table=Table(self, nom_table="categories_tarifs", nouveau_nom_table="core.CategorieTarif", nouveaux_noms_champs={"IDactivite": "activite"}))
 
-        self.Ajouter(Table(self, nom_table="noms_tarifs", nouveau_nom_table="core.NomTarif", nouveaux_noms_champs={"IDactivite": "activite"},
+        self.Ajouter(categorie="activites", table=Table(self, nom_table="noms_tarifs", nouveau_nom_table="core.NomTarif", nouveaux_noms_champs={"IDactivite": "activite"},
                            exclure_champs=["IDcategorie_tarif"]))
 
-        self.Ajouter(Table_tarifs(self, nom_table="tarifs", nouveau_nom_table="core.Tarif", nouveaux_noms_champs={"IDactivite": "activite", "IDnom_tarif": "nom_tarif", "IDtype_quotient": "type_quotient"},
+        self.Ajouter(categorie="activites", table=Table_tarifs(self, nom_table="tarifs", nouveau_nom_table="core.Tarif", nouveaux_noms_champs={"IDactivite": "activite", "IDnom_tarif": "nom_tarif", "IDtype_quotient": "type_quotient"},
                                   exclure_champs=["IDcategorie_tarif", "condition_nbre_combi", "condition_periode", "condition_nbre_jours", "condition_conso_facturees",
                                                   "condition_dates_continues", "etiquettes", "IDevenement", "IDproduit", "code_produit_local"],
                                   dict_types_champs={"forfait_saisie_manuelle": bool, "forfait_saisie_auto": bool, "forfait_suppression_auto": bool}))
 
-        self.Ajouter(Table(self, nom_table="tarifs_lignes", nouveau_nom_table="core.TarifLigne", nouveaux_noms_champs={"IDactivite": "activite", "IDtarif": "tarif"},
+        self.Ajouter(categorie="activites", table=Table(self, nom_table="tarifs_lignes", nouveau_nom_table="core.TarifLigne", nouveaux_noms_champs={"IDactivite": "activite", "IDtarif": "tarif"},
                                   exclure_champs=["IDmodele"]))
 
-        self.Ajouter(Table_combi_tarifs(self, nom_table="combi_tarifs", nouveau_nom_table="core.CombiTarif", nouveaux_noms_champs={"IDtarif": "tarif", "IDgroupe": "groupe"},
+        self.Ajouter(categorie="activites", table=Table_combi_tarifs(self, nom_table="combi_tarifs", nouveau_nom_table="core.CombiTarif", nouveaux_noms_champs={"IDtarif": "tarif", "IDgroupe": "groupe"},
                                         nouveaux_champs=["unites"]))
 
-        self.Ajouter(Table(self, nom_table="ouvertures", nouveau_nom_table="core.Ouverture", condition_sql="WHERE IDgroupe!=0",
+        self.Ajouter(categorie="activites", table=Table(self, nom_table="ouvertures", nouveau_nom_table="core.Ouverture", condition_sql="WHERE IDgroupe!=0",
                                 nouveaux_noms_champs={"IDactivite": "activite", "IDunite": "unite", "IDgroupe": "groupe"}))
 
-        self.Ajouter(Table(self, nom_table="remplissage", nouveau_nom_table="core.Remplissage", nouveaux_noms_champs={"IDactivite": "activite", "IDunite_remplissage": "unite_remplissage", "IDgroupe": "groupe"},
+        self.Ajouter(categorie="activites", table=Table(self, nom_table="remplissage", nouveau_nom_table="core.Remplissage", nouveaux_noms_champs={"IDactivite": "activite", "IDunite_remplissage": "unite_remplissage", "IDgroupe": "groupe"},
                            sql="SELECT IDremplissage, remplissage.IDactivite, remplissage.IDunite_remplissage, IDgroupe, date, places FROM remplissage LEFT JOIN unites_remplissage on unites_remplissage.IDunite_remplissage = remplissage.IDunite_remplissage WHERE unites_remplissage.IDunite_remplissage IS NOT NULL"))
 
-        self.Ajouter(Table_individus(self, nom_table="individus", nouveau_nom_table="core.Individu", nouveaux_noms_champs={"IDcivilite": "civilite", "IDnationalite": "idnationalite", "IDsecteur": "secteur", "IDcategorie_travail": "categorie_travail", "IDmedecin": "medecin", "IDtype_sieste": "type_sieste"},
+        self.Ajouter(categorie="individus", table=Table_individus(self, nom_table="individus", nouveau_nom_table="core.Individu", nouveaux_noms_champs={"IDcivilite": "civilite", "IDnationalite": "idnationalite", "IDsecteur": "secteur", "IDcategorie_travail": "categorie_travail", "IDmedecin": "medecin", "IDtype_sieste": "type_sieste"},
                                      exclure_champs=["num_secu"], dict_types_champs={"deces": bool, "travail_tel_sms": bool, "tel_domicile_sms": bool, "tel_mobile_sms": bool},
                                      nouveaux_champs=["photo", "listes_diffusion"]))
 
-        self.Ajouter(Table(self, nom_table="scolarite", nouveau_nom_table="core.Scolarite", nouveaux_noms_champs={"IDindividu": "individu", "IDecole": "ecole", "IDclasse": "classe", "IDniveau": "niveau"}))
+        self.Ajouter(categorie="individus", table=Table(self, nom_table="scolarite", nouveau_nom_table="core.Scolarite", nouveaux_noms_champs={"IDindividu": "individu", "IDecole": "ecole", "IDclasse": "classe", "IDniveau": "niveau"}))
 
-        self.Ajouter(Table_familles(self, nom_table="familles", nouveau_nom_table="core.Famille",
+        self.Ajouter(categorie="individus", table=Table_familles(self, nom_table="familles", nouveau_nom_table="core.Famille",
                             nouveaux_noms_champs={"IDcaisse": "caisse", "code_comptable": "code_compta"},
                            exclure_champs=["IDcompte_payeur", "prelevement_activation", "prelevement_etab", "prelevement_guichet", "prelevement_numero", "prelevement_cle",
                                            "prelevement_banque", "prelevement_individu", "prelevement_nom", "prelevement_rue", "prelevement_cp", "prelevement_ville",
@@ -327,122 +329,113 @@ class Export_all(Export):
                             nouveaux_champs=["email_factures_adresses", "email_recus_adresses", "email_depots_adresses"],
                            dict_types_champs={"autorisation_cafpro": bool, "internet_actif": bool}))
 
-        self.Ajouter(Table(self, nom_table="evenements", nouveau_nom_table="core.Evenement", nouveaux_noms_champs={"IDactivite": "activite", "IDgroupe": "groupe", "IDunite": "unite"}))
+        self.Ajouter(categorie="activites", table=Table(self, nom_table="evenements", nouveau_nom_table="core.Evenement", nouveaux_noms_champs={"IDactivite": "activite", "IDgroupe": "groupe", "IDunite": "unite"}))
 
-        self.Ajouter(Table(self, nom_table="inscriptions",
+        self.Ajouter(categorie="inscriptions", table=Table(self, nom_table="inscriptions",
                            nouveau_nom_table="core.Inscription",
                            nouveaux_noms_champs={"IDindividu": "individu", "IDfamille": "famille", "IDactivite": "activite", "IDgroupe": "groupe", "IDcategorie_tarif": "categorie_tarif",
                                                  "date_inscription": "date_debut", "date_desinscription": "date_fin"},
                            exclure_champs=["IDcompte_payeur", "parti"]))
 
-        self.Ajouter(Table_consommations(self, nom_table="consommations",
+        self.Ajouter(categorie="consommations", table=Table_consommations(self, nom_table="consommations",
                            nouveau_nom_table="core.Consommation",
                            nouveaux_noms_champs={"IDindividu": "individu", "IDinscription": "inscription", "IDactivite": "activite", "IDunite": "unite", "IDgroupe": "groupe", "IDcategorie_tarif": "categorie_tarif", "IDprestation": "prestation", "IDevenement": "evenement"},
                            exclure_champs=["verrouillage", "IDutilisateur", "IDcompte_payeur", "etiquettes"]))
 
-        self.Ajouter(Table_problemes_sante(self, nom_table="problemes_sante",
+        self.Ajouter(categorie="individus", table=Table_problemes_sante(self, nom_table="problemes_sante",
                             nouveau_nom_table="core.Information",
                             nouveaux_noms_champs={"IDprobleme": "idinformation", "IDindividu": "individu", "IDtype": "categorie"},
                             dict_types_champs={"traitement_medical": bool, "eviction": bool, "diffusion_listing_enfants": bool, "diffusion_listing_conso": bool, "diffusion_listing_repas": bool}))
 
-        self.Ajouter(Table(self, nom_table="vaccins", nouveau_nom_table="core.Vaccin", nouveaux_noms_champs={"IDindividu": "individu", "IDtype_vaccin": "type_vaccin"}))
+        self.Ajouter(categorie="individus", table=Table(self, nom_table="vaccins", nouveau_nom_table="core.Vaccin", nouveaux_noms_champs={"IDindividu": "individu", "IDtype_vaccin": "type_vaccin"}))
 
-        self.Ajouter(Table(self, nom_table="messages", nouveau_nom_table="core.Note", nouveaux_noms_champs={"IDmessage": "idnote", "IDcategorie": "categorie", "IDindividu": "individu", "IDfamille": "famille"},
+        self.Ajouter(categorie="individus", table=Table(self, nom_table="messages", nouveau_nom_table="core.Note", nouveaux_noms_champs={"IDmessage": "idnote", "IDcategorie": "categorie", "IDindividu": "individu", "IDfamille": "famille"},
                            exclure_champs=["IDutilisateur", "nom"],
                            dict_types_champs={"afficher_accueil": bool, "afficher_liste": bool, "rappel": bool, "afficher_facture": bool, "rappel_famille": bool, "afficher_commande": bool}))
 
-        self.Ajouter(Table(self, nom_table="rattachements", nouveau_nom_table="core.Rattachement", nouveaux_noms_champs={"IDindividu": "individu", "IDfamille": "famille", "IDcategorie": "categorie"},
+        self.Ajouter(categorie="individus", table=Table(self, nom_table="rattachements", nouveau_nom_table="core.Rattachement", nouveaux_noms_champs={"IDindividu": "individu", "IDfamille": "famille", "IDcategorie": "categorie"},
                            dict_types_champs={"titulaire": bool}))
 
-        self.Ajouter(Table(self, nom_table="pieces", nouveau_nom_table="core.Piece", nouveaux_noms_champs={"IDindividu": "individu", "IDfamille": "famille", "IDtype_piece": "type_piece"}))
+        self.Ajouter(categorie="pieces", table=Table(self, nom_table="pieces", nouveau_nom_table="core.Piece", nouveaux_noms_champs={"IDindividu": "individu", "IDfamille": "famille", "IDtype_piece": "type_piece"}))
 
-        self.Ajouter(Table_factures(self, nom_table="factures", nouveau_nom_table="core.Facture", nouveaux_noms_champs={"IDfamille": "famille", "IDregie": "regie", "IDlot": "lot", "IDprefixe": "prefixe"},
+        self.Ajouter(categorie="facturation", table=Table_factures(self, nom_table="factures", nouveau_nom_table="core.Facture", nouveaux_noms_champs={"IDfamille": "famille", "IDregie": "regie", "IDlot": "lot", "IDprefixe": "prefixe"},
                             exclure_champs=["IDcompte_payeur", "IDutilisateur", "etat", "mention1", "mention2", "mention3"],
                             nouveaux_champs=["famille"]))
 
-        self.Ajouter(Table_prestations(self, nom_table="prestations", nouveau_nom_table="core.Prestation", nouveaux_noms_champs={"IDactivite": "activite", "IDtarif": "tarif", "IDfacture": "facture", "IDfamille": "famille",
+        self.Ajouter(categorie="consommations", table=Table_prestations(self, nom_table="prestations", nouveau_nom_table="core.Prestation", nouveaux_noms_champs={"IDactivite": "activite", "IDtarif": "tarif", "IDfacture": "facture", "IDfamille": "famille",
                            "IDindividu": "individu", "IDcategorie_tarif": "categorie_tarif", "code_comptable": "code_compta"},
                            exclure_champs=["IDcompte_payeur", "forfait_date_debut", "forfait_date_fin", "reglement_frais", "IDcontrat", "IDdonnee"]))
 
-        self.Ajouter(Table(self, nom_table="depots_cotisations", nouveau_nom_table="core.DepotCotisations", dict_types_champs={"verrouillage": bool}, nouveaux_noms_champs={"IDdepot_cotisation": "iddepot"})),
+        self.Ajouter(categorie="cotisations", table=Table(self, nom_table="depots_cotisations", nouveau_nom_table="core.DepotCotisations", dict_types_champs={"verrouillage": bool}, nouveaux_noms_champs={"IDdepot_cotisation": "iddepot"})),
 
-        self.Ajouter(Table_cotisations(self, nom_table="cotisations", nouveau_nom_table="core.Cotisation", nouveaux_noms_champs={"IDfamille": "famille", "IDindividu": "individu",
+        self.Ajouter(categorie="cotisations", table=Table_cotisations(self, nom_table="cotisations", nouveau_nom_table="core.Cotisation", nouveaux_noms_champs={"IDfamille": "famille", "IDindividu": "individu",
                                      "IDtype_cotisation": "type_cotisation", "IDunite_cotisation": "unite_cotisation", "IDdepot_cotisation": "depot_cotisation", "IDprestation": "prestation"},
                                       exclure_champs=["IDutilisateur"]))
 
-        # self.Ajouter(Table_aides(self, nom_table="aides", nouveau_nom_table="core.Aide", nouveaux_noms_champs={"IDfamille": "famille", "IDactivite": "activite", "IDcaisse": "caisse"},
-        #                          nouveaux_champs=["individus"]))
+        self.Ajouter(categorie="individus", table=Table(self, nom_table="quotients", nouveau_nom_table="core.Quotient", nouveaux_noms_champs={"IDfamille": "famille", "IDtype_quotient": "type_quotient"}))
 
-        # self.Ajouter(Table_combi_aides(self, nom_table="aides_combinaisons", nouveau_nom_table="core.CombiAide", nouveaux_noms_champs={"IDaide": "aide"},
-        #                          exclure_champs=["IDaide_montant"], nouveaux_champs=["montant", "unites"]))
-
-        self.Ajouter(Table(self, nom_table="quotients", nouveau_nom_table="core.Quotient", nouveaux_noms_champs={"IDfamille": "famille", "IDtype_quotient": "type_quotient"}))
-
-        # self.Ajouter(Table(self, nom_table="deductions", nouveau_nom_table="core.Deduction", nouveaux_noms_champs={"IDprestation": "prestation", "IDfamille": "famille", "IDaide": "aide"},
-        #                    exclure_champs=["IDcompte_payeur"],))
-
-        self.Ajouter(Table_documents_modeles(self, nom_table="documents_modeles", nouveau_nom_table="core.ModeleDocument", exclure_champs=["IDdonnee", "supprimable", "observations"],
+        self.Ajouter(categorie=None, table=Table_documents_modeles(self, nom_table="documents_modeles", nouveau_nom_table="core.ModeleDocument", exclure_champs=["IDdonnee", "supprimable", "observations"],
                                             nouveaux_noms_champs={"IDfond": "fond"}, dict_types_champs={"defaut": bool}, nouveaux_champs=["objets"]))
 
-        self.Ajouter(Table_questions(self, nom_table="questionnaire_questions", nouveau_nom_table="core.QuestionnaireQuestion", exclure_champs=["defaut"],
+        self.Ajouter(categorie="questionnaires", table=Table_questions(self, nom_table="questionnaire_questions", nouveau_nom_table="core.QuestionnaireQuestion", exclure_champs=["defaut"],
                                             nouveaux_noms_champs={"IDcategorie": "categorie"}, dict_types_champs={"visible": bool}, nouveaux_champs=["choix"]))
 
-        self.Ajouter(Table_reponses(self, nom_table="questionnaire_reponses", nouveau_nom_table="core.QuestionnaireReponse", exclure_champs=["type", "IDdonnee"],
+        self.Ajouter(categorie="questionnaires", table=Table_reponses(self, nom_table="questionnaire_reponses", nouveau_nom_table="core.QuestionnaireReponse", exclure_champs=["type", "IDdonnee"],
                                             nouveaux_noms_champs={"IDquestion": "question", "IDindividu": "individu", "IDfamille": "famille"}))
 
-        self.Ajouter(Table_payeurs(self, nom_table="payeurs", nouveau_nom_table="core.Payeur", exclure_champs=["IDcompte_payeur"],
+        self.Ajouter(categorie="individus", table=Table_payeurs(self, nom_table="payeurs", nouveau_nom_table="core.Payeur", exclure_champs=["IDcompte_payeur"],
                                         nouveaux_champs=["famille"]))
 
-        self.Ajouter(Table(self, nom_table="depots", nouveau_nom_table="core.Depot", dict_types_champs={"verrouillage": bool},
+        self.Ajouter(categorie="facturation", table=Table(self, nom_table="depots", nouveau_nom_table="core.Depot", dict_types_champs={"verrouillage": bool},
                                     nouveaux_noms_champs={"IDcompte": "compte"})),
 
-        self.Ajouter(Table_reglements(self, nom_table="reglements", nouveau_nom_table="core.Reglement",
+        self.Ajouter(categorie="facturation", table=Table_reglements(self, nom_table="reglements", nouveau_nom_table="core.Reglement",
                                             exclure_champs=["IDcompte_payeur", "IDprestation_frais", "IDutilisateur", "IDprelevement", "IDpiece"],
                                             nouveaux_noms_champs={"IDmode": "mode", "IDemetteur": "emetteur", "IDpayeur": "payeur", "IDcompte": "compte", "IDdepot": "depot"},
                                             nouveaux_champs=["famille"]))
 
-        self.Ajouter(Table_ventilation(self, nom_table="ventilation", nouveau_nom_table="core.Ventilation",
+        self.Ajouter(categorie="facturation", table=Table_ventilation(self, nom_table="ventilation", nouveau_nom_table="core.Ventilation",
                                             exclure_champs=["IDcompte_payeur"],
                                             nouveaux_noms_champs={"IDreglement": "reglement", "IDprestation": "prestation"},
                                             nouveaux_champs=["famille"]))
 
-        self.Ajouter(Table_recus(self, nom_table="recus", nouveau_nom_table="core.Recu",
+        self.Ajouter(categorie="facturation", table=Table_recus(self, nom_table="recus", nouveau_nom_table="core.Recu",
                                             exclure_champs=["IDutilisateur"],
                                             nouveaux_noms_champs={"IDfamille": "famille", "IDreglement": "reglement"}))
 
-        self.Ajouter(Table(self, nom_table="attestations", nouveau_nom_table="core.Attestation",
+        self.Ajouter(categorie="facturation", table=Table(self, nom_table="attestations", nouveau_nom_table="core.Attestation",
                                             exclure_champs=["IDutilisateur"],
                                             nouveaux_noms_champs={"IDfamille": "famille"}))
 
-        self.Ajouter(Table(self, nom_table="devis", nouveau_nom_table="core.Devis",
+        self.Ajouter(categorie="facturation", table=Table(self, nom_table="devis", nouveau_nom_table="core.Devis",
                                             exclure_champs=["IDutilisateur"],
                                             nouveaux_noms_champs={"IDfamille": "famille"}))
 
-        self.Ajouter(Table_textes_rappels(self, nom_table="textes_rappels", nouveau_nom_table="core.ModeleRappel",
+        self.Ajouter(categorie="facturation", table=Table_textes_rappels(self, nom_table="textes_rappels", nouveau_nom_table="core.ModeleRappel",
                                             exclure_champs=["texte_xml", "texte_pdf"],
                                             nouveaux_champs=["html"]))
 
-        self.Ajouter(Table_rappels(self, nom_table="rappels", nouveau_nom_table="core.Rappel",
+        self.Ajouter(categorie="facturation", table=Table_rappels(self, nom_table="rappels", nouveau_nom_table="core.Rappel",
                                             exclure_champs=["IDutilisateur", "IDcompte_payeur"],
                                             nouveaux_noms_champs={"IDtexte": "modele", "IDlot": "lot"},
                                             nouveaux_champs=["famille"]))
 
-        self.Ajouter(Table_modeles_emails(self, nom_table="modeles_emails", nouveau_nom_table="core.ModeleEmail",
+        self.Ajouter(categorie=None, table=Table_modeles_emails(self, nom_table="modeles_emails", nouveau_nom_table="core.ModeleEmail",
                                             dict_types_champs={"defaut": bool},
                                             exclure_champs=["IDadresse", "texte_xml"],
                                             nouveaux_champs=["html"]))
 
-        self.Ajouter(Table(self, nom_table="liens", nouveau_nom_table="core.Lien", dict_types_champs={"responsable": bool},
+        self.Ajouter(categorie="individus", table=Table(self, nom_table="liens", nouveau_nom_table="core.Lien", dict_types_champs={"responsable": bool},
                                             nouveaux_noms_champs={"IDfamille": "famille", "IDindividu_sujet": "individu_sujet", "IDindividu_objet": "individu_objet",
                                                                   "IDtype_lien": "idtype_lien", "IDautorisation": "autorisation"})),
 
-        self.Ajouter(Table(self, nom_table="adresses_mail", nouveau_nom_table="core.AdresseMail", dict_types_champs={"use_ssl": bool, "defaut": bool, "use_tls": bool},
+        self.Ajouter(categorie=None, table=Table(self, nom_table="adresses_mail", nouveau_nom_table="core.AdresseMail", dict_types_champs={"use_ssl": bool, "defaut": bool, "use_tls": bool},
                                             nouveaux_noms_champs={"smtp": "hote", "connexionssl": "use_ssl", "startTLS": "use_tls"},
                                             exclure_champs=["connexionAuthentifiee", "defaut"])),
 
-        self.Ajouter(Table(self, nom_table="contacts", nouveau_nom_table="core.Contact")),
+        self.Ajouter(categorie="individus", table=Table(self, nom_table="contacts", nouveau_nom_table="core.Contact")),
 
-        self.Ajouter(Table(self, nom_table="mandats", nouveau_nom_table="core.Mandat", dict_types_champs={"actif": bool},
+        self.Ajouter(categorie="individus", table=Table(self, nom_table="mandats", nouveau_nom_table="core.Mandat", dict_types_champs={"actif": bool},
                                             nouveaux_noms_champs={"IDfamille": "famille", "IDindividu": "individu"},
                                             exclure_champs=["IDbanque"])),
 
@@ -698,6 +691,13 @@ class Table_prestations(Table):
         if valeur and valeur in self.dictFactures:
             return valeur
         return None
+
+    def date(self, valeur=None):
+        if isinstance(valeur, datetime.datetime):
+            return valeur.date()
+        if isinstance(valeur, unicode) and ":" in valeur:
+            return valeur[:10]
+        return valeur
 
 
 class Table_consommations(Table):
