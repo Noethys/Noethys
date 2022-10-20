@@ -536,7 +536,7 @@ class Depannage():
         self.listeResultats.append((labelProbleme, labelCorrection, listeTemp))
 
     def LiensTronques(self):
-        labelProbleme = _(u"Liens sans individus associés")
+        labelProbleme = _(u"Liens sans familles ou sans individus associés")
         labelCorrection = _(u"Supprimer le lien dans la base")
 
         req = """SELECT IDlien, IDindividu_sujet
@@ -549,7 +549,8 @@ class Depannage():
         req = """SELECT IDlien, IDindividu_objet
         FROM liens 
         LEFT JOIN individus ON individus.IDindividu = liens.IDindividu_objet
-        WHERE individus.IDindividu IS NULL ;"""
+        LEFT JOIN familles ON familles.IDfamille = liens.IDfamille
+        WHERE individus.IDindividu IS NULL OR familles.IDfamille IS NULL;"""
         self.DB.ExecuterReq(req)
         listeObjets = self.DB.ResultatReq()
 
