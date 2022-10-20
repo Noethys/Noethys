@@ -23,7 +23,7 @@ import shutil
 import base64
 import os.path
 import wx.propgrid as wxpg
-from Ctrl import CTRL_Propertygrid
+from Ctrl.CTRL_Propertygrid import Propriete_date
 from Utils import UTILS_Dates, UTILS_Fichiers, UTILS_Corail
 import FonctionsPerso
 import wx.lib.dialogs as dialogs
@@ -69,17 +69,10 @@ class CTRL_Parametres(DLG_Saisie_lot_tresor_public.CTRL_Parametres):
         # Dates
         self.Append( wxpg.PropertyCategory(_(u"Dates")) )
 
-        if 'phoenix' in wx.PlatformInfo:
-            now = wx.DateTime.Now()
-        else :
-            now = wx.DateTime_Now()
-
-        propriete = wxpg.DateProperty(label=_(u"Date d'émission"), name="date_emission")
-        propriete.SetAttribute(wxpg.PG_DATE_PICKER_STYLE, DP_DROPDOWN|DP_SHOWCENTURY )
+        propriete = Propriete_date(label=_(u"Date d'émission (JJ/MM/AAAA)"), name="date_emission", value=datetime.date.today())
         self.Append(propriete)
-        
-        propriete = wxpg.DateProperty(label=_(u"Date du prélèvement"), name="date_prelevement", value=now)
-        propriete.SetAttribute(wxpg.PG_DATE_PICKER_STYLE, DP_DROPDOWN|DP_SHOWCENTURY )
+
+        propriete = Propriete_date(label=_(u"Date du prélèvement (JJ/MM/AAAA)"), name="date_prelevement", value=datetime.date.today())
         self.Append(propriete)
 
         # Collectivité
@@ -378,7 +371,7 @@ class Dialog(DLG_Saisie_lot_tresor_public.Dialog):
                 "montant": str(montant),
                 "sequence": track.prelevement_sequence,
                 "prelevement": track.prelevement,
-                "prelevement_date_mandat": track.prelevement_date_mandat.replace("-", ""),
+                "prelevement_date_mandat": str(track.prelevement_date_mandat).replace("-", "") if track.prelevement_date_mandat else "",
                 "prelevement_rum": track.prelevement_rum,
                 "prelevement_bic": track.prelevement_bic,
                 "prelevement_iban": track.prelevement_iban,

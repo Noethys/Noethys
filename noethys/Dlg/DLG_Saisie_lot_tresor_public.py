@@ -567,8 +567,12 @@ class Dialog(wx.Dialog):
             prelevement_libelle = u"{NOM_ORGANISATEUR} - {LIBELLE_FACTURE}"
         if objet_piece in ("", None):
             objet_piece = _(u"FACTURE NUM{NUM_FACTURE} {MOIS_LETTRES} {ANNEE}")
-            
-            
+
+        if self.IDlot == None:
+            date_emission = datetime.date.today()
+            date_prelevement = datetime.date.today()
+            date_envoi = datetime.date.today()
+
         listeValeurs = [
             ("exercice", exercice),
             ("mois", mois),
@@ -589,7 +593,7 @@ class Dialog(wx.Dialog):
             ("prelevement_libelle", prelevement_libelle),
             ("objet_piece", objet_piece),
             ]
-            
+
         for code, valeur in listeValeurs:
             try:
                 self.ctrl_parametres.SetPropertyValue(code, valeur)

@@ -40,6 +40,32 @@ else:
 
 
 
+class Propriete_date(wxpg.PyProperty):
+    def __init__(self, label, name=wxpg.LABEL_AS_NAME, value=None):
+        wxpg.PyProperty.__init__(self, label, name)
+        self.SetValue(value)
+
+    def GetClassName(self):
+        return self.__class__.__name__
+
+    def GetEditor(self):
+        return "TextCtrl"
+
+    def ValueToString(self, value, flags):
+        if isinstance(value, datetime.datetime) or isinstance(value, datetime.date):
+            return value.strftime("%d/%m/%Y")
+        return ""
+
+    def StringToValue(self, s, flags):
+        if not s:
+            return (True, None)
+        try:
+            date = datetime.datetime.strptime(s, "%d/%m/%Y")
+        except:
+            return (False, None)
+        return (True, date)
+
+
 class EditeurChoix(ChoiceEditor):
     def __init__(self):
         ChoiceEditor.__init__(self)

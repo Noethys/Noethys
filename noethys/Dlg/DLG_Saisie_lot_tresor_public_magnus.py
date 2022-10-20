@@ -21,6 +21,7 @@ import shutil
 import os.path
 import wx.propgrid as wxpg
 from Ctrl import CTRL_Propertygrid
+from Ctrl.CTRL_Propertygrid import Propriete_date
 from Utils import UTILS_Dates, UTILS_Texte, UTILS_Fichiers
 from Data import DATA_Bic
 import FonctionsPerso
@@ -69,21 +70,13 @@ class CTRL_Parametres(DLG_Saisie_lot_tresor_public.CTRL_Parametres):
         # Dates
         self.Append( wxpg.PropertyCategory(_(u"Dates")) )
 
-        if 'phoenix' in wx.PlatformInfo:
-            now = wx.DateTime.Now()
-        else :
-            now = wx.DateTime_Now()
-        
-        propriete = wxpg.DateProperty(label=_(u"Date d'émission"), name="date_emission", value=now)
-        propriete.SetAttribute(wxpg.PG_DATE_PICKER_STYLE, DP_DROPDOWN|DP_SHOWCENTURY )
+        propriete = Propriete_date(label=_(u"Date d'émission (JJ/MM/AAAA)"), name="date_emission", value=datetime.date.today())
         self.Append(propriete)
-        
-        propriete = wxpg.DateProperty(label=_(u"Date du prélèvement"), name="date_prelevement", value=now)
-        propriete.SetAttribute(wxpg.PG_DATE_PICKER_STYLE, DP_DROPDOWN|DP_SHOWCENTURY )
+
+        propriete = Propriete_date(label=_(u"Date du prélèvement (JJ/MM/AAAA)"), name="date_prelevement", value=datetime.date.today())
         self.Append(propriete)
-        
-        propriete = wxpg.DateProperty(label=_(u"Avis d'envoi"), name="date_envoi", value=now)
-        propriete.SetAttribute(wxpg.PG_DATE_PICKER_STYLE, DP_DROPDOWN|DP_SHOWCENTURY )
+
+        propriete = Propriete_date(label=_(u"Avis d'envoi (JJ/MM/AAAA)"), name="date_envoi", value=datetime.date.today())
         self.Append(propriete)
 
         # Collectivité
@@ -660,6 +653,7 @@ class Dialog(DLG_Saisie_lot_tresor_public.Dialog):
             valeur = u'"%s"' % valeur
             valeur = valeur.replace("\n", " ")
             valeur = valeur.replace("\r", " ")
+            valeur = valeur.strip()
             return valeur
 
         lignes = []
@@ -687,7 +681,7 @@ class Dialog(DLG_Saisie_lot_tresor_public.Dialog):
                     ligne[5] = ConvertToTexte(dict_donnees["code_budget"][:10])
 
                     # Exercice - Entier
-                    ligne[6] = dict_donnees["exercice"]
+                    ligne[6] = ConvertToTexte(dict_donnees["exercice"])
 
                     # Multiple - Texte (1)
                     ligne[7] = ConvertToTexte("M" if num_sous_ligne == 1 else "S")
@@ -728,7 +722,7 @@ class Dialog(DLG_Saisie_lot_tresor_public.Dialog):
                     ligne[25] = ConvertToTexte(UTILS_Dates.DateEngFr(dict_donnees["date_emission"]))
 
                     # Article - Texte (10)
-                    ligne[26] = IDposte[:10] # ConvertToTexte(dict_donnees["id_poste"][:10])
+                    ligne[26] = ConvertToTexte(IDposte[:10])
 
                     # Opération - Texte (10)
                     ligne[27] = ConvertToTexte(dict_donnees["operation"][:10])
@@ -740,28 +734,28 @@ class Dialog(DLG_Saisie_lot_tresor_public.Dialog):
                     ligne[29] = ConvertToTexte(dict_donnees["fonction"][:10])
 
                     # Montant HT - Monétaire (,4)
-                    ligne[30] = str(montant) + "00" # str(piece["montant"]) + "00"
+                    ligne[30] = ConvertToTexte(str(montant))
 
                     # Montant TVA - Monétaire (,4)
-                    ligne[31] = "0.0000"
+                    ligne[31] = ConvertToTexte("0.00")
 
                     # Solder - O/N
-                    ligne[32] = "0"
+                    ligne[32] = ConvertToTexte("0")
 
                     # Priorité - Entier
-                    ligne[33] = "0"
+                    ligne[33] = ConvertToTexte("0")
 
-                    # Accepté - O/N
-                    ligne[35] = "0"
+                    # Accepté
+                    ligne[35] = ConvertToTexte("")
 
-                    # Erroné - O/N
-                    ligne[36] = "0"
+                    # Erroné
+                    ligne[36] = ConvertToTexte("")
 
                     # NJ - Texte (2)
                     ligne[38] = ConvertToTexte(piece["natjur_helios"][:2])
 
                     # TvaTaux - Reel Simple (5)
-                    ligne[40] = "0.000000"
+                    ligne[40] = ConvertToTexte("0.00")
 
                     # Mixte - Texte (1)
                     ligne[44] = ConvertToTexte("N")
@@ -779,10 +773,10 @@ class Dialog(DLG_Saisie_lot_tresor_public.Dialog):
                     ligne[50] = ConvertToTexte("N")
 
                     # DelaiPaiement - Entier
-                    ligne[51] = "0"
+                    ligne[51] = ConvertToTexte("0")
 
                     # CPL - Texte (4)
-                    ligne[54] = code_produit_local[:4] # ConvertToTexte(dict_donnees["code_prodloc"][:4])
+                    ligne[54] = ConvertToTexte(code_produit_local[:4])
 
                     # Prélèvement :
                     if piece["prelevement"] == 1:

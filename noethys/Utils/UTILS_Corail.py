@@ -110,7 +110,7 @@ def GetXML(dictDonnees={}):
 
         # TypeTiers
         TypeTiers = doc.createElement("TypeTiers")
-        TypeTiers.setAttribute("V", "01")
+        TypeTiers.setAttribute("V", "D")
         InfoTiers.appendChild(TypeTiers)
 
         # Civilité
@@ -167,11 +167,11 @@ def GetXML(dictDonnees={}):
         Ville.setAttribute("V", dictPiece["titulaire_ville"][:38])
         Adresse.appendChild(Ville)
 
-        if dictPiece["prelevement"] == 1:
+        # RefBancaire
+        RefBancaire = doc.createElement("RefBancaire")
+        InfoPiece.appendChild(RefBancaire)
 
-            # RefBancaire
-            RefBancaire = doc.createElement("RefBancaire")
-            InfoPiece.appendChild(RefBancaire)
+        if dictPiece["prelevement"] == 1:
 
             # Titulaire
             Titulaire = doc.createElement("Titulaire")
@@ -210,7 +210,7 @@ def GetXML(dictDonnees={}):
 
         # PesASAP
         PesASAP = doc.createElement("PesASAP")
-        PesASAP.setAttribute("V", "02")
+        PesASAP.setAttribute("V", "01")
         InfoPiece.appendChild(PesASAP)
 
         # ASAPEnteteFacturation
@@ -235,30 +235,31 @@ def GetXML(dictDonnees={}):
         if dictDonnees["pieces_jointes"] != False and len(dictDonnees["pieces_jointes"]) > 0 :
 
             pj = dictDonnees["pieces_jointes"].get(dictPiece["IDfacture"], None)
+            if pj:
 
-            # PJ
-            PJ = doc.createElement("PJ")
-            Piece.appendChild(PJ)
+                # PJ
+                PJ = doc.createElement("PJ")
+                Piece.appendChild(PJ)
 
-            # NomPJ
-            NomPJ = doc.createElement("NomPJ")
-            NomPJ.setAttribute("V", pj["NomPJ"])
-            PJ.appendChild(NomPJ)
+                # NomPJ
+                NomPJ = doc.createElement("NomPJ")
+                NomPJ.setAttribute("V", pj["NomPJ"])
+                PJ.appendChild(NomPJ)
 
-            # IDPJInterne
-            IDPJInterne = doc.createElement("IDPJInterne")
-            IDPJInterne.setAttribute("V", pj["IdUnique"])
-            PJ.appendChild(IDPJInterne)
+                # IDPJInterne
+                IDPJInterne = doc.createElement("IDPJInterne")
+                IDPJInterne.setAttribute("V", pj["IdUnique"])
+                PJ.appendChild(IDPJInterne)
 
-            # CheminRelatif
-            CheminRelatif = doc.createElement("CheminRelatif")
-            CheminRelatif.setAttribute("V", "PJ\\")
-            PJ.appendChild(CheminRelatif)
+                # CheminRelatif
+                CheminRelatif = doc.createElement("CheminRelatif")
+                CheminRelatif.setAttribute("V", "PJ\\")
+                PJ.appendChild(CheminRelatif)
 
-            # TransmettreAHelios
-            TransmettreAHelios = doc.createElement("TransmettreAHelios")
-            TransmettreAHelios.setAttribute("V", "O")
-            PJ.appendChild(TransmettreAHelios)
+                # TransmettreAHelios
+                TransmettreAHelios = doc.createElement("TransmettreAHelios")
+                TransmettreAHelios.setAttribute("V", "O")
+                PJ.appendChild(TransmettreAHelios)
 
         if dictPiece["prelevement"] == 1:
 
