@@ -115,7 +115,11 @@ class CTRL_Parametres(DLG_Saisie_lot_tresor_public.CTRL_Parametres):
         self.Append( wxpg.PropertyCategory(_(u"Libellés")) )
 
         propriete = wxpg.StringProperty(label=_(u"Objet de la pièce"), name="objet_piece", value=_(u"FACTURE NUM{NUM_FACTURE} {MOIS_LETTRES} {ANNEE}"))
-        propriete.SetHelpString(_(u"Saisissez l'objet de la pièce (en majuscules et sans accents). Vous pouvez personnaliser ce libellé grâce aux mots-clés suivants : {NOM_ORGANISATEUR} {NUM_FACTURE} {LIBELLE_FACTURE} {MOIS} {MOIS_LETTRES} {ANNEE}.")) 
+        propriete.SetHelpString(_(u"Saisissez l'objet de la pièce (en majuscules et sans accents). Vous pouvez personnaliser ce libellé grâce aux mots-clés suivants : {NOM_ORGANISATEUR} {NUM_FACTURE} {LIBELLE_FACTURE} {MOIS} {MOIS_LETTRES} {ANNEE} {DATE_EMISSION}."))
+        self.Append(propriete)
+
+        propriete = wxpg.StringProperty(label=_(u"Libellé de la prestation"), name="prestation_libelle", value=_(u"{INDIVIDU_PRENOM} - {PRESTATION_LABEL}"))
+        propriete.SetHelpString(_(u"Saisissez le libellé de la prestation (détail ASAP). Vous pouvez personnaliser ce libellé grâce aux mots-clés suivants : {PRESTATION_LABEL} {PRESTATION_DATE} {INDIVIDU_PRENOM} {INDIVIDU_NOM} {MOIS} {MOIS_LETTRES} {ANNEE} {DATE_EMISSION} {OBJET}."))
         self.Append(propriete)
 
         propriete = wxpg.StringProperty(label=_(u"Libellé du prélèvement"), name="prelevement_libelle", value=u"{NOM_ORGANISATEUR} - {OBJET_PIECE}")
@@ -152,6 +156,7 @@ class CTRL_Parametres(DLG_Saisie_lot_tresor_public.CTRL_Parametres):
         self.SetPropertyValue("code_analytique_2", UTILS_Parametres.Parametres(mode="get", categorie="export_corail", nom="code_analytique_2", valeur=""))
         self.SetPropertyValue("inclure_pieces_jointes", UTILS_Parametres.Parametres(mode="get", categorie="export_corail", nom="inclure_pieces_jointes", valeur=True))
         self.SetPropertyValue("inclure_detail", UTILS_Parametres.Parametres(mode="get", categorie="export_corail", nom="inclure_detail", valeur=True))
+        self.SetPropertyValue("prestation_libelle", UTILS_Parametres.Parametres(mode="get", categorie="export_corail", nom="prestation_libelle", valeur=u"{INDIVIDU_PRENOM} - {PRESTATION_LABEL}"))
 
 
 # ---------------------------------------------------------------------------------------------------------------------------------
@@ -294,7 +299,7 @@ class Dialog(DLG_Saisie_lot_tresor_public.Dialog):
 
     def Memorisation_parametres(self):
         # Mémorisation des préférences
-        for code in ("fonction", "code_analytique_1", "code_analytique_2", "inclure_detail", "inclure_pieces_jointes"):
+        for code in ("fonction", "code_analytique_1", "code_analytique_2", "inclure_detail", "inclure_pieces_jointes", "prestation_libelle"):
             UTILS_Parametres.Parametres(mode="set", categorie="export_corail", nom=code, valeur=self.ctrl_parametres.GetPropertyValue(code))
 
     def OnBoutonFichier(self, event):
@@ -349,6 +354,7 @@ class Dialog(DLG_Saisie_lot_tresor_public.Dialog):
             objet_piece = objet_piece.replace("{MOIS}", str(self.ctrl_parametres.GetPropertyValue("mois")))
             objet_piece = objet_piece.replace("{MOIS_LETTRES}", DLG_Saisie_lot_tresor_public.GetMoisStr(self.ctrl_parametres.GetPropertyValue("mois"), majuscules=True, sansAccents=True))
             objet_piece = objet_piece.replace("{ANNEE}", str(self.ctrl_parametres.GetPropertyValue("exercice")))
+            objet_piece = objet_piece.replace("{DATE_EMISSION}", UTILS_Dates.ConvertDateWXenDate(self.ctrl_parametres.GetPropertyValue("date_emission")).strftime("%d/%m/%Y"))
 
             # Création du libellé du prélèvement
             prelevement_libelle = self.ctrl_parametres.GetPropertyValue("prelevement_libelle")
@@ -383,6 +389,12 @@ class Dialog(DLG_Saisie_lot_tresor_public.Dialog):
                 "titulaire_rue": track.titulaireRue,
                 "titulaire_cp": track.titulaireCP,
                 "titulaire_ville": track.titulaireVille,
+                "tiersSolidaire_civilite": track.tiersSolidaireCivilite,
+                "tiersSolidaire_nom": track.tiersSolidaireNom,
+                "tiersSolidaire_prenom": track.tiersSolidairePrenom,
+                "tiersSolidaire_rue": track.tiersSolidaireRue,
+                "tiersSolidaire_cp": track.tiersSolidaireCP,
+                "tiersSolidaire_ville": track.tiersSolidaireVille,
                 "idtiers_helios": track.idtiers_helios,
                 "natidtiers_helios": track.natidtiers_helios,
                 "reftiers_helios": track.reftiers_helios,
@@ -395,7 +407,7 @@ class Dialog(DLG_Saisie_lot_tresor_public.Dialog):
             montantTotal += montant
             nbreTotal += 1
 
-        # Mémorisation de tous les données
+        # Mémorisation de toutes les données
         dictDonnees = {
             "nom_fichier": nom_fichier,
             "date_emission": UTILS_Dates.ConvertDateWXenDate(self.ctrl_parametres.GetPropertyValue("date_emission")).strftime("%Y%m%d"),
@@ -412,6 +424,7 @@ class Dialog(DLG_Saisie_lot_tresor_public.Dialog):
             "objet_dette": self.ctrl_parametres.GetPropertyValue("objet_dette"),
             "code_prodloc": self.ctrl_parametres.GetPropertyValue("code_prodloc"),
             "nom_collectivite": nom_collectivite,
+            "prestation_libelle": self.ctrl_parametres.GetPropertyValue("prestation_libelle"),
             "pieces": listePieces,
             "pieces_jointes" : dict_pieces_jointes,
         }
@@ -520,9 +533,18 @@ class Dialog(DLG_Saisie_lot_tresor_public.Dialog):
             dict_prestations_factures[IDfacture].append({"IDprestation": IDprestation, "label": label, "montant": montant, "id_poste": id_poste, "code_prodloc": code_prodloc})
 
             # Définit le label
-            if IDindividu:
-                label = u"%s - %s" % (label, prenom)
-            libelle = (label, montant)
+            prestation_libelle = dict_donnees["prestation_libelle"]
+            prestation_libelle = prestation_libelle.replace("{PRESTATION_LABEL}", label)
+            prestation_libelle = prestation_libelle.replace("{PRESTATION_DATE}", UTILS_Dates.DateEngFr(date))
+            prestation_libelle = prestation_libelle.replace("{INDIVIDU_PRENOM}", prenom or "")
+            prestation_libelle = prestation_libelle.replace("{INDIVIDU_NOM}", nom or "")
+            prestation_libelle = prestation_libelle.replace("{MOIS}", str(self.ctrl_parametres.GetPropertyValue("mois")))
+            prestation_libelle = prestation_libelle.replace("{MOIS_LETTRES}", DLG_Saisie_lot_tresor_public.GetMoisStr(self.ctrl_parametres.GetPropertyValue("mois"), majuscules=True, sansAccents=True))
+            prestation_libelle = prestation_libelle.replace("{ANNEE}", str(self.ctrl_parametres.GetPropertyValue("exercice")))
+            prestation_libelle = prestation_libelle.replace("{DATE_EMISSION}", UTILS_Dates.ConvertDateWXenDate(self.ctrl_parametres.GetPropertyValue("date_emission")).strftime("%d/%m/%Y"))
+            prestation_libelle = prestation_libelle.replace("{OBJET}", dict_donnees["objet_dette"])
+
+            libelle = (prestation_libelle, montant)
 
             if IDfacture not in dict_resultats:
                 dict_resultats[IDfacture] = {}

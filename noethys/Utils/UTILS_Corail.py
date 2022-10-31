@@ -188,6 +188,86 @@ def GetXML(dictDonnees={}):
             BIC.setAttribute("V", dictPiece["prelevement_bic"])
             RefBancaire.appendChild(BIC)
 
+        # Tiers solidaire
+        if dictPiece["tiersSolidaire_nom"]:
+
+            # TiersSolidaire
+            TiersSolidaire = doc.createElement("TiersSolidaire")
+            InfoPiece.appendChild(TiersSolidaire)
+
+            # InfoTiersSolidaire
+            InfoTiersSolidaire = doc.createElement("InfoTiersSolidaire")
+            TiersSolidaire.appendChild(InfoTiersSolidaire)
+
+            # CatTiersSolidaire
+            CatTiersSolidaire = doc.createElement("CatTiersSolidaire")
+            CatTiersSolidaire.setAttribute("V", dictPiece["cattiers_helios"])
+            InfoTiersSolidaire.appendChild(CatTiersSolidaire)
+
+            # NatJurTiersSolidaire
+            NatJurTiersSolidaire = doc.createElement("NatJurTiersSolidaire")
+            NatJurTiersSolidaire.setAttribute("V", dictPiece["natjur_helios"])
+            InfoTiersSolidaire.appendChild(NatJurTiersSolidaire)
+
+            # TypeTiersTiersSolidaire
+            TypeTiersTiersSolidaire = doc.createElement("TypeTiersTiersSolidaire")
+            TypeTiersTiersSolidaire.setAttribute("V", "D")
+            InfoTiersSolidaire.appendChild(TypeTiersTiersSolidaire)
+
+            # CivilitéTiersSolidaire
+            civilite = dictPiece["tiersSolidaire_civilite"]
+            if civilite == "M.": civilite = "Mr"
+            if civilite == "Melle": civilite = "Mme"
+            if civilite not in (None, ""):
+                CiviliteTiersSolidaire = doc.createElement("CiviliteTiersSolidaire")
+                CiviliteTiersSolidaire.setAttribute("V", civilite[:10])
+                InfoTiersSolidaire.appendChild(CiviliteTiersSolidaire)
+
+            # RaisonSocialeTiersSolidaire
+            RaisonSocialeTiersSolidaire = doc.createElement("RaisonSocialeTiersSolidaire")
+            if dictPiece["tiersSolidaire_prenom"]:
+                temp = dictPiece["tiersSolidaire_nom"][:38] + " " + dictPiece["tiersSolidaire_prenom"]
+            else:
+                temp = dictPiece["tiersSolidaire_nom"][:38]
+            RaisonSocialeTiersSolidaire.setAttribute("V", temp)
+            InfoTiersSolidaire.appendChild(RaisonSocialeTiersSolidaire)
+
+            # NomTiersSolidaire
+            NomTiersSolidaire = doc.createElement("NomTiersSolidaire")
+            NomTiersSolidaire.setAttribute("V", dictPiece["tiersSolidaire_nom"][:38])
+            InfoTiersSolidaire.appendChild(NomTiersSolidaire)
+
+            # PrenomTiersSolidaire
+            prenom = dictPiece["tiersSolidaire_prenom"]
+            if prenom not in (None, ""):
+                PrenomTiersSolidaire = doc.createElement("PrenomTiersSolidaire")
+                PrenomTiersSolidaire.setAttribute("V", prenom[:38])
+                InfoTiersSolidaire.appendChild(PrenomTiersSolidaire)
+
+            # AdresseTiersSolidaire
+            AdresseTiersSolidaire = doc.createElement("AdresseTiersSolidaire")
+            TiersSolidaire.appendChild(AdresseTiersSolidaire)
+
+            # AdresseEtrangerTiersSolidaire
+            AdresseEtrangerTiersSolidaire = doc.createElement("AdresseEtrangerTiersSolidaire")
+            AdresseEtrangerTiersSolidaire.setAttribute("V", "N")
+            AdresseTiersSolidaire.appendChild(AdresseEtrangerTiersSolidaire)
+
+            # RueTiersSolidaire
+            RueTiersSolidaire = doc.createElement("RueTiersSolidaire")
+            RueTiersSolidaire.setAttribute("V", dictPiece["tiersSolidaire_rue"][:38])
+            AdresseTiersSolidaire.appendChild(RueTiersSolidaire)
+
+            # CPTiersSolidaire
+            CPTiersSolidaire = doc.createElement("CPTiersSolidaire")
+            CPTiersSolidaire.setAttribute("V", dictPiece["tiersSolidaire_cp"][:5])
+            AdresseTiersSolidaire.appendChild(CPTiersSolidaire)
+
+            # VilleTiersSolidaire
+            VilleTiersSolidaire = doc.createElement("VilleTiersSolidaire")
+            VilleTiersSolidaire.setAttribute("V", dictPiece["tiersSolidaire_ville"][:38])
+            AdresseTiersSolidaire.appendChild(VilleTiersSolidaire)
+
         # DatePiece
         DatePiece = doc.createElement("DatePiece")
         DatePiece.setAttribute("V", dictDonnees["date_emission"])
