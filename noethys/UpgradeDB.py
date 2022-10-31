@@ -1523,6 +1523,16 @@ class DB(GestionDB.DB):
 
         # =============================================================
 
+        versionFiltre = (1, 3, 1, 4)
+        if versionFichier < versionFiltre:
+            try:
+                self.AjoutChamp("familles", "tiers_solidaire", "INTEGER")
+                self.AjoutChamp("pes_pieces", "tiers_solidaire", "INTEGER")
+            except Exception as err:
+                return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
+
+        # =============================================================
+
 
 
         return True

@@ -125,6 +125,7 @@ DB_DATA = {
                                     ("autorisation_cafpro", "INTEGER", u"Autorisation de consultation CAFPRO (0/1)"),
                                     ("autre_adresse_facturation", "VARCHAR(450)", u"Autre adresse de facturation"),
                                     ("etat", "VARCHAR(50)", u"Etat"),
+                                    ("tiers_solidaire", "INTEGER", u"IDindividu du tiers solidaire"),
                                     ], # Les familles
     
     "rattachements":[       ("IDrattachement", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID rattachement"),
@@ -1363,6 +1364,7 @@ DB_DATA = {
                                     ("prelevement_titulaire", "VARCHAR(400)", u"Titulaire du compte bancaire"),
                                     ("prelevement_statut", "VARCHAR(100)", u"Statut du prélèvement"),
                                     ("titulaire_helios", "INTEGER", u"Tiers Trésor public"),
+                                    ("tiers_solidaire", "INTEGER", u"IDindividu du tiers solidaire"),
                                     ("type", "VARCHAR(400)", u"Type du prélèvement"),
                                     ("IDfacture", "INTEGER", u"ID de la facture"),
                                     ("numero", "BIGINT", u"Numéro de facture"),

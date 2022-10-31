@@ -74,7 +74,7 @@ class Track(object):
         self.nomLot =  donnees["nomLot"]
         self.adresse_famille = donnees["adresse_famille"]
         self.titulaire_helios = donnees["titulaire_helios"]
-        
+        self.tiers_solidaire = donnees["tiers_solidaire"]
         
         # Prélèvement
         self.prelevement_activation =  donnees["prelevement_activation"]
@@ -283,7 +283,7 @@ class ListView(FastObjectListView):
         email_factures,
         comptes_payeurs.IDcompte_payeur,
         individus.nom, individus.prenom,
-        titulaire_helios
+        titulaire_helios, tiers_solidaire
         FROM familles
         LEFT JOIN comptes_payeurs ON comptes_payeurs.IDfamille = familles.IDfamille
         LEFT JOIN individus ON individus.IDindividu = prelevement_individu
@@ -292,7 +292,7 @@ class ListView(FastObjectListView):
         DB.ExecuterReq(req)
         listeInfosFamilles = DB.ResultatReq()
         dictInfosFamilles = {}
-        for prelevement_activation, prelevement_etab, prelevement_guichet, prelevement_numero, prelevement_cle, prelevement_banque, prelevement_individu, prelevement_nom, prelevement_rue, prelevement_cp, prelevement_ville, prelevement_cle_iban, prelevement_iban, prelevement_bic, prelevement_reference_mandat, prelevement_date_mandat, email_factures, IDcompte_payeur, nomPayeur, prenomPayeur, titulaire_helios in listeInfosFamilles :
+        for prelevement_activation, prelevement_etab, prelevement_guichet, prelevement_numero, prelevement_cle, prelevement_banque, prelevement_individu, prelevement_nom, prelevement_rue, prelevement_cp, prelevement_ville, prelevement_cle_iban, prelevement_iban, prelevement_bic, prelevement_reference_mandat, prelevement_date_mandat, email_factures, IDcompte_payeur, nomPayeur, prenomPayeur, titulaire_helios, tiers_solidaire in listeInfosFamilles :
             prelevement_date_mandat = UTILS_Dates.DateEngEnDateDD(prelevement_date_mandat) 
             dictInfosFamilles[IDcompte_payeur] = {
                     "prelevement_activation" : prelevement_activation, "prelevement_etab" : prelevement_etab, "prelevement_guichet" : prelevement_guichet, 
@@ -302,6 +302,7 @@ class ListView(FastObjectListView):
                     "prelevement_cle_iban" : prelevement_cle_iban, "prelevement_iban" : prelevement_iban, "prelevement_bic" : prelevement_bic,
                     "prelevement_reference_mandat" : prelevement_reference_mandat, "prelevement_date_mandat" : prelevement_date_mandat,
                     "email_factures" : email_factures, "nomPayeur" : nomPayeur, "prenomPayeur" : prenomPayeur, "titulaire_helios" : titulaire_helios,
+                    "tiers_solidaire": tiers_solidaire,
                     }
         
         DB.Close() 

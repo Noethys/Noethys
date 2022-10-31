@@ -73,6 +73,7 @@ DICT_PROCEDURES = {
     "A9052" : _(u"Validation des actions du portail en doublon"),
     "A9055" : _(u"Création d'une table"),
     "A9062" : _(u"Modification du type d'un champ"),
+    "A9064" : _(u"Renseignement automatique du tiers solidaire dans toutes les fiches familles"),
 }
 
 
@@ -1419,9 +1420,54 @@ def A9062():
     DB.Close()
 
 
+def A9064():
+    """ Renseignement automatique du tiers solidaire dans toutes les fiches familles """
+    # Recherche des titulaires potentiels pour chaque famille
+    DB = GestionDB.DB()
+    req = """SELECT IDfamille, individus.IDindividu, IDcivilite, nom, prenom
+    FROM rattachements
+    LEFT JOIN individus ON individus.IDindividu = rattachements.IDindividu
+    WHERE IDcategorie=1 AND titulaire=1
+    ORDER BY IDcivilite, individus.IDindividu;"""
+    DB.ExecuterReq(req)
+    listeDonnees = DB.ResultatReq()
+    DB.Close()
+    dictIndividus = {}
+    for IDfamille, IDindividu, IDcivilite, nom, prenom in listeDonnees:
+        if (IDfamille in dictIndividus) == False:
+            dictIndividus[IDfamille] = []
+        dictIndividus[IDfamille].append({"IDcivilite": IDcivilite, "IDindividu": IDindividu, "nom": nom, "prenom": prenom})
+
+    # Recherche des familles
+    DB = GestionDB.DB()
+    req = """SELECT IDfamille, titulaire_helios, tiers_solidaire
+    FROM familles
+    WHERE tiers_solidaire IS NULL OR tiers_solidaire='';"""
+    DB.ExecuterReq(req)
+    listeDonnees = DB.ResultatReq()
+    DB.Close()
+    listeModifications = []
+    for IDfamille, titulaire_helios, tiers_solidaire in listeDonnees:
+        found = False
+        for dictIndividu in dictIndividus.get(IDfamille, []):
+            if not found and dictIndividu["IDindividu"] != titulaire_helios:
+                tiers_solidaire = dictIndividu["IDindividu"]
+                listeModifications.append((tiers_solidaire, IDfamille))
+                found = True
+
+    print("Nbre de tiers solidaires a enregistrer : %d" % len(listeModifications))
+
+    # Enregistrement des modifications
+    DB = GestionDB.DB()
+    DB.Executermany("UPDATE familles SET tiers_solidaire=? WHERE IDfamille=?", listeModifications, commit=False)
+    DB.Commit()
+    DB.Close()
+
+
+
 
 if __name__ == u"__main__":
     app = wx.App(0)
     # TEST D'UNE PROCEDURE :
-    A9052()
+    A9064()
     app.MainLoop()

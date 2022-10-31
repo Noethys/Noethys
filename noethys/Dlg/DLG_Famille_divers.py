@@ -95,7 +95,10 @@ class CTRL_Parametres(wxpg.PropertyGrid) :
         propriete = wxpg.EnumProperty(label=_(u"Titulaire"), name="titulaire_helios")
         propriete.SetHelpString(_(u"Sélectionnez le titulaire du compte pour Hélios (Trésor Public)"))
         self.Append(propriete)
-##        self.MAJ_titulaire_helios() 
+
+        propriete = wxpg.EnumProperty(label=_(u"Tiers solidaire"), name="tiers_solidaire")
+        propriete.SetHelpString(_(u"Sélectionnez le tiers solidaire du compte pour Hélios (Trésor Public)"))
+        self.Append(propriete)
 
         propriete = wxpg.StringProperty(label=_(u"Identifiant national"), name="idtiers_helios", value=u"")
         propriete.SetHelpString(_(u"[Facultatif] Saisissez l'identifiant national (SIRET ou SIREN ou FINESS ou NIR)")) 
@@ -223,6 +226,39 @@ class CTRL_Parametres(wxpg.PropertyGrid) :
         except :
             pass
 
+    def MAJ_tiers_solidaire(self):
+        propriete = self.GetPropertyByName("tiers_solidaire")
+        ancienneValeur = propriete.GetValue()
+        DB = GestionDB.DB()
+        req = """SELECT individus.IDindividu, nom, prenom
+        FROM rattachements
+        LEFT JOIN individus ON individus.IDindividu = rattachements.IDindividu
+        WHERE IDfamille=%d AND IDcategorie=1
+        GROUP BY individus.IDindividu
+        ORDER BY nom, prenom;""" % self.IDfamille
+        DB.ExecuterReq(req)
+        listeDonnees = DB.ResultatReq()
+        DB.Close()
+        choix = wxpg.PGChoices()
+        ancienChoixValide = False
+        for IDindividu, nom, prenom in listeDonnees :
+            if prenom == None : prenom = ""
+            nomIndividu = u"%s %s" % (nom, prenom)
+            if IDindividu == ancienneValeur :
+                ancienChoixValide = True
+            if 'phoenix' in wx.PlatformInfo:
+                choix.Add(label=nomIndividu, value=IDindividu)
+            else:
+                choix.Add(nomIndividu, IDindividu)
+        propriete.SetChoices(choix)
+        self.RefreshProperty(propriete)
+        if ancienChoixValide == False :
+            ancienneValeur = None
+        try :
+            propriete.SetValue(ancienneValeur)
+        except :
+            pass
+
     def SetAdresseFacturation(self, autre_adresse_facturation=None):
         if autre_adresse_facturation in ("", None) :
             self.SetPropertyValue("autre_adresse_facturation", False)
@@ -263,6 +299,7 @@ class CTRL_Parametres(wxpg.PropertyGrid) :
 
     def MAJ(self):
         self.MAJ_titulaire_helios()
+        self.MAJ_tiers_solidaire()
         self.Switch()
 
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -354,20 +391,21 @@ class Panel(wx.Panel):
         if self.majEffectuee == False :
             self.ctrl_parametres.MAJ() 
             DB = GestionDB.DB()
-            req = """SELECT internet_actif, internet_identifiant, internet_mdp, titulaire_helios, code_comptable, idtiers_helios, natidtiers_helios, reftiers_helios, cattiers_helios, natjur_helios, autre_adresse_facturation
+            req = """SELECT internet_actif, internet_identifiant, internet_mdp, titulaire_helios, tiers_solidaire, code_comptable, idtiers_helios, natidtiers_helios, reftiers_helios, cattiers_helios, natjur_helios, autre_adresse_facturation
             FROM familles
             WHERE IDfamille=%d;""" % self.IDfamille
             DB.ExecuterReq(req)
             listeDonnees = DB.ResultatReq()
             DB.Close()
             if len(listeDonnees) > 0 :
-                internet_actif, internet_identifiant, internet_mdp, titulaire_helios, code_comptable, idtiers_helios, natidtiers_helios, reftiers_helios, cattiers_helios, natjur_helios, autre_adresse_facturation = listeDonnees[0]
+                internet_actif, internet_identifiant, internet_mdp, titulaire_helios, tiers_solidaire, code_comptable, idtiers_helios, natidtiers_helios, reftiers_helios, cattiers_helios, natjur_helios, autre_adresse_facturation = listeDonnees[0]
 
                 # Compte internet
                 self.ctrl_compte_internet.SetDonnees({"internet_actif": internet_actif, "internet_identifiant": internet_identifiant, "internet_mdp": internet_mdp})
 
                 # Hélios
                 self.ctrl_parametres.SetPropertyValue("titulaire_helios", titulaire_helios)
+                self.ctrl_parametres.SetPropertyValue("tiers_solidaire", tiers_solidaire)
                 if idtiers_helios != None : self.ctrl_parametres.SetPropertyValue("idtiers_helios", idtiers_helios)
                 if natidtiers_helios != None : self.ctrl_parametres.SetPropertyValue("natidtiers_helios", natidtiers_helios)
                 if reftiers_helios != None : self.ctrl_parametres.SetPropertyValue("reftiers_helios", reftiers_helios)
@@ -412,10 +450,27 @@ class Panel(wx.Panel):
                     dlg.Destroy()
                     return False
 
+        # Tiers solidaire
+        tiers_solidaire = self.ctrl_parametres.GetPropertyValue("tiers_solidaire")
+        if tiers_solidaire != None :
+            DB = GestionDB.DB()
+            req = """SELECT IDrattachement, IDindividu, IDcategorie, titulaire
+            FROM rattachements WHERE IDfamille=%d;""" % self.IDfamille
+            DB.ExecuterReq(req)
+            listeRattachements = DB.ResultatReq()
+            DB.Close()
+            for IDrattachement, IDindividu, IDcategorie, titulaire in listeRattachements:
+                if tiers_solidaire == IDindividu and titulaire == 0 :
+                    dlg = wx.MessageDialog(self, _(u"Attention, le tiers solidaire doit être obligatoirement un titulaire du dossier !"), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                    dlg.ShowModal()
+                    dlg.Destroy()
+                    return False
+
         return True
     
     def Sauvegarde(self):
         titulaire_helios = self.ctrl_parametres.GetPropertyValue("titulaire_helios")
+        tiers_solidaire = self.ctrl_parametres.GetPropertyValue("tiers_solidaire")
         idtiers_helios = self.ctrl_parametres.GetPropertyValue("idtiers_helios")
         natidtiers_helios = self.ctrl_parametres.GetPropertyValue("natidtiers_helios")
         reftiers_helios = self.ctrl_parametres.GetPropertyValue("reftiers_helios")
@@ -426,6 +481,7 @@ class Panel(wx.Panel):
         DB = GestionDB.DB()
         listeDonnees = [    
                 ("titulaire_helios", titulaire_helios),
+                ("tiers_solidaire", tiers_solidaire),
                 ("code_comptable", code_comptable),
                 ("idtiers_helios", idtiers_helios),
                 ("natidtiers_helios", natidtiers_helios),

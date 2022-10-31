@@ -74,8 +74,9 @@ class Track(object):
         self.IDdepot = donnees["IDdepot"]
         
         self.titulaire_helios = donnees["titulaire_helios"]
+        self.tiers_solidaire = donnees["tiers_solidaire"]
         self.InitTitulaireHelios()
-        
+
         # Autres données Hélios
         if "idtiers_helios" in donnees["dictAutresDonnees"] :
             self.idtiers_helios = donnees["dictAutresDonnees"]["idtiers_helios"]
@@ -150,7 +151,31 @@ class Track(object):
             self.titulaireCP = ""
             self.titulaireVille = ""
             self.titulaireAdresse = ""
-        
+
+        if self.tiers_solidaire in self.dictIndividus :
+            self.tiersSolidaireCivilite = self.dictIndividus[self.tiers_solidaire]["civiliteAbrege"]
+            self.tiersSolidaireNom = self.dictIndividus[self.tiers_solidaire]["nom"]
+            self.tiersSolidairePrenom = self.dictIndividus[self.tiers_solidaire]["prenom"]
+            if self.tiersSolidaireCivilite == None :
+                self.tiersSolidaireNomComplet = u"%s %s" % (self.tiersSolidaireNom, self.tiersSolidairePrenom)
+            else :
+                self.tiersSolidaireNomComplet = u"%s %s %s" % (self.tiersSolidaireCivilite, self.tiersSolidaireNom, self.tiersSolidairePrenom)
+            self.tiersSolidaireNomPrenom = u"%s %s" % (self.tiersSolidaireNom, self.tiersSolidairePrenom)
+            self.tiersSolidaireRue = self.dictIndividus[self.tiers_solidaire]["rue"]
+            self.tiersSolidaireCP = self.dictIndividus[self.tiers_solidaire]["cp"]
+            self.tiersSolidaireVille = self.dictIndividus[self.tiers_solidaire]["ville"]
+            self.tiersSolidaireAdresse = u"%s %s %s" % (self.tiersSolidaireRue, self.tiersSolidaireCP, self.tiersSolidaireVille)
+        else :
+            self.tiersSolidaireCivilite = ""
+            self.tiersSolidaireNom = ""
+            self.tiersSolidairePrenom = ""
+            self.tiersSolidaireNomComplet = ""
+            self.tiersSolidaireNomPrenom = ""
+            self.tiersSolidaireRue = ""
+            self.tiersSolidaireCP = ""
+            self.tiersSolidaireVille = ""
+            self.tiersSolidaireAdresse = ""
+
     def InitNomsTitulaires(self):
         if self.IDfamille != None :
             self.titulaires = self.dictTitulaires[self.IDfamille]["titulairesSansCivilite"]
@@ -216,7 +241,7 @@ def GetTracks(IDlot=None, IDmandat=None):
     type, IDfacture, libelle, pes_pieces.montant, 
     reglements.IDreglement, reglements.date, reglements.IDdepot,
     comptes_payeurs.IDcompte_payeur,
-    pes_pieces.titulaire_helios, pes_pieces.numero
+    pes_pieces.titulaire_helios, pes_pieces.tiers_solidaire, pes_pieces.numero
     FROM pes_pieces
     LEFT JOIN reglements ON reglements.IDpiece = pes_pieces.IDpiece
     LEFT JOIN comptes_payeurs ON comptes_payeurs.IDfamille = pes_pieces.IDfamille
@@ -226,7 +251,7 @@ def GetTracks(IDlot=None, IDmandat=None):
     listeDonnees = DB.ResultatReq()
     DB.Close()
     listeListeView = []
-    for IDpiece, IDlot, IDfamille, prelevement, prelevement_iban, prelevement_bic, prelevement_IDmandat, prelevement_rum, prelevement_date_mandat, prelevement_sequence, prelevement_titulaire, prelevement_statut, type_piece, IDfacture, libelle, montant, IDreglement, dateReglement, IDdepot, IDcompte_payeur, titulaire_helios, numero in listeDonnees :
+    for IDpiece, IDlot, IDfamille, prelevement, prelevement_iban, prelevement_bic, prelevement_IDmandat, prelevement_rum, prelevement_date_mandat, prelevement_sequence, prelevement_titulaire, prelevement_statut, type_piece, IDfacture, libelle, montant, IDreglement, dateReglement, IDdepot, IDcompte_payeur, titulaire_helios, tiers_solidaire, numero in listeDonnees :
         if IDfamille in dictAutresDonnees :
             dictTempAutresDonnees = dictAutresDonnees[IDfamille]
         else :
@@ -238,7 +263,7 @@ def GetTracks(IDlot=None, IDmandat=None):
             "prelevement_sequence" : prelevement_sequence, "prelevement_titulaire" : prelevement_titulaire, "prelevement_statut" : prelevement_statut, 
             "IDfacture" : IDfacture, "libelle" : libelle, "montant" : montant, "statut" : prelevement_statut, "IDlot" : IDlot, "etat" : None, "type" : type_piece,
             "IDreglement" : IDreglement, "dateReglement" : dateReglement, "IDdepot" : IDdepot, "IDcompte_payeur" : IDcompte_payeur,
-            "titulaire_helios" : titulaire_helios, "numero" : numero, "dictAutresDonnees" : dictTempAutresDonnees,
+            "titulaire_helios" : titulaire_helios, "tiers_solidaire": tiers_solidaire, "numero" : numero, "dictAutresDonnees" : dictTempAutresDonnees,
             }
         track = Track(dictTemp, dictTitulaires, dictIndividus)
         listeListeView.append(track)
@@ -613,7 +638,7 @@ class ListView(FastObjectListView):
                 "prelevement_IDmandat" : prelevement_IDmandat, "prelevement_rum" : prelevement_rum, "prelevement_date_mandat" : prelevement_mandat_date,
                 "prelevement_titulaire" : prelevement_titulaire, "type" : "facture", "IDfacture" : track.IDfacture, "prelevement_sequence" : prelevement_sequence,
                 "libelle" : _(u"FACT%s") % track.numero, "montant" : montant, "prelevement_statut" : "attente", "IDlot" : self.IDlot, "etat" : "ajout", "IDreglement" : None, "dateReglement" : None,
-                "IDdepot" : None, "IDcompte_payeur" : track.IDcompte_payeur, "titulaire_helios" : track.titulaire_helios, "numero" : track.numero, "dictAutresDonnees" : dictTempAutresDonnees,
+                "IDdepot" : None, "IDcompte_payeur" : track.IDcompte_payeur, "titulaire_helios" : track.titulaire_helios, "tiers_solidaire": track.tiers_solidaire, "numero" : track.numero, "dictAutresDonnees" : dictTempAutresDonnees,
                 }
             
             if track.IDfacture not in listeFacturesPresentes :
@@ -931,6 +956,7 @@ class ListView(FastObjectListView):
                 ("prelevement_titulaire", track.prelevement_titulaire),
                 ("prelevement_statut", track.prelevement_statut),
                 ("titulaire_helios", track.titulaire_helios),
+                ("tiers_solidaire", track.tiers_solidaire),
                 ("type", track.type),
                 ("IDfacture", track.IDfacture),
                 ("numero", track.numero),

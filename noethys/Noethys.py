@@ -898,6 +898,7 @@ class MainFrame(wx.Frame):
 
                         {"code" : "conversion_rib_sepa", "label" : _(u"Convertir les RIB nationaux en mandats SEPA"), "infobulle" : _(u"Convertir les RIB nationaux en mandats SEPA"), "image" : "Images/16x16/Outils.png", "action" : self.On_outils_conversion_rib_sepa},
                             {"code" : "creation_titulaires_helios", "label" : _(u"Création automatique des titulaires Hélios"), "infobulle" : _(u"Création automatique des titulaires Hélios"), "image" : "Images/16x16/Outils.png", "action" : self.On_outils_creation_titulaires_helios},
+                            {"code" : "creation_tiers_solidaires", "label" : _(u"Création automatique des tiers solidaires"), "infobulle" : _(u"Création automatique des tiers solidaires"), "image" : "Images/16x16/Outils.png", "action" : self.On_outils_creation_tiers_solidaires},
                             "-",
                             {"code" : "console_python", "label" : _(u"Console Python"), "infobulle" : _(u"Console Python"), "image" : "Images/16x16/Python.png", "action" : self.On_outils_console_python},
                             {"code" : "console_sql", "label" : _(u"Console SQL"), "infobulle" : _(u"Console SQL"), "image" : "Images/16x16/Sql.png", "action" : self.On_outils_console_sql},
@@ -2736,6 +2737,11 @@ class MainFrame(wx.Frame):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("outils_utilitaires", "consulter") == False : return
         from Utils import UTILS_Procedures
         UTILS_Procedures.A7650()
+
+    def On_outils_creation_tiers_solidaires(self, event):
+        if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("outils_utilitaires", "consulter") == False : return
+        from Utils import UTILS_Procedures
+        UTILS_Procedures.A9064()
 
     def On_outils_reinitialisation(self, event):
         """ Réinitialisation du fichier de configuration """
