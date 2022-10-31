@@ -1,3 +1,16 @@
+Version 1.3.1.4 (31/10/2022) :
+
+- Ajout du tiers solidaire dans la fiche famille
+- Ajout de la génération des tiers solidaires depuis le menu Utilitaires
+- Correction de divers petits bugs
+
+Version 1.3.1.3 (19/10/2022) :
+
+- Ajout de l'export vers Corail de Cosoluce
+- Ajout des options dans la sauvegarde mysql
+- Correction du recalcul sur les dates fermées
+- Correction de la saisie des dates dans l'export vers le TP
+
 Version 1.3.1.2 (24/09/2022) :
 
 - Ajout de la procédure de création manuelle de table
