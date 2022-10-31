@@ -717,6 +717,9 @@ class Table_consommations(Table):
             return valeur
         return None
 
+    def quantite(self, valeur=None):
+        return valeur or 1
+
 
 class Table_cotisations(Table):
     def __init__(self, parent, **kwds):
