@@ -628,8 +628,13 @@ class SmtpV2(Base_messagerie):
 
     def Envoyer_lot(self, messages=[], dlg_progress=None, afficher_confirmation_envoi=True):
         """ Envoi des messages par lot """
+        # Si envoi par lot activé
+        nbre_mails_lot = self.dict_parametres.get("nbre_mails", None)
+        duree_pause = self.dict_parametres.get("duree_pause", None)
+
         # Envoi des mails
         index = 1
+        index_lot = 1
         listeAnomalies = []
         listeSucces = []
         ne_pas_signaler_erreurs = False
@@ -707,8 +712,17 @@ class SmtpV2(Base_messagerie):
                             return listeSucces
                 break
 
+            # Petit pause après chaque message
             if len(messages) > 1:
                 time.sleep(1)
+
+            # Envoi par lot
+            if nbre_mails_lot and len(messages) > 1:
+                if index_lot >= int(nbre_mails_lot):
+                    time.sleep(int(duree_pause))
+                    index_lot = 0
+                index_lot += 1
+
             index += 1
 
         # Fin de la gauge

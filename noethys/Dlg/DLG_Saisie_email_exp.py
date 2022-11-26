@@ -86,12 +86,18 @@ class Page_SMTP(wx.Panel):
         # Options
         self.static_sizer_options_staticbox = wx.StaticBox(self, -1, _(u"Options"))
         self.ctrl_notification = wx.CheckBox(self, -1, _(u"Accusé de réception"))
+        self.ctrl_envoi_lot = wx.CheckBox(self, -1, _(u"Envoi par lot"))
+        self.label_nbre_lot = wx.StaticText(self, -1, _(u"Mails par lot :"))
+        self.ctrl_nbre_lot = wx.SpinCtrl(self, -1, u"", size=(60, -1), min=1, max=1000)
+        self.label_duree_pause = wx.StaticText(self, -1, _(u"Pause (en secondes) :"))
+        self.ctrl_duree_pause = wx.SpinCtrl(self, -1, u"", size=(60, -1), min=1, max=1000)
 
         # Binds
         self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioServeur, self.radio_predefini )
         self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioServeur, self.radio_personnalise )
         self.Bind(wx.EVT_CHECKBOX, self.OnCheckAuthentification, self.ctrl_authentification)
         self.Bind(wx.EVT_CHOICE, self.OnChoiceServeur, self.ctrl_predefinis)
+        self.Bind(wx.EVT_CHECKBOX, self.OnCheckEnvoiLot, self.ctrl_envoi_lot)
 
         # Properties
         self.radio_predefini.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sélectionner un serveur prédéfini dans la liste")))
@@ -107,6 +113,9 @@ class Page_SMTP(wx.Panel):
         self.ctrl_mdp.SetToolTip(wx.ToolTip(_(u"Saisissez ici le mot de passe s'il s'agit d'une connexion authentifiée")))
         self.ctrl_startTLS.SetToolTip(wx.ToolTip(_(u"Cochez cette case si votre messagerie utilise le protocole TLS")))
         self.ctrl_notification.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour demander à recevoir un accusé de réception (Attention : Ne fonctionne qu'avec certaines messageries)")))
+        self.ctrl_envoi_lot.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour envoyer les mails par lot espacés d'une pause du temps souhaité")))
+        self.ctrl_nbre_lot.SetToolTip(wx.ToolTip(_(u"Saisissez le nombre de mails à envoyer avant la pause")))
+        self.ctrl_duree_pause.SetToolTip(wx.ToolTip(_(u"Saisissez le nombre de secondes d'attente entre deux envois de lots")))
 
         # Layout
         grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
@@ -169,8 +178,16 @@ class Page_SMTP(wx.Panel):
 
         # Options
         static_sizer_options = wx.StaticBoxSizer(self.static_sizer_options_staticbox, wx.VERTICAL)
-        static_sizer_options.Add(self.ctrl_notification, 1, wx.ALL|wx.EXPAND, 10)
-        grid_sizer_base.Add(static_sizer_options, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
+        grid_sizer_options = wx.FlexGridSizer(rows=1, cols=7, vgap=5, hgap=5)
+        grid_sizer_options.Add(self.ctrl_notification, 0, wx.EXPAND| wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_options.Add((5, 5), 1, wx.ALL | wx.EXPAND, 0)
+        grid_sizer_options.Add(self.ctrl_envoi_lot, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_options.Add(self.label_nbre_lot, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_options.Add(self.ctrl_nbre_lot, 0, wx.EXPAND |wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_options.Add(self.label_duree_pause, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_options.Add(self.ctrl_duree_pause, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        static_sizer_options.Add(grid_sizer_options, 1, wx.EXPAND | wx.ALL, 10)
+        grid_sizer_base.Add(static_sizer_options, 1, wx.RIGHT|wx.LEFT|wx.EXPAND, 10)
 
         self.SetSizer(grid_sizer_base)
         grid_sizer_base.Fit(self)
@@ -180,6 +197,7 @@ class Page_SMTP(wx.Panel):
         # Init controles
         self.radio_predefini.SetValue(True)
         self.OnRadioServeur(None)
+        self.OnCheckEnvoiLot(None)
 
     def OnRadioServeur(self, event):
         if self.radio_predefini.GetValue() == True:
@@ -206,6 +224,10 @@ class Page_SMTP(wx.Panel):
 
     def OnChoiceServeur(self, event):
         self.ActiveCtrlMdp()
+
+    def OnCheckEnvoiLot(self, event):
+        self.ctrl_nbre_lot.Enable(self.ctrl_envoi_lot.GetValue())
+        self.ctrl_duree_pause.Enable(self.ctrl_envoi_lot.GetValue())
 
     def OnCheckAuthentification(self, event):
         self.ActiveCtrlMdp()
@@ -275,12 +297,16 @@ class Page_SMTP(wx.Panel):
                 startTLS = 0
 
         # Options
-        parametres = "notification==%d" % int(self.ctrl_notification.GetValue())
+        parametres = []
+        parametres.append("notification==%d" % int(self.ctrl_notification.GetValue()))
+        if self.ctrl_envoi_lot.GetValue() == True:
+            parametres.append("nbre_mails==%d" % self.ctrl_nbre_lot.GetValue())
+            parametres.append("duree_pause==%d" % self.ctrl_duree_pause.GetValue())
 
         # Renvoie un dict des données
         dict_donnees = {
             "moteur": "smtp", "adresse": adresse, "nom_adresse": nom_adresse, "motdepasse": motdepasse, "smtp": smtp, "port": port,
-            "auth": auth, "startTLS": startTLS, "utilisateur": utilisateur, "parametres":parametres}
+            "auth": auth, "startTLS": startTLS, "utilisateur": utilisateur, "parametres":"##".join(parametres)}
         return dict_donnees
 
     def SetDonnees(self, dictDonnees={}):
@@ -304,6 +330,9 @@ class Page_SMTP(wx.Panel):
 
         # Options
         self.ctrl_notification.SetValue(int(dict_parametres.get("notification", 0)))
+        self.ctrl_envoi_lot.SetValue(int(dict_parametres.get("nbre_mails", 0)))
+        self.ctrl_nbre_lot.SetValue(int(dict_parametres.get("nbre_mails", 1)))
+        self.ctrl_duree_pause.SetValue(int(dict_parametres.get("duree_pause", 1)))
 
         # Recherche si les paramètres correspondent à un serveur prédéfini
         index = 0
@@ -330,6 +359,7 @@ class Page_SMTP(wx.Panel):
             self.radio_personnalise.SetValue(True)
 
         self.OnRadioServeur(None)
+        self.OnCheckEnvoiLot(None)
         self.ActiveCtrlMdp()
 
     def Validation(self):
