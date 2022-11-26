@@ -2999,17 +2999,6 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 
                                             index += 1
 
-##                                # Modifie le tarif aux autres individus de la famille
-##                                for IDprestation, dictValeurs in self.dictPrestations.iteritems() :
-##                                    if IDprestation != IDtarifPrestationSupprimee and dictValeurs["date"] == date and dictValeurs["IDtarif"] == IDtarifTmp and dictValeurs["IDindividu"] != IDindividu :
-##                                        montantInitial = self.dictPrestations[IDprestation]["montant_initial"]
-##                                        montantDeduction = montantInitial - self.dictPrestations[IDprestation]["montant"]
-##                                        montantFinal = montant_tarif_tmp - montantDeduction
-##                                        self.dictPrestations[IDprestation]["montant_initial"] = montant_tarif_tmp
-##                                        self.dictPrestations[IDprestation]["montant"] = montantFinal
-##                                        
-##                                        self.listePrestationsModifiees.append(IDprestation)
-                
         # 8 - Suppression des anciennes prestations
         for IDprestationAncienne, categorie in listeAnciennesPrestations :
             if (IDprestationAncienne in self.dictPrestations) == True :

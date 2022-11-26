@@ -131,7 +131,7 @@ def Sauvegarde(listeFichiersLocaux=[], listeFichiersReseau=[], nom="", repertoir
             dlgprogress.Update(numEtape, _(u"Compression du fichier %s...") % nomFichier);numEtape += 1
             fichierSave = u"%s/%s.sql" % (repTemp, nomFichier)
             options = UTILS_Customize.GetValeur("sauvegarde", "options", "", ajouter_si_manquant=False)
-            
+
             args = u""""%sbin/mysqldump" --defaults-extra-file="%s" --single-transaction --opt %s --databases %s > "%s" """ % (repMySQL, nomFichierLoginTemp, options or "", nomFichier, fichierSave)
             print(("Chemin mysqldump =", args))
             if six.PY2:
