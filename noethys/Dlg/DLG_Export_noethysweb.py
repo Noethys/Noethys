@@ -244,6 +244,10 @@ class Dialog(wx.Dialog):
         # Options
         options = self.ctrl_options.GetIDcoches()
 
+        # Vérifications
+        if not UTILS_Export_noethysweb.Verifications(parent=self):
+            return False
+
         # Générer du fichier de données
         dlgAttente = wx.BusyInfo(_(u"Cette opération peut prendre quelques minutes. Veuillez patienter..."), self)
         UTILS_Export_noethysweb.Export_all(dlg=self, nom_fichier=os.path.join(repertoire, nom + ".nweb"), mdp=motdepasse, options=options)

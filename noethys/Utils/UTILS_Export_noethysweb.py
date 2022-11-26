@@ -573,6 +573,16 @@ class Table_tarifs(Table):
             valeur = valeur.replace(";", ",")
         return valeur
 
+    def jours_scolaires(self, valeur=None):
+        if valeur:
+            valeur = valeur.replace(";", ",")
+        return valeur
+
+    def jours_vacances(self, valeur=None):
+        if valeur:
+            valeur = valeur.replace(";", ",")
+        return valeur
+
 
 class Table_combi_tarifs(Table):
     def unites(self, data={}):
@@ -759,6 +769,17 @@ class Table_aides(Table):
         req = """SELECT IDaide, IDindividu FROM aides_beneficiaires WHERE IDaide=%d;""" % data["pk"]
         self.parent.DB.ExecuterReq(req)
         return [IDindividu for IDaide, IDindividu in self.parent.DB.ResultatReq()]
+
+    def jours_scolaires(self, valeur=None):
+        if valeur:
+            valeur = valeur.replace(";", ",")
+        return valeur
+
+    def jours_vacances(self, valeur=None):
+        if valeur:
+            valeur = valeur.replace(";", ",")
+        return valeur
+
 
 class Table_combi_aides(Table):
     def __init__(self, parent, **kwds):
@@ -1157,3 +1178,35 @@ class Table_modeles_emails(Table):
                 html = html.replace(balise, "")
             html = re.sub('<font.*?>', '', html)
         return html
+
+
+def Verifications(parent=None):
+    """ Vérifications générales avant export """
+    DB = GestionDB.DB()
+
+    # Forfaits-crédits
+    req = "SELECT IDtarif, type FROM tarifs WHERE type='CREDIT';"
+    DB.ExecuterReq(req)
+    resultats = DB.ResultatReq()
+    if resultats:
+        dlg = wx.MessageDialog(parent, u"Les forfait-crédits ne sont pas encore disponibles dans Noethysweb. Souhaitez-vous quand même continuer ?", u"Avertissement", wx.YES_NO | wx.NO_DEFAULT | wx.CANCEL | wx.ICON_QUESTION)
+        reponse = dlg.ShowModal()
+        dlg.Destroy()
+        if reponse != wx.ID_YES:
+            DB.Close()
+            return False
+
+    # Méthode selon nbre enfants présents
+    req = "SELECT IDtarif, methode FROM tarifs WHERE methode LIKE 'montant_enfant';"
+    DB.ExecuterReq(req)
+    resultats = DB.ResultatReq()
+    if resultats:
+        dlg = wx.MessageDialog(parent, u"La méthode tarifaire selon le nombre d'enfants présents ne sont pas encore disponibles dans Noethysweb. Souhaitez-vous quand même continuer ?", u"Avertissement", wx.YES_NO | wx.NO_DEFAULT | wx.CANCEL | wx.ICON_QUESTION)
+        reponse = dlg.ShowModal()
+        dlg.Destroy()
+        if reponse != wx.ID_YES:
+            DB.Close()
+            return False
+
+    DB.Close()
+    return True
