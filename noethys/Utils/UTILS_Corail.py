@@ -199,10 +199,10 @@ def GetXML(dictDonnees={}):
             InfoTiersSolidaire = doc.createElement("InfoTiersSolidaire")
             TiersSolidaire.appendChild(InfoTiersSolidaire)
 
-            # CatTiersSolidaire
-            CatTiersSolidaire = doc.createElement("CatTiersSolidaire")
-            CatTiersSolidaire.setAttribute("V", dictPiece["cattiers_helios"])
-            InfoTiersSolidaire.appendChild(CatTiersSolidaire)
+            # CatTiersTiersSolidaire
+            CatTiersTiersSolidaire = doc.createElement("CatTiersTiersSolidaire")
+            CatTiersTiersSolidaire.setAttribute("V", dictPiece["cattiers_helios"])
+            InfoTiersSolidaire.appendChild(CatTiersTiersSolidaire)
 
             # NatJurTiersSolidaire
             NatJurTiersSolidaire = doc.createElement("NatJurTiersSolidaire")

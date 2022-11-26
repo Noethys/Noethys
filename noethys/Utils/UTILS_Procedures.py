@@ -1393,8 +1393,9 @@ def A9055():
     if reponse != wx.ID_OK:
         return
     DB = GestionDB.DB()
+    from Data import DATA_Tables as Tables
     if DB.IsTableExists(nom_table) == False:
-        DB.CreationTable(nom_table, DB.DB_DATA)
+        DB.CreationTable(nom_table, Tables.DB_DATA)
     else:
         dlg = wx.MessageDialog(None, _(u"Cette table existe déjà !"), _(u"Erreur"), wx.OK | wx.ICON_ERROR)
         dlg.ShowModal()
