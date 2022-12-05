@@ -1442,19 +1442,24 @@ def A9064():
     # Recherche des familles
     DB = GestionDB.DB()
     req = """SELECT IDfamille, titulaire_helios, tiers_solidaire
-    FROM familles
-    WHERE tiers_solidaire IS NULL OR tiers_solidaire='';"""
+    FROM familles;"""
     DB.ExecuterReq(req)
     listeDonnees = DB.ResultatReq()
     DB.Close()
     listeModifications = []
     for IDfamille, titulaire_helios, tiers_solidaire in listeDonnees:
+        reinit = False
+        if titulaire_helios == tiers_solidaire:
+            tiers_solidaire = None
+            reinit = True
         found = False
         for dictIndividu in dictIndividus.get(IDfamille, []):
-            if not found and dictIndividu["IDindividu"] != titulaire_helios:
+            if not tiers_solidaire and not found and dictIndividu["IDindividu"] != titulaire_helios:
                 tiers_solidaire = dictIndividu["IDindividu"]
                 listeModifications.append((tiers_solidaire, IDfamille))
                 found = True
+        if reinit and not found:
+            listeModifications.append((None, IDfamille))
 
     print("Nbre de tiers solidaires a enregistrer : %d" % len(listeModifications))
 
