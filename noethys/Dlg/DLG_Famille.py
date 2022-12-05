@@ -435,11 +435,11 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_MENU, self.MenuGenererAttestation, id=10)
         
         # Item Liste Attestation de présence
-        item = wx.MenuItem(menuPop, 20, _(u"Liste des attestations de présences générées"))
+        item = wx.MenuItem(menuPop, 12, _(u"Liste des attestations de présences générées"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Facture.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
-        self.Bind(wx.EVT_MENU, self.MenuListeAttestations, id=20)
+        self.Bind(wx.EVT_MENU, self.MenuListeAttestations, id=12)
 
         menuPop.AppendSeparator()
 
