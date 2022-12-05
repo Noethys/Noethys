@@ -403,7 +403,7 @@ class Export_all(Export):
                                             exclure_champs=["IDutilisateur"],
                                             nouveaux_noms_champs={"IDfamille": "famille", "IDreglement": "reglement"}))
 
-        self.Ajouter(categorie="facturation", table=Table(self, nom_table="attestations", nouveau_nom_table="core.Attestation",
+        self.Ajouter(categorie="facturation", table=Table_attestations(self, nom_table="attestations", nouveau_nom_table="core.Attestation",
                                             exclure_champs=["IDutilisateur"],
                                             nouveaux_noms_champs={"IDfamille": "famille"}))
 
@@ -1132,6 +1132,13 @@ class Table_recus(Table):
         return valeur
 
 
+class Table_attestations(Table):
+    def activites(self, valeur=None):
+        # Suppression de tous les idactivite en double
+        valeur = ";".join(list({idactivite: None for idactivite in valeur.split(";")}.keys()))
+        return valeur
+
+
 class Table_textes_rappels(Table):
     def couleur(self, valeur=""):
         return Rgb2hex(valeur)
@@ -1184,29 +1191,29 @@ def Verifications(parent=None):
     """ Vérifications générales avant export """
     DB = GestionDB.DB()
 
-    # Forfaits-crédits
-    req = "SELECT IDtarif, type FROM tarifs WHERE type='CREDIT';"
-    DB.ExecuterReq(req)
-    resultats = DB.ResultatReq()
-    if resultats:
-        dlg = wx.MessageDialog(parent, u"Les forfait-crédits ne sont pas encore disponibles dans Noethysweb. Souhaitez-vous quand même continuer ?", u"Avertissement", wx.YES_NO | wx.NO_DEFAULT | wx.CANCEL | wx.ICON_QUESTION)
-        reponse = dlg.ShowModal()
-        dlg.Destroy()
-        if reponse != wx.ID_YES:
-            DB.Close()
-            return False
+    # # Forfaits-crédits
+    # req = "SELECT IDtarif, type FROM tarifs WHERE type='CREDIT';"
+    # DB.ExecuterReq(req)
+    # resultats = DB.ResultatReq()
+    # if resultats:
+    #     dlg = wx.MessageDialog(parent, u"Les forfait-crédits ne sont pas encore disponibles dans Noethysweb. Souhaitez-vous quand même continuer ?", u"Avertissement", wx.YES_NO | wx.NO_DEFAULT | wx.CANCEL | wx.ICON_QUESTION)
+    #     reponse = dlg.ShowModal()
+    #     dlg.Destroy()
+    #     if reponse != wx.ID_YES:
+    #         DB.Close()
+    #         return False
 
-    # Méthode selon nbre enfants présents
-    req = "SELECT IDtarif, methode FROM tarifs WHERE methode LIKE 'montant_enfant';"
-    DB.ExecuterReq(req)
-    resultats = DB.ResultatReq()
-    if resultats:
-        dlg = wx.MessageDialog(parent, u"La méthode tarifaire selon le nombre d'enfants présents ne sont pas encore disponibles dans Noethysweb. Souhaitez-vous quand même continuer ?", u"Avertissement", wx.YES_NO | wx.NO_DEFAULT | wx.CANCEL | wx.ICON_QUESTION)
-        reponse = dlg.ShowModal()
-        dlg.Destroy()
-        if reponse != wx.ID_YES:
-            DB.Close()
-            return False
+    # # Méthode selon nbre enfants présents
+    # req = "SELECT IDtarif, methode FROM tarifs WHERE methode LIKE 'montant_enfant';"
+    # DB.ExecuterReq(req)
+    # resultats = DB.ResultatReq()
+    # if resultats:
+    #     dlg = wx.MessageDialog(parent, u"La méthode tarifaire selon le nombre d'enfants présents ne sont pas encore disponibles dans Noethysweb. Souhaitez-vous quand même continuer ?", u"Avertissement", wx.YES_NO | wx.NO_DEFAULT | wx.CANCEL | wx.ICON_QUESTION)
+    #     reponse = dlg.ShowModal()
+    #     dlg.Destroy()
+    #     if reponse != wx.ID_YES:
+    #         DB.Close()
+    #         return False
 
     DB.Close()
     return True
