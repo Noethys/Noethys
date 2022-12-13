@@ -90,9 +90,9 @@ class Track(object):
                 dict_factures[key] += dict_ventilation["montant"]
 
             # Mémorisation des prestations associées
-            if dict_ventilation["label"] not in dict_prestations:
-                dict_prestations[dict_ventilation["label"]] = 0.0
-            dict_prestations[dict_ventilation["label"]] += dict_ventilation["montant"]
+            if dict_ventilation[self.parent.detail] not in dict_prestations:
+                dict_prestations[dict_ventilation[self.parent.detail]] = 0.0
+            dict_prestations[dict_ventilation[self.parent.detail]] += dict_ventilation["montant"]
 
         # Analyse des factures associées
         self.texte_factures = ""
@@ -102,15 +102,23 @@ class Track(object):
                 liste_temp.append(u" n°%s (%.2f %s)" % (num_facture, montant, SYMBOLE))
             self.texte_factures = u", ".join(liste_temp)
 
-        # Analyse des factures associées
+        # Analyse des prestations associées
         self.texte_prestations = ""
-        if len(dict_prestations) > 0:
-            liste_temp = []
-            for label, montant in dict_prestations.items():
-                liste_temp.append(u"%s (%.2f %s)" % (label, montant, SYMBOLE))
-            self.texte_prestations = u", ".join(liste_temp)
+        if self.parent.detail == "label":
+            if len(dict_prestations) > 0:
+                liste_temp = []
+                for key, montant in dict_prestations.items():
+                    liste_temp.append(u"%s (%.2f %s)" % (key, montant, SYMBOLE))
+                self.texte_prestations = u", ".join(liste_temp)
 
-
+        if self.parent.detail == "IDactivite":
+            for key, montant in dict_prestations.items():
+                if not key:
+                    key = 0
+                label_key = "activite_%d" % key
+                if label_key not in self.parent.colonnes_detail:
+                    self.parent.colonnes_detail.append(label_key)
+                setattr(self, label_key, montant)
 
 
 class ListView(FastObjectListView):
@@ -119,6 +127,7 @@ class ListView(FastObjectListView):
         self.listeFiltres = []
         self.numColonneTri = 1
         self.ordreAscendant = True
+        self.detail = "label"
 
         # Importation des titulaires
         self.dict_titulaires = UTILS_Titulaires.GetTitulaires()
@@ -130,6 +139,8 @@ class ListView(FastObjectListView):
         self.Bind(wx.EVT_CONTEXT_MENU, self.OnContextMenu)
 
     def InitModel(self):
+        self.colonnes_detail = []
+        self.dict_activites = {}
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
@@ -144,9 +155,10 @@ class ListView(FastObjectListView):
 
         req = """SELECT IDventilation, ventilation.IDreglement, ventilation.IDprestation, ventilation.montant,
         prestations.IDfacture, prestations.label, factures.numero,
-        factures.IDprefixe, factures_prefixes.prefixe
+        factures.IDprefixe, factures_prefixes.prefixe, prestations.IDactivite, activites.nom
         FROM ventilation
         LEFT JOIN prestations ON prestations.IDprestation = ventilation.IDprestation 
+        LEFT JOIN activites ON activites.IDactivite = prestations.IDactivite
         LEFT JOIN reglements ON reglements.IDreglement = ventilation.IDreglement
         LEFT JOIN factures ON factures.IDfacture = prestations.IDfacture
         LEFT JOIN factures_prefixes ON factures_prefixes.IDprefixe = factures.IDprefixe
@@ -155,11 +167,12 @@ class ListView(FastObjectListView):
         DB.ExecuterReq(req)
         listeVentilation = DB.ResultatReq()
         dict_ventilation = {}
-        for IDventilation, IDreglement, IDprestation, montant, IDfacture, label, num_facture, IDprefixe, prefixe in listeVentilation:
+        for IDventilation, IDreglement, IDprestation, montant, IDfacture, label, num_facture, IDprefixe, prefixe, IDactivite, nom_activite in listeVentilation:
             if IDreglement not in dict_ventilation:
                 dict_ventilation[IDreglement] = []
             dict_ventilation[IDreglement].append({"IDprestation": IDprestation, "label": label, "montant": montant, "IDfacture": IDfacture, "num_facture": num_facture,
-                                                  "IDprefixe": IDprefixe, "prefixe": prefixe})
+                                                  "IDprefixe": IDprefixe, "prefixe": prefixe, "IDactivite": IDactivite, "nom_activite": nom_activite})
+            self.dict_activites[IDactivite] = nom_activite
 
         req = """SELECT 
         reglements.IDreglement, date_saisie, reglements.IDcompte_payeur, reglements.date, reglements.encaissement_attente,
@@ -252,8 +265,16 @@ class ListView(FastObjectListView):
             ColumnDefn(_(u"Date dépôt"), 'left', 75, "date_depot", typeDonnee="date", stringConverter=FormateDateCourt),
             ColumnDefn(_(u"Nom dépôt"), 'left', 110, "nom_depot", typeDonnee="texte"),
             ColumnDefn(_(u"Factures associées"), 'left', 130, "texte_factures", typeDonnee="texte"),
-            ColumnDefn(_(u"Prestations associées"), 'left', 250, "texte_prestations", typeDonnee="texte"),
             ]
+
+        if self.detail == "label":
+            liste_Colonnes.append(ColumnDefn(_(u"Prestations associées"), 'left', 250, "texte_prestations", typeDonnee="texte"))
+
+        if self.detail == "IDactivite":
+            for key_label in self.colonnes_detail:
+                IDactivite = int(key_label.split("_")[1])
+                label_colonne = self.dict_activites.get(IDactivite, "Autre")
+                liste_Colonnes.append(ColumnDefn(label_colonne, "right", 100, key_label, typeDonnee="montant", stringConverter=FormateMontant))
 
         self.SetColumns(liste_Colonnes)
         self.SetEmptyListMsg(_(u"Aucun règlement"))
@@ -350,7 +371,16 @@ class ListviewAvecFooter(PanelAvecFooter):
             "nom_mode" : {"mode" : "nombre", "singulier" : _(u"règlement"), "pluriel" : _(u"règlements"), "alignement" : wx.ALIGN_CENTER},
             "montant" : {"mode" : "total"},
             "montant_ventilation" : {"mode" : "total"},
-            }
+            "activite_0": {"mode": "total"},
+        }
+
+        DB = GestionDB.DB()
+        req = """SELECT IDactivite, nom FROM activites;"""
+        DB.ExecuterReq(req)
+        for IDactivite, nom in DB.ResultatReq():
+            dictColonnes["activite_%d" % IDactivite] = {"mode" : "total"}
+        DB.Close()
+
         PanelAvecFooter.__init__(self, parent, ListView, kwargs, dictColonnes)
 
 
