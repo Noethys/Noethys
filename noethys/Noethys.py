@@ -1024,7 +1024,7 @@ class MainFrame(wx.Frame):
                             {"code" : "factures_imprimer", "label" : _(u"Imprimer"), "infobulle" : _(u"Imprimer des factures"), "image" : "Images/16x16/Imprimante.png", "action" : self.On_facturation_factures_imprimer},
                             "-",
                             {"code" : "factures_liste", "label" : _(u"Liste des factures"), "infobulle" : _(u"Liste des factures générées"), "image" : "Images/16x16/Facture.png", "action" : self.On_facturation_factures_liste},
-                            ],
+                            {"code" : "factures_liste_detail", "label": _(u"Liste détaillée des factures"), "infobulle": _(u"Consulter la liste détaillée des factures"), "image": "Images/16x16/Facture.png", "action": self.On_facturation_factures_liste_detail}, ],
                     },
                     {"code" : "menu_facturation_rappels", "label" : _(u"Lettres de rappel"), "items" : [
                             {"code" : "rappels_generation", "label" : _(u"Génération"), "infobulle" : _(u"Génération des lettres de rappel"), "image" : "Images/16x16/Generation.png", "action" : self.On_facturation_rappels_generation},
@@ -2943,7 +2943,15 @@ class MainFrame(wx.Frame):
         dlg = DLG_Liste_factures.Dialog(self)
         dlg.ShowModal() 
         dlg.Destroy()
-        
+
+    def On_facturation_factures_liste_detail(self, event):
+        if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("facturation_factures", "consulter") == False: return
+        if self.VerificationVentilation() == False: return
+        from Dlg import DLG_Liste_factures_detail
+        dlg = DLG_Liste_factures_detail.Dialog(self)
+        dlg.ShowModal()
+        dlg.Destroy()
+
     def On_facturation_factures_prelevement(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("facturation_prelevements", "consulter") == False : return
         if self.VerificationVentilation() == False : return
