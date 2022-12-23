@@ -74,6 +74,9 @@ DICT_PROCEDURES = {
     "A9055" : _(u"Création d'une table"),
     "A9062" : _(u"Modification du type d'un champ"),
     "A9064" : _(u"Renseignement automatique du tiers solidaire dans toutes les fiches familles"),
+    "A9068" : _(u"Désinscription de plusieurs individus"),
+    "A9070" : _(u"Conversion d'une unité multihoraires en unité standard"),
+    "A9072" : _(u"Statistiques du tarif à un euro"),
 }
 
 
@@ -1469,11 +1472,152 @@ def A9064():
     DB.Commit()
     DB.Close()
 
+def A9068():
+    """ Déinscription de plusieurs individus """
+    DB = GestionDB.DB()
 
+    # Demande l'activité concernée
+    req = """SELECT IDactivite, nom FROM activites ORDER BY nom;"""
+    DB.ExecuterReq(req)
+    listeActivites = DB.ResultatReq()
+    dlg = wx.SingleChoiceDialog(None, u"Sélectionnez une activité :", u"Désinscription par lot", [nom for idactivite, nom in listeActivites], wx.CHOICEDLG_STYLE)
+    dlg.SetSize((400, 400))
+    dlg.CenterOnScreen()
+    if dlg.ShowModal() == wx.ID_OK:
+        index = dlg.GetSelection()
+        IDactivite, nom = listeActivites[index]
+        dlg.Destroy()
+    else:
+        DB.Close()
+        dlg.Destroy()
+        return
+
+    # Demande les individus à désinscrire
+    req = """SELECT IDinscription, individus.nom, individus.prenom
+    FROM inscriptions
+    LEFT JOIN individus ON individus.IDindividu = inscriptions.IDindividu
+    WHERE IDactivite=%d AND date_desinscription IS NULL
+    ORDER BY individus.nom, individus.prenom;""" % IDactivite
+    DB.ExecuterReq(req)
+    listeInscriptions = DB.ResultatReq()
+    dlg = wx.MultiChoiceDialog(None, u"Cochez les individus à désinscrire", u"Désinscription par lot", ["%s %s" % (nom, prenom) for idinscription, nom, prenom in listeInscriptions], wx.CHOICEDLG_STYLE)
+    dlg.SetSize((400, 400))
+    dlg.CenterOnScreen()
+    if dlg.ShowModal() == wx.ID_OK:
+        listeIDinscription = [listeInscriptions[index][0] for index in dlg.GetSelections()]
+        dlg.Destroy()
+    else:
+        DB.Close()
+        dlg.Destroy()
+        return
+
+    # Saisie de la date de désinscription
+    dlg = wx.TextEntryDialog(None, u"Saisissez la date de désinscription au format JJ/MM/AAAA :", u"Désinscription par lot", "")
+    reponse = dlg.ShowModal()
+    date = dlg.GetValue()
+    if reponse != wx.ID_OK:
+        DB.Close()
+        return
+    from Utils import UTILS_Dates
+    date_erreur = False
+    try:
+        date_desinscription = UTILS_Dates.DateFrEng(date)
+    except:
+        date_erreur = True
+    if date_erreur or not date_desinscription:
+        dlg = wx.MessageDialog(None, u"La date semble erronée. Procédure annulée.", _(u"Erreur"), wx.OK | wx.ICON_ERROR)
+        dlg.ShowModal()
+        dlg.Destroy()
+        DB.Close()
+        return
+
+    if len(listeIDinscription) == 0: condition = "IDinscription > 0"
+    elif len(listeIDinscription) == 1: condition = "IDinscription IN (%d)" % listeIDinscription[0]
+    else: condition = "IDinscription IN %s" % str(tuple(listeIDinscription))
+
+    DB.ExecuterReq("UPDATE inscriptions SET date_desinscription='%s' WHERE %s;" % (date_desinscription, condition))
+    DB.Commit()
+    DB.Close()
+
+
+def A9070():
+    """ Conversion d'une unité multihoraires en unité standard """
+    DB = GestionDB.DB()
+
+    # Demande l'activité concernée
+    req = """SELECT IDunite, unites.nom, activites.nom
+    FROM unites
+    LEFT JOIN activites ON activites.IDactivite = unites.IDactivite 
+    WHERE unites.type="Multihoraires"
+    ORDER BY activites.nom, unites.nom;"""
+    DB.ExecuterReq(req)
+    listeUnites = DB.ResultatReq()
+    dlg = wx.SingleChoiceDialog(None, u"Sélectionnez une unité multihoraires à convertir en standard :", u"Conversion", ["%s (%s)" % (nom_unite, nom_activite) for IDunite, nom_unite, nom_activite in listeUnites], wx.CHOICEDLG_STYLE)
+    dlg.SetSize((400, 400))
+    dlg.CenterOnScreen()
+    if dlg.ShowModal() == wx.ID_OK:
+        index = dlg.GetSelection()
+        IDunite, nom_unite, nom_activite = listeUnites[index]
+        dlg.Destroy()
+    else:
+        DB.Close()
+        dlg.Destroy()
+        return
+
+    DB.ExecuterReq("UPDATE unites SET type='Unitaire' WHERE IDunite=%d;" % IDunite)
+    DB.Commit()
+    DB.Close()
+
+
+def A9072():
+    """ Statistiques du tarif à un euro """
+    # Sélection de la période
+    from Dlg import DLG_Selection_dates
+    dlg = DLG_Selection_dates.Dialog(None)
+    if dlg.ShowModal() == wx.ID_OK:
+        date_debut, date_fin = dlg.GetDateDebut(), dlg.GetDateFin()
+        dlg.Destroy()
+    else:
+        dlg.Destroy()
+        return
+
+    # Demande l'activité concernée
+    DB = GestionDB.DB()
+    req = """SELECT IDactivite, nom FROM activites ORDER BY nom;"""
+    DB.ExecuterReq(req)
+    listeActivites = DB.ResultatReq()
+    dlg = wx.SingleChoiceDialog(None, u"Sélectionnez une activité :", u"Choix de l'activité", [nom_activite for IDactivite, nom_activite in listeActivites], wx.CHOICEDLG_STYLE)
+    dlg.SetSize((400, 400))
+    dlg.CenterOnScreen()
+    if dlg.ShowModal() == wx.ID_OK:
+        index = dlg.GetSelection()
+        IDactivite = listeActivites[index][0]
+        dlg.Destroy()
+    else:
+        DB.Close()
+        dlg.Destroy()
+        return
+
+    # Recherche les prestations
+    req = """SELECT IDprestation, IDindividu FROM prestations WHERE montant=1 AND IDactivite=%d AND date>='%s' AND date<='%s';""" % (IDactivite, date_debut, date_fin)
+    DB.ExecuterReq(req)
+    listePrestations = DB.ResultatReq()
+    DB.Close()
+    liste_individus = []
+    for IDprestation, IDindividu in listePrestations:
+        if IDindividu not in liste_individus:
+            liste_individus.append(IDindividu)
+
+    # Affichage des résultats
+    txt_resultats = _(u"Résultats : %d prestations / %d individus.") % (len(listePrestations), len(liste_individus))
+    dlg = wx.MessageDialog(None, txt_resultats, _(u"Résultats"), wx.OK | wx.ICON_INFORMATION)
+    dlg.ShowModal()
+    dlg.Destroy()
+    return
 
 
 if __name__ == u"__main__":
     app = wx.App(0)
     # TEST D'UNE PROCEDURE :
-    A9064()
+    A9072()
     app.MainLoop()
