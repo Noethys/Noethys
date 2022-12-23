@@ -245,7 +245,7 @@ class Export_all(Export):
 
         self.Ajouter(categorie="individus", table=Table(self, nom_table="types_sieste", nouveau_nom_table="core.TypeSieste"))
 
-        self.Ajouter(categorie="individus", table=Table(self, nom_table="types_vaccins", nouveau_nom_table="core.TypeVaccin"))
+        self.Ajouter(categorie="individus", table=Table_types_vaccins(self, nom_table="types_vaccins", nouveau_nom_table="core.TypeVaccin"))
 
         self.Ajouter(categorie="individus", table=Table_ecoles(self, nom_table="ecoles", nouveau_nom_table="core.Ecole"))
 
@@ -446,6 +446,14 @@ class Export_all(Export):
 class Table_structures(Table):
     def Get_data(self):
         return [{"model": "core.Structure", "pk": 1, "fields": {"nom": u"Structure par défaut"}},]
+
+
+class Table_types_vaccins(Table):
+    def types_maladies(self, data={}):
+        """ Champ ManyToMany"""
+        req = """SELECT IDtype_vaccin, IDtype_maladie FROM vaccins_maladies WHERE IDtype_vaccin=%d;""" % data["pk"]
+        self.parent.DB.ExecuterReq(req)
+        return [IDtype_maladie for IDtype_vaccin, IDtype_maladie in self.parent.DB.ResultatReq()]
 
 
 class Table_ecoles(Table):
