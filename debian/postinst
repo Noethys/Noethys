@@ -1,0 +1,14 @@
+#!/bin/bash
+
+## Only use folder previously located in /var/lib/noethys/ if they exists.
+
+for folder in "data" "sync" "temp" "aide" "updates" ; do
+  if [ -e /var/lib/noethys/$folder ] ; then
+    Folder="$(tr '[:lower:]' '[:upper:]' <<< ${folder:0:1})${folder:1}"
+    ln -sfT /var/lib/noethys/${folder} /usr/share/noethys/${Folder}
+  fi
+done
+
+if [ -e /usr/share/noethys/journal.log ] ; then
+    rm -f /usr/share/noethys/journal.log
+fi

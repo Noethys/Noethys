@@ -1,0 +1,11 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Noethys
+Comment=Multi activity management software
+Comment[fr_FR]=Logiciel de gestion multi-activités
+Exec=/usr/bin/python3 /usr/share/noethys/Noethys.py
+Terminal=false
+Type=Application
+StartupNotify=true
+Icon=/usr/share/noethys/Noethys.png
+Categories=Accouting;

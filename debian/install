@@ -1,0 +1,14 @@
+noethys/*.py		        usr/share/noethys/
+noethys/Versions.txt     usr/share/noethys/
+
+noethys/Ctrl             usr/share/noethys/
+noethys/Data           usr/share/noethys/
+noethys/Dlg             usr/share/noethys/
+noethys/ObjectListView   usr/share/noethys/
+noethys/Ol           usr/share/noethys/
+noethys/Outils           usr/share/noethys/
+noethys/Utils           usr/share/noethys/
+noethys/Static		usr/share/noethys/
+
+debian/noethys.desktop        usr/share/applications/
+debian/Noethys.png            usr/share/noethys/
