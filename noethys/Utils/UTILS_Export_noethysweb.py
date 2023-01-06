@@ -81,7 +81,7 @@ class Table():
 
                     # Fonction personnalisée
                     if hasattr(self, nom_champ):
-                        valeur = getattr(self, nom_champ)(valeur=valeur)
+                        valeur = getattr(self, nom_champ)(valeur=valeur, objet=objet)
 
                     # Changement du nom du champ
                     if nom_champ in self.nouveaux_noms_champs:
@@ -123,8 +123,14 @@ class Table():
                     valeur = getattr(self, nom_champ)(data=dictData)
                 dictTemp["fields"][nom_champ.lower()] = valeur
 
+            # Vérifie si la ligne est à incorporer ou non
+            ligne_valide = True
+            if hasattr(self, "valide_ligne"):
+                ligne_valide = getattr(self, "valide_ligne")(data=dictData)
+
             # Mémorisation de l'objet
-            liste_objets.append(dictTemp)
+            if ligne_valide:
+                liste_objets.append(dictTemp)
 
         return liste_objets
 
@@ -318,7 +324,7 @@ class Export_all(Export):
                                      exclure_champs=["num_secu"], dict_types_champs={"deces": bool, "travail_tel_sms": bool, "tel_domicile_sms": bool, "tel_mobile_sms": bool},
                                      nouveaux_champs=["photo", "listes_diffusion"]))
 
-        self.Ajouter(categorie="individus", table=Table(self, nom_table="scolarite", nouveau_nom_table="core.Scolarite", nouveaux_noms_champs={"IDindividu": "individu", "IDecole": "ecole", "IDclasse": "classe", "IDniveau": "niveau"}))
+        self.Ajouter(categorie="individus", table=Table_scolarite(self, nom_table="scolarite", nouveau_nom_table="core.Scolarite", nouveaux_noms_champs={"IDindividu": "individu", "IDecole": "ecole", "IDclasse": "classe", "IDniveau": "niveau"}))
 
         self.Ajouter(categorie="individus", table=Table_familles(self, nom_table="familles", nouveau_nom_table="core.Famille",
                             nouveaux_noms_champs={"IDcaisse": "caisse", "code_comptable": "code_compta"},
@@ -356,7 +362,7 @@ class Export_all(Export):
         self.Ajouter(categorie="individus", table=Table(self, nom_table="rattachements", nouveau_nom_table="core.Rattachement", nouveaux_noms_champs={"IDindividu": "individu", "IDfamille": "famille", "IDcategorie": "categorie"},
                            dict_types_champs={"titulaire": bool}))
 
-        self.Ajouter(categorie="pieces", table=Table(self, nom_table="pieces", nouveau_nom_table="core.Piece", nouveaux_noms_champs={"IDindividu": "individu", "IDfamille": "famille", "IDtype_piece": "type_piece"}))
+        self.Ajouter(categorie="pieces", table=Table_pieces(self, nom_table="pieces", nouveau_nom_table="core.Piece", nouveaux_noms_champs={"IDindividu": "individu", "IDfamille": "famille", "IDtype_piece": "type_piece"}))
 
         self.Ajouter(categorie="facturation", table=Table_factures(self, nom_table="factures", nouveau_nom_table="core.Facture", nouveaux_noms_champs={"IDfamille": "famille", "IDregie": "regie", "IDlot": "lot", "IDprefixe": "prefixe"},
                             exclure_champs=["IDcompte_payeur", "IDutilisateur", "etat", "mention1", "mention2", "mention3"],
@@ -364,7 +370,7 @@ class Export_all(Export):
 
         self.Ajouter(categorie="consommations", table=Table_prestations(self, nom_table="prestations", nouveau_nom_table="core.Prestation", nouveaux_noms_champs={"IDactivite": "activite", "IDtarif": "tarif", "IDfacture": "facture", "IDfamille": "famille",
                            "IDindividu": "individu", "IDcategorie_tarif": "categorie_tarif", "code_comptable": "code_compta"},
-                           exclure_champs=["IDcompte_payeur", "forfait_date_debut", "forfait_date_fin", "reglement_frais", "IDcontrat", "IDdonnee"]))
+                           exclure_champs=["IDcompte_payeur", "reglement_frais", "IDcontrat", "IDdonnee"]))
 
         self.Ajouter(categorie="cotisations", table=Table(self, nom_table="depots_cotisations", nouveau_nom_table="core.DepotCotisations", dict_types_champs={"verrouillage": bool}, nouveaux_noms_champs={"IDdepot_cotisation": "iddepot"})),
 
@@ -448,6 +454,26 @@ class Table_structures(Table):
         return [{"model": "core.Structure", "pk": 1, "fields": {"nom": u"Structure par défaut"}},]
 
 
+class Table_pieces(Table):
+    def __init__(self, parent, **kwds):
+        self.parent = parent
+
+        # Récupération des individus
+        req = """SELECT IDindividu, nom FROM individus;"""
+        self.parent.DB.ExecuterReq(req)
+        self.liste_individus = []
+        for IDindividu, nom in self.parent.DB.ResultatReq():
+            self.liste_individus.append(IDindividu)
+
+        Table.__init__(self, parent, **kwds)
+
+    def valide_ligne(self, data={}):
+        """ Incorpore la ligne uniquement le IDindividu existe"""
+        if data["fields"]["individu"] and data["fields"]["individu"] not in self.liste_individus:
+            return False
+        return True
+
+
 class Table_types_vaccins(Table):
     def types_maladies(self, data={}):
         """ Champ ManyToMany"""
@@ -457,7 +483,7 @@ class Table_types_vaccins(Table):
 
 
 class Table_ecoles(Table):
-    def secteurs(self, valeur=None):
+    def secteurs(self, valeur=None, objet=None):
         """ Champ ManyToMany"""
         liste_secteurs = []
         if valeur:
@@ -467,7 +493,7 @@ class Table_ecoles(Table):
 
 
 class Table_classes(Table):
-    def niveaux(self, valeur=None):
+    def niveaux(self, valeur=None, objet=None):
         """ Champ ManyToMany"""
         liste_niveaux = []
         if valeur:
@@ -512,7 +538,7 @@ class Table_activites(Table):
         self.parent.DB.ExecuterReq(req)
         return [IDtype_cotisation for IDactivite, IDtype_cotisation in self.parent.DB.ResultatReq()]
 
-    def inscriptions_multiples(self, valeur=None):
+    def inscriptions_multiples(self, valeur=None, objet=None):
         if valeur:
             return True
         return False
@@ -544,7 +570,7 @@ class Table_unites_remplissage(Table):
 
 
 class Table_tarifs(Table):
-    def categories_tarifs(self, valeur=None):
+    def categories_tarifs(self, valeur=None, objet=None):
         """ Champ ManyToMany"""
         liste_categories = []
         if valeur:
@@ -552,7 +578,7 @@ class Table_tarifs(Table):
                 liste_categories.append(int(IDcategorie_tarif))
         return liste_categories
 
-    def groupes(self, valeur=None):
+    def groupes(self, valeur=None, objet=None):
         """ Champ ManyToMany"""
         liste_groupes = []
         if valeur:
@@ -560,7 +586,7 @@ class Table_tarifs(Table):
                 liste_groupes.append(int(IDgroupe))
         return liste_groupes
 
-    def cotisations(self, valeur=None):
+    def cotisations(self, valeur=None, objet=None):
         """ Champ ManyToMany"""
         liste_cotisations = []
         if valeur:
@@ -568,7 +594,7 @@ class Table_tarifs(Table):
                 liste_cotisations.append(int(IDcotisation))
         return liste_cotisations
 
-    def caisses(self, valeur=None):
+    def caisses(self, valeur=None, objet=None):
         """ Champ ManyToMany"""
         liste_caisses = []
         if valeur:
@@ -576,17 +602,17 @@ class Table_tarifs(Table):
                 liste_caisses.append(int(IDcaisse))
         return liste_caisses
 
-    def etats(self, valeur=None):
+    def etats(self, valeur=None, objet=None):
         if valeur:
             valeur = valeur.replace(";", ",")
         return valeur
 
-    def jours_scolaires(self, valeur=None):
+    def jours_scolaires(self, valeur=None, objet=None):
         if valeur:
             valeur = valeur.replace(";", ",")
         return valeur
 
-    def jours_vacances(self, valeur=None):
+    def jours_vacances(self, valeur=None, objet=None):
         if valeur:
             valeur = valeur.replace(";", ",")
         return valeur
@@ -598,6 +624,26 @@ class Table_combi_tarifs(Table):
         req = """SELECT IDcombi_tarif, IDunite FROM combi_tarifs_unites WHERE IDcombi_tarif=%d;""" % data["pk"]
         self.parent.DB.ExecuterReq(req)
         return [IDunite for IDcombi_tarif, IDunite in self.parent.DB.ResultatReq()]
+
+
+class Table_scolarite(Table):
+    def __init__(self, parent, **kwds):
+        self.parent = parent
+
+        # Récupération des individus
+        req = """SELECT IDindividu, nom FROM individus;"""
+        self.parent.DB.ExecuterReq(req)
+        self.liste_individus = []
+        for IDindividu, nom in self.parent.DB.ResultatReq():
+            self.liste_individus.append(IDindividu)
+
+        Table.__init__(self, parent, **kwds)
+
+    def valide_ligne(self, data={}):
+        """ Incorpore la ligne uniquement le IDindividu existe"""
+        if data["fields"]["individu"] and data["fields"]["individu"] not in self.liste_individus:
+            return False
+        return True
 
 
 class Table_familles(Table):
@@ -613,22 +659,22 @@ class Table_familles(Table):
 
         Table.__init__(self, parent, **kwds)
 
-    def allocataire(self, valeur=None):
+    def allocataire(self, valeur=None, objet=None):
         if valeur and valeur in self.liste_individus:
             return valeur
         return None
 
-    def email_factures(self, valeur=None):
+    def email_factures(self, valeur=None, objet=None):
         if valeur:
             return True
         return False
 
-    def email_recus(self, valeur=None):
+    def email_recus(self, valeur=None, objet=None):
         if valeur:
             return True
         return False
 
-    def email_depots(self, valeur=None):
+    def email_depots(self, valeur=None, objet=None):
         if valeur:
             return True
         return False
@@ -696,25 +742,29 @@ class Table_prestations(Table):
         self.dictFactures = {}
         for IDfacture, date_edition in parent.DB.ResultatReq():
             self.dictFactures[IDfacture] = date_edition
-
         Table.__init__(self, parent, **kwds)
 
-    def IDindividu(self, valeur=None):
+    def IDindividu(self, valeur=None, objet=None):
         if valeur == 0:
             valeur = None
         return valeur
 
-    def IDfacture(self, valeur=None):
+    def IDfacture(self, valeur=None, objet=None):
         # Vérifie que la facture existe bien
         if valeur and valeur in self.dictFactures:
             return valeur
         return None
 
-    def date(self, valeur=None):
+    def date(self, valeur=None, objet=None):
         if isinstance(valeur, datetime.datetime):
             return valeur.date()
         if isinstance(valeur, unicode) and ":" in valeur:
             return valeur[:10]
+        return valeur
+
+    def date_valeur(self, valeur=None, objet=None):
+        if not valeur:
+            return objet[2]
         return valeur
 
 
@@ -729,13 +779,13 @@ class Table_consommations(Table):
 
         Table.__init__(self, parent, **kwds)
 
-    def IDprestation(self, valeur=None):
+    def IDprestation(self, valeur=None, objet=None):
         # Vérifie que la prestation existe bien
         if valeur and valeur in self.dictPrestations:
             return valeur
         return None
 
-    def quantite(self, valeur=None):
+    def quantite(self, valeur=None, objet=None):
         return valeur or 1
 
 
@@ -750,7 +800,7 @@ class Table_cotisations(Table):
 
         Table.__init__(self, parent, **kwds)
 
-    def activites(self, valeur=None):
+    def activites(self, valeur=None, objet=None):
         """ Champ ManyToMany"""
         liste_activites = []
         if valeur:
@@ -758,14 +808,14 @@ class Table_cotisations(Table):
                 liste_activites.append(int(IDactivite))
         return liste_activites
 
-    def IDprestation(self, valeur=None):
+    def IDprestation(self, valeur=None, objet=None):
         if valeur and valeur in self.dictPrestations:
             return valeur
         return None
 
 
 class Table_problemes_sante(Table):
-    def IDtype(self, valeur=None):
+    def IDtype(self, valeur=None, objet=None):
         if valeur == None:
             return 1
         return valeur
@@ -778,12 +828,12 @@ class Table_aides(Table):
         self.parent.DB.ExecuterReq(req)
         return [IDindividu for IDaide, IDindividu in self.parent.DB.ResultatReq()]
 
-    def jours_scolaires(self, valeur=None):
+    def jours_scolaires(self, valeur=None, objet=None):
         if valeur:
             valeur = valeur.replace(";", ",")
         return valeur
 
-    def jours_vacances(self, valeur=None):
+    def jours_vacances(self, valeur=None, objet=None):
         if valeur:
             valeur = valeur.replace(";", ",")
         return valeur
@@ -846,7 +896,7 @@ class Table_documents_modeles(Table):
 
         Table.__init__(self, parent, **kwds)
 
-    def IDfond(self, valeur=None):
+    def IDfond(self, valeur=None, objet=None):
         """ Changement de valeur par défaut """
         if valeur == 0:
             valeur = None
@@ -1035,7 +1085,7 @@ class Table_questions(Table):
 
         Table.__init__(self, parent, **kwds)
 
-    def IDcategorie(self, valeur=None):
+    def IDcategorie(self, valeur=None, objet=None):
         return self.dict_categories[valeur]
 
     def choix(self, data={}):
@@ -1043,7 +1093,7 @@ class Table_questions(Table):
             return ";".join(self.dict_choix[data["pk"]])
         return None
 
-    def options(self, valeur=None):
+    def options(self, valeur=None, objet=None):
         return None
 
 
@@ -1060,7 +1110,7 @@ class Table_reponses(Table):
 
         Table.__init__(self, parent, **kwds)
 
-    def reponse(self, valeur=None):
+    def reponse(self, valeur=None, objet=None):
         liste_reponse = []
         if valeur and ";" in valeur:
             for IDchoix in valeur.split(";"):
@@ -1084,6 +1134,7 @@ class Table_payeurs(Table):
 class Table_reglements(Table):
     def __init__(self, parent, **kwds):
         self.parent = parent
+
         # Importation de la table des payeurs
         req = "SELECT IDpayeur, IDcompte_payeur FROM payeurs;"
         self.parent.DB.ExecuterReq(req)
@@ -1091,17 +1142,29 @@ class Table_reglements(Table):
         for IDpayeur, IDcompte_payeur in self.parent.DB.ResultatReq():
             self.liste_payeurs.append(IDpayeur)
 
+        # Importation de la table des dépôts
+        req = "SELECT IDdepot, nom FROM depots;"
+        self.parent.DB.ExecuterReq(req)
+        self.liste_depots = []
+        for IDdepot, nom in self.parent.DB.ResultatReq():
+            self.liste_depots.append(IDdepot)
+
         Table.__init__(self, parent, **kwds)
 
     def famille(self, data={}):
         return self.parent.dictComptesPayeurs[data["IDcompte_payeur"]]
 
-    def encaissement_attente(self, valeur=None):
+    def encaissement_attente(self, valeur=None, objet=None):
         if valeur == None:
             return 0
         return valeur
 
-    def IDpayeur(self, valeur=None):
+    def IDdepot(self, valeur=None, objet=None):
+        if valeur and valeur not in self.liste_depots:
+            return None
+        return valeur
+
+    def IDpayeur(self, valeur=None, objet=None):
         if valeur not in self.liste_payeurs:
             try:
                 # Le payeur n'existe plus, on essaie de trouver un autre payeur de la même famille
@@ -1134,21 +1197,21 @@ class Table_recus(Table):
 
         Table.__init__(self, parent, **kwds)
 
-    def IDreglement(self, valeur=None):
+    def IDreglement(self, valeur=None, objet=None):
         if valeur not in self.liste_reglements:
             return None
         return valeur
 
 
 class Table_attestations(Table):
-    def activites(self, valeur=None):
+    def activites(self, valeur=None, objet=None):
         # Suppression de tous les idactivite en double
         valeur = ";".join(list({idactivite: None for idactivite in valeur.split(";")}.keys()))
         return valeur
 
 
 class Table_textes_rappels(Table):
-    def couleur(self, valeur=""):
+    def couleur(self, valeur="", objet=None):
         return Rgb2hex(valeur)
 
     def html(self, data={}):
@@ -1173,7 +1236,7 @@ class Table_rappels(Table):
     def famille(self, data={}):
         return self.parent.dictComptesPayeurs[data["IDcompte_payeur"]]
 
-    def IDlot(self, valeur=None):
+    def IDlot(self, valeur=None, objet=None):
         if valeur not in self.lots_rappels:
             return None
         return valeur
