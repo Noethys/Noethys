@@ -2369,6 +2369,7 @@ class Dialog(wx.Dialog):
                                                 if dictColonnePerso["donnee_code"] == "famille": donnee = dictInfosFamilles[IDfamille]["FAMILLE_NOM"]
                                                 if dictColonnePerso["donnee_code"] == "regime": donnee = dictInfosFamilles[IDfamille]["FAMILLE_NOM_REGIME"]
                                                 if dictColonnePerso["donnee_code"] == "caisse": donnee = dictInfosFamilles[IDfamille]["FAMILLE_NOM_CAISSE"]
+                                                if dictColonnePerso["donnee_code"] == "quotient_familial": donnee = dictInfosFamilles[IDfamille]["FAMILLE_QF_ACTUEL"]
                                                 if dictColonnePerso["donnee_code"] == "date_naiss": donnee = dictInfosIndividus[IDindividu]["INDIVIDU_DATE_NAISS"]
                                                 if dictColonnePerso["donnee_code"] == "medecin_nom": donnee = dictInfosIndividus[IDindividu]["MEDECIN_NOM"]
                                                 if dictColonnePerso["donnee_code"] == "tel_mobile": donnee = dictInfosIndividus[IDindividu]["INDIVIDU_TEL_MOBILE"]
