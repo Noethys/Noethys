@@ -496,7 +496,7 @@ class Informations() :
                 # Recherche les détails du lien
                 if IDtype_lien != None :
                     sexe = self.dictIndividus[IDindividu_sujet]["INDIVIDU_SEXE"]
-                    if sexe in ("M", "F") :
+                    if sexe in ("M", "F") and IDtype_lien in DICT_TYPES_LIENS:
                         nomLien = DICT_TYPES_LIENS[IDtype_lien][sexe].capitalize()
                         typeLien = DICT_TYPES_LIENS[IDtype_lien]["type"]
                         texteLien = DICT_TYPES_LIENS[IDtype_lien]["texte"][sexe]

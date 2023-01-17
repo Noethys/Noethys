@@ -413,7 +413,7 @@ class Export_all(Export):
                                             exclure_champs=["IDutilisateur"],
                                             nouveaux_noms_champs={"IDfamille": "famille"}))
 
-        self.Ajouter(categorie="facturation", table=Table(self, nom_table="devis", nouveau_nom_table="core.Devis",
+        self.Ajouter(categorie="facturation", table=Table_devis(self, nom_table="devis", nouveau_nom_table="core.Devis",
                                             exclure_champs=["IDutilisateur"],
                                             nouveaux_noms_champs={"IDfamille": "famille"}))
 
@@ -1204,6 +1204,13 @@ class Table_recus(Table):
 
 
 class Table_attestations(Table):
+    def activites(self, valeur=None, objet=None):
+        # Suppression de tous les idactivite en double
+        valeur = ";".join(list({idactivite: None for idactivite in valeur.split(";")}.keys()))
+        return valeur
+
+
+class Table_devis(Table):
     def activites(self, valeur=None, objet=None):
         # Suppression de tous les idactivite en double
         valeur = ";".join(list({idactivite: None for idactivite in valeur.split(";")}.keys()))

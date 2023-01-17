@@ -109,7 +109,7 @@ class Track(object):
             self.prelevement_payeur = u"%s %s" % (self.nomPayeur, self.prenomPayeur)
         
         # Envoi par Email
-        self.email_factures =  donnees["email_factures"]
+        self.email_factures = donnees.get("email_factures", None)
         
         if self.email_factures != None :
             self.email = True

@@ -59,7 +59,7 @@ class Track(object):
             self.retard = _(u"%s jours") % (self.date_edition - self.date_max).days
                 
         # Envoi par Email
-        self.email_factures =  donnees["email_factures"]
+        self.email_factures = donnees.get("email_factures", None)
         
         if self.email_factures != None :
             self.email = True
