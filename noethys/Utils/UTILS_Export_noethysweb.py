@@ -1108,7 +1108,20 @@ class Table_reponses(Table):
         for IDchoix, label in self.parent.DB.ResultatReq():
             self.dict_choix[IDchoix] = label
 
+        # Récupération des individus
+        req = """SELECT IDindividu, nom FROM individus;"""
+        self.parent.DB.ExecuterReq(req)
+        self.liste_individus = []
+        for IDindividu, nom in self.parent.DB.ResultatReq():
+            self.liste_individus.append(IDindividu)
+
         Table.__init__(self, parent, **kwds)
+
+    def valide_ligne(self, data={}):
+        """ Incorpore la ligne uniquement le IDindividu existe"""
+        if data["fields"]["individu"] and data["fields"]["individu"] not in self.liste_individus:
+            return False
+        return True
 
     def reponse(self, valeur=None, objet=None):
         liste_reponse = []
@@ -1122,7 +1135,7 @@ class Table_reponses(Table):
                     liste_reponse.append(self.dict_choix[IDchoix])
                 else:
                     liste_reponse.append(IDchoix)
-            valeur = ";".join(liste_reponse)
+            valeur = ";".join([str(reponse) for reponse in liste_reponse])
         return valeur
 
 
