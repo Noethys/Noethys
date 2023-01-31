@@ -283,11 +283,11 @@ class Export_all(Export):
                                               "portail_reservations_affichage": bool, "portail_unites_multiples": bool, "inscriptions_multiples": bool},
                            nouveaux_champs=["pieces", "groupes_activites", "cotisations", "structure"], champs_images=["logo"]))
 
-        self.Ajouter(categorie="activites", table=Table(self, nom_table="responsables_activite", nouveau_nom_table="core.ResponsableActivite", nouveaux_noms_champs={"IDactivite": "activite"}, dict_types_champs={"defaut": bool}))
+        self.Ajouter(categorie="activites", table=Table_responsables_activites(self, nom_table="responsables_activite", nouveau_nom_table="core.ResponsableActivite", nouveaux_noms_champs={"IDactivite": "activite"}, dict_types_champs={"defaut": bool}))
 
         self.Ajouter(categorie="activites", table=Table(self, nom_table="agrements", nouveau_nom_table="core.Agrement", nouveaux_noms_champs={"IDactivite": "activite"}))
 
-        self.Ajouter(categorie="activites", table=Table(self, nom_table="groupes", nouveau_nom_table="core.Groupe", nouveaux_noms_champs={"IDactivite": "activite"}))
+        self.Ajouter(categorie="activites", table=Table_groupes(self, nom_table="groupes", nouveau_nom_table="core.Groupe", nouveaux_noms_champs={"IDactivite": "activite"}))
 
         self.Ajouter(categorie="activites", table=Table_unites(self, nom_table="unites", nouveau_nom_table="core.Unite", nouveaux_noms_champs={"IDactivite": "activite", "IDrestaurateur": "restaurateur"},
                                   dict_types_champs={"heure_debut_fixe": bool, "heure_fin_fixe": bool, "repas": bool, "autogen_active": bool},
@@ -734,14 +734,42 @@ class Table_factures(Table):
         return self.parent.dictComptesPayeurs[data["IDcompte_payeur"]]
 
 
+class Table_responsables_activites(Table):
+    def __init__(self, parent, **kwds):
+
+        # Importe les activités
+        req = """SELECT IDactivite, nom FROM activites;"""
+        parent.DB.ExecuterReq(req)
+        self.dict_activites = {}
+        for IDactivite, nom in parent.DB.ResultatReq():
+            self.dict_activites[IDactivite] = nom
+
+        Table.__init__(self, parent, **kwds)
+
+    def valide_ligne(self, data={}):
+        """ Incorpore la ligne uniquement l'activité existe"""
+        if data["fields"]["activite"] not in self.dict_activites:
+            return False
+        return True
+
+
 class Table_prestations(Table):
     def __init__(self, parent, **kwds):
+
         # Importe les factures
         req = """SELECT IDfacture, date_edition FROM factures;"""
         parent.DB.ExecuterReq(req)
         self.dictFactures = {}
         for IDfacture, date_edition in parent.DB.ResultatReq():
             self.dictFactures[IDfacture] = date_edition
+
+        # Importation les catégories de tarifs
+        req = "SELECT IDcategorie_tarif, nom FROM categories_tarifs;"
+        parent.DB.ExecuterReq(req)
+        self.dict_categories_tarifs = {}
+        for IDcategorie_tarif, nom in parent.DB.ResultatReq():
+            self.dict_categories_tarifs[IDcategorie_tarif] = nom
+
         Table.__init__(self, parent, **kwds)
 
     def IDindividu(self, valeur=None, objet=None):
@@ -752,6 +780,12 @@ class Table_prestations(Table):
     def IDfacture(self, valeur=None, objet=None):
         # Vérifie que la facture existe bien
         if valeur and valeur in self.dictFactures:
+            return valeur
+        return None
+
+    def IDcategorie_tarif(self, valeur=None, objet=None):
+        # Vérifie que la catégorie de tarif existe bien
+        if valeur and valeur in self.dict_categories_tarifs:
             return valeur
         return None
 
@@ -766,6 +800,25 @@ class Table_prestations(Table):
         if not valeur:
             return objet[2]
         return valeur
+
+
+class Table_groupes(Table):
+    def __init__(self, parent, **kwds):
+
+        # Importe les activités
+        req = """SELECT IDactivite, nom FROM activites;"""
+        parent.DB.ExecuterReq(req)
+        self.dict_activites = {}
+        for IDactivite, nom in parent.DB.ResultatReq():
+            self.dict_activites[IDactivite] = nom
+
+        Table.__init__(self, parent, **kwds)
+
+    def valide_ligne(self, data={}):
+        """ Incorpore la ligne uniquement l'activité existe"""
+        if data["fields"]["activite"] not in self.dict_activites:
+            return False
+        return True
 
 
 class Table_consommations(Table):
