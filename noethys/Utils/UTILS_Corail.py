@@ -278,6 +278,11 @@ def GetXML(dictDonnees={}):
         Objet.setAttribute("V", dictPiece["objet_piece"][:160])
         InfoPiece.appendChild(Objet)
 
+        # LibPieceJustificative
+        LibPieceJustificative = doc.createElement("LibPieceJustificative")
+        LibPieceJustificative.setAttribute("V", dictPiece["objet_piece"][:160])
+        InfoPiece.appendChild(LibPieceJustificative)
+
         # TypePiecePES
         TypePiecePES = doc.createElement("TypePiecePES")
         TypePiecePES.setAttribute("V", "01")
