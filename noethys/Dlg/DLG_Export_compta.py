@@ -1442,7 +1442,8 @@ class CTRL_Parametres_quadracompta(CTRL_Parametres) :
 
         if not dictParametres["quadra_code_compta_famille"]:
             for IDfamille in dictTitulaires:
-                dictTitulaires[IDfamille]["code_comptable"] = "F%06d" % IDfamille
+                if not dictTitulaires[IDfamille]["code_comptable"]:
+                    dictTitulaires[IDfamille]["code_comptable"] = "F%06d" % IDfamille
 
         # Regroupement des prestations
         anomalies = []
