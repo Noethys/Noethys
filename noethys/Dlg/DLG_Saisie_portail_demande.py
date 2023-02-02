@@ -1248,7 +1248,7 @@ class Traitement():
                 liste_paiements = [(float(montant)/100, datetime.datetime.strptime(date, "%Y%m%d")) for date, montant in re.findall(r"([0-9]+)>([0-9]+)", vads_payment_config)]
 
         if "tipi" in systeme_paiement :
-            IDfacture = list(dict_paiements.keys())[0]
+            IDfacture = list(dict_paiements["facture"].keys())[0]
             req = """SELECT factures_regies.IDcompte_bancaire
             FROM factures
             LEFT JOIN factures_regies ON factures_regies.IDregie = factures.IDregie

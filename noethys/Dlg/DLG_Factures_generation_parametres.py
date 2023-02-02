@@ -45,7 +45,7 @@ class CTRL_Lot_factures(wx.Choice):
         db = GestionDB.DB()
         req = """SELECT IDlot, nom
         FROM lots_factures
-        ORDER BY IDlot;"""
+        ORDER BY IDlot DESC;"""
         db.ExecuterReq(req)
         listeDonnees = db.ResultatReq()
         db.Close()
