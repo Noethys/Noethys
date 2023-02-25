@@ -503,11 +503,39 @@ class ObjectListView(OLV.ObjectListView):
                     filtre = "track.ID%s in %s" % (code, self.GetInscrits(mode=code, choix=choix, criteres=criteres))
                 if choix == "PRESENTS" :
                     filtre = "track.ID%s in %s" % (code, self.GetInscrits(mode=code, choix=choix, criteres=criteres))
-                    
+
+            # Cotisations
+            if typeDonnee == "cotisations" :
+                if choix == "AJOUR":
+                    filtre = "track.ID%s in %s" % (code, self.GetCotisations(mode=code, choix=choix, criteres=criteres))
+
             # Mémorisation
             listeFiltresFinale.append(filtre) 
         
         return listeFiltresFinale
+
+    def GetCotisations(self, mode="individu", choix="", criteres={}):
+        """ Récupération de la liste des individus inscrits et présents """
+        date = criteres["date"]
+        liste_cotisations = [int(IDtype_cotisation) for IDtype_cotisation in criteres["listeCotisations"].split(";")]
+
+        if len(liste_cotisations) == 0: condition = "()"
+        elif len(liste_cotisations) == 1: condition = "(%d)" % liste_cotisations[0]
+        else: condition = str(tuple(liste_cotisations))
+
+        key = "IDfamille" if mode == "famille" else "IDindividu"
+
+        import GestionDB
+        DB = GestionDB.DB()
+        req = """SELECT %s
+        FROM cotisations 
+        WHERE IDtype_cotisation IN %s AND date_debut<='%s' AND date_fin>='%s'
+        ;""" %(key, condition, date, date)
+        DB.ExecuterReq(req)
+        listeDonnees = DB.ResultatReq()
+        DB.Close()
+
+        return [donnees[0] for donnees in listeDonnees]
 
     def GetInscrits(self, mode="individu", choix="", criteres={}):
         """ Récupération de la liste des individus inscrits et présents """

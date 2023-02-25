@@ -928,6 +928,10 @@ class CTRL_Page_cotisations(wx.Panel):
         self.ctrl_cotisations = CTRL_Cotisations(self)
         self.ctrl_cotisations.SetMinSize((150, 50))
 
+        self.label_date = wx.StaticText(self, -1, _(u"A la date suivante :"))
+        self.ctrl_date = CTRL_Saisie_date.Date2(self)
+        self.ctrl_date.SetDate(datetime.date.today())
+
         self.__do_layout()
 
         # Binds
@@ -937,9 +941,16 @@ class CTRL_Page_cotisations(wx.Panel):
         self.OnCheckCotisations(None)
 
     def __do_layout(self):
-        grid_sizer_base = wx.FlexGridSizer(rows=2, cols=1, vgap=5, hgap=5)
+        grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=5, hgap=5)
         grid_sizer_base.Add(self.check_cotisations, 0, wx.ALL, 0)
         grid_sizer_base.Add(self.ctrl_cotisations, 1, wx.BOTTOM|wx.LEFT|wx.RIGHT|wx.EXPAND, 0)
+
+        grid_sizer_date = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
+        grid_sizer_date.Add(self.label_date, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_date.Add(self.ctrl_date, 0, wx.BOTTOM|wx.LEFT|wx.RIGHT|wx.EXPAND, 0)
+        # grid_sizer_date.AddGrowableRow(1)
+        grid_sizer_base.Add(grid_sizer_date, 0, wx.EXPAND, 0)
+
         grid_sizer_base.AddGrowableRow(1)
         grid_sizer_base.AddGrowableCol(0)
         self.SetSizer(grid_sizer_base)
@@ -947,14 +958,13 @@ class CTRL_Page_cotisations(wx.Panel):
         self.Layout()
 
     def OnCheckCotisations(self, event):
-        if self.check_cotisations.GetValue() == True :
-            self.ctrl_cotisations.Enable(True)
-        else:
-            self.ctrl_cotisations.Enable(False)
+        self.ctrl_cotisations.Enable(self.check_cotisations.GetValue())
+        self.ctrl_date.Enable(self.check_cotisations.GetValue())
 
     def SetValeur(self, choix=None, criteres=None):
         if choix == "AJOUR":
-            self.ctrl_cotisations.SetIDcoches(criteres["listeCotisations"])
+            self.ctrl_cotisations.SetIDcoches([int(ID) for ID in criteres["listeCotisations"].split(";")])
+            self.ctrl_date.SetDate(criteres["date"])
             self.check_cotisations.SetValue(True)
         else:
             self.check_cotisations.SetValue(False)
@@ -964,7 +974,8 @@ class CTRL_Page_cotisations(wx.Panel):
         if self.check_cotisations.GetValue() == True:
             choix = "AJOUR"
             listeCotisations = self.ctrl_cotisations.GetTexteCoches()
-            criteres = {"listeCotisations": listeCotisations}
+            date = self.ctrl_date.GetDate()
+            criteres = {"listeCotisations": listeCotisations, "date": str(date)}
         return choix, criteres
 
     def Validation(self):
@@ -1347,18 +1358,18 @@ class CTRL_Champs(wx.TreeCtrl):
             self.dictChamps["speciaux"].append({"code" : code, "typeDonnee" : "inscrits", "titre" : titre})
 
         # Champ Cotisations
-        # code = None
-        # if self.ctrl_listview != None:
-        #     for colonne in self.ctrl_listview.listeColonnes:
-        #         if colonne.valueGetter == "IDfamille":
-        #             code = "famille"
-        #             break
-        #         if colonne.valueGetter == "IDindividu":
-        #             code = "individu"
-        #             break
-        # if code != None:
-        #     titre = _(u"Cotisations")
-        #     self.dictChamps["speciaux"].append({"code": code, "typeDonnee": "cotisations", "titre": titre})
+        code = None
+        if self.ctrl_listview != None:
+            for colonne in self.ctrl_listview.listeColonnes:
+                if colonne.valueGetter == "IDfamille":
+                    code = "famille"
+                    break
+                if colonne.valueGetter == "IDindividu":
+                    code = "individu"
+                    break
+        if code != None:
+            titre = _(u"Cotisations")
+            self.dictChamps["speciaux"].append({"code": code, "typeDonnee": "cotisations", "titre": titre})
 
         # --------------- Champs des colonnes --------------
         if self.ctrl_listview != None :
