@@ -357,7 +357,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                     dict_totaux[numColonne] += valeur
                 except:
                     pass
-                self.SetCellValue(numLigne, numColonne, str(valeur))
+                self.SetCellValue(numLigne, numColonne, unicode(valeur))
                 self.SetCellAlignment(numLigne, numColonne, wx.ALIGN_CENTRE, wx.ALIGN_CENTRE)
                 self.SetReadOnly(numLigne, numColonne, True)
 
