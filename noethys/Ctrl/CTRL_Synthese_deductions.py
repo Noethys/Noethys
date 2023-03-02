@@ -336,7 +336,8 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         
         # Remplissage des valeurs
         dict_totaux = {}
-        for numLigne, (regroupement, valeurs) in enumerate(dictResultats.items()):
+        for numLigne, regroupement in enumerate(listeRegroupement):
+            valeurs = dictResultats[regroupement]
             for numColonne, (code_colonne, label_colonne) in enumerate(listeColonnes):
                 valeur = ""
                 dict_totaux.setdefault(numColonne, 0)
