@@ -213,6 +213,8 @@ class Panel(wx.Panel):
         self.ctrl_code_comptable = wx.TextCtrl(self, -1, "")
         self.label_code_produit_local = wx.StaticText(self, -1, _(u"Code produit local :"))
         self.ctrl_code_produit_local = wx.TextCtrl(self, -1, "")
+        self.label_code_service = wx.StaticText(self, -1, _(u"Code service :"))
+        self.ctrl_code_service = wx.TextCtrl(self, -1, "")
 
         # Régie de facturation
         self.staticbox_regie_facturation_staticbox = wx.StaticBox(self, -1, _(u"Régie de facturation"))
@@ -313,6 +315,7 @@ class Panel(wx.Panel):
         self.ctrl_limitation_inscrits.SetToolTip(wx.ToolTip(_(u"Saisissez le nombre maximal d'inscrits de cette activité (Utile uniquement pour les activités à durée limitée)")))
         self.ctrl_code_comptable.SetToolTip(wx.ToolTip(_(u"Saisissez un code comptable si vous souhaitez utiliser l'export des écritures comptables vers des logiciels de compta")))
         self.ctrl_code_produit_local.SetToolTip(wx.ToolTip(_(u"Saisissez un code produit local si vous souhaitez utiliser l'export vers les logiciels de comptabilité publique")))
+        self.ctrl_code_service.SetToolTip(wx.ToolTip(_(u"Saisissez un code service si vous souhaitez utiliser l'export vers les logiciels de comptabilité publique")))
         self.ctrl_regie_facturation.SetToolTip(wx.ToolTip(_(u"Sélectionnez une régie de facturation")))
         self.check_inscriptions_multiples.SetToolTip(wx.ToolTip(_(u"Autoriser un individu à être inscrit plusieurs fois à la même activité. ATTENTION, ne pas utiliser cette option si vous utilisez des consommations dans cette activité car la grille des consommations est incompatible.")))
 
@@ -365,11 +368,13 @@ class Panel(wx.Panel):
 
         # Comptabilite
         staticbox_code_comptabilite = wx.StaticBoxSizer(self.staticbox_comptabilite_staticbox, wx.HORIZONTAL)
-        grid_sizer_comptabilite = wx.FlexGridSizer(rows=2, cols=2, vgap=5, hgap=5)
+        grid_sizer_comptabilite = wx.FlexGridSizer(rows=3, cols=2, vgap=5, hgap=5)
         grid_sizer_comptabilite.Add(self.label_code_comptable, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_comptabilite.Add(self.ctrl_code_comptable, 0, wx.EXPAND, 0)
         grid_sizer_comptabilite.Add(self.label_code_produit_local, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_comptabilite.Add(self.ctrl_code_produit_local, 0, wx.EXPAND, 0)
+        grid_sizer_comptabilite.Add(self.label_code_service, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_comptabilite.Add(self.ctrl_code_service, 0, wx.EXPAND, 0)
         grid_sizer_comptabilite.AddGrowableCol(1)
         staticbox_code_comptabilite.Add(grid_sizer_comptabilite, 1, wx.ALL | wx.EXPAND, 5)
         grid_sizer_gauche.Add(staticbox_code_comptabilite, 1, wx.EXPAND, 0)
@@ -532,7 +537,7 @@ class Panel(wx.Panel):
         """ Importation des données """
         db = GestionDB.DB()
         req = """SELECT nom, abrege, coords_org, rue, cp, ville, tel, fax, mail, site, 
-        logo_org, logo, date_debut, date_fin, public, nbre_inscrits_max, code_comptable, regie, code_produit_local, inscriptions_multiples
+        logo_org, logo, date_debut, date_fin, public, nbre_inscrits_max, code_comptable, regie, code_produit_local, inscriptions_multiples, code_service
         FROM activites 
         WHERE IDactivite=%d;""" % self.IDactivite
         db.ExecuterReq(req)
@@ -618,6 +623,10 @@ class Panel(wx.Panel):
         code_produit_local = activite[18]
         if code_produit_local != None:
             self.ctrl_code_produit_local.SetValue(code_produit_local)
+
+        code_service = activite[20]
+        if code_service != None:
+            self.ctrl_code_service.SetValue(code_service)
 
         # Régie de facturation
         regie = activite[17]
@@ -754,6 +763,7 @@ class Panel(wx.Panel):
         # Comptabilité
         code_comptable = self.ctrl_code_comptable.GetValue() 
         code_produit_local = self.ctrl_code_produit_local.GetValue()
+        code_service = self.ctrl_code_service.GetValue()
 
         # Régie de facturation
         regie = self.ctrl_regie_facturation.GetID()
@@ -778,6 +788,7 @@ class Panel(wx.Panel):
                 ("code_comptable", code_comptable),
                 ("regie", regie),
                 ("code_produit_local", code_produit_local),
+                ("code_service", code_service),
                 ("inscriptions_multiples", inscriptions_multiples),
             ]
         DB.ReqMAJ("activites", listeDonnees, "IDactivite", self.IDactivite)

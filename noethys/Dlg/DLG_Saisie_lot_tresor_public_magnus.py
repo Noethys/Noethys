@@ -98,12 +98,12 @@ class CTRL_Parametres(DLG_Saisie_lot_tresor_public.CTRL_Parametres):
         propriete.SetHelpString(_(u"Saisissez le code Produit Local. C'est celui qui sera utilisé si le champ 'code produit local' n'est pas renseigné dans la prestation ou dans le paramétrage de l'activité."))
         self.Append(propriete)
 
-        propriete = wxpg.StringProperty(label=_(u"Opération"), name="operation", value=u"")
-        propriete.SetHelpString(_(u"Saisissez le code de l'opération."))
+        propriete = wxpg.StringProperty(label=_(u"Code Service par défaut"), name="service", value=u"")
+        propriete.SetHelpString(_(u"Saisissez le code du service. C'est celui qui sera utilisé si le champ 'code service' n'est pas renseigné dans le paramétrage de l'activité."))
         self.Append(propriete)
 
-        propriete = wxpg.StringProperty(label=_(u"Service"), name="service", value=u"")
-        propriete.SetHelpString(_(u"Saisissez le code du service."))
+        propriete = wxpg.StringProperty(label=_(u"Opération"), name="operation", value=u"")
+        propriete.SetHelpString(_(u"Saisissez le code de l'opération."))
         self.Append(propriete)
 
         propriete = wxpg.StringProperty(label=_(u"Fonction"), name="fonction", value=u"")
@@ -188,7 +188,7 @@ class CTRL_Parametres(DLG_Saisie_lot_tresor_public.CTRL_Parametres):
         self.SetPropertyValue("inclure_detail", UTILS_Parametres.Parametres(mode="get", categorie="export_magnus", nom="inclure_detail", valeur=False))
         self.SetPropertyValue("tribunal", UTILS_Parametres.Parametres(mode="get", categorie="export_magnus", nom="tribunal", valeur=u"le tribunal administratif"))
         self.SetPropertyValue("code_compta_as_alias", UTILS_Parametres.Parametres(mode="get", categorie="export_magnus", nom="code_compta_as_alias", valeur=True))
-
+        self.SetPropertyValue("service", UTILS_Parametres.Parametres(mode="get", categorie="export_magnus", nom="service", valeur=u""))
 
 
 
@@ -349,7 +349,7 @@ class Dialog(DLG_Saisie_lot_tresor_public.Dialog):
 
     def Memorisation_parametres(self):
         # Mémorisation des préférences
-        for code in ("tipi", "edition_asap", "inclure_detail", "inclure_pieces_jointes", "tribunal", "code_compta_as_alias"):
+        for code in ("tipi", "edition_asap", "inclure_detail", "inclure_pieces_jointes", "tribunal", "code_compta_as_alias", "service"):
             UTILS_Parametres.Parametres(mode="set", categorie="export_magnus", nom=code, valeur=self.ctrl_parametres.GetPropertyValue(code))
 
     def OnBoutonFichier(self, event):
@@ -495,7 +495,7 @@ class Dialog(DLG_Saisie_lot_tresor_public.Dialog):
             if IDfacture not in dict_codes:
                 dict_codes[IDfacture] = {}
             for dict_prestation in liste_prestations:
-                key = (dict_prestation["id_poste"], dict_prestation["code_prodloc"])
+                key = (dict_prestation["id_poste"], dict_prestation["code_prodloc"], dict_prestation["code_service"])
                 if key not in dict_codes[IDfacture]:
                     dict_codes[IDfacture][key] = FloatToDecimal(0.0)
                 dict_codes[IDfacture][key] += dict_prestation["montant"]
@@ -557,7 +557,7 @@ class Dialog(DLG_Saisie_lot_tresor_public.Dialog):
         prestations.IDindividu, individus.nom, individus.prenom,
         SUM(ventilation.montant) AS montant_ventilation,
         prestations.code_compta, prestations.code_produit_local,
-        activites.code_comptable, activites.code_produit_local
+        activites.code_comptable, activites.code_produit_local, activites.code_service
         FROM prestations
         LEFT JOIN activites ON activites.IDactivite = prestations.IDactivite
         LEFT JOIN ventilation ON prestations.IDprestation = ventilation.IDprestation
@@ -570,20 +570,22 @@ class Dialog(DLG_Saisie_lot_tresor_public.Dialog):
         DB.Close()
         dict_resultats = {}
         dict_prestations_factures = {}
-        for IDprestation, date, montant, IDfacture, label, IDindividu, nom, prenom, montant_ventilation, code_compta, code_produit_local, activite_code_compta, activite_code_produit_local in listeDonnees:
+        for IDprestation, date, montant, IDfacture, label, IDindividu, nom, prenom, montant_ventilation, code_compta, code_produit_local, activite_code_compta, activite_code_produit_local, activite_code_service in listeDonnees:
             montant = FloatToDecimal(montant)
 
             # Recherche le code compta et le code prod local
             id_poste = dict_donnees["id_poste"]
             code_prodloc = dict_donnees["code_prodloc"]
+            code_service = dict_donnees["service"]
             if activite_code_compta: id_poste = activite_code_compta
             if activite_code_produit_local: code_prodloc = activite_code_produit_local
+            if activite_code_service: code_service = activite_code_service
             if code_compta: id_poste = code_compta
             if code_produit_local: code_prodloc = code_produit_local
 
             if IDfacture not in dict_prestations_factures:
                 dict_prestations_factures[IDfacture] = []
-            dict_prestations_factures[IDfacture].append({"IDprestation": IDprestation, "label": label, "montant": montant, "id_poste": id_poste, "code_prodloc": code_prodloc})
+            dict_prestations_factures[IDfacture].append({"IDprestation": IDprestation, "label": label, "montant": montant, "id_poste": id_poste, "code_prodloc": code_prodloc, "code_service": code_service})
 
             # Définit le label
             if IDindividu:
@@ -662,7 +664,7 @@ class Dialog(DLG_Saisie_lot_tresor_public.Dialog):
         for IdEcriture, piece in enumerate(dict_donnees["pieces"], start=1):
             num_sous_ligne = 1
             if piece["IDfacture"] in dict_donnees["codes"]:
-                for (IDposte, code_produit_local), montant in dict_donnees["codes"][piece["IDfacture"]].items():
+                for (IDposte, code_produit_local, code_service), montant in dict_donnees["codes"][piece["IDfacture"]].items():
                     ligne = {}
 
                     # IDEcriture - Texte (50)
@@ -728,7 +730,7 @@ class Dialog(DLG_Saisie_lot_tresor_public.Dialog):
                     ligne[27] = ConvertToTexte(dict_donnees["operation"][:10])
 
                     # Service - Texte (15)
-                    ligne[28] = ConvertToTexte(dict_donnees["service"][:15])
+                    ligne[28] = ConvertToTexte(code_service[:15])
 
                     # Fonction - Texte (10)
                     ligne[29] = ConvertToTexte(dict_donnees["fonction"][:10])

@@ -1533,6 +1533,16 @@ class DB(GestionDB.DB):
 
         # =============================================================
 
+        versionFiltre = (1, 3, 1, 8)
+        if versionFichier < versionFiltre:
+            try:
+                self.AjoutChamp("activites", "code_service", "VARCHAR(200)")
+            except Exception as err:
+                return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
+
+        # =============================================================
+
+
 
 
         return True
