@@ -131,6 +131,12 @@ class CTRL_Options(CTRL_Propertygrid.CTRL):
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
+        # Insérer texte d'introduction
+        propriete = wxpg.BoolProperty(label=_(u"Insérer un texte d'introduction"), name="afficher_introduction", value=False)
+        propriete.SetHelpString(_(u"Cochez cette case pour insérer un texte d'introduction"))
+        propriete.SetAttribute("UseCheckbox", True)
+        self.Append(propriete)
+
         # Catégorie
         self.Append(wxpg.PropertyCategory(_(u"Colonne Photo")))
 
@@ -542,6 +548,8 @@ class Dialog(wx.Dialog):
 
         DB = GestionDB.DB()
 
+        texte_introduction = []
+
         # ------------ MODE PRESENTS ---------------------------------
 
         if dictParametres["mode"] == "presents" :
@@ -573,6 +581,13 @@ class Dialog(wx.Dialog):
             ;""" % (conditionActivites, conditionsPeriodes)
             DB.ExecuterReq(req)
             listeIndividus = DB.ResultatReq()
+
+            # Création du texte d'introduction
+            liste_dates = []
+            for date_debut, date_fin in dictParametres["liste_periodes"]:
+                liste_dates.append(date_debut)
+                liste_dates.append(date_fin)
+            texte_introduction.append(u"Individus présents sur la période du %s au %s" % (UTILS_Dates.DateDDEnFr(min(liste_dates)), UTILS_Dates.DateDDEnFr(max(liste_dates))))
 
 
         # ------------ MODE INSCRITS ---------------------------------
@@ -688,7 +703,13 @@ class Dialog(wx.Dialog):
         
         # Insère un header
         Header() 
-        
+
+        # Texte d'introduction
+        para_style_introduction = ParagraphStyle(name="normal", fontName="Helvetica", fontSize=7, leading=7, spaceBefore=0, spaceAfter=0, alignment=1)
+        if texte_introduction and dictParametres["afficher_introduction"]:
+            story.append(Paragraph("".join([u"<para>%s</para>" % texte for texte in texte_introduction]), para_style_introduction))
+            story.append(Spacer(0, 15))
+
         # Activités
         for IDactivite in listeActivites :
 
