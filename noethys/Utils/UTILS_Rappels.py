@@ -134,7 +134,7 @@ class Facturation():
         FROM prestations
         WHERE (prestations.IDactivite IN %s OR prestations.IDactivite IS NULL)
         AND prestations.date <= '%s' AND prestations.IDcompte_payeur NOT IN %s AND %s
-        GROUP BY prestations.IDcompte_payeur
+        GROUP BY prestations.IDcompte_payeur, prestations.IDfamille
         ;""" % (conditionActivites, str(date_reference), conditionComptes, conditionPrestations)
         DB.ExecuterReq(req)
         listePrestations = DB.ResultatReq()  
