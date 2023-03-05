@@ -830,11 +830,24 @@ class Table_consommations(Table):
         for IDprestation, date in parent.DB.ResultatReq():
             self.dictPrestations[IDprestation] = date
 
+        # Importe les catégories de tarifs
+        req = """SELECT IDcategorie_tarif, nom FROM categories_tarifs;"""
+        parent.DB.ExecuterReq(req)
+        self.dictCategoriesTarifs = {}
+        for IDcategorie_tarif, nom in parent.DB.ResultatReq():
+            self.dictCategoriesTarifs[IDcategorie_tarif] = nom
+
         Table.__init__(self, parent, **kwds)
 
     def IDprestation(self, valeur=None, objet=None):
         # Vérifie que la prestation existe bien
         if valeur and valeur in self.dictPrestations:
+            return valeur
+        return None
+
+    def IDcategorie_tarif(self, valeur=None, objet=None):
+        # Vérifie que la catégorie de tarifs existe bien
+        if valeur and valeur in self.dictCategoriesTarifs:
             return valeur
         return None
 
