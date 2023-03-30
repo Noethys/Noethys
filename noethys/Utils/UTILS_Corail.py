@@ -372,7 +372,7 @@ def GetXML(dictDonnees={}):
             elif dictPiece["sequence"] == "RCUR": sequence = "03"
             elif dictPiece["sequence"] == "FNAL": sequence = "04"
             else: sequence = "01"
-            SequencePrelevement = doc.createElement("SequencePres")
+            SequencePrelevement = doc.createElement("SequencePrelevement")
             SequencePrelevement.setAttribute("V", sequence)
             Prelevement.appendChild(SequencePrelevement)
 
@@ -390,6 +390,36 @@ def GetXML(dictDonnees={}):
             LibPrelevement = doc.createElement("LibPrelevement")
             LibPrelevement.setAttribute("V", dictPiece["prelevement_libelle"][:140])
             Prelevement.appendChild(LibPrelevement)
+
+            # AncienRUM
+            AncienRUM = doc.createElement("AncienRUM")
+            AncienRUM.setAttribute("V", "")
+            Prelevement.appendChild(AncienRUM)
+
+            # AncienICS
+            AncienICS = doc.createElement("AncienICS")
+            AncienICS.setAttribute("V", "")
+            Prelevement.appendChild(AncienICS)
+
+            # AncienCreancier
+            AncienCreancier = doc.createElement("AncienCreancier")
+            AncienCreancier.setAttribute("V", "")
+            Prelevement.appendChild(AncienCreancier)
+
+            # ChangementBanque
+            ChangementBanque = doc.createElement("ChangementBanque")
+            ChangementBanque.setAttribute("V", "N")
+            Prelevement.appendChild(LibPrelevement)
+
+            # AncienIBAN
+            AncienIBAN = doc.createElement("AncienIBAN")
+            AncienIBAN.setAttribute("V", "")
+            Prelevement.appendChild(AncienIBAN)
+
+            # TitulaireDifferent
+            TitulaireDifferent = doc.createElement("TitulaireDifferent")
+            TitulaireDifferent.setAttribute("V", "N")
+            Prelevement.appendChild(TitulaireDifferent)
 
         # LignePiece
         LignePiece = doc.createElement("LignePiece")
