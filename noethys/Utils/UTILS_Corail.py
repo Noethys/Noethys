@@ -381,7 +381,7 @@ def GetXML(dictDonnees={}):
             RUM.setAttribute("V", dictPiece["prelevement_rum"])
             Prelevement.appendChild(RUM)
 
-            # RUM
+            # DateRUM
             DateRUM = doc.createElement("DateRUM")
             DateRUM.setAttribute("V", dictPiece["prelevement_date_mandat"])
             Prelevement.appendChild(DateRUM)
@@ -409,7 +409,7 @@ def GetXML(dictDonnees={}):
             # ChangementBanque
             ChangementBanque = doc.createElement("ChangementBanque")
             ChangementBanque.setAttribute("V", "N")
-            Prelevement.appendChild(LibPrelevement)
+            Prelevement.appendChild(ChangementBanque)
 
             # AncienIBAN
             AncienIBAN = doc.createElement("AncienIBAN")
