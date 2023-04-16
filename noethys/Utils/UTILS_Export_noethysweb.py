@@ -177,14 +177,14 @@ class Export:
         with open(nom_fichier_json, 'w') as outfile:
             json.dump(self.liste_objets, outfile, indent=4, cls=MyEncoder)
 
-        # with io.open(self.nom_fichier, encoding='utf-8') as f:
-        #     f.write(json.dumps(self.liste_objets, cls=MyEncoder, ensure_ascii=False))
-
         # Création du ZIP
         fichier_zip = shutil.make_archive(UTILS_Fichiers.GetRepTemp("exportweb"), 'zip', self.rep)
 
         # Crypte le fichier
-        UTILS_Cryptage_fichier.CrypterFichier(fichier_zip, self.nom_fichier, self.mdp, ancienne_methode=False)
+        if self.mdp:
+            UTILS_Cryptage_fichier.CrypterFichier(fichier_zip, self.nom_fichier, self.mdp, ancienne_methode=False)
+        else:
+            shutil.copyfile(fichier_zip, self.nom_fichier)
 
         # Nettoyage
         shutil.rmtree(self.rep)
@@ -425,6 +425,15 @@ class Export_all(Export):
                                             exclure_champs=["IDutilisateur", "IDcompte_payeur"],
                                             nouveaux_noms_champs={"IDtexte": "modele", "IDlot": "lot"},
                                             nouveaux_champs=["famille"]))
+
+        self.Ajouter(categorie="facturation", table=Table_aides(self, nom_table="aides", nouveau_nom_table="core.Aide", nouveaux_noms_champs={"IDfamille": "famille", "IDactivite": "activite", "IDcaisse": "caisse"},
+                                 nouveaux_champs=["individus"]))
+
+        self.Ajouter(categorie="facturation", table=Table_combi_aides(self, nom_table="aides_combinaisons", nouveau_nom_table="core.CombiAide", nouveaux_noms_champs={"IDaide": "aide", "IDaide_combi": "idcombi_aide"},
+                                 exclure_champs=["IDaide_montant"], nouveaux_champs=["montant", "unites"]))
+
+        self.Ajouter(categorie="facturation", table=Table_deductions(self, nom_table="deductions", nouveau_nom_table="core.Deduction", nouveaux_noms_champs={"IDprestation": "prestation", "IDaide": "aide"},
+                                exclure_champs=["IDcompte_payeur"], nouveaux_champs=["famille"]))
 
         self.Ajouter(categorie=None, table=Table_modeles_emails(self, nom_table="modeles_emails", nouveau_nom_table="core.ModeleEmail",
                                             dict_types_champs={"defaut": bool},
@@ -731,7 +740,9 @@ class Table_individus(Table):
 
 class Table_factures(Table):
     def famille(self, data={}):
-        return self.parent.dictComptesPayeurs[data["IDcompte_payeur"]]
+        if data["IDcompte_payeur"] in self.parent.dictComptesPayeurs:
+            return self.parent.dictComptesPayeurs[data["IDcompte_payeur"]]
+        return None
 
 
 class Table_responsables_activites(Table):
@@ -938,6 +949,26 @@ class Table_combi_aides(Table):
         if IDaide_combi in self.dictUnites:
             return self.dictUnites[IDaide_combi]
         return []
+
+
+class Table_deductions(Table):
+    def __init__(self, parent, **kwds):
+        # Importe les prestations
+        req = """SELECT IDprestation, date FROM prestations;"""
+        parent.DB.ExecuterReq(req)
+        self.dictPrestations = {}
+        for IDprestation, date in parent.DB.ResultatReq():
+            self.dictPrestations[IDprestation] = date
+        Table.__init__(self, parent, **kwds)
+
+    def valide_ligne(self, data={}):
+        """ Incorpore la ligne uniquement la prestation associée existe"""
+        if data["fields"]["prestation"] not in self.dictPrestations:
+            return False
+        return True
+
+    def famille(self, data={}):
+        return self.parent.dictComptesPayeurs[data["IDcompte_payeur"]]
 
 
 class Table_documents_modeles(Table):
@@ -1181,13 +1212,23 @@ class Table_reponses(Table):
         for IDindividu, nom in self.parent.DB.ResultatReq():
             self.liste_individus.append(IDindividu)
 
+        # Récupération des familles
+        req = """SELECT IDfamille, date_creation FROM familles;"""
+        self.parent.DB.ExecuterReq(req)
+        self.liste_familles = []
+        for IDfamille, date_creation in self.parent.DB.ResultatReq():
+            self.liste_familles.append(IDfamille)
+
         Table.__init__(self, parent, **kwds)
 
     def valide_ligne(self, data={}):
         """ Incorpore la ligne uniquement le IDindividu existe"""
+        valide = True
         if data["fields"]["individu"] and data["fields"]["individu"] not in self.liste_individus:
-            return False
-        return True
+            valide = False
+        if data["fields"]["famille"] and data["fields"]["famille"] not in self.liste_familles:
+            valide = False
+        return valide
 
     def reponse(self, valeur=None, objet=None):
         liste_reponse = []
@@ -1201,7 +1242,7 @@ class Table_reponses(Table):
                     liste_reponse.append(self.dict_choix[IDchoix])
                 else:
                     liste_reponse.append(IDchoix)
-            valeur = ";".join([str(reponse) for reponse in liste_reponse])
+            valeur = ";".join([unicode(reponse) for reponse in liste_reponse])
         return valeur
 
 
@@ -1336,8 +1377,11 @@ class Table_modeles_emails(Table):
         if texte_xml:
             if six.PY3 and isinstance(texte_xml, str):
                 texte_xml = texte_xml.encode("utf8")
-            ctrl_editeur.SetXML(texte_xml)
-            html = ctrl_editeur.GetHTML()[0]
+            try:
+                ctrl_editeur.SetXML(texte_xml)
+                html = ctrl_editeur.GetHTML()[0]
+            except:
+                html = ""
             for balise in ("<html>", "</html>", "<head>", "</head>", "<body>", "</body>", "\r\n", "</font>"):
                 html = html.replace(balise, "")
             html = re.sub('<font.*?>', '', html)

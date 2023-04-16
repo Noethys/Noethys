@@ -209,18 +209,19 @@ class Dialog(wx.Dialog):
         # Mot de passe
         motdepasse = self.ctrl_mdp.GetValue()
         confirmation = self.ctrl_confirmation.GetValue()
-        if not motdepasse:
-            dlg = wx.MessageDialog(self, _(u"Vous devez saisir un mot de passe !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
-            dlg.ShowModal()
-            dlg.Destroy()
-            self.ctrl_mdp.SetFocus()
-            return False
+        # if not motdepasse:
+        #     dlg = wx.MessageDialog(self, _(u"Vous devez saisir un mot de passe !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+        #     dlg.ShowModal()
+        #     dlg.Destroy()
+        #     self.ctrl_mdp.SetFocus()
+        #     return False
         if motdepasse != confirmation:
             dlg = wx.MessageDialog(self, _(u"Le mot de passe n'a pas été confirmé à l'identique !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_confirmation.SetFocus()
             return False
+
         # if six.PY3:
         #     motdepasse = six.binary_type(motdepasse, "utf-8")
         # motdepasse = base64.b64encode(motdepasse)
