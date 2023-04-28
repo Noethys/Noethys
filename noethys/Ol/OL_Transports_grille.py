@@ -55,7 +55,7 @@ class Track(object):
         self.depart_dateDD = donnees["depart_date"]
 ##        self.depart_dateDD = DateEngEnDateDD(self.depart_date)
         self.depart_heure = donnees["depart_heure"]
-        if self.depart_heure != None :
+        if self.depart_heure != None and ":" in self.depart_heure:
             hr, mn = self.depart_heure.split(":")
         else :
             hr, mn = 0, 0

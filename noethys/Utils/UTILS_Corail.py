@@ -12,6 +12,7 @@
 import Chemins
 from Utils.UTILS_Traduction import _
 from xml.dom.minidom import Document
+from Data import DATA_Bic
 
 
 def GetXML(dictDonnees={}):
@@ -173,10 +174,42 @@ def GetXML(dictDonnees={}):
 
         if dictPiece["prelevement"] == 1:
 
+            # Banque
+            infos_banque = DATA_Bic.RechercherBIC(dictPiece["prelevement_bic"])
+            nom_banque = infos_banque[0] if infos_banque else ""
+            Banque = doc.createElement("Banque")
+            Banque.setAttribute("V", nom_banque[:24])
+            RefBancaire.appendChild(Banque)
+
+            # BanqueEtrangere
+            BanqueEtrangere = doc.createElement("BanqueEtrangere")
+            BanqueEtrangere.setAttribute("V", "N")
+            RefBancaire.appendChild(BanqueEtrangere)
+
             # Titulaire
             Titulaire = doc.createElement("Titulaire")
             Titulaire.setAttribute("V", dictPiece["prelevement_titulaire"][:32])
             RefBancaire.appendChild(Titulaire)
+
+            # CodeBanque
+            CodeBanque = doc.createElement("CodeBanque")
+            CodeBanque.setAttribute("V", dictPiece["prelevement_iban"][4:9])
+            RefBancaire.appendChild(CodeBanque)
+
+            # CodeGuichet
+            CodeGuichet = doc.createElement("CodeGuichet")
+            CodeGuichet.setAttribute("V", dictPiece["prelevement_iban"][9:14])
+            RefBancaire.appendChild(CodeGuichet)
+
+            # NumeroCompte
+            NumeroCompte = doc.createElement("NumeroCompte")
+            NumeroCompte.setAttribute("V", dictPiece["prelevement_iban"][14:25])
+            RefBancaire.appendChild(NumeroCompte)
+
+            # CleRib
+            CleRib = doc.createElement("CleRib")
+            CleRib.setAttribute("V", dictPiece["prelevement_iban"][25:27])
+            RefBancaire.appendChild(CleRib)
 
             # IBAN
             IBAN = doc.createElement("IBAN")
