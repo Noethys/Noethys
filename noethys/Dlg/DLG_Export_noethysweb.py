@@ -35,6 +35,7 @@ class CTRL_Options(wx.CheckListBox):
             ("inscriptions", _(u"Inscriptions")),
             ("consommations", _(u"Consommations et prestations")),
             ("facturation", _(u"Facturation : factures, attestations, devis...")),
+            ("transports", _(u"Transports")),
         ]
         self.MAJ()
 
@@ -90,7 +91,7 @@ class Dialog(wx.Dialog):
         # Options
         self.box_options_staticbox = wx.StaticBox(self, -1, _(u"Données à transférer"))
         self.ctrl_options = CTRL_Options(self)
-        self.ctrl_options.SetMinSize((-1, 140))
+        self.ctrl_options.SetMinSize((-1, 160))
 
         # CTRL Editeur d'Emails pour récupérer la version HTML d'un texte XML
         self.ctrl_editeur = CTRL_Editeur_email.CTRL(self)
