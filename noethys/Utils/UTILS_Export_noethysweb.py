@@ -1502,25 +1502,25 @@ class Table_transports(Table):
     def valide_ligne(self, data={}):
         valide = True
         if data["fields"]["individu"] and data["fields"]["individu"] not in self.liste_individus:
-            print("pas de individu pour le transport ID%d" % data["fields"]["pk"])
+            print("pas de individu pour le transport ID%d" % data["pk"])
             valide = False
         if data["fields"]["compagnie"] and data["fields"]["compagnie"] not in self.liste_compagnies:
-            print("pas de compagnie pour le transport ID%d" % data["fields"]["pk"])
+            print("pas de compagnie pour le transport ID%d" % data["pk"])
             valide = False
         if data["fields"]["ligne"] and data["fields"]["ligne"] not in self.liste_lignes:
-            print("pas de ligne pour le transport ID%d" % data["fields"]["pk"])
+            print("pas de ligne pour le transport ID%d" % data["pk"])
             valide = False
         if data["fields"]["depart_arret"] and data["fields"]["depart_arret"] not in self.liste_arrets:
-            print("pas d'arret de depart pour le transport ID%d" % data["fields"]["pk"])
+            print("pas d'arret de depart pour le transport ID%d" % data["pk"])
             valide = False
         if data["fields"]["depart_lieu"] and data["fields"]["depart_lieu"] not in self.liste_lieux:
-            print("pas de lieu de depart pour le transport ID%d" % data["fields"]["pk"])
+            print("pas de lieu de depart pour le transport ID%d" % data["pk"])
             valide = False
         if data["fields"]["arrivee_arret"] and data["fields"]["arrivee_arret"] not in self.liste_arrets:
-            print("pas d'arret de arrivee pour le transport ID%d" % data["fields"]["pk"])
+            print("pas d'arret de arrivee pour le transport ID%d" % data["pk"])
             valide = False
         if data["fields"]["arrivee_lieu"] and data["fields"]["arrivee_lieu"] not in self.liste_lieux:
-            print("pas de lieu de arrivee pour le transport ID%d" % data["fields"]["pk"])
+            print("pas de lieu de arrivee pour le transport ID%d" % data["pk"])
             valide = False
         return valide
 
