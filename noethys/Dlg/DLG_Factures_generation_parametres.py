@@ -597,8 +597,9 @@ class Panel(wx.Panel):
                 WHERE IDactivite = %d""" % IDactivite
                 DB.ExecuterReq(req)
                 listeresult = DB.ResultatReq()
-                result = listeresult[0]
-                listeAllRegies.append(result[0])
+                if listeresult:
+                    result = listeresult[0]
+                    listeAllRegies.append(result[0])
                 DB.Close()
             listeRegies = list(set(listeAllRegies))
             if len(listeRegies) > 1 :
