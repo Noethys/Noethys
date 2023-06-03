@@ -117,12 +117,9 @@ class ListView(GroupListView):
     def __init__(self, *args, **kwds):
         self.selectionID = None
         self.selectionTrack = None
-        self.IDactivite = None
+        self.listeActivites = []
         self.partis = True
-        self.listeGroupes = []
-        self.listeCategories = []
         self.regroupement = None
-        self.labelParametres = ""
         self.ctrl_regroupement = kwds.pop("ctrl_regroupement", None)
         self.checkColonne = kwds.pop("checkColonne", False)
         # Initialisation du listCtrl
@@ -154,7 +151,7 @@ class ListView(GroupListView):
 
     def GetTracks(self):
         listeListeView = []
-        if self.IDactivite == None :
+        if len(self.listeActivites) == 0:
             return listeListeView
 
         DB = GestionDB.DB()
@@ -162,22 +159,9 @@ class ListView(GroupListView):
         conditions = []
 
         # Condition Activité
-        if self.IDactivite != 0 :
-            conditions.append("inscriptions.IDactivite=%d" % self.IDactivite)
-
-        # Condition Groupes
-        if self.listeGroupes != None :
-            if len(self.listeGroupes) == 0 : conditionGroupes = "()"
-            elif len(self.listeGroupes) == 1 : conditionGroupes = "(%d)" % self.listeGroupes[0]
-            else : conditionGroupes = str(tuple(self.listeGroupes))
-            conditions.append("inscriptions.IDgroupe IN %s" % conditionGroupes)
-
-        # Condition Catégories
-        if self.listeCategories != None:
-            if len(self.listeCategories) == 0 : conditionCategories = "()"
-            elif len(self.listeCategories) == 1 : conditionCategories = "(%d)" % self.listeCategories[0]
-            else : conditionCategories = str(tuple(self.listeCategories))
-            conditions.append("inscriptions.IDcategorie_tarif IN %s" % conditionCategories)
+        if len(self.listeActivites) == 0 : conditions.append("inscriptions.IDactivite IN ()")
+        elif len(self.listeActivites) == 1 : conditions .append("inscriptions.IDactivite IN (%d)" % self.listeActivites[0])
+        else : conditions.append("inscriptions.IDactivite IN %s" % str(tuple(self.listeActivites)))
 
         # Condition Partis
         if self.partis != True :
@@ -189,11 +173,14 @@ class ListView(GroupListView):
         # Récupération de la facturation
         dictFacturation = {}
 
+        if len(self.listeActivites) == 0: condition = "prestations.IDactivite IN ()"
+        elif len(self.listeActivites) == 1: condition = "prestations.IDactivite IN (%d)" % self.listeActivites[0]
+        else: condition = "prestations.IDactivite IN %s" % str(tuple(self.listeActivites))
+
         # Récupère les prestations
-        condition = ("WHERE IDactivite=%d" % self.IDactivite) if self.IDactivite != 0 else ""
         req = """SELECT IDfamille, IDindividu, SUM(montant)
         FROM prestations
-        %s
+        WHERE %s
         GROUP BY IDfamille, IDindividu
         ;""" % condition
         DB.ExecuterReq(req)
@@ -204,11 +191,10 @@ class ListView(GroupListView):
             dictFacturation[(IDfamille, IDindividu)] = {"prestations":total_prestations, "ventilation":0.0}
 
         # Récupère la ventilation
-        condition = ("WHERE prestations.IDactivite=%d" % self.IDactivite) if self.IDactivite != 0 else ""
         req = """SELECT IDfamille, IDindividu, SUM(ventilation.montant)
         FROM ventilation
         LEFT JOIN prestations ON prestations.IDprestation = ventilation.IDprestation
-        %s
+        WHERE %s
         GROUP BY IDfamille, IDindividu
         ;""" % condition
         DB.ExecuterReq(req)
@@ -306,9 +292,6 @@ class ListView(GroupListView):
 
             # Famille
             dictTemp["nomTitulaires"] = self.dict_titulaires[dictTemp["IDfamille"]]["titulairesSansCivilite"]
-            # self.rue = listview.dict_titulaires[self.IDfamille]["adresse"]["rue"]
-            # self.cp = listview.dict_titulaires[self.IDfamille]["adresse"]["cp"]
-            # self.ville = listview.dict_titulaires[self.IDfamille]["adresse"]["ville"]
 
             # Formatage sous forme de TRACK
             track = Track(self, dictTemp)
@@ -405,7 +388,7 @@ class ListView(GroupListView):
                 listeColonnes.append(ColumnDefn(titre, "left", 100, code, typeDonnee=typeDonnee, visible=False))
 
         #self.SetColumns(listeColonnes)
-        self.SetColumns2(colonnes=listeColonnes, nomListe="OL_Liste_inscriptions")
+        self.SetColumns2(colonnes=listeColonnes, nomListe="OL_Liste_detaillee_inscriptions")
 
         # Regroupement
         if self.regroupement != None :
@@ -452,13 +435,10 @@ class ListView(GroupListView):
                     return
                 index += 1
                     
-    def MAJ(self, IDindividu=None, IDactivite=None, partis=True, listeGroupes=[], listeCategories=[], regroupement=None, listeColonnes=[], labelParametres=""):
-        self.IDactivite = IDactivite
+    def MAJ(self, IDindividu=None, listeActivites=[], partis=True, regroupement=None, listeColonnes=[]):
+        self.listeActivites = listeActivites
         self.partis = partis
-        self.listeGroupes = listeGroupes
-        self.listeCategories = listeCategories
         self.regroupement = regroupement
-        self.labelParametres = labelParametres
         if IDindividu != None :
             self.selectionID = IDindividu
             self.selectionTrack = None
@@ -540,7 +520,7 @@ class ListView(GroupListView):
     def GetParametresImpression(self):
         dictParametres = {
             "titre" : _(u"Liste des inscriptions"),
-            "intro" : self.labelParametres,
+            "intro" : "",
             "total" : _(u"> %s individus") % (len(self.GetFilteredObjects()) if self.regroupement else len(self.innerList)),
             "orientation" : wx.PORTRAIT,
             }
