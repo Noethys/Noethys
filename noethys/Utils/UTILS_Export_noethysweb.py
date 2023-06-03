@@ -713,6 +713,11 @@ class Table_familles(Table):
     def email_depots_adresses(self, data={}):
         return data["email_depots"]
 
+    def titulaire_helios(self, valeur=None, objet=None):
+        if valeur and valeur in self.liste_individus:
+            return valeur
+        return None
+
 
 class Table_individus(Table):
     def __init__(self, parent, **kwds):
@@ -830,6 +835,11 @@ class Table_prestations(Table):
     def date_valeur(self, valeur=None, objet=None):
         if not valeur:
             return objet[2]
+        return valeur
+
+    def montant_initial(self, valeur=None, objet=None):
+        if valeur == None:
+            return objet[6]
         return valeur
 
 
