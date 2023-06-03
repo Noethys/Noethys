@@ -249,7 +249,7 @@ class ListView(FastObjectListView):
         dictParametres = {
             "titre" : _(u"Liste des quotients familiaux/revenus"),
             "intro" : self.dict_parametres["label_parametres"],
-            "total" : _(u"> %s familles") % len(self.donnees),
+            "total" : _(u"> %s familles") % len(self.GetFilteredObjects()),
             "orientation" : wx.PORTRAIT,
             }
         return dictParametres

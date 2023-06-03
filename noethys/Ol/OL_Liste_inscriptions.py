@@ -541,7 +541,7 @@ class ListView(GroupListView):
         dictParametres = {
             "titre" : _(u"Liste des inscriptions"),
             "intro" : self.labelParametres,
-            "total" : _(u"> %s individus") % len(self.donnees),
+            "total" : _(u"> %s individus") % len(self.GetFilteredObjects()),
             "orientation" : wx.PORTRAIT,
             }
         return dictParametres
