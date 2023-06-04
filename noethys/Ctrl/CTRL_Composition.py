@@ -239,7 +239,11 @@ class GetValeurs() :
             # Infos sur les activités inscrites
             if (IDindividu in dictInscriptions) == True :
                 dictInfos[IDindividu]["inscriptions"] = True
-                dictInfos[IDindividu]["listeInscriptions"] = dictInscriptions[IDindividu]
+                liste_temp = []
+                for inscription in dictInscriptions[IDindividu]:
+                    if not inscription["parti"] and (not inscription["activiteFin"] or inscription["activiteFin"] > str(datetime.date.today())):
+                        liste_temp.append(inscription)
+                dictInfos[IDindividu]["listeInscriptions"] = liste_temp
             else:
                 dictInfos[IDindividu]["inscriptions"] = False
                 dictInfos[IDindividu]["listeInscriptions"] = []
