@@ -125,6 +125,7 @@ class ListView(GroupListView):
         self.labelParametres = ""
         self.ctrl_regroupement = kwds.pop("ctrl_regroupement", None)
         self.checkColonne = kwds.pop("checkColonne", False)
+        self.nomListe = kwds.pop("nomListe", "OL_Liste_inscriptions")
         # Initialisation du listCtrl
         self.nom_fichier_liste = __file__
         GroupListView.__init__(self, *args, **kwds)
@@ -405,7 +406,7 @@ class ListView(GroupListView):
                 listeColonnes.append(ColumnDefn(titre, "left", 100, code, typeDonnee=typeDonnee, visible=False))
 
         #self.SetColumns(listeColonnes)
-        self.SetColumns2(colonnes=listeColonnes, nomListe="OL_Liste_inscriptions")
+        self.SetColumns2(colonnes=listeColonnes, nomListe=self.nomListe)
 
         # Regroupement
         if self.regroupement != None :
@@ -419,7 +420,8 @@ class ListView(GroupListView):
 
         # Case à cocher
         if self.checkColonne == True :
-            self.CreateCheckStateColumn(0)
+            if not self.checkStateColumn:
+                self.CreateCheckStateColumn(0)
             if len(self.columns) > 0:
                 self.SetSortColumn(self.columns[1])
         else :
@@ -486,11 +488,11 @@ class ListView(GroupListView):
         global LISTE_CHAMPS
         LISTE_CHAMPS = listeChamps
         
-    def SetChampsAffiches(self, listeLabels=[]):
+    def SetChampsAffiches(self, listeLabels=[], listeCodes=[]):
         global LISTE_CHAMPS
         index = 0
         for dictTemp in LISTE_CHAMPS :
-            if dictTemp["label"] in listeLabels :
+            if dictTemp["label"] in listeLabels or dictTemp["code"] in listeCodes:
                 LISTE_CHAMPS[index]["afficher"] = True
             else:
                 LISTE_CHAMPS[index]["afficher"] = False

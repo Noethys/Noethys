@@ -110,7 +110,7 @@ class GetValeurs() :
         # Recherche des inscriptions des membres de la famille
         dictInscriptions = {}
         req = """SELECT 
-        IDinscription, IDindividu, date_inscription, parti,
+        IDinscription, IDindividu, date_inscription, date_desinscription, parti,
         activites.nom, activites.date_debut, activites.date_fin,
         groupes.nom, categories_tarifs.nom
         FROM inscriptions
@@ -120,13 +120,13 @@ class GetValeurs() :
         WHERE inscriptions.statut='ok' AND IDfamille=%d;""" % self.IDfamille
         DB.ExecuterReq(req)
         listeInscriptions = DB.ResultatReq()
-        for IDinscription, IDindividu, dateInscription, parti, nomActivite, activiteDebut, activiteFin, nomGroupe, nomCategorie in listeInscriptions :
+        for IDinscription, IDindividu, dateInscription, date_desinscription, parti, nomActivite, activiteDebut, activiteFin, nomGroupe, nomCategorie in listeInscriptions :
             if (IDindividu in dictInscriptions) == False :
                 dictInscriptions[IDindividu] = []
             dictTemp = {
                 "IDinscription":IDinscription, "dateInscription":dateInscription, "parti":parti, 
                 "nomActivite":nomActivite, "activiteDebut":activiteDebut, "activiteFin":activiteFin, 
-                "nomGroupe":nomGroupe, "nomCategorie":nomCategorie
+                "nomGroupe":nomGroupe, "nomCategorie":nomCategorie, "dateDesinscription": date_desinscription,
                 } 
             dictInscriptions[IDindividu].append(dictTemp) 
             
@@ -241,7 +241,7 @@ class GetValeurs() :
                 dictInfos[IDindividu]["inscriptions"] = True
                 liste_temp = []
                 for inscription in dictInscriptions[IDindividu]:
-                    if not inscription["parti"] and (not inscription["activiteFin"] or inscription["activiteFin"] > str(datetime.date.today())):
+                    if not inscription["parti"] and (not inscription["activiteFin"] or inscription["activiteFin"] > str(datetime.date.today())) and (not inscription["dateDesinscription"] or inscription["dateDesinscription"] > str(datetime.date.today())):
                         liste_temp.append(inscription)
                 dictInfos[IDindividu]["listeInscriptions"] = liste_temp
             else:
@@ -1075,9 +1075,9 @@ class CTRL_Graphique(wx.ScrolledWindow):
             nbreInscriptions = len(dictInfoIndividu["listeInscriptions"])
             message += "\n"
             if nbreInscriptions == 1 :
-                message += _(u"%s est inscrit%s à 1 activité : \n") % (prenom, lettreGenre)
+                message += _(u"%s est inscrit%s à 1 activité \n") % (prenom, lettreGenre)
             else:
-                message += _(u"%s est inscrit%s à %d activités : \n") % (prenom, lettreGenre, nbreInscriptions)
+                message += _(u"%s est inscrit%s à %d activités \n") % (prenom, lettreGenre, nbreInscriptions)
             for dictInscription in dictInfoIndividu["listeInscriptions"] :
                 message += "> %s (%s - %s) \n" % (dictInscription["nomActivite"], dictInscription["nomGroupe"], dictInscription["nomCategorie"])
 
@@ -1925,9 +1925,9 @@ class CTRL_Liste(HTL.HyperTreeList):
             nbreInscriptions = len(dictInfoIndividu["listeInscriptions"])
             message += "\n"
             if nbreInscriptions == 1 :
-                message += _(u"%s est inscrit%s à 1 activité : \n") % (prenom, lettreGenre)
+                message += _(u"%s est inscrit%s à 1 activité \n") % (prenom, lettreGenre)
             else:
-                message += _(u"%s est inscrit%s à %d activités : \n") % (prenom, lettreGenre, nbreInscriptions)
+                message += _(u"%s est inscrit%s à %d activités \n") % (prenom, lettreGenre, nbreInscriptions)
             for dictInscription in dictInfoIndividu["listeInscriptions"] :
                 message += "> %s (%s - %s) \n" % (dictInscription["nomActivite"], dictInscription["nomGroupe"], dictInscription["nomCategorie"])
 
