@@ -538,7 +538,7 @@ class ListView(GroupListView):
         from Dlg import DLG_Famille
         dlg = DLG_Famille.Dialog(self, IDfamille)
         if dlg.ShowModal() == wx.ID_OK:
-            self.MAJ(IDindividu=IDindividu, IDactivite=self.IDactivite, listeGroupes=self.listeGroupes, listeCategories=self.listeCategories, regroupement=self.regroupement)
+            self.MAJ(IDindividu=IDindividu, listeActivites=self.listeActivites, regroupement=self.regroupement)
         dlg.Destroy()
 
     def OnConfigurationListe(self):
