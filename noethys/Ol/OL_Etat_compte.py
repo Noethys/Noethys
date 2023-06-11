@@ -135,7 +135,7 @@ class ListView(FastObjectListView):
         for IDreglement, date, montant in listeReglements :
             date = DateEngEnDateDD(date) 
             self.dictDonnees["nbreReglements"]["valeur"] += 1
-            self.dictDonnees["totalReglements"]["valeur"] += decimal.Decimal(str(montant))
+            self.dictDonnees["totalReglements"]["valeur"] += decimal.Decimal(str(montant or 0.0))
         
         # Calcul des soldes
         self.dictDonnees["soldeFinal"]["valeur"] = self.dictDonnees["totalReglements"]["valeur"] - self.dictDonnees["soldeFinal"]["valeur"]

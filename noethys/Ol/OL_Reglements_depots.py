@@ -143,7 +143,7 @@ class ListView(FastObjectListView):
         montant = 0.0
         for track in self.donnees :
             nbre += 1
-            montant += track.montant
+            montant += track.montant or 0.0
         # Label de staticbox
         label = u"%d %s (%.2f %s)" % (nbre, texte, montant, SYMBOLE)
         return label          
