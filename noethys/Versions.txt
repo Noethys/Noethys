@@ -1,7 +1,12 @@
+Version 1.3.2.4 (11/06/2023) :
+
+- Corrections de petits bugs
+
 Version 1.3.2.3 (03/06/2023) :
 
 - Ajout des questionnaires à la liste détaillée des consommations
 - Ajout de la liste détaillée des inscriptions
+- Ajout de la désinscription par lot
 - Correction GetFilteredObjects dans total impression
 - Correction du tri dans le ctrl de sélection des activités
 
