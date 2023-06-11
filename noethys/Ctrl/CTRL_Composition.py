@@ -241,7 +241,9 @@ class GetValeurs() :
                 dictInfos[IDindividu]["inscriptions"] = True
                 liste_temp = []
                 for inscription in dictInscriptions[IDindividu]:
-                    if not inscription["parti"] and (not inscription["activiteFin"] or inscription["activiteFin"] > str(datetime.date.today())) and (not inscription["dateDesinscription"] or inscription["dateDesinscription"] > str(datetime.date.today())):
+                    activiteFin = str(inscription["activiteFin"]) if inscription["activiteFin"] else ""
+                    dateDesinscription = str(inscription["dateDesinscription"]) if inscription["dateDesinscription"] else ""
+                    if not inscription["parti"] and (not activiteFin or activiteFin > str(datetime.date.today())) and (not dateDesinscription or dateDesinscription > str(datetime.date.today())):
                         liste_temp.append(inscription)
                 dictInfos[IDindividu]["listeInscriptions"] = liste_temp
             else:
