@@ -1390,6 +1390,24 @@ class Table_attestations(Table):
 
 
 class Table_devis(Table):
+    def __init__(self, parent, **kwds):
+        self.parent = parent
+        # Récupération des familles
+        req = """SELECT IDfamille, date_creation FROM familles;"""
+        self.parent.DB.ExecuterReq(req)
+        self.liste_familles = []
+        for IDfamille, date_creation in self.parent.DB.ResultatReq():
+            self.liste_familles.append(IDfamille)
+
+        Table.__init__(self, parent, **kwds)
+        del self.liste_familles
+
+    def valide_ligne(self, data={}):
+        valide = True
+        if data["fields"]["famille"] and data["fields"]["famille"] not in self.liste_familles:
+            valide = False
+        return valide
+
     def activites(self, valeur=None, objet=None):
         # Suppression de tous les idactivite en double
         valeur = ";".join(list({idactivite: None for idactivite in valeur.split(";")}.keys()))
