@@ -1861,7 +1861,7 @@ class ScrolledThumbnail(wx.ScrolledWindow):
             self.DrawThumbnail(thmb, self._items[ii], ii)
             dc.DrawBitmap(thmb, int(tx), int(ty))
   
-        rect = wx.Rect(xwhite, self._tBorder/2,
+        rect = wx.Rect(int(xwhite), int(self._tBorder/2),
                        self._cols*(self._tWidth + self._tBorder),
                        self._rows*(self._tHeight + self._tBorder) + \
                        self.GetCaptionHeight(0, self._rows))

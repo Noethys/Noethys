@@ -1927,15 +1927,9 @@ class CTRL_Liste(HTL.HyperTreeList):
             nbreInscriptions = len(dictInfoIndividu["listeInscriptions"])
             message += "\n"
             if nbreInscriptions == 1 :
-<<<<<<< HEAD
-                message += _(u"%s est inscrit%s � 1 activit� : \n") % (prenom, lettreGenre)
-            else:
-                message += _(u"%s est inscrit%s � %d activit�s : \n") % (prenom, lettreGenre, nbreInscriptions)
-=======
                 message += _(u"%s est inscrit%s � 1 activit� \n") % (prenom, lettreGenre)
             else:
                 message += _(u"%s est inscrit%s � %d activit�s \n") % (prenom, lettreGenre, nbreInscriptions)
->>>>>>> 961cb800c14110b56458abd7aa54b3aa699eb74f
             for dictInscription in dictInfoIndividu["listeInscriptions"] :
                 message += "> %s (%s - %s) \n" % (dictInscription["nomActivite"], dictInscription["nomGroupe"], dictInscription["nomCategorie"])
 
