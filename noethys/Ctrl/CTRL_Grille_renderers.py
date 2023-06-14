@@ -1087,7 +1087,7 @@ class LabelColonneMultihoraires(glr.GridLabelRenderer):
                     if largeur_quarts_heures > 1 and largeur_quarts_heures < 2 and chiffre_pair % 3 == 0:
                         affiche_heure = True
                     if affiche_heure == True :
-                        dc.DrawText(texte, x-(largTexte/2)+rect.x , posY+2)
+                        dc.DrawText(texte, int(x-(largTexte/2)+rect.x), int(posY+2))
                     chiffre_pair += 1
                 elif htime.minute in (15, 45) and largeur_quarts_heures > 4 :
                     hauteurTrait = 1

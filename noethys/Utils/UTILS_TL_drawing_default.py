@@ -441,7 +441,7 @@ class DefaultDrawingAlgorithm(DrawingAlgorithm):
             (tw, th) = self.dc.GetTextExtent(label)
             middle = self.metrics.calc_x(tp.mean_time())
             middley = self.metrics.half_height
-            self.dc.DrawText(label, middle - tw / 2, middley - th)
+            self.dc.DrawText(label, int(middle - tw / 2), int(middley - th))
         # Major strips
         self.dc.SetFont(self.header_font)
         self.dc.SetPen(self.grey_solid_pen)

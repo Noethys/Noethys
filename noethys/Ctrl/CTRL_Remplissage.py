@@ -686,7 +686,7 @@ class RendererCase(GridCellRenderer):
         largeurTexte, hauteurTexte = dc.GetTextExtent(texte)
         if self.case.ouvert == True or self.case.estTotal == True :
             self.DrawBorder(grid, dc, rect)
-        dc.DrawText(texte, rect[0] + rect[2]/2.0 - largeurTexte/2.0, rect[1] + rect[3]/2.0 - hauteurTexte/2.0)            
+        dc.DrawText(texte, int(rect[0] + rect[2]/2.0 - largeurTexte/2.0), int(rect[1] + rect[3]/2.0 - hauteurTexte/2.0))
             
     def MAJ(self):
         self.grid.Refresh()

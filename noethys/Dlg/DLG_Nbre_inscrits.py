@@ -87,7 +87,7 @@ class Renderer_gauge(object):
         mdc.SetTextForeground(COULEUR_TEXTE)
         x = rect.width/2 - textWidth/2
         x = 0 + 4
-        mdc.DrawText(texte, x, rect.height/2 - dummy/2)
+        mdc.DrawText(texte, int(x), int(rect.height/2 - dummy/2))
         
         # Double buffering
         dc.SetClippingRegion(rect.x, rect.y, rect.width, rect.height)

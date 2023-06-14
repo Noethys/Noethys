@@ -1434,7 +1434,7 @@ class CTRL_Style(OwnerDrawnComboBox):
 
         if flags & ODCB_PAINTING_CONTROL:
             # for painting the control itself
-            dc.DrawLine( r.x+5, r.y+r.height/2, r.x+r.width - 5, r.y+r.height/2 )
+            dc.DrawLine( int(r.x+5), int(r.y+r.height/2), int(r.x+r.width - 5), int(r.y+r.height/2 ))
             self.selection = item
         else:
             # for painting the items in the popup
@@ -1442,7 +1442,7 @@ class CTRL_Style(OwnerDrawnComboBox):
                         r.x + 3,
                         (r.y + 0) + ( (r.height/2) - dc.GetCharHeight() )/2
                         )
-            dc.DrawLine( r.x+5, r.y+((r.height/4)*3)+1, r.x+r.width - 5, r.y+((r.height/4)*3)+1 )
+            dc.DrawLine( int(r.x+5), int(r.y+((r.height/4)*3)+1), int(r.x+r.width - 5), int(r.y+((r.height/4)*3)+1 ))
            
     def OnDrawBackground(self, dc, rect, item, flags):
         # If the item is selected, or its item # iseven, or we are painting the

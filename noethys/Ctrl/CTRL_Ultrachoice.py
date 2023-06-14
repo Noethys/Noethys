@@ -94,7 +94,7 @@ class CTRL(OwnerDrawnComboBox):
         
         # Dessin du label
         dc.SetFont(wx.Font(10, wx.DEFAULT, wx.NORMAL, wx.BOLD, 0, ""))
-        dc.DrawText(dictItem["label"], r.x + tailleImage[0] + 4, (r.y + 0) + ( (r.height/2) - dc.GetCharHeight() )/2)
+        dc.DrawText(dictItem["label"], int(r.x + tailleImage[0] + 4), int((r.y + 0) + ( (r.height/2) - dc.GetCharHeight() )/2))
         
         # Dessin de la ligne
 ##        pen = wx.Pen(dc.GetTextForeground(), 0.5, wx.SOLID)
@@ -110,9 +110,9 @@ class CTRL(OwnerDrawnComboBox):
             if "\n" in description :
                 description = u"%s..." % description[0:description.index("\n")-1]
             
-            dc.DrawText(description, r.x + tailleImage[0] + 4, (r.y + 16) + ( (r.height/2) - dc.GetCharHeight() )/2)
+            dc.DrawText(description, int(r.x + tailleImage[0] + 4), int((r.y + 16) + ( (r.height/2) - dc.GetCharHeight() )/2))
         else :
-            dc.DrawLabel(description, wx.Rect(r.x + tailleImage[0] + 4, (r.y + 16) + ( (r.height/2) - dc.GetCharHeight() )/2, r.width - tailleImage[0], self.nbreLignesDescription*15))
+            dc.DrawLabel(description, wx.Rect(int(r.x + tailleImage[0] + 4), int((r.y + 16) + ( (r.height/2) - dc.GetCharHeight() )/2), int(r.width - tailleImage[0]), int(self.nbreLignesDescription*15)))
         
     
     def OnDrawBackground(self, dc, rect, item, flags):

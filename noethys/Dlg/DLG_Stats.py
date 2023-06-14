@@ -419,7 +419,7 @@ class Dialog(wx.Dialog):
         frame = wx.GetApp().GetTopWindow() 
         preview_window = wx.PreviewFrame(preview, None, _(u"Aperçu avant impression"))
         preview_window.Initialize()
-        preview_window.MakeModal(False)
+        # preview_window.Show(False)
         preview_window.SetPosition(frame.GetPosition())
         preview_window.SetSize(frame.GetSize())
         preview_window.Show(True)

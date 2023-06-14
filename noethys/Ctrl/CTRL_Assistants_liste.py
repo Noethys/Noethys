@@ -73,14 +73,14 @@ class FirstColumnRenderer(object):
         dc.SetFont(self.normalFont)
         textWidth, textHeight = dc.GetTextExtent(self.text)
         dc.SetTextForeground(wx.SystemSettings.GetColour(wx.SYS_COLOUR_BTNTEXT))
-        dc.DrawText(self.text, rect.x+bmpWidth+18, rect.y+(rect.height - textHeight)/4)
+        dc.DrawText(self.text, int(rect.x+bmpWidth+18), int(rect.y+(rect.height - textHeight)/4))
 
         # Description
         if self.description:
             dc.SetFont(self.smallerFont)
             textWidth, textHeight = dc.GetTextExtent(self.description)
             dc.SetTextForeground(self.greyColour)
-            dc.DrawText(self.description, rect.x+bmpWidth+18, rect.y+3*(rect.height - textHeight)/4)
+            dc.DrawText(self.description, int(rect.x+bmpWidth+18), int(rect.y+3*(rect.height - textHeight)/4))
         
 
     def GetLineHeight(self):

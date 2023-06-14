@@ -81,7 +81,7 @@ class FirstColumnRenderer(object):
                         
         textWidth, textHeight = dc.GetTextExtent(self.text)
         dc.SetTextForeground(wx.SystemSettings.GetColour(wx.SYS_COLOUR_BTNTEXT))
-        dc.DrawText(self.text, rect.x+bmpWidth+10, int(int(rect.y+(rect.height - textHeight)/4)))
+        dc.DrawText(self.text, rect.x+bmpWidth+10, int(rect.y+(rect.height - textHeight)/4))
 
         if not self.description:
             return
