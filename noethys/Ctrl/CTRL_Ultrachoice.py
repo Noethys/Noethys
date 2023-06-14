@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# -*- coding: utf8 -*-
+# -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
 # Application :    Noethys, gestion multi-activitï¿œs
 # Site internet :  www.noethys.com
