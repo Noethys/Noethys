@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -40,11 +40,11 @@ class CTRL_Choice(wx.Choice):
         else:
             self.Enable(True)
         self.SetItems(listeItems)
-        # Re-sélection après MAJ
+        # Re-sÃ©lection aprÃ¨s MAJ
         if selectionActuelle != None :
             self.SetID(selectionActuelle)
         else:
-            # Sélection par défaut
+            # SÃ©lection par dÃ©faut
             self.SetID(self.defaut)
                                         
     def GetListeDonnees(self):
@@ -98,7 +98,7 @@ def DemandeModele(categorie=""):
         if defaut == 1 :
             indexDefaut = index
         index += 1
-    dlg = wx.SingleChoiceDialog(None, _(u"Veuillez sélectionner un modèle dans la liste :"), _(u"Sélection d'un modèle"), listeLabels, wx.CHOICEDLG_STYLE)
+    dlg = wx.SingleChoiceDialog(None, _(u"Veuillez sÃ©lectionner un modÃ¨le dans la liste :"), _(u"SÃ©lection d'un modÃ¨le"), listeLabels, wx.CHOICEDLG_STYLE)
     if indexDefaut != None :
         dlg.SetSelection(indexDefaut)        
     if dlg.ShowModal() == wx.ID_OK:
@@ -107,7 +107,7 @@ def DemandeModele(categorie=""):
         dlg.Destroy()
     else:
         dlg.Destroy()
-        dlg = wx.MessageDialog(None, _(u"Sans modèle, l'édition est annulée !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+        dlg = wx.MessageDialog(None, _(u"Sans modÃ¨le, l'Ã©dition est annulÃ©e !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
         dlg.ShowModal()
         dlg.Destroy()
         return None

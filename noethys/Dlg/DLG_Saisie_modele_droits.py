@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-13 Ivan LUCAS
@@ -27,8 +27,8 @@ class Dialog(wx.Dialog):
         self.defaut = defaut
         self.IDmodele = IDmodele
         
-        # Généralités
-        self.staticbox_generalites_staticbox = wx.StaticBox(self, -1, _(u"Généralités"))
+        # GÃ©nÃ©ralitÃ©s
+        self.staticbox_generalites_staticbox = wx.StaticBox(self, -1, _(u"GÃ©nÃ©ralitÃ©s"))
         self.label_nom = wx.StaticText(self, -1, _(u"Nom :"))
         self.ctrl_nom = wx.TextCtrl(self, -1, u"")
         self.label_description = wx.StaticText(self, -1, _(u"Description :"))
@@ -53,14 +53,14 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
         
         if self.IDmodele != None :
-            self.SetTitle(_(u"Modification d'un modèle de droits"))
+            self.SetTitle(_(u"Modification d'un modÃ¨le de droits"))
             self.Importation()
         else:
-            self.SetTitle(_(u"Saisie d'un modèle de droits"))
+            self.SetTitle(_(u"Saisie d'un modÃ¨le de droits"))
 
     def __set_properties(self):
-        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez un nom pour ce modèle")))
-        self.ctrl_description.SetToolTip(wx.ToolTip(_(u"Saisissez une description pour ce modèle")))
+        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez un nom pour ce modÃ¨le")))
+        self.ctrl_description.SetToolTip(wx.ToolTip(_(u"Saisissez une description pour ce modÃ¨le")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
@@ -70,7 +70,7 @@ class Dialog(wx.Dialog):
         grid_sizer_base = wx.FlexGridSizer(rows=4, cols=1, vgap=10, hgap=10)
         grid_sizer_contenu = wx.FlexGridSizer(rows=1, cols=2, vgap=10, hgap=10)
         
-        # Généralités
+        # GÃ©nÃ©ralitÃ©s
         staticbox_generalites = wx.StaticBoxSizer(self.staticbox_generalites_staticbox, wx.VERTICAL)
         grid_sizer_generalites = wx.FlexGridSizer(rows=2, cols=2, vgap=5, hgap=5)
         
@@ -112,10 +112,10 @@ class Dialog(wx.Dialog):
         self.EndModal(wx.ID_CANCEL)
 
     def OnBoutonOk(self, event):     
-        # Vérification des données
+        # VÃ©rification des donnÃ©es
         nom = self.ctrl_nom.GetValue()
         if nom == "" :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un nom pour ce modèle !"), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un nom pour ce modÃ¨le !"), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_nom.SetFocus()
@@ -124,13 +124,13 @@ class Dialog(wx.Dialog):
         # Description
         description = self.ctrl_description.GetValue()
         if description == "" :
-            dlg = wx.MessageDialog(self, _(u"Etes-vous sûr de ne pas vouloir saisir de description pour ce modèle ?"), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+            dlg = wx.MessageDialog(self, _(u"Etes-vous sÃ»r de ne pas vouloir saisir de description pour ce modÃ¨le ?"), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
             if dlg.ShowModal() != wx.ID_YES :
                 dlg.Destroy()
                 return
             dlg.Destroy()
                 
-        # Sauvegarde du modèle
+        # Sauvegarde du modÃ¨le
         DB = GestionDB.DB()
         listeDonnees = [("nom", nom), ("observations", description), ("defaut", self.defaut)]
         if self.IDmodele == None :
@@ -142,7 +142,7 @@ class Dialog(wx.Dialog):
         # Sauvegarde des droits
         self.ctrl_droits.Sauvegarde(IDmodele=self.IDmodele) 
         
-        # Fermeture fenêtre
+        # Fermeture fenÃªtre
         self.EndModal(wx.ID_OK)
     
     def GetIDmodele(self):

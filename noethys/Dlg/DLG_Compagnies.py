@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -24,10 +24,10 @@ DICT_CATEGORIES = {
     "car" : {"singulier":_(u"compagnie de cars"), "pluriel":_(u"compagnies de cars"), "image":"Car"},
     "navette" : {"singulier":_(u"compagnie de navettes"), "pluriel":_(u"compagnies de navettes"), "image":"Navette"},
     "taxi" : {"singulier":_(u"compagnie de taxis"), "pluriel":_(u"compagnies de taxis"), "image":"Taxi"},
-    "avion" : {"singulier":_(u"compagnie aérienne"), "pluriel":_(u"compagnies aériennes"), "image":"Avion"},
+    "avion" : {"singulier":_(u"compagnie aÃ©rienne"), "pluriel":_(u"compagnies aÃ©riennes"), "image":"Avion"},
     "bateau" : {"singulier":_(u"compagnie maritime"), "pluriel":_(u"compagnies maritimes"), "image":"Bateau"},
     "train" : {"singulier":_(u"compagnie ferroviaire"), "pluriel":_(u"compagnies ferroviaires"), "image":"Train"},
-    "metro" : {"singulier":_(u"compagnie de métros"), "pluriel":_(u"compagnies de métro"), "image":"Metro"},
+    "metro" : {"singulier":_(u"compagnie de mÃ©tros"), "pluriel":_(u"compagnies de mÃ©tro"), "image":"Metro"},
     }
 
 
@@ -39,15 +39,15 @@ class Dialog(wx.Dialog):
         self.mode = mode
         self.categorie = categorie
         
-        # Recherche les caractéristiques de la catégorie
+        # Recherche les caractÃ©ristiques de la catÃ©gorie
         self.categorieSingulier = DICT_CATEGORIES[self.categorie]["singulier"]
         self.categoriePluriel = DICT_CATEGORIES[self.categorie]["pluriel"]
         self.nomImage = DICT_CATEGORIES[self.categorie]["image"]
         
         # Affichage des textes d'intro
         if self.mode == "selection" :
-            intro = _(u"Vous pouvez ici sélectionner une %s. Double-cliquez sur une ligne pour effectuer rapidement la sélection.") % self.categorieSingulier
-            titre = _(u"Sélection d'une %s") % self.categorieSingulier
+            intro = _(u"Vous pouvez ici sÃ©lectionner une %s. Double-cliquez sur une ligne pour effectuer rapidement la sÃ©lection.") % self.categorieSingulier
+            titre = _(u"SÃ©lection d'une %s") % self.categorieSingulier
             
         else:
             intro = _(u"Vous pouvez ici saisir, modifier ou supprimer des %s.") % self.categoriePluriel
@@ -84,8 +84,8 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter une %s") % self.categorieSingulier))
-        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la %s sélectionnée dans la liste") % self.categorieSingulier))
-        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la %s sélectionnée dans la liste") % self.categorieSingulier))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la %s sÃ©lectionnÃ©e dans la liste") % self.categorieSingulier))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la %s sÃ©lectionnÃ©e dans la liste") % self.categorieSingulier))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider et fermer")))
@@ -142,11 +142,11 @@ class Dialog(wx.Dialog):
     def OnBouton_ok(self, event):
         IDcompagnie = self.GetIDcompagnie()
         if IDcompagnie == None :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune compagnie dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune compagnie dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
-        # Fermeture de la fenêtre
+        # Fermeture de la fenÃªtre
         self.EndModal(wx.ID_OK)
 
     def OnBoutonAide(self, event): 

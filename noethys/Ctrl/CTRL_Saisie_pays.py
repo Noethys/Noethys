@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -57,18 +57,18 @@ class SaisiePays(wx.Panel):
         self.image_pays.SetToolTip(wx.ToolTip(_(u"Pays de naissance : ") + pays[2]))
         if self.mode == "pays" :
             # Mode pays
-            self.bouton_pays.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sélectionner un autre pays de naissance")))
+            self.bouton_pays.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sÃ©lectionner un autre pays de naissance")))
             self.image_pays.SetToolTip(wx.ToolTip(_(u"Pays de naissance : %s") % pays[2]))
         else:
-            # Mode nationalité
-            self.image_pays.SetToolTip(wx.ToolTip(_(u"Nationalité : %s") % pays[3]))
-            self.bouton_pays.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sélectionner une autre nationalité")))
+            # Mode nationalitÃ©
+            self.image_pays.SetToolTip(wx.ToolTip(_(u"NationalitÃ© : %s") % pays[3]))
+            self.bouton_pays.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sÃ©lectionner une autre nationalitÃ©")))
     
     def GetValue(self):
         return self.IDpays
 
     def Recherche_Pays(self, IDpays=0, nomPays=""):
-        """ Récupération de la liste des pays dans la base """
+        """ RÃ©cupÃ©ration de la liste des pays dans la base """
         con = sqlite3.connect(Chemins.GetStaticPath("Databases/Geographie.dat"))
         cur = con.cursor()
         if nomPays == "" :

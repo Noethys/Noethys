@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -21,9 +21,9 @@ from Ol import OL_Lieux
 
 DICT_CATEGORIES = {
     "gare" : {"singulier":_(u"gare"), "pluriel":_(u"gares"), "masculinFeminin":"e", "image":"Train"},
-    "aeroport" : {"singulier":_(u"aéroport"), "pluriel":_(u"aéroports"), "masculinFeminin":"", "image":"Avion"},
+    "aeroport" : {"singulier":_(u"aÃ©roport"), "pluriel":_(u"aÃ©roports"), "masculinFeminin":"", "image":"Avion"},
     "port" : {"singulier":_(u"port"), "pluriel":_(u"ports"), "masculinFeminin":"", "image":"Bateau"},
-    "station" : {"singulier":_(u"station de métro"), "pluriel":_(u"stations de métro"), "masculinFeminin":"e", "image":"Metro"},
+    "station" : {"singulier":_(u"station de mÃ©tro"), "pluriel":_(u"stations de mÃ©tro"), "masculinFeminin":"e", "image":"Metro"},
     }
 
 
@@ -35,7 +35,7 @@ class Dialog(wx.Dialog):
         self.mode = mode
         self.categorie = categorie
         
-        # Recherche les caractéristiques de la catégorie
+        # Recherche les caractÃ©ristiques de la catÃ©gorie
         self.categorieSingulier = DICT_CATEGORIES[self.categorie]["singulier"]
         self.categoriePluriel = DICT_CATEGORIES[self.categorie]["pluriel"]
         self.masculinFeminin = DICT_CATEGORIES[self.categorie]["masculinFeminin"]
@@ -43,8 +43,8 @@ class Dialog(wx.Dialog):
         
         # Affichage des textes d'intro
         if self.mode == "selection" :
-            intro = _(u"Vous pouvez ici sélectionner un%s %s. Double-cliquez sur une ligne pour effectuer rapidement la sélection.") % (self.masculinFeminin, self.categorieSingulier)
-            titre = _(u"Sélection d'un%s %s") % (self.masculinFeminin, self.categorieSingulier)
+            intro = _(u"Vous pouvez ici sÃ©lectionner un%s %s. Double-cliquez sur une ligne pour effectuer rapidement la sÃ©lection.") % (self.masculinFeminin, self.categorieSingulier)
+            titre = _(u"SÃ©lection d'un%s %s") % (self.masculinFeminin, self.categorieSingulier)
             
         else:
             intro = _(u"Vous pouvez ici saisir, modifier ou supprimer des %s.") % self.categoriePluriel
@@ -81,8 +81,8 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter un%s %s") % (self.masculinFeminin, self.categorieSingulier)))
-        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le lieu sélectionné dans la liste")))
-        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le lieu sélectionné dans la liste")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le lieu sÃ©lectionnÃ© dans la liste")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le lieu sÃ©lectionnÃ© dans la liste")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider et fermer")))
@@ -139,11 +139,11 @@ class Dialog(wx.Dialog):
     def OnBouton_ok(self, event):
         IDlieu = self.GetIDcompagnie()
         if IDlieu == None :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun%s %s dans la liste") % (self.masculinFeminin, self.categorieSingulier), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucun%s %s dans la liste") % (self.masculinFeminin, self.categorieSingulier), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
-        # Fermeture de la fenêtre
+        # Fermeture de la fenÃªtre
         self.EndModal(wx.ID_OK)
 
     def OnBoutonAide(self, event): 

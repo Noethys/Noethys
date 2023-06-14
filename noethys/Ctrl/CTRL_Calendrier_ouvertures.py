@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -32,8 +32,8 @@ class Calendrier(HTL.HyperTreeList):
         from Utils import UTILS_Linux
         UTILS_Linux.AdaptePolice(self)
 
-        # Création de la colonne principale
-        self.AddColumn(_(u"Périodes / Groupes"))
+        # CrÃ©ation de la colonne principale
+        self.AddColumn(_(u"PÃ©riodes / Groupes"))
         self.SetMainColumn(0)
         self.SetColumnWidth(0, 190)
 
@@ -47,14 +47,14 @@ class Calendrier(HTL.HyperTreeList):
 
     
     def Initialisation(self):
-        # Récupération des données
+        # RÃ©cupÃ©ration des donnÃ©es
         listeDates = (datetime.date(1977, 1, 1), datetime.date(2999, 1, 1))
         dictNomsGroupes = self.GetDictGroupes() 
         listeUnites = self.GetListeUnites(listeDates[0], listeDates[-1])
         self.dictOuvertures = {}
         self.GetDictOuvertures(listeDates[0], listeDates[-1])
         
-        # Analyse et traitement des données dans un dictionnaire
+        # Analyse et traitement des donnÃ©es dans un dictionnaire
         self.dictDonnees = {}
         dictTotaux = {}
         for dateDD, dictGroupes in self.dictOuvertures.items() :
@@ -82,7 +82,7 @@ class Calendrier(HTL.HyperTreeList):
                     if dateDD not in dictTotaux[annee]["unites"][IDunite] :
                         dictTotaux[annee]["unites"][IDunite].append(dateDD)
                     
-        # Création des colonnes
+        # CrÃ©ation des colonnes
         numColonne = 1
         dictColonnes = {}
         for dictUnite in listeUnites :
@@ -93,21 +93,21 @@ class Calendrier(HTL.HyperTreeList):
             dictColonnes[IDunite] = numColonne
             numColonne += 1
         
-        # Création de la racine
+        # CrÃ©ation de la racine
         self.root = self.AddRoot(_(u"Racine"))
 
-        # Création des branches
+        # CrÃ©ation des branches
         listeAnnees = list(self.dictDonnees.keys())
         listeAnnees.sort()
         for annee in listeAnnees :
-            # Année
-            label = _(u"Année %d") % annee
+            # AnnÃ©e
+            label = _(u"AnnÃ©e %d") % annee
             if annee in dictTotaux :
                 total = len(dictTotaux[annee]["toutes"])
                 if total == 1 :
-                    label = _(u"Année %d (1 date)") % annee
+                    label = _(u"AnnÃ©e %d (1 date)") % annee
                 else :
-                    label = _(u"Année %d (%d dates)") % (annee, total)
+                    label = _(u"AnnÃ©e %d (%d dates)") % (annee, total)
 
             dictMois = self.dictDonnees[annee]
             branche1 = self.AppendItem(self.root, label)
@@ -119,7 +119,7 @@ class Calendrier(HTL.HyperTreeList):
                 
                 # Mois
                 dictGroupes = self.dictDonnees[annee][mois]
-                listeMois = (_(u"Janvier"), _(u"Février"), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"Août"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"Décembre"))
+                listeMois = (_(u"Janvier"), _(u"FÃ©vrier"), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"AoÃ»t"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"DÃ©cembre"))
                 branche2 = self.AppendItem(branche1, listeMois[mois-1])
                 
                 # tri des groupes
@@ -148,7 +148,7 @@ class Calendrier(HTL.HyperTreeList):
                                     texte = _(u"%s dates") % nbreOuvertures
                                 self.SetItemText(branche3, texte, numColonne)
 
-                            # Totaux par année
+                            # Totaux par annÃ©e
                             if annee in dictTotaux :
                                 if IDunite in dictTotaux[annee]["unites"] :
                                     total = len(dictTotaux[annee]["unites"][IDunite])

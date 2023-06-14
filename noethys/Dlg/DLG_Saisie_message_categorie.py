@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -32,12 +32,12 @@ class Dialog(wx.Dialog):
         self.ctrl_nom = wx.TextCtrl(self, -1, u"")
 
         # Options
-        self.staticbox_options_staticbox = wx.StaticBox(self, -1, _(u"Options par défaut"))
+        self.staticbox_options_staticbox = wx.StaticBox(self, -1, _(u"Options par dÃ©faut"))
         
         self.ctrl_afficher_accueil = wx.CheckBox(self, -1, _(u"Afficher sur la page d'accueil"))
         self.ctrl_afficher_liste = wx.CheckBox(self, -1, _(u"Afficher sur la liste des consommations"))
         
-        self.label_priorite = wx.StaticText(self, -1, _(u"Priorité :"))
+        self.label_priorite = wx.StaticText(self, -1, _(u"PrioritÃ© :"))
         self.ctrl_priorite = wx.Choice(self, -1, choices=[_(u"Normale"), _(u"Haute")])
         self.ctrl_priorite.SetSelection(0)
         
@@ -53,16 +53,16 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
         
         if self.IDcategorie == None :
-            self.SetTitle(_(u"Saisie d'une catégorie de message"))
+            self.SetTitle(_(u"Saisie d'une catÃ©gorie de message"))
         else:
             self.Importation()
-            self.SetTitle(_(u"Modification d'une catégorie de message"))
+            self.SetTitle(_(u"Modification d'une catÃ©gorie de message"))
 
     def __set_properties(self):
-        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez un nom pour cette catégorie")))
+        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez un nom pour cette catÃ©gorie")))
         self.ctrl_afficher_accueil.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher ce message sur la page d'accueil")))
         self.ctrl_afficher_liste.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher ce message sur la liste des consommations")))
-        self.ctrl_priorite.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici la priorité du message")))
+        self.ctrl_priorite.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez ici la prioritÃ© du message")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
@@ -129,9 +129,9 @@ class Dialog(wx.Dialog):
         UTILS_Aide.Aide("Catgoriesdemessages")
 
     def OnBoutonOk(self, event): 
-        # Vérification des données
+        # VÃ©rification des donnÃ©es
         if len(self.ctrl_nom.GetValue()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un nom pour cette catégorie !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un nom pour cette catÃ©gorie !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_nom.SetFocus()
@@ -140,7 +140,7 @@ class Dialog(wx.Dialog):
         # Sauvegarde
         self.Sauvegarde()
         
-        # Fermeture de la fenêtre
+        # Fermeture de la fenÃªtre
         self.EndModal(wx.ID_OK)
     
     def GetIDcategorie(self):
@@ -148,7 +148,7 @@ class Dialog(wx.Dialog):
 
     def Sauvegarde(self):
         """ Sauvegarde """
-        # Récupération des données
+        # RÃ©cupÃ©ration des donnÃ©es
         nom = self.ctrl_nom.GetValue()
         if self.ctrl_priorite.GetSelection() == 1 :
             priorite = "HAUTE"

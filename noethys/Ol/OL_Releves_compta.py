@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activitÈs
+# Application :    Noethys, gestion multi-activit√©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-14 Ivan LUCAS
@@ -38,7 +38,7 @@ class Track(object):
     
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # RÈcupÈration des paramËtres perso
+        # R√©cup√©ration des param√®tres perso
         self.selectionID = None
         self.selectionTrack = None
         self.criteres = ""
@@ -60,7 +60,7 @@ class ListView(FastObjectListView):
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
-        """ RÈcupÈration des donnÈes """
+        """ R√©cup√©ration des donn√©es """
         if self.IDcompte_bancaire != None :
             conditions = "WHERE compta_releves.IDcompte_bancaire=%d" % self.IDcompte_bancaire
         else :
@@ -96,7 +96,7 @@ class ListView(FastObjectListView):
         self.evenRowsBackColor = wx.Colour(255, 255, 255)
         self.useExpansionColumn = True
         
-        # PrÈparation de la listeImages
+        # Pr√©paration de la listeImages
         imgDefaut = self.AddNamedImages("defaut", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Ok.png"), wx.BITMAP_TYPE_PNG))
 
         def FormateDate(dateDD):
@@ -106,14 +106,14 @@ class ListView(FastObjectListView):
         liste_Colonnes = [
             ColumnDefn(u"", "left", 0, "IDreleve", typeDonnee="entier"),
             ColumnDefn(_(u"Nom"), 'left', 200, "nom", typeDonnee="texte", isSpaceFilling=True),
-            ColumnDefn(_(u"Date dÈbut"), "left", 100, "date_debut", typeDonnee="date", stringConverter=FormateDate),
+            ColumnDefn(_(u"Date d√©but"), "left", 100, "date_debut", typeDonnee="date", stringConverter=FormateDate),
             ColumnDefn(_(u"Date fin"), "left", 100, "date_fin", typeDonnee="date", stringConverter=FormateDate),
             ColumnDefn(_(u"Compte bancaire"), "left", 200, "nomCompteBancaire", typeDonnee="texte"),
-            ColumnDefn(_(u"Nbre opÈrations"), "center", 100, "nbreOperations", typeDonnee="entier"),
+            ColumnDefn(_(u"Nbre op√©rations"), "center", 100, "nbreOperations", typeDonnee="entier"),
             ]
 
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(_(u"Aucun relevÈ bancaire"))
+        self.SetEmptyListMsg(_(u"Aucun relev√© bancaire"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
         self.SetSortColumn(self.columns[2])
         self.SetObjects(self.donnees)
@@ -127,7 +127,7 @@ class ListView(FastObjectListView):
             self.selectionTrack = None
         self.InitModel()
         self.InitObjectListView()
-        # SÈlection d'un item
+        # S√©lection d'un item
         if self.selectionTrack != None :
             self.SelectObject(self.selectionTrack, deselectOthers=True, ensureVisible=True)
         self.selectionID = None
@@ -145,7 +145,7 @@ class ListView(FastObjectListView):
             noSelection = False
             ID = self.Selection()[0].IDreleve
                 
-        # CrÈation du menu contextuel
+        # Cr√©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Modifier
@@ -176,7 +176,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"AperÁu avant impression"))
+        item = wx.MenuItem(menuPop, 40, _(u"Aper√ßu avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -194,12 +194,12 @@ class ListView(FastObjectListView):
 
     def Apercu(self, event):
         from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des relevÈs bancaires"), format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des relev√©s bancaires"), format="A", orientation=wx.PORTRAIT)
         prt.Preview()
 
     def Imprimer(self, event):
         from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des relevÈs bancaires"), format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des relev√©s bancaires"), format="A", orientation=wx.PORTRAIT)
         prt.Print()
 
 
@@ -213,7 +213,7 @@ class ListView(FastObjectListView):
     def Modifier(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_releves_bancaires", "modifier") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucun relevÈ bancaire ‡ modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucun relev√© bancaire √† modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -226,13 +226,13 @@ class ListView(FastObjectListView):
     def Supprimer(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_releves_bancaires", "supprimer") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucun relevÈ bancaire ‡ supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucun relev√© bancaire √† supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         IDreleve = self.Selection()[0].IDreleve
         
-        # VÈrifie que ce relevÈ n'a pas dÈj‡ ÈtÈ attribuÈ ‡ une opÈration
+        # V√©rifie que ce relev√© n'a pas d√©j√† √©t√© attribu√© √† une op√©ration
         DB = GestionDB.DB()
         req = """SELECT COUNT(IDoperation)
         FROM compta_operations
@@ -242,13 +242,13 @@ class ListView(FastObjectListView):
         nbreOperations = int(DB.ResultatReq()[0][0])
         DB.Close()
         if nbreOperations > 0 :
-            dlg = wx.MessageDialog(self, _(u"Ce relevÈ a dÈj‡ ÈtÈ associÈ ‡ %d opÈration(s).\n\nVous ne pouvez donc pas le supprimer !") % nbreOperations, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Ce relev√© a d√©j√† √©t√© associ√© √† %d op√©ration(s).\n\nVous ne pouvez donc pas le supprimer !") % nbreOperations, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
         # Suppression
-        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer ce relevÈ bancaire ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer ce relev√© bancaire ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         if dlg.ShowModal() == wx.ID_YES :
             DB = GestionDB.DB()
             DB.ReqDEL("compta_releves", "IDreleve", IDreleve)

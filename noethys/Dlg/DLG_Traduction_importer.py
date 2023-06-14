@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-15 Ivan LUCAS
@@ -40,7 +40,7 @@ class CTRL_Langue(wx.Choice):
                     code, extension = nomFichier.split(".")
                     data = UTILS_Json.Lire(os.path.join(rep, nomFichier), conversion_auto=True)
 
-                    # Lecture des caractéristiques
+                    # Lecture des caractÃ©ristiques
                     dictInfos = data["###INFOS###"]
                     nom = dictInfos["nom_langue"]
                     code = dictInfos["code_langue"]
@@ -57,7 +57,7 @@ class CTRL_Langue(wx.Choice):
                         self.listeLabels.append(label)
                         self.listeDonnees.append({"nom":nom, "code":code, "textes":listeTextes})
             
-        # Remplissage du contrôle
+        # Remplissage du contrÃ´le
         if len(self.listeLabels) == 0 :
             self.Enable(False)
         self.SetItems(self.listeLabels)
@@ -84,7 +84,7 @@ class Dialog(wx.Dialog):
 
         # Bandeau
         titre = _(u"Import/Export de traductions au format texte")
-        intro = _(u"Sélectionnez une langue dans la liste puis exportez ou importez les textes au format TXT.")
+        intro = _(u"SÃ©lectionnez une langue dans la liste puis exportez ou importez les textes au format TXT.")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Traduction.png")
         
@@ -105,8 +105,8 @@ class Dialog(wx.Dialog):
         wildcard = _(u"Fichiers texte|*.txt|Tous les fichiers (*.*)|*.*")
         sp = wx.StandardPaths.Get()
         cheminDefaut = sp.GetDocumentsDir()
-        self.ctrl_fichier_importer_original = filebrowse.FileBrowseButton(self, -1, labelText=_(u"Fichier des textes originaux :"), buttonText=_(u"Sélectionner"), toolTip=_(u"Cliquez ici pour sélectionner un fichier"), dialogTitle=_(u"Sélectionner un fichier"), fileMask=wildcard, startDirectory=cheminDefaut)
-        self.ctrl_fichier_importer_traduction = filebrowse.FileBrowseButton(self, -1, labelText=_(u"Fichier des textes traduits :"), buttonText=_(u"Sélectionner"), toolTip=_(u"Cliquez ici pour sélectionner un fichier"), dialogTitle=_(u"Sélectionner un fichier"), fileMask=wildcard, startDirectory=cheminDefaut)
+        self.ctrl_fichier_importer_original = filebrowse.FileBrowseButton(self, -1, labelText=_(u"Fichier des textes originaux :"), buttonText=_(u"SÃ©lectionner"), toolTip=_(u"Cliquez ici pour sÃ©lectionner un fichier"), dialogTitle=_(u"SÃ©lectionner un fichier"), fileMask=wildcard, startDirectory=cheminDefaut)
+        self.ctrl_fichier_importer_traduction = filebrowse.FileBrowseButton(self, -1, labelText=_(u"Fichier des textes traduits :"), buttonText=_(u"SÃ©lectionner"), toolTip=_(u"Cliquez ici pour sÃ©lectionner un fichier"), dialogTitle=_(u"SÃ©lectionner un fichier"), fileMask=wildcard, startDirectory=cheminDefaut)
         self.bouton_importer = CTRL_Bouton_image.CTRL(self, texte=_(u"Importer"), cheminImage="Images/32x32/Fleche_bas.png")
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
         self.bouton_fermer = CTRL_Bouton_image.CTRL(self, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
@@ -122,7 +122,7 @@ class Dialog(wx.Dialog):
         
 
     def __set_properties(self):
-        self.ctrl_langues.SetToolTip(wx.ToolTip(_(u"Sélectionnez la langue souhaitée")))
+        self.ctrl_langues.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez la langue souhaitÃ©e")))
         self.check_nontraduits.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour inclure uniquement les textes non traduits")))
         self.bouton_exporter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter les textes originaux au format txt")))
         self.bouton_importer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour importer les traductions du fichier txt")))
@@ -178,10 +178,10 @@ class Dialog(wx.Dialog):
         self.EndModal(wx.ID_CANCEL)        
 
     def OnBoutonExporter(self, event):
-        # Récupération de la langue
+        # RÃ©cupÃ©ration de la langue
         dictLangue = self.ctrl_langues.GetCode()
         if dictLangue == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez sélectionner une langue dans la liste !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez sÃ©lectionner une langue dans la liste !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -189,13 +189,13 @@ class Dialog(wx.Dialog):
         nom = dictLangue["nom"]
         textesLangue = dictLangue["textes"]
         
-        # Demande à l'utilisateur le nom de fichier et le répertoire de destination
+        # Demande Ã  l'utilisateur le nom de fichier et le rÃ©pertoire de destination
         nom_fichier = u"Textes_originaux.txt"
         wildcard = u"Fichier Texte (*.txt)|*.xml| Tous les fichiers (*.*)|*.*"
         sp = wx.StandardPaths.Get()
         cheminDefaut = sp.GetDocumentsDir()
         dlg = wx.FileDialog(
-            None, message = _(u"Veuillez sélectionner le répertoire de destination et le nom du fichier"), defaultDir=cheminDefaut, 
+            None, message = _(u"Veuillez sÃ©lectionner le rÃ©pertoire de destination et le nom du fichier"), defaultDir=cheminDefaut, 
             defaultFile = nom_fichier, 
             wildcard = wildcard, 
             style = wx.FD_SAVE
@@ -208,9 +208,9 @@ class Dialog(wx.Dialog):
             dlg.Destroy()
             return
         
-        # Le fichier de destination existe déjà :
+        # Le fichier de destination existe dÃ©jÃ  :
         if os.path.isfile(cheminFichier) == True :
-            dlg = wx.MessageDialog(None, _(u"Un fichier portant ce nom existe déjà. \n\nVoulez-vous le remplacer ?"), "Attention !", wx.YES_NO | wx.NO_DEFAULT | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(None, _(u"Un fichier portant ce nom existe dÃ©jÃ . \n\nVoulez-vous le remplacer ?"), "Attention !", wx.YES_NO | wx.NO_DEFAULT | wx.ICON_EXCLAMATION)
             if dlg.ShowModal() == wx.ID_NO :
                 return False
                 dlg.Destroy()
@@ -234,15 +234,15 @@ class Dialog(wx.Dialog):
         fichier.close() 
         
         # Confirmation fin
-        dlg = wx.MessageDialog(self, _(u"Le fichier a été généré avec succès (%d textes) !") % nbreTextes, _(u"Génération"), wx.OK | wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Le fichier a Ã©tÃ© gÃ©nÃ©rÃ© avec succÃ¨s (%d textes) !") % nbreTextes, _(u"GÃ©nÃ©ration"), wx.OK | wx.ICON_INFORMATION)
         dlg.ShowModal()
         dlg.Destroy()
 
     def OnBoutonImporter(self, event):
-        # Récupération de la langue
+        # RÃ©cupÃ©ration de la langue
         dictLangue = self.ctrl_langues.GetCode()
         if dictLangue == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez sélectionner une langue dans la liste !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez sÃ©lectionner une langue dans la liste !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -251,17 +251,17 @@ class Dialog(wx.Dialog):
         code_langue = dictLangue["code"]
         textes_langue = dictLangue["textes"]
         
-        # Récupération des fichiers
+        # RÃ©cupÃ©ration des fichiers
         fichier_original = self.ctrl_fichier_importer_original.GetValue() 
         if fichier_original == "" :
-            dlg = wx.MessageDialog(self, _(u"Vous devez sélectionner un fichier de textes originaux !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez sÃ©lectionner un fichier de textes originaux !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         
         fichier_traduction = self.ctrl_fichier_importer_traduction.GetValue() 
         if fichier_traduction == "" :
-            dlg = wx.MessageDialog(self, _(u"Vous devez sélectionner un fichier de textes traduits !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez sÃ©lectionner un fichier de textes traduits !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -276,7 +276,7 @@ class Dialog(wx.Dialog):
         fichier.close() 
 
         if len(lignesOriginal) !=  len(lignesTraduction) :
-            dlg = wx.MessageDialog(self, _(u"Le nombre de lignes des deux fichiers doit être identique !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Le nombre de lignes des deux fichiers doit Ãªtre identique !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -297,7 +297,7 @@ class Dialog(wx.Dialog):
                 dictTraductions[texte[:-1]] = lignesTraduction[indexLigne][:-1]
             indexLigne += 1
         
-        # Création du fichier de traduction perso
+        # CrÃ©ation du fichier de traduction perso
         nomFichier = UTILS_Fichiers.GetRepLang(u"%s.xlang" % code_langue)
         data = {}
         data["###INFOS###"] = {"nom_langue" : nom_langue, "code_langue" : code_langue}
@@ -306,7 +306,7 @@ class Dialog(wx.Dialog):
         UTILS_Json.Ecrire(nomFichier, data=data)
         
         # Confirmation
-        dlg = wx.MessageDialog(self, _(u"L'importation des traductions s'est déroulée avec succès !"), _(u"Succès"), wx.OK | wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"L'importation des traductions s'est dÃ©roulÃ©e avec succÃ¨s !"), _(u"SuccÃ¨s"), wx.OK | wx.ICON_INFORMATION)
         dlg.ShowModal()
         dlg.Destroy()
 

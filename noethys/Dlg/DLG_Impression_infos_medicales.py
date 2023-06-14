@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -56,11 +56,11 @@ class CTRL_profil_perso(CTRL_Profil.CTRL):
         self.dlg = dlg
 
     def Envoyer_parametres(self, dictParametres={}):
-        """ Envoi des paramètres du profil sélectionné à la fenêtre """
+        """ Envoi des paramÃ¨tres du profil sÃ©lectionnÃ© Ã  la fenÃªtre """
         self.dlg.SetParametres(dictParametres)
 
     def Recevoir_parametres(self):
-        """ Récupération des paramètres pour la sauvegarde du profil """
+        """ RÃ©cupÃ©ration des paramÃ¨tres pour la sauvegarde du profil """
         dictParametres = self.dlg.GetParametres()
         self.Enregistrer(dictParametres)
 
@@ -73,8 +73,8 @@ class CTRL_Options(CTRL_Propertygrid.CTRL):
 
     def Remplissage(self):
 
-        # Catégorie
-        self.Append(wxpg.PropertyCategory(_(u"Données")))
+        # CatÃ©gorie
+        self.Append(wxpg.PropertyCategory(_(u"DonnÃ©es")))
 
         # Afficher uniquement les individus avec infos
         propriete = wxpg.BoolProperty(label=_(u"Afficher uniquement individus avec infos"), name="individus_avec_infos", value=False)
@@ -82,62 +82,62 @@ class CTRL_Options(CTRL_Propertygrid.CTRL):
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
-        # Catégorie
+        # CatÃ©gorie
         self.Append(wxpg.PropertyCategory(_(u"Page")))
 
         # Orientation page
         propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Orientation de la page"), name="orientation", liste_choix=[("automatique", _(u"Automatique")), ("portrait", _(u"Portrait")), ("paysage", _(u"Paysage"))], valeur="automatique")
         propriete.SetEditor("EditeurChoix")
-        propriete.SetHelpString(_(u"Sélectionnez l'orientation de la page"))
+        propriete.SetHelpString(_(u"SÃ©lectionnez l'orientation de la page"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
-        # Catégorie
+        # CatÃ©gorie
         self.Append(wxpg.PropertyCategory(_(u"Lignes")))
 
         # Tri
-        liste_choix = [("nom", _(u"Nom")), ("prenom", _(u"Prénom")), ("age", _(u"Âge"))]
+        liste_choix = [("nom", _(u"Nom")), ("prenom", _(u"PrÃ©nom")), ("age", _(u"Ã‚ge"))]
         propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Tri"), name="tri", liste_choix=liste_choix, valeur="nom")
         propriete.SetEditor("EditeurChoix")
-        propriete.SetHelpString(_(u"Sélectionnez le tri"))
+        propriete.SetHelpString(_(u"SÃ©lectionnez le tri"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
         # Ordre
-        liste_choix = [("croissant", _(u"Croissant")), ("decroissant", _(u"Décroissant"))]
+        liste_choix = [("croissant", _(u"Croissant")), ("decroissant", _(u"DÃ©croissant"))]
         propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Ordre"), name="ordre", liste_choix=liste_choix, valeur="croissant")
         propriete.SetEditor("EditeurChoix")
-        propriete.SetHelpString(_(u"Sélectionnez l'ordre"))
+        propriete.SetHelpString(_(u"SÃ©lectionnez l'ordre"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
         # Afficher lignes vierges
         propriete = wxpg.IntProperty(label=_(u"Lignes vierges"), name="nbre_lignes_vierges", value=3)
         propriete.SetEditor("SpinCtrl")
-        propriete.SetHelpString(_(u"Nombre de lignes vierges à afficher en fin de liste"))
+        propriete.SetHelpString(_(u"Nombre de lignes vierges Ã  afficher en fin de liste"))
         propriete.SetAttribute("obligatoire", True)
         propriete.SetAttribute("Min", 0)
         self.Append(propriete)
 
-        # Insérer saut de page après groupe
-        propriete = wxpg.BoolProperty(label=_(u"Insérer saut de page après groupe"), name="saut_page_groupe", value=True)
-        propriete.SetHelpString(_(u"Cochez cette case pour insérer un saut de page après chaque groupe"))
+        # InsÃ©rer saut de page aprÃ¨s groupe
+        propriete = wxpg.BoolProperty(label=_(u"InsÃ©rer saut de page aprÃ¨s groupe"), name="saut_page_groupe", value=True)
+        propriete.SetHelpString(_(u"Cochez cette case pour insÃ©rer un saut de page aprÃ¨s chaque groupe"))
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
-        # Couleur du fond d'entête de colonne
-        propriete = wxpg.ColourProperty(label=_(u"Couleur ligne des entêtes"), name="couleur_fond_entetes", value=wx.Colour(208, 208, 208) )
-        propriete.SetHelpString(_(u"Sélectionnez la couleur de fond de la ligne des entêtes"))
+        # Couleur du fond d'entÃªte de colonne
+        propriete = wxpg.ColourProperty(label=_(u"Couleur ligne des entÃªtes"), name="couleur_fond_entetes", value=wx.Colour(208, 208, 208) )
+        propriete.SetHelpString(_(u"SÃ©lectionnez la couleur de fond de la ligne des entÃªtes"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
-        # Insérer texte d'introduction
-        propriete = wxpg.BoolProperty(label=_(u"Insérer un texte d'introduction"), name="afficher_introduction", value=False)
-        propriete.SetHelpString(_(u"Cochez cette case pour insérer un texte d'introduction"))
+        # InsÃ©rer texte d'introduction
+        propriete = wxpg.BoolProperty(label=_(u"InsÃ©rer un texte d'introduction"), name="afficher_introduction", value=False)
+        propriete.SetHelpString(_(u"Cochez cette case pour insÃ©rer un texte d'introduction"))
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
-        # Catégorie
+        # CatÃ©gorie
         self.Append(wxpg.PropertyCategory(_(u"Colonne Photo")))
 
         # Afficher les photos
@@ -148,7 +148,7 @@ class CTRL_Options(CTRL_Propertygrid.CTRL):
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
-        # Catégorie
+        # CatÃ©gorie
         self.Append(wxpg.PropertyCategory(_(u"Colonne Individu")))
 
         # Largeur colonne nom
@@ -157,37 +157,37 @@ class CTRL_Options(CTRL_Propertygrid.CTRL):
             liste_choix.append((str(x), "%d pixels" % x))
         propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Largeur de la colonne"), name="largeur_colonne_nom", liste_choix=liste_choix, valeur="automatique")
         propriete.SetEditor("EditeurChoix")
-        propriete.SetHelpString(_(u"Sélectionnez la largeur de la colonne Nom de l'individu (en pixels)"))
+        propriete.SetHelpString(_(u"SÃ©lectionnez la largeur de la colonne Nom de l'individu (en pixels)"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
-        # Catégorie
-        self.Append(wxpg.PropertyCategory(_(u"Colonne Âge")))
+        # CatÃ©gorie
+        self.Append(wxpg.PropertyCategory(_(u"Colonne Ã‚ge")))
 
-        # Afficher l'âge des individus
+        # Afficher l'Ã¢ge des individus
         propriete = wxpg.BoolProperty(label=_(u"Afficher la colonne"), name="afficher_age", value=True)
-        propriete.SetHelpString(_(u"Cochez cette case pour afficher de la colonne de l'âge des individus"))
+        propriete.SetHelpString(_(u"Cochez cette case pour afficher de la colonne de l'Ã¢ge des individus"))
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
-        # Largeur colonne âge
+        # Largeur colonne Ã¢ge
         liste_choix = [("automatique", _(u"Automatique")),]
         for x in range(5, 305, 5):
             liste_choix.append((str(x), "%d pixels" % x))
         propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Largeur de la colonne"), name="largeur_colonne_age", liste_choix=liste_choix, valeur="automatique")
         propriete.SetEditor("EditeurChoix")
-        propriete.SetHelpString(_(u"Sélectionnez la largeur de la colonne Âge de l'individu (en pixels)"))
+        propriete.SetHelpString(_(u"SÃ©lectionnez la largeur de la colonne Ã‚ge de l'individu (en pixels)"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
     def Validation(self):
-        """ Validation des données saisies """
-        # Vérifie que les données obligatoires ont été saisies
+        """ Validation des donnÃ©es saisies """
+        # VÃ©rifie que les donnÃ©es obligatoires ont Ã©tÃ© saisies
         for nom, valeur in self.GetPropertyValues().items():
             propriete = self.GetPropertyByName(nom)
             if self.GetPropertyAttribute(propriete, "obligatoire") == True:
                 if valeur == "" or valeur == None:
-                    dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement renseigner le paramètre '%s' !") % self.GetPropertyLabel(nom), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                    dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement renseigner le paramÃ¨tre '%s' !") % self.GetPropertyLabel(nom), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                     dlg.ShowModal()
                     dlg.Destroy()
                     return False
@@ -195,19 +195,19 @@ class CTRL_Options(CTRL_Propertygrid.CTRL):
         return True
 
     def Importation(self):
-        """ Importation des valeurs dans le contrôle """
+        """ Importation des valeurs dans le contrÃ´le """
         return False
 
     def GetParametres(self):
         return copy.deepcopy(self.GetPropertyValues())
 
     def SetParametres(self, dictParametres={}):
-        # Réinitialisation
+        # RÃ©initialisation
         if dictParametres == None :
             self.Reinitialisation(afficher_dlg=False)
             return
 
-        # Envoi des paramètres au Ctrl
+        # Envoi des paramÃ¨tres au Ctrl
         for nom, valeur in dictParametres.items():
             try :
                 propriete = self.GetPropertyByName(nom)
@@ -262,12 +262,12 @@ class Page_Colonnes(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.ctrl_colonnes.Monter, self.bouton_monter)
         self.Bind(wx.EVT_BUTTON, self.ctrl_colonnes.Descendre, self.bouton_descendre)
 
-        # Propriétés
+        # PropriÃ©tÃ©s
         self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter une colonne")))
-        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la colonne sélectionnée dans la liste")))
-        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la colonne sélectionnée dans la liste")))
-        self.bouton_monter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour monter la colonne sélectionnée dans la liste")))
-        self.bouton_descendre.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour descendre la colonne sélectionnée dans la liste")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la colonne sÃ©lectionnÃ©e dans la liste")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la colonne sÃ©lectionnÃ©e dans la liste")))
+        self.bouton_monter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour monter la colonne sÃ©lectionnÃ©e dans la liste")))
+        self.bouton_descendre.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour descendre la colonne sÃ©lectionnÃ©e dans la liste")))
 
         # Layout
         sizer_base = wx.BoxSizer(wx.VERTICAL)
@@ -311,8 +311,8 @@ class Page_Options(wx.Panel):
         # Binds
         self.Bind(wx.EVT_BUTTON, self.Reinitialisation, self.bouton_reinit)
 
-        # Propriétés
-        self.bouton_reinit.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour réinitialiser les options")))
+        # PropriÃ©tÃ©s
+        self.bouton_reinit.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour rÃ©initialiser les options")))
 
         # Layout
         sizer_base = wx.BoxSizer(wx.VERTICAL)
@@ -350,7 +350,7 @@ class CTRL_Parametres(wx.Notebook):
         self.dictPages = {}
 
         self.listePages = [
-            {"code": "generalites", "ctrl": Page_Generalites(self), "label": _(u"Paramètres"), "image": "Calendrier.png"},
+            {"code": "generalites", "ctrl": Page_Generalites(self), "label": _(u"ParamÃ¨tres"), "image": "Calendrier.png"},
             {"code": "colonnes", "ctrl": Page_Colonnes(self), "label": _(u"Colonnes"), "image": "Tableau_colonne.png"},
             {"code": "options", "ctrl": Page_Options(self), "label": _(u"Options"), "image": "Options.png"},
         ]
@@ -362,7 +362,7 @@ class CTRL_Parametres(wx.Notebook):
             self.dictImages[dictPage["code"]] = il.Add(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/%s" % dictPage["image"]), wx.BITMAP_TYPE_PNG))
         self.AssignImageList(il)
 
-        # Création des pages
+        # CrÃ©ation des pages
         self.dictPages = {}
         index = 0
         for dictPage in self.listePages:
@@ -399,8 +399,8 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, name="DLG_Impression_infos_medicales", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         
-        intro = _(u"Vous pouvez ici imprimer une liste au format PDF des informations médicales des individus présents sur la période de votre choix. Pour une liste standard, sélectionnez simplement une période puis cliquez sur 'Aperçu'.")
-        titre = _(u"Impression de la liste des informations médicales")
+        intro = _(u"Vous pouvez ici imprimer une liste au format PDF des informations mÃ©dicales des individus prÃ©sents sur la pÃ©riode de votre choix. Pour une liste standard, sÃ©lectionnez simplement une pÃ©riode puis cliquez sur 'AperÃ§u'.")
+        titre = _(u"Impression de la liste des informations mÃ©dicales")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Imprimante.png")
 
         # Profil de configuration
@@ -412,7 +412,7 @@ class Dialog(wx.Dialog):
 
         # Boutons
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
-        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Aperçu"), cheminImage="Images/32x32/Apercu.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"AperÃ§u"), cheminImage="Images/32x32/Apercu.png")
         self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         self.__set_properties()
@@ -421,13 +421,13 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
 
-        # Init Contrôles
+        # Init ContrÃ´les
         self.ctrl_profil.SetOnDefaut()
         self.bouton_ok.SetFocus()
 
 
     def __set_properties(self):
-        self.SetTitle(_(u"Impression de la liste des informations médicales"))
+        self.SetTitle(_(u"Impression de la liste des informations mÃ©dicales"))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
@@ -473,27 +473,27 @@ class Dialog(wx.Dialog):
         return self.ctrl_notebook.GetPageAvecCode(code)
 
     def GetParametres(self):
-        """ Récupération des paramètres """
+        """ RÃ©cupÃ©ration des paramÃ¨tres """
         return self.ctrl_notebook.GetParametres()
 
     def SetParametres(self, dictParametres={}):
-        """ Importation des paramètres """
+        """ Importation des paramÃ¨tres """
         if dictParametres != None :
             self.ctrl_notebook.SetParametres(dictParametres)
 
     def OnBoutonOk(self, event):
         dictParametres = self.ctrl_notebook.GetParametres()
 
-        # Récupération et vérification des données
+        # RÃ©cupÃ©ration et vÃ©rification des donnÃ©es
         listeActivites = dictParametres["liste_activites"]
         if len(listeActivites) == 0 :
             self.ctrl_notebook.AffichePage("generalites")
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement cocher au moins une activité !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement cocher au moins une activitÃ© !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
 
-        # Récupération et vérification des données
+        # RÃ©cupÃ©ration et vÃ©rification des donnÃ©es
         listeGroupes = dictParametres["liste_groupes"]
         if len(dictParametres["liste_groupes"]) == 0 :
             self.ctrl_notebook.AffichePage("generalites")
@@ -502,21 +502,21 @@ class Dialog(wx.Dialog):
             dlg.Destroy()
             return False
 
-        # Vérification qu'il y a des colonnes
+        # VÃ©rification qu'il y a des colonnes
         if not dictParametres["colonnes"]:
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement créer au moins une colonne !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement crÃ©er au moins une colonne !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
 
-        # Recherche les catégories utilisées
+        # Recherche les catÃ©gories utilisÃ©es
         liste_categories_utilisees = []
         for nom_categorie, categories in dictParametres["colonnes"]:
             for IDcategorie in UTILS_Texte.ConvertStrToListe(categories):
                 if IDcategorie not in liste_categories_utilisees :
                     liste_categories_utilisees.append(IDcategorie)
 
-        # Création du PDF
+        # CrÃ©ation du PDF
         from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, PageBreak
         from reportlab.platypus.flowables import ParagraphAndImage, Image
         from reportlab.lib.pagesizes import A4
@@ -531,7 +531,7 @@ class Dialog(wx.Dialog):
             self.hauteur_page = self.taille_page[0]
             self.largeur_page = self.taille_page[1]
         
-        # Création des conditions pour les requêtes SQL
+        # CrÃ©ation des conditions pour les requÃªtes SQL
         conditionsPeriodes = GetSQLdates(dictParametres["liste_periodes"])
         
         if len(listeActivites) == 0 : conditionActivites = "()"
@@ -542,7 +542,7 @@ class Dialog(wx.Dialog):
         elif len(listeGroupes) == 1 : conditionGroupes = "(%d)" % listeGroupes[0]
         else : conditionGroupes = str(tuple(listeGroupes))
                 
-        # Récupération des noms des groupes
+        # RÃ©cupÃ©ration des noms des groupes
         dictGroupes = dictParametres["dict_groupes"]
         dictActivites = dictParametres["dict_activites"]
 
@@ -554,7 +554,7 @@ class Dialog(wx.Dialog):
 
         if dictParametres["mode"] == "presents" :
 
-            # Récupération de la liste des groupes ouverts sur cette période
+            # RÃ©cupÃ©ration de la liste des groupes ouverts sur cette pÃ©riode
             req = """SELECT IDouverture, IDactivite, IDunite, IDgroupe
             FROM ouvertures 
             WHERE ouvertures.IDactivite IN %s AND %s
@@ -569,7 +569,7 @@ class Dialog(wx.Dialog):
                 if IDgroupe not in dictOuvertures[IDactivite] :
                     dictOuvertures[IDactivite].append(IDgroupe)
 
-            # Récupération des individus grâce à leurs consommations
+            # RÃ©cupÃ©ration des individus grÃ¢ce Ã  leurs consommations
             req = """SELECT individus.IDindividu, IDactivite, IDgroupe,
             IDcivilite, nom, prenom, date_naiss
             FROM consommations 
@@ -582,12 +582,12 @@ class Dialog(wx.Dialog):
             DB.ExecuterReq(req)
             listeIndividus = DB.ResultatReq()
 
-            # Création du texte d'introduction
+            # CrÃ©ation du texte d'introduction
             liste_dates = []
             for date_debut, date_fin in dictParametres["liste_periodes"]:
                 liste_dates.append(date_debut)
                 liste_dates.append(date_fin)
-            texte_introduction.append(u"Individus présents sur la période du %s au %s" % (UTILS_Dates.DateDDEnFr(min(liste_dates)), UTILS_Dates.DateDDEnFr(max(liste_dates))))
+            texte_introduction.append(u"Individus prÃ©sents sur la pÃ©riode du %s au %s" % (UTILS_Dates.DateDDEnFr(min(liste_dates)), UTILS_Dates.DateDDEnFr(max(liste_dates))))
 
 
         # ------------ MODE INSCRITS ---------------------------------
@@ -602,7 +602,7 @@ class Dialog(wx.Dialog):
                 if IDgroupe not in dictOuvertures[IDactivite] :
                     dictOuvertures[IDactivite].append(IDgroupe)
 
-            # Récupération des individus grâce à leurs consommations
+            # RÃ©cupÃ©ration des individus grÃ¢ce Ã  leurs consommations
             req = """SELECT individus.IDindividu, IDactivite, IDgroupe,
             IDcivilite, nom, prenom, date_naiss
             FROM individus 
@@ -622,18 +622,18 @@ class Dialog(wx.Dialog):
             if date_naiss != None: date_naiss = UTILS_Dates.DateEngEnDateDD(date_naiss)
             age = self.GetAge(date_naiss)
 
-            # Mémorisation de l'individu
+            # MÃ©morisation de l'individu
             dictIndividus[IDindividu] = {
                 "IDcivilite": IDcivilite, "nom": nom, "prenom": prenom,
                 "age": age, "date_naiss": date_naiss, "IDgroupe": IDgroupe, "IDactivite": IDactivite,
             }
 
-            # Mémorisation du IDindividu
+            # MÃ©morisation du IDindividu
             if IDindividu not in listeIDindividus:
                 listeIDindividus.append(IDindividu)
 
 
-        # Dict Informations médicales
+        # Dict Informations mÃ©dicales
         req = """SELECT IDprobleme, IDindividu, IDtype, intitule, date_debut, date_fin, description, traitement_medical,
         description_traitement, date_debut_traitement, date_fin_traitement, eviction, date_debut_eviction, date_fin_eviction
         FROM problemes_sante 
@@ -654,7 +654,7 @@ class Dialog(wx.Dialog):
                 }
             dictInfosMedicales[IDindividu].append(dictTemp)
         
-        # Récupération des photos individuelles
+        # RÃ©cupÃ©ration des photos individuelles
         dictPhotos = {}
         taillePhoto = 128
         if dictParametres["afficher_photos"] == "petite" : tailleImageFinal = 16
@@ -666,13 +666,13 @@ class Dialog(wx.Dialog):
                 nomFichier = Chemins.GetStaticPath("Images/128x128/%s" % DICT_CIVILITES[IDcivilite]["nomImage"])
                 IDphoto, bmp = CTRL_Photo.GetPhoto(IDindividu=IDindividu, nomFichier=nomFichier, taillePhoto=(taillePhoto, taillePhoto), qualite=100)
                 
-                # Création de la photo dans le répertoire Temp
+                # CrÃ©ation de la photo dans le rÃ©pertoire Temp
                 nomFichier = UTILS_Fichiers.GetRepTemp(fichier="photoTmp%d.jpg" % IDindividu)
                 bmp.SaveFile(nomFichier, type=wx.BITMAP_TYPE_JPEG)
                 img = Image(nomFichier, width=tailleImageFinal, height=tailleImageFinal)
                 dictPhotos[IDindividu] = img
             
-        # ---------------- Création du PDF -------------------
+        # ---------------- CrÃ©ation du PDF -------------------
         
         # Initialisation du PDF
         nomDoc = FonctionsPerso.GenerationNomDoc("LISTE_INFORMATIONS_MEDICALES", "pdf")
@@ -682,12 +682,12 @@ class Dialog(wx.Dialog):
         
         largeurContenu = self.largeur_page - 75
         
-        # Création du titre du document
+        # CrÃ©ation du titre du document
         def Header():
             dataTableau = []
             largeursColonnes = ( (largeurContenu-100, 100) )
             dateDuJour = UTILS_Dates.DateEngFr(str(datetime.date.today()))
-            dataTableau.append( (_(u"Informations médicales"), _(u"%s\nEdité le %s") % (UTILS_Organisateur.GetNom(), dateDuJour)) )
+            dataTableau.append( (_(u"Informations mÃ©dicales"), _(u"%s\nEditÃ© le %s") % (UTILS_Organisateur.GetNom(), dateDuJour)) )
             style = TableStyle([
                     ('BOX', (0,0), (-1,-1), 0.25, colors.black), 
                     ('VALIGN', (0,0), (-1,-1), 'TOP'), 
@@ -701,7 +701,7 @@ class Dialog(wx.Dialog):
             story.append(tableau)
             story.append(Spacer(0,20))       
         
-        # Insère un header
+        # InsÃ¨re un header
         Header() 
 
         # Texte d'introduction
@@ -710,7 +710,7 @@ class Dialog(wx.Dialog):
             story.append(Paragraph("".join([u"<para>%s</para>" % texte for texte in texte_introduction]), para_style_introduction))
             story.append(Spacer(0, 15))
 
-        # Activités
+        # ActivitÃ©s
         for IDactivite in listeActivites :
 
             # Groupes
@@ -729,19 +729,19 @@ class Dialog(wx.Dialog):
                     largeursColonnes = []
                     labelsColonnes = []
                                         
-                    # Recherche des entêtes de colonnes :
+                    # Recherche des entÃªtes de colonnes :
                     if dictParametres["afficher_photos"] != "non" :
                         labelsColonnes.append(_(u"Photo"))
                         largeursColonnes.append(tailleImageFinal+6)
                         
-                    labelsColonnes.append(_(u"Nom - prénom"))
+                    labelsColonnes.append(_(u"Nom - prÃ©nom"))
                     if dictParametres["largeur_colonne_nom"] == "automatique" :
                         largeursColonnes.append(120)
                     else :
                         largeursColonnes.append(int(dictParametres["largeur_colonne_nom"]))
 
                     if dictParametres["afficher_age"] == True :
-                        labelsColonnes.append(_(u"Âge"))
+                        labelsColonnes.append(_(u"Ã‚ge"))
                         if dictParametres["largeur_colonne_age"] == "automatique":
                             largeursColonnes.append(20)
                         else:
@@ -756,21 +756,21 @@ class Dialog(wx.Dialog):
                         labelsColonnes.append(nom_categorie)
                         largeursColonnes.append(largeurColonnes)
 
-                    # Création de l'entete de groupe
+                    # CrÃ©ation de l'entete de groupe
                     ligne = [u"%s - %s" % (nomActivite, nomGroupe),]
                     for x in range(0, len(labelsColonnes)-1):
                         ligne.append("")
                     dataTableau.append(ligne)
         
-                    # Création des entêtes
+                    # CrÃ©ation des entÃªtes
                     ligne = []
                     for label in labelsColonnes :
                         ligne.append(label)
                     dataTableau.append(ligne)
                     
-                    # --------- Création des lignes -----------
+                    # --------- CrÃ©ation des lignes -----------
                             
-                    # Création d'une liste temporaire pour le tri
+                    # CrÃ©ation d'une liste temporaire pour le tri
                     listeIndividus = []
                     if IDactivite in dictOuvertures :
                         if IDgroupe in dictOuvertures[IDactivite] :
@@ -779,12 +779,12 @@ class Dialog(wx.Dialog):
                                 if dictIndividu["IDgroupe"] == IDgroupe :
                                     valeursTri = (IDindividu, dictIndividu["nom"], dictIndividu["prenom"], dictIndividu["age"])
                                     
-                                    # + Sélection uniquement des individus avec infos
+                                    # + SÃ©lection uniquement des individus avec infos
                                     if dictParametres["individus_avec_infos"] == False or (dictParametres["individus_avec_infos"] == True and IDindividu in dictInfosMedicales ) :
                                         listeIndividus.append(valeursTri)
                     
                     if dictParametres["tri"] == "nom" : paramTri = 1 # Nom
-                    if dictParametres["tri"] == "prenom" : paramTri = 2 # Prénom
+                    if dictParametres["tri"] == "prenom" : paramTri = 2 # PrÃ©nom
                     if dictParametres["tri"] == "age" : paramTri = 3 # Age
                     if dictParametres["ordre"] == "croissant" :
                         ordreDecroissant = False
@@ -792,7 +792,7 @@ class Dialog(wx.Dialog):
                         ordreDecroissant = True
                     listeIndividus = sorted(listeIndividus, key=operator.itemgetter(paramTri), reverse=ordreDecroissant)
                     
-                    # Récupération des lignes individus
+                    # RÃ©cupÃ©ration des lignes individus
                     for IDindividu, nom, prenom, age in listeIndividus :
                         dictIndividu = dictIndividus[IDindividu]
                         
@@ -813,7 +813,7 @@ class Dialog(wx.Dialog):
                             else:
                                 ligne.append("")
                         
-                        # Informations médicales
+                        # Informations mÃ©dicales
                         paraStyle = ParagraphStyle(name="infos",
                                     fontName="Helvetica",
                                     fontSize=7,
@@ -821,13 +821,13 @@ class Dialog(wx.Dialog):
                                     spaceAfter=2,
                                     )
 
-                        # Création des colonnes
+                        # CrÃ©ation des colonnes
                         has_infos = False
                         for nom_categorie, categories in dictParametres["colonnes"]:
                             liste_categories = UTILS_Texte.ConvertStrToListe(categories)
 
                             case = []
-                            # Recherche s'il y a une info médicale dans cette case
+                            # Recherche s'il y a une info mÃ©dicale dans cette case
                             if IDindividu in dictInfosMedicales:
                                 for infoMedicale in dictInfosMedicales[IDindividu] :
                                     IDcategorie = infoMedicale["IDcategorie"]
@@ -841,35 +841,35 @@ class Dialog(wx.Dialog):
                                         date_debut_traitement = infoMedicale["date_debut_traitement"]
                                         date_fin_traitement = infoMedicale["date_fin_traitement"]
 
-                                        # Intitulé et description
+                                        # IntitulÃ© et description
                                         if description != None and description != "":
                                             texteInfos = u"<b>%s</b> : %s" % (intitule, description)
                                         else:
                                             texteInfos = u"%s" % intitule
                                         if len(texteInfos) > 0 and texteInfos[-1] != ".": texteInfos += u"."
-                                        # Traitement médical
+                                        # Traitement mÃ©dical
                                         if traitement == 1 and description_traitement != None and description_traitement != "":
                                             texteDatesTraitement = u""
                                             if date_debut_traitement != None and date_fin_traitement != None:
                                                 texteDatesTraitement = _(u" du %s au %s") % (UTILS_Dates.DateEngFr(date_debut_traitement), UTILS_Dates.DateEngFr(date_fin_traitement))
                                             if date_debut_traitement != None and date_fin_traitement == None:
-                                                texteDatesTraitement = _(u" à partir du %s") % UTILS_Dates.DateEngFr(date_debut_traitement)
+                                                texteDatesTraitement = _(u" Ã  partir du %s") % UTILS_Dates.DateEngFr(date_debut_traitement)
                                             if date_debut_traitement == None and date_fin_traitement != None:
                                                 texteDatesTraitement = _(u" jusqu'au %s") % UTILS_Dates.DateEngFr(date_fin_traitement)
                                             texteInfos += _(u"Traitement%s : %s.") % (texteDatesTraitement, description_traitement)
 
-                                        # Création du paragraphe
+                                        # CrÃ©ation du paragraphe
                                         case.append(Paragraph(texteInfos, paraStyle))
                                         has_infos = True
 
-                            # Ajoute la case à la ligne
+                            # Ajoute la case Ã  la ligne
                             ligne.append(case)
 
                         # Ajout de la ligne individuelle dans le tableau
                         if dictParametres["individus_avec_infos"] == False or (dictParametres["individus_avec_infos"] == True and has_infos == True):
                             dataTableau.append(ligne)
                     
-                    # Création des lignes vierges
+                    # CrÃ©ation des lignes vierges
                     for x in range(0, dictParametres["nbre_lignes_vierges"]):
                         ligne = []
                         for col in labelsColonnes :
@@ -883,10 +883,10 @@ class Dialog(wx.Dialog):
                             ('VALIGN', (0,0), (-1,-1), 'MIDDLE'), # Centre verticalement toutes les cases
                             
                             ('FONT',(0,0),(-1,-1), "Helvetica", 7), # Donne la police de caract. + taille de police 
-                            ('GRID', (0,0), (-1,-1), 0.25, colors.black), # Crée la bordure noire pour tout le tableau
+                            ('GRID', (0,0), (-1,-1), 0.25, colors.black), # CrÃ©e la bordure noire pour tout le tableau
                             ('ALIGN', (0,1), (-2,-1), 'CENTRE'), # Centre les cases
                             
-                            ('ALIGN', (0,1), (-1,1), 'CENTRE'), # Ligne de labels colonne alignée au centre
+                            ('ALIGN', (0,1), (-1,1), 'CENTRE'), # Ligne de labels colonne alignÃ©e au centre
                             ('FONT',(0,1),(-1,1), "Helvetica", 6), # Donne la police de caract. + taille de police des labels
                             
                             ('SPAN',(0,0),(-1,0)), # Fusionne les lignes du haut pour faire le titre du groupe
@@ -896,16 +896,16 @@ class Dialog(wx.Dialog):
                             ])
                         
                        
-                    # Création du tableau
+                    # CrÃ©ation du tableau
                     tableau = Table(dataTableau, largeursColonnes)
                     tableau.setStyle(style)
                     story.append(tableau)
                     story.append(Spacer(0,20))
                     
-                    # Saut de page après un groupe
+                    # Saut de page aprÃ¨s un groupe
                     if dictParametres["saut_page_groupe"] == True :
                         story.append(PageBreak())
-                        # Insère un header
+                        # InsÃ¨re un header
                         if indexGroupe < nbreGroupes :
                             Header() 
                     

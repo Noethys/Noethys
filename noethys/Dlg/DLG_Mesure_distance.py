@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-17 Ivan LUCAS
@@ -40,7 +40,7 @@ class CTRL_Lieu(wx.Choice):
             rue = dict_titulaires[IDfamille]["adresse"]["rue"]
             cp = dict_titulaires[IDfamille]["adresse"]["cp"]
             ville = dict_titulaires[IDfamille]["adresse"]["ville"]
-            liste_champs.append({"code" : "adresse_famille", "label" : _(u"Lieu de résidence du loueur"), "adresse" : "%s %s %s" % (rue, cp, ville)})
+            liste_champs.append({"code" : "adresse_famille", "label" : _(u"Lieu de rÃ©sidence du loueur"), "adresse" : "%s %s %s" % (rue, cp, ville)})
 
         # Questionnaire produits
         if "IDproduit" in self.dictParametres and self.dictParametres["IDproduit"] != None :
@@ -49,12 +49,12 @@ class CTRL_Lieu(wx.Choice):
             for dictQuestion in questionnaires.GetDonnees(ID=IDproduit):
                 liste_champs.append({"code" : dictQuestion["champ"], "label" : _(u"%s (produit)") % dictQuestion["label"], "adresse" : dictQuestion["reponse"]})
 
-        # Questionnaire catégories de produits
+        # Questionnaire catÃ©gories de produits
         if "IDcategorie" in self.dictParametres and self.dictParametres["IDcategorie"] != None:
             IDcategorie = self.dictParametres["IDcategorie"]
             questionnaires = UTILS_Questionnaires.ChampsEtReponses(type="categorie_produit")
             for dictQuestion in questionnaires.GetDonnees(ID=IDcategorie):
-                liste_champs.append({"code": dictQuestion["champ"], "label": _(u"%s (catégorie de produits)") % dictQuestion["label"], "adresse": dictQuestion["reponse"]})
+                liste_champs.append({"code": dictQuestion["champ"], "label": _(u"%s (catÃ©gorie de produits)") % dictQuestion["label"], "adresse": dictQuestion["reponse"]})
 
         # Remplissage du ctrl
         listeItems = []
@@ -109,23 +109,23 @@ class Dialog(wx.Dialog):
         self.parent = parent  
 
         # Bandeau
-        intro = _(u"Vous pouvez ici mesurer la distance entre deux lieux. Sélectionnez l'origine et la destination du trajet à mesurer. Ces paramètres sont mémorisés pour une utilisation ultérieure.")
+        intro = _(u"Vous pouvez ici mesurer la distance entre deux lieux. SÃ©lectionnez l'origine et la destination du trajet Ã  mesurer. Ces paramÃ¨tres sont mÃ©morisÃ©s pour une utilisation ultÃ©rieure.")
         titre = _(u"Mesurer une distance")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Transport.png")
         
-        # Paramètres
-        self.box_parametres_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Paramètres"))
+        # ParamÃ¨tres
+        self.box_parametres_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"ParamÃ¨tres"))
         self.label_origine = wx.StaticText(self, wx.ID_ANY, _(u"Origine :"))
         self.ctrl_origine = CTRL_Lieu(self, dictParametres=dictParametres)
         self.label_destination = wx.StaticText(self, wx.ID_ANY, _(u"Destination :"))
         self.ctrl_destination = CTRL_Lieu(self, dictParametres=dictParametres)
-        self.label_moyen = wx.StaticText(self, wx.ID_ANY, _(u"Véhicule :"))
+        self.label_moyen = wx.StaticText(self, wx.ID_ANY, _(u"VÃ©hicule :"))
         self.radio_voiture = wx.RadioButton(self, -1, _(u"En voiture"), style=wx.RB_GROUP)
         self.radio_marche = wx.RadioButton(self, -1, _(u"A pied"))
-        self.radio_velo = wx.RadioButton(self, -1, _(u"A vélo"))
+        self.radio_velo = wx.RadioButton(self, -1, _(u"A vÃ©lo"))
 
-        # Résultats
+        # RÃ©sultats
         self.ctrl_resultats = MyHtml(self)
         self.ctrl_resultats.SetMinSize((450, 180))
 
@@ -145,7 +145,7 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonFermer, self.bouton_fermer)
         self.Bind(wx.EVT_CLOSE, self.OnClose)
 
-        # Récupération des paramètres mémorisés
+        # RÃ©cupÃ©ration des paramÃ¨tres mÃ©morisÃ©s
         dictParametres = {"origine" : None, "destination" : None, "moyen" : None}
         dictParametres = UTILS_Parametres.ParametresCategorie(mode="get", categorie="locations_mesure_distance", dictParametres=dictParametres)
         if "origine" in dictParametres :
@@ -155,13 +155,13 @@ class Dialog(wx.Dialog):
         if "moyen" in dictParametres :
             self.SetMoyen(dictParametres["moyen"])
 
-        # Calcule les résultats
+        # Calcule les rÃ©sultats
         self.MAJ()
         
 
     def __set_properties(self):
-        self.ctrl_origine.SetToolTip(wx.ToolTip(_(u"Sélectionnez une origine dans la liste")))
-        self.ctrl_destination.SetToolTip(wx.ToolTip(_(u"Sélectionnez une destination dans la liste")))
+        self.ctrl_origine.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez une origine dans la liste")))
+        self.ctrl_destination.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez une destination dans la liste")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
 
@@ -169,7 +169,7 @@ class Dialog(wx.Dialog):
         grid_sizer_base = wx.FlexGridSizer(4, 1, 10, 10)
         grid_sizer_base.Add(self.ctrl_bandeau, 0, wx.EXPAND, 0)
 
-        # Paramètres
+        # ParamÃ¨tres
         box_parametres = wx.StaticBoxSizer(self.box_parametres_staticbox, wx.HORIZONTAL)
         grid_sizer_parametres = wx.FlexGridSizer(3, 2, 10, 10)
         grid_sizer_parametres.Add(self.label_origine, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL, 0)
@@ -188,7 +188,7 @@ class Dialog(wx.Dialog):
         box_parametres.Add(grid_sizer_parametres, 1, wx.ALL | wx.EXPAND, 10)
         grid_sizer_base.Add(box_parametres, 1, wx.LEFT | wx.RIGHT | wx.EXPAND, 10)
 
-        # Résultats
+        # RÃ©sultats
         grid_sizer_base.Add(self.ctrl_resultats, 1, wx.LEFT | wx.RIGHT | wx.EXPAND, 10)
         
         # Boutons
@@ -211,7 +211,7 @@ class Dialog(wx.Dialog):
         UTILS_Aide.Aide("")
 
     def MemorisationParametres(self):
-        # Mémorisation des paramètres
+        # MÃ©morisation des paramÃ¨tres
         if self.ctrl_origine.GetCode() != self.ctrl_destination.GetCode() :
             dictValeurs = {
                 "origine" : self.ctrl_origine.GetCode(),
@@ -247,33 +247,33 @@ class Dialog(wx.Dialog):
             self.radio_voiture.SetValue(True)
 
     def MAJ(self, event=None):
-        # Récupération de l'origine
+        # RÃ©cupÃ©ration de l'origine
         dictValeursOrigine = self.ctrl_origine.GetValeurs()
         if dictValeursOrigine == None or dictValeursOrigine["adresse"] in (None, ""):
             self.ctrl_resultats.SetTexte(_(u"Le lieu d'origine n'est pas valide."))
             return False
         origine_adresse = dictValeursOrigine["adresse"]
 
-        # Récupération de la destination
+        # RÃ©cupÃ©ration de la destination
         dictValeursDestination = self.ctrl_destination.GetValeurs()
         if dictValeursDestination == None or dictValeursDestination["adresse"] in (None, ""):
             self.ctrl_resultats.SetTexte(_(u"Le lieu de destination n'est pas valide."))
             return False
         origine_destination = dictValeursDestination["adresse"]
 
-        # Récupération du moyen
+        # RÃ©cupÃ©ration du moyen
         moyen = self.GetMoyen()
 
         # Calcul de la distance
         dictResultats = UTILS_Distances_villes.GetDistances(origine=origine_adresse, destinations=origine_destination, moyen=moyen)
         if dictResultats == {} :
-            self.ctrl_resultats.SetTexte(_(u"Aucun résultat avec ces paramètres."))
+            self.ctrl_resultats.SetTexte(_(u"Aucun rÃ©sultat avec ces paramÃ¨tres."))
             return False
 
-        # Affichage des résultats
+        # Affichage des rÃ©sultats
         dictResultats = dictResultats[origine_destination]
         texte = _(u"""
-        <FONT SIZE=5><B>Résultats :</B><BR></FONT>
+        <FONT SIZE=5><B>RÃ©sultats :</B><BR></FONT>
         <BR>
         <FONT SIZE=2>
             Origine : <I>%s</I> <BR>

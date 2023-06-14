@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activitÈs
+# Application :    Noethys, gestion multi-activit√©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -25,11 +25,11 @@ from Ctrl.CTRL_ObjectListView import FastObjectListView, ColumnDefn, Filter, CTR
 
 
 def FormatDuree(validite):
-    # IllimitÈe
+    # Illimit√©e
     if validite == None or validite == "j0-m0-a0" :
-        return _(u"IllimitÈe")
+        return _(u"Illimit√©e")
     
-    # DurÈe
+    # Dur√©e
     if validite != None and validite.startswith("j") :
         posM = validite.find("m")
         posA = validite.find("a")
@@ -48,10 +48,10 @@ def FormatDuree(validite):
             textMois = _(u"%d mois") % mois
             listItems.append(textMois)
         if annees == 1:
-            textAnnees = _(u"%d annÈe") % annees
+            textAnnees = _(u"%d ann√©e") % annees
             listItems.append(textAnnees)
         if annees > 1:
-            textAnnees = _(u"%d annÈes") % annees
+            textAnnees = _(u"%d ann√©es") % annees
             listItems.append(textAnnees)
 
         nbreItems = len(listItems)
@@ -86,7 +86,7 @@ class Track(object):
     
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # RÈcupÈration des paramËtres perso
+        # R√©cup√©ration des param√®tres perso
         self.selectionID = None
         self.selectionTrack = None
         self.criteres = ""
@@ -107,7 +107,7 @@ class ListView(FastObjectListView):
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
-        """ RÈcupÈration des donnÈes """
+        """ R√©cup√©ration des donn√©es """
         listeID = None
         db = GestionDB.DB()
         req = """SELECT IDtype_piece, nom, public, duree_validite, valide_rattachement
@@ -137,14 +137,14 @@ class ListView(FastObjectListView):
         
         liste_Colonnes = [
             ColumnDefn(_(u"ID"), "left", 0, "IDtype_piece", typeDonnee="entier"),
-            ColumnDefn(_(u"Nom de la piËce"), 'left', 220, "nom", typeDonnee="texte"),
+            ColumnDefn(_(u"Nom de la pi√®ce"), 'left', 220, "nom", typeDonnee="texte"),
             ColumnDefn(_(u"Public"), "left", 70, "txt_public", typeDonnee="texte"), 
-            ColumnDefn(_(u"ValiditÈ"), "left", 140, "txt_duree_validite", typeDonnee="texte"), 
+            ColumnDefn(_(u"Validit√©"), "left", 140, "txt_duree_validite", typeDonnee="texte"), 
             ColumnDefn(_(u"Rattachement valide"), "left", 120, "txt_rattachement", typeDonnee="texte"), 
             ]
         
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(_(u"Aucun type de piËce"))
+        self.SetEmptyListMsg(_(u"Aucun type de pi√®ce"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
         self.SetSortColumn(self.columns[1])
         self.SetObjects(self.donnees)
@@ -158,7 +158,7 @@ class ListView(FastObjectListView):
             self.selectionTrack = None
         self.InitModel()
         self.InitObjectListView()
-        # SÈlection d'un item
+        # S√©lection d'un item
         if self.selectionTrack != None :
             self.SelectObject(self.selectionTrack, deselectOthers=True, ensureVisible=True)
         self.selectionID = None
@@ -175,7 +175,7 @@ class ListView(FastObjectListView):
             noSelection = False
             ID = self.Selection()[0].IDtype_piece
                 
-        # CrÈation du menu contextuel
+        # Cr√©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Modifier
@@ -206,7 +206,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"AperÁu avant impression"))
+        item = wx.MenuItem(menuPop, 40, _(u"Aper√ßu avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -224,12 +224,12 @@ class ListView(FastObjectListView):
 
     def Apercu(self, event):
         from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des types de piËces"), format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des types de pi√®ces"), format="A", orientation=wx.PORTRAIT)
         prt.Preview()
 
     def Imprimer(self, event):
         from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des types de piËces"), format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des types de pi√®ces"), format="A", orientation=wx.PORTRAIT)
         prt.Print()
 
 
@@ -245,7 +245,7 @@ class ListView(FastObjectListView):
     def Modifier(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_types_pieces", "modifier") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucun type de piËce dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucun type de pi√®ce dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -259,13 +259,13 @@ class ListView(FastObjectListView):
     def Supprimer(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_types_pieces", "supprimer") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucun type de piËce dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucun type de pi√®ce dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         IDtype_piece = self.Selection()[0].IDtype_piece
         
-        # VÈrifie que ce type de piËce n'est pas dÈj‡ attribuÈ ‡ un individu
+        # V√©rifie que ce type de pi√®ce n'est pas d√©j√† attribu√© √† un individu
         DB = GestionDB.DB()
         req = """SELECT COUNT(IDpiece)
         FROM pieces 
@@ -275,12 +275,12 @@ class ListView(FastObjectListView):
         nbrePieces = int(DB.ResultatReq()[0][0])
         DB.Close()
         if nbrePieces > 0 :
-            dlg = wx.MessageDialog(self, _(u"Ce type de piËce a dÈj‡ ÈtÈ attribuÈ ‡ %d piËce(s).\n\nVous ne pouvez donc pas le supprimer !") % nbrePieces, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Ce type de pi√®ce a d√©j√† √©t√© attribu√© √† %d pi√®ce(s).\n\nVous ne pouvez donc pas le supprimer !") % nbrePieces, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
-        # VÈrifie que ce type de piËce n'est pas dÈj‡ attribuÈ comme piËce obligatoire pour une activitÈ
+        # V√©rifie que ce type de pi√®ce n'est pas d√©j√† attribu√© comme pi√®ce obligatoire pour une activit√©
         DB = GestionDB.DB()
         req = """SELECT COUNT(IDpiece_activite)
         FROM pieces_activites 
@@ -290,21 +290,21 @@ class ListView(FastObjectListView):
         nbreActivites = int(DB.ResultatReq()[0][0])
         DB.Close()
         if nbreActivites > 0 :
-            dlg = wx.MessageDialog(self, _(u"Ce type de piËce a dÈj‡ ÈtÈ attribuÈ comme piËce obligatoire ‡ %d activitÈ(s).\n\nVous ne pouvez donc pas le supprimer !") % nbreActivites, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Ce type de pi√®ce a d√©j√† √©t√© attribu√© comme pi√®ce obligatoire √† %d activit√©(s).\n\nVous ne pouvez donc pas le supprimer !") % nbreActivites, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         
         # Confirmation
-        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer ce type de piËce ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer ce type de pi√®ce ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         if dlg.ShowModal() == wx.ID_YES :
 
-            # Suppression du type de piËce
+            # Suppression du type de pi√®ce
             DB = GestionDB.DB()
             DB.ReqDEL("types_pieces", "IDtype_piece", IDtype_piece)
             DB.Close()
 
-            # Suppression des documents scannÈs rattachÈs
+            # Suppression des documents scann√©s rattach√©s
             DB = GestionDB.DB(suffixe="DOCUMENTS")
             DB.ReqDEL("documents", "IDtype_piece", IDtype_piece)
             DB.Close()
@@ -324,7 +324,7 @@ class BarreRecherche(wx.SearchCtrl):
         self.parent = parent
         self.rechercheEnCours = False
         
-        self.SetDescriptiveText(_(u"Rechercher un type de piËce..."))
+        self.SetDescriptiveText(_(u"Rechercher un type de pi√®ce..."))
         self.ShowSearchButton(True)
         
         self.listView = self.parent.ctrl_listview

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-14 Ivan LUCAS
@@ -88,8 +88,8 @@ class Dialog(wx.Dialog):
         self.parent = parent   
         self.IDreleve = IDreleve
         
-        # Généralités
-        self.box_generalites_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Généralités"))
+        # GÃ©nÃ©ralitÃ©s
+        self.box_generalites_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"GÃ©nÃ©ralitÃ©s"))
         
         self.label_compte = wx.StaticText(self, wx.ID_ANY, _(u"Compte :"))
         self.ctrl_compte = CTRL_Compte(self)
@@ -103,11 +103,11 @@ class Dialog(wx.Dialog):
         self.ctrl_date_fin = CTRL_Saisie_date.Date2(self)
         
         # Informations
-        self.box_informations_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Détail du relevé"))
+        self.box_informations_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"DÃ©tail du relevÃ©"))
         self.ctrl_informations = CTRL_Informations(self)
 
-        # Opérations
-        self.box_operations_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Opérations"))
+        # OpÃ©rations
+        self.box_operations_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"OpÃ©rations"))
         self.ctrl_operations = OL_Operations_releve.ListView(self, id=-1, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.ctrl_operations.SetMinSize((50, 50))
         
@@ -124,24 +124,24 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
 
-        # Init contrôles
+        # Init contrÃ´les
         self.ctrl_compte.SetID(IDcompte_bancaire)
         
         if self.IDreleve != None :
-            self.SetTitle(_(u"Modification d'un relevé bancaire"))
+            self.SetTitle(_(u"Modification d'un relevÃ© bancaire"))
             self.Importation() 
         else :
-            self.SetTitle(_(u"Saisie d'un relevé bancaire"))
+            self.SetTitle(_(u"Saisie d'un relevÃ© bancaire"))
             
         self.ctrl_operations.SetCompteBancaire(IDcompte_bancaire)
         self.ctrl_operations.SetReleve(IDreleve)
         self.ctrl_operations.MAJ() 
 
     def __set_properties(self):
-        self.ctrl_compte.SetToolTip(wx.ToolTip(_(u"Sélectionnez le compte bancaire associé")))
-        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez le nom du relevé bancaire (Ex : 'Janvier 2014')")))
-        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez la date de début du relevé")))
-        self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez la date de fin du relevé")))
+        self.ctrl_compte.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez le compte bancaire associÃ©")))
+        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez le nom du relevÃ© bancaire (Ex : 'Janvier 2014')")))
+        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez la date de dÃ©but du relevÃ©")))
+        self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez la date de fin du relevÃ©")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
@@ -152,7 +152,7 @@ class Dialog(wx.Dialog):
         
         grid_sizer_haut = wx.FlexGridSizer(1, 2, 10, 10)
         
-        # Généralités
+        # GÃ©nÃ©ralitÃ©s
         box_generalites = wx.StaticBoxSizer(self.box_generalites_staticbox, wx.VERTICAL)
         grid_sizer_generalites = wx.FlexGridSizer(3, 2, 10, 10)
         grid_sizer_generalites.Add(self.label_compte, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL, 0)
@@ -182,7 +182,7 @@ class Dialog(wx.Dialog):
         grid_sizer_haut.AddGrowableCol(1)
         grid_sizer_base.Add(grid_sizer_haut, 1, wx.LEFT | wx.RIGHT | wx.TOP | wx.EXPAND, 10)
         
-        # Opérations
+        # OpÃ©rations
         box_operations = wx.StaticBoxSizer(self.box_operations_staticbox, wx.VERTICAL)
         box_operations.Add(self.ctrl_operations, 1, wx.ALL | wx.EXPAND, 10)
         
@@ -219,20 +219,20 @@ class Dialog(wx.Dialog):
     def OnBoutonOk(self, event): 
         if self.Sauvegarde()  == False :
             return
-        # Fermeture de la fenêtre
+        # Fermeture de la fenÃªtre
         self.EndModal(wx.ID_OK)
 
     def Sauvegarde(self):
-        """ Sauvegarde des données """
+        """ Sauvegarde des donnÃ©es """
         nom = self.ctrl_nom.GetValue() 
         date_debut = self.ctrl_date_debut.GetDate() 
         date_fin = self.ctrl_date_fin.GetDate() 
         IDcompte = self.ctrl_compte.GetID() 
         listeOperations = self.ctrl_operations.GetTracksCoches() 
         
-        # Validation des données saisies
+        # Validation des donnÃ©es saisies
         if IDcompte == None : 
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner un compte bancaire !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sÃ©lectionner un compte bancaire !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_compte.SetFocus()
@@ -246,7 +246,7 @@ class Dialog(wx.Dialog):
             return False
 
         if date_debut == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de début !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de dÃ©but !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_debut.SetFocus()
@@ -260,14 +260,14 @@ class Dialog(wx.Dialog):
             return False
 
         if date_debut > date_fin :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de fin supérieure à la date de début !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de fin supÃ©rieure Ã  la date de dÃ©but !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_fin.SetFocus()
             return False
         
         if len(listeOperations) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez rapproché aucune opération.\n\nSouhaitez-vous tout de même valider ?"), _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez rapprochÃ© aucune opÃ©ration.\n\nSouhaitez-vous tout de mÃªme valider ?"), _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
             reponse = dlg.ShowModal()
             dlg.Destroy()
             if reponse != wx.ID_YES :
@@ -276,7 +276,7 @@ class Dialog(wx.Dialog):
         # Sauvegarde
         DB = GestionDB.DB()
         
-        # Sauvegarde du relevé
+        # Sauvegarde du relevÃ©
         listeDonnees = [ 
             ("nom", nom ),
             ("date_debut", date_debut ),
@@ -288,13 +288,13 @@ class Dialog(wx.Dialog):
         else :
             DB.ReqMAJ("compta_releves", listeDonnees, "IDreleve", self.IDreleve)
             
-        # Sauvegarde des opérations
+        # Sauvegarde des opÃ©rations
         listeIDoperations = []
         for track in listeOperations :
             DB.ReqMAJ("compta_operations", [("IDreleve", self.IDreleve),], "IDoperation", track.IDoperation)
             listeIDoperations.append(track.IDoperation)
         
-        # Suppression des anciennes opérations cochées
+        # Suppression des anciennes opÃ©rations cochÃ©es
         req = """SELECT IDoperation, date
         FROM compta_operations 
         WHERE IDreleve=%d;""" % self.IDreleve

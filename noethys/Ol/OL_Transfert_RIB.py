@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-13 Ivan LUCAS
@@ -72,20 +72,20 @@ class Track(object):
         if self.date == None or self.date == "" : informationsManquantes.append(_(u"date du mandat"))
         
         if self.IDmandat != None :
-            self.analyse = _(u"Mandat déjà créé")
+            self.analyse = _(u"Mandat dÃ©jÃ  crÃ©Ã©")
             self.valide = False
         elif len(informationsManquantes) > 0 :
             self.analyse = _(u"Infos manquantes : %s") % ", ".join(informationsManquantes)
             self.valide = False
         else :
-            self.analyse = _(u"Prêt pour transfert")
+            self.analyse = _(u"PrÃªt pour transfert")
             self.valide = True
         
         
     
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # Récupération des paramètres perso
+        # RÃ©cupÃ©ration des paramÃ¨tres perso
         self.selectionID = None
         self.selectionTrack = None
         self.criteres = ""
@@ -105,11 +105,11 @@ class ListView(FastObjectListView):
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
-        """ Récupération des données """
+        """ RÃ©cupÃ©ration des donnÃ©es """
         dictTitulaires = UTILS_Titulaires.GetTitulaires()
         listeID = None
 
-        # Récupération des RIB
+        # RÃ©cupÃ©ration des RIB
         DB = GestionDB.DB()
         req = """SELECT familles.IDfamille, prelevement_iban, prelevement_bic, prelevement_banque,
         prelevement_individu, prelevement_nom, prelevement_rue, prelevement_cp, prelevement_ville,
@@ -145,7 +145,7 @@ class ListView(FastObjectListView):
         self.evenRowsBackColor = wx.Colour(255, 255, 255)
         self.useExpansionColumn = True
 
-        # Préparation de la listeImages
+        # PrÃ©paration de la listeImages
         imgOk = self.AddNamedImages("ok", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Ok.png"), wx.BITMAP_TYPE_PNG))
         imgPasOk = self.AddNamedImages("pasok", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Interdit.png"), wx.BITMAP_TYPE_PNG))
 
@@ -181,7 +181,7 @@ class ListView(FastObjectListView):
         self.rowFormatter = rowFormatter
         self.SetColumns(liste_Colonnes)
         self.CreateCheckStateColumn(0)
-        self.SetEmptyListMsg(_(u"Aucune donnée"))
+        self.SetEmptyListMsg(_(u"Aucune donnÃ©e"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
         self.SetSortColumn(self.columns[1])
         self.SetObjects(self.donnees)
@@ -195,7 +195,7 @@ class ListView(FastObjectListView):
             self.selectionTrack = None
         self.InitModel()
         self.InitObjectListView()
-        # Sélection d'un item
+        # SÃ©lection d'un item
         if self.selectionTrack != None :
             self.SelectObject(self.selectionTrack, deselectOthers=True, ensureVisible=True)
         self.selectionID = None
@@ -206,7 +206,7 @@ class ListView(FastObjectListView):
 
     def OnContextMenu(self, event):
         """Ouverture du menu contextuel """
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Cocher les valides
@@ -225,8 +225,8 @@ class ListView(FastObjectListView):
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.CocheTout, id=70)
 
-        # Item Tout décocher
-        item = wx.MenuItem(menuPop, 80, _(u"Tout décocher"))
+        # Item Tout dÃ©cocher
+        item = wx.MenuItem(menuPop, 80, _(u"Tout dÃ©cocher"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Decocher.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -235,7 +235,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
 
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
+        item = wx.MenuItem(menuPop, 40, _(u"AperÃ§u avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -269,7 +269,7 @@ class ListView(FastObjectListView):
 
     def Impression(self, mode="preview"):
         if self.donnees == None or len(self.donnees) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Il n'y a aucune donnée à imprimer !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Il n'y a aucune donnÃ©e Ã  imprimer !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -327,16 +327,16 @@ class ListView(FastObjectListView):
     def Conversion(self):
         tracks = self.GetTracksCoches() 
         
-        # Vérifie si ligne valide
+        # VÃ©rifie si ligne valide
         for track in tracks :
             if track.valide == False :
-                dlg = wx.MessageDialog(self, _(u"Vous ne pouvez sélectionner que les lignes valides !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous ne pouvez sÃ©lectionner que les lignes valides !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
         
         # Demande de confirmation
-        dlg = wx.MessageDialog(self, _(u"Confirmez-vous la création de %d mandats ?\n\nCette opération peut prendre quelques minutes...") % len(tracks), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+        dlg = wx.MessageDialog(self, _(u"Confirmez-vous la crÃ©ation de %d mandats ?\n\nCette opÃ©ration peut prendre quelques minutes...") % len(tracks), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
         reponse = dlg.ShowModal() 
         dlg.Destroy()
         if reponse != wx.ID_YES :
@@ -347,7 +347,7 @@ class ListView(FastObjectListView):
         
         index = 0
         for track in tracks :
-            self.EcritStatusbar(_(u"Veuillez patienter...  Création du mandat %d / %d") % (index, len(tracks)))
+            self.EcritStatusbar(_(u"Veuillez patienter...  CrÃ©ation du mandat %d / %d") % (index, len(tracks)))
             listeDonnees = [    
                     ("IDfamille", track.IDfamille),
                     ("rum", track.rum),
@@ -372,7 +372,7 @@ class ListView(FastObjectListView):
         DB.Close()
         self.EcritStatusbar(u"") 
         
-        dlg = wx.MessageDialog(self, _(u"%d mandats ont été créés avec succès.") % len(tracks), _(u"Fin"), wx.OK | wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"%d mandats ont Ã©tÃ© crÃ©Ã©s avec succÃ¨s.") % len(tracks), _(u"Fin"), wx.OK | wx.ICON_INFORMATION)
         dlg.ShowModal()
         dlg.Destroy()
         return True

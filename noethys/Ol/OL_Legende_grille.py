@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -24,17 +24,17 @@ from Ctrl.CTRL_ObjectListView import FastObjectListView, ColumnDefn, Filter, CTR
 
 
 LISTE_DONNEES = [
-    (_(u"Présence"), "Ok5", 1),
-    (_(u"Absence justifiée"), "absentj", 2),
-    (_(u"Absence injustifiée"), "absenti", 3),
+    (_(u"PrÃ©sence"), "Ok5", 1),
+    (_(u"Absence justifiÃ©e"), "absentj", 2),
+    (_(u"Absence injustifiÃ©e"), "absenti", 3),
     (_(u"Sans prestation"), "Gratuit", 5),
-    (_(u"Réservation"), "Reservation", 6),
+    (_(u"RÃ©servation"), "Reservation", 6),
     (_(u"Attente"), "Attente2", 7),
     (_(u"Refus"), "Refus", 8),
     (_(u"Places disponibles"), "Disponible", 9),
     (_(u"Seuil d'alerte"), "Seuil_alerte", 10),
     (_(u"Complet"), "Complet", 11),
-    (_(u"Forfait crédit"), "Forfait_credit", 11),
+    (_(u"Forfait crÃ©dit"), "Forfait_credit", 11),
     ]
 
 
@@ -53,13 +53,13 @@ class ListView(FastObjectListView):
         FastObjectListView.__init__(self, *args, **kwds)
         self.InitModel()
         self.InitObjectListView()
-        self.SetToolTip(wx.ToolTip(_(u"Retrouvez ici la liste des codes couleurs et icônes utilisés dans la grille des consommations")))
+        self.SetToolTip(wx.ToolTip(_(u"Retrouvez ici la liste des codes couleurs et icÃ´nes utilisÃ©s dans la grille des consommations")))
                         
     def InitModel(self):
         self.donnees = self.GetTracks()
             
     def GetTracks(self):
-        """ Récupération des données """
+        """ RÃ©cupÃ©ration des donnÃ©es """
         listeListeView = []
         for donnees in LISTE_DONNEES :
             track = Track(donnees)
@@ -68,7 +68,7 @@ class ListView(FastObjectListView):
         return listeListeView
       
     def InitObjectListView(self):
-        # Création du imageList
+        # CrÃ©ation du imageList
         indexTmp = 0
         for label, nomImage, ordre in LISTE_DONNEES :
             self.AddNamedImages(nomImage, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/%s.png" % nomImage), wx.BITMAP_TYPE_PNG))
@@ -88,7 +88,7 @@ class ListView(FastObjectListView):
             ]
         
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(_(u"Aucune légende"))
+        self.SetEmptyListMsg(_(u"Aucune lÃ©gende"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
 ##        self.SetSortColumn(self.columns[0])
         self.SetObjects(self.donnees)
@@ -110,7 +110,7 @@ class MyFrame(wx.Frame):
 if __name__ == '__main__':
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    frame_1 = MyFrame(None, -1, _(u"OL légende grille des consommations"))
+    frame_1 = MyFrame(None, -1, _(u"OL lÃ©gende grille des consommations"))
     app.SetTopWindow(frame_1)
     frame_1.Show()
     app.MainLoop()

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -24,7 +24,7 @@ from Ol import OL_Reglements_depots
 import GestionDB
 
 from Utils import UTILS_Config
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"â‚¬")
 
 
 
@@ -33,9 +33,9 @@ def DateEngFr(textDate):
     return text
 
 def DateComplete(dateDD):
-    """ Transforme une date DD en date complète : Ex : lundi 15 janvier 2008 """
+    """ Transforme une date DD en date complÃ¨te : Ex : lundi 15 janvier 2008 """
     listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
-    listeMois = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
+    listeMois = (_(u"janvier"), _(u"fÃ©vrier"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"aoÃ»t"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"dÃ©cembre"))
     dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
     return dateComplete
 
@@ -86,7 +86,7 @@ class Track(object):
         else:
             self.inclus = True
 
-        # Récupération du nom des titulaires
+        # RÃ©cupÃ©ration du nom des titulaires
         self.nomTitulaires = _(" ")
         try :
             self.nomTitulaires = self.parent.dict_titulaires[self.IDfamille]["titulairesSansCivilite"]
@@ -102,18 +102,18 @@ class Dialog(wx.Dialog):
         self.parent = parent
         
         # Bandeau
-        intro = _(u"Vous pouvez ici saisir, modifier ou supprimer des dépôts bancaires. ")
-        titre = _(u"Gestion des dépôts")
+        intro = _(u"Vous pouvez ici saisir, modifier ou supprimer des dÃ©pÃ´ts bancaires. ")
+        titre = _(u"Gestion des dÃ©pÃ´ts")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Banque.png")
         
         # Reglements disponibles
-        self.staticbox_reglements = wx.StaticBox(self, -1, _(u"Règlements disponibles"))
+        self.staticbox_reglements = wx.StaticBox(self, -1, _(u"RÃ¨glements disponibles"))
         self.listviewAvecFooter1 = OL_Reglements_depots.ListviewAvecFooter(self, kwargs={"inclus" : False, "selectionPossible" : False, "size" : (-1, 180) }) 
         self.ctrl_reglements = self.listviewAvecFooter1.GetListview()
         self.ctrl_reglements.SetMinSize((100, 150))
 
-        # Dépôts
-        self.staticbox_depots = wx.StaticBox(self, -1, _(u"Dépôts"))
+        # DÃ©pÃ´ts
+        self.staticbox_depots = wx.StaticBox(self, -1, _(u"DÃ©pÃ´ts"))
         self.listviewAvecFooter2 = OL_Depots.ListviewAvecFooter(self, kwargs={}) 
         self.ctrl_depots = self.listviewAvecFooter2.GetListview()
         self.ctrl_recherche = OL_Depots.CTRL_Outils(self, listview=self.ctrl_depots)
@@ -124,7 +124,7 @@ class Dialog(wx.Dialog):
         self.bouton_imprimer = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Imprimante.png"), wx.BITMAP_TYPE_ANY))
         
         # Options
-        self.check_images = wx.CheckBox(self, -1, _(u"Afficher les images des modes et émetteurs"))
+        self.check_images = wx.CheckBox(self, -1, _(u"Afficher les images des modes et Ã©metteurs"))
         self.check_images.SetValue(UTILS_Config.GetParametre("depots_afficher_images", defaut=True))
         
         # Boutons
@@ -147,12 +147,12 @@ class Dialog(wx.Dialog):
 
 
     def __set_properties(self):
-        self.SetTitle(_(u"Gestion des dépôts"))
-        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter un dépôt")))
-        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le dépôt sélectionné dans la liste")))
-        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le dépôt sélectionné dans la liste")))
-        self.bouton_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer la liste des dépôts affichés")))
-        self.check_images.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher les images des modes et émetteurs dans chaque fenêtre du gestionnaire de dépôts")))
+        self.SetTitle(_(u"Gestion des dÃ©pÃ´ts"))
+        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter un dÃ©pÃ´t")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le dÃ©pÃ´t sÃ©lectionnÃ© dans la liste")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le dÃ©pÃ´t sÃ©lectionnÃ© dans la liste")))
+        self.bouton_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer la liste des dÃ©pÃ´ts affichÃ©s")))
+        self.check_images.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher les images des modes et Ã©metteurs dans chaque fenÃªtre du gestionnaire de dÃ©pÃ´ts")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         self.SetMinSize((950, 700))
@@ -163,7 +163,7 @@ class Dialog(wx.Dialog):
         # Bandeau
         grid_sizer_base.Add(self.ctrl_bandeau, 0, wx.EXPAND, 0)
 
-        # Règlements
+        # RÃ¨glements
         staticbox_reglements = wx.StaticBoxSizer(self.staticbox_reglements, wx.VERTICAL)
         grid_sizer_reglements = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
         
@@ -174,7 +174,7 @@ class Dialog(wx.Dialog):
         staticbox_reglements.Add(grid_sizer_reglements, 1, wx.ALL|wx.EXPAND, 5)
         grid_sizer_base.Add(staticbox_reglements, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
 
-        # Dépôts
+        # DÃ©pÃ´ts
         staticbox_depots = wx.StaticBoxSizer(self.staticbox_depots, wx.VERTICAL)
         grid_sizer_depots = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
         
@@ -224,10 +224,10 @@ class Dialog(wx.Dialog):
         tracks = self.GetTracks()
         self.ctrl_reglements.MAJ(tracks)
         # Label de staticbox
-        self.staticbox_reglements.SetLabel(self.ctrl_reglements.GetLabelListe(_(u"règlements disponibles")))
+        self.staticbox_reglements.SetLabel(self.ctrl_reglements.GetLabelListe(_(u"rÃ¨glements disponibles")))
 
     def GetTracks(self):
-        """ Récupération des données """
+        """ RÃ©cupÃ©ration des donnÃ©es """
         db = GestionDB.DB()
         req = """SELECT 
         reglements.IDreglement, reglements.IDcompte_payeur, reglements.date, 
@@ -273,11 +273,11 @@ class Dialog(wx.Dialog):
         self.ctrl_depots.Supprimer(None)
         
     def OnBoutonImprimer(self, event):               
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
         
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 20, _(u"Aperçu avant impression"))
+        item = wx.MenuItem(menuPop, 20, _(u"AperÃ§u avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)

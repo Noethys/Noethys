@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-13 Ivan LUCAS
@@ -36,7 +36,7 @@ class CTRL_Donnees(CT.CustomTreeCtrl):
     def __init__(self, parent, id=wx.ID_ANY, pos=wx.DefaultPosition, size=wx.DefaultSize, style=wx.SUNKEN_BORDER) :
         CT.CustomTreeCtrl.__init__(self, parent, id, pos, size, style)
         self.parent = parent
-        self.root = self.AddRoot(_(u"Données"))
+        self.root = self.AddRoot(_(u"DonnÃ©es"))
         
         self.SetBackgroundColour(wx.WHITE)
         self.SetAGWWindowStyleFlag(wx.TR_HIDE_ROOT | wx.TR_HAS_BUTTONS | wx.TR_HAS_VARIABLE_ROW_HEIGHT | CT.TR_AUTO_CHECK_CHILD)
@@ -47,7 +47,7 @@ class CTRL_Donnees(CT.CustomTreeCtrl):
     def MAJ(self):
         cochesPrecedents = self.GetCoches() 
         self.DeleteAllItems()
-        self.root = self.AddRoot(_(u"Données"))
+        self.root = self.AddRoot(_(u"DonnÃ©es"))
         
         # Fichiers locaux
         listeFichiersLocaux = self.GetListeFichiersLocaux()
@@ -68,10 +68,10 @@ class CTRL_Donnees(CT.CustomTreeCtrl):
                     if os.path.isfile(UTILS_Fichiers.GetRepData(fichier)) == False :
                         brancheFichier.Enable(False)
 
-        # Fichiers réseaux
+        # Fichiers rÃ©seaux
         listeFichiersReseau, listeBases = self.GetListeFichiersReseau()
         if len(listeFichiersReseau) > 0  and self.parent.check_reseau.GetValue() == True :
-            brancheType = self.AppendItem(self.root, _(u"Fichiers réseau"), ct_type=1)
+            brancheType = self.AppendItem(self.root, _(u"Fichiers rÃ©seau"), ct_type=1)
             self.SetPyData(brancheType, _(u"reseau"))
             self.SetItemBold(brancheType)
             
@@ -89,14 +89,14 @@ class CTRL_Donnees(CT.CustomTreeCtrl):
 
         self.ExpandAll() 
         
-        # Rétablit les coches précédents
+        # RÃ©tablit les coches prÃ©cÃ©dents
         if len(cochesPrecedents) > 0 :
             self.SetCoches(cochesPrecedents)
             
         self.AfficheNbreElements()
         
     def GetListeFichiersLocaux(self):
-        """ Trouver les fichiers présents sur le DD """
+        """ Trouver les fichiers prÃ©sents sur le DD """
         listeFichiersTmp = os.listdir(UTILS_Fichiers.GetRepData())
         listeFichiers = []
         for fichier in listeFichiersTmp :
@@ -125,7 +125,7 @@ class CTRL_Donnees(CT.CustomTreeCtrl):
         return listeFichiers, listeBases
 
     def GetCoches(self):
-        """ Obtient la liste des éléments cochés """
+        """ Obtient la liste des Ã©lÃ©ments cochÃ©s """
         dictDonnees = {}
         
         brancheType = self.GetFirstChild(self.root)[0]
@@ -195,7 +195,7 @@ class CTRL_Donnees(CT.CustomTreeCtrl):
         else:
             listeFichiersReseau = 0
         nbreElements = listeFichiersLocaux + listeFichiersReseau
-        texte = _(u"Données à sauvegarder (%d éléments cochés)") % nbreElements
+        texte = _(u"DonnÃ©es Ã  sauvegarder (%d Ã©lÃ©ments cochÃ©s)") % nbreElements
         self.parent.box_donnees_staticbox.SetLabel(texte)
         
 
@@ -222,18 +222,18 @@ class CTRL_Parametres(wx.Panel) :
         
         # Destination
         self.box_destination_staticbox = wx.StaticBox(self, -1, _(u"Destination"))
-        self.check_repertoire = wx.CheckBox(self, -1, _(u"Répertoire :"))
+        self.check_repertoire = wx.CheckBox(self, -1, _(u"RÃ©pertoire :"))
         self.ctrl_repertoire = wx.TextCtrl(self, -1, u"")
         self.bouton_repertoire = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Repertoire.png"), wx.BITMAP_TYPE_ANY))
         self.check_email = wx.CheckBox(self, -1, _(u"Envoi par Email :"))
         self.ctrl_email = wx.TextCtrl(self, -1, u"")
         
-        # Données
-        self.box_donnees_staticbox = wx.StaticBox(self, -1, _(u"Données à sauvegarder"))
+        # DonnÃ©es
+        self.box_donnees_staticbox = wx.StaticBox(self, -1, _(u"DonnÃ©es Ã  sauvegarder"))
         self.ctrl_donnees = CTRL_Donnees(self)
         self.ctrl_donnees.SetMinSize((300, -1))
         self.check_locaux = wx.CheckBox(self, -1, _(u"Fichiers locaux"))
-        self.check_reseau = wx.CheckBox(self, -1, _(u"Fichiers réseau"))
+        self.check_reseau = wx.CheckBox(self, -1, _(u"Fichiers rÃ©seau"))
 
         self.__set_properties()
         self.__do_layout()
@@ -246,13 +246,13 @@ class CTRL_Parametres(wx.Panel) :
         self.Bind(wx.EVT_CHECKBOX, self.OnCheckLocaux, self.check_locaux)
         self.Bind(wx.EVT_CHECKBOX, self.OnCheckReseau, self.check_reseau)
 
-        # Init Contrôles
+        # Init ContrÃ´les
         self.OnCheckCryptage(None) 
         self.OnCheckRepertoire(None) 
         self.OnCheckEmail(None) 
 
         self.check_locaux.SetValue(True)
-        # Récupération des paramètres de connexion réseau
+        # RÃ©cupÃ©ration des paramÃ¨tres de connexion rÃ©seau
         self.dictConnexion = None
         DB = GestionDB.DB() 
         if DB.echec != 1 :
@@ -266,16 +266,16 @@ class CTRL_Parametres(wx.Panel) :
     def __set_properties(self):
         self.check_cryptage.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour crypter le fichier de sauvegarde (utile pour un stockage en ligne)")))
         self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez ici le %s du fichier de sauvegarde") % self.labelControleNom.lower()))
-        self.ctrl_mdp.SetToolTip(wx.ToolTip(_(u"Si vous souhaitez protéger le fichier de sauvegarde avec un mot de passe, tapez-le ici")))
+        self.ctrl_mdp.SetToolTip(wx.ToolTip(_(u"Si vous souhaitez protÃ©ger le fichier de sauvegarde avec un mot de passe, tapez-le ici")))
         self.ctrl_confirmation.SetToolTip(wx.ToolTip(_(u"Confirmez le mot de passe")))
-        self.check_repertoire.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour enregistrer le fichier de sauvegarde dans le répertoire donné")))
+        self.check_repertoire.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour enregistrer le fichier de sauvegarde dans le rÃ©pertoire donnÃ©")))
         self.ctrl_repertoire.SetMinSize((180, -1))
-        self.ctrl_repertoire.SetToolTip(wx.ToolTip(_(u"Saisissez ici le répertoire de destination")))
-        self.bouton_repertoire.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sélectionner un répertoire de destination")))
+        self.ctrl_repertoire.SetToolTip(wx.ToolTip(_(u"Saisissez ici le rÃ©pertoire de destination")))
+        self.bouton_repertoire.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sÃ©lectionner un rÃ©pertoire de destination")))
         self.check_email.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour envoyer la sauvegarde par Email")))
-        self.ctrl_email.SetToolTip(wx.ToolTip(_(u"Saisissez ici une ou plusieurs adresses Email (separées par des points-virgules)")))
+        self.ctrl_email.SetToolTip(wx.ToolTip(_(u"Saisissez ici une ou plusieurs adresses Email (separÃ©es par des points-virgules)")))
         self.check_locaux.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher les fichiers locaux")))
-        self.check_reseau.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher les fichiers réseau")))
+        self.check_reseau.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher les fichiers rÃ©seau")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=2, vgap=10, hgap=10)
@@ -316,7 +316,7 @@ class CTRL_Parametres(wx.Panel) :
         grid_sizer_email.AddGrowableCol(1)
         grid_sizer_destination.Add(grid_sizer_email, 1, wx.EXPAND, 0)
 
-        # Répertoire
+        # RÃ©pertoire
         grid_sizer_repertoire = wx.FlexGridSizer(rows=1, cols=3, vgap=5, hgap=5)
         grid_sizer_repertoire.Add(self.check_repertoire, 0, wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_repertoire.Add(self.ctrl_repertoire, 0, wx.EXPAND, 0)
@@ -367,7 +367,7 @@ class CTRL_Parametres(wx.Panel) :
                 cheminDefaut = ""
         else:
             cheminDefaut = ""
-        dlg = wx.DirDialog(self, _(u"Veuillez sélectionner un répertoire de destination :"), defaultPath=cheminDefaut, style=wx.DD_DEFAULT_STYLE | wx.DD_DIR_MUST_EXIST)
+        dlg = wx.DirDialog(self, _(u"Veuillez sÃ©lectionner un rÃ©pertoire de destination :"), defaultPath=cheminDefaut, style=wx.DD_DEFAULT_STYLE | wx.DD_DIR_MUST_EXIST)
         if dlg.ShowModal() == wx.ID_OK:
             self.ctrl_repertoire.SetValue(dlg.GetPath())
         dlg.Destroy()
@@ -377,8 +377,8 @@ class CTRL_Parametres(wx.Panel) :
         
     def OnCheckReseau(self, event):
         if self.dictConnexion == None :
-            # Demande les paramètres de connexion
-            intro = _(u"Pour accéder à la liste des fichiers réseau disponibles, un accès MySQL \nest nécessaire. Veuillez saisir vos paramètres de connexion réseau :")
+            # Demande les paramÃ¨tres de connexion
+            intro = _(u"Pour accÃ©der Ã  la liste des fichiers rÃ©seau disponibles, un accÃ¨s MySQL \nest nÃ©cessaire. Veuillez saisir vos paramÃ¨tres de connexion rÃ©seau :")
             dlg = DLG_Saisie_param_reseau.Dialog(self, intro=intro)
             if dlg.ShowModal() == wx.ID_OK:
                 dictValeurs = dlg.GetDictValeurs()
@@ -387,16 +387,16 @@ class CTRL_Parametres(wx.Panel) :
                 dlg.Destroy()
                 self.check_reseau.SetValue(False)
                 return
-            # Vérifie si la connexion est bonne
+            # VÃ©rifie si la connexion est bonne
             resultat = DLG_Saisie_param_reseau.TestConnexion(dictValeurs)
             if resultat == False :
-                dlg = wx.MessageDialog(self, _(u"Echec du test de connexion.\n\nLes paramètres ne semblent pas exacts !"), _(u"Erreur"), wx.OK | wx.ICON_ERROR)
+                dlg = wx.MessageDialog(self, _(u"Echec du test de connexion.\n\nLes paramÃ¨tres ne semblent pas exacts !"), _(u"Erreur"), wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.check_reseau.SetValue(False)
                 return
             self.dictConnexion = dictValeurs
-        # MAJ de la liste des données
+        # MAJ de la liste des donnÃ©es
         self.ctrl_donnees.MAJ() 
     
     def SetDonnees(self, dictDonnees={}):
@@ -469,7 +469,7 @@ class CTRL_Parametres(wx.Panel) :
                 self.ctrl_mdp.SetFocus()
                 return False
             if motdepasse != confirmation :
-                dlg = wx.MessageDialog(self, _(u"Le mot de passe n'a pas été confirmé à l'identique !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Le mot de passe n'a pas Ã©tÃ© confirmÃ© Ã  l'identique !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_confirmation.SetFocus()
@@ -480,19 +480,19 @@ class CTRL_Parametres(wx.Panel) :
         else:
             motdepasse = None
         
-        # Répertoire
+        # RÃ©pertoire
         if self.check_repertoire.GetValue() == True :
             repertoire = self.ctrl_repertoire.GetValue() 
-            # Vérifie qu'un répertoire a été saisie
+            # VÃ©rifie qu'un rÃ©pertoire a Ã©tÃ© saisie
             if repertoire == "" :
-                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner un répertoire de destination !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sÃ©lectionner un rÃ©pertoire de destination !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_repertoire.SetFocus()
                 return False
-            # Vérifie que le répertoire existe
+            # VÃ©rifie que le rÃ©pertoire existe
             if os.path.isdir(repertoire) == False :
-                dlg = wx.MessageDialog(self, _(u"Le répertoire de destination que vous avez saisi n'existe pas !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Le rÃ©pertoire de destination que vous avez saisi n'existe pas !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_repertoire.SetFocus()
@@ -512,14 +512,14 @@ class CTRL_Parametres(wx.Panel) :
         else:
             listeEmails = None
         
-        # Vérifie qu'il y a une destination
+        # VÃ©rifie qu'il y a une destination
         if self.check_repertoire.GetValue() == False and self.check_email.GetValue() == False :
-            dlg = wx.MessageDialog(self, _(u"Vous devez sélectionner au moins une destination !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez sÃ©lectionner au moins une destination !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
         
-        # Données à sauver
+        # DonnÃ©es Ã  sauver
         dictDonnees = self.ctrl_donnees.GetCoches() 
         if "locaux" in dictDonnees and len(dictDonnees["locaux"]) > 0 :
             listeFichiersLocaux = ";".join(dictDonnees["locaux"])
@@ -531,12 +531,12 @@ class CTRL_Parametres(wx.Panel) :
             listeFichiersReseau = None
         
         if listeFichiersLocaux == None and listeFichiersReseau == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez cocher au moins un élément à sauvegarder dans la liste !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez cocher au moins un Ã©lÃ©ment Ã  sauvegarder dans la liste !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
         
-        # Envoi des données
+        # Envoi des donnÃ©es
         dictDonnees = {
             "sauvegarde_fichiers_locaux" : listeFichiersLocaux, 
             "sauvegarde_fichiers_reseau" : listeFichiersReseau, 
@@ -559,7 +559,7 @@ class Dialog(wx.Dialog):
         self.dictDonnees = dictDonnees
         self.resultat = False
 
-        intro = _(u"Vous pouvez créer ici une sauvegarde des données afin d'en la conservation ou de les transférer sur un autre ordinateur. Il est possible de crypter le fichier de sauvegarde et de l'enregistrer sur le disque dur ou une clé USB et de l'expédier par Email.")
+        intro = _(u"Vous pouvez crÃ©er ici une sauvegarde des donnÃ©es afin d'en la conservation ou de les transfÃ©rer sur un autre ordinateur. Il est possible de crypter le fichier de sauvegarde et de l'enregistrer sur le disque dur ou une clÃ© USB et de l'expÃ©dier par Email.")
         titre = _(u"Sauvegarde")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Sauvegarder.png")
@@ -579,7 +579,7 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
         
-        # Init Contrôles
+        # Init ContrÃ´les
         if dictDonnees != None :
             self.ctrl_parametres.SetDonnees(dictDonnees) 
         else :
@@ -620,7 +620,7 @@ class Dialog(wx.Dialog):
         self.EndModal(wx.ID_CANCEL)
     
     def Importation(self):
-        """ Importation des données par défaut """
+        """ Importation des donnÃ©es par dÃ©faut """
         dictSauvegarde = {
             "sauvegarde_nom" : _(u"Noethys_%s") % datetime.datetime.now().strftime("%Y%m%d_%H%M"),
             "sauvegarde_motdepasse" : UTILS_Config.GetParametre("sauvegarde_mdp", defaut=None),
@@ -632,12 +632,12 @@ class Dialog(wx.Dialog):
         self.ctrl_parametres.SetDonnees(dictSauvegarde) 
 
     def OnBoutonOk(self, event): 
-        # Validation des données
+        # Validation des donnÃ©es
         dictDonnees = self.ctrl_parametres.GetDonnees() 
         if dictDonnees == False :
             return
         
-        # Récupère paramètres
+        # RÃ©cupÃ¨re paramÃ¨tres
         listeFichiersLocaux = dictDonnees["sauvegarde_fichiers_locaux"]
         listeFichiersReseau = dictDonnees["sauvegarde_fichiers_reseau"]
         nom = dictDonnees["sauvegarde_nom"]
@@ -663,7 +663,7 @@ class Dialog(wx.Dialog):
             return False
 
         # Fin du processus
-        dlg = wx.MessageDialog(self, _(u"La procédure de sauvegarde est terminée."), _(u"Sauvegarde"), wx.OK | wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"La procÃ©dure de sauvegarde est terminÃ©e."), _(u"Sauvegarde"), wx.OK | wx.ICON_INFORMATION)
         dlg.ShowModal()
         dlg.Destroy()
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-14 Ivan LUCAS
@@ -56,8 +56,8 @@ class CTRL_Affichage(wx.Choice):
             ("6_prochains_mois", _(u"6 prochains mois")),
             ("12 prochains_mois", _(u"12 prochains mois")),
             ("mois_actuel", _(u"Mois actuel")),
-            ("annee_actuelle", _(u"Année actuelle")),
-            ("personnalise", _(u"Personnalisé")),
+            ("annee_actuelle", _(u"AnnÃ©e actuelle")),
+            ("personnalise", _(u"PersonnalisÃ©")),
             ]
         listeItems = []
         self.dictDonnees = {}
@@ -115,7 +115,7 @@ class CTRL(wx.Panel):
         self.IDcompte = IDcompte
         
     def SetPeriode(self, code="", date_debut=None, date_fin=None):
-        """ Attribue la période """
+        """ Attribue la pÃ©riode """
         dateJour = datetime.date.today() 
         self.date_debut = None
         self.date_fin = None
@@ -163,7 +163,7 @@ class CTRL(wx.Panel):
         listeOperations = DB.ResultatReq()
         DB.Close()
         
-        # Analyse des opérations
+        # Analyse des opÃ©rations
         listeDonnees = []
         solde = 0.0
         for IDoperation, typeOperation, date, IDreleve, montant in listeOperations :
@@ -195,7 +195,7 @@ class CTRL(wx.Panel):
             
         ax = self.figure.add_subplot(111)
                 
-        # Sélection du mode d'affichage
+        # SÃ©lection du mode d'affichage
         mode = None
         nbreJours = (self.date_fin - self.date_debut).days #(max(listeDates) - min(listeDates)).days
         if nbreJours < 60 :
@@ -205,7 +205,7 @@ class CTRL(wx.Panel):
         else :
             mode = "annee"
         
-        # Affichage par année
+        # Affichage par annÃ©e
         if mode == "annee" :
             anneeMin = self.date_debut.year
             anneeMax = self.date_max.year + 1
@@ -233,7 +233,7 @@ class CTRL(wx.Panel):
 ##            ax.set_xlim([min(listeDates), max(listeDates)])      
             ax.set_xlim([self.date_debut, self.date_fin])      
 
-        ax.fill_between(listeDates, 0, listeValeurs, facecolor='blue', alpha=0.5, label=_(u"Trésorerie"))
+        ax.fill_between(listeDates, 0, listeValeurs, facecolor='blue', alpha=0.5, label=_(u"TrÃ©sorerie"))
         
         self.figure.autofmt_xdate()
 
@@ -256,7 +256,7 @@ class CTRL(wx.Panel):
         ax.figure.canvas.draw()
         
         return
-        # Création du graph
+        # CrÃ©ation du graph
         ind = arange(len(listeLabels)) + 0.25  # the x locations for the groups
         width = 0.5
         for x in range(len(listeLabels)) :
@@ -300,7 +300,7 @@ class CTRL2():
 
         ax = figure.add_subplot(111)
                 
-        # Création du graph
+        # CrÃ©ation du graph
         ind = arange(len(listeLabels)) + 0.25  # the x locations for the groups
         width = 0.5
         for x in range(len(listeLabels)) :

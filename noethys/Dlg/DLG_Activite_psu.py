@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-15 Ivan LUCAS
@@ -51,7 +51,7 @@ class CTRL_Etiquette(wx.Choice):
 
         index = 0
         for IDetiquette, label, parent, ordre, couleur, active in listeDonnees :
-            # Mémorisation de l'étiquette
+            # MÃ©morisation de l'Ã©tiquette
             dictTemp = {
                 "IDetiquette" : IDetiquette, "label" : label, "parent" : parent,
                 "ordre" : ordre, "couleur" : couleur, "active" : active,
@@ -129,23 +129,23 @@ class Dialog(wx.Dialog):
         self.clsParametres = clsParametres
 
         # Bandeau
-        titre = _(u"Paramètres P.S.U.")
-        intro = _(u"Vous pouvez ici renseigner les paramètres P.S.U. de l'activité.")
+        titre = _(u"ParamÃ¨tres P.S.U.")
+        intro = _(u"Vous pouvez ici renseigner les paramÃ¨tres P.S.U. de l'activitÃ©.")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Contrat.png")
         
         # Activation
         self.box_activation_staticbox = wx.StaticBox(self, -1, _(u"Activation"))
-        self.label_activation = wx.StaticText(self, -1, _(u"Mode P.S.U. activé :"))
+        self.label_activation = wx.StaticText(self, -1, _(u"Mode P.S.U. activÃ© :"))
         self.radio_activation_oui = wx.RadioButton(self, -1, _(u"Oui"), style=wx.RB_GROUP)
         self.radio_activation_non = wx.RadioButton(self, -1, _(u"Non"))
                 
-        # Paramètres
-        self.box_parametres_staticbox = wx.StaticBox(self, -1, _(u"Paramètres P.S.U."))
-        self.label_unite_prevision = wx.StaticText(self, -1, _(u"Unité prévision :"))
+        # ParamÃ¨tres
+        self.box_parametres_staticbox = wx.StaticBox(self, -1, _(u"ParamÃ¨tres P.S.U."))
+        self.label_unite_prevision = wx.StaticText(self, -1, _(u"UnitÃ© prÃ©vision :"))
         self.ctrl_unite_prevision = CTRL_Unite(self, self.IDactivite)
         self.ctrl_unite_prevision.SetMinSize((350, -1))
-        self.label_unite_presence = wx.StaticText(self, -1, _(u"Unité présence :"))
+        self.label_unite_presence = wx.StaticText(self, -1, _(u"UnitÃ© prÃ©sence :"))
         self.ctrl_unite_presence = CTRL_Unite(self, self.IDactivite)
         self.label_tarif_forfait = wx.StaticText(self, -1, _(u"Tarif forfait :"))
         self.ctrl_tarif_forfait = CTRL_Tarif(self, IDactivite=self.IDactivite)
@@ -165,16 +165,16 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
         
-        # Init contrôles
+        # Init contrÃ´les
         self.Importation()
 
     def __set_properties(self):
-        self.radio_activation_oui.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour activer le mode P.S.U. pour cette activité")))
-        self.radio_activation_non.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour désactiver le mode P.S.U. pour cette activité")))
-        self.ctrl_unite_prevision.SetToolTip(wx.ToolTip(_(u"Sélectionnez l'unité de consommation qui doit être utilisée comme unité de prévision")))
-        self.ctrl_unite_presence.SetToolTip(wx.ToolTip(_(u"Sélectionnez l'unité de consommation qui doit être utilisée comme unité de présence")))
-        self.ctrl_tarif_forfait.SetToolTip(wx.ToolTip(_(u"Sélectionnez le tarif qui doit être utilisé comme forfait-crédit pour les mensualités")))
-        self.ctrl_etiquette_rtt.SetToolTip(wx.ToolTip(_(u"Sélectionnez l'étiquette qui représente les absences RTT")))
+        self.radio_activation_oui.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour activer le mode P.S.U. pour cette activitÃ©")))
+        self.radio_activation_non.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour dÃ©sactiver le mode P.S.U. pour cette activitÃ©")))
+        self.ctrl_unite_prevision.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez l'unitÃ© de consommation qui doit Ãªtre utilisÃ©e comme unitÃ© de prÃ©vision")))
+        self.ctrl_unite_presence.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez l'unitÃ© de consommation qui doit Ãªtre utilisÃ©e comme unitÃ© de prÃ©sence")))
+        self.ctrl_tarif_forfait.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez le tarif qui doit Ãªtre utilisÃ© comme forfait-crÃ©dit pour les mensualitÃ©s")))
+        self.ctrl_etiquette_rtt.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez l'Ã©tiquette qui reprÃ©sente les absences RTT")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
@@ -193,7 +193,7 @@ class Dialog(wx.Dialog):
         
         grid_sizer_base.Add(box_activation, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
                 
-        # Paramètres
+        # ParamÃ¨tres
         box_parametres = wx.StaticBoxSizer(self.box_parametres_staticbox, wx.VERTICAL)
         grid_sizer_parametres = wx.FlexGridSizer(rows=4, cols=2, vgap=10, hgap=10)
 
@@ -244,7 +244,7 @@ class Dialog(wx.Dialog):
             self.ctrl_etiquette_rtt.SetID(self.clsParametres.GetValeur("psu_etiquette_rtt", None))
 
     def OnBoutonOk(self, event):
-        # Récupération des données
+        # RÃ©cupÃ©ration des donnÃ©es
         psu_activation = int(self.radio_activation_oui.GetValue())
         psu_unite_prevision = self.ctrl_unite_prevision.GetID()
         psu_unite_presence = self.ctrl_unite_presence.GetID()
@@ -253,17 +253,17 @@ class Dialog(wx.Dialog):
 
         if psu_activation == 1 :
             if psu_unite_prevision == None :
-                dlg = wx.MessageDialog(self.parent, _(u"Vous avez activé le mode P.S.U. mais sans sélectionner d'unité de prévision !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self.parent, _(u"Vous avez activÃ© le mode P.S.U. mais sans sÃ©lectionner d'unitÃ© de prÃ©vision !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
             if psu_unite_presence == None :
-                dlg = wx.MessageDialog(self.parent, _(u"Vous avez activé le mode P.S.U. mais sans sélectionner d'unité de présence !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self.parent, _(u"Vous avez activÃ© le mode P.S.U. mais sans sÃ©lectionner d'unitÃ© de prÃ©sence !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
             if psu_tarif_forfait == None :
-                dlg = wx.MessageDialog(self.parent, _(u"Vous avez activé le mode P.S.U. mais sans sélectionner de tarif forfait-crédit !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self.parent, _(u"Vous avez activÃ© le mode P.S.U. mais sans sÃ©lectionner de tarif forfait-crÃ©dit !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False

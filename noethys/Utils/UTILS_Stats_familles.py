@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -27,7 +27,7 @@ DICT_COMPARATIF_NOMBRE = {"dictParametres" : {}, "dictResultats" : {} }
 def GetComparatifNombre(DB, dictParametres) :
     dictResultats = {}
     
-    # Vérifie si les données n'existent pas déjà
+    # VÃ©rifie si les donnÃ©es n'existent pas dÃ©jÃ 
     global DICT_COMPARATIF_NOMBRE
     if DICT_COMPARATIF_NOMBRE["dictParametres"] == dictParametres :
         return DICT_COMPARATIF_NOMBRE["listeResultats"]
@@ -35,11 +35,11 @@ def GetComparatifNombre(DB, dictParametres) :
     if dictParametres["mode"] == "inscrits" :
         return dictResultats
     
-    # Recherche des paramètres
+    # Recherche des paramÃ¨tres
     date_debut, date_fin = MODELES.GetDatesPeriode(dictParametres)
     conditionsActivites = MODELES.GetConditionActivites(dictParametres)
     
-    # Recherche des périodes de comparaison
+    # Recherche des pÃ©riodes de comparaison
     req = """SELECT MIN(date), MAX(date) 
     FROM consommations 
     WHERE consommations.etat IN ('reservation', 'present')
@@ -86,12 +86,12 @@ def GetComparatifNombre(DB, dictParametres) :
 DICT_CAISSES = {"dictParametres" : {}, "dictResultats" : {} }
 
 def GetDictCaisses(DB, dictParametres):
-    # Vérifie si les données n'existent pas déjà
+    # VÃ©rifie si les donnÃ©es n'existent pas dÃ©jÃ 
     global DICT_CAISSES
     if DICT_CAISSES["dictParametres"] == dictParametres :
         return DICT_CAISSES["dictResultats"]
 
-    # Recherche des paramètres
+    # Recherche des paramÃ¨tres
     date_debut, date_fin = MODELES.GetDatesPeriode(dictParametres)
     conditionsActivites = MODELES.GetConditionActivites(dictParametres)
     
@@ -136,7 +136,7 @@ def GetDictCaisses(DB, dictParametres):
             dictResultats[IDcaisse] = {"nom" : nom, "nbreFamilles" : 0}
         dictResultats[IDcaisse]["nbreFamilles"] += 1
 
-    # Mémorisation des résultats
+    # MÃ©morisation des rÃ©sultats
     DICT_CAISSES["dictParametres"] = dictParametres
     DICT_CAISSES["dictResultats"] = dictResultats
     return dictResultats
@@ -145,16 +145,16 @@ def GetDictCaisses(DB, dictParametres):
 DICT_MEMBRES = {"dictParametres" : {}, "dictResultats" : {} }
 
 def GetDictMembres(DB, dictParametres):
-    # Vérifie si les données n'existent pas déjà
+    # VÃ©rifie si les donnÃ©es n'existent pas dÃ©jÃ 
     global DICT_MEMBRES
     if DICT_MEMBRES["dictParametres"] == dictParametres :
         return DICT_MEMBRES["dictResultats"]
 
-    # Recherche des paramètres
+    # Recherche des paramÃ¨tres
     date_debut, date_fin = MODELES.GetDatesPeriode(dictParametres)
     conditionsActivites = MODELES.GetConditionActivites(dictParametres)
     
-    # Recherche du nombre d'individus présents
+    # Recherche du nombre d'individus prÃ©sents
     if dictParametres["mode"] == "presents" :
         req = """SELECT IDfamille, consommations.IDindividu
         FROM consommations 
@@ -189,7 +189,7 @@ def GetDictMembres(DB, dictParametres):
             dictResultats[nbreMembres] = 0
         dictResultats[nbreMembres] += 1
 
-    # Mémorisation des résultats
+    # MÃ©morisation des rÃ©sultats
     DICT_MEMBRES["dictParametres"] = dictParametres
     DICT_MEMBRES["dictResultats"] = dictResultats
     return dictResultats
@@ -200,12 +200,12 @@ def GetDictMembres(DB, dictParametres):
 DICT_QUOTIENTS = {"dictParametres" : {}, "dictResultats" : {} }
 
 def GetDictQuotients(DB, dictParametres):
-    # Vérifie si les données n'existent pas déjà
+    # VÃ©rifie si les donnÃ©es n'existent pas dÃ©jÃ 
     global DICT_QUOTIENTS
     if DICT_QUOTIENTS["dictParametres"] == dictParametres :
         return DICT_QUOTIENTS["dictResultats"]
 
-    # Recherche des paramètres
+    # Recherche des paramÃ¨tres
     conditionsActivites = MODELES.GetConditionActivites(dictParametres)
     
     if True : #dictParametres["mode"] == "presents" :
@@ -255,7 +255,7 @@ def GetDictQuotients(DB, dictParametres):
         if (tranche in dictTranchesTarifs) == False :
             dictTranchesTarifs[tranche] = 0
     
-    # Création des tranches de 100
+    # CrÃ©ation des tranches de 100
     dictTranchesDefaut = {"pasqf" : 0, "autre" : 0}
     for x in range(0, 3000, 100) :
         tranche = (x+1, x+100)
@@ -263,7 +263,7 @@ def GetDictQuotients(DB, dictParametres):
         dictTranchesDefaut[tranche] = 0    
     dictTranchesDefaut[(3001, 99999)] = 0
     
-    # Répartition des QF par tranche
+    # RÃ©partition des QF par tranche
     for IDfamille, quotient in dictQuotients.items() :
         for dictTranches in (dictTranchesDefaut, dictTranchesTarifs) :
             if quotient == None :
@@ -277,7 +277,7 @@ def GetDictQuotients(DB, dictParametres):
                 if found == False :
                     dictTranches["autre"] += 1
 
-    # Mémorisation des résultats
+    # MÃ©morisation des rÃ©sultats
     DICT_QUOTIENTS["dictParametres"] = dictParametres
     DICT_QUOTIENTS["dictResultats"] = {"dictTranchesTarifs" : dictTranchesTarifs, "dictTranchesDefaut" : dictTranchesDefaut}
     return DICT_QUOTIENTS["dictResultats"]
@@ -301,7 +301,7 @@ def TrierQF(listeTranches=[]):
 
 class Texte_nombre_familles(MODELES.Texte):
     def __init__(self):
-        """ Recherche du nombre de familles dont les individus sont présents """
+        """ Recherche du nombre de familles dont les individus sont prÃ©sents """
         MODELES.Texte.__init__(self)
         self.nom = _(u"Nombre de familles")
         self.code = "texte_nombre_familles"
@@ -311,7 +311,7 @@ class Texte_nombre_familles(MODELES.Texte):
         date_debut, date_fin = MODELES.GetDatesPeriode(dictParametres)
         conditionsActivites = MODELES.GetConditionActivites(dictParametres)
         
-        # Recherche du nombre d'individus présents
+        # Recherche du nombre d'individus prÃ©sents
         if dictParametres["mode"] == "presents" :
             req = """SELECT COUNT(IDfamille)
             FROM consommations 
@@ -333,7 +333,7 @@ class Texte_nombre_familles(MODELES.Texte):
         listeDonnees = DB.ResultatReq()
         
         if dictParametres["mode"] == "presents" :
-            mot = _(u"présent")
+            mot = _(u"prÃ©sent")
         else:
             mot = _(u"inscrit")
             
@@ -346,10 +346,10 @@ class Texte_nombre_familles(MODELES.Texte):
 
 
 class Tableau_nombre_familles(MODELES.Tableau):
-    """ Répartition du nombre de familles par activité """
+    """ RÃ©partition du nombre de familles par activitÃ© """
     def __init__(self):
         MODELES.Tableau.__init__(self)
-        self.nom = _(u"Répartition du nombre de familles par activité")
+        self.nom = _(u"RÃ©partition du nombre de familles par activitÃ©")
         self.code = "tableau_nombre_familles"
     def MAJ(self, DB=None, dictParametres={}):
         self.dictParametres = dictParametres
@@ -357,11 +357,11 @@ class Tableau_nombre_familles(MODELES.Tableau):
         self.lignes = []
         self.totaux = []
         
-        # Recherche des paramètres
+        # Recherche des paramÃ¨tres
         date_debut, date_fin = MODELES.GetDatesPeriode(dictParametres)
         conditionsActivites = MODELES.GetConditionActivites(dictParametres)
 
-        # Recherche du nombre d'individus présents
+        # Recherche du nombre d'individus prÃ©sents
         if dictParametres["mode"] == "presents" :
             req = """SELECT IDactivite, COUNT(IDfamille)
             FROM consommations 
@@ -390,9 +390,9 @@ class Tableau_nombre_familles(MODELES.Tableau):
                 dictActiTemp[IDactivite] = 0
             dictActiTemp[IDactivite] += 1
         
-        # Création du tableau
+        # CrÃ©ation du tableau
         self.largeur = "400"
-        self.colonnes = [ (_(u"Activité"), "250"), (_(u"Nombre de familles"), "150") ]
+        self.colonnes = [ (_(u"ActivitÃ©"), "250"), (_(u"Nombre de familles"), "150") ]
         self.lignes = []
         for IDactivite, listeFamilles in dictActiTemp.items() :
             nomActivite = dictParametres["dictActivites"][IDactivite]
@@ -408,7 +408,7 @@ class Graphe_nombre_familles(MODELES.Graphe):
         self.taille = (470, 360)
     def MAJ(self, figure=None, DB=None, dictParametres={}):
         self.dictParametres = dictParametres
-        # Création du graph
+        # CrÃ©ation du graph
         ax = figure.add_subplot(111)
         
         dictResultats = GetComparatifNombre(DB, dictParametres)
@@ -419,7 +419,7 @@ class Graphe_nombre_familles(MODELES.Graphe):
         listeValeurs = dictResultats["valeurs"]
         indexPeriodeReference = dictResultats["indexPeriodeReference"]
         
-        # Création du graph
+        # CrÃ©ation du graph
         ind = arange(len(listeLabels)) + self.decalage_x
         width = 0.5
         for x in range(len(listeLabels)) :
@@ -457,10 +457,10 @@ class Graphe_nombre_familles(MODELES.Graphe):
 
 
 class Tableau_repartition_caisses(MODELES.Tableau):
-    """ Répartition des familles par caisse """
+    """ RÃ©partition des familles par caisse """
     def __init__(self):
         MODELES.Tableau.__init__(self)
-        self.nom = _(u"Répartition des familles par caisse")
+        self.nom = _(u"RÃ©partition des familles par caisse")
         self.code = "tableau_repartition_caisses"
     def MAJ(self, DB=None, dictParametres={}):
         self.dictParametres = dictParametres
@@ -470,7 +470,7 @@ class Tableau_repartition_caisses(MODELES.Tableau):
         
         dictCaisses = GetDictCaisses(DB, dictParametres)
         
-        # Création du tableau
+        # CrÃ©ation du tableau
         self.largeur = "400"
         self.colonnes = [ (_(u"Caisse"), "250"), (_(u"Nombre de familles"), "150") ]
         self.lignes = []
@@ -491,12 +491,12 @@ class Tableau_repartition_caisses(MODELES.Tableau):
 class Graphe_repartition_caisses(MODELES.Graphe):
     def __init__(self):
         MODELES.Graphe.__init__(self)
-        self.nom = _(u"Répartition par caisse")
+        self.nom = _(u"RÃ©partition par caisse")
         self.code = "graphe_repartition_caisses"
         self.taille = (450, 280)
     def MAJ(self, figure=None, DB=None, dictParametres={}):
         self.dictParametres = dictParametres
-        # Création du graph
+        # CrÃ©ation du graph
         ax = figure.add_subplot(111)
         
         dictCaisses = GetDictCaisses(DB, dictParametres)
@@ -527,7 +527,7 @@ class Graphe_repartition_caisses(MODELES.Graphe):
             index += 1
         
         cam = ax.pie(listeValeurs, labels=listeLabels, colors=listeCouleurs, autopct='%1.1f%%', shadow=False)
-        title = ax.set_title(_(u"Répartition par caisse"), weight="bold", horizontalalignment = 'center')#, position=(0.5, 0.97))
+        title = ax.set_title(_(u"RÃ©partition par caisse"), weight="bold", horizontalalignment = 'center')#, position=(0.5, 0.97))
         matplotlib.pyplot.setp(title, rotation=0, fontsize=9)
         ax.set_aspect(1)
         labels, labelsPourcent = cam[1], cam[2]
@@ -540,10 +540,10 @@ class Graphe_repartition_caisses(MODELES.Graphe):
 
 
 class Tableau_nombre_membres(MODELES.Tableau):
-    """ Répartition du nombre de membres présents ou inscrits sur l'activité """
+    """ RÃ©partition du nombre de membres prÃ©sents ou inscrits sur l'activitÃ© """
     def __init__(self):
         MODELES.Tableau.__init__(self)
-        self.nom = _(u"Nombre de membres présents")
+        self.nom = _(u"Nombre de membres prÃ©sents")
         self.code = "tableau_nombre_membres"
     def MAJ(self, DB=None, dictParametres={}):
         self.dictParametres = dictParametres
@@ -551,17 +551,17 @@ class Tableau_nombre_membres(MODELES.Tableau):
         self.lignes = []
         self.totaux = []
         
-        # Recherche des paramètres
+        # Recherche des paramÃ¨tres
         date_debut, date_fin = MODELES.GetDatesPeriode(dictParametres)
         conditionsActivites = MODELES.GetConditionActivites(dictParametres)
         dictResultats = GetDictMembres(DB, dictParametres) 
         
         if dictParametres["mode"] == "presents" :
-            self.nom = _(u"Nombre de membres présents")
+            self.nom = _(u"Nombre de membres prÃ©sents")
         else:
             self.nom = _(u"Nombre de membres inscrits")
 
-        # Création du tableau
+        # CrÃ©ation du tableau
         self.largeur = "400"
         self.colonnes = [ (_(u"Nombre de membres"), "250"), (_(u"Nombre de familles"), "150") ]
         self.lignes = []
@@ -575,21 +575,21 @@ class Tableau_nombre_membres(MODELES.Tableau):
 class Graphe_nombre_membres(MODELES.Graphe):
     def __init__(self):
         MODELES.Graphe.__init__(self)
-        self.nom = _(u"Nombre de membres présents")
+        self.nom = _(u"Nombre de membres prÃ©sents")
         self.code = "graphe_nombre_membres"
         self.taille = (450, 280)
     def MAJ(self, figure=None, DB=None, dictParametres={}):
         self.dictParametres = dictParametres
-        # Création du graph
+        # CrÃ©ation du graph
         ax = figure.add_subplot(111)
         
-        # Recherche des paramètres
+        # Recherche des paramÃ¨tres
         date_debut, date_fin = MODELES.GetDatesPeriode(dictParametres)
         conditionsActivites = MODELES.GetConditionActivites(dictParametres)
         dictResultats = GetDictMembres(DB, dictParametres) 
         
         if dictParametres["mode"] == "presents" :
-            self.nom = _(u"Nombre de membres présents")
+            self.nom = _(u"Nombre de membres prÃ©sents")
         else:
             self.nom = _(u"Nombre de membres inscrits")
         
@@ -644,7 +644,7 @@ class Tableau_qf_tarifs(MODELES.Tableau):
         
         dictTranches = GetDictQuotients(DB, dictParametres)["dictTranchesTarifs"]
         
-        # Création du tableau
+        # CrÃ©ation du tableau
         self.largeur = "400"
         self.colonnes = [ (_(u"Tranche QF"), "250"), (_(u"Nombre de familles"), "150") ]
         self.lignes = []
@@ -655,7 +655,7 @@ class Tableau_qf_tarifs(MODELES.Tableau):
         # listeTranches.sort()
         listeTranches = TrierQF(listeTranches)
         
-        # Création du tableau des valeurs
+        # CrÃ©ation du tableau des valeurs
         for tranche in listeTranches :
             if tranche == "autre" : 
                 label = _(u"Autre")
@@ -677,7 +677,7 @@ class Graphe_qf_tarifs(MODELES.Graphe):
         self.taille = (450, 280)
     def MAJ(self, figure=None, DB=None, dictParametres={}):
         self.dictParametres = dictParametres
-        # Création du graph
+        # CrÃ©ation du graph
         ax = figure.add_subplot(111)
         
         dictTranches = GetDictQuotients(DB, dictParametres)["dictTranchesTarifs"]
@@ -695,7 +695,7 @@ class Graphe_qf_tarifs(MODELES.Graphe):
         for tranche in listeTranches :
             nbreTotal += dictTranches[tranche]
         
-        # Création du tableau des valeurs
+        # CrÃ©ation du tableau des valeurs
         index = 1
         if nbreTotal > 0 :
             for tranche in listeTranches :
@@ -709,7 +709,7 @@ class Graphe_qf_tarifs(MODELES.Graphe):
                 else :
                     label = u"%d - %d" % tranche
                 if label != None :
-                    # Mémorisation des valeurs
+                    # MÃ©morisation des valeurs
                     listeValeurs.append(valeur)
                     listeLabels.append(label)
                     # Couleur
@@ -743,7 +743,7 @@ class Tableau_qf_defaut(MODELES.Tableau):
         
         dictTranches = GetDictQuotients(DB, dictParametres)["dictTranchesDefaut"]
         
-        # Création du tableau
+        # CrÃ©ation du tableau
         self.largeur = "400"
         self.colonnes = [ (_(u"Tranche QF"), "250"), (_(u"Nombre de familles"), "150") ]
         self.lignes = []
@@ -753,7 +753,7 @@ class Tableau_qf_defaut(MODELES.Tableau):
         # listeTranches.sort()
         listeTranches = TrierQF(listeTranches)
         
-        # Création du tableau des valeurs
+        # CrÃ©ation du tableau des valeurs
         for tranche in listeTranches :
             if tranche == "autre" : 
                 label = _(u"Autre")
@@ -775,7 +775,7 @@ class Graphe_qf_defaut2(MODELES.Graphe):
         self.taille = (450, 280)
     def MAJ(self, figure=None, DB=None, dictParametres={}):
         self.dictParametres = dictParametres
-        # Création du graph
+        # CrÃ©ation du graph
         ax = figure.add_subplot(111)
         
         dictTranches = GetDictQuotients(DB, dictParametres)["dictTranchesDefaut"]
@@ -793,7 +793,7 @@ class Graphe_qf_defaut2(MODELES.Graphe):
         for tranche in listeTranches :
             nbreTotal += dictTranches[tranche]
         
-        # Création du tableau des valeurs
+        # CrÃ©ation du tableau des valeurs
         index = 1
         for tranche in listeTranches :
             valeur = dictTranches[tranche]
@@ -806,7 +806,7 @@ class Graphe_qf_defaut2(MODELES.Graphe):
             else :
                 label = u"%d - %d" % tranche
             if label != None and valeur != 0 :
-                # Mémorisation des valeurs
+                # MÃ©morisation des valeurs
                 listeValeurs.append(valeur)
                 listeLabels.append(label)
                 # Couleur
@@ -834,7 +834,7 @@ class Graphe_qf_defaut(MODELES.Graphe):
         self.taille = (450, 280)
     def MAJ(self, figure=None, DB=None, dictParametres={}):
         self.dictParametres = dictParametres
-        # Création du graph
+        # CrÃ©ation du graph
         ax = figure.add_subplot(111)
         
         dictTranches = GetDictQuotients(DB, dictParametres)["dictTranchesDefaut"]
@@ -847,7 +847,7 @@ class Graphe_qf_defaut(MODELES.Graphe):
         # listeTranches.sort()
         listeTranches = TrierQF(listeTranches)
         
-        # Création du tableau des valeurs
+        # CrÃ©ation du tableau des valeurs
         index = 1
         for tranche in listeTranches :
             valeur = dictTranches[tranche]
@@ -859,12 +859,12 @@ class Graphe_qf_defaut(MODELES.Graphe):
                 label = u"%d - %d" % tranche
             if label != None and valeur != 0 :
                 #if index % 2 == 0 : label = ""
-                # Mémorisation des valeurs
+                # MÃ©morisation des valeurs
                 listeValeurs.append(valeur)
                 listeLabels.append(label)
                 index += 1
                         
-        # Création du graph
+        # CrÃ©ation du graph
         ind = arange(len(listeLabels)) + self.decalage_x
         width = 0.5
         barres = ax.bar(ind, listeValeurs, width, color=MODELES.ConvertitCouleur2(MODELES.COULEUR_VERT_POMME))

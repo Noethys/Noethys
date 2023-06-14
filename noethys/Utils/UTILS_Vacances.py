@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-21 Ivan LUCAS
@@ -28,7 +28,7 @@ class Calendrier():
             self.data = {}
 
     def GetVacances(self):
-        """ Récupère les périodes de vacances """
+        """ RÃ©cupÃ¨re les pÃ©riodes de vacances """
         liste_items = []
         for item in self.data:
             if item["fields"]["zones"] == "Zone %s" % self.zone.upper() and "end_date" in item["fields"] and u"Enseignants" not in item["fields"].get("population", ""):
@@ -39,18 +39,18 @@ class Calendrier():
                 date_fin = UTILS_Dates.DateEngEnDateDD(item["fields"]["end_date"]) - datetime.timedelta(days=1)
                 annee = date_debut.year
 
-                if u"Hiver" in description: nom = u"Février"
-                elif u"Printemps" in description: nom = u"Pâques"
-                elif u"Été" in description: nom = u"Eté"
+                if u"Hiver" in description: nom = u"FÃ©vrier"
+                elif u"Printemps" in description: nom = u"PÃ¢ques"
+                elif u"Ã‰tÃ©" in description: nom = u"EtÃ©"
                 elif u"Toussaint" in description: nom = u"Toussaint"
-                elif u"Noël" in description: nom = u"Noël"
+                elif u"NoÃ«l" in description: nom = u"NoÃ«l"
                 else: nom = None
 
                 periode = {"annee": annee, "nom": nom, "date_debut": date_debut, "date_fin": date_fin}
                 if nom and periode not in liste_items:
                     liste_items.append(periode)
 
-        # Tri par date de début
+        # Tri par date de dÃ©but
         if six.PY2:
             liste_items.sort(lambda x, y: cmp(x["date_debut"], y["date_debut"]))
         else:

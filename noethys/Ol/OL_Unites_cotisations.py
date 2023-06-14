@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activitÈs
+# Application :    Noethys, gestion multi-activit√©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -18,7 +18,7 @@ import datetime
 import GestionDB
 
 from Utils import UTILS_Config
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"§")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"‚Ç¨")
 
 from Dlg import DLG_Saisie_unite_cotisation
 
@@ -33,9 +33,9 @@ def DateEngFr(textDate):
     return text
 
 def DateComplete(dateDD):
-    """ Transforme une date DD en date complËte : Ex : lundi 15 janvier 2008 """
+    """ Transforme une date DD en date compl√®te : Ex : lundi 15 janvier 2008 """
     listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
-    listeMois = (_(u"janvier"), _(u"fÈvrier"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"ao˚t"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"dÈcembre"))
+    listeMois = (_(u"janvier"), _(u"f√©vrier"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"ao√ªt"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"d√©cembre"))
     dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
     return dateComplete
 
@@ -55,7 +55,7 @@ class Track(object):
         self.label_prestation = donnees["label_prestation"]
         self.duree = donnees["duree"]
 
-        # PÈriode
+        # P√©riode
         if self.date_debut != None and self.date_fin != None :
 
             date_jour = datetime.date.today()
@@ -70,7 +70,7 @@ class Track(object):
 
             self.validite = ("periode", self.date_debut, self.date_fin)
 
-        # DurÈe
+        # Dur√©e
         if self.duree != None :
             posM = self.duree.find("m")
             posA = self.duree.find("a")
@@ -85,7 +85,7 @@ class Track(object):
     
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # RÈcupÈration des paramËtres perso
+        # R√©cup√©ration des param√®tres perso
         self.IDtype_cotisation = kwds.pop("IDtype_cotisation", None)
         self.selectionID = None
         self.selectionTrack = None
@@ -108,7 +108,7 @@ class ListView(FastObjectListView):
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
-        """ RÈcupÈration des donnÈes """
+        """ R√©cup√©ration des donn√©es """
         listeID = None
         listeListeView = []
         index = 0
@@ -141,7 +141,7 @@ class ListView(FastObjectListView):
         self.evenRowsBackColor = wx.Colour(255, 255, 255)
         self.useExpansionColumn = True
         
-        # PrÈparation de la listeImages
+        # Pr√©paration de la listeImages
         imgDefaut = self.AddNamedImages("defaut", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Ok.png"), wx.BITMAP_TYPE_PNG))
         
         def GetImageDefaut(track):
@@ -150,7 +150,7 @@ class ListView(FastObjectListView):
 
         def FormateDate(dateDD):
             if dateDD == None : return ""
-            if dateDD == datetime.date(2999, 1, 1) : return _(u"IllimitÈe")
+            if dateDD == datetime.date(2999, 1, 1) : return _(u"Illimit√©e")
             date = str(dateDD)
             text = str(date[8:10]) + "/" + str(date[5:7]) + "/" + str(date[:4])
             return text
@@ -168,18 +168,18 @@ class ListView(FastObjectListView):
                 return _(u"Du %s au %s") % (UTILS_Dates.DateDDEnFr(validite[1]), UTILS_Dates.DateDDEnFr(validite[2]))
 
             if validite[0] == "duree" :
-                return _(u"%d jours / %d mois / %s annÈes") % (validite[3], validite[2], validite[1])
+                return _(u"%d jours / %d mois / %s ann√©es") % (validite[3], validite[2], validite[1])
 
         liste_Colonnes = [
             ColumnDefn(u"", "left", 22, "IDunite_cotisation", typeDonnee="entier", imageGetter=GetImageDefaut),
             ColumnDefn(_(u"Nom"), 'left', 120, "nom", typeDonnee="texte"),
-            ColumnDefn(_(u"ValiditÈ"), 'left', 175, "validite", typeDonnee="texte", stringConverter=FormateValidite),
+            ColumnDefn(_(u"Validit√©"), 'left', 175, "validite", typeDonnee="texte", stringConverter=FormateValidite),
             ColumnDefn(_(u"Montant"), 'right', 70, "montant", typeDonnee="montant", stringConverter=FormateMontant),
             ]
         
         self.rowFormatter = rowFormatter
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(_(u"Aucune unitÈ de cotisation"))
+        self.SetEmptyListMsg(_(u"Aucune unit√© de cotisation"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
         self.SetSortColumn(self.columns[2])
         self.SetObjects(self.donnees)
@@ -199,7 +199,7 @@ class ListView(FastObjectListView):
             noSelection = False
             ID = self.Selection()[0].IDunite_cotisation
                 
-        # CrÈation du menu contextuel
+        # Cr√©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Modifier
@@ -229,8 +229,8 @@ class ListView(FastObjectListView):
                 
         menuPop.AppendSeparator()
         
-        # Item Par dÈfaut
-        item = wx.MenuItem(menuPop, 60, _(u"DÈfinir comme unitÈ par dÈfaut"))
+        # Item Par d√©faut
+        item = wx.MenuItem(menuPop, 60, _(u"D√©finir comme unit√© par d√©faut"))
         if noSelection == False :
             if self.Selection()[0].defaut == 1 :
                 bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Ok.png"), wx.BITMAP_TYPE_PNG)
@@ -242,7 +242,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"AperÁu avant impression"))
+        item = wx.MenuItem(menuPop, 40, _(u"Aper√ßu avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -260,12 +260,12 @@ class ListView(FastObjectListView):
 
     def Apercu(self, event):
         from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des unitÈs de cotisations"), format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des unit√©s de cotisations"), format="A", orientation=wx.PORTRAIT)
         prt.Preview()
 
     def Imprimer(self, event):
         from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des unitÈs de cotisations"), format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des unit√©s de cotisations"), format="A", orientation=wx.PORTRAIT)
         prt.Print()
 
     def Ajouter(self, event):
@@ -281,7 +281,7 @@ class ListView(FastObjectListView):
 
     def Modifier(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucune unitÈ de cotisation ‡ modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucune unit√© de cotisation √† modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -296,7 +296,7 @@ class ListView(FastObjectListView):
 
     def Supprimer(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucune unitÈ de cotisation ‡ supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucune unit√© de cotisation √† supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -304,7 +304,7 @@ class ListView(FastObjectListView):
         index = self.Selection()[0].index
         dictDonnees = self.listeDonnees[index]
         
-        # VÈrifie que l'unitÈ n'est pas dÈj‡ attribuÈe ‡ une cotisation
+        # V√©rifie que l'unit√© n'est pas d√©j√† attribu√©e √† une cotisation
         if IDunite_cotisation:
             DB = GestionDB.DB()
             req = """SELECT COUNT(IDcotisation)
@@ -315,16 +315,16 @@ class ListView(FastObjectListView):
             nbreCotisations = int(DB.ResultatReq()[0][0])
             DB.Close()
             if nbreCotisations > 0 :
-                dlg = wx.MessageDialog(self, _(u"Cette unitÈ de cotisation a dÈj‡ ÈtÈ attribuÈe ‡ %d cotisations(s).\n\nVous ne pouvez donc pas la supprimer !") % nbreCotisations, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Cette unit√© de cotisation a d√©j√† √©t√© attribu√©e √† %d cotisations(s).\n\nVous ne pouvez donc pas la supprimer !") % nbreCotisations, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return
         
         # Confirmation de suppression
-        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer cette unitÈ de cotisation ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer cette unit√© de cotisation ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         if dlg.ShowModal() == wx.ID_YES :
             dictDonnees["etat"] = "SUPPR"
-            # Met le dÈfaut sur un autre item
+            # Met le d√©faut sur un autre item
             if dictDonnees["defaut"] == 1 :
                 indexTmp = 0
                 attribue = False
@@ -339,7 +339,7 @@ class ListView(FastObjectListView):
 
     def SetDefaut(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucune unitÈ de cotisation dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucune unit√© de cotisation dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return

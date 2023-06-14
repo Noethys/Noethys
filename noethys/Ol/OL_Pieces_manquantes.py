@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -33,7 +33,7 @@ class Track(object):
     
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # Récupération des paramètres perso
+        # RÃ©cupÃ©ration des paramÃ¨tres perso
         self.selectionID = None
         self.selectionTrack = None
         self.criteres = ""
@@ -56,7 +56,7 @@ class ListView(FastObjectListView):
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
-        """ Récupération des données """
+        """ RÃ©cupÃ©ration des donnÃ©es """
         if self.dateReference == None : return []
         dictDonnees = UTILS_Pieces_manquantes.GetListePiecesManquantes(self.dateReference, self.listeActivites, self.presents, concernes=self.concernes)
 
@@ -80,12 +80,12 @@ class ListView(FastObjectListView):
         liste_Colonnes = [
             ColumnDefn(_(u"ID"), "left", 0, "IDfamille", typeDonnee="entier"),
             ColumnDefn(_(u"Famille"), 'left', 200, "nomTitulaires", typeDonnee="texte"),
-            ColumnDefn(_(u"Pièces manquantes"), "left", 500, "pieces", typeDonnee="texte"),
+            ColumnDefn(_(u"PiÃ¨ces manquantes"), "left", 500, "pieces", typeDonnee="texte"),
             ]
         
         self.SetColumns(liste_Colonnes)
         self.CreateCheckStateColumn(0)
-        self.SetEmptyListMsg(_(u"Aucune pièce manquante"))
+        self.SetEmptyListMsg(_(u"Aucune piÃ¨ce manquante"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
         self.SetSortColumn(self.columns[2])
         self.SetObjects(self.donnees)
@@ -104,10 +104,10 @@ class ListView(FastObjectListView):
 
     def OnContextMenu(self, event):
         """Ouverture du menu contextuel """
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
-        # Génération automatique des fonctions standards
+        # GÃ©nÃ©ration automatique des fonctions standards
         self.GenerationContextMenu(menuPop, dictParametres=self.GetParametresImpression())
 
         self.PopupMenu(menuPop)
@@ -115,7 +115,7 @@ class ListView(FastObjectListView):
 
     def GetParametresImpression(self):
         dictParametres = {
-            "titre" : _(u"Liste des pièces manquantes"),
+            "titre" : _(u"Liste des piÃ¨ces manquantes"),
             "intro" : self.labelParametres,
             "total" : _(u"> %s familles") % len(self.GetFilteredObjects()),
             "orientation" : wx.PORTRAIT,
@@ -137,7 +137,7 @@ class BarreRecherche(wx.SearchCtrl):
         self.parent = parent
         self.rechercheEnCours = False
         
-        self.SetDescriptiveText(_(u"Rechercher une pièce manquante..."))
+        self.SetDescriptiveText(_(u"Rechercher une piÃ¨ce manquante..."))
         self.ShowSearchButton(True)
         
         self.listView = self.parent.ctrl_listview

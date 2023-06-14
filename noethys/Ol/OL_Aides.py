@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activitÈs
+# Application :    Noethys, gestion multi-activit√©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -27,16 +27,16 @@ from Utils import UTILS_Utilisateurs
 DICT_INDIVIDUS = {}
 
 from Utils import UTILS_Config
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"§")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"‚Ç¨")
 
 def DateEngFr(textDate):
     text = str(textDate[8:10]) + "/" + str(textDate[5:7]) + "/" + str(textDate[:4])
     return text
 
 def DateComplete(dateDD):
-    """ Transforme une date DD en date complËte : Ex : lundi 15 janvier 2008 """
+    """ Transforme une date DD en date compl√®te : Ex : lundi 15 janvier 2008 """
     listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
-    listeMois = (_(u"janvier"), _(u"fÈvrier"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"ao˚t"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"dÈcembre"))
+    listeMois = (_(u"janvier"), _(u"f√©vrier"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"ao√ªt"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"d√©cembre"))
     dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
     return dateComplete
 
@@ -82,7 +82,7 @@ class Track(object):
         else:
             self.valide = False
         
-        # Noms des bÈnÈficiaires
+        # Noms des b√©n√©ficiaires
         self.texteBeneficiaires = u""
         if self.IDaide in DICT_INDIVIDUS :
             for IDindividu, nom, prenom in DICT_INDIVIDUS[self.IDaide] :
@@ -93,7 +93,7 @@ class Track(object):
     
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # RÈcupÈration des paramËtres perso
+        # R√©cup√©ration des param√®tres perso
         self.IDfamille = kwds.pop("IDfamille", None)
         self.selectionID = None
         self.selectionTrack = None
@@ -110,7 +110,7 @@ class ListView(FastObjectListView):
         
     def OnItemActivated(self,event):
         if self.GetParent().GetName() == "DLG_Choix_modele_aide" :
-            # SÈlection d'un modËle
+            # S√©lection d'un mod√®le
             self.GetParent().OnBoutonOk(None)
         else:
             # Modification 
@@ -120,7 +120,7 @@ class ListView(FastObjectListView):
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
-        """ RÈcupÈration des donnÈes """
+        """ R√©cup√©ration des donn√©es """
         global DICT_INDIVIDUS
         
         listeID = None
@@ -131,7 +131,7 @@ class ListView(FastObjectListView):
 ##            criteresAides = "WHERE aides.IDfamille IS NOT NULL"
             criteresAides = "WHERE aides.IDfamille=%d" % self.IDfamille
         
-        # RÈcupÈration des aides
+        # R√©cup√©ration des aides
         db = GestionDB.DB()
         req = """SELECT 
         aides.IDaide, aides.IDfamille, 
@@ -156,7 +156,7 @@ class ListView(FastObjectListView):
             if (IDaide in dictDonnees) == False :
                 dictDonnees[IDaide] = dictTemp
         
-        # RÈcupÈration des dÈductions dÈj‡ effectuÈes
+        # R√©cup√©ration des d√©ductions d√©j√† effectu√©es
         req = """SELECT IDdeduction, date, montant, deductions.IDaide
         FROM deductions
         LEFT JOIN aides ON aides.IDaide = deductions.IDaide
@@ -170,7 +170,7 @@ class ListView(FastObjectListView):
                 if date not in dictDonnees[IDaide]["listeDates"] :
                     dictDonnees[IDaide]["listeDates"].append(date)
 
-        # RÈcupÈration des noms des bÈnÈficiaires
+        # R√©cup√©ration des noms des b√©n√©ficiaires
         req = """SELECT 
         aides_beneficiaires.IDaide_beneficiaire, aides_beneficiaires.IDaide, aides_beneficiaires.IDindividu,
         individus.nom, individus.prenom
@@ -233,7 +233,7 @@ class ListView(FastObjectListView):
                 ColumnDefn(u"Du", 'left', 75, "date_debut", typeDonnee="date", stringConverter=FormateDateCourt),
                 ColumnDefn(_(u"Au"), 'left', 75, "date_fin", typeDonnee="date", stringConverter=FormateDateCourt),
                 ColumnDefn(_(u"Nom"), 'left', 160, "nom", typeDonnee="texte"),
-                ColumnDefn(_(u"ActivitÈ"), 'left', 60, "nom_activite", typeDonnee="texte"),
+                ColumnDefn(_(u"Activit√©"), 'left', 60, "nom_activite", typeDonnee="texte"),
                 ColumnDefn(_(u"Caisse"), 'left', 140, "nom_caisse", typeDonnee="texte"), 
                 ]
         else:
@@ -243,16 +243,16 @@ class ListView(FastObjectListView):
                 ColumnDefn(u"Du", 'left', 75, "date_debut", typeDonnee="date", stringConverter=FormateDateCourt),
                 ColumnDefn(_(u"Au"), 'left', 75, "date_fin", typeDonnee="date", stringConverter=FormateDateCourt),
                 ColumnDefn(_(u"Nom"), 'left', 130, "nom", typeDonnee="texte"),
-                ColumnDefn(_(u"ActivitÈ"), 'left', 60, "nom_activite", typeDonnee="texte"),
+                ColumnDefn(_(u"Activit√©"), 'left', 60, "nom_activite", typeDonnee="texte"),
                 ColumnDefn(_(u"Caisse"), 'left', 80, "nom_caisse", typeDonnee="texte"), 
-                ColumnDefn(_(u"BÈnÈficiaires"), 'left', 130, "texteBeneficiaires", typeDonnee="texte"),
-                ColumnDefn(_(u"Total des dÈductions"), 'left', 140, "texte_montant_max", typeDonnee="texte"),
+                ColumnDefn(_(u"B√©n√©ficiaires"), 'left', 130, "texteBeneficiaires", typeDonnee="texte"),
+                ColumnDefn(_(u"Total des d√©ductions"), 'left', 140, "texte_montant_max", typeDonnee="texte"),
                 ColumnDefn(_(u"Nbre de dates"), 'left', 130, "texte_dates_max", typeDonnee="texte"),
                 ]
         
         self.rowFormatter = rowFormatter
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(_(u"Aucune aide journaliËre"))
+        self.SetEmptyListMsg(_(u"Aucune aide journali√®re"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
         self.SetSortColumn(self.columns[1])
         self.SetObjects(self.donnees)
@@ -266,7 +266,7 @@ class ListView(FastObjectListView):
             self.selectionTrack = None
         self.InitModel()
         self.InitObjectListView()
-        # SÈlection d'un item
+        # S√©lection d'un item
         if self.selectionTrack != None :
             self.SelectObject(self.selectionTrack, deselectOthers=True, ensureVisible=True)
         self.selectionID = None
@@ -285,7 +285,7 @@ class ListView(FastObjectListView):
             noSelection = False
             ID = self.Selection()[0].IDaide
                 
-        # CrÈation du menu contextuel
+        # Cr√©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Ajouter
@@ -316,7 +316,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"AperÁu avant impression"))
+        item = wx.MenuItem(menuPop, 40, _(u"Aper√ßu avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -350,21 +350,21 @@ class ListView(FastObjectListView):
 
     def Apercu(self, event):
         from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des aides journaliËres"), format="A", orientation=wx.LANDSCAPE)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des aides journali√®res"), format="A", orientation=wx.LANDSCAPE)
         prt.Preview()
 
     def Imprimer(self, event):
         from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des aides journaliËres"), format="A", orientation=wx.LANDSCAPE)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des aides journali√®res"), format="A", orientation=wx.LANDSCAPE)
         prt.Print()
 
     def ExportTexte(self, event):
         from Utils import UTILS_Export
-        UTILS_Export.ExportTexte(self, titre=_(u"Liste des aides journaliËres"))
+        UTILS_Export.ExportTexte(self, titre=_(u"Liste des aides journali√®res"))
         
     def ExportExcel(self, event):
         from Utils import UTILS_Export
-        UTILS_Export.ExportExcel(self, titre=_(u"Liste des aides journaliËres"))
+        UTILS_Export.ExportExcel(self, titre=_(u"Liste des aides journali√®res"))
 
     def Ajouter(self, event):
         if self.IDfamille == None and UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_modeles_aides", "creer") == False : return
@@ -380,7 +380,7 @@ class ListView(FastObjectListView):
         if self.IDfamille== None and UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_modeles_aides", "modifier") == False : return
         if self.IDfamille != None and UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_aides", "modifier") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucune aide ‡ modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucune aide √† modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -395,13 +395,13 @@ class ListView(FastObjectListView):
         if self.IDfamille== None and UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_modeles_aides", "supprimer") == False : return
         if self.IDfamille != None and UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_aides", "supprimer") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucune aide ‡ supprimer dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucune aide √† supprimer dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         IDaide = self.Selection()[0].IDaide
         
-        # VÈrifie que cette aide n'a pas dÈj‡ ÈtÈ utilisÈe pour une prestation
+        # V√©rifie que cette aide n'a pas d√©j√† √©t√© utilis√©e pour une prestation
         DB = GestionDB.DB()
         req = """SELECT IDdeduction, IDaide
         FROM deductions
@@ -411,7 +411,7 @@ class ListView(FastObjectListView):
         listeDeductions = DB.ResultatReq()
         DB.Close() 
         if len(listeDeductions) > 0 :
-            dlg = wx.MessageDialog(self, _(u"Cette aide a dÈj‡ ÈtÈ attribuÈe ‡ %s dÈductions. Il est donc impossible de la supprimer !") % len(listeDeductions), _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Cette aide a d√©j√† √©t√© attribu√©e √† %s d√©ductions. Il est donc impossible de la supprimer !") % len(listeDeductions), _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -444,7 +444,7 @@ class BarreRecherche(wx.SearchCtrl):
         self.parent = parent
         self.rechercheEnCours = False
         
-        self.SetDescriptiveText(_(u"Rechercher un modËle..."))
+        self.SetDescriptiveText(_(u"Rechercher un mod√®le..."))
         self.ShowSearchButton(True)
         
         self.listView = self.parent.ctrl_listview

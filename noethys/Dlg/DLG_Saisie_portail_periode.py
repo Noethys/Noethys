@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-16 Ivan LUCAS
@@ -41,11 +41,11 @@ class CTRL_Choix_modele(wx.Choice):
         #else:
         #    self.Enable(True)
         self.SetItems(listeItems)
-        # Re-sélection après MAJ
+        # Re-sÃ©lection aprÃ¨s MAJ
         if selectionActuelle != None :
             self.SetID(selectionActuelle)
         else:
-            # Sélection par défaut
+            # SÃ©lection par dÃ©faut
             self.SetID(self.defaut)
 
     def GetListeDonnees(self):
@@ -91,15 +91,15 @@ class Dialog(wx.Dialog):
                 
         # Bandeau
         if self.IDperiode == None :
-            titre = _(u"Saisie d'une nouvelle période de réservations")
+            titre = _(u"Saisie d'une nouvelle pÃ©riode de rÃ©servations")
         else :
-            titre = _(u"Modification d'une période de réservations")
+            titre = _(u"Modification d'une pÃ©riode de rÃ©servations")
         self.SetTitle(titre)
-        intro = _(u"Définissez ici une période en renseignant le nom de la période, la période correspondante dans le calendrier des ouvertures et une éventuelle période daffichage sur le portail.")
+        intro = _(u"DÃ©finissez ici une pÃ©riode en renseignant le nom de la pÃ©riode, la pÃ©riode correspondante dans le calendrier des ouvertures et une Ã©ventuelle pÃ©riode daffichage sur le portail.")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Emails_exp.png")
         
         # Nom
-        self.box_nom_staticbox = wx.StaticBox(self, -1, _(u"Nom de la période"))
+        self.box_nom_staticbox = wx.StaticBox(self, -1, _(u"Nom de la pÃ©riode"))
         self.ctrl_nom = wx.TextCtrl(self, -1, "")
 
         # Introduction
@@ -107,8 +107,8 @@ class Dialog(wx.Dialog):
         self.ctrl_intro = wx.TextCtrl(self, -1, "", style=wx.TE_MULTILINE)
         self.ctrl_intro.SetMinSize((10, 50))
 
-        # Période
-        self.box_periode_staticbox = wx.StaticBox(self, -1, _(u"Période de réservations"))
+        # PÃ©riode
+        self.box_periode_staticbox = wx.StaticBox(self, -1, _(u"PÃ©riode de rÃ©servations"))
         self.label_date_debut = wx.StaticText(self, -1, u"Du")
         self.ctrl_date_debut = CTRL_Saisie_date.Date2(self)
         self.label_date_fin = wx.StaticText(self, -1, _(u"au"))
@@ -117,7 +117,7 @@ class Dialog(wx.Dialog):
         # Affichage
         self.box_affichage_staticbox = wx.StaticBox(self, -1, _(u"Affichage sur le portail"))
         self.radio_oui = wx.RadioButton(self, -1, _(u"Toujours afficher"), style=wx.RB_GROUP)
-        self.radio_dates = wx.RadioButton(self, -1, _(u"Afficher uniquement sur la période suivante :"))
+        self.radio_dates = wx.RadioButton(self, -1, _(u"Afficher uniquement sur la pÃ©riode suivante :"))
         self.label_affichage_date_debut = wx.StaticText(self, -1, _(u"Du"))
         self.ctrl_affichage_date_debut = CTRL_Saisie_date.Date2(self)
         self.ctrl_affichage_heure_debut = CTRL_Saisie_heure.Heure(self)
@@ -126,16 +126,16 @@ class Dialog(wx.Dialog):
         self.ctrl_affichage_heure_fin = CTRL_Saisie_heure.Heure(self)
         self.radio_non = wx.RadioButton(self, -1, _(u"Ne pas afficher"))
 
-        # Modèle d'Email de réponse associé
-        self.box_modele_staticbox = wx.StaticBox(self, -1, _(u"Modèle d'Email de réponse"))
-        self.radio_modele_defaut = wx.RadioButton(self, -1, _(u"Utiliser le modèle par défaut"), style=wx.RB_GROUP)
-        self.radio_modele_choix = wx.RadioButton(self, -1, _(u"Utiliser le modèle suivant :"))
+        # ModÃ¨le d'Email de rÃ©ponse associÃ©
+        self.box_modele_staticbox = wx.StaticBox(self, -1, _(u"ModÃ¨le d'Email de rÃ©ponse"))
+        self.radio_modele_defaut = wx.RadioButton(self, -1, _(u"Utiliser le modÃ¨le par dÃ©faut"), style=wx.RB_GROUP)
+        self.radio_modele_choix = wx.RadioButton(self, -1, _(u"Utiliser le modÃ¨le suivant :"))
         self.ctrl_modele_email = CTRL_Choix_modele(self)
         self.bouton_gestion_modeles = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Mecanisme.png"), wx.BITMAP_TYPE_ANY))
 
-        # Préfacturation
-        self.box_prefacturation_staticbox = wx.StaticBox(self, -1, _(u"Préfacturation"))
-        self.ctrl_prefacturation = wx.CheckBox(self, -1, _(u"Activer la préfacturation pour cette période"))
+        # PrÃ©facturation
+        self.box_prefacturation_staticbox = wx.StaticBox(self, -1, _(u"PrÃ©facturation"))
+        self.ctrl_prefacturation = wx.CheckBox(self, -1, _(u"Activer la prÃ©facturation pour cette pÃ©riode"))
 
         # Boutons
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
@@ -156,23 +156,23 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
         
-        # Init contrôles
+        # Init contrÃ´les
         self.Importation()
         self.OnRadioAffichage(None)
         self.OnRadioModele(None)
 
 
     def __set_properties(self):
-        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez ici un nom pour cette période (Ex : 'Juillet 2016', 'Année 2016', etc...)")))
-        self.ctrl_intro.SetToolTip(wx.ToolTip(_(u"Saisissez ici un texte d'introduction qui apparaîtra au-dessus du planning des réservations [Optionnel]")))
-        self.radio_oui.SetToolTip(wx.ToolTip(_(u"Sélectionnez cette option pour afficher cette période sur le portail")))
-        self.radio_dates.SetToolTip(wx.ToolTip(_(u"Sélectionnez cette option pour afficher cette période sur le portail uniquement entre les dates souhaitées")))
-        self.radio_non.SetToolTip(wx.ToolTip(_(u"Sélectionnez cette option pour ne pas afficher cette période sur le portail")))
-        self.radio_modele_defaut.SetToolTip(wx.ToolTip(_(u"Sélectionnez cette option pour utiliser le modèle d'Email par défaut pour l'envoi des réponses aux demandes")))
-        self.radio_modele_choix.SetToolTip(wx.ToolTip(_(u"Sélectionnez cette option pour utiliser un modèle d'Email spécifique pour les réponses aux demandes")))
-        self.ctrl_modele_email.SetToolTip(wx.ToolTip(_(u"Sélectionnez le modèle d'Email à associer à la période")))
-        self.bouton_gestion_modeles.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à la gestion des modèles d'Emails")))
-        self.ctrl_prefacturation.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour que le solde à régler pour cette période apparaisse sur le portail")))
+        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez ici un nom pour cette pÃ©riode (Ex : 'Juillet 2016', 'AnnÃ©e 2016', etc...)")))
+        self.ctrl_intro.SetToolTip(wx.ToolTip(_(u"Saisissez ici un texte d'introduction qui apparaÃ®tra au-dessus du planning des rÃ©servations [Optionnel]")))
+        self.radio_oui.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez cette option pour afficher cette pÃ©riode sur le portail")))
+        self.radio_dates.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez cette option pour afficher cette pÃ©riode sur le portail uniquement entre les dates souhaitÃ©es")))
+        self.radio_non.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez cette option pour ne pas afficher cette pÃ©riode sur le portail")))
+        self.radio_modele_defaut.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez cette option pour utiliser le modÃ¨le d'Email par dÃ©faut pour l'envoi des rÃ©ponses aux demandes")))
+        self.radio_modele_choix.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez cette option pour utiliser un modÃ¨le d'Email spÃ©cifique pour les rÃ©ponses aux demandes")))
+        self.ctrl_modele_email.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez le modÃ¨le d'Email Ã  associer Ã  la pÃ©riode")))
+        self.bouton_gestion_modeles.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accÃ©der Ã  la gestion des modÃ¨les d'Emails")))
+        self.ctrl_prefacturation.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour que le solde Ã  rÃ©gler pour cette pÃ©riode apparaisse sur le portail")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
@@ -193,7 +193,7 @@ class Dialog(wx.Dialog):
         box_intro.Add(self.ctrl_intro, 0, wx.ALL | wx.EXPAND, 10)
         grid_sizer_contenu.Add(box_intro, 1, wx.EXPAND, 0)
 
-        # Période
+        # PÃ©riode
         box_periode = wx.StaticBoxSizer(self.box_periode_staticbox, wx.VERTICAL)
 
         grid_sizer_periode = wx.FlexGridSizer(rows=1, cols=5, vgap=10, hgap=10)
@@ -228,7 +228,7 @@ class Dialog(wx.Dialog):
         box_affichage.Add(grid_sizer_affichage, 1, wx.ALL | wx.EXPAND, 10)
         grid_sizer_contenu.Add(box_affichage, 1,wx.EXPAND, 0)
 
-        # Modèle d'Email
+        # ModÃ¨le d'Email
         box_modele = wx.StaticBoxSizer(self.box_modele_staticbox, wx.VERTICAL)
 
         grid_sizer_modele = wx.FlexGridSizer(rows=3, cols=1, vgap=5, hgap=5)
@@ -247,7 +247,7 @@ class Dialog(wx.Dialog):
         box_modele.Add(grid_sizer_modele, 1, wx.ALL | wx.EXPAND, 10)
         grid_sizer_contenu.Add(box_modele, 1,wx.EXPAND, 0)
 
-        # Préfacturation
+        # PrÃ©facturation
         box_prefacturation = wx.StaticBoxSizer(self.box_prefacturation_staticbox, wx.VERTICAL)
         box_prefacturation.Add(self.ctrl_prefacturation, 0, wx.ALL, 10)
         grid_sizer_contenu.Add(box_prefacturation, 1, wx.EXPAND, 0)
@@ -301,7 +301,7 @@ class Dialog(wx.Dialog):
         self.EndModal(wx.ID_CANCEL)
 
     def Importation(self):
-        """ Importation des données """
+        """ Importation des donnÃ©es """
         if self.IDperiode == None :
             return
 
@@ -344,10 +344,10 @@ class Dialog(wx.Dialog):
 
 
     def OnBoutonOk(self, event):
-        # Récupération des données
+        # RÃ©cupÃ©ration des donnÃ©es
         nom = self.ctrl_nom.GetValue()
         if nom == "" :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un nom pour cette période !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un nom pour cette pÃ©riode !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_nom.SetFocus()
@@ -355,7 +355,7 @@ class Dialog(wx.Dialog):
 
         date_debut = self.ctrl_date_debut.GetDate()
         if date_debut == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de début pour cette période !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de dÃ©but pour cette pÃ©riode !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_debut.SetFocus()
@@ -363,14 +363,14 @@ class Dialog(wx.Dialog):
 
         date_fin = self.ctrl_date_fin.GetDate()
         if date_fin == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de fin pour cette période !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de fin pour cette pÃ©riode !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_fin.SetFocus()
             return
 
         if date_debut > date_fin :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de fin supérieure à la date de début !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de fin supÃ©rieure Ã  la date de dÃ©but !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_fin.SetFocus()
@@ -384,7 +384,7 @@ class Dialog(wx.Dialog):
 
             affichage_date_debut = self.ctrl_affichage_date_debut.GetDate()
             if affichage_date_debut == None :
-                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de début pour l'affichage !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de dÃ©but pour l'affichage !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_affichage_date_debut.SetFocus()
@@ -392,7 +392,7 @@ class Dialog(wx.Dialog):
 
             affichage_heure_debut = self.ctrl_affichage_heure_debut.GetHeure()
             if affichage_heure_debut == None or self.ctrl_affichage_heure_debut.Validation() == False :
-                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une heure de début valide pour l'affichage !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une heure de dÃ©but valide pour l'affichage !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_affichage_heure_debut.SetFocus()
@@ -415,7 +415,7 @@ class Dialog(wx.Dialog):
                 return
 
             if affichage_date_debut > affichage_date_fin :
-                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de fin supérieure à la date de début pour l'affichage !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de fin supÃ©rieure Ã  la date de dÃ©but pour l'affichage !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_affichage_date_fin.SetFocus()
@@ -432,7 +432,7 @@ class Dialog(wx.Dialog):
         if self.radio_modele_choix.GetValue() == True :
             IDmodele = self.ctrl_modele_email.GetID()
             if IDmodele == None :
-                dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun modèle d'Email dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucun modÃ¨le d'Email dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return

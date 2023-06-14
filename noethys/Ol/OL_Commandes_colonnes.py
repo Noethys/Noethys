@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-18 Ivan LUCAS
@@ -36,7 +36,7 @@ class Track(object):
         if self.categorie in DLG_Saisie_commandes_colonne.DICT_LABELS_CATEGORIES:
             self.categorie_texte = DLG_Saisie_commandes_colonne.DICT_LABELS_CATEGORIES[self.categorie]
         else :
-            self.categorie_texte = _(u"Catégorie inconnue")
+            self.categorie_texte = _(u"CatÃ©gorie inconnue")
 
     
 class ListView(FastObjectListView):
@@ -64,7 +64,7 @@ class ListView(FastObjectListView):
         self.MAJ()
 
     def GetTracks(self):
-        """ Récupération des données """
+        """ RÃ©cupÃ©ration des donnÃ©es """
         listeListeView = []
         index = 0
         for item in self.listeDonnees :
@@ -98,7 +98,7 @@ class ListView(FastObjectListView):
     def MAJ(self, index=None):
         self.InitModel()
         self.InitObjectListView()
-        # Sélection d'un item
+        # SÃ©lection d'un item
         if index != None :
             self.SelectObject(self.GetObjectAt(index), deselectOthers=True, ensureVisible=True)
         self._ResizeSpaceFillingColumns()
@@ -113,7 +113,7 @@ class ListView(FastObjectListView):
         else:
             noSelection = False
 
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Ajouter
@@ -144,15 +144,15 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
         
         # Item Deplacer vers le haut
-        item = wx.MenuItem(menuPop, 40, _(u"Déplacer vers le haut"))
+        item = wx.MenuItem(menuPop, 40, _(u"DÃ©placer vers le haut"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Fleche_haut.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Monter, id=40)
         if noSelection == True : item.Enable(False)
         
-        # Item Déplacer vers le bas
-        item = wx.MenuItem(menuPop, 50, _(u"Déplacer vers le bas"))
+        # Item DÃ©placer vers le bas
+        item = wx.MenuItem(menuPop, 50, _(u"DÃ©placer vers le bas"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Fleche_bas.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -162,7 +162,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
+        item = wx.MenuItem(menuPop, 40, _(u"AperÃ§u avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -189,7 +189,7 @@ class ListView(FastObjectListView):
         prt.Print()
 
     def GetIDprovisoire(self):
-        """ Création d'un ID négatif provisoire """
+        """ CrÃ©ation d'un ID nÃ©gatif provisoire """
         self.newID -= 1
         return int(self.newID)
 
@@ -204,13 +204,13 @@ class ListView(FastObjectListView):
         
     def Modifier(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune colonne à modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune colonne Ã  modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         track = self.Selection()[0]
         if track.nbre_valeurs > 0 :
-            dlg = wx.MessageDialog(self, _(u"Attention, cette colonne est déjà associée à %d valeurs dans une ou plusieurs commandes !\n\nSouhaitez-vous tout de même la modifier ?") % track.nbre_valeurs, _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(self, _(u"Attention, cette colonne est dÃ©jÃ  associÃ©e Ã  %d valeurs dans une ou plusieurs commandes !\n\nSouhaitez-vous tout de mÃªme la modifier ?") % track.nbre_valeurs, _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
             reponse = dlg.ShowModal()
             dlg.Destroy()
             if reponse != wx.ID_YES :
@@ -226,14 +226,14 @@ class ListView(FastObjectListView):
 
     def Supprimer(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune colonne à supprimer dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune colonne Ã  supprimer dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         track = self.Selection()[0]
 
         if track.nbre_valeurs > 0 :
-            dlg = wx.MessageDialog(self, _(u"Attention, cette colonne est déjà associée à %d valeurs dans une ou plusieurs commandes ! Si vous supprimez cette colonne, les valeurs associées seront également supprimées.\n\nSouhaitez-vous tout de même la supprimer ?") % track.nbre_valeurs, _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(self, _(u"Attention, cette colonne est dÃ©jÃ  associÃ©e Ã  %d valeurs dans une ou plusieurs commandes ! Si vous supprimez cette colonne, les valeurs associÃ©es seront Ã©galement supprimÃ©es.\n\nSouhaitez-vous tout de mÃªme la supprimer ?") % track.nbre_valeurs, _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
             reponse = dlg.ShowModal()
             dlg.Destroy()
             if reponse != wx.ID_YES :
@@ -247,7 +247,7 @@ class ListView(FastObjectListView):
 
     def Monter(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune colonne dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune colonne dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -260,7 +260,7 @@ class ListView(FastObjectListView):
     
     def Descendre(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune colonne dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune colonne dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return

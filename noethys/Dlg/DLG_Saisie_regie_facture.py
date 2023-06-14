@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-16 Ivan LUCAS
@@ -74,13 +74,13 @@ class Dialog(wx.Dialog):
         self.label_nom = wx.StaticText(self, wx.ID_ANY, _(u"Nom :"))
         self.ctrl_nom = wx.TextCtrl(self, wx.ID_ANY, u"")
         
-        self.label_numclitipi = wx.StaticText(self, wx.ID_ANY, _(u"Numéro Client TIPI :"))
+        self.label_numclitipi = wx.StaticText(self, wx.ID_ANY, _(u"NumÃ©ro Client TIPI :"))
         self.ctrl_numclitipi = wx.TextCtrl(self, wx.ID_ANY, u"")
 
-        self.label_emailregisseur = wx.StaticText(self, wx.ID_ANY, _(u"Mail du régisseur :"))
+        self.label_emailregisseur = wx.StaticText(self, wx.ID_ANY, _(u"Mail du rÃ©gisseur :"))
         self.ctrl_emailregisseur = CTRL_Saisie_mail.Mail(self)
 
-        self.label_compte_bancaire = wx.StaticText(self, wx.ID_ANY, _(u"Compte bancaire associé :"))
+        self.label_compte_bancaire = wx.StaticText(self, wx.ID_ANY, _(u"Compte bancaire associÃ© :"))
         self.ctrl_compte_bancaire = CTRL_compte_bancaire(self)
 
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
@@ -94,18 +94,18 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
 
-        # Init contrôles
+        # Init contrÃ´les
         if self.IDregie != None :
-            self.SetTitle(_(u"Modification d'une régie de facturation"))
+            self.SetTitle(_(u"Modification d'une rÃ©gie de facturation"))
             self.Importation() 
         else :
-            self.SetTitle(_(u"Saisie d'une régie de facturation"))
+            self.SetTitle(_(u"Saisie d'une rÃ©gie de facturation"))
 
     def __set_properties(self):
-        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez le nom de la régie")))
-        self.ctrl_numclitipi.SetToolTip(wx.ToolTip(_(u"Saisissez le numéro de client TIPI")))
-        self.ctrl_emailregisseur.SetToolTip(wx.ToolTip(_(u"Saisissez l addresse mail du régisseur")))
-        self.ctrl_compte_bancaire.SetToolTip(wx.ToolTip(_(u"Sélectionnez le compte bancaire associé a cette régie")))
+        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez le nom de la rÃ©gie")))
+        self.ctrl_numclitipi.SetToolTip(wx.ToolTip(_(u"Saisissez le numÃ©ro de client TIPI")))
+        self.ctrl_emailregisseur.SetToolTip(wx.ToolTip(_(u"Saisissez l addresse mail du rÃ©gisseur")))
+        self.ctrl_compte_bancaire.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez le compte bancaire associÃ© a cette rÃ©gie")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
@@ -153,17 +153,17 @@ class Dialog(wx.Dialog):
     def OnBoutonOk(self, event): 
         if self.Sauvegarde()  == False :
             return
-        # Fermeture de la fenêtre
+        # Fermeture de la fenÃªtre
         self.EndModal(wx.ID_OK)
 
     def Sauvegarde(self):
-        """ Sauvegarde des données """
+        """ Sauvegarde des donnÃ©es """
         nom = self.ctrl_nom.GetValue() 
         numclitipi = self.ctrl_numclitipi.GetValue()
         emailregisseur = self.ctrl_emailregisseur.GetValue()
         IDcompte_bancaire = self.ctrl_compte_bancaire.GetID()
         
-        # Validation des données saisies
+        # Validation des donnÃ©es saisies
         if nom == "" :
             dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un nom !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
@@ -172,7 +172,7 @@ class Dialog(wx.Dialog):
             return False
 
         #if numclitipi == "" :
-        #    dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un numéro de client TIPI!"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+        #    dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un numÃ©ro de client TIPI!"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
         #    dlg.ShowModal()
         #    dlg.Destroy()
         #    self.ctrl_numclitipi.SetFocus()
@@ -180,14 +180,14 @@ class Dialog(wx.Dialog):
 
         for caract in numclitipi :
             if caract not in "0123456789" :
-                dlg = wx.MessageDialog(self, _(u"Le numéro de client TIPI ne peut comporter que des chiffres !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Le numÃ©ro de client TIPI ne peut comporter que des chiffres !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_numclitipi.SetFocus()
                 return False
 
         if numclitipi != "" and emailregisseur == "":
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir l addresse mail du régisseur si vous avez saisi un numéro de client TIPI !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir l addresse mail du rÃ©gisseur si vous avez saisi un numÃ©ro de client TIPI !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_emailregisseur.SetFocus()

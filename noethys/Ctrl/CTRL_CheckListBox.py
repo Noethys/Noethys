@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-17 Ivan LUCAS
@@ -30,7 +30,7 @@ class CTRL(wx.CheckListBox):
         for dictTemp in listeDonnees :
             listeLabels.append((dictTemp["label"], dictTemp))
 
-        # Tri par ordre alphabétique si demandé
+        # Tri par ordre alphabÃ©tique si demandÃ©
         if trier == True :
             listeLabels.sort()
 
@@ -83,7 +83,7 @@ class Panel(wx.Panel):
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
         self.parent = parent
 
-        # Liste à cocher
+        # Liste Ã  cocher
         self.ctrl_liste = CTRL(self)
 
         # Boutons
@@ -106,7 +106,7 @@ class Panel(wx.Panel):
 
     def __set_properties(self):
         self.bouton_cocher_tout.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour tout cocher")))
-        self.bouton_cocher_rien.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour tout décocher")))
+        self.bouton_cocher_rien.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour tout dÃ©cocher")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
@@ -163,13 +163,13 @@ class MyFrame(wx.Frame):
         listeGroupes = DB.ResultatReq()
         DB.Close()
 
-        # Formatage des données
+        # Formatage des donnÃ©es
         listeDonnees = []
         for IDgroupe, IDactivite, nom in listeGroupes:
             dictTemp = {"ID": IDgroupe, "label": nom, "IDactivite": IDactivite}
             listeDonnees.append(dictTemp)
 
-        # Envoi des données à la liste
+        # Envoi des donnÃ©es Ã  la liste
         self.ctrl.SetDonnees(listeDonnees)
 
     def OnBoutonTest(self, event):

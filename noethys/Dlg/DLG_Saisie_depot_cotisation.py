@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -31,9 +31,9 @@ def DateEngFr(textDate):
     return text
 
 def DateComplete(dateDD):
-    """ Transforme une date DD en date complète : Ex : lundi 15 janvier 2008 """
+    """ Transforme une date DD en date complÃ¨te : Ex : lundi 15 janvier 2008 """
     listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
-    listeMois = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
+    listeMois = (_(u"janvier"), _(u"fÃ©vrier"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"aoÃ»t"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"dÃ©cembre"))
     dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
     return dateComplete
 
@@ -126,18 +126,18 @@ class Track(object):
         else:
             self.typeStr = _(u"Cotisation individuelle")
         
-        # Validité
+        # ValiditÃ©
         dateDuJour = datetime.date.today() 
         if dateDuJour >= self.date_debut and dateDuJour <= self.date_fin :
             self.valide = True
         else:
             self.valide = False
         
-        # Dépôt
+        # DÃ©pÃ´t
         if self.IDdepot_cotisation == None :
-            self.depotStr = _(u"Non déposée")
+            self.depotStr = _(u"Non dÃ©posÃ©e")
         else:
-            self.depotStr = _(u"Dépôt n°%d") % self.IDdepot_cotisation
+            self.depotStr = _(u"DÃ©pÃ´t nÂ°%d") % self.IDdepot_cotisation
         
         # Etat
         if self.IDdepot_cotisation == None or self.IDdepot_cotisation == 0 :
@@ -155,7 +155,7 @@ class Dialog(wx.Dialog):
         self.parent = parent
         self.IDdepot_cotisation = IDdepot_cotisation
 
-        # Importation des activités
+        # Importation des activitÃ©s
         DB = GestionDB.DB()
         req = """SELECT IDactivite, nom, abrege
         FROM activites
@@ -168,11 +168,11 @@ class Dialog(wx.Dialog):
             dictTemp = {"IDactivite":IDactivite, "nom":nom, "abrege":abrege}
             self.dictActivites[IDactivite] = dictTemp
 
-        # Paramètres
-        self.staticbox_parametres_staticbox = wx.StaticBox(self, -1, _(u"Paramètres"))
-        self.label_nom = wx.StaticText(self, -1, _(u"Nom du dépôt :"))
+        # ParamÃ¨tres
+        self.staticbox_parametres_staticbox = wx.StaticBox(self, -1, _(u"ParamÃ¨tres"))
+        self.label_nom = wx.StaticText(self, -1, _(u"Nom du dÃ©pÃ´t :"))
         self.ctrl_nom = wx.TextCtrl(self, -1, u"", size=(300, -1))
-        self.label_date = wx.StaticText(self, -1, _(u"Date du dépôt :"))
+        self.label_date = wx.StaticText(self, -1, _(u"Date du dÃ©pÃ´t :"))
         self.ctrl_date = CTRL_Saisie_date.Date2(self)
         self.label_verrouillage = wx.StaticText(self, -1, _(u"Verrouillage :"))
         self.ctrl_verrouillage = wx.CheckBox(self, -1, u"")
@@ -202,14 +202,14 @@ class Dialog(wx.Dialog):
         
         # Importation lors d'une modification
         if self.IDdepot_cotisation != None :
-            self.SetTitle(_(u"Modification d'un dépôt de cotisations"))
+            self.SetTitle(_(u"Modification d'un dÃ©pÃ´t de cotisations"))
             self.Importation() 
             self.OnCheckVerrouillage(None)
         else:
-            self.SetTitle(_(u"Saisie d'un dépôt de cotisations"))
+            self.SetTitle(_(u"Saisie d'un dÃ©pÃ´t de cotisations"))
             self.ctrl_date.SetDate(datetime.date.today())
         
-        # Importation des règlements
+        # Importation des rÃ¨glements
         self.tracks = self.GetTracks()
         self.ctrl_cotisations.MAJ(tracks=self.tracks, labelParametres=self.GetLabelParametres()) 
         self.MAJinfos() 
@@ -217,11 +217,11 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez ici un nom")))
-        self.ctrl_date.SetToolTip(wx.ToolTip(_(u"Saisissez la date de dépôt")))
-        self.bouton_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer la liste des cotisations du dépôt")))
-        self.ctrl_verrouillage.SetToolTip(wx.ToolTip(_(u"Cochez cette case si le dépôt doit être verrouillé. Dans ce cas, il devient impossible de modifier la liste des cotisations qui le contient !")))
+        self.ctrl_date.SetToolTip(wx.ToolTip(_(u"Saisissez la date de dÃ©pÃ´t")))
+        self.bouton_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer la liste des cotisations du dÃ©pÃ´t")))
+        self.ctrl_verrouillage.SetToolTip(wx.ToolTip(_(u"Cochez cette case si le dÃ©pÃ´t doit Ãªtre verrouillÃ©. Dans ce cas, il devient impossible de modifier la liste des cotisations qui le contient !")))
         self.ctrl_observations.SetToolTip(wx.ToolTip(_(u"[Optionnel] Saisissez des commentaires")))
-        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter ou retirer des cotisations de ce dépôt")))
+        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter ou retirer des cotisations de ce dÃ©pÃ´t")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
@@ -286,7 +286,7 @@ class Dialog(wx.Dialog):
         self.CenterOnScreen() 
 
     def GetTracks(self):
-        """ Récupération des données """
+        """ RÃ©cupÃ©ration des donnÃ©es """
         self.titulaires = UTILS_Titulaires.GetTitulaires() 
         if self.IDdepot_cotisation == None : 
             IDdepot_cotisation = 0
@@ -321,7 +321,7 @@ class Dialog(wx.Dialog):
 
 
     def Importation(self):
-        """ Importation des données """
+        """ Importation des donnÃ©es """
         DB = GestionDB.DB()
         req = """SELECT IDdepot_cotisation, date, nom, verrouillage, observations
         FROM depots_cotisations
@@ -362,11 +362,11 @@ class Dialog(wx.Dialog):
         UTILS_Aide.Aide("Gestiondesdptsdecotisations")
 
     def OnBoutonOk(self, event): 
-        # Sauvegarde des paramètres
+        # Sauvegarde des paramÃ¨tres
         etat = self.Sauvegarde_depot() 
         if etat == False :
             return
-        # Sauvegarde des règlements
+        # Sauvegarde des rÃ¨glements
         self.Sauvegarde_cotisations()
         # Fermeture
         self.EndModal(wx.ID_OK)
@@ -384,7 +384,7 @@ class Dialog(wx.Dialog):
         # Date
         date = self.ctrl_date.GetDate()
         if date == None :
-            dlg = wx.MessageDialog(self, _(u"Etes-vous sûr de ne pas vouloir saisir de date de dépôt ?"), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(self, _(u"Etes-vous sÃ»r de ne pas vouloir saisir de date de dÃ©pÃ´t ?"), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
             reponse = dlg.ShowModal()
             dlg.Destroy()
             if reponse !=  wx.ID_YES :
@@ -430,8 +430,8 @@ class Dialog(wx.Dialog):
         return self.IDdepot_cotisation
     
     def MAJinfos(self):
-        """ Créé le texte infos avec les stats du dépôt """
-        # Récupération des chiffres
+        """ CrÃ©Ã© le texte infos avec les stats du dÃ©pÃ´t """
+        # RÃ©cupÃ©ration des chiffres
         nbreTotal = 0
         for track in self.tracks :
             if track.inclus == True :
@@ -445,11 +445,11 @@ class Dialog(wx.Dialog):
         self.ctrl_infos.SetLabel(texte)
     
     def OnBoutonImprimer(self, event):               
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
         
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 20, _(u"Aperçu avant impression"))
+        item = wx.MenuItem(menuPop, 20, _(u"AperÃ§u avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -477,19 +477,19 @@ class Dialog(wx.Dialog):
         listeParametres = []
 
         nom = self.ctrl_nom.GetValue()
-        listeParametres.append(_(u"Nom du dépôt : %s") % nom)
+        listeParametres.append(_(u"Nom du dÃ©pÃ´t : %s") % nom)
         
         date = self.ctrl_date.GetDate() 
         if date == None : 
-            date = _(u"Non spécifiée")
+            date = _(u"Non spÃ©cifiÃ©e")
         else :
             date = DateEngFr(str(date))
         listeParametres.append(_(u"Date : %s") % date)
         
         if self.ctrl_verrouillage.GetValue() == True :
-            listeParametres.append(_(u"Dépôt verrouillé"))
+            listeParametres.append(_(u"DÃ©pÃ´t verrouillÃ©"))
         else :
-            listeParametres.append(_(u"Dépôt déverrouillé"))
+            listeParametres.append(_(u"DÃ©pÃ´t dÃ©verrouillÃ©"))
         
         labelParametres = " | ".join(listeParametres)
         return labelParametres

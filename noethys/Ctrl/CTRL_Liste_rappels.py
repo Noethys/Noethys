@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-13 Ivan LUCAS
@@ -55,7 +55,7 @@ class CTRL(wx.Panel):
         self.listviewAvecFooter = OL_Rappels.ListviewAvecFooter(self, kwargs={"IDcompte_payeur" : IDcompte_payeur, "codesColonnes" : codesColonnes, "checkColonne" : checkColonne, "triColonne" : triColonne}) 
         self.ctrl_rappels = self.listviewAvecFooter.GetListview()
         
-        # Ctrl des filtres de sélection
+        # Ctrl des filtres de sÃ©lection
         self.ctrl_filtres = DLG_Filtres_rappels.CTRL_Filtres(self, filtres=filtres, ctrl_rappels=self.ctrl_rappels)
         
         # Commandes de liste
@@ -71,7 +71,7 @@ class CTRL(wx.Panel):
         self.ctrl_recherche = OL_Rappels.BarreRecherche(self, listview=self.ctrl_rappels)
         self.hyper_tout = Hyperlien(self, label=_(u"Tout cocher"), infobulle=_(u"Cliquez ici pour tout cocher"), URL="tout")
         self.label_separation = wx.StaticText(self, -1, "|")
-        self.hyper_rien = Hyperlien(self, label=_(u"Tout décocher"), infobulle=_(u"Cliquez ici pour tout décocher"), URL="rien")
+        self.hyper_rien = Hyperlien(self, label=_(u"Tout dÃ©cocher"), infobulle=_(u"Cliquez ici pour tout dÃ©cocher"), URL="rien")
 
         self.__set_properties()
         self.__do_layout()
@@ -85,10 +85,10 @@ class CTRL(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonListeExportExcel, self.bouton_liste_export_excel)
         
     def __set_properties(self):
-        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher un aperçu de la lettre de rappel sélectionnée")))
-        self.bouton_email.SetToolTip(wx.ToolTip(_(u"Cliquez ici envoyer la lettre de rappel sélectionnée par Email")))
-        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la lettre de rappel sélectionnée ou les lettres de rappel cochées")))
-        self.bouton_liste_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher un aperçu avant impression de cette liste")))
+        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher un aperÃ§u de la lettre de rappel sÃ©lectionnÃ©e")))
+        self.bouton_email.SetToolTip(wx.ToolTip(_(u"Cliquez ici envoyer la lettre de rappel sÃ©lectionnÃ©e par Email")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la lettre de rappel sÃ©lectionnÃ©e ou les lettres de rappel cochÃ©es")))
+        self.bouton_liste_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher un aperÃ§u avant impression de cette liste")))
         self.bouton_liste_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer cette liste")))
         self.bouton_liste_export_texte.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter cette liste au format Texte")))
         self.bouton_liste_export_excel.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter cette liste au format Excel")))

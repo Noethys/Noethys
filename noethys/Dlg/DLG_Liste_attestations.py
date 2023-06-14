@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -25,8 +25,8 @@ class Dialog(wx.Dialog):
         self.parent = parent
         self.IDfamille = IDfamille
         
-        intro = _(u"Vous pouvez ici consulter la liste complète des attestations de présence créées dans le logiciel.")
-        titre = _(u"Liste des attestations de présence")
+        intro = _(u"Vous pouvez ici consulter la liste complÃ¨te des attestations de prÃ©sence crÃ©Ã©es dans le logiciel.")
+        titre = _(u"Liste des attestations de prÃ©sence")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Facture.png")
 
         self.listviewAvecFooter = OL_Attestations.ListviewAvecFooter(self, kwargs={"IDfamille" : self.IDfamille}) 
@@ -51,8 +51,8 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.SetTitle(_(u"Liste des attestations"))
-        self.bouton_ouvrir_fiche.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ouvrir la fiche famille de l'attestation sélectionnée dans la liste")))
-        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer l'attestation sélectionnée dans la liste")))
+        self.bouton_ouvrir_fiche.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ouvrir la fiche famille de l'attestation sÃ©lectionnÃ©e dans la liste")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer l'attestation sÃ©lectionnÃ©e dans la liste")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         self.SetMinSize((900, 700))

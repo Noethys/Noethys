@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -25,11 +25,11 @@ class Dialog_pays(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.typeSelection = typeSelection
         if self.typeSelection == "pays" :
-            intro = _(u"Vous pouvez sélectionner ici un pays en double-cliquant sur sa ligne. La barre de recherche peut vous permettre de retrouver rapidement un élément de la liste.")
-            titre = _(u"Sélection d'un pays")
+            intro = _(u"Vous pouvez sÃ©lectionner ici un pays en double-cliquant sur sa ligne. La barre de recherche peut vous permettre de retrouver rapidement un Ã©lÃ©ment de la liste.")
+            titre = _(u"SÃ©lection d'un pays")
         else:
-            intro = _(u"Vous pouvez sélectionner ici une nationalité en double-cliquant sur sa ligne. La barre de recherche peut vous permettre de retrouver rapidement un élément de la liste.")
-            titre = _(u"Sélection d'une nationalité")
+            intro = _(u"Vous pouvez sÃ©lectionner ici une nationalitÃ© en double-cliquant sur sa ligne. La barre de recherche peut vous permettre de retrouver rapidement un Ã©lÃ©ment de la liste.")
+            titre = _(u"SÃ©lection d'une nationalitÃ©")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Monde.png")
         self.ctrl_pays = OL_Pays.ListView(self, id=-1, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.ctrl_pays.MAJ()
@@ -46,9 +46,9 @@ class Dialog_pays(wx.Dialog):
 
     def __set_properties(self):
         if self.typeSelection == "pays" :
-            self.SetTitle(_(u"Sélection d'un pays"))
+            self.SetTitle(_(u"SÃ©lection d'un pays"))
         else:
-            self.SetTitle(_(u"Sélection d'une nationalité"))
+            self.SetTitle(_(u"SÃ©lection d'une nationalitÃ©"))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider et fermer")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler et fermer")))
@@ -79,7 +79,7 @@ class Dialog_pays(wx.Dialog):
     def OnBoutonOk(self, event):
         selection = self.ctrl_pays.Selection()
         if len(selection) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez saisi aucun élément dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez saisi aucun Ã©lÃ©ment dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-15 Ivan LUCAS
@@ -27,7 +27,7 @@ class Panel(wx.Panel):
         
         self.staticbox_groupes_staticbox = wx.StaticBox(self, -1, _(u"Etiquettes de consommations"))
         
-        self.ctrl_etiquettes = CTRL_Etiquettes.CTRL(self, listeActivites=[IDactivite,], nomActivite=u"Activité")
+        self.ctrl_etiquettes = CTRL_Etiquettes.CTRL(self, listeActivites=[IDactivite,], nomActivite=u"ActivitÃ©")
         self.ctrl_etiquettes.MAJ() 
         
         self.bouton_ajouter = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Ajouter.png"), wx.BITMAP_TYPE_ANY))
@@ -37,7 +37,7 @@ class Panel(wx.Panel):
         self.bouton_descendre = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Fleche_bas.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_trier = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Tri_za.png"), wx.BITMAP_TYPE_ANY))
 
-        self.label_info = wx.StaticText(self, -1, _(u"Les étiquettes sont optionnelles. Elles servent à associer à des consommations des actions, des intervenants, des salles, des états, etc..."))
+        self.label_info = wx.StaticText(self, -1, _(u"Les Ã©tiquettes sont optionnelles. Elles servent Ã  associer Ã  des consommations des actions, des intervenants, des salles, des Ã©tats, etc..."))
         self.label_info.SetFont(wx.Font(7, wx.SWISS, wx.NORMAL, wx.NORMAL, False))
         
         self.__set_properties()
@@ -51,12 +51,12 @@ class Panel(wx.Panel):
         
         
     def __set_properties(self):
-        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter une étiquette")))
-        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier l'étiquette selectionnée dans la liste")))
-        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer l'étiquette selectionnée dans la liste")))
-        self.bouton_monter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour monter l'étiquette sélectionnée dans la liste")))
-        self.bouton_descendre.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour descendre l'étiquette sélectionnée dans la liste")))
-        self.bouton_trier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour trier les étiquettes soeurs par ordre alphabétique")))
+        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter une Ã©tiquette")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier l'Ã©tiquette selectionnÃ©e dans la liste")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer l'Ã©tiquette selectionnÃ©e dans la liste")))
+        self.bouton_monter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour monter l'Ã©tiquette sÃ©lectionnÃ©e dans la liste")))
+        self.bouton_descendre.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour descendre l'Ã©tiquette sÃ©lectionnÃ©e dans la liste")))
+        self.bouton_trier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour trier les Ã©tiquettes soeurs par ordre alphabÃ©tique")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=1, vgap=10, hgap=10)

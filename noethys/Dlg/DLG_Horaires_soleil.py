@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-12 Ivan LUCAS
@@ -23,9 +23,9 @@ from Utils.UTILS_Astral import City
 import calendar
 
 def DateDDEnDateFR(dateDD):
-    """ Transforme une datetime.date en date complète FR """
+    """ Transforme une datetime.date en date complÃ¨te FR """
     listeJours = ("Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche")
-    listeMois = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
+    listeMois = (_(u"janvier"), _(u"fÃ©vrier"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"aoÃ»t"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"dÃ©cembre"))
     return listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
 
 
@@ -36,11 +36,11 @@ class Dialog(wx.Dialog):
         
         # Bandeau
         titre = _(u"Horaires du soleil")
-        intro = _(u"Cette fonctionnalité permet d'afficher les heures de lever et de coucher du soleil d'une ville sur un mois donné. Cette fonction utilise la géolocalisation GPS de la ville et un agorithme intégré de calcul de la position du soleil.")
+        intro = _(u"Cette fonctionnalitÃ© permet d'afficher les heures de lever et de coucher du soleil d'une ville sur un mois donnÃ©. Cette fonction utilise la gÃ©olocalisation GPS de la ville et un agorithme intÃ©grÃ© de calcul de la position du soleil.")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Soleil.png")
         
-        # Paramètres
+        # ParamÃ¨tres
         self.box_ville_staticbox = wx.StaticBox(self, -1, _(u"Ville"))
         self.radio_ville = wx.RadioButton(self, -1, _(u"Selon une ville :"), style=wx.RB_GROUP)
         self.label_ville = wx.StaticText(self, -1, _(u"CP :"))
@@ -53,8 +53,8 @@ class Dialog(wx.Dialog):
         
         self.box_mois_staticbox = wx.StaticBox(self, -1, _(u"Mois"))
         self.label_mois = wx.StaticText(self, -1, _(u"Mois :"))
-        self.ctrl_mois = wx.Choice(self, -1, choices=[_(u"Janvier"), _(u"Février"), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"Août"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"Décembre")])
-        self.label_annee = wx.StaticText(self, -1, _(u"Année :"))
+        self.ctrl_mois = wx.Choice(self, -1, choices=[_(u"Janvier"), _(u"FÃ©vrier"), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"AoÃ»t"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"DÃ©cembre")])
+        self.label_annee = wx.StaticText(self, -1, _(u"AnnÃ©e :"))
         self.ctrl_annee = wx.SpinCtrl(self, -1, u"", min=1970, max=2999)
         
         dateDuJour = datetime.date.today() 
@@ -62,9 +62,9 @@ class Dialog(wx.Dialog):
         self.ctrl_annee.SetValue(dateDuJour.year)
         
         # Bouton actualiser
-        self.bouton_actualiser = CTRL_Bouton_image.CTRL(self, texte=_(u"Rafraîchir la liste"), cheminImage="Images/32x32/Actualiser.png")
+        self.bouton_actualiser = CTRL_Bouton_image.CTRL(self, texte=_(u"RafraÃ®chir la liste"), cheminImage="Images/32x32/Actualiser.png")
         
-        # Résultats
+        # RÃ©sultats
         self.ctrl_resultats = wx.TextCtrl(self, -1, u"", style=wx.TE_MULTILINE)
         
         # Boutons
@@ -82,7 +82,7 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonFermer, self.bouton_fermer)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonActualiser, self.bouton_actualiser)
         
-        # Init contrôles
+        # Init contrÃ´les
         self.OnRadioVille(None)
         self.dictOrganisateur = self.GetOrganisateur() 
         if self.dictOrganisateur != None :
@@ -96,7 +96,7 @@ class Dialog(wx.Dialog):
         self.ctrl_annee.SetMinSize((80, -1))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
-        self.bouton_actualiser.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour actualiser la liste en fonction des paramètres")))
+        self.bouton_actualiser.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour actualiser la liste en fonction des paramÃ¨tres")))
         self.SetMinSize((-1, 700))
 
     def __do_layout(self):
@@ -164,7 +164,7 @@ class Dialog(wx.Dialog):
         self.EndModal(wx.ID_CANCEL)        
 
     def GetOrganisateur(self):
-        """ Récupère les infos sur l'organisateur """
+        """ RÃ©cupÃ¨re les infos sur l'organisateur """
         DB = GestionDB.DB()
         req = """SELECT cp, ville, gps
         FROM organisateur WHERE IDorganisateur=1;"""
@@ -194,14 +194,14 @@ class Dialog(wx.Dialog):
             cp = self.ctrl_ville.GetValueCP()
             ville = self.ctrl_ville.GetValueVille()
             if cp == "" or cp == None or ville == "" or ville == None :
-                dlg = wx.MessageDialog(self, _(u"Vous n'avez pas renseigné correctement la ville !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous n'avez pas renseignÃ© correctement la ville !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
             # recherche GPS
             dictGPS = UTILS_Gps.GPS(cp=cp, ville=ville, pays="France")
             if dictGPS == None : 
-                dlg = wx.MessageDialog(self, _(u"Les coordonnées GPS n'ont pas été détectées !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Les coordonnÃ©es GPS n'ont pas Ã©tÃ© dÃ©tectÃ©es !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
@@ -213,7 +213,7 @@ class Dialog(wx.Dialog):
             lat = self.ctrl_lat.GetValue()
             long = self.ctrl_long.GetValue()
             if lat == "" or lat == None or long == "" or long == None :
-                dlg = wx.MessageDialog(self, _(u"Vous n'avez pas renseigné correctement les coordonnées GPS !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous n'avez pas renseignÃ© correctement les coordonnÃ©es GPS !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
@@ -224,14 +224,14 @@ class Dialog(wx.Dialog):
         coords = self.GetGPS()
         if coords == None or coords == False :
             return
-        # Récupère GPS
+        # RÃ©cupÃ¨re GPS
         lat, long = coords
         self.AffichageResultats(lat, long)
     
     def AffichageResultats(self, lat, long):
         self.ctrl_resultats.Clear() 
         
-        # Récupère période
+        # RÃ©cupÃ¨re pÃ©riode
         mois, annee = self.GetPeriode() 
         tmp, nbreJours = calendar.monthrange(annee, mois)
         

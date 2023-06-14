@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -27,7 +27,7 @@ from Utils import UTILS_Dates
 from Utils import UTILS_Utilisateurs
 from Utils import UTILS_Gestion
 from Utils import UTILS_Config
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"â‚¬")
 
 
 from Utils import UTILS_Interface
@@ -76,7 +76,7 @@ class Track(object):
         self.titulaire_helios = donnees["titulaire_helios"]
         self.tiers_solidaire = donnees["tiers_solidaire"]
         
-        # Prélèvement
+        # PrÃ©lÃ¨vement
         self.prelevement_activation =  donnees["prelevement_activation"]
         self.prelevement_etab =  donnees["prelevement_etab"]
         self.prelevement_guichet =  donnees["prelevement_guichet"]
@@ -134,7 +134,7 @@ class ListView(FastObjectListView):
         # Binds perso
         self.Bind(wx.EVT_LIST_ITEM_ACTIVATED, self.OnActivated)
         self.Bind(wx.EVT_CONTEXT_MENU, self.OnContextMenu)
-        # Périodes de gestion
+        # PÃ©riodes de gestion
         self.gestion = UTILS_Gestion.Gestion(None)
 
     def SetIDcompte_payeur(self, IDcompte_payeur=None):
@@ -152,8 +152,8 @@ class ListView(FastObjectListView):
         IDfacture_intervalle ->  filtre = {"type" : "IDfacture_intervalle", "IDfacture_min" : 22, "IDfacture_max" : 28}
         IDfacture_liste ->         filtre = {"type" : "IDfacture_liste", "liste" : [10, 300, 20] }
         Lot de factures ->        filtre = {"type" : "lot", "IDlot" : 22}
-        Date d'émission ->      filtre = {"type" : "date_emission", "date_debut" : ___, "date_fin" : ___}
-        Date d'échéance ->      filtre = {"type" : "date_echance", "date_debut" : ___, "date_fin" : ___}
+        Date d'Ã©mission ->      filtre = {"type" : "date_emission", "date_debut" : ___, "date_fin" : ___}
+        Date d'Ã©chÃ©ance ->      filtre = {"type" : "date_echance", "date_debut" : ___, "date_fin" : ___}
         numero_intervalle ->    filtre = {"type" : "numero_intervalle", "numero_min" : 210, "numero_max" : 215}
         numero_liste ->           filtre = {"type" : "numero_liste", "liste" : [10, 300, 20] }
         """
@@ -170,7 +170,7 @@ class ListView(FastObjectListView):
         if self.IDcompte_payeur != None :
             listeConditions.append("prestations.IDcompte_payeur = %d" % self.IDcompte_payeur)
         
-        # 1ère série de filtres
+        # 1Ã¨re sÃ©rie de filtres
         if self.filtres != None :
             for filtre in self.filtres :
             
@@ -185,7 +185,7 @@ class ListView(FastObjectListView):
                     else : listeTemp = str(tuple(filtre["liste"]))
                     listeConditions.append( "factures.IDfacture IN %s" % listeTemp)
 
-                # Préfixe
+                # PrÃ©fixe
                 if filtre["type"] == "prefixe" :
                     if filtre["IDprefixe"] == None :
                         listeConditions.append( "factures.IDprefixe IS NULL")
@@ -196,11 +196,11 @@ class ListView(FastObjectListView):
                 if filtre["type"] == "lot" :
                     listeConditions.append( "factures.IDlot=%d" % filtre["IDlot"])
             
-                # Date d'émission
+                # Date d'Ã©mission
                 if filtre["type"] == "date_emission" :
                     listeConditions.append( "(factures.date_edition>='%s' AND factures.date_edition<='%s')" % (filtre["date_min"], filtre["date_max"]) )
 
-                # Date d'échéance
+                # Date d'Ã©chÃ©ance
                 if filtre["type"] == "date_echeance" :
                     listeConditions.append( "(factures.date_echeance>='%s' AND factures.date_echeance<='%s')" % (filtre["date_min"], filtre["date_max"]) )
 
@@ -220,7 +220,7 @@ class ListView(FastObjectListView):
         else :
             conditions = ""
         
-        # Récupération des totaux des prestations pour chaque facture
+        # RÃ©cupÃ©ration des totaux des prestations pour chaque facture
         req = """
         SELECT 
         prestations.IDfacture, SUM(prestations.montant)
@@ -236,7 +236,7 @@ class ListView(FastObjectListView):
             if IDfacture != None :
                 dictPrestations[IDfacture] = totalPrestations
         
-        # Récupération des factures
+        # RÃ©cupÃ©ration des factures
         req = """
         SELECT factures.IDfacture, factures.IDprefixe, factures_prefixes.prefixe, factures.numero, factures.IDcompte_payeur,
         factures.date_edition, factures.date_echeance, factures.IDutilisateur,
@@ -252,7 +252,7 @@ class ListView(FastObjectListView):
         DB.ExecuterReq(req)
         listeFactures = DB.ResultatReq()
         
-        # Récupération de la ventilation
+        # RÃ©cupÃ©ration de la ventilation
         req = """
         SELECT prestations.IDfacture, SUM(ventilation.montant)
         FROM ventilation
@@ -269,7 +269,7 @@ class ListView(FastObjectListView):
             if IDfacture != None :
                 dictVentilation[IDfacture] = montantVentilation
         
-        # Infos Prélèvement + Envoi par Email des factures
+        # Infos PrÃ©lÃ¨vement + Envoi par Email des factures
         if self.IDcompte_payeur != None :
             conditions = "WHERE comptes_payeurs.IDcompte_payeur = %d" % self.IDcompte_payeur
         else:
@@ -341,7 +341,7 @@ class ListView(FastObjectListView):
 
                 valide = True
                 
-                # 2ème série de filtres
+                # 2Ã¨me sÃ©rie de filtres
                 if self.filtres != None :
                     for filtre in self.filtres :
                 
@@ -369,7 +369,7 @@ class ListView(FastObjectListView):
                 if etat == "annulation" and self.afficherAnnulations == False :
                     valide = False
                     
-                # Mémorisation des valeurs
+                # MÃ©morisation des valeurs
                 if valide == True :                    
                     listeResultats.append(dictTemp)
             
@@ -392,7 +392,7 @@ class ListView(FastObjectListView):
 
 
     def GetTracks(self):
-        # Récupération des données
+        # RÃ©cupÃ©ration des donnÃ©es
         listeID = None
         listeDonnees = self.GetListeFactures() 
     
@@ -460,23 +460,23 @@ class ListView(FastObjectListView):
         self.oddRowsBackColor = UTILS_Interface.GetValeur("couleur_tres_claire", wx.Colour(240, 251, 237))
         self.evenRowsBackColor = "#ffffff" # Vert
 
-        # Paramètres ListView
+        # ParamÃ¨tres ListView
         self.useExpansionColumn = True
         
         dictColonnes = {
             "IDfacture" : ColumnDefn(u"", "left", 0, "IDfacture", typeDonnee="entier"),
             "date" : ColumnDefn(_(u"Date"), "centre", 80, "date_edition", typeDonnee="date", stringConverter=FormateDate),
-            "prefixe" : ColumnDefn(_(u"Préfixe"), "centre", 50, "prefixe", typeDonnee="texte"),
-            #"numero" : ColumnDefn(_(u"N°"), "centre", 65, "numero", typeDonnee="entier", stringConverter=FormateNumero),
-            "numero" : ColumnDefn(_(u"N°"), "centre", 80, "numero", typeDonnee="texte"),
+            "prefixe" : ColumnDefn(_(u"PrÃ©fixe"), "centre", 50, "prefixe", typeDonnee="texte"),
+            #"numero" : ColumnDefn(_(u"NÂ°"), "centre", 65, "numero", typeDonnee="entier", stringConverter=FormateNumero),
+            "numero" : ColumnDefn(_(u"NÂ°"), "centre", 80, "numero", typeDonnee="texte"),
             "famille" : ColumnDefn(_(u"Famille"), "left", 180, "nomsTitulaires", typeDonnee="texte"),
-            "date_debut" : ColumnDefn(_(u"Date début"), "centre", 80, "date_debut", typeDonnee="date", stringConverter=FormateDate),
+            "date_debut" : ColumnDefn(_(u"Date dÃ©but"), "centre", 80, "date_debut", typeDonnee="date", stringConverter=FormateDate),
             "date_fin" : ColumnDefn(_(u"Date fin"), "centre", 80, "date_fin", typeDonnee="date", stringConverter=FormateDate),
             "total" : ColumnDefn(_(u"Total"), "right", 65, "total", typeDonnee="montant", stringConverter=FormateMontant),
-            "regle" : ColumnDefn(_(u"Réglé"), "right", 65, "regle", typeDonnee="montant", stringConverter=FormateMontant),
+            "regle" : ColumnDefn(_(u"RÃ©glÃ©"), "right", 65, "regle", typeDonnee="montant", stringConverter=FormateMontant),
             "solde" : ColumnDefn(_(u"Solde"), "right", 65, "solde", typeDonnee="montant", stringConverter=FormateMontant),
             "solde_actuel" : ColumnDefn(_(u"Solde actuel"), "right", 90, "soldeActuel", typeDonnee="montant", stringConverter=FormateMontant, imageGetter=GetImageSoldeActuel),
-            "date_echeance" : ColumnDefn(_(u"Echéance"), "centre", 80, "date_echeance", typeDonnee="date", stringConverter=FormateDate),
+            "date_echeance" : ColumnDefn(_(u"EchÃ©ance"), "centre", 80, "date_echeance", typeDonnee="date", stringConverter=FormateDate),
             "nom_lot" : ColumnDefn(_(u"Lot"), "left", 150, "nomLot", typeDonnee="texte"),
             "prelevement" : ColumnDefn(u"P", "left", 20, "", imageGetter=GetImagePrelevement),
             "email" : ColumnDefn(u"E", "left", 20, "", imageGetter=GetImageEmail),
@@ -513,7 +513,7 @@ class ListView(FastObjectListView):
             self.selectionTrack = None
         self.InitModel()
         self.InitObjectListView()
-        # Sélection d'un item
+        # SÃ©lection d'un item
         if self.selectionTrack != None :
             self.SelectObject(self.selectionTrack, deselectOthers=True, ensureVisible=True)
         self.selectionID = None
@@ -537,11 +537,11 @@ class ListView(FastObjectListView):
         if len(self.Selection()) > 0 :
             ID = self.Selection()[0].IDfacture
         
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
-        # Item Rééditer la facture
-        item = wx.MenuItem(menuPop, 60, _(u"Aperçu PDF de la facture"))
+        # Item RÃ©Ã©diter la facture
+        item = wx.MenuItem(menuPop, 60, _(u"AperÃ§u PDF de la facture"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -557,7 +557,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
 
         # Item Modifier
-        item = wx.MenuItem(menuPop, 29, _(u"Modifier les caractéristiques"))
+        item = wx.MenuItem(menuPop, 29, _(u"Modifier les caractÃ©ristiques"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Modifier.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -574,7 +574,7 @@ class ListView(FastObjectListView):
 
         menuPop.AppendSeparator()
         
-        # Génération automatique des fonctions standards
+        # GÃ©nÃ©ration automatique des fonctions standards
         self.GenerationContextMenu(menuPop, dictParametres=self.GetParametresImpression())
 
         self.PopupMenu(menuPop)
@@ -591,13 +591,13 @@ class ListView(FastObjectListView):
 
     def Reedition(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune facture à imprimer !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune facture Ã  imprimer !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         track = self.Selection()[0]
         if track.etat == "annulation" :
-            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas visualiser une facture annulée !"), _(u"Information"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas visualiser une facture annulÃ©e !"), _(u"Information"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -609,13 +609,13 @@ class ListView(FastObjectListView):
     def EnvoyerEmail(self, event):
         """ Envoyer la facture par Email """
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune facture à envoyer par Email !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune facture Ã  envoyer par Email !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         track = self.Selection()[0]
         if track.etat == "annulation" :
-            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas envoyer par Email une facture annulée !"), _(u"Information"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas envoyer par Email une facture annulÃ©e !"), _(u"Information"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -625,7 +625,7 @@ class ListView(FastObjectListView):
         UTILS_Envoi_email.EnvoiEmailFamille(parent=self, IDfamille=track.IDfamille, nomDoc=FonctionsPerso.GenerationNomDoc("FACTURE", "pdf"), categorie="facture")
     
     def CreationPDF(self, nomDoc="", afficherDoc=True):        
-        """ Création du PDF pour Email """
+        """ CrÃ©ation du PDF pour Email """
         IDfacture = self.Selection()[0].IDfacture
         from Utils import UTILS_Facturation
         facturation = UTILS_Facturation.Facturation()
@@ -639,7 +639,7 @@ class ListView(FastObjectListView):
         total = _(u"%d factures. ") % len(self.donnees)
         if self.filtres != None :
             from Dlg.DLG_Filtres_factures import GetTexteFiltres 
-            intro = total + _(u"Filtres de sélection : %s") % GetTexteFiltres(self.filtres)
+            intro = total + _(u"Filtres de sÃ©lection : %s") % GetTexteFiltres(self.filtres)
         else :
             intro = None
         return intro, total
@@ -656,7 +656,7 @@ class ListView(FastObjectListView):
 
         # Avertissements
         if len(self.Selection()) == 0 and len(self.GetTracksCoches()) == 0:
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune facture dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune facture dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -675,7 +675,7 @@ class ListView(FastObjectListView):
         if len(self.GetTracksCoches()) > 0:
             # Suppression multiple
             listeSelections = self.GetTracksCoches()
-            dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment modifier les %d factures cochées ?") % (len(listeSelections)), _(u"Confirmation"), wx.YES_NO | wx.NO_DEFAULT | wx.CANCEL | wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment modifier les %d factures cochÃ©es ?") % (len(listeSelections)), _(u"Confirmation"), wx.YES_NO | wx.NO_DEFAULT | wx.CANCEL | wx.ICON_INFORMATION)
             reponse = dlg.ShowModal()
             dlg.Destroy()
             if reponse != wx.ID_YES:
@@ -684,7 +684,7 @@ class ListView(FastObjectListView):
         else:
             # Suppression unique
             listeSelections = self.Selection()
-            dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment modifier la facture n°%s ?") % (listeSelections[0].numero), _(u"Confirmation"), wx.YES_NO | wx.NO_DEFAULT | wx.CANCEL | wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment modifier la facture nÂ°%s ?") % (listeSelections[0].numero), _(u"Confirmation"), wx.YES_NO | wx.NO_DEFAULT | wx.CANCEL | wx.ICON_INFORMATION)
             reponse = dlg.ShowModal()
             dlg.Destroy()
             if reponse != wx.ID_YES:
@@ -693,10 +693,10 @@ class ListView(FastObjectListView):
         # Suppression de la facture
         listeIDfactures = []
         for track in listeSelections:
-            # Vérifie que la facture n'est pas dans une période de gestion verrouillée
+            # VÃ©rifie que la facture n'est pas dans une pÃ©riode de gestion verrouillÃ©e
             if self.gestion.IsPeriodeinPeriodes("factures", track.date_debut, track.date_fin) == False: return False
 
-            # Mémorisation de la facture
+            # MÃ©morisation de la facture
             listeIDfactures.append(track.IDfacture)
 
         from Utils import UTILS_Facturation
@@ -712,7 +712,7 @@ class ListView(FastObjectListView):
 
         # Avertissements
         if len(self.Selection()) == 0 and len(self.GetTracksCoches()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune facture dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune facture dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -735,7 +735,7 @@ class ListView(FastObjectListView):
         if len(self.GetTracksCoches()) > 0 :
             # Suppression multiple
             listeSelections = self.GetTracksCoches()
-            dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment %s les %d factures cochées ?") % (verbe, len(listeSelections)), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment %s les %d factures cochÃ©es ?") % (verbe, len(listeSelections)), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
             reponse = dlg.ShowModal() 
             dlg.Destroy()
             if reponse != wx.ID_YES :
@@ -744,7 +744,7 @@ class ListView(FastObjectListView):
         else :
             # Suppression unique
             listeSelections = self.Selection()        
-            dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment %s la facture n°%s ?") % (verbe, listeSelections[0].numero), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment %s la facture nÂ°%s ?") % (verbe, listeSelections[0].numero), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
             reponse = dlg.ShowModal() 
             dlg.Destroy()
             if reponse != wx.ID_YES :
@@ -753,10 +753,10 @@ class ListView(FastObjectListView):
         # Suppression de la facture
         listeIDfactures = []
         for track in listeSelections :
-            # Vérifie que la facture n'est pas dans une période de gestion verrouillée
+            # VÃ©rifie que la facture n'est pas dans une pÃ©riode de gestion verrouillÃ©e
             if self.gestion.IsPeriodeinPeriodes("factures", track.date_debut, track.date_fin) == False: return False
 
-            # Mémorisation de la facture
+            # MÃ©morisation de la facture
             listeIDfactures.append(track.IDfacture)
         
         from Utils import UTILS_Facturation
@@ -766,14 +766,14 @@ class ListView(FastObjectListView):
         self.MAJ() 
         
         # Confirmation de suppression
-##        dlg = wx.MessageDialog(self, _(u"%d facture(s) supprimée(s) avec succès.") % len(listeSelections), _(u"Suppression"), wx.OK | wx.ICON_INFORMATION)
+##        dlg = wx.MessageDialog(self, _(u"%d facture(s) supprimÃ©e(s) avec succÃ¨s.") % len(listeSelections), _(u"Suppression"), wx.OK | wx.ICON_INFORMATION)
 ##        dlg.ShowModal()
 ##        dlg.Destroy()
 
     def OuvrirFicheFamille(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_fiche", "consulter") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune fiche famille à ouvrir !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune fiche famille Ã  ouvrir !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return

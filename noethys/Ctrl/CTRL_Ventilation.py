@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -30,7 +30,7 @@ else :
 from Utils.UTILS_Decimal import FloatToDecimal as FloatToDecimal
 
 from Utils import UTILS_Config
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"â‚¬")
 
 import GestionDB
 from Ctrl import CTRL_Saisie_euros
@@ -50,9 +50,9 @@ def DateEngFr(textDate):
     return text
 
 def DateComplete(dateDD):
-    """ Transforme une date DD en date complète : Ex : lundi 15 janvier 2008 """
+    """ Transforme une date DD en date complÃ¨te : Ex : lundi 15 janvier 2008 """
     listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
-    listeMois = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
+    listeMois = (_(u"janvier"), _(u"fÃ©vrier"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"aoÃ»t"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"dÃ©cembre"))
     dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
     return dateComplete
 
@@ -60,7 +60,7 @@ def DateEngEnDateDD(dateEng):
     return datetime.date(int(dateEng[:4]), int(dateEng[5:7]), int(dateEng[8:10]))
         
 def PeriodeComplete(mois, annee):
-    listeMois = (_(u"Janvier"), _(u"Février"), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"Août"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"Décembre"))
+    listeMois = (_(u"Janvier"), _(u"FÃ©vrier"), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"AoÃ»t"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"DÃ©cembre"))
     periodeComplete = u"%s %d" % (listeMois[mois-1], annee)
     return periodeComplete
 
@@ -102,12 +102,12 @@ class Ligne_regroupement(object):
         hauteurLigne = 20
         grid.SetRowSize(numLigne, hauteurLigne)
 
-        # Attributs communes à toutes les colonnes
+        # Attributs communes Ã  toutes les colonnes
         for numColonne in range(0, 8) :
             self.grid.SetCellBackgroundColour(self.numLigne, numColonne, COULEUR_FOND_REGROUPEMENT)
             self.grid.SetReadOnly(self.numLigne, numColonne, True)
 
-        # Case à cocher
+        # Case Ã  cocher
         numColonne = 0
         self.grid.SetCellRenderer(self.numLigne, numColonne, gridlib.GridCellBoolRenderer())
 
@@ -125,7 +125,7 @@ class Ligne_regroupement(object):
         font.SetPointSize(8)
         self.grid.SetCellFont(self.numLigne, numColonne, font)
 
-        # Montant déjà ventilé
+        # Montant dÃ©jÃ  ventilÃ©
         numColonne = 6
         self.grid.SetCellRenderer(self.numLigne, numColonne, RendererCaseMontant())
         font = self.grid.GetFont() 
@@ -164,7 +164,7 @@ class Ligne_regroupement(object):
     def SetEtat(self, etat=False, majTotaux=True):
         self.grid.SetCellValue(self.numLigne, 0, str(int(etat)))
 
-        # Coche ou décoche les prestations du groupe
+        # Coche ou dÃ©coche les prestations du groupe
         for ligne in self.listeLignesPrestations :
             ligne.SetEtat(etat, majTotaux=False)
         
@@ -183,7 +183,7 @@ class Ligne_prestation(object):
         self.grid = grid
         self.type_ligne = "prestation"
 
-        # Récupération des données
+        # RÃ©cupÃ©ration des donnÃ©es
         self.IDprestation = donnees["IDprestation"]
         self.IDcompte_payeur = donnees["IDcompte_payeur"]
         self.date = donnees["date"]
@@ -202,7 +202,7 @@ class Ligne_prestation(object):
         self.nomCategorieTarif = donnees["nomCategorieTarif"]
         self.IDfacture = donnees["IDfacture"]
         if self.IDfacture == None or self.IDfacture == "" :
-            self.label_facture = _(u"Non facturé")
+            self.label_facture = _(u"Non facturÃ©")
         else:
             IDprefixe = donnees["IDprefixe"]
             prefixe = donnees["prefixe"]
@@ -212,7 +212,7 @@ class Ligne_prestation(object):
             else :
                 numeroStr = u"%06d" % num_facture
             date_facture = donnees["date_facture"]
-            self.label_facture = u"n°%s" % numeroStr
+            self.label_facture = u"nÂ°%s" % numeroStr
         self.IDfamille = donnees["IDfamille"]
         self.IDindividu = donnees["IDindividu"]
         self.nomIndividu = donnees["nomIndividu"]
@@ -238,7 +238,7 @@ class Ligne_prestation(object):
         hauteurLigne = 25
         self.grid.SetRowSize(numLigne, hauteurLigne)
         
-        # Case à cocher
+        # Case Ã  cocher
         numColonne = 0
         self.grid.SetCellRenderer(self.numLigne, numColonne, gridlib.GridCellBoolRenderer())
         self.grid.SetReadOnly(self.numLigne, numColonne, True)
@@ -268,7 +268,7 @@ class Ligne_prestation(object):
         self.grid.SetCellRenderer(self.numLigne, numColonne, RendererCaseMontant())
         self.grid.SetReadOnly(self.numLigne, numColonne, True)
         
-        # Montant déjà ventilé
+        # Montant dÃ©jÃ  ventilÃ©
         numColonne = 6
         self.grid.SetCellRenderer(self.numLigne, numColonne, RendererCaseMontant())
         self.grid.SetReadOnly(self.numLigne, numColonne, True)
@@ -279,8 +279,8 @@ class Ligne_prestation(object):
         self.grid.SetCellEditor(self.numLigne, numColonne, EditeurMontant(ligne=self))
 
     def MAJ(self, majTotaux=True):
-        """ MAJ les données et l'affichage de la ligne """
-        # MAJ des données
+        """ MAJ les donnÃ©es et l'affichage de la ligne """
+        # MAJ des donnÃ©es
         if type(self.ventilationActuelle) != decimal.Decimal :
             self.ventilationActuelle = FloatToDecimal(self.ventilationActuelle)
 
@@ -308,7 +308,7 @@ class Ligne_prestation(object):
         # Montant de la prestation
         self.grid.SetCellValue(self.numLigne, 5, six.text_type(self.montant))
 
-        # Montant déjà ventilé
+        # Montant dÃ©jÃ  ventilÃ©
         self.grid.SetCellValue(self.numLigne, 6, six.text_type(self.resteAVentiler))
         
         if self.resteAVentiler == 0.0 and self.GetEtat() == True : 
@@ -318,7 +318,7 @@ class Ligne_prestation(object):
         else: 
             self.grid.SetCellBackgroundColour(self.numLigne, 6, COULEUR_PARTIEL)
 
-        # Montant ventilé
+        # Montant ventilÃ©
         self.grid.SetCellValue(self.numLigne, 7, six.text_type(self.ventilationActuelle))
         self.grid.SetReadOnly(self.numLigne, 7, not self.GetEtat())
 
@@ -351,7 +351,7 @@ class Ligne_prestation(object):
             # Tout ventiler
             self.ventilationActuelle = montant
         else:
-            # Ventiler uniquement le montant donné
+            # Ventiler uniquement le montant donnÃ©
             self.ventilationActuelle = self.resteAVentiler
             
         self.MAJ(majTotaux) 
@@ -360,7 +360,7 @@ class Ligne_prestation(object):
         etat = not self.GetEtat() 
         montant = None
         
-        # Attribue uniquement du crédit encore disponible
+        # Attribue uniquement du crÃ©dit encore disponible
         if etat == True :
             montant = self.grid.GetCreditAventiler()
             if montant > self.resteAVentiler or self.grid.bloquer_ventilation == False :
@@ -369,7 +369,7 @@ class Ligne_prestation(object):
         # Modifie la ligne
         self.SetEtat(etat, montant)
         
-        # Décoche le groupe si aucune prestation cochée dedans
+        # DÃ©coche le groupe si aucune prestation cochÃ©e dedans
         if etat == False :
             auMoinsUneCochee = False
             for ligne in self.ligneRegroupement.listeLignesPrestations :
@@ -408,7 +408,7 @@ class RendererCaseMontant(GridCellRenderer):
         dc.SetFont(attr.GetFont())
         hAlign, vAlign = grid.GetCellAlignment(row, col)
         
-        # Alignement à droite
+        # Alignement Ã  droite
         largeur, hauteur = dc.GetTextExtent(texte)
         x = rect[0] + rect[2] - largeur - 2
         y = rect[1] + ((rect[3] - hauteur) / 2.0)
@@ -453,11 +453,11 @@ class EditeurMontant(GridCellEditor):
         # Validation du montant saisi
         if self._tc.Validation() == False :
             valeur = None
-        # Vérifie si montant saisi pas supérieur à montant à ventilé
+        # VÃ©rifie si montant saisi pas supÃ©rieur Ã  montant Ã  ventilÃ©
         if valeur != None :
             resteAVentiler = self.ligne.montant - self.ligne.ventilationPassee - FloatToDecimal(valeur)
             if resteAVentiler < 0 :
-                dlg = wx.MessageDialog(grid, _(u"Le montant saisi ne peut pas être supérieur au montant à ventiler !"), _(u"Erreur"), wx.OK | wx.ICON_ERROR)
+                dlg = wx.MessageDialog(grid, _(u"Le montant saisi ne peut pas Ãªtre supÃ©rieur au montant Ã  ventiler !"), _(u"Erreur"), wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
                 dlg.Destroy()
                 valeur = None
@@ -515,16 +515,16 @@ class CTRL_Ventilation(gridlib.Grid):
         self.GetGridWindow().Bind(wx.EVT_MOTION, self.OnMouseOver)
     
     def InitGrid(self):
-        """ Création de la grid et importation initiale des données """
+        """ CrÃ©ation de la grid et importation initiale des donnÃ©es """
         listeColonnes = [
             ( _(u""), 20),
             ( _(u"Date"), 175),
             ( _(u"Individu"), 124),
-            ( _(u"Intitulé"), 185),
-            ( _(u"N° Facture"), 75),
+            ( _(u"IntitulÃ©"), 185),
+            ( _(u"NÂ° Facture"), 75),
             ( _(u"Montant"), 65),
             ( _(u"A ventiler"), 65),
-            ( _(u"Ventilé"), 65),
+            ( _(u"VentilÃ©"), 65),
             ]
         
         # Initialisation de la grid
@@ -536,7 +536,7 @@ class CTRL_Ventilation(gridlib.Grid):
         self.DisableDragRowSize()
         self.modeDisable = False
         
-        # Création des colonnes
+        # CrÃ©ation des colonnes
         self.SetColLabelSize(22)
         numColonne = 0
         for label, largeur in listeColonnes :
@@ -544,13 +544,13 @@ class CTRL_Ventilation(gridlib.Grid):
             self.SetColSize(numColonne, largeur)
             numColonne += 1
         
-        # Importation des données
+        # Importation des donnÃ©es
         self.listeLignesPrestations = self.Importation()
         
         # MAJ de l'affichage de la grid
         self.MAJ() 
         
-        # Importation des ventilations existantes du règlement
+        # Importation des ventilations existantes du rÃ¨glement
         for ligne_prestation in self.listeLignesPrestations :
             if ligne_prestation.IDprestation in self.dictVentilation :
                 montant = self.dictVentilation[ligne_prestation.IDprestation]
@@ -563,7 +563,7 @@ class CTRL_Ventilation(gridlib.Grid):
         else:
             IDreglement = self.IDreglement
 
-        # Importation des ventilations de ce règlement
+        # Importation des ventilations de ce rÃ¨glement
         DB = GestionDB.DB()
         req = """SELECT IDventilation, IDprestation, montant
         FROM ventilation
@@ -577,7 +577,7 @@ class CTRL_Ventilation(gridlib.Grid):
             self.dictVentilation[IDprestation] = FloatToDecimal(montant)
             self.dictVentilationInitiale[IDprestation] = IDventilation
 
-        # Importation de la ventilation passée
+        # Importation de la ventilation passÃ©e
         req = """SELECT IDprestation, SUM(montant)
         FROM ventilation
         WHERE IDcompte_payeur=%d
@@ -589,7 +589,7 @@ class CTRL_Ventilation(gridlib.Grid):
         for IDprestation, montant in listeDonnees :
             dictVentilationPassee[IDprestation] = montant
 
-        # Importation des données
+        # Importation des donnÃ©es
         req = """
         SELECT prestations.IDprestation, prestations.IDcompte_payeur, date, categorie, label, prestations.montant, 
         prestations.IDactivite, activites.nom,
@@ -659,7 +659,7 @@ class CTRL_Ventilation(gridlib.Grid):
         return
         
     def MAJ(self):
-        """ Met à jour (redessine) tout le contrôle """
+        """ Met Ã  jour (redessine) tout le contrÃ´le """
         self.Freeze()
         if self.GetNumberRows() > 0 : 
             self.DeleteRows(0, self.GetNumberRows())
@@ -703,10 +703,10 @@ class CTRL_Ventilation(gridlib.Grid):
         # Tri des Keys
         listeKeys.sort()
         
-        # Création des lignes
+        # CrÃ©ation des lignes
         self.AppendRows(nbreLignes)
         
-        # Création des branches
+        # CrÃ©ation des branches
         numLigne = 0
         self.dictLignes = {}
         for key in listeKeys :
@@ -730,7 +730,7 @@ class CTRL_Ventilation(gridlib.Grid):
         self.MAJtotaux() 
         
     def MAJtotaux(self):
-        """ Mise à jour de tous les totaux regroupements + barreInfos """
+        """ Mise Ã  jour de tous les totaux regroupements + barreInfos """
         # MAJ de tous les totaux de regroupement
         for key, dictRegroupement in self.dictRegroupements.items() :
             ligne_regroupement = dictRegroupement["ligne_regroupement"]
@@ -751,7 +751,7 @@ class CTRL_Ventilation(gridlib.Grid):
     def SelectionneFacture(self, IDfacture=None):
         # Afficher par facture
         self.SetRegroupement("facture")
-        # Coche les prestations liées à la facture données
+        # Coche les prestations liÃ©es Ã  la facture donnÃ©es
         for key, dictRegroupement in self.dictRegroupements.items():
             if key == IDfacture :
                 ligne_regroupement = dictRegroupement["ligne_regroupement"]
@@ -774,7 +774,7 @@ class CTRL_Ventilation(gridlib.Grid):
         return total
     
     def Sauvegarde(self, IDreglement=None, DBtemp=None):
-        """ Sauvegarde des données """
+        """ Sauvegarde des donnÃ©es """
         if DBtemp == None :
             DB = GestionDB.DB()
         else :
@@ -839,7 +839,7 @@ class CTRL(wx.Panel):
         
         # Commandes rapides
         self.label_hyperliens_1 = wx.StaticText(self, -1, _(u"Ventiler "))
-        self.hyper_automatique = Hyperlien(self, label=_(u"automatiquement"), infobulle=_(u"Cliquez ici pour ventiler automatiquement le crédit restant"), URL="automatique")
+        self.hyper_automatique = Hyperlien(self, label=_(u"automatiquement"), infobulle=_(u"Cliquez ici pour ventiler automatiquement le crÃ©dit restant"), URL="automatique")
         self.label_hyperliens_2 = wx.StaticText(self, -1, u" | ")
         self.hyper_tout = Hyperlien(self, label=_(u"tout"), infobulle=_(u"Cliquez ici pour tout ventiler"), URL="tout")
         self.label_hyperliens_3 = wx.StaticText(self, -1, u" | ")
@@ -854,7 +854,7 @@ class CTRL(wx.Panel):
         self.imgAddition = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Addition.png"), wx.BITMAP_TYPE_PNG)
         self.ctrl_image = wx.StaticBitmap(self, -1, self.imgAddition)
         
-        self.ctrl_info = wx.StaticText(self, -1, _(u"Vous pouvez encore ventiler 30.90 ¤"))
+        self.ctrl_info = wx.StaticText(self, -1, _(u"Vous pouvez encore ventiler 30.90 â‚¬"))
         self.ctrl_info.SetFont(wx.Font(10, wx.SWISS, wx.NORMAL, wx.BOLD))
         
         self.__do_layout()
@@ -924,11 +924,11 @@ class CTRL(wx.Panel):
         self.MAJinfos(erreur) 
     
     def MAJinfos(self, erreur=None):
-        """ Recherche l'état """
+        """ Recherche l'Ã©tat """
         # if self.montant_reglement == FloatToDecimal(0.0) :
         #     self.validation = "erreur"
         #     self.ctrl_image.SetBitmap(self.imgErreur)
-        #     self.ctrl_info.SetLabel(_(u"Vous devez déjà saisir un montant pour ce règlement !"))
+        #     self.ctrl_info.SetLabel(_(u"Vous devez dÃ©jÃ  saisir un montant pour ce rÃ¨glement !"))
         #     return
 
 ##        if self.montant_reglement < FloatToDecimal(0.0) :
@@ -949,20 +949,20 @@ class CTRL(wx.Panel):
         if creditAVentiler > totalRestePrestationsAVentiler :
             creditAVentiler = totalRestePrestationsAVentiler
         
-        # Recherche de l'état
+        # Recherche de l'Ã©tat
         if creditAVentiler == FloatToDecimal(0.0) :
             self.validation = "ok"
-            label = _(u"Le règlement est correctement ventilé.")
+            label = _(u"Le rÃ¨glement est correctement ventilÃ©.")
         elif creditAVentiler > FloatToDecimal(0.0) :
             self.validation = "addition"
             label = _(u"Vous devez encore ventiler %.2f %s !") % (creditAVentiler, SYMBOLE)
         elif creditAVentiler < FloatToDecimal(0.0) :
             if self.montant_reglement >= FloatToDecimal(0.0):
                 self.validation = "trop"
-                label = _(u"Vous avez ventilé %.2f %s en trop !") % (-creditAVentiler, SYMBOLE)
+                label = _(u"Vous avez ventilÃ© %.2f %s en trop !") % (-creditAVentiler, SYMBOLE)
             else:
                 self.validation = "ok"
-                label = _(u"Le règlement est correctement ventilé.")
+                label = _(u"Le rÃ¨glement est correctement ventilÃ©.")
 
         # Affiche l'image
         if self.validation == "ok" : self.ctrl_image.SetBitmap(self.imgOk)
@@ -983,18 +983,18 @@ class CTRL(wx.Panel):
             if creditAVentiler > totalRestePrestationsAVentiler :
                 creditAVentiler = totalRestePrestationsAVentiler
             if creditAVentiler > FloatToDecimal(0.0) :
-                dlg = wx.MessageDialog(self, _(u"Vous devez encore ventiler %.2f %s.\n\nEtes-vous sûr de quand même vouloir valider et fermer ?") % (creditAVentiler, SYMBOLE), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous devez encore ventiler %.2f %s.\n\nEtes-vous sÃ»r de quand mÃªme vouloir valider et fermer ?") % (creditAVentiler, SYMBOLE), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
                 reponse = dlg.ShowModal()
                 dlg.Destroy()
                 if reponse !=  wx.ID_YES :
                     return False
         if self.validation == "trop" :
-            dlg = wx.MessageDialog(self, _(u"Vous avez ventilé %.2f %s en trop !") % (-creditAVentiler, SYMBOLE), _(u"Erreur de saisie"), wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"Vous avez ventilÃ© %.2f %s en trop !") % (-creditAVentiler, SYMBOLE), _(u"Erreur de saisie"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             return False
         if self.validation == "erreur" :
-            dlg = wx.MessageDialog(self, _(u"La ventilation n'est pas valide. Veuillez la vérifier..."), _(u"Erreur de saisie"), wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"La ventilation n'est pas valide. Veuillez la vÃ©rifier..."), _(u"Erreur de saisie"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -1002,7 +1002,7 @@ class CTRL(wx.Panel):
         
     def Sauvegarde(self, IDreglement=None, DB=None):
         self.ctrl_ventilation.Sauvegarde(IDreglement, DB)
-        # Si le montant du règlement est négatif :
+        # Si le montant du rÃ¨glement est nÃ©gatif :
 ##        if self.montant_reglement < 0.0 : 
 ##            DB = GestionDB.DB() 
 ##            DB.ReqDEL("ventilation", "IDreglement", IDreglement)
@@ -1024,11 +1024,11 @@ class CTRL(wx.Panel):
         self.hyper_automatique.UpdateLink()
 
     def VentilationAuto(self):
-        """ Procédure de ventilation automatique """
-        # Vérifie qu'il n'y a pas de prestations négatives
+        """ ProcÃ©dure de ventilation automatique """
+        # VÃ©rifie qu'il n'y a pas de prestations nÃ©gatives
         for ligne in self.ctrl_ventilation.listeLignesPrestations :
             if FloatToDecimal(ligne.montant) < FloatToDecimal(0.0) :
-                dlg = wx.MessageDialog(None, _(u"Ventilation automatique impossible !\n\nLa ventilation automatique n'est pas compatible avec les prestations comportant un montant négatif ! Vous devez donc effectuer une ventilation manuelle."), _(u"Information"), wx.OK | wx.ICON_ERROR)
+                dlg = wx.MessageDialog(None, _(u"Ventilation automatique impossible !\n\nLa ventilation automatique n'est pas compatible avec les prestations comportant un montant nÃ©gatif ! Vous devez donc effectuer une ventilation manuelle."), _(u"Information"), wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
@@ -1036,12 +1036,12 @@ class CTRL(wx.Panel):
         totalVentilation = FloatToDecimal(self.ctrl_ventilation.GetTotalVentile())
         resteVentilation = self.montant_reglement - totalVentilation
         if self.montant_reglement == FloatToDecimal(0.0) :
-            dlg = wx.MessageDialog(self, _(u"Vous avez déjà saisir un montant pour ce règlement !"), _(u"Erreur"), wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"Vous avez dÃ©jÃ  saisir un montant pour ce rÃ¨glement !"), _(u"Erreur"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             return False
         if resteVentilation <= FloatToDecimal(0.0) :
-            dlg = wx.MessageDialog(self, _(u"Vous avez déjà ventilé tout le crédit disponible !"), _(u"Erreur"), wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"Vous avez dÃ©jÃ  ventilÃ© tout le crÃ©dit disponible !"), _(u"Erreur"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             return False

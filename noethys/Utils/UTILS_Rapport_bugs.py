@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-19 Ivan LUCAS
@@ -45,7 +45,7 @@ def Activer_rapport_erreurs(version=""):
             pass
         try :
             if six.PY2:
-                bug = bug.decode("iso-8859-15")
+                bug = bug.decode("utf8")
             texte = u"%s\n%s" % (infos, bug)
             dlg = DLG_Rapport(None, texte)
             dlg.ShowModal()
@@ -65,12 +65,12 @@ class DLG_Rapport(wx.Dialog):
         self.parent = parent
 
         self.ctrl_image = wx.StaticBitmap(self, wx.ID_ANY, wx.Bitmap(Chemins.GetStaticPath(u"Images/48x48/Erreur.png"), wx.BITMAP_TYPE_ANY))
-        self.label_ligne_1 = wx.StaticText(self, wx.ID_ANY, _(u"Noethys a rencontré un problème !"))
-        self.label_ligne_2 = wx.StaticText(self, wx.ID_ANY, _(u"Le rapport d'erreur ci-dessous peut servir à la résolution de ce bug.\nMerci de bien vouloir le communiquer à l'auteur par Email ou depuis le forum."))
+        self.label_ligne_1 = wx.StaticText(self, wx.ID_ANY, _(u"Noethys a rencontrÃ© un problÃ¨me !"))
+        self.label_ligne_2 = wx.StaticText(self, wx.ID_ANY, _(u"Le rapport d'erreur ci-dessous peut servir Ã  la rÃ©solution de ce bug.\nMerci de bien vouloir le communiquer Ã  l'auteur par Email ou depuis le forum."))
         self.ctrl_rapport = wx.TextCtrl(self, wx.ID_ANY, texte, style=wx.TE_MULTILINE | wx.TE_READONLY)
         
-        self.bouton_envoyer = CTRL_Bouton_image.CTRL(self, texte=_(u"Envoyer à l'auteur"), cheminImage="Images/32x32/Emails_exp.png")
-        self.bouton_forum = CTRL_Bouton_image.CTRL(self, texte=_(u"Accéder au forum"), cheminImage="Images/32x32/Forum.png")
+        self.bouton_envoyer = CTRL_Bouton_image.CTRL(self, texte=_(u"Envoyer Ã  l'auteur"), cheminImage="Images/32x32/Emails_exp.png")
+        self.bouton_forum = CTRL_Bouton_image.CTRL(self, texte=_(u"AccÃ©der au forum"), cheminImage="Images/32x32/Forum.png")
         self.bouton_fermer = CTRL_Bouton_image.CTRL(self, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         self.__set_properties()
@@ -93,9 +93,9 @@ class DLG_Rapport(wx.Dialog):
     def __set_properties(self):
         self.SetTitle(_(u"Rapport d'erreurs"))
         self.label_ligne_1.SetFont(wx.Font(9, wx.DEFAULT, wx.NORMAL, wx.BOLD, 0, ""))
-        self.ctrl_rapport.SetToolTip(wx.ToolTip(_(u"Ce rapport d'erreur a été copié dans le presse-papiers")))
-        self.bouton_envoyer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour envoyer ce rapport d'erreur à l'auteur par Email")))
-        self.bouton_forum.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ouvrir votre navigateur internet et accéder au forum de Noethys. Vous pourrez ainsi signaler ce bug dans la rubrique dédiée.")))
+        self.ctrl_rapport.SetToolTip(wx.ToolTip(_(u"Ce rapport d'erreur a Ã©tÃ© copiÃ© dans le presse-papiers")))
+        self.bouton_envoyer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour envoyer ce rapport d'erreur Ã  l'auteur par Email")))
+        self.bouton_forum.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ouvrir votre navigateur internet et accÃ©der au forum de Noethys. Vous pourrez ainsi signaler ce bug dans la rubrique dÃ©diÃ©e.")))
         self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         self.SetMinSize((650, 450))
 
@@ -143,15 +143,15 @@ class DLG_Rapport(wx.Dialog):
             self.Envoyer_mail(commentaires, joindre_journal)
 
     def OnBoutonForum(self, event):
-        dlg = wx.MessageDialog(self, _(u"Noethys va ouvrir votre navigateur internet à la page du forum de Noethys. Vous n'aurez plus qu'à vous connecter avec vos identifiants Noethys et poster un nouveau message dans la rubrique dédiée aux bugs."), _(u"Forum Noethys"), wx.OK | wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Noethys va ouvrir votre navigateur internet Ã  la page du forum de Noethys. Vous n'aurez plus qu'Ã  vous connecter avec vos identifiants Noethys et poster un nouveau message dans la rubrique dÃ©diÃ©e aux bugs."), _(u"Forum Noethys"), wx.OK | wx.ICON_INFORMATION)
         dlg.ShowModal()
         dlg.Destroy()
         webbrowser.open("https://www.noethys.com/index.php/forum-34/6-signaler-un-bug")
 
     def GetAdresseExpDefaut(self):
-        """ Retourne les paramètres de l'adresse d'expéditeur par défaut """
+        """ Retourne les paramÃ¨tres de l'adresse d'expÃ©diteur par dÃ©faut """
         dictAdresse = {}
-        # Récupération des données
+        # RÃ©cupÃ©ration des donnÃ©es
         DB = GestionDB.DB()
         req = """SELECT IDadresse, moteur, adresse, motdepasse, smtp, port, defaut, connexionAuthentifiee, startTLS, utilisateur, parametres
         FROM adresses_mail WHERE defaut=1 ORDER BY adresse; """
@@ -164,13 +164,13 @@ class DLG_Rapport(wx.Dialog):
         return dictAdresse
 
     def Envoyer_mail(self, commentaires="", joindre_journal=False):
-        """ Envoi d'un mail avec pièce jointe """
+        """ Envoi d'un mail avec piÃ¨ce jointe """
         from Utils import UTILS_Envoi_email
 
-        # Expéditeur
+        # ExpÃ©diteur
         dictExp = self.GetAdresseExpDefaut()
         if dictExp == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez d'abord saisir une adresse d'expéditeur depuis le menu Paramétrage > Adresses d'expédition d'Emails. Sinon, postez votre rapport de bug dans le forum de Noethys."), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez d'abord saisir une adresse d'expÃ©diteur depuis le menu ParamÃ©trage > Adresses d'expÃ©dition d'Emails. Sinon, postez votre rapport de bug dans le forum de Noethys."), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -185,7 +185,7 @@ class DLG_Rapport(wx.Dialog):
         parametres = dictExp["parametres"]
 
         if adresseExpediteur == None :
-            dlg = wx.MessageDialog(self, _(u"L'adresse d'expédition ne semble pas valide. Veuillez la vérifier."), _(u"Envoi impossible"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"L'adresse d'expÃ©dition ne semble pas valide. Veuillez la vÃ©rifier."), _(u"Envoi impossible"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -197,14 +197,14 @@ class DLG_Rapport(wx.Dialog):
             nom_journal = UTILS_Fichiers.GetRepUtilisateur(customize.GetValeur("journal", "nom", "journal.log"))
             fichiers.append(nom_journal)
 
-        # Préparation du message
+        # PrÃ©paration du message
         IDrapport = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
         texteRapport = self.ctrl_rapport.GetValue().replace("\n","<br/>")
         if len(commentaires) == 0 :
             commentaires = _(u"Aucun")
         texte_html = _(u"<u>Rapport de bug %s :</u><br/><br/>%s<br/><u>Commentaires :</u><br/><br/>%s") % (IDrapport, texteRapport, commentaires)
 
-        sujet = _(u"Rapport de bug Noethys n°%s") % IDrapport
+        sujet = _(u"Rapport de bug Noethys nÂ°%s") % IDrapport
         message = UTILS_Envoi_email.Message(destinataires=["noe" + "thys" + "@" + "gm" + "ail" + ".com",], sujet=sujet, texte_html=texte_html, fichiers=fichiers)
 
         # Envoi du mail
@@ -214,13 +214,13 @@ class DLG_Rapport(wx.Dialog):
             messagerie.Envoyer(message)
             messagerie.Fermer()
         except Exception as err :
-            dlg = wx.MessageDialog(self, _(u"Le message n'a pas pu être envoyé. Merci de poster votre rapport de bug sur le forum de Noethys.\n\nErreur : %s !") % err, _(u"Envoi impossible"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Le message n'a pas pu Ãªtre envoyÃ©. Merci de poster votre rapport de bug sur le forum de Noethys.\n\nErreur : %s !") % err, _(u"Envoi impossible"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
 
         # Message de confirmation
-        dlg = wx.MessageDialog(self, _(u"Le rapport d'erreur a été envoyé avec succès."), _(u"Rapport envoyé"), wx.OK | wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Le rapport d'erreur a Ã©tÃ© envoyÃ© avec succÃ¨s."), _(u"Rapport envoyÃ©"), wx.OK | wx.ICON_INFORMATION)
         dlg.ShowModal()
         dlg.Destroy()
 
@@ -235,14 +235,14 @@ class DLG_Envoi(wx.Dialog):
         self.parent = parent
         self.texteRapport = texteRapport
 
-        self.label_ligne_1 = wx.StaticText(self, wx.ID_ANY, _(u"Le rapport est prêt à être envoyé..."))
-        self.label_ligne_2 = wx.StaticText(self, wx.ID_ANY, _(u"Vous pouvez ajouter ci-dessous des commentaires, remarques ou compléments d'informations\navant de l'envoyer à l'auteur. Il est également possible de joindre le rapport complet."))
+        self.label_ligne_1 = wx.StaticText(self, wx.ID_ANY, _(u"Le rapport est prÃªt Ã  Ãªtre envoyÃ©..."))
+        self.label_ligne_2 = wx.StaticText(self, wx.ID_ANY, _(u"Vous pouvez ajouter ci-dessous des commentaires, remarques ou complÃ©ments d'informations\navant de l'envoyer Ã  l'auteur. Il est Ã©galement possible de joindre le rapport complet."))
 
         self.ctrl_commentaires = wx.TextCtrl(self, wx.ID_ANY, "", style=wx.TE_MULTILINE)
 
-        self.check_journal = wx.CheckBox(self, -1, _(u"Joindre le journal des erreurs (Recommandé)"))
+        self.check_journal = wx.CheckBox(self, -1, _(u"Joindre le journal des erreurs (RecommandÃ©)"))
 
-        self.bouton_apercu = CTRL_Bouton_image.CTRL(self, texte=_(u"Aperçu"), cheminImage="Images/32x32/Apercu.png")
+        self.bouton_apercu = CTRL_Bouton_image.CTRL(self, texte=_(u"AperÃ§u"), cheminImage="Images/32x32/Apercu.png")
         self.bouton_envoyer = CTRL_Bouton_image.CTRL(self, texte=_(u"Envoyer l'Email"), cheminImage="Images/32x32/Emails_exp.png")
         self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
@@ -254,12 +254,12 @@ class DLG_Envoi(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
 
     def __set_properties(self):
-        self.SetTitle(_(u"Envoyer le rapport à l'auteur"))
+        self.SetTitle(_(u"Envoyer le rapport Ã  l'auteur"))
         self.label_ligne_1.SetFont(wx.Font(9, wx.DEFAULT, wx.NORMAL, wx.BOLD, 0, ""))
         self.ctrl_commentaires.SetToolTip(wx.ToolTip(_(u"Vous pouvez saisir des commentaires ici")))
-        self.check_journal.SetToolTip(wx.ToolTip(_(u"Pour faciliter la résolution du bug, vous pouvez joindre votre rapport d'erreurs")))
-        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour visualiser le contenu du message qui sera envoyé à l'auteur")))
-        self.bouton_envoyer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour envoyer le rapport et les commentaires à l'auteur")))
+        self.check_journal.SetToolTip(wx.ToolTip(_(u"Pour faciliter la rÃ©solution du bug, vous pouvez joindre votre rapport d'erreurs")))
+        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour visualiser le contenu du message qui sera envoyÃ© Ã  l'auteur")))
+        self.bouton_envoyer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour envoyer le rapport et les commentaires Ã  l'auteur")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
         self.SetMinSize((550, 350))
 
@@ -284,7 +284,7 @@ class DLG_Envoi(wx.Dialog):
         self.CenterOnScreen()
 
     def OnBoutonApercu(self, event):
-        """ Visualisation du message à envoyer """
+        """ Visualisation du message Ã  envoyer """
         commentaires = self.ctrl_commentaires.GetValue()
         if len(commentaires) == 0 :
             commentaires = _(u"Aucun")

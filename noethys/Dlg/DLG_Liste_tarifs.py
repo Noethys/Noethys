@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-16 Ivan LUCAS
@@ -21,7 +21,7 @@ from Utils import UTILS_Dates
 from Utils import UTILS_Texte
 
 from Utils import UTILS_Config
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"â‚¬")
 
 from Ctrl.CTRL_Tarification_calcul import CHAMPS_TABLE_LIGNES, LISTE_COLONNES, LISTE_METHODES
 
@@ -50,7 +50,7 @@ class CTRL_Activites(wx.ListBox):
         index = 0
         for IDactivite, nom in listeActivites :
             self.dictDonnees[index] = IDactivite
-            if nom == None : nom = u"Activité inconnue"
+            if nom == None : nom = u"ActivitÃ© inconnue"
             listeLabels.append(nom)
             index += 1
         self.SetItems(listeLabels)
@@ -103,7 +103,7 @@ class CTRL_Tarifs(html.HtmlWindow):
 
         DB = GestionDB.DB()
 
-        # Importation des infos sur l'activité
+        # Importation des infos sur l'activitÃ©
         req = """SELECT nom, date_debut, date_fin
         FROM activites
         WHERE IDactivite=%d
@@ -162,7 +162,7 @@ class CTRL_Tarifs(html.HtmlWindow):
 
             if True :#IDtarif in liste_tarifs_valides :
 
-                # Création des champs
+                # CrÃ©ation des champs
                 index = 0
                 for dictMethode in LISTE_METHODES :
                     if dictMethode["code"] == methode :
@@ -190,7 +190,7 @@ class CTRL_Tarifs(html.HtmlWindow):
                     if IDtarif == IDtarif_ligne :
                         dictValeurs = {}
 
-                        # Récupération des valeurs de la base
+                        # RÃ©cupÃ©ration des valeurs de la base
                         indexValeur = 0
                         for valeur in valeurs :
                             if valeur == "None" : valeur = None
@@ -222,7 +222,7 @@ class CTRL_Tarifs(html.HtmlWindow):
 
                         numLigne += 1
 
-                # Enlève des colonnes vides
+                # EnlÃ¨ve des colonnes vides
                 numColonne = 0
                 tableau2 = []
                 for ligne in tableau :
@@ -239,7 +239,7 @@ class CTRL_Tarifs(html.HtmlWindow):
                 #for ligne in tableau2 :
                 #    print "   ", ligne
 
-                source.append(u"<P><B>%s</B><BR><FONT SIZE=-2>%s - Tarif à partir du %s</FONT></P>" % (nom_prestation, texte_categories, UTILS_Dates.DateEngFr(date_debut)))
+                source.append(u"<P><B>%s</B><BR><FONT SIZE=-2>%s - Tarif Ã  partir du %s</FONT></P>" % (nom_prestation, texte_categories, UTILS_Dates.DateEngFr(date_debut)))
 
                 source.append(u"<P><TABLE BORDER CELLSPACING=1 BORDER=0>")
 
@@ -254,7 +254,7 @@ class CTRL_Tarifs(html.HtmlWindow):
         return "\n".join(source)
 
     def Apercu(self, event=None):
-        # Aperçu avant impression
+        # AperÃ§u avant impression
         html = self.GetSource()
         printout = HtmlPrintout(html)
         printout2 = HtmlPrintout(html)
@@ -262,7 +262,7 @@ class CTRL_Tarifs(html.HtmlWindow):
 
         preview.SetZoom(100)
         frame = wx.GetApp().GetTopWindow()
-        preview_window = wx.PreviewFrame(preview, None, _(u"Aperçu avant impression"))
+        preview_window = wx.PreviewFrame(preview, None, _(u"AperÃ§u avant impression"))
         preview_window.Initialize()
         if 'phoenix' not in wx.PlatformInfo:
             preview_window.MakeModal(False)
@@ -292,8 +292,8 @@ class DLG_Tarifs(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBouton_ok, self.bouton_ok)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
 
-        # Propriétés
-        self.SetTitle(_(u"Détail des tarifs"))
+        # PropriÃ©tÃ©s
+        self.SetTitle(_(u"DÃ©tail des tarifs"))
         self.SetMinSize((700, 500))
 
         # Layout
@@ -333,13 +333,13 @@ class Dialog(wx.Dialog):
         self.parent = parent   
 
         # Bandeau
-        intro = _(u"Vous pouvez consulter ici la liste des tarifs d'une activité. Cette liste sommaire est uniquement destinée à la consultation. Le paramétrage des tarifs se fait depuis la commande Activités du menu Paramétrage. Cliquez sur le nom d'une activité dans la liste de gauche pour afficher les tarifs correspondants.")
+        intro = _(u"Vous pouvez consulter ici la liste des tarifs d'une activitÃ©. Cette liste sommaire est uniquement destinÃ©e Ã  la consultation. Le paramÃ©trage des tarifs se fait depuis la commande ActivitÃ©s du menu ParamÃ©trage. Cliquez sur le nom d'une activitÃ© dans la liste de gauche pour afficher les tarifs correspondants.")
         titre = _(u"Liste des tarifs")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Euro.png")
         
-        # Activités
-        self.box_activites_staticbox = wx.StaticBox(self, -1, _(u"Activités"))
+        # ActivitÃ©s
+        self.box_activites_staticbox = wx.StaticBox(self, -1, _(u"ActivitÃ©s"))
         self.ctrl_activites = CTRL_Activites(self)
         self.ctrl_activites.SetMinSize((300, -1))
         
@@ -364,7 +364,7 @@ class Dialog(wx.Dialog):
 
 
     def __set_properties(self):
-        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher un aperçu avant impression")))
+        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher un aperÃ§u avant impression")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         self.SetMinSize((990, 700))
@@ -374,7 +374,7 @@ class Dialog(wx.Dialog):
         grid_sizer_base.Add(self.ctrl_bandeau, 0, wx.EXPAND, 0)
         grid_sizer_contenu = wx.FlexGridSizer(rows=1, cols=2, vgap=10, hgap=10)
 
-        # Activités
+        # ActivitÃ©s
         box_activites = wx.StaticBoxSizer(self.box_activites_staticbox, wx.VERTICAL)
         box_activites.Add(self.ctrl_activites, 1, wx.ALL|wx.EXPAND, 5)
         grid_sizer_contenu.Add(box_activites, 1, wx.EXPAND, 0)

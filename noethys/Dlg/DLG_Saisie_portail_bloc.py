@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-18 Ivan LUCAS
@@ -71,7 +71,7 @@ class PAGE_Texte(wx.Panel):
         self.parent = parent
         self.IDelement = None
 
-        # Contrôles
+        # ContrÃ´les
         self.ctrl_editeur = CTRL_Editeur_email.CTRL(self)
 
         # Layout
@@ -138,12 +138,12 @@ class PAGE_Onglets(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.ctrl_elements.Monter, self.bouton_monter)
         self.Bind(wx.EVT_BUTTON, self.ctrl_elements.Descendre, self.bouton_descendre)
 
-        # Propriétés
+        # PropriÃ©tÃ©s
         self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter un onglet")))
-        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier l'onglet sélectionné dans la liste")))
-        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer l'onglet sélectionné dans la liste")))
-        self.bouton_monter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour monter l'onglet sélectionné dans la liste")))
-        self.bouton_descendre.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour descendre l'onglet sélectionné dans la liste")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier l'onglet sÃ©lectionnÃ© dans la liste")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer l'onglet sÃ©lectionnÃ© dans la liste")))
+        self.bouton_monter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour monter l'onglet sÃ©lectionnÃ© dans la liste")))
+        self.bouton_descendre.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour descendre l'onglet sÃ©lectionnÃ© dans la liste")))
 
         # Layout
         sizer_base = wx.BoxSizer(wx.VERTICAL)
@@ -174,7 +174,7 @@ class PAGE_Onglets(wx.Panel):
 
     def Validation(self):
         if len(self.GetParametres()["elements"]) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous devez créer au moins un onglet pour ce modèle !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez crÃ©er au moins un onglet pour ce modÃ¨le !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -204,10 +204,10 @@ class PAGE_Blog(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.ctrl_elements.Modifier, self.bouton_modifier)
         self.Bind(wx.EVT_BUTTON, self.ctrl_elements.Supprimer, self.bouton_supprimer)
 
-        # Propriétés
+        # PropriÃ©tÃ©s
         self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter un article")))
-        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier l'article sélectionné dans la liste")))
-        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer l'article sélectionné dans la liste")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier l'article sÃ©lectionnÃ© dans la liste")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer l'article sÃ©lectionnÃ© dans la liste")))
 
         # Layout
         sizer_base = wx.BoxSizer(wx.VERTICAL)
@@ -258,10 +258,10 @@ class PAGE_Calendrier(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.ctrl_elements.Modifier, self.bouton_modifier)
         self.Bind(wx.EVT_BUTTON, self.ctrl_elements.Supprimer, self.bouton_supprimer)
 
-        # Propriétés
-        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter un évènement")))
-        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier l'évènement sélectionné dans la liste")))
-        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer l'évènement sélectionné dans la liste")))
+        # PropriÃ©tÃ©s
+        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter un Ã©vÃ¨nement")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier l'Ã©vÃ¨nement sÃ©lectionnÃ© dans la liste")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer l'Ã©vÃ¨nement sÃ©lectionnÃ© dans la liste")))
 
         # Layout
         sizer_base = wx.BoxSizer(wx.VERTICAL)
@@ -317,12 +317,12 @@ class PAGE_Trombi(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.ctrl_elements.Monter, self.bouton_monter)
         self.Bind(wx.EVT_BUTTON, self.ctrl_elements.Descendre, self.bouton_descendre)
 
-        # Propriétés
+        # PropriÃ©tÃ©s
         self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter un individu")))
-        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier l'individu sélectionné dans la liste")))
-        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer l'individu sélectionné dans la liste")))
-        self.bouton_monter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour monter l'individu sélectionné dans la liste")))
-        self.bouton_descendre.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour descendre l'individu sélectionné dans la liste")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier l'individu sÃ©lectionnÃ© dans la liste")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer l'individu sÃ©lectionnÃ© dans la liste")))
+        self.bouton_monter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour monter l'individu sÃ©lectionnÃ© dans la liste")))
+        self.bouton_descendre.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour descendre l'individu sÃ©lectionnÃ© dans la liste")))
 
         # Layout
         sizer_base = wx.BoxSizer(wx.VERTICAL)
@@ -353,7 +353,7 @@ class PAGE_Trombi(wx.Panel):
 
     def Validation(self):
         if len(self.GetParametres()["elements"]) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous devez créer au moins un individu pour ce trombinoscope !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez crÃ©er au moins un individu pour ce trombinoscope !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -383,13 +383,13 @@ class CTRL_Parametres(LB.FlatImageBook):
             index += 1
         self.AssignImageList(il)
 
-        # Création des pages
+        # CrÃ©ation des pages
         index = 0
         for code, label, ctrl, image in self.listePages:
             self.AddPage(ctrl, label, imageId=index)
             index += 1
 
-        # Sélection par défaut
+        # SÃ©lection par dÃ©faut
         self.SetSelection(0)
 
     def GetPageByCode(self, code=""):
@@ -437,8 +437,8 @@ class Dialog(wx.Dialog):
         self.IDpage_initial = None
         self.listeIDelementsImportes = []
 
-        # Généralités
-        self.staticbox_generalites_staticbox = wx.StaticBox(self, -1, _(u"Généralités"))
+        # GÃ©nÃ©ralitÃ©s
+        self.staticbox_generalites_staticbox = wx.StaticBox(self, -1, _(u"GÃ©nÃ©ralitÃ©s"))
 
         self.label_titre = wx.StaticText(self, -1, _(u"Titre :"))
         self.ctrl_titre = wx.TextCtrl(self, -1, "")
@@ -449,8 +449,8 @@ class Dialog(wx.Dialog):
         self.label_couleur = wx.StaticText(self, -1, _(u"Couleur :"))
         self.ctrl_couleur = CTRL_Couleur(self)
 
-        # Paramètres
-        self.staticbox_options_staticbox = wx.StaticBox(self, -1, _(u"Paramètres"))
+        # ParamÃ¨tres
+        self.staticbox_options_staticbox = wx.StaticBox(self, -1, _(u"ParamÃ¨tres"))
         self.ctrl_parametres = CTRL_Parametres(self)
         self.ctrl_parametres.SetMinSize((550, 350))
 
@@ -475,8 +475,8 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.ctrl_titre.SetToolTip(wx.ToolTip(_(u"Saisissez ici le titre du bloc")))
-        self.ctrl_page.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici la page dans laquelle vous souhaitez insérer ce bloc")))
-        self.ctrl_couleur.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici la couleur du bloc")))
+        self.ctrl_page.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez ici la page dans laquelle vous souhaitez insÃ©rer ce bloc")))
+        self.ctrl_couleur.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez ici la couleur du bloc")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider et fermer")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler et fermer")))
@@ -484,7 +484,7 @@ class Dialog(wx.Dialog):
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
 
-        # Généralités
+        # GÃ©nÃ©ralitÃ©s
         staticbox_generalites = wx.StaticBoxSizer(self.staticbox_generalites_staticbox, wx.VERTICAL)
 
         grid_sizer_generalites = wx.FlexGridSizer(rows=2, cols=2, vgap=10, hgap=10)
@@ -505,7 +505,7 @@ class Dialog(wx.Dialog):
 
         grid_sizer_base.Add(staticbox_generalites, 1, wx.LEFT|wx.RIGHT|wx.TOP|wx.EXPAND, 10)
 
-        # Paramètres
+        # ParamÃ¨tres
         staticbox_parametres = wx.StaticBoxSizer(self.staticbox_options_staticbox, wx.VERTICAL)
         staticbox_parametres.Add(self.ctrl_parametres, 1, wx.ALL|wx.EXPAND, 10)
 
@@ -533,7 +533,7 @@ class Dialog(wx.Dialog):
         UTILS_Aide.Aide("Connecthys")
 
     def Importation(self):
-        """ Importation des données """
+        """ Importation des donnÃ©es """
         dictParametres = {}
 
         DB = GestionDB.DB()
@@ -552,7 +552,7 @@ class Dialog(wx.Dialog):
             dictParametres["categorie"] = categorie
             dictParametres["parametres"] = parametres
 
-        # Eléments
+        # ElÃ©ments
         req = """SELECT IDelement, ordre, titre, categorie, date_debut, date_fin, parametres, texte_xml, texte_html
         FROM portail_elements
         WHERE IDbloc=%d
@@ -567,7 +567,7 @@ class Dialog(wx.Dialog):
                 self.listeIDelementsImportes.append(IDelement)
         dictParametres["elements"] = listeElements
 
-        # Envoie des paramètres
+        # Envoie des paramÃ¨tres
         self.ctrl_parametres.SetParametres(dictParametres)
         DB.Close()
 
@@ -586,11 +586,11 @@ class Dialog(wx.Dialog):
             self.ctrl_titre.SetFocus()
             return False
 
-        # Validation des paramètres
+        # Validation des paramÃ¨tres
         if self.ctrl_parametres.Validation() == False :
             return False
 
-        # Récupération des données
+        # RÃ©cupÃ©ration des donnÃ©es
         IDpage = self.ctrl_page.GetID()
         couleur = self.ctrl_couleur.GetID()
         dictParametres = self.ctrl_parametres.GetParametres()
@@ -598,7 +598,7 @@ class Dialog(wx.Dialog):
         # Sauvegarde
         DB = GestionDB.DB()
 
-        # Sauvegarde du modèle
+        # Sauvegarde du modÃ¨le
         listeDonnees = [
             ("IDpage", IDpage),
             ("titre", titre),
@@ -622,7 +622,7 @@ class Dialog(wx.Dialog):
         else:
             DB.ReqMAJ("portail_blocs", listeDonnees, "IDbloc", self.IDbloc)
 
-        # Sauvegarde des éléments
+        # Sauvegarde des Ã©lÃ©ments
         index = 1
         listeIDelement = []
         for dictElement in dictParametres["elements"] :
@@ -646,15 +646,15 @@ class Dialog(wx.Dialog):
                 listeIDelement.append(IDelement)
             index += 1
 
-        # Suppression des colonnes obsolètes
+        # Suppression des colonnes obsolÃ¨tes
         for IDelement in self.listeIDelementsImportes :
             if IDelement not in listeIDelement :
                 DB.ReqDEL("portail_elements", "IDelement", IDelement)
 
-        # Clôture de la base
+        # ClÃ´ture de la base
         DB.Close()
 
-        # Fermeture de la fenêtre
+        # Fermeture de la fenÃªtre
         self.EndModal(wx.ID_OK)
 
     def GetID(self):

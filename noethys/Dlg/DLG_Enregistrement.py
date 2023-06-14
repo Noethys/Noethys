@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-12 Ivan LUCAS
@@ -34,24 +34,24 @@ from Utils import UTILS_Utilisateurs
 ##<BR><BR>
 ##Ceci est un paragaphe
 ##<BR><BR>
-##Et ceci est le deuxième paragraphe
+##Et ceci est le deuxiÃ¨me paragraphe
 ##<BR>
-##<A HREF="http://www.noethys.com">Cliquez ici pour accéder au lien</A>.
+##<A HREF="http://www.noethys.com">Cliquez ici pour accÃ©der au lien</A>.
 ##</FONT>
 ##"""
 
 TEXTE = u"""
 <FONT SIZE=2>
-<P>Noethys est un logiciel totalement libre et gratuit mais son développement représente des milliers d'heures de travail.</P>
-<P>Alors si vous jugez que Noethys vous apporte un soutien appréciable au quotidien et 
-que vous souhaitez contribuer à son développement, offrez à votre structure un abonnement Classic ou Premium et bénéficiez en échange de la version complète du manuel de l'utilisateur.</P>
+<P>Noethys est un logiciel totalement libre et gratuit mais son dÃ©veloppement reprÃ©sente des milliers d'heures de travail.</P>
+<P>Alors si vous jugez que Noethys vous apporte un soutien apprÃ©ciable au quotidien et 
+que vous souhaitez contribuer Ã  son dÃ©veloppement, offrez Ã  votre structure un abonnement Classic ou Premium et bÃ©nÃ©ficiez en Ã©change de la version complÃ¨te du manuel de l'utilisateur.</P>
 <P>
-    <SPAN><U>Caractéristiques des abonnements :</U></SPAN>
+    <SPAN><U>CaractÃ©ristiques des abonnements :</U></SPAN>
     <UL>
-    <LI>Vous soutenez le développement du logiciel</LI>
-    <LI>Vous bénéficiez d'un accès complet au manuel de l'utilisateur</LI>
+    <LI>Vous soutenez le dÃ©veloppement du logiciel</LI>
+    <LI>Vous bÃ©nÃ©ficiez d'un accÃ¨s complet au manuel de l'utilisateur</LI>
     <LI>Vous choisissez le montant de votre contribution</LI>
-    <LI>Paiement par chèque ou virement</LI>
+    <LI>Paiement par chÃ¨que ou virement</LI>
     <LI>Envoi d'une facture</LI>
     </UL>
 </P>
@@ -77,9 +77,9 @@ def GetValidite(identifiant="", code=""):
         return False
 
     if six.PY3:
-        html = html.decode("iso-8859-15")
+        html = html.decode("utf8")
 
-    # Analyse l'état
+    # Analyse l'Ã©tat
     if html.startswith("codeok") :
         try :
             date = DateEngEnDateDD(html[7:])
@@ -88,7 +88,7 @@ def GetValidite(identifiant="", code=""):
     else :
         date = None
     
-    # Affiche l'état
+    # Affiche l'Ã©tat
     if date == None :
         return False
     else :
@@ -123,7 +123,7 @@ class Dialog(wx.Dialog):
 
         # Bandeau
         titre = _(u"Enregistrement")
-        intro = _(u"Vous pouvez saisir ici votre code d'enregistrement personnel afin d'activer votre abonnement Classic ou Premium. Effectuez ce paramétrage sur chacun de vos postes.")
+        intro = _(u"Vous pouvez saisir ici votre code d'enregistrement personnel afin d'activer votre abonnement Classic ou Premium. Effectuez ce paramÃ©trage sur chacun de vos postes.")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Cle.png")
         
@@ -134,7 +134,7 @@ class Dialog(wx.Dialog):
         self.label_code = wx.StaticText(self, -1, _(u"Code :"))
         self.ctrl_code = masked.TextCtrl(self, -1, "", mask="AAAA-AAAA-AAAA-AAAA-AAAA", formatcodes="F!")
         self.ctrl_code.SetMinSize((190, -1))
-        self.bouton_validite = wx.Button(self, -1, _(u"Vérifier la validité"))
+        self.bouton_validite = wx.Button(self, -1, _(u"VÃ©rifier la validitÃ©"))
         self.ctrl_image = wx.StaticBitmap(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/absenti.png"), wx.BITMAP_TYPE_ANY))
         self.label_validite = wx.StaticText(self, -1, _(u"Veuillez saisir un code."))
         
@@ -153,7 +153,7 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonFermer, self.bouton_fermer)
         self.Bind(wx.EVT_CLOSE, self.OnClose)
         
-        # Init contrôles
+        # Init contrÃ´les
         identifiant = UTILS_Config.GetParametre("enregistrement_identifiant", defaut=None)
         code = UTILS_Config.GetParametre("enregistrement_code", defaut=None)
         if identifiant != None and code != None :
@@ -162,7 +162,7 @@ class Dialog(wx.Dialog):
             
         self.VerifieEtat(identifiant, code)
         
-        # Vérifie droits utilisateurs
+        # VÃ©rifie droits utilisateurs
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_enregistrement", "modifier", afficheMessage=False) == False : 
             self.ctrl_identifiant.Enable(False)
             self.ctrl_code.Enable(False)
@@ -173,7 +173,7 @@ class Dialog(wx.Dialog):
     def __set_properties(self):
         self.ctrl_identifiant.SetToolTip(wx.ToolTip(_(u"Saisissez votre identifiant")))
         self.ctrl_code.SetToolTip(wx.ToolTip(_(u"Saisissez votre code d'enregistrement")))
-        self.bouton_validite.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour vérifier la validité de votre code d'enregistrement")))
+        self.bouton_validite.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour vÃ©rifier la validitÃ© de votre code d'enregistrement")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         self.SetMinSize((460, 600))
@@ -223,7 +223,7 @@ class Dialog(wx.Dialog):
         self.CenterOnScreen()
         
     def OnBoutonValidite(self, event): 
-        # Vérifie la saisie
+        # VÃ©rifie la saisie
         identifiant = self.ctrl_identifiant.GetValue()
         if len(identifiant) == 0 :
             dlg = wx.MessageDialog(self, _(u"Vous n'avez saisi aucun identifiant !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
@@ -246,13 +246,13 @@ class Dialog(wx.Dialog):
             self.ctrl_code.SetFocus()
             return
         
-        # Vérifie validité en ligne
+        # VÃ©rifie validitÃ© en ligne
         self.VerifieEtat(identifiant, code)
         
     
     def VerifieEtat(self, identifiant="", code=""):
-        """ Vérifie la validité du code en ligne """
-        dlgAttente = wx.BusyInfo(_(u"Vérification du code en cours..."), None)
+        """ VÃ©rifie la validitÃ© du code en ligne """
+        dlgAttente = wx.BusyInfo(_(u"VÃ©rification du code en cours..."), None)
         if 'phoenix' not in wx.PlatformInfo:
             wx.Yield()
         else:
@@ -264,16 +264,16 @@ class Dialog(wx.Dialog):
             html = h.read()
             h.close()
         except Exception as err:
-            self.AfficheEtatValidite(texte=u"Vérification impossible. Vérifiez votre connexion internet !", image="attention")
+            self.AfficheEtatValidite(texte=u"VÃ©rification impossible. VÃ©rifiez votre connexion internet !", image="attention")
             del dlgAttente
             print("pb dans verification code enregistrement.")
             traceback.print_exc(file=sys.stdout)
             return False
 
         if six.PY3:
-            html = html.decode("iso-8859-15")
+            html = html.decode("utf8")
 
-        # Analyse l'état
+        # Analyse l'Ã©tat
         if html.startswith("codeok") :
             try :
                 date = DateEngEnDateDD(html[7:])
@@ -282,14 +282,14 @@ class Dialog(wx.Dialog):
         else :
             date = None
         
-        # Affiche l'état
+        # Affiche l'Ã©tat
         if date == None :
             texte = _(u"Vous n'avez saisi aucun code valide")
             image = "pasok"
         else :
             nbreJoursRestants =  (date - datetime.date.today()).days
             if nbreJoursRestants < 0 :
-                texte = _(u"Votre licence est périmée depuis le %s") % DateEngFr(str(date))
+                texte = _(u"Votre licence est pÃ©rimÃ©e depuis le %s") % DateEngFr(str(date))
                 image = "pasok"
             elif nbreJoursRestants <= 30 :
                 texte = _(u"Votre licence est valide jusqu'au %s (%d jours restants)") % (DateEngFr(str(date)), nbreJoursRestants)
@@ -326,14 +326,14 @@ class Dialog(wx.Dialog):
         if " " in code :
             code = None
         
-        # Vérification des codes
+        # VÃ©rification des codes
         if identifiant != None and code != None and self.derniereValidation != (identifiant, code) and "impossible" not in self.label_validite.GetLabel() :
-            dlg = wx.MessageDialog(self, _(u"Vous avez modifié votre saisie depuis la dernière vérification.\n\nVeuillez vérifier maintenant la validité du code en cliquant sur le bouton 'Vérifier la validité' !"), _(u"Validation"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous avez modifiÃ© votre saisie depuis la derniÃ¨re vÃ©rification.\n\nVeuillez vÃ©rifier maintenant la validitÃ© du code en cliquant sur le bouton 'VÃ©rifier la validitÃ©' !"), _(u"Validation"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         
-        # Mémorisation des codes
+        # MÃ©morisation des codes
         UTILS_Config.SetParametre("enregistrement_identifiant", identifiant)
         UTILS_Config.SetParametre("enregistrement_code", code)
 

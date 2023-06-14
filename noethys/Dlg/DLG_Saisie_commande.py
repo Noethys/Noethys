@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-18 Ivan LUCAS
@@ -97,7 +97,7 @@ class OL_Totaux(FastObjectListView):
 
         self.rowFormatter = rowFormatter
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(_(u"Aucune donnée"))
+        self.SetEmptyListMsg(_(u"Aucune donnÃ©e"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
         self.SetObjects(self.donnees)
 
@@ -129,11 +129,11 @@ class CTRL_Infos(html.HtmlWindow):
             if restaurateur_nom not in (None, "") :
                 listeTemp.append(u"<B>%s</B>" % restaurateur_nom)
             else :
-                listeTemp.append(_(u"<B>Restaurateur<BR>non renseigné</B>"))
+                listeTemp.append(_(u"<B>Restaurateur<BR>non renseignÃ©</B>"))
             if restaurateur_tel not in (None, "") :
                 listeTemp.append(restaurateur_tel)
         else :
-            listeTemp.append(u"<B>Restaurateur<BR>non renseigné</B>")
+            listeTemp.append(u"<B>Restaurateur<BR>non renseignÃ©</B>")
 
         texte = u"""
         <CENTER>
@@ -155,11 +155,11 @@ class Dialog(wx.Dialog):
         self.IDcommande = IDcommande
         self.dictDonnees = {}
         
-        # Généralités
-        self.box_generalites_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Généralités"))
+        # GÃ©nÃ©ralitÃ©s
+        self.box_generalites_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"GÃ©nÃ©ralitÃ©s"))
         self.label_nom = wx.StaticText(self, wx.ID_ANY, _(u"Nom :"))
         self.ctrl_nom = wx.TextCtrl(self, wx.ID_ANY, u"")
-        self.label_periode = wx.StaticText(self, wx.ID_ANY, _(u"Période :"))
+        self.label_periode = wx.StaticText(self, wx.ID_ANY, _(u"PÃ©riode :"))
         self.ctrl_date_debut = CTRL_Saisie_date.Date2(self)
         self.label_au = wx.StaticText(self, wx.ID_ANY, _(u"au"))
         self.ctrl_date_fin = CTRL_Saisie_date.Date2(self)
@@ -177,11 +177,11 @@ class Dialog(wx.Dialog):
         self.ctrl_totaux.SetMinSize((250, 50))
 
         # Repas
-        self.box_repas_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Données"))
+        self.box_repas_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"DonnÃ©es"))
         self.ctrl_repas = CTRL_Commande_repas.CTRL(self, IDmodele=IDmodele, IDcommande=IDcommande)
         self.ctrl_repas.SetMinSize((100, 380))
 
-        # Légende
+        # LÃ©gende
         self.listeLegende = [
             {"label": _(u"Cases modifiables"), "couleur": CTRL_Commande_repas.COULEUR_CASES_OUVERTES, "ctrl_label": None, "ctrl_img": None},
             {"label": _(u"Cases non modifiables"), "couleur": CTRL_Commande_repas.COULEUR_CASES_FERMEES, "ctrl_label": None, "ctrl_img": None},
@@ -229,12 +229,12 @@ class Dialog(wx.Dialog):
         self.MAJ()
 
     def __set_properties(self):
-        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez un nom pour cette commande (Ex : 'Vacances de Pâques 2018')")))
-        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez la date de début de la période")))
-        self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez la date de fin de la période")))
+        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez un nom pour cette commande (Ex : 'Vacances de PÃ¢ques 2018')")))
+        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez la date de dÃ©but de la pÃ©riode")))
+        self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez la date de fin de la pÃ©riode")))
         self.ctrl_observations.SetToolTip(wx.ToolTip(_(u"Saisissez des observations")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
-        self.bouton_outils.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder aux outils")))
+        self.bouton_outils.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accÃ©der aux outils")))
         self.bouton_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer la commande au format PDF")))
         self.bouton_email.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour envoyer la commande par Email")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
@@ -245,7 +245,7 @@ class Dialog(wx.Dialog):
         grid_sizer_base = wx.FlexGridSizer(rows=4, cols=1, vgap=10, hgap=10)
         grid_sizer_haut = wx.FlexGridSizer(1, 3, 10, 10)
 
-        # Généralités
+        # GÃ©nÃ©ralitÃ©s
         box_generalites = wx.StaticBoxSizer(self.box_generalites_staticbox, wx.VERTICAL)
         grid_sizer_generalites = wx.FlexGridSizer(5, 2, 10, 10)
 
@@ -287,7 +287,7 @@ class Dialog(wx.Dialog):
         grid_sizer_repas = wx.FlexGridSizer(rows=2, cols=1, vgap=5, hgap=5)
         grid_sizer_repas.Add(self.ctrl_repas, 1, wx.EXPAND, 0)
 
-        # Légende
+        # LÃ©gende
         grid_sizer_legende = wx.FlexGridSizer(rows=1, cols=len(self.listeLegende)*3 + 3, vgap=4, hgap=4)
 
         grid_sizer_legende.Add(self.image_info, 0, wx.ALIGN_CENTER_VERTICAL, 0)
@@ -333,7 +333,7 @@ class Dialog(wx.Dialog):
         UTILS_Aide.Aide("Commandesdesrepas")
 
     def OnBoutonOutils(self, event):
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Importer les suggestions
@@ -347,7 +347,7 @@ class Dialog(wx.Dialog):
 
         # RAZ
         id = wx.Window.NewControlId()
-        item = wx.MenuItem(menuPop, id, _(u"Vider les données"))
+        item = wx.MenuItem(menuPop, id, _(u"Vider les donnÃ©es"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Gomme.png"), wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.ctrl_repas.RAZ, id=id)
@@ -359,7 +359,7 @@ class Dialog(wx.Dialog):
         self.ctrl_repas.MAJ(date_debut=self.ctrl_date_debut.GetDate(), date_fin=self.ctrl_date_fin.GetDate())
 
     def Importation(self):
-        """ Importation des données """
+        """ Importation des donnÃ©es """
         if self.IDmodele == None :
             IDmodele = 0
         else :
@@ -385,7 +385,7 @@ class Dialog(wx.Dialog):
                 self.ctrl_date_fin.SetDate(date_fin)
                 self.ctrl_observations.SetValue(observations)
 
-        # Modèle
+        # ModÃ¨le
         req = """SELECT modeles_commandes.nom, modeles_commandes.IDrestaurateur, parametres,
         restaurateurs.nom, restaurateurs.tel, restaurateurs.mail
         FROM modeles_commandes 
@@ -443,7 +443,7 @@ class Dialog(wx.Dialog):
         # validation des dates
         date_debut = self.ctrl_date_debut.GetDate()
         if self.ctrl_date_debut.Validation() == False or date_debut == None:
-            dlg = wx.MessageDialog(self, _(u"Vous devez saisir une date de début valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez saisir une date de dÃ©but valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_debut.SetFocus()
@@ -458,7 +458,7 @@ class Dialog(wx.Dialog):
             return False
 
         if date_debut > date_fin :
-            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas saisir une date de début supérieure à la date de fin !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas saisir une date de dÃ©but supÃ©rieure Ã  la date de fin !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_debut.SetFocus()
@@ -483,10 +483,10 @@ class Dialog(wx.Dialog):
         # Sauvegarde des repas
         self.ctrl_repas.Sauvegarde(IDcommande=self.IDcommande)
 
-        # Clôture de la base
+        # ClÃ´ture de la base
         DB.Close()
 
-        # Fermeture de la fenêtre
+        # Fermeture de la fenÃªtre
         UTILS_Dialogs.SaveSizePerso(self, __file__)
         self.EndModal(wx.ID_OK)
 
@@ -509,14 +509,14 @@ class Dialog(wx.Dialog):
     def CreationPDF(self, nomDoc=FonctionsPerso.GenerationNomDoc("COMMANDE_REPAS", "pdf"), afficherDoc=True):
         dictChampsFusion = {}
 
-        # Récupération des données
+        # RÃ©cupÃ©ration des donnÃ©es
         nom_commande = self.ctrl_nom.GetValue()
         date_debut = self.ctrl_date_debut.GetDate()
         date_fin = self.ctrl_date_fin.GetDate()
         observations = self.ctrl_observations.GetValue()
         dictDonnees = self.ctrl_repas.GetDonnees()
 
-        # Récupération des options d'impression
+        # RÃ©cupÃ©ration des options d'impression
         global DICT_INFOS_IMPRESSION
         DICT_INFOS_IMPRESSION = {"date_debut" : date_debut, "date_fin" : date_fin}
         dlg = DLG_Options_impression_pdf.Dialog(self, categorie="commande_repas", ctrl=CTRL_Options_impression)
@@ -527,7 +527,7 @@ class Dialog(wx.Dialog):
             dlg.Destroy()
             return False
 
-        # Création du PDF
+        # CrÃ©ation du PDF
         from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
         from reportlab.platypus.flowables import ParagraphAndImage, Image
         from reportlab.lib.pagesizes import A4
@@ -546,12 +546,12 @@ class Dialog(wx.Dialog):
 
         largeurContenu = largeur_page - 75
 
-        # Création du titre du document
+        # CrÃ©ation du titre du document
         def Header():
             dataTableau = []
             largeursColonnes = ( (largeurContenu-100, 100) )
             dateDuJour = UTILS_Dates.DateEngFr(str(datetime.date.today()))
-            dataTableau.append( (_(u"Commande des repas"), _(u"%s\nEdité le %s") % (UTILS_Organisateur.GetNom(), dateDuJour)) )
+            dataTableau.append( (_(u"Commande des repas"), _(u"%s\nEditÃ© le %s") % (UTILS_Organisateur.GetNom(), dateDuJour)) )
             style = TableStyle([
                     ('BOX', (0,0), (-1,-1), 0.25, colors.black),
                     ('VALIGN', (0,0), (-1,-1), 'TOP'),
@@ -565,10 +565,10 @@ class Dialog(wx.Dialog):
             story.append(tableau)
             story.append(Spacer(0, 10))
 
-        # Insère un header
+        # InsÃ¨re un header
         Header()
 
-        # Insère le nom et la période de la commande
+        # InsÃ¨re le nom et la pÃ©riode de la commande
         style_titre_commande = ParagraphStyle(name="1", alignment=1, fontName="Helvetica-Bold", fontSize=dictOptions["taille_texte_titre"], leading=8, spaceAfter=14)
         story.append(Paragraph(_(u"<para>%s - Du %s au %s</para>") % (nom_commande, UTILS_Dates.DateDDEnFr(date_debut), UTILS_Dates.DateDDEnFr(date_fin)), style_titre_commande))
 
@@ -591,7 +591,7 @@ class Dialog(wx.Dialog):
             for dictColonne in dictDonnees["liste_colonnes"] :
                 dictLargeurs[dictColonne["IDcolonne"]] = 1.0 * dictColonne["largeur"] / total_largeurs_colonnes * largeur_colonnes
 
-        # Dessin du tableau de données
+        # Dessin du tableau de donnÃ©es
         dataTableau = []
         largeursColonnes = [largeur_colonne_date,]
 
@@ -612,7 +612,7 @@ class Dialog(wx.Dialog):
         for numLigne in range(0, len(dictDonnees["liste_dates"])):
             ligne = []
 
-            # Ajout de la date à la ligne
+            # Ajout de la date Ã  la ligne
             date = dictDonnees["liste_dates"][numLigne]
 
             afficher_ligne = True
@@ -627,7 +627,7 @@ class Dialog(wx.Dialog):
                     valeur = date
                 ligne.append(Paragraph(valeur, style_entete))
 
-                # Ajout des cases à la ligne
+                # Ajout des cases Ã  la ligne
                 numColonne = 0
                 for dictColonne in dictDonnees["liste_colonnes"]:
 
@@ -637,19 +637,19 @@ class Dialog(wx.Dialog):
                         case = dictDonnees["cases"][(numLigne, numColonne)]
                         valeur = case.GetValeur()
 
-                        # Recherche le style à appliquer
+                        # Recherche le style Ã  appliquer
                         if "numerique" in case.categorieColonne:
                             style = style_numerique
 
-                            # Définit le style de la case total
+                            # DÃ©finit le style de la case total
                             if "total" in case.categorieColonne or numLigne == len(dictDonnees["liste_dates"])-1 :
                                 style = style_total
 
                             if numLigne == len(dictDonnees["liste_dates"]) - 1:
-                                # Récupère la valeur total de la colonne
+                                # RÃ©cupÃ¨re la valeur total de la colonne
                                 valeur = dict_totaux_colonnes.get(numColonne, 0)
                             else :
-                                # Mémorise total de la colonne numérique
+                                # MÃ©morise total de la colonne numÃ©rique
                                 if (numColonne in dict_totaux_colonnes) == False:
                                     dict_totaux_colonnes[numColonne] = 0
                                 dict_totaux_colonnes[numColonne] += valeur
@@ -686,7 +686,7 @@ class Dialog(wx.Dialog):
                 listeStyles.insert(0, ('BACKGROUND', (numColonne, 1), (numColonne, -1), couleur_fond_total))
             numColonne += 1
 
-        # Création du tableau
+        # CrÃ©ation du tableau
         tableau = Table(dataTableau, largeursColonnes, repeatRows=1)
         style = TableStyle(listeStyles)
         tableau.setStyle(style)
@@ -704,7 +704,7 @@ class Dialog(wx.Dialog):
         if afficherDoc == True :
             FonctionsPerso.LanceFichierExterne(nomDoc)
 
-        # Mémorisation des champs de fusion
+        # MÃ©morisation des champs de fusion
         dictChampsFusion["{NOM_COMMANDE}"] = nom_commande
         dictChampsFusion["{DATE_DEBUT}"] = UTILS_Dates.DateDDEnFr(date_debut)
         dictChampsFusion["{DATE_FIN}"] = UTILS_Dates.DateDDEnFr(date_fin)
@@ -720,12 +720,12 @@ class CTRL_Options_impression(DLG_Options_impression_pdf.CTRL_Parametres):
         # Affichage
         self.Append(wxpg.PropertyCategory(_(u"Affichage")))
 
-        # Période à afficher
+        # PÃ©riode Ã  afficher
         # date_debut = DICT_INFOS_IMPRESSION["date_debut"]
         # date_fin = DICT_INFOS_IMPRESSION["date_fin"]
         # if date_debut != None and date_fin != None :
         #
-        #     propriete = wxpg.StringProperty(label=_(u"Date de début"), name="date_debut", value=UTILS_Dates.DateDDEnFr(date_debut))
+        #     propriete = wxpg.StringProperty(label=_(u"Date de dÃ©but"), name="date_debut", value=UTILS_Dates.DateDDEnFr(date_debut))
         #     propriete.SetEditor("EditeurDate")
         #     self.Append(propriete)
         #
@@ -735,7 +735,7 @@ class CTRL_Options_impression(DLG_Options_impression_pdf.CTRL_Parametres):
 
         # Masquer dates anciennes
         propriete = wxpg.BoolProperty(label=_(u"Masquer les anciennes dates"), name="masquer_dates_anciennes", value=False)
-        propriete.SetHelpString(_(u"Cochez cette case pour masquer les dates passées"))
+        propriete.SetHelpString(_(u"Cochez cette case pour masquer les dates passÃ©es"))
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
@@ -751,21 +751,21 @@ class CTRL_Options_impression(DLG_Options_impression_pdf.CTRL_Parametres):
         # Orientation page
         propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Orientation de la page"), name="orientation", liste_choix=[("portrait", _(u"Portrait")), ("paysage", _(u"Paysage"))], valeur="portrait")
         propriete.SetEditor("EditeurChoix")
-        propriete.SetHelpString(_(u"Sélectionnez l'orientation de la page"))
+        propriete.SetHelpString(_(u"SÃ©lectionnez l'orientation de la page"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
         self.Append( wxpg.PropertyCategory(_(u"Couleurs de fond")) )
 
         # Couleur
-        propriete = wxpg.ColourProperty(label=_(u"Fond entêtes"), name="couleur_fond_entetes", value=wx.Colour(230, 230, 230))
-        propriete.SetHelpString(_(u"Sélectionnez une couleur"))
+        propriete = wxpg.ColourProperty(label=_(u"Fond entÃªtes"), name="couleur_fond_entetes", value=wx.Colour(230, 230, 230))
+        propriete.SetHelpString(_(u"SÃ©lectionnez une couleur"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
         # Couleur
         propriete = wxpg.ColourProperty(label=_(u"Fond colonne total"), name="couleur_fond_total", value=wx.Colour(245, 245, 245))
-        propriete.SetHelpString(_(u"Sélectionnez une couleur"))
+        propriete.SetHelpString(_(u"SÃ©lectionnez une couleur"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
@@ -773,14 +773,14 @@ class CTRL_Options_impression(DLG_Options_impression_pdf.CTRL_Parametres):
 
         # Taille police
         propriete = wxpg.IntProperty(label=_(u"Taille de texte"), name="taille_texte", value=7)
-        propriete.SetHelpString(_(u"Saisissez une taille de texte (7 par défaut)"))
+        propriete.SetHelpString(_(u"Saisissez une taille de texte (7 par dÃ©faut)"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
         self.SetPropertyEditor("taille_texte", "SpinCtrl")
 
         # Taille police
         propriete = wxpg.IntProperty(label=_(u"Taille de texte du titre"), name="taille_texte_titre", value=9)
-        propriete.SetHelpString(_(u"Saisissez une taille de texte (9 par défaut)"))
+        propriete.SetHelpString(_(u"Saisissez une taille de texte (9 par dÃ©faut)"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
         self.SetPropertyEditor("taille_texte", "SpinCtrl")
@@ -788,14 +788,14 @@ class CTRL_Options_impression(DLG_Options_impression_pdf.CTRL_Parametres):
         self.Append( wxpg.PropertyCategory(_(u"Colonnes")) )
 
         # Largeur automatique
-        propriete = wxpg.BoolProperty(label=_(u"Largeur auto ajustée"), name="largeur_colonnes_auto", value=True)
+        propriete = wxpg.BoolProperty(label=_(u"Largeur auto ajustÃ©e"), name="largeur_colonnes_auto", value=True)
         propriete.SetHelpString(_(u"Cochez cette case pour laisser Noethys ajuster la largeur des colonnes automatiquement"))
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
         # Largeur colonne labels
         propriete = wxpg.IntProperty(label=_(u"Largeur colonne date"), name="largeur_colonne_date", value=110)
-        propriete.SetHelpString(_(u"Saisissez la largeur pour la colonne date (110 par défaut)"))
+        propriete.SetHelpString(_(u"Saisissez la largeur pour la colonne date (110 par dÃ©faut)"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
         self.SetPropertyEditor("largeur_colonne_date", "SpinCtrl")

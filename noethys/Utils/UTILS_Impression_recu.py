@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activitÈs
+# Application :    Noethys, gestion multi-activit√©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -21,7 +21,7 @@ from Ctrl import CTRL_Bouton_image
 from Dlg import DLG_Noedoc
 
 from Utils import UTILS_Config
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"§")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"‚Ç¨")
 MONNAIE_SINGULIER = UTILS_Config.GetParametre("monnaie_singulier", _(u"Euro"))
 MONNAIE_DIVISION = UTILS_Config.GetParametre("monnaie_division", _(u"Centime"))
 
@@ -49,7 +49,7 @@ def DateEngFr(textDate):
 
 
 def Template(canvas, doc):
-    """ PremiËre page de l'attestation """
+    """ Premi√®re page de l'attestation """
     doc.modeleDoc.DessineFond(canvas) 
     doc.modeleDoc.DessineFormes(canvas) 
     doc.modeleDoc.DessineImages(canvas, dictChamps=DICT_VALEURS)
@@ -61,7 +61,7 @@ class MyPageTemplate(PageTemplate):
         self.pageWidth = pageSize[0]
         self.pageHeight = pageSize[1]
         
-        # RÈcupËre les coordonnÈes du cadre principal
+        # R√©cup√®re les coordonn√©es du cadre principal
         cadre_principal = doc.modeleDoc.FindObjet("cadre_principal")
         x, y, l, h = doc.modeleDoc.GetCoordsObjet(cadre_principal)
         global CADRE_CONTENU
@@ -85,15 +85,15 @@ class Impression():
         # Initialisation du document
         doc = BaseDocTemplate(nomDoc, pagesize=TAILLE_PAGE, showBoundary=False)
 
-        # MÈmorise le ID du modËle
+        # M√©morise le ID du mod√®le
         modeleDoc = DLG_Noedoc.ModeleDoc(IDmodele=IDmodele)
         doc.modeleDoc = modeleDoc
 
-        # VÈrifie qu'un cadre principal existe bien dans le document
+        # V√©rifie qu'un cadre principal existe bien dans le document
         if doc.modeleDoc.FindObjet("cadre_principal") == None :
             raise Exception("Votre modele de document doit obligatoirement comporter un cadre principal. Retournez dans l'editeur de document et utilisez pour votre modele la commande 'Inserer un objet special > Inserer le cadre principal'.")
 
-        # MÈmorise le ID du modËle
+        # M√©morise le ID du mod√®le
         modeleDoc = DLG_Noedoc.ModeleDoc(IDmodele=IDmodele)
         doc.modeleDoc = modeleDoc
         
@@ -108,7 +108,7 @@ class Impression():
         styleTexte.borderPadding = 9
         styleTexte.leading = 12
         
-##        # DÈfinit le template des pages suivantes
+##        # D√©finit le template des pages suivantes
 ##        story.append(NextPageTemplate("suivante"))
         
         
@@ -117,7 +117,7 @@ class Impression():
         # ------------------- TITRE -----------------
         dataTableau = []
         largeursColonnes = [ TAILLE_CADRE_CONTENU[2], ]
-        dataTableau.append((_(u"ReÁu de rËglement"),))
+        dataTableau.append((_(u"Re√ßu de r√®glement"),))
         dataTableau.append((u"",))
         style = TableStyle([
                 ('VALIGN', (0,0), (-1,-1), 'MIDDLE'), 
@@ -160,14 +160,14 @@ class Impression():
                                   fontName="Helvetica-Bold",
                                   fontSize=9,
                                 )
-        dataTableau.append( (_(u"CaractÈristiques du rËglement"), "") )
+        dataTableau.append( (_(u"Caract√©ristiques du r√®glement"), "") )
         montantEnLettres = UTILS_Conversion.trad(DICT_VALEURS["montant"], MONNAIE_SINGULIER, MONNAIE_DIVISION).strip() 
-        dataTableau.append( (_(u"Montant du rËglement :"), Paragraph(montantEnLettres.capitalize(), paraStyle) ) )
-        dataTableau.append( (_(u"Mode de rËglement :"), Paragraph(DICT_VALEURS["nomMode"], paraStyle) ) )
+        dataTableau.append( (_(u"Montant du r√®glement :"), Paragraph(montantEnLettres.capitalize(), paraStyle) ) )
+        dataTableau.append( (_(u"Mode de r√®glement :"), Paragraph(DICT_VALEURS["nomMode"], paraStyle) ) )
         dataTableau.append( (_(u"Nom du payeur :"), Paragraph(DICT_VALEURS["nomPayeur"], paraStyle) ) )
-        if DICT_VALEURS["nomEmetteur"] != None : dataTableau.append( (_(u"Nom de l'Èmetteur :"), Paragraph(DICT_VALEURS["nomEmetteur"], paraStyle) ) )
-        if DICT_VALEURS["numPiece"] not in ("", None) : dataTableau.append( (_(u"NumÈro de piËce :"), Paragraph(DICT_VALEURS["numPiece"], paraStyle) ) )
-        if DICT_VALEURS["date_differe"] not in ("", None): dataTableau.append((_(u"Encaissement diffÈrÈ :"), Paragraph(_(u"A partir du %s") % DICT_VALEURS["{DATE_DIFFERE}"], paraStyle)))
+        if DICT_VALEURS["nomEmetteur"] != None : dataTableau.append( (_(u"Nom de l'√©metteur :"), Paragraph(DICT_VALEURS["nomEmetteur"], paraStyle) ) )
+        if DICT_VALEURS["numPiece"] not in ("", None) : dataTableau.append( (_(u"Num√©ro de pi√®ce :"), Paragraph(DICT_VALEURS["numPiece"], paraStyle) ) )
+        if DICT_VALEURS["date_differe"] not in ("", None): dataTableau.append((_(u"Encaissement diff√©r√© :"), Paragraph(_(u"A partir du %s") % DICT_VALEURS["{DATE_DIFFERE}"], paraStyle)))
         
         style = TableStyle([
                 ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'), 
@@ -195,7 +195,7 @@ class Impression():
             story.append(Paragraph(u"<i>%s</i>" % textePrestations, paraStyleIntro))
             story.append(Spacer(0,20))
 
-            dataTableau = [(_(u"Date"), _(u"ActivitÈ"), _(u"Individu"), _(u"IntitulÈ"), _(u"Part utilisÈe")),]
+            dataTableau = [(_(u"Date"), _(u"Activit√©"), _(u"Individu"), _(u"Intitul√©"), _(u"Part utilis√©e")),]
             largeursColonnes = [50, 95, 70, 135, 50]
 
             paraStyle = ParagraphStyle(name="detail",
@@ -247,7 +247,7 @@ class Impression():
         except Exception as err :
             print("Erreur dans ouverture PDF :", err)
             if "Permission denied" in err :
-                dlg = wx.MessageDialog(None, _(u"Noethys ne peut pas crÈer le PDF.\n\nVeuillez vÈrifier qu'un autre PDF n'est pas dÈj‡ ouvert en arriËre-plan..."), _(u"Erreur d'Èdition"), wx.OK | wx.ICON_ERROR)
+                dlg = wx.MessageDialog(None, _(u"Noethys ne peut pas cr√©er le PDF.\n\nVeuillez v√©rifier qu'un autre PDF n'est pas d√©j√† ouvert en arri√®re-plan..."), _(u"Erreur d'√©dition"), wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return

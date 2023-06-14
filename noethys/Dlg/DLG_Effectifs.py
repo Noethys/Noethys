@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -32,7 +32,7 @@ class CTRL(aui.AuiNotebook):
         self.ctrl_remplissage = DLG_Remplissage.Panel(self)
         self.AddPage(self.ctrl_remplissage, _(u"Consommations"))
         try :
-            self.SetPageTooltip(0, _(u"Affiche l'état des consommations. \nVous pouvez glisser-déposer cet onglet pour déplacer la page."))
+            self.SetPageTooltip(0, _(u"Affiche l'Ã©tat des consommations. \nVous pouvez glisser-dÃ©poser cet onglet pour dÃ©placer la page."))
         except :
             pass
 
@@ -40,15 +40,15 @@ class CTRL(aui.AuiNotebook):
         self.ctrl_nbre_inscrits = DLG_Nbre_inscrits.Panel(self)
         self.AddPage(self.ctrl_nbre_inscrits, _(u"Inscriptions"))
         try :
-            self.SetPageTooltip(1, _(u"Affiche l'état des inscriptions. \nVous pouvez glisser-déposer cet onglet pour déplacer la page."))
+            self.SetPageTooltip(1, _(u"Affiche l'Ã©tat des inscriptions. \nVous pouvez glisser-dÃ©poser cet onglet pour dÃ©placer la page."))
         except :
             pass
 
-        # CTRL Evènements
+        # CTRL EvÃ¨nements
         self.ctrl_evenements = DLG_Recap_evenements.Panel(self)
-        self.AddPage(self.ctrl_evenements, _(u"Evènements"))
+        self.AddPage(self.ctrl_evenements, _(u"EvÃ¨nements"))
         try :
-            self.SetPageTooltip(2, _(u"Affiche l'état des évènements. \nVous pouvez glisser-déposer cet onglet pour déplacer la page."))
+            self.SetPageTooltip(2, _(u"Affiche l'Ã©tat des Ã©vÃ¨nements. \nVous pouvez glisser-dÃ©poser cet onglet pour dÃ©placer la page."))
         except :
             pass
 
@@ -56,7 +56,7 @@ class CTRL(aui.AuiNotebook):
         self.ctrl_locations = DLG_Tableau_bord_locations.Panel(self)
         self.AddPage(self.ctrl_locations, _(u"Locations"))
         try :
-            self.SetPageTooltip(3, _(u"Affiche l'état des locations. \nVous pouvez glisser-déposer cet onglet pour déplacer la page."))
+            self.SetPageTooltip(3, _(u"Affiche l'Ã©tat des locations. \nVous pouvez glisser-dÃ©poser cet onglet pour dÃ©placer la page."))
         except :
             pass
 
@@ -64,7 +64,7 @@ class CTRL(aui.AuiNotebook):
         self.Bind(aui.EVT_AUINOTEBOOK_PAGE_CHANGED, self.OnPageChanged)
 
     def OnPageChanged(self, event):
-        """ Quand une page du notebook est sélectionnée """
+        """ Quand une page du notebook est sÃ©lectionnÃ©e """
         self.MAJ()
 
     def MAJ(self):

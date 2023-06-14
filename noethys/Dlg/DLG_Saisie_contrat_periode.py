@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-14 Ivan LUCAS
@@ -29,8 +29,8 @@ class Dialog(wx.Dialog):
         self.track = track
         self.listeTracks = listeTracks
 
-        # Généralités
-        self.box_generalites_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Généralités"))
+        # GÃ©nÃ©ralitÃ©s
+        self.box_generalites_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"GÃ©nÃ©ralitÃ©s"))
         self.label_dates = wx.StaticText(self, wx.ID_ANY, _(u"Dates :"))
         self.ctrl_date_debut = CTRL_Saisie_date.Date2(self)
         self.label_au = wx.StaticText(self, wx.ID_ANY, _(u"au"))
@@ -75,9 +75,9 @@ class Dialog(wx.Dialog):
         
         # Init
         if self.track == None :
-            self.SetTitle(_(u"Saisie d'une période de facturation"))
+            self.SetTitle(_(u"Saisie d'une pÃ©riode de facturation"))
         else :
-            self.SetTitle(_(u"Modification d'une période de facturation"))
+            self.SetTitle(_(u"Modification d'une pÃ©riode de facturation"))
             self.Importation()
         
         if self.track != None :
@@ -88,26 +88,26 @@ class Dialog(wx.Dialog):
 
 
     def __set_properties(self):
-        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez la date de début de la période")))
-        self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez la date de fin de la période")))
+        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez la date de dÃ©but de la pÃ©riode")))
+        self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez la date de fin de la pÃ©riode")))
         self.ctrl_label_prestation.SetToolTip(wx.ToolTip(_(u"Saisissez le label de la prestation")))
         self.ctrl_date_prestation.SetToolTip(wx.ToolTip(_(u"Saisissez la date de la prestation")))
         self.ctrl_montant_prestation.SetToolTip(wx.ToolTip(_(u"Saisissez le montant de la prestation")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
-##        self.bouton_generer_conso.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour générer automatiquement des consommations")))
+##        self.bouton_generer_conso.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour gÃ©nÃ©rer automatiquement des consommations")))
 ##        self.bouton_ajouter_conso.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter une consommation")))
-##        self.bouton_modifier_conso.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la consommation sélectionnée")))
-        self.bouton_supprimer_conso.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer les consommations sélectionnées ou cochées")))
+##        self.bouton_modifier_conso.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la consommation sÃ©lectionnÃ©e")))
+        self.bouton_supprimer_conso.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer les consommations sÃ©lectionnÃ©es ou cochÃ©es")))
         self.bouton_cocher_conso.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour tout cocher")))
-        self.bouton_decocher_conso.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour tout décocher")))
+        self.bouton_decocher_conso.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour tout dÃ©cocher")))
         self.SetMinSize((500, 550))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(4, 1, 10, 10)
         
-        # Généralités
+        # GÃ©nÃ©ralitÃ©s
         box_generalites = wx.StaticBoxSizer(self.box_generalites_staticbox, wx.VERTICAL)
         grid_sizer_generalites = wx.FlexGridSizer(2, 2, 10, 10)
         grid_sizer_dates = wx.FlexGridSizer(1, 4, 5, 5)
@@ -206,7 +206,7 @@ class Dialog(wx.Dialog):
     def OnBoutonOk(self, event):  
         date_debut = self.ctrl_date_debut.GetDate()
         if date_debut == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement renseigner la date de début !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement renseigner la date de dÃ©but !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -219,7 +219,7 @@ class Dialog(wx.Dialog):
             return
 
         if date_fin < date_debut :
-            dlg = wx.MessageDialog(self, _(u"La date de début ne doit pas être supérieure à la date de fin !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"La date de dÃ©but ne doit pas Ãªtre supÃ©rieure Ã  la date de fin !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -243,10 +243,10 @@ class Dialog(wx.Dialog):
             if reponse != wx.ID_YES :
                 return
         
-        # Vérifie que cette période ne chevauche pas une autre période
+        # VÃ©rifie que cette pÃ©riode ne chevauche pas une autre pÃ©riode
         for track in self.listeTracks :
             if track != self.track and date_fin >= track.date_debut and date_debut <= track.date_fin :
-                dlg = wx.MessageDialog(self, _(u"Création impossible !\n\nCette période chevauche la période existante '%s' (du %s au %s).") % (track.label_prestation, UTILS_Dates.DateDDEnFr(track.date_debut), UTILS_Dates.DateDDEnFr(track.date_fin)), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"CrÃ©ation impossible !\n\nCette pÃ©riode chevauche la pÃ©riode existante '%s' (du %s au %s).") % (track.label_prestation, UTILS_Dates.DateDDEnFr(track.date_debut), UTILS_Dates.DateDDEnFr(track.date_fin)), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-13 Ivan LUCAS
@@ -24,7 +24,7 @@ else :
 
 
 class Dialog(wx.Dialog):
-    def __init__(self, parent, listeBoutons=[], titre=_(u"Quel type de prélèvement souhaitez-vous créer ?"), intro=_(u"Cliquez sur la norme souhaitée..."), minSize=(500, 400)):
+    def __init__(self, parent, listeBoutons=[], titre=_(u"Quel type de prÃ©lÃ¨vement souhaitez-vous crÃ©er ?"), intro=_(u"Cliquez sur la norme souhaitÃ©e..."), minSize=(500, 400)):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         self.minSize = minSize

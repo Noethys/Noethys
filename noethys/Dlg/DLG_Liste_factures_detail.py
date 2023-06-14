@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-19 Ivan LUCAS
@@ -74,20 +74,20 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         
-        intro = _(u"Vous pouvez ici consulter la liste détaillée des factures. Il est possible d'afficher pour chaque facture le montant des prestations regroupées par label ou par activité.")
-        titre = _(u"Liste détaillée des factures")
+        intro = _(u"Vous pouvez ici consulter la liste dÃ©taillÃ©e des factures. Il est possible d'afficher pour chaque facture le montant des prestations regroupÃ©es par label ou par activitÃ©.")
+        titre = _(u"Liste dÃ©taillÃ©e des factures")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Facture.png")
 
-        # Paramètres
+        # ParamÃ¨tres
         self.staticbox_options_staticbox = wx.StaticBox(self, -1, _(u"Filtres"))
 
-        self.label_annee = wx.StaticText(self, -1, _(u"Année d'édition :"))
+        self.label_annee = wx.StaticText(self, -1, _(u"AnnÃ©e d'Ã©dition :"))
         self.ctrl_annee = CTRL_Annee(self)
         self.ctrl_annee.SetMinSize((120, -1))
 
         self.label_tri = wx.StaticText(self, -1, _(u"Tri :"))
-        self.ctrl_tri = wx.Choice(self, -1, choices = (_(u"Ordre de saisie"), _(u"Date d'édition"), _(u"Date début"), _(u"Date fin"), _(u"Numéro"), _(u"Famille"), _(u"Montant")))
+        self.ctrl_tri = wx.Choice(self, -1, choices = (_(u"Ordre de saisie"), _(u"Date d'Ã©dition"), _(u"Date dÃ©but"), _(u"Date fin"), _(u"NumÃ©ro"), _(u"Famille"), _(u"Montant")))
         self.ctrl_tri.Select(1) 
         
         self.label_ordre = wx.StaticText(self, -1, _(u"Ordre :"))
@@ -99,8 +99,8 @@ class Dialog(wx.Dialog):
         self.ctrl_factures = self.listviewAvecFooter.GetListview()
         self.ctrl_recherche = OL_Liste_factures_detail.CTRL_Outils(self, listview=self.ctrl_factures)
 
-        self.label_regroupement = wx.StaticText(self, -1, _(u"Détail :"))
-        self.choix_regroupements = [("label", _(u"Nom de prestation")), ("IDactivite", _(u"Nom de l'activité"))]
+        self.label_regroupement = wx.StaticText(self, -1, _(u"DÃ©tail :"))
+        self.choix_regroupements = [("label", _(u"Nom de prestation")), ("IDactivite", _(u"Nom de l'activitÃ©"))]
         self.ctrl_regroupement = wx.Choice(self, -1, choices=[label for code, label in self.choix_regroupements])
         self.ctrl_regroupement.Select(0)
         self.Bind(wx.EVT_CHOICE, self.OnChoixRegroupement, self.ctrl_regroupement)
@@ -126,13 +126,13 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_CHOICE, self.OnParametre, self.ctrl_tri)
         self.Bind(wx.EVT_CHOICE, self.OnParametre, self.ctrl_ordre)
         
-        # Init contrôles
+        # Init contrÃ´les
         self.OnParametre()
 
     def __set_properties(self):
-        self.ctrl_tri.SetToolTip(wx.ToolTip(_(u"Sélectionnez le critère de tri")))
-        self.ctrl_ordre.SetToolTip(wx.ToolTip(_(u"Sélectionnez l'ordre de tri")))
-        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour créer un aperçu de la liste")))
+        self.ctrl_tri.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez le critÃ¨re de tri")))
+        self.ctrl_ordre.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez l'ordre de tri")))
+        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour crÃ©er un aperÃ§u de la liste")))
         self.bouton_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer la liste")))
         self.bouton_texte.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter la liste au format Texte")))
         self.bouton_excel.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter la liste au format Excel")))
@@ -144,7 +144,7 @@ class Dialog(wx.Dialog):
         grid_sizer_base = wx.FlexGridSizer(rows=4, cols=1, vgap=10, hgap=10)
         grid_sizer_base.Add(self.ctrl_bandeau, 0, wx.EXPAND, 0)
         
-        # Paramètres
+        # ParamÃ¨tres
         staticbox_options = wx.StaticBoxSizer(self.staticbox_options_staticbox, wx.VERTICAL)
         
         grid_sizer_options = wx.FlexGridSizer(rows=1, cols=16, vgap=5, hgap=5)
@@ -215,7 +215,7 @@ class Dialog(wx.Dialog):
     def OnParametre(self, event=None):
         listeFiltres = []
         
-        # Année
+        # AnnÃ©e
         annee = self.ctrl_annee.GetID() 
         if annee != None :
             listeFiltres.append("factures.date_edition>='%d-01-01' and factures.date_edition<='%d-12-31' " % (annee, annee))
@@ -238,7 +238,7 @@ class Dialog(wx.Dialog):
         else :
             ordreAscendant = False
         
-        # Envoi des paramètres au listview
+        # Envoi des paramÃ¨tres au listview
         self.ctrl_factures.numColonneTri = numColonneTri
         self.ctrl_factures.ordreAscendant = ordreAscendant
         self.ctrl_factures.listeFiltres = listeFiltres

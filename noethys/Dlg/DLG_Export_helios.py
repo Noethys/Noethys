@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-13 Ivan LUCAS
@@ -34,7 +34,7 @@ import FonctionsPerso
 from Utils.UTILS_Decimal import FloatToDecimal as FloatToDecimal
 
 from Utils import UTILS_Config
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"â‚¬")
 
 
 class CTRL_Type_impression(CTRL_Ultrachoice.CTRL):
@@ -63,8 +63,8 @@ class Dialog(wx.Dialog):
         self.parent = parent
 
         # Bandeau
-        intro = _(u"Vous pouvez ici exporter les factures au format ROLMRE pour Hélios. Cochez les factures à inclure dans le rôle puis cliquez sur le bouton Fichier pour générer un fichier de transfert normalisé ou le bouton Impression pour imprimer des versions papier.")
-        titre = _(u"Export vers Hélios (ROLMRE)")
+        intro = _(u"Vous pouvez ici exporter les factures au format ROLMRE pour HÃ©lios. Cochez les factures Ã  inclure dans le rÃ´le puis cliquez sur le bouton Fichier pour gÃ©nÃ©rer un fichier de transfert normalisÃ© ou le bouton Impression pour imprimer des versions papier.")
+        titre = _(u"Export vers HÃ©lios (ROLMRE)")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Helios.png")
         
@@ -72,15 +72,15 @@ class Dialog(wx.Dialog):
         self.box_factures_staticbox = wx.StaticBox(self, -1, _(u"Factures"))
         self.ctrl_factures = CTRL_Liste_factures.CTRL(self, filtres=filtres)
         
-        # Paramètres
-        self.box_parametres_staticbox = wx.StaticBox(self, -1, _(u"Paramètres du rôle"))
-        self.label_date = wx.StaticText(self, -1, _(u"Date d'émission :"))
+        # ParamÃ¨tres
+        self.box_parametres_staticbox = wx.StaticBox(self, -1, _(u"ParamÃ¨tres du rÃ´le"))
+        self.label_date = wx.StaticText(self, -1, _(u"Date d'Ã©mission :"))
         self.ctrl_date = CTRL_Saisie_date.Date2(self)
         self.label_exercice = wx.StaticText(self, -1, _(u"Exercice :"))
         self.ctrl_exercice = wx.TextCtrl(self, -1, u"")
-        self.label_num_role = wx.StaticText(self, -1, _(u"Numéro de rôle :"))
+        self.label_num_role = wx.StaticText(self, -1, _(u"NumÃ©ro de rÃ´le :"))
         self.ctrl_num_role = wx.TextCtrl(self, -1, u"")
-        self.label_code_coll = wx.StaticText(self, -1, _(u"Code collectivité :"))
+        self.label_code_coll = wx.StaticText(self, -1, _(u"Code collectivitÃ© :"))
         self.ctrl_code_coll = wx.TextCtrl(self, -1, u"")
         self.label_code_nat = wx.StaticText(self, -1, _(u"Code Nature :"))
         self.ctrl_code_nat = wx.TextCtrl(self, -1, u"")
@@ -101,14 +101,14 @@ class Dialog(wx.Dialog):
         # Sortie
         self.box_fichier_staticbox = wx.StaticBox(self, -1, _(u"Fichier"))
         self.box_impression_staticbox = wx.StaticBox(self, -1, _(u"Impression"))
-        self.bouton_fichier = CTRL_Bouton_image.CTRL(self, texte=_(u"Générer le fichier ROLMRE"), cheminImage="Images/32x32/Disk.png")
+        self.bouton_fichier = CTRL_Bouton_image.CTRL(self, texte=_(u"GÃ©nÃ©rer le fichier ROLMRE"), cheminImage="Images/32x32/Disk.png")
         self.label_type = wx.StaticText(self, -1, _(u"Type :"))
         self.label_type.Show(False)
-        self.ctrl_type = CTRL_Type_impression(self, donnees=[ {"label" : _(u"Rôle détaillé"), "description" : _(u"Détail des prestations par famille"), "image" : wx.Bitmap(Chemins.GetStaticPath(u"Images/32x32/Facture.png"), wx.BITMAP_TYPE_ANY)},
-                                                                    {"label" : _(u"Rôle simplifié"), "description" : _(u"Total des prestations par famille"), "image" : wx.Bitmap(Chemins.GetStaticPath(u"Images/32x32/Document_1.png"), wx.BITMAP_TYPE_ANY)},
-                                                                    {"label" : _(u"Récapitulatif"), "description" : _(u"Total des prestations par activité"), "image" : wx.Bitmap(Chemins.GetStaticPath(u"Images/32x32/Document_2.png"), wx.BITMAP_TYPE_ANY)},
+        self.ctrl_type = CTRL_Type_impression(self, donnees=[ {"label" : _(u"RÃ´le dÃ©taillÃ©"), "description" : _(u"DÃ©tail des prestations par famille"), "image" : wx.Bitmap(Chemins.GetStaticPath(u"Images/32x32/Facture.png"), wx.BITMAP_TYPE_ANY)},
+                                                                    {"label" : _(u"RÃ´le simplifiÃ©"), "description" : _(u"Total des prestations par famille"), "image" : wx.Bitmap(Chemins.GetStaticPath(u"Images/32x32/Document_1.png"), wx.BITMAP_TYPE_ANY)},
+                                                                    {"label" : _(u"RÃ©capitulatif"), "description" : _(u"Total des prestations par activitÃ©"), "image" : wx.Bitmap(Chemins.GetStaticPath(u"Images/32x32/Document_2.png"), wx.BITMAP_TYPE_ANY)},
                                                                     ])
-        self.bouton_apercu = CTRL_Bouton_image.CTRL(self, texte=_(u"Aperçu"), cheminImage="Images/32x32/Apercu.png")
+        self.bouton_apercu = CTRL_Bouton_image.CTRL(self, texte=_(u"AperÃ§u"), cheminImage="Images/32x32/Apercu.png")
         self.bouton_apercu.SetMinSize((100, -1)) 
         
         # Boutons
@@ -124,7 +124,7 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonFermer, self.bouton_fermer)
         self.Bind(wx.EVT_CLOSE, self.OnBoutonFermer) 
         
-        # Init contrôles
+        # Init contrÃ´les
         self.ctrl_date.SetDate(datetime.date.today())
         self.ctrl_num_role.SetValue("%02d" % datetime.date.today().month)
         self.ctrl_exercice.SetValue("%04d" % datetime.date.today().year)
@@ -133,15 +133,15 @@ class Dialog(wx.Dialog):
         self.ctrl_code_rec.SetValue(UTILS_Parametres.Parametres(mode="get", categorie="rolmre", nom="code_rec", valeur=""))
 
     def __set_properties(self):
-        self.ctrl_date.SetToolTip(wx.ToolTip(_(u"Saisissez la date d'émission du rôle")))
-        self.ctrl_code_coll.SetToolTip(wx.ToolTip(_(u"Saisissez ici le code Collectivité du rôle (ROLCOL)")))
-        self.ctrl_exercice.SetToolTip(wx.ToolTip(_(u"Saisissez ici le code Exercice du rôle (ROLEX)")))
-        self.ctrl_code_nat.SetToolTip(wx.ToolTip(_(u"Saisissez ici le code Nature du rôle (ROLNAT)")))
-        self.ctrl_num_role.SetToolTip(wx.ToolTip(_(u"Saisissez ici le numéro de rôle du rôle (ROLROL)")))
-        self.ctrl_code_rec.SetToolTip(wx.ToolTip(_(u"Saisissez ici le code Recette du rôle (ROLREC)")))
-        self.bouton_fichier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour générer le fichier ROLMRE")))
-        self.ctrl_type.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici le type de l'impression")))
-        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher le rôle au format PDF")))
+        self.ctrl_date.SetToolTip(wx.ToolTip(_(u"Saisissez la date d'Ã©mission du rÃ´le")))
+        self.ctrl_code_coll.SetToolTip(wx.ToolTip(_(u"Saisissez ici le code CollectivitÃ© du rÃ´le (ROLCOL)")))
+        self.ctrl_exercice.SetToolTip(wx.ToolTip(_(u"Saisissez ici le code Exercice du rÃ´le (ROLEX)")))
+        self.ctrl_code_nat.SetToolTip(wx.ToolTip(_(u"Saisissez ici le code Nature du rÃ´le (ROLNAT)")))
+        self.ctrl_num_role.SetToolTip(wx.ToolTip(_(u"Saisissez ici le numÃ©ro de rÃ´le du rÃ´le (ROLROL)")))
+        self.ctrl_code_rec.SetToolTip(wx.ToolTip(_(u"Saisissez ici le code Recette du rÃ´le (ROLREC)")))
+        self.bouton_fichier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour gÃ©nÃ©rer le fichier ROLMRE")))
+        self.ctrl_type.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez ici le type de l'impression")))
+        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher le rÃ´le au format PDF")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         self.SetMinSize((740, 740))
@@ -156,7 +156,7 @@ class Dialog(wx.Dialog):
         
         grid_sizer_base.Add(box_factures, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
         
-        # Paramètres
+        # ParamÃ¨tres
         box_parametres = wx.StaticBoxSizer(self.box_parametres_staticbox, wx.VERTICAL)
         grid_sizer_parametres = wx.FlexGridSizer(rows=2, cols=8, vgap=5, hgap=10)
         
@@ -228,24 +228,24 @@ class Dialog(wx.Dialog):
         self.EndModal(wx.ID_CANCEL)
 
     def ValidationSaisie(self):
-        """ Validation des données saisies """
+        """ Validation des donnÃ©es saisies """
         tracks = self.ctrl_factures.GetTracksCoches() 
         if len(tracks) == 0 : 
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune facture à inclure dans le rôle !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune facture Ã  inclure dans le rÃ´le !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
         
         for track in tracks :
             if -track.solde < 0.0 :
-                dlg = wx.MessageDialog(self, _(u"La facture n°%s n'est pas valide car elle comporte un montant de %.2f %s, soit inférieure à 0.\n\nVeuillez la retirer de la sélection.") % (track.numero, -track.solde, SYMBOLE), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"La facture nÂ°%s n'est pas valide car elle comporte un montant de %.2f %s, soit infÃ©rieure Ã  0.\n\nVeuillez la retirer de la sÃ©lection.") % (track.numero, -track.solde, SYMBOLE), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
         
         date_emission = self.ctrl_date.GetDate()
         if date_emission == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez saisir une date d'émission pour ce rôle !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez saisir une date d'Ã©mission pour ce rÃ´le !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date.SetFocus()
@@ -253,7 +253,7 @@ class Dialog(wx.Dialog):
 
         code_col = self.ctrl_code_coll.GetValue()
         if code_col == "" :
-            dlg = wx.MessageDialog(self, _(u"Vous devez saisir le code Collectivité du rôle !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez saisir le code CollectivitÃ© du rÃ´le !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_code_coll.SetFocus()
@@ -261,7 +261,7 @@ class Dialog(wx.Dialog):
         
         code_nat = self.ctrl_code_nat.GetValue()
         if code_nat == "" :
-            dlg = wx.MessageDialog(self, _(u"Vous devez saisir le code Nature du rôle !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez saisir le code Nature du rÃ´le !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_code_nat.SetFocus()
@@ -269,7 +269,7 @@ class Dialog(wx.Dialog):
 
         code_rec = self.ctrl_code_rec.GetValue()
         if code_rec == "" :
-            dlg = wx.MessageDialog(self, _(u"Vous devez saisir le code Recette du rôle !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez saisir le code Recette du rÃ´le !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_code_rec.SetFocus()
@@ -277,7 +277,7 @@ class Dialog(wx.Dialog):
         
         exercice = self.ctrl_exercice.GetValue()
         if exercice == "" :
-            dlg = wx.MessageDialog(self, _(u"Vous devez saisir l'exercice du rôle !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez saisir l'exercice du rÃ´le !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_exercice.SetFocus()
@@ -285,7 +285,7 @@ class Dialog(wx.Dialog):
 
         num_role = self.ctrl_num_role.GetValue()
         if num_role == "" :
-            dlg = wx.MessageDialog(self, _(u"Vous devez saisir le numéro de rôle !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez saisir le numÃ©ro de rÃ´le !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_num_role.SetFocus()
@@ -297,7 +297,7 @@ class Dialog(wx.Dialog):
         if self.ValidationSaisie() == False :
             return
         
-        # Récupération des paramètres
+        # RÃ©cupÃ©ration des paramÃ¨tres
         tracks = self.ctrl_factures.GetTracksCoches() 
         date_emission = self.ctrl_date.GetDate()
         code_col = self.ctrl_code_coll.GetValue()
@@ -333,27 +333,27 @@ class Dialog(wx.Dialog):
                 
                 
             dictDonnees = {
-                "ROLCOL" : code_col, # Code Collectivité
-                "ROLNAT" : code_nat, # Nature du rôle
+                "ROLCOL" : code_col, # Code CollectivitÃ©
+                "ROLNAT" : code_nat, # Nature du rÃ´le
                 "ROLEX" : exercice, # Exercice
                 "ROLREC" : code_rec, # Code Recette
-                "ROLROL" : num_role, # Numéro de rôle
-                "date_edition" : date_emission, # Date d'édition
+                "ROLROL" : num_role, # NumÃ©ro de rÃ´le
+                "date_edition" : date_emission, # Date d'Ã©dition
                 
-                "ROLDET" : track.numero, # Numéro de dette
+                "ROLDET" : track.numero, # NumÃ©ro de dette
                 "ROLEAU" : int(str(FloatToDecimal(-track.solde)).replace(".", "")), # Montant de la facture en centimes
                 
-                "nom" : track.nomsTitulaires, # Nom du débiteur
-                "rue" : rue, # Rue de résidence du débiteur
-                "code_postal" : cp, # Code postal de la ville de résidence du débiteur
-                "ville" : ville, # Nom de la ville de résidence du débiteur
-                "objet" : _(u"Facture n°%s") % track.numero, # Objet de la recette (64 caract max)
+                "nom" : track.nomsTitulaires, # Nom du dÃ©biteur
+                "rue" : rue, # Rue de rÃ©sidence du dÃ©biteur
+                "code_postal" : cp, # Code postal de la ville de rÃ©sidence du dÃ©biteur
+                "ville" : ville, # Nom de la ville de rÃ©sidence du dÃ©biteur
+                "objet" : _(u"Facture nÂ°%s") % track.numero, # Objet de la recette (64 caract max)
                 
-                "prelevement" : prelevement, # Activation du prélèvement
-                "prelevement_etab" : prelevement_etab, # Code établissement
+                "prelevement" : prelevement, # Activation du prÃ©lÃ¨vement
+                "prelevement_etab" : prelevement_etab, # Code Ã©tablissement
                 "prelevement_guichet" : prelevement_guichet, # Code Guichet
-                "prelevement_compte" : prelevement_compte, # Numéro de compte
-                "prelevement_cle" : prelevement_cle, # Clé RIB
+                "prelevement_compte" : prelevement_compte, # NumÃ©ro de compte
+                "prelevement_cle" : prelevement_cle, # ClÃ© RIB
                 "prelevement_titulaire" : prelevement_titulaire, # Nom titulaire du compte
                 }
             
@@ -363,14 +363,14 @@ class Dialog(wx.Dialog):
         # Finalisation du texte
         texte = "".join(listeLignes)
     
-        # Demande à l'utilisateur le nom de fichier et le répertoire de destination
+        # Demande Ã  l'utilisateur le nom de fichier et le rÃ©pertoire de destination
         nomFichier = "Rolmre.txt"
         wildcard = "Fichier texte (*.txt)|*.txt|" \
                         "All files (*.*)|*.*"
         sp = wx.StandardPaths.Get()
         cheminDefaut = sp.GetDocumentsDir()
         dlg = wx.FileDialog(
-            None, message = _(u"Veuillez sélectionner le répertoire de destination et le nom du fichier"), defaultDir=cheminDefaut, 
+            None, message = _(u"Veuillez sÃ©lectionner le rÃ©pertoire de destination et le nom du fichier"), defaultDir=cheminDefaut, 
             defaultFile = nomFichier, 
             wildcard = wildcard, 
             style = wx.FD_SAVE
@@ -383,22 +383,22 @@ class Dialog(wx.Dialog):
             dlg.Destroy()
             return
         
-        # Le fichier de destination existe déjà :
+        # Le fichier de destination existe dÃ©jÃ  :
         if os.path.isfile(cheminFichier) == True :
-            dlg = wx.MessageDialog(None, _(u"Un fichier portant ce nom existe déjà. \n\nVoulez-vous le remplacer ?"), "Attention !", wx.YES_NO | wx.NO_DEFAULT | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(None, _(u"Un fichier portant ce nom existe dÃ©jÃ . \n\nVoulez-vous le remplacer ?"), "Attention !", wx.YES_NO | wx.NO_DEFAULT | wx.ICON_EXCLAMATION)
             if dlg.ShowModal() == wx.ID_NO :
                 return False
                 dlg.Destroy()
             else:
                 dlg.Destroy()
 
-        # Création du fichier texte
+        # CrÃ©ation du fichier texte
         f = open(cheminFichier, "w")
-        f.write(texte.encode("iso-8859-15"))
+        f.write(texte.encode("utf8"))
         f.close()
         
-        # Confirmation de création du fichier et demande d'ouverture directe dans Excel
-        txtMessage = _(u"Le fichier a été créé avec succès.\n\nSouhaitez-vous l'ouvrir dès maintenant ?")
+        # Confirmation de crÃ©ation du fichier et demande d'ouverture directe dans Excel
+        txtMessage = _(u"Le fichier a Ã©tÃ© crÃ©Ã© avec succÃ¨s.\n\nSouhaitez-vous l'ouvrir dÃ¨s maintenant ?")
         dlgConfirm = wx.MessageDialog(None, txtMessage, _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.ICON_QUESTION)
         reponse = dlgConfirm.ShowModal()
         dlgConfirm.Destroy()
@@ -413,7 +413,7 @@ class Dialog(wx.Dialog):
         
         typeImpression = self.ctrl_type.GetType() 
         
-        # Récupération des paramètres
+        # RÃ©cupÃ©ration des paramÃ¨tres
         tracks = self.ctrl_factures.GetTracksCoches() 
         date_emission = self.ctrl_date.GetDate()
         code_col = self.ctrl_code_coll.GetValue()
@@ -477,7 +477,7 @@ class Dialog(wx.Dialog):
             dictPrestations[IDfacture][IDindividu][label]["quantite"] += 1
             dictPrestations[IDfacture][IDindividu][label]["montant"] += montant
 
-        # Création du PDF
+        # CrÃ©ation du PDF
         from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, PageBreak
         from reportlab.platypus.flowables import ParagraphAndImage, Image
         from reportlab.rl_config import defaultPageSize
@@ -497,12 +497,12 @@ class Dialog(wx.Dialog):
         
         largeurContenu = 520
         
-        # Création du titre du document
+        # CrÃ©ation du titre du document
         def Header():
             dataTableau = []
             largeursColonnes = ( (420, 100) )
             dateDuJour = UTILS_Dates.DateEngFr(str(datetime.date.today()))
-            dataTableau.append( (_(u"Rôle n°%s-%s") % (exercice, num_role), _(u"%s\nEdité le %s") % (UTILS_Organisateur.GetNom(), dateDuJour)) )
+            dataTableau.append( (_(u"RÃ´le nÂ°%s-%s") % (exercice, num_role), _(u"%s\nEditÃ© le %s") % (UTILS_Organisateur.GetNom(), dateDuJour)) )
             style = TableStyle([
                     ('BOX', (0,0), (-1,-1), 0.25, colors.black), 
                     ('VALIGN', (0,0), (-1,-1), 'TOP'), 
@@ -516,7 +516,7 @@ class Dialog(wx.Dialog):
             story.append(tableau)
             story.append(Spacer(0, 20))       
         
-        # Insère un header
+        # InsÃ¨re un header
         Header() 
         
         couleurFond1 = (0.8, 0.8, 1) # Vert -> (0.5, 1, 0.2)
@@ -527,7 +527,7 @@ class Dialog(wx.Dialog):
         styleMontant = ParagraphStyle(name="label", fontName="Helvetica", alignment=2, fontSize=7, spaceAfter=0, leading=8, spaceBefore=0)
 
         # Intro
-        story.append(Paragraph(_(u"Date d'émission : %s | Code Collectivité : %s | Code Nature : %s | Code Recette : %s") % (UTILS_Dates.DateDDEnFr(date_emission), code_col, code_nat, code_rec), styleTexte))
+        story.append(Paragraph(_(u"Date d'Ã©mission : %s | Code CollectivitÃ© : %s | Code Nature : %s | Code Recette : %s") % (UTILS_Dates.DateDDEnFr(date_emission), code_col, code_nat, code_rec), styleTexte))
         story.append(Spacer(0, 20))
         
         # Factures
@@ -535,13 +535,13 @@ class Dialog(wx.Dialog):
             
             for track in tracks :
                 
-                # Numéro de facture
+                # NumÃ©ro de facture
                 dataTableau = []
                 largeursColonnes = [100, 100, largeurContenu-100-100]
                 dataTableau.append((
-                    _(u"Facture n°%s") % track.numero, 
+                    _(u"Facture nÂ°%s") % track.numero, 
                     u"%.2f %s" % (-track.solde, SYMBOLE),
-                    _(u"Edité le %s | Echéance le %s | Période du %s au %s") % (UTILS_Dates.DateDDEnFr(track.date_edition), UTILS_Dates.DateDDEnFr(track.date_echeance), UTILS_Dates.DateDDEnFr(track.date_debut), UTILS_Dates.DateDDEnFr(track.date_fin)),
+                    _(u"EditÃ© le %s | EchÃ©ance le %s | PÃ©riode du %s au %s") % (UTILS_Dates.DateDDEnFr(track.date_edition), UTILS_Dates.DateDDEnFr(track.date_echeance), UTILS_Dates.DateDDEnFr(track.date_debut), UTILS_Dates.DateDDEnFr(track.date_fin)),
                     ))
                 tableau = Table(dataTableau, largeursColonnes)
                 listeStyles = [
@@ -556,7 +556,7 @@ class Dialog(wx.Dialog):
                 
                 # Famille
                 if track.prelevement == True :
-                    textePrelevement = _(u"N° Compte : %s | Etab : %s | Guichet : %s | Clé : %s | Titulaire : %s") % (track.prelevement_numero, track.prelevement_etab, track.prelevement_guichet, track.prelevement_cle, track.prelevement_payeur)
+                    textePrelevement = _(u"NÂ° Compte : %s | Etab : %s | Guichet : %s | ClÃ© : %s | Titulaire : %s") % (track.prelevement_numero, track.prelevement_etab, track.prelevement_guichet, track.prelevement_cle, track.prelevement_payeur)
                 else :
                     textePrelevement = u""
                 
@@ -567,7 +567,7 @@ class Dialog(wx.Dialog):
                 if track.adresse_famille["ville"] != None : ville = track.adresse_famille["ville"]
                 else : ville = u""
                 
-                dataTableau = [(Paragraph(_(u"Famille"), styleLabel), Paragraph(_(u"Adresse"), styleLabel), Paragraph(_(u"Prélèvement bancaire"), styleLabel)),]
+                dataTableau = [(Paragraph(_(u"Famille"), styleLabel), Paragraph(_(u"Adresse"), styleLabel), Paragraph(_(u"PrÃ©lÃ¨vement bancaire"), styleLabel)),]
                 largeursColonnes = [180, 140, largeurContenu-320]
                 dataTableau.append((
                     Paragraph(track.nomsTitulaires, styleTexte), 
@@ -587,10 +587,10 @@ class Dialog(wx.Dialog):
                 tableau.setStyle(TableStyle(listeStyles))
                 story.append(tableau)
                 
-                # Détail des prestations
+                # DÃ©tail des prestations
                 if typeImpression == "detail" and track.IDfacture in dictPrestations :
                     
-                    dataTableau = [(Paragraph(_(u"Individu"), styleLabel), Paragraph(_(u"Activité"), styleLabel), Paragraph(_(u"Prestation"), styleLabel), Paragraph(_(u"Quantité"), styleLabel), Paragraph(_(u"Montant total"), styleLabel)),]
+                    dataTableau = [(Paragraph(_(u"Individu"), styleLabel), Paragraph(_(u"ActivitÃ©"), styleLabel), Paragraph(_(u"Prestation"), styleLabel), Paragraph(_(u"QuantitÃ©"), styleLabel), Paragraph(_(u"Montant total"), styleLabel)),]
                     largeursColonnes = [130, 120, 185, 35, 50]
                     
                     for IDindividu, dictLabels in dictPrestations[track.IDfacture].items() :
@@ -642,8 +642,8 @@ class Dialog(wx.Dialog):
         dictTotaux[IDactivite][label]["montant"]
 
         dataTableau = [
-            (_(u"Totaux par activités et prestations"), "", "", ""),
-            (Paragraph(_(u"Activités"), styleLabel), Paragraph(_(u"Prestations"), styleLabel), Paragraph(_(u"Quantité"), styleLabel), Paragraph(_(u"Montant"), styleLabel)),
+            (_(u"Totaux par activitÃ©s et prestations"), "", "", ""),
+            (Paragraph(_(u"ActivitÃ©s"), styleLabel), Paragraph(_(u"Prestations"), styleLabel), Paragraph(_(u"QuantitÃ©"), styleLabel), Paragraph(_(u"Montant"), styleLabel)),
             ]
         largeursColonnes = [200, 240, 30, 50]
 
@@ -666,7 +666,7 @@ class Dialog(wx.Dialog):
                 quantiteActivite += dictTemp["quantite"]
                 totalActivite += dictTemp["montant"]
             
-            listeLabels.append(Paragraph(_(u"<b><i>Total de l'activité</i></b>"), styleTexte2)) 
+            listeLabels.append(Paragraph(_(u"<b><i>Total de l'activitÃ©</i></b>"), styleTexte2)) 
             listeQuantites.append(Paragraph("<b><i>%d</i></b>" % quantiteActivite, styleTexte2)) 
             listeMontants.append(Paragraph(u"<b><i>%.2f %s</i></b>" % (totalActivite, SYMBOLE), styleMontant))
             
@@ -702,7 +702,7 @@ class Dialog(wx.Dialog):
         except Exception as err :
             print("Erreur dans ouverture PDF :", err)
             if "Permission denied" in err :
-                dlg = wx.MessageDialog(None, _(u"Noethys ne peut pas créer le PDF.\n\nVeuillez vérifier qu'un autre PDF n'est pas déjà ouvert en arrière-plan..."), _(u"Erreur d'édition"), wx.OK | wx.ICON_ERROR)
+                dlg = wx.MessageDialog(None, _(u"Noethys ne peut pas crÃ©er le PDF.\n\nVeuillez vÃ©rifier qu'un autre PDF n'est pas dÃ©jÃ  ouvert en arriÃ¨re-plan..."), _(u"Erreur d'Ã©dition"), wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False

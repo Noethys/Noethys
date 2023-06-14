@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-12 Ivan LUCAS
@@ -19,13 +19,13 @@ from Utils import UTILS_Json
 
 
 def InfosFichier(fichier=""):
-    """ Récupère les infos principales sur un fichier """
+    """ RÃ©cupÃ¨re les infos principales sur un fichier """
     if os.path.isfile(fichier) == False :
         print("Pas de fichier a cet emplacement !")
         return None
 
     if six.PY2:
-        fichier = fichier.encode("iso-8859-15")
+        fichier = fichier.encode("utf8")
     data = UTILS_Json.Lire(fichier)
     return data
 
@@ -51,7 +51,7 @@ class Exporter():
         self.DB.Close()
                 
     def GetListeChamps(self, nomTable=''):
-        """ Récupération des champs de la table """
+        """ RÃ©cupÃ©ration des champs de la table """
         listeColonnes = self.DB.GetListeChamps2(nomTable)
         listeChamps = []
         for nomChamp, typeChamp in listeColonnes :
@@ -65,15 +65,15 @@ class Exporter():
         return sql
         
     def Exporter(self, ID=None):
-        """ Fonction à surcharger """
+        """ Fonction Ã  surcharger """
         self.ExporterTable("activites", "IDactivite=%d" % ID)
         self.ExporterTable("groupes", "IDactivite=%d" % ID)
         self.ExporterTable("agrements", "IDactivite=%d" % ID)
-        # Unités
+        # UnitÃ©s
         self.ExporterTable("unites", "IDactivite=%d" % ID)
         self.ExporterTable("unites_groupes", self.FormateCondition("IDunite", self.dictID["unites"]))
         self.ExporterTable("unites_incompat", self.FormateCondition("IDunite", self.dictID["unites"]))
-        # Unités de remplissage
+        # UnitÃ©s de remplissage
         self.ExporterTable("unites_remplissage", "IDactivite=%d" % ID)
         self.ExporterTable("unites_remplissage_unites", self.FormateCondition("IDunite_remplissage", self.dictID["unites_remplissage"]))
         # Calendrier
@@ -92,7 +92,7 @@ class Exporter():
         self.ExporterTable("combi_tarifs_unites", self.FormateCondition("IDtarif", self.dictID["tarifs"]))
         self.ExporterTable("tarifs_lignes", "IDactivite=%d" % ID)
 
-        # Correspondances spéciales
+        # Correspondances spÃ©ciales
         self.correspondances_speciales.append({"table" : "etiquettes", "champ" : "parent", "champ_reference" : "IDetiquette"})
         self.correspondances_speciales.append({"table" : "activites", "champ" : "psu_unite_prevision", "champ_reference" : "IDunite"})
         self.correspondances_speciales.append({"table" : "activites", "champ" : "psu_unite_presence", "champ_reference" : "IDunite"})
@@ -101,7 +101,7 @@ class Exporter():
 
 
     def ExporterTable(self, nomTable="", condition="", chainesListes=[], remplacement=None):
-        """ Exporter une table donnée """
+        """ Exporter une table donnÃ©e """
         listeChamps, listeColonnes = self.GetListeChamps(nomTable) 
         champCle = listeChamps[0]
         
@@ -121,7 +121,7 @@ class Exporter():
                 nomChamp = listeColonnes[indexColonne][0]
                 typeChamp = listeColonnes[indexColonne][1]
                 
-                # Mémorisation de l'ID de la ligne
+                # MÃ©morisation de l'ID de la ligne
                 if nomChamp == champCle :
                     listeID.append(donnee)
                 
@@ -148,7 +148,7 @@ class Exporter():
             "contenu": self.contenu,
         }
         if six.PY2:
-            fichier = fichier.encode("iso-8859-15")
+            fichier = fichier.encode("utf8")
         UTILS_Json.Ecrire(nom_fichier=fichier, data=data)
 
     
@@ -161,7 +161,7 @@ class Importer():
     def __init__(self, fichier=None, contenu=None):
         self.fichier = fichier
         
-        # Get Données
+        # Get DonnÃ©es
         if fichier != None :
             dictInfos = InfosFichier(self.fichier)
             self.categorie = dictInfos["categorie"]
@@ -172,7 +172,7 @@ class Importer():
     
     def DemandeChoix(self):
         listeContenu = self.GetNomContenu() 
-        dlg = wx.MultiChoiceDialog(None, _(u"Sélectionnez le contenu à importer :"), _(u"Importation"), listeContenu)
+        dlg = wx.MultiChoiceDialog(None, _(u"SÃ©lectionnez le contenu Ã  importer :"), _(u"Importation"), listeContenu)
         dlg.SetSelections(range(0, len(listeContenu)))
         if dlg.ShowModal() == wx.ID_OK :
             selections = dlg.GetSelections()
@@ -206,7 +206,7 @@ class Importer():
         del dlgAttente
 
     def GetTypesChamps(self, nomTable=''):
-        """ Récupération des types de champs de la table """
+        """ RÃ©cupÃ©ration des types de champs de la table """
         listeColonnes = self.DB.GetListeChamps2(nomTable)
         dictChamps = {}
         for nomChamp, typeChamp in listeColonnes :
@@ -215,12 +215,12 @@ class Importer():
         return dictChamps, champCle
 
     def Importer(self, listeTables=[], correspondances_speciales=[]):
-        """ Procédure d'importation """
+        """ ProcÃ©dure d'importation """
         # Importation des tables
         for nomTable, listeLignes, chainesListes in listeTables:
             self.ImporterTable(nomTable, listeLignes, chainesListes)
 
-        # MAJ des correspondances spéciales
+        # MAJ des correspondances spÃ©ciales
         for dictCorr in correspondances_speciales :
             table = dictCorr["table"]
             champ = dictCorr["champ"]
@@ -244,7 +244,7 @@ class Importer():
                             if nomChamp == champCle :
                                 newIDligne = self.dictID[champCle][valeur]
 
-                            # recherche le champ à remplacer
+                            # recherche le champ Ã  remplacer
                             if nomChamp == champ and valeur != None :
                                 if valeur in self.dictID[champ_reference] :
                                     valeur_remplacement = self.dictID[champ_reference][valeur]
@@ -259,7 +259,7 @@ class Importer():
     def ImporterTable(self, nomTable="", listeLignes=[], chainesListes=[]):
         if len(listeLignes) == 0 : return
         
-        # Récupère les types de champs
+        # RÃ©cupÃ¨re les types de champs
         dictTypesChamps, champCle = self.GetTypesChamps(nomTable)
 
         # Recherche le prochain ID
@@ -273,7 +273,7 @@ class Importer():
 
         for ligne in listeLignes :
 
-            # Récupération des valeurs
+            # RÃ©cupÃ©ration des valeurs
             dictDonnees = {}
             ancienID = None
             newID = prochainID
@@ -295,13 +295,13 @@ class Importer():
                         if valeur in self.dictID[nomChamp] :
                             valeur = self.dictID[nomChamp][valeur]
 
-                    # Remplacement d'un champ 'parent' (Prévu pour les étiquettes dans les activités)
+                    # Remplacement d'un champ 'parent' (PrÃ©vu pour les Ã©tiquettes dans les activitÃ©s)
                     #if nomChamp == "parent" and valeur != None :
                     #    if self.dictID.has_key(champCle) :
                     #        if self.dictID[champCle].has_key(valeur) :
                     #            valeur = self.dictID[champCle][valeur]
 
-                    # Chaîne de liste
+                    # ChaÃ®ne de liste
                     for nomChampChaine, champRemplacement, separateur in chainesListes :
                         if nomChamp == nomChampChaine :
                             if valeur == None or champRemplacement == None :
@@ -316,13 +316,13 @@ class Importer():
                                     listeTemp.append(str(donnee))
                                 valeur = separateur.join(listeTemp)
                             
-                    # Mémorisation des valeurs
+                    # MÃ©morisation des valeurs
                     if nomChamp != champCle :
                         dictDonnees[nomChamp] = valeur
                         if nomChamp not in liste_champs :
                             liste_champs.append(nomChamp)
 
-            # Formatage des données pour executermany
+            # Formatage des donnÃ©es pour executermany
             listeDonnees = []
             for nomChamp in liste_champs :
                 if nomChamp in dictDonnees :
@@ -331,7 +331,7 @@ class Importer():
             # Enregistrement
             liste_ajouts.append(listeDonnees)
 
-            # Mémorisation de L'ID dans la table des correspondances
+            # MÃ©morisation de L'ID dans la table des correspondances
             if (champCle in self.dictID) == False :
                 self.dictID[champCle] = {}
             self.dictID[champCle][ancienID] = newID
@@ -339,7 +339,7 @@ class Importer():
             prochainID += 1
             index_ligne += 1
 
-        # Executermany sur toute la table à importer
+        # Executermany sur toute la table Ã  importer
         texteChampsTemp = ", ".join(liste_champs)
         listeInterrogations = []
         for champ in liste_champs :
@@ -347,7 +347,7 @@ class Importer():
         texteInterrogations = ", ".join(listeInterrogations)
         self.DB.Executermany("INSERT INTO %s (%s) VALUES (%s)" % (nomTable, texteChampsTemp, texteInterrogations), liste_ajouts, commit=True)
 
-        # Enregistrement des blobs à part
+        # Enregistrement des blobs Ã  part
         for dictblob in listeBlobs :
             self.DB.MAJimage(table=dictblob["table"], key=dictblob["champCle"], IDkey=dictblob["newID"], blobImage=dictblob["valeur"], nomChampBlob=dictblob["nomChamp"])
 
@@ -356,14 +356,14 @@ class Importer():
     def ImporterTable_methodelente(self, nomTable="", listeLignes=[], chainesListes=[]):
         if len(listeLignes) == 0 : return
 
-        # Récupère les types de champs
+        # RÃ©cupÃ¨re les types de champs
         dictTypesChamps, champCle = self.GetTypesChamps(nomTable)
 
         # Duplique les lignes
         index_ligne = 0
         for ligne in listeLignes :
 
-            # Récupération des valeurs
+            # RÃ©cupÃ©ration des valeurs
             listeDonnees = []
             dictBlobs = {}
             ancienID = None
@@ -384,13 +384,13 @@ class Importer():
                         if valeur in self.dictID[nomChamp] :
                             valeur = self.dictID[nomChamp][valeur]
 
-                    # Remplacement d'un champ 'parent' (Prévu pour les étiquettes dans les activités)
+                    # Remplacement d'un champ 'parent' (PrÃ©vu pour les Ã©tiquettes dans les activitÃ©s)
                     # if nomChamp == "parent" and valeur != None :
                     #     if self.dictID.has_key(champCle) :
                     #         if self.dictID[champCle].has_key(valeur) :
                     #             valeur = self.dictID[champCle][valeur]
 
-                    # Chaîne de liste
+                    # ChaÃ®ne de liste
                     for nomChampChaine, champRemplacement, separateur in chainesListes :
                         if nomChamp == nomChampChaine :
                             if valeur == None or champRemplacement == None :
@@ -405,18 +405,18 @@ class Importer():
                                     listeTemp.append(str(donnee))
                                 valeur = separateur.join(listeTemp)
 
-                    # Mémorisation des valeurs
+                    # MÃ©morisation des valeurs
                     if nomChamp != champCle :
                         listeDonnees.append((nomChamp, valeur))
 
             # Enregistrement
             newID = self.DB.ReqInsert(nomTable, listeDonnees)
 
-            # Enregistrement des blobs à part
+            # Enregistrement des blobs Ã  part
             for nomChampBlob, blob in dictBlobs.items() :
                 self.DB.MAJimage(table=nomTable, key=champCle, IDkey=newID, blobImage=blob, nomChampBlob=nomChampBlob)
 
-            # Mémorisation de L'ID dans la table des correspondances
+            # MÃ©morisation de L'ID dans la table des correspondances
             if (champCle in self.dictID) == False :
                 self.dictID[champCle] = {}
             self.dictID[champCle][ancienID] = newID
@@ -437,7 +437,7 @@ if __name__ == "__main__":
     
     # print "Exportation..."
     # exportation = Exporter(categorie="activite")
-    # exportation.Ajouter(ID=2, nom=_(u"Activité1"))
+    # exportation.Ajouter(ID=2, nom=_(u"ActivitÃ©1"))
     # exportation.Enregistrer(fichier="Tests/test.npa")
 
     # print "Importation..."

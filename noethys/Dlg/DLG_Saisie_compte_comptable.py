@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-14 Ivan LUCAS
@@ -27,7 +27,7 @@ class Dialog(wx.Dialog):
         self.ctrl_nom = wx.TextCtrl(self, wx.ID_ANY, u"")
         self.ctrl_nom.SetMinSize((350, -1)) 
         
-        self.label_numero = wx.StaticText(self, wx.ID_ANY, _(u"Numéro :"))
+        self.label_numero = wx.StaticText(self, wx.ID_ANY, _(u"NumÃ©ro :"))
         self.ctrl_numero = wx.TextCtrl(self, wx.ID_ANY, u"")
 
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
@@ -41,7 +41,7 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
 
-        # Init contrôles
+        # Init contrÃ´les
         if self.IDcompte != None :
             self.SetTitle(_(u"Modification d'un compte"))
             self.Importation() 
@@ -50,7 +50,7 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez le nom du compte")))
-        self.ctrl_numero.SetToolTip(wx.ToolTip(_(u"Saisissez le numéro du compte")))
+        self.ctrl_numero.SetToolTip(wx.ToolTip(_(u"Saisissez le numÃ©ro du compte")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
@@ -92,15 +92,15 @@ class Dialog(wx.Dialog):
     def OnBoutonOk(self, event): 
         if self.Sauvegarde()  == False :
             return
-        # Fermeture de la fenêtre
+        # Fermeture de la fenÃªtre
         self.EndModal(wx.ID_OK)
 
     def Sauvegarde(self):
-        """ Sauvegarde des données """
+        """ Sauvegarde des donnÃ©es """
         nom = self.ctrl_nom.GetValue() 
         numero = self.ctrl_numero.GetValue() 
         
-        # Validation des données saisies
+        # Validation des donnÃ©es saisies
         if nom == "" :
             dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un nom !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
@@ -109,7 +109,7 @@ class Dialog(wx.Dialog):
             return False
 
         if numero == "" :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un numéro !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un numÃ©ro !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_numero.SetFocus()

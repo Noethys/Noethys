@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-17 Ivan LUCAS
@@ -21,7 +21,7 @@ from Ctrl import CTRL_Saisie_euros
 from Utils import UTILS_Dates
 from Utils import UTILS_Interface
 from Utils import UTILS_Config
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"â‚¬")
 
 from Ctrl.CTRL_ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 import wx.lib.agw.floatspin as FS
@@ -33,7 +33,7 @@ from Dlg.DLG_Ouvertures import Track_tarif
 
 class OL_Tarifs(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # Récupération des paramètres perso
+        # RÃ©cupÃ©ration des paramÃ¨tres perso
         self.dictInfosLocation = kwds.pop("dictInfosLocation", {})
         self.donnees = []
         # Initialisation du listCtrl
@@ -41,7 +41,7 @@ class OL_Tarifs(FastObjectListView):
         FastObjectListView.__init__(self, *args, **kwds)
 
     def InitModel(self):
-        """ Récupération des données """
+        """ RÃ©cupÃ©ration des donnÃ©es """
         if self.dictInfosLocation["IDproduit"] == None :
             return
 
@@ -96,10 +96,10 @@ class OL_Tarifs(FastObjectListView):
                 dictLignes[dictLigne["IDtarif"]] = []
             dictLignes[dictLigne["IDtarif"]].append(dictLigne)
 
-        # Mémorisation des tarifs
+        # MÃ©morisation des tarifs
         for IDtarif, IDactivite, date_debut, date_fin, methode, type, categories_tarifs, groupes, etiquettes, cotisations, caisses, description, jours_scolaires, jours_vacances, observations, tva, code_compta, IDtype_quotient, label_prestation, IDproduit in listeDonneesTarifs:
 
-            # Récupération des lignes du tarif
+            # RÃ©cupÃ©ration des lignes du tarif
             if IDtarif in dictLignes:
                 liste_lignes = dictLignes[IDtarif]
             else:
@@ -133,12 +133,12 @@ class OL_Tarifs(FastObjectListView):
                     quantite = self.dictInfosLocation["quantite"]
                     track.montant = quantite * liste_lignes[0]["montant_unique"]
 
-            # Mémorisation du tarif
+            # MÃ©morisation du tarif
             liste_tarifs.append(track)
 
         DB.Close()
 
-        # Envoi des données au OL
+        # Envoi des donnÃ©es au OL
         self.donnees = liste_tarifs
 
     def InitObjectListView(self):
@@ -171,7 +171,7 @@ class OL_Tarifs(FastObjectListView):
     def MAJ(self, track=None):
         self.InitModel()
         self.InitObjectListView()
-        # Sélection d'un item
+        # SÃ©lection d'un item
         if track != None:
             self.SelectObject(track, deselectOthers=True, ensureVisible=True)
 
@@ -191,7 +191,7 @@ class Dialog(wx.Dialog):
 
         # Tarifs
         self.box_tarifs_staticbox = wx.StaticBox(self, -1, _(u"Tarifs disponibles"))
-        self.label_tarifs = wx.StaticText(self, -1, _(u"Cliquez sur un tarif pour le sélectionner ou double-cliquez pour le sélectionner et le valider directement."))
+        self.label_tarifs = wx.StaticText(self, -1, _(u"Cliquez sur un tarif pour le sÃ©lectionner ou double-cliquez pour le sÃ©lectionner et le valider directement."))
         self.label_tarifs.SetFont(wx.Font(7, wx.SWISS, wx.NORMAL, wx.NORMAL))
         self.ctrl_tarifs = OL_Tarifs(self, id=-1, dictInfosLocation=dictInfosLocation, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.ctrl_tarifs.SetMinSize((50, 50))
@@ -237,7 +237,7 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.SetTitle(_(u"Saisie d'une prestation"))
-        self.ctrl_tarifs.SetToolTip(wx.ToolTip(_(u"Sélectionnez un tarif à appliquer")))
+        self.ctrl_tarifs.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez un tarif Ã  appliquer")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
@@ -329,7 +329,7 @@ class Dialog(wx.Dialog):
             self.ctrl_montant.SetFocus()
             return False
 
-        # Ferme la fenêtre
+        # Ferme la fenÃªtre
         self.EndModal(wx.ID_OK)
 
     def OnBoutonAnnuler(self, event=None): 

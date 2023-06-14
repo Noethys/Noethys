@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-15 Ivan LUCAS
@@ -26,7 +26,7 @@ from Utils import UTILS_Identification
 from Utils import UTILS_Dates
 from Utils import UTILS_Gestion
 from Utils import UTILS_Config
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"â‚¬")
 
 from Dlg import DLG_Badgeage_grille
 from threading import Thread 
@@ -66,7 +66,7 @@ class CTRL_Forfait(CTRL_Ultrachoice.CTRL):
         
         DB = GestionDB.DB()
         
-        # Recherche des catégories de tarifs
+        # Recherche des catÃ©gories de tarifs
         dictCategoriesTarifs = {}
         req = """SELECT IDcategorie_tarif, nom
         FROM categories_tarifs;"""
@@ -119,7 +119,7 @@ class CTRL_Forfait(CTRL_Ultrachoice.CTRL):
             nom = dictTarif["nomTarif"]
             date_debut = dictTarif["date_debut"]
             date_fin = dictTarif["date_fin"]
-            if date_debut == None and date_fin == None : label = _(u"%s (Sans période de validité)") % nom
+            if date_debut == None and date_fin == None : label = _(u"%s (Sans pÃ©riode de validitÃ©)") % nom
             if date_debut == None and date_fin != None : label = _(u"%s (Jusqu'au %s)") % (nom, UTILS_Dates.DateDDEnFr(date_fin))
             if date_debut != None and date_fin == None : label = _(u"%s (A partir du %s)") % (nom, UTILS_Dates.DateDDEnFr(date_debut))
             if date_debut != None and date_fin != None : label = _(u"%s (Du %s au %s)") % (nom, UTILS_Dates.DateDDEnFr(date_debut), UTILS_Dates.DateDDEnFr(date_fin))
@@ -218,7 +218,7 @@ class Traitement(Thread):
                     else :
                         date_facturation = self.date_debut
                     
-                    # Mémorisation de la prestation
+                    # MÃ©morisation de la prestation
                     IDprestation = grille.MemorisePrestation(track.IDcompte_payeur, date_facturation, self.IDactivite, dictTarif["IDtarif"], self.dictTarif["nomTarif"], 
                                                                                     dictTarif["resultat"]["montant_tarif"], dictTarif["resultat"]["montant_tarif"], track.IDfamille, track.IDindividu, 
                                                                                     listeDeductions=[], temps_facture=dictTarif["resultat"]["temps_facture"], IDcategorie_tarif=dictTarif["resultat"]["IDcategorie_tarif"],
@@ -241,11 +241,11 @@ class Traitement(Thread):
                 
                 else :
                     
-                    # Si aucun tarif trouvé :
-                    self.parent.EcritLog(u"Erreur : Aucun tarif valide trouvé pour %s" % track.nomCompletIndividu)
+                    # Si aucun tarif trouvÃ© :
+                    self.parent.EcritLog(u"Erreur : Aucun tarif valide trouvÃ© pour %s" % track.nomCompletIndividu)
                     self.parent.SetStatutTrack(track, "erreur")
                 
-                # Arrête le traitement si bouton arrêter enfoncé
+                # ArrÃªte le traitement si bouton arrÃªter enfoncÃ©
                 if self.stop: 
                     raise Abort
                 
@@ -258,7 +258,7 @@ class Traitement(Thread):
         
         except Abort as KeyBoardInterrupt: 
             if self.succes == True :
-                self.parent.EcritLog(_(u"Traitement terminé")) 
+                self.parent.EcritLog(_(u"Traitement terminÃ©")) 
                 self.parent.Arreter(forcer=True) 
 
             self.parent.bouton_ok.SetImageEtTexte(cheminImage="Images/32x32/Valider.png", texte=u"Commencer")
@@ -301,7 +301,7 @@ class CTRL_Activite(wx.Choice):
         self.dictDonnees = {}
         index = 0
         for IDactivite, nom, abrege in listeDonnees :
-            if nom == None : nom = u"Activité inconnue"
+            if nom == None : nom = u"ActivitÃ© inconnue"
             self.dictDonnees[index] = {"ID" : IDactivite, "nom" : nom, "abrege" : abrege}
             listeItems.append(nom)
             index += 1
@@ -318,7 +318,7 @@ class CTRL_Activite(wx.Choice):
         return self.dictDonnees[index]["ID"]
     
     def GetInfos(self):
-        """ Récupère les infos sur le compte sélectionné """
+        """ RÃ©cupÃ¨re les infos sur le compte sÃ©lectionnÃ© """
         index = self.GetSelection()
         if index == -1 : return None
         return self.dictDonnees[index]
@@ -332,19 +332,19 @@ class Dialog(wx.Dialog):
         self.parent = parent   
 
         # Bandeau
-        titre = _(u"Saisir un lot de forfaits-crédits")
-        intro = _(u"Vous pouvez ici saisir des forfaits-crédits individuels pour un ensemble d'individus. Sélectionnez une activité, le forfait-crédit à appliquer puis la période à impacter. Cochez les individus souhaités puis cliquez sur le bouton Commencer pour lancer le traitement.")
+        titre = _(u"Saisir un lot de forfaits-crÃ©dits")
+        intro = _(u"Vous pouvez ici saisir des forfaits-crÃ©dits individuels pour un ensemble d'individus. SÃ©lectionnez une activitÃ©, le forfait-crÃ©dit Ã  appliquer puis la pÃ©riode Ã  impacter. Cochez les individus souhaitÃ©s puis cliquez sur le bouton Commencer pour lancer le traitement.")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Euro.png")
         
-        # Paramètres
-        self.box_parametres_staticbox = wx.StaticBox(self, -1, _(u"Paramètres du forfait"))
-        self.label_periode = wx.StaticText(self, -1, u"Période :")
+        # ParamÃ¨tres
+        self.box_parametres_staticbox = wx.StaticBox(self, -1, _(u"ParamÃ¨tres du forfait"))
+        self.label_periode = wx.StaticText(self, -1, u"PÃ©riode :")
         self.ctrl_date_debut = CTRL_Saisie_date.Date2(self)
         self.label_date_fin = wx.StaticText(self, -1, "au")
         self.ctrl_date_fin = CTRL_Saisie_date.Date2(self)
         
-        self.label_activite = wx.StaticText(self, -1, u"Activité :")
+        self.label_activite = wx.StaticText(self, -1, u"ActivitÃ© :")
         self.ctrl_activite = CTRL_Activite(self)
 
         self.label_forfait = wx.StaticText(self, -1, u"Forfait :")
@@ -353,7 +353,7 @@ class Dialog(wx.Dialog):
         self.bouton_actualiser = wx.Button(self, -1, _(u"Actualiser la liste"))
         
         # Individus
-        self.box_individus_staticbox = wx.StaticBox(self, -1, _(u"Sélection des individus"))
+        self.box_individus_staticbox = wx.StaticBox(self, -1, _(u"SÃ©lection des individus"))
         self.listviewAvecFooter = OL_Saisie_lot_forfaits_credits.ListviewAvecFooter(self, kwargs={}) 
         self.ctrl_individus = self.listviewAvecFooter.GetListview()
         self.ctrl_recherche = OL_Saisie_lot_forfaits_credits.CTRL_Outils(self, listview=self.ctrl_individus, afficherCocher=True)
@@ -386,8 +386,8 @@ class Dialog(wx.Dialog):
         wx.CallLater(0, self.Layout)
 
     def __set_properties(self):
-        self.ctrl_activite.SetToolTip(wx.ToolTip(_(u"Sélectionnez l'activité pour laquelle vous souhaitez recalculer les prestations")))
-        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez une date de début")))
+        self.ctrl_activite.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez l'activitÃ© pour laquelle vous souhaitez recalculer les prestations")))
+        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez une date de dÃ©but")))
         self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez une date de fin")))
         self.bouton_actualiser.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour actualiser la liste")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
@@ -401,7 +401,7 @@ class Dialog(wx.Dialog):
         
         grid_sizer_contenu = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
         
-        # Paramètres
+        # ParamÃ¨tres
         box_parametres = wx.StaticBoxSizer(self.box_parametres_staticbox, wx.VERTICAL)
         grid_sizer_parametres = wx.FlexGridSizer(rows=3, cols=2, vgap=10, hgap=10)
 
@@ -491,7 +491,7 @@ class Dialog(wx.Dialog):
         else :
             categories_tarifs = []
         
-        # Récupération de la période
+        # RÃ©cupÃ©ration de la pÃ©riode
         date_debut = self.ctrl_date_debut.GetDate()
         date_fin = self.ctrl_date_fin.GetDate()
         
@@ -505,7 +505,7 @@ class Dialog(wx.Dialog):
     def OnBoutonActualiser(self, event): 
         IDactivite = self.ctrl_activite.GetID()
         if IDactivite == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner une activité !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sÃ©lectionner une activitÃ© !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_activite.SetFocus() 
@@ -513,7 +513,7 @@ class Dialog(wx.Dialog):
 
         date_debut = self.ctrl_date_debut.GetDate()
         if date_debut == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de début !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de dÃ©but !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_debut.SetFocus() 
@@ -571,8 +571,8 @@ class Dialog(wx.Dialog):
                 self.traitement.abort()
                 return True
             else :
-                # Demande la confirmation de l'arrêt
-                dlgConfirm = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment arrêter le traitement ?"), _(u"Confirmation d'arrêt"), wx.YES_NO|wx.NO_DEFAULT|wx.ICON_QUESTION)
+                # Demande la confirmation de l'arrÃªt
+                dlgConfirm = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment arrÃªter le traitement ?"), _(u"Confirmation d'arrÃªt"), wx.YES_NO|wx.NO_DEFAULT|wx.ICON_QUESTION)
                 reponse = dlgConfirm.ShowModal()
                 dlgConfirm.Destroy()
                 if reponse == wx.ID_NO:
@@ -593,14 +593,14 @@ class Dialog(wx.Dialog):
             # Stopper traitement
             self.Arreter() 
         else :
-            # Récupération des paramètres de sélection
+            # RÃ©cupÃ©ration des paramÃ¨tres de sÃ©lection
             IDactivite = self.ctrl_activite.GetID()
             dictTarif = self.ctrl_forfait.GetDictTarif() 
             date_debut = self.ctrl_date_debut.GetDate()
             date_fin = self.ctrl_date_fin.GetDate()
             tracks = self.ctrl_individus.GetTracksCoches()
 
-            # Périodes de gestion
+            # PÃ©riodes de gestion
             gestion = UTILS_Gestion.Gestion(None)
             if gestion.IsPeriodeinPeriodes("prestations", date_debut, date_fin) == False: return False
 
@@ -611,7 +611,7 @@ class Dialog(wx.Dialog):
                 return False
 
             # Demande confirmation de lancement
-            dlgConfirm = wx.MessageDialog(self, _(u"Souhaitez-vous saisir le forfait pour les %d individus cochés ?\n\nLe traitement peut prendre quelques minutes...") % len(tracks), _(u"Confirmation"), wx.YES_NO|wx.CANCEL|wx.YES_DEFAULT|wx.ICON_QUESTION)
+            dlgConfirm = wx.MessageDialog(self, _(u"Souhaitez-vous saisir le forfait pour les %d individus cochÃ©s ?\n\nLe traitement peut prendre quelques minutes...") % len(tracks), _(u"Confirmation"), wx.YES_NO|wx.CANCEL|wx.YES_DEFAULT|wx.ICON_QUESTION)
             reponse = dlgConfirm.ShowModal()
             dlgConfirm.Destroy()
             if reponse != wx.ID_YES :
@@ -619,7 +619,7 @@ class Dialog(wx.Dialog):
             
             # Lancer traitement
             self.EcritLog(_(u"Lancement du traitement"))
-            self.bouton_ok.SetImageEtTexte(cheminImage="Images/32x32/Arreter.png", texte=u"Arrêter")
+            self.bouton_ok.SetImageEtTexte(cheminImage="Images/32x32/Arreter.png", texte=u"ArrÃªter")
             self.bouton_fermer.Enable(False)
             self.Layout()
             

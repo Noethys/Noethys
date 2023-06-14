@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-13 Ivan LUCAS
@@ -18,9 +18,9 @@ import six
 from six.moves import range
 
 LISTE_JOURS = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
-LISTE_MOIS = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
+LISTE_MOIS = (_(u"janvier"), _(u"fÃ©vrier"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"aoÃ»t"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"dÃ©cembre"))
 LISTE_JOURS_ABREGES = (_(u"Lun."), _(u"Mar."), _(u"Mer."), _(u"Jeu."), _(u"Ven."), _(u"Sam."), _(u"Dim."))
-LISTE_MOIS_ABREGES = (_(u"janv."), _(u"fév."), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juil."), _(u"août"), _(u"sept."), _(u"oct"), _(u"nov."), _(u"déc."))
+LISTE_MOIS_ABREGES = (_(u"janv."), _(u"fÃ©v."), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juil."), _(u"aoÃ»t"), _(u"sept."), _(u"oct"), _(u"nov."), _(u"dÃ©c."))
 
 
 def DateEngFr(textDate):
@@ -34,7 +34,7 @@ def DateDDEnFr(date):
     return DateEngFr(str(date))
     
 def DateComplete(dateDD, abrege=False):
-    """ Transforme une date DD en date complète : Ex : lundi 15 janvier 2008 """
+    """ Transforme une date DD en date complÃ¨te : Ex : lundi 15 janvier 2008 """
     if dateDD == None : return u""
     if abrege == False :
         listeJours, listeMois = LISTE_JOURS, LISTE_MOIS
@@ -63,7 +63,7 @@ def DateFrEng(textDate):
     return text
 
 def PeriodeComplete(mois, annee):
-    listeMois = (_(u"Janvier"), _(u"Février"), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"Août"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"Décembre"))
+    listeMois = (_(u"Janvier"), _(u"FÃ©vrier"), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"AoÃ»t"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"DÃ©cembre"))
     periodeComplete = u"%s %d" % (listeMois[mois-1], annee)
     return periodeComplete
 
@@ -93,25 +93,25 @@ def HeuresEnDecimal(texteHeure="07:00"):
     return int(heure)
 
 def FloatEnDelta(valeur=10.50):
-    """ Convertit une valeur décimale en timedelta """
+    """ Convertit une valeur dÃ©cimale en timedelta """
     return datetime.timedelta(hours=valeur)
 
 def DeltaEnFloat(valeur=datetime.timedelta(0)):
-    """ Convertit une valeur décimale en timedelta """
+    """ Convertit une valeur dÃ©cimale en timedelta """
     return (valeur.days*24) + (valeur.seconds/3600.0)
 
 def DeltaEnHeures(valeur=datetime.timedelta(0)):
-    """ Convertit une durée timedelta en nombre d'heures"""
+    """ Convertit une durÃ©e timedelta en nombre d'heures"""
     return (valeur.days*24) + (valeur.seconds/3600.0)
 
 def SoustractionHeures(heure_max, heure_min):
-    """ Effectue l'opération heure_max - heure_min. Renvoi un timedelta """
+    """ Effectue l'opÃ©ration heure_max - heure_min. Renvoi un timedelta """
     if type(heure_max) != datetime.timedelta : heure_max = datetime.timedelta(hours=heure_max.hour, minutes=heure_max.minute)
     if type(heure_min) != datetime.timedelta : heure_min =  datetime.timedelta(hours=heure_min.hour, minutes=heure_min.minute)
     return heure_max - heure_min
 
 def AdditionHeures(heure1, heure2):
-    """ Effectue l'opération heure_max - heure_min. Renvoi un timedelta """
+    """ Effectue l'opÃ©ration heure_max - heure_min. Renvoi un timedelta """
     if type(heure1) != datetime.timedelta : heure1 = datetime.timedelta(hours=heure1.hour, minutes=heure1.minute)
     if type(heure2) != datetime.timedelta : heure2 =  datetime.timedelta(hours=heure2.hour, minutes=heure2.minute)
     return heure1 + heure2

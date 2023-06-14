@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -40,41 +40,41 @@ LISTE_METHODES = [
     { "code" : "horaire_montant_unique", "label" : _(u"Montant unique en fonction d'une tranche horaire"), "type" : "horaire", "nbre_lignes_max" : None, "entete" : None, "champs" : ("heure_debut_min", "heure_debut_max", "heure_fin_min", "heure_fin_max", "temps_facture", "montant_unique", "montant_questionnaire", "label"), "champs_obligatoires" : ("heure_debut_min", "heure_debut_max", "heure_fin_min", "heure_fin_max", "montant_unique"), "tarifs_compatibles" : ("JOURN",) },
     { "code" : "horaire_qf", "label" : _(u"En fonction d'une tranche horaire et du quotient familial"), "type" : "horaire", "nbre_lignes_max" : None, "entete" : None, "champs" : ("qf_min", "qf_max", "heure_debut_min", "heure_debut_max", "heure_fin_min", "heure_fin_max", "temps_facture", "montant_unique", "label"), "champs_obligatoires" : ("qf_min", "qf_max", "heure_debut_min", "heure_debut_max", "heure_fin_min", "heure_fin_max", "montant_unique"), "tarifs_compatibles" : ("JOURN",) },
     
-    { "code" : "duree_montant_unique", "label" : _(u"Montant unique en fonction d'une durée"), "type" : "horaire", "nbre_lignes_max" : None, "entete" : None, "champs" : ("duree_min", "duree_max", "temps_facture", "montant_unique", "montant_questionnaire", "label"), "champs_obligatoires" : ("duree_min", "duree_max", "montant_unique"), "tarifs_compatibles" : ("JOURN",) },
-    { "code" : "duree_qf", "label" : _(u"En fonction d'une durée et du quotient familial"), "type" : "horaire", "nbre_lignes_max" : None, "entete" : None, "champs" : ("qf_min", "qf_max", "duree_min", "duree_max", "temps_facture", "montant_unique", "label"), "champs_obligatoires" : ("qf_min", "qf_max", "duree_min", "duree_max", "montant_unique"), "tarifs_compatibles" : ("JOURN",) },
+    { "code" : "duree_montant_unique", "label" : _(u"Montant unique en fonction d'une durÃ©e"), "type" : "horaire", "nbre_lignes_max" : None, "entete" : None, "champs" : ("duree_min", "duree_max", "temps_facture", "montant_unique", "montant_questionnaire", "label"), "champs_obligatoires" : ("duree_min", "duree_max", "montant_unique"), "tarifs_compatibles" : ("JOURN",) },
+    { "code" : "duree_qf", "label" : _(u"En fonction d'une durÃ©e et du quotient familial"), "type" : "horaire", "nbre_lignes_max" : None, "entete" : None, "champs" : ("qf_min", "qf_max", "duree_min", "duree_max", "temps_facture", "montant_unique", "label"), "champs_obligatoires" : ("qf_min", "qf_max", "duree_min", "duree_max", "montant_unique"), "tarifs_compatibles" : ("JOURN",) },
     
     { "code" : "montant_unique_date", "label" : _(u"Montant unique en fonction de la date"), "type" : "unitaire", "nbre_lignes_max" : None, "entete" : None, "champs" : ("date", "montant_unique", "label"), "champs_obligatoires" : ("date", "montant_unique"), "tarifs_compatibles" : ("JOURN",) },
     { "code" : "qf_date", "label" : _(u"En fonction de la date et du quotient familial"), "type" : "unitaire", "nbre_lignes_max" : None, "entete" : None, "champs" : ("date", "qf_min", "qf_max", "montant_unique", "label"), "champs_obligatoires" : ("date", "qf_min", "qf_max", "montant_unique"), "tarifs_compatibles" : ("JOURN",) },
     
     { "code" : "variable", "label" : _(u"Tarif libre (Saisi par l'utilisateur)"), "type" : "unitaire", "nbre_lignes_max" : 0, "entete" : None, "champs" : (), "champs_obligatoires" : (), "tarifs_compatibles" : ("JOURN",) },
-    { "code" : "choix", "label" : _(u"Tarif au choix (Sélectionné par l'utilisateur)"), "type" : "unitaire", "nbre_lignes_max" : None, "entete" : None, "champs" : ("montant_unique", "label"), "champs_obligatoires" : ("montant_unique",), "tarifs_compatibles" : ("JOURN", "FORFAIT",) },
+    { "code" : "choix", "label" : _(u"Tarif au choix (SÃ©lectionnÃ© par l'utilisateur)"), "type" : "unitaire", "nbre_lignes_max" : None, "entete" : None, "champs" : ("montant_unique", "label"), "champs_obligatoires" : ("montant_unique",), "tarifs_compatibles" : ("JOURN", "FORFAIT",) },
 
-    { "code" : "montant_evenement", "label" : _(u"Montant de l'évènement"), "type" : "unitaire", "nbre_lignes_max" : 0, "entete" : None, "champs" : (), "champs_obligatoires" : (), "tarifs_compatibles" : ("JOURN",) },
+    { "code" : "montant_evenement", "label" : _(u"Montant de l'Ã©vÃ¨nement"), "type" : "unitaire", "nbre_lignes_max" : 0, "entete" : None, "champs" : (), "champs_obligatoires" : (), "tarifs_compatibles" : ("JOURN",) },
 
-    { "code" : "montant_unique_nbre_ind", "label" : _(u"Montant unique en fonction du nombre d'individus de la famille présents"), "type" : "unitaire", "nbre_lignes_max" : 1, "entete" : "tranche", "champs" : ("montant_enfant_1", "montant_enfant_2", "montant_enfant_3", "montant_enfant_4", "montant_enfant_5", "montant_enfant_6", ), "champs_obligatoires" : ("montant_enfant_1"), "tarifs_compatibles" : ("JOURN",) },
-    { "code" : "qf_nbre_ind", "label" : _(u"En fonction du quotient familial et du nombre d'individus de la famille présents"), "type" : "unitaire", "nbre_lignes_max" : None, "entete" : "tranche", "champs" : ("qf_min", "qf_max", "montant_enfant_1", "montant_enfant_2", "montant_enfant_3", "montant_enfant_4", "montant_enfant_5", "montant_enfant_6", ), "champs_obligatoires" : ("qf_min", "qf_max", "montant_enfant_1"), "tarifs_compatibles" : ("JOURN",) },
-    { "code" : "horaire_montant_unique_nbre_ind", "label" : _(u"Montant unique en fonction du nombre d'individus de la famille présents et de la tranche horaire"), "type" : "unitaire", "nbre_lignes_max" : None, "entete" : "tranche", "champs" : ("heure_debut_min", "heure_debut_max", "heure_fin_min", "heure_fin_max", "temps_facture", "montant_enfant_1", "montant_enfant_2", "montant_enfant_3", "montant_enfant_4", "montant_enfant_5", "montant_enfant_6", "label"), "champs_obligatoires" : ("heure_debut_min", "heure_debut_max", "heure_fin_min", "heure_fin_max", "montant_enfant_1"), "tarifs_compatibles" : ("JOURN",) },
-    { "code" : "montant_unique_nbre_ind_degr", "label" : _(u"Montant dégressif en fonction du nombre d'individus de la famille présents"), "type" : "unitaire", "nbre_lignes_max" : 1, "entete" : "tranche", "champs" : ("montant_enfant_1", "montant_enfant_2", "montant_enfant_3", "montant_enfant_4", "montant_enfant_5", "montant_enfant_6", ), "champs_obligatoires" : ("montant_enfant_1"), "tarifs_compatibles" : ("JOURN",) },
-    { "code" : "qf_nbre_ind_degr", "label" : _(u"Montant dégressif en fonction du quotient familial et du nombre d'individus de la famille présents"), "type" : "unitaire", "nbre_lignes_max" : None, "entete" : "tranche", "champs" : ("qf_min", "qf_max", "montant_enfant_1", "montant_enfant_2", "montant_enfant_3", "montant_enfant_4", "montant_enfant_5", "montant_enfant_6", ), "champs_obligatoires" : ("qf_min", "qf_max", "montant_enfant_1"), "tarifs_compatibles" : ("JOURN",) },
-    { "code" : "horaire_montant_unique_nbre_ind_degr", "label" : _(u"Montant dégressif en fonction du nombre d'individus de la famille présents et de la tranche horaire"), "type" : "unitaire", "nbre_lignes_max" : None, "entete" : "tranche", "champs" : ("heure_debut_min", "heure_debut_max", "heure_fin_min", "heure_fin_max", "temps_facture", "montant_enfant_1", "montant_enfant_2", "montant_enfant_3", "montant_enfant_4", "montant_enfant_5", "montant_enfant_6", "label"), "champs_obligatoires" : ("heure_debut_min", "heure_debut_max", "heure_fin_min", "heure_fin_max", "montant_enfant_1"), "tarifs_compatibles" : ("JOURN",) },
+    { "code" : "montant_unique_nbre_ind", "label" : _(u"Montant unique en fonction du nombre d'individus de la famille prÃ©sents"), "type" : "unitaire", "nbre_lignes_max" : 1, "entete" : "tranche", "champs" : ("montant_enfant_1", "montant_enfant_2", "montant_enfant_3", "montant_enfant_4", "montant_enfant_5", "montant_enfant_6", ), "champs_obligatoires" : ("montant_enfant_1"), "tarifs_compatibles" : ("JOURN",) },
+    { "code" : "qf_nbre_ind", "label" : _(u"En fonction du quotient familial et du nombre d'individus de la famille prÃ©sents"), "type" : "unitaire", "nbre_lignes_max" : None, "entete" : "tranche", "champs" : ("qf_min", "qf_max", "montant_enfant_1", "montant_enfant_2", "montant_enfant_3", "montant_enfant_4", "montant_enfant_5", "montant_enfant_6", ), "champs_obligatoires" : ("qf_min", "qf_max", "montant_enfant_1"), "tarifs_compatibles" : ("JOURN",) },
+    { "code" : "horaire_montant_unique_nbre_ind", "label" : _(u"Montant unique en fonction du nombre d'individus de la famille prÃ©sents et de la tranche horaire"), "type" : "unitaire", "nbre_lignes_max" : None, "entete" : "tranche", "champs" : ("heure_debut_min", "heure_debut_max", "heure_fin_min", "heure_fin_max", "temps_facture", "montant_enfant_1", "montant_enfant_2", "montant_enfant_3", "montant_enfant_4", "montant_enfant_5", "montant_enfant_6", "label"), "champs_obligatoires" : ("heure_debut_min", "heure_debut_max", "heure_fin_min", "heure_fin_max", "montant_enfant_1"), "tarifs_compatibles" : ("JOURN",) },
+    { "code" : "montant_unique_nbre_ind_degr", "label" : _(u"Montant dÃ©gressif en fonction du nombre d'individus de la famille prÃ©sents"), "type" : "unitaire", "nbre_lignes_max" : 1, "entete" : "tranche", "champs" : ("montant_enfant_1", "montant_enfant_2", "montant_enfant_3", "montant_enfant_4", "montant_enfant_5", "montant_enfant_6", ), "champs_obligatoires" : ("montant_enfant_1"), "tarifs_compatibles" : ("JOURN",) },
+    { "code" : "qf_nbre_ind_degr", "label" : _(u"Montant dÃ©gressif en fonction du quotient familial et du nombre d'individus de la famille prÃ©sents"), "type" : "unitaire", "nbre_lignes_max" : None, "entete" : "tranche", "champs" : ("qf_min", "qf_max", "montant_enfant_1", "montant_enfant_2", "montant_enfant_3", "montant_enfant_4", "montant_enfant_5", "montant_enfant_6", ), "champs_obligatoires" : ("qf_min", "qf_max", "montant_enfant_1"), "tarifs_compatibles" : ("JOURN",) },
+    { "code" : "horaire_montant_unique_nbre_ind_degr", "label" : _(u"Montant dÃ©gressif en fonction du nombre d'individus de la famille prÃ©sents et de la tranche horaire"), "type" : "unitaire", "nbre_lignes_max" : None, "entete" : "tranche", "champs" : ("heure_debut_min", "heure_debut_max", "heure_fin_min", "heure_fin_max", "temps_facture", "montant_enfant_1", "montant_enfant_2", "montant_enfant_3", "montant_enfant_4", "montant_enfant_5", "montant_enfant_6", "label"), "champs_obligatoires" : ("heure_debut_min", "heure_debut_max", "heure_fin_min", "heure_fin_max", "montant_enfant_1"), "tarifs_compatibles" : ("JOURN",) },
     
-    { "code" : "duree_coeff_montant_unique", "label" : _(u"Montant au prorata d'une durée"), "type" : "horaire", "nbre_lignes_max" : None, "entete" : None, "champs" : ("duree_min", "duree_max", "duree_seuil", "duree_plafond", "unite_horaire", "montant_unique", "montant_min", "montant_max", "montant_questionnaire", "ajustement", "label"), "champs_obligatoires" : ("unite_horaire", "montant_unique"), "tarifs_compatibles" : ("JOURN",) },
-    { "code" : "duree_coeff_qf", "label" : _(u"Montant au prorata d'une durée et selon le quotient familial"), "type" : "horaire", "nbre_lignes_max" : None, "entete" : None, "champs" : ("qf_min", "qf_max", "duree_min", "duree_max", "duree_seuil", "duree_plafond", "unite_horaire", "montant_unique", "montant_min", "montant_max", "ajustement", "label"), "champs_obligatoires" : ("qf_min", "qf_max", "unite_horaire", "montant_unique"), "tarifs_compatibles" : ("JOURN",) },
+    { "code" : "duree_coeff_montant_unique", "label" : _(u"Montant au prorata d'une durÃ©e"), "type" : "horaire", "nbre_lignes_max" : None, "entete" : None, "champs" : ("duree_min", "duree_max", "duree_seuil", "duree_plafond", "unite_horaire", "montant_unique", "montant_min", "montant_max", "montant_questionnaire", "ajustement", "label"), "champs_obligatoires" : ("unite_horaire", "montant_unique"), "tarifs_compatibles" : ("JOURN",) },
+    { "code" : "duree_coeff_qf", "label" : _(u"Montant au prorata d'une durÃ©e et selon le quotient familial"), "type" : "horaire", "nbre_lignes_max" : None, "entete" : None, "champs" : ("qf_min", "qf_max", "duree_min", "duree_max", "duree_seuil", "duree_plafond", "unite_horaire", "montant_unique", "montant_min", "montant_max", "ajustement", "label"), "champs_obligatoires" : ("qf_min", "qf_max", "unite_horaire", "montant_unique"), "tarifs_compatibles" : ("JOURN",) },
 
     { "code" : "taux_montant_unique", "label" : _(u"Par taux d'effort"), "type" : "unitaire", "nbre_lignes_max" : 1, "entete" : None, "champs" : ("taux", "montant_min", "montant_max", "ajustement", "label"), "champs_obligatoires" : ("taux",), "tarifs_compatibles" : ("JOURN",) },
     { "code" : "taux_qf", "label" : _(u"Par taux d'effort et par tranches de QF"), "type" : "unitaire", "nbre_lignes_max" : None, "entete" : None, "champs" : ("qf_min", "qf_max", "taux", "montant_min", "montant_max", "ajustement", "label"), "champs_obligatoires" : ("qf_min", "qf_max", "taux",), "tarifs_compatibles" : ("JOURN",) },
     { "code" : "taux_date", "label": _(u"Par taux d'effort et par date"), "type": "unitaire", "nbre_lignes_max": None, "entete": None, "champs": ("date", "taux", "montant_min", "montant_max", "ajustement", "label"), "champs_obligatoires": ("date", "taux"), "tarifs_compatibles": ("JOURN",)},
-    { "code" : "duree_taux_montant_unique", "label" : _(u"Par taux d'effort et en fonction d'une durée"), "type" : "horaire", "nbre_lignes_max" : None, "entete" : None, "champs" : ("duree_min", "duree_max", "temps_facture", "taux", "montant_min", "montant_max", "ajustement", "label"), "champs_obligatoires" : ("duree_min", "duree_max", "taux"), "tarifs_compatibles" : ("JOURN",) },
-    { "code" : "duree_taux_qf", "label" : _(u"Par taux d'effort et par tranches de QF en fonction d'une durée"), "type" : "horaire", "nbre_lignes_max" : None, "entete" : None, "champs" : ("qf_min", "qf_max", "duree_min", "duree_max", "temps_facture", "taux", "montant_min", "montant_max", "ajustement", "label"), "champs_obligatoires" : ("qf_min", "qf_max", "duree_min", "duree_max", "taux"), "tarifs_compatibles" : ("JOURN",) },
+    { "code" : "duree_taux_montant_unique", "label" : _(u"Par taux d'effort et en fonction d'une durÃ©e"), "type" : "horaire", "nbre_lignes_max" : None, "entete" : None, "champs" : ("duree_min", "duree_max", "temps_facture", "taux", "montant_min", "montant_max", "ajustement", "label"), "champs_obligatoires" : ("duree_min", "duree_max", "taux"), "tarifs_compatibles" : ("JOURN",) },
+    { "code" : "duree_taux_qf", "label" : _(u"Par taux d'effort et par tranches de QF en fonction d'une durÃ©e"), "type" : "horaire", "nbre_lignes_max" : None, "entete" : None, "champs" : ("qf_min", "qf_max", "duree_min", "duree_max", "temps_facture", "taux", "montant_min", "montant_max", "ajustement", "label"), "champs_obligatoires" : ("qf_min", "qf_max", "duree_min", "duree_max", "taux"), "tarifs_compatibles" : ("JOURN",) },
 
     # Lignes PSU
     { "code" : "forfait_contrat", "label" : _(u"Forfait contrat"), "type" : "unitaire", "nbre_lignes_max" : 0, "entete" : None, "champs" : (), "champs_obligatoires" : (), "tarifs_compatibles" : ("CREDIT",) },
-    { "code" : "psu_revenu", "label" : _(u"Barême PSU selon revenus"), "type" : "unitaire", "nbre_lignes_max" : None, "entete" : None, "champs" : ("revenu_min", "revenu_max", "taux", "montant_min", "montant_max", "ajustement"), "champs_obligatoires" : ("revenu_min", "revenu_max", "taux"), "tarifs_compatibles" : ("BAREME",) },
-    { "code" : "psu_qf", "label" : _(u"Barême PSU selon QF"), "type" : "unitaire", "nbre_lignes_max" : None, "entete" : None, "champs" : ("qf_min", "qf_max", "taux", "montant_min", "montant_max", "ajustement"), "champs_obligatoires" : ("qf_min", "qf_max", "taux"), "tarifs_compatibles" : ("BAREME",) },
+    { "code" : "psu_revenu", "label" : _(u"BarÃªme PSU selon revenus"), "type" : "unitaire", "nbre_lignes_max" : None, "entete" : None, "champs" : ("revenu_min", "revenu_max", "taux", "montant_min", "montant_max", "ajustement"), "champs_obligatoires" : ("revenu_min", "revenu_max", "taux"), "tarifs_compatibles" : ("BAREME",) },
+    { "code" : "psu_qf", "label" : _(u"BarÃªme PSU selon QF"), "type" : "unitaire", "nbre_lignes_max" : None, "entete" : None, "champs" : ("qf_min", "qf_max", "taux", "montant_min", "montant_max", "ajustement"), "champs_obligatoires" : ("qf_min", "qf_max", "taux"), "tarifs_compatibles" : ("BAREME",) },
 
     # Lignes PRODUITS
     {"code" : "produit_montant_unique", "label": _(u"Montant unique"), "type": "unitaire", "nbre_lignes_max": 1, "entete": None, "champs": ("montant_unique",), "champs_obligatoires": ("montant_unique",), "tarifs_compatibles": ("PRODUIT",)},
-    {"code" : "produit_proportionnel_quantite", "label": _(u"Montant proportionnel à la quantité"), "type": "unitaire", "nbre_lignes_max": 1, "entete": None, "champs": ("montant_unique",), "champs_obligatoires": ("montant_unique",), "tarifs_compatibles": ("PRODUIT",)},
+    {"code" : "produit_proportionnel_quantite", "label": _(u"Montant proportionnel Ã  la quantitÃ©"), "type": "unitaire", "nbre_lignes_max": 1, "entete": None, "champs": ("montant_unique",), "champs_obligatoires": ("montant_unique",), "tarifs_compatibles": ("PRODUIT",)},
 
 ]
 
@@ -85,7 +85,7 @@ LISTE_COLONNES = [
     { "code" : "revenu_min", "label" : _(u"Revenu\nmin >="), "largeur" : 70, "editeur" : "decimal", "infobulle" : _(u"Revenu minimal") },
     { "code" : "revenu_max", "label" : _(u"Revenu\nmax <="), "largeur" : 70, "editeur" : "decimal", "infobulle" : _(u"Revenu maximal") },
     { "code" : "montant_unique", "label" : _(u"Tarif"), "largeur" : 70, "editeur" : "decimal4", "infobulle" : _(u"Montant") },
-    { "code" : "montant_questionnaire", "label" : _(u"Tarif questionnaire"), "largeur" : 130, "editeur" : "questionnaire", "infobulle" : _(u"Montant renseigné dans les questionnaires familiaux ou individuels") },
+    { "code" : "montant_questionnaire", "label" : _(u"Tarif questionnaire"), "largeur" : 130, "editeur" : "questionnaire", "infobulle" : _(u"Montant renseignÃ© dans les questionnaires familiaux ou individuels") },
     { "code" : "montant_enfant_1", "label" : _(u"Tarif\n1 ind."), "largeur" : 60, "editeur" : "decimal4", "infobulle" : _(u"Montant") },
     { "code" : "montant_enfant_2", "label" : _(u"Tarif\n2 ind."), "largeur" : 60, "editeur" : "decimal4", "infobulle" : _(u"Montant") },
     { "code" : "montant_enfant_3", "label" : _(u"Tarif\n3 ind."), "largeur" : 60, "editeur" : "decimal4", "infobulle" : _(u"Montant") },
@@ -96,20 +96,20 @@ LISTE_COLONNES = [
     { "code" : "coefficient", "label" : _(u"Coefficient"), "largeur" : 70, "editeur" : "decimal", "infobulle" : _(u"Coefficient") },
     { "code" : "montant_min", "label" : _(u"Montant\nmin"), "largeur" : 70, "editeur" : "decimal4", "infobulle" : _(u"Montant minimal") },
     { "code" : "montant_max", "label" : _(u"Montant\nmax"), "largeur" : 70, "editeur" : "decimal4", "infobulle" : _(u"Montant maximal") },
-    { "code" : "heure_debut_min", "label" : _(u"Heure Début\nmin >="), "largeur" : 77, "editeur" : "heure", "infobulle" : _(u"Heure de début minimale") },
-    { "code" : "heure_debut_max", "label" : _(u"Heure Début\nmax <="), "largeur" : 77, "editeur" : "heure", "infobulle" : _(u"Heure de début maximale") },
+    { "code" : "heure_debut_min", "label" : _(u"Heure DÃ©but\nmin >="), "largeur" : 77, "editeur" : "heure", "infobulle" : _(u"Heure de dÃ©but minimale") },
+    { "code" : "heure_debut_max", "label" : _(u"Heure DÃ©but\nmax <="), "largeur" : 77, "editeur" : "heure", "infobulle" : _(u"Heure de dÃ©but maximale") },
     { "code" : "heure_fin_min", "label" : _(u"Heure Fin\nmin >="), "largeur" : 75, "editeur" : "heure", "infobulle" : _(u"Heure de fin minimale") },
     { "code" : "heure_fin_max", "label" : _(u"Heure Fin\nmax <="), "largeur" : 75, "editeur" : "heure", "infobulle" : _(u"Heure de fin maximale") },
-    { "code" : "duree_min", "label" : _(u"Durée\nmin >="), "largeur" : 70, "editeur" : "heure", "infobulle" : _(u"Durée minimale") },
-    { "code" : "duree_max", "label" : _(u"Durée\nmax <="), "largeur" : 70, "editeur" : "heure", "infobulle" : _(u"Durée maximale") },
+    { "code" : "duree_min", "label" : _(u"DurÃ©e\nmin >="), "largeur" : 70, "editeur" : "heure", "infobulle" : _(u"DurÃ©e minimale") },
+    { "code" : "duree_max", "label" : _(u"DurÃ©e\nmax <="), "largeur" : 70, "editeur" : "heure", "infobulle" : _(u"DurÃ©e maximale") },
     { "code" : "date", "label" : _(u"Date"), "largeur" : 80, "editeur" : "date", "infobulle" : _(u"Date") },
     { "code" : "label", "label" : _(u"Label de la prestation (Optionnel)"), "largeur" : 220, "editeur" : None, "infobulle" : _(u"Label de la prestation. Variables disponibles :\n{QUANTITE}, {TEMPS_REALISE}, {TEMPS_FACTURE}, {HEURE_DEBUT}, {HEURE_FIN}.") },
-    { "code" : "temps_facture", "label" : _(u"Temps facturé\n(pour la CAF)"), "largeur" : 90, "editeur" : "heure", "infobulle" : _(u"Temps facturé") },
-    { "code" : "unite_horaire", "label" : _(u"Unité\nhoraire"), "largeur" : 70, "editeur" : "heure", "infobulle" : _(u"Unité horaire de base") },
-    { "code" : "duree_seuil", "label" : _(u"Durée\nseuil"), "largeur" : 70, "editeur" : "heure", "infobulle" : _(u"Durée seuil") },
-    { "code" : "duree_plafond", "label" : _(u"Durée\nplafond"), "largeur" : 70, "editeur" : "heure", "infobulle" : _(u"Durée plafond") },
+    { "code" : "temps_facture", "label" : _(u"Temps facturÃ©\n(pour la CAF)"), "largeur" : 90, "editeur" : "heure", "infobulle" : _(u"Temps facturÃ©") },
+    { "code" : "unite_horaire", "label" : _(u"UnitÃ©\nhoraire"), "largeur" : 70, "editeur" : "heure", "infobulle" : _(u"UnitÃ© horaire de base") },
+    { "code" : "duree_seuil", "label" : _(u"DurÃ©e\nseuil"), "largeur" : 70, "editeur" : "heure", "infobulle" : _(u"DurÃ©e seuil") },
+    { "code" : "duree_plafond", "label" : _(u"DurÃ©e\nplafond"), "largeur" : 70, "editeur" : "heure", "infobulle" : _(u"DurÃ©e plafond") },
     { "code" : "taux", "label" : _(u"Taux"), "largeur" : 70, "editeur" : "decimal6", "infobulle" : _(u"Taux d'effort") },
-    { "code" : "ajustement", "label" : _(u"Majoration/\nDéduction"), "largeur" : 75, "editeur" : "decimal4", "infobulle" : _(u"Montant à majorer ou à déduire sur le tarif") },
+    { "code" : "ajustement", "label" : _(u"Majoration/\nDÃ©duction"), "largeur" : 75, "editeur" : "decimal4", "infobulle" : _(u"Montant Ã  majorer ou Ã  dÃ©duire sur le tarif") },
 ]
 
 CHAMPS_TABLE_LIGNES = [
@@ -423,7 +423,7 @@ class Tableau(gridlib.Grid):
         self.Refresh()
         
     def InitGrid(self):        
-        """ Création des colonnes """
+        """ CrÃ©ation des colonnes """
         nbreColonnes = len(self.champs)
         self.AppendCols(nbreColonnes)
         numColonne = 0
@@ -454,7 +454,7 @@ class Tableau(gridlib.Grid):
         
     def Remplissage(self):
         if self.code in self.dictDonnees : 
-            # Création des lignes
+            # CrÃ©ation des lignes
             dictLignes = self.dictDonnees[self.code]
             for numLigne in list(dictLignes.keys()) :
                 self.AjouterLigne()
@@ -470,15 +470,15 @@ class Tableau(gridlib.Grid):
             self.AjouterLigne()
         
     def AjouterLigne(self):
-        """ Création d'une ligne """
+        """ CrÃ©ation d'une ligne """
         numLigne = self.GetNumberRows()-1
 
-        # Création de la ligne
+        # CrÃ©ation de la ligne
         self.AppendRows(1)
         numLigne += 1
         self.SetRowLabelValue(numLigne, str(numLigne+1))
         self.SetRowSize(numLigne, 20)
-        # Mémorisation de la ligne
+        # MÃ©morisation de la ligne
         if (self.code in self.dictDonnees) == False : 
             self.dictDonnees[self.code] = {}
         if (numLigne in self.dictDonnees[self.code]) == False : 
@@ -528,7 +528,7 @@ class Tableau(gridlib.Grid):
     
     # def SuppressionLigne(self):
     #     numLigne = self.GetNumberRows() -1
-    #     # Confirmation de suppression si données existantes
+    #     # Confirmation de suppression si donnÃ©es existantes
     #     if self.dictDonnees.has_key(self.code)  :
     #         if self.dictDonnees[self.code].has_key(numLigne) :
     #             if len(self.dictDonnees[self.code][numLigne])> 0 :
@@ -540,13 +540,13 @@ class Tableau(gridlib.Grid):
     #                     dlg.Destroy()
     #     # Modification grid
     #     self.DeleteRows(numLigne, numLigne)
-    #     # Suppression de la ligne du dictionnaire de données
+    #     # Suppression de la ligne du dictionnaire de donnÃ©es
     #     if self.dictDonnees.has_key(self.code)  :
     #         if self.dictDonnees[self.code].has_key(numLigne) :
     #             del self.dictDonnees[self.code][numLigne]
 
     def Inserer(self, event=None):
-        """ Demande le nombre de lignes à insérer """
+        """ Demande le nombre de lignes Ã  insÃ©rer """
         if self.nbre_lignes_max != None :
             if self.nbre_lignes_max <= self.GetNumberRows() :
                 dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas saisir d'autres lignes !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
@@ -579,11 +579,11 @@ class Tableau(gridlib.Grid):
         self.InsererLignes(num_ligne_debut=num_ligne_debut, nbre_lignes=nbre_lignes)
 
     def InsererLignes(self, num_ligne_debut=0, nbre_lignes=1):
-        """ Insérer des lignes à partir de num_ligne_debut """
+        """ InsÃ©rer des lignes Ã  partir de num_ligne_debut """
         # Modification grid
         self.InsertRows(pos=num_ligne_debut, numRows=nbre_lignes)
 
-        # Décalage des lignes en mémoire
+        # DÃ©calage des lignes en mÃ©moire
         dict_temp = {}
         liste_num_lignes = list(self.dictDonnees[self.code].keys())
         liste_num_lignes.sort()
@@ -597,12 +597,12 @@ class Tableau(gridlib.Grid):
 
         self.dictDonnees[self.code] = dict_temp
 
-        # Génération des lignes
+        # GÃ©nÃ©ration des lignes
         for numLigne in range(num_ligne_debut, num_ligne_debut+nbre_lignes) :
             self.SetRowLabelValue(numLigne, str(numLigne + 1))
             self.SetRowSize(numLigne, 20)
 
-            # Mémorisation de la ligne
+            # MÃ©morisation de la ligne
             if (self.code in self.dictDonnees) == False:
                 self.dictDonnees[self.code] = {}
             if (numLigne in self.dictDonnees[self.code]) == False:
@@ -652,10 +652,10 @@ class Tableau(gridlib.Grid):
                 numColonne += 1
 
     def Supprimer(self, event=None):
-        """ Supprimer les lignes sélectionnées """
+        """ Supprimer les lignes sÃ©lectionnÃ©es """
         mode, selections = self.GetSelectionUtilisateur()
         if mode == None or (self.code in self.dictDonnees) == False:
-            dlg = wx.MessageDialog(self, _(u"Aucune ligne à supprimer."), u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Aucune ligne Ã  supprimer."), u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -675,7 +675,7 @@ class Tableau(gridlib.Grid):
         # Calcule le nombre de lignes
         nbre_lignes = num_ligne_fin - num_ligne_debut + 1
 
-        # Vérifie qu'il reste au moins une ligne
+        # VÃ©rifie qu'il reste au moins une ligne
         if (self.GetNumberRows() - nbre_lignes) == 0 :
             dlg = wx.MessageDialog(self, _(u"Vous devez conserver au moins une ligne !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
@@ -684,9 +684,9 @@ class Tableau(gridlib.Grid):
 
         # Demande confirmation suppression
         if nbre_lignes == 1 :
-            texte = _(u"Souhaitez-vous vraiment supprimer la ligne n°%d ?") % (num_ligne_debut+1)
+            texte = _(u"Souhaitez-vous vraiment supprimer la ligne nÂ°%d ?") % (num_ligne_debut+1)
         else :
-            texte = _(u"Souhaitez-vous vraiment supprimer %d lignes (n°%d à n°%d) ?") % (nbre_lignes, num_ligne_debut+1, num_ligne_fin+1)
+            texte = _(u"Souhaitez-vous vraiment supprimer %d lignes (nÂ°%d Ã  nÂ°%d) ?") % (nbre_lignes, num_ligne_debut+1, num_ligne_fin+1)
         dlg = wx.MessageDialog(self, texte, _(u"Supprimer"), wx.YES_NO | wx.NO_DEFAULT | wx.CANCEL | wx.ICON_QUESTION)
         reponse = dlg.ShowModal()
         dlg.Destroy()
@@ -697,7 +697,7 @@ class Tableau(gridlib.Grid):
 
 
     def SupprimerLignes(self, num_ligne_debut=0, nbre_lignes=1):
-        """ Supprimer des lignes de la ligne num_ligne_debut à num_ligne_fin """
+        """ Supprimer des lignes de la ligne num_ligne_debut Ã  num_ligne_fin """
         dict_temp = {}
         liste_num_lignes = list(self.dictDonnees[self.code].keys())
         liste_num_lignes.sort()
@@ -742,7 +742,7 @@ class Tableau(gridlib.Grid):
             if editeur == "entier" and valeur != "" : valeur = int(valeur) 
             if editeur == "questionnaire" and valeur != "" : valeur = int(valeur) 
 
-       # Mémorisation
+       # MÃ©morisation
         if IDligne != None : self.dictDonnees[self.code][numLigne]["IDligne"] = IDligne
         if valeur == None or valeur == "" :
             del self.dictDonnees[self.code][numLigne][numColonne]
@@ -755,11 +755,11 @@ class Tableau(gridlib.Grid):
         if IDtarif == None and self.track_tarif == None :
             return
 
-        # Importation de données virtuelles
+        # Importation de donnÃ©es virtuelles
         if self.track_tarif != None :
             listeDonnees = self.track_tarif.GetLignes()
 
-        # Importation depuis la base de données
+        # Importation depuis la base de donnÃ©es
         else :
             db = GestionDB.DB()
             champsTable = ", ".join(CHAMPS_TABLE_LIGNES)
@@ -772,7 +772,7 @@ class Tableau(gridlib.Grid):
             db.Close()
 
         if len(listeDonnees) == 0 : return
-        # Sélection de la méthode
+        # SÃ©lection de la mÃ©thode
         code = listeDonnees[0][3]
         index = 0
         for dictMethode in LISTE_METHODES :
@@ -781,7 +781,7 @@ class Tableau(gridlib.Grid):
                 self.parent.OnChoiceMethode(None)
                 champs = dictMethode["champs"]
             index += 1
-        # Création des lignes du tableau
+        # CrÃ©ation des lignes du tableau
         for index in range(1, len(listeDonnees)) :
             self.AjouterLigne()
         # Remplissage du tableau
@@ -789,7 +789,7 @@ class Tableau(gridlib.Grid):
         self.listeInitialeID = []
         for valeurs in listeDonnees :
             dictValeurs = {}
-            # Récupération des valeurs de la base
+            # RÃ©cupÃ©ration des valeurs de la base
             self.listeInitialeID.append(valeurs[0])
             indexValeur = 0
             for valeur in valeurs :
@@ -812,9 +812,9 @@ class Tableau(gridlib.Grid):
             numLigne += 1
     
     def Validation(self):
-        """ Vérification des donnéees """
+        """ VÃ©rification des donnÃ©ees """
         if (self.code in self.dictDonnees) == False : 
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner une méthode de calcul !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sÃ©lectionner une mÃ©thode de calcul !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -824,9 +824,9 @@ class Tableau(gridlib.Grid):
                 codeChamp = LISTE_COLONNES[indexChamp]["code"]
                 label = LISTE_COLONNES[indexChamp]["label"]
                 if codeChamp in self.champs_obligatoires :
-                    # Vérifie la valeur
+                    # VÃ©rifie la valeur
                     if (numColonne in dictColonnes) == False :
-                        dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement renseigner la colonne '%s' de la ligne n°%d !") % (label, numLigne+1), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
+                        dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement renseigner la colonne '%s' de la ligne nÂ°%d !") % (label, numLigne+1), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
                         dlg.ShowModal()
                         dlg.Destroy()
                         return False
@@ -874,7 +874,7 @@ class Tableau(gridlib.Grid):
                 dictValeurs[codeChamp] = valeur
                 numColonne += 1
             
-            # Création de la liste de champs pour la sauvegarde
+            # CrÃ©ation de la liste de champs pour la sauvegarde
             listeDonnees = []
             for codeChamp in CHAMPS_TABLE_LIGNES[1:] :
                 if codeChamp in list(dictValeurs.keys()) :
@@ -955,10 +955,10 @@ class Tableau(gridlib.Grid):
         return None, None
 
     def Copier(self, event=None):
-        """ Copie les cases sélectionnées dans le presse-papiers """
+        """ Copie les cases sÃ©lectionnÃ©es dans le presse-papiers """
         mode, selections = self.GetSelectionUtilisateur()
         if mode == None or (self.code in self.dictDonnees) == False:
-            dlg = wx.MessageDialog(self, _(u"Aucune donnée à copier."), u"Presse-papiers", wx.OK | wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(self, _(u"Aucune donnÃ©e Ã  copier."), u"Presse-papiers", wx.OK | wx.ICON_INFORMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -980,7 +980,7 @@ class Tableau(gridlib.Grid):
                 if code == "date" and valeur != None:
                     valeur = DateFrEnDateDD(valeur)
 
-                # Vérifie si cette case est dans la sélection
+                # VÃ©rifie si cette case est dans la sÃ©lection
                 selected = False
                 if mode == "lignes" and numLigne in selections : selected = True
                 if mode == "colonnes" and numColonne in selections : selected = True
@@ -1003,13 +1003,13 @@ class Tableau(gridlib.Grid):
                 wx.TheClipboard.Close()
 
                 # Confirmation
-                # dlg = wx.MessageDialog(self, _(u"La sélection de %s a été copiée dans le presse-papiers.") % mode, u"Presse-papiers", wx.OK | wx.ICON_INFORMATION)
+                # dlg = wx.MessageDialog(self, _(u"La sÃ©lection de %s a Ã©tÃ© copiÃ©e dans le presse-papiers.") % mode, u"Presse-papiers", wx.OK | wx.ICON_INFORMATION)
                 # dlg.ShowModal()
                 # dlg.Destroy()
 
     def Coller(self, event=None):
         """ Colle les valeurs des cases contenues dans le presse-papiers """
-        # Récupération du clipboard
+        # RÃ©cupÃ©ration du clipboard
         success = False
         objet = wx.CustomDataObject("lignes_calcul")
         if wx.TheClipboard.Open():
@@ -1038,19 +1038,19 @@ class Tableau(gridlib.Grid):
         #     num_ligne_debut = int(num_ligne_debut)
         # except :
         #     # Confirmation
-        #     dlg = wx.MessageDialog(self, _(u"Le numéro de ligne est erroné."), _(u"Presse-papiers"), wx.OK | wx.ICON_ERROR)
+        #     dlg = wx.MessageDialog(self, _(u"Le numÃ©ro de ligne est erronÃ©."), _(u"Presse-papiers"), wx.OK | wx.ICON_ERROR)
         #     dlg.ShowModal()
         #     dlg.Destroy()
         #     return False
 
-        # Remplissage avec les lignes à copier
+        # Remplissage avec les lignes Ã  copier
         numLigne = num_ligne_debut - 1
 
-        # Création de lignes supplémentaires si besoin
+        # CrÃ©ation de lignes supplÃ©mentaires si besoin
         if len(data_lignes) + numLigne > self.GetNumberRows() :
             if self.nbre_lignes_max == None or len(data_lignes) + numLigne <= self.nbre_lignes_max :
                 nbre = len(data_lignes) + numLigne - self.GetNumberRows()
-                dlg = wx.MessageDialog(self, _(u"Souhaitez-vous rajouter %d lignes supplémentaires ?") % nbre, _(u"Coller"), wx.YES_NO | wx.YES_DEFAULT | wx.CANCEL | wx.ICON_QUESTION)
+                dlg = wx.MessageDialog(self, _(u"Souhaitez-vous rajouter %d lignes supplÃ©mentaires ?") % nbre, _(u"Coller"), wx.YES_NO | wx.YES_DEFAULT | wx.CANCEL | wx.ICON_QUESTION)
                 reponse = dlg.ShowModal()
                 dlg.Destroy()
                 if reponse == wx.ID_CANCEL :
@@ -1062,7 +1062,7 @@ class Tableau(gridlib.Grid):
         # Remplissage des cases
         for dict_ligne in data_lignes :
             for code, valeur in dict_ligne.items() :
-                # Recherche le numéro de colonne
+                # Recherche le numÃ©ro de colonne
                 index = 0
                 numColonne = None
                 for codeChamp in self.champs:
@@ -1130,11 +1130,11 @@ class Tableau(gridlib.Grid):
         #if mode == None :
         #    self.SelectBlock(topRow=numLigne, leftCol=numColonne, bottomRow=numLigne, rightCol=numColonne)
 
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         id = wx.Window.NewControlId()
-        item = wx.MenuItem(menuPop, id, _(u"Insérer des lignes"))
+        item = wx.MenuItem(menuPop, id, _(u"InsÃ©rer des lignes"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Ajouter_ligne.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -1202,7 +1202,7 @@ class CTRL_Methode(wx.Choice):
         listeLabels = []
         index = 0
         for dictValeurs in LISTE_METHODES :
-            # Création du label
+            # CrÃ©ation du label
             label = dictValeurs["label"]
 
             if (self.typeTarif == None or self.typeTarif in dictValeurs["tarifs_compatibles"]) and (self.filtre == None or dictValeurs["code"] in self.filtre) :
@@ -1253,8 +1253,8 @@ class CTRL_Type_quotient(wx.Choice):
         db.ExecuterReq(req)
         listeDonnees = db.ResultatReq()
         db.Close()
-        listeItems = [_(u"Indifférent")]
-        self.dictDonnees = {0: {"ID": None, "nom": _(u"Indifférent")}}
+        listeItems = [_(u"IndiffÃ©rent")]
+        self.dictDonnees = {0: {"ID": None, "nom": _(u"IndiffÃ©rent")}}
         index = 1
         for IDtype_quotient, nom in listeDonnees:
             self.dictDonnees[index] = {"ID": IDtype_quotient, "nom ": nom}
@@ -1287,10 +1287,10 @@ class Panel(wx.Panel):
         
         self.nbre_lignes_max = None
 
-        self.label_methode = wx.StaticText(self, -1, _(u"Méthode :"))
+        self.label_methode = wx.StaticText(self, -1, _(u"MÃ©thode :"))
         self.ctrl_methode = CTRL_Methode(self, filtre=filtre_methodes)
 
-        self.label_parametres = wx.StaticText(self, -1, _(u"Paramètres :"))
+        self.label_parametres = wx.StaticText(self, -1, _(u"ParamÃ¨tres :"))
         self.ctrl_parametres = Tableau(self, track_tarif=track_tarif)
         
         self.bouton_ajouter_ligne = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Ajouter_ligne.png"), wx.BITMAP_TYPE_ANY))
@@ -1299,7 +1299,7 @@ class Panel(wx.Panel):
         self.bouton_copier = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Copier.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_coller = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Coller.png"), wx.BITMAP_TYPE_ANY))
 
-        # self.label_info = wx.StaticText(self, -1, _(u"L'astérisque (*) indique les méthodes de calcul compatibles avec les tarifs de type forfait."))
+        # self.label_info = wx.StaticText(self, -1, _(u"L'astÃ©risque (*) indique les mÃ©thodes de calcul compatibles avec les tarifs de type forfait."))
         # self.label_info.SetFont(wx.Font(7, wx.SWISS, wx.NORMAL, wx.NORMAL, False))
 
         self.label_type_quotient = wx.StaticText(self, -1, _(u"Type de QF :"))
@@ -1321,12 +1321,12 @@ class Panel(wx.Panel):
             self.OnChoiceMethode(None)
 
     def __set_properties(self):
-        self.ctrl_methode.SetToolTip(wx.ToolTip(_(u"Sélectionnez une méthode de calcul dans la liste")))
-        self.bouton_ajouter_ligne.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour insérer des lignes")))
-        self.bouton_supprimer_ligne.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer les lignes sélectionnées")))
-        self.bouton_copier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour copier les cases sélectionnées du tableau dans le presse-papiers")))
-        self.bouton_coller.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour coller les cases mémorisées dans le presse-papiers dans le tableau")))
-        self.ctrl_type_quotient.SetToolTip(wx.ToolTip(_(u"[OPTIONNEL] Sélectionnez ici le type de QF que vous souhaitez utiliser dans ce tarif. Indifférent par défaut.")))
+        self.ctrl_methode.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez une mÃ©thode de calcul dans la liste")))
+        self.bouton_ajouter_ligne.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour insÃ©rer des lignes")))
+        self.bouton_supprimer_ligne.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer les lignes sÃ©lectionnÃ©es")))
+        self.bouton_copier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour copier les cases sÃ©lectionnÃ©es du tableau dans le presse-papiers")))
+        self.bouton_coller.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour coller les cases mÃ©morisÃ©es dans le presse-papiers dans le tableau")))
+        self.ctrl_type_quotient.SetToolTip(wx.ToolTip(_(u"[OPTIONNEL] SÃ©lectionnez ici le type de QF que vous souhaitez utiliser dans ce tarif. IndiffÃ©rent par dÃ©faut.")))
         self.ctrl_parametres.SetMinSize((100, 50))
 
     def __do_layout(self):
@@ -1396,7 +1396,7 @@ class Panel(wx.Panel):
 
     def OnBoutonAjouter(self, event):
         if self.ctrl_methode.GetCode() == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez d'abord sélectionner une méthode de calcul !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez d'abord sÃ©lectionner une mÃ©thode de calcul !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -1405,7 +1405,7 @@ class Panel(wx.Panel):
 
     def OnBoutonSupprimer(self, event): 
         if self.ctrl_methode.GetCode() == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez d'abord sélectionner une méthode de calcul !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez d'abord sÃ©lectionner une mÃ©thode de calcul !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return

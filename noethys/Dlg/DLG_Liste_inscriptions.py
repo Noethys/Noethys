@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -60,8 +60,8 @@ class Parametres(wx.Panel):
         self.parent = parent
         self.listview = listview
         
-        # Activité
-        self.box_activite_staticbox = wx.StaticBox(self, -1, _(u"Activité"))
+        # ActivitÃ©
+        self.box_activite_staticbox = wx.StaticBox(self, -1, _(u"ActivitÃ©"))
         self.ctrl_activite = DLG_Selection_activite.Panel_Activite(self, callback=self.OnSelectionActivite)
 
         self.check_partis = wx.CheckBox(self, -1, _(u"Afficher les individus partis"))
@@ -71,8 +71,8 @@ class Parametres(wx.Panel):
         self.box_groupes_staticbox = wx.StaticBox(self, -1, _(u"Groupes"))
         self.ctrl_groupes = CTRL_CheckListBox.Panel(self)
         
-        # Catégories
-        self.box_categories_staticbox = wx.StaticBox(self, -1, _(u"Catégories"))
+        # CatÃ©gories
+        self.box_categories_staticbox = wx.StaticBox(self, -1, _(u"CatÃ©gories"))
         self.ctrl_categories = CTRL_CheckListBox.Panel(self)
         
         # Regroupement
@@ -80,7 +80,7 @@ class Parametres(wx.Panel):
         self.ctrl_regroupement = CTRL_Regroupement(self, listview=listview)
 
         # Actualiser
-        self.bouton_actualiser = CTRL_Bouton_image.CTRL(self, texte=_(u"Rafraîchir la liste"), cheminImage="Images/32x32/Actualiser.png")
+        self.bouton_actualiser = CTRL_Bouton_image.CTRL(self, texte=_(u"RafraÃ®chir la liste"), cheminImage="Images/32x32/Actualiser.png")
         self.bouton_actualiser.SetMinSize((250, 40))
 
         self.__set_properties()
@@ -91,15 +91,15 @@ class Parametres(wx.Panel):
 
     def __set_properties(self):
         self.check_partis.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour inclure dans la liste des individus partis")))
-        self.ctrl_groupes.SetToolTip(wx.ToolTip(_(u"Cochez les groupes à afficher")))
-        self.ctrl_categories.SetToolTip(wx.ToolTip(_(u"Cochez les catégories à afficher")))
-        self.ctrl_regroupement.SetToolTip(wx.ToolTip(_(u"Sélectionnez un regroupement")))
+        self.ctrl_groupes.SetToolTip(wx.ToolTip(_(u"Cochez les groupes Ã  afficher")))
+        self.ctrl_categories.SetToolTip(wx.ToolTip(_(u"Cochez les catÃ©gories Ã  afficher")))
+        self.ctrl_regroupement.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez un regroupement")))
         self.bouton_actualiser.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour actualiser la liste")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=6, cols=1, vgap=5, hgap=5)
         
-        # Activité
+        # ActivitÃ©
         box_activite = wx.StaticBoxSizer(self.box_activite_staticbox, wx.VERTICAL)
         box_activite.Add(self.ctrl_activite, 1, wx.ALL|wx.EXPAND, 5)
         box_activite.Add(self.check_partis, 0, wx.LEFT|wx.RIGHT|wx.BOTTOM|wx.EXPAND, 5)
@@ -110,7 +110,7 @@ class Parametres(wx.Panel):
         box_groupes.Add(self.ctrl_groupes, 1, wx.ALL|wx.EXPAND, 5)
         grid_sizer_base.Add(box_groupes, 1, wx.EXPAND, 0)
         
-        # Catégories
+        # CatÃ©gories
         box_categories = wx.StaticBoxSizer(self.box_categories_staticbox, wx.VERTICAL)
         box_categories.Add(self.ctrl_categories, 1, wx.ALL|wx.EXPAND, 5)
         grid_sizer_base.Add(box_categories, 1, wx.EXPAND, 0)
@@ -142,13 +142,13 @@ class Parametres(wx.Panel):
         listeGroupes = DB.ResultatReq()
         DB.Close()
 
-        # Formatage des données
+        # Formatage des donnÃ©es
         listeDonnees = []
         for IDgroupe, IDactivite, nom in listeGroupes:
             dictTemp = {"ID": IDgroupe, "label": nom, "IDactivite": IDactivite}
             listeDonnees.append(dictTemp)
 
-        # Envoi des données à la liste
+        # Envoi des donnÃ©es Ã  la liste
         self.ctrl_groupes.SetDonnees(listeDonnees, cocher=True)
 
     def MAJ_Categories(self):
@@ -161,41 +161,41 @@ class Parametres(wx.Panel):
         listeCategories = DB.ResultatReq()
         DB.Close()
 
-        # Formatage des données
+        # Formatage des donnÃ©es
         listeDonnees = []
         for IDcategorie_tarif, IDactivite, nom in listeCategories:
             dictTemp = {"ID": IDcategorie_tarif, "label": nom, "IDactivite": IDactivite}
             listeDonnees.append(dictTemp)
 
-        # Envoi des données à la liste
+        # Envoi des donnÃ©es Ã  la liste
         self.ctrl_categories.SetDonnees(listeDonnees, cocher=True)
 
     def OnChoixRegroupement(self, event): 
         pass
 
     def OnBoutonActualiser(self, event): 
-        # Récupération des paramètres
+        # RÃ©cupÃ©ration des paramÃ¨tres
         IDactivite = self.ctrl_activite.GetID()
         partis = self.check_partis.GetValue() 
         listeGroupes = self.ctrl_groupes.GetIDcoches()
         listeCategories = self.ctrl_categories.GetIDcoches()
         regroupement = self.ctrl_regroupement.GetRegroupement()
 
-        # Vérifications
+        # VÃ©rifications
         if IDactivite == None :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune activité !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune activitÃ© !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
 
         if len(listeGroupes) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous devez sélectionner au moins un groupe !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez sÃ©lectionner au moins un groupe !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
 
         if len(listeCategories) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous devez sélectionner au moins une catégorie !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez sÃ©lectionner au moins une catÃ©gorie !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -210,13 +210,13 @@ class Parametres(wx.Panel):
         listeParametres = []
         
         activite = self.ctrl_activite.GetNomActivite()
-        listeParametres.append(_(u"Activité : %s") % activite)
+        listeParametres.append(_(u"ActivitÃ© : %s") % activite)
 
         groupes = self.ctrl_groupes.GetLabelsCoches()
         listeParametres.append(_(u"Groupes : %s") % groupes)
 
         categories = self.ctrl_categories.GetLabelsCoches()
-        listeParametres.append(_(u"Catégories : %s") % categories)
+        listeParametres.append(_(u"CatÃ©gories : %s") % categories)
 
         labelParametres = " | ".join(listeParametres)
         return labelParametres
@@ -229,8 +229,8 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         
-        intro = _(u"Vous pouvez ici consulter et imprimer la liste des inscriptions. Commencez par sélectionner une activité avant de cliquer sur le bouton 'Rafraîchir la liste' pour afficher les résultats. Vous pouvez également regrouper les données par type d'informations et sélectionner les colonnes à afficher. Les données peuvent être ensuite imprimées ou exportées au format Texte ou Excel.")
-        titre = _(u"Liste des inscriptions à une activité")
+        intro = _(u"Vous pouvez ici consulter et imprimer la liste des inscriptions. Commencez par sÃ©lectionner une activitÃ© avant de cliquer sur le bouton 'RafraÃ®chir la liste' pour afficher les rÃ©sultats. Vous pouvez Ã©galement regrouper les donnÃ©es par type d'informations et sÃ©lectionner les colonnes Ã  afficher. Les donnÃ©es peuvent Ãªtre ensuite imprimÃ©es ou exportÃ©es au format Texte ou Excel.")
+        titre = _(u"Liste des inscriptions Ã  une activitÃ©")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Activite.png")
 
@@ -261,13 +261,13 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
         self.Bind(wx.EVT_BUTTON, self.ctrl_listview.MenuConfigurerListe, self.bouton_configuration)
 
-        # Init contrôles
+        # Init contrÃ´les
         self.ctrl_listview.MAJ()
         self.ctrl_parametres.ctrl_regroupement.MAJ()
 
     def __set_properties(self):
-        self.bouton_ouvrir_fiche.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ouvrir la fiche de la famille sélectionnée dans la liste")))
-        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour créer un aperçu de la liste")))
+        self.bouton_ouvrir_fiche.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ouvrir la fiche de la famille sÃ©lectionnÃ©e dans la liste")))
+        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour crÃ©er un aperÃ§u de la liste")))
         self.bouton_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer la liste")))
         self.bouton_texte.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter la liste au format Texte")))
         self.bouton_excel.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter la liste au format Excel")))
@@ -281,7 +281,7 @@ class Dialog(wx.Dialog):
         
         grid_sizer_contenu = wx.FlexGridSizer(rows=1, cols=3, vgap=5, hgap=5)
         
-        # Panel des paramètres
+        # Panel des paramÃ¨tres
         grid_sizer_contenu.Add(self.ctrl_parametres, 1, wx.EXPAND, 0)
         
         # Liste + Barre de recherche

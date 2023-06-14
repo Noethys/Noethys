@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-19 Ivan LUCAS
@@ -23,7 +23,7 @@ from Utils import UTILS_Gestion
 from Utils import UTILS_Config
 from Utils import UTILS_Titulaires
 from Utils import UTILS_Dates
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"â‚¬")
 from Utils import UTILS_Interface
 from Ctrl.CTRL_ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils, PanelAvecFooter
 from Utils.UTILS_Decimal import FloatToDecimal as FloatToDecimal
@@ -44,7 +44,7 @@ class Track(object):
         self.IDprefixe = donnees[9]
         self.prefixe = donnees[10]
 
-        # Récupération du nom des titulaires
+        # RÃ©cupÃ©ration du nom des titulaires
         self.nomTitulaires = _(" ")
         try :
             self.nomTitulaires = self.parent.dict_titulaires[self.IDfamille]["titulairesSansCivilite"]
@@ -62,7 +62,7 @@ class Track(object):
                 dict_prestations[dict_prestation[self.parent.detail]] = 0.0
             dict_prestations[dict_prestation[self.parent.detail]] += dict_prestation["montant"]
 
-        # Détail
+        # DÃ©tail
         for key, montant in dict_prestations.items():
             if not key:
                 key = 0
@@ -98,7 +98,7 @@ class ListView(FastObjectListView):
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
-        """ Récupération des données """
+        """ RÃ©cupÃ©ration des donnÃ©es """
         # Filtres
         criteres = ""
         if len(self.listeFiltres) > 0 :
@@ -176,7 +176,7 @@ class ListView(FastObjectListView):
             ColumnDefn(_(u"Date"), 'left', 90, "date_edition", typeDonnee="date", stringConverter=FormateDateCourt),
             ColumnDefn(_(u"Du"), 'left', 80, "date_debut", typeDonnee="date", stringConverter=FormateDateCourt),
             ColumnDefn(_(u"Au"), 'left', 80, "date_fin", typeDonnee="date", stringConverter=FormateDateCourt),
-            ColumnDefn(_(u"Numéro"), 'left', 60, "numero", typeDonnee="texte"),
+            ColumnDefn(_(u"NumÃ©ro"), 'left', 60, "numero", typeDonnee="texte"),
             ColumnDefn(_(u"Famille"), 'left', 140, "nomTitulaires", typeDonnee="texte"),
             ColumnDefn(_(u"Montant"), 'right', 80, "total", typeDonnee="montant", stringConverter=FormateMontant),
             ]
@@ -208,7 +208,7 @@ class ListView(FastObjectListView):
             self.selectionTrack = None
         self.InitModel()
         self.InitObjectListView()
-        # Sélection d'un item
+        # SÃ©lection d'un item
         if self.selectionTrack != None :
             self.SelectObject(self.selectionTrack, deselectOthers=True, ensureVisible=True)
         self.selectionID = None
@@ -227,10 +227,10 @@ class ListView(FastObjectListView):
             noSelection = False
             ID = self.Selection()[0].IDfacture
                 
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
-        # Génération automatique des fonctions standards
+        # GÃ©nÃ©ration automatique des fonctions standards
         self.GenerationContextMenu(menuPop)
 
         self.PopupMenu(menuPop)

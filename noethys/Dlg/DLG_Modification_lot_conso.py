@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -95,7 +95,7 @@ class CTRL_Modes(wx.ListBox):
         if IDactivite == None : return
         self.listeDonnees = [
             {"ID" : None, "nom" : _(u"Aucune modification")},
-            {"ID" : "reservation", "nom" : _(u"Réservation")},
+            {"ID" : "reservation", "nom" : _(u"RÃ©servation")},
             {"ID" : "attente", "nom" : _(u"Attente")},
             {"ID" : "refus", "nom" : _(u"Refus")},
         ]
@@ -139,9 +139,9 @@ class CTRL_Etats(wx.ListBox):
         self.listeDonnees = [
             {"ID" : None, "nom" : _(u"Aucune modification")},
             {"ID" : "reservation", "nom" : _(u"Pointage en attente")},
-            {"ID" : "present", "nom" : _(u"Présent")},
-            {"ID" : "absentj", "nom" : _(u"Absence justifiée")},
-            {"ID" : "absenti", "nom" : _(u"Absence injustifiée")},
+            {"ID" : "present", "nom" : _(u"PrÃ©sent")},
+            {"ID" : "absentj", "nom" : _(u"Absence justifiÃ©e")},
+            {"ID" : "absenti", "nom" : _(u"Absence injustifiÃ©e")},
         ]
             
     def SetID(self, ID=None):
@@ -223,16 +223,16 @@ class Dialog(wx.Dialog):
         self.dictResultats = {}
         
         # Bandeau
-        intro = _(u"Vous pouvez ici modifier un lot de consommations. Commencez par définir les paramètres de sélection des consommations puis sélectionnez un ou plusieurs paramètres à modifier. Remarquez que les modifications ne seront validées définitivement que lorsque vous vous quitterez la grille des consommations.")
+        intro = _(u"Vous pouvez ici modifier un lot de consommations. Commencez par dÃ©finir les paramÃ¨tres de sÃ©lection des consommations puis sÃ©lectionnez un ou plusieurs paramÃ¨tres Ã  modifier. Remarquez que les modifications ne seront validÃ©es dÃ©finitivement que lorsque vous vous quitterez la grille des consommations.")
         titre = _(u"Modification d'un lot de consommations")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Forfait.png")
 
         # Panel Selection
-        self.box_selection_staticbox = wx.StaticBox(self, -1, _(u"Sélection des consommations"))
+        self.box_selection_staticbox = wx.StaticBox(self, -1, _(u"SÃ©lection des consommations"))
         self.ctrl_selection = CTRL_Selection_lot_conso.CTRL(self, IDfamille=self.IDfamille, mode="modification", listeDates=selectionPeriode, selectionIndividus=selectionIndividus, selectionActivite=selectionActivite)
         self.ctrl_selection.SetMinSize((500, -1))
         # Panel Modifications
-        self.box_modifications_staticbox = wx.StaticBox(self, -1, _(u"Modifications à appliquer"))
+        self.box_modifications_staticbox = wx.StaticBox(self, -1, _(u"Modifications Ã  appliquer"))
         self.ctrl_modifications = CTRL_Modifications(self)
         self.ctrl_modifications.SetBackgroundColour("#F0FBED")
         
@@ -246,7 +246,7 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
         
-        # Init Contrôles
+        # Init ContrÃ´les
         self.ctrl_selection.OnChoixActivite(None)
 
     def __set_properties(self):
@@ -297,7 +297,7 @@ class Dialog(wx.Dialog):
     def OnBoutonOk(self, event): 
         self.dictResultats = {}
         
-        # Récupération des paramètres de sélection
+        # RÃ©cupÃ©ration des paramÃ¨tres de sÃ©lection
         selectionPeriodes = self.ctrl_selection.GetPeriodes()
         selectionIndividus = self.ctrl_selection.GetIndividus()
         selectionActivite = self.ctrl_selection.GetActivite()
@@ -325,7 +325,7 @@ class Dialog(wx.Dialog):
         print("selectionEtats =", selectionEtats)
         print("--------------------")
         
-        # Récupération des paramètres de modification
+        # RÃ©cupÃ©ration des paramÃ¨tres de modification
         modificationGroupe = self.ctrl_modifications.GetGroupe()
         modificationMode = self.ctrl_modifications.GetMode()
         modificationEtat = self.ctrl_modifications.GetEtat()

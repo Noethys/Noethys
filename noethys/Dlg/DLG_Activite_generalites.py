@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -133,7 +133,7 @@ class CTRL_Regie_facturation(wx.Choice):
         db.ExecuterReq(req)
         listeDonnees = db.ResultatReq()
         db.Close()
-        listeItems = [_(u"Aucune régie"),]
+        listeItems = [_(u"Aucune rÃ©gie"),]
         self.dictDonnees = {}
         self.dictDonnees[0] = { "ID" : 0, "nom" : _(u"Inconnue")}
         index = 1
@@ -171,25 +171,25 @@ class Panel(wx.Panel):
         
         self.listeInitialeGroupes = []
         
-        # Nom Activité
-        self.staticbox_nom_staticbox = wx.StaticBox(self, -1, _(u"Nom de l'activité"))
+        # Nom ActivitÃ©
+        self.staticbox_nom_staticbox = wx.StaticBox(self, -1, _(u"Nom de l'activitÃ©"))
         self.label_nom_complet = wx.StaticText(self, -1, _(u"Nom complet :"))
         self.ctrl_nom_complet = wx.TextCtrl(self, -1, u"")
-        self.label_nom_abrege = wx.StaticText(self, -1, _(u"Nom abrégé :"))
+        self.label_nom_abrege = wx.StaticText(self, -1, _(u"Nom abrÃ©gÃ© :"))
         self.ctrl_nom_abrege = wx.TextCtrl(self, -1, u"")
         
         # Coords
-        self.staticbox_coords_staticbox = wx.StaticBox(self, -1, _(u"Coordonnées"))
+        self.staticbox_coords_staticbox = wx.StaticBox(self, -1, _(u"CoordonnÃ©es"))
         self.radio_coords_org = wx.RadioButton(self, -1, u"", style=wx.RB_GROUP)
-        self.label_coords_org = wx.StaticText(self, -1, _(u"Identique à l'organisateur"))
+        self.label_coords_org = wx.StaticText(self, -1, _(u"Identique Ã  l'organisateur"))
         self.radio_coords_autres = wx.RadioButton(self, -1, u"")
-        self.label_coords_autres = wx.StaticText(self, -1, _(u"Autres coordonnées :"))
+        self.label_coords_autres = wx.StaticText(self, -1, _(u"Autres coordonnÃ©es :"))
         self.label_rue = wx.StaticText(self, -1, _(u"Rue :"))
         self.ctrl_rue = wx.TextCtrl(self, -1, u"", style=wx.TE_MULTILINE)
         self.label_ville = wx.StaticText(self, -1, _(u"C.P. :"))
         self.ctrl_ville = CTRL_Saisie_adresse.Adresse(self)
-        self.label_tel = wx.StaticText(self, -1, _(u"Tél :"))
-        self.ctrl_tel = CTRL_Saisie_tel.Tel(self, intitule=_(u"contact pour cette activité"))
+        self.label_tel = wx.StaticText(self, -1, _(u"TÃ©l :"))
+        self.ctrl_tel = CTRL_Saisie_tel.Tel(self, intitule=_(u"contact pour cette activitÃ©"))
         self.label_mail = wx.StaticText(self, -1, _(u"Email :"))
         self.ctrl_mail = CTRL_Saisie_mail.Mail(self)
         self.label_fax = wx.StaticText(self, -1, _(u"Fax :"))
@@ -198,7 +198,7 @@ class Panel(wx.Panel):
         self.ctrl_site = wx.TextCtrl(self, -1, u"")
         
         # Responsables
-        self.staticbox_responsables_staticbox = wx.StaticBox(self, -1, _(u"Responsables de l'activité"))
+        self.staticbox_responsables_staticbox = wx.StaticBox(self, -1, _(u"Responsables de l'activitÃ©"))
         self.ctrl_responsables = OL_Responsables_activite.ListView(self, IDactivite=IDactivite, id=-1, name="OL_responsables", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.ctrl_responsables.SetMinSize((-1, 40))
         self.ctrl_responsables.MAJ() 
@@ -208,7 +208,7 @@ class Panel(wx.Panel):
         self.bouton_defaut_responsable = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Ok.png"), wx.BITMAP_TYPE_ANY))
 
         # Code comptable
-        self.staticbox_comptabilite_staticbox = wx.StaticBox(self, -1, _(u"Comptabilité"))
+        self.staticbox_comptabilite_staticbox = wx.StaticBox(self, -1, _(u"ComptabilitÃ©"))
         self.label_code_comptable = wx.StaticText(self, -1, _(u"Code comptable :"))
         self.ctrl_code_comptable = wx.TextCtrl(self, -1, "")
         self.label_code_produit_local = wx.StaticText(self, -1, _(u"Code produit local :"))
@@ -216,28 +216,28 @@ class Panel(wx.Panel):
         self.label_code_service = wx.StaticText(self, -1, _(u"Code service :"))
         self.ctrl_code_service = wx.TextCtrl(self, -1, "")
 
-        # Régie de facturation
-        self.staticbox_regie_facturation_staticbox = wx.StaticBox(self, -1, _(u"Régie de facturation"))
+        # RÃ©gie de facturation
+        self.staticbox_regie_facturation_staticbox = wx.StaticBox(self, -1, _(u"RÃ©gie de facturation"))
         self.ctrl_regie_facturation = CTRL_Regie_facturation(self)
 
-        # Groupes d'activités
-        self.staticbox_groupes_staticbox = wx.StaticBox(self, -1, _(u"Regroupement d'activités"))
+        # Groupes d'activitÃ©s
+        self.staticbox_groupes_staticbox = wx.StaticBox(self, -1, _(u"Regroupement d'activitÃ©s"))
         self.ctrl_groupes = CTRL_Groupes_activite(self)
         self.ctrl_groupes.SetMinSize((320, 70))
         
         # Logo
         self.staticbox_logo_staticbox = wx.StaticBox(self, -1, _(u"Logo"))
-        self.radio_logo_org = wx.RadioButton(self, -1, u"Identique à l'organisateur", style=wx.RB_GROUP)
+        self.radio_logo_org = wx.RadioButton(self, -1, u"Identique Ã  l'organisateur", style=wx.RB_GROUP)
         self.radio_logo_autre = wx.RadioButton(self, -1, u"Autre logo :")
         self.bouton_modifier_logo = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Modifier.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_supprimer_logo = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Supprimer.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_visualiser_logo = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Loupe.png"), wx.BITMAP_TYPE_ANY))
         self.ctrl_logo = CTRL_Logo.CTRL(self, qualite=100, couleurFond=wx.Colour(255, 255, 255), size=self.bouton_modifier_logo.GetSize())
 
-        # Validité
-        self.staticbox_validite_staticbox = wx.StaticBox(self, -1, _(u"Dates de validité"))
+        # ValiditÃ©
+        self.staticbox_validite_staticbox = wx.StaticBox(self, -1, _(u"Dates de validitÃ©"))
         self.radio_illimitee = wx.RadioButton(self, -1, u"", style=wx.RB_GROUP)
-        self.label_illimitee = wx.StaticText(self, -1, _(u"Illimitée"))
+        self.label_illimitee = wx.StaticText(self, -1, _(u"IllimitÃ©e"))
         self.radio_limitee = wx.RadioButton(self, -1, u"")
         self.label_validite_du = wx.StaticText(self, -1, u"Du")
         self.ctrl_validite_du = CTRL_Saisie_date.Date(self)
@@ -247,7 +247,7 @@ class Panel(wx.Panel):
         # Public
         self.staticbox_public_staticbox = wx.StaticBox(self, -1, _(u"Public"))
         self.ctrl_public = CTRL_Public(self)
-        listePublic = [(1, _(u"Représentants"), False), (2, _(u"Enfants"), False),]
+        listePublic = [(1, _(u"ReprÃ©sentants"), False), (2, _(u"Enfants"), False),]
         self.ctrl_public.SetData(listePublic)
         self.ctrl_public.SetMinSize((-1, 40))
         self.staticbox_public_staticbox.Show(False)
@@ -281,7 +281,7 @@ class Panel(wx.Panel):
         if nouvelleActivite == False :
             self.Importation() 
         
-        # Initialisation des contrôles
+        # Initialisation des contrÃ´les
         self.OnRadioCoords(None) 
         self.OnRadioLogo(None) 
         self.OnRadioValidite(None) 
@@ -289,35 +289,35 @@ class Panel(wx.Panel):
         
 
     def __set_properties(self):
-        self.ctrl_nom_complet.SetToolTip(wx.ToolTip(_(u"Saisissez ici le nom complet de l'activité")))
+        self.ctrl_nom_complet.SetToolTip(wx.ToolTip(_(u"Saisissez ici le nom complet de l'activitÃ©")))
         self.ctrl_nom_abrege.SetMinSize((60, -1))
-        self.ctrl_nom_abrege.SetToolTip(wx.ToolTip(_(u"Saisissez ici le nom abrégé de l'activité")))
-        self.radio_coords_org.SetToolTip(wx.ToolTip(_(u"Selectionnez 'Autres coordonnées' si vous souhaitez attribuer des coordonnées différentes de celles de l'organisateur")))
-        self.radio_coords_autres.SetToolTip(wx.ToolTip(_(u"Selectionnez 'Autres coordonnées' si vous souhaitez attribuer des coordonnées différentes de celles de l'organisateur")))
-        self.ctrl_rue.SetToolTip(wx.ToolTip(_(u"Saisissez l'adresse de l'activité")))
-        self.ctrl_site.SetToolTip(wx.ToolTip(_(u"Saisissez l'adresse du site internet de l'activité")))
-        self.ctrl_responsables.SetToolTip(wx.ToolTip(_(u"Liste des responsables de l'activité")))
+        self.ctrl_nom_abrege.SetToolTip(wx.ToolTip(_(u"Saisissez ici le nom abrÃ©gÃ© de l'activitÃ©")))
+        self.radio_coords_org.SetToolTip(wx.ToolTip(_(u"Selectionnez 'Autres coordonnÃ©es' si vous souhaitez attribuer des coordonnÃ©es diffÃ©rentes de celles de l'organisateur")))
+        self.radio_coords_autres.SetToolTip(wx.ToolTip(_(u"Selectionnez 'Autres coordonnÃ©es' si vous souhaitez attribuer des coordonnÃ©es diffÃ©rentes de celles de l'organisateur")))
+        self.ctrl_rue.SetToolTip(wx.ToolTip(_(u"Saisissez l'adresse de l'activitÃ©")))
+        self.ctrl_site.SetToolTip(wx.ToolTip(_(u"Saisissez l'adresse du site internet de l'activitÃ©")))
+        self.ctrl_responsables.SetToolTip(wx.ToolTip(_(u"Liste des responsables de l'activitÃ©")))
         self.bouton_ajouter_responsable.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter un nom de responsable")))
-        self.bouton_modifier_responsable.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le nom sélectionné dans la liste")))
-        self.bouton_supprimer_responsable.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le nom sélectionné dans la liste")))
-        self.bouton_defaut_responsable.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour définir le responsable sélectionné dans la liste par défaut")))
-        self.radio_logo_org.SetToolTip(wx.ToolTip(_(u"Selectionnez 'Autre logo' pour attribuer à l'activité un logo différent de celui de l'organisateur")))
-        self.radio_logo_autre.SetToolTip(wx.ToolTip(_(u"Selectionnez 'Autre logo' pour attribuer à l'activité un logo différent de celui de l'organisateur")))
-        self.bouton_modifier_logo.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter ou modifier un logo pour cette activité")))
+        self.bouton_modifier_responsable.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le nom sÃ©lectionnÃ© dans la liste")))
+        self.bouton_supprimer_responsable.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le nom sÃ©lectionnÃ© dans la liste")))
+        self.bouton_defaut_responsable.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour dÃ©finir le responsable sÃ©lectionnÃ© dans la liste par dÃ©faut")))
+        self.radio_logo_org.SetToolTip(wx.ToolTip(_(u"Selectionnez 'Autre logo' pour attribuer Ã  l'activitÃ© un logo diffÃ©rent de celui de l'organisateur")))
+        self.radio_logo_autre.SetToolTip(wx.ToolTip(_(u"Selectionnez 'Autre logo' pour attribuer Ã  l'activitÃ© un logo diffÃ©rent de celui de l'organisateur")))
+        self.bouton_modifier_logo.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter ou modifier un logo pour cette activitÃ©")))
         self.bouton_supprimer_logo.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le logo")))
-        self.bouton_visualiser_logo.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour visualiser le logo en taille réelle")))
-        self.radio_illimitee.SetToolTip(wx.ToolTip(_(u"Selectionnez 'Illimitee' si l'activité est un accueil de loisirs")))
-        self.radio_limitee.SetToolTip(wx.ToolTip(_(u"Saisissez une periode de validité si l'activite fonctionne uniquement sur une période donnée")))
-        self.ctrl_validite_du.SetToolTip(wx.ToolTip(_(u"Saisissez une date de debut de validité")))
-        self.ctrl_validite_au.SetToolTip(wx.ToolTip(_(u"Saisissez ici une date de fin de validité")))
-        self.ctrl_public.SetToolTip(wx.ToolTip(_(u"Cochez les publics autorisés à être inscrit à cette activité")))
-        self.check_limitation_inscrits.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour définir un nombre maximal d'inscrits pour cette activité (Utile uniquement pour les activités à durée limitée)")))
-        self.ctrl_limitation_inscrits.SetToolTip(wx.ToolTip(_(u"Saisissez le nombre maximal d'inscrits de cette activité (Utile uniquement pour les activités à durée limitée)")))
-        self.ctrl_code_comptable.SetToolTip(wx.ToolTip(_(u"Saisissez un code comptable si vous souhaitez utiliser l'export des écritures comptables vers des logiciels de compta")))
-        self.ctrl_code_produit_local.SetToolTip(wx.ToolTip(_(u"Saisissez un code produit local si vous souhaitez utiliser l'export vers les logiciels de comptabilité publique")))
-        self.ctrl_code_service.SetToolTip(wx.ToolTip(_(u"Saisissez un code service si vous souhaitez utiliser l'export vers les logiciels de comptabilité publique")))
-        self.ctrl_regie_facturation.SetToolTip(wx.ToolTip(_(u"Sélectionnez une régie de facturation")))
-        self.check_inscriptions_multiples.SetToolTip(wx.ToolTip(_(u"Autoriser un individu à être inscrit plusieurs fois à la même activité. ATTENTION, ne pas utiliser cette option si vous utilisez des consommations dans cette activité car la grille des consommations est incompatible.")))
+        self.bouton_visualiser_logo.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour visualiser le logo en taille rÃ©elle")))
+        self.radio_illimitee.SetToolTip(wx.ToolTip(_(u"Selectionnez 'Illimitee' si l'activitÃ© est un accueil de loisirs")))
+        self.radio_limitee.SetToolTip(wx.ToolTip(_(u"Saisissez une periode de validitÃ© si l'activite fonctionne uniquement sur une pÃ©riode donnÃ©e")))
+        self.ctrl_validite_du.SetToolTip(wx.ToolTip(_(u"Saisissez une date de debut de validitÃ©")))
+        self.ctrl_validite_au.SetToolTip(wx.ToolTip(_(u"Saisissez ici une date de fin de validitÃ©")))
+        self.ctrl_public.SetToolTip(wx.ToolTip(_(u"Cochez les publics autorisÃ©s Ã  Ãªtre inscrit Ã  cette activitÃ©")))
+        self.check_limitation_inscrits.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour dÃ©finir un nombre maximal d'inscrits pour cette activitÃ© (Utile uniquement pour les activitÃ©s Ã  durÃ©e limitÃ©e)")))
+        self.ctrl_limitation_inscrits.SetToolTip(wx.ToolTip(_(u"Saisissez le nombre maximal d'inscrits de cette activitÃ© (Utile uniquement pour les activitÃ©s Ã  durÃ©e limitÃ©e)")))
+        self.ctrl_code_comptable.SetToolTip(wx.ToolTip(_(u"Saisissez un code comptable si vous souhaitez utiliser l'export des Ã©critures comptables vers des logiciels de compta")))
+        self.ctrl_code_produit_local.SetToolTip(wx.ToolTip(_(u"Saisissez un code produit local si vous souhaitez utiliser l'export vers les logiciels de comptabilitÃ© publique")))
+        self.ctrl_code_service.SetToolTip(wx.ToolTip(_(u"Saisissez un code service si vous souhaitez utiliser l'export vers les logiciels de comptabilitÃ© publique")))
+        self.ctrl_regie_facturation.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez une rÃ©gie de facturation")))
+        self.check_inscriptions_multiples.SetToolTip(wx.ToolTip(_(u"Autoriser un individu Ã  Ãªtre inscrit plusieurs fois Ã  la mÃªme activitÃ©. ATTENTION, ne pas utiliser cette option si vous utilisez des consommations dans cette activitÃ© car la grille des consommations est incompatible.")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=2, vgap=10, hgap=10)
@@ -326,7 +326,7 @@ class Panel(wx.Panel):
 
         grid_sizer_gauche = wx.FlexGridSizer(rows=6, cols=1, vgap=10, hgap=10)
 
-        # Nom activité
+        # Nom activitÃ©
         staticbox_nom = wx.StaticBoxSizer(self.staticbox_nom_staticbox, wx.VERTICAL)
         grid_sizer_nom = wx.FlexGridSizer(rows=2, cols=2, vgap=5, hgap=5)
         grid_sizer_nom.Add(self.label_nom_complet, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
@@ -337,7 +337,7 @@ class Panel(wx.Panel):
         staticbox_nom.Add(grid_sizer_nom, 1, wx.ALL|wx.EXPAND, 5)
         grid_sizer_gauche.Add(staticbox_nom, 1, wx.EXPAND, 0)
 
-        # Validité
+        # ValiditÃ©
         staticbox_validite = wx.StaticBoxSizer(self.staticbox_validite_staticbox, wx.VERTICAL)
         grid_sizer_validite = wx.FlexGridSizer(rows=2, cols=2, vgap=5, hgap=5)
         grid_sizer_validite_limitee = wx.FlexGridSizer(rows=1, cols=4, vgap=5, hgap=5)
@@ -352,7 +352,7 @@ class Panel(wx.Panel):
         staticbox_validite.Add(grid_sizer_validite, 1, wx.ALL|wx.EXPAND, 5)
         grid_sizer_gauche.Add(staticbox_validite, 1, wx.EXPAND, 0)
 
-        # Regroupement d'activités
+        # Regroupement d'activitÃ©s
         staticbox_groupes = wx.StaticBoxSizer(self.staticbox_groupes_staticbox, wx.VERTICAL)
         staticbox_groupes.Add(self.ctrl_groupes, 1, wx.ALL|wx.EXPAND, 5)
         grid_sizer_gauche.Add(staticbox_groupes, 1, wx.EXPAND, 0)
@@ -402,7 +402,7 @@ class Panel(wx.Panel):
         staticbox_responsables.Add(grid_sizer_responsables, 1, wx.ALL|wx.EXPAND, 5)
         grid_sizer_droit.Add(staticbox_responsables, 1, wx.EXPAND, 0)
 
-        # Régie de facturation
+        # RÃ©gie de facturation
         staticbox_regie_facturation = wx.StaticBoxSizer(self.staticbox_regie_facturation_staticbox, wx.HORIZONTAL)
         staticbox_regie_facturation.Add(self.ctrl_regie_facturation, 1, wx.ALL|wx.EXPAND, 5)
         grid_sizer_droit.Add(staticbox_regie_facturation, 1, wx.EXPAND, 0)
@@ -425,7 +425,7 @@ class Panel(wx.Panel):
         staticbox_logo.Add(grid_sizer_logo, 1, wx.ALL|wx.EXPAND, 5)
         grid_sizer_droit.Add(staticbox_logo, 1, wx.EXPAND, 0)
 
-        # Coordonnées
+        # CoordonnÃ©es
         staticbox_coords = wx.StaticBoxSizer(self.staticbox_coords_staticbox, wx.VERTICAL)
         grid_sizer_coords = wx.FlexGridSizer(rows=3, cols=2, vgap=5, hgap=5)
         grid_sizer_coords_autres = wx.FlexGridSizer(rows=4, cols=2, vgap=5, hgap=5)
@@ -534,7 +534,7 @@ class Panel(wx.Panel):
         self.ctrl_limitation_inscrits.Enable(self.check_limitation_inscrits.GetValue())
         
     def Importation(self):
-        """ Importation des données """
+        """ Importation des donnÃ©es """
         db = GestionDB.DB()
         req = """SELECT nom, abrege, coords_org, rue, cp, ville, tel, fax, mail, site, 
         logo_org, logo, date_debut, date_fin, public, nbre_inscrits_max, code_comptable, regie, code_produit_local, inscriptions_multiples, code_service
@@ -563,7 +563,7 @@ class Panel(wx.Panel):
             self.ctrl_mail.SetMail(activite[8])
             if activite[9] != None : self.ctrl_site.SetValue(activite[9])
             
-        # Regroupement d'activités
+        # Regroupement d'activitÃ©s
         DB = GestionDB.DB()
         req = """SELECT IDgroupe_activite, IDtype_groupe_activite
         FROM groupes_activites
@@ -586,7 +586,7 @@ class Panel(wx.Panel):
             if img != None :
                 self.ctrl_logo.ChargeFromBuffer(img)
                 
-        # Validité
+        # ValiditÃ©
         date_debut = activite[12]
         date_fin = activite[13]
         if date_debut == "1977-01-01" and date_fin == "2999-01-01" :
@@ -615,7 +615,7 @@ class Panel(wx.Panel):
         if activite[19] == 1:
             self.check_inscriptions_multiples.SetValue(True)
 
-        # Comptabilité
+        # ComptabilitÃ©
         code_comptable = activite[16]
         if code_comptable != None :
             self.ctrl_code_comptable.SetValue(code_comptable)
@@ -628,7 +628,7 @@ class Panel(wx.Panel):
         if code_service != None:
             self.ctrl_code_service.SetValue(code_service)
 
-        # Régie de facturation
+        # RÃ©gie de facturation
         regie = activite[17]
         if regie != None :
             self.ctrl_regie_facturation.SetID(regie)
@@ -636,13 +636,13 @@ class Panel(wx.Panel):
     def Validation(self):
         # Nom
         if self.ctrl_nom_complet.GetValue() == "" :
-            dlg = wx.MessageDialog(self, _(u"Le nom de l'activité doit être obligatoirement saisi !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Le nom de l'activitÃ© doit Ãªtre obligatoirement saisi !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_nom_complet.SetFocus() 
             return False
         if self.ctrl_nom_abrege.GetValue() == "" :
-            dlg = wx.MessageDialog(self, _(u"Le nom abrégé de l'activité doit être obligatoirement saisi !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Le nom abrÃ©gÃ© de l'activitÃ© doit Ãªtre obligatoirement saisi !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_nom_abrege.SetFocus() 
@@ -654,34 +654,34 @@ class Panel(wx.Panel):
         #     dlg.ShowModal()
         #     dlg.Destroy()
         #     return False
-        # Dates de validité
+        # Dates de validitÃ©
         if self.radio_limitee.GetValue() == True :
             if self.ctrl_validite_du.Validation() == False :
-                dlg = wx.MessageDialog(self, _(u"La date de début de validité ne semble pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"La date de dÃ©but de validitÃ© ne semble pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_validite_du.SetFocus()
                 return False
             if self.ctrl_validite_du.GetDate() == None :
-                dlg = wx.MessageDialog(self, _(u"La date de début de validité n'a pas été spécifiée !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"La date de dÃ©but de validitÃ© n'a pas Ã©tÃ© spÃ©cifiÃ©e !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_validite_du.SetFocus()
                 return False
             if self.ctrl_validite_au.Validation() == False :
-                dlg = wx.MessageDialog(self, _(u"La date de fin de validité ne semble pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"La date de fin de validitÃ© ne semble pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_validite_au.SetFocus()
                 return False
             if self.ctrl_validite_au.GetDate() == None :
-                dlg = wx.MessageDialog(self, _(u"La date de fin de validité n'a pas été spécifiée !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"La date de fin de validitÃ© n'a pas Ã©tÃ© spÃ©cifiÃ©e !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_validite_au.SetFocus()
                 return False
             if self.ctrl_validite_du.GetDate() > self.ctrl_validite_au.GetDate() :
-                dlg = wx.MessageDialog(self, _(u"La date de validité de début ne peut pas être supérieure à la date de fin !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"La date de validitÃ© de dÃ©but ne peut pas Ãªtre supÃ©rieure Ã  la date de fin !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_validite_du.SetFocus()
@@ -691,7 +691,7 @@ class Panel(wx.Panel):
         logo_org = int(self.radio_logo_org.GetValue())
         if logo_org == 0 :
             if self.ctrl_logo.GetBuffer() == None :
-                dlg = wx.MessageDialog(self, _(u"Vous avez sélectionné un logo personnalisé pour cette activité mais vous n'en avez sélectionné aucun !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous avez sÃ©lectionnÃ© un logo personnalisÃ© pour cette activitÃ© mais vous n'en avez sÃ©lectionnÃ© aucun !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
@@ -730,7 +730,7 @@ class Panel(wx.Panel):
             date_debut = self.ctrl_validite_du.GetDate()
             date_fin =self.ctrl_validite_au.GetDate()
         
-        # Regroupements d'activités
+        # Regroupements d'activitÃ©s
         listeIDGroupes = self.ctrl_groupes.GetIDcoches()
         for IDtype_groupe_activite in listeIDGroupes :
             if IDtype_groupe_activite not in self.listeInitialeGroupes :
@@ -760,12 +760,12 @@ class Panel(wx.Panel):
         # Inscriptions multiples
         inscriptions_multiples = int(self.check_inscriptions_multiples.GetValue())
 
-        # Comptabilité
+        # ComptabilitÃ©
         code_comptable = self.ctrl_code_comptable.GetValue() 
         code_produit_local = self.ctrl_code_produit_local.GetValue()
         code_service = self.ctrl_code_service.GetValue()
 
-        # Régie de facturation
+        # RÃ©gie de facturation
         regie = self.ctrl_regie_facturation.GetID()
         
         # Enregistrement

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-14 Ivan LUCAS
@@ -135,10 +135,10 @@ class CTRL_Horaire(wx.Panel):
         self.SetMinSize((220, 30))
         self.SetBackgroundColour((255, 255, 255))
                 
-        # Contrôles
+        # ContrÃ´les
         self.label_heure_debut = wx.StaticText(self, -1, _(u"Horaire :"))
         self.ctrl_heure_debut = CTRL_Saisie_heure.Heure(self)
-        self.label_heure_fin = wx.StaticText(self, -1, u"à")
+        self.label_heure_fin = wx.StaticText(self, -1, u"Ã ")
         self.ctrl_heure_fin = CTRL_Saisie_heure.Heure(self)
         
         if self.multihoraires == True :
@@ -188,13 +188,13 @@ class CTRL_Horaire(wx.Panel):
         heure_debut = self.GetHeureDebut() 
         heure_fin = self.GetHeureFin() 
         if heure_debut == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez saisir une heure de début pour l'unité '%s' !") % self.labelUnite, _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez saisir une heure de dÃ©but pour l'unitÃ© '%s' !") % self.labelUnite, _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_heure_debut.SetFocus() 
             return False
         if heure_fin == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez saisir une heure de fin pour l'unité '%s' !") % self.labelUnite, _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez saisir une heure de fin pour l'unitÃ© '%s' !") % self.labelUnite, _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_heure_fin.SetFocus() 
@@ -226,8 +226,8 @@ class CTRL_Quantite(wx.Panel):
         self.SetMinSize((220, 30))
         self.SetBackgroundColour((255, 255, 255))
                 
-        # Contrôles
-        self.label_quantite = wx.StaticText(self, -1, _(u"Quantité :"))
+        # ContrÃ´les
+        self.label_quantite = wx.StaticText(self, -1, _(u"QuantitÃ© :"))
         self.ctrl_quantite = wx.SpinCtrl(self, -1, "1", min=1, max=500, size=(70, -1))
 
         # Layout
@@ -275,8 +275,8 @@ class CTRL_Unites(HTL.HyperTreeList):
         self.SetAGWWindowStyleFlag( HTL.TR_NO_HEADER | wx.TR_HIDE_ROOT | wx.TR_HAS_BUTTONS | wx.TR_HAS_VARIABLE_ROW_HEIGHT | wx.TR_FULL_ROW_HIGHLIGHT )
         self.EnableSelectionVista(True)
         
-        # Création des colonnes
-        self.AddColumn(_(u"Unités"))
+        # CrÃ©ation des colonnes
+        self.AddColumn(_(u"UnitÃ©s"))
         self.SetColumnWidth(0, 300)
 
         # Binds
@@ -286,7 +286,7 @@ class CTRL_Unites(HTL.HyperTreeList):
         self.listeUnites = self.Importation_unites()
     
     def Activation(self, etat=True):
-        """ Active ou désactive le contrôle """
+        """ Active ou dÃ©sactive le contrÃ´le """
         self.activation = etat
         
     def OnCheckItem(self, event):
@@ -299,7 +299,7 @@ class CTRL_Unites(HTL.HyperTreeList):
                 self.EnableChildren(item, False)
 
     def MAJ(self):
-        """ Met à jour (redessine) tout le contrôle """
+        """ Met Ã  jour (redessine) tout le contrÃ´le """
         self.MAJenCours = True
         self.DeleteAllItems()
         self.root = self.AddRoot(_(u"Racine"))
@@ -311,7 +311,7 @@ class CTRL_Unites(HTL.HyperTreeList):
         if self.IDactivite == None :
             return listeUnites
                 
-        # Récupération des unités
+        # RÃ©cupÃ©ration des unitÃ©s
         DB = GestionDB.DB()
         req = """SELECT IDunite, nom, abrege, type, heure_debut, heure_fin
         FROM unites
@@ -333,7 +333,7 @@ class CTRL_Unites(HTL.HyperTreeList):
             type = dictUnite["type"]
             listeControles = []
             
-            # Niveau Unité
+            # Niveau UnitÃ©
             if self.IDunite == None :
                 niveauUnite = self.AppendItem(self.root, label, ct_type=1)
             else :
@@ -360,7 +360,7 @@ class CTRL_Unites(HTL.HyperTreeList):
                 ctrl.SetHeureFin(dictUnite["heure_fin"])
                 self.SetItemWindow(niveauHoraire, ctrl, 0)
 
-            # CTRL Quantité
+            # CTRL QuantitÃ©
             if type == "Quantite" :
                 niveauQuantite = self.AppendItem(niveauUnite, u"")
                 ctrl = CTRL_Quantite(self.GetMainWindow(), item=niveauQuantite, labelUnite=label)
@@ -377,7 +377,7 @@ class CTRL_Unites(HTL.HyperTreeList):
         if self.activation == False :
             self.EnableChildren(self.root, False)
 
-        # Pour éviter le bus de positionnement des contrôles
+        # Pour Ã©viter le bus de positionnement des contrÃ´les
         self.GetMainWindow().CalculatePositions() 
     
     def AjouterHoraires(self, niveauUnite=None, heure_debut=None, heure_fin=None):
@@ -477,12 +477,12 @@ class CTRL_Unites(HTL.HyperTreeList):
     def Validation(self):
         listeCoches = self.GetCoches()
         if len(listeCoches) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous devez sélectionner au moins une unité !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez sÃ©lectionner au moins une unitÃ© !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
 
-        # Vérifie la saisie
+        # VÃ©rifie la saisie
         if self.GetDonnees() == False :
             return False
 
@@ -497,29 +497,29 @@ class CTRL_Unites(HTL.HyperTreeList):
             nom = dictItem["nom"]
 
             if typeUnite == "Unitaire" :
-                # Si unité sans options (Standard)
+                # Si unitÃ© sans options (Standard)
                 listeUnites.append({"IDunite":IDunite, "options":{}})
             else :
-                # Si unité avec Options (Quantité, Horaire, multihoraires...)
+                # Si unitÃ© avec Options (QuantitÃ©, Horaire, multihoraires...)
                 for ctrl in dictItem["controles"] :
 
                     # Validation de la saisie
                     if ctrl.Validation() == False :
-                        dlg = wx.MessageDialog(self, _(u"Veuillez vérifier la saisie des paramètres des unités !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+                        dlg = wx.MessageDialog(self, _(u"Veuillez vÃ©rifier la saisie des paramÃ¨tres des unitÃ©s !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                         dlg.ShowModal()
                         dlg.Destroy()
                         return False
 
-                    # Récupération des données
+                    # RÃ©cupÃ©ration des donnÃ©es
                     dictOptions = {}
                     for key, valeur in ctrl.GetDonnees().items() :
                         dictOptions[key] = valeur
 
                     listeUnites.append({"IDunite":IDunite, "options":dictOptions})
 
-        # Vérifie si chevauchement
+        # VÃ©rifie si chevauchement
         if self.VerifieSiChevauchement(listeUnites) == True :
-            dlg = wx.MessageDialog(self, _(u"Des unités multi-horaires se chevauchent !\n\nVérifiez les horaires..."), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Des unitÃ©s multi-horaires se chevauchent !\n\nVÃ©rifiez les horaires..."), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -556,11 +556,11 @@ class Dialog(wx.Dialog):
         self.ctrl_vacances = CTRL_Jours(self, "vacances")
         self.label_semaines = wx.StaticText(self, -1, _(u"Semaines :"))
         self.ctrl_semaines = CTRL_Semaines(self)
-        self.label_feries = wx.StaticText(self, -1, _(u"Fériés :"))
-        self.ctrl_feries = wx.CheckBox(self, -1, _(u"Inclure les jours fériés"))
+        self.label_feries = wx.StaticText(self, -1, _(u"FÃ©riÃ©s :"))
+        self.ctrl_feries = wx.CheckBox(self, -1, _(u"Inclure les jours fÃ©riÃ©s"))
 
         # Unites
-        self.box_unites_staticbox = wx.StaticBox(self, -1, _(u"Unités"))
+        self.box_unites_staticbox = wx.StaticBox(self, -1, _(u"UnitÃ©s"))
         self.ctrl_unites = CTRL_Unites(self, IDactivite=IDactivite, IDunite=self.IDunite)
 
         # Boutons
@@ -581,9 +581,9 @@ class Dialog(wx.Dialog):
         self.ctrl_unites.MAJ() 
 
     def __set_properties(self):
-        self.SetTitle(_(u"Saisie d'un paramètre de planning"))
-        self.ctrl_semaines.SetToolTip(wx.ToolTip(_(u"Sélectionnez une fréquence")))
-        self.ctrl_feries.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour inclure les jours fériés")))
+        self.SetTitle(_(u"Saisie d'un paramÃ¨tre de planning"))
+        self.ctrl_semaines.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez une frÃ©quence")))
+        self.ctrl_feries.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour inclure les jours fÃ©riÃ©s")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
@@ -606,7 +606,7 @@ class Dialog(wx.Dialog):
         box_jours.Add(grid_sizer_jours, 1, wx.ALL|wx.EXPAND, 10)
         grid_sizer_base.Add(box_jours, 1, wx.LEFT|wx.RIGHT|wx.TOP|wx.EXPAND, 10)
 
-        # Unités
+        # UnitÃ©s
         box_unites = wx.StaticBoxSizer(self.box_unites_staticbox, wx.VERTICAL)
         box_unites.Add(self.ctrl_unites, 1, wx.ALL|wx.EXPAND, 10)
         grid_sizer_base.Add(box_unites, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
@@ -652,16 +652,16 @@ class Dialog(wx.Dialog):
         # Semaines
         semaines = self.ctrl_semaines.GetValeur() 
         
-        # Fériés
+        # FÃ©riÃ©s
         feries = self.ctrl_feries.GetValue() 
 
-        # Unités
+        # UnitÃ©s
         if self.ctrl_unites.Validation() == False :
             return False
 
         listeUnites = self.ctrl_unites.GetDonnees()
 
-        # Mémorisation des données
+        # MÃ©morisation des donnÃ©es
         self.resultats = {}
         self.resultats["jours_scolaires"] = jours_scolaires
         self.resultats["jours_vacances"] = jours_vacances
@@ -669,7 +669,7 @@ class Dialog(wx.Dialog):
         self.resultats["semaines"] = semaines
         self.resultats["unites"] = listeUnites
         
-        # Fermeture de la fenêtre
+        # Fermeture de la fenÃªtre
         self.EndModal(wx.ID_OK)
 
     def OnBoutonAnnuler(self, event): 
@@ -679,7 +679,7 @@ class Dialog(wx.Dialog):
         return self.resultats
 
     def SetDonnees(self, donnees={}):
-        """ Importation des données """
+        """ Importation des donnÃ©es """
 ##        self.ctrl_scolaires.SetJours("0;1;2;3;4")
 ##        self.ctrl_vacances.SetJours("0;1;2;3;4")
 ##        self.ctrl_semaines.SetValeur("2sem-2") 

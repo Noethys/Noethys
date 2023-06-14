@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activitÈs
+# Application :    Noethys, gestion multi-activit√©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-17 Ivan LUCAS
@@ -18,7 +18,7 @@ from Utils import UTILS_Interface
 from Ctrl.CTRL_ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 import GestionDB
 from Utils import UTILS_Config
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"§")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"‚Ç¨")
 
 from Dlg.DLG_Ouvertures import Track_evenement
 
@@ -26,7 +26,7 @@ from Dlg.DLG_Ouvertures import Track_evenement
 
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # RÈcupÈration des paramËtres perso
+        # R√©cup√©ration des param√®tres perso
         self.grid = kwds.pop("grid", None)
         self.liste_colonnes = kwds.pop("liste_colonnes", None)
         self.IDactivite = kwds.pop("IDactivite", None)
@@ -74,17 +74,17 @@ class ListView(FastObjectListView):
             "ID": ColumnDefn(_(u"ID"), "left", 0, "IDvenement", typeDonnee="entier"),
             "date": ColumnDefn(_(u"Date"), 'left', 80, "date", typeDonnee="date", stringConverter=FormateDateCourt),
             "nom": ColumnDefn(_(u"Nom"), "left", 200, "nom", typeDonnee="texte"),
-            "heure_debut": ColumnDefn(_(u"DÈbut"), 'center', 60, "heure_debut", typeDonnee="texte", stringConverter=FormateHeure),
+            "heure_debut": ColumnDefn(_(u"D√©but"), 'center', 60, "heure_debut", typeDonnee="texte", stringConverter=FormateHeure),
             "heure_fin": ColumnDefn(_(u"Fin"), 'center', 60, "heure_fin", typeDonnee="texte", stringConverter=FormateHeure),
             "montant": ColumnDefn(_(u"Montant"), 'center', 80, "montant", typeDonnee="montant", stringConverter=FormateMontant),
-            "capacite_max": ColumnDefn(_(u"CapacitÈ max."), 'center', 100, "capacite_max", typeDonnee="entier"),
+            "capacite_max": ColumnDefn(_(u"Capacit√© max."), 'center', 100, "capacite_max", typeDonnee="entier"),
             }
 
         liste_temp = []
         for code in self.liste_colonnes :
             liste_temp.append(dict_colonnes[code])
         self.SetColumns(liste_temp)
-        self.SetEmptyListMsg(_(u"Aucun ÈvËnement"))
+        self.SetEmptyListMsg(_(u"Aucun √©v√®nement"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
         self.SetSortColumn(self.columns[1])
         self.SetObjects(self.donnees)
@@ -92,7 +92,7 @@ class ListView(FastObjectListView):
     def MAJ(self, track=None):
         self.InitModel()
         self.InitObjectListView()
-        # SÈlection d'un item
+        # S√©lection d'un item
         if track != None :
             self.SelectObject(track, deselectOthers=True, ensureVisible=True)
         else :
@@ -108,7 +108,7 @@ class ListView(FastObjectListView):
         else:
             noSelection = False
 
-        # CrÈation du menu contextuel
+        # Cr√©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Ajouter
@@ -139,7 +139,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
 
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"AperÁu avant impression"))
+        item = wx.MenuItem(menuPop, 40, _(u"Aper√ßu avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -173,12 +173,12 @@ class ListView(FastObjectListView):
 
     def Impression(self, mode="preview"):
         if self.donnees == None or len(self.donnees) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Il n'y a aucune donnÈe ‡ imprimer !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Il n'y a aucune donn√©e √† imprimer !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des ÈvËnements"), format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des √©v√®nements"), format="A", orientation=wx.PORTRAIT)
         if mode == "preview" :
             prt.Preview()
         else:
@@ -192,11 +192,11 @@ class ListView(FastObjectListView):
 
     def ExportTexte(self, event):
         from Utils import UTILS_Export
-        UTILS_Export.ExportTexte(self, titre=_(u"Liste des ÈvËnements"))
+        UTILS_Export.ExportTexte(self, titre=_(u"Liste des √©v√®nements"))
         
     def ExportExcel(self, event):
         from Utils import UTILS_Export
-        UTILS_Export.ExportExcel(self, titre=_(u"Liste des ÈvËnements"))
+        UTILS_Export.ExportExcel(self, titre=_(u"Liste des √©v√®nements"))
 
     def Ajouter(self, event):
         from Dlg import DLG_Saisie_evenement
@@ -210,7 +210,7 @@ class ListView(FastObjectListView):
 
     def Modifier(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucun ÈvËnement ‡ modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucun √©v√®nement √† modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -218,7 +218,7 @@ class ListView(FastObjectListView):
 
         nbre_conso = self.GetNbreConsoAssociees(track_evenement)
         if nbre_conso > 0 :
-            dlg = wx.MessageDialog(self, _(u"Cet ÈvËnement est dÈj‡ associÈ ‡ %d consommations.\n\nSouhaitez-vous tout de mÍme le modifier ?") % nbre_conso, _(u"Modification"), wx.YES_NO | wx.NO_DEFAULT | wx.CANCEL | wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(self, _(u"Cet √©v√®nement est d√©j√† associ√© √† %d consommations.\n\nSouhaitez-vous tout de m√™me le modifier ?") % nbre_conso, _(u"Modification"), wx.YES_NO | wx.NO_DEFAULT | wx.CANCEL | wx.ICON_INFORMATION)
             reponse = dlg.ShowModal()
             dlg.Destroy()
             if reponse != wx.ID_YES:
@@ -233,21 +233,21 @@ class ListView(FastObjectListView):
 
     def Supprimer(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucun ÈvËnement ‡ supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucun √©v√®nement √† supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         track_evenement = self.Selection()[0]
 
-        # VÈrifie qu'une conso n'est pas dÈj‡ associÈe ‡ cet ÈvËnement
+        # V√©rifie qu'une conso n'est pas d√©j√† associ√©e √† cet √©v√®nement
         nbre_conso = self.GetNbreConsoAssociees(track_evenement)
         if nbre_conso > 0 :
-            dlg = wx.MessageDialog(self, _(u"Suppression interdite.\n\nVous ne pouvez pas supprimer cet ÈvËnement car %d consommations y sont dÈj‡ associÈes !") % nbre_conso, _(u"Suppression"), wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"Suppression interdite.\n\nVous ne pouvez pas supprimer cet √©v√®nement car %d consommations y sont d√©j√† associ√©es !") % nbre_conso, _(u"Suppression"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
-        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer cet ÈvËnement ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer cet √©v√®nement ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         if dlg.ShowModal() == wx.ID_YES :
             self.donnees.remove(track_evenement)
             self.MAJ()

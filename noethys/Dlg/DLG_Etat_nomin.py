@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -29,7 +29,7 @@ class CTRL_Periode(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent, -1)
         self.parent = parent
-        # Contrôles
+        # ContrÃ´les
         self.label_date_debut = wx.StaticText(self, -1, u"Du :")
         self.ctrl_date_debut = CTRL_Saisie_date.Date2(self)
         self.label_date_fin = wx.StaticText(self, -1, _(u"Au :"))
@@ -42,20 +42,20 @@ class CTRL_Periode(wx.Panel):
         grid_sizer.Add(self.ctrl_date_fin, 0, wx.EXPAND, 0)
         self.SetSizer(grid_sizer)
         self.Layout()
-        # Init Contrôles
+        # Init ContrÃ´les
         dateDuJour = datetime.date.today()
         self.ctrl_date_debut.SetDate(datetime.date(dateDuJour.year, 1, 1))
         self.ctrl_date_fin.SetDate(datetime.date(dateDuJour.year, 12, 31))
     
     def Validation(self):
         if self.ctrl_date_debut.GetDate() == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de début de validité !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de dÃ©but de validitÃ© !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_debut
             return False
         if self.ctrl_date_fin.GetDate() == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de fin de validité !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de fin de validitÃ© !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_debut
@@ -92,7 +92,7 @@ class CTRL_Groupes(wx.CheckListBox):
         if len(self.listeActivites) == 0 :
             return listeGroupes, dictGroupes 
 
-        # Condition Activités
+        # Condition ActivitÃ©s
         if len(self.listeActivites) == 0 : conditionActivites = "()"
         elif len(self.listeActivites) == 1 : conditionActivites = "(%d)" % self.listeActivites[0]
         else : conditionActivites = str(tuple(self.listeActivites))
@@ -174,7 +174,7 @@ class CTRL_Categories(wx.CheckListBox):
         if len(self.listeActivites) == 0 :
             return listeCategories, dictCategories 
 
-        # Condition Activités
+        # Condition ActivitÃ©s
         if len(self.listeActivites) == 0 : conditionActivites = "()"
         elif len(self.listeActivites) == 1 : conditionActivites = "(%d)" % self.listeActivites[0]
         else : conditionActivites = str(tuple(self.listeActivites))
@@ -248,8 +248,8 @@ class CTRL_Caisses(wx.CheckListBox):
         self.SetListeChoix()
     
     def Importation(self):
-        listeCaisses = [(_(u"Caisse non spécifiée"), 0),]
-        dictCaisses = {"nom":_(u"Caisse non spécifiée"), "IDcaisse":0}
+        listeCaisses = [(_(u"Caisse non spÃ©cifiÃ©e"), 0),]
+        dictCaisses = {"nom":_(u"Caisse non spÃ©cifiÃ©e"), "IDcaisse":0}
 
         DB = GestionDB.DB()
         req = """SELECT IDcaisse, nom
@@ -310,7 +310,7 @@ class CTRL_Age(wx.Panel):
         self.parent = parent
 
         self.radio_tous = wx.RadioButton(self, -1, _(u"Tous les individus"), style=wx.RB_GROUP)
-        self.radio_dates = wx.RadioButton(self, -1, _(u"Nés entre le"))
+        self.radio_dates = wx.RadioButton(self, -1, _(u"NÃ©s entre le"))
         self.ctrl_date_debut = CTRL_Saisie_date.Date(self)
         self.label_separation1 = wx.StaticText(self, -1, _(u"et le"))
         self.ctrl_date_fin = CTRL_Saisie_date.Date(self)
@@ -345,7 +345,7 @@ class CTRL_Age(wx.Panel):
         self.Bind(wx.EVT_RADIOBUTTON, self.OnRadio, self.radio_dates)
         self.Bind(wx.EVT_RADIOBUTTON, self.OnRadio, self.radio_age)
         
-        # Init contrôles
+        # Init contrÃ´les
         self.OnRadio(None)
 
     def OnRadio(self, event): 
@@ -382,7 +382,7 @@ class CTRL_QF(wx.Panel):
         wx.Panel.__init__(self, parent, -1)
         self.parent = parent
         
-        # Contrôles
+        # ContrÃ´les
         self.radio_tous = wx.RadioButton(self, -1, _(u"Tous les quotients"), style=wx.RB_GROUP)
         self.radio_sans = wx.RadioButton(self, -1, _(u"Sans quotient"))
         self.radio_qf = wx.RadioButton(self, -1, _(u"Entre"))
@@ -410,7 +410,7 @@ class CTRL_QF(wx.Panel):
         self.Bind(wx.EVT_RADIOBUTTON, self.OnRadio, self.radio_sans)
         self.Bind(wx.EVT_RADIOBUTTON, self.OnRadio, self.radio_qf)
         
-        # Init contrôles
+        # Init contrÃ´les
         self.OnRadio(None)
 
     def OnRadio(self, event): 
@@ -444,7 +444,7 @@ class CTRL_Profil(wx.Choice):
         else:
             self.Enable(True)
         self.SetItems(listeItems)
-        # Re-sélection après MAJ
+        # Re-sÃ©lection aprÃ¨s MAJ
         if selectionActuelle != None :
             self.SetID(selectionActuelle)
                                         
@@ -486,9 +486,9 @@ class CTRL_Etats(wx.CheckListBox):
     def MAJ(self):
         listeDonnees = [
             ("reservation", _(u"Pointage en attente")),
-            ("present", _(u"Présent")),
-            ("absentj", _(u"Absence justifiée")),
-            ("absenti", _(u"Absence injustifiée")),
+            ("present", _(u"PrÃ©sent")),
+            ("absentj", _(u"Absence justifiÃ©e")),
+            ("absenti", _(u"Absence injustifiÃ©e")),
         ]
         listeValeurs = []
         for code, nom in listeDonnees:
@@ -553,10 +553,10 @@ class CTRL_Champs(wx.Panel):
 
         # Properties
         self.ctrl_profil.SetToolTip(wx.ToolTip(_(u"Selectionnez un profil de liste")))
-        self.bouton_profils.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à la gestion des profils")))
+        self.bouton_profils.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accÃ©der Ã  la gestion des profils")))
         self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la liste des champs")))
-        self.bouton_monter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour monter le champ sélectionné")))
-        self.bouton_descendre.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour descendre le champ sélectionné")))
+        self.bouton_monter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour monter le champ sÃ©lectionnÃ©")))
+        self.bouton_descendre.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour descendre le champ sÃ©lectionnÃ©")))
 
         # Layout
         sizer_base = wx.BoxSizer(wx.VERTICAL)
@@ -734,14 +734,14 @@ class CTRL_Filtres(wx.Notebook):
 
         self.listePages = [
             {"code": "groupes", "ctrl": Page_Groupes(self), "label": _(u"Groupe")},
-            {"code": "categories", "ctrl": Page_Categories(self), "label": _(u"Catégorie de tarif")},
+            {"code": "categories", "ctrl": Page_Categories(self), "label": _(u"CatÃ©gorie de tarif")},
             {"code": "age", "ctrl": Page_Age(self), "label": _(u"Age")},
             {"code": "caisse", "ctrl": Page_Caisse(self), "label": _(u"Caisse")},
             {"code": "quotient", "ctrl": Page_Quotient(self), "label": _(u"Quotient familial")},
             {"code": "etats", "ctrl": Page_Etat(self), "label": _(u"Etat")},
         ]
 
-        # Création des pages
+        # CrÃ©ation des pages
         self.dictPages = {}
         index = 0
         for dictPage in self.listePages:
@@ -762,7 +762,7 @@ class CTRL_Filtres(wx.Notebook):
             index += 1
 
     def OnPageChanged(self, event):
-        """ Quand une page du notebook est sélectionnée """
+        """ Quand une page du notebook est sÃ©lectionnÃ©e """
         if event.GetOldSelection() == -1: return
         indexPage = event.GetSelection()
         page = self.GetPage(indexPage)
@@ -802,17 +802,17 @@ class Dialog(wx.Dialog):
         self.parent = parent
         
         # Bandeau
-        intro = _(u"Commencez par créer un profil de liste afin de constituer une liste de champs persistante. Vous pouvez sélectionner les champs prédéfinis ou paramétrer des champs personnalisés en fonction de vos besoins. Sélectionnez enfin des filtres conditionnels avant de lancer la création de la liste de données en cliquant sur Aperçu.")
+        intro = _(u"Commencez par crÃ©er un profil de liste afin de constituer une liste de champs persistante. Vous pouvez sÃ©lectionner les champs prÃ©dÃ©finis ou paramÃ©trer des champs personnalisÃ©s en fonction de vos besoins. SÃ©lectionnez enfin des filtres conditionnels avant de lancer la crÃ©ation de la liste de donnÃ©es en cliquant sur AperÃ§u.")
         titre = _(u"Etat nominatif des consommations")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Tableaux.png")
         
-        # Période
-        self.box_periode_staticbox = wx.StaticBox(self, -1, _(u"Période"))
+        # PÃ©riode
+        self.box_periode_staticbox = wx.StaticBox(self, -1, _(u"PÃ©riode"))
         self.ctrl_periode = CTRL_Periode(self)
         
-        # Activités
-        self.box_activites_staticbox = wx.StaticBox(self, -1, _(u"Activités"))
+        # ActivitÃ©s
+        self.box_activites_staticbox = wx.StaticBox(self, -1, _(u"ActivitÃ©s"))
         self.ctrl_activites = CTRL_Selection_activites.CTRL(self)
         self.ctrl_activites.SetMinSize((240, -1))
 
@@ -828,7 +828,7 @@ class Dialog(wx.Dialog):
 
         # Boutons
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
-        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Aperçu"), cheminImage="Images/32x32/Apercu.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"AperÃ§u"), cheminImage="Images/32x32/Apercu.png")
         self.bouton_fermer = CTRL_Bouton_image.CTRL(self, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         self.__set_properties()
@@ -857,12 +857,12 @@ class Dialog(wx.Dialog):
         grid_sizer_gauche = wx.FlexGridSizer(rows=2, cols=1, vgap=10, hgap=10)
         grid_sizer_droite = wx.FlexGridSizer(rows=2, cols=1, vgap=10, hgap=10)
 
-        # Période
+        # PÃ©riode
         box_periode = wx.StaticBoxSizer(self.box_periode_staticbox, wx.VERTICAL)
         box_periode.Add(self.ctrl_periode, 1, wx.ALL|wx.EXPAND, 10)
         grid_sizer_gauche.Add(box_periode, 1, wx.EXPAND, 0)
         
-        # Activités
+        # ActivitÃ©s
         box_activites = wx.StaticBoxSizer(self.box_activites_staticbox, wx.VERTICAL)
         box_activites.Add(self.ctrl_activites, 1, wx.ALL|wx.EXPAND, 10)
         grid_sizer_gauche.Add(box_activites, 1, wx.EXPAND, 0)
@@ -925,82 +925,82 @@ class Dialog(wx.Dialog):
     def OnBoutonOk(self, event):
         dictParametres = {}
         
-        # Récupération de la période
+        # RÃ©cupÃ©ration de la pÃ©riode
         if self.ctrl_periode.Validation() == False : return
         dictParametres["date_debut"] = self.ctrl_periode.GetDateDebut()
         dictParametres["date_fin"] = self.ctrl_periode.GetDateFin()
         
-        # Récupération des activités
+        # RÃ©cupÃ©ration des activitÃ©s
         listeActivites = self.ctrl_activites.GetActivites()
         if len(listeActivites) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune activité !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune activitÃ© !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
         dictParametres["activites"] = listeActivites
         
-        # Récupération des groupes
+        # RÃ©cupÃ©ration des groupes
         listeGroupes = self.ctrl_filtres.GetPageAvecCode("groupes").GetDonnees()
         if len(listeGroupes) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun groupe !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucun groupe !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
         dictParametres["groupes"] = listeGroupes
         
-        # Récupération des catégories de tarifs
+        # RÃ©cupÃ©ration des catÃ©gories de tarifs
         listeCategories = self.ctrl_filtres.GetPageAvecCode("categories").GetDonnees()
         if len(listeCategories) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune catégorie de tarif !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune catÃ©gorie de tarif !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
         dictParametres["categories"] = listeCategories
         
-        # Récupération des caisses
+        # RÃ©cupÃ©ration des caisses
         listeCaisses = self.ctrl_filtres.GetPageAvecCode("caisse").GetDonnees()
         dictParametres["caisses"] = listeCaisses
 
-        # Récupération de l'âge
+        # RÃ©cupÃ©ration de l'Ã¢ge
         age = self.ctrl_filtres.GetPageAvecCode("age").GetDonnees()
         if age == False : return
         dictParametres["age"] = age
         
-        # Récupération du QF
+        # RÃ©cupÃ©ration du QF
         QF = self.ctrl_filtres.GetPageAvecCode("quotient").GetDonnees()
         dictParametres["qf"] = QF
 
-        # Récupération de l'état
+        # RÃ©cupÃ©ration de l'Ã©tat
         listeEtats = self.ctrl_filtres.GetPageAvecCode("etats").GetDonnees()
         dictParametres["etats"] = listeEtats
 
-        # Récupération des champs sélectionnés
+        # RÃ©cupÃ©ration des champs sÃ©lectionnÃ©s
         listeChamps = self.ctrl_champs.ctrl_champs.GetTracksSelections()
         if len(listeChamps) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun champ !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucun champ !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
         dictParametres["champs"] = listeChamps
         
-        # Vérifie si les champs sont bien disponibles avec les activités sélectionnées
+        # VÃ©rifie si les champs sont bien disponibles avec les activitÃ©s sÃ©lectionnÃ©es
         listeChampsIndisponibles = []
         for champ in dictParametres["champs"] :
             if champ.type == None :
                 listeChampsIndisponibles.append(champ.code)
         if len(listeChampsIndisponibles) > 0 :
-            message = _(u"Attention, les %d champs suivants ne sont pas disponibles avec les activités sélectionnées : %s. Ils seront donc exclus des résultats.\n\nSouhaitez-vous quand même continuer ?") % (len(listeChampsIndisponibles), ", ".join(listeChampsIndisponibles))
+            message = _(u"Attention, les %d champs suivants ne sont pas disponibles avec les activitÃ©s sÃ©lectionnÃ©es : %s. Ils seront donc exclus des rÃ©sultats.\n\nSouhaitez-vous quand mÃªme continuer ?") % (len(listeChampsIndisponibles), ", ".join(listeChampsIndisponibles))
             dlg = wx.MessageDialog(self, message, _(u"Avertissement"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
             reponse = dlg.ShowModal() 
             dlg.Destroy()
             if reponse != wx.ID_YES :
                 return
 
-        # Récupération de tous les champs disponibles
+        # RÃ©cupÃ©ration de tous les champs disponibles
         listeChampsDispo = self.ctrl_champs.ctrl_champs.GetListeChampsDispo()
         dictParametres["champsDispo"] = listeChampsDispo
         
-        # Affichage des résultats
+        # Affichage des rÃ©sultats
         dlg = DLG_Etat_nomin_resultats.Dialog(self, dictParametres=dictParametres)
         dlg.ShowModal() 
         dlg.Destroy() 

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -31,7 +31,7 @@ def DateEngEnDateDD(dateEng):
 def GetListe(listeActivites=None, presents=None, archives=False):
     if listeActivites == None : return {} 
     
-    # Récupération des données
+    # RÃ©cupÃ©ration des donnÃ©es
     dictItems = {}
 
     # Conditions Activites
@@ -51,7 +51,7 @@ def GetListe(listeActivites=None, presents=None, archives=False):
 
     DB = GestionDB.DB()
 
-    # Récupération des présents
+    # RÃ©cupÃ©ration des prÃ©sents
     listePresents = []
     if presents != None :
         req = """SELECT IDfamille, inscriptions.IDinscription
@@ -65,7 +65,7 @@ def GetListe(listeActivites=None, presents=None, archives=False):
         for IDfamille, IDinscription in listeIndividusPresents :
             listePresents.append(IDfamille)
     
-    # Récupération des régimes et num d'alloc pour chaque famille
+    # RÃ©cupÃ©ration des rÃ©gimes et num d'alloc pour chaque famille
     req = """
     SELECT 
     inscriptions.IDfamille, regimes.nom, caisses.nom, num_allocataire
@@ -83,7 +83,7 @@ def GetListe(listeActivites=None, presents=None, archives=False):
     listeFamilles = DB.ResultatReq()
     DB.Close() 
     
-    # Formatage des données
+    # Formatage des donnÃ©es
     dictFinal = {}
     titulaires = UTILS_Titulaires.GetTitulaires() 
     for IDfamille, nomRegime, nomCaisse, numAlloc in listeFamilles :
@@ -130,7 +130,7 @@ class Track(object):
     
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # Récupération des paramètres perso
+        # RÃ©cupÃ©ration des paramÃ¨tres perso
         self.selectionID = None
         self.selectionTrack = None
         self.criteres = ""
@@ -151,13 +151,13 @@ class ListView(FastObjectListView):
                         
     def InitModel(self):
         self.donnees = self.GetTracks()
-        # Récupération des infos de base individus et familles
+        # RÃ©cupÃ©ration des infos de base individus et familles
         self.infosIndividus = UTILS_Infos_individus.Informations() 
         for track in self.donnees :
             self.infosIndividus.SetAsAttributs(parent=track, mode="famille", ID=track.IDfamille)
 
     def GetTracks(self):
-        """ Récupération des données """
+        """ RÃ©cupÃ©ration des donnÃ©es """
         dictDonnees = GetListe(self.listeActivites, self.presents, self.archives)
         listeListeView = []
         for IDfamille, dictTemp in dictDonnees.items() :
@@ -180,9 +180,9 @@ class ListView(FastObjectListView):
             ColumnDefn(_(u"C.P."), "left", 45, "cp", typeDonnee="texte"),
             ColumnDefn(_(u"Ville"), "left", 120, "ville", typeDonnee="texte"),
             ColumnDefn(_(u"Secteur"), "left", 100, "secteur", typeDonnee="texte"),
-            ColumnDefn(_(u"Régime"), "left", 130, "regime", typeDonnee="texte"),
+            ColumnDefn(_(u"RÃ©gime"), "left", 130, "regime", typeDonnee="texte"),
             ColumnDefn(_(u"Caisse"), "left", 130, "caisse", typeDonnee="texte"),
-            ColumnDefn(_(u"Numéro Alloc."), "left", 120, "numAlloc", typeDonnee="texte"),
+            ColumnDefn(_(u"NumÃ©ro Alloc."), "left", 120, "numAlloc", typeDonnee="texte"),
             ]        
 
         # # Insertion des champs infos de base individus
@@ -202,10 +202,10 @@ class ListView(FastObjectListView):
                 code2 = copy.copy(code)
                 typeDonnee = UTILS_Infos_individus.GetTypeChamp(code2)
                 code2 = code2.replace("{", "").replace("}", "").replace(u"_x_", u"_%d_" % x)
-                titre2 = titre2.replace(u"n°x", u"n°%d" % x)
+                titre2 = titre2.replace(u"nÂ°x", u"nÂ°%d" % x)
                 liste_Colonnes.append(ColumnDefn(titre2, "left", 100, code2, typeDonnee=typeDonnee, visible=False))
 
-            # if u"n°" not in titre and "_x_" not in code:
+            # if u"nÂ°" not in titre and "_x_" not in code:
             #     typeDonnee = UTILS_Infos_individus.GetTypeChamp(code)
             #     code = code.replace("{", "").replace("}", "")
             #     liste_Colonnes.append(ColumnDefn(titre, "left", 100, code, typeDonnee=typeDonnee, visible=False))
@@ -222,7 +222,7 @@ class ListView(FastObjectListView):
         self.presents = presents
         self.archives = archives
         self.labelParametres = labelParametres
-        attente = wx.BusyInfo(_(u"Recherche des données..."), self)
+        attente = wx.BusyInfo(_(u"Recherche des donnÃ©es..."), self)
         self.InitModel()
         self.InitObjectListView()
         del attente
@@ -238,7 +238,7 @@ class ListView(FastObjectListView):
             noSelection = False
             ID = self.Selection()[0].IDfamille
             
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
         
         # Item Ouvrir fiche famille
@@ -251,7 +251,7 @@ class ListView(FastObjectListView):
         
         menuPop.AppendSeparator()
         
-        # Génération automatique des fonctions standards
+        # GÃ©nÃ©ration automatique des fonctions standards
         self.GenerationContextMenu(menuPop, dictParametres=self.GetParametresImpression())
 
         # Commandes standards
@@ -272,7 +272,7 @@ class ListView(FastObjectListView):
     def OuvrirFicheFamille(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_fiche", "consulter") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune fiche famille à ouvrir !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune fiche famille Ã  ouvrir !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return

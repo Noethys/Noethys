@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-16 Ivan LUCAS
@@ -14,7 +14,7 @@ import wx
 from Utils import UTILS_Customize
 
 THEMES = [
-    ("Vert", _(u"Vert (Par défaut)")),
+    ("Vert", _(u"Vert (Par dÃ©faut)")),
     ("Bleu", _(u"Bleu")),
     ("Noir", _(u"Noir")),
 ]
@@ -51,7 +51,7 @@ def SetTheme(theme="Vert"):
     UTILS_Customize.SetValeur("interface", "theme", theme)
 
 def GetValeur(cle="", defaut="", theme=None):
-    # lecture du thème
+    # lecture du thÃ¨me
     if theme == None :
         theme = UTILS_Customize.GetValeur("interface", "theme", "Vert")
 
@@ -60,7 +60,7 @@ def GetValeur(cle="", defaut="", theme=None):
         if cle in DONNEES[theme]:
             return DONNEES[theme][cle]
 
-    # Sinon renvoie la valeur par défaut
+    # Sinon renvoie la valeur par dÃ©faut
     return defaut
 
 

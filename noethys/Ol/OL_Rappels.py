@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-13 Ivan LUCAS
@@ -25,7 +25,7 @@ from Utils import UTILS_Titulaires
 from Utils import UTILS_Dates
 from Utils import UTILS_Utilisateurs
 from Utils import UTILS_Config
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"â‚¬")
 
 
 from Utils import UTILS_Interface
@@ -103,7 +103,7 @@ class ListView(FastObjectListView):
         if self.IDcompte_payeur != None :
             listeConditions.append("rappels.IDcompte_payeur = %d" % self.IDcompte_payeur)
         
-        # 1ère série de filtres
+        # 1Ã¨re sÃ©rie de filtres
         if self.filtres != None :
             for filtre in self.filtres :
             
@@ -122,11 +122,11 @@ class ListView(FastObjectListView):
                 if filtre["type"] == "lot" :
                     listeConditions.append( "rappels.IDlot=%d" % filtre["IDlot"] )
             
-                # Date d'émission
+                # Date d'Ã©mission
                 if filtre["type"] == "date_emission" :
                     listeConditions.append( "(rappels.date_edition>='%s' AND rappels.date_edition<='%s')" % (filtre["date_min"], filtre["date_max"]) )
 
-                # Date de référence
+                # Date de rÃ©fÃ©rence
                 if filtre["type"] == "date_reference" :
                     listeConditions.append( "(rappels.date_reference>='%s' AND rappels.date_reference<='%s')" % (filtre["date_min"], filtre["date_max"]) )
 
@@ -147,7 +147,7 @@ class ListView(FastObjectListView):
             conditions = ""
 
 
-        # Récupération des rappels
+        # RÃ©cupÃ©ration des rappels
         req = """
         SELECT rappels.IDrappel, rappels.numero, rappels.IDcompte_payeur, 
         rappels.date_edition, rappels.date_reference, rappels.IDutilisateur,
@@ -164,7 +164,7 @@ class ListView(FastObjectListView):
         DB.ExecuterReq(req)
         listeRappels = DB.ResultatReq()
                 
-        # Infos Prélèvement + Envoi par Email des factures
+        # Infos PrÃ©lÃ¨vement + Envoi par Email des factures
         if self.IDcompte_payeur != None :
             conditions = "WHERE comptes_payeurs.IDcompte_payeur = %d" % self.IDcompte_payeur
         else:
@@ -215,7 +215,7 @@ class ListView(FastObjectListView):
 
             valide = True
             
-            # 2ème série de filtres
+            # 2Ã¨me sÃ©rie de filtres
             if self.filtres != None :
                 for filtre in self.filtres :
             
@@ -230,7 +230,7 @@ class ListView(FastObjectListView):
                         else :
                             if dictTemp["email_factures"] != None : valide = False
 
-            # Mémorisation des valeurs
+            # MÃ©morisation des valeurs
             if valide == True :                    
                 listeResultats.append(dictTemp)
         
@@ -253,7 +253,7 @@ class ListView(FastObjectListView):
 
 
     def GetTracks(self):
-        # Récupération des données
+        # RÃ©cupÃ©ration des donnÃ©es
         listeID = None
         listeDonnees = self.GetListeRappels() 
     
@@ -299,14 +299,14 @@ class ListView(FastObjectListView):
         self.oddRowsBackColor = UTILS_Interface.GetValeur("couleur_tres_claire", wx.Colour(240, 251, 237))
         self.evenRowsBackColor = "#FFFFFF" # Vert
 
-        # Paramètres ListView
+        # ParamÃ¨tres ListView
         self.useExpansionColumn = True
         
         dictColonnes = {
             "IDrappel" : ColumnDefn(u"", "left", 0, "IDrappel", typeDonnee="entier"),
-            "date_edition" : ColumnDefn(_(u"Date d'édition"), "centre", 80, "date_edition", typeDonnee="date", stringConverter=FormateDate),
-            "date_reference" : ColumnDefn(_(u"Date de référence"), "centre", 80, "date_reference", typeDonnee="date", stringConverter=FormateDate),
-            "numero" : ColumnDefn(u"N°", "centre", 65, "numero", typeDonnee="entier", stringConverter=FormateNumero),
+            "date_edition" : ColumnDefn(_(u"Date d'Ã©dition"), "centre", 80, "date_edition", typeDonnee="date", stringConverter=FormateDate),
+            "date_reference" : ColumnDefn(_(u"Date de rÃ©fÃ©rence"), "centre", 80, "date_reference", typeDonnee="date", stringConverter=FormateDate),
+            "numero" : ColumnDefn(u"NÂ°", "centre", 65, "numero", typeDonnee="entier", stringConverter=FormateNumero),
             "famille" : ColumnDefn(_(u"Famille"), "left", 180, "nomsTitulaires", typeDonnee="texte"),
             "date_min" : ColumnDefn(_(u"Date min"), "centre", 80, "date_min", typeDonnee="date", stringConverter=FormateDate),
             "date_max" : ColumnDefn(_(u"Date max"), "centre", 80, "date_max", typeDonnee="date", stringConverter=FormateDate),
@@ -347,7 +347,7 @@ class ListView(FastObjectListView):
             self.selectionTrack = None
         self.InitModel()
         self.InitObjectListView()
-        # Sélection d'un item
+        # SÃ©lection d'un item
         if self.selectionTrack != None :
             self.SelectObject(self.selectionTrack, deselectOthers=True, ensureVisible=True)
         self.selectionID = None
@@ -371,11 +371,11 @@ class ListView(FastObjectListView):
         if len(self.Selection()) > 0 :
             ID = self.Selection()[0].IDrappel
         
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
-        # Item Rééditer la lettre
-        item = wx.MenuItem(menuPop, 60, _(u"Aperçu PDF de la lettre de rappel"))
+        # Item RÃ©Ã©diter la lettre
+        item = wx.MenuItem(menuPop, 60, _(u"AperÃ§u PDF de la lettre de rappel"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -400,7 +400,7 @@ class ListView(FastObjectListView):
 
         menuPop.AppendSeparator()
         
-        # Génération automatique des fonctions standards
+        # GÃ©nÃ©ration automatique des fonctions standards
         self.GenerationContextMenu(menuPop, dictParametres=self.GetParametresImpression())
 
         self.PopupMenu(menuPop)
@@ -418,7 +418,7 @@ class ListView(FastObjectListView):
 
     def Reedition(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune lettre à imprimer !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune lettre Ã  imprimer !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -430,7 +430,7 @@ class ListView(FastObjectListView):
     def EnvoyerEmail(self, event):
         """ Envoyer la lettre par Email """
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune lettre de rappel à envoyer par Email !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune lettre de rappel Ã  envoyer par Email !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -440,7 +440,7 @@ class ListView(FastObjectListView):
         UTILS_Envoi_email.EnvoiEmailFamille(parent=self, IDfamille=track.IDfamille, nomDoc=FonctionsPerso.GenerationNomDoc("RAPPEL", "pdf") , categorie="rappel")
     
     def CreationPDF(self, nomDoc="", afficherDoc=True):        
-        """ Création du PDF pour Email """
+        """ CrÃ©ation du PDF pour Email """
         IDrappel = self.Selection()[0].IDrappel
         from Utils import UTILS_Rappels
         facturation = UTILS_Rappels.Facturation()
@@ -454,7 +454,7 @@ class ListView(FastObjectListView):
         total = _(u"%d factures. ") % len(self.donnees)
         if self.filtres != None :
             from Dlg.DLG_Filtres_rappels import GetTexteFiltres 
-            intro = total + _(u"Filtres de sélection : %s") % GetTexteFiltres(self.filtres)
+            intro = total + _(u"Filtres de sÃ©lection : %s") % GetTexteFiltres(self.filtres)
         else :
             intro = None
         return intro, total
@@ -483,7 +483,7 @@ class ListView(FastObjectListView):
         if self.IDcompte_payeur == None and UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("facturation_rappels", "supprimer") == False : return
         
         if len(self.Selection()) == 0 and len(self.GetTracksCoches()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune lettre de rappel à supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune lettre de rappel Ã  supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -491,7 +491,7 @@ class ListView(FastObjectListView):
         if len(self.GetTracksCoches()) > 0 :
             # Suppression multiple
             listeSelections = self.GetTracksCoches()
-            dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer les %d lettres de rappel cochées ?") % len(listeSelections), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer les %d lettres de rappel cochÃ©es ?") % len(listeSelections), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
             reponse = dlg.ShowModal() 
             dlg.Destroy()
             if reponse != wx.ID_YES :
@@ -500,7 +500,7 @@ class ListView(FastObjectListView):
         else :
             # Suppression unique
             listeSelections = self.Selection()        
-            dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer la lettre de rappel n°%d ?") % listeSelections[0].numero, _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer la lettre de rappel nÂ°%d ?") % listeSelections[0].numero, _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
             reponse = dlg.ShowModal() 
             dlg.Destroy()
             if reponse != wx.ID_YES :
@@ -524,14 +524,14 @@ class ListView(FastObjectListView):
         self.MAJ() 
         
         # Confirmation de suppression
-        dlg = wx.MessageDialog(self, _(u"%d lettres(s) de rappel supprimée(s) avec succès.") % len(listeSelections), _(u"Suppression"), wx.OK | wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"%d lettres(s) de rappel supprimÃ©e(s) avec succÃ¨s.") % len(listeSelections), _(u"Suppression"), wx.OK | wx.ICON_INFORMATION)
         dlg.ShowModal()
         dlg.Destroy()
 
     def OuvrirFicheFamille(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_fiche", "consulter") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune fiche famille à ouvrir !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune fiche famille Ã  ouvrir !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return

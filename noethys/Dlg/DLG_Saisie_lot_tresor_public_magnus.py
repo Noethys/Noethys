@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-20 Ivan LUCAS
@@ -31,7 +31,7 @@ from Utils import UTILS_Facturation
 from Utils import UTILS_Organisateur
 from Utils import UTILS_Parametres
 from Utils import UTILS_Config
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"â‚¬")
 
 from Dlg import DLG_Saisie_lot_tresor_public
 
@@ -51,59 +51,59 @@ class CTRL_Parametres(DLG_Saisie_lot_tresor_public.CTRL_Parametres):
 
     def Remplissage(self):
         # Bordereau
-        self.Append(wxpg.PropertyCategory(_(u"Généralités")))
+        self.Append(wxpg.PropertyCategory(_(u"GÃ©nÃ©ralitÃ©s")))
         
         propriete = wxpg.IntProperty(label=_(u"Exercice"), name="exercice", value=datetime.date.today().year)
-        propriete.SetHelpString(_(u"Saisissez l'année de l'exercice")) 
+        propriete.SetHelpString(_(u"Saisissez l'annÃ©e de l'exercice")) 
         self.Append(propriete)
         self.SetPropertyEditor("exercice", "SpinCtrl")
         
-        listeMois = [u"_", _(u"Janvier"), _(u"Février"), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"Août"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"Décembre")]
+        listeMois = [u"_", _(u"Janvier"), _(u"FÃ©vrier"), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"AoÃ»t"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"DÃ©cembre")]
         propriete = wxpg.EnumProperty(label=_(u"Mois"), name="mois", labels=listeMois, values=range(0, 13) , value=datetime.date.today().month)
-        propriete.SetHelpString(_(u"Sélectionnez le mois"))
+        propriete.SetHelpString(_(u"SÃ©lectionnez le mois"))
         self.Append(propriete)
 
         propriete = wxpg.StringProperty(label=_(u"Objet"), name="objet_dette", value=u"")
-        propriete.SetHelpString(_(u"Saisissez l'objet du bordereau (Ex : 'Cantine décembre 2020')"))
+        propriete.SetHelpString(_(u"Saisissez l'objet du bordereau (Ex : 'Cantine dÃ©cembre 2020')"))
         self.Append(propriete)
 
         # Dates
         self.Append( wxpg.PropertyCategory(_(u"Dates")) )
 
-        propriete = Propriete_date(label=_(u"Date d'émission (JJ/MM/AAAA)"), name="date_emission", value=datetime.date.today())
+        propriete = Propriete_date(label=_(u"Date d'Ã©mission (JJ/MM/AAAA)"), name="date_emission", value=datetime.date.today())
         self.Append(propriete)
 
-        propriete = Propriete_date(label=_(u"Date du prélèvement (JJ/MM/AAAA)"), name="date_prelevement", value=datetime.date.today())
+        propriete = Propriete_date(label=_(u"Date du prÃ©lÃ¨vement (JJ/MM/AAAA)"), name="date_prelevement", value=datetime.date.today())
         self.Append(propriete)
 
         propriete = Propriete_date(label=_(u"Avis d'envoi (JJ/MM/AAAA)"), name="date_envoi", value=datetime.date.today())
         self.Append(propriete)
 
-        # Collectivité
+        # CollectivitÃ©
         self.Append( wxpg.PropertyCategory(_(u"Identification")) )
 
-        propriete = wxpg.StringProperty(label=_(u"Code Collectivité"), name="code_collectivite", value=u"")
-        propriete.SetHelpString(_(u"Saisissez le code Collectivité")) 
+        propriete = wxpg.StringProperty(label=_(u"Code CollectivitÃ©"), name="code_collectivite", value=u"")
+        propriete.SetHelpString(_(u"Saisissez le code CollectivitÃ©")) 
         self.Append(propriete)
         
         propriete = wxpg.StringProperty(label=_(u"Code Budget"), name="code_budget", value=u"")
         propriete.SetHelpString(_(u"Saisissez le code Budget")) 
         self.Append(propriete)
 
-        propriete = wxpg.StringProperty(label=_(u"Poste par défaut"), name="id_poste", value=u"")
-        propriete.SetHelpString(_(u"Saisissez le poste par défaut. C'est celui qui sera utilisé si le champ 'code comptable' n'est pas renseigné dans la prestation ou dans le paramétrage de l'activité."))
+        propriete = wxpg.StringProperty(label=_(u"Poste par dÃ©faut"), name="id_poste", value=u"")
+        propriete.SetHelpString(_(u"Saisissez le poste par dÃ©faut. C'est celui qui sera utilisÃ© si le champ 'code comptable' n'est pas renseignÃ© dans la prestation ou dans le paramÃ©trage de l'activitÃ©."))
         self.Append(propriete)
 
-        propriete = wxpg.StringProperty(label=_(u"Code Produit Local par défaut"), name="code_prodloc", value=u"")
-        propriete.SetHelpString(_(u"Saisissez le code Produit Local. C'est celui qui sera utilisé si le champ 'code produit local' n'est pas renseigné dans la prestation ou dans le paramétrage de l'activité."))
+        propriete = wxpg.StringProperty(label=_(u"Code Produit Local par dÃ©faut"), name="code_prodloc", value=u"")
+        propriete.SetHelpString(_(u"Saisissez le code Produit Local. C'est celui qui sera utilisÃ© si le champ 'code produit local' n'est pas renseignÃ© dans la prestation ou dans le paramÃ©trage de l'activitÃ©."))
         self.Append(propriete)
 
-        propriete = wxpg.StringProperty(label=_(u"Code Service par défaut"), name="service", value=u"")
-        propriete.SetHelpString(_(u"Saisissez le code du service. C'est celui qui sera utilisé si le champ 'code service' n'est pas renseigné dans le paramétrage de l'activité."))
+        propriete = wxpg.StringProperty(label=_(u"Code Service par dÃ©faut"), name="service", value=u"")
+        propriete.SetHelpString(_(u"Saisissez le code du service. C'est celui qui sera utilisÃ© si le champ 'code service' n'est pas renseignÃ© dans le paramÃ©trage de l'activitÃ©."))
         self.Append(propriete)
 
-        propriete = wxpg.StringProperty(label=_(u"Opération"), name="operation", value=u"")
-        propriete.SetHelpString(_(u"Saisissez le code de l'opération."))
+        propriete = wxpg.StringProperty(label=_(u"OpÃ©ration"), name="operation", value=u"")
+        propriete.SetHelpString(_(u"Saisissez le code de l'opÃ©ration."))
         self.Append(propriete)
 
         propriete = wxpg.StringProperty(label=_(u"Fonction"), name="fonction", value=u"")
@@ -119,24 +119,24 @@ class CTRL_Parametres(DLG_Saisie_lot_tresor_public.CTRL_Parametres):
         self.Append(propriete)
 
         choix = [
-            ("", _(u"ASAP non dématérialisé")),
-            ("01", _(u"01-ASAP dématérialisé à éditer par le centre éditique")),
-            ("02", _(u"02-ASAP dématérialisé à destination d'une entité publique référencée dans Chorus Pro")),
+            ("", _(u"ASAP non dÃ©matÃ©rialisÃ©")),
+            ("01", _(u"01-ASAP dÃ©matÃ©rialisÃ© Ã  Ã©diter par le centre Ã©ditique")),
+            ("02", _(u"02-ASAP dÃ©matÃ©rialisÃ© Ã  destination d'une entitÃ© publique rÃ©fÃ©rencÃ©e dans Chorus Pro")),
             ("03", _(u"03-ASAP ORMC Chorus Pro")),
             ("04", _(u"04-ASAP sans traitement DGFIP")),
         ]
         propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Edition ASAP"), name="edition_asap", liste_choix=choix, valeur="01")
         propriete.SetEditor("EditeurChoix")
-        propriete.SetHelpString(_(u"Indiquez si l'ASAP doit être édité ou non par le centre éditique (Balise Edition dans bloc pièce du PES Titre)"))
+        propriete.SetHelpString(_(u"Indiquez si l'ASAP doit Ãªtre Ã©ditÃ© ou non par le centre Ã©ditique (Balise Edition dans bloc piÃ¨ce du PES Titre)"))
         self.Append(propriete)
 
-        propriete = wxpg.BoolProperty(label=_(u"Inclure le détail des factures"), name="inclure_detail", value=False)
-        propriete.SetHelpString(_(u"Cochez cette case si vous souhaitez que Noethys intègre le détail des prestations de chaque facture"))
+        propriete = wxpg.BoolProperty(label=_(u"Inclure le dÃ©tail des factures"), name="inclure_detail", value=False)
+        propriete.SetHelpString(_(u"Cochez cette case si vous souhaitez que Noethys intÃ¨gre le dÃ©tail des prestations de chaque facture"))
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
         propriete = wxpg.BoolProperty(label=_(u"Inclure les factures au format PDF"), name="inclure_pieces_jointes", value=False)
-        propriete.SetHelpString(_(u"Cochez cette case si vous souhaitez que Noethys intègre les factures au format PDF"))
+        propriete.SetHelpString(_(u"Cochez cette case si vous souhaitez que Noethys intÃ¨gre les factures au format PDF"))
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
@@ -146,42 +146,42 @@ class CTRL_Parametres(DLG_Saisie_lot_tresor_public.CTRL_Parametres):
         self.Append(propriete)
 
         propriete = wxpg.BoolProperty(label=_(u"Utiliser code comptable familial comme code tiers"), name="code_compta_as_alias", value=True)
-        propriete.SetHelpString(_(u"Utiliser le code comptable de la famille (Fiche famille > Onglet Divers) comme code tiers (ou alias). Sinon un code de type FAM000001 sera généré automatiquement."))
+        propriete.SetHelpString(_(u"Utiliser le code comptable de la famille (Fiche famille > Onglet Divers) comme code tiers (ou alias). Sinon un code de type FAM000001 sera gÃ©nÃ©rÃ© automatiquement."))
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
-        # Libellés
-        self.Append( wxpg.PropertyCategory(_(u"Libellés")) )
+        # LibellÃ©s
+        self.Append( wxpg.PropertyCategory(_(u"LibellÃ©s")) )
 
-        propriete = wxpg.StringProperty(label=_(u"Objet de la pièce"), name="objet_piece", value=_(u"FACTURE NUM{NUM_FACTURE} {MOIS_LETTRES} {ANNEE}"))
-        propriete.SetHelpString(_(u"Saisissez l'objet de la pièce (en majuscules et sans accents). Vous pouvez personnaliser ce libellé grâce aux mots-clés suivants : {NOM_ORGANISATEUR} {NUM_FACTURE} {LIBELLE_FACTURE} {MOIS} {MOIS_LETTRES} {ANNEE}.")) 
+        propriete = wxpg.StringProperty(label=_(u"Objet de la piÃ¨ce"), name="objet_piece", value=_(u"FACTURE NUM{NUM_FACTURE} {MOIS_LETTRES} {ANNEE}"))
+        propriete.SetHelpString(_(u"Saisissez l'objet de la piÃ¨ce (en majuscules et sans accents). Vous pouvez personnaliser ce libellÃ© grÃ¢ce aux mots-clÃ©s suivants : {NOM_ORGANISATEUR} {NUM_FACTURE} {LIBELLE_FACTURE} {MOIS} {MOIS_LETTRES} {ANNEE}.")) 
         self.Append(propriete)
 
-        propriete = wxpg.StringProperty(label=_(u"Libellé du prélèvement"), name="prelevement_libelle", value=u"{NOM_ORGANISATEUR} - {OBJET_PIECE}")
-        propriete.SetHelpString(_(u"Saisissez le libellé du prélèvement qui apparaîtra sur le relevé de compte de la famille. Vous pouvez personnaliser ce libellé grâce aux mots-clés suivants : {NOM_ORGANISATEUR} {OBJET_PIECE} {NUM_FACTURE} {LIBELLE_FACTURE} {MOIS} {MOIS_LETTRES} {ANNEE}.")) 
+        propriete = wxpg.StringProperty(label=_(u"LibellÃ© du prÃ©lÃ¨vement"), name="prelevement_libelle", value=u"{NOM_ORGANISATEUR} - {OBJET_PIECE}")
+        propriete.SetHelpString(_(u"Saisissez le libellÃ© du prÃ©lÃ¨vement qui apparaÃ®tra sur le relevÃ© de compte de la famille. Vous pouvez personnaliser ce libellÃ© grÃ¢ce aux mots-clÃ©s suivants : {NOM_ORGANISATEUR} {OBJET_PIECE} {NUM_FACTURE} {LIBELLE_FACTURE} {MOIS} {MOIS_LETTRES} {ANNEE}.")) 
         self.Append(propriete)
 
-        # Règlement automatique
-        self.Append( wxpg.PropertyCategory(_(u"Règlement automatique")) )
+        # RÃ¨glement automatique
+        self.Append( wxpg.PropertyCategory(_(u"RÃ¨glement automatique")) )
         
-        propriete = wxpg.BoolProperty(label=_(u"Régler automatiquement"), name="reglement_auto", value=False)
-        propriete.SetHelpString(_(u"Cochez cette case si vous souhaitez que Noethys créé un règlement automatiquement pour les prélèvements")) 
+        propriete = wxpg.BoolProperty(label=_(u"RÃ©gler automatiquement"), name="reglement_auto", value=False)
+        propriete.SetHelpString(_(u"Cochez cette case si vous souhaitez que Noethys crÃ©Ã© un rÃ¨glement automatiquement pour les prÃ©lÃ¨vements")) 
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
         
-        propriete = wxpg.EnumProperty(label=_(u"Compte à créditer"), name="IDcompte")
-        propriete.SetHelpString(_(u"Sélectionnez le compte bancaire à créditer dans le cadre du règlement automatique"))
+        propriete = wxpg.EnumProperty(label=_(u"Compte Ã  crÃ©diter"), name="IDcompte")
+        propriete.SetHelpString(_(u"SÃ©lectionnez le compte bancaire Ã  crÃ©diter dans le cadre du rÃ¨glement automatique"))
         propriete.SetEditor("EditeurComboBoxAvecBoutons")
         self.Append(propriete)
         self.MAJ_comptes() 
 
-        propriete = wxpg.EnumProperty(label=_(u"Mode de règlement"), name="IDmode")
-        propriete.SetHelpString(_(u"Sélectionnez le mode de règlement à utiliser dans le cadre du règlement automatique"))
+        propriete = wxpg.EnumProperty(label=_(u"Mode de rÃ¨glement"), name="IDmode")
+        propriete.SetHelpString(_(u"SÃ©lectionnez le mode de rÃ¨glement Ã  utiliser dans le cadre du rÃ¨glement automatique"))
         propriete.SetEditor("EditeurComboBoxAvecBoutons")
         self.Append(propriete)
         self.MAJ_modes()
 
-        # Préférences
+        # PrÃ©fÃ©rences
         self.SetPropertyValue("tipi", UTILS_Parametres.Parametres(mode="get", categorie="export_magnus", nom="tipi", valeur=True))
         self.SetPropertyValue("edition_asap", UTILS_Parametres.Parametres(mode="get", categorie="export_magnus", nom="edition_asap", valeur="01"))
         self.SetPropertyValue("inclure_pieces_jointes", UTILS_Parametres.Parametres(mode="get", categorie="export_magnus", nom="inclure_pieces_jointes", valeur=False))
@@ -202,8 +202,8 @@ class Dialog(DLG_Saisie_lot_tresor_public.Dialog):
 
 
     def ValidationDonnees(self):
-        """ Vérifie que les données saisies sont exactes """
-        # Généralités
+        """ VÃ©rifie que les donnÃ©es saisies sont exactes """
+        # GÃ©nÃ©ralitÃ©s
         nom = self.ctrl_nom.GetValue()
         if nom == "" :
             dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un nom de lot (Ex : 'Janvier 2013'...) !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
@@ -214,13 +214,13 @@ class Dialog(DLG_Saisie_lot_tresor_public.Dialog):
  
         for caract in nom :
             if caract in ("_",) :
-                dlg = wx.MessageDialog(self, _(u"Le caractère '%s' n'est pas autorisé dans le nom du lot !") % caract, _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Le caractÃ¨re '%s' n'est pas autorisÃ© dans le nom du lot !") % caract, _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_nom.SetFocus() 
                 return False
 
-        # Vérifie que le nom n'est pas déjà attribué
+        # VÃ©rifie que le nom n'est pas dÃ©jÃ  attribuÃ©
         if self.IDlot == None :
             IDlotTemp = 0
         else :
@@ -233,7 +233,7 @@ class Dialog(DLG_Saisie_lot_tresor_public.Dialog):
         listeDonnees = DB.ResultatReq()
         DB.Close()
         if len(listeDonnees) > 0 :
-            dlg = wx.MessageDialog(self, _(u"Ce nom de lot a déjà été attribué à un autre lot.\n\nChaque lot doit avoir un nom unique. Changez le nom."), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Ce nom de lot a dÃ©jÃ  Ã©tÃ© attribuÃ© Ã  un autre lot.\n\nChaque lot doit avoir un nom unique. Changez le nom."), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_nom.SetFocus() 
@@ -246,7 +246,7 @@ class Dialog(DLG_Saisie_lot_tresor_public.Dialog):
         else :
             verrouillage = 0
 
-        # Récupération des données du CTRL Paramètres
+        # RÃ©cupÃ©ration des donnÃ©es du CTRL ParamÃ¨tres
         exercice = self.ctrl_parametres.GetPropertyValue("exercice")
         mois = self.ctrl_parametres.GetPropertyValue("mois")
         objet_dette = self.ctrl_parametres.GetPropertyValue("objet_dette")
@@ -265,29 +265,29 @@ class Dialog(DLG_Saisie_lot_tresor_public.Dialog):
         IDmode = self.ctrl_parametres.GetPropertyValue("IDmode")
         tribunal = self.ctrl_parametres.GetPropertyValue("tribunal")
         
-        # Vérification du compte à créditer
+        # VÃ©rification du compte Ã  crÃ©diter
         if reglement_auto == 1 :
             if IDcompte == None :
-                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner un compte à créditer !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sÃ©lectionner un compte Ã  crÃ©diter !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
             if IDmode == None :
-                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner un mode de règlement pour le règlement automatique !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sÃ©lectionner un mode de rÃ¨glement pour le rÃ¨glement automatique !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
 
-        # Vérification des paramètres du bordereau
+        # VÃ©rification des paramÃ¨tres du bordereau
         listeVerifications = [
-            (exercice, "exercice", _(u"l'année de l'exercice")),
+            (exercice, "exercice", _(u"l'annÃ©e de l'exercice")),
             (mois, "mois", _(u"le mois")),
             (objet_dette, "objet_dette", _(u"l'objet de la dette")),
-            (date_emission, "date_emission", _(u"la date d'émission")),
-            (date_prelevement, "date_prelevement", _(u"la date souhaitée du prélèvement")),
+            (date_emission, "date_emission", _(u"la date d'Ã©mission")),
+            (date_prelevement, "date_prelevement", _(u"la date souhaitÃ©e du prÃ©lÃ¨vement")),
             (date_envoi, "date_envoi", _(u"la date d'envoi")),
             (id_poste, "id_poste", _(u"l'ID poste")),
-            (code_collectivite, "code_collectivite", _(u"le Code Collectivité")),
+            (code_collectivite, "code_collectivite", _(u"le Code CollectivitÃ©")),
             (code_budget, "code_budget", _(u"le Code Bugdet")),
             (code_prodloc, "code_prodloc", _(u"le code Produit Local")),
             (tribunal, "tribunal", _(u"le tribunal de recours")),
@@ -295,7 +295,7 @@ class Dialog(DLG_Saisie_lot_tresor_public.Dialog):
             
         for donnee, code, label in listeVerifications :
             if donnee == None or donnee == "" :
-                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir %s dans les paramètres du lot !") % label, _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir %s dans les paramÃ¨tres du lot !") % label, _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
@@ -304,7 +304,7 @@ class Dialog(DLG_Saisie_lot_tresor_public.Dialog):
                 try :
                     test = int(donnee) 
                 except :
-                    dlg = wx.MessageDialog(self, _(u"Vous devez saisir une valeur numérique valide pour le paramètre de bordereau 'ID Bordereau' !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+                    dlg = wx.MessageDialog(self, _(u"Vous devez saisir une valeur numÃ©rique valide pour le paramÃ¨tre de bordereau 'ID Bordereau' !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                     dlg.ShowModal()
                     dlg.Destroy()
                     return False
@@ -313,32 +313,32 @@ class Dialog(DLG_Saisie_lot_tresor_public.Dialog):
                 try :
                     test = int(donnee) 
                 except :
-                    dlg = wx.MessageDialog(self, _(u"Vous devez saisir une valeur numérique valide pour le paramètre de bordereau 'ID Collectivité' !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+                    dlg = wx.MessageDialog(self, _(u"Vous devez saisir une valeur numÃ©rique valide pour le paramÃ¨tre de bordereau 'ID CollectivitÃ©' !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                     dlg.ShowModal()
                     dlg.Destroy()
                     return False
 
-        # Vérification des pièces
+        # VÃ©rification des piÃ¨ces
         listeErreurs = []
         listeTemp1 = []
         for track in self.ctrl_pieces.GetObjects() :
 
             if track.analysePiece == False :
-                listeErreurs.append(_(u"- Facture n°%s : %s") % (track.IDfacture, track.analysePieceTexte))
+                listeErreurs.append(_(u"- Facture nÂ°%s : %s") % (track.IDfacture, track.analysePieceTexte))
                 
-            # Vérifie qu'un OOFF ou un FRST n'est pas attribué 2 fois à un seul mandat
+            # VÃ©rifie qu'un OOFF ou un FRST n'est pas attribuÃ© 2 fois Ã  un seul mandat
             if track.prelevement == 1 :
                 if track.prelevement_sequence in ("OOFF", "FRST") :
                     key = (track.prelevement_IDmandat, track.prelevement_sequence)
                     if key in listeTemp1 :
                         if track.prelevement_sequence == "OOFF" : 
-                            listeErreurs.append(_(u"- Facture n°%s : Le mandat n°%s de type ponctuel a déjà été utilisé une fois !") % (track.IDfacture, track.prelevement_IDmandat))
+                            listeErreurs.append(_(u"- Facture nÂ°%s : Le mandat nÂ°%s de type ponctuel a dÃ©jÃ  Ã©tÃ© utilisÃ© une fois !") % (track.IDfacture, track.prelevement_IDmandat))
                         if track.prelevement_sequence == "FRST" : 
-                            listeErreurs.append(_(u"- Facture n°%s : Mandat n°%s déjà initialisé. La séquence doit être définie sur 'RCUR' !") % (track.IDfacture, track.prelevement_IDmandat))
+                            listeErreurs.append(_(u"- Facture nÂ°%s : Mandat nÂ°%s dÃ©jÃ  initialisÃ©. La sÃ©quence doit Ãªtre dÃ©finie sur 'RCUR' !") % (track.IDfacture, track.prelevement_IDmandat))
                     listeTemp1.append(key)
             
         if len(listeErreurs) > 0 :
-            message1 = _(u"Le bordereau ne peut être validé en raison des erreurs suivantes :")
+            message1 = _(u"Le bordereau ne peut Ãªtre validÃ© en raison des erreurs suivantes :")
             message2 = "\n".join(listeErreurs)
             dlg = dialogs.MultiMessageDialog(self, message1, caption=_(u"Erreur"), msg2=message2, style = wx.ICON_EXCLAMATION |wx.OK, icon=None, btnLabels={wx.ID_OK : _(u"Ok")})
             reponse = dlg.ShowModal() 
@@ -348,43 +348,43 @@ class Dialog(DLG_Saisie_lot_tresor_public.Dialog):
         return True
 
     def Memorisation_parametres(self):
-        # Mémorisation des préférences
+        # MÃ©morisation des prÃ©fÃ©rences
         for code in ("tipi", "edition_asap", "inclure_detail", "inclure_pieces_jointes", "tribunal", "code_compta_as_alias", "service"):
             UTILS_Parametres.Parametres(mode="set", categorie="export_magnus", nom=code, valeur=self.ctrl_parametres.GetPropertyValue(code))
 
     def OnBoutonFichier(self, event):
-        """ Génération d'un fichier normalisé """
-        # Validation des données
+        """ GÃ©nÃ©ration d'un fichier normalisÃ© """
+        # Validation des donnÃ©es
         if self.ValidationDonnees() == False:
             return False
 
-        # Vérifie que des pièces existent
+        # VÃ©rifie que des piÃ¨ces existent
         if not(self.ctrl_pieces.GetObjects()):
-            dlg = wx.MessageDialog(self, _(u"Vous devez ajouter au moins une pièce !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez ajouter au moins une piÃ¨ce !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
 
-        # Récupération des infos sur la remise
+        # RÃ©cupÃ©ration des infos sur la remise
         remise_nom = DLG_Saisie_lot_tresor_public.Supprime_accent(self.ctrl_nom.GetValue())
         nom_fichier = remise_nom
 
         nomOrganisateur = UTILS_Organisateur.GetNom()
 
-        # Création d'un répertoire temporaire
+        # CrÃ©ation d'un rÃ©pertoire temporaire
         rep_temp = UTILS_Fichiers.GetRepTemp("export_magnus")
         if os.path.isdir(rep_temp):
             shutil.rmtree(rep_temp)
         os.mkdir(rep_temp)
 
-        # Génération des pièces jointes
+        # GÃ©nÃ©ration des piÃ¨ces jointes
         dict_pieces_jointes = {}
         if self.ctrl_parametres.GetPropertyValue("inclure_pieces_jointes") == True :
             dict_pieces_jointes = self.GenerationPiecesJointes(repertoire=rep_temp)
             if not dict_pieces_jointes:
                 return False
 
-        # Récupération des transactions à effectuer
+        # RÃ©cupÃ©ration des transactions Ã  effectuer
         montantTotal = FloatToDecimal(0.0)
         nbreTotal = 0
         listeAnomalies = []
@@ -395,7 +395,7 @@ class Dialog(DLG_Saisie_lot_tresor_public.Dialog):
             if track.analysePiece == False:
                 listeAnomalies.append(u"%s : %s" % (track.libelle, track.analysePieceTexte))
 
-            # Objet de la pièce
+            # Objet de la piÃ¨ce
             objet_piece = self.ctrl_parametres.GetPropertyValue("objet_piece")
             objet_piece = DLG_Saisie_lot_tresor_public.Supprime_accent(objet_piece).upper()
             objet_piece = objet_piece.replace("{NOM_ORGANISATEUR}", nomOrganisateur)
@@ -405,7 +405,7 @@ class Dialog(DLG_Saisie_lot_tresor_public.Dialog):
             objet_piece = objet_piece.replace("{MOIS_LETTRES}", DLG_Saisie_lot_tresor_public.GetMoisStr(self.ctrl_parametres.GetPropertyValue("mois"), majuscules=True, sansAccents=True))
             objet_piece = objet_piece.replace("{ANNEE}", str(self.ctrl_parametres.GetPropertyValue("exercice")))
 
-            # Création du libellé du prélèvement
+            # CrÃ©ation du libellÃ© du prÃ©lÃ¨vement
             prelevement_libelle = self.ctrl_parametres.GetPropertyValue("prelevement_libelle")
             prelevement_libelle = prelevement_libelle.replace("{NOM_ORGANISATEUR}", nomOrganisateur)
             prelevement_libelle = prelevement_libelle.replace("{OBJET_PIECE}", objet_piece)
@@ -450,12 +450,12 @@ class Dialog(DLG_Saisie_lot_tresor_public.Dialog):
         if len(listeAnomalies) > 0:
             import wx.lib.dialogs as dialogs
             message = "\n".join(listeAnomalies)
-            dlg = dialogs.MultiMessageDialog(self, _(u"Le fichier ne peut être généré en raison des anomalies suivantes :"), caption=_(u"Génération impossible"), msg2=message, style=wx.ICON_ERROR | wx.OK, icon=None, btnLabels={wx.ID_OK: _(u"Fermer")})
+            dlg = dialogs.MultiMessageDialog(self, _(u"Le fichier ne peut Ãªtre gÃ©nÃ©rÃ© en raison des anomalies suivantes :"), caption=_(u"GÃ©nÃ©ration impossible"), msg2=message, style=wx.ICON_ERROR | wx.OK, icon=None, btnLabels={wx.ID_OK: _(u"Fermer")})
             dlg.ShowModal()
             dlg.Destroy()
             return
 
-        # Mémorisation de toutes les données
+        # MÃ©morisation de toutes les donnÃ©es
         dictDonnees = {
             "nom_fichier": nom_fichier,
             "date_emission": UTILS_Dates.ConvertDateWXenDate(self.ctrl_parametres.GetPropertyValue("date_emission")).strftime("%Y-%m-%d"),
@@ -479,12 +479,12 @@ class Dialog(DLG_Saisie_lot_tresor_public.Dialog):
             "pieces_jointes" : dict_pieces_jointes,
         }
 
-        # Calcul des dates extrêmes du mois
+        # Calcul des dates extrÃªmes du mois
         nbreJoursMois = calendar.monthrange(int(dictDonnees["exercice"]), int(dictDonnees["mois"]))[1]
         dictDonnees["date_min"] = datetime.date(int(dictDonnees["exercice"]), int(dictDonnees["mois"]), 1)
         dictDonnees["date_max"] = datetime.date(int(dictDonnees["exercice"]), int(dictDonnees["mois"]), nbreJoursMois)
 
-        # Récupération du détail des factures
+        # RÃ©cupÃ©ration du dÃ©tail des factures
         detail_factures, dict_prestations_factures = self.Get_detail_pieces(dictDonnees)
         dictDonnees["detail"] = detail_factures
         dictDonnees["prestations"] = dict_prestations_factures
@@ -502,17 +502,17 @@ class Dialog(DLG_Saisie_lot_tresor_public.Dialog):
 
         dictDonnees["codes"] = dict_codes
 
-        # Génération des fichiers
+        # GÃ©nÃ©ration des fichiers
         resultat = self.Generer_fichier(dictDonnees, repertoire=rep_temp)
         if not resultat:
             return False
 
-        # Demande à l'utilisateur le nom de fichier et le répertoire de destination
+        # Demande Ã  l'utilisateur le nom de fichier et le rÃ©pertoire de destination
         wildcard = "Fichier ZIP (*.zip)|*.zip| All files (*.*)|*.*"
         sp = wx.StandardPaths.Get()
         cheminDefaut = sp.GetDocumentsDir()
         dlg = wx.FileDialog(
-            None, message=_(u"Veuillez sélectionner le répertoire de destination et le nom du fichier"),
+            None, message=_(u"Veuillez sÃ©lectionner le rÃ©pertoire de destination et le nom du fichier"),
             defaultDir=cheminDefaut,
             defaultFile=nom_fichier,
             wildcard=wildcard,
@@ -526,20 +526,20 @@ class Dialog(DLG_Saisie_lot_tresor_public.Dialog):
             dlg.Destroy()
             return
 
-        # Le fichier de destination existe déjà :
+        # Le fichier de destination existe dÃ©jÃ  :
         if os.path.isfile(cheminFichier) == True:
-            dlg = wx.MessageDialog(None, _(u"Un fichier portant ce nom existe déjà. \n\nVoulez-vous le remplacer ?"), _(u"Attention !"), wx.YES_NO | wx.NO_DEFAULT | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(None, _(u"Un fichier portant ce nom existe dÃ©jÃ . \n\nVoulez-vous le remplacer ?"), _(u"Attention !"), wx.YES_NO | wx.NO_DEFAULT | wx.ICON_EXCLAMATION)
             if dlg.ShowModal() == wx.ID_NO:
                 return False
                 dlg.Destroy()
             else:
                 dlg.Destroy()
 
-        # Création du fichier ZIP
+        # CrÃ©ation du fichier ZIP
         shutil.make_archive(cheminFichier.replace(".zip", ""), "zip", rep_temp)
 
-        # Confirmation de création du fichier
-        dlg = wx.MessageDialog(self, _(u"Le fichier a été créé avec succès.\n\nPensez à décompresser ce fichier avant l'import dans Magnus."), _(u"Information"), wx.OK | wx.ICON_INFORMATION)
+        # Confirmation de crÃ©ation du fichier
+        dlg = wx.MessageDialog(self, _(u"Le fichier a Ã©tÃ© crÃ©Ã© avec succÃ¨s.\n\nPensez Ã  dÃ©compresser ce fichier avant l'import dans Magnus."), _(u"Information"), wx.OK | wx.ICON_INFORMATION)
         dlg.ShowModal()
         dlg.Destroy()
 
@@ -587,7 +587,7 @@ class Dialog(DLG_Saisie_lot_tresor_public.Dialog):
                 dict_prestations_factures[IDfacture] = []
             dict_prestations_factures[IDfacture].append({"IDprestation": IDprestation, "label": label, "montant": montant, "id_poste": id_poste, "code_prodloc": code_prodloc, "code_service": code_service})
 
-            # Définit le label
+            # DÃ©finit le label
             if IDindividu:
                 label = u"%s - %s" % (label, prenom)
             libelle = (label, montant)
@@ -612,7 +612,7 @@ class Dialog(DLG_Saisie_lot_tresor_public.Dialog):
         return dict_resultats2, dict_prestations_factures
 
     def GenerationPiecesJointes(self, repertoire=""):
-        """ Génération des pièces jointes """
+        """ GÃ©nÃ©ration des piÃ¨ces jointes """
         IDfichier = FonctionsPerso.GetIDfichier()
 
         listeIDfacture = []
@@ -621,12 +621,12 @@ class Dialog(DLG_Saisie_lot_tresor_public.Dialog):
             listeIDfacture.append(track.IDfacture)
             dictTracks[track.IDfacture] = track
 
-        # Création du répertoire
+        # CrÃ©ation du rÃ©pertoire
         repertoire_pj = os.path.join(UTILS_Fichiers.GetRepTemp("export_magnus"), "PJ")
         if not os.path.isdir(repertoire_pj):
             os.mkdir(repertoire_pj)
 
-        # Génération des factures au format PDF
+        # GÃ©nÃ©ration des factures au format PDF
         nomFichierUnique = u"F{NUM_FACTURE}_{NOM_TITULAIRES_MAJ}"
 
         facturation = UTILS_Facturation.Facturation()
@@ -676,7 +676,7 @@ class Dialog(DLG_Saisie_lot_tresor_public.Dialog):
                     # Reelle - Texte (1)
                     ligne[3] = ConvertToTexte("O")
 
-                    # Collectivité - Texte (10)
+                    # CollectivitÃ© - Texte (10)
                     ligne[4] = ConvertToTexte(dict_donnees["code_collectivite"][:10])
 
                     # Budget - Texte (10)
@@ -714,7 +714,7 @@ class Dialog(DLG_Saisie_lot_tresor_public.Dialog):
                     # Libelle1 - Texte (50)
                     ligne[18] = ConvertToTexte(dict_donnees["objet_dette"][:50])
 
-                    # PièceJustificative1 - Texte (50)
+                    # PiÃ¨ceJustificative1 - Texte (50)
                     ligne[20] = ConvertToTexte(piece["objet_piece"][:50])
 
                     # Sens - Texte (1)
@@ -726,7 +726,7 @@ class Dialog(DLG_Saisie_lot_tresor_public.Dialog):
                     # Article - Texte (10)
                     ligne[26] = ConvertToTexte(IDposte[:10])
 
-                    # Opération - Texte (10)
+                    # OpÃ©ration - Texte (10)
                     ligne[27] = ConvertToTexte(dict_donnees["operation"][:10])
 
                     # Service - Texte (15)
@@ -735,22 +735,22 @@ class Dialog(DLG_Saisie_lot_tresor_public.Dialog):
                     # Fonction - Texte (10)
                     ligne[29] = ConvertToTexte(dict_donnees["fonction"][:10])
 
-                    # Montant HT - Monétaire (,4)
+                    # Montant HT - MonÃ©taire (,4)
                     ligne[30] = ConvertToTexte(str(montant))
 
-                    # Montant TVA - Monétaire (,4)
+                    # Montant TVA - MonÃ©taire (,4)
                     ligne[31] = ConvertToTexte("0.00")
 
                     # Solder - O/N
                     ligne[32] = ConvertToTexte("0")
 
-                    # Priorité - Entier
+                    # PrioritÃ© - Entier
                     ligne[33] = ConvertToTexte("0")
 
-                    # Accepté
+                    # AcceptÃ©
                     ligne[35] = ConvertToTexte("")
 
-                    # Erroné
+                    # ErronÃ©
                     ligne[36] = ConvertToTexte("")
 
                     # NJ - Texte (2)
@@ -762,7 +762,7 @@ class Dialog(DLG_Saisie_lot_tresor_public.Dialog):
                     # Mixte - Texte (1)
                     ligne[44] = ConvertToTexte("N")
 
-                    # Imprévisible - Texte (1)
+                    # ImprÃ©visible - Texte (1)
                     ligne[45] = ConvertToTexte("N")
 
                     # CodeAlim - Texte (1)
@@ -780,7 +780,7 @@ class Dialog(DLG_Saisie_lot_tresor_public.Dialog):
                     # CPL - Texte (4)
                     ligne[54] = ConvertToTexte(code_produit_local[:4])
 
-                    # Prélèvement :
+                    # PrÃ©lÃ¨vement :
                     if piece["prelevement"] == 1:
 
                         # CodeEtab - Texte (5)
@@ -812,7 +812,7 @@ class Dialog(DLG_Saisie_lot_tresor_public.Dialog):
                     # Tribunal - Texte (100)
                     ligne[68] = ConvertToTexte(dict_donnees["tribunal"][:100])
 
-                    # Civilité - Texte (32)
+                    # CivilitÃ© - Texte (32)
                     if piece["titulaire_civilite"] == u"M.": ligne[69] = ConvertToTexte("M")
                     if piece["titulaire_civilite"] == u"Mme": ligne[69] = ConvertToTexte("MME")
                     if piece["titulaire_civilite"] == u"Melle": ligne[69] = ConvertToTexte("MLLE")
@@ -833,14 +833,14 @@ class Dialog(DLG_Saisie_lot_tresor_public.Dialog):
                         # ICS - Texte (13)
                         IDcompte = self.ctrl_parametres.GetPropertyValue("IDcompte")
                         if not IDcompte:
-                            dlg = wx.MessageDialog(self, _(u"Au moins un prélèvement SEPA est demandé. Vous devez donc sélectionner un compte bancaire créditeur dans les paramètres !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+                            dlg = wx.MessageDialog(self, _(u"Au moins un prÃ©lÃ¨vement SEPA est demandÃ©. Vous devez donc sÃ©lectionner un compte bancaire crÃ©diteur dans les paramÃ¨tres !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                             dlg.ShowModal()
                             dlg.Destroy()
                             return False
 
                         dict_compte = self.ctrl_parametres.dictComptes[IDcompte]
                         if not dict_compte["code_ics"]:
-                            dlg = wx.MessageDialog(self, _(u"Au moins un prélèvement SEPA est demandé. Vous devez donc renseigner le numéro ICS dans les paramètres du compte bancaire créditeur !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+                            dlg = wx.MessageDialog(self, _(u"Au moins un prÃ©lÃ¨vement SEPA est demandÃ©. Vous devez donc renseigner le numÃ©ro ICS dans les paramÃ¨tres du compte bancaire crÃ©diteur !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                             dlg.ShowModal()
                             dlg.Destroy()
                             return False
@@ -877,30 +877,30 @@ class Dialog(DLG_Saisie_lot_tresor_public.Dialog):
                     # AncienBanque - O/N
                     ligne[84] = ConvertToTexte("N")
 
-                    # Version - Numérique (3)
+                    # Version - NumÃ©rique (3)
                     ligne[90] = ConvertToTexte("18")
 
-                    # CategorieTiersPES - Numérique (2)
+                    # CategorieTiersPES - NumÃ©rique (2)
                     ligne[91] = ConvertToTexte(piece["cattiers_helios"])
 
-                    # NatJuridiqueTiersPES - Numérique (2)
+                    # NatJuridiqueTiersPES - NumÃ©rique (2)
                     ligne[92] = ConvertToTexte(piece["natjur_helios"])
 
-                    # Civilité - Texte (32)
+                    # CivilitÃ© - Texte (32)
                     if piece["titulaire_civilite"] == u"M.": ligne[93] = ConvertToTexte("M")
                     if piece["titulaire_civilite"] == u"Mme": ligne[93] = ConvertToTexte("MME")
                     if piece["titulaire_civilite"] == u"Melle": ligne[93] = ConvertToTexte("MLLE")
 
-                    # NatIdentifiantTiers - Numérique (2)
+                    # NatIdentifiantTiers - NumÃ©rique (2)
                     ligne[94] = ConvertToTexte(piece["natidtiers_helios"])
 
                     # IdentifiantTiers - Texte (18)
                     ligne[95] = ConvertToTexte(piece["idtiers_helios"][:18])
 
-                    # CodeResident - Numérique (3)
+                    # CodeResident - NumÃ©rique (3)
                     ligne[97] = ConvertToTexte("0")
 
-                    # TypeTiersPES - Numérique (2)
+                    # TypeTiersPES - NumÃ©rique (2)
                     ligne[98] = ConvertToTexte("01")
 
                     # TitreASAP - O/N
@@ -912,7 +912,7 @@ class Dialog(DLG_Saisie_lot_tresor_public.Dialog):
                     # NumeroFacture - Texte (50)
                     ligne[111] = ConvertToTexte(piece["num_dette"])
 
-                    # EditionASAP - Numérique (2)
+                    # EditionASAP - NumÃ©rique (2)
                     ligne[112] = ConvertToTexte(dict_donnees["edition_asap"])
 
                     # DateEnvoiASAP - Texte (10)
@@ -924,18 +924,18 @@ class Dialog(DLG_Saisie_lot_tresor_public.Dialog):
                         texte_ligne[index-1] = valeur
                     lignes.append(";".join(texte_ligne))
 
-                    # Incrémente sous-ligne
+                    # IncrÃ©mente sous-ligne
                     num_sous_ligne += 1
 
 
-                # Création de la ligne de détail
+                # CrÃ©ation de la ligne de dÃ©tail
                 if self.ctrl_parametres.GetPropertyValue("inclure_detail") == True:
                     detail = dict_donnees["detail"].get(piece["IDfacture"], None)
                     if detail:
                         for index, dict_detail in enumerate(detail, start=1):
                             ligne_detail = {}
 
-                            # Version - Numérique (3)
+                            # Version - NumÃ©rique (3)
                             ligne_detail[1] = ConvertToTexte("18")
 
                             # RefIdEcriture - Texte (50)
@@ -950,28 +950,28 @@ class Dialog(DLG_Saisie_lot_tresor_public.Dialog):
                             # Libelle - Texte (200)
                             ligne_detail[5] = ConvertToTexte(dict_detail["libelle"][:200])
 
-                            # Quantite - Numérique (5)
+                            # Quantite - NumÃ©rique (5)
                             ligne_detail[6] = str(dict_detail["quantite"])
 
-                            # MtUnitaire - Monétaire
+                            # MtUnitaire - MonÃ©taire
                             ligne_detail[10] = str(dict_detail["montant"])
 
-                            # MtHTaxe - Monétaire
+                            # MtHTaxe - MonÃ©taire
                             ligne_detail[13] = str(dict_detail["montant"] * dict_detail["quantite"])
 
-                            # MtTTC - Monétaire
+                            # MtTTC - MonÃ©taire
                             ligne_detail[16] = str(dict_detail["montant"] * dict_detail["quantite"])
 
-                            # Ordre - Numérique (3)
+                            # Ordre - NumÃ©rique (3)
                             ligne_detail[17] = str(index)
 
-                            # Formatage de la ligne de détail
+                            # Formatage de la ligne de dÃ©tail
                             texte_ligne_detail = ['""' for x in range(0, 17)]
                             for index, valeur in ligne_detail.items():
                                 texte_ligne_detail[index-1] = valeur
                             lignes_detail.append(";".join(texte_ligne_detail))
 
-            # Création de la pièce jointe
+            # CrÃ©ation de la piÃ¨ce jointe
             ligne_pj = {}
             pj = dict_donnees["pieces_jointes"].get(piece["IDfacture"], None)
             if pj:
@@ -994,7 +994,7 @@ class Dialog(DLG_Saisie_lot_tresor_public.Dialog):
                 # TypFichier - Texte (2)
                 ligne_pj[7] = ConvertToTexte("06")
 
-                # Version - Numérique (3)
+                # Version - NumÃ©rique (3)
                 ligne_pj[8] = ConvertToTexte("18")
 
                 # Formatage de la ligne PJ
@@ -1009,15 +1009,15 @@ class Dialog(DLG_Saisie_lot_tresor_public.Dialog):
             contenu_lignes = u"\n".join(lignes)
             with open(os.path.join(repertoire, "WTAMC001.txt"), 'w') as fichier:
                 if six.PY2:
-                    contenu_lignes = contenu_lignes.encode("iso-8859-15")
+                    contenu_lignes = contenu_lignes.encode("utf8")
                 fichier.write(contenu_lignes)
 
-        # Enregistrement du fichier ECRITURES_ASAP (Détail)
+        # Enregistrement du fichier ECRITURES_ASAP (DÃ©tail)
         if lignes_detail:
             contenu_lignes_detail = u"\n".join(lignes_detail)
             with open(os.path.join(repertoire, "WTAMC001AS.txt"), 'w') as fichier:
                 if six.PY2:
-                    contenu_lignes_detail = contenu_lignes_detail.encode("iso-8859-15")
+                    contenu_lignes_detail = contenu_lignes_detail.encode("utf8")
                 fichier.write(contenu_lignes_detail)
 
         # Enregistrement du fichier ECRITURES_PJ
@@ -1025,7 +1025,7 @@ class Dialog(DLG_Saisie_lot_tresor_public.Dialog):
             contenu_lignes_pj = u"\n".join(lignes_pj)
             with open(os.path.join(repertoire, "WTAMC001PJ.txt"), 'w') as fichier:
                 if six.PY2:
-                    contenu_lignes_pj = contenu_lignes_pj.encode("iso-8859-15")
+                    contenu_lignes_pj = contenu_lignes_pj.encode("utf8")
                 fichier.write(contenu_lignes_pj)
 
         return True

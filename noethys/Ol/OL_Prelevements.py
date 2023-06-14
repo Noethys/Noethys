@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-13 Ivan LUCAS
@@ -26,7 +26,7 @@ from Utils import UTILS_Mandats
 import wx.lib.dialogs as dialogs
 
 from Utils import UTILS_Config
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"â‚¬")
 
 
 from Utils import UTILS_Interface
@@ -76,7 +76,7 @@ class Track(object):
         self.dateReglement = donnees["dateReglement"]
         self.IDdepot = donnees["IDdepot"]
         
-        # Lot de prélèvements
+        # Lot de prÃ©lÃ¨vements
         self.dateLot = donnees["dateLot"]
         self.nomLot = donnees["nomLot"]
             
@@ -97,7 +97,7 @@ class Track(object):
     
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # Récupération des paramètres perso
+        # RÃ©cupÃ©ration des paramÃ¨tres perso
         self.IDfamille = kwds.pop("IDfamille", None)
         self.IDmandat = kwds.pop("IDmandat", None)
         self.selectionID = None
@@ -121,7 +121,7 @@ class ListView(FastObjectListView):
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
-        """ Récupération des données """
+        """ RÃ©cupÃ©ration des donnÃ©es """
         self.InitBanques() 
         dictTitulaires = UTILS_Titulaires.GetTitulaires() 
         criteres = ""
@@ -233,21 +233,21 @@ class ListView(FastObjectListView):
 
         liste_Colonnes = [
             ColumnDefn(_(u"ID"), "left", 0, "IDprelevement", typeDonnee="entier"),
-            ColumnDefn(_(u"Date prélèv."), 'left', 75, "dateLot", typeDonnee="date", stringConverter=FormateDateCourt),
-            ColumnDefn(_(u"Lot prélèv."), 'left', 150, "nomLot", typeDonnee="texte"),
+            ColumnDefn(_(u"Date prÃ©lÃ¨v."), 'left', 75, "dateLot", typeDonnee="date", stringConverter=FormateDateCourt),
+            ColumnDefn(_(u"Lot prÃ©lÃ¨v."), 'left', 150, "nomLot", typeDonnee="texte"),
 ##            ColumnDefn(_(u"Type"), 'left', 70, "type", stringConverter=FormateType),
-            ColumnDefn(_(u"Libellé"), 'left', 110, "libelle", typeDonnee="texte"),
+            ColumnDefn(_(u"LibellÃ©"), 'left', 110, "libelle", typeDonnee="texte"),
 ##            ColumnDefn(_(u"Banque"), 'left', 120, "nomBanque"),
             ColumnDefn(_(u"Montant"), 'right', 70, "montant", typeDonnee="montant", stringConverter=FormateMontant),
             ColumnDefn(_(u"Statut"), 'left', 80, "statut", typeDonnee="texte", stringConverter=FormateStatut, imageGetter=GetImageStatut),
-            ColumnDefn(_(u"Règlement"), 'left', 70, "reglement", typeDonnee="bool", stringConverter=FormateReglement, imageGetter=GetImageReglement),
-            ColumnDefn(_(u"Séquence"), 'left', 70, "sequence", typeDonnee="texte"),
+            ColumnDefn(_(u"RÃ¨glement"), 'left', 70, "reglement", typeDonnee="bool", stringConverter=FormateReglement, imageGetter=GetImageReglement),
+            ColumnDefn(_(u"SÃ©quence"), 'left', 70, "sequence", typeDonnee="texte"),
             ColumnDefn(_(u"IBAN"), 'left', 190, "prelevement_iban", typeDonnee="texte"),
             ColumnDefn(_(u"BIC"), 'left', 100, "prelevement_bic", typeDonnee="texte"),
 ##            ColumnDefn(_(u"Etab."), 'left', 50, "prelevement_etab"),
 ##            ColumnDefn(_(u"Guich."), 'left', 50, "prelevement_guichet"),
 ##            ColumnDefn(_(u"Compte"), 'left', 90, "prelevement_numero"),
-##            ColumnDefn(_(u"Clé"), 'left', 30, "prelevement_cle"),
+##            ColumnDefn(_(u"ClÃ©"), 'left', 30, "prelevement_cle"),
             ColumnDefn(_(u"Banque"), 'left', 130, "nomBanque", typeDonnee="texte"),
             ColumnDefn(_(u"Titulaire du compte"), 'left', 160, "titulaire", typeDonnee="texte"),
             ColumnDefn(_(u"Ref. mandat"), 'left', 90, "prelevement_reference_mandat", typeDonnee="texte"),
@@ -258,7 +258,7 @@ class ListView(FastObjectListView):
 ##            liste_Colonnes.insert(3, ColumnDefn(_(u"Famille"), 'left', 210, "titulaires"))
             
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(_(u"Aucun prélèvement"))
+        self.SetEmptyListMsg(_(u"Aucun prÃ©lÃ¨vement"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
 ##        self.SetSortColumn(self.columns[self.numColonneTri])
         self.SortBy(self.numColonneTri, ascending=self.ordreAscendant)
@@ -273,10 +273,10 @@ class ListView(FastObjectListView):
 
     def OnContextMenu(self, event):
         """Ouverture du menu contextuel """
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
     
-        # Génération automatique des fonctions standards
+        # GÃ©nÃ©ration automatique des fonctions standards
         self.GenerationContextMenu(menuPop, dictParametres=self.GetParametresImpression())
 
         self.PopupMenu(menuPop)
@@ -284,14 +284,14 @@ class ListView(FastObjectListView):
 
     def GetParametresImpression(self):
         intro = ""
-        # Récupère le total
+        # RÃ©cupÃ¨re le total
         total = 0.0
         for track in self.donnees :
             total += track.montant
         total = self.GetTexteTotaux().replace("<B>", "").replace("</B>", "")
 
         dictParametres = {
-            "titre" : _(u"Liste des prélèvements"),
+            "titre" : _(u"Liste des prÃ©lÃ¨vements"),
             "intro" : intro,
             "total" : total,
             "orientation" : wx.LANDSCAPE,
@@ -299,7 +299,7 @@ class ListView(FastObjectListView):
         return dictParametres
 
     def GetLabelListe(self):
-        """ Récupère le nombre de prélèvements et le montant total de la liste """
+        """ RÃ©cupÃ¨re le nombre de prÃ©lÃ¨vements et le montant total de la liste """
         nbre = 0
         montant = 0.0
         for track in self.GetObjects() :
@@ -307,14 +307,14 @@ class ListView(FastObjectListView):
             montant += track.montant
         # Label de staticbox
         if nbre > 1 :
-            texte = _(u"prélèvements")
+            texte = _(u"prÃ©lÃ¨vements")
         else :
-            texte = _(u"prélèvement")
+            texte = _(u"prÃ©lÃ¨vement")
         label = u"%d %s (%.2f %s)" % (nbre, texte, montant, SYMBOLE)
         return label          
 
     def MAJtotaux(self):
-        """ Créé le texte infos avec les stats du lot """
+        """ CrÃ©Ã© le texte infos avec les stats du lot """
         if self.GetParent().GetName() != "DLG_Saisie_prelevement_lot" :
             return
         # Label de staticbox
@@ -323,7 +323,7 @@ class ListView(FastObjectListView):
         self.GetParent().box_prelevements_staticbox.SetLabel(self.GetLabelListe())
 
     def GetTexteTotaux(self):
-        # Récupération des chiffres
+        # RÃ©cupÃ©ration des chiffres
         nbreTotal = 0
         montantTotal = 0.0
         dictDetails = {}
@@ -335,7 +335,7 @@ class ListView(FastObjectListView):
                 dictDetails[track.statut] = {"nbre" : 0, "montant" : 0.0}
             dictDetails[track.statut]["nbre"] += 1
             dictDetails[track.statut]["montant"] += track.montant
-            # Regroupement par règlemennt
+            # Regroupement par rÃ¨glemennt
             if track.reglement == True :
                 reglement = "regle"
             else :
@@ -345,29 +345,29 @@ class ListView(FastObjectListView):
             dictDetails[reglement]["nbre"] += 1
             dictDetails[reglement]["montant"] += track.montant
             
-        # Création du texte
+        # CrÃ©ation du texte
         if nbreTotal == 0 :
-            texte = _(u"<B>Aucun prélèvement.   </B>")
+            texte = _(u"<B>Aucun prÃ©lÃ¨vement.   </B>")
         elif nbreTotal == 1 :
-            texte = _(u"<B>%d prélèvement (%.2f %s) : </B>") % (nbreTotal, montantTotal, SYMBOLE)
+            texte = _(u"<B>%d prÃ©lÃ¨vement (%.2f %s) : </B>") % (nbreTotal, montantTotal, SYMBOLE)
         else :
-            texte = _(u"<B>%d prélèvements (%.2f %s) : </B>") % (nbreTotal, montantTotal, SYMBOLE)
+            texte = _(u"<B>%d prÃ©lÃ¨vements (%.2f %s) : </B>") % (nbreTotal, montantTotal, SYMBOLE)
         
         for key in ("attente", "valide", "refus", "regle", "pasregle") :
             if key in dictDetails :
                 dictDetail = dictDetails[key]
                 if dictDetail["nbre"] == 1 :
                     if key == "attente" : label = _(u"en attente")
-                    if key == "valide" : label = _(u"validé")
-                    if key == "refus" : label = _(u"refusé")
-                    if key == "regle" : label = _(u"réglé")
-                    if key == "pasregle" : label = _(u"non réglé")
+                    if key == "valide" : label = _(u"validÃ©")
+                    if key == "refus" : label = _(u"refusÃ©")
+                    if key == "regle" : label = _(u"rÃ©glÃ©")
+                    if key == "pasregle" : label = _(u"non rÃ©glÃ©")
                 else :
                     if key == "attente" : label = _(u"en attente")
-                    if key == "valide" : label = _(u"validés")
-                    if key == "refus" : label = _(u"refusés")
-                    if key == "regle" : label = _(u"réglés")
-                    if key == "pasregle" : label = _(u"non réglés")
+                    if key == "valide" : label = _(u"validÃ©s")
+                    if key == "refus" : label = _(u"refusÃ©s")
+                    if key == "regle" : label = _(u"rÃ©glÃ©s")
+                    if key == "pasregle" : label = _(u"non rÃ©glÃ©s")
                 texteDetail = u"%d %s (%.2f %s), " % (dictDetail["nbre"], label, dictDetail["montant"], SYMBOLE)
                 texte += texteDetail
         if len(dictDetails) > 0 :

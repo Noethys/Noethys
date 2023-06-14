@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -28,7 +28,7 @@ class CTRL(wx.StaticBitmap):
         self.SetMinSize(tailleImage) 
         self.SetSize(tailleImage) 
         
-        # Pour la sauvegarde différée de l'image :
+        # Pour la sauvegarde diffÃ©rÃ©e de l'image :
         self.bmpBuffer = None
         
         self.table = table
@@ -42,7 +42,7 @@ class CTRL(wx.StaticBitmap):
         self.SetBitmap(self.GetPhoto())
 
     def GetPhoto(self):
-        """ Récupère une image """            
+        """ RÃ©cupÃ¨re une image """            
         # Recherche de l'image
         if self.IDkey != None : 
             DB = GestionDB.DB()
@@ -51,7 +51,7 @@ class CTRL(wx.StaticBitmap):
             listeDonnees = DB.ResultatReq()
             DB.Close()
             if len(listeDonnees) > 0 :
-                # Si une image est trouvée
+                # Si une image est trouvÃ©e
                 self.bmpBuffer = listeDonnees[0][0]
                 if self.bmpBuffer != None :
                     io = six.BytesIO(self.bmpBuffer)
@@ -64,7 +64,7 @@ class CTRL(wx.StaticBitmap):
                     self.modeDefaut = False
                     return bmp
         
-        # Si aucune image est trouvée, on prend l'image par défaut
+        # Si aucune image est trouvÃ©e, on prend l'image par dÃ©faut
         if self.imageDefaut != None :
             bmp = self.GetImageDefaut() 
             self.bmpBuffer = None
@@ -85,8 +85,8 @@ class CTRL(wx.StaticBitmap):
         return None
 
     def Ajouter(self, sauvegarder=True):
-        """ Permet la sélection et le retouchage d'une image """
-        # Sélection d'une image
+        """ Permet la sÃ©lection et le retouchage d'une image """
+        # SÃ©lection d'une image
         self.repCourant = os.getcwd()
 
         wildcard = "Toutes les images|*.jpg;*.png;*.gif|"     \
@@ -95,11 +95,11 @@ class CTRL(wx.StaticBitmap):
             "Image GIF (*.gif)|*.gif|"     \
             "Tous les fichiers (*.*)|*.*"
                 
-        # Récupération du chemin des documents
+        # RÃ©cupÃ©ration du chemin des documents
         sp = wx.StandardPaths.Get()
         cheminDefaut = sp.GetDocumentsDir()
         
-        # Ouverture dela fenêtre de dialogue
+        # Ouverture dela fenÃªtre de dialogue
         dlg = wx.FileDialog(
             self, message=_(u"Choisissez une image"),
             defaultDir=cheminDefaut, 
@@ -138,7 +138,7 @@ class CTRL(wx.StaticBitmap):
     def Supprimer(self, sauvegarder=True):
         """ Suppression de l'image """
         if self.modeDefaut == True :
-            dlg = wx.MessageDialog(self, _(u"Aucune image n'est enregistrée !"), _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Aucune image n'est enregistrÃ©e !"), _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -155,12 +155,12 @@ class CTRL(wx.StaticBitmap):
             DB.ReqMAJ(self.table, [("image", None),], self.key, self.IDkey)
             DB.Close()
             
-        # Applique l'image par défaut
+        # Applique l'image par dÃ©faut
         self.SetBitmap(self.GetImageDefaut())
         self.bmpBuffer = None
     
     def Sauvegarder(self):
-        """ Permet de sauvegarder ultérieurement l'image """
+        """ Permet de sauvegarder ultÃ©rieurement l'image """
         if self.bmpBuffer != None :
             # Sauvegarde d'une nouvelle image
             DB = GestionDB.DB()

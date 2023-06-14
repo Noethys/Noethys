@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activitÈs
+# Application :    Noethys, gestion multi-activit√©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-14 Ivan LUCAS
@@ -26,7 +26,7 @@ from Utils import UTILS_Dates
 from Utils import UTILS_Gestion
 from Utils import UTILS_Infos_individus
 from Utils import UTILS_Divers
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"§")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"‚Ç¨")
 
 from Utils.UTILS_Decimal import FloatToDecimal as FloatToDecimal
 
@@ -76,7 +76,7 @@ class Track(object):
         # Nom cotisation
         self.nomCotisation = u"%s - %s" % (self.nomTypeCotisation, self.nomUniteCotisation)
         
-        # NumÈro de cotisation
+        # Num√©ro de cotisation
         try :
             self.numero_int = int(self.numero)
         except :
@@ -94,18 +94,18 @@ class Track(object):
         else:
             self.typeStr = _(u"Cotisation individuelle")
         
-        # ValiditÈ
+        # Validit√©
         dateDuJour = datetime.date.today() 
         if dateDuJour >= self.date_debut and dateDuJour <= self.date_fin :
             self.valide = True
         else:
             self.valide = False
         
-        # DÈpÙt
+        # D√©p√¥t
         if self.IDdepot_cotisation == None :
-            self.depotStr = _(u"Non dÈposÈe")
+            self.depotStr = _(u"Non d√©pos√©e")
         else:
-            self.depotStr = _(u"DÈpÙt n∞%d") % self.IDdepot_cotisation
+            self.depotStr = _(u"D√©p√¥t n¬∞%d") % self.IDdepot_cotisation
 
         # Nom des titulaires de famille
         self.beneficiaires = ""
@@ -114,7 +114,7 @@ class Track(object):
         self.ville = ""
         
         if self.IDfamille != None :
-            self.beneficiaires = _(u"IDfamille n∞%d") % self.IDfamille
+            self.beneficiaires = _(u"IDfamille n¬∞%d") % self.IDfamille
             if parent.dictFamillesRattachees != None :
                 if self.IDfamille in parent.dictFamillesRattachees :
                     self.beneficiaires = parent.dictFamillesRattachees[self.IDfamille]["nomsTitulaires"]
@@ -153,7 +153,7 @@ class Track(object):
     
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # RÈcupÈration des paramËtres perso
+        # R√©cup√©ration des param√®tres perso
         self.IDindividu = kwds.pop("IDindividu", None)
         self.IDfamille = kwds.pop("IDfamille", None)
         self.dictFamillesRattachees = kwds.pop("dictFamillesRattachees", None)
@@ -170,10 +170,10 @@ class ListView(FastObjectListView):
         self.labelParametres = ""
         self.titre = _(u"Liste des cotisations")
 
-        # PÈriodes de gestion
+        # P√©riodes de gestion
         self.gestion = UTILS_Gestion.Gestion(None)
 
-        # Importation des activitÈs
+        # Importation des activit√©s
         DB = GestionDB.DB()
         req = """SELECT IDactivite, nom, abrege
         FROM activites
@@ -199,7 +199,7 @@ class ListView(FastObjectListView):
     def InitModel(self):
         self.donnees = self.GetTracks()
 
-        # RÈcupÈration des infos de base individus et familles
+        # R√©cup√©ration des infos de base individus et familles
         if self.mode == "liste":
             self.infosIndividus = UTILS_Infos_individus.Informations()
             for track in self.donnees :
@@ -228,7 +228,7 @@ class ListView(FastObjectListView):
         return False
     
     def GetTracks(self):
-        """ RÈcupÈration des donnÈes """
+        """ R√©cup√©ration des donn√©es """
         self.individus = UTILS_Titulaires.GetIndividus() 
         self.titulaires = UTILS_Titulaires.GetTitulaires() 
         
@@ -239,7 +239,7 @@ class ListView(FastObjectListView):
         listeConditions = []
         conditions = ""
 
-        # 1Ëre sÈrie de filtres
+        # 1√®re s√©rie de filtres
         if self.filtres != None :
             for filtre in self.filtres :
 
@@ -258,25 +258,25 @@ class ListView(FastObjectListView):
                 if filtre["type"] == "type" :
                     listeConditions.append("cotisations.IDtype_cotisation=%d" % filtre["IDtype_cotisation"])
 
-                # UnitÈ de cotisation
+                # Unit√© de cotisation
                 if filtre["type"] == "unite" :
                     listeConditions.append("cotisations.IDunite_cotisation=%d" % filtre["IDunite_cotisation"])
 
-                # Carte crÈÈe
+                # Carte cr√©√©e
                 if filtre["type"] == "carte" :
                     if filtre["choix"] == True :
                         listeConditions.append( "cotisations.date_creation_carte IS NOT NULL")
                     else :
                         listeConditions.append( "cotisations.date_creation_carte IS NULL")
 
-                # Carte facturÈe
+                # Carte factur√©e
                 if filtre["type"] == "facturee" :
                     if filtre["choix"] == True :
                         listeConditions.append( "cotisations.IDprestation IS NOT NULL")
                     else :
                         listeConditions.append( "cotisations.IDprestation IS NULL")
 
-                # DÈpÙt
+                # D√©p√¥t
                 if filtre["type"] == "depot" :
                     listeConditions.append("cotisations.IDdepot_cotisation=%d" % filtre["IDdepot_cotisation"])
                                 
@@ -419,7 +419,7 @@ class ListView(FastObjectListView):
 
             valide = True
                 
-            # 2Ëme sÈrie de filtres
+            # 2√®me s√©rie de filtres
             if self.filtres != None :
                 for filtre in self.filtres :
             
@@ -468,7 +468,7 @@ class ListView(FastObjectListView):
         self.evenRowsBackColor = wx.Colour(255, 255, 255)
         self.useExpansionColumn = True
         
-        # PrÈparation de la listeImages
+        # Pr√©paration de la listeImages
         imgOk = self.AddNamedImages("ok", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Ok.png"), wx.BITMAP_TYPE_PNG))
         imgPasOk = self.AddNamedImages("pasok", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Interdit.png"), wx.BITMAP_TYPE_PNG))
         self.imgVert = self.AddNamedImages("vert", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Ventilation_vert.png"), wx.BITMAP_TYPE_PNG))
@@ -485,7 +485,7 @@ class ListView(FastObjectListView):
         
         def FormateDate(dateDD):
             if dateDD == None : return ""
-            if dateDD == "2999-01-01" : return _(u"IllimitÈe")
+            if dateDD == "2999-01-01" : return _(u"Illimit√©e")
             date = str(dateDD)
             text = str(date[8:10]) + "/" + str(date[5:7]) + "/" + str(date[:4])
             return text
@@ -514,23 +514,23 @@ class ListView(FastObjectListView):
             "date_debut" : ColumnDefn(u"Du", 'left', 80, "date_debut", typeDonnee="date", stringConverter=FormateDate), 
             "date_fin" : ColumnDefn(_(u"Au"), 'left', 80, "date_fin", typeDonnee="date", stringConverter=FormateDate),
             "date_saisie" : ColumnDefn(_(u"Date saisie"), 'left', 80, "date_saisie", typeDonnee="date", stringConverter=FormateDate), 
-            "beneficiaires" : ColumnDefn(_(u"BÈnÈficiaires"), 'left', 150, "beneficiaires", typeDonnee="texte"),
+            "beneficiaires" : ColumnDefn(_(u"B√©n√©ficiaires"), 'left', 150, "beneficiaires", typeDonnee="texte"),
             "rue" : ColumnDefn(_(u"Rue"), 'left', 120, "rue", typeDonnee="texte"),
             "cp" : ColumnDefn(_(u"CP"), 'left', 70, "cp", typeDonnee="texte"),
             "ville" : ColumnDefn(_(u"Ville"), 'left', 100, "ville", typeDonnee="texte"),
             "type" : ColumnDefn(_(u"Type"), 'left', 110, "typeStr", typeDonnee="texte"),
             "nom" : ColumnDefn(_(u"Nom"), 'left', 210, "nomCotisation", typeDonnee="texte"),
             "type_cotisation" : ColumnDefn(_(u"Type"), 'left', 210, "nomTypeCotisation", typeDonnee="texte"),
-            "unite_cotisation" : ColumnDefn(_(u"UnitÈ"), 'left', 90, "nomUniteCotisation", typeDonnee="texte"),
-            "numero" : ColumnDefn(_(u"NumÈro"), 'left', 70, "numero", typeDonnee="texte"), 
+            "unite_cotisation" : ColumnDefn(_(u"Unit√©"), 'left', 90, "nomUniteCotisation", typeDonnee="texte"),
+            "numero" : ColumnDefn(_(u"Num√©ro"), 'left', 70, "numero", typeDonnee="texte"), 
             "montant" : ColumnDefn(_(u"Montant"), 'left', 70, "montant", typeDonnee="montant", stringConverter=FormateMontant), 
-            "regle" : ColumnDefn(_(u"RÈglÈ"), 'left', 70, "ventilation", typeDonnee="montant", stringConverter=FormateMontant), 
-            "date_reglement" : ColumnDefn(_(u"Date rÈglement"), 'left', 80, "dateReglement", typeDonnee="date", stringConverter=FormateDate), 
-            "mode_reglement" : ColumnDefn(_(u"Mode rÈglement"), 'left', 80, "modeReglement", typeDonnee="texte"), 
+            "regle" : ColumnDefn(_(u"R√©gl√©"), 'left', 70, "ventilation", typeDonnee="montant", stringConverter=FormateMontant), 
+            "date_reglement" : ColumnDefn(_(u"Date r√©glement"), 'left', 80, "dateReglement", typeDonnee="date", stringConverter=FormateDate), 
+            "mode_reglement" : ColumnDefn(_(u"Mode r√©glement"), 'left', 80, "modeReglement", typeDonnee="texte"), 
             "solde" : ColumnDefn(_(u"Solde"), 'left', 80, "solde", typeDonnee="montant", stringConverter=FormateMontant, imageGetter=GetImageVentilation), 
-            "date_creation_carte" : ColumnDefn(_(u"CrÈation carte"), 'left', 100, "date_creation_carte", typeDonnee="date", stringConverter=FormateDate, imageGetter=GetImageCreation), 
-            "depot_nom" : ColumnDefn(_(u"DÈpÙt carte"), 'left', 100, "depotStr", typeDonnee="texte", imageGetter=GetImageDepot), 
-            "activites" : ColumnDefn(_(u"ActivitÈs"), 'left', 150, "activitesStr", typeDonnee="texte"),
+            "date_creation_carte" : ColumnDefn(_(u"Cr√©ation carte"), 'left', 100, "date_creation_carte", typeDonnee="date", stringConverter=FormateDate, imageGetter=GetImageCreation), 
+            "depot_nom" : ColumnDefn(_(u"D√©p√¥t carte"), 'left', 100, "depotStr", typeDonnee="texte", imageGetter=GetImageDepot), 
+            "activites" : ColumnDefn(_(u"Activit√©s"), 'left', 150, "activitesStr", typeDonnee="texte"),
             "observations" : ColumnDefn(_(u"Notes"), 'left', 150, "observations", typeDonnee="texte"),
             }
             
@@ -549,7 +549,7 @@ class ListView(FastObjectListView):
         if self.mode == "liste":
             listeChamps = UTILS_Infos_individus.GetNomsChampsPossibles(mode="individu+famille")
             for titre, exemple, code in listeChamps :
-                if u"n∞" not in titre and "_x_" not in code:
+                if u"n¬∞" not in titre and "_x_" not in code:
                     typeDonnee = UTILS_Infos_individus.GetTypeChamp(code)
                     code = code.replace("{", "").replace("}", "")
                     listeColonnes.append(ColumnDefn(titre, "left", 100, code, typeDonnee=typeDonnee, visible=False))
@@ -580,7 +580,7 @@ class ListView(FastObjectListView):
             self.selectionTrack = None
         self.InitModel()
         self.InitObjectListView()
-        # SÈlection d'un item
+        # S√©lection d'un item
         if self.selectionTrack != None :
             self.SelectObject(self.selectionTrack, deselectOthers=True, ensureVisible=True)
         self.selectionID = None
@@ -601,7 +601,7 @@ class ListView(FastObjectListView):
             noSelection = False
             ID = self.Selection()[0].IDcotisation
                 
-        # CrÈation du menu contextuel
+        # Cr√©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
         
         if self.mode != "liste" :
@@ -652,7 +652,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
         
         # Item Recu Dons aux oeuvres
-        item = wx.MenuItem(menuPop, 60, _(u"Editer un reÁu Dons aux Oeuvres (PDF)"))
+        item = wx.MenuItem(menuPop, 60, _(u"Editer un re√ßu Dons aux Oeuvres (PDF)"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -673,7 +673,7 @@ class ListView(FastObjectListView):
             
         menuPop.AppendSeparator()
 
-        # GÈnÈration automatique des fonctions standards
+        # G√©n√©ration automatique des fonctions standards
         self.GenerationContextMenu(menuPop, dictParametres=self.GetParametresImpression())
 
         if self.mode == "liste":
@@ -694,7 +694,7 @@ class ListView(FastObjectListView):
 
     def Reedition(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucune cotisation ‡ imprimer !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucune cotisation √† imprimer !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -706,7 +706,7 @@ class ListView(FastObjectListView):
     def RecuCotisation(self, event):
         """ Imprimer dons aux oeuvres """
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucune cotisation dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucune cotisation dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -720,7 +720,7 @@ class ListView(FastObjectListView):
     def EnvoyerEmail(self, event):
         """ Envoyer la cotisation par Email """
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucune cotisation ‡ envoyer par Email !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucune cotisation √† envoyer par Email !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -730,7 +730,7 @@ class ListView(FastObjectListView):
         UTILS_Envoi_email.EnvoiEmailFamille(parent=self, IDfamille=track.IDfamille, nomDoc=FonctionsPerso.GenerationNomDoc("COTISATION", "pdf") , categorie="cotisation")
 
     def CreationPDF(self, nomDoc="", afficherDoc=True):        
-        """ CrÈation du PDF pour Email """
+        """ Cr√©ation du PDF pour Email """
         IDcotisation = self.Selection()[0].IDcotisation
         from Utils import UTILS_Cotisations
         cotisation = UTILS_Cotisations.Cotisation()
@@ -744,7 +744,7 @@ class ListView(FastObjectListView):
         total = _(u"%d cotisations. ") % len(self.donnees)
         if self.filtres != None :
             from Dlg.DLG_Filtres_cotisations import GetTexteFiltres 
-            intro = total + _(u"Filtres de sÈlection : %s") % GetTexteFiltres(self.filtres)
+            intro = total + _(u"Filtres de s√©lection : %s") % GetTexteFiltres(self.filtres)
         else :
             intro = None
         return intro, total
@@ -759,19 +759,19 @@ class ListView(FastObjectListView):
         if self.IDfamille != None and UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_cotisations", "creer") == False : return
         if self.IDindividu != None and UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("individus_cotisations", "creer") == False : return
 
-        # VÈrifie que l'individu est rattachÈ comme REPRESENTANT ou ENFANT ‡ une famille
+        # V√©rifie que l'individu est rattach√© comme REPRESENTANT ou ENFANT √† une famille
         if self.dictFamillesRattachees != None :
             valide = False
             for IDfamille, dictFamille in self.dictFamillesRattachees.items() :
                 if dictFamille["IDcategorie"] in (1, 2) :
                     valide = True
             if valide == False :
-                dlg = wx.MessageDialog(self, _(u"Pour bÈnÈficier d'une cotisation, un individu doit obligatoirement Ítre\nrattachÈ comme reprÈsentant ou enfant ‡ une fiche famille !"), _(u"CrÈation de cotisation impossible"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Pour b√©n√©ficier d'une cotisation, un individu doit obligatoirement √™tre\nrattach√© comme repr√©sentant ou enfant √† une fiche famille !"), _(u"Cr√©ation de cotisation impossible"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return
         
-        # Ouverture de la fenÍtre de saisie d'une cotisation
+        # Ouverture de la fen√™tre de saisie d'une cotisation
         from Dlg import DLG_Saisie_cotisation
         dlg = DLG_Saisie_cotisation.Dialog(self, IDcotisation=None, IDfamille=self.IDfamille, IDindividu=self.IDindividu, dictFamillesRattachees=self.dictFamillesRattachees)
         if dlg.ShowModal() == wx.ID_OK:
@@ -786,7 +786,7 @@ class ListView(FastObjectListView):
         if self.IDfamille != None and UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_cotisations", "modifier") == False : return
         if self.IDindividu != None and UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("individus_cotisations", "modifier") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucune cotisation ‡ modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucune cotisation √† modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -802,7 +802,7 @@ class ListView(FastObjectListView):
 
     def Supprimer(self, event):
         if len(self.Selection()) == 0 and len(self.GetTracksCoches()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucune cotisation ‡ supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucune cotisation √† supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -810,7 +810,7 @@ class ListView(FastObjectListView):
         if len(self.GetTracksCoches()) > 0 :
             # Suppression multiple
             listeSelections = self.GetTracksCoches()
-            dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer les %d cotisations cochÈes ?") % len(listeSelections), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer les %d cotisations coch√©es ?") % len(listeSelections), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
             reponse = dlg.ShowModal() 
             dlg.Destroy()
             if reponse != wx.ID_YES :
@@ -819,20 +819,20 @@ class ListView(FastObjectListView):
         else :
             # Suppression unique
             listeSelections = self.Selection()        
-            dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer la cotisation n∞%s ?") % listeSelections[0].numero, _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer la cotisation n¬∞%s ?") % listeSelections[0].numero, _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
             reponse = dlg.ShowModal() 
             dlg.Destroy()
             if reponse != wx.ID_YES :
                 return
 
         for track in listeSelections :
-            # VÈrifie les droits utilisateur
+            # V√©rifie les droits utilisateur
             if track.IDfamille != None and UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_cotisations", "supprimer") == False : return
             if track.IDindividu != None and UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("individus_cotisations", "supprimer") == False : return
-            # VÈrifie les pÈriodes gestion verrouillÈes
+            # V√©rifie les p√©riodes gestion verrouill√©es
             if self.gestion.Verification("cotisations", track.date_creation_carte) == False: return False
 
-        # Recherche si prestation dÈj‡ prÈsente sur facture
+        # Recherche si prestation d√©j√† pr√©sente sur facture
         listeID = []
         for track in listeSelections :
             listeID.append(track.IDcotisation) 
@@ -859,9 +859,9 @@ class ListView(FastObjectListView):
 
             if nbreCotisations > 0 :
                 if nbreCotisations == 1 :
-                    message = _(u"Cette cotisation apparaÓt dÈj‡ sur une facture. Il est donc impossible de la supprimer.")
+                    message = _(u"Cette cotisation appara√Æt d√©j√† sur une facture. Il est donc impossible de la supprimer.")
                 else :
-                    message = _(u"%d de ces cotisations apparaissent dÈj‡ sur une ou plusieurs factures. Il est donc impossible d'effectuer la suppression.") % len(listeFactures)
+                    message = _(u"%d de ces cotisations apparaissent d√©j√† sur une ou plusieurs factures. Il est donc impossible d'effectuer la suppression.") % len(listeFactures)
                 dlg = wx.MessageDialog(self, message, _(u"Suppression impossible"), wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
                 dlg.Destroy()
@@ -874,12 +874,12 @@ class ListView(FastObjectListView):
             if track.IDprestation != None :
                 DB.ReqDEL("prestations", "IDprestation", track.IDprestation)
             
-            # MÈmorise l'action dans l'historique
+            # M√©morise l'action dans l'historique
             UTILS_Historique.InsertActions([{
                 "IDindividu" : track.IDindividu,
                 "IDfamille" : track.IDfamille,
                 "IDcategorie" : 23, 
-                "action" : _(u"Suppression de la cotisation ID%d '%s' pour la pÈriode du %s au %s") % (track.IDcotisation, track.nomCotisation, UTILS_Dates.DateEngFr(str(track.date_debut)), UTILS_Dates.DateEngFr(str(track.date_fin))),
+                "action" : _(u"Suppression de la cotisation ID%d '%s' pour la p√©riode du %s au %s") % (track.IDcotisation, track.nomCotisation, UTILS_Dates.DateEngFr(str(track.date_debut)), UTILS_Dates.DateEngFr(str(track.date_fin))),
                 },])
                 
             # Actualisation de l'affichage
@@ -891,7 +891,7 @@ class ListView(FastObjectListView):
     def OuvrirFicheFamille(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_fiche", "consulter") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucune fiche famille ‡ ouvrir !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucune fiche famille √† ouvrir !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -27,7 +27,7 @@ class CTRL_activites(wx.CheckListBox):
         wx.CheckListBox.__init__(self, parent, -1)
         self.parent = parent
         self.data = []
-        self.SetToolTip(wx.ToolTip(_(u"Cochez les activités à afficher")))
+        self.SetToolTip(wx.ToolTip(_(u"Cochez les activitÃ©s Ã  afficher")))
         self.listeActivites = []
 
     def MAJ(self):
@@ -38,7 +38,7 @@ class CTRL_activites(wx.CheckListBox):
         self.SetIDcoches(coches)
     
     def Importation(self):
-        # Récupération des activités
+        # RÃ©cupÃ©ration des activitÃ©s
         if self.parent.ctrl_masquer_activites.GetValue() == True :
             conditions = "WHERE date_fin>'%s' " % (datetime.date.today() - datetime.timedelta(days=365*2))
         else :
@@ -100,24 +100,24 @@ class Dialog(wx.Dialog):
         self.parent = parent
         self.afficheLargeurColonneUnite = afficheLargeurColonneUnite
         
-        # Périodes
-        self.staticbox_periodes_staticbox = wx.StaticBox(self, -1, _(u"Période"))
+        # PÃ©riodes
+        self.staticbox_periodes_staticbox = wx.StaticBox(self, -1, _(u"PÃ©riode"))
         self.ctrl_periodes = CTRL_Grille_periode.CTRL(self)
         self.ctrl_periodes.SetMinSize((220, 230))
         
-        # Activités
-        self.staticbox_activites_staticbox = wx.StaticBox(self, -1, _(u"Activités"))
+        # ActivitÃ©s
+        self.staticbox_activites_staticbox = wx.StaticBox(self, -1, _(u"ActivitÃ©s"))
         self.ctrl_activites = CTRL_activites(self)
         self.ctrl_activites.SetMinSize((300, 150))
         
-        self.ctrl_masquer_activites = wx.CheckBox(self, -1, _(u"Masquer les anciennes activités"))
+        self.ctrl_masquer_activites = wx.CheckBox(self, -1, _(u"Masquer les anciennes activitÃ©s"))
         self.ctrl_masquer_activites.SetValue(UTILS_Parametres.Parametres(mode="get", categorie="parametres_remplissage", nom="masquer_anciennes_activites", valeur=0))
         self.ctrl_masquer_activites.SetFont(wx.Font(8, wx.DEFAULT, wx.NORMAL, wx.NORMAL, 0, ""))
         
         # Options d'affichage
         self.staticbox_options_staticbox = wx.StaticBox(self, -1, _(u"Options"))
         
-        self.label_abregeGroupes = wx.StaticText(self, -1, _(u"Utiliser le nom abrégé des groupes :"))
+        self.label_abregeGroupes = wx.StaticText(self, -1, _(u"Utiliser le nom abrÃ©gÃ© des groupes :"))
         self.ctrl_abregeGroupes_oui = wx.RadioButton(self, -1, _(u"Oui"), style = wx.RB_GROUP)
         self.ctrl_abregeGroupes_non = wx.RadioButton(self, -1, _(u"Non"))
         if abregeGroupes == True :
@@ -125,7 +125,7 @@ class Dialog(wx.Dialog):
         else:
             self.ctrl_abregeGroupes_non.SetValue(True)
 
-        self.label_affichePresents = wx.StaticText(self, -1, _(u"Afficher les présents en temps réel :"))
+        self.label_affichePresents = wx.StaticText(self, -1, _(u"Afficher les prÃ©sents en temps rÃ©el :"))
         self.ctrl_affichePresents_oui = wx.RadioButton(self, -1, _(u"Oui"), style = wx.RB_GROUP)
         self.ctrl_affichePresents_non = wx.RadioButton(self, -1, _(u"Non"))
         if affichePresents == True :
@@ -141,7 +141,7 @@ class Dialog(wx.Dialog):
         else:
             self.ctrl_afficheTotaux_non.SetValue(True)
 
-        self.label_maj_auto = wx.StaticText(self, -1, _(u"Mise à jour auto de l'affichage :"))
+        self.label_maj_auto = wx.StaticText(self, -1, _(u"Mise Ã  jour auto de l'affichage :"))
         self.liste_choix_maj_auto = [
             (0, _(u"Jamais")),
             # (1000 * 60, _("Toutes les minutes")),
@@ -187,16 +187,16 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
         self.Bind(wx.EVT_CHECKBOX, self.OnCheckMasquerActivites, self.ctrl_masquer_activites)
         
-        # Init contrôles
+        # Init contrÃ´les
         self.ctrl_activites.MAJ() 
         
-        # Applique les valeurs par défaut
+        # Applique les valeurs par dÃ©faut
         self.ctrl_periodes.SetDictDonnees(dictDonnees)
         self.ctrl_activites.SetDictDonnees(dictDonnees)
 
     def __set_properties(self):
-        self.SetTitle(_(u"Paramètres d'affichage"))
-        self.ctrl_masquer_activites.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour masquer de cette liste les activités vieilles de plus de 2 ans")))
+        self.SetTitle(_(u"ParamÃ¨tres d'affichage"))
+        self.ctrl_masquer_activites.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour masquer de cette liste les activitÃ©s vieilles de plus de 2 ans")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
         self.SetMinSize((640, 450))
@@ -206,14 +206,14 @@ class Dialog(wx.Dialog):
     
         grid_sizer_contenu = wx.FlexGridSizer(rows=1, cols=2, vgap=10, hgap=10)
         
-        # Période
+        # PÃ©riode
         staticbox_periodes = wx.StaticBoxSizer(self.staticbox_periodes_staticbox, wx.VERTICAL)
         staticbox_periodes.Add(self.ctrl_periodes, 1, wx.EXPAND|wx.ALL, 10)
         grid_sizer_contenu.Add(staticbox_periodes, 1, wx.EXPAND, 0)
         
         grid_sizer_droit = wx.FlexGridSizer(rows=2, cols=1, vgap=10, hgap=10)
         
-        # Activités
+        # ActivitÃ©s
         staticbox_activites = wx.StaticBoxSizer(self.staticbox_activites_staticbox, wx.VERTICAL)
         grid_sizer_activites = wx.FlexGridSizer(rows=2, cols=1, vgap=5, hgap=5)
         grid_sizer_activites.Add(self.ctrl_activites, 1, wx.EXPAND, 0)
@@ -303,10 +303,10 @@ class Dialog(wx.Dialog):
         return self.liste_choix_maj_auto[index][0]
 
     def OnBoutonOk(self, event):
-        # Mémorisation paramètres
+        # MÃ©morisation paramÃ¨tres
         UTILS_Parametres.Parametres(mode="set", categorie="parametres_remplissage", nom="masquer_anciennes_activites", valeur=int(self.ctrl_masquer_activites.GetValue()))
         
-        # Fermeture de la fenêtre
+        # Fermeture de la fenÃªtre
         self.EndModal(wx.ID_OK)
 
 

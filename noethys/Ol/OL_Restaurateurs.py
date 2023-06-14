@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -37,7 +37,7 @@ class Track(object):
     
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # Récupération des paramètres perso
+        # RÃ©cupÃ©ration des paramÃ¨tres perso
         self.selectionID = None
         self.selectionTrack = None
         self.criteres = ""
@@ -62,7 +62,7 @@ class ListView(FastObjectListView):
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
-        """ Récupération des données """
+        """ RÃ©cupÃ©ration des donnÃ©es """
         listeID = None
         db = GestionDB.DB()
         req = """SELECT IDrestaurateur, nom, rue, cp, ville, tel, fax, mail
@@ -96,7 +96,7 @@ class ListView(FastObjectListView):
             ColumnDefn(_(u"Rue"), "left", 140, "rue", typeDonnee="texte"),
             ColumnDefn(_(u"C.P."), "left", 45, "cp", typeDonnee="texte"),
             ColumnDefn(_(u"Ville"), "left", 110, "ville", typeDonnee="texte"),
-            ColumnDefn(_(u"Tél."), "left", 100, "tel", typeDonnee="texte"),
+            ColumnDefn(_(u"TÃ©l."), "left", 100, "tel", typeDonnee="texte"),
             ColumnDefn(_(u"Fax."), "left", 100, "fax", typeDonnee="texte"),
             ColumnDefn(_(u"Email"), "left", 100, "mail", typeDonnee="texte"),
             ]
@@ -116,7 +116,7 @@ class ListView(FastObjectListView):
             self.selectionTrack = None
         self.InitModel()
         self.InitObjectListView()
-        # Sélection d'un item
+        # SÃ©lection d'un item
         if self.selectionTrack != None :
             self.SelectObject(self.selectionTrack, deselectOthers=True, ensureVisible=True)
         self.selectionID = None
@@ -133,7 +133,7 @@ class ListView(FastObjectListView):
             noSelection = False
             ID = self.Selection()[0].IDrestaurateur
                 
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Modifier
@@ -164,7 +164,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
+        item = wx.MenuItem(menuPop, 40, _(u"AperÃ§u avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -221,7 +221,7 @@ class ListView(FastObjectListView):
     def Modifier(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_restaurateurs", "modifier") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun restaurateur à modifier dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucun restaurateur Ã  modifier dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -261,13 +261,13 @@ class ListView(FastObjectListView):
     def Supprimer(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_restaurateurs", "supprimer") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun restaurateur dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucun restaurateur dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         IDrestaurateur = self.Selection()[0].IDrestaurateur
         
-        # Vérifie que ce restaurateur n'a pas déjà été attribué à une unité de consommation
+        # VÃ©rifie que ce restaurateur n'a pas dÃ©jÃ  Ã©tÃ© attribuÃ© Ã  une unitÃ© de consommation
         DB = GestionDB.DB()
         req = """SELECT COUNT(IDunite)
         FROM unites 
@@ -277,12 +277,12 @@ class ListView(FastObjectListView):
         nbreUnites = int(DB.ResultatReq()[0][0])
         DB.Close()
         if nbreUnites > 0 :
-            dlg = wx.MessageDialog(self, _(u"Ce restaurateur a déjà été attribué à %d unité(s) de consommation.\n\nVous ne pouvez donc pas le supprimer !") % nbreUnites, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Ce restaurateur a dÃ©jÃ  Ã©tÃ© attribuÃ© Ã  %d unitÃ©(s) de consommation.\n\nVous ne pouvez donc pas le supprimer !") % nbreUnites, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
-        # Vérifie que des menus n'ont pas déjà été associés
+        # VÃ©rifie que des menus n'ont pas dÃ©jÃ  Ã©tÃ© associÃ©s
         DB = GestionDB.DB()
         req = """SELECT COUNT(IDmenu)
         FROM menus 
@@ -292,7 +292,7 @@ class ListView(FastObjectListView):
         nbreMenus = int(DB.ResultatReq()[0][0])
         DB.Close()
         if nbreMenus > 0 :
-            dlg = wx.MessageDialog(self, _(u"Attention, %s menus sont associés à ce restaurateur. Si vous supprimez ce restaurateur, les menus seront également supprimés. \n\nSouhaitez-vous tout de même supprimer le restaurateur ?") % nbreMenus, _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Attention, %s menus sont associÃ©s Ã  ce restaurateur. Si vous supprimez ce restaurateur, les menus seront Ã©galement supprimÃ©s. \n\nSouhaitez-vous tout de mÃªme supprimer le restaurateur ?") % nbreMenus, _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
             reponse = dlg.ShowModal()
             dlg.Destroy()
             if reponse != wx.ID_YES :

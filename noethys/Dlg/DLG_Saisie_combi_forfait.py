@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -61,7 +61,7 @@ class Dialog(wx.Dialog):
         self.bouton_calendrier = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Calendrier.png"), wx.BITMAP_TYPE_ANY))
 
         # Unites
-        self.staticbox_unites = wx.StaticBox(self, -1, _(u"Unités à combiner"))
+        self.staticbox_unites = wx.StaticBox(self, -1, _(u"UnitÃ©s Ã  combiner"))
         self.ctrl_unites = CTRL_Unites(self, self.listeUnites)
         
         self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
@@ -76,8 +76,8 @@ class Dialog(wx.Dialog):
     def __set_properties(self):
         self.SetTitle(_(u"Saisie d'une combinaison de forfait"))
         self.ctrl_date.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de la consommation")))
-        self.bouton_calendrier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sélectionner la date dans un calendrier")))
-        self.ctrl_unites.SetToolTip(wx.ToolTip(_(u"Cochez les unités à combiner")))
+        self.bouton_calendrier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sÃ©lectionner la date dans un calendrier")))
+        self.ctrl_unites.SetToolTip(wx.ToolTip(_(u"Cochez les unitÃ©s Ã  combiner")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
         self.SetMinSize((350, 420))
@@ -139,12 +139,12 @@ class Dialog(wx.Dialog):
         
         listeUnites = self.GetUnites()
         if len(listeUnites) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous devez cocher au moins une unité !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez cocher au moins une unitÃ© !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
                 
-        # Fermeture fenêtre
+        # Fermeture fenÃªtre
         self.EndModal(wx.ID_OK)
 
 

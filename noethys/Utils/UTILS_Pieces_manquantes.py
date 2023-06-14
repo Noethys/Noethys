@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activitÈs
+# Application :    Noethys, gestion multi-activit√©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -25,7 +25,7 @@ def GetListePiecesManquantes(dateReference=None, listeActivites=None, presents=N
     if dateReference == None : 
         dateReference = datetime.date.today()
 
-    # RÈcupÈration des donnÈes
+    # R√©cup√©ration des donn√©es
     dictItems = {}
     
     # Conditions Activites
@@ -37,7 +37,7 @@ def GetListePiecesManquantes(dateReference=None, listeActivites=None, presents=N
         else:
             conditionActivites = " AND consommations.IDactivite IN %s" % str(tuple(listeActivites))
             
-    # Conditions PrÈsents
+    # Conditions Pr√©sents
 ##    if presents == None :
 ##        conditionPresents = ""
 ##        jonctionPresents = ""
@@ -47,7 +47,7 @@ def GetListePiecesManquantes(dateReference=None, listeActivites=None, presents=N
     
     DB = GestionDB.DB()
     
-    # RÈcupÈration des piËces ‡ fournir
+    # R√©cup√©ration des pi√®ces √† fournir
 
 ## # Ancienne Version moins rapide :
 ##    req = """
@@ -64,7 +64,7 @@ def GetListePiecesManquantes(dateReference=None, listeActivites=None, presents=N
 ##    DB.ExecuterReq(req)
 ##    listePiecesObligatoires = DB.ResultatReq()
 
-    # RÈcupÈration des individus prÈsents
+    # R√©cup√©ration des individus pr√©sents
     listePresents = []
     if presents != None :
         req = """
@@ -94,7 +94,7 @@ def GetListePiecesManquantes(dateReference=None, listeActivites=None, presents=N
     listePiecesObligatoires = DB.ResultatReq()
 
 
-    # Recherche des piËces dÈj‡ fournies
+    # Recherche des pi√®ces d√©j√† fournies
     req = """
     SELECT IDpiece, pieces.IDtype_piece, IDindividu, IDfamille, date_debut, date_fin, public
     FROM pieces 
@@ -107,28 +107,28 @@ def GetListePiecesManquantes(dateReference=None, listeActivites=None, presents=N
     DB.Close()
     dictPiecesFournies = {}
     for IDpiece, IDtype_piece, IDindividu, IDfamille, date_debut, date_fin, publicPiece in listePiecesFournies :
-        # Pour les piËces familiales :
+        # Pour les pi√®ces familiales :
         if publicPiece == "famille" : IDindividu = None
         
         date_debut = DateEngEnDateDD(date_debut)
         date_fin = DateEngEnDateDD(date_fin)
         dictPiecesFournies[ (IDfamille, IDtype_piece, IDindividu) ] = (date_debut, date_fin)
     
-    # Comparaison de la liste des piËces ‡ fournir et la liste des piËces fournies
+    # Comparaison de la liste des pi√®ces √† fournir et la liste des pi√®ces fournies
     dictDonnees = {}
     for IDfamille, IDtype_piece, nomPiece, publicPiece, rattachementPiece, prenom, IDindividu in listePiecesObligatoires :
         
         if presents == None or (presents != None and IDindividu in listePresents) :
             
-            # Pour les piËces familiales :
+            # Pour les pi√®ces familiales :
             if publicPiece == "famille" : IDindividu = None
-            # Pour les piËces qui sont indÈpendantes de la famille
+            # Pour les pi√®ces qui sont ind√©pendantes de la famille
             if rattachementPiece == 1 :
                 IDfamilleTemp = None
             else:
                 IDfamilleTemp = IDfamille
                 
-            # PrÈparation du label
+            # Pr√©paration du label
             if publicPiece == "famille" or IDindividu == None :
                 label = nomPiece
             else:
@@ -146,7 +146,7 @@ def GetListePiecesManquantes(dateReference=None, listeActivites=None, presents=N
                 
             dictDonnees[(IDfamille, IDtype_piece, IDindividu)] = (IDfamille, IDtype_piece, nomPiece, publicPiece, prenom, IDindividu, valide, label)
         
-    # RÈpartition par famille
+    # R√©partition par famille
     dictPieces = {}
     nbreFamilles = 0
     for key, valeurs in dictDonnees.items() :
@@ -158,7 +158,7 @@ def GetListePiecesManquantes(dateReference=None, listeActivites=None, presents=N
         dictPieces[IDfamille].append(valeurs)
         dictPieces[IDfamille].sort()
     
-    # Formatage des donnÈes
+    # Formatage des donn√©es
     dictFinal = {}
     titulaires = UTILS_Titulaires.GetTitulaires() 
     for IDfamille, dictTemp in dictPieces.items() :

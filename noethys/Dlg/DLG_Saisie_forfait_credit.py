@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -27,7 +27,7 @@ from Utils import UTILS_Gestion
 from dateutil import relativedelta
 
 from Utils import UTILS_Config
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"â‚¬")
 
 
 class CTRL_Forfaits(HTL.HyperTreeList):
@@ -56,29 +56,29 @@ class CTRL_Forfaits(HTL.HyperTreeList):
     def Initialisation(self):      
         self.dictBranches = {}
                  
-        # Création des colonnes
+        # CrÃ©ation des colonnes
         self.AddColumn(_(u"Individu/Forfait"))
         self.SetMainColumn(0)
         self.SetColumnWidth(0, 230)
-        self.AddColumn(_(u"Activité"))
+        self.AddColumn(_(u"ActivitÃ©"))
         self.SetColumnWidth(1, 60)
         self.AddColumn(_(u"Tarif"))
         self.SetColumnWidth(2, 60)
         self.SetColumnAlignment(2, wx.ALIGN_RIGHT)
 
-        # Création de la racine
+        # CrÃ©ation de la racine
         self.root = self.AddRoot(_(u"Racine"))
         
         if self.IDfamille == None or self.date == None:
             return
         
-        # Recherche des données
+        # Recherche des donnÃ©es
         self.dictDonnees = self.grille.GetTarifsForfaitsCreditDisponibles(self.date)
         
         # Recherche du nom des titulaires
         dictTitulaires = UTILS_Titulaires.GetTitulaires([self.IDfamille,])
                     
-        # Création des branches
+        # CrÃ©ation des branches
         for IDfamille, dictFamille in self.dictDonnees.items() :
             
             if IDfamille == self.IDfamille :
@@ -131,7 +131,7 @@ class CTRL_Forfaits(HTL.HyperTreeList):
         self.Initialisation()
     
     def GetForfait(self):
-        """ Retourne la sélection """
+        """ Retourne la sÃ©lection """
         item = self.GetSelection() 
         if item == -1 :
             return None
@@ -205,13 +205,13 @@ class Dialog(wx.Dialog):
         self.parent = parent   
         self.grille = grille
         
-        # Paramètres
-        self.box_parametres_staticbox = wx.StaticBox(self, -1, _(u"Paramètres"))
+        # ParamÃ¨tres
+        self.box_parametres_staticbox = wx.StaticBox(self, -1, _(u"ParamÃ¨tres"))
 
         self.label_famille = wx.StaticText(self, -1, _(u"Famille :"))
         self.ctrl_famille = CTRL_Famille(self, listeFamilles)
 
-        self.label_dates = wx.StaticText(self, -1, _(u"Validité du :"))
+        self.label_dates = wx.StaticText(self, -1, _(u"ValiditÃ© du :"))
         self.ctrl_date_debut = CTRL_Saisie_date.Date2(self)
         self.label_au = wx.StaticText(self, -1, _(u"au"))
         self.ctrl_date_fin = CTRL_Saisie_date.Date2(self, activeCallback=False)
@@ -248,14 +248,14 @@ class Dialog(wx.Dialog):
         self.ctrl_forfaits.Bind(wx.EVT_TREE_SEL_CHANGED, self.OnChoixForfait)
         self.ctrl_forfaits.Bind(wx.EVT_TREE_ITEM_ACTIVATED, self.OnDoubleClicForfait)
 
-        # Init contrôles
+        # Init contrÃ´les
         self.OnChoixFamille() 
         self.ctrl_date_debut.SetFocus()
         
 
     def __set_properties(self):
-        self.SetTitle(_(u"Saisie d'un forfait crédit"))
-        self.ctrl_forfaits.SetToolTip(wx.ToolTip(_(u"Sélectionnez un forfait à créer")))
+        self.SetTitle(_(u"Saisie d'un forfait crÃ©dit"))
+        self.ctrl_forfaits.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez un forfait Ã  crÃ©er")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
@@ -271,7 +271,7 @@ class Dialog(wx.Dialog):
 ##        grid_sizer_famille.AddGrowableCol(1)
 ##        grid_sizer_base.Add(grid_sizer_famille, 1, wx.LEFT|wx.RIGHT|wx.TOP|wx.EXPAND, 10)
 
-        # Paramètres
+        # ParamÃ¨tres
         box_parametres = wx.StaticBoxSizer(self.box_parametres_staticbox, wx.VERTICAL)
         grid_sizer_parametres = wx.FlexGridSizer(rows=3, cols=2, vgap=10, hgap=10)
         
@@ -348,7 +348,7 @@ class Dialog(wx.Dialog):
         if data["type"] == "tarif" :
             dictTarif = data["donnees"]
             
-            # Définit les données par défaut
+            # DÃ©finit les donnÃ©es par dÃ©faut
             self.SetDuree(dictTarif["forfait_duree"])
             self.ctrl_label.SetValue(dictTarif["resultat"]["nom_tarif"])
             self.ctrl_montant.SetMontant(dictTarif["resultat"]["montant_tarif"])
@@ -443,7 +443,7 @@ class Dialog(wx.Dialog):
     def OnBoutonOk(self, event=None):
         # validation : Famille
         if self.ctrl_famille.GetIDfamille() == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner une famille !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sÃ©lectionner une famille !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_famille.SetFocus()
@@ -451,7 +451,7 @@ class Dialog(wx.Dialog):
 
         # validation des dates
         if self.ctrl_date_debut.Validation() == False or self.ctrl_date_debut.GetDate() == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez saisir une date de début valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez saisir une date de dÃ©but valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_debut.SetFocus()
@@ -465,7 +465,7 @@ class Dialog(wx.Dialog):
             return False
 
         if self.ctrl_date_debut.GetDate() > self.ctrl_date_fin.GetDate() :
-            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas saisir une date de début supérieure à la date de fin !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas saisir une date de dÃ©but supÃ©rieure Ã  la date de fin !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_debut.SetFocus()
@@ -474,7 +474,7 @@ class Dialog(wx.Dialog):
         # Validation Forfait
         dictTarif = self.ctrl_forfaits.GetForfait() 
         if dictTarif == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez sélectionner un tarif dans la liste proposée !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez sÃ©lectionner un tarif dans la liste proposÃ©e !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_forfaits.SetFocus()
@@ -502,7 +502,7 @@ class Dialog(wx.Dialog):
             self.ctrl_montant.SetFocus()
             return False
 
-        # Périodes de gestion
+        # PÃ©riodes de gestion
         self.gestion = UTILS_Gestion.Gestion(self)
 
         date_debut = self.ctrl_date_debut.GetDate()
@@ -512,7 +512,7 @@ class Dialog(wx.Dialog):
         date_prestation = self.ctrl_date_prestation.GetDate()
         if self.gestion.Verification("prestations", date_prestation) == False: return False
 
-        # Ferme la fenêtre
+        # Ferme la fenÃªtre
         self.EndModal(wx.ID_OK)
 
     def OnBoutonAnnuler(self, event=None): 

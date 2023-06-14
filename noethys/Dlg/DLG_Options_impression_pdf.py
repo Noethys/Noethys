@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-17 Ivan LUCAS
@@ -33,8 +33,8 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         self.Append( wxpg.PropertyCategory(_(u"Type de document")) )
 
         # Type
-        propriete = wxpg.EnumProperty(label=_(u"Type"), name="type_document", labels=[_(u"Détaillé"), _(u"Simplifié"), _(u"Totaux")], values=[0, 1, 2], value=0)
-        propriete.SetHelpString(_(u"Sélectionnez un type de document")) 
+        propriete = wxpg.EnumProperty(label=_(u"Type"), name="type_document", labels=[_(u"DÃ©taillÃ©"), _(u"SimplifiÃ©"), _(u"Totaux")], values=[0, 1, 2], value=0)
+        propriete.SetHelpString(_(u"SÃ©lectionnez un type de document")) 
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
@@ -42,20 +42,20 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         self.Append( wxpg.PropertyCategory(_(u"Couleurs de fond")) )
 
         # Couleur 3
-        propriete = wxpg.ColourProperty(label=_(u"Fond ligne entêtes"), name="couleur_fond_3", value=wx.Colour(230, 230, 255))
-        propriete.SetHelpString(_(u"Sélectionnez une couleur"))
+        propriete = wxpg.ColourProperty(label=_(u"Fond ligne entÃªtes"), name="couleur_fond_3", value=wx.Colour(230, 230, 255))
+        propriete.SetHelpString(_(u"SÃ©lectionnez une couleur"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
         # Couleur 1
-        propriete = wxpg.ColourProperty(label=_(u"Fond ligne dépôt"), name="couleur_fond_1", value=wx.Colour(204, 204, 255))
-        propriete.SetHelpString(_(u"Sélectionnez une couleur")) 
+        propriete = wxpg.ColourProperty(label=_(u"Fond ligne dÃ©pÃ´t"), name="couleur_fond_1", value=wx.Colour(204, 204, 255))
+        propriete.SetHelpString(_(u"SÃ©lectionnez une couleur")) 
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
         # Couleur 2
         propriete = wxpg.ColourProperty(label=_(u"Fond ligne total"), name="couleur_fond_2", value=wx.Colour(230, 230, 255))
-        propriete.SetHelpString(_(u"Sélectionnez une couleur")) 
+        propriete.SetHelpString(_(u"SÃ©lectionnez une couleur")) 
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
@@ -63,27 +63,27 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         self.Append( wxpg.PropertyCategory(_(u"Titre")) )
 
         # Texte
-        propriete = wxpg.StringProperty(label=_(u"Texte"), name="titre_texte", value=_(u"Récapitulatif des factures"))
+        propriete = wxpg.StringProperty(label=_(u"Texte"), name="titre_texte", value=_(u"RÃ©capitulatif des factures"))
         propriete.SetHelpString(_(u"Saisissez un texte"))
         self.Append(propriete)
 
         # Taille police
         propriete = wxpg.IntProperty(label=_(u"Taille de texte"), name="titre_taille_texte", value=16)
-        propriete.SetHelpString(_(u"Saisissez une taille de texte (16 par défaut)")) 
+        propriete.SetHelpString(_(u"Saisissez une taille de texte (16 par dÃ©faut)")) 
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
         self.SetPropertyEditor("titre_taille_texte", "SpinCtrl")
         
         # Couleur
 ##        propriete = wxpg.ColourProperty(label=_(u"Couleur de texte"), name="titre_couleur", value=wx.BLACK)
-##        propriete.SetHelpString(_(u"Sélectionnez une couleur")) 
+##        propriete.SetHelpString(_(u"SÃ©lectionnez une couleur")) 
 ##        propriete.SetAttribute("obligatoire", True)
 ##        self.Append(propriete)
 
         # Alignement
         labels = [_(u"Gauche"), _(u"Centre"), _(u"Droite")]
         propriete = wxpg.EnumProperty(label=_(u"Alignement du texte"), name="titre_alignement", labels=labels, values=[wx.ALIGN_LEFT, wx.ALIGN_CENTER, wx.ALIGN_RIGHT] , value=wx.ALIGN_LEFT)
-        propriete.SetHelpString(_(u"Sélectionnez le type d'alignement")) 
+        propriete.SetHelpString(_(u"SÃ©lectionnez le type d'alignement")) 
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
@@ -97,7 +97,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
 
         # Taille police
         propriete = wxpg.IntProperty(label=_(u"Taille de texte"), name="intro_taille_texte", value=7)
-        propriete.SetHelpString(_(u"Saisissez une taille de texte (7 par défaut)")) 
+        propriete.SetHelpString(_(u"Saisissez une taille de texte (7 par dÃ©faut)")) 
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
         self.SetPropertyEditor("intro_taille_texte", "SpinCtrl")
@@ -106,20 +106,20 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
 ##        labels = [_(u"Normal"), _(u"Light"), "Gras"]
 ##        valeurs = [wx.FONTWEIGHT_NORMAL, wx.FONTWEIGHT_LIGHT, wx.FONTWEIGHT_BOLD]
 ##        propriete = wxpg.EnumProperty(label=_(u"Style de texte"), name="intro_style", labels=labels, values=valeurs, value=wx.FONTWEIGHT_NORMAL)
-##        propriete.SetHelpString(_(u"Sélectionnez un style de texte")) 
+##        propriete.SetHelpString(_(u"SÃ©lectionnez un style de texte")) 
 ##        propriete.SetAttribute("obligatoire", True)
 ##        self.Append(propriete)
         
         # Couleur
 ##        propriete = wxpg.ColourProperty(label=_(u"Couleur de texte"), name="intro_couleur", value=wx.BLACK)
-##        propriete.SetHelpString(_(u"Sélectionnez une couleur")) 
+##        propriete.SetHelpString(_(u"SÃ©lectionnez une couleur")) 
 ##        propriete.SetAttribute("obligatoire", True)
 ##        self.Append(propriete)
 
         # Alignement
         labels = [_(u"Gauche"), _(u"Centre"), _(u"Droite")]
         propriete = wxpg.EnumProperty(label=_(u"Alignement du texte"), name="intro_alignement", labels=labels, values=[wx.ALIGN_LEFT, wx.ALIGN_CENTER, wx.ALIGN_RIGHT] , value=wx.ALIGN_LEFT)
-        propriete.SetHelpString(_(u"Sélectionnez le type d'alignement")) 
+        propriete.SetHelpString(_(u"SÃ©lectionnez le type d'alignement")) 
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
@@ -129,12 +129,12 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
 
         # Texte
         propriete = wxpg.StringProperty(label=_(u"Texte"), name="conclusion_texte", value=_(u"{NBRE_FACTURES} factures | Montant total : {TOTAL_FACTURES}"))
-        propriete.SetHelpString(_(u"Saisissez un texte. Vous pouvez utiliser les mots-clés suivants : {NBRE_FACTURES}, {TOTAL_FACTURES}, {NBRE_FACT_PRELEV}, {TOTAL_FACT_PRELEV}"))
+        propriete.SetHelpString(_(u"Saisissez un texte. Vous pouvez utiliser les mots-clÃ©s suivants : {NBRE_FACTURES}, {TOTAL_FACTURES}, {NBRE_FACT_PRELEV}, {TOTAL_FACT_PRELEV}"))
         self.Append(propriete)
 
         # Taille police
         propriete = wxpg.IntProperty(label=_(u"Taille de texte"), name="conclusion_taille_texte", value=7)
-        propriete.SetHelpString(_(u"Saisissez une taille de texte (7 par défaut)")) 
+        propriete.SetHelpString(_(u"Saisissez une taille de texte (7 par dÃ©faut)")) 
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
         self.SetPropertyEditor("conclusion_taille_texte", "SpinCtrl")
@@ -143,50 +143,50 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
 ##        labels = [_(u"Normal"), _(u"Light"), "Gras"]
 ##        valeurs = [wx.FONTWEIGHT_NORMAL, wx.FONTWEIGHT_LIGHT, wx.FONTWEIGHT_BOLD]
 ##        propriete = wxpg.EnumProperty(label=_(u"Style de texte"), name="conclusion_style", labels=labels, values=valeurs, value=wx.FONTWEIGHT_BOLD)
-##        propriete.SetHelpString(_(u"Sélectionnez un style de texte")) 
+##        propriete.SetHelpString(_(u"SÃ©lectionnez un style de texte")) 
 ##        propriete.SetAttribute("obligatoire", True)
 ##        self.Append(propriete)
         
         # Couleur
 ##        propriete = wxpg.ColourProperty(label=_(u"Couleur de texte"), name="conclusion_couleur", value=wx.BLACK)
-##        propriete.SetHelpString(_(u"Sélectionnez une couleur")) 
+##        propriete.SetHelpString(_(u"SÃ©lectionnez une couleur")) 
 ##        propriete.SetAttribute("obligatoire", True)
 ##        self.Append(propriete)
 
         # Alignement
         labels = [_(u"Gauche"), _(u"Centre"), _(u"Droite")]
         propriete = wxpg.EnumProperty(label=_(u"Alignement du texte"), name="conclusion_alignement", labels=labels, values=[wx.ALIGN_LEFT, wx.ALIGN_CENTER, wx.ALIGN_RIGHT] , value=wx.ALIGN_LEFT)
-        propriete.SetHelpString(_(u"Sélectionnez le type d'alignement")) 
+        propriete.SetHelpString(_(u"SÃ©lectionnez le type d'alignement")) 
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
 
     def Validation(self):
-        """ Validation des données saisies """
+        """ Validation des donnÃ©es saisies """
         for nom, valeur in self.GetPropertyValues().items() :
             propriete = self.GetPropertyByName(nom)
             if self.GetPropertyAttribute(propriete, "obligatoire") == True :
                 if valeur == "" or valeur == None :
-                    dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement renseigner le paramètre '%s' !") % nom, _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                    dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement renseigner le paramÃ¨tre '%s' !") % nom, _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                     dlg.ShowModal()
                     dlg.Destroy()
                     return False
         return True
         
     def Importation(self):
-        """ Importation des valeurs dans le contrôle """
-        # Récupération des noms et valeurs par défaut du contrôle
+        """ Importation des valeurs dans le contrÃ´le """
+        # RÃ©cupÃ©ration des noms et valeurs par dÃ©faut du contrÃ´le
         dictValeurs = copy.deepcopy(self.GetPropertyValues())
-        # Recherche les paramètres mémorisés
+        # Recherche les paramÃ¨tres mÃ©morisÃ©s
         dictParametres = UTILS_Parametres.ParametresCategorie(mode="get", categorie=self.categorie, dictParametres=dictValeurs)
-        # Envoie les paramètres dans le contrôle
+        # Envoie les paramÃ¨tres dans le contrÃ´le
         for nom, valeur in dictParametres.items() :
             propriete = self.GetPropertyByName(nom)
             ancienneValeur = propriete.GetValue() 
             propriete.SetValue(valeur)
     
     def Sauvegarde(self, forcer=False):
-        """ Mémorisation des valeurs du contrôle """
+        """ MÃ©morisation des valeurs du contrÃ´le """
         dictValeurs = copy.deepcopy(self.GetPropertyValues())
         UTILS_Parametres.ParametresCategorie(mode="set", categorie=self.categorie, dictParametres=dictValeurs)
         
@@ -202,7 +202,7 @@ class CTRL(wx.Panel):
         self.parent = parent
         self.categorie = categorie
 
-        # Paramètres généraux
+        # ParamÃ¨tres gÃ©nÃ©raux
         self.box_options_staticbox = wx.StaticBox(self, -1, _(u"Options d'impression"))
         if ctrl == None :
             self.ctrl_parametres = CTRL_Parametres(self, categorie=categorie)
@@ -221,7 +221,7 @@ class CTRL(wx.Panel):
         grid_sizer_base.AddGrowableCol(0)
         grid_sizer_base.AddGrowableRow(0)
 
-        # Paramètres généraux
+        # ParamÃ¨tres gÃ©nÃ©raux
         box_options = wx.StaticBoxSizer(self.box_options_staticbox, wx.VERTICAL)
         grid_sizer_parametres = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
         grid_sizer_parametres.Add(self.ctrl_parametres, 1, wx.EXPAND, 0)
@@ -245,7 +245,7 @@ class CTRL(wx.Panel):
     def GetOptions(self):
         dictOptions = {} 
         
-        # Récupération des paramètres
+        # RÃ©cupÃ©ration des paramÃ¨tres
         if self.ctrl_parametres.Validation() == False :
             return False
         for nom, valeur in self.ctrl_parametres.GetValeurs().items()  :
@@ -264,12 +264,12 @@ class Dialog(wx.Dialog):
 
         # Bandeau
         titre = _(u"Options d'impression")
-        intro = _(u"Vous pouvez ici modifier les paramètres d'impression du document. Cliquez sur le bouton 'Mémoriser les paramètres' pour réutiliser les mêmes paramètres pour les impressions suivantes.")
+        intro = _(u"Vous pouvez ici modifier les paramÃ¨tres d'impression du document. Cliquez sur le bouton 'MÃ©moriser les paramÃ¨tres' pour rÃ©utiliser les mÃªmes paramÃ¨tres pour les impressions suivantes.")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Imprimante.png")
 
 
-        # Paramètres
+        # ParamÃ¨tres
         self.ctrl_parametres = CTRL(self, categorie=categorie, ctrl=ctrl)
                 
         # Boutons

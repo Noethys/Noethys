@@ -186,7 +186,7 @@ class Newsticker(Control):
         texte = wordwrap(texte, self.GetSize()[0], dc, breakLongWords=True)
         self.UpdateExtent(dc, texte)
         
-        # Calcule le décalage à appliquer
+        # Calcule le dÃ©calage Ã  appliquer
         y = self.GetSize()[1] - self.decalage
         
         # Titre
@@ -261,8 +261,8 @@ class Newsticker(Control):
         self.pause = False
         
     def OnTick(self, evt):
-        """ Calcul du décalage """  
-        # Défilement continu
+        """ Calcul du dÃ©calage """  
+        # DÃ©filement continu
         if self.pause == False :
             self.decalage += self._ppf
             yHautBloc = self.GetSize()[1] - self.decalage + self.headingHeight
@@ -273,7 +273,7 @@ class Newsticker(Control):
                 # Changement de texte
                 self.SetText(self.GetNextPage())
         
-        # Calcul du décalage
+        # Calcul du dÃ©calage
         yHautBloc = self.GetSize()[1] - self.decalage
         yBasBloc = yHautBloc + self.textSize[1] + self.headingHeight
 

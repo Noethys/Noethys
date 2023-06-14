@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -60,18 +60,18 @@ class Dialog(wx.Dialog):
         self.SetTitle(_(u"Saisie d'un vaccin"))  
         
         self.sizer_nom_staticbox = wx.StaticBox(self, -1, _(u"1. Nom du vaccin"))
-        self.sizer_duree_staticbox = wx.StaticBox(self, -1, _(u"2. Durée de validité"))
-        self.sizer_maladies_staticbox = wx.StaticBox(self, -1, _(u"3. Maladies associées"))
+        self.sizer_duree_staticbox = wx.StaticBox(self, -1, _(u"2. DurÃ©e de validitÃ©"))
+        self.sizer_maladies_staticbox = wx.StaticBox(self, -1, _(u"3. Maladies associÃ©es"))
         
         self.label_nom = wx.StaticText(self, -1, "Nom :")
         self.ctrl_nom = wx.TextCtrl(self, -1, "")
-        self.radio_duree_1 = wx.RadioButton(self, -1, _(u"Validité illimitée"), style=wx.RB_GROUP)
-        self.radio_duree_2 = wx.RadioButton(self, -1, _(u"Validité limitée : "))
+        self.radio_duree_1 = wx.RadioButton(self, -1, _(u"ValiditÃ© illimitÃ©e"), style=wx.RB_GROUP)
+        self.radio_duree_2 = wx.RadioButton(self, -1, _(u"ValiditÃ© limitÃ©e : "))
         self.label_jours = wx.StaticText(self, -1, _(u"Jours :"))
         self.spin_jours = wx.SpinCtrl(self, -1, "", min=0, max=100)
         self.label_mois = wx.StaticText(self, -1, _(u"Mois :"))
         self.spin_mois = wx.SpinCtrl(self, -1, "", min=0, max=100)
-        self.label_annees = wx.StaticText(self, -1, _(u"Années :"))
+        self.label_annees = wx.StaticText(self, -1, _(u"AnnÃ©es :"))
         self.spin_annees = wx.SpinCtrl(self, -1, "", min=0, max=100)
         self.ctrl_maladies = CheckListBox(self)
         
@@ -94,8 +94,8 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez ici un nom de vaccin. Par exemple : 'DT Polio'")))
-        self.radio_duree_1.SetToolTip(wx.ToolTip(_(u"Sélectionnez 'Illimitée' si le vaccin est valable à vie")))
-        self.radio_duree_2.SetToolTip(wx.ToolTip(_(u"Sélectionnez 'Limitée' si vous pouvez définir une durée pour ce vaccin")))
+        self.radio_duree_1.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez 'IllimitÃ©e' si le vaccin est valable Ã  vie")))
+        self.radio_duree_2.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez 'LimitÃ©e' si vous pouvez dÃ©finir une durÃ©e pour ce vaccin")))
         self.spin_jours.SetMinSize((60, -1))
         self.spin_mois.SetMinSize((60, -1))
         self.spin_annees.SetMinSize((60, -1))
@@ -184,10 +184,10 @@ class Dialog(wx.Dialog):
         UTILS_Aide.Aide("Vaccins")
 
     def OnBoutonOk(self, event):
-        # Vérification des données saisies
+        # VÃ©rification des donnÃ©es saisies
         textNom = self.ctrl_nom.GetValue()
         if textNom == "" :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement donner un nom à ce vaccin !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement donner un nom Ã  ce vaccin !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_nom.SetFocus()
@@ -198,19 +198,19 @@ class Dialog(wx.Dialog):
         annees = int(self.spin_annees.GetValue())
 
         if jours == 0 and mois == 0 and annees == 0 and self.radio_duree_2.GetValue() == True:
-            dlg = wx.MessageDialog(self, _(u"Vous avez sélectionné une durée de validité limitée. \nVous devez donc saisir un nombre de jours et/ou de mois et/ou d'années."), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous avez sÃ©lectionnÃ© une durÃ©e de validitÃ© limitÃ©e. \nVous devez donc saisir un nombre de jours et/ou de mois et/ou d'annÃ©es."), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.spin_jours.SetFocus()
             return
         
         if self.ctrl_maladies.GetIDcoches() == 0:
-            dlg = wx.MessageDialog(self, _(u"Vous devez associer des maladies à ce vaccin"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez associer des maladies Ã  ce vaccin"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
             
-        # Fermeture de la fenêtre
+        # Fermeture de la fenÃªtre
         self.EndModal(wx.ID_OK)
 
     def GetNom(self):

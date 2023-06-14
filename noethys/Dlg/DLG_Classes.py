@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -74,7 +74,7 @@ class Dialog(wx.Dialog):
         
         # Bandeau
         titre = _(u"Gestion des classes")
-        intro = _(u"Vous pouvez ici paramétrer les classes pour chaque école. Vous devez obligatoirement indiquer pour chacune un nom, les dates de la saison et les niveaux scolaires concernés. Vous devez créer de nouvelles classes à chaque saison.")
+        intro = _(u"Vous pouvez ici paramÃ©trer les classes pour chaque Ã©cole. Vous devez obligatoirement indiquer pour chacune un nom, les dates de la saison et les niveaux scolaires concernÃ©s. Vous devez crÃ©er de nouvelles classes Ã  chaque saison.")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Classe.png")
         
@@ -105,15 +105,15 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonFermer, self.bouton_fermer)
         
-        # Init contrôles
+        # Init contrÃ´les
         self.OnChoixEcole(None)
         self.ActivationControles()
 
     def __set_properties(self):
-        self.ctrl_ecole.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici une école")))
-        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour créer une classe")))
-        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la classe sélectionnée dans la liste")))
-        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la classe sélectionnée dans la liste")))
+        self.ctrl_ecole.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez ici une Ã©cole")))
+        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour crÃ©er une classe")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la classe sÃ©lectionnÃ©e dans la liste")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la classe sÃ©lectionnÃ©e dans la liste")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         self.SetMinSize((620, 680))
@@ -122,7 +122,7 @@ class Dialog(wx.Dialog):
         grid_sizer_base = wx.FlexGridSizer(rows=4, cols=1, vgap=10, hgap=10)
         grid_sizer_base.Add(self.ctrl_bandeau, 0, wx.EXPAND, 0)
         
-        # Catégorie
+        # CatÃ©gorie
         staticbox_ecole = wx.StaticBoxSizer(self.staticbox_ecole_staticbox, wx.VERTICAL)
         grid_sizer_ecole = wx.FlexGridSizer(rows=1, cols=2, vgap=10, hgap=10)
         grid_sizer_ecole.Add(self.label_ecole, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
@@ -131,7 +131,7 @@ class Dialog(wx.Dialog):
         staticbox_ecole.Add(grid_sizer_ecole, 1, wx.ALL|wx.EXPAND, 10)
         grid_sizer_base.Add(staticbox_ecole, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
         
-        # Modèles
+        # ModÃ¨les
         staticbox_classes = wx.StaticBoxSizer(self.staticbox_classes_staticbox, wx.VERTICAL)
         grid_sizer_classes = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
         grid_sizer_classes.Add(self.ctrl_classes, 1, wx.EXPAND, 0)

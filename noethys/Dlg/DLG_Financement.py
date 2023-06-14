@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-16 Ivan LUCAS
@@ -52,7 +52,7 @@ class CTRL_Titre(wx.Panel):
         # Titre
         self.label_titre = wx.StaticText(self, -1, _(u"Aller\nplus loin\navec\nNoethys"), style=wx.ALIGN_CENTER)
 
-        # Propriétés
+        # PropriÃ©tÃ©s
         # self.SetBackgroundColour(wx.BLACK)
         # self.label_titre.SetForegroundColour(wx.WHITE)
         self.label_titre.SetFont(wx.Font(14, wx.FONTFAMILY_DEFAULT, wx.NORMAL, wx.BOLD))
@@ -85,9 +85,9 @@ class Page_documentation(wx.Panel):
         self.bouton_imprimer = CTRL_Bouton_image.CTRL(self, texte=_(u"Bon de commande"), cheminImage="Images/32x32/Imprimante.png")
         self.bouton_fermer = CTRL_Bouton_image.CTRL(self, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
-        # Propriétés
-        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour en savoir plus sur le manuel de référence")))
-        self.bouton_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer le bon de commande et les conditions générales de vente")))
+        # PropriÃ©tÃ©s
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour en savoir plus sur le manuel de rÃ©fÃ©rence")))
+        self.bouton_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer le bon de commande et les conditions gÃ©nÃ©rales de vente")))
         self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
 
         # Calcule les espaces du sizer
@@ -113,7 +113,7 @@ class Page_documentation(wx.Panel):
 
         self.SetSizer(grid_sizer_base)
 
-        # Calcule taille de la fenêtre
+        # Calcule taille de la fenÃªtre
         self.SetMinSize(self.image_fond.GetSize())
         self.Layout()
 
@@ -146,7 +146,7 @@ class Page_documentation(wx.Panel):
         try:
             FonctionsPerso.LanceFichierExterne("https://noethys.com/public/bon_commande_documentation.pdf")
         except:
-            dlg = wx.MessageDialog(None, _(u"Noethys ne peut pas ouvrir le PDF !\n\nVeuillez vérifier qu'un autre PDF n'est pas déjà ouvert en arrière-plan..."),_(u"Erreur"), wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(None, _(u"Noethys ne peut pas ouvrir le PDF !\n\nVeuillez vÃ©rifier qu'un autre PDF n'est pas dÃ©jÃ  ouvert en arriÃ¨re-plan..."),_(u"Erreur"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
 
@@ -168,9 +168,9 @@ class Page_connecthys(wx.Panel):
         self.bouton_imprimer = CTRL_Bouton_image.CTRL(self, texte=_(u"Bon de commande"), cheminImage="Images/32x32/Imprimante.png")
         self.bouton_fermer = CTRL_Bouton_image.CTRL(self, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
-        # Propriétés
+        # PropriÃ©tÃ©s
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour en savoir plus sur Connecthys Easy")))
-        self.bouton_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer le bon de commande et les conditions générales de vente")))
+        self.bouton_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer le bon de commande et les conditions gÃ©nÃ©rales de vente")))
         self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
 
         # Calcule les espaces du sizer
@@ -196,7 +196,7 @@ class Page_connecthys(wx.Panel):
 
         self.SetSizer(grid_sizer_base)
 
-        # Calcule taille de la fenêtre
+        # Calcule taille de la fenÃªtre
         self.SetMinSize(self.image_fond.GetSize())
         self.Layout()
 
@@ -229,7 +229,7 @@ class Page_connecthys(wx.Panel):
         try:
             FonctionsPerso.LanceFichierExterne("https://www.connecthys.com/bon_commande_connecthys.pdf")
         except:
-            dlg = wx.MessageDialog(None, _(u"Noethys ne peut pas ouvrir le PDF !\n\nVeuillez vérifier qu'un autre PDF n'est pas déjà ouvert en arrière-plan..."),_(u"Erreur"), wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(None, _(u"Noethys ne peut pas ouvrir le PDF !\n\nVeuillez vÃ©rifier qu'un autre PDF n'est pas dÃ©jÃ  ouvert en arriÃ¨re-plan..."),_(u"Erreur"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
 
@@ -248,7 +248,7 @@ class Page_formations(wx.Panel):
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"En savoir plus"), cheminImage="Images/32x32/Aide.png")
         self.bouton_fermer = CTRL_Bouton_image.CTRL(self, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
-        # Propriétés
+        # PropriÃ©tÃ©s
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour en savoir plus sur les formations")))
         self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
 
@@ -274,7 +274,7 @@ class Page_formations(wx.Panel):
 
         self.SetSizer(grid_sizer_base)
 
-        # Calcule taille de la fenêtre
+        # Calcule taille de la fenÃªtre
         self.SetMinSize(self.image_fond.GetSize())
         self.Layout()
 
@@ -317,7 +317,7 @@ class Page_developpement(wx.Panel):
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"En savoir plus"), cheminImage="Images/32x32/Aide.png")
         self.bouton_fermer = CTRL_Bouton_image.CTRL(self, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
-        # Propriétés
+        # PropriÃ©tÃ©s
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour en savoir plus")))
         self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
 
@@ -343,7 +343,7 @@ class Page_developpement(wx.Panel):
 
         self.SetSizer(grid_sizer_base)
 
-        # Calcule taille de la fenêtre
+        # Calcule taille de la fenÃªtre
         self.SetMinSize(self.image_fond.GetSize())
         self.Layout()
 
@@ -368,7 +368,7 @@ class Page_developpement(wx.Panel):
         self.GetParent().EndModal(wx.ID_CANCEL)
 
     def OnBoutonAide(self, event):
-        dlg = wx.MessageDialog(None, _(u"Pour en savoir davantage sur les développements, consultez le concepteur de Noethys depuis le menu Aide > Envoyer un email à l'auteur."), _(u"Information"), wx.OK | wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(None, _(u"Pour en savoir davantage sur les dÃ©veloppements, consultez le concepteur de Noethys depuis le menu Aide > Envoyer un email Ã  l'auteur."), _(u"Information"), wx.OK | wx.ICON_INFORMATION)
         dlg.ShowModal()
         dlg.Destroy()
 
@@ -389,9 +389,9 @@ class Page_assistance(wx.Panel):
         self.bouton_imprimer = CTRL_Bouton_image.CTRL(self, texte=_(u"Bon de commande"), cheminImage="Images/32x32/Imprimante.png")
         self.bouton_fermer = CTRL_Bouton_image.CTRL(self, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
-        # Propriétés
+        # PropriÃ©tÃ©s
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour en savoir plus")))
-        self.bouton_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer le bon de commande et les conditions générales de vente")))
+        self.bouton_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer le bon de commande et les conditions gÃ©nÃ©rales de vente")))
         self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
 
         # Calcule les espaces du sizer
@@ -417,7 +417,7 @@ class Page_assistance(wx.Panel):
 
         self.SetSizer(grid_sizer_base)
 
-        # Calcule taille de la fenêtre
+        # Calcule taille de la fenÃªtre
         self.SetMinSize(self.image_fond.GetSize())
         self.Layout()
 
@@ -449,7 +449,7 @@ class Page_assistance(wx.Panel):
         try:
             FonctionsPerso.LanceFichierExterne("https://noethys.com/public/bon_commande_assistance.pdf")
         except:
-            dlg = wx.MessageDialog(None, _(u"Noethys ne peut pas ouvrir le PDF !\n\nVeuillez vérifier qu'un autre PDF n'est pas déjà ouvert en arrière-plan..."),_(u"Erreur"), wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(None, _(u"Noethys ne peut pas ouvrir le PDF !\n\nVeuillez vÃ©rifier qu'un autre PDF n'est pas dÃ©jÃ  ouvert en arriÃ¨re-plan..."),_(u"Erreur"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
 
@@ -471,7 +471,7 @@ class Dialog(wx.Dialog):
             {"code": "documentation", "titre" : _(u"Documentation"), "page" : Page_documentation(self), "image": 'Images/32x32/Livre.png'},
             {"code": "connecthys", "titre": _(u"Connecthys Easy"), "page": Page_connecthys(self), "image": 'Images/32x32/Connecthys.png'},
             {"code": "formations", "titre": _(u"Formations"), "page": Page_formations(self), "image": 'Images/32x32/Classe.png'},
-            {"code": "developpement", "titre": _(u"Développement"), "page": Page_developpement(self), "image": 'Images/32x32/Questionnaire.png'},
+            {"code": "developpement", "titre": _(u"DÃ©veloppement"), "page": Page_developpement(self), "image": 'Images/32x32/Questionnaire.png'},
         ]
 
         if Affiche_assistance():
@@ -493,7 +493,7 @@ class Dialog(wx.Dialog):
 
         sizer_h = wx.BoxSizer(wx.HORIZONTAL)
 
-        # Création des boutons
+        # CrÃ©ation des boutons
         grid_sizer_boutons = wx.FlexGridSizer(rows=7, cols=1, vgap=5, hgap=5)
         #grid_sizer_boutons.Add(self.ctrl_titre, 1, wx.EXPAND, 0)
         for bouton in self.liste_boutons:
@@ -501,7 +501,7 @@ class Dialog(wx.Dialog):
         sizer_h.Add(grid_sizer_boutons, 0, wx.EXPAND | wx.ALL, 5)
         # grid_sizer_boutons.AddGrowableRow(0)
 
-        # Création des pages
+        # CrÃ©ation des pages
         self.sizer_pages = wx.BoxSizer(wx.VERTICAL)
         for item in self.liste_pages:
             self.sizer_pages.Add(item["page"], 0, wx.EXPAND, 0)

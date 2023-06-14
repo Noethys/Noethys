@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-14 Ivan LUCAS
@@ -154,11 +154,11 @@ class Dialog(wx.Dialog):
         self.parent = parent 
         self.IDbudget = IDbudget
         
-        # Généralités
-        self.box_generalites_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Généralités"))
+        # GÃ©nÃ©ralitÃ©s
+        self.box_generalites_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"GÃ©nÃ©ralitÃ©s"))
         self.label_nom = wx.StaticText(self, wx.ID_ANY, _(u"Nom :"))
         self.ctrl_nom = wx.TextCtrl(self, wx.ID_ANY, u"")
-        self.label_periode = wx.StaticText(self, wx.ID_ANY, _(u"Période :"))
+        self.label_periode = wx.StaticText(self, wx.ID_ANY, _(u"PÃ©riode :"))
         self.ctrl_date_debut = CTRL_Saisie_date.Date2(self)
         self.label_au = wx.StaticText(self, wx.ID_ANY, _(u"au"))
         self.ctrl_date_fin = CTRL_Saisie_date.Date2(self)
@@ -170,8 +170,8 @@ class Dialog(wx.Dialog):
         self.box_analytiques_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Postes analytiques"))
         self.ctrl_analytiques = CTRL_Analytiques(self)
 
-        # Catégories
-        self.box_categories_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Catégories budgétaires"))
+        # CatÃ©gories
+        self.box_categories_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"CatÃ©gories budgÃ©taires"))
         self.notebook = wx.Notebook(self, -1, style=wx.BK_BOTTOM)
         
         self.ctrl_categories_debit = Panel_OL(self.notebook, "debit")
@@ -179,8 +179,8 @@ class Dialog(wx.Dialog):
 
 ##        self.ctrl_categories_debit = OL_Categories_budgetaires.ListView(self.notebook, id=-1, typeCategorie="debit", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
 ##        self.ctrl_categories_credit = OL_Categories_budgetaires.ListView(self.notebook, id=-1, typeCategorie="credit", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
-        self.notebook.AddPage(self.ctrl_categories_debit, _(u"Débit"))
-        self.notebook.AddPage(self.ctrl_categories_credit, _(u"Crédit"))
+        self.notebook.AddPage(self.ctrl_categories_debit, _(u"DÃ©bit"))
+        self.notebook.AddPage(self.ctrl_categories_credit, _(u"CrÃ©dit"))
         
         self.bouton_ajouter_categories = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Ajouter.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_modifier_categories = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Modifier.png"), wx.BITMAP_TYPE_ANY))
@@ -202,7 +202,7 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
         
-        # Importation de l'opération
+        # Importation de l'opÃ©ration
         if self.IDbudget != None :
             self.Importation()
             titre = _(u"Modification d'un budget")
@@ -210,7 +210,7 @@ class Dialog(wx.Dialog):
             titre = _(u"Saisie d'un budget")
         self.SetTitle(titre)
         
-        # Importation des catégories
+        # Importation des catÃ©gories
         self.tracksDebitInitial = []
         self.tracksCreditInitial = []
         self.tracksInitial = []
@@ -227,13 +227,13 @@ class Dialog(wx.Dialog):
                 
 
     def __set_properties(self):
-        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez un nom pour ce budget (Ex : Année 2015)")))
-        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez la date de début de la période à budgéter")))
-        self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez la date de fin de la période à budgéter")))
+        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez un nom pour ce budget (Ex : AnnÃ©e 2015)")))
+        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez la date de dÃ©but de la pÃ©riode Ã  budgÃ©ter")))
+        self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez la date de fin de la pÃ©riode Ã  budgÃ©ter")))
         self.ctrl_observations.SetToolTip(wx.ToolTip(_(u"Saisissez des observations")))
-        self.bouton_ajouter_categories.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter une catégorie budgétaire")))
-        self.bouton_modifier_categories.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la catégorie budgétaire sélectionnée")))
-        self.bouton_supprimer_categories.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la catégorie budgétaire sélectionnée")))
+        self.bouton_ajouter_categories.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter une catÃ©gorie budgÃ©taire")))
+        self.bouton_modifier_categories.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la catÃ©gorie budgÃ©taire sÃ©lectionnÃ©e")))
+        self.bouton_supprimer_categories.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la catÃ©gorie budgÃ©taire sÃ©lectionnÃ©e")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
@@ -243,7 +243,7 @@ class Dialog(wx.Dialog):
         grid_sizer_base = wx.FlexGridSizer(3, 1, 10, 10)
         grid_sizer_haut = wx.FlexGridSizer(1, 2, 10, 10)
 
-        # Généralités
+        # GÃ©nÃ©ralitÃ©s
         box_generalites = wx.StaticBoxSizer(self.box_generalites_staticbox, wx.VERTICAL)
         grid_sizer_generalites = wx.FlexGridSizer(5, 2, 10, 10)
                 
@@ -275,7 +275,7 @@ class Dialog(wx.Dialog):
 
         grid_sizer_base.Add(grid_sizer_haut, 1, wx.LEFT | wx.RIGHT | wx.TOP | wx.EXPAND, 10)
         
-        # Catégories
+        # CatÃ©gories
         box_categories = wx.StaticBoxSizer(self.box_categories_staticbox, wx.VERTICAL)
         grid_sizer_categories = wx.FlexGridSizer(1, 2, 5, 5)
         grid_sizer_categories.Add(self.notebook, 1, wx.EXPAND, 0)
@@ -381,21 +381,21 @@ class Dialog(wx.Dialog):
             return False
 
         if date_debut == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de début de période pour ce budget !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de dÃ©but de pÃ©riode pour ce budget !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_debut.SetFocus()
             return False
 
         if date_fin == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de fin de période pour ce budget !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de fin de pÃ©riode pour ce budget !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_fin.SetFocus()
             return False
 
         if date_fin < date_debut :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de fin supérieure à la date de début de période !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de fin supÃ©rieure Ã  la date de dÃ©but de pÃ©riode !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_fin.SetFocus()
@@ -407,7 +407,7 @@ class Dialog(wx.Dialog):
             dlg.Destroy()
             return False
 
-        # Sauvegarde de l'opération
+        # Sauvegarde de l'opÃ©ration
         DB = GestionDB.DB()
         
         listeDonnees = [ 
@@ -422,7 +422,7 @@ class Dialog(wx.Dialog):
         else :
             DB.ReqMAJ("compta_budgets", listeDonnees, "IDbudget", self.IDbudget)
 
-        # Sauvegarde des catégories
+        # Sauvegarde des catÃ©gories
         listeID = []
         for listeTracks in (tracksCategoriesDebit, tracksCategoriesCredit) :
             for track in listeTracks :
@@ -438,7 +438,7 @@ class Dialog(wx.Dialog):
                     DB.ReqMAJ("compta_categories_budget", listeDonnees, "IDcategorie_budget", track.IDcategorie_budget)
                 listeID.append(track.IDcategorie_budget) 
                 
-        # Supprime les catégories supprimées
+        # Supprime les catÃ©gories supprimÃ©es
         for track in self.tracksInitial :
             if track.IDcategorie_budget not in listeID :
                 DB.ReqDEL("compta_categories_budget", "IDcategorie_budget", track.IDcategorie_budget)

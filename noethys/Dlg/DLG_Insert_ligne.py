@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-16 Ivan LUCAS
@@ -25,14 +25,14 @@ class Dialog(wx.Dialog):
 
         # Nbre de lignes
         self.staticbox_generalites_staticbox = wx.StaticBox(self, -1, _(u"Lignes"))
-        self.label_nbre_lignes = wx.StaticText(self, -1, u"Saisissez le nombre de lignes à insérer :")
+        self.label_nbre_lignes = wx.StaticText(self, -1, u"Saisissez le nombre de lignes Ã  insÃ©rer :")
         self.ctrl_nbre_lignes = wx.SpinCtrl(self, -1, "1", size=(60, -1), style=wx.TE_PROCESS_ENTER)
 
         # Options
         self.staticbox_options_staticbox = wx.StaticBox(self, -1, _(u"Options"))
-        self.radio_debut = wx.RadioButton(self, -1, _(u"Au début du tableau"), style=wx.RB_GROUP)
-        self.radio_avant = wx.RadioButton(self, -1, _(u"Avant la ligne sélectionnée"))
-        self.radio_apres = wx.RadioButton(self, -1, _(u"Après la ligne sélectionnée"))
+        self.radio_debut = wx.RadioButton(self, -1, _(u"Au dÃ©but du tableau"), style=wx.RB_GROUP)
+        self.radio_avant = wx.RadioButton(self, -1, _(u"Avant la ligne sÃ©lectionnÃ©e"))
+        self.radio_apres = wx.RadioButton(self, -1, _(u"AprÃ¨s la ligne sÃ©lectionnÃ©e"))
         self.radio_fin = wx.RadioButton(self, -1, _(u"A la fin du tableau"))
 
         # Boutons
@@ -50,15 +50,15 @@ class Dialog(wx.Dialog):
         self.radio_apres.SetValue(True)
 
     def __set_properties(self):
-        self.SetTitle(_(u"Insérer des lignes"))
-        self.ctrl_nbre_lignes.SetToolTip(wx.ToolTip(_(u"Saisissez le nombre de lignes à insérer")))
+        self.SetTitle(_(u"InsÃ©rer des lignes"))
+        self.ctrl_nbre_lignes.SetToolTip(wx.ToolTip(_(u"Saisissez le nombre de lignes Ã  insÃ©rer")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler et fermer")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
 
-        # Généralités
+        # GÃ©nÃ©ralitÃ©s
         staticbox_generalites = wx.StaticBoxSizer(self.staticbox_generalites_staticbox, wx.VERTICAL)
         grid_sizer_generalites = wx.FlexGridSizer(rows=1, cols=2, vgap=10, hgap=10)
         grid_sizer_generalites.Add(self.label_nbre_lignes, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)

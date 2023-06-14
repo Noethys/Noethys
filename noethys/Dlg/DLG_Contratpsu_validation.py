@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-15 Ivan LUCAS
@@ -19,7 +19,7 @@ from Ctrl import CTRL_Bandeau
 from Ol import OL_Contratspsu_validation
 import GestionDB
 
-LISTE_MOIS = [_(u"Janvier"), _(u"Février"), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"Août"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"Décembre")]
+LISTE_MOIS = [_(u"Janvier"), _(u"FÃ©vrier"), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"AoÃ»t"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"DÃ©cembre")]
 
 
 class CTRL_Activite(wx.Choice):
@@ -47,7 +47,7 @@ class CTRL_Activite(wx.Choice):
         self.dictDonnees = {}
         index = 0
         for IDactivite, nom, abrege in listeDonnees :
-            if nom == None : nom = u"Activité inconnue"
+            if nom == None : nom = u"ActivitÃ© inconnue"
             self.dictDonnees[index] = {"ID" : IDactivite, "nom" : nom, "abrege" : abrege}
             listeItems.append(nom)
             index += 1
@@ -64,7 +64,7 @@ class CTRL_Activite(wx.Choice):
         return self.dictDonnees[index]["ID"]
 
     def GetInfos(self):
-        """ Récupère les infos sur le compte sélectionné """
+        """ RÃ©cupÃ¨re les infos sur le compte sÃ©lectionnÃ© """
         index = self.GetSelection()
         if index == -1 : return None
         return self.dictDonnees[index]
@@ -76,23 +76,23 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         
-        intro = _(u"Avant de générer les factures d'une activité de type P.S.U., vous devez commencer par générer ici les mensualités pour le mois souhaité. Notez qu'il est est possible de saisir manuellement un nombre d'heures de régularisation avant de valider la génération.")
+        intro = _(u"Avant de gÃ©nÃ©rer les factures d'une activitÃ© de type P.S.U., vous devez commencer par gÃ©nÃ©rer ici les mensualitÃ©s pour le mois souhaitÃ©. Notez qu'il est est possible de saisir manuellement un nombre d'heures de rÃ©gularisation avant de valider la gÃ©nÃ©ration.")
         titre = _(u"Validation des contrats P.S.U.")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Contrat.png")
         
-        # Paramètres
-        self.box_parametres_staticbox = wx.StaticBox(self, -1, _(u"Paramètres"))
+        # ParamÃ¨tres
+        self.box_parametres_staticbox = wx.StaticBox(self, -1, _(u"ParamÃ¨tres"))
         self.label_mois = wx.StaticText(self, -1, _(u"Mois :"))
         self.ctrl_mois = wx.Choice(self, -1, choices=LISTE_MOIS)
         self.spin_mois = wx.SpinButton(self, -1, size=(18, 20),  style=wx.SP_VERTICAL)
         self.spin_mois.SetRange(-1, 1)
         self.ctrl_annee = wx.SpinCtrl(self, -1, size=(60, -1), min=2000, max=2999)
-        self.label_activite = wx.StaticText(self, -1, _(u"Activité :"))
+        self.label_activite = wx.StaticText(self, -1, _(u"ActivitÃ© :"))
         self.ctrl_activite = CTRL_Activite(self)
 
         # Contrats
-        self.box_contrats_staticbox = wx.StaticBox(self, -1, _(u"Mensualités"))
+        self.box_contrats_staticbox = wx.StaticBox(self, -1, _(u"MensualitÃ©s"))
         self.listviewAvecFooter = OL_Contratspsu_validation.ListviewAvecFooter(self)
         self.ctrl_contrats = self.listviewAvecFooter.GetListview()
         self.ctrl_recherche = OL_Contratspsu_validation.CTRL_Outils(self, listview=self.ctrl_contrats, afficherCocher=True)
@@ -104,7 +104,7 @@ class Dialog(wx.Dialog):
         self.bouton_texte = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Texte2.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_excel = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Excel.png"), wx.BITMAP_TYPE_ANY))
 
-        self.label_info = wx.StaticText(self, -1, _(u"Remarque : Vous pouvez double-cliquer dans la colonne 'H. régular.' pour saisir un nombre positif ou négatif d'heures de régularisation."))
+        self.label_info = wx.StaticText(self, -1, _(u"Remarque : Vous pouvez double-cliquer dans la colonne 'H. rÃ©gular.' pour saisir un nombre positif ou nÃ©gatif d'heures de rÃ©gularisation."))
         self.label_info.SetFont(wx.Font(8, wx.SWISS, wx.NORMAL, wx.NORMAL))
         self.label_info.SetForegroundColour(wx.Colour(180, 180, 180))
 
@@ -138,9 +138,9 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
-        self.bouton_detail.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher un aperçu du détail de la mensualité sélectionnée")))
-        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer les prestations existantes des lignes sélectionnées ou cochées")))
-        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour créer un aperçu de la liste")))
+        self.bouton_detail.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher un aperÃ§u du dÃ©tail de la mensualitÃ© sÃ©lectionnÃ©e")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer les prestations existantes des lignes sÃ©lectionnÃ©es ou cochÃ©es")))
+        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour crÃ©er un aperÃ§u de la liste")))
         self.bouton_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer la liste")))
         self.bouton_texte.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter la liste au format Texte")))
         self.bouton_excel.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter la liste au format Excel")))

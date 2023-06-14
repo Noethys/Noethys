@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-19 Ivan LUCAS
@@ -23,7 +23,7 @@ from Utils import UTILS_Gestion
 from Utils import UTILS_Config
 from Utils import UTILS_Titulaires
 from Utils import UTILS_Dates
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"â‚¬")
 
 from Utils import UTILS_Interface
 from Ctrl.CTRL_ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils, PanelAvecFooter
@@ -56,7 +56,7 @@ class Track(object):
         self.IDfamille = donnees[14]
         self.inclus = True
 
-        # Récupération du nom des titulaires
+        # RÃ©cupÃ©ration du nom des titulaires
         self.nomTitulaires = _(" ")
         try :
             self.nomTitulaires = self.parent.dict_titulaires[self.IDfamille]["titulairesSansCivilite"]
@@ -73,7 +73,7 @@ class Track(object):
         for dict_ventilation in self.liste_ventilation:
             self.montant_ventilation += dict_ventilation["montant"]
 
-            # Mémorisation des factures associées
+            # MÃ©morisation des factures associÃ©es
             if dict_ventilation["IDfacture"] != None:
 
                 IDprefixe = dict_ventilation["IDprefixe"]
@@ -89,20 +89,20 @@ class Track(object):
                     dict_factures[key] = 0.0
                 dict_factures[key] += dict_ventilation["montant"]
 
-            # Mémorisation des prestations associées
+            # MÃ©morisation des prestations associÃ©es
             if dict_ventilation[self.parent.detail] not in dict_prestations:
                 dict_prestations[dict_ventilation[self.parent.detail]] = 0.0
             dict_prestations[dict_ventilation[self.parent.detail]] += dict_ventilation["montant"]
 
-        # Analyse des factures associées
+        # Analyse des factures associÃ©es
         self.texte_factures = ""
         if len(dict_factures) > 0:
             liste_temp = []
             for (IDfacture, num_facture), montant in dict_factures.items():
-                liste_temp.append(u" n°%s (%.2f %s)" % (num_facture, montant, SYMBOLE))
+                liste_temp.append(u" nÂ°%s (%.2f %s)" % (num_facture, montant, SYMBOLE))
             self.texte_factures = u", ".join(liste_temp)
 
-        # Analyse des prestations associées
+        # Analyse des prestations associÃ©es
         self.texte_prestations = ""
         if self.parent.detail == "label":
             if len(dict_prestations) > 0:
@@ -144,7 +144,7 @@ class ListView(FastObjectListView):
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
-        """ Récupération des données """
+        """ RÃ©cupÃ©ration des donnÃ©es """
         # Filtres
         criteres = ""
         if len(self.listeFiltres) > 0 :
@@ -200,7 +200,7 @@ class ListView(FastObjectListView):
             else:
                 liste_ventilation = []
 
-            # Mémorisation du track règlement
+            # MÃ©morisation du track rÃ¨glement
             track = Track(self, item, liste_ventilation)
             listeListeView.append(track)
         return listeListeView
@@ -257,18 +257,18 @@ class ListView(FastObjectListView):
             ColumnDefn(_(u"Date"), 'left', 75, "date", typeDonnee="date", stringConverter=FormateDateCourt),
             ColumnDefn(_(u"Mode"), 'left', 90, "nom_mode", typeDonnee="texte"),
             ColumnDefn(_(u"Emetteur"), 'left', 110, "nom_emetteur", typeDonnee="texte"),
-            ColumnDefn(_(u"Numéro"), 'left', 60, "numero_piece", typeDonnee="texte"),
+            ColumnDefn(_(u"NumÃ©ro"), 'left', 60, "numero_piece", typeDonnee="texte"),
             ColumnDefn(_(u"Famille"), 'left', 130, "nomTitulaires", typeDonnee="texte"),
             ColumnDefn(_(u"Payeur"), 'left', 130, "nom_payeur", typeDonnee="texte"),
             ColumnDefn(_(u"Montant"), 'right', 60, "montant", typeDonnee="montant", stringConverter=FormateMontant),
-            ColumnDefn(_(u"Ventilé"), 'right', 80, "montant_ventilation", typeDonnee="montant", stringConverter=FormateMontant, imageGetter=GetImageVentilation),
-            ColumnDefn(_(u"Date dépôt"), 'left', 75, "date_depot", typeDonnee="date", stringConverter=FormateDateCourt),
-            ColumnDefn(_(u"Nom dépôt"), 'left', 110, "nom_depot", typeDonnee="texte"),
-            ColumnDefn(_(u"Factures associées"), 'left', 130, "texte_factures", typeDonnee="texte"),
+            ColumnDefn(_(u"VentilÃ©"), 'right', 80, "montant_ventilation", typeDonnee="montant", stringConverter=FormateMontant, imageGetter=GetImageVentilation),
+            ColumnDefn(_(u"Date dÃ©pÃ´t"), 'left', 75, "date_depot", typeDonnee="date", stringConverter=FormateDateCourt),
+            ColumnDefn(_(u"Nom dÃ©pÃ´t"), 'left', 110, "nom_depot", typeDonnee="texte"),
+            ColumnDefn(_(u"Factures associÃ©es"), 'left', 130, "texte_factures", typeDonnee="texte"),
             ]
 
         if self.detail == "label":
-            liste_Colonnes.append(ColumnDefn(_(u"Prestations associées"), 'left', 250, "texte_prestations", typeDonnee="texte"))
+            liste_Colonnes.append(ColumnDefn(_(u"Prestations associÃ©es"), 'left', 250, "texte_prestations", typeDonnee="texte"))
 
         if self.detail == "IDactivite":
             for key_label in self.colonnes_detail:
@@ -277,7 +277,7 @@ class ListView(FastObjectListView):
                 liste_Colonnes.append(ColumnDefn(label_colonne, "right", 100, key_label, typeDonnee="montant", stringConverter=FormateMontant))
 
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(_(u"Aucun règlement"))
+        self.SetEmptyListMsg(_(u"Aucun rÃ¨glement"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
         self.SortBy(self.numColonneTri, ascending=self.ordreAscendant)
         self.SetObjects(self.donnees)
@@ -291,7 +291,7 @@ class ListView(FastObjectListView):
             self.selectionTrack = None
         self.InitModel()
         self.InitObjectListView()
-        # Sélection d'un item
+        # SÃ©lection d'un item
         if self.selectionTrack != None :
             self.SelectObject(self.selectionTrack, deselectOthers=True, ensureVisible=True)
         self.selectionID = None
@@ -310,10 +310,10 @@ class ListView(FastObjectListView):
             noSelection = False
             ID = self.Selection()[0].IDreglement
                 
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
-        # Génération automatique des fonctions standards
+        # GÃ©nÃ©ration automatique des fonctions standards
         self.GenerationContextMenu(menuPop, dictParametres=self.GetParametresImpression())
 
         self.PopupMenu(menuPop)
@@ -327,7 +327,7 @@ class ListView(FastObjectListView):
         total = self.GetDetailReglements()
 
         dictParametres = {
-            "titre" : _(u"Liste des règlements"),
+            "titre" : _(u"Liste des rÃ¨glements"),
             "intro" : intro,
             "total" : total,
             "orientation" : wx.LANDSCAPE,
@@ -335,7 +335,7 @@ class ListView(FastObjectListView):
         return dictParametres
 
     def GetDetailReglements(self):
-        # Récupération des chiffres
+        # RÃ©cupÃ©ration des chiffres
         nbreTotal = 0
         montantTotal = 0.0
         dictDetails = {}
@@ -345,15 +345,15 @@ class ListView(FastObjectListView):
                 nbreTotal += 1
                 # Nbre total
                 montantTotal += track.montant
-                # Détail
+                # DÃ©tail
                 if (track.IDmode in dictDetails) == False :
                     dictDetails[track.IDmode] = { "label" : track.nom_mode, "nbre" : 0, "montant" : 0.0}
                 dictDetails[track.IDmode]["nbre"] += 1
                 dictDetails[track.IDmode]["montant"] += track.montant
-        # Création du texte
-        texte = _(u"%d règlements (%.2f ¤) : ") % (nbreTotal, montantTotal)
+        # CrÃ©ation du texte
+        texte = _(u"%d rÃ¨glements (%.2f â‚¬) : ") % (nbreTotal, montantTotal)
         for IDmode, dictDetail in dictDetails.items() :
-            texteDetail = u"%d %s (%.2f ¤), " % (dictDetail["nbre"], dictDetail["label"], dictDetail["montant"])
+            texteDetail = u"%d %s (%.2f â‚¬), " % (dictDetail["nbre"], dictDetail["label"], dictDetail["montant"])
             texte += texteDetail
         if len(dictDetails) > 0 :
             texte = texte[:-2] + u"."
@@ -368,7 +368,7 @@ class ListView(FastObjectListView):
 class ListviewAvecFooter(PanelAvecFooter):
     def __init__(self, parent, kwargs={}):
         dictColonnes = {
-            "nom_mode" : {"mode" : "nombre", "singulier" : _(u"règlement"), "pluriel" : _(u"règlements"), "alignement" : wx.ALIGN_CENTER},
+            "nom_mode" : {"mode" : "nombre", "singulier" : _(u"rÃ¨glement"), "pluriel" : _(u"rÃ¨glements"), "alignement" : wx.ALIGN_CENTER},
             "montant" : {"mode" : "total"},
             "montant_ventilation" : {"mode" : "total"},
             "activite_0": {"mode": "total"},

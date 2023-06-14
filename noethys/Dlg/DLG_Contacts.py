@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-20 Ivan LUCAS
@@ -26,11 +26,11 @@ class Dialog(wx.Dialog):
         self.mode = mode
         
         if self.mode == "selection" :
-            intro = _(u"Vous pouvez ici sélectionner un contact dans le carnet d'adresses. Double-cliquez sur une ligne pour effectuer rapidement la sélection.")
-            titre = _(u"Sélection d'un contact")
-            self.SetTitle(_(u"Sélection d'un contact"))
+            intro = _(u"Vous pouvez ici sÃ©lectionner un contact dans le carnet d'adresses. Double-cliquez sur une ligne pour effectuer rapidement la sÃ©lection.")
+            titre = _(u"SÃ©lection d'un contact")
+            self.SetTitle(_(u"SÃ©lection d'un contact"))
         else:
-            intro = _(u"Vous pouvez ici saisir, modifier ou supprimer des contacts dans le carnet d'adresses. Ceux-ci peuvent notamment être ensuite utilisés dans l'éditeur d'emails.")
+            intro = _(u"Vous pouvez ici saisir, modifier ou supprimer des contacts dans le carnet d'adresses. Ceux-ci peuvent notamment Ãªtre ensuite utilisÃ©s dans l'Ã©diteur d'emails.")
             titre = _(u"Gestion du carnet d'adresses")
             self.SetTitle(_(u"Gestion du carnet d'adresses"))
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Carnet.png")
@@ -64,8 +64,8 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter un contact")))
-        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le contact sélectionné dans la liste")))
-        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le contact sélectionné dans la iste")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le contact sÃ©lectionnÃ© dans la liste")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le contact sÃ©lectionnÃ© dans la iste")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider et fermer")))
@@ -122,11 +122,11 @@ class Dialog(wx.Dialog):
     def OnBouton_ok(self, event):
         IDcontact = self.GetIDcontact()
         if IDcontact == None :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun contact dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucun contact dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
-        # Fermeture de la fenêtre
+        # Fermeture de la fenÃªtre
         self.EndModal(wx.ID_OK)
 
     def OnBoutonAide(self, event): 

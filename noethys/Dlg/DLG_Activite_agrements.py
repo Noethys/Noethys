@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -25,15 +25,15 @@ class Panel(wx.Panel):
         self.parent = parent
         self.IDactivite = IDactivite
         
-        self.staticbox_agrements_staticbox = wx.StaticBox(self, -1, _(u"Agréments de l'activité"))
+        self.staticbox_agrements_staticbox = wx.StaticBox(self, -1, _(u"AgrÃ©ments de l'activitÃ©"))
         self.radio_aucun = wx.RadioButton(self, -1, u"")
         self.radio_aucun.SetValue(True)
-        self.label_aucun = wx.StaticText(self, -1, _(u"Aucun agrément"))
+        self.label_aucun = wx.StaticText(self, -1, _(u"Aucun agrÃ©ment"))
         self.radio_unique = wx.RadioButton(self, -1, u"")
-        self.label_unique = wx.StaticText(self, -1, _(u"Agrément unique :"))
+        self.label_unique = wx.StaticText(self, -1, _(u"AgrÃ©ment unique :"))
         self.ctrl_agrement_unique = wx.TextCtrl(self, -1, u"")
         self.radio_multiples = wx.RadioButton(self, -1, u"")
-        self.label_multiples = wx.StaticText(self, -1, _(u"Agréments multiples :"))
+        self.label_multiples = wx.StaticText(self, -1, _(u"AgrÃ©ments multiples :"))
         
         self.ctrl_agrements = OL_Agrements.ListView(self, IDactivite=self.IDactivite, id=-1, name="OL_agrements", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.ctrl_agrements.MAJ() 
@@ -61,13 +61,13 @@ class Panel(wx.Panel):
         
 
     def __set_properties(self):
-        self.radio_unique.SetToolTip(wx.ToolTip(_(u"Sélectionnez 'Agrément unique' si l'activité possède un agrément unique")))
+        self.radio_unique.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez 'AgrÃ©ment unique' si l'activitÃ© possÃ¨de un agrÃ©ment unique")))
         self.ctrl_agrement_unique.SetMinSize((120, -1))
-        self.ctrl_agrement_unique.SetToolTip(wx.ToolTip(_(u"Saisissez ici le numéro d'agrément unique")))
-        self.radio_multiples.SetToolTip(wx.ToolTip(_(u"Sélectionnez 'Agréments multiples' si l'activité peut avoir plusieurs agréments")))
-        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter un agrément")))
-        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier l'agrément selectionné dans la liste")))
-        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer l'agrément selectionnné dans la liste")))
+        self.ctrl_agrement_unique.SetToolTip(wx.ToolTip(_(u"Saisissez ici le numÃ©ro d'agrÃ©ment unique")))
+        self.radio_multiples.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez 'AgrÃ©ments multiples' si l'activitÃ© peut avoir plusieurs agrÃ©ments")))
+        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter un agrÃ©ment")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier l'agrÃ©ment selectionnÃ© dans la liste")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer l'agrÃ©ment selectionnnÃ© dans la liste")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=1, vgap=10, hgap=10)
@@ -133,7 +133,7 @@ class Panel(wx.Panel):
         self.ctrl_agrements.Supprimer(None)
 
     def Importation(self):
-        """ Importation des données """
+        """ Importation des donnÃ©es """
         db = GestionDB.DB()
         req = """SELECT IDagrement, agrement, date_debut, date_fin 
         FROM agrements WHERE IDactivite=%d;""" % self.IDactivite
@@ -163,7 +163,7 @@ class Panel(wx.Panel):
             listeDonnees = DB.ResultatReq()
             DB.Close()
             if len(listeDonnees) > 0 :
-                dlg = wx.MessageDialog(self, _(u"Vous avez sélectionné 'Aucun agrément' pour cette activité. Souhaitez-vous vraiment supprimer le ou les agréments précédemment saisis pour cette activité ?"), _(u"Suppression d'agréments"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous avez sÃ©lectionnÃ© 'Aucun agrÃ©ment' pour cette activitÃ©. Souhaitez-vous vraiment supprimer le ou les agrÃ©ments prÃ©cÃ©demment saisis pour cette activitÃ© ?"), _(u"Suppression d'agrÃ©ments"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
                 if dlg.ShowModal() != wx.ID_YES :
                     dlg.Destroy()
                     return False
@@ -172,7 +172,7 @@ class Panel(wx.Panel):
         # Unique
         if self.radio_unique.GetValue() == True :
             if self.ctrl_agrement_unique.GetValue() == "" :
-                dlg = wx.MessageDialog(self, _(u"Vous avez sélectionné 'Agrément unique' sans saisir de numéro d'agrément !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous avez sÃ©lectionnÃ© 'AgrÃ©ment unique' sans saisir de numÃ©ro d'agrÃ©ment !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_agrement_unique.SetFocus() 
@@ -181,7 +181,7 @@ class Panel(wx.Panel):
         if self.radio_multiples.GetValue() == True :
             nbreAgrements = len(self.ctrl_agrements.donnees)
             if nbreAgrements == 0 :
-                dlg = wx.MessageDialog(self, _(u"Vous avez sélectionné 'Agréments multiples' sans saisir aucun numéro d'agrément !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous avez sÃ©lectionnÃ© 'AgrÃ©ments multiples' sans saisir aucun numÃ©ro d'agrÃ©ment !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
@@ -198,12 +198,12 @@ class Panel(wx.Panel):
             DB.ExecuterReq(req)
             listeDonnees = DB.ResultatReq()
             if len(listeDonnees) > 0 :
-                # Effacement des agréments existants
+                # Effacement des agrÃ©ments existants
                 DB.ReqDEL("agrements", "IDactivite", self.IDactivite)
             DB.Close()
         # Unique
         if self.radio_unique.GetValue() == True :
-            # Effacement des numéros d'agréments multiples existants
+            # Effacement des numÃ©ros d'agrÃ©ments multiples existants
             DB = GestionDB.DB()
             req = """SELECT IDagrement, IDactivite, agrement, date_debut, date_fin
             FROM agrements 
@@ -211,10 +211,10 @@ class Panel(wx.Panel):
             DB.ExecuterReq(req)
             listeDonnees = DB.ResultatReq()
             if len(listeDonnees) > 0 :
-                # Effacement des agréments uniques existants
+                # Effacement des agrÃ©ments uniques existants
                 for IDagrement, IDactivite, agrement, date_debut, date_fin in listeDonnees :
                     DB.ReqDEL("agrements", "IDagrement", IDagrement)
-            # Enregistrement de l'agrément unique
+            # Enregistrement de l'agrÃ©ment unique
             req = """SELECT IDagrement, IDactivite, agrement, date_debut, date_fin
             FROM agrements 
             WHERE date_debut='1977-01-01' AND date_fin='2999-01-01' AND IDactivite=%d; """ % self.IDactivite
@@ -244,7 +244,7 @@ class Panel(wx.Panel):
             DB.ExecuterReq(req)
             listeDonnees = DB.ResultatReq()
             if len(listeDonnees) > 0 :
-                # Effacement des agréments uniques existants
+                # Effacement des agrÃ©ments uniques existants
                 for IDagrement, IDactivite, agrement, date_debut, date_fin in listeDonnees :
                     DB.ReqDEL("agrements", "IDagrement", IDagrement)
             DB.Close()

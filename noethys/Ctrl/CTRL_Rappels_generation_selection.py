@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -23,7 +23,7 @@ import traceback
 import decimal
 
 from Utils import UTILS_Config
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"â‚¬")
 MONNAIE_SINGULIER = UTILS_Config.GetParametre("monnaie_singulier", _(u"Euro"))
 MONNAIE_DIVISION = UTILS_Config.GetParametre("monnaie_division", _(u"Centime"))
 
@@ -82,7 +82,7 @@ class CTRL_document(wx.Choice):
     def OnChoice(self, event):
         dictDocument = self.GetDictDocument() 
         if dictDocument != None :
-            # Attribue la couleur de fond à la ligne
+            # Attribue la couleur de fond Ã  la ligne
             self.GetGrandParent().SetCouleurLigne(self.branche, dictDocument["couleur"])
     
     def GetDictDocument(self):
@@ -101,7 +101,7 @@ class CTRL(HTL.HyperTreeList):
         self.dictParametres = {}
         self.dictComptes = {}
                 
-        # Création des colonnes
+        # CrÃ©ation des colonnes
         listeColonnes = [
             ( _(u"Famille/Individu"), 200, wx.ALIGN_LEFT),
             ( u"Du", 70, wx.ALIGN_CENTER),
@@ -117,7 +117,7 @@ class CTRL(HTL.HyperTreeList):
             self.SetColumnAlignment(numColonne, alignement)
             numColonne += 1
         
-##        # Création de l'ImageList
+##        # CrÃ©ation de l'ImageList
 ##        il = wx.ImageList(16, 16)
 ##        self.img_ok = il.Add(wx.Bitmap(Chemins.GetStaticPath('Images/16x16/Ok.png'), wx.BITMAP_TYPE_PNG))
 ##        self.img_pasok = il.Add(wx.Bitmap(Chemins.GetStaticPath('Images/16x16/Interdit.png'), wx.BITMAP_TYPE_PNG))
@@ -141,22 +141,22 @@ class CTRL(HTL.HyperTreeList):
 
     def AfficheNbreComptes(self, nbreComptes=0):
         if self.parent.GetName() == "DLG_Rappels_generation_selection" :
-            if nbreComptes == 0 : label = _(u"Aucune lettre de rappel sélectionnée")
-            elif nbreComptes == 1 : label = _(u"1 lettre de rappel sélectionnée")
-            else: label = _(u"%d lettres de rappel sélectionnées") % nbreComptes
+            if nbreComptes == 0 : label = _(u"Aucune lettre de rappel sÃ©lectionnÃ©e")
+            elif nbreComptes == 1 : label = _(u"1 lettre de rappel sÃ©lectionnÃ©e")
+            else: label = _(u"%d lettres de rappel sÃ©lectionnÃ©es") % nbreComptes
             self.parent.box_rappels_staticbox.SetLabel(label)
         
     def OnCheckItem(self, event):
         if self.MAJenCours == False :
             item = event.GetItem()
             if self.GetPyData(item)["type"] == "individu" :
-                # Récupère les données sur le compte payeur
+                # RÃ©cupÃ¨re les donnÃ©es sur le compte payeur
                 itemParent = self.GetItemParent(item)
                 IDcompte_payeur = self.GetPyData(itemParent)["valeur"]
 ##                compte_total = self.dictComptes[IDcompte_payeur]["total"]
 ##                compte_ventilation = self.dictComptes[IDcompte_payeur]["ventilation"]
                 compte_reports = self.dictComptes[IDcompte_payeur]["total_reports"]
-                # Récupère les données sur l'individu
+                # RÃ©cupÃ¨re les donnÃ©es sur l'individu
                 IDindividu = self.GetPyData(item)["valeur"]
 ##                individu_total = self.dictComptes[IDcompte_payeur]["individus"][IDindividu]["total"]
 ##                individu_ventilation = self.dictComptes[IDcompte_payeur]["individus"][IDindividu]["ventilation"]
@@ -182,7 +182,7 @@ class CTRL(HTL.HyperTreeList):
         self.AfficheNbreComptes(len(self.GetCoches()))
     
     def SelectImpayes(self):
-        """ Sélectionne uniquement les familles avec un compte débiteur """
+        """ SÃ©lectionne uniquement les familles avec un compte dÃ©biteur """
         self.MAJenCours = True
         item = self.root
         for index in range(0, self.GetChildrenCount(self.root)):
@@ -212,14 +212,14 @@ class CTRL(HTL.HyperTreeList):
     
     
     def MAJ(self):
-        """ Met à jour (redessine) tout le contrôle """
+        """ Met Ã  jour (redessine) tout le contrÃ´le """
         self.DeleteAllItems()
         self.root = self.AddRoot(_(u"Racine"))
         self.Remplissage()
         self.CocheTout() 
     
     def Remplissage(self):
-        dlgAttente = wx.BusyInfo(_(u"Recherche des impayés en cours..."), None)
+        dlgAttente = wx.BusyInfo(_(u"Recherche des impayÃ©s en cours..."), None)
         if 'phoenix' not in wx.PlatformInfo:
             wx.Yield()
         
@@ -235,7 +235,7 @@ class CTRL(HTL.HyperTreeList):
         except Exception as err:
             del dlgAttente
             traceback.print_exc(file=sys.stdout)
-            dlg = wx.MessageDialog(self, _(u"Désolé, le problème suivant a été rencontré dans la recherche des rappels : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"DÃ©solÃ©, le problÃ¨me suivant a Ã©tÃ© rencontrÃ© dans la recherche des rappels : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -279,7 +279,7 @@ class CTRL(HTL.HyperTreeList):
             self.SetItemText(niveauCompte, texteRetard, 3)
             self.SetItemText(niveauCompte, solde, 4)
             
-            ctrl_document = CTRL_document(self.GetMainWindow(), -1, branche=niveauCompte, IDcompte_payeur=IDcompte_payeur, nbreJoursRetard=nbreJoursRetard, infobulle=_(u"Sélectionnez un document"))
+            ctrl_document = CTRL_document(self.GetMainWindow(), -1, branche=niveauCompte, IDcompte_payeur=IDcompte_payeur, nbreJoursRetard=nbreJoursRetard, infobulle=_(u"SÃ©lectionnez un document"))
             self.SetItemWindow(niveauCompte, ctrl_document, 5)
             self.dictControles[IDcompte_payeur] = ctrl_document
 
@@ -310,11 +310,11 @@ class CTRL(HTL.HyperTreeList):
         if type != "compte" : return
         nomIndividu = dictItem["nom"]
         
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Ouvrir fiche famille
-        item = wx.MenuItem(menuPop, 10, _(u"Afficher un aperçu PDF"))
+        item = wx.MenuItem(menuPop, 10, _(u"Afficher un aperÃ§u PDF"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -328,13 +328,13 @@ class CTRL(HTL.HyperTreeList):
         item = self.GetSelection()
         dictItem = self.GetMainWindow().GetItemPyData(item)
         if dictItem == None :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune lettre dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune lettre dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         type = dictItem["type"]
         if type != "compte" : 
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune lettre dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune lettre dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -342,24 +342,24 @@ class CTRL(HTL.HyperTreeList):
         IDcompte_payeur = dictItem["IDfamille"]
         dictDocument = dictItem["ctrl_document"].GetDictDocument()
         
-        # Vérifie qu'un texte a été attribué
+        # VÃ©rifie qu'un texte a Ã©tÃ© attribuÃ©
         if dictDocument["IDtexte"] == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement attribuer un texte à cette lettre !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement attribuer un texte Ã  cette lettre !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         
-        # Récupération des données
+        # RÃ©cupÃ©ration des donnÃ©es
         dictCompte = self.dictComptes[IDcompte_payeur]
         
         dictCompte["titre"] = dictDocument["titre"] 
         dictCompte["IDtexte"] = dictDocument["IDtexte"] 
         
-        # Fusion des mots-clés
+        # Fusion des mots-clÃ©s
         facturation = UTILS_Rappels.Facturation()
         dictCompte["texte"] = facturation.Fusion(dictDocument["IDtexte"] , dictCompte)
 
-        # Récupération des paramètres d'affichage
+        # RÃ©cupÃ©ration des paramÃ¨tres d'affichage
         dlg = DLG_Apercu_rappel.Dialog(self, provisoire=True)
         if dlg.ShowModal() == wx.ID_OK:
             dictOptions = dlg.GetParametres()
@@ -369,7 +369,7 @@ class CTRL(HTL.HyperTreeList):
             return False
                    
         # Fabrication du PDF
-        dlgAttente = wx.BusyInfo(_(u"Création de l'aperçu au format PDF..."), None)
+        dlgAttente = wx.BusyInfo(_(u"CrÃ©ation de l'aperÃ§u au format PDF..."), None)
         if 'phoenix' not in wx.PlatformInfo:
             wx.Yield()
         try :
@@ -378,7 +378,7 @@ class CTRL(HTL.HyperTreeList):
         except Exception as err:
             del dlgAttente
             traceback.print_exc(file=sys.stdout)
-            dlg = wx.MessageDialog(self, _(u"Désolé, le problème suivant a été rencontré dans la création de l'aperçu de la lettre de rappel : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"DÃ©solÃ©, le problÃ¨me suivant a Ã©tÃ© rencontrÃ© dans la crÃ©ation de l'aperÃ§u de la lettre de rappel : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -395,7 +395,7 @@ class MyFrame(wx.Frame):
         sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
         self.SetSizer(sizer_1)
         
-        # Données pour les tests        
+        # DonnÃ©es pour les tests        
         self.myOlv = CTRL(panel)
         dictParametres = {
             "date_reference" : datetime.date.today(),

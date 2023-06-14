@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-18 Ivan LUCAS
@@ -22,9 +22,9 @@ import six
 
 
 DICT_LABELS_CATEGORIES = {
-    "numerique_avec_suggestion" : _(u"Numérique (Avec suggestion)"),
-    "numerique_sans_suggestion" : _(u"Numérique (Libre)"),
-    "numerique_total" : _(u"Numérique (Total)"),
+    "numerique_avec_suggestion" : _(u"NumÃ©rique (Avec suggestion)"),
+    "numerique_sans_suggestion" : _(u"NumÃ©rique (Libre)"),
+    "numerique_total" : _(u"NumÃ©rique (Total)"),
     "texte_infos" : _(u"Texte (Informations)"),
     "texte_libre" : _(u"Texte (Libre)"),
 }
@@ -40,12 +40,12 @@ class CTRL_Unites(HTL.HyperTreeList):
         self.SetAGWWindowStyleFlag(HTL.TR_NO_HEADER | wx.TR_HIDE_ROOT | wx.TR_HAS_BUTTONS | wx.TR_HAS_VARIABLE_ROW_HEIGHT | wx.TR_FULL_ROW_HIGHLIGHT)
         self.EnableSelectionVista(True)
 
-        # Création des colonnes
-        self.AddColumn(_(u"Activité/Unité/Groupe"))
+        # CrÃ©ation des colonnes
+        self.AddColumn(_(u"ActivitÃ©/UnitÃ©/Groupe"))
         self.SetColumnWidth(0, 370)
 
     def MAJ(self):
-        """ Met à jour (redessine) tout le contrôle """
+        """ Met Ã  jour (redessine) tout le contrÃ´le """
         self.dictActivites, self.dictUnites = self.Importation()
         self.MAJenCours = True
         self.DeleteAllItems()
@@ -62,7 +62,7 @@ class CTRL_Unites(HTL.HyperTreeList):
         if self.parent.check_repas.GetValue() == True :
             conditions.append("AND unites.repas=1")
 
-        # Récupération des activités et des unités
+        # RÃ©cupÃ©ration des activitÃ©s et des unitÃ©s
         DB = GestionDB.DB()
         req = """SELECT 
         activites.IDactivite, activites.nom, activites.abrege, activites.date_debut, activites.date_fin,
@@ -81,7 +81,7 @@ class CTRL_Unites(HTL.HyperTreeList):
             if date_debut != None: date_debut = UTILS_Dates.DateEngEnDateDD(date_debut)
             if date_fin != None: date_fin = UTILS_Dates.DateEngEnDateDD(date_fin)
 
-            # Mémorisation de l'activité, du groupe et de l'unité
+            # MÃ©morisation de l'activitÃ©, du groupe et de l'unitÃ©
             if (IDactivite in dictActivites) == False:
                 dictActivites[IDactivite] = {"nom": nom, "abrege": abrege, "date_debut": date_debut, "date_fin": date_fin, "groupes": {}}
 
@@ -93,7 +93,7 @@ class CTRL_Unites(HTL.HyperTreeList):
         return dictActivites, dictUnites
 
     def Remplissage(self):
-        # Tri des activités par nom
+        # Tri des activitÃ©s par nom
         listeActivites = []
         for IDactivite, dictActivite in self.dictActivites.items():
             listeActivites.append((dictActivite["nom"], IDactivite))
@@ -103,7 +103,7 @@ class CTRL_Unites(HTL.HyperTreeList):
         for nomActivite, IDactivite in listeActivites:
             dictActivite = self.dictActivites[IDactivite]
 
-            # Niveau Activité
+            # Niveau ActivitÃ©
             niveauActivite = self.AppendItem(self.root, nomActivite)
             self.SetPyData(niveauActivite, {"type": "activite", "ID": IDactivite, "nom": nomActivite})
             self.SetItemBold(niveauActivite, True)
@@ -113,7 +113,7 @@ class CTRL_Unites(HTL.HyperTreeList):
                 niveauGroupe = self.AppendItem(niveauActivite, dictGroupe["nom"])
                 self.SetPyData(niveauGroupe, {"type": "groupe", "ID": dictGroupe["IDgroupe"], "nom": dictGroupe["nom"]})
 
-                # Niveau Unités
+                # Niveau UnitÃ©s
                 for dictUnite in dictGroupe["unites"]:
                     niveauUnite = self.AppendItem(niveauGroupe, dictUnite["nom"], ct_type=1)
                     self.SetPyData(niveauUnite, {"type": "unite", "IDunite": dictUnite["IDunite"], "IDgroupe": dictGroupe["IDgroupe"], "nom": dictUnite["nom"]})
@@ -165,12 +165,12 @@ class CTRL_Groupes(HTL.HyperTreeList):
         self.SetAGWWindowStyleFlag(HTL.TR_NO_HEADER | wx.TR_HIDE_ROOT | wx.TR_HAS_BUTTONS | wx.TR_HAS_VARIABLE_ROW_HEIGHT | wx.TR_FULL_ROW_HIGHLIGHT)
         self.EnableSelectionVista(True)
 
-        # Création des colonnes
-        self.AddColumn(_(u"Activité/Groupe"))
+        # CrÃ©ation des colonnes
+        self.AddColumn(_(u"ActivitÃ©/Groupe"))
         self.SetColumnWidth(0, 370)
 
     def MAJ(self):
-        """ Met à jour (redessine) tout le contrôle """
+        """ Met Ã  jour (redessine) tout le contrÃ´le """
         self.dictActivites = self.Importation()
         self.MAJenCours = True
         self.DeleteAllItems()
@@ -181,7 +181,7 @@ class CTRL_Groupes(HTL.HyperTreeList):
     def Importation(self):
         dictActivites = {}
 
-        # Récupération des activités et des groupes
+        # RÃ©cupÃ©ration des activitÃ©s et des groupes
         DB = GestionDB.DB()
         req = """SELECT 
         activites.IDactivite, activites.nom, activites.abrege, activites.date_debut, activites.date_fin,
@@ -197,7 +197,7 @@ class CTRL_Groupes(HTL.HyperTreeList):
             if date_debut != None: date_debut = UTILS_Dates.DateEngEnDateDD(date_debut)
             if date_fin != None: date_fin = UTILS_Dates.DateEngEnDateDD(date_fin)
 
-            # Mémorisation de l'activité, du groupe et de l'unité
+            # MÃ©morisation de l'activitÃ©, du groupe et de l'unitÃ©
             if (IDactivite in dictActivites) == False:
                 dictActivites[IDactivite] = {"nom": nom, "abrege": abrege, "date_debut": date_debut, "date_fin": date_fin, "groupes": []}
 
@@ -206,7 +206,7 @@ class CTRL_Groupes(HTL.HyperTreeList):
         return dictActivites
 
     def Remplissage(self):
-        # Tri des activités par nom
+        # Tri des activitÃ©s par nom
         listeActivites = []
         for IDactivite, dictActivite in self.dictActivites.items():
             listeActivites.append((dictActivite["nom"], IDactivite))
@@ -216,7 +216,7 @@ class CTRL_Groupes(HTL.HyperTreeList):
         for nomActivite, IDactivite in listeActivites:
             dictActivite = self.dictActivites[IDactivite]
 
-            # Niveau Activité
+            # Niveau ActivitÃ©
             niveauActivite = self.AppendItem(self.root, nomActivite)
             self.SetPyData(niveauActivite, {"type": "activite", "IDactivite": IDactivite, "nom": nomActivite})
             self.SetItemBold(niveauActivite, True)
@@ -260,7 +260,7 @@ class CTRL_Colonnes_numeriques(wx.CheckListBox):
         self.parent = parent
 
     def MAJ(self):
-        # Importation des colonnes numériques
+        # Importation des colonnes numÃ©riques
         try :
             tracks_colonnes = self.GetGrandParent().GetGrandParent().donnees
         except :
@@ -304,11 +304,11 @@ class PAGE_Unites(wx.Panel):
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
         self.parent = parent
 
-        # Contrôles
-        self.label_intro = wx.StaticText(self, -1, _(u"Cochez les unités à additionner :"))
+        # ContrÃ´les
+        self.label_intro = wx.StaticText(self, -1, _(u"Cochez les unitÃ©s Ã  additionner :"))
         self.ctrl_unites = CTRL_Unites(self)
         self.ctrl_unites.SetMinSize((100, 50))
-        self.check_repas = wx.CheckBox(self, -1, _(u"Afficher uniquement les unités avec repas inclus"))
+        self.check_repas = wx.CheckBox(self, -1, _(u"Afficher uniquement les unitÃ©s avec repas inclus"))
 
         # Layout
         grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=5, hgap=5)
@@ -332,7 +332,7 @@ class PAGE_Unites(wx.Panel):
 
     def Validation(self):
         if len(self.ctrl_unites.GetCoches()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous devez cocher au moins une unité !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez cocher au moins une unitÃ© !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -356,19 +356,19 @@ class PAGE_Informations(wx.Panel):
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
         self.parent = parent
 
-        # Contrôles
-        self.label_intro = wx.StaticText(self, -1, _(u"Cochez les informations à afficher :"))
-        self.check_infos_medicales = wx.CheckBox(self, -1, _(u"Afficher les informations médicales"))
+        # ContrÃ´les
+        self.label_intro = wx.StaticText(self, -1, _(u"Cochez les informations Ã  afficher :"))
+        self.check_infos_medicales = wx.CheckBox(self, -1, _(u"Afficher les informations mÃ©dicales"))
         self.check_messages = wx.CheckBox(self, -1, _(u"Afficher les messages individuels"))
 
-        self.label_groupes = wx.StaticText(self, -1, _(u"Cochez les groupes concernés :"))
+        self.label_groupes = wx.StaticText(self, -1, _(u"Cochez les groupes concernÃ©s :"))
         self.radio_groupes_tous = wx.RadioButton(self, -1, _(u"Tous les groupes"), style=wx.RB_GROUP)
         self.radio_groupes_choix = wx.RadioButton(self, -1, _(u"Uniquement les groupes suivants :"))
         self.ctrl_groupes = CTRL_Groupes(self)
         self.ctrl_groupes.SetMinSize((100, 50))
 
-        self.check_infos_medicales.SetToolTip(wx.ToolTip(_(u"Affiche les informations médicales. Attention, la case 'Afficher sur la commande des repas' doit avoir été cochée dans la fenêtre de saisie de l'information médicale.")))
-        self.check_messages.SetToolTip(wx.ToolTip(_(u"Affiche les messages individuels. Attention, la case 'Afficher sur la commande des repas' doit avoir été cochée dans la fenêtre de saisie du message.")))
+        self.check_infos_medicales.SetToolTip(wx.ToolTip(_(u"Affiche les informations mÃ©dicales. Attention, la case 'Afficher sur la commande des repas' doit avoir Ã©tÃ© cochÃ©e dans la fenÃªtre de saisie de l'information mÃ©dicale.")))
+        self.check_messages.SetToolTip(wx.ToolTip(_(u"Affiche les messages individuels. Attention, la case 'Afficher sur la commande des repas' doit avoir Ã©tÃ© cochÃ©e dans la fenÃªtre de saisie du message.")))
 
         # Layout
         grid_sizer_base = wx.FlexGridSizer(rows=7, cols=1, vgap=5, hgap=5)
@@ -400,7 +400,7 @@ class PAGE_Informations(wx.Panel):
 
     def Validation(self):
         if self.check_infos_medicales.GetValue() == False and self.check_messages.GetValue() == False :
-            dlg = wx.MessageDialog(self, _(u"Vous devez cocher au moins un élément !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez cocher au moins un Ã©lÃ©ment !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -441,9 +441,9 @@ class PAGE_Total(wx.Panel):
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
         self.parent = parent
 
-        # Contrôles
-        self.label_intro = wx.StaticText(self, -1, _(u"Précisez les données à totaliser :"))
-        self.radio_colonnes_toutes = wx.RadioButton(self, -1, _(u"Toutes les colonnes numériques"), style=wx.RB_GROUP)
+        # ContrÃ´les
+        self.label_intro = wx.StaticText(self, -1, _(u"PrÃ©cisez les donnÃ©es Ã  totaliser :"))
+        self.radio_colonnes_toutes = wx.RadioButton(self, -1, _(u"Toutes les colonnes numÃ©riques"), style=wx.RB_GROUP)
         self.radio_colonnes_choix = wx.RadioButton(self, -1, _(u"Uniquement les colonnes suivantes :"))
         self.ctrl_colonnes = CTRL_Colonnes_numeriques(self)
         self.ctrl_colonnes.SetMinSize((100, 50))
@@ -496,8 +496,8 @@ class PAGE_Vide(wx.Panel):
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
         self.parent = parent
 
-        # Contrôles
-        self.label_intro = wx.StaticText(self, -1, _(u"Aucun paramètre à renseigner."))
+        # ContrÃ´les
+        self.label_intro = wx.StaticText(self, -1, _(u"Aucun paramÃ¨tre Ã  renseigner."))
 
         # Layout
         grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=5, hgap=5)
@@ -539,7 +539,7 @@ class CTRL_Parametres(wx.Choicebook):
             label = DICT_LABELS_CATEGORIES[code]
             self.AddPage(ctrl, label)
 
-        # Sélection par défaut
+        # SÃ©lection par dÃ©faut
         self.SetSelection(0)
 
     def GetPageByCode(self, code=""):
@@ -585,8 +585,8 @@ class Dialog(wx.Dialog):
         self.IDcolonne = None
         self.dictDonnees = {}
 
-        # Généralités
-        self.staticbox_generalites_staticbox = wx.StaticBox(self, -1, _(u"Généralités"))
+        # GÃ©nÃ©ralitÃ©s
+        self.staticbox_generalites_staticbox = wx.StaticBox(self, -1, _(u"GÃ©nÃ©ralitÃ©s"))
 
         self.label_nom = wx.StaticText(self, -1, _(u"Nom :"))
         self.ctrl_nom = wx.TextCtrl(self, -1, "")
@@ -595,8 +595,8 @@ class Dialog(wx.Dialog):
         self.ctrl_largeur = wx.SpinCtrl(self, -1, "", min=10, max=200)
         self.ctrl_largeur.SetValue(80)
 
-        # Paramètres
-        self.staticbox_options_staticbox = wx.StaticBox(self, -1, _(u"Paramètres"))
+        # ParamÃ¨tres
+        self.staticbox_options_staticbox = wx.StaticBox(self, -1, _(u"ParamÃ¨tres"))
         self.ctrl_parametres = CTRL_Parametres(self)
         self.ctrl_parametres.SetMinSize((400, 250))
 
@@ -626,7 +626,7 @@ class Dialog(wx.Dialog):
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
 
-        # Généralités
+        # GÃ©nÃ©ralitÃ©s
         staticbox_generalites = wx.StaticBoxSizer(self.staticbox_generalites_staticbox, wx.VERTICAL)
 
         grid_sizer_generalites = wx.FlexGridSizer(rows=2, cols=2, vgap=10, hgap=10)
@@ -639,7 +639,7 @@ class Dialog(wx.Dialog):
 
         grid_sizer_base.Add(staticbox_generalites, 1, wx.LEFT|wx.RIGHT|wx.TOP|wx.EXPAND, 10)
 
-        # Paramètres
+        # ParamÃ¨tres
         staticbox_parametres = wx.StaticBoxSizer(self.staticbox_options_staticbox, wx.VERTICAL)
         staticbox_parametres.Add(self.ctrl_parametres, 1, wx.ALL|wx.EXPAND, 10)
 
@@ -675,7 +675,7 @@ class Dialog(wx.Dialog):
             self.ctrl_nom.SetFocus()
             return False
 
-        # Validation des paramètres
+        # Validation des paramÃ¨tres
         if self.ctrl_parametres.Validation() == False :
             return False
 

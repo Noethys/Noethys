@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-17 Ivan LUCAS
@@ -94,7 +94,7 @@ class ToolBar(UTILS_Adaptations.ToolBar):
         self.AddSeparator()
         self.AddLabelTool(self.ID_OUTIL_AUJOURDHUI, _(u"Aujourd'hui"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Jour.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Aujourd'hui"), "")
         self.AddLabelTool(self.ID_OUTIL_CHERCHER, _(u"Chercher"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Calendrier_zoom.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Chercher une date"), "")
-        self.AddLabelTool(self.ID_OUTIL_APERCU, _(u"Aperçu"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Apercu.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Aperçu avant impression"), "")
+        self.AddLabelTool(self.ID_OUTIL_APERCU, _(u"AperÃ§u"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Apercu.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"AperÃ§u avant impression"), "")
 
         # Binds
         self.Bind(wx.EVT_TOOL, self.OnAffichageJour, id=self.ID_OUTIL_JOUR)
@@ -176,8 +176,8 @@ class ToolBar(UTILS_Adaptations.ToolBar):
         self.parent.ctrl_planning.SetDate(newDate)
 
     def OnApercu(self, event):
-        """ Aperçu avant impression """
-        # Demande à l'utilisateur la mise en page
+        """ AperÃ§u avant impression """
+        # Demande Ã  l'utilisateur la mise en page
         reglages = self.parent.reglagesImpression
         
         data = wx.PrintData()
@@ -217,19 +217,19 @@ class ToolBar(UTILS_Adaptations.ToolBar):
         preview = wx.PrintPreview(rpt1, rpt2, data)
 ##        preview.SetZoom( 100 )
 ##        if preview.Ok():
-##            frame = wx.PreviewFrame(preview, None, _(u"Aperçu avant impression"), size=wx.Size( 700, 500 ) )
+##            frame = wx.PreviewFrame(preview, None, _(u"AperÃ§u avant impression"), size=wx.Size( 700, 500 ) )
 ##            frame.Initialize()
 ##            frame.Show( True )
         
 ##        from Utils import UTILS_Printer
-##        preview_window = UTILS_Printer.PreviewFrame(preview, None, _(u"Aperçu avant impression"), reglages["orientation"])
+##        preview_window = UTILS_Printer.PreviewFrame(preview, None, _(u"AperÃ§u avant impression"), reglages["orientation"])
 ##        preview_window.Initialize()
 ##        preview_window.MakeModal(False)
 ##        preview_window.Show(True)
         
         preview.SetZoom(100)
         frame = wx.GetApp().GetTopWindow() 
-        preview_window = wx.PreviewFrame(preview, None, _(u"Aperçu avant impression"))
+        preview_window = wx.PreviewFrame(preview, None, _(u"AperÃ§u avant impression"))
         preview_window.Initialize()
         preview_window.MakeModal(False)
         preview_window.SetPosition(frame.GetPosition())
@@ -248,7 +248,7 @@ class DLG_Recherche_date(wx.Dialog):
     def __init__(self, parent):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
-        # Contrôles
+        # ContrÃ´les
         if 'phoenix' in wx.PlatformInfo:
             self._date = wx.adv.DatePickerCtrl(self, style=wx.adv.DP_DROPDOWN | wx.adv.DP_SHOWCENTURY )
         else :
@@ -258,7 +258,7 @@ class DLG_Recherche_date(wx.Dialog):
         # Layout
         szAll = wx.BoxSizer( wx.VERTICAL )
         szDate = wx.BoxSizer( wx.HORIZONTAL )
-        szDate.Add( wx.StaticText( self, label=_(u"Sélectionnez une date :")), wx.ALIGN_CENTER_VERTICAL | wx.ALL, 5 )
+        szDate.Add( wx.StaticText( self, label=_(u"SÃ©lectionnez une date :")), wx.ALIGN_CENTER_VERTICAL | wx.ALL, 5 )
         szDate.Add( self._date, 0, wx.ALIGN_CENTER_VERTICAL | wx.ALL, 5 )
         btSizer = wx.StdDialogButtonSizer()
         btSizer.Add( btOk, 0, wx.RIGHT, 5 )
@@ -275,7 +275,7 @@ class DLG_Recherche_date(wx.Dialog):
 # --------------------------------------------------------------------------------------------------------------------------
 
 class CTRL_Planning(wx.Panel):
-    """ Contrôle Scheduler """
+    """ ContrÃ´le Scheduler """
     def __init__(self, parent):
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
         self.parent = parent
@@ -284,10 +284,10 @@ class CTRL_Planning(wx.Panel):
         # Barre d'outils
         self.barre_outils = ToolBar(self)
         
-        # Insertion des vacances et jours fériés dans le schedule
+        # Insertion des vacances et jours fÃ©riÃ©s dans le schedule
         self.joursSpeciaux = UTILS_Schedule.JoursSpeciaux()
         
-        # Réglage de l'impression
+        # RÃ©glage de l'impression
         self.reglagesImpression = {
             "orientation" : wx.PORTRAIT,
             "papier" : wx.PAPER_A4,            
@@ -297,7 +297,7 @@ class CTRL_Planning(wx.Panel):
             "marge_droite" : 30,
             }
         
-        # Création du scheduler
+        # CrÃ©ation du scheduler
         self.ctrl_planning = wxScheduler.wxScheduler(self, joursSpeciaux=self.joursSpeciaux)
         self.ctrl_planning.SetResizable(True)
         self.ctrl_planning.SetShowWorkHour(False)
@@ -382,7 +382,7 @@ class CTRL_Planning(wx.Panel):
             self.Modifier(schedule=schedule)
     
     def Ajouter(self, date=None):
-        """ Création d'un évènement """
+        """ CrÃ©ation d'un Ã©vÃ¨nement """
         pass
         # datedt = ConvertDateWXenDT(date)
         # Ajout ici
@@ -407,15 +407,15 @@ class CTRL_Planning(wx.Panel):
         self.Importation()
 
     def Importation(self):
-        """ Importation des events depuis la base de données """
+        """ Importation des events depuis la base de donnÃ©es """
         pass
-        # # Création des schedules
+        # # CrÃ©ation des schedules
         # for dictTransport in listeTransports :
         #     dictTransport = self.AnalyseTransport(dictTransport, modLocalisation)
         #     self.CreationSchedule(dictTransport)
 
     def CreationSchedule(self, dictDonnees={}):
-        """ Création d'un schedule """
+        """ CrÃ©ation d'un schedule """
         schedule = wxScheduler.wxSchedule()
         schedule.IDtransport = dictDonnees["IDtransport"]
         self.RemplitSchedule(dictDonnees, schedule)
@@ -428,7 +428,7 @@ class CTRL_Planning(wx.Panel):
         # Icone
         schedule.icons = [wx.Bitmap(Chemins.GetStaticPath("Images/16x16/%s.png" % dictDonnees["image"]), wx.BITMAP_TYPE_ANY),]
         
-        # Date et heure de début
+        # Date et heure de dÃ©but
         schedule.start = ConvertDateDTenWX(date=dictDonnees["depart_date"], heure=dictDonnees["depart_heure"])
         
         # Date et heure de fin

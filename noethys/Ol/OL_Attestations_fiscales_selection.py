@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-14 Ivan LUCAS
@@ -23,7 +23,7 @@ from Utils import UTILS_Interface
 from Ctrl.CTRL_ObjectListView import ObjectListView, FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
 from Utils import UTILS_Config
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"â‚¬")
 
 from Utils.UTILS_Decimal import FloatToDecimal as FloatToDecimal
 from Utils import UTILS_Titulaires
@@ -67,13 +67,13 @@ class ListView(FastObjectListView):
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
-        """ Récupération des données """
+        """ RÃ©cupÃ©ration des donnÃ©es """
         listePrestations = self.listePrestations 
         dictComptes = {}
         
         for track in listePrestations :
             
-            # Recherche si un ajustement est demandé
+            # Recherche si un ajustement est demandÃ©
             ajustement = FloatToDecimal(0.0)
             if track.ajustement not in ("", None) :
                 ajustement = FloatToDecimal(float(track.ajustement))
@@ -84,7 +84,7 @@ class ListView(FastObjectListView):
 
                 if (IDcompte_payeur in dictComptes) == False :
 
-                    # Récupération des infos sur la famille
+                    # RÃ©cupÃ©ration des infos sur la famille
                     dictInfosTitulaires = self.dictTitulaires[IDfamille]
                     rue_resid = dictInfosTitulaires["adresse"]["rue"]
                     cp_resid = dictInfosTitulaires["adresse"]["cp"]
@@ -105,7 +105,7 @@ class ListView(FastObjectListView):
                 
                 dictPrestation = copy.deepcopy(dictPrestation) 
                 
-                # Applique les éventuels ajustements
+                # Applique les Ã©ventuels ajustements
                 montant = dictPrestation["montant"] + ajustement
                 if montant < FloatToDecimal(0.0) : 
                     montant = FloatToDecimal(0.0)
@@ -120,7 +120,7 @@ class ListView(FastObjectListView):
                 dictPrestation["regle"] = regle
                 dictPrestation["impaye"] = impaye
                 
-                # Mémorise les données
+                # MÃ©morise les donnÃ©es
                 dictComptes[IDcompte_payeur]["prestations"].append(dictPrestation)
 
                 dictComptes[IDcompte_payeur]["montant_total"] += dictPrestation["montant"]
@@ -155,8 +155,8 @@ class ListView(FastObjectListView):
             ColumnDefn(_(u"IDcompte_payeur"), 'left', 0, "IDcompte_payeur", typeDonnee="entier", isEditable=False),
             ColumnDefn(_(u"Famille"), 'left', 290, "nomsTitulairesSansCivilite", typeDonnee="texte", isEditable=True),
             ColumnDefn(_(u"Total"), 'right', 70, "montant_total", typeDonnee="montant", stringConverter=FormateMontant, isEditable=False),
-            ColumnDefn(_(u"Réglé"), 'right', 70, "montant_regle", typeDonnee="montant", stringConverter=FormateMontant, isEditable=False),
-            ColumnDefn(_(u"Impayé"), 'right', 70, "montant_impaye", typeDonnee="montant", stringConverter=FormateMontant, isEditable=False),
+            ColumnDefn(_(u"RÃ©glÃ©"), 'right', 70, "montant_regle", typeDonnee="montant", stringConverter=FormateMontant, isEditable=False),
+            ColumnDefn(_(u"ImpayÃ©"), 'right', 70, "montant_impaye", typeDonnee="montant", stringConverter=FormateMontant, isEditable=False),
             ColumnDefn(_(u"Rue"), 'left', 150, "rue_resid", typeDonnee="texte", isEditable=True),
             ColumnDefn(_(u"CP"), 'left', 50, "cp_resid", typeDonnee="texte", isEditable=True),
             ColumnDefn(_(u"Ville"), 'left', 150, "ville_resid", typeDonnee="texte", isEditable=True),
@@ -164,7 +164,7 @@ class ListView(FastObjectListView):
         self.SetColumns(liste_Colonnes)
         self.CreateCheckStateColumn(0)
 
-        self.SetEmptyListMsg(_(u"Aucune donnée"))
+        self.SetEmptyListMsg(_(u"Aucune donnÃ©e"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
         self.SetSortColumn(self.columns[2])
         self.SetObjects(self.donnees)
@@ -203,7 +203,7 @@ class ListView(FastObjectListView):
     
     def MAJLabelListe(self):
         if self.GetParent().GetName() == "DLG_Attestations_fiscales_selection" :
-            self.GetParent().staticbox_attestations_staticbox.SetLabel(_(u"Attestations à générer (%d)") % len(self.GetTracksCoches()))
+            self.GetParent().staticbox_attestations_staticbox.SetLabel(_(u"Attestations Ã  gÃ©nÃ©rer (%d)") % len(self.GetTracksCoches()))
         
     def GetTracksCoches(self):
         return self.GetCheckedObjects()
@@ -219,28 +219,28 @@ class ListView(FastObjectListView):
         
     def OnContextMenu(self, event):
         """Ouverture du menu contextuel """            
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
-        # Sélectionner les payés
-        item = wx.MenuItem(menuPop, 10, _(u"Cocher uniquement les payés"))
+        # SÃ©lectionner les payÃ©s
+        item = wx.MenuItem(menuPop, 10, _(u"Cocher uniquement les payÃ©s"))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.CocherPayes, id=10)
 
-        # Tout sélectionner
+        # Tout sÃ©lectionner
         item = wx.MenuItem(menuPop, 20, _(u"Tout cocher"))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.CocherTout, id=20)
 
-        # Tout dé-sélectionner
-        item = wx.MenuItem(menuPop, 30, _(u"Tout décocher"))
+        # Tout dÃ©-sÃ©lectionner
+        item = wx.MenuItem(menuPop, 30, _(u"Tout dÃ©cocher"))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.CocherRien, id=30)
         
         menuPop.AppendSeparator()
         
         # Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
+        item = wx.MenuItem(menuPop, 40, _(u"AperÃ§u avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -274,7 +274,7 @@ class ListView(FastObjectListView):
 
     def Impression(self, mode="preview"):
         if self.donnees == None or len(self.donnees) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Il n'y a aucune donnée à imprimer !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Il n'y a aucune donnÃ©e Ã  imprimer !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return

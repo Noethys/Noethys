@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-17 Ivan LUCAS
@@ -32,7 +32,7 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         
-        intro = _(u"Vous pouvez saisir ici un lot de cotisations. Sélectionnez les paramètres des cotisations à créer, cochez les individus ou les familles puis cliquez sur le bouton Ok. Utilisez la commande de Filtrage de liste pour effectuer une sélection rapide des individus ou des familles.")
+        intro = _(u"Vous pouvez saisir ici un lot de cotisations. SÃ©lectionnez les paramÃ¨tres des cotisations Ã  crÃ©er, cochez les individus ou les familles puis cliquez sur le bouton Ok. Utilisez la commande de Filtrage de liste pour effectuer une sÃ©lection rapide des individus ou des familles.")
         titre = _(u"Saisir un lot de cotisations")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Cotisation.png")
@@ -40,19 +40,19 @@ class Dialog(wx.Dialog):
         # Liste
         self.staticbox_individus_staticbox = wx.StaticBox(self, -1, _(u"Individus / Familles"))
 
-        self.label_info = wx.StaticText(self, -1, _(u"Double-cliquez sur une ligne pour modifier le numéro de cotisation à générer."))
+        self.label_info = wx.StaticText(self, -1, _(u"Double-cliquez sur une ligne pour modifier le numÃ©ro de cotisation Ã  gÃ©nÃ©rer."))
         self.label_info.SetFont(wx.Font(7, wx.SWISS, wx.NORMAL, wx.NORMAL))
-        self.check_masquer = wx.CheckBox(self, -1, _(u"Masquer si la cotisation existe déjà"))
+        self.check_masquer = wx.CheckBox(self, -1, _(u"Masquer si la cotisation existe dÃ©jÃ "))
         self.ctrl_listview = OL_Saisie_lot_cotisations.ListView(self, id=-1, categorie="individu", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.ctrl_listview.SetMinSize((10, 10))
         self.ctrl_recherche = OL_Saisie_lot_cotisations.CTRL_Outils(self, listview=self.ctrl_listview, afficherCocher=True)
 
-        # Paramètres
+        # ParamÃ¨tres
         self.ctrl_parametres = CTRL_Parametres(self, mode_lot=True)
 
         # Boutons
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
-        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Générer les cotisations"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"GÃ©nÃ©rer les cotisations"), cheminImage="Images/32x32/Valider.png")
         self.bouton_fermer = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         self.__set_properties()
@@ -70,9 +70,9 @@ class Dialog(wx.Dialog):
             self.ctrl_listview.MAJ()
 
     def __set_properties(self):
-        self.check_masquer.SetToolTip(wx.ToolTip(_(u"Masquez les familles ou les individus qui possèdent déjà la cotisation sélectionnée")))
+        self.check_masquer.SetToolTip(wx.ToolTip(_(u"Masquez les familles ou les individus qui possÃ¨dent dÃ©jÃ  la cotisation sÃ©lectionnÃ©e")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
-        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour inscrire les individus cochés")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour inscrire les individus cochÃ©s")))
         self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         self.SetMinSize((920, 650))
 
@@ -143,14 +143,14 @@ class Dialog(wx.Dialog):
         if self.Sauvegarde() == False :
             return False
 
-        # Fermeture de la fenêtre
+        # Fermeture de la fenÃªtre
         #self.EndModal(wx.ID_OK)
 
     def Sauvegarde(self):
-        # Récupération des tracks
+        # RÃ©cupÃ©ration des tracks
         liste_tracks = self.ctrl_listview.GetTracksCoches()
 
-        # Récupération des paramètres
+        # RÃ©cupÃ©ration des paramÃ¨tres
         IDtype_cotisation = self.ctrl_parametres.ctrl_type.GetID()
         IDunite_cotisation = self.ctrl_parametres.ctrl_unite.GetID()
         date_saisie = self.ctrl_parametres.date_saisie
@@ -161,7 +161,7 @@ class Dialog(wx.Dialog):
         observations = self.ctrl_parametres.ctrl_observations.GetValue()
         type_cotisation = self.ctrl_parametres.ctrl_type.GetDetailDonnees()["type"]
 
-        # Vérifie que les cotisations n'existent pas déjà
+        # VÃ©rifie que les cotisations n'existent pas dÃ©jÃ 
         liste_IDindividu = [track.IDindividu for track in liste_tracks if track.IDindividu != None]
         if len(liste_IDindividu) == 1 :
             condition_individus = "AND cotisations.IDindividu == %d" % liste_IDindividu[0]
@@ -194,14 +194,14 @@ class Dialog(wx.Dialog):
                 # Si cotisation familiale
                 if IDfamille != None and IDfamille in dictTitulaires:
                     nom_famille = dictTitulaires[IDfamille]["titulairesSansCivilite"]
-                    liste_details.append(_(u"Famille de %s : Cotisation n°%s") % (nom_famille, numero))
+                    liste_details.append(_(u"Famille de %s : Cotisation nÂ°%s") % (nom_famille, numero))
                 # Si cotisation individuelle
                 if IDindividu != None :
                     if prenom_individu == None : prenom_individu = ""
-                    liste_details.append(_(u"%s %s : Cotisation n°%s") % (nom_individu, prenom_individu, numero))
+                    liste_details.append(_(u"%s %s : Cotisation nÂ°%s") % (nom_individu, prenom_individu, numero))
             # Demande si on continue ou non
-            intro = _(u"Les cotisations suivantes existent déjà avec le même type et la même unité de cotisation :")
-            conclusion = _(u"Souhaitez-vous quand même les générer une nouvelle fois ?")
+            intro = _(u"Les cotisations suivantes existent dÃ©jÃ  avec le mÃªme type et la mÃªme unitÃ© de cotisation :")
+            conclusion = _(u"Souhaitez-vous quand mÃªme les gÃ©nÃ©rer une nouvelle fois ?")
             detail = "\n".join(liste_details)
             dlg = DLG_Messagebox.Dialog(self, titre=_(u"Avertissement"), introduction=intro, detail=detail, conclusion=conclusion, icone=wx.ICON_EXCLAMATION, boutons=[_(u"Oui"), _(u"Non"), _(u"Annuler")])
             reponse = dlg.ShowModal()
@@ -209,7 +209,7 @@ class Dialog(wx.Dialog):
             if reponse in (1, 2):
                 return False
 
-        # Création de la carte
+        # CrÃ©ation de la carte
         if self.ctrl_parametres.ctrl_creation.GetValue() == True:
             numero_manuel = self.ctrl_parametres.radio_numero_manuel.GetValue()
             date_creation_carte = self.ctrl_parametres.ctrl_date_creation.GetDate()
@@ -220,7 +220,7 @@ class Dialog(wx.Dialog):
             numero = None
 
         # Confirmation
-        dlg = wx.MessageDialog(self, _(u"Confirmez-vous la génération de %d cotisations ?") % len(liste_tracks), _(u"Confirmation"), wx.YES_NO | wx.NO_DEFAULT | wx.CANCEL | wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Confirmez-vous la gÃ©nÃ©ration de %d cotisations ?") % len(liste_tracks), _(u"Confirmation"), wx.YES_NO | wx.NO_DEFAULT | wx.CANCEL | wx.ICON_INFORMATION)
         reponse = dlg.ShowModal()
         dlg.Destroy()
         if reponse != wx.ID_YES:
@@ -229,11 +229,11 @@ class Dialog(wx.Dialog):
         # Sauvegarde
         DB = GestionDB.DB()
 
-        dlgprogress = wx.ProgressDialog(_(u"Génération des cotisations"), _(u"Veuillez patienter..."), maximum=len(liste_tracks), parent=None, style=wx.PD_SMOOTH | wx.PD_AUTO_HIDE | wx.PD_APP_MODAL)
+        dlgprogress = wx.ProgressDialog(_(u"GÃ©nÃ©ration des cotisations"), _(u"Veuillez patienter..."), maximum=len(liste_tracks), parent=None, style=wx.PD_SMOOTH | wx.PD_AUTO_HIDE | wx.PD_APP_MODAL)
         index = 1
         for track in liste_tracks :
 
-            dlgprogress.Update(index, _(u"Génération de la cotisation %d sur %d") % (index, len(liste_tracks)))
+            dlgprogress.Update(index, _(u"GÃ©nÃ©ration de la cotisation %d sur %d") % (index, len(liste_tracks)))
 
             if numero_manuel == True :
                 numero = track.numero
@@ -267,7 +267,7 @@ class Dialog(wx.Dialog):
 
             if facturer == True:
 
-                # Création d'une prestation
+                # CrÃ©ation d'une prestation
                 listeDonnees = [
                     ("IDcompte_payeur", track.IDcompte_payeur),
                     ("date", date_facturation),
@@ -284,17 +284,17 @@ class Dialog(wx.Dialog):
                 # Insertion du IDprestation dans la cotisation
                 DB.ReqMAJ("cotisations", [("IDprestation", IDprestation), ], "IDcotisation", IDcotisation)
 
-            # Mémorise l'action dans l'historique
+            # MÃ©morise l'action dans l'historique
             date_debut_periode = UTILS_Dates.DateEngFr(str(date_debut))
             date_fin_periode = UTILS_Dates.DateEngFr(str(date_fin))
             UTILS_Historique.InsertActions([{
                 "IDindividu": track.IDindividu,
                 "IDfamille": track.IDfamille,
                 "IDcategorie": 21,
-                "action": _(u"Saisie de la cotisation ID%d '%s' pour la période du %s au %s") % (IDcotisation, label_prestation, date_debut_periode, date_fin_periode),
+                "action": _(u"Saisie de la cotisation ID%d '%s' pour la pÃ©riode du %s au %s") % (IDcotisation, label_prestation, date_debut_periode, date_fin_periode),
             }, ])
 
-            # Génération du prochain numéro de cotisation
+            # GÃ©nÃ©ration du prochain numÃ©ro de cotisation
             if numero != None :
                 numero = UTILS_Texte.Incrementer(numero)
 
@@ -303,8 +303,8 @@ class Dialog(wx.Dialog):
         DB.Close()
         dlgprogress.Destroy()
 
-        # Succès
-        dlg = wx.MessageDialog(self, _(u"Les %d cotisations ont été générées avec succès.") % len(liste_tracks), _(u"Fin"), wx.OK | wx.ICON_INFORMATION)
+        # SuccÃ¨s
+        dlg = wx.MessageDialog(self, _(u"Les %d cotisations ont Ã©tÃ© gÃ©nÃ©rÃ©es avec succÃ¨s.") % len(liste_tracks), _(u"Fin"), wx.OK | wx.ICON_INFORMATION)
         dlg.ShowModal()
         dlg.Destroy()
 

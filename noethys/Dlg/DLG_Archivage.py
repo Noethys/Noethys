@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-18 Ivan LUCAS
@@ -74,7 +74,7 @@ class Page(wx.Panel):
 
         # Properties
         self.bouton_ouvrir_fiche.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ouvrir la fiche famille correspondante")))
-        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour créer un aperçu de la liste")))
+        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour crÃ©er un aperÃ§u de la liste")))
         self.bouton_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer la liste")))
         self.bouton_texte.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter la liste au format Texte")))
         self.bouton_excel.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter la liste au format Excel")))
@@ -185,7 +185,7 @@ class CTRL_Notebook(wx.Notebook):
             self.dictImages[dictPage["code"]] = il.Add(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/%s" % dictPage["image"]), wx.BITMAP_TYPE_PNG))
         self.AssignImageList(il)
 
-        # Création des pages
+        # CrÃ©ation des pages
         self.dictPages = {}
         index = 0
         for dictPage in self.listePages:
@@ -212,7 +212,7 @@ class CTRL_Notebook(wx.Notebook):
             index += 1
 
     def OnPageChanged(self, event):
-        """ Quand une page du notebook est sélectionnée """
+        """ Quand une page du notebook est sÃ©lectionnÃ©e """
         if event.GetOldSelection() == -1: return
         indexPage = event.GetSelection()
         page = self.GetPage(indexPage)
@@ -244,22 +244,22 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         
-        intro = _(u"Sélectionnez le mode Familles ou Individus, cochez les lignes à traiter, puis cliquez sur le bouton Action souhaité. L'archivage permet de cacher les familles ou individus de certaines listes. L'effacement est une action non réversible qui supprime toutes les données personnelles.")
+        intro = _(u"SÃ©lectionnez le mode Familles ou Individus, cochez les lignes Ã  traiter, puis cliquez sur le bouton Action souhaitÃ©. L'archivage permet de cacher les familles ou individus de certaines listes. L'effacement est une action non rÃ©versible qui supprime toutes les donnÃ©es personnelles.")
         titre = _(u"Archiver et effacer")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Archiver.png")
 
-        # Liste des données
-        self.staticbox_donnees = wx.StaticBox(self, -1, _(u"Liste des données"))
+        # Liste des donnÃ©es
+        self.staticbox_donnees = wx.StaticBox(self, -1, _(u"Liste des donnÃ©es"))
         self.ctrl_notebook = CTRL_Notebook(self)
 
         # Boutons actions
-        self.staticbox_actions = wx.StaticBox(self, -1, _(u"Actions sur les lignes cochées"))
+        self.staticbox_actions = wx.StaticBox(self, -1, _(u"Actions sur les lignes cochÃ©es"))
         self.bouton_archiver = CTRL_Bouton_image.CTRL(self, texte=_(u"Archiver"), cheminImage="Images/32x32/Archiver.png")
-        self.bouton_desarchiver = CTRL_Bouton_image.CTRL(self, texte=_(u"Désarchiver"), cheminImage="Images/32x32/Desarchiver.png")
+        self.bouton_desarchiver = CTRL_Bouton_image.CTRL(self, texte=_(u"DÃ©sarchiver"), cheminImage="Images/32x32/Desarchiver.png")
         self.bouton_effacer = CTRL_Bouton_image.CTRL(self, texte=_(u"Effacer"), cheminImage="Images/32x32/Gomme.png")
 
-        # Boutons fenêtre
+        # Boutons fenÃªtre
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
         self.bouton_fermer = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
@@ -275,9 +275,9 @@ class Dialog(wx.Dialog):
     def __set_properties(self):
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
-        self.bouton_archiver.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour archiver les lignes cochées. L'archivage permet de cacher des individus ou des familles dans certaines listes du logiciel.")))
-        self.bouton_desarchiver.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour désarchiver les lignes cochées")))
-        self.bouton_effacer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour effacer définitivement les lignes cochées. L'effacement est une action irréversible qui supprime les données personnelles (anonymisation) mais sans affecter certaines données telles que la facturation ou les consommations.")))
+        self.bouton_archiver.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour archiver les lignes cochÃ©es. L'archivage permet de cacher des individus ou des familles dans certaines listes du logiciel.")))
+        self.bouton_desarchiver.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour dÃ©sarchiver les lignes cochÃ©es")))
+        self.bouton_effacer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour effacer dÃ©finitivement les lignes cochÃ©es. L'effacement est une action irrÃ©versible qui supprime les donnÃ©es personnelles (anonymisation) mais sans affecter certaines donnÃ©es telles que la facturation ou les consommations.")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
 
@@ -285,7 +285,7 @@ class Dialog(wx.Dialog):
         grid_sizer_base = wx.FlexGridSizer(rows=4, cols=1, vgap=10, hgap=10)
         grid_sizer_base.Add(self.ctrl_bandeau, 0, wx.EXPAND, 0)
 
-        # Liste de données
+        # Liste de donnÃ©es
         sizer_donnees = wx.StaticBoxSizer(self.staticbox_donnees, wx.VERTICAL)
         sizer_donnees.Add(self.ctrl_notebook, 1, wx.ALL | wx.EXPAND, 10)
         grid_sizer_base.Add(sizer_donnees, 1, wx.LEFT | wx.RIGHT | wx.EXPAND, 10)

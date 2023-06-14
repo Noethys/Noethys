@@ -336,7 +336,7 @@ class BackgroundDrawerDCMixin(object):
 	"""
 
 	def DrawDayBackground(self, x, y, w, h, highlight=False):
-		# Fond par défaut
+		# Fond par dÃ©faut
 		if highlight == False or highlight == None :
 			brush = wx.TRANSPARENT_BRUSH
 		# Fond pour Aujourd'hui
@@ -372,7 +372,7 @@ class HeaderDrawerDCMixin(object):
 
 		textW, textH = self.context.GetTextExtent( text )
 
-		# Fond par défaut
+		# Fond par dÃ©faut
 		if highlight == False or highlight == None :
 			brush = wx.TRANSPARENT_BRUSH
 		# Fond pour Aujourd'hui
@@ -411,7 +411,7 @@ class HeaderDrawerDCMixin(object):
 		results = []
 ####JE SUIS ICI !
 		if day is not None:
-			# Fond par défaut
+			# Fond par dÃ©faut
 			if highlight == False or highlight == None : brush = wx.TRANSPARENT_BRUSH
 			# Fond pour Aujourd'hui
 			elif highlight == True : brush = wx.Brush(wx.SystemSettings.GetColour(wx.SYS_COLOUR_HIGHLIGHT))
@@ -575,7 +575,7 @@ class HeaderDrawerGCMixin(object):
 			font.SetWeight(fweight)
 
 LISTE_JOURS = (u"lun.", u"mar.", u"mer.", u"jeu.", u"ven.", u"sam.", u"dim.")
-LISTE_MOIS = (u"janvier", u"février", u"mars", u"avril", u"mai", u"juin", u"juillet", u"août", u"septembre", u"octobre", u"novembre", u"décembre")
+LISTE_MOIS = (u"janvier", u"fÃ©vrier", u"mars", u"avril", u"mai", u"juin", u"juillet", u"aoÃ»t", u"septembre", u"octobre", u"novembre", u"dÃ©cembre")
 
 class HeaderDrawerMixin(object):
 	"""

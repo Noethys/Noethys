@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-20 Ivan LUCAS
@@ -32,10 +32,10 @@ from Utils import UTILS_Organisateur
 from Utils import UTILS_Infos_individus
 from Utils import UTILS_Dates
 
-LISTE_MOIS = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
+LISTE_MOIS = (_(u"janvier"), _(u"fÃ©vrier"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"aoÃ»t"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"dÃ©cembre"))
 
 def DateComplete(dateDD):
-    """ Transforme une date DD en date complète : Ex : lundi 15 janvier 2008 """
+    """ Transforme une date DD en date complÃ¨te : Ex : lundi 15 janvier 2008 """
     listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
     dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + LISTE_MOIS[dateDD.month-1] + " " + str(dateDD.year)
     return dateComplete
@@ -115,7 +115,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         self.SetRowLabelSize(200)
         self.SetColLabelSize(50)
 
-        # Paramètres par défaut
+        # ParamÃ¨tres par dÃ©faut
         self.date_debut = None
         self.date_fin = None
         self.affichage_regroupement = "jour"
@@ -131,7 +131,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             self.infosIndividus = UTILS_Infos_individus.Informations(date_reference=date_debut, qf=True, inscriptions=False, messages=False, infosMedicales=False, cotisationsManquantes=False, piecesManquantes=False, questionnaires=True, scolarite=False)
             self.dictInfosFamilles = self.infosIndividus.GetDictValeurs(mode="famille", ID=None, formatChamp=False)
 
-        # Mémorisation des paramètres
+        # MÃ©morisation des paramÃ¨tres
         self.date_debut = date_debut
         self.date_fin = date_fin
         self.listeCategories = listeCategories
@@ -141,7 +141,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         
         # init grid
         try :
-            dlgAttente = wx.BusyInfo(_(u"Veuillez patienter durant la recherche des données..."), None)
+            dlgAttente = wx.BusyInfo(_(u"Veuillez patienter durant la recherche des donnÃ©es..."), None)
             if 'phoenix' not in wx.PlatformInfo:
                 wx.Yield()
             self.InitGrid() 
@@ -149,7 +149,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         except Exception as err:
             del dlgAttente
             traceback.print_exc(file=sys.stdout)
-            dlg = wx.MessageDialog(self, _(u"Désolé, le problème suivant a été rencontré dans la recherche des données de la synthèse des locations : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"DÃ©solÃ©, le problÃ¨me suivant a Ã©tÃ© rencontrÃ© dans la recherche des donnÃ©es de la synthÃ¨se des locations : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -173,7 +173,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         listeLocations = DB.ResultatReq()
         DB.Close() 
         
-        # Calcul des données
+        # Calcul des donnÃ©es
         dictResultats = {}
         listeProduits = []
         for IDlocation, IDfamille, date_debut, date_fin, IDproduit, nom_produit, IDcategorie, nom_categorie in listeLocations :
@@ -211,7 +211,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 regroupement = None
 
             if regroupement in ("", None):
-                regroupement = _(u"- Non renseigné -")
+                regroupement = _(u"- Non renseignÃ© -")
 
             if self.affichage_donnees == "quantite":
                 valeur = 1
@@ -256,7 +256,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
     def InitGrid(self):
         self.ResetGrid() 
         
-        # Récupération des données
+        # RÃ©cupÃ©ration des donnÃ©es
         dictResultats, listeProduits = self.Importation()
         
         if self.affichage_donnees == "quantite":
@@ -282,7 +282,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                     dictTotaux["colonnes"][regroupement] = defaut
                 dictTotaux["colonnes"][regroupement] += valeur
         
-        # Création des colonnes
+        # CrÃ©ation des colonnes
         largeur_colonne = 90
         dictColonnes = {}
         self.AppendCols(len(listeProduits))
@@ -301,7 +301,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         self.SetColLabelValue(index, _(u"TOTAL"))
         dictColonnes["total"] = index
 
-        # Création des lignes
+        # CrÃ©ation des lignes
         listeRegroupement.sort()
         self.AppendRows(len(listeRegroupement))
         
@@ -359,7 +359,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             self.SetCellAlignment(numLigne, numColonne, wx.ALIGN_CENTRE, wx.ALIGN_CENTRE)
             self.SetReadOnly(numLigne, numColonne, True)
         
-        # Total général
+        # Total gÃ©nÃ©ral
         label = FormateValeur(total_general, self.affichage_donnees)
         numLigne = dictLignes["total"]
         numColonne = dictColonnes["total"]
@@ -375,9 +375,9 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             self.SetCellBackgroundColour(numLigne, y, couleurFond)
                 
     def Apercu(self):
-        """ Impression tableau de données """
+        """ Impression tableau de donnÃ©es """
         if self.GetNumberRows() == 0 or self.GetNumberCols() == 0 :
-            dlg = wx.MessageDialog(self, _(u"Il n'y a rien à imprimer !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Il n'y a rien Ã  imprimer !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return None
@@ -393,7 +393,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             r, g, b = couleur[0], couleur[1], couleur[2]
             return r/255.0, g/255.0, b/255.0
         
-        # Récupération des données du tableau
+        # RÃ©cupÃ©ration des donnÃ©es du tableau
         tableau = self
         nbreColonnes = tableau.GetNumberCols()
         nbreLignes = tableau.GetNumberRows()
@@ -403,7 +403,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         dataTableau = []
         listeCouleurs = []
         
-        # Création des colonnes
+        # CrÃ©ation des colonnes
         largeursColonnes = []
         largeurColonne = 45
         largeurColonneLabel = 90
@@ -412,16 +412,16 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             else: largeursColonnes.append(largeurColonne)
         
         listeStyles = [
-            ('GRID', (0,0), (-1,-1), 0.25, colors.black), # Crée la bordure noire pour tout le tableau
+            ('GRID', (0,0), (-1,-1), 0.25, colors.black), # CrÃ©e la bordure noire pour tout le tableau
             ('VALIGN', (0, 0), (-1,-1), 'MIDDLE'), # Centre verticalement toutes les cases
             ('ALIGN', (0, 0), (-1, 0), 'CENTRE'), # Centre les labels de colonne
-            ('ALIGN', (1, 1), (-1,- 1), 'CENTRE'), # Valeurs à gauche
-            ('ALIGN', (0, 1), (0, -1), 'CENTRE'), # Colonne Label Ligne centrée
+            ('ALIGN', (1, 1), (-1,- 1), 'CENTRE'), # Valeurs Ã  gauche
+            ('ALIGN', (0, 1), (0, -1), 'CENTRE'), # Colonne Label Ligne centrÃ©e
             ('FONT',(0, 0),(-1,-1), "Helvetica", 6), # Donne la police de caract. + taille de police de la ligne de total
             ('FONT',(0, 0),(-1,0), "Helvetica-Bold", 6), # Donne la police de caract. + taille de police de la ligne de total
             ]
         
-        # Création de l'entete
+        # CrÃ©ation de l'entete
         style_label_col = ParagraphStyle(name="label", fontName="Helvetica", alignment=1, fontSize=6, spaceAfter=0, leading=8, spaceBefore=0)
         valeursLigne = ["",]
         for numColonne in range(0, nbreColonnes) :
@@ -429,7 +429,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             valeursLigne.append(Paragraph(labelColonne, style_label_col))
         dataTableau.append(valeursLigne)
         
-        # Création des lignes
+        # CrÃ©ation des lignes
         for numLigne in range(0, nbreLignes) :
             labelLigne = tableau.GetRowLabelValue(numLigne)
             valeursLigne = [labelLigne,]
@@ -448,7 +448,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         # Style du tableau
         style = TableStyle(listeStyles)
         
-        # Création du tableau
+        # CrÃ©ation du tableau
         tableau = Table(dataTableau, largeursColonnes,  hAlign='LEFT')
         tableau.setStyle(style)
         story.append(tableau)
@@ -461,12 +461,12 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         else :
             largeur, hauteur = A4
 
-        # Création du titre du document
+        # CrÃ©ation du titre du document
         dataTableau = []
         largeurContenu = largeur - (tailleMarge*2)
         largeursColonnes = ( (largeurContenu-100, 100) )
         dateDuJour = DateEngFr(str(datetime.date.today()))
-        dataTableau.append( (_(u"Synthèse des locations"), _(u"%s\nEdité le %s") % (UTILS_Organisateur.GetNom(), dateDuJour)) )
+        dataTableau.append( (_(u"SynthÃ¨se des locations"), _(u"%s\nEditÃ© le %s") % (UTILS_Organisateur.GetNom(), dateDuJour)) )
         style = TableStyle([
                 ('BOX', (0,0), (-1,-1), 0.25, colors.black), 
                 ('VALIGN', (0,0), (-1,-1), 'TOP'), 
@@ -480,7 +480,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         story.insert(0, tableau)
         story.insert(1, Spacer(0, 10))       
         
-        # Insertion du label Paramètres
+        # Insertion du label ParamÃ¨tres
         styleA = ParagraphStyle(name="A", fontName="Helvetica", fontSize=6, spaceAfter=20)
         story.insert(2, Paragraph(self.labelParametres, styleA))       
 
@@ -495,11 +495,11 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 
     def ExportTexte(self, event=None):
         from Utils import UTILS_Export
-        UTILS_Export.ExportTexte(grid=self, titre=_(u"Synthèse des locations"))
+        UTILS_Export.ExportTexte(grid=self, titre=_(u"SynthÃ¨se des locations"))
         
     def ExportExcel(self, event=None):
         from Utils import UTILS_Export
-        UTILS_Export.ExportExcel(grid=self, titre=_(u"Synthèse des locations"))
+        UTILS_Export.ExportExcel(grid=self, titre=_(u"SynthÃ¨se des locations"))
 
 
 # -------------------------------------------------------------------------------------------------------------------------------------------

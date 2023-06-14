@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -28,9 +28,9 @@ def DateEngFr(textDate):
     return text
 
 def DateComplete(dateDD):
-    """ Transforme une date DD en date complète : Ex : lundi 15 janvier 2008 """
+    """ Transforme une date DD en date complÃ¨te : Ex : lundi 15 janvier 2008 """
     listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
-    listeMois = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
+    listeMois = (_(u"janvier"), _(u"fÃ©vrier"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"aoÃ»t"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"dÃ©cembre"))
     dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
     return dateComplete
 
@@ -106,8 +106,8 @@ class Dialog(wx.Dialog):
         self.date_saisie = datetime.date.today()
         self.nom = None
         
-        # Catégorie
-        self.staticbox_categorie_staticbox = wx.StaticBox(self, -1, _(u"Catégorie"))
+        # CatÃ©gorie
+        self.staticbox_categorie_staticbox = wx.StaticBox(self, -1, _(u"CatÃ©gorie"))
         self.ctrl_categorie = CTRL_Categorie(self)
         self.bouton_categorie = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Mecanisme.png"), wx.BITMAP_TYPE_ANY))
 
@@ -123,14 +123,14 @@ class Dialog(wx.Dialog):
         self.ctrl_afficher_commande = wx.CheckBox(self, -1, _(u"Afficher sur la commande des repas"))
         self.ctrl_afficher_factures = wx.CheckBox(self, -1, _(u"Afficher sur les factures"))
 
-        self.ctrl_rappel_famille = wx.CheckBox(self, -1, _(u"Rappel à l'ouverture de la fiche famille"))
-        self.ctrl_rappel_accueil = wx.CheckBox(self, -1, _(u"Rappel à l'ouverture du fichier"))
+        self.ctrl_rappel_famille = wx.CheckBox(self, -1, _(u"Rappel Ã  l'ouverture de la fiche famille"))
+        self.ctrl_rappel_accueil = wx.CheckBox(self, -1, _(u"Rappel Ã  l'ouverture du fichier"))
 
         self.label_parution = wx.StaticText(self, -1, _(u"Date de parution :"))
         self.ctrl_parution = CTRL_Saisie_date.Date(self)
         self.ctrl_parution.SetDate(datetime.date.today())
         
-        self.label_priorite = wx.StaticText(self, -1, _(u"Priorité :"))
+        self.label_priorite = wx.StaticText(self, -1, _(u"PrioritÃ© :"))
         self.ctrl_priorite = wx.Choice(self, -1, choices=[_(u"Normale"), _(u"Haute")])
         self.ctrl_priorite.SetSelection(0)
         
@@ -165,16 +165,16 @@ class Dialog(wx.Dialog):
         wx.CallLater(0, self.ctrl_texte.SetFocus)
 
     def __set_properties(self):
-        self.ctrl_categorie.SetToolTip(wx.ToolTip(_(u"Sélectionnez une catégorie")))
-        self.bouton_categorie.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à la gestion des catégories de messages")))
+        self.ctrl_categorie.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez une catÃ©gorie")))
+        self.bouton_categorie.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accÃ©der Ã  la gestion des catÃ©gories de messages")))
         self.ctrl_afficher_accueil.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher ce message sur la page d'accueil")))
         self.ctrl_afficher_factures.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher ce message sur les futures factures de la famille")))
         self.ctrl_parution.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de parution du message")))
         self.ctrl_afficher_liste.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher ce message sur la liste des consommations")))
         self.ctrl_afficher_commande.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher ce message sur la commande des repas")))
-        self.ctrl_priorite.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici la priorité du message")))
-        self.ctrl_rappel_accueil.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher un rappel du message à l'ouverture du logiciel")))
-        self.ctrl_rappel_famille.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher un rappel du message à l'ouverture de la fiche famille")))
+        self.ctrl_priorite.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez ici la prioritÃ© du message")))
+        self.ctrl_rappel_accueil.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher un rappel du message Ã  l'ouverture du logiciel")))
+        self.ctrl_rappel_famille.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher un rappel du message Ã  l'ouverture de la fiche famille")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
@@ -183,7 +183,7 @@ class Dialog(wx.Dialog):
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=4, cols=1, vgap=10, hgap=10)
         
-        # Catégorie
+        # CatÃ©gorie
         staticbox_categorie = wx.StaticBoxSizer(self.staticbox_categorie_staticbox, wx.VERTICAL)
         grid_sizer_categorie = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
         grid_sizer_categorie.Add(self.ctrl_categorie, 0, wx.EXPAND|wx.ALIGN_CENTER_VERTICAL, 0)
@@ -253,7 +253,7 @@ class Dialog(wx.Dialog):
         UTILS_Aide.Aide("Lesmessages")
 
     def OnBoutonOk(self, event): 
-        # Vérification des données
+        # VÃ©rification des donnÃ©es
         if len(self.ctrl_texte.GetValue()) == 0 :
             dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un texte !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
@@ -271,7 +271,7 @@ class Dialog(wx.Dialog):
         # Sauvegarde
         self.Sauvegarde()
         
-        # Fermeture de la fenêtre
+        # Fermeture de la fenÃªtre
         self.EndModal(wx.ID_OK)
 
     def GetIDmessage(self):
@@ -313,7 +313,7 @@ class Dialog(wx.Dialog):
 
     def Sauvegarde(self):
         """ Sauvegarde """
-        # Récupération des données
+        # RÃ©cupÃ©ration des donnÃ©es
         IDcategorie = self.ctrl_categorie.GetID()
         texte = self.ctrl_texte.GetValue()
         if self.ctrl_priorite.GetSelection() == 1 :
@@ -361,7 +361,7 @@ class Dialog(wx.Dialog):
             DB.ReqMAJ("messages", listeDonnees, "IDmessage", self.IDmessage)
         DB.Close()
         
-        # Mémorise l'action dans l'historique
+        # MÃ©morise l'action dans l'historique
         if nouveauMessage == True :
             type = _(u"Saisie")
             IDcategorie = 24

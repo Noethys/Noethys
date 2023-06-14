@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-15 Ivan LUCAS
@@ -38,7 +38,7 @@ class CTRL_Montant(wx.TextCtrl):
         if event != None : event.Skip()
 
     def Validation(self):
-        # Vérifie si montant vide
+        # VÃ©rifie si montant vide
         montantStr = self.GetValue()
         try :
             test = float(montantStr)
@@ -68,7 +68,7 @@ class Dialog(wx.Dialog):
         self.IDfamille = IDfamille
         self.track = None
 
-        # Période d'application
+        # PÃ©riode d'application
         self.staticbox_periode_staticbox = wx.StaticBox(self, -1, _(u"Date d'application"))
         self.label_date_debut = wx.StaticText(self, -1, _(u"A partir du :"))
         self.ctrl_date_debut = CTRL_Saisie_date.Date2(self)
@@ -82,7 +82,7 @@ class Dialog(wx.Dialog):
 
         # Tarifs
         self.staticbox_tarifs_staticbox = wx.StaticBox(self, -1, _(u"Tarifs"))
-        self.label_suggere = wx.StaticText(self, -1, _(u"Suggéré"))
+        self.label_suggere = wx.StaticText(self, -1, _(u"SuggÃ©rÃ©"))
         self.label_retenu = wx.StaticText(self, -1, _(u"Retenu"))
 
         self.label_suggere.SetForegroundColour((180, 180, 180))
@@ -98,7 +98,7 @@ class Dialog(wx.Dialog):
         self.ctrl_base_retenu = CTRL_Montant(self)
         self.ctrl_base_suggere.Enable(False)
 
-        self.label_depassement = wx.StaticText(self, -1, _(u"Tarif dépassement :"))
+        self.label_depassement = wx.StaticText(self, -1, _(u"Tarif dÃ©passement :"))
         self.ctrl_depassement_suggere = CTRL_Montant(self)
         self.ctrl_depassement_retenu = CTRL_Montant(self)
         self.ctrl_depassement_suggere.Enable(False)
@@ -116,15 +116,15 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.SetTitle(_(u"Saisie d'un tarif de contrat"))
-        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez la date de début d'application")))
+        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez la date de dÃ©but d'application")))
         self.ctrl_revenu.SetToolTip(wx.ToolTip(_(u"Saisissez le revenu pris en compte")))
         self.ctrl_qf.SetToolTip(wx.ToolTip(_(u"Saisissez le quotient familial pris en compte")))
-        self.ctrl_taux_suggere.SetToolTip(wx.ToolTip(_(u"Taux calculé automatiquement")))
+        self.ctrl_taux_suggere.SetToolTip(wx.ToolTip(_(u"Taux calculÃ© automatiquement")))
         self.ctrl_taux_retenu.SetToolTip(wx.ToolTip(_(u"Saisissez le taux retenu")))
-        self.ctrl_base_suggere.SetToolTip(wx.ToolTip(_(u"Tarif de base calculé automatiquement")))
+        self.ctrl_base_suggere.SetToolTip(wx.ToolTip(_(u"Tarif de base calculÃ© automatiquement")))
         self.ctrl_base_retenu.SetToolTip(wx.ToolTip(_(u"Saisissez le tarif de base")))
-        self.ctrl_depassement_suggere.SetToolTip(wx.ToolTip(_(u"Tarif de dépassement calculé automatiquement")))
-        self.ctrl_depassement_retenu.SetToolTip(wx.ToolTip(_(u"Saisissez le tarif de dépassement")))
+        self.ctrl_depassement_suggere.SetToolTip(wx.ToolTip(_(u"Tarif de dÃ©passement calculÃ© automatiquement")))
+        self.ctrl_depassement_retenu.SetToolTip(wx.ToolTip(_(u"Saisissez le tarif de dÃ©passement")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
@@ -192,7 +192,7 @@ class Dialog(wx.Dialog):
         UTILS_Aide.Aide("Contrats")
 
     def OnActualiserSuggestion(self, event=None):
-        # Recherche date début de tarif
+        # Recherche date dÃ©but de tarif
         date_debut = self.ctrl_date_debut.GetDate()
         if date_debut == None :
             return
@@ -219,13 +219,13 @@ class Dialog(wx.Dialog):
         #TODO : Calcul du taux
 
         # Calcul du tarif de base
-        #TODO : Calcul du tarif de base + dépassement
+        #TODO : Calcul du tarif de base + dÃ©passement
 
 
 
     def OnBoutonOk(self, event):
         if self.ctrl_date_debut.Validation() == False or self.ctrl_date_debut.GetDate() == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de début d'application valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de dÃ©but d'application valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_debut.SetFocus()
@@ -266,7 +266,7 @@ class Dialog(wx.Dialog):
             self.ctrl_base_retenu.SetFocus()
             return False
 
-        # tarif dépassement
+        # tarif dÃ©passement
         if self.ctrl_depassement_retenu.Validation() == False :
             dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement un montant de revenu valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
@@ -274,10 +274,10 @@ class Dialog(wx.Dialog):
             self.ctrl_depassement_retenu.SetFocus()
             return False
 
-        # Vérifie le date de début par rapport à celle du contrat
+        # VÃ©rifie le date de dÃ©but par rapport Ã  celle du contrat
         # if self.parent.VerifieTarif(self.track) == False :
         #     if self.ctrl_date_debut.GetDate() != self.parent.clsbase.GetValeur("date_debut"):
-        #         dlg = wx.MessageDialog(self, _(u"Attention, si vous modifiez la date de début de ce tarif, la période du contrat ne disposera pas de tarif disponible au premier jour du contrat !\n\nSouhaitez-vous tout de même modifier ce tarif ?"), _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+        #         dlg = wx.MessageDialog(self, _(u"Attention, si vous modifiez la date de dÃ©but de ce tarif, la pÃ©riode du contrat ne disposera pas de tarif disponible au premier jour du contrat !\n\nSouhaitez-vous tout de mÃªme modifier ce tarif ?"), _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
         #         reponse = dlg.ShowModal()
         #         dlg.Destroy()
         #         if reponse != wx.ID_YES :

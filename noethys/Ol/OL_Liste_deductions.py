@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activitÈs
+# Application :    Noethys, gestion multi-activit√©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-18 Ivan LUCAS
@@ -20,7 +20,7 @@ import GestionDB
 from Utils import UTILS_Dates
 from Utils import UTILS_Titulaires
 from Utils import UTILS_Config
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"§")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"‚Ç¨")
 
 from Utils import UTILS_Interface
 from Ctrl.CTRL_ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils, PanelAvecFooter
@@ -74,7 +74,7 @@ class Track(object):
     
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # RÈcupÈration des paramËtres perso
+        # R√©cup√©ration des param√®tres perso
         self.selectionID = None
         self.selectionTrack = None
         self.criteres = ""
@@ -107,7 +107,7 @@ class ListView(FastObjectListView):
         # Condition dates
         condition = " (deductions.date>='%s' and deductions.date<='%s') " % (self.date_debut, self.date_fin)
 
-        # Conditions ActivitÈs
+        # Conditions Activit√©s
         if self.listeActivites == "toutes" or self.listeActivites == None :
             conditionActivites = ""
         else :
@@ -164,7 +164,7 @@ class ListView(FastObjectListView):
         return listeDeductions
 
     def GetTracks(self):
-        """ RÈcupÈration des donnÈes """
+        """ R√©cup√©ration des donn√©es """
         listeDeductions = self.Importation() 
 
         listeID = None
@@ -211,22 +211,22 @@ class ListView(FastObjectListView):
             ColumnDefn(_(u"Date"), 'left', 90, "date", typeDonnee="date", stringConverter=FormateDateCourt), 
             ColumnDefn(_(u"Famille"), 'left', 160, "nomTitulaires", typeDonnee="texte"),
             ColumnDefn(_(u"Caisse"), 'left', 80, "nomCaisse", typeDonnee="texte"),
-            ColumnDefn(_(u"n∞ Alloc."), 'left', 80, "num_allocataire", typeDonnee="texte"),
+            ColumnDefn(_(u"n¬∞ Alloc."), 'left', 80, "num_allocataire", typeDonnee="texte"),
             ColumnDefn(_(u"Individu"), 'left', 140, "nomComplet", typeDonnee="texte"),
             ColumnDefn(_(u"Date naiss."), 'left', 90, "date_naiss", typeDonnee="date", stringConverter=FormateDateCourt),
-            ColumnDefn(_(u"Label dÈduction"), 'left', 220, "label", typeDonnee="texte"), 
+            ColumnDefn(_(u"Label d√©duction"), 'left', 220, "label", typeDonnee="texte"), 
             ColumnDefn(_(u"Montant"), 'right', 90, "montant", typeDonnee="montant", stringConverter=FormateMontant), 
             ColumnDefn(_(u"Label prestation"), 'left', 150, "labelPrestation", typeDonnee="texte"), 
             ColumnDefn(_(u"Date prestation"), 'left', 90, "datePrestation", typeDonnee="date", stringConverter=FormateDateCourt), 
-            ColumnDefn(_(u"ActivitÈ"), 'left', 70, "abregeActivite", typeDonnee="texte"), 
+            ColumnDefn(_(u"Activit√©"), 'left', 70, "abregeActivite", typeDonnee="texte"), 
             ColumnDefn(_(u"Montant initial"), 'right', 90, "montantInitialPrestation", typeDonnee="montant", stringConverter=FormateMontant),
             ColumnDefn(_(u"Montant final"), 'right', 90, "montantPrestation", typeDonnee="montant", stringConverter=FormateMontant),
-            ColumnDefn(_(u"FacturÈ"), 'left', 60, "IDfacture", typeDonnee="texte", stringConverter=FormateFacture),
+            ColumnDefn(_(u"Factur√©"), 'left', 60, "IDfacture", typeDonnee="texte", stringConverter=FormateFacture),
             ]
 
         self.SetColumns(liste_Colonnes)
         self.CreateCheckStateColumn(0)
-        self.SetEmptyListMsg(_(u"Aucune dÈduction"))
+        self.SetEmptyListMsg(_(u"Aucune d√©duction"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
         self.SetSortColumn(self.columns[1])
         self.SetObjects(self.donnees)
@@ -246,7 +246,7 @@ class ListView(FastObjectListView):
             self.selectionTrack = None
         self.InitModel()
         self.InitObjectListView()
-        # SÈlection d'un item
+        # S√©lection d'un item
         if self.selectionTrack != None :
             self.SelectObject(self.selectionTrack, deselectOthers=True, ensureVisible=True)
         self.selectionID = None
@@ -263,7 +263,7 @@ class ListView(FastObjectListView):
             noSelection = False
             ID = self.Selection()[0].IDdeduction
                 
-        # CrÈation du menu contextuel
+        # Cr√©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Modifier
@@ -284,7 +284,7 @@ class ListView(FastObjectListView):
                 
         menuPop.AppendSeparator()
 
-        # GÈnÈration automatique des fonctions standards
+        # G√©n√©ration automatique des fonctions standards
         self.GenerationContextMenu(menuPop, dictParametres=self.GetParametresImpression())
 
         self.PopupMenu(menuPop)
@@ -292,16 +292,16 @@ class ListView(FastObjectListView):
 
     def GetParametresImpression(self):
         dictParametres = {
-            "titre" : _(u"Liste des dÈductions"),
+            "titre" : _(u"Liste des d√©ductions"),
             "intro" : self.labelParametres,
-            "total" : _(u"%s dÈductions") % len(self.donnees),
+            "total" : _(u"%s d√©ductions") % len(self.donnees),
             "orientation" : wx.LANDSCAPE,
             }
         return dictParametres
 
     def Modifier(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucune dÈduction ‡ modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucune d√©duction √† modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -329,7 +329,7 @@ class ListView(FastObjectListView):
 
     def Supprimer(self, event):
         if len(self.Selection()) == 0 and len(self.GetTracksCoches()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucune dÈduction ‡ supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucune d√©duction √† supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -337,7 +337,7 @@ class ListView(FastObjectListView):
         if len(self.GetTracksCoches()) > 0 :
             # Suppression multiple
             listeSelections = self.GetTracksCoches()
-            dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer les %d dÈductions cochÈes ?") % len(listeSelections), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer les %d d√©ductions coch√©es ?") % len(listeSelections), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
             reponse = dlg.ShowModal() 
             dlg.Destroy()
             if reponse != wx.ID_YES :
@@ -346,19 +346,19 @@ class ListView(FastObjectListView):
         else :
             # Suppression unique
             listeSelections = self.Selection()        
-            dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer la dÈduction n∞%d ?") % listeSelections[0].IDdeduction, _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer la d√©duction n¬∞%d ?") % listeSelections[0].IDdeduction, _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
             reponse = dlg.ShowModal() 
             dlg.Destroy()
             if reponse != wx.ID_YES :
                 return
         
-        # VÈrifie les prestations dÈj‡ facturÈes
+        # V√©rifie les prestations d√©j√† factur√©es
         nbreFactures = 0
         for track in listeSelections :
             if track.IDfacture != None :
                 nbreFactures += 1
         if nbreFactures > 0 :
-            dlg = wx.MessageDialog(self, _(u"Suppression impossible : %d dÈductions sont associÈes ‡ des prestations dÈj‡ facturÈes !") % nbreFactures, _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Suppression impossible : %d d√©ductions sont associ√©es √† des prestations d√©j√† factur√©es !") % nbreFactures, _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False                
@@ -401,7 +401,7 @@ class ListView(FastObjectListView):
         return self.GetCheckedObjects()
 
     def GetTotalDeductions(self):
-        """ Est utilisÈe par la DLG_Saisie_prestation pour connaÓtre le montant total des dÈductions """
+        """ Est utilis√©e par la DLG_Saisie_prestation pour conna√Ætre le montant total des d√©ductions """
         total = 0.0
         for IDdeduction, dictDeduction in self.dictDeductions.items() :
             total += dictDeduction["montant"]
@@ -414,7 +414,7 @@ class ListView(FastObjectListView):
 class ListviewAvecFooter(PanelAvecFooter):
     def __init__(self, parent, kwargs={}):
         dictColonnes = {
-            "nomTitulaires" : {"mode" : "nombre", "singulier" : _(u"dÈduction"), "pluriel" : _(u"dÈductions"), "alignement" : wx.ALIGN_CENTER},
+            "nomTitulaires" : {"mode" : "nombre", "singulier" : _(u"d√©duction"), "pluriel" : _(u"d√©ductions"), "alignement" : wx.ALIGN_CENTER},
             "montant" : {"mode" : "total"},
             "montantInitialPrestation" : {"mode" : "total"},
             "montantPrestation" : {"mode" : "total"},

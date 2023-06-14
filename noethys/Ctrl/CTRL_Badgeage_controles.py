@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-12 Ivan LUCAS
@@ -90,7 +90,7 @@ class CTRL_Barre_numerique(wx.SearchCtrl):
                 child.Bind(wx.EVT_CHAR, self.OnKeyDown) 
                 break 
 
-        # Init Détection RFID
+        # Init DÃ©tection RFID
         self.InitialisationRFID()
     
     def Activer(self):
@@ -137,7 +137,7 @@ class CTRL_Barre_numerique(wx.SearchCtrl):
                         if IDindividu != None :
                             self.ValidationIdentification(IDindividu, mode="RFID")
                         else :
-                            DIALOGUES.DLG_Message(self.interface, message=_(u"Ce numéro de badge RFID n'est pas répertorié !"), icone="erreur")
+                            DIALOGUES.DLG_Message(self.interface, message=_(u"Ce numÃ©ro de badge RFID n'est pas rÃ©pertoriÃ© !"), icone="erreur")
                             self.Start() 
             except Exception as err :
                 #print err
@@ -157,7 +157,7 @@ class CTRL_Barre_numerique(wx.SearchCtrl):
             return
         if keycode == wx.WXK_RETURN :
             self.EnvoiTouche("Validation")
-        # Vérifie que les caractères saisis sont autorisés
+        # VÃ©rifie que les caractÃ¨res saisis sont autorisÃ©s
         if keycode in (wx.WXK_RETURN, wx.WXK_BACK, wx.WXK_DELETE) or keycode > 255 :
             event.Skip()
             return
@@ -180,7 +180,7 @@ class CTRL_Barre_numerique(wx.SearchCtrl):
         try :
             IDindividu = int(txtSearch)
         except :
-            DIALOGUES.DLG_Message(self.interface, message=_(u"Ce numéro de badge ne semble pas valide !"), icone="erreur")
+            DIALOGUES.DLG_Message(self.interface, message=_(u"Ce numÃ©ro de badge ne semble pas valide !"), icone="erreur")
             return False
         self.ValidationIdentification(IDindividu, mode="CLAVIER")
         
@@ -223,7 +223,7 @@ class CTRL_Barre_numerique(wx.SearchCtrl):
     
     def ReceptionTouche(self, touche=""):
         """ Recoit une touche du clavier virtuel """
-        # Envoie touche à la barre de recherche
+        # Envoie touche Ã  la barre de recherche
         texte = self.GetValue()
         self.SetFocus()
         if touche == "Efface" :
@@ -235,21 +235,21 @@ class CTRL_Barre_numerique(wx.SearchCtrl):
             self.SetInsertionPoint(len(texte)+1)
         
     def ValidationIdentification(self, IDindividu=None, mode="CLAVIER"):
-        """ Vérification de l'identification """
+        """ VÃ©rification de l'identification """
         # On vide la barre de recherche
         self.OnCancel(None)
-        # Lancement de la procédure si IDindividu correct
+        # Lancement de la procÃ©dure si IDindividu correct
         resultat = self.interface.ValidationIdentification(IDindividu)
         if resultat == False :
-            DIALOGUES.DLG_Message(self.interface, message=_(u"Ce numéro de badge n'existe pas !"), icone="erreur")
+            DIALOGUES.DLG_Message(self.interface, message=_(u"Ce numÃ©ro de badge n'existe pas !"), icone="erreur")
             return False
         else :
-            # Vérification que l'individu est inscrit
+            # VÃ©rification que l'individu est inscrit
             if self.listeIndividus != None :
                 if IDindividu not in self.listeIndividus :
                     DIALOGUES.DLG_Message(self.interface, message=_(u"Il n'y a pas d'inscription valide !"), icone="erreur")
                     return False
-            # Lance la procédure
+            # Lance la procÃ©dure
             self.interface.Procedure(IDindividu)
 
 
@@ -295,7 +295,7 @@ class CTRL_Liste_individus(ULC.UltimateListCtrl):
         
         self.InsertColumn(0, _(u"Nom de l'individu"), width=400, format=ULC.ULC_FORMAT_LEFT)
         
-        # Création des items
+        # CrÃ©ation des items
         index = 0
         for IDindividu, IDcivilite, nom, prenom in listeIndividus :
             label = u"  %s %s" % (nom, prenom)
@@ -352,14 +352,14 @@ class CTRL_Liste_individus(ULC.UltimateListCtrl):
     def Valider(self, event=None):
         selections = self.GetSelections()
         if len(selections) == 0 :
-            DIALOGUES.DLG_Message(self.interface, message=_(u"Vous devez d'abord sélectionner un individu dans la liste !"), icone="exclamation")
+            DIALOGUES.DLG_Message(self.interface, message=_(u"Vous devez d'abord sÃ©lectionner un individu dans la liste !"), icone="exclamation")
             return
         index, IDindividu = selections[0]
         
-        # Lancement de la procédure si IDindividu correct
+        # Lancement de la procÃ©dure si IDindividu correct
         resultat = self.interface.ValidationIdentification(IDindividu)
         if resultat == False :
-            DIALOGUES.DLG_Message(self.interface, message=_(u"Ce numéro de badge n'existe pas !"), icone="erreur")
+            DIALOGUES.DLG_Message(self.interface, message=_(u"Ce numÃ©ro de badge n'existe pas !"), icone="erreur")
             return False
         else :
             self.Reset() 
@@ -374,7 +374,7 @@ class CTRL_Importation(wx.Panel):
         wx.Panel.__init__(self, interface, id=-1, style=wx.TAB_TRAVERSAL)
         self.interface = interface
         
-        # Contrôles
+        # ContrÃ´les
         self.boutonTest = wx.Button(self, -1, _(u"Test"))
         
         # Binds

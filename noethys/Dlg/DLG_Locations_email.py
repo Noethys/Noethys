@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-17 Ivan LUCAS
@@ -31,7 +31,7 @@ class Dialog(wx.Dialog):
         self.parent = parent
         
         # Bandeau
-        intro = _(u"Cochez les locations à envoyer par Email puis cliquez sur le bouton 'Transférer vers l'éditeur d'Emails'.")
+        intro = _(u"Cochez les locations Ã  envoyer par Email puis cliquez sur le bouton 'TransfÃ©rer vers l'Ã©diteur d'Emails'.")
         titre = _(u"Envoi de locations par Email")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Emails_piece.png")
@@ -46,7 +46,7 @@ class Dialog(wx.Dialog):
         
         # Boutons
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
-        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Transférer vers l'éditeur d'Emails"), cheminImage="Images/32x32/Emails_piece.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"TransfÃ©rer vers l'Ã©diteur d'Emails"), cheminImage="Images/32x32/Emails_piece.png")
         self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         self.__set_properties()
@@ -57,13 +57,13 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
         
-        # Init Contrôles
+        # Init ContrÃ´les
         self.ctrl_liste_locations.MAJ()
                 
 
     def __set_properties(self):
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
-        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour transférer les locations vers l'éditeur d'Emails")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour transfÃ©rer les locations vers l'Ã©diteur d'Emails")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
         self.SetMinSize((850, 700))
 
@@ -106,16 +106,16 @@ class Dialog(wx.Dialog):
         self.EndModal(wx.ID_CANCEL)
 
     def OnBoutonOk(self, event): 
-        """ Aperçu PDF des locations """
-        # Validation des données saisies
+        """ AperÃ§u PDF des locations """
+        # Validation des donnÃ©es saisies
         tracks = self.ctrl_liste_locations.GetTracksCoches()
         if len(tracks) == 0 : 
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune location à envoyer par Email !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune location Ã  envoyer par Email !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
-        # Création des locations sélectionnées
+        # CrÃ©ation des locations sÃ©lectionnÃ©es
         listeIDlocation = []
         for track in tracks :
             listeIDlocation.append(track.IDlocation)
@@ -133,7 +133,7 @@ class Dialog(wx.Dialog):
             for IDlocation, fichier in dictPieces.items() :
                 os.remove(fichier)  
 
-        # Récupération des adresses Emails
+        # RÃ©cupÃ©ration des adresses Emails
         dict_adresses = UTILS_Envoi_email.GetAdressesFamilles([track.IDfamille for track in tracks])
         if dict_adresses == False:
             return False
@@ -146,7 +146,7 @@ class Dialog(wx.Dialog):
                     champs = dictChampsFusion[track.IDlocation]
                     liste_donnees.append({"adresse" : adresse, "pieces" : [fichier,], "champs" : champs})
 
-        # Transfert des données vers DLG Mailer
+        # Transfert des donnÃ©es vers DLG Mailer
         from Dlg import DLG_Mailer
         dlg = DLG_Mailer.Dialog(self, categorie="location")
         dlg.SetDonnees(liste_donnees, modificationAutorisee=False)

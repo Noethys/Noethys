@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-13 Ivan LUCAS
@@ -75,14 +75,14 @@ class Dialog(wx.Dialog):
         self.parent = parent  
 
         # Bandeau
-        intro = _(u"Vous pouvez ici afficher la liste des pièces fournies. Commencez par sélectionner le type de pièce à afficher puis cochez la case 'valide' si vous souhaitez afficher uniquement les pièces valides à une date précise.")
-        titre = _(u"Liste des pièces fournies")
+        intro = _(u"Vous pouvez ici afficher la liste des piÃ¨ces fournies. Commencez par sÃ©lectionner le type de piÃ¨ce Ã  afficher puis cochez la case 'valide' si vous souhaitez afficher uniquement les piÃ¨ces valides Ã  une date prÃ©cise.")
+        titre = _(u"Liste des piÃ¨ces fournies")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Piece.png")
         
-        # Paramètres
-        self.box_parametres_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Paramètres"))
-        self.label_piece = wx.StaticText(self, wx.ID_ANY, _(u"Pièce :"))
+        # ParamÃ¨tres
+        self.box_parametres_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"ParamÃ¨tres"))
+        self.label_piece = wx.StaticText(self, wx.ID_ANY, _(u"PiÃ¨ce :"))
         self.ctrl_piece = CTRL_Piece(self)
         self.ctrl_valide = wx.CheckBox(self, wx.ID_ANY, _(u"Uniquement si valide au :"))
         self.ctrl_date = CTRL_Saisie_date.Date2(self)
@@ -121,11 +121,11 @@ class Dialog(wx.Dialog):
         self.OnPieceValide(None)
 
     def __set_properties(self):
-        self.ctrl_piece.SetToolTip(wx.ToolTip(_(u"Sélectionnez une pièce dans la liste")))
-        self.ctrl_valide.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher uniquement les pièces valides à la date choisie")))
-        self.ctrl_date.SetToolTip(wx.ToolTip(_(u"Choisissez la date à laquelle les pièces doivent être valides")))
-        self.bouton_actualiser.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour actualiser la liste en fonction des paramètres sélectionnés")))
-        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher un aperçu avant impression de la liste")))
+        self.ctrl_piece.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez une piÃ¨ce dans la liste")))
+        self.ctrl_valide.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher uniquement les piÃ¨ces valides Ã  la date choisie")))
+        self.ctrl_date.SetToolTip(wx.ToolTip(_(u"Choisissez la date Ã  laquelle les piÃ¨ces doivent Ãªtre valides")))
+        self.bouton_actualiser.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour actualiser la liste en fonction des paramÃ¨tres sÃ©lectionnÃ©s")))
+        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher un aperÃ§u avant impression de la liste")))
         self.bouton_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer la liste")))
         self.bouton_excel.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter la liste au format Excel")))
         self.bouton_texte.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter la liste au format Texte")))
@@ -198,7 +198,7 @@ class Dialog(wx.Dialog):
         if self.ctrl_valide.GetValue() == True :
             date_reference = self.ctrl_date.GetDate() 
             if date_reference == None :
-                dlg = wx.MessageDialog(self, _(u"Vous devez renseigner une date de référence !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous devez renseigner une date de rÃ©fÃ©rence !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_date.SetFocus() 

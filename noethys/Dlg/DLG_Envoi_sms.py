@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activitÈs
+# Application :    Noethys, gestion multi-activit√©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-17 Ivan LUCAS
@@ -50,7 +50,7 @@ class Page_Message(wx.Panel):
 
 
     def __set_properties(self):
-        self.ctrl_objet.SetToolTip(wx.ToolTip(_(u"Saisissez l'objet du message. Il s'agit d'une donnÈe interne qui permet la tracabilitÈ du message envoyÈ.")))
+        self.ctrl_objet.SetToolTip(wx.ToolTip(_(u"Saisissez l'objet du message. Il s'agit d'une donn√©e interne qui permet la tracabilit√© du message envoy√©.")))
         self.ctrl_message.SetToolTip(wx.ToolTip(_(u"Saisissez le texte du message")))
 
     def __do_layout(self):
@@ -76,7 +76,7 @@ class Page_Message(wx.Panel):
 
     def OnTexte(self, event=None):
         nbre_caracteres_max = self.clsbase.GetValeur("nbre_caracteres_max", 0)
-        texte = _(u"%d / %d caractËres") % (len(self.ctrl_message.GetValue()), nbre_caracteres_max)
+        texte = _(u"%d / %d caract√®res") % (len(self.ctrl_message.GetValue()), nbre_caracteres_max)
         self.label_nbre_caracteres.SetLabel(texte)
 
     def MAJ(self):
@@ -101,15 +101,15 @@ class Page_Message(wx.Panel):
 
         nbre_caracteres_max = self.clsbase.GetValeur("nbre_caracteres_max", 0)
         if len(texte) > nbre_caracteres_max :
-            dlg = wx.MessageDialog(self, _(u"Vous avez dÈpassÈ le nombre de caractËres autorisÈ !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous avez d√©pass√© le nombre de caract√®res autoris√© !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
 
-        alphabet_gsm = u" 0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZƒ‰‡≈Â∆Êﬂ«ËÈ…Ï÷ˆÚ—Ò‹¸˘#%&()*+,-./:;<>=ß$!?£ø°@_'"
+        alphabet_gsm = u" 0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ√Ñ√§√†√Ö√•√Ü√¶√ü√á√®√©√â√¨√ñ√∂√≤√ë√±√ú√º√π#%&()*+,-./:;<>=¬ß$!?¬£¬ø¬°@_'"
         for caractere in texte :
             if caractere not in alphabet_gsm and caractere != "\n" :
-                dlg = wx.MessageDialog(self, _(u"Le caractËre '%s' n'est pas pris en charge dans les SMS !") % caractere, _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Le caract√®re '%s' n'est pas pris en charge dans les SMS !") % caractere, _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
@@ -131,11 +131,11 @@ class Page_Saisie_manuelle(wx.Panel):
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
         self.parent = parent
 
-        # ContrÙles
+        # Contr√¥les
         self.ctrl = wx.TextCtrl(self, -1, style=wx.TE_MULTILINE)
         self.ctrl.SetMinSize((10, 10))
         self.Bind(wx.EVT_TEXT, self.OnCheck, self.ctrl)
-        self.ctrl.SetToolTip(wx.ToolTip(_(u"Saisissez manuellement des numÈros de tÈlÈphones en les sÈparant par des points-virgules (;)")))
+        self.ctrl.SetToolTip(wx.ToolTip(_(u"Saisissez manuellement des num√©ros de t√©l√©phones en les s√©parant par des points-virgules (;)")))
 
         # Layout
         sizer = wx.BoxSizer(wx.VERTICAL)
@@ -174,7 +174,7 @@ class Page_Familles_individus(wx.Panel):
         self.parent = parent
         self.categorie = categorie
 
-        # ContrÙles
+        # Contr√¥les
         self.listview = OL_Selection_sms.ListView(self, id=-1, categorie=categorie, style=wx.LC_REPORT | wx.SUNKEN_BORDER | wx.LC_SINGLE_SEL | wx.LC_HRULES | wx.LC_VRULES)
         self.listview.SetMinSize((10, 10))
         self.barre_recherche = OL_Selection_sms.CTRL_Outils(self, listview=self.listview, afficherCocher=True)
@@ -222,7 +222,7 @@ class Page_Familles_individus(wx.Panel):
 
 def AjouteTexteImage(image=None, texte="", alignement="droite-bas", padding=0, taille_police=9):
     """ Ajoute un texte sur une image bitmap """
-    # CrÈation du bitmap
+    # Cr√©ation du bitmap
     largeurImage, hauteurImage = image.GetSize()
     if 'phoenix' in wx.PlatformInfo:
         bmp = wx.Bitmap(largeurImage, hauteurImage)
@@ -233,7 +233,7 @@ def AjouteTexteImage(image=None, texte="", alignement="droite-bas", padding=0, t
     mdc.SetBackgroundMode(wx.TRANSPARENT)
     mdc.Clear()
 
-    # ParamËtres
+    # Param√®tres
     dc.SetBrush(wx.Brush(wx.RED))
     dc.SetPen(wx.TRANSPARENT_PEN)
     dc.SetFont(wx.Font(taille_police, wx.DEFAULT, wx.NORMAL, wx.BOLD, 0, ""))
@@ -289,7 +289,7 @@ class CTRL_Destinataires(wx.Notebook):
             self.imageList.Add(dictPage["image"])
         self.AssignImageList(self.imageList)
 
-        # CrÈation des pages
+        # Cr√©ation des pages
         index = 0
         for dictPage in self.listePages:
             self.AddPage(dictPage["page"], dictPage["label"], imageId=index)
@@ -366,7 +366,7 @@ class Page_Destinataires(wx.Panel):
         # Destinataires
         self.staticbox_destinataires_staticbox = wx.StaticBox(self, -1, _(u"2. Cochez les destinataires"))
         self.ctrl_destinataires = CTRL_Destinataires(self)
-        self.check_avec_sms = wx.CheckBox(self, -1, _(u"Afficher uniquement les numÈros de tÈlÈphones dont l'option SMS est activÈe"))
+        self.check_avec_sms = wx.CheckBox(self, -1, _(u"Afficher uniquement les num√©ros de t√©l√©phones dont l'option SMS est activ√©e"))
 
         self.__set_properties()
         self.__do_layout()
@@ -374,7 +374,7 @@ class Page_Destinataires(wx.Panel):
         self.Bind(wx.EVT_CHECKBOX, self.OnCheckSMS, self.check_avec_sms)
 
     def __set_properties(self):
-        self.check_avec_sms.SetToolTip(wx.ToolTip(_(u"Cochez cette option pour afficher uniquemement les numÈros de tÈlÈphones dont l'option SMS a ÈtÈ activÈe dans la fiche individuelle")))
+        self.check_avec_sms.SetToolTip(wx.ToolTip(_(u"Cochez cette option pour afficher uniquemement les num√©ros de t√©l√©phones dont l'option SMS a √©t√© activ√©e dans la fiche individuelle")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
@@ -402,7 +402,7 @@ class Page_Destinataires(wx.Panel):
     def Validation(self):
         listeTelephones = self.ctrl_destinataires.GetDonnees()[1]
         if len(listeTelephones) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement cocher au moins un numÈro de tÈlÈphone !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement cocher au moins un num√©ro de t√©l√©phone !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -423,7 +423,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL):
 
     def Remplissage(self):
         # Plateforme
-        self.Append(wxpg.PropertyCategory(_(u"ParamËtres")))
+        self.Append(wxpg.PropertyCategory(_(u"Param√®tres")))
 
         liste_choix = [
             ("contact_everyone", _(u"Contact Everyone By Orange Business")),
@@ -434,7 +434,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL):
 
         propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Plateforme"), name="plateforme", liste_choix=liste_choix, valeur=None)
         propriete.SetEditor("EditeurChoix")
-        propriete.SetHelpString(_(u"SÈlectionnez une plateforme"))
+        propriete.SetHelpString(_(u"S√©lectionnez une plateforme"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
@@ -445,9 +445,9 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL):
         liste_adresses = DB.ResultatReq()
         DB.Close()
         liste_adresses.insert(0, (0, _(u"Aucune")))
-        propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Adresse d'expÈdition d'email"), name="adresse_expedition_email", liste_choix=liste_adresses, valeur=0)
+        propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Adresse d'exp√©dition d'email"), name="adresse_expedition_email", liste_choix=liste_adresses, valeur=0)
         propriete.SetEditor("EditeurChoix")
-        propriete.SetHelpString(_(u"SÈlectionnez l'adresse d'expÈdition de l'email. Cette adresse doit Ítre rÈfÈrencÈe sur votre compte Contact Everyone."))
+        propriete.SetHelpString(_(u"S√©lectionnez l'adresse d'exp√©dition de l'email. Cette adresse doit √™tre r√©f√©renc√©e sur votre compte Contact Everyone."))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
@@ -468,17 +468,17 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL):
 
         # Token Mailjet
         propriete = wxpg.StringProperty(label=_(u"Token Mailjet"), name="token_sms_mailjet", value="")
-        propriete.SetHelpString(_(u"Saisissez le token que vous avez gÈnÈrÈ sur votre compte Mailjet"))
+        propriete.SetHelpString(_(u"Saisissez le token que vous avez g√©n√©r√© sur votre compte Mailjet"))
         self.Append(propriete)
 
         # Sender ID Mailjet
-        propriete = wxpg.StringProperty(label=_(u"Nom de l'expÈditeur"), name="sender_sms_mailjet", value="")
-        propriete.SetHelpString(_(u"Saisissez le nom de l'expÈditeur. Exemples : 'MJC', 'ALSH', 'MAIRIE'..."))
+        propriete = wxpg.StringProperty(label=_(u"Nom de l'exp√©diteur"), name="sender_sms_mailjet", value="")
+        propriete.SetHelpString(_(u"Saisissez le nom de l'exp√©diteur. Exemples : 'MJC', 'ALSH', 'MAIRIE'..."))
         self.Append(propriete)
 
-        # Nbre caractËres max
-        propriete = wxpg.IntProperty(label=_(u"Nombre maximal de caractËres du message"), name="nbre_caracteres_max", value=160)
-        propriete.SetHelpString(_(u"Nombre maximal de caractËres du message"))
+        # Nbre caract√®res max
+        propriete = wxpg.IntProperty(label=_(u"Nombre maximal de caract√®res du message"), name="nbre_caracteres_max", value=160)
+        propriete.SetHelpString(_(u"Nombre maximal de caract√®res du message"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
         self.SetPropertyEditor("nbre_caracteres_max", "SpinCtrl")
@@ -515,7 +515,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL):
             }
         }
 
-        # Cache toutes les propriÈtÈs
+        # Cache toutes les propri√©t√©s
         for nom_property, dict_conditions in dict_switch.items():
             for condition, liste_proprietes in dict_conditions.items():
                 for dict_propriete in liste_proprietes :
@@ -523,7 +523,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL):
                     propriete.Hide(True)
                     propriete.SetAttribute("obligatoire", False)
 
-        # Affiche que les propriÈtÈs souhaitÈes
+        # Affiche que les propri√©t√©s souhait√©es
         for nom_property, dict_conditions in dict_switch.items() :
             propriete = self.GetProperty(nom_property)
             valeur = propriete.GetValue()
@@ -541,19 +541,19 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL):
 
 
     def Validation(self):
-        """ Validation des donnÈes saisies """
-        # VÈrifie que les donnÈes obligatoires ont ÈtÈ saisies
+        """ Validation des donn√©es saisies """
+        # V√©rifie que les donn√©es obligatoires ont √©t√© saisies
         for nom, valeur in self.GetPropertyValues().items():
             propriete = self.GetPropertyByName(nom)
             if self.GetPropertyAttribute(propriete, "obligatoire") == True:
                 if valeur == "" or valeur == None:
-                    dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement renseigner le paramËtre '%s' !") % self.GetPropertyLabel(nom), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                    dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement renseigner le param√®tre '%s' !") % self.GetPropertyLabel(nom), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                     dlg.ShowModal()
                     dlg.Destroy()
                     return False
 
         # if self.GetPropertyByName("adresse_expedition_email").GetValue() == 0 :
-        #     dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sÈlectionner une adresse d'expÈdition !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+        #     dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement s√©lectionner une adresse d'exp√©dition !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
         #     dlg.ShowModal()
         #     dlg.Destroy()
         #     return False
@@ -563,12 +563,12 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL):
         return True
 
     def Importation(self):
-        """ Importation des valeurs dans le contrÙle """
-        # RÈcupÈration des noms et valeurs par dÈfaut du contrÙle
+        """ Importation des valeurs dans le contr√¥le """
+        # R√©cup√©ration des noms et valeurs par d√©faut du contr√¥le
         dictValeurs = copy.deepcopy(self.GetPropertyValues())
-        # Recherche les paramËtres mÈmorisÈs
+        # Recherche les param√®tres m√©moris√©s
         dictParametres = UTILS_Parametres.ParametresCategorie(mode="get", categorie="envoi_sms", dictParametres=dictValeurs)
-        # Envoie les paramËtres dans le contrÙle
+        # Envoie les param√®tres dans le contr√¥le
         for nom, valeur in dictParametres.items():
             propriete = self.GetPropertyByName(nom)
             ancienneValeur = propriete.GetValue()
@@ -576,7 +576,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL):
         self.Switch()
 
     def Sauvegarde(self, forcer=False):
-        """ MÈmorisation des valeurs du contrÙle """
+        """ M√©morisation des valeurs du contr√¥le """
         dictValeurs = copy.deepcopy(self.GetPropertyValues())
         UTILS_Parametres.ParametresCategorie(mode="set", categorie="envoi_sms", dictParametres=dictValeurs)
 
@@ -594,8 +594,8 @@ class Page_Parametres(wx.Panel):
         self.clsbase = clsbase
         self.MAJ_effectuee = False
 
-        # ParamËtres
-        self.staticbox_parametres_staticbox = wx.StaticBox(self, -1, _(u"1. Renseignez les paramËtres"))
+        # Param√®tres
+        self.staticbox_parametres_staticbox = wx.StaticBox(self, -1, _(u"1. Renseignez les param√®tres"))
         self.ctrl_parametres = CTRL_Parametres(self)
         self.ctrl_parametres.Importation()
         self.bouton_reinitialisation = CTRL_Propertygrid.Bouton_reinitialisation(self, self.ctrl_parametres)
@@ -647,14 +647,14 @@ class Page_Parametres(wx.Panel):
 
 
 class Base(object) :
-    """ Classe commune ‡ l'assistant et au notebook """
+    """ Classe commune √† l'assistant et au notebook """
     def __init__(self):
         self.dictDonnees = {}
 
     def InitPages(self, parent=None):
         """ Initialisation des pages """
         self.listePages = [
-            {"code" : "parametres", "label" : _(u"ParamËtres"), "ctrl" : Page_Parametres(parent, clsbase=self), "image" : "Maison.png"},
+            {"code" : "parametres", "label" : _(u"Param√®tres"), "ctrl" : Page_Parametres(parent, clsbase=self), "image" : "Maison.png"},
             {"code" : "destinataires", "label": _(u"Destinataires"), "ctrl": Page_Destinataires(parent, clsbase=self), "image": "Maison.png"},
             {"code" : "message", "label": _(u"Message"), "ctrl": Page_Message(parent, clsbase=self), "image": "Maison.png"},
         ]
@@ -685,7 +685,7 @@ class Dialog(wx.Dialog, Base):
         self.parent = parent
 
         titre = _(u"Envoi de SMS")
-        intro = _(u"Vous pouvez envoyer ici des SMS aux individus ou familles ‡ condition que votre plateforme d'envoi ait ÈtÈ intÈgrÈe ‡ cette fonctionnalitÈ. Consultez la liste des prestataires pris en charge dans la liste dÈroulante Plateforme de la page des paramËtres.")
+        intro = _(u"Vous pouvez envoyer ici des SMS aux individus ou familles √† condition que votre plateforme d'envoi ait √©t√© int√©gr√©e √† cette fonctionnalit√©. Consultez la liste des prestataires pris en charge dans la liste d√©roulante Plateforme de la page des param√®tres.")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Sms.png")
 
@@ -712,7 +712,7 @@ class Dialog(wx.Dialog, Base):
         self.nbrePages = len(self.listePages)    
         self.pageVisible = 0
                         
-        # CrÈation des pages
+        # Cr√©ation des pages
         self.Creation_Pages()
         self.GetPage("parametres").MAJ()
 
@@ -729,8 +729,8 @@ class Dialog(wx.Dialog, Base):
 
     def __set_properties(self):
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
-        self.bouton_retour.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour revenir ‡ la page prÈcÈdente")))
-        self.bouton_suite.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour passer ‡ l'Ètape suivante")))
+        self.bouton_retour.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour revenir √† la page pr√©c√©dente")))
+        self.bouton_suite.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour passer √† l'√©tape suivante")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez pour annuler")))
         self.SetMinSize((770, 650))
 
@@ -769,11 +769,11 @@ class Dialog(wx.Dialog, Base):
         UTILS_Aide.Aide("EnvoideSMS")
 
     def AfficherPage(self, numPage=0):
-        # rend invisible la page affichÈe
+        # rend invisible la page affich√©e
         page = self.listePages[self.pageVisible]["ctrl"]
         page.Sauvegarde()
         page.Show(False)
-        # Fait apparaÓtre nouvelle page
+        # Fait appara√Ætre nouvelle page
         self.pageVisible = numPage
         page = self.listePages[self.pageVisible]["ctrl"]
         page.MAJ()
@@ -783,7 +783,7 @@ class Dialog(wx.Dialog, Base):
     def Onbouton_retour(self, event):
         # Affiche nouvelle page
         self.AfficherPage(self.pageVisible - 1)
-        # Si on quitte l'avant-derniËre page, on active le bouton Suivant
+        # Si on quitte l'avant-derni√®re page, on active le bouton Suivant
         if self.pageVisible == self.nbrePages-1:
             self.bouton_suite.Enable(True)
             self.bouton_suite.SetImage(Chemins.GetStaticPath("Images/32x32/Valider.png"))
@@ -792,26 +792,26 @@ class Dialog(wx.Dialog, Base):
             self.bouton_suite.Enable(True)
             self.bouton_suite.SetImage(Chemins.GetStaticPath("Images/32x32/Fleche_droite.png"))
             self.bouton_suite.SetTexte(_(u"Suite"))
-        # Si on revient ‡ la premiËre page, on dÈsactive le bouton Retour
+        # Si on revient √† la premi√®re page, on d√©sactive le bouton Retour
         if self.pageVisible == 0 :
             self.bouton_retour.Enable(False)
 
     def Onbouton_suite(self, event):
-        # VÈrifie que les donnÈes de la page en cours sont valides
+        # V√©rifie que les donn√©es de la page en cours sont valides
         validation = self.ValidationPages()
         if validation == False : return
-        # Si on est dÈj‡ sur la derniËre page : on termine
+        # Si on est d√©j√† sur la derni√®re page : on termine
         if self.pageVisible == self.nbrePages-1 :
             self.listePages[self.pageVisible]["ctrl"].Sauvegarde()
             self.Terminer()
             return
         # Affiche nouvelle page
         self.AfficherPage(self.pageVisible + 1)
-        # Si on arrive ‡ la derniËre page, on dÈsactive le bouton Suivant
+        # Si on arrive √† la derni√®re page, on d√©sactive le bouton Suivant
         if self.pageVisible == self.nbrePages-1 :
             self.bouton_suite.SetImage(Chemins.GetStaticPath("Images/32x32/Valider.png"))
             self.bouton_suite.SetTexte(_(u"Envoyer"))
-        # Si on quitte la premiËre page, on active le bouton Retour
+        # Si on quitte la premi√®re page, on active le bouton Retour
         if self.pageVisible > 0 :
             self.bouton_retour.Enable(True)
 
@@ -826,7 +826,7 @@ class Dialog(wx.Dialog, Base):
         self.EndModal(wx.ID_CANCEL)
 
     def ValidationPages(self) :
-        """ Validation des donnÈes avant changement de pages """
+        """ Validation des donn√©es avant changement de pages """
         return self.listePages[self.pageVisible]["ctrl"].Validation()
 
     def Terminer(self):
@@ -839,7 +839,7 @@ class Dialog(wx.Dialog, Base):
 
     def Envoyer(self):
         # Demande de confirmation
-        dlg = wx.MessageDialog(self, _(u"Confirmez-vous l'envoi du message vers %d numÈros ?") % len(self.dictDonnees["liste_telephones"]), _(u"Confirmation"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+        dlg = wx.MessageDialog(self, _(u"Confirmez-vous l'envoi du message vers %d num√©ros ?") % len(self.dictDonnees["liste_telephones"]), _(u"Confirmation"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
         reponse = dlg.ShowModal()
         dlg.Destroy()
         if reponse != wx.ID_YES :
@@ -848,11 +848,11 @@ class Dialog(wx.Dialog, Base):
         # --------------------- CONTACT EVERYONE BY ORANGE BUSINESS ---------------------
         if self.dictDonnees["plateforme"] == "contact_everyone" :
 
-            # RÈcupÈration adresse d'expÈdition
+            # R√©cup√©ration adresse d'exp√©dition
             IDadresse = self.dictDonnees["adresse_expedition_email"]
             dictAdresse = UTILS_Envoi_email.GetAdresseExp(IDadresse=IDadresse)
 
-            # GÈnÈration de la piËce jointe
+            # G√©n√©ration de la pi√®ce jointe
             liste_lignes = []
 
             for ligne in self.dictDonnees["message"].split("\n") :
@@ -866,10 +866,10 @@ class Dialog(wx.Dialog, Base):
 
             cheminFichier = UTILS_Fichiers.GetRepTemp(fichier="sms.txt")
             fichier = open(cheminFichier, 'w')
-            fichier.write(texte.encode("iso-8859-15"))
+            fichier.write(texte.encode("utf8"))
             fichier.close()
 
-            # PrÈparation du message
+            # Pr√©paration du message
             message = UTILS_Envoi_email.Message(destinataires=[self.dictDonnees["orange_adresse_destination_email"],],
                                                 sujet=self.dictDonnees["objet"], texte_html=_(u"Envoi de SMS"), fichiers=[cheminFichier,])
 
@@ -881,11 +881,11 @@ class Dialog(wx.Dialog, Base):
         # --------------------- CLEVER SMS ---------------------
         if self.dictDonnees["plateforme"] == "cleversms" :
 
-            # RÈcupÈration adresse d'expÈdition
+            # R√©cup√©ration adresse d'exp√©dition
             IDadresse = self.dictDonnees["adresse_expedition_email"]
             dictAdresse = UTILS_Envoi_email.GetAdresseExp(IDadresse=IDadresse)
 
-            # GÈnÈration de la piËce jointe
+            # G√©n√©ration de la pi√®ce jointe
             liste_lignes = []
 
             message = self.dictDonnees["message"].replace("\n", "")
@@ -897,10 +897,10 @@ class Dialog(wx.Dialog, Base):
 
             cheminFichier = UTILS_Fichiers.GetRepTemp(fichier="sms.txt")
             fichier = open(cheminFichier, 'w')
-            fichier.write(texte.encode("iso-8859-15"))
+            fichier.write(texte.encode("utf8"))
             fichier.close()
 
-            # PrÈparation du message
+            # Pr√©paration du message
             message = UTILS_Envoi_email.Message(destinataires=[self.dictDonnees["cleversms_adresse_destination_email"],],
                                                 sujet=self.dictDonnees["objet"], texte_html=_(u"Envoi de SMS"), fichiers=[cheminFichier,])
             # Envoi de l'email
@@ -911,11 +911,11 @@ class Dialog(wx.Dialog, Base):
         # --------------------- CLEVER MULTIMEDIAS ---------------------
         if self.dictDonnees["plateforme"] == "clevermultimedias" :
 
-            # RÈcupÈration adresse d'expÈdition
+            # R√©cup√©ration adresse d'exp√©dition
             IDadresse = self.dictDonnees["adresse_expedition_email"]
             dictAdresse = UTILS_Envoi_email.GetAdresseExp(IDadresse=IDadresse)
 
-            # GÈnÈration de la piËce jointe
+            # G√©n√©ration de la pi√®ce jointe
             liste_lignes = ["NUM;MESSAGE",]
 
             message = self.dictDonnees["message"].replace("\n", "")
@@ -928,10 +928,10 @@ class Dialog(wx.Dialog, Base):
 
             cheminFichier = UTILS_Fichiers.GetRepTemp(fichier="sms.txt")
             fichier = open(cheminFichier, 'w')
-            fichier.write(texte.encode("iso-8859-15"))
+            fichier.write(texte.encode("utf8"))
             fichier.close()
 
-            # PrÈparation du message
+            # Pr√©paration du message
             message = UTILS_Envoi_email.Message(destinataires=[self.dictDonnees["clevermultimedias_adresse_destination_email"],],
                                                 sujet=self.dictDonnees["objet"], texte_html=_(u"Envoi de SMS"), fichiers=[cheminFichier,])
             # Envoi de l'email
@@ -942,11 +942,11 @@ class Dialog(wx.Dialog, Base):
         # --------------------- MAILJET ---------------------
         if self.dictDonnees["plateforme"] == "mailjet":
 
-            # RÈcupÈration token
+            # R√©cup√©ration token
             api_token = self.dictDonnees["token_sms_mailjet"]
             sender_id = self.dictDonnees["sender_sms_mailjet"]
 
-            # PrÈparation de l'envoi
+            # Pr√©paration de l'envoi
             headers = {
                 "Authorization": "Bearer {api_token}".format(api_token=api_token),
                 "Content-Type": "application/json"
@@ -960,7 +960,7 @@ class Dialog(wx.Dialog, Base):
                 numero = numero.replace(".", "")
                 numero = "+33" + numero[1:]
 
-                # CrÈation du message JSON
+                # Cr√©ation du message JSON
                 message_data = {
                     "From": sender_id,
                     "To": numero,
@@ -973,16 +973,16 @@ class Dialog(wx.Dialog, Base):
                     print("Erreur envoi SMS :", reponse.text)
                     dict_erreur = json.loads(reponse.text)
                     texte_erreur = u"Code erreur : %s. Erreur : %s" % (dict_erreur["ErrorCode"], dict_erreur["ErrorMessage"])
-                    dlg = DLG_Messagebox.Dialog(self, titre=_(u"Envoi de SMS"), introduction=_(u"L'envoi du SMS vers le numÈro %s a rencontrÈ une erreur :") % numero,
+                    dlg = DLG_Messagebox.Dialog(self, titre=_(u"Envoi de SMS"), introduction=_(u"L'envoi du SMS vers le num√©ro %s a rencontr√© une erreur :") % numero,
                                                 detail=texte_erreur, conclusion=_(u"Que souhaitez-vous faire ?"),
-                                                icone=wx.ICON_ERROR, boutons=[_(u"Continuer l'envoi"), _(u"ArrÍter")])
+                                                icone=wx.ICON_ERROR, boutons=[_(u"Continuer l'envoi"), _(u"Arr√™ter")])
                     reponse = dlg.ShowModal()
                     dlg.Destroy()
                     if reponse == 1:
                         return False
 
         # Confirmation d'envoi
-        dlg = wx.MessageDialog(self, _(u"Envoi des SMS terminÈ."), _(u"Confirmation"), wx.OK | wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Envoi des SMS termin√©."), _(u"Confirmation"), wx.OK | wx.ICON_INFORMATION)
         dlg.ShowModal()
         dlg.Destroy()
 
@@ -1002,8 +1002,8 @@ class Dialog(wx.Dialog, Base):
             messagerie.Fermer()
         except Exception as err:
             print((err,))
-            err = str(err).decode("iso-8859-15")
-            dlgErreur = wx.MessageDialog(None, _(u"Une erreur a ÈtÈ dÈtectÈe dans l'envoi de l'Email !\n\nErreur : %s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
+            err = str(err).decode("utf8")
+            dlgErreur = wx.MessageDialog(None, _(u"Une erreur a √©t√© d√©tect√©e dans l'envoi de l'Email !\n\nErreur : %s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
             dlgErreur.ShowModal()
             dlgErreur.Destroy()
             return False

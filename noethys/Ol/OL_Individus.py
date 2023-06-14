@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -35,7 +35,7 @@ except :
 
 
 def GetRattachements(IDindividu):
-    # Récupération des rattachements dans la base
+    # RÃ©cupÃ©ration des rattachements dans la base
     DB = GestionDB.DB()
     req = """SELECT IDrattachement, IDindividu, IDfamille, IDcategorie, titulaire
     FROM rattachements
@@ -50,7 +50,7 @@ def GetRattachements(IDindividu):
     if len(listeRattachements) == 0:
         rattachements = None
         dictTitulaires = {}
-        txtTitulaires = _(u"Rattaché à aucune famille")
+        txtTitulaires = _(u"RattachÃ© Ã  aucune famille")
     elif len(listeRattachements) == 1:
         IDfamille = listeRattachements[0][2]
         IDcategorie = listeRattachements[0][3]
@@ -141,7 +141,7 @@ class Track(object):
     
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # Récupération des paramètres perso
+        # RÃ©cupÃ©ration des paramÃ¨tres perso
         self.itemSelected = False
         self.popupIndex = -1
         self.listeFiltres = []
@@ -179,13 +179,13 @@ class ListView(FastObjectListView):
                 nom, valeur = parametre.split("===")
                 dictParametres[nom] = valeur
 
-        # Groupes d'activités
+        # Groupes d'activitÃ©s
         self.dictParametres["groupes_activites"] = []
         if "liste_groupes_activites" in dictParametres:
             listeID = [int(ID) for ID in dictParametres["liste_groupes_activites"].split(";")]
             self.dictParametres["groupes_activites"] = listeID
 
-        # Activités
+        # ActivitÃ©s
         self.dictParametres["activites"] = []
         if "liste_activites" in dictParametres:
             listeID = [int(ID) for ID in dictParametres["liste_activites"].split(";")]
@@ -229,8 +229,8 @@ class ListView(FastObjectListView):
                 dictRattachementsIndividus[IDindividu].append((IDrattachement, IDindividu, IDfamille, IDcategorie, titulaire))
             
     def GetTracks(self):
-        """ Récupération des données """        
-        # Récupération des données dans la base
+        """ RÃ©cupÃ©ration des donnÃ©es """        
+        # RÃ©cupÃ©ration des donnÃ©es dans la base
         listeChamps = (
             "individus.IDindividu", "IDcivilite", "nom", "prenom", "num_secu","IDnationalite", 
             "date_naiss", "IDpays_naiss", "cp_naiss", "ville_naiss",
@@ -251,10 +251,10 @@ class ListView(FastObjectListView):
         listeDonnees = db.ResultatReq()
         db.Close()
         
-        # Récupération du dictionnaire des civilités
+        # RÃ©cupÃ©ration du dictionnaire des civilitÃ©s
         dictCivilites = Civilites.GetDictCivilites()
 
-        # Création du dictionnaire des données
+        # CrÃ©ation du dictionnaire des donnÃ©es
         dictIndividus = {}
         for valeurs in listeDonnees :
             IDindividu = valeurs[0]
@@ -263,7 +263,7 @@ class ListView(FastObjectListView):
             for index in range(0, len(listeChamps)) :
                 nomChamp = listeChamps[index]
                 dictTemp[nomChamp] = valeurs[index]
-            # Infos sur la civilité
+            # Infos sur la civilitÃ©
             if dictTemp["IDcivilite"] != None and dictTemp["IDcivilite"] != "" :
                 dictTemp["genre"] = dictCivilites[dictTemp["IDcivilite"]]["sexe"]
                 dictTemp["categorieCivilite"] = dictCivilites[dictTemp["IDcivilite"]]["categorie"]
@@ -291,7 +291,7 @@ class ListView(FastObjectListView):
 
             dictIndividus[IDindividu] = dictTemp
         
-        # Vérifie si le dictIndividus est différent du précédent pour empêcher l'actualisation de la liste
+        # VÃ©rifie si le dictIndividus est diffÃ©rent du prÃ©cÃ©dent pour empÃªcher l'actualisation de la liste
         if dictIndividus == self.dictIndividus and self.forceActualisation == False :
             return None
         else :
@@ -299,7 +299,7 @@ class ListView(FastObjectListView):
         
         filtre = None
 
-        # Si filtre activités
+        # Si filtre activitÃ©s
         if len(self.dictParametres["activites"]) > 0 :
             conditionActivites = GestionDB.ConvertConditionChaine(self.dictParametres["activites"])
             db = GestionDB.DB()
@@ -315,7 +315,7 @@ class ListView(FastObjectListView):
             for ID, nom in listeDonnees :
                 filtre.append(ID)
 
-        # Si filtre Groupes d'activités
+        # Si filtre Groupes d'activitÃ©s
         if len(self.dictParametres["groupes_activites"]) > 0 :
             conditionGroupesActivites = GestionDB.ConvertConditionChaine(self.dictParametres["groupes_activites"])
             db = GestionDB.DB()
@@ -332,7 +332,7 @@ class ListView(FastObjectListView):
             for ID, nom in listeDonnees :
                 filtre.append(ID)
 
-        # Création des Tracks
+        # CrÃ©ation des Tracks
         listeListeView = []
         self.dictTracks = {}
         for IDindividu, dictTemp in dictIndividus.items() :
@@ -344,7 +344,7 @@ class ListView(FastObjectListView):
         return listeListeView
       
     def InitObjectListView(self):
-        # Création du imageList
+        # CrÃ©ation du imageList
         for categorie, civilites in Civilites.LISTE_CIVILITES :
             for IDcivilite, CiviliteLong, CiviliteAbrege, nomImage, genre in civilites :
                 indexImg = self.AddNamedImages(nomImage, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/%s" % nomImage), wx.BITMAP_TYPE_PNG))
@@ -374,14 +374,14 @@ class ListView(FastObjectListView):
         liste_Colonnes = [
             ColumnDefn(u"", "left", 22, "IDindividu", typeDonnee="entier", imageGetter=GetImageCivilite),
             ColumnDefn(_(u"Nom"), 'left', 120, "nom", typeDonnee="texte"),
-            ColumnDefn(_(u"Prénom"), "left", 110, "prenom", typeDonnee="texte"),
+            ColumnDefn(_(u"PrÃ©nom"), "left", 110, "prenom", typeDonnee="texte"),
             ColumnDefn(_(u"Date naiss."), "left", 72, "date_naiss", typeDonnee="date", stringConverter=FormateDate),
             ColumnDefn(_(u"Age"), "left", 50, "age", typeDonnee="entier", stringConverter=FormateAge),
             ColumnDefn(_(u"Rue"), "left", 150, "rue_resid", typeDonnee="texte"),
             ColumnDefn(_(u"C.P."), "left", 50, "cp_resid", typeDonnee="texte"),
             ColumnDefn(_(u"Ville"), "left", 100, "ville_resid", typeDonnee="texte"),
-            ColumnDefn(_(u"Tél. domicile"), "left", 100, "tel_domicile", typeDonnee="texte"),
-            ColumnDefn(_(u"Tél. mobile"), "left", 100, "tel_mobile", typeDonnee="texte"),
+            ColumnDefn(_(u"TÃ©l. domicile"), "left", 100, "tel_domicile", typeDonnee="texte"),
+            ColumnDefn(_(u"TÃ©l. mobile"), "left", 100, "tel_mobile", typeDonnee="texte"),
             ColumnDefn(_(u"Email"), "left", 150, "mail", typeDonnee="texte"),
             ColumnDefn(_(u"Recherche"), "left", 0, "champ_recherche", typeDonnee="texte"),
             ]
@@ -391,7 +391,7 @@ class ListView(FastObjectListView):
         self.SetObjects(self.donnees)
        
     def MAJ(self, IDindividu=None, forceActualisation=False):        
-        # Mémorise l'individu sélectionné avant la MAJ
+        # MÃ©morise l'individu sÃ©lectionnÃ© avant la MAJ
         if IDindividu == None :
             selectionTrack = self.Selection()
             if len(selectionTrack) > 0 :        
@@ -407,7 +407,7 @@ class ListView(FastObjectListView):
         self.Reselection(IDindividu)
     
     def Reselection(self, IDindividu=None):
-        """ Re-sélection après MAJ de la liste """
+        """ Re-sÃ©lection aprÃ¨s MAJ de la liste """
         if IDindividu in self.dictTracks :
             track = self.dictTracks[IDindividu]
             self.SelectObject(track, deselectOthers=True, ensureVisible=True)
@@ -428,7 +428,7 @@ class ListView(FastObjectListView):
             noSelection = False
             ID = self.Selection()[0].IDindividu
                 
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Modifier
@@ -474,7 +474,7 @@ class ListView(FastObjectListView):
         
         menuPop.AppendSeparator()
 
-        # Génération automatique des fonctions standards
+        # GÃ©nÃ©ration automatique des fonctions standards
         self.GenerationContextMenu(menuPop, titre=_(u"Liste des individus"), orientation=wx.LANDSCAPE)
         
         self.PopupMenu(menuPop)
@@ -505,7 +505,7 @@ class ListView(FastObjectListView):
             return
         # Si on est dans le panel de recherche d'individus
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun individu dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucun individu dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -515,11 +515,11 @@ class ListView(FastObjectListView):
         ouvrirGrille=False
         ouvrirFicheInd = False
         if event != None :
-            # Ouverture grille de l'individu si touche CTRL enfoncée
+            # Ouverture grille de l'individu si touche CTRL enfoncÃ©e
             if wx.GetKeyState(wx.WXK_CONTROL) == True or event.GetId() == 60 :
                 ouvrirGrille=True
             
-            # Ouverture fiche de l'individu si touche SHIFT enfoncée
+            # Ouverture fiche de l'individu si touche SHIFT enfoncÃ©e
             if wx.GetKeyState(wx.WXK_SHIFT) == True or event.GetId() == 70 :
                 ouvrirFicheInd = True
         
@@ -538,9 +538,9 @@ class ListView(FastObjectListView):
             if rattachements != None :
                 rattachements.sort()
 
-            # Rattaché à aucune famille
+            # RattachÃ© Ã  aucune famille
             if rattachements == None :
-                dlg = wx.MessageDialog(self, _(u"Cet individu n'est rattaché à aucune famille.\n\nSouhaitez-vous ouvrir sa fiche individuelle ?"), _(u"Confirmation"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+                dlg = wx.MessageDialog(self, _(u"Cet individu n'est rattachÃ© Ã  aucune famille.\n\nSouhaitez-vous ouvrir sa fiche individuelle ?"), _(u"Confirmation"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
                 reponse = dlg.ShowModal()
                 dlg.Destroy()
                 if reponse !=  wx.ID_YES :
@@ -555,23 +555,23 @@ class ListView(FastObjectListView):
                     self.MAJ()
                     return
 
-            # Rattachée à une seule famille
+            # RattachÃ©e Ã  une seule famille
             elif len(rattachements) == 1 :
                 IDcategorie, IDfamille, titulaire = rattachements[0]
-            # Rattachée à plusieurs familles
+            # RattachÃ©e Ã  plusieurs familles
             else:
                 listeNoms = []
                 for IDcategorie, IDfamille, titulaire in rattachements :
                     nomTitulaires = dictTitulaires[IDfamille]
                     if IDcategorie == 1 :
-                        nomCategorie = _(u"représentant")
+                        nomCategorie = _(u"reprÃ©sentant")
                         if titulaire == 1 :
                             nomCategorie += _(u" titulaire")
                     elif IDcategorie == 2 : nomCategorie = _(u"enfant")
                     elif IDcategorie == 3 : nomCategorie = _(u"contact")
-                    else: nomCategorie = _(u"Catégorie inconnue")
+                    else: nomCategorie = _(u"CatÃ©gorie inconnue")
                     listeNoms.append(_(u"%s (en tant que %s)") % (nomTitulaires, nomCategorie))
-                dlg = wx.SingleChoiceDialog(self, _(u"Cet individu est rattaché à %d familles.\nLa fiche de quelle famille souhaitez-vous ouvrir ?") % len(listeNoms), _(u"Rattachements multiples"), listeNoms, wx.CHOICEDLG_STYLE)
+                dlg = wx.SingleChoiceDialog(self, _(u"Cet individu est rattachÃ© Ã  %d familles.\nLa fiche de quelle famille souhaitez-vous ouvrir ?") % len(listeNoms), _(u"Rattachements multiples"), listeNoms, wx.CHOICEDLG_STYLE)
                 IDfamilleSelection = None
                 if dlg.ShowModal() == wx.ID_OK:
                     indexSelection = dlg.GetSelection()
@@ -609,7 +609,7 @@ class ListView(FastObjectListView):
                     self.MAJ() 
             except :
                 pass
-            # Mémorisation pour l'historique de la barre de recherche rapide
+            # MÃ©morisation pour l'historique de la barre de recherche rapide
             try :
                 if IDindividu not in self.historique :
                     self.historique.append(IDindividu)
@@ -621,7 +621,7 @@ class ListView(FastObjectListView):
     def Supprimer(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("individus_fiche", "consulter") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun individu dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucun individu dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -629,7 +629,7 @@ class ListView(FastObjectListView):
         
         DB = GestionDB.DB()
         
-        # Vérifie si cet individu n'est pas rattaché à une famille
+        # VÃ©rifie si cet individu n'est pas rattachÃ© Ã  une famille
         req = """
         SELECT IDrattachement, IDfamille
         FROM rattachements
@@ -638,7 +638,7 @@ class ListView(FastObjectListView):
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         if len(listeDonnees) > 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas supprimer cette fiche car elle est rattachée à au moins une famille.\n\nSi vous souhaitez vraiment la supprimer, veuillez effectuer cette action à partir de la fiche famille !"), _(u"Suppression impossible"), wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas supprimer cette fiche car elle est rattachÃ©e Ã  au moins une famille.\n\nSi vous souhaitez vraiment la supprimer, veuillez effectuer cette action Ã  partir de la fiche famille !"), _(u"Suppression impossible"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             DB.Close()
@@ -677,7 +677,7 @@ class ListView(FastObjectListView):
         DB.Commit() 
         DB.Close()
                 
-        dlg = wx.MessageDialog(self, _(u"La fiche individuelle a été supprimée avec succès."), _(u"Suppression"), wx.OK | wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"La fiche individuelle a Ã©tÃ© supprimÃ©e avec succÃ¨s."), _(u"Suppression"), wx.OK | wx.ICON_INFORMATION)
         dlg.ShowModal()
         dlg.Destroy()
 
@@ -708,7 +708,7 @@ class ListView(FastObjectListView):
         except :
             pass
 
-        # Préparation du timer
+        # PrÃ©paration du timer
         self.timer_rfid = wx.Timer(self, -1)
         self.Bind(wx.EVT_TIMER, self.OnTimerRFID, self.timer_rfid)
         self.Bind(wx.EVT_WINDOW_DESTROY, self.OnDestroy)
@@ -776,7 +776,7 @@ class ListView(FastObjectListView):
                     if len(listeDonnees) > 0 :
                         IDindividu, IDfamille = listeDonnees[0]
 
-                    # On stoppe le timer de détection RFID
+                    # On stoppe le timer de dÃ©tection RFID
                     self.timer_rfid.Stop()
 
                     time.sleep(2)
@@ -790,7 +790,7 @@ class ListView(FastObjectListView):
                     if IDfamille != None:
                         self.OuvrirFicheFamille(IDfamille=IDfamille)
 
-                    # On relance le timer de détection RFID
+                    # On relance le timer de dÃ©tection RFID
                     self.timer_rfid.Start()
 
             except Exception as err:

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-19 Ivan LUCAS
@@ -115,9 +115,9 @@ def Lire(nom_fichier="", conversion_auto=False):
             data = {}
             for key, valeur in fichier.items():
                 if type(key) == str:
-                    key = key.decode("iso-8859-15")
+                    key = key.decode("utf8")
                 if type(valeur) == str:
-                    valeur = valeur.decode("iso-8859-15")
+                    valeur = valeur.decode("utf8")
                 data[key] = valeur
             fichier.close()
 
@@ -128,7 +128,7 @@ def Lire(nom_fichier="", conversion_auto=False):
             print("Conversion du shelve en Json impossible :")
             print(err,)
 
-    # Si aucune donnée trouvée, on lève une erreur
+    # Si aucune donnÃ©e trouvÃ©e, on lÃ¨ve une erreur
     if data == None :
         raise
 

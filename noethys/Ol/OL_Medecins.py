@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activitÈs
+# Application :    Noethys, gestion multi-activit√©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -38,7 +38,7 @@ class Track(object):
     
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # RÈcupÈration des paramËtres perso
+        # R√©cup√©ration des param√®tres perso
         self.selectionID = None
         self.selectionTrack = None
         self.criteres = ""
@@ -63,7 +63,7 @@ class ListView(FastObjectListView):
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
-        """ RÈcupÈration des donnÈes """
+        """ R√©cup√©ration des donn√©es """
         listeID = None
         db = GestionDB.DB()
         req = """SELECT IDmedecin, nom, prenom, rue_resid, cp_resid, ville_resid, tel_cabinet, tel_mobile
@@ -94,16 +94,16 @@ class ListView(FastObjectListView):
         liste_Colonnes = [
             ColumnDefn(_(u"ID"), "left", 0, "IDmedecin", typeDonnee="entier"),
             ColumnDefn(_(u"Nom"), 'left', 120, "nom", typeDonnee="texte"),
-            ColumnDefn(_(u"PrÈnom"), "left", 120, "prenom", typeDonnee="texte"),
+            ColumnDefn(_(u"Pr√©nom"), "left", 120, "prenom", typeDonnee="texte"),
             ColumnDefn(_(u"Rue"), "left", 140, "rue_resid", typeDonnee="texte"),
             ColumnDefn(_(u"C.P."), "left", 45, "cp_resid", typeDonnee="texte"),
             ColumnDefn(_(u"Ville"), "left", 110, "ville_resid", typeDonnee="texte"),
-            ColumnDefn(_(u"TÈl. Cabinet"), "left", 100, "tel_cabinet", typeDonnee="texte"),
-            ColumnDefn(_(u"TÈl. Mobile"), "left", 100, "tel_mobile", typeDonnee="texte"),
+            ColumnDefn(_(u"T√©l. Cabinet"), "left", 100, "tel_cabinet", typeDonnee="texte"),
+            ColumnDefn(_(u"T√©l. Mobile"), "left", 100, "tel_mobile", typeDonnee="texte"),
             ]
         
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(_(u"Aucun mÈdecin"))
+        self.SetEmptyListMsg(_(u"Aucun m√©decin"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
         self.SetSortColumn(self.columns[1])
         self.SetObjects(self.donnees)
@@ -117,7 +117,7 @@ class ListView(FastObjectListView):
             self.selectionTrack = None
         self.InitModel()
         self.InitObjectListView()
-        # SÈlection d'un item
+        # S√©lection d'un item
         if self.selectionTrack != None :
             self.SelectObject(self.selectionTrack, deselectOthers=True, ensureVisible=True)
         self.selectionID = None
@@ -134,7 +134,7 @@ class ListView(FastObjectListView):
             noSelection = False
             ID = self.Selection()[0].IDmedecin
                 
-        # CrÈation du menu contextuel
+        # Cr√©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Modifier
@@ -165,7 +165,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"AperÁu avant impression"))
+        item = wx.MenuItem(menuPop, 40, _(u"Aper√ßu avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -183,12 +183,12 @@ class ListView(FastObjectListView):
 
     def Apercu(self, event):
         from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des mÈdecins"), format="A", orientation=wx.LANDSCAPE)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des m√©decins"), format="A", orientation=wx.LANDSCAPE)
         prt.Preview()
 
     def Imprimer(self, event):
         from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des mÈdecins"), format="A", orientation=wx.LANDSCAPE)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des m√©decins"), format="A", orientation=wx.LANDSCAPE)
         prt.Print()
 
     def Ajouter(self, event):
@@ -221,7 +221,7 @@ class ListView(FastObjectListView):
     def Modifier(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_medecins", "modifier") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucun mÈdecin dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucun m√©decin dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -261,13 +261,13 @@ class ListView(FastObjectListView):
     def Supprimer(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_medecins", "supprimer") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucun mÈdecin dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucun m√©decin dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         IDmedecin = self.Selection()[0].IDmedecin
         
-        # VÈrifie que ce mÈdecin n'a pas dÈj‡ attribuÈ ‡ un individu
+        # V√©rifie que ce m√©decin n'a pas d√©j√† attribu√© √† un individu
         DB = GestionDB.DB()
         req = """SELECT COUNT(IDindividu)
         FROM individus 
@@ -277,13 +277,13 @@ class ListView(FastObjectListView):
         nbreIndividus = int(DB.ResultatReq()[0][0])
         DB.Close()
         if nbreIndividus > 0 :
-            dlg = wx.MessageDialog(self, _(u"Ce mÈdecin a dÈj‡ ÈtÈ attribuÈ ‡ %d individu(s).\n\nVous ne pouvez donc pas le supprimer !") % nbreIndividus, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Ce m√©decin a d√©j√† √©t√© attribu√© √† %d individu(s).\n\nVous ne pouvez donc pas le supprimer !") % nbreIndividus, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         
         # Confirmation de suppression
-        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer ce mÈdecin ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer ce m√©decin ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         if dlg.ShowModal() == wx.ID_YES :
             DB = GestionDB.DB()
             DB.ReqDEL("medecins", "IDmedecin", IDmedecin)
@@ -301,7 +301,7 @@ class BarreRecherche(wx.SearchCtrl):
         self.parent = parent
         self.rechercheEnCours = False
         
-        self.SetDescriptiveText(_(u"Rechercher un mÈdecin..."))
+        self.SetDescriptiveText(_(u"Rechercher un m√©decin..."))
         self.ShowSearchButton(True)
         
         self.listView = self.parent.ctrl_listview

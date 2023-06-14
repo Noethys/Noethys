@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -14,7 +14,7 @@ from six.moves.urllib.request import urlopen
 
 
 def GetDistances(origine="", destinations=[], moyen="voiture") :
-    """ Récupère sur Googlemaps les distances entre les villes """
+    """ RÃ©cupÃ¨re sur Googlemaps les distances entre les villes """
     dictResultats = {}
 
     # Recherche le moyen de locomotion
@@ -27,7 +27,7 @@ def GetDistances(origine="", destinations=[], moyen="voiture") :
 
     try :
 
-        # Création de la requete URL
+        # CrÃ©ation de la requete URL
 
         # Formatage du texte d'origine
         if isinstance(origine, tuple) :
@@ -51,7 +51,7 @@ def GetDistances(origine="", destinations=[], moyen="voiture") :
         texteDestinations = "|".join(liste_destinations)
         url = """http://maps.googleapis.com/maps/api/distancematrix/json?origins=%s&destinations=%s&sensor=false&mode=%s&language=fr-FR&userip=192.168.1.1""" % (texteOrigine, texteDestinations, mode)
 
-        # Récupère les distances sur Google maps
+        # RÃ©cupÃ¨re les distances sur Google maps
         # Conversion des accents
         url = quote(url.encode('utf8'), ":/?=.-%&,")
 
@@ -59,7 +59,7 @@ def GetDistances(origine="", destinations=[], moyen="voiture") :
         f = urlopen(url, timeout=10)
         texteReponse = f.read()
         
-        # Transforme le résultat en dictionnaire Python
+        # Transforme le rÃ©sultat en dictionnaire Python
         import json
         dictReponse = json.loads(texteReponse)
         
@@ -90,12 +90,12 @@ def GetDistances(origine="", destinations=[], moyen="voiture") :
 if __name__ == '__main__':
 
 
-    # Test avec coordonnées GPS
+    # Test avec coordonnÃ©es GPS
     dictResultats = GetDistances(origine="46.539464, 6.646241", destinations="46.538994, 6.651082", moyen="marche")
 
     # Test avec plusieurs villes de destination
     #dictResultats = GetDistances(origine=("29870", "LANNILIS"), destinations=[("29200", "BREST"), ("29000", "QUIMPER")], moyen="voiture")
 
-    # Affichage des résultats
+    # Affichage des rÃ©sultats
     for key, resultat in dictResultats.items() :
         print(key, " ->", resultat)

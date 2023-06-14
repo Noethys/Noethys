@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -118,7 +118,7 @@ class CTRL_Choix(FastObjectListView):
         else:
             noSelection = False
           
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Modifier
@@ -180,7 +180,7 @@ class CTRL_Choix(FastObjectListView):
     def Modifier(self, event=None):
         track = self.GetSelectedObject() 
         if track == None :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun choix dans la liste !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucun choix dans la liste !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -196,7 +196,7 @@ class CTRL_Choix(FastObjectListView):
     def Supprimer(self, event=None):
         track = self.GetSelectedObject() 
         if track == None :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun choix dans la liste !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucun choix dans la liste !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -208,7 +208,7 @@ class CTRL_Choix(FastObjectListView):
     def Monter(self, event=None):
         track = self.GetSelectedObject() 
         if track == None :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun choix dans la liste !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucun choix dans la liste !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -221,7 +221,7 @@ class CTRL_Choix(FastObjectListView):
     def Descendre(self, event=None):
         track = self.GetSelectedObject() 
         if track == None :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun choix dans la liste !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucun choix dans la liste !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -261,7 +261,7 @@ class CTRL_Categorie(wx.Choice):
         self.SetItems(listeItems)
                                         
     def GetListeDonnees(self):
-        # Importation des catégories
+        # Importation des catÃ©gories
         DB = GestionDB.DB()
         req = """SELECT IDcategorie, ordre, visible, type, couleur, label
         FROM questionnaire_categories
@@ -379,13 +379,13 @@ class Dialog(wx.Dialog):
         self.ordre = None
         self.defaut = None
         
-        # Généralités
-        self.box_generalites_staticbox = wx.StaticBox(self, -1, _(u"Généralités"))
+        # GÃ©nÃ©ralitÃ©s
+        self.box_generalites_staticbox = wx.StaticBox(self, -1, _(u"GÃ©nÃ©ralitÃ©s"))
         self.label_label = wx.StaticText(self, -1, _(u"Label :"))
         self.ctrl_label = wx.TextCtrl(self, -1, u"")
-        self.label_categorie = wx.StaticText(self, -1, _(u"Catégorie :"))
+        self.label_categorie = wx.StaticText(self, -1, _(u"CatÃ©gorie :"))
         self.ctrl_categorie = CTRL_Categorie(self, type=type)
-        self.label_controle = wx.StaticText(self, -1, _(u"Contrôle :"))
+        self.label_controle = wx.StaticText(self, -1, _(u"ContrÃ´le :"))
         self.ctrl_controle = CTRL_Controle(self)
         self.label_visible = wx.StaticText(self, -1, _(u"Visible :"))
         self.ctrl_visible = wx.CheckBox(self, -1, u"")
@@ -407,7 +407,7 @@ class Dialog(wx.Dialog):
 
         # Options
         self.box_options_staticbox = wx.StaticBox(self, -1, _(u"Options"))
-        self.label_hauteur = wx.StaticText(self, -1, _(u"Hauteur du contrôle :"))
+        self.label_hauteur = wx.StaticText(self, -1, _(u"Hauteur du contrÃ´le :"))
         self.ctrl_hauteur = wx.SpinCtrl(self, -1, "")
         self.ctrl_hauteur.SetRange(-1, 500)
         self.label_valmin = wx.StaticText(self, -1, _(u"Valeur minimale :"))
@@ -444,25 +444,25 @@ class Dialog(wx.Dialog):
         else:
             self.ctrl_controle.OnChoix(MAJ=False)
             
-        # Initialisation des contrôles
+        # Initialisation des contrÃ´les
         self.ctrl_choix.MAJ() 
         self.ctrl_label.SetFocus()
 
     def __set_properties(self):
         self.SetTitle(_(u"Saisie d'une question"))
         self.ctrl_label.SetToolTip(wx.ToolTip(_(u"Saisissez ici le label de la question")))
-        self.ctrl_categorie.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici la catégorie de la question")))
-        self.ctrl_controle.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici le type de contrôle souhaité")))
+        self.ctrl_categorie.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez ici la catÃ©gorie de la question")))
+        self.ctrl_controle.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez ici le type de contrÃ´le souhaitÃ©")))
         self.ctrl_visible.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour rendre visible cette question")))
         self.bouton_ajouter_choix.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter une nouvelle question")))
-        self.bouton_modifier_choix.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la ligne sélectionnée dans la liste")))
-        self.bouton_supprimer_choix.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la ligne sélectionnée dans la liste")))
-        self.bouton_monter_choix.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour monter la ligne sélectionnée dans la liste")))
-        self.bouton_descendre_choix.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour descendre la ligne sélectionnée dans la liste")))
+        self.bouton_modifier_choix.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la ligne sÃ©lectionnÃ©e dans la liste")))
+        self.bouton_supprimer_choix.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la ligne sÃ©lectionnÃ©e dans la liste")))
+        self.bouton_monter_choix.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour monter la ligne sÃ©lectionnÃ©e dans la liste")))
+        self.bouton_descendre_choix.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour descendre la ligne sÃ©lectionnÃ©e dans la liste")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
-        self.ctrl_hauteur.SetToolTip(wx.ToolTip(_(u"Saisissez ici la hauteur du contrôle (en pixels)\nIndiquez '-1' pour définir une taille automatiquement")))
-        self.ctrl_valmin.SetToolTip(wx.ToolTip(_(u"Saisissez ici la valeur minimale du contrôle")))
-        self.ctrl_valmax.SetToolTip(wx.ToolTip(_(u"Saisissez ici la valeur maximale du contrôle")))
+        self.ctrl_hauteur.SetToolTip(wx.ToolTip(_(u"Saisissez ici la hauteur du contrÃ´le (en pixels)\nIndiquez '-1' pour dÃ©finir une taille automatiquement")))
+        self.ctrl_valmin.SetToolTip(wx.ToolTip(_(u"Saisissez ici la valeur minimale du contrÃ´le")))
+        self.ctrl_valmax.SetToolTip(wx.ToolTip(_(u"Saisissez ici la valeur maximale du contrÃ´le")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
         self.SetMinSize((650, 450))
@@ -474,7 +474,7 @@ class Dialog(wx.Dialog):
         # Colonne gauche
         grid_sizer_gauche = wx.FlexGridSizer(rows=2, cols=1, vgap=10, hgap=10)
         
-        # Box Généralités
+        # Box GÃ©nÃ©ralitÃ©s
         box_generalites = wx.StaticBoxSizer(self.box_generalites_staticbox, wx.VERTICAL)
         grid_sizer_generalites = wx.FlexGridSizer(rows=4, cols=2, vgap=10, hgap=10)
         grid_sizer_generalites.Add(self.label_label, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
@@ -623,7 +623,7 @@ class Dialog(wx.Dialog):
         return dictOptions
     
     def GetDictOptionsStr(self):
-        """ Récupère les options au format str pour l'enregistrement dans la base """
+        """ RÃ©cupÃ¨re les options au format str pour l'enregistrement dans la base """
         listeOptions = []
         dictOptions = self.GetDictOptions() 
         for code, valeur in dictOptions.items() :
@@ -662,7 +662,7 @@ class Dialog(wx.Dialog):
         DB.Close() 
         if len(listeDonnees) == 0 : return
         IDcategorie, ordre, visible, label, controle, defaut, options = listeDonnees[0]
-        # Catégorie
+        # CatÃ©gorie
         self.ctrl_categorie.SetID(IDcategorie)
         # Ordre
         self.ordre = ordre
@@ -670,7 +670,7 @@ class Dialog(wx.Dialog):
         self.ctrl_visible.SetValue(visible)
         # label
         self.ctrl_label.SetValue(label)
-        # Contrôle
+        # ContrÃ´le
         self.ctrl_controle.SetCode(controle)
         # Defaut
         self.defaut = defaut
@@ -689,7 +689,7 @@ class Dialog(wx.Dialog):
         return self.IDquestion 
     
     def OnBoutonOk(self, event): 
-        # Récupération des valeurs
+        # RÃ©cupÃ©ration des valeurs
         label = self.GetLabel() 
         IDcategorie = self.GetCategorie() 
         controle = self.GetControle()
@@ -698,7 +698,7 @@ class Dialog(wx.Dialog):
         defaut = self.ctrl_apercu.GetValeurs()[10000]
         options = self.GetDictOptionsStr() 
         
-        # Vérification des valeurs
+        # VÃ©rification des valeurs
         if label == "" :
             dlg = wx.MessageDialog(self, _(u"Vous n'avez saisi aucun label !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-19 Ivan LUCAS
@@ -22,7 +22,7 @@ class DB(GestionDB.DB):
         GestionDB.DB.__init__(self, *args, **kwds)
 
     def Upgrade(self, versionFichier=(0, 0, 0, 0) ) :
-        """ Adapte un fichier obsolète à la version actuelle du logiciel """
+        """ Adapte un fichier obsolÃ¨te Ã  la version actuelle du logiciel """
 
         # Filtres de conversion
 
@@ -561,7 +561,7 @@ class DB(GestionDB.DB):
                 self.AjoutChamp("familles", "titulaire_helios", "INTEGER")
                 self.AjoutChamp("familles", "code_comptable", "VARCHAR(450)")
                 from Utils import UTILS_Procedures
-                UTILS_Procedures.A7650() # Création auto des titulaires Hélios
+                UTILS_Procedures.A7650() # CrÃ©ation auto des titulaires HÃ©lios
             except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
         
@@ -575,7 +575,7 @@ class DB(GestionDB.DB):
                 self.AjoutChamp("activites", "code_comptable", "VARCHAR(450)")
                 self.AjoutChamp("types_cotisations", "code_comptable", "VARCHAR(450)")
                 from Utils import UTILS_Procedures
-                UTILS_Procedures.A8120() # Création auto type_comptable dans table modes_règlements
+                UTILS_Procedures.A8120() # CrÃ©ation auto type_comptable dans table modes_rÃ¨glements
             except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
         
@@ -594,8 +594,8 @@ class DB(GestionDB.DB):
         if versionFichier < versionFiltre :
             try :
                 from Utils import UTILS_Export_documents
-                UTILS_Export_documents.ImporterDepuisFichierDefaut(IDmodele=12, nom=None, IDfond=0, defaut=1) # import modèle doc reçu don aux oeuvres
-                UTILS_Export_documents.ImporterDepuisFichierDefaut(IDmodele=13, nom=None, IDfond=1, defaut=1) # import modèle doc attestation fiscale
+                UTILS_Export_documents.ImporterDepuisFichierDefaut(IDmodele=12, nom=None, IDfond=0, defaut=1) # import modÃ¨le doc reÃ§u don aux oeuvres
+                UTILS_Export_documents.ImporterDepuisFichierDefaut(IDmodele=13, nom=None, IDfond=1, defaut=1) # import modÃ¨le doc attestation fiscale
             except Exception as err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
         
@@ -1233,7 +1233,7 @@ class DB(GestionDB.DB):
                 if self.IsTableExists("commandes") == False: self.CreationTable("commandes", Tables.DB_DATA)
                 if self.IsTableExists("commandes_valeurs") == False: self.CreationTable("commandes_valeurs", Tables.DB_DATA)
                 self.AjoutChamp("messages", "afficher_commande", "INTEGER")
-                # Importation du modèle d'emails 'Commande de repas'
+                # Importation du modÃ¨le d'emails 'Commande de repas'
                 from Utils import UTILS_Procedures
                 UTILS_Procedures.A9054()
             except Exception as err:
@@ -1397,10 +1397,10 @@ class DB(GestionDB.DB):
                 if self.IsTableExists("devis") == False: self.CreationTable("devis", Tables.DB_DATA)
                 if self.IsTableExists("portail_reservations_locations") == False: self.CreationTable("portail_reservations_locations", Tables.DB_DATA)
                 self.AjoutChamp("locations", "IDlocation_portail", "VARCHAR(100)")
-                # import modèle doc devis par défaut
+                # import modÃ¨le doc devis par dÃ©faut
                 from Utils import UTILS_Export_documents
                 UTILS_Export_documents.ImporterDepuisFichierDefaut(IDmodele=14, nom=None, IDfond=1, defaut=1)
-                # Importation du modèle d'emails 'Réservation location portail'
+                # Importation du modÃ¨le d'emails 'RÃ©servation location portail'
                 from Utils import UTILS_Procedures
                 UTILS_Procedures.A9054()
             except Exception as err:

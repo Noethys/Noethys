@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -23,7 +23,7 @@ from Utils import UTILS_Interface
 from Ctrl.CTRL_ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
 from Utils import UTILS_Config
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"â‚¬")
 
 DICT_TITULAIRES = {}
 
@@ -67,7 +67,7 @@ class Track(object):
     
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # Récupération des paramètres perso
+        # RÃ©cupÃ©ration des paramÃ¨tres perso
         self.selectionID = None
         self.selectionTrack = None
         self.criteres = ""
@@ -99,7 +99,7 @@ class ListView(FastObjectListView):
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
-        """ Récupération des données """
+        """ RÃ©cupÃ©ration des donnÃ©es """
         if self.dict_parametres["date_reference"] == None : return []
         if self.dict_parametres["IDtype_quotient"] == None : return []
         
@@ -114,7 +114,7 @@ class ListView(FastObjectListView):
 
         DB = GestionDB.DB()
 
-        # Récupération des présents
+        # RÃ©cupÃ©ration des prÃ©sents
         listePresents = []
         if self.dict_parametres["presents"] != None :
             req = """SELECT IDfamille, inscriptions.IDinscription
@@ -128,7 +128,7 @@ class ListView(FastObjectListView):
             for IDfamille, IDinscription in listeIndividusPresents :
                 listePresents.append(IDfamille)
 
-        # Récupération des familles
+        # RÃ©cupÃ©ration des familles
         req = """
         SELECT inscriptions.IDfamille, familles.autorisation_cafpro
         FROM inscriptions 
@@ -144,7 +144,7 @@ class ListView(FastObjectListView):
         DB.ExecuterReq(req)
         listeFamilles = DB.ResultatReq()
         
-        # Récupération des quotients valides à la date de référence
+        # RÃ©cupÃ©ration des quotients valides Ã  la date de rÃ©fÃ©rence
         req = """SELECT IDquotient, IDfamille, date_debut, date_fin, quotient, observations, revenu, IDtype_quotient
         FROM quotients
         WHERE date_debut<='%s' AND date_fin>='%s' AND IDtype_quotient=%d
@@ -193,7 +193,7 @@ class ListView(FastObjectListView):
         liste_Colonnes = [
             ColumnDefn(_(u"ID"), "left", 0, "IDfamille", typeDonnee="entier"),
             ColumnDefn(_(u"Famille"), 'left', 280, "nomTitulaires", typeDonnee="texte"),
-            ColumnDefn(_(u"Accès CAFPRO"), "center", 100, "autorisation_cafpro_str", typeDonnee="texte"),
+            ColumnDefn(_(u"AccÃ¨s CAFPRO"), "center", 100, "autorisation_cafpro_str", typeDonnee="texte"),
             ColumnDefn(_(u"QF"), "center", 80, "quotient", typeDonnee="entier"),
             ColumnDefn(_(u"Revenu"), 'center', 80, "revenu", typeDonnee="montant", stringConverter=FormateMontant),
             ColumnDefn(u"Du", "left", 80, "date_debut", typeDonnee="date", stringConverter=FormateDate),
@@ -211,12 +211,12 @@ class ListView(FastObjectListView):
         self.dict_parametres[nom] = valeur
 
     def MAJ(self, IDfamille=None):
-        attente = wx.BusyInfo(_(u"Recherche des données..."), self)
+        attente = wx.BusyInfo(_(u"Recherche des donnÃ©es..."), self)
         self.InitModel()
         self.InitObjectListView()
         del attente
 
-        # Sélection
+        # SÃ©lection
         for track in self.donnees:
             if track.IDfamille == IDfamille :
                 self.SelectObject(track, ensureVisible=True)
@@ -227,7 +227,7 @@ class ListView(FastObjectListView):
 
     def OnContextMenu(self, event):
         """Ouverture du menu contextuel """        
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Ouverture fiche famille
@@ -239,7 +239,7 @@ class ListView(FastObjectListView):
         
         menuPop.AppendSeparator()
         
-        # Génération automatique des fonctions standards
+        # GÃ©nÃ©ration automatique des fonctions standards
         self.GenerationContextMenu(menuPop, dictParametres=self.GetParametresImpression())
 
         self.PopupMenu(menuPop)
@@ -257,7 +257,7 @@ class ListView(FastObjectListView):
     def OuvrirFicheFamille(self, event=None):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_fiche", "consulter") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune fiche famille à ouvrir !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune fiche famille Ã  ouvrir !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return

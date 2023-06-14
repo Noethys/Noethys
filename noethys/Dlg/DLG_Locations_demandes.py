@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activitÈs
+# Application :    Noethys, gestion multi-activit√©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-17 Ivan LUCAS
@@ -26,10 +26,10 @@ class Panel(wx.Panel):
         self.bordure = bordure
 
         # Filtres
-        self.check_attente_avec_possibilites = wx.CheckBox(self, -1, _(u"Avec disponibilitÈs"))
-        self.check_attente_sans_possibilites = wx.CheckBox(self, -1, _(u"Sans disponibilitÈs"))
-        self.check_attente_refusees = wx.CheckBox(self, -1, _(u"RefusÈes"))
-        self.check_attente_attribuees = wx.CheckBox(self, -1, _(u"AttribuÈes"))
+        self.check_attente_avec_possibilites = wx.CheckBox(self, -1, _(u"Avec disponibilit√©s"))
+        self.check_attente_sans_possibilites = wx.CheckBox(self, -1, _(u"Sans disponibilit√©s"))
+        self.check_attente_refusees = wx.CheckBox(self, -1, _(u"Refus√©es"))
+        self.check_attente_attribuees = wx.CheckBox(self, -1, _(u"Attribu√©es"))
 
         self.check_attente_avec_possibilites.SetFont(wx.Font(8, wx.FONTFAMILY_DEFAULT, wx.NORMAL, wx.NORMAL))
         self.check_attente_sans_possibilites.SetFont(wx.Font(8, wx.FONTFAMILY_DEFAULT, wx.NORMAL, wx.NORMAL))
@@ -62,13 +62,13 @@ class Panel(wx.Panel):
         self.check_attente_sans_possibilites.SetValue(True)
 
     def __set_properties(self):
-        self.check_attente_avec_possibilites.SetToolTip(wx.ToolTip(_(u"Inclure les demandes en attente avec disponibilitÈs")))
-        self.check_attente_sans_possibilites.SetToolTip(wx.ToolTip(_(u"Inclure les demandes en attente sans disponibilitÈs")))
-        self.check_attente_refusees.SetToolTip(wx.ToolTip(_(u"Inclure les demandes refusÈes")))
-        self.check_attente_attribuees.SetToolTip(wx.ToolTip(_(u"Inclure les demandes dÈj‡ attribuÈes")))
+        self.check_attente_avec_possibilites.SetToolTip(wx.ToolTip(_(u"Inclure les demandes en attente avec disponibilit√©s")))
+        self.check_attente_sans_possibilites.SetToolTip(wx.ToolTip(_(u"Inclure les demandes en attente sans disponibilit√©s")))
+        self.check_attente_refusees.SetToolTip(wx.ToolTip(_(u"Inclure les demandes refus√©es")))
+        self.check_attente_attribuees.SetToolTip(wx.ToolTip(_(u"Inclure les demandes d√©j√† attribu√©es")))
         self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter une demande de location")))
-        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la demande de location sÈlectionnÈe dans la liste")))
-        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la demande de location sÈlectionnÈe dans la liste")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la demande de location s√©lectionn√©e dans la liste")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la demande de location s√©lectionn√©e dans la liste")))
 
     def __do_layout(self):
         sizer_base = wx.BoxSizer(wx.VERTICAL)

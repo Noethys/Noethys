@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -26,7 +26,7 @@ from Data import DATA_Civilites as Civilites
 
 
 def ArrondirHeureSup(heures, minutes, pas): 
-    """ Arrondi l'heure au pas supérieur """
+    """ Arrondi l'heure au pas supÃ©rieur """
     for x in range(0, 60, pas):
         if x >= minutes :
             return (heures, x)
@@ -56,7 +56,7 @@ def FormateValeur(valeur, mode="decimal"):
 
 def DeltaEnStr(varTimedelta) :
     """ Transforme une variable TIMEDELTA en heure datetime.time """
-    # Si sup à une journée :
+    # Si sup Ã  une journÃ©e :
     if varTimedelta.total_seconds() >= 86400 :
         hours, remainder = divmod(varTimedelta.total_seconds(), 3600)
         minutes, seconds = divmod(remainder, 60)
@@ -74,8 +74,8 @@ DICT_QUESTIONNAIRES = {}
 
 
 def GetDictIndividus(parametres={}):
-    """ Récupération des infos sur les individus """
-    # Récupération des adresses
+    """ RÃ©cupÃ©ration des infos sur les individus """
+    # RÃ©cupÃ©ration des adresses
     DB = GestionDB.DB()
     req = """SELECT IDindividu, individus.nom, prenom, rue_resid, cp_resid, ville_resid, secteurs.nom 
     FROM individus
@@ -88,7 +88,7 @@ def GetDictIndividus(parametres={}):
         if secteur == None : secteur = ""
         dictAdresses[IDindividu] = { "nom" : nom, "prenom" : prenom, "rue_resid" : rue_resid, "cp_resid" : cp_resid, "ville_resid" : ville_resid, "secteur" : secteur}
     
-    # Récupération des individus
+    # RÃ©cupÃ©ration des individus
     listeChamps = (
         "IDindividu", "IDcivilite", "nom", "prenom", "num_secu","IDnationalite", 
         "date_naiss", "IDpays_naiss", "cp_naiss", "ville_naiss",
@@ -102,10 +102,10 @@ def GetDictIndividus(parametres={}):
     listeIndividus= DB.ResultatReq()
     DB.Close() 
     
-    # Récupération des civilités
+    # RÃ©cupÃ©ration des civilitÃ©s
     dictCivilites = Civilites.GetDictCivilites()
 
-    # Récupération des infos individuelles
+    # RÃ©cupÃ©ration des infos individuelles
     infosIndividus = UTILS_Infos_individus.Informations(date_reference=parametres["date_debut"], qf=False, inscriptions=False,
                                                              messages=False, infosMedicales=False,
                                                              cotisationsManquantes=False, piecesManquantes=False,
@@ -124,7 +124,7 @@ def GetDictIndividus(parametres={}):
             nomChamp = listeChamps[index]
             dictTemp[nomChamp] = valeurs[index]
             
-        # Infos sur la civilité
+        # Infos sur la civilitÃ©
         if dictTemp["IDcivilite"] != None and dictTemp["IDcivilite"] != "":
             dictTemp["genre"] = dictCivilites[dictTemp["IDcivilite"]]["sexe"]
             dictTemp["categorieCivilite"] = dictCivilites[dictTemp["IDcivilite"]]["categorie"]
@@ -165,7 +165,7 @@ def GetDictIndividus(parametres={}):
 
 
 def GetQuestionnaires():
-    """ Récupération des questions des questionnaires """
+    """ RÃ©cupÃ©ration des questions des questionnaires """
     # Importation des questions
     dictControles = {}
     for dictControle in LISTE_CONTROLES :
@@ -199,7 +199,7 @@ def GetQuestionnaires():
                     texteReponse = u""
                     
                 else :
-                    # Formatage de la réponse
+                    # Formatage de la rÃ©ponse
                     texteReponse = u""
                     if filtre == "texte" : texteReponse = reponse
                     if filtre == "entier" : texteReponse = reponse
@@ -221,7 +221,7 @@ def GetQuestionnaires():
                             texteReponse = _(u"Non")
                     if filtre == "date" : texteReponse = DateEngEnDateDD(reponse)
 
-                # Mémorisation
+                # MÃ©morisation
                 if IDindividu != None :
                     ID = IDindividu
                 else :
@@ -320,13 +320,13 @@ class Track(object):
             if dictTemp["periode"] == "PV" : dictConso[IDunite]["NBRE_PV_UNITE"] += quantite
             if dictTemp["periode"] == "GV" : dictConso[IDunite]["NBRE_GV_UNITE"] += quantite
             
-            # Temps de présence
+            # Temps de prÃ©sence
             dictConso[IDunite]["TEMPS_UNITE"] += dictTemp["temps"]
             if dictTemp["periode"] == "HV" : dictConso[IDunite]["TEMPS_HV_UNITE"] += dictTemp["temps"]
             if dictTemp["periode"] == "PV" : dictConso[IDunite]["TEMPS_PV_UNITE"] += dictTemp["temps"]
             if dictTemp["periode"] == "GV" : dictConso[IDunite]["TEMPS_GV_UNITE"] += dictTemp["temps"]
 
-            # Temps facturé
+            # Temps facturÃ©
             temps_facture = dictTemp["temps_facture"]
             IDprestation = dictTemp["IDprestation"]
             if temps_facture not in (None, "") and IDprestation not in listePrestationsTraitees:
@@ -339,7 +339,7 @@ class Track(object):
                 if dictTemp["periode"] == "GV" : dictConso[IDunite]["TEMPS_FACTURE_GV_UNITE"] += temps_facture
                 listePrestationsTraitees.append(IDprestation)
 
-        # Unités
+        # UnitÃ©s
         for prefixe in ("NBRE", "TEMPS", "TEMPS_FACTURE") :
             for champ in listeChamps :
                 if champ.type == "%s_UNITE" % prefixe :
@@ -401,7 +401,7 @@ class Track(object):
 
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # Récupération des paramètres perso
+        # RÃ©cupÃ©ration des paramÃ¨tres perso
         self.dictParametres = kwds.pop("dictParametres", {})
         # Initialisation du listCtrl
         self.nom_fichier_liste = __file__
@@ -414,22 +414,22 @@ class ListView(FastObjectListView):
         self.donnees = self.GetTracks()
         
     def GetTracks(self):
-        """ Création des lignes """
+        """ CrÃ©ation des lignes """
         DB = GestionDB.DB()
 
-        # Récupération de tous les individus
+        # RÃ©cupÃ©ration de tous les individus
         global DICT_INDIVIDUS
         DICT_INDIVIDUS = GetDictIndividus(parametres=self.dictParametres)
     
-        # Récupération des titulaires
+        # RÃ©cupÃ©ration des titulaires
         global DICT_TITULAIRES
         DICT_TITULAIRES = UTILS_Titulaires.GetTitulaires()
         
-        # Récupération des questionnaires
+        # RÃ©cupÃ©ration des questionnaires
         global DICT_QUESTIONNAIRES
         DICT_QUESTIONNAIRES = GetQuestionnaires()
         
-        # Récupération des QF
+        # RÃ©cupÃ©ration des QF
         req = """SELECT IDquotient, IDfamille, date_debut, date_fin, quotient
         FROM quotients
         ORDER BY date_debut
@@ -442,7 +442,7 @@ class ListView(FastObjectListView):
                 dictQuotients[IDfamille] = []
             dictQuotients[IDfamille].append({"IDquotient":IDquotient, "date_debut":DateEngEnDateDD(date_debut), "date_fin":DateEngEnDateDD(date_fin), "quotient":quotient})
 
-        # Récupération des déductions
+        # RÃ©cupÃ©ration des dÃ©ductions
 ##        req = """SELECT IDdeduction, IDprestation, date, montant, label, IDaide
 ##        FROM deductions
 ##        WHERE date>='%s' AND date <='%s'
@@ -455,7 +455,7 @@ class ListView(FastObjectListView):
 ##                dictDeductions[IDprestation] = []
 ##            dictDeductions[IDprestation].append({"IDdeduction":IDdeduction, "IDprestation":IDprestation, "date":date, "montant":montant, "label":label, "IDaide":IDaide})
 
-        # Récupération des familles
+        # RÃ©cupÃ©ration des familles
         req = """SELECT IDfamille, familles.IDcaisse, caisses.nom, num_allocataire, allocataire
         FROM familles
         LEFT JOIN caisses ON caisses.IDcaisse = familles.IDcaisse
@@ -481,10 +481,10 @@ class ListView(FastObjectListView):
             else :
                 listeQuotients = []
                         
-            # Mémorisation
+            # MÃ©morisation
             DICT_FAMILLES[IDfamille] = {"IDfamille":IDfamille, "IDcaisse":IDcaisse, "nomCaisse":nomCaisse, "num_allocataire":num_allocataire, "nomAllocataire":nomAllocataire, "listeQuotients":listeQuotients, "qf":qf}
 
-        # Récupération des périodes de vacances
+        # RÃ©cupÃ©ration des pÃ©riodes de vacances
         req = """SELECT IDvacance, nom, annee, date_debut, date_fin
         FROM vacances
         ;"""
@@ -500,7 +500,7 @@ class ListView(FastObjectListView):
                 grandesVacs = False
             listeVacances.append( {"date_debut" : date_debut_Tmp, "date_fin" : date_fin_Tmp, "grandesVacs" : grandesVacs} )
 
-        # Création des conditions
+        # CrÃ©ation des conditions
         if len(self.dictParametres["caisses"]) == 0 : conditionCaisses = "AND familles.IDcaisse IN ()"
         elif len(self.dictParametres["caisses"]) == 1 : conditionCaisses = "AND familles.IDcaisse IN (%d)" % self.dictParametres["caisses"][0]
         else : conditionCaisses = "AND familles.IDcaisse IN %s" % str(tuple(self.dictParametres["caisses"]))
@@ -520,7 +520,7 @@ class ListView(FastObjectListView):
         elif len(self.dictParametres["etats"]) == 1 : conditionEtats = "AND consommations.etat IN ('%s')" % self.dictParametres["etats"][0]
         else : conditionEtats = "AND consommations.etat IN %s" % str(tuple(self.dictParametres["etats"]))
 
-        # Récupération des consommations
+        # RÃ©cupÃ©ration des consommations
         req = """SELECT 
         consommations.IDconso, consommations.IDindividu, consommations.IDactivite, 
         consommations.date, consommations.IDunite, consommations.IDgroupe,
@@ -552,7 +552,7 @@ class ListView(FastObjectListView):
             else :
                 age = None
             
-            # Quantité
+            # QuantitÃ©
             if quantite == None :
                 quantite = 1
 
@@ -564,13 +564,13 @@ class ListView(FastObjectListView):
                 h, m = heure_fin.split(":")
                 heure_fin = datetime.time(int(h), int(m))
         
-            # Calcul de la durée
+            # Calcul de la durÃ©e
             if heure_debut != None and heure_fin != None :
                 temps = (datetime.timedelta(hours=heure_fin.hour, minutes=heure_fin.minute) - datetime.timedelta(hours=heure_debut.hour, minutes=heure_debut.minute)) * quantite
             else:
                 temps = datetime.timedelta(seconds=0)
                 
-            # Recherche la période
+            # Recherche la pÃ©riode
             periode = None
             for dictVac in listeVacances :
                 if date >= dictVac["date_debut"] and date <= dictVac["date_fin"] :
@@ -582,13 +582,13 @@ class ListView(FastObjectListView):
                 # C'est hors vacances :
                 periode = "HV"
             
-            # Recherche des déductions
+            # Recherche des dÃ©ductions
 ##            if dictDeductions.has_key(IDprestation) :
 ##                deductions = dictDeductions[IDprestation]
 ##            else :
 ##                deductions = []
             
-            # Vérifie que cette consommation répond bien aux paramètres conditionnels
+            # VÃ©rifie que cette consommation rÃ©pond bien aux paramÃ¨tres conditionnels
             valide = True
             
             if self.dictParametres["age"] != None :
@@ -617,7 +617,7 @@ class ListView(FastObjectListView):
                     if QFfamille < QFmin or QFfamille > QFmax :
                         valide = False
             
-            # Mémorisation de la consommation
+            # MÃ©morisation de la consommation
             if valide == True :
                 if ((IDindividu, IDfamille) in dictResultats) == False :
                     dictResultats[(IDindividu, IDfamille)] = []
@@ -628,14 +628,14 @@ class ListView(FastObjectListView):
                                 }
                 dictResultats[(IDindividu, IDfamille)].append(dictTemp)
                 
-        # Création des tracks
+        # CrÃ©ation des tracks
         listeListeView = []
         for (IDindividu, IDfamille), listeConso in dictResultats.items() :
             listeListeView.append(Track(IDindividu, IDfamille, listeConso, self.dictParametres["champsDispo"]))
 
         # Avertissement au sujet des familles sans QF
         if len(listeFamillesSansQF) > 0 :
-            dlg = wx.MessageDialog(self, _(u"Attention, veuillez noter que %d familles ne disposant de quotient familial sur la période sélectionnée ont été exclus des résultats !") % len(listeFamillesSansQF), _(u"Avertissement"), wx.OK | wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(self, _(u"Attention, veuillez noter que %d familles ne disposant de quotient familial sur la pÃ©riode sÃ©lectionnÃ©e ont Ã©tÃ© exclus des rÃ©sultats !") % len(listeFamillesSansQF), _(u"Avertissement"), wx.OK | wx.ICON_INFORMATION)
             dlg.ShowModal()
             dlg.Destroy()
 
@@ -691,14 +691,14 @@ class ListView(FastObjectListView):
             return "texte"
             
             
-        # Création des colonnes
+        # CrÃ©ation des colonnes
         liste_Colonnes = [ColumnDefn("", "left", 0, "IDindividu", typeDonnee="entier"), ]
         for champ in self.dictParametres["champs"] :
             if champ.type != None :
                 liste_Colonnes.append(ColumnDefn(champ.titre, "left", champ.largeur, champ.code, typeDonnee=RechercheTypeDonnee(champ), stringConverter=FormatageValeur))
         
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(_(u"Aucune donnée"))
+        self.SetEmptyListMsg(_(u"Aucune donnÃ©e"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
         self.SetSortColumn(self.columns[1])
         self.SetObjects(self.donnees)
@@ -707,12 +707,12 @@ class ListView(FastObjectListView):
 
     def AfficheTotaux(self):
         """ Affiche les totaux """
-        # Récupère les labels de colonnes
+        # RÃ©cupÃ¨re les labels de colonnes
         listeColonnes = []
         for colonne in self.columns :
             listeColonnes.append((colonne.title, colonne.align, colonne.width, colonne.valueGetter))
         
-        # Récupère les valeurs
+        # RÃ©cupÃ¨re les valeurs
         dictValeurs = {}
         listeTracks = self.innerList # listview.GetFilteredObjects()
         for track in listeTracks :
@@ -733,14 +733,14 @@ class ListView(FastObjectListView):
                 else :
                     valeur = None
                 
-                # Mémorisation
+                # MÃ©morisation
                 if valeur != None and codeChamp not in ("IDindividu", "INDIVIDU_ID", "FAMILLE_ID", "INDIVIDU_AGE", "FAMILLE_QF") :
                     if (codeChamp in dictValeurs) == False :
                         dictValeurs[codeChamp] = {"valeur":valeur, "label" : labelChamp}
                     else :
                         dictValeurs[codeChamp]["valeur"] += valeur
 
-        # Affichage des résultats
+        # Affichage des rÃ©sultats
         def FormateValeur(valeur):
             # Nombre
             if isinstance(valeur, int) : 
@@ -779,11 +779,11 @@ class ListView(FastObjectListView):
 
     def OnContextMenu(self, event):
         """Ouverture du menu contextuel """    
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
         
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
+        item = wx.MenuItem(menuPop, 40, _(u"AperÃ§u avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -888,19 +888,19 @@ class MyFrame(wx.Frame):
         sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
         self.SetSizer(sizer_1)
         
-        # Paramètres de tests
+        # ParamÃ¨tres de tests
         IDprofil = 10
         listeActivites = [1, 2, 3, 4]
         dateMin = datetime.date(2012, 9, 1)
         dateMax = datetime.date(2012, 9, 30)
         
-        # Récupération de tous les champs disponibles
+        # RÃ©cupÃ©ration de tous les champs disponibles
         from Ol import OL_Etat_nomin_champs
         champs = OL_Etat_nomin_champs.Champs(listeActivites=listeActivites, dateMin=dateMin, dateMax=dateMax)
         dictChamps = champs.GetDictChamps() 
         listeChampsDispo = champs.GetChamps() 
         
-        # Récupération des champs sélectionnés du profil
+        # RÃ©cupÃ©ration des champs sÃ©lectionnÃ©s du profil
         DB = GestionDB.DB()
         req = """SELECT IDselection, IDprofil, code, ordre
         FROM etat_nomin_selections
@@ -922,7 +922,7 @@ class MyFrame(wx.Frame):
                 dictTemp = {"IDselection":IDselection, "IDprofil":IDprofil, "code":code, "ordre":ordre, "label":_(u"Non disponible"), "type":None, "categorie":None, "titre":None, "formule":None}
             listeChamps.append(OL_Etat_nomin_selections.Track(dictTemp))
             
-        # Création des paramètres
+        # CrÃ©ation des paramÃ¨tres
         dictParametres = {
             "caisses" : [1, 2],
             "champs" : listeChamps,

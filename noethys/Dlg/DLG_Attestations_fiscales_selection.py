@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-14 Ivan LUCAS
@@ -30,7 +30,7 @@ from Utils import UTILS_Envoi_email
 import wx.lib.agw.hyperlink as Hyperlink
 
 
-TEXTE_INTRO = _(u"Veuillez trouver ci-dessous le montant réglé à notre organisme sur la période du {DATE_DEBUT} au {DATE_FIN} pour la garde de votre ou vos enfants de moins de 7 ans :")
+TEXTE_INTRO = _(u"Veuillez trouver ci-dessous le montant rÃ©glÃ© Ã  notre organisme sur la pÃ©riode du {DATE_DEBUT} au {DATE_FIN} pour la garde de votre ou vos enfants de moins de 7 ans :")
 
 
 def DateEngFr(textDate):
@@ -38,7 +38,7 @@ def DateEngFr(textDate):
     return text
 
 def GetTexteNoms(listeNoms=[]):
-    """ Récupère les noms sous la forme David DUPOND et Maxime DURAND... """
+    """ RÃ©cupÃ¨re les noms sous la forme David DUPOND et Maxime DURAND... """
     texteNoms = u""
     nbreIndividus = len(listeNoms)
     if nbreIndividus == 0 : texteNoms = u""
@@ -51,7 +51,7 @@ def GetTexteNoms(listeNoms=[]):
     return texteNoms
 
 def Supprime_accent(texte):
-    liste = [ (u"é", u"e"), (u"è", u"e"), (u"ê", u"e"), (u"ë", u"e"), (u"à", u"a"), (u"û", u"u"), (u"ô", u"o"), (u"ç", u"c"), (u"î", u"i"), (u"ï", u"i"),]
+    liste = [ (u"Ã©", u"e"), (u"Ã¨", u"e"), (u"Ãª", u"e"), (u"Ã«", u"e"), (u"Ã ", u"a"), (u"Ã»", u"u"), (u"Ã´", u"o"), (u"Ã§", u"c"), (u"Ã®", u"i"), (u"Ã¯", u"i"),]
     for a, b in liste :
         texte = texte.replace(a, b)
         texte = texte.replace(a.upper(), b.upper())
@@ -120,7 +120,7 @@ class CTRL_Signataires(wx.Choice):
         return self.dictDonnees[index]["ID"]
     
     def GetInfos(self):
-        """ Récupère les infos sur le signataire sélectionné """
+        """ RÃ©cupÃ¨re les infos sur le signataire sÃ©lectionnÃ© """
         index = self.GetSelection()
         if index == -1 : return None
         return self.dictDonnees[index]
@@ -184,7 +184,7 @@ class CTRL_Signataires(wx.Choice):
 ##        return self.dictDonnees[index]["ID"]
 ##    
 ##    def GetInfos(self):
-##        """ Récupère les infos sur le signataire sélectionné """
+##        """ RÃ©cupÃ¨re les infos sur le signataire sÃ©lectionnÃ© """
 ##        index = self.GetSelection()
 ##        if index == -1 : return None
 ##        return self.dictDonnees[index]
@@ -232,7 +232,7 @@ class CTRL_Options(wx.Panel):
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
         self.parent = parent
         
-        self.label_modele = wx.StaticText(self, -1, _(u"Modèle :"))
+        self.label_modele = wx.StaticText(self, -1, _(u"ModÃ¨le :"))
         self.ctrl_modele = CTRL_Choix_modele.CTRL_Choice(self, categorie="attestation_fiscale")
         self.ctrl_modele.Select(0)
         self.bouton_gestion_modeles = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Mecanisme.png"), wx.BITMAP_TYPE_ANY))
@@ -241,7 +241,7 @@ class CTRL_Options(wx.Panel):
         self.ctrl_signataire = CTRL_Signataires(self)
 
         self.label_montant = wx.StaticText(self, -1, _(u"Montant :"))
-        self.ctrl_montant = wx.Choice(self, -1, choices=[_(u"Réglé"), _(u"Facturé")])
+        self.ctrl_montant = wx.Choice(self, -1, choices=[_(u"RÃ©glÃ©"), _(u"FacturÃ©")])
         self.ctrl_montant.Select(0)
 
         self.label_intro = wx.StaticText(self, -1, _(u"Intro :"))
@@ -250,12 +250,12 @@ class CTRL_Options(wx.Panel):
         self.ctrl_texte_intro = wx.TextCtrl(self, -1, TEXTE_INTRO)
 
 ##        self.label_affichage = wx.StaticText(self, -1, _(u"Affichage :"))
-##        self.radio_condense = wx.RadioButton(self, -1, _(u"Condensé"), style=wx.RB_GROUP)
-##        self.radio_detaille = wx.RadioButton(self, -1, _(u"Détaillé"))
+##        self.radio_condense = wx.RadioButton(self, -1, _(u"CondensÃ©"), style=wx.RB_GROUP)
+##        self.radio_detaille = wx.RadioButton(self, -1, _(u"DÃ©taillÃ©"))
 
-        # Répertoire
+        # RÃ©pertoire
         self.label_repertoire = wx.StaticText(self, -1, _(u"Copie :"))
-        self.checkbox_repertoire = wx.CheckBox(self, -1, _(u"Enregistrer une copie unique dans le répertoire :"))
+        self.checkbox_repertoire = wx.CheckBox(self, -1, _(u"Enregistrer une copie unique dans le rÃ©pertoire :"))
         self.ctrl_repertoire = wx.TextCtrl(self, -1, u"")
         self.bouton_repertoire = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Repertoire.png"), wx.BITMAP_TYPE_ANY))
         
@@ -268,18 +268,18 @@ class CTRL_Options(wx.Panel):
         self.__set_properties()
         self.__do_layout()
 
-        # Init contrôles
+        # Init contrÃ´les
         self.OnCheckIntro(None) 
         self.OnCheckRepertoire(None)
 
     def __set_properties(self):
-        self.ctrl_modele.SetToolTip(wx.ToolTip(_(u"Sélectionnez un modèle de documents")))
-        self.ctrl_signataire.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici le signataire du document")))
-        self.ctrl_intro.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour inclure le texte d'introduction : 'Je soussigné... atteste...' ")))
-        self.ctrl_texte_intro.SetToolTip(wx.ToolTip(_(u"Vous pouvez modifier ici le texte d'introduction. \n\nUtilisez les mots-clés {GENRE}, {NOM}, {FONCTION}, {ENFANTS}, \n{DATE_DEBUT} et {DATE_FIN} pour inclure dynamiquement les \nvaleurs correspondantes.")))
-        self.checkbox_repertoire.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour enregistrer un exemplaire de chaque attestation de rappel au format PDF dans le répertoire indiqué")))
-        self.bouton_repertoire.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sélectionner un répertoire de destination")))
-        self.ctrl_montant.SetToolTip(wx.ToolTip(_(u"Sélectionnez le montant à afficher. Réglé par défaut.")))
+        self.ctrl_modele.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez un modÃ¨le de documents")))
+        self.ctrl_signataire.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez ici le signataire du document")))
+        self.ctrl_intro.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour inclure le texte d'introduction : 'Je soussignÃ©... atteste...' ")))
+        self.ctrl_texte_intro.SetToolTip(wx.ToolTip(_(u"Vous pouvez modifier ici le texte d'introduction. \n\nUtilisez les mots-clÃ©s {GENRE}, {NOM}, {FONCTION}, {ENFANTS}, \n{DATE_DEBUT} et {DATE_FIN} pour inclure dynamiquement les \nvaleurs correspondantes.")))
+        self.checkbox_repertoire.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour enregistrer un exemplaire de chaque attestation de rappel au format PDF dans le rÃ©pertoire indiquÃ©")))
+        self.bouton_repertoire.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sÃ©lectionner un rÃ©pertoire de destination")))
+        self.ctrl_montant.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez le montant Ã  afficher. RÃ©glÃ© par dÃ©faut.")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
@@ -287,7 +287,7 @@ class CTRL_Options(wx.Panel):
         # Options
         grid_sizer_options = wx.FlexGridSizer(rows=6, cols=2, vgap=5, hgap=10)
         
-        # Modèle
+        # ModÃ¨le
         grid_sizer_options.Add(self.label_modele, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_modele = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
         grid_sizer_modele.Add(self.ctrl_modele, 0, wx.EXPAND|wx.ALIGN_CENTER_VERTICAL, 0)
@@ -322,7 +322,7 @@ class CTRL_Options(wx.Panel):
 ##        grid_sizer_affichage.Add(self.radio_detaille, 0,wx.ALIGN_CENTER_VERTICAL, 0)
 ##        grid_sizer_options.Add(grid_sizer_affichage, 1, wx.EXPAND, 0)
 
-        # Répertoire
+        # RÃ©pertoire
         grid_sizer_options.Add(self.label_repertoire, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_repertoire = wx.FlexGridSizer(rows=1, cols=3, vgap=5, hgap=5)
         grid_sizer_repertoire.Add(self.checkbox_repertoire, 0, wx.EXPAND, 0)
@@ -362,7 +362,7 @@ class CTRL_Options(wx.Panel):
                 cheminDefaut = ""
         else:
             cheminDefaut = ""
-        dlg = wx.DirDialog(self, _(u"Veuillez sélectionner un répertoire de destination :"), defaultPath=cheminDefaut, style=wx.DD_DEFAULT_STYLE | wx.DD_DIR_MUST_EXIST)
+        dlg = wx.DirDialog(self, _(u"Veuillez sÃ©lectionner un rÃ©pertoire de destination :"), defaultPath=cheminDefaut, style=wx.DD_DEFAULT_STYLE | wx.DD_DIR_MUST_EXIST)
         if dlg.ShowModal() == wx.ID_OK:
             self.ctrl_repertoire.SetValue(dlg.GetPath())
         dlg.Destroy()
@@ -378,7 +378,7 @@ class CTRL_Options(wx.Panel):
         # Signataire
         infosSignataire = self.ctrl_signataire.GetInfos()
         if infosSignataire == None :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun signataire !"), _(u"Annulation"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucun signataire !"), _(u"Annulation"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -398,19 +398,19 @@ class CTRL_Options(wx.Panel):
             "genre" : genreSignataire,
             }
         
-        # Répertoire
+        # RÃ©pertoire
         if self.checkbox_repertoire.GetValue() == True :
             repertoire = self.ctrl_repertoire.GetValue() 
-            # Vérifie qu'un répertoire a été saisie
+            # VÃ©rifie qu'un rÃ©pertoire a Ã©tÃ© saisie
             if repertoire == "" :
-                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner un répertoire de destination !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sÃ©lectionner un rÃ©pertoire de destination !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_repertoire.SetFocus()
                 return False
-            # Vérifie que le répertoire existe
+            # VÃ©rifie que le rÃ©pertoire existe
             if os.path.isdir(repertoire) == False :
-                dlg = wx.MessageDialog(self, _(u"Le répertoire de destination que vous avez saisi n'existe pas !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Le rÃ©pertoire de destination que vous avez saisi n'existe pas !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_repertoire.SetFocus()
@@ -418,10 +418,10 @@ class CTRL_Options(wx.Panel):
         else:
             repertoire = None
                 
-        # Récupération du modèle
+        # RÃ©cupÃ©ration du modÃ¨le
         IDmodele = self.ctrl_modele.GetID() 
         if IDmodele == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner un modèle !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sÃ©lectionner un modÃ¨le !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -458,7 +458,7 @@ class Panel(wx.Panel):
         self.ctrl_options = CTRL_Options(self)
         
         # Attestations
-        self.staticbox_attestations_staticbox = wx.StaticBox(self, -1, _(u"Attestations à générer"))
+        self.staticbox_attestations_staticbox = wx.StaticBox(self, -1, _(u"Attestations Ã  gÃ©nÃ©rer"))
         self.ctrl_attestations = OL_Attestations_fiscales_selection.ListView(self, id=-1, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
 
         self.bouton_apercu_liste = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_ANY))
@@ -466,11 +466,11 @@ class Panel(wx.Panel):
         self.bouton_export_texte = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Texte2.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_export_excel = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Excel.png"), wx.BITMAP_TYPE_ANY))
 
-        self.hyper_payes = Hyperlien(self, label=_(u"Sélectionner uniquement les payés"), infobulle=_(u"Cliquez ici pour sélectionner uniquement les payés"), URL="payes")
+        self.hyper_payes = Hyperlien(self, label=_(u"SÃ©lectionner uniquement les payÃ©s"), infobulle=_(u"Cliquez ici pour sÃ©lectionner uniquement les payÃ©s"), URL="payes")
         self.label_separation_1 = wx.StaticText(self, -1, u"|")
-        self.hyper_tout = Hyperlien(self, label=_(u"Tout sélectionner"), infobulle=_(u"Cliquez ici pour tout sélectionner"), URL="tout")
+        self.hyper_tout = Hyperlien(self, label=_(u"Tout sÃ©lectionner"), infobulle=_(u"Cliquez ici pour tout sÃ©lectionner"), URL="tout")
         self.label_separation_2 = wx.StaticText(self, -1, u"|")
-        self.hyper_rien = Hyperlien(self, label=_(u"Tout désélectionner"), infobulle=_(u"Cliquez ici pour tout désélectionner"), URL="rien")
+        self.hyper_rien = Hyperlien(self, label=_(u"Tout dÃ©sÃ©lectionner"), infobulle=_(u"Cliquez ici pour tout dÃ©sÃ©lectionner"), URL="rien")
         
         # Actions
         self.staticbox_actions_staticbox = wx.StaticBox(self, -1, _(u"Actions"))
@@ -491,12 +491,12 @@ class Panel(wx.Panel):
 
 
     def __set_properties(self):
-        self.bouton_apercu_liste.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher un aperçu avant impression de la liste")))
+        self.bouton_apercu_liste.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher un aperÃ§u avant impression de la liste")))
         self.bouton_imprimer_liste.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer la liste")))
         self.bouton_export_texte.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter la liste au format texte")))
         self.bouton_export_excel.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter la liste au format Excel")))
-        self.bouton_email.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à l'envoi des attestations fiscales par Email")))
-        self.bouton_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer les attestations fiscales générées")))
+        self.bouton_email.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accÃ©der Ã  l'envoi des attestations fiscales par Email")))
+        self.bouton_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer les attestations fiscales gÃ©nÃ©rÃ©es")))
 
     def __do_layout(self):
 ##        grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
@@ -617,7 +617,7 @@ class Panel(wx.Panel):
         listeActivites = self.GetParent().page1.GetActivites() 
         self.ctrl_options.ctrl_signataire.MAJ(listeActivites)
 
-        dlgAttente = wx.BusyInfo(_(u"Recherche des données..."), None)
+        dlgAttente = wx.BusyInfo(_(u"Recherche des donnÃ©es..."), None)
         if 'phoenix' not in wx.PlatformInfo:
             wx.Yield()
         try :
@@ -639,7 +639,7 @@ class Panel(wx.Panel):
     def Sauvegarder(self):
         """ Sauvegarde des attestations """
         # Demande la confirmation de sauvegarde
-        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous mémoriser les attestations ?\n\n(Cliquez NON si c'était juste un test sinon cliquez OUI)"), _(u"Sauvegarde"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous mÃ©moriser les attestations ?\n\n(Cliquez NON si c'Ã©tait juste un test sinon cliquez OUI)"), _(u"Sauvegarde"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         reponse = dlg.ShowModal() 
         dlg.Destroy()
         if reponse != wx.ID_YES :
@@ -661,7 +661,7 @@ class Panel(wx.Panel):
                     regle = dictCompte["ventilation"] 
                     solde = total - regle
 
-                    # Liste des activités
+                    # Liste des activitÃ©s
                     texteActivites = ""
                     for IDactivite in self.listeActivites :
                         texteActivites += "%d;" % IDactivite
@@ -693,11 +693,11 @@ class Panel(wx.Panel):
 
                     IDattestation = DB.ReqInsert("attestations", listeDonnees)
                                         
-                    # Mémorisation de l'action dans l'historique
+                    # MÃ©morisation de l'action dans l'historique
                     UTILS_Historique.InsertActions([{
                             "IDfamille" : IDfamille,
                             "IDcategorie" : 27, 
-                            "action" : _(u"Edition d'une attestation de présence pour la période du %s au %s pour un total de %.02f ¤ et un solde de %.02f ¤") % (DateEngFr(str(self.date_debut)), DateEngFr(str(self.date_fin)), total, solde),
+                            "action" : _(u"Edition d'une attestation de prÃ©sence pour la pÃ©riode du %s au %s pour un total de %.02f â‚¬ et un solde de %.02f â‚¬") % (DateEngFr(str(self.date_debut)), DateEngFr(str(self.date_fin)), total, solde),
                             },])
 
             DB.Close() 
@@ -707,7 +707,7 @@ class Panel(wx.Panel):
             DB.Close() 
             del dlgAttente
             traceback.print_exc(file=sys.stdout)
-            dlg = wx.MessageDialog(self, _(u"Désolé, le problème suivant a été rencontré dans la sauvegarde des attestations : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"DÃ©solÃ©, le problÃ¨me suivant a Ã©tÃ© rencontrÃ© dans la sauvegarde des attestations : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -722,36 +722,36 @@ class Panel(wx.Panel):
         return dictOptions
         
     def Apercu(self, event=None): 
-        """ Aperçu PDF des attestations """
-        # Validation des données saisies
+        """ AperÃ§u PDF des attestations """
+        # Validation des donnÃ©es saisies
         tracks = self.ctrl_attestations.GetTracksCoches() 
         if len(tracks) == 0 : 
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune attestation à imprimer !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune attestation Ã  imprimer !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         
-        # Récupération des options
+        # RÃ©cupÃ©ration des options
         dictOptions = self.GetOptions() 
         if dictOptions == False :
             return False
         
-        # Impression des cotisations sélectionnées
+        # Impression des cotisations sÃ©lectionnÃ©es
         x = UTILS_Attestations_fiscales.Attestations_fiscales()
         x.Impression(tracks=tracks, afficherDoc=True, dictOptions=dictOptions, repertoire=dictOptions["repertoire"])
 
     
     def EnvoiEmail(self, event=None): 
         """ Envoi par Email des attestations fiscales """
-        # Validation des données saisies
+        # Validation des donnÃ©es saisies
         tracks = self.ctrl_attestations.GetTracksCoches() 
         if len(tracks) == 0 : 
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune attestation à imprimer !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune attestation Ã  imprimer !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
 
-        # Création des cotisations sélectionnées
+        # CrÃ©ation des cotisations sÃ©lectionnÃ©es
         dictOptions = self.GetOptions() 
         if dictOptions == False :
             return False
@@ -767,7 +767,7 @@ class Panel(wx.Panel):
                 if os.path.isfile(fichier):
                     os.remove(fichier)
 
-        # Récupération des adresses mail
+        # RÃ©cupÃ©ration des adresses mail
         dict_adresses = UTILS_Envoi_email.GetAdressesFamilles([track.IDfamille for track in tracks])
         if dict_adresses == False:
             return False
@@ -780,7 +780,7 @@ class Panel(wx.Panel):
                     champs = dictChampsFusion[track.IDcompte_payeur]
                     liste_donnees.append({"adresse": adresse, "pieces": [fichier,], "champs": champs})
 
-        # Transfert des données vers DLG Mailer
+        # Transfert des donnÃ©es vers DLG Mailer
         from Dlg import DLG_Mailer
         dlg = DLG_Mailer.Dialog(self, categorie="attestation_fiscale")
         dlg.SetDonnees(liste_donnees, modificationAutorisee=False)

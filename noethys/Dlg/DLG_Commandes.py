@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-18 Ivan LUCAS
@@ -27,7 +27,7 @@ class CTRL_Modele(wx.Choice):
         self.MAJ()
 
     def MAJ(self):
-        # Importation des catégories
+        # Importation des catÃ©gories
         DB = GestionDB.DB()
         req = """SELECT IDmodele, nom, defaut
         FROM modeles_commandes
@@ -79,13 +79,13 @@ class Dialog(wx.Dialog):
         
         # Bandeau
         titre = _(u"Commandes des repas")
-        intro = _(u"Vous pouvez ici créer des commandes de repas. Sélectionnez un modèle de commande puis cliquez sur le bouton Ajouter pour créer une nouvelle commande. Si aucun modèle de commande n'existe, vous devez obligatoirement commencer par en créer un avant de saisir une commande.")
+        intro = _(u"Vous pouvez ici crÃ©er des commandes de repas. SÃ©lectionnez un modÃ¨le de commande puis cliquez sur le bouton Ajouter pour crÃ©er une nouvelle commande. Si aucun modÃ¨le de commande n'existe, vous devez obligatoirement commencer par en crÃ©er un avant de saisir une commande.")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Repas.png")
         
-        # Modèle
-        self.staticbox_modele_staticbox = wx.StaticBox(self, -1, _(u"Modèle de commande"))
-        self.label_modele = wx.StaticText(self, -1, _(u"Modèle :"))
+        # ModÃ¨le
+        self.staticbox_modele_staticbox = wx.StaticBox(self, -1, _(u"ModÃ¨le de commande"))
+        self.label_modele = wx.StaticText(self, -1, _(u"ModÃ¨le :"))
         self.ctrl_modele = CTRL_Modele(self)
         self.bouton_modeles = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Mecanisme.png"), wx.BITMAP_TYPE_ANY))
 
@@ -112,15 +112,15 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonFermer, self.bouton_fermer)
 
-        # Init contrôle
+        # Init contrÃ´le
         self.OnChoixModele(None)
 
     def __set_properties(self):
-        self.ctrl_modele.SetToolTip(wx.ToolTip(_(u"Sélectionnez un modèle de commandes")))
-        self.bouton_modeles.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter, modifier ou supprimer des modèles de commandes")))
-        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour créer une nouvelle commande")))
-        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la commande sélectionnée dans la liste")))
-        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la commande sélectionnée dans la liste")))
+        self.ctrl_modele.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez un modÃ¨le de commandes")))
+        self.bouton_modeles.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter, modifier ou supprimer des modÃ¨les de commandes")))
+        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour crÃ©er une nouvelle commande")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la commande sÃ©lectionnÃ©e dans la liste")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la commande sÃ©lectionnÃ©e dans la liste")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         self.SetMinSize((780, 650))
@@ -129,7 +129,7 @@ class Dialog(wx.Dialog):
         grid_sizer_base = wx.FlexGridSizer(rows=4, cols=1, vgap=10, hgap=10)
         grid_sizer_base.Add(self.ctrl_bandeau, 0, wx.EXPAND, 0)
         
-        # Modèle
+        # ModÃ¨le
         staticbox_modele = wx.StaticBoxSizer(self.staticbox_modele_staticbox, wx.VERTICAL)
         grid_sizer_modele = wx.FlexGridSizer(rows=1, cols=3, vgap=10, hgap=5)
         grid_sizer_modele.Add(self.label_modele, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)

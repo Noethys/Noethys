@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -117,7 +117,7 @@ class Track(object):
     
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # Récupération des paramètres perso
+        # RÃ©cupÃ©ration des paramÃ¨tres perso
         self.selectionID = None
         self.selectionTrack = None
         self.criteres = ""
@@ -139,8 +139,8 @@ class ListView(FastObjectListView):
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
-        """ Récupération des données """
-        # Critères
+        """ RÃ©cupÃ©ration des donnÃ©es """
+        # CritÃ¨res
         listeID = None
         self.criteres = ""
         # Liste de filtres
@@ -152,7 +152,7 @@ class ListView(FastObjectListView):
                 else:
                     self.criteres += " AND " + criteres
         
-        # Importation des villes par défaut
+        # Importation des villes par dÃ©faut
         DB = GestionDB.DB(nomFichier=Chemins.GetStaticPath("Databases/Geographie.dat"), suffixe=None)
         req = """SELECT IDville, nom, cp
         FROM villes %s ORDER BY nom; """ % self.criteres
@@ -179,7 +179,7 @@ class ListView(FastObjectListView):
         for IDville, nom, cp in listeDonnees :
             mode = None
             
-            # Filtre de sélection
+            # Filtre de sÃ©lection
             valide = True
             if listeID != None :
                 if IDville not in listeID :
@@ -198,7 +198,7 @@ class ListView(FastObjectListView):
             if IDville > 100000 and mode == None :
                 mode = "ajout"
             
-            # Création des tracks
+            # CrÃ©ation des tracks
             if valide == True :
                 track = Track((IDville, nom, cp, mode))
                 listeListeView.append(track)
@@ -233,7 +233,7 @@ class ListView(FastObjectListView):
             self.selectionTrack = None
         self.InitModel()
         self.InitObjectListView()
-        # Sélection d'un item
+        # SÃ©lection d'un item
         if self.selectionTrack != None :
             self.SelectObject(self.selectionTrack, deselectOthers=True, ensureVisible=True)
         self.selectionID = None
@@ -249,7 +249,7 @@ class ListView(FastObjectListView):
         else:
             noSelection = False
                 
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Ajouter
@@ -295,7 +295,7 @@ class ListView(FastObjectListView):
     def Modifier(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_villes", "modifier") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune ville à modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune ville Ã  modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -309,7 +309,7 @@ class ListView(FastObjectListView):
             nom = dlg.GetNom()
             cp = dlg.GetCp()
             DB = GestionDB.DB()
-            # Si c'est une ville par défaut
+            # Si c'est une ville par dÃ©faut
             if IDville < 100000 :
                 IDcorrection = DB.ReqInsert("corrections_villes", [("mode", "modif"), ("IDville", IDville), ("nom", nom), ("cp", cp)])
                 self.MAJ(100000+IDcorrection)
@@ -324,7 +324,7 @@ class ListView(FastObjectListView):
     def Supprimer(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_villes", "supprimer") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune ville à supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune ville Ã  supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -336,7 +336,7 @@ class ListView(FastObjectListView):
         dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer la ville '%s (%s)' ?") % (nom, cp), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         if dlg.ShowModal() == wx.ID_YES :
             DB = GestionDB.DB()
-            # Si c'est une ville par défaut
+            # Si c'est une ville par dÃ©faut
             if IDville < 100000 :
                 IDcorrection = DB.ReqInsert("corrections_villes", [("mode", "suppr"), ("IDville", IDville)])
             else :

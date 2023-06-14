@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -29,7 +29,7 @@ class PanelReseau(wx.Panel):
         self.label_port = wx.StaticText(self, -1, _(u"Port :"), size=(-1, -1), style=wx.ALIGN_RIGHT)
         self.ctrl_port = wx.TextCtrl(self, -1, "3306", size=(45, -1))
         
-        self.label_hote = wx.StaticText(self, -1, _(u"Hôte :"), size=(-1, -1), style=wx.ALIGN_RIGHT)
+        self.label_hote = wx.StaticText(self, -1, _(u"HÃ´te :"), size=(-1, -1), style=wx.ALIGN_RIGHT)
         self.ctrl_hote = wx.TextCtrl(self, -1, "", size=(-1, -1))
         
         self.label_user = wx.StaticText(self, -1, _(u"Utilisateur :"), size=(-1, -1), style=wx.ALIGN_RIGHT)
@@ -64,29 +64,29 @@ class PanelReseau(wx.Panel):
         grid_sizer_base.Fit(self)
         self.Layout()
         
-        self.ctrl_port.SetToolTip(wx.ToolTip(_(u"Le numéro de port est 3306 par défaut.")))
-        self.ctrl_hote.SetToolTip(wx.ToolTip(_(u"Indiquez ici le nom du serveur hôte.")))
-        self.ctrl_user.SetToolTip(wx.ToolTip(_(u"Indiquez ici le nom de l'utilisateur. Ce nom doit avoir été validé par le créateur du fichier.")))
-        self.ctrl_mdp.SetToolTip(wx.ToolTip(_(u"Indiquez ici le mot de passe nécessaire à la connexion à MySQL")))
+        self.ctrl_port.SetToolTip(wx.ToolTip(_(u"Le numÃ©ro de port est 3306 par dÃ©faut.")))
+        self.ctrl_hote.SetToolTip(wx.ToolTip(_(u"Indiquez ici le nom du serveur hÃ´te.")))
+        self.ctrl_user.SetToolTip(wx.ToolTip(_(u"Indiquez ici le nom de l'utilisateur. Ce nom doit avoir Ã©tÃ© validÃ© par le crÃ©ateur du fichier.")))
+        self.ctrl_mdp.SetToolTip(wx.ToolTip(_(u"Indiquez ici le mot de passe nÃ©cessaire Ã  la connexion Ã  MySQL")))
 
 
 class MyDialog(wx.Dialog):
     def __init__(self, parent):
-        wx.Dialog.__init__(self, parent, -1, title=_(u"Création d'un fichier"))       
+        wx.Dialog.__init__(self, parent, -1, title=_(u"CrÃ©ation d'un fichier"))       
         self.parent = parent
         
         self.listeTablesImportation = Tables.TABLES_IMPORTATION_OPTIONNELLES
 
         # Bandeau
-        titre = _(u"Créer un nouveau fichier")
-        intro = _(u"Sélectionnez le type de fichier à créer puis renseignez les paramètres demandés : le nom du fichier et l'identité de l'administrateur du fichier. Pour un fichier réseau, saisissez les codes MySQL.")
+        titre = _(u"CrÃ©er un nouveau fichier")
+        intro = _(u"SÃ©lectionnez le type de fichier Ã  crÃ©er puis renseignez les paramÃ¨tres demandÃ©s : le nom du fichier et l'identitÃ© de l'administrateur du fichier. Pour un fichier rÃ©seau, saisissez les codes MySQL.")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Fichier_nouveau.png")
         self.SetTitle(titre)
         
-        # Radio Local/Réseau
+        # Radio Local/RÃ©seau
         self.sizer_type_staticbox = wx.StaticBox(self, -1, _(u"Type de fichier"))
         self.radio_local = wx.RadioButton(self, -1, _(u"Local"), style = wx.RB_GROUP )
-        self.radio_reseau = wx.RadioButton(self, -1, _(u"Réseau") )
+        self.radio_reseau = wx.RadioButton(self, -1, _(u"RÃ©seau") )
         self.radio_internet = wx.RadioButton(self, -1, _(u"Serveur internet") )
         
         # Nom Fichier
@@ -95,27 +95,27 @@ class MyDialog(wx.Dialog):
         self.text_nomFichier = wx.TextCtrl(self, -1, "")
         self.text_nomFichier.SetMinSize((350, -1)) 
         
-        # Identité Administrateur
-        self.staticbox_identite_staticbox = wx.StaticBox(self, -1, _(u"Identité administrateur"))
+        # IdentitÃ© Administrateur
+        self.staticbox_identite_staticbox = wx.StaticBox(self, -1, _(u"IdentitÃ© administrateur"))
         self.label_sexe = wx.StaticText(self, -1, _(u"Sexe :"))
         self.ctrl_sexe = wx.Choice(self, -1, choices=[_(u"Homme"), _(u"Femme")])
         self.ctrl_sexe.Select(0)
         self.label_nom = wx.StaticText(self, -1, _(u"Nom :"))
         self.ctrl_nom = wx.TextCtrl(self, -1, u"")
-        self.label_prenom = wx.StaticText(self, -1, _(u"Prénom :"))
+        self.label_prenom = wx.StaticText(self, -1, _(u"PrÃ©nom :"))
         self.ctrl_prenom = wx.TextCtrl(self, -1, u"")
         self.label_mdp = wx.StaticText(self, -1, _(u"Mot de passe :"))
         self.ctrl_mdp = wx.TextCtrl(self, -1, u"", style=wx.TE_PASSWORD)
         self.label_confirmation = wx.StaticText(self, -1, _(u"Confirmation :"))
         self.ctrl_confirmation = wx.TextCtrl(self, -1, u"", style=wx.TE_PASSWORD)
         
-        # Sélection des tables à importer
-        self.checkbox_details = wx.CheckBox(self, -1, _(u"Importer les données par défaut"))
+        # SÃ©lection des tables Ã  importer
+        self.checkbox_details = wx.CheckBox(self, -1, _(u"Importer les donnÃ©es par dÃ©faut"))
         self.checkbox_details.SetValue(True)
         self.hyperlink_details = self.Build_Hyperlink()
         
         # Panel Fichier RESEAU
-        self.sizer_reseau_staticbox = wx.StaticBox(self, -1, _(u"Connexion au réseau"))
+        self.sizer_reseau_staticbox = wx.StaticBox(self, -1, _(u"Connexion au rÃ©seau"))
         self.panelReseau = PanelReseau(self)
         self.panelReseau.Enable(False)
         
@@ -133,15 +133,15 @@ class MyDialog(wx.Dialog):
         self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioReseau, self.radio_internet)
 
     def __set_properties(self):
-        self.checkbox_details.SetToolTip(wx.ToolTip(_(u"Il est recommandé de conserver cette case\n cochée afin d'importer les données par défaut")))
-        self.text_nomFichier.SetToolTip(wx.ToolTip(_(u"Saisissez ici le nom de votre nouveau fichier.\nExemples : 'CLSH Lannilis', 'Colo Auvergne' ou 'Mon fichier à moi'...")))
+        self.checkbox_details.SetToolTip(wx.ToolTip(_(u"Il est recommandÃ© de conserver cette case\n cochÃ©e afin d'importer les donnÃ©es par dÃ©faut")))
+        self.text_nomFichier.SetToolTip(wx.ToolTip(_(u"Saisissez ici le nom de votre nouveau fichier.\nExemples : 'CLSH Lannilis', 'Colo Auvergne' ou 'Mon fichier Ã  moi'...")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler la saisie")))
-        self.radio_local.SetToolTip(wx.ToolTip(_(u"Le mode local est utilisé pour une utilisation mono-poste")))
-        self.radio_reseau.SetToolTip(wx.ToolTip(_(u"Le mode réseau est utilisateur pour une utilisation multipostes. \nMySQL doit être obligatoirement installé et configuré avant utilisation.")))
+        self.radio_local.SetToolTip(wx.ToolTip(_(u"Le mode local est utilisÃ© pour une utilisation mono-poste")))
+        self.radio_reseau.SetToolTip(wx.ToolTip(_(u"Le mode rÃ©seau est utilisateur pour une utilisation multipostes. \nMySQL doit Ãªtre obligatoirement installÃ© et configurÃ© avant utilisation.")))
         self.radio_internet.SetToolTip(wx.ToolTip(_(u"Le mode Serveur internet permet d'installer le fichier sur un serveur internet distant")))
-        self.ctrl_sexe.SetToolTip(wx.ToolTip(_(u"Sélectionnez le sexe de l'utilisateur")))
+        self.ctrl_sexe.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez le sexe de l'utilisateur")))
         self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez ici le nom de famille de l'utilisateur")))
         self.ctrl_prenom.SetToolTip(wx.ToolTip(_(u"Saisissez ici le prenom de l'utilisateur")))
         self.ctrl_mdp.SetToolTip(wx.ToolTip(_(u"Saisissez un mot de passe pour l'administrateur")))
@@ -153,7 +153,7 @@ class MyDialog(wx.Dialog):
         grid_sizer_boutons = wx.FlexGridSizer(rows=1, cols=4, vgap=10, hgap=10)
         grid_sizer_base.Add(self.ctrl_bandeau, 1, wx.EXPAND, 0)
         
-        # Radios Local/réseau
+        # Radios Local/rÃ©seau
         sizer_type = wx.StaticBoxSizer(self.sizer_type_staticbox, wx.VERTICAL)
         grid_sizer_radio = wx.FlexGridSizer(rows=1, cols=3, vgap=5, hgap=5)
         grid_sizer_radio.Add(self.radio_local, 1, wx.EXPAND | wx.TOP|wx.BOTTOM, 5)
@@ -178,7 +178,7 @@ class MyDialog(wx.Dialog):
         sizer_contenu.Add(grid_sizer_contenu, 1, wx.ALL|wx.EXPAND, 10)
         grid_sizer_base.Add(sizer_contenu, 1, wx.LEFT|wx.RIGHT|wx.BOTTOM|wx.EXPAND, 10)
         
-        # Identité Administrateur
+        # IdentitÃ© Administrateur
         staticbox_identite = wx.StaticBoxSizer(self.staticbox_identite_staticbox, wx.VERTICAL)
         grid_sizer_identite = wx.FlexGridSizer(rows=5, cols=2, vgap=5, hgap=5)
         
@@ -201,7 +201,7 @@ class MyDialog(wx.Dialog):
         staticbox_identite.Add(grid_sizer_identite, 1, wx.ALL|wx.EXPAND, 10)
         grid_sizer_base.Add(staticbox_identite, 1, wx.LEFT|wx.RIGHT|wx.BOTTOM|wx.EXPAND, 10)
         
-        # Réseau
+        # RÃ©seau
         sizer_reseau = wx.StaticBoxSizer(self.sizer_reseau_staticbox, wx.VERTICAL)
         sizer_reseau.Add(self.panelReseau, 1, wx.ALL|wx.EXPAND, 10)
         grid_sizer_base.Add(sizer_reseau, 1, wx.RIGHT|wx.LEFT|wx.BOTTOM|wx.EXPAND, 10)
@@ -232,21 +232,21 @@ class MyDialog(wx.Dialog):
     def Build_Hyperlink(self) :
         """ Construit un hyperlien """
         self.SetFont(wx.Font(8, wx.SWISS, wx.NORMAL, wx.NORMAL, False))
-        hyper = hl.HyperLinkCtrl(self, -1, _(u"(Détails)"), URL="")
+        hyper = hl.HyperLinkCtrl(self, -1, _(u"(DÃ©tails)"), URL="")
         hyper.Bind(hl.EVT_HYPERLINK_LEFT, self.OnLeftLink)
         hyper.AutoBrowse(False)
         hyper.SetColours("BLUE", "BLUE", "BLUE")
         hyper.EnableRollover(True)
         hyper.SetUnderlines(False, False, True)
         hyper.SetBold(False)
-        hyper.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sélectionner les données à importer")))
+        hyper.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sÃ©lectionner les donnÃ©es Ã  importer")))
         hyper.UpdateLink()
         hyper.DoPopup(False)
         return hyper
     
     def OnLeftLink(self, event):
-        """ Sélectionner les données à importer """
-        # Préparation de la liste des données
+        """ SÃ©lectionner les donnÃ©es Ã  importer """
+        # PrÃ©paration de la liste des donnÃ©es
         listeDonnees = []
         listePreSelections = []
         index = 0
@@ -256,14 +256,14 @@ class MyDialog(wx.Dialog):
                 listePreSelections.append(index)
             index += 1
                                           
-        # Boîte de dialogue sélections multiples
-        titre = _(u"Importation des données")
-        message = _(u"Sélectionnez les données que vous souhaitez importer :")
+        # BoÃ®te de dialogue sÃ©lections multiples
+        titre = _(u"Importation des donnÃ©es")
+        message = _(u"SÃ©lectionnez les donnÃ©es que vous souhaitez importer :")
         dlg = wx.MultiChoiceDialog(self, message, titre, listeDonnees, wx.CHOICEDLG_STYLE)
-        # Coche ceux qui doivent être déjà sélectionnés dans la liste
+        # Coche ceux qui doivent Ãªtre dÃ©jÃ  sÃ©lectionnÃ©s dans la liste
         dlg.SetSelections(listePreSelections)
         
-        # Résultats
+        # RÃ©sultats
         if dlg.ShowModal() == wx.ID_OK:
             listeSelections = dlg.GetSelections()
             index = 0
@@ -298,7 +298,7 @@ class MyDialog(wx.Dialog):
         UTILS_Aide.Aide("Crerunfichier")
 
     def OnBoutonOk(self, event):
-        """ Validation des données saisies """
+        """ Validation des donnÃ©es saisies """
         
         # Validation du nom saisi
         nomFichier = self.text_nomFichier.GetValue()
@@ -310,15 +310,15 @@ class MyDialog(wx.Dialog):
             return
         
         if (self.radio_reseau.GetValue() == True or self.radio_internet.GetValue() == True) and " " in nomFichier :
-            dlg = wx.MessageDialog(self, _(u"Il est interdit d'utiliser des espaces dans les noms des fichiers réseau !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"Il est interdit d'utiliser des espaces dans les noms des fichiers rÃ©seau !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             self.text_nomFichier.SetFocus()
             return
         
         for caract in nomFichier :
-            if caract in u"éèëäâïîùûüàôç'&%*,;!:?./§@¤" :
-                dlg = wx.MessageDialog(self, _(u"Il est interdit d'utiliser des accents ou autres caractères spéciaux dans le nom de fichier !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_ERROR)
+            if caract in u"Ã©Ã¨Ã«Ã¤Ã¢Ã¯Ã®Ã¹Ã»Ã¼Ã Ã´Ã§'&%*,;!:?./Â§@â‚¬" :
+                dlg = wx.MessageDialog(self, _(u"Il est interdit d'utiliser des accents ou autres caractÃ¨res spÃ©ciaux dans le nom de fichier !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.text_nomFichier.SetFocus()
@@ -327,21 +327,21 @@ class MyDialog(wx.Dialog):
         # Traitement du checkbox
         if self.checkbox_details.GetValue() == False :
             
-            # Demande de confirmation pour le refus d'importer les données par défaut
-            dlg = wx.MessageDialog(self, _(u"Etes-vous sûr de ne pas vouloir importer les données par défaut ?"), _(u"Importation des données"), wx.YES_NO | wx.CANCEL | wx.ICON_QUESTION)
+            # Demande de confirmation pour le refus d'importer les donnÃ©es par dÃ©faut
+            dlg = wx.MessageDialog(self, _(u"Etes-vous sÃ»r de ne pas vouloir importer les donnÃ©es par dÃ©faut ?"), _(u"Importation des donnÃ©es"), wx.YES_NO | wx.CANCEL | wx.ICON_QUESTION)
             if dlg.ShowModal() == wx.ID_YES :
                 dlg.Destroy()
             else:
                 dlg.Destroy()
                 return
             
-            # Désactivation des données importées par défaut
+            # DÃ©sactivation des donnÃ©es importÃ©es par dÃ©faut
             index = 0
             for categorie in self.listeTablesImportation :
                 self.listeTablesImportation[index][2] = False
                 index += 1
         
-        # Identité administrateur
+        # IdentitÃ© administrateur
         if self.ctrl_nom.IsEnabled() :
             
             if len(self.ctrl_nom.GetValue()) == 0 :
@@ -382,14 +382,14 @@ class MyDialog(wx.Dialog):
             try :
                 port = int(port)
             except Exception as err:
-                dlg = wx.MessageDialog(self, _(u"Le numéro de port n'est pas valide. \n\nErreur : %s") % err, _(u"Erreur de saisie"), wx.OK | wx.ICON_ERROR)
+                dlg = wx.MessageDialog(self, _(u"Le numÃ©ro de port n'est pas valide. \n\nErreur : %s") % err, _(u"Erreur de saisie"), wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.panelReseau.ctrl_port.SetFocus()
                 return
             
             if hote == "" :
-                dlg = wx.MessageDialog(self, _(u"Vous devez saisir un nom pour le serveur hôte."), _(u"Erreur de saisie"), wx.OK | wx.ICON_ERROR)
+                dlg = wx.MessageDialog(self, _(u"Vous devez saisir un nom pour le serveur hÃ´te."), _(u"Erreur de saisie"), wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.panelReseau.ctrl_hote.SetFocus()
@@ -409,11 +409,11 @@ class MyDialog(wx.Dialog):
                 self.panelReseau.ctrl_mdp.SetFocus()
                 return
             
-            # Teste la connexion Réseau
+            # Teste la connexion RÃ©seau
             dictResultats = GestionDB.TestConnexionMySQL(typeTest="connexion", nomFichier=self.GetNomFichier() )
             if dictResultats["connexion"][0] == False :
                 erreur = dictResultats["connexion"][1]
-                dlg = wx.MessageDialog(self, _(u"La connexion au réseau MySQL est impossible. \n\nErreur : %s") % erreur, "Erreur de connexion", wx.OK | wx.ICON_ERROR)
+                dlg = wx.MessageDialog(self, _(u"La connexion au rÃ©seau MySQL est impossible. \n\nErreur : %s") % erreur, "Erreur de connexion", wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False

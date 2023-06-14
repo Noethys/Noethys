@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -116,7 +116,7 @@ class CTRL_Allocataire(wx.Choice):
         self.SetItems(listeItems)
                                         
     def GetListeDonnees(self):
-        # Récupération de la liste des représentants de la famille
+        # RÃ©cupÃ©ration de la liste des reprÃ©sentants de la famille
         DB = GestionDB.DB()
         req = """SELECT individus.IDindividu, nom, prenom
         FROM rattachements
@@ -131,7 +131,7 @@ class CTRL_Allocataire(wx.Choice):
         for IDindividu, nom, prenom in listeDonnees :
             listeRepresentants.append({"IDindividu":IDindividu, "nom":nom, "prenom":prenom})
         
-        # Remplissage du contrôle
+        # Remplissage du contrÃ´le
         listeItems = [u"",]
         self.dictDonnees = {}
         self.dictDonnees[0] = { "ID" : 0, "nom" : _(u"Inconnu")}
@@ -178,23 +178,23 @@ class Panel(wx.Panel):
         self.ctrl_caisse = CTRL_Caisse(self)
         self.ctrl_caisse.SetMinSize((120, -1))
         self.bouton_caisses = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Mecanisme.png"), wx.BITMAP_TYPE_ANY))
-        self.label_numero = wx.StaticText(self, -1, _(u"N° allocataire :"))
+        self.label_numero = wx.StaticText(self, -1, _(u"NÂ° allocataire :"))
         self.ctrl_numero = wx.TextCtrl(self, -1, u"")
         self.label_allocataire = wx.StaticText(self, -1, _(u"Titulaire :"))
         self.ctrl_allocataire = CTRL_Allocataire(self)
         self.ctrl_allocataire.SetMinSize((140, -1))
-        self.check_autorisation_cafpro = wx.CheckBox(self, -1, u"Accès CAF-CDAP")
+        self.check_autorisation_cafpro = wx.CheckBox(self, -1, u"AccÃ¨s CAF-CDAP")
         self.bouton_cafpro = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Cafpro.png"), wx.BITMAP_TYPE_ANY))
 
         # Aides
-        self.staticbox_aides_staticbox = wx.StaticBox(self, -1, _(u"Aides journalières"))
+        self.staticbox_aides_staticbox = wx.StaticBox(self, -1, _(u"Aides journaliÃ¨res"))
         self.ctrl_aides = OL_Aides.ListView(self, id=-1, IDfamille=self.IDfamille, name="OL_aides", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.ctrl_aides.SetMinSize((20, 20)) 
         self.bouton_ajouter = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Ajouter.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_modifier = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Modifier.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_supprimer = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Supprimer.png"), wx.BITMAP_TYPE_ANY))
         
-        self.hyper_liste = Hyperlien(self, label=_(u"Afficher la liste des déductions"), infobulle=_(u"Cliquez ici pour afficher la liste des déductions"), URL="")
+        self.hyper_liste = Hyperlien(self, label=_(u"Afficher la liste des dÃ©ductions"), infobulle=_(u"Cliquez ici pour afficher la liste des dÃ©ductions"), URL="")
         
         self.__set_properties()
         self.__do_layout()
@@ -207,21 +207,21 @@ class Panel(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonModifier, self.bouton_modifier)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonSupprimer, self.bouton_supprimer)
         
-        # Init contrôles
+        # Init contrÃ´les
         self.OnChoixCaisse(None)
         self.OnCheckCafpro(None)
         
 
     def __set_properties(self):
-        self.ctrl_caisse.SetToolTip(wx.ToolTip(_(u"Sélectionnez une caisse")))
-        self.bouton_caisses.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à la gestion des caisses")))
-        self.ctrl_numero.SetToolTip(wx.ToolTip(_(u"Saisissez le numéro d'allocataire")))
-        self.ctrl_allocataire.SetToolTip(wx.ToolTip(_(u"Sélectionnez l'individu titulaire du dossier d'allocataire")))
-        self.check_autorisation_cafpro.SetToolTip(wx.ToolTip(_(u"Cochez cette case si la famille a donné une autorisation de consultation CDAP")))
-        self.bouton_cafpro.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder au site CAF-CDAP")))
-        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter une aide journalière")))
-        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier l'aide sélectionnée dans la liste")))
-        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer l'aide sélectionnée dans la liste")))
+        self.ctrl_caisse.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez une caisse")))
+        self.bouton_caisses.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accÃ©der Ã  la gestion des caisses")))
+        self.ctrl_numero.SetToolTip(wx.ToolTip(_(u"Saisissez le numÃ©ro d'allocataire")))
+        self.ctrl_allocataire.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez l'individu titulaire du dossier d'allocataire")))
+        self.check_autorisation_cafpro.SetToolTip(wx.ToolTip(_(u"Cochez cette case si la famille a donnÃ© une autorisation de consultation CDAP")))
+        self.bouton_cafpro.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accÃ©der au site CAF-CDAP")))
+        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter une aide journaliÃ¨re")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier l'aide sÃ©lectionnÃ©e dans la liste")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer l'aide sÃ©lectionnÃ©e dans la liste")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=2, cols=1, vgap=5, hgap=5)
@@ -284,7 +284,7 @@ class Panel(wx.Panel):
         self.bouton_cafpro.Enable(self.check_autorisation_cafpro.GetValue())
 
     def OnBoutonCafpro(self, event):
-        # Mémorisation du numéro allocataire dans le presse-papiers
+        # MÃ©morisation du numÃ©ro allocataire dans le presse-papiers
 #         num_allocataire = self.ctrl_numero.GetValue()
 #         clipdata = wx.TextDataObject()
 #         clipdata.SetText(num_allocataire)
@@ -292,7 +292,7 @@ class Panel(wx.Panel):
 #         wx.TheClipboard.SetData(clipdata)
 #         wx.TheClipboard.Close()
 #
-#         # Vérifie si case Ne plus Afficher cochée ou non
+#         # VÃ©rifie si case Ne plus Afficher cochÃ©e ou non
 #         if UTILS_Parametres.Parametres(mode="get", categorie="ne_plus_afficher", nom="acces_cafpro", valeur=False) == False :
 #             texte = u"""
 # <CENTER><IMG SRC="Static/Images/32x32/Astuce.png">
@@ -300,9 +300,9 @@ class Panel(wx.Panel):
 # <BR>
 # <B>Astuce</B>
 # <BR><BR>
-# Le numéro d'allocataire de la famille a été copié dans le presse-papiers.
+# Le numÃ©ro d'allocataire de la famille a Ã©tÃ© copiÃ© dans le presse-papiers.
 # <BR><BR>
-# Collez tout simplement ce numéro dans le champ de recherche du site CAFPRO grâce à la combinaison de touches <B>CTRL+V</B> de votre clavier !
+# Collez tout simplement ce numÃ©ro dans le champ de recherche du site CAFPRO grÃ¢ce Ã  la combinaison de touches <B>CTRL+V</B> de votre clavier !
 # </FONT>
 # </CENTER>
 # """
@@ -313,7 +313,7 @@ class Panel(wx.Panel):
 #             if nePlusAfficher == True :
 #                 UTILS_Parametres.Parametres(mode="set", categorie="ne_plus_afficher", nom="acces_cafpro", valeur=nePlusAfficher)
 
-        # Récupération des données
+        # RÃ©cupÃ©ration des donnÃ©es
         dictDonnees = {}
 
         # Recherche nom allocataire
@@ -325,7 +325,7 @@ class Panel(wx.Panel):
             if len(self.ctrl_allocataire.dictDonnees) > 1 :
                 dictDonnees["nom_allocataire"] = self.ctrl_allocataire.dictDonnees[1]["nom"]
 
-        # Recherche numéro allocataire
+        # Recherche numÃ©ro allocataire
         dictDonnees["numero_allocataire"] = self.ctrl_numero.GetValue()
 
         # Ouverture de la frame d'aide
@@ -365,10 +365,10 @@ class Panel(wx.Panel):
         """ MAJ integrale du controle avec MAJ des donnees """
         # MAJ Caisse
         if self.majEffectuee == False :
-            # MAJ des contrôles de choix
+            # MAJ des contrÃ´les de choix
             self.ctrl_caisse.MAJ() 
             self.ctrl_allocataire.MAJ()
-            # Importation des données de la famille
+            # Importation des donnÃ©es de la famille
             db = GestionDB.DB()
             req = """SELECT IDcaisse, num_allocataire, allocataire, autorisation_cafpro
             FROM familles
@@ -387,7 +387,7 @@ class Panel(wx.Panel):
                 self.check_autorisation_cafpro.SetValue(autorisation_cafpro)
             self.OnCheckCafpro(None)
         else :
-            # MAJ contrôles Allocataire titulaire
+            # MAJ contrÃ´les Allocataire titulaire
             allocataire = self.ctrl_allocataire.GetID()
             self.ctrl_allocataire.MAJ()
             self.ctrl_allocataire.SetID(allocataire)
@@ -407,7 +407,7 @@ class Panel(wx.Panel):
         self.majEffectuee = True
                 
     def ValidationData(self):
-        """ Return True si les données sont valides et pretes à être sauvegardées """
+        """ Return True si les donnÃ©es sont valides et pretes Ã  Ãªtre sauvegardÃ©es """
         return True
     
     def Sauvegarde(self):

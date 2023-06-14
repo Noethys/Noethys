@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -30,10 +30,10 @@ from Dlg.DLG_Activite_portail import Panel as Page9
 
 
 def Supprimer_activite(IDactivite=None, nouvelleActivite=False):
-    """ Processus de suppression d'une activité """
+    """ Processus de suppression d'une activitÃ© """
     DB = GestionDB.DB()
     
-    # Vérifie si des individus sont déjà inscrits à cette activité
+    # VÃ©rifie si des individus sont dÃ©jÃ  inscrits Ã  cette activitÃ©
     req = """
     SELECT IDinscription, IDactivite
     FROM inscriptions
@@ -42,7 +42,7 @@ def Supprimer_activite(IDactivite=None, nouvelleActivite=False):
     DB.ExecuterReq(req)
     listeDonnees = DB.ResultatReq()
     if len(listeDonnees) > 0 :
-        dlg = wx.MessageDialog(None, _(u"Vous ne pouvez pas supprimer cette activité car %d individus y sont déjà inscrits.") % len(listeDonnees), _(u"Suppression impossible"), wx.OK | wx.ICON_ERROR)
+        dlg = wx.MessageDialog(None, _(u"Vous ne pouvez pas supprimer cette activitÃ© car %d individus y sont dÃ©jÃ  inscrits.") % len(listeDonnees), _(u"Suppression impossible"), wx.OK | wx.ICON_ERROR)
         dlg.ShowModal()
         dlg.Destroy()
         DB.Close()
@@ -50,14 +50,14 @@ def Supprimer_activite(IDactivite=None, nouvelleActivite=False):
             
         
     # Demande de confirmation de la suppression
-    dlg = wx.MessageDialog(None, _(u"Souhaitez-vous vraiment supprimer cette activité ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+    dlg = wx.MessageDialog(None, _(u"Souhaitez-vous vraiment supprimer cette activitÃ© ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
     if dlg.ShowModal() != wx.ID_YES :
         dlg.Destroy()
         DB.Close() 
         return False
     dlg.Destroy()
 
-    dlg = wx.MessageDialog(None, _(u"Vous êtes vraiment sûr de vouloir supprimer cette activité ?\n\nToute suppression sera irréversible !"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+    dlg = wx.MessageDialog(None, _(u"Vous Ãªtes vraiment sÃ»r de vouloir supprimer cette activitÃ© ?\n\nToute suppression sera irrÃ©versible !"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
     if dlg.ShowModal() != wx.ID_YES :
         dlg.Destroy()
         DB.Close() 
@@ -69,7 +69,7 @@ def Supprimer_activite(IDactivite=None, nouvelleActivite=False):
         elif len(listeID) == 1 : return "(%d)" % listeID[0]
         else : return str(tuple(listeID))
 
-    # Récupération des IDunites
+    # RÃ©cupÃ©ration des IDunites
     req = """SELECT IDunite, IDactivite FROM unites WHERE IDactivite=%d""" % IDactivite
     DB.ExecuterReq(req)
     listeDonnees = DB.ResultatReq()
@@ -78,7 +78,7 @@ def Supprimer_activite(IDactivite=None, nouvelleActivite=False):
         listeID.append(IDunite)
     conditionUnites = FormateCondition(listeID)
 
-    # Récupération des IDunite_remplissage
+    # RÃ©cupÃ©ration des IDunite_remplissage
     req = """SELECT IDunite_remplissage, IDactivite FROM unites_remplissage WHERE IDactivite=%d""" % IDactivite
     DB.ExecuterReq(req)
     listeDonnees = DB.ResultatReq()
@@ -87,7 +87,7 @@ def Supprimer_activite(IDactivite=None, nouvelleActivite=False):
         listeID.append(IDunite_remplissage)
     conditionUnitesRemplissage = FormateCondition(listeID)
 
-    # Récupération des IDtarif
+    # RÃ©cupÃ©ration des IDtarif
     req = """SELECT IDtarif, IDactivite FROM tarifs WHERE IDactivite=%d""" % IDactivite
     DB.ExecuterReq(req)
     listeDonnees = DB.ResultatReq()
@@ -96,7 +96,7 @@ def Supprimer_activite(IDactivite=None, nouvelleActivite=False):
         listeID.append(IDtarif)
     conditionTarifs = FormateCondition(listeID)
 
-    # Suppression de l'activité
+    # Suppression de l'activitÃ©
     DB.ReqDEL("activites", "IDactivite", IDactivite)
     DB.ReqDEL("groupes_activites", "IDactivite", IDactivite)
     DB.ReqDEL("responsables_activite", "IDactivite", IDactivite)
@@ -117,7 +117,7 @@ def Supprimer_activite(IDactivite=None, nouvelleActivite=False):
     DB.ReqDEL("portail_periodes", "IDactivite", IDactivite)
     DB.ReqDEL("portail_unites", "IDactivite", IDactivite)
     
-    # Suppressions spéciales
+    # Suppressions spÃ©ciales
     DB.ExecuterReq("DELETE FROM combi_tarifs WHERE IDtarif IN %s" % conditionTarifs)
     DB.ExecuterReq("DELETE FROM combi_tarifs_unites WHERE IDtarif IN %s" % conditionTarifs)
     DB.ExecuterReq("DELETE FROM unites_groupes WHERE IDunite IN %s" % conditionUnites)
@@ -152,7 +152,7 @@ class ClsParametres():
             return defaut
 
     def Importation(self):
-        """ Importation des données """
+        """ Importation des donnÃ©es """
         self.dictDonnees = {}
         DB = GestionDB.DB()
         req = """SELECT psu_activation, psu_unite_prevision, psu_unite_presence, psu_tarif_forfait, psu_etiquette_rtt
@@ -175,24 +175,24 @@ class ClsParametres():
             psu_unite_presence = self.GetValeur("psu_unite_presence", None)
             psu_tarif_forfait = self.GetValeur("psu_tarif_forfait", None)
 
-            # Vérifie que des valeurs ont été saisies
+            # VÃ©rifie que des valeurs ont Ã©tÃ© saisies
             if psu_unite_prevision == None :
-                dlg = wx.MessageDialog(self.parent, _(u"Vous avez sélectionné le mode P.S.U. mais sans sélectionner d'unité de prévision !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self.parent, _(u"Vous avez sÃ©lectionnÃ© le mode P.S.U. mais sans sÃ©lectionner d'unitÃ© de prÃ©vision !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
             if psu_unite_presence == None :
-                dlg = wx.MessageDialog(self.parent, _(u"Vous avez sélectionné le mode P.S.U. mais sans sélectionner d'unité de présence !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self.parent, _(u"Vous avez sÃ©lectionnÃ© le mode P.S.U. mais sans sÃ©lectionner d'unitÃ© de prÃ©sence !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
             if psu_tarif_forfait == None :
-                dlg = wx.MessageDialog(self.parent, _(u"Vous avez sélectionné le mode P.S.U. mais sans sélectionner de tarif forfait-crédit !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self.parent, _(u"Vous avez sÃ©lectionnÃ© le mode P.S.U. mais sans sÃ©lectionner de tarif forfait-crÃ©dit !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
 
-            # Vérifie que les valeurs existent
+            # VÃ©rifie que les valeurs existent
             DB = GestionDB.DB()
 
             req = """SELECT IDunite, nom
@@ -205,7 +205,7 @@ class ClsParametres():
                     if IDunite_temp == IDunite :
                         valide = True
                 if valide == False :
-                    dlg = wx.MessageDialog(self.parent, _(u"Vous avez sélectionné le mode P.S.U. mais l'unité de prévision sélectionnée semble inexistante !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                    dlg = wx.MessageDialog(self.parent, _(u"Vous avez sÃ©lectionnÃ© le mode P.S.U. mais l'unitÃ© de prÃ©vision sÃ©lectionnÃ©e semble inexistante !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                     dlg.ShowModal()
                     dlg.Destroy()
                     DB.Close()
@@ -220,7 +220,7 @@ class ClsParametres():
                 if psu_tarif_forfait == IDtarif :
                     valide = True
             if valide == False :
-                dlg = wx.MessageDialog(self.parent, _(u"Vous avez sélectionné le mode P.S.U. mais le tarif forfait-crédit sélectionné semble inexistant !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self.parent, _(u"Vous avez sÃ©lectionnÃ© le mode P.S.U. mais le tarif forfait-crÃ©dit sÃ©lectionnÃ© semble inexistant !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 DB.Close()
@@ -231,7 +231,7 @@ class ClsParametres():
         return True
 
     def Sauvegarde(self):
-        """ Sauvegarde des paramètres """
+        """ Sauvegarde des paramÃ¨tres """
         listeDonnees = [
             ("psu_activation", self.GetValeur("psu_activation", 0)),
             ("psu_unite_prevision", self.GetValeur("psu_unite_prevision", None)),
@@ -250,12 +250,12 @@ class ClsCommune():
 
     def GetListePages(self):
         listePages = [
-            ("generalites", _(u"Généralités"), Page1(self, IDactivite=self.IDactivite, nouvelleActivite=self.nouvelleActivite), "Loupe.png"),
-            ("agrements", _(u"Agréments"), Page2(self, IDactivite=self.IDactivite, nouvelleActivite=self.nouvelleActivite), "Etiquette.png"),
+            ("generalites", _(u"GÃ©nÃ©ralitÃ©s"), Page1(self, IDactivite=self.IDactivite, nouvelleActivite=self.nouvelleActivite), "Loupe.png"),
+            ("agrements", _(u"AgrÃ©ments"), Page2(self, IDactivite=self.IDactivite, nouvelleActivite=self.nouvelleActivite), "Etiquette.png"),
             ("groupes", _(u"Groupes"), Page3(self, IDactivite=self.IDactivite, nouvelleActivite=self.nouvelleActivite), "Famille.png"),
             ("obligations", _(u"Renseignements"), Page4(self, IDactivite=self.IDactivite, nouvelleActivite=self.nouvelleActivite), "Femme.png"),
             ("etiquettes", _(u"Etiquettes"), Page8(self, IDactivite=self.IDactivite, nouvelleActivite=self.nouvelleActivite), "Etiquette.png"),
-            ("unites", _(u"Unités"), Page5(self, IDactivite=self.IDactivite, nouvelleActivite=self.nouvelleActivite), "Mecanisme.png"),
+            ("unites", _(u"UnitÃ©s"), Page5(self, IDactivite=self.IDactivite, nouvelleActivite=self.nouvelleActivite), "Mecanisme.png"),
             ("calendrier", _(u"Calendrier"), Page6(self, IDactivite=self.IDactivite, nouvelleActivite=self.nouvelleActivite), "Calendrier.png"),
             ("portail", _(u"Portail"), Page9(self, IDactivite=self.IDactivite, nouvelleActivite=self.nouvelleActivite), "Planete.png"),
             ("tarification", _(u"Tarification"), Page7(self, IDactivite=self.IDactivite, nouvelleActivite=self.nouvelleActivite), "Euro.png"),
@@ -263,11 +263,11 @@ class ClsCommune():
         return listePages
 
     def MenuOptions(self, event=None):
-        # Création du menu Options
+        # CrÃ©ation du menu Options
         menuPop = UTILS_Adaptations.Menu()
 
         id = wx.Window.NewControlId()
-        item = wx.MenuItem(menuPop, id, _(u"Paramètres P.S.U."), _(u"Renseigner les paramètres P.S.U."))
+        item = wx.MenuItem(menuPop, id, _(u"ParamÃ¨tres P.S.U."), _(u"Renseigner les paramÃ¨tres P.S.U."))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Contrat.png"), wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.ParametresPSU, id=id)
@@ -292,8 +292,8 @@ class Assistant(wx.Dialog, ClsCommune):
             self.CreateIDactivite()
             self.nouvelleActivite = True
         
-        intro = _(u"Vous pouvez ici renseigner tous les paramètres d'une activité. Attention, ce paramétrage est encore complexe pour un utilisateur n'ayant reçu aucune formation spécifique. Vous pouvez notamment trouver de l'aide sur le forum d'entraide ou dans les ressources disponibles depuis la rubrique Assistance du site.")
-        titre = _(u"Paramétrage d'une activité")
+        intro = _(u"Vous pouvez ici renseigner tous les paramÃ¨tres d'une activitÃ©. Attention, ce paramÃ©trage est encore complexe pour un utilisateur n'ayant reÃ§u aucune formation spÃ©cifique. Vous pouvez notamment trouver de l'aide sur le forum d'entraide ou dans les ressources disponibles depuis la rubrique Assistance du site.")
+        titre = _(u"ParamÃ©trage d'une activitÃ©")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Activite.png")
         
         self.listePages = self.GetListePages()
@@ -301,7 +301,7 @@ class Assistant(wx.Dialog, ClsCommune):
         self.static_line = wx.StaticLine(self, -1)
         
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
-        self.bouton_options = CTRL_Bouton_image.CTRL(self, texte=_(u"Paramètres avancés"), cheminImage="Images/32x32/Configuration2.png")
+        self.bouton_options = CTRL_Bouton_image.CTRL(self, texte=_(u"ParamÃ¨tres avancÃ©s"), cheminImage="Images/32x32/Configuration2.png")
         self.bouton_retour = CTRL_Bouton_image.CTRL(self, texte=_(u"Retour"), cheminImage="Images/32x32/Fleche_gauche.png")
         self.bouton_suite = CTRL_Bouton_image.CTRL(self, texte=_(u"Suite"), cheminImage="Images/32x32/Fleche_droite.png", margesImage=(0, 0, 4, 0), positionImage=wx.RIGHT)
         self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
@@ -319,7 +319,7 @@ class Assistant(wx.Dialog, ClsCommune):
         self.nbrePages = len(self.listePages)    
         self.pageVisible = 0
                         
-        # Création des pages
+        # CrÃ©ation des pages
         self.Creation_Pages()
             
     def Creation_Pages(self):
@@ -331,19 +331,19 @@ class Assistant(wx.Dialog, ClsCommune):
             self.sizer_pages.Layout()
             ctrlPage.Show(False)
 
-        # Chargement des autres paramètres
+        # Chargement des autres paramÃ¨tres
         self.clsParametres = ClsParametres(self, self.IDactivite)
 
-        # Affichage de la première page
+        # Affichage de la premiÃ¨re page
         self.listePages[self.pageVisible][2].Show(True)
         self.sizer_pages.Layout()
 
     def __set_properties(self):
-        self.SetTitle(_(u"Paramétrage d'une activité"))
+        self.SetTitle(_(u"ParamÃ©trage d'une activitÃ©"))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
-        self.bouton_options.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder aux paramètres avancés")))
-        self.bouton_retour.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour revenir à la page précédente")))
-        self.bouton_suite.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour passer à l'étape suivante")))
+        self.bouton_options.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accÃ©der aux paramÃ¨tres avancÃ©s")))
+        self.bouton_retour.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour revenir Ã  la page prÃ©cÃ©dente")))
+        self.bouton_suite.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour passer Ã  l'Ã©tape suivante")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez pour annuler")))
         self.SetMinSize((840, 710))
 
@@ -378,7 +378,7 @@ class Assistant(wx.Dialog, ClsCommune):
         self.sizer_pages = sizer_pages
     
     def CreateIDactivite(self):
-        """ Crée l'activité dans la base de données afin d'obtenir un IDactivité """
+        """ CrÃ©e l'activitÃ© dans la base de donnÃ©es afin d'obtenir un IDactivitÃ© """
         DB = GestionDB.DB()
         date_creation = str(datetime.date.today())
         listeDonnees = [("date_creation", date_creation),]
@@ -390,15 +390,15 @@ class Assistant(wx.Dialog, ClsCommune):
         UTILS_Aide.Aide("Paramtreruneactivit")
 
     def Onbouton_retour(self, event):
-        # rend invisible la page affichée
+        # rend invisible la page affichÃ©e
         pageCible = self.listePages[self.pageVisible][2] #eval("self.page"+str(self.pageVisible))
         pageCible.Show(False)
-        # Fait apparaître nouvelle page
+        # Fait apparaÃ®tre nouvelle page
         self.pageVisible -= 1
         pageCible = self.listePages[self.pageVisible][2]
         pageCible.Show(True)
         self.sizer_pages.Layout()
-        # Si on quitte l'avant-dernière page, on active le bouton Suivant
+        # Si on quitte l'avant-derniÃ¨re page, on active le bouton Suivant
         if self.pageVisible == self.nbrePages-1 :
             self.bouton_suite.Enable(True)
             self.bouton_suite.SetImage(Chemins.GetStaticPath("Images/32x32/Valider.png"))
@@ -407,34 +407,34 @@ class Assistant(wx.Dialog, ClsCommune):
             self.bouton_suite.Enable(True)
             self.bouton_suite.SetImage(Chemins.GetStaticPath("Images/32x32/Fleche_droite.png"))
             self.bouton_suite.SetTexte(_(u"Suite"))
-        # Si on revient à la première page, on désactive le bouton Retour
+        # Si on revient Ã  la premiÃ¨re page, on dÃ©sactive le bouton Retour
         if self.pageVisible == 0 :
             self.bouton_retour.Enable(False)
         # On active le bouton annuler
         self.bouton_annuler.Enable(True)
 
     def Onbouton_suite(self, event):
-        # Vérifie que les données de la page en cours sont valides
+        # VÃ©rifie que les donnÃ©es de la page en cours sont valides
         validation = self.ValidationPages()
         if validation == False : return
-        # Si on est déjà sur la dernière page : on termine
+        # Si on est dÃ©jÃ  sur la derniÃ¨re page : on termine
         if self.pageVisible == self.nbrePages-1 :
             self.Terminer()
             return
-        # Rend invisible la page affichée
+        # Rend invisible la page affichÃ©e
         pageCible = self.listePages[self.pageVisible][2]
         pageCible.Show(False)
-        # Fait apparaître nouvelle page
+        # Fait apparaÃ®tre nouvelle page
         self.pageVisible += 1
         pageCible = self.listePages[self.pageVisible][2]
         pageCible.Show(True)
         self.sizer_pages.Layout()
-        # Si on arrive à la dernière page, on désactive le bouton Suivant
+        # Si on arrive Ã  la derniÃ¨re page, on dÃ©sactive le bouton Suivant
         if self.pageVisible == self.nbrePages-1 :
             self.bouton_suite.SetImage(Chemins.GetStaticPath("Images/32x32/Valider.png"))
             self.bouton_suite.SetTexte(_(u"Valider"))
             self.bouton_annuler.Enable(False)
-        # Si on quitte la première page, on active le bouton Retour
+        # Si on quitte la premiÃ¨re page, on active le bouton Retour
         if self.pageVisible > 0 :
             self.bouton_retour.Enable(True)
 
@@ -451,11 +451,11 @@ class Assistant(wx.Dialog, ClsCommune):
             self.EndModal(wx.ID_CANCEL)
 
     def ValidationPages(self) :
-        """ Validation des données avant changement de pages """
+        """ Validation des donnÃ©es avant changement de pages """
         if self.listePages[self.pageVisible][2].Validation() == False :
             return False
 
-        # Validation des autres paramètres
+        # Validation des autres paramÃ¨tres
         if self.clsParametres.Validation() == False :
             return False
 
@@ -465,10 +465,10 @@ class Assistant(wx.Dialog, ClsCommune):
         return self.IDactivite
     
     def Terminer(self):
-        # Sauvegarde des données
+        # Sauvegarde des donnÃ©es
         for codePage, labelPage, ctrlPage, imgPage in self.listePages :
             ctrlPage.Sauvegarde()
-        # Sauvegardes des autres paramètres
+        # Sauvegardes des autres paramÃ¨tres
         self.clsParametres.Sauvegarde()
         # Fermeture
         self.EndModal(wx.ID_OK)
@@ -495,7 +495,7 @@ class Notebook(wx.Notebook, ClsCommune):
             index += 1
         self.AssignImageList(il)
 
-        # Création des pages
+        # CrÃ©ation des pages
         index = 0
         self.dictPages = {}
         for codePage, labelPage, ctrlPage, imgPage in self.listePages :
@@ -504,7 +504,7 @@ class Notebook(wx.Notebook, ClsCommune):
             self.SetPageImage(index, self.dictImages[codePage])
             index += 1
 
-        # Chargement des autres paramètres
+        # Chargement des autres paramÃ¨tres
         self.clsParametres = ClsParametres(self, self.IDactivite)
         
     def GetPage(self, codePage=""):
@@ -518,11 +518,11 @@ class Notebook(wx.Notebook, ClsCommune):
             index += 1
 
     def ValidationPages(self) :
-        # Validation des données des pages
+        # Validation des donnÃ©es des pages
         for codePageTemp, labelPage, ctrlPage, imgPage in self.listePages :
             if ctrlPage.Validation() == False :
                 return False
-        # Validation des autres paramètres
+        # Validation des autres paramÃ¨tres
         if self.clsParametres.Validation() == False :
             return False
         return True
@@ -531,7 +531,7 @@ class Notebook(wx.Notebook, ClsCommune):
         # Sauvegarde des pages
         for codePageTemp, labelPage, ctrlPage, imgPage in self.listePages :
             ctrlPage.Sauvegarde()
-        # Sauvegardes des autres paramètres
+        # Sauvegardes des autres paramÃ¨tres
         self.clsParametres.Sauvegarde()
         return True
 
@@ -550,14 +550,14 @@ class Dialog(wx.Dialog):
             self.CreateIDactivite()
             self.nouvelleActivite = True
             
-        titre = _(u"Paramétrage d'une activité")
-        intro = _(u"Vous pouvez ici renseigner tous les paramètres d'une activité. Attention, ce paramétrage peut être complexe pour un utilisateur n'ayant reçu aucune formation spécifique. Vous pouvez demander un coup de pouce à la communauté depuis le forum d'entraide sur le site internet de Noethys.")
+        titre = _(u"ParamÃ©trage d'une activitÃ©")
+        intro = _(u"Vous pouvez ici renseigner tous les paramÃ¨tres d'une activitÃ©. Attention, ce paramÃ©trage peut Ãªtre complexe pour un utilisateur n'ayant reÃ§u aucune formation spÃ©cifique. Vous pouvez demander un coup de pouce Ã  la communautÃ© depuis le forum d'entraide sur le site internet de Noethys.")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Activite.png")
         
         self.ctrl_notebook = Notebook(self, IDactivite, nouvelleActivite=self.nouvelleActivite)
         
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
-        self.bouton_options = CTRL_Bouton_image.CTRL(self, texte=_(u"Paramètres avancés"), cheminImage="Images/32x32/Configuration2.png")
+        self.bouton_options = CTRL_Bouton_image.CTRL(self, texte=_(u"ParamÃ¨tres avancÃ©s"), cheminImage="Images/32x32/Configuration2.png")
         self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
         self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
@@ -572,9 +572,9 @@ class Dialog(wx.Dialog):
         
         
     def __set_properties(self):
-        self.SetTitle(_(u"Paramétrage d'une activité"))
+        self.SetTitle(_(u"ParamÃ©trage d'une activitÃ©"))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
-        self.bouton_options.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder aux paramètres avancés")))
+        self.bouton_options.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accÃ©der aux paramÃ¨tres avancÃ©s")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler et fermer")))
 
@@ -602,7 +602,7 @@ class Dialog(wx.Dialog):
         self.CenterOnScreen()
     
     def CreateIDactivite(self):
-        """ Crée l'activité dans la base de données afin d'obtenir un IDactivité """
+        """ CrÃ©e l'activitÃ© dans la base de donnÃ©es afin d'obtenir un IDactivitÃ© """
         DB = GestionDB.DB()
         date_creation = str(datetime.date.today())
         listeDonnees = [("date_creation", date_creation),]
@@ -627,7 +627,7 @@ class Dialog(wx.Dialog):
         self.ctrl_notebook.MenuOptions()
 
     def OnBoutonOk(self, event):
-        # Validation des données
+        # Validation des donnÃ©es
         validation = self.ctrl_notebook.ValidationPages()
         if validation == False :
             return False

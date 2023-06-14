@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -20,7 +20,7 @@ import locale
 from Utils import UTILS_Titulaires
 from Utils import UTILS_Utilisateurs
 from Utils import UTILS_Config
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"â‚¬")
 
 
 from Utils import UTILS_Interface
@@ -33,9 +33,9 @@ def DateEngFr(textDate):
     return text
 
 def DateComplete(dateDD):
-    """ Transforme une date DD en date complète : Ex : lundi 15 janvier 2008 """
+    """ Transforme une date DD en date complÃ¨te : Ex : lundi 15 janvier 2008 """
     listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
-    listeMois = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
+    listeMois = (_(u"janvier"), _(u"fÃ©vrier"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"aoÃ»t"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"dÃ©cembre"))
     dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
     return dateComplete
 
@@ -109,7 +109,7 @@ class ListView(FastObjectListView):
 
 
     def GetTracks(self):
-        # Récupération des données
+        # RÃ©cupÃ©ration des donnÃ©es
         listeID = None
         listeDonnees = self.GetListeAttestations() 
     
@@ -148,19 +148,19 @@ class ListView(FastObjectListView):
         self.oddRowsBackColor = UTILS_Interface.GetValeur("couleur_tres_claire", wx.Colour(240, 251, 237))
         self.evenRowsBackColor = "#FFFFFF" # Vert
 
-        # Paramètres ListView
+        # ParamÃ¨tres ListView
         self.useExpansionColumn = True
 
-        # Version pour liste reçus
+        # Version pour liste reÃ§us
         self.SetColumns([
             ColumnDefn(u"", "left", 0, "IDrecu", typeDonnee="entier"),
             ColumnDefn(_(u"Date"), "left", 70, "date_edition", typeDonnee="date", stringConverter=FormateDate),
-            ColumnDefn(_(u"Numéro"), "centre", 60, "numero", typeDonnee="entier", stringConverter=FormateNumero), 
+            ColumnDefn(_(u"NumÃ©ro"), "centre", 60, "numero", typeDonnee="entier", stringConverter=FormateNumero), 
             ColumnDefn(_(u"Famille"), "left", 180, "nomsTitulaires", typeDonnee="texte"),
             ColumnDefn(_(u"IDreglement"), "centre", 75, "IDreglement", typeDonnee="entier"),
         ])
         self.SetSortColumn(self.columns[1])
-        self.SetEmptyListMsg(_(u"Aucun reçu de règlement"))
+        self.SetEmptyListMsg(_(u"Aucun reÃ§u de rÃ¨glement"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
 ##        self.rowFormatter = rowFormatter
         self.SetObjects(self.donnees)
@@ -174,7 +174,7 @@ class ListView(FastObjectListView):
             self.selectionTrack = None
         self.InitModel()
         self.InitObjectListView()
-        # Sélection d'un item
+        # SÃ©lection d'un item
         if self.selectionTrack != None :
             self.SelectObject(self.selectionTrack, deselectOthers=True, ensureVisible=True)
         self.selectionID = None
@@ -196,7 +196,7 @@ class ListView(FastObjectListView):
         if len(self.Selection()) > 0 :
             ID = self.Selection()[0].IDrecu
         
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
 ##        # Item Ajouter
@@ -224,8 +224,8 @@ class ListView(FastObjectListView):
         
         menuPop.AppendSeparator()
     
-##        # Item Rééditer la facture
-##        item = wx.MenuItem(menuPop, 60, _(u"Rééditer la facture (PDF)"))
+##        # Item RÃ©Ã©diter la facture
+##        item = wx.MenuItem(menuPop, 60, _(u"RÃ©Ã©diter la facture (PDF)"))
 ##        bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
 ##        item.SetBitmap(bmp)
 ##        menuPop.AppendItem(item)
@@ -233,15 +233,15 @@ class ListView(FastObjectListView):
 ##        
 ##        menuPop.AppendSeparator()
     
-        # Génération automatique des fonctions standards
-        self.GenerationContextMenu(menuPop, titre=_(u"Liste des reçus de règlements"))
+        # GÃ©nÃ©ration automatique des fonctions standards
+        self.GenerationContextMenu(menuPop, titre=_(u"Liste des reÃ§us de rÃ¨glements"))
 
         self.PopupMenu(menuPop)
         menuPop.Destroy()
     
 ##    def Reedition(self, event):
 ##        if len(self.Selection()) == 0 :
-##            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune facture à rééditer !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+##            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune facture Ã  rÃ©Ã©diter !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
 ##            dlg.ShowModal()
 ##            dlg.Destroy()
 ##            return
@@ -251,7 +251,7 @@ class ListView(FastObjectListView):
 
     def Supprimer(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune reçu à supprimer dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune reÃ§u Ã  supprimer dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -259,13 +259,13 @@ class ListView(FastObjectListView):
         numero = self.Selection()[0].numero
                 
         # Demande la confirmation de suppression
-        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer le reçu n°%d ?") % numero, _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer le reÃ§u nÂ°%d ?") % numero, _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         reponse = dlg.ShowModal() 
         dlg.Destroy()
         if reponse != wx.ID_YES :
             return
         
-        # Suppression du reçu
+        # Suppression du reÃ§u
         DB = GestionDB.DB()
         DB.ReqDEL("recus", "IDrecu", IDrecu)
         DB.Close()         
@@ -274,14 +274,14 @@ class ListView(FastObjectListView):
         self.MAJ() 
         
         # Confirmation de suppression
-        dlg = wx.MessageDialog(self, _(u"Reçu supprimé !"), _(u"Suppression"), wx.OK | wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"ReÃ§u supprimÃ© !"), _(u"Suppression"), wx.OK | wx.ICON_INFORMATION)
         dlg.ShowModal()
         dlg.Destroy()
 
     def OuvrirFicheFamille(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_fiche", "consulter") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune fiche famille à ouvrir !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune fiche famille Ã  ouvrir !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -302,7 +302,7 @@ class BarreRecherche(wx.SearchCtrl):
         self.parent = parent
         self.rechercheEnCours = False
         
-        self.SetDescriptiveText(_(u"Rechercher un reçu de règlement..."))
+        self.SetDescriptiveText(_(u"Rechercher un reÃ§u de rÃ¨glement..."))
         self.ShowSearchButton(True)
         
         self.listView = self.parent.ctrl_listview

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activitÈs
+# Application :    Noethys, gestion multi-activit√©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-14 Ivan LUCAS
@@ -19,7 +19,7 @@ import datetime
 import GestionDB
 from Utils import UTILS_Historique
 from Utils import UTILS_Config
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"§")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"‚Ç¨")
 
 
 from Utils import UTILS_Interface
@@ -53,7 +53,7 @@ class Track(object):
         if self.type_contrat == "psu" :
             self.type_contrat_str = _(u"P.S.U.")
 
-        # ValiditÈ
+        # Validit√©
         if str(datetime.date.today()) <= self.date_fin :
             self.valide = True
         else:
@@ -63,7 +63,7 @@ class Track(object):
     
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # RÈcupÈration des paramËtres perso
+        # R√©cup√©ration des param√®tres perso
         self.IDindividu = kwds.pop("IDindividu", None)
         self.dictFamillesRattachees = kwds.pop("dictFamillesRattachees", {} )
         self.activeDoubleclick = kwds.pop("activeDoubleclick", True)
@@ -87,7 +87,7 @@ class ListView(FastObjectListView):
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
-        """ RÈcupÈration des donnÈes """
+        """ R√©cup√©ration des donn√©es """
         listeConditions = []
         if self.IDindividu != None :
             listeConditions.append("contrats.IDindividu=%d" % self.IDindividu)
@@ -156,7 +156,7 @@ class ListView(FastObjectListView):
             ColumnDefn(_(u"Du"), 'center', 70, "date_debut", typeDonnee="date", stringConverter=DateEngFr),
             ColumnDefn(_(u"Au"), 'center', 70, "date_fin", typeDonnee="date", stringConverter=DateEngFr),
             ColumnDefn(_(u"Type"), 'center', 70, "type_contrat_str", typeDonnee="texte"),
-            ColumnDefn(_(u"Nom de l'activitÈ"), 'left', 110, "nom_activite", typeDonnee="texte", isSpaceFilling=True),
+            ColumnDefn(_(u"Nom de l'activit√©"), 'left', 110, "nom_activite", typeDonnee="texte", isSpaceFilling=True),
             ColumnDefn(_(u"Montant"), 'right', 80, "montant", typeDonnee="montant", stringConverter=FormateMontant),
             ]
         
@@ -179,7 +179,7 @@ class ListView(FastObjectListView):
             self.selectionTrack = None
         self.InitModel()
         self.InitObjectListView()
-        # SÈlection d'un item
+        # S√©lection d'un item
         if self.selectionTrack != None :
             self.SelectObject(self.selectionTrack, deselectOthers=True, ensureVisible=True)
         self.selectionID = None
@@ -197,7 +197,7 @@ class ListView(FastObjectListView):
             noSelection = False
             ID = self.Selection()[0].IDcontrat
                 
-        # CrÈation du menu contextuel
+        # Cr√©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Modifier
@@ -226,14 +226,14 @@ class ListView(FastObjectListView):
                 
         menuPop.AppendSeparator()
 
-        # GÈnÈration automatique des fonctions standards
+        # G√©n√©ration automatique des fonctions standards
         self.GenerationContextMenu(menuPop, titre=_(u"Liste des contrats"))
 
         self.PopupMenu(menuPop)
         menuPop.Destroy()
 
     def Ajouter(self, event):
-        # SÈlection de l'activitÈ
+        # S√©lection de l'activit√©
         from Dlg import DLG_Saisie_contrat_intro
         dlg = DLG_Saisie_contrat_intro.Dialog(self, IDindividu=self.IDindividu, dictFamillesRattachees=self.dictFamillesRattachees)
         if dlg.ShowModal() == wx.ID_OK:
@@ -249,7 +249,7 @@ class ListView(FastObjectListView):
         IDmodele = None
         
         if dictOptions != None :
-            # Utilisation d'un modËle
+            # Utilisation d'un mod√®le
             if dictOptions["type"] == "modele" :
                 IDmodele = dictOptions["IDmodele"]
 
@@ -257,7 +257,7 @@ class ListView(FastObjectListView):
             if dictOptions["type"] == "contrat" :
                 copie = dictOptions["IDcontrat"]
             
-        # CrÈation du contrat de type Classique
+        # Cr√©ation du contrat de type Classique
         if type_contrat == "classique" :
             from Dlg import DLG_Saisie_contrat
             dlg = DLG_Saisie_contrat.Dialog(self, IDindividu=self.IDindividu, IDinscription=IDinscription, IDcontrat=None, IDmodele=IDmodele, copie=copie)
@@ -266,7 +266,7 @@ class ListView(FastObjectListView):
                 self.MAJ(IDcontrat)
             dlg.Destroy()
 
-        # CrÈation du contrat de type PSU
+        # Cr√©ation du contrat de type PSU
         if type_contrat == "psu" :
             from Dlg import DLG_Saisie_contratpsu
             dlg = DLG_Saisie_contratpsu.Assistant(self, IDinscription=IDinscription)
@@ -277,7 +277,7 @@ class ListView(FastObjectListView):
 
     def Modifier(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucun contrat ‡ modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucun contrat √† modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -301,7 +301,7 @@ class ListView(FastObjectListView):
 
     def Supprimer(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucun contrat ‡ supprimer dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucun contrat √† supprimer dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -326,13 +326,13 @@ class ListView(FastObjectListView):
             if IDfacture != None :
                 listePrestationsFacturees.append(IDprestation)
         if len(listePrestationsFacturees) > 0 :
-            dlg = wx.MessageDialog(self, _(u"Il est impossible de supprimer ce contrat directement car %d prestations associÈes apparaissent dÈj‡ sur une facture !") % len(listePrestationsFacturees), _(u"Suppression impossible"), wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"Il est impossible de supprimer ce contrat directement car %d prestations associ√©es apparaissent d√©j√† sur une facture !") % len(listePrestationsFacturees), _(u"Suppression impossible"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             DB.Close() 
             return
         
-        # Recherche si des consommations sont pointÈes
+        # Recherche si des consommations sont point√©es
         req = """SELECT IDconso, etat
         FROM consommations
         LEFT JOIN prestations ON prestations.IDprestation = consommations.IDprestation
@@ -345,7 +345,7 @@ class ListView(FastObjectListView):
             if etat in ("present", "absenti", "absentj"):
                 listeConsoPointees.append(IDconso)
         if len(listeConsoPointees) > 0 :
-            dlg = wx.MessageDialog(self, _(u"Il est impossible de supprimer ce contrat directement car %d consommations associÈes sont dÈj‡ pointÈes !") % len(listeConsoPointees), _(u"Suppression impossible"), wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"Il est impossible de supprimer ce contrat directement car %d consommations associ√©es sont d√©j√† point√©es !") % len(listeConsoPointees), _(u"Suppression impossible"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -357,17 +357,17 @@ class ListView(FastObjectListView):
             DB.ReqDEL("contrats", "IDcontrat", track.IDcontrat)
             DB.ReqDEL("contrats_tarifs", "IDcontrat", track.IDcontrat)
             DB.ReqDEL("prestations", "IDcontrat", track.IDcontrat)
-            # Suppression des consommations associÈes
+            # Suppression des consommations associ√©es
             for IDprestation in listeIDprestations :
                 DB.ReqDEL("consommations", "IDprestation", IDprestation)
             DB.Close() 
             
-##            # MÈmorise l'action dans l'historique
+##            # M√©morise l'action dans l'historique
 ##            UTILS_Historique.InsertActions([{
 ##                "IDindividu" : self.IDindividu,
 ##                "IDfamille" : IDfamille,
 ##                "IDcategorie" : 19, 
-##                "action" : _(u"Suppression de l'inscription ‡ l'activitÈ '%s'") % nomActivite
+##                "action" : _(u"Suppression de l'inscription √† l'activit√© '%s'") % nomActivite
 ##                },])
                 
             # Actualise l'affichage
@@ -377,7 +377,7 @@ class ListView(FastObjectListView):
     def OuvrirFicheFamille(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_fiche", "consulter") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucune fiche famille ‡ ouvrir !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucune fiche famille √† ouvrir !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return

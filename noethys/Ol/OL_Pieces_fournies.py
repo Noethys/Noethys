@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-13 Ivan LUCAS
@@ -35,19 +35,19 @@ class Track(object):
         self.individu_nom = donnees[7]
         self.individu_prenom = donnees[8]
         
-        # Nom Individu si pièce individuelle
+        # Nom Individu si piÃ¨ce individuelle
         if self.individu_prenom == None :
             self.individu_nom_complet = self.individu_nom
         else :
             self.individu_nom_complet = u"%s %s" % (self.individu_nom, self.individu_prenom)
         
-        # Nom Famille si pièce familiale
+        # Nom Famille si piÃ¨ce familiale
         if self.IDfamille != None :
             self.nom_titulaires = dictTitulaires[self.IDfamille]["titulairesSansCivilite"]
         else :
             self.nom_titulaires = ""
             
-        # Type de pièce        
+        # Type de piÃ¨ce        
         if self.public == "famille" : 
             self.nomPublic = _(u"Familiale")
         else :
@@ -57,7 +57,7 @@ class Track(object):
     
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # Récupération des paramètres perso
+        # RÃ©cupÃ©ration des paramÃ¨tres perso
         self.IDtype_piece = None
         self.date_reference = None
         self.selectionID = None
@@ -76,7 +76,7 @@ class ListView(FastObjectListView):
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
-        """ Récupération des données """
+        """ RÃ©cupÃ©ration des donnÃ©es """
         if self.IDtype_piece == None :
             return [] 
         
@@ -124,7 +124,7 @@ class ListView(FastObjectListView):
             if dateDD == None :
                 return ""
             if dateDD == "2999-01-01" :
-                return _(u"Illimitée")
+                return _(u"IllimitÃ©e")
             else:
                 return UTILS_Dates.DateDDEnFr(dateDD)
 
@@ -134,10 +134,10 @@ class ListView(FastObjectListView):
             ColumnDefn(_(u"Famille"), 'left', 220, "nom_titulaires", typeDonnee="texte"),
             ColumnDefn(u"Du", "left", 80, "date_debut", typeDonnee="date", stringConverter=FormateDateCourt),
             ColumnDefn(_(u"Au"), "left", 80, "date_fin", typeDonnee="date", stringConverter=FormateDateCourt),
-            ColumnDefn(_(u"Type de pièce"), "left", 100, "nomPublic", typeDonnee="texte"),
+            ColumnDefn(_(u"Type de piÃ¨ce"), "left", 100, "nomPublic", typeDonnee="texte"),
             ]
 
-        # Intégration le filtre inscrits/Présents
+        # IntÃ©gration le filtre inscrits/PrÃ©sents
         if len(self.donnees) > 0 :
             if self.donnees[0].public == "famille" :
                 liste_Colonnes.append(ColumnDefn(_(u"IDfamille"), "left", 40, "IDfamille", typeDonnee="entier"))
@@ -145,7 +145,7 @@ class ListView(FastObjectListView):
                 liste_Colonnes.append(ColumnDefn(_(u"IDindividu"), "left", 40, "IDindividu", typeDonnee="entier"))
 
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(_(u"Aucune pièce"))
+        self.SetEmptyListMsg(_(u"Aucune piÃ¨ce"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
         self.SetSortColumn(self.columns[1])
         if len(self.donnees) > 0 :
@@ -164,7 +164,7 @@ class ListView(FastObjectListView):
             self.selectionTrack = None
         self.InitModel()
         self.InitObjectListView()
-        # Sélection d'un item
+        # SÃ©lection d'un item
         if self.selectionTrack != None :
             self.SelectObject(self.selectionTrack, deselectOthers=True, ensureVisible=True)
         self.selectionID = None
@@ -181,10 +181,10 @@ class ListView(FastObjectListView):
             noSelection = False
             ID = self.Selection()[0].IDpiece
                 
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
     
-        # Génération automatique des fonctions standards
+        # GÃ©nÃ©ration automatique des fonctions standards
         self.GenerationContextMenu(menuPop, dictParametres=self.GetParametresImpression())
 
         self.PopupMenu(menuPop)
@@ -192,13 +192,13 @@ class ListView(FastObjectListView):
 
     def GetParametresImpression(self):
         if len(self.donnees) > 0 :
-            intro = _(u"Pièce sélectionnée : %s") % self.donnees[0].nomPiece
+            intro = _(u"PiÃ¨ce sÃ©lectionnÃ©e : %s") % self.donnees[0].nomPiece
         else :
             intro = ""
-        total = _(u"Un total de %d pièces") % len(self.donnees)
+        total = _(u"Un total de %d piÃ¨ces") % len(self.donnees)
 
         dictParametres = {
-            "titre" : _(u"Liste des pièces fournies"),
+            "titre" : _(u"Liste des piÃ¨ces fournies"),
             "intro" : intro,
             "total" : total,
             "orientation" : wx.PORTRAIT,
@@ -215,7 +215,7 @@ class BarreRecherche(wx.SearchCtrl):
         self.parent = parent
         self.rechercheEnCours = False
         
-        self.SetDescriptiveText(_(u"Rechercher une pièce..."))
+        self.SetDescriptiveText(_(u"Rechercher une piÃ¨ce..."))
         self.ShowSearchButton(True)
         
         self.listView = self.parent.ctrl_donnees

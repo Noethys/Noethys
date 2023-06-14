@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-16 Ivan LUCAS
@@ -74,7 +74,7 @@ if platform.system() != 'Linux' :
 
 class Synchro():
     def __init__(self, dict_parametres=None, log=None):
-        # Récupération des données de config du portail si besoin
+        # RÃ©cupÃ©ration des donnÃ©es de config du portail si besoin
         if dict_parametres == None :
             self.dict_parametres = UTILS_Parametres.ParametresCategorie(mode="get", categorie="portail", dictParametres=VALEURS_DEFAUT_CONFIG)
         else :
@@ -105,30 +105,30 @@ class Synchro():
         self.nbre_etapes = 26
         self.log.EcritLog(_(u"Lancement de la synchronisation..."))
 
-        # Téléchargement des données en ligne
+        # TÃ©lÃ©chargement des donnÃ©es en ligne
         self.Download_data(full_synchro=full_synchro)
 
-        # Recherche de mises à jours logicielles Connecthys
+        # Recherche de mises Ã  jours logicielles Connecthys
         if self.dict_parametres["client_rechercher_updates"] == True :
 
-            # Vérifie si une update n'a pas été faite aujourd'hui avec la même version de Noethys
+            # VÃ©rifie si une update n'a pas Ã©tÃ© faite aujourd'hui avec la mÃªme version de Noethys
             last_update = UTILS_Parametres.Parametres(mode="get", categorie="portail", nom="last_update", valeur=None)
             version_noethys = FonctionsPerso.GetVersionLogiciel()
             data = "%s#%s" % (str(datetime.date.today()), version_noethys)
             if data != last_update :
                 resultat = self.Update_application()
-                # Mémorise la demande d'update
+                # MÃ©morise la demande d'update
                 if resultat == True :
                     UTILS_Parametres.Parametres(mode="set", categorie="portail", nom="last_update", valeur=data)
 
-        # Upload des données locales
+        # Upload des donnÃ©es locales
         resultat = self.Upload_data(full_synchro=full_synchro)
         if resultat == False :
-            self.log.EcritLog(_(u"Synchronisation arrêtée."))
+            self.log.EcritLog(_(u"Synchronisation arrÃªtÃ©e."))
         else :
             secondes = time.time() - t1
-            self.log.EcritLog(_(u"Synchronisation effectuée en %d secondes.") % secondes)
-        self.log.EcritLog(_(u"Client de synchronisation prêt"))
+            self.log.EcritLog(_(u"Synchronisation effectuÃ©e en %d secondes.") % secondes)
+        self.log.EcritLog(_(u"Client de synchronisation prÃªt"))
         try :
             self.log.SetGauge(0)
         except :
@@ -179,7 +179,7 @@ class Synchro():
         liste_lignes.append(Ecrit_ligne("TALISMAN", self.dict_parametres["talisman"], type_valeur=bool))
         liste_lignes.append(Ecrit_ligne("CAPTCHA", self.dict_parametres["captcha"], type_valeur=int))
 
-        # Paramètres SMTP pour Flask-mail
+        # ParamÃ¨tres SMTP pour Flask-mail
         if self.dict_parametres["email_type_adresse"] > 0 :
             adresse_valide = False
 
@@ -204,7 +204,7 @@ class Synchro():
                     MAIL_SERVER, MAIL_DEFAULT_SENDER, MAIL_PORT, MAIL_USE_TLS, MAIL_USE_SSL, MAIL_USERNAME, MAIL_PASSWORD = listeAdresses[0]
                     adresse_valide = True
 
-            # Mémorisation des paramètres emails
+            # MÃ©morisation des paramÃ¨tres emails
             if adresse_valide == True :
                 liste_lignes.append(Ecrit_ligne("MAIL_SERVER", MAIL_SERVER, type_valeur=str))
                 liste_lignes.append(Ecrit_ligne("MAIL_DEFAULT_SENDER", MAIL_DEFAULT_SENDER, type_valeur=str))
@@ -240,7 +240,7 @@ class Synchro():
             else :
                 self.dict_parametres["mdp_autoriser_reinitialisation"] = False
 
-        # Génération du fichier
+        # GÃ©nÃ©ration du fichier
         nomFichier = "config.py"
         nomFichierComplet = UTILS_Fichiers.GetRepTemp(fichier=nomFichier)
         fichier = codecs.open(nomFichierComplet, 'w', encoding='utf8')
@@ -251,14 +251,14 @@ class Synchro():
         # Mode WSGI : Comparaison des 2 fichiers de config
         dirty_config = True
         #if self.dict_parametres["serveur_type"] == 2 :
-        self.log.EcritLog(_(u"Téléchargement du fichier de config"))
+        self.log.EcritLog(_(u"TÃ©lÃ©chargement du fichier de config"))
         resultat = self.TelechargeFichier(ftp=ftp, nomFichier="config.py", repFichier="application/data")
         if resultat != False :
             fichier_online = open(os.path.join(resultat[0], resultat[1]), "r")
             liste_lignes_online = fichier_online.readlines()
             fichier_online.close()
 
-            # Comparaison du fichier en ligne et du fichier généré
+            # Comparaison du fichier en ligne et du fichier gÃ©nÃ©rÃ©
             if liste_lignes_online == liste_lignes :
                 dirty_config = False
 
@@ -283,9 +283,9 @@ class Synchro():
         else :
             connexion_provisoire = False
 
-        self.log.EcritLog(_(u"Mise à jour du fichier WSGI pour auto reload"))
+        self.log.EcritLog(_(u"Mise Ã  jour du fichier WSGI pour auto reload"))
 
-        # Téléchargement du fichier wsgi
+        # TÃ©lÃ©chargement du fichier wsgi
         resultat = self.TelechargeFichier(ftp=ftp, nomFichier="connecthys.wsgi", repFichier=None)
         if resultat == False :
             return False
@@ -293,7 +293,7 @@ class Synchro():
         liste_lignes_wsgi = fichier_wsgi.readlines()
         fichier_wsgi.close()
 
-        # Création du nouveau fichier wsgi
+        # CrÃ©ation du nouveau fichier wsgi
         nomFichierComplet = UTILS_Fichiers.GetRepTemp(fichier="connecthys.wsgi")
         fichier_wsgi = codecs.open(nomFichierComplet, 'w')
         for ligne in liste_lignes_wsgi :
@@ -364,7 +364,7 @@ class Synchro():
             pass
 
     def Upload_data(self, full_synchro=False) :
-        self.log.EcritLog(_(u"Lancement de la synchronisation des données..."))
+        self.log.EcritLog(_(u"Lancement de la synchronisation des donnÃ©es..."))
         t1 = time.time()
 
         last_synchro = UTILS_Parametres.Parametres(mode="get", categorie="portail", nom="last_synchro", valeur="")
@@ -384,11 +384,11 @@ class Synchro():
             self.Deconnexion(ftp)
             return False
 
-        # Récupération du fichier models
-        self.log.EcritLog(_(u"Récupération des modèles de données..."))
+        # RÃ©cupÃ©ration du fichier models
+        self.log.EcritLog(_(u"RÃ©cupÃ©ration des modÃ¨les de donnÃ©es..."))
         resultat = self.TelechargeFichier(ftp=ftp, nomFichier="models.py", repFichier="application")
         if resultat == False :
-            self.log.EcritLog(_(u"[ERREUR] Récupération des modèles de données impossible."))
+            self.log.EcritLog(_(u"[ERREUR] RÃ©cupÃ©ration des modÃ¨les de donnÃ©es impossible."))
             self.Deconnexion(ftp)
             return False
 
@@ -400,43 +400,43 @@ class Synchro():
         sys.path.append(chemin)
         models = importlib.import_module(nomFichier.replace(".py", ""))
 
-        # Génération d'un nombre secret pour le nom de fichier des données
+        # GÃ©nÃ©ration d'un nombre secret pour le nom de fichier des donnÃ©es
         secret = ""
         for x in range(0, 20) :
             secret += random.choice("1234567890")
         secret = int(secret)
 
-        # Initialisation de la base de données
+        # Initialisation de la base de donnÃ©es
         nomFichierDB = UTILS_Fichiers.GetRepTemp(fichier="import_%d.db" % secret)
         engine = models.create_engine("sqlite:///%s" % nomFichierDB, echo=False)
 
-        # Création des tables
+        # CrÃ©ation des tables
         models.Base.metadata.drop_all(engine)
         models.Base.metadata.create_all(engine)
 
-        # Création d'une session
+        # CrÃ©ation d'une session
         Session = models.sessionmaker(bind=engine)
         session = Session()
 
-        # Liste des tables modifiées à importer dans Connecthys
+        # Liste des tables modifiÃ©es Ã  importer dans Connecthys
         liste_tables_modifiees =[]
 
         # Ouverture de la base Noethys
         DB = GestionDB.DB()
 
-        self.log.EcritLog(_(u"Récupération des données à exporter..."))
+        self.log.EcritLog(_(u"RÃ©cupÃ©ration des donnÃ©es Ã  exporter..."))
         self.Pulse_gauge()
 
-        # Préparation du cryptage des valeurs
+        # PrÃ©paration du cryptage des valeurs
         cryptage = UTILS_Cryptage_fichier.AESCipher(self.dict_parametres["secret_key"][10:20], bs=16, prefixe=u"#@#")
 
-        # Création des paramètres
+        # CrÃ©ation des paramÃ¨tres
 
         # IDfichier
         IDfichier = FonctionsPerso.GetIDfichier()
         session.add(models.Parametre(nom="IDfichier", parametre=IDfichier))
 
-        # Thème
+        # ThÃ¨me
         index = 0
         for code, label in LISTE_THEMES :
             if index == self.dict_parametres["theme"] :
@@ -469,7 +469,7 @@ class Synchro():
             rond = True
         session.add(models.Parametre(nom="ORGANISATEUR_IMAGE_ROND", parametre=str(rond)))
 
-        # Données organisateur
+        # DonnÃ©es organisateur
         dict_organisateur = UTILS_Organisateur.GetDonnees(tailleLogo=(200, 200))
 
         session.add(models.Parametre(nom="ORGANISATEUR_NOM", parametre=dict_organisateur["nom"]))
@@ -607,7 +607,7 @@ class Synchro():
                 dictEmailsFamilles[IDfamille] = []
             dictEmailsFamilles[IDfamille].append(mail)
 
-        # Création des users
+        # CrÃ©ation des users
         dictTitulaires = UTILS_Titulaires.GetTitulaires()
 
         req = """SELECT IDfamille, internet_actif, internet_identifiant, internet_mdp, email_recus, etat, prelevement_activation
@@ -655,20 +655,20 @@ class Synchro():
                             mdp = UTILS_Internet.DecrypteMDP(mdp, IDfichier=IDfichier)
                         dictDonnee["internet_mdp"] = SHA256.new(mdp.encode('utf-8')).hexdigest()
 
-                    # Génération du session_token
+                    # GÃ©nÃ©ration du session_token
                     session_token = "%s-%d-%s-%s-%d" % (profil, dictDonnee["ID"], dictDonnee["internet_identifiant"], dictDonnee["internet_mdp"][:20], dictDonnee["internet_actif"])
 
-                    # Récupération de l email de recu
+                    # RÃ©cupÃ©ration de l email de recu
                     email = ""
                     if IDfamille in dictEmailsFamilles:
-                        # Sélectionne les 3 premières adresses email de la famille
+                        # SÃ©lectionne les 3 premiÃ¨res adresses email de la famille
                         email = ";".join(dictEmailsFamilles[IDfamille][:3])
                         email = cryptage.encrypt(email)
 
-                    # Autre paramètres
+                    # Autre paramÃ¨tres
                     liste_parametres = []
                     if profil == "famille":
-                        # Prélèvement auto
+                        # PrÃ©lÃ¨vement auto
                         prelevement_auto = dictDonnee.get("prelevement_activation", 0)
                         if not prelevement_auto:
                             prelevement_auto = 0
@@ -677,7 +677,7 @@ class Synchro():
                         liste_parametres.append("solde==%s" % (dictReglements.get(IDfamille, 0.0) - dictPrestations.get(IDfamille, 0.0)))
                     parametres = "##".join(liste_parametres)
 
-                    # Si famille archivée ou effacée
+                    # Si famille archivÃ©e ou effacÃ©e
                     if dictDonnee["etat"] != None:
                         dictDonnee["internet_actif"] = 0
 
@@ -685,11 +685,11 @@ class Synchro():
                         listeIDfamille.append(IDfamille)
                         
                     if dictDonnee["internet_actif"] == 0 :
-                        # Anonymise les infos des comptes désactivés
+                        # Anonymise les infos des comptes dÃ©sactivÃ©s
                         nomDossier = "XXX"
                         email = ""
 
-                    # Création du user
+                    # CrÃ©ation du user
                     m = models.User(IDuser=None, identifiant=dictDonnee["internet_identifiant"], cryptpassword=dictDonnee["internet_mdp"],
                                     nom=nomDossier, email=email, role=profil, IDfamille=IDfamille, IDutilisateur=IDutilisateur, actif=dictDonnee["internet_actif"],
                                     session_token=session_token)
@@ -698,7 +698,7 @@ class Synchro():
                     session.add(m)
 
 
-        # Création des factures
+        # CrÃ©ation des factures
         self.Pulse_gauge()
 
         if self.dict_parametres["factures_selection"] == 0 :
@@ -708,7 +708,7 @@ class Synchro():
             date_limite = datetime.date.today() + relativedelta.relativedelta(months=-nbre_mois)
             conditions_factures = "WHERE factures.date_edition >= '%s'" % date_limite
 
-        # Récupération des totaux des prestations pour chaque facture
+        # RÃ©cupÃ©ration des totaux des prestations pour chaque facture
         req = """
         SELECT
         prestations.IDfacture, SUM(prestations.montant)
@@ -724,7 +724,7 @@ class Synchro():
             if IDfacture != None :
                 dictPrestations[IDfacture] = totalPrestations
 
-        # Récupération des factures
+        # RÃ©cupÃ©ration des factures
         req = """
         SELECT factures.IDfacture, factures.IDprefixe, factures_prefixes.prefixe, factures.numero, factures.IDcompte_payeur,
         factures.date_edition, factures.date_echeance, factures.IDutilisateur,
@@ -740,7 +740,7 @@ class Synchro():
         DB.ExecuterReq(req)
         listeFactures = DB.ResultatReq()
 
-        # Récupération de la ventilation
+        # RÃ©cupÃ©ration de la ventilation
         req = """
         SELECT prestations.IDfacture, SUM(ventilation.montant)
         FROM ventilation
@@ -761,7 +761,7 @@ class Synchro():
             if IDfamille in listeIDfamille :
                 if numero == None : numero = 0
                 if IDprefixe != None :
-                    # On supprime le tiret séparateur du préfixe et du numéro de facture pour TIPI (le tiret est proscrit)
+                    # On supprime le tiret sÃ©parateur du prÃ©fixe et du numÃ©ro de facture pour TIPI (le tiret est proscrit)
                     if "paiement_ligne_systeme" in self.dict_parametres and (self.dict_parametres["paiement_ligne_systeme"] == 1 or self.dict_parametres["paiement_ligne_systeme"] == 2) :
                         numero = u"%s%06d" % (prefixe, numero)
                     else :
@@ -790,7 +790,7 @@ class Synchro():
 
         liste_tables_modifiees.append("factures")
 
-        # Création des règlements
+        # CrÃ©ation des rÃ¨glements
         self.Pulse_gauge()
 
         if self.dict_parametres["reglements_selection"] == 0 :
@@ -826,7 +826,7 @@ class Synchro():
 
         liste_tables_modifiees.append("reglements")
 
-        # Création des pièces manquantes
+        # CrÃ©ation des piÃ¨ces manquantes
         self.Pulse_gauge()
 
         dictPieces = UTILS_Pieces_manquantes.GetListePiecesManquantes(dateReference=datetime.date.today(), concernes=True)
@@ -837,10 +837,10 @@ class Synchro():
 
         liste_tables_modifiees.append("pieces_manquantes")
 
-        # Création des types de pièces
+        # CrÃ©ation des types de piÃ¨ces
         self.Pulse_gauge()
 
-        # Recherche des documents associées aux types de pièces
+        # Recherche des documents associÃ©es aux types de piÃ¨ces
         DB2 = GestionDB.DB(suffixe="DOCUMENTS")
         req = "SELECT IDdocument, IDtype_piece, document, type, label, last_update FROM documents WHERE IDtype_piece IS NOT NULL AND document IS NOT NULL;"
         DB2.ExecuterReq(req)
@@ -852,7 +852,7 @@ class Synchro():
                 dictDocuments[IDtype_piece] = []
             dictDocuments[IDtype_piece].append({"IDdocument" : IDdocument, "document" : document, "extension" : extension, "label" : label, "last_update" : last_update})
 
-        # Recherche des types de pièces
+        # Recherche des types de piÃ¨ces
         req = """
         SELECT IDtype_piece, nom, public
         FROM types_pieces;"""
@@ -860,7 +860,7 @@ class Synchro():
         listeTypesPieces = DB.ResultatReq()
         for IDtype_piece, nom, public in listeTypesPieces :
 
-            # Recherche de documents associés
+            # Recherche de documents associÃ©s
             fichiers = []
             if IDtype_piece in dictDocuments :
                 for dict_document in dictDocuments[IDtype_piece] :
@@ -875,7 +875,7 @@ class Synchro():
                         fichier.write(buffer)
                         fichier.close()
 
-                        # Upload de la pièce
+                        # Upload de la piÃ¨ce
                         print("Upload du fichier", nomFichier)
                         self.UploadFichier(ftp=ftp, nomFichierComplet=cheminFichier, repDest="application/static/pieces")
 
@@ -884,7 +884,7 @@ class Synchro():
 
         liste_tables_modifiees.append("types_pieces")
 
-        # Création des cotisations manquantes
+        # CrÃ©ation des cotisations manquantes
         self.Pulse_gauge()
 
         dictCotisations = UTILS_Cotisations_manquantes.GetListeCotisationsManquantes(dateReference=datetime.date.today(), concernes=True)
@@ -895,7 +895,7 @@ class Synchro():
 
         liste_tables_modifiees.append("cotisations_manquantes")
 
-        # Création de la liste des cotisations
+        # CrÃ©ation de la liste des cotisations
         if self.dict_parametres["cotisations_selection"] == 0 :
             conditions_cotisations = ""
         else :
@@ -925,12 +925,12 @@ class Synchro():
         liste_tables_modifiees.append("cotisations")
 
 
-        # Création des locations
+        # CrÃ©ation des locations
         self.Pulse_gauge()
 
         if self.dict_parametres["locations_afficher"]:
 
-            # Création de la liste des catégories de produits
+            # CrÃ©ation de la liste des catÃ©gories de produits
             req = """SELECT IDcategorie, nom FROM produits_categories;"""
             DB.ExecuterReq(req)
             listeCatProduits = DB.ResultatReq()
@@ -940,7 +940,7 @@ class Synchro():
 
             liste_tables_modifiees.append("categories_produits")
 
-            # Création de la liste des produits
+            # CrÃ©ation de la liste des produits
             req = """SELECT IDproduit, produits.IDcategorie, produits.nom, quantite, montant, produits_categories.nom, activation_partage
             FROM produits
             LEFT JOIN produits_categories ON produits_categories.IDcategorie = produits.IDcategorie
@@ -953,7 +953,7 @@ class Synchro():
 
             liste_tables_modifiees.append("produits")
 
-            # Création de la liste des locations
+            # CrÃ©ation de la liste des locations
             if self.dict_parametres["locations_selection"] == 0 :
                 conditions_locations = ""
             else :
@@ -975,7 +975,7 @@ class Synchro():
 
             liste_tables_modifiees.append("locations")
 
-        # Création des activités
+        # CrÃ©ation des activitÃ©s
         self.Pulse_gauge()
 
         req = """
@@ -1008,7 +1008,7 @@ class Synchro():
 
         liste_tables_modifiees.append("activites")
 
-        # Création des groupes
+        # CrÃ©ation des groupes
         self.Pulse_gauge()
 
         req = """
@@ -1023,7 +1023,7 @@ class Synchro():
 
         liste_tables_modifiees.append("groupes")
 
-        # Création des individus
+        # CrÃ©ation des individus
         self.Pulse_gauge()
 
         champs_individus = ["IDrattachement", "rattachements.IDindividu", "rattachements.IDfamille", "titulaire", "IDcategorie",
@@ -1047,7 +1047,7 @@ class Synchro():
                     if valeur != None :
                         valeur = str(valeur)
 
-                # Renseignements à masquer
+                # Renseignements Ã  masquer
                 if champ == "nom" and dictTemp["IDcategorie"] == 1 and (self.dict_parametres["renseignements_adulte_nom"] == "masquer" or self.dict_parametres["renseignements_afficher"] == False) :
                     valeur = None
                 if champ == "nom" and dictTemp["IDcategorie"] == 2 and (self.dict_parametres["renseignements_enfant_nom"] == "masquer" or self.dict_parametres["renseignements_afficher"] == False) :
@@ -1065,7 +1065,7 @@ class Synchro():
                 if champ in ("profession", "employeur", "travail_tel", "travail_mail") and (self.dict_parametres["renseignements_adulte_profession"] == "masquer" or self.dict_parametres["renseignements_afficher"] == False):
                     valeur = None
 
-                # Cryptage des données
+                # Cryptage des donnÃ©es
                 if champ in ("nom", "prenom", "date_naiss", "cp_naiss", "ville_naiss", "tel_domicile", "tel_mobile", "mail", "rue_resid","cp_resid", "ville_resid", "profession", "employeur", "travail_tel", "travail_mail"):
                     valeur = cryptage.encrypt(valeur)
 
@@ -1084,7 +1084,7 @@ class Synchro():
 
         liste_tables_modifiees.append("individus")
 
-        # Création des inscriptions
+        # CrÃ©ation des inscriptions
         self.Pulse_gauge()
 
         req = """SELECT IDinscription, IDindividu, IDfamille, IDactivite, IDgroupe, date_desinscription
@@ -1093,14 +1093,14 @@ class Synchro():
         DB.ExecuterReq(req)
         listeInscriptions = DB.ResultatReq()
         for IDinscription, IDindividu, IDfamille, IDactivite, IDgroupe, date_desinscription in listeInscriptions :
-            if True :#IDfamille in listeIDfamille : Modifié pour connaître le nombre d'inscrits par activité
+            if True :#IDfamille in listeIDfamille : ModifiÃ© pour connaÃ®tre le nombre d'inscrits par activitÃ©
                 date_desinscription = UTILS_Dates.DateEngEnDateDD(date_desinscription)
                 m = models.Inscription(IDinscription=IDinscription, IDindividu=IDindividu, IDfamille=IDfamille, IDactivite=IDactivite, IDgroupe=IDgroupe, date_desinscription=date_desinscription)
                 session.add(m)
 
         liste_tables_modifiees.append("inscriptions")
 
-        # Création des unités
+        # CrÃ©ation des unitÃ©s
         self.Pulse_gauge()
 
         req = """SELECT IDunite, IDactivite, nom, unites_principales, unites_secondaires, ordre
@@ -1116,7 +1116,7 @@ class Synchro():
 
         liste_tables_modifiees.append("unites")
 
-        # Création des périodes
+        # CrÃ©ation des pÃ©riodes
         self.Pulse_gauge()
 
         req = """SELECT IDperiode, IDactivite, nom, date_debut, date_fin, affichage, affichage_date_debut, affichage_date_fin, introduction, prefacturation
@@ -1137,7 +1137,7 @@ class Synchro():
                                 prefacturation=prefacturation)
             session.add(m)
 
-            # Mémorise les activités pour lesquelles il y a des périodes...
+            # MÃ©morise les activitÃ©s pour lesquelles il y a des pÃ©riodes...
             if affichage_date_fin == None or date_fin >= datetime.date.today() or affichage_date_fin >= datetime.datetime.now():
                 if IDactivite not in dict_dates_activites :
                     dict_dates_activites[IDactivite] = {"date_min" : None, "date_max" : None}
@@ -1146,7 +1146,7 @@ class Synchro():
                 if dict_dates_activites[IDactivite]["date_max"] == None or dict_dates_activites[IDactivite]["date_max"] < date_fin :
                     dict_dates_activites[IDactivite]["date_max"] = date_fin
 
-            # Mémorise période pour préfacturation
+            # MÃ©morise pÃ©riode pour prÃ©facturation
             if prefacturation == 1 :
                 if (IDactivite in dict_periodes) == False :
                     dict_periodes[IDactivite] = []
@@ -1154,13 +1154,13 @@ class Synchro():
 
         liste_tables_modifiees.append("periodes")
 
-        # Création de la condition pour les ouvertures et les consommations
+        # CrÃ©ation de la condition pour les ouvertures et les consommations
         listeConditions = []
         for IDactivite, periode in dict_dates_activites.items() :
             listeConditions.append("(IDactivite=%d AND date>='%s' AND date<='%s')" % (IDactivite, periode["date_min"], periode["date_max"]))
         texteConditions = "(%s)" % " OR ".join(listeConditions)
 
-        # Création des ouvertures
+        # CrÃ©ation des ouvertures
         self.Pulse_gauge()
 
         if len(listeConditions) > 0 :
@@ -1201,7 +1201,7 @@ class Synchro():
 
             liste_tables_modifiees.append("feries")
 
-        # Création des consommations
+        # CrÃ©ation des consommations
         self.Pulse_gauge()
 
         if len(listeConditions) > 0 :
@@ -1223,9 +1223,9 @@ class Synchro():
             liste_tables_modifiees.append("consommations")
 
 
-            # Création de la pré-facturation
+            # CrÃ©ation de la prÃ©-facturation
 
-            # Récupère la ventilation
+            # RÃ©cupÃ¨re la ventilation
             req = """SELECT ventilation.IDprestation, SUM(ventilation.montant)
             FROM ventilation
             LEFT JOIN prestations ON prestations.IDprestation = ventilation.IDprestation
@@ -1237,7 +1237,7 @@ class Synchro():
             for IDprestation, montant in listeVentilations:
                 dict_ventilation[IDprestation] = FloatToDecimal(montant)
 
-            # Récupère les prestations
+            # RÃ©cupÃ¨re les prestations
             req = """SELECT IDprestation, IDfamille, IDactivite, date, montant
             FROM prestations
             WHERE IDfacture IS NULL AND %s;""" % texteConditions
@@ -1250,7 +1250,7 @@ class Synchro():
                 if (IDfamille in dict_prestations) == False :
                     dict_prestations[IDfamille] = {}
 
-                # Recherche la période correspondante
+                # Recherche la pÃ©riode correspondante
                 IDperiode = None
                 if IDactivite in dict_periodes:
                     for dictPeriode in dict_periodes[IDactivite]:
@@ -1273,7 +1273,7 @@ class Synchro():
 
             liste_tables_modifiees.append("prefacturation")
 
-        # Création des actions
+        # CrÃ©ation des actions
         self.Pulse_gauge()
 
         req = """SELECT IDaction, horodatage, IDfamille, IDindividu, categorie, action, description, commentaire, parametres, etat, traitement_date, IDperiode, ref_unique, reponse, IDpaiement, ventilation
@@ -1292,7 +1292,7 @@ class Synchro():
 
         liste_tables_modifiees.append("actions")
 
-        # Création des messages
+        # CrÃ©ation des messages
         req = """SELECT IDmessage, titre, texte, affichage_date_debut, affichage_date_fin
         FROM portail_messages
         ORDER BY titre;"""
@@ -1308,7 +1308,7 @@ class Synchro():
 
         liste_tables_modifiees.append("messages")
 
-        # Création des régies
+        # CrÃ©ation des rÃ©gies
         req = """SELECT IDregie, nom, numclitipi, email_regisseur
         FROM factures_regies;"""
         DB.ExecuterReq(req)
@@ -1366,15 +1366,15 @@ class Synchro():
 
 
 
-        # Mémorise les tables modifiées qui seront à importées dans Connecthys
+        # MÃ©morise les tables modifiÃ©es qui seront Ã  importÃ©es dans Connecthys
         texte_tables_modifiees = ";".join(liste_tables_modifiees)
         session.add(models.Parametre(nom="tables_modifiees_synchro", parametre=texte_tables_modifiees))
 
-        # Fermeture de la base de données Noethys
+        # Fermeture de la base de donnÃ©es Noethys
         DB.Close()
 
         # Commit
-        self.log.EcritLog(_(u"Enregistrement des données à exporter..."))
+        self.log.EcritLog(_(u"Enregistrement des donnÃ©es Ã  exporter..."))
         self.Pulse_gauge()
         session.commit()
 
@@ -1401,7 +1401,7 @@ class Synchro():
         # Pour contrer le bug de Pickle dans le cryptage
         fichier2 = open(nomFichierCRYPT, "rb")
         content = fichier2.read()
-        # TODO: comprendre pourquoi quand appele via synchro arrrière plan ou vian synchro du bouton outils du panel c'est Utils.UTILS_Cryptage
+        # TODO: comprendre pourquoi quand appele via synchro arrriÃ¨re plan ou vian synchro du bouton outils du panel c'est Utils.UTILS_Cryptage
         #       et via le DLG et le bouton Synchroniser maintenant c'est UTILS_Cryptage
         #       WTF !!!!!
         content = content.replace(b"Utils.UTILS_Cryptage_fichier", b"cryptage")
@@ -1412,8 +1412,8 @@ class Synchro():
         fichier3.write(content)
         fichier3.close()
 
-        # Envoi du fichier de données
-        self.log.EcritLog(_(u"Envoi du fichier de données..."))
+        # Envoi du fichier de donnÃ©es
+        self.log.EcritLog(_(u"Envoi du fichier de donnÃ©es..."))
         self.Pulse_gauge()
         time.sleep(0.5)
 
@@ -1422,8 +1422,8 @@ class Synchro():
         # Fermeture connexion FTP ou SFTP
         self.Deconnexion(ftp)
 
-        # Envoi de la requête de traitement du fichier d'import
-        self.log.EcritLog(_(u"Envoi de la requête de traitement du fichier d'export..."))
+        # Envoi de la requÃªte de traitement du fichier d'import
+        self.log.EcritLog(_(u"Envoi de la requÃªte de traitement du fichier d'export..."))
         self.Pulse_gauge()
         time.sleep(0.5)
 
@@ -1455,11 +1455,11 @@ class Synchro():
         if page != None and page != "True" and page != b"True" :
             # Affichage erreur
             print("Erreur dans le traitement du fichier :", page)
-            self.log.EcritLog(_(u"[ERREUR] Erreur dans le traitement du fichier. Réponse reçue :"))
+            self.log.EcritLog(_(u"[ERREUR] Erreur dans le traitement du fichier. RÃ©ponse reÃ§ue :"))
             self.log.EcritLog(page)
 
         else :
-            # Mémorisation horodatage synchro
+            # MÃ©morisation horodatage synchro
             UTILS_Parametres.Parametres(mode="set", categorie="portail", nom="last_synchro", valeur=str(datetime.datetime.now()))
 
         print("Temps upload_data = ", time.time() - t1)
@@ -1474,17 +1474,17 @@ class Synchro():
         return secret
 
     def Download_data(self, full_synchro=False):
-        """ Téléchargement des demandes """
-        self.log.EcritLog(_(u"Téléchargement des demandes..."))
+        """ TÃ©lÃ©chargement des demandes """
+        self.log.EcritLog(_(u"TÃ©lÃ©chargement des demandes..."))
         self.Pulse_gauge()
 
-        # Codage de la clé de sécurité
+        # Codage de la clÃ© de sÃ©curitÃ©
         secret = self.GetSecretInteger()
 
-        # Préparation du décryptage des valeurs
+        # PrÃ©paration du dÃ©cryptage des valeurs
         cryptage = UTILS_Cryptage_fichier.AESCipher(self.dict_parametres["secret_key"][10:20], bs=16, prefixe=u"#@#")
 
-        # Recherche la dernière demande téléchargée
+        # Recherche la derniÃ¨re demande tÃ©lÃ©chargÃ©e
         last = 0
         DB = GestionDB.DB()
         req = """
@@ -1502,9 +1502,9 @@ class Synchro():
             except:
                 pass
 
-        # Téléchargement des demandes non enregistrées
+        # TÃ©lÃ©chargement des demandes non enregistrÃ©es
         if full_synchro == True :
-            # Demande à récupérer toutes les actions du portail
+            # Demande Ã  rÃ©cupÃ©rer toutes les actions du portail
             last = 0
             # Lit toutes les ref_unique de la base
             req = """
@@ -1516,10 +1516,10 @@ class Synchro():
 
         DB.Close()
 
-        # Envoi de la requête pour obtenir le XML
+        # Envoi de la requÃªte pour obtenir le XML
         try :
 
-            # Création de l'url de syncdown
+            # CrÃ©ation de l'url de syncdown
             if self.dict_parametres["serveur_type"] == 0 :
                 url = self.dict_parametres["url_connecthys"]
             if self.dict_parametres["serveur_type"] == 1 :
@@ -1529,28 +1529,28 @@ class Synchro():
             url += ("" if url[-1] == "/" else "/") + "syncdown/%d/%d" % (int(secret), last)
             print("URL syncdown =", url)
 
-            # Récupération des données au format json
+            # RÃ©cupÃ©ration des donnÃ©es au format json
             req = Request(url)
             reponse = urlopen(req)
             page = reponse.read()
             liste_actions = json.loads(page)
 
             if len(liste_actions) == 0 :
-                self.log.EcritLog(_(u"Aucune demande non traitée trouvée..."))
+                self.log.EcritLog(_(u"Aucune demande non traitÃ©e trouvÃ©e..."))
             elif len(liste_actions) == 1 :
-                self.log.EcritLog(_(u"1 demande non traitée trouvée..."))
+                self.log.EcritLog(_(u"1 demande non traitÃ©e trouvÃ©e..."))
             else :
-                self.log.EcritLog(_(u"%s demandes non traitées trouvées...") % len(liste_actions))
+                self.log.EcritLog(_(u"%s demandes non traitÃ©es trouvÃ©es...") % len(liste_actions))
 
         except Exception as err :
             print(err)
-            self.log.EcritLog(_(u"Téléchargement des demandes impossible"))
+            self.log.EcritLog(_(u"TÃ©lÃ©chargement des demandes impossible"))
             liste_actions = []
 
         # Sauvegarde des actions
         if liste_actions != None and len(liste_actions) > 0 :
 
-            # Recherche la réservation la plus récente pour chaque période
+            # Recherche la rÃ©servation la plus rÃ©cente pour chaque pÃ©riode
             # dict_dernieres_reservations = {}
             # for action in liste_actions :
             #     if action["categorie"] == "reservations" :
@@ -1578,7 +1578,7 @@ class Synchro():
             for action in liste_actions :
                 valide = True
 
-                # Télécharge uniquement les demandes non enregistrées dans la base
+                # TÃ©lÃ©charge uniquement les demandes non enregistrÃ©es dans la base
                 if full_synchro == True:
                     if action["ref_unique"] in listeRefExistantes :
                         valide = False
@@ -1600,7 +1600,7 @@ class Synchro():
                             if action["IDutilisateur"] != None :
                                 listePasswordsUtilisateurs.append((action["parametres"], action["IDutilisateur"]))
 
-                    # Mémorisation des actions
+                    # MÃ©morisation des actions
                     listeActions.append([
                             prochainIDaction, action["horodatage"], action["IDfamille"], action["IDindividu"],
                             action["IDutilisateur"], action["categorie"], action["action"], action["description"],
@@ -1609,12 +1609,12 @@ class Synchro():
                             action.get("IDpaiement", None), action.get("ventilation", None),
                             ])
 
-                    # Mémorisation des réservations
+                    # MÃ©morisation des rÃ©servations
                     if len(action["reservations"]) > 0 :
                         for reservation in action["reservations"] :
                             listeReservations.append([reservation["date"], reservation["IDinscription"], reservation["IDunite"], prochainIDaction, reservation["etat"]])
 
-                    # Mémorisation des renseignements
+                    # MÃ©morisation des renseignements
                     if "renseignements" in action and len(action["renseignements"]) > 0:
                         for renseignement in action["renseignements"] :
                             try:
@@ -1623,7 +1623,7 @@ class Synchro():
                             except:
                                 pass
 
-                    # Mémorisation des locations
+                    # MÃ©morisation des locations
                     if "locations" in action and len(action["locations"]) > 0:
                         for location in action["locations"] :
                             listeLocations.append([location["date_debut"], location["date_fin"], location["IDlocation"], location["IDproduit"], prochainIDaction, location["etat"], location["partage"], location["description"]])
@@ -1642,20 +1642,20 @@ class Synchro():
             if len(listePasswordsFamilles) > 0 :
                 DB.Executermany("UPDATE familles SET internet_mdp=? WHERE IDfamille=?", listePasswordsFamilles, commit=False)
                 if len(listePasswordsFamilles) == 1:
-                    self.log.EcritLog(_(u"1 mot de passe famille modifié..."))
+                    self.log.EcritLog(_(u"1 mot de passe famille modifiÃ©..."))
                 else:
-                    self.log.EcritLog(_(u"%d mots de passe familles modifiés...") % len(listePasswordsFamilles))
+                    self.log.EcritLog(_(u"%d mots de passe familles modifiÃ©s...") % len(listePasswordsFamilles))
             if len(listePasswordsUtilisateurs) > 0 :
                 DB.Executermany("UPDATE utilisateurs SET internet_mdp=? WHERE IDutilisateur=?", listePasswordsUtilisateurs, commit=False)
                 if len(listePasswordsUtilisateurs) == 1:
-                    self.log.EcritLog(_(u"1 mot de passe administrateur modifié..."))
+                    self.log.EcritLog(_(u"1 mot de passe administrateur modifiÃ©..."))
                 else:
-                    self.log.EcritLog(_(u"%d mots de passe administrateurs modifiés...") % len(listePasswordsUtilisateurs))
+                    self.log.EcritLog(_(u"%d mots de passe administrateurs modifiÃ©s...") % len(listePasswordsUtilisateurs))
 
             DB.Commit()
             DB.Close()
 
-            self.log.EcritLog(_(u"Téléchargement terminé"))
+            self.log.EcritLog(_(u"TÃ©lÃ©chargement terminÃ©"))
 
         return True
 
@@ -1668,15 +1668,15 @@ class Synchro():
 
     def Update_application(self):
         """ Demande une update de l'application """
-        self.log.EcritLog(_(u"Recherche d'une mise à jour..."))
+        self.log.EcritLog(_(u"Recherche d'une mise Ã  jour..."))
 
-        # Codage de la clé de sécurité
+        # Codage de la clÃ© de sÃ©curitÃ©
         secret = self.GetSecretInteger()
 
         liste_actions = []
         try :
 
-            # Création de l'url de syncdown
+            # CrÃ©ation de l'url de syncdown
             if self.dict_parametres["serveur_type"] == 0 :
                 url = self.dict_parametres["url_connecthys"]
             if self.dict_parametres["serveur_type"] == 1 :
@@ -1690,7 +1690,7 @@ class Synchro():
             url += "update/%d/%d/%d" % (int(secret), int(version_noethys), mode)
             print("URL update =", url)
 
-            # Récupération des données au format json
+            # RÃ©cupÃ©ration des donnÃ©es au format json
             req = Request(url)
             reponse = urlopen(req)
             page = reponse.read()
@@ -1709,13 +1709,13 @@ class Synchro():
 
     def Upgrade_application(self):
         """ Demande un upgrade de l'application """
-        # Codage de la clé de sécurité
+        # Codage de la clÃ© de sÃ©curitÃ©
         secret = self.GetSecretInteger()
 
         liste_actions = []
         try :
 
-            # Création de l'url de syncdown
+            # CrÃ©ation de l'url de syncdown
             if self.dict_parametres["serveur_type"] == 0 :
                 url = self.dict_parametres["url_connecthys"]
             if self.dict_parametres["serveur_type"] == 1 :
@@ -1725,7 +1725,7 @@ class Synchro():
             url += ("" if url[-1] == "/" else "/") + "upgrade/%d" % int(secret)
             print("URL upgrade =", url)
 
-            # Récupération des données au format json
+            # RÃ©cupÃ©ration des donnÃ©es au format json
             req = Request(url)
             reponse = urlopen(req)
             page = reponse.read()
@@ -1743,13 +1743,13 @@ class Synchro():
         return True
 
     def Repair_application(self):
-        """ Demande un repair de la base de données """
-        # Codage de la clé de sécurité
+        """ Demande un repair de la base de donnÃ©es """
+        # Codage de la clÃ© de sÃ©curitÃ©
         secret = self.GetSecretInteger()
 
         try :
 
-            # Création de l'url de syncdown
+            # CrÃ©ation de l'url de syncdown
             if self.dict_parametres["serveur_type"] == 0 :
                 url = self.dict_parametres["url_connecthys"]
             if self.dict_parametres["serveur_type"] == 1 :
@@ -1759,7 +1759,7 @@ class Synchro():
             url += ("" if url[-1] == "/" else "/") + "repairdb/%d" % int(secret)
             print("URL repair =", url)
 
-            # Récupération des données au format json
+            # RÃ©cupÃ©ration des donnÃ©es au format json
             req = Request(url)
             reponse = urlopen(req)
             page = reponse.read()
@@ -1768,7 +1768,7 @@ class Synchro():
             print("Resultat :", data)
 
         except Exception as err :
-            self.log.EcritLog(_(u"[Erreur] Erreur dans la demande de réparation DB"))
+            self.log.EcritLog(_(u"[Erreur] Erreur dans la demande de rÃ©paration DB"))
             print("Erreur dans la demande de repairdb :", err)
             self.log.EcritLog(err)
             print("Erreur dans la demande de repairdb :", str(err))
@@ -1777,13 +1777,13 @@ class Synchro():
         return True
 
     def Clear_application(self):
-        """ Demande un effacement total des tables de la base de données """
-        # Codage de la clé de sécurité
+        """ Demande un effacement total des tables de la base de donnÃ©es """
+        # Codage de la clÃ© de sÃ©curitÃ©
         secret = self.GetSecretInteger()
 
         try :
 
-            # Création de l'url de syncdown
+            # CrÃ©ation de l'url de syncdown
             if self.dict_parametres["serveur_type"] == 0 :
                 url = self.dict_parametres["url_connecthys"]
             if self.dict_parametres["serveur_type"] == 1 :
@@ -1793,7 +1793,7 @@ class Synchro():
             url += ("" if url[-1] == "/" else "/") + "cleardb/%d" % int(secret)
             print("URL repair =", url)
 
-            # Récupération des données au format json
+            # RÃ©cupÃ©ration des donnÃ©es au format json
             req = Request(url)
             reponse = urlopen(req)
             page = reponse.read()
@@ -1811,16 +1811,16 @@ class Synchro():
         return True
 
     def TelechargeFichier(self, ftp=None, nomFichier="models.py", repFichier=None):
-        """ Télécharge un fichier sur internet """
+        """ TÃ©lÃ©charge un fichier sur internet """
 
-        # Création d'un répertoire temporaire
+        # CrÃ©ation d'un rÃ©pertoire temporaire
         repDestination = UTILS_Fichiers.GetRepTemp("portail_temp")
         try :
             os.mkdir(repDestination)
         except :
             pass
 
-        # Téléchargement du fichier vers le répertoire temporaire
+        # TÃ©lÃ©chargement du fichier vers le rÃ©pertoire temporaire
         if self.dict_parametres["hebergement_type"] == 0 :
             infilepath = self.dict_parametres["hebergement_local_repertoire"]
             if repFichier != None :
@@ -1832,7 +1832,7 @@ class Synchro():
             try :
                 shutil.copy2(infile, repDestination)
             except Exception as err :
-                self.log.EcritLog(_(u"Récupération locale impossible du fichier '%s'") % nomFichier)
+                self.log.EcritLog(_(u"RÃ©cupÃ©ration locale impossible du fichier '%s'") % nomFichier)
                 self.log.EcritLog(_(u"err: %s") % err)
                 print("Erreur dans telechargement du fichier '%s' : %s" % (nomFichier, str(err)))
                 return False
@@ -1850,7 +1850,7 @@ class Synchro():
                 ftp.retrbinary('RETR ' + nomFichier, fichier.write)
                 fichier.close()
             except Exception as err :
-                self.log.EcritLog(_(u"Téléchargement FTP impossible du fichier '%s'") % nomFichier)
+                self.log.EcritLog(_(u"TÃ©lÃ©chargement FTP impossible du fichier '%s'") % nomFichier)
                 self.log.EcritLog(_(u"err: %s") % err)
                 print(u"Erreur dans telechargement du fichier '%s' : %s" % (nomFichier, str(err)))
                 return False
@@ -1871,9 +1871,9 @@ class Synchro():
                     ftp.chdir("../" * len(repFichier.split("/")))
             except Exception as err :
                 if nomFichier == "config.py" :
-                    self.log.EcritLog(_(u"Aucun fichier de configuration à télécharger"))
+                    self.log.EcritLog(_(u"Aucun fichier de configuration Ã  tÃ©lÃ©charger"))
                 else :
-                    self.log.EcritLog(_(u"Téléchargement SSH/SFTP impossible du fichier '%s'") % nomFichier)
+                    self.log.EcritLog(_(u"TÃ©lÃ©chargement SSH/SFTP impossible du fichier '%s'") % nomFichier)
                     self.log.EcritLog(_(u"err: %s") % err)
                     print("Erreur dans telechargement du fichier '%s' : %s" % (nomFichier, str(err)))
                 return False
@@ -1952,7 +1952,7 @@ class Synchro():
         else :
             ftp, ssh = resultats
 
-        # Téléchargement du fichier
+        # TÃ©lÃ©chargement du fichier
         resultat = self.TelechargeFichier(ftp=ftp, nomFichier=nomFichier, repFichier=repFichier)
         if resultat == False :
             return False

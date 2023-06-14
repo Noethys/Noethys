@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -20,7 +20,7 @@ import locale
 
 from Utils import UTILS_Utilisateurs
 from Utils import UTILS_Config
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"â‚¬")
 
 
 from Utils import UTILS_Interface
@@ -31,9 +31,9 @@ def DateEngFr(textDate):
     return text
 
 def DateComplete(dateDD):
-    """ Transforme une date DD en date complète : Ex : lundi 15 janvier 2008 """
+    """ Transforme une date DD en date complÃ¨te : Ex : lundi 15 janvier 2008 """
     listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
-    listeMois = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
+    listeMois = (_(u"janvier"), _(u"fÃ©vrier"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"aoÃ»t"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"dÃ©cembre"))
     dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
     return dateComplete
 
@@ -64,7 +64,7 @@ class Track(object):
             num_facture = donnees["num_facture"]
             date_facture = donnees["date_facture"]
             if num_facture != None :
-                self.label_facture = u"n°%d" % num_facture
+                self.label_facture = u"nÂ°%d" % num_facture
             else :
                 self.label_facture = u""
         self.IDfamille = donnees["IDfamille"]
@@ -186,7 +186,7 @@ class ListView(GroupListView):
 ##        for IDprestation, montantVentilation in listeVentilation :
 ##            dictVentilation[IDprestation] = montantVentilation
         
-        # Ancienne version non optimisée
+        # Ancienne version non optimisÃ©e
         req = """
         SELECT prestations.IDprestation, prestations.IDcompte_payeur, prestations.date, categorie, 
         prestations.label, prestations.montant, 
@@ -234,26 +234,26 @@ class ListView(GroupListView):
                 }
             listePrestations.append(dictTemp)
             
-            # Mémorisation des individus
+            # MÃ©morisation des individus
             if IDindividu != None and prenomIndividu != None and (prenomIndividu, IDindividu) not in listeIndividus :
                 listeIndividus.append((prenomIndividu, IDindividu))
             
-            # Mémorisation des activités
+            # MÃ©morisation des activitÃ©s
             if IDactivite != None and nomActivite != None and (nomActivite, IDactivite) not in listeActivites :
                 listeActivites.append((nomActivite, IDactivite))
                 
-            # Mémorisation des factures
-            if IDfacture != None and (u"N° %d" % IDfacture, IDfacture) not in listeFactures :
-                listeFactures.append((u"N° %d" % IDfacture, IDfacture))
+            # MÃ©morisation des factures
+            if IDfacture != None and (u"NÂ° %d" % IDfacture, IDfacture) not in listeFactures :
+                listeFactures.append((u"NÂ° %d" % IDfacture, IDfacture))
             
-            # Mémorisation du total des prestations affichées
+            # MÃ©morisation du total des prestations affichÃ©es
             total += montant
             
         return listePrestations, listeIndividus, listeActivites, listeFactures, total
 
 
     def GetTracks(self):
-        # Récupération des données
+        # RÃ©cupÃ©ration des donnÃ©es
         listeID = None
         listeDonnees, self.listeIndividus, self.listeActivites, self.listeFactures, self.total = self.GetListePrestations(IDfamille=self.IDfamille) 
     
@@ -301,21 +301,21 @@ class ListView(GroupListView):
         self.oddRowsBackColor = UTILS_Interface.GetValeur("couleur_tres_claire", wx.Colour(240, 251, 237))
         self.evenRowsBackColor = "#FFFFFF" # Vert
         
-        # Paramètres ListView
+        # ParamÃ¨tres ListView
         self.useExpansionColumn = True
         self.SetColumns([
             ColumnDefn(u"", "left", 0, "IDprestation", typeDonnee="entier"),
             ColumnDefn(_(u"Date"), "left", 160, "date", typeDonnee="date", stringConverter=FormateDate),
-##            ColumnDefn(_(u"Catégorie"), "left", 100, "categorie"),
+##            ColumnDefn(_(u"CatÃ©gorie"), "left", 100, "categorie"),
             ColumnDefn(_(u"Individu"), "left", 75, "prenomIndividu", typeDonnee="texte"),
-            ColumnDefn(_(u"Activité"), "left", 55, "nomAbregeActivite", typeDonnee="texte"),
+            ColumnDefn(_(u"ActivitÃ©"), "left", 55, "nomAbregeActivite", typeDonnee="texte"),
             ColumnDefn(_(u"Label"), "left", 155, "label", typeDonnee="texte"),
             ColumnDefn(_(u"Montant"), "right", 65, "montant", typeDonnee="montant", stringConverter=FormateMontant),
-            ColumnDefn(_(u"Réglé"), "right", 72, "montant_ventilation", typeDonnee="montant", stringConverter=FormateMontant, imageGetter=GetImageVentilation),
-            ColumnDefn(_(u"Déduc."), "right", 55, "montant_deduction", typeDonnee="montant", stringConverter=FormateMontant),
+            ColumnDefn(_(u"RÃ©glÃ©"), "right", 72, "montant_ventilation", typeDonnee="montant", stringConverter=FormateMontant, imageGetter=GetImageVentilation),
+            ColumnDefn(_(u"DÃ©duc."), "right", 55, "montant_deduction", typeDonnee="montant", stringConverter=FormateMontant),
 ##            ColumnDefn(_(u"Tarif"), "left", 140, "nomTarif"),
-            ColumnDefn(_(u"Catégorie de tarif"), "left", 100, "nomCategorieTarif", typeDonnee="texte"),
-            ColumnDefn(_(u"N° Facture"), "left", 70, "label_facture", typeDonnee="texte"),
+            ColumnDefn(_(u"CatÃ©gorie de tarif"), "left", 100, "nomCategorieTarif", typeDonnee="texte"),
+            ColumnDefn(_(u"NÂ° Facture"), "left", 70, "label_facture", typeDonnee="texte"),
         ])
 ##        self.SetShowGroups(False)
         self.CreateCheckStateColumn(0)
@@ -377,7 +377,7 @@ class ListView(GroupListView):
             self.selectionTrack = None
         self.InitModel()
         self.InitObjectListView()
-        # Sélection d'un item
+        # SÃ©lection d'un item
         if self.selectionTrack != None :
             self.SelectObject(self.selectionTrack, deselectOthers=True, ensureVisible=True)
         self.selectionID = None
@@ -399,7 +399,7 @@ class ListView(GroupListView):
         if len(self.Selection()) > 0 :
             ID = self.Selection()[0].IDprestation
         
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Ajouter
@@ -433,15 +433,15 @@ class ListView(GroupListView):
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.CocheTout, id=70)
 
-        # Item Tout décocher
-        item = wx.MenuItem(menuPop, 80, _(u"Tout décocher"))
+        # Item Tout dÃ©cocher
+        item = wx.MenuItem(menuPop, 80, _(u"Tout dÃ©cocher"))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.CocheRien, id=80)
 
         menuPop.AppendSeparator()
 
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
+        item = wx.MenuItem(menuPop, 40, _(u"AperÃ§u avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -501,7 +501,7 @@ class ListView(GroupListView):
 
     def Modifier(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune prestation dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune prestation dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -521,7 +521,7 @@ class ListView(GroupListView):
 
     def Supprimer(self, event):
         if len(self.Selection()) == 0 and len(self.GetTracksCoches()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune prestation à supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune prestation Ã  supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -529,7 +529,7 @@ class ListView(GroupListView):
         if len(self.GetTracksCoches()) > 0 :
             # Suppression multiple
             listeSelections = self.GetTracksCoches()
-            dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer les %d prestations cochées ?") % len(listeSelections), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer les %d prestations cochÃ©es ?") % len(listeSelections), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
             reponse = dlg.ShowModal() 
             dlg.Destroy()
             if reponse != wx.ID_YES :
@@ -538,7 +538,7 @@ class ListView(GroupListView):
         else :
             # Suppression unique
             listeSelections = self.Selection()        
-            dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer la prestation n°%d ?") % listeSelections[0].IDprestation, _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer la prestation nÂ°%d ?") % listeSelections[0].IDprestation, _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
             reponse = dlg.ShowModal() 
             dlg.Destroy()
             if reponse != wx.ID_YES :
@@ -550,21 +550,21 @@ class ListView(GroupListView):
             DB = GestionDB.DB()
             valide = True
             
-            # Vérifie si ce n'est pas un forfait non supprimable
+            # VÃ©rifie si ce n'est pas un forfait non supprimable
             if track.forfait == 2 :
-                dlg = wx.MessageDialog(self, _(u"La prestation n°%d est un forfait non supprimable !\n\n(Pour le supprimer, vous devez obligatoirement désinscrire l'individu de l'activité)") % track.IDprestation, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"La prestation nÂ°%d est un forfait non supprimable !\n\n(Pour le supprimer, vous devez obligatoirement dÃ©sinscrire l'individu de l'activitÃ©)") % track.IDprestation, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 valide = False
             
-            # Vérifie qu'aucune facture n'y est rattachée
+            # VÃ©rifie qu'aucune facture n'y est rattachÃ©e
             if valide == True and track.IDfacture != None :
-                dlg = wx.MessageDialog(self, _(u"La prestation n°%d est déjà facturée. Vous ne pouvez donc pas la supprimer !") % track.IDprestation, _(u"Suppression impossible"), wx.OK | wx.ICON_INFORMATION)
+                dlg = wx.MessageDialog(self, _(u"La prestation nÂ°%d est dÃ©jÃ  facturÃ©e. Vous ne pouvez donc pas la supprimer !") % track.IDprestation, _(u"Suppression impossible"), wx.OK | wx.ICON_INFORMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 valide = False
                     
-            # Recherche si des consommations y sont attachées
+            # Recherche si des consommations y sont attachÃ©es
             req = """
             SELECT IDconso, date, consommations.etat, consommations.IDunite, unites.nom, 
             consommations.IDindividu, individus.nom, individus.prenom
@@ -580,7 +580,7 @@ class ListView(GroupListView):
             nbreVerrouillees = 0
             
             if len(listeConsommations) > 0 and valide == True :
-                message = _(u"Attention, la prestation n°%d est rattachée aux %d consommation(s) suivantes :\n\n") % (track.IDprestation, len(listeConsommations))
+                message = _(u"Attention, la prestation nÂ°%d est rattachÃ©e aux %d consommation(s) suivantes :\n\n") % (track.IDprestation, len(listeConsommations))
                 for IDconso, date, etat, IDunite, nomUnite, IDindividu, nomIndividu, prenomIndividu in listeConsommations :
                     listeIDconso.append(IDconso)
                     if etat == "present" :
@@ -593,9 +593,9 @@ class ListView(GroupListView):
                         individu = _(u"pour %s %s") % (nomIndividu, prenomIndividu)
                     ligneTexte = _(u"   - Le %s : %s %s\n") % (dateFr, nomUnite, individu)
                     message += ligneTexte
-                message += _(u"\nSouhaitez-vous supprimer également ces consommations (conseillé) ?\n\n(Si vous répondez non, les consommations seront conservées dans le calendrier mais seront considérées comme gratuites.")
+                message += _(u"\nSouhaitez-vous supprimer Ã©galement ces consommations (conseillÃ©) ?\n\n(Si vous rÃ©pondez non, les consommations seront conservÃ©es dans le calendrier mais seront considÃ©rÃ©es comme gratuites.")
                 
-                # Demande confirmation pour supprimer les consommations associées
+                # Demande confirmation pour supprimer les consommations associÃ©es
                 dlg = wx.MessageDialog(self, message, _(u"Suppression"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
                 reponse = dlg.ShowModal() 
                 dlg.Destroy()
@@ -603,24 +603,24 @@ class ListView(GroupListView):
                     valide = False
                 if reponse == wx.ID_YES :
                     if nbreVerrouillees > 0 :
-                        # Annule la procédure d'annulation si des consommations sont déjà pointées sur 'présent' :
-                        dlg = wx.MessageDialog(self, _(u"La prestation %d est rattachée à %d consommation(s) déjà pointées.\nIl vous est donc impossible de le(s) supprimer !\n\nProcédure de suppression annulée.") % (track.IDprestation, nbreVerrouillees), _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
+                        # Annule la procÃ©dure d'annulation si des consommations sont dÃ©jÃ  pointÃ©es sur 'prÃ©sent' :
+                        dlg = wx.MessageDialog(self, _(u"La prestation %d est rattachÃ©e Ã  %d consommation(s) dÃ©jÃ  pointÃ©es.\nIl vous est donc impossible de le(s) supprimer !\n\nProcÃ©dure de suppression annulÃ©e.") % (track.IDprestation, nbreVerrouillees), _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
                         dlg.ShowModal()
                         dlg.Destroy()
                         valide = False
                     else :
-                        # Suppression des consommations associées
+                        # Suppression des consommations associÃ©es
                         for IDconso in listeIDconso :
                             DB.ReqDEL("consommations", "IDconso", IDconso)
                 if reponse == wx.ID_NO :
-                    # Supprime la référence à la prestation des consommations
+                    # Supprime la rÃ©fÃ©rence Ã  la prestation des consommations
                     for IDconso in listeIDconso :
                         listeDonnees = [("IDprestation", None),]
                         DB.ReqMAJ("consommations", listeDonnees, "IDconso", IDconso)
             
-            # Recherche s'il s'agit d'une prestation de frais de gestion pour un règlement
+            # Recherche s'il s'agit d'une prestation de frais de gestion pour un rÃ¨glement
             if track.reglement_frais != None :
-                dlg = wx.MessageDialog(self, _(u"La prestation n°%d est rattachée au règlement n°%d en tant que frais de gestion de règlement.\n\nSouhaitez-vous vraiment supprimer cette prestation ?") % (track.IDprestation, track.reglement_frais), _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+                dlg = wx.MessageDialog(self, _(u"La prestation nÂ°%d est rattachÃ©e au rÃ¨glement nÂ°%d en tant que frais de gestion de rÃ¨glement.\n\nSouhaitez-vous vraiment supprimer cette prestation ?") % (track.IDprestation, track.reglement_frais), _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
                 reponse = dlg.ShowModal() 
                 dlg.Destroy()
                 if reponse != wx.ID_YES :
@@ -639,7 +639,7 @@ class ListView(GroupListView):
         DB.Close() 
         
         # Confirmation de suppression
-        dlg = wx.MessageDialog(self, _(u"%d prestation(s) ont été supprimée(s) avec succès.") % len(listeSuppressions), _(u"Suppression"), wx.OK | wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"%d prestation(s) ont Ã©tÃ© supprimÃ©e(s) avec succÃ¨s.") % len(listeSuppressions), _(u"Suppression"), wx.OK | wx.ICON_INFORMATION)
         dlg.ShowModal()
         dlg.Destroy()
         
@@ -663,7 +663,7 @@ class ListView(GroupListView):
     def OuvrirFicheFamille(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_fiche", "consulter") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune fiche famille à ouvrir !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune fiche famille Ã  ouvrir !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return

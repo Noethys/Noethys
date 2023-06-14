@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activitÈs
+# Application :    Noethys, gestion multi-activit√©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -36,10 +36,10 @@ class Track(object):
     
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # RÈcupÈration des paramËtres perso
+        # R√©cup√©ration des param√®tres perso
         self.categorie = kwds.pop("categorie", "") # avion, taxi, train, etc...
-        self.categorieSingulier = kwds.pop("categorieSingulier", u"") # "compagnie aÈrienne"
-        self.categoriePluriel = kwds.pop("categoriePluriel", u"") # "compagnies aÈriennes"
+        self.categorieSingulier = kwds.pop("categorieSingulier", u"") # "compagnie a√©rienne"
+        self.categoriePluriel = kwds.pop("categoriePluriel", u"") # "compagnies a√©riennes"
         self.mode = kwds.pop("mode", "gestion") # Selection ou gestion
         
         self.selectionID = None
@@ -65,7 +65,7 @@ class ListView(FastObjectListView):
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
-        """ RÈcupÈration des donnÈes """
+        """ R√©cup√©ration des donn√©es """
         listeID = None
         db = GestionDB.DB()
         req = """SELECT IDcompagnie, nom, rue, cp, ville, tel, fax, mail
@@ -101,7 +101,7 @@ class ListView(FastObjectListView):
             ColumnDefn(_(u"Rue"), "left", 140, "rue", typeDonnee="texte"),
             ColumnDefn(_(u"C.P."), "left", 45, "cp", typeDonnee="texte"),
             ColumnDefn(_(u"Ville"), "left", 110, "ville", typeDonnee="texte"),
-            ColumnDefn(_(u"TÈl."), "left", 100, "tel", typeDonnee="texte"),
+            ColumnDefn(_(u"T√©l."), "left", 100, "tel", typeDonnee="texte"),
             ColumnDefn(_(u"Fax."), "left", 100, "fax", typeDonnee="texte"),
             ColumnDefn(_(u"Email"), "left", 100, "mail", typeDonnee="texte"),
             ]
@@ -121,7 +121,7 @@ class ListView(FastObjectListView):
             self.selectionTrack = None
         self.InitModel()
         self.InitObjectListView()
-        # SÈlection d'un item
+        # S√©lection d'un item
         if self.selectionTrack != None :
             self.SelectObject(self.selectionTrack, deselectOthers=True, ensureVisible=True)
         self.selectionID = None
@@ -138,7 +138,7 @@ class ListView(FastObjectListView):
             noSelection = False
             ID = self.Selection()[0].IDcompagnie
                 
-        # CrÈation du menu contextuel
+        # Cr√©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Modifier
@@ -169,7 +169,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"AperÁu avant impression"))
+        item = wx.MenuItem(menuPop, 40, _(u"Aper√ßu avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -227,7 +227,7 @@ class ListView(FastObjectListView):
     def Modifier(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_compagnies", "modifier") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucune compagnie ‡ modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucune compagnie √† modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -267,13 +267,13 @@ class ListView(FastObjectListView):
     def Supprimer(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_compagnies", "supprimer") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucune compagnie dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucune compagnie dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         IDcompagnie = self.Selection()[0].IDcompagnie
         
-        # VÈrifie que cette compagnie n'a pas dÈj‡ ÈtÈ attribuÈe ‡ un transport
+        # V√©rifie que cette compagnie n'a pas d√©j√† √©t√© attribu√©e √† un transport
 ##        DB = GestionDB.DB()
 ##        req = """SELECT COUNT(IDunite)
 ##        FROM unites 
@@ -283,7 +283,7 @@ class ListView(FastObjectListView):
 ##        nbreUnites = int(DB.ResultatReq()[0][0])
 ##        DB.Close()
 ##        if nbreUnites > 0 :
-##            dlg = wx.MessageDialog(self, _(u"Cette compagnie a dÈj‡ ÈtÈ attribuÈe ‡ %d unitÈ(s) de consommation.\n\nVous ne pouvez donc pas le supprimer !") % nbreUnites, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
+##            dlg = wx.MessageDialog(self, _(u"Cette compagnie a d√©j√† √©t√© attribu√©e √† %d unit√©(s) de consommation.\n\nVous ne pouvez donc pas le supprimer !") % nbreUnites, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
 ##            dlg.ShowModal()
 ##            dlg.Destroy()
 ##            return
@@ -349,7 +349,7 @@ class MyFrame(wx.Frame):
         sizer_1 = wx.BoxSizer(wx.VERTICAL)
         sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
         self.SetSizer(sizer_1)
-        self.myOlv = ListView(panel, id=-1, categorie="avion", categorieSingulier=_(u"compagnie aÈrienne"), categoriePluriel=_(u"compagnies aÈriennes"), name="OL_test", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
+        self.myOlv = ListView(panel, id=-1, categorie="avion", categorieSingulier=_(u"compagnie a√©rienne"), categoriePluriel=_(u"compagnies a√©riennes"), name="OL_test", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.myOlv.MAJ() 
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.myOlv, 1, wx.ALL|wx.EXPAND, 4)

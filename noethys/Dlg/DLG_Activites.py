@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -49,8 +49,8 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         
-        intro = _(u"Vous pouvez ici saisir, modifier ou supprimer des activités. Une activité peut être un Accueil de Loisirs, un séjour de vacances, une cantine scolaire, une garderie périscolaire, une crèche, une activité sportive ou culturelle, etc...")
-        titre = _(u"Gestion des activités")
+        intro = _(u"Vous pouvez ici saisir, modifier ou supprimer des activitÃ©s. Une activitÃ© peut Ãªtre un Accueil de Loisirs, un sÃ©jour de vacances, une cantine scolaire, une garderie pÃ©riscolaire, une crÃ¨che, une activitÃ© sportive ou culturelle, etc...")
+        titre = _(u"Gestion des activitÃ©s")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Activite.png")
         self.ctrl_listview = OL_Activites.ListView(self, id=-1, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.ctrl_listview.MAJ()
@@ -63,7 +63,7 @@ class Dialog(wx.Dialog):
         self.bouton_importer = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Document_import.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_exporter = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Document_export.png"), wx.BITMAP_TYPE_ANY))
 
-        self.ctrl_activites_ouvertes = wx.CheckBox(self, -1, _(u"Afficher uniquement les activités ouvertes"))
+        self.ctrl_activites_ouvertes = wx.CheckBox(self, -1, _(u"Afficher uniquement les activitÃ©s ouvertes"))
         self.ctrl_activites_ouvertes.SetFont(wx.Font(8, wx.FONTFAMILY_DEFAULT, wx.NORMAL, wx.NORMAL))
 
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
@@ -82,13 +82,13 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_CHECKBOX, self.OnCocheActivitesOuvertes, self.ctrl_activites_ouvertes)
 
     def __set_properties(self):
-        self.SetTitle(_(u"Gestion des activités"))
-        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour créer une activité")))
-        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier l'activité sélectionnée dans la liste")))
-        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer l'activité sélectionnée dans la liste")))
-        self.bouton_dupliquer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour dupliquer l'activité sélectionnée dans la liste")))
-        self.bouton_importer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour importer un paramétrage d'activité (.nxa)")))
-        self.bouton_exporter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter un ou plusieurs paramétrages d'activités (.nxa)")))
+        self.SetTitle(_(u"Gestion des activitÃ©s"))
+        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour crÃ©er une activitÃ©")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier l'activitÃ© sÃ©lectionnÃ©e dans la liste")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer l'activitÃ© sÃ©lectionnÃ©e dans la liste")))
+        self.bouton_dupliquer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour dupliquer l'activitÃ© sÃ©lectionnÃ©e dans la liste")))
+        self.bouton_importer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour importer un paramÃ©trage d'activitÃ© (.nxa)")))
+        self.bouton_exporter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter un ou plusieurs paramÃ©trages d'activitÃ©s (.nxa)")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         self.SetMinSize((800, 700))

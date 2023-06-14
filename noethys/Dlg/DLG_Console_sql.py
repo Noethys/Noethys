@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-12 Ivan LUCAS
@@ -27,7 +27,7 @@ class Dialog(wx.Dialog):
         self.parent = parent
         
         # Bandeau
-        intro = _(u"Cette console SQL intégrée à Noethys peut être utilisée pour effectuer des opérations avancées sur la base de données.")
+        intro = _(u"Cette console SQL intÃ©grÃ©e Ã  Noethys peut Ãªtre utilisÃ©e pour effectuer des opÃ©rations avancÃ©es sur la base de donnÃ©es.")
         titre = _(u"Console SQL")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Sql.png")

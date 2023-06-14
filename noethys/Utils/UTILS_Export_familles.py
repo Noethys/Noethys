@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-18 Ivan LUCAS
@@ -17,17 +17,17 @@ from Utils import UTILS_Infos_individus
 from Utils import UTILS_Dates
 from Utils.UTILS_Decimal import FloatToDecimal as FloatToDecimal
 from Utils import UTILS_Config
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"â‚¬")
 import six
 
 
 class Export():
     def __init__(self, IDfamille=None):
-        """ si IDfamille == None : Toutes les familles sont sélectionnées"""
+        """ si IDfamille == None : Toutes les familles sont sÃ©lectionnÃ©es"""
         self.IDfamille = IDfamille
 
     def GetDoc(self):
-        # Importation des données de la DB
+        # Importation des donnÃ©es de la DB
         DB = GestionDB.DB()
 
         if self.IDfamille == None :
@@ -42,7 +42,7 @@ class Export():
             conditions = "WHERE IDfamille=%d" % self.IDfamille
             liste_IDfamille = [self.IDfamille,]
 
-        # Importation des pièces fournies
+        # Importation des piÃ¨ces fournies
         req = """SELECT pieces.IDpiece, pieces.date_debut, pieces.date_fin,
         types_pieces.public, types_pieces.nom, 
         individus.IDindividu, pieces.IDfamille, individus.prenom
@@ -176,7 +176,7 @@ class Export():
 
         # Importation des factures
 
-        # Récupération des totaux des prestations pour chaque facture
+        # RÃ©cupÃ©ration des totaux des prestations pour chaque facture
         req = """
         SELECT prestations.IDfacture, SUM(prestations.montant)
         FROM prestations
@@ -190,7 +190,7 @@ class Export():
             if IDfacture != None :
                 dictPrestationsFactures[IDfacture] = totalPrestations
 
-        # Récupération des factures
+        # RÃ©cupÃ©ration des factures
         req = """
         SELECT factures.IDfacture, factures.numero, factures.date_edition, factures.date_debut, 
         factures.date_fin, factures.total, factures.regle, factures.solde, comptes_payeurs.IDfamille
@@ -202,7 +202,7 @@ class Export():
         DB.ExecuterReq(req)
         listeFactures = DB.ResultatReq()
 
-        # Récupération de la ventilation
+        # RÃ©cupÃ©ration de la ventilation
         req = """
         SELECT prestations.IDfacture, SUM(ventilation.montant)
         FROM ventilation
@@ -243,7 +243,7 @@ class Export():
                 dictFactures[IDfamille] = []
             dictFactures[IDfamille].append(dictFacture)
 
-        # Importation des règlements
+        # Importation des rÃ¨glements
         req = """SELECT
         reglements.IDreglement, comptes_payeurs.IDfamille,
         reglements.date, modes_reglements.label, emetteurs.nom, 
@@ -280,10 +280,10 @@ class Export():
 
         DB.Close()
 
-        # Récupération des infos individus
+        # RÃ©cupÃ©ration des infos individus
         infos = UTILS_Infos_individus.Informations()
 
-        # Génération du XML
+        # GÃ©nÃ©ration du XML
         doc = Document()
 
         # Racine Familles
@@ -292,7 +292,7 @@ class Export():
 
         for IDfamille in liste_IDfamille :
 
-            # Famille : Infos générales
+            # Famille : Infos gÃ©nÃ©rales
             node_famille = doc.createElement("famille")
             node_famille.setAttribute("id", str(IDfamille))
             node_racine.appendChild(node_famille)
@@ -341,7 +341,7 @@ class Export():
                     node.setAttribute("reponse", six.text_type(dictQuestionnaire["reponse"]))
                     node_questionnaires.appendChild(node)
 
-            # Famille : Pièces
+            # Famille : PiÃ¨ces
             if IDfamille in dictPieces["familles"]:
                 node_pieces = doc.createElement(u"pieces")
                 node_famille.appendChild(node_pieces)
@@ -404,7 +404,7 @@ class Export():
                         node.setAttribute("montant_solde", u"%.2f" % dictFacture["montant_solde"])
                         node_factures.appendChild(node)
 
-                # Famille : Règlements
+                # Famille : RÃ¨glements
                 if IDfamille in dictReglements:
                     node_reglements = doc.createElement(u"reglements")
                     node_famille.appendChild(node_reglements)
@@ -440,7 +440,7 @@ class Export():
                     node_individu.setAttribute("id", str(IDindividu))
                     node_individus.appendChild(node_individu)
 
-                    # Individu : données générales
+                    # Individu : donnÃ©es gÃ©nÃ©rales
                     for key, champ in infos.GetListeChampsIndividus():
                         valeur = infos.dictIndividus[IDindividu][key]
                         if isinstance(valeur, (six.text_type, str)):
@@ -462,7 +462,7 @@ class Export():
                             node.setAttribute("texte", dictMessage["texte"])
                             node_messages.appendChild(node)
 
-                    # Individu : Infos médicales
+                    # Individu : Infos mÃ©dicales
                     if "medical" in infos.dictIndividus[IDindividu]:
                         node_medicales = doc.createElement(u"infos_medicales")
                         node_individu.appendChild(node_medicales)
@@ -501,7 +501,7 @@ class Export():
                             node.setAttribute("reponse", six.text_type(dictQuestionnaire["reponse"]))
                             node_questionnaires.appendChild(node)
 
-                    # Individu : Scolarité
+                    # Individu : ScolaritÃ©
                     if "scolarite" in infos.dictIndividus[IDindividu]:
                         node_scolarite = doc.createElement(u"scolarite")
                         node_individu.appendChild(node_scolarite)
@@ -516,7 +516,7 @@ class Export():
                             node.setAttribute("niveau_abrege", dictScolarite["niveau_abrege"])
                             node_scolarite.appendChild(node)
 
-                    # Individu : Pièces
+                    # Individu : PiÃ¨ces
                     if IDindividu in dictPieces["individus"]:
                         node_pieces = doc.createElement(u"pieces")
                         node_individu.appendChild(node_pieces)

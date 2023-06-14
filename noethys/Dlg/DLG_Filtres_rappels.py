@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-13 Ivan LUCAS
@@ -24,7 +24,7 @@ from Ctrl import CTRL_Saisie_euros
 from Dlg.DLG_Rappels_generation_parametres import CTRL_Lot_rappels
 
 from Utils import UTILS_Config
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"â‚¬")
 
 
 def DateEngFr(textDate):
@@ -36,7 +36,7 @@ def DateEngFr(textDate):
 # ----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 def GetTexteFiltres(filtres):
-    """ Transforme la liste de filtres en texte pour le contrôle HTML """
+    """ Transforme la liste de filtres en texte pour le contrÃ´le HTML """
     if filtres == None :
         filtres = []
     
@@ -53,21 +53,21 @@ def GetTexteFiltres(filtres):
             if len(listeDonnees) > 0 :
                 listeTextes.append(_(u"Lot de lettres '%s'") % listeDonnees[0][1])
         
-        # Date d'émission
+        # Date d'Ã©mission
          if filtre["type"] == "date_emission" :
-            listeTextes.append(_(u"Date d'émission de %s à %s") % (DateEngFr(str(filtre["date_min"])), DateEngFr(str(filtre["date_max"]))))
+            listeTextes.append(_(u"Date d'Ã©mission de %s Ã  %s") % (DateEngFr(str(filtre["date_min"])), DateEngFr(str(filtre["date_max"]))))
 
-        # Date de référence
+        # Date de rÃ©fÃ©rence
          if filtre["type"] == "date_reference" :
-            listeTextes.append(_(u"Date de référence de %s à %s") % (DateEngFr(str(filtre["date_min"])), DateEngFr(str(filtre["date_max"]))))
+            listeTextes.append(_(u"Date de rÃ©fÃ©rence de %s Ã  %s") % (DateEngFr(str(filtre["date_min"])), DateEngFr(str(filtre["date_max"]))))
 
-        # Numéros Intervalle
+        # NumÃ©ros Intervalle
          if filtre["type"] == "numero_intervalle" :
-            listeTextes.append(_(u"Numéros de lettres de %s à %s") % (filtre["numero_min"], filtre["numero_max"]))
+            listeTextes.append(_(u"NumÃ©ros de lettres de %s Ã  %s") % (filtre["numero_min"], filtre["numero_max"]))
 
-        # Numéros Liste
+        # NumÃ©ros Liste
          if filtre["type"] == "numero_liste" :
-            listeTextes.append(_(u"Numéros de lettres suivants : %s") % ";".join(filtre["listeNumeros"]))
+            listeTextes.append(_(u"NumÃ©ros de lettres suivants : %s") % ";".join(filtre["listeNumeros"]))
 
         # Solde
          if filtre["type"] == "solde" :
@@ -80,9 +80,9 @@ def GetTexteFiltres(filtres):
         # Email
          if filtre["type"] == "email" :
             if filtre["choix"] == True :
-                listeTextes.append(_(u"Lettres nécessitant un envoi par Email"))
+                listeTextes.append(_(u"Lettres nÃ©cessitant un envoi par Email"))
             else :
-                listeTextes.append(_(u"Lettres ne nécessitant pas un envoi par Email"))
+                listeTextes.append(_(u"Lettres ne nÃ©cessitant pas un envoi par Email"))
     
     if len(listeTextes) > 0 :
         texte = u" | ".join(listeTextes) + u"."
@@ -119,9 +119,9 @@ class CTRL_Filtres(wx.Panel):
         couleurFond=wx.Colour(255, 255, 255)
         self.SetBackgroundColour(couleurFond)
         
-        self.ctrl_html = MyHtml(self, texte=_(u"Aucun filtre de sélection."), couleurFond=couleurFond, hauteur=25)
+        self.ctrl_html = MyHtml(self, texte=_(u"Aucun filtre de sÃ©lection."), couleurFond=couleurFond, hauteur=25)
         self.bouton_parametres = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Mecanisme.png"), wx.BITMAP_TYPE_ANY))#wx.Bitmap("Images/32x32/Configuration2.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_parametres.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier les filtres de sélection des lettres de rappel")))
+        self.bouton_parametres.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier les filtres de sÃ©lection des lettres de rappel")))
         
         self.Bind(wx.EVT_BUTTON, self.OnBoutonParametres, self.bouton_parametres)
         
@@ -131,7 +131,7 @@ class CTRL_Filtres(wx.Panel):
         self.SetSizer(sizer)
         sizer.Fit(self)
         
-        # Init contrôles
+        # Init contrÃ´les
         self.MAJ() 
     
     def SetTexte(self, texte=u""):
@@ -147,7 +147,7 @@ class CTRL_Filtres(wx.Panel):
         
     def MAJ(self):
         # MAJ du HTML
-        texte = _(u"<FONT SIZE=-1><B>Filtres de sélection :</B> %s</FONT>") % GetTexteFiltres(self.filtres)
+        texte = _(u"<FONT SIZE=-1><B>Filtres de sÃ©lection :</B> %s</FONT>") % GetTexteFiltres(self.filtres)
         self.SetTexte(texte) 
         # MAJ du ctrl_rappels
         if self.ctrl_rappels != None :
@@ -163,8 +163,8 @@ class Dialog(wx.Dialog):
         self.parent = parent
         
         # Bandeau
-        intro = _(u"Sélectionnez ici les filtres de sélection de votre choix à appliquer sur la liste des lettres de rappel.")
-        titre = _(u"Filtres de sélection des lettres de rappel")
+        intro = _(u"SÃ©lectionnez ici les filtres de sÃ©lection de votre choix Ã  appliquer sur la liste des lettres de rappel.")
+        titre = _(u"Filtres de sÃ©lection des lettres de rappel")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Filtre.png")
         
@@ -172,24 +172,24 @@ class Dialog(wx.Dialog):
         self.check_lot = wx.CheckBox(self, -1, _(u"Lot de rappels :"))
         self.ctrl_lot = CTRL_Lot_rappels(self)
         
-        self.check_emission = wx.CheckBox(self, -1, _(u"Date d'émission de"))
+        self.check_emission = wx.CheckBox(self, -1, _(u"Date d'Ã©mission de"))
         self.ctrl_emission_min = CTRL_Saisie_date.Date2(self)
-        self.label_emission_a = wx.StaticText(self, -1, u"à")
+        self.label_emission_a = wx.StaticText(self, -1, u"Ã ")
         self.ctrl_emission_max = CTRL_Saisie_date.Date2(self)
         
-        self.check_reference = wx.CheckBox(self, -1, _(u"Date de référence de"))
+        self.check_reference = wx.CheckBox(self, -1, _(u"Date de rÃ©fÃ©rence de"))
         self.ctrl_reference_min = CTRL_Saisie_date.Date2(self)
-        self.label_reference_a = wx.StaticText(self, -1, u"à")
+        self.label_reference_a = wx.StaticText(self, -1, u"Ã ")
         self.ctrl_reference_max = CTRL_Saisie_date.Date2(self)
         
-        self.check_numeros_intervalle = wx.CheckBox(self, -1, _(u"Numéros de lettres de"))
+        self.check_numeros_intervalle = wx.CheckBox(self, -1, _(u"NumÃ©ros de lettres de"))
         self.ctrl_numeros_intervalle_min = wx.SpinCtrl(self, -1, u"", min=0, max=1000000)
         self.ctrl_numeros_intervalle_min.SetMinSize((70, -1))
-        self.label_numeros_intervalle_a = wx.StaticText(self, -1, u"à")
+        self.label_numeros_intervalle_a = wx.StaticText(self, -1, u"Ã ")
         self.ctrl_numeros_intervalle_max = wx.SpinCtrl(self, -1, u"", min=0, max=1000000)
         self.ctrl_numeros_intervalle_max.SetMinSize((70, -1))
 
-        self.check_numeros_liste = wx.CheckBox(self, -1, _(u"Numéros de lettres suivants :"))
+        self.check_numeros_liste = wx.CheckBox(self, -1, _(u"NumÃ©ros de lettres suivants :"))
         self.ctrl_numeros_liste = wx.TextCtrl(self, -1, u"")
         
         listeOperateurs = (u"=", u"<>", u">", u"<", u">=", u"<=")
@@ -199,7 +199,7 @@ class Dialog(wx.Dialog):
         self.ctrl_solde_operateur.SetSelection(0)
         self.ctrl_solde_montant = CTRL_Saisie_euros.CTRL(self)
 
-        self.check_email = wx.CheckBox(self, -1, _(u"Envoi par Email demandé"))
+        self.check_email = wx.CheckBox(self, -1, _(u"Envoi par Email demandÃ©"))
         self.ctrl_email = wx.Choice(self, -1, choices=["Oui", _(u"Non")])
         self.ctrl_email.SetSelection(0)
 
@@ -222,26 +222,26 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
         
-        # Init contrôles
+        # Init contrÃ´les
         self.OnCheck(None)
         
 
     def __set_properties(self):
         self.check_lot.SetToolTip(wx.ToolTip(_(u"Filtre Lot de lettres de rappel")))
-        self.ctrl_lot.SetToolTip(wx.ToolTip(_(u"Sélectionnez un lot de lettres dans la liste")))
-        self.check_emission.SetToolTip(wx.ToolTip(_(u"Filtre Date d'émission")))
-        self.ctrl_emission_min.SetToolTip(wx.ToolTip(_(u"Sélectionnez une date min")))
-        self.ctrl_emission_max.SetToolTip(wx.ToolTip(_(u"Sélectionnez une date max")))
-        self.check_reference.SetToolTip(wx.ToolTip(_(u"Filtre Date d'échéance")))
-        self.ctrl_reference_min.SetToolTip(wx.ToolTip(_(u"Sélectionnez une date min")))
-        self.ctrl_reference_max.SetToolTip(wx.ToolTip(_(u"Sélectionnez une date max")))
-        self.check_numeros_intervalle.SetToolTip(wx.ToolTip(_(u"Filtre Intervalle de numéros de lettres")))
-        self.ctrl_numeros_intervalle_min.SetToolTip(wx.ToolTip(_(u"Saisissez un numéro de lettre min")))
-        self.ctrl_numeros_intervalle_max.SetToolTip(wx.ToolTip(_(u"Saisissez un numéro de lettre max")))
-        self.check_numeros_liste.SetToolTip(wx.ToolTip(_(u"Filtre Liste de numéros de lettres")))
-        self.ctrl_numeros_liste.SetToolTip(wx.ToolTip(_(u"Saisissez les numéros de lettres souhaités en les séparant par un point-virgule (;)")))
+        self.ctrl_lot.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez un lot de lettres dans la liste")))
+        self.check_emission.SetToolTip(wx.ToolTip(_(u"Filtre Date d'Ã©mission")))
+        self.ctrl_emission_min.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez une date min")))
+        self.ctrl_emission_max.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez une date max")))
+        self.check_reference.SetToolTip(wx.ToolTip(_(u"Filtre Date d'Ã©chÃ©ance")))
+        self.ctrl_reference_min.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez une date min")))
+        self.ctrl_reference_max.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez une date max")))
+        self.check_numeros_intervalle.SetToolTip(wx.ToolTip(_(u"Filtre Intervalle de numÃ©ros de lettres")))
+        self.ctrl_numeros_intervalle_min.SetToolTip(wx.ToolTip(_(u"Saisissez un numÃ©ro de lettre min")))
+        self.ctrl_numeros_intervalle_max.SetToolTip(wx.ToolTip(_(u"Saisissez un numÃ©ro de lettre max")))
+        self.check_numeros_liste.SetToolTip(wx.ToolTip(_(u"Filtre Liste de numÃ©ros de lettres")))
+        self.ctrl_numeros_liste.SetToolTip(wx.ToolTip(_(u"Saisissez les numÃ©ros de lettres souhaitÃ©s en les sÃ©parant par un point-virgule (;)")))
         self.check_solde.SetToolTip(wx.ToolTip(_(u"Filtre Solde")))
-        self.ctrl_solde_operateur.SetToolTip(wx.ToolTip(_(u"Sélectionnez un opération de comparaison")))
+        self.ctrl_solde_operateur.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez un opÃ©ration de comparaison")))
         self.ctrl_solde_montant.SetToolTip(wx.ToolTip(_(u"Saisissez un montant")))
         self.check_email.SetToolTip(wx.ToolTip(_(u"Filtre Envoi par Email")))
         self.ctrl_email.SetToolTip(wx.ToolTip(_(u"Oui/Non")))
@@ -351,49 +351,49 @@ class Dialog(wx.Dialog):
         if self.check_lot.GetValue() == True :
             IDlot = self.ctrl_lot.GetID()
             if IDlot == None :
-                dlg = wx.MessageDialog(self, _(u"Filtre Lot de lettres : Vous n'avez sélectionné aucun lot dans la liste proposée !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Filtre Lot de lettres : Vous n'avez sÃ©lectionnÃ© aucun lot dans la liste proposÃ©e !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
             
             filtres.append({"type" : "lot", "IDlot" : IDlot})
         
-        # Date d'émission
+        # Date d'Ã©mission
         if self.check_emission.GetValue() == True :
             date_min = self.ctrl_emission_min.GetDate()
             date_max = self.ctrl_emission_max.GetDate()
             if date_min == None or date_max == None :
-                dlg = wx.MessageDialog(self, _(u"Filtre Date d'émission : Les dates saisies ne sont pas valides !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Filtre Date d'Ã©mission : Les dates saisies ne sont pas valides !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
         
             filtres.append({"type" : "date_emission", "date_min" : date_min, "date_max" : date_max})
 
-        # Date de référence
+        # Date de rÃ©fÃ©rence
         if self.check_reference.GetValue() == True :
             date_min = self.ctrl_reference_min.GetDate()
             date_max = self.ctrl_reference_max.GetDate()
             if date_min == None or date_max == None :
-                dlg = wx.MessageDialog(self, _(u"Filtre Date de référence : Les dates saisies ne sont pas valides !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Filtre Date de rÃ©fÃ©rence : Les dates saisies ne sont pas valides !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
         
             filtres.append({"type" : "date_reference", "date_min" : date_min, "date_max" : date_max})
 
-        # Numéros Intervalle
+        # NumÃ©ros Intervalle
         if self.check_numeros_intervalle.GetValue() == True :
             numero_min = int(self.ctrl_numeros_intervalle_min.GetValue())
             numero_max = int(self.ctrl_numeros_intervalle_max.GetValue())
         
             filtres.append({"type" : "numero_intervalle", "numero_min" : numero_min, "numero_max" : numero_max})
 
-        # Numéros Liste
+        # NumÃ©ros Liste
         if self.check_numeros_liste.GetValue() == True :
             listeTemp = self.ctrl_numeros_liste.GetValue()
             if listeTemp == "" :
-                dlg = wx.MessageDialog(self, _(u"Filtre Liste de numéros : Vous n'avez saisi aucun numéro de lettre dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Filtre Liste de numÃ©ros : Vous n'avez saisi aucun numÃ©ro de lettre dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
@@ -402,7 +402,7 @@ class Dialog(wx.Dialog):
                 for numero in listeTemp.split(";") :
                     listeNumeros.append(int(numero))
             except :
-                dlg = wx.MessageDialog(self, _(u"Filtre Liste de numéros : Les numéros de lettres saisis ne sont pas valides !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Filtre Liste de numÃ©ros : Les numÃ©ros de lettres saisis ne sont pas valides !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
@@ -452,13 +452,13 @@ class Dialog(wx.Dialog):
                 self.check_lot.SetValue(True)
                 self.ctrl_lot.SetID(filtre["IDlot"])
         
-            # Date d'émission
+            # Date d'Ã©mission
             if filtre["type"] == "date_emission" :
                 self.check_emission.SetValue(True)
                 self.ctrl_emission_min.SetDate(filtre["date_min"])
                 self.ctrl_emission_max.SetDate(filtre["date_max"])
 
-            # Date de référence
+            # Date de rÃ©fÃ©rence
             if filtre["type"] == "date_reference" :
                 self.check_reference.SetValue(True)
                 self.ctrl_reference_min.SetDate(filtre["date_min"])

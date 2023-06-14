@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activitÈs
+# Application :    Noethys, gestion multi-activit√©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -25,13 +25,13 @@ from Ctrl import CTRL_Saisie_euros
 ##    "combinaisons" : [
 ##            { "IDaide_combi" : None, "listeUnites" : 
 ##                [
-##                {"IDaide_combi_unite" : None, "IDunite" : 35}, # AprËs-midi
+##                {"IDaide_combi_unite" : None, "IDunite" : 35}, # Apr√®s-midi
 ##                {"IDaide_combi_unite" : None, "IDunite" : 33}, # Repas
 ##                ],
 ##            },
 ##            { "IDaide_combi" : None, "listeUnites" : 
 ##                [
-##                {"IDaide_combi_unite" : None, "IDunite" : 34}, # MatinÈe
+##                {"IDaide_combi_unite" : None, "IDunite" : 34}, # Matin√©e
 ##                {"IDaide_combi_unite" : None, "IDunite" : 33}, # Repas
 ##                ],
 ##            },
@@ -67,13 +67,13 @@ class ListBoxCombinaisons(wx.ListBox):
                 if IDunite in self.dictUnites :
                     label += self.dictUnites[IDunite]["nom"] + " + "
                 else :
-                    label += _(u"[UnitÈ ID%d inconnue]") % IDunite + " + "
+                    label += _(u"[Unit√© ID%d inconnue]") % IDunite + " + "
             if len(label) > 0 : label = label[:-2]
             self.Insert(label, self.GetCount(), index) 
             index += 1
     
     def ImportationUnites(self):
-        # Recherche des unitÈs disponibles de l'activitÈ
+        # Recherche des unit√©s disponibles de l'activit√©
         db = GestionDB.DB()
         req = """SELECT IDunite, ordre, nom, abrege, type, heure_debut, heure_fin, date_debut, date_fin
         FROM unites
@@ -99,22 +99,22 @@ class ListBoxCombinaisons(wx.ListBox):
     def Modifier(self):
         index = self.GetSelection()
         if index == -1 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucune combinaison ‡ modifier dans la liste !"), "Information", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucune combinaison √† modifier dans la liste !"), "Information", wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         index = self.GetClientData(index)
-        # RÈcupÈration des anciennes IDunites
+        # R√©cup√©ration des anciennes IDunites
         listeAnciennesIDunites = []
         listeUnites = self.dictMontant["combinaisons"][index]["listeUnites"]
         for dictUnite in listeUnites :
             IDunite = dictUnite["IDunite"]
             listeAnciennesIDunites.append(IDunite)
         listeAnciennesIDunites.sort()
-        # FenÍtre de saisie
+        # Fen√™tre de saisie
         listeIDunites = self.Saisie(listeAnciennesIDunites) 
         if listeIDunites == None : return
-        # Modification de la liste de donnÈes
+        # Modification de la liste de donn√©es
         listeValeurs = []
         listeTemp = []
         for IDunite in listeIDunites :
@@ -133,7 +133,7 @@ class ListBoxCombinaisons(wx.ListBox):
     def Supprimer(self):
         index = self.GetSelection()
         if index == -1 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucune combinaison ‡ supprimer dans la liste !"), "Information", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucune combinaison √† supprimer dans la liste !"), "Information", wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -146,7 +146,7 @@ class ListBoxCombinaisons(wx.ListBox):
         dlg.Destroy()
 
     def Saisie(self, listeAnciennesIDunites=None):                
-        # Recherche des unitÈs disponibles de l'activitÈ
+        # Recherche des unit√©s disponibles de l'activit√©
         db = GestionDB.DB()
         req = """SELECT IDunite, nom, type, heure_debut, heure_fin, date_debut, date_fin
         FROM unites
@@ -156,7 +156,7 @@ class ListBoxCombinaisons(wx.ListBox):
         listeUnites = db.ResultatReq()
         db.Close()
         if len(listeUnites) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Il n'existe aucune unitÈ pour cette activitÈ !"), "Information", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Il n'existe aucune unit√© pour cette activit√© !"), "Information", wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return None
@@ -171,18 +171,18 @@ class ListBoxCombinaisons(wx.ListBox):
             listeItems.append(valeurs[1])
             index += 1
             
-        # BoÓte de dialogue pour choisir les combinaisons
-        dlg = wx.MultiChoiceDialog(self, _(u"Cochez les unitÈs ‡ combiner :"), _(u"Combinaisons d'unitÈs"), listeItems)
+        # Bo√Æte de dialogue pour choisir les combinaisons
+        dlg = wx.MultiChoiceDialog(self, _(u"Cochez les unit√©s √† combiner :"), _(u"Combinaisons d'unit√©s"), listeItems)
         if len(listeAnciennesSelections) > 0 :
             dlg.SetSelections(listeAnciennesSelections)
         if dlg.ShowModal() == wx.ID_OK :
             listeSelections = dlg.GetSelections()
             if len(listeSelections) == 0 :
-                dlg = wx.MessageDialog(self, _(u"Vous n'avez cochÈ aucune unitÈ !"), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous n'avez coch√© aucune unit√© !"), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return None
-            # VÈrifie que les unitÈs sÈlectionnÈes sont compatibles entre elles
+            # V√©rifie que les unit√©s s√©lectionn√©es sont compatibles entre elles
             db = GestionDB.DB()
             req = """SELECT IDunite_incompat, IDunite, IDunite_incompatible
             FROM unites_incompat;"""
@@ -199,7 +199,7 @@ class ListBoxCombinaisons(wx.ListBox):
                         if IDunite1 != IDunite2 :
                             for IDunite_incompat, IDunite, IDunite_incompatible in listeIncompatibilites :
                                 if (IDunite == IDunite1 and IDunite_incompatible == IDunite2) or (IDunite == IDunite2 and IDunite_incompatible == IDunite1) :
-                                    dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas crÈer cette combinaison car les\nunitÈs '%s' et '%s' sont incompatibles entre elles !") % (nomUnite1, nomUnite2), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                                    dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas cr√©er cette combinaison car les\nunit√©s '%s' et '%s' sont incompatibles entre elles !") % (nomUnite1, nomUnite2), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
                                     dlg.ShowModal()
                                     dlg.Destroy()
                                     return None
@@ -208,21 +208,21 @@ class ListBoxCombinaisons(wx.ListBox):
             dlg.Destroy()
             return None
         
-        # CrÈe une liste des IDunitÈs sÈlectionnÈs
+        # Cr√©e une liste des IDunit√©s s√©lectionn√©s
         listeIDunites = []
         for selection in listeSelections :
             listeIDunites.append(listeUnites[selection][0])
         listeIDunites.sort()
         
-        # Si c'est une modification, vÈrifie qu'une modification a ÈtÈ faite
+        # Si c'est une modification, v√©rifie qu'une modification a √©t√© faite
         if listeAnciennesIDunites != None :
             if listeAnciennesIDunites == listeIDunites :
-                dlg = wx.MessageDialog(self, _(u"Vous n'avez effectuÈ aucune modification !"), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous n'avez effectu√© aucune modification !"), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return None
         
-        # VÈrifie que la combinaison n'existe pas dÈj‡
+        # V√©rifie que la combinaison n'existe pas d√©j√†
         for dictCombinaison in self.dictMontant["combinaisons"] :
             IDaide_combi = dictCombinaison["IDaide_combi"]
             listeUnites = dictCombinaison["listeUnites"]
@@ -235,7 +235,7 @@ class ListBoxCombinaisons(wx.ListBox):
                 
             listeUnitesTmp.sort()
             if (listeUnitesTmp == listeIDunites)  :
-                dlg = wx.MessageDialog(self, _(u"Cette combinaison existe dÈj‡ !"), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Cette combinaison existe d√©j√† !"), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return None
@@ -256,7 +256,7 @@ class Dialog(wx.Dialog):
         if self.dictMontant == None :
             self.dictMontant = { "IDaide_montant" : None, "montant" : 0.0, "combinaisons" : [] }
         
-        # ContrÙles
+        # Contr√¥les
         self.label_montant = wx.StaticText(self, -1, _(u"Montant :"))
         self.ctrl_montant = CTRL_Saisie_euros.CTRL(self, size=(70, -1))
         self.ctrl_montant.SetMontant(self.dictMontant["montant"])
@@ -283,9 +283,9 @@ class Dialog(wx.Dialog):
     def __set_properties(self):
         self.SetTitle(_(u"Saisie d'un montant"))
         self.ctrl_montant.SetToolTip(wx.ToolTip(_(u"Saisissez ici un montant en euros")))
-        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter une combinaisons d'unitÈs")))
-        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la combinaison d'unitÈs sÈlectionnÈes dans la liste")))
-        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la combinaison d'unitÈs sÈlectionnÈes dans la liste")))
+        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter une combinaisons d'unit√©s")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la combinaison d'unit√©s s√©lectionn√©es dans la liste")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la combinaison d'unit√©s s√©lectionn√©es dans la liste")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler et fermer")))
@@ -352,7 +352,7 @@ class Dialog(wx.Dialog):
         
         dictMontant = self.GetDictMontant() 
         if len(dictMontant["combinaisons"]) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous devez crÈer obligatoirement une combinaison d'unitÈs !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez cr√©er obligatoirement une combinaison d'unit√©s !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -368,13 +368,13 @@ DONNEES_TEST = {
     "combinaisons" : [
             { "IDaide_combi" : None, "listeUnites" : 
                 [
-                {"IDaide_combi_unite" : None, "IDunite" : 35}, # AprËs-midi
+                {"IDaide_combi_unite" : None, "IDunite" : 35}, # Apr√®s-midi
                 {"IDaide_combi_unite" : None, "IDunite" : 33}, # Repas
                 ],
             },
             { "IDaide_combi" : None, "listeUnites" : 
                 [
-                {"IDaide_combi_unite" : None, "IDunite" : 34}, # MatinÈe
+                {"IDaide_combi_unite" : None, "IDunite" : 34}, # Matin√©e
                 {"IDaide_combi_unite" : None, "IDunite" : 33}, # Repas
                 ],
             },

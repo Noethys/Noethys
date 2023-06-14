@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activitÈs
+# Application :    Noethys, gestion multi-activit√©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-16 Ivan LUCAS
@@ -44,7 +44,7 @@ class Track(object):
 
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # RÈcupÈration des paramËtres perso
+        # R√©cup√©ration des param√®tres perso
         self.selectionID = None
         self.selectionTrack = None
         self.criteres = ""
@@ -64,7 +64,7 @@ class ListView(FastObjectListView):
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
-        """ RÈcupÈration des donnÈes """
+        """ R√©cup√©ration des donn√©es """
         DB = GestionDB.DB()
         req = """SELECT IDfamille, internet_actif, internet_identifiant, internet_mdp
         FROM familles
@@ -81,11 +81,11 @@ class ListView(FastObjectListView):
             IDfamille = item[0]
             if self.filtre_familles != None :
 
-                # Filtre sans activitÈ
+                # Filtre sans activit√©
                 if self.filtre_familles["type_filtre"] == "sans" and IDfamille in self.filtre_familles["liste_familles"] :
                     valide = False
 
-                # Filtre avec activitÈ
+                # Filtre avec activit√©
                 if self.filtre_familles["type_filtre"] == "avec" and IDfamille not in self.filtre_familles["liste_familles"] :
                     valide = False
 
@@ -143,7 +143,7 @@ class ListView(FastObjectListView):
             self.selectionTrack = None
         self.InitModel()
         self.InitObjectListView()
-        # SÈlection d'un item
+        # S√©lection d'un item
         if self.selectionTrack != None :
             self.SelectObject(self.selectionTrack, deselectOthers=True, ensureVisible=True)
         self.selectionID = None
@@ -154,7 +154,7 @@ class ListView(FastObjectListView):
 
     def OnContextMenu(self, event):
         """Ouverture du menu contextuel """
-        # CrÈation du menu contextuel
+        # Cr√©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Ouvrir fiche famille
@@ -166,7 +166,7 @@ class ListView(FastObjectListView):
 
         menuPop.AppendSeparator()
 
-        # GÈnÈration automatique des fonctions standards
+        # G√©n√©ration automatique des fonctions standards
         self.GenerationContextMenu(menuPop, dictParametres=self.GetParametresImpression())
 
         self.PopupMenu(menuPop)
@@ -194,7 +194,7 @@ class ListView(FastObjectListView):
     def OuvrirFicheFamille(self, event=None):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_fiche", "consulter") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucune fiche famille ‡ ouvrir !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucune fiche famille √† ouvrir !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -212,10 +212,10 @@ class ListView(FastObjectListView):
         self.SetActivation(0)
 
     def SetActivation(self, actif=1):
-        """ Activation ou dÈsactivation des comptes cochÈs """
+        """ Activation ou d√©sactivation des comptes coch√©s """
         listeCoches = self.GetTracksCoches()
         if len(listeCoches) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez cochÈ aucun compte internet ‡ modifier !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez coch√© aucun compte internet √† modifier !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -223,8 +223,8 @@ class ListView(FastObjectListView):
         if actif == True :
             texte = _(u"activer")
         else :
-            texte = _(u"dÈsactiver")
-        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment %s les %d comptes sÈlectionnÈs ?") % (texte, len(listeCoches)), _(u"Modification"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+            texte = _(u"d√©sactiver")
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment %s les %d comptes s√©lectionn√©s ?") % (texte, len(listeCoches)), _(u"Modification"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
         reponse = dlg.ShowModal()
         dlg.Destroy()
         if reponse != wx.ID_YES :
@@ -240,42 +240,42 @@ class ListView(FastObjectListView):
         self.MAJ()
 
     def ReinitPasswords(self, event=None):
-        """ RÈgÈnÈration des mots de passe """
+        """ R√©g√©n√©ration des mots de passe """
         listeCoches = self.GetTracksCoches()
         if len(listeCoches) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez cochÈ aucun compte internet ‡ rÈinitialiser !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez coch√© aucun compte internet √† r√©initialiser !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
         # Demandes de confirmation
-        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment rÈinitialiser les mots de passe des %d comptes sÈlectionnÈs ?") % len(listeCoches), _(u"Modification"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment r√©initialiser les mots de passe des %d comptes s√©lectionn√©s ?") % len(listeCoches), _(u"Modification"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
         reponse = dlg.ShowModal()
         dlg.Destroy()
         if reponse != wx.ID_YES :
             return
 
-        dlg = wx.MessageDialog(self, _(u"ATTENTION, TOUS LES MOTS DE PASSE SERONT REINITIALISES !\n\nSouhaitez-vous vraiment regÈnÈrer les mots de passe des %d comptes sÈlectionnÈs ?") % len(listeCoches), _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+        dlg = wx.MessageDialog(self, _(u"ATTENTION, TOUS LES MOTS DE PASSE SERONT REINITIALISES !\n\nSouhaitez-vous vraiment reg√©n√©rer les mots de passe des %d comptes s√©lectionn√©s ?") % len(listeCoches), _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
         reponse = dlg.ShowModal()
         dlg.Destroy()
         if reponse != wx.ID_YES :
             return
 
-        # RÈcupËre la taille des mots de passe
+        # R√©cup√®re la taille des mots de passe
         taille = UTILS_Parametres.Parametres(mode="get", categorie="comptes_internet", nom="taille_passwords", valeur=8)
-        dlg = wx.MessageDialog(self, _(u"Les mots de passe comporteront %d caractËres.\n\nSi cela vous convient, cliquez sur Oui, sinon annulez et allez dans Menu ParamÈtrage > PrÈfÈrences pour modifier la taille des mots de passe des comptes internet.") % taille, _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+        dlg = wx.MessageDialog(self, _(u"Les mots de passe comporteront %d caract√®res.\n\nSi cela vous convient, cliquez sur Oui, sinon annulez et allez dans Menu Param√©trage > Pr√©f√©rences pour modifier la taille des mots de passe des comptes internet.") % taille, _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
         reponse = dlg.ShowModal()
         dlg.Destroy()
         if reponse != wx.ID_YES :
             return
 
-        dlg = wx.MessageDialog(self, _(u"DERNIER AVERTISSEMENT !\n\nConfirmez-vous la rÈinitialisation des mots de passe ? Vous ne pourrez pas revenir en arriËre..."), _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+        dlg = wx.MessageDialog(self, _(u"DERNIER AVERTISSEMENT !\n\nConfirmez-vous la r√©initialisation des mots de passe ? Vous ne pourrez pas revenir en arri√®re..."), _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
         reponse = dlg.ShowModal()
         dlg.Destroy()
         if reponse != wx.ID_YES :
             return
 
-        # RegÈnÈration des mots de passe
+        # Reg√©n√©ration des mots de passe
         listeModifications = []
         for track in listeCoches :
             mdp = UTILS_Internet.CreationMDP(nbreCaract=taille, IDfichier=self.IDfichier)

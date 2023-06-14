@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -37,7 +37,7 @@ def DateEngFr(textDate):
     return text
 
 def GetTexteNoms(listeNoms=[]):
-    """ Récupère les noms sous la forme David DUPOND et Maxime DURAND... """
+    """ RÃ©cupÃ¨re les noms sous la forme David DUPOND et Maxime DURAND... """
     texteNoms = u""
     nbreIndividus = len(listeNoms)
     if nbreIndividus == 0 : texteNoms = u""
@@ -50,7 +50,7 @@ def GetTexteNoms(listeNoms=[]):
     return texteNoms
 
 def Supprime_accent(texte):
-    liste = [ (u"é", u"e"), (u"è", u"e"), (u"ê", u"e"), (u"ë", u"e"), (u"à", u"a"), (u"û", u"u"), (u"ô", u"o"), (u"ç", u"c"), (u"î", u"i"), (u"ï", u"i"),]
+    liste = [ (u"Ã©", u"e"), (u"Ã¨", u"e"), (u"Ãª", u"e"), (u"Ã«", u"e"), (u"Ã ", u"a"), (u"Ã»", u"u"), (u"Ã´", u"o"), (u"Ã§", u"c"), (u"Ã®", u"i"), (u"Ã¯", u"i"),]
     for a, b in liste :
         texte = texte.replace(a, b)
         texte = texte.replace(a.upper(), b.upper())
@@ -117,7 +117,7 @@ def Supprime_accent(texte):
 ##        return self.dictDonnees[index]["ID"]
 ##    
 ##    def GetInfos(self):
-##        """ Récupère les infos sur le signataire sélectionné """
+##        """ RÃ©cupÃ¨re les infos sur le signataire sÃ©lectionnÃ© """
 ##        index = self.GetSelection()
 ##        if index == -1 : return None
 ##        return self.dictDonnees[index]
@@ -163,14 +163,14 @@ class Dialog(wx.Dialog):
         self.donnees = {}
         
         # Attestations
-        self.staticbox_attestations_staticbox = wx.StaticBox(self, -1, _(u"Attestations à créer"))
+        self.staticbox_attestations_staticbox = wx.StaticBox(self, -1, _(u"Attestations Ã  crÃ©er"))
         self.ctrl_attestations = CTRL_Attestations_selection.CTRL(self, date_debut=self.date_debut, date_fin=self.date_fin, dateNaiss=self.dateNaiss, listeActivites=self.listeActivites, listePrestations=self.listePrestations)
         
-        self.hyper_payes = Hyperlien(self, label=_(u"Sélectionner uniquement les payés"), infobulle=_(u"Cliquez ici pour sélectionner uniquement les payés"), URL="payes")
+        self.hyper_payes = Hyperlien(self, label=_(u"SÃ©lectionner uniquement les payÃ©s"), infobulle=_(u"Cliquez ici pour sÃ©lectionner uniquement les payÃ©s"), URL="payes")
         self.label_separation_1 = wx.StaticText(self, -1, u"|")
-        self.hyper_tout = Hyperlien(self, label=_(u"Tout sélectionner"), infobulle=_(u"Cliquez ici pour tout sélectionner"), URL="tout")
+        self.hyper_tout = Hyperlien(self, label=_(u"Tout sÃ©lectionner"), infobulle=_(u"Cliquez ici pour tout sÃ©lectionner"), URL="tout")
         self.label_separation_2 = wx.StaticText(self, -1, u"|")
-        self.hyper_rien = Hyperlien(self, label=_(u"Tout désélectionner"), infobulle=_(u"Cliquez ici pour tout désélectionner"), URL="rien")
+        self.hyper_rien = Hyperlien(self, label=_(u"Tout dÃ©sÃ©lectionner"), infobulle=_(u"Cliquez ici pour tout dÃ©sÃ©lectionner"), URL="rien")
 
         # Options des documents
         self.ctrl_parametres = CTRL_Attestations_options.CTRL(self, listeActivites=listeActivites)
@@ -178,7 +178,7 @@ class Dialog(wx.Dialog):
         # Boutons
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
         self.bouton_liste = CTRL_Bouton_image.CTRL(self, texte=_(u"Liste"), cheminImage="Images/32x32/Imprimante.png")
-        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Aperçu"), cheminImage="Images/32x32/Apercu.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"AperÃ§u"), cheminImage="Images/32x32/Apercu.png")
         self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
         
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
@@ -190,14 +190,14 @@ class Dialog(wx.Dialog):
         self.__set_properties()
         self.__do_layout()
 
-        # Init contrôles
+        # Init contrÃ´les
         self.ctrl_attestations.MAJ() 
 
     def __set_properties(self):
-        self.SetTitle(_(u"Sélection des attestations à éditer"))
+        self.SetTitle(_(u"SÃ©lection des attestations Ã  Ã©diter"))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
-        self.bouton_liste.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer la liste affichée")))
-        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour créer l'aperçu des attestations (PDF)")))
+        self.bouton_liste.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer la liste affichÃ©e")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour crÃ©er l'aperÃ§u des attestations (PDF)")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         self.SetMinSize((600, 650))
 
@@ -276,50 +276,50 @@ class Dialog(wx.Dialog):
     def OnBoutonAnnuler(self, event):
         if self.impressionEffectuee == True :
             self.Sauvegarder() 
-        # Fermeture de la fenêtre
+        # Fermeture de la fenÃªtre
         self.EndModal(200)
 
     def OnBoutonOk(self, event):
-        # Récupération du dictOptions
+        # RÃ©cupÃ©ration du dictOptions
         dictOptions = self.ctrl_parametres.GetOptions() 
         if dictOptions == False :
             return False
         
-        # Récupération du signataire
+        # RÃ©cupÃ©ration du signataire
         infosSignataire = self.ctrl_parametres.ctrl_parametres.GetInfosSignataire() 
         if infosSignataire == None :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun signataire !"), _(u"Annulation"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucun signataire !"), _(u"Annulation"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
                 
-        # Création du PDF
+        # CrÃ©ation du PDF
         dictComptes = self.ctrl_attestations.GetDonnees(dictOptions=dictOptions, infosSignataire=infosSignataire) 
     
-        # Si aucune attestation à créer
+        # Si aucune attestation Ã  crÃ©er
         if len(dictComptes) == 0 : 
-            dlg = wx.MessageDialog(self, _(u"Il n'y a aucune attestation à créer !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Il n'y a aucune attestation Ã  crÃ©er !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
-        # Préparation des commentaires
+        # PrÃ©paration des commentaires
         dictCommentaires = {}
         for track in self.listePrestations :
             if track["commentaire"] != "" :
                 dictCommentaires[(track["label"], track["IDactivite"])] = track["commentaire"]
         dictOptions["dictCommentaires"] = dictCommentaires
 
-        # Détail
+        # DÃ©tail
         if dictOptions["affichage_prestations"] == 0 :
             detail = True
         else:
             detail = False
 
-        # Création des PDF à l'unité
+        # CrÃ©ation des PDF Ã  l'unitÃ©
         repertoire = dictOptions["repertoire_copie"]
         if repertoire not in (None, "") :
-            dlgAttente = wx.BusyInfo(_(u"Génération des attestations à l'unité au format PDF..."), None)
+            dlgAttente = wx.BusyInfo(_(u"GÃ©nÃ©ration des attestations Ã  l'unitÃ© au format PDF..."), None)
             if 'phoenix' not in wx.PlatformInfo:
                 wx.Yield()
             try :
@@ -330,7 +330,7 @@ class Dialog(wx.Dialog):
                     nomFichier = _(u"Attestation %d - %s") % (IDattestation, nomTitulaires)
                     cheminFichier = u"%s/%s.pdf" % (repertoire, nomFichier)
                     dictComptesTemp = {IDcompte_payeur : dictCompte}
-                    self.EcritStatusbar(_(u"Génération de l'attestation %d/%d : %s") % (index, len(dictComptes), nomFichier))
+                    self.EcritStatusbar(_(u"GÃ©nÃ©ration de l'attestation %d/%d : %s") % (index, len(dictComptes), nomFichier))
                     UTILS_Impression_facture.Impression(dictComptesTemp, dictOptions, IDmodele=dictOptions["IDmodele"], mode="attestation", ouverture=False, nomFichier=cheminFichier)
                     index += 1
                 self.EcritStatusbar("")
@@ -338,16 +338,16 @@ class Dialog(wx.Dialog):
             except Exception as err:
                 del dlgAttente
                 traceback.print_exc(file=sys.stdout)
-                dlg = wx.MessageDialog(self, _(u"Désolé, le problème suivant a été rencontré dans la génération des attestations : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
+                dlg = wx.MessageDialog(self, _(u"DÃ©solÃ©, le problÃ¨me suivant a Ã©tÃ© rencontrÃ© dans la gÃ©nÃ©ration des attestations : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
 
         # Fabrication du PDF global
-        dlgAttente = wx.BusyInfo(_(u"Génération du lot d'attestations au format PDF..."), None)
+        dlgAttente = wx.BusyInfo(_(u"GÃ©nÃ©ration du lot d'attestations au format PDF..."), None)
         if 'phoenix' not in wx.PlatformInfo:
             wx.Yield()
-        self.EcritStatusbar(_(u"Génération du lot d'attestations de rappel en cours... veuillez patienter..."))
+        self.EcritStatusbar(_(u"GÃ©nÃ©ration du lot d'attestations de rappel en cours... veuillez patienter..."))
         try :
             UTILS_Impression_facture.Impression(dictComptes, dictOptions, IDmodele=dictOptions["IDmodele"], mode="attestation")
             self.EcritStatusbar("")
@@ -355,7 +355,7 @@ class Dialog(wx.Dialog):
         except Exception as err:
             del dlgAttente
             traceback.print_exc(file=sys.stdout)
-            dlg = wx.MessageDialog(self, _(u"Désolé, le problème suivant a été rencontré dans la génération des attestations : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"DÃ©solÃ©, le problÃ¨me suivant a Ã©tÃ© rencontrÃ© dans la gÃ©nÃ©ration des attestations : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -366,7 +366,7 @@ class Dialog(wx.Dialog):
     def Sauvegarder(self):
         """ Sauvegarde des attestations """
         # Demande la confirmation de sauvegarde
-        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous mémoriser les attestations ?\n\n(Cliquez NON si c'était juste un test sinon cliquez OUI)"), _(u"Sauvegarde"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous mÃ©moriser les attestations ?\n\n(Cliquez NON si c'Ã©tait juste un test sinon cliquez OUI)"), _(u"Sauvegarde"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         reponse = dlg.ShowModal() 
         dlg.Destroy()
         if reponse != wx.ID_YES :
@@ -388,7 +388,7 @@ class Dialog(wx.Dialog):
                     regle = dictCompte["ventilation"] 
                     solde = total - regle
 
-                    # Liste des activités
+                    # Liste des activitÃ©s
                     texteActivites = ""
                     for IDactivite in self.listeActivites :
                         texteActivites += "%d;" % IDactivite
@@ -420,11 +420,11 @@ class Dialog(wx.Dialog):
 
                     IDattestation = DB.ReqInsert("attestations", listeDonnees)
                                         
-                    # Mémorisation de l'action dans l'historique
+                    # MÃ©morisation de l'action dans l'historique
                     UTILS_Historique.InsertActions([{
                             "IDfamille" : IDfamille,
                             "IDcategorie" : 27, 
-                            "action" : _(u"Edition d'une attestation de présence pour la période du %s au %s pour un total de %.02f ¤ et un solde de %.02f ¤") % (DateEngFr(str(self.date_debut)), DateEngFr(str(self.date_fin)), total, solde),
+                            "action" : _(u"Edition d'une attestation de prÃ©sence pour la pÃ©riode du %s au %s pour un total de %.02f â‚¬ et un solde de %.02f â‚¬") % (DateEngFr(str(self.date_debut)), DateEngFr(str(self.date_fin)), total, solde),
                             },])
 
             DB.Close() 
@@ -434,12 +434,12 @@ class Dialog(wx.Dialog):
             DB.Close() 
             del dlgAttente
             traceback.print_exc(file=sys.stdout)
-            dlg = wx.MessageDialog(self, _(u"Désolé, le problème suivant a été rencontré dans la sauvegarde des attestations : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"DÃ©solÃ©, le problÃ¨me suivant a Ã©tÃ© rencontrÃ© dans la sauvegarde des attestations : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             return False
 
-        # Mémorisation des paramètres
+        # MÃ©morisation des paramÃ¨tres
         self.ctrl_parametres.MemoriserParametres() 
     
 
@@ -454,9 +454,9 @@ if __name__ == "__main__":
         dateNaiss = None,
         listeActivites = [1, 2, 3, 4, 5],
         listePrestations = [
-            {"commentaire" : u"", "IDactivite" : 1, "label" : _(u"Journée avec repas")},
-            {"commentaire" : u"", "IDactivite" : 1, "label" : _(u"Demi-journée avec repas")},
-            {"commentaire" : u"", "IDactivite" : 1, "label" : _(u"Demi-journée")},
+            {"commentaire" : u"", "IDactivite" : 1, "label" : _(u"JournÃ©e avec repas")},
+            {"commentaire" : u"", "IDactivite" : 1, "label" : _(u"Demi-journÃ©e avec repas")},
+            {"commentaire" : u"", "IDactivite" : 1, "label" : _(u"Demi-journÃ©e")},
             ],
         )
     app.SetTopWindow(dialog_1)

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-14 Ivan LUCAS
@@ -125,18 +125,18 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         
-        intro = _(u"Vous pouvez ici consulter la liste complète des contrats générés dans le logiciel. Les commandes proposées vous permettent de modifier, supprimer ou imprimer des contrats. Pour supprimer un lot de contrats, cochez-les et utilisez le bouton Supprimer.")
+        intro = _(u"Vous pouvez ici consulter la liste complÃ¨te des contrats gÃ©nÃ©rÃ©s dans le logiciel. Les commandes proposÃ©es vous permettent de modifier, supprimer ou imprimer des contrats. Pour supprimer un lot de contrats, cochez-les et utilisez le bouton Supprimer.")
         titre = _(u"Liste des contrats")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Contrat.png")
 
-        # Paramètres
+        # ParamÃ¨tres
         self.staticbox_options_staticbox = wx.StaticBox(self, -1, _(u"Filtres"))
 
-        self.label_annee = wx.StaticText(self, -1, _(u"Année :"))
+        self.label_annee = wx.StaticText(self, -1, _(u"AnnÃ©e :"))
         self.ctrl_annee = CTRL_Annee(self)
         self.ctrl_annee.SetMinSize((60, -1))
 
-        self.label_activite = wx.StaticText(self, -1, _(u"Activité :"))
+        self.label_activite = wx.StaticText(self, -1, _(u"ActivitÃ© :"))
         self.ctrl_activite = CTRL_Activite(self)
         self.ctrl_activite.SetMinSize((200, -1))
                 
@@ -169,16 +169,16 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_CHOICE, self.MAJ, self.ctrl_annee)
         self.Bind(wx.EVT_CHOICE, self.MAJ, self.ctrl_activite)
         
-        # Init contrôles
+        # Init contrÃ´les
         wx.CallAfter(self.MAJ)
 
     def __set_properties(self):
         self.SetTitle(_(u"Liste des contrats"))
-        self.bouton_ouvrir_fiche.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ouvrir la fiche famille du contrat sélectionné dans la liste")))
-        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour créer un aperçu avant impression de la liste")))
+        self.bouton_ouvrir_fiche.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ouvrir la fiche famille du contrat sÃ©lectionnÃ© dans la liste")))
+        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour crÃ©er un aperÃ§u avant impression de la liste")))
         self.bouton_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer directement la liste")))
-        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le contrat sélectionné dans la liste")))
-        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le contrat sélectionné dans la liste")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le contrat sÃ©lectionnÃ© dans la liste")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le contrat sÃ©lectionnÃ© dans la liste")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         self.SetMinSize((800, 700))
@@ -187,7 +187,7 @@ class Dialog(wx.Dialog):
         grid_sizer_base = wx.FlexGridSizer(rows=4, cols=1, vgap=10, hgap=10)
         grid_sizer_base.Add(self.ctrl_bandeau, 0, wx.EXPAND, 0)
 
-        # Paramètres
+        # ParamÃ¨tres
         staticbox_options = wx.StaticBoxSizer(self.staticbox_options_staticbox, wx.VERTICAL)
         
         grid_sizer_options = wx.FlexGridSizer(rows=1, cols=16, vgap=5, hgap=5)
@@ -240,18 +240,18 @@ class Dialog(wx.Dialog):
     def MAJ(self, event=None):
         listeFiltres = []
         
-        # Filtre Année
+        # Filtre AnnÃ©e
         annee = self.ctrl_annee.GetID() 
         if annee != None :
             listeFiltres.append("contrats.date_debut<='%d-21-31' AND contrats.date_fin>='%d-01-01'" % (annee, annee))
             
-        # Filtre Activité
+        # Filtre ActivitÃ©
         IDactivite = self.ctrl_activite.GetID() 
         if IDactivite != None :
             listeFiltres.append("inscriptions.IDactivite=%d" % IDactivite)
         
         # MAJ de la liste
-        attente = wx.BusyInfo(_(u"Recherche des données..."), self)
+        attente = wx.BusyInfo(_(u"Recherche des donnÃ©es..."), self)
         self.ctrl_listview.listeFiltres = listeFiltres
         self.ctrl_listview.MAJ() 
         del attente

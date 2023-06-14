@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-13 Ivan LUCAS
@@ -17,7 +17,7 @@ import GestionDB
 
 
 def GetListeUtilisateurs(nomFichier=""):
-    """ Récupère la liste des utilisateurs et de leurs droits """
+    """ RÃ©cupÃ¨re la liste des utilisateurs et de leurs droits """
     DB = GestionDB.DB(nomFichier=nomFichier)
 
     # Droits
@@ -100,7 +100,7 @@ def GetListeUtilisateurs(nomFichier=""):
 
 
 def VerificationDroits(dictUtilisateur=None, categorie="", action="", IDactivite=""):
-    """ Vérifie si un utilisateur peut accéder à une action """
+    """ VÃ©rifie si un utilisateur peut accÃ©der Ã  une action """
     if dictUtilisateur == None or ("droits" in dictUtilisateur) == False :
         return True
     
@@ -152,7 +152,7 @@ def VerificationDroitsUtilisateurActuel(categorie="", action="", IDactivite="", 
     except :
         nomWindow = None
     if nomWindow == "general" : 
-        # Si la frame 'General' est chargée, on y récupère le dict de config
+        # Si la frame 'General' est chargÃ©e, on y rÃ©cupÃ¨re le dict de config
         dictUtilisateur = topWindow.dictUtilisateur
         resultat = VerificationDroits(dictUtilisateur, categorie, action, IDactivite)
         if resultat == False and afficheMessage == True :
@@ -164,7 +164,7 @@ def VerificationDroitsUtilisateurActuel(categorie="", action="", IDactivite="", 
 def AfficheDLGInterdiction():
     import wx.lib.dialogs as dialogs
     image = wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Droits.png"), wx.BITMAP_TYPE_ANY)
-    dlg = dialogs.MultiMessageDialog(None, _(u"Votre profil utilisateur ne vous permet pas d'accéder à cette fonctionnalité !"), caption=_(u"Accès non autorisé"), style=wx.ICON_ERROR | wx.OK, icon=image, btnLabels={wx.ID_OK : _(u"Ok")})
+    dlg = dialogs.MultiMessageDialog(None, _(u"Votre profil utilisateur ne vous permet pas d'accÃ©der Ã  cette fonctionnalitÃ© !"), caption=_(u"AccÃ¨s non autorisÃ©"), style=wx.ICON_ERROR | wx.OK, icon=image, btnLabels={wx.ID_OK : _(u"Ok")})
     dlg.ShowModal() 
     dlg.Destroy() 
     

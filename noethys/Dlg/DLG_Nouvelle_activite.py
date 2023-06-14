@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-18 Ivan LUCAS
@@ -22,7 +22,7 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, id=-1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
 
         # Intro
-        self.label_intro = wx.StaticText(self, -1, _(u"Double-cliquez sur 'Créer une nouvelle activité' ou sur l'un des assistants proposés :"))
+        self.label_intro = wx.StaticText(self, -1, _(u"Double-cliquez sur 'CrÃ©er une nouvelle activitÃ©' ou sur l'un des assistants proposÃ©s :"))
 
         # Liste assistants
         self.ctrl_assistants = CTRL_Assistants_liste.CTRL(self)
@@ -42,9 +42,9 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_LIST_ITEM_ACTIVATED, self.OnBoutonOk, self.ctrl_assistants)
 
     def __set_properties(self):
-        self.SetTitle(_(u"Créer une nouvelle activité"))
+        self.SetTitle(_(u"CrÃ©er une nouvelle activitÃ©"))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
-        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ouvrir l'assistant sélectionné dans la liste")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ouvrir l'assistant sÃ©lectionnÃ© dans la liste")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
 
     def __do_layout(self):
@@ -81,7 +81,7 @@ class Dialog(wx.Dialog):
     def OnBoutonOk(self, event): 
         index = self.ctrl_assistants.GetFirstSelected()
         if index == -1 :
-            dlg = wx.MessageDialog(self, _(u"Vous devez sélectionner un assistant dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez sÃ©lectionner un assistant dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return 

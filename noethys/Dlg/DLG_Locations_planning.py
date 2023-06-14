@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-17 Ivan LUCAS
@@ -35,7 +35,7 @@ class CTRL_Produit(wx.TextCtrl):
     def SetIDproduit(self, IDproduit=None):
         self.IDproduit = IDproduit
 
-        # Recherche des caractéristiques du produit
+        # Recherche des caractÃ©ristiques du produit
         db = GestionDB.DB()
         req = """SELECT produits.nom, produits.IDcategorie, produits.observations, produits.image, produits_categories.nom
         FROM produits 
@@ -56,7 +56,7 @@ class CTRL_Produit(wx.TextCtrl):
         # Nom
         self.SetValue(label)
 
-        # Mémorise IDcategorie (sert pour mesure de la distance)
+        # MÃ©morise IDcategorie (sert pour mesure de la distance)
         self.IDcategorie = IDcategorie
 
     def GetIDproduit(self):
@@ -83,7 +83,7 @@ class Track(object):
         if self.quantite == None :
             self.quantite = 1
 
-        # Période
+        # PÃ©riode
         if isinstance(self.date_debut, str) or isinstance(self.date_debut, six.text_type) :
             self.date_debut = datetime.datetime.strptime(self.date_debut, "%Y-%m-%d %H:%M:%S")
 
@@ -97,7 +97,7 @@ class CTRL_Planning(CTRL_Agenda.CTRL_Planning):
         self.IDproduit = None
         CTRL_Agenda.CTRL_Planning.__init__(self, parent)
 
-        # Règle l'affichage sur SEMAINE + VERTICAL
+        # RÃ¨gle l'affichage sur SEMAINE + VERTICAL
         self.barre_outils.SetPeriode("semaine")
 
 
@@ -165,14 +165,14 @@ class CTRL_Planning(CTRL_Agenda.CTRL_Planning):
             self.Modifier(schedule=schedule)
     
     def Ajouter(self, date=None):
-        """ Création d'un évènement """
+        """ CrÃ©ation d'un Ã©vÃ¨nement """
         if self.IDproduit == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner un produit !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sÃ©lectionner un produit !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
-        # Création d'une location
+        # CrÃ©ation d'une location
         from Dlg import DLG_Saisie_location
         dlg = DLG_Saisie_location.Dialog(self, IDfamille=None, IDproduit=self.IDproduit)
         if dlg.ShowModal() == wx.ID_OK:
@@ -206,7 +206,7 @@ class CTRL_Planning(CTRL_Agenda.CTRL_Planning):
         self.MAJ()
 
     def Importation(self):
-        """ Importation des events depuis la base de données """
+        """ Importation des events depuis la base de donnÃ©es """
         if self.IDproduit == None :
             IDproduit = 0
         else :
@@ -227,10 +227,10 @@ class CTRL_Planning(CTRL_Agenda.CTRL_Planning):
         listeSchedules = []
         index = 0
         for donnees in listeDonnees :
-            # Création du track
+            # CrÃ©ation du track
             track = Track(donnees)
 
-            # Création du schedule
+            # CrÃ©ation du schedule
             schedule = wxScheduler.wxSchedule()
             schedule.index = index
             self.RemplitSchedule(track, schedule)
@@ -248,7 +248,7 @@ class CTRL_Planning(CTRL_Agenda.CTRL_Planning):
         # Icone
         #schedule.icons = [wx.Bitmap(Chemins.GetStaticPath("Images/16x16/%s.png" % dictDonnees["image"]), wx.BITMAP_TYPE_ANY),]
         
-        # Date et heure de début
+        # Date et heure de dÃ©but
         schedule.start = CTRL_Agenda.ConvertDateDTenWX2(track.date_debut)
         
         # Date et heure de fin
@@ -286,7 +286,7 @@ class Dialog(wx.Dialog):
         self.parent = parent
         
         # Bandeau
-        intro = _(u"Sélectionnez un produit pour afficher son planning de locations. Faites un clic droit sur le planning pour accéder aux fonctions d'ajout, de modification et de suppression.")
+        intro = _(u"SÃ©lectionnez un produit pour afficher son planning de locations. Faites un clic droit sur le planning pour accÃ©der aux fonctions d'ajout, de modification et de suppression.")
         titre = _(u"Planning des locations")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Calendrier.png")
@@ -294,7 +294,7 @@ class Dialog(wx.Dialog):
         self.label_produit = wx.StaticText(self, -1, _(u"Produit :"))
         self.ctrl_produit = CTRL_Produit(self)
         self.ctrl_produit.SetFont(wx.Font(10, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, 'Arial'))
-        self.bouton_produit = wx.Button(self, -1, _(u"Sélectionner"))
+        self.bouton_produit = wx.Button(self, -1, _(u"SÃ©lectionner"))
 
         # Planning
         self.ctrl_planning = CTRL_Planning(self)
@@ -319,7 +319,7 @@ class Dialog(wx.Dialog):
     def __set_properties(self):
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
-        self.bouton_produit.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sélectionner un produit")))
+        self.bouton_produit.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sÃ©lectionner un produit")))
         self.SetMinSize((950, 700))
 
     def __do_layout(self):

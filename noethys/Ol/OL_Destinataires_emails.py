@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activitÈs
+# Application :    Noethys, gestion multi-activit√©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-12 Ivan LUCAS
@@ -50,7 +50,7 @@ class Track(object):
         self.TraitementPieces() 
     
     def TraitementPieces(self):
-        """ Traitement des piËces """
+        """ Traitement des pi√®ces """
         if len(self.pieces) > 0 :
             self.listeLabelsPieces = []
             listeExtensions = []
@@ -91,7 +91,7 @@ class Track(object):
     
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # RÈcupÈration des paramËtres perso
+        # R√©cup√©ration des param√®tres perso
         listeDonneesManuelles = kwds.pop("listeDonnees", [])
         self.modificationAutorisee = kwds.pop("modificationAutorisee", True)
 
@@ -118,14 +118,14 @@ class ListView(FastObjectListView):
         # Binds perso
         self.Bind(wx.EVT_CONTEXT_MENU, self.OnContextMenu)
         
-        # Init donnÈes
+        # Init donn√©es
         if len(listeDonneesManuelles) > 0 :
             self.SetDonneesManuelles(listeDonneesManuelles)
                 
     def InitModel(self):
         self.donnees = self.GetTracks()
         
-        # MÈmorise les piËces jointes personnelles et les champs
+        # M√©morise les pi√®ces jointes personnelles et les champs
         for track in self.donnees :
             if (track.adresse in self.memoire_pieces) == False :
                 self.memoire_pieces[track.adresse] = []
@@ -136,7 +136,7 @@ class ListView(FastObjectListView):
             self.memoire_champs[track.adresse] = track.champs
             
     def GetTracks(self):
-        """ RÈcupÈration des donnÈes """
+        """ R√©cup√©ration des donn√©es """
         listeID = None
         listeListeView = []
         for item in self.listeDonnees :
@@ -157,19 +157,19 @@ class ListView(FastObjectListView):
         self.evenRowsBackColor = wx.Colour(255, 255, 255)
         self.useExpansionColumn = True
         
-        # PrÈparation de la listeImages
+        # Pr√©paration de la listeImages
         self.dictImages = {}
         for extension in LISTE_EXTENSIONS :
             self.AddNamedImages(extension, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Fichier_%s.png" % extension), wx.BITMAP_TYPE_PNG))
         
-        # Formatage des donnÈes
+        # Formatage des donn√©es
         def GetImagePiece(track):
             return track.extension_pieces
 
         liste_Colonnes = [
             ColumnDefn(u"", "left", 0, None),
             ColumnDefn(_(u"Adresse"), 'left', 150, "adresse", typeDonnee="texte", isSpaceFilling=True),
-            ColumnDefn(_(u"PiËces jointes personnelles"), 'left', 190, "texte_pieces", typeDonnee="texte", imageGetter=GetImagePiece),
+            ColumnDefn(_(u"Pi√®ces jointes personnelles"), 'left', 190, "texte_pieces", typeDonnee="texte", imageGetter=GetImagePiece),
             ]
         
         self.SetColumns(liste_Colonnes)
@@ -187,7 +187,7 @@ class ListView(FastObjectListView):
             self.selectionTrack = None
         self.InitModel()
         self.InitObjectListView()
-        # SÈlection d'un item
+        # S√©lection d'un item
         if self.selectionTrack != None :
             self.SelectObject(self.selectionTrack, deselectOthers=True, ensureVisible=True)
         self.selectionID = None
@@ -204,7 +204,7 @@ class ListView(FastObjectListView):
         else:
             selection = self.Selection()[0]
 
-        # CrÈation du menu contextuel
+        # Cr√©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Modifier
@@ -217,16 +217,16 @@ class ListView(FastObjectListView):
 
         menuPop.AppendSeparator()
         
-        # Ajouter piËce jointe
-        item = wx.MenuItem(menuPop, 20, _(u"Ajouter une piËce personnelle"))
+        # Ajouter pi√®ce jointe
+        item = wx.MenuItem(menuPop, 20, _(u"Ajouter une pi√®ce personnelle"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Ajouter.png"), wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.AjouterPiece, id=20)
         if selection == None :
             item.Enable(False)
         
-        # Retirer piËce jointe
-        item = wx.MenuItem(menuPop, 30, _(u"Retirer une piËce personnelle"))
+        # Retirer pi√®ce jointe
+        item = wx.MenuItem(menuPop, 30, _(u"Retirer une pi√®ce personnelle"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Supprimer.png"), wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.RetirerPiece, id=30)
@@ -235,8 +235,8 @@ class ListView(FastObjectListView):
 
         menuPop.AppendSeparator()
 
-        # Ouvrir piËce jointe
-        item = wx.MenuItem(menuPop, 60, _(u"Ouvrir une piËce personnelle"))
+        # Ouvrir pi√®ce jointe
+        item = wx.MenuItem(menuPop, 60, _(u"Ouvrir une pi√®ce personnelle"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Loupe.png"), wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.OuvrirPiece, id=60)
@@ -246,7 +246,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
 
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"AperÁu avant impression"))
+        item = wx.MenuItem(menuPop, 40, _(u"Aper√ßu avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -308,7 +308,7 @@ class ListView(FastObjectListView):
         # Autorisation des modifications
         if modificationAutorisee != None :
             self.modificationAutorisee = modificationAutorisee
-        # IMportation des donnÈes
+        # IMportation des donn√©es
         self.SetDonnees(listeDonnees)
         listeTemp = []
         for track in self.donnees :
@@ -320,9 +320,9 @@ class ListView(FastObjectListView):
             }
 
     def AjouterPiece(self, event):
-        """ Demande l'emplacement du fichier ‡ joindre """
+        """ Demande l'emplacement du fichier √† joindre """
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous devez d'abord sÈlectionner un destinataire dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez d'abord s√©lectionner un destinataire dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -330,7 +330,7 @@ class ListView(FastObjectListView):
 
         standardPath = wx.StandardPaths.Get()
         rep = standardPath.GetDocumentsDir()
-        dlg = wx.FileDialog(self, message=_(u"Veuillez sÈlectionner le ou les fichiers ‡ joindre"), defaultDir=rep, defaultFile="", style=wx.FD_OPEN|wx.FD_MULTIPLE)
+        dlg = wx.FileDialog(self, message=_(u"Veuillez s√©lectionner le ou les fichiers √† joindre"), defaultDir=rep, defaultFile="", style=wx.FD_OPEN|wx.FD_MULTIPLE)
         if dlg.ShowModal() == wx.ID_OK:
             chemins = dlg.GetPaths()
         else:
@@ -340,7 +340,7 @@ class ListView(FastObjectListView):
         for fichier in chemins :
             valide = True
             if fichier in track.pieces :
-                dlg = wx.MessageDialog(self, _(u"Le fichier '%s' est dÈj‡ dans la liste !") % os.path.basename(fichier), "Erreur", wx.OK| wx.ICON_EXCLAMATION)  
+                dlg = wx.MessageDialog(self, _(u"Le fichier '%s' est d√©j√† dans la liste !") % os.path.basename(fichier), "Erreur", wx.OK| wx.ICON_EXCLAMATION)  
                 dlg.ShowModal()
                 dlg.Destroy()
                 valide = False
@@ -350,20 +350,20 @@ class ListView(FastObjectListView):
         self.MAJ()
         
     def RetirerPiece(self, event):
-        """ Retirer piËces """
+        """ Retirer pi√®ces """
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous devez d'abord sÈlectionner un destinataire dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez d'abord s√©lectionner un destinataire dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         track = self.Selection()[0]
         if track.pieces == [] :
-            dlg = wx.MessageDialog(self, _(u"Il n'y a aucune piËce ‡ retirer !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Il n'y a aucune pi√®ce √† retirer !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
-        dlg = wx.MultiChoiceDialog(self, _(u"Cochez les piËces personnelles ‡ retirer :"), _(u"Retirer des piËces personnelles"), track.listeLabelsPieces)
+        dlg = wx.MultiChoiceDialog(self, _(u"Cochez les pi√®ces personnelles √† retirer :"), _(u"Retirer des pi√®ces personnelles"), track.listeLabelsPieces)
         if dlg.ShowModal() == wx.ID_OK :
             selections = dlg.GetSelections()
             for index in selections :
@@ -374,19 +374,19 @@ class ListView(FastObjectListView):
 
     def OuvrirPiece(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous devez d'abord sÈlectionner un destinataire ‡ ouvrir dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez d'abord s√©lectionner un destinataire √† ouvrir dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         track = self.Selection()[0]
         if track.pieces == [] :
-            dlg = wx.MessageDialog(self, _(u"Il n'y a aucune piËce ‡ ouvrir !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Il n'y a aucune pi√®ce √† ouvrir !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
-        # Demande le fichier ‡ ouvrir
+        # Demande le fichier √† ouvrir
         if len(track.pieces) > 1 :
-            dlg = wx.SingleChoiceDialog(self, _(u"SÈlectionnez la piËce jointe personnelle ‡ ouvrir :"), _(u"Ouvrir une piËce jointe personnelle"), track.pieces, wx.CHOICEDLG_STYLE)
+            dlg = wx.SingleChoiceDialog(self, _(u"S√©lectionnez la pi√®ce jointe personnelle √† ouvrir :"), _(u"Ouvrir une pi√®ce jointe personnelle"), track.pieces, wx.CHOICEDLG_STYLE)
             if dlg.ShowModal() == wx.ID_OK:
                 fichier = track.pieces[dlg.GetSelection()]
                 dlg.Destroy()
@@ -411,20 +411,20 @@ class ListView(FastObjectListView):
 
     def ExportTexte(self, event=None):
         """ Export de la liste au format texte """
-        # VÈrifie qu"il y a des adresses mails saisies
+        # V√©rifie qu"il y a des adresses mails saisies
         if len(self.donnees) == 0 :
             dlg = wx.MessageDialog(self, _(u"La liste des destinataires est vide !"), "Erreur", wx.OK| wx.ICON_EXCLAMATION)  
             dlg.ShowModal()
             dlg.Destroy()
             return
-        # Demande ‡ l'utilisateur le nom de fichier et le rÈpertoire de destination
+        # Demande √† l'utilisateur le nom de fichier et le r√©pertoire de destination
         nomFichier = "ExportTexte.txt"
         wildcard = "Fichier texte (*.txt)|*.txt|" \
                         "All files (*.*)|*.*"
         sp = wx.StandardPaths.Get()
         cheminDefaut = sp.GetDocumentsDir()
         dlg = wx.FileDialog(
-            None, message = _(u"Veuillez sÈlectionner le rÈpertoire de destination et le nom du fichier"), defaultDir=cheminDefaut, 
+            None, message = _(u"Veuillez s√©lectionner le r√©pertoire de destination et le nom du fichier"), defaultDir=cheminDefaut, 
             defaultFile = nomFichier, 
             wildcard = wildcard, 
             style = wx.FD_SAVE
@@ -436,26 +436,26 @@ class ListView(FastObjectListView):
         else:
             dlg.Destroy()
             return
-        # Le fichier de destination existe dÈj‡ :
+        # Le fichier de destination existe d√©j√† :
         if os.path.isfile(cheminFichier) == True :
-            dlg = wx.MessageDialog(None, _(u"Un fichier portant ce nom existe dÈj‡. \n\nVoulez-vous le remplacer ?"), "Attention !", wx.YES_NO | wx.NO_DEFAULT | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(None, _(u"Un fichier portant ce nom existe d√©j√†. \n\nVoulez-vous le remplacer ?"), "Attention !", wx.YES_NO | wx.NO_DEFAULT | wx.ICON_EXCLAMATION)
             if dlg.ShowModal() == wx.ID_NO :
                 return False
                 dlg.Destroy()
             else:
                 dlg.Destroy()
-        # CrÈation du fichier texte
+        # Cr√©ation du fichier texte
         texte = ""
         separateur = ";"
         for track in self.donnees :
             texte += track.adresse + separateur
         texte = texte[:-1]
-        # CrÈation du fichier texte
+        # Cr√©ation du fichier texte
         f = open(cheminFichier, "w")
-        f.write(texte.encode("iso-8859-15"))
+        f.write(texte.encode("utf8"))
         f.close()
-        # Confirmation de crÈation du fichier et demande d'ouverture directe dans Excel
-        txtMessage = _(u"Le fichier Texte a ÈtÈ crÈÈ avec succËs. Souhaitez-vous l'ouvrir dËs maintenant ?")
+        # Confirmation de cr√©ation du fichier et demande d'ouverture directe dans Excel
+        txtMessage = _(u"Le fichier Texte a √©t√© cr√©√© avec succ√®s. Souhaitez-vous l'ouvrir d√®s maintenant ?")
         dlgConfirm = wx.MessageDialog(None, txtMessage, _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.ICON_QUESTION)
         reponse = dlgConfirm.ShowModal()
         dlgConfirm.Destroy()
@@ -467,20 +467,20 @@ class ListView(FastObjectListView):
     def ExportExcel(self, event=None):
         """ Export Excel """
         titre = _(u"Destinataires")
-        # VÈrifie qu"il y a des adresses mails saisies
+        # V√©rifie qu"il y a des adresses mails saisies
         if len(self.donnees) == 0 :
             dlg = wx.MessageDialog(self, _(u"La liste des destinataires est vide !"), "Erreur", wx.OK| wx.ICON_EXCLAMATION)  
             dlg.ShowModal()
             dlg.Destroy()
             return
-        # Demande ‡ l'utilisateur le nom de fichier et le rÈpertoire de destination
+        # Demande √† l'utilisateur le nom de fichier et le r√©pertoire de destination
         nomFichier = "ExportExcel_%s.xlsx" % datetime.datetime.now().strftime("%Y%m%d%H%M%S")
         wildcard = "Fichier Excel (*.xlsx)|*.xlsx|" \
                         "All files (*.*)|*.*"
         sp = wx.StandardPaths.Get()
         cheminDefaut = sp.GetDocumentsDir()
         dlg = wx.FileDialog(
-            None, message = _(u"Veuillez sÈlectionner le rÈpertoire de destination et le nom du fichier"), defaultDir=cheminDefaut, 
+            None, message = _(u"Veuillez s√©lectionner le r√©pertoire de destination et le nom du fichier"), defaultDir=cheminDefaut, 
             defaultFile = nomFichier, 
             wildcard = wildcard, 
             style = wx.FD_SAVE
@@ -492,9 +492,9 @@ class ListView(FastObjectListView):
         else:
             dlg.Destroy()
             return
-        # Le fichier de destination existe dÈj‡ :
+        # Le fichier de destination existe d√©j√† :
         if os.path.isfile(cheminFichier) == True :
-            dlg = wx.MessageDialog(None, _(u"Un fichier portant ce nom existe dÈj‡. \n\nVoulez-vous le remplacer ?"), "Attention !", wx.YES_NO | wx.NO_DEFAULT | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(None, _(u"Un fichier portant ce nom existe d√©j√†. \n\nVoulez-vous le remplacer ?"), "Attention !", wx.YES_NO | wx.NO_DEFAULT | wx.ICON_EXCLAMATION)
             if dlg.ShowModal() == wx.ID_NO :
                 return False
                 dlg.Destroy()
@@ -503,7 +503,7 @@ class ListView(FastObjectListView):
 
         # Export
         import xlsxwriter
-        # CrÈation d'un classeur
+        # Cr√©ation d'un classeur
         classeur = xlsxwriter.Workbook(cheminFichier)
         feuille = classeur.add_worksheet(titre)
         x = 0
@@ -512,8 +512,8 @@ class ListView(FastObjectListView):
             x += 1                    
         classeur.close()
 
-        # Confirmation de crÈation du fichier et demande d'ouverture directe dans Excel
-        txtMessage = _(u"Le fichier Excel a ÈtÈ crÈÈ avec succËs. Souhaitez-vous l'ouvrir dËs maintenant ?")
+        # Confirmation de cr√©ation du fichier et demande d'ouverture directe dans Excel
+        txtMessage = _(u"Le fichier Excel a √©t√© cr√©√© avec succ√®s. Souhaitez-vous l'ouvrir d√®s maintenant ?")
         dlgConfirm = wx.MessageDialog(None, txtMessage, _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.ICON_QUESTION)
         reponse = dlgConfirm.ShowModal()
         dlgConfirm.Destroy()
@@ -524,11 +524,11 @@ class ListView(FastObjectListView):
 
 
     def GetDonnees(self):
-        """ Renvoie les donnÈes au format track """
+        """ Renvoie les donn√©es au format track """
         return self.donnees
 
     def GetDonneesDict(self):
-        """ Renvoie les donnÈes au format dict """
+        """ Renvoie les donn√©es au format dict """
         listeTemp = []
         for track in self.donnees :
             dictTemp = {"adresse":track.adresse, "pieces":track.pieces, "champs":track.champs}

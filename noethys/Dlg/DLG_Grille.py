@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -39,7 +39,7 @@ from Ctrl import CTRL_Etiquettes
 
 class Commandes(wx.Panel):
     def __init__(self, parent):
-        """ Boutons de commande en bas de la fenêtre """
+        """ Boutons de commande en bas de la fenÃªtre """
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
         self.parent = parent
 
@@ -78,8 +78,8 @@ class Commandes(wx.Panel):
         # Infosbulles
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
-        self.bouton_options.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder au menu des options")))
-        self.bouton_outils.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder au menu des outils")))
+        self.bouton_options.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accÃ©der au menu des options")))
+        self.bouton_outils.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accÃ©der au menu des outils")))
         self.bouton_lot.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour saisir, modifier ou supprimer un lot de consommations")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
 
@@ -88,7 +88,7 @@ class Commandes(wx.Panel):
         self.parent.panel_grille.grille.Sauvegarde()
         self.parent.panel_grille.grille.SauvegardeTransports()
         self.parent.MemoriseParametres()
-        # Fermeture de la fenêtre
+        # Fermeture de la fenÃªtre
         if 'phoenix' in wx.PlatformInfo:
             self.parent._mgr.UnInit()
         try :
@@ -100,12 +100,12 @@ class Commandes(wx.Panel):
         # Confirmation d'annulation
         listeHistorique = self.parent.panel_grille.grille.GetHistorique()
         if len(listeHistorique) > 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous avez effectué %d modification(s) dans la grille.\n\nSouhaitez-vous vraiment les annuler ?") % len(listeHistorique), _(u"Annulation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous avez effectuÃ© %d modification(s) dans la grille.\n\nSouhaitez-vous vraiment les annuler ?") % len(listeHistorique), _(u"Annulation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
             reponse = dlg.ShowModal() 
             dlg.Destroy()
             if reponse != wx.ID_YES :
                 return
-        # Fermeture de la fenêtre
+        # Fermeture de la fenÃªtre
         if 'phoenix' in wx.PlatformInfo:
             self.parent._mgr.UnInit()
         self.parent.EndModal(wx.ID_CANCEL)
@@ -175,13 +175,13 @@ class PanelGrille(wx.Panel):
         self.parent = parent
         self.IDfamille = IDfamille
         
-        # Paramètres de sélection
+        # ParamÃ¨tres de sÃ©lection
         self.mode = mode
         self.listeSelectionActivites = [] #[1,]
         self.listeSelectionIndividus =  [] #[24,]
         self.listePeriodes = [] # [(datetime.date(2010, 1, 1), datetime.date(2010, 12, 31)), (datetime.date(2011, 5, 1), datetime.date(2011, 12, 31)),]
         
-        # Création des contrôles
+        # CrÃ©ation des contrÃ´les
 ##        self.ctrl_titre = CTRL_titre(self, IDfamille, couleurFond="#316AC5")
         self.grille = CTRL_Grille.CTRL(self, IDfamille=IDfamille)
 
@@ -206,7 +206,7 @@ class PanelGrille(wx.Panel):
         self.ID_MODE_REFUS = wx.Window.NewControlId()
 
         liste_tools = [
-            (self.ID_MODE_RESERVATION, _(u"Réservation"), CTRL_Grille.COULEUR_RESERVATION, _(u"Mode de saisie 'Réservation'")),
+            (self.ID_MODE_RESERVATION, _(u"RÃ©servation"), CTRL_Grille.COULEUR_RESERVATION, _(u"Mode de saisie 'RÃ©servation'")),
             (self.ID_MODE_ATTENTE, _(u"Attente"), CTRL_Grille.COULEUR_ATTENTE, _(u"Mode de saisie 'Attente'")),
             (self.ID_MODE_REFUS, _(u"Refus"), CTRL_Grille.COULEUR_REFUS, _(u"Mode de saisie 'Refus'")),
         ]
@@ -280,17 +280,17 @@ class Notebook(aui.AuiNotebook):
         
         self.pages = []
         
-        # Paramètres de sélection
+        # ParamÃ¨tres de sÃ©lection
         self.mode = "individu"
         self.listeActivites = [1,]
         self.listeSelectionIndividus = [24,]
         self.listeIndividusFamille = [24, 25]
         self.listePeriodes = [] # [(datetime.date(2010, 1, 1), datetime.date(2010, 12, 31)), (datetime.date(2011, 5, 1), datetime.date(2011, 12, 31)),]
         
-        # Création de la grille
+        # CrÃ©ation de la grille
         self.grille = CTRL_Grille.CTRL(self)
         
-        # Création des pages de tests sur le notebook
+        # CrÃ©ation des pages de tests sur le notebook
         self.AddPage(self.grille, _(u"test1"))
         self.AddPage(wx.Panel(self, -1), _(u"test2"))
         self.AddPage(wx.Panel(self, -1), _(u"test3"))
@@ -331,7 +331,7 @@ class Dialog(wx.Dialog):
         self._mgr.SetManagedWindow(self)
         self.SetTitle(_(u"Grille des consommations"))
         
-        # Récupère les perspectives
+        # RÃ©cupÃ¨re les perspectives
         cfg = UTILS_Config.FichierConfig()
         self.userConfig = cfg.GetDictConfig()
         if ("grille_perspectives" in self.userConfig) == True :
@@ -343,29 +343,29 @@ class Dialog(wx.Dialog):
         else:
             self.perspective_active = None
                 
-        # Création du notebook
+        # CrÃ©ation du notebook
         self.panel_grille = PanelGrille(self, "individu", self.IDfamille)
         self.dictActivites = self.panel_grille.grille.dictActivites
         self.dictIndividus = self.panel_grille.grille.dictIndividus
         self.dictGroupes = self.panel_grille.grille.dictGroupes
         self.listeSelectionIndividus = self.panel_grille.grille.listeSelectionIndividus
                         
-        # Création des panels amovibles
+        # CrÃ©ation des panels amovibles
         self.panel_periode = CTRL_Grille_periode.CTRL(self)
         dictDonnees = UTILS_Config.GetParametre("dict_selection_periodes_activites")
         self.panel_periode.SetDictDonnees(dictDonnees)
         self._mgr.AddPane(self.panel_periode, aui.AuiPaneInfo().
-                          Name("periode").Caption(_(u"Sélection de la période")).
+                          Name("periode").Caption(_(u"SÃ©lection de la pÃ©riode")).
                           Top().Layer(1).BestSize(wx.Size(230,144)).Position(1).CloseButton(False).Fixed().MaximizeButton(False))
         
         self.panel_individus = CTRL_Grille_individus.CTRL(self, self.IDfamille, self.dictIndividus, selectionIndividus, selectionTous)
         self._mgr.AddPane(self.panel_individus, aui.AuiPaneInfo().
-                          Name("individus").Caption(_(u"Sélection des individus")).
+                          Name("individus").Caption(_(u"SÃ©lection des individus")).
                           Top().Layer(1).BestSize(wx.Size(180,140)).Position(2).CloseButton(False).MaximizeButton(False).MinSize((10, 100)))
                         
         self.panel_activites = CTRL_Grille_activite2.CTRL(self, self.dictIndividus, self.dictActivites, self.dictGroupes, self.listeSelectionIndividus)
         self._mgr.AddPane(self.panel_activites, aui.AuiPaneInfo().
-                          Name("activites").Caption(_(u"Sélection des activités")).
+                          Name("activites").Caption(_(u"SÃ©lection des activitÃ©s")).
                           Top().Layer(1).Position(3).CloseButton(False).MaximizeButton(False).MinSize((160, 100)))
         
         self.panel_facturation = CTRL_Grille_facturation.CTRL(self)
@@ -380,7 +380,7 @@ class Dialog(wx.Dialog):
 
         self.panel_forfaits = CTRL_Grille_forfaits.CTRL(self, grille=self.panel_grille.grille)
         self._mgr.AddPane(self.panel_forfaits, aui.AuiPaneInfo().
-                          Name("forfaits").Caption(_(u"Forfaits crédits")).
+                          Name("forfaits").Caption(_(u"Forfaits crÃ©dits")).
                           Right().Layer(0).Position(4).BestSize(wx.Size(275,140)).CloseButton(False).MaximizeButton(False).MinSize((275, 100)))
         self._mgr.GetPane("forfaits").dock_proportion = 50000
         
@@ -391,7 +391,7 @@ class Dialog(wx.Dialog):
 
         self.panel_legende = OL_Legende_grille.ListView(self, id=-1, name="OL_legende", style=wx.LC_REPORT|wx.LC_NO_HEADER | wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL)
         self._mgr.AddPane(self.panel_legende, aui.AuiPaneInfo().
-                          Name("legende").Caption(_(u"Légende")).
+                          Name("legende").Caption(_(u"LÃ©gende")).
                           Left().Layer(0).Position(2).CloseButton(False).BestSize(wx.Size(170, 100)).MaximizeButton(False).MinSize((170, 100)))    
         self._mgr.GetPane("legende").dock_proportion = 60000
         
@@ -402,16 +402,16 @@ class Dialog(wx.Dialog):
         self._mgr.GetPane("raccourcis").dock_proportion = 30000
         
         
-        # Création du panel central
+        # CrÃ©ation du panel central
         self._mgr.AddPane(self.panel_grille, aui.AuiPaneInfo().Name("grille").
                           CenterPane())
                 
         self._mgr.GetPane("grille").Show()
 
-        # Sauvegarde de la perspective par défaut
+        # Sauvegarde de la perspective par dÃ©faut
         self.perspective_defaut = self._mgr.SavePerspective()
 
-        # Récupération de la perspective chargée
+        # RÃ©cupÃ©ration de la perspective chargÃ©e
         if self.perspective_active != None :
             self._mgr.LoadPerspective(self.perspectives[self.perspective_active]["perspective"])
         else:
@@ -421,7 +421,7 @@ class Dialog(wx.Dialog):
         
         self.Bind(wx.EVT_CLOSE, self.OnClose)
         
-        # Détermine la taille de la fenêtre
+        # DÃ©termine la taille de la fenÃªtre
         self.SetMinSize((600, 670))
         taille_fenetre = UTILS_Config.GetParametre("taille_fenetre_grille")
         if taille_fenetre == None :
@@ -432,7 +432,7 @@ class Dialog(wx.Dialog):
             self.SetSize(taille_fenetre)
         self.CenterOnScreen()
         
-        # Initialisation des contrôles
+        # Initialisation des contrÃ´les
         self.panel_periode.SetVisibleSelection()
         self.SetListesPeriodes(self.panel_periode.GetDatesSelections())
         self.SetListeSelectionIndividus(self.panel_individus.GetSelections())
@@ -482,20 +482,20 @@ class Dialog(wx.Dialog):
 ##        event.Skip() 
 
     def MemoriseParametres(self):
-        # Mémorisation du paramètre de la taille d'écran
+        # MÃ©morisation du paramÃ¨tre de la taille d'Ã©cran
         if self.IsMaximized() == True :
             taille_fenetre = (0, 0)
         else:
             taille_fenetre = tuple(self.GetSize())
         UTILS_Config.SetParametre("taille_fenetre_grille", taille_fenetre)
-        # Autres paramètres
+        # Autres paramÃ¨tres
         UTILS_Config.SetParametre("grille_perspectives", self.perspectives)
         UTILS_Config.SetParametre("grille_perspective_active", self.perspective_active)
-        # Paramètres grille
+        # ParamÃ¨tres grille
         self.panel_grille.grille.MemoriseParametres() 
 
     def MenuOptions(self):
-        # Création du menu Options
+        # CrÃ©ation du menu Options
         menuPop = UTILS_Adaptations.Menu()
 
         ID_AFFICHAGE_PERSPECTIVE_DEFAUT = wx.Window.NewControlId()
@@ -510,7 +510,7 @@ class Dialog(wx.Dialog):
         ID_BLOCAGE_SI_COMPLET = wx.Window.NewControlId()
         ID_AFFICHE_SANS_PRESTATION = wx.Window.NewControlId()
 
-        item = wx.MenuItem(menuPop, ID_AFFICHAGE_PERSPECTIVE_DEFAUT, _(u"Disposition par défaut"), _(u"Afficher la disposition par défaut"), wx.ITEM_CHECK)
+        item = wx.MenuItem(menuPop, ID_AFFICHAGE_PERSPECTIVE_DEFAUT, _(u"Disposition par dÃ©faut"), _(u"Afficher la disposition par dÃ©faut"), wx.ITEM_CHECK)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.On_affichage_perspective_defaut, id=ID_AFFICHAGE_PERSPECTIVE_DEFAUT)
         if self.perspective_active == None : item.Check(True)
@@ -531,7 +531,7 @@ class Dialog(wx.Dialog):
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.On_affichage_perspective_save, id=ID_AFFICHAGE_PERSPECTIVE_SAVE)
         
-        item = wx.MenuItem(menuPop, ID_AFFICHAGE_PERSPECTIVE_SUPPR, _(u"Supprimer des dispositions"), _(u"Supprimer des dispositions de page d'accueil sauvegardée"))
+        item = wx.MenuItem(menuPop, ID_AFFICHAGE_PERSPECTIVE_SUPPR, _(u"Supprimer des dispositions"), _(u"Supprimer des dispositions de page d'accueil sauvegardÃ©e"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Perspective_supprimer.png"), wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.On_affichage_perspective_suppr, id=ID_AFFICHAGE_PERSPECTIVE_SUPPR)
@@ -539,11 +539,11 @@ class Dialog(wx.Dialog):
         menuPop.AppendSeparator()
         
         self.listePanneaux = [
-            { "label" : _(u"Sélection de la période"), "code" : "periode", "IDmenu" : None },
-            { "label" : _(u"Sélection des individus"), "code" : "individus", "IDmenu" : None }, 
+            { "label" : _(u"SÃ©lection de la pÃ©riode"), "code" : "periode", "IDmenu" : None },
+            { "label" : _(u"SÃ©lection des individus"), "code" : "individus", "IDmenu" : None }, 
             { "label" : _(u"Options d'affichage et de saisie"), "code" : "activites", "IDmenu" : None },
             { "label" : _(u"Facturation"), "code" : "facturation", "IDmenu" : None },
-            { "label" : _(u"Légende"), "code" : "legende", "IDmenu" : None },
+            { "label" : _(u"LÃ©gende"), "code" : "legende", "IDmenu" : None },
             { "label" : _(u"Touches raccourcis"), "code" : "raccourcis", "IDmenu" : None },
             ]
         ID = ID_AFFICHAGE_PANNEAUX
@@ -560,7 +560,7 @@ class Dialog(wx.Dialog):
         
         menuPop.AppendSeparator()
 
-        item = wx.MenuItem(menuPop, ID_AFFICHE_COLONNE_MEMO, _(u"Afficher la colonne Mémo journalier"), _(u"Afficher la colonne Mémo journalier"), wx.ITEM_CHECK)
+        item = wx.MenuItem(menuPop, ID_AFFICHE_COLONNE_MEMO, _(u"Afficher la colonne MÃ©mo journalier"), _(u"Afficher la colonne MÃ©mo journalier"), wx.ITEM_CHECK)
         menuPop.AppendItem(item)
         item.Check(self.panel_grille.grille.GetAfficheColonneMemo())
         self.Bind(wx.EVT_MENU, self.On_affiche_memo, id=ID_AFFICHE_COLONNE_MEMO)
@@ -570,24 +570,24 @@ class Dialog(wx.Dialog):
         item.Check(self.panel_grille.grille.GetAfficheColonneTransports())
         self.Bind(wx.EVT_MENU, self.On_affiche_transports, id=ID_AFFICHE_COLONNE_TRANSPORTS)
 
-        item = wx.MenuItem(menuPop, ID_MASQUER_UNITES_FERMEES, _(u"Masquer les unités fermées"), _(u"Masquer les unités fermées"), wx.ITEM_CHECK)
+        item = wx.MenuItem(menuPop, ID_MASQUER_UNITES_FERMEES, _(u"Masquer les unitÃ©s fermÃ©es"), _(u"Masquer les unitÃ©s fermÃ©es"), wx.ITEM_CHECK)
         menuPop.AppendItem(item)
         item.Check(self.panel_grille.grille.GetMasquerUnitesFermees())
         self.Bind(wx.EVT_MENU, self.On_masquer_unites_fermees, id=ID_MASQUER_UNITES_FERMEES)
 
-        item = wx.MenuItem(menuPop, ID_AFFICHAGE_PARAMETRES, _(u"Définir hauteur et largeurs des cases"), _(u"Définir la hauteur des lignes et la largeur des cases"))
+        item = wx.MenuItem(menuPop, ID_AFFICHAGE_PARAMETRES, _(u"DÃ©finir hauteur et largeurs des cases"), _(u"DÃ©finir la hauteur des lignes et la largeur des cases"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Mecanisme.png"), wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.On_affichage_parametres, id=ID_AFFICHAGE_PARAMETRES)
 
         menuPop.AppendSeparator()
 
-        item = wx.MenuItem(menuPop, ID_AFFICHE_SANS_PRESTATION, _(u"Afficher le symbole 'Sans prestation'"), _(u"Affiche le symbole 'Sans prestation' dans les cases si aucune prestation n'est rattachée"), wx.ITEM_CHECK)
+        item = wx.MenuItem(menuPop, ID_AFFICHE_SANS_PRESTATION, _(u"Afficher le symbole 'Sans prestation'"), _(u"Affiche le symbole 'Sans prestation' dans les cases si aucune prestation n'est rattachÃ©e"), wx.ITEM_CHECK)
         menuPop.AppendItem(item)
         item.Check(self.panel_grille.grille.afficheSansPrestation)
         self.Bind(wx.EVT_MENU, self.On_affiche_sans_prestation, id=ID_AFFICHE_SANS_PRESTATION)
 
-        item = wx.MenuItem(menuPop, ID_BLOCAGE_SI_COMPLET, _(u"Blocage si capacité maximale atteinte"), _(u"Empêche l'utilisateur de saisir une consommation si la capacité maximale est atteinte (case rouge)"), wx.ITEM_CHECK)
+        item = wx.MenuItem(menuPop, ID_BLOCAGE_SI_COMPLET, _(u"Blocage si capacitÃ© maximale atteinte"), _(u"EmpÃªche l'utilisateur de saisir une consommation si la capacitÃ© maximale est atteinte (case rouge)"), wx.ITEM_CHECK)
         menuPop.AppendItem(item)
         item.Check(self.panel_grille.grille.blocageSiComplet)
         self.Bind(wx.EVT_MENU, self.On_blocage_si_complet, id=ID_BLOCAGE_SI_COMPLET)
@@ -596,7 +596,7 @@ class Dialog(wx.Dialog):
         menuPop.Destroy()
 
     def MenuOutils(self):
-        # Création du menu Outils
+        # CrÃ©ation du menu Outils
         menuPop = UTILS_Adaptations.Menu()
 
         ID_OUTILS_SAISIE_FORFAIT = wx.Window.NewControlId()
@@ -608,7 +608,7 @@ class Dialog(wx.Dialog):
         ID_OUTILS_CONVERTIR_ETAT = wx.Window.NewControlId()
         ID_OUTILS_RECOPIAGE = wx.Window.NewControlId()
 
-        item = wx.MenuItem(menuPop, ID_OUTILS_SAISIE_FORFAIT, _(u"Appliquer des forfaits datés"), _(u"Appliquer des forfaits datés"))
+        item = wx.MenuItem(menuPop, ID_OUTILS_SAISIE_FORFAIT, _(u"Appliquer des forfaits datÃ©s"), _(u"Appliquer des forfaits datÃ©s"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Forfait.png"), wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.On_outils_saisie_forfait, id=ID_OUTILS_SAISIE_FORFAIT)
@@ -622,7 +622,7 @@ class Dialog(wx.Dialog):
 
         menuPop.AppendSeparator()
 
-        item = wx.MenuItem(menuPop, ID_OUTILS_CONVERTIR_ETAT, _(u"Convertir l'état des consommations"), _(u"Convertir l'état des consommations"))
+        item = wx.MenuItem(menuPop, ID_OUTILS_CONVERTIR_ETAT, _(u"Convertir l'Ã©tat des consommations"), _(u"Convertir l'Ã©tat des consommations"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Calendrier_modification.png"), wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.panel_grille.grille.ConvertirEtat, id=ID_OUTILS_CONVERTIR_ETAT)
@@ -634,24 +634,24 @@ class Dialog(wx.Dialog):
 
         menuPop.AppendSeparator()
 
-        item = wx.MenuItem(menuPop, ID_OUTILS_TOUT_SELECTIONNER, _(u"Sélectionner toutes les lignes"), _(u"Sélectionner toutes les lignes"))
+        item = wx.MenuItem(menuPop, ID_OUTILS_TOUT_SELECTIONNER, _(u"SÃ©lectionner toutes les lignes"), _(u"SÃ©lectionner toutes les lignes"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Cocher.png"), wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.panel_grille.grille.SelectionnerLignes, id=ID_OUTILS_TOUT_SELECTIONNER)
 
-        item = wx.MenuItem(menuPop, ID_OUTILS_TOUT_DESELECTIONNER, _(u"Désélectionner toutes les lignes"), _(u"Désélectionner toutes les lignes"))
+        item = wx.MenuItem(menuPop, ID_OUTILS_TOUT_DESELECTIONNER, _(u"DÃ©sÃ©lectionner toutes les lignes"), _(u"DÃ©sÃ©lectionner toutes les lignes"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Decocher.png"), wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.panel_grille.grille.DeselectionnerLignes, id=ID_OUTILS_TOUT_DESELECTIONNER)
 
         menuPop.AppendSeparator()
         
-        item = wx.MenuItem(menuPop, ID_OUTILS_IMPRIMER_CONSO, _(u"Imprimer la liste des réservations"), _(u"Imprimer la liste des réservations affichées"))
+        item = wx.MenuItem(menuPop, ID_OUTILS_IMPRIMER_CONSO, _(u"Imprimer la liste des rÃ©servations"), _(u"Imprimer la liste des rÃ©servations affichÃ©es"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Imprimante.png"), wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.On_outils_imprimer_conso, id=ID_OUTILS_IMPRIMER_CONSO)
 
-        item = wx.MenuItem(menuPop, ID_OUTILS_ENVOYER_CONSO, _(u"Envoyer la liste des réservations par Email"), _(u"Envoyer la liste des réservations affichées par Email"))
+        item = wx.MenuItem(menuPop, ID_OUTILS_ENVOYER_CONSO, _(u"Envoyer la liste des rÃ©servations par Email"), _(u"Envoyer la liste des rÃ©servations affichÃ©es par Email"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Emails_exp.png"), wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.On_outils_envoyer_conso, id=ID_OUTILS_ENVOYER_CONSO)
@@ -674,7 +674,7 @@ class Dialog(wx.Dialog):
 
     def On_affichage_perspective_save(self, event):
         newIDperspective = len(self.perspectives)
-        dlg = wx.TextEntryDialog(self, _(u"Veuillez saisir un intitulé pour cette disposition :"), _(u"Sauvegarde d'une disposition"))
+        dlg = wx.TextEntryDialog(self, _(u"Veuillez saisir un intitulÃ© pour cette disposition :"), _(u"Sauvegarde d'une disposition"))
         dlg.SetValue(_(u"Disposition %d") % (newIDperspective + 1))
         reponse = dlg.ShowModal()
         if reponse != wx.ID_OK:
@@ -714,7 +714,7 @@ class Dialog(wx.Dialog):
         self._mgr.Update()
     
     def On_affichage_parametres(self, event):
-        """ Définit la largeur de la colonne unité """
+        """ DÃ©finit la largeur de la colonne unitÃ© """
         self.panel_grille.grille.Parametres() 
 
     def On_affiche_memo(self, event):
@@ -742,13 +742,13 @@ class Dialog(wx.Dialog):
         listeIndividus = self.panel_grille.listeSelectionIndividus
         
         if len(self.panel_grille.grille.listeHistorique) > 0 :
-            dlg = wx.MessageDialog(self, _(u"Des modifications ont été effectuées dans la grille.\n\nVous devez d'abord les sauvegarder avant de saisir un forfait !"), _(u"Sauvegarde des modifications"), wx.YES_NO|wx.YES_DEFAULT|wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Des modifications ont Ã©tÃ© effectuÃ©es dans la grille.\n\nVous devez d'abord les sauvegarder avant de saisir un forfait !"), _(u"Sauvegarde des modifications"), wx.YES_NO|wx.YES_DEFAULT|wx.ICON_EXCLAMATION)
             reponse = dlg.ShowModal() 
             dlg.Destroy()
             if reponse != wx.ID_YES :
                 return 
             
-            # Sauvegarde des données
+            # Sauvegarde des donnÃ©es
             self.panel_grille.grille.Sauvegarde()
             self.panel_grille.grille.InitDonnees()
             self.panel_grille.MAJ_grille() 
@@ -761,7 +761,7 @@ class Dialog(wx.Dialog):
 
     def On_outils_recalculer(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("consommations_conso", "modifier") == False : return
-        dlg = wx.MessageDialog(self, _(u"Confirmez-vous le recalcul des prestations de toutes les consommations affichées ?"), _(u"Recalcul des prestations"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+        dlg = wx.MessageDialog(self, _(u"Confirmez-vous le recalcul des prestations de toutes les consommations affichÃ©es ?"), _(u"Recalcul des prestations"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
         reponse = dlg.ShowModal() 
         dlg.Destroy()
         if reponse != wx.ID_YES :
@@ -769,13 +769,13 @@ class Dialog(wx.Dialog):
         self.panel_grille.grille.RecalculerToutesPrestations() 
 
     def On_outils_lot_saisie(self, event):
-        dlg = wx.MessageDialog(self, _(u"Désolé, cette fonction n'est pas encore disponible !"), _(u"Fonction indisponible"), wx.OK | wx.ICON_EXCLAMATION)
+        dlg = wx.MessageDialog(self, _(u"DÃ©solÃ©, cette fonction n'est pas encore disponible !"), _(u"Fonction indisponible"), wx.OK | wx.ICON_EXCLAMATION)
         dlg.ShowModal()
         dlg.Destroy()
         
     def On_outils_lot_modif(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("consommations_conso", "modifier") == False : return
-        # Récupération des données affichées
+        # RÃ©cupÃ©ration des donnÃ©es affichÃ©es
         periodes = self.panel_grille.listePeriodes
         listeActivites = self.panel_grille.listeSelectionActivites
         if len(listeActivites) == 1 :
@@ -799,7 +799,7 @@ class Dialog(wx.Dialog):
         self.panel_grille.Modification_lot(dictResultats)
 
     def On_outils_lot_suppr(self, event):
-        dlg = wx.MessageDialog(self, _(u"Désolé, cette fonction n'est pas encore disponible !"), _(u"Fonction indisponible"), wx.OK | wx.ICON_EXCLAMATION)
+        dlg = wx.MessageDialog(self, _(u"DÃ©solÃ©, cette fonction n'est pas encore disponible !"), _(u"Fonction indisponible"), wx.OK | wx.ICON_EXCLAMATION)
         dlg.ShowModal()
         dlg.Destroy()
         

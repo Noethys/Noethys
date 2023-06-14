@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activitÈs
+# Application :    Noethys, gestion multi-activit√©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-17 Ivan LUCAS
@@ -19,7 +19,7 @@ from Ctrl.CTRL_ObjectListView import FastObjectListView, ColumnDefn, Filter, CTR
 from Utils import UTILS_Dates
 from Utils import UTILS_Gestion
 from Utils import UTILS_Config
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"§")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"‚Ç¨")
 
 
 
@@ -38,7 +38,7 @@ class Track_prestation(object):
             ("IDfacture", None)
             ]
 
-        # Insertion des donnÈes
+        # Insertion des donn√©es
         for nom, defaut in champs :
             if nom in donnees:
                 valeur = donnees[nom]
@@ -51,7 +51,7 @@ class Track_prestation(object):
 
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # RÈcupÈration des paramËtres perso
+        # R√©cup√©ration des param√®tres perso
         self.dlg_saisie_location = kwds.pop("dlg_saisie_location", None)
         self.donnees = []
         # Initialisation du listCtrl
@@ -72,7 +72,7 @@ class ListView(FastObjectListView):
         pass
 
     def GetTracks(self):
-        """ RÈcupÈration des donnÈes """
+        """ R√©cup√©ration des donn√©es """
         return self.donnees
 
     def InitObjectListView(self):            
@@ -98,7 +98,7 @@ class ListView(FastObjectListView):
             ColumnDefn(_(u"Date"), 'left', 100, "date", typeDonnee="date", stringConverter=FormateDate),
             ColumnDefn(_(u"Label"), "left", 280, "label", typeDonnee="texte"),
             ColumnDefn(_(u"Montant"), "right", 100, "montant", typeDonnee="montant", stringConverter=FormateMontant),
-            ColumnDefn(_(u"FacturÈ"), "right", 80, "IDfacture", typeDonnee="entier", stringConverter=FormateFacture),
+            ColumnDefn(_(u"Factur√©"), "right", 80, "IDfacture", typeDonnee="entier", stringConverter=FormateFacture),
             ]
 
         self.SetColumns(liste_Colonnes)
@@ -110,7 +110,7 @@ class ListView(FastObjectListView):
     def MAJ(self, track=None):
         self.InitModel()
         self.InitObjectListView()
-        # SÈlection d'un item
+        # S√©lection d'un item
         if track != None :
             self.SelectObject(track, deselectOthers=True, ensureVisible=True)
         self.MAJtexteOnglet()
@@ -125,7 +125,7 @@ class ListView(FastObjectListView):
         else:
             noSelection = False
 
-        # CrÈation du menu contextuel
+        # Cr√©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Modifier
@@ -168,14 +168,14 @@ class ListView(FastObjectListView):
 
     def Modifier(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucune prestation ‡ modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucune prestation √† modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         track_prestation = self.Selection()[0]
 
         if track_prestation.IDfacture != None :
-            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas modifier cette prestation car elle apparaÓt dÈj‡ sur une facture !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas modifier cette prestation car elle appara√Æt d√©j√† sur une facture !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -193,14 +193,14 @@ class ListView(FastObjectListView):
 
     def Supprimer(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucune prestation ‡ supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucune prestation √† supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         track_prestation = self.Selection()[0]
 
         if track_prestation.IDfacture != None :
-            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas supprimer cette prestation car elle apparaÓt dÈj‡ sur une facture !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas supprimer cette prestation car elle appara√Æt d√©j√† sur une facture !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return

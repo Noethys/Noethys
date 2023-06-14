@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -26,20 +26,20 @@ class Dialog(wx.Dialog):
         self.parent = parent      
         
         self.staticbox_adresse_staticbox = wx.StaticBox(self, -1, _(u"Adresse"))
-        self.staticbox_coords_staticbox = wx.StaticBox(self, -1, _(u"Coordonnées"))
-        self.staticbox_identite_staticbox = wx.StaticBox(self, -1, _(u"Identité"))
+        self.staticbox_coords_staticbox = wx.StaticBox(self, -1, _(u"CoordonnÃ©es"))
+        self.staticbox_identite_staticbox = wx.StaticBox(self, -1, _(u"IdentitÃ©"))
         
         self.label_nom = wx.StaticText(self, -1, _(u"Nom :"))
         self.ctrl_nom = wx.TextCtrl(self, -1, "")
-        self.label_prenom = wx.StaticText(self, -1, _(u"Prénom :"))
+        self.label_prenom = wx.StaticText(self, -1, _(u"PrÃ©nom :"))
         self.ctrl_prenom = wx.TextCtrl(self, -1, "")
         self.label_rue = wx.StaticText(self, -1, _(u"Rue :"))
         self.ctrl_rue = wx.TextCtrl(self, -1, "")
         self.label_cp = wx.StaticText(self, -1, _(u"C.P. :"))
         self.ctrl_ville = CTRL_Saisie_adresse.Adresse(self)
-        self.label_tel = wx.StaticText(self, -1, _(u"Tél. Cabinet :"))
+        self.label_tel = wx.StaticText(self, -1, _(u"TÃ©l. Cabinet :"))
         self.ctrl_tel = CTRL_Saisie_tel.Tel(self, intitule=_(u"cabinet"))
-        self.label_mobile = wx.StaticText(self, -1, _(u"Tél. Mobile :"))
+        self.label_mobile = wx.StaticText(self, -1, _(u"TÃ©l. Mobile :"))
         self.ctrl_mobile = CTRL_Saisie_tel.Tel(self, intitule=_(u"mobile"))
         
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
@@ -54,12 +54,12 @@ class Dialog(wx.Dialog):
         self.ctrl_nom.Bind(wx.EVT_KILL_FOCUS, self.OnKillFocusNom)
 
     def __set_properties(self):
-        self.SetTitle(_(u"Saisie d'un médecin"))
-        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez le nom de famille du médecin")))
-        self.ctrl_prenom.SetToolTip(wx.ToolTip(_(u"Saisissez le prénom du médecin")))
-        self.ctrl_rue.SetToolTip(wx.ToolTip(_(u"Saisissez la rue du cabinet du médecin")))
-        self.ctrl_tel.SetToolTip(wx.ToolTip(_(u"Saisissez le numéro de téléphone du cabinet")))
-        self.ctrl_mobile.SetToolTip(wx.ToolTip(_(u"Saisissez le numéro de mobile du médecin")))
+        self.SetTitle(_(u"Saisie d'un mÃ©decin"))
+        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez le nom de famille du mÃ©decin")))
+        self.ctrl_prenom.SetToolTip(wx.ToolTip(_(u"Saisissez le prÃ©nom du mÃ©decin")))
+        self.ctrl_rue.SetToolTip(wx.ToolTip(_(u"Saisissez la rue du cabinet du mÃ©decin")))
+        self.ctrl_tel.SetToolTip(wx.ToolTip(_(u"Saisissez le numÃ©ro de tÃ©lÃ©phone du cabinet")))
+        self.ctrl_mobile.SetToolTip(wx.ToolTip(_(u"Saisissez le numÃ©ro de mobile du mÃ©decin")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider et fermer")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler et fermer")))

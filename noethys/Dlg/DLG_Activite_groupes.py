@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -36,7 +36,7 @@ class Panel(wx.Panel):
         self.bouton_monter = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Fleche_haut.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_descendre = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Fleche_bas.png"), wx.BITMAP_TYPE_ANY))
 
-        self.label_info = wx.StaticText(self, -1, _(u"Vous devez obligatoirement saisir un groupe. Si votre activité n'en possède pas, créez juste un groupe intitulé 'Groupe unique'."))
+        self.label_info = wx.StaticText(self, -1, _(u"Vous devez obligatoirement saisir un groupe. Si votre activitÃ© n'en possÃ¨de pas, crÃ©ez juste un groupe intitulÃ© 'Groupe unique'."))
         self.label_info.SetFont(wx.Font(7, wx.SWISS, wx.NORMAL, wx.NORMAL, False))
         
         self.__set_properties()
@@ -55,10 +55,10 @@ class Panel(wx.Panel):
         
     def __set_properties(self):
         self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter un groupe")))
-        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le groupe selectionné dans la liste")))
-        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le groupe selectionné dans la liste")))
-        self.bouton_monter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour monter le groupe sélectionné dans la liste")))
-        self.bouton_descendre.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour descendre le groupe sélectionné dans la liste")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le groupe selectionnÃ© dans la liste")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le groupe selectionnÃ© dans la liste")))
+        self.bouton_monter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour monter le groupe sÃ©lectionnÃ© dans la liste")))
+        self.bouton_descendre.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour descendre le groupe sÃ©lectionnÃ© dans la liste")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=1, vgap=10, hgap=10)
@@ -127,7 +127,7 @@ class Panel(wx.Panel):
     def Validation(self):
         nbreGroupes = len(self.ctrl_groupes.donnees)
         if nbreGroupes == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous devez créer au moins un groupe !\n\nSi vous n'avez aucun groupe, créez juste un groupe intitulé par exemple 'Groupe unique'."), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez crÃ©er au moins un groupe !\n\nSi vous n'avez aucun groupe, crÃ©ez juste un groupe intitulÃ© par exemple 'Groupe unique'."), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False

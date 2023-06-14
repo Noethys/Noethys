@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -37,8 +37,8 @@ DICT_AUTORISATIONS = Liens.DICT_AUTORISATIONS
 
 class GetValeurs() :
     def __init__(self, IDindividu_fiche=None, IDfamille=None):
-        """ IDindividu_fiche : pour trouver toutes les familles rattachées à cet individu """
-        """ OU IDfamille : pour obtenir uniquement les liens de la famille donnée """
+        """ IDindividu_fiche : pour trouver toutes les familles rattachÃ©es Ã  cet individu """
+        """ OU IDfamille : pour obtenir uniquement les liens de la famille donnÃ©e """
         self.IDindividu_fiche = IDindividu_fiche
         self.IDfamille = IDfamille
         
@@ -58,9 +58,9 @@ class GetValeurs() :
         self.DB.Close() 
     
     def GetDictCategories(self):
-        # Dict des catégories :
+        # Dict des catÃ©gories :
         dictCategories = {
-            1 : _(u"Représentants"),
+            1 : _(u"ReprÃ©sentants"),
             2 : _(u"Enfants"),
             3 : _(u"Contacts"),
 ##            4 : _(u"Hors famille"),
@@ -68,12 +68,12 @@ class GetValeurs() :
         return dictCategories
             
     def GetFamillesRattachees(self):
-        # REQ > Recherche les familles rattachées à cet individu
+        # REQ > Recherche les familles rattachÃ©es Ã  cet individu
         req = """SELECT IDrattachement, IDindividu, IDfamille, IDcategorie, titulaire
         FROM rattachements WHERE IDindividu=%d;""" % self.IDindividu_fiche
         self.DB.ExecuterReq(req)
         listefamillesRattachees = self.DB.ResultatReq()
-        # Récupère les ID des familles de l'individus : Ex : listeIDfamille = [1, 2]
+        # RÃ©cupÃ¨re les ID des familles de l'individus : Ex : listeIDfamille = [1, 2]
         listeIDfamille = []
         for valeurs in listefamillesRattachees :
             if valeurs[2] not in listeIDfamille :
@@ -143,7 +143,7 @@ class GetValeurs() :
             return texteNoms
     
     def GetListeIDindividusRattaches(self, IDfamille=None):
-        """ Si IDfamille = None : prend toutes les familles rattachées """
+        """ Si IDfamille = None : prend toutes les familles rattachÃ©es """
         listeIDindividusRattaches = []
         for IDrattachement, IDindividu, IDfamilleTmp, IDcategorie, titulaire in self.listeIndividusRattaches :
             if IDindividu not in listeIDindividusRattaches :
@@ -152,7 +152,7 @@ class GetValeurs() :
         return listeIDindividusRattaches
         
     def GetDictInfosIndividus(self):
-        # Création du dictionnaire d'infos sur chaque individus rattachés :
+        # CrÃ©ation du dictionnaire d'infos sur chaque individus rattachÃ©s :
         dictInfosIndividus = {}
         if len(self.listeIDindividusRattaches) == 1 : condition = "(%d)" % self.listeIDindividusRattaches[0]
         else : condition = str(tuple(self.listeIDindividusRattaches))
@@ -165,17 +165,17 @@ class GetValeurs() :
         return dictInfosIndividus
     
     def GetDictLiens(self):
-        # Création du dictionnaire de liens pour tous les individus rattachés
+        # CrÃ©ation du dictionnaire de liens pour tous les individus rattachÃ©s
         dictLiens = {}
         for IDrattachement, IDindividu, IDfamille, IDcategorie, titulaire in self.listeIndividusRattaches :
             
-            # Création de la clé IDfamille
+            # CrÃ©ation de la clÃ© IDfamille
             if (IDfamille in dictLiens) == False :
                 dictLiens[IDfamille] = {}
-            # Création de la clé IDindividu
+            # CrÃ©ation de la clÃ© IDindividu
             if (IDindividu in dictLiens[IDfamille]) == False :
                 dictLiens[IDfamille][IDindividu] = {}
-            # Création de la catégorie de rattachement
+            # CrÃ©ation de la catÃ©gorie de rattachement
             for IDcategorieTmp, labelCategorie in self.dictCategories.items():
                 dictLiens[IDfamille][IDindividu][IDcategorieTmp] = {}
                 
@@ -184,7 +184,7 @@ class GetValeurs() :
                 lienExistant = self.FindLien(IDindividu_sujet, IDindividu)
                 if IDindividu != IDindividu_sujet :
                     if self.FindLien(IDindividu_sujet, IDindividu) == None :
-                        # Si pas de lien existant, on créé une ligne vierge
+                        # Si pas de lien existant, on crÃ©Ã© une ligne vierge
                         lien = {"IDlien" : None, "IDfamille" : IDfamille, "IDindividu_sujet" : IDindividu_sujet, "IDindividu_objet" : IDindividu, "modif" : False, "IDtypeLien" : None, "titulaire" : 0, "IDautorisation" : None}
                     else :
                         # Si un lien existe, on l'importe ici
@@ -212,7 +212,7 @@ class GetValeurs() :
         return listeLiensAsauver
     
     def Sauvegarde(self):
-        """ Sauvegarde dans la base de données """
+        """ Sauvegarde dans la base de donnÃ©es """
         listeLiensAsauver = self.GetDataPourSauvegarde() 
         DB = GestionDB.DB()
         for dictDonnees in listeLiensAsauver :
@@ -224,7 +224,7 @@ class GetValeurs() :
                                 ("IDautorisation", dictDonnees["IDautorisation"]),
                             ]
             if dictDonnees["IDlien"] == None :
-                # Création du lien
+                # CrÃ©ation du lien
                 IDlien = DB.ReqInsert("liens", listeDonnees)
             else:
                 # Modification du lien
@@ -302,8 +302,8 @@ class Hyperlien_LiensFamille(Hyperlink.HyperLinkCtrl):
 class Choice_liens(wx.Choice):
     def __init__(self, parent, id=-1, IDfamille=None, IDindividu_objet=None, IDcategorie=None, IDindividu_sujet=None, nomIndividu="", typeIndividu="" , sexeIndividu="", IDtypeLien=None, infobulle="" ):
         """ typeIndividu = "A" ou "E" (adulte ou enfant) """
-        """ sexeIndividu = "M" ou "F" (masculin ou féminin) """
-        """ Lien = ID type lien par défaut """
+        """ sexeIndividu = "M" ou "F" (masculin ou fÃ©minin) """
+        """ Lien = ID type lien par dÃ©faut """
         wx.Choice.__init__(self, parent, id=id, size=(160, -1))
         self.parent = parent
         self.IDfamille = IDfamille
@@ -332,7 +332,7 @@ class Choice_liens(wx.Choice):
 ##                        texte = _(u"est sa %s") % typeLien
                     listeChoix.append((texte, IDtypeLien))
         listeChoix.sort()
-        # Création de la liste de choix pour le wx.choice après le tri
+        # CrÃ©ation de la liste de choix pour le wx.choice aprÃ¨s le tri
         listeChoix2 = []
         index = 0
         listeChoix2.append(_(u"n'a aucun lien"))
@@ -363,8 +363,8 @@ class Choice_liens(wx.Choice):
 class Choice_autorisations(BitmapComboBox):
     def __init__(self, parent, id=-1, IDfamille=None, IDindividu_objet=None, IDcategorie=None, IDindividu_sujet=None, nomIndividu="", typeIndividu="" , sexeIndividu="", IDautorisation=None, infobulle="" ):
         """ typeIndividu = "A" ou "E" (adulte ou enfant) """
-        """ sexeIndividu = "M" ou "F" (masculin ou féminin) """
-        """ Lien = ID type lien par défaut """
+        """ sexeIndividu = "M" ou "F" (masculin ou fÃ©minin) """
+        """ Lien = ID type lien par dÃ©faut """
         BitmapComboBox.__init__(self, parent, id=id, size=(190, -1), style=wx.CB_READONLY )
         self.parent = parent
         self.IDfamille = IDfamille
@@ -391,7 +391,7 @@ class Choice_autorisations(BitmapComboBox):
             img = valeurs["img"]
             listeChoix.append((IDautorisation, texte, img))
         listeChoix.sort()
-        # Création de la liste de choix pour le wx.choice après le tri
+        # CrÃ©ation de la liste de choix pour le wx.choice aprÃ¨s le tri
         listeChoix2 = []
         index = 0
         listeChoix2.append((u"- - - - - - - - - - - - - - - - - - -", wx.NullBitmap, None))
@@ -424,8 +424,8 @@ class Choice_autorisations(BitmapComboBox):
 class Choice_autorisations_archive(wx.Choice):
     def __init__(self, parent, id=-1, IDfamille=None, IDindividu_objet=None, IDcategorie=None, IDindividu_sujet=None, nomIndividu="", typeIndividu="" , sexeIndividu="", IDautorisation=None, infobulle="" ):
         """ typeIndividu = "A" ou "E" (adulte ou enfant) """
-        """ sexeIndividu = "M" ou "F" (masculin ou féminin) """
-        """ Lien = ID type lien par défaut """
+        """ sexeIndividu = "M" ou "F" (masculin ou fÃ©minin) """
+        """ Lien = ID type lien par dÃ©faut """
         wx.Choice.__init__(self, parent, id=id, size=(190, -1) ) 
         self.parent = parent
         self.IDfamille = IDfamille
@@ -450,7 +450,7 @@ class Choice_autorisations_archive(wx.Choice):
                 texte = valeurs[self.sexeIndividu]
             listeChoix.append((IDautorisation, texte))
         listeChoix.sort()
-        # Création de la liste de choix pour le wx.choice après le tri
+        # CrÃ©ation de la liste de choix pour le wx.choice aprÃ¨s le tri
         listeChoix2 = []
         index = 0
         listeChoix2.append(u"  ")
@@ -529,7 +529,7 @@ class CTRL_Saisie_Liens(HTL.HyperTreeList):
         self.IDfamille = IDfamille
         self.donnees = donnees
         
-        # Création de l'ImageList (Récupère les images attribuées aux civilités)
+        # CrÃ©ation de l'ImageList (RÃ©cupÃ¨re les images attribuÃ©es aux civilitÃ©s)
         il = wx.ImageList(16, 16)
         index = 0
         self.dictImages = {}
@@ -549,7 +549,7 @@ class CTRL_Saisie_Liens(HTL.HyperTreeList):
         self.SetColumnWidth(2, 200)
         self.SetMainColumn(0)
                         
-        # Création des branches
+        # CrÃ©ation des branches
         self.root = self.AddRoot(_(u"Les liens"))
 ##        self.CreationBranches()
         
@@ -562,7 +562,7 @@ class CTRL_Saisie_Liens(HTL.HyperTreeList):
         self.donnees = donnees
         
     def MAJ_ctrl(self):
-        """ Met à jour (redessine) tout le contrôle """
+        """ Met Ã  jour (redessine) tout le contrÃ´le """
         nbreBranches = self.GetChildrenCount(self.root)
         if nbreBranches > 1 :
             self.DeleteChildren(self.root)
@@ -570,7 +570,7 @@ class CTRL_Saisie_Liens(HTL.HyperTreeList):
         self.CreationBranches()
     
     def MAJ_contenu(self):
-        """ Met uniquement à jour le contenu du contrôle """
+        """ Met uniquement Ã  jour le contenu du contrÃ´le """
         for IDfamille in self.donnees.listeIDfamillesRattachees :
             IDindividu_objet = self.IDindividu
             IDcategorie_individu_objet, titulaireTmp = self.donnees.GetInfoIndividuRattache(IDindividu_objet, IDfamille)
@@ -579,7 +579,7 @@ class CTRL_Saisie_Liens(HTL.HyperTreeList):
             for IDindividu_sujet in listeIndividusRattaches :
                 if IDindividu_sujet != IDindividu_objet :
                     
-                    # Récupération du controle LIENS
+                    # RÃ©cupÃ©ration du controle LIENS
                     IDcategorie, titulaireTmp = self.donnees.GetInfoIndividuRattache(IDindividu_sujet, IDfamille)                
                     ctrl_lien = self.donnees.dictLiens[IDfamille][IDindividu_objet][IDcategorie][IDindividu_sujet]["ctrl_lien"]
                     # Recherche la valeur dans le dict et l'applique
@@ -587,7 +587,7 @@ class CTRL_Saisie_Liens(HTL.HyperTreeList):
                     ctrl_lien.SetIDtypeLien(IDtypeLien)
                     
 ##                    if IDcategorie_individu_objet == 2 : # and IDcategorie == 1 
-##                        # Récupération du controle AUTORISATIONS
+##                        # RÃ©cupÃ©ration du controle AUTORISATIONS
 ##                        IDcategorie, titulaireTmp = self.donnees.GetInfoIndividuRattache(IDindividu_sujet, IDfamille)
 ##                        ctrl_autorisations = self.donnees.dictLiens[IDfamille][IDindividu_objet][IDcategorie][IDindividu_sujet]["ctrl_autorisations"]
 ##                        # Recherche la valeur dans le dict et l'applique
@@ -595,14 +595,14 @@ class CTRL_Saisie_Liens(HTL.HyperTreeList):
 ##                        ctrl_autorisations.SetIDautorisation(IDautorisation)
 ##                        
 ##                    if IDcategorie_individu_objet == 1 and IDcategorie == 2 :
-##                        # Récupération du controle AUTORISATIONS
+##                        # RÃ©cupÃ©ration du controle AUTORISATIONS
 ##                        IDcategorie, titulaireTmp = self.donnees.GetInfoIndividuRattache(IDindividu_sujet, IDfamille)
 ##                        ctrl_autorisations = self.donnees.dictLiens[IDfamille][IDindividu_objet][IDcategorie][IDindividu_sujet]["ctrl_autorisations"]
 ##                        # Recherche la valeur dans le dict et l'applique
 ##                        IDautorisation = self.donnees.dictLiens[IDfamille][IDindividu_sujet][1][IDindividu_objet]["IDautorisation"]
 ##                        ctrl_autorisations.SetIDautorisation(IDautorisation)
                     
-                    # Récupération du controle AUTORISATIONS
+                    # RÃ©cupÃ©ration du controle AUTORISATIONS
                     IDcategorie, titulaireTmp = self.donnees.GetInfoIndividuRattache(IDindividu_sujet, IDfamille)
                     ctrl_autorisations = self.donnees.dictLiens[IDfamille][IDindividu_objet][IDcategorie][IDindividu_sujet]["ctrl_autorisations"]
                     # Recherche la valeur dans le dict et l'applique
@@ -611,22 +611,22 @@ class CTRL_Saisie_Liens(HTL.HyperTreeList):
                                 
         
     def CreationBranches(self):
-        # Création des branche FAMILLES
+        # CrÃ©ation des branche FAMILLES
         for IDfamille in self.donnees.listeIDfamillesRattachees :
-            # Intégration de l'hyperlien NOM DE LA FAMILLE
+            # IntÃ©gration de l'hyperlien NOM DE LA FAMILLE
             label = _(u"Famille de %s") % self.donnees.GetNomsTitulairesFamille(IDfamille)
             hl = Hyperlien(self.GetMainWindow(), label=label, URL="", IDfamille=IDfamille, IDindividu=None, infobulle=u"")
             famille = self.AppendItem(self.root, "", wnd=hl)
             self.SetPyData(famille, IDfamille)
             
-            # Création des branche CATEGORIES
+            # CrÃ©ation des branche CATEGORIES
             for IDcategorie in range(1, len(self.donnees.dictCategories)+1):
                 txt = self.donnees.dictCategories[IDcategorie]
                 categorie = self.AppendItem(famille, txt)
                 self.SetPyData(categorie, IDcategorie)
                 self.SetItemBold(categorie, True)
                 
-                # Création des branche INDIVIDUS
+                # CrÃ©ation des branche INDIVIDUS
                 if self.IDindividu in self.donnees.dictLiens[IDfamille] :
                     if IDcategorie in self.donnees.dictLiens[IDfamille][self.IDindividu] :
                         dictIndividus = self.donnees.dictLiens[IDfamille][self.IDindividu][IDcategorie]
@@ -648,27 +648,27 @@ class CTRL_Saisie_Liens(HTL.HyperTreeList):
                             titulaire = dictIndividu["titulaire"]
                                             
                             if IDcategorie == 4 and IDindividu == None:
-                                # Intégration de l'hyperlien AJOUTER UN INDIVIDU
+                                # IntÃ©gration de l'hyperlien AJOUTER UN INDIVIDU
                                 hl = Hyperlien(self.GetMainWindow(), label=_(u"Ajouter un individu..."), URL="", IDindividu=None, infobulle=u"")#_(u"Cliquez sur ce lien pour ajouter \n un individu hors famille"))
                                 individu = self.AppendItem(categorie, "", wnd=hl)
                                 self.SetPyData(individu, IDindividu)
                                 
                             else:
-                                # Intégration de l'hyperlien NOM INDIVIDU
+                                # IntÃ©gration de l'hyperlien NOM INDIVIDU
                                 individu = self.AppendItem(categorie, u"%s %s" % (nom, prenom))#, wnd=hl)
                                 self.SetPyData(individu, IDindividu)
                             
-                                # Intégration du Choice LIENS
-                                infobulle = _(u"Sélectionnez le lien de %s vis-à-vis \nde %s") % (prenom, self.donnees.dictInfosIndividus[self.IDindividu]["prenom"])
+                                # IntÃ©gration du Choice LIENS
+                                infobulle = _(u"SÃ©lectionnez le lien de %s vis-Ã -vis \nde %s") % (prenom, self.donnees.dictInfosIndividus[self.IDindividu]["prenom"])
                                 ctrl_lien = Choice_liens(self.GetMainWindow(), -1, IDfamille, self.IDindividu, IDcategorie, IDindividu, prenom, type, sexe, IDtypeLien, infobulle)
                                 self.SetItemWindow(individu, ctrl_lien, 1)
-                                # Mémorisation du controle LIENS
+                                # MÃ©morisation du controle LIENS
                                 self.donnees.dictLiens[IDfamille][self.IDindividu][IDcategorie][IDindividu]["ctrl_lien"] = ctrl_lien
                                 
-                                # Intégration de la case à cocher AUTORISATIONS
+                                # IntÃ©gration de la case Ã  cocher AUTORISATIONS
                                 IDcategorie_individu_objet, titulaire_individu_objet = self.donnees.GetInfoIndividuRattache(self.IDindividu, IDfamille) 
 
-                                infobulle = _(u"Sélectionnez le niveau d'autorisation de %s vis-à-vis de %s") % (prenom, self.donnees.dictInfosIndividus[self.IDindividu]["prenom"])
+                                infobulle = _(u"SÃ©lectionnez le niveau d'autorisation de %s vis-Ã -vis de %s") % (prenom, self.donnees.dictInfosIndividus[self.IDindividu]["prenom"])
                                 ctrl_autorisations = Choice_autorisations(self.GetMainWindow(), -1, IDfamille, self.IDindividu, IDcategorie, IDindividu, prenom, type, sexe, IDautorisation, infobulle)
                                 self.SetItemWindow(individu, ctrl_autorisations, 2)
                                 self.donnees.dictLiens[IDfamille][self.IDindividu][IDcategorie][IDindividu]["ctrl_autorisations"] = ctrl_autorisations
@@ -682,7 +682,7 @@ class CTRL_Saisie_Liens(HTL.HyperTreeList):
             self.Expand(famille)
             
     def OnMAJvaleur(self, IDfamille=None, IDindividu_objet=None, IDcategorie=None, IDindividu_sujet=None, nomDonnee=None, valeur=None):
-        """ Modifie une valeur donnée dans le self.dictIndividus """
+        """ Modifie une valeur donnÃ©e dans le self.dictIndividus """
         # ctrl AUTORISATIONS
         if nomDonnee == "IDautorisation" :
 ##            if self.donnees.dictLiens[IDfamille][IDindividu_sujet][IDcategorie].has_key(IDindividu_objet) == False :
@@ -713,7 +713,7 @@ class CTRL_Saisie_Liens(HTL.HyperTreeList):
             # ----------------------- Modification en cascade des liens -----------------------
             #
             
-            # Application du lien inverse à l'autre individu :
+            # Application du lien inverse Ã  l'autre individu :
             IDcategorieTmp, titulaireTmp = self.donnees.GetInfoIndividuRattache(IDindividu_objet, IDfamille)
             if valeur == None :
                 IDtypeLien = None
@@ -721,7 +721,7 @@ class CTRL_Saisie_Liens(HTL.HyperTreeList):
                 IDtypeLien = DICT_TYPES_LIENS[valeur]["lien"]
             self.donnees.dictLiens[IDfamille][IDindividu_sujet][IDcategorieTmp][IDindividu_objet]["IDtypeLien"] = IDtypeLien
             self.donnees.dictLiens[IDfamille][IDindividu_sujet][IDcategorieTmp][IDindividu_objet]["modif"] = True
-            # Déduction de liens : 
+            # DÃ©duction de liens : 
             
             # Si individu_objet est une femme : on recherche les enfants de individu_objet 
             # et on leur applique entre eux le lien FRERES/SOEUR
@@ -731,10 +731,10 @@ class CTRL_Saisie_Liens(HTL.HyperTreeList):
                 listeFreresSoeurs = []
                 dictEnfants = self.donnees.dictLiens[IDfamille][IDindividu_objet][2]
                 for IDindividu_enfant, dictEnfants in dictEnfants.items() :
-                    # On vérifie que c'est son enfant :
+                    # On vÃ©rifie que c'est son enfant :
                     if dictEnfants["IDtypeLien"] == 2 :
                         listeFreresSoeurs.append(IDindividu_enfant)
-                # On applique le lien 2 (freres/soeur) aux enfants trouvés
+                # On applique le lien 2 (freres/soeur) aux enfants trouvÃ©s
                 if len(listeFreresSoeurs) > 1 : 
                     for IDenfant_sujet in listeFreresSoeurs :
                         for IDenfant_objet in listeFreresSoeurs :
@@ -744,7 +744,7 @@ class CTRL_Saisie_Liens(HTL.HyperTreeList):
         
         
         
-        # Met à jour en cascade les autres lignes du HyperTreeList
+        # Met Ã  jour en cascade les autres lignes du HyperTreeList
         if self.parent.GetName() == "panel_liens" :
             self.MAJ_contenu()
         else:
@@ -800,20 +800,20 @@ class Panel_liens(wx.Panel):
         """ MAJ integrale du controle avec MAJ des donnees """
         if self.majEffectuee == False :
             
-            # MAJ du contrôle
+            # MAJ du contrÃ´le
             self.donnees = GetValeurs(self.IDindividu, self.IDfamille)
             self.donnees.InitValeurs()
             self.ctrl_liens.SetDonnees(self.donnees)
             self.ctrl_liens.MAJ_ctrl()
             
-            # Vérification des droits utilisateurs
+            # VÃ©rification des droits utilisateurs
             if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("individus_liens", "modifier", afficheMessage=False) == False : 
                 self.ctrl_liens.Enable(False)
             
             self.majEffectuee = True
             
     def ValidationData(self):
-        """ Return True si les données sont valides et pretes à être sauvegardées """
+        """ Return True si les donnÃ©es sont valides et pretes Ã  Ãªtre sauvegardÃ©es """
         return True
     
     def Sauvegarde(self):
@@ -836,29 +836,29 @@ class Notebook(wx.aui.AuiNotebook):
         # MAJ Globale
         if IDindividu_selection == None :
             
-            # Supprime les pages déjà crées
+            # Supprime les pages dÃ©jÃ  crÃ©es
             if self.GetPageCount() > 0 :
                 for index in range(self.GetPageCount()-1, -1, -1) :
                     self.DeletePage(index)
             
             self.dictPages = {}
             
-            # Récupération des données
+            # RÃ©cupÃ©ration des donnÃ©es
             self.donnees = GetValeurs(IDindividu_fiche=self.IDindividu, IDfamille=self.IDfamille)
             self.donnees.InitValeurs()
             listeIDindividus = self.donnees.GetListeIDindividusRattaches(self.IDfamille)
             dictCivilites = Civilites.GetDictCivilites()        
             
-            #Création du notebook aui
+            #CrÃ©ation du notebook aui
             indexPage = 0
             for IDindividu in listeIDindividus :
-                # Création de la page
+                # CrÃ©ation de la page
                 page = CTRL_Saisie_Liens(self, IDindividu=IDindividu, IDfamille=self.IDfamille, donnees=self.donnees)
                 page.MAJ_ctrl()
                 self.dictPages[IDindividu] = indexPage
                 nomIndividu = self.donnees.dictInfosIndividus[IDindividu]["nom"] + " " + self.donnees.dictInfosIndividus[IDindividu]["prenom"]
                 self.AddPage(page, nomIndividu)
-                # Intégration de l'image dans l'onglet
+                # IntÃ©gration de l'image dans l'onglet
                 IDcivilite = self.donnees.dictInfosIndividus[IDindividu]["IDcivilite"]
                 if IDcivilite != None :
                     nomImage = dictCivilites[IDcivilite]["nomImage"]
@@ -887,8 +887,8 @@ class Dialog_liens(wx.Dialog):
     def __init__(self, parent, IDindividu=None, IDfamille=None):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         
-        intro = _(u"Vous bénéficiez ici d'une vue d'ensemble des liens unissant les membres de la famille sélectionnée. Vous pouvez utiliser un glisser-déposer avec votre souris sur chaque onglet pour afficher plusieurs individus à la fois.")
-        self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=_(u"Définition des liens"), texte=intro, hauteurHtml=30, nomImage="Images/32x32/Famille.png")
+        intro = _(u"Vous bÃ©nÃ©ficiez ici d'une vue d'ensemble des liens unissant les membres de la famille sÃ©lectionnÃ©e. Vous pouvez utiliser un glisser-dÃ©poser avec votre souris sur chaque onglet pour afficher plusieurs individus Ã  la fois.")
+        self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=_(u"DÃ©finition des liens"), texte=intro, hauteurHtml=30, nomImage="Images/32x32/Famille.png")
         
         self.ctrl_notebook = Notebook(self, IDindividu=IDindividu, IDfamille=IDfamille)
         
@@ -905,7 +905,7 @@ class Dialog_liens(wx.Dialog):
         self.ctrl_notebook.MAJ() 
 
     def __set_properties(self):
-        self.SetTitle(_(u"Définition des liens"))
+        self.SetTitle(_(u"DÃ©finition des liens"))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider et fermer")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler et fermer")))

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-15 Ivan LUCAS
@@ -18,13 +18,13 @@ from Utils import UTILS_Dates
 import datetime
 from Utils.UTILS_Decimal import FloatToDecimal as FloatToDecimal
 from Utils import UTILS_Config
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"â‚¬")
 
 
 from Utils import UTILS_Interface
 from Ctrl.CTRL_ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils, PanelAvecFooter
 
-LISTE_MOIS= (_(u"Janvier"), _(u"Février"), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"Août"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"Décembre"))
+LISTE_MOIS= (_(u"Janvier"), _(u"FÃ©vrier"), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"AoÃ»t"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"DÃ©cembre"))
 
   
 class Track(object):
@@ -41,11 +41,11 @@ class Track(object):
         self.tarif_base = self.dictValeurs["tarif_base"]
         self.tarif_depassement = self.dictValeurs["tarif_depassement"]
 
-        # Prévisions
+        # PrÃ©visions
         self.heures_prevues = self.dictValeurs["heures_prevues"]
         self.montant_prevu = self.dictValeurs["montant_prevu"]
 
-        # Facturé
+        # FacturÃ©
         self.IDfacture = self.dictValeurs["IDfacture"]
         self.num_facture = self.dictValeurs["num_facture"]
         self.heures_facturees = self.dictValeurs["heures_facturees"]
@@ -62,7 +62,7 @@ class Track(object):
 
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # Récupération des paramètres perso
+        # RÃ©cupÃ©ration des paramÃ¨tres perso
         self.clsbase = kwds.pop("clsbase", None)
         self.selectionID = None
         self.selectionTrack = None
@@ -117,18 +117,18 @@ class ListView(FastObjectListView):
         liste_Colonnes = [
             ColumnDefn(_(u"IDprestation"), "left", 0, "IDprestation", typeDonnee="entier"),
             ColumnDefn(_(u"Mois"), 'left', 110, "annee_mois", typeDonnee="texte", stringConverter=FormateMois),
-            ColumnDefn(_(u"Heures prév."), 'center', 80, "heures_prevues", typeDonnee="duree", stringConverter=FormateDuree),
-            ColumnDefn(_(u"Montant prév."), 'center', 90, "montant_prevu", typeDonnee="montant", stringConverter=FormateMontant),
+            ColumnDefn(_(u"Heures prÃ©v."), 'center', 80, "heures_prevues", typeDonnee="duree", stringConverter=FormateDuree),
+            ColumnDefn(_(u"Montant prÃ©v."), 'center', 90, "montant_prevu", typeDonnee="montant", stringConverter=FormateMontant),
             ColumnDefn(_(u"Date fact."), 'center', 80, "date_facturation", typeDonnee="date", stringConverter=FormateDate),
             ColumnDefn(_(u"Heures fact."), 'center', 80, "heures_facturees", typeDonnee="duree", stringConverter=FormateDuree),
             ColumnDefn(_(u"Montant fact."), 'center', 90, "montant_facture", typeDonnee="montant", stringConverter=FormateMontant),
-            ColumnDefn(_(u"N° Facture"), 'center', 70, "num_facture", typeDonnee="entier"),
+            ColumnDefn(_(u"NÂ° Facture"), 'center', 70, "num_facture", typeDonnee="entier"),
             ColumnDefn(_(u"Taux"), 'center', 80, "taux", typeDonnee="montant", stringConverter=FormateMontant2),
             ColumnDefn(_(u"Tarif de base"), 'center', 80, "tarif_base", typeDonnee="montant", stringConverter=FormateMontant2),
             ]
         
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(_(u"Aucune mensualité"))
+        self.SetEmptyListMsg(_(u"Aucune mensualitÃ©"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
         self.SetSortColumn(1)
         
@@ -148,7 +148,7 @@ class ListView(FastObjectListView):
 
     def OnContextMenu(self, event):
         """Ouverture du menu contextuel """        
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         if len(self.Selection()) == 0:
@@ -156,11 +156,11 @@ class ListView(FastObjectListView):
         else:
             noSelection = False
                 
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
+        item = wx.MenuItem(menuPop, 40, _(u"AperÃ§u avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -194,21 +194,21 @@ class ListView(FastObjectListView):
             
     def Apercu(self, event):
         from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des mensualités"), format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des mensualitÃ©s"), format="A", orientation=wx.PORTRAIT)
         prt.Preview()
 
     def Imprimer(self, event):
         from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des mensualités"), format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des mensualitÃ©s"), format="A", orientation=wx.PORTRAIT)
         prt.Print()
 
     def ExportTexte(self, event):
         from Utils import UTILS_Export
-        UTILS_Export.ExportTexte(self, titre=_(u"Liste des mensualités"), autoriseSelections=False)
+        UTILS_Export.ExportTexte(self, titre=_(u"Liste des mensualitÃ©s"), autoriseSelections=False)
         
     def ExportExcel(self, event):
         from Utils import UTILS_Export
-        UTILS_Export.ExportExcel(self, titre=_(u"Liste des mensualités"), autoriseSelections=False)
+        UTILS_Export.ExportExcel(self, titre=_(u"Liste des mensualitÃ©s"), autoriseSelections=False)
 
 
 # -------------------------------------------------------------------------------------------------------------------------------------------
@@ -216,7 +216,7 @@ class ListView(FastObjectListView):
 class ListviewAvecFooter(PanelAvecFooter):
     def __init__(self, parent, kwargs={}):
         dictColonnes = {
-            "annee_mois" : {"mode" : "nombre", "singulier" : _(u"mensualité"), "pluriel" : _(u"mensualités"), "alignement" : wx.ALIGN_CENTER},
+            "annee_mois" : {"mode" : "nombre", "singulier" : _(u"mensualitÃ©"), "pluriel" : _(u"mensualitÃ©s"), "alignement" : wx.ALIGN_CENTER},
             "heures_prevues" : {"mode" : "total", "alignement" : wx.ALIGN_CENTER, "format" : "temps"},
             "montant_prevu" : {"mode" : "total", "alignement" : wx.ALIGN_CENTER},
             "heures_facturees" : {"mode" : "total", "alignement" : wx.ALIGN_CENTER, "format" : "temps"},

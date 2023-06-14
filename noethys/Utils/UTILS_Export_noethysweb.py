@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-20 Ivan LUCAS
@@ -48,7 +48,7 @@ class Table():
         self.condition_sql = condition_sql
         self.sql = sql
 
-        # Recherche des données
+        # Recherche des donnÃ©es
         self.liste_objets = self.Get_data()
 
     def Get_data(self):
@@ -79,7 +79,7 @@ class Table():
 
                 if nom_champ not in self.exclure_champs:
 
-                    # Fonction personnalisée
+                    # Fonction personnalisÃ©e
                     if hasattr(self, nom_champ):
                         valeur = getattr(self, nom_champ)(valeur=valeur, objet=objet)
 
@@ -96,21 +96,21 @@ class Table():
                         rep_images = self.nom_table
                         rep_images_complet = os.path.join(self.parent.rep_medias, rep_images)
 
-                        # Création du répertoire images
+                        # CrÃ©ation du rÃ©pertoire images
                         if not os.path.exists(rep_images_complet):
                             os.makedirs(rep_images_complet)
 
                         # Ouverture de l'image
                         image = Image.open(six.BytesIO(valeur))
 
-                        # Création du nom du fichier image
+                        # CrÃ©ation du nom du fichier image
                         nom_fichier_image = u"%s.%s" % (uuid.uuid4(), image.format.lower())
 
-                        # Sauvegarde de l'image dans le répertoire
+                        # Sauvegarde de l'image dans le rÃ©pertoire
                         image.save(os.path.join(rep_images_complet, nom_fichier_image), format=image.format)
                         valeur = rep_images + "/" + nom_fichier_image
 
-                    # Mémorisation de la valeur
+                    # MÃ©morisation de la valeur
                     dictTemp["fields"][nom_champ.lower()] = valeur
                     dictData["fields"][nom_champ.lower()] = valeur
 
@@ -123,12 +123,12 @@ class Table():
                     valeur = getattr(self, nom_champ)(data=dictData)
                 dictTemp["fields"][nom_champ.lower()] = valeur
 
-            # Vérifie si la ligne est à incorporer ou non
+            # VÃ©rifie si la ligne est Ã  incorporer ou non
             ligne_valide = True
             if hasattr(self, "valide_ligne"):
                 ligne_valide = getattr(self, "valide_ligne")(data=dictData)
 
-            # Mémorisation de l'objet
+            # MÃ©morisation de l'objet
             if ligne_valide:
                 liste_objets.append(dictTemp)
 
@@ -157,12 +157,12 @@ class Export:
         self.options = options
         self.liste_objets = []
 
-        # Création du répertoire de travail
+        # CrÃ©ation du rÃ©pertoire de travail
         self.rep = UTILS_Fichiers.GetRepTemp(fichier="noethysweb")
         if not os.path.exists(self.rep):
             os.makedirs(self.rep)
 
-        # Création du répertoire medias
+        # CrÃ©ation du rÃ©pertoire medias
         self.rep_medias = os.path.join(self.rep, "media")
         if not os.path.exists(self.rep_medias):
             os.makedirs(self.rep_medias)
@@ -172,12 +172,12 @@ class Export:
             self.liste_objets.extend(table.Get_objets())
 
     def Finaliser(self):
-        # Création du fichier json
+        # CrÃ©ation du fichier json
         nom_fichier_json = os.path.join(self.rep, "core.json")
         with open(nom_fichier_json, 'w') as outfile:
             json.dump(self.liste_objets, outfile, indent=4, cls=MyEncoder)
 
-        # Création du ZIP
+        # CrÃ©ation du ZIP
         fichier_zip = shutil.make_archive(UTILS_Fichiers.GetRepTemp("exportweb"), 'zip', self.rep)
 
         # Crypte le fichier
@@ -199,14 +199,14 @@ class Export_all(Export):
         # Ouverture de la DB
         self.DB = GestionDB.DB()
 
-        # Récupération des comptes payeurs
+        # RÃ©cupÃ©ration des comptes payeurs
         req = """SELECT IDcompte_payeur, IDfamille FROM comptes_payeurs;"""
         self.DB.ExecuterReq(req)
         self.dictComptesPayeurs = {}
         for IDcompte_payeur, IDfamille in self.DB.ResultatReq():
             self.dictComptesPayeurs[IDcompte_payeur] = IDfamille
 
-        # Tables à exporter
+        # Tables Ã  exporter
         self.Ajouter(categorie=None, table=Table_structures(self))
 
         self.Ajouter(categorie=None, table=Table(self, nom_table="categories_medicales", nouveau_nom_table="core.CategorieInformation"))
@@ -472,14 +472,14 @@ class Export_all(Export):
 
 class Table_structures(Table):
     def Get_data(self):
-        return [{"model": "core.Structure", "pk": 1, "fields": {"nom": u"Structure par défaut"}},]
+        return [{"model": "core.Structure", "pk": 1, "fields": {"nom": u"Structure par dÃ©faut"}},]
 
 
 class Table_pieces(Table):
     def __init__(self, parent, **kwds):
         self.parent = parent
 
-        # Récupération des individus
+        # RÃ©cupÃ©ration des individus
         req = """SELECT IDindividu, nom FROM individus;"""
         self.parent.DB.ExecuterReq(req)
         self.liste_individus = []
@@ -533,7 +533,7 @@ class Table_activites(Table):
     def __init__(self, parent, **kwds):
         self.parent = parent
 
-        # Récupération des types de groupes d'activités
+        # RÃ©cupÃ©ration des types de groupes d'activitÃ©s
         req = """SELECT IDtype_groupe_activite, nom FROM types_groupes_activites;"""
         self.parent.DB.ExecuterReq(req)
         self.liste_types_groupes_activites = []
@@ -653,7 +653,7 @@ class Table_scolarite(Table):
     def __init__(self, parent, **kwds):
         self.parent = parent
 
-        # Récupération des individus
+        # RÃ©cupÃ©ration des individus
         req = """SELECT IDindividu, nom FROM individus;"""
         self.parent.DB.ExecuterReq(req)
         self.liste_individus = []
@@ -674,7 +674,7 @@ class Table_familles(Table):
     def __init__(self, parent, **kwds):
         self.parent = parent
 
-        # Récupération des allocataires
+        # RÃ©cupÃ©ration des allocataires
         req = """SELECT IDindividu, nom FROM individus;"""
         self.parent.DB.ExecuterReq(req)
         self.liste_individus = []
@@ -732,11 +732,11 @@ class Table_individus(Table):
         for IDindividu, photo in listePhotos:
             self.dictPhotos[IDindividu] = photo
 
-        # Création du répertoire photos
+        # CrÃ©ation du rÃ©pertoire photos
         self.rep_images = "individus"
         self.rep_images_complet = os.path.join(self.parent.rep_medias, self.rep_images)
 
-        # Création du répertoire images
+        # CrÃ©ation du rÃ©pertoire images
         if not os.path.exists(self.rep_images_complet):
             os.makedirs(self.rep_images_complet)
 
@@ -770,7 +770,7 @@ class Table_factures(Table):
 class Table_responsables_activites(Table):
     def __init__(self, parent, **kwds):
 
-        # Importe les activités
+        # Importe les activitÃ©s
         req = """SELECT IDactivite, nom FROM activites;"""
         parent.DB.ExecuterReq(req)
         self.dict_activites = {}
@@ -781,7 +781,7 @@ class Table_responsables_activites(Table):
         del self.dict_activites
 
     def valide_ligne(self, data={}):
-        """ Incorpore la ligne uniquement l'activité existe"""
+        """ Incorpore la ligne uniquement l'activitÃ© existe"""
         if data["fields"]["activite"] not in self.dict_activites:
             return False
         return True
@@ -797,7 +797,7 @@ class Table_prestations(Table):
         for IDfacture, date_edition in parent.DB.ResultatReq():
             self.dictFactures[IDfacture] = date_edition
 
-        # Importation les catégories de tarifs
+        # Importation les catÃ©gories de tarifs
         req = "SELECT IDcategorie_tarif, nom FROM categories_tarifs;"
         parent.DB.ExecuterReq(req)
         self.dict_categories_tarifs = {}
@@ -814,13 +814,13 @@ class Table_prestations(Table):
         return valeur
 
     def IDfacture(self, valeur=None, objet=None):
-        # Vérifie que la facture existe bien
+        # VÃ©rifie que la facture existe bien
         if valeur and valeur in self.dictFactures:
             return valeur
         return None
 
     def IDcategorie_tarif(self, valeur=None, objet=None):
-        # Vérifie que la catégorie de tarif existe bien
+        # VÃ©rifie que la catÃ©gorie de tarif existe bien
         if valeur and valeur in self.dict_categories_tarifs:
             return valeur
         return None
@@ -846,7 +846,7 @@ class Table_prestations(Table):
 class Table_groupes(Table):
     def __init__(self, parent, **kwds):
 
-        # Importe les activités
+        # Importe les activitÃ©s
         req = """SELECT IDactivite, nom FROM activites;"""
         parent.DB.ExecuterReq(req)
         self.dict_activites = {}
@@ -857,7 +857,7 @@ class Table_groupes(Table):
         del self.dict_activites
 
     def valide_ligne(self, data={}):
-        """ Incorpore la ligne uniquement l'activité existe"""
+        """ Incorpore la ligne uniquement l'activitÃ© existe"""
         if data["fields"]["activite"] not in self.dict_activites:
             return False
         return True
@@ -872,7 +872,7 @@ class Table_consommations(Table):
         for IDprestation, date in parent.DB.ResultatReq():
             self.dictPrestations[IDprestation] = date
 
-        # Importe les catégories de tarifs
+        # Importe les catÃ©gories de tarifs
         req = """SELECT IDcategorie_tarif, nom FROM categories_tarifs;"""
         parent.DB.ExecuterReq(req)
         self.dictCategoriesTarifs = {}
@@ -884,13 +884,13 @@ class Table_consommations(Table):
         del self.dictCategoriesTarifs
 
     def IDprestation(self, valeur=None, objet=None):
-        # Vérifie que la prestation existe bien
+        # VÃ©rifie que la prestation existe bien
         if valeur and valeur in self.dictPrestations:
             return valeur
         return None
 
     def IDcategorie_tarif(self, valeur=None, objet=None):
-        # Vérifie que la catégorie de tarifs existe bien
+        # VÃ©rifie que la catÃ©gorie de tarifs existe bien
         if valeur and valeur in self.dictCategoriesTarifs:
             return valeur
         return None
@@ -960,7 +960,7 @@ class Table_combi_aides(Table):
         self.dictMontants = {}
         for IDaide_combi, IDaide_montant, montant in self.parent.DB.ResultatReq():
             self.dictMontants[IDaide_combi] = montant
-        # Importation des unités
+        # Importation des unitÃ©s
         req = """SELECT IDaide_combi, IDunite FROM aides_combi_unites;"""
         self.parent.DB.ExecuterReq(req)
         self.dictUnites = {}
@@ -999,7 +999,7 @@ class Table_deductions(Table):
         del self.dictPrestations
 
     def valide_ligne(self, data={}):
-        """ Incorpore la ligne uniquement la prestation associée existe"""
+        """ Incorpore la ligne uniquement la prestation associÃ©e existe"""
         if data["fields"]["prestation"] not in self.dictPrestations:
             return False
         return True
@@ -1012,7 +1012,7 @@ class Table_documents_modeles(Table):
     def __init__(self, parent, **kwds):
         self.parent = parent
 
-        # Importation de tous les objets des modèles
+        # Importation de tous les objets des modÃ¨les
         listeChamps = []
         for nom, type_champ, info in DICT_CHAMPS["documents_objets"]:
             listeChamps.append(nom)
@@ -1032,13 +1032,13 @@ class Table_documents_modeles(Table):
         del self.dict_objets
 
     def IDfond(self, valeur=None, objet=None):
-        """ Changement de valeur par défaut """
+        """ Changement de valeur par dÃ©faut """
         if valeur == 0:
             valeur = None
         return valeur
 
     def objets(self, data={}):
-        """ Création d'un champ supplémentaire """
+        """ CrÃ©ation d'un champ supplÃ©mentaire """
         liste_objets = []
         IDmodele = data["pk"]
         if IDmodele in self.dict_objets:
@@ -1151,7 +1151,7 @@ class Table_documents_modeles(Table):
                             "strokeDashArray": self.ConvertTrait(dict_objet["styleTrait"]),
                         })
 
-                # Spécial
+                # SpÃ©cial
                 if dict_objet["categorie"] == "special":
                     objet = {
                         "type": "rect", "categorie": "special", "nom": dict_objet["nom"],
@@ -1211,7 +1211,7 @@ class Table_questions(Table):
                 self.dict_choix[IDquestion] = []
             self.dict_choix[IDquestion].append(label)
 
-        # Importation de la table des catégories
+        # Importation de la table des catÃ©gories
         req = "SELECT IDcategorie, type, label FROM questionnaire_categories ORDER BY ordre;"
         self.parent.DB.ExecuterReq(req)
         self.dict_categories = {}
@@ -1245,14 +1245,14 @@ class Table_reponses(Table):
         for IDchoix, label in self.parent.DB.ResultatReq():
             self.dict_choix[IDchoix] = label
 
-        # Récupération des individus
+        # RÃ©cupÃ©ration des individus
         req = """SELECT IDindividu, nom FROM individus;"""
         self.parent.DB.ExecuterReq(req)
         self.liste_individus = []
         for IDindividu, nom in self.parent.DB.ResultatReq():
             self.liste_individus.append(IDindividu)
 
-        # Récupération des familles
+        # RÃ©cupÃ©ration des familles
         req = """SELECT IDfamille, date_creation FROM familles;"""
         self.parent.DB.ExecuterReq(req)
         self.liste_familles = []
@@ -1305,7 +1305,7 @@ class Table_reglements(Table):
         for IDpayeur, IDcompte_payeur in self.parent.DB.ResultatReq():
             self.liste_payeurs.append(IDpayeur)
 
-        # Importation de la table des dépôts
+        # Importation de la table des dÃ©pÃ´ts
         req = "SELECT IDdepot, nom FROM depots;"
         self.parent.DB.ExecuterReq(req)
         self.liste_depots = []
@@ -1332,7 +1332,7 @@ class Table_reglements(Table):
     def IDpayeur(self, valeur=None, objet=None):
         if valeur not in self.liste_payeurs:
             try:
-                # Le payeur n'existe plus, on essaie de trouver un autre payeur de la même famille
+                # Le payeur n'existe plus, on essaie de trouver un autre payeur de la mÃªme famille
                 req = "SELECT IDreglement, IDcompte_payeur FROM reglements WHERE IDpayeur=%d;" % valeur
                 self.parent.DB.ExecuterReq(req)
                 IDreglement, IDcompte_payeur = self.parent.DB.ResultatReq()[0]
@@ -1353,14 +1353,14 @@ class Table_ventilation(Table):
 class Table_recus(Table):
     def __init__(self, parent, **kwds):
         self.parent = parent
-        # Importation de la table des règlements
+        # Importation de la table des rÃ¨glements
         req = "SELECT IDreglement, IDcompte_payeur FROM reglements;"
         self.parent.DB.ExecuterReq(req)
         self.liste_reglements = []
         for IDreglement, IDcompte_payeur in self.parent.DB.ResultatReq():
             self.liste_reglements.append(IDreglement)
 
-        # Récupération des familles
+        # RÃ©cupÃ©ration des familles
         req = """SELECT IDfamille, date_creation FROM familles;"""
         self.parent.DB.ExecuterReq(req)
         self.liste_familles = []
@@ -1392,7 +1392,7 @@ class Table_attestations(Table):
 class Table_devis(Table):
     def __init__(self, parent, **kwds):
         self.parent = parent
-        # Récupération des familles
+        # RÃ©cupÃ©ration des familles
         req = """SELECT IDfamille, date_creation FROM familles;"""
         self.parent.DB.ExecuterReq(req)
         self.liste_familles = []
@@ -1469,49 +1469,49 @@ class Table_modeles_emails(Table):
 class Table_transports(Table):
     def __init__(self, parent, **kwds):
         self.parent = parent
-        # Liste des transports pour vérifier le champ prog
+        # Liste des transports pour vÃ©rifier le champ prog
         req = "SELECT IDtransport, categorie FROM transports;"
         self.parent.DB.ExecuterReq(req)
         self.liste_transports_prog = []
         for IDtransport, categorie in self.parent.DB.ResultatReq():
             self.liste_transports_prog.append(IDtransport)
 
-        # Récupération des individus
+        # RÃ©cupÃ©ration des individus
         req = """SELECT IDindividu, nom FROM individus;"""
         self.parent.DB.ExecuterReq(req)
         self.liste_individus = []
         for IDindividu, nom in self.parent.DB.ResultatReq():
             self.liste_individus.append(IDindividu)
 
-        # Récupération des compagnies
+        # RÃ©cupÃ©ration des compagnies
         req = """SELECT IDcompagnie, nom FROM transports_compagnies;"""
         self.parent.DB.ExecuterReq(req)
         self.liste_compagnies = []
         for IDcompagnie, nom in self.parent.DB.ResultatReq():
             self.liste_compagnies.append(IDcompagnie)
 
-        # Récupération des lignes
+        # RÃ©cupÃ©ration des lignes
         req = """SELECT IDligne, nom FROM transports_lignes;"""
         self.parent.DB.ExecuterReq(req)
         self.liste_lignes = []
         for IDligne, nom in self.parent.DB.ResultatReq():
             self.liste_lignes.append(IDligne)
 
-        # Récupération des arrêts
+        # RÃ©cupÃ©ration des arrÃªts
         req = """SELECT IDarret, nom FROM transports_arrets;"""
         self.parent.DB.ExecuterReq(req)
         self.liste_arrets = []
         for IDarret, nom in self.parent.DB.ResultatReq():
             self.liste_arrets.append(IDarret)
 
-        # Récupération des lieux
+        # RÃ©cupÃ©ration des lieux
         req = """SELECT IDlieu, nom FROM transports_lieux;"""
         self.parent.DB.ExecuterReq(req)
         self.liste_lieux = []
         for IDlieu, nom in self.parent.DB.ResultatReq():
             self.liste_lieux.append(IDlieu)
 
-        # Récupération des unités de conso
+        # RÃ©cupÃ©ration des unitÃ©s de conso
         req = """SELECT IDunite, nom FROM unites;"""
         self.parent.DB.ExecuterReq(req)
         self.liste_unites = []
@@ -1579,27 +1579,27 @@ class Table_transports(Table):
 
 
 def Verifications(parent=None):
-    """ Vérifications générales avant export """
+    """ VÃ©rifications gÃ©nÃ©rales avant export """
     DB = GestionDB.DB()
 
-    # # Forfaits-crédits
+    # # Forfaits-crÃ©dits
     # req = "SELECT IDtarif, type FROM tarifs WHERE type='CREDIT';"
     # DB.ExecuterReq(req)
     # resultats = DB.ResultatReq()
     # if resultats:
-    #     dlg = wx.MessageDialog(parent, u"Les forfait-crédits ne sont pas encore disponibles dans Noethysweb. Souhaitez-vous quand même continuer ?", u"Avertissement", wx.YES_NO | wx.NO_DEFAULT | wx.CANCEL | wx.ICON_QUESTION)
+    #     dlg = wx.MessageDialog(parent, u"Les forfait-crÃ©dits ne sont pas encore disponibles dans Noethysweb. Souhaitez-vous quand mÃªme continuer ?", u"Avertissement", wx.YES_NO | wx.NO_DEFAULT | wx.CANCEL | wx.ICON_QUESTION)
     #     reponse = dlg.ShowModal()
     #     dlg.Destroy()
     #     if reponse != wx.ID_YES:
     #         DB.Close()
     #         return False
 
-    # # Méthode selon nbre enfants présents
+    # # MÃ©thode selon nbre enfants prÃ©sents
     # req = "SELECT IDtarif, methode FROM tarifs WHERE methode LIKE 'montant_enfant';"
     # DB.ExecuterReq(req)
     # resultats = DB.ResultatReq()
     # if resultats:
-    #     dlg = wx.MessageDialog(parent, u"La méthode tarifaire selon le nombre d'enfants présents ne sont pas encore disponibles dans Noethysweb. Souhaitez-vous quand même continuer ?", u"Avertissement", wx.YES_NO | wx.NO_DEFAULT | wx.CANCEL | wx.ICON_QUESTION)
+    #     dlg = wx.MessageDialog(parent, u"La mÃ©thode tarifaire selon le nombre d'enfants prÃ©sents ne sont pas encore disponibles dans Noethysweb. Souhaitez-vous quand mÃªme continuer ?", u"Avertissement", wx.YES_NO | wx.NO_DEFAULT | wx.CANCEL | wx.ICON_QUESTION)
     #     reponse = dlg.ShowModal()
     #     dlg.Destroy()
     #     if reponse != wx.ID_YES:

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-15 Ivan LUCAS
@@ -27,7 +27,7 @@ from Utils import UTILS_Identification
 from Utils import UTILS_Dates
 from Utils import UTILS_Config
 from Utils import UTILS_Gestion
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"â‚¬")
 
 from Dlg import DLG_Badgeage_grille
 from threading import Thread 
@@ -97,7 +97,7 @@ class Traitement(Thread):
                 if nbreErreurs == 0 :
                     self.parent.SetStatutTrack(track, "ok")
 
-                # Arrête le traitement si bouton arrêter enfoncé
+                # ArrÃªte le traitement si bouton arrÃªter enfoncÃ©
                 if self.stop: 
                     raise Abort
                 
@@ -110,7 +110,7 @@ class Traitement(Thread):
         
         except Abort as KeyBoardInterrupt: 
             if self.succes == True :
-                self.parent.EcritLog(_(u"Traitement terminé")) 
+                self.parent.EcritLog(_(u"Traitement terminÃ©")) 
                 self.parent.Arreter(forcer=True) 
 
             self.parent.bouton_ok.SetImageEtTexte(cheminImage="Images/32x32/Valider.png", texte=u"Commencer")
@@ -153,7 +153,7 @@ class CTRL_Activite(wx.Choice):
         self.dictDonnees = {}
         index = 0
         for IDactivite, nom, abrege in listeDonnees :
-            if nom == None : nom = u"Activité inconnue"
+            if nom == None : nom = u"ActivitÃ© inconnue"
             self.dictDonnees[index] = {"ID" : IDactivite, "nom" : nom, "abrege" : abrege}
             listeItems.append(nom)
             index += 1
@@ -170,7 +170,7 @@ class CTRL_Activite(wx.Choice):
         return self.dictDonnees[index]["ID"]
     
     def GetInfos(self):
-        """ Récupère les infos sur le compte sélectionné """
+        """ RÃ©cupÃ¨re les infos sur le compte sÃ©lectionnÃ© """
         index = self.GetSelection()
         if index == -1 : return None
         return self.dictDonnees[index]
@@ -186,21 +186,21 @@ class Dialog(wx.Dialog):
 
         # Bandeau
         titre = _(u"Traitement par lot")
-        intro = _(u"Vous pouvez ici saisir, modifier ou supprimer des consommations pour un ensemble d'individus. Sélectionnez une activité ainsi que les paramètres de l'action à appliquer. Cochez les individus souhaités puis cliquez sur le bouton Commencer pour lancer le traitement.")
+        intro = _(u"Vous pouvez ici saisir, modifier ou supprimer des consommations pour un ensemble d'individus. SÃ©lectionnez une activitÃ© ainsi que les paramÃ¨tres de l'action Ã  appliquer. Cochez les individus souhaitÃ©s puis cliquez sur le bouton Commencer pour lancer le traitement.")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Calendrier_modifier.png")
         
-        # Paramètres
-        self.box_parametres_staticbox = wx.StaticBox(self, -1, _(u"Paramètres"))
-        self.label_activite = wx.StaticText(self, -1, u"Activité :")
+        # ParamÃ¨tres
+        self.box_parametres_staticbox = wx.StaticBox(self, -1, _(u"ParamÃ¨tres"))
+        self.label_activite = wx.StaticText(self, -1, u"ActivitÃ© :")
         self.ctrl_activite = CTRL_Activite(self)
         self.label_action = wx.StaticText(self, -1, u"Action :")
         self.ctrl_action = wx.TextCtrl(self, -1, u"")
         self.ctrl_action.Enable(False)
-        self.bouton_action = wx.Button(self, -1, _(u"Sélectionner une action"))
+        self.bouton_action = wx.Button(self, -1, _(u"SÃ©lectionner une action"))
         
         # Individus
-        self.box_individus_staticbox = wx.StaticBox(self, -1, _(u"Sélection des individus"))
+        self.box_individus_staticbox = wx.StaticBox(self, -1, _(u"SÃ©lection des individus"))
         self.listviewAvecFooter = OL_Saisie_lot_conso_global.ListviewAvecFooter(self, kwargs={}) 
         self.ctrl_individus = self.listviewAvecFooter.GetListview()
         self.ctrl_recherche = OL_Saisie_lot_conso_global.CTRL_Outils(self, listview=self.ctrl_individus, afficherCocher=True)
@@ -233,8 +233,8 @@ class Dialog(wx.Dialog):
         wx.CallLater(0, self.Layout)
 
     def __set_properties(self):
-        self.ctrl_activite.SetToolTip(wx.ToolTip(_(u"Sélectionnez l'activité pour laquelle vous souhaitez recalculer les prestations")))
-        self.bouton_action.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sélectionner les paramètres des actions")))
+        self.ctrl_activite.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez l'activitÃ© pour laquelle vous souhaitez recalculer les prestations")))
+        self.bouton_action.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sÃ©lectionner les paramÃ¨tres des actions")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
@@ -246,7 +246,7 @@ class Dialog(wx.Dialog):
         
         grid_sizer_contenu = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
         
-        # Paramètres
+        # ParamÃ¨tres
         box_parametres = wx.StaticBoxSizer(self.box_parametres_staticbox, wx.VERTICAL)
         grid_sizer_parametres = wx.FlexGridSizer(rows=3, cols=2, vgap=10, hgap=10)
 
@@ -387,8 +387,8 @@ class Dialog(wx.Dialog):
                 self.traitement.abort()
                 return True
             else :
-                # Demande la confirmation de l'arrêt
-                dlgConfirm = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment arrêter le traitement ?"), _(u"Confirmation d'arrêt"), wx.YES_NO|wx.NO_DEFAULT|wx.ICON_QUESTION)
+                # Demande la confirmation de l'arrÃªt
+                dlgConfirm = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment arrÃªter le traitement ?"), _(u"Confirmation d'arrÃªt"), wx.YES_NO|wx.NO_DEFAULT|wx.ICON_QUESTION)
                 reponse = dlgConfirm.ShowModal()
                 dlgConfirm.Destroy()
                 if reponse == wx.ID_NO:
@@ -409,18 +409,18 @@ class Dialog(wx.Dialog):
             # Stopper traitement
             self.Arreter() 
         else :
-            # Récupération des paramètres de sélection
+            # RÃ©cupÃ©ration des paramÃ¨tres de sÃ©lection
             IDactivite = self.ctrl_activite.GetID()
             tracks = self.ctrl_individus.GetTracksCoches() 
 
             if IDactivite == None :
-                dlg = wx.MessageDialog(self, _(u"Vous devez sélectionner une activité dans la liste !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous devez sÃ©lectionner une activitÃ© dans la liste !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
 
             if self.dictAction == None :
-                dlg = wx.MessageDialog(self, _(u"Vous devez sélectionner une action en cliquant sur le bouton 'Sélectionner une action' !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous devez sÃ©lectionner une action en cliquant sur le bouton 'SÃ©lectionner une action' !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
@@ -431,12 +431,12 @@ class Dialog(wx.Dialog):
                 dlg.Destroy()
                 return False
 
-            # Périodes de gestion
+            # PÃ©riodes de gestion
             gestion = UTILS_Gestion.Gestion(self)
             if gestion.IsPeriodeinPeriodes("consommations", self.dictAction["date_debut"], self.dictAction["date_fin"]) == False: return False
 
             # Demande confirmation de lancement
-            dlgConfirm = wx.MessageDialog(self, _(u"Souhaitez-vous appliquer le traitement par lot pour les %d individus cochés ?\n\nLe processus peut prendre quelques minutes...") % len(tracks), _(u"Confirmation"), wx.YES_NO|wx.CANCEL|wx.YES_DEFAULT|wx.ICON_QUESTION)
+            dlgConfirm = wx.MessageDialog(self, _(u"Souhaitez-vous appliquer le traitement par lot pour les %d individus cochÃ©s ?\n\nLe processus peut prendre quelques minutes...") % len(tracks), _(u"Confirmation"), wx.YES_NO|wx.CANCEL|wx.YES_DEFAULT|wx.ICON_QUESTION)
             reponse = dlgConfirm.ShowModal()
             dlgConfirm.Destroy()
             if reponse != wx.ID_YES :
@@ -444,12 +444,12 @@ class Dialog(wx.Dialog):
             
             # Lancer traitement
             self.EcritLog(_(u"Lancement du traitement"))
-            self.bouton_ok.SetImageEtTexte(cheminImage="Images/32x32/Arreter.png", texte=u"Arrêter")
+            self.bouton_ok.SetImageEtTexte(cheminImage="Images/32x32/Arreter.png", texte=u"ArrÃªter")
             self.bouton_fermer.Enable(False)
             self.Layout()
             
             # Traitement
-            # Ajout de la liste des individus dans l'action sinon problème dans CTRL_Grille.TraitementLot_processus
+            # Ajout de la liste des individus dans l'action sinon problÃ¨me dans CTRL_Grille.TraitementLot_processus
             for track in tracks :
                 self.dictAction["individus"].append(dict((key, value) for key, value in track.__dict__.items() 
                                                          if not callable(value) and not key.startswith('__')))

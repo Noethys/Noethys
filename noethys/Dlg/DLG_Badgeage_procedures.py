@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-12 Ivan LUCAS
@@ -24,8 +24,8 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         
-        intro = _(u"Vous pouvez ici saisir, modifier ou supprimer des procédures de badgeage.")
-        titre = _(u"Gestion des procédures de badgeage")
+        intro = _(u"Vous pouvez ici saisir, modifier ou supprimer des procÃ©dures de badgeage.")
+        titre = _(u"Gestion des procÃ©dures de badgeage")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Badgeage.png")
         self.ctrl_listview = OL_Badgeage_procedures.ListView(self, id=-1, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
@@ -39,7 +39,7 @@ class Dialog(wx.Dialog):
         self.bouton_defaut = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Ok.png"), wx.BITMAP_TYPE_ANY))
         
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
-        self.bouton_vocal = CTRL_Bouton_image.CTRL(self, texte=_(u"Configuration de la synthèse vocale"), cheminImage="Images/32x32/Vocal.png")
+        self.bouton_vocal = CTRL_Bouton_image.CTRL(self, texte=_(u"Configuration de la synthÃ¨se vocale"), cheminImage="Images/32x32/Vocal.png")
         self.bouton_fermer = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         self.__set_properties()
@@ -54,13 +54,13 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
 
     def __set_properties(self):
-        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter une procédure")))
-        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la procédure sélectionnée dans la liste")))
-        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la procédure sélectionnée dans la liste")))
-        self.bouton_dupliquer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour dupliquer la procédure sélectionnée dans la liste")))
-        self.bouton_defaut.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour définir la procédure sélectionnée comme celle par défaut")))
+        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter une procÃ©dure")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la procÃ©dure sÃ©lectionnÃ©e dans la liste")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la procÃ©dure sÃ©lectionnÃ©e dans la liste")))
+        self.bouton_dupliquer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour dupliquer la procÃ©dure sÃ©lectionnÃ©e dans la liste")))
+        self.bouton_defaut.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour dÃ©finir la procÃ©dure sÃ©lectionnÃ©e comme celle par dÃ©faut")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
-        self.bouton_vocal.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder au paramétrage de la synthèse vocale")))
+        self.bouton_vocal.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accÃ©der au paramÃ©trage de la synthÃ¨se vocale")))
         self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         self.SetMinSize((650, 550))
 

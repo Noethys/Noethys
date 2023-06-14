@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-13 Ivan LUCAS
@@ -63,15 +63,15 @@ class Panel(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonImprimerLot, self.bouton_imprimer_lot)
 
     def __set_properties(self):
-        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher un aperçu de la lettre de rappel sélectionnée")))
-        self.bouton_email.SetToolTip(wx.ToolTip(_(u"Cliquez ici envoyer la lettre de rappel sélectionnée par Email")))
-        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la lettre de rappel sélectionnée ou les lettres de rappel cochées")))
-        self.bouton_apercu_liste.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher un aperçu avant impression de la liste")))
+        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher un aperÃ§u de la lettre de rappel sÃ©lectionnÃ©e")))
+        self.bouton_email.SetToolTip(wx.ToolTip(_(u"Cliquez ici envoyer la lettre de rappel sÃ©lectionnÃ©e par Email")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la lettre de rappel sÃ©lectionnÃ©e ou les lettres de rappel cochÃ©es")))
+        self.bouton_apercu_liste.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher un aperÃ§u avant impression de la liste")))
         self.bouton_imprimer_liste.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer la liste")))
         self.bouton_export_texte.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter la liste au format texte")))
         self.bouton_export_excel.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter la liste au format Excel")))
-        self.bouton_email_lot.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à l'envoi des rappels par Email")))
-        self.bouton_imprimer_lot.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer les lettres de rappel générées")))
+        self.bouton_email_lot.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accÃ©der Ã  l'envoi des rappels par Email")))
+        self.bouton_imprimer_lot.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer les lettres de rappel gÃ©nÃ©rÃ©es")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=2, cols=1, vgap=10, hgap=10)
@@ -146,7 +146,7 @@ class Panel(wx.Panel):
         self.ctrl_rappels.ExportExcel()
 
     def GetFiltreNumerosRappels(self):
-        """ Retourn un filtre par numéro de lettres générées """
+        """ Retourn un filtre par numÃ©ro de lettres gÃ©nÃ©rÃ©es """
         listeNumeros = []
         for track in self.ctrl_rappels.GetTracksTous() :
             listeNumeros.append(track.numero)
@@ -157,7 +157,7 @@ class Panel(wx.Panel):
         """ Envoi par Email des lettres de rappel """
         filtres = [self.GetFiltreNumerosRappels(),]
         # Demande d'application automatique de filtres
-        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous que Noethys sélectionne automatiquement les lettres de rappels dont les familles souhaitent recevoir leurs factures par Email ?\n\n(Si non, notez que vous pouvez toujours effectuer cette sélection ultérieurement avec les filtres de sélection)"), _(u"Application automatique de filtres"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous que Noethys sÃ©lectionne automatiquement les lettres de rappels dont les familles souhaitent recevoir leurs factures par Email ?\n\n(Si non, notez que vous pouvez toujours effectuer cette sÃ©lection ultÃ©rieurement avec les filtres de sÃ©lection)"), _(u"Application automatique de filtres"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
         reponse = dlg.ShowModal() 
         dlg.Destroy()
         if reponse == wx.ID_CANCEL :
@@ -174,7 +174,7 @@ class Panel(wx.Panel):
         """ Impression des lettres de rappel """
         filtres = [self.GetFiltreNumerosRappels(),]
         # Demande d'application automatique de filtres
-        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous que Noethys sélectionne automatiquement les lettres de rappel dont les familles ne souhaitent pas recevoir leurs factures par Email ?\n\n(Si non, notez que vous pouvez toujours effectuer cette sélection ultérieurement avec les filtres de sélection)"), _(u"Application automatique de filtres"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous que Noethys sÃ©lectionne automatiquement les lettres de rappel dont les familles ne souhaitent pas recevoir leurs factures par Email ?\n\n(Si non, notez que vous pouvez toujours effectuer cette sÃ©lection ultÃ©rieurement avec les filtres de sÃ©lection)"), _(u"Application automatique de filtres"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
         reponse = dlg.ShowModal() 
         dlg.Destroy()
         if reponse == wx.ID_CANCEL :
@@ -192,7 +192,7 @@ class Panel(wx.Panel):
             IDrappel_min = min(self.parent.listeRappelsGenerees)
             IDrappel_max = max(self.parent.listeRappelsGenerees)
             self.ctrl_rappels.SetFiltres([{"type" : "IDrappel_intervalle", "IDrappel_min" : IDrappel_min, "IDrappel_max" : IDrappel_max},])
-            self.box_rappels_staticbox.SetLabel(_(u"%d lettres de rappel générées") % len(self.parent.listeRappelsGenerees))
+            self.box_rappels_staticbox.SetLabel(_(u"%d lettres de rappel gÃ©nÃ©rÃ©es") % len(self.parent.listeRappelsGenerees))
         self.ctrl_rappels.MAJ() 
         self.ctrl_rappels.DefilePremier()
         

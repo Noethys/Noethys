@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activitÈs
+# Application :    Noethys, gestion multi-activit√©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-16 Ivan LUCAS
@@ -32,7 +32,7 @@ class Track(object):
     
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # RÈcupÈration des paramËtres perso
+        # R√©cup√©ration des param√®tres perso
         self.selectionID = None
         self.selectionTrack = None
         self.criteres = ""
@@ -53,7 +53,7 @@ class ListView(FastObjectListView):
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
-        """ RÈcupÈration des donnÈes """
+        """ R√©cup√©ration des donn√©es """
         listeID = None
         db = GestionDB.DB()
         req = """SELECT types_quotients.IDtype_quotient, types_quotients.nom, COUNT(quotients.IDquotient)
@@ -87,7 +87,7 @@ class ListView(FastObjectListView):
         liste_Colonnes = [
             ColumnDefn(_(u"ID"), "left", 0, "IDtype_quotient", typeDonnee="entier"),
             ColumnDefn(_(u"Nom du type"), 'left', 230, "nom", typeDonnee="texte"),
-            ColumnDefn(_(u"Nombre de quotients associÈs"), "center", 190, "nbre_quotients", typeDonnee="entier"),
+            ColumnDefn(_(u"Nombre de quotients associ√©s"), "center", 190, "nbre_quotients", typeDonnee="entier"),
             ]
         
         self.SetColumns(liste_Colonnes)
@@ -105,7 +105,7 @@ class ListView(FastObjectListView):
             self.selectionTrack = None
         self.InitModel()
         self.InitObjectListView()
-        # SÈlection d'un item
+        # S√©lection d'un item
         if self.selectionTrack != None :
             self.SelectObject(self.selectionTrack, deselectOthers=True, ensureVisible=True)
         self.selectionID = None
@@ -122,7 +122,7 @@ class ListView(FastObjectListView):
             noSelection = False
             ID = self.Selection()[0].IDtype_quotient
                 
-        # CrÈation du menu contextuel
+        # Cr√©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Modifier
@@ -153,7 +153,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"AperÁu avant impression"))
+        item = wx.MenuItem(menuPop, 40, _(u"Aper√ßu avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -200,7 +200,7 @@ class ListView(FastObjectListView):
     def Modifier(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_types_quotients", "modifier") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucun type ‡ modifier dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucun type √† modifier dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -225,21 +225,21 @@ class ListView(FastObjectListView):
     def Supprimer(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_types_quotients", "supprimer") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucun type de quotient ‡ supprimer dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucun type de quotient √† supprimer dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         IDtype_quotient = self.Selection()[0].IDtype_quotient
         nbre_quotients = self.Selection()[0].nbre_quotients
 
-        # VÈrifie qu'un quotient n'est pas dÈj‡ attribuÈ
+        # V√©rifie qu'un quotient n'est pas d√©j√† attribu√©
         if nbre_quotients > 0 :
-            dlg = wx.MessageDialog(self, _(u"Ce type de quotient a dÈj‡ ÈtÈ attribuÈ ‡ %d quotient(s).\n\nVous ne pouvez donc pas le supprimer !") % nbre_quotients, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Ce type de quotient a d√©j√† √©t√© attribu√© √† %d quotient(s).\n\nVous ne pouvez donc pas le supprimer !") % nbre_quotients, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
-        # VÈrifie qu'un tarif n'est pas dÈj‡ attribuÈ
+        # V√©rifie qu'un tarif n'est pas d√©j√† attribu√©
         DB = GestionDB.DB()
         req = """SELECT COUNT(IDtarif)
         FROM tarifs
@@ -249,7 +249,7 @@ class ListView(FastObjectListView):
         nbreTarifs = int(DB.ResultatReq()[0][0])
         DB.Close()
         if nbreTarifs > 0 :
-            dlg = wx.MessageDialog(self, _(u"Ce type de quotient a dÈj‡ ÈtÈ attribuÈ ‡ %d tarif(s).\n\nVous ne pouvez donc pas le supprimer !") % nbreTarifs, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Ce type de quotient a d√©j√† √©t√© attribu√© √† %d tarif(s).\n\nVous ne pouvez donc pas le supprimer !") % nbreTarifs, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return

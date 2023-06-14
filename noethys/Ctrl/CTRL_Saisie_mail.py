@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -32,7 +32,7 @@ class Mail(wx.TextCtrl):
         if event != None : event.Skip() 
     
     def Validation(self):
-        # Vérifie si Email vide
+        # VÃ©rifie si Email vide
         text = self.GetValue()
         if text != "":
             posAt = text.find("@")

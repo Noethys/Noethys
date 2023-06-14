@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-15 Ivan LUCAS
@@ -45,18 +45,18 @@ class Track(object):
         if self.heure_debut != None and self.heure_fin != None :
             self.texteDetail = "%s - %s" % (self.heure_debut.replace(":", "h"), self.heure_fin.replace(":", "h"))
         if self.quantite != None :
-            self.texteDetail += _(u" Qté=%d") % self.quantite
+            self.texteDetail += _(u" QtÃ©=%d") % self.quantite
         
         if self.etat == "reservation" : 
-            self.texteEtat = _(u"Réservation")
+            self.texteEtat = _(u"RÃ©servation")
         elif self.etat == "present" : 
-            self.texteEtat = _(u"Présent")
+            self.texteEtat = _(u"PrÃ©sent")
         elif self.etat == "attente" : 
             self.texteEtat = _(u"Attente")
         elif self.etat == "absenti" : 
-            self.texteEtat = _(u"Absence injustifiée")
+            self.texteEtat = _(u"Absence injustifiÃ©e")
         elif self.etat == "absentj" : 
-            self.texteEtat = _(u"Absence justifiée")
+            self.texteEtat = _(u"Absence justifiÃ©e")
         elif self.etat == "refus" : 
             self.texteEtat = _(u"Refus")
         else :
@@ -66,11 +66,11 @@ class Track(object):
         self.heure_debut_time = UTILS_Dates.HeureStrEnTime(self.heure_debut)
         self.heure_fin_time = UTILS_Dates.HeureStrEnTime(self.heure_fin)
 
-        # Calcule la durée réelle
+        # Calcule la durÃ©e rÃ©elle
         self.duree_reelle = UTILS_Dates.SoustractionHeures(self.heure_fin_time, self.heure_debut_time)
         self.duree_reelle_str = UTILS_Dates.DeltaEnStr(self.duree_reelle, separateur="h")
 
-        # Calcule la durée arrondie
+        # Calcule la durÃ©e arrondie
         arrondi_type = self.clsbase.GetValeur("arrondi_type", None)
         arrondi_delta = self.clsbase.GetValeur("arrondi_delta", 15)
         self.duree_arrondie = UTILS_Dates.CalculerArrondi(arrondi_type=arrondi_type, arrondi_delta=arrondi_delta, heure_debut=self.heure_debut_time, heure_fin=self.heure_fin_time)
@@ -80,7 +80,7 @@ class Track(object):
 
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # Récupération des paramètres perso
+        # RÃ©cupÃ©ration des paramÃ¨tres perso
         self.clsbase = kwds.pop("clsbase", None)
         self.selectionID = None
         self.selectionTrack = None
@@ -89,7 +89,7 @@ class ListView(FastObjectListView):
         self.popupIndex = -1
         self.listeFiltres = []
 
-        # Init autres données
+        # Init autres donnÃ©es
         self.dictUnites = self.Importation_unites()
         self.dictOuvertures = self.GetOuverturesUnites()
 
@@ -108,7 +108,7 @@ class ListView(FastObjectListView):
         if self.clsbase == None :
             return
 
-        # Récupération des unités
+        # RÃ©cupÃ©ration des unitÃ©s
         DB = GestionDB.DB()
         req = """SELECT IDunite, nom, abrege, type, heure_debut, heure_fin
         FROM unites
@@ -120,7 +120,7 @@ class ListView(FastObjectListView):
         for IDunite, nom, abrege, type, heure_debut, heure_fin in listeDonnees :
             self.dictUnites[IDunite] = {"nom":nom, "abrege":abrege, "type":type, "heure_debut":heure_debut, "heure_fin":heure_fin, "unites_incompatibles" : []}
 
-        # Récupère les incompatibilités entre unités
+        # RÃ©cupÃ¨re les incompatibilitÃ©s entre unitÃ©s
         req = """SELECT IDunite_incompat, IDunite, IDunite_incompatible
         FROM unites_incompat;"""
         DB.ExecuterReq(req)
@@ -154,11 +154,11 @@ class ListView(FastObjectListView):
         liste_Colonnes = [
             ColumnDefn(_(u"IDconso"), "left", 0, "IDconso", typeDonnee="entier"),
             ColumnDefn(_(u"Date"), 'left', 190, "date", typeDonnee="date", stringConverter=FormateDate),
-            #ColumnDefn(_(u"Unité"), 'left', 70, "nomUnite", typeDonnee="texte", isSpaceFilling=True),
+            #ColumnDefn(_(u"UnitÃ©"), 'left', 70, "nomUnite", typeDonnee="texte", isSpaceFilling=True),
             #ColumnDefn(_(u"Etat"), 'left', 50, "texteEtat", typeDonnee="texte"),
-            ColumnDefn(_(u"Détail"), 'left', 100, "texteDetail", typeDonnee="texte"),
-            ColumnDefn(_(u"Durée réelle"), 'center', 90, "duree_reelle", typeDonnee="texte", stringConverter=FormateDuree),
-            ColumnDefn(_(u"Durée retenue"), 'center', 90, "duree_arrondie", typeDonnee="texte", stringConverter=FormateDuree),
+            ColumnDefn(_(u"DÃ©tail"), 'left', 100, "texteDetail", typeDonnee="texte"),
+            ColumnDefn(_(u"DurÃ©e rÃ©elle"), 'center', 90, "duree_reelle", typeDonnee="texte", stringConverter=FormateDuree),
+            ColumnDefn(_(u"DurÃ©e retenue"), 'center', 90, "duree_arrondie", typeDonnee="texte", stringConverter=FormateDuree),
             ]
         
         self.SetColumns(liste_Colonnes)
@@ -207,7 +207,7 @@ class ListView(FastObjectListView):
 
     def OnContextMenu(self, event):
         """Ouverture du menu contextuel """        
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         if len(self.Selection()) == 0:
@@ -215,7 +215,7 @@ class ListView(FastObjectListView):
         else:
             noSelection = False
                 
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Ajouter
@@ -250,8 +250,8 @@ class ListView(FastObjectListView):
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.CocheTout, id=70)
 
-        # Item Tout décocher
-        item = wx.MenuItem(menuPop, 80, _(u"Tout décocher"))
+        # Item Tout dÃ©cocher
+        item = wx.MenuItem(menuPop, 80, _(u"Tout dÃ©cocher"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Decocher.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -260,7 +260,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
 
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
+        item = wx.MenuItem(menuPop, 40, _(u"AperÃ§u avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -294,21 +294,21 @@ class ListView(FastObjectListView):
             
     def Apercu(self, event):
         from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des prévisions"), format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des prÃ©visions"), format="A", orientation=wx.PORTRAIT)
         prt.Preview()
 
     def Imprimer(self, event):
         from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des prévisions"), format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des prÃ©visions"), format="A", orientation=wx.PORTRAIT)
         prt.Print()
 
     def ExportTexte(self, event):
         from Utils import UTILS_Export
-        UTILS_Export.ExportTexte(self, titre=_(u"Liste des prévisions"), autoriseSelections=False)
+        UTILS_Export.ExportTexte(self, titre=_(u"Liste des prÃ©visions"), autoriseSelections=False)
         
     def ExportExcel(self, event):
         from Utils import UTILS_Export
-        UTILS_Export.ExportExcel(self, titre=_(u"Liste des prévisions"), autoriseSelections=False)
+        UTILS_Export.ExportExcel(self, titre=_(u"Liste des prÃ©visions"), autoriseSelections=False)
 
 
     def Ajouter(self, event):
@@ -325,7 +325,7 @@ class ListView(FastObjectListView):
         
     def Modifier(self, event):  
         if len(self.Selection()) == 0 :
-           dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune consommation à modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+           dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune consommation Ã  modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
            dlg.ShowModal()
            dlg.Destroy()
            return
@@ -342,7 +342,7 @@ class ListView(FastObjectListView):
 
     def Supprimer(self, event):  
         if len(self.Selection()) == 0 and len(self.GetTracksCoches()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune consommation à supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune consommation Ã  supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -350,7 +350,7 @@ class ListView(FastObjectListView):
         if len(self.GetTracksCoches()) > 0 :
             # Suppression multiple
             listeSelections = self.GetTracksCoches()
-            dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer les consommations cochées ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+            dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer les consommations cochÃ©es ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
             reponse = dlg.ShowModal() 
             dlg.Destroy()
             if reponse != wx.ID_YES :
@@ -359,7 +359,7 @@ class ListView(FastObjectListView):
         else :
             # Suppression unique
             listeSelections = self.Selection()        
-            dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer la consommation sélectionnée ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+            dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer la consommation sÃ©lectionnÃ©e ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
             reponse = dlg.ShowModal() 
             dlg.Destroy()
             if reponse != wx.ID_YES :
@@ -369,7 +369,7 @@ class ListView(FastObjectListView):
         listeSuppressions = []
         for track in listeSelections :
             if track.etat in ("present", "absenti", "absentj") :
-                dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas supprimer la consommation '%s' du %s car elle est déjà pointée !") % (track.nomUnite, UTILS_Dates.DateDDEnFr(track.date)) , _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas supprimer la consommation '%s' du %s car elle est dÃ©jÃ  pointÃ©e !") % (track.nomUnite, UTILS_Dates.DateDDEnFr(track.date)) , _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return
@@ -403,7 +403,7 @@ class ListView(FastObjectListView):
 
 
     def Importation_unites(self):
-        # Récupération des unités
+        # RÃ©cupÃ©ration des unitÃ©s
         DB = GestionDB.DB()
         req = """SELECT IDunite, nom, abrege, type, heure_debut, heure_fin
         FROM unites
@@ -415,7 +415,7 @@ class ListView(FastObjectListView):
         for IDunite, nom, abrege, type, heure_debut, heure_fin in listeDonnees :
             dictUnites[IDunite] = {"nom":nom, "abrege":abrege, "type":type, "heure_debut":heure_debut, "heure_fin":heure_fin, "unites_incompatibles" : []}
 
-        # Récupère les incompatibilités entre unités
+        # RÃ©cupÃ¨re les incompatibilitÃ©s entre unitÃ©s
         req = """SELECT IDunite_incompat, IDunite, IDunite_incompatible
         FROM unites_incompat;"""
         DB.ExecuterReq(req)
@@ -450,7 +450,7 @@ class ListView(FastObjectListView):
 
     def Generation(self, listeConso=[], IDconso=None):
 
-        # Vérification de la validité des dates
+        # VÃ©rification de la validitÃ© des dates
         listeAnomalies = []
         nbreConsoValides = 0
         listeConsoFinale = []
@@ -461,36 +461,36 @@ class ListView(FastObjectListView):
             dateFr = UTILS_Dates.DateDDEnFr(dictConso["date"])
             valide = True
 
-            # Recherche si pas d'incompatibilités avec les conso déjà saisies
+            # Recherche si pas d'incompatibilitÃ©s avec les conso dÃ©jÃ  saisies
             for track in self.GetTracks() :
                 if dictConso["date"] == track.date :
                     nomUnite1 = self.dictUnites[dictConso["IDunite"]]["nom"]
                     nomUnite2 = self.dictUnites[track.IDunite]["nom"]
 
                     if self.VerifieCompatibilitesUnites(track.IDunite, dictConso["IDunite"]) == False :
-                        listeAnomalies.append(_(u"%s : Unité %s incompatible avec unité %s déjà présente") % (dateFr, nomUnite1, nomUnite2))
+                        listeAnomalies.append(_(u"%s : UnitÃ© %s incompatible avec unitÃ© %s dÃ©jÃ  prÃ©sente") % (dateFr, nomUnite1, nomUnite2))
                         valide = False
 
                     if dictConso["IDunite"] == track.IDunite :
                         if self.dictUnites[dictConso["IDunite"]]["type"] == "Multihoraire" :
                             if dictConso["heure_fin"] > track.heure_debut and dictConso["heure_debut"] < track.heure_fin :
-                                listeAnomalies.append(_(u"%s : L'unité multihoraires %s chevauche une consommation d'une unité identique") % (dateFr, nomUnite1))
+                                listeAnomalies.append(_(u"%s : L'unitÃ© multihoraires %s chevauche une consommation d'une unitÃ© identique") % (dateFr, nomUnite1))
                                 valide = False
                         else :
-                            listeAnomalies.append(_(u"%s : Unité %s déjà présente") % (dateFr, nomUnite1))
+                            listeAnomalies.append(_(u"%s : UnitÃ© %s dÃ©jÃ  prÃ©sente") % (dateFr, nomUnite1))
                             valide = False
 
-            # Vérifie si unité ouverte
+            # VÃ©rifie si unitÃ© ouverte
             IDgroupe = self.clsbase.GetValeur("IDgroupe")
             if IDgroupe != None and ((dictConso["date"], dictConso["IDunite"], IDgroupe) in self.dictOuvertures) == False :
-                listeAnomalies.append(_(u"%s : Unité %s fermée") % (dateFr, self.dictUnites[dictConso["IDunite"]]["nom"]))
+                listeAnomalies.append(_(u"%s : UnitÃ© %s fermÃ©e") % (dateFr, self.dictUnites[dictConso["IDunite"]]["nom"]))
                 valide = False
 
             # IDconso pour les modifications
             if IDconso != None :
                 dictConso["IDconso"] = IDconso
 
-            # Insertion de la conso validée
+            # Insertion de la conso validÃ©e
             if valide == True :
                 listeConsoFinale.append(dictConso)
                 nbreConsoValides += 1
@@ -499,23 +499,23 @@ class ListView(FastObjectListView):
 
         # Signalement des anomalies
         if len(listeAnomalies) :
-            message1 = _(u"Les %d anomalies suivantes ont été trouvées.\n\nSouhaitez-vous tout de même générer les %d autres consommations ?") % (len(listeAnomalies), nbreConsoValides)
+            message1 = _(u"Les %d anomalies suivantes ont Ã©tÃ© trouvÃ©es.\n\nSouhaitez-vous tout de mÃªme gÃ©nÃ©rer les %d autres consommations ?") % (len(listeAnomalies), nbreConsoValides)
             message2 = u"\n".join(listeAnomalies)
-            dlg = dialogs.MultiMessageDialog(self, message1, caption = _(u"Génération"), msg2=message2, style = wx.ICON_EXCLAMATION | wx.YES|wx.CANCEL|wx.YES_DEFAULT, btnLabels={wx.ID_YES : _(u"Oui"), wx.ID_CANCEL : _(u"Annuler")})
+            dlg = dialogs.MultiMessageDialog(self, message1, caption = _(u"GÃ©nÃ©ration"), msg2=message2, style = wx.ICON_EXCLAMATION | wx.YES|wx.CANCEL|wx.YES_DEFAULT, btnLabels={wx.ID_YES : _(u"Oui"), wx.ID_CANCEL : _(u"Annuler")})
             reponse = dlg.ShowModal()
             dlg.Destroy()
             if reponse != wx.ID_YES :
                 return False
 
         if nbreConsoValides == 0 :
-            dlg = wx.MessageDialog(self, _(u"Il n'y a aucune consommation à générer !"), _(u"Génération"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Il n'y a aucune consommation Ã  gÃ©nÃ©rer !"), _(u"GÃ©nÃ©ration"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
 
         # Demande de confirmation
         if IDconso == None :
-            dlg = wx.MessageDialog(self, _(u"Confirmez-vous la génération de %d consommations ?") % nbreConsoValides, _(u"Génération"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+            dlg = wx.MessageDialog(self, _(u"Confirmez-vous la gÃ©nÃ©ration de %d consommations ?") % nbreConsoValides, _(u"GÃ©nÃ©ration"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
             reponse = dlg.ShowModal()
             dlg.Destroy()
             if reponse != wx.ID_YES :
@@ -524,13 +524,13 @@ class ListView(FastObjectListView):
         return listeConsoFinale
 
     def GenerationSelonPlanning(self, listeConso=[]):
-        """ Génération des consommations selon le planning général """
-        # Recherche des conso à générer
+        """ GÃ©nÃ©ration des consommations selon le planning gÃ©nÃ©ral """
+        # Recherche des conso Ã  gÃ©nÃ©rer
         listeConso = self.Generation(listeConso=listeConso)
         if listeConso == False :
             return
 
-        # Création des tracks
+        # CrÃ©ation des tracks
         listeTracks = []
         for dictConso in listeConso :
             listeTracks.append(Track(self.clsbase, dictConso))

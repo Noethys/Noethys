@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-12 Ivan LUCAS
@@ -58,7 +58,7 @@ class CTRL_Groupes(wx.CheckListBox):
         index = 0
         for nomGroupe, IDtype_groupe_activite in self.listeDonnees :
             if nomGroupe == None :
-                nomGroupe = _(u"Groupe d'activité inconnu")
+                nomGroupe = _(u"Groupe d'activitÃ© inconnu")
             self.Append(nomGroupe) 
             self.dictIndex[index] = IDtype_groupe_activite
             index += 1
@@ -113,7 +113,7 @@ class CTRL_Groupes(wx.CheckListBox):
             index += 1
             
     def GetLabelsGroupes(self):
-        """ Renvoie les labels des groupes d'activités sélectionnés """
+        """ Renvoie les labels des groupes d'activitÃ©s sÃ©lectionnÃ©s """
         listeLabels = []
         index = 0
         for nomGroupe, IDtype_groupe_activite in self.listeDonnees :
@@ -145,7 +145,7 @@ class CTRL_Activites(wx.CheckListBox):
         self.dictIndex = {}
         index = 0
         for IDactivite, nom in self.listeDonnees :
-            if nom == None : nom = u"Activité inconnue"
+            if nom == None : nom = u"ActivitÃ© inconnue"
             self.Append(nom)
             self.dictIndex[index] = IDactivite
             index += 1
@@ -200,8 +200,8 @@ class Parametres(wx.Panel):
         wx.Panel.__init__(self, parent, id=-1, name="panel_parametres", style=wx.TAB_TRAVERSAL)
         self.parent = parent
         
-        # Période
-        self.staticbox_periode_staticbox = wx.StaticBox(self, -1, _(u"Période de référence"))
+        # PÃ©riode
+        self.staticbox_periode_staticbox = wx.StaticBox(self, -1, _(u"PÃ©riode de rÃ©fÃ©rence"))
         self.label_date_debut = wx.StaticText(self, -1, u"Du")
         self.ctrl_date_debut = CTRL_Saisie_date.Date2(self)
         self.label_date_fin = wx.StaticText(self, -1, _(u"Au"))
@@ -218,18 +218,18 @@ class Parametres(wx.Panel):
         self.radio_locations.SetValue(True)
         self.radio_autres.SetValue(True)
 
-        # Activités
-        self.staticbox_activites_staticbox = wx.StaticBox(self, -1, _(u"Activités"))
-        self.radio_toutes = wx.RadioButton(self, -1, _(u"Toutes les activités"), style=wx.RB_GROUP)
-        self.radio_groupes = wx.RadioButton(self, -1, _(u"Sélectionner un groupe d'activités"))
+        # ActivitÃ©s
+        self.staticbox_activites_staticbox = wx.StaticBox(self, -1, _(u"ActivitÃ©s"))
+        self.radio_toutes = wx.RadioButton(self, -1, _(u"Toutes les activitÃ©s"), style=wx.RB_GROUP)
+        self.radio_groupes = wx.RadioButton(self, -1, _(u"SÃ©lectionner un groupe d'activitÃ©s"))
         self.ctrl_groupes = CTRL_Groupes(self)
         self.ctrl_groupes.SetMinSize((150, 60))
-        self.radio_activites = wx.RadioButton(self, -1, _(u"Sélectionner une ou plusieurs activités"))
+        self.radio_activites = wx.RadioButton(self, -1, _(u"SÃ©lectionner une ou plusieurs activitÃ©s"))
         self.ctrl_activites = CTRL_Activites(self)
         self.ctrl_activites.SetMinSize((150, 60))
 
         # Boutons Actualiser
-        self.bouton_actualiser = CTRL_Bouton_image.CTRL(self, texte=_(u"Rafraîchir la liste"), cheminImage="Images/32x32/Actualiser.png")
+        self.bouton_actualiser = CTRL_Bouton_image.CTRL(self, texte=_(u"RafraÃ®chir la liste"), cheminImage="Images/32x32/Actualiser.png")
         self.bouton_actualiser.SetMinSize((-1, 50)) 
 
         self.__set_properties()
@@ -244,24 +244,24 @@ class Parametres(wx.Panel):
         self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioActivites, self.radio_groupes)
         self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioActivites, self.radio_activites)
 
-        # Init Contrôles
+        # Init ContrÃ´les
         self.OnRadioActivites(None)
 
 
 
     def __set_properties(self):
-        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez la date de début de période")))
-        self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez la date de fin de période")))
-        self.radio_cotisations.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher les cotisations dans la synthèse")))
-        self.radio_consommations.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher les consommations dans la synthèse")))
-        self.radio_locations.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher les locations dans la synthèse")))
-        self.radio_autres.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher les autres types de prestations dans la synthèse")))
-        self.bouton_actualiser.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour actualiser les résultats en fonction des paramètres sélectionnés")))
+        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez la date de dÃ©but de pÃ©riode")))
+        self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez la date de fin de pÃ©riode")))
+        self.radio_cotisations.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher les cotisations dans la synthÃ¨se")))
+        self.radio_consommations.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher les consommations dans la synthÃ¨se")))
+        self.radio_locations.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher les locations dans la synthÃ¨se")))
+        self.radio_autres.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher les autres types de prestations dans la synthÃ¨se")))
+        self.bouton_actualiser.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour actualiser les rÃ©sultats en fonction des paramÃ¨tres sÃ©lectionnÃ©s")))
         
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=4, cols=1, vgap=10, hgap=10)
         
-        # Date de référence
+        # Date de rÃ©fÃ©rence
         staticbox_periode = wx.StaticBoxSizer(self.staticbox_periode_staticbox, wx.VERTICAL)
         grid_sizer_periode = wx.FlexGridSizer(rows=2, cols=2, vgap=5, hgap=5)
         grid_sizer_periode.Add(self.label_date_debut, 0, wx.ALIGN_CENTER_VERTICAL, 0)
@@ -281,7 +281,7 @@ class Parametres(wx.Panel):
         staticbox_affichage.Add(grid_sizer_affichage, 1, wx.ALL|wx.EXPAND, 5)
         grid_sizer_base.Add(staticbox_affichage, 1, wx.RIGHT|wx.EXPAND, 5)
 
-        # Activités
+        # ActivitÃ©s
         staticbox_activites = wx.StaticBoxSizer(self.staticbox_activites_staticbox, wx.VERTICAL)
         grid_sizer_activites = wx.FlexGridSizer(rows=6, cols=1, vgap=5, hgap=5)
         grid_sizer_activites.Add(self.radio_toutes, 0, 0, 0)
@@ -311,11 +311,11 @@ class Parametres(wx.Panel):
         except : pass
             
     def OnBoutonActualiser(self, event):
-        """ Validation des données saisies """
-        # Vérifie date de référence
+        """ Validation des donnÃ©es saisies """
+        # VÃ©rifie date de rÃ©fÃ©rence
         date_debut = self.ctrl_date_debut.GetDate()
         if self.ctrl_date_debut.FonctionValiderDate() == False or date_debut == None :
-            dlg = wx.MessageDialog(self, _(u"La date de début de période ne semble pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"La date de dÃ©but de pÃ©riode ne semble pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_debut.SetFocus()
@@ -323,13 +323,13 @@ class Parametres(wx.Panel):
 
         date_fin = self.ctrl_date_fin.GetDate()
         if self.ctrl_date_fin.FonctionValiderDate() == False or date_fin == None :
-            dlg = wx.MessageDialog(self, _(u"La date de fin de période ne semble pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"La date de fin de pÃ©riode ne semble pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_fin.SetFocus()
             return False
         
-        # Envoi des données
+        # Envoi des donnÃ©es
         self.parent.MAJ()
         
         return True
@@ -358,15 +358,15 @@ class Parametres(wx.Panel):
         return listeFiltres
 
     def GetLabelActivites(self):
-        """ Renvoie les labels des groupes ou activités sélectionnées """
+        """ Renvoie les labels des groupes ou activitÃ©s sÃ©lectionnÃ©es """
         if self.radio_toutes.GetValue() == True :
-            return _(u"Toutes les activités")
+            return _(u"Toutes les activitÃ©s")
         if self.radio_groupes.GetValue() == True :
-            # Groupe d'activités
+            # Groupe d'activitÃ©s
             listeTemp = self.ctrl_groupes.GetLabelsGroupes()
             return ", ".join(listeTemp)
         else :
-            # Activités
+            # ActivitÃ©s
             listeTemp = []
             dictActivites = self.ctrl_activites.GetDictActivites()
             for IDactivite in self.ctrl_activites.GetIDcoches()  :
@@ -382,12 +382,12 @@ class Dialog(wx.Dialog):
         self.parent = parent
         
         # Bandeau
-        intro = _(u"Vous pouvez ici afficher la liste détaillée des déductions. Commencez par saisir une période de référence puis sélectionnez les activités à afficher. Il est ensuite possible d'imprimer les résultats ou de les exporter sous Ms Excel.")
-        titre = _(u"Liste des déductions")
+        intro = _(u"Vous pouvez ici afficher la liste dÃ©taillÃ©e des dÃ©ductions. Commencez par saisir une pÃ©riode de rÃ©fÃ©rence puis sÃ©lectionnez les activitÃ©s Ã  afficher. Il est ensuite possible d'imprimer les rÃ©sultats ou de les exporter sous Ms Excel.")
+        titre = _(u"Liste des dÃ©ductions")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Euro.png")
         self.SetTitle(titre)
         
-        # Panel Paramètres
+        # Panel ParamÃ¨tres
         self.ctrl_parametres = Parametres(self)
         
         # ListView
@@ -419,7 +419,7 @@ class Dialog(wx.Dialog):
         self.__set_properties()
         self.__do_layout()
                 
-        # Initialisation des contrôles
+        # Initialisation des contrÃ´les
         anneeActuelle = datetime.date.today().year
         self.ctrl_parametres.ctrl_date_debut.SetDate(datetime.date(anneeActuelle, 1, 1))
         self.ctrl_parametres.ctrl_date_fin.SetDate(datetime.date(anneeActuelle, 12, 31))
@@ -429,9 +429,9 @@ class Dialog(wx.Dialog):
     def __set_properties(self):
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
-        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la déduction sélectionnée dans la liste")))
-        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la déduction sélectionnée dans la liste")))
-        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour créer un aperçu de la liste")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la dÃ©duction sÃ©lectionnÃ©e dans la liste")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la dÃ©duction sÃ©lectionnÃ©e dans la liste")))
+        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour crÃ©er un aperÃ§u de la liste")))
         self.bouton_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer la liste")))
         self.bouton_export_texte.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter la liste au format Texte")))
         self.bouton_export_excel.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter la liste au format Excel")))
@@ -443,7 +443,7 @@ class Dialog(wx.Dialog):
         
         grid_sizer_contenu = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
         
-        # Panel des paramètres
+        # Panel des paramÃ¨tres
         grid_sizer_contenu.Add(self.ctrl_parametres, 1, wx.EXPAND, 0)
         
         # CTRL
@@ -506,7 +506,7 @@ class Dialog(wx.Dialog):
         date_fin = self.ctrl_parametres.ctrl_date_fin.GetDate()
         if date_debut == None : date_debut = "---"
         if date_fin == None : date_fin= "---"
-        listeParametres.append(_(u"Période du %s au %s") % (DateEngFr(str(date_debut)), DateEngFr(str(date_fin))))
+        listeParametres.append(_(u"PÃ©riode du %s au %s") % (DateEngFr(str(date_debut)), DateEngFr(str(date_fin))))
         
         # Affichage
         listeAffichage = []
@@ -517,11 +517,11 @@ class Dialog(wx.Dialog):
             if filtre == "autre" : listeAffichage.append("Autres")
             if filtre == "avoir" : listeAffichage.append("Avoirs")
         affichage = ", ".join(listeAffichage)
-        listeParametres.append(_(u"Eléments affichés : %s") % affichage)
+        listeParametres.append(_(u"ElÃ©ments affichÃ©s : %s") % affichage)
         
-        # Activités
+        # ActivitÃ©s
         activites = self.ctrl_parametres.GetLabelActivites()
-        listeParametres.append(_(u"Activités : %s") % activites)
+        listeParametres.append(_(u"ActivitÃ©s : %s") % activites)
                 
         labelParametres = " | ".join(listeParametres)
         return labelParametres

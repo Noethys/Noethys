@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -33,12 +33,12 @@ class Dialog(wx.Dialog):
         self.ctrl_nom = wx.TextCtrl(self, -1, u"")
         
         # Coords
-        self.staticbox_coords_staticbox = wx.StaticBox(self, -1, _(u"Coordonnées"))
+        self.staticbox_coords_staticbox = wx.StaticBox(self, -1, _(u"CoordonnÃ©es"))
         self.label_rue = wx.StaticText(self, -1, _(u"Rue :"))
         self.ctrl_rue = wx.TextCtrl(self, -1, u"", style=wx.TE_MULTILINE)
         self.label_ville = wx.StaticText(self, -1, _(u"C.P. :"))
         self.ctrl_ville = CTRL_Saisie_adresse.Adresse(self)
-        self.label_tel = wx.StaticText(self, -1, _(u"Tél. :"))
+        self.label_tel = wx.StaticText(self, -1, _(u"TÃ©l. :"))
         self.ctrl_tel = CTRL_Saisie_tel.Tel(self, intitule=_(u"restaurateur"))
         self.label_fax = wx.StaticText(self, -1, _(u"Fax. :"))
         self.ctrl_fax = CTRL_Saisie_tel.Tel(self, intitule=_(u"fax"))

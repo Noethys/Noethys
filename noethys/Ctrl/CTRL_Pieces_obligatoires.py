@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -53,8 +53,8 @@ class CTRL(HTL.HyperTreeList):
         self.listePiecesObligatoires = []
         self.dictItems = {}
 
-        # Création des colonnes
-        self.AddColumn(_(u"Pièces à fournir"))
+        # CrÃ©ation des colonnes
+        self.AddColumn(_(u"PiÃ¨ces Ã  fournir"))
         self.SetColumnWidth(0, largeurColonne)
         self.SetColumnAlignment(0, wx.ALIGN_LEFT)
                 
@@ -75,7 +75,7 @@ class CTRL(HTL.HyperTreeList):
     def OnSelection(self, event):
         item = event.GetItem()
         donnees = self.GetPyData(item)
-        # Si le parent est la fenêtre de saisie d'une pièce :
+        # Si le parent est la fenÃªtre de saisie d'une piÃ¨ce :
         if self.GetParent().GetName() == "DLG_Saisie_piece" :
             self.GetParent().OnSelectionPieceObligatoire(donnees)
     
@@ -84,19 +84,19 @@ class CTRL(HTL.HyperTreeList):
         donnees = self.GetPyData(item)
         if donnees == None : return
         if donnees["type"] != "piece" : return
-        # Si la pièce est valide, on annule
+        # Si la piÃ¨ce est valide, on annule
         if donnees["valide"] != "pasok" :
-            dlg = wx.MessageDialog(self, _(u"Une pièce valide existe déjà !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Une piÃ¨ce valide existe dÃ©jÃ  !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
-        # Ouverture de la fenêtre de saisie d'une pièce
+        # Ouverture de la fenÃªtre de saisie d'une piÃ¨ce
         if self.GetParent().GetName() == "DLG_Individu_pieces" or self.GetParent().GetName() == "DLG_Famille_pieces" :
             self.GetParent().OnAjoutExpress(donnees["IDfamille"], donnees["IDtype_piece"], donnees["IDindividu"])
         
         
     def MAJ(self):
-        """ Met à jour (redessine) tout le contrôle """
+        """ Met Ã  jour (redessine) tout le contrÃ´le """
         self.DeleteAllItems()
         self.Remplissage()
     
@@ -107,11 +107,11 @@ class CTRL(HTL.HyperTreeList):
         return self.GetPyData(self.GetSelection())
     
     def Remplissage(self):
-        # Récupération des données
+        # RÃ©cupÃ©ration des donnÃ©es
         self.listePiecesObligatoires = []
         self.dictItems = {}
         
-        # Création des conditions
+        # CrÃ©ation des conditions
         condition = ""
         # Si pour fiche FAMILLE :
         if self.IDfamille != None :
@@ -122,7 +122,7 @@ class CTRL(HTL.HyperTreeList):
         
         DB = GestionDB.DB()
         
-        # Récupération des pièces à fournir pour la famille ou l'individu
+        # RÃ©cupÃ©ration des piÃ¨ces Ã  fournir pour la famille ou l'individu
         req = """
         SELECT 
         inscriptions.IDfamille, pieces_activites.IDtype_piece, types_pieces.nom, types_pieces.public, types_pieces.valide_rattachement, individus.prenom, individus.IDindividu
@@ -137,7 +137,7 @@ class CTRL(HTL.HyperTreeList):
         DB.ExecuterReq(req)
         listePiecesObligatoires = DB.ResultatReq()
         
-        # Récupération des pièces de la famille
+        # RÃ©cupÃ©ration des piÃ¨ces de la famille
         dateDuJour = datetime.date.today()
         
         if self.IDindividu != None :
@@ -205,24 +205,24 @@ class CTRL(HTL.HyperTreeList):
         DB.Close()
         dictPiecesFournies = {}
         for IDpiece, IDtype_piece, IDindividu, IDfamille, date_debut, date_fin, publicPiece in listePiecesFournies :
-            # Pour les pièces familiales :
+            # Pour les piÃ¨ces familiales :
             if publicPiece == "famille" : IDindividu = None
             
             date_debut = DateEngEnDateDD(date_debut)
             date_fin = DateEngEnDateDD(date_fin)
             dictPiecesFournies[ (IDfamille, IDtype_piece, IDindividu) ] = (date_debut, date_fin)
         
-        # Comparaison de la liste des pièces à fournir et la liste des pièces fournies
+        # Comparaison de la liste des piÃ¨ces Ã  fournir et la liste des piÃ¨ces fournies
         dictDonnees = {}
         for IDfamille, IDtype_piece, nomPiece, publicPiece, rattachementPiece, prenom, IDindividu in listePiecesObligatoires :
             
-            # Pour les pièces familiales :
+            # Pour les piÃ¨ces familiales :
             if publicPiece == "famille" : IDindividu = None
-            # Pour les pièces qui sont indépendantes de la famille
+            # Pour les piÃ¨ces qui sont indÃ©pendantes de la famille
             if rattachementPiece == 1 :
                 IDfamille = None
             
-            # Mémorise pour la fenêtre de saisie d'une pièce
+            # MÃ©morise pour la fenÃªtre de saisie d'une piÃ¨ce
             self.listePiecesObligatoires.append((IDfamille, IDtype_piece, IDindividu))
             
             if (IDfamille, IDtype_piece, IDindividu) in dictPiecesFournies :
@@ -236,7 +236,7 @@ class CTRL(HTL.HyperTreeList):
                 valide = "pasok"
             dictDonnees[(IDfamille, IDtype_piece, IDindividu)] = (IDfamille, IDtype_piece, nomPiece, publicPiece, prenom, IDindividu, valide)
         
-        # Répartition par famille
+        # RÃ©partition par famille
         dictPieces = {}
         nbreFamilles = 0
         for key, valeurs in dictDonnees.items() :
@@ -248,16 +248,16 @@ class CTRL(HTL.HyperTreeList):
             dictPieces[IDfamille].append(valeurs)
             dictPieces[IDfamille].sort()
         
-        # Création de la racine
+        # CrÃ©ation de la racine
         self.root = self.AddRoot(_(u"Racine"))
         
-        # Création des branches
+        # CrÃ©ation des branches
         for IDfamille, valeurs in dictPieces.items() :
             
             # Niveau 1 : Titulaires des familles
             if nbreFamilles > 1 :
                 if IDfamille == None :
-                    label = _(u"Pièces indépendantes")
+                    label = _(u"PiÃ¨ces indÃ©pendantes")
                 else:
                     if self.dictFamillesRattachees != None and len(self.dictFamillesRattachees) > 0 :
                         label = self.dictFamillesRattachees[IDfamille]["nomsTitulaires"]
@@ -269,7 +269,7 @@ class CTRL(HTL.HyperTreeList):
             else:
                 niveau1 = self.root
             
-            # Niveau 2 : Nom des pièces
+            # Niveau 2 : Nom des piÃ¨ces
             for IDfamille, IDtype_piece, nomPiece, publicPiece, prenom, IDindividu, valide in valeurs :
                 if publicPiece == "famille" or self.IDindividu != None :
                     label = nomPiece

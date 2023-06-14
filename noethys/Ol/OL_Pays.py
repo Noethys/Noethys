@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -31,7 +31,7 @@ class Track(object):
     
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # Récupération des paramètres perso
+        # RÃ©cupÃ©ration des paramÃ¨tres perso
         self.selectionID = None
         self.selectionTrack = None
         self.criteres = ""
@@ -53,8 +53,8 @@ class ListView(FastObjectListView):
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
-        """ Récupération des données """
-        # Critères
+        """ RÃ©cupÃ©ration des donnÃ©es """
+        # CritÃ¨res
         listeID = None
         self.criteres = ""
         # Liste de filtres
@@ -87,7 +87,7 @@ class ListView(FastObjectListView):
         return listeListeView
       
     def InitObjectListView(self):
-        # Création du imageList avec une taille 24x24
+        # CrÃ©ation du imageList avec une taille 24x24
         dictImagesDrapeau = {}
         imageList = wx.ImageList(24, 24)
         for track in self.donnees :
@@ -95,7 +95,7 @@ class ListView(FastObjectListView):
             dictImagesDrapeau[track.code_drapeau] = indexImg
         self.SetImageLists(imageList, imageList)
         
-        # Formatage des données
+        # Formatage des donnÃ©es
         def GetImageDrapeau(track):
             return dictImagesDrapeau[track.code_drapeau]
             
@@ -107,7 +107,7 @@ class ListView(FastObjectListView):
         liste_Colonnes = [
             ColumnDefn(u"", "left", 29, "IDpays", typeDonnee="entier", imageGetter=GetImageDrapeau),
             ColumnDefn(_(u"Nom du pays"), 'left', 210, "nom", typeDonnee="texte"),
-            ColumnDefn(_(u"Nationalité"), "left", 200, "nationalite", typeDonnee="texte"),
+            ColumnDefn(_(u"NationalitÃ©"), "left", 200, "nationalite", typeDonnee="texte"),
             ]
         
         self.SetColumns(liste_Colonnes)
@@ -125,7 +125,7 @@ class ListView(FastObjectListView):
             self.selectionTrack = None
         self.InitModel()
         self.InitObjectListView()
-        # Sélection d'un item
+        # SÃ©lection d'un item
         if self.selectionTrack != None :
             self.SelectObject(self.selectionTrack, deselectOthers=True, ensureVisible=True)
         self.selectionID = None
@@ -142,7 +142,7 @@ class BarreRecherche(wx.SearchCtrl):
         wx.SearchCtrl.__init__(self, parent, size=(-1, -1), style=wx.TE_PROCESS_ENTER)
         self.parent = parent
 
-        self.SetDescriptiveText(_(u"Rechercher un pays ou une nationalité..."))
+        self.SetDescriptiveText(_(u"Rechercher un pays ou une nationalitÃ©..."))
         self.ShowSearchButton(True)
         
         self.listView = self.parent.ctrl_pays

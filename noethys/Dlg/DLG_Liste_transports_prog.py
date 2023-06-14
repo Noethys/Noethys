@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-18 Ivan LUCAS
@@ -49,13 +49,13 @@ class Panel(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.ctrl_liste.ExportExcel, self.bouton_export_excel)
         self.Bind(wx.EVT_BUTTON, self.ctrl_liste.ExportTexte, self.bouton_export_texte)
         
-        # Init contrôles
+        # Init contrÃ´les
         self.MAJ() 
         
     def __set_properties(self):
-        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Modifier le transport sélectionné dans la liste")))
-        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Supprimer le transport sélectionné dans la liste")))
-        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Afficher un aperçu avant impression de la liste")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Modifier le transport sÃ©lectionnÃ© dans la liste")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Supprimer le transport sÃ©lectionnÃ© dans la liste")))
+        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Afficher un aperÃ§u avant impression de la liste")))
         self.bouton_imprimer.SetToolTip(wx.ToolTip(_(u"Imprimer la liste")))
         self.bouton_export_excel.SetToolTip(wx.ToolTip(_(u"Exporter la liste au format Excel")))
         self.bouton_export_texte.SetToolTip(wx.ToolTip(_(u"Exporter la liste au format Texte")))

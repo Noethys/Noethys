@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-15 Ivan LUCAS
@@ -19,7 +19,7 @@ import datetime
 import calendar
 from Utils.UTILS_Decimal import FloatToDecimal as FloatToDecimal
 from Utils import UTILS_Config
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"â‚¬")
 
 
 from Utils import UTILS_Interface
@@ -27,7 +27,7 @@ from Ctrl.CTRL_ObjectListView import ObjectListView, FastObjectListView, ColumnD
 
 from Dlg.DLG_Saisie_contratpsu import Base
 
-LISTE_MOIS = [_(u"Janvier"), _(u"Février"), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"Août"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"Décembre")]
+LISTE_MOIS = [_(u"Janvier"), _(u"FÃ©vrier"), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"AoÃ»t"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"DÃ©cembre")]
 
 
 
@@ -89,10 +89,10 @@ class ListView(FastObjectListView):
         liste_Colonnes = [
             ColumnDefn(_(u""), "left", 0, "", typeDonnee="texte"),
             ColumnDefn(_(u"Date"), 'left', 170, "date", typeDonnee="date", stringConverter=FormateDate),
-            ColumnDefn(_(u"Prévision"), 'center', 90, "duree_prevision", typeDonnee="duree", stringConverter=FormateDuree),
-            ColumnDefn(_(u"Présence"), 'center', 90, "duree_presence", typeDonnee="duree", stringConverter=FormateDuree),
-            ColumnDefn(_(u"Abs déduc."), 'center', 90, "heures_absences_deductibles", typeDonnee="duree", stringConverter=FormateDuree),
-            ColumnDefn(_(u"Abs non déduc."), 'center', 90, "heures_absences_non_deductibles", typeDonnee="duree", stringConverter=FormateDuree),
+            ColumnDefn(_(u"PrÃ©vision"), 'center', 90, "duree_prevision", typeDonnee="duree", stringConverter=FormateDuree),
+            ColumnDefn(_(u"PrÃ©sence"), 'center', 90, "duree_presence", typeDonnee="duree", stringConverter=FormateDuree),
+            ColumnDefn(_(u"Abs dÃ©duc."), 'center', 90, "heures_absences_deductibles", typeDonnee="duree", stringConverter=FormateDuree),
+            ColumnDefn(_(u"Abs non dÃ©duc."), 'center', 90, "heures_absences_non_deductibles", typeDonnee="duree", stringConverter=FormateDuree),
             ColumnDefn(_(u"H.Compl."), 'center', 90, "depassement", typeDonnee="duree", stringConverter=FormateDuree),
             ColumnDefn(_(u""), 'center', 5, "5", typeDonnee="texte"),
             ColumnDefn(_(u"Abs. RTT"), 'center', 90, "absences_rtt", typeDonnee="duree", stringConverter=FormateDuree),
@@ -104,10 +104,10 @@ class ListView(FastObjectListView):
         self.SetSortColumn(1)
 
     def SetDonnees(self, track_mensualite=None):
-        # Recherche des dates extrêmes du mois
+        # Recherche des dates extrÃªmes du mois
         self.track_mensualite = track_mensualite
 
-        # Génération des tracks
+        # GÃ©nÃ©ration des tracks
         self.donnees = []
         for date, dict_date in track_mensualite.dict_dates.items() :
             track = Track(date=date, dict_date=dict_date)
@@ -125,7 +125,7 @@ class ListView(FastObjectListView):
 
     def OnContextMenu(self, event):
         """Ouverture du menu contextuel """        
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         if len(self.Selection()) == 0:
@@ -133,11 +133,11 @@ class ListView(FastObjectListView):
         else:
             noSelection = False
                 
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
+        item = wx.MenuItem(menuPop, 40, _(u"AperÃ§u avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -171,21 +171,21 @@ class ListView(FastObjectListView):
             
     def Apercu(self, event):
         from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Détail de la mensualité"), intro=self.GetIntro(), format="A", orientation=wx.LANDSCAPE)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"DÃ©tail de la mensualitÃ©"), intro=self.GetIntro(), format="A", orientation=wx.LANDSCAPE)
         prt.Preview()
 
     def Imprimer(self, event):
         from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Détail de la mensualité"), intro=self.GetIntro(), format="A", orientation=wx.LANDSCAPE)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"DÃ©tail de la mensualitÃ©"), intro=self.GetIntro(), format="A", orientation=wx.LANDSCAPE)
         prt.Print()
 
     def ExportTexte(self, event):
         from Utils import UTILS_Export
-        UTILS_Export.ExportTexte(self, titre=_(u"Détail de la mensualité"), autoriseSelections=False)
+        UTILS_Export.ExportTexte(self, titre=_(u"DÃ©tail de la mensualitÃ©"), autoriseSelections=False)
         
     def ExportExcel(self, event):
         from Utils import UTILS_Export
-        UTILS_Export.ExportExcel(self, titre=_(u"Détail de la mensualité"), autoriseSelections=False)
+        UTILS_Export.ExportExcel(self, titre=_(u"DÃ©tail de la mensualitÃ©"), autoriseSelections=False)
 
     def GetIntro(self):
         return "" #TODO <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<

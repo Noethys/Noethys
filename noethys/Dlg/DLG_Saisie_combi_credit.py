@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -52,12 +52,12 @@ class Dialog(wx.Dialog):
         self.listeUnites = listeUnites
 
         # Unites
-        self.staticbox_unites = wx.StaticBox(self, -1, _(u"Unités à combiner"))
+        self.staticbox_unites = wx.StaticBox(self, -1, _(u"UnitÃ©s Ã  combiner"))
         self.ctrl_unites = CTRL_Unites(self, self.listeUnites)
         
         # Options
         self.staticbox_options = wx.StaticBox(self, -1, _(u"Options"))
-        self.check_quantite = wx.CheckBox(self, -1, _(u"Quantité max. :"))
+        self.check_quantite = wx.CheckBox(self, -1, _(u"QuantitÃ© max. :"))
         self.ctrl_quantite = wx.SpinCtrl(self, -1, "", min=0, max=500)
         
         if afficheOptions == False :
@@ -80,8 +80,8 @@ class Dialog(wx.Dialog):
         
     def __set_properties(self):
         self.SetTitle(_(u"Saisie d'une combinaison"))
-        self.check_quantite.SetToolTip(wx.ToolTip(_(u"Vous pouvez définir ici un plafond maximal")))
-        self.ctrl_unites.SetToolTip(wx.ToolTip(_(u"Cochez les unités à combiner")))
+        self.check_quantite.SetToolTip(wx.ToolTip(_(u"Vous pouvez dÃ©finir ici un plafond maximal")))
+        self.ctrl_unites.SetToolTip(wx.ToolTip(_(u"Cochez les unitÃ©s Ã  combiner")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
         self.SetMinSize((350, 420))
@@ -89,7 +89,7 @@ class Dialog(wx.Dialog):
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
         
-        # Unités
+        # UnitÃ©s
         staticbox_unites = wx.StaticBoxSizer(self.staticbox_unites, wx.VERTICAL)
         staticbox_unites.Add(self.ctrl_unites, 1, wx.ALL|wx.EXPAND, 10)
         grid_sizer_base.Add(staticbox_unites, 1, wx.LEFT|wx.RIGHT|wx.TOP|wx.EXPAND, 10)
@@ -138,25 +138,25 @@ class Dialog(wx.Dialog):
         self.OnCheckQuantite() 
         
     def OnBoutonOk(self, event): 
-        # Quantité
+        # QuantitÃ©
         if self.check_quantite.GetValue() == True :
             quantite = self.ctrl_quantite.GetValue()
             if quantite == 0 or quantite == "" or quantite == None :
-                dlg = wx.MessageDialog(self, _(u"La quantité max. que vous avez saisi ne semble pas valide !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"La quantitÃ© max. que vous avez saisi ne semble pas valide !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_quantite.SetFocus()
                 return
         
-        # Unités
+        # UnitÃ©s
         listeUnites = self.GetUnites()
         if len(listeUnites) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous devez cocher au moins une unité !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez cocher au moins une unitÃ© !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
                 
-        # Fermeture fenêtre
+        # Fermeture fenÃªtre
         self.EndModal(wx.ID_OK)
 
 

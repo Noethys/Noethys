@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -34,7 +34,7 @@ class Track(object):
     
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # Récupération des paramètres perso
+        # RÃ©cupÃ©ration des paramÃ¨tres perso
         self.IDactivite = kwds.pop("IDactivite", None)
         self.selectionID = None
         self.selectionTrack = None
@@ -56,7 +56,7 @@ class ListView(FastObjectListView):
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
-        """ Récupération des données """
+        """ RÃ©cupÃ©ration des donnÃ©es """
         listeID = None
         db = GestionDB.DB()
         req = """SELECT IDresponsable, IDactivite, nom, fonction, defaut, sexe
@@ -86,7 +86,7 @@ class ListView(FastObjectListView):
         self.evenRowsBackColor = wx.Colour(255, 255, 255)
         self.useExpansionColumn = True
         
-        # Préparation de la listeImages
+        # PrÃ©paration de la listeImages
         imgDefaut = self.AddNamedImages("defaut", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Ok.png"), wx.BITMAP_TYPE_PNG))
         imgHomme = self.AddNamedImages("homme", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Homme.png"), wx.BITMAP_TYPE_PNG))
         imgFemme = self.AddNamedImages("femme", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Femme.png"), wx.BITMAP_TYPE_PNG))
@@ -122,7 +122,7 @@ class ListView(FastObjectListView):
             self.selectionTrack = None
         self.InitModel()
         self.InitObjectListView()
-        # Sélection d'un item
+        # SÃ©lection d'un item
         if self.selectionTrack != None :
             self.SelectObject(self.selectionTrack, deselectOthers=True, ensureVisible=True)
         self.selectionID = None
@@ -139,7 +139,7 @@ class ListView(FastObjectListView):
             noSelection = False
             ID = self.Selection()[0].IDresponsable
                 
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Modifier
@@ -169,8 +169,8 @@ class ListView(FastObjectListView):
         
         menuPop.AppendSeparator()
 
-        # Item Par défaut
-        item = wx.MenuItem(menuPop, 40, _(u"Définir comme responsable par défaut"))
+        # Item Par dÃ©faut
+        item = wx.MenuItem(menuPop, 40, _(u"DÃ©finir comme responsable par dÃ©faut"))
         if noSelection == False :
             if self.Selection()[0].defaut == 1 :
                 bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Ok.png"), wx.BITMAP_TYPE_PNG)
@@ -182,7 +182,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
+        item = wx.MenuItem(menuPop, 40, _(u"AperÃ§u avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -200,12 +200,12 @@ class ListView(FastObjectListView):
 
     def Apercu(self, event):
         from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des responsables d'activités"), format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des responsables d'activitÃ©s"), format="A", orientation=wx.PORTRAIT)
         prt.Preview()
 
     def Imprimer(self, event):
         from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des responsables d'activités"), format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des responsables d'activitÃ©s"), format="A", orientation=wx.PORTRAIT)
         prt.Print()
 
 
@@ -234,7 +234,7 @@ class ListView(FastObjectListView):
 
     def Modifier(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun responsable dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucun responsable dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -260,7 +260,7 @@ class ListView(FastObjectListView):
 
     def Supprimer(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun responsable dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucun responsable dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -268,9 +268,9 @@ class ListView(FastObjectListView):
         if dlg.ShowModal() == wx.ID_YES :
             IDresponsable = self.Selection()[0].IDresponsable
             DB = GestionDB.DB()
-            # Suppression de l'identité
+            # Suppression de l'identitÃ©
             DB.ReqDEL("responsables_activite", "IDresponsable", IDresponsable)
-            # Attribue le Défaut à un autre responsable
+            # Attribue le DÃ©faut Ã  un autre responsable
             if self.Selection()[0].defaut == 1 :
                 req = """SELECT IDresponsable, defaut
                 FROM responsables_activite
@@ -287,7 +287,7 @@ class ListView(FastObjectListView):
     
     def SetDefaut(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun responsable dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucun responsable dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -339,7 +339,7 @@ class Saisie(wx.Dialog):
             self.SetTitle(_(u"Modification d'un responsable"))
         self.SetMinSize((400, -1))
         
-        self.ctrl_sexe.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici le genre du responsable.")))
+        self.ctrl_sexe.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez ici le genre du responsable.")))
         self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez ici le nom du responsable. Ex.: 'David DUPOND' ")))
         self.ctrl_fonction.SetToolTip(wx.ToolTip(_(u"Saisissez ici la fonction du responsable. Ex. : 'Directeur'")))
 

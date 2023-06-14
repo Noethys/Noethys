@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-15 Ivan LUCAS
@@ -42,7 +42,7 @@ class CTRL_Choix(wx.Choice):
         DB.Close()
         listeLabels = []
         for ID, nom in listeDonnees :
-            if nom == None : nom = _(u"Activité inconnue")
+            if nom == None : nom = _(u"ActivitÃ© inconnue")
             listeLabels.append(nom)
             self.listeID.append(ID)
         self.SetItems(listeLabels)
@@ -70,15 +70,15 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         
-        intro = _(u"Vous pouvez saisir ici un lot d'inscriptions. Sélectionnez les paramètres de l'inscription, cochez les individus à inscrire puis cliquez sur le bouton Ok. Utilisez la commande de Filtrage de liste pour effectuer une sélection rapide des individus.")
+        intro = _(u"Vous pouvez saisir ici un lot d'inscriptions. SÃ©lectionnez les paramÃ¨tres de l'inscription, cochez les individus Ã  inscrire puis cliquez sur le bouton Ok. Utilisez la commande de Filtrage de liste pour effectuer une sÃ©lection rapide des individus.")
         titre = _(u"Saisir un lot d'inscriptions")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Activite.png")
 
-        # Paramètres
-        self.staticbox_parametres_staticbox = wx.StaticBox(self, -1, _(u"Paramètres de l'inscription"))
+        # ParamÃ¨tres
+        self.staticbox_parametres_staticbox = wx.StaticBox(self, -1, _(u"ParamÃ¨tres de l'inscription"))
 
-        self.label_activite = wx.StaticText(self, -1, _(u"Activité :"))
+        self.label_activite = wx.StaticText(self, -1, _(u"ActivitÃ© :"))
         self.ctrl_activite = CTRL_Choix(self, id=999, mode="activites")
         self.ctrl_activite.SetMinSize((60, -1))
 
@@ -86,12 +86,12 @@ class Dialog(wx.Dialog):
         self.ctrl_groupe = CTRL_Choix(self, mode="groupes")
         self.ctrl_groupe.SetMinSize((150, -1))
 
-        self.label_categorie = wx.StaticText(self, -1, _(u"Catégorie de tarif :"))
+        self.label_categorie = wx.StaticText(self, -1, _(u"CatÃ©gorie de tarif :"))
         self.ctrl_categorie = CTRL_Choix(self, mode="categories")
         self.ctrl_categorie.SetMinSize((150, -1))
                 
         # Liste
-        self.staticbox_individus_staticbox = wx.StaticBox(self, -1, _(u"Individus à inscrire"))
+        self.staticbox_individus_staticbox = wx.StaticBox(self, -1, _(u"Individus Ã  inscrire"))
         
         self.ctrl_listview = OL_Saisie_lot_inscriptions.ListView(self, id=-1, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.ctrl_recherche = OL_Saisie_lot_inscriptions.CTRL_Outils(self, listview=self.ctrl_listview, afficherCocher=True)
@@ -109,12 +109,12 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_CHOICE, self.OnChoix, self.ctrl_groupe)
         self.Bind(wx.EVT_CHOICE, self.OnChoix, self.ctrl_categorie)
         
-        # Init contrôles
+        # Init contrÃ´les
         self.ctrl_listview.MAJ()
 
     def __set_properties(self):
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
-        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour inscrire les individus cochés")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour inscrire les individus cochÃ©s")))
         self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         self.SetMinSize((850, 700))
 
@@ -122,7 +122,7 @@ class Dialog(wx.Dialog):
         grid_sizer_base = wx.FlexGridSizer(rows=4, cols=1, vgap=10, hgap=10)
         grid_sizer_base.Add(self.ctrl_bandeau, 0, wx.EXPAND, 0)
 
-        # Paramètres
+        # ParamÃ¨tres
         staticbox_parametres = wx.StaticBoxSizer(self.staticbox_parametres_staticbox, wx.VERTICAL)
         
         grid_sizer_parametres = wx.FlexGridSizer(rows=1, cols=8, vgap=5, hgap=5)
@@ -199,19 +199,19 @@ class Dialog(wx.Dialog):
         nomCategorie = self.ctrl_categorie.GetStringSelection()
         
         if IDactivite == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez sélectionner une activité dans la liste proposée !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez sÃ©lectionner une activitÃ© dans la liste proposÃ©e !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
         if IDgroupe == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez sélectionner un groupe dans la liste proposée !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez sÃ©lectionner un groupe dans la liste proposÃ©e !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
         if IDcategorie_tarif == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez sélectionner une catégorie de tarif dans la liste proposée !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez sÃ©lectionner une catÃ©gorie de tarif dans la liste proposÃ©e !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return

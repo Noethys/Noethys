@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activitÈs
+# Application :    Noethys, gestion multi-activit√©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-14 Ivan LUCAS
@@ -40,7 +40,7 @@ class Track(object):
     
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # RÈcupÈration des paramËtres perso
+        # R√©cup√©ration des param√®tres perso
         self.selectionID = None
         self.selectionTrack = None
         self.criteres = ""
@@ -60,7 +60,7 @@ class ListView(FastObjectListView):
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
-        """ RÈcupÈration des donnÈes """
+        """ R√©cup√©ration des donn√©es """
         listeListeView = []
         index = 0
         for bmp in self.listePhotos :
@@ -75,7 +75,7 @@ class ListView(FastObjectListView):
         self.evenRowsBackColor = wx.Colour(255, 255, 255)
         self.useExpansionColumn = True
         
-        # CrÈation du imageList avec une taille personnalisÈe
+        # Cr√©ation du imageList avec une taille personnalis√©e
         dictImages = {}
         imageList = wx.ImageList(TAILLE_IMAGE[0], TAILLE_IMAGE[1])
         for track in self.donnees :
@@ -92,7 +92,7 @@ class ListView(FastObjectListView):
             ]
 
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(_(u"Aucun visage dÈtectÈ"))
+        self.SetEmptyListMsg(_(u"Aucun visage d√©tect√©"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
 ##        self.SetSortColumn(self.columns[0])
         self.SetObjects(self.donnees)
@@ -107,7 +107,7 @@ class ListView(FastObjectListView):
             self.selectionTrack = None
         self.InitModel()
         self.InitObjectListView()
-        # SÈlection d'un item
+        # S√©lection d'un item
         if self.selectionTrack != None :
             self.SelectObject(self.selectionTrack, deselectOthers=True, ensureVisible=True)
         self.selectionID = None
@@ -119,7 +119,7 @@ class ListView(FastObjectListView):
 
     def Modifier(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucune photo ‡ identifier dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucune photo √† identifier dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -193,7 +193,7 @@ class DLG_Rechercher_individu(wx.Dialog):
         
     def OnBoutonOk(self, event):
         if self.GetDonnees() == None :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucun individu dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucun individu dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -208,15 +208,15 @@ class Dialog(wx.Dialog):
         self.parent = parent
         self.nom_fichier = None
         
-        intro = _(u"Vous pouvez ici importer un lot de photos individuelles depuis une photo de groupe. Chargez la photo et Noethys se chargera de dÈtecter les visages. Vous devrez ensuite identifier chaque photo : Double-cliquez sur une photo pour l'associer ‡ un individu. Cliquez sur Enregistrer pour terminer.")
+        intro = _(u"Vous pouvez ici importer un lot de photos individuelles depuis une photo de groupe. Chargez la photo et Noethys se chargera de d√©tecter les visages. Vous devrez ensuite identifier chaque photo : Double-cliquez sur une photo pour l'associer √† un individu. Cliquez sur Enregistrer pour terminer.")
         titre = _(u"Importer des photos individuelles")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Photos.png")
         
         self.ctrl_image = wx.StaticBitmap(self, -1, bitmap=wx.NullBitmap, size=TAILLE_IMAGE_ORIGINALE, style=wx.SUNKEN_BORDER)
         self.bouton_image = wx.Button(self, -1, _(u"Charger une image"))
-        self.bouton_sauvegarder = wx.Button(self, -1, _(u"Enregistrer les photos identifiÈes"))
-        self.label_infos = wx.StaticText(self, -1, _(u"Cliquez le bouton Charger\npour rechercher la photo de\ngroupe ‡ analyser."), style=wx.ALIGN_CENTER)
+        self.bouton_sauvegarder = wx.Button(self, -1, _(u"Enregistrer les photos identifi√©es"))
+        self.label_infos = wx.StaticText(self, -1, _(u"Cliquez le bouton Charger\npour rechercher la photo de\ngroupe √† analyser."), style=wx.ALIGN_CENTER)
 
         self.ctrl_listview = ListView(self, id=-1, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.ctrl_listview.MAJ() 
@@ -235,7 +235,7 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.bouton_image.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour charger une image")))
-        self.bouton_sauvegarder.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour enregistrer les images identifiÈes dans les fiches individuelles correspondantes")))
+        self.bouton_sauvegarder.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour enregistrer les images identifi√©es dans les fiches individuelles correspondantes")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         self.SetMinSize((820, 650))
@@ -295,7 +295,7 @@ class Dialog(wx.Dialog):
         """ Charger un fichier """
         nbreIdentifiees = len(self.GetPhotosIdentifiees())
         if nbreIdentifiees > 0 :
-            dlg = wx.MessageDialog(None, _(u"Souhaitez-vous vraiment charger une nouvelle image ?\n\nAttention, les %d photo(s) identifiÈe(s) non enregistrÈes seront annulÈes.") % nbreIdentifiees, _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+            dlg = wx.MessageDialog(None, _(u"Souhaitez-vous vraiment charger une nouvelle image ?\n\nAttention, les %d photo(s) identifi√©e(s) non enregistr√©es seront annul√©es.") % nbreIdentifiees, _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
             reponse = dlg.ShowModal() 
             dlg.Destroy()
             if reponse != wx.ID_YES :
@@ -349,7 +349,7 @@ class Dialog(wx.Dialog):
         
         cascade = cv2.CascadeClassifier(Chemins.GetStaticPath("Divers/haarcascade_frontalface_alt2.xml"))
         if six.PY2:
-            nom_fichier = nom_fichier.encode("iso-8859-15")
+            nom_fichier = nom_fichier.encode("utf8")
         img = cv2.imread(nom_fichier)
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         
@@ -373,10 +373,10 @@ class Dialog(wx.Dialog):
             imgVisage.Rescale(width=TAILLE_IMAGE[0], height=TAILLE_IMAGE[1], quality=wx.IMAGE_QUALITY_HIGH)
             bmpVisage = imgVisage.ConvertToBitmap()
             
-            # Ajoute la photo ‡ la liste
+            # Ajoute la photo √† la liste
             listePhotos.append(bmpVisage) 
             
-            # TracÈ du cadre rouge
+            # Trac√© du cadre rouge
             cv2.rectangle(frame, (x, y), (x+w, y+h), (255,0,0), 2)
         
         # Envoie les visages au ListView
@@ -390,7 +390,7 @@ class Dialog(wx.Dialog):
         self.AfficheImageOriginale(bmp)
         
         # MAJ Label_infos
-        texte = _(u"Noethys a dÈtectÈ %d visages.\n\nDouble-cliquez sur les lignes\nde la liste pour les associer\n‡ des individus.") % len(listePhotos)
+        texte = _(u"Noethys a d√©tect√© %d visages.\n\nDouble-cliquez sur les lignes\nde la liste pour les associer\n√† des individus.") % len(listePhotos)
         self.label_infos.SetLabel(texte)
         self.Layout()
         
@@ -422,17 +422,17 @@ class Dialog(wx.Dialog):
         self.ctrl_image.SetBitmap(bmp)
 
     def OnBoutonEnregistrer(self, event):
-        """ Enregistre les photos identifiÈes """
+        """ Enregistre les photos identifi√©es """
         tracks = self.GetPhotosIdentifiees()
         if len(tracks) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez identifiÈ aucune photo dans la liste !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez identifi√© aucune photo dans la liste !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
         
         DB = GestionDB.DB(suffixe="PHOTOS")
         if DB.echec == 1 : 
-            dlg = wx.MessageDialog(self, _(u"La base de donnÈes PHOTOS n'a pas ÈtÈ trouvÈe !"), _(u"Erreur"), wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"La base de donn√©es PHOTOS n'a pas √©t√© trouv√©e !"), _(u"Erreur"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             DB.Close() 
@@ -464,7 +464,7 @@ class Dialog(wx.Dialog):
         DB.Close()
         
         # Message de confirmation
-        dlg = wx.MessageDialog(self, _(u"Les %d photos identifiÈes ont ÈtÈ enregistrÈes avec succËs dans les fiches individuelles !") % len(tracks), _(u"Confirmation"), wx.OK | wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Les %d photos identifi√©es ont √©t√© enregistr√©es avec succ√®s dans les fiches individuelles !") % len(tracks), _(u"Confirmation"), wx.OK | wx.ICON_INFORMATION)
         dlg.ShowModal()
         dlg.Destroy()
 

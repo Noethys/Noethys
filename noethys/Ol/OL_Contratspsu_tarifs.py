@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-15 Ivan LUCAS
@@ -17,7 +17,7 @@ import GestionDB
 from Utils import UTILS_Dates
 import datetime
 from Utils import UTILS_Config
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"â‚¬")
 
 
 from Utils import UTILS_Interface
@@ -43,7 +43,7 @@ class Track(object):
 
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # Récupération des paramètres perso
+        # RÃ©cupÃ©ration des paramÃ¨tres perso
         self.clsbase = kwds.pop("clsbase", None)
         self.selectionID = None
         self.selectionTrack = None
@@ -86,12 +86,12 @@ class ListView(FastObjectListView):
 
         liste_Colonnes = [
             ColumnDefn(_(u"IDcontrat_tarif"), "left", 0, "IDcontrat_tarif", typeDonnee="entier"),
-            ColumnDefn(_(u"Date de début"), 'left', 100, "date_debut", typeDonnee="date", isSpaceFilling=True, stringConverter=FormateDate),
+            ColumnDefn(_(u"Date de dÃ©but"), 'left', 100, "date_debut", typeDonnee="date", isSpaceFilling=True, stringConverter=FormateDate),
             ColumnDefn(_(u"Revenu"), 'center', 90, "revenu", typeDonnee="montant", stringConverter=FormateMontant),
             ColumnDefn(_(u"Quotient"), 'center', 90, "quotient", typeDonnee="entier"),
             ColumnDefn(_(u"Taux"), 'center', 90, "taux", typeDonnee="montant", stringConverter=FormateMontant2),
             ColumnDefn(_(u"Tarif de base"), 'center', 90, "tarif_base", typeDonnee="montant", stringConverter=FormateMontant2),
-            ColumnDefn(_(u"Tarif dépass."), 'center', 90, "tarif_depassement", typeDonnee="montant", stringConverter=FormateMontant2),
+            ColumnDefn(_(u"Tarif dÃ©pass."), 'center', 90, "tarif_depassement", typeDonnee="montant", stringConverter=FormateMontant2),
             ]
         
         self.SetColumns(liste_Colonnes)
@@ -120,7 +120,7 @@ class ListView(FastObjectListView):
 
     def OnContextMenu(self, event):
         """Ouverture du menu contextuel """        
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         if len(self.Selection()) == 0:
@@ -128,7 +128,7 @@ class ListView(FastObjectListView):
         else:
             noSelection = False
                 
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Ajouter
@@ -157,7 +157,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
 
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
+        item = wx.MenuItem(menuPop, 40, _(u"AperÃ§u avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -221,7 +221,7 @@ class ListView(FastObjectListView):
         
     def Modifier(self, event):  
         if len(self.Selection()) == 0 :
-           dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun tarif à modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+           dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucun tarif Ã  modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
            dlg.ShowModal()
            dlg.Destroy()
            return
@@ -236,7 +236,7 @@ class ListView(FastObjectListView):
         dlg.Destroy()
 
     def VerifieTarif(self, trackExclus=None):
-        """ Vérifie si un tarif commence bien au premier jour du contrat """
+        """ VÃ©rifie si un tarif commence bien au premier jour du contrat """
         date_debut_contrat = self.clsbase.GetValeur("date_debut")
         valide = False
         for track in self.GetTracks():
@@ -246,20 +246,20 @@ class ListView(FastObjectListView):
 
     def Supprimer(self, event):  
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune consommation à supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune consommation Ã  supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         track = self.Selection()[0]
 
         # if self.VerifieTarif(track) == False :
-        #     dlg = wx.MessageDialog(self, _(u"Attention, si vous supprimez ce tarif, la période du contrat ne disposera pas de tarif disponible au premier jour du contrat !\n\nSouhaitez-vous tout de même supprimer le tarif sélectionné ?"), _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+        #     dlg = wx.MessageDialog(self, _(u"Attention, si vous supprimez ce tarif, la pÃ©riode du contrat ne disposera pas de tarif disponible au premier jour du contrat !\n\nSouhaitez-vous tout de mÃªme supprimer le tarif sÃ©lectionnÃ© ?"), _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
         #     reponse = dlg.ShowModal()
         #     dlg.Destroy()
         #     if reponse != wx.ID_YES :
         #         return
 
-        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer le tarif sélectionné ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer le tarif sÃ©lectionnÃ© ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
         reponse = dlg.ShowModal()
         dlg.Destroy()
         if reponse != wx.ID_YES :

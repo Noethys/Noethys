@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 
 # Copyright (C) 2009  Rickard Lindberg, Roger Lindberg
 #

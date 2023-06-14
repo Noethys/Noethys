@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -76,16 +76,16 @@ class BarreOutils(wx.ToolBar):
         ID_ALIGNER_DROIT = wx.Window.NewControlId()
 
         # Boutons
-        AddTool(self, ID_ALIGNER_GAUCHE, "Images/Teamword/aligner_gauche.png", kind=wx.ITEM_CHECK, label=_(u"Aligner à gauche"), handler=self.parent.OnAlignLeft, updateUI=self.parent.OnUpdateAlignLeft)
+        AddTool(self, ID_ALIGNER_GAUCHE, "Images/Teamword/aligner_gauche.png", kind=wx.ITEM_CHECK, label=_(u"Aligner Ã  gauche"), handler=self.parent.OnAlignLeft, updateUI=self.parent.OnUpdateAlignLeft)
         AddTool(self, ID_ALIGNER_CENTRE, "Images/Teamword/aligner_centre.png", kind=wx.ITEM_CHECK, label=_(u"Centrer"), handler=self.parent.OnAlignCenter, updateUI=self.parent.OnUpdateAlignCenter)
-        AddTool(self, ID_ALIGNER_DROIT, "Images/Teamword/aligner_droit.png", kind=wx.ITEM_CHECK, label=_(u"Aligner à droite"), handler=self.parent.OnAlignRight, updateUI=self.parent.OnUpdateAlignRight)
+        AddTool(self, ID_ALIGNER_DROIT, "Images/Teamword/aligner_droit.png", kind=wx.ITEM_CHECK, label=_(u"Aligner Ã  droite"), handler=self.parent.OnAlignRight, updateUI=self.parent.OnUpdateAlignRight)
         self.AddSeparator()
         AddTool(self, ID_GRAS, "Images/Teamword/gras.png", kind=wx.ITEM_CHECK, label=_(u"Gras"), handler=self.parent.OnBold, updateUI=self.parent.OnUpdateBold)
         AddTool(self, ID_ITALIQUE, "Images/Teamword/italique.png", kind=wx.ITEM_CHECK, label=_(u"Italique"), handler=self.parent.OnItalic, updateUI=self.parent.OnUpdateItalic)
-        AddTool(self, ID_SOULIGNE, "Images/Teamword/souligne.png", kind=wx.ITEM_CHECK, label=_(u"Souligné"), handler=self.parent.OnUnderline, updateUI=self.parent.OnUpdateUnderline)
+        AddTool(self, ID_SOULIGNE, "Images/Teamword/souligne.png", kind=wx.ITEM_CHECK, label=_(u"SoulignÃ©"), handler=self.parent.OnUnderline, updateUI=self.parent.OnUpdateUnderline)
         self.AddSeparator()
         AddTool(self, wx.ID_UNDO, "Images/Teamword/annuler.png", label=_(u"Annuler"), handler=self.parent.ForwardEvent, updateUI=self.parent.ForwardEvent)
-        AddTool(self, wx.ID_REDO, "Images/Teamword/repeter.png", label=_(u"Répéter"), handler=self.parent.ForwardEvent, updateUI=self.parent.ForwardEvent)
+        AddTool(self, wx.ID_REDO, "Images/Teamword/repeter.png", label=_(u"RÃ©pÃ©ter"), handler=self.parent.ForwardEvent, updateUI=self.parent.ForwardEvent)
         self.AddSeparator()
         AddTool(self, wx.ID_CUT, "Images/Teamword/couper.png", label=_(u"Couper"), handler=self.parent.ForwardEvent, updateUI=self.parent.ForwardEvent)
         AddTool(self, wx.ID_COPY, "Images/Teamword/copier.png", label=_(u"Copier"), handler=self.parent.ForwardEvent, updateUI=self.parent.ForwardEvent)
@@ -112,7 +112,7 @@ class Dialog(wx.Dialog):
         for motCle, code in MOTSCLES :
             self.listeMotsCles.append(motCle)
         
-        self.staticbox_generalites_staticbox = wx.StaticBox(self, -1, _(u"Généralites"))
+        self.staticbox_generalites_staticbox = wx.StaticBox(self, -1, _(u"GÃ©nÃ©ralites"))
         
         # Nom
         self.label_nom = wx.StaticText(self, -1, _(u"Nom :"))
@@ -124,13 +124,13 @@ class Dialog(wx.Dialog):
         
         # Attribution
         self.ctrl_attribution = wx.CheckBox(self, -1, u"")
-        self.label_attribution_1 = wx.StaticText(self, -1, _(u"Attribuer par défaut lorsque le nombre de jours de retard est entre"))
+        self.label_attribution_1 = wx.StaticText(self, -1, _(u"Attribuer par dÃ©faut lorsque le nombre de jours de retard est entre"))
         self.ctrl_retard_min = wx.SpinCtrl(self, -1, u"", min=0, max=9000)
         self.label_attribution_2 = wx.StaticText(self, -1, _(u"et"))
         self.ctrl_retard_max = wx.SpinCtrl(self, -1, u"", min=0, max=9000)
         
-        # Mots-clés
-        self.staticbox_motscles_staticbox = wx.StaticBox(self, -1, _(u"Mots-clés disponibles"))
+        # Mots-clÃ©s
+        self.staticbox_motscles_staticbox = wx.StaticBox(self, -1, _(u"Mots-clÃ©s disponibles"))
         self.ctrl_motscles = wx.ListBox(self, -1, choices=self.listeMotsCles, style=wx.SIMPLE_BORDER)
         self.ctrl_motscles.SetBackgroundColour("#F0FBED")
         
@@ -165,17 +165,17 @@ class Dialog(wx.Dialog):
         else:
             self.SetTitle(_(u"Saisie d'un texte de rappel"))
         
-        # Init contrôles
+        # Init contrÃ´les
         self.OnCheckAttribution(None)
 
     def __set_properties(self):
         self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez un nom pour ce texte")))
-        self.ctrl_titre.SetToolTip(wx.ToolTip(_(u"Saisissez le titre qui apparaîtra en entête du document")))
-        self.ctrl_couleur.SetToolTip(wx.ToolTip(_(u"Sélectionnez une couleur")))
-        self.ctrl_attribution.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour que ce texte soit automatiquement attribué en fonction du nombre de jours de retard du paiement")))
+        self.ctrl_titre.SetToolTip(wx.ToolTip(_(u"Saisissez le titre qui apparaÃ®tra en entÃªte du document")))
+        self.ctrl_couleur.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez une couleur")))
+        self.ctrl_attribution.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour que ce texte soit automatiquement attribuÃ© en fonction du nombre de jours de retard du paiement")))
         self.ctrl_retard_min.SetMinSize((60, -1))
         self.ctrl_retard_max.SetMinSize((60, -1))
-        self.ctrl_motscles.SetToolTip(wx.ToolTip(_(u"Double-cliquez sur un mot-clé pour l'insérer dans le texte\nou recopiez-le directement (avec ses accolades).")))
+        self.ctrl_motscles.SetToolTip(wx.ToolTip(_(u"Double-cliquez sur un mot-clÃ© pour l'insÃ©rer dans le texte\nou recopiez-le directement (avec ses accolades).")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
@@ -381,7 +381,7 @@ class Dialog(wx.Dialog):
 
     def OnFont(self, evt):
         if not self.ctrl_texte.HasSelection():
-            dlg = wx.MessageDialog(self, _(u"Vous devez d'abord sélectionner un texte."), _(u"Police"), wx.OK | wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez d'abord sÃ©lectionner un texte."), _(u"Police"), wx.OK | wx.ICON_INFORMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -471,7 +471,7 @@ class Dialog(wx.Dialog):
         wx.FileSystem.AddHandler(wx.MemoryFSHandler())
 
     def GetHtmlText(self, imagesIncluses=False):
-        # Récupération de la source HTML
+        # RÃ©cupÃ©ration de la source HTML
         handler = rt.RichTextHTMLHandler()
         if imagesIncluses == True : 
             handler.SetFlags(rt.RICHTEXT_HANDLER_SAVE_IMAGES_TO_BASE64)
@@ -531,7 +531,7 @@ class Dialog(wx.Dialog):
         # Change la balise <p> en <para>
         source = source.replace("<p", "<para")
         source = source.replace("</p>", "</para>")
-        # Supprime des sauts à la ligne
+        # Supprime des sauts Ã  la ligne
         source = source.replace("<br>", "")
         source = source.replace("\r", "")
         source = source.replace("\n", "")
@@ -544,7 +544,7 @@ class Dialog(wx.Dialog):
         return source
 
     def OnBoutonOk(self, event):     
-        # Vérification des données
+        # VÃ©rification des donnÃ©es
         label = self.ctrl_nom.GetValue()
         if label == "" :
             dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un nom !"), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
@@ -554,7 +554,7 @@ class Dialog(wx.Dialog):
             return        
         
         if self.couleur == (255, 255, 255):
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner une couleur en cliquant sur le bouton couleur !"), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sÃ©lectionner une couleur en cliquant sur le bouton couleur !"), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_couleur.SetFocus()
@@ -565,7 +565,7 @@ class Dialog(wx.Dialog):
             retard_min = self.ctrl_retard_min.GetValue()
             retard_max = self.ctrl_retard_max.GetValue()
             if retard_min >= retard_max :
-                dlg = wx.MessageDialog(self, _(u"Les conditions d'attribution par défaut semblent erronées !"), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Les conditions d'attribution par dÃ©faut semblent erronÃ©es !"), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return   
@@ -581,7 +581,7 @@ class Dialog(wx.Dialog):
             self.ctrl_titre.SetFocus()
             return        
         
-        # Récupération du texte
+        # RÃ©cupÃ©ration du texte
         texteStr = self.ctrl_texte.GetValue() 
         texteXML = self.SaveTexte()
         textePDF = self.HtmlEnReportlab(self.GetHtmlText())
@@ -592,7 +592,7 @@ class Dialog(wx.Dialog):
             self.ctrl_texte.SetFocus()
             return     
         
-        # Pour éviter bug de la police segoe UI
+        # Pour Ã©viter bug de la police segoe UI
         texteXML = texteXML.replace("Segoe UI", "Arial")
         textePDF = textePDF.replace("Segoe UI", "Arial")
         
@@ -613,7 +613,7 @@ class Dialog(wx.Dialog):
             DB.ReqMAJ("textes_rappels", listeDonnees, "IDtexte", self.IDtexte)
         DB.Close()
 
-        # Fermeture fenêtre
+        # Fermeture fenÃªtre
         self.EndModal(wx.ID_OK)
     
     def GetIDtexte(self):
@@ -644,7 +644,7 @@ class Dialog(wx.Dialog):
     def ImpressionTEST(self):
         texte = self.HtmlEnReportlab(self.GetHtmlText())
         
-        # Création du PDF
+        # CrÃ©ation du PDF
         from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, PageBreak
         from reportlab.platypus.flowables import ParagraphAndImage, Image
         from reportlab.rl_config import defaultPageSize

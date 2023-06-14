@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -54,12 +54,12 @@ class Dialog(wx.Dialog):
         self.parent = parent
         
         # Bandeau
-        intro = _(u"Vous pouvez ici purger tout ou une partie de l'historique de Noethys. Cette fonction peut vous permettre d'alléger la base de données au bout de quelques années d'utilisation.")
+        intro = _(u"Vous pouvez ici purger tout ou une partie de l'historique de Noethys. Cette fonction peut vous permettre d'allÃ©ger la base de donnÃ©es au bout de quelques annÃ©es d'utilisation.")
         titre = _(u"Purge de l'historique")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Horloge3.png")
         
-        # Liste catégories
-        self.label_categories = wx.StaticText(self, -1, _(u"Catégories :"))
+        # Liste catÃ©gories
+        self.label_categories = wx.StaticText(self, -1, _(u"CatÃ©gories :"))
         self.listeCategories = []
         self.dictCategories = {}
         index = 0
@@ -68,9 +68,9 @@ class Dialog(wx.Dialog):
             self.dictCategories[index] = IDcategorie
             index += 1
         self.ctrl_categories = wx.CheckListBox(self, -1, choices=self.listeCategories)
-        self.hyper_tout = Hyperlien(self, label=_(u"Tout sélectionner"), infobulle=_(u"Cliquez ici pour tout sélectionner"), URL="tout")
+        self.hyper_tout = Hyperlien(self, label=_(u"Tout sÃ©lectionner"), infobulle=_(u"Cliquez ici pour tout sÃ©lectionner"), URL="tout")
         self.label_separation = wx.StaticText(self, -1, u"|")
-        self.hyper_rien = Hyperlien(self, label=_(u"Tout désélectionner"), infobulle=_(u"Cliquez ici pour tout désélectionner"), URL="rien")
+        self.hyper_rien = Hyperlien(self, label=_(u"Tout dÃ©sÃ©lectionner"), infobulle=_(u"Cliquez ici pour tout dÃ©sÃ©lectionner"), URL="rien")
         
         # Date limite
         self.label_date = wx.StaticText(self, -1, _(u"Date limite :"))
@@ -91,7 +91,7 @@ class Dialog(wx.Dialog):
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour lancer la purge")))
         self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
-        self.ctrl_date.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date limite jusqu'à laquelle les actions seront supprimées")))
+        self.ctrl_date.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date limite jusqu'Ã  laquelle les actions seront supprimÃ©es")))
         self.SetMinSize((450, 500))
 
     def __do_layout(self):
@@ -139,25 +139,25 @@ class Dialog(wx.Dialog):
         self.CenterOnScreen()
     
     def OnBoutonOk(self, event):
-        # Récupère les catégories
+        # RÃ©cupÃ¨re les catÃ©gories
         listeCategories = self.GetIDcoches() 
         if len(listeCategories) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous devez sélectionner un moins une catégorie !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez sÃ©lectionner un moins une catÃ©gorie !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         
-        # Récupère la date limite
+        # RÃ©cupÃ¨re la date limite
         date = self.ctrl_date.GetDate() 
         if date == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez saisir une date limite jusqu'à laquelle les actions seront effacées !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez saisir une date limite jusqu'Ã  laquelle les actions seront effacÃ©es !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date.SetFocus()
             return
         
         # Demande de confirmation
-        dlg = wx.MessageDialog(self, _(u"Etes-vous sûr de vouloir purger l'historique ?"), _(u"Demande de confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+        dlg = wx.MessageDialog(self, _(u"Etes-vous sÃ»r de vouloir purger l'historique ?"), _(u"Demande de confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
         reponse = dlg.ShowModal()
         dlg.Destroy()
         if reponse != wx.ID_YES :
@@ -174,7 +174,7 @@ class Dialog(wx.Dialog):
         DB.Commit() 
         DB.Close()
         
-        # Fermeture de la fenêtre
+        # Fermeture de la fenÃªtre
         self.EndModal(wx.ID_OK)
 
     def GetIDcoches(self):

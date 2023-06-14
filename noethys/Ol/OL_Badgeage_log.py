@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-12 Ivan LUCAS
@@ -28,9 +28,9 @@ def DateEngFr(textDate):
     return text
 
 def DateComplete(dateDD):
-    """ Transforme une date DD en date complète : Ex : lundi 15 janvier 2008 """
+    """ Transforme une date DD en date complÃ¨te : Ex : lundi 15 janvier 2008 """
     listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
-    listeMois = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
+    listeMois = (_(u"janvier"), _(u"fÃ©vrier"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"aoÃ»t"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"dÃ©cembre"))
     dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
     return dateComplete
 
@@ -39,14 +39,14 @@ def DateEngEnDateDD(dateEng):
 
 def Purger():
     """ Purge de l'historique """
-    texte = _(u"La purge du journal de badgeage vous permet de réduire la taille de la base de données. Il est conseillé d'y procéder une fois que vous n'avez plus besoin de l'historique de badgeage (soit quelques mois après).\n\nCommencez par sélectionner une date maximale.")
+    texte = _(u"La purge du journal de badgeage vous permet de rÃ©duire la taille de la base de donnÃ©es. Il est conseillÃ© d'y procÃ©der une fois que vous n'avez plus besoin de l'historique de badgeage (soit quelques mois aprÃ¨s).\n\nCommencez par sÃ©lectionner une date maximale.")
     dlg = wx.MessageDialog(None, texte, _(u"Purge du journal de badgeage"), wx.OK|wx.CANCEL|wx.ICON_INFORMATION)
     reponse = dlg.ShowModal()
     dlg.Destroy()
     if reponse != wx.ID_OK:
         return False
 
-    # Sélection d'une date
+    # SÃ©lection d'une date
     from Dlg import DLG_calendrier_simple
     dlg = DLG_calendrier_simple.Dialog(None)
     if dlg.ShowModal() == wx.ID_OK :
@@ -70,7 +70,7 @@ def Purger():
     DB.Commit()
     DB.Close() 
     # Fin
-    dlg = wx.MessageDialog(None, _(u"Purge du journal de badgeage terminée."), _(u"Information"), wx.OK | wx.ICON_INFORMATION)
+    dlg = wx.MessageDialog(None, _(u"Purge du journal de badgeage terminÃ©e."), _(u"Information"), wx.OK | wx.ICON_INFORMATION)
     dlg.ShowModal()
     dlg.Destroy()
 
@@ -91,7 +91,7 @@ class Track(object):
         # Individu
         self.individu = individu
         self.IDindividu = IDindividu
-        # Résultat
+        # RÃ©sultat
         self.resultat = resultat
         if self.resultat == True :
             self.texteResultat = "Ok"
@@ -127,7 +127,7 @@ class ListView(FastObjectListView):
         self.evenRowsBackColor = wx.Colour(255, 255, 255)
         self.useExpansionColumn = True
         
-        # Préparation de la listeImages
+        # PrÃ©paration de la listeImages
         imgOk = self.AddNamedImages("ok", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Ok.png"), wx.BITMAP_TYPE_PNG))
         imgPasOk = self.AddNamedImages("pasok", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Interdit.png"), wx.BITMAP_TYPE_PNG))
         self.imgVert = self.AddNamedImages("vert", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Ventilation_vert.png"), wx.BITMAP_TYPE_PNG))
@@ -152,7 +152,7 @@ class ListView(FastObjectListView):
                 ColumnDefn(_(u"Heure"), 'center', 60, "heure", typeDonnee="texte", stringConverter=FormateHeure), 
                 ColumnDefn(_(u"Action"), 'left', 270, "action", typeDonnee="texte"), 
                 ColumnDefn(_(u"Individu"), 'left', 150, "individu", typeDonnee="texte"), 
-                ColumnDefn(_(u"Résultat"), 'left', 150, "texteResultat", typeDonnee="texte", imageGetter=GetImageStatut, isSpaceFilling=True), 
+                ColumnDefn(_(u"RÃ©sultat"), 'left', 150, "texteResultat", typeDonnee="texte", imageGetter=GetImageStatut, isSpaceFilling=True), 
                 ]
         else :
             liste_Colonnes = [
@@ -161,7 +161,7 @@ class ListView(FastObjectListView):
                 ColumnDefn(_(u"Heure"), 'center', 60, "heure", typeDonnee="texte", stringConverter=FormateHeure), 
                 ColumnDefn(_(u"Action"), 'left', 270, "action", typeDonnee="texte"), 
                 ColumnDefn(_(u"Individu"), 'left', 130, "individu", typeDonnee="texte"), 
-                ColumnDefn(_(u"Résultat"), 'left', 150, "texteResultat", typeDonnee="texte", imageGetter=GetImageStatut, isSpaceFilling=True), 
+                ColumnDefn(_(u"RÃ©sultat"), 'left', 150, "texteResultat", typeDonnee="texte", imageGetter=GetImageStatut, isSpaceFilling=True), 
                 ]
 
         self.SetColumns(liste_Colonnes)
@@ -172,11 +172,11 @@ class ListView(FastObjectListView):
 
     def OnContextMenu(self, event):
         """Ouverture du menu contextuel """                
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
+        item = wx.MenuItem(menuPop, 40, _(u"AperÃ§u avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -228,7 +228,7 @@ class ListView(FastObjectListView):
 
     def AjouterAction(self, individu=u"", IDindividu=None, heure=None, action="", resultat=None):
         """ Ajouter une action """
-        """ heure="14:45" (Si heure=None : heure actuelle automatique), individu=_(u"DUPOND Kévin"), action="enregistrer", resultat=True """
+        """ heure="14:45" (Si heure=None : heure actuelle automatique), individu=_(u"DUPOND KÃ©vin"), action="enregistrer", resultat=True """
         track = Track(self, date=None, heure=heure, action=action, individu=individu, IDindividu=IDindividu, resultat=resultat)
         self.AddObject(track)
         self.EnsureCellVisible(self.nbreActions, 0)
@@ -237,7 +237,7 @@ class ListView(FastObjectListView):
         self.donnees.append(track)
     
     def MemoriserAction(self, track):
-        """ Sauvegarde un track dans la base de données """
+        """ Sauvegarde un track dans la base de donnÃ©es """
         DB = GestionDB.DB()
         listeDonnees = [    
                 ("date", str(track.date)),

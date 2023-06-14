@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -24,7 +24,7 @@ from Utils import UTILS_Facturation
 from Utils import UTILS_Titulaires
 
 from Utils import UTILS_Config
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"â‚¬")
 
 from Data import DATA_Civilites as Civilites
 DICT_CIVILITES = Civilites.GetDictCivilites()
@@ -70,8 +70,8 @@ class ListView(FastObjectListView):
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
-        # Récupération des données
-        dlgAttente = wx.BusyInfo(_(u"Recherche des prestations à facturer en cours..."), None)
+        # RÃ©cupÃ©ration des donnÃ©es
+        dlgAttente = wx.BusyInfo(_(u"Recherche des prestations Ã  facturer en cours..."), None)
         #wx.Yield()
         
         try :
@@ -91,7 +91,7 @@ class ListView(FastObjectListView):
         except Exception as err:
             del dlgAttente
             traceback.print_exc(file=sys.stdout)
-            dlg = wx.MessageDialog(self, _(u"Désolé, le problème suivant a été rencontré dans la recherche de factures : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"DÃ©solÃ©, le problÃ¨me suivant a Ã©tÃ© rencontrÃ© dans la recherche de factures : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -143,20 +143,20 @@ class ListView(FastObjectListView):
         self.oddRowsBackColor = UTILS_Interface.GetValeur("couleur_tres_claire", wx.Colour(240, 251, 237))
         self.evenRowsBackColor = "#FFFFFF" # Vert
 
-        # Paramètres ListView
+        # ParamÃ¨tres ListView
         self.useExpansionColumn = True
         self.SetColumns([
             ColumnDefn(_(u"IDfamille"), "left", 0, "IDfamille", typeDonnee="entier"),
             ColumnDefn(_(u"Famille"), "left", 195, "nomSansCivilite", typeDonnee="texte"),#, isSpaceFilling=True),
-            ColumnDefn(_(u"Total période"), "right", 85, "total", typeDonnee="montant", stringConverter=FormateMontant),
-            ColumnDefn(_(u"Déjà réglé"), "right", 85, "ventilation", typeDonnee="montant", stringConverter=FormateMontant),
-            ColumnDefn(_(u"Dû période"), "right", 85, "du_periode", typeDonnee="montant", stringConverter=FormateMontant, imageGetter=GetImageDuPeriode),
-            ColumnDefn(_(u"Rep. impayés"), "right", 90, "total_reports", typeDonnee="montant", stringConverter=FormateMontant),
-            ColumnDefn(_(u"Dû total"), "right", 85, "du_total", typeDonnee="montant", stringConverter=FormateMontant, imageGetter=GetImageDuTotal),
+            ColumnDefn(_(u"Total pÃ©riode"), "right", 85, "total", typeDonnee="montant", stringConverter=FormateMontant),
+            ColumnDefn(_(u"DÃ©jÃ  rÃ©glÃ©"), "right", 85, "ventilation", typeDonnee="montant", stringConverter=FormateMontant),
+            ColumnDefn(_(u"DÃ» pÃ©riode"), "right", 85, "du_periode", typeDonnee="montant", stringConverter=FormateMontant, imageGetter=GetImageDuPeriode),
+            ColumnDefn(_(u"Rep. impayÃ©s"), "right", 90, "total_reports", typeDonnee="montant", stringConverter=FormateMontant),
+            ColumnDefn(_(u"DÃ» total"), "right", 85, "du_total", typeDonnee="montant", stringConverter=FormateMontant, imageGetter=GetImageDuTotal),
         ])
         self.CreateCheckStateColumn(0)
         self.SetSortColumn(self.columns[2])
-        self.SetEmptyListMsg(_(u"Aucune facture à générer"))
+        self.SetEmptyListMsg(_(u"Aucune facture Ã  gÃ©nÃ©rer"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
         self.SetObjects(self.donnees)
     
@@ -176,27 +176,27 @@ class ListView(FastObjectListView):
         if len(self.Selection()) > 0 :
             ID = self.Selection()[0].IDcompte_payeur
         
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
-        # Aperçu sélection
+        # AperÃ§u sÃ©lection
         id = wx.Window.NewControlId()
-        item = wx.MenuItem(menuPop, id, _(u"Aperçu de la facture sélectionnée"))
+        item = wx.MenuItem(menuPop, id, _(u"AperÃ§u de la facture sÃ©lectionnÃ©e"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.ApercuSelection, id=id)
         if ID == None : item.Enable(False)
 
-        # Aperçu factures cochées
+        # AperÃ§u factures cochÃ©es
         id = wx.Window.NewControlId()
-        item = wx.MenuItem(menuPop, id, _(u"Aperçu des factures cochées"))
+        item = wx.MenuItem(menuPop, id, _(u"AperÃ§u des factures cochÃ©es"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.ApercuCoches, id=id)
 
-        # Aperçu Toutes les factures
+        # AperÃ§u Toutes les factures
         id = wx.Window.NewControlId()
-        item = wx.MenuItem(menuPop, id, _(u"Aperçu de toutes les factures"))
+        item = wx.MenuItem(menuPop, id, _(u"AperÃ§u de toutes les factures"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.ApercuToutes, id=id)
@@ -210,8 +210,8 @@ class ListView(FastObjectListView):
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.CocheListeTout, id=70)
 
-        # Item Tout décocher
-        item = wx.MenuItem(menuPop, 80, _(u"Tout décocher"))
+        # Item Tout dÃ©cocher
+        item = wx.MenuItem(menuPop, 80, _(u"Tout dÃ©cocher"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Decocher.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -220,7 +220,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
 
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
+        item = wx.MenuItem(menuPop, 40, _(u"AperÃ§u avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -254,21 +254,21 @@ class ListView(FastObjectListView):
 
     def Apercu(self, event):
         from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des factures à générer"), format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des factures Ã  gÃ©nÃ©rer"), format="A", orientation=wx.PORTRAIT)
         prt.Preview()
 
     def Imprimer(self, event):
         from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des factures à générer"), format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des factures Ã  gÃ©nÃ©rer"), format="A", orientation=wx.PORTRAIT)
         prt.Print()
 
     def ExportTexte(self, event):
         from Utils import UTILS_Export
-        UTILS_Export.ExportTexte(self, titre=_(u"Liste des factures à générer"))
+        UTILS_Export.ExportTexte(self, titre=_(u"Liste des factures Ã  gÃ©nÃ©rer"))
         
     def ExportExcel(self, event):
         from Utils import UTILS_Export
-        UTILS_Export.ExportExcel(self, titre=_(u"Liste des factures à générer"))
+        UTILS_Export.ExportExcel(self, titre=_(u"Liste des factures Ã  gÃ©nÃ©rer"))
         
     def GetTracksCoches(self):
         return self.GetCheckedObjects()
@@ -280,9 +280,9 @@ class ListView(FastObjectListView):
     def AfficheNbreComptes(self, nbreComptes=0):
         grandParent = self.GetGrandParent()
         if grandParent.GetName() == "DLG_Factures_generation_selection" :
-            if nbreComptes == 0 : label = _(u"Aucune facture sélectionnée")
-            elif nbreComptes == 1 : label = _(u"1 facture sélectionnée")
-            else: label = _(u"%d factures sélectionnées") % nbreComptes
+            if nbreComptes == 0 : label = _(u"Aucune facture sÃ©lectionnÃ©e")
+            elif nbreComptes == 1 : label = _(u"1 facture sÃ©lectionnÃ©e")
+            else: label = _(u"%d factures sÃ©lectionnÃ©es") % nbreComptes
             grandParent.box_factures_staticbox.SetLabel(label)
 
     def OnCheck(self, track=None):
@@ -304,7 +304,7 @@ class ListView(FastObjectListView):
 
     def AfficherApercu(self, event=None):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune facture dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune facture dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -312,12 +312,12 @@ class ListView(FastObjectListView):
         IDfamille = track.IDfamille
         IDcompte_payeur = track.IDcompte_payeur
         
-        # Récupération des données
+        # RÃ©cupÃ©ration des donnÃ©es
         dictCompte = self.dictComptes[IDcompte_payeur]
 
     def ApercuSelection(self, event=None):
         if len(self.Selection()) == 0:
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune facture dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune facture dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -327,7 +327,7 @@ class ListView(FastObjectListView):
 
     def ApercuCoches(self, event=None):
         if len(self.GetTracksCoches()) == 0:
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez coché aucune facture dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez cochÃ© aucune facture dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -348,7 +348,7 @@ class ListView(FastObjectListView):
         self.ApercuFactures(dictComptes)
 
     def ApercuFactures(self, dictComptes={}):
-        # Récupération des paramètres d'affichage
+        # RÃ©cupÃ©ration des paramÃ¨tres d'affichage
         dlg = DLG_Apercu_facture.Dialog(self, provisoire=True)
         if dlg.ShowModal() == wx.ID_OK:
             dictOptions = dlg.GetParametres()
@@ -358,7 +358,7 @@ class ListView(FastObjectListView):
             return False
 
         # Fabrication du PDF
-        dlgAttente = wx.BusyInfo(_(u"Création de l'aperçu au format PDF..."), None)
+        dlgAttente = wx.BusyInfo(_(u"CrÃ©ation de l'aperÃ§u au format PDF..."), None)
         if 'phoenix' not in wx.PlatformInfo:
             wx.Yield()
         try:
@@ -367,7 +367,7 @@ class ListView(FastObjectListView):
         except Exception as err:
             del dlgAttente
             traceback.print_exc(file=sys.stdout)
-            dlg = wx.MessageDialog(self, _(u"Désolé, le problème suivant a été rencontré dans la création de l'aperçu des factures : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"DÃ©solÃ©, le problÃ¨me suivant a Ã©tÃ© rencontrÃ© dans la crÃ©ation de l'aperÃ§u des factures : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -402,7 +402,7 @@ class MyFrame(wx.Frame):
         sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
         self.SetSizer(sizer_1)
         
-        # Données pour les tests
+        # DonnÃ©es pour les tests
         date_debut = datetime.date(2010, 10, 4)
         date_fin = datetime.date(2012, 11, 30)
         liste_activites = [1, 3]

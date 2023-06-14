@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-17 Ivan LUCAS
@@ -66,7 +66,7 @@ class CTRL_Produit(wx.TextCtrl):
     def SetIDproduit(self, IDproduit=None):
         self.IDproduit = IDproduit
 
-        # Recherche des caractéristiques du produit
+        # Recherche des caractÃ©ristiques du produit
         db = GestionDB.DB()
         req = """SELECT produits.nom, produits.IDcategorie, produits.observations, produits.image, produits_categories.nom, produits.activation_partage
         FROM produits 
@@ -96,7 +96,7 @@ class CTRL_Produit(wx.TextCtrl):
         self.parent.grid_sizer_base.Layout()
         self.parent.Layout()
 
-        # Mémorise IDcategorie (sert pour mesure de la distance)
+        # MÃ©morise IDcategorie (sert pour mesure de la distance)
         self.IDcategorie = IDcategorie
 
         # Logo
@@ -134,7 +134,7 @@ class CTRL_Parametres(wx.Notebook):
             self.dictImages[dictPage["code"]] = il.Add(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/%s" % dictPage["image"]), wx.BITMAP_TYPE_PNG))
         self.AssignImageList(il)
 
-        # Création des pages
+        # CrÃ©ation des pages
         self.dictPages = {}
         index = 0
         for dictPage in self.listePages:
@@ -156,7 +156,7 @@ class CTRL_Parametres(wx.Notebook):
             index += 1
 
     def OnPageChanged(self, event):
-        """ Quand une page du notebook est sélectionnée """
+        """ Quand une page du notebook est sÃ©lectionnÃ©e """
         if event.GetOldSelection() == -1: return
         indexPage = event.GetSelection()
         page = self.GetPage(indexPage)
@@ -234,8 +234,8 @@ class Page_Facturation(wx.Panel):
 
         # Properties
         self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter une prestation")))
-        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la prestation sélectionnée dans la liste")))
-        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la prestation sélectionnée dans la liste")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la prestation sÃ©lectionnÃ©e dans la liste")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la prestation sÃ©lectionnÃ©e dans la liste")))
 
         # Bind
         self.Bind(wx.EVT_BUTTON, self.ctrl_prestations.Ajouter, self.bouton_ajouter)
@@ -329,17 +329,17 @@ class Dialog(wx.Dialog):
         else :
             self.SetTitle(_(u"Modification d'une location"))
 
-        # Généralités
-        self.staticbox_generalites_staticbox = wx.StaticBox(self, -1, _(u"Généralités"))
+        # GÃ©nÃ©ralitÃ©s
+        self.staticbox_generalites_staticbox = wx.StaticBox(self, -1, _(u"GÃ©nÃ©ralitÃ©s"))
         self.label_loueur = wx.StaticText(self, -1, _(u"Loueur :"))
         self.ctrl_loueur = CTRL_Loueur(self)
         self.ctrl_loueur.SetFont(wx.Font(10, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, 'Arial'))
-        self.bouton_loueur = wx.Button(self, -1, _(u"Sélectionner"))
+        self.bouton_loueur = wx.Button(self, -1, _(u"SÃ©lectionner"))
 
         self.label_produit = wx.StaticText(self, -1, _(u"Produit :"))
         self.ctrl_produit = CTRL_Produit(self)
         self.ctrl_produit.SetFont(wx.Font(10, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, 'Arial'))
-        self.bouton_produit = wx.Button(self, -1, _(u"Sélectionner"))
+        self.bouton_produit = wx.Button(self, -1, _(u"SÃ©lectionner"))
 
         self.label_description = wx.StaticText(self, -1, _(u"Description :"))
         self.ctrl_description = wx.TextCtrl(self, -1, u"")
@@ -357,28 +357,28 @@ class Dialog(wx.Dialog):
         self.ctrl_logo = CTRL_Logo.CTRL(self, qualite=100, couleurFond=wx.Colour(255, 255, 255), size=(110, 110), mode="lecture")
         self.bouton_visualiser = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Loupe.png"), wx.BITMAP_TYPE_ANY))
 
-        # Période
-        self.staticbox_periode_staticbox = wx.StaticBox(self, -1, _(u"Période de location"))
-        self.label_date_debut = wx.StaticText(self, -1, _(u"Début :"))
+        # PÃ©riode
+        self.staticbox_periode_staticbox = wx.StaticBox(self, -1, _(u"PÃ©riode de location"))
+        self.label_date_debut = wx.StaticText(self, -1, _(u"DÃ©but :"))
         self.ctrl_date_debut = CTRL_Saisie_date.Date2(self)
         self.ctrl_heure_debut = CTRL_Saisie_heure.Heure(self)
         self.check_date_fin = wx.CheckBox(self, -1, _(u"Fin :"))
         self.ctrl_date_fin = CTRL_Saisie_date.Date2(self)
         self.ctrl_heure_fin = CTRL_Saisie_heure.Heure(self)
 
-        self.check_recurrence = wx.CheckBox(self, -1, _(u"Récurrence"))
+        self.check_recurrence = wx.CheckBox(self, -1, _(u"RÃ©currence"))
         self.bouton_recurrence = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Mecanisme.png"), wx.BITMAP_TYPE_ANY))
         if self.IDlocation:
             self.check_recurrence.Show(False)
             self.bouton_recurrence.Show(False)
 
-        # Quantité
-        self.staticbox_quantite_staticbox = wx.StaticBox(self, -1, _(u"Quantité"))
+        # QuantitÃ©
+        self.staticbox_quantite_staticbox = wx.StaticBox(self, -1, _(u"QuantitÃ©"))
         self.ctrl_quantite = wx.SpinCtrl(self, -1, min=1, max=99999)
         self.ctrl_quantite.SetMinSize((80, -1))
         self.ctrl_quantite.SetValue(1)
 
-        # Paramètres
+        # ParamÃ¨tres
         self.ctrl_parametres = CTRL_Parametres(self, self.IDlocation)
         self.ctrl_parametres.SetMinSize((650, 270))
 
@@ -401,7 +401,7 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonProduit, self.bouton_produit)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonRecurrence, self.bouton_recurrence)
 
-        # Init contrôles
+        # Init contrÃ´les
         maintenant = datetime.datetime.now()
         self.ctrl_date_debut.SetDate(datetime.datetime.strftime(maintenant, "%Y-%m-%d"))
         self.ctrl_heure_debut.SetHeure(datetime.datetime.strftime(maintenant, "%H:%M"))
@@ -426,24 +426,24 @@ class Dialog(wx.Dialog):
     def __set_properties(self):
         self.ctrl_loueur.SetToolTip(wx.ToolTip(_(u"Nom du loueur")))
         self.ctrl_produit.SetToolTip(wx.ToolTip(_(u"Nom du produit")))
-        self.bouton_loueur.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sélectionner un loueur")))
-        self.bouton_produit.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sélectionner un produit")))
+        self.bouton_loueur.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sÃ©lectionner un loueur")))
+        self.bouton_produit.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sÃ©lectionner un produit")))
         self.ctrl_description.SetToolTip(wx.ToolTip(_(u"Saisissez ici une description pour cette location (Ex : Location de salle pour mariage...)")))
-        self.ctrl_observations.SetToolTip(wx.ToolTip(_(u"Saisissez ici des observations éventuelles")))
+        self.ctrl_observations.SetToolTip(wx.ToolTip(_(u"Saisissez ici des observations Ã©ventuelles")))
         self.ctrl_partage.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour autoriser le partage entre plusieurs usagers")))
         self.ctrl_logo.SetToolTip(wx.ToolTip(_(u"Image du produit")))
-        self.bouton_visualiser.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour visualiser l'image actuelle en taille réelle")))
+        self.bouton_visualiser.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour visualiser l'image actuelle en taille rÃ©elle")))
 
-        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez la date de début de location")))
-        self.ctrl_heure_debut.SetToolTip(wx.ToolTip(_(u"Saisissez l'heure de début de location")))
-        self.check_date_fin.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour définir la date de fin de location")))
+        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez la date de dÃ©but de location")))
+        self.ctrl_heure_debut.SetToolTip(wx.ToolTip(_(u"Saisissez l'heure de dÃ©but de location")))
+        self.check_date_fin.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour dÃ©finir la date de fin de location")))
         self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez la date de fin de location")))
         self.ctrl_heure_fin.SetToolTip(wx.ToolTip(_(u"Saisissez l'heure de fin de location")))
-        self.ctrl_quantite.SetToolTip(wx.ToolTip(_(u"Saisissez une quantité")))
-        self.bouton_recurrence.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour définir les paramètres de la récurrence")))
+        self.ctrl_quantite.SetToolTip(wx.ToolTip(_(u"Saisissez une quantitÃ©")))
+        self.bouton_recurrence.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour dÃ©finir les paramÃ¨tres de la rÃ©currence")))
 
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
-        self.bouton_outils.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder aux outils")))
+        self.bouton_outils.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accÃ©der aux outils")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider la saisie")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler et fermer")))
 
@@ -452,7 +452,7 @@ class Dialog(wx.Dialog):
 
         grid_sizer_haut = wx.FlexGridSizer(rows=1, cols=2, vgap=10, hgap=10)
 
-        # Généralités
+        # GÃ©nÃ©ralitÃ©s
         staticbox_generalites = wx.StaticBoxSizer(self.staticbox_generalites_staticbox, wx.VERTICAL)
         grid_sizer_generalites = wx.FlexGridSizer(rows=5, cols=2, vgap=10, hgap=10)
 
@@ -504,7 +504,7 @@ class Dialog(wx.Dialog):
 
         grid_sizer_milieu = wx.FlexGridSizer(rows=1, cols=2, vgap=10, hgap=10)
 
-        # Période
+        # PÃ©riode
         staticbox_periode = wx.StaticBoxSizer(self.staticbox_periode_staticbox, wx.VERTICAL)
         grid_sizer_periode = wx.FlexGridSizer(rows=1, cols=10, vgap=5, hgap=5)
         grid_sizer_periode.Add(self.label_date_debut, 0, wx.ALIGN_CENTER_VERTICAL, 0)
@@ -523,7 +523,7 @@ class Dialog(wx.Dialog):
 
         grid_sizer_milieu.Add(staticbox_periode, 1, wx.EXPAND, 0)
 
-        # Quantité
+        # QuantitÃ©
         staticbox_quantite = wx.StaticBoxSizer(self.staticbox_quantite_staticbox, wx.VERTICAL)
         staticbox_quantite.Add(self.ctrl_quantite, 1, wx.ALL|wx.EXPAND, 10)
         grid_sizer_milieu.Add(staticbox_quantite, 1, wx.EXPAND, 0)
@@ -593,7 +593,7 @@ class Dialog(wx.Dialog):
         UTILS_Aide.Aide("Listedeslocations")
 
     def OnBoutonOutils(self, event):
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Mesurer
@@ -602,9 +602,9 @@ class Dialog(wx.Dialog):
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Mesurer_distance, id=10)
 
-        # Contrôle
+        # ContrÃ´le
         if UTILS_Customize.GetValeur("referentiel", "url", None, ajouter_si_manquant=False) != None:
-            item = wx.MenuItem(menuPop, 20, _(u"Contrôle référentiel"))
+            item = wx.MenuItem(menuPop, 20, _(u"ContrÃ´le rÃ©fÃ©rentiel"))
             item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Personnes.png"), wx.BITMAP_TYPE_PNG))
             menuPop.AppendItem(item)
             self.Bind(wx.EVT_MENU, self.Controle_referentiel, id=20)
@@ -662,7 +662,7 @@ class Dialog(wx.Dialog):
         # Loueur
         IDfamille = self.ctrl_loueur.GetIDfamille()
         if IDfamille == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner un loueur pour ce produit !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sÃ©lectionner un loueur pour ce produit !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -671,7 +671,7 @@ class Dialog(wx.Dialog):
         IDproduit = self.ctrl_produit.GetIDproduit()
         nom_produit = self.ctrl_produit.GetNomProduit()
         if IDproduit == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner un produit !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sÃ©lectionner un produit !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -682,17 +682,17 @@ class Dialog(wx.Dialog):
         # Observations
         observations = self.ctrl_observations.GetValue()
 
-        # Quantité
+        # QuantitÃ©
         quantite = int(self.ctrl_quantite.GetValue())
 
         liste_locations = []
 
         if self.check_recurrence.GetValue() == False:
 
-            # Date de début
+            # Date de dÃ©but
             date_debut = self.ctrl_date_debut.GetDate()
             if date_debut == None:
-                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de début de location !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de dÃ©but de location !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_date_debut.SetFocus()
@@ -700,7 +700,7 @@ class Dialog(wx.Dialog):
 
             heure_debut = self.ctrl_heure_debut.GetHeure()
             if heure_debut == None or self.ctrl_heure_debut.Validation() == False:
-                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une heure de début valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une heure de dÃ©but valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_heure_debut.SetFocus()
@@ -733,7 +733,7 @@ class Dialog(wx.Dialog):
                 date_fin = None
 
             if date_fin != None and date_debut > date_fin:
-                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de fin supérieure à la date de début !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de fin supÃ©rieure Ã  la date de dÃ©but !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_date_fin.SetFocus()
@@ -744,14 +744,14 @@ class Dialog(wx.Dialog):
         # Prestations
         liste_prestations = self.ctrl_parametres.GetPageAvecCode("facturation").GetDonnees()["prestations"]
 
-        # Récurrence
+        # RÃ©currence
         num_serie = None
         modifier_date_prestation = False
         if self.check_recurrence.GetValue() == True:
             num_serie = str(uuid.uuid4())
 
             if not self.recurrence:
-                dlg = wx.MessageDialog(self, _(u"Vous n'avez pas renseigné les paramètres de la récurrence !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous n'avez pas renseignÃ© les paramÃ¨tres de la rÃ©currence !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return
@@ -760,21 +760,21 @@ class Dialog(wx.Dialog):
             liste_locations = self.Calcule_occurences(self.recurrence)
 
             # Demande confirmation
-            introduction = _(u"Confirmez-vous la création des %d locations suivantes :") % len(liste_locations)
+            introduction = _(u"Confirmez-vous la crÃ©ation des %d locations suivantes :") % len(liste_locations)
             liste_locations_txt = []
             for dict_location in liste_locations:
                 date_debut = dict_location["date_debut"]
                 date_fin = dict_location["date_fin"]
-                liste_locations_txt.append(_(u"%s - %s") % (date_debut.strftime("%d/%m/%Y %H:%M:%S"), date_fin.strftime("%d/%m/%Y %H:%M:%S") if (date_fin and date_fin.year != 2999) else _(u"Illimitée")))
+                liste_locations_txt.append(_(u"%s - %s") % (date_debut.strftime("%d/%m/%Y %H:%M:%S"), date_fin.strftime("%d/%m/%Y %H:%M:%S") if (date_fin and date_fin.year != 2999) else _(u"IllimitÃ©e")))
             dlg = DLG_Messagebox.Dialog(self, titre=_(u"Confirmation"), introduction=introduction, detail=u"\n".join(liste_locations_txt), icone=wx.ICON_EXCLAMATION, boutons=[_(u"Oui"), _(u"Non"), _(u"Annuler")])
             reponse = dlg.ShowModal()
             dlg.Destroy()
             if reponse in (1, 2):
                 return False
 
-            # Demande si la date de prestation doit devenir la date de début de chaque location
+            # Demande si la date de prestation doit devenir la date de dÃ©but de chaque location
             if liste_prestations:
-                dlg = wx.MessageDialog(self, _(u"Souhaitez-vous que la date de chaque prestation soit la date de début de chaque location ?"), _(u"Question"), wx.YES_NO | wx.NO_DEFAULT | wx.CANCEL | wx.ICON_QUESTION)
+                dlg = wx.MessageDialog(self, _(u"Souhaitez-vous que la date de chaque prestation soit la date de dÃ©but de chaque location ?"), _(u"Question"), wx.YES_NO | wx.NO_DEFAULT | wx.CANCEL | wx.ICON_QUESTION)
                 reponse = dlg.ShowModal()
                 dlg.Destroy()
                 modifier_date_prestation = reponse == wx.ID_YES
@@ -785,16 +785,16 @@ class Dialog(wx.Dialog):
             valide = True
             date_debut = dict_location["date_debut"]
             date_fin = dict_location["date_fin"]
-            periode_str = _(u"%s - %s") % (date_debut.strftime("%d/%m/%Y %H:%M:%S"), date_fin.strftime("%d/%m/%Y %H:%M:%S") if (date_fin and date_fin.year != 2999) else _(u"Illimitée"))
+            periode_str = _(u"%s - %s") % (date_debut.strftime("%d/%m/%Y %H:%M:%S"), date_fin.strftime("%d/%m/%Y %H:%M:%S") if (date_fin and date_fin.year != 2999) else _(u"IllimitÃ©e"))
 
-            # Vérifie que la quantité demandée est disponible
+            # VÃ©rifie que la quantitÃ© demandÃ©e est disponible
             dictPeriodes = UTILS_Locations.GetStockDisponible(IDproduit=IDproduit, date_debut=date_debut, date_fin=date_fin, IDlocation_exception=self.IDlocation)
             liste_periode_non_dispo = []
             for periode, valeurs in dictPeriodes.items() :
                 if valeurs["disponible"] < quantite :
                     debut = datetime.datetime.strftime(periode[0], "%d/%m/%Y-%Hh%M")
                     if periode[1].year == 2999 :
-                        fin = _(u"Illimité")
+                        fin = _(u"IllimitÃ©")
                     else :
                         fin = datetime.datetime.strftime(periode[1], "%d/%m/%Y-%Hh%M")
                     liste_periode_non_dispo.append(_(u"Stock disponible du %s au %s : %d produits") % (debut, fin, valeurs["disponible"]))
@@ -802,23 +802,23 @@ class Dialog(wx.Dialog):
                 liste_anomalies.append(u"Location du %s : Produit indisponible. %s." % (periode_str, u", ".join(liste_periode_non_dispo)))
                 valide = False
 
-            # Périodes de gestion
+            # PÃ©riodes de gestion
             gestion = UTILS_Gestion.Gestion(None)
             for track_prestation in liste_prestations:
                 if gestion.Verification("prestations", track_prestation.date) == False:
                     valide = False
-                    liste_anomalies.append(u"Location du %s : la période de gestion est verrouillée." % periode_str)
+                    liste_anomalies.append(u"Location du %s : la pÃ©riode de gestion est verrouillÃ©e." % periode_str)
 
-            # Mémorise la location valide
+            # MÃ©morise la location valide
             if valide:
                 liste_valides.append(dict_location)
 
 
-        # Annonce les anomalies trouvées
+        # Annonce les anomalies trouvÃ©es
         if len(liste_anomalies) > 0:
-            introduction = _(u"%d anomalies ont été détectées :") % len(liste_anomalies)
+            introduction = _(u"%d anomalies ont Ã©tÃ© dÃ©tectÃ©es :") % len(liste_anomalies)
             if len(liste_valides) > 0:
-                conclusion = _(u"Souhaitez-vous quand même continuer avec les %d locations possibles ?") % len(liste_valides)
+                conclusion = _(u"Souhaitez-vous quand mÃªme continuer avec les %d locations possibles ?") % len(liste_valides)
                 dlg = DLG_Messagebox.Dialog(self, titre=_(u"Anomalies"), introduction=introduction, detail=u"\n".join(liste_anomalies), conclusion=conclusion, icone=wx.ICON_EXCLAMATION, boutons=[_(u"Oui"), _(u"Non"), _(u"Annuler")])
                 reponse = dlg.ShowModal()
                 dlg.Destroy()
@@ -856,7 +856,7 @@ class Dialog(wx.Dialog):
                 ("partage", partage),
                 ]
 
-            periode = _(u"%s - %s") % (date_debut.strftime("%d/%m/%Y %H:%M:%S"), date_fin.strftime("%d/%m/%Y %H:%M:%S") if (date_fin and date_fin.year != 2999) else _(u"Illimitée"))
+            periode = _(u"%s - %s") % (date_debut.strftime("%d/%m/%Y %H:%M:%S"), date_fin.strftime("%d/%m/%Y %H:%M:%S") if (date_fin and date_fin.year != 2999) else _(u"IllimitÃ©e"))
 
             IDlocation = self.IDlocation
 
@@ -898,7 +898,7 @@ class Dialog(wx.Dialog):
                         DB.ReqMAJ("prestations", listeDonnees, "IDprestation", IDprestation)
                 listeID.append(IDprestation)
 
-            # Suppression des prestations obsolètes
+            # Suppression des prestations obsolÃ¨tes
             for IDprestation in self.liste_initiale_IDprestation :
                 if IDprestation not in listeID :
                     DB.ReqDEL("prestations", "IDprestation", IDprestation)
@@ -907,19 +907,19 @@ class Dialog(wx.Dialog):
             # Sauvegarde du questionnaire
             self.ctrl_parametres.GetPageAvecCode("questionnaire").ctrl_questionnaire.Sauvegarde(DB=DB, IDdonnee=IDlocation)
 
-        # Mémorise l'IDlocation
+        # MÃ©morise l'IDlocation
         self.IDlocation = IDlocation
 
         DB.Close()
 
-        # Fermeture de la fenêtre
+        # Fermeture de la fenÃªtre
         self.EndModal(wx.ID_OK)
 
     def GetIDlocation(self):
         return self.IDlocation
 
     def Importation(self):
-        """ Importation des données """
+        """ Importation des donnÃ©es """
         DB = GestionDB.DB()
 
         # Importation de la location
@@ -932,7 +932,7 @@ class Dialog(wx.Dialog):
             return
         IDfamille, IDproduit, description, observations, date_debut, date_fin, quantite, self.serie, partage = listeDonnees[0]
 
-        # Généralités
+        # GÃ©nÃ©ralitÃ©s
         self.ctrl_loueur.SetIDfamille(IDfamille)
         self.ctrl_produit.SetIDproduit(IDproduit)
         if observations:
@@ -940,7 +940,7 @@ class Dialog(wx.Dialog):
         if description:
             self.ctrl_description.SetValue(description)
 
-        # Date de début
+        # Date de dÃ©but
         if date_debut != None:
             date_debut = UTILS_Dates.DateEngEnDateDDT(date_debut)
             self.SetDebut(date_debut)
@@ -950,7 +950,7 @@ class Dialog(wx.Dialog):
             date_fin = UTILS_Dates.DateEngEnDateDDT(date_fin)
             self.SetFin(date_fin)
 
-        # Quantité
+        # QuantitÃ©
         if quantite != None :
             self.ctrl_quantite.SetValue(quantite)
 
@@ -992,7 +992,7 @@ class Dialog(wx.Dialog):
         semaines = dictDonnees["semaines"]
         feries = dictDonnees["feries"]
 
-        # Importation vacances et fériés
+        # Importation vacances et fÃ©riÃ©s
         DB = GestionDB.DB()
         req = """SELECT date_debut, date_fin, nom, annee FROM vacances ORDER BY date_debut;"""
         DB.ExecuterReq(req)
@@ -1050,7 +1050,7 @@ class Dialog(wx.Dialog):
         dateTemp = date
         for date in listeDates:
 
-            # Vérifie période et jour
+            # VÃ©rifie pÃ©riode et jour
             valide = False
             if EstEnVacances(date):
                 if date.weekday() in jours_vacances:
@@ -1059,12 +1059,12 @@ class Dialog(wx.Dialog):
                 if date.weekday() in jours_scolaires:
                     valide = True
 
-            # Calcul le numéro de semaine
+            # Calcul le numÃ©ro de semaine
             if len(listeDates) > 0:
                 if date.weekday() < dateTemp.weekday():
                     numSemaine += 1
 
-            # Fréquence semaines
+            # FrÃ©quence semaines
             if semaines in (2, 3, 4):
                 if numSemaine % semaines != 0:
                     valide = False
@@ -1077,7 +1077,7 @@ class Dialog(wx.Dialog):
                 if numSemaineAnnee % 2 != 0 and semaines == 5:
                     valide = False
 
-            # Vérifie si férié
+            # VÃ©rifie si fÃ©riÃ©
             if feries == False and EstFerie(date) == True:
                 valide = False
 

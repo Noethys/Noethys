@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -26,7 +26,7 @@ def GetPhoto(IDindividu=None, nomFichier=None, taillePhoto=(128, 128), qualite=w
     """ Retourne la photo d'un individu """    
     qualite=wx.IMAGE_QUALITY_HIGH
     if IDindividu != None :
-        # Recherche d'une image dans la base de données
+        # Recherche d'une image dans la base de donnÃ©es
         DB = GestionDB.DB(suffixe="PHOTOS")
         if DB.echec != 1 : 
             req = "SELECT IDphoto, photo FROM photos WHERE IDindividu=%d;" % IDindividu 
@@ -60,7 +60,7 @@ def GetPhoto(IDindividu=None, nomFichier=None, taillePhoto=(128, 128), qualite=w
 def GetPhotos(listeIndividus=[], taillePhoto=None, qualite=wx.IMAGE_QUALITY_HIGH):
     """ Retourne les photos de plusieurs individus """
     """ listeIndividus = [(IDindividu1, nomFichierDefaut), (IDindividu2, nomFichierDefaut), etc...] """
-    # Recherche les images par défaut sur le disque dur
+    # Recherche les images par dÃ©faut sur le disque dur
     dictImagesDefaut = {}
     listeIDindividus = []
     for IDindividu, nomFichier in listeIndividus :
@@ -74,7 +74,7 @@ def GetPhotos(listeIndividus=[], taillePhoto=None, qualite=wx.IMAGE_QUALITY_HIGH
                     bmp = img.ConvertToBitmap()
                 dictImagesDefaut[nomFichier] = bmp
 
-    # Récupère les photos dans la DB
+    # RÃ©cupÃ¨re les photos dans la DB
     dictPhotosDB = {}
     DB = GestionDB.DB(suffixe="PHOTOS")
     if DB.echec == 0 : 
@@ -109,7 +109,7 @@ def GetPhotos(listeIndividus=[], taillePhoto=None, qualite=wx.IMAGE_QUALITY_HIGH
                 bmp = dictImagesDefaut[nomFichier]
             else :
                 bmp = None
-        # Mémorisation de la photo
+        # MÃ©morisation de la photo
         dictPhotos[IDindividu] = {"bmp" : bmp, "IDphoto" : IDphoto}
 
     return dictPhotos
@@ -128,7 +128,7 @@ class CTRL_Photo(wx.StaticBitmap):
         self.image_base64 = None
         
         self.SetBackgroundColour(wx.Colour(0, 0, 0))
-        self.SetToolTip(wx.ToolTip(_(u"Cliquez sur le bouton droit de votre souris\npour accéder aux fonctions photo")))
+        self.SetToolTip(wx.ToolTip(_(u"Cliquez sur le bouton droit de votre souris\npour accÃ©der aux fonctions photo")))
         
         self.Bind(wx.EVT_LEFT_DOWN, self.MenuPhoto)
         self.Bind(wx.EVT_RIGHT_DOWN, self.MenuPhoto)
@@ -165,7 +165,7 @@ class CTRL_Photo(wx.StaticBitmap):
         """Ouverture du menu contextuel de la photo """
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("individus_photo", "modifier") == False : return
         
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Ajouter
@@ -175,8 +175,8 @@ class CTRL_Photo(wx.StaticBitmap):
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Menu_Ajouter, id=10)
         
-        # Item Capturer à partir d'une caméra
-        item = wx.MenuItem(menuPop, 20, _(u"Capturer une photo à partir d'une webcam"))
+        # Item Capturer Ã  partir d'une camÃ©ra
+        item = wx.MenuItem(menuPop, 20, _(u"Capturer une photo Ã  partir d'une webcam"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Webcam.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -209,16 +209,16 @@ class CTRL_Photo(wx.StaticBitmap):
         self.Ajoute_image()
 
     def Ajoute_image(self):
-        """ Permet la sélection et le retouchage d'une photo pour la personne """
-        # Sélection d'une image
+        """ Permet la sÃ©lection et le retouchage d'une photo pour la personne """
+        # SÃ©lection d'une image
         self.repCourant = os.getcwd()
 
         wildcard = "Toutes les images|*.bmp;*.gif;*.jpg;*.png|Image JPEG (*.jpg)|*.jpg|Image PNG (*.png)|*.png|Image GIF (*.gif)|*.gif|Tous les fichiers (*.*)|*.*"
                 
-        # Récupération du chemin des documents
+        # RÃ©cupÃ©ration du chemin des documents
         sp = wx.StandardPaths.Get()
         cheminDefaut = sp.GetDocumentsDir()
-        # Ouverture dela fenêtre de dialogue
+        # Ouverture dela fenÃªtre de dialogue
         dlg = wx.FileDialog(
             self, message=_(u"Choisissez une photo"),
             defaultDir=cheminDefaut, 
@@ -251,7 +251,7 @@ class CTRL_Photo(wx.StaticBitmap):
                 imgbase64 = base64.b64encode(bmp)
                 self.SetPhoto(imgbase64=imgbase64)
             else :
-                # Recherche si une photo existe déjà pour cet individu
+                # Recherche si une photo existe dÃ©jÃ  pour cet individu
                 DB = GestionDB.DB(suffixe="PHOTOS")
                 if DB.echec != 1 :
                     req = "SELECT IDphoto, photo FROM photos WHERE IDindividu=%d;" % self.IDindividu
@@ -272,7 +272,7 @@ class CTRL_Photo(wx.StaticBitmap):
         self.Capture_image()
 
     def Capture_image(self):
-        """ Capture la photo à partir d'une caméra """
+        """ Capture la photo Ã  partir d'une camÃ©ra """
         from Dlg import DLG_Capture_video_opencv_2 as dlg
         image = None
         dlg = dlg.Dialog(self)
@@ -306,7 +306,7 @@ class CTRL_Photo(wx.StaticBitmap):
             DB = GestionDB.DB(suffixe="PHOTOS")
             DB.ReqDEL("photos", "IDindividu", self.IDindividu)
             DB.Close()
-            # Recherche la civilité de l'individu
+            # Recherche la civilitÃ© de l'individu
             DB = GestionDB.DB()
             req = "SELECT IDcivilite FROM individus WHERE IDindividu=%d;" % self.IDindividu
             DB.ExecuterReq(req)
@@ -321,12 +321,12 @@ class CTRL_Photo(wx.StaticBitmap):
                         nomFichier = civilite[3]
                         break
             nomFichier = Chemins.GetStaticPath("Images/128x128/%s" % nomFichier)
-            # Applique l'image par défaut
+            # Applique l'image par dÃ©faut
             self.SetPhoto(self.IDindividu, nomFichier)
         
     def Menu_Imprimer(self, event):
         """ Impression de la photo de la personne """
-        # Récupération de la liste des personnes
+        # RÃ©cupÃ©ration de la liste des personnes
         DB = GestionDB.DB()        
         req = """SELECT IDpersonne, nom, prenom FROM personnes WHERE IDpersonne=%d; """ % self.IDpersonne
         DB.executerReq(req)

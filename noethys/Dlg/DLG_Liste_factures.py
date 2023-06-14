@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -24,7 +24,7 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         
-        intro = _(u"Vous pouvez ici consulter la liste complète des factures créées dans le logiciel.")
+        intro = _(u"Vous pouvez ici consulter la liste complÃ¨te des factures crÃ©Ã©es dans le logiciel.")
         titre = _(u"Liste des factures")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Facture.png")
@@ -32,7 +32,7 @@ class Dialog(wx.Dialog):
         self.ctrl_factures = CTRL_Liste_factures.CTRL(self)
         
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
-        self.bouton_recap = CTRL_Bouton_image.CTRL(self, texte=_(u"Récapitulatif"), cheminImage="Images/32x32/Imprimante.png")
+        self.bouton_recap = CTRL_Bouton_image.CTRL(self, texte=_(u"RÃ©capitulatif"), cheminImage="Images/32x32/Imprimante.png")
         self.bouton_fermer = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         self.__set_properties()
@@ -41,12 +41,12 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonRecap, self.bouton_recap)
 
-        # Init contrôles
+        # Init contrÃ´les
         self.ctrl_factures.MAJ() 
 
     def __set_properties(self):
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
-        self.bouton_recap.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer un récapitulatif des factures cochées dans la liste")))
+        self.bouton_recap.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer un rÃ©capitulatif des factures cochÃ©es dans la liste")))
         self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         self.SetMinSize((930, 700))
 
@@ -77,7 +77,7 @@ class Dialog(wx.Dialog):
         UTILS_Aide.Aide("Listedesfactures")
 
     def OnBoutonRecap(self, event): 
-        """ Aperçu PDF du récapitulatif des factures """
+        """ AperÃ§u PDF du rÃ©capitulatif des factures """
         tracks = self.ctrl_factures.GetTracksCoches() 
         if len(tracks) == 0 : 
             dlg = wx.MessageDialog(self, _(u"Vous devez cocher au moins une facture dans la liste !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)

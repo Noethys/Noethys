@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -20,7 +20,7 @@ import FonctionsPerso
 from Dlg import DLG_Noedoc
 
 from Utils import UTILS_Config
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"â‚¬")
 
 from reportlab.platypus.doctemplate import PageTemplate, BaseDocTemplate, NextPageTemplate
 from reportlab.platypus import Paragraph, Spacer, Table, TableStyle, PageBreak
@@ -86,7 +86,7 @@ def DateEngFr(textDate):
     return text
 
 def PeriodeComplete(mois, annee):
-    listeMois = (_(u"Janvier"), _(u"Février"), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"Août"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"Décembre"))
+    listeMois = (_(u"Janvier"), _(u"FÃ©vrier"), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"AoÃ»t"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"DÃ©cembre"))
     periodeComplete = u"%s %d" % (listeMois[mois-1], annee)
     return periodeComplete
 
@@ -104,7 +104,7 @@ class MyCanvas(Canvas):
 
 
 def Template(canvas, doc):
-    """ Première page de l'attestation """
+    """ PremiÃ¨re page de l'attestation """
     doc.modeleDoc.DessineFond(canvas) 
     doc.modeleDoc.DessineFormes(canvas) 
 
@@ -122,7 +122,7 @@ class MyPageTemplate(PageTemplate):
         self.pageWidth = pageSize[0]
         self.pageHeight = pageSize[1]
         
-        # Récupère les coordonnées du cadre principal
+        # RÃ©cupÃ¨re les coordonnÃ©es du cadre principal
         cadre_principal = doc.modeleDoc.FindObjet("cadre_principal")
         x, y, l, h = doc.modeleDoc.GetCoordsObjet(cadre_principal)
         global CADRE_CONTENU
@@ -135,7 +135,7 @@ class MyPageTemplate(PageTemplate):
         IDcompte_payeur = doc._nameSpace["IDcompte_payeur"]
         dictCompte = DICT_COMPTES[IDcompte_payeur]
         
-        # Dessin du coupon-réponse vertical
+        # Dessin du coupon-rÃ©ponse vertical
         coupon_vertical = doc.modeleDoc.FindObjet("coupon_vertical")
         if DICT_OPTIONS["coupon"] == True and coupon_vertical != None :
             x, y, largeur, hauteur = doc.modeleDoc.GetCoordsObjet(coupon_vertical)
@@ -150,7 +150,7 @@ class MyPageTemplate(PageTemplate):
             # Textes
             canvas.rotate(90)
             canvas.setFont("Helvetica", 8)
-            canvas.drawString(y+2*mm, -x-4*mm, _(u"Merci de joindre ce coupon à votre règlement"))
+            canvas.drawString(y+2*mm, -x-4*mm, _(u"Merci de joindre ce coupon Ã  votre rÃ¨glement"))
             canvas.setFont("Helvetica", 7)
             solde = dictCompte["solde_num"]#dictCompte["total"] - dictCompte["ventilation"]
             numero = dictCompte["numero"]
@@ -163,7 +163,7 @@ class MyPageTemplate(PageTemplate):
                 barcode.drawOn(canvas, y+36*mm, -x-13*mm)
             canvas.restoreState()
 
-        # Dessin du coupon-réponse horizontal
+        # Dessin du coupon-rÃ©ponse horizontal
         coupon_horizontal = doc.modeleDoc.FindObjet("coupon_horizontal")
         if DICT_OPTIONS["coupon"] == True and coupon_horizontal != None :
             x, y, largeur, hauteur = doc.modeleDoc.GetCoordsObjet(coupon_horizontal)
@@ -175,7 +175,7 @@ class MyPageTemplate(PageTemplate):
             canvas.rect(x, y, largeur, hauteur, fill=0)
             # Textes
             canvas.setFont("Helvetica", 8)
-            canvas.drawString(x+2*mm, y+hauteur-4*mm, _(u"Merci de joindre ce coupon à votre règlement"))
+            canvas.drawString(x+2*mm, y+hauteur-4*mm, _(u"Merci de joindre ce coupon Ã  votre rÃ¨glement"))
             canvas.setFont("Helvetica", 7)
             solde = dictCompte["solde_num"]#dictCompte["total"] - dictCompte["ventilation"]
             numero = dictCompte["numero"]
@@ -205,7 +205,7 @@ class MyPageTemplate(PageTemplate):
 
         
 def Template_PagesSuivantes(canvas, doc):
-    """ Première page de l'attestation """
+    """ PremiÃ¨re page de l'attestation """
     canvas.saveState()
 
     canvas.setFont('Times-Roman', 12)
@@ -248,15 +248,15 @@ class Impression():
             nomDoc = nomFichier
         doc = BaseDocTemplate(nomDoc, pagesize=TAILLE_PAGE, showBoundary=False)
         
-        # Mémorise le ID du modèle
+        # MÃ©morise le ID du modÃ¨le
         modeleDoc = DLG_Noedoc.ModeleDoc(IDmodele=IDmodele)
         doc.modeleDoc = modeleDoc
 
-        # Vérifie qu'un cadre principal existe bien dans le document
+        # VÃ©rifie qu'un cadre principal existe bien dans le document
         if doc.modeleDoc.FindObjet("cadre_principal") == None :
             raise Exception("Votre modele de document doit obligatoirement comporter un cadre principal. Retournez dans l'editeur de document et utilisez pour votre modele la commande 'Inserer un objet special > Inserer le cadre principal'.")
 
-        # Importe le template de la première page
+        # Importe le template de la premiÃ¨re page
         doc.addPageTemplates(MyPageTemplate(pageSize=TAILLE_PAGE, doc=doc))
         
         story = []
@@ -268,7 +268,7 @@ class Impression():
         # styleTexte.borderPadding = 9
         # styleTexte.leading = 12
         
-##        # Définit le template des pages suivantes
+##        # DÃ©finit le template des pages suivantes
 ##        story.append(NextPageTemplate("suivante"))
         
         

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-17 Ivan LUCAS
@@ -35,12 +35,12 @@ class DLG_Supprimer_occurences(wx.Dialog):
         self.parent = parent
 
         # Intro
-        self.label_intro = wx.StaticText(self, -1, _(u"Cette location fait partie d'une série de %d occurences.\n\nQue souhaitez-vous supprimer ?") % nbre_occurences)
+        self.label_intro = wx.StaticText(self, -1, _(u"Cette location fait partie d'une sÃ©rie de %d occurences.\n\nQue souhaitez-vous supprimer ?") % nbre_occurences)
 
         # Options
-        self.radio_selection = wx.RadioButton(self, -1, _(u"Uniquement l'occurence sélectionnée"), style=wx.RB_GROUP)
-        self.radio_toutes = wx.RadioButton(self, -1, _(u"Toutes les occurences de la série"))
-        self.radio_periode = wx.RadioButton(self, -1, _(u"Les occurences de la série du"))
+        self.radio_selection = wx.RadioButton(self, -1, _(u"Uniquement l'occurence sÃ©lectionnÃ©e"), style=wx.RB_GROUP)
+        self.radio_toutes = wx.RadioButton(self, -1, _(u"Toutes les occurences de la sÃ©rie"))
+        self.radio_periode = wx.RadioButton(self, -1, _(u"Les occurences de la sÃ©rie du"))
         self.ctrl_date_debut = CTRL_Saisie_date.Date2(self)
         self.label_date_fin = wx.StaticText(self, -1, " au")
         self.ctrl_date_fin = CTRL_Saisie_date.Date2(self)
@@ -118,23 +118,23 @@ class DLG_Supprimer_occurences(wx.Dialog):
 
     def OnBoutonOk(self, event):
         if self.radio_periode.GetValue() == True:
-            # Validation de la période
+            # Validation de la pÃ©riode
             date_debut = self.ctrl_date_debut.GetDate()
             if self.ctrl_date_debut.FonctionValiderDate() == False or date_debut == None:
-                dlg = wx.MessageDialog(self, _(u"La date de début de période semble incorrecte !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"La date de dÃ©but de pÃ©riode semble incorrecte !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
 
             date_fin = self.ctrl_date_fin.GetDate()
             if self.ctrl_date_fin.FonctionValiderDate() == False or date_fin == None:
-                dlg = wx.MessageDialog(self, _(u"La date de fin de période semble incorrecte !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"La date de fin de pÃ©riode semble incorrecte !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
 
             if date_fin < date_debut:
-                dlg = wx.MessageDialog(self, _(u"La date de début de période est supérieure à la date de fin !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"La date de dÃ©but de pÃ©riode est supÃ©rieure Ã  la date de fin !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
@@ -148,7 +148,7 @@ def Supprimer_location(parent, IDlocation=None):
 
     def GetLocations(condition=""):
         DB = GestionDB.DB()
-        # Récupère les infos sur cette location
+        # RÃ©cupÃ¨re les infos sur cette location
         req = """SELECT IDlocation, IDfamille, date_debut, date_fin, serie, produits.nom, produits_categories.nom
         FROM locations 
         LEFT JOIN produits ON produits.IDproduit = locations.IDproduit
@@ -166,15 +166,15 @@ def Supprimer_location(parent, IDlocation=None):
                 date_fin = datetime.datetime(2999, 1, 1)
             if isinstance(date_fin, str) or isinstance(date_fin, six.text_type):
                 date_fin = datetime.datetime.strptime(date_fin, "%Y-%m-%d %H:%M:%S")
-            periode = _(u"%s - %s") % (date_debut.strftime("%d/%m/%Y %H:%M:%S"), date_fin.strftime("%d/%m/%Y %H:%M:%S") if (date_fin and date_fin.year != 2999) else _(u"Illimitée"))
+            periode = _(u"%s - %s") % (date_debut.strftime("%d/%m/%Y %H:%M:%S"), date_fin.strftime("%d/%m/%Y %H:%M:%S") if (date_fin and date_fin.year != 2999) else _(u"IllimitÃ©e"))
             label_produit = u"%s (%s)" % (nom_produit, nom_categorie)
             liste_resultats.append({"IDlocation": IDlocation, "IDfamille": IDfamille, "date_debut": date_debut, "date_fin": date_fin, "periode": periode, "label_produit": label_produit, "serie": serie, "prestations": []})
         return liste_resultats
 
-    # Importe de la location cliquée
+    # Importe de la location cliquÃ©e
     liste_locations = GetLocations(condition="IDlocation=%d" % IDlocation)
 
-    # Vérifie si la location est dans une série
+    # VÃ©rifie si la location est dans une sÃ©rie
     if liste_locations[0]["serie"]:
         num_serie = liste_locations[0]["serie"]
         liste_locations_serie = GetLocations(condition="serie='%s'" % num_serie)
@@ -195,7 +195,7 @@ def Supprimer_location(parent, IDlocation=None):
                 if dict_location["date_debut"] <= dict_donnees["date_fin"] and dict_location["date_fin"] >= dict_donnees["date_debut"]:
                     liste_locations.append(dict_location)
 
-    # Vérifie si les prestations de cette location sont déjà facturées
+    # VÃ©rifie si les prestations de cette location sont dÃ©jÃ  facturÃ©es
     liste_anomalies = []
     liste_valides = []
 
@@ -218,9 +218,9 @@ def Supprimer_location(parent, IDlocation=None):
             listePrestations.append({"IDprestation" : IDprestation, "date" : date, "IDfacture" : IDfacture})
             listeIDprestations.append(IDprestation)
 
-            # Vérifie la période de gestion
+            # VÃ©rifie la pÃ©riode de gestion
             if gestion.Verification("prestations", date) == False:
-                liste_anomalies.append(u"Location du %s : Impossible à supprimer car une prestation associée est comprise dans une période de gestion verrouillée")
+                liste_anomalies.append(u"Location du %s : Impossible Ã  supprimer car une prestation associÃ©e est comprise dans une pÃ©riode de gestion verrouillÃ©e")
                 valide = False
 
             if IDfacture != None :
@@ -229,7 +229,7 @@ def Supprimer_location(parent, IDlocation=None):
         liste_locations[index]["prestations"] = listeIDprestations
 
         if nbrePrestationsFacturees > 0:
-            liste_anomalies.append(u"Location du %s : Impossible à supprimer car %d prestations y sont déjà associées" % (dict_location["periode"], nbrePrestationsFacturees))
+            liste_anomalies.append(u"Location du %s : Impossible Ã  supprimer car %d prestations y sont dÃ©jÃ  associÃ©es" % (dict_location["periode"], nbrePrestationsFacturees))
             valide = False
 
         if valide:
@@ -238,9 +238,9 @@ def Supprimer_location(parent, IDlocation=None):
 
     DB.Close()
 
-    # Annonce les anomalies trouvées
+    # Annonce les anomalies trouvÃ©es
     if len(liste_anomalies) > 0:
-        introduction = _(u"%d anomalies ont été détectées :") % len(liste_anomalies)
+        introduction = _(u"%d anomalies ont Ã©tÃ© dÃ©tectÃ©es :") % len(liste_anomalies)
         if len(liste_valides) > 0:
             conclusion = _(u"Souhaitez-vous continuer avec les %d autres locations ?") % len(liste_valides)
             dlg = DLG_Messagebox.Dialog(None, titre=_(u"Anomalies"), introduction=introduction, detail=u"\n".join(liste_anomalies), conclusion=conclusion, icone=wx.ICON_EXCLAMATION, boutons=[_(u"Oui"), _(u"Non"), _(u"Annuler")])
@@ -303,14 +303,14 @@ class Track(object):
         if self.quantite == None :
             self.quantite = 1
 
-        # Période
+        # PÃ©riode
         if isinstance(self.date_debut, str) or isinstance(self.date_debut, six.text_type) :
             self.date_debut = datetime.datetime.strptime(self.date_debut, "%Y-%m-%d %H:%M:%S")
 
         if isinstance(self.date_fin, str) or isinstance(self.date_fin, six.text_type) :
             self.date_fin = datetime.datetime.strptime(self.date_fin, "%Y-%m-%d %H:%M:%S")
 
-        # Récupération des réponses des questionnaires
+        # RÃ©cupÃ©ration des rÃ©ponses des questionnaires
         for dictQuestion in listview.liste_questions :
             setattr(self, "question_%d" % dictQuestion["IDquestion"], listview.GetReponse(dictQuestion["IDquestion"], self.IDproduit))
 
@@ -321,7 +321,7 @@ class Track(object):
             self.cp = listview.dict_titulaires[self.IDfamille]["adresse"]["cp"]
             self.ville = listview.dict_titulaires[self.IDfamille]["adresse"]["ville"]
 
-        # Durée
+        # DurÃ©e
         self.duree = None
         if self.date_debut != None and self.date_fin != None:
             self.duree = (self.date_fin.date() - self.date_debut.date()).days
@@ -338,7 +338,7 @@ class Track(object):
 
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # Récupération des paramètres perso
+        # RÃ©cupÃ©ration des paramÃ¨tres perso
         self.IDfamille = kwds.pop("IDfamille", None)
         self.IDproduit = kwds.pop("IDproduit", None)
         self.checkColonne = kwds.pop("checkColonne", False)
@@ -372,7 +372,7 @@ class ListView(FastObjectListView):
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
-        """ Récupération des données """
+        """ RÃ©cupÃ©ration des donnÃ©es """
         liste_conditions = []
 
         if self.IDfamille != None :
@@ -425,7 +425,7 @@ class ListView(FastObjectListView):
 
         def FormateDate(date):
             if date == None :
-                return _(u"Non définie")
+                return _(u"Non dÃ©finie")
             else :
                 return datetime.datetime.strftime(date, "%d/%m/%Y - %Hh%M")
 
@@ -445,11 +445,11 @@ class ListView(FastObjectListView):
 
         dict_colonnes = {
             "IDlocation" : ColumnDefn(u"", "left", 0, "IDlocation", typeDonnee="entier"),
-            "date_debut" : ColumnDefn(_(u"Début"), "left", 130, "date_debut", typeDonnee="date", stringConverter=FormateDate),
+            "date_debut" : ColumnDefn(_(u"DÃ©but"), "left", 130, "date_debut", typeDonnee="date", stringConverter=FormateDate),
             "date_fin" : ColumnDefn(_(u"Fin"), "left", 130, "date_fin", typeDonnee="date", stringConverter=FormateDate),
             "nomProduit" : ColumnDefn(_(u"Nom du produit"), 'left', 200, "nomProduit", typeDonnee="texte"),
-            "nomCategorie" : ColumnDefn(_(u"Catégorie du produit"), 'left', 200, "nomCategorie", typeDonnee="texte"),
-            "quantite": ColumnDefn(u"Qté", "left", 60, "quantite", typeDonnee="entier"),
+            "nomCategorie" : ColumnDefn(_(u"CatÃ©gorie du produit"), 'left', 200, "nomCategorie", typeDonnee="texte"),
+            "quantite": ColumnDefn(u"QtÃ©", "left", 60, "quantite", typeDonnee="entier"),
             "nomTitulaires" : ColumnDefn(_(u"Loueur"), 'left', 270, "nomTitulaires", typeDonnee="texte"),
             "rue" : ColumnDefn(_(u"Rue"), 'left', 200, "rue", typeDonnee="texte"),
             "cp" : ColumnDefn(_(u"C.P."), 'left', 70, "cp", typeDonnee="texte"),
@@ -497,7 +497,7 @@ class ListView(FastObjectListView):
             self.selectionTrack = None
         self.InitModel()
         self.InitObjectListView()
-        # Sélection d'un item
+        # SÃ©lection d'un item
         if self.selectionTrack != None :
             self.SelectObject(self.selectionTrack, deselectOthers=True, ensureVisible=True)
         self.selectionID = None
@@ -519,7 +519,7 @@ class ListView(FastObjectListView):
         else:
             noSelection = False
 
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Modifier
@@ -567,7 +567,7 @@ class ListView(FastObjectListView):
 
         menuPop.AppendSeparator()
 
-        # Génération automatique des fonctions standards
+        # GÃ©nÃ©ration automatique des fonctions standards
         self.GenerationContextMenu(menuPop, titre=_(u"Liste des locations"))
 
         # Commandes standards
@@ -586,7 +586,7 @@ class ListView(FastObjectListView):
 
     def Modifier(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune location à modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune location Ã  modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -600,7 +600,7 @@ class ListView(FastObjectListView):
 
     def Supprimer(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune location à supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune location Ã  supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -612,7 +612,7 @@ class ListView(FastObjectListView):
 
     def ImprimerPDF(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune location à imprimer !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune location Ã  imprimer !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -624,7 +624,7 @@ class ListView(FastObjectListView):
     def EnvoyerEmail(self, event):
         """ Envoyer la location par Email """
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune location à envoyer par Email !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune location Ã  envoyer par Email !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -634,7 +634,7 @@ class ListView(FastObjectListView):
         UTILS_Envoi_email.EnvoiEmailFamille(parent=self, IDfamille=track.IDfamille, nomDoc=FonctionsPerso.GenerationNomDoc("LOCATION", "pdf") , categorie="location")
 
     def CreationPDF(self, nomDoc="", afficherDoc=True):
-        """ Création du PDF pour Email """
+        """ CrÃ©ation du PDF pour Email """
         IDlocation = self.Selection()[0].IDlocation
         from Utils import UTILS_Locations
         location = UTILS_Locations.Location()

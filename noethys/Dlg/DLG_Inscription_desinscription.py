@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 # ------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activitÃ©s
+# Application :    Noethys, gestion multi-activitÃƒÂ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-17 Ivan LUCAS
@@ -19,7 +19,7 @@ from Ctrl import CTRL_Saisie_date
 from Ctrl import CTRL_Saisie_euros
 from Utils.UTILS_Traduction import _
 from Utils import UTILS_Config
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"â‚¬")
 
 
 class Dialog(wx.Dialog):
@@ -28,16 +28,16 @@ class Dialog(wx.Dialog):
         self.parent = parent
 
         self.staticbox_remboursement_staticbox = wx.StaticBox(self, -1, _(u"Remboursement"))
-        self.ctrl_remboursement = wx.CheckBox(self, -1, _(u"Générer un remboursement"))
+        self.ctrl_remboursement = wx.CheckBox(self, -1, _(u"GÃ©nÃ©rer un remboursement"))
         self.ctrl_remboursement.SetValue(0)
 
-        self.label_motif = wx.StaticText(self, label=_(u"Motif du départ :"))
+        self.label_motif = wx.StaticText(self, label=_(u"Motif du dÃ©part :"))
         self.ctrl_motif = wx.TextCtrl(self, -1, u"")
-        self.label_total = wx.StaticText(self, label=_(u"Coût total de l'activité :"))
+        self.label_total = wx.StaticText(self, label=_(u"CoÃ»t total de l'activitÃ© :"))
         self.ctrl_total = CTRL_Saisie_euros.CTRL(self)
-        self.label_nb_seances = wx.StaticText(self, label=_(u"Nb séances effectuées :"))
+        self.label_nb_seances = wx.StaticText(self, label=_(u"Nb sÃ©ances effectuÃ©es :"))
         self.ctrl_nb_seances = wx.TextCtrl(self, -1, u"0", style=wx.TE_RIGHT)
-        self.label_prix_seance = wx.StaticText(self, label=_(u"Coût unitaire séance :"))
+        self.label_prix_seance = wx.StaticText(self, label=_(u"CoÃ»t unitaire sÃ©ance :"))
         self.ctrl_prix_seance = CTRL_Saisie_euros.CTRL(self)
 
         # Boutons
@@ -58,7 +58,7 @@ class Dialog(wx.Dialog):
         self.OnCheckboxJustification(None)
 
     def __set_properties(self):
-        self.SetTitle(_(u"Générer un remboursement"))
+        self.SetTitle(_(u"GÃ©nÃ©rer un remboursement"))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider et fermer")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler la saisie et fermer")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
@@ -113,11 +113,11 @@ class Dialog(wx.Dialog):
         self.ctrl_prix_seance.Enable(self.ctrl_remboursement.IsChecked())
 
     def OnKillFocusSeances(self, event):
-        """Le nombre de séances doit être un entier"""
+        """Le nombre de sÃ©ances doit Ãªtre un entier"""
         try:
             nb_seances = int(self.ctrl_nb_seances.GetValue())
         except ValueError:
-            wx.MessageBox(_(u"Le nombre de séances doit être un entier"))
+            wx.MessageBox(_(u"Le nombre de sÃ©ances doit Ãªtre un entier"))
         event.Skip()
 
     def OnBoutonAnnuler(self, event):
@@ -126,19 +126,19 @@ class Dialog(wx.Dialog):
     def OnBoutonOk(self, event):
         if self.ctrl_remboursement.IsChecked():
             if (self.ctrl_motif.IsEmpty() or self.ctrl_total.IsEmpty() or self.ctrl_nb_seances.IsEmpty() or self.ctrl_prix_seance.IsEmpty()):
-                dlg = wx.MessageDialog(self, _(u"Tous les champs doivent être remplis !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Tous les champs doivent Ãªtre remplis !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
 
             montant = self.GetMontant()
-            dlg = wx.MessageDialog(None, _(u"Confirmez-vous la génération d'un remboursement de %.2f %s ?") % (montant, SYMBOLE), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(None, _(u"Confirmez-vous la gÃ©nÃ©ration d'un remboursement de %.2f %s ?") % (montant, SYMBOLE), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
             reponse = dlg.ShowModal()
             dlg.Destroy()
             if reponse != wx.ID_YES :
                 return False
 
-        # Fermeture de la fenêtre
+        # Fermeture de la fenÃªtre
         self.EndModal(wx.ID_OK)
 
     def GetMontant(self):

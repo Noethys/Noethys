@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-12 Ivan LUCAS
@@ -49,24 +49,24 @@ DICT_CONTROLES = {
         {"code" : "ligne_metro", "label" : _(u"Ligne"), "ctrl" : "CTRL_Lignes(self, categorie='metro')" },
         {"code" : "ligne_pedibus", "label" : _(u"Ligne"), "ctrl" : "CTRL_Lignes(self, categorie='pedibus')" },
         
-        {"code" : "numero_avion", "label" : _(u"N° de vol"), "ctrl" : "CTRL_Numero(self, categorie='avion')" },
-        {"code" : "numero_train", "label" : _(u"N° de train"), "ctrl" : "CTRL_Numero(self, categorie='train')" },
-        {"code" : "details", "label" : _(u"Détails"), "ctrl" : "CTRL_Details(self)" },
+        {"code" : "numero_avion", "label" : _(u"NÂ° de vol"), "ctrl" : "CTRL_Numero(self, categorie='avion')" },
+        {"code" : "numero_train", "label" : _(u"NÂ° de train"), "ctrl" : "CTRL_Numero(self, categorie='train')" },
+        {"code" : "details", "label" : _(u"DÃ©tails"), "ctrl" : "CTRL_Details(self)" },
         {"code" : "observations", "label" : _(u"Observ."), "ctrl" : "CTRL_Observations(self)" },
         ],
         
     "depart" : [
         {"code" : "date_heure", "label" : _(u"Heure"), "ctrl" : "CTRL_DateHeure(self)" },
         
-        {"code" : "arret_bus", "label" : _(u"Arrêt"), "ctrl" : "CTRL_Arrets(self, categorie='bus')" },
-        {"code" : "arret_car", "label" : _(u"Arrêt"), "ctrl" : "CTRL_Arrets(self, categorie='car')" },
-        {"code" : "arret_navette", "label" : _(u"Arrêt"), "ctrl" : "CTRL_Arrets(self, categorie='navette')" },
-        {"code" : "arret_bateau", "label" : _(u"Arrêt"), "ctrl" : "CTRL_Arrets(self, categorie='bateau')" },
-        {"code" : "arret_metro", "label" : _(u"Arrêt"), "ctrl" : "CTRL_Arrets(self, categorie='metro')" },
-        {"code" : "arret_pedibus", "label" : _(u"Arrêt"), "ctrl" : "CTRL_Arrets(self, categorie='pedibus')" },
+        {"code" : "arret_bus", "label" : _(u"ArrÃªt"), "ctrl" : "CTRL_Arrets(self, categorie='bus')" },
+        {"code" : "arret_car", "label" : _(u"ArrÃªt"), "ctrl" : "CTRL_Arrets(self, categorie='car')" },
+        {"code" : "arret_navette", "label" : _(u"ArrÃªt"), "ctrl" : "CTRL_Arrets(self, categorie='navette')" },
+        {"code" : "arret_bateau", "label" : _(u"ArrÃªt"), "ctrl" : "CTRL_Arrets(self, categorie='bateau')" },
+        {"code" : "arret_metro", "label" : _(u"ArrÃªt"), "ctrl" : "CTRL_Arrets(self, categorie='metro')" },
+        {"code" : "arret_pedibus", "label" : _(u"ArrÃªt"), "ctrl" : "CTRL_Arrets(self, categorie='pedibus')" },
         
         {"code" : "gare", "label" : _(u"Gare"), "ctrl" : "CTRL_Lieux(self, categorie='gare')" },
-        {"code" : "aeroport", "label" : _(u"Aéroport"), "ctrl" : "CTRL_Lieux(self, categorie='aeroport')" },
+        {"code" : "aeroport", "label" : _(u"AÃ©roport"), "ctrl" : "CTRL_Lieux(self, categorie='aeroport')" },
         {"code" : "port", "label" : _(u"Port"), "ctrl" : "CTRL_Lieux(self, categorie='port')" },
         #{"code" : "station", "label" : _(u"Station"), "ctrl" : "CTRL_Lieux(self, categorie='station')" },
         
@@ -76,15 +76,15 @@ DICT_CONTROLES = {
     "arrivee" : [
         {"code" : "date_heure", "label" : _(u"Heure"), "ctrl" : "CTRL_DateHeure(self)" },
         
-        {"code" : "arret_bus", "label" : _(u"Arrêt"), "ctrl" : "CTRL_Arrets(self, categorie='bus')" },
-        {"code" : "arret_car", "label" : _(u"Arrêt"), "ctrl" : "CTRL_Arrets(self, categorie='car')" },
-        {"code" : "arret_navette", "label" : _(u"Arrêt"), "ctrl" : "CTRL_Arrets(self, categorie='navette')" },
-        {"code" : "arret_bateau", "label" : _(u"Arrêt"), "ctrl" : "CTRL_Arrets(self, categorie='bateau')" },
-        {"code" : "arret_metro", "label" : _(u"Arrêt"), "ctrl" : "CTRL_Arrets(self, categorie='metro')" },
-        {"code" : "arret_pedibus", "label" : _(u"Arrêt"), "ctrl" : "CTRL_Arrets(self, categorie='pedibus')" },
+        {"code" : "arret_bus", "label" : _(u"ArrÃªt"), "ctrl" : "CTRL_Arrets(self, categorie='bus')" },
+        {"code" : "arret_car", "label" : _(u"ArrÃªt"), "ctrl" : "CTRL_Arrets(self, categorie='car')" },
+        {"code" : "arret_navette", "label" : _(u"ArrÃªt"), "ctrl" : "CTRL_Arrets(self, categorie='navette')" },
+        {"code" : "arret_bateau", "label" : _(u"ArrÃªt"), "ctrl" : "CTRL_Arrets(self, categorie='bateau')" },
+        {"code" : "arret_metro", "label" : _(u"ArrÃªt"), "ctrl" : "CTRL_Arrets(self, categorie='metro')" },
+        {"code" : "arret_pedibus", "label" : _(u"ArrÃªt"), "ctrl" : "CTRL_Arrets(self, categorie='pedibus')" },
         
         {"code" : "gare", "label" : _(u"Gare"), "ctrl" : "CTRL_Lieux(self, categorie='gare')" },
-        {"code" : "aeroport", "label" : _(u"Aéroport"), "ctrl" : "CTRL_Lieux(self, categorie='aeroport')" },
+        {"code" : "aeroport", "label" : _(u"AÃ©roport"), "ctrl" : "CTRL_Lieux(self, categorie='aeroport')" },
         {"code" : "port", "label" : _(u"Port"), "ctrl" : "CTRL_Lieux(self, categorie='port')" },
         #{"code" : "station", "label" : _(u"Station"), "ctrl" : "CTRL_Lieux(self, categorie='station')" },
         
@@ -102,7 +102,7 @@ DICT_CATEGORIES = {
                                     "arrivee" : ["date_heure", "localisation",],
                                     },},
 
-    "velo" : {   "label" : _(u"Vélo"), "image" : "Velo", "type" : "localisations", "controles" : {
+    "velo" : {   "label" : _(u"VÃ©lo"), "image" : "Velo", "type" : "localisations", "controles" : {
                                     "generalites" : ["observations",],
                                     "depart" : ["date_heure", "localisation",],
                                     "arrivee" : ["date_heure", "localisation",],
@@ -156,13 +156,13 @@ DICT_CATEGORIES = {
                                     "arrivee" : [ "date_heure", "gare"],
                                     },},
 
-    "metro" : {      "label" : _(u"Métro"), "image" : "Metro", "type" : "lignes", "controles" : {
+    "metro" : {      "label" : _(u"MÃ©tro"), "image" : "Metro", "type" : "lignes", "controles" : {
                                     "generalites" : [ "compagnie_metro", "ligne_metro", "observations"],
                                     "depart" : [ "date_heure", "arret_metro"],
                                     "arrivee" : [ "date_heure", "arret_metro"],
                                     },},
 
-    "pedibus" : {      "label" : _(u"Pédibus"), "image" : "Pedibus", "type" : "lignes", "controles" : {
+    "pedibus" : {      "label" : _(u"PÃ©dibus"), "image" : "Pedibus", "type" : "lignes", "controles" : {
                                     "generalites" : [ "ligne_pedibus", "observations"],
                                     "depart" : [ "date_heure", "arret_pedibus"],
                                     "arrivee" : [ "date_heure", "arret_pedibus"],
@@ -184,7 +184,7 @@ class CTRL_Choix_arrets(wx.Choice):
         self.IDligne = IDligne
         self.MAJ() 
         self.Select(0)
-        self.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici un arrêt")))
+        self.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez ici un arrÃªt")))
     
     def MAJ(self, IDligne=0):
         if IDligne == None : IDligne = 0
@@ -229,7 +229,7 @@ class CTRL_Choix_arrets(wx.Choice):
 
 
 class CTRL_Arrets(wx.Panel):
-    """ Contrôle Choix des arrêts """
+    """ ContrÃ´le Choix des arrÃªts """
     def __init__(self, parent, categorie="bus"):
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
         self.parent = parent
@@ -239,7 +239,7 @@ class CTRL_Arrets(wx.Panel):
         self.bouton_gestion = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Mecanisme.png"), wx.BITMAP_TYPE_ANY))
         
         self.Bind(wx.EVT_BUTTON, self.OnBoutonGestion, self.bouton_gestion)
-        self.bouton_gestion.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder au paramétrage des arrêts")))
+        self.bouton_gestion.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accÃ©der au paramÃ©trage des arrÃªts")))
 
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
         grid_sizer_base.Add(self.ctrl_arrets, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALL|wx.EXPAND, 0)
@@ -254,7 +254,7 @@ class CTRL_Arrets(wx.Panel):
         dlg = DLG_Arrets.Dialog(self, categorie=self.categorie)
         dlg.ShowModal() 
         dlg.Destroy()
-        # MAJ contrôles
+        # MAJ contrÃ´les
         for controle in self.parent.GetControles("arret_%s" % self.categorie) :
             controle.MAJ() 
         for controle in self.parent.GetControles("ligne_%s" % self.categorie) :
@@ -296,7 +296,7 @@ class CTRL_Choix_lignes(wx.Choice):
         self.categorie = categorie
         self.MAJ() 
         self.Select(0)
-        self.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici une ligne")))
+        self.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez ici une ligne")))
     
     def MAJ(self):
         listeItems = self.GetListeDonnees()
@@ -339,7 +339,7 @@ class CTRL_Choix_lignes(wx.Choice):
 
 
 class CTRL_Lignes(wx.Panel):
-    """ Contrôle Choix de Lignes """
+    """ ContrÃ´le Choix de Lignes """
     def __init__(self, parent, categorie="bus"):
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
         self.parent = parent
@@ -350,7 +350,7 @@ class CTRL_Lignes(wx.Panel):
         self.Bind(wx.EVT_CHOICE, self.OnChoix, self.ctrl_lignes)
         
         self.Bind(wx.EVT_BUTTON, self.OnBoutonGestion, self.bouton_gestion)
-        self.bouton_gestion.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder au paramétrage des lignes")))
+        self.bouton_gestion.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accÃ©der au paramÃ©trage des lignes")))
 
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
         grid_sizer_base.Add(self.ctrl_lignes, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALL|wx.EXPAND, 0)
@@ -361,7 +361,7 @@ class CTRL_Lignes(wx.Panel):
         self.Layout()
 
     def OnChoix(self, event):
-        # MAJ contrôles arrêts
+        # MAJ contrÃ´les arrÃªts
         for controle in self.parent.GetControles("arret_%s" % self.categorie) :
             controle.MAJ(IDligne=self.GetLigne())
 
@@ -405,7 +405,7 @@ class CTRL_Lignes(wx.Panel):
 
 
 class CTRL_Localisation_domicile(wx.Panel):
-    """ Contrôle Domicile pour CTRL Localisation """
+    """ ContrÃ´le Domicile pour CTRL Localisation """
     def __init__(self, parent):
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
         self.parent = parent
@@ -452,7 +452,7 @@ class CTRL_Choix_activite(wx.Choice):
         self.parent = parent
         self.MAJ() 
         self.Select(0)
-        self.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici une activité")))
+        self.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez ici une activitÃ©")))
     
     def MAJ(self):
         listeItems = self.GetListeDonnees()
@@ -475,7 +475,7 @@ class CTRL_Choix_activite(wx.Choice):
         self.dictDonnees[0] = { "ID" : 0, "nom" : u""}
         index = 1
         for IDactivite, nom in listeDonnees :
-            if nom == None : nom = u"Activité inconnue"
+            if nom == None : nom = u"ActivitÃ© inconnue"
             self.dictDonnees[index] = { "ID" : IDactivite, "nom " : nom}
             listeItems.append(nom)
             index += 1
@@ -496,12 +496,12 @@ class CTRL_Choix_activite(wx.Choice):
 
 
 class CTRL_Localisation_activite(wx.Panel):
-    """ Contrôle Activité pour CTRL Localisation """
+    """ ContrÃ´le ActivitÃ© pour CTRL Localisation """
     def __init__(self, parent):
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
         self.parent = parent
 
-        self.label_activite = wx.StaticText(self, -1, _(u"Activité :"))
+        self.label_activite = wx.StaticText(self, -1, _(u"ActivitÃ© :"))
         self.ctrl_activite = CTRL_Choix_activite(self)
         
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=4, vgap=5, hgap=5)
@@ -524,7 +524,7 @@ class CTRL_Localisation_activite(wx.Panel):
 
     def Validation(self):
         if self.ctrl_activite.GetID() == None :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune activité !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune activitÃ© !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.SetFocus()
@@ -540,7 +540,7 @@ class CTRL_Choix_ecole(wx.Choice):
         self.parent = parent
         self.MAJ() 
         self.Select(0)
-        self.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici une école")))
+        self.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez ici une Ã©cole")))
     
     def MAJ(self):
         listeItems = self.GetListeDonnees()
@@ -583,7 +583,7 @@ class CTRL_Choix_ecole(wx.Choice):
 
 
 class CTRL_Localisation_ecole(wx.Panel):
-    """ Contrôle Ecole pour CTRL Localisation """
+    """ ContrÃ´le Ecole pour CTRL Localisation """
     def __init__(self, parent):
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
         self.parent = parent
@@ -611,7 +611,7 @@ class CTRL_Localisation_ecole(wx.Panel):
 
     def Validation(self):
         if self.ctrl_ecole.GetID() == None :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune école !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune Ã©cole !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.SetFocus()
@@ -621,7 +621,7 @@ class CTRL_Localisation_ecole(wx.Panel):
 
 
 class CTRL_Localisation_autre(wx.Panel):
-    """ Contrôle Autre pour CTRL Localisation """
+    """ ContrÃ´le Autre pour CTRL Localisation """
     def __init__(self, parent):
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
         self.parent = parent
@@ -685,16 +685,16 @@ class CTRL_Localisation_autre(wx.Panel):
 
 
 class CTRL_Localisation(wx.Choicebook):
-    """ Contrôle Localisation """
+    """ ContrÃ´le Localisation """
     def __init__(self, parent):
         wx.Choicebook.__init__(self, parent, id=-1)
         self.parent = parent
-        self.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici une localisation")))
+        self.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez ici une localisation")))
         
         self.listePanels = [
             ("DOMI", _(u"Domicile de l'individu"), CTRL_Localisation_domicile(self) ),
-            ("ACTI", _(u"Une activité"), CTRL_Localisation_activite(self) ),
-            ("ECOL", _(u"Une école"), CTRL_Localisation_ecole(self) ),
+            ("ACTI", _(u"Une activitÃ©"), CTRL_Localisation_activite(self) ),
+            ("ECOL", _(u"Une Ã©cole"), CTRL_Localisation_ecole(self) ),
             #("CONT", _(u"Contact du carnet d'adresses"), wx.Panel(self, -1) ),
             ("AUTR", _(u"Autre"), CTRL_Localisation_autre(self) ),
             ]
@@ -702,7 +702,7 @@ class CTRL_Localisation(wx.Choicebook):
         for code, label, ctrl in self.listePanels :
             self.AddPage(ctrl, label)
             
-        # Sélection par défaut
+        # SÃ©lection par dÃ©faut
         self.SetSelection(3)
     
     def GetLocalisation(self):
@@ -736,7 +736,7 @@ class CTRL_Localisation(wx.Choicebook):
 #------------------------------------------------------------------------------------------------------
 
 class CTRL_DateHeure(wx.Panel):
-    """ Contrôle Date et Heure """
+    """ ContrÃ´le Date et Heure """
     def __init__(self, parent):
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
         self.parent = parent
@@ -755,7 +755,7 @@ class CTRL_DateHeure(wx.Panel):
         self.Layout()
     
     def AffichageDate(self, etat=True):
-        """ Affiche ou non le contrôle Date """
+        """ Affiche ou non le contrÃ´le Date """
         self.label_date.Show(etat)
         self.ctrl_date.Show(etat)
         
@@ -766,7 +766,7 @@ class CTRL_DateHeure(wx.Panel):
                 ctrl.SetDate(self.GetDate())
     
     def SetDateTime(self, datedt=None):
-        """ Remplit les contrôles à partir d'un datetime date + heure """
+        """ Remplit les contrÃ´les Ã  partir d'un datetime date + heure """
         self.SetDate(datetime.date(datedt.year, datedt.month, datedt.day))
         self.SetHeure("%02d:%02d" % (datedt.hour, datedt.minute))
         
@@ -783,8 +783,8 @@ class CTRL_DateHeure(wx.Panel):
         return self.ctrl_heure.GetHeure()
 
     def Validation(self):
-        if self.rubrique == "depart" : nomTemp = _(u"de départ")
-        if self.rubrique == "arrivee" : nomTemp = _(u"d'arrivée")
+        if self.rubrique == "depart" : nomTemp = _(u"de dÃ©part")
+        if self.rubrique == "arrivee" : nomTemp = _(u"d'arrivÃ©e")
 
         if self.GetDate() == None  and self.ctrl_date.IsShown() :
             dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date %s !") % nomTemp, _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
@@ -794,14 +794,14 @@ class CTRL_DateHeure(wx.Panel):
             return False
         
         if self.GetDate() != None and self.ctrl_date.Validation() == False and self.ctrl_date.IsEnabled():
-            dlg = wx.MessageDialog(self, _(u"Veuillez vérifier la cohérence de la date %s !") % nomTemp, _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Veuillez vÃ©rifier la cohÃ©rence de la date %s !") % nomTemp, _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date.SetFocus()
             return False
         
         if self.GetHeure() != None and self.ctrl_heure.Validation() == False :
-            dlg = wx.MessageDialog(self, _(u"Veuillez vérifier la cohérence de l'heure %s !") % nomTemp, _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Veuillez vÃ©rifier la cohÃ©rence de l'heure %s !") % nomTemp, _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_heure.SetFocus()
@@ -828,7 +828,7 @@ class CTRL_Details(wx.TextCtrl):
     def __init__(self, parent):
         wx.TextCtrl.__init__(self, parent, -1, size=(170, -1)) 
         self.parent = parent
-        self.SetToolTip(wx.ToolTip(_(u"Saisissez ici les détails concernant ce transport (Ex : numéro de place, classe, etc...)")))
+        self.SetToolTip(wx.ToolTip(_(u"Saisissez ici les dÃ©tails concernant ce transport (Ex : numÃ©ro de place, classe, etc...)")))
     
     def SetDetails(self, details=""):
         if details == None : details = ""
@@ -886,8 +886,8 @@ class CTRL_Numero(wx.TextCtrl):
     def __init__(self, parent, categorie="avion"):
         wx.TextCtrl.__init__(self, parent, -1, size=(170, -1)) 
         self.parent = parent
-        if categorie == "avion" : self.SetToolTip(wx.ToolTip(_(u"Saisissez ici le numéro du vol")))
-        if categorie == "train" : self.SetToolTip(wx.ToolTip(_(u"Saisissez ici le numéro du train")))
+        if categorie == "avion" : self.SetToolTip(wx.ToolTip(_(u"Saisissez ici le numÃ©ro du vol")))
+        if categorie == "train" : self.SetToolTip(wx.ToolTip(_(u"Saisissez ici le numÃ©ro du train")))
     
     def SetNumero(self, numero=""):
         if numero == None : numero = ""
@@ -919,7 +919,7 @@ class CTRL_Choix_compagnies(wx.Choice):
         self.categorie = categorie
         self.MAJ() 
         self.Select(0)
-        self.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici une compagnie")))
+        self.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez ici une compagnie")))
     
     def MAJ(self):
         listeItems = self.GetListeDonnees()
@@ -962,7 +962,7 @@ class CTRL_Choix_compagnies(wx.Choice):
 
 
 class CTRL_Compagnies(wx.Panel):
-    """ Contrôle Choix de compagnies """
+    """ ContrÃ´le Choix de compagnies """
     def __init__(self, parent, categorie="car"):
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
         self.parent = parent
@@ -972,7 +972,7 @@ class CTRL_Compagnies(wx.Panel):
         self.bouton_gestion = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Mecanisme.png"), wx.BITMAP_TYPE_ANY))
         
         self.Bind(wx.EVT_BUTTON, self.OnBoutonGestion, self.bouton_gestion)
-        self.bouton_gestion.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder au paramétrage des compagnies")))
+        self.bouton_gestion.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accÃ©der au paramÃ©trage des compagnies")))
 
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
         grid_sizer_base.Add(self.ctrl_compagnies, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALL|wx.EXPAND, 0)
@@ -1024,7 +1024,7 @@ class CTRL_Choix_lieux(wx.Choice):
         self.categorie = categorie
         self.MAJ() 
         self.Select(0)
-        self.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici un lieu")))
+        self.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez ici un lieu")))
     
     def MAJ(self):
         listeItems = self.GetListeDonnees()
@@ -1067,7 +1067,7 @@ class CTRL_Choix_lieux(wx.Choice):
 
 
 class CTRL_Lieux(wx.Panel):
-    """ Contrôle Choix de lieux """
+    """ ContrÃ´le Choix de lieux """
     def __init__(self, parent, categorie="gare"):
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
         self.parent = parent
@@ -1077,7 +1077,7 @@ class CTRL_Lieux(wx.Panel):
         self.bouton_gestion = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Mecanisme.png"), wx.BITMAP_TYPE_ANY))
         
         self.Bind(wx.EVT_BUTTON, self.OnBoutonGestion, self.bouton_gestion)
-        self.bouton_gestion.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder au paramétrages des lieux")))
+        self.bouton_gestion.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accÃ©der au paramÃ©trages des lieux")))
 
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
         grid_sizer_base.Add(self.ctrl_lieux, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALL|wx.EXPAND, 0)
@@ -1095,7 +1095,7 @@ class CTRL_Lieux(wx.Panel):
         dlg = DLG_Lieux.Dialog(self, categorie=self.categorie, mode="gestion")
         dlg.ShowModal() 
         dlg.Destroy()
-        # MAJ contrôles
+        # MAJ contrÃ´les
         for controle in self.parent.GetControles(self.categorie) :
             controle.MAJ() 
     
@@ -1136,7 +1136,7 @@ class CTRL_Categorie(BitmapComboBox):
         self.MAJlisteDonnees() 
         if len(self.dictDonnees) > 0 :
             self.SetSelection(0)
-        self.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici un moyen de locomotion")))
+        self.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez ici un moyen de locomotion")))
     
     def MAJlisteDonnees(self):
         listeItems = self.GetListeDonnees()
@@ -1188,20 +1188,20 @@ class CTRL(wx.Panel):
         self.listeSizers = []
         self.listeControles = []
         
-        # Ctrl Choix Catégorie
+        # Ctrl Choix CatÃ©gorie
         self.ctrl_categorie = CTRL_Categorie(self)
         self.ctrl_categorie.SetCategorie(self.categorie)
         self.grid_sizer_base.Add(self.ctrl_categorie, 0, wx.EXPAND|wx.BOTTOM, 10)
         self.Bind(wx.EVT_COMBOBOX, self.OnChoixCategorie, self.ctrl_categorie)
         
-        # Généralités
-        self.CreationControles(rubrique="generalites", label=_(u"Généralités"))
+        # GÃ©nÃ©ralitÃ©s
+        self.CreationControles(rubrique="generalites", label=_(u"GÃ©nÃ©ralitÃ©s"))
 
-        # Départ
-        self.CreationControles(rubrique="depart", label=_(u"Départ"))
+        # DÃ©part
+        self.CreationControles(rubrique="depart", label=_(u"DÃ©part"))
         
-        # Arrivée
-        self.CreationControles(rubrique="arrivee", label=_(u"Arrivée"))
+        # ArrivÃ©e
+        self.CreationControles(rubrique="arrivee", label=_(u"ArrivÃ©e"))
         
         # Verouillage boutons de gestion
         if verrouilleBoutons == True :
@@ -1222,7 +1222,7 @@ class CTRL(wx.Panel):
                 self.Importation() 
 
 
-    def CreationControles(self, rubrique="generalites", label=_(u"Généralités")):
+    def CreationControles(self, rubrique="generalites", label=_(u"GÃ©nÃ©ralitÃ©s")):
         box = wx.StaticBox(self, -1, label)
         boxSizer = wx.StaticBoxSizer(box, wx.VERTICAL)
         grid_sizer = wx.FlexGridSizer(rows=18, cols=2, vgap=10, hgap=10)
@@ -1235,14 +1235,14 @@ class CTRL(wx.Panel):
             ctrl_label = wx.StaticText(self, -1, u"%s :" % label)
             grid_sizer.Add(ctrl_label, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
             
-            # contrôle
+            # contrÃ´le
             nomControle = dictControle["ctrl"]
             ctrl = eval(nomControle)
             ctrl.SetName(code)
             ctrl.rubrique = rubrique
             grid_sizer.Add(ctrl, 0, wx.EXPAND, 0)
             
-            # Mémorisation des 2 contrôles
+            # MÃ©morisation des 2 contrÃ´les
             self.listeControles.append((code, ctrl, ctrl_label))
 
         grid_sizer.AddGrowableCol(1)
@@ -1262,8 +1262,8 @@ class CTRL(wx.Panel):
         self.OnChoixCategorie(None)
         
     def MAJaffichage(self):
-        """ Affiche ou non les contrôles de la catégorie """
-        # recherche des contrôles à afficher
+        """ Affiche ou non les contrÃ´les de la catÃ©gorie """
+        # recherche des contrÃ´les Ã  afficher
         self.Freeze()
         for codeControle, ctrl, ctrl_label in self.listeControles :
             resultat = self.RechercheControle(codeControle, self.categorie)
@@ -1277,7 +1277,7 @@ class CTRL(wx.Panel):
         self.Thaw() 
 
     def RechercheControle(self, codeControle="", categorie="bus"):
-        """ Recherche si un contrôle donnéé est utilisé par la catégorie donnée """
+        """ Recherche si un contrÃ´le donnÃ©Ã© est utilisÃ© par la catÃ©gorie donnÃ©e """
         for rubrique in ("generalites", "depart", "arrivee") :
             listeControlesCategorie = DICT_CATEGORIES[self.categorie]["controles"][rubrique]
             if codeControle in listeControlesCategorie :
@@ -1285,7 +1285,7 @@ class CTRL(wx.Panel):
         return False
 
     def GetControles(self, texteNom="", controleActuel=None):
-        """ Retrouve les contrôles du panel dont le nom comporte le texte texteNom """
+        """ Retrouve les contrÃ´les du panel dont le nom comporte le texte texteNom """
         listeControlesTrouves = []
         for children in self.GetChildren():
             if texteNom in children.GetName() and children != controleActuel : 
@@ -1293,38 +1293,38 @@ class CTRL(wx.Panel):
         return listeControlesTrouves
     
     def GetControle(self, code="date_heure", rubrique="depart"):
-        """ Recherche un contrôle particulier d'après son code """
+        """ Recherche un contrÃ´le particulier d'aprÃ¨s son code """
         for codeControle, ctrl, ctrl_label in self.listeControles :
             if codeControle == code and ctrl.rubrique == rubrique :
                 return ctrl
         return None
 
     def AffichageDates(self, etat=True):
-        # Départ
+        # DÃ©part
         self.GetControle("date_heure", rubrique="depart").AffichageDate(etat) 
-        # Arrivée
+        # ArrivÃ©e
         self.GetControle("date_heure", rubrique="arrivee").AffichageDate(etat) 
 
     def Validation(self):
-        """ Validation des données """
-        # Recherche les contrôles actifs
+        """ Validation des donnÃ©es """
+        # Recherche les contrÃ´les actifs
         for codeControle, ctrl, ctrl_label in self.listeControles :
             resultat = self.RechercheControle(codeControle, self.categorie)
             if resultat == True :
                 if ctrl.Validation() == False :
-                    print("ca coince sur le contrôle", codeControle, ctrl.rubrique)
+                    print("ca coince sur le contrÃ´le", codeControle, ctrl.rubrique)
                     return False
         return True
     
     def GetDictDonnees(self):
-        """ Retourne un dict avec toutes les données """
-        # Création d'un dict de données vierges d'après la table de champs
+        """ Retourne un dict avec toutes les donnÃ©es """
+        # CrÃ©ation d'un dict de donnÃ©es vierges d'aprÃ¨s la table de champs
         dictDonnees = {}
         for nom, type, info in DICT_TABLES["transports"] :
             if nom not in ("IDtransport", "IDindividu"):
                 dictDonnees[nom] = None
         
-        # Récupère la valeur des contrôles
+        # RÃ©cupÃ¨re la valeur des contrÃ´les
         for codeControle, ctrl, ctrl_label in self.listeControles :
             resultat = self.RechercheControle(codeControle, self.categorie)
             if resultat == True :
@@ -1332,7 +1332,7 @@ class CTRL(wx.Panel):
                 for key, data in dictData.items() :
                     dictDonnees[key] = data
         
-        # Ajout de la catégorie
+        # Ajout de la catÃ©gorie
         dictDonnees["categorie"] = self.categorie
         
         # Ajout du IDindividu
@@ -1341,11 +1341,11 @@ class CTRL(wx.Panel):
         return dictDonnees
         
     def Sauvegarde(self, mode="unique", parametres=None):
-        """ Sauvegarde des données """
+        """ Sauvegarde des donnÃ©es """
         self.listeDonneesSauvegardees = []
         DB = GestionDB.DB()
         
-        # Récupère les données
+        # RÃ©cupÃ¨re les donnÃ©es
         dictDonnees = self.GetDictDonnees() 
         
         # ----------------------------------------- SAISIE UNIQUE ----------------------------------------
@@ -1368,7 +1368,7 @@ class CTRL(wx.Panel):
             dictDonnees["mode"] = "TRANSP"
             type = parametres["mode"]
 
-            # Récupération des jours fériés et de vacances
+            # RÃ©cupÃ©ration des jours fÃ©riÃ©s et de vacances
             joursSpeciaux = UTILS_Jours_speciaux.JoursSpeciaux() 
 
             if type == "CALENDRIER" :
@@ -1379,7 +1379,7 @@ class CTRL(wx.Panel):
                 date_min = parametres["date_debut"]
                 date_max = parametres["date_fin"]
             
-            # Récupération des jours de présence sur l'activité donnée
+            # RÃ©cupÃ©ration des jours de prÃ©sence sur l'activitÃ© donnÃ©e
             if parametres["activite"] != None :
                 req = """SELECT IDconso, date, IDunite
                 FROM consommations 
@@ -1392,7 +1392,7 @@ class CTRL(wx.Panel):
                     if date not in listeDatesPresences :
                         listeDatesPresences.append(date)
             
-            # Création de la liste de jours initiale
+            # CrÃ©ation de la liste de jours initiale
             if type == "CALENDRIER" :
                 liste_dates = parametres["dates"]
                 
@@ -1403,17 +1403,17 @@ class CTRL(wx.Panel):
                     date = date + datetime.timedelta(days=1) 
                     liste_dates.append(date)
                 
-            # Recherche des dates de création
+            # Recherche des dates de crÃ©ation
             liste_problemes = []
             liste_dates_retenues = []
             
             for date in liste_dates :
                 valide = True
                 
-                # Spécifique au mode Planning
+                # SpÃ©cifique au mode Planning
                 if type == "PLANNING" :
                     
-                    # Vérifie que ce jour de la semaine est bien demandé par l'utilisateur
+                    # VÃ©rifie que ce jour de la semaine est bien demandÃ© par l'utilisateur
                     if joursSpeciaux.RechercheJourVacances(date) == True :
                         if date.weekday() not in parametres["jours_vacances"] :
                             print(date.weekday(), parametres["jours_vacances"])
@@ -1422,23 +1422,23 @@ class CTRL(wx.Panel):
                         if date.weekday() not in parametres["jours_scolaires"] :
                             valide = False
                     
-                # Fériés
+                # FÃ©riÃ©s
                 if parametres["feries"] == False :
                     if joursSpeciaux.RechercheJourFerie(date) == True :
-                        liste_problemes.append((date, _(u"Jour férié")))
+                        liste_problemes.append((date, _(u"Jour fÃ©riÃ©")))
                         valide = False
                 
-                # Jour de présence
+                # Jour de prÃ©sence
                 if parametres["activite"] != None :
                     if date not in listeDatesPresences :
-                        liste_problemes.append((date, _(u"Non inscrit à l'activité spécifiée")))
+                        liste_problemes.append((date, _(u"Non inscrit Ã  l'activitÃ© spÃ©cifiÃ©e")))
                         valide = False
                 
                 if valide == True :
                     liste_dates_retenues.append(date)
             
             if len(liste_dates_retenues) == 0 :
-                dlg = wx.MessageDialog(self, _(u"Désolé mais il n'y a aucune date valide avec les paramètres que vous avez spécifié !"), _(u"Information"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"DÃ©solÃ© mais il n'y a aucune date valide avec les paramÃ¨tres que vous avez spÃ©cifiÃ© !"), _(u"Information"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
@@ -1467,7 +1467,7 @@ class CTRL(wx.Panel):
                 # Sauvegarde
                 IDtransport = DB.ReqInsert("transports", listeDonnees)
                 
-                # Mémorisation pour scheduler
+                # MÃ©morisation pour scheduler
                 dictTemp = dictDonnees.copy() 
                 dictTemp["IDtransport"] = IDtransport
                 self.listeDonneesSauvegardees.append(dictTemp)
@@ -1476,7 +1476,7 @@ class CTRL(wx.Panel):
         if mode == "prog" :
             dictDonnees["mode"] = "PROG"
             
-            # Insertion des paramètres de la programmation
+            # Insertion des paramÃ¨tres de la programmation
             dictDonnees["date_debut"] = parametres["date_debut"]
             dictDonnees["date_fin"] = parametres["date_fin"]
             dictDonnees["actif"] = parametres["actif"]
@@ -1502,8 +1502,8 @@ class CTRL(wx.Panel):
         return self.IDtransport 
     
     def Importation(self):
-        """ Importation des données """
-        # Récupère les noms de champs de la table
+        """ Importation des donnÃ©es """
+        # RÃ©cupÃ¨re les noms de champs de la table
         listeChamps = []
         for nom, type, info in DICT_TABLES["transports"] :
             listeChamps.append(nom)
@@ -1527,12 +1527,12 @@ class CTRL(wx.Panel):
         self.RemplitChamps(listeDonnees)
     
     def RemplitChamps(self, listeDonnees=[]):
-        # Sélectionne la catégorie
+        # SÃ©lectionne la catÃ©gorie
         for key, valeur in listeDonnees :
             if key == "categorie" :
                 self.SelectCategorie(valeur)
         
-        # Importe les valeurs dans les contrôles
+        # Importe les valeurs dans les contrÃ´les
         for codeControle, ctrl, ctrl_label in self.listeControles :
             ctrl.SetData(listeDonnees)
     

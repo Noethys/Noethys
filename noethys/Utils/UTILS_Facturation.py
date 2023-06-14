@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-13 Ivan LUCAS
@@ -18,7 +18,7 @@ import sys
 import traceback
 from Utils import UTILS_Conversion
 from Utils import UTILS_Config
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"â‚¬")
 MONNAIE_SINGULIER = UTILS_Config.GetParametre("monnaie_singulier", _(u"Euro"))
 MONNAIE_DIVISION = UTILS_Config.GetParametre("monnaie_division", _(u"Centime"))
 
@@ -41,7 +41,7 @@ from Utils.UTILS_Pes import GetCle_modulo23
 
 
 def FormateMaj(nom_titulaires):
-    """ Formate nom de fichier en majuscules et sans caractères spéciaux """
+    """ Formate nom de fichier en majuscules et sans caractÃ¨res spÃ©ciaux """
     nom_titulaires = UTILS_Texte.Supprime_accent(nom_titulaires)
     resultat = ""
     for caract in nom_titulaires :
@@ -53,11 +53,11 @@ def FormateMaj(nom_titulaires):
 
 class Facturation():
     def __init__(self):
-        """ Récupération de toutes les données de base """
+        """ RÃ©cupÃ©ration de toutes les donnÃ©es de base """
         
         DB = GestionDB.DB()
             
-        # Récupération de tous les individus de la base
+        # RÃ©cupÃ©ration de tous les individus de la base
         req = """SELECT IDindividu, IDcivilite, nom, prenom, date_naiss, adresse_auto, rue_resid, cp_resid, ville_resid
         FROM individus;""" 
         DB.ExecuterReq(req)
@@ -66,7 +66,7 @@ class Facturation():
         for IDindividu, IDcivilite, nom, prenom, date_naiss, adresse_auto, rue_resid, cp_resid, ville_resid in listeIndividus :
             self.dictIndividus[IDindividu] = {"IDcivilite":IDcivilite, "nom":nom, "prenom":prenom, "date_naiss":date_naiss, "adresse_auto":adresse_auto, "rue_resid":rue_resid, "cp_resid":cp_resid, "ville_resid":ville_resid}
 
-        # Récupération de tous les messages familiaux à afficher
+        # RÃ©cupÃ©ration de tous les messages familiaux Ã  afficher
         req = """SELECT IDmessage, IDcategorie, date_parution, priorite, IDfamille, nom, texte
         FROM messages
         WHERE afficher_facture=1 AND IDfamille IS NOT NULL;"""
@@ -79,7 +79,7 @@ class Facturation():
                 self.dictMessageFamiliaux[IDfamille] = []
             self.dictMessageFamiliaux[IDfamille].append({"IDmessage":IDmessage, "IDcategorie":IDcategorie, "date_parution":date_parution, "priorite":priorite, "nom":nom, "texte":texte})
 
-        # Récupération des infos sur l'organisme
+        # RÃ©cupÃ©ration des infos sur l'organisme
         req = """SELECT nom, rue, cp, ville, tel, fax, mail, site, num_agrement, num_siret, code_ape
         FROM organisateur
         WHERE IDorganisateur=1;""" 
@@ -103,7 +103,7 @@ class Facturation():
         # Get noms Titulaires
         self.dictNomsTitulaires = UTILS_Titulaires.GetTitulaires(mode_adresse_facturation=True)
 
-        # Recherche des numéros d'agréments
+        # Recherche des numÃ©ros d'agrÃ©ments
         req = """SELECT IDactivite, agrement, date_debut, date_fin
         FROM agrements
         ORDER BY date_debut;"""
@@ -112,10 +112,10 @@ class Facturation():
 
         DB.Close() 
 
-        # Récupération des questionnaires
+        # RÃ©cupÃ©ration des questionnaires
         self.Questionnaires = UTILS_Questionnaires.ChampsEtReponses(type="famille")
         
-        # Récupération des infos de base familles
+        # RÃ©cupÃ©ration des infos de base familles
         self.infosIndividus = UTILS_Infos_individus.Informations(mode_adresse_facturation=True)
         
 
@@ -126,7 +126,7 @@ class Facturation():
         return None
 
     def Supprime_accent(self, texte):
-        liste = [ (u"é", u"e"), (u"è", u"e"), (u"ê", u"e"), (u"ë", u"e"), (u"ä", u"a"), (u"à", u"a"), (u"û", u"u"), (u"ô", u"o"), (u"ç", u"c"), (u"î", u"i"), (u"ï", u"i"), (u"/", u""), (u"\\", u""), ]
+        liste = [ (u"Ã©", u"e"), (u"Ã¨", u"e"), (u"Ãª", u"e"), (u"Ã«", u"e"), (u"Ã¤", u"a"), (u"Ã ", u"a"), (u"Ã»", u"u"), (u"Ã´", u"o"), (u"Ã§", u"c"), (u"Ã®", u"i"), (u"Ã¯", u"i"), (u"/", u""), (u"\\", u""), ]
         for a, b in liste :
             texte = texte.replace(a, b)
             texte = texte.replace(a.upper(), b.upper())
@@ -148,7 +148,7 @@ class Facturation():
         return texte
 
     def GetDonnees(self, listeFactures=[], liste_activites=[], date_debut=None, date_fin=None, date_edition=None, date_echeance=None, prestations=["consommation", "cotisation", "location", "autre"], typeLabel=0, date_anterieure=None, mention1="", mention2="", mention3=""):
-        """ Recherche des factures à créer """      
+        """ Recherche des factures Ã  crÃ©er """      
         
         dictFactures = {}
         listeIDfactures = []
@@ -156,7 +156,7 @@ class Facturation():
             listeIDfactures.append(dictTemp["IDfacture"])
             dictFactures[dictTemp["IDfacture"]] = dictTemp
               
-        # Création des conditions SQL
+        # CrÃ©ation des conditions SQL
         if len(liste_activites) == 0 : conditionActivites = "()"
         elif len(liste_activites) == 1 : conditionActivites = "(%d)" % liste_activites[0]
         else : conditionActivites = str(tuple(liste_activites))
@@ -168,7 +168,7 @@ class Facturation():
             elif len(listeIDfactures) == 1 : conditionFactures = "(%d)" % listeIDfactures[0]
             else : conditionFactures = str(tuple(listeIDfactures))
 
-        # En cas d'intégration des prestations antérieures
+        # En cas d'intÃ©gration des prestations antÃ©rieures
         if date_anterieure == None :
             date_debut_temp = date_debut
         else :
@@ -183,7 +183,7 @@ class Facturation():
         
         DB = GestionDB.DB()
         
-        # Recherche des prestations de la période
+        # Recherche des prestations de la pÃ©riode
         if len(listeFactures) == 0 :
             conditions = "WHERE (prestations.IDactivite IN %s OR prestations.IDactivite IS NULL) AND %s AND %s" % (conditionActivites, conditionDates, conditionPrestations)
         else :
@@ -235,19 +235,19 @@ class Facturation():
             montant = FloatToDecimal(montant)
             montant_ventilation = FloatToDecimal(montant_ventilation)
             
-            # Mémorisation des règlements
+            # MÃ©morisation des rÃ¨glements
             if (IDcompte_payeur in dictReglements) == False :
                 dictReglements[IDcompte_payeur] = {}
             if (IDreglement in dictReglements[IDcompte_payeur]) == False :
                 dictReglements[IDcompte_payeur][IDreglement] = {"date" : date, "montant" : montant, "mode" : mode, "emetteur" : emetteur, "numero" : numero_piece, "payeur" : payeur, "ventilation" : FloatToDecimal(0.0)}
             dictReglements[IDcompte_payeur][IDreglement]["ventilation"] += montant_ventilation
             
-            # Mémorisation de la ventilation
+            # MÃ©morisation de la ventilation
             if (IDprestation in dictVentilationPrestations) == False :
                 dictVentilationPrestations[IDprestation] = FloatToDecimal(0.0)
             dictVentilationPrestations[IDprestation] += montant_ventilation
 
-        # Recherche des QF aux dates concernées
+        # Recherche des QF aux dates concernÃ©es
         if len(listeFactures) == 0 :
             date_min = date_debut
             date_max = date_fin
@@ -269,7 +269,7 @@ class Facturation():
         DB.ExecuterReq(req)
         listeQfdates = DB.ResultatReq()
             
-        # Recherche des anciennes prestations impayées (=le report antérieur)
+        # Recherche des anciennes prestations impayÃ©es (=le report antÃ©rieur)
         if len(listeFactures) == 0 :
             conditions = "WHERE (prestations.IDactivite IN %s OR prestations.IDactivite IS NULL) AND prestations.date<'%s' " % (conditionActivites, date_debut)
         else :
@@ -312,7 +312,7 @@ class Facturation():
         for IDprestation, montant_ventilation in listeVentilationReports :
             dictVentilationReports[IDprestation] = montant_ventilation
         
-        # Recherche des déductions
+        # Recherche des dÃ©ductions
         if len(listeFactures) == 0 :
             conditions = ""
         else :
@@ -403,7 +403,7 @@ class Facturation():
 
         DB.Close()
 
-        # Analyse et regroupement des données
+        # Analyse et regroupement des donnÃ©es
         num_facture = 0
         dictComptes = {}
         dictComptesPayeursFactures = {}
@@ -438,7 +438,7 @@ class Facturation():
                 cp_resid = dictInfosTitulaires["adresse"]["cp"]
                 ville_resid = dictInfosTitulaires["adresse"]["ville"]
 
-                # Recherche des règlements
+                # Recherche des rÃ¨glements
                 if IDcompte_payeur in dictReglements :
                     dictReglementsCompte = dictReglements[IDcompte_payeur]
                 else :
@@ -450,7 +450,7 @@ class Facturation():
                 else :
                     solde_compte = u"0.00 %s" % SYMBOLE
 
-                # Mémorisation des infos
+                # MÃ©morisation des infos
                 dictComptes[ID] = {
                     
                     "date_debut" : date_debut,
@@ -490,7 +490,7 @@ class Facturation():
                     "{DATE_EDITION_LONG}" : UTILS_Dates.DateComplete(date_edition),
                     "{DATE_EDITION_COURT}" : UTILS_Dates.DateEngFr(str(date_edition)),
 
-                    "numero" : _(u"Facture n°%06d") % num_facture,
+                    "numero" : _(u"Facture nÂ°%06d") % num_facture,
                     "num_facture" : num_facture,
                     "{NUM_FACTURE}" : u"%06d" % num_facture,
                     "{CODEBARRES_NUM_FACTURE}" :"F%06d" % num_facture,
@@ -512,20 +512,20 @@ class Facturation():
                 # Ajoute les informations de base famille
                 dictComptes[ID].update(self.infosIndividus.GetDictValeurs(mode="famille", ID=IDfamille, formatChamp=True))
 
-                # Date échéance
+                # Date Ã©chÃ©ance
                 if date_echeance != None :
                     if date_echeance != None :
                         dictComptes[ID]["date_echeance"] = date_echeance
                         dictComptes[ID]["{DATE_ECHEANCE_LONG}"] = UTILS_Dates.DateComplete(date_echeance)
                         dictComptes[ID]["{DATE_ECHEANCE_COURT}"] = UTILS_Dates.DateEngFr(str(date_echeance)) 
-                        dictComptes[ID]["{TEXTE_ECHEANCE}"] = _(u"Echéance du règlement : %s") % UTILS_Dates.DateEngFr(str(date_echeance)) 
+                        dictComptes[ID]["{TEXTE_ECHEANCE}"] = _(u"EchÃ©ance du rÃ¨glement : %s") % UTILS_Dates.DateEngFr(str(date_echeance)) 
                 else:
                     dictComptes[ID]["date_echeance"] = None
                     dictComptes[ID]["{DATE_ECHEANCE_LONG}"] = ""
                     dictComptes[ID]["{DATE_ECHEANCE_COURT}"] = ""
                     dictComptes[ID]["{TEXTE_ECHEANCE}"] = ""
 
-                # Ajoute les réponses des questionnaires
+                # Ajoute les rÃ©ponses des questionnaires
                 for dictReponse in self.Questionnaires.GetDonnees(IDfamille) :
                     dictComptes[ID][dictReponse["champ"]] = dictReponse["reponse"]
                     if dictReponse["controle"] == "codebarres" :
@@ -571,9 +571,9 @@ class Facturation():
                     dateNaiss = self.dictIndividus[IDindividu]["date_naiss"]
                     if dateNaiss != None : 
                         if DICT_CIVILITES[IDcivilite]["sexe"] == "M" :
-                            texteDateNaiss = _(u", né le %s") % UTILS_Dates.DateEngFr(str(dateNaiss))
+                            texteDateNaiss = _(u", nÃ© le %s") % UTILS_Dates.DateEngFr(str(dateNaiss))
                         else:
-                            texteDateNaiss = _(u", née le %s") % UTILS_Dates.DateEngFr(str(dateNaiss))
+                            texteDateNaiss = _(u", nÃ©e le %s") % UTILS_Dates.DateEngFr(str(dateNaiss))
                     else:
                         texteDateNaiss = u""
                     texteIndividu = _(u"<b>%s %s</b><font size=7>%s</font>") % (nomIndividu, prenomIndividu, texteDateNaiss)
@@ -582,21 +582,21 @@ class Facturation():
                     dictComptes[ID]["{INDIVIDUS_CONCERNES}"].append(u"%s %s" % (nomIndividu, prenomIndividu))
                     
                 else:
-                    # Si c'est pour une prestation familiale on créé un individu ID 0 :
+                    # Si c'est pour une prestation familiale on crÃ©Ã© un individu ID 0 :
                     nom = _(u"Prestations diverses")
                     texteIndividu = u"<b>%s</b>" % nom
 
                 dictComptes[ID]["individus"][IDindividu] = { "texte" : texteIndividu, "activites" : {}, "total" : FloatToDecimal(0.0), "ventilation" : FloatToDecimal(0.0), "total_reports" : FloatToDecimal(0.0), "nom" : nom, "select" : True }
 
-            # Ajout de l'activité
+            # Ajout de l'activitÃ©
             if (IDactivite in dictComptes[ID]["individus"][IDindividu]["activites"]) == False :
                 texteActivite = nomActivite
                 agrement = self.RechercheAgrement(IDactivite, date)
                 if agrement != None :
-                    texteActivite += _(u" - n° agrément : %s") % agrement
+                    texteActivite += _(u" - nÂ° agrÃ©ment : %s") % agrement
                 dictComptes[ID]["individus"][IDindividu]["activites"][IDactivite] = { "texte" : texteActivite, "presences" : {} }
             
-            # Ajout de la présence
+            # Ajout de la prÃ©sence
             if (date in dictComptes[ID]["individus"][IDindividu]["activites"][IDactivite]["presences"]) == False :
                 dictComptes[ID]["individus"][IDindividu]["activites"][IDactivite]["presences"][date] = { "texte" : UTILS_Dates.DateEngFr(str(date)), "unites" : [], "total" : FloatToDecimal(0.0) }
 
@@ -606,13 +606,13 @@ class Facturation():
             else:
                 listeDates = []
 
-            # Recherche des déductions
+            # Recherche des dÃ©ductions
             if IDprestation in dictDeductions :
                 deductions = dictDeductions[IDprestation]
             else :
                 deductions = []
 
-            # Mémorisation des déductions pour total
+            # MÃ©morisation des dÃ©ductions pour total
             for dictDeduction in deductions :
                 dictComptes[ID]["listeDeductions"].append(dictDeduction)
 
@@ -627,11 +627,11 @@ class Facturation():
                     for dictTemp in dictConsommations[IDprestation] :
                         if dictTemp["etat"] == "absenti" :
                             nbreAbsences += 1
-                    # Si toutes les consommations attachées à la prestation sont sur l'état "Absence injustifiée" :
+                    # Si toutes les consommations attachÃ©es Ã  la prestation sont sur l'Ã©tat "Absence injustifiÃ©e" :
                     if nbreAbsences == len(dictConsommations[IDprestation]) :
-                        label = label + _(u" (Absence injustifiée)")
+                        label = label + _(u" (Absence injustifiÃ©e)")
 
-            # Mémorisation de la prestation
+            # MÃ©morisation de la prestation
             dictPrestation = {
                 "IDprestation" : IDprestation, "date" : date, "categorie" : categorie, "label" : label,
                 "montant_initial" : montant_initial, "montant" : montant, "tva" : tva, 
@@ -649,11 +649,11 @@ class Facturation():
             if montant_ventilation != None : 
                 dictComptes[ID]["individus"][IDindividu]["ventilation"] += montant_ventilation
                         
-            # Stockage des IDprestation pour saisir le IDfacture après création de la facture
+            # Stockage des IDprestation pour saisir le IDfacture aprÃ¨s crÃ©ation de la facture
             dictComptes[ID]["listePrestations"].append((IDindividu, IDprestation))
             dictComptes[ID]["listeIDprestations"].append(IDprestation)
 
-            # Intégration des qf aux dates concernées
+            # IntÃ©gration des qf aux dates concernÃ©es
             for qf_idfamille, quotient, qfdate_debut, qfdate_fin in listeQfdates :
                 qfdate_debut = UTILS_Dates.DateEngEnDateDD(qfdate_debut)
                 qfdate_fin = UTILS_Dates.DateEngEnDateDD(qfdate_fin)
@@ -669,14 +669,14 @@ class Facturation():
                     dictComptes[ID]["qfdates"][plage] = quotient
                 
         
-        # Intégration des total des déductions
+        # IntÃ©gration des total des dÃ©ductions
         for ID, valeurs in dictComptes.items() :
             totalDeductions = 0.0
             for dictDeduction in dictComptes[ID]["listeDeductions"] :
                 totalDeductions += dictDeduction["montant"]
             dictComptes[ID]["{TOTAL_DEDUCTIONS}"] = u"%.02f %s" % (totalDeductions, SYMBOLE)
 
-        # Intégration du REPORT des anciennes prestations NON PAYEES
+        # IntÃ©gration du REPORT des anciennes prestations NON PAYEES
         for IDprestation, IDcompte_payeur, date, categorie, label, montant, IDactivite, nomActivite, abregeActivite, IDtarif, nomTarif, nomCategorieTarif, IDfacture, IDindividu, IDfamille, forfait_date_debut, forfait_date_fin in listeReports :
             montant = FloatToDecimal(montant) 
             
@@ -691,7 +691,7 @@ class Facturation():
             annee = date.year
             periode = (annee, mois)
             
-            if montant_ventilation != montant : # Avant c'était : montant_ventilation < montant mais j'ai changé pour le pb des prestations avec montant négatif
+            if montant_ventilation != montant : # Avant c'Ã©tait : montant_ventilation < montant mais j'ai changÃ© pour le pb des prestations avec montant nÃ©gatif
 
                 if len(listeFactures) == 0 :
                     
@@ -715,7 +715,7 @@ class Facturation():
                                 dictComptes[IDfacture]["total_reports"] += montant_impaye
                                 dictComptes[IDfacture]["{TOTAL_REPORTS}"] = u"%.02f %s" % (dictComptes[IDfacture]["total_reports"], SYMBOLE)
         
-        # Ajout des impayés au solde
+        # Ajout des impayÃ©s au solde
         for ID, dictValeurs in dictComptes.items() :
             dictComptes[ID]["solde_avec_reports"] = dictComptes[ID]["solde"] + dictComptes[ID]["total_reports"]
             dictComptes[ID]["{SOLDE_AVEC_REPORTS}"] = u"%.02f %s" % (dictComptes[ID]["solde_avec_reports"], SYMBOLE)
@@ -731,14 +731,14 @@ class Facturation():
 
     def GetDonneesImpression(self, listeFactures=[], dictOptions=None):
         """ Impression des factures """
-        dlgAttente = wx.BusyInfo(_(u"Recherche des données de facturation..."), None)
+        dlgAttente = wx.BusyInfo(_(u"Recherche des donnÃ©es de facturation..."), None)
         try :
             if 'phoenix' not in wx.PlatformInfo:
                 wx.Yield()
         except :
             pass
         
-        # Récupère les données de la facture
+        # RÃ©cupÃ¨re les donnÃ©es de la facture
         if len(listeFactures) == 0 : conditions = "()"
         elif len(listeFactures) == 1 : conditions = "(%d)" % listeFactures[0]
         else : conditions = str(tuple(listeFactures))
@@ -779,7 +779,7 @@ class Facturation():
                     "date_debut": UTILS_Dates.DateEngEnDateDD(date_debut), "date_fin": UTILS_Dates.DateEngEnDateDD(date_fin),
                 })
 
-        # Récupération des prélèvements
+        # RÃ©cupÃ©ration des prÃ©lÃ¨vements
         req = """SELECT 
         prelevements.IDprelevement, prelevements.prelevement_numero, prelevements.prelevement_iban,
         prelevements.IDfacture, prelevements.montant, prelevements.statut, 
@@ -794,7 +794,7 @@ class Facturation():
         DB.ExecuterReq(req)
         listePrelevements = DB.ResultatReq()
 
-        # Pièces PES ORMC
+        # PiÃ¨ces PES ORMC
         req = """SELECT
         pes_pieces.IDpiece, pes_pieces.numero, pes_pieces.prelevement_iban, pes_pieces.IDfacture,
         pes_pieces.montant, pes_pieces.prelevement_statut, comptes_payeurs.IDcompte_payeur,
@@ -880,7 +880,7 @@ class Facturation():
 
         DB.Close()
 
-        # Récupération des données de facturation
+        # RÃ©cupÃ©ration des donnÃ©es de facturation
         typeLabel = 0
         if dictOptions != None and "intitules" in dictOptions :
             typeLabel = dictOptions["intitules"]
@@ -904,7 +904,7 @@ class Facturation():
                     dictCompte["ventilation"] = regle
                     dictCompte["solde"] = solde
                 
-                # Attribue un numéro de facture
+                # Attribue un numÃ©ro de facture
                 if IDprefixe != None :
                     numeroStr = u"%s-%06d" % (prefixe, numero)
                 else :
@@ -913,7 +913,7 @@ class Facturation():
                 dictCompte["{IDFACTURE}"] = str(IDfacture)
                 dictCompte["num_facture"] = numeroStr
                 dictCompte["num_codeBarre"] = numeroStr #"%07d" % numero
-                dictCompte["numero"] = _(u"Facture n°%s") % numeroStr
+                dictCompte["numero"] = _(u"Facture nÂ°%s") % numeroStr
                 dictCompte["{NUM_FACTURE}"] = numeroStr #u"%06d" % numero
                 dictCompte["{CODEBARRES_NUM_FACTURE}"] = u"F%s" % numeroStr
                 dictCompte["{NUMERO_FACTURE}"] = dictCompte["{NUM_FACTURE}"]
@@ -935,10 +935,10 @@ class Facturation():
                     dictIndividu["select"] = True
                     dictIndividu["scolarites"] = dict_scolarites.get(IDindividu, [])
 
-                # Recherche de prélèvements
+                # Recherche de prÃ©lÃ¨vements
                 if IDfacture in dictPrelevements :
                     if datePrelevement and datePrelevement < dictCompte["date_edition"]:
-                        verbe = _(u"a été")
+                        verbe = _(u"a Ã©tÃ©")
                     else :
                         verbe = _(u"sera")
                     montant = dictPrelevements[IDfacture]["montant"]
@@ -948,11 +948,11 @@ class Facturation():
                     code_ics = dictPrelevements[IDfacture]["code_ics"]
                     dictCompte["{DATE_PRELEVEMENT}"] = UTILS_Dates.DateEngFr(str(datePrelevement))
                     if iban != None :
-                        dictCompte["prelevement"] = _(u"La somme de %.2f %s %s prélevée le %s sur le compte ***%s") % (montant, SYMBOLE, verbe, UTILS_Dates.DateEngFr(str(datePrelevement)), iban[-7:])
+                        dictCompte["prelevement"] = _(u"La somme de %.2f %s %s prÃ©levÃ©e le %s sur le compte ***%s") % (montant, SYMBOLE, verbe, UTILS_Dates.DateEngFr(str(datePrelevement)), iban[-7:])
                     else :
-                        dictCompte["prelevement"] = _(u"La somme de %.2f %s %s prélevée le %s") % (montant, SYMBOLE, verbe, UTILS_Dates.DateEngFr(str(datePrelevement)))
+                        dictCompte["prelevement"] = _(u"La somme de %.2f %s %s prÃ©levÃ©e le %s") % (montant, SYMBOLE, verbe, UTILS_Dates.DateEngFr(str(datePrelevement)))
                     if rum != None :
-                        dictCompte["prelevement"] += _(u"<br/>Réf. mandat unique : %s / Code ICS : %s") % (rum, code_ics)
+                        dictCompte["prelevement"] += _(u"<br/>RÃ©f. mandat unique : %s / Code ICS : %s") % (rum, code_ics)
                 else :
                     dictCompte["prelevement"] = None
                     dictCompte["{DATE_PRELEVEMENT}"] = ""
@@ -998,12 +998,12 @@ class Facturation():
                 dictChampsFusion[IDfacture]["{SOLDE_COMPTE}"] = dictCompte["{SOLDE_COMPTE}"]
                 dictChampsFusion[IDfacture]["{DATE_PRELEVEMENT}"] = dictCompte["{DATE_PRELEVEMENT}"]
 
-                # Fusion pour textes personnalisés
+                # Fusion pour textes personnalisÃ©s
                 dictCompte["texte_titre"] = self.RemplaceMotsCles(dictOptions["texte_titre"], dictCompte)
                 dictCompte["texte_introduction"] = self.RemplaceMotsCles(dictOptions["texte_introduction"], dictCompte)
                 dictCompte["texte_conclusion"] = self.RemplaceMotsCles(dictOptions["texte_conclusion"], dictCompte)
                 
-                # Mémorisation de la facture
+                # MÃ©morisation de la facture
                 dictFactures[IDfacture] = dictCompte
             
             index += 1
@@ -1021,12 +1021,12 @@ class Facturation():
 
     def Impression(self, listeFactures=[], nomDoc=None, nomFichierUnique=None, afficherDoc=True, dictOptions=None, repertoire=None, repertoireTemp=False, afficherOptions=True):
         """ Impression des factures """
-        # Récupération des paramètres d'affichage
+        # RÃ©cupÃ©ration des paramÃ¨tres d'affichage
         if dictOptions == None :
             if afficherOptions == True :
 
                 if afficherDoc == False :
-                    dlg = DLG_Apercu_facture.Dialog(None, titre=_(u"Sélection des paramètres de la facture"), intro=_(u"Sélectionnez ici les paramètres d'affichage de la facture puis cliquez sur le bouton OK."))
+                    dlg = DLG_Apercu_facture.Dialog(None, titre=_(u"SÃ©lection des paramÃ¨tres de la facture"), intro=_(u"SÃ©lectionnez ici les paramÃ¨tres d'affichage de la facture puis cliquez sur le bouton OK."))
                     dlg.bouton_ok.SetImageEtTexte("Images/32x32/Valider.png", _("Ok"))
                 else :
                     dlg = DLG_Apercu_facture.Dialog(None)
@@ -1038,20 +1038,20 @@ class Facturation():
                     return False
 
             else :
-                dlg = DLG_Apercu_facture.Dialog(None, titre=_(u"Sélection des paramètres de la facture"), intro=_(u"Sélectionnez ici les paramètres d'affichage de la facture puis cliquez sur le bouton OK."))
+                dlg = DLG_Apercu_facture.Dialog(None, titre=_(u"SÃ©lection des paramÃ¨tres de la facture"), intro=_(u"SÃ©lectionnez ici les paramÃ¨tres d'affichage de la facture puis cliquez sur le bouton OK."))
                 dictOptions = dlg.GetParametres()
                 dlg.Destroy()
 
-        # Récupération des données à partir des IDfacture
+        # RÃ©cupÃ©ration des donnÃ©es Ã  partir des IDfacture
         resultat = self.GetDonneesImpression(listeFactures, dictOptions)
         if resultat == False :
             return False
         dictFactures, dictChampsFusion = resultat
         
-        # Création des PDF à l'unité
+        # CrÃ©ation des PDF Ã  l'unitÃ©
         def CreationPDFunique(repertoireCible=""):
             dictPieces = {}
-            dlgProgress = wx.ProgressDialog(_(u"Génération des factures au format PDF"), _(u"Initialisation..."), maximum=len(dictFactures), parent=None, style=wx.PD_SMOOTH | wx.PD_AUTO_HIDE | wx.PD_APP_MODAL)
+            dlgProgress = wx.ProgressDialog(_(u"GÃ©nÃ©ration des factures au format PDF"), _(u"Initialisation..."), maximum=len(dictFactures), parent=None, style=wx.PD_SMOOTH | wx.PD_AUTO_HIDE | wx.PD_APP_MODAL)
             try :
                 if 'phoenix' not in wx.PlatformInfo:
                     wx.Yield()
@@ -1084,18 +1084,18 @@ class Facturation():
             except Exception as err:
                 dlgProgress.Destroy()
                 traceback.print_exc(file=sys.stdout)
-                dlg = wx.MessageDialog(None, _(u"Désolé, le problème suivant a été rencontré dans l'édition des factures : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
+                dlg = wx.MessageDialog(None, _(u"DÃ©solÃ©, le problÃ¨me suivant a Ã©tÃ© rencontrÃ© dans l'Ã©dition des factures : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
         
-        # Répertoire souhaité par l'utilisateur
+        # RÃ©pertoire souhaitÃ© par l'utilisateur
         if repertoire not in (None, "") :
             resultat = CreationPDFunique(repertoire)
             if resultat == False :
                 return False
 
-        # Répertoire TEMP (pour Emails)
+        # RÃ©pertoire TEMP (pour Emails)
         dictPieces = {}
         if repertoireTemp == True :
             dictPieces = CreationPDFunique(UTILS_Fichiers.GetRepTemp())
@@ -1104,13 +1104,13 @@ class Facturation():
 
         # Fabrication du PDF global
         if repertoireTemp == False :
-            dlgAttente = wx.BusyInfo(_(u"Création du PDF des factures..."), None)
+            dlgAttente = wx.BusyInfo(_(u"CrÃ©ation du PDF des factures..."), None)
             try :
                 if 'phoenix' not in wx.PlatformInfo:
                     wx.Yield()
             except :
                 pass
-            self.EcritStatusbar(_(u"Création du PDF des factures en cours... veuillez patienter..."))
+            self.EcritStatusbar(_(u"CrÃ©ation du PDF des factures en cours... veuillez patienter..."))
             try :
                 UTILS_Impression_facture.Impression(dictFactures, dictOptions, IDmodele=dictOptions["IDmodele"], ouverture=afficherDoc, nomFichier=nomDoc)
                 self.EcritStatusbar("")
@@ -1120,8 +1120,8 @@ class Facturation():
                 traceback.print_exc(file=sys.stdout)
                 err = str(err)
                 if six.PY2:
-                    err = err.decode("iso-8859-15")
-                dlg = wx.MessageDialog(None, _(u"Désolé, le problème suivant a été rencontré dans l'édition des factures : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
+                    err = err.decode("utf8")
+                dlg = wx.MessageDialog(None, _(u"DÃ©solÃ©, le problÃ¨me suivant a Ã©tÃ© rencontrÃ© dans l'Ã©dition des factures : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
@@ -1158,7 +1158,7 @@ def SuppressionFacture(listeFactures=[], mode="suppression"):
 
 
 def ModificationFacture(listeFactures=[], dict_valeurs={}):
-    """ Modification des caractéristique d'une facture """
+    """ Modification des caractÃ©ristique d'une facture """
     dlgAttente = wx.BusyInfo(_(u"Modification des factures en cours..."), None)
     if 'phoenix' not in wx.PlatformInfo:
         wx.Yield()
@@ -1170,11 +1170,11 @@ def ModificationFacture(listeFactures=[], dict_valeurs={}):
         if "IDlot" in dict_valeurs :
             DB.ReqMAJ("factures", [("IDlot", dict_valeurs["IDlot"]), ], "IDfacture", IDfacture)
 
-        # Modification Date émission
+        # Modification Date Ã©mission
         if "date_emission" in dict_valeurs :
             DB.ReqMAJ("factures", [("date_edition", dict_valeurs["date_emission"]), ], "IDfacture", IDfacture)
 
-        # Modification Date_échéance
+        # Modification Date_Ã©chÃ©ance
         if "date_echeance" in dict_valeurs :
             DB.ReqMAJ("factures", [("date_echeance", dict_valeurs["date_echeance"]), ], "IDfacture", IDfacture)
 
@@ -1195,42 +1195,42 @@ def Calculer_datamatrix(dictCompte):
     dict_pes = dictCompte["dict_pes"]
     elements = []
 
-    # 1-40 : Données métiers (40 caractères)
+    # 1-40 : DonnÃ©es mÃ©tiers (40 caractÃ¨res)
     elements.append(" " * 40)
 
-    # 41-64 : Zone d'espaces (24 caractères)
+    # 41-64 : Zone d'espaces (24 caractÃ¨res)
     elements.append(" " * 24)
 
-    # 65-67 : Code établissement (3 caractères)
+    # 65-67 : Code Ã©tablissement (3 caractÃ¨res)
     if not dict_pes["pes_lot_code_etab"]:
         return ""
     code_etab = DATA_Codes_etab.Rechercher(str(dict_pes["pes_lot_code_etab"]))
     elements.append("%03d" % int(code_etab))
 
-    # 68 : Code période (1 caractère)
+    # 68 : Code pÃ©riode (1 caractÃ¨re)
     elements.append(str(dict_pes["pes_lot_mois"])[:1])
 
-    # 69-71 : Deux premiers caractères du CodProdLoc (3 caractères)
+    # 69-71 : Deux premiers caractÃ¨res du CodProdLoc (3 caractÃ¨res)
     elements.append("%03d" % int(DATA_Codes_etab.Rechercher(str(dict_pes["pes_lot_code_produit"])[:2])))
 
-    # 72-73 : deux zéros
+    # 72-73 : deux zÃ©ros
     elements.append("00")
 
-    # 74-75 : Deux derniers chiffres de la balise Exerc (2 caractères)
+    # 74-75 : Deux derniers chiffres de la balise Exerc (2 caractÃ¨res)
     elements.append(str(dict_pes["pes_lot_exercice"])[-2:])
 
-    # 76 : Clé 5 (modulo 11)
+    # 76 : ClÃ© 5 (modulo 11)
     base = int("".join(elements[-5:]))
     cle = str(11 - (base % 11))[-1:]
     elements.append(cle)
 
-    # 77-82 : Code émetteur (6 caractères)
+    # 77-82 : Code Ã©metteur (6 caractÃ¨res)
     elements.append("940033")
 
-    # 83-86 : Code établissement (=0001)
+    # 83-86 : Code Ã©tablissement (=0001)
     elements.append("0001")
 
-    # 87-88 : Clé 3 (Modulo 100)
+    # 87-88 : ClÃ© 3 (Modulo 100)
     base = "".join(elements[-2:])
     cle = sum([rang * int(valeur) for rang, valeur in enumerate(base[::-1], 1)]) % 100
     elements.append("%02d" % cle)
@@ -1238,7 +1238,7 @@ def Calculer_datamatrix(dictCompte):
     # 89 : Espace
     elements.append(" ")
 
-    # 92-115 : Référence de l'opération (24 caractères)
+    # 92-115 : RÃ©fÃ©rence de l'opÃ©ration (24 caractÃ¨res)
     id_poste = "%06d" % int(dict_pes["pes_lot_id_poste"])
 
     num_dette = "%015d" % int(dictCompte["num_facture"])
@@ -1251,7 +1251,7 @@ def Calculer_datamatrix(dictCompte):
     # 116 : Code document (=9)
     elements.append("9")
 
-    # 90-91 : Clé 2 (Modulo 100)
+    # 90-91 : ClÃ© 2 (Modulo 100)
     base = "".join(elements[-2:])
     cle = sum([rang * int(valeur) for rang, valeur in enumerate(base[::-1], 1)]) % 100
     elements.insert(len(elements)-2, "%02d" % cle)
@@ -1265,11 +1265,11 @@ def Calculer_datamatrix(dictCompte):
     # 122 : Espace
     elements.append(" ")
 
-    # 123-130 : Montant (8 caractères)
+    # 123-130 : Montant (8 caractÃ¨res)
     montant = "{: >8}".format(("%.2f" % dictCompte["solde"]).replace(".", ""))
     elements.append(montant)
 
-    # 117-118 : Clé 1 (Modulo 100)
+    # 117-118 : ClÃ© 1 (Modulo 100)
     base1 = "".join(elements[-4:-2]).replace(" ", "0")
     somme1 = sum([rang * int(valeur) for rang, valeur in enumerate(base1[::-1], 9)])
 
@@ -1296,7 +1296,7 @@ if __name__ == '__main__':
     # Test du module Facturation :
     facturation = Facturation()
 
-    # Recherche de factures à générer
+    # Recherche de factures Ã  gÃ©nÃ©rer
     #liste_factures = facturation.GetDonnees(liste_activites=[1, 2, 3], date_debut=datetime.date(2017, 1, 1), date_fin=datetime.date(2017, 1, 31), date_edition=datetime.date.today(), date_echeance=datetime.date(2017, 2, 28), prestations=["consommation", "cotisation", "autre"] )
     #for IDfacture, facture in liste_factures.iteritems() :
     #    print "Facture =", IDfacture, facture

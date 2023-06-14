@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -24,7 +24,7 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         
-        intro = _(u"Vous pouvez ici saisir, modifier ou supprimer des utilisateurs. Il existe 2 profils d'utilisateurs : les simples utilisateurs et les administrateurs qui ont, en plus, l'autorisation de créer, modifier ou supprimer des utilisateurs.")
+        intro = _(u"Vous pouvez ici saisir, modifier ou supprimer des utilisateurs. Il existe 2 profils d'utilisateurs : les simples utilisateurs et les administrateurs qui ont, en plus, l'autorisation de crÃ©er, modifier ou supprimer des utilisateurs.")
         titre = _(u"Gestion des utilisateurs")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Personnes.png")
         self.ctrl_listview = OL_Utilisateurs.ListView(self, id=-1, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
@@ -51,9 +51,9 @@ class Dialog(wx.Dialog):
     def __set_properties(self):
         self.SetTitle(_(u"Gestion des utilisateurs"))
         self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter un utilisateur")))
-        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier l'utilisateur sélectionné dans la liste")))
-        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer l'utilisateur sélectionné dans la liste")))
-        self.bouton_historique.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher l'historique de l'utilisateur sélectionné dans la liste")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier l'utilisateur sÃ©lectionnÃ© dans la liste")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer l'utilisateur sÃ©lectionnÃ© dans la liste")))
+        self.bouton_historique.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher l'historique de l'utilisateur sÃ©lectionnÃ© dans la liste")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         self.SetMinSize((675, 600))

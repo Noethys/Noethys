@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -31,8 +31,8 @@ class Page_periodes(wx.Panel):
         self.parent = parent
         self.IDactivite = IDactivite
 
-        # Périodes de réservations
-        self.staticbox_periodes_staticbox = wx.StaticBox(self, -1, _(u"Périodes de réservations"))
+        # PÃ©riodes de rÃ©servations
+        self.staticbox_periodes_staticbox = wx.StaticBox(self, -1, _(u"PÃ©riodes de rÃ©servations"))
         self.ctrl_periodes = OL_Portail_periodes.ListView(self, IDactivite=IDactivite, id=-1, name="OL_portail_periodes", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.ctrl_periodes.MAJ()
         self.bouton_periodes_ajouter = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Ajouter.png"), wx.BITMAP_TYPE_ANY))
@@ -45,9 +45,9 @@ class Page_periodes(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.ctrl_periodes.Supprimer, self.bouton_periodes_supprimer)
 
         # Properties
-        self.bouton_periodes_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour créer une période de réservations")))
-        self.bouton_periodes_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la période de réservations sélectionnée dans la liste")))
-        self.bouton_periodes_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la période de réservations selectionnée dans la liste")))
+        self.bouton_periodes_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour crÃ©er une pÃ©riode de rÃ©servations")))
+        self.bouton_periodes_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la pÃ©riode de rÃ©servations sÃ©lectionnÃ©e dans la liste")))
+        self.bouton_periodes_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la pÃ©riode de rÃ©servations selectionnÃ©e dans la liste")))
 
         # Layout
         grid_sizer_base = wx.FlexGridSizer(rows=4, cols=1, vgap=10, hgap=10)
@@ -78,8 +78,8 @@ class Page_unites(wx.Panel):
         self.parent = parent
         self.IDactivite = IDactivite
 
-        # Unités de réservations
-        self.staticbox_unites_staticbox = wx.StaticBox(self, -1, _(u"Unités de réservations"))
+        # UnitÃ©s de rÃ©servations
+        self.staticbox_unites_staticbox = wx.StaticBox(self, -1, _(u"UnitÃ©s de rÃ©servations"))
         self.ctrl_unites = OL_Portail_unites.ListView(self, IDactivite=self.IDactivite, id=-1, name="OL_portail_unites", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.ctrl_unites.MAJ()
         self.bouton_unites_ajouter = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Ajouter.png"), wx.BITMAP_TYPE_ANY))
@@ -88,7 +88,7 @@ class Page_unites(wx.Panel):
         self.bouton_unites_monter = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Fleche_haut.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_unites_descendre = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Fleche_bas.png"), wx.BITMAP_TYPE_ANY))
 
-        self.check_unites_multiples = wx.CheckBox(self, -1, _(u"Sélection multiple d'unités de réservations autorisée"))
+        self.check_unites_multiples = wx.CheckBox(self, -1, _(u"SÃ©lection multiple d'unitÃ©s de rÃ©servations autorisÃ©e"))
 
         # Binds
         self.Bind(wx.EVT_BUTTON, self.ctrl_unites.Ajouter, self.bouton_unites_ajouter)
@@ -98,12 +98,12 @@ class Page_unites(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.ctrl_unites.Descendre, self.bouton_unites_descendre)
 
         # Properties
-        self.bouton_unites_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour créer une unité de réservation")))
-        self.bouton_unites_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier l'unité de réservation sélectionnée dans la liste")))
-        self.bouton_unites_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer l'unité de réservation sélectionnée dans la liste")))
-        self.bouton_unites_monter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour monter l'unité de réservation dans la liste")))
-        self.bouton_unites_descendre.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour descendre l'unité de réservation dans la liste")))
-        self.check_unites_multiples.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour autoriser l'internaute à cocher plusieurs unités à la fois")))
+        self.bouton_unites_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour crÃ©er une unitÃ© de rÃ©servation")))
+        self.bouton_unites_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier l'unitÃ© de rÃ©servation sÃ©lectionnÃ©e dans la liste")))
+        self.bouton_unites_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer l'unitÃ© de rÃ©servation sÃ©lectionnÃ©e dans la liste")))
+        self.bouton_unites_monter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour monter l'unitÃ© de rÃ©servation dans la liste")))
+        self.bouton_unites_descendre.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour descendre l'unitÃ© de rÃ©servation dans la liste")))
+        self.check_unites_multiples.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour autoriser l'internaute Ã  cocher plusieurs unitÃ©s Ã  la fois")))
 
         # Layout
         grid_sizer_base = wx.FlexGridSizer(rows=2, cols=1, vgap=10, hgap=10)
@@ -139,20 +139,20 @@ class CTRL_Date_limite(wx.Choice):
 
     def MAJ(self):
         self.liste_donnees = [
-            (1000, _(u"Lundi précédent")),
-            (1001, _(u"Mardi précédent")),
-            (1002, _(u"Mercredi précédent")),
-            (1003, _(u"Jeudi précédent")),
-            (1004, _(u"Vendredi précédent")),
-            (1005, _(u"Samedi précédent")),
-            (1006, _(u"Dimanche précédent")),
-            (2000, _(u"Lundi de la semaine précédente")),
-            (2001, _(u"Mardi de la semaine précédente")),
-            (2002, _(u"Mercredi de la semaine précédente")),
-            (2003, _(u"Jeudi de la semaine précédente")),
-            (2004, _(u"Vendredi de la semaine précédente")),
-            (2005, _(u"Samedi de la semaine précédente")),
-            (2006, _(u"Dimanche de la semaine précédente")),
+            (1000, _(u"Lundi prÃ©cÃ©dent")),
+            (1001, _(u"Mardi prÃ©cÃ©dent")),
+            (1002, _(u"Mercredi prÃ©cÃ©dent")),
+            (1003, _(u"Jeudi prÃ©cÃ©dent")),
+            (1004, _(u"Vendredi prÃ©cÃ©dent")),
+            (1005, _(u"Samedi prÃ©cÃ©dent")),
+            (1006, _(u"Dimanche prÃ©cÃ©dent")),
+            (2000, _(u"Lundi de la semaine prÃ©cÃ©dente")),
+            (2001, _(u"Mardi de la semaine prÃ©cÃ©dente")),
+            (2002, _(u"Mercredi de la semaine prÃ©cÃ©dente")),
+            (2003, _(u"Jeudi de la semaine prÃ©cÃ©dente")),
+            (2004, _(u"Vendredi de la semaine prÃ©cÃ©dente")),
+            (2005, _(u"Samedi de la semaine prÃ©cÃ©dente")),
+            (2006, _(u"Dimanche de la semaine prÃ©cÃ©dente")),
             (0, _(u"Jour J")),
         ]
         for x in range(1, 31):
@@ -181,22 +181,22 @@ class Page_options(wx.Panel):
         self.parent = parent
         self.IDactivite = IDactivite
 
-        # Préparation de la liste des jours
+        # PrÃ©paration de la liste des jours
         liste_jours = [_(u"Jour J"),]
         for x in range(1, 31):
             liste_jours.append(liste_jours[0] + str(-x))
 
         # Date limite de modification
         self.staticbox_date_limite = wx.StaticBox(self, -1, _(u"Limite de modification"))
-        self.check_date_limite = wx.CheckBox(self, -1, _(u"Une réservation peut être ajoutée, modifiée ou supprimée jusqu'à"))
+        self.check_date_limite = wx.CheckBox(self, -1, _(u"Une rÃ©servation peut Ãªtre ajoutÃ©e, modifiÃ©e ou supprimÃ©e jusqu'Ã "))
         self.ctrl_date_limite = CTRL_Date_limite(self)
         self.ctrl_heure_limite = CTRL_Saisie_heure.Heure(self)
         self.check_limite_weekends = wx.CheckBox(self, -1, _(u"Exclure les week-ends"))
-        self.check_limite_feries = wx.CheckBox(self, -1, _(u"Exclure les jours fériés"))
+        self.check_limite_feries = wx.CheckBox(self, -1, _(u"Exclure les jours fÃ©riÃ©s"))
 
-        # Absence injustifiée
-        self.staticbox_absenti = wx.StaticBox(self, -1, _(u"Absence injustifiée"))
-        self.check_absenti = wx.CheckBox(self, -1, _(u"L'état 'Absence injustifiée' est attribué aux réservations modifiées ou supprimées après"))
+        # Absence injustifiÃ©e
+        self.staticbox_absenti = wx.StaticBox(self, -1, _(u"Absence injustifiÃ©e"))
+        self.check_absenti = wx.CheckBox(self, -1, _(u"L'Ã©tat 'Absence injustifiÃ©e' est attribuÃ© aux rÃ©servations modifiÃ©es ou supprimÃ©es aprÃ¨s"))
         self.ctrl_date_absenti = wx.Choice(self, -1, choices=liste_jours)
         self.ctrl_heure_absenti = CTRL_Saisie_heure.Heure(self)
 
@@ -344,8 +344,8 @@ class Panel(wx.Panel):
         self.ctrl_inscriptions_date_fin = CTRL_Saisie_date.Date2(self)
         self.ctrl_inscriptions_heure_fin = CTRL_Saisie_heure.Heure(self)
 
-        # Réservations
-        self.box_reservations_staticbox = wx.StaticBox(self, -1, _(u"Réservations sur le portail"))
+        # RÃ©servations
+        self.box_reservations_staticbox = wx.StaticBox(self, -1, _(u"RÃ©servations sur le portail"))
         self.radio_reservations_non = wx.RadioButton(self, -1, _(u"Ne pas autoriser"), style=wx.RB_GROUP)
         self.radio_reservations_oui = wx.RadioButton(self, -1, _(u"Autoriser"))
 
@@ -356,8 +356,8 @@ class Panel(wx.Panel):
         self.page_unites = Page_unites(self.notebook_reservations, IDactivite=IDactivite)
         self.page_options = Page_options(self.notebook_reservations, IDactivite=IDactivite)
 
-        self.notebook_reservations.AddPage(self.page_periodes, _(u"Périodes"))
-        self.notebook_reservations.AddPage(self.page_unites, _(u"Unités"))
+        self.notebook_reservations.AddPage(self.page_periodes, _(u"PÃ©riodes"))
+        self.notebook_reservations.AddPage(self.page_unites, _(u"UnitÃ©s"))
         self.notebook_reservations.AddPage(self.page_options, _(u"Options"))
 
         self.__set_properties()
@@ -375,11 +375,11 @@ class Panel(wx.Panel):
         self.OnRadioInscriptions()
 
     def __set_properties(self):
-        self.radio_inscriptions_oui.SetToolTip(wx.ToolTip(_(u"Sélectionnez cette option pour autoriser l'inscription à cette activité sur le portail")))
-        self.radio_inscriptions_dates.SetToolTip(wx.ToolTip(_(u"Sélectionnez cette option pour autoriser l'inscription à cette activité sur le portail uniquement entre les dates souhaitées")))
-        self.radio_inscriptions_non.SetToolTip(wx.ToolTip(_(u"Sélectionnez cette option pour ne pas autoriser l'inscription à cette activité sur le portail")))
-        self.radio_reservations_oui.SetToolTip(wx.ToolTip(_(u"Sélectionnez cette option pour autoriser les réservations à cette activité sur le portail")))
-        self.radio_reservations_non.SetToolTip(wx.ToolTip(_(u"Sélectionnez cette option pour ne pas autoriser les réservations à cette activité sur le portail")))
+        self.radio_inscriptions_oui.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez cette option pour autoriser l'inscription Ã  cette activitÃ© sur le portail")))
+        self.radio_inscriptions_dates.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez cette option pour autoriser l'inscription Ã  cette activitÃ© sur le portail uniquement entre les dates souhaitÃ©es")))
+        self.radio_inscriptions_non.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez cette option pour ne pas autoriser l'inscription Ã  cette activitÃ© sur le portail")))
+        self.radio_reservations_oui.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez cette option pour autoriser les rÃ©servations Ã  cette activitÃ© sur le portail")))
+        self.radio_reservations_non.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez cette option pour ne pas autoriser les rÃ©servations Ã  cette activitÃ© sur le portail")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=4, cols=1, vgap=10, hgap=10)
@@ -403,7 +403,7 @@ class Panel(wx.Panel):
         staticbox_inscriptions.Add(grid_sizer_affichage, 1, wx.ALL|wx.EXPAND, 5)
         grid_sizer_base.Add(staticbox_inscriptions, 1, wx.LEFT|wx.RIGHT|wx.TOP|wx.EXPAND, 10)
 
-        # Réservations
+        # RÃ©servations
         staticbox_reservations = wx.StaticBoxSizer(self.box_reservations_staticbox, wx.VERTICAL)
 
         grid_sizer_reservations = wx.FlexGridSizer(rows=2, cols=1, vgap=20, hgap=10)
@@ -434,7 +434,7 @@ class Panel(wx.Panel):
         self.ctrl_inscriptions_heure_fin.Enable(etat)
 
     def Importation(self):
-        """ Importation des données """
+        """ Importation des donnÃ©es """
         db = GestionDB.DB()
         req = """SELECT portail_inscriptions_affichage, portail_inscriptions_date_debut,
         portail_inscriptions_date_fin, portail_reservations_affichage, portail_unites_multiples,
@@ -460,7 +460,7 @@ class Panel(wx.Panel):
         else :
             self.radio_inscriptions_non.SetValue(True)
 
-        # Réservations
+        # RÃ©servations
         if portail_reservations_affichage == 1 :
             self.radio_reservations_oui.SetValue(True)
         else :
@@ -479,7 +479,7 @@ class Panel(wx.Panel):
 
             affichage_date_debut = self.ctrl_inscriptions_date_debut.GetDate()
             if affichage_date_debut == None :
-                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de début !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de dÃ©but !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_inscriptions_date_debut.SetFocus()
@@ -487,7 +487,7 @@ class Panel(wx.Panel):
 
             affichage_heure_debut = self.ctrl_inscriptions_heure_debut.GetHeure()
             if affichage_heure_debut == None or self.ctrl_inscriptions_heure_debut.Validation() == False :
-                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une heure de début valide pour l'affichage !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une heure de dÃ©but valide pour l'affichage !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_inscriptions_heure_debut.SetFocus()
@@ -510,7 +510,7 @@ class Panel(wx.Panel):
                 return False
 
             if affichage_date_debut > affichage_date_fin :
-                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de fin supérieure à la date de début !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de fin supÃ©rieure Ã  la date de dÃ©but !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_inscriptions_date_fin.SetFocus()
@@ -525,7 +525,7 @@ class Panel(wx.Panel):
         return True
         
     def Sauvegarde(self):
-        # Données Inscriptions
+        # DonnÃ©es Inscriptions
         portail_inscriptions_date_debut = None
         portail_inscriptions_date_fin = None
 
@@ -543,14 +543,14 @@ class Panel(wx.Panel):
             affichage_heure_fin = self.ctrl_inscriptions_heure_fin.GetHeure()
             portail_inscriptions_date_fin = datetime.datetime(year=affichage_date_fin.year, month=affichage_date_fin.month, day=affichage_date_fin.day, hour=int(affichage_heure_fin[:2]), minute=int(affichage_heure_fin[3:]))
 
-        # Données réservations
+        # DonnÃ©es rÃ©servations
         if self.radio_reservations_oui.GetValue() == True : portail_reservations_affichage = True
         if self.radio_reservations_non.GetValue() == True : portail_reservations_affichage = False
 
-        # Unités de réservations
+        # UnitÃ©s de rÃ©servations
         portail_unites_multiples = self.page_unites.check_unites_multiples.GetValue()
 
-        # Options réservations
+        # Options rÃ©servations
         portail_reservations_limite = self.page_options.GetDateLimite()
         portail_reservations_absenti = self.page_options.GetAbsenti()
 

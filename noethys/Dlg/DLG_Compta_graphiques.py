@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-14 Ivan LUCAS
@@ -24,7 +24,7 @@ else :
 from Ctrl import CTRL_Bandeau
 
 from Utils import UTILS_Config
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"â‚¬")
 
 import numpy as np
 import matplotlib
@@ -44,13 +44,13 @@ except Exception as err :
 
 
 LISTE_MODELES = [
-    {"code" : "repartition_categories_debit_tresorerie", "label" : _(u"Répartition des opérations de trésorerie au débit"), "image" : "Repartition.png"},
-    {"code" : "repartition_categories_credit_tresorerie", "label" : _(u"Répartition des opérations de trésorerie au crédit"), "image" : "Repartition.png"},
-    {"code" : "repartition_categories_debit_budgetaires", "label" : _(u"Répartition des opérations budgétaires au débit"), "image" : "Repartition.png"},
-    {"code" : "repartition_categories_credit_budgetaires", "label" : _(u"Répartition des opérations budgétaires au crédit"), "image" : "Repartition.png"},
-    {"code" : "repartition_categories_debit_tresorerie_budgetaires", "label" : _(u"Répartition des opérations de trésorerie + budgétaires au débit"), "image" : "Repartition.png"},
-    {"code" : "repartition_categories_credit_tresorerie_budgetaires", "label" : _(u"Répartition des opérations de trésorerie + budgétaires au crédit"), "image" : "Repartition.png"},
-    {"code" : "tiers_debit", "label" : _(u"Dépenses par tiers"), "image" : "Barres.png"},
+    {"code" : "repartition_categories_debit_tresorerie", "label" : _(u"RÃ©partition des opÃ©rations de trÃ©sorerie au dÃ©bit"), "image" : "Repartition.png"},
+    {"code" : "repartition_categories_credit_tresorerie", "label" : _(u"RÃ©partition des opÃ©rations de trÃ©sorerie au crÃ©dit"), "image" : "Repartition.png"},
+    {"code" : "repartition_categories_debit_budgetaires", "label" : _(u"RÃ©partition des opÃ©rations budgÃ©taires au dÃ©bit"), "image" : "Repartition.png"},
+    {"code" : "repartition_categories_credit_budgetaires", "label" : _(u"RÃ©partition des opÃ©rations budgÃ©taires au crÃ©dit"), "image" : "Repartition.png"},
+    {"code" : "repartition_categories_debit_tresorerie_budgetaires", "label" : _(u"RÃ©partition des opÃ©rations de trÃ©sorerie + budgÃ©taires au dÃ©bit"), "image" : "Repartition.png"},
+    {"code" : "repartition_categories_credit_tresorerie_budgetaires", "label" : _(u"RÃ©partition des opÃ©rations de trÃ©sorerie + budgÃ©taires au crÃ©dit"), "image" : "Repartition.png"},
+    {"code" : "tiers_debit", "label" : _(u"DÃ©penses par tiers"), "image" : "Barres.png"},
     {"code" : "tiers_credit", "label" : _(u"Recettes par tiers"), "image" : "Barres.png"},
     #{"code" : "repartition_depenses", "label" : _(u"Graphique 3"), "image" : "Courbes2.png"},
     ]
@@ -226,7 +226,7 @@ class CTRL_Graphique(wx.Panel):
         dlg.Destroy()
 
     def OnBoutonOptions(self, event):
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
         
         item = wx.MenuItem(menuPop, 10, _(u"Afficher les valeurs"), _(u"Afficher les valeurs"), wx.ITEM_CHECK)
@@ -273,7 +273,7 @@ class CTRL_Graphique(wx.Panel):
         self.Layout()
 
     def Graphe_repartition_categories(self, typeCategorie="", typeDonnees="tresorerie+budgetaires"):
-        # Récupération des données
+        # RÃ©cupÃ©ration des donnÃ©es
         conditions = []
         if self.dictParametres["date_debut"] != None :
             conditions.append("date_budget>='%s'" % self.dictParametres["date_debut"])
@@ -342,7 +342,7 @@ class CTRL_Graphique(wx.Panel):
             
             index += 1
                 
-        # Création du graphique
+        # CrÃ©ation du graphique
         ax = self.figure.add_subplot(111)
         cam = ax.pie(listeValeurs, labels=listeLabels, colors=listeCouleurs, autopct='%1.1f%%', shadow=False)
         title = ax.set_title(self.dictParametres["nom"], weight="bold", horizontalalignment = 'center')#, position=(0.5, 0.97))
@@ -359,7 +359,7 @@ class CTRL_Graphique(wx.Panel):
 
 
     def Graphe_tiers(self, typeCategorie=""):
-        # Récupération des données
+        # RÃ©cupÃ©ration des donnÃ©es
         conditions = []
         if self.dictParametres["date_debut"] != None :
             conditions.append("date_budget>='%s'" % self.dictParametres["date_debut"])
@@ -446,7 +446,7 @@ class CTRL_Graphique(wx.Panel):
 
 
 
-        # Récupération des données
+        # RÃ©cupÃ©ration des donnÃ©es
         from Ol import OL_Suivi_budget
         analyse = OL_Suivi_budget.Analyse(self.dictBudget)
         listeCategories = analyse.GetValeurs() 
@@ -471,8 +471,8 @@ class CTRL_Graphique(wx.Panel):
 ##        opacity = 0.4
 ##        
 ##        ax = self.figure.add_subplot(111)
-##        barres = ax.bar(listeIndex, listeRealise, width=bar_width, alpha=opacity, color="g", label=_(u"Réel"))
-##        barres = ax.bar(listeIndex + bar_width, listeBudgete, width=bar_width, alpha=opacity, color="b", label=_(u"Budgété"))
+##        barres = ax.bar(listeIndex, listeRealise, width=bar_width, alpha=opacity, color="g", label=_(u"RÃ©el"))
+##        barres = ax.bar(listeIndex + bar_width, listeBudgete, width=bar_width, alpha=opacity, color="b", label=_(u"BudgÃ©tÃ©"))
 ##
 ##        # Formatage des montants sur y
 ##        majorFormatter = FormatStrFormatter(SYMBOLE + u" %d")
@@ -485,7 +485,7 @@ class CTRL_Graphique(wx.Panel):
 ##        labels = ax.get_xticklabels()
 ##        setp(labels, rotation=45) 
 ##        
-##        # Légende
+##        # LÃ©gende
 ##        props = matplotlib.font_manager.FontProperties(size=10)
 ##        leg = ax.legend(loc='best', shadow=False, fancybox=True, prop=props)
 ##        leg.get_frame().set_alpha(0.5)
@@ -500,8 +500,8 @@ class CTRL_Graphique(wx.Panel):
         opacity = 0.4
         
         ax = self.figure.add_subplot(111)
-        barresRealise = ax.barh(listeIndex, listeRealise, height=bar_height, alpha=opacity, color="g", label=_(u"Réel"))
-        barresBudgete = ax.barh(listeIndex + bar_height, listeBudgete, height=bar_height, alpha=opacity, color="b", label=_(u"Budgété"))
+        barresRealise = ax.barh(listeIndex, listeRealise, height=bar_height, alpha=opacity, color="g", label=_(u"RÃ©el"))
+        barresBudgete = ax.barh(listeIndex + bar_height, listeBudgete, height=bar_height, alpha=opacity, color="b", label=_(u"BudgÃ©tÃ©"))
 
         # Formatage des montants sur x
         majorFormatter = FormatStrFormatter(u"%d " + SYMBOLE)
@@ -531,7 +531,7 @@ class CTRL_Graphique(wx.Panel):
         margeGauche = 0.1 + largeurMax * 0.008
         self.figure.subplots_adjust(left=margeGauche, right=None, wspace=None, hspace=None)
 
-        # Légende
+        # LÃ©gende
         props = matplotlib.font_manager.FontProperties(size=10)
         leg = ax.legend(loc='best', shadow=False, fancybox=True, prop=props)
         leg.get_frame().set_alpha(0.5)
@@ -551,18 +551,18 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent 
 
-        intro = _(u"Sélectionnez un modèle de graphique dans la liste proposée puis ajustez les paramètres si besoin.")
+        intro = _(u"SÃ©lectionnez un modÃ¨le de graphique dans la liste proposÃ©e puis ajustez les paramÃ¨tres si besoin.")
         titre = _(u"Graphiques")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Diagramme.png")
 
-        # Modèle
-        self.box_modele_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Modèle"))
+        # ModÃ¨le
+        self.box_modele_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"ModÃ¨le"))
         self.ctrl_modele = CTRL_Modele(self)
         self.ctrl_modele.SetMinSize((400, -1))
         
-        # Paramètres
-        self.box_parametres_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Paramètres"))
+        # ParamÃ¨tres
+        self.box_parametres_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"ParamÃ¨tres"))
         self.label_exercice = wx.StaticText(self, wx.ID_ANY, _(u"Exercice :"))
         self.ctrl_exercice = CTRL_Exercice(self)
         self.label_analytique = wx.StaticText(self, wx.ID_ANY, _(u"Analytique :"))
@@ -589,16 +589,16 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonFermer, self.bouton_ok)
         
-        # Init contrôles
+        # Init contrÃ´les
         wx.CallLater(1, self.MAJgraphique)
         
 
     def __set_properties(self):
-        self.ctrl_modele.SetToolTip(wx.ToolTip(_(u"Sélectionnez un modèle de graphique")))
-        self.ctrl_exercice.SetToolTip(wx.ToolTip(_(u"Sélectionnez un exercice")))
-        self.ctrl_analytique.SetToolTip(wx.ToolTip(_(u"Sélectionnez un poste analytique")))
-        self.bouton_zoom.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder aux fonctions d'export et d'impression du graphique")))
-        self.bouton_options.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder aux options du graphique")))
+        self.ctrl_modele.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez un modÃ¨le de graphique")))
+        self.ctrl_exercice.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez un exercice")))
+        self.ctrl_analytique.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez un poste analytique")))
+        self.bouton_zoom.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accÃ©der aux fonctions d'export et d'impression du graphique")))
+        self.bouton_options.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accÃ©der aux options du graphique")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         self.SetMinSize((800, 700))
@@ -609,12 +609,12 @@ class Dialog(wx.Dialog):
         
         grid_sizer_haut = wx.FlexGridSizer(1, 2, 10, 10)
         
-        # Modèle
+        # ModÃ¨le
         box_modele = wx.StaticBoxSizer(self.box_modele_staticbox, wx.VERTICAL)
         box_modele.Add(self.ctrl_modele, 1, wx.ALL | wx.EXPAND, 10)
         grid_sizer_haut.Add(box_modele, 1, wx.EXPAND, 0)
         
-        # Paramètres
+        # ParamÃ¨tres
         box_parametres = wx.StaticBoxSizer(self.box_parametres_staticbox, wx.VERTICAL)
         grid_sizer_parametres = wx.FlexGridSizer(2, 2, 5, 5)
 

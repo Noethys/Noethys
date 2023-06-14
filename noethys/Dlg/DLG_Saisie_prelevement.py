@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-12 Ivan LUCAS
@@ -182,7 +182,7 @@ class Dialog(wx.Dialog):
         self.parent = parent
         self.track = track
         
-        self.SetTitle(_(u"Saisie d'un prélèvement"))
+        self.SetTitle(_(u"Saisie d'un prÃ©lÃ¨vement"))
         
         # Famille
         self.box_famille_staticbox = wx.StaticBox(self, -1, _(u"Destinataire"))
@@ -190,12 +190,12 @@ class Dialog(wx.Dialog):
         self.ctrl_famille = CTRL_Famille(self)
         
         # RIB
-        self.box_rib_staticbox = wx.StaticBox(self, -1, _(u"Coordonnées bancaires"))
+        self.box_rib_staticbox = wx.StaticBox(self, -1, _(u"CoordonnÃ©es bancaires"))
         
         self.label_etab = wx.StaticText(self, -1, _(u"Etab."))
         self.label_guichet = wx.StaticText(self, -1, _(u"Guichet"))
-        self.label_numero = wx.StaticText(self, -1, _(u"Numéro"))
-        self.label_cle = wx.StaticText(self, -1, _(u"Clé"))
+        self.label_numero = wx.StaticText(self, -1, _(u"NumÃ©ro"))
+        self.label_cle = wx.StaticText(self, -1, _(u"ClÃ©"))
         self.ctrl_code_etab = wx.TextCtrl(self, -1, u"", style=wx.TE_CENTRE, validator = MyValidator())
         self.ctrl_code_guichet = wx.TextCtrl(self, -1, u"", style=wx.TE_CENTRE, validator = MyValidator())
         self.ctrl_numero = wx.TextCtrl(self, -1, u"", style=wx.TE_CENTRE, validator = MyValidator())
@@ -212,13 +212,13 @@ class Dialog(wx.Dialog):
         self.label_titulaire = wx.StaticText(self, -1, _(u"Titulaire du compte"))
         self.ctrl_titulaire = wx.TextCtrl(self, -1, u"")
 
-        # Prélèvement
-        self.box_prelevement_staticbox = wx.StaticBox(self, -1, _(u"Prélèvement"))
+        # PrÃ©lÃ¨vement
+        self.box_prelevement_staticbox = wx.StaticBox(self, -1, _(u"PrÃ©lÃ¨vement"))
 
         self.label_type = wx.StaticText(self, -1, _(u"Type :"))
         self.ctrl_type = wx.StaticText(self, -1, _(u"Saisie manuelle"))
 
-        self.label_libelle = wx.StaticText(self, -1, _(u"Libellé :"))
+        self.label_libelle = wx.StaticText(self, -1, _(u"LibellÃ© :"))
         self.ctrl_libelle = wx.TextCtrl(self, -1, u"")
 
         self.label_montant = wx.StaticText(self, -1, _(u"Montant :"))
@@ -235,7 +235,7 @@ class Dialog(wx.Dialog):
         self.radio_etat_valide.Enable(False) 
         self.radio_etat_refus.Enable(False) 
 
-        self.label_reglement = wx.StaticText(self, -1, _(u"Règlement :"))
+        self.label_reglement = wx.StaticText(self, -1, _(u"RÃ¨glement :"))
         self.ctrl_reglement = wx.StaticText(self, -1, _(u"Non"))
 
         # Boutons
@@ -257,7 +257,7 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
         
-        # Init contrôles
+        # Init contrÃ´les
         self.Importation() 
         self.OnSaisieRIB(None)
 
@@ -270,14 +270,14 @@ class Dialog(wx.Dialog):
         self.ctrl_type.SetForegroundColour(wx.Colour(150, 150, 150))
         self.ctrl_reglement.SetForegroundColour(wx.Colour(150, 150, 150))
 
-        self.ctrl_famille.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici la famille à débiter")))
+        self.ctrl_famille.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez ici la famille Ã  dÃ©biter")))
         self.ctrl_code_etab.SetToolTip(wx.ToolTip(_(u"Saisissez ici le code Etablissement")))
         self.ctrl_code_guichet.SetToolTip(wx.ToolTip(_(u"Saisissez ici le code Guichet")))
-        self.ctrl_numero.SetToolTip(wx.ToolTip(_(u"Saisissez ici le numéro de compte")))
-        self.ctrl_cle.SetToolTip(wx.ToolTip(_(u"Saisissez ici la clé du RIB")))
-        self.ctrl_controle.SetToolTip(wx.ToolTip(_(u"Une coche verte apparaît si les coordonnées bancaires sont valides")))
-        self.ctrl_banque.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici l'établissement du compte")))
-        self.bouton_banques.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à la gestion des établissements bancaires")))
+        self.ctrl_numero.SetToolTip(wx.ToolTip(_(u"Saisissez ici le numÃ©ro de compte")))
+        self.ctrl_cle.SetToolTip(wx.ToolTip(_(u"Saisissez ici la clÃ© du RIB")))
+        self.ctrl_controle.SetToolTip(wx.ToolTip(_(u"Une coche verte apparaÃ®t si les coordonnÃ©es bancaires sont valides")))
+        self.ctrl_banque.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez ici l'Ã©tablissement du compte")))
+        self.bouton_banques.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accÃ©der Ã  la gestion des Ã©tablissements bancaires")))
         
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
@@ -330,7 +330,7 @@ class Dialog(wx.Dialog):
 
         grid_sizer_base.Add(box_rib, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
         
-        # Prélèvement
+        # PrÃ©lÃ¨vement
         box_prelevement = wx.StaticBoxSizer(self.box_prelevement_staticbox, wx.VERTICAL)
         grid_sizer_prelevement = wx.FlexGridSizer(rows=5, cols=2, vgap=10, hgap=10)
 
@@ -436,7 +436,7 @@ class Dialog(wx.Dialog):
         self.EndModal(wx.ID_CANCEL)
 
     def Importation(self):
-        """ Importation des données """
+        """ Importation des donnÃ©es """
         if self.track == None :
             return
         
@@ -469,7 +469,7 @@ class Dialog(wx.Dialog):
 
 
     def OnBoutonOk(self, event):
-        # Récupération des données
+        # RÃ©cupÃ©ration des donnÃ©es
         track = self.GetTrack() 
         if track == False :
             return
@@ -489,44 +489,44 @@ class Dialog(wx.Dialog):
         libelle = self.ctrl_libelle.GetValue() 
         montant = self.ctrl_montant.GetMontant()
         
-        # Validation des données
+        # Validation des donnÃ©es
         if IDfamille == None :
-            dlg = wx.MessageDialog(self, _(u"Vous avez oublié de sélectionner une famille dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous avez oubliÃ© de sÃ©lectionner une famille dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_famille.SetFocus()
             return False
 
         if self.ControleRIB() == False :
-            dlg = wx.MessageDialog(self, _(u"Il est impossible d'activer le prélèvement :\nLes coordonnées bancaires ne sont pas valides !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Il est impossible d'activer le prÃ©lÃ¨vement :\nLes coordonnÃ©es bancaires ne sont pas valides !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_code_etab.SetFocus()
             return False
 
         if IDbanque == None :
-            dlg = wx.MessageDialog(self, _(u"Il est impossible d'activer le prélèvement :\nVous n'avez sélectionné aucun établissement bancaire !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Il est impossible d'activer le prÃ©lÃ¨vement :\nVous n'avez sÃ©lectionnÃ© aucun Ã©tablissement bancaire !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_banque.SetFocus()
             return False
 
         if titulaire == "" :
-            dlg = wx.MessageDialog(self, _(u"Vous avez oublié de saisir un nom de titulaire pour le compte bancaire !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous avez oubliÃ© de saisir un nom de titulaire pour le compte bancaire !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_titulaire.SetFocus()
             return False
 
         if libelle == "" :
-            dlg = wx.MessageDialog(self, _(u"Vous avez oublié de saisir un libellé pour cette opération !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous avez oubliÃ© de saisir un libellÃ© pour cette opÃ©ration !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_libelle.SetFocus()
             return False
 
         if montant == None or montant == 0.0 :
-            dlg = wx.MessageDialog(self, _(u"Vous avez oublié de saisir un montant pour cette opération !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous avez oubliÃ© de saisir un montant pour cette opÃ©ration !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_montant.SetFocus()

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -21,9 +21,9 @@ import wx.lib.agw.hypertreelist as HTL
 from wx.lib.agw.customtreectrl import EVT_TREE_ITEM_CHECKED
 
 def DateComplete(dateDD):
-    """ Transforme une date DD en date complète : Ex : lundi 15 janvier 2008 """
+    """ Transforme une date DD en date complÃ¨te : Ex : lundi 15 janvier 2008 """
     listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
-    listeMois = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
+    listeMois = (_(u"janvier"), _(u"fÃ©vrier"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"aoÃ»t"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"dÃ©cembre"))
     dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
     return dateComplete
 
@@ -41,10 +41,10 @@ class CTRL(HTL.HyperTreeList):
         self.SetAGWWindowStyleFlag( HTL.TR_NO_HEADER | wx.TR_HIDE_ROOT | wx.TR_HAS_BUTTONS | wx.TR_HAS_VARIABLE_ROW_HEIGHT | wx.TR_FULL_ROW_HIGHLIGHT | HTL.TR_AUTO_CHECK_CHILD | HTL.TR_AUTO_CHECK_PARENT)
         self.EnableSelectionVista(True)
         
-        self.SetToolTip(wx.ToolTip(_(u"Cochez les dépôts à afficher")))
+        self.SetToolTip(wx.ToolTip(_(u"Cochez les dÃ©pÃ´ts Ã  afficher")))
         
-        # Création des colonnes
-        self.AddColumn(_(u"Dépôts"))
+        # CrÃ©ation des colonnes
+        self.AddColumn(_(u"DÃ©pÃ´ts"))
         self.SetColumnWidth(0, 400)
 
         # Binds
@@ -68,9 +68,9 @@ class CTRL(HTL.HyperTreeList):
         parent = self.root
         for index in range(0, self.GetChildrenCount(self.root)):
             parent = self.GetNext(parent) 
-            # Recherche des activités cochées
+            # Recherche des activitÃ©s cochÃ©es
             annee = self.GetPyData(parent)["ID"]
-            # Recherche des dépôts cochés
+            # Recherche des dÃ©pÃ´ts cochÃ©s
             listeDepots = []
             item, cookie = self.GetFirstChild(parent)
             for index in range(0, self.GetChildrenCount(parent)):
@@ -91,17 +91,17 @@ class CTRL(HTL.HyperTreeList):
         return listeDepots
     
     def MAJ(self):
-        """ Met à jour (redessine) tout le contrôle """
+        """ Met Ã  jour (redessine) tout le contrÃ´le """
         self.listeDepots = self.Importation()
         self.MAJenCours = True
         self.DeleteAllItems()
-        # Création de la racine
+        # CrÃ©ation de la racine
         self.root = self.AddRoot(_(u"Racine"))
         self.Remplissage()
         self.MAJenCours = False
 
     def Remplissage(self):
-        # Tri des dépôts par année
+        # Tri des dÃ©pÃ´ts par annÃ©e
         dictDepots = {} 
         for dictDepot in self.listeDepots :
             date = dictDepot["date"]
@@ -119,16 +119,16 @@ class CTRL(HTL.HyperTreeList):
         # Remplissage
         for annee in listeAnnees :
             
-            # Niveau Année
+            # Niveau AnnÃ©e
             if annee == None :
-                label = _(u"Sans date de dépôt")
+                label = _(u"Sans date de dÃ©pÃ´t")
             else :
                 label = str(annee)
             niveauAnnee = self.AppendItem(self.root, label, ct_type=1)
             self.SetPyData(niveauAnnee, {"type" : "annee", "ID" : annee, "label" : label})
             self.SetItemBold(niveauAnnee, True)
             
-            # Niveau Dépôts
+            # Niveau DÃ©pÃ´ts
             for dictDepot in dictDepots[annee] :
                 if dictDepot["date"] == None :
                     dateStr = u""

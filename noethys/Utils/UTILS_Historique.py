@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-15 Ivan LUCAS
@@ -19,38 +19,38 @@ CATEGORIES = {
     1 : _(u"Ouverture d'un fichier"),
     2 : _(u"Fermeture d'un fichier"),
     3 : _(u"Nouvel utilisateur"),
-    4 : _(u"Création d'une famille"),
+    4 : _(u"CrÃ©ation d'une famille"),
     5 : _(u"Suppression d'une famille"),
-    6 : _(u"Saisie d'un règlement"),
-    7 : _(u"Modification d'un règlement"),
-    8 : _(u"Suppression d'un règlement"),
+    6 : _(u"Saisie d'un rÃ¨glement"),
+    7 : _(u"Modification d'un rÃ¨glement"),
+    8 : _(u"Suppression d'un rÃ¨glement"),
     9 : _(u"Saisie de consommations"),
     10 : _(u"Suppression de consommations"),
-    11 : _(u"Création d'un individu"),
+    11 : _(u"CrÃ©ation d'un individu"),
     12 : _(u"Suppression d'un individu"),
     13 : _(u"Rattachement d'un individu"),
-    14 : _(u"Détachement d'un individu"),
-    15 : _(u"Saisie d'une pièce"),
-    16 : _(u"Modification d'une pièce"),
-    17 : _(u"Suppression d'une pièce"),
-    18 : _(u"Inscription à une activité"),
-    19 : _(u"Désinscription d'une activité"),
-    20 : _(u"Modification de l'inscription à une activité"),
+    14 : _(u"DÃ©tachement d'un individu"),
+    15 : _(u"Saisie d'une piÃ¨ce"),
+    16 : _(u"Modification d'une piÃ¨ce"),
+    17 : _(u"Suppression d'une piÃ¨ce"),
+    18 : _(u"Inscription Ã  une activitÃ©"),
+    19 : _(u"DÃ©sinscription d'une activitÃ©"),
+    20 : _(u"Modification de l'inscription Ã  une activitÃ©"),
     21 : _(u"Saisie d'une cotisation"),
     22 : _(u"Modification d'une cotisation"),
     23 : _(u"Suppression d'une cotisation"),
     24 : _(u"Saisie d'un message"),
     25 : _(u"Modification d'un message"),
     26 : _(u"Suppression d'un message"),
-    27 : _(u"Edition d'une attestation de présence"),
-    28 : _(u"Edition d'un reçu de règlement"),
+    27 : _(u"Edition d'une attestation de prÃ©sence"),
+    28 : _(u"Edition d'un reÃ§u de rÃ¨glement"),
     29 : _(u"Modification de consommations"),
     30 : _(u"Inscription scolaire"),
     31 : _(u"Modification d'une inscription scolaire"),
     32 : _(u"Suppression d'une inscription scolaire"),
     33 : _(u"Envoi d'un Email"),
     34 : _(u"Edition d'une confirmation d'inscription"),
-    35 : _(u"Génération d'un fichier XML SEPA"),
+    35 : _(u"GÃ©nÃ©ration d'un fichier XML SEPA"),
     36 : _(u"Edition d'un devis"),
     37 : _(u"Saisie d'une location"),
     38 : _(u"Modification d'une location"),
@@ -85,7 +85,7 @@ def InsertActions(listeActions=[], DB=None):
         IDcategorie = dictAction.get("IDcategorie", None)
         action = dictAction.get("action", u"")
         if len(action) >= 500 :
-            action = action[:495] + "..." # Texte limité à 499 caractères
+            action = action[:495] + "..." # Texte limitÃ© Ã  499 caractÃ¨res
         IDdonnee = dictAction.get("IDdonnee", None)
         listeAjouts.append((date, heure, IDutilisateur, IDfamille, IDindividu, IDcategorie, action, IDdonnee))
     

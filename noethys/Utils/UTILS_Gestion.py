@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-17 Ivan LUCAS
@@ -38,8 +38,8 @@ class Track_periode(object):
         if self.verrou_consommations == 1 : liste_categories.append(_(u"consommations"))
         if self.verrou_prestations == 1 : liste_categories.append(_(u"prestations"))
         if self.verrou_factures == 1 : liste_categories.append(_(u"factures"))
-        if self.verrou_reglements == 1 : liste_categories.append(_(u"règlements"))
-        if self.verrou_depots == 1 : liste_categories.append(_(u"dépôts"))
+        if self.verrou_reglements == 1 : liste_categories.append(_(u"rÃ¨glements"))
+        if self.verrou_depots == 1 : liste_categories.append(_(u"dÃ©pÃ´ts"))
         if self.verrou_cotisations == 1 : liste_categories.append(_(u"cotisations"))
         self.texte_verrous = ", ".join(liste_categories).capitalize()
 
@@ -67,7 +67,7 @@ class Gestion():
     def Verification(self, categorie=None, donnees=None, silencieux=False):
         liste_problemes = []
 
-        # Formate les données reçues
+        # Formate les donnÃ©es reÃ§ues
         if type(donnees) in (datetime.date, str, six.text_type) :
             listeDonnees = [{"date" : donnees},]
         elif type(donnees) == dict :
@@ -82,14 +82,14 @@ class Gestion():
         else:
             listeCategories = [categorie,]
 
-        # Spécial consommations
+        # SpÃ©cial consommations
         if "consommations" in listeCategories :
             listeCategories.append("prestations")
 
-        # Analyse des données
+        # Analyse des donnÃ©es
         for donnees in listeDonnees :
 
-            # Recherche le format de la donnée
+            # Recherche le format de la donnÃ©e
             if type(donnees) == datetime.date:
                 date = donnees
             elif type(donnees) in (str, six.text_type):
@@ -99,11 +99,11 @@ class Gestion():
                 if type(date) in (str, six.text_type):
                     date = UTILS_Dates.DateEngEnDateDD(date)
 
-            # Vérifie que la date n'est pas dans une période de gestion
+            # VÃ©rifie que la date n'est pas dans une pÃ©riode de gestion
             for periode in self.liste_periodes :
                 if date >= periode.date_debut and date <= periode.date_fin :
 
-                    # Vérifie que la catégorie est verrouillée
+                    # VÃ©rifie que la catÃ©gorie est verrouillÃ©e
                     verrou = False
                     for categorie in listeCategories:
                         if hasattr(periode, "verrou_%s" % categorie) :
@@ -127,7 +127,7 @@ class Gestion():
         for periode in self.liste_periodes:
             if date_debut <= periode.date_fin and date_fin >= periode.date_debut:
 
-                # Vérifie que la catégorie est verrouillée
+                # VÃ©rifie que la catÃ©gorie est verrouillÃ©e
                 verrou = False
                 if hasattr(periode, "verrou_%s" % categorie):
                     if getattr(periode, "verrou_%s" % categorie) == 1:
@@ -149,17 +149,17 @@ class DLG_Verrouillage(wx.Dialog):
         self.parent = parent
         self.liste_problemes = liste_problemes
 
-        titre = _(u"Période verrouillée")
+        titre = _(u"PÃ©riode verrouillÃ©e")
         self.SetTitle(titre)
         self.ctrl_image = wx.StaticBitmap(self, wx.ID_ANY, wx.Bitmap(Chemins.GetStaticPath(u"Images/48x48/Cadenas_ferme.png"), wx.BITMAP_TYPE_ANY))
         self.label_ligne_1 = wx.StaticText(self, wx.ID_ANY, titre)
         if intro == None :
-            intro = _(u"Vous ne pouvez pas modifier les données d'une période de gestion qui a été verrouillée.")
+            intro = _(u"Vous ne pouvez pas modifier les donnÃ©es d'une pÃ©riode de gestion qui a Ã©tÃ© verrouillÃ©e.")
         self.label_ligne_2 = wx.StaticText(self, wx.ID_ANY, intro)
         self.ctrl_detail = wx.TextCtrl(self, wx.ID_ANY, "", style=wx.TE_MULTILINE | wx.TE_READONLY)
         self.ctrl_detail.SetMinSize((500, 300))
 
-        # Insertion du texte de détail
+        # Insertion du texte de dÃ©tail
         texte = u"\n".join(liste_problemes)
         if len(texte) > 0 :
             self.ctrl_detail.SetValue(texte)

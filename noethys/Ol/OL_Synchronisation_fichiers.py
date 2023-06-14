@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-15 Ivan LUCAS
@@ -56,11 +56,11 @@ class ListView(FastObjectListView):
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
-        """ Récupération des données """
-        # Récupération du IDfichier
+        """ RÃ©cupÃ©ration des donnÃ©es """
+        # RÃ©cupÃ©ration du IDfichier
         IDfichier = FonctionsPerso.GetIDfichier()
         
-        # Lecture des fichiers du répertoire SYNC
+        # Lecture des fichiers du rÃ©pertoire SYNC
         listeFichiers = os.listdir(UTILS_Fichiers.GetRepSync())
         
         listeListeView = []
@@ -104,7 +104,7 @@ class ListView(FastObjectListView):
                 DB.ExecuterReq(req)
                 listeMemosJournees = DB.ResultatReq()
                 if len(listeMemosJournees) > 0 :
-                    liste_details_actions.append(_(u"%d actions sur les mémos journaliers") % len(listeMemosJournees))
+                    liste_details_actions.append(_(u"%d actions sur les mÃ©mos journaliers") % len(listeMemosJournees))
 
                 DB.Close() 
                 
@@ -134,7 +134,7 @@ class ListView(FastObjectListView):
             return FonctionsPerso.Formate_taille_octets(taille)
             
         liste_Colonnes = [
-            ColumnDefn(_(u"Date génération"), "left", 130, "horodatage", typeDonnee="dateheure", stringConverter=FormateHorodatage),
+            ColumnDefn(_(u"Date gÃ©nÃ©ration"), "left", 130, "horodatage", typeDonnee="dateheure", stringConverter=FormateHorodatage),
             ColumnDefn(_(u"Appareil (ID)"), "left", 130, "appareil", typeDonnee="texte"),
             ColumnDefn(_(u"Contenu du fichier"), "left", 285, "detail_actions", typeDonnee="texte"),
             ColumnDefn(_(u"Nom du fichier"), "left", 285, "nom_fichier", typeDonnee="texte"),
@@ -159,7 +159,7 @@ class ListView(FastObjectListView):
 
     def OnContextMenu(self, event):
         """Ouverture du menu contextuel """
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Archiver
@@ -174,7 +174,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
 
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
+        item = wx.MenuItem(menuPop, 40, _(u"AperÃ§u avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -218,7 +218,7 @@ class ListView(FastObjectListView):
             DB = GestionDB.DB()
             # Renommage des fichiers
             os.rename(UTILS_Fichiers.GetRepSync(nomFichier), UTILS_Fichiers.GetRepSync(nomFichier.replace(".dat", ".archive")))
-            # Mémorisation de l'archivage dans la base
+            # MÃ©morisation de l'archivage dans la base
             nomFichierTemp = nomFichier.replace(".dat", "").replace(".archive", "")
             IDarchive = DB.ReqInsert("nomade_archivage", [("nom_fichier", nomFichierTemp), ("ID_appareil", IDappareil), ("date", datetime.date.today())])
             DB.Close()
@@ -228,21 +228,21 @@ class ListView(FastObjectListView):
         
     def Apercu(self, event):
         from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des fichiers à synchroniser"), format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des fichiers Ã  synchroniser"), format="A", orientation=wx.PORTRAIT)
         prt.Preview()
 
     def Imprimer(self, event):
         from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des fichiers à synchroniser"), format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des fichiers Ã  synchroniser"), format="A", orientation=wx.PORTRAIT)
         prt.Print()
 
     def ExportTexte(self, event):
         from Utils import UTILS_Export
-        UTILS_Export.ExportTexte(self, titre=_(u"Liste des fichiers à synchroniser"))
+        UTILS_Export.ExportTexte(self, titre=_(u"Liste des fichiers Ã  synchroniser"))
         
     def ExportExcel(self, event):
         from Utils import UTILS_Export
-        UTILS_Export.ExportExcel(self, titre=_(u"Liste des fichiers à synchroniser"))
+        UTILS_Export.ExportExcel(self, titre=_(u"Liste des fichiers Ã  synchroniser"))
     
     def GetTracksCoches(self):
         return self.GetCheckedObjects()

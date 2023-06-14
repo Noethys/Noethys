@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-16 Ivan LUCAS
@@ -22,7 +22,7 @@ def GetNomModule(chemin_module=""):
 
 
 def AjusteSizePerso(parent=None, chemin_module=""):
-    """ Ajuste la taille de la fenêtre selon les souhaits de l'utilisateur """
+    """ Ajuste la taille de la fenÃªtre selon les souhaits de l'utilisateur """
     nom_module = GetNomModule(chemin_module)
     taille_fenetre = UTILS_Config.GetParametre(nom_module)
     if taille_fenetre != None :
@@ -33,7 +33,7 @@ def AjusteSizePerso(parent=None, chemin_module=""):
 
 
 def SaveSizePerso(parent=None, chemin_module=""):
-    """ Mémorise la taille de la fenêtre """
+    """ MÃ©morise la taille de la fenÃªtre """
     nom_module = GetNomModule(chemin_module)
     if parent.IsMaximized() == True :
         taille_fenetre = (0, 0)

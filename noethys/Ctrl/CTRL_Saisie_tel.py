@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -25,7 +25,7 @@ class Tel(masked.TextCtrl):
         masked.TextCtrl.__init__(self, parent, -1, "", size=size, style=wx.TE_CENTRE, mask=self.mask)
         self.parent = parent
         self.SetMinSize((125, -1))
-        self.SetToolTip(wx.ToolTip(_(u"Saisissez un numéro de %s") % intitule))
+        self.SetToolTip(wx.ToolTip(_(u"Saisissez un numÃ©ro de %s") % intitule))
         self.Bind(wx.EVT_KILL_FOCUS, self.OnKillFocus)
     
     def OnKillFocus(self, event):
@@ -38,14 +38,14 @@ class Tel(masked.TextCtrl):
         if self.mask == "" : 
             return True, None
         text = self.GetValue()
-        # Vérifie si Tél vide
+        # VÃ©rifie si TÃ©l vide
         if text == "" or text == "  .  .  .  .  .":
             return True, None
-        # Vérifie si Téléphone valide
+        # VÃ©rifie si TÃ©lÃ©phone valide
         posChiffres = [0, 1, 3, 4, 6, 7, 9, 10, 12, 13]
         for position in posChiffres:
             if text[position].isdigit() == False:
-                message = _(u"Le numéro que vous avez saisi ne semble pas valide.")
+                message = _(u"Le numÃ©ro que vous avez saisi ne semble pas valide.")
                 return False, message
         return True, None
     

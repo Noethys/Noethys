@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -10,16 +10,16 @@
 
 
 DICT_TYPES_LIENS = {
-    1 : { "M" : u"père", "F" : u"mère", "public" : "A", "lien" : 2, "type" : "parent", "texte" : { "M" : u"est son père", "F" : u"est sa mère"} },
+    1 : { "M" : u"pÃ¨re", "F" : u"mÃ¨re", "public" : "A", "lien" : 2, "type" : "parent", "texte" : { "M" : u"est son pÃ¨re", "F" : u"est sa mÃ¨re"} },
     2 : { "M" : u"fils", "F" : u"fille", "public" : "E", "lien" : 1, "type" : "enfant", "texte" : { "M" : u"est son fils", "F" : u"est sa fille"} },
     
-    3 : { "M" : u"frère", "F" : u"soeur", "public" : "AE", "lien" : 3, "type" : None, "texte" : { "M" : u"est son frère", "F" : u"est sa soeur"} },
+    3 : { "M" : u"frÃ¨re", "F" : u"soeur", "public" : "AE", "lien" : 3, "type" : None, "texte" : { "M" : u"est son frÃ¨re", "F" : u"est sa soeur"} },
     
-    4 : { "M" : u"grand-père", "F" : u"grand-mère", "public" : "A", "lien" : 5, "type" : None, "texte" : { "M" : u"est son grand-père", "F" : u"est sa grand-mère"} },
+    4 : { "M" : u"grand-pÃ¨re", "F" : u"grand-mÃ¨re", "public" : "A", "lien" : 5, "type" : None, "texte" : { "M" : u"est son grand-pÃ¨re", "F" : u"est sa grand-mÃ¨re"} },
     5 : { "M" : u"petit-fils", "F" : u"petite-fille", "public" : "E", "lien" : 4, "type" : None, "texte" : { "M" : u"est son petit-fils", "F" : u"est sa petite-fille"} },
     
     6 : { "M" : u"oncle", "F" : u"tante", "public" : "A", "lien" : 7, "type" : None, "texte" : { "M" : u"est son oncle", "F" : u"est sa tante"} },
-    7 : { "M" : u"neveu", "F" : u"nièce", "public" : "E", "lien" : 6, "type" : None, "texte" : { "M" : u"est son neveu", "F" : u"est sa nièce"} },
+    7 : { "M" : u"neveu", "F" : u"niÃ¨ce", "public" : "E", "lien" : 6, "type" : None, "texte" : { "M" : u"est son neveu", "F" : u"est sa niÃ¨ce"} },
     
 ##    8 : { "M" : u"parrain", "F" : u"marraine", "public" : "AE", "lien" : 9 },
 ##    9 : { "M" : u"filleul", "F" : u"filleule", "public" : "AE", "lien" : 8 },
@@ -30,10 +30,10 @@ DICT_TYPES_LIENS = {
     
     12 : { "M" : u"veuf", "F" : u"veuve", "public" : "A", "lien" : 12, "type" : "couple", "texte" : { "M" : u"est son veuf", "F" : u"est sa veuve"}},
 
-    13 : { "M" : u"beau-père", "F" : u"belle-mère", "public" : "A", "lien" : 14, "type" : None, "texte" : { "M" : u"est son beau-père", "F" : u"est sa belle-mère"} },
+    13 : { "M" : u"beau-pÃ¨re", "F" : u"belle-mÃ¨re", "public" : "A", "lien" : 14, "type" : None, "texte" : { "M" : u"est son beau-pÃ¨re", "F" : u"est sa belle-mÃ¨re"} },
     14 : { "M" : u"beau-fils", "F" : u"belle-fille", "public" : "E", "lien" : 13, "type" : None, "texte" : { "M" : u"est son beau-fils", "F" : u"est sa belle-fille"} },    
     
-    15 : { "M" : u"pacsé", "F" : u"pacsée", "public" : "A", "lien" : 15, "type" : "couple", "texte" : { "M" : u"est son pacsé", "F" : u"est sa pacsée"} },
+    15 : { "M" : u"pacsÃ©", "F" : u"pacsÃ©e", "public" : "A", "lien" : 15, "type" : "couple", "texte" : { "M" : u"est son pacsÃ©", "F" : u"est sa pacsÃ©e"} },
     
     16 : { "M" : u"ex-mari", "F" : u"ex-femme", "public" : "A", "lien" : 16, "type" : "ex-couple", "texte" : { "M" : u"est son ex-mari", "F" : u"est son ex-femme"} },
     
@@ -56,9 +56,9 @@ DICT_TYPES_LIENS = {
 
 
 DICT_AUTORISATIONS = {
-    1 : { "M" : u"Responsable légal", "F" : u"Responsable légale", "img" : "Responsable_legal.png"},
+    1 : { "M" : u"Responsable lÃ©gal", "F" : u"Responsable lÃ©gale", "img" : "Responsable_legal.png"},
     2 : { "M" : u"Contacter en cas d'urgence", "F" : u"Contacter en cas d'urgence", "img" : "Telephone.png"},
-    3 : { "M" : u"Raccompagnement autorisé", "F" : u"Raccompagnement autorisé", "img" : "Sortir.png"},
+    3 : { "M" : u"Raccompagnement autorisÃ©", "F" : u"Raccompagnement autorisÃ©", "img" : "Sortir.png"},
     4 : { "M" : u"Raccompagnement interdit", "F" : u"Raccompagnement interdit", "img" : "Interdit2.png"},
     }
 

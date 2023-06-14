@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-17 Ivan LUCAS
@@ -31,20 +31,20 @@ class Dialog(wx.Dialog):
         # Bandeau
         titre = _(u"Envoyer un Email")
         self.SetTitle(titre)
-        intro = _(u"Sélectionnez les paramètres et cliquez sur Ok pour accéder à l'outil d'envoi des emails.")
+        intro = _(u"SÃ©lectionnez les paramÃ¨tres et cliquez sur Ok pour accÃ©der Ã  l'outil d'envoi des emails.")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Editeur_email.png")
 
         # Choix de l'adresse
-        self.staticbox_adresse = wx.StaticBox(self, -1, _(u"Sélection de l'adresse"))
+        self.staticbox_adresse = wx.StaticBox(self, -1, _(u"SÃ©lection de l'adresse"))
         self.radio_famille = wx.RadioButton(self, -1, _(u"L'adresse internet de la famille"), style=wx.RB_GROUP)
         self.radio_individu = wx.RadioButton(self, -1, _(u"L'adresse internet de l'individu"))
         self.staticbox_adresse.SetMinSize((350, -1))
 
         # Lignes
-        self.staticbox_lignes = wx.StaticBox(self, -1, _(u"Sélection des lignes"))
-        self.radio_lignes_affichees = wx.RadioButton(self, -1, _(u"Toutes les lignes affichées"), style=wx.RB_GROUP)
-        self.radio_lignes_cochees = wx.RadioButton(self, -1, _(u"Toutes les lignes cochées"))
-        self.radio_ligne_selectionnee = wx.RadioButton(self, -1, _(u"La ligne sélectionnée"))
+        self.staticbox_lignes = wx.StaticBox(self, -1, _(u"SÃ©lection des lignes"))
+        self.radio_lignes_affichees = wx.RadioButton(self, -1, _(u"Toutes les lignes affichÃ©es"), style=wx.RB_GROUP)
+        self.radio_lignes_cochees = wx.RadioButton(self, -1, _(u"Toutes les lignes cochÃ©es"))
+        self.radio_ligne_selectionnee = wx.RadioButton(self, -1, _(u"La ligne sÃ©lectionnÃ©e"))
 
         # Boutons
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
@@ -76,11 +76,11 @@ class Dialog(wx.Dialog):
         self.__do_layout()
 
     def __set_properties(self):
-        self.radio_famille.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sélectionner les adresses des familles")))
-        self.radio_individu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sélectionner les adresses des individus")))
-        self.radio_lignes_affichees.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sélectionner toutes les lignes affichées dans la liste")))
-        self.radio_lignes_cochees.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sélectionner toutes les lignes cochées affichées")))
-        self.radio_ligne_selectionnee.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sélectionner la ligne sélectionnée")))
+        self.radio_famille.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sÃ©lectionner les adresses des familles")))
+        self.radio_individu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sÃ©lectionner les adresses des individus")))
+        self.radio_lignes_affichees.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sÃ©lectionner toutes les lignes affichÃ©es dans la liste")))
+        self.radio_lignes_cochees.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sÃ©lectionner toutes les lignes cochÃ©es affichÃ©es")))
+        self.radio_ligne_selectionnee.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sÃ©lectionner la ligne sÃ©lectionnÃ©e")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
@@ -128,7 +128,7 @@ class Dialog(wx.Dialog):
         UTILS_Aide.Aide("")
 
     def OnBoutonOk(self, event):
-        # Sélection des lignes
+        # SÃ©lection des lignes
         if self.radio_ligne_selectionnee.GetValue() == True :
             tracks = self.listview.GetSelectedObjects()
 
@@ -138,7 +138,7 @@ class Dialog(wx.Dialog):
         if self.radio_lignes_cochees.GetValue() == True :
             tracks = self.listview.GetCheckedObjects()
 
-        # Récupération de toutes les adresses Emails
+        # RÃ©cupÃ©ration de toutes les adresses Emails
         listeDonnees = []
         listeAnomalies = []
 
@@ -177,7 +177,7 @@ class Dialog(wx.Dialog):
                     if len(listeEmails) > 0 :
                         adresse = listeEmails[0]
 
-                    # Mémorisation des données
+                    # MÃ©morisation des donnÃ©es
                     if adresse != None :
                         dictTemp = {"adresse": adresse, "pieces": [], "champs": {}}
                         if dictTemp not in listeDonnees :
@@ -185,28 +185,28 @@ class Dialog(wx.Dialog):
                     else:
                         listeAnomalies.append(dict_titulaires[track.IDfamille]["titulairesSansCivilite"])
 
-        # Annonce les anomalies trouvées
+        # Annonce les anomalies trouvÃ©es
         if len(listeAnomalies) > 0:
             if self.radio_famille.GetValue() == True :
-                introduction = _(u"%d des familles sélectionnées n'ont pas d'adresse Email :") % len(listeAnomalies)
-                conclusion = _(u"Souhaitez-vous quand même continuer avec les %d autres familles ?") % len(listeDonnees)
+                introduction = _(u"%d des familles sÃ©lectionnÃ©es n'ont pas d'adresse Email :") % len(listeAnomalies)
+                conclusion = _(u"Souhaitez-vous quand mÃªme continuer avec les %d autres familles ?") % len(listeDonnees)
             else :
-                introduction = _(u"%d des individus sélectionnés n'ont pas d'adresse Email :") % len(listeAnomalies)
-                conclusion = _(u"Souhaitez-vous quand même continuer avec les %d autres individus ?") % len(listeDonnees)
+                introduction = _(u"%d des individus sÃ©lectionnÃ©s n'ont pas d'adresse Email :") % len(listeAnomalies)
+                conclusion = _(u"Souhaitez-vous quand mÃªme continuer avec les %d autres individus ?") % len(listeDonnees)
             dlg = DLG_Messagebox.Dialog(self, titre=_(u"Anomalies"), introduction=introduction, detail=u"\n".join(listeAnomalies), conclusion=conclusion, icone=wx.ICON_EXCLAMATION, boutons=[_(u"Oui"), _(u"Non"), _(u"Annuler")])
             reponse = dlg.ShowModal()
             dlg.Destroy()
             if reponse in (1, 2) :
                 return False
 
-        # Dernière vérification avant transfert
+        # DerniÃ¨re vÃ©rification avant transfert
         if len(listeDonnees) == 0:
-            dlg = wx.MessageDialog(self, _(u"Il ne reste finalement aucun email à envoyer !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Il ne reste finalement aucun email Ã  envoyer !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
-        # Transfert des données vers DLG Mailer
+        # Transfert des donnÃ©es vers DLG Mailer
         from Dlg import DLG_Mailer
         dlg = DLG_Mailer.Dialog(self)
         dlg.SetDonnees(listeDonnees, modificationAutorisee=True)
@@ -214,7 +214,7 @@ class Dialog(wx.Dialog):
         dlg.ShowModal()
         dlg.Destroy()
 
-        # Fermeture de la fenêtre
+        # Fermeture de la fenÃªtre
         self.EndModal(wx.ID_OK)
     
 

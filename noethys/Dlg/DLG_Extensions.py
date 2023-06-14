@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-19 Ivan LUCAS
@@ -32,7 +32,7 @@ class CTRL_Extensions(wx.ListBox):
         self.Bind(wx.EVT_LISTBOX_DCLICK, self.Executer)
 
     def MAJ(self, IDactivite=None):
-        # Recherche d'extensions dans le répertoire
+        # Recherche d'extensions dans le rÃ©pertoire
         ext = "py"
         fichiers = os.listdir(UTILS_Fichiers.GetRepExtensions())
         fichiers.sort()
@@ -50,11 +50,11 @@ class CTRL_Extensions(wx.ListBox):
             self.Select(0)
 
     def Importer(self, event=None):
-        # Ouverture de la fenêtre de dialogue
+        # Ouverture de la fenÃªtre de dialogue
         wildcard = _(u"Module python (*.py)|*.py|Tous les fichiers (*.*)|*.*")
         sp = wx.StandardPaths.Get()
         dlg = wx.FileDialog(
-            self, message=_(u"Choisissez une extension à importer"),
+            self, message=_(u"Choisissez une extension Ã  importer"),
             defaultDir=sp.GetDocumentsDir(),
             defaultFile="",
             wildcard=wildcard,
@@ -69,7 +69,7 @@ class CTRL_Extensions(wx.ListBox):
             return
 
         # Cherche si le fichier
-        fichier = codecs.open(nomFichierLong, encoding='iso-8859-15', mode='r')
+        fichier = codecs.open(nomFichierLong, encoding='utf8', mode='r')
         texte = "\n".join(fichier.readlines())
         fichier.close()
         if "def Extension(" not in texte:
@@ -78,13 +78,13 @@ class CTRL_Extensions(wx.ListBox):
             dlg.Destroy()
             return False
 
-        # Copie le fichier vers le répertoire Extensions
+        # Copie le fichier vers le rÃ©pertoire Extensions
         shutil.copyfile(nomFichierLong, UTILS_Fichiers.GetRepExtensions(nomFichierCourt))
         self.MAJ()
 
     def Supprimer(self, event=None):
         if self.GetSelection() == -1:
-            dlg = wx.MessageDialog(self, _(u"Aucune extension n'a été sélectionnée dans la liste !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Aucune extension n'a Ã©tÃ© sÃ©lectionnÃ©e dans la liste !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -100,12 +100,12 @@ class CTRL_Extensions(wx.ListBox):
 
     def Executer(self, event=None):
         if self.GetSelection() == -1:
-            dlg = wx.MessageDialog(self, _(u"Aucune extension n'a été sélectionnée dans la liste !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Aucune extension n'a Ã©tÃ© sÃ©lectionnÃ©e dans la liste !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
 
-        # Exécution de l'extension
+        # ExÃ©cution de l'extension
         nom_fichier = self.GetStringSelection()
         sys.path.append(UTILS_Fichiers.GetRepExtensions())
         module = importlib.import_module(nom_fichier)
@@ -119,7 +119,7 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, name="DLG_Extensions", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         
-        intro = _(u"Vous pouvez ici exécuter, importer ou supprimer des extensions. Une extension est un module Python qui apporte des fonctionnalités supplémentaires. Une extension doit contenir une fonction Extension().")
+        intro = _(u"Vous pouvez ici exÃ©cuter, importer ou supprimer des extensions. Une extension est un module Python qui apporte des fonctionnalitÃ©s supplÃ©mentaires. Une extension doit contenir une fonction Extension().")
         titre = _(u"Extensions")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Terminal.png")
@@ -144,8 +144,8 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.bouton_importer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour importer une extension")))
-        self.bouton_executer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exécuter l'extension sélectionnée dans la liste ou double-cliquez sur la ligne correspondante dans la liste")))
-        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer l'extension sélectionnée dans la liste")))
+        self.bouton_executer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exÃ©cuter l'extension sÃ©lectionnÃ©e dans la liste ou double-cliquez sur la ligne correspondante dans la liste")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer l'extension sÃ©lectionnÃ©e dans la liste")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         self.SetMinSize((550, 500))

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          wolf29f
 # Licence:         Licence GNU GPL
@@ -12,12 +12,12 @@ import six
 
 class DataType(object):
     """
-    Classe permettant la conversion facile vers le format souhaité (nombre de caractères, alignement, décimales)
+    Classe permettant la conversion facile vers le format souhaitÃ© (nombre de caractÃ¨res, alignement, dÃ©cimales)
     """
 
     def __init__(self, type=int, length=1, align="<", precision=2):
         """
-        initialise l'objet avec les paramétres souhaités
+        initialise l'objet avec les paramÃ©tres souhaitÃ©s
         """
         self.type = type
         self.length = length
@@ -26,20 +26,20 @@ class DataType(object):
 
     def convert(self,data):
         """
-        convertit la donnée fournie dans le format souhaité
+        convertit la donnÃ©e fournie dans le format souhaitÃ©
         """
         ret_val = ""
 
-        # s'assure que la donnée soit bien en unicode
+        # s'assure que la donnÃ©e soit bien en unicode
         if type(data) is str:
             if six.PY2:
-                data = data.decode("iso-8859-15")
+                data = data.decode("utf8")
             data = six.text_type(data)
 
         # si l'on veux des entiers
         if self.type == int:
             if data != "":
-                # on vérifie qu'il s'agit bien d'un nombre
+                # on vÃ©rifie qu'il s'agit bien d'un nombre
                 try:
                     data = int(data)
                 except ValueError as e:
@@ -50,7 +50,7 @@ class DataType(object):
             else:
                 ret_val = u"{0: {align}0{length}s}".format(data,align=self.align,length=self.length)
 
-        # si l'on veux des chaines de caractéres
+        # si l'on veux des chaines de caractÃ©res
         elif self.type == str:
             data = data.replace("\"","")
             ret_val = u"{0: {align}0{length}s}".format(data,align=self.align,length=self.length)
@@ -58,7 +58,7 @@ class DataType(object):
         # si l'on veux un nombre a virgule
         elif self.type == float:
             if data != "":
-                # on vérifie qu'il s'agit bien d'un nombre
+                # on vÃ©rifie qu'il s'agit bien d'un nombre
                 try:
                     data=float(data)
                 except ValueError as e:
@@ -91,12 +91,12 @@ dataTypes = {"num_mvnt":DataType(int,10,">"),
 
 class XImportLine(object):
     """
-    Définie une ligne telle que formaté dans un fichier XImport
+    DÃ©finie une ligne telle que formatÃ© dans un fichier XImport
     """
 
     def __init__(self,data,dictParametres,num_ligne,typeComptable=None):
         """
-        Récupére les donnée utiles fournis en paramétres, les convertis et les enregistre 
+        RÃ©cupÃ©re les donnÃ©e utiles fournis en paramÃ©tres, les convertis et les enregistre 
         """
         # contient les valeurs fournies et non converties
         values = dict()
@@ -104,12 +104,12 @@ class XImportLine(object):
         # contiendra les valeurs convertie
         self.values = dict()
 
-        # le numéro de mouvement est le numéro de la ligne ?
+        # le numÃ©ro de mouvement est le numÃ©ro de la ligne ?
         values["num_mvnt"] = num_ligne
         values["montant"] = data["montant"]
-        values["devise"] = u"¤"
+        values["devise"] = u"â‚¬"
 
-        # on récupére ce qui nous interesse selon le type de donnée
+        # on rÃ©cupÃ©re ce qui nous interesse selon le type de donnÃ©e
         if "type" in data:
             
             if data["type"] == "total_prestations":
@@ -148,13 +148,13 @@ class XImportLine(object):
                 values["libelle"] = data["libelle"]
                 values["code_analyt"]=data["code_compta"]
 
-        # Si aucun type n'est renseigné, il y a un probléme
+        # Si aucun type n'est renseignÃ©, il y a un problÃ©me
         else:
             raise ValueError("'type' not in data")
 
-        # Convertit toutes les données
+        # Convertit toutes les donnÃ©es
         for i in list(dataTypes.keys()):
-            # Si la donnée a bien été fournie, on la convertit
+            # Si la donnÃ©e a bien Ã©tÃ© fournie, on la convertit
             if i in values:
                 self.values[i]=dataTypes[i].convert(values[i])
             # Sinon on remplit de blanc, pour respecter la largeur des colonnes
@@ -163,7 +163,7 @@ class XImportLine(object):
 
     def __getattr__(self,name):
         """
-        gére l'acces aux attributs, pour plus de souplesse, les attributs inconnus renvoient None
+        gÃ©re l'acces aux attributs, pour plus de souplesse, les attributs inconnus renvoient None
         """
         if name in self.values:
             return self.values[name]
@@ -172,7 +172,7 @@ class XImportLine(object):
 
     def __str__(self):
         """
-        Renvois la liste des donnée et leur valeur (appelé lors d'un print ou d'une convertion str)
+        Renvois la liste des donnÃ©e et leur valeur (appelÃ© lors d'un print ou d'une convertion str)
         """
         return "LigneXImport : \n\t"+\
                "num_mvnt :" + six.text_type(self.num_mvnt)+"\n\t"+\
@@ -191,7 +191,7 @@ class XImportLine(object):
     
     def getData(self):
         """
-        Retourne la ligne telle qu'elle doit être enregistré dans le fichier XImport
+        Retourne la ligne telle qu'elle doit Ãªtre enregistrÃ© dans le fichier XImport
         """
         return six.text_type(self.num_mvnt)+\
                 six.text_type(self.journal)+\

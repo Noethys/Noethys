@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -25,7 +25,7 @@ def GetListeCotisationsManquantes(dateReference=None, listeActivites=None, prese
     if dateReference == None : 
         dateReference = datetime.date.today()
 
-    # Récupération des données
+    # RÃ©cupÃ©ration des donnÃ©es
     dictItems = {}
 
     # Conditions Activites
@@ -37,7 +37,7 @@ def GetListeCotisationsManquantes(dateReference=None, listeActivites=None, prese
         else:
             conditionActivites = " AND inscriptions.IDactivite IN %s" % str(tuple(listeActivites))
 
-    # Conditions Présents
+    # Conditions PrÃ©sents
     if presents == None :
         conditionPresents = ""
         jonctionPresents = ""
@@ -45,7 +45,7 @@ def GetListeCotisationsManquantes(dateReference=None, listeActivites=None, prese
         conditionPresents = " AND (consommations.date>='%s' AND consommations.date<='%s' AND consommations.etat IN ('reservation', 'present'))" % (str(presents[0]), str(presents[1]))
         jonctionPresents = "LEFT JOIN consommations ON consommations.IDindividu = individus.IDindividu"
     
-    # Récupération des cotisations à fournir pour la famille ou l'individu
+    # RÃ©cupÃ©ration des cotisations Ã  fournir pour la famille ou l'individu
     DB = GestionDB.DB()
     req = """
     SELECT 
@@ -70,7 +70,7 @@ def GetListeCotisationsManquantes(dateReference=None, listeActivites=None, prese
             dictCotisationObligatoires[IDfamille][IDactivite] = []
         dictCotisationObligatoires[IDfamille][IDactivite].append((IDfamille, IDtype_cotisation, nomCotisation, typeCotisation, prenom, IDindividu))
     
-    # Recherche des cotisations déjà fournies
+    # Recherche des cotisations dÃ©jÃ  fournies
     req = """
     SELECT IDcotisation, cotisations.IDtype_cotisation, IDindividu, IDfamille, date_debut, date_fin, type
     FROM cotisations 
@@ -90,7 +90,7 @@ def GetListeCotisationsManquantes(dateReference=None, listeActivites=None, prese
         date_fin = DateEngEnDateDD(date_fin)
         dictCotisationsFournies[ (IDfamille, IDtype_cotisation, IDindividu) ] = (date_debut, date_fin)
     
-    # Comparaison de la liste des cotisations à fournir et la liste des cotisations fournies
+    # Comparaison de la liste des cotisations Ã  fournir et la liste des cotisations fournies
     dictDonnees = {}
     for IDfamille, dictCotisationsFamille in dictCotisationObligatoires.items() :
         for IDactivite, listeCotisationsActivite in dictCotisationsFamille.items() :
@@ -103,10 +103,10 @@ def GetListeCotisationsManquantes(dateReference=None, listeActivites=None, prese
 ##                if typeCotisation == "famille" : 
 ##                    IDindividu = None
 ##                else:
-##                    # Pour les cotisations qui sont indépendantes de la famille
+##                    # Pour les cotisations qui sont indÃ©pendantes de la famille
 ##                    IDfamilleTemp = None
                 
-                # Préparation du label
+                # PrÃ©paration du label
                 if typeCotisation == "famille" or IDindividu == None :
                     label = nomCotisation
                 else:
@@ -130,7 +130,7 @@ def GetListeCotisationsManquantes(dateReference=None, listeActivites=None, prese
                     
                 listeTemp.append((IDfamille, IDtype_cotisation, nomCotisation, typeCotisation, prenom, IDindividu, valide, label))
                 
-            # Mémorisation
+            # MÃ©morisation
             for IDfamille, IDtype_cotisation, nomCotisation, typeCotisation, prenom, IDindividu, valide, label in listeTemp :
                 if activiteValide == True :
                     valide = "ok"
@@ -139,7 +139,7 @@ def GetListeCotisationsManquantes(dateReference=None, listeActivites=None, prese
 ##                if IDfamille == 57 or IDindividu == 107 :
 ##                    print (IDfamille, IDtype_cotisation, nomCotisation, typeCotisation, prenom, IDindividu, valide, label)
                     
-    # Comparaison de la liste des cotisations à fournir et la liste des cotisations fournies
+    # Comparaison de la liste des cotisations Ã  fournir et la liste des cotisations fournies
 ##    dictDonnees = {}
 ##    for IDfamille, IDactivite, IDtype_cotisation, nomCotisation, typeCotisation, prenom, IDindividu, nbreConso in listeCotisationsObligatoires :
 ##        
@@ -147,10 +147,10 @@ def GetListeCotisationsManquantes(dateReference=None, listeActivites=None, prese
 ##        if typeCotisation == "famille" : 
 ##            IDindividu = None
 ##        else:
-##            # Pour les cotisations qui sont indépendantes de la famille
+##            # Pour les cotisations qui sont indÃ©pendantes de la famille
 ##            IDfamille = None
 ##        
-##        # Préparation du label
+##        # PrÃ©paration du label
 ##        if typeCotisation == "famille" or IDindividu == None :
 ##            label = nomCotisation
 ##        else:
@@ -168,7 +168,7 @@ def GetListeCotisationsManquantes(dateReference=None, listeActivites=None, prese
 ##            
 ##        dictDonnees[(IDfamille, IDtype_cotisation, IDindividu)] = (IDfamille, IDtype_cotisation, nomCotisation, typeCotisation, prenom, IDindividu, valide, label)
     
-    # Répartition par famille
+    # RÃ©partition par famille
     dictCotisations = {}
     nbreFamilles = 0
     nbreCotisations = len(dictDonnees)
@@ -181,7 +181,7 @@ def GetListeCotisationsManquantes(dateReference=None, listeActivites=None, prese
         dictCotisations[IDfamille].append(valeurs)
         dictCotisations[IDfamille].sort()
     
-    # Formatage des données
+    # Formatage des donnÃ©es
     dictFinal = {}
     titulaires = UTILS_Titulaires.GetTitulaires() 
     for IDfamille, dictTemp in dictCotisations.items() :

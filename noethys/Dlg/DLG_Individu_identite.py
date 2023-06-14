@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -35,7 +35,7 @@ class Sieste(wx.Choice):
     def __init__(self, parent):
         wx.Choice.__init__(self, parent, -1, choices=[]) 
         self.parent = parent
-        self.SetToolTip(wx.ToolTip(_(u"Sélectionnez le type de sieste nécessaire pour cet individu")))
+        self.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez le type de sieste nÃ©cessaire pour cet individu")))
         self.MAJ() 
     
     def MAJ(self):
@@ -83,19 +83,19 @@ class Panel_identite(wx.Panel):
         
         self.majEffectuee = False
         
-        # Identité
+        # IdentitÃ©
         self.staticbox_etatcivil_staticbox = wx.StaticBox(self, -1, _(u"Etat-civil"))
-        self.label_civilite = wx.StaticText(self, -1, _(u"Civilité/genre :"))
+        self.label_civilite = wx.StaticText(self, -1, _(u"CivilitÃ©/genre :"))
         self.ctrl_civilite = CTRL_Saisie_civilite.Civilite(self)
         self.label_nomjfille = wx.StaticText(self, -1, _(u"Nom de jeune fille :"))
         self.ctrl_nomjfille = wx.TextCtrl(self, -1, u"")
         self.label_nom = wx.StaticText(self, -1, _(u"Nom :"))
         self.ctrl_nom = wx.TextCtrl(self, -1, "")
-        self.label_prenom = wx.StaticText(self, -1, _(u"Prénom :"))
+        self.label_prenom = wx.StaticText(self, -1, _(u"PrÃ©nom :"))
         self.ctrl_prenom = wx.TextCtrl(self, -1, "")
-        self.label_numsecu = wx.StaticText(self, -1, _(u"Num. sécu. :"))
+        self.label_numsecu = wx.StaticText(self, -1, _(u"Num. sÃ©cu. :"))
         self.ctrl_numsecu = CTRL_Saisie_numSecu.NumSecu(self)
-        self.label_nationalite = wx.StaticText(self, -1, _(u"Nationalité :"))
+        self.label_nationalite = wx.StaticText(self, -1, _(u"NationalitÃ© :"))
         self.ctrl_nationalite = CTRL_Saisie_pays.SaisiePays(self, mode="nationalite")
         
         # Naissance
@@ -108,10 +108,10 @@ class Panel_identite(wx.Panel):
         self.label_lieunaiss = wx.StaticText(self, -1, _(u"Lieu | C.P. :"))
         self.ctrl_adressenaiss = CTRL_Saisie_adresse.Adresse(self)
         
-        # Décès
-        self.staticbox_deces = wx.StaticBox(self, -1, _(u"Décès"))
+        # DÃ©cÃ¨s
+        self.staticbox_deces = wx.StaticBox(self, -1, _(u"DÃ©cÃ¨s"))
         self.ctrl_deces = wx.CheckBox(self, -1, u"")
-        self.label_deces = wx.StaticText(self, -1, _(u"Année :"))
+        self.label_deces = wx.StaticText(self, -1, _(u"AnnÃ©e :"))
         self.ctrl_annee_deces = wx.TextCtrl(self, -1, u"")
         
         # Sieste
@@ -119,8 +119,8 @@ class Panel_identite(wx.Panel):
         self.ctrl_sieste = Sieste(self)
         self.bouton_sieste = wx.Button(self, -1, "...", size=(20, 20))
         
-        # Mémo
-        self.staticbox_memo = wx.StaticBox(self, -1, _(u"Mémo"))
+        # MÃ©mo
+        self.staticbox_memo = wx.StaticBox(self, -1, _(u"MÃ©mo"))
         self.ctrl_memo = wx.TextCtrl(self, -1, u"", style=wx.TE_MULTILINE)
 
         self.__set_properties()
@@ -148,17 +148,17 @@ class Panel_identite(wx.Panel):
         self.ctrl_nomjfille.Enable(False)
         self.label_nomjfille.Enable(False)
         self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez ici le nom de l'individu")))
-        self.ctrl_prenom.SetToolTip(wx.ToolTip(_(u"Saisissez ici le prénom de l'individu")))
+        self.ctrl_prenom.SetToolTip(wx.ToolTip(_(u"Saisissez ici le prÃ©nom de l'individu")))
         self.ctrl_datenaiss.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de naissance de l'individu")))
         self.ctrl_datenaiss.SetMinSize((95, -1))
         self.ctrl_age.SetMinSize((60, -1))
         self.ctrl_age.SetToolTip(wx.ToolTip(_(u"Age de l'individu")))
         self.ctrl_age.Enable(False)
-        self.ctrl_deces.SetToolTip(wx.ToolTip(_(u"Cochez cette case si l'individu est décédé")))
-        self.ctrl_annee_deces.SetToolTip(wx.ToolTip(_(u"Saisissez ici l'année de décès de l'individu")))
+        self.ctrl_deces.SetToolTip(wx.ToolTip(_(u"Cochez cette case si l'individu est dÃ©cÃ©dÃ©")))
+        self.ctrl_annee_deces.SetToolTip(wx.ToolTip(_(u"Saisissez ici l'annÃ©e de dÃ©cÃ¨s de l'individu")))
         self.ctrl_annee_deces.SetMinSize((40, -1))
-        self.ctrl_sieste.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici un type de sieste pour cet individu")))
-        self.bouton_sieste.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à la fenêtre de gestion des types de sieste")))
+        self.ctrl_sieste.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez ici un type de sieste pour cet individu")))
+        self.bouton_sieste.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accÃ©der Ã  la fenÃªtre de gestion des types de sieste")))
         self.ctrl_memo.SetToolTip(wx.ToolTip(_(u"Saisissez ici les informations de votre choix concernant cet individu")))
 
     def __do_layout(self):
@@ -212,10 +212,10 @@ class Panel_identite(wx.Panel):
         
         grid_sizer_gauche.Add(staticbox_naiss, 1, wx.EXPAND | wx.LEFT | wx.RIGHT , 5)
         
-        # Grid sizer Décès + Sieste
+        # Grid sizer DÃ©cÃ¨s + Sieste
         grid_sizer_deces_sieste = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
         
-        # StaticBox Décès
+        # StaticBox DÃ©cÃ¨s
         staticbox_deces = wx.StaticBoxSizer(self.staticbox_deces, wx.VERTICAL)
         grid_sizer_deces = wx.FlexGridSizer(rows=1, cols=3, vgap=5, hgap=5)
         grid_sizer_deces.Add(self.ctrl_deces, 0, wx.ALIGN_CENTER_VERTICAL, 0)
@@ -239,7 +239,7 @@ class Panel_identite(wx.Panel):
         # Finalisation du sizer gauche
         grid_sizer_base.Add(grid_sizer_gauche, 1, wx.EXPAND, 0)
         
-        # StaticBox Mémo
+        # StaticBox MÃ©mo
         staticbox_memo = wx.StaticBoxSizer(self.staticbox_memo, wx.VERTICAL)
         staticbox_memo.Add(self.ctrl_memo, 1, wx.ALL|wx.EXPAND, 5)
         
@@ -271,7 +271,7 @@ class Panel_identite(wx.Panel):
             if len(prenom) > 0 : 
                 prenom = prenom[:1].upper() + prenom[1:]
             else:
-                prenom = _(u"Prénom")
+                prenom = _(u"PrÃ©nom")
             self.Set_Header(nomLigne="nom", texte=u"%s, %s" % (nom, prenom))
         if event != None :
             event.Skip() 
@@ -303,18 +303,18 @@ class Panel_identite(wx.Panel):
         else:
             age = self.ctrl_datenaiss.GetAge()
             sexe = self.ctrl_civilite.GetSexe()
-            if sexe == "M" : texte = _(u"Né le %s (%d ans)") % (dateFR, age)
-            if sexe == "F" : texte = _(u"Née le %s (%d ans)") % (dateFR, age)
+            if sexe == "M" : texte = _(u"NÃ© le %s (%d ans)") % (dateFR, age)
+            if sexe == "F" : texte = _(u"NÃ©e le %s (%d ans)") % (dateFR, age)
             if age != None : self.ctrl_age.SetValue(_(u"%d ans") % age)
         self.Set_Header(nomLigne="datenaiss", texte=texte)
         if event != None : event.Skip() 
         
     def OnChoiceCivilite(self, event):
-        # Signale que c'est une rubrique qui a été sélectionnée
+        # Signale que c'est une rubrique qui a Ã©tÃ© sÃ©lectionnÃ©e
         if self.ctrl_civilite.GetType() == "rubrique" :
             self.ctrl_civilite.SetFocus()
             return
-        # Applique la photo à la fiche
+        # Applique la photo Ã  la fiche
         self.SetPhoto(nomFichier=Chemins.GetStaticPath("Images/128x128/%s" % self.ctrl_civilite.GetPhoto()))
         # Active ou non le controle NOM DE JEUNE FILLE
         if self.ctrl_civilite.GetCivilite() == "Madame" :
@@ -327,7 +327,7 @@ class Panel_identite(wx.Panel):
             self.ctrl_nom.SetFocus()
         # MAJ Header Nom
         self.OnTextNomOuPrenom(None)
-        # Désactive certains contrôles si c'est un organisme
+        # DÃ©sactive certains contrÃ´les si c'est un organisme
         if self.ctrl_civilite.GetRubrique() == "AUTRE" :
             self.Set_Header(nomLigne="datenaiss", texte=self.ctrl_civilite.GetCivilite())
             etat = False
@@ -440,40 +440,40 @@ class Panel_identite(wx.Panel):
         
     
     def ValidationData(self):
-        """ Validation des données avant Sauvegarde """
-        # Vérification de la civilité
+        """ Validation des donnÃ©es avant Sauvegarde """
+        # VÃ©rification de la civilitÃ©
         if self.ctrl_civilite.GetID() == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner une civilité !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sÃ©lectionner une civilitÃ© !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
         
-        # Vérification du nom
+        # VÃ©rification du nom
         if self.ctrl_nom.GetValue() == "" :
             dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un nom !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
         
-        # Vérification de la civilité
+        # VÃ©rification de la civilitÃ©
         if self.ctrl_civilite.GetRubrique() != "AUTRE" and self.ctrl_prenom.GetValue() == "" :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un prénom !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un prÃ©nom !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
         
-        # Vérification de l'année de décès
+        # VÃ©rification de l'annÃ©e de dÃ©cÃ¨s
         if self.ctrl_deces.GetValue() == True :
             if self.ctrl_annee_deces.GetValue() != "" :
                 try :
                     annee_deces = int(self.ctrl_annee_deces.GetValue())
                 except :
-                    dlg = wx.MessageDialog(self, _(u"L'année de décès que vous avez saisi n'est pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                    dlg = wx.MessageDialog(self, _(u"L'annÃ©e de dÃ©cÃ¨s que vous avez saisi n'est pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                     dlg.ShowModal()
                     dlg.Destroy()
                     return False
                 if annee_deces < 1500 or annee_deces > 3000 :
-                    dlg = wx.MessageDialog(self, _(u"L'année de décès que vous avez saisi n'est pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                    dlg = wx.MessageDialog(self, _(u"L'annÃ©e de dÃ©cÃ¨s que vous avez saisi n'est pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                     dlg.ShowModal()
                     dlg.Destroy()
                     return False
@@ -497,12 +497,12 @@ class Panel_identite(wx.Panel):
             "memo" : self.ctrl_memo.GetValue(),
             "IDtype_sieste" : self.ctrl_sieste.GetID(),
             }
-        # Si c'est un organisme, on efface le prénom saisi :
+        # Si c'est un organisme, on efface le prÃ©nom saisi :
         IDcivilite = dictDonnees["IDcivilite"]
         if DICT_CIVILITES[IDcivilite]["sexe"] == None :
             dictDonnees["prenom"] = u""
         
-        # Année de décès
+        # AnnÃ©e de dÃ©cÃ¨s
         if self.ctrl_annee_deces.GetValue() != "" :
             if self.ctrl_deces.GetValue() == True :
                 dictDonnees["annee_deces"] = int(self.ctrl_annee_deces.GetValue())
@@ -514,7 +514,7 @@ class Panel_identite(wx.Panel):
         return dictDonnees
 
     def Sauvegarde(self):
-        """ Sauvegarde des données dans la base """
+        """ Sauvegarde des donnÃ©es dans la base """
         dictDonnees = self.GetData()
         DB = GestionDB.DB()
         listeDonnees = [    
@@ -537,12 +537,12 @@ class Panel_identite(wx.Panel):
         DB.Close()
 
     def SetValeursDefaut(self, nom="", prenom="", IDcategorie=1):
-        """ Importe des valeurs par défaut lors de la création d'une fiche """
+        """ Importe des valeurs par dÃ©faut lors de la crÃ©ation d'une fiche """
         self.parent.AffichePage("identite")
-        # Nom et prénom
+        # Nom et prÃ©nom
         self.ctrl_nom.SetValue(nom.upper())
         self.ctrl_prenom.SetValue(prenom)
-        # Civilité
+        # CivilitÃ©
         genre = self.RechercheGenre(prenom)
         if genre == None :
             self.ctrl_civilite.SetFocus()
@@ -559,7 +559,7 @@ class Panel_identite(wx.Panel):
     def RechercheGenre(self, prenom=""):
         import FonctionsPerso
         #prenom = FonctionsPerso.supprime_accent(prenom)
-        """ Recherche le genre de l'individu suivant son prénom """
+        """ Recherche le genre de l'individu suivant son prÃ©nom """
         db = GestionDB.DB(nomFichier=Chemins.GetStaticPath("Databases/Prenoms.dat"), suffixe=None)
         req = """SELECT prenom, genre
         FROM prenoms WHERE prenom='%s';""" % prenom.lower()

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-13 Ivan LUCAS
@@ -133,8 +133,8 @@ class Panel(wx.Panel):
         wx.Panel.__init__(self, parent, id=-1, name="DLG_Rappels_generation_parametres", style=wx.TAB_TRAVERSAL)
         self.parent = parent
         
-        # Période
-        self.box_date_reference_staticbox = wx.StaticBox(self, -1, _(u"Date de référence"))
+        # PÃ©riode
+        self.box_date_reference_staticbox = wx.StaticBox(self, -1, _(u"Date de rÃ©fÃ©rence"))
         self.label_date_reference = wx.StaticText(self, -1, _(u"Jusqu'au"))
         self.ctrl_date_reference = CTRL_Saisie_date.Date2(self)
         
@@ -144,20 +144,20 @@ class Panel(wx.Panel):
         self.ctrl_lot = CTRL_Lot_rappels(self)
         self.bouton_lots = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Mecanisme.png"), wx.BITMAP_TYPE_ANY))
         
-        # Paramètres
-        self.box_parametres_staticbox = wx.StaticBox(self, -1, _(u"Paramètres"))
-        self.label_date_emission = wx.StaticText(self, -1, _(u"Date d'émission :"))
+        # ParamÃ¨tres
+        self.box_parametres_staticbox = wx.StaticBox(self, -1, _(u"ParamÃ¨tres"))
+        self.label_date_emission = wx.StaticText(self, -1, _(u"Date d'Ã©mission :"))
         self.ctrl_date_emission = CTRL_Saisie_date.Date2(self)
         
         # Elements
-        self.box_elements_staticbox = wx.StaticBox(self, -1, _(u"Prestations à rechercher"))
+        self.box_elements_staticbox = wx.StaticBox(self, -1, _(u"Prestations Ã  rechercher"))
         self.check_consommations = wx.CheckBox(self, -1, _(u"Consommations"))
         self.check_cotisations = wx.CheckBox(self, -1, _(u"Cotisations"))
         self.check_locations = wx.CheckBox(self, -1, _(u"Locations"))
         self.check_autres = wx.CheckBox(self, -1, _(u"Autres"))
         
         # Familles
-        self.box_familles_staticbox = wx.StaticBox(self, -1, _(u"Sélection des familles"))
+        self.box_familles_staticbox = wx.StaticBox(self, -1, _(u"SÃ©lection des familles"))
         
         self.radio_familles_toutes = wx.RadioButton(self, -1, _(u"Toutes les familles"), style=wx.RB_GROUP)
         
@@ -173,8 +173,8 @@ class Panel(wx.Panel):
         self.radio_familles_lot = wx.RadioButton(self, -1, _(u"Les familles qui n'ont aucune facture dans le lot de factures :"))
         self.ctrl_familles_lot = CTRL_Lot_factures(self)
 
-        # Activités
-        self.box_activites_staticbox = wx.StaticBox(self, -1, _(u"Activités"))
+        # ActivitÃ©s
+        self.box_activites_staticbox = wx.StaticBox(self, -1, _(u"ActivitÃ©s"))
         self.ctrl_activites = CTRL_Selection_activites.CTRL(self)
 
         self.__set_properties()
@@ -186,7 +186,7 @@ class Panel(wx.Panel):
         self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioFamilles, self.radio_familles_prestations)
         self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioFamilles, self.radio_familles_lot)
         
-        # Init contrôles
+        # Init contrÃ´les
         self.ctrl_date_reference.SetDate(datetime.date.today())
         self.ctrl_date_emission.SetDate(datetime.date.today())
         self.check_consommations.SetValue(True)
@@ -197,24 +197,24 @@ class Panel(wx.Panel):
         
 
     def __set_properties(self):
-        self.ctrl_lot.SetToolTip(wx.ToolTip(_(u"Sélectionnez un lot de lettres de rappel à associer : Janvier 2013, Février, 2013, etc... Ce nom vous permettra de retrouver vos rappels facilement [Optionnel]")))
-        self.bouton_lots.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à la gestion des lots")))
-        self.ctrl_date_emission.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date d'émission la date des lettres de rappel (Par défaut la date du jour)")))
-        self.ctrl_date_reference.SetToolTip(wx.ToolTip(_(u"Saisissez la date de référence avant laquelle Noethys recherchera des impayés")))
+        self.ctrl_lot.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez un lot de lettres de rappel Ã  associer : Janvier 2013, FÃ©vrier, 2013, etc... Ce nom vous permettra de retrouver vos rappels facilement [Optionnel]")))
+        self.bouton_lots.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accÃ©der Ã  la gestion des lots")))
+        self.ctrl_date_emission.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date d'Ã©mission la date des lettres de rappel (Par dÃ©faut la date du jour)")))
+        self.ctrl_date_reference.SetToolTip(wx.ToolTip(_(u"Saisissez la date de rÃ©fÃ©rence avant laquelle Noethys recherchera des impayÃ©s")))
         self.check_consommations.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour inclure les prestations de consommations")))
         self.check_cotisations.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour inclure les prestations de cotisations")))
         self.check_locations.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour inclure les prestations de locations")))
         self.check_autres.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour inclure les autres types de prestations")))
-        self.radio_familles_toutes.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour rechercher les lettres de rappel de toutes les familles (par défaut)")))
+        self.radio_familles_toutes.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour rechercher les lettres de rappel de toutes les familles (par dÃ©faut)")))
         self.radio_familles_unique.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour rechercher les lettres de rappel d'une seule famille")))
-        self.ctrl_famille.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici une famille")))
+        self.ctrl_famille.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez ici une famille")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=2, vgap=10, hgap=10)
 
         grid_sizer_gauche = wx.FlexGridSizer(rows=5, cols=1, vgap=10, hgap=10)
 
-        # Date de référence
+        # Date de rÃ©fÃ©rence
         box_date_reference = wx.StaticBoxSizer(self.box_date_reference_staticbox, wx.VERTICAL)
         grid_sizer_date_reference = wx.FlexGridSizer(rows=1, cols=4, vgap=5, hgap=5)
         grid_sizer_date_reference.Add(self.label_date_reference, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
@@ -232,7 +232,7 @@ class Panel(wx.Panel):
         box_lot.Add(grid_sizer_lot, 1, wx.ALL|wx.EXPAND, 10)
         grid_sizer_gauche.Add(box_lot, 1, wx.EXPAND, 0)
 
-        # Paramètres
+        # ParamÃ¨tres
         box_parametres = wx.StaticBoxSizer(self.box_parametres_staticbox, wx.VERTICAL)
         grid_sizer_parametres = wx.FlexGridSizer(rows=4, cols=2, vgap=5, hgap=5)
         grid_sizer_parametres.Add(self.label_date_emission, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
@@ -274,7 +274,7 @@ class Panel(wx.Panel):
         box_familles.Add(grid_sizer_familles, 1, wx.ALL|wx.EXPAND, 10)
         grid_sizer_gauche.Add(box_familles, 1, wx.EXPAND, 0)
         
-        # Activités
+        # ActivitÃ©s
         box_activites = wx.StaticBoxSizer(self.box_activites_staticbox, wx.VERTICAL)
         grid_sizer_gauche.AddGrowableRow(4)
         grid_sizer_base.Add(grid_sizer_gauche, 1, wx.EXPAND, 0)
@@ -306,42 +306,42 @@ class Panel(wx.Panel):
         self.ctrl_familles_lot.Enable(self.radio_familles_lot.GetValue())
 
     def Validation(self):
-        """ Validation des données saisies """
-        # Vérifie date de référence
+        """ Validation des donnÃ©es saisies """
+        # VÃ©rifie date de rÃ©fÃ©rence
         date_reference = self.ctrl_date_reference.GetDate()
         if self.ctrl_date_reference.FonctionValiderDate() == False or date_reference == None :
-            dlg = wx.MessageDialog(self, _(u"La date de référence ne semble pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"La date de rÃ©fÃ©rence ne semble pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_reference.SetFocus()
             return False
 
-        # Vérifier si lot de lettres de rappel
+        # VÃ©rifier si lot de lettres de rappel
         IDlot = self.ctrl_lot.GetID()
         if IDlot == None :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez pas sélectionné de lot de lettres de rappel à associer. \n\nSouhaitez-vous quand même continuer ?"), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez pas sÃ©lectionnÃ© de lot de lettres de rappel Ã  associer. \n\nSouhaitez-vous quand mÃªme continuer ?"), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
             resultat = dlg.ShowModal()
             dlg.Destroy()
             if resultat != wx.ID_YES :
                 return False
             
-        # Date d'émission
+        # Date d'Ã©mission
         date_emission = self.ctrl_date_emission.GetDate()
         if self.ctrl_date_emission.FonctionValiderDate() == False or date_emission == None :
-            dlg = wx.MessageDialog(self, _(u"La date d'émission ne semble pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"La date d'Ã©mission ne semble pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_emission.SetFocus()
             return False
 
-        # Vérifier si types de prestations indiquées
+        # VÃ©rifier si types de prestations indiquÃ©es
         prestations = []
         if self.check_consommations.GetValue() == True : prestations.append("consommation")
         if self.check_cotisations.GetValue() == True : prestations.append("cotisation")
         if self.check_locations.GetValue() == True: prestations.append("location")
         if self.check_autres.GetValue() == True : prestations.append("autre")
         if len(prestations) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement cocher au moins un type de prestation à facturer !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement cocher au moins un type de prestation Ã  facturer !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -351,23 +351,23 @@ class Panel(wx.Panel):
         if self.radio_familles_unique.GetValue() == True :
             IDcompte_payeur_unique = self.ctrl_famille.GetIDcompte_payeur() 
             if IDcompte_payeur_unique == None :
-                dlg = wx.MessageDialog(self, _(u"Vous avez sélectionné l'option 'famille unique' mais sans sélectionner de famille dans la liste proposée !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous avez sÃ©lectionnÃ© l'option 'famille unique' mais sans sÃ©lectionner de famille dans la liste proposÃ©e !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
 
-        # Vérifie les activités sélectionnées
+        # VÃ©rifie les activitÃ©s sÃ©lectionnÃ©es
         listeActivites = self.ctrl_activites.GetActivites() 
         if len(listeActivites) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune activité !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune activitÃ© !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
 
-        # Vérification droits utilisateurs
+        # VÃ©rification droits utilisateurs
         for IDactivite in listeActivites :
             if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("facturation_rappels", "creer", IDactivite=IDactivite, afficheMessage=False) == False : 
-                dlg = wx.MessageDialog(self, _(u"Vous n'avez pas l'autorisation de générer des rappels pour l'ensemble des activités sélectionnées !"), _(u"Action non autorisée"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous n'avez pas l'autorisation de gÃ©nÃ©rer des rappels pour l'ensemble des activitÃ©s sÃ©lectionnÃ©es !"), _(u"Action non autorisÃ©e"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
@@ -378,7 +378,7 @@ class Panel(wx.Panel):
         if self.radio_familles_prestations.GetValue() == True :
             date_debut = self.ctrl_familles_prestations_min.GetDate() 
             if self.ctrl_familles_prestations_min.FonctionValiderDate() == False or date_debut == None :
-                dlg = wx.MessageDialog(self, _(u"La date de début de prestation ne semble pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"La date de dÃ©but de prestation ne semble pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_familles_prestations_min.SetFocus()
@@ -406,7 +406,7 @@ class Panel(wx.Panel):
         if self.radio_familles_lot.GetValue() == True :
             IDlot = self.ctrl_familles_lot.GetID()
             if IDlot == None :
-                dlg = wx.MessageDialog(self, _(u"Vous n'avez pas sélectionné de lot de factures dans le filtre familles !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous n'avez pas sÃ©lectionnÃ© de lot de factures dans le filtre familles !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
@@ -423,7 +423,7 @@ class Panel(wx.Panel):
                 listeExclusions.append(IDcompte_payeur)
 
 
-        # Envoi des données à DLG_Rappels_generation
+        # Envoi des donnÃ©es Ã  DLG_Rappels_generation
         self.parent.dictParametres = {
             "date_reference" : date_reference,
             "IDlot" : IDlot,

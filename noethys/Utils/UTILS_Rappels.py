@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-13 Ivan LUCAS
@@ -21,7 +21,7 @@ import sys
 import traceback
 
 from Utils import UTILS_Config
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"â‚¬")
 MONNAIE_SINGULIER = UTILS_Config.GetParametre("monnaie_singulier", _(u"Euro"))
 MONNAIE_DIVISION = UTILS_Config.GetParametre("monnaie_division", _(u"Centime"))
 
@@ -44,11 +44,11 @@ from Dlg.DLG_Saisie_texte_rappel import MOTSCLES
 
 class Facturation():
     def __init__(self):
-        """ Récupération de toutes les données de base """
+        """ RÃ©cupÃ©ration de toutes les donnÃ©es de base """
         
         DB = GestionDB.DB()
             
-        # Récupération des infos sur l'organisme
+        # RÃ©cupÃ©ration des infos sur l'organisme
         req = """SELECT nom, rue, cp, ville, tel, fax, mail, site, num_agrement, num_siret, code_ape
         FROM organisateur
         WHERE IDorganisateur=1;""" 
@@ -70,7 +70,7 @@ class Facturation():
             self.dictOrganisme["code_ape"] = code_ape
 
 
-        # Récupération des textes de rappels
+        # RÃ©cupÃ©ration des textes de rappels
         req = """SELECT IDtexte, titre, texte_pdf
         FROM textes_rappels;""" 
         DB.ExecuterReq(req)
@@ -84,15 +84,15 @@ class Facturation():
         # Get noms Titulaires
         self.dictTitulaires = UTILS_Titulaires.GetTitulaires() 
 
-        # Récupération des questionnaires
+        # RÃ©cupÃ©ration des questionnaires
         self.Questionnaires = UTILS_Questionnaires.ChampsEtReponses(type="famille")
 
-        # Récupération des infos de base familles
+        # RÃ©cupÃ©ration des infos de base familles
         self.infosIndividus = UTILS_Infos_individus.Informations() 
         
         
     def Supprime_accent(self, texte):
-        liste = [ (u"é", u"e"), (u"è", u"e"), (u"ê", u"e"), (u"ë", u"e"), (u"à", u"a"), (u"û", u"u"), (u"ô", u"o"), (u"ç", u"c"), (u"î", u"i"), (u"ï", u"i"),]
+        liste = [ (u"Ã©", u"e"), (u"Ã¨", u"e"), (u"Ãª", u"e"), (u"Ã«", u"e"), (u"Ã ", u"a"), (u"Ã»", u"u"), (u"Ã´", u"o"), (u"Ã§", u"c"), (u"Ã®", u"i"), (u"Ã¯", u"i"),]
         for a, b in liste :
             texte = texte.replace(a, b)
             texte = texte.replace(a.upper(), b.upper())
@@ -108,9 +108,9 @@ class Facturation():
 
 
     def GetDonnees(self, listeRappels=[], liste_activites=[], listeExceptionsComptes=[], date_reference=None, date_edition=None, prestations=["consommation", "cotisation", "location", "autre"]):
-        """ Recherche des rappels à créer """   
+        """ Recherche des rappels Ã  crÃ©er """   
        
-        # Création des conditions SQL
+        # CrÃ©ation des conditions SQL
         if len(liste_activites) == 0 : conditionActivites = "()"
         elif len(liste_activites) == 1 : conditionActivites = "(%d)" % liste_activites[0]
         else : conditionActivites = str(tuple(liste_activites))
@@ -126,7 +126,7 @@ class Facturation():
 
         DB = GestionDB.DB()
         
-        # Recherche des prestations de la période
+        # Recherche des prestations de la pÃ©riode
         req = """SELECT prestations.IDcompte_payeur, prestations.IDfamille,
         MIN(prestations.date),
         MAX(prestations.date),
@@ -139,7 +139,7 @@ class Facturation():
         DB.ExecuterReq(req)
         listePrestations = DB.ResultatReq()  
         
-        # Récupération de la ventilation
+        # RÃ©cupÃ©ration de la ventilation
         req = """SELECT prestations.IDcompte_payeur, SUM(ventilation.montant)
         FROM ventilation
         LEFT JOIN prestations ON prestations.IDprestation = ventilation.IDprestation
@@ -156,7 +156,7 @@ class Facturation():
         DB.Close() 
 
 
-        # Analyse et regroupement des données
+        # Analyse et regroupement des donnÃ©es
         dictComptes = {}
         for IDcompte_payeur, IDfamille, date_min, date_max, montant in listePrestations :
             
@@ -198,7 +198,7 @@ class Facturation():
                     "{SOLDE_LETTRES}" : UTILS_Conversion.trad(-solde, MONNAIE_SINGULIER, MONNAIE_DIVISION),
                     "select" : True,
                     "num_codeBarre" :  "%07d" % numero,
-                    "numero" : _(u"Rappel n°%07d") % numero,
+                    "numero" : _(u"Rappel nÂ°%07d") % numero,
                     "{CODEBARRES_NUM_RAPPEL}" : "F%06d" % numero,
 
                     "date_min" : UTILS_Dates.DateEngEnDateDD(date_min),
@@ -222,10 +222,10 @@ class Facturation():
                     "{ORGANISATEUR_APE}" : self.dictOrganisme["code_ape"],
                     }
                 
-                # Ajout les données de base familles
+                # Ajout les donnÃ©es de base familles
                 dictComptes[IDcompte_payeur].update(self.infosIndividus.GetDictValeurs(mode="famille", ID=IDfamille, formatChamp=True))
                 
-                # Ajoute les réponses des questionnaires
+                # Ajoute les rÃ©ponses des questionnaires
                 for dictReponse in self.Questionnaires.GetDonnees(IDfamille) :
                     dictComptes[IDcompte_payeur][dictReponse["champ"]] = dictReponse["reponse"]
                     if dictReponse["controle"] == "codebarres" :
@@ -236,14 +236,14 @@ class Facturation():
 
     def GetDonneesImpression(self, listeRappels=[]):
         """ Impression des factures """
-        dlgAttente = wx.BusyInfo(_(u"Recherche des données de facturation..."), None)
+        dlgAttente = wx.BusyInfo(_(u"Recherche des donnÃ©es de facturation..."), None)
         try :
             if 'phoenix' not in wx.PlatformInfo:
                 wx.Yield()
         except :
             pass
         
-        # Récupère les données de la facture
+        # RÃ©cupÃ¨re les donnÃ©es de la facture
         if len(listeRappels) == 0 : conditions = "()"
         elif len(listeRappels) == 1 : conditions = "(%d)" % listeRappels[0]
         else : conditions = str(tuple(listeRappels))
@@ -270,7 +270,7 @@ class Facturation():
             del dlgAttente
             return False
         
-        # Création des dictRappels
+        # CrÃ©ation des dictRappels
         dictRappels = {}
         dictChampsFusion = {}
         for IDrappel, numero, IDcompte_payeur, date_edition, activites, IDutilisateur, IDtexte, date_reference, solde, date_min, date_max, prestations, IDfamille, nomLot in listeDonnees :
@@ -300,7 +300,7 @@ class Facturation():
                 "{SOLDE_LETTRES}" : UTILS_Conversion.trad(-solde, MONNAIE_SINGULIER, MONNAIE_DIVISION),
                 "select" : True,
                 "num_codeBarre" :  "%07d" % numero,
-                "numero" : _(u"Rappel n°%07d") % numero,
+                "numero" : _(u"Rappel nÂ°%07d") % numero,
                 "{CODEBARRES_NUM_RAPPEL}" : "F%06d" % numero,
 
                 "date_min" : date_min,
@@ -329,10 +329,10 @@ class Facturation():
 
             dictRappel["texte"] = self.Fusion(IDtexte, dictRappel)
 
-            # Ajout les données de base familles
+            # Ajout les donnÃ©es de base familles
             dictRappel.update(self.infosIndividus.GetDictValeurs(mode="famille", ID=IDfamille, formatChamp=True))
 
-            # Ajoute les réponses des questionnaires
+            # Ajoute les rÃ©ponses des questionnaires
             for dictReponse in self.Questionnaires.GetDonnees(IDfamille) :
                 dictRappel[dictReponse["champ"]] = dictReponse["reponse"]
                 if dictReponse["controle"] == "codebarres" :
@@ -370,16 +370,16 @@ class Facturation():
 
     def Impression(self, listeRappels=[], nomDoc=None, afficherDoc=True, dictOptions=None, repertoire=None, repertoireTemp=False):
         """ Impression des factures """
-        # Récupération des données à partir des IDrappel
+        # RÃ©cupÃ©ration des donnÃ©es Ã  partir des IDrappel
         resultat = self.GetDonneesImpression(listeRappels)
         if resultat == False :
             return False
         dictRappels, dictChampsFusion = resultat
         
-        # Récupération des paramètres d'affichage
+        # RÃ©cupÃ©ration des paramÃ¨tres d'affichage
         if dictOptions == None :
             if afficherDoc == False :
-                dlg = DLG_Apercu_rappel.Dialog(None, titre=_(u"Sélection des paramètres de la lettre de rappel"), intro=_(u"Sélectionnez ici les paramètres d'affichage du rappel à envoyer par Email."))
+                dlg = DLG_Apercu_rappel.Dialog(None, titre=_(u"SÃ©lection des paramÃ¨tres de la lettre de rappel"), intro=_(u"SÃ©lectionnez ici les paramÃ¨tres d'affichage du rappel Ã  envoyer par Email."))
                 dlg.bouton_ok.SetImageEtTexte("Images/32x32/Valider.png", _("Ok"))
             else :
                 dlg = DLG_Apercu_rappel.Dialog(None)
@@ -390,10 +390,10 @@ class Facturation():
                 dlg.Destroy()
                 return False
 
-        # Création des PDF à l'unité
+        # CrÃ©ation des PDF Ã  l'unitÃ©
         def CreationPDFunique(repertoireCible=""):
             dictPieces = {}
-            dlgAttente = wx.BusyInfo(_(u"Génération des lettres de rappel à l'unité au format PDF..."), None)
+            dlgAttente = wx.BusyInfo(_(u"GÃ©nÃ©ration des lettres de rappel Ã  l'unitÃ© au format PDF..."), None)
             if 'phoenix' not in wx.PlatformInfo:
                 wx.Yield()
             try :
@@ -415,18 +415,18 @@ class Facturation():
             except Exception as err:
                 del dlgAttente
                 traceback.print_exc(file=sys.stdout)
-                dlg = wx.MessageDialog(None, _(u"Désolé, le problème suivant a été rencontré dans l'édition des lettres de rappel : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
+                dlg = wx.MessageDialog(None, _(u"DÃ©solÃ©, le problÃ¨me suivant a Ã©tÃ© rencontrÃ© dans l'Ã©dition des lettres de rappel : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
         
-        # Répertoire souhaité par l'utilisateur
+        # RÃ©pertoire souhaitÃ© par l'utilisateur
         if repertoire != None :
             resultat = CreationPDFunique(repertoire)
             if resultat == False :
                 return False
 
-        # Répertoire TEMP (pour Emails)
+        # RÃ©pertoire TEMP (pour Emails)
         dictPieces = {}
         if repertoireTemp == True :
             dictPieces = CreationPDFunique(UTILS_Fichiers.GetRepTemp())
@@ -435,10 +435,10 @@ class Facturation():
 
         # Fabrication du PDF global
         if repertoireTemp == False :
-            dlgAttente = wx.BusyInfo(_(u"Création du PDF des lettres de rappel..."), None)
+            dlgAttente = wx.BusyInfo(_(u"CrÃ©ation du PDF des lettres de rappel..."), None)
             if 'phoenix' not in wx.PlatformInfo:
                 wx.Yield()
-            self.EcritStatusbar(_(u"Création du PDF des lettres de rappel en cours... veuillez patienter..."))
+            self.EcritStatusbar(_(u"CrÃ©ation du PDF des lettres de rappel en cours... veuillez patienter..."))
             try :
                 UTILS_Impression_rappel.Impression(dictRappels, dictOptions, IDmodele=dictOptions["IDmodele"], ouverture=afficherDoc, nomFichier=nomDoc)
                 self.EcritStatusbar("")
@@ -446,8 +446,8 @@ class Facturation():
             except Exception as err:
                 del dlgAttente
                 traceback.print_exc(file=sys.stdout)
-                err = str(err).decode("iso-8859-15")
-                dlg = wx.MessageDialog(None, _(u"Désolé, le problème suivant a été rencontré dans l'édition des lettres de rappel : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
+                err = str(err).decode("utf8")
+                dlg = wx.MessageDialog(None, _(u"DÃ©solÃ©, le problÃ¨me suivant a Ã©tÃ© rencontrÃ© dans l'Ã©dition des lettres de rappel : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False

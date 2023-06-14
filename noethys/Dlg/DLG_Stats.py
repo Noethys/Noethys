@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -92,25 +92,25 @@ class CTRL_Parametres(wx.html.HtmlWindow):
         self.dictParametres = dictParametres
 
     def MAJ(self):
-        """ Création de la source HTML """
+        """ CrÃ©ation de la source HTML """
         html = ""
         
         if ("mode" in self.dictParametres) == False or len(self.dictParametres["listeActivites"]) == 0 :
             return
         
-        # Période
+        # PÃ©riode
         if self.dictParametres["mode"] == "inscrits" :
-            html += _(u"<U><B>Période :</B></U> Aucune")
+            html += _(u"<U><B>PÃ©riode :</B></U> Aucune")
         else:
-            html += _(u"<U><B>Période :</B></U> %s") % self.dictParametres["periode"]["label"]
+            html += _(u"<U><B>PÃ©riode :</B></U> %s") % self.dictParametres["periode"]["label"]
         html += u"<BR><BR>"
         
-        # Activités
+        # ActivitÃ©s
         listeActivites = self.dictParametres["listeActivites"]
         if len(listeActivites) == 0 :
-            html += _(u"<U><B>Activités :</B></U> Aucune")
+            html += _(u"<U><B>ActivitÃ©s :</B></U> Aucune")
         else :
-            html += _(u"<U><B>Activités : </B></U><UL>")
+            html += _(u"<U><B>ActivitÃ©s : </B></U><UL>")
             for IDactivite in listeActivites :
                 nomActivite = self.dictParametres["dictActivites"][IDactivite]
                 html += u"<LI>%s</LI>" % nomActivite
@@ -121,7 +121,7 @@ class CTRL_Parametres(wx.html.HtmlWindow):
         
         
         # Finalisation du html
-        html = _(u"<html><head><title>Paramètres</title></head><body><FONT SIZE=-1>%s</FONT></body></html>") % html
+        html = _(u"<html><head><title>ParamÃ¨tres</title></head><body><FONT SIZE=-1>%s</FONT></body></html>") % html
         self.SetPage(html)
 
 
@@ -162,7 +162,7 @@ class Dialog(wx.Dialog):
                             INDIVIDUS.Graphe_nombre_individus(),
                             ]},
 
-                    {"nom" : _(u"Ancienneté"), "code" : "individus_anciennete", "image" : None, "ctrl_html" : None, "visible" : True, "objets" : [
+                    {"nom" : _(u"AnciennetÃ©"), "code" : "individus_anciennete", "image" : None, "ctrl_html" : None, "visible" : True, "objets" : [
                             INDIVIDUS.Tableau_nouveaux_individus(),
                             INDIVIDUS.Graphe_nouveaux_individus(),
                             INDIVIDUS.Graphe_arrivee_individus(),
@@ -173,19 +173,19 @@ class Dialog(wx.Dialog):
                             INDIVIDUS.Graphe_repartition_genre(),
                             ]},
 
-                    {"nom" : _(u"Âge"), "code" : "individus_age", "image" : None, "ctrl_html" : None, "visible" : True, "objets" : [
+                    {"nom" : _(u"Ã‚ge"), "code" : "individus_age", "image" : None, "ctrl_html" : None, "visible" : True, "objets" : [
                             INDIVIDUS.Tableau_repartition_ages(),
                             INDIVIDUS.Graphe_repartition_ages(),
                             INDIVIDUS.Tableau_repartition_annees_naiss(),
                             INDIVIDUS.Graphe_repartition_annees_naiss(),
                             ]},
 
-                    {"nom" : _(u"Coordonnées"), "code" : "individus_coordonnees", "image" : None, "ctrl_html" : None, "visible" : True, "objets" : [
+                    {"nom" : _(u"CoordonnÃ©es"), "code" : "individus_coordonnees", "image" : None, "ctrl_html" : None, "visible" : True, "objets" : [
                             INDIVIDUS.Tableau_repartition_villes(),
                             INDIVIDUS.Graphe_repartition_villes(),
                             ]},
 
-                    {"nom" : _(u"Scolarité"), "code" : "individus_scolarite", "image" : None, "ctrl_html" : None, "visible" : True, "objets" : [
+                    {"nom" : _(u"ScolaritÃ©"), "code" : "individus_scolarite", "image" : None, "ctrl_html" : None, "visible" : True, "objets" : [
                             INDIVIDUS.Tableau_repartition_ecoles(),
                             INDIVIDUS.Graphe_repartition_ecoles(),
                             INDIVIDUS.Tableau_repartition_niveaux_scolaires(),
@@ -230,7 +230,7 @@ class Dialog(wx.Dialog):
 
 
         # Bandeau
-        intro = _(u"Vous pouvez ici consulter des statistiques complètes sur les activités et la période de votre choix. Ces informations sont présentées sous forme de rubrique, de pages et d'items que vous pouvez choisir d'afficher ou non. Vous pouvez ensuite imprimer ces informations sous forme de rapport hierarchisé. Cliquez sur les graphes pour accéder aux outils spécifiques.")
+        intro = _(u"Vous pouvez ici consulter des statistiques complÃ¨tes sur les activitÃ©s et la pÃ©riode de votre choix. Ces informations sont prÃ©sentÃ©es sous forme de rubrique, de pages et d'items que vous pouvez choisir d'afficher ou non. Vous pouvez ensuite imprimer ces informations sous forme de rapport hierarchisÃ©. Cliquez sur les graphes pour accÃ©der aux outils spÃ©cifiques.")
         titre = _(u"Statistiques")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Barres.png")
@@ -243,20 +243,20 @@ class Dialog(wx.Dialog):
         self.InitLabelbook() 
         self.ctrl_labelbook.SetSelection(0) 
 
-        # Paramètres
-        self.box_parametres_staticbox = wx.StaticBox(self, -1, _(u"Paramètres"))
+        # ParamÃ¨tres
+        self.box_parametres_staticbox = wx.StaticBox(self, -1, _(u"ParamÃ¨tres"))
         self.ctrl_parametres = CTRL_Parametres(self)
         self.ctrl_parametres.MAJ() 
-        self.hyper_parametres = Hyperlien(self, label=_(u"Modifier les paramètres"), infobulle=_(u"Modifier les paramètres"), URL="parametres")
+        self.hyper_parametres = Hyperlien(self, label=_(u"Modifier les paramÃ¨tres"), infobulle=_(u"Modifier les paramÃ¨tres"), URL="parametres")
 
         # impression
         self.box_impression_staticbox = wx.StaticBox(self, -1, _(u"Impression"))
         self.ctrl_impression = CTRL_Stats_objets.CTRL_Objets(self, liste_objets=self.listeObjets)
         self.ctrl_impression.MAJ() 
         
-        self.hyper_selectionner = Hyperlien(self, label=_(u"Tout sélectionner"), infobulle=_(u"Tout sélectionner"), URL="selectionner")
+        self.hyper_selectionner = Hyperlien(self, label=_(u"Tout sÃ©lectionner"), infobulle=_(u"Tout sÃ©lectionner"), URL="selectionner")
         self.label_separation = wx.StaticText(self, -1, u"|")
-        self.hyper_deselectionner = Hyperlien(self, label=_(u"Tout dé-sélectionner"), infobulle=_(u"Tout dé-sélectionner"), URL="deselectionner")
+        self.hyper_deselectionner = Hyperlien(self, label=_(u"Tout dÃ©-sÃ©lectionner"), infobulle=_(u"Tout dÃ©-sÃ©lectionner"), URL="deselectionner")
         
         self.bouton_imprimer = CTRL_Bouton_image.CTRL(self, texte=_(u"Imprimer"), cheminImage="Images/32x32/Imprimante.png")
         
@@ -295,7 +295,7 @@ class Dialog(wx.Dialog):
         
         grid_sizer_droite = wx.FlexGridSizer(rows=2, cols=1, vgap=10, hgap=10)
         
-        # Paramètres
+        # ParamÃ¨tres
         box_parametres = wx.StaticBoxSizer(self.box_parametres_staticbox, wx.VERTICAL)
         grid_sizer_parametres = wx.FlexGridSizer(rows=2, cols=1, vgap=2, hgap=2)
         grid_sizer_parametres.Add(self.ctrl_parametres, 0, wx.EXPAND, 0)
@@ -362,12 +362,12 @@ class Dialog(wx.Dialog):
         
         menuPop.AppendSeparator()
 
-        item = wx.MenuItem(menuPop, 20, _(u"La rubrique affichée"))
+        item = wx.MenuItem(menuPop, 20, _(u"La rubrique affichÃ©e"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Imprimante.png"), wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Imprimer, id=20)
 
-        item = wx.MenuItem(menuPop, 30, _(u"La page affichée"))
+        item = wx.MenuItem(menuPop, 30, _(u"La page affichÃ©e"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Imprimante.png"), wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Imprimer, id=30)
@@ -380,24 +380,24 @@ class Dialog(wx.Dialog):
         listeCodes = self.ctrl_impression.GetCoches() 
         
         # Imprimer tout
-        dlgAttente = wx.BusyInfo(_(u"Création du rapport..."), None)
+        dlgAttente = wx.BusyInfo(_(u"CrÃ©ation du rapport..."), None)
         if 'phoenix' not in wx.PlatformInfo:
             wx.Yield()
         
         if ID == 10 : 
             html = self.baseHTML.GetHTML(mode="impression", selectionsCodes=listeCodes)
-        # Imprimer la rubrique affichée
+        # Imprimer la rubrique affichÃ©e
         if ID == 20 : 
             indexRubrique = self.ctrl_labelbook.GetSelection()
             codeRubrique = self.RechercherElement(indexRubrique=indexRubrique)[0]
             html = self.baseHTML.GetHTML(mode="impression", rubrique=codeRubrique, selectionsCodes=listeCodes)
-        # Imprimer la page affichée
+        # Imprimer la page affichÃ©e
         if ID == 30 : 
             codeRubrique, codePage = self.RecherchePageAffichee() 
             html = self.baseHTML.GetHTML(mode="impression", rubrique=codeRubrique, page=codePage, selectionsCodes=listeCodes)
         
         if len(listeCodes) == 0 or len(html) <= 50 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune information à imprimer !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune information Ã  imprimer !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -410,14 +410,14 @@ class Dialog(wx.Dialog):
         preview = wx.PrintPreview(printout, printout2)
         
 ##        from Utils import UTILS_Printer
-##        preview_window = UTILS_Printer.PreviewFrame(preview, None, _(u"Aperçu avant impression"))
+##        preview_window = UTILS_Printer.PreviewFrame(preview, None, _(u"AperÃ§u avant impression"))
 ##        preview_window.Initialize()
 ##        preview_window.MakeModal(False)
 ##        preview_window.Show(True)
 
         preview.SetZoom(100)
         frame = wx.GetApp().GetTopWindow() 
-        preview_window = wx.PreviewFrame(preview, None, _(u"Aperçu avant impression"))
+        preview_window = wx.PreviewFrame(preview, None, _(u"AperÃ§u avant impression"))
         preview_window.Initialize()
         preview_window.MakeModal(False)
         preview_window.SetPosition(frame.GetPosition())
@@ -432,7 +432,7 @@ class Dialog(wx.Dialog):
         self.ctrl_labelbook.SetColour(LB.INB_TAB_AREA_BACKGROUND_COLOUR, self.couleurFond)
         self.ctrl_labelbook.SetColour(LB.INB_ACTIVE_TAB_COLOUR, (255, 255, 255) )
 
-        # Création de l'ImageList
+        # CrÃ©ation de l'ImageList
         self.dictImages = {
             "individus" : {"img" : wx.Bitmap(Chemins.GetStaticPath('Images/16x16/Personnes.png'), wx.BITMAP_TYPE_PNG), "index" : None},
             "familles" : {"img" : wx.Bitmap(Chemins.GetStaticPath('Images/16x16/Famille.png'), wx.BITMAP_TYPE_PNG), "index" : None},
@@ -463,17 +463,17 @@ class Dialog(wx.Dialog):
                     break
                 indexRubrique += 1
 
-        # Création du notebook
+        # CrÃ©ation du notebook
         flatNoteBook = FNB.FlatNotebook(self.ctrl_labelbook, -1, agwStyle=FNB.FNB_BOTTOM 
                                                                                                             | FNB.FNB_NO_TAB_FOCUS
                                                                                                             | FNB.FNB_NO_X_BUTTON
                                                                                                             )
         flatNoteBook.SetTabAreaColour(self.couleurFond)
         
-        # Mémorise le ctrl flatNoteBook
+        # MÃ©morise le ctrl flatNoteBook
         self.listeObjets[indexRubrique]["ctrl_notebook"] = flatNoteBook
         
-        # Création des pages
+        # CrÃ©ation des pages
         listePages = []
         indexPage = 0
         for dictPage in dictRubrique["pages"] :
@@ -515,7 +515,7 @@ class Dialog(wx.Dialog):
 
     def MAJpageAffichee(self):
         indexRubrique = self.ctrl_labelbook.GetSelection()
-        # Recherche la page à MAJ
+        # Recherche la page Ã  MAJ
         indexR = 0
         for dictRubrique in self.listeObjets :
             if dictRubrique["visible"] == True :
@@ -526,8 +526,8 @@ class Dialog(wx.Dialog):
                 indexR += 1
 
     def MAJpage(self, indexRubrique=None, indexPage=None):
-        """ Met à jour le contenu d'une page """
-        dlgAttente = wx.BusyInfo(_(u"Actualisation des données..."), None)
+        """ Met Ã  jour le contenu d'une page """
+        dlgAttente = wx.BusyInfo(_(u"Actualisation des donnÃ©es..."), None)
         if 'phoenix' not in wx.PlatformInfo:
             wx.Yield()
         
@@ -553,7 +553,7 @@ class Dialog(wx.Dialog):
         if codeRubrique == None or codePage == None :
             return None
         
-        # MAJ du contrôles HTML
+        # MAJ du contrÃ´les HTML
         self.baseHTML.MAJ(page=codePage)
         pageHTML = self.baseHTML.GetHTML(page=codePage) 
         ctrl_html.SetPage(pageHTML)
@@ -585,7 +585,7 @@ class Dialog(wx.Dialog):
         indexRubrique = self.ctrl_labelbook.GetSelection()
         codeRubrique = None
         codePage = None
-        # Recherche la page à MAJ
+        # Recherche la page Ã  MAJ
         indexR = 0
         for dictRubrique in self.listeObjets :
             if dictRubrique["visible"] == True :
@@ -607,7 +607,7 @@ class Dialog(wx.Dialog):
     def OnChangeLabelbook(self, event):
         self.MAJpageAffichee() 
 ##        indexRubrique = self.ctrl_labelbook.GetSelection()
-##        # Recherche la page à MAJ
+##        # Recherche la page Ã  MAJ
 ##        indexR = 0
 ##        for dictRubrique in self.listeObjets :
 ##            if dictRubrique["visible"] == True :
@@ -640,7 +640,7 @@ class Dialog(wx.Dialog):
             annee = dateJour.year
             self.dictParametres = {"mode":"presents", "periode":{"type":"annee", "annee":annee, "date_debut":datetime.date(annee, 1, 1), "date_fin":datetime.date(annee, 12, 31)}, "listeActivites":[], "dictActivites":{} }
         
-        # Demande les paramètres à l'utilisateur
+        # Demande les paramÃ¨tres Ã  l'utilisateur
         dlg = DLG_Stats_parametres.Dialog(self)
         dlg.SetParametres(self.dictParametres)
         if dlg.ShowModal() == wx.ID_OK:
@@ -650,14 +650,14 @@ class Dialog(wx.Dialog):
             dlg.Destroy()
             return False
         
-        # Envoi des paramètres à l'afficheur HTML
+        # Envoi des paramÃ¨tres Ã  l'afficheur HTML
         self.ctrl_parametres.SetParametres(self.dictParametres)
         self.ctrl_parametres.MAJ() 
         
-        # Envoi des paramètres à la baseHTML
+        # Envoi des paramÃ¨tres Ã  la baseHTML
         self.baseHTML.SetParametres(self.dictParametres)
         
-        # Actualisation de la page affichée actuellement
+        # Actualisation de la page affichÃ©e actuellement
         self.MAJpageAffichee()
         return True
 

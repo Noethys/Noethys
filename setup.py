@@ -1,5 +1,5 @@
 #!\\usr\\bin\\env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #-----------------------------------------------------------
 # Auteur:        Ivan LUCAS
 #-----------------------------------------------------------
@@ -75,7 +75,7 @@ manifest = """
 
 
 def GetVersion():
-    """ Recherche du numéro de version """
+    """ Recherche du numÃ©ro de version """
     fichierVersion = open(os.path.join(NOETHYS_PATH, "Versions.txt"), "r")
     txtVersion = fichierVersion.readlines()[0]
     fichierVersion.close()
@@ -195,7 +195,7 @@ data_files=[
             # Polices
             GetDossiers("Static/Polices"),
 
-            # Fichiers à importer :
+            # Fichiers Ã  importer :
             ('', ['noethys/Versions.txt', 'noethys/Licence.txt', 'noethys/Icone.ico']),
 
             ]
@@ -220,8 +220,8 @@ setup(
     name = "Noethys",
     version = VERSION_APPLICATION,
     author = "Ivan LUCAS",
-    description = u"Noethys, le logiciel libre et gratuit de gestion multi-activités",
-    long_description = open("README.md").read().decode("iso-8859-15"),
+    description = u"Noethys, le logiciel libre et gratuit de gestion multi-activitÃ©s",
+    long_description = open("README.md").read().decode("utf8"),
     url = "http://www.noethys.com",
     license = "GPL V3",
     plateformes = "ALL",
@@ -248,9 +248,9 @@ if "py2exe" in sys.argv :
 
     z = zipfile.ZipFile(os.path.join("dist/", "library.zip"), 'a')
 
-    # IMPORTANT : Ce code ne fonctione que si Pytz est unzippé :
+    # IMPORTANT : Ce code ne fonctione que si Pytz est unzippÃ© :
     # Commande easy_install --upgrade --always-unzip pytz
-    # Pour la mettre à jour avec un dézippe automatique
+    # Pour la mettre Ã  jour avec un dÃ©zippe automatique
 
     # Timezone de pytz :
     print "Ajout manuel du repertoire Zoneinfo de pytz..."
@@ -268,7 +268,7 @@ if "py2exe" in sys.argv :
     nom = "C866CA3A-32F7-11D2-9602-00C04F8EE628x0x5x0.py"
     z.write("noethys/Outils/%s" % nom, "win32com/gen_py/%s" % nom)
 
-    # Importe le cacert.pem dans le répertoire certifi
+    # Importe le cacert.pem dans le rÃ©pertoire certifi
     import certifi
     chemin_cert = certifi.where()
     z.write(chemin_cert, "certifi/cacert.pem")
@@ -276,7 +276,7 @@ if "py2exe" in sys.argv :
     # Cloture le ZIP
     z.close()
 
-    # Supprime le répertoire des données exemples de Matplotlib
+    # Supprime le rÃ©pertoire des donnÃ©es exemples de Matplotlib
     print "Supprime les donnees exemples de Matplotlib si besoin..."
     try :
         shutil.rmtree("dist/mpl-data/sample_data")

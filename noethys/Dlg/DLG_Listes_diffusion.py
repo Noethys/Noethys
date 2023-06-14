@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -23,7 +23,7 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         
-        intro = _(u"Vous pouvez ici saisir, modifier ou supprimer des listes de diffusion. Ces listes peuvent être utilisées pour abonner par exemple un individu à une lettre mensuelle internet.")
+        intro = _(u"Vous pouvez ici saisir, modifier ou supprimer des listes de diffusion. Ces listes peuvent Ãªtre utilisÃ©es pour abonner par exemple un individu Ã  une lettre mensuelle internet.")
         titre = _(u"Gestion des listes de diffusion")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Liste_diffusion.png")
         self.ctrl_listview = OL_Listes_diffusion.ListView(self, id=-1, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
@@ -50,9 +50,9 @@ class Dialog(wx.Dialog):
     def __set_properties(self):
         self.SetTitle(_(u"Gestion des listes de diffusion"))
         self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter une liste de diffusion")))
-        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la liste de diffusion sélectionnée")))
-        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la liste de diffusion sélectionnée")))
-        self.bouton_vider.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour vider la liste de diffusion : les abonnements seront supprimés.")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la liste de diffusion sÃ©lectionnÃ©e")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la liste de diffusion sÃ©lectionnÃ©e")))
+        self.bouton_vider.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour vider la liste de diffusion : les abonnements seront supprimÃ©s.")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         self.SetMinSize((500, 500))

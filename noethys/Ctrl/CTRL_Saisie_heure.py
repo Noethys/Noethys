@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -44,14 +44,14 @@ class Heure(masked.TextCtrl):
         try :
             if texteBrut == "":
                 return False
-            # Vérifie chaque chiffre
+            # VÃ©rifie chaque chiffre
             for chiffre in texteBrut:
                 if chiffre != " ":
                     if not (0 <= int(chiffre) <=9):
                         return False
                 else:
                     return False
-            # Vérification de l'ensemble de la date
+            # VÃ©rification de l'ensemble de la date
             if not (0<= int(texteBrut[:2]) <=self.heure_max):
                 return False
             if not (0<= int(texteBrut[-2:]) <=59):

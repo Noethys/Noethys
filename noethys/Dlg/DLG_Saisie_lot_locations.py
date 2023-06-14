@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-18 Ivan LUCAS
@@ -25,7 +25,7 @@ import six
 
 def FormateDate(date):
     if date == None :
-        return _(u"Non définie")
+        return _(u"Non dÃ©finie")
     else :
         return datetime.datetime.strftime(date, "%d/%m/%Y - %Hh%M")
 
@@ -103,7 +103,7 @@ class CTRL_Jours(wx.Panel):
 
         self.hyper_tout = Hyperlien(self, label=_(u"Tout"), infobulle=_(u"Cliquez ici pour tout cocher"), URL="tout")
         self.label_separation = wx.StaticText(self, -1, u"|")
-        self.hyper_rien = Hyperlien(self, label=_(u"Rien"), infobulle=_(u"Cliquez ici pour tout décocher"), URL="rien")
+        self.hyper_rien = Hyperlien(self, label=_(u"Rien"), infobulle=_(u"Cliquez ici pour tout dÃ©cocher"), URL="rien")
 
         # Layout
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=10, vgap=0, hgap=0)
@@ -167,26 +167,26 @@ class Dialog(wx.Dialog):
         self.IDlocation = IDlocation
         self.periode = periode
 
-        # Importation de la location modèle
+        # Importation de la location modÃ¨le
         self.Importation()
 
         # Action
-        self.box_action_staticbox = wx.StaticBox(self, -1, _(u"Location à recopier"))
+        self.box_action_staticbox = wx.StaticBox(self, -1, _(u"Location Ã  recopier"))
         if len(self.dictModele) > 0 :
-            texte = _(u"Produit : %s\nDu %s au %s\nDurée : %s") % (self.dictModele["nom_produit"], self.dictModele["date_debut_str"], self.dictModele["date_fin_str"], self.dictModele["duree_str"])
+            texte = _(u"Produit : %s\nDu %s au %s\nDurÃ©e : %s") % (self.dictModele["nom_produit"], self.dictModele["date_debut_str"], self.dictModele["date_fin_str"], self.dictModele["duree_str"])
         else :
             texte = _(u"ERREUR : Location introuvable")
         self.ctrl_info = wx.StaticText(self, -1, texte)
         self.ctrl_info.SetMinSize((-1, 50))
 
-        # Période
-        self.box_periode_staticbox = wx.StaticBox(self, -1, _(u"Période d'application"))
+        # PÃ©riode
+        self.box_periode_staticbox = wx.StaticBox(self, -1, _(u"PÃ©riode d'application"))
         
         self.label_date_debut = wx.StaticText(self, -1, u"Du")
         self.ctrl_date_debut = CTRL_Saisie_date.Date2(self)
         self.label_date_fin = wx.StaticText(self, -1, _(u"au"))
         self.ctrl_date_fin = CTRL_Saisie_date.Date2(self)
-        self.ctrl_feries = wx.CheckBox(self, -1, _(u"Inclure les fériés"))
+        self.ctrl_feries = wx.CheckBox(self, -1, _(u"Inclure les fÃ©riÃ©s"))
 
         # Jours
         self.box_jours_staticbox = wx.StaticBox(self, -1, _(u"Jours"))
@@ -195,7 +195,7 @@ class Dialog(wx.Dialog):
         self.ctrl_scolaires = CTRL_Jours(self, "scolaire")
         self.label_vacances = wx.StaticText(self, -1, _(u"Vacances :"))
         self.ctrl_vacances = CTRL_Jours(self, "vacances")
-        self.label_semaines = wx.StaticText(self, -1, _(u"Fréquence :"))
+        self.label_semaines = wx.StaticText(self, -1, _(u"FrÃ©quence :"))
         self.ctrl_semaines = CTRL_Semaines(self)
 
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
@@ -217,10 +217,10 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.SetTitle(_(u"Saisie par lot"))
-        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Sélectionnez une date de début de période cible")))
-        self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Sélectionnez une date de fin de période cible")))
-        self.ctrl_semaines.SetToolTip(wx.ToolTip(_(u"Sélectionnez une fréquence")))
-        self.ctrl_feries.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour modifier également les jours fériés")))
+        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez une date de dÃ©but de pÃ©riode cible")))
+        self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez une date de fin de pÃ©riode cible")))
+        self.ctrl_semaines.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez une frÃ©quence")))
+        self.ctrl_feries.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour modifier Ã©galement les jours fÃ©riÃ©s")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
@@ -235,7 +235,7 @@ class Dialog(wx.Dialog):
 
         grid_sizer_bas = wx.FlexGridSizer(rows=1, cols=2, vgap=10, hgap=10)
 
-        # Périodes
+        # PÃ©riodes
         box_periode = wx.StaticBoxSizer(self.box_periode_staticbox, wx.VERTICAL)
         grid_sizer_periode = wx.FlexGridSizer(rows=3, cols=2, vgap=5, hgap=5)
         grid_sizer_periode.Add(self.label_date_debut, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
@@ -298,13 +298,13 @@ class Dialog(wx.Dialog):
         DB.ExecuterReq(req)
         self.listeVacances = DB.ResultatReq()
 
-        # Importation des fériés
+        # Importation des fÃ©riÃ©s
         req = """SELECT type, nom, jour, mois, annee
         FROM jours_feries;"""
         DB.ExecuterReq(req)
         self.listeFeries = DB.ResultatReq()
 
-        # Importation de la location modèle
+        # Importation de la location modÃ¨le
         req = """SELECT locations.IDfamille, locations.IDproduit, 
         locations.observations, locations.date_debut, locations.date_fin, locations.quantite,
         produits.nom, 
@@ -323,7 +323,7 @@ class Dialog(wx.Dialog):
             if quantite == None:
                 quantite = 1
 
-            # Période
+            # PÃ©riode
             if isinstance(date_debut, str) or isinstance(date_debut, six.text_type):
                 date_debut = datetime.datetime.strptime(date_debut, "%Y-%m-%d %H:%M:%S")
 
@@ -336,7 +336,7 @@ class Dialog(wx.Dialog):
                 duree_str = UTILS_Dates.FormatDelta(duree)
             else :
                 duree = None
-                duree_str = _(u"Non définie")
+                duree_str = _(u"Non dÃ©finie")
 
             self.dictModele = {
                 "IDfamille" : IDfamille, "IDproduit" : IDproduit, "observations" : observations,
@@ -374,23 +374,23 @@ class Dialog(wx.Dialog):
 
 
     def OnBoutonOk(self, event):
-        # Période
+        # PÃ©riode
         date_debut = self.ctrl_date_debut.GetDate()
         date_fin = self.ctrl_date_fin.GetDate()
         if date_debut == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez saisir une date de début de période !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez saisir une date de dÃ©but de pÃ©riode !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_debut.SetFocus()
             return False
         if date_fin == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez saisir une date de fin de période !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez saisir une date de fin de pÃ©riode !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_fin.SetFocus()
             return False
         if date_debut > date_fin :
-            dlg = wx.MessageDialog(self, _(u"La date de début ne peut pas être supérieure à la date de fin !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"La date de dÃ©but ne peut pas Ãªtre supÃ©rieure Ã  la date de fin !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_debut.SetFocus()
@@ -415,7 +415,7 @@ class Dialog(wx.Dialog):
         dateTemp = date
         while date < (date_fin + datetime.timedelta(days=1)):
 
-            # Vérifie période et jour
+            # VÃ©rifie pÃ©riode et jour
             valide = False
             if self.EstEnVacances(date):
                 if date.weekday() in jours_vacances:
@@ -424,16 +424,16 @@ class Dialog(wx.Dialog):
                 if date.weekday() in jours_scolaires:
                     valide = True
 
-            # Vérifie si férié
+            # VÃ©rifie si fÃ©riÃ©
             if feries == False and self.EstFerie(date) == True:
                 valide = False
 
-            # Calcul le numéro de semaine
+            # Calcul le numÃ©ro de semaine
             if len(listeDates) > 0:
                 if date.weekday() < dateTemp.weekday():
                     numSemaine += 1
 
-            # Fréquence semaines
+            # FrÃ©quence semaines
             if semaines in (2, 3, 4):
                 if numSemaine % semaines != 0:
                     valide = False
@@ -446,7 +446,7 @@ class Dialog(wx.Dialog):
                 if numSemaineAnnee % 2 != 0 and semaines == 5:
                     valide = False
 
-            # Ajout de la date à la liste
+            # Ajout de la date Ã  la liste
             if valide == True:
                 listeDates.append(date)
 
@@ -489,7 +489,7 @@ class Dialog(wx.Dialog):
 
         del dlgAttente
 
-        # Fermeture de la fenêtre
+        # Fermeture de la fenÃªtre
         self.EndModal(wx.ID_OK)
 
     def GetDonnees(self):

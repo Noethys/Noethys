@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -22,42 +22,42 @@ from Ctrl import CTRL_Compte_internet
 
 LISTE_CATEGORIES_TIERS = [
     ("01", _(u"Personne physique")),
-    ("20", _(u"Etat ou établissement public national")),
-    ("21", _(u"Région")),
-    ("22", _(u"Département")),
+    ("20", _(u"Etat ou Ã©tablissement public national")),
+    ("21", _(u"RÃ©gion")),
+    ("22", _(u"DÃ©partement")),
     ("23", _(u"Commune")),
-    ("24", _(u"Groupement de collectivités")),
-    ("25", _(u"Caisse des écoles")),
+    ("24", _(u"Groupement de collectivitÃ©s")),
+    ("25", _(u"Caisse des Ã©coles")),
     ("26", _(u"CCAS")),
-    ("27", _(u"Etablissement public de santé")),
-    ("28", _(u"Ecole nationale de la santé publique")),
-    ("29", _(u"Autre établissement publique ou organisme international")),
-    ("50", _(u"Personne morale de droit privé autre qu'organisme social")),
-    ("60", _(u"Caisse de sécurité sociale régime général")),
-    ("61", _(u"Caisse de sécurité sociale régime agricole")),
-    ("62", _(u"Sécurité sociale des travailleurs non salariés et professions non agricoles")),
-    ("63", _(u"Autre régime obligatoire de sécurité sociale")),
+    ("27", _(u"Etablissement public de santÃ©")),
+    ("28", _(u"Ecole nationale de la santÃ© publique")),
+    ("29", _(u"Autre Ã©tablissement publique ou organisme international")),
+    ("50", _(u"Personne morale de droit privÃ© autre qu'organisme social")),
+    ("60", _(u"Caisse de sÃ©curitÃ© sociale rÃ©gime gÃ©nÃ©ral")),
+    ("61", _(u"Caisse de sÃ©curitÃ© sociale rÃ©gime agricole")),
+    ("62", _(u"SÃ©curitÃ© sociale des travailleurs non salariÃ©s et professions non agricoles")),
+    ("63", _(u"Autre rÃ©gime obligatoire de sÃ©curitÃ© sociale")),
     ("64", _(u"Mutuelle ou organisme d'assurance")),
     ("65", _(u"Autre tiers payant")),
     ("70", _(u"CNRACL")),
     ("71", _(u"IRCANTEC")),
     ("72", _(u"ASSEDIC")),
-    ("73", _(u"Caisse mutualiste de retraite complémentaire")),
+    ("73", _(u"Caisse mutualiste de retraite complÃ©mentaire")),
     ("74", _(u"Autre organisme social")),
     ]
 
 LISTE_NATURES_JURIDIQUES = [
     ("00", _(u"Inconnu")),
     ("01", _(u"Particulier")),
-    ("02", _(u"Artisan / commerçant / agriculteur")),
-    ("03", _(u"Société")),
-    ("04", _(u"CAM ou Caisse appliquant les mêmes règles")),
-    ("05", _(u"Caisse complémentaire")),
+    ("02", _(u"Artisan / commerÃ§ant / agriculteur")),
+    ("03", _(u"SociÃ©tÃ©")),
+    ("04", _(u"CAM ou Caisse appliquant les mÃªmes rÃ¨gles")),
+    ("05", _(u"Caisse complÃ©mentaire")),
     ("06", _(u"Association")),
-    ("07", _(u"Etat ou organisme d'état")),
+    ("07", _(u"Etat ou organisme d'Ã©tat")),
     ("08", _(u"Etablissement public national")),
-    ("09", _(u"Collectivité territoriale / EPL / EPS")),
-    ("10", _(u"Etat étranger")),
+    ("09", _(u"CollectivitÃ© territoriale / EPL / EPS")),
+    ("10", _(u"Etat Ã©tranger")),
     ("11", _(u"CAF")),
     ]
 
@@ -86,18 +86,18 @@ class CTRL_Parametres(wxpg.PropertyGrid) :
         self.IDfamille = IDfamille
         self.Bind(wxpg.EVT_PG_CHANGED, self.OnPropGridChange)
 
-        # Définition des éditeurs personnalisés
+        # DÃ©finition des Ã©diteurs personnalisÃ©s
         self.SetExtraStyle(wxpg.PG_EX_HELP_AS_TOOLTIPS)
         
-        # Données Tiers pour Hélios
-        self.Append( wxpg.PropertyCategory(_(u"Données tiers pour Hélios")) )
+        # DonnÃ©es Tiers pour HÃ©lios
+        self.Append( wxpg.PropertyCategory(_(u"DonnÃ©es tiers pour HÃ©lios")) )
         
         propriete = wxpg.EnumProperty(label=_(u"Titulaire"), name="titulaire_helios")
-        propriete.SetHelpString(_(u"Sélectionnez le titulaire du compte pour Hélios (Trésor Public)"))
+        propriete.SetHelpString(_(u"SÃ©lectionnez le titulaire du compte pour HÃ©lios (TrÃ©sor Public)"))
         self.Append(propriete)
 
         propriete = wxpg.EnumProperty(label=_(u"Tiers solidaire"), name="tiers_solidaire")
-        propriete.SetHelpString(_(u"Sélectionnez le tiers solidaire du compte pour Hélios (Trésor Public)"))
+        propriete.SetHelpString(_(u"SÃ©lectionnez le tiers solidaire du compte pour HÃ©lios (TrÃ©sor Public)"))
         self.Append(propriete)
 
         propriete = wxpg.StringProperty(label=_(u"Identifiant national"), name="idtiers_helios", value=u"")
@@ -106,21 +106,21 @@ class CTRL_Parametres(wxpg.PropertyGrid) :
 
         listeLabels, listeID = GetDonneesListe(LISTE_TYPES_ID_TIERS)
         propriete = wxpg.EnumProperty(label=_(u"Type d'identifiant national"), name="natidtiers_helios", labels=listeLabels, values=listeID, value=9999)
-        propriete.SetHelpString(_(u"[Facultatif] Sélectionnez le type d'identifiant national du tiers pour Hélios (Trésor Public)"))
+        propriete.SetHelpString(_(u"[Facultatif] SÃ©lectionnez le type d'identifiant national du tiers pour HÃ©lios (TrÃ©sor Public)"))
         self.Append(propriete)
 
-        propriete = wxpg.StringProperty(label=_(u"Référence locale"), name="reftiers_helios", value="")
-        propriete.SetHelpString(_(u"[Facultatif] Saisissez la référence locale du tiers")) 
+        propriete = wxpg.StringProperty(label=_(u"RÃ©fÃ©rence locale"), name="reftiers_helios", value="")
+        propriete.SetHelpString(_(u"[Facultatif] Saisissez la rÃ©fÃ©rence locale du tiers")) 
         self.Append(propriete)
 
         listeLabels, listeID = GetDonneesListe(LISTE_CATEGORIES_TIERS)
-        propriete = wxpg.EnumProperty(label=_(u"Catégorie"), name="cattiers_helios", labels=listeLabels, values=listeID, value=1)
-        propriete.SetHelpString(_(u"Sélectionnez la catégorie de tiers pour Hélios (Trésor Public)"))
+        propriete = wxpg.EnumProperty(label=_(u"CatÃ©gorie"), name="cattiers_helios", labels=listeLabels, values=listeID, value=1)
+        propriete.SetHelpString(_(u"SÃ©lectionnez la catÃ©gorie de tiers pour HÃ©lios (TrÃ©sor Public)"))
         self.Append(propriete)
 
         listeLabels, listeID = GetDonneesListe(LISTE_NATURES_JURIDIQUES)
         propriete = wxpg.EnumProperty(label=_(u"Nature juridique"), name="natjur_helios", labels=listeLabels, values=listeID, value=1)
-        propriete.SetHelpString(_(u"Sélectionnez la nature juridique du tiers pour Hélios (Trésor Public)"))
+        propriete.SetHelpString(_(u"SÃ©lectionnez la nature juridique du tiers pour HÃ©lios (TrÃ©sor Public)"))
         self.Append(propriete)
 
 
@@ -150,11 +150,11 @@ class CTRL_Parametres(wxpg.PropertyGrid) :
         self.Append(propriete)
 
 
-        # Comptabilité
-        self.Append( wxpg.PropertyCategory(_(u"Comptabilité")) )
+        # ComptabilitÃ©
+        self.Append( wxpg.PropertyCategory(_(u"ComptabilitÃ©")) )
 
         propriete = wxpg.StringProperty(label=_(u"Code comptable"), name="code_comptable", value=u"")
-        propriete.SetHelpString(_(u"Saisissez le code comptable de la famille (Utilisé pour les exports vers logiciels de compta)")) 
+        propriete.SetHelpString(_(u"Saisissez le code comptable de la famille (UtilisÃ© pour les exports vers logiciels de compta)")) 
         self.Append(propriete)
 
     def OnPropGridChange(self, event):
@@ -286,12 +286,12 @@ class CTRL_Parametres(wxpg.PropertyGrid) :
             return None
 
     def Validation(self):
-        """ Validation des données saisies """
+        """ Validation des donnÃ©es saisies """
         for nom, valeur in self.GetPropertyValues().items() :
             propriete = self.GetPropertyByName(nom)
             if self.GetPropertyAttribute(propriete, "obligatoire") == True :
                 if valeur == "" or valeur == None :
-                    dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement renseigner le paramètre '%s' !") % self.GetPropertyLabel(nom), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                    dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement renseigner le paramÃ¨tre '%s' !") % self.GetPropertyLabel(nom), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                     dlg.ShowModal()
                     dlg.Destroy()
                     return False
@@ -325,8 +325,8 @@ class Panel(wx.Panel):
         self.bouton_envoi_pressepapiers = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Clipboard.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_historique = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Historique.png"), wx.BITMAP_TYPE_ANY))
 
-        # Paramètres divers
-        self.staticBox_divers = wx.StaticBox(self, -1, _(u"Paramètres divers"))
+        # ParamÃ¨tres divers
+        self.staticBox_divers = wx.StaticBox(self, -1, _(u"ParamÃ¨tres divers"))
         self.ctrl_parametres = CTRL_Parametres(self, IDfamille=IDfamille)
         
         self.__set_properties()
@@ -338,9 +338,9 @@ class Panel(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.Consulter_historique, self.bouton_historique)
 
     def __set_properties(self):
-        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Modifier les paramètres du compte internet")))
-        self.bouton_envoi_mail.SetToolTip(wx.ToolTip(_(u"Envoyer un couriel à la famille avec les codes d'accès au portail Internet")))
-        self.bouton_envoi_pressepapiers.SetToolTip(wx.ToolTip(_(u"Copier les codes d'accès dans le presse-papiers afin de les coller ensuite dans un document ou un email par exemple")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Modifier les paramÃ¨tres du compte internet")))
+        self.bouton_envoi_mail.SetToolTip(wx.ToolTip(_(u"Envoyer un couriel Ã  la famille avec les codes d'accÃ¨s au portail Internet")))
+        self.bouton_envoi_pressepapiers.SetToolTip(wx.ToolTip(_(u"Copier les codes d'accÃ¨s dans le presse-papiers afin de les coller ensuite dans un document ou un email par exemple")))
         self.bouton_historique.SetToolTip(wx.ToolTip(_(u"Consulter et traiter les demandes de la famille")))
 
     def __do_layout(self):
@@ -364,7 +364,7 @@ class Panel(wx.Panel):
         sizer_staticBox_param.Add(grid_sizer_param, 1, wx.ALL|wx.EXPAND, 5)
         grid_sizer_base.Add(sizer_staticBox_param, 1, wx.ALL|wx.EXPAND, 5)
 
-        # Paramètres divers
+        # ParamÃ¨tres divers
         sizer_staticBox_divers = wx.StaticBoxSizer(self.staticBox_divers, wx.VERTICAL)
         sizer_staticBox_divers.Add(self.ctrl_parametres, 1, wx.ALL|wx.EXPAND, 5)
         grid_sizer_base.Add(sizer_staticBox_divers, 1, wx.RIGHT|wx.BOTTOM|wx.TOP|wx.EXPAND, 5)
@@ -403,7 +403,7 @@ class Panel(wx.Panel):
                 # Compte internet
                 self.ctrl_compte_internet.SetDonnees({"internet_actif": internet_actif, "internet_identifiant": internet_identifiant, "internet_mdp": internet_mdp})
 
-                # Hélios
+                # HÃ©lios
                 self.ctrl_parametres.SetPropertyValue("titulaire_helios", titulaire_helios)
                 self.ctrl_parametres.SetPropertyValue("tiers_solidaire", tiers_solidaire)
                 if idtiers_helios != None : self.ctrl_parametres.SetPropertyValue("idtiers_helios", idtiers_helios)
@@ -429,12 +429,12 @@ class Panel(wx.Panel):
         self.majEffectuee = True
                 
     def ValidationData(self):
-        """ Return True si les données sont valides et pretes à être sauvegardées """
-        # Vérifie que les paramètres sont saisis
+        """ Return True si les donnÃ©es sont valides et pretes Ã  Ãªtre sauvegardÃ©es """
+        # VÃ©rifie que les paramÃ¨tres sont saisis
         if self.ctrl_parametres.Validation() == False :
             return False
 
-        # Titulaire Hélios
+        # Titulaire HÃ©lios
         titulaire_helios = self.ctrl_parametres.GetPropertyValue("titulaire_helios")
         if titulaire_helios != None :
             DB = GestionDB.DB()
@@ -445,7 +445,7 @@ class Panel(wx.Panel):
             DB.Close()
             for IDrattachement, IDindividu, IDcategorie, titulaire in listeRattachements:
                 if titulaire_helios == IDindividu and titulaire == 0 :
-                    dlg = wx.MessageDialog(self, _(u"Attention, le titulaire Hélios doit être obligatoirement un titulaire du dossier !"), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                    dlg = wx.MessageDialog(self, _(u"Attention, le titulaire HÃ©lios doit Ãªtre obligatoirement un titulaire du dossier !"), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
                     dlg.ShowModal()
                     dlg.Destroy()
                     return False
@@ -461,7 +461,7 @@ class Panel(wx.Panel):
             DB.Close()
             for IDrattachement, IDindividu, IDcategorie, titulaire in listeRattachements:
                 if tiers_solidaire == IDindividu and titulaire == 0 :
-                    dlg = wx.MessageDialog(self, _(u"Attention, le tiers solidaire doit être obligatoirement un titulaire du dossier !"), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                    dlg = wx.MessageDialog(self, _(u"Attention, le tiers solidaire doit Ãªtre obligatoirement un titulaire du dossier !"), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
                     dlg.ShowModal()
                     dlg.Destroy()
                     return False
@@ -494,7 +494,7 @@ class Panel(wx.Panel):
         DB.Close()
 
     def Envoyer_email(self, event):
-        # Envoyer un email à la famille
+        # Envoyer un email Ã  la famille
         from Utils import UTILS_Envoi_email
         listeAdresses = UTILS_Envoi_email.GetAdresseFamille(self.IDfamille)
         if listeAdresses == False or len(listeAdresses) == 0 :

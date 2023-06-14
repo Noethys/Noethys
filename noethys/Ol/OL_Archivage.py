@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-18 Ivan LUCAS
@@ -27,7 +27,7 @@ from Ol import OL_Individus
 from Utils import UTILS_Archivage
 from Utils.UTILS_Decimal import FloatToDecimal as FloatToDecimal
 from Utils import UTILS_Config
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"â‚¬")
 
 
 class Track_famille(object):
@@ -58,7 +58,7 @@ class Track_individu(object):
 
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # Récupération des paramètres perso
+        # RÃ©cupÃ©ration des paramÃ¨tres perso
         self.mode = kwds.pop("mode", "familles")
         self.selectionID = None
         self.selectionTrack = None
@@ -85,7 +85,7 @@ class ListView(FastObjectListView):
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
-        """ Récupération des données """
+        """ RÃ©cupÃ©ration des donnÃ©es """
         DB = GestionDB.DB()
         if self.mode == "familles" :
             req = """SELECT IDfamille, etat FROM familles WHERE etat IS NULL OR etat='archive';"""
@@ -103,11 +103,11 @@ class ListView(FastObjectListView):
             ID = item[0]
             if self.filtre != None :
 
-                # Filtre sans activité
+                # Filtre sans activitÃ©
                 if self.filtre["type_filtre"] == "sans" and ID in self.filtre["liste"] :
                     valide = False
 
-                # Filtre avec activité
+                # Filtre avec activitÃ©
                 if self.filtre["type_filtre"] == "avec" and ID not in self.filtre["liste"] :
                     valide = False
 
@@ -133,9 +133,9 @@ class ListView(FastObjectListView):
 
         def FormateEtat(etat):
             if etat == "archive" :
-                return _(u"Archivé")
+                return _(u"ArchivÃ©")
             elif etat == "efface" :
-                return _(u"Effacé")
+                return _(u"EffacÃ©")
             else :
                 return ""
 
@@ -169,7 +169,7 @@ class ListView(FastObjectListView):
             liste_Colonnes = [
                 ColumnDefn(_(u"ID"), "left", 0, "IDindividu", typeDonnee="entier"),
                 ColumnDefn(_(u"Nom"), 'left', 180, "nom", typeDonnee="texte"),
-                ColumnDefn(_(u"Prénom"), 'left', 180, "prenom", typeDonnee="texte"),
+                ColumnDefn(_(u"PrÃ©nom"), 'left', 180, "prenom", typeDonnee="texte"),
                 ColumnDefn(_(u"Date naiss."), "left", 100, "date_naiss", typeDonnee="date", stringConverter=FormateDate),
                 ]
 
@@ -196,7 +196,7 @@ class ListView(FastObjectListView):
             self.selectionTrack = None
         self.InitModel()
         self.InitObjectListView()
-        # Sélection d'un item
+        # SÃ©lection d'un item
         if self.selectionTrack != None :
             self.SelectObject(self.selectionTrack, deselectOthers=True, ensureVisible=True)
         self.selectionID = None
@@ -207,7 +207,7 @@ class ListView(FastObjectListView):
 
     def OnContextMenu(self, event):
         """Ouverture du menu contextuel """
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Ouvrir fiche famille
@@ -219,7 +219,7 @@ class ListView(FastObjectListView):
 
         menuPop.AppendSeparator()
 
-        # Génération automatique des fonctions standards
+        # GÃ©nÃ©ration automatique des fonctions standards
         self.GenerationContextMenu(menuPop, dictParametres=self.GetParametresImpression())
 
         self.PopupMenu(menuPop)
@@ -247,7 +247,7 @@ class ListView(FastObjectListView):
     def OuvrirFicheFamille(self, event=None):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_fiche", "consulter") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune fiche famille à ouvrir !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune fiche famille Ã  ouvrir !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -271,9 +271,9 @@ class ListView(FastObjectListView):
             if rattachements != None:
                 rattachements.sort()
 
-            # Rattaché à aucune famille
+            # RattachÃ© Ã  aucune famille
             if rattachements == None:
-                dlg = wx.MessageDialog(self, _(u"Cet individu n'est rattaché à aucune famille.\n\nSouhaitez-vous ouvrir sa fiche individuelle ?"), _(u"Confirmation"), wx.YES_NO | wx.YES_DEFAULT | wx.CANCEL | wx.ICON_INFORMATION)
+                dlg = wx.MessageDialog(self, _(u"Cet individu n'est rattachÃ© Ã  aucune famille.\n\nSouhaitez-vous ouvrir sa fiche individuelle ?"), _(u"Confirmation"), wx.YES_NO | wx.YES_DEFAULT | wx.CANCEL | wx.ICON_INFORMATION)
                 reponse = dlg.ShowModal()
                 dlg.Destroy()
                 if reponse != wx.ID_YES:
@@ -288,22 +288,22 @@ class ListView(FastObjectListView):
                     self.MAJ()
                     return
 
-            # Rattachée à une seule famille
+            # RattachÃ©e Ã  une seule famille
             elif len(rattachements) == 1:
                 IDcategorie, IDfamille, titulaire = rattachements[0]
-            # Rattachée à plusieurs familles
+            # RattachÃ©e Ã  plusieurs familles
             else:
                 listeNoms = []
                 for IDcategorie, IDfamille, titulaire in rattachements:
                     nomTitulaires = dictTitulaires[IDfamille]
                     if IDcategorie == 1:
-                        nomCategorie = _(u"représentant")
+                        nomCategorie = _(u"reprÃ©sentant")
                         if titulaire == 1:
                             nomCategorie += _(u" titulaire")
                     if IDcategorie == 2: nomCategorie = _(u"enfant")
                     if IDcategorie == 3: nomCategorie = _(u"contact")
                     listeNoms.append(_(u"%s (en tant que %s)") % (nomTitulaires, nomCategorie))
-                dlg = wx.SingleChoiceDialog(self, _(u"Cet individu est rattaché à %d familles.\nLa fiche de quelle famille souhaitez-vous ouvrir ?") % len(listeNoms), _(u"Rattachements multiples"), listeNoms, wx.CHOICEDLG_STYLE)
+                dlg = wx.SingleChoiceDialog(self, _(u"Cet individu est rattachÃ© Ã  %d familles.\nLa fiche de quelle famille souhaitez-vous ouvrir ?") % len(listeNoms), _(u"Rattachements multiples"), listeNoms, wx.CHOICEDLG_STYLE)
                 IDfamilleSelection = None
                 if dlg.ShowModal() == wx.ID_OK:
                     indexSelection = dlg.GetSelection()

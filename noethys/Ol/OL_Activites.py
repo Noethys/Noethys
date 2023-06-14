@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activitÈs
+# Application :    Noethys, gestion multi-activit√©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -37,7 +37,7 @@ class Exporter(UTILS_Export_tables.Exporter):
         self.nouveauNom = nouveauNom
         
     def Exporter(self, ID=None):
-        # GÈnÈralitÈs
+        # G√©n√©ralit√©s
         if self.nouveauNom != "" :
             remplacementNom = ("nom", self.nouveauNom)
         else :
@@ -47,19 +47,19 @@ class Exporter(UTILS_Export_tables.Exporter):
         self.ExporterTable("groupes_activites", "IDactivite=%d" % ID)
         # Groupes
         self.ExporterTable("groupes", "IDactivite=%d" % ID)
-        # AgrÈments
+        # Agr√©ments
         self.ExporterTable("agrements", "IDactivite=%d" % ID)
         # Renseignements
         self.ExporterTable("pieces_activites", "IDactivite=%d" % ID)
         self.ExporterTable("cotisations_activites", "IDactivite=%d" % ID)
         self.ExporterTable("renseignements_activites", "IDactivite=%d" % ID)
-        # UnitÈs
+        # Unit√©s
         self.ExporterTable("unites", "IDactivite=%d" % ID)
         self.ExporterTable("unites_groupes", self.FormateCondition("IDunite", self.dictID["unites"]))
         self.ExporterTable("unites_incompat", self.FormateCondition("IDunite", self.dictID["unites"]))
         # Etiquettes
         self.ExporterTable("etiquettes", "IDactivite=%d" % ID)
-        # UnitÈs de remplissage
+        # Unit√©s de remplissage
         self.ExporterTable("unites_remplissage", "IDactivite=%d" % ID)
         self.ExporterTable("unites_remplissage_unites", self.FormateCondition("IDunite_remplissage", self.dictID["unites_remplissage"]))
         # Calendrier
@@ -80,10 +80,10 @@ class Exporter(UTILS_Export_tables.Exporter):
         # Portail
         self.ExporterTable("portail_periodes", "IDactivite=%d" % ID)
         self.ExporterTable("portail_unites", "IDactivite=%d" % ID)
-        # EvËnements
+        # Ev√®nements
         self.ExporterTable("evenements", "IDactivite=%d" % ID)
 
-        # Correspondances spÈciales
+        # Correspondances sp√©ciales
         self.correspondances_speciales.append({"table" : "etiquettes", "champ" : "parent", "champ_reference" : "IDetiquette"})
         self.correspondances_speciales.append({"table" : "activites", "champ" : "psu_unite_prevision", "champ_reference" : "IDunite"})
         self.correspondances_speciales.append({"table" : "activites", "champ" : "psu_unite_presence", "champ_reference" : "IDunite"})
@@ -112,23 +112,23 @@ class Track(object):
         self.date_creation = donnees[15]
         self.vaccins_obligatoires = donnees[16]
         
-        # PÈriode
+        # P√©riode
         if self.date_debut == "1977-01-01" and self.date_fin == "2999-01-01" :
             self.periode = "illimitee"
-            self.labelPeriode = _(u"IllimitÈe")
+            self.labelPeriode = _(u"Illimit√©e")
         else:
             if self.date_debut != None and self.date_fin != None :
                 self.periode = u"%s;%s" % (self.date_fin, self.date_debut)
                 self.labelPeriode = _(u"Du %s au %s") % (DateEngFr(self.date_debut), DateEngFr(self.date_fin))
             else:
                 self.periode = None
-                self.labelPeriode = _(u"Pas de pÈriode")
+                self.labelPeriode = _(u"Pas de p√©riode")
 
         
     
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # RÈcupÈration des paramËtres perso
+        # R√©cup√©ration des param√®tres perso
         self.IDactivite = kwds.pop("IDactivite", None)
         self.modificationAutorisee = kwds.pop("modificationAutorisee", True)
         self.selectionID = None
@@ -153,7 +153,7 @@ class ListView(FastObjectListView):
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
-        """ RÈcupÈration des donnÈes """
+        """ R√©cup√©ration des donn√©es """
         listeID = None
 
         if self.activites_ouvertes:
@@ -192,22 +192,22 @@ class ListView(FastObjectListView):
 
         def FormatePeriode(periode):
             if periode == None :
-                return _(u"Pas de pÈriode")
+                return _(u"Pas de p√©riode")
             if periode == "illimitee" :
-                return _(u"IllimitÈe")
+                return _(u"Illimit√©e")
             else:
                 date_fin, date_debut = periode.split(";")
             return _(u"Du %s au %s") % (DateEngFr(date_debut), DateEngFr(date_fin))
 
         liste_Colonnes = [
             ColumnDefn(_(u"ID"), "left", 0, "IDactivite", typeDonnee="entier"),
-            ColumnDefn(_(u"Nom de l'activitÈ"), 'left', 220, "nom", typeDonnee="texte", isSpaceFilling=True),
-            ColumnDefn(_(u"AbrÈgÈ"), 'left', 90, "abrege", typeDonnee="texte"),
-            ColumnDefn(_(u"PÈriode de validitÈ"), 'left', 200, "periode", typeDonnee="texte", stringConverter=FormatePeriode),
+            ColumnDefn(_(u"Nom de l'activit√©"), 'left', 220, "nom", typeDonnee="texte", isSpaceFilling=True),
+            ColumnDefn(_(u"Abr√©g√©"), 'left', 90, "abrege", typeDonnee="texte"),
+            ColumnDefn(_(u"P√©riode de validit√©"), 'left', 200, "periode", typeDonnee="texte", stringConverter=FormatePeriode),
             ]
         
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(_(u"Aucune activitÈ"))
+        self.SetEmptyListMsg(_(u"Aucune activit√©"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
         self.SortBy(3, False)
         self.SetObjects(self.donnees)
@@ -221,7 +221,7 @@ class ListView(FastObjectListView):
             self.selectionTrack = None
         self.InitModel()
         self.InitObjectListView()
-        # SÈlection d'un item
+        # S√©lection d'un item
         if self.selectionTrack != None :
             self.SelectObject(self.selectionTrack, deselectOthers=True, ensureVisible=True)
         self.selectionID = None
@@ -239,7 +239,7 @@ class ListView(FastObjectListView):
             noSelection = False
             ID = self.Selection()[0].IDactivite
                 
-        # CrÈation du menu contextuel
+        # Cr√©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
         
         if self.modificationAutorisee :
@@ -296,7 +296,7 @@ class ListView(FastObjectListView):
             menuPop.AppendSeparator()
 
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"AperÁu avant impression"))
+        item = wx.MenuItem(menuPop, 40, _(u"Aper√ßu avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -330,27 +330,27 @@ class ListView(FastObjectListView):
 
     def Apercu(self, event):
         from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des activitÈs"), format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des activit√©s"), format="A", orientation=wx.PORTRAIT)
         prt.Preview()
 
     def Imprimer(self, event):
         from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des activitÈs"), format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des activit√©s"), format="A", orientation=wx.PORTRAIT)
         prt.Print()
 
     def ExportTexte(self, event):
         from Utils import UTILS_Export
-        UTILS_Export.ExportTexte(self, titre=_(u"Liste des activitÈs"))
+        UTILS_Export.ExportTexte(self, titre=_(u"Liste des activit√©s"))
         
     def ExportExcel(self, event):
         from Utils import UTILS_Export
-        UTILS_Export.ExportExcel(self, titre=_(u"Liste des activitÈs"))
+        UTILS_Export.ExportExcel(self, titre=_(u"Liste des activit√©s"))
 
 
     def Ajouter(self, event):        
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_activites", "creer") == False : return
 
-        # Propose assistants de gÈnÈration d'activitÈs
+        # Propose assistants de g√©n√©ration d'activit√©s
         from Dlg import DLG_Nouvelle_activite
         dlg = DLG_Nouvelle_activite.Dialog(self)
         if dlg.ShowModal() == wx.ID_OK:
@@ -361,11 +361,11 @@ class ListView(FastObjectListView):
             return
 
         if code == "nouveau" :
-            # CrÈation manuelle de l'activitÈ
+            # Cr√©ation manuelle de l'activit√©
             from Dlg import DLG_Activite
             dlg = DLG_Activite.Assistant(self, IDactivite=None)
         else :
-            # CrÈation avec assistant de l'activitÈ
+            # Cr√©ation avec assistant de l'activit√©
             module = importlib.import_module("Ctrl.CTRL_Assistant_%s" % code)
             dlg = module.Dialog(self)
 
@@ -378,7 +378,7 @@ class ListView(FastObjectListView):
 
     def Modifier(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucune activitÈ ‡ modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucune activit√© √† modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -393,7 +393,7 @@ class ListView(FastObjectListView):
 
     def Supprimer(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucune activitÈ ‡ supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucune activit√© √† supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -406,17 +406,17 @@ class ListView(FastObjectListView):
             self.MAJ()
 
     def Dupliquer(self, event):
-        """ Dupliquer un modËle """
+        """ Dupliquer un mod√®le """
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_activites", "creer") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucune activitÈ ‡ dupliquer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucune activit√© √† dupliquer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         IDactivite = self.Selection()[0].IDactivite
         nom = self.Selection()[0].nom
 
-        dlg = wx.MessageDialog(None, _(u"Confirmez-vous la duplication de l'activitÈ '%s' ?") % nom, _(u"Duplication"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+        dlg = wx.MessageDialog(None, _(u"Confirmez-vous la duplication de l'activit√© '%s' ?") % nom, _(u"Duplication"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
         reponse = dlg.ShowModal()
         dlg.Destroy()
         if reponse != wx.ID_YES :
@@ -436,11 +436,11 @@ class ListView(FastObjectListView):
     def Importer(self, event):
         """ Importer """
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_activites", "creer") == False : return
-        # Ouverture de la fenÍtre de dialogue
-        wildcard = _(u"ActivitÈ Noethys (*.nxa)|*.nxa|Tous les fichiers (*.*)|*.*")
+        # Ouverture de la fen√™tre de dialogue
+        wildcard = _(u"Activit√© Noethys (*.nxa)|*.nxa|Tous les fichiers (*.*)|*.*")
         sp = wx.StandardPaths.Get()
         dlg = wx.FileDialog(
-            self, message=_(u"Choisissez un fichier ‡ importer"),
+            self, message=_(u"Choisissez un fichier √† importer"),
             defaultDir=sp.GetDocumentsDir(), 
             defaultFile="",
             wildcard=wildcard,
@@ -460,7 +460,7 @@ class ListView(FastObjectListView):
         
         # Confirmation
         if nbreChoix > 0 :
-            dlg = wx.MessageDialog(self, _(u"%d activitÈ(s) ont ÈtÈ importÈes avec succËs.") % nbreChoix, _(u"Importation"), wx.OK | wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(self, _(u"%d activit√©(s) ont √©t√© import√©es avec succ√®s.") % nbreChoix, _(u"Importation"), wx.OK | wx.ICON_INFORMATION)
             dlg.ShowModal()
             dlg.Destroy()
         
@@ -470,7 +470,7 @@ class ListView(FastObjectListView):
     def Exporter(self, event):
         """ Exporter """
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_activites", "consulter") == False : return
-        # Demande les activitÈs ‡ exporter
+        # Demande les activit√©s √† exporter
         listeActivites = []
         listeLabels = []
         for track in self.GetObjects() :
@@ -478,7 +478,7 @@ class ListView(FastObjectListView):
             listeLabels.append(label)
             listeActivites.append((track.IDactivite, track.nom))
 
-        dlg = wx.MultiChoiceDialog(None, _(u"SÈlectionnez les activitÈs ‡ exporter :"), _(u"Exportation"), listeLabels)
+        dlg = wx.MultiChoiceDialog(None, _(u"S√©lectionnez les activit√©s √† exporter :"), _(u"Exportation"), listeLabels)
         dlg.SetSize((550, 500))
         if dlg.ShowModal() == wx.ID_OK :
             selections = dlg.GetSelections()
@@ -486,7 +486,7 @@ class ListView(FastObjectListView):
             selections = []
         dlg.Destroy()
         if len(selections) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucune activitÈ ‡ exporter !\n\nExportation annulÈe."), _(u"Exportation"), wx.OK | wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucune activit√© √† exporter !\n\nExportation annul√©e."), _(u"Exportation"), wx.OK | wx.ICON_INFORMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -499,7 +499,7 @@ class ListView(FastObjectListView):
         standardPath = wx.StandardPaths.Get()
         dlg = wx.FileDialog(self, message=_(u"Enregistrer le fichier sous..."),
                             defaultDir = standardPath.GetDocumentsDir(), defaultFile="activites.nxa",
-                            wildcard=_(u"ActivitÈ Noethys (*.nxa)|*.nxa"), style=wx.FD_SAVE)
+                            wildcard=_(u"Activit√© Noethys (*.nxa)|*.nxa"), style=wx.FD_SAVE)
 
         if dlg.ShowModal() == wx.ID_OK:
             path = dlg.GetPath()
@@ -509,9 +509,9 @@ class ListView(FastObjectListView):
         if path == None :
             return
 
-        # Le fichier de destination existe dÈj‡ :
+        # Le fichier de destination existe d√©j√† :
         if os.path.isfile(path) == True :
-            dlg = wx.MessageDialog(None, _(u"Un fichier portant ce nom existe dÈj‡. \n\nVoulez-vous le remplacer ?"), "Attention !", wx.YES_NO | wx.NO_DEFAULT | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(None, _(u"Un fichier portant ce nom existe d√©j√†. \n\nVoulez-vous le remplacer ?"), "Attention !", wx.YES_NO | wx.NO_DEFAULT | wx.ICON_EXCLAMATION)
             if dlg.ShowModal() == wx.ID_NO :
                 return False
                 dlg.Destroy()
@@ -525,7 +525,7 @@ class ListView(FastObjectListView):
         exportation.Enregistrer(fichier=path)
 
         # Confirmation
-        dlg = wx.MessageDialog(self, _(u"%d activitÈ(s) ont ÈtÈ exportÈes avec succËs.") % len(listeSelection), _(u"Exportation"), wx.OK | wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"%d activit√©(s) ont √©t√© export√©es avec succ√®s.") % len(listeSelection), _(u"Exportation"), wx.OK | wx.ICON_INFORMATION)
         dlg.ShowModal()
         dlg.Destroy()
 
@@ -539,7 +539,7 @@ class BarreRecherche(wx.SearchCtrl):
         self.parent = parent
         self.rechercheEnCours = False
         
-        self.SetDescriptiveText(_(u"Rechercher une activitÈ..."))
+        self.SetDescriptiveText(_(u"Rechercher une activit√©..."))
         self.ShowSearchButton(True)
         
         self.listView = self.parent.ctrl_listview

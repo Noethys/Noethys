@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-18 Ivan LUCAS
@@ -22,7 +22,7 @@ import datetime
 
 
 def GetNomCategorie(IDcategorie=1):
-    if IDcategorie == 1: nom_categorie = _(u"représentant")
+    if IDcategorie == 1: nom_categorie = _(u"reprÃ©sentant")
     elif IDcategorie == 2: nom_categorie = _(u"enfant")
     elif IDcategorie == 3: nom_categorie = _(u"contact")
     else: nom_categorie = ""
@@ -55,10 +55,10 @@ class Archivage():
             label = _(u"archiver")
         elif etat == "desarchiver" :
             valeur = None
-            label = _(u"désarchiver")
+            label = _(u"dÃ©sarchiver")
 
-        # Sélection des individus
-        liste_individus = self.SelectionIndividus(intro=_(u"Cochez les individus à %s :") % label)
+        # SÃ©lection des individus
+        liste_individus = self.SelectionIndividus(intro=_(u"Cochez les individus Ã  %s :") % label)
         if liste_individus == False :
             return False
 
@@ -89,10 +89,10 @@ class Archivage():
             label = _(u"archiver")
         elif etat == "desarchiver" :
             valeur = None
-            label = _(u"désarchiver")
+            label = _(u"dÃ©sarchiver")
 
-        # Sélection des individus
-        liste_individus = self.SelectionIndividus(intro=_(u"Cochez les individus à %s :") % label)
+        # SÃ©lection des individus
+        liste_individus = self.SelectionIndividus(intro=_(u"Cochez les individus Ã  %s :") % label)
         if liste_individus == False :
             return False
 
@@ -125,13 +125,13 @@ class Archivage():
         return resultat
 
     def Modifier(self, listeID=[], nom_table="", champ_condition="", liste_valeurs=[]):
-        """ Fonction pour modifier une table donnée """
-        # Préparation des champs
+        """ Fonction pour modifier une table donnÃ©e """
+        # PrÃ©paration des champs
         liste_champs = []
         for nom_champ, valeur in liste_valeurs:
             liste_champs.append("%s=?" % nom_champ)
 
-        # Préparation des valeurs
+        # PrÃ©paration des valeurs
         listeModifications = []
         for ID in listeID:
             listeTemp = []
@@ -140,7 +140,7 @@ class Archivage():
             listeTemp.append(ID)
             listeModifications.append(listeTemp)
 
-        # Requête de modification
+        # RequÃªte de modification
         self.DB.Executermany("UPDATE %s SET %s WHERE %s=?" % (nom_table, ", ".join(liste_champs), champ_condition), listeModifications, commit=False)
         self.DB.Commit()
 
@@ -149,7 +149,7 @@ class Archivage():
         self.DB.Commit()
 
     def SelectionIndividus(self, intro=""):
-        # Récupère les individus
+        # RÃ©cupÃ¨re les individus
         req = """SELECT IDindividu, nom, prenom
         FROM individus;"""
         self.DB.ExecuterReq(req)
@@ -161,7 +161,7 @@ class Archivage():
             nom_complet = u"%s %s" % (nom, prenom)
             dict_individus[IDindividu] = {"nom_complet" : nom_complet, "nom" : nom, "prenom" : prenom}
 
-        # Récupère les individus rattachés
+        # RÃ©cupÃ¨re les individus rattachÃ©s
         req = """SELECT IDrattachement, IDindividu, IDfamille, IDcategorie
         FROM rattachements;"""
         self.DB.ExecuterReq(req)
@@ -202,7 +202,7 @@ class Archivage():
         # Version FAMILLES
         if self.liste_familles != [] :
 
-            # Sélection des individus
+            # SÃ©lection des individus
             for IDfamille in self.liste_familles:
                 nomTitulaires = self.dict_titulaires[IDfamille]["titulairesSansCivilite"]
                 liste_rattaches = []
@@ -212,14 +212,14 @@ class Archivage():
                         nom_categorie = GetNomCategorie(IDcategorie).capitalize()
                         infos = []
 
-                        # Recherche si l'individu est rattaché à d'autres familles non inclues
+                        # Recherche si l'individu est rattachÃ© Ã  d'autres familles non inclues
                         if IDindividu in dict_rattachements_individus:
                             for IDfamilleTemp, IDcategorieTemp in dict_rattachements_individus[IDindividu]:
                                 if IDfamilleTemp not in self.liste_familles:
-                                    infos.append(_(u"Rattaché également à la famille de %s en tant que %s") % (self.dict_titulaires[IDfamilleTemp]["titulairesSansCivilite"], GetNomCategorie(IDcategorieTemp)))
+                                    infos.append(_(u"RattachÃ© Ã©galement Ã  la famille de %s en tant que %s") % (self.dict_titulaires[IDfamilleTemp]["titulairesSansCivilite"], GetNomCategorie(IDcategorieTemp)))
 
                         if (IDindividu, IDfamille) in dictPrestations:
-                            infos.append(_(u"Des prestations futures sont déjà enregistrées"))
+                            infos.append(_(u"Des prestations futures sont dÃ©jÃ  enregistrÃ©es"))
 
                         liste_rattaches.append({"IDcategorie" : IDcategorie, "nom_complet" : nom_complet, "IDindividu" : IDindividu, "nom_categorie" : nom_categorie, "infos" : infos})
                         liste_rattaches = sorted(liste_rattaches, key=operator.itemgetter("IDcategorie"))
@@ -231,7 +231,7 @@ class Archivage():
         # Version INDIVIDUS
         if self.liste_individus != [] :
 
-            # Sélection des individus
+            # SÃ©lection des individus
             for IDindividu in self.liste_individus :
                 nom_complet = dict_individus[IDindividu]["nom_complet"]
                 liste_rattaches = []
@@ -243,7 +243,7 @@ class Archivage():
                         infos = []
 
                         if (IDindividu, IDfamille) in dictPrestations:
-                            infos.append(_(u"Des prestations futures sont déjà enregistrées"))
+                            infos.append(_(u"Des prestations futures sont dÃ©jÃ  enregistrÃ©es"))
 
                         liste_rattaches.append({"IDcategorie": IDcategorie, "nomTitulaires": nomTitulaires, "IDfamille": IDfamille, "nom_categorie": nom_categorie, "infos": infos})
                         liste_rattaches = sorted(liste_rattaches, key=operator.itemgetter("IDcategorie"))
@@ -252,7 +252,7 @@ class Archivage():
             liste_individus_temp = sorted(liste_individus_temp, key=operator.itemgetter("nom_complet"))
             #liste_individus_temp.sort()
 
-        # Affiche dlg de sélection
+        # Affiche dlg de sÃ©lection
         dlg = DLG_Selection(None, intro=intro, liste_familles=liste_familles_temp, liste_individus=liste_individus_temp)
         listeIndividusCoches = False
         if dlg.ShowModal() == wx.ID_OK :
@@ -262,13 +262,13 @@ class Archivage():
 
     def Effacer_familles(self):
         """ Effacer les familles """
-        # Sélection des individus
-        liste_individus = self.SelectionIndividus(intro=_(u"Cochez les individus à effacer :"))
+        # SÃ©lection des individus
+        liste_individus = self.SelectionIndividus(intro=_(u"Cochez les individus Ã  effacer :"))
         if liste_individus == False :
             return False
 
         # Demande de confirmation
-        dlg = wx.MessageDialog(None, _(u"Confirmez-vous l'effacement de %d fiches familles et de %d fiches individuelles ?\n\nAttention, cette action est irréversible !") % (len(self.liste_familles), len(liste_individus)), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+        dlg = wx.MessageDialog(None, _(u"Confirmez-vous l'effacement de %d fiches familles et de %d fiches individuelles ?\n\nAttention, cette action est irrÃ©versible !") % (len(self.liste_familles), len(liste_individus)), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
         reponse = dlg.ShowModal()
         dlg.Destroy()
         if reponse != wx.ID_YES :
@@ -277,7 +277,7 @@ class Archivage():
         # Attente
         dlgAttente = wx.BusyInfo(_(u"Veuillez patienter durant l'effacement..."), None)
 
-        # Récupère les comptes_payeurs
+        # RÃ©cupÃ¨re les comptes_payeurs
         req = """SELECT IDfamille, IDcompte_payeur
         FROM comptes_payeurs
         WHERE IDfamille IN %s;""" % GestionDB.ConvertConditionChaine(self.liste_familles)
@@ -337,10 +337,10 @@ class Archivage():
         self.Supprimer(listeID=self.liste_familles, nom_table="messages", champ_condition="IDfamille")
 
         # Payeurs
-        liste_valeurs = [("nom", _(u"Payeur effacé")),]
+        liste_valeurs = [("nom", _(u"Payeur effacÃ©")),]
         self.Modifier(listeID=liste_comptes_payeurs, nom_table="payeurs", champ_condition="IDcompte_payeur", liste_valeurs=liste_valeurs)
 
-        # Pièces
+        # PiÃ¨ces
         self.Supprimer(listeID=self.liste_familles, nom_table="pieces", champ_condition="IDfamille")
 
         # Questionnaires
@@ -361,11 +361,11 @@ class Archivage():
         # Individus
         self.Effacer_individus(liste_individus=liste_individus)
 
-        # Détruit dlgAttente
+        # DÃ©truit dlgAttente
         del dlgAttente
 
-        # Fin de procédure
-        dlg = wx.MessageDialog(None, _(u"L'effacement a été effectué !"), _(u"Information"), wx.OK | wx.ICON_INFORMATION)
+        # Fin de procÃ©dure
+        dlg = wx.MessageDialog(None, _(u"L'effacement a Ã©tÃ© effectuÃ© !"), _(u"Information"), wx.OK | wx.ICON_INFORMATION)
         dlg.ShowModal()
         dlg.Destroy()
         return True
@@ -375,13 +375,13 @@ class Archivage():
         if liste_individus == None :
             liste_individus = self.liste_individus
 
-            # Sélection des individus
-            liste_individus = self.SelectionIndividus(intro=_(u"Cochez les individus à effacer :"))
+            # SÃ©lection des individus
+            liste_individus = self.SelectionIndividus(intro=_(u"Cochez les individus Ã  effacer :"))
             if liste_individus == False :
                 return False
 
             # Demande de confirmation
-            dlg = wx.MessageDialog(None, _(u"Confirmez-vous l'effacement de %d fiches individuelles ?\n\nAttention, cette action est irréversible !") % len(liste_individus), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(None, _(u"Confirmez-vous l'effacement de %d fiches individuelles ?\n\nAttention, cette action est irrÃ©versible !") % len(liste_individus), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
             reponse = dlg.ShowModal()
             dlg.Destroy()
             if reponse != wx.ID_YES :
@@ -393,7 +393,7 @@ class Archivage():
         # Individus
         liste_valeurs = [
             ("IDcivilite", 1),
-            ("nom", _(u"Individu effacé")),
+            ("nom", _(u"Individu effacÃ©")),
             ("nom_jfille", u""),
             ("prenom", u""),
             ("num_secu", ""),
@@ -442,16 +442,16 @@ class Archivage():
         self.Supprimer(listeID=liste_individus, nom_table="liens", champ_condition="IDindividu_sujet")
         self.Supprimer(listeID=liste_individus, nom_table="liens", champ_condition="IDindividu_objet")
 
-        # Mémo journalier
+        # MÃ©mo journalier
         self.Supprimer(listeID=liste_individus, nom_table="memo_journee", champ_condition="IDindividu")
 
         # Messages
         self.Supprimer(listeID=liste_individus, nom_table="messages", champ_condition="IDindividu")
 
-        # Pièces
+        # PiÃ¨ces
         self.Supprimer(listeID=liste_individus, nom_table="pieces", champ_condition="IDindividu")
 
-        # Pb santé
+        # Pb santÃ©
         self.Supprimer(listeID=liste_individus, nom_table="problemes_sante", champ_condition="IDindividu")
 
         # Questionnaires
@@ -460,7 +460,7 @@ class Archivage():
         # Rattachements
         #self.Supprimer(listeID=liste_individus, nom_table="rattachements", champ_condition="IDindividu")
 
-        # Scolarité
+        # ScolaritÃ©
         self.Supprimer(listeID=liste_individus, nom_table="scolarite", champ_condition="IDindividu")
 
         # Transports
@@ -469,13 +469,13 @@ class Archivage():
         # Vaccins
         self.Supprimer(listeID=liste_individus, nom_table="vaccins", champ_condition="IDindividu")
 
-        # Fin de procédure
+        # Fin de procÃ©dure
         if self.liste_individus != []:
-            # Détruit dlgAttente
+            # DÃ©truit dlgAttente
             del dlgAttente
 
-            # Succès
-            dlg = wx.MessageDialog(None, _(u"L'effacement a été effectué !"), _(u"Information"), wx.OK | wx.ICON_INFORMATION)
+            # SuccÃ¨s
+            dlg = wx.MessageDialog(None, _(u"L'effacement a Ã©tÃ© effectuÃ© !"), _(u"Information"), wx.OK | wx.ICON_INFORMATION)
             dlg.ShowModal()
             dlg.Destroy()
         return True
@@ -497,20 +497,20 @@ class CTRL_Selection(HTL.HyperTreeList):
         self.img_attestation = il.Add(wx.Bitmap(Chemins.GetStaticPath('Images/16x16/Attention.png'), wx.BITMAP_TYPE_PNG))
         self.AssignImageList(il)
 
-        # Création des colonnes
+        # CrÃ©ation des colonnes
         if len(self.liste_familles) > 0 :
-            self.AddColumn(_(u"Famille/Individu rattaché"))
+            self.AddColumn(_(u"Famille/Individu rattachÃ©"))
         else :
-            self.AddColumn(_(u"Individu/Famille rattachée"))
+            self.AddColumn(_(u"Individu/Famille rattachÃ©e"))
         self.SetColumnWidth(0, 300)
-        self.AddColumn(_(u"Catégorie"))
+        self.AddColumn(_(u"CatÃ©gorie"))
         self.SetColumnWidth(1, 100)
         self.AddColumn(_(u"Avertissements"))
         self.SetColumnWidth(2, 1000)
         self.MAJ()
 
     def MAJ(self):
-        """ Met à jour (redessine) tout le contrôle """
+        """ Met Ã  jour (redessine) tout le contrÃ´le """
         self.DeleteAllItems()
         self.root = self.AddRoot(_(u"Racine"))
         self.Remplissage()
@@ -571,10 +571,10 @@ class CTRL_Selection(HTL.HyperTreeList):
             else :
                 infos = []
 
-            # Vérifie si infos à confirmer
+            # VÃ©rifie si infos Ã  confirmer
             if len(infos) > 0:
                 if afficher_avertissements == True :
-                    intro = _(u"Souhaitez-vous sélectionner %s malgré les avertissements suivants ?") % nom_complet
+                    intro = _(u"Souhaitez-vous sÃ©lectionner %s malgrÃ© les avertissements suivants ?") % nom_complet
                     dlg = DLG_Messagebox.Dialog(self, titre=_(u"Avertissement"), introduction=intro, detail=u"\n".join(infos), icone=wx.ICON_EXCLAMATION, boutons=[_(u"Oui"), _(u"Non"), _(u"Annuler")], defaut=1)
                     reponse = dlg.ShowModal()
                     dlg.Destroy()
@@ -589,7 +589,7 @@ class CTRL_Selection(HTL.HyperTreeList):
 # -----------------------------------------------------------------------------------------
 
 class DLG_Selection(wx.Dialog):
-    def __init__(self, parent, intro=_(u"Cochez les individus à effacer :"), liste_familles=None, liste_individus=None):
+    def __init__(self, parent, intro=_(u"Cochez les individus Ã  effacer :"), liste_familles=None, liste_individus=None):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE | wx.RESIZE_BORDER | wx.MAXIMIZE_BOX | wx.MINIMIZE_BOX)
         self.parent = parent
         self.liste_familles = liste_familles
@@ -611,7 +611,7 @@ class DLG_Selection(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
 
     def __set_properties(self):
-        self.SetTitle(_(u"Sélection des individus"))
+        self.SetTitle(_(u"SÃ©lection des individus"))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider et fermer")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler et fermer")))

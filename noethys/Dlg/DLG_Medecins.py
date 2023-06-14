@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -26,13 +26,13 @@ class Dialog(wx.Dialog):
         self.mode = mode
         
         if self.mode == "selection" :
-            intro = _(u"Vous pouvez ici sélectionner un médecin traitant pour l'individu. Double-cliquez sur une ligne pour effectuer rapidement la sélection.")
-            titre = _(u"Sélection d'un médecin")
-            self.SetTitle(_(u"Sélection d'un médecin"))
+            intro = _(u"Vous pouvez ici sÃ©lectionner un mÃ©decin traitant pour l'individu. Double-cliquez sur une ligne pour effectuer rapidement la sÃ©lection.")
+            titre = _(u"SÃ©lection d'un mÃ©decin")
+            self.SetTitle(_(u"SÃ©lection d'un mÃ©decin"))
         else:
-            intro = _(u"Vous pouvez ici saisir, modifier ou supprimer des médecins.")
-            titre = _(u"Gestion des médecins")
-            self.SetTitle(_(u"Gestion des médecins"))
+            intro = _(u"Vous pouvez ici saisir, modifier ou supprimer des mÃ©decins.")
+            titre = _(u"Gestion des mÃ©decins")
+            self.SetTitle(_(u"Gestion des mÃ©decins"))
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Medecin.png")
         self.ctrl_listview = OL_Medecins.ListView(self, id=-1, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.ctrl_listview.MAJ()
@@ -64,9 +64,9 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
 
     def __set_properties(self):
-        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter un médecin")))
-        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le médecin sélectionné dans la liste")))
-        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le médecin sélectionné dans la iste")))
+        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter un mÃ©decin")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le mÃ©decin sÃ©lectionnÃ© dans la liste")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le mÃ©decin sÃ©lectionnÃ© dans la iste")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider et fermer")))
@@ -123,11 +123,11 @@ class Dialog(wx.Dialog):
     def OnBouton_ok(self, event):
         IDmedecin = self.GetIDmedecin()
         if IDmedecin == None :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun médecin dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucun mÃ©decin dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
-        # Fermeture de la fenêtre
+        # Fermeture de la fenÃªtre
         self.EndModal(wx.ID_OK)
 
     def OnBoutonAide(self, event): 

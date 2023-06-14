@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -77,14 +77,14 @@ class Dialog(wx.Dialog):
         self.IDquotient = IDquotient
         
         # Dates
-        self.staticbox_dates_staticbox = wx.StaticBox(self, -1, _(u"Dates de validité"))
+        self.staticbox_dates_staticbox = wx.StaticBox(self, -1, _(u"Dates de validitÃ©"))
         self.label_date_debut = wx.StaticText(self, -1, u"Du")
         self.ctrl_date_debut = CTRL_Saisie_date.Date2(self)
         self.label_date_fin = wx.StaticText(self, -1, _(u"au"))
         self.ctrl_date_fin = CTRL_Saisie_date.Date2(self)
         
-        # Paramètres
-        self.staticbox_parametres_staticbox = wx.StaticBox(self, -1, _(u"Paramètres"))
+        # ParamÃ¨tres
+        self.staticbox_parametres_staticbox = wx.StaticBox(self, -1, _(u"ParamÃ¨tres"))
 
         self.label_type_quotient = wx.StaticText(self, -1, _(u"Type de quotient :"))
         self.ctrl_type_quotient = CTRL_Type_quotient(self)
@@ -116,10 +116,10 @@ class Dialog(wx.Dialog):
         self.Importation()
 
     def __set_properties(self):
-        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de début de validité")))
-        self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de fin de validité")))
-        self.ctrl_type_quotient.SetToolTip(wx.ToolTip(_(u"Sélectionnez un type de quotient")))
-        self.bouton_types_quotients.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à la gestion des types de quotients")))
+        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de dÃ©but de validitÃ©")))
+        self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de fin de validitÃ©")))
+        self.ctrl_type_quotient.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez un type de quotient")))
+        self.bouton_types_quotients.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accÃ©der Ã  la gestion des types de quotients")))
         self.ctrl_quotient.SetToolTip(wx.ToolTip(_(u"Saisissez ici le quotient familial")))
         self.ctrl_revenu.SetToolTip(wx.ToolTip(_(u"Saisissez ici le revenu")))
         self.ctrl_observations.SetToolTip(wx.ToolTip(_(u"[Optionnel] Saisissez ici des commentaires sur ce quotient/revenu")))
@@ -234,10 +234,10 @@ class Dialog(wx.Dialog):
         return self.ctrl_observations.GetValue()
 
     def OnBoutonOk(self, event):
-        # Période
+        # PÃ©riode
         date_debut = self.GetDateDebut()
         if self.ctrl_date_debut.FonctionValiderDate() == False or date_debut == None :
-            dlg = wx.MessageDialog(self, _(u"La date de début de validité n'est pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"La date de dÃ©but de validitÃ© n'est pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_debut.SetFocus()
@@ -245,7 +245,7 @@ class Dialog(wx.Dialog):
 
         date_fin = self.GetDateFin()
         if self.ctrl_date_fin.FonctionValiderDate() == False or date_fin == None :
-            dlg = wx.MessageDialog(self, _(u"La date de fin de validité n'est pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"La date de fin de validitÃ© n'est pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_fin.SetFocus()
@@ -280,7 +280,7 @@ class Dialog(wx.Dialog):
             dlg.Destroy()
             return False
 
-        # Vérifie que ce quotient ne se superpose pas sur un autre
+        # VÃ©rifie que ce quotient ne se superpose pas sur un autre
         if self.IDquotient == None :
             IDquotient = 0
         else :
@@ -294,7 +294,7 @@ class Dialog(wx.Dialog):
         listeDonnees = DB.ResultatReq()
         DB.Close()
         if len(listeDonnees) > 0 :
-            dlg = wx.MessageDialog(self, _(u"Il existe déjà %d quotient/revenu saisi sur cette période.\n\nSouhaitez-vous tout de même l'enregistrer ?") % len(listeDonnees), _(u"Anomalie"), wx.YES_NO | wx.NO_DEFAULT | wx.CANCEL | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Il existe dÃ©jÃ  %d quotient/revenu saisi sur cette pÃ©riode.\n\nSouhaitez-vous tout de mÃªme l'enregistrer ?") % len(listeDonnees), _(u"Anomalie"), wx.YES_NO | wx.NO_DEFAULT | wx.CANCEL | wx.ICON_EXCLAMATION)
             reponse = dlg.ShowModal()
             dlg.Destroy()
             if reponse != wx.ID_YES :
@@ -336,7 +336,7 @@ class Dialog(wx.Dialog):
         if self.IDquotient == None :
 
             self.SetTitle(_(u"Saisie d'un quotient familial/revenu"))
-            # Recherche des dates à appliquer
+            # Recherche des dates Ã  appliquer
             DB = GestionDB.DB()
             req = """
             SELECT date_debut, date_fin

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-16 Ivan LUCAS
@@ -74,7 +74,7 @@ class Serveur(Thread):
                 try :
 
                     if self.parent.last_synchro == None :
-                        # Lance une synchro quelques secondes après le démarrage
+                        # Lance une synchro quelques secondes aprÃ¨s le dÃ©marrage
                         if self.parent.synchro_ouverture == True :
                             self.parent.last_synchro = datetime.datetime.now()
                             time.sleep(30)
@@ -82,17 +82,17 @@ class Serveur(Thread):
                         else :
                             self.parent.last_synchro = datetime.datetime.now()
                     else :
-                        # Vérifie si une synchro est nécessaire selon le délai choisi
+                        # VÃ©rifie si une synchro est nÃ©cessaire selon le dÃ©lai choisi
                         if datetime.datetime.now() >= self.GetHeureProchaineSynchro() :
                             self.start_synchro = True
 
 
-                    # Lancement de la procédure de synchronisation
+                    # Lancement de la procÃ©dure de synchronisation
                     if self.start_synchro == True and self.synchro_en_cours == False :
 
                         self.start_synchro = False
 
-                        # Mémorise l'heure de la dernière synchro
+                        # MÃ©morise l'heure de la derniÃ¨re synchro
                         self.parent.last_synchro = datetime.datetime.now()
 
                         # Effectue la synchro
@@ -141,7 +141,7 @@ class Panel(wx.Panel):
         self.couleur_defaut = self.bouton_traiter.GetBackgroundColour()
 
         self.bouton_synchroniser = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Actualiser2.png"), wx.BITMAP_TYPE_ANY))
-        self.bouton_synchroniser.SetToolTip(wx.ToolTip(_(u"Synchroniser maintenant les données entre Noethys et Connecthys")))
+        self.bouton_synchroniser.SetToolTip(wx.ToolTip(_(u"Synchroniser maintenant les donnÃ©es entre Noethys et Connecthys")))
 
         self.bouton_outils = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Outils.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_outils.SetToolTip(wx.ToolTip(_(u"Outils")))
@@ -201,7 +201,7 @@ class Panel(wx.Panel):
 
     def MAJ(self, block=True):
         """ MAJ du bouton Demandes """
-        # Paramètres
+        # ParamÃ¨tres
 
         if self.lock.acquire(block) == True:
             try:
@@ -220,7 +220,7 @@ class Panel(wx.Panel):
 
 
     def MAJ_bouton(self, block=True):
-        # Recherche le nombre d'actions enregistrées non traitées
+        # Recherche le nombre d'actions enregistrÃ©es non traitÃ©es
         DB = GestionDB.DB()
         req = """SELECT IDaction, horodatage
         FROM portail_actions
@@ -238,11 +238,11 @@ class Panel(wx.Panel):
                     self.bouton_traiter.SetBackgroundColour(self.couleur_defaut)
                     #self.bouton_traiter.Enable(False)
                 elif nbre_actions_attente == 1 :
-                    texte = _(u"1 demande\nà traiter")
+                    texte = _(u"1 demande\nÃ  traiter")
                     self.bouton_traiter.SetBackgroundColour((150, 255, 150))
                     #self.bouton_traiter.Enable(True)
                 else :
-                    texte = _(u"%d demandes\nà traiter") % nbre_actions_attente
+                    texte = _(u"%d demandes\nÃ  traiter") % nbre_actions_attente
                     self.bouton_traiter.SetBackgroundColour((150, 255, 150))
                     #self.bouton_traiter.Enable(True)
 
@@ -273,7 +273,7 @@ class Panel(wx.Panel):
             else:
                 return False
             self.serveur.Start()
-            return self.EcritLog(_(u"Client de synchronisation prêt"))
+            return self.EcritLog(_(u"Client de synchronisation prÃªt"))
         else :
             self.serveur.Start()
 
@@ -309,21 +309,21 @@ class Panel(wx.Panel):
         self.serveur.Start_synchro()
 
     def OnBoutonOutils(self, event=None):
-        """ Création du menu Outils """
+        """ CrÃ©ation du menu Outils """
         menuPop = UTILS_Adaptations.Menu()
 
         # Afficher heure prochaine synchro
         id = wx.Window.NewControlId()
-        texte_next_synchro = _(u"Prochaine synchronisation prévue à %s") % self.serveur.GetHeureProchaineSynchro().strftime("%Hh%M")
+        texte_next_synchro = _(u"Prochaine synchronisation prÃ©vue Ã  %s") % self.serveur.GetHeureProchaineSynchro().strftime("%Hh%M")
         item = wx.MenuItem(menuPop, id, texte_next_synchro, texte_next_synchro)
         menuPop.AppendItem(item)
         item.Enable(False)
 
         menuPop.AppendSeparator()
 
-        # Synchroniser maintenant les données
+        # Synchroniser maintenant les donnÃ©es
         id = wx.Window.NewControlId()
-        item = wx.MenuItem(menuPop, id, _(u"Synchroniser maintenant"), _(u"Synchroniser maintenant les données entre Noethys et Connecthys"))
+        item = wx.MenuItem(menuPop, id, _(u"Synchroniser maintenant"), _(u"Synchroniser maintenant les donnÃ©es entre Noethys et Connecthys"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Actualiser2.png"), wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
 
@@ -338,7 +338,7 @@ class Panel(wx.Panel):
 
         # Configuration du portail
         id = wx.Window.NewControlId()
-        item = wx.MenuItem(menuPop, id, _(u"Configuration"), _(u"Accéder à la configuration de Connecthys"))
+        item = wx.MenuItem(menuPop, id, _(u"Configuration"), _(u"AccÃ©der Ã  la configuration de Connecthys"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Mecanisme.png"), wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
 

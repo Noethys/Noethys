@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-18 Ivan LUCAS
@@ -26,13 +26,13 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
 
-        # Inscrits et présents
-        self.staticbox_activites = wx.StaticBox(self, -1, _(u"Activités"))
+        # Inscrits et prÃ©sents
+        self.staticbox_activites = wx.StaticBox(self, -1, _(u"ActivitÃ©s"))
         self.radio_tous = wx.RadioButton(self, -1, _(u"Tous les individus"))
-        self.radio_inscrits = wx.RadioButton(self, -1, _(u"Uniquement les inscrits aux activités suivantes :"))
+        self.radio_inscrits = wx.RadioButton(self, -1, _(u"Uniquement les inscrits aux activitÃ©s suivantes :"))
         self.ctrl_activites = CTRL_Selection_activites.CTRL(self)
         
-        self.check_presents = wx.CheckBox(self, -1, _(u"Et présents du"))
+        self.check_presents = wx.CheckBox(self, -1, _(u"Et prÃ©sents du"))
         self.ctrl_date_debut = CTRL_Saisie_date.Date2(self)
         self.label_au = wx.StaticText(self, -1, _(u"au"))
         self.ctrl_date_fin = CTRL_Saisie_date.Date2(self)
@@ -43,13 +43,13 @@ class Dialog(wx.Dialog):
             self.label_au.Show(False)
             self.ctrl_date_fin.Show(False)
 
-        # Archivés et effaces
+        # ArchivÃ©s et effaces
         self.staticbox_options = wx.StaticBox(self, -1, _(u"Options"))
-        self.check_archives = wx.CheckBox(self, -1, _(u"Afficher les individus archivés"))
-        self.check_effaces = wx.CheckBox(self, -1, _(u"Afficher les individus effacés"))
+        self.check_archives = wx.CheckBox(self, -1, _(u"Afficher les individus archivÃ©s"))
+        self.check_effaces = wx.CheckBox(self, -1, _(u"Afficher les individus effacÃ©s"))
 
         # RFID
-        self.check_rfid = wx.CheckBox(self, -1, _(u"Activer la détection des badges RFID"))
+        self.check_rfid = wx.CheckBox(self, -1, _(u"Activer la dÃ©tection des badges RFID"))
 
         self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
         self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
@@ -63,19 +63,19 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
         
-        # Init Contrôles
+        # Init ContrÃ´les
         self.OnRadio(None)
 
     def __set_properties(self):
-        self.SetTitle(_(u"Paramètres d'affichage"))
-        self.radio_tous.SetToolTip(wx.ToolTip(_(u"Cochez ici pour sélectionner tous les individus")))
-        self.radio_inscrits.SetToolTip(wx.ToolTip(_(u"Cochez ici pour sélectionner des inscrits")))
-        self.check_presents.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour saisir une période de présence")))
-        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez la date de début de période")))
-        self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de fin de période")))
-        self.check_archives.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour inclure les individus archivés")))
-        self.check_effaces.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour inclure les individus effacés")))
-        self.check_rfid.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour activer la détection des badges RFID")))
+        self.SetTitle(_(u"ParamÃ¨tres d'affichage"))
+        self.radio_tous.SetToolTip(wx.ToolTip(_(u"Cochez ici pour sÃ©lectionner tous les individus")))
+        self.radio_inscrits.SetToolTip(wx.ToolTip(_(u"Cochez ici pour sÃ©lectionner des inscrits")))
+        self.check_presents.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour saisir une pÃ©riode de prÃ©sence")))
+        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez la date de dÃ©but de pÃ©riode")))
+        self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de fin de pÃ©riode")))
+        self.check_archives.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour inclure les individus archivÃ©s")))
+        self.check_effaces.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour inclure les individus effacÃ©s")))
+        self.check_rfid.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour activer la dÃ©tection des badges RFID")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
         self.SetMinSize((490, 510))
@@ -83,7 +83,7 @@ class Dialog(wx.Dialog):
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=5, cols=1, vgap=10, hgap=10)
 
-        # Activités
+        # ActivitÃ©s
         staticbox_activites = wx.StaticBoxSizer(self.staticbox_activites, wx.VERTICAL)
         staticbox_activites.Add(self.radio_tous, 0, wx.ALL|wx.EXPAND, 10)
         staticbox_activites.Add(self.radio_inscrits, 0, wx.LEFT|wx.RIGHT, 10)
@@ -183,33 +183,33 @@ class Dialog(wx.Dialog):
         if self.ctrl_activites.Validation() == False :
             return
         
-        # Les présents
+        # Les prÃ©sents
         if self.check_presents.GetValue() == True :
             if self.ctrl_date_debut.GetDate() == None or self.ctrl_date_debut.Validation() == False :
-                dlg = wx.MessageDialog(self, _(u"Vous n'avez saisi aucune date de début de période !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous n'avez saisi aucune date de dÃ©but de pÃ©riode !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return
             
             if self.ctrl_date_fin.GetDate() == None or self.ctrl_date_fin.Validation() == False :
-                dlg = wx.MessageDialog(self, _(u"Vous n'avez saisi aucune date de fin de période !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous n'avez saisi aucune date de fin de pÃ©riode !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return
 
             if self.ctrl_date_debut.GetDate() > self.ctrl_date_fin.GetDate() :
-                dlg = wx.MessageDialog(self, _(u"La date de début est supérieure à la date de fin !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"La date de dÃ©but est supÃ©rieure Ã  la date de fin !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return
         
-        # Fermeture de la fenêtre
+        # Fermeture de la fenÃªtre
         self.EndModal(wx.ID_OK)
             
     def GetParametres(self):
         listeParametres = []
 
-        # Activités
+        # ActivitÃ©s
         if self.radio_inscrits.GetValue() == True :
             mode, listeIDtemp = self.ctrl_activites.GetValeurs()
             listeID = []
@@ -245,13 +245,13 @@ class Dialog(wx.Dialog):
                 nom, valeur = parametre.split("===")
                 dictParametres[nom] = valeur
 
-        # Groupes d'activités
+        # Groupes d'activitÃ©s
         if "liste_groupes_activites" in dictParametres:
             listeID = [int(ID) for ID in dictParametres["liste_groupes_activites"].split(";")]
             self.ctrl_activites.SetValeurs("groupes", listeID)
             self.radio_inscrits.SetValue(True)
 
-        # Activités
+        # ActivitÃ©s
         if "liste_activites" in dictParametres:
             listeID = [int(ID) for ID in dictParametres["liste_activites"].split(";")]
             self.ctrl_activites.SetValeurs("activites", listeID)

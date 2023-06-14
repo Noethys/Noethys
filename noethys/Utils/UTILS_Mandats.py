@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -19,29 +19,29 @@ from Utils import UTILS_Dates
 from dateutil import relativedelta
 
 
-ERREUR1 = _(u"Le mandat n'a pas été utilisé durant plus de 36 mois. Il faut donc refaire un nouveau mandat.")
-ERREUR2 = _(u"Ce mandat ponctuel a déjà été utilisé une fois. Il faut refaire un nouveau mandat.")
+ERREUR1 = _(u"Le mandat n'a pas Ã©tÃ© utilisÃ© durant plus de 36 mois. Il faut donc refaire un nouveau mandat.")
+ERREUR2 = _(u"Ce mandat ponctuel a dÃ©jÃ  Ã©tÃ© utilisÃ© une fois. Il faut refaire un nouveau mandat.")
 
 LISTE_SEQUENCES = [
     (_(u"Automatique"), "auto"),
-    (_(u"Prélèvement ponctuel (OOFF)"), "OOFF"),
-    (_(u"Premier prélèvement d'une série (FRST)"), "FRST"),
-    (_(u"Prélèvement suivant d'une série (RCUR)"), "RCUR"), 
-    (_(u"Dernier prélèvement d'une série (FNAL)"), "FNAL"),
+    (_(u"PrÃ©lÃ¨vement ponctuel (OOFF)"), "OOFF"),
+    (_(u"Premier prÃ©lÃ¨vement d'une sÃ©rie (FRST)"), "FRST"),
+    (_(u"PrÃ©lÃ¨vement suivant d'une sÃ©rie (RCUR)"), "RCUR"), 
+    (_(u"Dernier prÃ©lÃ¨vement d'une sÃ©rie (FNAL)"), "FNAL"),
     ]
 
 
 
 
 class Mandats():
-    """ Récupère les mandats et vérifie leurs validités """
+    """ RÃ©cupÃ¨re les mandats et vÃ©rifie leurs validitÃ©s """
     def __init__(self):
         self.dictMandats, self.dictMandatsFamilles = self.GetMandats() 
         self.dictPrelevements = self.GetPrelevementsMandats() 
         
     
     def GetMandats(self):
-        """ Récupération des mandats """
+        """ RÃ©cupÃ©ration des mandats """
         DB = GestionDB.DB()
         req = """SELECT IDmandat, IDfamille, rum, type, date, IDbanque, mandats.IDindividu, individu_nom, iban, bic, sequence, actif, individus.nom, individus.prenom
         FROM mandats
@@ -73,9 +73,9 @@ class Mandats():
         return dictMandats, dictMandatsFamilles
     
     def GetPrelevementsMandats(self):
-        """ Récupère les prélèvements existants pour chaque mandat """
+        """ RÃ©cupÃ¨re les prÃ©lÃ¨vements existants pour chaque mandat """
         DB = GestionDB.DB()
-        # Prélèvements
+        # PrÃ©lÃ¨vements
         req = """SELECT IDprelevement, IDfamille, IDmandat, statut, lots_prelevements.date
         FROM prelevements
         LEFT JOIN lots_prelevements ON lots_prelevements.IDlot = prelevements.IDlot
@@ -84,7 +84,7 @@ class Mandats():
         ;"""
         DB.ExecuterReq(req)
         listePrelevements = DB.ResultatReq()
-        # Pièces PES ORMC
+        # PiÃ¨ces PES ORMC
         req = """SELECT IDpiece, IDfamille, prelevement_IDmandat, prelevement_statut, pes_lots.date_prelevement
         FROM pes_pieces
         LEFT JOIN pes_lots ON pes_lots.IDlot = pes_pieces.IDlot
@@ -137,7 +137,7 @@ class Mandats():
         else :
             mandatActif = False
         
-        # Recherche les prélèvements associés à ce mandat
+        # Recherche les prÃ©lÃ¨vements associÃ©s Ã  ce mandat
         listePrelevements = []
         nbrePrelevementsValides = 0
         if IDmandat in self.dictPrelevements :
@@ -147,7 +147,7 @@ class Mandats():
                     nbrePrelevementsValides += 1
         nbrePrelevements = len(listePrelevements)
         
-        # Vérifie si le mandat a bien été utilisé depuis 36 mois
+        # VÃ©rifie si le mandat a bien Ã©tÃ© utilisÃ© depuis 36 mois
 ##        dateJour = datetime.date.today() 
 ##        dateDerniereUtilisation = dateMandat
 ##        for dictPrelevement in listePrelevements :
@@ -157,27 +157,27 @@ class Mandats():
 ##        if dateJour > dateMaxMandat :
 ##            valide = ERREUR1
         
-        # Si mandat ponctuel : recherche s'il a déjà un prélèvement rattaché
+        # Si mandat ponctuel : recherche s'il a dÃ©jÃ  un prÃ©lÃ¨vement rattachÃ©
         if typeMandat == "ponctuel" :
             if nbrePrelevementsValides > 0 :
                 valide = ERREUR2
         
-        # Si mandat ponctuel : recherche de la séquence
+        # Si mandat ponctuel : recherche de la sÃ©quence
         if typeMandat == "ponctuel" :
             prochaineSequence = "OOFF"
         
-        # Si mandat récurrent : recherche de la séquence
+        # Si mandat rÃ©current : recherche de la sÃ©quence
         if typeMandat == "recurrent" :
             if nbrePrelevementsValides == 0 :
                 prochaineSequence = "FRST"
             else :
                 prochaineSequence = "RCUR"
         
-        # Si la prochaine séquence est spécifiée dans le mandat (si non 'automatique') :
+        # Si la prochaine sÃ©quence est spÃ©cifiÃ©e dans le mandat (si non 'automatique') :
         if sequence != "auto" :
             prochaineSequence = sequence
             
-        # Renvoie les résultats
+        # Renvoie les rÃ©sultats
         dictResultat = {"valide" : valide, "actif" : mandatActif, "prochaineSequence" : prochaineSequence, "nbrePrelevements" : nbrePrelevements, "nbrePrelevementsValides" : nbrePrelevementsValides}
         return dictResultat
         

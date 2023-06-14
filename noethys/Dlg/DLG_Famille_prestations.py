@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-17 Ivan LUCAS
@@ -19,7 +19,7 @@ import wx.lib.agw.hyperlink as Hyperlink
 from Utils import UTILS_Utilisateurs
 
 from Utils import UTILS_Config
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"â‚¬")
 
 
 class Hyperlien_regroupement(Hyperlink.HyperLinkCtrl):
@@ -92,9 +92,9 @@ class Hyperlien_periodes(Hyperlink.HyperLinkCtrl):
             listePeriodes = dlg.GetListePeriodes()
             # Label
             if listePeriodes == None :
-                self.SetLabel(_(u"Toutes les périodes"))
+                self.SetLabel(_(u"Toutes les pÃ©riodes"))
             else:
-                self.SetLabel(_(u"Sélection"))
+                self.SetLabel(_(u"SÃ©lection"))
             # MAJ
             self.parent.ctrl_prestations.SetListePeriodes(listePeriodes)
 ##            self.parent.MAJtotal()
@@ -191,11 +191,11 @@ class Panel(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.ctrl_prestations.Supprimer, self.bouton_supprimer)
         self.Bind(wx.EVT_BUTTON, self.ctrl_prestations.Appliquer_modele, self.bouton_modele)
 
-        # Propriétés
+        # PropriÃ©tÃ©s
         self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour saisir une prestation")))
-        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la prestation sélectionnée")))
-        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la prestation sélectionnée")))
-        self.bouton_modele.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour saisir une prestation à partir d'un modèle de prestation")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la prestation sÃ©lectionnÃ©e")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la prestation sÃ©lectionnÃ©e")))
+        self.bouton_modele.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour saisir une prestation Ã  partir d'un modÃ¨le de prestation")))
 
         # Layout
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
@@ -239,7 +239,7 @@ class Panel(wx.Panel):
         self.ctrl_total.SetLabel(_(u"Total : %.2f %s") % (self.ctrl_prestations.GetTotal(), SYMBOLE))
             
     def ValidationData(self):
-        """ Return True si les données sont valides et pretes à être sauvegardées """
+        """ Return True si les donnÃ©es sont valides et pretes Ã  Ãªtre sauvegardÃ©es """
         return True
     
     def Sauvegarde(self):

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-14 Ivan LUCAS
@@ -23,7 +23,7 @@ from Utils import UTILS_Mandats
 import wx.lib.dialogs as dialogs
 
 from Utils import UTILS_Config
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"â‚¬")
 
 
 from Utils import UTILS_Interface
@@ -105,7 +105,7 @@ class Track(object):
     
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # Récupération des paramètres perso
+        # RÃ©cupÃ©ration des paramÃ¨tres perso
         self.IDfamille = kwds.pop("IDfamille", None)
         self.IDmandat = kwds.pop("IDmandat", None)
         self.selectionID = None
@@ -127,7 +127,7 @@ class ListView(FastObjectListView):
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
-        """ Récupération des données """
+        """ RÃ©cupÃ©ration des donnÃ©es """
         dictTitulaires = UTILS_Titulaires.GetTitulaires() 
         criteres = ""
         if self.IDfamille != None :
@@ -232,26 +232,26 @@ class ListView(FastObjectListView):
             
         liste_Colonnes = [
             ColumnDefn(_(u"ID"), "left", 0, "IDprelevement", typeDonnee="entier"),
-            ColumnDefn(_(u"Date Prélèv."), 'left', 80, "datePrelevement", typeDonnee="date", stringConverter=FormateDateCourt),
+            ColumnDefn(_(u"Date PrÃ©lÃ¨v."), 'left', 80, "datePrelevement", typeDonnee="date", stringConverter=FormateDateCourt),
             ColumnDefn(_(u"Nom bordereau"), 'left', 150, "nomLot", typeDonnee="texte"),
 ##            ColumnDefn(_(u"Famille"), 'left', 230, "titulaires"),
 ##            ColumnDefn(_(u"Type"), 'left', 70, "type", stringConverter=FormateType),
-            ColumnDefn(_(u"Libellé"), 'left', 110, "libelle", typeDonnee="texte"),
+            ColumnDefn(_(u"LibellÃ©"), 'left', 110, "libelle", typeDonnee="texte"),
             ColumnDefn(_(u"Montant"), 'right', 70, "montant", typeDonnee="montant", stringConverter=FormateMontant),
             ColumnDefn(_(u"Statut"), 'left', 80, "prelevement_statut", typeDonnee="texte", stringConverter=FormateStatut, imageGetter=GetImageStatut),
-            ColumnDefn(_(u"Règlement"), 'left', 70, "reglement", typeDonnee="bool", stringConverter=FormateReglement, imageGetter=GetImageReglement),
-            ColumnDefn(_(u"Séquence"), 'left', 70, "prelevement_sequence", typeDonnee="texte"),
+            ColumnDefn(_(u"RÃ¨glement"), 'left', 70, "reglement", typeDonnee="bool", stringConverter=FormateReglement, imageGetter=GetImageReglement),
+            ColumnDefn(_(u"SÃ©quence"), 'left', 70, "prelevement_sequence", typeDonnee="texte"),
             ColumnDefn(_(u"IBAN"), 'left', 190, "prelevement_iban", typeDonnee="texte"),
             ColumnDefn(_(u"BIC"), 'left', 100, "prelevement_bic", typeDonnee="texte"),
             ColumnDefn(_(u"Titulaire compte bancaire"), 'left', 160, "prelevement_titulaire", typeDonnee="texte"),
             ColumnDefn(_(u"Ref. mandat"), 'left', 90, "prelevement_rum", typeDonnee="texte"),
             ColumnDefn(_(u"Date mandat"), 'left', 80, "prelevement_date_mandat", typeDonnee="date", stringConverter=FormateDateCourt),
-            ColumnDefn(_(u"Titulaire Hélios"), 'left', 150, "titulaireNomComplet", typeDonnee="texte"),
+            ColumnDefn(_(u"Titulaire HÃ©lios"), 'left', 150, "titulaireNomComplet", typeDonnee="texte"),
             ColumnDefn(_(u"Adresse"), 'left', 220, "titulaireAdresse", typeDonnee="texte"),
             ]
             
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(_(u"Aucun prélèvement"))
+        self.SetEmptyListMsg(_(u"Aucun prÃ©lÃ¨vement"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
 ##        self.SetSortColumn(self.columns[self.numColonneTri])
         self.SortBy(self.numColonneTri, ascending=self.ordreAscendant)
@@ -266,11 +266,11 @@ class ListView(FastObjectListView):
 
     def OnContextMenu(self, event):
         """Ouverture du menu contextuel """
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
+        item = wx.MenuItem(menuPop, 40, _(u"AperÃ§u avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -303,15 +303,15 @@ class ListView(FastObjectListView):
         menuPop.Destroy()
 
     def Impression(self):
-        # Récupère l'intitulé du compte
-        txtIntro = _(u"Liste des prélèvements")
-        # Récupère le total
+        # RÃ©cupÃ¨re l'intitulÃ© du compte
+        txtIntro = _(u"Liste des prÃ©lÃ¨vements")
+        # RÃ©cupÃ¨re le total
         total = 0.0
         for track in self.donnees :
             total += track.montant
         txtTotal = self.GetTexteTotaux().replace("<B>", "").replace("</B>", "")
         from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des prélèvements"), intro=txtIntro, total=txtTotal, format="A", orientation=wx.LANDSCAPE)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des prÃ©lÃ¨vements"), intro=txtIntro, total=txtTotal, format="A", orientation=wx.LANDSCAPE)
         return prt
         
     def Apercu(self, event=None):
@@ -322,11 +322,11 @@ class ListView(FastObjectListView):
 
     def ExportTexte(self, event=None):
         from Utils import UTILS_Export
-        UTILS_Export.ExportTexte(self, titre=_(u"Liste des prélèvements PES ORMC"))
+        UTILS_Export.ExportTexte(self, titre=_(u"Liste des prÃ©lÃ¨vements PES ORMC"))
         
     def ExportExcel(self, event=None):
         from Utils import UTILS_Export
-        UTILS_Export.ExportExcel(self, titre=_(u"Liste des prélèvements PES ORMC"))
+        UTILS_Export.ExportExcel(self, titre=_(u"Liste des prÃ©lÃ¨vements PES ORMC"))
         
 
 

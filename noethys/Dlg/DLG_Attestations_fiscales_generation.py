@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-14 Ivan LUCAS
@@ -27,8 +27,8 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, name="DLG_Attestations_fiscales_generation", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         
-        intro = _(u"Vous pouvez ici générer des attestions fiscales à imprimer ou envoyer par Email Page 1 : Sélectionnez des paramètres puis cliquez sur Rafraîchir pour afficher les prestations à inclure. Vous pouvez ajuster chaque prestation grâce à la fonction Ajustement (pour déduire le coût des repas par exemple). Page 2 : Cochez les attestations à générer puis cliquez sur les boutons Envoyer par Email ou Imprimer.")
-        titre = _(u"Génération des attestations fiscales")
+        intro = _(u"Vous pouvez ici gÃ©nÃ©rer des attestions fiscales Ã  imprimer ou envoyer par Email Page 1 : SÃ©lectionnez des paramÃ¨tres puis cliquez sur RafraÃ®chir pour afficher les prestations Ã  inclure. Vous pouvez ajuster chaque prestation grÃ¢ce Ã  la fonction Ajustement (pour dÃ©duire le coÃ»t des repas par exemple). Page 2 : Cochez les attestations Ã  gÃ©nÃ©rer puis cliquez sur les boutons Envoyer par Email ou Imprimer.")
+        titre = _(u"GÃ©nÃ©ration des attestations fiscales")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Generation.png")
         
@@ -52,7 +52,7 @@ class Dialog(wx.Dialog):
         self.nbrePages = len(self.listePages)    
         self.pageVisible = 1
                         
-        # Création des pages
+        # CrÃ©ation des pages
         self.Creation_Pages()        
         
             
@@ -68,8 +68,8 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
-        self.bouton_retour.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour revenir à la page précédente")))
-        self.bouton_suite.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour passer à l'étape suivante")))
+        self.bouton_retour.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour revenir Ã  la page prÃ©cÃ©dente")))
+        self.bouton_suite.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour passer Ã  l'Ã©tape suivante")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez pour fermer")))
         self.SetMinSize((990, 760))
 
@@ -108,15 +108,15 @@ class Dialog(wx.Dialog):
         UTILS_Aide.Aide("Generation")
 
     def Onbouton_retour(self, event):
-        # rend invisible la page affichée
+        # rend invisible la page affichÃ©e
         pageCible = eval("self.page"+str(self.pageVisible))
         pageCible.Show(False)
-        # Fait apparaître nouvelle page
+        # Fait apparaÃ®tre nouvelle page
         self.pageVisible -= 1
         pageCible = eval("self.page"+str(self.pageVisible))
         pageCible.Show(True)
         self.sizer_pages.Layout()
-        # Si on quitte l'avant-dernière page, on active le bouton Suivant
+        # Si on quitte l'avant-derniÃ¨re page, on active le bouton Suivant
         if self.pageVisible == self.nbrePages :
             self.bouton_suite.Enable(True)
             self.bouton_suite.SetImage(Chemins.GetStaticPath("Images/32x32/Fermer.png"))
@@ -124,40 +124,40 @@ class Dialog(wx.Dialog):
             self.bouton_suite.Enable(True)
             self.bouton_suite.SetImage(Chemins.GetStaticPath("Images/32x32/Fleche_droite.png"))
             self.bouton_suite.SetTexte(_(u"Suite"))
-        # Si on revient à la première page, on désactive le bouton Retour
+        # Si on revient Ã  la premiÃ¨re page, on dÃ©sactive le bouton Retour
         if self.pageVisible == 1 :
             self.bouton_retour.Enable(False)
         # On active le bouton annuler
         self.bouton_annuler.Enable(True)
 
     def Onbouton_suite(self, event):
-        # Vérifie que les données de la page en cours sont valides
+        # VÃ©rifie que les donnÃ©es de la page en cours sont valides
         validation = self.ValidationPages()
         if validation == False : return
-        # Si on est déjà sur la dernière page : on termine
+        # Si on est dÃ©jÃ  sur la derniÃ¨re page : on termine
         if self.pageVisible == self.nbrePages :
             self.Terminer()
             return
-        # Rend invisible la page affichée
+        # Rend invisible la page affichÃ©e
         pageCible = eval("self.page"+str(self.pageVisible))
         pageCible.Show(False)
-        # Fait apparaître nouvelle page
+        # Fait apparaÃ®tre nouvelle page
         self.pageVisible += 1
         pageCible = eval("self.page"+str(self.pageVisible))
         pageCible.MAJ() 
         pageCible.Show(True)
         self.sizer_pages.Layout()
-        # Si on arrive à la dernière page, on désactive le bouton Suivant
+        # Si on arrive Ã  la derniÃ¨re page, on dÃ©sactive le bouton Suivant
         if self.pageVisible == self.nbrePages :
             self.bouton_suite.SetImage(Chemins.GetStaticPath("Images/32x32/Fermer.png"))
             self.bouton_suite.SetTexte(_(u"Fermer"))
             self.bouton_annuler.Enable(False)
-        # Si on quitte la première page, on active le bouton Retour
+        # Si on quitte la premiÃ¨re page, on active le bouton Retour
         if self.pageVisible > 1 :
             self.bouton_retour.Enable(True)
         
     def ValidationPages(self) :
-        """ Validation des données avant changement de pages """
+        """ Validation des donnÃ©es avant changement de pages """
         validation = getattr(self, "page%d" % self.pageVisible).Validation()
         return validation
     

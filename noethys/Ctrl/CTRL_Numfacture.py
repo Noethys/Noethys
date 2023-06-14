@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -23,7 +23,7 @@ class CTRL(wx.SearchCtrl):
         self.parent = parent
         self.IDfamille = IDfamille
         self.IDutilisateurActif = None
-        self.SetDescriptiveText(_(u"N° de facture"))
+        self.SetDescriptiveText(_(u"NÂ° de facture"))
             
         # Options
         self.ShowSearchButton(True)
@@ -52,7 +52,7 @@ class CTRL(wx.SearchCtrl):
         # try :
         #     numFacture = int(txtSearch)
         # except :
-        #     dlg = wx.MessageDialog(self, _(u"Ce numéro de facture n'est pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+        #     dlg = wx.MessageDialog(self, _(u"Ce numÃ©ro de facture n'est pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
         #     dlg.ShowModal()
         #     dlg.Destroy()
         #     return
@@ -78,14 +78,14 @@ class CTRL(wx.SearchCtrl):
             conditionNumero = None
 
         if conditionNumero == None :
-            dlg = wx.MessageDialog(self, _(u"Ce numéro de facture ne semble pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Ce numÃ©ro de facture ne semble pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
         DB = GestionDB.DB()
 
-##        # Récupération des totaux des prestations pour chaque facture
+##        # RÃ©cupÃ©ration des totaux des prestations pour chaque facture
 ##        req = """
 ##        SELECT 
 ##        IDfacture, SUM(montant)
@@ -100,7 +100,7 @@ class CTRL(wx.SearchCtrl):
 ##            if IDfacture != None :
 ##                dictPrestations[IDfacture] = totalPrestations
 
-        # Recherche si le numéro de facture existe
+        # Recherche si le numÃ©ro de facture existe
         req = u"""
         SELECT 
         factures.IDfacture, factures.total, factures.regle, factures.solde,
@@ -117,21 +117,21 @@ class CTRL(wx.SearchCtrl):
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()     
         DB.Close() 
-        # Si le numéro de facture n'existe pas
+        # Si le numÃ©ro de facture n'existe pas
         if len(listeDonnees) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Ce numéro ne correspond à aucune facture existante %s!") % texteSupp, _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Ce numÃ©ro ne correspond Ã  aucune facture existante %s!") % texteSupp, _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         
         IDfacture, totalInitial, regleInitial, soldeInitial, regleActuel, etat, IDfamille = listeDonnees[0]
         if etat == "annulation" :
-            dlg = wx.MessageDialog(self, _(u"La facture n°%s a été annulée !") % numFacture, _(u"Facture annulée"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"La facture nÂ°%s a Ã©tÃ© annulÃ©e !") % numFacture, _(u"Facture annulÃ©e"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         
-        # Recherche si la facture a déjà été réglée
+        # Recherche si la facture a dÃ©jÃ  Ã©tÃ© rÃ©glÃ©e
         
         DB = GestionDB.DB()
         req = """SELECT IDfacture, SUM(montant)
@@ -150,7 +150,7 @@ class CTRL(wx.SearchCtrl):
         if totalActuel == None : totalActuel = 0.0 
         if regleActuel == None : regleActuel = 0.0 
         if totalActuel - regleActuel == 0.0 :
-            dlg = wx.MessageDialog(self, _(u"La facture n°%s a déjà été réglée en intégralité !") % numFacture, _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"La facture nÂ°%s a dÃ©jÃ  Ã©tÃ© rÃ©glÃ©e en intÃ©gralitÃ© !") % numFacture, _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -195,14 +195,14 @@ class MyFrame(wx.Frame):
 # --------------------------- DLG de saisie de mot de passe ----------------------------
 
 class Dialog(wx.Dialog):
-    def __init__(self, parent, id=-1, title=_(u"Régler une facture"), IDfamille=None):
+    def __init__(self, parent, id=-1, title=_(u"RÃ©gler une facture"), IDfamille=None):
         wx.Dialog.__init__(self, parent, id, title, name="DLG_Regler_facture")
         self.parent = parent
         self.IDfamille = IDfamille
         
         self.staticbox = wx.StaticBox(self, -1, "")
 
-        self.label = wx.StaticText(self, -1, _(u"Veuillez saisir le numéro de la facture à régler ou\nscannez directement le code-barre sur la facture :"))
+        self.label = wx.StaticText(self, -1, _(u"Veuillez saisir le numÃ©ro de la facture Ã  rÃ©gler ou\nscannez directement le code-barre sur la facture :"))
         self.ctrl_mdp = CTRL(self, IDfamille=self.IDfamille)
         
         self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -50,8 +50,8 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         
-        intro = _(u"Si vous n'arrivez plus à supprimer certaines consommations liées à des forfaits, utilisez cette fonctionnalité pour les déverrouiller. Elles deviendront alors supprimables. Cochez les consommations à déverrouiller plus cliquer sur le bouton Déverrouiller.")
-        titre = _(u"Déverrouillage de consommations de forfaits")
+        intro = _(u"Si vous n'arrivez plus Ã  supprimer certaines consommations liÃ©es Ã  des forfaits, utilisez cette fonctionnalitÃ© pour les dÃ©verrouiller. Elles deviendront alors supprimables. Cochez les consommations Ã  dÃ©verrouiller plus cliquer sur le bouton DÃ©verrouiller.")
+        titre = _(u"DÃ©verrouillage de consommations de forfaits")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Medecin2.png")
         
@@ -61,11 +61,11 @@ class Dialog(wx.Dialog):
 
         self.hyper_tout = Hyperlien(self, label=_(u"Tout cocher"), infobulle=_(u"Cliquez ici pour tout cocher"), URL="tout")
         self.label_separation = wx.StaticText(self, -1, "|")
-        self.hyper_rien = Hyperlien(self, label=_(u"Tout décocher"), infobulle=_(u"Cliquez ici pour tout décocher"), URL="rien")
+        self.hyper_rien = Hyperlien(self, label=_(u"Tout dÃ©cocher"), infobulle=_(u"Cliquez ici pour tout dÃ©cocher"), URL="rien")
 
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
         self.bouton_fermer = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
-        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Déverrouiller"), cheminImage="Images/32x32/Deverrouiller.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"DÃ©verrouiller"), cheminImage="Images/32x32/Deverrouiller.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -76,7 +76,7 @@ class Dialog(wx.Dialog):
     def __set_properties(self):
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
-        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour déverrouiller les consommations cochées")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour dÃ©verrouiller les consommations cochÃ©es")))
         self.SetMinSize((800, 700))
 
     def __do_layout(self):

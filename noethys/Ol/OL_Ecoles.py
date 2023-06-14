@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activitÈs
+# Application :    Noethys, gestion multi-activit√©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -51,7 +51,7 @@ class Track(object):
     
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # RÈcupÈration des paramËtres perso
+        # R√©cup√©ration des param√®tres perso
         self.selectionID = None
         self.selectionTrack = None
         self.criteres = ""
@@ -88,7 +88,7 @@ class ListView(FastObjectListView):
             
 
     def GetTracks(self):
-        """ RÈcupÈration des donnÈes """
+        """ R√©cup√©ration des donn√©es """
         listeID = None
         db = GestionDB.DB()
         req = """SELECT IDecole, nom, rue, cp, ville, tel, fax, mail, secteurs
@@ -122,14 +122,14 @@ class ListView(FastObjectListView):
             ColumnDefn(_(u"Rue"), "left", 140, "rue", typeDonnee="texte"),
             ColumnDefn(_(u"C.P."), "left", 45, "cp", typeDonnee="texte"),
             ColumnDefn(_(u"Ville"), "left", 110, "ville", typeDonnee="texte"),
-            ColumnDefn(_(u"TÈl."), "left", 100, "tel", typeDonnee="texte"),
+            ColumnDefn(_(u"T√©l."), "left", 100, "tel", typeDonnee="texte"),
             ColumnDefn(_(u"Fax."), "left", 100, "fax", typeDonnee="texte"),
             ColumnDefn(_(u"Email"), "left", 100, "mail", typeDonnee="texte"),
             ColumnDefn(_(u"Secteurs"), "left", 250, "txtSecteurs", typeDonnee="texte"),
             ]
         
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(_(u"Aucune Ècole"))
+        self.SetEmptyListMsg(_(u"Aucune √©cole"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
         self.SetSortColumn(self.columns[1])
         self.SetObjects(self.donnees)
@@ -143,7 +143,7 @@ class ListView(FastObjectListView):
             self.selectionTrack = None
         self.InitModel()
         self.InitObjectListView()
-        # SÈlection d'un item
+        # S√©lection d'un item
         if self.selectionTrack != None :
             self.SelectObject(self.selectionTrack, deselectOthers=True, ensureVisible=True)
         self.selectionID = None
@@ -160,7 +160,7 @@ class ListView(FastObjectListView):
             noSelection = False
             ID = self.Selection()[0].IDecole
                 
-        # CrÈation du menu contextuel
+        # Cr√©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Modifier
@@ -191,7 +191,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"AperÁu avant impression"))
+        item = wx.MenuItem(menuPop, 40, _(u"Aper√ßu avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -209,12 +209,12 @@ class ListView(FastObjectListView):
 
     def Apercu(self, event):
         from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des Ècoles"), format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des √©coles"), format="A", orientation=wx.PORTRAIT)
         prt.Preview()
 
     def Imprimer(self, event):
         from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des Ècoles"), format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des √©coles"), format="A", orientation=wx.PORTRAIT)
         prt.Print()
 
 
@@ -250,14 +250,14 @@ class ListView(FastObjectListView):
     def Modifier(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_ecoles", "modifier") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucune Ècole ‡ modifier dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucune √©cole √† modifier dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         from Dlg import DLG_Saisie_ecole
         IDecole = self.Selection()[0].IDecole
         dlg = DLG_Saisie_ecole.Dialog(self)
-        dlg.SetTitle(_(u"Modification d'une Ècole"))
+        dlg.SetTitle(_(u"Modification d'une √©cole"))
         dlg.SetNom(self.Selection()[0].nom)
         dlg.SetRue(self.Selection()[0].rue)
         dlg.SetCp(self.Selection()[0].cp)
@@ -294,13 +294,13 @@ class ListView(FastObjectListView):
     def Supprimer(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_ecoles", "supprimer") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucune Ècole dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucune √©cole dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         IDecole = self.Selection()[0].IDecole
 
-        # VÈrifie que cette Ècole n'a pas dÈj‡ ÈtÈ attribuÈ ‡ une classe
+        # V√©rifie que cette √©cole n'a pas d√©j√† √©t√© attribu√© √† une classe
         DB = GestionDB.DB()
         req = """SELECT COUNT(IDclasse)
         FROM classes 
@@ -310,12 +310,12 @@ class ListView(FastObjectListView):
         nbreClasses = int(DB.ResultatReq()[0][0])
         DB.Close()
         if nbreClasses > 0 :
-            dlg = wx.MessageDialog(self, _(u"Cette Ècole a dÈj‡ ÈtÈ rattachÈe ‡ %d classes.\nVous ne pouvez donc la supprimer.") % nbreClasses, _(u"Avertissement"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Cette √©cole a d√©j√† √©t√© rattach√©e √† %d classes.\nVous ne pouvez donc la supprimer.") % nbreClasses, _(u"Avertissement"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
-        # VÈrifie que cette Ècole n'a pas dÈj‡ ÈtÈ attribuÈ ‡ une scolaritÈ
+        # V√©rifie que cette √©cole n'a pas d√©j√† √©t√© attribu√© √† une scolarit√©
         DB = GestionDB.DB()
         req = """SELECT COUNT(IDindividu)
         FROM scolarite 
@@ -325,13 +325,13 @@ class ListView(FastObjectListView):
         nbreIndividus = int(DB.ResultatReq()[0][0])
         DB.Close()
         if nbreIndividus > 0 :
-            dlg = wx.MessageDialog(self, _(u"Cette Ècole a dÈj‡ ÈtÈ attribuÈe ‡ %d individus.\nVous ne pouvez donc la supprimer.") % nbreIndividus, _(u"Avertissement"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Cette √©cole a d√©j√† √©t√© attribu√©e √† %d individus.\nVous ne pouvez donc la supprimer.") % nbreIndividus, _(u"Avertissement"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
         # Confirmation de suppression
-        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer cette Ècole ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer cette √©cole ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         if dlg.ShowModal() == wx.ID_YES :
             DB = GestionDB.DB()
             DB.ReqDEL("ecoles", "IDecole", IDecole)
@@ -349,7 +349,7 @@ class BarreRecherche(wx.SearchCtrl):
         self.parent = parent
         self.rechercheEnCours = False
         
-        self.SetDescriptiveText(_(u"Rechercher une Ècole..."))
+        self.SetDescriptiveText(_(u"Rechercher une √©cole..."))
         self.ShowSearchButton(True)
         
         self.listView = self.parent.ctrl_listview

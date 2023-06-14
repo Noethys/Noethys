@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -26,8 +26,8 @@ class Dialog(wx.Dialog):
         self.parent = parent
         
         # Bandeau
-        intro = _(u"Vous pouvez ici saisir un montant et un label personnalisés pour la prestation qui va être créée.")
-        titre = _(u"Prestation personnalisée")
+        intro = _(u"Vous pouvez ici saisir un montant et un label personnalisÃ©s pour la prestation qui va Ãªtre crÃ©Ã©e.")
+        titre = _(u"Prestation personnalisÃ©e")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Euro.png")
         
@@ -58,8 +58,8 @@ class Dialog(wx.Dialog):
         self.bouton_annuler.Show(False)
 
     def __set_properties(self):
-        self.ctrl_label.SetToolTip(wx.ToolTip(_(u"Vous pouvez modifier ici un label personnalisé pour la prestation")))
-        self.ctrl_montant.SetToolTip(wx.ToolTip(_(u"Saisissez ici le montant de la prestation et tapez sur la touche Entrée pour valider rapidement")))
+        self.ctrl_label.SetToolTip(wx.ToolTip(_(u"Vous pouvez modifier ici un label personnalisÃ© pour la prestation")))
+        self.ctrl_montant.SetToolTip(wx.ToolTip(_(u"Saisissez ici le montant de la prestation et tapez sur la touche EntrÃ©e pour valider rapidement")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
@@ -108,7 +108,7 @@ class Dialog(wx.Dialog):
             dlg.Destroy()
             self.ctrl_label.SetFocus()
             return
-        # Fermeture de la fenêtre
+        # Fermeture de la fenÃªtre
         self.EndModal(wx.ID_OK)
     
     def GetMontant(self):
@@ -127,7 +127,7 @@ class Dialog(wx.Dialog):
 if __name__ == "__main__":
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    frame_1 = Dialog(None, label=_(u"Cinéma"))
+    frame_1 = Dialog(None, label=_(u"CinÃ©ma"))
     app.SetTopWindow(frame_1)
     frame_1.ShowModal()
     app.MainLoop()

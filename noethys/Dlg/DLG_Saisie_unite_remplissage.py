@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -104,7 +104,7 @@ class CheckListBoxUnites(wx.CheckListBox):
             if IDunite not in liste_ancienne :
                 listeDonnees = [ ("IDunite_remplissage", self.IDunite_remplissage ), ("IDunite", IDunite ), ]
                 IDunite_remplissage_unite = DB.ReqInsert("unites_remplissage_unites", listeDonnees)
-        # On enlève les anciens
+        # On enlÃ¨ve les anciens
         for IDunite in liste_ancienne :
             if IDunite not in liste_nouvelle :
                 DB.ReqDEL("unites_remplissage_unites", "IDunite", IDunite)
@@ -120,34 +120,34 @@ class Dialog(wx.Dialog):
         self.IDunite_remplissage = IDunite_remplissage
         
         # Nom
-        self.staticbox_nom_staticbox = wx.StaticBox(self, -1, _(u"Nom de l'unité"))
+        self.staticbox_nom_staticbox = wx.StaticBox(self, -1, _(u"Nom de l'unitÃ©"))
         self.label_nom = wx.StaticText(self, -1, _(u"Nom complet :"))
         self.ctrl_nom = wx.TextCtrl(self, -1, u"")
         self.ctrl_nom.SetMinSize((300, -1))
 
-        self.label_abrege = wx.StaticText(self, -1, _(u"Nom abrégé :"))
+        self.label_abrege = wx.StaticText(self, -1, _(u"Nom abrÃ©gÃ© :"))
         self.ctrl_abrege = wx.TextCtrl(self, -1, u"")
         
-        # Caractéristiques
-        self.staticbox_caract_staticbox = wx.StaticBox(self, -1, _(u"Caractéristiques"))
+        # CaractÃ©ristiques
+        self.staticbox_caract_staticbox = wx.StaticBox(self, -1, _(u"CaractÃ©ristiques"))
         self.label_seuil = wx.StaticText(self, -1, _(u"Seuil d'alerte :"))
         self.ctrl_seuil = wx.SpinCtrl(self, -1, "5", size=(60, -1))
         self.ctrl_seuil.SetRange(0, 200)
                 
-        self.label_unites = wx.StaticText(self, -1, _(u"Unités :"))
+        self.label_unites = wx.StaticText(self, -1, _(u"UnitÃ©s :"))
         self.ctrl_unites = CheckListBoxUnites(self, self.IDactivite, self.IDunite_remplissage)
         self.ctrl_unites.SetMinSize((-1, 100))
         self.ctrl_unites.MAJ() 
         
         self.label_etiquettes = wx.StaticText(self, -1, _(u"Etiquettes :"))
-        self.ctrl_etiquettes = CTRL_Etiquettes.CTRL(self, listeActivites=[self.IDactivite,], nomActivite=u"Activité", activeMenu=False)
+        self.ctrl_etiquettes = CTRL_Etiquettes.CTRL(self, listeActivites=[self.IDactivite,], nomActivite=u"ActivitÃ©", activeMenu=False)
         self.ctrl_etiquettes.SetMinSize((-1, 80))
         self.ctrl_etiquettes.MAJ() 
         
         self.label_horaire = wx.StaticText(self, -1, _(u"Plage horaire :"))
         self.label_de = wx.StaticText(self, -1, _(u"de"))
         self.ctrl_heure_min = CTRL_Saisie_heure.Heure(self)
-        self.label_a = wx.StaticText(self, -1, u"à")
+        self.label_a = wx.StaticText(self, -1, u"Ã ")
         self.ctrl_heure_max = CTRL_Saisie_heure.Heure(self)
         
         self.label_affichage = wx.StaticText(self, -1, _(u"Affichage :"))
@@ -156,9 +156,9 @@ class Dialog(wx.Dialog):
         self.check_afficher_grille_conso = wx.CheckBox(self, -1, _(u"Grille des consommations"))
         self.check_afficher_grille_conso.SetValue(True) 
 
-        # Validité
-        self.staticbox_validite_staticbox = wx.StaticBox(self, -1, _(u"Validité"))
-        self.radio_illimitee = wx.RadioButton(self, -1, _(u"Durant la période de validité de l'activité"), style=wx.RB_GROUP)
+        # ValiditÃ©
+        self.staticbox_validite_staticbox = wx.StaticBox(self, -1, _(u"ValiditÃ©"))
+        self.radio_illimitee = wx.RadioButton(self, -1, _(u"Durant la pÃ©riode de validitÃ© de l'activitÃ©"), style=wx.RB_GROUP)
         self.radio_limitee = wx.RadioButton(self, -1, u"Du")
         self.ctrl_date_debut = CTRL_Saisie_date.Date(self)
         self.label_au = wx.StaticText(self, -1, _(u"au"))
@@ -182,21 +182,21 @@ class Dialog(wx.Dialog):
         self.OnRadioValidite(None)
 
     def __set_properties(self):
-        self.SetTitle(_(u"Saisie d'une unité de remplissage"))
-        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez ici le nom complet de l'unité de remplissage")))
+        self.SetTitle(_(u"Saisie d'une unitÃ© de remplissage"))
+        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez ici le nom complet de l'unitÃ© de remplissage")))
         self.ctrl_abrege.SetMinSize((80, -1))
-        self.ctrl_abrege.SetToolTip(wx.ToolTip(_(u"Saisissez ici le nom abrégé de l'unité de remplissage")))
+        self.ctrl_abrege.SetToolTip(wx.ToolTip(_(u"Saisissez ici le nom abrÃ©gÃ© de l'unitÃ© de remplissage")))
         self.ctrl_seuil.SetToolTip(wx.ToolTip(_(u"Saisisez le nombre de places qui constitue le seuil d'alerte")))
-        self.ctrl_unites.SetToolTip(wx.ToolTip(_(u"Cochez les unités qui doivent être associées")))
-        self.ctrl_etiquettes.SetToolTip(wx.ToolTip(_(u"Cochez les étiquettes qui doivent être associées")))
-        self.radio_illimitee.SetToolTip(wx.ToolTip(_(u"Cochez ici si l'unité est valable sur toute la durée de validité de l'activité")))
-        self.radio_limitee.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour définir une période de validité précise")))
-        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez une date de début")))
+        self.ctrl_unites.SetToolTip(wx.ToolTip(_(u"Cochez les unitÃ©s qui doivent Ãªtre associÃ©es")))
+        self.ctrl_etiquettes.SetToolTip(wx.ToolTip(_(u"Cochez les Ã©tiquettes qui doivent Ãªtre associÃ©es")))
+        self.radio_illimitee.SetToolTip(wx.ToolTip(_(u"Cochez ici si l'unitÃ© est valable sur toute la durÃ©e de validitÃ© de l'activitÃ©")))
+        self.radio_limitee.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour dÃ©finir une pÃ©riode de validitÃ© prÃ©cise")))
+        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez une date de dÃ©but")))
         self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez une date de fin")))
         self.ctrl_heure_min.SetToolTip(wx.ToolTip(_(u"[OPTIONNEL] Saisissez une plage horaire conditionnelle")))
         self.ctrl_heure_max.SetToolTip(wx.ToolTip(_(u"[OPTIONNEL] Saisissez une plage horaire conditionnelle")))
-        self.check_afficher_page_accueil.SetToolTip(wx.ToolTip(_(u"Afficher cette unité dans le cadre Effectifs de la page d'accueil")))
-        self.check_afficher_grille_conso.SetToolTip(wx.ToolTip(_(u"Afficher cette unité dans la grille des consommations")))
+        self.check_afficher_page_accueil.SetToolTip(wx.ToolTip(_(u"Afficher cette unitÃ© dans le cadre Effectifs de la page d'accueil")))
+        self.check_afficher_grille_conso.SetToolTip(wx.ToolTip(_(u"Afficher cette unitÃ© dans la grille des consommations")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
@@ -242,7 +242,7 @@ class Dialog(wx.Dialog):
         grid_sizer_caract.AddGrowableCol(1)
         staticbox_caract.Add(grid_sizer_caract, 1, wx.ALL|wx.EXPAND, 10)
         grid_sizer_base.Add(staticbox_caract, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
-        # Validité
+        # ValiditÃ©
         staticbox_validite = wx.StaticBoxSizer(self.staticbox_validite_staticbox, wx.VERTICAL)
         grid_sizer_validite = wx.FlexGridSizer(rows=2, cols=1, vgap=5, hgap=5)
         grid_sizer_validite.Add(self.radio_illimitee, 0, 0, 0)
@@ -287,7 +287,7 @@ class Dialog(wx.Dialog):
         etat = self.Sauvegarde() 
         if etat == False :
             return
-        # Fermeture de la fenêtre
+        # Fermeture de la fenÃªtre
         self.EndModal(wx.ID_OK)
     
     def Sauvegarde(self):
@@ -301,7 +301,7 @@ class Dialog(wx.Dialog):
         
         abrege = self.ctrl_abrege.GetValue()
         if abrege == "" :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un nom abrégé !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un nom abrÃ©gÃ© !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -310,7 +310,7 @@ class Dialog(wx.Dialog):
         
         heure_min = self.ctrl_heure_min.GetHeure() 
         if heure_min != None and self.ctrl_heure_min.Validation() == False :
-            dlg = wx.MessageDialog(self, _(u"L'heure minimale semble être incorrecte !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"L'heure minimale semble Ãªtre incorrecte !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_heure_min.SetFocus()
@@ -318,14 +318,14 @@ class Dialog(wx.Dialog):
 
         heure_max = self.ctrl_heure_max.GetHeure() 
         if heure_max != None and self.ctrl_heure_max.Validation() == False :
-            dlg = wx.MessageDialog(self, _(u"L'heure maximale semble être incorrecte !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"L'heure maximale semble Ãªtre incorrecte !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_heure_max.SetFocus()
             return False
         
         if (heure_min != None and heure_max == None) or (heure_min == None and heure_max != None) :
-            dlg = wx.MessageDialog(self, _(u"La plage horaire est incomplète !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"La plage horaire est incomplÃ¨te !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_heure_min.SetFocus()
@@ -335,20 +335,20 @@ class Dialog(wx.Dialog):
         afficher_page_accueil = int(self.check_afficher_page_accueil.GetValue())
         afficher_grille_conso = int(self.check_afficher_grille_conso.GetValue())
             
-        # Validité
+        # ValiditÃ©
         if self.radio_illimitee.GetValue() == True :
             date_debut = "1977-01-01"
             date_fin = "2999-01-01"
         else:
             date_debut = self.ctrl_date_debut.GetDate()
             if date_debut == None :
-                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de début de validité !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de dÃ©but de validitÃ© !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
             date_fin = self.ctrl_date_fin.GetDate()
             if date_fin == None :
-                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de fin de validité !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de fin de validitÃ© !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
@@ -373,7 +373,7 @@ class Dialog(wx.Dialog):
             ]
 
         if self.IDunite_remplissage == None :
-            # Recherche le numéro d'ordre
+            # Recherche le numÃ©ro d'ordre
             req = """SELECT IDunite_remplissage, ordre
             FROM unites_remplissage WHERE IDactivite=%d
             ORDER BY ordre DESC LIMIT 1
@@ -390,7 +390,7 @@ class Dialog(wx.Dialog):
         else:
             DB.ReqMAJ("unites_remplissage", listeDonnees, "IDunite_remplissage", self.IDunite_remplissage)
                 
-        # Incompatibilités
+        # IncompatibilitÃ©s
         self.ctrl_unites.Sauvegarde() 
         
         DB.Close()

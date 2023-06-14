@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-16 Ivan LUCAS
@@ -30,9 +30,9 @@ class CTRL_Regroupement(wx.Choice):
         self.listeValeurs = [
             (_(u"Aucun"), None),
             (_(u"Etat"), "etat"),
-            (_(u"Catégorie"), "categorie"),
+            (_(u"CatÃ©gorie"), "categorie"),
             (_(u"Famille"), "nom"),
-            (_(u"Période"), "periode"),
+            (_(u"PÃ©riode"), "periode"),
             ]
 
         self.listeLabels = []
@@ -71,7 +71,7 @@ class CTRL_Log(wx.TextCtrl):
         try :
             texte += u"[%s] %s " % (horodatage, message)
         except :
-            texte += u"[%s] %s " % (horodatage, str(message).decode("iso-8859-15"))
+            texte += u"[%s] %s " % (horodatage, str(message).decode("utf8"))
         self.AppendText(texte)
 
         # Surlignage des erreurs
@@ -81,7 +81,7 @@ class CTRL_Log(wx.TextCtrl):
     def Enregistrer(self, event):
         standardPath = wx.StandardPaths.Get()
         wildcard = _(u"Tous les fichiers (*.*)|*.*")
-        dlg = wx.FileDialog(None, message=_(u"Sélectionnez un répertoire et un nom de fichier"), defaultDir=standardPath.GetDocumentsDir(),  defaultFile="journal.txt", wildcard=wildcard, style=wx.FD_SAVE)
+        dlg = wx.FileDialog(None, message=_(u"SÃ©lectionnez un rÃ©pertoire et un nom de fichier"), defaultDir=standardPath.GetDocumentsDir(),  defaultFile="journal.txt", wildcard=wildcard, style=wx.FD_SAVE)
         nomFichier = None
         if dlg.ShowModal() == wx.ID_OK:
             nomFichier = dlg.GetPath()
@@ -101,7 +101,7 @@ class Dialog(wx.Dialog):
         self.IDfamille = IDfamille
 
         # Bandeau
-        intro = _(u"Double-cliquez sur une ligne pour traiter la demande correspondante ou cliquez sur le bouton 'Commencer' pour traiter la première demande de la liste.")
+        intro = _(u"Double-cliquez sur une ligne pour traiter la demande correspondante ou cliquez sur le bouton 'Commencer' pour traiter la premiÃ¨re demande de la liste.")
         titre = _(u"Traitement des demandes")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Connecthys.png")
@@ -121,11 +121,11 @@ class Dialog(wx.Dialog):
         self.ctrl_recherche = OL_Portail_demandes.CTRL_Outils(self, listview=self.ctrl_demandes, afficherCocher=True)
         self.label_regroupement = wx.StaticText(self, -1, _(u"Regroupement :"))
         self.ctrl_regroupement = CTRL_Regroupement(self)
-        self.check_cacher_traitees = wx.CheckBox(self, -1, _(u"Cacher les demandes traitées"))
+        self.check_cacher_traitees = wx.CheckBox(self, -1, _(u"Cacher les demandes traitÃ©es"))
         self.check_cacher_traitees.SetValue(True)
 
         # Journal
-        self.box_journal_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Journal d'évènements"))
+        self.box_journal_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Journal d'Ã©vÃ¨nements"))
         self.ctrl_log = CTRL_Log(self)
         self.ctrl_log.SetMinSize((100, 80))
         self.ctrl_demandes.log = self.ctrl_log
@@ -160,14 +160,14 @@ class Dialog(wx.Dialog):
 
 
     def __set_properties(self):
-        self.bouton_traiter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour traiter la demande sélectionnée dans la liste")))
-        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher un aperçu avant impression de la liste")))
+        self.bouton_traiter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour traiter la demande sÃ©lectionnÃ©e dans la liste")))
+        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher un aperÃ§u avant impression de la liste")))
         self.bouton_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer la liste")))
         self.bouton_texte.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter la liste au format Texte")))
         self.bouton_excel.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter la liste au format Excel")))
         self.bouton_configuration.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour configurer la liste")))
-        self.ctrl_regroupement.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sélectionner une colonne de regroupement")))
-        self.check_cacher_traitees.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour cacher les demandes déjà traitées")))
+        self.ctrl_regroupement.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sÃ©lectionner une colonne de regroupement")))
+        self.check_cacher_traitees.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour cacher les demandes dÃ©jÃ  traitÃ©es")))
         self.bouton_enregistrer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour enregistrer le contenu du journal dans un fichier")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour commencer le traitement des demandes")))
@@ -247,7 +247,7 @@ class Dialog(wx.Dialog):
         from Dlg import DLG_Verification_ventilation
         tracks = DLG_Verification_ventilation.Verification()
         if len(tracks) > 0 :
-            dlg = wx.MessageDialog(self, _(u"Un ou plusieurs règlements peuvent être ventilés.\n\nSouhaitez-vous le faire maintenant (conseillé) ?"), _(u"Ventilation"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Un ou plusieurs rÃ¨glements peuvent Ãªtre ventilÃ©s.\n\nSouhaitez-vous le faire maintenant (conseillÃ©) ?"), _(u"Ventilation"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
             reponse = dlg.ShowModal()
             dlg.Destroy()
             if reponse == wx.ID_YES :

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-15 Ivan LUCAS
@@ -40,15 +40,15 @@ class Export():
     def __init__(self):
         self.dictTables = {
 
-            "parametres":[      ("IDparametre", "INTEGER PRIMARY KEY AUTOINCREMENT", _(u"ID du paramètre")),
-                                            ("nom", "VARCHAR(400)", _(u"Nom du paramètre")),
-                                            ("valeur", "VARCHAR(400)", _(u"Valeur du paramètre")),
+            "parametres":[      ("IDparametre", "INTEGER PRIMARY KEY AUTOINCREMENT", _(u"ID du paramÃ¨tre")),
+                                            ("nom", "VARCHAR(400)", _(u"Nom du paramÃ¨tre")),
+                                            ("valeur", "VARCHAR(400)", _(u"Valeur du paramÃ¨tre")),
                                             ],
 
             "individus":[            ("IDindividu", "INTEGER PRIMARY KEY AUTOINCREMENT", _(u"ID de la personne")),
-                                            ("IDcivilite", "INTEGER", _(u"Civilité de la personne")),
+                                            ("IDcivilite", "INTEGER", _(u"CivilitÃ© de la personne")),
                                             ("nom", "VARCHAR(100)", _(u"Nom de famille de la personne")),
-                                            ("prenom", "VARCHAR(100)", _(u"Prénom de la personne")),
+                                            ("prenom", "VARCHAR(100)", _(u"PrÃ©nom de la personne")),
                                             ("photo", "BLOB", _(u"Photo de la personne")),
                                             ],
 
@@ -85,10 +85,10 @@ class Export():
     def CopieTable(self, dbdest, nomTable=""):
         DB = GestionDB.DB()
         
-        # Création de la table
+        # CrÃ©ation de la table
         dbdest.CreationTable(nomTable=nomTable, dicoDB=TABLES.DB_DATA)
 
-        # Préparation des champs
+        # PrÃ©paration des champs
         listeChamps = []
         liste_champs_blob = []
         index = 0
@@ -98,7 +98,7 @@ class Export():
             listeChamps.append(nom)
             index += 1
         
-        # Lecture des données
+        # Lecture des donnÃ©es
         req = """SELECT %s FROM %s;""" % (", ".join(listeChamps), nomTable)
         DB.ExecuterReq(req)
         listeTemp = DB.ResultatReq()
@@ -121,7 +121,7 @@ class Export():
             self.CopieTable(dbdest, nomTable=nomTable)
     
     def GetParametres(self):
-        # Recherche des paramètres
+        # Recherche des paramÃ¨tres
         DB = GestionDB.DB()
         req = """SELECT IDparametre, nom, parametre 
         FROM parametres;"""
@@ -139,23 +139,23 @@ class Export():
         
         # Ouverture dlg d'attente
         if afficherDlgAttente == True :
-            dlgAttente = wx.BusyInfo(_(u"Génération du fichier de données..."), None)
+            dlgAttente = wx.BusyInfo(_(u"GÃ©nÃ©ration du fichier de donnÃ©es..."), None)
         
         try :
             
-            # Génération du nom de fichier
+            # GÃ©nÃ©ration du nom de fichier
             self.nomFichier = UTILS_Fichiers.GetRepTemp(fichier=u"data_%s" % dictParametres["IDfichier"])
 
-            # Vérifie si le fichier existe déjà
+            # VÃ©rifie si le fichier existe dÃ©jÃ 
             nomFichierTemp = self.nomFichier + ".dat"
             if os.path.isfile(nomFichierTemp) :
                 os.remove(nomFichierTemp) 
                 
-            # Création des tables
+            # CrÃ©ation des tables
             dbdest = GestionDB.DB(suffixe=None, nomFichier=nomFichierTemp, modeCreation=True)
             dbdest.CreationTables(dicoDB=self.dictTables)
 
-            # Enregistrement des paramètres
+            # Enregistrement des paramÃ¨tres
             listeParametres = [
                 ("IDfichier", dictParametres["IDfichier"]),
                 ("horodatage", dictParametres["horodatage"]),
@@ -163,7 +163,7 @@ class Export():
                 ]
             self.Enregistrer(dbdest, nomTable="parametres", listeChamps=["nom", "valeur"], listeDonnees=listeParametres)
             
-            # Données du dictIndividus
+            # DonnÃ©es du dictIndividus
             from Utils import UTILS_Infos_individus
             infos = UTILS_Infos_individus.Informations()
             dictValeurs = infos.GetDictValeurs(mode="individu", formatChamp=False)
@@ -175,7 +175,7 @@ class Export():
             
             self.Enregistrer(dbdest, nomTable="informations", listeChamps=["IDindividu", "champ", "valeur"], listeDonnees=listeDonnees)
             
-            # Données individus
+            # DonnÃ©es individus
             db = GestionDB.DB(suffixe="PHOTOS")
             req = """SELECT IDindividu, photo FROM photos;"""
             db.ExecuterReq(req)
@@ -200,7 +200,7 @@ class Export():
 
             self.Enregistrer(dbdest, nomTable="individus", listeChamps=["IDindividu", "IDcivilite", "nom", "prenom", "photo"], listeDonnees=listeDonnees)
             
-            # Données Titulaires de dossier
+            # DonnÃ©es Titulaires de dossier
             dictTitulaires = UTILS_Titulaires.GetTitulaires()
             listeDonnees = []
             for IDfamille, dictTemp in dictTitulaires.items() :
@@ -209,7 +209,7 @@ class Export():
             
             self.Enregistrer(dbdest, nomTable="titulaires", listeChamps=["IDfamille", "nom"], listeDonnees=listeDonnees)
 
-            # Données organisateur
+            # DonnÃ©es organisateur
             db = GestionDB.DB()
             req = """SELECT IDorganisateur, nom, logo FROM organisateur;"""
             db.ExecuterReq(req)
@@ -223,7 +223,7 @@ class Export():
             
             self.Enregistrer(dbdest, nomTable="organisateur", listeChamps=["IDorganisateur", "nom", "logo"], listeDonnees=listeDonnees)
             
-            # Tables à copier en intégralité
+            # Tables Ã  copier en intÃ©gralitÃ©
             listeTables = [
                 "vacances", "jours_feries", "activites", "groupes", "unites", "unites_groupes", "unites_incompat", "unites_remplissage", "unites_remplissage_unites", "ouvertures", "remplissage",
                 "inscriptions", "consommations", "memo_journee", "comptes_payeurs", "familles", "utilisateurs", "nomade_archivage",
@@ -259,7 +259,7 @@ class Export():
             traceback.print_exc(file=sys.stdout)
             if afficherDlgAttente == True :
                 del dlgAttente
-            dlg = wx.MessageDialog(None, _(u"Désolé, l'erreur suivante a été rencontrée : ") + str(err), "Erreur ", wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(None, _(u"DÃ©solÃ©, l'erreur suivante a Ã©tÃ© rencontrÃ©e : ") + str(err), "Erreur ", wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             return None
@@ -280,7 +280,7 @@ class Export():
             shutil.copyfile(nomFichier, chemin)
             
     def EnvoyerVersFTP(self, nomFichier=""):
-        # Récupération des paramètres
+        # RÃ©cupÃ©ration des paramÃ¨tres
         hote = UTILS_Config.GetParametre("synchro_ftp_hote", defaut="")
         identifiant = UTILS_Config.GetParametre("synchro_ftp_identifiant", defaut="")
         mdp = base64.b64decode(UTILS_Config.GetParametre("synchro_ftp_mdp", defaut=""))
@@ -289,7 +289,7 @@ class Export():
             mdp = mdp.decode("utf-8")
 
         # Envoyer le fichier
-        dlgAttente = wx.BusyInfo(_(u"Envoi du fichier de données vers un répertoire FTP..."), None)
+        dlgAttente = wx.BusyInfo(_(u"Envoi du fichier de donnÃ©es vers un rÃ©pertoire FTP..."), None)
         try :
             ftp = ftplib.FTP(hote, identifiant, mdp)
             ftp.cwd(repertoire)
@@ -300,13 +300,13 @@ class Export():
         except Exception as err :
             print(err)
             del dlgAttente
-            dlg = wx.MessageDialog(None, _(u"Le fichier n'a pas pu être envoyé !\n\nVérifiez les paramètres de connexion FTP dans les paramètres de synchronisation."), "Erreur ", wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(None, _(u"Le fichier n'a pas pu Ãªtre envoyÃ© !\n\nVÃ©rifiez les paramÃ¨tres de connexion FTP dans les paramÃ¨tres de synchronisation."), "Erreur ", wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             return False
         
         del dlgAttente
-        dlg = wx.MessageDialog(None, _(u"Le fichier a été envoyé avec succès !"), u"Succès", wx.OK | wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(None, _(u"Le fichier a Ã©tÃ© envoyÃ© avec succÃ¨s !"), u"SuccÃ¨s", wx.OK | wx.ICON_INFORMATION)
         dlg.ShowModal()
         dlg.Destroy()
         return True
@@ -319,7 +319,7 @@ if __name__ == '__main__':
     nomFichier = export.Run(afficherDlgAttente=False)
     print("nomFichier =", nomFichier)
     print("fini")
-    # Envoi vers un répertoire
+    # Envoi vers un rÃ©pertoire
 ##    export.EnvoyerVersRepertoire(nomFichier) 
 ##    export.EnvoyerVersFTP(nomFichier)
     app.MainLoop()

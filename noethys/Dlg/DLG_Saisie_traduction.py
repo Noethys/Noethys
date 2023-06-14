@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-15 Ivan LUCAS
@@ -28,13 +28,13 @@ class Dialog(wx.Dialog):
         self.code = code
         self.nom = nom
         
-        intro = _(u"Double-cliquez sur une ligne pour saisir ou modifier la traduction correspondante. Il est possible de traduire uniquement une partie du logiciel en utilisant la barre de recherche qui appliquera un filtre sur les résultats (Exemple : Tapez 'facture' pour sélectionner uniquement les textes qui concernent les factures).")
+        intro = _(u"Double-cliquez sur une ligne pour saisir ou modifier la traduction correspondante. Il est possible de traduire uniquement une partie du logiciel en utilisant la barre de recherche qui appliquera un filtre sur les rÃ©sultats (Exemple : Tapez 'facture' pour sÃ©lectionner uniquement les textes qui concernent les factures).")
         titre = _(u"Saisie d'une traduction")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Traduction.png")
         
-        # Généralités
-        self.box_generalites_staticbox = wx.StaticBox(self, -1, _(u"Généralités"))
+        # GÃ©nÃ©ralitÃ©s
+        self.box_generalites_staticbox = wx.StaticBox(self, -1, _(u"GÃ©nÃ©ralitÃ©s"))
         self.label_nom_langue = wx.StaticText(self, -1, _(u"Nom de la langue :"))
         self.ctrl_nom_langue = wx.TextCtrl(self, -1, self.nom)
         self.ctrl_nom_langue.SetMinSize((300, -1))
@@ -71,15 +71,15 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
 
-        # Init contrôles
+        # Init contrÃ´les
         self.ctrl_traductions.MAJ() 
         
 
     def __set_properties(self):
         self.ctrl_nom_langue.SetToolTip(wx.ToolTip(_(u"Saisissez le nom de la langue (Exemple : 'Anglais'")))
-        self.ctrl_code_langue.SetToolTip(wx.ToolTip(_(u"Saisissez un code alpha pour cette langue sans espaces ni majuscules ni caractères spéciaux (Exemple : 'anglais')")))
-        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour saisir une traduction pour la ligne sélectionnée dans la liste")))
-        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour créer un aperçu de la liste")))
+        self.ctrl_code_langue.SetToolTip(wx.ToolTip(_(u"Saisissez un code alpha pour cette langue sans espaces ni majuscules ni caractÃ¨res spÃ©ciaux (Exemple : 'anglais')")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour saisir une traduction pour la ligne sÃ©lectionnÃ©e dans la liste")))
+        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour crÃ©er un aperÃ§u de la liste")))
         self.bouton_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer la liste")))
         self.bouton_texte.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter la liste au format Texte")))
         self.bouton_excel.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter la liste au format Excel")))
@@ -92,7 +92,7 @@ class Dialog(wx.Dialog):
         grid_sizer_base = wx.FlexGridSizer(rows=4, cols=1, vgap=10, hgap=10)
         grid_sizer_base.Add(self.ctrl_bandeau, 0, wx.EXPAND, 0)
                 
-        # Généralités
+        # GÃ©nÃ©ralitÃ©s
         box_generalites = wx.StaticBoxSizer(self.box_generalites_staticbox, wx.VERTICAL)
         grid_sizer_generalites = wx.FlexGridSizer(rows=2, cols=5, vgap=10, hgap=10)
         grid_sizer_generalites.Add(self.label_nom_langue, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
@@ -153,14 +153,14 @@ class Dialog(wx.Dialog):
         self.EndModal(wx.ID_CANCEL)
     
     def OnBoutonOk(self, event): 
-        # Récupération des paramètres
+        # RÃ©cupÃ©ration des paramÃ¨tres
         nom_langue = self.ctrl_nom_langue.GetValue()
         code_langue = self.ctrl_code_langue.GetValue()
         
-        # Récupération des traductions perso
+        # RÃ©cupÃ©ration des traductions perso
         dictTraductions = self.ctrl_traductions.GetDictTraductionsPerso() 
         
-        # Création du fichier de traduction perso
+        # CrÃ©ation du fichier de traduction perso
         nomFichier = UTILS_Fichiers.GetRepLang(u"%s.xlang" % code_langue)
         data = {}
         data["###INFOS###"] = {"nom_langue" : nom_langue, "code_langue" : code_langue}

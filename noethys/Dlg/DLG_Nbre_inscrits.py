@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-12 Ivan LUCAS
@@ -82,7 +82,7 @@ class Renderer_gauge(object):
         if self.nbre_inscrits_max > 0 :
             texte += _(u" / %d places") % self.nbre_inscrits_max
         #else :
-        #    texte += _(u" / places illimitées")
+        #    texte += _(u" / places illimitÃ©es")
         textWidth, dummy = mdc.GetTextExtent(texte)
         mdc.SetTextForeground(COULEUR_TEXTE)
         x = rect.width/2 - textWidth/2
@@ -160,8 +160,8 @@ class CTRL(ULC.UltimateListCtrl):
         # self.couleurFond = wx.SystemSettings.GetColour(wx.SYS_COLOUR_FRAMEBK)
         self.SetBackgroundColour(self.couleurFond)
 
-        # Création des colonnes
-        self.InsertColumn(0, _(u"Nom de l'activité"), width=200, format=ULC.ULC_FORMAT_RIGHT)
+        # CrÃ©ation des colonnes
+        self.InsertColumn(0, _(u"Nom de l'activitÃ©"), width=200, format=ULC.ULC_FORMAT_RIGHT)
         self.InsertColumn(1, _(u"Nbre inscrits"), width=200, format=ULC.ULC_FORMAT_CENTRE)
         
         # Binds
@@ -173,16 +173,16 @@ class CTRL(ULC.UltimateListCtrl):
         pass
 
     def OnContextMenu(self, event):
-        # Sélection de l'item cliqué
+        # SÃ©lection de l'item cliquÃ©
         item, flags = self.HitTest((event.GetX(), event.GetY()))
         if item != wx.NOT_FOUND and flags & wx.LIST_HITTEST_ONITEM:
             self.Select(item)
 
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Actualiser
-        item = wx.MenuItem(menuPop, 10, _(u"Consulter les tarifs de l'activité"))
+        item = wx.MenuItem(menuPop, 10, _(u"Consulter les tarifs de l'activitÃ©"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Euro.png"), wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.OuvrirTarifs, id=10)
@@ -196,7 +196,7 @@ class CTRL(ULC.UltimateListCtrl):
     def OuvrirTarifs(self, event=None):
         index = self.GetFirstSelected()
         if index == -1 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune activité dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune activitÃ© dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -213,7 +213,7 @@ class CTRL(ULC.UltimateListCtrl):
 
         DB = GestionDB.DB()
 
-        # Recherche des paramètres
+        # Recherche des paramÃ¨tres
         parametres = UTILS_Config.GetParametre("nbre_inscrits_parametre_activites", defaut=None)
         if parametres != None :
             code, liste = parametres.split("###")
@@ -257,7 +257,7 @@ class CTRL(ULC.UltimateListCtrl):
         # Seuil d'alerte
         self.seuil_alerte = UTILS_Config.GetParametre("nbre_inscrits_parametre_alerte", 5)
 
-        # Récupération des groupes
+        # RÃ©cupÃ©ration des groupes
         req = """SELECT groupes.IDgroupe, groupes.IDactivite, groupes.nom, groupes.nbre_inscrits_max,
         COUNT(inscriptions.IDinscription) as nbre_inscriptions
         FROM groupes
@@ -280,7 +280,7 @@ class CTRL(ULC.UltimateListCtrl):
                 dictGroupes[IDactivite] = []
             dictGroupes[IDactivite].append({"IDgroupe" : IDgroupe, "nom" : nom, "nbre_inscrits_max" : nbre_inscrits_max, "nbre_inscrits" : nbre_inscrits, "IDactivite" : IDactivite})
 
-        # Récupération des activités
+        # RÃ©cupÃ©ration des activitÃ©s
         activite_ouverte = UTILS_Config.GetParametre("nbre_inscrits_parametre_ouvert", 1)
         if activite_ouverte == 1 :
             if condition == "" :
@@ -314,13 +314,13 @@ class CTRL(ULC.UltimateListCtrl):
 
             listeActivitesTemp.append({"IDactivite" : IDactivite, "nom" : nom, "nbre_inscrits_max" : nbre_inscrits_max, "nbre_inscrits" : nbre_inscrits, "liste_groupes" : liste_groupes, "infos" : " ".join(liste_infos)})
         
-        # Pour éviter l'actualisation de l'affichage si aucune modification des données
+        # Pour Ã©viter l'actualisation de l'affichage si aucune modification des donnÃ©es
         if self.listeActivites != listeActivitesTemp or forcerActualisation == True :
             self.listeActivites = listeActivitesTemp
         else :
             return
 
-        # MAJ du contrôle
+        # MAJ du contrÃ´le
         self.Freeze()
         self.DeleteAllItems()
 
@@ -332,7 +332,7 @@ class CTRL(ULC.UltimateListCtrl):
 
                 couleur_fond = UTILS_Interface.GetValeur("couleur_tres_claire", wx.Colour(214, 250, 199))
 
-                # Colonne Activité
+                # Colonne ActivitÃ©
                 label = u" " + dictActivite["nom"]
                 self.InsertStringItem(index, label)
                 self.SetItemPyData(index, dictActivite)
@@ -370,7 +370,7 @@ class CTRL(ULC.UltimateListCtrl):
         self.SetColumnWidth(0, wx.LIST_AUTOSIZE)
         self.SetColumnWidth(1, ULC.ULC_AUTOSIZE_FILL)
         
-        # Actualiser l'affichage pour éviter bug de positionnement
+        # Actualiser l'affichage pour Ã©viter bug de positionnement
         try :
             self.DoLayout()
         except :
@@ -383,7 +383,7 @@ class CTRL(ULC.UltimateListCtrl):
         self.MAJ(forcerActualisation=True)
 
     def Tests(self):
-        """ UNIQUEMENT POUR TESTS : Test de mise à jour des gauges sur 50 """
+        """ UNIQUEMENT POUR TESTS : Test de mise Ã  jour des gauges sur 50 """
         import random
         for index in range(0, self.GetItemCount()) :
             renderer = self.dictRenderers[index]
@@ -409,11 +409,11 @@ class Panel(wx.Panel):
         
         # Commandes
         self.bouton_parametres = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Mecanisme.png"), wx.BITMAP_TYPE_PNG))
-        self.bouton_parametres.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier les paramètres d'affichage")))
+        self.bouton_parametres.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier les paramÃ¨tres d'affichage")))
         self.bouton_outils = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Outils.png"), wx.BITMAP_TYPE_PNG))
-        self.bouton_outils.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder aux outils")))
+        self.bouton_outils.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accÃ©der aux outils")))
         self.bouton_tarifs = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Euro.png"), wx.BITMAP_TYPE_PNG))
-        self.bouton_tarifs.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour consulter les tarifs de l'activité sélectionnée (ou double-cliquez sur une activité dans la liste)")))
+        self.bouton_tarifs.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour consulter les tarifs de l'activitÃ© sÃ©lectionnÃ©e (ou double-cliquez sur une activitÃ© dans la liste)")))
 
         # Barre de recherche
         self.ctrl_recherche = BarreRecherche(self, ctrl=self.ctrl_inscriptions)
@@ -452,7 +452,7 @@ class Panel(wx.Panel):
             self.ctrl_inscriptions.MAJ(forcerActualisation=True) 
         
     def OnBoutonOutils(self, event):
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Actualiser

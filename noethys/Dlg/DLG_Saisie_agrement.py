@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -22,13 +22,13 @@ class Dialog(wx.Dialog):
     def __init__(self, parent):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent      
-        self.SetTitle(_(u"Saisie d'un agrément"))  
+        self.SetTitle(_(u"Saisie d'un agrÃ©ment"))  
         
-        self.sizer_agrement_staticbox = wx.StaticBox(self, -1, _(u"Numéro d'agrément"))
-        self.label_agrement = wx.StaticText(self, -1, _(u"Agrément :"))
+        self.sizer_agrement_staticbox = wx.StaticBox(self, -1, _(u"NumÃ©ro d'agrÃ©ment"))
+        self.label_agrement = wx.StaticText(self, -1, _(u"AgrÃ©ment :"))
         self.ctrl_agrement = wx.TextCtrl(self, -1, "")
         
-        self.sizer_duree_staticbox = wx.StaticBox(self, -1, _(u"Dates de validité"))
+        self.sizer_duree_staticbox = wx.StaticBox(self, -1, _(u"Dates de validitÃ©"))
         self.label_date_debut = wx.StaticText(self, -1, u"Du")
         self.ctrl_date_debut = CTRL_Saisie_date.Date2(self)
         self.label_date_fin = wx.StaticText(self, -1, _(u"au"))
@@ -45,9 +45,9 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
 
     def __set_properties(self):
-        self.ctrl_agrement.SetToolTip(wx.ToolTip(_(u"Saisissez ici un numéro d'agrément Par exemple : '098GHJ25542'")))
-        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de début de validité")))
-        self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de fin de validité")))
+        self.ctrl_agrement.SetToolTip(wx.ToolTip(_(u"Saisissez ici un numÃ©ro d'agrÃ©ment Par exemple : '098GHJ25542'")))
+        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de dÃ©but de validitÃ©")))
+        self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de fin de validitÃ©")))
         self.SetMinSize((340, 200))
 
     def __do_layout(self):
@@ -62,7 +62,7 @@ class Dialog(wx.Dialog):
         sizer_nom.Add(grid_sizer_nom, 1, wx.ALL|wx.EXPAND, 10)
         grid_sizer_base.Add(sizer_nom, 1, wx.LEFT|wx.RIGHT|wx.TOP|wx.EXPAND, 10)
         
-        # Validité
+        # ValiditÃ©
         sizer_duree = wx.StaticBoxSizer(self.sizer_duree_staticbox, wx.VERTICAL)
         grid_sizer_validite = wx.FlexGridSizer(rows=1, cols=5, vgap=5, hgap=5)
         grid_sizer_validite.Add((40,-1), 0, 0, 0)
@@ -93,27 +93,27 @@ class Dialog(wx.Dialog):
         UTILS_Aide.Aide("Agrments")
 
     def OnBoutonOk(self, event):
-        # Vérification des données saisies
+        # VÃ©rification des donnÃ©es saisies
         if self.ctrl_agrement.GetValue() == "" :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement donner un numéro d'agrément !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement donner un numÃ©ro d'agrÃ©ment !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_agrement.SetFocus()
             return
         if self.ctrl_date_debut.GetDate() == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement donner une date de début de validité !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement donner une date de dÃ©but de validitÃ© !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_debut.SetFocus()
             return
         if self.ctrl_date_fin.GetDate() == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement donner une date de fin de validité !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement donner une date de fin de validitÃ© !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_fin.SetFocus()
             return
                     
-        # Fermeture de la fenêtre
+        # Fermeture de la fenÃªtre
         self.EndModal(wx.ID_OK)
 
     def GetAgrement(self):

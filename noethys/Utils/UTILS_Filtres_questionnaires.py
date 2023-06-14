@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-12 Ivan LUCAS
@@ -21,7 +21,7 @@ def GetDictControles():
 
 
 def Filtre(controle=None, choix="", criteres="", reponse="", dictControles=None):
-    """ Compare un filtre avec une réponse """
+    """ Compare un filtre avec une rÃ©ponse """
     # Recherche le type de filtre
     if dictControles == None :
         dictControles = GetDictControles()

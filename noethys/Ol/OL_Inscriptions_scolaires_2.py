@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -52,7 +52,7 @@ class Track(object):
 
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # Récupération des paramètres perso
+        # RÃ©cupÃ©ration des paramÃ¨tres perso
         self.selectionID = None
         self.selectionTrack = None
         self.criteres = ""
@@ -70,7 +70,7 @@ class ListView(FastObjectListView):
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
-        """ Récupération des données """
+        """ RÃ©cupÃ©ration des donnÃ©es """
         # Conditions
         conditions = ["individus.etat IS NULL"]
         if self.IDecole != None :
@@ -84,7 +84,7 @@ class ListView(FastObjectListView):
         else :
             txtConditions = ""
         
-        # Récupération des individus
+        # RÃ©cupÃ©ration des individus
         DB = GestionDB.DB()
         req = """
         SELECT individus.IDindividu, individus.IDcivilite, individus.nom, individus.prenom, individus.date_naiss,
@@ -101,7 +101,7 @@ class ListView(FastObjectListView):
         listeDonnees = DB.ResultatReq()
         DB.Close() 
         
-        # Récupération des civilités
+        # RÃ©cupÃ©ration des civilitÃ©s
         dictCivilites = Civilites.GetDictCivilites()
         
         listeListeView = []
@@ -116,7 +116,7 @@ class ListView(FastObjectListView):
             dictTemp["date_fin"] = valeurs[6]
             dictTemp["abregeNiveau"] = valeurs[7]
             
-            # Infos sur la civilité
+            # Infos sur la civilitÃ©
             dictTemp["genre"] = dictCivilites[dictTemp["IDcivilite"]]["sexe"]
             dictTemp["categorieCivilite"] = dictCivilites[dictTemp["IDcivilite"]]["categorie"]
             dictTemp["civiliteLong"]  = dictCivilites[dictTemp["IDcivilite"]]["civiliteLong"]
@@ -131,7 +131,7 @@ class ListView(FastObjectListView):
                 age = (datedujour.year - datenaissDD.year) - int((datedujour.month, datedujour.day) < (datenaissDD.month, datenaissDD.day))
                 dictTemp["age"] = age
             
-            # Spécial
+            # SpÃ©cial
             if self.IDclasse == None :
                 dictTemp["IDniveau"] = None
                 dictTemp["abregeNiveau"] = u""
@@ -143,7 +143,7 @@ class ListView(FastObjectListView):
         return listeListeView
         
     def InitObjectListView(self):
-        # Création du imageList
+        # CrÃ©ation du imageList
         for categorie, civilites in Civilites.LISTE_CIVILITES :
             for IDcivilite, CiviliteLong, CiviliteAbrege, nomImage, genre in civilites :
                 indexImg = self.AddNamedImages(nomImage, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/%s" % nomImage), wx.BITMAP_TYPE_PNG))
@@ -169,7 +169,7 @@ class ListView(FastObjectListView):
         liste_Colonnes = [
             ColumnDefn(u"", "left", 22, "IDindividu", typeDonnee="entier", imageGetter=GetImageCivilite),
             ColumnDefn(_(u"Nom"), 'left', 100, "nom", typeDonnee="texte"),
-            ColumnDefn(_(u"Prénom"), "left", 100, "prenom", typeDonnee="texte"),
+            ColumnDefn(_(u"PrÃ©nom"), "left", 100, "prenom", typeDonnee="texte"),
             ColumnDefn(_(u"Date naiss."), "left", 72, "date_naiss", typeDonnee="date", stringConverter=FormateDate),
             ColumnDefn(_(u"Age"), "left", 50, "age", typeDonnee="entier", stringConverter=FormateAge),
             ColumnDefn(_(u"Niveau"), "left", 60, "abregeNiveau", typeDonnee="texte"),

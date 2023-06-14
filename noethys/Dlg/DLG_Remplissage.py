@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -47,7 +47,7 @@ class ToolBar(wx.ToolBar):
             None,
             {"ID": ID_LISTE_ATTENTE, "label": _(u"Liste d'attente"), "image": "Images/32x32/Liste_attente.png", "type" : wx.ITEM_NORMAL, "tooltip": _(u"Afficher la liste d'attente")},
             None,
-            {"ID": ID_PARAMETRES, "label": _(u"Paramètres"), "image": "Images/32x32/Configuration2.png", "type" : wx.ITEM_NORMAL, "tooltip": _(u"Sélectionner les paramètres d'affichage")},
+            {"ID": ID_PARAMETRES, "label": _(u"ParamÃ¨tres"), "image": "Images/32x32/Configuration2.png", "type" : wx.ITEM_NORMAL, "tooltip": _(u"SÃ©lectionner les paramÃ¨tres d'affichage")},
             {"ID": ID_OUTILS, "label": _(u"Outils"), "image": "Images/32x32/Configuration.png", "type" : wx.ITEM_NORMAL, "tooltip": _(u"Outils")},
         ]
 
@@ -109,13 +109,13 @@ class ToolBar(wx.ToolBar):
         maj_auto_remplissage = MAJ_AUTO_REMPLISSAGE
         dlg = DLG_Parametres_remplissage.Dialog(None, dictDonnees, abregeGroupes=abregeGroupes, affichePresents=affichePresents, totaux=totaux, maj_auto_remplissage=maj_auto_remplissage)
         if dlg.ShowModal() == wx.ID_OK:
-            # Mise à jour des paramètres du tableau
+            # Mise Ã  jour des paramÃ¨tres du tableau
             listeActivites = dlg.GetListeActivites()
             listePeriodes = dlg.GetListePeriodes()
             dictDonnees = dlg.GetDictDonnees() 
             abregeGroupes = dlg.GetAbregeGroupes()
             afficheTotaux = dlg.GetAfficheTotaux()
-            # Mise à jour du tableau de remplissage
+            # Mise Ã  jour du tableau de remplissage
             self.GetParent().ctrl_remplissage.SetListeActivites(listeActivites)
             self.GetParent().ctrl_remplissage.SetListePeriodes(listePeriodes)
             self.GetParent().ctrl_remplissage.SetAbregeGroupes(abregeGroupes)
@@ -123,7 +123,7 @@ class ToolBar(wx.ToolBar):
             self.GetParent().ctrl_remplissage.MAJ()
             dictDonnees["modeAffichage"] = modeAffichage
             self.GetParent().SetDictDonnees(dictDonnees)
-            # Affiche ticker des présents
+            # Affiche ticker des prÃ©sents
             AFFICHE_PRESENTS = dlg.GetAffichePresents()
             UTILS_Config.SetParametre("remplissage_affiche_presents", int(AFFICHE_PRESENTS))
             # MAJ auto remplissage
@@ -134,17 +134,17 @@ class ToolBar(wx.ToolBar):
         dlg.Destroy()
 
     def MenuOutils(self, event):
-        # Création du menu Outils
+        # CrÃ©ation du menu Outils
         menuPop = UTILS_Adaptations.Menu()
 
         ID_APERCU = wx.Window.NewControlId()
-        item = wx.MenuItem(menuPop, ID_APERCU, _(u"Aperçu avant impression"), _(u"Imprimer la liste des effectifs affichée"))
+        item = wx.MenuItem(menuPop, ID_APERCU, _(u"AperÃ§u avant impression"), _(u"Imprimer la liste des effectifs affichÃ©e"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Apercu, id=ID_APERCU)
 
         ID_IMPRIMER = wx.Window.NewControlId()
-        item = wx.MenuItem(menuPop, ID_IMPRIMER, _(u"Imprimer"), _(u"Imprimer la liste des effectifs affichée"))
+        item = wx.MenuItem(menuPop, ID_IMPRIMER, _(u"Imprimer"), _(u"Imprimer la liste des effectifs affichÃ©e"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Imprimante.png"), wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Imprimer, id=ID_IMPRIMER)
@@ -200,10 +200,10 @@ class Panel(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent, name="panel_remplissage", id=-1, style=wx.TAB_TRAVERSAL)
         
-        # Récupération des paramètres d'affichage
+        # RÃ©cupÃ©ration des paramÃ¨tres d'affichage
         self.dictDonnees = self.GetParametres() 
 
-        # Création des contrôles
+        # CrÃ©ation des contrÃ´les
         self.toolBar = ToolBar(self)
         self.ctrl_remplissage = CTRL_Remplissage.CTRL(self, self.dictDonnees)
         
@@ -253,9 +253,9 @@ class Panel(wx.Panel):
     def SetDictDonnees(self, dictDonnees={}):
         if len(dictDonnees) != 0 :
             self.dictDonnees = dictDonnees
-        # Mémorisation du dict de Données de sélection
+        # MÃ©morisation du dict de DonnÃ©es de sÃ©lection
         self.ctrl_remplissage.SetDictDonnees(self.dictDonnees)
-        # Mémorisation du dict de données dans le config
+        # MÃ©morisation du dict de donnÃ©es dans le config
         UTILS_Config.SetParametre("dict_selection_periodes_activites", self.dictDonnees)
 
     def MAJ(self):
@@ -268,13 +268,13 @@ class Panel(wx.Panel):
             MAJ_AUTO_EN_ATTENTE = wx.CallLater(MAJ_AUTO_REMPLISSAGE, self.MAJ)
 
     def MAJpresents(self):
-        """ MAJ du Ticker des présents """
+        """ MAJ du Ticker des prÃ©sents """
         listeActivites = self.dictDonnees["listeActivites"]
         self.ctrl_presents.SetActivites(listeActivites)
         self.ctrl_presents.MAJ() 
     
     def AffichePresents(self, etat=True):
-        """ Affiche ou cache le Ticker des présents """
+        """ Affiche ou cache le Ticker des prÃ©sents """
         if AFFICHE_PRESENTS == 0 :
             etat = 0
         self.ctrl_presents.Show(etat)

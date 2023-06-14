@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-13 Ivan LUCAS
@@ -11,7 +11,7 @@
 
 
 def ModifierLuminosite(couleurRGB, coeff=-50) :
-    """ Modifie la luminosité d'une couleur : + éclaircit / - assombrit """
+    """ Modifie la luminositÃ© d'une couleur : + Ã©claircit / - assombrit """
     couleurHSV = RGBToHSV(couleurRGB) 
     couleurRGB = HSVToRGB((couleurHSV[0], couleurHSV[1], couleurHSV[2] + coeff))
     return couleurRGB

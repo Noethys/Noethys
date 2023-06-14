@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -19,11 +19,11 @@ def RechercheData(xml, nom="", positionDebut=0):
 
 
 def Meteo(ville="", cp=""):
-    """ Création d'un dictionnaire avec la météo Google """
+    """ CrÃ©ation d'un dictionnaire avec la mÃ©tÃ©o Google """
     dictMeteo = { "jour" : {}, "previsions" : [] }
     
     try :
-        # Récupère le fichier xml de Google
+        # RÃ©cupÃ¨re le fichier xml de Google
         url = "http://www.google.fr/ig/api?weather=%s%%20%s&lang=fr" % (ville, cp)
         url = url.replace(' ','%20')
         f = urlopen(url, timeout=5)
@@ -32,14 +32,14 @@ def Meteo(ville="", cp=""):
         if "problem_cause" in xml : 
             return None
 
-        # Lit la météo du jour
+        # Lit la mÃ©tÃ©o du jour
         posG, posD, dictMeteo["jour"]["condition"] = RechercheData(xml, "condition data", 0)
         posG, posD, dictMeteo["jour"]["temp"] = RechercheData(xml, "temp_c data", posD)
         posG, posD, dictMeteo["jour"]["humidite"] = RechercheData(xml, "humidity data", posD)
         posG, posD, dictMeteo["jour"]["image"] = RechercheData(xml, "icon data", posD)
         posG, posD, dictMeteo["jour"]["vent"] = RechercheData(xml, "wind_condition data", posD)
 
-        # Lit les prévisions
+        # Lit les prÃ©visions
         for numJour in range(0, 4) :
             dictTemp = {}
             posG, posD, dictTemp["jour"] = RechercheData(xml, "day_of_week data", posD)

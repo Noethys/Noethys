@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-13 Ivan LUCAS
@@ -22,9 +22,9 @@ from Utils import UTILS_Titulaires
             
 
 def DateComplete(dateDD):
-    """ Transforme une date DD en date complète : Ex : lundi 15 janvier 2008 """
+    """ Transforme une date DD en date complÃ¨te : Ex : lundi 15 janvier 2008 """
     listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
-    listeMois = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
+    listeMois = (_(u"janvier"), _(u"fÃ©vrier"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"aoÃ»t"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"dÃ©cembre"))
     dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
     return dateComplete
 
@@ -48,7 +48,7 @@ class CTRL_Forfait(HTL.HyperTreeList):
         from Utils import UTILS_Linux
         UTILS_Linux.AdaptePolice(self)
 
-        # Périodes de gestion
+        # PÃ©riodes de gestion
         self.gestion = UTILS_Gestion.Gestion(self)
 
         # Binds
@@ -56,15 +56,15 @@ class CTRL_Forfait(HTL.HyperTreeList):
         self.GetMainWindow().Bind(wx.EVT_RIGHT_UP, self.OnContextMenu) 
         
     def Initialisation(self):               
-        # Création des colonnes
+        # CrÃ©ation des colonnes
         self.AddColumn(_(u"Prestations"))
         self.SetMainColumn(0)
         self.SetColumnWidth(0, 200)
         
-        # Création de la racine
+        # CrÃ©ation de la racine
         self.root = self.AddRoot(_(u"Racine"))
 
-        # Préparation des données
+        # PrÃ©paration des donnÃ©es
         dictDonnees = {}
         self.dictImages = {}
         il = wx.ImageList(9, 16)
@@ -96,7 +96,7 @@ class CTRL_Forfait(HTL.HyperTreeList):
         # Recherche du nom des titulaires
         dictTitulaires = UTILS_Titulaires.GetTitulaires(list(dictDonnees.keys()))
 
-        # Création des branches
+        # CrÃ©ation des branches
         famillesAffichees = False
         for IDfamille, dictFamille in dictDonnees.items() :
             
@@ -140,7 +140,7 @@ class CTRL_Forfait(HTL.HyperTreeList):
         return branche
         
     def CreationImage(self, couleur=(0, 0, 0)):
-        """ Création des images pour le TreeCtrl """
+        """ CrÃ©ation des images pour le TreeCtrl """
         if 'phoenix' in wx.PlatformInfo:
             bmp = wx.Bitmap(9, 16)
         else :
@@ -185,7 +185,7 @@ class CTRL_Forfait(HTL.HyperTreeList):
         else:
             dataItem = None
         
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Modifier
@@ -235,7 +235,7 @@ class CTRL_Forfait(HTL.HyperTreeList):
             
             IDindividu = dictTarif["resultat"]["IDindividu"]
             
-            # Création de la prestation
+            # CrÃ©ation de la prestation
             IDprestation = self.grille.MemorisePrestation(IDcompte_payeur, datePrestation, dictTarif["IDactivite"], dictTarif["IDtarif"], label, 
                                                                             montant, dictTarif["resultat"]["montant_tarif"], IDfamille, IDindividu, 
                                                                             listeDeductions=[], temps_facture=dictTarif["resultat"]["temps_facture"], IDcategorie_tarif=dictTarif["resultat"]["IDcategorie_tarif"],
@@ -264,10 +264,10 @@ class CTRL_Forfait(HTL.HyperTreeList):
             dictTemp["couleur"] = self.grille.CreationCouleurForfait(index=len(self.grille.dictForfaits))
             self.grille.dictForfaits[IDprestation] = dictTemp
 
-            # MAJ du contrôle Forfaits
+            # MAJ du contrÃ´le Forfaits
             self.MAJ(self.grille.dictForfaits, self.grille.listeSelectionIndividus)
 
-            # Propose éventuellement un recalcul des conso déjà présentes
+            # Propose Ã©ventuellement un recalcul des conso dÃ©jÃ  prÃ©sentes
             nbreConso = 0
             for IDindividuTemp, dictIndividu in self.grille.dictConsoIndividus.items() :
                 for dateDD, dictDate in dictIndividu.items() :
@@ -280,7 +280,7 @@ class CTRL_Forfait(HTL.HyperTreeList):
 
             # Demande la confirmation de la suppression du forfait
             if nbreConso > 0 :
-                dlg2 = wx.MessageDialog(None, _(u"Souhaitez-vous recalculer les prestations affichées (conseillé) ?"), _(u"Recalcul"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+                dlg2 = wx.MessageDialog(None, _(u"Souhaitez-vous recalculer les prestations affichÃ©es (conseillÃ©) ?"), _(u"Recalcul"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
                 if dlg2.ShowModal() == wx.ID_YES :
                     self.grille.RecalculerToutesPrestations() 
                 dlg2.Destroy()
@@ -293,7 +293,7 @@ class CTRL_Forfait(HTL.HyperTreeList):
         item = self.GetSelection()
         dataItem = self.GetItemPyData(item)
         if dataItem == None or dataItem["type"] != "forfait" :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun forfait à modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucun forfait Ã  modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -301,14 +301,14 @@ class CTRL_Forfait(HTL.HyperTreeList):
         donnees = dataItem["donnees"]
         IDprestation = donnees["IDprestation"] 
 
-        # Vérifie si le forfait est déjà facturé
+        # VÃ©rifie si le forfait est dÃ©jÃ  facturÃ©
         if donnees["IDfacture"] != None :
-            dlg = wx.MessageDialog(self, _(u"Ce forfait apparaît déjà sur une facture. Il n'est pas possible de le modifier !"), _(u"Attention"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Ce forfait apparaÃ®t dÃ©jÃ  sur une facture. Il n'est pas possible de le modifier !"), _(u"Attention"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
-        # Périodes de gestion
+        # PÃ©riodes de gestion
         if self.gestion.IsPeriodeinPeriodes("consommations", donnees["forfait_date_debut"], donnees["forfait_date_fin"]) == False: return False
         if self.gestion.Verification("prestations", donnees["date"]) == False: return False
 
@@ -334,7 +334,7 @@ class CTRL_Forfait(HTL.HyperTreeList):
             
             IDindividu = dictTarif["resultat"]["IDindividu"]
             
-            # Création de la prestation
+            # CrÃ©ation de la prestation
             self.grille.dictPrestations[IDprestation]["label"] = label
             self.grille.dictPrestations[IDprestation]["date"] = datePrestation
             self.grille.dictPrestations[IDprestation]["montant_initial"] = montant
@@ -360,10 +360,10 @@ class CTRL_Forfait(HTL.HyperTreeList):
             dictTemp["couleur"] = self.grille.dictForfaits[IDprestation]["couleur"]
             self.grille.dictForfaits[IDprestation] = dictTemp
 
-            # MAJ du contrôle Forfaits
+            # MAJ du contrÃ´le Forfaits
             self.MAJ(self.grille.dictForfaits, self.grille.listeSelectionIndividus)
 
-            # Propose éventuellement un recalcul des conso déjà présentes
+            # Propose Ã©ventuellement un recalcul des conso dÃ©jÃ  prÃ©sentes
             nbreConso = 0
             for IDindividuTemp, dictIndividu in self.grille.dictConsoIndividus.items() :
                 for dateDD, dictDate in dictIndividu.items() :
@@ -376,7 +376,7 @@ class CTRL_Forfait(HTL.HyperTreeList):
 
             # Demande la confirmation de la suppression du forfait
             if nbreConso > 0 :
-                dlg2 = wx.MessageDialog(None, _(u"Souhaitez-vous recalculer les prestations affichées (conseillé) ?"), _(u"Recalcul"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+                dlg2 = wx.MessageDialog(None, _(u"Souhaitez-vous recalculer les prestations affichÃ©es (conseillÃ©) ?"), _(u"Recalcul"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
                 if dlg2.ShowModal() == wx.ID_YES :
                     self.grille.RecalculerToutesPrestations() 
                 dlg2.Destroy()
@@ -387,7 +387,7 @@ class CTRL_Forfait(HTL.HyperTreeList):
         item = self.GetSelection()
         dataItem = self.GetItemPyData(item)
         if dataItem == None or dataItem["type"] != "forfait" :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun forfait à supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucun forfait Ã  supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -395,18 +395,18 @@ class CTRL_Forfait(HTL.HyperTreeList):
         donnees = dataItem["donnees"]
         IDprestation = donnees["IDprestation"] 
 
-        # Vérifie si le forfait est déjà facturé
+        # VÃ©rifie si le forfait est dÃ©jÃ  facturÃ©
         if donnees["IDfacture"] != None :
-            dlg = wx.MessageDialog(self, _(u"Ce forfait apparaît déjà sur une facture. Il n'est pas possible de le supprimer !"), _(u"Attention"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Ce forfait apparaÃ®t dÃ©jÃ  sur une facture. Il n'est pas possible de le supprimer !"), _(u"Attention"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
-        # Périodes de gestion
+        # PÃ©riodes de gestion
         if self.gestion.IsPeriodeinPeriodes("consommations", donnees["forfait_date_debut"], donnees["forfait_date_fin"]) == False: return False
         if self.gestion.Verification("prestations", donnees["date"]) == False: return False
 
-        # Vérifie si des consommations du forfait existent déjà sur d'autres périodes non affichées
+        # VÃ©rifie si des consommations du forfait existent dÃ©jÃ  sur d'autres pÃ©riodes non affichÃ©es
         listeConso = []
         for IDindividu, dictIndividu in self.grille.dictConsoIndividus.items() :
             for dateDD, dictDate in dictIndividu.items() :
@@ -428,7 +428,7 @@ class CTRL_Forfait(HTL.HyperTreeList):
                 nbreConsoNonAffichees += 1
         
         if nbreConsoNonAffichees > 0 :
-            dlg = wx.MessageDialog(self, _(u"Ce forfait contient %d consommation(s) qui ne sont pas affichées ici. Il n'est donc pas possible de le supprimer maintenant !") % nbreConsoNonAffichees, _(u"Attention"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Ce forfait contient %d consommation(s) qui ne sont pas affichÃ©es ici. Il n'est donc pas possible de le supprimer maintenant !") % nbreConsoNonAffichees, _(u"Attention"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -452,7 +452,7 @@ class CTRL_Forfait(HTL.HyperTreeList):
 
 
     def Modifier_forfait(self, IDprestation=None, montant_initial=0.0, montant=0.0):
-        """ Tentative de MAJ de la prestation pour l'intégration des aides journalières dans les forfaits-crédits """
+        """ Tentative de MAJ de la prestation pour l'intÃ©gration des aides journaliÃ¨res dans les forfaits-crÃ©dits """
         self.grille.dictPrestations[IDprestation]["montant_initial"] = montant
         self.grille.dictPrestations[IDprestation]["montant"] = montant
         self.grille.listePrestationsModifiees.append(IDprestation)
@@ -484,9 +484,9 @@ class CTRL(wx.Panel):
         self.bouton_modifier = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Modifier.png"), wx.BITMAP_TYPE_PNG))
         self.bouton_supprimer = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Supprimer.png"), wx.BITMAP_TYPE_PNG))
         
-        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour saisir un forfait crédit")))
-        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le forfait sélectionné dans la liste")))
-        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le forfait sélectionné dans la liste")))
+        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour saisir un forfait crÃ©dit")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le forfait sÃ©lectionnÃ© dans la liste")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le forfait sÃ©lectionnÃ© dans la liste")))
         
         # Binds
         self.Bind(wx.EVT_BUTTON, self.Ajouter, self.bouton_ajouter)

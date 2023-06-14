@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -28,8 +28,8 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, name="DLG_Facturation", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         
-        intro = _(u"Vous pouvez ici générer des factures. Page 1 : Sélectionnez des paramètres puis cliquez sur Suite pour afficher les factures disponibles. Page 2 : Cochez les factures à générer puis cliquez sur Suite. Page 3 : Vous pouvez effectuer d'autres actions sur les factures générées.")
-        titre = _(u"Génération de factures")
+        intro = _(u"Vous pouvez ici gÃ©nÃ©rer des factures. Page 1 : SÃ©lectionnez des paramÃ¨tres puis cliquez sur Suite pour afficher les factures disponibles. Page 2 : Cochez les factures Ã  gÃ©nÃ©rer puis cliquez sur Suite. Page 3 : Vous pouvez effectuer d'autres actions sur les factures gÃ©nÃ©rÃ©es.")
+        titre = _(u"GÃ©nÃ©ration de factures")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Generation.png")
         
@@ -66,8 +66,8 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
-        self.bouton_retour.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour revenir à la page précédente")))
-        self.bouton_suite.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour passer à l'étape suivante")))
+        self.bouton_retour.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour revenir Ã  la page prÃ©cÃ©dente")))
+        self.bouton_suite.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour passer Ã  l'Ã©tape suivante")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez pour annuler")))
 
     def __do_layout(self):
@@ -108,59 +108,59 @@ class Dialog(wx.Dialog):
         UTILS_Aide.Aide("Gnration")
 
     def Onbouton_retour(self, event):
-        # rend invisible la page affichée
+        # rend invisible la page affichÃ©e
         pageCible = eval("self.page"+str(self.pageVisible))
         pageCible.Show(False)
-        # Fait apparaître nouvelle page
+        # Fait apparaÃ®tre nouvelle page
         self.pageVisible -= 1
         pageCible = eval("self.page"+str(self.pageVisible))
         pageCible.Show(True)
         self.sizer_pages.Layout()
-        # Si on quitte l'avant-dernière page, on active le bouton Suivant
+        # Si on quitte l'avant-derniÃ¨re page, on active le bouton Suivant
         if self.pageVisible == self.nbrePages :
             self.bouton_suite.Enable(True)
             self.bouton_suite.SetImage(Chemins.GetStaticPath("Images/32x32/Fermer.png"))
         else:
             self.bouton_suite.Enable(True)
             self.bouton_suite.SetImage(Chemins.GetStaticPath("Images/32x32/Fleche_droite.png"))
-        # Si on revient à la première page, on désactive le bouton Retour
+        # Si on revient Ã  la premiÃ¨re page, on dÃ©sactive le bouton Retour
         if self.pageVisible == 1 :
             self.bouton_retour.Enable(False)
         # On active le bouton annuler
         self.bouton_annuler.Enable(True)
 
     def Onbouton_suite(self, event):
-        # Vérifie que les données de la page en cours sont valides
+        # VÃ©rifie que les donnÃ©es de la page en cours sont valides
         validation = self.ValidationPages()
         if validation == False : return
-        # Si on est déjà sur la dernière page : on termine
+        # Si on est dÃ©jÃ  sur la derniÃ¨re page : on termine
         if self.pageVisible == self.nbrePages :
             self.Terminer()
             return
-        # Rend invisible la page affichée
+        # Rend invisible la page affichÃ©e
         pageCible = eval("self.page"+str(self.pageVisible))
         pageCible.Show(False)
-        # Fait apparaître nouvelle page
+        # Fait apparaÃ®tre nouvelle page
         self.pageVisible += 1
         pageCible = eval("self.page"+str(self.pageVisible))
         pageCible.MAJ() 
         pageCible.Show(True)
         self.sizer_pages.Layout()
-        # Si on arrive à la dernière page, on désactive le bouton Suivant
+        # Si on arrive Ã  la derniÃ¨re page, on dÃ©sactive le bouton Suivant
         if self.pageVisible == self.nbrePages :
             self.bouton_suite.SetImage(Chemins.GetStaticPath("Images/32x32/Fermer.png"))
             self.bouton_suite.SetTexte(_(u"Fermer"))
             self.bouton_annuler.Enable(False)
-        # Si on quitte la première page, on active le bouton Retour
+        # Si on quitte la premiÃ¨re page, on active le bouton Retour
         if self.pageVisible > 1 :
             self.bouton_retour.Enable(True)
         
-        # Désactivation du bouton Retour si dernière page > SPECIAL FACTURATION !!!
+        # DÃ©sactivation du bouton Retour si derniÃ¨re page > SPECIAL FACTURATION !!!
         if self.pageVisible == self.nbrePages :            
             self.bouton_retour.Enable(False)
 
     def ValidationPages(self) :
-        """ Validation des données avant changement de pages """
+        """ Validation des donnÃ©es avant changement de pages """
         validation = getattr(self, "page%s" % self.pageVisible).Validation()
         return validation
     

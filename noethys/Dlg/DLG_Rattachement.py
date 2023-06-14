@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -29,15 +29,15 @@ def Formate(mot):
     mot = mot.lower()
     out = ""
     for c in mot:
-        if c == u'é' or c == u'è' or c == u'ê':
+        if c == u'Ã©' or c == u'Ã¨' or c == u'Ãª':
             c = 'e'
-        elif c == u'à':
+        elif c == u'Ã ':
             c = 'a'
-        elif c == u'ù' or c == u'û':
+        elif c == u'Ã¹' or c == u'Ã»':
             c = 'u'
-        elif c == u'î':
+        elif c == u'Ã®':
             c = 'i'
-        elif c == u'ç':
+        elif c == u'Ã§':
             c = 'c'
         out += c
     return out
@@ -93,12 +93,12 @@ class Dialog(wx.Dialog):
         
         # Bandeau
         titre = _(u"Rattachement d'un individu")
-        intro = _(u"Commencez par sélectionner une catégorie de rattachement puis saisissez son nom et son prénom. Si l'individu apparait dans la liste, sélectionnez-le. Sinon créez une nouvelle fiche individuelle.")
+        intro = _(u"Commencez par sÃ©lectionner une catÃ©gorie de rattachement puis saisissez son nom et son prÃ©nom. Si l'individu apparait dans la liste, sÃ©lectionnez-le. Sinon crÃ©ez une nouvelle fiche individuelle.")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Famille.png")
         
         # Categorie
-        self.staticbox_categorie_staticbox = wx.StaticBox(self, -1, _(u"1. Sélection de la catégorie de rattachement"))
-        self.bouton_categorie_1 = wx.ToggleButton(self, 1, _(u"Représentant"))
+        self.staticbox_categorie_staticbox = wx.StaticBox(self, -1, _(u"1. SÃ©lection de la catÃ©gorie de rattachement"))
+        self.bouton_categorie_1 = wx.ToggleButton(self, 1, _(u"ReprÃ©sentant"))
         self.bouton_categorie_2 = wx.ToggleButton(self, 2, _(u"Enfant"))
         self.bouton_categorie_3 = wx.ToggleButton(self, 3, _(u"Contact"))
         self.ctrl_titulaire = wx.CheckBox(self, -1, _(u"Titulaire du dossier famille"))
@@ -108,23 +108,23 @@ class Dialog(wx.Dialog):
             self.bouton_categorie_2.Enable(False)
             self.bouton_categorie_3.Enable(False)
         
-        # Sélection individu
+        # SÃ©lection individu
         self.staticbox_selection_staticbox = wx.StaticBox(self, -1, _(u"2. Saisie du nom de l'individu"))
         self.ctrl_propositions = OL_Individus.ListView(self, id=-1, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.ctrl_propositions.dictParametres["archives"] = True
         self.label_nom = wx.StaticText(self, -1, _(u"Nom :"))
         self.ctrl_nom = CtrlRecherche(self, numColonne=1)
-        self.label_prenom = wx.StaticText(self, -1, _(u"Prénom :"))
+        self.label_prenom = wx.StaticText(self, -1, _(u"PrÃ©nom :"))
         self.ctrl_prenom = wx.TextCtrl(self, -1, "") #CtrlRecherche(self, numColonne=2)
         
         # Txt remarque
         txtRemarque = u"""
         <IMG SRC="Static/Images/16x16/Attention2.png">
         <FONT SIZE=-1>
-        Si l'individu à rattacher n'apparaît pas dans cette liste, 
+        Si l'individu Ã  rattacher n'apparaÃ®t pas dans cette liste, 
         vous devez cliquez sur ce bouton 
         <A HREF="Saisie">Saisir un nouvel individu</A>
-        pour créer une nouvelle fiche individuelle.
+        pour crÃ©er une nouvelle fiche individuelle.
         </FONT>
         """
         self.ctrl_html = MyHtml(self, texte=txtRemarque, hauteur=31)
@@ -149,16 +149,16 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.SetTitle(_(u"Rattachement d'un individu"))
-        self.bouton_categorie_1.SetToolTip(wx.ToolTip(_(u"Représentants")))
+        self.bouton_categorie_1.SetToolTip(wx.ToolTip(_(u"ReprÃ©sentants")))
         self.bouton_categorie_2.SetToolTip(wx.ToolTip(_(u"Enfants")))
         self.bouton_categorie_3.SetToolTip(wx.ToolTip(_(u"Contacts")))
-        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez ici le nom de l'individu à rattacher (en majuscules et sans accents)")))
-        self.ctrl_prenom.SetToolTip(wx.ToolTip(_(u"Saisissez ici le prénom de l'individu à rattacher")))
-        self.ctrl_propositions.SetToolTip(wx.ToolTip(_(u"Double-cliquez sur le nom de l'individu à rattacher")))
+        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez ici le nom de l'individu Ã  rattacher (en majuscules et sans accents)")))
+        self.ctrl_prenom.SetToolTip(wx.ToolTip(_(u"Saisissez ici le prÃ©nom de l'individu Ã  rattacher")))
+        self.ctrl_propositions.SetToolTip(wx.ToolTip(_(u"Double-cliquez sur le nom de l'individu Ã  rattacher")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
-        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour rattacher l'individu selectionné dans la liste")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour rattacher l'individu selectionnÃ© dans la liste")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler et fermer")))
-        self.ctrl_titulaire.SetToolTip(wx.ToolTip(_(u"Cochez cette case si l'individu doit être considéré comme titulaire du dossier")))
+        self.ctrl_titulaire.SetToolTip(wx.ToolTip(_(u"Cochez cette case si l'individu doit Ãªtre considÃ©rÃ© comme titulaire du dossier")))
         self.SetMinSize((500, 550))
 
     def __do_layout(self):
@@ -215,7 +215,7 @@ class Dialog(wx.Dialog):
             self.ActiveControles(True)
             self.ctrl_propositions.MAJ()
         if ID == 1 :
-            # Si on choisit Représentant, on vérifie qu'un titulaire est déjà saisi dans la famille
+            # Si on choisit ReprÃ©sentant, on vÃ©rifie qu'un titulaire est dÃ©jÃ  saisi dans la famille
             if self.nbreTitulaires == 0 :
                 self.ctrl_titulaire.Enable(False)
             else:
@@ -265,7 +265,7 @@ class Dialog(wx.Dialog):
     def CreationIDindividu(self):
         nom = self.ctrl_nom.GetValue()
         if nom  == "" :
-            dlg = wx.MessageDialog(self, _(u"Vous devez saisir le nom du nouvel individu à créer !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez saisir le nom du nouvel individu Ã  crÃ©er !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_nom.SetFocus()
@@ -273,18 +273,18 @@ class Dialog(wx.Dialog):
         
         prenom = self.ctrl_prenom.GetValue()
         if prenom == "":
-            dlg = wx.MessageDialog(self, _(u"Etes-vous sûr de ne pas vouloir saisir de prénom ?"), _(u"Confirmation"), wx.YES_NO | wx.NO_DEFAULT | wx.CANCEL | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Etes-vous sÃ»r de ne pas vouloir saisir de prÃ©nom ?"), _(u"Confirmation"), wx.YES_NO | wx.NO_DEFAULT | wx.CANCEL | wx.ICON_EXCLAMATION)
             reponse = dlg.ShowModal()
             dlg.Destroy()
             if reponse != wx.ID_YES:
                 self.ctrl_prenom.SetFocus()
                 return
 
-        # Vérifie que l'individu n'existe pas déjà dans la liste
+        # VÃ©rifie que l'individu n'existe pas dÃ©jÃ  dans la liste
         if self.ctrl_propositions.donnees != None :
             for individu in self.ctrl_propositions.donnees :
                 if Formate(individu.nom) == Formate(nom) and Formate(individu.prenom) == Formate(prenom) :
-                    dlg = wx.MessageDialog(self, _(u"Un individu portant ce nom existe déjà dans la liste ! \n\nSi vous souhaitez quand même créer un nouvel individu avec ce nom, cliquez sur OUI."), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+                    dlg = wx.MessageDialog(self, _(u"Un individu portant ce nom existe dÃ©jÃ  dans la liste ! \n\nSi vous souhaitez quand mÃªme crÃ©er un nouvel individu avec ce nom, cliquez sur OUI."), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
                     reponse = dlg.ShowModal()
                     dlg.Destroy()
                     if reponse !=  wx.ID_YES :
@@ -297,12 +297,12 @@ class Dialog(wx.Dialog):
     def OnBoutonOk(self, event):
         IDindividu = self.GetSelectionIDindividu()
         if IDindividu == None :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez saisi aucun élément dans la liste !\n\n(Si vous souhaitez créer un individu, cliquez sur 'Saisir un nouvel individu')"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez saisi aucun Ã©lÃ©ment dans la liste !\n\n(Si vous souhaitez crÃ©er un individu, cliquez sur 'Saisir un nouvel individu')"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
         
-        # Vérifie que la personne n'est pas déjà rattachée à cette famille
+        # VÃ©rifie que la personne n'est pas dÃ©jÃ  rattachÃ©e Ã  cette famille
         if self.IDfamille != None :
             DB = GestionDB.DB()
             req = "SELECT IDindividu, IDfamille, IDcategorie, titulaire FROM rattachements WHERE IDindividu=%d AND IDfamille=%d;" % (IDindividu, self.IDfamille)
@@ -310,7 +310,7 @@ class Dialog(wx.Dialog):
             listeRattachements = DB.ResultatReq()
             DB.Close()
             if len(listeRattachements) > 0 :
-                dlg = wx.MessageDialog(self, _(u"Rattachement Impossible : Cet individu est déjà rattaché à cette famille !"), _(u"Erreur de rattachement"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Rattachement Impossible : Cet individu est dÃ©jÃ  rattachÃ© Ã  cette famille !"), _(u"Erreur de rattachement"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activitÈs
+# Application :    Noethys, gestion multi-activit√©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -47,10 +47,10 @@ class Track(object):
             if IDmodele in dictModeles :
                 self.texteDroits = dictModeles[IDmodele]
             else :
-                self.texteDroits = _(u"ModËle de droits inconnu")
+                self.texteDroits = _(u"Mod√®le de droits inconnu")
 
         elif self.profil == "perso" :
-            self.texteDroits = _(u"Droits personnalisÈs")
+            self.texteDroits = _(u"Droits personnalis√©s")
         
         else :
             self.texteDroits = _(u"Administrateur")
@@ -68,7 +68,7 @@ class Track(object):
     
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # RÈcupÈration des paramËtres perso
+        # R√©cup√©ration des param√®tres perso
         self.selectionID = None
         self.selectionTrack = None
         self.criteres = ""
@@ -89,11 +89,11 @@ class ListView(FastObjectListView):
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
-        """ RÈcupÈration des donnÈes """
+        """ R√©cup√©ration des donn√©es """
         listeID = None
         DB = GestionDB.DB()
         
-        # Liste des modËles
+        # Liste des mod√®les
         req = """SELECT IDmodele, nom
         FROM modeles_droits;"""
         DB.ExecuterReq(req)
@@ -128,14 +128,14 @@ class ListView(FastObjectListView):
         self.evenRowsBackColor = wx.Colour(255, 255, 255)
         self.useExpansionColumn = True
         
-        # PrÈparation de la listeImages
+        # Pr√©paration de la listeImages
         imgActif = self.AddNamedImages("actif", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Ok.png"), wx.BITMAP_TYPE_PNG))
         imgInactif = self.AddNamedImages("inactif", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Interdit.png"), wx.BITMAP_TYPE_PNG))
         
         for track in self.donnees :
             self.AddNamedImages(str(track.IDutilisateur), track.image)
         
-        # Formatage des donnÈes
+        # Formatage des donn√©es
         def GetImageActif(track):
             if track.actif == 1 : return "actif"
             else: return "inactif"
@@ -147,7 +147,7 @@ class ListView(FastObjectListView):
             
             ColumnDefn(u"", 'left', 22, "IDutilisateur", typeDonnee="entier", imageGetter=GetImageAvatar),
             ColumnDefn(_(u"Nom"), 'left', 150, "nom", typeDonnee="texte"),
-            ColumnDefn(_(u"PrÈnom"), 'left', 150, "prenom", typeDonnee="texte"),
+            ColumnDefn(_(u"Pr√©nom"), 'left', 150, "prenom", typeDonnee="texte"),
             ColumnDefn(_(u"Actif"), "left", 60, "texteActif", typeDonnee="texte", imageGetter=GetImageActif),
             ColumnDefn(_(u"Droits"), 'left', 200, "texteDroits", typeDonnee="texte"),
             ]
@@ -167,7 +167,7 @@ class ListView(FastObjectListView):
             self.selectionTrack = None
         self.InitModel()
         self.InitObjectListView()
-        # SÈlection d'un item
+        # S√©lection d'un item
         if self.selectionTrack != None :
             self.SelectObject(self.selectionTrack, deselectOthers=True, ensureVisible=True)
         self.selectionID = None
@@ -184,7 +184,7 @@ class ListView(FastObjectListView):
             noSelection = False
             ID = self.Selection()[0].IDutilisateur
                 
-        # CrÈation du menu contextuel
+        # Cr√©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Modifier
@@ -225,7 +225,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"AperÁu avant impression"))
+        item = wx.MenuItem(menuPop, 40, _(u"Aper√ßu avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -262,7 +262,7 @@ class ListView(FastObjectListView):
 
     def Modifier(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucun utilisateur ‡ modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucun utilisateur √† modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -276,14 +276,14 @@ class ListView(FastObjectListView):
 
     def Supprimer(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucun utilisateur ‡ supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucun utilisateur √† supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_utilisateurs", "supprimer") == False : return
         IDutilisateur = self.Selection()[0].IDutilisateur
         profil = self.Selection()[0].profil
-        # VÈrifie que cet utilisateur n'est pas dÈj‡ attribuÈ ‡ d'autres tables de donnÈes
+        # V√©rifie que cet utilisateur n'est pas d√©j√† attribu√© √† d'autres tables de donn√©es
         
         # Table Consommations
         DB = GestionDB.DB()
@@ -295,12 +295,12 @@ class ListView(FastObjectListView):
         nbreConso = int(DB.ResultatReq()[0][0])
         DB.Close()
         if nbreConso > 0 :
-            dlg = wx.MessageDialog(self, _(u"Cet utilisateur a dÈj‡ ÈtÈ attribuÈ ‡ %d consommation(s).\n\nVous ne pouvez donc pas le supprimer !") % nbreConso, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Cet utilisateur a d√©j√† √©t√© attribu√© √† %d consommation(s).\n\nVous ne pouvez donc pas le supprimer !") % nbreConso, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
             
-        # Table RËglements
+        # Table R√®glements
         DB = GestionDB.DB()
         req = """SELECT COUNT(IDreglement)
         FROM reglements 
@@ -310,12 +310,12 @@ class ListView(FastObjectListView):
         nbreReglements = int(DB.ResultatReq()[0][0])
         DB.Close()
         if nbreReglements > 0 :
-            dlg = wx.MessageDialog(self, _(u"Cet utilisateur a dÈj‡ ÈtÈ attribuÈ ‡ %d rËglement(s).\n\nVous ne pouvez donc pas le supprimer !") % nbreReglements, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Cet utilisateur a d√©j√† √©t√© attribu√© √† %d r√®glement(s).\n\nVous ne pouvez donc pas le supprimer !") % nbreReglements, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         
-        # VÈrifie qu'il reste au moins un administrateur
+        # V√©rifie qu'il reste au moins un administrateur
         if profil == "administrateur" :
             nbreAdmin = 0
             for track in self.donnees :
@@ -340,7 +340,7 @@ class ListView(FastObjectListView):
     def Historique(self, event):
         """ Affiche l'historique de l'utilisateur """
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucun utilisateur dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucun utilisateur dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return

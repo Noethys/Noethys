@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -75,14 +75,14 @@ class PreviewControlBar(wx.PyPreviewControlBar):
         self.bouton_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher l'impression")))
         self.bouton_rapide_x1.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour lancer une impression rapide en 1 exemplaire")))
         self.bouton_rapide_x2.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour lancer une impression rapide en 2 exemplaires")))
-        self.bouton_premier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à la première page")))
-        self.bouton_precedent.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à la page précédente")))
-        self.bouton_suivant.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à la page suivante")))
-        self.bouton_dernier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à la dernière page")))
-        self.bouton_zoom_moins.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour faire un zoom arrière")))
-        self.ctrl_zoom.SetToolTip(wx.ToolTip(_(u"Déplacez la règlette pour zoomer")))
+        self.bouton_premier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accÃ©der Ã  la premiÃ¨re page")))
+        self.bouton_precedent.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accÃ©der Ã  la page prÃ©cÃ©dente")))
+        self.bouton_suivant.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accÃ©der Ã  la page suivante")))
+        self.bouton_dernier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accÃ©der Ã  la derniÃ¨re page")))
+        self.bouton_zoom_moins.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour faire un zoom arriÃ¨re")))
+        self.ctrl_zoom.SetToolTip(wx.ToolTip(_(u"DÃ©placez la rÃ¨glette pour zoomer")))
         self.bouton_zoom_plus.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour faire un zoom avant")))
-        self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer l'aperçu")))
+        self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer l'aperÃ§u")))
 
     def __do_layout(self):
         grid_sizer_base = wx.GridSizer(rows=2, cols=1, vgap=0, hgap=0)
@@ -167,7 +167,7 @@ class PreviewControlBar(wx.PyPreviewControlBar):
         
     
 class PreviewFrame(wx.PyPreviewFrame):
-    def __init__(self, preview, parent, title=_(u"Aperçu avant impression"), orientation=wx.PORTRAIT):
+    def __init__(self, preview, parent, title=_(u"AperÃ§u avant impression"), orientation=wx.PORTRAIT):
         wx.PyPreviewFrame.__init__(self, preview, parent, title)
         self.preview = preview
         self.orientation = orientation
@@ -199,8 +199,8 @@ class ObjectListViewPrinter():
         self.orientation = orientation
     
     def InitParametres(self):
-        """ Récupération des paramètres d'impression """
-        # DLG des paramètres d'impression
+        """ RÃ©cupÃ©ration des paramÃ¨tres d'impression """
+        # DLG des paramÃ¨tres d'impression
         dictOptions = {
             "titre" : self.titre,
             "introduction" : self.intro,
@@ -215,7 +215,7 @@ class ObjectListViewPrinter():
             dlg.Destroy() 
             return False
         
-        # Remplacement des mots-clés
+        # Remplacement des mots-clÃ©s
         listeChamps = ["pied_page_texte_gauche", "pied_page_texte_milieu", "pied_page_texte_droite"]
         nomOrganisateur = self.GetNomOrganisateur()
         for key, valeur in dictOptions.items() :
@@ -227,7 +227,7 @@ class ObjectListViewPrinter():
                 valeur = valeur.replace("{NBRE_PAGES}", "%(totalPages)d")
                 dictOptions[key] = valeur
                 
-        # Préparation du printout
+        # PrÃ©paration du printout
         self.printer = ListCtrlPrinter.ListCtrlPrinter(self.listview, dictOptions["titre"])
         self.printer.printout.margins = (wx.Point(int(dictOptions["marge_gauche"]), int(dictOptions["marge_haut"])), wx.Point(int(dictOptions["marge_droite"]), int(dictOptions["marge_bas"])))
         self.printer.printout.printData.SetOrientation(dictOptions["orientation"])
@@ -236,10 +236,10 @@ class ObjectListViewPrinter():
         ListCtrlPrinter.LISTINTRO = dictOptions["introduction"]
         ListCtrlPrinter.LISTFOOTER = dictOptions["conclusion"]
         
-        # Préparation du format
+        # PrÃ©paration du format
         fmt = ReportFormat()
         
-        # Entête de page
+        # EntÃªte de page
     ##        fmt.PageHeader.Font = wx.FFont(10, wx.FONTFAMILY_DECORATIVE, wx.FONTFLAG_BOLD, face=headerFontName)
     ##        fmt.PageHeader.TextColor = wx.WHITE
     ##        fmt.PageHeader.Background(wx.GREEN, wx.RED, space=(16, 4, 0, 4))
@@ -311,7 +311,7 @@ class ObjectListViewPrinter():
         fmt.ListFooter.TextAlignment = dictOptions["conclusion_alignement"]
         fmt.ListFooter.CanWrap = True
         
-        # Divers paramètres
+        # Divers paramÃ¨tres
         fmt.IsShrinkToFit = True
         fmt.IncludeImages = dictOptions["inclure_images"]
         fmt.IsColumnHeadingsOnEachPage = dictOptions["entetes_toutes_pages"]
@@ -346,19 +346,19 @@ class ObjectListViewPrinter():
         printPreview = self.printer.printout.GetPrintPreview()
         printPreview.SetZoom(100)
 
-        frm = MyPreviewFrame(printPreview, None, _(u"Aperçu avant impression"))
+        frm = MyPreviewFrame(printPreview, None, _(u"AperÃ§u avant impression"))
         frm.Show(True)
 
 
 
     def GetFormatA(self):        
-        """ Paramètres du format personnalisé pour objectlistview """
+        """ ParamÃ¨tres du format personnalisÃ© pour objectlistview """
         fmt = ReportFormat()
         
         headerFontName="Arial"
         rowFontName="Arial"
         
-        # Entête de page
+        # EntÃªte de page
     ##        fmt.PageHeader.Font = wx.FFont(10, wx.FONTFAMILY_DECORATIVE, wx.FONTFLAG_BOLD, face=headerFontName)
     ##        fmt.PageHeader.TextColor = wx.WHITE
     ##        fmt.PageHeader.Background(wx.GREEN, wx.RED, space=(16, 4, 0, 4))
@@ -426,7 +426,7 @@ class ObjectListViewPrinter():
         fmt.ListFooter.TextAlignment = wx.ALIGN_LEFT
         fmt.ListFooter.CanWrap = True
         
-        # Divers paramètres
+        # Divers paramÃ¨tres
         fmt.IsShrinkToFit = True
         fmt.IncludeImages = True
         fmt.IsColumnHeadingsOnEachPage = True
@@ -453,7 +453,7 @@ class MyPreviewFrame(wx.PreviewFrame):
         wx.PreviewFrame.__init__(self, *args, **kwargs)
         self.Initialize()
 
-        # Récupération de la bar de contrôle
+        # RÃ©cupÃ©ration de la bar de contrÃ´le
         if 'phoenix' not in wx.PlatformInfo:
             controlBar = self.GetControlBar()
         else:
@@ -463,18 +463,18 @@ class MyPreviewFrame(wx.PreviewFrame):
 
         liste_controles = controlBar.GetChildren()
 
-        # Traduction des contrôles en français
+        # Traduction des contrÃ´les en franÃ§ais
         liste_controles[0].SetToolTip(wx.ToolTip(_(u"Imprimer")))
-        liste_controles[1].SetToolTip(wx.ToolTip(_(u"Aller à la première page")))
-        liste_controles[2].SetToolTip(wx.ToolTip(_(u"Aller à la page précédente")))
-        liste_controles[5].SetToolTip(wx.ToolTip(_(u"Aller à la page suivante")))
-        liste_controles[6].SetToolTip(wx.ToolTip(_(u"Aller à la dernière page")))
-        liste_controles[7].SetToolTip(wx.ToolTip(_(u"Zoom arrière")))
+        liste_controles[1].SetToolTip(wx.ToolTip(_(u"Aller Ã  la premiÃ¨re page")))
+        liste_controles[2].SetToolTip(wx.ToolTip(_(u"Aller Ã  la page prÃ©cÃ©dente")))
+        liste_controles[5].SetToolTip(wx.ToolTip(_(u"Aller Ã  la page suivante")))
+        liste_controles[6].SetToolTip(wx.ToolTip(_(u"Aller Ã  la derniÃ¨re page")))
+        liste_controles[7].SetToolTip(wx.ToolTip(_(u"Zoom arriÃ¨re")))
         liste_controles[9].SetToolTip(wx.ToolTip(_(u"Zoom avant")))
         liste_controles[10].SetToolTip(wx.ToolTip(_(u"Fermer")))
         liste_controles[10].SetLabel(_(u"Fermer"))
 
-        # Ajustement taille et position de la fenêtre
+        # Ajustement taille et position de la fenÃªtre
         if 'phoenix' not in wx.PlatformInfo:
             self.MakeModal(False)
 
@@ -556,7 +556,7 @@ class FramePreview(wx.Frame):
         sizer_base.Fit(self)
         self.Layout()
         
-        # Initialisation des contrôles
+        # Initialisation des contrÃ´les
         self.OnZoom(None)
 
 

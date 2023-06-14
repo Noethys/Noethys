@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -12,14 +12,14 @@
 LISTE_TYPES_RENSEIGNEMENTS = [
     ( 1, u"Date de naissance"),
     ( 2, u"Lieu de naissance"),
-    ( 3, u"Numéro de sécurité sociale"),
-##    ( 5, u"Adresse de résidence"),
-    ( 6, u"Médecin traitant"),
+    ( 3, u"NumÃ©ro de sÃ©curitÃ© sociale"),
+##    ( 5, u"Adresse de rÃ©sidence"),
+    ( 6, u"MÃ©decin traitant"),
     ( 12, u"Quotient familial"),
     ( 7, u"Caisse d'allocations"),
-    ( 8, u"Numéro d'allocataire"),
+    ( 8, u"NumÃ©ro d'allocataire"),
     ( 9, u"Titulaire allocataire"),
-    ( 10, u"Titulaire Hélios"),
+    ( 10, u"Titulaire HÃ©lios"),
     ( 11, u"Code comptable"),
     ] # Liste des renseignements obligatoires possibles
 

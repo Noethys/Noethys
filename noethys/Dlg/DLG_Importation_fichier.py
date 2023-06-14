@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-14 Ivan LUCAS
@@ -31,9 +31,9 @@ class CTRL_Options(wx.CheckListBox):
         self.dictIndex = {}
         self.listeOptions = [
             ("abonnements", _(u"Listes de diffusion et abonnements")),
-            ("scolarite", _(u"Données de scolarité : étapes, écoles, classes...")),
+            ("scolarite", _(u"DonnÃ©es de scolaritÃ© : Ã©tapes, Ã©coles, classes...")),
             ("questionnaire", _(u"Questionnaires familiaux et individuels")),
-            ("pieces", _(u"Pièces et types de pièces")),
+            ("pieces", _(u"PiÃ¨ces et types de piÃ¨ces")),
             ("messages", _(u"Messages de type famille, individuel ou accueil")),
             ("quotients", _(u"Quotients familiaux des familles")),
             ("mandats", _(u"Mandats SEPA des familles")),
@@ -67,20 +67,20 @@ class Dialog(wx.Dialog):
 
         # Bandeau
         titre = _(u"Importer des familles depuis un fichier Noethys")
-        intro = _(u"Cette fonctionnalité vous permet d'importer les fiches familles d'un autre fichier de données Noethys. <u>Attention, toutes les fiches familles déjà saisies seront écrasées !</u> Il est donc conseillé d'utiliser cette fonction uniquement après la création d'un nouveau fichier. Sélectionnez un fichier à importer, cochez des options puis cliquez sur OK.")
+        intro = _(u"Cette fonctionnalitÃ© vous permet d'importer les fiches familles d'un autre fichier de donnÃ©es Noethys. <u>Attention, toutes les fiches familles dÃ©jÃ  saisies seront Ã©crasÃ©es !</u> Il est donc conseillÃ© d'utiliser cette fonction uniquement aprÃ¨s la crÃ©ation d'un nouveau fichier. SÃ©lectionnez un fichier Ã  importer, cochez des options puis cliquez sur OK.")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Document_import.png")
         self.SetTitle(titre)
 
         # Mode
         self.box_mode_staticbox = wx.StaticBox(self, -1, _(u"Mode"))
         self.radio_local = wx.RadioButton(self, -1, _(u"Local"), style=wx.RB_GROUP)
-        self.radio_reseau = wx.RadioButton(self, -1, _(u"Réseau"))
+        self.radio_reseau = wx.RadioButton(self, -1, _(u"RÃ©seau"))
         
-        # Codes d'accès
-        self.box_codes_staticbox = wx.StaticBox(self, -1, _(u"Codes d'accès réseau"))
+        # Codes d'accÃ¨s
+        self.box_codes_staticbox = wx.StaticBox(self, -1, _(u"Codes d'accÃ¨s rÃ©seau"))
         self.label_port = wx.StaticText(self, -1, _(u"Port :"))
         self.ctrl_port = wx.TextCtrl(self, -1, u"3306", style=wx.TE_CENTRE)
-        self.label_hote = wx.StaticText(self, -1, _(u"Hôte :"))
+        self.label_hote = wx.StaticText(self, -1, _(u"HÃ´te :"))
         self.ctrl_hote = wx.TextCtrl(self, -1, u"")
         self.label_utilisateur = wx.StaticText(self, -1, _(u"Utilisateur :"))
         self.ctrl_utilisateur = wx.TextCtrl(self, -1, u"")
@@ -89,12 +89,12 @@ class Dialog(wx.Dialog):
         self.bouton_valider_codes = wx.Button(self, -1, _(u"Valider"), style=wx.BU_EXACTFIT)
         
         # Liste fichiers
-        self.box_fichiers_staticbox = wx.StaticBox(self, -1, _(u"1. Sélection du fichier"))
+        self.box_fichiers_staticbox = wx.StaticBox(self, -1, _(u"1. SÃ©lection du fichier"))
         self.ctrl_fichiers = CTRL_Liste_fichiers.CTRL(self, mode="local")
         self.ctrl_fichiers.SetMinSize((-1, 200))
 
         # Options
-        self.box_options_staticbox = wx.StaticBox(self, -1, _(u"2. Sélection des données optionnelles"))
+        self.box_options_staticbox = wx.StaticBox(self, -1, _(u"2. SÃ©lection des donnÃ©es optionnelles"))
         self.ctrl_options = CTRL_Options(self)
         self.ctrl_options.SetMinSize((20, 140))
 
@@ -113,23 +113,23 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
         
-        # Init contrôles
+        # Init contrÃ´les
         self.OnChoixMode(None) 
         
 
     def __set_properties(self):
         self.radio_local.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher les fichiers disponibles en mode local")))
-        self.radio_reseau.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher les fichiers disponibles en mode réseau")))
+        self.radio_reseau.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher les fichiers disponibles en mode rÃ©seau")))
         self.ctrl_port.SetMinSize((40, -1))
-        self.ctrl_port.SetToolTip(wx.ToolTip(_(u"Le numéro de port est 3306 par défaut")))
+        self.ctrl_port.SetToolTip(wx.ToolTip(_(u"Le numÃ©ro de port est 3306 par dÃ©faut")))
         self.ctrl_hote.SetMinSize((90,-1))
-        self.ctrl_hote.SetToolTip(wx.ToolTip(_(u"Indiquez ici le nom du serveur hôte")))
+        self.ctrl_hote.SetToolTip(wx.ToolTip(_(u"Indiquez ici le nom du serveur hÃ´te")))
         self.ctrl_utilisateur.SetMinSize((90,-1))
         self.ctrl_utilisateur.SetToolTip(wx.ToolTip(_(u"Indiquez ici le nom de l'utilisateur")))
-        self.ctrl_motdepasse.SetToolTip(wx.ToolTip(_(u"Indiquez ici le mot de passe nécessaire à la connexion à MySQL")))
-        self.bouton_valider_codes.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider les codes réseau et afficher la liste des fichiers disponibles")))
+        self.ctrl_motdepasse.SetToolTip(wx.ToolTip(_(u"Indiquez ici le mot de passe nÃ©cessaire Ã  la connexion Ã  MySQL")))
+        self.bouton_valider_codes.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider les codes rÃ©seau et afficher la liste des fichiers disponibles")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
-        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ouvrir le fichier sélectionné dans la liste")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ouvrir le fichier sÃ©lectionnÃ© dans la liste")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
 
     def __do_layout(self):
@@ -206,18 +206,18 @@ class Dialog(wx.Dialog):
         self.MAJliste() 
     
     def MAJliste(self):
-        """ Met à jour la liste des fichiers """
+        """ Met Ã  jour la liste des fichiers """
         modeLocal = self.radio_local.GetValue()
         if modeLocal == True :
             # Mode local
             self.ctrl_fichiers.SetMode(mode="local")
         else :
-            # Mode réseau
+            # Mode rÃ©seau
             dictCodes = self.GetCodesReseau() 
             self.ctrl_fichiers.SetMode(mode="reseau", codesReseau=dictCodes)
     
     def GetCodesReseau(self):
-        """ Récupération des codes réseau saisis """
+        """ RÃ©cupÃ©ration des codes rÃ©seau saisis """
         try :
             port = int(self.ctrl_port.GetValue())
         except Exception as err:
@@ -231,14 +231,14 @@ class Dialog(wx.Dialog):
         dictCodes = self.GetCodesReseau() 
         
         if dictCodes["port"] == "" :
-            dlg = wx.MessageDialog(self, _(u"Le numéro de port n'est pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"Le numÃ©ro de port n'est pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_port.SetFocus()
             return
         
         if dictCodes["hote"] == "" :
-            dlg = wx.MessageDialog(self, _(u"Vous devez saisir un nom pour le serveur hôte !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"Vous devez saisir un nom pour le serveur hÃ´te !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_hote.SetFocus()
@@ -270,13 +270,13 @@ class Dialog(wx.Dialog):
     def OnBoutonModifierFichier(self, event): 
         index = self.ctrl_fichiers.GetFirstSelected()
         if index == -1 :
-            dlg = wx.MessageDialog(self, _(u"Vous devez sélectionner un fichier à modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez sÃ©lectionner un fichier Ã  modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return 
         titre = self.ctrl_fichiers.GetItemPyData(index)["titre"]
         if self.fichierOuvert == titre :
-            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas modifier un fichier déjà ouvert !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas modifier un fichier dÃ©jÃ  ouvert !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return 
@@ -286,13 +286,13 @@ class Dialog(wx.Dialog):
     def OnBoutonSupprimerFichier(self, event): 
         index = self.ctrl_fichiers.GetFirstSelected()
         if index == -1 :
-            dlg = wx.MessageDialog(self, _(u"Vous devez sélectionner un fichier à supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez sÃ©lectionner un fichier Ã  supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return 
         titre = self.ctrl_fichiers.GetItemPyData(index)["titre"]
         if self.fichierOuvert == titre :
-            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas supprimer un fichier déjà ouvert !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas supprimer un fichier dÃ©jÃ  ouvert !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return 
@@ -315,7 +315,7 @@ class Dialog(wx.Dialog):
         if modeLocal == True :
             nomFichier = dictItem["titre"]
             if six.PY2:
-                nomFichier = nomFichier.decode("iso-8859-15")
+                nomFichier = nomFichier.decode("utf8")
     
         # Version RESEAU
         if modeLocal == False :
@@ -334,7 +334,7 @@ class Dialog(wx.Dialog):
     def OnBoutonOk(self, event): 
         index = self.ctrl_fichiers.GetFirstSelected()
         if index == -1 :
-            dlg = wx.MessageDialog(self, _(u"Vous devez sélectionner un fichier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez sÃ©lectionner un fichier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return 
@@ -346,13 +346,13 @@ class Dialog(wx.Dialog):
         # Demande de confirmation
         nbreFamilles = self.GetNbreFamilles() 
         if nbreFamilles > 0 :
-            dlg = wx.MessageDialog(self, _(u"Attention, %d fiches familles sont déjà saisies dans ce fichier. Si vous utilisez la fonction d'importation, TOUTES les fiches actuelles seront écrasées !!!\n\nSouhaitez-vous tout de même continuer ?") % nbreFamilles, _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Attention, %d fiches familles sont dÃ©jÃ  saisies dans ce fichier. Si vous utilisez la fonction d'importation, TOUTES les fiches actuelles seront Ã©crasÃ©es !!!\n\nSouhaitez-vous tout de mÃªme continuer ?") % nbreFamilles, _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
             if dlg.ShowModal() != wx.ID_YES :
                 dlg.Destroy()
                 return False
             dlg.Destroy()
         
-        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment lancer l'importation des familles du fichier '%s' ?\n\nAttention, toutes les données actuelles seront écrasées !") % titre, _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment lancer l'importation des familles du fichier '%s' ?\n\nAttention, toutes les donnÃ©es actuelles seront Ã©crasÃ©es !") % titre, _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
         if dlg.ShowModal() != wx.ID_YES :
             dlg.Destroy()
             return False
@@ -376,12 +376,12 @@ class Dialog(wx.Dialog):
             
         DB = GestionDB.DB() 
         for nomTable in listeTables :
-            # Réinitialisation de la table
+            # RÃ©initialisation de la table
             print("Reinitialisation de la table %s..." % nomTable)
             DB.ExecuterReq("DROP TABLE %s;" % nomTable)
             DB.Commit() 
             DB.CreationTable(nomTable, Tables.DB_DATA)
-            # Importation des données
+            # Importation des donnÃ©es
             print("Importation de la table %s..." % nomTable)
             if self.radio_local.GetValue() == True :
                 DB.Importation_table(nomTable=nomTable, nomFichierdefault=UTILS_Fichiers.GetRepData(u"%s_DATA.dat" % nomFichier))
@@ -391,7 +391,7 @@ class Dialog(wx.Dialog):
         
         # Fin
         nbreFamilles = self.GetNbreFamilles() 
-        dlg = wx.MessageDialog(self, _(u"La procédure d'importation est terminée !\n\n%d familles ont été importées avec succès.") % nbreFamilles, _(u"Confirmation"), wx.OK | wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"La procÃ©dure d'importation est terminÃ©e !\n\n%d familles ont Ã©tÃ© importÃ©es avec succÃ¨s.") % nbreFamilles, _(u"Confirmation"), wx.OK | wx.ICON_INFORMATION)
         dlg.ShowModal()
         dlg.Destroy()
         

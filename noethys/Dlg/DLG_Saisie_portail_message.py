@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-16 Ivan LUCAS
@@ -27,8 +27,8 @@ class Dialog(wx.Dialog):
         self.parent = parent
         self.IDmessage = IDmessage
 
-        # Généralités
-        self.box_generalites_staticbox = wx.StaticBox(self, -1, _(u"Généralités"))
+        # GÃ©nÃ©ralitÃ©s
+        self.box_generalites_staticbox = wx.StaticBox(self, -1, _(u"GÃ©nÃ©ralitÃ©s"))
         self.label_titre = wx.StaticText(self, -1, _(u"Titre :"))
         self.ctrl_titre = wx.TextCtrl(self, -1, "")
         self.label_texte = wx.StaticText(self, -1, _(u"Texte :"))
@@ -37,7 +37,7 @@ class Dialog(wx.Dialog):
         # Affichage
         self.box_affichage_staticbox = wx.StaticBox(self, -1, _(u"Affichage sur le portail"))
         self.radio_oui = wx.RadioButton(self, -1, _(u"Toujours afficher"), style=wx.RB_GROUP)
-        self.radio_dates = wx.RadioButton(self, -1, _(u"Afficher uniquement sur la période suivante :"))
+        self.radio_dates = wx.RadioButton(self, -1, _(u"Afficher uniquement sur la pÃ©riode suivante :"))
         self.label_affichage_date_debut = wx.StaticText(self, -1, _(u"Du"))
         self.ctrl_affichage_date_debut = CTRL_Saisie_date.Date2(self)
         self.ctrl_affichage_heure_debut = CTRL_Saisie_heure.Heure(self)
@@ -58,7 +58,7 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioAffichage, self.radio_dates)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
 
-        # Init contrôles
+        # Init contrÃ´les
         self.Importation()
         self.OnRadioAffichage(None)
 
@@ -67,10 +67,10 @@ class Dialog(wx.Dialog):
             self.SetTitle(_(u"Saisie d'un message"))
         else:
             self.SetTitle(_(u"Modification d'un message"))
-        self.ctrl_titre.SetToolTip(wx.ToolTip(_(u"Saisissez ici un titre interne pour ce message. Ce titre n'apparaîtra pas sur le portail.")))
-        self.ctrl_texte.SetToolTip(wx.ToolTip(_(u"Saisissez ici le texte qui apparaîtra sur la page d'accueil du portail")))
-        self.radio_oui.SetToolTip(wx.ToolTip(_(u"Sélectionnez cette option pour toujours afficher ce message sur le portail")))
-        self.radio_dates.SetToolTip(wx.ToolTip(_(u"Sélectionnez cette option pour afficher message sur le portail uniquement entre les dates souhaitées")))
+        self.ctrl_titre.SetToolTip(wx.ToolTip(_(u"Saisissez ici un titre interne pour ce message. Ce titre n'apparaÃ®tra pas sur le portail.")))
+        self.ctrl_texte.SetToolTip(wx.ToolTip(_(u"Saisissez ici le texte qui apparaÃ®tra sur la page d'accueil du portail")))
+        self.radio_oui.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez cette option pour toujours afficher ce message sur le portail")))
+        self.radio_dates.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez cette option pour afficher message sur le portail uniquement entre les dates souhaitÃ©es")))
         self.SetMinSize((550, 450))
 
     def __do_layout(self):
@@ -78,7 +78,7 @@ class Dialog(wx.Dialog):
 
         grid_sizer_contenu = wx.FlexGridSizer(rows=2, cols=1, vgap=10, hgap=10)
 
-        # Généralités
+        # GÃ©nÃ©ralitÃ©s
         box_generalites = wx.StaticBoxSizer(self.box_generalites_staticbox, wx.VERTICAL)
         grid_sizer_generalites = wx.FlexGridSizer(rows=2, cols=2, vgap=5, hgap=5)
         grid_sizer_generalites.Add(self.label_titre, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
@@ -141,7 +141,7 @@ class Dialog(wx.Dialog):
         self.ctrl_affichage_heure_fin.Enable(etat)
 
     def Importation(self):
-        """ Importation des données """
+        """ Importation des donnÃ©es """
         if self.IDmessage == None :
             return
 
@@ -171,7 +171,7 @@ class Dialog(wx.Dialog):
 
 
     def OnBoutonOk(self, event):
-        # Validation des données
+        # Validation des donnÃ©es
         titre = self.ctrl_titre.GetValue()
         if titre == "" :
             dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un titre !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
@@ -192,7 +192,7 @@ class Dialog(wx.Dialog):
 
             affichage_date_debut = self.ctrl_affichage_date_debut.GetDate()
             if affichage_date_debut == None :
-                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de début pour l'affichage !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de dÃ©but pour l'affichage !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_affichage_date_debut.SetFocus()
@@ -200,7 +200,7 @@ class Dialog(wx.Dialog):
 
             affichage_heure_debut = self.ctrl_affichage_heure_debut.GetHeure()
             if affichage_heure_debut == None or self.ctrl_affichage_heure_debut.Validation() == False :
-                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une heure de début valide pour l'affichage !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une heure de dÃ©but valide pour l'affichage !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_affichage_heure_debut.SetFocus()
@@ -223,7 +223,7 @@ class Dialog(wx.Dialog):
                 return
 
             if affichage_date_debut > affichage_date_fin :
-                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de fin supérieure à la date de début pour l'affichage !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de fin supÃ©rieure Ã  la date de dÃ©but pour l'affichage !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_affichage_date_fin.SetFocus()
@@ -237,7 +237,7 @@ class Dialog(wx.Dialog):
             affichage_date_debut = None
             affichage_date_fin = None
 
-        # Sauvegarde des données
+        # Sauvegarde des donnÃ©es
         DB = GestionDB.DB()
         listeDonnees = [
             ("titre", titre),

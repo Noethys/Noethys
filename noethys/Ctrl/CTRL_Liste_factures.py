@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-13 Ivan LUCAS
@@ -54,7 +54,7 @@ class CTRL(wx.Panel):
         self.listviewAvecFooter = OL_Factures.ListviewAvecFooter(self, kwargs={"codesColonnes" : codesColonnes, "checkColonne" : checkColonne, "triColonne" : triColonne}) 
         self.ctrl_factures = self.listviewAvecFooter.GetListview()
         
-        # Ctrl des filtres de sélection
+        # Ctrl des filtres de sÃ©lection
         self.ctrl_filtres = DLG_Filtres_factures.CTRL_Filtres(self, filtres=filtres, ctrl_factures=self.ctrl_factures)
         
         # Commandes de liste
@@ -68,10 +68,10 @@ class CTRL(wx.Panel):
         
         # Options de liste
         self.ctrl_recherche = OL_Factures.BarreRecherche(self, listview=self.ctrl_factures)
-        self.ctrl_afficher_annulations = wx.CheckBox(self, -1, u"Afficher les factures annulées")
+        self.ctrl_afficher_annulations = wx.CheckBox(self, -1, u"Afficher les factures annulÃ©es")
         self.hyper_tout = Hyperlien(self, label=_(u"Tout cocher"), infobulle=_(u"Cliquez ici pour tout cocher"), URL="tout")
         self.label_separation = wx.StaticText(self, -1, "|")
-        self.hyper_rien = Hyperlien(self, label=_(u"Tout décocher"), infobulle=_(u"Cliquez ici pour tout décocher"), URL="rien")
+        self.hyper_rien = Hyperlien(self, label=_(u"Tout dÃ©cocher"), infobulle=_(u"Cliquez ici pour tout dÃ©cocher"), URL="rien")
 
         self.__set_properties()
         self.__do_layout()
@@ -86,14 +86,14 @@ class CTRL(wx.Panel):
         self.Bind(wx.EVT_CHECKBOX, self.OnCheckAnnulations, self.ctrl_afficher_annulations)
         
     def __set_properties(self):
-        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher un aperçu de la facture sélectionnée")))
-        self.bouton_email.SetToolTip(wx.ToolTip(_(u"Cliquez ici envoyer la facture sélectionnée par Email")))
-        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la facture sélectionnée ou les factures cochées")))
-        self.bouton_liste_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher un aperçu avant impression de cette liste")))
+        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher un aperÃ§u de la facture sÃ©lectionnÃ©e")))
+        self.bouton_email.SetToolTip(wx.ToolTip(_(u"Cliquez ici envoyer la facture sÃ©lectionnÃ©e par Email")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la facture sÃ©lectionnÃ©e ou les factures cochÃ©es")))
+        self.bouton_liste_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher un aperÃ§u avant impression de cette liste")))
         self.bouton_liste_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer cette liste")))
         self.bouton_liste_export_texte.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter cette liste au format Texte")))
         self.bouton_liste_export_excel.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter cette liste au format Excel")))
-        self.ctrl_afficher_annulations.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher les factures annulées dans la liste")))
+        self.ctrl_afficher_annulations.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher les factures annulÃ©es dans la liste")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=2, cols=1, vgap=5, hgap=5)

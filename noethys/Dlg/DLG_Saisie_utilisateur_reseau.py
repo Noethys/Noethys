@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -41,15 +41,15 @@ class Dialog(wx.Dialog):
         self.ctrl_mdp_2 = wx.TextCtrl(self, -1, "", style=wx.TE_PASSWORD)
         
         # Hotes utilisateur
-        self.sizer_hotes_staticbox = wx.StaticBox(self, -1, _(u"Hôtes de connexion"))
-        self.radio_1 = wx.RadioButton(self, -1, _(u"Connexion depuis n'importe quel hôte (recommandé)"), style=wx.RB_GROUP)
+        self.sizer_hotes_staticbox = wx.StaticBox(self, -1, _(u"HÃ´tes de connexion"))
+        self.radio_1 = wx.RadioButton(self, -1, _(u"Connexion depuis n'importe quel hÃ´te (recommandÃ©)"), style=wx.RB_GROUP)
         self.radio_2 = wx.RadioButton(self, -1, _(u"Connexion uniquement depuis le serveur principal"))
-        self.radio_3 = wx.RadioButton(self, -1, _(u"Connexion uniquement depuis l'hôte suivant :"))
+        self.radio_3 = wx.RadioButton(self, -1, _(u"Connexion uniquement depuis l'hÃ´te suivant :"))
         self.ctrl_hote = wx.TextCtrl(self, -1, "")
         
-        # Autorisation d'accès au fichier
-        self.sizer_autorisation_staticbox = wx.StaticBox(self, -1, _(u"Autorisation d'accès au fichier '%s'") % self.nomBase)
-        self.ctrl_autorisation = wx.CheckBox(self, -1, _(u"Cet utilisateur est autorisé à se connecter au fichier"))
+        # Autorisation d'accÃ¨s au fichier
+        self.sizer_autorisation_staticbox = wx.StaticBox(self, -1, _(u"Autorisation d'accÃ¨s au fichier '%s'") % self.nomBase)
+        self.ctrl_autorisation = wx.CheckBox(self, -1, _(u"Cet utilisateur est autorisÃ© Ã  se connecter au fichier"))
         
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
         self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
@@ -64,13 +64,13 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
 
-        # Si Modification -> importation des données
+        # Si Modification -> importation des donnÃ©es
         if self.nomUtilisateur == "" :
             self.mode = "creation"
-            self.SetTitle(_(u"Création d'un utilisateur réseau"))
+            self.SetTitle(_(u"CrÃ©ation d'un utilisateur rÃ©seau"))
         else:
             self.mode = "modification"
-            self.SetTitle(_(u"Modification d'un utilisateur réseau"))
+            self.SetTitle(_(u"Modification d'un utilisateur rÃ©seau"))
         
         # Importation
         if self.nomHote == "%" or self.nomHote == "" : 
@@ -83,18 +83,18 @@ class Dialog(wx.Dialog):
             self.radio_3.SetValue(True)
             self.ctrl_hote.SetValue(self.nomHote)
         
-        # Recherche l'autorisation d'accès au fichier
+        # Recherche l'autorisation d'accÃ¨s au fichier
         self.ctrl_autorisation.SetValue(self.RechercheAutorisation())
 
 
     def __set_properties(self):
-        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez ici un nom pour l'utilisateur. \nIl est fortement conseillé de n'inclure aucun caractères spéciaux (accents, symboles...)")))
-        self.radio_1.SetToolTip(wx.ToolTip(_(u"L'utilisateur ne peut se connecter à la base de données\n qu'à partir du serveur sur lequel se trouve la base de données.")))
-        self.radio_2.SetToolTip(wx.ToolTip(_(u"L'utilisateur ne peut se connecter à la base de données\n qu'à partir des ordinateurs dont les adresses locales ou\n distantes sont cochées dans la liste suivante.")))
-        self.radio_3.SetToolTip(wx.ToolTip(_(u"L'utilisateur ne peut se connecter à la base de données\n qu'à partir des ordinateurs dont les adresses locales ou\n distantes sont cochées dans la liste suivante.")))
+        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez ici un nom pour l'utilisateur. \nIl est fortement conseillÃ© de n'inclure aucun caractÃ¨res spÃ©ciaux (accents, symboles...)")))
+        self.radio_1.SetToolTip(wx.ToolTip(_(u"L'utilisateur ne peut se connecter Ã  la base de donnÃ©es\n qu'Ã  partir du serveur sur lequel se trouve la base de donnÃ©es.")))
+        self.radio_2.SetToolTip(wx.ToolTip(_(u"L'utilisateur ne peut se connecter Ã  la base de donnÃ©es\n qu'Ã  partir des ordinateurs dont les adresses locales ou\n distantes sont cochÃ©es dans la liste suivante.")))
+        self.radio_3.SetToolTip(wx.ToolTip(_(u"L'utilisateur ne peut se connecter Ã  la base de donnÃ©es\n qu'Ã  partir des ordinateurs dont les adresses locales ou\n distantes sont cochÃ©es dans la liste suivante.")))
         self.ctrl_mdp_1.SetToolTip(wx.ToolTip(_(u"Saisissez un mot de passe pour cet utilisateur")))
         self.ctrl_mdp_2.SetToolTip(wx.ToolTip(_(u"Confirmez le mot de passe en le tapant une seconde fois...")))
-        self.ctrl_autorisation.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour autoriser l'utilisateur à se connecter \nau fichier à partir de l'hôte indiqué ci-dessus.")))
+        self.ctrl_autorisation.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour autoriser l'utilisateur Ã  se connecter \nau fichier Ã  partir de l'hÃ´te indiquÃ© ci-dessus.")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
 
     def __do_layout(self):
@@ -162,7 +162,7 @@ class Dialog(wx.Dialog):
 
 
     def RechercheAutorisation(self):
-        # Recherche l'autorisation d'accès au fichier
+        # Recherche l'autorisation d'accÃ¨s au fichier
         if self.radio_1.GetValue() == True : hote = "%"
         if self.radio_2.GetValue() == True : hote = "localhost"
         if self.radio_3.GetValue() == True : hote = self.ctrl_hote.GetValue()
@@ -227,7 +227,7 @@ class Dialog(wx.Dialog):
 
     def OnBoutonOk(self, event):
 
-        # Vérification des données saisies
+        # VÃ©rification des donnÃ©es saisies
         textNom = self.ctrl_nom.GetValue()
         if textNom == "" :
             dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement donner un nom pour cet utilisateur !"), "Information", wx.OK | wx.ICON_INFORMATION)
@@ -236,60 +236,60 @@ class Dialog(wx.Dialog):
             self.ctrl_nom.SetFocus()
             return
         
-        # Vérification des caractères spéciaux du nom
+        # VÃ©rification des caractÃ¨res spÃ©ciaux du nom
         erreur = False
         for caract in textNom :
-            if caract in u"ïîôûëê~&é(-è_çà)=~#{[|`\^@]}" :
+            if caract in u"Ã¯Ã®Ã´Ã»Ã«Ãª~&Ã©(-Ã¨_Ã§Ã )=~#{[|`\^@]}" :
                 erreur = True
         if erreur == True :
-            dlg = wx.MessageDialog(self, _(u"Le nom d'utilisateur ne devrait pas inclure de caractères spéciaux (accents, symboles...)"), "Information", wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"Le nom d'utilisateur ne devrait pas inclure de caractÃ¨res spÃ©ciaux (accents, symboles...)"), "Information", wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_nom.SetFocus()
             return
         
-        # Vérification du mot de passe
+        # VÃ©rification du mot de passe
         mdp1 = self.ctrl_mdp_1.GetValue()
         mdp2 = self.ctrl_mdp_2.GetValue()
         if mdp1 != mdp2 :
-            dlg = wx.MessageDialog(self, _(u"Le mot de passe ne correspond pas à la confirmation."), "Information", wx.OK | wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(self, _(u"Le mot de passe ne correspond pas Ã  la confirmation."), "Information", wx.OK | wx.ICON_INFORMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         
         # Si pas de mot de passe
         if mdp1 == "" :
-            txtMessage = unicode(_(u"Attention, vous n'avez saisi aucun mot de passe pour cet utilisateur.\nCela peut être risqué pour la sécurité des données.\n\nVoulez-vous quand même valider la création de cet utilisateur sans mot de passe ?\n\n(Cliquez sur Non ou sur Annuler pour saisir un mot de de passe)"))
+            txtMessage = unicode(_(u"Attention, vous n'avez saisi aucun mot de passe pour cet utilisateur.\nCela peut Ãªtre risquÃ© pour la sÃ©curitÃ© des donnÃ©es.\n\nVoulez-vous quand mÃªme valider la crÃ©ation de cet utilisateur sans mot de passe ?\n\n(Cliquez sur Non ou sur Annuler pour saisir un mot de de passe)"))
             dlgConfirm = wx.MessageDialog(self, txtMessage, _(u"Confirmation de suppression"), wx.YES_NO|wx.CANCEL|wx.NO_DEFAULT|wx.ICON_QUESTION)
             reponse = dlgConfirm.ShowModal()
             dlgConfirm.Destroy()
             if reponse == wx.ID_NO or reponse == wx.ID_CANCEL :
                 return
         
-        # Vérification qu'un hôte spécifique a été saisi
+        # VÃ©rification qu'un hÃ´te spÃ©cifique a Ã©tÃ© saisi
         textHote = self.ctrl_hote.GetValue()
         if textHote == "" and self.radio_3.GetValue() == True :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un hote spécifique"), "Information", wx.OK | wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un hote spÃ©cifique"), "Information", wx.OK | wx.ICON_INFORMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_hote.SetFocus()
             return
         
-        # Procédure d'enregistrement des données
+        # ProcÃ©dure d'enregistrement des donnÃ©es
         resultat = self.Sauvegarde()
         if resultat == False:
             return
         
-        # MàJ du listCtrl du panel de configuration
+        # MÃ J du listCtrl du panel de configuration
         self.parent.listCtrl.MAJListeCtrl()
 
-        # Fermeture de la fenêtre
+        # Fermeture de la fenÃªtre
         self.EndModal(wx.ID_OK)
 
             
             
     def Sauvegarde(self):
-        """ Sauvegarde des données dans la base de données """ 
+        """ Sauvegarde des donnÃ©es dans la base de donnÃ©es """ 
         DB = GestionDB.DB()
         DB.ExecuterReq("USE mysql;")
         
@@ -299,7 +299,7 @@ class Dialog(wx.Dialog):
         if self.radio_2.GetValue() == True : hote = "localhost"
         if self.radio_3.GetValue() == True : hote = self.ctrl_hote.GetValue()
                 
-        # Création de l'hôte :
+        # CrÃ©ation de l'hÃ´te :
         req = "SELECT host, user FROM user WHERE user='%s' and host='%s';" % (nom, hote)
         DB.ExecuterReq(req)
         donnees = DB.ResultatReq()
@@ -310,19 +310,19 @@ class Dialog(wx.Dialog):
         else:
             print("L'utilisateur existe deja.")
             DB.Close()
-            dlg = wx.MessageDialog(self, _(u"Cet utilisateur avec cet hôte existe déjà !"), "Information", wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"Cet utilisateur avec cet hÃ´te existe dÃ©jÃ  !"), "Information", wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             return False
         
-        # Création de l'autorisation à la base en cours
+        # CrÃ©ation de l'autorisation Ã  la base en cours
         if self.ctrl_autorisation.GetValue() == True :
             for suffixe in LISTE_SUFFIXES :
                 req = u"""GRANT SELECT,INSERT,UPDATE,DELETE,CREATE,DROP,ALTER,EXECUTE ON %s.* TO '%s'@'%s' ;
                 """ % (u"%s_%s" % (self.nomBase, suffixe), nom, hote)
                 DB.ExecuterReq(req)
         else:
-            # Si l'autorisation existe déjà mais est décochée : on efface cette autorisation
+            # Si l'autorisation existe dÃ©jÃ  mais est dÃ©cochÃ©e : on efface cette autorisation
             for suffixe in LISTE_SUFFIXES :
                 req = "SELECT host, db, user FROM db WHERE user='%s' and db='%s' and host='%s';" % (nom, u"%s_%s" % (self.nomBase, suffixe), hote)
                 DB.ExecuterReq(req)

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-13 Ivan LUCAS
@@ -102,9 +102,9 @@ class CTRL_Prefixe_factures(wx.Choice):
         db.ExecuterReq(req)
         listeDonnees = db.ResultatReq()
         db.Close()
-        listeItems = [_(u"Aucun préfixe"),]
+        listeItems = [_(u"Aucun prÃ©fixe"),]
         self.dictDonnees = {}
-        self.dictDonnees[0] = { "ID" : None, "nom" : _(u"Aucun préfixe"), "prefixe" : None}
+        self.dictDonnees[0] = { "ID" : None, "nom" : _(u"Aucun prÃ©fixe"), "prefixe" : None}
         index = 1
         for IDprefixe, nom, prefixe in listeDonnees :
             self.dictDonnees[index] = { "ID" : IDprefixe, "nom" : nom, "prefixe" : prefixe}
@@ -195,8 +195,8 @@ class Panel(wx.Panel):
         wx.Panel.__init__(self, parent, id=-1, name="DLG_Factures_generation_parametres", style=wx.TAB_TRAVERSAL)
         self.parent = parent
         
-        # Période
-        self.box_periode_staticbox = wx.StaticBox(self, -1, _(u"Période"))
+        # PÃ©riode
+        self.box_periode_staticbox = wx.StaticBox(self, -1, _(u"PÃ©riode"))
         self.label_date_debut = wx.StaticText(self, -1, u"Du")
         self.ctrl_date_debut = CTRL_Saisie_date.Date2(self)
         self.label_date_fin = wx.StaticText(self, -1, _(u"au"))
@@ -208,18 +208,18 @@ class Panel(wx.Panel):
         self.ctrl_lot = CTRL_Lot_factures(self)
         self.bouton_lots = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Mecanisme.png"), wx.BITMAP_TYPE_ANY))
         
-        # Paramètres
-        self.label_prefixe = wx.StaticText(self, -1, _(u"Préfixe de numéro :"))
+        # ParamÃ¨tres
+        self.label_prefixe = wx.StaticText(self, -1, _(u"PrÃ©fixe de numÃ©ro :"))
         self.ctrl_prefixe = CTRL_Prefixe_factures(self)
         self.bouton_prefixes = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Mecanisme.png"), wx.BITMAP_TYPE_ANY))
-        self.label_prochain_numero = wx.StaticText(self, -1, _(u"Prochain numéro :"))
+        self.label_prochain_numero = wx.StaticText(self, -1, _(u"Prochain numÃ©ro :"))
         self.ctrl_prochain_numero = wx.TextCtrl(self, -1, u"", size=(95, -1))
         self.bouton_prochain_numero = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Actualiser2.png"), wx.BITMAP_TYPE_ANY))
         self.check_numero_auto = wx.CheckBox(self, -1, _(u"Auto."))
-        self.box_parametres_staticbox = wx.StaticBox(self, -1, _(u"Paramètres"))
-        self.label_date_emission = wx.StaticText(self, -1, _(u"Date d'émission :"))
+        self.box_parametres_staticbox = wx.StaticBox(self, -1, _(u"ParamÃ¨tres"))
+        self.label_date_emission = wx.StaticText(self, -1, _(u"Date d'Ã©mission :"))
         self.ctrl_date_emission = CTRL_Saisie_date.Date2(self)
-        self.label_date_echeance = wx.StaticText(self, -1, _(u"Date d'échéance :"))
+        self.label_date_echeance = wx.StaticText(self, -1, _(u"Date d'Ã©chÃ©ance :"))
         self.ctrl_date_echeance = CTRL_Saisie_date.Date2(self)
         self.label_mention1 = wx.StaticText(self, -1, _(u"Mention 1 :"))
         self.ctrl_mention1 = wx.TextCtrl(self, -1, u"")
@@ -229,25 +229,25 @@ class Panel(wx.Panel):
         self.ctrl_mention3 = wx.TextCtrl(self, -1, u"")
 
         # Elements
-        self.box_elements_staticbox = wx.StaticBox(self, -1, _(u"Prestations à facturer"))
+        self.box_elements_staticbox = wx.StaticBox(self, -1, _(u"Prestations Ã  facturer"))
         self.check_consommations = wx.CheckBox(self, -1, _(u"Consommations"))
         self.check_cotisations = wx.CheckBox(self, -1, _(u"Cotisations"))
         self.check_locations = wx.CheckBox(self, -1, _(u"Locations"))
         self.check_autres = wx.CheckBox(self, -1, _(u"Autres"))
         
         # Familles
-        self.box_familles_staticbox = wx.StaticBox(self, -1, _(u"Sélection des familles"))
+        self.box_familles_staticbox = wx.StaticBox(self, -1, _(u"SÃ©lection des familles"))
         self.radio_familles_toutes = wx.RadioButton(self, -1, _(u"Toutes les familles"), style=wx.RB_GROUP)
         self.radio_familles_unique = wx.RadioButton(self, -1, _(u"Uniquement la famille suivante :"))
         self.ctrl_famille = CTRL_Famille(self)
         
-        # Activités
-        self.box_activites_staticbox = wx.StaticBox(self, -1, _(u"Activités"))
+        # ActivitÃ©s
+        self.box_activites_staticbox = wx.StaticBox(self, -1, _(u"ActivitÃ©s"))
         self.ctrl_activites = CTRL_Selection_activites.CTRL(self)
 
-        # Inclure prestations antérieures non facturées
-        self.box_anterieures_staticbox = wx.StaticBox(self, -1, _(u"Prestations antérieures non facturées"))
-        self.check_prestations_anterieures = wx.CheckBox(self, -1, _(u"Inclure les prestations antérieures depuis le"))
+        # Inclure prestations antÃ©rieures non facturÃ©es
+        self.box_anterieures_staticbox = wx.StaticBox(self, -1, _(u"Prestations antÃ©rieures non facturÃ©es"))
+        self.check_prestations_anterieures = wx.CheckBox(self, -1, _(u"Inclure les prestations antÃ©rieures depuis le"))
         self.ctrl_date_anterieures = CTRL_Saisie_date.Date2(self)
 
         self.__set_properties()
@@ -263,7 +263,7 @@ class Panel(wx.Panel):
         self.Bind(wx.EVT_CHECKBOX, self.OnCheckAnterieures, self.check_prestations_anterieures)
 
 
-        # Init contrôles
+        # Init contrÃ´les
         self.ctrl_date_emission.SetDate(datetime.date.today())
         self.check_consommations.SetValue(True)
         self.check_cotisations.SetValue(True)
@@ -279,15 +279,15 @@ class Panel(wx.Panel):
         wx.CallLater(1, self.SendSizeEvent)
 
     def __set_properties(self):
-        self.ctrl_prefixe.SetToolTip(wx.ToolTip(_(u"Sélectionnez un préfixe de numéro de factures dans la liste proposée. Cet paramètre permet d'obtenir des numéros de facture de type 'ABC-00001'.")))
-        self.bouton_prefixes.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à la gestion des préfixes de factures")))
-        self.ctrl_lot.SetToolTip(wx.ToolTip(_(u"Sélectionnez un nom de lot à associer aux factures générées. Ex : Janvier 2013, Février, 2013, etc... Ce nom vous permettra de retrouver vos factures facilement [Optionnel]")))
-        self.bouton_lots.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à la gestion des lots")))
-        self.ctrl_prochain_numero.SetToolTip(wx.ToolTip(_(u"Numéro de la prochaine facture générée. Vous pouvez modifier ce numéro si vous souhaitez par exemple modifier la numérotation en début d'année")))
-        self.bouton_prochain_numero.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sélectionner automatiquement le prochain numéro de facture")))
-        self.check_numero_auto.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour laisser Noethys sélectionner automatiquement le prochain numéro de facture")))
-        self.ctrl_date_emission.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date d'émission la date des factures (Par défaut la date du jour)")))
-        self.ctrl_date_echeance.SetToolTip(wx.ToolTip(_(u"Saisissez la date d'échéance de paiement qui apparaîtra sur la facture [Optionnel]")))
+        self.ctrl_prefixe.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez un prÃ©fixe de numÃ©ro de factures dans la liste proposÃ©e. Cet paramÃ¨tre permet d'obtenir des numÃ©ros de facture de type 'ABC-00001'.")))
+        self.bouton_prefixes.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accÃ©der Ã  la gestion des prÃ©fixes de factures")))
+        self.ctrl_lot.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez un nom de lot Ã  associer aux factures gÃ©nÃ©rÃ©es. Ex : Janvier 2013, FÃ©vrier, 2013, etc... Ce nom vous permettra de retrouver vos factures facilement [Optionnel]")))
+        self.bouton_lots.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accÃ©der Ã  la gestion des lots")))
+        self.ctrl_prochain_numero.SetToolTip(wx.ToolTip(_(u"NumÃ©ro de la prochaine facture gÃ©nÃ©rÃ©e. Vous pouvez modifier ce numÃ©ro si vous souhaitez par exemple modifier la numÃ©rotation en dÃ©but d'annÃ©e")))
+        self.bouton_prochain_numero.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sÃ©lectionner automatiquement le prochain numÃ©ro de facture")))
+        self.check_numero_auto.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour laisser Noethys sÃ©lectionner automatiquement le prochain numÃ©ro de facture")))
+        self.ctrl_date_emission.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date d'Ã©mission la date des factures (Par dÃ©faut la date du jour)")))
+        self.ctrl_date_echeance.SetToolTip(wx.ToolTip(_(u"Saisissez la date d'Ã©chÃ©ance de paiement qui apparaÃ®tra sur la facture [Optionnel]")))
         self.ctrl_mention1.SetToolTip(wx.ToolTip(_(u"Saisissez une mention libre")))
         self.ctrl_mention2.SetToolTip(wx.ToolTip(_(u"Saisissez une mention libre")))
         self.ctrl_mention3.SetToolTip(wx.ToolTip(_(u"Saisissez une mention libre")))
@@ -295,10 +295,10 @@ class Panel(wx.Panel):
         self.check_cotisations.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour inclure les prestations de cotisations")))
         self.check_locations.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour inclure les prestations de locations")))
         self.check_autres.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour inclure les autres types de prestations")))
-        self.radio_familles_toutes.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour rechercher les factures de toutes les familles (par défaut)")))
+        self.radio_familles_toutes.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour rechercher les factures de toutes les familles (par dÃ©faut)")))
         self.radio_familles_unique.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour rechercher les factures d'une seule famille")))
-        self.ctrl_famille.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici une famille")))
-        self.check_prestations_anterieures.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour inclure les prestations antérieures à la date de début non facturées depuis la date souhaitée")))
+        self.ctrl_famille.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez ici une famille")))
+        self.check_prestations_anterieures.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour inclure les prestations antÃ©rieures Ã  la date de dÃ©but non facturÃ©es depuis la date souhaitÃ©e")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=2, vgap=10, hgap=10)
@@ -306,7 +306,7 @@ class Panel(wx.Panel):
         grid_sizer_gauche = wx.FlexGridSizer(rows=5, cols=1, vgap=10, hgap=10)
         grid_sizer_droit = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
 
-        # Période
+        # PÃ©riode
         box_periode = wx.StaticBoxSizer(self.box_periode_staticbox, wx.VERTICAL)
         grid_sizer_periode = wx.FlexGridSizer(rows=1, cols=4, vgap=5, hgap=5)
         grid_sizer_periode.Add(self.label_date_debut, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
@@ -326,7 +326,7 @@ class Panel(wx.Panel):
         box_lot.Add(grid_sizer_lot, 1, wx.ALL|wx.EXPAND, 10)
         grid_sizer_gauche.Add(box_lot, 1, wx.EXPAND, 0)
 
-        # Paramètres
+        # ParamÃ¨tres
         box_parametres = wx.StaticBoxSizer(self.box_parametres_staticbox, wx.VERTICAL)
         grid_sizer_parametres = wx.FlexGridSizer(rows=7, cols=2, vgap=5, hgap=5)
 
@@ -374,7 +374,7 @@ class Panel(wx.Panel):
         grid_sizer_gauche.AddGrowableRow(4)
         grid_sizer_base.Add(grid_sizer_gauche, 1, wx.EXPAND, 0)
 
-        # Activités
+        # ActivitÃ©s
         box_activites = wx.StaticBoxSizer(self.box_activites_staticbox, wx.VERTICAL)
 
         box_activites.Add(self.ctrl_activites, 1, wx.ALL|wx.EXPAND, 10)
@@ -390,7 +390,7 @@ class Panel(wx.Panel):
         box_elements.Add(grid_sizer_elements, 1, wx.ALL|wx.EXPAND, 10)
         grid_sizer_droit.Add(box_elements, 1, wx.EXPAND, 0)
 
-        # Inclure prestations antérieures
+        # Inclure prestations antÃ©rieures
         box_anterieures = wx.StaticBoxSizer(self.box_anterieures_staticbox, wx.VERTICAL)
         grid_sizer_anterieures = wx.FlexGridSizer(rows=1, cols=3, vgap=2, hgap=2)
         grid_sizer_anterieures.Add(self.check_prestations_anterieures, 0, wx.EXPAND, 0)
@@ -448,101 +448,101 @@ class Panel(wx.Panel):
         self.ctrl_date_anterieures.SetFocus()
 
     def Validation(self):
-        """ Validation des données saisies """
-        # Vérifie date début
+        """ Validation des donnÃ©es saisies """
+        # VÃ©rifie date dÃ©but
         date_debut = self.ctrl_date_debut.GetDate()
         if self.ctrl_date_debut.FonctionValiderDate() == False or date_debut == None :
-            dlg = wx.MessageDialog(self, _(u"La date de début de période ne semble pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"La date de dÃ©but de pÃ©riode ne semble pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_debut.SetFocus()
             return False
         
-        # Vérifie date fin
+        # VÃ©rifie date fin
         date_fin = self.ctrl_date_fin.GetDate()
         if self.ctrl_date_fin.FonctionValiderDate() == False or date_fin == None :
-            dlg = wx.MessageDialog(self, _(u"La date de fin de période ne semble pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"La date de fin de pÃ©riode ne semble pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_fin.SetFocus()
             return False
         
-        # Vérifie les deux dates
+        # VÃ©rifie les deux dates
         if date_debut > date_fin :
-            dlg = wx.MessageDialog(self, _(u"La date de début de période est supérieure à la date de fin !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"La date de dÃ©but de pÃ©riode est supÃ©rieure Ã  la date de fin !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_fin.SetFocus()
             return False
 
-        # Vérifie que la période sélectionnée n'est pas dans une période de gestion
+        # VÃ©rifie que la pÃ©riode sÃ©lectionnÃ©e n'est pas dans une pÃ©riode de gestion
         gestion = UTILS_Gestion.Gestion(None)
         if gestion.IsPeriodeinPeriodes("factures", date_debut, date_fin) == False: return False
 
-        # Vérifier si lot de factures
+        # VÃ©rifier si lot de factures
         IDlot = self.ctrl_lot.GetID()
         nomLot = self.ctrl_lot.GetNom()
         if IDlot == None :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez pas sélectionné de lot de factures à associer.\n\nSouhaitez-vous quand même continuer ?"), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez pas sÃ©lectionnÃ© de lot de factures Ã  associer.\n\nSouhaitez-vous quand mÃªme continuer ?"), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
             resultat = dlg.ShowModal()
             dlg.Destroy()
             if resultat != wx.ID_YES :
                 return False
 
-        # Préfixe de facture
+        # PrÃ©fixe de facture
         IDprefixe = self.ctrl_prefixe.GetID()
         prefixe = self.ctrl_prefixe.GetPrefixe()
 
-        # Prochain numéro de facture
+        # Prochain numÃ©ro de facture
         if self.check_numero_auto.GetValue() == True :
-            # Numéro auto
+            # NumÃ©ro auto
             prochain_numero = None
         else :
-            # Numéro perso
+            # NumÃ©ro perso
             try :
                 prochain_numero = int(self.ctrl_prochain_numero.GetValue())
             except :
                 prochain_numero = None
             if prochain_numero in (None, "") :
-                dlg = wx.MessageDialog(self, _(u"Le prochain numéro de facture ne semble pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Le prochain numÃ©ro de facture ne semble pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_prochain_numero.SetFocus()
                 return False
             
             if prochain_numero < self.prochain_numero_defaut :
-                dlg = wx.MessageDialog(self, _(u"Le prochain numéro de facture n'est pas valide : une facture générée porte déjà un numéro égal ou supérieur !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Le prochain numÃ©ro de facture n'est pas valide : une facture gÃ©nÃ©rÃ©e porte dÃ©jÃ  un numÃ©ro Ã©gal ou supÃ©rieur !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_prochain_numero.SetFocus()
                 return False
         
-        # Date d'émission
+        # Date d'Ã©mission
         date_emission = self.ctrl_date_emission.GetDate()
         if self.ctrl_date_emission.FonctionValiderDate() == False or date_emission == None :
-            dlg = wx.MessageDialog(self, _(u"La date d'émission ne semble pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"La date d'Ã©mission ne semble pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_emission.SetFocus()
             return False
 
-        # Date d'échéance
+        # Date d'Ã©chÃ©ance
         date_echeance = self.ctrl_date_echeance.GetDate()
         if date_echeance == None :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez pas saisi de date d'échéance. \n\nSouhaitez-vous quand même continuer ?"), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez pas saisi de date d'Ã©chÃ©ance. \n\nSouhaitez-vous quand mÃªme continuer ?"), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
             resultat = dlg.ShowModal()
             dlg.Destroy()
             if resultat != wx.ID_YES :
                 return False
 
-        # Vérifier si lot de factures
+        # VÃ©rifier si lot de factures
         prestations = []
         if self.check_consommations.GetValue() == True : prestations.append("consommation")
         if self.check_cotisations.GetValue() == True : prestations.append("cotisation")
         if self.check_locations.GetValue() == True: prestations.append("location")
         if self.check_autres.GetValue() == True : prestations.append("autre")
         if len(prestations) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement cocher au moins un type de prestation à facturer !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement cocher au moins un type de prestation Ã  facturer !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -553,40 +553,40 @@ class Panel(wx.Panel):
         else :
             IDcompte_payeur_unique = self.ctrl_famille.GetIDcompte_payeur() 
             if IDcompte_payeur_unique == None :
-                dlg = wx.MessageDialog(self, _(u"Vous avez sélectionné l'option 'famille unique' mais sans sélectionner de famille dans la liste proposée !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous avez sÃ©lectionnÃ© l'option 'famille unique' mais sans sÃ©lectionner de famille dans la liste proposÃ©e !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
 
-        # Vérifie les activités sélectionnées
+        # VÃ©rifie les activitÃ©s sÃ©lectionnÃ©es
         listeActivites = self.ctrl_activites.GetActivites() 
         if len(listeActivites) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune activité.\n\nSouhaitez-vous quand même continuer ?"), _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune activitÃ©.\n\nSouhaitez-vous quand mÃªme continuer ?"), _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
             resultat = dlg.ShowModal()
             dlg.Destroy()
             if resultat != wx.ID_YES :
                 return False
 
-        # Date antérieure
+        # Date antÃ©rieure
         date_anterieure = None
         if self.check_prestations_anterieures.GetValue() == True :
             date_anterieure = self.ctrl_date_anterieures.GetDate()
             if self.ctrl_date_anterieures.FonctionValiderDate() == False or date_anterieure == None:
-                dlg = wx.MessageDialog(self, _(u"La date antérieure ne semble pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"La date antÃ©rieure ne semble pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_date_anterieures.SetFocus()
                 return False
 
-        # Vérification droits utilisateurs
+        # VÃ©rification droits utilisateurs
         for IDactivite in listeActivites :
             if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("facturation_factures", "creer", IDactivite=IDactivite, afficheMessage=False) == False : 
-                dlg = wx.MessageDialog(self, _(u"Vous n'avez pas l'autorisation de générer des factures pour l'ensemble des activités sélectionnées !"), _(u"Action non autorisée"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous n'avez pas l'autorisation de gÃ©nÃ©rer des factures pour l'ensemble des activitÃ©s sÃ©lectionnÃ©es !"), _(u"Action non autorisÃ©e"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
         
-        # Vérifie la compatibilité des régies des activités sélectionnées
+        # VÃ©rifie la compatibilitÃ© des rÃ©gies des activitÃ©s sÃ©lectionnÃ©es
         IDregie = None
         if len(listeActivites) >= 1 :
             listeAllRegies = []
@@ -603,14 +603,14 @@ class Panel(wx.Panel):
                 DB.Close()
             listeRegies = list(set(listeAllRegies))
             if len(listeRegies) > 1 :
-                dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas générer des factures pour l'ensemble des activités sélectionnées !\n\nCertaines activités sont liées à des régies différentes"), _(u"Régies différentes"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas gÃ©nÃ©rer des factures pour l'ensemble des activitÃ©s sÃ©lectionnÃ©es !\n\nCertaines activitÃ©s sont liÃ©es Ã  des rÃ©gies diffÃ©rentes"), _(u"RÃ©gies diffÃ©rentes"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
             else :
                 IDregie = listeRegies[0]
 
-        # Envoi des données à DLG_Factures_generation
+        # Envoi des donnÃ©es Ã  DLG_Factures_generation
         self.parent.dictParametres = {
             "date_debut" : date_debut,
             "date_fin" : date_fin,
@@ -645,8 +645,8 @@ class Panel(wx.Panel):
         self.ctrl_famille.Enable(False)
     
     def AfficheProchainNumeroDefaut(self, event=None):
-        """ Recherche numéro de facture suivant """
-        # Recherche du prochain numéro de facture
+        """ Recherche numÃ©ro de facture suivant """
+        # Recherche du prochain numÃ©ro de facture
         IDprefixe = self.ctrl_prefixe.GetID()
         if IDprefixe == None :
             conditions = "WHERE IDprefixe IS NULL"
@@ -665,7 +665,7 @@ class Panel(wx.Panel):
         else:
             self.prochain_numero_defaut = listeDonnees[0][0] + 1
 
-        # Affichage du numéro trouvé
+        # Affichage du numÃ©ro trouvÃ©
         self.ctrl_prochain_numero.SetValue(str(self.prochain_numero_defaut))
 
 

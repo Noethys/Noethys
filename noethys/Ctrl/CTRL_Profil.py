@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-17 Ivan LUCAS
@@ -36,7 +36,7 @@ class CTRL_Choix_profil(wx.Choice):
         else:
             self.Enable(True)
         self.SetItems(listeItems)
-        # Re-sélection après MAJ
+        # Re-sÃ©lection aprÃ¨s MAJ
         self.SetID(selectionActuelle)
 
     def GetListeDonnees(self):
@@ -79,7 +79,7 @@ class CTRL_Choix_profil(wx.Choice):
 # -------------------------------------------------------------------------------------------------------------------------------------------
 
 class CTRL(wx.Panel):
-    """ Contrôle sélection d'un profil avec boutons d'actions """
+    """ ContrÃ´le sÃ©lection d'un profil avec boutons d'actions """
     def __init__(self, parent, categorie=""):
         wx.Panel.__init__(self, parent, id=-1, name="ctrl_profil", style=wx.TAB_TRAVERSAL)
         self.parent = parent
@@ -94,9 +94,9 @@ class CTRL(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonGestion, self.bouton_gestion)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonEnregistrer, self.bouton_enregistrer)
 
-        self.ctrl_choix_profil.SetToolTip(wx.ToolTip(_(u"Sélectionnez un profil de configuration")))
-        self.bouton_gestion.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à la gestion des profils")))
-        self.bouton_enregistrer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour enregistrer le profil sélectionné")))
+        self.ctrl_choix_profil.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez un profil de configuration")))
+        self.bouton_gestion.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accÃ©der Ã  la gestion des profils")))
+        self.bouton_enregistrer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour enregistrer le profil sÃ©lectionnÃ©")))
 
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=3, vgap=5, hgap=5)
         grid_sizer_base.Add(self.ctrl_choix_profil, 0, wx.EXPAND|wx.ALIGN_CENTER_VERTICAL|wx.ALL, 0)
@@ -137,20 +137,20 @@ class CTRL(wx.Panel):
         self.Envoyer_parametres(dictParametres)
 
     def Enregistrer(self, dictParametres={}):
-        """ Enregistrer les paramètres du profil """
+        """ Enregistrer les paramÃ¨tres du profil """
         IDprofil = self.GetIDprofil()
 
-        # Si aucun profil sélectionné, on propose d'en créer tout de suite
+        # Si aucun profil sÃ©lectionnÃ©, on propose d'en crÃ©er tout de suite
         if IDprofil == None :
             IDprofil = self.Proposer_creation_profil()
             if IDprofil in (None, False) :
                 return False
 
-        # Sauvegarde des paramètres du profil dans la base
+        # Sauvegarde des paramÃ¨tres du profil dans la base
         SetParametres(categorie="profil_%s" % self.categorie, dictParametres=dictParametres, IDprofil=IDprofil)
 
     def ViderProfil(self):
-        """ Vider les paramètres du profil """
+        """ Vider les paramÃ¨tres du profil """
         IDprofil = self.GetIDprofil()
         if IDprofil != None :
             DB = GestionDB.DB()
@@ -158,14 +158,14 @@ class CTRL(wx.Panel):
             DB.Close()
 
     def Proposer_creation_profil(self):
-        """ On propose de créer un nouveau profil """
-        dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun profil pour enregistrer votre configuration.\n\nSouhaitez-vous créer un nouveau profil maintenant ?"), _(u"Créer un profil de configuration"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+        """ On propose de crÃ©er un nouveau profil """
+        dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucun profil pour enregistrer votre configuration.\n\nSouhaitez-vous crÃ©er un nouveau profil maintenant ?"), _(u"CrÃ©er un profil de configuration"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
         reponse = dlg.ShowModal()
         dlg.Destroy()
         if reponse != wx.ID_YES :
             return False
 
-        # Création d'un nouveau profil
+        # CrÃ©ation d'un nouveau profil
         dlg = wx.TextEntryDialog(self, _(u"Saisissez le nom du nouveau profil de configuration :"), _(u"Saisie d'un profil"), u"")
         if dlg.ShowModal() == wx.ID_OK:
             label = dlg.GetValue()
@@ -193,11 +193,11 @@ class CTRL(wx.Panel):
 
 
     def Envoyer_parametres(self, dictParametres={}):
-        """ A SURCHARGER : Envoi des paramètres du profil sélectionné à la fenêtre """
+        """ A SURCHARGER : Envoi des paramÃ¨tres du profil sÃ©lectionnÃ© Ã  la fenÃªtre """
         pass
 
     def Recevoir_parametres(self):
-        """ A SURCHARGER : Récupération des paramètres pour la sauvegarde du profil """
+        """ A SURCHARGER : RÃ©cupÃ©ration des paramÃ¨tres pour la sauvegarde du profil """
         # Utiliser avec self.Enregistrer(dictParametres)
         pass
 
@@ -233,12 +233,12 @@ def SetParametres(categorie="", dictParametres={}, IDprofil=None):
             valeur = six.text_type(valeur)
 
         if nom in dictDonnees:
-            # Si valeur existe déjà dans DB
+            # Si valeur existe dÃ©jÃ  dans DB
             if dictDonnees[nom] != valeur :
                 listeModifications.append((valeur, type_donnee, nom, IDprofil))
 
         else:
-            # Le parametre n'existe pas, on le créé :
+            # Le parametre n'existe pas, on le crÃ©Ã© :
             listeAjouts.append((nom, valeur, type_donnee, IDprofil))
 
     # Sauvegarde des modifications

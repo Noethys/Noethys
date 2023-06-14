@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -20,7 +20,7 @@ import FonctionsPerso
 from Dlg import DLG_Noedoc
 from Utils import UTILS_Dates
 from Utils import UTILS_Config
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"â‚¬")
 
 from reportlab.platypus.doctemplate import PageTemplate, BaseDocTemplate, NextPageTemplate
 from reportlab.platypus import Paragraph, Spacer, Table, TableStyle, PageBreak
@@ -63,7 +63,7 @@ class MyCanvas(Canvas):
 
 
 def Template(canvas, doc):
-    """ Première page de l'attestation """
+    """ PremiÃ¨re page de l'attestation """
     doc.modeleDoc.DessineFond(canvas) 
     doc.modeleDoc.DessineFormes(canvas) 
 
@@ -81,7 +81,7 @@ class MyPageTemplate(PageTemplate):
         self.pageWidth = pageSize[0]
         self.pageHeight = pageSize[1]
         
-        # Récupère les coordonnées du cadre principal
+        # RÃ©cupÃ¨re les coordonnÃ©es du cadre principal
         cadre_principal = doc.modeleDoc.FindObjet("cadre_principal")
         x, y, l, h = doc.modeleDoc.GetCoordsObjet(cadre_principal)
         global CADRE_CONTENU
@@ -103,7 +103,7 @@ class MyPageTemplate(PageTemplate):
 
         
 def Template_PagesSuivantes(canvas, doc):
-    """ Première page de l'attestation """
+    """ PremiÃ¨re page de l'attestation """
     canvas.saveState()
 
     canvas.setFont('Times-Roman', 12)
@@ -146,19 +146,19 @@ class Impression():
             nomDoc = nomFichier
         doc = BaseDocTemplate(nomDoc, pagesize=TAILLE_PAGE, showBoundary=False)
 
-        # Mémorise le ID du modèle
+        # MÃ©morise le ID du modÃ¨le
         modeleDoc = DLG_Noedoc.ModeleDoc(IDmodele=IDmodele)
         doc.modeleDoc = modeleDoc
 
-        # Vérifie qu'un cadre principal existe bien dans le document
+        # VÃ©rifie qu'un cadre principal existe bien dans le document
         if doc.modeleDoc.FindObjet("cadre_principal") == None :
             raise Exception("Votre modele de document doit obligatoirement comporter un cadre principal. Retournez dans l'editeur de document et utilisez pour votre modele la commande 'Inserer un objet special > Inserer le cadre principal'.")
 
-        # Mémorise le ID du modèle
+        # MÃ©morise le ID du modÃ¨le
         modeleDoc = DLG_Noedoc.ModeleDoc(IDmodele=IDmodele)
         doc.modeleDoc = modeleDoc
         
-        # Importe le template de la première page
+        # Importe le template de la premiÃ¨re page
         doc.addPageTemplates(MyPageTemplate(pageSize=TAILLE_PAGE, doc=doc))
         
         story = []
@@ -170,7 +170,7 @@ class Impression():
         styleTexte.borderPadding = 9
         styleTexte.leading = 12
         
-##        # Définit le template des pages suivantes
+##        # DÃ©finit le template des pages suivantes
 ##        story.append(NextPageTemplate("suivante"))
         
         
@@ -192,7 +192,7 @@ class Impression():
             largeursColonnes = [ TAILLE_CADRE_CONTENU[2], ]
             dataTableau.append((dictOptions["titre"],))
             texteDateReference = UTILS_Dates.DateEngFr(str(datetime.date.today()))
-            dataTableau.append((_(u"Période du %s au %s") % (UTILS_Dates.DateDDEnFr(dictOptions["date_debut"]), UTILS_Dates.DateDDEnFr(dictOptions["date_fin"])),))
+            dataTableau.append((_(u"PÃ©riode du %s au %s") % (UTILS_Dates.DateDDEnFr(dictOptions["date_debut"]), UTILS_Dates.DateDDEnFr(dictOptions["date_fin"])),))
             style = TableStyle([
                     ('VALIGN', (0,0), (-1,-1), 'MIDDLE'), 
                     ('FONT',(0,0),(0,0), "Helvetica-Bold", 19), 
@@ -231,7 +231,7 @@ class Impression():
                 story.append(Spacer(0, 25))
             
             # DETAIL par enfant
-            dataTableau = [(_(u"Nom et prénom"), _(u"Date de naissance"), _(u"Montant")),]
+            dataTableau = [(_(u"Nom et prÃ©nom"), _(u"Date de naissance"), _(u"Montant")),]
             largeursColonnes = [ 220, 80, 80]
             
             paraStyle = ParagraphStyle(name="detail",

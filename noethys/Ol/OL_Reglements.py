@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -22,7 +22,7 @@ from Utils import UTILS_Utilisateurs
 from Utils import UTILS_Gestion
 from Utils import UTILS_Config
 from Utils import UTILS_Titulaires
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"â‚¬")
 
 
 from Utils import UTILS_Interface
@@ -36,9 +36,9 @@ def DateEngFr(textDate):
     return text
 
 def DateComplete(dateDD):
-    """ Transforme une date DD en date complète : Ex : lundi 15 janvier 2008 """
+    """ Transforme une date DD en date complÃ¨te : Ex : lundi 15 janvier 2008 """
     listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
-    listeMois = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
+    listeMois = (_(u"janvier"), _(u"fÃ©vrier"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"aoÃ»t"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"dÃ©cembre"))
     dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
     return dateComplete
 
@@ -89,7 +89,7 @@ class Track(object):
         self.IDprelevement = donnees[24]
         self.IDfamille = donnees[25]
 
-        # Récupération du nom des titulaires
+        # RÃ©cupÃ©ration du nom des titulaires
         self.nomTitulaires = _(" ")
         if self.parent.mode == "liste" :
             try :
@@ -101,7 +101,7 @@ class Track(object):
     
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # Récupération des paramètres perso
+        # RÃ©cupÃ©ration des paramÃ¨tres perso
         self.IDcompte_payeur = kwds.pop("IDcompte_payeur", None)
         self.IDdepot = kwds.pop("IDdepot", None)
         self.mode = kwds.pop("mode", "famille")
@@ -135,7 +135,7 @@ class ListView(FastObjectListView):
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
-        """ Récupération des données """
+        """ RÃ©cupÃ©ration des donnÃ©es """
         # Conditions
         listeID = None
         if self.mode == "depot" :
@@ -253,18 +253,18 @@ class ListView(FastObjectListView):
             ColumnDefn(_(u"Date"), 'left', 160, "date", typeDonnee="date", stringConverter=FormateDateLong),
             ColumnDefn(_(u"Mode"), 'left', 110, "nom_mode", typeDonnee="texte"),
             ColumnDefn(_(u"Emetteur"), 'left', 120, "nom_emetteur", typeDonnee="texte"),
-            ColumnDefn(_(u"Numéro"), 'left', 60, "numero_piece", typeDonnee="texte"),
+            ColumnDefn(_(u"NumÃ©ro"), 'left', 60, "numero_piece", typeDonnee="texte"),
             ColumnDefn(_(u"Payeur"), 'left', 130, "nom_payeur", typeDonnee="texte"),
             ColumnDefn(_(u"Montant"), 'right', 60, "montant", typeDonnee="montant", stringConverter=FormateMontant),
-            ColumnDefn(_(u"Ventilé"), 'right', 80, "montant_ventilation", typeDonnee="montant", stringConverter=FormateMontant, imageGetter=GetImageVentilation),
-            ColumnDefn(_(u"Dépôt"), 'left', 90, "date_depot", typeDonnee="date", stringConverter=FormateDateCourt, imageGetter=GetImageDepot),
+            ColumnDefn(_(u"VentilÃ©"), 'right', 80, "montant_ventilation", typeDonnee="montant", stringConverter=FormateMontant, imageGetter=GetImageVentilation),
+            ColumnDefn(_(u"DÃ©pÃ´t"), 'left', 90, "date_depot", typeDonnee="date", stringConverter=FormateDateCourt, imageGetter=GetImageDepot),
             ]
 
         if self.mode == "liste" :
             liste_Colonnes.insert(5, ColumnDefn(_(u"Famille"), 'left', 130, "nomTitulaires", typeDonnee="texte"))
 
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(_(u"Aucun règlement"))
+        self.SetEmptyListMsg(_(u"Aucun rÃ¨glement"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
 ##        self.SetSortColumn(self.columns[1])
         self.SortBy(self.numColonneTri, ascending=self.ordreAscendant)
@@ -279,7 +279,7 @@ class ListView(FastObjectListView):
             self.selectionTrack = None
         self.InitModel()
         self.InitObjectListView()
-        # Sélection d'un item
+        # SÃ©lection d'un item
         if self.selectionTrack != None :
             self.SelectObject(self.selectionTrack, deselectOthers=True, ensureVisible=True)
         self.selectionID = None
@@ -298,7 +298,7 @@ class ListView(FastObjectListView):
             noSelection = False
             ID = self.Selection()[0].IDreglement
                 
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         if self.mode != "liste" :
@@ -337,13 +337,13 @@ class ListView(FastObjectListView):
         # Item Ventilation Automatique
         sousMenuVentilation = UTILS_Adaptations.Menu()
         
-        item = wx.MenuItem(sousMenuVentilation, 201, _(u"Uniquement le règlement sélectionné"))
+        item = wx.MenuItem(sousMenuVentilation, 201, _(u"Uniquement le rÃ¨glement sÃ©lectionnÃ©"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Magique.png"), wx.BITMAP_TYPE_PNG))
         sousMenuVentilation.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.VentilationAuto, id=201)
         if noSelection == True : item.Enable(False)
 
-        item = wx.MenuItem(sousMenuVentilation, 202, _(u"Tous les règlements"))
+        item = wx.MenuItem(sousMenuVentilation, 202, _(u"Tous les rÃ¨glements"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Magique.png"), wx.BITMAP_TYPE_PNG))
         sousMenuVentilation.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.VentilationAuto, id=202)
@@ -353,7 +353,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
         
         # Item Editer RECU
-        item = wx.MenuItem(menuPop, 60, _(u"Editer un reçu (PDF)"))
+        item = wx.MenuItem(menuPop, 60, _(u"Editer un reÃ§u (PDF)"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.EditerRecu, id=60)
@@ -361,7 +361,7 @@ class ListView(FastObjectListView):
         
         menuPop.AppendSeparator()
     
-        # Génération automatique des fonctions standards
+        # GÃ©nÃ©ration automatique des fonctions standards
         self.GenerationContextMenu(menuPop, dictParametres=self.GetParametresImpression())
 
         self.PopupMenu(menuPop)
@@ -375,7 +375,7 @@ class ListView(FastObjectListView):
         total = self.GetDetailReglements()
 
         dictParametres = {
-            "titre" : _(u"Liste des règlements"),
+            "titre" : _(u"Liste des rÃ¨glements"),
             "intro" : intro,
             "total" : total,
             "orientation" : wx.LANDSCAPE,
@@ -384,7 +384,7 @@ class ListView(FastObjectListView):
 
     def EditerRecu(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun règlement dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucun rÃ¨glement dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -395,7 +395,7 @@ class ListView(FastObjectListView):
         dlg.Destroy()
 
     def GetDetailReglements(self):
-        # Récupération des chiffres
+        # RÃ©cupÃ©ration des chiffres
         nbreTotal = 0
         montantTotal = 0.0
         dictDetails = {}
@@ -405,15 +405,15 @@ class ListView(FastObjectListView):
                 nbreTotal += 1
                 # Nbre total
                 montantTotal += track.montant
-                # Détail
+                # DÃ©tail
                 if (track.IDmode in dictDetails) == False :
                     dictDetails[track.IDmode] = { "label" : track.nom_mode, "nbre" : 0, "montant" : 0.0}
                 dictDetails[track.IDmode]["nbre"] += 1
                 dictDetails[track.IDmode]["montant"] += track.montant
-        # Création du texte
-        texte = _(u"%d règlements (%.2f ¤) : ") % (nbreTotal, montantTotal)
+        # CrÃ©ation du texte
+        texte = _(u"%d rÃ¨glements (%.2f â‚¬) : ") % (nbreTotal, montantTotal)
         for IDmode, dictDetail in dictDetails.items() :
-            texteDetail = u"%d %s (%.2f ¤), " % (dictDetail["nbre"], dictDetail["label"], dictDetail["montant"])
+            texteDetail = u"%d %s (%.2f â‚¬), " % (dictDetail["nbre"], dictDetail["label"], dictDetail["montant"])
             texte += texteDetail
         if len(dictDetails) > 0 :
             texte = texte[:-2] + u"."
@@ -444,15 +444,15 @@ class ListView(FastObjectListView):
         if self.IDcompte_payeur != None and UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_reglements", "modifier") == False : return
         
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun règlement à modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucun rÃ¨glement Ã  modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         IDreglement = self.Selection()[0].IDreglement
 
-        # Avertissement si appartient à un prélèvement
+        # Avertissement si appartient Ã  un prÃ©lÃ¨vement
         if self.Selection()[0].IDprelevement != None :
-            dlg = wx.MessageDialog(self, _(u"Ce règlement est rattaché à un prélèvement automatique.\n\nSouhaitez-vous vraiment le modifier ?"), _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Ce rÃ¨glement est rattachÃ© Ã  un prÃ©lÃ¨vement automatique.\n\nSouhaitez-vous vraiment le modifier ?"), _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
             reponse = dlg.ShowModal() 
             dlg.Destroy()
             if reponse != wx.ID_YES :
@@ -468,7 +468,7 @@ class ListView(FastObjectListView):
         if self.IDcompte_payeur != None and UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_reglements", "supprimer") == False : return
         
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun règlement à supprimer dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucun rÃ¨glement Ã  supprimer dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -476,26 +476,26 @@ class ListView(FastObjectListView):
         IDreglement = self.Selection()[0].IDreglement
         IDdepot = self.Selection()[0].IDdepot
         
-        # Si appartient à un dépot : annulation
+        # Si appartient Ã  un dÃ©pot : annulation
         if IDdepot != None :
-            dlg = wx.MessageDialog(self, _(u"Ce règlement est déjà attribué à un dépôt. Vous ne pouvez donc pas le supprimer !"), _(u"Règlement déposé"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Ce rÃ¨glement est dÃ©jÃ  attribuÃ© Ã  un dÃ©pÃ´t. Vous ne pouvez donc pas le supprimer !"), _(u"RÃ¨glement dÃ©posÃ©"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         
-        # Avertissement si appartient à un prélèvement
+        # Avertissement si appartient Ã  un prÃ©lÃ¨vement
         if self.Selection()[0].IDprelevement != None :
-            dlg = wx.MessageDialog(self, _(u"Ce règlement est rattaché à un prélèvement automatique.\n\nSouhaitez-vous vraiment le supprimer ?"), _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Ce rÃ¨glement est rattachÃ© Ã  un prÃ©lÃ¨vement automatique.\n\nSouhaitez-vous vraiment le supprimer ?"), _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
             reponse = dlg.ShowModal() 
             dlg.Destroy()
             if reponse != wx.ID_YES :
                 return
 
-        # Vérifie que le règlement n'est pas dans une période de gestion
+        # VÃ©rifie que le rÃ¨glement n'est pas dans une pÃ©riode de gestion
         gestion = UTILS_Gestion.Gestion(None)
         if gestion.Verification("reglements", track.date) == False: return False
 
-        # Recherche si frais de gestion existant pour ce règlement
+        # Recherche si frais de gestion existant pour ce rÃ¨glement
         DB = GestionDB.DB()
         req = """SELECT IDprestation, montant_initial, label
         FROM prestations
@@ -506,19 +506,19 @@ class ListView(FastObjectListView):
         DB.Close()
         if len(listeFrais) > 0 :
             IDprestationFrais, montantFrais, labelFrais = listeFrais[0]
-            dlg = wx.MessageDialog(self, _(u"Une prestation d'un montant de %.2f %s pour frais de gestion est associée à ce règlement. Cette prestation sera automatiquement supprimée en même temps que le règlement.\n\nConfirmez-vous tout de même la suppression de ce règlement ?") % (montantFrais, SYMBOLE), _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Une prestation d'un montant de %.2f %s pour frais de gestion est associÃ©e Ã  ce rÃ¨glement. Cette prestation sera automatiquement supprimÃ©e en mÃªme temps que le rÃ¨glement.\n\nConfirmez-vous tout de mÃªme la suppression de ce rÃ¨glement ?") % (montantFrais, SYMBOLE), _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
             if dlg.ShowModal() != wx.ID_YES :
                 return
         else :
             IDprestationFrais = None
         
         # Demande de confirmation de suppression
-        dlg = wx.MessageDialog(self, _(u"Confirmez-vous la suppression de ce règlement ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Confirmez-vous la suppression de ce rÃ¨glement ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         if dlg.ShowModal() == wx.ID_YES :
             DB = GestionDB.DB()
             DB.ReqDEL("reglements", "IDreglement", IDreglement)
             DB.ReqDEL("ventilation", "IDreglement", IDreglement)
-            # Mémorise l'action dans l'historique
+            # MÃ©morise l'action dans l'historique
             req = """SELECT IDfamille
             FROM comptes_payeurs
             WHERE IDcompte_payeur=%d
@@ -526,13 +526,13 @@ class ListView(FastObjectListView):
             DB.ExecuterReq(req)
             IDfamille = DB.ResultatReq()[0][0]
             
-            montant = u"%.2f ¤" % self.Selection()[0].montant
+            montant = u"%.2f â‚¬" % self.Selection()[0].montant
             texteMode = self.Selection()[0].nom_mode
             textePayeur = self.Selection()[0].nom_payeur
             UTILS_Historique.InsertActions([{
                 "IDfamille" : IDfamille,
                 "IDcategorie" : 8, 
-                "action" : _(u"Suppression du règlement ID%d : %s en %s payé par %s") % (IDreglement, montant, texteMode, textePayeur),
+                "action" : _(u"Suppression du rÃ¨glement ID%d : %s en %s payÃ© par %s") % (IDreglement, montant, texteMode, textePayeur),
                 },])
             
             # Suppression des frais de gestion
@@ -553,9 +553,9 @@ class ListView(FastObjectListView):
         from Ol.OL_Verification_ventilation import VentilationAuto
         ID = event.GetId() 
         if ID == 201 :
-            # Uniquement la ligne sélectionnée
+            # Uniquement la ligne sÃ©lectionnÃ©e
             if len(self.Selection()) == 0 :
-                dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun règlement !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucun rÃ¨glement !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return
@@ -565,7 +565,7 @@ class ListView(FastObjectListView):
         # Toutes les lignes
         if ID == 202 :
             if len(self.donnees) == 0 :
-                dlg = wx.MessageDialog(self, _(u"La liste des règlements est vide !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"La liste des rÃ¨glements est vide !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return
@@ -582,7 +582,7 @@ class ListView(FastObjectListView):
         self.MAJ()
 
         if solde >= 0.0 :
-            dlg = wx.MessageDialog(self, _(u"Il est impossible de créer un remboursement car il n'y a pas d'avoir !\n\nLe solde du compte est de %.2f %s.") % (-solde, SYMBOLE), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Il est impossible de crÃ©er un remboursement car il n'y a pas d'avoir !\n\nLe solde du compte est de %.2f %s.") % (-solde, SYMBOLE), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -600,7 +600,7 @@ class BarreRecherche(wx.SearchCtrl):
         self.parent = parent
         self.rechercheEnCours = False
         
-        self.SetDescriptiveText(_(u"Rechercher un règlement..."))
+        self.SetDescriptiveText(_(u"Rechercher un rÃ¨glement..."))
         self.ShowSearchButton(True)
         
         self.listView = self.parent.ctrl_reglements
@@ -637,7 +637,7 @@ class BarreRecherche(wx.SearchCtrl):
 class ListviewAvecFooter(PanelAvecFooter):
     def __init__(self, parent, kwargs={}):
         dictColonnes = {
-            "nom_mode" : {"mode" : "nombre", "singulier" : _(u"règlement"), "pluriel" : _(u"règlements"), "alignement" : wx.ALIGN_CENTER},
+            "nom_mode" : {"mode" : "nombre", "singulier" : _(u"rÃ¨glement"), "pluriel" : _(u"rÃ¨glements"), "alignement" : wx.ALIGN_CENTER},
             "montant" : {"mode" : "total"},
             "montant_ventilation" : {"mode" : "total"},
             }

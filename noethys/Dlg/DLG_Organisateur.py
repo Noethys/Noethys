@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -36,7 +36,7 @@ class Dialog(wx.Dialog):
         
         self.logo = None
         
-        intro = _(u"Saisissez ici les informations concernant l'organisateur. Ces données seront utilisées dans les différents documents édités par le logiciel.")
+        intro = _(u"Saisissez ici les informations concernant l'organisateur. Ces donnÃ©es seront utilisÃ©es dans les diffÃ©rents documents Ã©ditÃ©s par le logiciel.")
         titre = _(u"L'organisateur")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Organisateur.png")
         
@@ -44,13 +44,13 @@ class Dialog(wx.Dialog):
         self.label_nom = wx.StaticText(self, -1, _(u"Nom :"))
         self.ctrl_nom = wx.TextCtrl(self, -1, u"")
         
-        self.staticbox_coords_staticbox = wx.StaticBox(self, -1, _(u"Coordonnées"))
+        self.staticbox_coords_staticbox = wx.StaticBox(self, -1, _(u"CoordonnÃ©es"))
         self.label_rue = wx.StaticText(self, -1, _(u"Rue :"))
         self.ctrl_rue = wx.TextCtrl(self, -1, u"", style=wx.TE_MULTILINE)
         self.label_adresse = wx.StaticText(self, -1, _(u"C.P. :"))
         self.ctrl_adresse = CTRL_Saisie_adresse.Adresse(self)
-        self.label_tel = wx.StaticText(self, -1, _(u"Tél :"))
-        self.ctrl_tel = CTRL_Saisie_tel.Tel(self, intitule=_(u"siège"))
+        self.label_tel = wx.StaticText(self, -1, _(u"TÃ©l :"))
+        self.ctrl_tel = CTRL_Saisie_tel.Tel(self, intitule=_(u"siÃ¨ge"))
         self.label_mail = wx.StaticText(self, -1, _(u"Email :"))
         self.ctrl_mail = CTRL_Saisie_mail.Mail(self)
         self.label_fax = wx.StaticText(self, -1, _(u"Fax :"))
@@ -58,10 +58,10 @@ class Dialog(wx.Dialog):
         self.label_site = wx.StaticText(self, -1, _(u"Site internet :"))
         self.ctrl_site = wx.TextCtrl(self, -1, u"")
         
-        self.staticbox_numeros_staticbox = wx.StaticBox(self, -1, _(u"Numéros d'identification"))
-        self.label_agrement = wx.StaticText(self, -1, _(u"Numéro agrément :"))
+        self.staticbox_numeros_staticbox = wx.StaticBox(self, -1, _(u"NumÃ©ros d'identification"))
+        self.label_agrement = wx.StaticText(self, -1, _(u"NumÃ©ro agrÃ©ment :"))
         self.ctrl_agrement = wx.TextCtrl(self, -1, u"")
-        self.label_siret = wx.StaticText(self, -1, _(u"Numéro SIRET :"))
+        self.label_siret = wx.StaticText(self, -1, _(u"NumÃ©ro SIRET :"))
         self.ctrl_siret = wx.TextCtrl(self, -1, u"")
         self.label_ape = wx.StaticText(self, -1, _(u"Code APE :"))
         self.ctrl_ape = wx.TextCtrl(self, -1, u"")
@@ -76,7 +76,7 @@ class Dialog(wx.Dialog):
         self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
         self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
         
-        # Empêche l'annulation
+        # EmpÃªche l'annulation
         if self.empecheAnnulation == True :
             self.bouton_annuler.Show(False)
             self.EnableCloseButton(False)
@@ -99,13 +99,13 @@ class Dialog(wx.Dialog):
         self.ctrl_rue.SetToolTip(wx.ToolTip(_(u"Saisissez ici la rue de l'adresse de l'organisateur")))
         self.ctrl_site.SetToolTip(wx.ToolTip(_(u"Saisissez ici l'adresse du site internet de l'organisateur")))
         self.ctrl_agrement.SetMinSize((200, -1))
-        self.ctrl_agrement.SetToolTip(wx.ToolTip(_(u"Saisissez ici le numéro d'agrément de l'organisateur")))
-        self.ctrl_siret.SetToolTip(wx.ToolTip(_(u"Saisissez ici le numéro SIRET de l'organisateur")))
+        self.ctrl_agrement.SetToolTip(wx.ToolTip(_(u"Saisissez ici le numÃ©ro d'agrÃ©ment de l'organisateur")))
+        self.ctrl_siret.SetToolTip(wx.ToolTip(_(u"Saisissez ici le numÃ©ro SIRET de l'organisateur")))
         self.ctrl_ape.SetToolTip(wx.ToolTip(_(u"Saisissez ici le code APE de l'organisateur")))
         self.ctrl_logo.SetToolTip(wx.ToolTip(_(u"Logo de l'organisateur")))
         self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter ou modifier le logo de l'organisateur")))
         self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le logo actuel")))
-        self.bouton_visualiser.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour visualiser le logo actuel en taille réelle")))
+        self.bouton_visualiser.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour visualiser le logo actuel en taille rÃ©elle")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider la saisie")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler et fermer")))
@@ -186,15 +186,15 @@ class Dialog(wx.Dialog):
         UTILS_Aide.Aide("Lorganisateur")
 
     def GetGPSOrganisateur(self, cp="", ville=""):
-        """ Récupère les coordonnées GPS de l'organisateur """
+        """ RÃ©cupÃ¨re les coordonnÃ©es GPS de l'organisateur """
         if ville == "" or cp == "" : 
             return None
-        # Recherche des coordonnées
+        # Recherche des coordonnÃ©es
         dictGPS = UTILS_Gps.GPS(cp=cp, ville=ville, pays="France")
         if dictGPS == None : 
             coords = None
         else :
-            # Sauvegarde des coordonnées GPS dans la base
+            # Sauvegarde des coordonnÃ©es GPS dans la base
             lat, long = dictGPS["lat"], dictGPS["long"]
             coords = "%s;%s" % (str(lat), str(long))
         return coords
@@ -253,12 +253,12 @@ class Dialog(wx.Dialog):
                 DB.ReqMAJ("organisateur", [("logo", None),], "IDorganisateur", 1)
         DB.Close()
         
-        # Fermeture de la fenêtre
+        # Fermeture de la fenÃªtre
         self.EndModal(wx.ID_OK)
         
 
     def Importation(self):
-        """ Importation des données """
+        """ Importation des donnÃ©es """
         db = GestionDB.DB()
         req = """SELECT nom, rue, cp, ville, tel, fax, mail, site, num_agrement, num_siret, code_ape, logo
         FROM organisateur WHERE IDorganisateur=1;"""
@@ -278,7 +278,7 @@ class Dialog(wx.Dialog):
         self.ctrl_mail.SetMail(organisateur[6])
         self.ctrl_site.SetValue(organisateur[7])
         
-        # Numéros
+        # NumÃ©ros
         self.ctrl_agrement.SetValue(organisateur[8])
         self.ctrl_siret.SetValue(organisateur[9])
         self.ctrl_ape.SetValue(organisateur[10])

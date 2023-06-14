@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 
 # Copyright (C) 2009  Rickard Lindberg, Roger Lindberg
 #
@@ -54,8 +54,8 @@ DATA_INDICATOR_SIZE = 10
 
 LISTE_JOURS = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
 LISTE_JOURS_ABREGE = (_(u"Lun"), _(u"Mar"), _(u"Mer"), _(u"Jeu"), _(u"Ven"), _(u"Sam"), _(u"Dim"))
-LISTE_MOIS = (_(u"Janvier"), _(u"F�vrier"), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"Ao�t"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"D�cembre"))
-LISTE_MOIS_ABREGE = (_(u"Jan."), _(u"F�v."), _(u"Mars"), _(u"Avr."), _(u"Mai"), _(u"Juin"), _(u"Juil."), _(u"Ao�t"), _(u"Sept."), _(u"Oct."), _(u"Nov."), _(u"D�c."))
+LISTE_MOIS = (_(u"Janvier"), _(u"Fï¿œvrier"), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"Aoï¿œt"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"Dï¿œcembre"))
+LISTE_MOIS_ABREGE = (_(u"Jan."), _(u"Fï¿œv."), _(u"Mars"), _(u"Avr."), _(u"Mai"), _(u"Juin"), _(u"Juil."), _(u"Aoï¿œt"), _(u"Sept."), _(u"Oct."), _(u"Nov."), _(u"Dï¿œc."))
 
 
 class Strip(object):

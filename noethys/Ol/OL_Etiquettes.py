@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-14 Ivan LUCAS
@@ -46,7 +46,7 @@ def GetDictInfosIndividus():
     DICT_INFOS_INDIVIDUS = dictInfos
 
 def GetInfosOrganisme():
-    # Récupération des infos sur l'organisme
+    # RÃ©cupÃ©ration des infos sur l'organisme
     DB = GestionDB.DB()
     req = """SELECT nom, rue, cp, ville, tel, fax, mail, site, num_agrement, num_siret, code_ape
     FROM organisateur
@@ -137,7 +137,7 @@ class TrackIndividu(object):
         self.civiliteAbrege = donnees["civiliteAbrege"]
         self.nomImage = donnees["nomImage"]     
         
-        # Récupération des réponses des questionnaires
+        # RÃ©cupÃ©ration des rÃ©ponses des questionnaires
         for dictQuestion in self.listview.LISTE_QUESTIONS :
             setattr(self, "question_%d" % dictQuestion["IDquestion"], self.listview.GetReponse(dictQuestion["IDquestion"], self.IDindividu))
 
@@ -191,19 +191,19 @@ def GetListeIndividus(listview=None, listeActivites=None, presents=None, IDindiv
         else:
             conditionActivites = " AND inscriptions.IDactivite IN %s AND inscriptions.statut='ok' AND (inscriptions.date_desinscription IS NULL OR inscriptions.date_desinscription>='%s') " % (str(tuple(listeActivites)), datetime.date.today())
 
-    # Conditions Présents
+    # Conditions PrÃ©sents
     conditionPresents = ""
     jointurePresents = ""
     if presents != None :
         conditionPresents = " AND (consommations.date>='%s' AND consommations.date<='%s' AND consommations.etat IN ('reservation', 'present'))" % (str(presents[0]), str(presents[1]))
         jointurePresents = "LEFT JOIN consommations ON consommations.IDindividu = individus.IDindividu"
     
-    # Condition Individu donné
+    # Condition Individu donnÃ©
     conditionIndividus = ""
     if IDindividu != None :
         conditionIndividus = " AND individus.IDindividu=%d" % IDindividu
         
-    # Récupération des individus
+    # RÃ©cupÃ©ration des individus
     listeChamps = (
         "individus.IDindividu", "IDcivilite", "individus.nom", "prenom", "num_secu","IDnationalite",
         "date_naiss", "IDpays_naiss", "cp_naiss", "ville_naiss",
@@ -226,10 +226,10 @@ def GetListeIndividus(listview=None, listeActivites=None, presents=None, IDindiv
     listeDonnees = DB.ResultatReq()
     DB.Close() 
 
-    # Récupération des civilités
+    # RÃ©cupÃ©ration des civilitÃ©s
     dictCivilites = Civilites.GetDictCivilites()
     
-    # Récupération des adresses auto
+    # RÃ©cupÃ©ration des adresses auto
     GetDictInfosIndividus()
         
     listeListeView = []
@@ -240,7 +240,7 @@ def GetListeIndividus(listview=None, listeActivites=None, presents=None, IDindiv
         for index in range(0, len(listeChamps)) :
             nomChamp = listeChamps[index]
             dictTemp[nomChamp] = valeurs[index]
-        # Infos sur la civilité
+        # Infos sur la civilitÃ©
         if dictTemp["IDcivilite"] == None or dictTemp["IDcivilite"] == "" :
             IDcivilite = 1
         else :
@@ -296,7 +296,7 @@ class TrackFamille(object):
         else :
             self.mail = None
         
-        # Récupération des réponses des questionnaires
+        # RÃ©cupÃ©ration des rÃ©ponses des questionnaires
         for dictQuestion in self.listview.LISTE_QUESTIONS :
             setattr(self, "question_%d" % dictQuestion["IDquestion"], self.listview.GetReponse(dictQuestion["IDquestion"], self.IDfamille))
 
@@ -328,7 +328,7 @@ class TrackFamille(object):
         return dictTemp
 
 def GetListeFamilles(listview=None, listeActivites=None, presents=None, IDfamille=None, infosIndividus=None):
-    """ Récupération des infos familles """
+    """ RÃ©cupÃ©ration des infos familles """
     # Conditions Activites
     if listeActivites == None or listeActivites == [] :
         conditionActivites = ""
@@ -338,19 +338,19 @@ def GetListeFamilles(listview=None, listeActivites=None, presents=None, IDfamill
         else:
             conditionActivites = " AND inscriptions.IDactivite IN %s" % str(tuple(listeActivites))
 
-    # Conditions Présents
+    # Conditions PrÃ©sents
     conditionPresents = ""
     jointurePresents = ""
     if presents != None :
         conditionPresents = " AND (consommations.date>='%s' AND consommations.date<='%s' AND consommations.etat IN ('reservation', 'present'))" % (str(presents[0]), str(presents[1]))
         jointurePresents = "LEFT JOIN consommations ON consommations.IDindividu = individus.IDindividu"
 
-    # Condition Famille donnée
+    # Condition Famille donnÃ©e
     conditionFamilles = ""
     if IDfamille != None :
         conditionFamilles = " AND familles.IDfamille=%d" % IDfamille
 
-    # Récupération des régimes et num d'alloc pour chaque famille
+    # RÃ©cupÃ©ration des rÃ©gimes et num d'alloc pour chaque famille
     DB = GestionDB.DB()
     req = """
     SELECT 
@@ -372,7 +372,7 @@ def GetListeFamilles(listview=None, listeActivites=None, presents=None, IDfamill
 
     IDfichier = FonctionsPerso.GetIDfichier()
     
-    # Formatage des données
+    # Formatage des donnÃ©es
     listeListeView = []
     titulaires = UTILS_Titulaires.GetTitulaires() 
     for IDfamille, nomRegime, nomCaisse, numAlloc, internet_identifiant, internet_mdp in listeFamilles :
@@ -408,7 +408,7 @@ def GetListeFamilles(listview=None, listeActivites=None, presents=None, IDfamill
 
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # Récupération des paramètres perso
+        # RÃ©cupÃ©ration des paramÃ¨tres perso
         self.categorie = kwds.pop("categorie", "individus")
         self.IDindividu = kwds.pop("IDindividu", None)
         self.IDfamille = kwds.pop("IDfamille", None)
@@ -424,23 +424,23 @@ class ListView(FastObjectListView):
         self.Bind(wx.EVT_CONTEXT_MENU, self.OnContextMenu)
 
     def InitModel(self):
-        # Récupération des questions
+        # RÃ©cupÃ©ration des questions
         self.LISTE_QUESTIONS = self.UtilsQuestionnaires.GetQuestions(type=self.categorie[:-1])
         
-        # Récupération des questionnaires
+        # RÃ©cupÃ©ration des questionnaires
         self.DICT_QUESTIONNAIRES = self.UtilsQuestionnaires.GetReponses(type=self.categorie[:-1])
 
-        # Récupération des infos de base individus et familles
+        # RÃ©cupÃ©ration des infos de base individus et familles
         self.infosIndividus = UTILS_Infos_individus.Informations() 
         
-        # Récupération des tracks
+        # RÃ©cupÃ©ration des tracks
         if self.categorie == "individus" :
             self.donnees = GetListeIndividus(self, self.listeActivites, self.presents, self.IDindividu, self.infosIndividus)
         else:
             self.donnees = GetListeFamilles(self, self.listeActivites, self.presents, self.IDfamille, self.infosIndividus)
 
     def InitObjectListView(self):
-        # Création du imageList
+        # CrÃ©ation du imageList
         for categorie, civilites in Civilites.LISTE_CIVILITES :
             for IDcivilite, CiviliteLong, CiviliteAbrege, nomImage, genre in civilites :
                 indexImg = self.AddNamedImages(nomImage, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/%s" % nomImage), wx.BITMAP_TYPE_PNG))
@@ -468,19 +468,19 @@ class ListView(FastObjectListView):
             liste_Colonnes = [
                 ColumnDefn(u"", "left", 22, "IDindividu", typeDonnee="entier", imageGetter=GetImageCivilite),
                 ColumnDefn(_(u"Nom"), 'left', 100, "nom", typeDonnee="texte"),
-                ColumnDefn(_(u"Prénom"), "left", 100, "prenom", typeDonnee="texte"),
+                ColumnDefn(_(u"PrÃ©nom"), "left", 100, "prenom", typeDonnee="texte"),
                 ColumnDefn(_(u"Date naiss."), "left", 72, "date_naiss", typeDonnee="date", stringConverter=FormateDate),
                 ColumnDefn(_(u"Age"), "left", 50, "age", typeDonnee="entier", stringConverter=FormateAge),
                 ColumnDefn(_(u"Rue"), "left", 150, "rue_resid", typeDonnee="texte"),
                 ColumnDefn(_(u"C.P."), "left", 50, "cp_resid", typeDonnee="texte"),
                 ColumnDefn(_(u"Ville"), "left", 120, "ville_resid", typeDonnee="texte"),
                 ColumnDefn(_(u"Secteur"), "left", 120, "secteur", typeDonnee="texte"),
-##                ColumnDefn(_(u"Tél. domicile"), "left", 100, "tel_domicile"),
-##                ColumnDefn(_(u"Tél. mobile"), "left", 100, "tel_mobile"),
+##                ColumnDefn(_(u"TÃ©l. domicile"), "left", 100, "tel_domicile"),
+##                ColumnDefn(_(u"TÃ©l. mobile"), "left", 100, "tel_mobile"),
                 ColumnDefn(_(u"Email"), "left", 150, "mail", typeDonnee="texte"),
 ##                ColumnDefn(_(u"Profession"), "left", 150, "profession"),
 ##                ColumnDefn(_(u"Employeur"), "left", 150, "employeur"),
-##                ColumnDefn(_(u"Tél pro."), "left", 100, "travail_tel"),
+##                ColumnDefn(_(u"TÃ©l pro."), "left", 100, "travail_tel"),
 ##                ColumnDefn(_(u"Email pro."), "left", 150, "travail_mail"),
                 ]
         
@@ -494,9 +494,9 @@ class ListView(FastObjectListView):
                 ColumnDefn(_(u"Ville"), "left", 120, "ville", typeDonnee="texte"),
                 ColumnDefn(_(u"Secteur"), "left", 120, "secteur", typeDonnee="texte"),
                 ColumnDefn(_(u"Email"), "left", 100, "mail", typeDonnee="texte"),
-                ColumnDefn(_(u"Régime"), "left", 130, "regime", typeDonnee="texte"),
+                ColumnDefn(_(u"RÃ©gime"), "left", 130, "regime", typeDonnee="texte"),
                 ColumnDefn(_(u"Caisse"), "left", 130, "caisse", typeDonnee="texte"),
-                ColumnDefn(_(u"Numéro Alloc."), "left", 120, "numAlloc", typeDonnee="texte"),
+                ColumnDefn(_(u"NumÃ©ro Alloc."), "left", 120, "numAlloc", typeDonnee="texte"),
                 ]        
         
         # Ajout des questions des questionnaires
@@ -561,23 +561,23 @@ class ListView(FastObjectListView):
 
     def OnContextMenu(self, event):
         """Ouverture du menu contextuel """            
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
         
-        # Tout sélectionner
+        # Tout sÃ©lectionner
         item = wx.MenuItem(menuPop, 20, _(u"Tout cocher"))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.CocheListeTout, id=20)
 
-        # Tout dé-sélectionner
-        item = wx.MenuItem(menuPop, 30, _(u"Tout décocher"))
+        # Tout dÃ©-sÃ©lectionner
+        item = wx.MenuItem(menuPop, 30, _(u"Tout dÃ©cocher"))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.CocheListeRien, id=30)
         
         menuPop.AppendSeparator()
         
         # Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
+        item = wx.MenuItem(menuPop, 40, _(u"AperÃ§u avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -611,7 +611,7 @@ class ListView(FastObjectListView):
 
     def Impression(self, mode="preview"):
         if self.donnees == None or len(self.donnees) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Il n'y a aucune donnée à imprimer !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Il n'y a aucune donnÃ©e Ã  imprimer !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return

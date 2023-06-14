@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -28,7 +28,7 @@ class CTRL_profil_perso(CTRL_Profil.CTRL):
         self.dlg = dlg
 
     def Envoyer_parametres(self, dictParametres={}):
-        """ Envoi des paramètres du profil sélectionné à la fenêtre """
+        """ Envoi des paramÃ¨tres du profil sÃ©lectionnÃ© Ã  la fenÃªtre """
         listeFiltres = []
         if dictParametres != None :
             for index, dictFiltreStr in dictParametres.items() :
@@ -37,16 +37,16 @@ class CTRL_profil_perso(CTRL_Profil.CTRL):
         self.dlg.SetDonnees(listeFiltres)
 
     def Recevoir_parametres(self):
-        """ Récupération des paramètres pour la sauvegarde du profil """
+        """ RÃ©cupÃ©ration des paramÃ¨tres pour la sauvegarde du profil """
         listeFiltres = self.dlg.GetDonnees()
         dictParametres = {}
         index = 0
         for dictFiltre in listeFiltres :
             dictParametres["filtre%d" % index] = str(dictFiltre)
             index += 1
-        # Vide le profil des éventuels précédents paramètres
+        # Vide le profil des Ã©ventuels prÃ©cÃ©dents paramÃ¨tres
         self.ViderProfil()
-        # Puis enregistre les nouveaux paramètres du profil
+        # Puis enregistre les nouveaux paramÃ¨tres du profil
         self.Enregistrer(dictParametres)
 
 
@@ -59,7 +59,7 @@ class Dialog(wx.Dialog):
         self.parent = parent
         self.ctrl_listview = ctrl_listview
         
-        intro = _(u"Cliquez sur le bouton Ajouter situé à droite de la liste pour saisir de nouveaux filtres. Si le profil de configuration est disponible, utilisez-le pour mémoriser vos filtres préférés.")
+        intro = _(u"Cliquez sur le bouton Ajouter situÃ© Ã  droite de la liste pour saisir de nouveaux filtres. Si le profil de configuration est disponible, utilisez-le pour mÃ©moriser vos filtres prÃ©fÃ©rÃ©s.")
         titre = _(u"Filtrer")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Filtre.png")
@@ -102,8 +102,8 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter un filtre")))
-        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le filtre sélectionné dans la liste")))
-        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le filtre sélectionné dans la liste")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le filtre sÃ©lectionnÃ© dans la liste")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le filtre sÃ©lectionnÃ© dans la liste")))
         self.bouton_tout_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer TOUS les filtres de cette liste")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
@@ -165,7 +165,7 @@ class Dialog(wx.Dialog):
         UTILS_Aide.Aide("")
 
     def OnBoutonOk(self, event):
-        # Fermeture de la fenêtre
+        # Fermeture de la fenÃªtre
         self.EndModal(wx.ID_OK)
 
     def GetDonnees(self):

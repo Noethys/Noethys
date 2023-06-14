@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-13 Ivan LUCAS
@@ -31,7 +31,7 @@ class Dialog(wx.Dialog):
         self.parent = parent
         
         # Bandeau
-        intro = _(u"Cochez les factures à envoyer par Email puis cliquez sur le bouton 'Transférer vers l'éditeur d'Emails'.")
+        intro = _(u"Cochez les factures Ã  envoyer par Email puis cliquez sur le bouton 'TransfÃ©rer vers l'Ã©diteur d'Emails'.")
         titre = _(u"Envoi de factures par Email")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Emails_piece.png")
@@ -46,8 +46,8 @@ class Dialog(wx.Dialog):
         
         # Boutons
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
-        self.bouton_recap = CTRL_Bouton_image.CTRL(self, texte=_(u"Récapitulatif"), cheminImage="Images/32x32/Imprimante.png")
-        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Transférer vers l'éditeur d'Emails"), cheminImage="Images/32x32/Emails_piece.png")
+        self.bouton_recap = CTRL_Bouton_image.CTRL(self, texte=_(u"RÃ©capitulatif"), cheminImage="Images/32x32/Imprimante.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"TransfÃ©rer vers l'Ã©diteur d'Emails"), cheminImage="Images/32x32/Emails_piece.png")
         self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         self.__set_properties()
@@ -59,14 +59,14 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
         
-        # Init Contrôles
+        # Init ContrÃ´les
         self.ctrl_liste_factures.MAJ() 
                 
 
     def __set_properties(self):
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
-        self.bouton_recap.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer un récapitulatif des factures cochées dans la liste")))
-        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour transférer les factures vers l'éditeur d'Emails")))
+        self.bouton_recap.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer un rÃ©capitulatif des factures cochÃ©es dans la liste")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour transfÃ©rer les factures vers l'Ã©diteur d'Emails")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
         self.SetMinSize((850, 700))
 
@@ -110,7 +110,7 @@ class Dialog(wx.Dialog):
         self.EndModal(wx.ID_CANCEL)
 
     def OnBoutonRecap(self, event): 
-        """ Aperçu PDF du récapitulatif des factures """
+        """ AperÃ§u PDF du rÃ©capitulatif des factures """
         tracks = self.ctrl_liste_factures.GetTracksCoches() 
         if len(tracks) == 0 : 
             dlg = wx.MessageDialog(self, _(u"Vous devez cocher au moins une facture dans la liste !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
@@ -124,21 +124,21 @@ class Dialog(wx.Dialog):
         dlg.Destroy()
 
     def OnBoutonOk(self, event): 
-        """ Aperçu PDF des factures """
-        # Validation des données saisies
+        """ AperÃ§u PDF des factures """
+        # Validation des donnÃ©es saisies
         tracks = self.ctrl_liste_factures.GetTracksCoches() 
         if len(tracks) == 0 : 
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune facture à envoyer par Email !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune facture Ã  envoyer par Email !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
-        # Création des factures sélectionnées
+        # CrÃ©ation des factures sÃ©lectionnÃ©es
         listeIDfacture = []
         for track in tracks :
             # Avertissements
             if track.etat == "annulation" : 
-                dlg = wx.MessageDialog(self, _(u"La facture n°%s a été annulée.\n\nVous ne pouvez pas l'envoyer par Email !") % track.numero, _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"La facture nÂ°%s a Ã©tÃ© annulÃ©e.\n\nVous ne pouvez pas l'envoyer par Email !") % track.numero, _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return
@@ -163,7 +163,7 @@ class Dialog(wx.Dialog):
                 except :
                     pass
 
-        # Récupération de toutes les adresses Emails
+        # RÃ©cupÃ©ration de toutes les adresses Emails
         DB = GestionDB.DB()
         req = """SELECT IDindividu, mail, travail_mail
         FROM individus;"""
@@ -174,7 +174,7 @@ class Dialog(wx.Dialog):
         for IDindividu, mail, travail_mail in listeAdressesIndividus :
             dictAdressesIndividus[IDindividu] = {"perso" : mail, "travail" : travail_mail}
                 
-        # Récupération des données adresse + champs + pièces
+        # RÃ©cupÃ©ration des donnÃ©es adresse + champs + piÃ¨ces
         listeDonnees = []
         listeAnomalies = []
         listeEnvoiNonDemande = []
@@ -182,7 +182,7 @@ class Dialog(wx.Dialog):
             liste_adresses = []
 
             if track.email == True :
-                # Si Famille inscrite à l'envoi par Email :
+                # Si Famille inscrite Ã  l'envoi par Email :
                 for valeur in track.email_factures.split("##"):
                     IDindividu, categorie, adresse = valeur.split(";")
                     if IDindividu != "" :
@@ -193,13 +193,13 @@ class Dialog(wx.Dialog):
                         liste_adresses.append(adresse)
 
             else :
-                # Si famille non inscrite à l'envoi par Email
+                # Si famille non inscrite Ã  l'envoi par Email
                 adresse = UTILS_Envoi_email.GetAdresseFamille(track.IDfamille, choixMultiple=False, muet=True, nomTitulaires=track.nomsTitulaires)
                 if adresse == False:
                     return False
                 liste_adresses.append(adresse)
 
-            # Mémorisation des données
+            # MÃ©morisation des donnÃ©es
             for adresse in liste_adresses :
                 if adresse not in (None, "", []) :
                     if track.IDfacture in dictPieces :
@@ -213,10 +213,10 @@ class Dialog(wx.Dialog):
                     listeAnomalies.append(track.nomsTitulaires)
 
         
-        # Annonce les anomalies trouvées
+        # Annonce les anomalies trouvÃ©es
         if len(listeAnomalies) > 0 :
-            dlg = DLG_Messagebox.Dialog(self, titre=_(u"Avertissement"), introduction=u"%d des familles sélectionnées n'ont pas d'adresse Email :" % len(listeAnomalies),
-                                        detail=u"".join([u"- %s\n" % nom for nom in listeAnomalies]), conclusion=u"Souhaitez-vous quand même continuer avec les %d autres familles ?" % len(listeDonnees),
+            dlg = DLG_Messagebox.Dialog(self, titre=_(u"Avertissement"), introduction=u"%d des familles sÃ©lectionnÃ©es n'ont pas d'adresse Email :" % len(listeAnomalies),
+                                        detail=u"".join([u"- %s\n" % nom for nom in listeAnomalies]), conclusion=u"Souhaitez-vous quand mÃªme continuer avec les %d autres familles ?" % len(listeDonnees),
                                         icone=wx.ICON_WARNING, boutons=[_(u"Oui"), _(u"Non"), _(u"Annuler")])
             reponse = dlg.ShowModal()
             dlg.Destroy()
@@ -224,10 +224,10 @@ class Dialog(wx.Dialog):
                 SupprimerFichiersTemp()
                 return False
 
-        # Annonce les envois non demandés
+        # Annonce les envois non demandÃ©s
         if len(listeEnvoiNonDemande) > 0 :
-            texte = _(u"%d des familles sélectionnées n'ont pas demandé d'envoi par Email de leur facture :\n\n") % len(listeEnvoiNonDemande)
-            texte += _(u"Souhaitez-vous quand même leur envoyer une facture ?")
+            texte = _(u"%d des familles sÃ©lectionnÃ©es n'ont pas demandÃ© d'envoi par Email de leur facture :\n\n") % len(listeEnvoiNonDemande)
+            texte += _(u"Souhaitez-vous quand mÃªme leur envoyer une facture ?")
             dlg = wx.MessageDialog(self, texte, _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
             reponse = dlg.ShowModal() 
             dlg.Destroy()
@@ -235,15 +235,15 @@ class Dialog(wx.Dialog):
                 SupprimerFichiersTemp()
                 return        
         
-        # Dernière vérification avant transfert
+        # DerniÃ¨re vÃ©rification avant transfert
         if len(listeDonnees) == 0 : 
-            dlg = wx.MessageDialog(self, _(u"Il ne reste finalement aucune facture à envoyer par Email !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Il ne reste finalement aucune facture Ã  envoyer par Email !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             SupprimerFichiersTemp()
             return
 
-        # Transfert des données vers DLG Mailer
+        # Transfert des donnÃ©es vers DLG Mailer
         from Dlg import DLG_Mailer
         dlg = DLG_Mailer.Dialog(self, categorie="facture")
         dlg.SetDonnees(listeDonnees, modificationAutorisee=False)

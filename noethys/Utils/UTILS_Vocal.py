@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-12 Ivan LUCAS
@@ -44,15 +44,15 @@ class Vocal() :
         
         if self.echec == False :
             
-            # Récupère la voix par défaut
+            # RÃ©cupÃ¨re la voix par dÃ©faut
             self.defaut = UTILS_Config.GetParametre("vocal_voix", defaut=self.engine.getProperty("voice"))
             
-            # Sélection de la voix
+            # SÃ©lection de la voix
             for voice in self.GetListeVoix()  :
                 if voice.id == self.defaut :
                     self.engine.setProperty('voice', voice.id)
 
-            # Règle la vitesse
+            # RÃ¨gle la vitesse
             self.engine.setProperty("rate", 150)
             
             # Importation des corrections phoniques
@@ -100,7 +100,7 @@ class Vocal() :
         return self.defaut
     
     def SetVoixActuelle(self, id=None):
-        """ Mémorise la voix actuelle """
+        """ MÃ©morise la voix actuelle """
 ##        UTILS_Parametres.Parametres(mode="set", categorie="vocal", nom="voix", valeur=id)
         UTILS_Config.SetParametre("vocal_voix", id)
         self.engine.setProperty('voice', id)
@@ -127,4 +127,4 @@ class Vocal() :
 
 if __name__ == "__main__":
     vocal = Vocal() 
-    vocal.Parle(_(u"Bonjour Kévin"))
+    vocal.Parle(_(u"Bonjour KÃ©vin"))

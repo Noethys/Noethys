@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-17 Ivan LUCAS
@@ -23,7 +23,7 @@ from Ctrl import CTRL_Saisie_date
 from Utils import UTILS_Dates
 from Utils.UTILS_Decimal import FloatToDecimal as FloatToDecimal
 from Utils import UTILS_Config
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"â‚¬")
 
 from Ctrl.CTRL_Tarification_calcul import CHAMPS_TABLE_LIGNES
 from Dlg.DLG_Saisie_prestation import Choix_individu
@@ -66,7 +66,7 @@ class CTRL_Modeles(wx.Choice):
                 dictLignes[IDmodele] = []
             dictLignes[IDmodele].append(dictLigne)
 
-        # Importation des modèles
+        # Importation des modÃ¨les
         req = """SELECT IDmodele, categorie, label, IDactivite, IDtarif, IDcategorie_tarif, code_compta, tva, public, IDtype_quotient
         FROM modeles_prestations
         ORDER BY label; """
@@ -119,15 +119,15 @@ class Dialog(wx.Dialog):
         self.IDfamille = IDfamille
         self.IDprestation = None
 
-        titre = _(u"Saisir une prestation à partir d'un modèle")
-        intro = _(u"Cette fonctionnalité vous permet de créer rapidement une prestation en fonction d'un modèle prédéfini.")
+        titre = _(u"Saisir une prestation Ã  partir d'un modÃ¨le")
+        intro = _(u"Cette fonctionnalitÃ© vous permet de crÃ©er rapidement une prestation en fonction d'un modÃ¨le prÃ©dÃ©fini.")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Euro.png")
 
-        # Généralités
-        self.staticbox_generalites_staticbox = wx.StaticBox(self, -1, _(u"Paramètres"))
+        # GÃ©nÃ©ralitÃ©s
+        self.staticbox_generalites_staticbox = wx.StaticBox(self, -1, _(u"ParamÃ¨tres"))
 
-        self.label_modele = wx.StaticText(self, -1, _(u"Modèle :"))
+        self.label_modele = wx.StaticText(self, -1, _(u"ModÃ¨le :"))
         self.ctrl_modele = CTRL_Modeles(self)
         self.ctrl_modele.SetMinSize((300, -1))
         self.bouton_modeles = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Mecanisme.png"), wx.BITMAP_TYPE_ANY))
@@ -159,11 +159,11 @@ class Dialog(wx.Dialog):
         self.OnChoixModele()
 
     def __set_properties(self):
-        self.ctrl_modele.SetToolTip(wx.ToolTip(_(u"Sélectionnez le modèle à appliquer")))
-        self.ctrl_individu.SetToolTip(wx.ToolTip(_(u"Sélectionnez l'individu à associer à cette prestation")))
-        self.ctrl_date.SetToolTip(wx.ToolTip(_(u"Sélectionnez la date de la prestation (aujourd'hui par défaut)")))
-        self.ctrl_montant.SetToolTip(wx.ToolTip(_(u"Le montant de la prestation est proposé automatiquement mais vous pouvez le modifier librement")))
-        self.bouton_modeles.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter, modifier ou supprimer des modèles de prestations")))
+        self.ctrl_modele.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez le modÃ¨le Ã  appliquer")))
+        self.ctrl_individu.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez l'individu Ã  associer Ã  cette prestation")))
+        self.ctrl_date.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez la date de la prestation (aujourd'hui par dÃ©faut)")))
+        self.ctrl_montant.SetToolTip(wx.ToolTip(_(u"Le montant de la prestation est proposÃ© automatiquement mais vous pouvez le modifier librement")))
+        self.bouton_modeles.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter, modifier ou supprimer des modÃ¨les de prestations")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider et fermer")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler et fermer")))
@@ -172,7 +172,7 @@ class Dialog(wx.Dialog):
         grid_sizer_base = wx.FlexGridSizer(rows=4, cols=1, vgap=10, hgap=10)
         grid_sizer_base.Add(self.ctrl_bandeau, 0, wx.EXPAND, 0)
 
-        # Généralités
+        # GÃ©nÃ©ralitÃ©s
         staticbox_generalites = wx.StaticBoxSizer(self.staticbox_generalites_staticbox, wx.VERTICAL)
 
         grid_sizer_generalites = wx.FlexGridSizer(rows=3, cols=2, vgap=10, hgap=10)
@@ -242,7 +242,7 @@ class Dialog(wx.Dialog):
 
         if dictModele != None :
 
-            # recherche le montant à appliquer
+            # recherche le montant Ã  appliquer
             montant = 0.0
 
             # Recherche du montant du tarif : MONTANT UNIQUE
@@ -255,7 +255,7 @@ class Dialog(wx.Dialog):
                     if montant_questionnaire not in (None, 0.0):
                         montant = montant_questionnaire
 
-            # Recherche du montant à appliquer : QUOTIENT FAMILIAL
+            # Recherche du montant Ã  appliquer : QUOTIENT FAMILIAL
             if dictModele["methode"] == "qf":
                 listeQFfamille = self.GetQuotientsFamiliaux()
                 lignes_calcul = dictModele["lignes"]
@@ -287,7 +287,7 @@ class Dialog(wx.Dialog):
             if date >= date_debut and date <= date_fin and (dictModele["IDtype_quotient"] == None or dictModele["IDtype_quotient"] == IDtype_quotient) :
                 return quotient
 
-        # Si la famille n'a pas de QF, on attribue le QF le plus élevé :
+        # Si la famille n'a pas de QF, on attribue le QF le plus Ã©levÃ© :
         listeQF = []
         for ligneCalcul in dictModele["lignes"] :
             listeQF.append(ligneCalcul["qf_max"])
@@ -319,11 +319,11 @@ class Dialog(wx.Dialog):
         UTILS_Aide.Aide("Prestations")
 
     def OnBoutonOk(self, event):
-        # Récupération et vérification des données saisies
+        # RÃ©cupÃ©ration et vÃ©rification des donnÃ©es saisies
         dictModele = self.ctrl_modele.GetDictValeurs()
 
         if dictModele == None:
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner un modèle dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sÃ©lectionner un modÃ¨le dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -351,7 +351,7 @@ class Dialog(wx.Dialog):
         if self.ctrl_individu.IsEnabled() == True :
             IDindividu = self.ctrl_individu.GetID()
             if IDindividu == None:
-                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner un individu !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sÃ©lectionner un individu !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_individu.SetFocus()
@@ -367,7 +367,7 @@ class Dialog(wx.Dialog):
             self.ctrl_date.SetFocus()
             return
 
-        # Récupération du IDcompte_payeur
+        # RÃ©cupÃ©ration du IDcompte_payeur
         DB = GestionDB.DB()
         req = "SELECT IDcompte_payeur FROM familles WHERE IDfamille=%d" % self.IDfamille
         DB.ExecuterReq(req)
@@ -395,7 +395,7 @@ class Dialog(wx.Dialog):
         self.IDprestation = DB.ReqInsert("prestations", listeDonnees)
         DB.Close()
 
-        # Fermeture de la fenêtre
+        # Fermeture de la fenÃªtre
         self.EndModal(wx.ID_OK)
 
     def GetIDprestation(self):

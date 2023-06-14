@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -25,8 +25,8 @@ class Dialog(wx.Dialog):
         self.parent = parent
         self.IDfamille = IDfamille
         
-        intro = _(u"Vous pouvez ici visualiser uniquement la répartition des ventilations par règlement. Double-cliquez sur un règlement pour faire apparaître sa ventilation détaillée.")
-        titre = _(u"Répartition de la ventilation")
+        intro = _(u"Vous pouvez ici visualiser uniquement la rÃ©partition des ventilations par rÃ¨glement. Double-cliquez sur un rÃ¨glement pour faire apparaÃ®tre sa ventilation dÃ©taillÃ©e.")
+        titre = _(u"RÃ©partition de la ventilation")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Repartition.png")
         
         self.ctrl_listview = CTRL_Repartition.CTRL(self, IDfamille=self.IDfamille)
@@ -41,7 +41,7 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnAide, self.bouton_aide)
 
     def __set_properties(self):
-        self.SetTitle(_(u"Répartition de la ventilation"))
+        self.SetTitle(_(u"RÃ©partition de la ventilation"))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         self.SetMinSize((940, 670))

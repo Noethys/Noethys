@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activitÈs
+# Application :    Noethys, gestion multi-activit√©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -39,7 +39,7 @@ class Track(object):
     
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # RÈcupÈration des paramËtres perso
+        # R√©cup√©ration des param√®tres perso
         self.selectionID = None
         self.selectionTrack = None
         self.criteres = ""
@@ -60,7 +60,7 @@ class ListView(FastObjectListView):
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
-        """ RÈcupÈration des donnÈes """
+        """ R√©cup√©ration des donn√©es """
         listeID = None
         db = GestionDB.DB()
         req = """SELECT lots_prelevements.IDlot, lots_prelevements.nom, lots_prelevements.date, lots_prelevements.verrouillage, lots_prelevements.observations, lots_prelevements.type, Count(prelevements.IDlot) AS nbrePrelevements
@@ -107,13 +107,13 @@ class ListView(FastObjectListView):
             ColumnDefn(_(u"ID"), "left", 42, "IDlot", typeDonnee="entier", imageGetter=GetImageVerrouillage),
             ColumnDefn(_(u"Nom"), "left", 290, "nom", typeDonnee="texte"), 
             ColumnDefn(_(u"Date"), "left", 80, "date", typeDonnee="date", stringConverter=FormateDate),
-            ColumnDefn(_(u"Nbre PrÈlËv."), "center", 80, "nbrePrelevements", typeDonnee="entier"), 
+            ColumnDefn(_(u"Nbre Pr√©l√®v."), "center", 80, "nbrePrelevements", typeDonnee="entier"), 
             ColumnDefn(_(u"Type"), "left", 70, "typePrelevementStr", typeDonnee="texte"),
             ColumnDefn(_(u"Observations"), "left", 200, "observations", typeDonnee="texte"), 
             ]
         
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(_(u"Aucun lot de prÈlËvements"))
+        self.SetEmptyListMsg(_(u"Aucun lot de pr√©l√®vements"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
         self.SetSortColumn(self.columns[2])
         self.SetObjects(self.donnees)
@@ -127,7 +127,7 @@ class ListView(FastObjectListView):
             self.selectionTrack = None
         self.InitModel()
         self.InitObjectListView()
-        # SÈlection d'un item
+        # S√©lection d'un item
         if self.selectionTrack != None :
             self.SelectObject(self.selectionTrack, deselectOthers=True, ensureVisible=True)
         self.selectionID = None
@@ -144,7 +144,7 @@ class ListView(FastObjectListView):
             noSelection = False
             ID = self.Selection()[0].IDlot
                 
-        # CrÈation du menu contextuel
+        # Cr√©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Modifier
@@ -175,7 +175,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"AperÁu avant impression"))
+        item = wx.MenuItem(menuPop, 40, _(u"Aper√ßu avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -193,12 +193,12 @@ class ListView(FastObjectListView):
 
     def Apercu(self, event):
         from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des lots de prÈlËvements"), format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des lots de pr√©l√®vements"), format="A", orientation=wx.PORTRAIT)
         prt.Preview()
 
     def Imprimer(self, event):
         from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des lots de prÈlËvements"), format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des lots de pr√©l√®vements"), format="A", orientation=wx.PORTRAIT)
         prt.Print()
 
 
@@ -217,7 +217,7 @@ class ListView(FastObjectListView):
     def Modifier(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("facturation_prelevements", "modifier") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucun lot ‡ modifier dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucun lot √† modifier dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -231,17 +231,17 @@ class ListView(FastObjectListView):
     def Supprimer(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("facturation_prelevements", "supprimer") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucun lot ‡ supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucun lot √† supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         nbrePrelevements = self.Selection()[0].nbrePrelevements
         if nbrePrelevements > 0 :
-            dlg = wx.MessageDialog(self, _(u"Il est impossible de supprimer ce lot puisqu'il est dÈj‡ constituÈ de %d prÈlËvements(s) !") % nbrePrelevements, _(u"Suppression impossible"), wx.OK | wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(self, _(u"Il est impossible de supprimer ce lot puisqu'il est d√©j√† constitu√© de %d pr√©l√®vements(s) !") % nbrePrelevements, _(u"Suppression impossible"), wx.OK | wx.ICON_INFORMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
-        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer ce lot de prÈlËvements ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer ce lot de pr√©l√®vements ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         if dlg.ShowModal() == wx.ID_YES :
             IDlot = self.Selection()[0].IDlot
             DB = GestionDB.DB()
@@ -263,11 +263,11 @@ class ListView(FastObjectListView):
         dlg.Destroy()
     
     def DemanderTypePrelevement(self):
-        """ Demander si SEPA ou National ‡ crÈer """
+        """ Demander si SEPA ou National √† cr√©er """
         # from Dlg import DLG_Choix
         # listeBoutons = [
-        #     (_(u"PrÈlËvement SEPA"), _(u"Nouvelle norme de prÈlËvements bancaires valables dans toute l'Europe ‡ partir du 1er fÈvrier 2014. Veuillez ‡ saisir les mandats de vos usagers avant d'utiliser ce nouveau type de prÈlËvement.")),
-        #     (_(u"PrÈlËvement National"), _(u"Type de prÈlËvement valable uniquement jusqu'au 1er fÈvrier 2014 en France. Ce type de prÈlËvement sera impossible au-del‡ de cette date.")),
+        #     (_(u"Pr√©l√®vement SEPA"), _(u"Nouvelle norme de pr√©l√®vements bancaires valables dans toute l'Europe √† partir du 1er f√©vrier 2014. Veuillez √† saisir les mandats de vos usagers avant d'utiliser ce nouveau type de pr√©l√®vement.")),
+        #     (_(u"Pr√©l√®vement National"), _(u"Type de pr√©l√®vement valable uniquement jusqu'au 1er f√©vrier 2014 en France. Ce type de pr√©l√®vement sera impossible au-del√† de cette date.")),
         #     ]
         # dlg = DLG_Choix.Dialog(self, listeBoutons=listeBoutons)
         # reponse = dlg.ShowModal()
@@ -286,7 +286,7 @@ class BarreRecherche(wx.SearchCtrl):
         self.parent = parent
         self.rechercheEnCours = False
         
-        self.SetDescriptiveText(_(u"Rechercher un lot de prÈlËvements..."))
+        self.SetDescriptiveText(_(u"Rechercher un lot de pr√©l√®vements..."))
         self.ShowSearchButton(True)
         
         self.listView = self.parent.ctrl_listview

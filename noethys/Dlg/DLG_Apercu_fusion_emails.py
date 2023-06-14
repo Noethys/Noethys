@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-12 Ivan LUCAS
@@ -42,7 +42,7 @@ class Dialog(wx.Dialog):
         self.bouton_avancer = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Avancer.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_dernier = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Dernier.png"), wx.BITMAP_TYPE_ANY))
         
-        # Aperçu
+        # AperÃ§u
         self.ctrl_editeur = CTRL_Editeur_email.Editeur(self)
         self.ctrl_editeur.SetEditable(False) 
         
@@ -61,15 +61,15 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonFermer, self.bouton_fermer)
         
-        # Init contrôles
+        # Init contrÃ´les
         self.bouton_fermer.SetFocus() 
         self.MAJ_apercu()
 
     def __set_properties(self):
-        self.SetTitle(_(u"Aperçu de la fusion"))
+        self.SetTitle(_(u"AperÃ§u de la fusion"))
         self.bouton_premier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour atteindre le premier")))
         self.bouton_reculer.SetMinSize((50, -1))
-        self.bouton_reculer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour atteindre le précédent")))
+        self.bouton_reculer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour atteindre le prÃ©cÃ©dent")))
         self.bouton_avancer.SetMinSize((50, -1))
         self.bouton_avancer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour atteindre le suivant")))
         self.bouton_dernier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour atteindre le dernier")))
@@ -92,7 +92,7 @@ class Dialog(wx.Dialog):
         grid_sizer_navigation.AddGrowableCol(3)
         grid_sizer_base.Add(grid_sizer_navigation, 1, wx.ALL|wx.EXPAND, 10)
         
-        # Ctrl Aperçu
+        # Ctrl AperÃ§u
         grid_sizer_base.Add(self.ctrl_editeur, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
         
         # Boutons
@@ -156,7 +156,7 @@ class Dialog(wx.Dialog):
         # Remplacement des champs standards
         for motcle, valeur in CTRL_Editeur_email.GetChampsStandards().items():
             xml = xml.replace(motcle, valeur)
-        # Remplacement des champs spécifiques
+        # Remplacement des champs spÃ©cifiques
         dictDonnee = self.donnees[index]
         for motcle, valeur in dictDonnee["champs"].items() :
             if valeur == None or valeur == "//None" :
@@ -166,7 +166,7 @@ class Dialog(wx.Dialog):
             if type(valeur) == datetime.date:
                 valeur = UTILS_Dates.DateDDEnFr(valeur)
             xml = xml.replace(motcle, valeur)
-        # MAJ éditeur
+        # MAJ Ã©diteur
         self.ctrl_editeur.SetXML(xml)
         
 

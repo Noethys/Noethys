@@ -10,7 +10,7 @@ class wxScheduler( wxSchedulerCore, scrolled.ScrolledPanel ):
     def __init__( self, *args, **kwds ):
         kwds[ "style" ] = wx.TAB_TRAVERSAL|wx.FULL_REPAINT_ON_RESIZE
 
-        # Insertion des vacances et jours fériés
+        # Insertion des vacances et jours fÃ©riÃ©s
         self.joursSpeciaux = kwds.pop("joursSpeciaux", None)
 
         super( wxScheduler, self ).__init__( *args, **kwds )

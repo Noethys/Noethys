@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -27,10 +27,10 @@ class Dialog(wx.Dialog):
         self.parent = parent
         self.tracks= tracks
         
-        self.label_intro = wx.StaticText(self, -1, _(u"Double-cliquez sur une cotisation pour l'affecter ou non au dépôt."), style=wx.ALIGN_CENTER)
+        self.label_intro = wx.StaticText(self, -1, _(u"Double-cliquez sur une cotisation pour l'affecter ou non au dÃ©pÃ´t."), style=wx.ALIGN_CENTER)
         
         self.label_tri = wx.StaticText(self, -1, _(u"Tri par :"))
-        self.ctrl_tri = wx.Choice(self, -1, choices = (_(u"Ordre de saisie"), _(u"Date de début de validité"), _(u"Date de fin de validité"), _(u"Nom des titulaires"), _(u"Type de cotisation"), _(u"Nom de cotisation"), _(u"Numéro de carte"), _(u"Date de dépôt")))
+        self.ctrl_tri = wx.Choice(self, -1, choices = (_(u"Ordre de saisie"), _(u"Date de dÃ©but de validitÃ©"), _(u"Date de fin de validitÃ©"), _(u"Nom des titulaires"), _(u"Type de cotisation"), _(u"Nom de cotisation"), _(u"NumÃ©ro de carte"), _(u"Date de dÃ©pÃ´t")))
         self.ctrl_tri.Select(0) 
         
         self.label_ordre = wx.StaticText(self, -1, _(u"Ordre :"))
@@ -47,8 +47,8 @@ class Dialog(wx.Dialog):
         self.bouton_haut = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Fleche_haut_rouge.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_haut_tout = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Fleche_double_haut_rouge.png"), wx.BITMAP_TYPE_ANY))
 
-        # Reglements du dépôt
-        self.staticbox_cotisations_depot_staticbox = wx.StaticBox(self, -1, _(u"Cotisations du dépôt"))
+        # Reglements du dÃ©pÃ´t
+        self.staticbox_cotisations_depot_staticbox = wx.StaticBox(self, -1, _(u"Cotisations du dÃ©pÃ´t"))
         self.ctrl_cotisations_depot = OL_Cotisations_depots.ListView(self, id=-1, inclus=True, name="OL_cotisations_depot", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         
         # Boutons
@@ -68,22 +68,22 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_CHOICE, self.OnChoixTri, self.ctrl_tri)
         self.Bind(wx.EVT_CHOICE, self.OnChoixOrdre, self.ctrl_ordre)
 
-        # Initialisation des contrôles
+        # Initialisation des contrÃ´les
         self.MAJListes(tracks=self.tracks) 
         
 
     def __set_properties(self):
         self.SetTitle(_(u"Ajouter ou retirer des cotisations"))
-        self.ctrl_tri.SetToolTip(wx.ToolTip(_(u"Sélectionnez le critère de tri")))
-        self.ctrl_ordre.SetToolTip(wx.ToolTip(_(u"Sélectionnez l'ordre de tri")))
-        self.bouton_bas_tout.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter toutes les cotisations dans le dépôt")))
-        self.bouton_bas.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter la cotisation disponible selectionné dans le dépôt")))
+        self.ctrl_tri.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez le critÃ¨re de tri")))
+        self.ctrl_ordre.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez l'ordre de tri")))
+        self.bouton_bas_tout.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter toutes les cotisations dans le dÃ©pÃ´t")))
+        self.bouton_bas.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter la cotisation disponible selectionnÃ© dans le dÃ©pÃ´t")))
         self.bouton_bas_tout.SetMinSize((80, -1))
         self.bouton_bas.SetMinSize((150, -1))
         self.bouton_haut.SetMinSize((150, -1))
         self.bouton_haut_tout.SetMinSize((80, -1))
-        self.bouton_haut.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour retirer la cotisation sélectionnée du dépôt")))
-        self.bouton_haut_tout.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour retirer toutes les cotisations du dépôt")))
+        self.bouton_haut.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour retirer la cotisation sÃ©lectionnÃ©e du dÃ©pÃ´t")))
+        self.bouton_haut_tout.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour retirer toutes les cotisations du dÃ©pÃ´t")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
@@ -121,7 +121,7 @@ class Dialog(wx.Dialog):
         grid_sizer_commandes.AddGrowableCol(5)
         grid_sizer_base.Add(grid_sizer_commandes, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
         
-        # Cotisations déposées
+        # Cotisations dÃ©posÃ©es
         staticbox_reglements_depot = wx.StaticBoxSizer(self.staticbox_cotisations_depot_staticbox, wx.VERTICAL)
         staticbox_reglements_depot.Add(self.ctrl_cotisations_depot, 1, wx.ALL|wx.EXPAND, 5)
         grid_sizer_base.Add(staticbox_reglements_depot, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)

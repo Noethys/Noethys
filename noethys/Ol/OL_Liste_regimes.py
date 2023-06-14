@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -29,7 +29,7 @@ def DateEngEnDateDD(dateEng):
 def GetListe(listeActivites=None, presents=None):
     if listeActivites == None : return {} 
     
-    # Récupération des données
+    # RÃ©cupÃ©ration des donnÃ©es
     dictItems = {}
 
     # Conditions Activites
@@ -41,7 +41,7 @@ def GetListe(listeActivites=None, presents=None):
         else:
             conditionActivites = " AND inscriptions.IDactivite IN %s" % str(tuple(listeActivites))
 
-    # Conditions Présents
+    # Conditions PrÃ©sents
 ##    if presents == None :
 ##        conditionPresents = ""
 ##        jointurePresents = ""
@@ -51,7 +51,7 @@ def GetListe(listeActivites=None, presents=None):
 
     DB = GestionDB.DB()
 
-    # Récupération des régimes et num d'alloc pour chaque famille
+    # RÃ©cupÃ©ration des rÃ©gimes et num d'alloc pour chaque famille
 
 ### Ancienne version lente :
 ##    req = """
@@ -68,7 +68,7 @@ def GetListe(listeActivites=None, presents=None):
 ##    GROUP BY familles.IDfamille
 ##    ;""" % (conditionActivites, conditionPresents)
 
-    # Récupération des présents
+    # RÃ©cupÃ©ration des prÃ©sents
     listePresents = []
     if presents != None :
         req = """SELECT IDfamille
@@ -99,7 +99,7 @@ def GetListe(listeActivites=None, presents=None):
     listeFamilles = DB.ResultatReq()
     DB.Close() 
     
-    # Formatage des données
+    # Formatage des donnÃ©es
     dictFinal = {}
     titulaires = UTILS_Titulaires.GetTitulaires() 
     for IDfamille, nomRegime, nomCaisse, numAlloc in listeFamilles :
@@ -119,7 +119,7 @@ def GetListe(listeActivites=None, presents=None):
 
 
 def GetFamillesSansCaisse(listeActivites=None, date_debut=None, date_fin=None):
-    """ Permet de récupérer la liste des familles n'ayant pas de caisse renseignée """
+    """ Permet de rÃ©cupÃ©rer la liste des familles n'ayant pas de caisse renseignÃ©e """
     dictDonnees = GetListe(listeActivites=listeActivites, presents=(date_debut, date_fin))
     listeFamillesSansCaisse = []
     for IDfamille, dictFamille in dictDonnees.items() :
@@ -142,7 +142,7 @@ class Track(object):
     
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # Récupération des paramètres perso
+        # RÃ©cupÃ©ration des paramÃ¨tres perso
         self.selectionID = None
         self.selectionTrack = None
         self.criteres = ""
@@ -164,7 +164,7 @@ class ListView(FastObjectListView):
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
-        """ Récupération des données """
+        """ RÃ©cupÃ©ration des donnÃ©es """
         dictDonnees = GetListe(self.listeActivites, self.presents)
         listeListeView = []
         for IDfamille, dictTemp in dictDonnees.items() :
@@ -183,9 +183,9 @@ class ListView(FastObjectListView):
         liste_Colonnes = [
             ColumnDefn(_(u"ID"), "left", 0, "IDfamille", typeDonnee="entier"),
             ColumnDefn(_(u"Famille"), 'left', 250, "nomTitulaires", typeDonnee="texte"),
-            ColumnDefn(_(u"Régime"), "left", 130, "nomRegime", typeDonnee="texte"),
+            ColumnDefn(_(u"RÃ©gime"), "left", 130, "nomRegime", typeDonnee="texte"),
             ColumnDefn(_(u"Caisse"), "left", 130, "nomCaisse", typeDonnee="texte"),
-            ColumnDefn(_(u"Numéro Alloc."), "left", 120, "numAlloc", typeDonnee="texte"),
+            ColumnDefn(_(u"NumÃ©ro Alloc."), "left", 120, "numAlloc", typeDonnee="texte"),
             ]        
         self.SetColumns(liste_Colonnes)
         self.SetEmptyListMsg(_(u"Aucune famille"))
@@ -197,7 +197,7 @@ class ListView(FastObjectListView):
         self.listeActivites = listeActivites
         self.presents = presents
         self.labelParametres = labelParametres
-        attente = wx.BusyInfo(_(u"Recherche des données..."), self)
+        attente = wx.BusyInfo(_(u"Recherche des donnÃ©es..."), self)
         self.InitModel()
         self.InitObjectListView()
         del attente
@@ -213,7 +213,7 @@ class ListView(FastObjectListView):
             noSelection = False
             ID = self.Selection()[0].IDfamille
             
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
         
         # Item Ouvrir fiche famille
@@ -226,7 +226,7 @@ class ListView(FastObjectListView):
         
         menuPop.AppendSeparator()
         
-        # Génération automatique des fonctions standards
+        # GÃ©nÃ©ration automatique des fonctions standards
         self.GenerationContextMenu(menuPop, dictParametres=self.GetParametresImpression())
 
         self.PopupMenu(menuPop)
@@ -234,7 +234,7 @@ class ListView(FastObjectListView):
 
     def GetParametresImpression(self):
         dictParametres = {
-            "titre" : _(u"Liste des régimes et caisses"),
+            "titre" : _(u"Liste des rÃ©gimes et caisses"),
             "intro" : self.labelParametres,
             "total" : _(u"> %s familles") % len(self.GetFilteredObjects()),
             "orientation" : wx.PORTRAIT,
@@ -244,7 +244,7 @@ class ListView(FastObjectListView):
     def OuvrirFicheFamille(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_fiche", "consulter") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune fiche famille à ouvrir !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune fiche famille Ã  ouvrir !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activit�s
+# Application :    Noethys, gestion multi-activitï¿œs
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-16 Ivan LUCAS
@@ -19,14 +19,14 @@ import six
 
 
 def ConvertVersionTuple(texteVersion=""):
-    """ Convertit un num�ro de version texte en tuple """
+    """ Convertit un numï¿œro de version texte en tuple """
     tupleTemp = []
     for num in texteVersion.split(".") :
         tupleTemp.append(int(num))
     return tuple(tupleTemp)
 
 def GetAnnonce():
-    """ Fonction de r�cup�ration de l'annonce � afficher """
+    """ Fonction de rï¿œcupï¿œration de l'annonce ï¿œ afficher """
     dateJour = datetime.date.today() 
     dictAnnonce = None
     found = False
@@ -43,20 +43,20 @@ def GetAnnonce():
     #                 versionLogiciel = ConvertVersionTuple("1.0.5.6")#FonctionsPerso.GetVersionLogiciel())
     #                 version = ConvertVersionTuple(version)
     #                 if versionLogiciel < version :
-    #                     dictAnnonce = {"IDannonce":None, "image":image, "titre":titre.decode("iso-8859-15"), "texte_html":texte_html.decode("iso-8859-15")}
+    #                     dictAnnonce = {"IDannonce":None, "image":image, "titre":titre.decode("utf8"), "texte_html":texte_html.decode("utf8")}
     #                     found = True
     #             else :
-    #                 dictAnnonce = {"IDannonce":None, "image":image, "titre":titre.decode("iso-8859-15"), "texte_html":texte_html.decode("iso-8859-15")}
+    #                 dictAnnonce = {"IDannonce":None, "image":image, "titre":titre.decode("utf8"), "texte_html":texte_html.decode("utf8")}
     #                 found = True
     # except :
     #     pass
         
-    # Recherche Annonces stock�es dans la base de donn�es
+    # Recherche Annonces stockï¿œes dans la base de donnï¿œes
     if found == False :
         
         try :
             
-            # Init base de donn�es
+            # Init base de donnï¿œes
             con = sqlite3.connect(Chemins.GetStaticPath("Databases/Annonces.dat"))
             cur = con.cursor()
             
@@ -113,7 +113,7 @@ class Panel(wx.Panel):
     def __init__(self, parent, size=(-1, -1)):
         wx.Panel.__init__(self, parent, name="panel_accueil", id=-1, size=size, style=wx.TAB_TRAVERSAL)
 
-        # R�cup�ration des donn�es de l'interface
+        # Rï¿œcupï¿œration des donnï¿œes de l'interface
         theme = UTILS_Interface.GetTheme()
         nom_fichier = "Fond.jpg"
         if six.PY3 and theme == "Vert":
@@ -129,7 +129,7 @@ class Panel(wx.Panel):
         self.Refresh()
 
     def OnPaint(self, event):
-        """ Pr�paration du DC """
+        """ Prï¿œparation du DC """
         dc = wx.BufferedPaintDC(self)
         if wx.VERSION < (2, 9, 0, 0) :
             self.PrepareDC(dc)
@@ -140,7 +140,7 @@ class Panel(wx.Panel):
         # Dessine le fond
         dc.DrawBitmap(self.image_fond, 0, 0)
 
-        # R�cup�re l'annonce
+        # Rï¿œcupï¿œre l'annonce
         dictAnnonce = GetAnnonce()
         if dictAnnonce != None :
 
@@ -149,7 +149,7 @@ class Panel(wx.Panel):
             titre = dictAnnonce["titre"]
             texte_html = dictAnnonce["texte_html"]
 
-            # Pr�paration du dessin
+            # Prï¿œparation du dessin
             x, y = 20, 20
             taille_police = 8
             largeurTexte = 300

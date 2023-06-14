@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -25,7 +25,7 @@ class Dialog(wx.Dialog):
         self.parent = parent
         
         # Bandeau
-        intro = _(u"Vous pouvez ici consulter un simple calendrier qui affiche les périodes de vacances et les jours fériés. Le triangle rouge indique la date du jour. Vous pouvez permuter l'affichage annuel / mensuel en cliquant sur le bouton en haut à gauche.")
+        intro = _(u"Vous pouvez ici consulter un simple calendrier qui affiche les pÃ©riodes de vacances et les jours fÃ©riÃ©s. Le triangle rouge indique la date du jour. Vous pouvez permuter l'affichage annuel / mensuel en cliquant sur le bouton en haut Ã  gauche.")
         titre = _(u"Calendrier")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Calendrier.png")
         

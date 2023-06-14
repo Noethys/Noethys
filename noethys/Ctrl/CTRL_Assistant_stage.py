@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-18 Ivan LUCAS
@@ -27,8 +27,8 @@ from Ctrl import CTRL_Assistant_base as Assistant
 class Page_introduction(Assistant.Page):
     def __init__(self, parent):
         Assistant.Page.__init__(self, parent)
-        self.Ajouter_question(titre=_(u"Bienvenue dans l'assistant de génération d'une activité de type stage (stage de théâtre, de danse, de gym, etc...)"))
-        self.Ajouter_question(titre=_(u"Cliquez sur le bouton Suite pour commencer la saisie des données..."))
+        self.Ajouter_question(titre=_(u"Bienvenue dans l'assistant de gÃ©nÃ©ration d'une activitÃ© de type stage (stage de thÃ©Ã¢tre, de danse, de gym, etc...)"))
+        self.Ajouter_question(titre=_(u"Cliquez sur le bouton Suite pour commencer la saisie des donnÃ©es..."))
 
     def Suite(self):
         return Page_generalites
@@ -38,17 +38,17 @@ class Page_introduction(Assistant.Page):
 class Page_generalites(Assistant.Page):
     def __init__(self, parent):
         Assistant.Page.__init__(self, parent)
-        self.Ajouter_rubrique(titre=_(u"Généralités"))
-        self.Ajouter_question(code="nom", titre=_(u"Quel est le nom du stage ?"), commentaire=_(u"Exemple : 'Stage de théâtre - Février 2018'"), ctrl=Assistant.CTRL_Texte, obligatoire=True)
-        self.Ajouter_question(code="date_debut", titre=_(u"Quelle est la date de début du stage ?"), commentaire=None, ctrl=Assistant.CTRL_Date, obligatoire=True)
+        self.Ajouter_rubrique(titre=_(u"GÃ©nÃ©ralitÃ©s"))
+        self.Ajouter_question(code="nom", titre=_(u"Quel est le nom du stage ?"), commentaire=_(u"Exemple : 'Stage de thÃ©Ã¢tre - FÃ©vrier 2018'"), ctrl=Assistant.CTRL_Texte, obligatoire=True)
+        self.Ajouter_question(code="date_debut", titre=_(u"Quelle est la date de dÃ©but du stage ?"), commentaire=None, ctrl=Assistant.CTRL_Date, obligatoire=True)
         self.Ajouter_question(code="date_fin", titre=_(u"Quelle est la date de fin du stage ?"), commentaire=None, ctrl=Assistant.CTRL_Date, obligatoire=True)
         self.Ajouter_question(code="nbre_inscrits_max", titre=_(u"Quel est le nombre maximal d'inscrits ?"), commentaire=_(u"S'il n'y aucune limitation globale du nombre d'inscrits, conservez la valeur 0."), ctrl=Assistant.CTRL_Nombre)
-        self.Ajouter_question(code="groupes_activites", titre=_(u"Cochez les groupes d'activités associés à ce stage :"), commentaire=_(u"Les groupes d'activités permettent une sélection plus rapide dans certaines fenêtres de Noethys."), ctrl=Assistant.CTRL_Groupes_activite)
+        self.Ajouter_question(code="groupes_activites", titre=_(u"Cochez les groupes d'activitÃ©s associÃ©s Ã  ce stage :"), commentaire=_(u"Les groupes d'activitÃ©s permettent une sÃ©lection plus rapide dans certaines fenÃªtres de Noethys."), ctrl=Assistant.CTRL_Groupes_activite)
 
     def Suite(self):
         # Validation des dates du stage
         if self.parent.dict_valeurs["date_debut"] > self.parent.dict_valeurs["date_fin"]:
-            dlg = wx.MessageDialog(self, _(u"La date de fin du stage doit être supérieure à la date du début !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"La date de fin du stage doit Ãªtre supÃ©rieure Ã  la date du dÃ©but !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -69,7 +69,7 @@ class Page_groupes(Assistant.Page):
     def __init__(self, parent):
         Assistant.Page.__init__(self, parent)
         self.Ajouter_rubrique(titre=_(u"Groupes"))
-        self.Ajouter_question(code="has_groupes", titre=_(u"Le stage est-il constitué de groupes distincts ?"), commentaire=_(u"Exemple : Débutants et confirmés. Si vous n'êtes pas sûr, laissez non."), ctrl=Assistant.CTRL_Oui_non, defaut=False)
+        self.Ajouter_question(code="has_groupes", titre=_(u"Le stage est-il constituÃ© de groupes distincts ?"), commentaire=_(u"Exemple : DÃ©butants et confirmÃ©s. Si vous n'Ãªtes pas sÃ»r, laissez non."), ctrl=Assistant.CTRL_Oui_non, defaut=False)
 
     def Suite(self):
         if self.parent.dict_valeurs["has_groupes"] == True :
@@ -93,7 +93,7 @@ class Page_groupes_liste(Assistant.Page):
         Assistant.Page.__init__(self, parent)
         self.Ajouter_rubrique(titre=_(u"Groupes"))
         for index in range(1, self.parent.dict_valeurs["nbre_groupes"]+1) :
-            self.Ajouter_question(code="nom_groupe#%d" % index, titre=_(u"Quel est le nom du groupe n°%d ?") % index, commentaire=None, ctrl=Assistant.CTRL_Texte, obligatoire=True)
+            self.Ajouter_question(code="nom_groupe#%d" % index, titre=_(u"Quel est le nom du groupe nÂ°%d ?") % index, commentaire=None, ctrl=Assistant.CTRL_Texte, obligatoire=True)
 
     def Suite(self):
         return Page_renseignements
@@ -111,7 +111,7 @@ class Page_categories_tarifs(Assistant.Page):
     def __init__(self, parent):
         Assistant.Page.__init__(self, parent)
         self.Ajouter_rubrique(titre=_(u"Tarifs"))
-        self.Ajouter_question(code="has_categories_tarifs", titre=_(u"Avez-vous plusieurs catégories de tarifs ?"), commentaire=_(u"On retrouve par exemple souvent 'Commune' et 'Hors commune'."), ctrl=Assistant.CTRL_Oui_non, defaut=False)
+        self.Ajouter_question(code="has_categories_tarifs", titre=_(u"Avez-vous plusieurs catÃ©gories de tarifs ?"), commentaire=_(u"On retrouve par exemple souvent 'Commune' et 'Hors commune'."), ctrl=Assistant.CTRL_Oui_non, defaut=False)
 
     def Suite(self):
         if self.parent.dict_valeurs["has_categories_tarifs"] == True :
@@ -124,11 +124,11 @@ class Page_categories_tarifs_nombre(Assistant.Page):
     def __init__(self, parent):
         Assistant.Page.__init__(self, parent)
         self.Ajouter_rubrique(titre=_(u"Tarifs"))
-        self.Ajouter_question(code="nbre_categories_tarifs", titre=_(u"Quel est le nombre de catégories de tarifs ?"), commentaire=None, ctrl=Assistant.CTRL_Nombre, obligatoire=True)
+        self.Ajouter_question(code="nbre_categories_tarifs", titre=_(u"Quel est le nombre de catÃ©gories de tarifs ?"), commentaire=None, ctrl=Assistant.CTRL_Nombre, obligatoire=True)
 
     def Suite(self):
         if self.parent.dict_valeurs["nbre_categories_tarifs"] < 2 :
-            dlg = wx.MessageDialog(self, _(u"Le nombre de catégories doit être supérieur à 1 !\n\nSinon sélectionnez Non à la question précédente."), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Le nombre de catÃ©gories doit Ãªtre supÃ©rieur Ã  1 !\n\nSinon sÃ©lectionnez Non Ã  la question prÃ©cÃ©dente."), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -140,16 +140,16 @@ class Page_tarifs(Assistant.Page):
     def __init__(self, parent):
         Assistant.Page.__init__(self, parent)
 
-        # Si une seule catégorie de tarif
+        # Si une seule catÃ©gorie de tarif
         if self.parent.dict_valeurs["has_categories_tarifs"] == False :
             self.Ajouter_rubrique(titre=_(u"Tarif"))
-            self.Ajouter_question(code="tarif", titre=_(u"Quel est le tarif à appliquer ?"), commentaire=_(u"Sélectionnez une méthode puis saisissez les paramètres demandés."), ctrl=Assistant.CTRL_Tarif)
-        # Si plusieurs catégories de tarifs
+            self.Ajouter_question(code="tarif", titre=_(u"Quel est le tarif Ã  appliquer ?"), commentaire=_(u"SÃ©lectionnez une mÃ©thode puis saisissez les paramÃ¨tres demandÃ©s."), ctrl=Assistant.CTRL_Tarif)
+        # Si plusieurs catÃ©gories de tarifs
         else :
             for index in range(1, self.parent.dict_valeurs["nbre_categories_tarifs"]+1):
-                self.Ajouter_rubrique(titre=_(u"Tarif n°%d") % index)
-                self.Ajouter_question(code="nom_categorie_tarif#%d" % index, titre=_(u"Quel est le nom de la catégorie de tarifs n°%d ?") % index, commentaire=_(u"Exemples : 'Commune' ou 'Hors commune'."), ctrl=Assistant.CTRL_Texte, obligatoire=False)
-                self.Ajouter_question(code="tarif#%d" % index, titre=_(u"Quel est le tarif à appliquer à la catégorie n°%d ?") % index, commentaire=_(u"Sélectionnez une méthode puis saisissez les paramètres demandés."), ctrl=Assistant.CTRL_Tarif)
+                self.Ajouter_rubrique(titre=_(u"Tarif nÂ°%d") % index)
+                self.Ajouter_question(code="nom_categorie_tarif#%d" % index, titre=_(u"Quel est le nom de la catÃ©gorie de tarifs nÂ°%d ?") % index, commentaire=_(u"Exemples : 'Commune' ou 'Hors commune'."), ctrl=Assistant.CTRL_Texte, obligatoire=False)
+                self.Ajouter_question(code="tarif#%d" % index, titre=_(u"Quel est le tarif Ã  appliquer Ã  la catÃ©gorie nÂ°%d ?") % index, commentaire=_(u"SÃ©lectionnez une mÃ©thode puis saisissez les paramÃ¨tres demandÃ©s."), ctrl=Assistant.CTRL_Tarif)
 
     def Suite(self):
         return Page_conclusion
@@ -158,8 +158,8 @@ class Page_tarifs(Assistant.Page):
 class Page_conclusion(Assistant.Page):
     def __init__(self, parent):
         Assistant.Page.__init__(self, parent)
-        self.Ajouter_question(titre=_(u"Félicitations, vous avez terminé de paramétrer votre stage !"))
-        self.Ajouter_question(titre=_(u"Cliquez maintenant sur le bouton Valider pour générer cette activité."))
+        self.Ajouter_question(titre=_(u"FÃ©licitations, vous avez terminÃ© de paramÃ©trer votre stage !"))
+        self.Ajouter_question(titre=_(u"Cliquez maintenant sur le bouton Valider pour gÃ©nÃ©rer cette activitÃ©."))
 
     def Suite(self):
         DB = GestionDB.DB()
@@ -167,11 +167,11 @@ class Page_conclusion(Assistant.Page):
         IDactivite = self.parent.dict_valeurs["IDactivite"]
 
 
-        # Unités de consommation
+        # UnitÃ©s de consommation
         listeIDunite = []
         listeDonnees = [
             ("IDactivite", IDactivite),
-            ("nom", _(u"Journée Stage")),
+            ("nom", _(u"JournÃ©e Stage")),
             ("abrege", _(u"JS")),
             ("type", "Unitaire"),
             ("date_debut", "1977-01-01"),
@@ -182,11 +182,11 @@ class Page_conclusion(Assistant.Page):
         IDunite = DB.ReqInsert("unites", listeDonnees)
         listeIDunite.append(IDunite)
 
-        # Unité de remplissage
+        # UnitÃ© de remplissage
         listeIDuniteRemplissage = []
         listeDonnees = [
             ("IDactivite", IDactivite),
-            ("nom", _(u"Journée Stage")),
+            ("nom", _(u"JournÃ©e Stage")),
             ("abrege", _(u"JS")),
             ("seuil_alerte", 5),
             ("date_debut", "1977-01-01"),
@@ -228,17 +228,17 @@ class Page_conclusion(Assistant.Page):
         listeDonnees = [("IDactivite", IDactivite), ("nom", nom_tarif)]
         IDnom_tarif = DB.ReqInsert("noms_tarifs", listeDonnees)
 
-        # Catégories de tarifs
+        # CatÃ©gories de tarifs
         listeCategoriesEtTarifs = []
 
-        # Si catégorie unique
+        # Si catÃ©gorie unique
         if self.parent.dict_valeurs["has_categories_tarifs"] == False :
-            listeDonnees = [("IDactivite", IDactivite), ("nom", _(u"Catégorie unique"))]
+            listeDonnees = [("IDactivite", IDactivite), ("nom", _(u"CatÃ©gorie unique"))]
             IDcategorie_tarif = DB.ReqInsert("categories_tarifs", listeDonnees)
             track_tarif = self.parent.dict_valeurs["tarif"]
             listeCategoriesEtTarifs.append((IDcategorie_tarif, track_tarif))
 
-        # Si plusieurs catégories
+        # Si plusieurs catÃ©gories
         if self.parent.dict_valeurs["has_categories_tarifs"] == True :
             nbre_categories_tarifs = self.parent.dict_valeurs["nbre_categories_tarifs"]
             for index in range(1, nbre_categories_tarifs+1):

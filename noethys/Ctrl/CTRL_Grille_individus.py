@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -126,7 +126,7 @@ class CTRL_individus(ULC.UltimateListCtrl):
         self.SetSecondGradientColour(None) #"#316AC5")
         self.EnableSelectionGradient(True)
         
-        # Création de la liste d'individus à afficher
+        # CrÃ©ation de la liste d'individus Ã  afficher
         listeIndividus = []
         for IDindividu, dictIndividu in self.dictIndividus.items() :
             nbreInscriptions = len(dictIndividu["inscriptions"])
@@ -151,7 +151,7 @@ class CTRL_individus(ULC.UltimateListCtrl):
             self.dictPhotos[IDindividu] = img
         self.AssignImageList(il, wx.IMAGE_LIST_NORMAL)
                 
-        # Création des items
+        # CrÃ©ation des items
         index = 0
         for age, IDindividu in listeIndividus :
             dictIndividu = self.dictIndividus[IDindividu]
@@ -190,7 +190,7 @@ class CTRL_individus(ULC.UltimateListCtrl):
 ##        self.OnSelection()
     
     def OnSelection(self):
-        """ Quand une sélection d'individus est effectuée... """
+        """ Quand une sÃ©lection d'individus est effectuÃ©e... """
         listeSelections = self.GetSelections()
 ##        try :
         self.GetGrandParent().SetListeSelectionIndividus(listeSelections)

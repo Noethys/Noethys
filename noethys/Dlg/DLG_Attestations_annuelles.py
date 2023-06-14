@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -32,7 +32,7 @@ from Utils import UTILS_Utilisateurs
 
 
 def ArrondirHeureSup(heures, minutes, pas): 
-    """ Arrondi l'heure au pas supérieur """
+    """ Arrondi l'heure au pas supÃ©rieur """
     for x in range(0, 60, pas):
         if x >= minutes :
             return (heures, x)
@@ -67,7 +67,7 @@ def FormateValeur(valeur, mode="decimal"):
 ##    if type(valeur) == datetime.timedelta :
 ##        hr, mn, sc = str(valeur).split(":")
 ##    if mode == "decimal" :
-##        # Mode décimal
+##        # Mode dÃ©cimal
 ##        minDecimal = int(mn)*100/60
 ##        texte = "%s.%s" % (hr, minDecimal)
 ##        resultat = float(texte)
@@ -84,24 +84,24 @@ class Parametres(wx.Panel):
         wx.Panel.__init__(self, parent, id=-1, name="panel_parametres", style=wx.TAB_TRAVERSAL)
         self.parent = parent
         
-        # Période
-        self.staticbox_periode_staticbox = wx.StaticBox(self, -1, _(u"Période de référence"))
+        # PÃ©riode
+        self.staticbox_periode_staticbox = wx.StaticBox(self, -1, _(u"PÃ©riode de rÃ©fÃ©rence"))
         self.label_date_debut = wx.StaticText(self, -1, u"Du")
         self.ctrl_date_debut = CTRL_Saisie_date.Date2(self)
         self.label_date_fin = wx.StaticText(self, -1, _(u"Au"))
         self.ctrl_date_fin = CTRL_Saisie_date.Date2(self)
 
-        # Séparation
-        self.staticbox_dateNaiss_staticbox = wx.StaticBox(self, -1, _(u"Limite d'âge"))
+        # SÃ©paration
+        self.staticbox_dateNaiss_staticbox = wx.StaticBox(self, -1, _(u"Limite d'Ã¢ge"))
         self.check_dateNaiss = wx.CheckBox(self, -1, _(u"Date de naiss. :"))
         self.ctrl_dateNaiss = CTRL_Saisie_date.Date(self)
         
-        # Activités
-        self.staticbox_activites_staticbox = wx.StaticBox(self, -1, _(u"Activités"))
+        # ActivitÃ©s
+        self.staticbox_activites_staticbox = wx.StaticBox(self, -1, _(u"ActivitÃ©s"))
         self.ctrl_activites = CTRL_Selection_activites.CTRL(self)
         
         # Actualiser
-        self.bouton_actualiser = CTRL_Bouton_image.CTRL(self, texte=_(u"Rafraîchir la liste"), cheminImage="Images/32x32/Actualiser.png")
+        self.bouton_actualiser = CTRL_Bouton_image.CTRL(self, texte=_(u"RafraÃ®chir la liste"), cheminImage="Images/32x32/Actualiser.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -109,19 +109,19 @@ class Parametres(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonActualiser, self.bouton_actualiser)
         self.Bind(wx.EVT_CHECKBOX, self.OnCheckAge, self.check_dateNaiss)
         
-        # Init Contrôles
+        # Init ContrÃ´les
         self.OnCheckAge(None)
 
     def __set_properties(self):
-        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez la date de début de période")))
-        self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez la date de fin de période")))
+        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez la date de dÃ©but de pÃ©riode")))
+        self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez la date de fin de pÃ©riode")))
         self.ctrl_dateNaiss.SetToolTip(wx.ToolTip(_(u"Saisissez une date de naissance maximale")))
         self.bouton_actualiser.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour actualiser la liste")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=4, cols=1, vgap=10, hgap=10)
         
-        # Date de référence
+        # Date de rÃ©fÃ©rence
         staticbox_periode = wx.StaticBoxSizer(self.staticbox_periode_staticbox, wx.VERTICAL)
         grid_sizer_periode = wx.FlexGridSizer(rows=2, cols=2, vgap=5, hgap=5)
         grid_sizer_periode.Add(self.label_date_debut, 0, wx.ALIGN_CENTER_VERTICAL, 0)
@@ -139,7 +139,7 @@ class Parametres(wx.Panel):
         staticbox_dateNaiss.Add(grid_sizer_dateNaiss, 0, wx.EXPAND|wx.ALL, 5)
         grid_sizer_base.Add(staticbox_dateNaiss, 1, wx.RIGHT|wx.EXPAND, 5)
                 
-        # Activités
+        # ActivitÃ©s
         staticbox_activites = wx.StaticBoxSizer(self.staticbox_activites_staticbox, wx.VERTICAL)
         staticbox_activites.Add(self.ctrl_activites, 1, wx.ALL|wx.EXPAND, 5)
         grid_sizer_base.Add(staticbox_activites, 1, wx.RIGHT|wx.EXPAND, 5)
@@ -186,17 +186,17 @@ class Dialog(wx.Dialog):
         self.parent = parent
         
         # Bandeau
-        intro = _(u"Pour éditer une attestation de présence, vous pouvez utiliser la fonction dédiée depuis une fiche famille. Mais pour éditer tout un lot d'attestations (Les attestations annuelles pour les impôts par exemple), il est plus rapide d'utiliser cette fonction. Commencez par définir vos paramètres de sélection puis cliquez sur Ok.")
-        titre = _(u"Edition d'attestations de présence")
+        intro = _(u"Pour Ã©diter une attestation de prÃ©sence, vous pouvez utiliser la fonction dÃ©diÃ©e depuis une fiche famille. Mais pour Ã©diter tout un lot d'attestations (Les attestations annuelles pour les impÃ´ts par exemple), il est plus rapide d'utiliser cette fonction. Commencez par dÃ©finir vos paramÃ¨tres de sÃ©lection puis cliquez sur Ok.")
+        titre = _(u"Edition d'attestations de prÃ©sence")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Generation.png")
         self.SetTitle(titre)
         
-        # Panel Paramètres
+        # Panel ParamÃ¨tres
         self.ctrl_parametres = Parametres(self)
         
         # CTRL Prestations
         self.staticbox_prestations_staticbox = wx.StaticBox(self, -1, _(u"Prestations"))
-        self.label_commentaires = wx.StaticText(self, -1, _(u"Double-cliquez dans la colonne 'Commentaire' pour afficher une information complémentaire sur la prestation."))
+        self.label_commentaires = wx.StaticText(self, -1, _(u"Double-cliquez dans la colonne 'Commentaire' pour afficher une information complÃ©mentaire sur la prestation."))
         self.ctrl_prestations = OL_Attestations_prestations.ListView(self, id=-1, name="OL_attestations_prestations", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
@@ -208,12 +208,12 @@ class Dialog(wx.Dialog):
         
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
         
-        # Données Test
+        # DonnÃ©es Test
         anneeActuelle = datetime.date.today().year
         self.ctrl_parametres.ctrl_date_debut.SetDate(datetime.date(anneeActuelle, 1, 1))
         self.ctrl_parametres.ctrl_date_fin.SetDate(datetime.date(anneeActuelle, 12, 31))
         
-        # Init contrôles
+        # Init contrÃ´les
         self.ctrl_parametres.MAJprestations()
 
     def __set_properties(self):
@@ -228,7 +228,7 @@ class Dialog(wx.Dialog):
         
         grid_sizer_contenu = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
         
-        # Panel des paramètres
+        # Panel des paramÃ¨tres
         grid_sizer_contenu.Add(self.ctrl_parametres, 1, wx.EXPAND, 0)
         
         # Ctrl des prestations
@@ -258,23 +258,23 @@ class Dialog(wx.Dialog):
         self.CenterOnScreen()
 
     def OnBoutonOk(self, event):
-        # Validation de la période
+        # Validation de la pÃ©riode
         date_debut = self.ctrl_parametres.ctrl_date_debut.GetDate() 
         if self.ctrl_parametres.ctrl_date_debut.FonctionValiderDate() == False or date_debut == None :
-            dlg = wx.MessageDialog(self, _(u"La date de début de période semble incorrecte !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"La date de dÃ©but de pÃ©riode semble incorrecte !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         
         date_fin = self.ctrl_parametres.ctrl_date_fin.GetDate() 
         if self.ctrl_parametres.ctrl_date_fin.FonctionValiderDate() == False or date_fin == None :
-            dlg = wx.MessageDialog(self, _(u"La date de fin de période semble incorrecte !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"La date de fin de pÃ©riode semble incorrecte !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         
         if date_fin < date_debut :
-            dlg = wx.MessageDialog(self, _(u"La date de début de période est supérieure à la date de fin !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"La date de dÃ©but de pÃ©riode est supÃ©rieure Ã  la date de fin !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -292,18 +292,18 @@ class Dialog(wx.Dialog):
             else :
                 dateNaiss = self.ctrl_parametres.ctrl_dateNaiss.GetDate()
         
-        # Validation des activités
+        # Validation des activitÃ©s
         listeActivites = self.ctrl_parametres.GetActivites()
         if len(listeActivites) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous devez sélectionner au moins une activité !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez sÃ©lectionner au moins une activitÃ© !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
-        # Vérification droits utilisateurs
+        # VÃ©rification droits utilisateurs
         for IDactivite in listeActivites :
             if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("facturation_attestations", "creer", IDactivite=IDactivite, afficheMessage=False) == False : 
-                dlg = wx.MessageDialog(self, _(u"Vous n'avez pas l'autorisation de générer des attestations pour l'ensemble des activités sélectionnées !"), _(u"Action non autorisée"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous n'avez pas l'autorisation de gÃ©nÃ©rer des attestations pour l'ensemble des activitÃ©s sÃ©lectionnÃ©es !"), _(u"Action non autorisÃ©e"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
@@ -311,12 +311,12 @@ class Dialog(wx.Dialog):
         # Validation des prestations
         listePrestations = self.ctrl_prestations.GetDonnees() 
         if len(listePrestations) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous devez sélectionner au moins une prestation !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez sÃ©lectionner au moins une prestation !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         
-        # Ouvrir la DLG de sélection
+        # Ouvrir la DLG de sÃ©lection
         dlg = DLG_Attestations_selection.Dialog(self, date_debut=date_debut, date_fin=date_fin, dateNaiss=dateNaiss, listeActivites=listeActivites, listePrestations=listePrestations)
         reponse = dlg.ShowModal() 
         dlg.Destroy()

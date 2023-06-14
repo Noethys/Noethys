@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-16 Ivan LUCAS
@@ -22,15 +22,15 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent      
 
-        # Généralités
-        self.staticbox_generalites_staticbox = wx.StaticBox(self, -1, _(u"Généralités"))
+        # GÃ©nÃ©ralitÃ©s
+        self.staticbox_generalites_staticbox = wx.StaticBox(self, -1, _(u"GÃ©nÃ©ralitÃ©s"))
 
         self.label_nom = wx.StaticText(self, -1, _(u"Nom :"))
         self.ctrl_nom = wx.TextCtrl(self, -1, "")
         if nom != None :
             self.ctrl_nom.SetValue(nom)
 
-        self.label_abrege = wx.StaticText(self, -1, _(u"Abrégé :"))
+        self.label_abrege = wx.StaticText(self, -1, _(u"AbrÃ©gÃ© :"))
         self.ctrl_abrege = wx.TextCtrl(self, -1, "")
         if abrege != None :
             self.ctrl_abrege.SetValue(abrege)
@@ -66,10 +66,10 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.ctrl_nom.SetMinSize((300, -1))
-        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez ici l'intitulé du groupe (Ex : '3-6 ans', 'Grands'...)")))
-        self.ctrl_abrege.SetToolTip(wx.ToolTip(_(u"Saisissez ici le nom abrégé du groupe (Ex : '3-6', 'GRANDS'...")))
-        self.check_limitation_inscrits.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour définir un nombre d'inscrits maximal pour ce groupe (Utile uniquement pour les activités à durée limitée)")))
-        self.ctrl_limitation_inscrits.SetToolTip(wx.ToolTip(_(u"Saisissez ici une nombre d'inscrits maximal pour ce groupe (Utile uniquement pour les activités à durée limitée)")))
+        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez ici l'intitulÃ© du groupe (Ex : '3-6 ans', 'Grands'...)")))
+        self.ctrl_abrege.SetToolTip(wx.ToolTip(_(u"Saisissez ici le nom abrÃ©gÃ© du groupe (Ex : '3-6', 'GRANDS'...")))
+        self.check_limitation_inscrits.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour dÃ©finir un nombre d'inscrits maximal pour ce groupe (Utile uniquement pour les activitÃ©s Ã  durÃ©e limitÃ©e)")))
+        self.ctrl_limitation_inscrits.SetToolTip(wx.ToolTip(_(u"Saisissez ici une nombre d'inscrits maximal pour ce groupe (Utile uniquement pour les activitÃ©s Ã  durÃ©e limitÃ©e)")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider et fermer")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler et fermer")))
@@ -77,7 +77,7 @@ class Dialog(wx.Dialog):
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
 
-        # Généralités
+        # GÃ©nÃ©ralitÃ©s
         staticbox_generalites = wx.StaticBoxSizer(self.staticbox_generalites_staticbox, wx.VERTICAL)
 
         grid_sizer_generalites = wx.FlexGridSizer(rows=2, cols=2, vgap=10, hgap=10)
@@ -141,7 +141,7 @@ class Dialog(wx.Dialog):
             self.ctrl_nom.SetFocus()
             return
         if abrege == "" :
-            dlg = wx.MessageDialog(self, _(u"Etes-vous sûr de ne pas vouloir saisir de nom abrégé pour ce groupe ?"), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(self, _(u"Etes-vous sÃ»r de ne pas vouloir saisir de nom abrÃ©gÃ© pour ce groupe ?"), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
             reponse = dlg.ShowModal()
             dlg.Destroy()
             if reponse !=  wx.ID_YES :

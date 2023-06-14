@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-16 Ivan LUCAS
@@ -26,7 +26,7 @@ class Dialog(wx.Dialog):
         self.label_nom = wx.StaticText(self, wx.ID_ANY, _(u"Nom :"))
         self.ctrl_nom = wx.TextCtrl(self, wx.ID_ANY, u"")
         
-        self.label_prefixe = wx.StaticText(self, wx.ID_ANY, _(u"Préfixe :"))
+        self.label_prefixe = wx.StaticText(self, wx.ID_ANY, _(u"PrÃ©fixe :"))
         self.ctrl_prefixe = wx.TextCtrl(self, wx.ID_ANY, u"")
 
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
@@ -40,16 +40,16 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
 
-        # Init contrôles
+        # Init contrÃ´les
         if self.IDprefixe != None :
-            self.SetTitle(_(u"Modification d'un préfixe de facture"))
+            self.SetTitle(_(u"Modification d'un prÃ©fixe de facture"))
             self.Importation() 
         else :
-            self.SetTitle(_(u"Saisie d'un préfixe de facture"))
+            self.SetTitle(_(u"Saisie d'un prÃ©fixe de facture"))
 
     def __set_properties(self):
-        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez le nom du préfixe (interne au logiciel)")))
-        self.ctrl_prefixe.SetToolTip(wx.ToolTip(_(u"Saisissez le préfixe (en majuscules uniquement)")))
+        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez le nom du prÃ©fixe (interne au logiciel)")))
+        self.ctrl_prefixe.SetToolTip(wx.ToolTip(_(u"Saisissez le prÃ©fixe (en majuscules uniquement)")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
@@ -91,15 +91,15 @@ class Dialog(wx.Dialog):
     def OnBoutonOk(self, event): 
         if self.Sauvegarde()  == False :
             return
-        # Fermeture de la fenêtre
+        # Fermeture de la fenÃªtre
         self.EndModal(wx.ID_OK)
 
     def Sauvegarde(self):
-        """ Sauvegarde des données """
+        """ Sauvegarde des donnÃ©es """
         nom = self.ctrl_nom.GetValue() 
         prefixe = self.ctrl_prefixe.GetValue()
         
-        # Validation des données saisies
+        # Validation des donnÃ©es saisies
         if nom == "" :
             dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un nom !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
@@ -108,7 +108,7 @@ class Dialog(wx.Dialog):
             return False
 
         if prefixe == "" :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un préfixe !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un prÃ©fixe !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_prefixe.SetFocus()
@@ -116,7 +116,7 @@ class Dialog(wx.Dialog):
 
         for caract in prefixe :
             if caract not in "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ" :
-                dlg = wx.MessageDialog(self, _(u"Le préfixe ne peut comporter que des chiffres et des lettres majuscules !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Le prÃ©fixe ne peut comporter que des chiffres et des lettres majuscules !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_prefixe.SetFocus()

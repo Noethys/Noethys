@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-17 Ivan LUCAS
@@ -81,7 +81,7 @@ class CTRL(ULC.UltimateListCtrl):
             else :
                 bmp = None
 
-            # Mémorisation
+            # MÃ©morisation
             dictTemp = {"IDmodele" : IDmodele, "nomModele" : nomModele, "IDcategorie" : IDcategorie,
                         "nomCategorie": nomCategorie, "bmp" : bmp}
             self.liste_images.append(dictTemp)
@@ -90,7 +90,7 @@ class CTRL(ULC.UltimateListCtrl):
         dictPhotos = {}
         il = wx.ImageList(self.taillePhoto[0], self.taillePhoto[1], True)
 
-        # Image par défaut
+        # Image par dÃ©faut
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Categorie_produits_nb.png"), wx.BITMAP_TYPE_PNG)
         img = bmp.ConvertToImage()
         img = UTILS_Images.RecadreImg(img, self.taillePhoto)
@@ -102,7 +102,7 @@ class CTRL(ULC.UltimateListCtrl):
                 dictPhotos[dictImage["IDmodele"]] = il.Add(dictImage["bmp"])
         self.AssignImageList(il, wx.IMAGE_LIST_NORMAL)
 
-        # Création des items
+        # CrÃ©ation des items
         index = 0
         for dictImage in self.liste_images:
             label = dictImage["nomModele"]

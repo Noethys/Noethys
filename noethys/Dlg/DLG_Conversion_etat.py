@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-15 Ivan LUCAS
@@ -24,13 +24,13 @@ class CTRL_Etat(wx.Choice):
         wx.Choice.__init__(self, parent, -1, size=(-1, -1))
         self.parent = parent
         self.listeEtats = [
-            (None, _(u"-- Sélectionnez un état --")),
-            ("reservation", _(u"Réservation")),
+            (None, _(u"-- SÃ©lectionnez un Ã©tat --")),
+            ("reservation", _(u"RÃ©servation")),
             ("attente", _(u"Attente")),
             ("refus", _(u"Refus")),
-            ("present", _(u"Présence")),
-            ("absentj", _(u"Absence justifiée")),
-            ("absenti", _(u"Absence injustifiée")),
+            ("present", _(u"PrÃ©sence")),
+            ("absentj", _(u"Absence justifiÃ©e")),
+            ("absenti", _(u"Absence injustifiÃ©e")),
             ]
         self.MAJ()
 
@@ -60,9 +60,9 @@ class Dialog(wx.Dialog):
         self.parent = parent
 
         # Bandeau
-        titre = _(u"Convertir l'état des consommations")
+        titre = _(u"Convertir l'Ã©tat des consommations")
         self.SetTitle(titre)
-        intro = _(u"Sélectionnez l'état à convertir puis l'état souhaité. Vous pouvez également préciser les lignes à impacter.")
+        intro = _(u"SÃ©lectionnez l'Ã©tat Ã  convertir puis l'Ã©tat souhaitÃ©. Vous pouvez Ã©galement prÃ©ciser les lignes Ã  impacter.")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Calendrier_modifier.png")
 
         # Conversion
@@ -73,8 +73,8 @@ class Dialog(wx.Dialog):
 
         # Options
         self.staticbox_options = wx.StaticBox(self, -1, _(u"Options"))
-        self.radio_lignes_affichees = wx.RadioButton(self, -1, _(u"Toutes les lignes affichées"), style=wx.RB_GROUP)
-        self.radio_lignes_selectionnees = wx.RadioButton(self, -1, _(u"Toutes les lignes sélectionnées"))
+        self.radio_lignes_affichees = wx.RadioButton(self, -1, _(u"Toutes les lignes affichÃ©es"), style=wx.RB_GROUP)
+        self.radio_lignes_selectionnees = wx.RadioButton(self, -1, _(u"Toutes les lignes sÃ©lectionnÃ©es"))
 
         # Boutons
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
@@ -101,10 +101,10 @@ class Dialog(wx.Dialog):
             self.radio_lignes_selectionnees.SetValue(True)
 
     def __set_properties(self):
-        self.ctrl_etat_avant.SetToolTip(wx.ToolTip(_(u"Sélectionnez l'état à convertir. Seules les consommations ayant cet état seront converties.")))
-        self.ctrl_etat_apres.SetToolTip(wx.ToolTip(_(u"Sélectionnez l'état souhaité")))
-        self.radio_lignes_affichees.SetToolTip(wx.ToolTip(_(u"Sélectionnez cette option pour appliquer la conversion sur toutes les lignes affichées")))
-        self.radio_lignes_selectionnees.SetToolTip(wx.ToolTip(_(u"Sélectionnez cette option pour appliquer la conversion uniquement sur les lignes sélectionnées")))
+        self.ctrl_etat_avant.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez l'Ã©tat Ã  convertir. Seules les consommations ayant cet Ã©tat seront converties.")))
+        self.ctrl_etat_apres.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez l'Ã©tat souhaitÃ©")))
+        self.radio_lignes_affichees.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez cette option pour appliquer la conversion sur toutes les lignes affichÃ©es")))
+        self.radio_lignes_selectionnees.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez cette option pour appliquer la conversion uniquement sur les lignes sÃ©lectionnÃ©es")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
@@ -153,24 +153,24 @@ class Dialog(wx.Dialog):
         UTILS_Aide.Aide("Lagrilledesconsommations")
 
     def OnBoutonOk(self, event):
-        # Vérification des données saisies
+        # VÃ©rification des donnÃ©es saisies
         if self.ctrl_etat_avant.GetValeur() == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner un état à convertir !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sÃ©lectionner un Ã©tat Ã  convertir !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         if self.ctrl_etat_apres.GetValeur() == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner l'état souhaité !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sÃ©lectionner l'Ã©tat souhaitÃ© !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         if self.ctrl_etat_avant.GetValeur() == self.ctrl_etat_apres.GetValeur()  :
-            dlg = wx.MessageDialog(self, _(u"Les deux états sélectionnés doivent être différents !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Les deux Ã©tats sÃ©lectionnÃ©s doivent Ãªtre diffÃ©rents !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
-        # Mémorisation des paramètres
+        # MÃ©morisation des paramÃ¨tres
         etat_avant = self.ctrl_etat_avant.GetValeur()
         UTILS_Parametres.Parametres(mode="set", categorie="conversion_etat", nom="etat_avant", valeur=etat_avant)
         etat_apres = self.ctrl_etat_apres.GetValeur()
@@ -181,7 +181,7 @@ class Dialog(wx.Dialog):
         if self.radio_lignes_selectionnees.GetValue() == True :
             UTILS_Parametres.Parametres(mode="set", categorie="conversion_etat", nom="option_lignes", valeur="lignes_selectionnees")
 
-        # Fermeture de la fenêtre
+        # Fermeture de la fenÃªtre
         self.EndModal(wx.ID_OK)
     
     def GetDonnees(self):

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-17 Ivan LUCAS
@@ -26,40 +26,40 @@ class CTRL(CTRL_Propertygrid.CTRL):
 
     def Remplissage(self):
 
-        # Catégorie
+        # CatÃ©gorie
         self.Append(wxpg.PropertyCategory(_(u"Page")))
 
         # Orientation page
         propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Orientation de la page"), name="orientation", liste_choix=[("automatique", _(u"Automatique")), ("portrait", _(u"Portrait")), ("paysage", _(u"Paysage"))], valeur="automatique")
         propriete.SetEditor("EditeurChoix")
-        propriete.SetHelpString(_(u"Sélectionnez l'orientation de la page"))
+        propriete.SetHelpString(_(u"SÃ©lectionnez l'orientation de la page"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
 
-        # Catégorie
+        # CatÃ©gorie
         self.Append(wxpg.PropertyCategory(_(u"Lignes")))
 
         # Tri
-        liste_choix = [("nom", _(u"Nom")), ("prenom", _(u"Prénom")), ("age", _(u"Âge"))]
+        liste_choix = [("nom", _(u"Nom")), ("prenom", _(u"PrÃ©nom")), ("age", _(u"Ã‚ge"))]
         propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Tri"), name="tri", liste_choix=liste_choix, valeur="nom")
         propriete.SetEditor("EditeurChoix")
-        propriete.SetHelpString(_(u"Sélectionnez le tri"))
+        propriete.SetHelpString(_(u"SÃ©lectionnez le tri"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
         # Ordre
-        liste_choix = [("croissant", _(u"Croissant")), ("decroissant", _(u"Décroissant"))]
+        liste_choix = [("croissant", _(u"Croissant")), ("decroissant", _(u"DÃ©croissant"))]
         propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Ordre"), name="ordre", liste_choix=liste_choix, valeur="croissant")
         propriete.SetEditor("EditeurChoix")
-        propriete.SetHelpString(_(u"Sélectionnez l'ordre"))
+        propriete.SetHelpString(_(u"SÃ©lectionnez l'ordre"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
         # Afficher lignes vierges
         propriete = wxpg.IntProperty(label=_(u"Lignes vierges"), name="nbre_lignes_vierges", value=3)
         propriete.SetEditor("SpinCtrl")
-        propriete.SetHelpString(_(u"Nombre de lignes vierges à afficher en fin de liste"))
+        propriete.SetHelpString(_(u"Nombre de lignes vierges Ã  afficher en fin de liste"))
         propriete.SetAttribute("obligatoire", True)
         propriete.SetAttribute("Min", 0)
         self.Append(propriete)
@@ -76,37 +76,37 @@ class CTRL(CTRL_Propertygrid.CTRL):
             liste_choix.append((str(x), "%d pixels" % x))
         propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Hauteur de la ligne Individu"), name="hauteur_ligne_individu", liste_choix=liste_choix, valeur="automatique")
         propriete.SetEditor("EditeurChoix")
-        propriete.SetHelpString(_(u"Sélectionnez la hauteur de la ligne de l'individu (en pixels)"))
+        propriete.SetHelpString(_(u"SÃ©lectionnez la hauteur de la ligne de l'individu (en pixels)"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
         # Couleur du fond de titre
         propriete = wxpg.ColourProperty(label=_(u"Couleur ligne de titre"), name="couleur_fond_titre", value=wx.Colour(208, 208, 208) )
-        propriete.SetHelpString(_(u"Sélectionnez la couleur de fond de la ligne de titre"))
+        propriete.SetHelpString(_(u"SÃ©lectionnez la couleur de fond de la ligne de titre"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
-        # Couleur du fond d'entête de colonne
-        propriete = wxpg.ColourProperty(label=_(u"Couleur ligne des entêtes"), name="couleur_fond_entetes", value=wx.Colour(240, 240, 240) )
-        propriete.SetHelpString(_(u"Sélectionnez la couleur de fond de la ligne des entêtes"))
+        # Couleur du fond d'entÃªte de colonne
+        propriete = wxpg.ColourProperty(label=_(u"Couleur ligne des entÃªtes"), name="couleur_fond_entetes", value=wx.Colour(240, 240, 240) )
+        propriete.SetHelpString(_(u"SÃ©lectionnez la couleur de fond de la ligne des entÃªtes"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
         # Couleur du fond de total
         propriete = wxpg.ColourProperty(label=_(u"Couleur ligne de total"), name="couleur_fond_total", value=wx.Colour(208, 208, 208) )
-        propriete.SetHelpString(_(u"Sélectionnez la couleur de fond de la ligne de total"))
+        propriete.SetHelpString(_(u"SÃ©lectionnez la couleur de fond de la ligne de total"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
-        # Taille nom activité
-        propriete = wxpg.IntProperty(label=_(u"Taille de police du nom d'activité"), name="activite_taille_nom", value=5)
+        # Taille nom activitÃ©
+        propriete = wxpg.IntProperty(label=_(u"Taille de police du nom d'activitÃ©"), name="activite_taille_nom", value=5)
         propriete.SetEditor("SpinCtrl")
-        propriete.SetHelpString(_(u"Taille de police du nom d'activité"))
+        propriete.SetHelpString(_(u"Taille de police du nom d'activitÃ©"))
         propriete.SetAttribute("obligatoire", True)
         propriete.SetAttribute("Min", 0)
         self.Append(propriete)
 
-        # Catégorie
+        # CatÃ©gorie
         self.Append(wxpg.PropertyCategory(_(u"Colonne Photo")))
 
         # Afficher les photos
@@ -117,7 +117,7 @@ class CTRL(CTRL_Propertygrid.CTRL):
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
-        # Catégorie
+        # CatÃ©gorie
         self.Append(wxpg.PropertyCategory(_(u"Colonne Individu")))
 
         # Largeur colonne nom
@@ -126,41 +126,41 @@ class CTRL(CTRL_Propertygrid.CTRL):
             liste_choix.append((str(x), "%d pixels" % x))
         propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Largeur de la colonne"), name="largeur_colonne_nom", liste_choix=liste_choix, valeur="automatique")
         propriete.SetEditor("EditeurChoix")
-        propriete.SetHelpString(_(u"Sélectionnez la largeur de la colonne Nom de l'individu (en pixels)"))
+        propriete.SetHelpString(_(u"SÃ©lectionnez la largeur de la colonne Nom de l'individu (en pixels)"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
-        # Catégorie
-        self.Append(wxpg.PropertyCategory(_(u"Colonne Âge")))
+        # CatÃ©gorie
+        self.Append(wxpg.PropertyCategory(_(u"Colonne Ã‚ge")))
 
-        # Afficher l'âge des individus
+        # Afficher l'Ã¢ge des individus
         propriete = wxpg.BoolProperty(label=_(u"Afficher la colonne"), name="afficher_age", value=True)
-        propriete.SetHelpString(_(u"Cochez cette case pour afficher de la colonne de l'âge des individus"))
+        propriete.SetHelpString(_(u"Cochez cette case pour afficher de la colonne de l'Ã¢ge des individus"))
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
-        # Largeur colonne âge
+        # Largeur colonne Ã¢ge
         liste_choix = [("automatique", _(u"Automatique")),]
         for x in range(5, 305, 5):
             liste_choix.append((str(x), "%d pixels" % x))
         propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Largeur de la colonne"), name="largeur_colonne_age", liste_choix=liste_choix, valeur="automatique")
         propriete.SetEditor("EditeurChoix")
-        propriete.SetHelpString(_(u"Sélectionnez la largeur de la colonne Âge de l'individu (en pixels)"))
+        propriete.SetHelpString(_(u"SÃ©lectionnez la largeur de la colonne Ã‚ge de l'individu (en pixels)"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
-        # Catégorie
-        self.Append(wxpg.PropertyCategory(_(u"Colonnes des unités")))
+        # CatÃ©gorie
+        self.Append(wxpg.PropertyCategory(_(u"Colonnes des unitÃ©s")))
 
-        # Afficher les évènements
-        propriete = wxpg.BoolProperty(label=_(u"Afficher les évènements"), name="afficher_evenements", value=False)
-        propriete.SetHelpString(_(u"Cochez cette case pour afficher les évènements"))
+        # Afficher les Ã©vÃ¨nements
+        propriete = wxpg.BoolProperty(label=_(u"Afficher les Ã©vÃ¨nements"), name="afficher_evenements", value=False)
+        propriete.SetHelpString(_(u"Cochez cette case pour afficher les Ã©vÃ¨nements"))
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
-        # Afficher les étiquettes
-        propriete = wxpg.BoolProperty(label=_(u"Afficher les étiquettes"), name="afficher_etiquettes", value=False)
-        propriete.SetHelpString(_(u"Cochez cette case pour afficher les étiquettes"))
+        # Afficher les Ã©tiquettes
+        propriete = wxpg.BoolProperty(label=_(u"Afficher les Ã©tiquettes"), name="afficher_etiquettes", value=False)
+        propriete.SetHelpString(_(u"Cochez cette case pour afficher les Ã©tiquettes"))
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
@@ -170,30 +170,30 @@ class CTRL(CTRL_Propertygrid.CTRL):
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
-        # Largeur colonne unités
+        # Largeur colonne unitÃ©s
         liste_choix = [("automatique", _(u"Automatique")),]
         for x in range(5, 105, 5):
             liste_choix.append((str(x), "%d pixels" % x))
         propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Largeur de la colonne"), name="largeur_colonne_unite", liste_choix=liste_choix, valeur="automatique")
         propriete.SetEditor("EditeurChoix")
-        propriete.SetHelpString(_(u"Sélectionnez la largeur de chaque colonne unité (en pixels)"))
+        propriete.SetHelpString(_(u"SÃ©lectionnez la largeur de chaque colonne unitÃ© (en pixels)"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
-        # Catégorie
-        self.Append(wxpg.PropertyCategory(_(u"Colonnes personnalisées")))
+        # CatÃ©gorie
+        self.Append(wxpg.PropertyCategory(_(u"Colonnes personnalisÃ©es")))
 
-        # Largeur colonne unités
+        # Largeur colonne unitÃ©s
         liste_choix = []
         for x in range(5, 105, 5):
             liste_choix.append((str(x), "%d pixels" % x))
-        propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Largeur par défaut des colonnes"), name="largeur_colonne_perso", liste_choix=liste_choix, valeur="40")
+        propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Largeur par dÃ©faut des colonnes"), name="largeur_colonne_perso", liste_choix=liste_choix, valeur="40")
         propriete.SetEditor("EditeurChoix")
-        propriete.SetHelpString(_(u"Sélectionnez la largeur par défaut de toutes les colonnes personnalisées (en pixels)"))
+        propriete.SetHelpString(_(u"SÃ©lectionnez la largeur par dÃ©faut de toutes les colonnes personnalisÃ©es (en pixels)"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
-        # Catégorie
+        # CatÃ©gorie
         self.Append(wxpg.PropertyCategory(_(u"Colonne Informations")))
 
         # Afficher les informations
@@ -214,9 +214,9 @@ class CTRL(CTRL_Propertygrid.CTRL):
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
-        # Afficher les pièces manquantes
-        propriete = wxpg.BoolProperty(label=_(u"Afficher les pièces manquantes"), name="afficher_pieces_manquantes", value=False)
-        propriete.SetHelpString(_(u"Cochez cette case pour afficher les pièces manquantes"))
+        # Afficher les piÃ¨ces manquantes
+        propriete = wxpg.BoolProperty(label=_(u"Afficher les piÃ¨ces manquantes"), name="afficher_pieces_manquantes", value=False)
+        propriete.SetHelpString(_(u"Cochez cette case pour afficher les piÃ¨ces manquantes"))
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
@@ -226,7 +226,7 @@ class CTRL(CTRL_Propertygrid.CTRL):
             liste_choix.append((str(x), "%d pixels" % x))
         propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Largeur de la colonne"), name="largeur_colonne_informations", liste_choix=liste_choix, valeur="automatique")
         propriete.SetEditor("EditeurChoix")
-        propriete.SetHelpString(_(u"Sélectionnez la largeur de la colonne Informations (en pixels)"))
+        propriete.SetHelpString(_(u"SÃ©lectionnez la largeur de la colonne Informations (en pixels)"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
@@ -239,21 +239,21 @@ class CTRL(CTRL_Propertygrid.CTRL):
 
 
     def Validation(self):
-        """ Validation des données saisies """
-        # Vérifie que les données obligatoires ont été saisies
+        """ Validation des donnÃ©es saisies """
+        # VÃ©rifie que les donnÃ©es obligatoires ont Ã©tÃ© saisies
         for nom, valeur in self.GetPropertyValues().items():
             propriete = self.GetPropertyByName(nom)
             if self.GetPropertyAttribute(propriete, "obligatoire") == True:
                 if valeur == "" or valeur == None:
-                    dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement renseigner le paramètre '%s' !") % self.GetPropertyLabel(nom), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                    dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement renseigner le paramÃ¨tre '%s' !") % self.GetPropertyLabel(nom), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                     dlg.ShowModal()
                     dlg.Destroy()
                     return False
 
-        # Vérifie les tranches de QF perso
+        # VÃ©rifie les tranches de QF perso
         if self.GetPropertyByName("regroupement_principal").GetValue() == "qf_perso" :
             if self.GetPropertyByName("tranches_qf_perso").GetValue() == []:
-                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir au moins une tranche de QF personnalisée !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir au moins une tranche de QF personnalisÃ©e !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
@@ -261,19 +261,19 @@ class CTRL(CTRL_Propertygrid.CTRL):
         return True
 
     def Importation(self):
-        """ Importation des valeurs dans le contrôle """
+        """ Importation des valeurs dans le contrÃ´le """
         return False
 
     def GetParametres(self):
         return copy.deepcopy(self.GetPropertyValues())
 
     def SetParametres(self, dictParametres={}):
-        # Réinitialisation
+        # RÃ©initialisation
         if dictParametres == None :
             self.Reinitialisation(afficher_dlg=False)
             return
 
-        # Envoi des paramètres au Ctrl
+        # Envoi des paramÃ¨tres au Ctrl
         for nom, valeur in dictParametres.items():
             try :
                 propriete = self.GetPropertyByName(nom)

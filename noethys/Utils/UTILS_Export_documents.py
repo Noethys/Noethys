@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-12 Ivan LUCAS
@@ -18,14 +18,14 @@ import base64
 
 
 def Exporter(IDmodele=None, fichier="", depuisFichierDefaut=False):
-    """ Exportation d'un modèle de document """
+    """ Exportation d'un modÃ¨le de document """
     # Ouverture Base
     if depuisFichierDefaut == False :
         DB = GestionDB.DB()
     else :
         DB = GestionDB.DB(nomFichier=Chemins.GetStaticPath("Databases/Defaut.dat"), suffixe=None)
 
-    # Récupération des infos sur le modèle
+    # RÃ©cupÃ©ration des infos sur le modÃ¨le
     req = """SELECT nom, categorie, largeur, hauteur, IDfond, defaut
     FROM documents_modeles
     WHERE IDmodele=%d
@@ -34,13 +34,13 @@ def Exporter(IDmodele=None, fichier="", depuisFichierDefaut=False):
     listeDonnees = DB.ResultatReq()
     nom, categorie, largeur, hauteur, IDfond, defaut = listeDonnees[0]
 
-    # Récupération des champs de la table des objets
+    # RÃ©cupÃ©ration des champs de la table des objets
     listeColonnes = DB.GetListeChamps2("documents_objets")
     listeChamps = []
     for nomChamp, typeChamp in listeColonnes :
         listeChamps.append(nomChamp)
 
-    # Récupération des données à exporter
+    # RÃ©cupÃ©ration des donnÃ©es Ã  exporter
     req = """SELECT %s
     FROM documents_objets
     WHERE IDmodele=%d
@@ -51,7 +51,7 @@ def Exporter(IDmodele=None, fichier="", depuisFichierDefaut=False):
     # Fermeture Base
     DB.Close()
 
-    # Mémorisation des objets
+    # MÃ©morisation des objets
     listeObjets = []
     for donnees in listeDonnees :
         dictObjet = {}
@@ -68,14 +68,14 @@ def Exporter(IDmodele=None, fichier="", depuisFichierDefaut=False):
             if nomChamp == "image" and donnee != None:
                 donnee = base64.b64encode(donnee)
 
-            # Mémorisation
+            # MÃ©morisation
             if nomChamp not in ("IDmodele", "IDobjet") :
                 dictObjet[nomChamp] = donnee
 
             index += 1
         listeObjets.append(dictObjet)
 
-    # Mémorisation dans un dict
+    # MÃ©morisation dans un dict
     data = {
         "nom": nom,
         "categorie": categorie,
@@ -89,27 +89,27 @@ def Exporter(IDmodele=None, fichier="", depuisFichierDefaut=False):
     # Enregistrement dans un fichier Json
     if fichier != "" :
         if six.PY2:
-            fichier = fichier.encode("iso-8859-15")
+            fichier = fichier.encode("utf8")
         UTILS_Json.Ecrire(nom_fichier=fichier, data=data)
 
     return data
 
 
 def InfosFichier(fichier=""):
-    """ Récupère les infos principales sur un fichier """
+    """ RÃ©cupÃ¨re les infos principales sur un fichier """
     if six.PY2:
-        fichier = fichier.encode("iso-8859-15")
+        fichier = fichier.encode("utf8")
     data = UTILS_Json.Lire(fichier)
     return data
 
 
 def Importer(fichier="", dictDonnees={}, IDfond=None, defaut=0):
-    """ Importation d'un modèle de document depuis un fichier JSON ou un DICTIONNAIRE """
+    """ Importation d'un modÃ¨le de document depuis un fichier JSON ou un DICTIONNAIRE """
     DB = GestionDB.DB()
 
     if fichier != "" :
         if six.PY2:
-            fichier = fichier.encode("iso-8859-15")
+            fichier = fichier.encode("utf8")
         data = UTILS_Json.Lire(fichier)
     else :
         data = dictDonnees
@@ -157,10 +157,10 @@ def Importer(fichier="", dictDonnees={}, IDfond=None, defaut=0):
 # -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 def DupliquerModele(IDmodele=None, nom="", categorie=None) :
-    """ Dupliquer un modèle de doc """
+    """ Dupliquer un modÃ¨le de doc """
     DB = GestionDB.DB()
 
-    # Duplication du modèle
+    # Duplication du modÃ¨le
     conditions = "IDmodele=%d" % IDmodele
     dictModifications = {"nom" : nom}
     if categorie != None :
@@ -179,7 +179,7 @@ def DupliquerModele(IDmodele=None, nom="", categorie=None) :
 # -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 def ImporterDepuisFichierDefaut(IDmodele=None, nom=None, IDfond=1, defaut=0):
-    """ Importer un modèle de document depuis le fichier defaut.dat """
+    """ Importer un modÃ¨le de document depuis le fichier defaut.dat """
     try :
         dictDonnees = Exporter(IDmodele=IDmodele, depuisFichierDefaut=True)
         if nom != None : dictDonnees["nom"] = nom
@@ -198,7 +198,7 @@ if __name__ == "__main__":
     # Avec un dictionnaire depuis le fichier defaut.dat
     # ImporterDepuisFichierDefaut(IDmodele=13, nom=None, IDfond=1, defaut=0)
 
-    # Dupliquer un modèle
-    # DupliquerModele(IDmodele=5, nom=_(u"Attestation fiscale par défaut 2"), categorie="attestation_fiscale")
+    # Dupliquer un modÃ¨le
+    # DupliquerModele(IDmodele=5, nom=_(u"Attestation fiscale par dÃ©faut 2"), categorie="attestation_fiscale")
 
     pass

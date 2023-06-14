@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -36,9 +36,9 @@ def DateEngFr(textDate):
     return text
 
 def DateComplete(dateDD):
-    """ Transforme une date DD en date complète : Ex : lundi 15 janvier 2008 """
+    """ Transforme une date DD en date complÃ¨te : Ex : lundi 15 janvier 2008 """
     listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
-    listeMois = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
+    listeMois = (_(u"janvier"), _(u"fÃ©vrier"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"aoÃ»t"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"dÃ©cembre"))
     dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
     return dateComplete
 
@@ -46,7 +46,7 @@ def DateEngEnDateDD(dateEng):
     return datetime.date(int(dateEng[:4]), int(dateEng[5:7]), int(dateEng[8:10]))
         
 def PeriodeComplete(mois, annee):
-    listeMois = (_(u"Janvier"), _(u"Février"), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"Août"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"Décembre"))
+    listeMois = (_(u"Janvier"), _(u"FÃ©vrier"), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"AoÃ»t"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"DÃ©cembre"))
     periodeComplete = u"%s %d" % (listeMois[mois-1], annee)
     return periodeComplete
 
@@ -69,7 +69,7 @@ class Track(object):
         if self.numero_piece == None :
             self.numero_piece = u""
         self.montant = donnees[8]
-        self.montant_str = u"%.2f ¤ " % self.montant
+        self.montant_str = u"%.2f â‚¬ " % self.montant
         self.IDpayeur = donnees[9]
         self.nom_payeur = donnees[10]
         self.observations = donnees[11]
@@ -96,7 +96,7 @@ class Track(object):
         self.montant_ventilation = donnees[23]
         if self.montant_ventilation == None :
             self.montant_ventilation = 0.0
-        self.montant_ventilation_str = u"%.2f ¤ " % self.montant_ventilation
+        self.montant_ventilation_str = u"%.2f â‚¬ " % self.montant_ventilation
     
     def GetImageVentilation(self):
         if self.montant_ventilation == None :
@@ -138,16 +138,16 @@ class CTRL(HTL.HyperTreeList):
         DB.Close()
         self.IDcompte_payeur = listeDonnees[0][0]
 
-        # Création des colonnes
+        # CrÃ©ation des colonnes
         listeColonnes = [
             ( _(u"Date"), 180, wx.ALIGN_LEFT),
             ( _(u"Mode"), 130, wx.ALIGN_LEFT),
             ( _(u"Emetteur"), 130, wx.ALIGN_LEFT),
-            ( _(u"Numéro"), 70, wx.ALIGN_LEFT),
+            ( _(u"NumÃ©ro"), 70, wx.ALIGN_LEFT),
             ( _(u"Payeur"), 100, wx.ALIGN_LEFT),
             ( _(u"Montant"), 70, wx.ALIGN_LEFT),
-            ( _(u"Ventilé"), 80, wx.ALIGN_LEFT),
-            ( _(u"Dépôt"), 100, wx.ALIGN_LEFT),
+            ( _(u"VentilÃ©"), 80, wx.ALIGN_LEFT),
+            ( _(u"DÃ©pÃ´t"), 100, wx.ALIGN_LEFT),
             ]
         numColonne = 0
         for label, largeur, alignement in listeColonnes :
@@ -165,7 +165,7 @@ class CTRL(HTL.HyperTreeList):
         self.EnableSelectionVista(True)
                     
     def Importation(self):
-        """ Récupération des données """
+        """ RÃ©cupÃ©ration des donnÃ©es """
         listeID = None
         db = GestionDB.DB()
         req = """SELECT 
@@ -202,10 +202,10 @@ class CTRL(HTL.HyperTreeList):
 
 
     def MAJ(self):
-        """ Met à jour (redessine) tout le contrôle """
+        """ Met Ã  jour (redessine) tout le contrÃ´le """
 ##        self.Freeze()
         self.DeleteAllItems()
-        # Création de la racine
+        # CrÃ©ation de la racine
         self.root = self.AddRoot(_(u"Racine"))
         self.Remplissage()
 ##        self.Thaw() 
@@ -222,7 +222,7 @@ class CTRL(HTL.HyperTreeList):
         self.imgNon = il.Add(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Interdit.png"), wx.BITMAP_TYPE_PNG))
         self.AssignImageList(il)
         
-        # Création des branches
+        # CrÃ©ation des branches
         for track in listeTracks :
             
             # Niveau 1
@@ -264,7 +264,7 @@ class CTRL(HTL.HyperTreeList):
                         
 ##        self.ExpandAllChildren(self.root)
         
-        # Pour éviter le bus de positionnement des contrôles
+        # Pour Ã©viter le bus de positionnement des contrÃ´les
         self.GetMainWindow().CalculatePositions() 
         
         self.listeTracks = listeTracks

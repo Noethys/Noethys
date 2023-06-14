@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activitÈs
+# Application :    Noethys, gestion multi-activit√©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-18 Ivan LUCAS
@@ -27,8 +27,8 @@ from Dlg.DLG_Ouvertures import Track_tarif, Track_ligne
 class Page_introduction(Assistant.Page):
     def __init__(self, parent):
         Assistant.Page.__init__(self, parent)
-        self.Ajouter_question(titre=_(u"Bienvenue dans l'assistant de gÈnÈration d'une activitÈ de type sorties familiales."))
-        self.Ajouter_question(titre=_(u"Cliquez sur le bouton Suite pour commencer la saisie des donnÈes..."))
+        self.Ajouter_question(titre=_(u"Bienvenue dans l'assistant de g√©n√©ration d'une activit√© de type sorties familiales."))
+        self.Ajouter_question(titre=_(u"Cliquez sur le bouton Suite pour commencer la saisie des donn√©es..."))
 
     def Suite(self):
         return Page_generalites
@@ -38,9 +38,9 @@ class Page_introduction(Assistant.Page):
 class Page_generalites(Assistant.Page):
     def __init__(self, parent):
         Assistant.Page.__init__(self, parent)
-        self.Ajouter_rubrique(titre=_(u"GÈnÈralitÈs"))
-        self.Ajouter_question(code="nom", titre=_(u"Quel est le nom de l'activitÈ ?"), commentaire=_(u"Exemple : 'Sorties familiales'"), ctrl=Assistant.CTRL_Texte, obligatoire=True)
-        self.Ajouter_question(code="groupes_activites", titre=_(u"Cochez les groupes d'activitÈs associÈs ‡ cette activitÈ :"), commentaire=_(u"Les groupes d'activitÈs permettent une sÈlection plus rapide dans certaines fenÍtres de Noethys."), ctrl=Assistant.CTRL_Groupes_activite)
+        self.Ajouter_rubrique(titre=_(u"G√©n√©ralit√©s"))
+        self.Ajouter_question(code="nom", titre=_(u"Quel est le nom de l'activit√© ?"), commentaire=_(u"Exemple : 'Sorties familiales'"), ctrl=Assistant.CTRL_Texte, obligatoire=True)
+        self.Ajouter_question(code="groupes_activites", titre=_(u"Cochez les groupes d'activit√©s associ√©s √† cette activit√© :"), commentaire=_(u"Les groupes d'activit√©s permettent une s√©lection plus rapide dans certaines fen√™tres de Noethys."), ctrl=Assistant.CTRL_Groupes_activite)
 
     def Suite(self):
         return Page_responsable
@@ -66,18 +66,18 @@ class Page_renseignements(Assistant.Page_renseignements):
 class Page_conclusion(Assistant.Page):
     def __init__(self, parent):
         Assistant.Page.__init__(self, parent)
-        self.Ajouter_question(titre=_(u"FÈlicitations, vous avez terminÈ de paramÈtrer votre activitÈ !"))
-        self.Ajouter_question(titre=_(u"Cliquez maintenant sur le bouton Valider pour gÈnÈrer cette activitÈ."))
+        self.Ajouter_question(titre=_(u"F√©licitations, vous avez termin√© de param√©trer votre activit√© !"))
+        self.Ajouter_question(titre=_(u"Cliquez maintenant sur le bouton Valider pour g√©n√©rer cette activit√©."))
 
         texte = _(u"""<IMG SRC="%s">
-        AprËs la gÈnÈration de l'activitÈ, vous devrez aller dans le paramÈtrage de l'activitÈ > Onglet Calendrier
-        pour paramÈtrer les sorties. Celles-ci doivent Ítre enregistrÈes en tant qu'ÈvËnements dans Noethys. 
-        Pour saisir votre premiËre sortie depuis le calendrier des ouvertures, cliquez sur la case de la date souhaitÈe 
-        pour ouvrir l'unitÈ de consommation 'Sortie' puis cliquez sur le '+' de la case pour saisir une ou plusieurs sorties.
+        Apr√®s la g√©n√©ration de l'activit√©, vous devrez aller dans le param√©trage de l'activit√© > Onglet Calendrier
+        pour param√©trer les sorties. Celles-ci doivent √™tre enregistr√©es en tant qu'√©v√®nements dans Noethys. 
+        Pour saisir votre premi√®re sortie depuis le calendrier des ouvertures, cliquez sur la case de la date souhait√©e 
+        pour ouvrir l'unit√© de consommation 'Sortie' puis cliquez sur le '+' de la case pour saisir une ou plusieurs sorties.
         """) % Chemins.GetStaticPath("Images/16x16/Astuce.png")
         self.Ajouter_question(ctrl=Assistant.CTRL_Html, texte=texte, size=(-1, 50))
 
-        # Pour la crÈation du groupe unique
+        # Pour la cr√©ation du groupe unique
         self.parent.dict_valeurs["has_groupes"] = False
 
     def Suite(self):
@@ -85,7 +85,7 @@ class Page_conclusion(Assistant.Page):
         self.parent.Sauvegarde_standard(DB)
         IDactivite = self.parent.dict_valeurs["IDactivite"]
 
-        # UnitÈs de consommation
+        # Unit√©s de consommation
         listeIDunite = []
         listeDonnees = [
             ("IDactivite", IDactivite),
@@ -100,7 +100,7 @@ class Page_conclusion(Assistant.Page):
         IDunite = DB.ReqInsert("unites", listeDonnees)
         listeIDunite.append(IDunite)
 
-        # UnitÈ de remplissage
+        # Unit√© de remplissage
         listeIDuniteRemplissage = []
         listeDonnees = [
             ("IDactivite", IDactivite),
@@ -123,11 +123,11 @@ class Page_conclusion(Assistant.Page):
         listeDonnees = [("IDactivite", IDactivite), ("nom", _(u"Sortie"))]
         IDnom_tarif = DB.ReqInsert("noms_tarifs", listeDonnees)
 
-        # CatÈgories de tarifs
+        # Cat√©gories de tarifs
         listeCategoriesEtTarifs = []
 
-        # CatÈgorie unique
-        listeDonnees = [("IDactivite", IDactivite), ("nom", _(u"CatÈgorie unique"))]
+        # Cat√©gorie unique
+        listeDonnees = [("IDactivite", IDactivite), ("nom", _(u"Cat√©gorie unique"))]
         IDcategorie_tarif = DB.ReqInsert("categories_tarifs", listeDonnees)
         track_tarif = Track_tarif()
         listeCategoriesEtTarifs.append((IDcategorie_tarif, track_tarif))

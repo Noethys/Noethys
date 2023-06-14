@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -39,7 +39,7 @@ class CTRL_Groupes(CT.CustomTreeCtrl):
         self.Bind(CT.EVT_TREE_ITEM_CHECKED, self.OnCheck)
 
     def Activation(self, etat=True):
-        """ Active ou désactive le contrôle """
+        """ Active ou dÃ©sactive le contrÃ´le """
         self.activation = etat
         self.MAJ() 
 
@@ -60,17 +60,17 @@ class CTRL_Groupes(CT.CustomTreeCtrl):
         
         self.listeDonnees = self.Importation()
         self.DeleteAllItems()
-        self.root = self.AddRoot(_(u"Données"))
+        self.root = self.AddRoot(_(u"DonnÃ©es"))
         self.dictItems = {}
         
-        # Préparation des données
+        # PrÃ©paration des donnÃ©es
         dictDonnees = {}
         for IDgroupe, nomGroupe, ordreGroupe, IDactivite, nomActivite, dateFinActivite in self.listeDonnees :
             if (IDactivite in dictDonnees) == False :
                 dictDonnees[IDactivite] = {"nom" : nomActivite, "IDactivite" : IDactivite, "dateFinActivite" : dateFinActivite, "groupes" : []}
             dictDonnees[IDactivite]["groupes"].append((ordreGroupe, IDgroupe, nomGroupe))
 
-        # Tri des noms des activités par ordre alpha
+        # Tri des noms des activitÃ©s par ordre alpha
         listeActivites = []
         for IDactivite, dictActivite in dictDonnees.items() :
             listeActivites.append((dictActivite["dateFinActivite"], IDactivite))
@@ -79,10 +79,10 @@ class CTRL_Groupes(CT.CustomTreeCtrl):
         # Remplissage
         for dateFinActivite, IDactivite in listeActivites :
             
-            # Branche activité
+            # Branche activitÃ©
             dictActivite = dictDonnees[IDactivite]
             nomActivite = dictActivite["nom"]
-            if nomActivite == None : nomActivite = u"Activité inconnue"
+            if nomActivite == None : nomActivite = u"ActivitÃ© inconnue"
             brancheActivite = self.AppendItem(self.root, nomActivite, ct_type=1)
             dictData = {"type" : "activite", "IDactivite" : IDactivite, "nom" : nomActivite}
             self.SetPyData(brancheActivite, dictData)
@@ -111,7 +111,7 @@ class CTRL_Groupes(CT.CustomTreeCtrl):
         self.Coche(item=item)
     
     def Coche(self, item=None, etat=None):
-        """ Coche ou décoche un item """
+        """ Coche ou dÃ©coche un item """
         dictData = self.GetItemPyData(item)
         itemParent = self.GetItemParent(item)
         
@@ -136,7 +136,7 @@ class CTRL_Groupes(CT.CustomTreeCtrl):
                     self.CheckItem(itemParent, False)
         
     def GetCochesItem(self, item=None):
-        """ Renvoie la liste des sous items cochés d'un item parent """
+        """ Renvoie la liste des sous items cochÃ©s d'un item parent """
         listeItems = []
         itemTemp, cookie = self.GetFirstChild(item)
         for index in range(0, self.GetChildrenCount(item, recursively=False)) :
@@ -147,7 +147,7 @@ class CTRL_Groupes(CT.CustomTreeCtrl):
         return listeItems
     
     def GetGroupes(self):
-        """ Renvoie la liste des groupes cochés """
+        """ Renvoie la liste des groupes cochÃ©s """
         listeGroupes = []
         for item, dictData in self.dictItems.items() :
             if self.IsItemEnabled(item) and self.IsItemChecked(item) and dictData["type"] == "groupe" :
@@ -156,7 +156,7 @@ class CTRL_Groupes(CT.CustomTreeCtrl):
         return listeGroupes
         
     def SetGroupes(self, listeGroupes=[]):
-        """ Coche les groupes donnés """
+        """ Coche les groupes donnÃ©s """
         self.mode_importation = True
         for item, dictData in self.dictItems.items() :
             if dictData["type"] == "groupe" :
@@ -167,7 +167,7 @@ class CTRL_Groupes(CT.CustomTreeCtrl):
         self.mode_importation = False
     
     def SetActivites(self, listeActivites=[]):
-        """ Coche les activités """
+        """ Coche les activitÃ©s """
         for item, dictData in self.dictItems.items() :
             if dictData["type"] == "activite" :
                 if dictData["IDactivite"] in listeActivites :
@@ -273,7 +273,7 @@ class CTRL_Groupes_activites(wx.CheckListBox):
         self.parent.OnCheck() 
     
     def GetLabelsGroupes(self):
-        """ Renvoie les labels des groupes d'activités sélectionnés """
+        """ Renvoie les labels des groupes d'activitÃ©s sÃ©lectionnÃ©s """
         listeLabels = []
         index = 0
         for nomGroupe, IDtype_groupe_activite in self.listeDonnees :
@@ -303,7 +303,7 @@ class CTRL_Activites(wx.CheckListBox):
         self.dictIndex = {}
         index = 0
         for IDactivite, nom in self.listeDonnees :
-            if nom == None : nom = u"Activité inconnue"
+            if nom == None : nom = u"ActivitÃ© inconnue"
             self.Append(nom)
             self.dictIndex[index] = IDactivite
             self.dictActivites[IDactivite] = nom
@@ -358,16 +358,16 @@ class CTRL(wx.Panel):
         self.afficheToutes = afficheToutes
         self.modeGroupes = modeGroupes
         
-        # Contrôles
-        self.radio_toutes = wx.RadioButton(self, -1, _(u"Toutes les activités"), style=wx.RB_GROUP)
+        # ContrÃ´les
+        self.radio_toutes = wx.RadioButton(self, -1, _(u"Toutes les activitÃ©s"), style=wx.RB_GROUP)
         if self.afficheToutes == False :
             style = wx.RB_GROUP
         else :
             style = 0
-        self.radio_groupes_activites = wx.RadioButton(self, -1, _(u"Les groupes d'activités suivants :"), style=style)
+        self.radio_groupes_activites = wx.RadioButton(self, -1, _(u"Les groupes d'activitÃ©s suivants :"), style=style)
         self.ctrl_groupes_activites = CTRL_Groupes_activites(self)
         self.ctrl_groupes_activites.SetMinSize((200, 40))
-        self.radio_activites = wx.RadioButton(self, -1, _(u"Les activités suivantes :"))
+        self.radio_activites = wx.RadioButton(self, -1, _(u"Les activitÃ©s suivantes :"))
         
         self.ctrl_activites = CTRL_Activites(self)
         self.ctrl_activites.SetMinSize((200, 40))
@@ -406,7 +406,7 @@ class CTRL(wx.Panel):
         self.SetSizer(grid_sizer_base)
         grid_sizer_base.Fit(self)
         
-        # Init Contrôles
+        # Init ContrÃ´les
         self.ctrl_groupes_activites.Enable(self.radio_groupes_activites.GetValue())
         if self.afficheToutes == False :
             self.radio_toutes.Show(False)
@@ -420,16 +420,16 @@ class CTRL(wx.Panel):
         self.OnCheck()
     
     def Validation(self):
-        """ Vérifie que des données ont été sélectionnées """
+        """ VÃ©rifie que des donnÃ©es ont Ã©tÃ© sÃ©lectionnÃ©es """
         if self.afficheToutes == True and self.radio_toutes.GetValue() == True :
             return True
         if self.radio_groupes_activites.GetValue() == True and len(self.GetActivites()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune activité !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune activitÃ© !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
         if self.radio_activites.GetValue() == True and ((self.modeGroupes == False and len(self.GetActivites()) == 0) or (self.modeGroupes == True and len(self.GetGroupes()) == 0)) :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune activité !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune activitÃ© !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -445,8 +445,8 @@ class CTRL(wx.Panel):
             self.OnRadioActivites(None)
         
     def GetActivites(self):
-        """ Retourne la liste des IDactivité sélectionnés """
-        # Vérifie les activités sélectionnées
+        """ Retourne la liste des IDactivitÃ© sÃ©lectionnÃ©s """
+        # VÃ©rifie les activitÃ©s sÃ©lectionnÃ©es
         if self.radio_groupes_activites.GetValue() == True :
             listeActivites = self.ctrl_groupes_activites.GetIDcoches()
         else:
@@ -483,12 +483,12 @@ class CTRL(wx.Panel):
             pass
 
     def GetLabelActivites(self):
-        """ Renvoie les labels des groupes ou activités sélectionnées """
+        """ Renvoie les labels des groupes ou activitÃ©s sÃ©lectionnÃ©es """
         if self.radio_groupes_activites.GetValue() == True :
-            # Groupe d'activités
+            # Groupe d'activitÃ©s
             listeTemp = self.ctrl_groupes_activites.GetLabelsGroupes()
         else :
-            # Activités
+            # ActivitÃ©s
             listeTemp = []
             dictActivites = self.GetDictActivites()
             for IDactivite in self.GetActivites()  :
@@ -496,7 +496,7 @@ class CTRL(wx.Panel):
         return listeTemp
 
     def GetValeurs(self):
-        """ Retourne les valeurs sélectionnées """
+        """ Retourne les valeurs sÃ©lectionnÃ©es """
         if self.afficheToutes == True and self.radio_toutes.GetValue() == True :
             mode = "toutes"
             listeID = []

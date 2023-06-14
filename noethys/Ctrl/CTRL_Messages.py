@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -30,8 +30,8 @@ class Panel(wx.Panel):
         self.bouton_messages_supprimer = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Supprimer.png"), wx.BITMAP_TYPE_PNG))
         
         self.bouton_messages_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour saisir un message")))
-        self.bouton_messages_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le message sélectionné dans la liste")))
-        self.bouton_messages_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le message sélectionné dans la liste")))
+        self.bouton_messages_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le message sÃ©lectionnÃ© dans la liste")))
+        self.bouton_messages_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le message sÃ©lectionnÃ© dans la liste")))
         
         self.__do_layout()
         

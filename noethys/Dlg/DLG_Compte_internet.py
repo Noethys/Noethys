@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-18 Ivan LUCAS
@@ -31,19 +31,19 @@ class Dialog(wx.Dialog):
         self.dictDonneesInitiales = {}
 
         # Bandeau
-        intro = _(u"Sélectionnez les paramètres du compte internet.")
-        titre = _(u"Paramètres du compte internet")
+        intro = _(u"SÃ©lectionnez les paramÃ¨tres du compte internet.")
+        titre = _(u"ParamÃ¨tres du compte internet")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Connecthys.png")
         
         # Activation
         self.box_activation_staticbox = wx.StaticBox(self, -1, _(u"Activation"))
-        self.label_activation = wx.StaticText(self, -1, _(u"Compte activé :"))
+        self.label_activation = wx.StaticText(self, -1, _(u"Compte activÃ© :"))
         self.radio_activation_oui = wx.RadioButton(self, -1, _(u"Oui"), style=wx.RB_GROUP)
         self.radio_activation_non = wx.RadioButton(self, -1, _(u"Non"))
                 
         # Codes
-        self.box_codes_staticbox = wx.StaticBox(self, -1, _(u"Codes d'accès"))
+        self.box_codes_staticbox = wx.StaticBox(self, -1, _(u"Codes d'accÃ¨s"))
 
         self.label_identifiant = wx.StaticText(self, -1, _(u"Identifiant :"))
         self.ctrl_identifiant = wx.TextCtrl(self, -1, "")
@@ -76,18 +76,18 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
         
-        # Init contrôles
+        # Init contrÃ´les
         self.radio_activation_non.SetValue(True)
         if self.mode_virtuel == False :
             self.Importation()
 
     def __set_properties(self):
         self.radio_activation_oui.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour activer le compte internet")))
-        self.radio_activation_non.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour désactiver le compte internet")))
+        self.radio_activation_non.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour dÃ©sactiver le compte internet")))
         self.bouton_identifiant_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour autoriser la modification manuelle de l'identifiant")))
         self.bouton_mdp_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour autoriser la modification manuelle du mot de passe")))
-        self.bouton_identifiant_regenerer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour régénérer automatiquement un nouvel identifiant")))
-        self.bouton_mdp_regenerer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour régénérer automatiquement un nouveau mot de passe")))
+        self.bouton_identifiant_regenerer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour rÃ©gÃ©nÃ©rer automatiquement un nouvel identifiant")))
+        self.bouton_mdp_regenerer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour rÃ©gÃ©nÃ©rer automatiquement un nouveau mot de passe")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
@@ -157,7 +157,7 @@ class Dialog(wx.Dialog):
 
     def ActiveMdp(self, event):
         if "********" in self.ctrl_mdp.GetValue():
-            dlg = wx.MessageDialog(self, _(u"Attention, ce mot de passe a déjà été personnalisé par l'usager ! \n\nSouhaitez-vous vraiment modifier ce mot de passe ?"), _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Attention, ce mot de passe a dÃ©jÃ  Ã©tÃ© personnalisÃ© par l'usager ! \n\nSouhaitez-vous vraiment modifier ce mot de passe ?"), _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
             reponse = dlg.ShowModal()
             dlg.Destroy()
             if reponse != wx.ID_YES :
@@ -169,7 +169,7 @@ class Dialog(wx.Dialog):
         self.ctrl_mdp.SetFocus()
 
     def RegenererIdentifiant(self, event):
-        dlg = wx.MessageDialog(self, _(u"Vous êtes vraiment sûr de vouloir générer un nouvel identifiant ?"), _(u"Avertissement"), wx.YES_NO | wx.NO_DEFAULT | wx.CANCEL | wx.ICON_EXCLAMATION)
+        dlg = wx.MessageDialog(self, _(u"Vous Ãªtes vraiment sÃ»r de vouloir gÃ©nÃ©rer un nouvel identifiant ?"), _(u"Avertissement"), wx.YES_NO | wx.NO_DEFAULT | wx.CANCEL | wx.ICON_EXCLAMATION)
         reponse = dlg.ShowModal()
         dlg.Destroy()
         if reponse != wx.ID_YES:
@@ -180,13 +180,13 @@ class Dialog(wx.Dialog):
 
     def RegenererMdp(self, event):
         if "********" in self.ctrl_mdp.GetValue():
-            dlg = wx.MessageDialog(self, _(u"Attention, ce mot de passe a déjà été personnalisé par l'usager ! \n\nSouhaitez-vous vraiment modifier ce mot de passe ?"), _(u"Avertissement"), wx.YES_NO | wx.NO_DEFAULT | wx.CANCEL | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Attention, ce mot de passe a dÃ©jÃ  Ã©tÃ© personnalisÃ© par l'usager ! \n\nSouhaitez-vous vraiment modifier ce mot de passe ?"), _(u"Avertissement"), wx.YES_NO | wx.NO_DEFAULT | wx.CANCEL | wx.ICON_EXCLAMATION)
             reponse = dlg.ShowModal()
             dlg.Destroy()
             if reponse != wx.ID_YES:
                 return False
 
-        dlg = wx.MessageDialog(self, _(u"Vous êtes vraiment sûr de vouloir générer un nouveau mot de passe ?"), _(u"Avertissement"), wx.YES_NO | wx.NO_DEFAULT | wx.CANCEL | wx.ICON_EXCLAMATION)
+        dlg = wx.MessageDialog(self, _(u"Vous Ãªtes vraiment sÃ»r de vouloir gÃ©nÃ©rer un nouveau mot de passe ?"), _(u"Avertissement"), wx.YES_NO | wx.NO_DEFAULT | wx.CANCEL | wx.ICON_EXCLAMATION)
         reponse = dlg.ShowModal()
         dlg.Destroy()
         if reponse != wx.ID_YES:
@@ -197,7 +197,7 @@ class Dialog(wx.Dialog):
         self.ctrl_mdp.SetValue(internet_mdp)
 
     def Importation(self):
-        """ Importation des données """
+        """ Importation des donnÃ©es """
         if self.IDfamille == None and self.IDutilisateur == None :
             return
 
@@ -236,20 +236,20 @@ class Dialog(wx.Dialog):
 
         # Validation
         if len(dictDonnees["internet_identifiant"]) < 7 and dictDonnees["internet_identifiant"] != "demo" :
-            dlg = wx.MessageDialog(self, _(u"L'identifiant est vraiment court.\n\nSouhaitez-vous tout de même le valider ?"), _(u"Avertissement"), wx.YES_NO | wx.NO_DEFAULT | wx.CANCEL | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"L'identifiant est vraiment court.\n\nSouhaitez-vous tout de mÃªme le valider ?"), _(u"Avertissement"), wx.YES_NO | wx.NO_DEFAULT | wx.CANCEL | wx.ICON_EXCLAMATION)
             reponse = dlg.ShowModal()
             dlg.Destroy()
             if reponse != wx.ID_YES:
                 return False
 
         if len(dictDonnees["internet_mdp"]) < 7 and dictDonnees["internet_mdp"] != "demo" :
-            dlg = wx.MessageDialog(self, _(u"Le mot de passe est vraiment court.\n\nSouhaitez-vous tout de même le valider ?"), _(u"Avertissement"), wx.YES_NO | wx.NO_DEFAULT | wx.CANCEL | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Le mot de passe est vraiment court.\n\nSouhaitez-vous tout de mÃªme le valider ?"), _(u"Avertissement"), wx.YES_NO | wx.NO_DEFAULT | wx.CANCEL | wx.ICON_EXCLAMATION)
             reponse = dlg.ShowModal()
             dlg.Destroy()
             if reponse != wx.ID_YES:
                 return False
 
-        # Vérifie que l'identifiant n'a pas déjà été attribué à un autre utilisateur ou une autre famille
+        # VÃ©rifie que l'identifiant n'a pas dÃ©jÃ  Ã©tÃ© attribuÃ© Ã  un autre utilisateur ou une autre famille
         DB = GestionDB.DB()
         if self.IDfamille != None :
             req = u"""SELECT IDfamille, internet_identifiant
@@ -259,7 +259,7 @@ class Dialog(wx.Dialog):
             listeDonnees = DB.ResultatReq()
             DB.Close()
             if len(listeDonnees) > 0 :
-                dlg = wx.MessageDialog(self, _(u"Cet identifiant a déjà été attribué à %d famille(s) !") % len(listeDonnees), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Cet identifiant a dÃ©jÃ  Ã©tÃ© attribuÃ© Ã  %d famille(s) !") % len(listeDonnees), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
@@ -272,7 +272,7 @@ class Dialog(wx.Dialog):
             listeDonnees = DB.ResultatReq()
             DB.Close()
             if len(listeDonnees) > 0 :
-                dlg = wx.MessageDialog(self, _(u"Cet identifiant a déjà été attribué à %d utilisateur(s) !") % len(listeDonnees), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Cet identifiant a dÃ©jÃ  Ã©tÃ© attribuÃ© Ã  %d utilisateur(s) !") % len(listeDonnees), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False

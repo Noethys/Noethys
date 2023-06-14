@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-15 Ivan LUCAS
@@ -21,7 +21,7 @@ from Utils import UTILS_Dates
 from Utils.UTILS_Decimal import FloatToDecimal as FloatToDecimal
 
 from Utils import UTILS_Config
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"â‚¬")
 
 from Utils import UTILS_Titulaires
 from Utils import UTILS_Utilisateurs
@@ -81,13 +81,13 @@ class ListView(FastObjectListView):
         listeListeView = []
         self.dictUnitesConso = {}
         
-        # Récupération des données        
+        # RÃ©cupÃ©ration des donnÃ©es        
         DB = GestionDB.DB()
 
         liste_inscriptions = None
         if self.action != None and self.action["action"] in ("modification", "suppression", "etat"):
 
-            # Formatage de la condition Unités
+            # Formatage de la condition UnitÃ©s
             liste_unites = []
             for unite in self.action["unites"] :
                 liste_unites.append(unite["IDunite"])
@@ -132,7 +132,7 @@ class ListView(FastObjectListView):
         for IDinscription, IDindividu, nom, prenom, IDfamille, IDcompte_payeur, IDcategorie_tarif, nomCategorieTarif, IDgroupe, nomGroupe in listeInscrits :
 
             if liste_inscriptions == None or IDinscription in liste_inscriptions :
-                # Mémorisation
+                # MÃ©morisation
                 dictTemp = {
                     "IDinscription" : IDinscription, "IDindividu" : IDindividu, "nom" : nom, "prenom" : prenom, "IDfamille" : IDfamille, "IDcompte_payeur" : IDcompte_payeur,
                     "IDcategorie_tarif" : IDcategorie_tarif, "nomCategorieTarif" : nomCategorieTarif, "IDgroupe" : IDgroupe, "nomGroupe" : nomGroupe,
@@ -163,17 +163,17 @@ class ListView(FastObjectListView):
         self.oddRowsBackColor = UTILS_Interface.GetValeur("couleur_tres_claire", wx.Colour(240, 251, 237))
         self.evenRowsBackColor = "#FFFFFF" # Vert
         
-        # Paramètres ListView
+        # ParamÃ¨tres ListView
         self.useExpansionColumn = True
         
-        # Préparation des colonnes
+        # PrÃ©paration des colonnes
         listeColonnes = [
             ColumnDefn(u"", "left", 0, "IDindividu", typeDonnee="entier"),
             ColumnDefn(_(u""), "left", 20, "statut", typeDonnee="texte", imageGetter=GetImageStatut),
             ColumnDefn(_(u"Individu"), "left", 170, "nomCompletIndividu", typeDonnee="texte"),
             ColumnDefn(_(u"Famille"), "left", 250, "titulaires", typeDonnee="texte"),
             ColumnDefn(_(u"Groupe"), "left", 120, "nomGroupe", typeDonnee="texte"),
-            ColumnDefn(_(u"Catégorie de tarif"), "left", 150, "nom_categorie_tarif", typeDonnee="texte"),
+            ColumnDefn(_(u"CatÃ©gorie de tarif"), "left", 150, "nom_categorie_tarif", typeDonnee="texte"),
             ]
                 
         self.SetColumns(listeColonnes)
@@ -209,7 +209,7 @@ class ListView(FastObjectListView):
         if len(self.Selection()) > 0 :
             ID = self.Selection()[0].IDfamille
         
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Ouverture fiche famille
@@ -229,8 +229,8 @@ class ListView(FastObjectListView):
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.CocheTout, id=70)
 
-        # Item Tout décocher
-        item = wx.MenuItem(menuPop, 80, _(u"Tout décocher"))
+        # Item Tout dÃ©cocher
+        item = wx.MenuItem(menuPop, 80, _(u"Tout dÃ©cocher"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Decocher.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -239,7 +239,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
 
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
+        item = wx.MenuItem(menuPop, 40, _(u"AperÃ§u avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -309,7 +309,7 @@ class ListView(FastObjectListView):
     def OuvrirFicheFamille(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_fiche", "consulter") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune fiche famille à ouvrir !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune fiche famille Ã  ouvrir !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return

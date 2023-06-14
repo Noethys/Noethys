@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-15 Ivan LUCAS
@@ -23,8 +23,8 @@ class Panel(wx.Panel):
         self.parent = parent
         self.clsbase = clsbase
 
-        # Mensualités
-        self.staticbox_mensualites_staticbox = wx.StaticBox(self, -1, _(u"Récapitulatif"))
+        # MensualitÃ©s
+        self.staticbox_mensualites_staticbox = wx.StaticBox(self, -1, _(u"RÃ©capitulatif"))
         self.ctrl_recapitulatif = OL_Contratspsu_recapitulatif.ListView(self, id=-1, clsbase=clsbase, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
 
         self.bouton_recapitulatif_apercu = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Apercu.png"), wx.BITMAP_TYPE_ANY))
@@ -39,13 +39,13 @@ class Panel(wx.Panel):
 
 
     def __set_properties(self):
-        self.bouton_recapitulatif_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher un aperçu avant impression de la liste")))
+        self.bouton_recapitulatif_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher un aperÃ§u avant impression de la liste")))
         self.bouton_recapitulatif_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer la liste")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
         
-        # Mensualités
+        # MensualitÃ©s
         staticbox_recapitulatif = wx.StaticBoxSizer(self.staticbox_mensualites_staticbox, wx.VERTICAL)
         grid_sizer_recapitulatif = wx.FlexGridSizer(rows=2, cols=2, vgap=5, hgap=5)
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-13 Ivan LUCAS
@@ -102,7 +102,7 @@ class CTRL_Label_prestation(wx.Panel):
         for code, label in self.listeChoix:
             choices.append(label)
         self.ctrl_choix = wx.Choice(self, -1, choices=choices)
-        self.ctrl_choix.SetToolTip(wx.ToolTip(_(u"Sélectionnez le label de la prestation")))
+        self.ctrl_choix.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez le label de la prestation")))
         self.ctrl_autre = wx.TextCtrl(self, -1, "")
 
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
@@ -149,7 +149,7 @@ class CTRL_Label_prestation(wx.Panel):
 
     def Validation(self):
         if self.GetCodeSelection() == "autre:":
-            dlg = wx.MessageDialog(self, _(u"Vous avez sélectionné un label de prestation personnalisé mais sans saisir le label souhaité !"),_(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous avez sÃ©lectionnÃ© un label de prestation personnalisÃ© mais sans saisir le label souhaitÃ© !"),_(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_autre.SetFocus()
@@ -165,7 +165,7 @@ class Panel(wx.Panel):
         self.parent = parent
         self.cacher_dates = cacher_dates
 
-        # Validité
+        # ValiditÃ©
         self.label_date_debut = wx.StaticText(self, -1, _(u"A partir du :"))
         self.ctrl_date_debut = CTRL_Saisie_date.Date2(self)
         self.check_date_fin = wx.CheckBox(self, -1, _(u"Jusqu'au"))
@@ -185,15 +185,15 @@ class Panel(wx.Panel):
         self.label_observations = wx.StaticText(self, -1, _(u"Observations :"))
         self.ctrl_observations = wx.TextCtrl(self, -1, u"", style=wx.TE_MULTILINE) 
 
-        # Catégories de tarifs
-        self.label_categories = wx.StaticText(self, -1, _(u"Catégories :"))
+        # CatÃ©gories de tarifs
+        self.label_categories = wx.StaticText(self, -1, _(u"CatÃ©gories :"))
         self.ctrl_categories = CTRL_Categories(self, IDactivite)
         self.ctrl_categories.SetMinSize((150, 50))
 
         # Label de la prestation
         self.label_label_prestation = wx.StaticText(self, -1, _(u"Label prestation :"))
         listeChoix = [
-            ("nom_tarif", _(u"Nom du tarif (Par défaut)")),
+            ("nom_tarif", _(u"Nom du tarif (Par dÃ©faut)")),
             ("description_tarif", _(u"Description du tarif")),
             ]
         self.ctrl_label_prestation = CTRL_Label_prestation(self, listeChoix=listeChoix)
@@ -257,12 +257,12 @@ class Panel(wx.Panel):
         self.grid_sizer_base = grid_sizer_base
                 
         # Tooltips
-        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de début de validité")))
-        self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de fin de validité")))
+        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de dÃ©but de validitÃ©")))
+        self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de fin de validitÃ©")))
         self.ctrl_description.SetToolTip(wx.ToolTip(_(u"Saisissez une description explicite pour ce tarif [Optionnel]")))
-        self.ctrl_categories.SetToolTip(wx.ToolTip(_(u"Cochez les catégories de tarifs à rattacher à ce tarif")))
+        self.ctrl_categories.SetToolTip(wx.ToolTip(_(u"Cochez les catÃ©gories de tarifs Ã  rattacher Ã  ce tarif")))
         self.ctrl_tva.SetToolTip(wx.ToolTip(_(u"Saisissez le taux de TVA inclus [Optionnel]")))
-        self.ctrl_code_comptable.SetToolTip(wx.ToolTip(_(u"Saisissez le code comptable de cette prestation si vous souhaitez utiliser l'export vers les logiciels de comptabilité [Optionnel]")))
+        self.ctrl_code_comptable.SetToolTip(wx.ToolTip(_(u"Saisissez le code comptable de cette prestation si vous souhaitez utiliser l'export vers les logiciels de comptabilitÃ© [Optionnel]")))
 
         # Binds
         self.Bind(wx.EVT_CHECKBOX, self.OnCheckDateFin, self.check_date_fin)
@@ -356,14 +356,14 @@ class Panel(wx.Panel):
         return self.ctrl_code_produit_local.GetValue()
 
     def Validation(self):
-        # Vérification des dates de validité
+        # VÃ©rification des dates de validitÃ©
         if not self.cacher_dates :
 
             validation = self.ctrl_date_debut.FonctionValiderDate()
             if validation == False :
                 return False
             if self.ctrl_date_debut.GetDate() == None :
-                dlg = wx.MessageDialog(self, _(u"Vous devez saisir une date de début de validité !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous devez saisir une date de dÃ©but de validitÃ© !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_date_debut.SetFocus()
@@ -374,33 +374,33 @@ class Panel(wx.Panel):
                 if validation == False :
                     return False
                 if self.ctrl_date_fin.GetDate() == None :
-                    dlg = wx.MessageDialog(self, _(u"Vous devez saisir une date de fin de validité !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
+                    dlg = wx.MessageDialog(self, _(u"Vous devez saisir une date de fin de validitÃ© !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
                     dlg.ShowModal()
                     dlg.Destroy()
                     self.ctrl_date_fin.SetFocus()
                     return False
                 if self.ctrl_date_fin.GetDate() < self.ctrl_date_debut.GetDate() :
-                    dlg = wx.MessageDialog(self, _(u"Vous devez saisir une date de fin supérieure à la date de début !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
+                    dlg = wx.MessageDialog(self, _(u"Vous devez saisir une date de fin supÃ©rieure Ã  la date de dÃ©but !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
                     dlg.ShowModal()
                     dlg.Destroy()
                     self.ctrl_date_fin.SetFocus()
                     return False
 
-        # Vérifie que des catégories de tarifs ont été cochées
+        # VÃ©rifie que des catÃ©gories de tarifs ont Ã©tÃ© cochÃ©es
         listeCategories = self.ctrl_categories.GetIDcoches()
         if self.ctrl_categories.IsShown() and len(listeCategories) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez coché aucune catégorie de tarifs.\nCe tarif sera donc inactif pour le moment...\n\nVoulez-vous quand-même continuer ?") , _(u"Erreur"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez cochÃ© aucune catÃ©gorie de tarifs.\nCe tarif sera donc inactif pour le moment...\n\nVoulez-vous quand-mÃªme continuer ?") , _(u"Erreur"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
             reponse = dlg.ShowModal() 
             dlg.Destroy()
             if reponse != wx.ID_YES :
                 return False
 
-        # Vérifie la valeur du label de prestation
+        # VÃ©rifie la valeur du label de prestation
         if self.ctrl_label_prestation.Validation() == False :
             return False
 
         if self.GetLabelPrestation() == "description_tarif" and self.GetDescription() == "" :
-            dlg = wx.MessageDialog(self, _(u"Vous avez sélectionné un label de prestation 'Description du tarif' mais sans saisir de description !"), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous avez sÃ©lectionnÃ© un label de prestation 'Description du tarif' mais sans saisir de description !"), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_description.SetFocus()

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activitÈs
+# Application :    Noethys, gestion multi-activit√©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -33,7 +33,7 @@ class Track(object):
     
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # RÈcupÈration des paramËtres perso
+        # R√©cup√©ration des param√®tres perso
         self.selectionID = None
         self.selectionTrack = None
         self.criteres = ""
@@ -54,7 +54,7 @@ class ListView(FastObjectListView):
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
-        """ RÈcupÈration des donnÈes """
+        """ R√©cup√©ration des donn√©es """
         listeID = None
         db = GestionDB.DB()
         req = """SELECT IDniveau, ordre, nom, abrege
@@ -87,7 +87,7 @@ class ListView(FastObjectListView):
             ColumnDefn(_(u"ID"), "left", 0, "IDniveau", typeDonnee="entier"),
             ColumnDefn(_(u"Ordre"), "center", 0, "ordre", typeDonnee="entier"), 
             ColumnDefn(_(u"Nom du niveau"), "left", 290, "nom", typeDonnee="texte", isSpaceFilling=True), 
-            ColumnDefn(_(u"AbrÈgÈ"), "left", 110, "abrege", typeDonnee="texte"), 
+            ColumnDefn(_(u"Abr√©g√©"), "left", 110, "abrege", typeDonnee="texte"), 
             ]
         
         self.SetColumns(liste_Colonnes)
@@ -105,7 +105,7 @@ class ListView(FastObjectListView):
             self.selectionTrack = None
         self.InitModel()
         self.InitObjectListView()
-        # SÈlection d'un item
+        # S√©lection d'un item
         if self.selectionTrack != None :
             self.SelectObject(self.selectionTrack, deselectOthers=True, ensureVisible=True)
         self.selectionID = None
@@ -123,7 +123,7 @@ class ListView(FastObjectListView):
             noSelection = False
             ID = self.Selection()[0].IDniveau
                 
-        # CrÈation du menu contextuel
+        # Cr√©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Ajouter
@@ -154,15 +154,15 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
         
         # Item Deplacer vers le haut
-        item = wx.MenuItem(menuPop, 40, _(u"DÈplacer vers le haut"))
+        item = wx.MenuItem(menuPop, 40, _(u"D√©placer vers le haut"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Fleche_haut.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Monter, id=40)
         if noSelection == True : item.Enable(False)
         
-        # Item DÈplacer vers le bas
-        item = wx.MenuItem(menuPop, 50, _(u"DÈplacer vers le bas"))
+        # Item D√©placer vers le bas
+        item = wx.MenuItem(menuPop, 50, _(u"D√©placer vers le bas"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Fleche_bas.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -172,7 +172,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"AperÁu avant impression"))
+        item = wx.MenuItem(menuPop, 40, _(u"Aper√ßu avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -201,7 +201,7 @@ class ListView(FastObjectListView):
 
     def Ajouter(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_niveaux_scolaires", "creer") == False : return
-        # Recherche numÈro d'ordre ‡ appliquer
+        # Recherche num√©ro d'ordre √† appliquer
         listeTemp = []
         for track in self.donnees :
             listeTemp.append(track.ordre)
@@ -229,7 +229,7 @@ class ListView(FastObjectListView):
     def Modifier(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_niveaux_scolaires", "modifier") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucun niveau scolaire ‡ modifier dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucun niveau scolaire √† modifier dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -253,13 +253,13 @@ class ListView(FastObjectListView):
     def Supprimer(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_niveaux_scolaires", "supprimer") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucun niveau scolaire ‡ supprimer dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucun niveau scolaire √† supprimer dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         IDniveau = self.Selection()[0].IDniveau
 
-        # VÈrifie que ce niveau n'a pas dÈj‡ ÈtÈ attribuÈ ‡ une classe
+        # V√©rifie que ce niveau n'a pas d√©j√† √©t√© attribu√© √† une classe
         DB = GestionDB.DB()
         req = """SELECT IDclasse, niveaux
         FROM classes 
@@ -276,12 +276,12 @@ class ListView(FastObjectListView):
                         nbreClasses += 1
         
         if nbreClasses > 0 :
-            dlg = wx.MessageDialog(self, _(u"Ce niveau scolaire a dÈj‡ ÈtÈ rattachÈ ‡ %d classes.\nVous ne pouvez donc le supprimer.") % nbreClasses, _(u"Avertissement"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Ce niveau scolaire a d√©j√† √©t√© rattach√© √† %d classes.\nVous ne pouvez donc le supprimer.") % nbreClasses, _(u"Avertissement"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
-        # VÈrifie que ce niveau n'a pas dÈj‡ ÈtÈ attribuÈ ‡ une scolaritÈ
+        # V√©rifie que ce niveau n'a pas d√©j√† √©t√© attribu√© √† une scolarit√©
         DB = GestionDB.DB()
         req = """SELECT COUNT(IDindividu)
         FROM scolarite 
@@ -291,7 +291,7 @@ class ListView(FastObjectListView):
         nbreIndividus = int(DB.ResultatReq()[0][0])
         DB.Close()
         if nbreIndividus > 0 :
-            dlg = wx.MessageDialog(self, _(u"Ce niveau scolaire a dÈj‡ ÈtÈ rattachÈ ‡ %d individus.\nVous ne pouvez donc le supprimer.") % nbreIndividus, _(u"Avertissement"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Ce niveau scolaire a d√©j√† √©t√© rattach√© √† %d individus.\nVous ne pouvez donc le supprimer.") % nbreIndividus, _(u"Avertissement"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -318,7 +318,7 @@ class ListView(FastObjectListView):
     def Monter(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_niveaux_scolaires", "modifier") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucun niveau scolaire dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucun niveau scolaire dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -340,7 +340,7 @@ class ListView(FastObjectListView):
     def Descendre(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_niveaux_scolaires", "modifier") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucun niveau scolaire dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucun niveau scolaire dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -372,7 +372,7 @@ class DLG_Saisie(wx.Dialog):
         if nom != None :
             self.ctrl_nom.SetValue(nom)
             
-        self.label_abrege = wx.StaticText(self, -1, _(u"AbrÈgÈ :"))
+        self.label_abrege = wx.StaticText(self, -1, _(u"Abr√©g√© :"))
         self.ctrl_abrege = wx.TextCtrl(self, -1, "", size=(80, -1))
         if abrege !=None :
             self.ctrl_abrege.SetValue(abrege)
@@ -421,13 +421,13 @@ class DLG_Saisie(wx.Dialog):
         nom = self.ctrl_nom.GetValue()
         abrege = self.ctrl_abrege.GetValue()
         if nom == "" :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez saisi aucun nom de niveau !\nExemple : 'Cours prÈparatoire'"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez saisi aucun nom de niveau !\nExemple : 'Cours pr√©paratoire'"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_nom.SetFocus()
             return
         if abrege == "" :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez saisi aucun abrÈgÈ de niveau !\nExemple : 'CP'"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez saisi aucun abr√©g√© de niveau !\nExemple : 'CP'"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_abrege.SetFocus()

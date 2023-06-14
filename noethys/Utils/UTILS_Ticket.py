@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-13 Ivan LUCAS
@@ -37,14 +37,14 @@ def Impression(lignes=[], imprimante=None, titre=_(u"Ticket"), nomPolice="Arial"
     if len(lignes) == 0 : 
         return
 
-    # Vérifie que les librairies windows ont bien été chargées
+    # VÃ©rifie que les librairies windows ont bien Ã©tÃ© chargÃ©es
     if LIB_CHARGEES == False :
-        dlg = wx.MessageDialog(None, _(u"L'outil d'impression de ticket ne peut pas être chargé. Ce problème sera sûrement résolu en téléchargeant le Package redistribuable Microsoft Visual C++ 2008 (x86) de Microsoft. Rendez-vous sur http://www.microsoft.com/fr-fr/download/details.aspx?id=29."), _(u"Erreur"), wx.OK | wx.ICON_ERROR)
+        dlg = wx.MessageDialog(None, _(u"L'outil d'impression de ticket ne peut pas Ãªtre chargÃ©. Ce problÃ¨me sera sÃ»rement rÃ©solu en tÃ©lÃ©chargeant le Package redistribuable Microsoft Visual C++ 2008 (x86) de Microsoft. Rendez-vous sur http://www.microsoft.com/fr-fr/download/details.aspx?id=29."), _(u"Erreur"), wx.OK | wx.ICON_ERROR)
         dlg.ShowModal()
         dlg.Destroy()
         return
 
-    # Sélection de l'imprimante
+    # SÃ©lection de l'imprimante
     if imprimante != None :
         if imprimante not in GetListeImprimantes() :
             imprimante = None
@@ -62,7 +62,7 @@ def Impression(lignes=[], imprimante=None, titre=_(u"Ticket"), nomPolice="Arial"
     dc.StartDoc(titre)
     dc.StartPage() 
     
-    # Création des lignes
+    # CrÃ©ation des lignes
     y = 0
     for ligne in lignes :
         font = win32ui.CreateFont({"name" : nomPolice, "height" : taillePolice})
@@ -83,7 +83,7 @@ def ImpressionModele(IDmodele=None, dictValeurs={}, titre=_(u"Ticket")):
     if IDmodele == None : 
         return []
     
-    # Importation du modèle
+    # Importation du modÃ¨le
     DB = GestionDB.DB()
     req = """SELECT categorie, nom, description, lignes, defaut, taille, interligne, imprimante
     FROM modeles_tickets

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activitÈs
+# Application :    Noethys, gestion multi-activit√©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-15 Ivan LUCAS
@@ -31,7 +31,7 @@ from Utils import UTILS_Infos_individus
 from Utils.UTILS_Decimal import FloatToDecimal as FloatToDecimal
 
 from Utils import UTILS_Config
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"§")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"‚Ç¨")
 
 
 
@@ -58,8 +58,8 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         self.Append( wxpg.PropertyCategory(_(u"Type de document")) )
     
         # Type
-        propriete = wxpg.EnumProperty(label=_(u"Type"), name="type_document", labels=[_(u"DÈtaillÈ"), _(u"SimplifiÈ"), (u"Totaux")], values=[0, 1, 2], value=0)
-        propriete.SetHelpString(_(u"SÈlectionnez un type de document")) 
+        propriete = wxpg.EnumProperty(label=_(u"Type"), name="type_document", labels=[_(u"D√©taill√©"), _(u"Simplifi√©"), (u"Totaux")], values=[0, 1, 2], value=0)
+        propriete.SetHelpString(_(u"S√©lectionnez un type de document")) 
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
@@ -68,13 +68,13 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         
         # Couleur 1
         propriete = wxpg.ColourProperty(label=_(u"Couleur de fond 1"), name="couleur_fond_1", value=wx.Colour(204, 204, 255))
-        propriete.SetHelpString(_(u"SÈlectionnez une couleur")) 
+        propriete.SetHelpString(_(u"S√©lectionnez une couleur")) 
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
         # Couleur 2
         propriete = wxpg.ColourProperty(label=_(u"Couleur de fond 2"), name="couleur_fond_2", value=wx.Colour(230, 230, 255))
-        propriete.SetHelpString(_(u"SÈlectionnez une couleur")) 
+        propriete.SetHelpString(_(u"S√©lectionnez une couleur")) 
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
         
@@ -82,27 +82,27 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         self.Append( wxpg.PropertyCategory(_(u"Titre")) )
 
         # Texte
-        propriete = wxpg.StringProperty(label=_(u"Texte"), name="titre_texte", value=_(u"RÈcapitulatif des factures"))
+        propriete = wxpg.StringProperty(label=_(u"Texte"), name="titre_texte", value=_(u"R√©capitulatif des factures"))
         propriete.SetHelpString(_(u"Saisissez un texte"))
         self.Append(propriete)
 
         # Taille police
         propriete = wxpg.IntProperty(label=_(u"Taille de texte"), name="titre_taille_texte", value=16)
-        propriete.SetHelpString(_(u"Saisissez une taille de texte (16 par dÈfaut)")) 
+        propriete.SetHelpString(_(u"Saisissez une taille de texte (16 par d√©faut)")) 
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
         self.SetPropertyEditor("titre_taille_texte", "SpinCtrl")
         
         # Couleur
 ##        propriete = wxpg.ColourProperty(label=_(u"Couleur de texte"), name="titre_couleur", value=wx.BLACK)
-##        propriete.SetHelpString(_(u"SÈlectionnez une couleur")) 
+##        propriete.SetHelpString(_(u"S√©lectionnez une couleur")) 
 ##        propriete.SetAttribute("obligatoire", True)
 ##        self.Append(propriete)
 
         # Alignement
         labels = [_(u"Gauche"), _(u"Centre"), _(u"Droite")]
         propriete = wxpg.EnumProperty(label=_(u"Alignement du texte"), name="titre_alignement", labels=labels, values=[wx.ALIGN_LEFT, wx.ALIGN_CENTER, wx.ALIGN_RIGHT] , value=wx.ALIGN_LEFT)
-        propriete.SetHelpString(_(u"SÈlectionnez le type d'alignement")) 
+        propriete.SetHelpString(_(u"S√©lectionnez le type d'alignement")) 
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
@@ -116,49 +116,49 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         # Question 1
         propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Champ 1"), name="question_1", liste_choix=liste_choix, valeur="non")
         propriete.SetEditor("EditeurChoix")
-        propriete.SetHelpString(_(u"SÈlectionnez un item du questionnaire famille ‡ inclure dans le document"))
+        propriete.SetHelpString(_(u"S√©lectionnez un item du questionnaire famille √† inclure dans le document"))
         self.Append(propriete)
 
         # Question 2
         propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Champ 2"), name="question_2", liste_choix=liste_choix, valeur="non")
         propriete.SetEditor("EditeurChoix")
-        propriete.SetHelpString(_(u"SÈlectionnez un item du questionnaire famille ‡ inclure dans le document"))
+        propriete.SetHelpString(_(u"S√©lectionnez un item du questionnaire famille √† inclure dans le document"))
         self.Append(propriete)
 
         # Question 3
         propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Champ 3"), name="question_3", liste_choix=liste_choix, valeur="non")
         propriete.SetEditor("EditeurChoix")
-        propriete.SetHelpString(_(u"SÈlectionnez un item du questionnaire famille ‡ inclure dans le document"))
+        propriete.SetHelpString(_(u"S√©lectionnez un item du questionnaire famille √† inclure dans le document"))
         self.Append(propriete)
 
         # --------------------------- INDIVIDUS ------------------------------------------
         self.Append( wxpg.PropertyCategory(_(u"Champs individuels")) )
 
         liste_choix = [("non", _(u"Non")),
-                       ("ecole_debut_facture", _(u"Ecole ‡ la date de dÈbut de la facture")),
-                       ("ecole_fin_facture", _(u"Ecole ‡ la date de fin de la facture")),
-                       ("classe_debut_facture", _(u"Classe ‡ la date de dÈbut de la facture")),
-                       ("classe_fin_facture", _(u"Classe ‡ la date de fin de la facture")),
-                       ("niveau_debut_facture", _(u"Niveau scolaire ‡ la date de dÈbut de la facture")),
-                       ("niveau_fin_facture", _(u"Niveau scolaire ‡ la date de fin de la facture")),
+                       ("ecole_debut_facture", _(u"Ecole √† la date de d√©but de la facture")),
+                       ("ecole_fin_facture", _(u"Ecole √† la date de fin de la facture")),
+                       ("classe_debut_facture", _(u"Classe √† la date de d√©but de la facture")),
+                       ("classe_fin_facture", _(u"Classe √† la date de fin de la facture")),
+                       ("niveau_debut_facture", _(u"Niveau scolaire √† la date de d√©but de la facture")),
+                       ("niveau_fin_facture", _(u"Niveau scolaire √† la date de fin de la facture")),
                        ]
 
         # Champ individuel 1
         propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Champ 1"), name="champ_ind_1", liste_choix=liste_choix, valeur="non")
         propriete.SetEditor("EditeurChoix")
-        propriete.SetHelpString(_(u"SÈlectionnez un champ individuel ‡ intÈgrer dans le document"))
+        propriete.SetHelpString(_(u"S√©lectionnez un champ individuel √† int√©grer dans le document"))
         self.Append(propriete)
 
         # Champ individuel 2
         propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Champ 2"), name="champ_ind_2", liste_choix=liste_choix, valeur="non")
         propriete.SetEditor("EditeurChoix")
-        propriete.SetHelpString(_(u"SÈlectionnez un champ individuel ‡ intÈgrer dans le document"))
+        propriete.SetHelpString(_(u"S√©lectionnez un champ individuel √† int√©grer dans le document"))
         self.Append(propriete)
 
         # Champ individuel 3
         propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Champ 3"), name="champ_ind_3", liste_choix=liste_choix, valeur="non")
         propriete.SetEditor("EditeurChoix")
-        propriete.SetHelpString(_(u"SÈlectionnez un champ individuel ‡ intÈgrer dans le document"))
+        propriete.SetHelpString(_(u"S√©lectionnez un champ individuel √† int√©grer dans le document"))
         self.Append(propriete)
 
         # --------------------------- INTRODUCTION ------------------------------------------
@@ -171,7 +171,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
 
         # Taille police
         propriete = wxpg.IntProperty(label=_(u"Taille de texte"), name="intro_taille_texte", value=7)
-        propriete.SetHelpString(_(u"Saisissez une taille de texte (7 par dÈfaut)")) 
+        propriete.SetHelpString(_(u"Saisissez une taille de texte (7 par d√©faut)")) 
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
         self.SetPropertyEditor("intro_taille_texte", "SpinCtrl")
@@ -180,20 +180,20 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
 ##        labels = [_(u"Normal"), _(u"Light"), "Gras"]
 ##        valeurs = [wx.FONTWEIGHT_NORMAL, wx.FONTWEIGHT_LIGHT, wx.FONTWEIGHT_BOLD]
 ##        propriete = wxpg.EnumProperty(label=_(u"Style de texte"), name="intro_style", labels=labels, values=valeurs, value=wx.FONTWEIGHT_NORMAL)
-##        propriete.SetHelpString(_(u"SÈlectionnez un style de texte")) 
+##        propriete.SetHelpString(_(u"S√©lectionnez un style de texte")) 
 ##        propriete.SetAttribute("obligatoire", True)
 ##        self.Append(propriete)
         
         # Couleur
 ##        propriete = wxpg.ColourProperty(label=_(u"Couleur de texte"), name="intro_couleur", value=wx.BLACK)
-##        propriete.SetHelpString(_(u"SÈlectionnez une couleur")) 
+##        propriete.SetHelpString(_(u"S√©lectionnez une couleur")) 
 ##        propriete.SetAttribute("obligatoire", True)
 ##        self.Append(propriete)
 
         # Alignement
         labels = [_(u"Gauche"), _(u"Centre"), _(u"Droite")]
         propriete = wxpg.EnumProperty(label=_(u"Alignement du texte"), name="intro_alignement", labels=labels, values=[wx.ALIGN_LEFT, wx.ALIGN_CENTER, wx.ALIGN_RIGHT] , value=wx.ALIGN_LEFT)
-        propriete.SetHelpString(_(u"SÈlectionnez le type d'alignement")) 
+        propriete.SetHelpString(_(u"S√©lectionnez le type d'alignement")) 
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
@@ -203,12 +203,12 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
 
         # Texte
         propriete = wxpg.StringProperty(label=_(u"Texte"), name="conclusion_texte", value=_(u"{NBRE_FACTURES} factures | Montant total : {TOTAL_FACTURES}"))
-        propriete.SetHelpString(_(u"Saisissez un texte. Vous pouvez utiliser les mots-clÈs suivants : {NBRE_FACTURES}, {TOTAL_FACTURES}, {NBRE_FACT_PRELEV}, {TOTAL_FACT_PRELEV}"))
+        propriete.SetHelpString(_(u"Saisissez un texte. Vous pouvez utiliser les mots-cl√©s suivants : {NBRE_FACTURES}, {TOTAL_FACTURES}, {NBRE_FACT_PRELEV}, {TOTAL_FACT_PRELEV}"))
         self.Append(propriete)
 
         # Taille police
         propriete = wxpg.IntProperty(label=_(u"Taille de texte"), name="conclusion_taille_texte", value=7)
-        propriete.SetHelpString(_(u"Saisissez une taille de texte (7 par dÈfaut)")) 
+        propriete.SetHelpString(_(u"Saisissez une taille de texte (7 par d√©faut)")) 
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
         self.SetPropertyEditor("conclusion_taille_texte", "SpinCtrl")
@@ -217,50 +217,50 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
 ##        labels = [_(u"Normal"), _(u"Light"), "Gras"]
 ##        valeurs = [wx.FONTWEIGHT_NORMAL, wx.FONTWEIGHT_LIGHT, wx.FONTWEIGHT_BOLD]
 ##        propriete = wxpg.EnumProperty(label=_(u"Style de texte"), name="conclusion_style", labels=labels, values=valeurs, value=wx.FONTWEIGHT_BOLD)
-##        propriete.SetHelpString(_(u"SÈlectionnez un style de texte")) 
+##        propriete.SetHelpString(_(u"S√©lectionnez un style de texte")) 
 ##        propriete.SetAttribute("obligatoire", True)
 ##        self.Append(propriete)
         
         # Couleur
 ##        propriete = wxpg.ColourProperty(label=_(u"Couleur de texte"), name="conclusion_couleur", value=wx.BLACK)
-##        propriete.SetHelpString(_(u"SÈlectionnez une couleur")) 
+##        propriete.SetHelpString(_(u"S√©lectionnez une couleur")) 
 ##        propriete.SetAttribute("obligatoire", True)
 ##        self.Append(propriete)
 
         # Alignement
         labels = [_(u"Gauche"), _(u"Centre"), _(u"Droite")]
         propriete = wxpg.EnumProperty(label=_(u"Alignement du texte"), name="conclusion_alignement", labels=labels, values=[wx.ALIGN_LEFT, wx.ALIGN_CENTER, wx.ALIGN_RIGHT] , value=wx.ALIGN_LEFT)
-        propriete.SetHelpString(_(u"SÈlectionnez le type d'alignement")) 
+        propriete.SetHelpString(_(u"S√©lectionnez le type d'alignement")) 
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
 
     def Validation(self):
-        """ Validation des donnÈes saisies """
+        """ Validation des donn√©es saisies """
         for nom, valeur in self.GetPropertyValues().items() :
             propriete = self.GetPropertyByName(nom)
             if self.GetPropertyAttribute(propriete, "obligatoire") == True :
                 if valeur == "" or valeur == None :
-                    dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement renseigner le paramËtre '%s' !") % nom, _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                    dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement renseigner le param√®tre '%s' !") % nom, _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                     dlg.ShowModal()
                     dlg.Destroy()
                     return False
         return True
         
     def Importation(self):
-        """ Importation des valeurs dans le contrÙle """
-        # RÈcupÈration des noms et valeurs par dÈfaut du contrÙle
+        """ Importation des valeurs dans le contr√¥le """
+        # R√©cup√©ration des noms et valeurs par d√©faut du contr√¥le
         dictValeurs = copy.deepcopy(self.GetPropertyValues())
-        # Recherche les paramËtres mÈmorisÈs
+        # Recherche les param√®tres m√©moris√©s
         dictParametres = UTILS_Parametres.ParametresCategorie(mode="get", categorie="impression_recap_factures", dictParametres=dictValeurs)
-        # Envoie les paramËtres dans le contrÙle
+        # Envoie les param√®tres dans le contr√¥le
         for nom, valeur in dictParametres.items() :
             propriete = self.GetPropertyByName(nom)
             ancienneValeur = propriete.GetValue()
             propriete.SetValue(valeur)
     
     def Sauvegarde(self, forcer=False):
-        """ MÈmorisation des valeurs du contrÙle """
+        """ M√©morisation des valeurs du contr√¥le """
         dictValeurs = copy.deepcopy(self.GetPropertyValues())
         UTILS_Parametres.ParametresCategorie(mode="set", categorie="impression_recap_factures", dictParametres=dictValeurs)
         
@@ -275,7 +275,7 @@ class CTRL(wx.Panel):
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
         self.parent = parent
         
-        # ParamËtres gÈnÈraux
+        # Param√®tres g√©n√©raux
         self.box_options_staticbox = wx.StaticBox(self, -1, _(u"Options d'impression"))
         self.ctrl_parametres = CTRL_Parametres(self)
         self.ctrl_parametres.Importation() 
@@ -291,7 +291,7 @@ class CTRL(wx.Panel):
         grid_sizer_base.AddGrowableCol(0)
         grid_sizer_base.AddGrowableRow(0)
 
-        # ParamËtres gÈnÈraux
+        # Param√®tres g√©n√©raux
         box_options = wx.StaticBoxSizer(self.box_options_staticbox, wx.VERTICAL)
         grid_sizer_parametres = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
         grid_sizer_parametres.Add(self.ctrl_parametres, 1, wx.EXPAND, 0)
@@ -315,7 +315,7 @@ class CTRL(wx.Panel):
     def GetOptions(self):
         dictOptions = {} 
         
-        # RÈcupÈration des paramËtres
+        # R√©cup√©ration des param√®tres
         if self.ctrl_parametres.Validation() == False :
             return False
         for nom, valeur in self.ctrl_parametres.GetValeurs().items()  :
@@ -333,24 +333,24 @@ class Dialog(wx.Dialog):
         self.tracks = tracks
 
         # Bandeau
-        titre = _(u"Impression d'un rÈcapitulatif des factures")
-        intro = _(u"Vous pouvez ici modifier les paramËtres d'impression du document. Cliquez sur le bouton 'MÈmoriser les paramËtres' pour rÈutiliser les mÍmes paramËtres pour les impressions suivantes.")
+        titre = _(u"Impression d'un r√©capitulatif des factures")
+        intro = _(u"Vous pouvez ici modifier les param√®tres d'impression du document. Cliquez sur le bouton 'M√©moriser les param√®tres' pour r√©utiliser les m√™mes param√®tres pour les impressions suivantes.")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Imprimante.png")
 
-        # RÈcupÈration des questionnaires
+        # R√©cup√©ration des questionnaires
         self.Questionnaires = UTILS_Questionnaires.ChampsEtReponses(type="famille")
 
-        # RÈcupÈration des infos de base familles
+        # R√©cup√©ration des infos de base familles
         # self.infosIndividus = UTILS_Infos_individus.Informations()
         # self.dictInfosFamilles = self.infosIndividus.GetDictValeurs(mode="famille", ID=None, formatChamp=True)
 
-        # ParamËtres
+        # Param√®tres
         self.ctrl_parametres = CTRL(self, dictOptions=dictOptions)
                 
         # Boutons
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
-        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"AperÁu"), cheminImage="Images/32x32/Apercu.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Aper√ßu"), cheminImage="Images/32x32/Apercu.png")
         self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Fermer"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
@@ -405,7 +405,7 @@ class Dialog(wx.Dialog):
         if dictOptions == False :
             return
 
-        # RÈcupÈration des paramËtres
+        # R√©cup√©ration des param√®tres
         listeIDfactures = []
         montantTotal = FloatToDecimal(0.0)
         for track in self.tracks :
@@ -431,7 +431,7 @@ class Dialog(wx.Dialog):
         DB.ExecuterReq(req)
         listePrestations = DB.ResultatReq()
 
-        # RÈcupÈration des prÈlËvements
+        # R√©cup√©ration des pr√©l√®vements
         req = """SELECT
             prelevements.IDprelevement, prelevements.prelevement_iban,
             prelevements.IDfacture, lots_prelevements.date,
@@ -442,7 +442,7 @@ class Dialog(wx.Dialog):
             ;""" % conditionFactures
         DB.ExecuterReq(req)
         listePrelevements = DB.ResultatReq()
-        # PiËces PES ORMC
+        # Pi√®ces PES ORMC
         req = """SELECT
             pes_pieces.IDpiece, pes_pieces.prelevement_iban, pes_pieces.IDfacture,
             pes_lots.date_prelevement, pes_pieces.prelevement_IDmandat, pes_pieces.prelevement_titulaire
@@ -462,7 +462,7 @@ class Dialog(wx.Dialog):
                 }
 
         DB.Close()
-        # Calcul totaux prÈlËvements
+        # Calcul totaux pr√©l√®vements
         nbrFactPrelev = len(dictPrelevements)
         montantTotalPrelev = 0.0
         for track in self.tracks:
@@ -499,7 +499,7 @@ class Dialog(wx.Dialog):
             dictPrestations[IDfacture][IDindividu][label]["quantite"] += 1
             dictPrestations[IDfacture][IDindividu][label]["montant"] += montant
 
-        # CrÈation du PDF
+        # Cr√©ation du PDF
         from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, PageBreak
         from reportlab.platypus.flowables import ParagraphAndImage, Image
         from reportlab.rl_config import defaultPageSize
@@ -519,12 +519,12 @@ class Dialog(wx.Dialog):
         
         largeurContenu = 520
         
-        # CrÈation du titre du document
+        # Cr√©ation du titre du document
         def Header():
             dataTableau = []
             largeursColonnes = ( (420, 100) )
             dateDuJour = UTILS_Dates.DateEngFr(str(datetime.date.today()))
-            dataTableau.append( (dictOptions["titre_texte"], _(u"%s\nEditÈ le %s") % (UTILS_Organisateur.GetNom(), dateDuJour)) )
+            dataTableau.append( (dictOptions["titre_texte"], _(u"%s\nEdit√© le %s") % (UTILS_Organisateur.GetNom(), dateDuJour)) )
             style = TableStyle([
                     ('BOX', (0,0), (-1,-1), 0.25, colors.black), 
                     ('VALIGN', (0,0), (-1,-1), 'TOP'), 
@@ -538,7 +538,7 @@ class Dialog(wx.Dialog):
             story.append(tableau)
             story.append(Spacer(0, 20))       
         
-        # InsËre un header
+        # Ins√®re un header
         Header() 
         
         couleurFond1 = ConvertCouleurWXpourPDF(dictOptions["couleur_fond_1"])
@@ -563,19 +563,19 @@ class Dialog(wx.Dialog):
 
                 numero = track.numero
                 if track.etat == "annulation" :
-                    numero = u"%s (AnnulÈe)" % numero
+                    numero = u"%s (Annul√©e)" % numero
                 
                 solde = track.solde
                 if solde != 0.0 :
                     solde = -solde
                     
-                # NumÈro de facture
+                # Num√©ro de facture
                 dataTableau = []
                 largeursColonnes = [100, 100, largeurContenu-100-100]
                 dataTableau.append((
-                    _(u"Facture n∞%s") % numero, 
+                    _(u"Facture n¬∞%s") % numero, 
                     u"%.2f %s" % (solde, SYMBOLE),
-                    _(u"EditÈ le %s | EchÈance le %s | PÈriode du %s au %s") % (UTILS_Dates.DateDDEnFr(track.date_edition), UTILS_Dates.DateDDEnFr(track.date_echeance), UTILS_Dates.DateDDEnFr(track.date_debut), UTILS_Dates.DateDDEnFr(track.date_fin)),
+                    _(u"Edit√© le %s | Ech√©ance le %s | P√©riode du %s au %s") % (UTILS_Dates.DateDDEnFr(track.date_edition), UTILS_Dates.DateDDEnFr(track.date_echeance), UTILS_Dates.DateDDEnFr(track.date_debut), UTILS_Dates.DateDDEnFr(track.date_fin)),
                     ))
                 tableau = Table(dataTableau, largeursColonnes)
                 listeStyles = [
@@ -593,7 +593,7 @@ class Dialog(wx.Dialog):
                     if track.IDfacture in dictPrelevements :
                         textePrelevement = _(u"IBAN : %s | RUM : %s | Titulaire : %s | Le : %s ") % (dictPrelevements[track.IDfacture]["iban"], dictPrelevements[track.IDfacture]["rum"], dictPrelevements[track.IDfacture]["titulaire"], dictPrelevements[track.IDfacture]["datePrelevement"])
                     else :
-                        textePrelevement = _(u"N∞ Compte : %s | Etab : %s | Guichet : %s | ClÈ : %s | Titulaire : %s") % (track.prelevement_numero, track.prelevement_etab, track.prelevement_guichet, track.prelevement_cle, track.prelevement_payeur)
+                        textePrelevement = _(u"N¬∞ Compte : %s | Etab : %s | Guichet : %s | Cl√© : %s | Titulaire : %s") % (track.prelevement_numero, track.prelevement_etab, track.prelevement_guichet, track.prelevement_cle, track.prelevement_payeur)
                 else :
                     textePrelevement = u""
                 
@@ -605,7 +605,7 @@ class Dialog(wx.Dialog):
                 else : ville = u""
 
                 dataTableau = []
-                dataTableau.append((Paragraph(_(u"Famille"), styleLabel), Paragraph(_(u"Adresse"), styleLabel), Paragraph(_(u"PrÈlËvement bancaire"), styleLabel)))
+                dataTableau.append((Paragraph(_(u"Famille"), styleLabel), Paragraph(_(u"Adresse"), styleLabel), Paragraph(_(u"Pr√©l√®vement bancaire"), styleLabel)))
                 dataTableau.append((Paragraph(track.nomsTitulaires, styleTexte), (Paragraph(rue, styleTexte), Paragraph(u"%s %s" % (cp, ville), styleTexte)),Paragraph(textePrelevement, styleTexte)))
 
                 largeursColonnes = [180, 140, largeurContenu-320]
@@ -622,7 +622,7 @@ class Dialog(wx.Dialog):
                 tableau.setStyle(TableStyle(listeStyles))
                 story.append(tableau)
 
-                # RÈcupÈration des champs personnalisÈs
+                # R√©cup√©ration des champs personnalis√©s
                 dataTableau = []
 
                 label_1, label_2, label_3, question_1, question_2, question_3 = "", "", "", "", "", ""
@@ -649,24 +649,24 @@ class Dialog(wx.Dialog):
                     story.append(tableau)
 
 
-                # DÈtail des prestations
+                # D√©tail des prestations
                 if dictOptions["type_document"] == 0 and track.IDfacture in dictPrestations :
 
-                    # PrÈparation des champs individuels supplÈmentaires
+                    # Pr√©paration des champs individuels suppl√©mentaires
                     liste_champs_ind = []
                     for key in ("champ_ind_1", "champ_ind_2", "champ_ind_3"):
                         if dictOptions[key] not in ("non", "", None):
                             liste_champs_ind.append(dictOptions[key])
 
                     if len(liste_champs_ind) == 0 :
-                        dataTableau = [(Paragraph(_(u"Individu"), styleLabel), Paragraph(_(u"ActivitÈ"), styleLabel),
-                                        Paragraph(_(u"Prestation"), styleLabel), Paragraph(_(u"QuantitÈ"), styleLabel),
+                        dataTableau = [(Paragraph(_(u"Individu"), styleLabel), Paragraph(_(u"Activit√©"), styleLabel),
+                                        Paragraph(_(u"Prestation"), styleLabel), Paragraph(_(u"Quantit√©"), styleLabel),
                                         Paragraph(_(u"Montant total"), styleLabel)), ]
                         largeursColonnes = [130, 120, 185, 35, 50]
                     else:
                         # On rajoute la colonne Infos individuelles :
-                        dataTableau = [(Paragraph(_(u"Individu"), styleLabel), Paragraph(_(u"Informations"), styleLabel), Paragraph(_(u"ActivitÈ"), styleLabel),
-                                        Paragraph(_(u"Prestation"), styleLabel), Paragraph(_(u"QuantitÈ"), styleLabel),
+                        dataTableau = [(Paragraph(_(u"Individu"), styleLabel), Paragraph(_(u"Informations"), styleLabel), Paragraph(_(u"Activit√©"), styleLabel),
+                                        Paragraph(_(u"Prestation"), styleLabel), Paragraph(_(u"Quantit√©"), styleLabel),
                                         Paragraph(_(u"Montant total"), styleLabel)), ]
                         largeursColonnes = [120, 110, 100, 105, 35, 50]
                     
@@ -701,7 +701,7 @@ class Dialog(wx.Dialog):
                             listeMontants,
                             ]
 
-                        # RÈcupÈration des infos individuelles
+                        # R√©cup√©ration des infos individuelles
                         if len(liste_champs_ind) > 0 :
                             liste_textes_ind = []
                             for key in liste_champs_ind :
@@ -748,8 +748,8 @@ class Dialog(wx.Dialog):
         
         # Totaux        
         dataTableau = [
-            (_(u"Totaux par activitÈs et prestations"), "", "", ""),
-            (Paragraph(_(u"ActivitÈs"), styleLabel), Paragraph(_(u"Prestations"), styleLabel), Paragraph(_(u"QuantitÈ"), styleLabel), Paragraph(_(u"Montant"), styleLabel)),
+            (_(u"Totaux par activit√©s et prestations"), "", "", ""),
+            (Paragraph(_(u"Activit√©s"), styleLabel), Paragraph(_(u"Prestations"), styleLabel), Paragraph(_(u"Quantit√©"), styleLabel), Paragraph(_(u"Montant"), styleLabel)),
             ]
         largeursColonnes = [195, 240, 35, 50]
 
@@ -772,7 +772,7 @@ class Dialog(wx.Dialog):
                 quantiteActivite += dictTemp["quantite"]
                 totalActivite += dictTemp["montant"]
             
-            listeLabels.append(Paragraph(_(u"<b><i>Total de l'activitÈ</i></b>"), styleTexte2)) 
+            listeLabels.append(Paragraph(_(u"<b><i>Total de l'activit√©</i></b>"), styleTexte2)) 
             listeQuantites.append(Paragraph("<b><i>%d</i></b>" % quantiteActivite, styleTexte2)) 
             listeMontants.append(Paragraph(u"<b><i>%.2f %s</i></b>" % (totalActivite, SYMBOLE), styleMontant))
             
@@ -814,7 +814,7 @@ class Dialog(wx.Dialog):
         except Exception as err :
             print("Erreur dans ouverture PDF :", err)
             if "Permission denied" in err :
-                dlg = wx.MessageDialog(None, _(u"Noethys ne peut pas crÈer le PDF.\n\nVeuillez vÈrifier qu'un autre PDF n'est pas dÈj‡ ouvert en arriËre-plan..."), _(u"Erreur d'Èdition"), wx.OK | wx.ICON_ERROR)
+                dlg = wx.MessageDialog(None, _(u"Noethys ne peut pas cr√©er le PDF.\n\nVeuillez v√©rifier qu'un autre PDF n'est pas d√©j√† ouvert en arri√®re-plan..."), _(u"Erreur d'√©dition"), wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False

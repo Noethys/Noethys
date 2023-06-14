@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -32,9 +32,9 @@ def DateEngFr(textDate):
     return text
 
 def DateComplete(dateDD):
-    """ Transforme une date DD en date complète : Ex : lundi 15 janvier 2008 """
+    """ Transforme une date DD en date complÃ¨te : Ex : lundi 15 janvier 2008 """
     listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
-    listeMois = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
+    listeMois = (_(u"janvier"), _(u"fÃ©vrier"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"aoÃ»t"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"dÃ©cembre"))
     dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
     return dateComplete
 
@@ -252,7 +252,7 @@ class Choix_beneficiaire(wx.Choice):
                 self.listeDonnees.append(self.GetGrandParent().IDfamille)
                 
             else:
-                # Si on vient d'une fiche individuelle : on affiche les familles rattachées
+                # Si on vient d'une fiche individuelle : on affiche les familles rattachÃ©es
                 IDindividu = self.GetGrandParent().IDindividu
                 if self.GetGrandParent().dictFamillesRattachees != None :
                     for IDfamille, dictFamille in self.GetGrandParent().dictFamillesRattachees.items() :
@@ -261,7 +261,7 @@ class Choix_beneficiaire(wx.Choice):
                             self.listeNoms.append(_(u"Famille de %s") % nomTitulaires)
                             self.listeDonnees.append(IDfamille)
 
-        # Remplissage du contrôle
+        # Remplissage du contrÃ´le
         self.SetItems(self.listeNoms)
         
         if len(self.listeNoms) > 0 :
@@ -339,7 +339,7 @@ class Choix_payeur(wx.Choice):
             self.listeNoms.append(nomTitulaires)
             self.listeDonnees.append((IDcompte_payeur, self.GetGrandParent().IDfamille))
                 
-        # Remplissage du contrôle
+        # Remplissage du contrÃ´le
         self.SetItems(self.listeNoms)
         
         if len(self.listeNoms) > 0 :
@@ -375,7 +375,7 @@ class CTRL_Activites(wx.TextCtrl):
         self.Enable(False)
         self.listeDonnees = []
         
-        # Importation des activités
+        # Importation des activitÃ©s
         DB = GestionDB.DB()
         req = """SELECT IDactivite, nom, abrege
         FROM activites
@@ -403,7 +403,7 @@ class CTRL_Activites(wx.TextCtrl):
         self.SetValue(texte)
         
     def SetDonnees(self, donnees=None, format="texte"):
-        """ Importe les données au format texte ou liste """
+        """ Importe les donnÃ©es au format texte ou liste """
         if format == "texte" :
             if donnees == None : donnees = ""
             self.listeDonnees = UTILS_Divers.ConvertChaineEnListe(donnees)
@@ -413,7 +413,7 @@ class CTRL_Activites(wx.TextCtrl):
         self.MAJ() 
     
     def GetDonnees(self, format="texte"):
-        """ Retourne les données au format texte ou liste """
+        """ Retourne les donnÃ©es au format texte ou liste """
         if format == "texte" :
             return UTILS_Divers.ConvertListeEnChaine(self.listeDonnees)
         else :
@@ -430,7 +430,7 @@ class CTRL_Activites(wx.TextCtrl):
             if dictTemp["IDactivite"] in self.listeDonnees :
                 listePreSelections.append(index)
             index += 1
-        dlg = wx.MultiChoiceDialog(self, _(u"Cochez les activités à associer à la cotisation :"), _(u"Associer des activités"), listeLabels)
+        dlg = wx.MultiChoiceDialog(self, _(u"Cochez les activitÃ©s Ã  associer Ã  la cotisation :"), _(u"Associer des activitÃ©s"), listeLabels)
         dlg.SetSize((500, 550))
         dlg.SetSelections(listePreSelections)
         if dlg.ShowModal() == wx.ID_OK :
@@ -461,17 +461,17 @@ class CTRL_Parametres(wx.Panel):
         self.staticbox_cotisation_staticbox = wx.StaticBox(self, -1, _(u"Cotisation"))
         self.label_type = wx.StaticText(self, -1, _(u"Type :"))
         self.ctrl_type = Choix_type(self)
-        self.label_unite = wx.StaticText(self, -1, _(u"Unité :"))
+        self.label_unite = wx.StaticText(self, -1, _(u"UnitÃ© :"))
         self.ctrl_unite = Choix_unite(self)
-        self.label_beneficiaire = wx.StaticText(self, -1, _(u"Bénéfic. :"))
+        self.label_beneficiaire = wx.StaticText(self, -1, _(u"BÃ©nÃ©fic. :"))
         self.ctrl_beneficiaire = Choix_beneficiaire(self)
-        self.label_validite = wx.StaticText(self, -1, _(u"Validité :"))
+        self.label_validite = wx.StaticText(self, -1, _(u"ValiditÃ© :"))
         self.label_du = wx.StaticText(self, -1, u"du")
         self.ctrl_date_debut = CTRL_Saisie_date.Date(self)
         self.label_au = wx.StaticText(self, -1, _(u"au"))
         self.ctrl_date_fin = CTRL_Saisie_date.Date(self)
 
-        self.label_activites = wx.StaticText(self, -1, _(u"Activités :"))
+        self.label_activites = wx.StaticText(self, -1, _(u"ActivitÃ©s :"))
         self.ctrl_activites = CTRL_Activites(self)
         self.bouton_activites = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Modifier.png"), wx.BITMAP_TYPE_ANY))
 
@@ -479,20 +479,20 @@ class CTRL_Parametres(wx.Panel):
         self.ctrl_observations = wx.TextCtrl(self, -1, "", style=wx.TE_MULTILINE)
 
         # Carte
-        self.staticbox_carte_staticbox = wx.StaticBox(self, -1, _(u"Carte d'adhérent"))
-        self.label_creation = wx.StaticText(self, -1, _(u"Création :"))
+        self.staticbox_carte_staticbox = wx.StaticBox(self, -1, _(u"Carte d'adhÃ©rent"))
+        self.label_creation = wx.StaticText(self, -1, _(u"CrÃ©ation :"))
         self.ctrl_creation = wx.CheckBox(self, -1, "")
-        self.label_numero = wx.StaticText(self, -1, _(u"Numéro :"))
+        self.label_numero = wx.StaticText(self, -1, _(u"NumÃ©ro :"))
 
         if self.mode_lot == True :
-            self.radio_numero_auto = wx.RadioButton(self, -1, _(u"Automatique à partir de"), style=wx.RB_GROUP)
+            self.radio_numero_auto = wx.RadioButton(self, -1, _(u"Automatique Ã  partir de"), style=wx.RB_GROUP)
             self.radio_numero_manuel = wx.RadioButton(self, -1, _(u"Manuel (saisie directe dans la liste)"))
 
         self.ctrl_numero = wx.TextCtrl(self, -1, u"")
         self.label_date = wx.StaticText(self, -1, _(u"Date :"))
         self.ctrl_date_creation = CTRL_Saisie_date.Date2(self)
         self.ctrl_date_creation.SetDate(datetime.date.today())
-        self.label_depot = wx.StaticText(self, -1, _(u"Dépôt :"))
+        self.label_depot = wx.StaticText(self, -1, _(u"DÃ©pÃ´t :"))
         self.ctrl_depot = wx.TextCtrl(self, -1, u"")
 
         # Prestation
@@ -523,10 +523,10 @@ class CTRL_Parametres(wx.Panel):
         self.__set_properties()
         self.__do_layout()
 
-        # Périodes de gestion
+        # PÃ©riodes de gestion
         self.gestion = UTILS_Gestion.Gestion(None)
 
-        # Init contrôles
+        # Init contrÃ´les
         self.ctrl_depot.Enable(False)
 
     def Init(self):
@@ -550,25 +550,25 @@ class CTRL_Parametres(wx.Panel):
             self.Importation()
 
     def __set_properties(self):
-        self.ctrl_type.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici le type de cotisation")))
-        self.ctrl_unite.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici l'unité de cotisation")))
-        self.ctrl_beneficiaire.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici la famille ou l'individu qui bénéficie de cette cotisation")))
-        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de début de validité")))
-        self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de fin de validité")))
-        self.bouton_activites.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour associer une ou plusieurs activités à cette cotisation")))
+        self.ctrl_type.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez ici le type de cotisation")))
+        self.ctrl_unite.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez ici l'unitÃ© de cotisation")))
+        self.ctrl_beneficiaire.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez ici la famille ou l'individu qui bÃ©nÃ©ficie de cette cotisation")))
+        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de dÃ©but de validitÃ©")))
+        self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de fin de validitÃ©")))
+        self.bouton_activites.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour associer une ou plusieurs activitÃ©s Ã  cette cotisation")))
         self.ctrl_observations.SetToolTip(wx.ToolTip(_(u"Saisissez un texte libre (optionnel)")))
-        self.ctrl_creation.SetToolTip(wx.ToolTip(_(u"Selectionnez OUI si une carte d'adhérent a ete créee")))
+        self.ctrl_creation.SetToolTip(wx.ToolTip(_(u"Selectionnez OUI si une carte d'adhÃ©rent a ete crÃ©ee")))
         self.ctrl_numero.SetMinSize((70, -1))
-        self.ctrl_numero.SetToolTip(wx.ToolTip(_(u"Saisissez ici le numéro de la carte d'adhérent")))
-        self.ctrl_date_creation.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de création de la carte d'adhérent")))
+        self.ctrl_numero.SetToolTip(wx.ToolTip(_(u"Saisissez ici le numÃ©ro de la carte d'adhÃ©rent")))
+        self.ctrl_date_creation.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de crÃ©ation de la carte d'adhÃ©rent")))
         self.ctrl_depot.SetMinSize((70, -1))
-        self.ctrl_depot.SetToolTip(wx.ToolTip(_(u"Numero et date du dépôt")))
-        self.ctrl_facturer.SetToolTip(wx.ToolTip(_(u"Selectionnez OUI si la carte doit etre facturée")))
-        self.ctrl_date_prestation.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de la prestation à facturer")))
+        self.ctrl_depot.SetToolTip(wx.ToolTip(_(u"Numero et date du dÃ©pÃ´t")))
+        self.ctrl_facturer.SetToolTip(wx.ToolTip(_(u"Selectionnez OUI si la carte doit etre facturÃ©e")))
+        self.ctrl_date_prestation.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de la prestation Ã  facturer")))
         self.ctrl_montant.SetMinSize((70, -1))
         self.ctrl_montant.SetToolTip(wx.ToolTip(_(u"Saisissez ici le montant a facturer")))
-        self.ctrl_label.SetToolTip(wx.ToolTip(_(u"Saisissez ici le label de la prestation a créer")))
-        self.ctrl_payeur.SetToolTip(wx.ToolTip(_(u"Sélectionnez la famille à facturer")))
+        self.ctrl_label.SetToolTip(wx.ToolTip(_(u"Saisissez ici le label de la prestation a crÃ©er")))
+        self.ctrl_payeur.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez la famille Ã  facturer")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=4, cols=1, vgap=10, hgap=10)
@@ -609,7 +609,7 @@ class CTRL_Parametres(wx.Panel):
         staticbox_carte = wx.StaticBoxSizer(self.staticbox_carte_staticbox, wx.VERTICAL)
         grid_sizer_carte = wx.FlexGridSizer(rows=4, cols=2, vgap=5, hgap=5)
 
-        # Création
+        # CrÃ©ation
         grid_sizer_carte.Add(self.label_creation, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_creation = wx.FlexGridSizer(rows=1, cols=4, vgap=5, hgap=5)
         grid_sizer_creation.Add(self.ctrl_creation, 0, wx.ALIGN_CENTER_VERTICAL, 0)
@@ -698,7 +698,7 @@ class CTRL_Parametres(wx.Panel):
         self.OnChoixUnite(None)
 
     def OnChoixUnite(self, event):
-        # Récupère les données sur le type
+        # RÃ©cupÃ¨re les donnÃ©es sur le type
         dictDonneesType = self.ctrl_type.GetDetailDonnees()
         if dictDonneesType != None:
             carte = dictDonneesType["carte"]
@@ -707,7 +707,7 @@ class CTRL_Parametres(wx.Panel):
             if carte == 1:
                 self.ctrl_creation.SetValue(True)
 
-        # Récupère les données sur l'unité
+        # RÃ©cupÃ¨re les donnÃ©es sur l'unitÃ©
         dictDonneesUnite = self.ctrl_unite.GetDetailDonnees()
         if dictDonneesUnite != None:
             nomUnite = dictDonneesUnite["nom"]
@@ -717,7 +717,7 @@ class CTRL_Parametres(wx.Panel):
             label_prestation = dictDonneesUnite["label_prestation"]
             duree = dictDonneesUnite["duree"]
 
-            # Validité
+            # ValiditÃ©
             if date_debut != None and date_fin != None:
                 self.ctrl_date_debut.SetDate(date_debut)
                 self.ctrl_date_fin.SetDate(date_fin)
@@ -738,7 +738,7 @@ class CTRL_Parametres(wx.Panel):
             # Montant
             self.ctrl_montant.SetMontant(montant)
             if label_prestation != None:
-                # Label personnalisé
+                # Label personnalisÃ©
                 self.ctrl_label.SetValue(label_prestation)
             else:
                 # Label automatique
@@ -746,11 +746,11 @@ class CTRL_Parametres(wx.Panel):
                 self.ctrl_label.SetValue(label)
             self.ctrl_facturer.SetValue(True)
 
-            # MAJ ctrl bénéficiaires
+            # MAJ ctrl bÃ©nÃ©ficiaires
             if dictDonneesType != None and self.mode_lot == False :
                 self.ctrl_beneficiaire.SetListeDonnees(type)
 
-        # MAJ contrôles
+        # MAJ contrÃ´les
         self.OnChoixCreation(None)
         self.OnChoixFacturer(None)
 
@@ -777,7 +777,7 @@ class CTRL_Parametres(wx.Panel):
                 self.radio_numero_auto.Enable(False)
                 self.radio_numero_manuel.Enable(False)
 
-        # Affichage de la colonne numéro
+        # Affichage de la colonne numÃ©ro
         if self.mode_lot == True :
             self.OnRadioNumero(None)
 
@@ -797,21 +797,21 @@ class CTRL_Parametres(wx.Panel):
     def Validation(self):
         # Type
         if self.ctrl_type.GetID() == None:
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner un type de cotisation !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sÃ©lectionner un type de cotisation !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
 
-        # Unité
+        # UnitÃ©
         if self.ctrl_unite.GetID() == None:
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner une unité de cotisation !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sÃ©lectionner une unitÃ© de cotisation !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
 
-        # Validation de la date de début
+        # Validation de la date de dÃ©but
         if self.ctrl_date_debut.FonctionValiderDate() == False or self.ctrl_date_debut.GetDate() == None:
-            dlg = wx.MessageDialog(self, _(u"Vous devez saisir une date de début valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez saisir une date de dÃ©but valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_debut.SetFocus()
@@ -825,13 +825,13 @@ class CTRL_Parametres(wx.Panel):
             self.ctrl_date_fin.SetFocus()
             return False
 
-        # Si la case CREATION est cochée
+        # Si la case CREATION est cochÃ©e
         if self.ctrl_creation.GetValue() == True:
 
-            # Vérifie la date de création
+            # VÃ©rifie la date de crÃ©ation
             date_creation = self.ctrl_date_creation.GetDate()
             if self.ctrl_date_creation.FonctionValiderDate() == False or date_creation == None:
-                dlg = wx.MessageDialog(self, _(u"Vous devez saisir une date de création de carte valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous devez saisir une date de crÃ©ation de carte valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_date_creation.SetFocus()
@@ -839,18 +839,18 @@ class CTRL_Parametres(wx.Panel):
 
             if self.gestion.Verification("cotisations", date_creation) == False: return False
 
-            # Vérifie qu'un numéro de carte a été saisi
+            # VÃ©rifie qu'un numÃ©ro de carte a Ã©tÃ© saisi
             if self.ctrl_numero.GetValue() == "" and (self.mode_lot == False or self.radio_numero_manuel.GetValue() == True) :
-                dlg = wx.MessageDialog(self, _(u"Etes-vous sûr de ne pas vouloir saisir de numéro d'adhérent ?"), _(u"Confirmation"), wx.YES_NO | wx.NO_DEFAULT | wx.CANCEL | wx.ICON_INFORMATION)
+                dlg = wx.MessageDialog(self, _(u"Etes-vous sÃ»r de ne pas vouloir saisir de numÃ©ro d'adhÃ©rent ?"), _(u"Confirmation"), wx.YES_NO | wx.NO_DEFAULT | wx.CANCEL | wx.ICON_INFORMATION)
                 reponse = dlg.ShowModal()
                 dlg.Destroy()
                 if reponse != wx.ID_YES:
                     return False
 
-        # Si la case PRESTATION est cochée
+        # Si la case PRESTATION est cochÃ©e
         if self.ctrl_facturer.GetValue() == True:
 
-            # Vérifie la date de facturation
+            # VÃ©rifie la date de facturation
             date_prestation = self.ctrl_date_prestation.GetDate()
             if self.ctrl_date_prestation.FonctionValiderDate() == False or date_prestation == None:
                 dlg = wx.MessageDialog(self, _(u"Vous devez saisir une date de facturation valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
@@ -861,15 +861,15 @@ class CTRL_Parametres(wx.Panel):
 
             if self.gestion.Verification("prestations", date_prestation) == False: return False
 
-            # Vérifie le montant
+            # VÃ©rifie le montant
             if self.ctrl_montant.GetMontant() == 0.00:
-                dlg = wx.MessageDialog(self, _(u"Etes-vous sûr de ne pas vouloir saisir de montant ?"), _(u"Confirmation"), wx.YES_NO | wx.NO_DEFAULT | wx.CANCEL | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Etes-vous sÃ»r de ne pas vouloir saisir de montant ?"), _(u"Confirmation"), wx.YES_NO | wx.NO_DEFAULT | wx.CANCEL | wx.ICON_EXCLAMATION)
                 reponse = dlg.ShowModal()
                 dlg.Destroy()
                 if reponse != wx.ID_YES:
                     return False
 
-            # Vérifie le label de prestation
+            # VÃ©rifie le label de prestation
             if self.ctrl_label.GetValue() == "":
                 dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un label pour la facturation !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
@@ -881,7 +881,7 @@ class CTRL_Parametres(wx.Panel):
 
             # Demande la confirmation de la suppression de la prestation
             if self.IDprestation != None:
-                dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer la prestation qui a déjà été créée pour cette cotisation ?"), _(u"Suppression"), wx.YES_NO | wx.NO_DEFAULT | wx.CANCEL | wx.ICON_INFORMATION)
+                dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer la prestation qui a dÃ©jÃ  Ã©tÃ© crÃ©Ã©e pour cette cotisation ?"), _(u"Suppression"), wx.YES_NO | wx.NO_DEFAULT | wx.CANCEL | wx.ICON_INFORMATION)
                 if dlg.ShowModal() != wx.ID_YES:
                     return False
                 dlg.Destroy()
@@ -891,7 +891,7 @@ class CTRL_Parametres(wx.Panel):
     def Sauvegarde(self):
         """ Sauvegarde """
 
-        # Récupération des données
+        # RÃ©cupÃ©ration des donnÃ©es
         donneesType = self.ctrl_type.GetDetailDonnees()
         if donneesType["type"] == "famille":
             # Si c'est une cotisation famille
@@ -910,7 +910,7 @@ class CTRL_Parametres(wx.Panel):
         activites = self.ctrl_activites.GetDonnees(format="texte")
         observations = self.ctrl_observations.GetValue()
 
-        # Création de la carte
+        # CrÃ©ation de la carte
         if self.ctrl_creation.GetValue() == True:
             date_creation_carte = self.ctrl_date_creation.GetDate()
             numero = self.ctrl_numero.GetValue()
@@ -952,7 +952,7 @@ class CTRL_Parametres(wx.Panel):
 
         if facturer == True:
 
-            # Création d'une prestation
+            # CrÃ©ation d'une prestation
             listeDonnees = [
                 ("IDcompte_payeur", IDcompte_payeur),
                 ("date", date_facturation),
@@ -969,7 +969,7 @@ class CTRL_Parametres(wx.Panel):
             else:
                 DB.ReqMAJ("prestations", listeDonnees, "IDprestation", IDprestation)
 
-                # Recherche si cette prestation a déjà été ventilée sur un règlement
+                # Recherche si cette prestation a dÃ©jÃ  Ã©tÃ© ventilÃ©e sur un rÃ¨glement
                 req = """SELECT IDventilation, ventilation.montant
                 FROM ventilation
                 LEFT JOIN reglements ON reglements.IDreglement = ventilation.IDreglement
@@ -981,7 +981,7 @@ class CTRL_Parametres(wx.Panel):
                 for IDventilation, montantTmp in listeVentilations:
                     montantVentilation += montantTmp
                 if montantVentilation > montant:
-                    # Si le montant total ventilé est supérieur au montant de la prestation :
+                    # Si le montant total ventilÃ© est supÃ©rieur au montant de la prestation :
                     montantVentilationTmp = 0.0
                     for IDventilation, montantTmp in listeVentilations:
                         montantVentilationTmp += montantTmp
@@ -996,7 +996,7 @@ class CTRL_Parametres(wx.Panel):
 
         else:
 
-            # Suppression d'une prestation précédemment créée
+            # Suppression d'une prestation prÃ©cÃ©demment crÃ©Ã©e
             if IDprestation != None:
                 DB.ReqDEL("prestations", "IDprestation", IDprestation)
                 DB.ReqDEL("ventilation", "IDprestation", IDprestation)
@@ -1007,7 +1007,7 @@ class CTRL_Parametres(wx.Panel):
 
         DB.Close()
 
-        # Mémorise l'action dans l'historique
+        # MÃ©morise l'action dans l'historique
         date_debut_periode = DateEngFr(str(date_debut))
         date_fin_periode = DateEngFr(str(date_fin))
         if nouvelleCotisation == True:
@@ -1020,7 +1020,7 @@ class CTRL_Parametres(wx.Panel):
             "IDindividu": IDindividu,
             "IDfamille": IDfamille,
             "IDcategorie": IDcategorie,
-            "action": _(u"%s de la cotisation ID%d '%s' pour la période du %s au %s") % (type, self.IDcotisation, label_prestation, date_debut_periode, date_fin_periode),
+            "action": _(u"%s de la cotisation ID%d '%s' pour la pÃ©riode du %s au %s") % (type, self.IDcotisation, label_prestation, date_debut_periode, date_fin_periode),
         }, ])
 
     def Importation(self):
@@ -1069,9 +1069,9 @@ class CTRL_Parametres(wx.Panel):
             self.ctrl_numero.SetValue(numero)
 
         if IDdepot_cotisation == None:
-            self.ctrl_depot.SetValue(_(u"Non déposée"))
+            self.ctrl_depot.SetValue(_(u"Non dÃ©posÃ©e"))
         else:
-            self.ctrl_depot.SetValue(_(u"Déposée sur le dépôt n°%d") % IDdepot_cotisation)
+            self.ctrl_depot.SetValue(_(u"DÃ©posÃ©e sur le dÃ©pÃ´t nÂ°%d") % IDdepot_cotisation)
             self.ctrl_creation.Enable(False)
             self.ctrl_date_creation.Enable(False)
             self.ctrl_numero.Enable(False)
@@ -1082,7 +1082,7 @@ class CTRL_Parametres(wx.Panel):
         else:
             self.ctrl_facturer.SetValue(True)
 
-            # Importation des données de la prestation
+            # Importation des donnÃ©es de la prestation
             DB = GestionDB.DB()
             req = """SELECT
             IDcompte_payeur, label, montant, date, IDfacture
@@ -1108,7 +1108,7 @@ class CTRL_Parametres(wx.Panel):
                 self.IDprestation = None
                 self.ctrl_facturer.SetValue(False)
 
-        # Init contrôles
+        # Init contrÃ´les
         self.OnChoixCreation(None)
         self.OnChoixFacturer(None)
 
@@ -1138,7 +1138,7 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
 
-        # Init contrôles
+        # Init contrÃ´les
         self.bouton_ok.SetFocus()
 
         if self.IDcotisation == None :
@@ -1155,7 +1155,7 @@ class Dialog(wx.Dialog):
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=4, cols=1, vgap=10, hgap=10)
 
-        # Paramètres
+        # ParamÃ¨tres
         grid_sizer_base.Add(self.ctrl_parametres, 1, wx.LEFT|wx.RIGHT|wx.TOP|wx.EXPAND, 10)
 
         # Boutons
@@ -1180,14 +1180,14 @@ class Dialog(wx.Dialog):
         UTILS_Aide.Aide("Cotisations1")
 
     def OnBoutonOk(self, event): 
-        # Vérification des données saisies
+        # VÃ©rification des donnÃ©es saisies
         if self.ctrl_parametres.Validation() == False :
             return False
 
         # Sauvegarde
         self.ctrl_parametres.Sauvegarde()
 
-        # Fermeture de la fenêtre
+        # Fermeture de la fenÃªtre
         self.EndModal(wx.ID_OK)
     
     def GetIDcotisation(self):

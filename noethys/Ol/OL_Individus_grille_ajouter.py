@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -42,7 +42,7 @@ class Track(object):
     
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # Récupération des paramètres perso
+        # RÃ©cupÃ©ration des paramÃ¨tres perso
         self.selectionID = None
         self.selectionTrack = None
         self.criteres = ""
@@ -62,8 +62,8 @@ class ListView(FastObjectListView):
         self.donnees = self.GetTracks()
             
     def GetTracks(self):
-        """ Récupération des données """
-        # Critères
+        """ RÃ©cupÃ©ration des donnÃ©es """
+        # CritÃ¨res
         listeID = None
         self.criteres = ""
         db = GestionDB.DB()
@@ -72,7 +72,7 @@ class ListView(FastObjectListView):
         db.ExecuterReq(req)
         listeDonnees = db.ResultatReq()
         db.Close()
-        # Récupération du dictionnaire des civilités
+        # RÃ©cupÃ©ration du dictionnaire des civilitÃ©s
         dictCivilites = Civilites.GetDictCivilites()
         listeListeView = []
         for IDindividu, IDcivilite, nom, prenom, date_naiss  in listeDonnees :
@@ -82,7 +82,7 @@ class ListView(FastObjectListView):
             dictTemp["nom"] = nom
             dictTemp["prenom"] = prenom
             dictTemp["date_naiss"] = date_naiss
-            # Infos sur la civilité
+            # Infos sur la civilitÃ©
             IDcivilite = dictTemp["IDcivilite"]
             if IDcivilite == None : IDcivilite = 1
             genre = dictCivilites[IDcivilite]["sexe"]
@@ -111,7 +111,7 @@ class ListView(FastObjectListView):
         return listeListeView
       
     def InitObjectListView(self):
-        # Création du imageList
+        # CrÃ©ation du imageList
         for categorie, civilites in Civilites.LISTE_CIVILITES :
             for IDcivilite, CiviliteLong, CiviliteAbrege, nomImage, genre in civilites :
                 indexImg = self.AddNamedImages(nomImage, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/%s" % nomImage), wx.BITMAP_TYPE_PNG))
@@ -137,7 +137,7 @@ class ListView(FastObjectListView):
         liste_Colonnes = [
             ColumnDefn(u"", "left", 22, "IDindividu", typeDonnee="entier", imageGetter=GetImageCivilite),
             ColumnDefn(_(u"Nom"), 'left', 100, "nom", typeDonnee="texte"),
-            ColumnDefn(_(u"Prénom"), "left", 100, "prenom", typeDonnee="texte"),
+            ColumnDefn(_(u"PrÃ©nom"), "left", 100, "prenom", typeDonnee="texte"),
             ColumnDefn(_(u"Date naiss."), "left", 72, "date_naiss", typeDonnee="date", stringConverter=FormateDate),
             ColumnDefn(_(u"Age"), "left", 50, "age", typeDonnee="entier", stringConverter=FormateAge),
             ]
@@ -157,7 +157,7 @@ class ListView(FastObjectListView):
             self.selectionTrack = None
         self.InitModel()
         self.InitObjectListView()
-        # Sélection d'un item
+        # SÃ©lection d'un item
         if self.selectionTrack != None :
             self.SelectObject(self.selectionTrack, deselectOthers=True, ensureVisible=True)
         self.selectionID = None

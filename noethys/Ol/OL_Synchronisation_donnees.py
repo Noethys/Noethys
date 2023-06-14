@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activitÈs
+# Application :    Noethys, gestion multi-activit√©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-15 Ivan LUCAS
@@ -54,7 +54,7 @@ class Track(object):
             self.IDcompte_payeur = donnees["IDcompte_payeur"]
             self.quantite = donnees["quantite"]
             self.IDfamille = donnees["IDfamille"]
-            self.nomUnite = dictUnites.get(self.IDunite, u"<UnitÈ supprimÈe>")
+            self.nomUnite = dictUnites.get(self.IDunite, u"<Unit√© supprim√©e>")
             if self.IDindividu in dictIndividus :
                 self.nomIndividu = dictIndividus[self.IDindividu]
             else :
@@ -97,7 +97,7 @@ class ListView(GroupListView):
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
-        """ RÈcupÈration des donnÈes """
+        """ R√©cup√©ration des donn√©es """
         DB = GestionDB.DB()
         
         # Lecture Individus
@@ -110,7 +110,7 @@ class ListView(GroupListView):
             if prenom == None : prenom = ""
             dictIndividus[IDindividu] = u"%s %s" % (nom, prenom)
         
-        # Lecture unitÈs
+        # Lecture unit√©s
         req = """SELECT IDunite, nom, abrege
         FROM unites
         ORDER BY ordre;"""
@@ -123,10 +123,10 @@ class ListView(GroupListView):
         DB.Close() 
         
         
-        # RÈcupÈration du IDfichier
+        # R√©cup√©ration du IDfichier
         IDfichier = FonctionsPerso.GetIDfichier()
         
-        # Lecture des fichiers du rÈpertoire SYNC
+        # Lecture des fichiers du r√©pertoire SYNC
         listeFichiers = os.listdir(UTILS_Fichiers.GetRepSync())
         
         listeListeView = []
@@ -160,7 +160,7 @@ class ListView(GroupListView):
                 if ("ID_appareil" in dictParametres) == False :
                     dictParametres["ID_appareil"] = "IDAppareil inconnu"
                 
-                # MÈmorise l'IDappareil
+                # M√©morise l'IDappareil
                 self.dictIDappareil[nomFichierCourt] = dictParametres["ID_appareil"]
                 
                 # Lecture des consommations
@@ -179,13 +179,13 @@ class ListView(GroupListView):
                         "date_saisie" : date_saisie, "IDutilisateur" : IDutilisateur, "IDcategorie_tarif" : IDcategorie_tarif, "IDcompte_payeur" : IDcompte_payeur, "IDfamille" : IDfamille, 
                         }
                         
-                    # VÈrifie que cette action n'est pas dÈj‡ dans la liste
+                    # V√©rifie que cette action n'est pas d√©j√† dans la liste
                     if dictTemp not in listeDictTempTraites :
                         listeListeView.append(Track(dictTemp, dictIndividus=dictIndividus, dictUnites=dictUnites, dictParametres=dictParametres, nomFichier=nomFichier))
                         if self.cacher_doublons == True :
                             listeDictTempTraites.append(dictTemp)
                     
-                # Lecture des mÈmos journaliers
+                # Lecture des m√©mos journaliers
                 req = """SELECT IDmemo, horodatage, action, IDindividu, date, texte
                 FROM memo_journee;"""
                 DB.ExecuterReq(req)
@@ -199,7 +199,7 @@ class ListView(GroupListView):
                         "date" : date, "texte" : texte, 
                         }
                     
-                    # VÈrifie que cette action n'est pas dÈj‡ dans la liste
+                    # V√©rifie que cette action n'est pas d√©j√† dans la liste
                     if dictTemp not in listeDictTempTraites :
                         listeListeView.append(Track(dictTemp, dictIndividus=dictIndividus, dictParametres=dictParametres, nomFichier=nomFichier))
                         if self.cacher_doublons == True :
@@ -234,16 +234,16 @@ class ListView(GroupListView):
         
         def FormateCategorie(categorie):
             if categorie == "consommation" : return _(u"Consommation")
-            if categorie == "memo_journee" : return _(u"MÈmo journalier")
+            if categorie == "memo_journee" : return _(u"M√©mo journalier")
             return "?"
         
         liste_Colonnes = [
             ColumnDefn(_(u"Horodatage"), "left", 130, "horodatage", typeDonnee="dateheure", stringConverter=FormateHorodatage),
             ColumnDefn(_(u"Statut"), "left", 50, "statut", typeDonnee="texte", imageGetter=GetImageStatut),
-            ColumnDefn(_(u"CatÈgorie"), "left", 120, "categorie", typeDonnee="texte", stringConverter=FormateCategorie),
+            ColumnDefn(_(u"Cat√©gorie"), "left", 120, "categorie", typeDonnee="texte", stringConverter=FormateCategorie),
             ColumnDefn(_(u"Action"), "left", 100, "action", typeDonnee="texte", stringConverter=Capitalize),
             ColumnDefn(_(u"Individu"), "left", 150, "nomIndividu", typeDonnee="texte"),
-            ColumnDefn(_(u"DÈtail"), "left", 300, "detail", typeDonnee="texte"),
+            ColumnDefn(_(u"D√©tail"), "left", 300, "detail", typeDonnee="texte"),
             ColumnDefn(_(u"Appareil (ID)"), "left", 130, "appareil", typeDonnee="texte"),
             ColumnDefn(_(u"Nom du fichier"), "left", 290, "nomFichier", typeDonnee="texte"),
             ]
@@ -272,11 +272,11 @@ class ListView(GroupListView):
 
     def OnContextMenu(self, event):
         """Ouverture du menu contextuel """
-        # CrÈation du menu contextuel
+        # Cr√©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"AperÁu avant impression"))
+        item = wx.MenuItem(menuPop, 40, _(u"Aper√ßu avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -310,21 +310,21 @@ class ListView(GroupListView):
 
     def Apercu(self, event):
         from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des donnÈes ‡ synchroniser"), format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des donn√©es √† synchroniser"), format="A", orientation=wx.PORTRAIT)
         prt.Preview()
 
     def Imprimer(self, event):
         from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des donnÈes ‡ synchroniser"), format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des donn√©es √† synchroniser"), format="A", orientation=wx.PORTRAIT)
         prt.Print()
 
     def ExportTexte(self, event):
         from Utils import UTILS_Export
-        UTILS_Export.ExportTexte(self, titre=_(u"Liste des donnÈes ‡ synchroniser"))
+        UTILS_Export.ExportTexte(self, titre=_(u"Liste des donn√©es √† synchroniser"))
         
     def ExportExcel(self, event):
         from Utils import UTILS_Export
-        UTILS_Export.ExportExcel(self, titre=_(u"Liste des donnÈes ‡ synchroniser"))
+        UTILS_Export.ExportExcel(self, titre=_(u"Liste des donn√©es √† synchroniser"))
     
     def GetTracksCoches(self):
         return self.GetCheckedObjects()

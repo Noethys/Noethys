@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activitÈs
+# Application :    Noethys, gestion multi-activit√©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-12 Ivan LUCAS
@@ -79,9 +79,9 @@ class CTRL(ULC.UltimateListCtrl):
             
         try :
             if len(self.listePieces) > 0 :
-                self.parent.box_pieces_staticbox.SetLabel(u"PiËces jointes communes (%d)" % len(self.listePieces))
+                self.parent.box_pieces_staticbox.SetLabel(u"Pi√®ces jointes communes (%d)" % len(self.listePieces))
             else:
-                self.parent.box_pieces_staticbox.SetLabel(u"PiËces jointes communes")
+                self.parent.box_pieces_staticbox.SetLabel(u"Pi√®ces jointes communes")
         except :
             pass
     
@@ -95,7 +95,7 @@ class CTRL(ULC.UltimateListCtrl):
             noSelection = True
             self.ToutDeselectionner()
                 
-        # CrÈation du menu contextuel
+        # Cr√©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Ajouter
@@ -123,10 +123,10 @@ class CTRL(ULC.UltimateListCtrl):
             index = self.GetNextSelected(index)
 
     def Ajouter(self, event):
-        # Demande l'emplacement du fichier ‡ joindre
+        # Demande l'emplacement du fichier √† joindre
         standardPath = wx.StandardPaths.Get()
         rep = standardPath.GetDocumentsDir()
-        dlg = wx.FileDialog(self, message=_(u"Veuillez sÈlectionner le ou les fichiers ‡ joindre"), defaultDir=rep, defaultFile="", style=wx.FD_OPEN|wx.FD_MULTIPLE)
+        dlg = wx.FileDialog(self, message=_(u"Veuillez s√©lectionner le ou les fichiers √† joindre"), defaultDir=rep, defaultFile="", style=wx.FD_OPEN|wx.FD_MULTIPLE)
         if dlg.ShowModal() == wx.ID_OK:
             chemins = dlg.GetPaths()
         else:
@@ -137,7 +137,7 @@ class CTRL(ULC.UltimateListCtrl):
             
             for dictFichier in self.listePieces :
                 if fichier == dictFichier["nom"] :
-                    dlg = wx.MessageDialog(self, _(u"Le fichier '%s' est dÈj‡ dans la liste !") % os.path.basename(fichier), "Erreur", wx.OK| wx.ICON_EXCLAMATION)  
+                    dlg = wx.MessageDialog(self, _(u"Le fichier '%s' est d√©j√† dans la liste !") % os.path.basename(fichier), "Erreur", wx.OK| wx.ICON_EXCLAMATION)  
                     dlg.ShowModal()
                     dlg.Destroy()
                     valide = False
@@ -151,13 +151,13 @@ class CTRL(ULC.UltimateListCtrl):
 
     def Supprimer(self, event):
         if self.GetSelectedItemCount() == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucune piËce jointe ‡ enlever de la liste !"), "Erreur", wx.OK| wx.ICON_EXCLAMATION)  
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucune pi√®ce jointe √† enlever de la liste !"), "Erreur", wx.OK| wx.ICON_EXCLAMATION)  
             dlg.ShowModal()
             dlg.Destroy()
             return
         index = self.GetFirstSelected()
         if self.listePieces[index]["obligatoire"] == True :
-            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas dÈsÈlectionner cette piËce !"), "Erreur", wx.OK| wx.ICON_EXCLAMATION)  
+            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas d√©s√©lectionner cette pi√®ce !"), "Erreur", wx.OK| wx.ICON_EXCLAMATION)  
             dlg.ShowModal()
             dlg.Destroy()
             return

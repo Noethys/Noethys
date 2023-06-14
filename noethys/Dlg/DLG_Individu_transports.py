@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-12 Ivan LUCAS
@@ -25,7 +25,7 @@ class Panel(wx.Panel):
         self.IDindividu = IDindividu
         self.dictFamillesRattachees = dictFamillesRattachees
         
-        # Transports programmés
+        # Transports programmÃ©s
         self.staticbox_prog = wx.StaticBox(self, -1, _(u"Programmation de transports"))
         self.ctrl_prog_transports = OL_Transports_prog.ListView(self, IDindividu=IDindividu, id=-1, name="OL_prog_transports", style=wx.LC_HRULES|wx.LC_VRULES|wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL)
         self.ctrl_prog_transports.SetMinSize((150, 20))
@@ -56,19 +56,19 @@ class Panel(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonSupprimerListe, self.bouton_liste_supprimer)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonCalendrier, self.bouton_liste_calendrier)
 
-        # Propriétés
+        # PropriÃ©tÃ©s
         self.bouton_prog_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour programmer un transport")))
-        self.bouton_prog_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la programmation sélectionnée dans la liste")))
-        self.bouton_prog_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la programmation sélectionnée dans la liste")))
+        self.bouton_prog_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la programmation sÃ©lectionnÃ©e dans la liste")))
+        self.bouton_prog_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la programmation sÃ©lectionnÃ©e dans la liste")))
         self.bouton_liste_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour saisir un ou plusieurs transports")))
-        self.bouton_liste_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le transport sélectionné dans la liste")))
-        self.bouton_liste_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le transport sélectionné ou les transports cochés dans la liste")))
+        self.bouton_liste_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le transport sÃ©lectionnÃ© dans la liste")))
+        self.bouton_liste_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le transport sÃ©lectionnÃ© ou les transports cochÃ©s dans la liste")))
         self.bouton_liste_calendrier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher le planning des transports")))
         
         # Layout
         grid_sizer_base = wx.FlexGridSizer(rows=2, cols=1, vgap=0, hgap=0)
         
-        # Transports programmés
+        # Transports programmÃ©s
         staticbox_prog_transports = wx.StaticBoxSizer(self.staticbox_prog, wx.VERTICAL)
         grid_sizer_prog = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
         grid_sizer_prog.Add(self.ctrl_prog_transports, 1, wx.EXPAND, 0)
@@ -136,7 +136,7 @@ class Panel(wx.Panel):
         self.Refresh()
         
     def ValidationData(self):
-        """ Return True si les données sont valides et pretes à être sauvegardées """
+        """ Return True si les donnÃ©es sont valides et pretes Ã  Ãªtre sauvegardÃ©es """
         return True
     
     def Sauvegarde(self):

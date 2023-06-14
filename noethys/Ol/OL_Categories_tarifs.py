@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -27,7 +27,7 @@ class Track(object):
         self.IDcategorie_tarif = donnees[0]
         self.nom = donnees[1]
         
-        # Recherche des villes rattachées
+        # Recherche des villes rattachÃ©es
         self.villesRattachees = u""
         if self.IDcategorie_tarif in dictVilles:
             listeVilles = dictVilles[self.IDcategorie_tarif]
@@ -37,7 +37,7 @@ class Track(object):
     
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # Récupération des paramètres perso
+        # RÃ©cupÃ©ration des paramÃ¨tres perso
         self.IDactivite = kwds.pop("IDactivite", None)
         self.selectionID = None
         self.selectionTrack = None
@@ -59,11 +59,11 @@ class ListView(FastObjectListView):
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
-        """ Récupération des données """
+        """ RÃ©cupÃ©ration des donnÃ©es """
         listeID = None
         DB = GestionDB.DB()
         
-        # Récupération des tarifs
+        # RÃ©cupÃ©ration des tarifs
         req = """SELECT IDcategorie_tarif, nom
         FROM categories_tarifs
         WHERE IDactivite=%d
@@ -71,7 +71,7 @@ class ListView(FastObjectListView):
         DB.ExecuterReq(req)
         listeCategories = DB.ResultatReq()
         
-        # Récupération des villes rattachées
+        # RÃ©cupÃ©ration des villes rattachÃ©es
         req = """SELECT IDville, IDcategorie_tarif, cp, nom
         FROM categories_tarifs_villes
         ORDER BY nom;"""
@@ -106,11 +106,11 @@ class ListView(FastObjectListView):
         liste_Colonnes = [
             ColumnDefn(_(u"ID"), "left", 0, "IDcategorie_tarif", typeDonnee="entier"),
             ColumnDefn(_(u"Nom"), "left", 230, "nom", typeDonnee="texte"), 
-            ColumnDefn(_(u"Villes rattachées"), "left", 320, "villesRattachees", typeDonnee="texte", isSpaceFilling=True), 
+            ColumnDefn(_(u"Villes rattachÃ©es"), "left", 320, "villesRattachees", typeDonnee="texte", isSpaceFilling=True), 
             ]
         
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(_(u"Aucune catégorie de tarifs"))
+        self.SetEmptyListMsg(_(u"Aucune catÃ©gorie de tarifs"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
         self.SetSortColumn(self.columns[1])
         self.SetObjects(self.donnees)
@@ -124,7 +124,7 @@ class ListView(FastObjectListView):
             self.selectionTrack = None
         self.InitModel()
         self.InitObjectListView()
-        # Sélection d'un item
+        # SÃ©lection d'un item
         if self.selectionTrack != None :
             self.SelectObject(self.selectionTrack, deselectOthers=True, ensureVisible=True)
         self.selectionID = None
@@ -142,7 +142,7 @@ class ListView(FastObjectListView):
             noSelection = False
             ID = self.Selection()[0].IDcategorie_tarif
                 
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Modifier
@@ -173,7 +173,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
+        item = wx.MenuItem(menuPop, 40, _(u"AperÃ§u avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -191,12 +191,12 @@ class ListView(FastObjectListView):
 
     def Apercu(self, event):
         from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des catégories de tarifs"), format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des catÃ©gories de tarifs"), format="A", orientation=wx.PORTRAIT)
         prt.Preview()
 
     def Imprimer(self, event):
         from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des catégories de tarifs"), format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des catÃ©gories de tarifs"), format="A", orientation=wx.PORTRAIT)
         prt.Print()
 
 
@@ -209,13 +209,13 @@ class ListView(FastObjectListView):
             self.MAJ()
         else:
             dlg.Destroy()
-        # MAJ du ctrl tarifs de la fenêtre parente
+        # MAJ du ctrl tarifs de la fenÃªtre parente
         if self.GetParent().GetName() == "panel_tarification" :
             self.GetParent().MAJtarifs()
 
     def Modifier(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune catégorie à modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune catÃ©gorie Ã  modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -227,19 +227,19 @@ class ListView(FastObjectListView):
             self.MAJ()
         else:
             dlg.Destroy()
-        # MAJ du ctrl tarifs de la fenêtre parente
+        # MAJ du ctrl tarifs de la fenÃªtre parente
         if self.GetParent().GetName() == "panel_tarification" :
             self.GetParent().MAJtarifs()
 
     def Supprimer(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune catégorie à supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune catÃ©gorie Ã  supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         IDcategorie_tarif = self.Selection()[0].IDcategorie_tarif
         
-        # Recherche si cette catégorie n'est pas déjà attribuée à un tarif
+        # Recherche si cette catÃ©gorie n'est pas dÃ©jÃ  attribuÃ©e Ã  un tarif
         DB = GestionDB.DB()
         req = """SELECT IDtarif, categories_tarifs FROM tarifs;"""
         DB.ExecuterReq(req)
@@ -256,11 +256,11 @@ class ListView(FastObjectListView):
                     nbreApparitions += 1
         
         if nbreApparitions > 0 :
-            dlg = wx.MessageDialog(self, _(u"Il est impossible de supprimer cette catégorie car elle est déjà utilisée dans %d tarifs !") % nbreApparitions, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Il est impossible de supprimer cette catÃ©gorie car elle est dÃ©jÃ  utilisÃ©e dans %d tarifs !") % nbreApparitions, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
-        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer cette catégorie ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer cette catÃ©gorie ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
         if dlg.ShowModal() == wx.ID_YES :
             DB = GestionDB.DB()
             DB.ReqDEL("categories_tarifs", "IDcategorie_tarif", IDcategorie_tarif)
@@ -268,7 +268,7 @@ class ListView(FastObjectListView):
             DB.Close() 
             self.MAJ()
         dlg.Destroy()
-        # MAJ du ctrl tarifs de la fenêtre parente
+        # MAJ du ctrl tarifs de la fenÃªtre parente
         if self.GetParent().GetName() == "panel_tarification" :
             self.GetParent().MAJtarifs()
 
@@ -280,7 +280,7 @@ class BarreRecherche(wx.SearchCtrl):
         self.parent = parent
         self.rechercheEnCours = False
         
-        self.SetDescriptiveText(_(u"Rechercher une catégorie de tarifs..."))
+        self.SetDescriptiveText(_(u"Rechercher une catÃ©gorie de tarifs..."))
         self.ShowSearchButton(True)
         
         self.listView = self.parent.ctrl_listview

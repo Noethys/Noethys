@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -26,7 +26,7 @@ class CTRL_Secteurs(wx.CheckListBox):
         wx.CheckListBox.__init__(self, parent, -1)
         self.parent = parent
         self.data = []
-        self.SetToolTip(wx.ToolTip(_(u"Cochez les secteurs à rattacher")))
+        self.SetToolTip(wx.ToolTip(_(u"Cochez les secteurs Ã  rattacher")))
         self.listeSecteurs, self.dictSecteurs = self.Importation()
         self.SetListeChoix()
 
@@ -89,25 +89,25 @@ class Dialog(wx.Dialog):
         self.parent = parent   
         
         # Nom
-        self.staticbox_nom_staticbox = wx.StaticBox(self, -1, _(u"Nom de l'école"))
+        self.staticbox_nom_staticbox = wx.StaticBox(self, -1, _(u"Nom de l'Ã©cole"))
         self.label_nom = wx.StaticText(self, -1, _(u"Nom :"), size=(60, -1), style=wx.ALIGN_RIGHT)
         self.ctrl_nom = wx.TextCtrl(self, -1, u"")
         
         # Coords
-        self.staticbox_coords_staticbox = wx.StaticBox(self, -1, _(u"Coordonnées"))
+        self.staticbox_coords_staticbox = wx.StaticBox(self, -1, _(u"CoordonnÃ©es"))
         self.label_rue = wx.StaticText(self, -1, _(u"Rue :"), size=(60, -1), style=wx.ALIGN_RIGHT)
         self.ctrl_rue = wx.TextCtrl(self, -1, u"", style=wx.TE_MULTILINE)
         self.label_ville = wx.StaticText(self, -1, _(u"C.P. :"))
         self.ctrl_ville = CTRL_Saisie_adresse.Adresse(self)
-        self.label_tel = wx.StaticText(self, -1, _(u"Tél. :"))
-        self.ctrl_tel = CTRL_Saisie_tel.Tel(self, intitule=u"école")
+        self.label_tel = wx.StaticText(self, -1, _(u"TÃ©l. :"))
+        self.ctrl_tel = CTRL_Saisie_tel.Tel(self, intitule=u"Ã©cole")
         self.label_fax = wx.StaticText(self, -1, _(u"Fax. :"))
         self.ctrl_fax = CTRL_Saisie_tel.Tel(self, intitule=_(u"fax"))
         self.label_mail = wx.StaticText(self, -1, _(u"Email :"))
         self.ctrl_mail = CTRL_Saisie_mail.Mail(self)
 
         # Secteurs
-        self.staticbox_secteurs_staticbox = wx.StaticBox(self, -1, _(u"Secteurs rattachés"))
+        self.staticbox_secteurs_staticbox = wx.StaticBox(self, -1, _(u"Secteurs rattachÃ©s"))
         self.label_secteurs = wx.StaticText(self, -1, _(u"Secteurs :"), size=(60, -1), style=wx.ALIGN_RIGHT)
         self.ctrl_secteurs = CTRL_Secteurs(self)
         self.ctrl_secteurs.SetMinSize((-1, 100))
@@ -123,8 +123,8 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
 
     def __set_properties(self):
-        self.SetTitle(_(u"Ajout d'une école"))
-        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez le nom de l'école")))
+        self.SetTitle(_(u"Ajout d'une Ã©cole"))
+        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez le nom de l'Ã©cole")))
         self.ctrl_rue.SetToolTip(wx.ToolTip(_(u"Saisissez la rue")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))

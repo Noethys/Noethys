@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-12 Ivan LUCAS
@@ -35,11 +35,11 @@ def ConvertDateDTenWX(date=None):
 class JoursSpeciaux() :
     def __init__(self):
         
-        # Définit les couleurs
+        # DÃ©finit les couleurs
         self.couleur_feries = wx.Colour(180, 180, 180)
         self.couleur_vacances = wx.Colour(255, 255, 187)
         
-        # Récupère les données dans la base
+        # RÃ©cupÃ¨re les donnÃ©es dans la base
         self.listeVacances = self.Importation_Vacances() 
         self.listeFeriesFixes, self.listeFeriesVariables = self.Importation_Feries() 
         
@@ -65,7 +65,7 @@ class JoursSpeciaux() :
         return listeVacances
     
     def Importation_Feries(self):
-        """ Importation des dates des jours fériés """
+        """ Importation des dates des jours fÃ©riÃ©s """
         req = "SELECT * FROM jours_feries;"
         DB = GestionDB.DB()
         DB.ExecuterReq(req)
@@ -84,7 +84,7 @@ class JoursSpeciaux() :
         return listeFeriesFixes, listeFeriesVariables
 
     def RechercheJourFerie(self, datewx=None):
-        """ Recherche si une date est un jour férié """
+        """ Recherche si une date est un jour fÃ©riÃ© """
         if (datewx.GetDay(), datewx.GetMonth()+1) in self.listeFeriesFixes :
             return True
         else:

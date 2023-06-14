@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-16 Ivan LUCAS
@@ -80,18 +80,18 @@ class Track(object):
 
     def FormateCategorie(self):
         if self.categorie == "factures" : self.categorie_label = _(u"Factures")
-        elif self.categorie == "reglements" : self.categorie_label = _(u"Règlements")
+        elif self.categorie == "reglements" : self.categorie_label = _(u"RÃ¨glements")
         elif self.categorie == "inscriptions" : self.categorie_label = _(u"Inscriptions")
-        elif self.categorie == "reservations" : self.categorie_label = _(u"Réservations")
+        elif self.categorie == "reservations" : self.categorie_label = _(u"RÃ©servations")
         elif self.categorie == "renseignements": self.categorie_label = _(u"Renseignements")
         elif self.categorie == "locations": self.categorie_label = _(u"Locations")
-        elif self.categorie == "pieces": self.categorie_label = _(u"Pièces")
+        elif self.categorie == "pieces": self.categorie_label = _(u"PiÃ¨ces")
         elif self.categorie == "compte":self.categorie_label = _(u"Compte")
         else : self.categorie_label = _(u"")
 
     def FormateEtat(self):
         if self.etat == "attente" : self.etat_label = _(u"En attente")
-        elif self.etat == "validation" : self.etat_label = _(u"Traité")
+        elif self.etat == "validation" : self.etat_label = _(u"TraitÃ©")
         else : self.etat_label = _(u"")
 
     def Refresh(self):
@@ -128,7 +128,7 @@ class ListView(GroupListView):
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
-        """ Récupération des données """
+        """ RÃ©cupÃ©ration des donnÃ©es """
         self.dictTitulaires = UTILS_Titulaires.GetTitulaires()
 
         DB = GestionDB.DB()
@@ -154,7 +154,7 @@ class ListView(GroupListView):
         else :
             conditions = ""
 
-        # Lecture des réservations
+        # Lecture des rÃ©servations
         req = """SELECT portail_reservations.IDaction, groupes.nom
         FROM portail_reservations
         LEFT JOIN portail_actions ON portail_actions.IDaction = portail_reservations.IDaction
@@ -245,19 +245,19 @@ class ListView(GroupListView):
             "IDaction" : ColumnDefn(_(u"IDaction"), "left", 0, "", typeDonnee="texte"),
             "horodatage" : ColumnDefn(_(u"Horodatage"), "left", 140, "horodatage", typeDonnee="dateheure", stringConverter=FormateHorodatage),
             "etat" : ColumnDefn(_(u"Etat"), "left", 90, "etat_label", typeDonnee="texte", imageGetter=GetImageEtat),
-            "traitement_date" : ColumnDefn(_(u"Traitée le"), "left", 80, "traitement_date", typeDonnee="date", stringConverter=FormateDate),
-            "categorie" : ColumnDefn(_(u"Catégorie"), "left", 120, "categorie_label", typeDonnee="texte", imageGetter=GetImageCategorie),
+            "traitement_date" : ColumnDefn(_(u"TraitÃ©e le"), "left", 80, "traitement_date", typeDonnee="date", stringConverter=FormateDate),
+            "categorie" : ColumnDefn(_(u"CatÃ©gorie"), "left", 120, "categorie_label", typeDonnee="texte", imageGetter=GetImageCategorie),
             "nom" : ColumnDefn(_(u"Nom"), "left", 180, "nom", typeDonnee="texte"),
             "description" : ColumnDefn(_(u"Description"), "left", 300, "description", typeDonnee="texte"),
-            "periode" : ColumnDefn(_(u"Période"), "left", 200, "periode_nom", typeDonnee="texte"),
+            "periode" : ColumnDefn(_(u"PÃ©riode"), "left", 200, "periode_nom", typeDonnee="texte"),
             "commentaire" : ColumnDefn(_(u"Commentaire"), "left", 200, "commentaire", typeDonnee="texte"),
             "email_date": ColumnDefn(_(u"Email"), "left", 95, "email_date", typeDonnee="date", stringConverter=FormateDate, imageGetter=GetImageEmail),
-            "reponse" : ColumnDefn(_(u"Réponse"), "left", 200, "reponse", typeDonnee="texte"),
-            "ville": ColumnDefn(_(u"Ville de résidence"), "left", 150, "ville", typeDonnee="texte"),
+            "reponse" : ColumnDefn(_(u"RÃ©ponse"), "left", 200, "reponse", typeDonnee="texte"),
+            "ville": ColumnDefn(_(u"Ville de rÃ©sidence"), "left", 150, "ville", typeDonnee="texte"),
             "nom_groupe": ColumnDefn(_(u"Groupe"), "left", 120, "nom_groupe", typeDonnee="texte"),
             }
 
-        # Liste des colonnes par défaut
+        # Liste des colonnes par dÃ©faut
         liste_colonnes = ["horodatage", "etat", "traitement_date", "categorie", "nom", "description", "periode",
                           "commentaire", "email_date", "reponse", "ville", "nom_groupe"]
 
@@ -294,7 +294,7 @@ class ListView(GroupListView):
 
     def OnContextMenu(self, event):
         """Ouverture du menu contextuel """
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Traiter
@@ -308,8 +308,8 @@ class ListView(GroupListView):
 
         menuPop.AppendSeparator()
 
-        # Génération automatique des fonctions standards
-        self.GenerationContextMenu(menuPop, titre=_(u"Liste des données à synchroniser"))
+        # GÃ©nÃ©ration automatique des fonctions standards
+        self.GenerationContextMenu(menuPop, titre=_(u"Liste des donnÃ©es Ã  synchroniser"))
 
         self.PopupMenu(menuPop)
         menuPop.Destroy()
@@ -320,25 +320,25 @@ class ListView(GroupListView):
     def Commencer(self):
         tracks = self.GetObjects()
         if len(tracks) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Il n'y a aucune demande à traiter dans la liste !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Il n'y a aucune demande Ã  traiter dans la liste !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
-        # Ouverture de la fenêtre de traitement des demandes
+        # Ouverture de la fenÃªtre de traitement des demandes
         dlg = DLG_Saisie_portail_demande.Dialog(self, track=tracks[0], tracks=self.GetObjects())
         dlg.ShowModal()
         dlg.Destroy()
 
     def Traiter(self, event=None):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune ligne à traiter dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune ligne Ã  traiter dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         track = self.Selection()[0]
 
-        # Ouverture de la fenêtre de traitement des demandes
+        # Ouverture de la fenÃªtre de traitement des demandes
         dlg = DLG_Saisie_portail_demande.Dialog(self, track=track, tracks=self.GetObjects())
         dlg.ShowModal()
         dlg.Destroy()

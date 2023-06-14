@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-14 Ivan LUCAS
@@ -26,7 +26,7 @@ from Utils import UTILS_Titulaires
 from Utils.UTILS_Decimal import FloatToDecimal as FloatToDecimal
 import FonctionsPerso
 from Utils import UTILS_Config
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"â‚¬")
 from Utils import UTILS_Parametres
 import six
 import wx.propgrid as wxpg
@@ -53,7 +53,7 @@ def FormateLibelle(texte="", valeurs=[]):
     return texte
 
 def GetKeysDictTries(dictValeurs={}, key=""):
-    """ Renvoie une liste de keys de dictionnaire triés selon la sous key indiquée """
+    """ Renvoie une liste de keys de dictionnaire triÃ©s selon la sous key indiquÃ©e """
     listeKeys = []
     for ID, dictTemp in dictValeurs.items() :
         listeKeys.append((dictTemp[key], ID))
@@ -115,7 +115,7 @@ def Export_ebp_compta(ligne, dictParametres, numLigne, typeComptable=None):
             "EUR",
             ]
     
-    # Dépôt
+    # DÃ©pÃ´t
     if ligne["type"] == "depot" :
         montant, sens = GetSens(montant, "D")
         ligneTemp = [
@@ -132,7 +132,7 @@ def Export_ebp_compta(ligne, dictParametres, numLigne, typeComptable=None):
             "EUR",
             ]
 
-    # Total par mode de règlement
+    # Total par mode de rÃ¨glement
     if ligne["type"] == "total_mode" :
         montant, sens = GetSens(montant, "D")
         ligneTemp = [
@@ -149,7 +149,7 @@ def Export_ebp_compta(ligne, dictParametres, numLigne, typeComptable=None):
             "EUR",
             ]
 
-    # Règlements
+    # RÃ¨glements
     if ligne["type"] == "total_reglements" :
         montant, sens = GetSens(montant, "C")
         ligneTemp = [
@@ -185,7 +185,7 @@ class Donnees():
         else :
             condition = "prestations.date>='%s' AND prestations.date<='%s'" % (self.date_debut, self.date_fin)
 
-        # Récupération des prestations 
+        # RÃ©cupÃ©ration des prestations 
         DB = GestionDB.DB() 
         req = """
         SELECT prestations.IDprestation, prestations.date, categorie, prestations.code_compta, tarifs.code_compta,
@@ -226,7 +226,7 @@ class Donnees():
                 }
             listePrestations.append(dictTemp)
             
-        # -------------- Ventes crédit : Ventilation par nom de prestation  ---------------
+        # -------------- Ventes crÃ©dit : Ventilation par nom de prestation  ---------------
         dictCodesPrestations = {}
         for dictPrestation in listePrestations :
             
@@ -240,14 +240,14 @@ class Donnees():
                         labelActivite = u"%s - " % dictPrestation["nomAbregeActivite"]
                     intituleTemp = "%s%s" % (labelActivite, dictPrestation["label"])
                 
-                # Si mode regroupement par activité
+                # Si mode regroupement par activitÃ©
                 if self.dictParametres["option_regroupement_prestations"] == 1 :
                     if dictPrestation["nomActivite"] != "" :
                         intituleTemp = dictPrestation["nomActivite"]
                     else :
                         intituleTemp = dictPrestation["label"]
                     
-                # Mémorisation de la prestation
+                # MÃ©morisation de la prestation
                 if (intituleTemp in dictCodesPrestations) == False :
                     
                     # Recherche le code compta de la prestation
@@ -266,14 +266,14 @@ class Donnees():
                     if code_compta == "" :
                         code_compta = self.dictParametres["code_ventes"]
                         
-                    # Mémorisation de la prestation
+                    # MÃ©morisation de la prestation
                     dictCodesPrestations[intituleTemp] = {"code_compta" : code_compta, "montant" : FloatToDecimal(0.0)}
                     
                 dictCodesPrestations[intituleTemp]["montant"] += dictPrestation["montant"]
 
-        # Vérification des codes comptables
+        # VÃ©rification des codes comptables
         if len(dictCodesPrestations) > 0 :
-            dlg = Dialog_codes(None, dictCodes=dictCodesPrestations, keyStr=True, titre=_(u"Vérification des codes comptables des prestations"))
+            dlg = Dialog_codes(None, dictCodes=dictCodesPrestations, keyStr=True, titre=_(u"VÃ©rification des codes comptables des prestations"))
             if dlg.ShowModal() == wx.ID_OK :
                 dictCodesTemp = dlg.GetCodes() 
                 dlg.Destroy() 
@@ -283,14 +283,14 @@ class Donnees():
             for intitule, code_compta in dictCodesTemp.items() :
                 dictCodesPrestations[intitule]["code_compta"] = code_compta
             
-        # Mémorisation des lignes prestations
+        # MÃ©morisation des lignes prestations
         listeIntitules = list(dictCodesPrestations.keys()) 
         listeIntitules.sort() 
         
         for intitule in listeIntitules :
             dictCode = dictCodesPrestations[intitule]
 
-            # Formatage libellé prestation
+            # Formatage libellÃ© prestation
             libelle = FormateLibelle(
                 texte = self.dictParametres["format_prestation"],
                 valeurs = [
@@ -307,7 +307,7 @@ class Donnees():
                 })
 
 
-        # -------------- Ventes débit : Total de la facturation ---------------
+        # -------------- Ventes dÃ©bit : Total de la facturation ---------------
         montantTotal = FloatToDecimal(0.0)
         for labelPrestation, dictTemp in dictCodesPrestations.items() :
             if dictTemp["code_compta"] != "" :
@@ -320,7 +320,7 @@ class Donnees():
                 ("{DATE_FIN}", UTILS_Dates.DateDDEnFr(self.date_fin)),
                 ])
         
-        # Mémorisation ligne 
+        # MÃ©morisation ligne 
         listeLignes.append({
             "type" : "total_prestations",
             "libelle" : libelle,
@@ -333,13 +333,13 @@ class Donnees():
     def GetReglements_Modes(self, typeComptable="banque"):
         DB = GestionDB.DB() 
         
-        # Condition de sélection des règlements
+        # Condition de sÃ©lection des rÃ¨glements
         if self.dictParametres["option_selection_reglements"] == 0 :
             condition = "reglements.IDdepot IS NOT NULL AND depots.date IS NOT NULL AND depots.date>='%s' AND depots.date<='%s' AND modes_reglements.type_comptable='%s' " % (self.date_debut, self.date_fin, typeComptable)
         else :
             condition = "reglements.date>='%s' AND reglements.date<='%s' AND modes_reglements.type_comptable='%s' " % (self.date_debut, self.date_fin, typeComptable)
 
-        # Récupération des règlements
+        # RÃ©cupÃ©ration des rÃ¨glements
         req = """SELECT 
         reglements.IDreglement, reglements.IDcompte_payeur, reglements.date, 
         reglements.IDmode, modes_reglements.label, 
@@ -378,9 +378,9 @@ class Donnees():
             dictModesReglements[IDmode]["montant"] += FloatToDecimal(montant)
             dictModesReglements[IDmode]["nbreReglements"] += 1
 
-        # Vérification des codes comptables
+        # VÃ©rification des codes comptables
         if len(dictModesReglements) > 0 :
-            dlg = Dialog_codes(None, dictCodes=dictModesReglements, keyStr=False, titre=_(u"Vérification des codes comptables des modes de règlements de type %s") % typeComptable)
+            dlg = Dialog_codes(None, dictCodes=dictModesReglements, keyStr=False, titre=_(u"VÃ©rification des codes comptables des modes de rÃ¨glements de type %s") % typeComptable)
             if dlg.ShowModal() == wx.ID_OK :
                 dictCodesTemp = dlg.GetCodes() 
                 dlg.Destroy() 
@@ -396,7 +396,7 @@ class Donnees():
             
             if dictMode["code_compta"] != "" :
             
-                # Formatage libellé dépôt
+                # Formatage libellÃ© dÃ©pÃ´t
                 libelle = FormateLibelle(
                     texte = self.dictParametres["format_mode"],
                     valeurs = [
@@ -406,7 +406,7 @@ class Donnees():
                         ("{NBRE_REGLEMENTS}", str(dictMode["nbreReglements"])),
                         ])
                 
-                # Mémorisation ligne
+                # MÃ©morisation ligne
                 listeLignes.append({
                     "type" : "total_mode",
                     "IDmode" : dictMode["IDmode"],
@@ -418,7 +418,7 @@ class Donnees():
                     "nomCompte" : dictMode["nomCompte"],
                     })
         
-        # Total des règlements
+        # Total des rÃ¨glements
         if len(listeLignes) > 0 :
 
             montantTotal = FloatToDecimal(0.0)
@@ -445,13 +445,13 @@ class Donnees():
     def GetReglements_Depots(self, typeComptable="banque"):
         DB = GestionDB.DB() 
         
-        # Condition de sélection des règlements
+        # Condition de sÃ©lection des rÃ¨glements
         if self.dictParametres["option_selection_reglements"] == 0 :
             condition = "reglements.IDdepot IS NOT NULL AND depots.date IS NOT NULL AND depots.date>='%s' AND depots.date<='%s' AND modes_reglements.type_comptable='%s' " % (self.date_debut, self.date_fin, typeComptable)
         else :
             condition = "reglements.date>='%s' AND reglements.date<='%s' AND modes_reglements.type_comptable='%s' " % (self.date_debut, self.date_fin, typeComptable)
 
-        # Dépôts
+        # DÃ©pÃ´ts
         req = """SELECT 
         depots.IDdepot, depots.date, depots.nom, depots.code_compta, reglements.IDmode, modes_reglements.label, modes_reglements.type_comptable,
         SUM(reglements.montant), COUNT(reglements.IDreglement),
@@ -479,9 +479,9 @@ class Donnees():
             dictDepots[IDdepot] = dictTemp
             montantTotal += FloatToDecimal(montant)
         
-        # Vérification des codes comptables
+        # VÃ©rification des codes comptables
         if len(dictDepots) > 0 :
-            dlg = Dialog_codes(None, dictCodes=dictDepots, keyStr=False, titre=_(u"Vérification des codes comptables des dépôts de type %s") % typeComptable)
+            dlg = Dialog_codes(None, dictCodes=dictDepots, keyStr=False, titre=_(u"VÃ©rification des codes comptables des dÃ©pÃ´ts de type %s") % typeComptable)
             if dlg.ShowModal() == wx.ID_OK :
                 dictCodesTemp = dlg.GetCodes() 
                 dlg.Destroy() 
@@ -498,7 +498,7 @@ class Donnees():
 
             if dictDepot["code_compta"] != "" :
 
-                # Formatage libellé dépôt
+                # Formatage libellÃ© dÃ©pÃ´t
                 libelle = FormateLibelle(
                     texte = self.dictParametres["format_depot"],
                     valeurs = [
@@ -510,7 +510,7 @@ class Donnees():
                         ("{NBRE_REGLEMENTS}", str(dictDepot["nbreReglements"])),
                         ])
                 
-                # Mémorisation ligne dépôt
+                # MÃ©morisation ligne dÃ©pÃ´t
                 listeLignes.append({
                     "type" : "depot",
                     "IDdepot" : dictDepot["IDdepot"],
@@ -524,7 +524,7 @@ class Donnees():
                     "nomCompte" : dictDepot["nomCompte"],
                     })
                                 
-        # Total des règlements
+        # Total des rÃ¨glements
         if len(listeLignes) > 0 :
             
             montantTotal = FloatToDecimal(0.0)
@@ -552,7 +552,7 @@ class Donnees():
 ##    def GetReglements(self, typeComptable="banque"):
 ##        DB = GestionDB.DB() 
 ##        
-##        # Dépôts de règlements
+##        # DÃ©pÃ´ts de rÃ¨glements
 ##        req = """SELECT 
 ##        depots.IDdepot, depots.date, depots.nom, reglements.IDmode, modes_reglements.label, modes_reglements.type_comptable,
 ##        SUM(reglements.montant), COUNT(reglements.IDreglement)
@@ -571,7 +571,7 @@ class Donnees():
 ##                "type_comptable" : type_comptable, "montant" : FloatToDecimal(montant), "nbreReglements" : nbreReglements, 
 ##                })
 ##        
-##        # Règlements
+##        # RÃ¨glements
 ##        req = """SELECT 
 ##        reglements.IDreglement, reglements.IDcompte_payeur, reglements.date, 
 ##        reglements.IDmode, modes_reglements.label, 
@@ -606,11 +606,11 @@ class Donnees():
 ##                "attente" : attente, "dateDepot" : UTILS_Dates.DateEngEnDateDD(dateDepot), "nomDepot" : nomDepot, "date_saisie" : date_saisie, "IDfamille" : IDfamille, "code_compta_mode" : code_compta_mode,
 ##                })
 ##        
-##        # Analyse des dépôts
+##        # Analyse des dÃ©pÃ´ts
 ##        listeLignes = []
 ##        for dictDepot in listeDepots :
 ##            
-##            # Formatage libellé dépôt
+##            # Formatage libellÃ© dÃ©pÃ´t
 ##            libelle_depot = self.dictParametres["format_depot"]
 ##            listeMotsCles = [
 ##                ("{IDDEPOT}", str(dictDepot["IDdepot"])),
@@ -623,7 +623,7 @@ class Donnees():
 ##            for motcle, valeur in listeMotsCles :
 ##                libelle_depot = libelle_depot.replace(motcle, valeur)
 ##            
-##            # Mémorisation ligne dépôt
+##            # MÃ©morisation ligne dÃ©pÃ´t
 ##            listeLignes.append({
 ##                "type" : "depot",
 ##                "IDdepot" : dictDepot["IDdepot"],
@@ -634,7 +634,7 @@ class Donnees():
 ##                "montant" : str(dictDepot["montant"]),
 ##                })
 ##                        
-##            # Analyse des règlements
+##            # Analyse des rÃ¨glements
 ##            if dictReglementsDepots.has_key(dictDepot["IDdepot"]) :
 ##                for dictReglement in dictReglementsDepots[dictDepot["IDdepot"]] :
 ##
@@ -643,7 +643,7 @@ class Donnees():
 ##                    else :
 ##                        nomFamille = ""
 ##
-##                    # Formatage libellé Règlement
+##                    # Formatage libellÃ© RÃ¨glement
 ##                    libelle_reglement = self.dictParametres["format_reglement"]
 ##                    listeMotsCles = [
 ##                        ("{IDREGLEMENT}", str(dictReglement["IDreglement"])),
@@ -695,10 +695,10 @@ class Donnees():
 ##    def GetVentes(self):
 ##        DB = GestionDB.DB() 
 ##        
-##        dlgAttente = wx.BusyInfo(_(u"Recherche des données en cours..."), None)
+##        dlgAttente = wx.BusyInfo(_(u"Recherche des donnÃ©es en cours..."), None)
 ##        wx.Yield() 
 ##        
-##        # Récupération des factures
+##        # RÃ©cupÃ©ration des factures
 ##        req = """
 ##        SELECT factures.IDfacture, factures.numero, factures.IDcompte_payeur, comptes_payeurs.IDfamille,
 ##        factures.date_edition, factures.date_echeance, 
@@ -725,7 +725,7 @@ class Donnees():
 ##                }
 ##            listeFactures.append(dictTemp)
 ##
-##        # Récupération des prestations des factures
+##        # RÃ©cupÃ©ration des prestations des factures
 ##        req = """
 ##        SELECT prestations.IDprestation, prestations.date, categorie, prestations.code_compta, tarifs.code_compta,
 ##        prestations.label, prestations.montant, 
@@ -781,7 +781,7 @@ class Donnees():
 ##                else :
 ##                    nomFamille = ""
 ##                
-##                # Formatage libellé facture
+##                # Formatage libellÃ© facture
 ##                libelle_facture = self.dictParametres["format_facture"]
 ##                listeMotsCles = [
 ##                    ("{IDFACTURE}", str(dictFacture["IDfacture"])),
@@ -796,7 +796,7 @@ class Donnees():
 ##                for motcle, valeur in listeMotsCles :
 ##                    libelle_facture = libelle_facture.replace(motcle, valeur)
 ##                
-##                # Mémorisation ligne facture
+##                # MÃ©morisation ligne facture
 ##                listeLignes.append({
 ##                    "type" : "facture",
 ##                    "IDfacture" : IDfacture,
@@ -833,7 +833,7 @@ class Donnees():
 ##                                        if dictPrestation["code_compta_type_cotisation"] not in (None, ""):
 ##                                            code_compta = dictPrestation["code_compta_type_cotisation"]
 ##                            
-##                            # Vérifie si code compta présent
+##                            # VÃ©rifie si code compta prÃ©sent
 ##                            if dictPrestation["nomAbregeActivite"] in (None, ""):
 ##                                labelActivite = ""
 ##                            else :
@@ -845,7 +845,7 @@ class Donnees():
 ##                                code_compta = self.dictParametres["code_ventes"]
 ##                            dictCodes[intituleTemp] = code_compta
 ##                            
-##                            # Formatage libellé prestation
+##                            # Formatage libellÃ© prestation
 ##                            libelle_prestation = self.dictParametres["format_prestation"]
 ##                            listeMotsCles = [
 ##                                ("{IDPRESTATION}", str(dictPrestation["IDprestation"])),
@@ -875,9 +875,9 @@ class Donnees():
 ##                                "intituleTemp" : intituleTemp,
 ##                                })
 ##                
-##                # Vérifie que le total des prestations correspond au montant de la facture
+##                # VÃ©rifie que le total des prestations correspond au montant de la facture
 ##                if dictFacture["total"] != totalPrestationsFacture :
-##                    listeAnomalies.append(_(u"- Le total des prestations de la facture n°%s du %s (%s) ne correspond pas au montant initial de la facture.") % (dictFacture["numero"], FormateDate(dictFacture["date_edition"], "%d/%m/%Y"), nomFamille) )
+##                    listeAnomalies.append(_(u"- Le total des prestations de la facture nÂ°%s du %s (%s) ne correspond pas au montant initial de la facture.") % (dictFacture["numero"], FormateDate(dictFacture["date_edition"], "%d/%m/%Y"), nomFamille) )
 ##                    
 ##        del dlgAttente
 ##        
@@ -885,7 +885,7 @@ class Donnees():
 ##        if len(listeAnomalies) > 0 :
 ##        
 ##            # Propose le correcteur d'anomalies
-##            dlg = wx.MessageDialog(None, _(u"Des anomalies ont été détectées dans certaines factures.\n\nSouhaitez-vous lancer le correcteur d'anomalies afin de les corriger dès à présent (Conseillé) ?"), _(u"Anomalies"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+##            dlg = wx.MessageDialog(None, _(u"Des anomalies ont Ã©tÃ© dÃ©tectÃ©es dans certaines factures.\n\nSouhaitez-vous lancer le correcteur d'anomalies afin de les corriger dÃ¨s Ã  prÃ©sent (ConseillÃ©) ?"), _(u"Anomalies"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
 ##            reponse = dlg.ShowModal() 
 ##            dlg.Destroy()
 ##            if reponse == wx.ID_YES :
@@ -911,7 +911,7 @@ class Donnees():
 ##                    listeLignes[index]["code_compta"] = dictCodes[intituleTemp]
 ##            index += 1
 ##            
-##        # Recherche des prestations de la période non facturées
+##        # Recherche des prestations de la pÃ©riode non facturÃ©es
 ##        DB = GestionDB.DB() 
 ##        req = """SELECT IDprestation, date, label, montant, IDfamille, activites.abrege
 ##        FROM prestations
@@ -937,7 +937,7 @@ class Donnees():
 ##            listePrestationsSansFactures.append(u"- %s : %s (%s | %s)" % (date, label, montant, nomFamille))
 ##        
 ##        if len(listePrestationsSansFactures) > 0 :
-##            message1 = _(u"Attention, %d prestations (%s) de cette période n'apparaissent sur aucune facture. Ces prestations ne figureront pas dans les écritures comptables. Il est donc conseillé de quitter et générer depuis le menu Facturation les factures correspondantes avant de lancer l'export des écritures comptables.\n\nSouhaitez-vous quand même continuer ?") % (len(listePrestationsSansFactures), u"%.2f %s" % (totalPrestationsSansFactures, SYMBOLE))
+##            message1 = _(u"Attention, %d prestations (%s) de cette pÃ©riode n'apparaissent sur aucune facture. Ces prestations ne figureront pas dans les Ã©critures comptables. Il est donc conseillÃ© de quitter et gÃ©nÃ©rer depuis le menu Facturation les factures correspondantes avant de lancer l'export des Ã©critures comptables.\n\nSouhaitez-vous quand mÃªme continuer ?") % (len(listePrestationsSansFactures), u"%.2f %s" % (totalPrestationsSansFactures, SYMBOLE))
 ##            message2 = u"\n" .join(listePrestationsSansFactures)
 ##            dlg = dialogs.MultiMessageDialog(None, message1, caption=_(u"Avertissement"), msg2=message2 + "\n\n\n", style = wx.ICON_EXCLAMATION | wx.OK | wx.CANCEL, icon=None, btnLabels={wx.ID_OK : _(u"Oui"), wx.ID_CANCEL : _(u"Non")})
 ##            reponse = dlg.ShowModal() 
@@ -951,7 +951,7 @@ class Donnees():
 ##    def GetReglements(self, typeComptable="banque"):
 ##        DB = GestionDB.DB() 
 ##        
-##        # Dépôts de règlements
+##        # DÃ©pÃ´ts de rÃ¨glements
 ##        req = """SELECT 
 ##        depots.IDdepot, depots.date, depots.nom, reglements.IDmode, modes_reglements.label, modes_reglements.type_comptable,
 ##        SUM(reglements.montant), COUNT(reglements.IDreglement)
@@ -970,7 +970,7 @@ class Donnees():
 ##                "type_comptable" : type_comptable, "montant" : FloatToDecimal(montant), "nbreReglements" : nbreReglements, 
 ##                })
 ##        
-##        # Règlements
+##        # RÃ¨glements
 ##        req = """SELECT 
 ##        reglements.IDreglement, reglements.IDcompte_payeur, reglements.date, 
 ##        reglements.IDmode, modes_reglements.label, 
@@ -1002,11 +1002,11 @@ class Donnees():
 ##                "attente" : attente, "dateDepot" : UTILS_Dates.DateEngEnDateDD(dateDepot), "nomDepot" : nomDepot, "date_saisie" : date_saisie, "IDfamille" : IDfamille,
 ##                })
 ##        
-##        # Analyse des dépôts
+##        # Analyse des dÃ©pÃ´ts
 ##        listeLignes = []
 ##        for dictDepot in listeDepots :
 ##            
-##            # Formatage libellé dépôt
+##            # Formatage libellÃ© dÃ©pÃ´t
 ##            libelle_depot = self.dictParametres["format_depot"]
 ##            listeMotsCles = [
 ##                ("{IDDEPOT}", str(dictDepot["IDdepot"])),
@@ -1019,7 +1019,7 @@ class Donnees():
 ##            for motcle, valeur in listeMotsCles :
 ##                libelle_depot = libelle_depot.replace(motcle, valeur)
 ##            
-##            # Mémorisation ligne dépôt
+##            # MÃ©morisation ligne dÃ©pÃ´t
 ##            listeLignes.append({
 ##                "type" : "depot",
 ##                "IDdepot" : dictDepot["IDdepot"],
@@ -1030,7 +1030,7 @@ class Donnees():
 ##                "montant" : str(dictDepot["montant"]),
 ##                })
 ##                        
-##            # Analyse des règlements
+##            # Analyse des rÃ¨glements
 ##            if dictReglementsDepots.has_key(dictDepot["IDdepot"]) :
 ##                for dictReglement in dictReglementsDepots[dictDepot["IDdepot"]] :
 ##
@@ -1039,7 +1039,7 @@ class Donnees():
 ##                    else :
 ##                        nomFamille = ""
 ##
-##                    # Formatage libellé Règlement
+##                    # Formatage libellÃ© RÃ¨glement
 ##                    libelle_reglement = self.dictParametres["format_reglement"]
 ##                    listeMotsCles = [
 ##                        ("{IDREGLEMENT}", str(dictReglement["IDreglement"])),
@@ -1151,12 +1151,12 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL):
                 self.Append(wxpg.PropertyCategory(valeur))
 
     def Importation(self):
-        """ Importation des valeurs dans le contrôle """
-        # Récupération des noms et valeurs par défaut du contrôle
+        """ Importation des valeurs dans le contrÃ´le """
+        # RÃ©cupÃ©ration des noms et valeurs par dÃ©faut du contrÃ´le
         dictValeurs = copy.deepcopy(self.GetPropertyValues())
-        # Recherche les paramètres mémorisés
+        # Recherche les paramÃ¨tres mÃ©morisÃ©s
         dictParametres = UTILS_Parametres.ParametresCategorie(mode="get", categorie="export_compta", dictParametres=dictValeurs)
-        # Envoie les paramètres dans le contrôle
+        # Envoie les paramÃ¨tres dans le contrÃ´le
         for nom, valeur in dictParametres.items() :
             propriete = self.GetPropertyByName(nom)
             ancienneValeur = propriete.GetValue()
@@ -1169,26 +1169,26 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL):
                 propriete.SetValue(valeur)
     
     def Sauvegarde(self, forcer=False):
-        """ Mémorisation des valeurs du contrôle """
+        """ MÃ©morisation des valeurs du contrÃ´le """
         if self.GetPropertyByName("memoriser_parametres").GetValue() == True or forcer == True :
             dictValeurs = copy.deepcopy(self.GetPropertyValues())
             UTILS_Parametres.ParametresCategorie(mode="set", categorie="export_compta", dictParametres=dictValeurs)
 
     def Validation(self):
-        # Période
+        # PÃ©riode
         if self.GetGrandParent().ctrl_date_debut.GetDate() == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement renseigner la date de début de période !"), _(u"Information"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement renseigner la date de dÃ©but de pÃ©riode !"), _(u"Information"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
 
         if self.GetGrandParent().ctrl_date_fin.GetDate() == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement renseigner la date de fin de période !"), _(u"Information"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement renseigner la date de fin de pÃ©riode !"), _(u"Information"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
 
-        # Paramètres
+        # ParamÃ¨tres
         for valeur in self.listeDonnees :
             if type(valeur) == dict :
                 if valeur["type"] == "chaine" and valeur["obligatoire"] == True and self.GetPropertyValue(valeur["code"]) == "" :
@@ -1205,12 +1205,12 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL):
         return dictParametres
 
     def CreationFichierTxt(self, nomFichier="", texte=""):
-        # Demande à l'utilisateur le nom de fichier et le répertoire de destination
+        # Demande Ã  l'utilisateur le nom de fichier et le rÃ©pertoire de destination
         wildcard = "Fichier texte (*.txt)|*.txt|" \
                    "All files (*.*)|*.*"
         sp = wx.StandardPaths.Get()
         cheminDefaut = sp.GetDocumentsDir()
-        dlg = wx.FileDialog(None, message=_(u"Veuillez sélectionner le répertoire de destination et le nom du fichier"),
+        dlg = wx.FileDialog(None, message=_(u"Veuillez sÃ©lectionner le rÃ©pertoire de destination et le nom du fichier"),
             defaultDir=cheminDefaut, defaultFile=nomFichier, wildcard=wildcard, style=wx.FD_SAVE)
         dlg.SetFilterIndex(0)
         if dlg.ShowModal() == wx.ID_OK:
@@ -1220,26 +1220,26 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL):
             dlg.Destroy()
             return
 
-        # Le fichier de destination existe déjà :
+        # Le fichier de destination existe dÃ©jÃ  :
         if os.path.isfile(cheminFichier) == True:
-            dlg = wx.MessageDialog(None, _(u"Un fichier portant ce nom existe déjà. \n\nVoulez-vous le remplacer ?"), "Attention !", wx.YES_NO | wx.NO_DEFAULT | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(None, _(u"Un fichier portant ce nom existe dÃ©jÃ . \n\nVoulez-vous le remplacer ?"), "Attention !", wx.YES_NO | wx.NO_DEFAULT | wx.ICON_EXCLAMATION)
             if dlg.ShowModal() == wx.ID_NO:
                 dlg.Destroy()
                 return False
             else:
                 dlg.Destroy()
 
-        # Création du fichier texte
+        # CrÃ©ation du fichier texte
         if six.PY2:
             f = open(cheminFichier, "w")
-            texte = texte.encode("iso-8859-15")
+            texte = texte.encode("utf8")
         else:
             f = codecs.open(cheminFichier, encoding='utf-8', mode='w')
         f.write(texte)
         f.close()
 
-        # Confirmation de création du fichier et demande d'ouverture directe dans Excel
-        txtMessage = _(u"Le fichier a été créé avec succès.\n\nSouhaitez-vous l'ouvrir dès maintenant ?")
+        # Confirmation de crÃ©ation du fichier et demande d'ouverture directe dans Excel
+        txtMessage = _(u"Le fichier a Ã©tÃ© crÃ©Ã© avec succÃ¨s.\n\nSouhaitez-vous l'ouvrir dÃ¨s maintenant ?")
         dlgConfirm = wx.MessageDialog(None, txtMessage, _(u"Confirmation"), wx.YES_NO | wx.NO_DEFAULT | wx.ICON_QUESTION)
         reponse = dlgConfirm.ShowModal()
         dlgConfirm.Destroy()
@@ -1255,7 +1255,7 @@ class Panel_parametres(wx.Panel):
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
         self.parent = parent
 
-        # Contrôles
+        # ContrÃ´les
         self.ctrl_parametres = classe(self)
         self.bouton_reinitialisation = CTRL_Propertygrid.Bouton_reinitialisation(self, self.ctrl_parametres)
         self.bouton_sauvegarde = CTRL_Propertygrid.Bouton_sauvegarde(self, self.ctrl_parametres)
@@ -1279,44 +1279,44 @@ class Panel_parametres(wx.Panel):
 class CTRL_Parametres_defaut(CTRL_Parametres) :
     def __init__(self, parent):
         self.listeDonnees = [
-            _(u"Options générales"),
-            {"type":"choix", "label":_(u"Type de période"), "description": _(u"Type de période"), "code": "option_type_periode", "tip": _(u"Sélectionnez le type de période à sélectionner"), "choix": [_(u"Selon la date de saisie de la prestation"), _(u"Selon la date de la prestation")], "defaut": 0, "obligatoire": True},
-            {"type":"choix", "label":_(u"Regroupement des prestations"), "description":_(u"Mode de regroupement des prestations"), "code":"option_regroupement_prestations", "tip":_(u"Sélectionnez le mode de regroupement des prestations"), "choix":[_(u"Par nom de prestation"), _(u"Par nom d'activité")], "defaut":0, "obligatoire":True},
-            {"type":"choix", "label":_(u"Regroupement des règlements"), "description":_(u"Mode de regroupement des règlements"), "code":"option_regroupement_reglements", "tip":_(u"Sélectionnez le mode de regroupement des règlements"), "choix":[_(u"Par mode de règlement"), _(u"Par dépôt de règlement")], "defaut":0, "obligatoire":True},
-            {"type":"choix", "label":_(u"Sélection des règlements"), "description":_(u"Sélection des règlements"), "code":"option_selection_reglements", "tip":_(u"Sélectionnez le mode de sélection des règlements"), "choix":[_(u"Règlements déposés sur la période"), _(u"Règlements saisis sur la période")], "defaut":0, "obligatoire":True},
-            {"type":"check", "label":_(u"Insérer entête noms des champs"), "description":_(u"Insérer ligne noms des champs"), "code":"ligne_noms_champs", "tip":_(u"Cochez cette case pour insérer en début de fichier une ligne avec les noms des champs"), "defaut":False, "obligatoire":True},
-            {"type":"check", "label":_(u"Mémoriser les paramètres"), "description":_(u"Mémoriser les paramètres"), "code":"memoriser_parametres", "tip":_(u"Cochez cette case pour mémoriser les paramètres"), "defaut":True, "obligatoire":True},
-            _(u"Codes journaux par défaut"),
+            _(u"Options gÃ©nÃ©rales"),
+            {"type":"choix", "label":_(u"Type de pÃ©riode"), "description": _(u"Type de pÃ©riode"), "code": "option_type_periode", "tip": _(u"SÃ©lectionnez le type de pÃ©riode Ã  sÃ©lectionner"), "choix": [_(u"Selon la date de saisie de la prestation"), _(u"Selon la date de la prestation")], "defaut": 0, "obligatoire": True},
+            {"type":"choix", "label":_(u"Regroupement des prestations"), "description":_(u"Mode de regroupement des prestations"), "code":"option_regroupement_prestations", "tip":_(u"SÃ©lectionnez le mode de regroupement des prestations"), "choix":[_(u"Par nom de prestation"), _(u"Par nom d'activitÃ©")], "defaut":0, "obligatoire":True},
+            {"type":"choix", "label":_(u"Regroupement des rÃ¨glements"), "description":_(u"Mode de regroupement des rÃ¨glements"), "code":"option_regroupement_reglements", "tip":_(u"SÃ©lectionnez le mode de regroupement des rÃ¨glements"), "choix":[_(u"Par mode de rÃ¨glement"), _(u"Par dÃ©pÃ´t de rÃ¨glement")], "defaut":0, "obligatoire":True},
+            {"type":"choix", "label":_(u"SÃ©lection des rÃ¨glements"), "description":_(u"SÃ©lection des rÃ¨glements"), "code":"option_selection_reglements", "tip":_(u"SÃ©lectionnez le mode de sÃ©lection des rÃ¨glements"), "choix":[_(u"RÃ¨glements dÃ©posÃ©s sur la pÃ©riode"), _(u"RÃ¨glements saisis sur la pÃ©riode")], "defaut":0, "obligatoire":True},
+            {"type":"check", "label":_(u"InsÃ©rer entÃªte noms des champs"), "description":_(u"InsÃ©rer ligne noms des champs"), "code":"ligne_noms_champs", "tip":_(u"Cochez cette case pour insÃ©rer en dÃ©but de fichier une ligne avec les noms des champs"), "defaut":False, "obligatoire":True},
+            {"type":"check", "label":_(u"MÃ©moriser les paramÃ¨tres"), "description":_(u"MÃ©moriser les paramÃ¨tres"), "code":"memoriser_parametres", "tip":_(u"Cochez cette case pour mÃ©moriser les paramÃ¨tres"), "defaut":True, "obligatoire":True},
+            _(u"Codes journaux par dÃ©faut"),
             {"type":"chaine", "label":_(u"Ventes"), "description":_(u"Code journal des ventes"), "code":"journal_ventes", "tip":_(u"Saisissez le code journal des ventes"), "defaut":_(u"VE"), "obligatoire":True},
             {"type":"chaine", "label":_(u"Banque"), "description":_(u"Code journal de la banque"), "code":"journal_banque", "tip":_(u"Saisissez le code journal de la banque"), "defaut":_(u"BP"), "obligatoire":True},
             {"type":"chaine", "label":_(u"Caisse"), "description":_(u"Code journal de la caisse"), "code":"journal_caisse", "tip":_(u"Saisissez le code journal de la caisse"), "defaut":_(u"CA"), "obligatoire":False},
-            _(u"Codes comptables par défaut"),
-            {"type":"chaine", "label":_(u"Ventes"), "description":_(u"Code comptable des ventes"), "code":"code_ventes", "tip":_(u"Saisissez le code comptable des ventes (Peut être ajusté en détail dans le paramétrage des activités, des cotisations, des tarifs et des prestations)"), "defaut":u"706", "obligatoire":True},
-            {"type":"chaine", "label":_(u"Clients"), "description":_(u"Code comptable des clients"), "code":"code_clients", "tip":_(u"Saisissez le code comptable des clients (Peut- être ajusté en détail dans la fiche famille)"), "defaut":u"411", "obligatoire":True},
+            _(u"Codes comptables par dÃ©faut"),
+            {"type":"chaine", "label":_(u"Ventes"), "description":_(u"Code comptable des ventes"), "code":"code_ventes", "tip":_(u"Saisissez le code comptable des ventes (Peut Ãªtre ajustÃ© en dÃ©tail dans le paramÃ©trage des activitÃ©s, des cotisations, des tarifs et des prestations)"), "defaut":u"706", "obligatoire":True},
+            {"type":"chaine", "label":_(u"Clients"), "description":_(u"Code comptable des clients"), "code":"code_clients", "tip":_(u"Saisissez le code comptable des clients (Peut- Ãªtre ajustÃ© en dÃ©tail dans la fiche famille)"), "defaut":u"411", "obligatoire":True},
             {"type":"chaine", "label":_(u"Banque"), "description":_(u"Code comptable de la banque"), "code":"code_banque", "tip":_(u"Saisissez le code comptable de la banque"), "defaut":u"512", "obligatoire":True},
             {"type":"chaine", "label":_(u"Caisse"), "description":_(u"Code comptable de la caisse"), "code":"code_caisse", "tip":_(u"Saisissez le code comptable de la caisse"), "defaut":u"531", "obligatoire":False},
-            _(u"Formats des libellés"),
-            {"type":"chaine", "label":_(u"Total des prestations"), "description":_(u"Format du libellé du total des ventes"), "code":"format_total_ventes", "tip":_(u"Saisissez le format du libellé du total des ventes. Vous pouvez utiliser les mots-clés suivants : {DATE_DEBUT} {DATE_FIN}."), "defaut":_(u"Prestations du {DATE_DEBUT} au {DATE_FIN}"), "obligatoire":True},
-            {"type":"chaine", "label":_(u"Total des règlements"), "description":_(u"Format du libellé du total des règlements"), "code":"format_total_reglements", "tip":_(u"Saisissez le format du libellé du total des règlements. Vous pouvez utiliser les mots-clés suivants : {DATE_DEBUT} {DATE_FIN}."), "defaut":_(u"Règlements du {DATE_DEBUT} au {DATE_FIN}"), "obligatoire":True},
-            #{"type":"chaine", "label":_(u"Prestation"), "description":_(u"Format du libellé des prestations"), "code":"format_prestation", "tip":_(u"Saisissez le format du libellé des prestations. Vous pouvez utiliser les mots-clés suivants : {IDPRESTATION} {DATE} {LIBELLE} {ACTIVITE} {ACTIVITE_ABREGE} {TARIF} {INDIVIDU_NOM} {INDIVIDU_PRENOM}"), "defaut":u"{LIBELLE} {INDIVIDU_NOM} {INDIVIDU_PRENOM}", "obligatoire":True},
-            {"type":"chaine", "label":_(u"Prestation"), "description":_(u"Format du libellé des prestations"), "code":"format_prestation", "tip":_(u"Saisissez le format du libellé des prestations. Vous pouvez utiliser les mots-clés suivants : {NOM_PRESTATION} {DATE_DEBUT} {DATE_FIN}."), "defaut":u"{NOM_PRESTATION}", "obligatoire":True},
-            {"type":"chaine", "label":_(u"Mode de règlement"), "description":_(u"Format du libellé des modes de règlements"), "code":"format_mode", "tip":_(u"Saisissez le format du libellé des modes de règlements. Vous pouvez utiliser les mots-clés suivants : {IDMODE} {NOM_MODE} {CODE_COMPTABLE} {NBRE_REGLEMENTS}."), "defaut":u"{NOM_MODE}", "obligatoire":True},
-            {"type":"chaine", "label":_(u"Dépôt"), "description":_(u"Format du libellé des dépôts"), "code":"format_depot", "tip":_(u"Saisissez le format du libellé des dépôts. Vous pouvez utiliser les mots-clés suivants : {IDDEPOT} {NOM_DEPOT} {DATE_DEPOT} {MODE_REGLEMENT} {TYPE_COMPTABLE} {NBRE_REGLEMENTS}."), "defaut":u"{NOM_DEPOT} - {DATE_DEPOT}", "obligatoire":True},
-            #{"type":"chaine", "label":_(u"Règlement"), "description":_(u"Format du libellé des règlements"), "code":"format_reglement", "tip":_(u"Saisissez le format du libellé des règlements. Vous pouvez utiliser les mots-clés suivants : {IDREGLEMENT} {DATE} {MODE_REGLEMENT} {NOM_FAMILLE} {NUMERO_PIECE} {NOM_PAYEUR} {NUMERO_QUITTANCIER} {DATE_DEPOT} {NOM_DEPOT}."), "defaut":u"{MODE_REGLEMENT} {NOM_FAMILLE}", "obligatoire":True},
+            _(u"Formats des libellÃ©s"),
+            {"type":"chaine", "label":_(u"Total des prestations"), "description":_(u"Format du libellÃ© du total des ventes"), "code":"format_total_ventes", "tip":_(u"Saisissez le format du libellÃ© du total des ventes. Vous pouvez utiliser les mots-clÃ©s suivants : {DATE_DEBUT} {DATE_FIN}."), "defaut":_(u"Prestations du {DATE_DEBUT} au {DATE_FIN}"), "obligatoire":True},
+            {"type":"chaine", "label":_(u"Total des rÃ¨glements"), "description":_(u"Format du libellÃ© du total des rÃ¨glements"), "code":"format_total_reglements", "tip":_(u"Saisissez le format du libellÃ© du total des rÃ¨glements. Vous pouvez utiliser les mots-clÃ©s suivants : {DATE_DEBUT} {DATE_FIN}."), "defaut":_(u"RÃ¨glements du {DATE_DEBUT} au {DATE_FIN}"), "obligatoire":True},
+            #{"type":"chaine", "label":_(u"Prestation"), "description":_(u"Format du libellÃ© des prestations"), "code":"format_prestation", "tip":_(u"Saisissez le format du libellÃ© des prestations. Vous pouvez utiliser les mots-clÃ©s suivants : {IDPRESTATION} {DATE} {LIBELLE} {ACTIVITE} {ACTIVITE_ABREGE} {TARIF} {INDIVIDU_NOM} {INDIVIDU_PRENOM}"), "defaut":u"{LIBELLE} {INDIVIDU_NOM} {INDIVIDU_PRENOM}", "obligatoire":True},
+            {"type":"chaine", "label":_(u"Prestation"), "description":_(u"Format du libellÃ© des prestations"), "code":"format_prestation", "tip":_(u"Saisissez le format du libellÃ© des prestations. Vous pouvez utiliser les mots-clÃ©s suivants : {NOM_PRESTATION} {DATE_DEBUT} {DATE_FIN}."), "defaut":u"{NOM_PRESTATION}", "obligatoire":True},
+            {"type":"chaine", "label":_(u"Mode de rÃ¨glement"), "description":_(u"Format du libellÃ© des modes de rÃ¨glements"), "code":"format_mode", "tip":_(u"Saisissez le format du libellÃ© des modes de rÃ¨glements. Vous pouvez utiliser les mots-clÃ©s suivants : {IDMODE} {NOM_MODE} {CODE_COMPTABLE} {NBRE_REGLEMENTS}."), "defaut":u"{NOM_MODE}", "obligatoire":True},
+            {"type":"chaine", "label":_(u"DÃ©pÃ´t"), "description":_(u"Format du libellÃ© des dÃ©pÃ´ts"), "code":"format_depot", "tip":_(u"Saisissez le format du libellÃ© des dÃ©pÃ´ts. Vous pouvez utiliser les mots-clÃ©s suivants : {IDDEPOT} {NOM_DEPOT} {DATE_DEPOT} {MODE_REGLEMENT} {TYPE_COMPTABLE} {NBRE_REGLEMENTS}."), "defaut":u"{NOM_DEPOT} - {DATE_DEPOT}", "obligatoire":True},
+            #{"type":"chaine", "label":_(u"RÃ¨glement"), "description":_(u"Format du libellÃ© des rÃ¨glements"), "code":"format_reglement", "tip":_(u"Saisissez le format du libellÃ© des rÃ¨glements. Vous pouvez utiliser les mots-clÃ©s suivants : {IDREGLEMENT} {DATE} {MODE_REGLEMENT} {NOM_FAMILLE} {NUMERO_PIECE} {NOM_PAYEUR} {NUMERO_QUITTANCIER} {DATE_DEPOT} {NOM_DEPOT}."), "defaut":u"{MODE_REGLEMENT} {NOM_FAMILLE}", "obligatoire":True},
             ]
         CTRL_Parametres.__init__(self, parent, self.listeDonnees)
 
     def Generation(self, format="ciel_compta"):
         if self.Validation() == False: return False
 
-        # Récupération des paramètres
+        # RÃ©cupÃ©ration des paramÃ¨tres
         dictParametres = self.GetParametres()
         donnees = Donnees(dictParametres)
 
         numLigne = 1
         listeLignesTxt = []
 
-        # Ligne d'entête
+        # Ligne d'entÃªte
         if dictParametres["ligne_noms_champs"] == True:
             listeLignesTxt.append(
                 "numligne,date,journal,compte,libelleauto,libellemanuel,piece,montant,sens,echeance,devise")
@@ -1371,26 +1371,26 @@ class CTRL_Parametres_quadracompta(CTRL_Parametres) :
         cheminDefaut = sp.GetDocumentsDir()
 
         self.listeDonnees = [
-            _(u"Options générales"),
-            {"type": "check", "label": _(u"Mémoriser les paramètres"), "description": _(u"Mémoriser les paramètres"), "code": "memoriser_parametres", "tip": _(u"Cochez cette case pour mémoriser les paramètres"), "defaut": True, "obligatoire": True},
-            {"type": "repertoire", "label": _(u"Répertoire de destination"), "description": _(u"Répertoire de destination"), "code": "quadra_repertoire", "tip": _(u"Sélectionnez un répertoire de destination"), "defaut": cheminDefaut, "obligatoire": True},
-            _(u"Données"),
-            {"type":"choix", "label":_(u"Ventes"), "description": _(u"Type de données à afficher"), "code": "quadra_type_ventes", "tip": _(u"Sélectionnez le type de données à afficher"), "choix": [_(u"Factures de la période"), _(u"Prestations de la période")], "defaut": 0, "obligatoire": True},
-            {"type":"choix", "label":_(u"Règlements"), "description": _(u"Type de données à afficher"), "code": "quadra_type_reglements", "tip": _(u"Sélectionnez le type de données à afficher"), "choix": [_(u"Règlements déposés sur la période"), _(u"Règlements saisis sur la période")], "defaut": 0, "obligatoire": True},
-            {"type":"check", "label":_(u"Utiliser code compta de la famille"), "description": _(u"Utiliser le code comptable de la famille"), "code": "quadra_code_compta_famille", "tip": _(u"Cochez cette case pour utiliser le code comptable saisi dans l'onglet divers de la fiche famille. Sinon un code générique sera utilisé."), "defaut": True, "obligatoire": True},
+            _(u"Options gÃ©nÃ©rales"),
+            {"type": "check", "label": _(u"MÃ©moriser les paramÃ¨tres"), "description": _(u"MÃ©moriser les paramÃ¨tres"), "code": "memoriser_parametres", "tip": _(u"Cochez cette case pour mÃ©moriser les paramÃ¨tres"), "defaut": True, "obligatoire": True},
+            {"type": "repertoire", "label": _(u"RÃ©pertoire de destination"), "description": _(u"RÃ©pertoire de destination"), "code": "quadra_repertoire", "tip": _(u"SÃ©lectionnez un rÃ©pertoire de destination"), "defaut": cheminDefaut, "obligatoire": True},
+            _(u"DonnÃ©es"),
+            {"type":"choix", "label":_(u"Ventes"), "description": _(u"Type de donnÃ©es Ã  afficher"), "code": "quadra_type_ventes", "tip": _(u"SÃ©lectionnez le type de donnÃ©es Ã  afficher"), "choix": [_(u"Factures de la pÃ©riode"), _(u"Prestations de la pÃ©riode")], "defaut": 0, "obligatoire": True},
+            {"type":"choix", "label":_(u"RÃ¨glements"), "description": _(u"Type de donnÃ©es Ã  afficher"), "code": "quadra_type_reglements", "tip": _(u"SÃ©lectionnez le type de donnÃ©es Ã  afficher"), "choix": [_(u"RÃ¨glements dÃ©posÃ©s sur la pÃ©riode"), _(u"RÃ¨glements saisis sur la pÃ©riode")], "defaut": 0, "obligatoire": True},
+            {"type":"check", "label":_(u"Utiliser code compta de la famille"), "description": _(u"Utiliser le code comptable de la famille"), "code": "quadra_code_compta_famille", "tip": _(u"Cochez cette case pour utiliser le code comptable saisi dans l'onglet divers de la fiche famille. Sinon un code gÃ©nÃ©rique sera utilisÃ©."), "defaut": True, "obligatoire": True},
             _(u"Affichage"),
-            {"type": "check", "label": _(u"Insérer entête noms des champs"), "description": _(u"Insérer ligne noms des champs"), "code": "quadra_ligne_noms_champs", "tip": _(u"Cochez cette case pour insérer en début de fichier une ligne avec les noms des champs"), "defaut": True, "obligatoire": True},
-            {"type": "check", "label": _(u"Séparer les écritures avec ligne vide"), "description": _(u"Séparer les écritures par une ligne vide"), "code": "quadra_ligne_vide", "tip": _(u"Séparer les écritures par une ligne vide"), "defaut": True, "obligatoire": True},
-            _(u"Codes journaux par défaut"),
+            {"type": "check", "label": _(u"InsÃ©rer entÃªte noms des champs"), "description": _(u"InsÃ©rer ligne noms des champs"), "code": "quadra_ligne_noms_champs", "tip": _(u"Cochez cette case pour insÃ©rer en dÃ©but de fichier une ligne avec les noms des champs"), "defaut": True, "obligatoire": True},
+            {"type": "check", "label": _(u"SÃ©parer les Ã©critures avec ligne vide"), "description": _(u"SÃ©parer les Ã©critures par une ligne vide"), "code": "quadra_ligne_vide", "tip": _(u"SÃ©parer les Ã©critures par une ligne vide"), "defaut": True, "obligatoire": True},
+            _(u"Codes journaux par dÃ©faut"),
             {"type": "chaine", "label":_(u"Ventes"), "description":_(u"Code journal des ventes"), "code":"quadra_journal_ventes", "tip":_(u"Saisissez le code journal des ventes"), "defaut":_(u"VT"), "obligatoire":True},
-            {"type": "chaine", "label": _(u"Règlements"), "description": _(u"Code journal des règlements"), "code": "quadra_journal_reglements", "tip": _(u"Saisissez le code journal des règlements"), "defaut": _(u"OD1"), "obligatoire": True},
+            {"type": "chaine", "label": _(u"RÃ¨glements"), "description": _(u"Code journal des rÃ¨glements"), "code": "quadra_journal_reglements", "tip": _(u"Saisissez le code journal des rÃ¨glements"), "defaut": _(u"OD1"), "obligatoire": True},
             ]
         CTRL_Parametres.__init__(self, parent, self.listeDonnees)
 
     def Generation(self, format=None):
         if self.Validation() == False: return False
 
-        # Récupération des paramètres
+        # RÃ©cupÃ©ration des paramÃ¨tres
         dictParametres = self.GetParametres()
 
         # Importation des prestations
@@ -1499,7 +1499,7 @@ class CTRL_Parametres_quadracompta(CTRL_Parametres) :
 
                 if not code_compta:
                     if prestation["IDactivite"]:
-                        txt = u"Le code comptable de l'activité %s est manquant." % prestation["nom_activite"]
+                        txt = u"Le code comptable de l'activitÃ© %s est manquant." % prestation["nom_activite"]
                     else:
                         txt = u"Le code comptable de la prestation %s est manquant." % prestation["label"]
                     if txt not in anomalies:
@@ -1517,7 +1517,7 @@ class CTRL_Parametres_quadracompta(CTRL_Parametres) :
         liste_clesprimaires = list(dict_resultats.keys())
         liste_clesprimaires.sort()
 
-        # Création du fichier des ventes
+        # CrÃ©ation du fichier des ventes
         lignes = []
         for cle_primaire in liste_clesprimaires:
             IDfamille = dict_resultats[cle_primaire]["IDfamille"]
@@ -1533,10 +1533,10 @@ class CTRL_Parametres_quadracompta(CTRL_Parametres) :
                 date = dictParametres["date_fin"]
                 num_piece = ""
 
-            # Ligne de débit
+            # Ligne de dÃ©bit
             lignes.append([code_journal_ventes, date, code_comptable_famille, noms_titulaires, noms_titulaires, montant_debit, "", num_piece])
 
-            # Lignes de crédit
+            # Lignes de crÃ©dit
             for cle_secondaire, valeurs in dict_resultats[cle_primaire]["lignes_credit"].items():
                 lignes.append([code_journal_ventes, date, valeurs["code_compta"], valeurs["label_compta"], noms_titulaires, "", valeurs["montant_credit"], num_piece])
 
@@ -1544,16 +1544,16 @@ class CTRL_Parametres_quadracompta(CTRL_Parametres) :
             if dictParametres["quadra_ligne_vide"]:
                 lignes.append(None)
 
-        # Création du fichier des ventes
+        # CrÃ©ation du fichier des ventes
         colonnes = [
             {"label": u"Code journal", "largeur": 12},
             {"label": u"Date", "largeur": 15},
             {"label": u"Compte", "largeur": 15},
-            {"label": u"Intitulé", "largeur": 40},
-            {"label": u"Libellé", "largeur": 40},
-            {"label": u"Débit", "largeur": 12},
-            {"label": u"Crédit", "largeur": 12},
-            {"label": u"Num. Pièce", "largeur": 12},
+            {"label": u"IntitulÃ©", "largeur": 40},
+            {"label": u"LibellÃ©", "largeur": 40},
+            {"label": u"DÃ©bit", "largeur": 12},
+            {"label": u"CrÃ©dit", "largeur": 12},
+            {"label": u"Num. PiÃ¨ce", "largeur": 12},
             ]
 
         if not anomalies:
@@ -1561,15 +1561,15 @@ class CTRL_Parametres_quadracompta(CTRL_Parametres) :
             if not succes:
                 return False
 
-        # ----------------- Règlements -------------------
+        # ----------------- RÃ¨glements -------------------
 
-        # Condition de sélection des règlements
+        # Condition de sÃ©lection des rÃ¨glements
         if dictParametres["quadra_type_reglements"] == 0 :
             condition = "reglements.IDdepot IS NOT NULL AND depots.date IS NOT NULL AND depots.date>='%s' AND depots.date<='%s' " % (dictParametres["date_debut"], dictParametres["date_fin"])
         else :
             condition = "reglements.date>='%s' AND reglements.date<='%s' " % (dictParametres["date_debut"], dictParametres["date_fin"])
 
-        # Récupération des règlements
+        # RÃ©cupÃ©ration des rÃ¨glements
         DB = GestionDB.DB()
         req = """SELECT 
         reglements.IDreglement, reglements.date, 
@@ -1602,10 +1602,10 @@ class CTRL_Parametres_quadracompta(CTRL_Parametres) :
             code_comptable_famille = dictTitulaires[IDfamille]["code_comptable"]
             noms_titulaires = dictTitulaires[IDfamille]["titulairesSansCivilite"]
 
-            # Ligne débit
+            # Ligne dÃ©bit
             lignes.append([code_journal, date_reglement, code_compta_mode, label_mode, noms_titulaires, numero_piece, FloatToDecimal(montant), ""])
 
-            # Ligne crédit
+            # Ligne crÃ©dit
             lignes.append([code_journal, date_reglement, code_comptable_famille, nom_payeur, noms_titulaires, numero_piece, "", FloatToDecimal(montant)])
 
             # Ligne vide
@@ -1619,20 +1619,20 @@ class CTRL_Parametres_quadracompta(CTRL_Parametres) :
                     anomalies.append(txt)
 
             if code_compta_mode in ("", None):
-                txt = u"Le code comptable du mode de règlement %s est manquant." % label_mode
+                txt = u"Le code comptable du mode de rÃ¨glement %s est manquant." % label_mode
                 if txt not in anomalies:
                     anomalies.append(txt)
 
-        # Création du fichier des ventes
+        # CrÃ©ation du fichier des ventes
         colonnes = [
             {"label": u"Code journal", "largeur": 12},
             {"label": u"Date", "largeur": 15},
             {"label": u"Compte", "largeur": 15},
-            {"label": u"Intitulé", "largeur": 40},
-            {"label": u"Libellé", "largeur": 40},
-            {"label": u"Num. Pièce", "largeur": 12},
-            {"label": u"Débit", "largeur": 12},
-            {"label": u"Crédit", "largeur": 12},
+            {"label": u"IntitulÃ©", "largeur": 40},
+            {"label": u"LibellÃ©", "largeur": 40},
+            {"label": u"Num. PiÃ¨ce", "largeur": 12},
+            {"label": u"DÃ©bit", "largeur": 12},
+            {"label": u"CrÃ©dit", "largeur": 12},
             ]
         if not anomalies:
             succes = self.CreationFichierExcel(nom_fichier="reglements.xlsx", colonnes=colonnes, lignes=lignes)
@@ -1646,8 +1646,8 @@ class CTRL_Parametres_quadracompta(CTRL_Parametres) :
             dlg.Destroy()
             return False
 
-        # Succès
-        dlg = wx.MessageDialog(self, _(u"Les fichiers ont été générés avec succès dans le répertoire %s.") % dictParametres["quadra_repertoire"], _(u"Succès"), wx.OK | wx.ICON_INFORMATION)
+        # SuccÃ¨s
+        dlg = wx.MessageDialog(self, _(u"Les fichiers ont Ã©tÃ© gÃ©nÃ©rÃ©s avec succÃ¨s dans le rÃ©pertoire %s.") % dictParametres["quadra_repertoire"], _(u"SuccÃ¨s"), wx.OK | wx.ICON_INFORMATION)
         dlg.ShowModal()
         dlg.Destroy()
         return True
@@ -1657,11 +1657,11 @@ class CTRL_Parametres_quadracompta(CTRL_Parametres) :
 
         cheminFichier = os.path.join(dictParametres["quadra_repertoire"], nom_fichier)
 
-        # # Demande à l'utilisateur le nom de fichier et le répertoire de destination
+        # # Demande Ã  l'utilisateur le nom de fichier et le rÃ©pertoire de destination
         # wildcard = "Fichiers Excel (*.xlsx)|*.xlsx|Tous les fichiers (*.*)|*.*"
         # cheminDefaut = dictParametres["quadra_repertoire"]
         # print("cheminDefaut=", cheminDefaut)
-        # dlg = wx.FileDialog(None, message=_(u"Veuillez sélectionner le répertoire de destination et le nom du fichier"), defaultDir=cheminDefaut, defaultFile=nom_fichier, wildcard=wildcard, style=wx.FD_SAVE)
+        # dlg = wx.FileDialog(None, message=_(u"Veuillez sÃ©lectionner le rÃ©pertoire de destination et le nom du fichier"), defaultDir=cheminDefaut, defaultFile=nom_fichier, wildcard=wildcard, style=wx.FD_SAVE)
         # dlg.SetFilterIndex(0)
         # if dlg.ShowModal() == wx.ID_OK:
         #     cheminFichier = dlg.GetPath()
@@ -1670,15 +1670,15 @@ class CTRL_Parametres_quadracompta(CTRL_Parametres) :
         #     dlg.Destroy()
         #     return
 
-        # Le fichier de destination existe déjà :
+        # Le fichier de destination existe dÃ©jÃ  :
         if os.path.isfile(cheminFichier) == True:
-            dlg = wx.MessageDialog(None, _(u"Un fichier portant ce nom existe déjà. \n\nVoulez-vous le remplacer ?"),"Attention !", wx.YES_NO | wx.NO_DEFAULT | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(None, _(u"Un fichier portant ce nom existe dÃ©jÃ . \n\nVoulez-vous le remplacer ?"),"Attention !", wx.YES_NO | wx.NO_DEFAULT | wx.ICON_EXCLAMATION)
             reponse = dlg.ShowModal()
             dlg.Destroy()
             if reponse == wx.ID_NO:
                 return False
 
-        # Création d'un classeur et d'une feuille
+        # CrÃ©ation d'un classeur et d'une feuille
         classeur = xlsxwriter.Workbook(cheminFichier)
         feuille = classeur.add_worksheet()
 
@@ -1687,7 +1687,7 @@ class CTRL_Parametres_quadracompta(CTRL_Parametres) :
         format_money = classeur.add_format({'num_format': '# ##0.00'})
         format_label = classeur.add_format({'align': 'center', 'bold': True})
 
-        # Création des labels de colonnes
+        # CrÃ©ation des labels de colonnes
         x, y = 0, 0
         for colonne in colonnes:
             if dictParametres["quadra_ligne_noms_champs"]:
@@ -1695,7 +1695,7 @@ class CTRL_Parametres_quadracompta(CTRL_Parametres) :
             feuille.set_column(y, y, colonne["largeur"])
             y += 1
 
-        # Création des lignes
+        # CrÃ©ation des lignes
         x, y = 1, 0
         for valeurs in lignes:
             if valeurs :
@@ -1715,7 +1715,7 @@ class CTRL_Parametres_quadracompta(CTRL_Parametres) :
             classeur.close()
         except Exception as err:
             if "Permission denied" in six.text_type(err):
-                texte = _(u"Impossible de créer le fichier !\n\nVérifiez qu'un fichier du même nom n'est pas déjà ouvert en arrière-plan.")
+                texte = _(u"Impossible de crÃ©er le fichier !\n\nVÃ©rifiez qu'un fichier du mÃªme nom n'est pas dÃ©jÃ  ouvert en arriÃ¨re-plan.")
             else:
                 texte = _(u"Erreur: %s" % err)
             dlg = wx.MessageDialog(self, texte, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
@@ -1733,13 +1733,13 @@ class Dialog(wx.Dialog):
         self.parent = parent
 
         # Bandeau
-        intro = _(u"Sélectionnez les dates de la période à exporter, choisissez le format d'export correspondant à votre logiciel de compatibilité puis renseignez les paramètres nécessaires avant cliquer sur Générer. Vous obtiendrez un fichier qu'il vous suffira d'importer depuis votre logiciel de comptabilité.")
-        titre = _(u"Export des écritures comptables")
+        intro = _(u"SÃ©lectionnez les dates de la pÃ©riode Ã  exporter, choisissez le format d'export correspondant Ã  votre logiciel de compatibilitÃ© puis renseignez les paramÃ¨tres nÃ©cessaires avant cliquer sur GÃ©nÃ©rer. Vous obtiendrez un fichier qu'il vous suffira d'importer depuis votre logiciel de comptabilitÃ©.")
+        titre = _(u"Export des Ã©critures comptables")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Export_comptable.png")
         
-        # Période
-        self.box_periode_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Période"))
+        # PÃ©riode
+        self.box_periode_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"PÃ©riode"))
         self.label_date_debut = wx.StaticText(self, wx.ID_ANY, u"Du")
         self.ctrl_date_debut = CTRL_Saisie_date.Date2(self)
         self.label_date_fin = wx.StaticText(self, wx.ID_ANY, _(u"au"))
@@ -1749,8 +1749,8 @@ class Dialog(wx.Dialog):
         self.box_logiciel_staticbox = wx.StaticBox(self, -1, _(u"Format d'export"))
         self.ctrl_logiciel = CTRL_Logiciel(self)
 
-        # Paramètres
-        self.box_parametres_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Paramètres"))
+        # ParamÃ¨tres
+        self.box_parametres_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"ParamÃ¨tres"))
         self.pages = [
             {"code": "defaut", "logiciels": ["ebp_compta", "ciel_compta_ebp", "ciel_compta_ximport"], "ctrl": Panel_parametres(self, CTRL_Parametres_defaut)},
             {"code": "quadracompta", "logiciels": ["quadracompta"], "ctrl": Panel_parametres(self, CTRL_Parametres_quadracompta)},
@@ -1758,7 +1758,7 @@ class Dialog(wx.Dialog):
 
         # Boutons
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
-        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Générer le fichier"), cheminImage="Images/32x32/Disk.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"GÃ©nÃ©rer le fichier"), cheminImage="Images/32x32/Disk.png")
         self.bouton_fermer = CTRL_Bouton_image.CTRL(self, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         self.__set_properties()
@@ -1774,10 +1774,10 @@ class Dialog(wx.Dialog):
         wx.CallAfter(self.ctrl_date_debut.SetFocus)
 
     def __set_properties(self):
-        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez la date de début de la période à exporter")))
-        self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez la date de fin de la période à exporter")))
+        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez la date de dÃ©but de la pÃ©riode Ã  exporter")))
+        self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez la date de fin de la pÃ©riode Ã  exporter")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
-        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour lancer la génération des fichiers d'exportation")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour lancer la gÃ©nÃ©ration des fichiers d'exportation")))
         self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         self.SetMinSize((700, 680))
 
@@ -1898,7 +1898,7 @@ class CTRL_Codes(wxpg.PropertyGrid) :
                     ID = int(label)
                     if "label" in self.dictCodes[ID] : label = self.dictCodes[ID]["label"]
                     if "intitule" in self.dictCodes[ID] : label = self.dictCodes[ID]["intitule"]
-                dlg = wx.MessageDialog(None, _(u"Vous n'avez pas renseigné le code comptable de la ligne '%s'.\n\nSouhaitez-vous tout de même continuer ? (Si oui, cette ligne ne sera pas exportée)") % label, _(u"Information manquante"), wx.YES_NO|wx.YES_DEFAULT|wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(None, _(u"Vous n'avez pas renseignÃ© le code comptable de la ligne '%s'.\n\nSouhaitez-vous tout de mÃªme continuer ? (Si oui, cette ligne ne sera pas exportÃ©e)") % label, _(u"Information manquante"), wx.YES_NO|wx.YES_DEFAULT|wx.ICON_EXCLAMATION)
                 reponse = dlg.ShowModal()
                 dlg.Destroy()
                 if reponse == wx.ID_NO:
@@ -1914,17 +1914,17 @@ class CTRL_Codes(wxpg.PropertyGrid) :
 
 
 class Dialog_codes(wx.Dialog):
-    def __init__(self, parent, dictCodes=None, keyStr=False, titre=_(u"Vérification des codes comptables")):
+    def __init__(self, parent, dictCodes=None, keyStr=False, titre=_(u"VÃ©rification des codes comptables")):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         self.dictCodes = dictCodes
         
-        self.label_intro = wx.StaticText(self, wx.ID_ANY, _(u"Veuillez vérifier ci-dessous que les codes comptables attribués sont exacts. \nLaissez la ligne vide si vous souhaitez exclure celle-ci de l'export."))
+        self.label_intro = wx.StaticText(self, wx.ID_ANY, _(u"Veuillez vÃ©rifier ci-dessous que les codes comptables attribuÃ©s sont exacts. \nLaissez la ligne vide si vous souhaitez exclure celle-ci de l'export."))
         self.ctrl_codes = CTRL_Codes(self, dictCodes=dictCodes, keyStr=keyStr)
         self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
         self.bouton_fermer = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
         
-        # Propriétés
+        # PropriÃ©tÃ©s
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         self.SetMinSize((590, 600))

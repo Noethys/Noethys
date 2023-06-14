@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activitÈs
+# Application :    Noethys, gestion multi-activit√©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-13 Ivan LUCAS
@@ -30,7 +30,7 @@ class Exporter(UTILS_Export_tables.Exporter):
         UTILS_Export_tables.Exporter.__init__(self, categorie)
         
     def Exporter(self, ID=None):
-        # GÈnÈralitÈs
+        # G√©n√©ralit√©s
         self.ExporterTable("modeles_droits", "IDmodele=%d" % ID, remplacement=("defaut", 0))
         self.ExporterTable("droits", "IDmodele=%d" % ID)
 
@@ -43,7 +43,7 @@ class Track(object):
         self.observations = donnees[2]
         self.defaut = donnees[3]
         
-        # DÈtail
+        # D√©tail
         nbreAutorisations = 0
         nbreInterdictions = 0
         nbreRestrictions = 0
@@ -67,7 +67,7 @@ class Track(object):
     
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # RÈcupÈration des paramËtres perso
+        # R√©cup√©ration des param√®tres perso
         self.selectionID = None
         self.selectionTrack = None
         self.criteres = ""
@@ -88,7 +88,7 @@ class ListView(FastObjectListView):
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
-        """ RÈcupÈration des donnÈes """
+        """ R√©cup√©ration des donn√©es """
         listeID = None
         DB = GestionDB.DB()
         
@@ -104,7 +104,7 @@ class ListView(FastObjectListView):
                 self.dictDroits[IDmodele] = []
             self.dictDroits[IDmodele].append(etat)
         
-        # Lecture des modËles
+        # Lecture des mod√®les
         req = """SELECT IDmodele, nom, observations, defaut
         FROM modeles_droits
         ORDER BY nom;
@@ -133,7 +133,7 @@ class ListView(FastObjectListView):
         self.evenRowsBackColor = wx.Colour(255, 255, 255)
         self.useExpansionColumn = True
         
-        # PrÈparation de la listeImages
+        # Pr√©paration de la listeImages
         imgDefaut = self.AddNamedImages("defaut", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Ok.png"), wx.BITMAP_TYPE_PNG))
         
         def GetImageDefaut(track):
@@ -143,12 +143,12 @@ class ListView(FastObjectListView):
         liste_Colonnes = [
             ColumnDefn(u"", "left", 22, "IDmodele", typeDonnee="entier", imageGetter=GetImageDefaut),
             ColumnDefn(_(u"Nom"), 'left', 200, "nom", typeDonnee="texte"),
-            ColumnDefn(_(u"DÈtails"), 'left', 250, "details", typeDonnee="texte"),
+            ColumnDefn(_(u"D√©tails"), 'left', 250, "details", typeDonnee="texte"),
             ColumnDefn(_(u"Observations"), 'left', 200, "observations", typeDonnee="texte", isSpaceFilling=True),
             ]
         
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(_(u"Aucun modËle de droits"))
+        self.SetEmptyListMsg(_(u"Aucun mod√®le de droits"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
         self.SetSortColumn(self.columns[1])
         self.SetObjects(self.donnees)
@@ -162,7 +162,7 @@ class ListView(FastObjectListView):
             self.selectionTrack = None
         self.InitModel()
         self.InitObjectListView()
-        # SÈlection d'un item
+        # S√©lection d'un item
         if self.selectionTrack != None :
             self.SelectObject(self.selectionTrack, deselectOthers=True, ensureVisible=True)
         self.selectionID = None
@@ -180,7 +180,7 @@ class ListView(FastObjectListView):
             noSelection = False
             ID = self.Selection()[0].IDmodele
                 
-        # CrÈation du menu contextuel
+        # Cr√©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Modifier
@@ -216,8 +216,8 @@ class ListView(FastObjectListView):
         self.Bind(wx.EVT_MENU, self.Dupliquer, id=70)
         if noSelection == True : item.Enable(False)
 
-        # Item Par dÈfaut
-        item = wx.MenuItem(menuPop, 60, _(u"DÈfinir comme modËle par dÈfaut"))
+        # Item Par d√©faut
+        item = wx.MenuItem(menuPop, 60, _(u"D√©finir comme mod√®le par d√©faut"))
         if noSelection == False :
             if self.Selection()[0].defaut == 1 :
                 bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Ok.png"), wx.BITMAP_TYPE_PNG)
@@ -229,7 +229,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"AperÁu avant impression"))
+        item = wx.MenuItem(menuPop, 40, _(u"Aper√ßu avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -247,12 +247,12 @@ class ListView(FastObjectListView):
 
     def Apercu(self, event):
         from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des modËle de droits"), format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des mod√®le de droits"), format="A", orientation=wx.PORTRAIT)
         prt.Preview()
 
     def Imprimer(self, event):
         from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des modËles de droits"), format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des mod√®les de droits"), format="A", orientation=wx.PORTRAIT)
         prt.Print()
 
     def Ajouter(self, event):
@@ -270,7 +270,7 @@ class ListView(FastObjectListView):
 
     def Modifier(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucun modËle ‡ modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucun mod√®le √† modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -284,14 +284,14 @@ class ListView(FastObjectListView):
 
     def Supprimer(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucun modËle ‡ supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucun mod√®le √† supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_modeles_droits", "supprimer") == False : return
         IDmodele = self.Selection()[0].IDmodele
         
-        # VÈrifie que ce modËle n'a pas dÈj‡ ÈtÈ attribuÈ ‡ un utilisateur
+        # V√©rifie que ce mod√®le n'a pas d√©j√† √©t√© attribu√© √† un utilisateur
         DB = GestionDB.DB()
         condition = "modele:%d" % IDmodele
         req = """SELECT IDutilisateur, profil
@@ -302,18 +302,18 @@ class ListView(FastObjectListView):
         listeDonnees = DB.ResultatReq()
         DB.Close() 
         if len(listeDonnees) > 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas supprimer ce modËle de droits.\n\nIl a dÈj‡ ÈtÈ attribuÈ ‡ %d utilisateur(s) !") % len(listeDonnees), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas supprimer ce mod√®le de droits.\n\nIl a d√©j√† √©t√© attribu√© √† %d utilisateur(s) !") % len(listeDonnees), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
         # Demande confirmation suppression
-        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer ce modËle ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer ce mod√®le ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         if dlg.ShowModal() == wx.ID_YES :
             DB = GestionDB.DB()
             DB.ReqDEL("modeles_droits", "IDmodele", IDmodele)
             DB.ReqDEL("droits", "IDmodele", IDmodele)
-            # Attribue le DÈfaut ‡ un autre enregistrement
+            # Attribue le D√©faut √† un autre enregistrement
             if self.Selection()[0].defaut == 1 :
                 req = """SELECT IDmodele, defaut
                 FROM modeles_droits
@@ -328,9 +328,9 @@ class ListView(FastObjectListView):
         dlg.Destroy()
 
     def Dupliquer(self, event):
-        """ Dupliquer un modËle """
+        """ Dupliquer un mod√®le """
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucun modËle ‡ dupliquer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucun mod√®le √† dupliquer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -338,7 +338,7 @@ class ListView(FastObjectListView):
         IDmodele = self.Selection()[0].IDmodele
         nom = self.Selection()[0].nom
 
-        dlg = wx.MessageDialog(None, _(u"Confirmez-vous la duplication du modËle '%s' ?") % nom, _(u"Duplication"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+        dlg = wx.MessageDialog(None, _(u"Confirmez-vous la duplication du mod√®le '%s' ?") % nom, _(u"Duplication"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
         reponse = dlg.ShowModal()
         dlg.Destroy()
         if reponse != wx.ID_YES :
@@ -357,7 +357,7 @@ class ListView(FastObjectListView):
 
     def SetDefaut(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucun modËle dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucun mod√®le dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -387,7 +387,7 @@ class BarreRecherche(wx.SearchCtrl):
         self.parent = parent
         self.rechercheEnCours = False
         
-        self.SetDescriptiveText(_(u"Rechercher un modËle..."))
+        self.SetDescriptiveText(_(u"Rechercher un mod√®le..."))
         self.ShowSearchButton(True)
         
         self.listView = self.parent.ctrl_listview

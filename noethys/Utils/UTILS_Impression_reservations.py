@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activitÈs
+# Application :    Noethys, gestion multi-activit√©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -19,7 +19,7 @@ import datetime
 
 from Utils import UTILS_Organisateur
 from Utils import UTILS_Config
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"§")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"‚Ç¨")
 
 
 def DateEngFr(textDate):
@@ -28,7 +28,7 @@ def DateEngFr(textDate):
 
 
 def Impression(dictDonnees={}, nomDoc=FonctionsPerso.GenerationNomDoc("RESERVATIONS", "pdf"), afficherDoc=True):
-    # CrÈation du PDF
+    # Cr√©ation du PDF
     from reportlab.platypus.doctemplate import PageTemplate, BaseDocTemplate, NextPageTemplate
     from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, PageBreak
     from reportlab.platypus.flowables import ParagraphAndImage, Image
@@ -54,12 +54,12 @@ def Impression(dictDonnees={}, nomDoc=FonctionsPerso.GenerationNomDoc("RESERVATI
     couleurFond = (0.8, 0.8, 1)
     couleurFondActivite = (0.92, 0.92, 1)
             
-    # CrÈation du titre du document
+    # Cr√©ation du titre du document
     def Header():
         dataTableau = []
         largeursColonnes = ( (420, 100) )
         dateDuJour = DateEngFr(str(datetime.date.today()))
-        dataTableau.append( (_(u"RÈservations"), _(u"%s\nEditÈ le %s") % (UTILS_Organisateur.GetNom(), dateDuJour)) )
+        dataTableau.append( (_(u"R√©servations"), _(u"%s\nEdit√© le %s") % (UTILS_Organisateur.GetNom(), dateDuJour)) )
         style = TableStyle([
                 ('BOX', (0,0), (-1,-1), 0.25, colors.black), 
                 ('VALIGN', (0,0), (-1,-1), 'TOP'), 
@@ -73,15 +73,15 @@ def Impression(dictDonnees={}, nomDoc=FonctionsPerso.GenerationNomDoc("RESERVATI
         story.append(tableau)
         story.append(Spacer(0,20))       
     
-    # InsËre un header
+    # Ins√®re un header
     Header()
 
-    # Texte si aucune rÈservation
+    # Texte si aucune r√©servation
     if len(dictDonnees) == 0 :
         paraStyle = ParagraphStyle(name="defaut", fontName="Helvetica", fontSize=11)
         story.append(Paragraph("&nbsp;", paraStyle))
         story.append(Paragraph("&nbsp;", paraStyle))
-        story.append(Paragraph(_(u"<para align='centre'><b>Aucune rÈservation</b></para>"), paraStyle))
+        story.append(Paragraph(_(u"<para align='centre'><b>Aucune r√©servation</b></para>"), paraStyle))
     
     # Tableau NOM INDIVIDU
     totalFacturationFamille = 0.0
@@ -92,9 +92,9 @@ def Impression(dictDonnees={}, nomDoc=FonctionsPerso.GenerationNomDoc("RESERVATI
         sexe = dictIndividu["sexe"]
         if date_naiss != None :
             if sexe == "M" : 
-                texteNaiss = _(u", nÈ le %s") % DateEngFr(str(date_naiss))
+                texteNaiss = _(u", n√© le %s") % DateEngFr(str(date_naiss))
             else : 
-                texteNaiss = _(u", nÈe le %s") % DateEngFr(str(date_naiss))
+                texteNaiss = _(u", n√©e le %s") % DateEngFr(str(date_naiss))
         else:
             texteNaiss = u""
         texteIndividu = u"%s %s%s" % (nom, prenom, texteNaiss)
@@ -207,7 +207,7 @@ def Impression(dictDonnees={}, nomDoc=FonctionsPerso.GenerationNomDoc("RESERVATI
                     
                 texteConsos = Paragraph("<br/>".join(listeConso), paraStyle)
                 
-                # Insertion de l'Ètat
+                # Insertion de l'√©tat
                 texteEtat = listeEtats
                 
                 # Insertion des prestations et montants
@@ -229,7 +229,7 @@ def Impression(dictDonnees={}, nomDoc=FonctionsPerso.GenerationNomDoc("RESERVATI
                     dataTableau.append([texteDate, texteConsos, texteEtat, textePrestations, texteMontants])
             
             if len(dataTableau) == 1 :
-                dlg = wx.MessageDialog(None, _(u"Il n'y a aucune consommation ‡ imprimer !"), _(u"Erreur"), wx.OK | wx.ICON_INFORMATION)
+                dlg = wx.MessageDialog(None, _(u"Il n'y a aucune consommation √† imprimer !"), _(u"Erreur"), wx.OK | wx.ICON_INFORMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return
@@ -260,7 +260,7 @@ def Impression(dictDonnees={}, nomDoc=FonctionsPerso.GenerationNomDoc("RESERVATI
                 ('BACKGROUND', (-1, -1), (-1, -1), couleurFond), 
                 ]
             
-        # CrÈation du tableau
+        # Cr√©ation du tableau
         largeursColonnesTotal = [460, 60]
         tableau = Table(dataTableau, largeursColonnesTotal)
         tableau.setStyle(TableStyle(listeStyles))
@@ -287,7 +287,7 @@ def Impression(dictDonnees={}, nomDoc=FonctionsPerso.GenerationNomDoc("RESERVATI
     except Exception as err :
         print("Erreur dans ouverture PDF :", err)
         if "Permission denied" in err :
-            dlg = wx.MessageDialog(None, _(u"Noethys ne peut pas crÈer le PDF.\n\nVeuillez vÈrifier qu'un autre PDF n'est pas dÈj‡ ouvert en arriËre-plan..."), _(u"Erreur d'Èdition"), wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(None, _(u"Noethys ne peut pas cr√©er le PDF.\n\nVeuillez v√©rifier qu'un autre PDF n'est pas d√©j√† ouvert en arri√®re-plan..."), _(u"Erreur d'√©dition"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             return False

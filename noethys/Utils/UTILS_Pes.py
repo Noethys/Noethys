@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activitÈs
+# Application :    Noethys, gestion multi-activit√©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-13 Ivan LUCAS
@@ -25,11 +25,11 @@ import zipfile
 def DemanderChoix(parent):
     """ Propose le choix entre ROLMRE et PES V2 ORMC """
     from Dlg import DLG_Choix
-    titre = _(u"Quel protocole d'Èchanges souhaitez-vous utiliser ?")
-    intro = _(u"Cliquez sur le protocole d'Èchange souhaitÈ afin d'accÈder ‡ la fonctionnalitÈ dÈdiÈe...")
+    titre = _(u"Quel protocole d'√©changes souhaitez-vous utiliser ?")
+    intro = _(u"Cliquez sur le protocole d'√©change souhait√© afin d'acc√©der √† la fonctionnalit√© d√©di√©e...")
     listeBoutons = [
-        (_(u"Bordereau PES Recette ORMC"), _(u"Nouveau type de bordereau Recette ORMC (Ordre de Recette Multi CrÈanciers) fidËle au nouveau protocole d'Èchange PES V2 entre les collectivitÈs locales et la DGFIP. Remplace le protocole ROLMRE ‡ partir du 01/02/2014.")),
-        (_(u"RÙle ROLMRE"), _(u"Le protocole ROLMRE est une procÈdure d'Èchanges de donnÈes utilisÈe dans les collectivitÈs qui devient obsolËte ‡ partir du 01/02/2014. Au del‡ de cette date, il faut utiliser le bordereau PES ORMC.")),
+        (_(u"Bordereau PES Recette ORMC"), _(u"Nouveau type de bordereau Recette ORMC (Ordre de Recette Multi Cr√©anciers) fid√®le au nouveau protocole d'√©change PES V2 entre les collectivit√©s locales et la DGFIP. Remplace le protocole ROLMRE √† partir du 01/02/2014.")),
+        (_(u"R√¥le ROLMRE"), _(u"Le protocole ROLMRE est une proc√©dure d'√©changes de donn√©es utilis√©e dans les collectivit√©s qui devient obsol√®te √† partir du 01/02/2014. Au del√† de cette date, il faut utiliser le bordereau PES ORMC.")),
         ]
     dlg = DLG_Choix.Dialog(parent, listeBoutons=listeBoutons, intro=intro, titre=titre)
     reponse = dlg.ShowModal() 
@@ -41,10 +41,10 @@ def DemanderChoix(parent):
 # ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 def GetXML(dictDonnees={}):
-    """ GÈnÈration du fichier PES Recette ORMC """
+    """ G√©n√©ration du fichier PES Recette ORMC """
     doc = Document()
 
-    # GÈnÈration du document XML
+    # G√©n√©ration du document XML
     racine = doc.createElement("n:PES_Aller")
     racine.setAttribute("xsi:schemaLocation", "http://www.minefi.gouv.fr/cp/helios/pes_v2/recette/r0/aller")
     racine.setAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance")
@@ -171,7 +171,7 @@ def GetXML(dictDonnees={}):
     
     for dictPiece in dictDonnees["pieces"] :
         
-        # PiËce
+        # Pi√®ce
         Piece = doc.createElement("Piece")
         Bordereau.appendChild(Piece)
     
@@ -256,7 +256,7 @@ def GetXML(dictDonnees={}):
         # BlocPiece.appendChild(NomService)
 
 
-        # Ligne de piËce
+        # Ligne de pi√®ce
         LigneDePiece = doc.createElement("LigneDePiece")
         Piece.appendChild(LigneDePiece)
         
@@ -294,7 +294,7 @@ def GetXML(dictDonnees={}):
         MtHT.setAttribute("V", dictPiece["montant"])
         InfoLignePiece.appendChild(MtHT)
 
-        # Info prÈlËvement SEPA
+        # Info pr√©l√®vement SEPA
         if dictPiece["prelevement"] == 1 :
             
             InfoPrelevementSEPA = doc.createElement("InfoPrelevementSEPA")
@@ -494,7 +494,7 @@ def EnregistrerXML(doc=None, nomFichier=""):
     
 
 def GetCle_modulo11(elements=[]):
-    """ Calcul de la clÈ Modulo 11 """
+    """ Calcul de la cl√© Modulo 11 """
     nombre = "".join(elements)[::-1]
     listeCoeff = [2, 3, 4, 5, 6, 7] * (len(nombre) // 6 + 1)
     total = 0
@@ -510,7 +510,7 @@ def GetCle_modulo11(elements=[]):
     return cle
 
 def GetCle_modulo23(elements=[]):
-    """ Calcul de la clÈ Modulo 23 """
+    """ Calcul de la cl√© Modulo 23 """
     nombre = "".join(elements)
     K = (int(nombre) % 23) + 1
     alphabet = "ABCDEFGHJKLMNPQRSTUVWXY"
@@ -520,12 +520,12 @@ def GetCle_modulo23(elements=[]):
 def ValidationXSD(xml=""):
     try :
 
-        # TÈlÈchargement du fichier XSD
+        # T√©l√©chargement du fichier XSD
         url = "http://www.noethys.com/fichiers/pes/schemas_pes.zip"
         fichier_dest = UTILS_Fichiers.GetRepTemp(fichier="schemas_pes.zip")
         urlretrieve(url, fichier_dest)
 
-        # DÈcompression du zip XSD
+        # D√©compression du zip XSD
         z = zipfile.ZipFile(fichier_dest, 'r')
         rep_dest = UTILS_Fichiers.GetRepTemp() + "/schemas_pes"
         z.extractall(rep_dest)
@@ -587,11 +587,11 @@ if __name__ == "__main__":
             "prelevement_rum" : "123",
             "prelevement_bic" : "TESTFR2B",
             "prelevement_iban" : "AB0030001007941234567890100",
-            "prelevement_titulaire" : _(u"DUPOND GÈrard"),
+            "prelevement_titulaire" : _(u"DUPOND G√©rard"),
             "prelevement_libelle" : "prelevement_libelle",
             "titulaire_civilite" : "Mr.",
             "titulaire_nom" : _(u"DUPOND"),
-            "titulaire_prenom" : _(u"GÈrard"),
+            "titulaire_prenom" : _(u"G√©rard"),
             "titulaire_rue" : _(u"10 rue des oiseaux"),
             "titulaire_cp" : u"29870",
             "titulaire_ville" : _(u"LANNILIS"),

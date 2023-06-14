@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-13 Ivan LUCAS
@@ -74,7 +74,7 @@ class Panel(wx.Panel):
         
         self.hyper_select_tout = Hyperlien(self, label=_(u"Tout cocher"), infobulle=_(u"Cliquez ici pour tout cocher"), URL="tout")
         self.label_separation = wx.StaticText(self, -1, "|")
-        self.hyper_selection_rien = Hyperlien(self, label=_(u"Tout décocher"), infobulle=_(u"Cliquez ici pour tout décocher"), URL="rien")
+        self.hyper_selection_rien = Hyperlien(self, label=_(u"Tout dÃ©cocher"), infobulle=_(u"Cliquez ici pour tout dÃ©cocher"), URL="rien")
 
         self.__set_properties()
         self.__do_layout()
@@ -85,10 +85,10 @@ class Panel(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.OnSupprimerTexte, self.bouton_supprimer_texte)
 
     def __set_properties(self):
-        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour créer un aperçu PDF de la lettre de rappel sélectionnée")))
+        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour crÃ©er un aperÃ§u PDF de la lettre de rappel sÃ©lectionnÃ©e")))
         self.bouton_ajouter_texte.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter un texte de rappel")))
-        self.bouton_modifier_texte.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le texte sélectionné dans la liste")))
-        self.bouton_supprimer_texte.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le texte sélectionné dans la liste")))
+        self.bouton_modifier_texte.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le texte sÃ©lectionnÃ© dans la liste")))
+        self.bouton_supprimer_texte.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le texte sÃ©lectionnÃ© dans la liste")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=2, cols=1, vgap=10, hgap=10)
@@ -155,28 +155,28 @@ class Panel(wx.Panel):
         # Validation de la saisie
         nbreCoches = len(self.ctrl_rappels.GetCoches())
         if nbreCoches == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune lettre de rappel à générer !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune lettre de rappel Ã  gÃ©nÃ©rer !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
         
         # Demande de confirmation
         if nbreCoches == 1 :
-            texte = _(u"Confirmez-vous la génération de 1 lettre de rappel ?")
+            texte = _(u"Confirmez-vous la gÃ©nÃ©ration de 1 lettre de rappel ?")
         else :
-            texte = _(u"Confirmez-vous la génération de %d rappels ?") % nbreCoches
+            texte = _(u"Confirmez-vous la gÃ©nÃ©ration de %d rappels ?") % nbreCoches
         dlg = wx.MessageDialog(self, texte, _(u"Confirmation"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
         reponse = dlg.ShowModal() 
         dlg.Destroy()
         if reponse != wx.ID_YES :
             return False
 
-        # Génération des rappels
+        # GÃ©nÃ©ration des rappels
         listeRappelsGenerees = self.SauvegardeRappels() 
         if listeRappelsGenerees == False :
             return False
         
-        # Envoi des rappels générées
+        # Envoi des rappels gÃ©nÃ©rÃ©es
         self.parent.listeRappelsGenerees = listeRappelsGenerees
         
         return True
@@ -190,11 +190,11 @@ class Panel(wx.Panel):
 
     def SauvegardeRappels(self):
         """ Sauvegarde des rappels """
-        dlgAttente = wx.BusyInfo(_(u"Génération des rappels en cours..."), None)
+        dlgAttente = wx.BusyInfo(_(u"GÃ©nÃ©ration des rappels en cours..."), None)
         if 'phoenix' not in wx.PlatformInfo:
             wx.Yield()
 
-        # Recherche numéro de facture suivant
+        # Recherche numÃ©ro de facture suivant
         DB = GestionDB.DB()
         req = """SELECT MAX(numero) FROM rappels;""" 
         DB.ExecuterReq(req)
@@ -205,16 +205,16 @@ class Panel(wx.Panel):
         else:
             numero = listeDonnees[0][0] + 1
         
-        # Récupère Utilisateur en cours
+        # RÃ©cupÃ¨re Utilisateur en cours
         IDutilisateur = UTILS_Identification.GetIDutilisateur()
         
-        # Génération des rappels
+        # GÃ©nÃ©ration des rappels
         listeRappelsGenerees = []
 
-        # Fusion des mots-clés
+        # Fusion des mots-clÃ©s
         facturation = UTILS_Rappels.Facturation()
 
-        # Tri par ordre alphabétique de la liste
+        # Tri par ordre alphabÃ©tique de la liste
         listeComptes = []
         listeAnomalies = []
         dictCoches = self.ctrl_rappels.GetCoches()
@@ -231,10 +231,10 @@ class Panel(wx.Panel):
                 listeComptes.append((dictCompte["nomSansCivilite"], IDcompte_payeur, dictCompte))
         listeComptes.sort()
         
-        # Il reste des textes non attribués :
+        # Il reste des textes non attribuÃ©s :
         if len(listeAnomalies) > 0  :
             del dlgAttente
-            dlg = wx.MessageDialog(self, _(u"Il reste %d lettre(s) pour lesquelles vous n'avez pas attribué de texte !") % len(listeAnomalies), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Il reste %d lettre(s) pour lesquelles vous n'avez pas attribuÃ© de texte !") % len(listeAnomalies), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -246,9 +246,9 @@ class Panel(wx.Panel):
             index = 0
             for nomTitulaires, IDcompte_payeur, dictCompte in listeComptes :
 
-                self.EcritStatusbar(_(u"Génération de la lettre de rappel %d sur %d...") % (index+1, len(listeComptes)))
+                self.EcritStatusbar(_(u"GÃ©nÃ©ration de la lettre de rappel %d sur %d...") % (index+1, len(listeComptes)))
                 
-                # Liste des activités
+                # Liste des activitÃ©s
                 texteActivites = ""
                 for IDactivite in self.parent.dictParametres["listeActivites"] :
                     texteActivites += "%d;" % IDactivite
@@ -283,7 +283,7 @@ class Panel(wx.Panel):
             DB.Close() 
             del dlgAttente
             traceback.print_exc(file=sys.stdout)
-            dlg = wx.MessageDialog(self, _(u"Désolé, le problème suivant a été rencontré : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"DÃ©solÃ©, le problÃ¨me suivant a Ã©tÃ© rencontrÃ© : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             self.EcritStatusbar(u"")

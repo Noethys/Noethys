@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-17 Ivan LUCAS
@@ -64,13 +64,13 @@ class Dialog(wx.Dialog):
         self.parent = parent
         self.categorie = categorie
 
-        # Généralités
+        # GÃ©nÃ©ralitÃ©s
         self.box_generalites_staticbox = wx.StaticBox(self, -1, _(u"Saisissez un nom pour cette image"))
         self.label_nom = wx.StaticText(self, -1, _(u"Nom :"))
         self.ctrl_nom = wx.TextCtrl(self, -1, "")
 
-        # Donnée associée
-        self.box_donnee_staticbox = wx.StaticBox(self, -1, _(u"Sélectionnez la donnée associée"))
+        # DonnÃ©e associÃ©e
+        self.box_donnee_staticbox = wx.StaticBox(self, -1, _(u"SÃ©lectionnez la donnÃ©e associÃ©e"))
         self.ctrl_donnee = CTRL_Donnees(self, categorie=categorie)
         self.ctrl_donnee.SetMinSize((450, 250))
 
@@ -94,7 +94,7 @@ class Dialog(wx.Dialog):
 
         grid_sizer_contenu = wx.FlexGridSizer(rows=2, cols=1, vgap=10, hgap=10)
 
-        # Généralités
+        # GÃ©nÃ©ralitÃ©s
         box_generalites = wx.StaticBoxSizer(self.box_generalites_staticbox, wx.VERTICAL)
         grid_sizer_generalites = wx.FlexGridSizer(rows=2, cols=2, vgap=5, hgap=5)
         grid_sizer_generalites.Add(self.label_nom, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
@@ -103,7 +103,7 @@ class Dialog(wx.Dialog):
         box_generalites.Add(grid_sizer_generalites, 1, wx.ALL | wx.EXPAND, 10)
         grid_sizer_contenu.Add(box_generalites, 1,wx.EXPAND, 0)
 
-        # Donnée
+        # DonnÃ©e
         box_donnee = wx.StaticBoxSizer(self.box_donnee_staticbox, wx.VERTICAL)
         box_donnee.Add(self.ctrl_donnee, 1, wx.ALL | wx.EXPAND, 10)
         grid_sizer_contenu.Add(box_donnee, 1,wx.EXPAND, 0)
@@ -130,7 +130,7 @@ class Dialog(wx.Dialog):
         self.CenterOnScreen()
 
     def OnBoutonOk(self, event):
-        # Validation des données
+        # Validation des donnÃ©es
         nom = self.ctrl_nom.GetValue()
         if nom == "" :
             dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un nom !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
@@ -141,7 +141,7 @@ class Dialog(wx.Dialog):
 
         IDdonnee = self.ctrl_donnee.GetID()
         if IDdonnee == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner une donnée dans la liste proposée !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sÃ©lectionner une donnÃ©e dans la liste proposÃ©e !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return

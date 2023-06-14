@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-17 Ivan LUCAS
@@ -66,7 +66,7 @@ class CTRL_Categories(wx.TextCtrl):
         elif len(self.liste_categories) == 1: condition = "(%d)" % self.liste_categories[0]
         else: condition = str(tuple(self.liste_categories))
 
-        # Recherche des caractéristiques des catégories
+        # Recherche des caractÃ©ristiques des catÃ©gories
         db = GestionDB.DB()
         req = """SELECT IDcategorie, nom
         FROM produits_categories 
@@ -82,7 +82,7 @@ class CTRL_Categories(wx.TextCtrl):
             label = ", ".join(liste_labels)
             couleur = wx.BLACK
         else :
-            label = _(u"Indifférent")
+            label = _(u"IndiffÃ©rent")
             couleur = wx.LIGHT_GREY
         self.SetForegroundColour(couleur)
 
@@ -109,7 +109,7 @@ class CTRL_Produits(wx.TextCtrl):
         elif len(self.liste_produits) == 1: condition = "(%d)" % self.liste_produits[0]
         else: condition = str(tuple(self.liste_produits))
 
-        # Recherche des caractéristiques des produits
+        # Recherche des caractÃ©ristiques des produits
         db = GestionDB.DB()
         req = """SELECT produits.IDproduit, produits.nom, produits.IDcategorie, produits.observations, produits_categories.nom
         FROM produits 
@@ -127,7 +127,7 @@ class CTRL_Produits(wx.TextCtrl):
             label = ", ".join(liste_labels)
             couleur = wx.BLACK
         else :
-            label = _(u"Indifférent")
+            label = _(u"IndiffÃ©rent")
             couleur = wx.LIGHT_GREY
         self.SetForegroundColour(couleur)
 
@@ -146,13 +146,13 @@ class PAGE_Criteres(wx.Panel):
         self.parent = parent
         self.IDdemande = IDdemande
 
-        self.label_categories = wx.StaticText(self, -1, _(u"Catégories :"))
+        self.label_categories = wx.StaticText(self, -1, _(u"CatÃ©gories :"))
         self.ctrl_categories = CTRL_Categories(self)
-        self.bouton_categories = wx.Button(self, -1, _(u"Sélectionner"))
+        self.bouton_categories = wx.Button(self, -1, _(u"SÃ©lectionner"))
 
         self.label_produits = wx.StaticText(self, -1, _(u"Produits :"))
         self.ctrl_produits = CTRL_Produits(self)
-        self.bouton_produits = wx.Button(self, -1, _(u"Sélectionner"))
+        self.bouton_produits = wx.Button(self, -1, _(u"SÃ©lectionner"))
 
         self.label_filtres = wx.StaticText(self, -1, _(u"Questions :"), style=wx.ALIGN_RIGHT)
         self.ctrl_filtres = OL_Filtres_questionnaire.ListView(self, listeDonnees=[], listeTypes=["produit",], CallFonctionOnMAJ=self.MAJListePropositions, id=-1, style=wx.LC_REPORT|wx.LC_NO_HEADER|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
@@ -163,13 +163,13 @@ class PAGE_Criteres(wx.Panel):
         self.bouton_supprimer = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Supprimer.png"), wx.BITMAP_TYPE_ANY))
 
         # Properties
-        self.ctrl_categories.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sélectionner des catégories")))
-        self.bouton_categories.SetToolTip(wx.ToolTip(_(u"Choix de catégories")))
-        self.ctrl_produits.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sélectionner des produits")))
-        self.bouton_produits.SetToolTip(wx.ToolTip(_(u"Choix de catégories")))
+        self.ctrl_categories.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sÃ©lectionner des catÃ©gories")))
+        self.bouton_categories.SetToolTip(wx.ToolTip(_(u"Choix de catÃ©gories")))
+        self.ctrl_produits.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sÃ©lectionner des produits")))
+        self.bouton_produits.SetToolTip(wx.ToolTip(_(u"Choix de catÃ©gories")))
         self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour saisir un filtre sur les questionnaires")))
-        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le filtre sélectionné")))
-        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le filtre sélectionné")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le filtre sÃ©lectionnÃ©")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le filtre sÃ©lectionnÃ©")))
 
         # Binds
         self.Bind(wx.EVT_BUTTON, self.Ajouter_filtre, self.bouton_ajouter)
@@ -248,15 +248,15 @@ class PAGE_Criteres(wx.Panel):
         #self.MAJListePropositions()
 
     def MAJListePropositions(self):
-        # Récupération de la liste des filtres actuelle
+        # RÃ©cupÃ©ration de la liste des filtres actuelle
         dictFiltres = {self.IDdemande : []}
         for track in self.ctrl_filtres.GetTracks() :
             dictFiltres[self.IDdemande].append({"IDfiltre":track.IDfiltre, "IDquestion":track.IDquestion, "choix":track.choix, "criteres":track.criteres, "controle":track.controle})
 
-        # Récupération des paramètres de la demande
+        # RÃ©cupÃ©ration des paramÃ¨tres de la demande
         dictDemande = {"IDdemande": self.IDdemande, "categories": self.ctrl_categories.GetListeCategories(), "produits": self.ctrl_produits.GetListeProduits()}
 
-        # Recherche les produits disponibles à proposer
+        # Recherche les produits disponibles Ã  proposer
         dictPropositions = UTILS_Locations.GetPropositionsLocations(dictFiltresSelection=dictFiltres, dictDemandeSelection=dictDemande, uniquement_disponibles=False)
         texte = self.GetGrandParent().ctrl_statut.GetPageByCode("attente").ctrl_propositions.SetDictPropositions(dictPropositions, IDdemande=self.IDdemande)
         self.GetGrandParent().ctrl_statut.GetPageByCode("attente").label_propositions.SetLabel(texte)
@@ -288,11 +288,11 @@ class Notebook(wx.Notebook):
         self.dictPages = {}
 
         self.listePages = [
-            ("criteres", _(u"Critères"), PAGE_Criteres(self, IDdemande=IDdemande)),
+            ("criteres", _(u"CritÃ¨res"), PAGE_Criteres(self, IDdemande=IDdemande)),
             ("questionnaire", _(u"Questionnaire"), PAGE_Questionnaire(self, IDdemande=IDdemande)),
         ]
 
-        # Création des pages
+        # CrÃ©ation des pages
         index = 0
         for codePage, labelPage, ctrlPage in self.listePages:
             page = ctrlPage
@@ -330,7 +330,7 @@ class PAGE_Statut_attente(wx.Panel):
         self.parent = parent
 
         # Propositions
-        self.label_propositions = wx.StaticText(self, -1, _(u"Produits proposés :"))
+        self.label_propositions = wx.StaticText(self, -1, _(u"Produits proposÃ©s :"))
         self.ctrl_propositions = OL_Produits.ListView(self, id=-1, afficher_detail_location=False, on_double_click="consultation", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.ctrl_propositions.SetMinSize((100, 50))
         self.ctrl_propositions.afficher_uniquement_disponibles = True
@@ -339,12 +339,12 @@ class PAGE_Statut_attente(wx.Panel):
         self.radio_produits_disponibles = wx.RadioButton(self, -1, _(u"Les produits disponibles"), style=wx.RB_GROUP)
         self.radio_produits_possibles = wx.RadioButton(self, -1, _(u"Les produits potentiels"))
 
-        self.radio_produits_disponibles.SetToolTip(wx.ToolTip(_(u"Afficher les produits disponibles répondant aux critères")))
-        self.radio_produits_possibles.SetToolTip(wx.ToolTip(_(u"Afficher tous les produits répondant aux critères donnés")))
+        self.radio_produits_disponibles.SetToolTip(wx.ToolTip(_(u"Afficher les produits disponibles rÃ©pondant aux critÃ¨res")))
+        self.radio_produits_possibles.SetToolTip(wx.ToolTip(_(u"Afficher tous les produits rÃ©pondant aux critÃ¨res donnÃ©s")))
 
         # Bouton Attribuer
-        self.bouton_attribuer = CTRL_Bouton_image.CTRL(self, texte=_(u"Attribuer le produit sélectionné"), cheminImage="Images/32x32/Location.png")
-        self.bouton_attribuer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour attribuer le produit sélectionné dans la liste")))
+        self.bouton_attribuer = CTRL_Bouton_image.CTRL(self, texte=_(u"Attribuer le produit sÃ©lectionnÃ©"), cheminImage="Images/32x32/Location.png")
+        self.bouton_attribuer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour attribuer le produit sÃ©lectionnÃ© dans la liste")))
 
         # Binds
         self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioProduits, self.radio_produits_disponibles)
@@ -381,12 +381,12 @@ class PAGE_Statut_attente(wx.Panel):
     def OnBoutonAttribuer(self, event):
         IDproduit = self.ctrl_propositions.GetID()
         if IDproduit == None:
-            dlg = wx.MessageDialog(self, _(u"Vous devez sélectionner un produit disponible dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez sÃ©lectionner un produit disponible dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
-        # Création d'une location
+        # CrÃ©ation d'une location
         self.GetGrandParent().Attribution(IDproduit)
 
 
@@ -428,7 +428,7 @@ class CTRL_Attribution(html.HtmlWindow):
     def SetIDlocation(self, IDlocation):
         self.IDlocation = IDlocation
 
-        # Importation des données de la location
+        # Importation des donnÃ©es de la location
         DB = GestionDB.DB()
         req = """SELECT IDfamille, locations.IDproduit, locations.observations, date_debut, date_fin,
         produits.nom, produits_categories.nom
@@ -444,14 +444,14 @@ class CTRL_Attribution(html.HtmlWindow):
 
         date_debut_temp = datetime.datetime.strftime(UTILS_Dates.DateEngEnDateDDT(date_debut), "%d/%m/%Y")
         heure_debut_temp = datetime.datetime.strftime(UTILS_Dates.DateEngEnDateDDT(date_debut), "%Hh%M")
-        texte_debut = _(u"%s à %s") % (date_debut_temp, heure_debut_temp)
+        texte_debut = _(u"%s Ã  %s") % (date_debut_temp, heure_debut_temp)
 
         if date_fin != None :
             date_fin_temp = datetime.datetime.strftime(UTILS_Dates.DateEngEnDateDDT(date_fin), "%d/%m/%Y")
             heure_fin_temp = datetime.datetime.strftime(UTILS_Dates.DateEngEnDateDDT(date_fin), "%Hh%M")
-            texte_fin = _(u"%s à %s") % (date_fin_temp, heure_fin_temp)
+            texte_fin = _(u"%s Ã  %s") % (date_fin_temp, heure_fin_temp)
         else :
-            texte_fin = _(u"Non définie")
+            texte_fin = _(u"Non dÃ©finie")
 
         if len(observations) > 0 :
             texte_observations = _(u"<BR>Notes : %s") % observations
@@ -462,9 +462,9 @@ class CTRL_Attribution(html.HtmlWindow):
         <FONT SIZE=5><B>Demande satisfaite</B><BR></FONT>
         <BR>
         Produit : <b>%s</b><BR>
-        Catégorie : %s <BR>
+        CatÃ©gorie : %s <BR>
         <BR>
-        Début de location : %s <BR>
+        DÃ©but de location : %s <BR>
         Fin de location : %s <BR>
         %s
         """) % (nomProduit, nomCategorie, texte_debut, texte_fin, texte_observations)
@@ -483,7 +483,7 @@ class PAGE_Statut_attribuee(wx.Panel):
         self.parent = parent
         self.IDlocation = None
 
-        self.label_attribution = wx.StaticText(self, -1, _(u"Location attribuée :"))
+        self.label_attribution = wx.StaticText(self, -1, _(u"Location attribuÃ©e :"))
         self.ctrl_attribution = MyHtml(self)
 
         # Layout
@@ -499,7 +499,7 @@ class PAGE_Statut_attribuee(wx.Panel):
     def SetIDlocation(self, IDlocation):
         self.IDlocation = IDlocation
 
-        # Importation des données de la location
+        # Importation des donnÃ©es de la location
         DB = GestionDB.DB()
         req = """SELECT IDfamille, locations.IDproduit, locations.observations, date_debut, date_fin,
         produits.nom, produits_categories.nom
@@ -515,14 +515,14 @@ class PAGE_Statut_attribuee(wx.Panel):
 
         date_debut_temp = datetime.datetime.strftime(UTILS_Dates.DateEngEnDateDDT(date_debut), "%d/%m/%Y")
         heure_debut_temp = datetime.datetime.strftime(UTILS_Dates.DateEngEnDateDDT(date_debut), "%Hh%M")
-        texte_debut = _(u"%s à %s") % (date_debut_temp, heure_debut_temp)
+        texte_debut = _(u"%s Ã  %s") % (date_debut_temp, heure_debut_temp)
 
         if date_fin != None :
             date_fin_temp = datetime.datetime.strftime(UTILS_Dates.DateEngEnDateDDT(date_fin), "%d/%m/%Y")
             heure_fin_temp = datetime.datetime.strftime(UTILS_Dates.DateEngEnDateDDT(date_fin), "%Hh%M")
-            texte_fin = _(u"%s à %s") % (date_fin_temp, heure_fin_temp)
+            texte_fin = _(u"%s Ã  %s") % (date_fin_temp, heure_fin_temp)
         else :
-            texte_fin = _(u"Non définie")
+            texte_fin = _(u"Non dÃ©finie")
 
         if len(observations) > 0 :
             texte_observations = _(u"<BR>Notes : %s") % observations
@@ -531,9 +531,9 @@ class PAGE_Statut_attribuee(wx.Panel):
 
         texte = _(u"""
         Produit : <b>%s</b><BR>
-        Catégorie : %s <BR>
+        CatÃ©gorie : %s <BR>
         <BR>
-        Début de location : %s <BR>
+        DÃ©but de location : %s <BR>
         Fin de location : %s <BR>
         %s
         """) % (nomProduit, nomCategorie, texte_debut, texte_fin, texte_observations)
@@ -551,18 +551,18 @@ class CTRL_Statut(wx.Choicebook):
     def __init__(self, parent):
         wx.Choicebook.__init__(self, parent, id=-1)
         self.parent = parent
-        self.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici le statut de la demande")))
+        self.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez ici le statut de la demande")))
 
         self.listePanels = [
             ("attente", _(u"En attente"), PAGE_Statut_attente(self)),
-            ("refusee", _(u"Demande refusée"), PAGE_Statut_refusee(self)),
+            ("refusee", _(u"Demande refusÃ©e"), PAGE_Statut_refusee(self)),
             #("attribuee", _(u"Demande satisfaite"), PAGE_Statut_attribuee(self)),
         ]
 
         for code, label, ctrl in self.listePanels:
             self.AddPage(ctrl, label)
 
-        # Sélection par défaut
+        # SÃ©lection par dÃ©faut
         self.SetSelection(0)
 
     def GetPageByCode(self, code=""):
@@ -606,12 +606,12 @@ class Dialog(wx.Dialog):
         else :
             self.SetTitle(_(u"Modification d'une demande"))
 
-        # Généralités
-        self.staticbox_generalites_staticbox = wx.StaticBox(self, -1, _(u"Généralités"))
+        # GÃ©nÃ©ralitÃ©s
+        self.staticbox_generalites_staticbox = wx.StaticBox(self, -1, _(u"GÃ©nÃ©ralitÃ©s"))
         self.label_loueur = wx.StaticText(self, -1, _(u"Loueur :"))
         self.ctrl_loueur = CTRL_Loueur(self)
         self.ctrl_loueur.SetFont(wx.Font(10, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD, False, 'Arial'))
-        self.bouton_loueur = wx.Button(self, -1, _(u"Sélectionner"))
+        self.bouton_loueur = wx.Button(self, -1, _(u"SÃ©lectionner"))
 
         self.label_date_demande = wx.StaticText(self, -1, _(u"Date :"))
         self.ctrl_date_demande = CTRL_Saisie_date.Date2(self)
@@ -646,7 +646,7 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOutils, self.bouton_outils)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
 
-        # Init contrôles
+        # Init contrÃ´les
         maintenant = datetime.datetime.now()
         self.ctrl_date_demande.SetDate(datetime.datetime.strftime(maintenant, "%Y-%m-%d"))
         self.ctrl_heure_demande.SetHeure(datetime.datetime.strftime(maintenant, "%H:%M"))
@@ -662,16 +662,16 @@ class Dialog(wx.Dialog):
         self.ctrl_loueur.SetToolTip(wx.ToolTip(_(u"Nom du loueur")))
         self.ctrl_date_demande.SetToolTip(wx.ToolTip(_(u"Date de la demande")))
         self.ctrl_heure_demande.SetToolTip(wx.ToolTip(_(u"Heure de la demande")))
-        self.ctrl_observations.SetToolTip(wx.ToolTip(_(u"Saisissez ici des observations éventuelles")))
+        self.ctrl_observations.SetToolTip(wx.ToolTip(_(u"Saisissez ici des observations Ã©ventuelles")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
-        self.bouton_outils.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder aux outils")))
+        self.bouton_outils.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accÃ©der aux outils")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider la saisie")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler et fermer")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=5, cols=1, vgap=10, hgap=10)
 
-        # Généralités
+        # GÃ©nÃ©ralitÃ©s
         staticbox_generalites = wx.StaticBoxSizer(self.staticbox_generalites_staticbox, wx.VERTICAL)
         grid_sizer_generalites = wx.FlexGridSizer(rows=3, cols=2, vgap=10, hgap=10)
 
@@ -741,7 +741,7 @@ class Dialog(wx.Dialog):
         UTILS_Aide.Aide("Listedesdemandes")
 
     def OnBoutonOutils(self, event):
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Actualiser
@@ -750,9 +750,9 @@ class Dialog(wx.Dialog):
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Mesurer_distance, id=10)
 
-        # Contrôle
+        # ContrÃ´le
         if UTILS_Customize.GetValeur("referentiel", "url", None, ajouter_si_manquant=False) != None:
-            item = wx.MenuItem(menuPop, 20, _(u"Contrôle référentiel"))
+            item = wx.MenuItem(menuPop, 20, _(u"ContrÃ´le rÃ©fÃ©rentiel"))
             item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Personnes.png"), wx.BITMAP_TYPE_PNG))
             menuPop.AppendItem(item)
             self.Bind(wx.EVT_MENU, self.Controle_referentiel, id=20)
@@ -765,20 +765,20 @@ class Dialog(wx.Dialog):
         categories = self.notebook.GetPage("criteres").ctrl_categories.listeDonnees
         produits = self.notebook.GetPage("criteres").ctrl_produits.listeDonnees
 
-        # Si aucune catégorie sélectionnée
+        # Si aucune catÃ©gorie sÃ©lectionnÃ©e
         if len(categories) == 0 and len(produits) == 0:
-            dlg = wx.MessageDialog(self, _(u"Vous devez d'abord sélectionner renseigner une catégorie ou un produit dans les critères !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez d'abord sÃ©lectionner renseigner une catÃ©gorie ou un produit dans les critÃ¨res !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
 
-        # Si une seule catégorie sélectionnée
+        # Si une seule catÃ©gorie sÃ©lectionnÃ©e
         if len(categories) == 1 :
             IDcategorie = categories[0][0]
         else :
             IDcategorie = None
 
-        # Si un seul produit sélectionné
+        # Si un seul produit sÃ©lectionnÃ©
         if len(produits) == 1 :
             IDproduit = produits[0][0]
         else :
@@ -794,7 +794,7 @@ class Dialog(wx.Dialog):
                 liste_donnees.append(("produits", donnees[0], donnees))
                 liste_labels.append(u"%s (produit)" % donnees[1])
 
-            dlg = wx.SingleChoiceDialog(self, _(u"Sélectionnez la donnée qui vous intéresse :"), _(u"Sélection d'une donnée"), liste_labels, wx.CHOICEDLG_STYLE)
+            dlg = wx.SingleChoiceDialog(self, _(u"SÃ©lectionnez la donnÃ©e qui vous intÃ©resse :"), _(u"SÃ©lection d'une donnÃ©e"), liste_labels, wx.CHOICEDLG_STYLE)
             if dlg.ShowModal() == wx.ID_OK:
                 dlg.Destroy()
                 donnees = liste_donnees[dlg.GetSelection()]
@@ -850,7 +850,7 @@ class Dialog(wx.Dialog):
         # Loueur
         IDfamille = self.ctrl_loueur.GetIDfamille()
         if IDfamille == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner un loueur pour cette demande !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sÃ©lectionner un loueur pour cette demande !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -858,7 +858,7 @@ class Dialog(wx.Dialog):
         # Observations
         observations = self.ctrl_observations.GetValue()
 
-        # Critères
+        # CritÃ¨res
         categories = UTILS_Texte.ConvertListeToStr(self.notebook.GetPage("criteres").ctrl_categories.GetListeCategories())
         produits = UTILS_Texte.ConvertListeToStr(self.notebook.GetPage("criteres").ctrl_produits.GetListeProduits())
 
@@ -915,14 +915,14 @@ class Dialog(wx.Dialog):
         # Fermeture de la base
         DB.Close()
 
-        # Fermeture de la fenêtre
+        # Fermeture de la fenÃªtre
         self.EndModal(wx.ID_OK)
 
     def GetIDdemande(self):
         return self.IDdemande
 
     def Importation(self):
-        """ Importation des données """
+        """ Importation des donnÃ©es """
         if self.IDdemande != None :
             DB = GestionDB.DB()
             req = """SELECT date, IDfamille, observations, categories, produits, statut, motif_refus, IDlocation
@@ -947,7 +947,7 @@ class Dialog(wx.Dialog):
             IDlocation = None
             listeFiltres = []
 
-        # Généralités
+        # GÃ©nÃ©ralitÃ©s
         if date != None :
             self.ctrl_date_demande.SetDate(datetime.datetime.strftime(UTILS_Dates.DateEngEnDateDDT(date), "%Y-%m-%d"))
             self.ctrl_heure_demande.SetHeure(datetime.datetime.strftime(UTILS_Dates.DateEngEnDateDDT(date), "%H:%M"))
@@ -958,7 +958,7 @@ class Dialog(wx.Dialog):
         if observations != None :
             self.ctrl_observations.SetValue(observations)
 
-        # Critères
+        # CritÃ¨res
         self.notebook.GetPage("criteres").ctrl_categories.SetListeCategories(UTILS_Texte.ConvertStrToListe(categories))
         self.notebook.GetPage("criteres").ctrl_produits.SetListeProduits(UTILS_Texte.ConvertStrToListe(produits))
 
@@ -986,7 +986,7 @@ class Dialog(wx.Dialog):
         self.ctrl_attribution.SetIDlocation(IDlocation)
 
     def Attribution(self, IDproduit=None):
-        # Création d'une location
+        # CrÃ©ation d'une location
         from Dlg import DLG_Saisie_location
         dlg = DLG_Saisie_location.Dialog(self, IDfamille=self.ctrl_loueur.GetIDfamille(), IDproduit=IDproduit)
         IDlocation = None

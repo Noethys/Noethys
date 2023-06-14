@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-18 Ivan LUCAS
@@ -43,11 +43,11 @@ class CTRL(HTL.HyperTreeList):
         self.listeIDconso = listeIDconso
         self.listeImpression = []
                 
-        # Création des colonnes
+        # CrÃ©ation des colonnes
         listeColonnes = [
             ( _(u"Date/Groupe/Individu"), 250, wx.ALIGN_LEFT),
-            ( _(u"Consommations réservées"), 240, wx.ALIGN_LEFT),
-            ( _(u"Date de la réservation"), 200, wx.ALIGN_LEFT),
+            ( _(u"Consommations rÃ©servÃ©es"), 240, wx.ALIGN_LEFT),
+            ( _(u"Date de la rÃ©servation"), 200, wx.ALIGN_LEFT),
             ]
         numColonne = 0
         for label, largeur, alignement in listeColonnes :
@@ -103,7 +103,7 @@ class CTRL(HTL.HyperTreeList):
             # Date
             if (date in dictConso) == False :
                 dictConso[date] = {}
-            # Activité
+            # ActivitÃ©
             if (IDactivite in dictConso[date]) == False :
                 dictConso[date][IDactivite] = {}
             # Groupe
@@ -134,7 +134,7 @@ class CTRL(HTL.HyperTreeList):
         return dictConso, dictActivites, dictGroupes, dictIndividus
     
     def MAJ(self):
-        """ Met à jour (redessine) tout le contrôle """
+        """ Met Ã  jour (redessine) tout le contrÃ´le """
         self.DeleteAllItems()
         self.root = self.AddRoot(_(u"Racine"))
         self.Remplissage()
@@ -142,7 +142,7 @@ class CTRL(HTL.HyperTreeList):
     def Remplissage(self):
         dictConso, dictActivites, dictGroupes, dictIndividus = self.Importation()
 
-        # Mémorisation pour impression
+        # MÃ©morisation pour impression
         self.listeImpression = []
         
         # Branches DATE
@@ -155,7 +155,7 @@ class CTRL(HTL.HyperTreeList):
             self.SetItemBold(niveauDate, True)
             self.SetItemBackgroundColour(niveauDate, wx.Colour(*COULEUR_FOND_REGROUPEMENT))
             
-            # Branches Activités
+            # Branches ActivitÃ©s
             listeActivites = list(dictConso[date].keys())
             listeActivites.sort() 
             
@@ -198,7 +198,7 @@ class CTRL(HTL.HyperTreeList):
                         niveauIndividu = self.AppendItem(niveauGroupe, texteIndividu)
                         self.SetPyData(niveauIndividu, {"type" : "individu", "nomIndividu" : nomIndividu, "IDindividu" : IDindividu, "IDfamille" : IDfamille})
                         
-                        # Détail pour l'individu
+                        # DÃ©tail pour l'individu
                         texteUnites = u""
                         dateSaisie = None
                         placeDispo = True
@@ -219,15 +219,15 @@ class CTRL(HTL.HyperTreeList):
                         self.SetItemText(niveauIndividu, texteUnites, 1)
                         self.SetItemText(niveauIndividu, texteDateSaisie, 2)
 
-                        # Mémorisation pour impression
+                        # MÃ©morisation pour impression
                         listeImpressionIndividus.append({"placeDispo" : placeDispo, "texteIndividu" : texteIndividu, "texteUnites" : texteUnites, "texteDateSaisie" : texteDateSaisie} )
                         
                         num += 1
                     
-                    # Mémorisation pour impression
+                    # MÃ©morisation pour impression
                     listeImpressionGroupes.append( (nomGroupe, listeImpressionIndividus) )
 
-            # Mémorisation pour impression
+            # MÃ©morisation pour impression
             self.listeImpression.append( (UTILS_Dates.DateComplete(date), listeImpressionGroupes) )
         
         self.ExpandAllChildren(self.root)
@@ -257,7 +257,7 @@ class CTRL(HTL.HyperTreeList):
         if type != "individu" : return
         nomIndividu = dictItem["nomIndividu"]
         
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Ouvrir fiche famille
@@ -275,13 +275,13 @@ class CTRL(HTL.HyperTreeList):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_fiche", "consulter") == False : return
         dictItem = self.GetMainWindow().GetItemPyData(self.GetSelection())
         if dictItem == None :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun individu dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucun individu dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         type = dictItem["type"]
         if type != "individu" : 
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun individu dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucun individu dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -296,18 +296,18 @@ class CTRL(HTL.HyperTreeList):
         
         if self.GetGrandParent().GetName() == "panel_remplissage" :
             panel_remplissage = self.GetGrandParent()
-            # Mise à jour des chiffres du remplissage
+            # Mise Ã  jour des chiffres du remplissage
             panel_remplissage.MAJ() 
-            # Récupération des nouveau chiffres
+            # RÃ©cupÃ©ration des nouveau chiffres
             self.dictEtatPlaces = panel_remplissage.ctrl_remplissage.GetEtatPlaces() # copy.deepcopy(panel_remplissage.ctrl_remplissage.GetEtatPlaces())
-            # MAJ du contrôle liste d'attente
+            # MAJ du contrÃ´le liste d'attente
             self.MAJ() 
             
         
         
     
     def Imprimer(self, event):
-        # Création du PDF
+        # CrÃ©ation du PDF
         from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, PageBreak
         from reportlab.rl_config import defaultPageSize
         from reportlab.lib import colors
@@ -324,12 +324,12 @@ class CTRL(HTL.HyperTreeList):
         
         largeurContenu = 520
         
-        # Création du titre du document
+        # CrÃ©ation du titre du document
         def Header():
             dataTableau = []
             largeursColonnes = ( (420, 100) )
             dateDuJour = UTILS_Dates.DateEngFr(str(datetime.date.today()))
-            dataTableau.append( (_(u"Liste des consommations"), _(u"%s\nEdité le %s") % (UTILS_Organisateur.GetNom(), dateDuJour)) )
+            dataTableau.append( (_(u"Liste des consommations"), _(u"%s\nEditÃ© le %s") % (UTILS_Organisateur.GetNom(), dateDuJour)) )
             style = TableStyle([
                     ('BOX', (0,0), (-1,-1), 0.25, colors.black), 
                     ('VALIGN', (0,0), (-1,-1), 'TOP'), 
@@ -343,7 +343,7 @@ class CTRL(HTL.HyperTreeList):
             story.append(tableau)
             story.append(Spacer(0,20))       
         
-        # Insère un header
+        # InsÃ¨re un header
         Header() 
                                 
         # Un tableau par date
@@ -378,10 +378,10 @@ class CTRL(HTL.HyperTreeList):
                     ('VALIGN', (0,0), (-1,-1), 'MIDDLE'), # Centre verticalement toutes les cases
                     
                     ('FONT',(0,0),(-1,-1), "Helvetica", 7), # Donne la police de caract. + taille de police 
-                    ('GRID', (0,0), (-1,-1), 0.25, colors.black), # Crée la bordure noire pour tout le tableau
+                    ('GRID', (0,0), (-1,-1), 0.25, colors.black), # CrÃ©e la bordure noire pour tout le tableau
                     ('ALIGN', (0,1), (-1,-1), 'CENTRE'), # Centre les cases
                     
-                    ('ALIGN', (0,1), (-1,1), 'CENTRE'), # Ligne de labels colonne alignée au centre
+                    ('ALIGN', (0,1), (-1,1), 'CENTRE'), # Ligne de labels colonne alignÃ©e au centre
                     ('FONT',(0,1),(-1,1), "Helvetica", 6), # Donne la police de caract. + taille de police des labels
                     
                     ('SPAN',(0,0),(-1,0)), # Fusionne les lignes du haut pour faire le titre du groupe
@@ -390,13 +390,13 @@ class CTRL(HTL.HyperTreeList):
                     
                     ]
             
-            # Formatage des lignes "Activités"
+            # Formatage des lignes "ActivitÃ©s"
             for indexGroupe in listeIndexGroupes :
                 listeStyles.append( ('SPAN', (0, indexGroupe), (-1, indexGroupe)) )
                 listeStyles.append( ('FONT', (0, indexGroupe), (-1, indexGroupe), "Helvetica-Bold", 7) )
                 listeStyles.append( ('ALIGN', (0, indexGroupe), (-1, indexGroupe), 'LEFT') ) 
                 
-            # Création du tableau
+            # CrÃ©ation du tableau
             tableau = Table(dataTableau, largeursColonnes)
             tableau.setStyle(TableStyle(listeStyles))
             story.append(tableau)

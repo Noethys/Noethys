@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-14 Ivan LUCAS
@@ -27,8 +27,8 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         
-        intro = _(u"Sélectionnez un compte et une période pour afficher le suivi de la trésorerie correspondante.")
-        titre = _(u"Trésorerie")
+        intro = _(u"SÃ©lectionnez un compte et une pÃ©riode pour afficher le suivi de la trÃ©sorerie correspondante.")
+        titre = _(u"TrÃ©sorerie")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Tresorerie.png")
         
@@ -36,7 +36,7 @@ class Dialog(wx.Dialog):
         self.label_compte = wx.StaticText(self, wx.ID_ANY, _(u"Compte :"))
         self.ctrl_compte = CTRL_Saisie_compte.CTRL(self, IDcompte_bancaire=IDcompte_bancaire)
         
-        self.label_periode = wx.StaticText(self, wx.ID_ANY, _(u"Période :"))
+        self.label_periode = wx.StaticText(self, wx.ID_ANY, _(u"PÃ©riode :"))
         self.ctrl_periode = CTRL_Graph_tresorerie.CTRL_Affichage(self)
         
         self.label_date_debut = wx.StaticText(self, wx.ID_ANY, u"du")

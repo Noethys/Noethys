@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activitÈs
+# Application :    Noethys, gestion multi-activit√©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-17 Ivan LUCAS
@@ -51,16 +51,16 @@ class CTRL(HTL.HyperTreeList):
             TR_COLUMN_LINES = wx.TR_COLUMN_LINES
         self.SetAGWWindowStyleFlag(wx.TR_HIDE_ROOT  | wx.TR_ROW_LINES | wx.TR_HAS_BUTTONS | TR_COLUMN_LINES | wx.TR_HAS_VARIABLE_ROW_HEIGHT | wx.TR_FULL_ROW_HIGHLIGHT )
 
-        # GÈnÈration des colonnes
+        # G√©n√©ration des colonnes
         self.CreationColonnes()
 
         # Racine
         self.root = self.AddRoot(_(u"Racine"))
 
     def CreationColonnes(self):
-        """ CrÈation des colonnes """
+        """ Cr√©ation des colonnes """
         liste_colonnes = [
-            (_(u"ActivitÈ / Date / EvËnement"), 300, wx.ALIGN_LEFT),
+            (_(u"Activit√© / Date / Ev√®nement"), 300, wx.ALIGN_LEFT),
             (_(u"Inscrits"), 80, wx.ALIGN_CENTER),
             (_(u"Places max"), 90, wx.ALIGN_CENTER),
             (_(u"Places libres"), 90, wx.ALIGN_CENTER),
@@ -98,7 +98,7 @@ class CTRL(HTL.HyperTreeList):
         elif len(self.listeActivites) == 1 : conditionActivites = "(%d)" % self.listeActivites[0]
         else : conditionActivites = str(tuple(self.listeActivites))
 
-        # Recherche des ÈvËnements
+        # Recherche des √©v√®nements
         DB = GestionDB.DB()
         req = """SELECT IDevenement, evenements.IDactivite, evenements.nom, date, heure_debut, heure_fin, capacite_max,
         activites.nom
@@ -112,7 +112,7 @@ class CTRL(HTL.HyperTreeList):
         dictDonnees = {}
         for IDevenement, IDactivite, nom, date, heure_debut, heure_fin, capacite_max, nomActivite in listeDonnees :
             if nomActivite == None :
-                nomActivite = _(u"ActivitÈ inconnue")
+                nomActivite = _(u"Activit√© inconnue")
             date = UTILS_Dates.DateEngEnDateDD(date)
             dictEvenement = {"nom" : nom, "IDactivite" : IDactivite, "date" : date, "heure_debut" : heure_debut, "heure_fin" : heure_fin, "nomActivite" : nomActivite, "nbre_max" : capacite_max, "nbre_inscrits" : 0, "nbre_attente" : 0}
             dictEvenements[IDevenement] = dictEvenement
@@ -121,7 +121,7 @@ class CTRL(HTL.HyperTreeList):
             infos = " ".join([nom, UTILS_Dates.DateEngFr(str(date))])
             if self.filtre == None or (self.filtre.lower() in infos.lower()):
 
-                # MÈmorisation de l'ÈvËnement
+                # M√©morisation de l'√©v√®nement
                 key = (nomActivite, IDactivite)
                 if (key in dictDonnees) == False :
                     dictDonnees[key] = {}
@@ -145,24 +145,24 @@ class CTRL(HTL.HyperTreeList):
 
         DB.Close()
 
-        # VÈrifie si actualisation nÈcessaire
+        # V√©rifie si actualisation n√©cessaire
         if self.dictEvenements != dictEvenements or forcerActualisation == True :
             self.dictEvenements = dictEvenements
         else :
             return
 
-        # MAJ du contrÙle
+        # MAJ du contr√¥le
         self.DeleteChildren(self.root)
 
-        # PrÈparation pour impression
+        # Pr√©paration pour impression
         self.dictImpression["contenu"] = []
         self.dictImpression["coloration"] = []
 
-        # Tri par activitÈs
+        # Tri par activit√©s
         listeActivites = list(dictDonnees.keys())
         listeActivites.sort()
 
-        # Niveau ActivitÈ
+        # Niveau Activit√©
         for key in listeActivites :
             nomActivite, IDactivite = key
             label = nomActivite.upper()
@@ -182,10 +182,10 @@ class CTRL(HTL.HyperTreeList):
                 font.SetWeight(wx.BOLD)
                 self.SetItemFont(niveau_date, font)
 
-                # MÈmorisation ligne pour impression
+                # M√©morisation ligne pour impression
                 self.dictImpression["contenu"].append([label,])
 
-                # EvËnements
+                # Ev√®nements
                 for IDevenement in dictDonnees[key][date] :
                     dictEvenement = dictEvenements[IDevenement]
                     label = dictEvenement["nom"]
@@ -224,7 +224,7 @@ class CTRL(HTL.HyperTreeList):
                     if couleur_fond != None :
                         self.SetItemBackgroundColour(niveau_evenement, couleur_fond)
 
-                    # MÈmorisation ligne activitÈ pour impression
+                    # M√©morisation ligne activit√© pour impression
                     self.dictImpression["contenu"].append([u"     %s" % label, texte_inscrits, texte_inscrits_max, texte_places_libres])
 
 
@@ -257,7 +257,7 @@ class CTRL(HTL.HyperTreeList):
             item = self.GetNext(item)
 
     def Imprimer(self, event=None):
-        # CrÈation du PDF
+        # Cr√©ation du PDF
         from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
         from reportlab.lib.pagesizes import A4
         from reportlab.lib import colors
@@ -272,11 +272,11 @@ class CTRL(HTL.HyperTreeList):
         doc = SimpleDocTemplate(nomDoc, pagesize=(largeur_page, hauteur_page), topMargin=30, bottomMargin=30, leftMargin=40, rightMargin=40)
         story = []
 
-        # CrÈation du titre du document
+        # Cr√©ation du titre du document
         dataTableau = []
         largeursColonnes = ( (largeur_page-175, 100) )
         dateDuJour = UTILS_Dates.DateEngFr(str(datetime.date.today()))
-        dataTableau.append( (_(u"EvËnements"), _(u"%s\nEditÈ le %s") % (UTILS_Organisateur.GetNom(), dateDuJour)) )
+        dataTableau.append( (_(u"Ev√®nements"), _(u"%s\nEdit√© le %s") % (UTILS_Organisateur.GetNom(), dateDuJour)) )
         style = TableStyle([
                 ('BOX', (0,0), (-1,-1), 0.25, colors.black),
                 ('VALIGN', (0,0), (-1,-1), 'TOP'),
@@ -317,13 +317,13 @@ class CTRL(HTL.HyperTreeList):
         listeStyles = [
             ('VALIGN', (0,0), (-1,-1), 'MIDDLE'), # Centre verticalement toutes les cases
             ('FONT',(0,0),(-1,-1), "Helvetica", 7), # Donne la police de caract. + taille de police
-            ('GRID', (0,0), (-1,-1), 0.25, colors.black), # CrÈe la bordure noire pour tout le tableau
+            ('GRID', (0,0), (-1,-1), 0.25, colors.black), # Cr√©e la bordure noire pour tout le tableau
             ('ALIGN', (1,0), (-1,-1), 'CENTRE'), # Centre les cases
             ('BACKGROUND', (0,0), (-1,0), (0.6, 0.6, 0.6) ), # Donne la couleur de fond du label
             ('BACKGROUND', (0, positionLigneTotal), (-1, positionLigneTotal), (0.8, 0.8, 0.8) ), # Donne la couleur de fond du total
             ]
 
-        # Formatage des lignes "ActivitÈs"
+        # Formatage des lignes "Activit√©s"
         for indexColoration, typeColoration in self.dictImpression["coloration"] :
 
             if typeColoration == "activite" :
@@ -335,7 +335,7 @@ class CTRL(HTL.HyperTreeList):
                 listeStyles.append( ('TEXTCOLOR', (0, indexColoration+1), (-1, indexColoration+1), (1, 1, 1)) )
                 listeStyles.append( ('BACKGROUND', (0, indexColoration+1), (-1, indexColoration+1), (0, 0, 0)) )
 
-        # CrÈation du tableau
+        # Cr√©ation du tableau
         tableau = Table(dataTableau, largeursColonnes, repeatRows=1)
         tableau.setStyle(TableStyle(listeStyles))
         story.append(tableau)
@@ -349,16 +349,16 @@ class CTRL(HTL.HyperTreeList):
 
     def ExportExcel(self, event=None):
         """ Export Excel """
-        titre = _(u"EvËnements")
+        titre = _(u"Ev√®nements")
 
-        # Demande ‡ l'utilisateur le nom de fichier et le rÈpertoire de destination
+        # Demande √† l'utilisateur le nom de fichier et le r√©pertoire de destination
         nomFichier = "ExportExcel_%s.xlsx" % datetime.datetime.now().strftime("%Y%m%d%H%M%S")
         wildcard = "Fichier Excel (*.xlsx)|*.xlsx|" \
                         "All files (*.*)|*.*"
         sp = wx.StandardPaths.Get()
         cheminDefaut = sp.GetDocumentsDir()
         dlg = wx.FileDialog(
-            None, message = _(u"Veuillez sÈlectionner le rÈpertoire de destination et le nom du fichier"), defaultDir=cheminDefaut,
+            None, message = _(u"Veuillez s√©lectionner le r√©pertoire de destination et le nom du fichier"), defaultDir=cheminDefaut,
             defaultFile = nomFichier,
             wildcard = wildcard,
             style = wx.FD_SAVE
@@ -371,9 +371,9 @@ class CTRL(HTL.HyperTreeList):
             dlg.Destroy()
             return
 
-        # Le fichier de destination existe dÈj‡ :
+        # Le fichier de destination existe d√©j√† :
         if os.path.isfile(cheminFichier) == True :
-            dlg = wx.MessageDialog(None, _(u"Un fichier portant ce nom existe dÈj‡. \n\nVoulez-vous le remplacer ?"), "Attention !", wx.YES_NO | wx.NO_DEFAULT | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(None, _(u"Un fichier portant ce nom existe d√©j√†. \n\nVoulez-vous le remplacer ?"), "Attention !", wx.YES_NO | wx.NO_DEFAULT | wx.ICON_EXCLAMATION)
             if dlg.ShowModal() == wx.ID_NO :
                 return False
                 dlg.Destroy()
@@ -389,7 +389,7 @@ class CTRL(HTL.HyperTreeList):
         format_money_titre = classeur.add_format({'num_format': '# ##0.00', 'bold': True, 'bg_color': '#E7EAED'})
         format_titre = classeur.add_format({'align': 'center', 'bold': True, 'bg_color': '#E7EAED'})
 
-        # CrÈation des labels de colonnes
+        # Cr√©ation des labels de colonnes
         x = 0
         y = 0
         for valeur in self.dictImpression["entete"] :
@@ -476,8 +476,8 @@ class CTRL(HTL.HyperTreeList):
         # Finalisation du fichier xlsx
         classeur.close()
 
-        # Confirmation de crÈation du fichier et demande d'ouverture directe dans Excel
-        txtMessage = _(u"Le fichier Excel a ÈtÈ crÈÈ avec succËs. Souhaitez-vous l'ouvrir dËs maintenant ?")
+        # Confirmation de cr√©ation du fichier et demande d'ouverture directe dans Excel
+        txtMessage = _(u"Le fichier Excel a √©t√© cr√©√© avec succ√®s. Souhaitez-vous l'ouvrir d√®s maintenant ?")
         dlgConfirm = wx.MessageDialog(None, txtMessage, _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.ICON_QUESTION)
         reponse = dlgConfirm.ShowModal()
         dlgConfirm.Destroy()
@@ -505,9 +505,9 @@ class Panel(wx.Panel):
         self.bouton_export = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Excel.png"), wx.BITMAP_TYPE_PNG))
         self.bouton_export.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter la liste au format Excel")))
         self.bouton_parametres = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Mecanisme.png"), wx.BITMAP_TYPE_PNG))
-        self.bouton_parametres.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier les paramËtres d'affichage")))
+        self.bouton_parametres.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier les param√®tres d'affichage")))
         self.bouton_outils = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Outils.png"), wx.BITMAP_TYPE_PNG))
-        self.bouton_outils.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accÈder aux outils")))
+        self.bouton_outils.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour acc√©der aux outils")))
 
         # Barre de recherche
         self.ctrl_recherche = BarreRecherche(self, ctrl=self.ctrl_evenements)
@@ -548,7 +548,7 @@ class Panel(wx.Panel):
         dlg = DLG_Parametres_remplissage.Dialog(None, dictDonnees, afficheAbregeGroupes=False, afficheLargeurColonneUnite=False, afficheTotaux=False)
         if dlg.ShowModal() == wx.ID_OK:
             newDictDonnees = dlg.GetDictDonnees()
-            # Envoi les donnÈes au ctrl remplissage
+            # Envoi les donn√©es au ctrl remplissage
             for key, valeur in newDictDonnees.items() :
                 dictDonnees[key] = valeur
             self.GetParent().ctrl_remplissage.SetDictDonnees(dictDonnees)
@@ -562,7 +562,7 @@ class Panel(wx.Panel):
         self.ctrl_evenements.MAJ()
 
     def OnBoutonOutils(self, event):
-        # CrÈation du menu contextuel
+        # Cr√©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Actualiser

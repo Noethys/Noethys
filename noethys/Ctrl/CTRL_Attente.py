@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -34,9 +34,9 @@ def DateEngFr(textDate):
     return text
 
 def DateComplete(dateDD):
-    """ Transforme une date DD en date complète : Ex : lundi 15 janvier 2008 """
+    """ Transforme une date DD en date complÃ¨te : Ex : lundi 15 janvier 2008 """
     listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
-    listeMois = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
+    listeMois = (_(u"janvier"), _(u"fÃ©vrier"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"aoÃ»t"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"dÃ©cembre"))
     dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
     return dateComplete
 
@@ -44,7 +44,7 @@ def DateEngEnDateDD(dateEng):
     return datetime.date(int(dateEng[:4]), int(dateEng[5:7]), int(dateEng[8:10]))
         
 def PeriodeComplete(mois, annee):
-    listeMois = (_(u"Janvier"), _(u"Février"), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"Août"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"Décembre"))
+    listeMois = (_(u"Janvier"), _(u"FÃ©vrier"), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"AoÃ»t"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"DÃ©cembre"))
     periodeComplete = u"%s %d" % (listeMois[mois-1], annee)
     return periodeComplete
 
@@ -68,11 +68,11 @@ class CTRL(HTL.HyperTreeList):
         self.listeActivites = []
         self.listeImpression = []
                 
-        # Création des colonnes
+        # CrÃ©ation des colonnes
         listeColonnes = [
             ( _(u"Date/Groupe/Individu"), 250, wx.ALIGN_LEFT),
-            ( _(u"Consommations réservées"), 240, wx.ALIGN_LEFT),
-            ( _(u"Date de la réservation"), 200, wx.ALIGN_LEFT),
+            ( _(u"Consommations rÃ©servÃ©es"), 240, wx.ALIGN_LEFT),
+            ( _(u"Date de la rÃ©servation"), 200, wx.ALIGN_LEFT),
             ]
         numColonne = 0
         for label, largeur, alignement in listeColonnes :
@@ -81,7 +81,7 @@ class CTRL(HTL.HyperTreeList):
             self.SetColumnAlignment(numColonne, alignement)
             numColonne += 1
         
-        # Création de l'ImageList
+        # CrÃ©ation de l'ImageList
         il = wx.ImageList(16, 16)
         self.img_ok = il.Add(wx.Bitmap(Chemins.GetStaticPath('Images/16x16/Ok.png'), wx.BITMAP_TYPE_PNG))
         self.img_pasok = il.Add(wx.Bitmap(Chemins.GetStaticPath('Images/16x16/Interdit.png'), wx.BITMAP_TYPE_PNG))
@@ -116,11 +116,11 @@ class CTRL(HTL.HyperTreeList):
         return texteSQL
 
     def Importation(self):
-        # Conditions Périodes
+        # Conditions PÃ©riodes
         conditionsDates = self.GetSQLdates(self.listePeriodes)
         conditionsDates = conditionsDates.replace("date", "consommations.date")
 
-        # Conditions Activités
+        # Conditions ActivitÃ©s
         if len(self.listeActivites) == 0 : conditionActivites = "()"
         elif len(self.listeActivites) == 1 : conditionActivites = "(%d)" % self.listeActivites[0]
         else : conditionActivites = str(tuple(self.listeActivites))
@@ -159,13 +159,13 @@ class CTRL(HTL.HyperTreeList):
             # Date
             if (date in dictConso) == False :
                 dictConso[date] = {}
-            # Activité
+            # ActivitÃ©
             if (IDactivite in dictConso[date]) == False :
                 dictConso[date][IDactivite] = {}
             # Groupe
             if (IDgroupe in dictConso[date][IDactivite]) == False :
                 dictConso[date][IDactivite][IDgroupe] = {}
-            # Evènement
+            # EvÃ¨nement
             if (IDevenement in dictConso[date][IDactivite][IDgroupe]) == False :
                 dictConso[date][IDactivite][IDgroupe][IDevenement] = {}
             # Individu
@@ -193,10 +193,10 @@ class CTRL(HTL.HyperTreeList):
         return dictConso, dictActivites, dictGroupes, dictIndividus, dictEvenements
     
     def MAJ(self):
-        """ Met à jour (redessine) tout le contrôle """
+        """ Met Ã  jour (redessine) tout le contrÃ´le """
 ##        self.Freeze()
         self.DeleteAllItems()
-        # Création de la racine
+        # CrÃ©ation de la racine
         self.root = self.AddRoot(_(u"Racine"))
         self.Remplissage()
 ##        self.Thaw() 
@@ -206,7 +206,7 @@ class CTRL(HTL.HyperTreeList):
 
         dictPlacesRestantes = {}
         
-        # Mémorisation pour impression
+        # MÃ©morisation pour impression
         self.listeImpression = []
         
         # Branches DATE
@@ -219,7 +219,7 @@ class CTRL(HTL.HyperTreeList):
             self.SetItemBold(niveauDate, True)
             self.SetItemBackgroundColour(niveauDate, wx.Colour(*COULEUR_FOND_REGROUPEMENT))
             
-            # Branches Activités
+            # Branches ActivitÃ©s
             listeActivites = list(dictConso[date].keys())
             listeActivites.sort() 
             
@@ -245,7 +245,7 @@ class CTRL(HTL.HyperTreeList):
 
                     listeImpressionEvenements = []
 
-                    # Parcourt les évènements
+                    # Parcourt les Ã©vÃ¨nements
                     for IDevenement, dictTemp in dictConso[date][IDactivite][IDgroupe].items() :
 
                         if IDevenement != None :
@@ -275,7 +275,7 @@ class CTRL(HTL.HyperTreeList):
                             niveauIndividu = self.AppendItem(parent, texteIndividu)
                             self.SetPyData(niveauIndividu, {"type" : "individu", "nomIndividu" : nomIndividu, "IDindividu" : IDindividu, "IDfamille" : IDfamille})
 
-                            # Détail pour l'individu
+                            # DÃ©tail pour l'individu
                             texteUnites = u""
                             dateSaisie = None
                             placeDispo = True
@@ -337,17 +337,17 @@ class CTRL(HTL.HyperTreeList):
                                 img = self.img_pasok
                             self.SetItemImage(niveauIndividu, img, which=wx.TreeItemIcon_Normal)
 
-                            # Mémorisation pour impression
+                            # MÃ©morisation pour impression
                             listeImpressionIndividus.append({"placeDispo" : placeDispo, "nomIndividu" : nomIndividu, "num" : num, "texteIndividu" : texteIndividu, "texteUnites" : texteUnites, "texteDateSaisie" : texteDateSaisie} )
 
                             num += 1
 
                         listeImpressionEvenements.append((nom_evenement, listeImpressionIndividus))
 
-                    # Mémorisation pour impression
+                    # MÃ©morisation pour impression
                     listeImpressionGroupes.append( (nomGroupe, listeImpressionEvenements) )
 
-            # Mémorisation pour impression
+            # MÃ©morisation pour impression
             self.listeImpression.append( (DateComplete(date), listeImpressionGroupes) )
         
         self.ExpandAllChildren(self.root)
@@ -377,7 +377,7 @@ class CTRL(HTL.HyperTreeList):
         if type != "individu" : return
         nomIndividu = dictItem["nomIndividu"]
         
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Ouvrir fiche famille
@@ -407,13 +407,13 @@ class CTRL(HTL.HyperTreeList):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_fiche", "consulter") == False : return
         dictItem = self.GetMainWindow().GetItemPyData(self.GetSelection())
         if dictItem == None :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun individu dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucun individu dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         type = dictItem["type"]
         if type != "individu" : 
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun individu dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucun individu dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -428,18 +428,18 @@ class CTRL(HTL.HyperTreeList):
         
         if self.GetGrandParent().GetName() == "panel_remplissage" :
             panel_remplissage = self.GetGrandParent()
-            # Mise à jour des chiffres du remplissage
+            # Mise Ã  jour des chiffres du remplissage
             panel_remplissage.MAJ() 
-            # Récupération des nouveau chiffres
+            # RÃ©cupÃ©ration des nouveau chiffres
             self.dictEtatPlaces = panel_remplissage.ctrl_remplissage.GetEtatPlaces() # copy.deepcopy(panel_remplissage.ctrl_remplissage.GetEtatPlaces())
-            # MAJ du contrôle liste d'attente
+            # MAJ du contrÃ´le liste d'attente
             self.MAJ() 
             
         
         
     
     def Imprimer(self, event=None):
-        # Création du PDF
+        # CrÃ©ation du PDF
         from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, PageBreak
         from reportlab.platypus.flowables import ParagraphAndImage, Image
         from reportlab.rl_config import defaultPageSize
@@ -460,12 +460,12 @@ class CTRL(HTL.HyperTreeList):
         
         largeurContenu = 520
         
-        # Création du titre du document
+        # CrÃ©ation du titre du document
         def Header():
             dataTableau = []
             largeursColonnes = ( (420, 100) )
             dateDuJour = DateEngFr(str(datetime.date.today()))
-            dataTableau.append( (_(u"Liste d'attente"), _(u"%s\nEdité le %s") % (UTILS_Organisateur.GetNom(), dateDuJour)) )
+            dataTableau.append( (_(u"Liste d'attente"), _(u"%s\nEditÃ© le %s") % (UTILS_Organisateur.GetNom(), dateDuJour)) )
             style = TableStyle([
                     ('BOX', (0,0), (-1,-1), 0.25, colors.black), 
                     ('VALIGN', (0,0), (-1,-1), 'TOP'), 
@@ -479,7 +479,7 @@ class CTRL(HTL.HyperTreeList):
             story.append(tableau)
             story.append(Spacer(0,20))       
         
-        # Insère un header
+        # InsÃ¨re un header
         Header() 
                                 
         # Un tableau par date
@@ -520,10 +520,10 @@ class CTRL(HTL.HyperTreeList):
                     ('VALIGN', (0,0), (-1,-1), 'MIDDLE'), # Centre verticalement toutes les cases
                     
                     ('FONT',(0,0),(-1,-1), "Helvetica", 7), # Donne la police de caract. + taille de police 
-                    ('GRID', (0,0), (-1,-1), 0.25, colors.black), # Crée la bordure noire pour tout le tableau
+                    ('GRID', (0,0), (-1,-1), 0.25, colors.black), # CrÃ©e la bordure noire pour tout le tableau
                     ('ALIGN', (0,1), (-1,-1), 'CENTRE'), # Centre les cases
                     
-                    ('ALIGN', (0,1), (-1,1), 'CENTRE'), # Ligne de labels colonne alignée au centre
+                    ('ALIGN', (0,1), (-1,1), 'CENTRE'), # Ligne de labels colonne alignÃ©e au centre
                     ('FONT',(0,1),(-1,1), "Helvetica", 6), # Donne la police de caract. + taille de police des labels
                     
                     ('SPAN',(0,0),(-1,0)), # Fusionne les lignes du haut pour faire le titre du groupe
@@ -532,13 +532,13 @@ class CTRL(HTL.HyperTreeList):
                     
                     ]
             
-            # Formatage des lignes "Activités"
+            # Formatage des lignes "ActivitÃ©s"
             for indexGroupe in listeIndexGroupes :
                 listeStyles.append( ('SPAN', (0, indexGroupe), (-1, indexGroupe)) )
                 listeStyles.append( ('FONT', (0, indexGroupe), (-1, indexGroupe), "Helvetica-Bold", 7) )
                 listeStyles.append( ('ALIGN', (0, indexGroupe), (-1, indexGroupe), 'LEFT') ) 
                 
-            # Création du tableau
+            # CrÃ©ation du tableau
             tableau = Table(dataTableau, largeursColonnes)
             tableau.setStyle(TableStyle(listeStyles))
             story.append(tableau)
@@ -555,14 +555,14 @@ class CTRL(HTL.HyperTreeList):
         """ Export Excel """
         titre = _(u"Liste d'attente")
 
-        # Demande à l'utilisateur le nom de fichier et le répertoire de destination
+        # Demande Ã  l'utilisateur le nom de fichier et le rÃ©pertoire de destination
         nomFichier = "ExportExcel_%s.xlsx" % datetime.datetime.now().strftime("%Y%m%d%H%M%S")
         wildcard = "Fichier Excel (*.xlsx)|*.xlsx|" \
                         "All files (*.*)|*.*"
         sp = wx.StandardPaths.Get()
         cheminDefaut = sp.GetDocumentsDir()
         dlg = wx.FileDialog(
-            None, message = _(u"Veuillez sélectionner le répertoire de destination et le nom du fichier"), defaultDir=cheminDefaut,
+            None, message = _(u"Veuillez sÃ©lectionner le rÃ©pertoire de destination et le nom du fichier"), defaultDir=cheminDefaut,
             defaultFile = nomFichier,
             wildcard = wildcard,
             style = wx.FD_SAVE
@@ -575,9 +575,9 @@ class CTRL(HTL.HyperTreeList):
             dlg.Destroy()
             return
 
-        # Le fichier de destination existe déjà :
+        # Le fichier de destination existe dÃ©jÃ  :
         if os.path.isfile(cheminFichier) == True :
-            dlg = wx.MessageDialog(None, _(u"Un fichier portant ce nom existe déjà. \n\nVoulez-vous le remplacer ?"), "Attention !", wx.YES_NO | wx.NO_DEFAULT | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(None, _(u"Un fichier portant ce nom existe dÃ©jÃ . \n\nVoulez-vous le remplacer ?"), "Attention !", wx.YES_NO | wx.NO_DEFAULT | wx.ICON_EXCLAMATION)
             if dlg.ShowModal() == wx.ID_NO :
                 return False
                 dlg.Destroy()
@@ -593,8 +593,8 @@ class CTRL(HTL.HyperTreeList):
 
         # Entetes et largeurs des colonnes
         colonnes = [
-            (_(u"Date"), 30), (_(u"Groupe"), 20), (_(u"Dispo"), 15), (_(u"N°"), 15),
-            (_(u"Individu"), 30), (_(u"Unités"), 30), (_(u"Date de saisie"), 30),
+            (_(u"Date"), 30), (_(u"Groupe"), 20), (_(u"Dispo"), 15), (_(u"NÂ°"), 15),
+            (_(u"Individu"), 30), (_(u"UnitÃ©s"), 30), (_(u"Date de saisie"), 30),
             ]
         index = 0
         for label, largeur in colonnes :
@@ -627,8 +627,8 @@ class CTRL(HTL.HyperTreeList):
         # Finalisation du fichier xlsx
         classeur.close()
 
-        # Confirmation de création du fichier et demande d'ouverture directe dans Excel
-        txtMessage = _(u"Le fichier Excel a été créé avec succès. Souhaitez-vous l'ouvrir dès maintenant ?")
+        # Confirmation de crÃ©ation du fichier et demande d'ouverture directe dans Excel
+        txtMessage = _(u"Le fichier Excel a Ã©tÃ© crÃ©Ã© avec succÃ¨s. Souhaitez-vous l'ouvrir dÃ¨s maintenant ?")
         dlgConfirm = wx.MessageDialog(None, txtMessage, _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.ICON_QUESTION)
         reponse = dlgConfirm.ShowModal()
         dlgConfirm.Destroy()

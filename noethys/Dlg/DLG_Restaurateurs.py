@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -26,11 +26,11 @@ class Dialog(wx.Dialog):
         self.mode = mode
         
         if self.mode == "selection" :
-            intro = _(u"Vous pouvez ici sélectionner un restaurateur. Double-cliquez sur une ligne pour effectuer rapidement la sélection.")
-            titre = _(u"Sélection d'un restaurateur")
-            self.SetTitle(_(u"Sélection d'un restaurateur"))
+            intro = _(u"Vous pouvez ici sÃ©lectionner un restaurateur. Double-cliquez sur une ligne pour effectuer rapidement la sÃ©lection.")
+            titre = _(u"SÃ©lection d'un restaurateur")
+            self.SetTitle(_(u"SÃ©lection d'un restaurateur"))
         else:
-            intro = _(u"Vous pouvez ici saisir, modifier ou supprimer des restaurateurs. Ceux-ci pourront ensuite être associés à des modèles de commande de repas.")
+            intro = _(u"Vous pouvez ici saisir, modifier ou supprimer des restaurateurs. Ceux-ci pourront ensuite Ãªtre associÃ©s Ã  des modÃ¨les de commande de repas.")
             titre = _(u"Gestion des restaurateurs")
             self.SetTitle(_(u"Gestion des restaurateurs"))
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Restaurateur.png")
@@ -63,8 +63,8 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter un restaurateur")))
-        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le restaurateur sélectionné dans la liste")))
-        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le restaurateur sélectionné dans la iste")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le restaurateur sÃ©lectionnÃ© dans la liste")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le restaurateur sÃ©lectionnÃ© dans la iste")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider et fermer")))
@@ -121,11 +121,11 @@ class Dialog(wx.Dialog):
     def OnBouton_ok(self, event):
         restaurateur = self.GetIDrestaurateur()
         if restaurateur == None :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun restaurateur dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucun restaurateur dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
-        # Fermeture de la fenêtre
+        # Fermeture de la fenÃªtre
         self.EndModal(wx.ID_OK)
 
     def OnBoutonAide(self, event): 

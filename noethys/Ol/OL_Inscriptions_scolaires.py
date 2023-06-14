@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -43,7 +43,7 @@ def GetListe(IDclasse=None, IDindividu=None):
     else:
         condition = "scolarite.IDindividu=%d" % IDindividu
         
-    # Récupération des individus
+    # RÃ©cupÃ©ration des individus
     DB = GestionDB.DB()
     req = """
     SELECT IDscolarite, scolarite.date_debut, scolarite.date_fin, scolarite.IDindividu, scolarite.IDniveau,
@@ -61,7 +61,7 @@ def GetListe(IDclasse=None, IDindividu=None):
     listeDonnees = DB.ResultatReq()
     DB.Close() 
     
-    # Récupération des civilités
+    # RÃ©cupÃ©ration des civilitÃ©s
     dictCivilites = Civilites.GetDictCivilites()
     
     listeListeView = []
@@ -82,7 +82,7 @@ def GetListe(IDclasse=None, IDindividu=None):
         dictTemp["IDclasse"] = valeurs[12]
         dictTemp["nomClasse"] = valeurs[13]
         
-        # Infos sur la civilité
+        # Infos sur la civilitÃ©
         dictTemp["genre"] = dictCivilites[dictTemp["IDcivilite"]]["sexe"]
         dictTemp["categorieCivilite"] = dictCivilites[dictTemp["IDcivilite"]]["categorie"]
         dictTemp["civiliteLong"]  = dictCivilites[dictTemp["IDcivilite"]]["civiliteLong"]
@@ -149,7 +149,7 @@ class Track(object):
 
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # Récupération des paramètres perso
+        # RÃ©cupÃ©ration des paramÃ¨tres perso
         self.selectionID = None
         self.selectionTrack = None
         self.criteres = ""
@@ -171,7 +171,7 @@ class ListView(FastObjectListView):
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
-        """ Récupération des données """
+        """ RÃ©cupÃ©ration des donnÃ©es """
         listeListeView = GetListe(IDclasse=self.IDclasse)
         return listeListeView
     
@@ -186,7 +186,7 @@ class ListView(FastObjectListView):
             pass
         
     def InitObjectListView(self):
-        # Création du imageList
+        # CrÃ©ation du imageList
         for categorie, civilites in Civilites.LISTE_CIVILITES :
             for IDcivilite, CiviliteLong, CiviliteAbrege, nomImage, genre in civilites :
                 indexImg = self.AddNamedImages(nomImage, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/%s" % nomImage), wx.BITMAP_TYPE_PNG))
@@ -212,7 +212,7 @@ class ListView(FastObjectListView):
         liste_Colonnes = [
             ColumnDefn(u"", "left", 22, "IDindividu", typeDonnee="entier", imageGetter=GetImageCivilite),
             ColumnDefn(_(u"Nom"), 'left', 100, "nom", typeDonnee="texte"),
-            ColumnDefn(_(u"Prénom"), "left", 100, "prenom", typeDonnee="texte"),
+            ColumnDefn(_(u"PrÃ©nom"), "left", 100, "prenom", typeDonnee="texte"),
             ColumnDefn(_(u"Date naiss."), "left", 72, "date_naiss", typeDonnee="date", stringConverter=FormateDate),
             ColumnDefn(_(u"Age"), "left", 50, "age", typeDonnee="entier", stringConverter=FormateAge),
             ColumnDefn(_(u"Niveau"), "left", 60, "abregeNiveau", typeDonnee="texte"),
@@ -243,7 +243,7 @@ class ListView(FastObjectListView):
             noSelection = False
             ID = self.Selection()[0].IDscolarite
             
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Ajouter
@@ -274,7 +274,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
 
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
+        item = wx.MenuItem(menuPop, 40, _(u"AperÃ§u avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -308,7 +308,7 @@ class ListView(FastObjectListView):
 
     def Impression(self, mode="preview"):
         if self.donnees == None or len(self.donnees) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Il n'y a aucune donnée à imprimer !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Il n'y a aucune donnÃ©e Ã  imprimer !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -337,7 +337,7 @@ class ListView(FastObjectListView):
         UTILS_Export.ExportExcel(self, titre=_(u"Liste des inscrits"))
     
     def GetInfosClasse(self, IDclasse=None):
-        # Recherche les caractéristiques de la classe
+        # Recherche les caractÃ©ristiques de la classe
         DB = GestionDB.DB()
         req = """SELECT IDecole, nom, date_debut, date_fin, niveaux
         FROM classes WHERE IDclasse=%d
@@ -370,7 +370,7 @@ class ListView(FastObjectListView):
         date_fin = dictInfosClasse["date_fin"]
         listeNiveaux = dictInfosClasse["listeNiveaux"]
 
-        # Ouverture le fenêtre de saisie
+        # Ouverture le fenÃªtre de saisie
         from Dlg import DLG_Saisie_inscriptions_scolaires
         dlg = DLG_Saisie_inscriptions_scolaires.Dialog(self, IDecole=IDecole, IDclasse=self.IDclasse) 
         dlg.SetNomClasse(nom)
@@ -385,7 +385,7 @@ class ListView(FastObjectListView):
 
     def Modifier(self, event=None):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune inscription à modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune inscription Ã  modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -400,12 +400,12 @@ class ListView(FastObjectListView):
         nom = self.Selection()[0].nom
         prenom = self.Selection()[0].prenom
         
-        # Récupération de toute la scolarité de l'individu
+        # RÃ©cupÃ©ration de toute la scolaritÃ© de l'individu
         listeDonneesIndividu = GetListe(IDindividu=IDindividu)
         
         from Dlg import DLG_Saisie_scolarite
         dlg = DLG_Saisie_scolarite.Dialog(self, IDscolarite=IDscolarite, donneesScolarite=listeDonneesIndividu)
-        dlg.SetTitle(_(u"Modification d'une étape de la scolarité de %s %s") % (prenom, nom))
+        dlg.SetTitle(_(u"Modification d'une Ã©tape de la scolaritÃ© de %s %s") % (prenom, nom))
         dlg.SetDateDebut(date_debut)
         dlg.SetDateFin(date_fin)
         dlg.SetEcole(IDecole)
@@ -433,7 +433,7 @@ class ListView(FastObjectListView):
             DB.ReqMAJ("scolarite", listeDonnees, "IDscolarite", IDscolarite)
             DB.Close()
             
-            # Mémorise l'action dans l'historique
+            # MÃ©morise l'action dans l'historique
             UTILS_Historique.InsertActions([{
                 "IDindividu" : IDindividu,
                 "IDfamille" : None,
@@ -448,7 +448,7 @@ class ListView(FastObjectListView):
 
     def Supprimer(self, event=None):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune inscription à supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune inscription Ã  supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -469,7 +469,7 @@ class ListView(FastObjectListView):
             DB.ReqDEL("scolarite", "IDscolarite", IDscolarite)
             DB.Close() 
 
-            # Mémorise l'action dans l'historique
+            # MÃ©morise l'action dans l'historique
             UTILS_Historique.InsertActions([{
                 "IDindividu" : IDindividu,
                 "IDfamille" : None,

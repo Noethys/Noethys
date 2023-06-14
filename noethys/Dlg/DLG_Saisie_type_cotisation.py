@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -22,9 +22,9 @@ from Ol import OL_Unites_cotisations
 
 
 def DateComplete(dateDD):
-    """ Transforme une date DD en date complète : Ex : lundi 15 janvier 2008 """
+    """ Transforme une date DD en date complÃ¨te : Ex : lundi 15 janvier 2008 """
     listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
-    listeMois = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
+    listeMois = (_(u"janvier"), _(u"fÃ©vrier"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"aoÃ»t"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"dÃ©cembre"))
     dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
     return dateComplete
 
@@ -43,17 +43,17 @@ class Dialog(wx.Dialog):
         else:
             self.defaut = 0
 
-        # Généralités
-        self.staticbox_generalites_staticbox = wx.StaticBox(self, -1, _(u"Généralités"))
+        # GÃ©nÃ©ralitÃ©s
+        self.staticbox_generalites_staticbox = wx.StaticBox(self, -1, _(u"GÃ©nÃ©ralitÃ©s"))
         self.label_nom = wx.StaticText(self, -1, _(u"Nom :"))
         self.ctrl_nom = wx.TextCtrl(self, -1, u"")
         self.label_type = wx.StaticText(self, -1, _(u"Type :"))
         self.ctrl_type = wx.Choice(self, -1, choices=[_(u"Cotisation familiale"), _(u"Cotisation individuelle")])
         self.ctrl_type.Select(0)
-        self.ctrl_carte = wx.CheckBox(self, -1, _(u"Est représentée par une carte d'adhérent"))
+        self.ctrl_carte = wx.CheckBox(self, -1, _(u"Est reprÃ©sentÃ©e par une carte d'adhÃ©rent"))
 
-        # Unités
-        self.staticbox_unites_staticbox = wx.StaticBox(self, -1, _(u"Unités"))
+        # UnitÃ©s
+        self.staticbox_unites_staticbox = wx.StaticBox(self, -1, _(u"UnitÃ©s"))
         self.ctrl_unites = OL_Unites_cotisations.ListView(self, IDtype_cotisation=self.IDtype_cotisation, id=-1, name="OL_Unites_cotisations", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
 
         self.bouton_ajouter_unite = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Ajouter.png"), wx.BITMAP_TYPE_ANY))
@@ -93,13 +93,13 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez ici le nom de la cotisation")))
-        self.ctrl_type.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici le type de la cotisation")))
-        self.ctrl_carte.SetToolTip(wx.ToolTip(_(u"Cochez cette case si la cotisation est représentée par une carte d'adhérent")))
-        self.bouton_ajouter_unite.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter une unité")))
-        self.bouton_modifier_unite.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier l'unité sélectionnée dans la liste")))
-        self.bouton_supprimer_unite.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer l'unité sélectionnée dans la liste")))
-        self.bouton_defaut.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour définir l'unité de cotisation sélectionnée comme celle par défaut")))
-        self.ctrl_code_comptable.SetToolTip(wx.ToolTip(_(u"Saisissez un code comptable pour cette cotisation si vous souhaitez exporter les écritures comptables vers des logiciels de compta")))
+        self.ctrl_type.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez ici le type de la cotisation")))
+        self.ctrl_carte.SetToolTip(wx.ToolTip(_(u"Cochez cette case si la cotisation est reprÃ©sentÃ©e par une carte d'adhÃ©rent")))
+        self.bouton_ajouter_unite.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter une unitÃ©")))
+        self.bouton_modifier_unite.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier l'unitÃ© sÃ©lectionnÃ©e dans la liste")))
+        self.bouton_supprimer_unite.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer l'unitÃ© sÃ©lectionnÃ©e dans la liste")))
+        self.bouton_defaut.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour dÃ©finir l'unitÃ© de cotisation sÃ©lectionnÃ©e comme celle par dÃ©faut")))
+        self.ctrl_code_comptable.SetToolTip(wx.ToolTip(_(u"Saisissez un code comptable pour cette cotisation si vous souhaitez exporter les Ã©critures comptables vers des logiciels de compta")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
@@ -185,10 +185,10 @@ class Dialog(wx.Dialog):
         # Code produit local
         if code_produit_local != None :
             self.ctrl_code_produit_local.SetValue(code_produit_local)
-        # Mémorisation du DEFAUT
+        # MÃ©morisation du DEFAUT
         self.defaut = defaut
         
-        # Importation des unités de pièces
+        # Importation des unitÃ©s de piÃ¨ces
         req = """SELECT IDunite_cotisation, date_debut, date_fin, 
         defaut, nom, montant, label_prestation, duree
         FROM unites_cotisations 
@@ -235,7 +235,7 @@ class Dialog(wx.Dialog):
         return self.IDtype_cotisation
 
     def OnBoutonOk(self, event):
-        # Récupération des données
+        # RÃ©cupÃ©ration des donnÃ©es
         nom = self.ctrl_nom.GetValue()
         if self.ctrl_type.GetSelection() == 0 :
             type = "famille"
@@ -244,7 +244,7 @@ class Dialog(wx.Dialog):
         carte = int(self.ctrl_carte.GetValue())
         listeUnites = self.ctrl_unites.GetListeDonnees() 
         
-        # Vérification des données
+        # VÃ©rification des donnÃ©es
         if nom == "" :
             dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un nom pour ce type de cotisation !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
@@ -257,7 +257,7 @@ class Dialog(wx.Dialog):
             if dictUnite["etat"] != "SUPPR" :
                 nbreUnites += 1
         if nbreUnites == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir au moins une unité de cotisation !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir au moins une unitÃ© de cotisation !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -280,7 +280,7 @@ class Dialog(wx.Dialog):
         else:
             DB.ReqMAJ("types_cotisations", listeDonnees, "IDtype_cotisation", self.IDtype_cotisation)
             
-        # Sauvegarde des unités de cotisation
+        # Sauvegarde des unitÃ©s de cotisation
         for dictUnite in listeUnites :
             IDunite_cotisation = dictUnite["IDunite_cotisation"]
             date_debut = dictUnite["date_debut"]

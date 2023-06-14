@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-19 Ivan LUCAS
@@ -21,7 +21,7 @@ from Ctrl import CTRL_Bandeau
 from Ctrl import CTRL_Depot_prestations
 from Utils import UTILS_Dates
 from Utils import UTILS_Config
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"â‚¬")
 
 
 
@@ -41,7 +41,7 @@ class CTRL_Infos(html.HtmlWindow):
 
     def SetLabel(self, texte=""):
         if texte == "":
-            texte = _(u"Sélectionnez un dépôt pour commencer...")
+            texte = _(u"SÃ©lectionnez un dÃ©pÃ´t pour commencer...")
         self.texte = texte
         self.SetPage(u"""<BODY><FONT SIZE=2 COLOR='#000000'>%s</FONT></BODY>""" % texte)
         self.SetBackgroundColour(self.couleurFond)
@@ -57,26 +57,26 @@ class Dialog(wx.Dialog):
         self.parent = parent
 
         # Bandeau
-        intro = _(u"Sélectionnez un dépôt pour afficher le détail des prestations ventilées avec les règlements inclus dans ce dépôt. Il est ensuite possible d'exporter les résultats sous forme de PDF ou sous Ms Excel.")
-        titre = _(u"Détail des prestations d'un dépôt")
+        intro = _(u"SÃ©lectionnez un dÃ©pÃ´t pour afficher le dÃ©tail des prestations ventilÃ©es avec les rÃ¨glements inclus dans ce dÃ©pÃ´t. Il est ensuite possible d'exporter les rÃ©sultats sous forme de PDF ou sous Ms Excel.")
+        titre = _(u"DÃ©tail des prestations d'un dÃ©pÃ´t")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Diagramme.png")
         self.SetTitle(titre)
 
-        # Sélection du dépôt
-        self.staticbox_depot = wx.StaticBox(self, -1, _(u"Sélection du dépôt"))
+        # SÃ©lection du dÃ©pÃ´t
+        self.staticbox_depot = wx.StaticBox(self, -1, _(u"SÃ©lection du dÃ©pÃ´t"))
         self.ctrl_infos = CTRL_Infos(self, hauteur=32, couleurFond="#F0FBED", style=wx.html.HW_NO_SELECTION | wx.html.HW_SCROLLBAR_NEVER | wx.SUNKEN_BORDER)
         self.ctrl_infos.SetLabel("")
-        self.bouton_rechercher = CTRL_Bouton_image.CTRL(self, texte=_(u"Sélectionner un dépôt"), cheminImage="Images/32x32/Loupe.png")
+        self.bouton_rechercher = CTRL_Bouton_image.CTRL(self, texte=_(u"SÃ©lectionner un dÃ©pÃ´t"), cheminImage="Images/32x32/Loupe.png")
 
-        # Résultats
-        self.staticbox_resultats = wx.StaticBox(self, -1, _(u"Résultats"))
+        # RÃ©sultats
+        self.staticbox_resultats = wx.StaticBox(self, -1, _(u"RÃ©sultats"))
         self.ctrl_resultats = CTRL_Depot_prestations.CTRL(self, IDdepot=None)
         
         # Commandes de liste
         self.bouton_apercu = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_excel = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Excel.png"), wx.BITMAP_TYPE_ANY))
 
-        self.check_details = wx.CheckBox(self, -1, _(u"Afficher détail par tarif unitaire"))
+        self.check_details = wx.CheckBox(self, -1, _(u"Afficher dÃ©tail par tarif unitaire"))
         self.check_details.SetValue(True) 
 
         self.hyper_developper = self.Build_Hyperlink_developper()
@@ -96,16 +96,16 @@ class Dialog(wx.Dialog):
         self.__set_properties()
         self.__do_layout()
                 
-        # Initialisation des contrôles
+        # Initialisation des contrÃ´les
         self.ctrl_resultats.MAJ()
 
     def __set_properties(self):
-        self.bouton_rechercher.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour rechercher un dépôt")))
+        self.bouton_rechercher.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour rechercher un dÃ©pÃ´t")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
-        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour créer un aperçu avant impression des résultats (PDF)")))
-        self.bouton_excel.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter les résultats au format MS Excel")))
-        self.check_details.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher le détail par tarif unitaire")))
+        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour crÃ©er un aperÃ§u avant impression des rÃ©sultats (PDF)")))
+        self.bouton_excel.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter les rÃ©sultats au format MS Excel")))
+        self.check_details.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher le dÃ©tail par tarif unitaire")))
         self.SetMinSize((700, 700))
 
     def __do_layout(self):
@@ -164,7 +164,7 @@ class Dialog(wx.Dialog):
         self.CenterOnScreen()
 
     def OnSelectionDepot(self, event=None):
-        # Importation de la liste des dépôts
+        # Importation de la liste des dÃ©pÃ´ts
         DB = GestionDB.DB()
         req = """SELECT depots.IDdepot, depots.date, depots.nom, SUM(reglements.montant), COUNT(reglements.IDreglement)
         FROM depots
@@ -179,11 +179,11 @@ class Dialog(wx.Dialog):
         for IDdepot, date, nom, total, quantite in listeDepots:
             if not total:
                 total = 0.0
-            nom = u"%s (%s - %.2f %s - %d règlements)" % (nom, UTILS_Dates.DateEngFr(date), total, SYMBOLE, quantite)
+            nom = u"%s (%s - %.2f %s - %d rÃ¨glements)" % (nom, UTILS_Dates.DateEngFr(date), total, SYMBOLE, quantite)
             listeDonnees.append({"IDdepot": IDdepot, "nom": nom})
             listeLabels.append(nom)
 
-        dlg = wx.SingleChoiceDialog(None, _(u"Sélectionnez un dépôt dans la liste :"), _(u"Sélection d'un dépôt"), listeLabels, wx.CHOICEDLG_STYLE)
+        dlg = wx.SingleChoiceDialog(None, _(u"SÃ©lectionnez un dÃ©pÃ´t dans la liste :"), _(u"SÃ©lection d'un dÃ©pÃ´t"), listeLabels, wx.CHOICEDLG_STYLE)
         dlg.SetSize((700, 700))
         dlg.CenterOnScreen()
         if dlg.ShowModal() == wx.ID_OK:
@@ -199,14 +199,14 @@ class Dialog(wx.Dialog):
     def Build_Hyperlink_developper(self) :
         """ Construit un hyperlien """
         self.SetFont(wx.Font(8, wx.SWISS, wx.NORMAL, wx.NORMAL, False))
-        hyper = hl.HyperLinkCtrl(self, -1, _(u"Tout développer"), URL="")
+        hyper = hl.HyperLinkCtrl(self, -1, _(u"Tout dÃ©velopper"), URL="")
         hyper.Bind(hl.EVT_HYPERLINK_LEFT, self.OnLeftLink_developper)
         hyper.AutoBrowse(False)
         hyper.SetColours("BLUE", "BLUE", "BLUE")
         hyper.EnableRollover(True)
         hyper.SetUnderlines(False, False, True)
         hyper.SetBold(False)
-        hyper.SetToolTip(wx.ToolTip(_(u"Tout développer")))
+        hyper.SetToolTip(wx.ToolTip(_(u"Tout dÃ©velopper")))
         hyper.UpdateLink()
         hyper.DoPopup(False)
         return hyper
@@ -217,14 +217,14 @@ class Dialog(wx.Dialog):
     def Build_Hyperlink_reduire(self) :
         """ Construit un hyperlien """
         self.SetFont(wx.Font(8, wx.SWISS, wx.NORMAL, wx.NORMAL, False))
-        hyper = hl.HyperLinkCtrl(self, -1, _(u"Tout réduire"), URL="")
+        hyper = hl.HyperLinkCtrl(self, -1, _(u"Tout rÃ©duire"), URL="")
         hyper.Bind(hl.EVT_HYPERLINK_LEFT, self.OnLeftLink_reduire)
         hyper.AutoBrowse(False)
         hyper.SetColours("BLUE", "BLUE", "BLUE")
         hyper.EnableRollover(True)
         hyper.SetUnderlines(False, False, True)
         hyper.SetBold(False)
-        hyper.SetToolTip(wx.ToolTip(_(u"Tout réduire")))
+        hyper.SetToolTip(wx.ToolTip(_(u"Tout rÃ©duire")))
         hyper.UpdateLink()
         hyper.DoPopup(False)
         return hyper

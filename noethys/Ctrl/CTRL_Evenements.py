@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activitÈs
+# Application :    Noethys, gestion multi-activit√©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-17 Ivan LUCAS
@@ -40,7 +40,7 @@ class CTRL(CT.CustomTreeCtrl):
             self.Bind(wx.EVT_RIGHT_DOWN, self.OnContextMenu)
 
     def Activation(self, etat=True):
-        """ Active ou dÈsactive le contrÙle """
+        """ Active ou d√©sactive le contr√¥le """
         self.activation = etat
         self.MAJ() 
     
@@ -74,10 +74,10 @@ class CTRL(CT.CustomTreeCtrl):
         # Importation
         self.listeEvenements = self.Importation()
 
-        # CrÈation de la racine
-        self.root = self.AddRoot(_(u"EvËnements"))
+        # Cr√©ation de la racine
+        self.root = self.AddRoot(_(u"Ev√®nements"))
 
-        # Regroupement des donnÈes
+        # Regroupement des donn√©es
         dictActivites = {}
         dictEvenements = {}
         for dictEvenement in self.listeEvenements :
@@ -93,7 +93,7 @@ class CTRL(CT.CustomTreeCtrl):
 
             dictEvenements[IDactivite][date].append(dictEvenement)
 
-        # Tri des activitÈs par ordre alpha
+        # Tri des activit√©s par ordre alpha
         listeActivites = [(dictActivites[IDactivite], IDactivite) for IDactivite in list(dictEvenements.keys())]
         listeActivites.sort()
 
@@ -137,7 +137,7 @@ class CTRL(CT.CustomTreeCtrl):
         self.Thaw()
 
     def Importation(self):
-        """ Importation de la liste des ÈvËnements """
+        """ Importation de la liste des √©v√®nements """
         if len(self.listeActivites) == 0 : conditionActivites = "()"
         elif len(self.listeActivites) == 1 : conditionActivites = "(%d)" % self.listeActivites[0]
         else : conditionActivites = str(tuple(self.listeActivites))
@@ -167,7 +167,7 @@ class CTRL(CT.CustomTreeCtrl):
         for IDevenement, IDactivite, date, nom, heure_debut, heure_fin, nomActivite in listeDonnees :
             date = UTILS_Dates.DateEngEnDateDD(date)
 
-            # MÈmorisation de l'ÈvËnement
+            # M√©morisation de l'√©v√®nement
             dictTemp = {
                 "IDevenement" : IDevenement, "IDactivite" : IDactivite, "date" : date, "nom" : nom,
                 "heure_debut" : heure_debut, "heure_fin" : heure_fin, "nomActivite" : nomActivite,
@@ -179,14 +179,14 @@ class CTRL(CT.CustomTreeCtrl):
     def OnContextMenu(self, event):
         """Ouverture du menu contextuel """
 
-        # Recherche et sÈlection de l'item pointÈ avec la souris
+        # Recherche et s√©lection de l'item point√© avec la souris
         item = self.FindTreeItem(event.GetPosition())
         if item == None:
             return
         self.SelectItem(item, True)
         dictData = self.GetPyData(item)
         
-        # CrÈation du menu contextuel
+        # Cr√©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Ajouter
@@ -215,7 +215,7 @@ class CTRL(CT.CustomTreeCtrl):
         menuPop.Destroy()
 
     def FindTreeItem(self, position):
-        """ Permet de retrouver l'item pointÈ dans le TreeCtrl """
+        """ Permet de retrouver l'item point√© dans le TreeCtrl """
         item, flags = self.HitTest(position)
         if item and flags & (wx.TREE_HITTEST_ONITEMLABEL |
                              wx.TREE_HITTEST_ONITEMICON):
@@ -223,7 +223,7 @@ class CTRL(CT.CustomTreeCtrl):
         return None
     
     def Ajouter(self, event):
-        """ Ajouter une Ètiquette """
+        """ Ajouter une √©tiquette """
         item = self.GetSelection()
         dictData = self.GetPyData(item)
         if dictData != None :
@@ -247,16 +247,16 @@ class CTRL(CT.CustomTreeCtrl):
             dictOptions = dlg.GetOptions()
             active = dictOptions["active"]
             
-            # Sauvegarde de l'Ètiquette
+            # Sauvegarde de l'√©tiquette
             self.SauvegarderEtiquette(IDetiquette=None, label=label, IDactivite=IDactivite, parent=IDparent, couleur=couleur, ordre=ordre, active=active)
         dlg.Destroy()
             
     def Modifier(self, event):
-        """ Modifier une Ètiquette """
+        """ Modifier une √©tiquette """
         item = self.GetSelection()
         dictData = self.GetPyData(item)
         if dictData == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sÈlectionner une Ètiquette ‡ modifier !"), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement s√©lectionner une √©tiquette √† modifier !"), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -276,7 +276,7 @@ class CTRL(CT.CustomTreeCtrl):
             active = dictOptions["active"]
 
             if dictData["IDetiquette"] == IDparent :
-                dlg2 = wx.MessageDialog(self, _(u"Vous ne pouvez pas sÈlectionner une Ètiquette parente qui est l'Ètiquette ‡ modifier !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg2 = wx.MessageDialog(self, _(u"Vous ne pouvez pas s√©lectionner une √©tiquette parente qui est l'√©tiquette √† modifier !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg2.ShowModal()
                 dlg2.Destroy()
                 dlg.Destroy()
@@ -304,7 +304,7 @@ class CTRL(CT.CustomTreeCtrl):
         item = self.GetSelection()
         dictData = self.GetPyData(item)
         if dictData == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sÈlectionner une Ètiquette ‡ supprimer !"), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement s√©lectionner une √©tiquette √† supprimer !"), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -314,47 +314,47 @@ class CTRL(CT.CustomTreeCtrl):
         dictConsoAssociees = self.RechercheNbreConsoAssociees() 
         if IDetiquette in dictConsoAssociees :
             if dictConsoAssociees[IDetiquette] > 0 :
-                dlg = wx.MessageDialog(self, _(u"Cette Ètiquette a dÈj‡ ÈtÈ associÈe ‡ %d consommation(s) !\n\nVous ne pouvez donc pas la supprimer." % dictConsoAssociees[IDetiquette]), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Cette √©tiquette a d√©j√† √©t√© associ√©e √† %d consommation(s) !\n\nVous ne pouvez donc pas la supprimer." % dictConsoAssociees[IDetiquette]), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return
         
-        # Confirmation de suppression des Ètiquettes enfants
+        # Confirmation de suppression des √©tiquettes enfants
         listeTousEnfants = []
         if self.GetChildrenCount(item, recursively=True) > 0 :
 
-            # RÈcupËre la liste des tous les items enfants (rÈcursif)
+            # R√©cup√®re la liste des tous les items enfants (r√©cursif)
             self.GetItemsEnfants(listeTousEnfants, item)
             
-            # Va servir ‡ vÈrifier les liens avec les autres tables :
+            # Va servir √† v√©rifier les liens avec les autres tables :
             for dictDataTemp in listeTousEnfants :
                 if dictDataTemp["IDetiquette"] in dictConsoAssociees :
                     if dictConsoAssociees[dictDataTemp["IDetiquette"]] > 0 :
-                        dlg = wx.MessageDialog(self, _(u"L'Ètiquette enfant '%s' qui dÈpend de l'Ètiquette sÈlectionnÈe a dÈj‡ ÈtÈ associÈe ‡ %d consommation(s) !\n\nVous ne pouvez donc pas supprimer l'Ètiquette parent." % (dictDataTemp["label"], dictDataTemp["IDetiquette"])), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                        dlg = wx.MessageDialog(self, _(u"L'√©tiquette enfant '%s' qui d√©pend de l'√©tiquette s√©lectionn√©e a d√©j√† √©t√© associ√©e √† %d consommation(s) !\n\nVous ne pouvez donc pas supprimer l'√©tiquette parent." % (dictDataTemp["label"], dictDataTemp["IDetiquette"])), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
                         dlg.ShowModal()
                         dlg.Destroy()
                         return
             
             # Demande de confirmation
-            dlg = wx.MessageDialog(self, _(u"Attention, cette Ètiquette comporte des Ètiquettes enfants.\n\nSouhaitez-vous vraiment supprimer cette Ètiquette ? Les Ètiquettes enfants seront Ègalement supprimÈes !"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(self, _(u"Attention, cette √©tiquette comporte des √©tiquettes enfants.\n\nSouhaitez-vous vraiment supprimer cette √©tiquette ? Les √©tiquettes enfants seront √©galement supprim√©es !"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
             reponse = dlg.ShowModal() 
             dlg.Destroy()
             if reponse != wx.ID_YES :
                 return
         
         # Confirmation de suppression
-        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer cette Ètiquette ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer cette √©tiquette ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         if dlg.ShowModal() == wx.ID_YES :
             DB = GestionDB.DB()
             
-            # Suppression de l'Ètiquette
+            # Suppression de l'√©tiquette
             DB.ReqDEL("etiquettes", "IDetiquette", dictData["IDetiquette"])
 
-            # Suppression des Ètiquettes enfants Ègalement
+            # Suppression des √©tiquettes enfants √©galement
             for dictTemp in listeTousEnfants :
                 DB.ReqDEL("etiquettes", "IDetiquette", dictTemp["IDetiquette"])
 
-            # Modification de l'ordre des Ètiquettes soeurs
+            # Modification de l'ordre des √©tiquettes soeurs
             itemParent = self.GetItemParent(item)
             listeItemsSoeurs = []
             self.GetItemsEnfants(liste=listeItemsSoeurs, item=itemParent, recursif=False)
@@ -410,7 +410,7 @@ class CTRL(CT.CustomTreeCtrl):
         return nbre
 
     def GetCoches(self):
-        """ Obtient la liste des Ètiquettes cochÈes """
+        """ Obtient la liste des √©tiquettes coch√©es """
         listeCoches = []
         for IDevenement, item in self.dictItems.items() :
             if self.IsItemChecked(item) == True :
@@ -465,7 +465,7 @@ if __name__ == '__main__':
     frame_1.Show()
     app.MainLoop()
     
-    # Test Dialog de sÈlection d'Ètiquettes
+    # Test Dialog de s√©lection d'√©tiquettes
     # frame_1 = DialogSelection(None, listeActivites=[1,])
     # app.SetTopWindow(frame_1)
     # frame_1.ShowModal()

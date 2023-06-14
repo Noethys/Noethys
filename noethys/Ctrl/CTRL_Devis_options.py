@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-20 Ivan LUCAS
@@ -49,34 +49,34 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
             ]
 
 
-        # Catégorie 
-        self.Append( wxpg.PropertyCategory(_(u"Modèle")) )
+        # CatÃ©gorie 
+        self.Append( wxpg.PropertyCategory(_(u"ModÃ¨le")) )
 
-        propriete = wxpg.EnumProperty(label=_(u"Modèle de document"), name="IDmodele", value=0)
-        propriete.SetHelpString(_(u"Sélectionnez le modèle de document à utiliser"))
+        propriete = wxpg.EnumProperty(label=_(u"ModÃ¨le de document"), name="IDmodele", value=0)
+        propriete.SetHelpString(_(u"SÃ©lectionnez le modÃ¨le de document Ã  utiliser"))
         propriete.SetEditor("EditeurComboBoxAvecBoutons")
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
         self.MAJ_modeles() 
 
-        # Catégorie 
-        self.Append( wxpg.PropertyCategory(_(u"Mémorisation")) )
+        # CatÃ©gorie 
+        self.Append( wxpg.PropertyCategory(_(u"MÃ©morisation")) )
         
-        # Mémorisation des paramètres
-        propriete = wxpg.BoolProperty(label=_(u"Mémoriser les paramètres"), name="memoriser_parametres", value=True)
-        propriete.SetHelpString(_(u"Cochez cette case si vous souhaitez mémoriser les paramètres de cette liste")) 
+        # MÃ©morisation des paramÃ¨tres
+        propriete = wxpg.BoolProperty(label=_(u"MÃ©moriser les paramÃ¨tres"), name="memoriser_parametres", value=True)
+        propriete.SetHelpString(_(u"Cochez cette case si vous souhaitez mÃ©moriser les paramÃ¨tres de cette liste")) 
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
-        # Répertoire de sauvegarde
+        # RÃ©pertoire de sauvegarde
         if 'phoenix' in wx.PlatformInfo:
-            propriete = wxpg.DirProperty(name=_(u"Répertoire pour copie unique"), label="repertoire_copie", value="")
+            propriete = wxpg.DirProperty(name=_(u"RÃ©pertoire pour copie unique"), label="repertoire_copie", value="")
         else:
-            propriete = wxpg.DirProperty(label=_(u"Répertoire pour copie unique"), name="repertoire_copie", value="")
-        propriete.SetHelpString(_(u"Enregistrer une copie unique de chaque document dans le répertoire sélectionné. Sinon laissez vide ce champ.")) 
+            propriete = wxpg.DirProperty(label=_(u"RÃ©pertoire pour copie unique"), name="repertoire_copie", value="")
+        propriete.SetHelpString(_(u"Enregistrer une copie unique de chaque document dans le rÃ©pertoire sÃ©lectionnÃ©. Sinon laissez vide ce champ.")) 
         self.Append(propriete)
         
-        # Catégorie 
+        # CatÃ©gorie 
         self.Append( wxpg.PropertyCategory(_(u"Titre")) )
 
         # Afficher le titre
@@ -86,255 +86,255 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         self.Append(propriete)
 
         propriete = wxpg.StringProperty(label=_(u"Titre du document"), name="texte_titre", value=_(u"Devis"))
-        propriete.SetHelpString(_(u"Saisissez le titre du document (Par défaut 'Devis'). Vous pouvez intégrer les mots-clés suivants : %s") % ", ".join(listeChamps))
+        propriete.SetHelpString(_(u"Saisissez le titre du document (Par dÃ©faut 'Devis'). Vous pouvez intÃ©grer les mots-clÃ©s suivants : %s") % ", ".join(listeChamps))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
         propriete = wxpg.IntProperty(label=_(u"Taille de texte du titre"), name="taille_texte_titre", value=19)
-        propriete.SetHelpString(_(u"Saisissez la taille de texte du titre (29 par défaut)")) 
+        propriete.SetHelpString(_(u"Saisissez la taille de texte du titre (29 par dÃ©faut)")) 
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
         self.SetPropertyEditor("taille_texte_titre", "SpinCtrl")
         
-        propriete = wxpg.BoolProperty(label=_(u"Afficher la période de facturation"), name="afficher_periode", value=True)
-        propriete.SetHelpString(_(u"Cochez cette case si vous souhaitez afficher la période de facturation dans le document")) 
+        propriete = wxpg.BoolProperty(label=_(u"Afficher la pÃ©riode de facturation"), name="afficher_periode", value=True)
+        propriete.SetHelpString(_(u"Cochez cette case si vous souhaitez afficher la pÃ©riode de facturation dans le document")) 
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
         
-        propriete = wxpg.IntProperty(label=_(u"Taille de texte de la période"), name="taille_texte_periode", value=8)
-        propriete.SetHelpString(_(u"Saisissez la taille de texte de la période (8 par défaut)")) 
+        propriete = wxpg.IntProperty(label=_(u"Taille de texte de la pÃ©riode"), name="taille_texte_periode", value=8)
+        propriete.SetHelpString(_(u"Saisissez la taille de texte de la pÃ©riode (8 par dÃ©faut)")) 
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
         self.SetPropertyEditor("taille_texte_periode", "SpinCtrl")
 
-        # Catégorie 
+        # CatÃ©gorie 
         self.Append( wxpg.PropertyCategory(_(u"Tableau des prestations")) )
 
-        # Affichage condensé ou détaillé
-        propriete = wxpg.EnumProperty(label=_(u"Affichage des prestations"), name="affichage_prestations", labels=[_(u"Détaillé"), _(u"Condensé")], values=[0, 1] , value=0)
-        propriete.SetHelpString(_(u"Sélectionnez un type d'affichage")) 
+        # Affichage condensÃ© ou dÃ©taillÃ©
+        propriete = wxpg.EnumProperty(label=_(u"Affichage des prestations"), name="affichage_prestations", labels=[_(u"DÃ©taillÃ©"), _(u"CondensÃ©")], values=[0, 1] , value=0)
+        propriete.SetHelpString(_(u"SÃ©lectionnez un type d'affichage")) 
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
-        # Intitulés des prestations
-        labels = [_(u"Intitulé original"), _(u"Intitulé original + état 'Absence injustifiée'"), _(u"Nom du tarif"), _(u"Nom de l'activité")]
-        propriete = wxpg.EnumProperty(label=_(u"Intitulés des prestations"), name="intitules", labels=labels, values=[0, 1, 2, 3] , value=0)
-        propriete.SetHelpString(_(u"Sélectionnez le type d'intitulé à afficher pour les prestations")) 
+        # IntitulÃ©s des prestations
+        labels = [_(u"IntitulÃ© original"), _(u"IntitulÃ© original + Ã©tat 'Absence injustifiÃ©e'"), _(u"Nom du tarif"), _(u"Nom de l'activitÃ©")]
+        propriete = wxpg.EnumProperty(label=_(u"IntitulÃ©s des prestations"), name="intitules", labels=labels, values=[0, 1, 2, 3] , value=0)
+        propriete.SetHelpString(_(u"SÃ©lectionnez le type d'intitulÃ© Ã  afficher pour les prestations")) 
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
         
         # Couleur 1
         propriete = wxpg.ColourProperty(label=_(u"Couleur de fond 1"), name="couleur_fond_1", value=wx.Colour(204, 204, 255) )
-        propriete.SetHelpString(_(u"Sélectionnez la couleur 1")) 
+        propriete.SetHelpString(_(u"SÃ©lectionnez la couleur 1")) 
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
         
         # Couleur 2
         propriete = wxpg.ColourProperty(label=_(u"Couleur de fond 2"), name="couleur_fond_2", value=wx.Colour(234, 234, 255) )
-        propriete.SetHelpString(_(u"Sélectionnez la couleur 2")) 
+        propriete.SetHelpString(_(u"SÃ©lectionnez la couleur 2")) 
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
         
         # Largeur colonne Date
-        propriete = wxpg.IntProperty(label=_(u"Largeur de la colonne Date (ou Qté)"), name="largeur_colonne_date", value=50)
-        propriete.SetHelpString(_(u"Saisissez la largeur de la colonne Date (50 par défaut)")) 
+        propriete = wxpg.IntProperty(label=_(u"Largeur de la colonne Date (ou QtÃ©)"), name="largeur_colonne_date", value=50)
+        propriete.SetHelpString(_(u"Saisissez la largeur de la colonne Date (50 par dÃ©faut)")) 
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
         self.SetPropertyEditor("largeur_colonne_date", "SpinCtrl")
         
         # Largeur colonne Montant HT
         propriete = wxpg.IntProperty(label=_(u"Largeur de la colonne Montant HT"), name="largeur_colonne_montant_ht", value=50)
-        propriete.SetHelpString(_(u"Saisissez la largeur de la colonne Montant HT (50 par défaut)")) 
+        propriete.SetHelpString(_(u"Saisissez la largeur de la colonne Montant HT (50 par dÃ©faut)")) 
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
         self.SetPropertyEditor("largeur_colonne_montant_ht", "SpinCtrl")
 
         # Largeur colonne Montant TVA
         propriete = wxpg.IntProperty(label=_(u"Largeur de la colonne Montant TVA"), name="largeur_colonne_montant_tva", value=50)
-        propriete.SetHelpString(_(u"Saisissez la largeur de la colonne Montant TVA (50 par défaut)")) 
+        propriete.SetHelpString(_(u"Saisissez la largeur de la colonne Montant TVA (50 par dÃ©faut)")) 
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
         self.SetPropertyEditor("largeur_colonne_montant_tva", "SpinCtrl")
 
         # Largeur colonne Montant TTC
         propriete = wxpg.IntProperty(label=_(u"Largeur de la colonne Montant TTC"), name="largeur_colonne_montant_ttc", value=70)
-        propriete.SetHelpString(_(u"Saisissez la largeur de la colonne Montant TTC (70 par défaut)")) 
+        propriete.SetHelpString(_(u"Saisissez la largeur de la colonne Montant TTC (70 par dÃ©faut)")) 
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
         self.SetPropertyEditor("largeur_colonne_montant_ttc", "SpinCtrl")
         
         # Taille de texte du nom de l'individu
         propriete = wxpg.IntProperty(label=_(u"Taille de texte de l'individu"), name="taille_texte_individu", value=9)
-        propriete.SetHelpString(_(u"Saisissez la taille de texte de l'individu (9 par défaut)")) 
+        propriete.SetHelpString(_(u"Saisissez la taille de texte de l'individu (9 par dÃ©faut)")) 
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
         self.SetPropertyEditor("taille_texte_individu", "SpinCtrl")
 
-        # Taille de texte du nom de l'activité
-        propriete = wxpg.IntProperty(label=_(u"Taille de texte de l'activité"), name="taille_texte_activite", value=6)
-        propriete.SetHelpString(_(u"Saisissez la taille de texte de l'activité (6 par défaut)")) 
+        # Taille de texte du nom de l'activitÃ©
+        propriete = wxpg.IntProperty(label=_(u"Taille de texte de l'activitÃ©"), name="taille_texte_activite", value=6)
+        propriete.SetHelpString(_(u"Saisissez la taille de texte de l'activitÃ© (6 par dÃ©faut)")) 
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
         self.SetPropertyEditor("taille_texte_activite", "SpinCtrl")
 
         # Taille de texte des noms de colonnes
         propriete = wxpg.IntProperty(label=_(u"Taille de texte des noms de colonnes"), name="taille_texte_noms_colonnes", value=5)
-        propriete.SetHelpString(_(u"Saisissez la taille de texte des noms de colonnes (5 par défaut)")) 
+        propriete.SetHelpString(_(u"Saisissez la taille de texte des noms de colonnes (5 par dÃ©faut)")) 
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
         self.SetPropertyEditor("taille_texte_noms_colonnes", "SpinCtrl")
 
         # Taille de texte des prestations
         propriete = wxpg.IntProperty(label=_(u"Taille de texte des prestations"), name="taille_texte_prestation", value=7)
-        propriete.SetHelpString(_(u"Saisissez la taille de texte des prestations (7 par défaut)")) 
+        propriete.SetHelpString(_(u"Saisissez la taille de texte des prestations (7 par dÃ©faut)")) 
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
         self.SetPropertyEditor("taille_texte_prestation", "SpinCtrl")
 
         # Taille de texte des messages
         propriete = wxpg.IntProperty(label=_(u"Taille de texte des messages"), name="taille_texte_messages", value=7)
-        propriete.SetHelpString(_(u"Saisissez la taille de texte des messages (7 par défaut)")) 
+        propriete.SetHelpString(_(u"Saisissez la taille de texte des messages (7 par dÃ©faut)")) 
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
         self.SetPropertyEditor("taille_texte_messages", "SpinCtrl")
 
         # Taille de texte des labels totaux
         propriete = wxpg.IntProperty(label=_(u"Taille de texte des labels totaux"), name="taille_texte_labels_totaux", value=9)
-        propriete.SetHelpString(_(u"Saisissez la taille de texte des labels totaux (9 par défaut)")) 
+        propriete.SetHelpString(_(u"Saisissez la taille de texte des labels totaux (9 par dÃ©faut)")) 
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
         self.SetPropertyEditor("taille_texte_labels_totaux", "SpinCtrl")
 
         # Taille de texte des totaux
         propriete = wxpg.IntProperty(label=_(u"Taille de texte des montants totaux"), name="taille_texte_montants_totaux", value=10)
-        propriete.SetHelpString(_(u"Saisissez la taille de texte des montants totaux (10 par défaut)")) 
+        propriete.SetHelpString(_(u"Saisissez la taille de texte des montants totaux (10 par dÃ©faut)")) 
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
         self.SetPropertyEditor("taille_texte_montants_totaux", "SpinCtrl")
 
-        # Catégorie
-        self.Append( wxpg.PropertyCategory(_(u"Prestations antérieures")) )
+        # CatÃ©gorie
+        self.Append( wxpg.PropertyCategory(_(u"Prestations antÃ©rieures")) )
 
         # Taille de texte
         propriete = wxpg.IntProperty(label=_(u"Taille de texte du commentaire"), name="taille_texte_prestations_anterieures", value=5)
-        propriete.SetHelpString(_(u"Saisissez la taille de texte du commentaire de bas de tableaux (5 par défaut)"))
+        propriete.SetHelpString(_(u"Saisissez la taille de texte du commentaire de bas de tableaux (5 par dÃ©faut)"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
         self.SetPropertyEditor("taille_texte_prestations_anterieures", "SpinCtrl")
 
         # Texte d'information
-        propriete = wxpg.LongStringProperty(label=_(u"Texte d'information"), name="texte_prestations_anterieures", value=_(u"Des prestations antérieures ont été reportées sur cette attestation."))
-        propriete.SetHelpString(_(u"Saisissez un texte d'information pour les prestations antérieures"))
+        propriete = wxpg.LongStringProperty(label=_(u"Texte d'information"), name="texte_prestations_anterieures", value=_(u"Des prestations antÃ©rieures ont Ã©tÃ© reportÃ©es sur cette attestation."))
+        propriete.SetHelpString(_(u"Saisissez un texte d'information pour les prestations antÃ©rieures"))
         self.Append(propriete)
 
-        # Catégorie 
+        # CatÃ©gorie 
         self.Append( wxpg.PropertyCategory(_(u"Texte d'introduction")) )
 
         propriete = wxpg.LongStringProperty(label=_(u"Texte d'introduction"), name="texte_introduction", value="")
-        propriete.SetHelpString(_(u"Saisissez un texte d'introduction. Vous pouvez intégrer les mots-clés suivants : %s") % ", ".join(listeChamps)) 
+        propriete.SetHelpString(_(u"Saisissez un texte d'introduction. Vous pouvez intÃ©grer les mots-clÃ©s suivants : %s") % ", ".join(listeChamps)) 
         self.Append(propriete)
 
         propriete = wxpg.IntProperty(label=_(u"Taille de texte d'introduction"), name="taille_texte_introduction", value=9)
-        propriete.SetHelpString(_(u"Saisissez la taille de texte d'introduction (9 par défaut)")) 
+        propriete.SetHelpString(_(u"Saisissez la taille de texte d'introduction (9 par dÃ©faut)")) 
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
         self.SetPropertyEditor("taille_texte_introduction", "SpinCtrl")
 
         propriete = wxpg.EnumProperty(label=_(u"Style de texte introduction"), name="style_texte_introduction", labels=[_(u"Normal"), _(u"Italique"), "Gras", _(u"Italique + Gras")], values=[0, 1, 2, 3] , value=1)
-        propriete.SetHelpString(_(u"Sélectionnez un style de texte")) 
+        propriete.SetHelpString(_(u"SÃ©lectionnez un style de texte")) 
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
         propriete = wxpg.ColourProperty(label=_(u"Couleur de fond introduction"), name="couleur_fond_introduction", value=wx.Colour(255, 255, 255) )
-        propriete.SetHelpString(_(u"Sélectionnez une couleur de fond pour le texte d'introduction")) 
+        propriete.SetHelpString(_(u"SÃ©lectionnez une couleur de fond pour le texte d'introduction")) 
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
         propriete = wxpg.ColourProperty(label=_(u"Couleur de bord introduction"), name="couleur_bord_introduction", value=wx.Colour(255, 255, 255) )
-        propriete.SetHelpString(_(u"Sélectionnez une couleur de bord pour le texte d'introduction")) 
+        propriete.SetHelpString(_(u"SÃ©lectionnez une couleur de bord pour le texte d'introduction")) 
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
         propriete = wxpg.EnumProperty(label=_(u"Alignement du texte d'introduction"), name="alignement_texte_introduction", labels=[_(u"Gauche"), _(u"Centre"), _(u"Droite")], values=[0, 1, 2] , value=1)
-        propriete.SetHelpString(_(u"Sélectionnez un type d'alignement pour le texte d'introduction")) 
+        propriete.SetHelpString(_(u"SÃ©lectionnez un type d'alignement pour le texte d'introduction")) 
         self.Append(propriete)
 
-        # Catégorie 
+        # CatÃ©gorie 
         self.Append( wxpg.PropertyCategory(_(u"Texte de conclusion")) )
 
         propriete = wxpg.LongStringProperty(label=_(u"Texte de conclusion"), name="texte_conclusion", value=u"")
-        propriete.SetHelpString(_(u"Saisissez un texte de conclusion (Aucun par défaut). Vous pouvez intégrer les mots-clés suivants : %s") % ", ".join(listeChamps)) 
+        propriete.SetHelpString(_(u"Saisissez un texte de conclusion (Aucun par dÃ©faut). Vous pouvez intÃ©grer les mots-clÃ©s suivants : %s") % ", ".join(listeChamps)) 
         self.Append(propriete)
 
         propriete = wxpg.IntProperty(label=_(u"Taille de texte de conclusion"), name="taille_texte_conclusion", value=9)
-        propriete.SetHelpString(_(u"Saisissez la taille de texte de conclusion (9 par défaut)")) 
+        propriete.SetHelpString(_(u"Saisissez la taille de texte de conclusion (9 par dÃ©faut)")) 
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
         self.SetPropertyEditor("taille_texte_conclusion", "SpinCtrl")
 
         propriete = wxpg.EnumProperty(label=_(u"Style de texte conclusion"), name="style_texte_conclusion", labels=[_(u"Normal"), _(u"Italique"), "Gras", _(u"Italique + Gras")], values=[0, 1, 2, 3] , value=0)
-        propriete.SetHelpString(_(u"Sélectionnez un style de texte")) 
+        propriete.SetHelpString(_(u"SÃ©lectionnez un style de texte")) 
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
         propriete = wxpg.ColourProperty(label=_(u"Couleur de fond conclusion"), name="couleur_fond_conclusion", value=wx.Colour(255, 255, 255) )
-        propriete.SetHelpString(_(u"Sélectionnez une couleur de fond pour le texte de conclusion")) 
+        propriete.SetHelpString(_(u"SÃ©lectionnez une couleur de fond pour le texte de conclusion")) 
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
         propriete = wxpg.ColourProperty(label=_(u"Couleur de bord conclusion"), name="couleur_bord_conclusion", value=wx.Colour(255, 255, 255) )
-        propriete.SetHelpString(_(u"Sélectionnez une couleur de bord pour le texte de conclusion")) 
+        propriete.SetHelpString(_(u"SÃ©lectionnez une couleur de bord pour le texte de conclusion")) 
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
         propriete = wxpg.EnumProperty(label=_(u"Alignement du texte de conclusion"), name="alignement_texte_conclusion", labels=[_(u"Gauche"), _(u"Centre"), _(u"Droite")], values=[0, 1, 2] , value=0)
-        propriete.SetHelpString(_(u"Sélectionnez un type d'alignement pour le texte de conclusion")) 
+        propriete.SetHelpString(_(u"SÃ©lectionnez un type d'alignement pour le texte de conclusion")) 
         self.Append(propriete)
 
         # Signature 
         self.Append( wxpg.PropertyCategory(_(u"Signature")) )
 
         propriete = wxpg.ImageFileProperty(label=_(u"Image de signature"), name="image_signature")
-        propriete.SetHelpString(_(u"Sélectionnez l'image d'une signature à insérer en fin de document")) 
+        propriete.SetHelpString(_(u"SÃ©lectionnez l'image d'une signature Ã  insÃ©rer en fin de document")) 
         self.Append(propriete)
 
         propriete = wxpg.IntProperty(label=_(u"Taille de l'image (en %)"), name="taille_image_signature", value=100)
-        propriete.SetHelpString(_(u"Saisissez la taille de l'image en pourcentage (100 par défaut)")) 
+        propriete.SetHelpString(_(u"Saisissez la taille de l'image en pourcentage (100 par dÃ©faut)")) 
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
         self.SetPropertyEditor("taille_image_signature", "SpinCtrl")
 
         propriete = wxpg.EnumProperty(label=_(u"Alignement de l'image"), name="alignement_image_signature", labels=[_(u"Gauche"), _(u"Centre"), _(u"Droite")], values=[0, 1, 2] , value=0)
-        propriete.SetHelpString(_(u"Sélectionnez un type d'alignement pour l'image de signature")) 
+        propriete.SetHelpString(_(u"SÃ©lectionnez un type d'alignement pour l'image de signature")) 
         self.Append(propriete)
 
 
     def Validation(self):
-        """ Validation des données saisies """
+        """ Validation des donnÃ©es saisies """
         for nom, valeur in self.GetPropertyValues().items() :
             propriete = self.GetPropertyByName(nom)
             if self.GetPropertyAttribute(propriete, "obligatoire") == True :
                 if valeur == "" or valeur == None :
-                    dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement renseigner le paramètre '%s' !") % nom, _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                    dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement renseigner le paramÃ¨tre '%s' !") % nom, _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                     dlg.ShowModal()
                     dlg.Destroy()
                     return False
         return True
         
     def Importation(self):
-        """ Importation des valeurs dans le contrôle """
-        # Récupération des noms et valeurs par défaut du contrôle
+        """ Importation des valeurs dans le contrÃ´le """
+        # RÃ©cupÃ©ration des noms et valeurs par dÃ©faut du contrÃ´le
         dictValeurs = copy.deepcopy(self.GetPropertyValues())
-        # Recherche les paramètres mémorisés
+        # Recherche les paramÃ¨tres mÃ©morisÃ©s
         dictParametres = UTILS_Parametres.ParametresCategorie(mode="get", categorie="impression_devis", dictParametres=dictValeurs)
-        # Envoie les paramètres dans le contrôle
+        # Envoie les paramÃ¨tres dans le contrÃ´le
         for nom, valeur in dictParametres.items() :
             propriete = self.GetPropertyByName(nom)
             ancienneValeur = propriete.GetValue() 
             propriete.SetValue(valeur)
     
     def Sauvegarde(self, forcer=False):
-        """ Mémorisation des valeurs du contrôle """
+        """ MÃ©morisation des valeurs du contrÃ´le """
         if self.GetPropertyByName("memoriser_parametres").GetValue() == True or forcer == True :
             dictValeurs = copy.deepcopy(self.GetPropertyValues())
             UTILS_Parametres.ParametresCategorie(mode="set", categorie="impression_devis", dictParametres=dictValeurs)
@@ -389,7 +389,7 @@ class CTRL(wx.Panel):
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
         self.parent = parent
                 
-        # Paramètres
+        # ParamÃ¨tres
         self.box_options_staticbox = wx.StaticBox(self, -1, _(u"Options d'impression"))
         self.ctrl_parametres = CTRL_Parametres(self, listeActivites=listeActivites)
         self.ctrl_parametres.Importation() 
@@ -405,7 +405,7 @@ class CTRL(wx.Panel):
         grid_sizer_base.AddGrowableCol(0)
         grid_sizer_base.AddGrowableRow(0)
 
-        # Paramètres
+        # ParamÃ¨tres
         box_options = wx.StaticBoxSizer(self.box_options_staticbox, wx.VERTICAL)
         grid_sizer_parametres = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
         grid_sizer_parametres.Add(self.ctrl_parametres, 1, wx.EXPAND, 0)
@@ -429,7 +429,7 @@ class CTRL(wx.Panel):
     def GetOptions(self):
         dictOptions = {} 
 
-        # Récupération des paramètres
+        # RÃ©cupÃ©ration des paramÃ¨tres
         if self.ctrl_parametres.Validation() == False :
             return False
         for nom, valeur in self.ctrl_parametres.GetValeurs().items()  :

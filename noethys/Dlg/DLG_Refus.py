@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -28,8 +28,8 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         
-        intro = _(u"Vous pouvez ici consulter la liste des individus qui avaient réservé des places sur liste d'attente et qui après libération de places, les avaient finalement refusé. Cette liste vous permet donc de déterminer avec précision le nombre de places qui auraient été nécessaires afin d'accueillir tout le monde...")
-        titre = _(u"Liste des places refusées")
+        intro = _(u"Vous pouvez ici consulter la liste des individus qui avaient rÃ©servÃ© des places sur liste d'attente et qui aprÃ¨s libÃ©ration de places, les avaient finalement refusÃ©. Cette liste vous permet donc de dÃ©terminer avec prÃ©cision le nombre de places qui auraient Ã©tÃ© nÃ©cessaires afin d'accueillir tout le monde...")
+        titre = _(u"Liste des places refusÃ©es")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Places_refus.png")
         
         self.ctrl_refus = CTRL_Attente.CTRL(self, dictDonnees=dictDonnees, dictEtatPlaces=dictEtatPlaces, dictUnitesRemplissage=dictUnitesRemplissage, mode="refus")
@@ -48,8 +48,8 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
 
     def __set_properties(self):
-        self.SetTitle(_(u"Liste des places refusées"))
-        self.bouton_ouvrir_fiche.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ouvrir la fiche famille de l'individu sélectionné dans la liste")))
+        self.SetTitle(_(u"Liste des places refusÃ©es"))
+        self.bouton_ouvrir_fiche.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ouvrir la fiche famille de l'individu sÃ©lectionnÃ© dans la liste")))
         self.bouton_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer cette liste (PDF)")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))

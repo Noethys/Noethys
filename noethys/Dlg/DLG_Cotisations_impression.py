@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-14 Ivan LUCAS
@@ -28,7 +28,7 @@ class Dialog(wx.Dialog):
         self.parent = parent
         
         # Bandeau
-        intro = _(u"Cochez les cotisations à imprimer puis cliquez sur le bouton 'Aperçu' pour visualiser le ou les documents dans votre lecteur PDF.")
+        intro = _(u"Cochez les cotisations Ã  imprimer puis cliquez sur le bouton 'AperÃ§u' pour visualiser le ou les documents dans votre lecteur PDF.")
         titre = _(u"Impression de cotisations")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Imprimante.png")
@@ -43,7 +43,7 @@ class Dialog(wx.Dialog):
         
         # Boutons
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
-        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Aperçu"), cheminImage="Images/32x32/Apercu.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"AperÃ§u"), cheminImage="Images/32x32/Apercu.png")
         self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         self.__set_properties()
@@ -54,7 +54,7 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonApercu, self.bouton_ok)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
         
-        # Init Contrôles
+        # Init ContrÃ´les
         self.ctrl_liste_cotisations.MAJ() 
                 
 
@@ -103,11 +103,11 @@ class Dialog(wx.Dialog):
         self.EndModal(wx.ID_CANCEL)
 
     def OnBoutonApercu(self, event): 
-        """ Aperçu PDF des cotisations """
-        # Validation des données saisies
+        """ AperÃ§u PDF des cotisations """
+        # Validation des donnÃ©es saisies
         tracks = self.ctrl_liste_cotisations.GetTracksCoches() 
         if len(tracks) == 0 : 
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune cotisation à imprimer !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune cotisation Ã  imprimer !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -116,12 +116,12 @@ class Dialog(wx.Dialog):
         for track in tracks :
             listeIDcotisation.append(track.IDcotisation) 
         
-        # Récupération des options
+        # RÃ©cupÃ©ration des options
         dictOptions = self.ctrl_options.GetOptions()
         if dictOptions == False :
             return False
 
-        # Impression des cotisations sélectionnées
+        # Impression des cotisations sÃ©lectionnÃ©es
         x = UTILS_Cotisations.Cotisation()
         x.Impression(listeCotisations=listeIDcotisation, afficherDoc=True, dictOptions=dictOptions, repertoire=dictOptions["repertoire"])
         

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-18 Ivan LUCAS
@@ -85,12 +85,12 @@ class Page_Colonnes(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.ctrl_colonnes.Monter, self.bouton_monter)
         self.Bind(wx.EVT_BUTTON, self.ctrl_colonnes.Descendre, self.bouton_descendre)
 
-        # Propriétés
+        # PropriÃ©tÃ©s
         self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter une colonne")))
-        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la colonne sélectionnée dans la liste")))
-        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la colonne sélectionnée dans la liste")))
-        self.bouton_monter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour monter la colonne sélectionnée dans la liste")))
-        self.bouton_descendre.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour descendre la colonne sélectionnée dans la liste")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la colonne sÃ©lectionnÃ©e dans la liste")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la colonne sÃ©lectionnÃ©e dans la liste")))
+        self.bouton_monter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour monter la colonne sÃ©lectionnÃ©e dans la liste")))
+        self.bouton_descendre.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour descendre la colonne sÃ©lectionnÃ©e dans la liste")))
 
         # Layout
         sizer_base = wx.BoxSizer(wx.VERTICAL)
@@ -126,7 +126,7 @@ class Page_Colonnes(wx.Panel):
 
     def Validation(self):
         if len(self.GetColonnes()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous devez créer au moins une colonne pour ce modèle !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez crÃ©er au moins une colonne pour ce modÃ¨le !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -143,9 +143,9 @@ class Dialog(wx.Dialog):
         self.premierModele = premierModele
         self.listeIDcolonnesImportees = []
 
-        # Généralités
-        self.box_generalites_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Généralités"))
-        self.label_nom = wx.StaticText(self, wx.ID_ANY, _(u"Nom du modèle :"))
+        # GÃ©nÃ©ralitÃ©s
+        self.box_generalites_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"GÃ©nÃ©ralitÃ©s"))
+        self.label_nom = wx.StaticText(self, wx.ID_ANY, _(u"Nom du modÃ¨le :"))
         self.ctrl_nom = wx.TextCtrl(self, wx.ID_ANY, u"")
         self.label_restaurateur = wx.StaticText(self, -1, _(u"Restaurateur :"))
         self.ctrl_restaurateur = CTRL_Restaurateur(self)
@@ -167,19 +167,19 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonRestaurateur, self.bouton_restaurateur)
 
-        # Init Contrôles
+        # Init ContrÃ´les
         if self.IDmodele == None :
-            self.SetTitle(_(u"Saisie d'un modèle de commandes de repas"))
+            self.SetTitle(_(u"Saisie d'un modÃ¨le de commandes de repas"))
         else :
-            self.SetTitle(_(u"Modification d'un modèle de commandes de repas"))
+            self.SetTitle(_(u"Modification d'un modÃ¨le de commandes de repas"))
             self.Importation()
 
         self.ctrl_nom.SetFocus()
 
     def __set_properties(self):
-        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez un nom pour ce modèle")))
+        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez un nom pour ce modÃ¨le")))
         self.ctrl_restaurateur.SetToolTip(wx.ToolTip(_(u"Selectionnez un restaurateur")))
-        self.bouton_restaurateur.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à la gestion des restaurateurs")))
+        self.bouton_restaurateur.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accÃ©der Ã  la gestion des restaurateurs")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
@@ -188,7 +188,7 @@ class Dialog(wx.Dialog):
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=4, cols=1, vgap=10, hgap=10)
 
-        # Généralités
+        # GÃ©nÃ©ralitÃ©s
         box_generalites = wx.StaticBoxSizer(self.box_generalites_staticbox, wx.VERTICAL)
         grid_sizer_generalites = wx.FlexGridSizer(5, 2, 10, 10)
 
@@ -255,10 +255,10 @@ class Dialog(wx.Dialog):
         self.ctrl_colonnes.SetParametres(dictDonnees)
 
     def Importation(self):
-        """ Importation des données """
+        """ Importation des donnÃ©es """
         DB = GestionDB.DB()
 
-        # Modèle
+        # ModÃ¨le
         req = """SELECT nom, IDrestaurateur, parametres
         FROM modeles_commandes WHERE IDmodele=%d;""" % self.IDmodele
         DB.ExecuterReq(req)
@@ -295,7 +295,7 @@ class Dialog(wx.Dialog):
         # Validation
         nom = self.ctrl_nom.GetValue()
         if nom == "" :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un nom pour ce modèle !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un nom pour ce modÃ¨le !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_nom.SetFocus()
@@ -303,7 +303,7 @@ class Dialog(wx.Dialog):
 
         IDrestaurateur = self.ctrl_restaurateur.GetID()
         if IDrestaurateur == None :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun restaurateur.\n\nEtes-vous sûr de vouloir continuer ?"), _(u"Information"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucun restaurateur.\n\nEtes-vous sÃ»r de vouloir continuer ?"), _(u"Information"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
             reponse = dlg.ShowModal()
             dlg.Destroy()
             if reponse != wx.ID_YES :
@@ -313,13 +313,13 @@ class Dialog(wx.Dialog):
             return False
         colonnes = self.ctrl_colonnes.GetColonnes()
 
-        # Récupération des données
+        # RÃ©cupÃ©ration des donnÃ©es
         dictDonnees = self.GetDonnees()
 
         # Sauvegarde
         DB = GestionDB.DB()
 
-        # Sauvegarde du modèle
+        # Sauvegarde du modÃ¨le
         listeDonnees = [
             ("nom", nom),
             ("IDrestaurateur", IDrestaurateur),
@@ -349,14 +349,14 @@ class Dialog(wx.Dialog):
                 ]
             if IDcolonne == None or IDcolonne < 0 :
                 newIDcolonne = DB.ReqInsert("modeles_commandes_colonnes", listeDonnees)
-                dictCorrespondancesID[IDcolonne] = int(newIDcolonne) # Convertit l'IDnégatif en IDpositif
+                dictCorrespondancesID[IDcolonne] = int(newIDcolonne) # Convertit l'IDnÃ©gatif en IDpositif
                 dictColonne["IDcolonne"] = newIDcolonne
             else:
                 DB.ReqMAJ("modeles_commandes_colonnes", listeDonnees, "IDcolonne", IDcolonne)
             listeIDcolonne.append(IDcolonne)
             index += 1
 
-        # Echange l'IDnégatif contre IDpositif dans les paramètres des colonnes de total
+        # Echange l'IDnÃ©gatif contre IDpositif dans les paramÃ¨tres des colonnes de total
         if len(dictCorrespondancesID) > 0 :
             for dictColonne in colonnes:
                 if dictColonne["categorie"] == "numerique_total" and ("colonnes" in dictColonne["parametres"]) == True :
@@ -371,16 +371,16 @@ class Dialog(wx.Dialog):
                         listeDonnees = [("parametres", six.text_type(dictColonne["parametres"])),]
                         DB.ReqMAJ("modeles_commandes_colonnes", listeDonnees, "IDcolonne", dictColonne["IDcolonne"])
 
-        # Suppression des colonnes obsolètes
+        # Suppression des colonnes obsolÃ¨tes
         for IDcolonne in self.listeIDcolonnesImportees :
             if IDcolonne not in listeIDcolonne :
                 DB.ReqDEL("modeles_commandes_colonnes", "IDcolonne", IDcolonne)
                 DB.ReqDEL("commandes_valeurs", "IDcolonne", IDcolonne)
 
-        # Clôture de la base
+        # ClÃ´ture de la base
         DB.Close()
 
-        # Fermeture de la fenêtre
+        # Fermeture de la fenÃªtre
         self.EndModal(wx.ID_OK)
 
     def GetIDmodele(self):

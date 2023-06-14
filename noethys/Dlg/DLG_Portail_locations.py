@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-20 Ivan LUCAS
@@ -63,20 +63,20 @@ class Dialog(wx.Dialog):
         self.reponse = ""
 
         # Bandeau
-        intro = _(u"Vous pouvez gérer ici la demande de façon manuelle. Commencez par cliquer sur le bouton 'Appliquer la demande' pour voir apparaître les modifications demandées sur le portail. Vous pouvez alors effectuer manuellement d'éventuelles modifications avant de valider. Décochez les actions à refuser.")
+        intro = _(u"Vous pouvez gÃ©rer ici la demande de faÃ§on manuelle. Commencez par cliquer sur le bouton 'Appliquer la demande' pour voir apparaÃ®tre les modifications demandÃ©es sur le portail. Vous pouvez alors effectuer manuellement d'Ã©ventuelles modifications avant de valider. DÃ©cochez les actions Ã  refuser.")
         titre = _(u"Traitement manuel des locations")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Location.png")
 
         # Locations
-        self.box_locations_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Détail de la demande"))
+        self.box_locations_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"DÃ©tail de la demande"))
         self.ctrl_locations = OL_Portail_locations.ListView(self, -1, style=wx.LC_REPORT|wx.LC_HRULES|wx.LC_VRULES|wx.LC_SINGLE_SEL|wx.SUNKEN_BORDER)
         self.hyper_select_tout = Hyperlien(self, label=_(u"Tout cocher"), infobulle=_(u"Cliquez ici pour tout cocher"), URL="tout")
         self.label_separation = wx.StaticText(self, -1, "|")
-        self.hyper_selection_rien = Hyperlien(self, label=_(u"Tout décocher"), infobulle=_(u"Cliquez ici pour tout décocher"), URL="rien")
+        self.hyper_selection_rien = Hyperlien(self, label=_(u"Tout dÃ©cocher"), infobulle=_(u"Cliquez ici pour tout dÃ©cocher"), URL="rien")
 
         # Journal
-        self.box_journal_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Journal d'évènements"))
+        self.box_journal_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Journal d'Ã©vÃ¨nements"))
         self.ctrl_log = CTRL_Log(self)
         self.ctrl_log.SetMinSize((100, 80))
         self.bouton_traiter = CTRL_Bouton_image.CTRL(self, texte=_(u"Appliquer la demande"), cheminImage="Images/32x32/Fleche_bas.png")
@@ -224,10 +224,10 @@ class Dialog(wx.Dialog):
                             resultat = _(u"%s du %s : %s") % (track.nom_produit, track.date_debut_txt, track.statut)
                         self.parent.EcritLog(resultat, self.ctrl_log)
 
-                    # Mémorisation pour réponse
+                    # MÃ©morisation pour rÃ©ponse
                     resultats[track.etat][track.action_possible] += 1
 
-                # Action refusée
+                # Action refusÃ©e
                 if not self.ctrl_locations.IsChecked(track):
                     DB.ReqMAJ("portail_reservations_locations", [("resultat", "refus")], "IDreservation", track.IDreservation)
                     self.parent.EcritLog(_(u"Refus de l'action : %s." % track.action), self.ctrl_log)
@@ -235,15 +235,15 @@ class Dialog(wx.Dialog):
 
         DB.Close()
 
-        # Formatage de la réponse
+        # Formatage de la rÃ©ponse
         liste_resultats = []
         for etat, valeurs in resultats.items():
             for succes, quantite in valeurs.items():
                 if quantite:
                     if succes == True:
-                        txt_validation = u"validé"
+                        txt_validation = u"validÃ©"
                     else:
-                        txt_validation = u"refusé"
+                        txt_validation = u"refusÃ©"
                     if quantite == 1:
                         pluriel = ""
                     else:
@@ -258,7 +258,7 @@ class Dialog(wx.Dialog):
 
         if liste_resultats:
             self.reponse = UTILS_Texte.ConvertListeToPhrase(liste_resultats) + "."
-            self.parent.EcritLog(_(u"Réponse : %s") % self.reponse, self.ctrl_log)
+            self.parent.EcritLog(_(u"RÃ©ponse : %s") % self.reponse, self.ctrl_log)
 
             # MAJ de la liste des actions
             self.ctrl_locations.MAJ(track_demande=self.track)

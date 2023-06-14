@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -15,16 +15,16 @@ import GestionDB
 
 
 class AnalyseLocalisation():
-    """ Renvoie les noms des lieux de départ et d'arrivée """
+    """ Renvoie les noms des lieux de dÃ©part et d'arrivÃ©e """
     def __init__(self):
         self.MAJ()
     
     
     def MAJ(self):
-        """ Récupère les données dans la base """
+        """ RÃ©cupÃ¨re les donnÃ©es dans la base """
         DB = GestionDB.DB()
         
-        # Arrêts
+        # ArrÃªts
         req = """SELECT IDarret, nom FROM transports_arrets;"""
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
@@ -40,7 +40,7 @@ class AnalyseLocalisation():
         for IDlieu, nom in listeDonnees :
             self.dict_lieux[IDlieu] = nom
         
-        # Activités
+        # ActivitÃ©s
         req = """SELECT IDactivite, nom FROM activites;"""
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
@@ -59,7 +59,7 @@ class AnalyseLocalisation():
         DB.Close()
     
     def Analyse(self, IDarret=None, IDlieu=None, localisation=None):
-        # Analyse du départ ou de l'arrivée
+        # Analyse du dÃ©part ou de l'arrivÃ©e
         nom = u""
         if IDarret != None and IDarret in self.dict_arrets :
             nom = self.dict_arrets[IDarret]

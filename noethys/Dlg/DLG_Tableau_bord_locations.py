@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-17 Ivan LUCAS
@@ -47,10 +47,10 @@ class Page_locations(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.ctrl_locations.Modifier, self.bouton_modifier_location)
         self.Bind(wx.EVT_BUTTON, self.ctrl_locations.Supprimer, self.bouton_supprimer_location)
 
-        # Propriétés
+        # PropriÃ©tÃ©s
         self.bouton_ajouter_location.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour saisir une location")))
-        self.bouton_modifier_location.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la location sélectionnée")))
-        self.bouton_supprimer_location.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la location sélectionnée")))
+        self.bouton_modifier_location.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la location sÃ©lectionnÃ©e")))
+        self.bouton_supprimer_location.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la location sÃ©lectionnÃ©e")))
         self.check_locations_actives.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher uniquement les locations actives")))
 
         # --- Layout ---
@@ -82,7 +82,7 @@ class Page_locations(wx.Panel):
         grid_sizer_base.AddGrowableRow(0)
         self.Layout()
 
-        # Init contrôles
+        # Init contrÃ´les
         self.ctrl_locations.afficher_uniquement_actives = self.check_locations_actives.GetValue()
 
     def OnCheckActives(self, event):
@@ -100,10 +100,10 @@ class Page_demandes(wx.Panel):
         self.IDfamille = IDfamille
 
         # Filtres
-        self.check_attente_avec_possibilites = wx.CheckBox(self, -1, _(u"Demandes avec disponibilités"))
-        self.check_attente_sans_possibilites = wx.CheckBox(self, -1, _(u"Demandes sans disponibilités"))
-        self.check_attente_refusees = wx.CheckBox(self, -1, _(u"Demandes refusées"))
-        self.check_attente_attribuees = wx.CheckBox(self, -1, _(u"Demandes attribuées"))
+        self.check_attente_avec_possibilites = wx.CheckBox(self, -1, _(u"Demandes avec disponibilitÃ©s"))
+        self.check_attente_sans_possibilites = wx.CheckBox(self, -1, _(u"Demandes sans disponibilitÃ©s"))
+        self.check_attente_refusees = wx.CheckBox(self, -1, _(u"Demandes refusÃ©es"))
+        self.check_attente_attribuees = wx.CheckBox(self, -1, _(u"Demandes attribuÃ©es"))
 
         self.ctrl_demandes = OL_Locations_demandes.ListView(self, IDfamille=IDfamille, id=-1, name="OL_Demandes_locations", style=wx.LC_REPORT | wx.SUNKEN_BORDER | wx.LC_SINGLE_SEL | wx.LC_HRULES | wx.LC_VRULES)
         self.ctrl_demandes.SetMinSize((50, 50))
@@ -117,10 +117,10 @@ class Page_demandes(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.ctrl_demandes.Modifier, self.bouton_modifier_demande)
         self.Bind(wx.EVT_BUTTON, self.ctrl_demandes.Supprimer, self.bouton_supprimer_demande)
 
-        # Propriétés
+        # PropriÃ©tÃ©s
         self.bouton_ajouter_demande.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour saisir une demande de location")))
-        self.bouton_modifier_demande.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la demande de location sélectionnée")))
-        self.bouton_supprimer_demande.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la demande de location sélectionnée")))
+        self.bouton_modifier_demande.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la demande de location sÃ©lectionnÃ©e")))
+        self.bouton_supprimer_demande.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la demande de location sÃ©lectionnÃ©e")))
 
         # --- Layout ---
         grid_sizer_base = wx.FlexGridSizer(rows=2, cols=1, vgap=0, hgap=0)
@@ -192,7 +192,7 @@ class Panel(wx.Panel):
             index += 1
 
     def OnPageChanged(self, event):
-        """ Quand une page du tookbook est sélectionnée """
+        """ Quand une page du tookbook est sÃ©lectionnÃ©e """
         index = event.GetSelection()
         self.MAJpage(index)
         event.Skip()

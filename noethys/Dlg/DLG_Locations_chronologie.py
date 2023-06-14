@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-18 Ivan LUCAS
@@ -30,18 +30,18 @@ class Timeline(TL.TimelinePerso):
         TL.TimelinePerso.__init__(self)
 
     def _load_data(self):
-        """ Importation des données """
+        """ Importation des donnÃ©es """
         self.preferred_period = None
         self.categories = []
         self.events = []
 
-        # Période préférée
+        # PÃ©riode prÃ©fÃ©rÃ©e
         dateDuJour = datetime.datetime.today()
         dateDebut = dateDuJour - datetime.timedelta(6)
         dateFin = dateDuJour + datetime.timedelta(1)
         self.preferred_period = TL.TimePeriod(dateDebut, dateFin)
 
-        # Récupération des events LOCATIONS
+        # RÃ©cupÃ©ration des events LOCATIONS
         DB = GestionDB.DB()
         req = """SELECT IDlocation, IDfamille, date_debut, date_fin, locations.quantite,
         produits.IDproduit, produits.nom
@@ -52,7 +52,7 @@ class Timeline(TL.TimelinePerso):
         listeLocations = DB.ResultatReq()
         DB.Close()
 
-        # Préparation des données
+        # PrÃ©paration des donnÃ©es
         listeIDfamille = []
         dictProduits = {}
         for IDlocation, IDfamille, date_debut, date_fin, quantite, IDproduit, nom_produit in listeLocations:
@@ -65,7 +65,7 @@ class Timeline(TL.TimelinePerso):
                 dictProduits[IDproduit] = categorie
         dictTitulaires = UTILS_Titulaires.GetTitulaires(listeIDfamille)
 
-        # Création des events
+        # CrÃ©ation des events
         for IDlocation, IDfamille, date_debut, date_fin, quantite, IDproduit, nom_produit in listeLocations :
             date_debut = UTILS_Dates.DateEngEnDateDDT(date_debut)
             date_fin = UTILS_Dates.DateEngEnDateDDT(date_fin)
@@ -82,14 +82,14 @@ class Timeline(TL.TimelinePerso):
 
             texte = nomTitulaires
             if quantite > 1 :
-                texte += _(u" - Quantité : %d") % quantite
+                texte += _(u" - QuantitÃ© : %d") % quantite
             date_debut_str = datetime.datetime.strftime(date_debut, "%d/%m/%Y-%Hh%M")
             if date_fin.year == 2999:
-                date_fin_str = _(u"Illimité")
+                date_fin_str = _(u"IllimitÃ©")
             else:
                 date_fin_str = datetime.datetime.strftime(date_fin, "%d/%m/%Y-%Hh%M")
 
-            description = _(u"Loueur : %s\nProduit : %s\nQuantité : %d\nDébut : %s\nFin : %s") % (nomTitulaires, nom_produit, quantite, date_debut_str, date_fin_str)
+            description = _(u"Loueur : %s\nProduit : %s\nQuantitÃ© : %d\nDÃ©but : %s\nFin : %s") % (nomTitulaires, nom_produit, quantite, date_debut_str, date_fin_str)
             icon = None
 
             event = TL.Event(date_debut, date_fin, texte, dictProduits[IDproduit])
@@ -108,7 +108,7 @@ class Dialog(wx.Dialog):
         self.parent = parent
 
         # Bandeau
-        intro = _(u"Vous pouvez ici consulter les locations sous forme chronologique. Vous pouvez déplacer le graphique vers la droite ou vers la gauche en le faisant glisser avec la souris ou en utilisant sa molette, et basculer entre un affichage annuel, mensuel ou quotidien. Conservez la touche CTRL enfoncée et utilisez la molette pour zoomer.")
+        intro = _(u"Vous pouvez ici consulter les locations sous forme chronologique. Vous pouvez dÃ©placer le graphique vers la droite ou vers la gauche en le faisant glisser avec la souris ou en utilisant sa molette, et basculer entre un affichage annuel, mensuel ou quotidien. Conservez la touche CTRL enfoncÃ©e et utilisez la molette pour zoomer.")
         titre = _(u"Chronologie des locations")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Timeline.png")

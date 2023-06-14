@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -33,15 +33,15 @@ class ToolBar(wx.ToolBar):
 
         # Boutons
         liste_boutons = [
-            {"ID" : ID_CREER_FAMILLE, "label" : _(u"Ajouter"), "image" : "Images/32x32/Famille_ajouter.png", "tooltip" : _(u"Créer une nouvelle famille")},
+            {"ID" : ID_CREER_FAMILLE, "label" : _(u"Ajouter"), "image" : "Images/32x32/Famille_ajouter.png", "tooltip" : _(u"CrÃ©er une nouvelle famille")},
             None,
-            {"ID": ID_MODIFIER_FAMILLE, "label": _(u"Modifier"), "image": "Images/32x32/Famille_modifier.png", "tooltip": _(u"Modifier la fiche famille de l'individu sélectionné")},
-            {"ID": ID_SUPPRIMER_FAMILLE, "label": _(u"Supprimer"), "image": "Images/32x32/Famille_supprimer.png", "tooltip": _(u"Supprimer ou détacher l'individu sélectionné")},
+            {"ID": ID_MODIFIER_FAMILLE, "label": _(u"Modifier"), "image": "Images/32x32/Famille_modifier.png", "tooltip": _(u"Modifier la fiche famille de l'individu sÃ©lectionnÃ©")},
+            {"ID": ID_SUPPRIMER_FAMILLE, "label": _(u"Supprimer"), "image": "Images/32x32/Famille_supprimer.png", "tooltip": _(u"Supprimer ou dÃ©tacher l'individu sÃ©lectionnÃ©")},
             None,
-            {"ID": ID_OUVRIR_GRILLE, "label": _(u"Calendrier"), "image": "Images/32x32/Calendrier.png", "tooltip": _(u"Ouvrir la grille des consommations de l'individu sélectionné\n(ou double-clic sur la ligne + touche CTRL enfoncée)")},
-            {"ID": ID_OUVRIR_FICHE_IND, "label": _(u"Fiche ind."), "image": "Images/32x32/Personnes.png", "tooltip": _(u"Ouvrir la fiche individuelle de l'individu sélectionné\n(ou double-clic sur la ligne + touche SHIFT enfoncée)")},
+            {"ID": ID_OUVRIR_GRILLE, "label": _(u"Calendrier"), "image": "Images/32x32/Calendrier.png", "tooltip": _(u"Ouvrir la grille des consommations de l'individu sÃ©lectionnÃ©\n(ou double-clic sur la ligne + touche CTRL enfoncÃ©e)")},
+            {"ID": ID_OUVRIR_FICHE_IND, "label": _(u"Fiche ind."), "image": "Images/32x32/Personnes.png", "tooltip": _(u"Ouvrir la fiche individuelle de l'individu sÃ©lectionnÃ©\n(ou double-clic sur la ligne + touche SHIFT enfoncÃ©e)")},
             None,
-            {"ID": ID_PARAMETRES, "label": _(u"Paramètres"), "image": "Images/32x32/Configuration2.png", "type": wx.ITEM_NORMAL, "tooltip": _(u"Sélectionner les paramètres d'affichage")},
+            {"ID": ID_PARAMETRES, "label": _(u"ParamÃ¨tres"), "image": "Images/32x32/Configuration2.png", "type": wx.ITEM_NORMAL, "tooltip": _(u"SÃ©lectionner les paramÃ¨tres d'affichage")},
             {"ID": ID_OUTILS, "label": _(u"Outils"), "image": "Images/32x32/Configuration.png", "tooltip": _(u"Outils")},
             ]
         for bouton in liste_boutons :
@@ -94,7 +94,7 @@ class ToolBar(wx.ToolBar):
         self.GetParent().ctrl_listview.MAJ(forceActualisation=True)
         
     def MenuOutils(self, event):
-        # Création du menu Outils
+        # CrÃ©ation du menu Outils
         menuPop = UTILS_Adaptations.Menu()
 
         ID_ACTUALISER = wx.Window.NewControlId()
@@ -104,12 +104,12 @@ class ToolBar(wx.ToolBar):
         ID_EXPORT_TEXTE = wx.Window.NewControlId()
         ID_AIDE = wx.Window.NewControlId()
 
-        item = wx.MenuItem(menuPop, ID_APERCU, _(u"Aperçu avant impression"), _(u"Imprimer la liste des effectifs affichée"))
+        item = wx.MenuItem(menuPop, ID_APERCU, _(u"AperÃ§u avant impression"), _(u"Imprimer la liste des effectifs affichÃ©e"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Apercu, id=ID_APERCU)
         
-        item = wx.MenuItem(menuPop, ID_IMPRIMER, _(u"Imprimer"), _(u"Imprimer la liste des effectifs affichée"))
+        item = wx.MenuItem(menuPop, ID_IMPRIMER, _(u"Imprimer"), _(u"Imprimer la liste des effectifs affichÃ©e"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Imprimante.png"), wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Imprimer, id=ID_IMPRIMER)
@@ -167,7 +167,7 @@ class Panel(wx.Panel):
         self.__set_properties()
         self.__do_layout()
         
-        # Recherche paramètres d'affichage de la liste des individus
+        # Recherche paramÃ¨tres d'affichage de la liste des individus
         self.ActualiseParametresAffichage()
 
     def __set_properties(self):

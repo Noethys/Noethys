@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -22,7 +22,7 @@ import GestionDB
 
     
 def Importation_donnees():
-    # Importation de la base par défaut
+    # Importation de la base par dÃ©faut
     con = sqlite3.connect(Chemins.GetStaticPath("Databases/Geographie.dat"))
     cur = con.cursor()
     cur.execute("SELECT IDville, nom, cp FROM villes")
@@ -62,7 +62,7 @@ def Importation_donnees():
             if dictCorrections[IDville]["mode"] == "suppr" :
                 valide = False
         
-        # Mémorisation
+        # MÃ©morisation
         if valide == True :
             try :
                 cp = int(cp)
@@ -95,12 +95,12 @@ class TextCtrlCp(masked.TextCtrl):
             self.Bind(wx.EVT_KILL_FOCUS, self.OnKillFocus)
 
     def OnKillFocus(self, event):
-        """ Quand le contrôle Code perd le focus """
+        """ Quand le contrÃ´le Code perd le focus """
         if self.autoComplete == False :
             event.Skip()
             return
         textCode = self.GetValue()
-        # On vérifie que la ville n'est pas déjà dans la case ville
+        # On vÃ©rifie que la ville n'est pas dÃ©jÃ  dans la case ville
         villeSelect = self.ctrlVille.GetValue()
         if villeSelect != '':
             for ville, cp in self.listeVilles:
@@ -108,7 +108,7 @@ class TextCtrlCp(masked.TextCtrl):
                     event.Skip()
                     return
         
-        # On recherche si plusieurs villes ont ce même code postal
+        # On recherche si plusieurs villes ont ce mÃªme code postal
         ReponsesVilles = []
         for ville, cp in self.listeVilles:
             if cp == textCode :
@@ -118,7 +118,7 @@ class TextCtrlCp(masked.TextCtrl):
         # Code postal introuvable
         if nbreReponses == 0:
             if textCode.strip() != '':
-                dlg = wx.MessageDialog(self, _(u"Ce code postal n'est pas répertorié dans la base de données. \nVérifiez que vous n'avez pas fait d'erreur de saisie."), "Information", wx.OK | wx.ICON_INFORMATION)
+                dlg = wx.MessageDialog(self, _(u"Ce code postal n'est pas rÃ©pertoriÃ© dans la base de donnÃ©es. \nVÃ©rifiez que vous n'avez pas fait d'erreur de saisie."), "Information", wx.OK | wx.ICON_INFORMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
             event.Skip()
@@ -128,24 +128,24 @@ class TextCtrlCp(masked.TextCtrl):
             resultat = ReponsesVilles[0]
             self.ctrlVille.SetValue(resultat)
 
-        # Fenêtre de choix entre plusieurs codes postau
+        # FenÃªtre de choix entre plusieurs codes postau
         if nbreReponses > 1:
             resultat = self.ChoixVilles(textCode, ReponsesVilles)
             if resultat != '':
                 self.ctrlVille.SetValue(resultat)
 
-        # Sélection du texte de la case ville pour l'autocomplete
+        # SÃ©lection du texte de la case ville pour l'autocomplete
         self.ctrlVille.SetSelection(0, len(resultat))
         
         event.Skip()
 
     def ChoixVilles(self, cp, listeReponses):
-        """ Boîte de dialogue pour donner le choix entre plusieurs villes possédant un code postal identique """
+        """ BoÃ®te de dialogue pour donner le choix entre plusieurs villes possÃ©dant un code postal identique """
         resultat = ""
-        titre = _(u"Sélection d'une ville")
+        titre = _(u"SÃ©lection d'une ville")
         nbreReponses = len(listeReponses)
         listeReponses.sort()
-        message = str(nbreReponses) + _(u" villes possèdent le code postal ") + str(cp) + _(u". Double-cliquez sur\nle nom d'une ville pour la sélectionner :")
+        message = str(nbreReponses) + _(u" villes possÃ¨dent le code postal ") + str(cp) + _(u". Double-cliquez sur\nle nom d'une ville pour la sÃ©lectionner :")
         dlg = wx.SingleChoiceDialog(self, message, titre, listeReponses, wx.CHOICEDLG_STYLE)
         if dlg.ShowModal() == wx.ID_OK:
             resultat = dlg.GetStringSelection()
@@ -153,7 +153,7 @@ class TextCtrlCp(masked.TextCtrl):
         return resultat
 
     def SetInfobulleVille(self):
-        """ Créé une info-bulle pour les cp et villes pour indiquer les régions et départements """
+        """ CrÃ©Ã© une info-bulle pour les cp et villes pour indiquer les rÃ©gions et dÃ©partements """
         cp = self.GetValue()
         if cp == "" or cp == "     " :
             controle.SetToolTip(wx.ToolTip(_(u"Saisissez un code postal")))
@@ -162,10 +162,10 @@ class TextCtrlCp(masked.TextCtrl):
                 num_dep = cp[:2]
                 nomDepartement, num_region = self.dictDepartements[num_dep]
                 nomRegion = self.dictRegions[num_region]
-                texte = _(u"Département : %s (%s)\nRégion : %s") % (nomDepartement, num_dep, nomRegion)
+                texte = _(u"DÃ©partement : %s (%s)\nRÃ©gion : %s") % (nomDepartement, num_dep, nomRegion)
                 self.SetToolTip(wx.ToolTip(texte))
             except :
-                self.SetToolTip(wx.ToolTip(_(u"Le code postal saisi ne figure pas dans la base de données")))
+                self.SetToolTip(wx.ToolTip(_(u"Le code postal saisi ne figure pas dans la base de donnÃ©es")))
 
 
 class TextCtrlVille(wx.TextCtrl):
@@ -186,7 +186,7 @@ class TextCtrlVille(wx.TextCtrl):
 
 
     def OnKillFocus(self, event):
-        """ Quand le contrôle ville perd le focus """
+        """ Quand le contrÃ´le ville perd le focus """
         if self.autoComplete == False :
             event.Skip()
             return
@@ -204,14 +204,14 @@ class TextCtrlVille(wx.TextCtrl):
                 if villeSelect == ville:
                     listeCodes.append(cp)
                     
-            # Chargement de la fenêtre de choix des codes
+            # Chargement de la fenÃªtre de choix des codes
             resultat = self.ChoixCodes(villeSelect, listeCodes)
             if resultat != '':
                 self.ctrlCp.SetValue(resultat)
 
         # Si la ville saisie n'existe pas
         if nbreCodes == 0:
-            dlg = wx.MessageDialog(self, _(u"Cette ville n'est pas répertoriée dans la base de données. \nVérifiez que vous n'avez pas fait d'erreur de saisie."), "Information", wx.OK | wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(self, _(u"Cette ville n'est pas rÃ©pertoriÃ©e dans la base de donnÃ©es. \nVÃ©rifiez que vous n'avez pas fait d'erreur de saisie."), "Information", wx.OK | wx.ICON_INFORMATION)
             dlg.ShowModal()
             dlg.Destroy()
         
@@ -249,12 +249,12 @@ class TextCtrlVille(wx.TextCtrl):
             event.Skip()
 
     def ChoixCodes(self, ville, listeReponses):
-        """ Boîte de dialogue pour donner le choix entre plusieurs villes possédant le même nom """
+        """ BoÃ®te de dialogue pour donner le choix entre plusieurs villes possÃ©dant le mÃªme nom """
         resultat = ""
-        titre = _(u"Sélection d'une ville")
+        titre = _(u"SÃ©lection d'une ville")
         nbreReponses = len(listeReponses)
         listeReponses.sort()
-        message = str(nbreReponses) + _(u" villes portent le nom ") + str(ville) + _(u". Double-cliquez sur\nle code postal d'une ville pour la sélectionner :")
+        message = str(nbreReponses) + _(u" villes portent le nom ") + str(ville) + _(u". Double-cliquez sur\nle code postal d'une ville pour la sÃ©lectionner :")
         dlg = wx.SingleChoiceDialog(self, message, titre, listeReponses, wx.CHOICEDLG_STYLE)
         if dlg.ShowModal() == wx.ID_OK:
             resultat = dlg.GetStringSelection()
@@ -277,7 +277,7 @@ class Adresse(wx.Panel):
         self.ctrl_cp.ctrlVille = self.ctrl_ville
         self.bouton_options = wx.Button(self, -1, "...", size=(20, 20))
         
-        # Pour désactiver l'autocomplete du controle VILLE qui ne fonctionne pas sous Linux
+        # Pour dÃ©sactiver l'autocomplete du controle VILLE qui ne fonctionne pas sous Linux
         if "linux" in sys.platform :
             self.ctrl_ville.Enable(False)
 
@@ -290,7 +290,7 @@ class Adresse(wx.Panel):
         self.ctrl_cp.SetMinSize((50, -1))
         self.ctrl_cp.SetToolTip(wx.ToolTip(_(u"Saisissez ici le code postal de la ville")))
         self.ctrl_ville.SetToolTip(wx.ToolTip(_(u"Saisissez ici le nom de la ville")))
-        self.bouton_options.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour rechercher une ville ou pour saisir \nmanuellement une ville non présente dans la base\nde données du logiciel")))
+        self.bouton_options.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour rechercher une ville ou pour saisir \nmanuellement une ville non prÃ©sente dans la base\nde donnÃ©es du logiciel")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=4, vgap=5, hgap=5)
@@ -337,7 +337,7 @@ class Adresse(wx.Panel):
             self.SetValueVille(ville)
         dlg.Destroy()
         
-        # MAJ des données dans les contrôles
+        # MAJ des donnÃ©es dans les contrÃ´les
         self.listeNomsVilles, self.listeVilles, self.dictRegions, self.dictDepartements = Importation_donnees()
         self.ctrl_cp.listeVilles=self.listeVilles
         self.ctrl_ville.listeVilles=self.listeVilles

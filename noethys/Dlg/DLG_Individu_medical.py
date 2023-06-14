@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -34,17 +34,17 @@ class CTRL_Medecin(html.HtmlWindow):
             self.SetStandardFonts()
         self.SetBorders(0)
         self.SetMinSize((-1, hauteur))
-        self.SetToolTip(wx.ToolTip(_(u"Cliquez sur le bouton Modifier pour sélectionner un médecin")))
+        self.SetToolTip(wx.ToolTip(_(u"Cliquez sur le bouton Modifier pour sÃ©lectionner un mÃ©decin")))
 ##        couleurFond = wx.SystemSettings.GetColour(30)
 ##        self.SetBackgroundColour("#F0FBED" )
     
         
     def SetIDmedecin(self, IDmedecin=None):
-        """ Recherche dans la base le médecin de l'individu donné """
+        """ Recherche dans la base le mÃ©decin de l'individu donnÃ© """
         if self.IDindividu == None : return
         db = GestionDB.DB()
         if IDmedecin == None :
-            # Recherche dans la base le médecin de l'individu
+            # Recherche dans la base le mÃ©decin de l'individu
             req = """SELECT IDmedecin FROM individus WHERE IDindividu=%d; """ % self.IDindividu
             db.ExecuterReq(req)
             listeIndividus = db.ResultatReq()
@@ -61,7 +61,7 @@ class CTRL_Medecin(html.HtmlWindow):
                 listeMedecins = []
                 
         else:
-            # Attribue un médecin à l'individu
+            # Attribue un mÃ©decin Ã  l'individu
             req = """SELECT IDmedecin, nom, prenom, rue_resid, cp_resid, ville_resid, tel_cabinet, tel_mobile
             FROM medecins WHERE IDmedecin=%d; """ % IDmedecin
             db.ExecuterReq(req)
@@ -73,7 +73,7 @@ class CTRL_Medecin(html.HtmlWindow):
         
         db.Close()
         
-        # Création du texte à afficher
+        # CrÃ©ation du texte Ã  afficher
         if len(listeMedecins) > 0 :
             nom = listeMedecins[0][1]
             prenom = listeMedecins[0][2]
@@ -91,11 +91,11 @@ class CTRL_Medecin(html.HtmlWindow):
             tel = listeMedecins[0][6]
             if tel == None : tel = ""
             texteMedecin = _(u"Dr %s %s<BR>%s") % (nom, prenom, tel)
-            txtToolTip = _(u"Dr %s %s\n\n%s\n%s %s\n\nTél. Cabinet : %s\nTél. Mobile : %s") % (nom, prenom, rue, cp, ville, tel, mobile)
+            txtToolTip = _(u"Dr %s %s\n\n%s\n%s %s\n\nTÃ©l. Cabinet : %s\nTÃ©l. Mobile : %s") % (nom, prenom, rue, cp, ville, tel, mobile)
             self.SetToolTip(wx.ToolTip(txtToolTip))
         else:
             texteMedecin = None
-            self.SetToolTip(wx.ToolTip(_(u"Cliquez sur le bouton Modifier pour sélectionner un médecin")))
+            self.SetToolTip(wx.ToolTip(_(u"Cliquez sur le bouton Modifier pour sÃ©lectionner un mÃ©decin")))
         self.SetTexteMedecin(texteMedecin)
     
     def DetacherMedecin(self):
@@ -105,14 +105,14 @@ class CTRL_Medecin(html.HtmlWindow):
         self.IDmedecin = None
         db.Close()
         self.SetTexteMedecin(None)
-        self.SetToolTip(wx.ToolTip(_(u"Cliquez sur le bouton Modifier pour sélectionner un médecin")))
+        self.SetToolTip(wx.ToolTip(_(u"Cliquez sur le bouton Modifier pour sÃ©lectionner un mÃ©decin")))
         
     def SetTexteMedecin(self, texteMedecin=""):
         if texteMedecin == None or texteMedecin == "" :
-            # Si pas de médecin
+            # Si pas de mÃ©decin
             texte = u"""<CENTER><IMG SRC="Static/Images/Special/Medecin_gris.png"></CENTER>"""
         else:
-            # Si médecin sélectionné
+            # Si mÃ©decin sÃ©lectionnÃ©
             texte = u"""
             <CENTER>
             <IMG SRC="Static/Images/48x48/Medecin-avecbords.png"><BR>
@@ -148,16 +148,16 @@ class Panel(wx.Panel):
         self.bouton_modifier_vaccin = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Modifier.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_supprimer_vaccin = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Supprimer.png"), wx.BITMAP_TYPE_ANY))
         
-        # Problemes de santé
-        self.staticbox_problemes_staticbox = wx.StaticBox(self, -1, _(u"Informations médicales"))
+        # Problemes de santÃ©
+        self.staticbox_problemes_staticbox = wx.StaticBox(self, -1, _(u"Informations mÃ©dicales"))
         self.ctrl_problemes = OL_Pb_sante.ListView(self, IDindividu=IDindividu, id=-1, name="OL_problemes", style=wx.LC_NO_HEADER|wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL)
         self.ctrl_problemes.SetMinSize((150, 20))
         self.bouton_ajouter_probleme = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Ajouter.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_modifier_probleme = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Modifier.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_supprimer_probleme = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Supprimer.png"), wx.BITMAP_TYPE_ANY))
        
-        # Médecin traitant
-        self.staticbox_medecin_staticbox = wx.StaticBox(self, -1, _(u"Médecin traitant"))
+        # MÃ©decin traitant
+        self.staticbox_medecin_staticbox = wx.StaticBox(self, -1, _(u"MÃ©decin traitant"))
         self.bouton_medecin = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Modifier.png"), wx.BITMAP_TYPE_ANY)) #wx.BitmapButton(self, -1, wx.Bitmap(u"Images/32x32/Medecin.png", wx.BITMAP_TYPE_ANY))
         self.bouton_detacher_medecin = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Supprimer.png"), wx.BITMAP_TYPE_ANY))
         
@@ -166,7 +166,7 @@ class Panel(wx.Panel):
         self.__set_properties()
         self.__do_layout()
         
-##        # Initialisation des contrôles
+##        # Initialisation des contrÃ´les
 ##        self.ctrl_maladies.MAJ()
 ##        self.ctrl_vaccins.MAJ()
 ##        self.ctrl_problemes.MAJ()
@@ -184,13 +184,13 @@ class Panel(wx.Panel):
     def __set_properties(self):
         self.ctrl_maladies.SetToolTip(wx.ToolTip(_(u"Liste des maladies dont le vaccin est obligatoire")))
         self.bouton_ajouter_vaccin.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter un vaccin")))
-        self.bouton_modifier_vaccin.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le vaccin sélectionné")))
-        self.bouton_supprimer_vaccin.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le vaccin sélectionné")))
-        self.bouton_ajouter_probleme.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter une information médicale")))
-        self.bouton_modifier_probleme.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier l'information médicale sélectionnée dans la liste")))
-        self.bouton_supprimer_probleme.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer l'information médicale sélectionnée dans la liste")))
-        self.bouton_medecin.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sélectionner un médecin traitant")))
-        self.bouton_detacher_medecin.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour détacher le médecin de cette fiche individuelle")))
+        self.bouton_modifier_vaccin.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le vaccin sÃ©lectionnÃ©")))
+        self.bouton_supprimer_vaccin.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le vaccin sÃ©lectionnÃ©")))
+        self.bouton_ajouter_probleme.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter une information mÃ©dicale")))
+        self.bouton_modifier_probleme.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier l'information mÃ©dicale sÃ©lectionnÃ©e dans la liste")))
+        self.bouton_supprimer_probleme.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer l'information mÃ©dicale sÃ©lectionnÃ©e dans la liste")))
+        self.bouton_medecin.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sÃ©lectionner un mÃ©decin traitant")))
+        self.bouton_detacher_medecin.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour dÃ©tacher le mÃ©decin de cette fiche individuelle")))
 ##        self.ctrl_maladies.SetMinSize((130, -1))
         self.ctrl_medecin.SetMinSize((90, 100))
 
@@ -215,7 +215,7 @@ class Panel(wx.Panel):
         staticbox_vaccinations.Add(grid_sizer_vaccinations, 1, wx.ALL|wx.EXPAND, 5)
         grid_sizer_base.Add(staticbox_vaccinations, 1, wx.LEFT|wx.RIGHT|wx.TOP|wx.EXPAND, 5)
         
-        # Problèmes
+        # ProblÃ¨mes
         staticbox_problemes = wx.StaticBoxSizer(self.staticbox_problemes_staticbox, wx.VERTICAL)
         grid_sizer_problemes.Add(self.ctrl_problemes, 1, wx.EXPAND, 0)
         grid_sizer_com_problemes.Add(self.bouton_ajouter_probleme, 0, 0, 0)
@@ -227,7 +227,7 @@ class Panel(wx.Panel):
         staticbox_problemes.Add(grid_sizer_problemes, 1, wx.ALL|wx.EXPAND, 5)
         grid_sizer_bas.Add(staticbox_problemes, 1, wx.EXPAND, 0)
         
-        # Médecin
+        # MÃ©decin
         staticbox_medecin = wx.StaticBoxSizer(self.staticbox_medecin_staticbox, wx.VERTICAL)
         grid_sizer_medecin = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
         grid_sizer_medecin.Add(self.ctrl_medecin, 1, wx.EXPAND, 0)
@@ -250,7 +250,7 @@ class Panel(wx.Panel):
         grid_sizer_base.AddGrowableCol(0) 
     
     def MAJ(self):
-        # Initialisation des contrôles
+        # Initialisation des contrÃ´les
         self.IDindividu = self.GetGrandParent().IDindividu
         if self.majEffectuee == False :
             self.ctrl_medecin.SetIDmedecin(None)
@@ -284,7 +284,7 @@ class Panel(wx.Panel):
     
     def Detacher_medecin(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("individus_medecin", "modifier") == False : return
-        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment détacher ce médecin ?"), _(u"Détacher un médecin"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment dÃ©tacher ce mÃ©decin ?"), _(u"DÃ©tacher un mÃ©decin"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         if dlg.ShowModal() == wx.ID_YES :
             self.ctrl_medecin.DetacherMedecin() 
         dlg.Destroy()

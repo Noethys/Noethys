@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-17 Ivan LUCAS
@@ -50,14 +50,14 @@ class Track(object):
                 else :
                     self.nomTitulaires = _(u"%d loueurs") % len(liste_locations)
 
-        # Récupération des réponses des questionnaires
+        # RÃ©cupÃ©ration des rÃ©ponses des questionnaires
         for dictQuestion in parent.liste_questions :
             setattr(self, "question_%d" % dictQuestion["IDquestion"], parent.GetReponse(dictQuestion["IDquestion"], self.IDproduit))
 
     
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # Récupération des paramètres perso
+        # RÃ©cupÃ©ration des paramÃ¨tres perso
         self.selection_multiple = kwds.pop("selection_multiple", False)
         self.afficher_locations = kwds.pop("afficher_locations", True)
         self.afficher_detail_location = kwds.pop("afficher_detail_location", True)
@@ -93,7 +93,7 @@ class ListView(FastObjectListView):
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
-        """ Récupération des données """
+        """ RÃ©cupÃ©ration des donnÃ©es """
         listeID = None
 
         # Importation des titulaires
@@ -135,7 +135,7 @@ class ListView(FastObjectListView):
                 if item[0] not in listeID :
                     valide = False
 
-            # Mémorisation position
+            # MÃ©morisation position
             if self.dictPositions != None and track.IDproduit in self.dictPositions:
                 track.position = self.dictPositions[track.IDproduit]
 
@@ -155,7 +155,7 @@ class ListView(FastObjectListView):
         self.evenRowsBackColor = wx.Colour(255, 255, 255)
         self.useExpansionColumn = True
 
-        # Préparation de la listeImages
+        # PrÃ©paration de la listeImages
         self.AddNamedImages("indisponible", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Interdit.png"), wx.BITMAP_TYPE_PNG))
         self.AddNamedImages("disponible", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Ok4.png"), wx.BITMAP_TYPE_PNG))
 
@@ -177,7 +177,7 @@ class ListView(FastObjectListView):
             elif position == 1 :
                 return _(u"1er")
             else :
-                return _(u"%dème") % position
+                return _(u"%dÃ¨me") % position
 
         def FormateDisponible(disponible):
             if disponible == 1 :
@@ -190,11 +190,11 @@ class ListView(FastObjectListView):
         dict_colonnes = {
             "IDproduit" : ColumnDefn(u"", "left", 0, "IDproduit", typeDonnee="entier"),
             "nom": ColumnDefn(_(u"Nom"), 'left', 170, "nom", typeDonnee="texte"),
-            "nomCategorie": ColumnDefn(_(u"Catégorie"), 'left', 170, "nomCategorie", typeDonnee="texte"),
+            "nomCategorie": ColumnDefn(_(u"CatÃ©gorie"), 'left', 170, "nomCategorie", typeDonnee="texte"),
             "quantite": ColumnDefn(_(u"Stock initial"), "left", 70, "quantite", typeDonnee="entier"),
-            "disponible": ColumnDefn(_(u"Disponibilité"), "left", 110, "disponible", typeDonnee="texte", stringConverter=FormateDisponible, imageGetter=GetImageDisponible),
+            "disponible": ColumnDefn(_(u"DisponibilitÃ©"), "left", 110, "disponible", typeDonnee="texte", stringConverter=FormateDisponible, imageGetter=GetImageDisponible),
             "nomTitulaires": ColumnDefn(_(u"Loueur"), "left", 200, "nomTitulaires", typeDonnee="texte"),
-            "date_debut": ColumnDefn(_(u"Début"), "left", 120, "date_debut", typeDonnee="texte", stringConverter=FormateDate),
+            "date_debut": ColumnDefn(_(u"DÃ©but"), "left", 120, "date_debut", typeDonnee="texte", stringConverter=FormateDate),
             "date_fin": ColumnDefn(_(u"Fin"), "left", 120, "date_fin", typeDonnee="texte", stringConverter=FormateDate),
             "position": ColumnDefn(u"Position", "left", 80, "position", typeDonnee="entier", stringConverter=FormatePosition),
         }
@@ -235,7 +235,7 @@ class ListView(FastObjectListView):
             self.selectionTrack = None
         self.InitModel()
         self.InitObjectListView()
-        # Sélection d'un item
+        # SÃ©lection d'un item
         if self.selectionTrack != None :
             self.SelectObject(self.selectionTrack, deselectOthers=True, ensureVisible=True)
         self.selectionID = None
@@ -257,7 +257,7 @@ class ListView(FastObjectListView):
         else:
             noSelection = False
 
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         if self.on_double_click == "modification":
@@ -298,7 +298,7 @@ class ListView(FastObjectListView):
 
         menuPop.AppendSeparator()
 
-        # Génération automatique des fonctions standards
+        # GÃ©nÃ©ration automatique des fonctions standards
         self.GenerationContextMenu(menuPop, titre=_(u"Liste des produits"))
 
         self.PopupMenu(menuPop)
@@ -313,7 +313,7 @@ class ListView(FastObjectListView):
 
     def Modifier(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun produit à modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucun produit Ã  modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -326,13 +326,13 @@ class ListView(FastObjectListView):
 
     def Supprimer(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun produit à supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucun produit Ã  supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         track = self.Selection()[0]
         
-        # Vérifie que ce produit n'a pas déjà été attribué à une location
+        # VÃ©rifie que ce produit n'a pas dÃ©jÃ  Ã©tÃ© attribuÃ© Ã  une location
         DB = GestionDB.DB()
         req = """SELECT COUNT(IDlocation)
         FROM locations 
@@ -342,7 +342,7 @@ class ListView(FastObjectListView):
         nbreLocationsRattachees = int(DB.ResultatReq()[0][0])
         DB.Close()
         if nbreLocationsRattachees > 0 :
-            dlg = wx.MessageDialog(self, _(u"Ce produit a déjà été attribué à %d location(s).\n\nVous ne pouvez donc pas le supprimer !") % nbreLocationsRattachees, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Ce produit a dÃ©jÃ  Ã©tÃ© attribuÃ© Ã  %d location(s).\n\nVous ne pouvez donc pas le supprimer !") % nbreLocationsRattachees, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -405,27 +405,27 @@ class ListView(FastObjectListView):
         if position == 1 :
             texte_position = u"1er"
         elif position > 1 :
-            texte_position = u"%dème" % position
+            texte_position = u"%dÃ¨me" % position
         else :
             texte_position = u""
 
-        # Met à jour la liste des propositions
+        # Met Ã  jour la liste des propositions
         self.SetFiltreIDproduit(listeID)
 
-        # Création d'un label
+        # CrÃ©ation d'un label
         if len(listeID) == 0 :
-            texte = _(u"Aucun produit proposé.")
+            texte = _(u"Aucun produit proposÃ©.")
         elif len(listeID) == 1 :
-            texte = _(u"1 produit proposé (meilleure position : %s) :") % texte_position
+            texte = _(u"1 produit proposÃ© (meilleure position : %s) :") % texte_position
         else :
-            texte = _(u"%d produits proposés (meilleure position : %s) :") % (len(listeID), texte_position)
+            texte = _(u"%d produits proposÃ©s (meilleure position : %s) :") % (len(listeID), texte_position)
         return texte
 
 
     def Consulter(self, event=None):
         """ Consulter la fiche produit """
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun produit à consulter dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucun produit Ã  consulter dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return

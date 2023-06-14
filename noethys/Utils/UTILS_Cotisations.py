@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-14 Ivan LUCAS
@@ -21,7 +21,7 @@ import sys
 import traceback
 
 from Utils import UTILS_Config
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"â‚¬")
 MONNAIE_SINGULIER = UTILS_Config.GetParametre("monnaie_singulier", _(u"Euro"))
 MONNAIE_DIVISION = UTILS_Config.GetParametre("monnaie_division", _(u"Centime"))
 
@@ -45,11 +45,11 @@ from Utils import UTILS_Fichiers
 
 class Cotisation():
     def __init__(self):
-        """ Récupération de toutes les données de base """
+        """ RÃ©cupÃ©ration de toutes les donnÃ©es de base """
         
         DB = GestionDB.DB()
             
-        # Récupération des infos sur l'organisme
+        # RÃ©cupÃ©ration des infos sur l'organisme
         req = """SELECT nom, rue, cp, ville, tel, fax, mail, site, num_agrement, num_siret, code_ape
         FROM organisateur
         WHERE IDorganisateur=1;""" 
@@ -76,14 +76,14 @@ class Cotisation():
         self.dictTitulaires = UTILS_Titulaires.GetTitulaires() 
         self.dictIndividus = UTILS_Titulaires.GetIndividus() 
         
-        # Récupération des infos de base individus et familles
+        # RÃ©cupÃ©ration des infos de base individus et familles
         self.infosIndividus = UTILS_Infos_individus.Informations() 
 
-        # Récupération des questionnaires
+        # RÃ©cupÃ©ration des questionnaires
         self.Questionnaires = UTILS_Questionnaires.ChampsEtReponses(type="famille")
 
     def Supprime_accent(self, texte):
-        liste = [ (u"é", u"e"), (u"è", u"e"), (u"ê", u"e"), (u"ë", u"e"), (u"à", u"a"), (u"û", u"u"), (u"ô", u"o"), (u"ç", u"c"), (u"î", u"i"), (u"ï", u"i"),]
+        liste = [ (u"Ã©", u"e"), (u"Ã¨", u"e"), (u"Ãª", u"e"), (u"Ã«", u"e"), (u"Ã ", u"a"), (u"Ã»", u"u"), (u"Ã´", u"o"), (u"Ã§", u"c"), (u"Ã®", u"i"), (u"Ã¯", u"i"),]
         for a, b in liste :
             texte = texte.replace(a, b)
             texte = texte.replace(a.upper(), b.upper())
@@ -98,18 +98,18 @@ class Cotisation():
 
     def GetDonneesImpression(self, listeCotisations=[]):
         """ Impression des factures """
-        dlgAttente = wx.BusyInfo(_(u"Recherche des données..."), None)
+        dlgAttente = wx.BusyInfo(_(u"Recherche des donnÃ©es..."), None)
         if 'phoenix' not in wx.PlatformInfo:
             wx.Yield()
         
-        # Récupère les données de la facture
+        # RÃ©cupÃ¨re les donnÃ©es de la facture
         if len(listeCotisations) == 0 : conditions = "()"
         elif len(listeCotisations) == 1 : conditions = "(%d)" % listeCotisations[0]
         else : conditions = str(tuple(listeCotisations))
 
         DB = GestionDB.DB()
         
-        # Récupération des activités
+        # RÃ©cupÃ©ration des activitÃ©s
         req = """SELECT IDactivite, nom, abrege
         FROM activites
         ORDER BY date_fin DESC;"""
@@ -120,7 +120,7 @@ class Cotisation():
             dictTemp = {"IDactivite":IDactivite, "nom":nom, "abrege":abrege}
             dictActivites[IDactivite] = dictTemp
 
-        # Récupère les prestations
+        # RÃ©cupÃ¨re les prestations
         dictFacturation = {}
         req = """SELECT IDcotisation, SUM(montant)
         FROM prestations
@@ -132,7 +132,7 @@ class Cotisation():
         for IDcotisation, montant in listePrestations :
             dictFacturation[IDcotisation] = {"montant":montant, "ventilation":0.0, "dateReglement":None,"modeReglement":None}
         
-        # Récupère la ventilation
+        # RÃ©cupÃ¨re la ventilation
         req = """SELECT IDcotisation, SUM(ventilation.montant), MIN(reglements.date), MIN(modes_reglements.label)
         FROM ventilation
         LEFT JOIN prestations ON prestations.IDprestation = ventilation.IDprestation
@@ -172,7 +172,7 @@ class Cotisation():
             del dlgAttente
             return False
         
-        # Création des dictRappels
+        # CrÃ©ation des dictRappels
         dictDonnees = {}
         dictChampsFusion = {}
         for item in listeDonnees :
@@ -200,7 +200,7 @@ class Cotisation():
             if activites == None :
                 activites = ""
             
-            # Activités
+            # ActivitÃ©s
             texte = ""
             if len(activites) > 0 :
                 listeTemp = []
@@ -221,11 +221,11 @@ class Cotisation():
             else:
                 typeStr = _(u"Cotisation individuelle")
                         
-            # Dépôt
+            # DÃ©pÃ´t
             if IDdepot_cotisation == None :
-                depotStr = _(u"Non déposée")
+                depotStr = _(u"Non dÃ©posÃ©e")
             else:
-                depotStr = _(u"Dépôt n°%d") % IDdepot_cotisation
+                depotStr = _(u"DÃ©pÃ´t nÂ°%d") % IDdepot_cotisation
 
             # Nom des titulaires de famille
             beneficiaires = ""
@@ -278,7 +278,7 @@ class Cotisation():
             regleStrLettres = UTILS_Conversion.trad(ventilation, MONNAIE_SINGULIER, MONNAIE_DIVISION)
             soldeStrLettres = UTILS_Conversion.trad(solde, MONNAIE_SINGULIER, MONNAIE_DIVISION)
 
-            # Mémorisation des données
+            # MÃ©morisation des donnÃ©es
             dictDonnee = {
                 "select" : True,
                 
@@ -344,7 +344,7 @@ class Cotisation():
             if IDfamille != None :
                 dictDonnee.update(self.infosIndividus.GetDictValeurs(mode="famille", ID=IDfamille, formatChamp=True))
             
-            # Ajoute les réponses des questionnaires
+            # Ajoute les rÃ©ponses des questionnaires
             for dictReponse in self.Questionnaires.GetDonnees(IDfamille) :
                 dictDonnee[dictReponse["champ"]] = dictReponse["reponse"]
                 if dictReponse["controle"] == "codebarres" :
@@ -364,16 +364,16 @@ class Cotisation():
 
     def Impression(self, listeCotisations=[], nomDoc=None, afficherDoc=True, dictOptions=None, repertoire=None, repertoireTemp=False):
         """ Impression des factures """
-        # Récupération des données à partir des IDrappel
+        # RÃ©cupÃ©ration des donnÃ©es Ã  partir des IDrappel
         resultat = self.GetDonneesImpression(listeCotisations)
         if resultat == False :
             return False
         dictCotisations, dictChampsFusion = resultat
         
-        # Récupération des paramètres d'affichage
+        # RÃ©cupÃ©ration des paramÃ¨tres d'affichage
         if dictOptions == None :
             if afficherDoc == False :
-                dlg = DLG_Apercu_cotisation.Dialog(None, titre=_(u"Sélection des paramètres de la cotisation"), intro=_(u"Sélectionnez ici les paramètres d'affichage de la cotisation."))
+                dlg = DLG_Apercu_cotisation.Dialog(None, titre=_(u"SÃ©lection des paramÃ¨tres de la cotisation"), intro=_(u"SÃ©lectionnez ici les paramÃ¨tres d'affichage de la cotisation."))
                 dlg.bouton_ok.SetImageEtTexte("Images/32x32/Valider.png", _("Ok"))
             else :
                 dlg = DLG_Apercu_cotisation.Dialog(None)
@@ -384,10 +384,10 @@ class Cotisation():
                 dlg.Destroy()
                 return False
 
-        # Création des PDF à l'unité
+        # CrÃ©ation des PDF Ã  l'unitÃ©
         def CreationPDFunique(repertoireCible=""):
             dictPieces = {}
-            dlgAttente = wx.BusyInfo(_(u"Génération des cotisations à l'unité au format PDF..."), None)
+            dlgAttente = wx.BusyInfo(_(u"GÃ©nÃ©ration des cotisations Ã  l'unitÃ© au format PDF..."), None)
             if 'phoenix' not in wx.PlatformInfo:
                 wx.Yield()
             try :
@@ -409,18 +409,18 @@ class Cotisation():
             except Exception as err:
                 del dlgAttente
                 traceback.print_exc(file=sys.stdout)
-                dlg = wx.MessageDialog(None, _(u"Désolé, le problème suivant a été rencontré dans l'édition des cotisations : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
+                dlg = wx.MessageDialog(None, _(u"DÃ©solÃ©, le problÃ¨me suivant a Ã©tÃ© rencontrÃ© dans l'Ã©dition des cotisations : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
         
-        # Répertoire souhaité par l'utilisateur
+        # RÃ©pertoire souhaitÃ© par l'utilisateur
         if repertoire != None :
             resultat = CreationPDFunique(repertoire)
             if resultat == False :
                 return False
 
-        # Répertoire TEMP (pour Emails)
+        # RÃ©pertoire TEMP (pour Emails)
         dictPieces = {}
         if repertoireTemp == True :
             dictPieces = CreationPDFunique(UTILS_Fichiers.GetRepTemp())
@@ -429,10 +429,10 @@ class Cotisation():
 
         # Fabrication du PDF global
         if repertoireTemp == False :
-            dlgAttente = wx.BusyInfo(_(u"Création du PDF des cotisations..."), None)
+            dlgAttente = wx.BusyInfo(_(u"CrÃ©ation du PDF des cotisations..."), None)
             if 'phoenix' not in wx.PlatformInfo:
                 wx.Yield()
-            self.EcritStatusbar(_(u"Création du PDF des cotisations en cours... veuillez patienter..."))
+            self.EcritStatusbar(_(u"CrÃ©ation du PDF des cotisations en cours... veuillez patienter..."))
             try :
                 UTILS_Impression_cotisation.Impression(dictCotisations, dictOptions, IDmodele=dictOptions["IDmodele"], ouverture=afficherDoc, nomFichier=nomDoc)
                 self.EcritStatusbar("")
@@ -440,7 +440,7 @@ class Cotisation():
             except Exception as err:
                 del dlgAttente
                 traceback.print_exc(file=sys.stdout)
-                dlg = wx.MessageDialog(None, u"Désolé, le problème suivant a été rencontré dans l'édition des cotisations : \n\n%s" % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
+                dlg = wx.MessageDialog(None, u"DÃ©solÃ©, le problÃ¨me suivant a Ã©tÃ© rencontrÃ© dans l'Ã©dition des cotisations : \n\n%s" % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False

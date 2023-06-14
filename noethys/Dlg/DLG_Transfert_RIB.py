@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -52,7 +52,7 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         
-        intro = _(u"Utilisez cette fonctionnalité pour convertir les anciens RIB utilisés pour les prélèvements nationaux en mandats SEPA. Noethys a déjà sélectionné les RIB qui peuvent être convertis. Il ne vous reste plus qu'à cliquer sur le bouton VALIDER pour lancer la procédure. Attention, il est conseillé de faire une sauvegarde avant...")
+        intro = _(u"Utilisez cette fonctionnalitÃ© pour convertir les anciens RIB utilisÃ©s pour les prÃ©lÃ¨vements nationaux en mandats SEPA. Noethys a dÃ©jÃ  sÃ©lectionnÃ© les RIB qui peuvent Ãªtre convertis. Il ne vous reste plus qu'Ã  cliquer sur le bouton VALIDER pour lancer la procÃ©dure. Attention, il est conseillÃ© de faire une sauvegarde avant...")
         titre = _(u"Conversion des RIB nationaux en Mandats SEPA")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Configuration.png")
@@ -66,7 +66,7 @@ class Dialog(wx.Dialog):
         self.label_separation1 = wx.StaticText(self, -1, "|")
         self.hyper_tout = Hyperlien(self, label=_(u"Tout cocher"), infobulle=_(u"Cliquez ici pour tout cocher"), URL="tout")
         self.label_separation2 = wx.StaticText(self, -1, "|")
-        self.hyper_rien = Hyperlien(self, label=_(u"Tout décocher"), infobulle=_(u"Cliquez ici pour tout décocher"), URL="rien")
+        self.hyper_rien = Hyperlien(self, label=_(u"Tout dÃ©cocher"), infobulle=_(u"Cliquez ici pour tout dÃ©cocher"), URL="rien")
 
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
         self.bouton_fermer = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")

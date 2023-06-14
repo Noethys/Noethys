@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-17 Ivan LUCAS
@@ -27,7 +27,7 @@ class Track(object):
     
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # Récupération des paramètres perso
+        # RÃ©cupÃ©ration des paramÃ¨tres perso
         self.categorie = kwds.pop("categorie", "")
         self.selectionID = None
         self.selectionTrack = None
@@ -50,7 +50,7 @@ class ListView(FastObjectListView):
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
-        """ Récupération des données """
+        """ RÃ©cupÃ©ration des donnÃ©es """
         listeID = None
         db = GestionDB.DB()
         req = """SELECT IDprofil, label, defaut
@@ -80,7 +80,7 @@ class ListView(FastObjectListView):
         self.evenRowsBackColor = wx.Colour(255, 255, 255)
         self.useExpansionColumn = True
 
-        # Préparation de la listeImages
+        # PrÃ©paration de la listeImages
         imgDefaut = self.AddNamedImages("defaut", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Ok.png"), wx.BITMAP_TYPE_PNG))
 
         def GetImageDefaut(track):
@@ -109,7 +109,7 @@ class ListView(FastObjectListView):
             self.selectionTrack = None
         self.InitModel()
         self.InitObjectListView()
-        # Sélection d'un item
+        # SÃ©lection d'un item
         if self.selectionTrack != None :
             self.SelectObject(self.selectionTrack, deselectOthers=True, ensureVisible=True)
         self.selectionID = None
@@ -126,7 +126,7 @@ class ListView(FastObjectListView):
             noSelection = False
             ID = self.Selection()[0].IDprofil
                 
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Modifier
@@ -164,8 +164,8 @@ class ListView(FastObjectListView):
 
         menuPop.AppendSeparator()
 
-        # Item Par défaut
-        item = wx.MenuItem(menuPop, 70, _(u"Définir comme profil par défaut"))
+        # Item Par dÃ©faut
+        item = wx.MenuItem(menuPop, 70, _(u"DÃ©finir comme profil par dÃ©faut"))
         if noSelection == False :
             if self.Selection()[0].defaut == 1 :
                 bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Ok.png"), wx.BITMAP_TYPE_PNG)
@@ -177,7 +177,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
 
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
+        item = wx.MenuItem(menuPop, 40, _(u"AperÃ§u avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -230,7 +230,7 @@ class ListView(FastObjectListView):
 
     def Modifier(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun profil à modifier !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucun profil Ã  modifier !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -257,7 +257,7 @@ class ListView(FastObjectListView):
 
     def Supprimer(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun profil à supprimer !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucun profil Ã  supprimer !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -269,7 +269,7 @@ class ListView(FastObjectListView):
             # Suppression
             DB.ReqDEL("profils", "IDprofil", IDprofil)
             DB.ReqDEL("profils_parametres", "IDprofil", IDprofil)
-            # Réattribution du défaut
+            # RÃ©attribution du dÃ©faut
             defaut = None
             for track in self.donnees :
                 if track.IDprofil != IDprofil :
@@ -284,9 +284,9 @@ class ListView(FastObjectListView):
         dlg.Destroy()
 
     def Dupliquer(self, event):
-        """ Dupliquer un modèle """
+        """ Dupliquer un modÃ¨le """
         if len(self.Selection()) == 0:
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun profil à dupliquer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucun profil Ã  dupliquer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -300,7 +300,7 @@ class ListView(FastObjectListView):
         dictModifications = {"label": _(u"Copie de %s") % label, "defaut" : 0}
         newIDprofil = DB.Dupliquer("profils", "IDprofil", conditions, dictModifications)
 
-        # Duplication des paramètres
+        # Duplication des paramÃ¨tres
         conditions = "IDprofil=%d" % IDprofil
         dictModifications = {"IDprofil": newIDprofil}
         newIDparametre = DB.Dupliquer("profils_parametres", "IDparametre", conditions, dictModifications)
@@ -310,7 +310,7 @@ class ListView(FastObjectListView):
 
     def SetDefaut(self, event=None):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun profil dans la liste !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucun profil dans la liste !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-12 Ivan LUCAS
@@ -53,7 +53,7 @@ from Utils import UTILS_Depannage
 
 
 def Autodetection(parent=None):
-    """ Auto-détection d'anomalies """
+    """ Auto-dÃ©tection d'anomalies """
     # Recherche d'anomalies
     d = UTILS_Depannage.Depannage(parent)
     listeResultats = d.GetResultats()
@@ -62,7 +62,7 @@ def Autodetection(parent=None):
     if nbreAnomalies == 0 :
         return None
     # Propose une correction des anomalies
-    dlg = wx.MessageDialog(parent, _(u"Des anomalies ont été détectées dans ce fichier de données.\n\nSouhaitez-vous lancer maintenant le correcteur d'anomalies ?"), _(u"Anomalies"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+    dlg = wx.MessageDialog(parent, _(u"Des anomalies ont Ã©tÃ© dÃ©tectÃ©es dans ce fichier de donnÃ©es.\n\nSouhaitez-vous lancer maintenant le correcteur d'anomalies ?"), _(u"Anomalies"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
     reponse = dlg.ShowModal() 
     dlg.Destroy()
     if reponse == wx.ID_YES :
@@ -112,20 +112,20 @@ class CTRL(CT.CustomTreeCtrl):
         self.EnableSelectionVista(True)
 
     def MAJ(self):
-        # Get données
+        # Get donnÃ©es
         d = UTILS_Depannage.Depannage()
         listeResultats = d.GetResultats()
         nbreAnomalies = d.GetNbreAnomalies() 
             
         # RAZ ctrl
         self.DeleteAllItems()
-        if nbreAnomalies == 0 : texte = _(u"Aucune anomalie détectée")
-        elif nbreAnomalies == 1 : texte = _(u"1 anomalie détectée :")
-        else : texte = _(u"%d anomalies détectées :") % nbreAnomalies
+        if nbreAnomalies == 0 : texte = _(u"Aucune anomalie dÃ©tectÃ©e")
+        elif nbreAnomalies == 1 : texte = _(u"1 anomalie dÃ©tectÃ©e :")
+        else : texte = _(u"%d anomalies dÃ©tectÃ©es :") % nbreAnomalies
         self.root = self.AddRoot(texte)
         self.SetItemBold(self.root, True)
         
-        # Création de l'ImageList
+        # CrÃ©ation de l'ImageList
         il = wx.ImageList(16, 16)
         self.img_ok = il.Add(wx.Bitmap(Chemins.GetStaticPath('Images/16x16/Ok4.png'), wx.BITMAP_TYPE_PNG))
         self.img_pasok = il.Add(wx.Bitmap(Chemins.GetStaticPath('Images/16x16/Interdit2.png'), wx.BITMAP_TYPE_PNG))
@@ -163,7 +163,7 @@ class CTRL(CT.CustomTreeCtrl):
             niveauRubrique = self.GetNextChild(self.root, index1+1)[0]
 
     def Correction(self):
-        """ Obtient la liste des éléments cochés """
+        """ Obtient la liste des Ã©lÃ©ments cochÃ©s """
         nbreCorrections = 0
         DB = GestionDB.DB()
         niveauRubrique = self.GetFirstChild(self.root)[0]
@@ -186,11 +186,11 @@ class CTRL(CT.CustomTreeCtrl):
         DB.Close() 
 
         if nbreCorrections == 0 :
-            message = _(u"Aucune correction n'a été effectuée !")
+            message = _(u"Aucune correction n'a Ã©tÃ© effectuÃ©e !")
         elif nbreCorrections == 1 :
-            message = _(u"1 correction a bien été effectuée !")
+            message = _(u"1 correction a bien Ã©tÃ© effectuÃ©e !")
         else :
-            message = _(u"%d corrections ont bien été effectuées !") % nbreCorrections
+            message = _(u"%d corrections ont bien Ã©tÃ© effectuÃ©es !") % nbreCorrections
         dlg = wx.MessageDialog(self, message, _(u"Information"), wx.OK | wx.ICON_INFORMATION)
         dlg.ShowModal()
         dlg.Destroy()
@@ -203,7 +203,7 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, id=-1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER)
         self.sauvegardeEffectuee = False
         
-        intro = _(u"Cette fonction permet de détecter et corriger automatiquement certaines anomalies qui pourraient survenir après des erreurs de manipulation ou des bugs non identifiés. Cochez les éléments à corriger puis cliquez sur le bouton Corriger.")
+        intro = _(u"Cette fonction permet de dÃ©tecter et corriger automatiquement certaines anomalies qui pourraient survenir aprÃ¨s des erreurs de manipulation ou des bugs non identifiÃ©s. Cochez les Ã©lÃ©ments Ã  corriger puis cliquez sur le bouton Corriger.")
         titre = _(u"Correcteur d'anomalies")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Depannage.png")
@@ -212,10 +212,10 @@ class Dialog(wx.Dialog):
         self.ctrl_resultats = CTRL(self) #MyHtml(self)
         self.hyper_tout = Hyperlien(self, label=_(u"Tout cocher"), infobulle=_(u"Cliquez ici pour tout cocher"), URL="tout")
         self.label_separation = wx.StaticText(self, -1, u"|")
-        self.hyper_rien = Hyperlien(self, label=_(u"Tout décocher"), infobulle=_(u"Cliquez ici pour tout décocher"), URL="rien")
+        self.hyper_rien = Hyperlien(self, label=_(u"Tout dÃ©cocher"), infobulle=_(u"Cliquez ici pour tout dÃ©cocher"), URL="rien")
 
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
-        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Corriger les anomalies cochées"), cheminImage="Images/32x32/Depannage.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Corriger les anomalies cochÃ©es"), cheminImage="Images/32x32/Depannage.png")
         self.bouton_fermer = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         self.__set_properties()
@@ -225,12 +225,12 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
         
-        # Init contrôles
+        # Init contrÃ´les
         self.ctrl_resultats.MAJ() 
 
     def __set_properties(self):
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
-        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour corriger les anomalies cochées")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour corriger les anomalies cochÃ©es")))
         self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         self.SetMinSize((800, 600))
 
@@ -272,7 +272,7 @@ class Dialog(wx.Dialog):
     def OnBoutonOk(self, event):
         """ Lance la correction """
         if self.sauvegardeEffectuee == False :
-            dlg = wx.MessageDialog(self, _(u"Souhaitez-vous sauvegarder votre fichier de données avant la correction (Recommandé) ?"), _(u"Annulation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+            dlg = wx.MessageDialog(self, _(u"Souhaitez-vous sauvegarder votre fichier de donnÃ©es avant la correction (RecommandÃ©) ?"), _(u"Annulation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
             reponse = dlg.ShowModal()
             dlg.Destroy()
             

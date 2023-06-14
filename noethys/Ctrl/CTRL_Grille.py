@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activitÈs
+# Application :    Noethys, gestion multi-activit√©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-15 Ivan LUCAS
@@ -61,14 +61,14 @@ from Ctrl import CTRL_Grille_renderers
 from Utils import UTILS_Texte
 
 
-# ParamËtres personnalisables
+# Param√®tres personnalisables
 AFFICHE_NOM_GROUPE = True
 AFFICHE_COLONNE_MEMO = True
 AFFICHE_COLONNE_TRANSPORTS = True
 FORMAT_LABEL_LIGNE = "nom_prenom"
 MASQUER_UNITES_FERMEES = False
 
-# Colonnes unitÈs
+# Colonnes unit√©s
 HAUTEUR_LIGNE = 30
 LARGEUR_COLONNE_UNITE = 50
 LARGEUR_COLONNE_MEMO = 170
@@ -76,7 +76,7 @@ LARGEUR_COLONNE_TRANSPORTS = 100
 LARGEUR_COLONNE_MULTIHORAIRES = 200
 LARGEUR_COLONNE_EVENEMENT = 200
 
-# Colonnes ActivitÈs
+# Colonnes Activit√©s
 LARGEUR_COLONNE_ACTIVITE = 18
 COULEUR_COLONNE_ACTIVITE = wx.Colour(205, 144, 233)
 
@@ -99,9 +99,9 @@ DICT_ECOLES = {}
 
 
 def DateComplete(dateDD):
-    """ Transforme une date DD en date complËte : Ex : lundi 15 janvier 2008 """
+    """ Transforme une date DD en date compl√®te : Ex : lundi 15 janvier 2008 """
     listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
-    listeMois = (_(u"janvier"), _(u"fÈvrier"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"ao˚t"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"dÈcembre"))
+    listeMois = (_(u"janvier"), _(u"f√©vrier"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"ao√ªt"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"d√©cembre"))
     dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
     return dateComplete
 
@@ -172,7 +172,7 @@ def Additionne_intervalles_temps(intervals=[]):
     return result
 
 def SoustractionHeures(heure_max, heure_min):
-    """ Effectue l'opÈration heure_max - heure_min. Renvoi un timedelta """
+    """ Effectue l'op√©ration heure_max - heure_min. Renvoi un timedelta """
     h_max = datetime.timedelta(hours=heure_max.hour, minutes=heure_max.minute)
     h_min =  datetime.timedelta(hours=heure_min.hour, minutes=heure_min.minute)
     return h_max - h_min
@@ -195,7 +195,7 @@ def ConvertListeToStr(liste=[]):
     return ";".join([str(x) for x in liste])
 
 def CompareDict(dict1={}, dict2={}, keys=[]):
-    """ Compare les valeurs de 2 dictionnaires selon les clÈs donnÈes """
+    """ Compare les valeurs de 2 dictionnaires selon les cl√©s donn√©es """
     isIdem = True
     for key in keys:
         if dict1[key] != dict2[key] :
@@ -203,7 +203,7 @@ def CompareDict(dict1={}, dict2={}, keys=[]):
     return isIdem
 
 def CreationImage(largeur, hauteur, couleur=None):
-    """ couleur peut Ítre RGB ou HEXA """
+    """ couleur peut √™tre RGB ou HEXA """
     if 'phoenix' in wx.PlatformInfo:
         b = wx.Bitmap(largeur, hauteur)
     else :
@@ -339,7 +339,7 @@ class Ligne():
         self.couleurFermeture = "#F7ACB2"
         couleurVacances = "#F3FD89"
         
-        # CrÈation du label de ligne
+        # Cr√©ation du label de ligne
         if self.estSeparation == True :
             hauteurLigne = 18
         else:
@@ -366,17 +366,17 @@ class Ligne():
         self.grid.SetRowLabelRenderer(numLigne, self.renderer_label)
         self.grid.dictLignes[numLigne] = self.renderer_label
         
-        # CrÈation des cases
+        # Cr√©ation des cases
         self.dictCases = {}
         numColonne = 0
         for IDactivite in self.grid.listeActivites :
-            # CrÈation de la colonne activitÈ
+            # Cr√©ation de la colonne activit√©
             if len(self.grid.listeActivites) > 1 and IDactivite in self.grid.dictListeUnites :
                 case = CTRL_Grille_cases.CaseSeparationActivite(self, self.grid, self.numLigne, numColonne, IDactivite)
                 self.dictCases[numColonne] = case
                 numColonne += 1
                 
-            # VÈrifie s'il faut verrouiller la ligne            
+            # V√©rifie s'il faut verrouiller la ligne            
             IDfamilleConso = None
             if self.IDindividu in self.grid.dictConsoIndividus :
                 if self.date in self.grid.dictConsoIndividus[self.IDindividu] :
@@ -385,7 +385,7 @@ class Ligne():
                             IDfamilleConso = conso.IDfamille
                             break
                         
-            # CrÈation des cases unitÈs
+            # Cr√©ation des cases unit√©s
             if IDactivite in self.grid.dictListeUnites :
                 for dictUnite in self.grid.dictListeUnites[IDactivite] :
                     IDunite = dictUnite["IDunite"]
@@ -403,7 +403,7 @@ class Ligne():
                                 if IDactivite in self.grid.dictInfosInscriptions[IDindividu] :
                                     IDfamille = self.grid.dictInfosInscriptions[IDindividu][IDactivite]["IDfamille"]
 
-                        # Verrouillage si parti de l'activitÈ
+                        # Verrouillage si parti de l'activit√©
                         verrouillage = 0
                         if IDindividu in self.grid.dictInfosInscriptions :
                             if IDactivite in self.grid.dictInfosInscriptions[IDindividu] :
@@ -411,13 +411,13 @@ class Ligne():
                                 if date_desinscription != None and self.date > date_desinscription :
                                     verrouillage = 1
 
-                        # S'il y a des conso rattachÈes ‡ une autre famille, on verrouille la ligne
+                        # S'il y a des conso rattach√©es √† une autre famille, on verrouille la ligne
                         if IDfamilleConso != None :
                             if IDfamille != IDfamilleConso :
                                 verrouillage = 1
                                 IDfamille = IDfamilleConso
                         
-                        # CrÈation de la case
+                        # Cr√©ation de la case
                         if typeUnite in ("Unitaire", "Horaire", "Quantite") :
                             case = CTRL_Grille_cases.CaseStandard(self, self.grid, self.numLigne, numColonne, self.IDindividu, IDfamille, self.date, IDunite, IDactivite, verrouillage)
 
@@ -439,7 +439,7 @@ class Ligne():
                         self.dictCases[numColonne] = case
                     numColonne += 1
         
-        # MÈmo journalier
+        # M√©mo journalier
         if AFFICHE_COLONNE_MEMO == True :
             if len(self.grid.listeActivites) > 1 :
                 case = CTRL_Grille_cases.CaseSeparationActivite(self, self.grid, self.numLigne, numColonne, None, estMemo=True)
@@ -493,7 +493,7 @@ class Ligne():
     def OnContextMenu(self):
         return
     
-        # CrÈation du menu contextuel
+        # Cr√©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item IDENTIFICATION DE LA LIGNE
@@ -510,7 +510,7 @@ class Ligne():
 ##        menuPop.AppendItem(item)
 ##        self.grid.Bind(wx.EVT_MENU, self.Verrouillage, id=10)
 ##        
-##        item = wx.MenuItem(menuPop, 20, _(u"DÈverrouiller toutes les consommations"))
+##        item = wx.MenuItem(menuPop, 20, _(u"D√©verrouiller toutes les consommations"))
 ##        bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Cadenas.png"), wx.BITMAP_TYPE_PNG)
 ##        item.SetBitmap(bmp)
 ##        menuPop.AppendItem(item)
@@ -526,23 +526,23 @@ class Ligne():
                     
         if nbreCasesReservations > 0 :
             
-            item = wx.MenuItem(menuPop, 30, _(u"DÈfinir toutes les pointages de la ligne comme 'Pointage en attente'"))
+            item = wx.MenuItem(menuPop, 30, _(u"D√©finir toutes les pointages de la ligne comme 'Pointage en attente'"))
             menuPop.AppendItem(item)
             self.grid.Bind(wx.EVT_MENU, self.SetPresentAbsent, id=30)
             
-            item = wx.MenuItem(menuPop, 40, _(u"Pointer toutes les consommations de la ligne sur 'PrÈsent'"))
+            item = wx.MenuItem(menuPop, 40, _(u"Pointer toutes les consommations de la ligne sur 'Pr√©sent'"))
             bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Ok5.png"), wx.BITMAP_TYPE_PNG)
             item.SetBitmap(bmp)
             menuPop.AppendItem(item)
             self.grid.Bind(wx.EVT_MENU, self.SetPresentAbsent, id=40)
             
-            item = wx.MenuItem(menuPop, 50, _(u"Pointer toutes les consommations de la ligne sur 'Absence justifiÈe'"))
+            item = wx.MenuItem(menuPop, 50, _(u"Pointer toutes les consommations de la ligne sur 'Absence justifi√©e'"))
             bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/absentj.png"), wx.BITMAP_TYPE_PNG)
             item.SetBitmap(bmp)
             menuPop.AppendItem(item)
             self.grid.Bind(wx.EVT_MENU, self.SetPresentAbsent, id=50)
             
-            item = wx.MenuItem(menuPop, 60, _(u"Pointer toutes les consommations de la ligne sur 'Absence injustifiÈe'"))
+            item = wx.MenuItem(menuPop, 60, _(u"Pointer toutes les consommations de la ligne sur 'Absence injustifi√©e'"))
             bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/absenti.png"), wx.BITMAP_TYPE_PNG)
             item.SetBitmap(bmp)
             menuPop.AppendItem(item)
@@ -574,7 +574,7 @@ class Ligne():
                 case.MemoriseValeurs()
                 case.renderer.MAJ()
         self.MAJctrl_totaux()
-        self.grid.listeHistorique.append((self.IDindividu, self.date, None, _(u"Modification de l'Ètat de toutes les consommations de la ligne")))
+        self.grid.listeHistorique.append((self.IDindividu, self.date, None, _(u"Modification de l'√©tat de toutes les consommations de la ligne")))
                 
     
     def Verrouillage(self, event):
@@ -625,14 +625,14 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         # Utilisateur en cours
         self.IDutilisateur = UTILS_Identification.GetIDutilisateur()
 
-        # PÈriodes de gestion
+        # P√©riodes de gestion
         self.gestion = UTILS_Gestion.Gestion(self)
         
         # Init Tooltip
         self.tip = STT.SuperToolTip(u"")
-        self.tip.SetEndDelay(10000) # Fermeture auto du tooltip aprËs 10 secs
+        self.tip.SetEndDelay(10000) # Fermeture auto du tooltip apr√®s 10 secs
 
-        # CrÈation initiale de la grille
+        # Cr√©ation initiale de la grille
         self.CreateGrid(0, 0)
         self.SetRowLabelSize(180)
         self.EnableGridLines(False)
@@ -645,7 +645,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 
         self.SetDefaultCellBackgroundColour(self.GetBackgroundColour())
         
-        # RÈcupÈration des paramËtres
+        # R√©cup√©ration des param√®tres
         global AFFICHE_COLONNE_MEMO, AFFICHE_COLONNE_TRANSPORTS, FORMAT_LABEL_LIGNE, MASQUER_UNITES_FERMEES
         
         parametresDefaut = {
@@ -661,7 +661,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             }
         dictParametres = UTILS_Parametres.ParametresCategorie(mode="get", categorie="parametres_grille_conso", dictParametres=parametresDefaut)
         
-        # ParamËtres divers
+        # Param√®tres divers
         AFFICHE_COLONNE_MEMO = dictParametres["affiche_colonne_memo"]
         AFFICHE_COLONNE_TRANSPORTS = dictParametres["affiche_colonne_transports"]
         FORMAT_LABEL_LIGNE = dictParametres["format_label_ligne"]
@@ -697,7 +697,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         self.GetGridWindow().Bind(wx.EVT_LEFT_DOWN, self.OnLeftClick)
         self.GetGridWindow().Bind(wx.EVT_LEFT_DCLICK, self.OnLeftDoubleClick)
 
-        # Init DonnÈes
+        # Init Donn√©es
         self.InitDonnees()
         
     def InitDonnees(self):
@@ -744,7 +744,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         
     def SetModeIndividu(self, listeActivites=[], listeSelectionIndividus=[], listeIndividusFamille=[], listePeriodes=[], modeSilencieux=False):
         if modeSilencieux == False :
-            attente = wx.BusyInfo(_(u"Recherche des donnÈes..."), self)
+            attente = wx.BusyInfo(_(u"Recherche des donn√©es..."), self)
         self.mode = "individu"
         self.listeActivites = listeActivites
         self.listeSelectionIndividus = listeSelectionIndividus
@@ -762,7 +762,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 
     def SetModeDate(self, listeActivites=[], listeSelectionIndividus=[], date=None, modeSilencieux=False):
         if modeSilencieux == False :
-            attente = wx.BusyInfo(_(u"Recherche des donnÈes..."), self)
+            attente = wx.BusyInfo(_(u"Recherche des donn√©es..."), self)
         self.mode = "date"
         self.listeActivites = listeActivites
         self.date = date
@@ -785,7 +785,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         self.SetFocus()
 
     def MAJ_donnees(self):
-        # RÈcupÈration des donnÈes
+        # R√©cup√©ration des donn√©es
         self.DB = GestionDB.DB()
         self.dictOuvertures, self.listeUnitesOuvertes = self.GetDictOuvertures(self.listeActivites, self.listePeriodes)
         self.dictListeUnites, self.dictUnites = self.GetListeUnites(self.listeUnitesOuvertes)
@@ -832,25 +832,25 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                     for conso in listeConso :
                         if conso.etat in ["reservation", "present", "attente"] :
 
-                            # MÈmorisation spÈciale si c'est un ÈvËnement
+                            # M√©morisation sp√©ciale si c'est un √©v√®nement
                             if conso.IDevenement != None :
                                 if (conso.IDevenement in self.dictRemplissageEvenements) == False :
                                     self.dictRemplissageEvenements[conso.IDevenement] = {"reservation" : 0, "present" : 0, "attente" : 0}
                                 self.dictRemplissageEvenements[conso.IDevenement][conso.etat] += 1
 
-                            # QuantitÈ
+                            # Quantit√©
                             if conso.quantite != None :
                                 quantite = conso.quantite
                             else :
                                 quantite = 1
 
-                            # MÈmorisation par unitÈ de remplissage
+                            # M√©morisation par unit√© de remplissage
                             if conso.IDunite in self.dictUnitesRemplissage :
                                 for IDunite_remplissage in self.dictUnitesRemplissage[conso.IDunite] :
                                     if IDunite_remplissage in self.dictRemplissage :
                                         valide = True
                                         
-                                        # VÈrifie s'il y a une plage horaire conditionnelle :
+                                        # V√©rifie s'il y a une plage horaire conditionnelle :
                                         if "heure_min" in self.dictRemplissage[IDunite_remplissage] :
                                             heure_min = self.dictRemplissage[IDunite_remplissage]["heure_min"]
                                             heure_max = self.dictRemplissage[IDunite_remplissage]["heure_max"]
@@ -865,7 +865,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                                             except :
                                                  valide = True
 
-                                        # VÈrifie si condition Ètiquettes
+                                        # V√©rifie si condition √©tiquettes
                                         if "etiquettes" in self.dictRemplissage[IDunite_remplissage]:
                                             etiquettes = self.dictRemplissage[IDunite_remplissage]["etiquettes"]
                                         else :
@@ -875,12 +875,12 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                                             if len(etiquettesCommunes) == 0 :
                                                 valide = False
 
-                                        # MÈmorisation de la place prise
+                                        # M√©morisation de la place prise
                                         self.dictRemplissage2 = UTILS_Divers.DictionnaireImbrique(dictionnaire=self.dictRemplissage2, cles=[IDunite_remplissage, date, conso.IDgroupe, conso.etat], valeur=0)
                                         if valide == True :
                                             self.dictRemplissage2[IDunite_remplissage][date][conso.IDgroupe][conso.etat] += quantite
 
-                            # MÈmorisation pour les totaux du gestionnaire de conso
+                            # M√©morisation pour les totaux du gestionnaire de conso
                             if conso.etat in ["reservation", "present"] and self.mode == "date" and quantite != None and date == self.date :
                                 self.dictConsoUnites = UTILS_Divers.DictionnaireImbrique(dictionnaire=self.dictConsoUnites, cles=[conso.IDunite, conso.IDgroupe], valeur=0)
                                 self.dictConsoUnites[conso.IDunite][conso.IDgroupe] += quantite
@@ -914,7 +914,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         
 
     def InitGrid(self):
-        # ----------------- CrÈation des colonnes -------------------------
+        # ----------------- Cr√©ation des colonnes -------------------------
         nbreColonnes = 0
         for IDactivite in self.listeActivites :
             if len(self.listeActivites) > 1 and IDactivite in self.dictListeUnites :
@@ -922,7 +922,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             if IDactivite in self.dictListeUnites :
                 for dictUnite in self.dictListeUnites[IDactivite] :
                     nbreColonnes += 1
-        # Ajout colonne MÈmo
+        # Ajout colonne M√©mo
         if AFFICHE_COLONNE_MEMO == True :
             if len(self.listeActivites) > 1 :
                 nbreColonnes += 2
@@ -936,11 +936,11 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         # GetInfosMultihoraires
         self.dictColonnesMultihoraires = self.GetInfosColonnesMultihoraires()
         
-        # Colonnes UnitÈs
+        # Colonnes Unit√©s
         numColonne = 0
         listeColonnesActivites = []
         for IDactivite in self.listeActivites :
-            # CrÈation de la colonne activitÈ
+            # Cr√©ation de la colonne activit√©
             if len(self.listeActivites) > 1 and IDactivite in self.dictListeUnites :
                 renderer = CTRL_Grille_renderers.LabelColonneStandard("activite", COULEUR_COLONNE_ACTIVITE)
                 self.SetColLabelRenderer(numColonne, renderer)
@@ -948,7 +948,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 self.SetColLabelValue(numColonne, "")
                 listeColonnesActivites.append(numColonne)
                 numColonne += 1
-            # CrÈation des colonnes unitÈs
+            # Cr√©ation des colonnes unit√©s
             if IDactivite in self.dictListeUnites:
                 for dictUnite in self.dictListeUnites[IDactivite] :
                     IDunite = dictUnite["IDunite"]
@@ -971,7 +971,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                     self.SetColLabelValue(numColonne, labelColonne)
                     numColonne += 1
         
-        # CrÈation de la colonne MÈmo
+        # Cr√©ation de la colonne M√©mo
         if AFFICHE_COLONNE_MEMO == True :
             if len(self.listeActivites) > 1 :
                 renderer = CTRL_Grille_renderers.LabelColonneStandard("activite", COULEUR_COLONNE_ACTIVITE)
@@ -982,17 +982,17 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 numColonne += 1
             self.SetColLabelRenderer(numColonne, None)
             self.SetColSize(numColonne, self.dictParametres["largeurs"]["memo"])
-            self.SetColLabelValue(numColonne, _(u"MÈmo journalier"))
+            self.SetColLabelValue(numColonne, _(u"M√©mo journalier"))
             numColonne += 1
             
-        # CrÈation de la colonne Transports
+        # Cr√©ation de la colonne Transports
         if AFFICHE_COLONNE_TRANSPORTS == True :
             self.SetColLabelRenderer(numColonne, None)
             self.SetColSize(numColonne, LARGEUR_COLONNE_TRANSPORTS)
             self.SetColLabelValue(numColonne, _(u"Transports"))
         
         
-        # ------------------ CrÈation des lignes -----------------------------
+        # ------------------ Cr√©ation des lignes -----------------------------
         
         if self.mode == "individu" :
             
@@ -1021,12 +1021,12 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 nbreLignes = nbreDates * (nbreIndividusSelection+1)
             self.AppendRows(nbreLignes)
             
-            # Span des colonnes ActivitÈs
+            # Span des colonnes Activit√©s
             if nbreLignes > 0 :
                 for numColonneActivite in listeColonnesActivites :
                     self.SetCellSize(0, numColonneActivite, nbreLignes, 1)
             
-            # CrÈation des lignes
+            # Cr√©ation des lignes
             self.dictLignes = {}
             numLigne = 0
             for dateDD in listeDates :
@@ -1037,7 +1037,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                     self.dictLignes[numLigne] = ligne
                     numLigne += 1
                 else :
-                    # Ligne de sÈparation
+                    # Ligne de s√©paration
                     ligne = Ligne(self, numLigne=numLigne, IDindividu=None, date=dateDD, modeLabel="date", estSeparation=True)
                     self.dictLignes[numLigne] = ligne
                     numLigne += 1
@@ -1191,7 +1191,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         dates_extremes = self.GetDatesExtremes(self.listePeriodes)
         dictListeUnites = {}
         dictUnites = {}
-        # RÈcupËre la liste des unitÈs
+        # R√©cup√®re la liste des unit√©s
         req = """SELECT IDunite, IDactivite, nom, abrege, type, heure_debut, heure_debut_fixe, heure_fin, heure_fin_fixe, date_debut, date_fin, ordre, touche_raccourci, largeur, autogen_active, autogen_conditions, autogen_parametres
         FROM unites 
         ORDER BY ordre; """ 
@@ -1202,7 +1202,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             "heure_fin" : heure_fin, "heure_fin_fixe" : heure_fin_fixe, "date_debut" : date_debut, "date_fin" : date_fin, "ordre" : ordre, "touche_raccourci" : touche_raccourci, "largeur" : largeur,
             "autogen_active" : autogen_active, "autogen_conditions" : autogen_conditions, "autogen_parametres" : autogen_parametres}
 
-            # MÈmorisation des unitÈs
+            # M√©morisation des unit√©s
             dictUnites[IDunite] = dictTemp
 
             if IDunite in listeUnitesOuvertes or MASQUER_UNITES_FERMEES == False:
@@ -1211,7 +1211,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                         dictListeUnites[IDactivite] = []
                     dictListeUnites[IDactivite].append(dictTemp)
 
-            # MÈmorisation des largeurs
+            # M√©morisation des largeurs
             if (IDunite in self.dictParametres["largeurs"]["unites"]) == False :
                 if largeur == None :
                     if type == "Multihoraires" :
@@ -1222,7 +1222,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                         largeur = LARGEUR_COLONNE_UNITE
                 self.dictParametres["largeurs"]["unites"][IDunite] = largeur            
             
-        # RÈcupËre les incompatibilitÈs entre unitÈs
+        # R√©cup√®re les incompatibilit√©s entre unit√©s
         req = """SELECT IDunite_incompat, IDunite, IDunite_incompatible
         FROM unites_incompat;"""
         self.DB.ExecuterReq(req)
@@ -1245,7 +1245,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         elif len(listeActivites) == 1 : conditionActivites = "(%d)" % listeActivites[0]
         else : conditionActivites = str(tuple(listeActivites))
 
-        # Importation des ÈvËnements
+        # Importation des √©v√®nements
         req = """SELECT IDevenement, IDactivite, IDunite, IDgroupe, date, nom, description, capacite_max, heure_debut, heure_fin, montant
         FROM evenements 
         WHERE IDactivite IN %s %s
@@ -1311,7 +1311,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         elif len(listeActivites) == 1 : conditionActivites = "(%d)" % listeActivites[0]
         else : conditionActivites = str(tuple(listeActivites))
         
-        # RÈcupÈration des unitÈs de remplissage
+        # R√©cup√©ration des unit√©s de remplissage
         req = """SELECT IDunite_remplissage_unite, unites_remplissage_unites.IDunite_remplissage, IDunite
         FROM unites_remplissage_unites
         LEFT JOIN unites_remplissage ON unites_remplissage.IDunite_remplissage = unites_remplissage_unites.IDunite_remplissage
@@ -1325,7 +1325,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             else:
                 dictUnitesRemplissage[IDunite].append(IDunite_remplissage)
 
-        # RÈcupÈration des unitÈs de remplissage
+        # R√©cup√©ration des unit√©s de remplissage
         req = """SELECT IDunite_remplissage, IDactivite, ordre, nom, abrege, date_debut, date_fin, seuil_alerte, heure_min, heure_max, etiquettes
         FROM unites_remplissage 
         WHERE IDactivite IN %s
@@ -1347,7 +1347,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                                                                         "etiquettes" : etiquettes,
                                                                         }
         
-        # RÈcupÈration des paramËtres de remplissage
+        # R√©cup√©ration des param√®tres de remplissage
         req = """SELECT IDremplissage, IDactivite, IDunite_remplissage, IDgroupe, date, places
         FROM remplissage 
         WHERE IDactivite IN %s %s
@@ -1361,7 +1361,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             
             dictRemplissage = UTILS_Divers.DictionnaireImbrique(dictionnaire=dictRemplissage, cles=[IDunite_remplissage, dateDD, IDgroupe], valeur=places)
                 
-        # RÈcupÈration des consommations existantes 
+        # R√©cup√©ration des consommations existantes 
         req = """SELECT IDconso, consommations.IDindividu, IDactivite, IDinscription, date, IDunite, 
         IDgroupe, heure_debut, heure_fin, consommations.etat, verrouillage, date_saisie, IDutilisateur, 
         IDcategorie_tarif, consommations.IDcompte_payeur, IDprestation, forfait, quantite, etiquettes,
@@ -1377,13 +1377,13 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             date_saisieDD = DateEngEnDateDD(date_saisie)
             etiquettes = ConvertStrToListe(etiquettes, siVide=[]) 
 
-            # QuantitÈ
+            # Quantit√©
             if quantite == None :
                 quantiteTemp = 1
             else :
                 quantiteTemp = quantite
                         
-            # MÈmorisation des conso des individus sÈlectionnÈs
+            # M√©morisation des conso des individus s√©lectionn√©s
             if IDindividu in listeIndividus or self.mode == "date" or True :
                 
                 conso = Conso() 
@@ -1411,13 +1411,13 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 
                 dictConsoIndividus = UTILS_Divers.DictionnaireImbrique(dictionnaire=dictConsoIndividus, cles=[IDindividu, dateDD, IDunite], valeur=[])
                     
-                # Recherche si la consommation n'est pas dÈj‡ dans la liste
+                # Recherche si la consommation n'est pas d√©j√† dans la liste
                 consoExists = False
                 for consoTemp in dictConsoIndividus[IDindividu][dateDD][IDunite] :
                     if consoTemp.IDconso == IDconso :
                         consoExists = True
                 
-                # Recherche si la consommation n'a pas ÈtÈ supprimÈe
+                # Recherche si la consommation n'a pas √©t√© supprim√©e
                 for consoTemp in self.listeConsoSupprimees :
                     if consoTemp.IDconso == IDconso :
                         consoExists = True
@@ -1479,13 +1479,13 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         listeDonnees = self.DB.ResultatReq()
         dictGroupes[0] = { "IDactivite" : 0, "nom" : _(u"Sans groupe"), "ordre" : 0 }
         dictTemp = {}
-        # MÈmorise le groupe
+        # M√©morise le groupe
         for IDgroupe, IDactivite, nom, ordre in listeDonnees :
             dictGroupes[IDgroupe] = { "IDactivite" : IDactivite, "nom" : nom, "ordre" : ordre, "nbreGroupesActivite" : 0}
             if (IDactivite in dictTemp) == False :
                 dictTemp[IDactivite] = 0
             dictTemp[IDactivite] += 1
-        # Pour compter le nombre de groupes par activitÈ
+        # Pour compter le nombre de groupes par activit√©
         for IDgroupe, dictTempGroupe in dictGroupes.items() :
             IDactivite = dictTempGroupe["IDactivite"]
             if IDactivite in dictTemp :
@@ -1522,7 +1522,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         if len(listeActivites) == 0 : conditionActivites = "()"
         elif len(listeActivites) == 1 : conditionActivites = "(%d)" % listeActivites[0]
         else : conditionActivites = str(tuple(listeActivites))
-        # RÈcupÈration des mÈmos
+        # R√©cup√©ration des m√©mos
         req = """SELECT IDmemo, IDindividu, date, texte, couleur
         FROM memo_journee; """ 
         self.DB.ExecuterReq(req)
@@ -1585,7 +1585,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             dictTemp = { "nom" : nom, "abrege" : abrege, "date_debut" : date_debut, "date_fin" : date_fin, "tarifs" : {} }
             dictActivites[IDactivite] = dictTemp
         
-        # Recherche les combinaisons d'unitÈs des tarifs
+        # Recherche les combinaisons d'unit√©s des tarifs
         req = """SELECT combi_tarifs_unites.IDcombi_tarif_unite, combi_tarifs_unites.IDcombi_tarif, 
         combi_tarifs_unites.IDtarif, combi_tarifs_unites.IDunite, date, type, combi_tarifs.quantite_max
         FROM combi_tarifs_unites
@@ -1603,7 +1603,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                     dictCombiUnites[IDtarif][IDcombi_tarif] = [IDunite,]
                 else:
                     dictCombiUnites[IDtarif][IDcombi_tarif].append(IDunite)
-            # MÈmorisation des quantitÈs max pour les forfaits crÈdits
+            # M√©morisation des quantit√©s max pour les forfaits cr√©dits
             if quantite_max != None :
                 if (IDcombi_tarif in dictQuantiteMax) == False :
                     dictQuantiteMax[IDcombi_tarif] = {"quantite_max" : quantite_max, "listeUnites" : [] }
@@ -1645,7 +1645,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 dictFiltres[IDtarif] = []
             dictFiltres[IDtarif].append({"IDfiltre":IDfiltre, "IDquestion":IDquestion, "choix":choix, "criteres":criteres, "type":type, "controle":controle, "defaut":defaut})
         
-        # Recherche des tarifs pour chaque activitÈ
+        # Recherche des tarifs pour chaque activit√©
         req = """SELECT 
         IDtarif, tarifs.IDactivite, tarifs.IDnom_tarif, nom, date_debut, date_fin, 
         condition_nbre_combi, condition_periode, condition_nbre_jours, condition_conso_facturees,
@@ -1685,7 +1685,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 "label_prestation" : label_prestation, "options" : options, "IDevenement" : IDevenement,
                 }
                 
-            # Recherche si ce tarif a des combinaisons d'unitÈs
+            # Recherche si ce tarif a des combinaisons d'unit√©s
             if IDtarif in dictCombiUnites :
                 listeCombinaisons = []
                 nbre_max_unites_combi = 0
@@ -1693,7 +1693,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                     listeCombinaisons.append(tuple(listeCombis))
                     if len(listeCombis) > nbre_max_unites_combi :
                         nbre_max_unites_combi = len(listeCombis)
-                    # MÈmorisation des quantitÈs max
+                    # M√©morisation des quantit√©s max
                     if IDcombi in dictQuantiteMax :
                         dictTemp["quantitesMax"].append(dictQuantiteMax[IDcombi])
                 dictTemp["combinaisons_unites"] = listeCombinaisons
@@ -1706,7 +1706,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             if IDtarif in dictFiltres:
                 dictTemp["filtres"] = dictFiltres[IDtarif]
             
-            # MÈmorisation de ce tarif
+            # M√©morisation de ce tarif
             if (IDactivite in dictActivites) == True :
                 if listeCategoriesTarifs == None :
                     listeCategoriesTarifs = [None,]
@@ -1715,7 +1715,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                         dictActivites[IDactivite]["tarifs"][IDcategorie_tarif] = []
                     dictActivites[IDactivite]["tarifs"][IDcategorie_tarif].append(dictTemp)
             
-            # VÈrifie s'il y a des forfaits au crÈdit dedans :
+            # V√©rifie s'il y a des forfaits au cr√©dit dedans :
             if type == "CREDIT" :
                 self.tarifsForfaitsCreditsPresents = True
                 
@@ -1723,7 +1723,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
     
     def Importation_prestations(self, listeComptesPayeurs=[]):
         
-        # RÈcupËre le dictPrestations
+        # R√©cup√®re le dictPrestations
         for IDprestation in list(self.dictPrestations.keys()) :
             if IDprestation > 0 and IDprestation not in self.listePrestationsModifiees :
                 del self.dictPrestations[IDprestation]
@@ -1797,12 +1797,12 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         if self.tarifsForfaitsCreditsPresents == False :
             return
         
-        # RÈcupËre le dictPrestations
+        # R√©cup√®re le dictPrestations
         for IDprestation in list(self.dictForfaits.keys()) :
             if IDprestation > 0 and IDprestation not in self.listePrestationsModifiees :
                 del self.dictForfaits[IDprestation]
         
-        # Recherche les dates extrÍmes affichÈes
+        # Recherche les dates extr√™mes affich√©es
         if len(self.listePeriodes) == 0 :
             return
         date_min = None
@@ -1841,7 +1841,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             # Attribution d'une couleur au forfait
             couleur = self.CreationCouleurForfait(index)
             
-            # CrÈation du dictTemp
+            # Cr√©ation du dictTemp
             if IDindividu != None and IDindividu != 0 :
                 nomIndividu = u"%s %s" % (self.dictIndividus[IDindividu]["nom"], self.dictIndividus[IDindividu]["prenom"])
             else:
@@ -1855,17 +1855,17 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 "code_produit_local": code_produit_local, "dict_conso" : {},
                 }
             
-            # MÈmorisation dans le dict des forfaits
+            # M√©morisation dans le dict des forfaits
             if IDprestation not in self.listePrestationsSupprimees and IDprestation not in self.listePrestationsModifiees :
                 self.dictForfaits[IDprestation] = dictTemp
             
-            # MÈmorisation dans le dict des prestations
+            # M√©morisation dans le dict des prestations
             if IDprestation not in list(self.dictPrestations.keys()) and IDprestation not in self.listePrestationsSupprimees and IDprestation not in self.listePrestationsModifiees :
                 self.dictPrestations[IDprestation] = dictTemp
 
             index += 1
 
-        # Importation des conso dÈj‡ associÈes aux forfaits importÈs
+        # Importation des conso d√©j√† associ√©es aux forfaits import√©s
         listeIDprestation = list(self.dictPrestations.keys())
         if len(listeIDprestation) == 0 : conditionForfaits = "()"
         elif len(listeIDprestation) == 1 : conditionForfaits = "(%d)" % listeIDprestation[0]
@@ -1885,7 +1885,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                     self.dictForfaits[IDprestation]["dict_conso"][date] = []
                 self.dictForfaits[IDprestation]["dict_conso"][date].append(IDunite)
 
-        # MAJ du contrÙle Forfaits
+        # MAJ du contr√¥le Forfaits
         try :
             self.GetGrandParent().panel_forfaits.MAJ(self.dictForfaits, self.listeSelectionIndividus)
         except : 
@@ -1893,7 +1893,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 
 
     def Importation_transports(self):
-        """ Importation des transports et des transports programmÈs """
+        """ Importation des transports et des transports programm√©s """
         global DICT_ARRETS, DICT_LIEUX, DICT_ACTIVITES, DICT_ECOLES
         
 
@@ -1903,7 +1903,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         
         dates_extremes = self.GetDatesExtremes(self.listePeriodes)
 
-        # RÈcupËre les noms de champs de la table
+        # R√©cup√®re les noms de champs de la table
         listeChamps = []
         for nom, type, info in DICT_TABLES["transports"] :
             listeChamps.append(nom)
@@ -1917,7 +1917,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 liste2.append(int(valeur))
             return liste2
             
-        # Importation des transports programmÈs
+        # Importation des transports programm√©s
         req = """SELECT %s
         FROM transports
         WHERE mode='PROG' AND IDindividu IN %s
@@ -1966,7 +1966,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 
                 self.listeTransportsInitiale.append(dictTemp["IDtransport"])
             
-        # ArrÍts
+        # Arr√™ts
         req = """SELECT IDarret, nom FROM transports_arrets;"""
         self.DB.ExecuterReq(req)
         listeDonnees = self.DB.ResultatReq()
@@ -1982,7 +1982,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         for IDlieu, nom in listeDonnees :
             DICT_LIEUX[IDlieu] = nom
         
-        # ActivitÈs
+        # Activit√©s
         req = """SELECT IDactivite, nom FROM activites;"""
         self.DB.ExecuterReq(req)
         listeDonnees = self.DB.ResultatReq()
@@ -2001,7 +2001,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 
     def Importation_deductions(self, listeComptesPayeurs=[]):
         
-        # RÈcupËre le dictPrestations
+        # R√©cup√®re le dictPrestations
         for IDdeduction in list(self.dictDeductions.keys()) :
             if IDdeduction > 0 :
                 del self.dictDeductions[IDdeduction]
@@ -2022,7 +2022,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 ##        FROM deductions
 ##        WHERE IDcompte_payeur IN %s %s
 ##        ;""" % (conditionComptes, conditionDates)
-        # J'ai enlevÈ la conditionDates ci-dessous pour qu'il importe toutes les dÈductions (pour tenir compte des montants ou nbre max des aides)
+        # J'ai enlev√© la conditionDates ci-dessous pour qu'il importe toutes les d√©ductions (pour tenir compte des montants ou nbre max des aides)
         req = """SELECT
         IDdeduction, IDprestation, IDcompte_payeur, date, montant, label, IDaide
         FROM deductions
@@ -2046,7 +2046,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 
 
     def GetAides(self):
-        """ RÈcupËre les aides journaliËres de la famille """
+        """ R√©cup√®re les aides journali√®res de la famille """
         dictAides = {}
         
         # Importation des aides
@@ -2082,7 +2082,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         elif len(listeIDaides) == 1 : conditionAides = "(%d)" % listeIDaides[0]
         else : conditionAides = str(tuple(listeIDaides))
         
-        # Importation des bÈnÈficiaires
+        # Importation des b√©n√©ficiaires
         req = """SELECT IDaide_beneficiaire, IDaide, IDindividu
         FROM aides_beneficiaires
         WHERE IDaide IN %s;""" % conditionAides
@@ -2092,7 +2092,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             if IDaide in dictAides :
                 dictAides[IDaide]["beneficiaires"].append(IDindividu)
         
-        # Importation des montants, combinaisons et unitÈs de combi
+        # Importation des montants, combinaisons et unit√©s de combi
         req = """SELECT 
         aides_montants.IDaide, aides_combi_unites.IDaide_combi_unite, aides_combi_unites.IDaide_combi, aides_combi_unites.IDunite,
         aides_combinaisons.IDaide_montant, aides_montants.montant
@@ -2105,13 +2105,13 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         
         for IDaide, IDaide_combi_unite, IDaide_combi, IDunite, IDaide_montant, montant in listeUnites :
             if IDaide in dictAides :
-                # MÈmorisation du montant
+                # M√©morisation du montant
                 if (IDaide_montant in dictAides[IDaide]["montants"]) == False :
                     dictAides[IDaide]["montants"][IDaide_montant] = {"montant":montant, "combinaisons":{}}
-                # MÈmorisation de la combinaison
+                # M√©morisation de la combinaison
                 if (IDaide_combi in dictAides[IDaide]["montants"][IDaide_montant]["combinaisons"]) == False :
                     dictAides[IDaide]["montants"][IDaide_montant]["combinaisons"][IDaide_combi] = []
-                # MÈmorisation des unitÈs de combinaison
+                # M√©morisation des unit√©s de combinaison
                 dictAides[IDaide]["montants"][IDaide_montant]["combinaisons"][IDaide_combi].append(IDunite)
         
         return dictAides
@@ -2119,7 +2119,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 
     def GetComptesPayeurs(self):
         dictComptesPayeurs = {}
-        # RÈcupËre le compte_payeur des ou de la famille
+        # R√©cup√®re le compte_payeur des ou de la famille
         if self.mode == "individu" :
             req = """SELECT IDfamille, IDcompte_payeur
             FROM comptes_payeurs
@@ -2135,7 +2135,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
     
     def GetQuotientsFamiliaux(self):
         dictQuotientsFamiliaux = {}
-        # RÈcupËre le QF de la famille
+        # R√©cup√®re le QF de la famille
         if self.mode == "individu" :
             req = """SELECT IDquotient, IDfamille, date_debut, date_fin, quotient, IDtype_quotient
             FROM quotients
@@ -2189,14 +2189,14 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             barre = case.RechercheBarre(x, y, readOnlyInclus=False)
             if barre != None :
                 barre, region, x, y, ecart = barre
-                # Recherche si des touches raccourcis sont enfoncÈes
+                # Recherche si des touches raccourcis sont enfonc√©es
                 if wx.GetKeyState(97) or wx.GetKeyState(112) or wx.GetKeyState(105) or wx.GetKeyState(106) or wx.GetKeyState(99) or wx.GetKeyState(115) :
                     case.ToucheRaccourci(barre)
                 else :
                     # Protections anti modification et suppression
                     if case.ProtectionsModifSuppr(barre.conso) == False :
                         return
-                    # Sinon dÈclenche le moving de la barre
+                    # Sinon d√©clenche le moving de la barre
                     self.barreMoving = {"barre" : barre, "region" : region, "x" : x, "y" : y, "ecart" : ecart, "heure_debut" : barre.heure_debut, "heure_fin" : barre.heure_fin}
                     self.SetCurseur(region)
 
@@ -2204,7 +2204,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         else :
             case.OnClick()
 
-            # MÈmorise la case enfoncÈe
+            # M√©morise la case enfonc√©e
             if self.casesSurvolees == None:
                 self.casesSurvolees = [case,]
 
@@ -2291,14 +2291,14 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 if numColonne in ligne.dictCases :
                     case = ligne.dictCases[numColonne]
 
-        # Click gauche souris enfoncÈ
+        # Click gauche souris enfonc√©
         if self.casesSurvolees != None and case != None:
             if case not in self.casesSurvolees and case.GetTypeUnite() in ("Unitaire", "Horaire", "Quantite"):
                 self.casesSurvolees.append(case)
                 if wx.GetMouseState().LeftIsDown():
                     self.OnLeftClick(event)
 
-        # Recherche si c'est une case ÈvËnementielle : si oui, considËre l'ÈvËnement au lieu de la case
+        # Recherche si c'est une case √©v√®nementielle : si oui, consid√®re l'√©v√®nement au lieu de la case
         if case != None and hasattr(case, "CategorieCase") and case.CategorieCase == "evenement":
             case = case.RechercheEvenement(x, y)
 
@@ -2357,7 +2357,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             barre.MAJ_facturation() 
             barre.case.MAJremplissage()
             barre.case.Refresh()
-            # AutogÈnÈration
+            # Autog√©n√©ration
             self.Autogeneration(ligne=barre.case.ligne, IDactivite=barre.case.IDactivite, IDunite=barre.case.IDunite)
 
         self.barreMoving = None
@@ -2392,16 +2392,16 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 ####TOOLTIP
 
     def AfficheTooltip(self):
-        """ CrÈation du supertooltip """
+        """ Cr√©ation du supertooltip """
         case = self.tip.case
         
-        # RÈcupÈration des donnÈes du tooltip
+        # R√©cup√©ration des donn√©es du tooltip
         dictDonnees = case.GetTexteInfobulle()
         if dictDonnees == None or type(dictDonnees) != dict :
             self.ActiveTooltip(actif=False)
             return
         
-        # ParamÈtrage du tooltip
+        # Param√©trage du tooltip
         font = self.GetFont()
         self.tip.SetHyperlinkFont(wx.Font(8, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, 'Arial'))
         
@@ -2448,9 +2448,9 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         self.tipFrame.SetPosition((x+15, y+17))
         self.tipFrame.DropShadow(True)
         self.tipFrame.Show()
-        #self.tipFrame.StartAlpha(True) # ou .Show() pour un affichage immÈdiat
+        #self.tipFrame.StartAlpha(True) # ou .Show() pour un affichage imm√©diat
         
-        # ArrÍt du timer
+        # Arr√™t du timer
         self.timerTip.Stop()
         del self.timerTip
 
@@ -2471,7 +2471,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 self.timerTip.Start(1500)
                 self.tip.case = case
         else:
-            # DÈsactive le tooltip
+            # D√©sactive le tooltip
             if hasattr(self, "timerTip"):
                 if self.timerTip.IsRunning():
                     self.timerTip.Stop()
@@ -2507,7 +2507,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         return IDfacture
 
     def Facturation(self, IDactivite, IDindividu, IDfamille, date, IDcategorie_tarif, numIndividu=None, IDgroupe=None, case=None, modeSilencieux=False, etiquettes=[], action="saisie"):
-        # 1 - Recherche les unitÈs de la ligne
+        # 1 - Recherche les unit√©s de la ligne
         try :
             dictUnites = self.dictConsoIndividus[IDindividu][date]
         except :
@@ -2523,7 +2523,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 
                     dictQuantites[IDunite] = conso.quantite
 
-        # 2 - Recherche un tarif valable ‡ cette date
+        # 2 - Recherche un tarif valable √† cette date
         if (IDactivite in self.dictActivites) == False : return None
         if (IDcategorie_tarif in self.dictActivites[IDactivite]["tarifs"]) == False : return None
         
@@ -2532,7 +2532,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             if self.RechercheTarifValide(dictTarif, IDgroupe, date, IDindividu, IDfamille, etiquettes) == True :
                 listeTarifsValides1.append(dictTarif)
         
-        # 3 - On recherche si des combinaisons sont prÈsentes sur cette ligne
+        # 3 - On recherche si des combinaisons sont pr√©sentes sur cette ligne
         listeTarifsValides2 = []
         for dictTarif in listeTarifsValides1 :
             dictTarif = copy.deepcopy(dictTarif)
@@ -2540,17 +2540,17 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             for combinaison in combinaisons_unites :
                 resultat = self.RechercheCombinaisonDict(dictUnitesUtilisees, combinaison, dictTarif)
                 if resultat == True :
-                    if len(combinaison) > dictTarif["nbre_max_unites_combi"] : # Ceci est une ligne rajoutÈe pour le souci des 3 unites de conso non dÈtectÈes
+                    if len(combinaison) > dictTarif["nbre_max_unites_combi"] : # Ceci est une ligne rajout√©e pour le souci des 3 unites de conso non d√©tect√©es
                         dictTarif["nbre_max_unites_combi"] = len(combinaison)
                         dictTarif["combi_retenue"] = combinaison
                         listeTarifsValides2.append(dictTarif)
 
-        # 4 - Tri des tarifs par date de dÈbut
+        # 4 - Tri des tarifs par date de d√©but
         if six.PY2:
             listeTarifsValides2.sort(cmp=self.TriTarifs2)
         else:
             listeTarifsValides2.sort(key=functools.cmp_to_key(self.TriTarifs2))
-        # Tri des tarifs par nombre d'unitÈs
+        # Tri des tarifs par nombre d'unit√©s
         if six.PY2:
             listeTarifsValides2.sort(cmp=self.TriTarifs)
         else :
@@ -2558,7 +2558,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 
 
         #-----------------------------------------------------------
-        # Si forfaits au crÈdits prÈsents dans les tarifs
+        # Si forfaits au cr√©dits pr√©sents dans les tarifs
         nbreTarifsForfait = 0
         for dictTarif in listeTarifsValides2 :
             if dictTarif["type"] == "CREDIT" :
@@ -2568,10 +2568,10 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             listeTarifsValides3 = []
             for dictTarif in listeTarifsValides2 :
                 if dictTarif["type"] == "CREDIT" :
-                    # tarif crÈdit
+                    # tarif cr√©dit
                     IDprestationForfait, dictTarifForfait = self.RechercheForfaitCredit(IDtarif=dictTarif["IDtarif"], date=date, IDfamille=IDfamille, IDindividu=IDindividu)
 
-                    # VÈrification des quantitÈs max
+                    # V√©rification des quantit√©s max
                     if len(dictTarif["quantitesMax"]) > 0 :
 
                         combiRetenue = list(dictTarif["combi_retenue"])
@@ -2586,7 +2586,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 
                         if quantite_max != None :
 
-                            # Recherche la quantitÈ de conso dans la grille affichÈe
+                            # Recherche la quantit√© de conso dans la grille affich√©e
                             nbre = 0
                             liste_dates = []
                             for dateTemp, dictUnitesTemp in self.dictConsoIndividus[IDindividu].items():
@@ -2600,7 +2600,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                                 if self.RechercheCombinaisonTuple(listeUnitesTemp, combiRetenue) == True:
                                     nbre += 1
 
-                            # Recherche la quantitÈ de conso dÈj‡ enregistrÈe dans la DB
+                            # Recherche la quantit√© de conso d√©j√† enregistr√©e dans la DB
                             if IDprestationForfait in self.dictForfaits :
                                 if "dict_conso" in self.dictForfaits[IDprestationForfait] :
                                     for dateTemp, listeUnitesTemp in self.dictForfaits[IDprestationForfait]["dict_conso"].items() :
@@ -2627,7 +2627,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                                     # Blocage de la saisie
                                     case.Supprimer()
                                     if modeSilencieux == False :
-                                        dlg = wx.MessageDialog(self, _(u"Il n'y a plus de crÈdit disponible dans le forfait !"), _(u"CrÈdit ÈpuisÈ"), wx.OK | wx.ICON_EXCLAMATION)
+                                        dlg = wx.MessageDialog(self, _(u"Il n'y a plus de cr√©dit disponible dans le forfait !"), _(u"Cr√©dit √©puis√©"), wx.OK | wx.ICON_EXCLAMATION)
                                         dlg.ShowModal()
                                         dlg.Destroy()
                                         return
@@ -2640,7 +2640,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 else :
                     # Tarif normal
                     listeTarifsValides3.append(dictTarif)
-            # Met les forfaits crÈdit en premier
+            # Met les forfaits cr√©dit en premier
             if six.PY2:
                 listeTarifsValides3.sort(cmp=self.TriTarifs3)
             else:
@@ -2649,12 +2649,12 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             listeTarifsValides2 = listeTarifsValides3
         #-----------------------------------------------------------
 
-        # 5 - On conserve les tarifs qui ont plus grand nombre d'unitÈs dans la combi
+        # 5 - On conserve les tarifs qui ont plus grand nombre d'unit√©s dans la combi
         listeTarifsRetenus = []
         listeIDunitesTraitees = []
         for dictTarif in listeTarifsValides2 :
             combinaisons_unites = dictTarif["combi_retenue"]
-            # Recherche des unitÈs non traitÈes
+            # Recherche des unit√©s non trait√©es
             valide = True
             for IDunite in combinaisons_unites :
                 if IDunite in listeIDunitesTraitees :
@@ -2672,20 +2672,20 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             IDtarif = dictTarif["IDtarif"]
             combinaisons_unites = dictTarif["combi_retenue"]
 
-            # Recherche des ÈvËnements dans une des cases de la combinaison
+            # Recherche des √©v√®nements dans une des cases de la combinaison
             liste_evenements = [None,]
             if "evenement" in dictTarif["methode"] :
 
-                # Recherche les ÈvËnements pour lesquels une conso est saisie
+                # Recherche les √©v√®nements pour lesquels une conso est saisie
                 liste_evenements = []
                 for evenement in self.GetEvenementsUnites(combinaisons_unites, date, dictTarif, IDindividu):
                     if evenement.conso != None :
                         liste_evenements.append(evenement)
 
-            # MÈmorise le tarif initial pour les ÈvËnements
+            # M√©morise le tarif initial pour les √©v√®nements
             mem_dictTarif = copy.copy(dictTarif)
             for evenement in liste_evenements :
-                # Recherche un tarif spÈcial ÈvËnement
+                # Recherche un tarif sp√©cial √©v√®nement
                 if evenement != None and IDactivite in self.dictActivites and IDcategorie_tarif in self.dictActivites[IDactivite]["tarifs"]:
                     dictTarif = copy.copy(mem_dictTarif)
                     for dictTarifEvent in self.dictActivites[IDactivite]["tarifs"][IDcategorie_tarif] :
@@ -2693,13 +2693,13 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                             dictTarif = dictTarifEvent
                             dictTarif["nom_tarif"] = evenement.nom
 
-                # Forfait crÈdit
+                # Forfait cr√©dit
                 if "CREDIT" in dictTarif:
                     forfait_credit = dictTarif["CREDIT"]
                 else:
                     forfait_credit = False
 
-                # Recherche du temps facturÈ par dÈfaut
+                # Recherche du temps factur√© par d√©faut
                 liste_temps = []
                 for IDunite in combinaisons_unites :
                     if IDunite in dictUnites :
@@ -2713,7 +2713,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 else :
                     temps_facture = None
 
-                # Recherche de la quantitÈ
+                # Recherche de la quantit√©
                 quantite = 0
                 for IDunite in combinaisons_unites :
                     if IDunite in dictQuantites :
@@ -2733,10 +2733,10 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 
 
                 # -------------------------------------------------------------------------
-                # ------------ DÈduction d'une aide journaliËre --------------------
+                # ------------ D√©duction d'une aide journali√®re --------------------
                 # -------------------------------------------------------------------------
 
-                # Recherche si une aide est valable ‡ cette date et pour cet individu et pour cette activitÈ
+                # Recherche si une aide est valable √† cette date et pour cet individu et pour cette activit√©
                 listeAidesRetenues = []
                 for IDaide, dictAide in self.dictAides.items() :
                     IDfamilleTemp = dictAide["IDfamille"]
@@ -2745,16 +2745,16 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                     dateDebutTemp = dictAide["date_debut"]
                     dateFinTemp = dictAide["date_fin"]
 
-                    # VÈrifie si date est dans jours scolaires ou de vacances
+                    # V√©rifie si date est dans jours scolaires ou de vacances
                     date_ok = True
                     if dictAide["jours_scolaires"] != None and dictAide["jours_scolaires"] != None :
                         date_ok = self.VerificationPeriodes(dictAide["jours_scolaires"], dictAide["jours_vacances"], date)
 
                     if date_ok == True and IDfamille == IDfamilleTemp and date >= dateDebutTemp and date <= dateFinTemp and IDindividu in listeBeneficiaires and IDactiviteTemp == IDactivite :
-                        # Une aide valide a ÈtÈ trouvÈe...
+                        # Une aide valide a √©t√© trouv√©e...
                         listeCombiValides = []
 
-                        # On recherche si des combinaisons sont prÈsentes sur cette ligne
+                        # On recherche si des combinaisons sont pr√©sentes sur cette ligne
                         dictMontants = dictAide["montants"]
                         for IDaide_montant, dictMontant in dictMontants.items() :
                             montant = dictMontant["montant"]
@@ -2778,18 +2778,18 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                                         }
                                     listeCombiValides.append(dictTmp)
 
-                        # Tri des combinaisons par nombre d'unitÈs max dans les combinaisons
+                        # Tri des combinaisons par nombre d'unit√©s max dans les combinaisons
                         if six.PY2:
                             listeCombiValides.sort(cmp=self.TriTarifs)
                         else:
                             listeCombiValides.sort(key=functools.cmp_to_key(self.TriTarifs))
 
-                        # On conserve le combi qui a le plus grand nombre d'unitÈs dedans
+                        # On conserve le combi qui a le plus grand nombre d'unit√©s dedans
                         aideRetenue = None
                         if len(listeCombiValides) > 0 :
                             aideRetenue = listeCombiValides[0]
 
-                        # VÈrifie que le montant max ou le nbre de dates max n'est pas dÈj‡ atteint avant application
+                        # V√©rifie que le montant max ou le nbre de dates max n'est pas d√©j√† atteint avant application
                         listeDatesAide = []
                         montantMaxAide = 0.0
                         if aideRetenue != None :
@@ -2808,23 +2808,23 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                             if (montantMaxAide + aideRetenue["montant"]) > dictAide["montant_max"] :
                                 aideRetenue = None
 
-                        # MÈmorisation de l'aide retenue
+                        # M√©morisation de l'aide retenue
                         if aideRetenue != None and montant_tarif > 0:
                             listeAidesRetenues.append(aideRetenue)
 
 
                 if forfait_credit == False :
-                    # Application de la dÈduction
+                    # Application de la d√©duction
                     montant_initial = montant_tarif
                     montant_final = montant_initial
                     for aideRetenue in listeAidesRetenues :
                         montant_final = montant_final - aideRetenue["montant"]
 
-                    # Formatage du temps facturÈ
+                    # Formatage du temps factur√©
                     if temps_facture != None :
                         temps_facture = time.strftime("%H:%M", time.gmtime(temps_facture.seconds))
 
-                    # -------------------------MÈmorisation de la prestation ---------------------------------------------
+                    # -------------------------M√©morisation de la prestation ---------------------------------------------
                     IDcompte_payeur = self.dictComptesPayeurs[IDfamille]
                     IDprestation = self.MemorisePrestation(IDcompte_payeur, date, IDactivite, IDtarif, nom_tarif, montant_initial, montant_final, IDfamille, IDindividu, listeDeductions=listeAidesRetenues, temps_facture=temps_facture, IDcategorie_tarif=IDcategorie_tarif, dictTarif=dictTarif, evenement=evenement)
                     if IDprestation < 0 :
@@ -2833,7 +2833,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 else :
                     IDprestation = forfait_credit
 
-                # Attribue ‡ chaque unitÈ un IDprestation
+                # Attribue √† chaque unit√© un IDprestation
                 for IDunite in combinaisons_unites :
                     if evenement != None :
                         IDevenement = evenement.IDevenement
@@ -2841,7 +2841,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                         IDevenement = None
                     dictUnitesPrestations[(IDunite, IDevenement)] = IDprestation
 
-        # 7 - Parcours de toutes les unitÈs de la date pour modifier le IDprestation
+        # 7 - Parcours de toutes les unit√©s de la date pour modifier le IDprestation
         listeAnciennesPrestations = []
         for IDunite, listeConso in self.dictConsoIndividus[IDindividu][date].items() :
             for conso in listeConso :
@@ -2857,7 +2857,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                     else:
                         IDprestation = None
 
-                    # Supprime si nÈcessaire l'ancienne prestation
+                    # Supprime si n√©cessaire l'ancienne prestation
                     valeur = (conso.IDprestation, "consommation")
                     if (IDprestation == None or IDprestation < 0) or IDprestation in list(self.dictForfaits.keys()) :
                         if conso.IDprestation != None and valeur not in listeAnciennesPrestations and conso.IDprestation not in list(self.dictForfaits.keys()) :
@@ -2878,12 +2878,12 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                         else :
                             pass
 
-        # 7A - VÈrifie que la prestation supprimÈe n'est pas un tarif SELON NBRE INDIVIDUS FAMILLE
+        # 7A - V√©rifie que la prestation supprim√©e n'est pas un tarif SELON NBRE INDIVIDUS FAMILLE
         for IDprestationAncienne, categorie in listeAnciennesPrestations :
             if IDprestationAncienne in self.dictPrestations:
                 IDtarifPrestationSupprimee = self.dictPrestations[IDprestationAncienne]["IDtarif"]
 
-                # Recherche le tarif de la prestation supprimÈe
+                # Recherche le tarif de la prestation supprim√©e
                 for IDactiviteTmp, dictActiviteTmp in self.dictActivites.items() :
                     for IDnom_tarifTmp, listeTarifsTmp in dictActiviteTmp["tarifs"].items() :
                         for dictTarif in listeTarifsTmp :
@@ -2933,7 +2933,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                                             # if tarifFound == True :
                                             #     break
 
-                                    # Recherche combien d'individus de la famille sont dÈj‡ prÈsents ce jour-l‡
+                                    # Recherche combien d'individus de la famille sont d√©j√† pr√©sents ce jour-l√†
                                     listeIndividusPresents = []
                                     listePrestationsConcernees = []
                                     for IDprestation, dictValeurs in self.dictPrestations.items() :
@@ -2942,9 +2942,9 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                                                 listeIndividusPresents.append(dictValeurs["IDindividu"])
                                     nbreIndividus = len(listeIndividusPresents)
                                     
-                                    # Recherche le tarif ‡ appliquer ‡ chaque individu
+                                    # Recherche le tarif √† appliquer √† chaque individu
                                     if "degr" in methode_calcul :
-                                        # Si tarif dÈgressif diffÈrent pour chaque individu
+                                        # Si tarif d√©gressif diff√©rent pour chaque individu
                                         tarifsDegr = []
                                         if montant_enfant_1 != None and montant_enfant_1 != 0.0 : tarifsDegr.append(montant_enfant_1)
                                         if montant_enfant_2 != None and montant_enfant_2 != 0.0 : tarifsDegr.append(montant_enfant_2)
@@ -2968,7 +2968,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                                     for IDprestation, dictValeurs in self.dictPrestations.items() :
                                         if IDprestation != IDtarifPrestationSupprimee and dictValeurs["date"] == date and dictValeurs["IDfamille"] == IDfamille and dictValeurs["IDtarif"] == IDtarifTmp and dictValeurs["IDindividu"] != IDindividu :
                                             
-                                            # Recherche du tarif ‡ appliquer aux autres individus de la famille
+                                            # Recherche du tarif √† appliquer aux autres individus de la famille
                                             if "degr" in methode_calcul :
                                                 montantTmp = 0.0
                                                 try :
@@ -2987,7 +2987,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                                             
                                             self.listePrestationsModifiees.append(IDprestation)
 
-                                            # Modifie le montant affichÈ dans le volet Facturation
+                                            # Modifie le montant affich√© dans le volet Facturation
                                             if self.mode == "individu" :
                                                 self.GetGrandParent().panel_facturation.ModifiePrestation(
                                                                 date=date, 
@@ -3005,7 +3005,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 del self.dictPrestations[IDprestationAncienne]
             self.listePrestationsSupprimees.append(IDprestationAncienne)
 
-        # 9 - Met ‡ jour le controle d'affichage des prestations
+        # 9 - Met √† jour le controle d'affichage des prestations
         if self.mode == "individu" :
             self.GetGrandParent().panel_facturation.SaisiePrestation(
                     self.dictPrestations,
@@ -3076,7 +3076,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                             for prestation in dictPrestation[date][IDindividu] :
                                 label = prestation["label"]
                                 montant = prestation["montant"]
-                                texte += u"      - %s : %s §\n" % (label, montant)
+                                texte += u"      - %s : %s ‚Ç¨\n" % (label, montant)
                 texte += u"\n"
         
         if regroupement == "individu" :
@@ -3093,27 +3093,27 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                         for prestation in dictPrestation[date][IDindividu] :
                             label = prestation["label"]
                             montant = prestation["montant"]
-                            texte += u"      - %s : %s §\n" % (label, montant)
+                            texte += u"      - %s : %s ‚Ç¨\n" % (label, montant)
                     texte += u"\n"
         
-        # Ecrit dans la fenÍtre de TEST
+        # Ecrit dans la fen√™tre de TEST
         try : self.GetGrandParent().ctrl_facturation.SetValue(texte)
         except : pass
         
-        # Ecrit dans la fenÍtre AUI
+        # Ecrit dans la fen√™tre AUI
         try : self.GetGrandParent().panel_facturation.SetValue(texte)
         except : pass
         
         
     def RechercheCombinaisonDict(self, dictUnitesUtilisees={}, combinaison=[], dictTarif={}):
-        """ Recherche une combinaison donnÈe dans une ligne de la grille """
+        """ Recherche une combinaison donn√©e dans une ligne de la grille """
         for IDunite_combi in combinaison :
-            # VÈrifie si chaque unitÈ est dans la combinaison
+            # V√©rifie si chaque unit√© est dans la combinaison
             if (IDunite_combi in dictUnitesUtilisees) == False :
                 return False
             if dictUnitesUtilisees[IDunite_combi] == None :
                 return False
-            # VÈrifie si l'Ètat est valide
+            # V√©rifie si l'√©tat est valide
             if dictTarif["type"] == "JOURN" :
                 etats = dictTarif["etats"]
                 etat = dictUnitesUtilisees[IDunite_combi]
@@ -3122,14 +3122,14 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         return True
 
     def RechercheCombinaisonTuple(self, combinaisons_unites=[], combinaison=[]):
-        """ Recherche une combinaison donnÈe dans une ligne de la grille """
+        """ Recherche une combinaison donn√©e dans une ligne de la grille """
         for IDunite_combi in combinaison :
             if IDunite_combi not in combinaisons_unites :
                 return False
         return True
     
     def GetTarifsForfaitsCreditDisponibles(self, date=datetime.date(2012, 1, 10)):
-        """ Fonction utilisation pour la crÈation d'un forfait au crÈdit """
+        """ Fonction utilisation pour la cr√©ation d'un forfait au cr√©dit """
         # Recherche des tarifs disponibles pour chaque individu
         dictDonnees = {}
         listeActivites = []
@@ -3142,7 +3142,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 if IDactivite not in listeActivites :
                     listeActivites.append(IDactivite)
                 
-                # CrÈation de dict de rÈsultats
+                # Cr√©ation de dict de r√©sultats
                 if (IDfamille in dictDonnees) == False :
                     dictDonnees[IDfamille] = { "individus":{}, "forfaits":[] }
                 if (IDindividu in dictDonnees[IDfamille]["individus"]) == False :
@@ -3216,9 +3216,9 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 
     def MemorisePrestation(self, IDcompte_payeur, date, IDactivite, IDtarif, nom_tarif, montant_initial, montant_final, IDfamille, IDindividu, categorie="consommation", listeDeductions=[], 
                                                 temps_facture=None, IDcategorie_tarif=None, forfait_date_debut=None, forfait_date_fin=None, dictTarif=None, evenement=None):
-        """ MÈmorisation de la prestation """
+        """ M√©morisation de la prestation """
 
-        # PrÈparation des valeurs ‡ mÈmoriser
+        # Pr√©paration des valeurs √† m√©moriser
         if IDindividu != None :
             nomIndividu = u"%s %s" % (self.dictIndividus[IDindividu]["nom"], self.dictIndividus[IDindividu]["prenom"])
         else:
@@ -3247,12 +3247,12 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 "forfait" : None,
                 }
 
-        # Recherche si une prestation identique existe dÈj‡ en mÈmoire
+        # Recherche si une prestation identique existe d√©j√† en m√©moire
         for IDprestation, dictTemp1 in self.dictPrestations.items() :
             if IDprestation > 0 :
                 dictTemp2 = dictTemp1.copy()
 
-                # Renvoie prestation existante si la prestation apparaÓt dÈj‡ sur une facture mÍme si le montant est diffÈrent
+                # Renvoie prestation existante si la prestation appara√Æt d√©j√† sur une facture m√™me si le montant est diff√©rent
                 keys = ["date", "IDindividu", "IDtarif", "IDcompte_payeur"]
                 if evenement:
                     keys.append("label")
@@ -3264,23 +3264,23 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 if CompareDict(dictPrestation, dictTemp2, keys=keys) == True :
                     return IDprestation
 
-        # Recherche le prochain numÈro dans la liste des prestations
+        # Recherche le prochain num√©ro dans la liste des prestations
         IDprestation = self.prochainIDprestation
         self.prochainIDprestation -= 1
         
-        # MÈmorisation de la prestation
+        # M√©morisation de la prestation
         dictPrestation["IDprestation"] = IDprestation
         dictPrestation["montantVentilation"] = 0.0
         self.dictPrestations[IDprestation] = dictPrestation
         
-        # CrÈation des dÈductions pour les aides journaliËres
+        # Cr√©ation des d√©ductions pour les aides journali√®res
         self.CreationDeductions(listeDeductions=listeDeductions, IDprestation=IDprestation, IDcompte_payeur=IDcompte_payeur, date=date)
 
         return IDprestation
 
 
     def CreationDeductions(self, listeDeductions=[], IDprestation=None, IDcompte_payeur=None, date=None):
-        # CrÈation des dÈductions pour les aides journaliËres
+        # Cr√©ation des d√©ductions pour les aides journali√®res
         for deduction in listeDeductions :
             IDdeduction = self.prochainIDdeduction
             self.prochainIDdeduction -= 1
@@ -3292,7 +3292,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             if (IDprestation in self.dictDeductions) == False :
                 self.dictDeductions[IDprestation] = []
 
-            # Recherche si cette aide existe dÈj‡
+            # Recherche si cette aide existe d√©j√†
             index_exist = None
             index = 0
             for deduction_temp in self.dictDeductions[IDprestation]:
@@ -3307,7 +3307,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 
 
     def RechercheForfaitCredit(self, IDtarif=None, date=None, IDfamille=None, IDindividu=None):
-        """ Recherche un forfait dans la liste des forfaits disponibles pour une consommation donnÈe """
+        """ Recherche un forfait dans la liste des forfaits disponibles pour une consommation donn√©e """
         for IDprestation, dictTarif in self.dictForfaits.items() :
             if dictTarif["IDtarif"] == IDtarif and dictTarif["forfait_date_debut"] <= date and dictTarif["forfait_date_fin"] >= date :
                 if dictTarif["IDfamille"] == IDfamille :
@@ -3317,20 +3317,20 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
     
     def RechercheTarifValide(self, dictTarif={}, IDgroupe=None, date=None, IDindividu=None, IDfamille=None, etiquettes=[]):
         """ Pour Facturation """
-        # VÈrifie si dates validitÈ ok
+        # V√©rifie si dates validit√© ok
         date_debut = dictTarif["date_debut"]
         date_fin = dictTarif["date_fin"]
         if date_fin == None : date_fin = datetime.date(2999, 1, 1)
         if date_debut == None or date < date_debut or date > date_fin :
             return False
 
-        # VÈrifie si groupe ok
+        # V√©rifie si groupe ok
         listeGroupes = dictTarif["groupes"]
         if listeGroupes != None :
             if IDgroupe not in listeGroupes :
                 return False
 
-        # VÈrifie si Ètiquette ok
+        # V√©rifie si √©tiquette ok
         listeEtiquettes = dictTarif["etiquettes"]
         if listeEtiquettes != None :
             valide = False
@@ -3340,24 +3340,24 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             if valide == False :
                 return False
             
-        # VÈrifie si cotisation ‡ jour
+        # V√©rifie si cotisation √† jour
         if dictTarif["cotisations"] != None :
             cotisationsValide = self.VerificationCotisations(listeCotisations=dictTarif["cotisations"], date=date, IDindividu=IDindividu, IDfamille=IDfamille)
             if cotisationsValide == False :
                 return False
 
-        # VÈrifie si caisse ‡ jour
+        # V√©rifie si caisse √† jour
         if dictTarif["caisses"] != None :
             caissesValide = self.VerificationCaisses(listeCaisses=dictTarif["caisses"], IDfamille=IDfamille)
             if caissesValide == False :
                 return False
 
-        # VÈrifie si pÈriode ok
+        # V√©rifie si p√©riode ok
         if dictTarif["jours_scolaires"] != None or dictTarif["jours_vacances"] != None :
             if self.VerificationPeriodes(dictTarif["jours_scolaires"], dictTarif["jours_vacances"], date) == False :
                 return False
                 
-        # VÈrifie si filtres de questionnaires ok
+        # V√©rifie si filtres de questionnaires ok
         if len(dictTarif["filtres"]) > 0 :
             filtresValide = self.VerificationFiltres(listeFiltres=dictTarif["filtres"], date=date, IDindividu=IDindividu, IDfamille=IDfamille)
             if filtresValide == False :
@@ -3375,7 +3375,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 if date >= date_debut and date <= date_fin and (dictTarif["IDtype_quotient"] == None or dictTarif["IDtype_quotient"] == IDtype_quotient) :
                     return quotient
 
-        # Si la famille n'a pas de QF, on attribue le QF le plus ÈlevÈ :
+        # Si la famille n'a pas de QF, on attribue le QF le plus √©lev√© :
         listeQF = []
         for ligneCalcul in dictTarif["lignes_calcul"] :
             qf = ligneCalcul["qf_max"]
@@ -3434,7 +3434,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         methode_calcul = dictTarif["methode"]
         label_prestation = dictTarif["label_prestation"]
 
-        # Label de la prestation personnalisÈ
+        # Label de la prestation personnalis√©
         if label_prestation != None and label_prestation == "description_tarif" :
             nom_tarif = description_tarif
         if label_prestation != None and label_prestation.startswith("autre:"):
@@ -3449,7 +3449,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             if montant_questionnaire not in (None, 0.0) :
                 montant_tarif = montant_questionnaire
             
-        # Recherche du montant ‡ appliquer : QUOTIENT FAMILIAL
+        # Recherche du montant √† appliquer : QUOTIENT FAMILIAL
         if methode_calcul == "qf" :
             montant_tarif = 0.0
             tarifFound = False
@@ -3479,7 +3479,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             tarifFound = False
             lignes_calcul = dictTarif["lignes_calcul"]
 
-            # Recherche des heures debut et fin des unitÈs cochÈes
+            # Recherche des heures debut et fin des unit√©s coch√©es
             heure_debut = None
             heure_fin = None
             for IDunite, listeConso in self.dictConsoIndividus[IDindividu][date].items() :
@@ -3517,7 +3517,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                     heure_fin_delta = datetime.timedelta(hours=heure_fin.hour, minutes=heure_fin.minute)
                     duree_delta = heure_fin_delta - heure_debut_delta
                     
-                    # CrÈation du label personnalisÈ
+                    # Cr√©ation du label personnalis√©
                     label = ligneCalcul["label"]
                     if label != None and label != "" :
                         if "{TEMPS_REALISE}" in label : 
@@ -3539,7 +3539,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             tarifFound = False
             lignes_calcul = dictTarif["lignes_calcul"]
 
-            # Recherche des heures debut et fin des unitÈs cochÈes
+            # Recherche des heures debut et fin des unit√©s coch√©es
             heure_debut = None
             heure_fin = None
             for IDunite, listeConso in self.dictConsoIndividus[IDindividu][date].items() :
@@ -3581,7 +3581,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                             heure_fin_delta = datetime.timedelta(hours=heure_fin.hour, minutes=heure_fin.minute)
                             duree_delta = heure_fin_delta - heure_debut_delta
 
-                            # CrÈation du label personnalisÈ
+                            # Cr√©ation du label personnalis√©
                             label = ligneCalcul["label"]
                             if label != None and label != "" :
                                 if "{TEMPS_REALISE}" in label :
@@ -3612,7 +3612,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                     #             heure_fin_delta = datetime.timedelta(hours=heure_fin.hour, minutes=heure_fin.minute)
                     #             duree_delta = heure_fin_delta - heure_debut_delta
                     #
-                    #             # CrÈation du label personnalisÈ
+                    #             # Cr√©ation du label personnalis√©
                     #             label = ligneCalcul["label"]
                     #             if label != None and label != "" :
                     #                 if "{TEMPS_REALISE}" in label :
@@ -3637,7 +3637,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             tarifFound = False
             lignes_calcul = dictTarif["lignes_calcul"]
 
-            # Recherche des heures debut et fin des unitÈs cochÈes
+            # Recherche des heures debut et fin des unit√©s coch√©es
             duree, heure_debut_delta, heure_fin_delta = self.CalculeDuree(IDindividu, date, combinaisons_unites)
             duree_delta = heure_fin_delta - heure_debut_delta
 
@@ -3658,7 +3658,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                     else :
                         temps_facture = duree_max
                                 
-                    # CrÈation du label personnalisÈ
+                    # Cr√©ation du label personnalis√©
                     label = ligneCalcul["label"]
                     if label != None and label != "" :
                         if "{TEMPS_REALISE}" in label : 
@@ -3680,7 +3680,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             tarifFound = False
             lignes_calcul = dictTarif["lignes_calcul"]
 
-            # Recherche de la durÈe totale des unitÈs cochÈes
+            # Recherche de la dur√©e totale des unit√©s coch√©es
 ##            heure_debut = None
 ##            heure_fin = None
 ##            for IDunite, listeConso in self.dictConsoIndividus[IDindividu][date].iteritems() :
@@ -3696,7 +3696,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 ##                    if heure_fin == None or heure_fin_temp > heure_fin : 
 ##                        heure_fin = heure_fin_temp
 ##            
-##            # Calcul de la durÈe
+##            # Calcul de la dur√©e
 ##            heure_debut_delta = datetime.timedelta(hours=heure_debut.hour, minutes=heure_debut.minute)
 ##            heure_fin_delta = datetime.timedelta(hours=heure_fin.hour, minutes=heure_fin.minute)
 ##            duree_delta = heure_fin_delta - heure_debut_delta
@@ -3727,14 +3727,14 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 if duree_min <= duree <= duree_max :
                     montant_tarif = montant_tarif_ligne
 
-                    # Temps facturÈ
+                    # Temps factur√©
                     if ligneCalcul["temps_facture"] != None and ligneCalcul["temps_facture"] != "" :
                         temps_facture = HeureStrEnTime(ligneCalcul["temps_facture"])
                         temps_facture = datetime.timedelta(hours=temps_facture.hour, minutes=temps_facture.minute)
                     else :
                         temps_facture = duree_max
 
-                    # CrÈation du label personnalisÈ
+                    # Cr√©ation du label personnalis√©
                     label = ligneCalcul["label"]
                     if label != None and label != "" :
                         if "{TEMPS_REALISE}" in label :
@@ -3777,7 +3777,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                     if label != None and label != "" :
                         nom_tarif = label
             
-        # Recherche du montant ‡ appliquer : EN FONCTION DE LA DATE ET DU QUOTIENT FAMILIAL
+        # Recherche du montant √† appliquer : EN FONCTION DE LA DATE ET DU QUOTIENT FAMILIAL
         if methode_calcul == "qf_date" :
             montant_tarif = 0.0
             tarifFound = False
@@ -3828,7 +3828,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 montant_tarif = dlg.GetMontant()
                 dlg.Destroy()
             else :
-                # Sinon pas de nouvelle saisie : on cherche l'ancienne prestation dÈj‡ saisie
+                # Sinon pas de nouvelle saisie : on cherche l'ancienne prestation d√©j√† saisie
                 for IDprestation, dictValeurs in self.dictPrestations.items() :
                     if dictValeurs["date"] == date and dictValeurs["IDfamille"] == IDfamille and dictValeurs["IDindividu"] == IDindividu and dictValeurs["IDtarif"] == IDtarif :
                         nom_tarif = dictValeurs["label"]
@@ -3846,7 +3846,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 montant_tarif = dlg.GetMontant()
                 dlg.Destroy()
             else :
-                # Sinon pas de nouvelle saisie : on cherche l'ancienne prestation dÈj‡ saisie
+                # Sinon pas de nouvelle saisie : on cherche l'ancienne prestation d√©j√† saisie
                 for IDprestation, dictValeurs in self.dictPrestations.items() :
                     if dictValeurs["date"] == date and dictValeurs["IDfamille"] == IDfamille and dictValeurs["IDindividu"] == IDindividu and dictValeurs["IDtarif"] == IDtarif :
                         nom_tarif = dictValeurs["label"]
@@ -3887,7 +3887,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             if "horaire" in methode_calcul  :
                 tarifFound = False
 
-                # Recherche des heures debut et fin des unitÈs cochÈes
+                # Recherche des heures debut et fin des unit√©s coch√©es
                 heure_debut = None
                 heure_fin = None
                 for IDunite, listeConso in self.dictConsoIndividus[IDindividu][date].items() :
@@ -3931,7 +3931,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                         heure_fin_delta = datetime.timedelta(hours=heure_fin.hour, minutes=heure_fin.minute)
                         duree_delta = heure_fin_delta - heure_debut_delta
                         
-                        # CrÈation du label personnalisÈ
+                        # Cr√©ation du label personnalis√©
                         label = ligneCalcul["label"]
                         if label != None and label != "" :
                             if "{TEMPS_REALISE}" in label : 
@@ -3946,8 +3946,8 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                         break
 
 
-            # Recherche combien d'individus de la famille sont dÈj‡ prÈsents
-            # ce jour-l‡ ou au dÈbut du forfait
+            # Recherche combien d'individus de la famille sont d√©j√† pr√©sents
+            # ce jour-l√† ou au d√©but du forfait
             listeIndividusPresents = set()
             listePrestationsConcernees = []
             for IDprestation, dictValeurs in self.dictPrestations.items() :
@@ -3961,9 +3961,9 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                     listeIndividusPresents.add(dictValeurs["IDindividu"])
             nbreIndividus = len(listeIndividusPresents) + 1
 
-            # Recherche le tarif ‡ appliquer ‡ chaque individu
+            # Recherche le tarif √† appliquer √† chaque individu
             if "degr" in methode_calcul :
-                # Si tarif dÈgressif diffÈrent pour chaque individu
+                # Si tarif d√©gressif diff√©rent pour chaque individu
                 tarifsDegr = []
                 if montant_enfant_1 != None and montant_enfant_1 != 0.0 : tarifsDegr.append(montant_enfant_1)
                 if montant_enfant_2 != None and montant_enfant_2 != 0.0 : tarifsDegr.append(montant_enfant_2)
@@ -3987,7 +3987,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             for IDprestation, dictValeurs in self.dictPrestations.items() :
                 if dictValeurs["date"] == date and dictValeurs["IDtarif"] == IDtarif and dictValeurs["IDfamille"] == IDfamille : #and dictValeurs["IDindividu"] != IDindividu :
                     
-                    # Recherche du tarif ‡ appliquer aux autres individus de la famille
+                    # Recherche du tarif √† appliquer aux autres individus de la famille
                     if "degr" in methode_calcul :
                         montantTmp = 0.0
                         try :
@@ -4006,7 +4006,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 
                     self.listePrestationsModifiees.append(IDprestation)
                     
-                    # Modifie le montant affichÈ dans le volet Facturation
+                    # Modifie le montant affich√© dans le volet Facturation
                     if self.mode == "individu" :
                         self.GetGrandParent().panel_facturation.ModifiePrestation(
                                         date=date, 
@@ -4026,7 +4026,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             tarifFound = False
             lignes_calcul = dictTarif["lignes_calcul"]
 
-            # Recherche des heures debut et fin des unitÈs cochÈes
+            # Recherche des heures debut et fin des unit√©s coch√©es
             duree, heure_debut_delta, heure_fin_delta = self.CalculeDuree(IDindividu, date, combinaisons_unites)
             duree_delta = heure_fin_delta - heure_debut_delta
             
@@ -4065,14 +4065,14 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 
                 if duree_min <= duree <= duree_max and conditionQF == True :        
                     duree_temp = duree
-                    # VÈrifie durÈes seuil et plafond
+                    # V√©rifie dur√©es seuil et plafond
                     if duree_seuil != None :
                         if duree_temp < duree_seuil : duree_temp = duree_seuil
                     if duree_plafond != None and duree_plafond.seconds > 0 :
                         if duree_temp > duree_plafond : duree_temp = duree_plafond
                     
                     # Calcul du tarif
-                    nbre = int(math.ceil(1.0 * duree_temp.seconds / unite_horaire.seconds)) # Arrondi ‡ l'entier supÈrieur
+                    nbre = int(math.ceil(1.0 * duree_temp.seconds / unite_horaire.seconds)) # Arrondi √† l'entier sup√©rieur
                     montant_tarif = nbre * montant_tarif_ligne
                     montant_tarif = float(decimal.Decimal(str(montant_tarif)))
 
@@ -4084,16 +4084,16 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                         if montant_tarif > montant_max :
                             montant_tarif = montant_max
 
-                    # Application de l'ajustement (majoration ou dÈduction)
+                    # Application de l'ajustement (majoration ou d√©duction)
                     if ajustement != None :
                         montant_tarif = montant_tarif + ajustement
                         if montant_tarif < 0.0 :
                             montant_tarif = 0.0
 
-                    # Calcul du temps facturÈ
+                    # Calcul du temps factur√©
                     temps_facture = unite_horaire * nbre
                     
-                    # CrÈation du label personnalisÈ
+                    # Cr√©ation du label personnalis√©
                     label = ligneCalcul["label"]
                     if label != None and label != "" :
                         if "{QUANTITE}" in label : 
@@ -4127,7 +4127,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 montant_max = ligneCalcul["montant_max"]
                 ajustement = ligneCalcul["ajustement"]
                 
-                # VÈrifie si QF ok pour le calcul basÈ Ègalement sur paliers de QF
+                # V√©rifie si QF ok pour le calcul bas√© √©galement sur paliers de QF
                 conditions = True
                 if methode_calcul == "taux_qf" :
                     if QFfamille != None :
@@ -4159,13 +4159,13 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                         if montant_tarif > montant_max :
                             montant_tarif = montant_max
 
-                    # Application de l'ajustement (majoration ou dÈduction)
+                    # Application de l'ajustement (majoration ou d√©duction)
                     if ajustement != None :
                         montant_tarif = montant_tarif + ajustement
                         if montant_tarif < 0.0 :
                             montant_tarif = 0.0
 
-                    # CrÈation du label personnalisÈ
+                    # Cr√©ation du label personnalis√©
                     label = ligneCalcul["label"]
                     if label != None and label != "" :
                         if "{TAUX}" in label : 
@@ -4184,7 +4184,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             # Recherche QF de la famille
             QFfamille = self.RechercheQF(dictTarif, IDfamille, date)
             
-            # Recherche de la durÈe
+            # Recherche de la dur√©e
             duree, heure_debut_delta, heure_fin_delta = self.CalculeDuree(IDindividu, date, combinaisons_unites)
             
             for ligneCalcul in lignes_calcul :
@@ -4208,7 +4208,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 if duree_max == None or duree_max == datetime.timedelta(0) : 
                     duree_max = datetime.timedelta(hours=23, minutes=59)
 
-                # VÈrifie si QF ok pour le calcul basÈ Ègalement sur paliers de QF
+                # V√©rifie si QF ok pour le calcul bas√© √©galement sur paliers de QF
                 conditionQF = True
                 if methode_calcul == "duree_taux_qf" :
                     if QFfamille != None :
@@ -4235,20 +4235,20 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                         if montant_tarif > montant_max :
                             montant_tarif = montant_max
 
-                    # Application de l'ajustement (majoration ou dÈduction)
+                    # Application de l'ajustement (majoration ou d√©duction)
                     if ajustement != None :
                         montant_tarif = montant_tarif + ajustement
                         if montant_tarif < 0.0 :
                             montant_tarif = 0.0
 
-                    # Calcul du temps facturÈ
+                    # Calcul du temps factur√©
                     if temps_facture_ligne != None and temps_facture_ligne != "" :
                         temps_facture = HeureStrEnTime(temps_facture_ligne) 
                         temps_facture = datetime.timedelta(hours=temps_facture.hour, minutes=temps_facture.minute)
                     else :
                         temps_facture = duree_max #datetime.timedelta(hours=duree_max.hour, minutes=duree_max.minute)
 
-                    # CrÈation du label personnalisÈ
+                    # Cr√©ation du label personnalis√©
                     label = ligneCalcul["label"]
                     if label != None and label != "" :
                         if "{TAUX}" in label : 
@@ -4261,12 +4261,12 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                         
                     break
 
-        # Si unitÈ de type QUANTITE
+        # Si unit√© de type QUANTITE
         if quantite != None :
             montant_tarif = montant_tarif * quantite
             nom_tarif = u"%d %s" % (quantite, nom_tarif)
         
-        # Arrondit le montant ‡ pour enlever les dÈcimales en trop. Ex : 3.05678 -> 3.05
+        # Arrondit le montant √† pour enlever les d√©cimales en trop. Ex : 3.05678 -> 3.05
         montant_tarif = float(FloatToDecimal(montant_tarif, plusProche=True))
 
         # if montant_tarif == 0.0 :
@@ -4326,7 +4326,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         self.CreationPDF() 
         
     def CreationPDF(self, nomDoc=FonctionsPerso.GenerationNomDoc("RESERVATIONS", "pdf"), afficherDoc=True):
-        # Recherche des numÈros d'agrÈments
+        # Recherche des num√©ros d'agr√©ments
         DB = GestionDB.DB() 
         req = """
         SELECT IDactivite, agrement, date_debut, date_fin
@@ -4349,7 +4349,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                     return agrement
             return None
 
-        # ---- CrÈation d'un dict au format Individu>Activite>Date>Conso
+        # ---- Cr√©ation d'un dict au format Individu>Activite>Date>Conso
         dictDonnees = {}
 
         # Parcours des individus
@@ -4372,9 +4372,9 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                                     nomActivite = self.dictActivites[IDactivite]["nom"]
                                     agrement = RechercheAgrement(IDactivite, date)
                                     if agrement != None :
-                                        agrement = _(u" - n∞ agrÈment : %s") % agrement
+                                        agrement = _(u" - n¬∞ agr√©ment : %s") % agrement
                     
-                                    # MÈmorisation des donnÈes
+                                    # M√©morisation des donn√©es
                                     if IDindividu not in dictDonnees:
                                         dictDonnees[IDindividu] = { "nom":nom, "prenom":prenom, "date_naiss":date_naiss, "sexe":sexe, "activites":{}}
                                     if IDactivite not in dictDonnees[IDindividu]["activites"]:
@@ -4384,15 +4384,15 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                                     if not IDunite in dictDonnees[IDindividu]["activites"][IDactivite]["dates"][date]["unites"]:
                                         dictDonnees[IDindividu]["activites"][IDactivite]["dates"][date]["unites"][IDunite] = []
 
-                                    # RÈcupÈration des consommations
+                                    # R√©cup√©ration des consommations
                                     nomUnite = self.dictUnites[IDunite]["nom"]
                                     ordreUnite = self.dictUnites[IDunite]["ordre"]
                                     typeUnite = self.dictUnites[IDunite]["type"]
                                     etat = conso.etat
-                                    if etat == "reservation" : etat = _(u"RÈservation")
-                                    if etat == "absenti" : etat = _(u"Absence injustifiÈe")
-                                    if etat == "absentj" : etat = _(u"Absence justifiÈe")
-                                    if etat == "present" : etat = _(u"PrÈsent")
+                                    if etat == "reservation" : etat = _(u"R√©servation")
+                                    if etat == "absenti" : etat = _(u"Absence injustifi√©e")
+                                    if etat == "absentj" : etat = _(u"Absence justifi√©e")
+                                    if etat == "present" : etat = _(u"Pr√©sent")
                                     if etat == "attente" : etat = _(u"Attente")
                                     if etat == "refus" : etat = _(u"Refus")
                                     IDgroupe = conso.IDgroupe
@@ -4400,7 +4400,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                                     heure_debut = conso.heure_debut
                                     heure_fin = conso.heure_fin
                                     
-                                    # Recherche de la prestation associÈe ‡ la conso
+                                    # Recherche de la prestation associ√©e √† la conso
                                     if IDprestation != None and IDprestation in self.dictPrestations :
                                         prestation = {
                                             "montant": self.dictPrestations[IDprestation]["montant"],
@@ -4418,7 +4418,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                                     }
                                     dictDonnees[IDindividu]["activites"][IDactivite]["dates"][date]["unites"][IDunite].append(dictTemp)
 
-        # Lancement de la crÈation du PDF
+        # Lancement de la cr√©ation du PDF
         from Utils import UTILS_Impression_reservations
         dictChamps = UTILS_Impression_reservations.Impression(dictDonnees, nomDoc=nomDoc, afficherDoc=afficherDoc)
         return dictChamps
@@ -4438,7 +4438,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 ##            # Parcours les cases
 ##            for numColonne, case in ligne.dictCases.iteritems() :
 ##                if case.typeCase == "consommation" :
-##                    # VÈrifie que les cases font partie de la sÈlection
+##                    # V√©rifie que les cases font partie de la s√©lection
 ##                    valide = True
 ##                    if case.IDactivite != dictParametres["selection"]["activite"] : valide = False
 ##                    if case.IDgroupe not in dictParametres["selection"]["groupes"] : valide = False
@@ -4457,7 +4457,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         """ Convertit toutes les conso selon les souhaits """
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("consommations_conso", "modifier") == False : return
 
-        # Demande les paramËtres de la conversion
+        # Demande les param√®tres de la conversion
         from Dlg import DLG_Conversion_etat
         dlg = DLG_Conversion_etat.Dialog(self)
         if dlg.ShowModal() == wx.ID_OK :
@@ -4467,7 +4467,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             dlg.Destroy()
             return
 
-        # Recherche les cases concernÈes
+        # Recherche les cases concern√©es
         listeConso = []
         listeDates = []
         for numLigne, ligne in self.dictLignes.items() :
@@ -4480,16 +4480,16 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                                 listeDates.append(case.date)
 
         if len(listeConso) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Il n'y a aucune consommation ayant cet Ètat !"), _(u"Annulation"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Il n'y a aucune consommation ayant cet √©tat !"), _(u"Annulation"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
-        # VÈrifie que des dates ne sont pas dans une pÈriode de gestion
+        # V√©rifie que des dates ne sont pas dans une p√©riode de gestion
         if self.gestion.Verification("consommations", listeDates) == False: return False
 
         # Confirmation
-        dlg = wx.MessageDialog(self, _(u"Confirmez-vous le changement d'Ètat '%s' en '%s' pour %d consommations ?") % (dictDonnees["label_etat_avant"], dictDonnees["label_etat_apres"], len(listeConso)), _(u"Changement d'Ètat"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+        dlg = wx.MessageDialog(self, _(u"Confirmez-vous le changement d'√©tat '%s' en '%s' pour %d consommations ?") % (dictDonnees["label_etat_avant"], dictDonnees["label_etat_apres"], len(listeConso)), _(u"Changement d'√©tat"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
         reponse = dlg.ShowModal()
         dlg.Destroy()
         if reponse != wx.ID_YES :
@@ -4515,7 +4515,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
     
     def RecalculerToutesPrestations(self, modeSilencieux=True, inclure_dates_fermees=False):
         """ Recalcule les prestations de toutes les cases """
-        # VÈrifie que la pÈriode sÈlectionnÈe n'est pas dans une pÈriode de gestion
+        # V√©rifie que la p√©riode s√©lectionn√©e n'est pas dans une p√©riode de gestion
         date_debut, date_fin = self.GetDatesExtremes(self.listePeriodes)
         if self.gestion.IsPeriodeinPeriodes("consommations", date_debut, date_fin) == False: return False
 
@@ -4539,13 +4539,13 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                         case.Refresh() 
                     
         if len(listeDejaFactures) > 0 and modeSilencieux == False :
-            dlg = wx.MessageDialog(self, _(u"Notez que %d prestations n'ont pas ÈtÈ recalculÈs car \ncelles-ci apparaissent dÈj‡ sur des factures ou sont verrouillÈes !") % len(listeDejaFactures), _(u"Information"), wx.OK | wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(self, _(u"Notez que %d prestations n'ont pas √©t√© recalcul√©s car \ncelles-ci apparaissent d√©j√† sur des factures ou sont verrouill√©es !") % len(listeDejaFactures), _(u"Information"), wx.OK | wx.ICON_INFORMATION)
             dlg.ShowModal()
             dlg.Destroy()
     
     
     def RechercheTransportsIndividu(self, dictionnaire={}, IDindividu=None, IDtransport=None):
-        """ Recherche si un transport a dÈj‡ ÈtÈ importÈ dans le dictionnaire donnÈ """
+        """ Recherche si un transport a d√©j√† √©t√© import√© dans le dictionnaire donn√© """
         if IDindividu in dictionnaire :
             for IDtransp, dictTemp in dictionnaire[IDindividu].items() :
                 if IDtransp == IDtransport :
@@ -4568,11 +4568,11 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         except :
             return
         
-        # Recherche les unitÈs de la ligne
+        # Recherche les unit√©s de la ligne
         listeUnitesUtilisees = []
         for IDunite, listeConso in dictUnites.items() :
             for conso in listeConso :
-                if conso.etat in ("reservation", "present", "absenti") : # ici, le 'absenti' permet de facturer aussi si absence injustifiÈe
+                if conso.etat in ("reservation", "present", "absenti") : # ici, le 'absenti' permet de facturer aussi si absence injustifi√©e
                     listeUnitesUtilisees.append(IDunite)
         
         def RechercheProgValide(dictProg):
@@ -4593,7 +4593,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 if date.weekday() not in dictProg["jours_scolaires"] :
                     return False
             
-            # UnitÈs
+            # Unit√©s
             valide = False
             for IDunite in listeUnitesUtilisees :
                 if IDunite in dictProg["unites"] :
@@ -4609,11 +4609,11 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                         return True
             return False
             
-        # Recherche si une programmation existe pour cet individu, cette date et ces unitÈs
+        # Recherche si une programmation existe pour cet individu, cette date et ces unit√©s
         if IDindividu in self.dict_transports_prog:
             for IDprog, dictProg in self.dict_transports_prog[IDindividu].items() :
 
-                # CrÈation
+                # Cr√©ation
                 if RechercheProgValide(dictProg) == True and RechercheTransportExistant(dictProg["IDtransport"], date) == False :
                     self.CreationTransportProg(dictProg, date)
                 
@@ -4652,7 +4652,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         return False
 
     def CreationTransportProg(self, dictProg={}, date=None):
-        """ CrÈation d'un transport """
+        """ Cr√©ation d'un transport """
         dictTemp = copy.deepcopy(dictProg)
         IDtransport = self.RechercheProchainIDtransport() 
         IDindividu = dictProg["IDindividu"]
@@ -4682,7 +4682,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             
 
     def VerificationCotisations(self, listeCotisations=[], date=None, IDindividu=None, IDfamille=None):
-        """ VÈrifie si l'individu a l'une des cotisations indiquÈes ‡ jour ‡ la date donnÈe """
+        """ V√©rifie si l'individu a l'une des cotisations indiqu√©es √† jour √† la date donn√©e """
         # Recherche des cotisations valides pour l'individu ou la famille
         DB = GestionDB.DB()
         req = """SELECT IDcotisation, IDtype_cotisation, date_debut, date_fin
@@ -4701,7 +4701,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         return False
 
     def VerificationCaisses(self, listeCaisses=[], IDfamille=None):
-        """ VÈrifie si la famille a l'une des caisses donnÈes """
+        """ V√©rifie si la famille a l'une des caisses donn√©es """
         # Recherche de la caisse de la famille
         DB = GestionDB.DB()
         req = """SELECT IDfamille, IDcaisse
@@ -4719,7 +4719,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         return False
 
     def VerificationFiltres(self, listeFiltres=[], date=None, IDindividu=None, IDfamille=None):
-        """ VÈrifie si l'individu ou la famille a les filtres valides """
+        """ V√©rifie si l'individu ou la famille a les filtres valides """
         DB = GestionDB.DB()
         
         validation = True
@@ -4728,7 +4728,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             defaut = dictFiltre["defaut"]
             listeReponses = []
 
-            # Recherche les rÈponses
+            # Recherche les r√©ponses
             if dictFiltre["type"] == "individu" :
                 req = """SELECT IDreponse, reponse
                 FROM questionnaire_reponses
@@ -4743,11 +4743,11 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 DB.ExecuterReq(req)
                 listeReponses = DB.ResultatReq()     
 
-            # Si aucune rÈponse enregistrÈe, on rÈcupËre la valeur par dÈfaut
+            # Si aucune r√©ponse enregistr√©e, on r√©cup√®re la valeur par d√©faut
             if len(listeReponses) == 0 :
                 listeReponses = [(None, defaut)]
 
-            # Compare le filtre avec les rÈponses
+            # Compare le filtre avec les r√©ponses
             for IDreponse, reponse in listeReponses :
                 resultat = UTILS_Filtres_questionnaires.Filtre(controle=dictFiltre["controle"], choix=dictFiltre["choix"], criteres=dictFiltre["criteres"], reponse=reponse)
                 if resultat == False :
@@ -4758,7 +4758,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         return validation
 
     def VerificationPeriodes(self, jours_scolaires, jours_vacances, date):
-        """ VÈrifier si jour scolaire ou vacances """
+        """ V√©rifier si jour scolaire ou vacances """
         valide = False
         # Jours scolaires
         if jours_scolaires != None :
@@ -4774,7 +4774,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         
     def TraitementLot(self):
         """ Traitement par lot """
-        # RÈcupÈration des donnÈes par dÈfaut
+        # R√©cup√©ration des donn√©es par d√©faut
         listeIndividus = self.listeIndividusFamille
         date_debut = None
         date_fin = None
@@ -4782,7 +4782,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         if dates_extremes[0] != datetime.date(1970, 1, 1) :
             date_debut, date_fin = dates_extremes
         
-        # FenÍtre de saisie
+        # Fen√™tre de saisie
         from Dlg import DLG_Saisie_lot_conso
         dlg = DLG_Saisie_lot_conso.Dialog(self, listeIndividus=listeIndividus, date_debut=date_debut, date_fin=date_fin)
         if dlg.ShowModal() == wx.ID_OK :
@@ -4793,17 +4793,17 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         if resultats == None :
             return
 
-        # VÈrifie que la pÈriode sÈlectionnÈe n'est pas dans une pÈriode de gestion
+        # V√©rifie que la p√©riode s√©lectionn√©e n'est pas dans une p√©riode de gestion
         if self.gestion.IsPeriodeinPeriodes("consommations", resultats["date_debut"], resultats["date_fin"]) == False: return False
 
         # ------ Processus du traitement par lot -----
         dlg_grille = self.GetGrandParent()
         
         try :
-            # dlgAttente = wx.BusyInfo(_(u"Veuillez patienter durant la procÈdure..."), None)
+            # dlgAttente = wx.BusyInfo(_(u"Veuillez patienter durant la proc√©dure..."), None)
             # wx.Yield()
 
-            # SÈlection des individus
+            # S√©lection des individus
             listeIndividus = []
             dictIndividus = {}
             for dictIndividu in resultats["individus"] :
@@ -4814,7 +4814,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             dlg_grille.panel_individus.SetSelections(listeIndividus)
             dlg_grille.SetListeSelectionIndividus(listeIndividus)
             
-            # SÈlection de la pÈriode
+            # S√©lection de la p√©riode
             date_debut = resultats["date_debut"]
             date_fin = resultats["date_fin"]
             dictPeriode = {
@@ -4839,13 +4839,13 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         except Exception as err:
             # del dlgAttente
             traceback.print_exc(file=sys.stdout)
-            dlg = wx.MessageDialog(self, _(u"DÈsolÈ, le problËme suivant a ÈtÈ rencontrÈ dans le traitement par lot des consommations : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"D√©sol√©, le probl√®me suivant a √©t√© rencontr√© dans le traitement par lot des consommations : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
-        # Formatage du texte de rÈsultats
-        texte = _(u"<B>La procÈdure de traitement par lot est terminÈe mais les incidents suivants ont ÈtÈ rencontrÈs :</B><BR><BR>")
+        # Formatage du texte de r√©sultats
+        texte = _(u"<B>La proc√©dure de traitement par lot est termin√©e mais les incidents suivants ont √©t√© rencontr√©s :</B><BR><BR>")
         
         afficher = False
         for IDindividu, listeActions in journal.items() :
@@ -4860,10 +4860,10 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                     texte += u"<LI>%s - %s : %s.</LI>" % (DateEngFr(str(date)), nomUnite, action)
                 texte += "</UL><BR><BR>"
             
-        # Affichage des rÈsultats
+        # Affichage des r√©sultats
         if afficher == True :
             from Dlg import DLG_Message_html
-            dlg = DLG_Message_html.Dialog(self, texte=u"<FONT SIZE=2>%s</FONT>" % texte, titre=_(u"RÈsultats du traitement par lot"), size=(630, 450))
+            dlg = DLG_Message_html.Dialog(self, texte=u"<FONT SIZE=2>%s</FONT>" % texte, titre=_(u"R√©sultats du traitement par lot"), size=(630, 450))
             dlg.ShowModal()
             dlg.Destroy()
 
@@ -4872,7 +4872,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         """ Processus du traitement par lot """
         journal = {}
 
-        # Recherche les individus impactÈs
+        # Recherche les individus impact√©s
         listeIndividus = []
         for dictIndividu in resultats["individus"] :
             listeIndividus.append(dictIndividu["IDindividu"])
@@ -4882,13 +4882,13 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             for numColonne, case in ligne.dictCases.items() :
                 if case.typeCase == "consommation" :
                     
-                    # VÈrifie si ouvert
+                    # V√©rifie si ouvert
                     if case.ouvert == True :
                         
                         if (case.IDindividu in journal) == False :
                             journal[case.IDindividu] = []
                             
-                        # VÈrifie si la date est valide selon les critËres
+                        # V√©rifie si la date est valide selon les crit√®res
                         if case.date in resultats["dates"] and case.IDindividu in listeIndividus :
                             valide = True
                         else :
@@ -4939,21 +4939,21 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 
                                         valide = True
 
-                                        # VÈrifie qu'il est possible de placer une conso dans cette case
+                                        # V√©rifie qu'il est possible de placer une conso dans cette case
                                         if dictUnite["type"] != "Evenement" and case.IsCaseDisponible(heure_debut, heure_fin) == False :
-                                            journal[case.IDindividu].append((case.date, dictUnite["nom"], _(u"Une consommation est dÈj‡ enregistrÈe")))
+                                            journal[case.IDindividu].append((case.date, dictUnite["nom"], _(u"Une consommation est d√©j√† enregistr√©e")))
                                             valide = False
 
-                                        # VÈrifie qu'il reste des places disponibles
+                                        # V√©rifie qu'il reste des places disponibles
                                         if dictUnite["type"] != "Evenement" and case.HasPlaceDisponible(heure_debut, heure_fin) == False :
                                             journal[case.IDindividu].append((case.date, dictUnite["nom"], _(u"Plus de places")))
                                             valide = False
 
-                                        # VÈrifie la compatibilitÈ avec les autres unitÈs
+                                        # V√©rifie la compatibilit√© avec les autres unit√©s
                                         incompatibilite = case.VerifieCompatibilitesUnites()
                                         if incompatibilite != None :
                                             nomUniteIncompatible = self.dictUnites[incompatibilite]["nom"]
-                                            journal[case.IDindividu].append((case.date, dictUnite["nom"], _(u"IncompatibilitÈ avec l'unitÈ '%s' dÈj‡ enregistrÈe") %  nomUniteIncompatible))
+                                            journal[case.IDindividu].append((case.date, dictUnite["nom"], _(u"Incompatibilit√© avec l'unit√© '%s' d√©j√† enregistr√©e") %  nomUniteIncompatible))
                                             valide = False
 
                                         # Saisie d'une conso
@@ -4961,7 +4961,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 
                                             if dictUnite["type"] == "Multihoraires" :
                                                 barre = case.SaisieBarre(UTILS_Dates.HeureStrEnTime(heure_debut), UTILS_Dates.HeureStrEnTime(heure_fin), etiquettes=resultats["etiquettes"])
-                                                # Modifie Ètat
+                                                # Modifie √©tat
                                                 if resultats["etat"] != None and barre.conso.etat != resultats["etat"] :
                                                     case.ModifieEtat(barre.conso, resultats["etat"])
 
@@ -4971,13 +4971,13 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                                                         if case.IsCaseDisponible(evenement) :
                                                             if case.HasPlaceDisponible(evenement) :
                                                                 case.Ajouter_evenement(evenement=evenement, etiquettes=resultats["etiquettes"])
-                                                                # Modifie Ètat
+                                                                # Modifie √©tat
                                                                 if resultats["etat"] != None and evenement.conso.etat != resultats["etat"]:
                                                                     case.ModifieEtat(evenement.conso, resultats["etat"])
 
                                             else :
                                                 case.OnClick(saisieHeureDebut=heure_debut, saisieHeureFin=heure_fin, saisieQuantite=quantite, modeSilencieux=True, etiquettes=resultats["etiquettes"])
-                                                # Modifie Ètat
+                                                # Modifie √©tat
                                                 if resultats["etat"] != None and case.etat != resultats["etat"] :
                                                     case.ModifieEtat(None, resultats["etat"])
 
@@ -4995,10 +4995,10 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                                             if conso.etat != None :
                                                 
                                                 if conso.IDfacture != None :
-                                                    journal[case.IDindividu].append((case.date, dictUnite["nom"], _(u"Interdit de modifier une consommation dÈj‡ facturÈe")))
+                                                    journal[case.IDindividu].append((case.date, dictUnite["nom"], _(u"Interdit de modifier une consommation d√©j√† factur√©e")))
                                                     
                                                 elif conso.etat in ("present", "absentj", "absenti") :
-                                                    journal[case.IDindividu].append((case.date, dictUnite["nom"], _(u"Interdit de modifier une consommation dÈj‡ pointÈe")))
+                                                    journal[case.IDindividu].append((case.date, dictUnite["nom"], _(u"Interdit de modifier une consommation d√©j√† point√©e")))
                                                 
                                                 elif conso.forfait != None :
                                                     journal[case.IDindividu].append((case.date, dictUnite["nom"], _(u"Interdit de modifier un forfait")))
@@ -5010,7 +5010,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                                                         heure_fin = dictUnite["options"]["heure_fin"]
                                                         case.OnClick(saisieHeureDebut=heure_debut, saisieHeureFin=heure_fin, modeSilencieux=True, etiquettes=resultats["etiquettes"])
                                                     
-                                                    # Modifie QuantitÈ si unitÈ de type QuantitÈ
+                                                    # Modifie Quantit√© si unit√© de type Quantit√©
                                                     if dictUnite["type"] == "Quantite" :
                                                         quantite = conso.quantite
                                                         if conso.quantite == None :
@@ -5035,9 +5035,9 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                                             if len(resultats["etiquettes"]) == 0 or len(set(conso.etiquettes) & set(resultats["etiquettes"])) > 0 :
                                                 
                                                 if conso.IDfacture != None :
-                                                    journal[case.IDindividu].append((case.date, dictUnite["nom"], _(u"Interdit de modifier une consommation dÈj‡ facturÈe")))
+                                                    journal[case.IDindividu].append((case.date, dictUnite["nom"], _(u"Interdit de modifier une consommation d√©j√† factur√©e")))
                                                 elif conso.etat in ("present", "absentj", "absenti") :
-                                                    journal[case.IDindividu].append((case.date, dictUnite["nom"], _(u"Interdit de modifier une consommation dÈj‡ pointÈe")))
+                                                    journal[case.IDindividu].append((case.date, dictUnite["nom"], _(u"Interdit de modifier une consommation d√©j√† point√©e")))
                                                 elif conso.forfait != None :
                                                     journal[case.IDindividu].append((case.date, dictUnite["nom"], _(u"Impossible de modifier un forfait")))
                                                 else :
@@ -5050,7 +5050,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                                                         if conso.etat != None :
                                                             case.OnClick(modeSilencieux=True, ForcerSuppr=True)
                     
-                            # -------------------- Changement d'Ètat -------------------
+                            # -------------------- Changement d'√©tat -------------------
                             if resultats["action"] == "etat" :
                                 for dictUnite in resultats["unites"] :
                                     if dictUnite["IDunite"] == case.IDunite :
@@ -5061,7 +5061,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                                                 if conso.etat != None :
                                                     if resultats["etat"] != None and conso.etat != resultats["etat"] :
                                                         if conso.IDfacture != None :
-                                                            journal[case.IDindividu].append((case.date, dictUnite["nom"], _(u"Impossible de supprimer une consommation dÈj‡ facturÈe")))
+                                                            journal[case.IDindividu].append((case.date, dictUnite["nom"], _(u"Impossible de supprimer une consommation d√©j√† factur√©e")))
                                                         else :
                                                             if dictUnite["type"] != "Evenement" or ("expression" in resultats and (resultats["expression"] == None or resultats["expression"].lower())) in conso.evenement.nom.lower() :
                                                                 case.ModifieEtat(conso, resultats["etat"])
@@ -5070,13 +5070,13 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         return journal
 
     def ResolveFormule(self, formule="", dictVariables={}):
-        # Remplacement de variables prÈdÈfinies
+        # Remplacement de variables pr√©d√©finies
         #print formule
         for variable, valeur in dictVariables.items() :
             formule = formule.replace(variable, valeur.__repr__())
         # Replacement des variables utilisateurs
         formule = re.sub(r'\"([0-9][0-9]):([0-9][0-9])\"', sub, formule)
-        # RÈsolution de la formule
+        # R√©solution de la formule
         try :
             resultat = eval(formule)
         except Exception as err :
@@ -5085,16 +5085,16 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         return resultat
 
     def Autogeneration(self, ligne=None, IDactivite=None, IDunite=None):
-        """ AutogÈnÈration de consommations """
+        """ Autog√©n√©ration de consommations """
         #print "------ Recherche d'unites autogenerees"
 
-        # Recherche s'il existe des unitÈs auto-gÈnÈrÈes
+        # Recherche s'il existe des unit√©s auto-g√©n√©r√©es
         listeUnitesAuto = []
         for dictUnite in self.dictListeUnites[IDactivite] :
             if dictUnite["autogen_active"] == 1 :
                 listeUnitesAuto.append(dictUnite)
 
-                # VÈrifie que l'unitÈ qui fait l'appel n'est pas elle-mÍme auto-gÈnÈrÈe
+                # V√©rifie que l'unit√© qui fait l'appel n'est pas elle-m√™me auto-g√©n√©r√©e
                 if IDunite == dictUnite["IDunite"] :
                     return
 
@@ -5131,22 +5131,22 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                     if heure_fin_conso > heure_fin :
                         heure_fin = heure_fin_conso
 
-                    # DurÈe
+                    # Dur√©e
                     duree += duree_conso
 
                     # Etat
                     etat = conso.etat
 
-            # MÈmorisation des rÈsultats
+            # M√©morisation des r√©sultats
             dictVariables["{HEUREDEBUT_UNITE%d}" % IDunite] = heure_debut
             dictVariables["{HEUREFIN_UNITE%d}" % IDunite] = heure_fin
             dictVariables["{DUREE_UNITE%d}" % IDunite] = duree
             dictVariables["{ETAT_UNITE%d}" % IDunite] = etat
 
-        # Traite chaque unitÈ auto-gÈnÈrÈe
+        # Traite chaque unit√© auto-g√©n√©r√©e
         for dictUnite in listeUnitesAuto :
 
-            # VÈrifie si les conditions sont rÈunies
+            # V√©rifie si les conditions sont r√©unies
             conditions = dictUnite["autogen_conditions"]
             if conditions != None :
                 listeConditions = conditions.split(";")
@@ -5158,14 +5158,14 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 valide = False
 
             for condition in listeConditions :
-                # VÈrifie que la condition est valide
+                # V√©rifie que la condition est valide
                 if self.ResolveFormule(condition, dictVariables) != True :
                     valide = False
 
-            # PrÈpare les paramËtres de la conso ‡ saisir ou ‡ supprimer
+            # Pr√©pare les param√®tres de la conso √† saisir ou √† supprimer
             dictParametres = {
                 "dates" : [ligne.date,],
-                "description" : u"Auto-gÈnÈration",
+                "description" : u"Auto-g√©n√©ration",
                 "IDactivite" : IDactivite,
                 "date_fin" : [ligne.date,],
                 "date_debut" : [ligne.date,],
@@ -5177,14 +5177,14 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 "unites" : [{"nom" : dictUnite["nom"],"type" : dictUnite["type"],"IDunite" : dictUnite["IDunite"],"options" : {}},],
             }
 
-            # VÈrifie si une conso existe dÈj‡ :
+            # V√©rifie si une conso existe d√©j√† :
             consoExists = dictVariables["{ETAT_UNITE%d}" % dictUnite["IDunite"]] != None
             #print "consoExists=", consoExists
 
             # Si toutes les conditions sont valides
             if valide == True :
 
-                # RÈcupÈration des paramËtres de l'unitÈ auto-gÈnÈrÈe
+                # R√©cup√©ration des param√®tres de l'unit√© auto-g√©n√©r√©e
                 parametres = dictUnite["autogen_parametres"]
                 if parametres not in ("", None) :
 
@@ -5241,12 +5241,12 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 ####SAUVEGARDE
 
     def Sauvegarde(self):
-        """ Sauvegarde des donnÈes """
+        """ Sauvegarde des donn√©es """
         DB = GestionDB.DB()
 
         # -------------- Sauvegarde du DictPrestations ----------------
 
-        # Version optimisÈe de la saisie des nouvelles prestations
+        # Version optimis√©e de la saisie des nouvelles prestations
         prochainID = DB.GetProchainID("prestations")
 
         dictNewIDprestation = {}
@@ -5278,7 +5278,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                     ("date_valeur", str(datetime.date.today())),
                     ]
 
-                # MÈmorisation de la prestation ‡ ajouter
+                # M√©morisation de la prestation √† ajouter
                 listeValeurs = []
                 for key, valeur in listeDonnees :
                     if key not in listeChampsPrestations :
@@ -5289,7 +5289,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 newIDprestation = copy.copy(prochainID)
                 dictNewIDprestation[IDprestation] = newIDprestation
 
-                # Sauvegarde des dÈductions
+                # Sauvegarde des d√©ductions
                 if IDprestation in self.dictDeductions :
                     for dictDeduction in self.dictDeductions[IDprestation] :
                         listeDonnees = [
@@ -5301,7 +5301,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                             ("IDaide", dictDeduction["IDaide"]),
                             ]
 
-                        # MÈmorisation de la dÈduction ‡ ajouter
+                        # M√©morisation de la d√©duction √† ajouter
                         listeValeurs = []
                         for key, valeur in listeDonnees :
                             if key not in listeChampsDeductions :
@@ -5313,7 +5313,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 # Passe au prochain IDprestation
                 prochainID += 1
 
-        # Ajout optimisÈ des prestations
+        # Ajout optimis√© des prestations
         if len(listeAjoutsPrestations) > 0 :
             texteChampsTemp = ", ".join(listeChampsPrestations)
             listeInterrogations = []
@@ -5322,7 +5322,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             texteInterrogations = ", ".join(listeInterrogations)
             DB.Executermany("INSERT INTO prestations (%s) VALUES (%s)" % (texteChampsTemp, texteInterrogations), listeAjoutsPrestations, commit=False)
 
-        # Ajout optimisÈ des dÈductions
+        # Ajout optimis√© des d√©ductions
         if len(listeAjoutsDeductions) > 0 :
             texteChampsTemp = ", ".join(listeChampsDeductions)
             listeInterrogations = []
@@ -5332,14 +5332,14 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             DB.Executermany("INSERT INTO deductions (%s) VALUES (%s)" % (texteChampsTemp, texteInterrogations), listeAjoutsDeductions, commit=False)
 
 
-        # ------------- Sauvegarde des prestations modifiÈes ------------------
+        # ------------- Sauvegarde des prestations modifi√©es ------------------
         listeModifications = []
         listeSuppressions = []
         for IDPrestationModif in self.listePrestationsModifiees :
             if IDPrestationModif > 0 and IDPrestationModif in self.dictPrestations :
                 # Sauvegarde de la prestation
                 dictValeurs = self.dictPrestations[IDPrestationModif]                
-                # Version optimisÈe
+                # Version optimis√©e
                 listeModifications.append((dictValeurs["label"], dictValeurs["montant_initial"], dictValeurs["montant"], dictValeurs["forfait_date_debut"], dictValeurs["forfait_date_fin"], dictValeurs["code_compta"], dictValeurs["code_produit_local"], dictValeurs["tva"], IDPrestationModif))
                 listeSuppressions.append(IDPrestationModif)
 
@@ -5356,9 +5356,9 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             DB.ExecuterReq("DELETE FROM ventilation WHERE IDprestation IN %s" % conditionSuppression)
 
 
-        # ------------- Suppression des prestations et dÈductions ‡ supprimer ------------------
+        # ------------- Suppression des prestations et d√©ductions √† supprimer ------------------
         
-        # Version optimisÈe
+        # Version optimis√©e
         if len(self.listePrestationsSupprimees) > 0 :
             if len(self.listePrestationsSupprimees) == 1 : 
                 conditionSuppression = "(%d)" % self.listePrestationsSupprimees[0]
@@ -5384,7 +5384,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                         if (IDprestation == None or IDprestation < 0) and (IDprestation in dictNewIDprestation) == True :
                             IDprestation = dictNewIDprestation[IDprestation]
 
-                        # RÈcupÈration des donnÈes
+                        # R√©cup√©ration des donn√©es
                         listeDonnees = [
                             ("IDindividu", IDindividu),
                             ("IDinscription", conso.IDinscription),
@@ -5408,21 +5408,21 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                             ("badgeage_fin", conso.badgeage_fin),
                         ]
 
-                        # Pour version optimisÈe :
+                        # Pour version optimis√©e :
                         listeValeurs = []
                         for key, valeur in listeDonnees :
                             if key not in listeChamps :
                                 listeChamps.append(key)
                             listeValeurs.append(valeur)
 
-                        # PrÈparation pour historique
+                        # Pr√©paration pour historique
                         IDfamille = conso.IDfamille
                         if (IDfamille in dictHistorique) == False :
                             dictHistorique[IDfamille] = {}
                         if (IDindividu in dictHistorique[IDfamille]) == False :
                             dictHistorique[IDfamille][IDindividu] = { "suppr" : {}, "modif" : {}, "ajout" : {} }
 
-                        # Recherche de l'abrÈgÈ de l'unitÈ
+                        # Recherche de l'abr√©g√© de l'unit√©
                         if IDunite in self.dictUnites :
                             abregeUnite = self.dictUnites[IDunite]["abrege"]
                         else :
@@ -5435,7 +5435,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 
                         # Ajout
                         if conso.statut == "ajout" :
-                            # Version optimisÈe
+                            # Version optimis√©e
                             listeAjouts.append(listeValeurs)
 
                             if (date in dictHistorique[IDfamille][IDindividu]["ajout"]) == False :
@@ -5445,7 +5445,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                         # Modification
                         if conso.statut == "modification" :
 
-                            # Version optimisÈe
+                            # Version optimis√©e
                             listeValeursTemp = listeValeurs
                             listeValeursTemp.append(conso.IDconso)
                             listeModifications.append(listeValeursTemp)
@@ -5457,7 +5457,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                         # Suppression
                         if conso.statut == "suppression" or (conso.etat == None and conso.IDconso != None) :
 
-                            # Version optimisÈe
+                            # Version optimis√©e
                             listeSuppressions.append(conso.IDconso)
 
                             if (date in dictHistorique[IDfamille][IDindividu]["suppr"]) == False :
@@ -5475,7 +5475,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             else :
                 abregeUnite = u"---"
 
-            # PrÈparation pour historique
+            # Pr√©paration pour historique
             IDfamille = conso.IDfamille
             IDindividu = conso.case.IDindividu
             if (IDfamille in dictHistorique) == False :
@@ -5512,10 +5512,10 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 conditionSuppression = str(tuple(listeSuppressions))
             DB.ExecuterReq("DELETE FROM consommations WHERE IDconso IN %s" % conditionSuppression)
 
-        # Application des modifications dans la base de donnÈes
+        # Application des modifications dans la base de donn√©es
         DB.Commit()
 
-        # ---------------- Sauvegarde des mÈmos journaliers -------------------
+        # ---------------- Sauvegarde des m√©mos journaliers -------------------
         for key, valeurs in self.dictMemos.items() :
             IDindividu = key[0]
             date = key[1]
@@ -5540,7 +5540,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             if statut == "suppression" :
                 DB.ReqDEL("memo_journee", "IDmemo", IDmemo, commit=False)
 
-        # ----------------- MÈmorisation de l'action dans l'historique gÈnÈral -------------------
+        # ----------------- M√©morisation de l'action dans l'historique g√©n√©ral -------------------
         listeAjoutsHistorique = []
         for IDfamille, dictIndividus in dictHistorique.items() :
             for IDindividu, dictCategories in dictIndividus.items() :
@@ -5571,7 +5571,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             UTILS_Historique.InsertActions(listeAjoutsHistorique, DB=DB)
 
 
-        # Application des modifications dans la base de donnÈes
+        # Application des modifications dans la base de donn√©es
         DB.Commit()
 
         # Cloture de la DB
@@ -5587,7 +5587,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             listeNewID = {}
             for IDtransport, dictTransport in dictTransports.items() :
 
-                # CrÈation de la liste de donnÈes
+                # Cr√©ation de la liste de donn√©es
                 listeDonnees = [
                     ("IDindividu", dictTransport["IDindividu"]),
                     ("mode", dictTransport["mode"]),
@@ -5633,7 +5633,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         DB.Close()
     
     def MemoriseParametres(self):
-        """ MÈmorisation des paramËtres """
+        """ M√©morisation des param√®tres """
         dictValeurs = {
             "affiche_colonne_memo" : AFFICHE_COLONNE_MEMO,
             "affiche_colonne_transports" : AFFICHE_COLONNE_TRANSPORTS,
@@ -5755,7 +5755,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 
         listeDonnees.append(
             (_(u"Autres colonnes"), [
-                {"label" : _(u"MÈmo journalier"), "code" : "memo", "valeur" : self.dictParametres["largeurs"]["memo"], "defaut" : LARGEUR_COLONNE_MEMO},
+                {"label" : _(u"M√©mo journalier"), "code" : "memo", "valeur" : self.dictParametres["largeurs"]["memo"], "defaut" : LARGEUR_COLONNE_MEMO},
                 {"label" : _(u"Transports"), "code" : "transports", "valeur" : self.dictParametres["largeurs"]["transports"], "defaut" : LARGEUR_COLONNE_TRANSPORTS},
                 ] )
             )
@@ -5812,9 +5812,9 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         self.Refresh()
 
     def Recopier(self, event=None):
-        """ Recopiage des conso d'une unitÈ vers une autre unitÈ """
+        """ Recopiage des conso d'une unit√© vers une autre unit√© """
 
-        # Demande les paramËtres de la conversion
+        # Demande les param√®tres de la conversion
         from Dlg import DLG_Recopiage_conso
         dlg = DLG_Recopiage_conso.Dialog(self)
         if dlg.ShowModal() == wx.ID_OK :
@@ -5824,7 +5824,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             dlg.Destroy()
             return
 
-        # Recherche les cases ‡ recopier
+        # Recherche les cases √† recopier
         listeCasesOriginales = []
         for numLigne, ligne in self.dictLignes.items() :
             if dictDonnees["option_lignes"] == "lignes_affichees" or (dictDonnees["option_lignes"] == "lignes_selectionnees" and ligne.coche == True):
@@ -5838,7 +5838,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             for conso in case.GetListeConso() :
                 if conso.etat != None :
 
-                    # PrÈpare les paramËtres de la conso ‡ saisir ou ‡ supprimer
+                    # Pr√©pare les param√®tres de la conso √† saisir ou √† supprimer
                     dictParametres = {
                         "action" : "saisie",
                         "dates" : [case.ligne.date,],
@@ -5878,8 +5878,8 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                     journal = self.TraitementLot_processus(dictParametres)
                     listeJournaux.append((case, conso, journal))
 
-        # Formatage du texte de rÈsultats
-        texte = _(u"<B>La procÈdure de recopiage est terminÈe mais les incidents suivants ont ÈtÈ rencontrÈs :</B><BR><BR>")
+        # Formatage du texte de r√©sultats
+        texte = _(u"<B>La proc√©dure de recopiage est termin√©e mais les incidents suivants ont √©t√© rencontr√©s :</B><BR><BR>")
 
         afficher = False
         texte += u"<UL>"
@@ -5891,10 +5891,10 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                         texte += u"<LI>%s - %s : %s.</LI>" % (case.ligne.labelLigne, nomUnite, action)
         texte += "</UL><BR><BR>"
 
-        # Affichage des rÈsultats
+        # Affichage des r√©sultats
         if afficher == True :
             from Dlg import DLG_Message_html
-            dlg = DLG_Message_html.Dialog(self, texte=u"<FONT SIZE=2>%s</FONT>" % texte, titre=_(u"RÈsultats du recopiage"), size=(630, 450))
+            dlg = DLG_Message_html.Dialog(self, texte=u"<FONT SIZE=2>%s</FONT>" % texte, titre=_(u"R√©sultats du recopiage"), size=(630, 450))
             dlg.ShowModal()
             dlg.Destroy()
 
@@ -5923,22 +5923,22 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         #             if heure_fin_conso > heure_fin :
         #                 heure_fin = heure_fin_conso
         #
-        #             # DurÈe
+        #             # Dur√©e
         #             duree += duree_conso
         #
         #             # Etat
         #             etat = conso.etat
         #
-        #     # MÈmorisation des rÈsultats
+        #     # M√©morisation des r√©sultats
         #     dictVariables["{HEUREDEBUT_UNITE%d}" % IDunite] = heure_debut
         #     dictVariables["{HEUREFIN_UNITE%d}" % IDunite] = heure_fin
         #     dictVariables["{DUREE_UNITE%d}" % IDunite] = duree
         #     dictVariables["{ETAT_UNITE%d}" % IDunite] = etat
         #
-        # # Traite chaque unitÈ auto-gÈnÈrÈe
+        # # Traite chaque unit√© auto-g√©n√©r√©e
         # for dictUnite in listeUnitesAuto :
         #
-        #     # VÈrifie si les conditions sont rÈunies
+        #     # V√©rifie si les conditions sont r√©unies
         #     conditions = dictUnite["autogen_conditions"]
         #     listeConditions = conditions.split(";")
         #
@@ -5947,14 +5947,14 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         #         valide = False
         #
         #     for condition in listeConditions :
-        #         # VÈrifie que la condition est valide
+        #         # V√©rifie que la condition est valide
         #         if self.ResolveFormule(condition, dictVariables) != True :
         #             valide = False
         #
-        #     # PrÈpare les paramËtres de la conso ‡ saisir ou ‡ supprimer
+        #     # Pr√©pare les param√®tres de la conso √† saisir ou √† supprimer
         #     dictParametres = {
         #         "dates" : [ligne.date,],
-        #         "description" : u"Auto-gÈnÈration",
+        #         "description" : u"Auto-g√©n√©ration",
         #         "IDactivite" : IDactivite,
         #         "date_fin" : [ligne.date,],
         #         "date_debut" : [ligne.date,],
@@ -5966,14 +5966,14 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         #         "unites" : [{"nom" : dictUnite["nom"],"type" : dictUnite["type"],"IDunite" : dictUnite["IDunite"],"options" : {}},],
         #     }
         #
-        #     # VÈrifie si une conso existe dÈj‡ :
+        #     # V√©rifie si une conso existe d√©j√† :
         #     consoExists = dictVariables["{ETAT_UNITE%d}" % dictUnite["IDunite"]] != None
         #     #print "consoExists=", consoExists
         #
         #     # Si toutes les conditions sont valides
         #     if valide == True :
         #
-        #         # RÈcupÈration des paramËtres de l'unitÈ auto-gÈnÈrÈe
+        #         # R√©cup√©ration des param√®tres de l'unit√© auto-g√©n√©r√©e
         #         parametres = dictUnite["autogen_parametres"]
         #         if parametres not in ("", None) :
         #

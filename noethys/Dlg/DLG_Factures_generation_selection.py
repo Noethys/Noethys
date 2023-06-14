@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-13 Ivan LUCAS
@@ -31,8 +31,8 @@ class Panel(wx.Panel):
         wx.Panel.__init__(self, parent, id=-1, name="DLG_Factures_generation_selection", style=wx.TAB_TRAVERSAL)
         self.parent = parent
 
-        # Factures à générer
-        self.box_factures_staticbox = wx.StaticBox(self, -1, _(u"Factures à générer"))
+        # Factures Ã  gÃ©nÃ©rer
+        self.box_factures_staticbox = wx.StaticBox(self, -1, _(u"Factures Ã  gÃ©nÃ©rer"))
 
         self.listviewAvecFooter = OL_Factures_generation_selection.ListviewAvecFooter(self) 
         self.ctrl_factures = self.listviewAvecFooter.GetListview()
@@ -41,7 +41,7 @@ class Panel(wx.Panel):
 
         # Options
         self.box_options_staticbox = wx.StaticBox(self, -1, _(u"Options"))
-        self.bouton_option_montant = wx.Button(self, -1, _(u"Cocher uniquement les factures dont le montant 'Dû période' est supérieur ou égal à"))
+        self.bouton_option_montant = wx.Button(self, -1, _(u"Cocher uniquement les factures dont le montant 'DÃ» pÃ©riode' est supÃ©rieur ou Ã©gal Ã "))
         self.ctrl_option_montant = CTRL_Saisie_euros.CTRL(self)
         self.ctrl_option_montant.SetMinSize((70, -1))
 
@@ -52,8 +52,8 @@ class Panel(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.CocherMontant, self.bouton_option_montant)
 
     def __set_properties(self):
-        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour créer un aperçu PDF d'une ou plusieurs factures")))
-        self.bouton_option_montant.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour cocher uniquement les factures dont le montant 'Dû Période' est supérieur ou égal au montant souhaité")))
+        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour crÃ©er un aperÃ§u PDF d'une ou plusieurs factures")))
+        self.bouton_option_montant.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour cocher uniquement les factures dont le montant 'DÃ» PÃ©riode' est supÃ©rieur ou Ã©gal au montant souhaitÃ©")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=2, cols=1, vgap=10, hgap=10)
@@ -87,7 +87,7 @@ class Panel(wx.Panel):
         box_factures.Fit(self)
 
     def MAJ(self):
-        # Paramètres
+        # ParamÃ¨tres
         self.ctrl_factures.SetParametres(self.parent.dictParametres)
         # Montant
         try:
@@ -105,36 +105,36 @@ class Panel(wx.Panel):
         nbreTotalFactures = len(self.ctrl_factures.GetObjects())
         nbreCoches = len(self.ctrl_factures.GetTracksCoches())
         if nbreCoches == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune facture à générer !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune facture Ã  gÃ©nÃ©rer !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
         
         # Demande de confirmation
         if nbreCoches < nbreTotalFactures :
-            texteSupp = _(u"(Sur un total de %d factures proposées) ") % nbreTotalFactures
+            texteSupp = _(u"(Sur un total de %d factures proposÃ©es) ") % nbreTotalFactures
         else :
             texteSupp = ""
         if nbreCoches == 1 :
-            texte = _(u"Confirmez-vous la génération de 1 facture %s?") % texteSupp
+            texte = _(u"Confirmez-vous la gÃ©nÃ©ration de 1 facture %s?") % texteSupp
         else :
-            texte = _(u"Confirmez-vous la génération de %d factures %s?") % (nbreCoches, texteSupp)
+            texte = _(u"Confirmez-vous la gÃ©nÃ©ration de %d factures %s?") % (nbreCoches, texteSupp)
         dlg = wx.MessageDialog(self, texte, _(u"Confirmation"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
         reponse = dlg.ShowModal() 
         dlg.Destroy()
         if reponse != wx.ID_YES :
             return False
     
-        # Génération des factures
+        # GÃ©nÃ©ration des factures
         listeFacturesGenerees = self.SauvegardeFactures() 
         if listeFacturesGenerees == False :
             return False
 
-        # Mémorisation du montant supp
+        # MÃ©morisation du montant supp
         montant = self.ctrl_option_montant.GetMontant()
         UTILS_Parametres.Parametres(mode="set", categorie="generation_factures", nom="cocher_montant_sup", valeur=montant)
 
-        # Envoi des factures générées
+        # Envoi des factures gÃ©nÃ©rÃ©es
         self.parent.listeFacturesGenerees = listeFacturesGenerees
         
         return True
@@ -148,26 +148,26 @@ class Panel(wx.Panel):
 
     def OnBoutonApercu(self, event):
         """Ouverture du menu contextuel """
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
-        # Aperçu sélection
+        # AperÃ§u sÃ©lection
         id = wx.Window.NewControlId()
-        item = wx.MenuItem(menuPop, id, _(u"Aperçu de la facture sélectionnée"))
+        item = wx.MenuItem(menuPop, id, _(u"AperÃ§u de la facture sÃ©lectionnÃ©e"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.ctrl_factures.ApercuSelection, id=id)
 
-        # Aperçu factures cochées
+        # AperÃ§u factures cochÃ©es
         id = wx.Window.NewControlId()
-        item = wx.MenuItem(menuPop, id, _(u"Aperçu des factures cochées"))
+        item = wx.MenuItem(menuPop, id, _(u"AperÃ§u des factures cochÃ©es"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.ctrl_factures.ApercuCoches, id=id)
 
-        # Aperçu Toutes les factures
+        # AperÃ§u Toutes les factures
         id = wx.Window.NewControlId()
-        item = wx.MenuItem(menuPop, id, _(u"Aperçu de toutes les factures"))
+        item = wx.MenuItem(menuPop, id, _(u"AperÃ§u de toutes les factures"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.ctrl_factures.ApercuToutes, id=id)
@@ -175,7 +175,7 @@ class Panel(wx.Panel):
         menuPop.AppendSeparator()
 
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression de la liste"))
+        item = wx.MenuItem(menuPop, 40, _(u"AperÃ§u avant impression de la liste"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -194,27 +194,27 @@ class Panel(wx.Panel):
 
     def SauvegardeFactures(self):
         """ Sauvegarde des factures """
-        # Récupère Utilisateur en cours
+        # RÃ©cupÃ¨re Utilisateur en cours
         IDutilisateur = UTILS_Identification.GetIDutilisateur()
         
-        # Génération des factures
+        # GÃ©nÃ©ration des factures
         listeFacturesGenerees = []
         
-        # Tri par ordre alphabétique de la liste
+        # Tri par ordre alphabÃ©tique de la liste
         listeComptes = []
         for track in self.ctrl_factures.GetTracksCoches() :
             listeComptes.append((track.nomSansCivilite, track.IDcompte_payeur))
         listeComptes.sort()
 
         # ProgressBar
-        dlgProgress = wx.ProgressDialog(_(u"Génération des factures"), _(u"Initialisation..."), maximum=len(listeComptes), parent=None, style=wx.PD_SMOOTH | wx.PD_AUTO_HIDE | wx.PD_APP_MODAL)
+        dlgProgress = wx.ProgressDialog(_(u"GÃ©nÃ©ration des factures"), _(u"Initialisation..."), maximum=len(listeComptes), parent=None, style=wx.PD_SMOOTH | wx.PD_AUTO_HIDE | wx.PD_APP_MODAL)
         
-        # Sélection du prochain numéro de facture
+        # SÃ©lection du prochain numÃ©ro de facture
         numero = self.parent.dictParametres["prochain_numero"]
         IDprefixe = self.parent.dictParametres["IDprefixe"]
         
         if numero == None :
-            # Recherche du prochain numéro de facture si mode AUTO
+            # Recherche du prochain numÃ©ro de facture si mode AUTO
             if IDprefixe == None :
                 conditions = "WHERE IDprefixe IS NULL"
             else :
@@ -238,7 +238,7 @@ class Panel(wx.Panel):
             index = 0
             for nomTitulaires, IDcompte_payeur in listeComptes :
                 dictCompte = self.ctrl_factures.dictComptes[IDcompte_payeur]
-                texte = _(u"Génération de la facture %d sur %d...") % (index+1, len(listeComptes))
+                texte = _(u"GÃ©nÃ©ration de la facture %d sur %d...") % (index+1, len(listeComptes))
                 self.EcritStatusbar(texte)
                 dlgProgress.Update(index+1, texte)
 
@@ -249,7 +249,7 @@ class Panel(wx.Panel):
                 # Dates
                 date_edition = dictCompte["date_edition"]
                 date_echeance = dictCompte["date_echeance"] 
-                # Liste des activités
+                # Liste des activitÃ©s
                 texteActivites = ""
                 for IDactivite in dictCompte["liste_activites"] :
                     texteActivites += "%d;" % IDactivite
@@ -286,7 +286,7 @@ class Panel(wx.Panel):
                     ]
                 IDfacture = DB.ReqInsert("factures", listeDonnees)
                                     
-                # Attribution des IDfacture à chaque prestation
+                # Attribution des IDfacture Ã  chaque prestation
                 for IDindividu, IDprestation in listePrestations :
                     if dictCompte["individus"][IDindividu]["select"] == True :
                         listeDonnees = [ ("IDfacture", IDfacture ), ]
@@ -304,7 +304,7 @@ class Panel(wx.Panel):
             DB.Close()
             dlgProgress.Destroy()
             traceback.print_exc(file=sys.stdout)
-            dlg = wx.MessageDialog(self, _(u"Désolé, le problème suivant a été rencontré : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"DÃ©solÃ©, le problÃ¨me suivant a Ã©tÃ© rencontrÃ© : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             self.EcritStatusbar(u"")

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-16 Ivan LUCAS
@@ -70,8 +70,8 @@ class Panel_Activite(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonActivite, self.bouton_activites)
 
     def __set_properties(self):
-        self.ctrl_activite.SetToolTip(wx.ToolTip(_(u"Activité sélectionnée")))
-        self.bouton_activites.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sélectionner une activité")))
+        self.ctrl_activite.SetToolTip(wx.ToolTip(_(u"ActivitÃ© sÃ©lectionnÃ©e")))
+        self.bouton_activites.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sÃ©lectionner une activitÃ©")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
@@ -112,7 +112,7 @@ class Dialog(wx.Dialog):
         self.ctrl_activites.SetMinSize((750, 500))
         self.ctrl_recherche = OL_Inscriptions_activite.CTRL_Outils(self, listview=self.ctrl_activites)
 
-        self.ctrl_activites_valides = wx.CheckBox(self, -1, _(u"Afficher uniquement les activités ouvertes"))
+        self.ctrl_activites_valides = wx.CheckBox(self, -1, _(u"Afficher uniquement les activitÃ©s ouvertes"))
         self.ctrl_activites_valides.SetFont(wx.Font(8, wx.FONTFAMILY_DEFAULT, wx.NORMAL, wx.NORMAL))
         self.ctrl_activites_valides.SetValue(True)
 
@@ -130,14 +130,14 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
         self.Bind(wx.EVT_CHECKBOX, self.OnCocheActivitesValides, self.ctrl_activites_valides)
 
-        # Init contrôles
+        # Init contrÃ´les
         self.ctrl_activites.MAJ()
 
         wx.CallLater(10, self.ctrl_recherche.SetFocus)
 
     def __set_properties(self):
-        self.SetTitle(_(u"Sélection d'une activité"))
-        self.ctrl_activites.SetToolTip(wx.ToolTip(_(u"Double-cliquez sur une ligne pour la sélectionner rapidement")))
+        self.SetTitle(_(u"SÃ©lection d'une activitÃ©"))
+        self.ctrl_activites.SetToolTip(wx.ToolTip(_(u"Double-cliquez sur une ligne pour la sÃ©lectionner rapidement")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
@@ -183,14 +183,14 @@ class Dialog(wx.Dialog):
         UTILS_Aide.Aide("Activits1")
 
     def OnBoutonOk(self, event=None):
-        # Vérification des données saisies
+        # VÃ©rification des donnÃ©es saisies
         if self.ctrl_activites.GetID() == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner une activité !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sÃ©lectionner une activitÃ© !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
-        # Fermeture de la fenêtre
+        # Fermeture de la fenÃªtre
         self.EndModal(wx.ID_OK)
 
     def SetIDactivite(self, IDactivite=None):

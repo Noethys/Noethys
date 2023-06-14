@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-12 Ivan LUCAS
@@ -161,7 +161,7 @@ class CTRL_Titulaire(wx.Choice):
     def GetListeDonnees(self):
         if self.IDfamille == None :
             return []
-        # Récupération de la liste des représentants de la famille
+        # RÃ©cupÃ©ration de la liste des reprÃ©sentants de la famille
         DB = GestionDB.DB()
         req = """SELECT individus.IDindividu, nom, prenom
         FROM rattachements
@@ -176,7 +176,7 @@ class CTRL_Titulaire(wx.Choice):
         for IDindividu, nom, prenom in listeDonnees :
             listeRepresentants.append({"IDindividu":IDindividu, "nom":nom, "prenom":prenom})
         
-        # Remplissage du contrôle
+        # Remplissage du contrÃ´le
         listeItems = [u"",]
         self.dictDonnees = {}
         self.dictDonnees[0] = { "ID" : 0, "nom" : _(u"Inconnue")}
@@ -217,19 +217,19 @@ class Dialog(wx.Dialog):
         self.IDmandat = IDmandat
                                 
         # Mandat
-        self.box_mandat_staticbox = wx.StaticBox(self, -1, _(u"Caractéristiques du mandat"))
-        self.label_reference_mandat = wx.StaticText(self, -1, _(u"Référence Unique du Mandat (RUM) :"))
+        self.box_mandat_staticbox = wx.StaticBox(self, -1, _(u"CaractÃ©ristiques du mandat"))
+        self.label_reference_mandat = wx.StaticText(self, -1, _(u"RÃ©fÃ©rence Unique du Mandat (RUM) :"))
         self.ctrl_reference_mandat = wx.TextCtrl(self, -1, str(self.IDfamille), style=wx.TE_CENTRE)
         self.label_date_mandat = wx.StaticText(self, -1, _(u"Date de signature du mandat :"))
         self.ctrl_date_mandat = CTRL_Saisie_date.Date2(self)
         self.label_type_mandat = wx.StaticText(self, -1, _(u"Type de mandat :"))
-        self.ctrl_type_mandat = wx.Choice(self, -1, choices=[_(u"Récurrent"), _(u"Ponctuel")])
+        self.ctrl_type_mandat = wx.Choice(self, -1, choices=[_(u"RÃ©current"), _(u"Ponctuel")])
         self.ctrl_type_mandat.Select(0) 
         self.ctrl_actif = wx.CheckBox(self, -1, "")
         self.ctrl_actif.SetValue(True)
 
         # RIB
-        self.box_rib_staticbox = wx.StaticBox(self, -1, _(u"Coordonnées bancaires"))
+        self.box_rib_staticbox = wx.StaticBox(self, -1, _(u"CoordonnÃ©es bancaires"))
                 
         # IBAN
         self.label_iban = wx.StaticText(self, -1, _(u"IBAN"))
@@ -264,15 +264,15 @@ class Dialog(wx.Dialog):
 
         # Options
         self.box_options_staticbox = wx.StaticBox(self, -1, _(u"Options"))
-        self.label_sequence = wx.StaticText(self, -1, _(u"Séquence suiv. :"))
+        self.label_sequence = wx.StaticText(self, -1, _(u"SÃ©quence suiv. :"))
         self.ctrl_sequence = CTRL_Sequence(self)
         self.ctrl_sequence.Select(0) 
         self.label_memo = wx.StaticText(self, -1, _(u"Observations :"))
         self.ctrl_memo = wx.TextCtrl(self, -1, u"", style=wx.TE_MULTILINE)
-        self.label_actif = wx.StaticText(self, -1, _(u"Mandat activé :"))
+        self.label_actif = wx.StaticText(self, -1, _(u"Mandat activÃ© :"))
         
-        # Liste des prélèvements
-        self.box_prelevements_staticbox = wx.StaticBox(self, -1, _(u"Prélèvements rattachés"))
+        # Liste des prÃ©lÃ¨vements
+        self.box_prelevements_staticbox = wx.StaticBox(self, -1, _(u"PrÃ©lÃ¨vements rattachÃ©s"))
         self.notebook = wx.Notebook(self, -1, style=wx.BK_TOP)
         
         if self.IDmandat == None :
@@ -292,8 +292,8 @@ class Dialog(wx.Dialog):
         self.ctrl_pieces.MAJ() 
         
         
-        self.notebook.AddPage(self.ctrl_prelevements, _(u"Prélèvements directs SEPA (%d)") % len(self.ctrl_prelevements.donnees))
-        self.notebook.AddPage(self.ctrl_pieces, _(u"Prélèvements PES ORMC (%d)") % len(self.ctrl_pieces.donnees))
+        self.notebook.AddPage(self.ctrl_prelevements, _(u"PrÃ©lÃ¨vements directs SEPA (%d)") % len(self.ctrl_prelevements.donnees))
+        self.notebook.AddPage(self.ctrl_pieces, _(u"PrÃ©lÃ¨vements PES ORMC (%d)") % len(self.ctrl_pieces.donnees))
         self.notebook.SetMinSize((50, 180)) 
         
         # Boutons
@@ -318,7 +318,7 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
         
-        # Init contrôles
+        # Init contrÃ´les
         if self.IDmandat != None :
             self.SetTitle(_(u"Modification d'un mandat SEPA"))
             self.Importation() 
@@ -332,22 +332,22 @@ class Dialog(wx.Dialog):
     def __set_properties(self):
         self.ctrl_iban.SetMinSize((200, -1))
         self.ctrl_bic.SetMinSize((120, -1))
-        self.ctrl_controle.SetToolTip(wx.ToolTip(_(u"Une coche verte apparaît si les coordonnées bancaires sont valides")))
-##        self.ctrl_banque.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici l'établissement du compte")))
-        self.ctrl_iban.SetToolTip(wx.ToolTip(_(u"Saisissez ici le numéro IBAN")))
-        self.ctrl_bic.SetToolTip(wx.ToolTip(_(u"Saisissez ici le numéro BIC")))
-##        self.bouton_banques.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à la gestion des établissements bancaires")))
-        self.radio_membre.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sélectionner un membre de la famille")))
-        self.ctrl_membre.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici un membre de la famille en tant que titulaire du compte bancaire")))
+        self.ctrl_controle.SetToolTip(wx.ToolTip(_(u"Une coche verte apparaÃ®t si les coordonnÃ©es bancaires sont valides")))
+##        self.ctrl_banque.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez ici l'Ã©tablissement du compte")))
+        self.ctrl_iban.SetToolTip(wx.ToolTip(_(u"Saisissez ici le numÃ©ro IBAN")))
+        self.ctrl_bic.SetToolTip(wx.ToolTip(_(u"Saisissez ici le numÃ©ro BIC")))
+##        self.bouton_banques.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accÃ©der Ã  la gestion des Ã©tablissements bancaires")))
+        self.radio_membre.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sÃ©lectionner un membre de la famille")))
+        self.ctrl_membre.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez ici un membre de la famille en tant que titulaire du compte bancaire")))
         self.radio_individu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour saisir manuellement un titulaire de compte bancaire")))
         self.ctrl_individu_nom.SetToolTip(wx.ToolTip(_(u"Saisissez un nom de titulaire pour ce compte bancaire")))
         self.ctrl_individu_rue.SetToolTip(wx.ToolTip(_(u"Saisissez la rue de l'individu")))
-        self.ctrl_reference_mandat.SetToolTip(wx.ToolTip(_(u"Lors de la saisie d'un mandat, il est attribué automatiquement par Noethys en fonction du RUM du dernier mandat saisi. Mais vous pouvez le modifier en fonction de vos besoins (Ex : '004567', 'XZA-34654', etc...). Attention, il doit s'agir d'une référence alphanumérique unique.")))
+        self.ctrl_reference_mandat.SetToolTip(wx.ToolTip(_(u"Lors de la saisie d'un mandat, il est attribuÃ© automatiquement par Noethys en fonction du RUM du dernier mandat saisi. Mais vous pouvez le modifier en fonction de vos besoins (Ex : '004567', 'XZA-34654', etc...). Attention, il doit s'agir d'une rÃ©fÃ©rence alphanumÃ©rique unique.")))
         self.ctrl_date_mandat.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de signature du mandat SEPA")))
-        self.ctrl_type_mandat.SetToolTip(wx.ToolTip(_(u"Utilisez le type 'Récurrent' si le mandant est utilisable pour plusieurs prélèvements ou 'Ponctuel' s'il n'était destiné qu'à un prélèvement unique.")))
+        self.ctrl_type_mandat.SetToolTip(wx.ToolTip(_(u"Utilisez le type 'RÃ©current' si le mandant est utilisable pour plusieurs prÃ©lÃ¨vements ou 'Ponctuel' s'il n'Ã©tait destinÃ© qu'Ã  un prÃ©lÃ¨vement unique.")))
         self.ctrl_memo.SetToolTip(wx.ToolTip(_(u"Saisissez des observations")))
-        self.ctrl_sequence.SetToolTip(wx.ToolTip(_(u"Sélectionnez la séquence de la prochaine opération (Automatique par défaut)\n\nImportant : Sélectionnez RCUR si ce mandat a déjà été utilisé hors de Noethys ou avant le 01/01/2014.")))
-        self.ctrl_actif.SetToolTip(wx.ToolTip(_(u"Mandat activé ou non. Si vous le désactivez, il ne sera plus utilisable pour de futurs prélèvements.")))
+        self.ctrl_sequence.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez la sÃ©quence de la prochaine opÃ©ration (Automatique par dÃ©faut)\n\nImportant : SÃ©lectionnez RCUR si ce mandat a dÃ©jÃ  Ã©tÃ© utilisÃ© hors de Noethys ou avant le 01/01/2014.")))
+        self.ctrl_actif.SetToolTip(wx.ToolTip(_(u"Mandat activÃ© ou non. Si vous le dÃ©sactivez, il ne sera plus utilisable pour de futurs prÃ©lÃ¨vements.")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer le mandat au format PDF")))
         self.bouton_email.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour envoyer le mandat en PDF par Email")))
@@ -453,7 +453,7 @@ class Dialog(wx.Dialog):
         
         grid_sizer_base.Add(grid_sizer_contenu, 1, wx.LEFT|wx.TOP|wx.RIGHT|wx.EXPAND, 10)
         
-        # Liste des prélèvements
+        # Liste des prÃ©lÃ¨vements
         box_prelevements = wx.StaticBoxSizer(self.box_prelevements_staticbox, wx.VERTICAL)
         box_prelevements.Add(self.notebook, 1, wx.ALL|wx.EXPAND, 10)
         grid_sizer_base.Add(box_prelevements, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
@@ -493,7 +493,7 @@ class Dialog(wx.Dialog):
     def MAJcontrole(self, iban="", bic="", valide=True):
         if valide == True :
             self.ctrl_controle.SetBitmap(self.image_valide)
-            texte = _(u"Coordonnées bancaires valides")
+            texte = _(u"CoordonnÃ©es bancaires valides")
             infosBanque = DATA_Bic.RechercherBIC(bic)
             if infosBanque != None : 
                 nomBanque, villeBanque = infosBanque
@@ -502,7 +502,7 @@ class Dialog(wx.Dialog):
                 texte += _(u"\nBanque inconnue")
         else :
             self.ctrl_controle.SetBitmap(self.image_nonvalide)
-            texte = _(u"Coordonnées bancaires non valides")
+            texte = _(u"CoordonnÃ©es bancaires non valides")
         self.label_analyse_iban.SetLabel(texte) 
         
         
@@ -577,7 +577,7 @@ class Dialog(wx.Dialog):
             pass
 
     def Importation(self):
-        """ Importation des données """
+        """ Importation des donnÃ©es """
         if self.IDfamille == None :
             return
         DB = GestionDB.DB()
@@ -623,7 +623,7 @@ class Dialog(wx.Dialog):
             self.ctrl_individu_ville.SetValueCP(cp)
             self.ctrl_individu_ville.SetValueVille(ville)
         
-        # Mémo
+        # MÃ©mo
         self.ctrl_memo.SetValue(memo) 
         self.ctrl_sequence.SetCode(sequence)
         
@@ -635,7 +635,7 @@ class Dialog(wx.Dialog):
             
 
     def OnBoutonOk(self, event):
-        # Récupération des données
+        # RÃ©cupÃ©ration des donnÃ©es
 ##        IDbanque = self.ctrl_banque.GetID()
         IDindividu = self.ctrl_membre.GetID()
         nom = self.ctrl_individu_nom.GetValue()
@@ -658,9 +658,9 @@ class Dialog(wx.Dialog):
         else :
             IDindividu = None
 
-        # Vérification des données saisies
+        # VÃ©rification des donnÃ©es saisies
         if len(rum) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous devez saisir la référence du mandat !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez saisir la rÃ©fÃ©rence du mandat !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_reference_mandat.SetFocus()
@@ -674,21 +674,21 @@ class Dialog(wx.Dialog):
             return
 
         if UTILS_Prelevements.ControleIBAN(iban) == False :
-            dlg = wx.MessageDialog(self, _(u"Le IBAN semble erroné !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Le IBAN semble erronÃ© !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_iban.SetFocus()
             return
         
         if UTILS_Prelevements.ControleBIC(bic) == False :
-            dlg = wx.MessageDialog(self, _(u"Le BIC semble erroné !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Le BIC semble erronÃ© !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_bic.SetFocus()
             return
             
 ##        if IDbanque == None :
-##            dlg = wx.MessageDialog(self, _(u"Vous devez sélectionner un établissement bancaire !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+##            dlg = wx.MessageDialog(self, _(u"Vous devez sÃ©lectionner un Ã©tablissement bancaire !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
 ##            dlg.ShowModal()
 ##            dlg.Destroy()
 ##            self.ctrl_banque.SetFocus()
@@ -696,14 +696,14 @@ class Dialog(wx.Dialog):
         
         if self.radio_membre.GetValue() == True :
             if IDindividu == None :
-                dlg = wx.MessageDialog(self, _(u"Vous n'avez pas sélectionné de titulaire du compte bancaire !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous n'avez pas sÃ©lectionnÃ© de titulaire du compte bancaire !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_membre.SetFocus()
                 return
         else :
             if nom == "" :
-                dlg = wx.MessageDialog(self, _(u"Vous n'avez pas renseigné le titulaire du compte bancaire !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous n'avez pas renseignÃ© le titulaire du compte bancaire !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_individu_nom.SetFocus()
@@ -716,7 +716,7 @@ class Dialog(wx.Dialog):
         
         sequence = self.ctrl_sequence.GetCode() 
         
-        # Vérifie que le RUM n'est pas déjà attribué à un autre mandat
+        # VÃ©rifie que le RUM n'est pas dÃ©jÃ  attribuÃ© Ã  un autre mandat
         if self.IDmandat == None :
             IDmandatTemp = 0
         else :
@@ -727,7 +727,7 @@ class Dialog(wx.Dialog):
         listeDonnees = DB.ResultatReq()
         DB.Close()
         if len(listeDonnees) > 0 :
-            dlg = wx.MessageDialog(self, _(u"Le RUM saisi a déjà été enregistré pour un autre mandat alors qu'il doit être unique ! \n\nVeuillez en saisir un différent..."), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Le RUM saisi a dÃ©jÃ  Ã©tÃ© enregistrÃ© pour un autre mandat alors qu'il doit Ãªtre unique ! \n\nVeuillez en saisir un diffÃ©rent..."), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_reference_mandat.SetFocus() 
@@ -777,7 +777,7 @@ class Dialog(wx.Dialog):
         dictChampsFusion = {}
         dictDonnees = {}
         
-        # Récupère infos sur organisateur
+        # RÃ©cupÃ¨re infos sur organisateur
         from Utils import UTILS_Organisateur
         dictOrganisateur = UTILS_Organisateur.GetDonnees(tailleLogo=(200, 200))
         
@@ -794,7 +794,7 @@ class Dialog(wx.Dialog):
             IDcompte, nomCompte, numeroCompte, ics = listeDonnees[0]
             if len(listeDonnees) > 1:
                 listeReponses = [u"%s  (%s - %s)" % (donnees[3], donnees[1], donnees[2]) for donnees in listeDonnees]
-                dlg = wx.SingleChoiceDialog(self, _(u"Plusieurs numéros ICS sont disponibles, veuillez en sélectionner un dans la liste:"), _(u"Choix de l'ICS"), listeReponses, wx.CHOICEDLG_STYLE)
+                dlg = wx.SingleChoiceDialog(self, _(u"Plusieurs numÃ©ros ICS sont disponibles, veuillez en sÃ©lectionner un dans la liste:"), _(u"Choix de l'ICS"), listeReponses, wx.CHOICEDLG_STYLE)
                 if dlg.ShowModal() == wx.ID_OK:
                     ics = listeDonnees[dlg.GetSelection()][3]
                     dlg.Destroy()
@@ -802,7 +802,7 @@ class Dialog(wx.Dialog):
                     dlg.Destroy()
                     return False
 
-        # Récupère données du mandat        
+        # RÃ©cupÃ¨re donnÃ©es du mandat        
         titulaire_nom = ""
         titulaire_rue = ""
         titulaire_cp = ""
@@ -847,11 +847,11 @@ class Dialog(wx.Dialog):
             "ics" : ics,
             }
         
-        # Mémorisation pour la fusion Emails
+        # MÃ©morisation pour la fusion Emails
         dictChampsFusion["{RUM}"] = rum
         dictChampsFusion["{DATE}"] = date
 
-        # Lancement de l'édition du PDF
+        # Lancement de l'Ã©dition du PDF
         Impression(dictDonnees, nomDoc=nomDoc, afficherDoc=afficherDoc)
         
         return dictChampsFusion
@@ -878,25 +878,25 @@ class Impression():
         
         largeursColonnes = (100, largeurContenu-100-100, 100)
 
-        titre = Paragraph(u"""<para align=center fontSize=16><b>Mandat de prélèvement SEPA</b></para>""", styleSheet['BodyText'])
+        titre = Paragraph(u"""<para align=center fontSize=16><b>Mandat de prÃ©lÃ¨vement SEPA</b></para>""", styleSheet['BodyText'])
         dataTableau.append([titre,])
 
         # Nom de l'organisateur
-        ligne1 = Paragraph(u"""<para align=center fontSize=10>%s - ICS n°%s</para>""" % (dictDonnees["organisateur"]["nom"], dictDonnees["ics"]), styleSheet['BodyText'])
+        ligne1 = Paragraph(u"""<para align=center fontSize=10>%s - ICS nÂ°%s</para>""" % (dictDonnees["organisateur"]["nom"], dictDonnees["ics"]), styleSheet['BodyText'])
         ligne2 = Paragraph(u"""<para align=center fontSize=8>%s %s %s</para>""" % (dictDonnees["organisateur"]["rue"], dictDonnees["organisateur"]["cp"], dictDonnees["organisateur"]["ville"]), styleSheet['BodyText'])
         dataTableau.append([ [ligne1, ligne2],])
 
-        # Mention légale obligatoire sur le SEPA
+        # Mention lÃ©gale obligatoire sur le SEPA
         mention_sepa = Paragraph(u"""
-        <para align=left leading=10 fontSize=7>En signant ce mandat, vous autorisez %s à envoyer des instructions à votre banque pour débiter votre compte, et votre banque à débiter votre compte conformément aux instructions de %s.
-        Vous bénéficiez du droit d'être remboursé par votre banque selon les conditions décrites dans la convention que vous avez passée avec elle.
-        Une demande de remboursement doit être présentée dans les 8 semaines suivant la date de début de votre compte pour un prélèvement autorisé.
-        Vos droits concernant le prélèvement sont expliqués dans un document que vous pouvez obtenir auprès de votre banque.
+        <para align=left leading=10 fontSize=7>En signant ce mandat, vous autorisez %s Ã  envoyer des instructions Ã  votre banque pour dÃ©biter votre compte, et votre banque Ã  dÃ©biter votre compte conformÃ©ment aux instructions de %s.
+        Vous bÃ©nÃ©ficiez du droit d'Ãªtre remboursÃ© par votre banque selon les conditions dÃ©crites dans la convention que vous avez passÃ©e avec elle.
+        Une demande de remboursement doit Ãªtre prÃ©sentÃ©e dans les 8 semaines suivant la date de dÃ©but de votre compte pour un prÃ©lÃ¨vement autorisÃ©.
+        Vos droits concernant le prÃ©lÃ¨vement sont expliquÃ©s dans un document que vous pouvez obtenir auprÃ¨s de votre banque.
         </para>""" % (dictDonnees["organisateur"]["nom"], dictDonnees["organisateur"]["nom"]), styleSheet['BodyText'])
         dataTableau.append([mention_sepa,])
         
         # RUM
-        dataTableau.append([Paragraph(_(u"<para align=center fontSize=8><b>Référence unique du mandat</b></para>"), styleSheet['BodyText']),])
+        dataTableau.append([Paragraph(_(u"<para align=center fontSize=8><b>RÃ©fÃ©rence unique du mandat</b></para>"), styleSheet['BodyText']),])
         dataTableauTemp = [
             [Paragraph(_(u"<para align=right fontSize=10>RUM :</para>"), styleSheet['BodyText']), self.Cases(modele=[1 for x in range(38)], texte=dictDonnees["rum"])],
             ]
@@ -907,10 +907,10 @@ class Impression():
         tableauTemp.setStyle(style)
         dataTableau.append([tableauTemp,])
 
-        # Nom et coordonnées et débiteur
-        dataTableau.append([Paragraph(_(u"<para align=center fontSize=8><b>Identité et coordonnées du débiteur</b></para>"), styleSheet['BodyText']),])
+        # Nom et coordonnÃ©es et dÃ©biteur
+        dataTableau.append([Paragraph(_(u"<para align=center fontSize=8><b>IdentitÃ© et coordonnÃ©es du dÃ©biteur</b></para>"), styleSheet['BodyText']),])
         dataTableauTemp = [
-            [Paragraph(_(u"<para align=right fontSize=10>Nom et prénom :</para>"), styleSheet['BodyText']), self.Cases(modele=[1 for x in range(38)], texte=dictDonnees["titulaire_nom"])],
+            [Paragraph(_(u"<para align=right fontSize=10>Nom et prÃ©nom :</para>"), styleSheet['BodyText']), self.Cases(modele=[1 for x in range(38)], texte=dictDonnees["titulaire_nom"])],
             [Paragraph(_(u"<para align=right fontSize=10>Adresse :</para>"), styleSheet['BodyText']), self.Cases(modele=[1 for x in range(38)], texte=dictDonnees["titulaire_rue"])],
             [Paragraph(_(u"<para align=right fontSize=10>Code postal :</para>"), styleSheet['BodyText']), self.Cases(modele=[1 for x in range(38)], texte=dictDonnees["titulaire_cp"])],
             [Paragraph(_(u"<para align=right fontSize=10>Ville :</para>"), styleSheet['BodyText']), self.Cases(modele=[1 for x in range(38)], texte=dictDonnees["titulaire_ville"])],
@@ -922,8 +922,8 @@ class Impression():
         tableauTemp.setStyle(style)
         dataTableau.append([tableauTemp,])
 
-        # Compte à débiter
-        dataTableau.append([Paragraph(_(u"<para align=center fontSize=8><b>Compte à débiter</b></para>"), styleSheet['BodyText']),])
+        # Compte Ã  dÃ©biter
+        dataTableau.append([Paragraph(_(u"<para align=center fontSize=8><b>Compte Ã  dÃ©biter</b></para>"), styleSheet['BodyText']),])
         
         iban = self.Cases(modele=[1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 1], texte=dictDonnees["iban"])
         bic = self.Cases(modele=[1 for x in range(11)], texte=dictDonnees["bic"])
@@ -949,7 +949,7 @@ class Impression():
             ponctuel = "X"
         dataTableauTemp = [
             "", 
-            Paragraph(_(u"<para align=left fontSize=10>Paiement récurrent :</para>"), styleSheet['BodyText']), 
+            Paragraph(_(u"<para align=left fontSize=10>Paiement rÃ©current :</para>"), styleSheet['BodyText']), 
             self.Cases(modele=[1,], texte=recurrent),
             "",
             Paragraph(_(u"<para align=left fontSize=10>Paiement ponctuel :</para>"), styleSheet['BodyText']), 
@@ -966,7 +966,7 @@ class Impression():
         # Signature
         dataTableau.append([Paragraph(_(u"<para align=center fontSize=8><b>Signature</b></para>"), styleSheet['BodyText']),])
         dataTableauTemp = [
-            [Paragraph(_(u"<para align=right fontSize=10>Fait à :</para>"), styleSheet['BodyText']), self.Cases(modele=[1 for x in range(38)])],
+            [Paragraph(_(u"<para align=right fontSize=10>Fait Ã  :</para>"), styleSheet['BodyText']), self.Cases(modele=[1 for x in range(38)])],
             [Paragraph(_(u"<para align=right fontSize=10>Le :</para>"), styleSheet['BodyText']), self.Cases(modele=[1, 1, 2, 1, 1, 2, 1, 1, 1, 1], texte="  /  /    ")],
             [Paragraph(_(u"<para align=right fontSize=10>Signature :</para>"), styleSheet['BodyText']), ""],
             ["", ""],
@@ -984,9 +984,9 @@ class Impression():
 
         # Mention CNIL
         mention_cnil = Paragraph(u"""
-        <para align=left leading=10 fontSize=7>Les informations contenus dans le présent mandat, qui doit être complété, sont destinés à n'être utilisées par le créancier que pour la gestion
-        de sa relation avec son client. Elles pourront donner lieu à l'exercice, par ce dernier, de ses droits d'oppositions, d'accès et de rectifications tels 
-        que prévus aux articles 38 et suivants de la loi n°78-17 du 6 janvier 1978 relative à l'informatique, aux fichiers et aux libertés.
+        <para align=left leading=10 fontSize=7>Les informations contenus dans le prÃ©sent mandat, qui doit Ãªtre complÃ©tÃ©, sont destinÃ©s Ã  n'Ãªtre utilisÃ©es par le crÃ©ancier que pour la gestion
+        de sa relation avec son client. Elles pourront donner lieu Ã  l'exercice, par ce dernier, de ses droits d'oppositions, d'accÃ¨s et de rectifications tels 
+        que prÃ©vus aux articles 38 et suivants de la loi nÂ°78-17 du 6 janvier 1978 relative Ã  l'informatique, aux fichiers et aux libertÃ©s.
         </para>""", styleSheet['BodyText'])
         dataTableau.append([mention_cnil,])
         
@@ -1014,7 +1014,7 @@ class Impression():
         except Exception as err :
             print("Erreur dans ouverture PDF :", err)
             if "Permission denied" in err :
-                dlg = wx.MessageDialog(None, _(u"Noethys ne peut pas créer le PDF.\n\nVeuillez vérifier qu'un autre PDF n'est pas déjà ouvert en arrière-plan..."), _(u"Erreur d'édition"), wx.OK | wx.ICON_ERROR)
+                dlg = wx.MessageDialog(None, _(u"Noethys ne peut pas crÃ©er le PDF.\n\nVeuillez vÃ©rifier qu'un autre PDF n'est pas dÃ©jÃ  ouvert en arriÃ¨re-plan..."), _(u"Erreur d'Ã©dition"), wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return
@@ -1026,7 +1026,7 @@ class Impression():
 
     def Cases(self, modele=[1, 1, 1, 0, 1, 1, 1], texte="", largeurColonnes=10, couleur=(0.8, 0.8, 0.8)) :
         """ 
-        1 = Case à avec texte avec cadre
+        1 = Case Ã  avec texte avec cadre
         2 = Case avec texte sans cadre
         0 = Case sans texte et sans cadre
         """        

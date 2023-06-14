@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -39,7 +39,7 @@ class Track(object):
     
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # Récupération des paramètres perso
+        # RÃ©cupÃ©ration des paramÃ¨tres perso
         self.selectionID = None
         self.selectionTrack = None
         self.criteres = ""
@@ -60,7 +60,7 @@ class ListView(FastObjectListView):
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
-        """ Récupération des données """
+        """ RÃ©cupÃ©ration des donnÃ©es """
         listeID = None
         db = GestionDB.DB()
         req = """SELECT IDvacance, nom, annee, date_debut, date_fin
@@ -90,7 +90,7 @@ class ListView(FastObjectListView):
         
         def FormateDate(texteDate):
             """ Transforme le format "aaaa-mm-jj" en "mercredi 12 septembre 2008" """
-            listeMois = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
+            listeMois = (_(u"janvier"), _(u"fÃ©vrier"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"aoÃ»t"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"dÃ©cembre"))
             listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
             jour = int(texteDate[8:10])
             mois = int(texteDate[5:7])
@@ -101,14 +101,14 @@ class ListView(FastObjectListView):
             
         liste_Colonnes = [
             ColumnDefn(_(u"ID"), "left", 0, "IDvacance", typeDonnee="entier"),
-            ColumnDefn(_(u"Année"), 'left', 50, "annee", typeDonnee="texte"),
+            ColumnDefn(_(u"AnnÃ©e"), 'left', 50, "annee", typeDonnee="texte"),
             ColumnDefn(_(u"Nom"), "left", 120, "nom", typeDonnee="texte"), 
-            ColumnDefn(_(u"Date de début"), "left", 190, "date_debut", typeDonnee="date", stringConverter=FormateDate), 
+            ColumnDefn(_(u"Date de dÃ©but"), "left", 190, "date_debut", typeDonnee="date", stringConverter=FormateDate), 
             ColumnDefn(_(u"Date de fin"), "left", 190, "date_fin", typeDonnee="date", stringConverter=FormateDate), 
             ]
         
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(_(u"Aucune période de vacances"))
+        self.SetEmptyListMsg(_(u"Aucune pÃ©riode de vacances"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
         self.SetSortColumn(self.columns[3])
         self.SetObjects(self.donnees)
@@ -122,7 +122,7 @@ class ListView(FastObjectListView):
             self.selectionTrack = None
         self.InitModel()
         self.InitObjectListView()
-        # Sélection d'un item
+        # SÃ©lection d'un item
         if self.selectionTrack != None :
             self.SelectObject(self.selectionTrack, deselectOthers=True, ensureVisible=True)
         self.selectionID = None
@@ -139,7 +139,7 @@ class ListView(FastObjectListView):
             noSelection = False
             ID = self.Selection()[0].IDvacance
                 
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Modifier
@@ -179,7 +179,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
 
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
+        item = wx.MenuItem(menuPop, 40, _(u"AperÃ§u avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -229,7 +229,7 @@ class ListView(FastObjectListView):
     def Modifier(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_vacances", "modifier") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune période de vacances à modifier dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune pÃ©riode de vacances Ã  modifier dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -263,11 +263,11 @@ class ListView(FastObjectListView):
     def Supprimer(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_vacances", "supprimer") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune période de vacances à supprimer dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucune pÃ©riode de vacances Ã  supprimer dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
-        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer cette période de vacances ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer cette pÃ©riode de vacances ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         if dlg.ShowModal() == wx.ID_YES :
             IDvacance = self.Selection()[0].IDvacance
             DB = GestionDB.DB()
@@ -313,17 +313,17 @@ class Saisie(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
 
-        self.sizer_periode_staticbox = wx.StaticBox(self, -1, _(u"Nom de la période"))
-        choices = [_(u"Février"), _(u"Pâques"), _(u"Eté"), _(u"Toussaint"), _(u"Noël")]
+        self.sizer_periode_staticbox = wx.StaticBox(self, -1, _(u"Nom de la pÃ©riode"))
+        choices = [_(u"FÃ©vrier"), _(u"PÃ¢ques"), _(u"EtÃ©"), _(u"Toussaint"), _(u"NoÃ«l")]
         self.label_nom = wx.StaticText(self, -1, _(u"Nom :"))
         self.ctrl_nom = wx.Choice(self, -1, choices=choices, size=(100, -1))
-        self.label_annee = wx.StaticText(self, -1, _(u"Année :"))
+        self.label_annee = wx.StaticText(self, -1, _(u"AnnÃ©e :"))
         self.ctrl_annee = wx.SpinCtrl(self, -1, "", style=wx.TE_CENTRE, size=(60, -1))
         self.ctrl_annee.SetRange(2000, 2099)
         anneeEnCours = datetime.date.today().year
         self.ctrl_annee.SetValue(anneeEnCours)
         
-        self.sizer_dates_staticbox = wx.StaticBox(self, -1, _(u"Dates de la période"))
+        self.sizer_dates_staticbox = wx.StaticBox(self, -1, _(u"Dates de la pÃ©riode"))
         self.label_dateDebut = wx.StaticText(self, -1, u"Du")
         self.ctrl_dateDebut = MyDatePickerCtrl(self)
         self.label_dateFin = wx.StaticText(self, -1, _(u"au"))
@@ -333,18 +333,18 @@ class Saisie(wx.Dialog):
         self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
         self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
         
-        # Propriétés
-        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Choisissez ici le nom de la période")))
-        self.ctrl_annee.SetToolTip(wx.ToolTip(_(u"Saisissez ici l'année de la période. Ex. : '2011'")))
-        self.ctrl_dateDebut.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de début de la période")))
-        self.ctrl_dateFin.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de fin de la période")))
+        # PropriÃ©tÃ©s
+        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Choisissez ici le nom de la pÃ©riode")))
+        self.ctrl_annee.SetToolTip(wx.ToolTip(_(u"Saisissez ici l'annÃ©e de la pÃ©riode. Ex. : '2011'")))
+        self.ctrl_dateDebut.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de dÃ©but de la pÃ©riode")))
+        self.ctrl_dateFin.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de fin de la pÃ©riode")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler la saisie")))
         if IDvacance == None :
-            self.SetTitle(_(u"Saisie d'une période de vacances"))
+            self.SetTitle(_(u"Saisie d'une pÃ©riode de vacances"))
         else:
-            self.SetTitle(_(u"Modification d'une période de vacances"))
+            self.SetTitle(_(u"Modification d'une pÃ©riode de vacances"))
         self.SetMinSize((350, -1))
     
         # Layout
@@ -413,7 +413,7 @@ class Saisie(wx.Dialog):
     
     def OnBoutonOk(self, event):
         if self.ctrl_nom.GetSelection == -1 :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner un nom de période !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sÃ©lectionner un nom de pÃ©riode !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_nom.SetFocus()
@@ -421,9 +421,9 @@ class Saisie(wx.Dialog):
         
         date_debut = self.ctrl_dateDebut.GetDate()
         date_fin = self.ctrl_dateFin.GetDate() 
-        # Vérifie que la date de fin est supérieure à la date de début de contrat
+        # VÃ©rifie que la date de fin est supÃ©rieure Ã  la date de dÃ©but de contrat
         if date_debut > date_fin :
-            dlg = wx.MessageDialog(self, _(u"La date de fin de vacances doit être supérieure à la date de début !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"La date de fin de vacances doit Ãªtre supÃ©rieure Ã  la date de dÃ©but !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_dateFin.SetFocus()
@@ -445,7 +445,7 @@ class BarreRecherche(wx.SearchCtrl):
         self.parent = parent
         self.rechercheEnCours = False
         
-        self.SetDescriptiveText(_(u"Rechercher une période de vacances..."))
+        self.SetDescriptiveText(_(u"Rechercher une pÃ©riode de vacances..."))
         self.ShowSearchButton(True)
         
         self.listView = self.parent.ctrl_listview

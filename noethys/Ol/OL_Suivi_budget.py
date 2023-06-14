@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-14 Ivan LUCAS
@@ -19,7 +19,7 @@ from Dlg import DLG_Saisie_categorie_budget
 import datetime
 
 from Utils import UTILS_Config
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"â‚¬")
 
 
 from Utils import UTILS_Interface
@@ -37,7 +37,7 @@ class Analyse():
         
         DB = GestionDB.DB() 
         
-        # Récupération des consommations
+        # RÃ©cupÃ©ration des consommations
         req = """SELECT IDunite, COUNT(IDconso)
         FROM consommations
         WHERE date >='%s' AND date <='%s'
@@ -56,7 +56,7 @@ class Analyse():
         
         listeCategoriesUtilisees = []
         
-        # Récupération des opérations de trésorerie
+        # RÃ©cupÃ©ration des opÃ©rations de trÃ©sorerie
         req = """SELECT IDcategorie, SUM(montant)
         FROM compta_ventilation
         WHERE date_budget>='%s' AND date_budget<='%s' AND IDanalytique IN %s
@@ -70,7 +70,7 @@ class Analyse():
             if IDcategorie not in listeCategoriesUtilisees :
                 listeCategoriesUtilisees.append(IDcategorie) 
 
-        # Récupération des opérations budgétaires
+        # RÃ©cupÃ©ration des opÃ©rations budgÃ©taires
         req = """SELECT IDcategorie, SUM(montant)
         FROM compta_operations_budgetaires
         WHERE date_budget>='%s' AND date_budget<='%s' AND IDanalytique IN %s
@@ -84,7 +84,7 @@ class Analyse():
             if IDcategorie not in listeCategoriesUtilisees :
                 listeCategoriesUtilisees.append(IDcategorie) 
 
-        # Récupéraion des infos sur les catégories
+        # RÃ©cupÃ©raion des infos sur les catÃ©gories
         req = """SELECT IDcategorie, type, nom, abrege
         FROM compta_categories;"""
         DB.ExecuterReq(req)
@@ -93,7 +93,7 @@ class Analyse():
         for IDcategorie, typeCategorie, nom, abrege in listeDonnees :
             dictInfosCategories[IDcategorie] = {"typeCategorie" : typeCategorie, "nom" : nom, "abrege" : abrege}        
         
-        # Récupération des catégories budgétaires
+        # RÃ©cupÃ©ration des catÃ©gories budgÃ©taires
         req = """SELECT IDcategorie_budget, type, IDcategorie, valeur
         FROM compta_categories_budget
         WHERE IDbudget=%d
@@ -135,7 +135,7 @@ class Analyse():
             if IDcategorie in dictInfosCategories :
                 nomCategorie = dictInfosCategories[IDcategorie]["nom"]
             else :
-                nomCategorie = _(u"Catégorie inconnue")
+                nomCategorie = _(u"CatÃ©gorie inconnue")
 
             listeIDcategories.append(IDcategorie)
             listeCategories.append({
@@ -146,7 +146,7 @@ class Analyse():
 
         DB.Close() 
         
-        # Catégories non budgétées
+        # CatÃ©gories non budgÃ©tÃ©es
         if self.dictBudget["inclure_toutes_categories"] == True :
             
             for IDcategorie in listeCategoriesUtilisees :
@@ -189,7 +189,7 @@ class Analyse():
         return listeCategories
         
     def CalculePlafond(self, valeur=""):
-        """ Calcule du montant plafond de la catégorie """
+        """ Calcule du montant plafond de la catÃ©gorie """
         # Remplacement des champs
         for nomChamp, valChamp in self.dictChamps.items() :
             valeur = valeur.replace(nomChamp, str(valChamp))
@@ -224,7 +224,7 @@ class Track(object):
 
 class ListView(GroupListView):
     def __init__(self, *args, **kwds):
-        # Récupération des paramètres perso
+        # RÃ©cupÃ©ration des paramÃ¨tres perso
         self.selectionID = None
         self.selectionTrack = None
         self.criteres = ""
@@ -244,7 +244,7 @@ class ListView(GroupListView):
     def InitModel(self):
         self.donnees = []
         
-        # Importation des catégories
+        # Importation des catÃ©gories
         if self.dictBudget == None :
             return
         analyse = Analyse(self.dictBudget)
@@ -281,17 +281,17 @@ class ListView(GroupListView):
             return u"%.1f %%" % float(valeur)
 
         def FormateType(valeur):
-            if valeur == "credit" : return _(u"Crédit")
-            if valeur == "debit" : return _(u"Débit")
+            if valeur == "credit" : return _(u"CrÃ©dit")
+            if valeur == "debit" : return _(u"DÃ©bit")
             if valeur == "total" : return _(u"Total")
             
             
         liste_Colonnes = [
 ##            ColumnDefn(u"", "left", 0, "IDcategorie_budget"),
-            ColumnDefn(_(u"Catégorie budgétaire"), "left", 200, "nomCategorie", typeDonnee="texte", isSpaceFilling=True),
+            ColumnDefn(_(u"CatÃ©gorie budgÃ©taire"), "left", 200, "nomCategorie", typeDonnee="texte", isSpaceFilling=True),
             ColumnDefn(_(u"Type"), "left", 50, "typeCategorie", typeDonnee="texte", stringConverter=FormateType),
-            ColumnDefn(_(u"Réel"), "right", 80, "realise", typeDonnee="montant", stringConverter=FormateMontant),
-            ColumnDefn(_(u"Budgété"), "right", 80, "plafond", typeDonnee="montant", stringConverter=FormateMontant),
+            ColumnDefn(_(u"RÃ©el"), "right", 80, "realise", typeDonnee="montant", stringConverter=FormateMontant),
+            ColumnDefn(_(u"BudgÃ©tÃ©"), "right", 80, "plafond", typeDonnee="montant", stringConverter=FormateMontant),
             ColumnDefn(_(u"Pourcent."), "right", 80, "pourcentage", stringConverter=FormatePourcentage),
             ColumnDefn(_(u"Ecart"), "right", 80, "solde", typeDonnee="montant", stringConverter=FormateEcart),
             ]
@@ -303,7 +303,7 @@ class ListView(GroupListView):
         self.useExpansionColumn = True
         self.SetShowItemCounts(False)
 
-        self.SetEmptyListMsg(_(u"Aucune catégorie budgétaire"))
+        self.SetEmptyListMsg(_(u"Aucune catÃ©gorie budgÃ©taire"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
         self.SetSortColumn(self.columns[1])
         self.SetObjects(self.donnees)
@@ -317,7 +317,7 @@ class ListView(GroupListView):
             self.selectionTrack = None
         self.InitModel()
         self.InitObjectListView()
-        # Sélection d'un item
+        # SÃ©lection d'un item
         if self.selectionTrack != None :
             self.SelectObject(self.selectionTrack, deselectOthers=True, ensureVisible=True)
         self.selectionID = None
@@ -329,11 +329,11 @@ class ListView(GroupListView):
 
     def OnContextMenu(self, event):
         """Ouverture du menu contextuel """
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
+        item = wx.MenuItem(menuPop, 40, _(u"AperÃ§u avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -367,21 +367,21 @@ class ListView(GroupListView):
 
     def Apercu(self, event):
         from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des catégories budgétaires"), format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des catÃ©gories budgÃ©taires"), format="A", orientation=wx.PORTRAIT)
         prt.Preview()
 
     def Imprimer(self, event):
         from Utils import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des catégories budgétaires"), format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des catÃ©gories budgÃ©taires"), format="A", orientation=wx.PORTRAIT)
         prt.Print()
 
     def ExportTexte(self, event):
         from Utils import UTILS_Export
-        UTILS_Export.ExportTexte(self, titre=_(u"Liste des catégories budgétaires"))
+        UTILS_Export.ExportTexte(self, titre=_(u"Liste des catÃ©gories budgÃ©taires"))
         
     def ExportExcel(self, event):
         from Utils import UTILS_Export
-        UTILS_Export.ExportExcel(self, titre=_(u"Liste des catégories budgétaires"))
+        UTILS_Export.ExportExcel(self, titre=_(u"Liste des catÃ©gories budgÃ©taires"))
 
 
 # -------------------------------------------------------------------------------------------------------------------------------------------

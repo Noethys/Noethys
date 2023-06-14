@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-16 Ivan LUCAS
@@ -38,7 +38,7 @@ class Track(object):
         else :
             self.dict_inscrits_groupes = {}
 
-        # Recherche le nombre d'inscrits total de l'activité
+        # Recherche le nombre d'inscrits total de l'activitÃ©
         self.nbre_inscrits = 0
         for IDgroupe, nbre_inscrits in self.dict_inscrits_groupes.items() :
             self.nbre_inscrits += nbre_inscrits
@@ -59,7 +59,7 @@ class Track(object):
         self.label_places = u""
         liste_labels_groupes = []
 
-        # Recherche les places disponibles sur la totalité de l'activité
+        # Recherche les places disponibles sur la totalitÃ© de l'activitÃ©
         if self.nbre_places_disponibles != None :
             liste_labels_groupes.append(u"Total : %d/%d " % (self.nbre_inscrits, self.nbre_inscrits_max))
 
@@ -79,20 +79,20 @@ class Track(object):
         self.label_places = u", ".join(liste_labels_groupes)
 
         if len(self.label_places) == 0 :
-            self.label_places = _(u"Places illimitées")
+            self.label_places = _(u"Places illimitÃ©es")
 
 
-        # Période
+        # PÃ©riode
         if self.date_debut == "1977-01-01" and self.date_fin == "2999-01-01" :
             self.periode = "illimitee"
-            #self.labelPeriode = _(u"Illimitée")
+            #self.labelPeriode = _(u"IllimitÃ©e")
         else:
             if self.date_debut != None and self.date_fin != None :
                 self.periode = u"%s;%s" % (self.date_fin, self.date_debut)
                 #self.labelPeriode = _(u"Du %s au %s") % (UTILS_Dates.DateEngFr(self.date_debut), UTILS_Dates.DateEngFr(self.date_fin))
             else:
                 self.periode = None
-                #self.labelPeriode = _(u"Pas de période")
+                #self.labelPeriode = _(u"Pas de pÃ©riode")
 
         
     
@@ -107,7 +107,7 @@ class ListView(FastObjectListView):
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
-        """ Récupération des données """
+        """ RÃ©cupÃ©ration des donnÃ©es """
         DB = GestionDB.DB()
 
         if self.activites_recentes == True :
@@ -115,7 +115,7 @@ class ListView(FastObjectListView):
         else :
             conditionDate = ""
 
-        # Recherche des activités
+        # Recherche des activitÃ©s
         req = """SELECT IDactivite, nom, abrege, date_debut, date_fin, nbre_inscrits_max
         FROM activites
         %s;""" % conditionDate
@@ -163,22 +163,22 @@ class ListView(FastObjectListView):
 
         def FormatePeriode(periode):
             if periode == None :
-                return _(u"Pas de période")
+                return _(u"Pas de pÃ©riode")
             if periode == "illimitee" :
-                return _(u"Illimitée")
+                return _(u"IllimitÃ©e")
             else:
                 date_fin, date_debut = periode.split(";")
             return _(u"Du %s au %s") % (UTILS_Dates.DateEngFr(date_debut), UTILS_Dates.DateEngFr(date_fin))
 
         liste_Colonnes = [
             ColumnDefn(_(u"IDactivite"), "left", 0, "IDactivite", typeDonnee="entier"),
-            ColumnDefn(_(u"Nom de l'activité"), 'left', 220, "nom", typeDonnee="texte", isSpaceFilling=True),
-            ColumnDefn(_(u"Période de validité"), 'left', 180, "periode", typeDonnee="texte", stringConverter=FormatePeriode),
+            ColumnDefn(_(u"Nom de l'activitÃ©"), 'left', 220, "nom", typeDonnee="texte", isSpaceFilling=True),
+            ColumnDefn(_(u"PÃ©riode de validitÃ©"), 'left', 180, "periode", typeDonnee="texte", stringConverter=FormatePeriode),
             ColumnDefn(_(u"Etat des places"), 'left', 250, "label_places", typeDonnee="texte"),
             ]
         
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(_(u"Aucune activité"))
+        self.SetEmptyListMsg(_(u"Aucune activitÃ©"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
         self.SortBy(2, False)
         self.SetObjects(self.donnees)
@@ -186,7 +186,7 @@ class ListView(FastObjectListView):
     def MAJ(self):
         self.InitModel()
         self.InitObjectListView()
-        # Sélection d'un item
+        # SÃ©lection d'un item
         # if self.selectionTrack != None :
         #     self.SelectObject(self.selectionTrack, deselectOthers=True, ensureVisible=True)
         self._ResizeSpaceFillingColumns()

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activitÈs
+# Application :    Noethys, gestion multi-activit√©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-14 Ivan LUCAS
@@ -42,7 +42,7 @@ class Track(object):
     
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # RÈcupÈration des paramËtres perso
+        # R√©cup√©ration des param√®tres perso
         self.selectionID = None
         self.selectionTrack = None
         self.criteres = ""
@@ -63,7 +63,7 @@ class ListView(FastObjectListView):
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
-        """ RÈcupÈration des donnÈes """
+        """ R√©cup√©ration des donn√©es """
         listeID = None
         db = GestionDB.DB()
         req = """SELECT pes_lots.IDlot, pes_lots.nom, pes_lots.verrouillage, pes_lots.observations, pes_lots.format, exercice, mois, Count(pes_pieces.IDlot) AS nbrePieces
@@ -109,15 +109,15 @@ class ListView(FastObjectListView):
         def FormatePeriode(periode):
             if periode == None or periode == "" : return u""
             annee, mois = periode.split("-")
-            listeMois = [u"_", _(u"Janvier"), _(u"FÈvrier"), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"Ao˚t"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"DÈcembre")]
+            listeMois = [u"_", _(u"Janvier"), _(u"F√©vrier"), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"Ao√ªt"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"D√©cembre")]
             return u"%s %s" % (listeMois[int(mois)], annee)
 
         liste_Colonnes = [
             ColumnDefn(_(u"ID"), "left", 42, "IDlot", typeDonnee="entier", imageGetter=GetImageVerrouillage),
-            ColumnDefn(_(u"PÈriode"), "left", 150, "periode", typeDonnee="texte", stringConverter=FormatePeriode), 
+            ColumnDefn(_(u"P√©riode"), "left", 150, "periode", typeDonnee="texte", stringConverter=FormatePeriode), 
             ColumnDefn(_(u"Nom du lot"), "left", 190, "nom", typeDonnee="texte"),
             ColumnDefn(_(u"Format"), "left", 170, "nom_format", typeDonnee="texte"),
-            ColumnDefn(_(u"Nbre piËces"), "center", 80, "nbrePieces", typeDonnee="entier"), 
+            ColumnDefn(_(u"Nbre pi√®ces"), "center", 80, "nbrePieces", typeDonnee="entier"), 
             ColumnDefn(_(u"Observations"), "left", 200, "observations", typeDonnee="texte"), 
             ]
         
@@ -136,7 +136,7 @@ class ListView(FastObjectListView):
             self.selectionTrack = None
         self.InitModel()
         self.InitObjectListView()
-        # SÈlection d'un item
+        # S√©lection d'un item
         if self.selectionTrack != None :
             self.SelectObject(self.selectionTrack, deselectOthers=True, ensureVisible=True)
         self.selectionID = None
@@ -153,7 +153,7 @@ class ListView(FastObjectListView):
             noSelection = False
             ID = self.Selection()[0].IDlot
                 
-        # CrÈation du menu contextuel
+        # Cr√©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Modifier
@@ -184,7 +184,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"AperÁu avant impression"))
+        item = wx.MenuItem(menuPop, 40, _(u"Aper√ßu avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -226,7 +226,7 @@ class ListView(FastObjectListView):
     def Modifier(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("facturation_helios", "modifier") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucun bordereau ‡ modifier dans la liste !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucun bordereau √† modifier dans la liste !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -242,19 +242,19 @@ class ListView(FastObjectListView):
     def Supprimer(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("facturation_helios", "supprimer") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucun bordereau ‡ supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucun bordereau √† supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         track = self.Selection()[0]
         if track.verrouillage == 1 :
-            dlg = wx.MessageDialog(self, _(u"Il est impossible de supprimer ce bordereau car il est verrouillÈ."), _(u"Suppression impossible"), wx.OK | wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(self, _(u"Il est impossible de supprimer ce bordereau car il est verrouill√©."), _(u"Suppression impossible"), wx.OK | wx.ICON_INFORMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         nbrePieces = track.nbrePieces
         if nbrePieces > 0 :
-            dlg = wx.MessageDialog(self, _(u"Il est impossible de supprimer ce bordereau puisqu'il est dÈj‡ constituÈ de %d piËce(s) !") % nbrePieces, _(u"Suppression impossible"), wx.OK | wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(self, _(u"Il est impossible de supprimer ce bordereau puisqu'il est d√©j√† constitu√© de %d pi√®ce(s) !") % nbrePieces, _(u"Suppression impossible"), wx.OK | wx.ICON_INFORMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return

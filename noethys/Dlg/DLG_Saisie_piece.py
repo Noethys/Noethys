@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -48,7 +48,7 @@ class Choix_Piece_autre(wx.Choice):
             
             if self.parent.dictFamillesRattachees != None :
                 
-                # S'il y a une seule famille rattachée :
+                # S'il y a une seule famille rattachÃ©e :
                 if len(self.parent.dictFamillesRattachees) == 1 :
                     IDfamille = list(self.parent.dictFamillesRattachees.keys())[0]
                     for IDtype_piece, dictTypePiece in self.dictTypesPieces.items() :
@@ -64,7 +64,7 @@ class Choix_Piece_autre(wx.Choice):
                             self.listeDonnees.append( {"IDfamille":IDfamille, "IDtype_piece":IDtype_piece, "IDindividu":IDindividuTmp, "nomPiece":nomPiece} )
                         
                 else:
-                    # S'il y a plusieurs familles rattachées :
+                    # S'il y a plusieurs familles rattachÃ©es :
                     for IDtype_piece, dictTypePiece in self.dictTypesPieces.items() :
                         nomPiece = dictTypePiece["nom"]
                         public = dictTypePiece["public"]
@@ -83,7 +83,7 @@ class Choix_Piece_autre(wx.Choice):
         # Si on vient d'une fiche famille
         else:
             
-            # Récupération de tous les membres de la famille
+            # RÃ©cupÃ©ration de tous les membres de la famille
             DB = GestionDB.DB()
             req = """SELECT IDrattachement, rattachements.IDindividu, rattachements.IDfamille, IDcategorie, titulaire, nom, prenom
             FROM rattachements 
@@ -109,7 +109,7 @@ class Choix_Piece_autre(wx.Choice):
                             self.listeID.append(IDtype_piece)
                             self.listeDonnees.append( {"IDfamille":IDfamille, "IDtype_piece":IDtype_piece, "IDindividu":IDindividu, "nomPiece":nomPiece} )
         
-        # Remplissage du contrôle
+        # Remplissage du contrÃ´le
         self.SetItems(self.listeNoms)
     
     def SetID(self, ID=None):
@@ -150,43 +150,43 @@ class Dialog(wx.Dialog):
         self.IDindividu = IDindividu
         self.dictFamillesRattachees = dictFamillesRattachees
         
-        # Récupère les types de pièces existants
+        # RÃ©cupÃ¨re les types de piÃ¨ces existants
         self.dictTypesPieces = self.Importation_types_pieces() 
         
-        # Liste des pièces
-        self.sizer_type_staticbox = wx.StaticBox(self, -1, _(u"Type de pièce"))
+        # Liste des piÃ¨ces
+        self.sizer_type_staticbox = wx.StaticBox(self, -1, _(u"Type de piÃ¨ce"))
         if IDfamille != None :
             texte = _(u"la famille")
         else:
             texte = _(u"l'individu")
-        self.radio_pieces_1 = wx.RadioButton(self, -1, _(u"Dans la liste des pièces que %s doit fournir :") % texte, style = wx.RB_GROUP)
+        self.radio_pieces_1 = wx.RadioButton(self, -1, _(u"Dans la liste des piÃ¨ces que %s doit fournir :") % texte, style = wx.RB_GROUP)
         self.ctrl_pieces_obligatoires = CTRL_Pieces_obligatoires.CTRL(self, IDfamille=IDfamille, IDindividu=IDindividu, dictFamillesRattachees=dictFamillesRattachees, size=(-1, 200))
         self.ctrl_pieces_obligatoires.SetMinSize((-1, 90))
         self.ctrl_pieces_obligatoires.MAJ() 
         self.listePiecesObligatoires = self.ctrl_pieces_obligatoires.GetlistePiecesObligatoires()
         
-        # Types de pièces autres
-        self.radio_pieces_2 = wx.RadioButton(self, -1, _(u"Dans la liste des autres types de pièces prédéfinis :"))
+        # Types de piÃ¨ces autres
+        self.radio_pieces_2 = wx.RadioButton(self, -1, _(u"Dans la liste des autres types de piÃ¨ces prÃ©dÃ©finis :"))
         self.ctrl_pieces_autres = Choix_Piece_autre(self, self.listePiecesObligatoires, self.dictTypesPieces)
 
-        # Un type de pièce libre
-        self.radio_pieces_3 = wx.RadioButton(self, -1, _(u"Un autre type de pièce :"))
+        # Un type de piÃ¨ce libre
+        self.radio_pieces_3 = wx.RadioButton(self, -1, _(u"Un autre type de piÃ¨ce :"))
         self.label_titre_piece = wx.StaticText(self, -1, "Titre :")
         self.ctrl_titre_piece = wx.TextCtrl(self, -1, "")
 
-        # Date de début
-        self.sizer_date_debut_staticbox = wx.StaticBox(self, -1, _(u"Date de début"))
+        # Date de dÃ©but
+        self.sizer_date_debut_staticbox = wx.StaticBox(self, -1, _(u"Date de dÃ©but"))
         self.label_date_debut = wx.StaticText(self, -1, "Date :")
         self.ctrl_date_debut = CTRL_Saisie_date.Date(self)
         
         # Date de fin
         self.sizer_date_fin_staticbox = wx.StaticBox(self, -1, _(u"Date de fin"))
         self.radio_date_fin_1 = wx.RadioButton(self, -1, _(u"Date :"), style = wx.RB_GROUP)
-        self.radio_date_fin_2 = wx.RadioButton(self, -1, _(u"Validité illimitée"))
+        self.radio_date_fin_2 = wx.RadioButton(self, -1, _(u"ValiditÃ© illimitÃ©e"))
         self.ctrl_date_fin = CTRL_Saisie_date.Date(self)
         
-        # Pages capturées
-        self.sizer_pages_staticbox = wx.StaticBox(self, -1, _(u"Documents associés"))
+        # Pages capturÃ©es
+        self.sizer_pages_staticbox = wx.StaticBox(self, -1, _(u"Documents associÃ©s"))
         self.ctrl_pages = CTRL_Vignettes_documents.CTRL(self, type_donnee="piece", IDpiece=self.IDpiece, style=wx.BORDER_SUNKEN)
         self.bouton_ajouter_page = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Ajouter.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_supprimer_page = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Supprimer.png"), wx.BITMAP_TYPE_ANY))
@@ -202,16 +202,16 @@ class Dialog(wx.Dialog):
         self.__set_properties()
         self.__do_layout()
 
-        # Init contrôles
+        # Init contrÃ´les
         self.ctrl_pieces_autres.Enable(False)
         self.ctrl_titre_piece.Enable(False)
 
-        # Si Modification -> importation des données
+        # Si Modification -> importation des donnÃ©es
         if IDpiece == None :
-            self.SetTitle(_(u"Saisie d'une pièce"))
+            self.SetTitle(_(u"Saisie d'une piÃ¨ce"))
             self.ctrl_date_debut.SetDate(datetime.date.today())
         else:
-            self.SetTitle(_(u"Modification d'une pièce"))
+            self.SetTitle(_(u"Modification d'une piÃ¨ce"))
             self.Importation()
 
         # Binds
@@ -232,19 +232,19 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.radio_pieces_1.SetValue(1)
-        self.radio_pieces_2.SetToolTip(wx.ToolTip(_(u"Cliquez ici si la pièce que vous souhaitez enregistrer n'est pas dans la liste des pièces obligatoires à fournir")))
-        self.radio_pieces_3.SetToolTip(wx.ToolTip(_(u"Cliquez ici si la pièce que vous souhaitez enregistrer n'est pas un type de pièce prédéfini")))
-        self.ctrl_titre_piece.SetToolTip(wx.ToolTip(_(u"Saisissez un titre pour cette pièce")))
-        self.ctrl_pieces_obligatoires.SetToolTip(wx.ToolTip(_(u"Sélectionnez un type de pièce en cliquant sur son nom")))
-        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez la date de début de validité.\nRemarque : Il s'agit bien de la date d'emission de la pièce \n(par exemple, la date d'obtention d'un diplôme) et non la date à laquelle vous avez reçue la pièce")))
-        self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez la date d'expiration de la pièce")))
-        self.radio_date_fin_1.SetToolTip(wx.ToolTip(_(u"Cliquez ici si la pièce a une durée de validité limitée dans le temps")))
-        self.radio_date_fin_2.SetToolTip(wx.ToolTip(_(u"Cliquez ici si la pièce que vous souhaitez enregistrer a une durée de validité illimitée")))
+        self.radio_pieces_2.SetToolTip(wx.ToolTip(_(u"Cliquez ici si la piÃ¨ce que vous souhaitez enregistrer n'est pas dans la liste des piÃ¨ces obligatoires Ã  fournir")))
+        self.radio_pieces_3.SetToolTip(wx.ToolTip(_(u"Cliquez ici si la piÃ¨ce que vous souhaitez enregistrer n'est pas un type de piÃ¨ce prÃ©dÃ©fini")))
+        self.ctrl_titre_piece.SetToolTip(wx.ToolTip(_(u"Saisissez un titre pour cette piÃ¨ce")))
+        self.ctrl_pieces_obligatoires.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez un type de piÃ¨ce en cliquant sur son nom")))
+        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez la date de dÃ©but de validitÃ©.\nRemarque : Il s'agit bien de la date d'emission de la piÃ¨ce \n(par exemple, la date d'obtention d'un diplÃ´me) et non la date Ã  laquelle vous avez reÃ§ue la piÃ¨ce")))
+        self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez la date d'expiration de la piÃ¨ce")))
+        self.radio_date_fin_1.SetToolTip(wx.ToolTip(_(u"Cliquez ici si la piÃ¨ce a une durÃ©e de validitÃ© limitÃ©e dans le temps")))
+        self.radio_date_fin_2.SetToolTip(wx.ToolTip(_(u"Cliquez ici si la piÃ¨ce que vous souhaitez enregistrer a une durÃ©e de validitÃ© illimitÃ©e")))
         self.bouton_ajouter_page.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter un document")))
-        self.bouton_supprimer_page.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le document sélectionné")))
-        self.bouton_visualiser_page.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour visualiser le document sélectionné")))
+        self.bouton_supprimer_page.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le document sÃ©lectionnÃ©")))
+        self.bouton_visualiser_page.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour visualiser le document sÃ©lectionnÃ©")))
         self.bouton_zoom_plus.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour agrandir les vignettes")))
-        self.bouton_zoom_moins.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour réduire les vignettes")))
+        self.bouton_zoom_moins.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour rÃ©duire les vignettes")))
         self.SetMinSize((640, 500)) 
         
     def __do_layout(self):
@@ -357,21 +357,21 @@ class Dialog(wx.Dialog):
     def SelectPiece(self, IDfamille=None, IDtype_piece=None, IDindividu=None):
         self.ctrl_pieces_obligatoires.SelectPiece(IDfamille, IDtype_piece, IDindividu)
         if self.CalcValiditeDefaut() == False :
-            # Mets le focus sur la date de début
+            # Mets le focus sur la date de dÃ©but
             self.ctrl_date_debut.SetFocus()
     
     def OnSelectionPieceObligatoire(self, donnees):
-        # Si une date de début a déjà été saisie, on procède à la recherche de la date de fin par défaut
+        # Si une date de dÃ©but a dÃ©jÃ  Ã©tÃ© saisie, on procÃ¨de Ã  la recherche de la date de fin par dÃ©faut
         if self.CalcValiditeDefaut() == False :
-            # Mets le focus sur la date de début
+            # Mets le focus sur la date de dÃ©but
             self.ctrl_date_debut.SetFocus()
         
     def OnChoixAutres(self, event):
         IDtype_piece = self.ctrl_pieces_autres.GetID()
         if IDtype_piece == None : return
-        # Si une date de début a déjà été saisie, on procède à la recherche de la date de fin par défaut
+        # Si une date de dÃ©but a dÃ©jÃ  Ã©tÃ© saisie, on procÃ¨de Ã  la recherche de la date de fin par dÃ©faut
         if self.CalcValiditeDefaut() == False :
-            # Mets le focus sur la date de début
+            # Mets le focus sur la date de dÃ©but
             self.ctrl_date_debut.SetFocus()
         self.ctrl_pieces_obligatoires.Unselect() 
 
@@ -434,31 +434,31 @@ class Dialog(wx.Dialog):
         if dateDebut == "  /  /    ":
             return False
 
-        # Récupération des données sur la pièces
+        # RÃ©cupÃ©ration des donnÃ©es sur la piÃ¨ces
         selection = self.GetSelectionPiece()
         if selection == None : return
         
-        # Validation de la date de début
+        # Validation de la date de dÃ©but
         validation = self.ctrl_date_debut.FonctionValiderDate()
         if validation == False:
             self.ctrl_date_debut.SetFocus()
             return
 
-        # Recherche de la durée de validité par défaut de la pièce
+        # Recherche de la durÃ©e de validitÃ© par dÃ©faut de la piÃ¨ce
         IDtype_piece = selection["IDtype_piece"]
         if IDtype_piece in self.dictTypesPieces :
             validite = self.dictTypesPieces[IDtype_piece]["duree_validite"]
         else :
             validite = None
         
-        # Si illimité
+        # Si illimitÃ©
         if validite == None or validite == "j0-m0-a0" : 
             dateFin = "2999-01-01"
             self.radio_date_fin_2.SetValue(1)
             self.ctrl_date_fin.Enable(False)
             self.bouton_ok.SetFocus()
         
-        # Si durée limitée
+        # Si durÃ©e limitÃ©e
         elif validite != None and validite.startswith("j") :
             posM = validite.find("m")
             posA = validite.find("a")
@@ -471,7 +471,7 @@ class Dialog(wx.Dialog):
             dateAnnee = int(dateDebut[6:10])
             dateDebut = datetime.date(dateAnnee, dateMois, dateJour)
 
-            # Calcul de la date de fin de validité
+            # Calcul de la date de fin de validitÃ©
             dateFin = dateDebut
             if jours != 0 : dateFin = dateFin + relativedelta.relativedelta(days=+jours)
             if mois != 0 : dateFin = dateFin + relativedelta.relativedelta(months=+mois)
@@ -514,7 +514,7 @@ class Dialog(wx.Dialog):
 
         self.SetValeurs(IDfamille, IDtype_piece, IDindividu, titre)
 
-        # Insertion de la date de début
+        # Insertion de la date de dÃ©but
         self.ctrl_date_debut.SetDate(date_debut)
 
         # Insertion de la date de fin
@@ -527,16 +527,16 @@ class Dialog(wx.Dialog):
             self.ctrl_date_fin.SetDate(date_fin)
 
     def SetValeurs(self, IDfamille=None, IDtype_piece=None, IDindividu=None, titre=None):
-        # Sélection de la pièce dans les pièces obligatoires
+        # SÃ©lection de la piÃ¨ce dans les piÃ¨ces obligatoires
         resultat = self.ctrl_pieces_obligatoires.SelectPiece(IDfamille, IDtype_piece, IDindividu)
         self.radio_pieces_1.SetValue(True)
 
-        # Sélection de la pièce dans les pièces prédéfinies
+        # SÃ©lection de la piÃ¨ce dans les piÃ¨ces prÃ©dÃ©finies
         if not resultat:
             self.ctrl_pieces_autres.SelectPiece(IDfamille, IDtype_piece, IDindividu)
             self.radio_pieces_2.SetValue(True)
 
-        # Si autre type de pièce
+        # Si autre type de piÃ¨ce
         if not IDtype_piece:
             self.radio_pieces_3.SetValue(True)
             if titre:
@@ -545,17 +545,17 @@ class Dialog(wx.Dialog):
         self.OnRadioPieces(None)
 
     def Sauvegarde(self):
-        # Vérification des données saisies
+        # VÃ©rification des donnÃ©es saisies
         selection = self.GetSelectionPiece()
         if selection == None:
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun type de pièce !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucun type de piÃ¨ce !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
 
-        # Validation de la date de début
+        # Validation de la date de dÃ©but
         if self.ctrl_date_debut.FonctionValiderDate() == False or self.ctrl_date_debut.GetDate() == None:
-            dlg = wx.MessageDialog(self, _(u"Vous devez saisir une date de début valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez saisir une date de dÃ©but valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_debut.SetFocus()
@@ -569,21 +569,21 @@ class Dialog(wx.Dialog):
                 self.ctrl_date_fin.SetFocus()
                 return False
 
-        # Vérifie que la date de fin est supérieure à la date de début
+        # VÃ©rifie que la date de fin est supÃ©rieure Ã  la date de dÃ©but
         if self.radio_date_fin_1.GetValue() == True:
             if self.ctrl_date_debut.GetDate() > self.ctrl_date_fin.GetDate():
-                dlg = wx.MessageDialog(self, _(u"Attention, la date de début est supérieure à la date de fin !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Attention, la date de dÃ©but est supÃ©rieure Ã  la date de fin !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_date_fin.SetFocus()
                 return False
 
-        # Vérifie que le titre a été saisi
+        # VÃ©rifie que le titre a Ã©tÃ© saisi
         titre = None
         if self.radio_pieces_3.GetValue() == True:
             titre = self.ctrl_titre_piece.GetValue()
             if not titre:
-                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un titre pour cette pièce !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un titre pour cette piÃ¨ce !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_titre_piece.SetFocus()
@@ -616,7 +616,7 @@ class Dialog(wx.Dialog):
             DB.ReqMAJ("pieces", listeDonnees, "IDpiece", self.IDpiece)
         DB.Close()
 
-        # Mémorise l'action dans l'historique
+        # MÃ©morise l'action dans l'historique
         if nouvellePiece == True:
             type = _(u"Saisie")
             IDcategorie = 15
@@ -636,10 +636,10 @@ class Dialog(wx.Dialog):
             "IDindividu": IDindividu,
             "IDfamille": self.IDfamille,
             "IDcategorie": IDcategorie,
-            "action": _(u"%s de la pièce ID%d '%s' %s") % (type, self.IDpiece, nomPiece, texteDetail),
+            "action": _(u"%s de la piÃ¨ce ID%d '%s' %s") % (type, self.IDpiece, nomPiece, texteDetail),
         }, ])
 
-        # Sauvegarde des pages scannées
+        # Sauvegarde des pages scannÃ©es
         self.ctrl_pages.Sauvegarde(self.IDpiece)
 
         return True

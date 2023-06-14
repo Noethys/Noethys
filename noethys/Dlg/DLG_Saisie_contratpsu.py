@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-15 Ivan LUCAS
@@ -37,29 +37,29 @@ from Ol.OL_Contratspsu_mensualites import Track as Track_mensualite
 
 
 
-TEXTE_INTRO = _(u"Vous pouvez saisir ici les paramètres d'un contrat P.S.U.")
+TEXTE_INTRO = _(u"Vous pouvez saisir ici les paramÃ¨tres d'un contrat P.S.U.")
 
 class Base(object) :
-    """ Classe commune à l'assistant et au notebook """
+    """ Classe commune Ã  l'assistant et au notebook """
     def __init__(self, IDcontrat=None, IDinscription=None, DB=None):
         self.IDcontrat = IDcontrat
         self.IDinscription = IDinscription
 
-        # Stockage des données du contrat
+        # Stockage des donnÃ©es du contrat
         self.dictContrat = {}
 
-        # Importation des données
+        # Importation des donnÃ©es
         self.Importation(DB)
 
 
     def InitPages(self, parent=None):
         """ Initialisation des pages """
         self.listePages = [
-            {"code" : "generalites", "label" : _(u"Généralités"), "ctrl" : DLG_Contratpsu_generalites.Panel(parent, clsbase=self), "image" : "Maison.png"},
-            {"code" : "previsions", "label" : _(u"Prévisions"), "ctrl" : DLG_Contratpsu_calendrier.Panel(parent, clsbase=self), "image" : "Calendrier.png"},
+            {"code" : "generalites", "label" : _(u"GÃ©nÃ©ralitÃ©s"), "ctrl" : DLG_Contratpsu_generalites.Panel(parent, clsbase=self), "image" : "Maison.png"},
+            {"code" : "previsions", "label" : _(u"PrÃ©visions"), "ctrl" : DLG_Contratpsu_calendrier.Panel(parent, clsbase=self), "image" : "Calendrier.png"},
             {"code" : "tarification", "label" : _(u"Tarification"), "ctrl" : DLG_Contratpsu_tarification.Panel(parent, clsbase=self), "image" : "Calculatrice.png"},
             {"code" : "mensualisation", "label" : _(u"Mensualisation"), "ctrl" : DLG_Contratpsu_mensualisation.Panel(parent, clsbase=self), "image" : "Euro.png"},
-            {"code" : "recapitulatif", "label" : _(u"Récapitulatif"), "ctrl" : DLG_Contratpsu_recapitulatif.Panel(parent, clsbase=self), "image" : "Information.png"},
+            {"code" : "recapitulatif", "label" : _(u"RÃ©capitulatif"), "ctrl" : DLG_Contratpsu_recapitulatif.Panel(parent, clsbase=self), "image" : "Information.png"},
             ]
         return self.listePages
 
@@ -83,9 +83,9 @@ class Base(object) :
             return defaut
 
     def Calculer(self, mode_test=False, dict_valeurs={}):
-        """ Calcul des totaux et des mensualités """
+        """ Calcul des totaux et des mensualitÃ©s """
         """ dict_valeurs : pour saisir des valeurs tests """
-        # Récupération des données
+        # RÃ©cupÃ©ration des donnÃ©es
         date_debut = self.GetValeur("date_debut")
         if "date_debut" in dict_valeurs :
             date_debut = dict_valeurs["date_debut"]
@@ -104,7 +104,7 @@ class Base(object) :
         duree_absences_solde = duree_absences_prevues - duree_absences_prises
         self.SetValeur("duree_absences_solde", duree_absences_solde)
 
-        # Vérifie si dates du contrat valides avant les calculs
+        # VÃ©rifie si dates du contrat valides avant les calculs
         if date_debut != None and date_fin != None and date_fin > date_debut :
             dates_valides = True
         else :
@@ -118,7 +118,7 @@ class Base(object) :
             nbre_semaines = 0
             nbre_mois = 0
 
-        # Analyse des heures prévues
+        # Analyse des heures prÃ©vues
         duree_heures_brut = datetime.timedelta(0)
         listeDatesUniques = []
         for track in tracks_previsions :
@@ -142,18 +142,18 @@ class Base(object) :
         # Calcul du nbre d'heures du contrat
         duree_heures_contrat = duree_heures_brut - duree_absences_prevues + duree_heures_regularisation
 
-        # Génération des dates de facturation
+        # GÃ©nÃ©ration des dates de facturation
         if dates_valides :
             liste_mois = list(rrule.rrule(rrule.MONTHLY, bymonthday=1, dtstart=date_debut, until=date_fin))
         else :
             liste_mois = []
         nbre_mois_factures = len(liste_mois)
 
-        # Ajout de la date de début du contrat
+        # Ajout de la date de dÃ©but du contrat
         if dates_valides and date_debut.day > 1 :
             liste_mois.insert(0, date_debut)
 
-        # Recherche s'il y a des mensualités déjà facturées
+        # Recherche s'il y a des mensualitÃ©s dÃ©jÃ  facturÃ©es
         # listePrestationsFacturees = []
         # heuresFacturees = datetime.timedelta(seconds=0)
         # for dictPrestation in self.GetValeur("liste_prestations", []) :
@@ -162,7 +162,7 @@ class Base(object) :
         #         heuresFacturees += dictPrestation["temps_facture"]
         # nbrePrestations = len(listePrestationsFacturees)
 
-        # Conversion du nbre d'heures déjà facturées en entier
+        # Conversion du nbre d'heures dÃ©jÃ  facturÃ©es en entier
         # heuresFacturees = (nbre_heures_contrat.days*24) + (nbre_heures_contrat.seconds/3600)
 
         # Calcul du forfait mensuel
@@ -186,7 +186,7 @@ class Base(object) :
         #     forfait_horaire_mensuel, reste_division = divmod(nbre_heures_contrat, nbre_mois)
         # forfait_horaire_dernier_mois = forfait_horaire_mensuel + reste_division
 
-        # Génération des mensualités
+        # GÃ©nÃ©ration des mensualitÃ©s
         tracks_mensualites = []
         total_mensualites = FloatToDecimal(0.0)
         index = 0
@@ -218,7 +218,7 @@ class Base(object) :
                 if track_tarif == None or date_facturation >= date_debut_tarif :
                     track_tarif = track
 
-            # Calcul du montant mensuel à facturer
+            # Calcul du montant mensuel Ã  facturer
             if track_tarif != None :
                 tarif_base = track_tarif.tarif_base
                 tarif_depassement = track_tarif.tarif_depassement
@@ -245,7 +245,7 @@ class Base(object) :
                     montant_facture = dictPrestation["montant"]
                     heures_facturees = dictPrestation["temps_facture"]
 
-            # Mémorisation de la mensualité
+            # MÃ©morisation de la mensualitÃ©
             dictMensualite = {
                 "IDprestation" : IDprestation,
                 "date_facturation" : date_facturation,
@@ -265,33 +265,33 @@ class Base(object) :
             tracks_mensualites.append(Track_mensualite(dictMensualite))
             index += 1
 
-        # Vérifie si anomalies
+        # VÃ©rifie si anomalies
         listeAnomalies = []
 
-        # Vérifie que les prestations facturées sont toujours là
+        # VÃ©rifie que les prestations facturÃ©es sont toujours lÃ 
         # for dictPrestation in listePrestationsFacturees :
         #     present = False
         #     for track in tracks_mensualites :
         #         if track.IDprestation == dictPrestation["IDprestation"] :
         #             present = True
         #     if present == False :
-        #         listeAnomalies.append(_(u"La prestation du %s ne peut pas être supprimée car elle apparaît déjà sur la facture n°%s." % (UTILS_Dates.DateDDEnFr(dictPrestation["date_facturation"]), dictPrestation["num_facture"])))
+        #         listeAnomalies.append(_(u"La prestation du %s ne peut pas Ãªtre supprimÃ©e car elle apparaÃ®t dÃ©jÃ  sur la facture nÂ°%s." % (UTILS_Dates.DateDDEnFr(dictPrestation["date_facturation"]), dictPrestation["num_facture"])))
 
-        # Vérifie si les consommations sont bien sur la période du contrat
+        # VÃ©rifie si les consommations sont bien sur la pÃ©riode du contrat
         nbreConsoHorsPeriode = 0
         for track in tracks_previsions :
             if track.date < date_debut or track.date > date_fin :
                 nbreConsoHorsPeriode += 1
         if nbreConsoHorsPeriode > 0 :
-            listeAnomalies.append(_(u"%d consommations prévues sont en dehors de la période du contrat." % nbreConsoHorsPeriode))
+            listeAnomalies.append(_(u"%d consommations prÃ©vues sont en dehors de la pÃ©riode du contrat." % nbreConsoHorsPeriode))
 
         # Si mode test, renvoie la liste des anomalies
         if mode_test == True :
             if len(listeAnomalies) > 0 :
                 from Dlg import DLG_Messagebox
-                introduction =_(u"Votre saisie ne peut pas être validée en raison des erreurs suivantes :")
+                introduction =_(u"Votre saisie ne peut pas Ãªtre validÃ©e en raison des erreurs suivantes :")
                 detail = "\n".join(listeAnomalies)
-                conclusion =_(u"Veuillez modifier les données saisies.")
+                conclusion =_(u"Veuillez modifier les donnÃ©es saisies.")
                 dlg = DLG_Messagebox.Dialog(None, titre=_(u"Erreur"), introduction=introduction, detail=detail, conclusion=conclusion, icone=wx.ICON_INFORMATION, boutons=[_(u"Ok"),])
                 dlg.ShowModal()
                 dlg.Destroy()
@@ -299,7 +299,7 @@ class Base(object) :
             else :
                 return True
 
-        # Envoi des données à clsbase
+        # Envoi des donnÃ©es Ã  clsbase
         dictValeurs = {
             "nbre_semaines" : nbre_semaines,
             "nbre_mois" : nbre_mois,
@@ -326,7 +326,7 @@ class Base(object) :
         """ Sauvegarde dans la base """
         DB = GestionDB.DB()
 
-        # Enregistrement des informations générales sur le contrat
+        # Enregistrement des informations gÃ©nÃ©rales sur le contrat
         listeDonnees = (
             ("IDindividu", self.GetValeur("IDindividu", None)),
             ("IDinscription", self.GetValeur("IDinscription", None)),
@@ -375,7 +375,7 @@ class Base(object) :
         #         DB.ReqMAJ("consommations", listeDonnees, "IDconso", IDconso)
         #     liste_IDconso.append(IDconso)
 
-        # Version optimisée
+        # Version optimisÃ©e
         listeChamps = [
             "IDindividu", "IDinscription", "IDactivite", "date", "IDunite", "IDgroupe", "heure_debut", "heure_fin",
             "etat", "IDutilisateur", "IDcategorie_tarif", "IDcompte_payeur", "quantite",
@@ -407,7 +407,7 @@ class Base(object) :
                 listeModifications.append(listeDonnees)
                 liste_IDconso.append(IDconso)
 
-        # Ajout optimisé des conso
+        # Ajout optimisÃ© des conso
         if len(listeAjouts) > 0 :
             texteChampsTemp = ", ".join(listeChamps)
             listeInterrogations = []
@@ -416,14 +416,14 @@ class Base(object) :
             texteInterrogations = ", ".join(listeInterrogations)
             DB.Executermany("INSERT INTO consommations (%s) VALUES (%s)" % (texteChampsTemp, texteInterrogations), listeAjouts, commit=True)
 
-        # Modification optimisée des conso
+        # Modification optimisÃ©e des conso
         if len(listeModifications) > 0 :
             listeChampsTemp = []
             for champ in listeChamps :
                 listeChampsTemp.append(("%s=?" % champ))
             DB.Executermany("UPDATE consommations SET %s WHERE IDconso=?" % ", ".join(listeChampsTemp), listeModifications, commit=True)
 
-        # Suppression des consommations supprimées
+        # Suppression des consommations supprimÃ©es
         listeSuppressions = []
         for IDconso in self.GetValeur("liste_IDconso", []):
             if IDconso not in liste_IDconso :
@@ -455,7 +455,7 @@ class Base(object) :
                 DB.ReqMAJ("contrats_tarifs", listeDonnees, "IDcontrat_tarif", IDcontrat_tarif)
             liste_IDtarif.append(IDcontrat_tarif)
 
-        # Suppression des tarifs supprimés
+        # Suppression des tarifs supprimÃ©s
         listeSuppressions = []
         for IDcontrat_tarif in self.GetValeur("liste_IDtarif", []):
             if IDcontrat_tarif not in liste_IDtarif :
@@ -468,7 +468,7 @@ class Base(object) :
                 conditionSuppression = str(tuple(listeSuppressions))
             DB.ExecuterReq("DELETE FROM contrats_tarifs WHERE IDcontrat_tarif IN %s" % conditionSuppression)
 
-        # Enregistrement des mensualités
+        # Enregistrement des mensualitÃ©s
         # liste_IDprestation = []
         # for track in self.GetValeur("tracks_mensualites", []):
         #     listeDonnees = (
@@ -497,7 +497,7 @@ class Base(object) :
         #         DB.ReqMAJ("prestations", listeDonnees, "IDprestation", IDprestation)
         #     liste_IDprestation.append(IDprestation)
         #
-        # # Suppression des prestations supprimées
+        # # Suppression des prestations supprimÃ©es
         # listeSuppressions = []
         # for IDprestation in self.GetValeur("liste_IDprestation", []):
         #     if IDprestation not in liste_IDprestation :
@@ -526,7 +526,7 @@ class Base(object) :
         else :
             DB = DBtemp
 
-        # Informations générales sur le contrat
+        # Informations gÃ©nÃ©rales sur le contrat
         if self.IDcontrat != None :
 
             req = """SELECT contrats.IDindividu, IDinscription, date_debut, date_fin, observations, IDactivite, type,
@@ -562,7 +562,7 @@ class Base(object) :
                 else :
                     dictValeurs["individu_nom_complet"] = individu_nom
 
-        # Importation des données de l'inscription
+        # Importation des donnÃ©es de l'inscription
         if self.IDinscription != None :
 
             req = """SELECT IDindividu, IDfamille, IDactivite, IDgroupe, IDcategorie_tarif, IDcompte_payeur, date_inscription, parti
@@ -597,7 +597,7 @@ class Base(object) :
                 dictValeurs["arrondi_delta"] = arrondi_delta
                 dictValeurs["duree_tolerance_depassement"] = UTILS_Dates.HeureStrEnDelta(duree_tolerance_depassement)
 
-        # Informations sur l'activité
+        # Informations sur l'activitÃ©
         req = """SELECT psu_unite_prevision, psu_unite_presence, psu_tarif_forfait, psu_etiquette_rtt
         FROM activites
         WHERE IDactivite=%d
@@ -612,7 +612,7 @@ class Base(object) :
         dictValeurs["psu_etiquette_rtt"] = psu_etiquette_rtt
         dictValeurs["duree_absences_prises"] = datetime.timedelta(0)
 
-        # Mémorise les données déjà importées
+        # MÃ©morise les donnÃ©es dÃ©jÃ  importÃ©es
         self.SetValeurs(dictValeurs)
 
         # Echap sur nouveau contrat
@@ -686,7 +686,7 @@ class Base(object) :
         dictValeurs["tracks_tarifs"] = tracks_tarifs
         dictValeurs["liste_IDtarif"] = liste_IDtarif
 
-        # Lecture des mensualités
+        # Lecture des mensualitÃ©s
         req = """SELECT IDprestation, date, label, montant_initial, prestations.montant, prestations.IDfacture, temps_facture,
         forfait_date_debut, forfait_date_fin, factures.numero
         FROM prestations
@@ -718,7 +718,7 @@ class Base(object) :
         if DBtemp == None :
             DB.Close()
 
-        # Mémorisation des données
+        # MÃ©morisation des donnÃ©es
         self.SetValeurs(dictValeurs)
 
 
@@ -729,7 +729,7 @@ class Assistant(wx.Dialog, Base):
         Base.__init__(self, IDcontrat=IDcontrat, IDinscription=IDinscription)
         self.parent = parent
 
-        titre = _(u"Création d'un contrat PSU")
+        titre = _(u"CrÃ©ation d'un contrat PSU")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=TEXTE_INTRO, hauteurHtml=30, nomImage="Images/32x32/Contrat.png")
 
@@ -756,7 +756,7 @@ class Assistant(wx.Dialog, Base):
         self.nbrePages = len(self.listePages)    
         self.pageVisible = 0
                         
-        # Création des pages
+        # CrÃ©ation des pages
         self.Creation_Pages()
         self.GetPage("generalites").MAJ()
 
@@ -773,8 +773,8 @@ class Assistant(wx.Dialog, Base):
 
     def __set_properties(self):
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
-        self.bouton_retour.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour revenir à la page précédente")))
-        self.bouton_suite.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour passer à l'étape suivante")))
+        self.bouton_retour.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour revenir Ã  la page prÃ©cÃ©dente")))
+        self.bouton_suite.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour passer Ã  l'Ã©tape suivante")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez pour annuler")))
         self.SetMinSize((700, 640))
 
@@ -813,11 +813,11 @@ class Assistant(wx.Dialog, Base):
         UTILS_Aide.Aide("Contrats")
 
     def AfficherPage(self, numPage=0):
-        # rend invisible la page affichée
+        # rend invisible la page affichÃ©e
         page = self.listePages[self.pageVisible]["ctrl"]
         page.Sauvegarde()
         page.Show(False)
-        # Fait apparaître nouvelle page
+        # Fait apparaÃ®tre nouvelle page
         self.pageVisible = numPage
         page = self.listePages[self.pageVisible]["ctrl"]
         page.MAJ()
@@ -827,7 +827,7 @@ class Assistant(wx.Dialog, Base):
     def Onbouton_retour(self, event):
         # Affiche nouvelle page
         self.AfficherPage(self.pageVisible - 1)
-        # Si on quitte l'avant-dernière page, on active le bouton Suivant
+        # Si on quitte l'avant-derniÃ¨re page, on active le bouton Suivant
         if self.pageVisible == self.nbrePages-1:
             self.bouton_suite.Enable(True)
             self.bouton_suite.SetImage(Chemins.GetStaticPath("Images/32x32/Valider.png"))
@@ -836,26 +836,26 @@ class Assistant(wx.Dialog, Base):
             self.bouton_suite.Enable(True)
             self.bouton_suite.SetImage(Chemins.GetStaticPath("Images/32x32/Fleche_droite.png"))
             self.bouton_suite.SetTexte(_(u"Suite"))
-        # Si on revient à la première page, on désactive le bouton Retour
+        # Si on revient Ã  la premiÃ¨re page, on dÃ©sactive le bouton Retour
         if self.pageVisible == 0 :
             self.bouton_retour.Enable(False)
 
     def Onbouton_suite(self, event):
-        # Vérifie que les données de la page en cours sont valides
+        # VÃ©rifie que les donnÃ©es de la page en cours sont valides
         validation = self.ValidationPages()
         if validation == False : return
-        # Si on est déjà sur la dernière page : on termine
+        # Si on est dÃ©jÃ  sur la derniÃ¨re page : on termine
         if self.pageVisible == self.nbrePages-1 :
             self.listePages[self.pageVisible]["ctrl"].Sauvegarde()
             self.Terminer()
             return
         # Affiche nouvelle page
         self.AfficherPage(self.pageVisible + 1)
-        # Si on arrive à la dernière page, on désactive le bouton Suivant
+        # Si on arrive Ã  la derniÃ¨re page, on dÃ©sactive le bouton Suivant
         if self.pageVisible == self.nbrePages-1 :
             self.bouton_suite.SetImage(Chemins.GetStaticPath("Images/32x32/Valider.png"))
             self.bouton_suite.SetTexte(_(u"Valider"))
-        # Si on quitte la première page, on active le bouton Retour
+        # Si on quitte la premiÃ¨re page, on active le bouton Retour
         if self.pageVisible > 0 :
             self.bouton_retour.Enable(True)
 
@@ -867,7 +867,7 @@ class Assistant(wx.Dialog, Base):
 
     def Annuler(self):
         """ Annulation des modifications """
-        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment abandonner la saisie de ce nouveau contrat ?\n\nLes éventuelles données saisies seront perdues."), _(u"Annulation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment abandonner la saisie de ce nouveau contrat ?\n\nLes Ã©ventuelles donnÃ©es saisies seront perdues."), _(u"Annulation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
         reponse = dlg.ShowModal()
         dlg.Destroy()
         if reponse != wx.ID_YES :
@@ -875,14 +875,14 @@ class Assistant(wx.Dialog, Base):
         self.EndModal(wx.ID_CANCEL)
 
     def ValidationPages(self) :
-        """ Validation des données avant changement de pages """
+        """ Validation des donnÃ©es avant changement de pages """
         return self.listePages[self.pageVisible]["ctrl"].Validation()
 
     def Terminer(self):
         if self.Validation() == False :
             return False
 
-        # Sauvegarde des données
+        # Sauvegarde des donnÃ©es
         self.Sauvegarde()
 
         # Fermeture
@@ -912,7 +912,7 @@ class Notebook(wx.Notebook, Base):
             index += 1
         self.AssignImageList(il)
 
-        # Création des pages
+        # CrÃ©ation des pages
         index = 0
         self.dictPages = {}
         for dictPage in self.listePages :
@@ -933,12 +933,12 @@ class Notebook(wx.Notebook, Base):
 
             page = self.GetPage(event.GetOldSelection())
 
-            # Validation de la page quittée
+            # Validation de la page quittÃ©e
             if page.Validation() == False :
                 event.Veto()
                 return
 
-            # Sauvegarde de la page quittée
+            # Sauvegarde de la page quittÃ©e
             page.Sauvegarde()
 
         event.Skip()
@@ -946,7 +946,7 @@ class Notebook(wx.Notebook, Base):
     def OnPageChanged(self, event):
         if event.GetId() == 10 :
 
-            # MAJ de la page affichée
+            # MAJ de la page affichÃ©e
             page = self.GetPage(event.GetSelection())
             page.MAJ()
 
@@ -1021,7 +1021,7 @@ class Dialog(wx.Dialog):
         self.OnBoutonAnnuler()
 
     def OnBoutonAnnuler(self, event=None):
-        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment annuler ?\n\nLes éventuelles modifications que vous avez effectué seront perdues."), _(u"Annulation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment annuler ?\n\nLes Ã©ventuelles modifications que vous avez effectuÃ© seront perdues."), _(u"Annulation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
         reponse = dlg.ShowModal()
         dlg.Destroy()
         if reponse != wx.ID_YES :
@@ -1036,7 +1036,7 @@ class Dialog(wx.Dialog):
         if self.ctrl_notebook.GetPageActuelle().Validation() == False :
             return False
 
-        # Sauvegarde des données
+        # Sauvegarde des donnÃ©es
         self.ctrl_notebook.GetPageActuelle().Sauvegarde()
         self.ctrl_notebook.Sauvegarde()
 

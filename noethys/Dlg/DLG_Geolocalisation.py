@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-12 Ivan LUCAS
@@ -21,13 +21,13 @@ from Ctrl import CTRL_Saisie_adresse
 
 
 class Dialog(wx.Dialog):
-    def __init__(self, parent, titre=_(u"Géolocalisation GPS")):
+    def __init__(self, parent, titre=_(u"GÃ©olocalisation GPS")):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent   
         
         # Bandeau
-        intro = _(u"Cette fonctionnalité vous permet d'obtenir les coordonnées GPS d'un lieu. Saisissez une adresse complète ou une ville avant de cliquer sur Rechercher.")
-        titre = _(u"Géolocalisation GPS")
+        intro = _(u"Cette fonctionnalitÃ© vous permet d'obtenir les coordonnÃ©es GPS d'un lieu. Saisissez une adresse complÃ¨te ou une ville avant de cliquer sur Rechercher.")
+        titre = _(u"GÃ©olocalisation GPS")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Carte.png")
         
@@ -39,8 +39,8 @@ class Dialog(wx.Dialog):
         self.ctrl_ville = CTRL_Saisie_adresse.Adresse(self)
         self.bouton_rechercher = CTRL_Bouton_image.CTRL(self, texte=_(u"Rechercher"), cheminImage="Images/32x32/Loupe.png")
         
-        # Résultats
-        self.box_resultats_staticbox = wx.StaticBox(self, -1, _(u"Résultats"))
+        # RÃ©sultats
+        self.box_resultats_staticbox = wx.StaticBox(self, -1, _(u"RÃ©sultats"))
         self.ctrl_resultats = wx.TextCtrl(self, -1, u"", style=wx.TE_MULTILINE)
         
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
@@ -97,7 +97,7 @@ class Dialog(wx.Dialog):
         self.CenterOnScreen()
 
     def OnBoutonRechercher(self, event): 
-        # Vérification de la saisie
+        # VÃ©rification de la saisie
         rue = self.ctrl_rue.GetValue()
         cp = self.ctrl_ville.GetValueCP()
         ville = self.ctrl_ville.GetValueVille()
@@ -110,9 +110,9 @@ class Dialog(wx.Dialog):
         # Recherche
         resultats = UTILS_Gps.GPS(rue=rue, cp=cp, ville=ville, pays="France")
         
-        # Affichage des résultats
+        # Affichage des rÃ©sultats
         if resultats == None :
-            texte = _(u"Aucun résultat \n")
+            texte = _(u"Aucun rÃ©sultat \n")
         else :
             texte = _(u"Lat : %s  Long : %s \n") % (str(resultats["lat"]), str(resultats["long"]))
         self.ctrl_resultats.write(texte)

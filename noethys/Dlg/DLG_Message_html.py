@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-12 Ivan LUCAS
@@ -26,9 +26,9 @@ TEXTE = u"""
 <BR><BR>
 Ceci est un paragaphe
 <BR><BR>
-Et ceci est le deuxième paragraphe
+Et ceci est le deuxiÃ¨me paragraphe
 <BR>
-<A HREF="http://www.noethys.com">Cliquez ici pour accéder au lien</A>.
+<A HREF="http://www.noethys.com">Cliquez ici pour accÃ©der au lien</A>.
 </FONT>
 </CENTER>
 """

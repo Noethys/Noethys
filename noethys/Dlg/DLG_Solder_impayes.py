@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-13 Ivan LUCAS
@@ -25,7 +25,7 @@ from Ol import OL_Solder_impayes
 from Utils import UTILS_Identification
 
 from Utils import UTILS_Config
-SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"â‚¬")
 
 
 
@@ -80,7 +80,7 @@ class CTRL_Compte(wx.Choice):
         return self.dictDonnees[index]["ID"]
     
     def GetInfos(self):
-        """ Récupère les infos sur le compte sélectionné """
+        """ RÃ©cupÃ¨re les infos sur le compte sÃ©lectionnÃ© """
         index = self.GetSelection()
         if index == -1 : return None
         return self.dictDonnees[index]
@@ -134,7 +134,7 @@ class CTRL_Mode(wx.Choice):
         return self.dictDonnees[index]["ID"]
     
     def GetInfosMode(self):
-        """ Récupère les infos sur le mode sélectionné """
+        """ RÃ©cupÃ¨re les infos sur le mode sÃ©lectionnÃ© """
         index = self.GetSelection()
         if index == -1 : return None
         return self.dictDonnees[index]
@@ -189,7 +189,7 @@ class CTRL_Emetteur(wx.Choice):
         return self.dictDonnees[index]["ID"]
     
     def GetInfosEmetteur(self):
-        """ Récupère les infos sur l'émetteur sélectionné """
+        """ RÃ©cupÃ¨re les infos sur l'Ã©metteur sÃ©lectionnÃ© """
         index = self.GetSelection()
         if index == -1 : return None
         return self.dictDonnees[index]
@@ -206,13 +206,13 @@ class Dialog(wx.Dialog):
         self.parent = parent   
 
         # Bandeau
-        titre = _(u"Solder les impayés")
-        intro = _(u"Cette fonctionnalité vous permet de laisser Noethys créer des règlements pour les prestations impayées d'une période donnée. Utile pour remettre les comptes à zéro par exemple.")
+        titre = _(u"Solder les impayÃ©s")
+        intro = _(u"Cette fonctionnalitÃ© vous permet de laisser Noethys crÃ©er des rÃ¨glements pour les prestations impayÃ©es d'une pÃ©riode donnÃ©e. Utile pour remettre les comptes Ã  zÃ©ro par exemple.")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Impayes.png")
 
-        # Règlement
-        self.box_reglement_staticbox = wx.StaticBox(self, -1, _(u"Paramètres des règlements"))
+        # RÃ¨glement
+        self.box_reglement_staticbox = wx.StaticBox(self, -1, _(u"ParamÃ¨tres des rÃ¨glements"))
         self.label_compte = wx.StaticText(self, -1, _(u"Compte :"))
         self.ctrl_compte = CTRL_Compte(self)
         self.bouton_compte = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Mecanisme.png"), wx.BITMAP_TYPE_ANY))
@@ -224,7 +224,7 @@ class Dialog(wx.Dialog):
         self.bouton_emetteur = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Mecanisme.png"), wx.BITMAP_TYPE_ANY))
         
         # Prestations
-        self.box_prestations_staticbox = wx.StaticBox(self, -1, _(u"Sélection des prestations"))
+        self.box_prestations_staticbox = wx.StaticBox(self, -1, _(u"SÃ©lection des prestations"))
         self.label_date_debut = wx.StaticText(self, -1, u"Du")
         self.ctrl_date_debut = CTRL_Saisie_date.Date2(self)
         self.label_date_fin = wx.StaticText(self, -1, "au")
@@ -256,13 +256,13 @@ class Dialog(wx.Dialog):
         wx.CallLater(0, self.Layout)
 
     def __set_properties(self):
-        self.ctrl_compte.SetToolTip(wx.ToolTip(_(u"Sélectionnez un compte bancaire à créditer")))
-        self.bouton_compte.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à la gestion des comptes bancaires")))
-        self.ctrl_mode.SetToolTip(wx.ToolTip(_(u"Sélectionnez un mode de règlement")))
-        self.bouton_mode.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à la gestion des modes de règlements")))
-        self.ctrl_emetteur.SetToolTip(wx.ToolTip(_(u"Sélectionnez un émetteur de règlement")))
-        self.bouton_emetteur.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à la gestion des modes de règlements")))
-        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez une date de début")))
+        self.ctrl_compte.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez un compte bancaire Ã  crÃ©diter")))
+        self.bouton_compte.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accÃ©der Ã  la gestion des comptes bancaires")))
+        self.ctrl_mode.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez un mode de rÃ¨glement")))
+        self.bouton_mode.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accÃ©der Ã  la gestion des modes de rÃ¨glements")))
+        self.ctrl_emetteur.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez un Ã©metteur de rÃ¨glement")))
+        self.bouton_emetteur.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accÃ©der Ã  la gestion des modes de rÃ¨glements")))
+        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez une date de dÃ©but")))
         self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez une date de fin")))
         self.bouton_actualiser.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour actualiser la liste")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
@@ -273,7 +273,7 @@ class Dialog(wx.Dialog):
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=4, cols=1, vgap=10, hgap=10)
         
-        # Règlement
+        # RÃ¨glement
         box_reglement = wx.StaticBoxSizer(self.box_reglement_staticbox, wx.VERTICAL)
         grid_sizer_reglement = wx.FlexGridSizer(rows=3, cols=3, vgap=5, hgap=5)
         grid_sizer_base.Add(self.ctrl_bandeau, 0, wx.EXPAND, 0)
@@ -366,7 +366,7 @@ class Dialog(wx.Dialog):
     def OnBoutonActualiser(self, event): 
         date_debut = self.ctrl_date_debut.GetDate()
         if date_debut == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de début !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de dÃ©but !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_debut.SetFocus() 
@@ -394,7 +394,7 @@ class Dialog(wx.Dialog):
         # compte
         IDcompte = self.ctrl_compte.GetID() 
         if IDcompte == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner un compte à créditer !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sÃ©lectionner un compte Ã  crÃ©diter !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -402,7 +402,7 @@ class Dialog(wx.Dialog):
         # Mode
         IDmode = self.ctrl_mode.GetID() 
         if IDmode == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner un mode de règlement !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sÃ©lectionner un mode de rÃ¨glement !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -422,13 +422,13 @@ class Dialog(wx.Dialog):
         montantTotal = decimal.Decimal(0.0)
         for track in tracks : 
             montantTotal += track.impaye
-        dlg = wx.MessageDialog(self, _(u"Confirmez-vous la création automatique de %d règlements pour un total de %.2f %s ?") % (len(tracks), montantTotal, SYMBOLE), _(u"Demande de confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+        dlg = wx.MessageDialog(self, _(u"Confirmez-vous la crÃ©ation automatique de %d rÃ¨glements pour un total de %.2f %s ?") % (len(tracks), montantTotal, SYMBOLE), _(u"Demande de confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
         reponse = dlg.ShowModal() 
         dlg.Destroy()
         if reponse != wx.ID_YES :
             return False
         
-        # ----------------------------- Création des règlements -----------------------------------------------------------
+        # ----------------------------- CrÃ©ation des rÃ¨glements -----------------------------------------------------------
         DB = GestionDB.DB()
         
         # Recherche des payeurs
@@ -443,7 +443,7 @@ class Dialog(wx.Dialog):
             dictPayeurs[IDcompte_payeur].append({"nom" : nom, "IDpayeur" : IDpayeur})
 
                                 
-        # Sauvegarde des règlements + ventilation
+        # Sauvegarde des rÃ¨glements + ventilation
         for track in tracks :
 
             # Recherche du payeur
@@ -454,7 +454,7 @@ class Dialog(wx.Dialog):
                 nomTitulaire = u"%s %s" % (track.listeTitulaires[0]["nom"], track.listeTitulaires[0]["prenom"])
                 IDpayeur = DB.ReqInsert("payeurs", [("IDcompte_payeur", track.IDcompte_payeur), ("nom", nomTitulaire)])
                 
-            # Création des données à sauvegarder
+            # CrÃ©ation des donnÃ©es Ã  sauvegarder
             listeDonnees = [
                 ("IDcompte_payeur", track.IDcompte_payeur),
                 ("date", str(datetime.date.today())),
@@ -463,7 +463,7 @@ class Dialog(wx.Dialog):
                 ("numero_piece", None),
                 ("montant", float(track.impaye)),
                 ("IDpayeur", IDpayeur),
-                ("observations", _(u"Règlement créé avec la fonction 'Solder les impayés'")),
+                ("observations", _(u"RÃ¨glement crÃ©Ã© avec la fonction 'Solder les impayÃ©s'")),
                 ("numero_quittancier", None),
                 ("IDcompte", IDcompte),
                 ("date_differe", None),
@@ -487,7 +487,7 @@ class Dialog(wx.Dialog):
                     
         DB.Close() 
 
-        dlg = wx.MessageDialog(self, _(u"Les %d règlements ont été créés avec succès.") % len(tracks), _(u"Confirmation"), wx.OK | wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Les %d rÃ¨glements ont Ã©tÃ© crÃ©Ã©s avec succÃ¨s.") % len(tracks), _(u"Confirmation"), wx.OK | wx.ICON_INFORMATION)
         dlg.ShowModal()
         dlg.Destroy()
         

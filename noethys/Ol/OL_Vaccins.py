@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -50,10 +50,10 @@ class Track(object):
         self.dateDD = datetime.date(int(self.date[:4]), int(self.date[5:7]), int(self.date[8:10]))
         self.nom = donnees[4]
         self.duree_validite = donnees[5]
-        # validité
+        # validitÃ©
         jours, mois, annees = FormatDuree(self.duree_validite)
         self.date_expiration, self.nbreJoursRestants = self.CalcValidite(jours, mois, annees)
-        # Maladies associées
+        # Maladies associÃ©es
         self.txt_maladies_associees = ""
         if self.IDtype_vaccin in DICT_LIENS_MALADIES :
             self.listeMaladiesAssociees = DICT_LIENS_MALADIES[self.IDtype_vaccin]
@@ -69,11 +69,11 @@ class Track(object):
         dateJour, dateMois, dateAnnee = date_vaccin.day, date_vaccin.month, date_vaccin.year
         
         if jours==0 and mois==0 and annees==0:
-            # Si illimité
+            # Si illimitÃ©
             dateFin = datetime.date(2999, 1, 1)
             return str(dateFin), None
         else:
-            # Limité
+            # LimitÃ©
             dateFin = date_vaccin
             if jours != 0 : dateFin = dateFin + relativedelta.relativedelta(days=+jours)
             if mois != 0 : dateFin = dateFin + relativedelta.relativedelta(months=+mois)
@@ -97,7 +97,7 @@ class Track(object):
 ##                dateFin = datetime.date(dateAnnee, dateMois, dateJour)
 ##                dateJour, dateMois, dateAnnee = dateFin.day, dateFin.month, dateFin.year
 ##
-##            # Calcul des années
+##            # Calcul des annÃ©es
 ##            if annees != 0:
 ##                dateAnnee = dateAnnee + annees
 ##                dateFin = datetime.date(dateAnnee, dateMois, dateJour)
@@ -110,7 +110,7 @@ class Track(object):
     
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # Récupération des paramètres perso
+        # RÃ©cupÃ©ration des paramÃ¨tres perso
         self.IDindividu = kwds.pop("IDindividu", None)
         self.selectionID = None
         self.selectionTrack = None
@@ -134,7 +134,7 @@ class ListView(FastObjectListView):
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
-        """ Récupération des données """
+        """ RÃ©cupÃ©ration des donnÃ©es """
         listeID = None
         db = GestionDB.DB()
         req = """
@@ -196,11 +196,11 @@ class ListView(FastObjectListView):
         
         def FormateValidite(nbreJoursRestants):
             if nbreJoursRestants == None :
-                return _(u"Validité illimitée")
+                return _(u"ValiditÃ© illimitÃ©e")
             elif nbreJoursRestants == 0 :
                 return _(u"Expire aujourd'hui")
             elif nbreJoursRestants < 0 :
-                return _(u"Vaccin périmé")
+                return _(u"Vaccin pÃ©rimÃ©")
             else:
                 return _(u"Expire dans %d jours") % nbreJoursRestants
         
@@ -211,8 +211,8 @@ class ListView(FastObjectListView):
         liste_Colonnes = [
             ColumnDefn(_(u"ID"), "left", 0, "IDvaccin", typeDonnee="entier"),
             ColumnDefn(_(u"Nom du vaccin"), 'left', 140, "nom", typeDonnee="texte"),
-            ColumnDefn(_(u"Validité"), "left", 120, "nbreJoursRestants", typeDonnee="texte", stringConverter=FormateValidite), 
-            ColumnDefn(_(u"Maladies associées"), "left", 110, "txt_maladies_associees", typeDonnee="texte", isSpaceFilling=True), 
+            ColumnDefn(_(u"ValiditÃ©"), "left", 120, "nbreJoursRestants", typeDonnee="texte", stringConverter=FormateValidite), 
+            ColumnDefn(_(u"Maladies associÃ©es"), "left", 110, "txt_maladies_associees", typeDonnee="texte", isSpaceFilling=True), 
             ]
         
         self.rowFormatter = rowFormatter
@@ -231,7 +231,7 @@ class ListView(FastObjectListView):
             self.selectionTrack = None
         self.InitModel()
         self.InitObjectListView()
-        # Sélection d'un item
+        # SÃ©lection d'un item
         if self.selectionTrack != None :
             self.SelectObject(self.selectionTrack, deselectOthers=True, ensureVisible=True)
         self.selectionID = None
@@ -249,7 +249,7 @@ class ListView(FastObjectListView):
             noSelection = False
             ID = self.Selection()[0].IDvaccin
                 
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Modifier
@@ -280,7 +280,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
+        item = wx.MenuItem(menuPop, 40, _(u"AperÃ§u avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -328,7 +328,7 @@ class ListView(FastObjectListView):
     def Modifier(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("individus_vaccins", "modifier") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun vaccin à modifier dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucun vaccin Ã  modifier dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -354,7 +354,7 @@ class ListView(FastObjectListView):
     def Supprimer(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("individus_vaccins", "supprimer") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun vaccin à supprimer dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucun vaccin Ã  supprimer dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -380,7 +380,7 @@ class Choice(wx.Choice):
         wx.Choice.__init__(self, parent, -1) 
         self.parent = parent
         self.listeData = []
-        self.SetToolTip(wx.ToolTip(_(u"Sélectionnez le vaccin")))
+        self.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez le vaccin")))
     
     def SetListe(self, listeData=[]):
         self.Clear()
@@ -475,7 +475,7 @@ class Saisie(wx.Dialog):
         
     def OnBoutonOk(self, event):
         if self.ctrl_vaccin.GetID() == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner un vaccin dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sÃ©lectionner un vaccin dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_vaccin.SetFocus()

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-15 Ivan LUCAS
@@ -24,7 +24,7 @@ def ChargeTraduction(nom=""):
     global DICT_TRADUCTIONS
     dictTraductions = {}
     
-    # Recherche le fichier de langage par défaut ".lang" puis un éventuel fichier perso ".xlang"
+    # Recherche le fichier de langage par dÃ©faut ".lang" puis un Ã©ventuel fichier perso ".xlang"
     for rep in (Chemins.GetStaticPath("Lang"), UTILS_Fichiers.GetRepLang()) :
         for extension in ("lang", "xlang") :
             nomFichier = os.path.join(rep, u"%s.%s" % (nom, extension))
@@ -33,19 +33,19 @@ def ChargeTraduction(nom=""):
                 for key, valeur in data.items():
                     dictTraductions[key] = valeur
 
-    # Mémorise les traductions
+    # MÃ©morise les traductions
     DICT_TRADUCTIONS = dictTraductions
     
     
     
 def _(chaine) :
-    """ Traduit une chaîne """
+    """ Traduit une chaÃ®ne """
     # Recherche si une traduction existe
     if DICT_TRADUCTIONS != None :
         if chaine in DICT_TRADUCTIONS :
             return DICT_TRADUCTIONS[chaine]
     
-    # Sinon renvoie la chaine par défaut
+    # Sinon renvoie la chaine par dÃ©faut
     return chaine
 
 
@@ -68,7 +68,7 @@ def GenerationFichierTextes() :
     
             if nomFichier.endswith("py") and nomFichier.startswith("DATA_") == False and nomFichier not in ("CreateurMAJ.py", "CreateurANNONCES.py") :
                 # Ouverture du fichier
-                fichier = codecs.open(chemin_fichier, encoding='iso-8859-15', mode='r')
+                fichier = codecs.open(chemin_fichier, encoding='utf8', mode='r')
                 texte = "\n".join(fichier.readlines())
                 fichier.close()
 
@@ -91,7 +91,7 @@ def GenerationFichierTextes() :
                             dictTextes[chaine] = []
                         dictTextes[chaine].append(nomFichier)
 
-    # Génération du fichier
+    # GÃ©nÃ©ration du fichier
     nomFichier = Chemins.GetStaticPath("Databases/Textes.dat")
     UTILS_Json.Ecrire(nomFichier, data=dictTextes)
     print("Generation du fichier de textes terminee.")

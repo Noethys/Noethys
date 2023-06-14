@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -38,7 +38,7 @@ class Track(object):
     
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # Récupération des paramètres perso
+        # RÃ©cupÃ©ration des paramÃ¨tres perso
         self.selectionID = None
         self.selectionTrack = None
         self.criteres = ""
@@ -59,7 +59,7 @@ class ListView(FastObjectListView):
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
-        """ Récupération des données """
+        """ RÃ©cupÃ©ration des donnÃ©es """
         listeID = None
         db = GestionDB.DB()
         req = """SELECT IDcompte, nom, numero, defaut, raison, code_etab, code_guichet, code_nne
@@ -87,7 +87,7 @@ class ListView(FastObjectListView):
         self.evenRowsBackColor = wx.Colour(255, 255, 255)
         self.useExpansionColumn = True
         
-        # Préparation de la listeImages
+        # PrÃ©paration de la listeImages
         imgDefaut = self.AddNamedImages("defaut", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Ok.png"), wx.BITMAP_TYPE_PNG))
         
         def GetImageDefaut(track):
@@ -96,12 +96,12 @@ class ListView(FastObjectListView):
 
         liste_Colonnes = [
             ColumnDefn(u"", "left", 21, "IDcompte", typeDonnee="entier", imageGetter=GetImageDefaut),
-            ColumnDefn(_(u"Intitulé"), 'left', 200, "nom", typeDonnee="texte"),
-            ColumnDefn(_(u"Numéro"), "left", 100, "numero", typeDonnee="texte"),
+            ColumnDefn(_(u"IntitulÃ©"), 'left', 200, "nom", typeDonnee="texte"),
+            ColumnDefn(_(u"NumÃ©ro"), "left", 100, "numero", typeDonnee="texte"),
             ColumnDefn(_(u"Raison sociale"), "left", 170, "raison", typeDonnee="texte"),
             ColumnDefn(_(u"Code Etab."), "left", 80, "code_etab", typeDonnee="texte"),
             ColumnDefn(_(u"Code Guichet"), "left", 90, "code_guichet", typeDonnee="texte"),
-            ColumnDefn(_(u"N° NNE"), "left", 80, "code_nne", typeDonnee="texte"),
+            ColumnDefn(_(u"NÂ° NNE"), "left", 80, "code_nne", typeDonnee="texte"),
             ]
 
         self.SetColumns(liste_Colonnes)
@@ -119,7 +119,7 @@ class ListView(FastObjectListView):
             self.selectionTrack = None
         self.InitModel()
         self.InitObjectListView()
-        # Sélection d'un item
+        # SÃ©lection d'un item
         if self.selectionTrack != None :
             self.SelectObject(self.selectionTrack, deselectOthers=True, ensureVisible=True)
         self.selectionID = None
@@ -136,7 +136,7 @@ class ListView(FastObjectListView):
             noSelection = False
             ID = self.Selection()[0].IDcompte
                 
-        # Création du menu contextuel
+        # CrÃ©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Modifier
@@ -166,8 +166,8 @@ class ListView(FastObjectListView):
         
         menuPop.AppendSeparator()
 
-        # Item Par défaut
-        item = wx.MenuItem(menuPop, 60, _(u"Définir comme compte par défaut"))
+        # Item Par dÃ©faut
+        item = wx.MenuItem(menuPop, 60, _(u"DÃ©finir comme compte par dÃ©faut"))
         if noSelection == False :
             if self.Selection()[0].defaut == 1 :
                 bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Ok.png"), wx.BITMAP_TYPE_PNG)
@@ -179,7 +179,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
+        item = wx.MenuItem(menuPop, 40, _(u"AperÃ§u avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -220,7 +220,7 @@ class ListView(FastObjectListView):
     def Modifier(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_comptes_bancaires", "modifier") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun compte à modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucun compte Ã  modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -233,13 +233,13 @@ class ListView(FastObjectListView):
     def Supprimer(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_comptes_bancaires", "supprimer") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun compte à supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucun compte Ã  supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         IDcompte = self.Selection()[0].IDcompte
         
-        # Vérifie que ce compte n'a pas déjà été attribué à un règlement
+        # VÃ©rifie que ce compte n'a pas dÃ©jÃ  Ã©tÃ© attribuÃ© Ã  un rÃ¨glement
         DB = GestionDB.DB()
         req = """SELECT COUNT(IDreglement)
         FROM reglements 
@@ -249,12 +249,12 @@ class ListView(FastObjectListView):
         nbre = int(DB.ResultatReq()[0][0])
         DB.Close()
         if nbre > 0 :
-            dlg = wx.MessageDialog(self, _(u"Ce compte a déjà été attribué à %d règlement(s).\n\nVous ne pouvez donc pas le supprimer !") % nbre, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Ce compte a dÃ©jÃ  Ã©tÃ© attribuÃ© Ã  %d rÃ¨glement(s).\n\nVous ne pouvez donc pas le supprimer !") % nbre, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
-        # Vérifie que ce compte n'a pas déjà été attribué à un dépôt
+        # VÃ©rifie que ce compte n'a pas dÃ©jÃ  Ã©tÃ© attribuÃ© Ã  un dÃ©pÃ´t
         DB = GestionDB.DB()
         req = """SELECT COUNT(IDdepot)
         FROM depots 
@@ -264,12 +264,12 @@ class ListView(FastObjectListView):
         nbre = int(DB.ResultatReq()[0][0])
         DB.Close()
         if nbre > 0 :
-            dlg = wx.MessageDialog(self, _(u"Ce compte a déjà été attribué à %d dépôt(s) de règlements.\n\nVous ne pouvez donc pas le supprimer !") % nbre, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Ce compte a dÃ©jÃ  Ã©tÃ© attribuÃ© Ã  %d dÃ©pÃ´t(s) de rÃ¨glements.\n\nVous ne pouvez donc pas le supprimer !") % nbre, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
-        # Vérifie que ce compte n'a pas déjà été attribué à une opération comptable
+        # VÃ©rifie que ce compte n'a pas dÃ©jÃ  Ã©tÃ© attribuÃ© Ã  une opÃ©ration comptable
         DB = GestionDB.DB()
         req = """SELECT COUNT(IDoperation)
         FROM compta_operations 
@@ -279,12 +279,12 @@ class ListView(FastObjectListView):
         nbre = int(DB.ResultatReq()[0][0])
         DB.Close()
         if nbre > 0 :
-            dlg = wx.MessageDialog(self, _(u"Ce compte a déjà été attribué à %d opérations comptables.\n\nVous ne pouvez donc pas le supprimer !") % nbre, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Ce compte a dÃ©jÃ  Ã©tÃ© attribuÃ© Ã  %d opÃ©rations comptables.\n\nVous ne pouvez donc pas le supprimer !") % nbre, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
-        # Vérifie que ce compte n'a pas déjà été attribué à un relevé de compte
+        # VÃ©rifie que ce compte n'a pas dÃ©jÃ  Ã©tÃ© attribuÃ© Ã  un relevÃ© de compte
         DB = GestionDB.DB()
         req = """SELECT COUNT(IDreleve)
         FROM compta_releves 
@@ -294,7 +294,7 @@ class ListView(FastObjectListView):
         nbre = int(DB.ResultatReq()[0][0])
         DB.Close()
         if nbre > 0 :
-            dlg = wx.MessageDialog(self, _(u"Ce compte a déjà été attribué à %d relevés de compte.\n\nVous ne pouvez donc pas le supprimer !") % nbre, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Ce compte a dÃ©jÃ  Ã©tÃ© attribuÃ© Ã  %d relevÃ©s de compte.\n\nVous ne pouvez donc pas le supprimer !") % nbre, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -303,9 +303,9 @@ class ListView(FastObjectListView):
         dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer ce compte bancaire ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         if dlg.ShowModal() == wx.ID_YES :
             DB = GestionDB.DB()
-            # Suppression de l'identité
+            # Suppression de l'identitÃ©
             DB.ReqDEL("comptes_bancaires", "IDcompte", IDcompte)
-            # Attribue le Défaut à un autre compte
+            # Attribue le DÃ©faut Ã  un autre compte
             if self.Selection()[0].defaut == 1 :
                 req = """SELECT IDcompte, defaut
                 FROM comptes_bancaires
@@ -345,11 +345,11 @@ class Saisie(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE)
         self.parent = parent
         
-        self.label_nom = wx.StaticText(self, -1, _(u"Intitulé du compte :"))
+        self.label_nom = wx.StaticText(self, -1, _(u"IntitulÃ© du compte :"))
         self.ctrl_nom = wx.TextCtrl(self, -1, "")
         if nom != None :
             self.ctrl_nom.SetValue(nom)
-        self.label_numero = wx.StaticText(self, -1, _(u"Numéro de compte :"))
+        self.label_numero = wx.StaticText(self, -1, _(u"NumÃ©ro de compte :"))
         self.ctrl_numero = wx.TextCtrl(self, -1, "")
         if numero !=None :
             self.ctrl_numero.SetValue(numero)
@@ -364,8 +364,8 @@ class Saisie(wx.Dialog):
             self.SetTitle(_(u"Modification d'un compte"))
         self.SetMinSize((450, -1))
         
-        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez ici l'intitulé du compte")))
-        self.ctrl_numero.SetToolTip(wx.ToolTip(_(u"Saisissez ici le numéro du compte")))
+        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez ici l'intitulÃ© du compte")))
+        self.ctrl_numero.SetToolTip(wx.ToolTip(_(u"Saisissez ici le numÃ©ro du compte")))
 
         grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
         grid_sizer_boutons = wx.FlexGridSizer(rows=1, cols=4, vgap=10, hgap=10)
@@ -407,7 +407,7 @@ class Saisie(wx.Dialog):
             self.ctrl_nom.SetFocus()
             return
         if numero == "" :
-            dlg = wx.MessageDialog(self, _(u"Etes-vous sûr de ne pas saisir de numéro de compte ?"), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(self, _(u"Etes-vous sÃ»r de ne pas saisir de numÃ©ro de compte ?"), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
             reponse = dlg.ShowModal()
             dlg.Destroy()
             if reponse !=  wx.ID_YES :

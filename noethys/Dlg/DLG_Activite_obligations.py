@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -90,7 +90,7 @@ class CheckListBoxPieces(wx.CheckListBox):
             self.SetIDcoches(listeID)
 
     def Sauvegarde(self):
-        # Sauvegarde des pièces à fournir
+        # Sauvegarde des piÃ¨ces Ã  fournir
         liste_nouvelle = self.GetIDcoches()
         liste_ancienne = []
         DB = GestionDB.DB()
@@ -102,12 +102,12 @@ class CheckListBoxPieces(wx.CheckListBox):
             listeID = []
             for IDpiece_activite, IDtype_piece in listePieces :
                 liste_ancienne.append(IDtype_piece)
-        # On rattache les nouveaux type de pièces
+        # On rattache les nouveaux type de piÃ¨ces
         for IDtype_piece in liste_nouvelle :
             if IDtype_piece not in liste_ancienne :
                 listeDonnees = [ ("IDactivite", self.IDactivite ), ("IDtype_piece", IDtype_piece ), ]
                 IDpiece_activite = DB.ReqInsert("pieces_activites", listeDonnees)
-        # On enlève les anciens types de pièces
+        # On enlÃ¨ve les anciens types de piÃ¨ces
         for IDtype_piece in liste_ancienne :
             if IDtype_piece not in liste_nouvelle :
                 DB.ReqDEL("pieces_activites", "IDtype_piece", IDtype_piece)
@@ -183,7 +183,7 @@ class CheckListBoxCotisations(wx.CheckListBox):
         return len(listeCotisations)
 
     def Sauvegarde(self):
-        # Sauvegarde des cotisations à fournir
+        # Sauvegarde des cotisations Ã  fournir
         liste_nouvelle = self.GetIDcoches()
         liste_ancienne = []
         DB = GestionDB.DB()
@@ -200,7 +200,7 @@ class CheckListBoxCotisations(wx.CheckListBox):
             if IDtype_cotisation not in liste_ancienne :
                 listeDonnees = [ ("IDactivite", self.IDactivite ), ("IDtype_cotisation", IDtype_cotisation ), ]
                 IDcotisation_activite = DB.ReqInsert("cotisations_activites", listeDonnees)
-        # On enlève les anciens types de cotisations
+        # On enlÃ¨ve les anciens types de cotisations
         for IDtype_cotisation in liste_ancienne :
             if IDtype_cotisation not in liste_nouvelle :
                 DB.ReqDEL("cotisations_activites", "IDtype_cotisation", IDtype_cotisation)
@@ -263,7 +263,7 @@ class CheckListBoxRenseignements(wx.CheckListBox):
             self.SetIDcoches(listeID)
 
     def Sauvegarde(self):
-        # Sauvegarde des infos à renseigner
+        # Sauvegarde des infos Ã  renseigner
         liste_nouvelle = self.GetIDcoches()
         liste_ancienne = []
         DB = GestionDB.DB()
@@ -280,7 +280,7 @@ class CheckListBoxRenseignements(wx.CheckListBox):
             if IDtype_renseignement not in liste_ancienne :
                 listeDonnees = [ ("IDactivite", self.IDactivite ), ("IDtype_renseignement", IDtype_renseignement ), ]
                 IDrenseignement = DB.ReqInsert("renseignements_activites", listeDonnees)
-        # On enlève les anciens types de renseignements
+        # On enlÃ¨ve les anciens types de renseignements
         for IDtype_renseignement in liste_ancienne :
             if IDtype_renseignement not in liste_nouvelle :
                 DB.ReqDEL("renseignements_activites", "IDtype_renseignement", IDtype_renseignement)
@@ -343,32 +343,32 @@ class Panel(wx.Panel):
         self.parent = parent
         self.IDactivite = IDactivite
         
-        # Pièces
-        self.staticbox_pieces_staticbox = wx.StaticBox(self, -1, _(u"Pièces à fournir"))
+        # PiÃ¨ces
+        self.staticbox_pieces_staticbox = wx.StaticBox(self, -1, _(u"PiÃ¨ces Ã  fournir"))
         self.ctrl_pieces = CheckListBoxPieces(self, IDactivite=IDactivite)
         self.ctrl_pieces.SetMinSize((-1, 55))
         self.ctrl_pieces.MAJ()
-        self.hyper_pieces = Hyperlien(self, label=_(u"Accéder au paramétrage des pièces"), infobulle=_(u"Cliquez ici pour accéder au paramétrage des pièces"), URL="pieces")
+        self.hyper_pieces = Hyperlien(self, label=_(u"AccÃ©der au paramÃ©trage des piÃ¨ces"), infobulle=_(u"Cliquez ici pour accÃ©der au paramÃ©trage des piÃ¨ces"), URL="pieces")
         
         # Cotisations
         self.staticbox_cotisations_staticbox = wx.StaticBox(self, -1, _(u"Cotisations"))
-        self.ctrl_check_cotisations = wx.CheckBox(self, -1, _(u"L'individu inscrit doit avoir à jour au moins l'une des cotisations suivantes :"))
+        self.ctrl_check_cotisations = wx.CheckBox(self, -1, _(u"L'individu inscrit doit avoir Ã  jour au moins l'une des cotisations suivantes :"))
         self.ctrl_cotisations = CheckListBoxCotisations(self, IDactivite=IDactivite)
         self.ctrl_cotisations.SetMinSize((-1, 55))
         self.ctrl_cotisations.MAJ()
-        self.hyper_cotisations = Hyperlien(self, label=_(u"Accéder au paramétrage des cotisations"), infobulle=_(u"Cliquez ici pour accéder au paramétrage des cotisations"), URL="cotisations")
+        self.hyper_cotisations = Hyperlien(self, label=_(u"AccÃ©der au paramÃ©trage des cotisations"), infobulle=_(u"Cliquez ici pour accÃ©der au paramÃ©trage des cotisations"), URL="cotisations")
 
         # Vaccins
         self.staticbox_vaccins_staticbox = wx.StaticBox(self, -1, _(u"Vaccins obligatoires"))
-        self.ctrl_vaccins = wx.CheckBox(self, -1, _(u"L'individu inscrit doit avoir ses vaccins à jour"))
-        self.label_vaccins_1 = wx.StaticText(self, -1, _(u"(Accéder au paramètrage "))
-        self.hyper_vaccins = Hyperlien(self, label=_(u"des vaccins"), infobulle=_(u"Cliquez ici pour accéder au paramétrage des vaccins"), URL="vaccins")
+        self.ctrl_vaccins = wx.CheckBox(self, -1, _(u"L'individu inscrit doit avoir ses vaccins Ã  jour"))
+        self.label_vaccins_1 = wx.StaticText(self, -1, _(u"(AccÃ©der au paramÃ¨trage "))
+        self.hyper_vaccins = Hyperlien(self, label=_(u"des vaccins"), infobulle=_(u"Cliquez ici pour accÃ©der au paramÃ©trage des vaccins"), URL="vaccins")
         self.label_vaccins_2 = wx.StaticText(self, -1, _(u" et "))
-        self.hyper_maladies = Hyperlien(self, label=_(u"des maladies"), infobulle=_(u"Cliquez ici pour accéder au paramétrage des maladies"), URL="maladies")
+        self.hyper_maladies = Hyperlien(self, label=_(u"des maladies"), infobulle=_(u"Cliquez ici pour accÃ©der au paramÃ©trage des maladies"), URL="maladies")
         self.label_vaccins_3 = wx.StaticText(self, -1, u")")
         
         # Infos
-        self.staticbox_infos_staticbox = wx.StaticBox(self, -1, _(u"Informations à renseigner"))
+        self.staticbox_infos_staticbox = wx.StaticBox(self, -1, _(u"Informations Ã  renseigner"))
         self.ctrl_infos = CheckListBoxRenseignements(self, IDactivite=IDactivite)
         self.ctrl_infos.SetMinSize((50, 50))
         self.ctrl_infos.MAJ()
@@ -382,21 +382,21 @@ class Panel(wx.Panel):
         if self.IDactivite != None :
             self.Importation() 
         
-        # Init contrôles
+        # Init contrÃ´les
         self.OnCheckCotisations(None)
             
 
     def __set_properties(self):
-        self.ctrl_pieces.SetToolTip(wx.ToolTip(_(u"Cochez les pièces que l'individu inscrit à cette activité doit fournir")))
-        self.ctrl_vaccins.SetToolTip(wx.ToolTip(_(u"Cochez cette case si l'individu inscrit à cette activité doit obligatoirement justifier de ses vaccins à jour")))
-        self.ctrl_infos.SetToolTip(wx.ToolTip(_(u"Cochez les informations que l'individu inscrit à cette activité doit obligatoirement renseigner dans son dossier")))
-        self.ctrl_cotisations.SetToolTip(wx.ToolTip(_(u"Cochez les cotisations que l'individu inscrit à cette activité doit avoir à jour (au moins l'une d'elle)")))
+        self.ctrl_pieces.SetToolTip(wx.ToolTip(_(u"Cochez les piÃ¨ces que l'individu inscrit Ã  cette activitÃ© doit fournir")))
+        self.ctrl_vaccins.SetToolTip(wx.ToolTip(_(u"Cochez cette case si l'individu inscrit Ã  cette activitÃ© doit obligatoirement justifier de ses vaccins Ã  jour")))
+        self.ctrl_infos.SetToolTip(wx.ToolTip(_(u"Cochez les informations que l'individu inscrit Ã  cette activitÃ© doit obligatoirement renseigner dans son dossier")))
+        self.ctrl_cotisations.SetToolTip(wx.ToolTip(_(u"Cochez les cotisations que l'individu inscrit Ã  cette activitÃ© doit avoir Ã  jour (au moins l'une d'elle)")))
         self.ctrl_pieces.SetMinSize((-1, 90))
         
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=4, cols=1, vgap=10, hgap=10)
         
-        # Pièces
+        # PiÃ¨ces
         staticbox_pieces = wx.StaticBoxSizer(self.staticbox_pieces_staticbox, wx.VERTICAL)
         grid_sizer_pieces = wx.FlexGridSizer(rows=2, cols=1, vgap=2, hgap=2)
         grid_sizer_pieces.Add(self.ctrl_pieces, 1, wx.EXPAND, 0)
@@ -448,7 +448,7 @@ class Panel(wx.Panel):
             self.hyper_cotisations.Enable(False)
 
     def Importation(self):
-        # Importation des pièces à fournir
+        # Importation des piÃ¨ces Ã  fournir
         self.ctrl_pieces.Importation()
         
         # Importation des cotisations
@@ -472,10 +472,10 @@ class Panel(wx.Panel):
         self.ctrl_infos.Importation()
     
     def Validation(self):
-        # Vérifie qu'une cotisation au moins a été cochée
+        # VÃ©rifie qu'une cotisation au moins a Ã©tÃ© cochÃ©e
         if self.ctrl_check_cotisations.GetValue() == True :
             if len(self.ctrl_cotisations.GetIDcoches()) == 0 :
-                dlg = wx.MessageDialog(self, _(u"Vous avez coché 'Cotisation obligatoire' mais sans cocher de cotisation dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous avez cochÃ© 'Cotisation obligatoire' mais sans cocher de cotisation dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
@@ -483,10 +483,10 @@ class Panel(wx.Panel):
         return True
     
     def Sauvegarde(self): 
-        # Sauvegarde des pièces à fournir
+        # Sauvegarde des piÃ¨ces Ã  fournir
         self.ctrl_pieces.Sauvegarde()
         
-        # Sauvegarde des cotisations à avoir
+        # Sauvegarde des cotisations Ã  avoir
         if self.ctrl_check_cotisations.GetValue() == True :
             self.ctrl_cotisations.Sauvegarde()
         else:

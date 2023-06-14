@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -25,8 +25,8 @@ class Dialog(wx.Dialog):
         self.parent = parent
         self.IDfamille = IDfamille
         
-        intro = _(u"Vous pouvez ici visualiser le détail des déductions appliquées pour chaque type d'aide journalière. Double-cliquez sur une aide pour faire apparaître les déductions correspondantes.")
-        titre = _(u"Détail des aides journalières appliquées")
+        intro = _(u"Vous pouvez ici visualiser le dÃ©tail des dÃ©ductions appliquÃ©es pour chaque type d'aide journaliÃ¨re. Double-cliquez sur une aide pour faire apparaÃ®tre les dÃ©ductions correspondantes.")
+        titre = _(u"DÃ©tail des aides journaliÃ¨res appliquÃ©es")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Repartition.png")
         
         self.ctrl_listview = CTRL_Detail_aides.CTRL(self, IDfamille=self.IDfamille)
@@ -41,7 +41,7 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnAide, self.bouton_aide)
 
     def __set_properties(self):
-        self.SetTitle(_(u"Détail des aides journalières appliquées"))
+        self.SetTitle(_(u"DÃ©tail des aides journaliÃ¨res appliquÃ©es"))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         self.SetMinSize((940, 670))

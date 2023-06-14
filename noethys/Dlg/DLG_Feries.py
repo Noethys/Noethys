@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -34,10 +34,10 @@ class Panel(wx.Panel):
         self.bouton_modifier = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Modifier.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_supprimer = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Supprimer.png"), wx.BITMAP_TYPE_ANY))
         
-        # Propriétés
-        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter un jour férié %s") % self.type))
-        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le jour férié %s sélectionné dans la liste") % self.type))
-        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le jour férié %s sélectionné dans la liste") % self.type))
+        # PropriÃ©tÃ©s
+        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter un jour fÃ©riÃ© %s") % self.type))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le jour fÃ©riÃ© %s sÃ©lectionnÃ© dans la liste") % self.type))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le jour fÃ©riÃ© %s sÃ©lectionnÃ© dans la liste") % self.type))
         
         # Layout
         sizer_staticbox = wx.StaticBoxSizer(self.staticbox, wx.VERTICAL)
@@ -86,14 +86,14 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         
-        intro = _(u"Vous pouvez ici saisir, modifier ou supprimer des jours fériés. Ces informations sont utilisées dans le calendrier de saisie des consommations et dans le paramétrage des unités des activités.")
-        titre = _(u"Gestion des jours fériés")
+        intro = _(u"Vous pouvez ici saisir, modifier ou supprimer des jours fÃ©riÃ©s. Ces informations sont utilisÃ©es dans le calendrier de saisie des consommations et dans le paramÃ©trage des unitÃ©s des activitÃ©s.")
+        titre = _(u"Gestion des jours fÃ©riÃ©s")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Jour.png")
         self.panel_variables = Panel(self, type="variable")
         self.panel_fixes = Panel(self, type="fixe")
         
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
-        self.bouton_saisie_auto = CTRL_Bouton_image.CTRL(self, texte=_(u"Génération auto. des jours variables"), cheminImage="Images/32x32/Magique.png")
+        self.bouton_saisie_auto = CTRL_Bouton_image.CTRL(self, texte=_(u"GÃ©nÃ©ration auto. des jours variables"), cheminImage="Images/32x32/Magique.png")
         self.bouton_fermer = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         self.__set_properties()
@@ -104,9 +104,9 @@ class Dialog(wx.Dialog):
         
 
     def __set_properties(self):
-        self.SetTitle(_(u"Gestion des jours fériés"))
+        self.SetTitle(_(u"Gestion des jours fÃ©riÃ©s"))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
-        self.bouton_saisie_auto.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour saisir automatiquement les jours fériés variables")))
+        self.bouton_saisie_auto.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour saisir automatiquement les jours fÃ©riÃ©s variables")))
         self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         self.SetMinSize((550, 680))
 

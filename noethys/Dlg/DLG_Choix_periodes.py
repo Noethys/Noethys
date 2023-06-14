@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -22,10 +22,10 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, name="DLG_Choix_periodes", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         
-        # Périodes
-        self.staticbox_periodes_staticbox = wx.StaticBox(self, -1, _(u"Sélectionnez une ou plusieurs périodes"))
+        # PÃ©riodes
+        self.staticbox_periodes_staticbox = wx.StaticBox(self, -1, _(u"SÃ©lectionnez une ou plusieurs pÃ©riodes"))
         self.ctrl_periodes = CTRL_Grille_periode.CTRL(self)            
-        self.ctrl_toutes = wx.CheckBox(self, -1, _(u"Toutes les périodes"))
+        self.ctrl_toutes = wx.CheckBox(self, -1, _(u"Toutes les pÃ©riodes"))
         
         # Boutons de commandes 
         self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
@@ -37,12 +37,12 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_CHECKBOX, self.OnCheckToutes, self.ctrl_toutes)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
         
-        # Applique les valeurs par défaut
+        # Applique les valeurs par dÃ©faut
         if len(dictDonnees) > 0 :
             self.ctrl_periodes.SetDictDonnees(dictDonnees)
 
     def __set_properties(self):
-        self.SetTitle(_(u"Sélection de périodes"))
+        self.SetTitle(_(u"SÃ©lection de pÃ©riodes"))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
         self.SetMinSize((350, 420))
@@ -92,7 +92,7 @@ class Dialog(wx.Dialog):
             return dictDonnees
 
     def OnBoutonOk(self, event):
-        # Fermeture de la fenêtre
+        # Fermeture de la fenÃªtre
         self.EndModal(wx.ID_OK)
 
 

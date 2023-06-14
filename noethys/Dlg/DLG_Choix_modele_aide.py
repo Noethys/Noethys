@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -24,8 +24,8 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, name="DLG_Choix_modele_aide", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         
-        intro = _(u"Vous pouvez ici sélectionner un modèle prédéfini d'aide journalière. Cette fonction vous permet de gagner du temps lors de la saisie d'une aide. Sélectionnez une ligne et cliquez sur Ok ou double-cliquez directement sur une ligne.")
-        titre = _(u"Importation d'un modèle d'aide")
+        intro = _(u"Vous pouvez ici sÃ©lectionner un modÃ¨le prÃ©dÃ©fini d'aide journaliÃ¨re. Cette fonction vous permet de gagner du temps lors de la saisie d'une aide. SÃ©lectionnez une ligne et cliquez sur Ok ou double-cliquez directement sur une ligne.")
+        titre = _(u"Importation d'un modÃ¨le d'aide")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Configuration2.png")
         self.ctrl_listview = OL_Aides.ListView(self, id=-1, IDfamille=None, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.ctrl_listview.MAJ()
@@ -42,10 +42,10 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
 
     def __set_properties(self):
-        self.SetTitle(_(u"Importation d'un modèle d'aide"))
+        self.SetTitle(_(u"Importation d'un modÃ¨le d'aide"))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
-        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour importer le modèle d'aide sélectionné")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour importer le modÃ¨le d'aide sÃ©lectionnÃ©")))
         self.SetMinSize((600, 600))
 
     def __do_layout(self):
@@ -90,11 +90,11 @@ class Dialog(wx.Dialog):
         
     def OnBoutonOk(self, event):
         if self.GetIDaide() == None :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun modèle à importer !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÃ©lectionnÃ© aucun modÃ¨le Ã  importer !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
-        # Fermeture de la fenêtre
+        # Fermeture de la fenÃªtre
         self.EndModal(wx.ID_OK)
 
 

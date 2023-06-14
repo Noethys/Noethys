@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activit�s
+# Application :    Noethys, gestion multi-activitï¿œs
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-18 Ivan LUCAS
@@ -117,7 +117,7 @@ class Case():
 
     def GetTexteToolTip(self):
         if self.texte == None :
-            texte = u"Aucune donn�e"
+            texte = u"Aucune donnï¿œe"
         else :
             texte = self.texte
         texte += u"\n\nCOMMANDES :"
@@ -306,7 +306,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             menuPop.Destroy()
 
     def Importation(self):
-        """ Importation des donn�es """
+        """ Importation des donnï¿œes """
         dictDonnees = {}
         if self.periode == None or self.periode == None :
             return dictDonnees
@@ -320,7 +320,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 
         DB = GestionDB.DB()
 
-        # Cat�gories de menus
+        # Catï¿œgories de menus
         req = """SELECT IDcategorie, nom
         FROM menus_categories 
         ORDER BY ordre;"""
@@ -370,7 +370,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         if len(self.dictDonnees) == 0 :
             return
 
-        # Cr�ation des colonnes
+        # Crï¿œation des colonnes
         nbreColonnes = len(self.dictDonnees["categories"])
         self.AppendCols(nbreColonnes)
 
@@ -383,7 +383,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             self.SetColSize(numColonne, 300)
             numColonne += 1
 
-        # Cr�ation des lignes
+        # Crï¿œation des lignes
         nbreLignes = len(self.dictDonnees["dates"])
         self.AppendRows(nbreLignes)
 
@@ -397,7 +397,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             self.SetRowSize(numLigne, 40)
             numLigne += 1
 
-        # Cr�ation des cases
+        # Crï¿œation des cases
         self.dictCases = {}
         numLigne = 0
         for date in self.dictDonnees["dates"]:
@@ -412,7 +412,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 else :
                     dictMenu = None
 
-                # Cr�ation de la case
+                # Crï¿œation de la case
                 case = Case(self, numLigne=numLigne, numColonne=numColonne, IDcategorie=IDcategorie, date=date, dictMenu=dictMenu)
                 self.dictCases[(numLigne, numColonne)] = case
 
@@ -489,7 +489,7 @@ class DLG_Saisie_texte(wx.Dialog):
             texte = ""
 
         # Bandeau
-        intro = _(u"Saisissez ci-dessous un plat par ligne. Pour ins�rer une l�gende dans le texte, double-cliquez sur son nom dans la liste ou tapez directement le num�ro correspondant entre accolades (Exemples : {3} ou {14}).")
+        intro = _(u"Saisissez ci-dessous un plat par ligne. Pour insï¿œrer une lï¿œgende dans le texte, double-cliquez sur son nom dans la liste ou tapez directement le numï¿œro correspondant entre accolades (Exemples : {3} ou {14}).")
         titre = _(u"Saisie d'un menu")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Menu.png")
@@ -499,8 +499,8 @@ class DLG_Saisie_texte(wx.Dialog):
         self.ctrl_texte = wx.TextCtrl(self, -1, "", style=wx.TE_MULTILINE )
         self.ctrl_texte.SetMinSize((300, 300))
 
-        # L�gendes
-        self.staticbox_legendes_staticbox = wx.StaticBox(self, -1, _(u"L�gendes disponibles"))
+        # Lï¿œgendes
+        self.staticbox_legendes_staticbox = wx.StaticBox(self, -1, _(u"Lï¿œgendes disponibles"))
         self.ctrl_legendes = CTRL_Legendes(self, ctrl_texte=self.ctrl_texte)
         self.ctrl_legendes.SetMinSize((200, 200))
         self.bouton_legendes = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Mecanisme.png"), wx.BITMAP_TYPE_ANY))
@@ -522,9 +522,9 @@ class DLG_Saisie_texte(wx.Dialog):
 
     def __set_properties(self):
         self.SetTitle(_(u"Saisie d'un menu"))
-        self.bouton_legendes.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour acc�der � la gestion des l�gendes")))
+        self.bouton_legendes.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accï¿œder ï¿œ la gestion des lï¿œgendes")))
         self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour effacer le contenu du texte")))
-        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider ou tapez sur la touche Entr�e du clavier")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider ou tapez sur la touche Entrï¿œe du clavier")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
 
     def __do_layout(self):
@@ -538,7 +538,7 @@ class DLG_Saisie_texte(wx.Dialog):
         staticbox_texte.Add(self.ctrl_texte, 1, wx.ALL|wx.EXPAND, 5)
         grid_sizer_contenu.Add(staticbox_texte, 1, wx.EXPAND, 0)
 
-        # L�gendes
+        # Lï¿œgendes
         staticbox_legendes = wx.StaticBoxSizer(self.staticbox_legendes_staticbox, wx.HORIZONTAL)
         staticbox_legendes.Add(self.ctrl_legendes, 1, wx.ALL|wx.EXPAND, 5)
         staticbox_legendes.Add(self.bouton_legendes, 0, wx.TOP|wx.RIGHT, 5)
@@ -605,7 +605,7 @@ class MyFrame(wx.Frame):
         sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
         self.SetSizer(sizer_1)
 
-        # Contr�les
+        # Contrï¿œles
         self.ctrl = CTRL(panel)
         self.ctrl.MAJ(periode={"mois" : 7, "annee" : 2018}, IDrestaurateur=1)
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activitÈs
+# Application :    Noethys, gestion multi-activit√©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -33,7 +33,7 @@ class Track(object):
     
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
-        # RÈcupÈration des paramËtres perso
+        # R√©cup√©ration des param√®tres perso
         self.categorie = kwds.pop("categorie", "") # gare, aeroport, port, station
         self.categorieSingulier = kwds.pop("categorieSingulier", u"") # "gare"
         self.categoriePluriel = kwds.pop("categoriePluriel", u"") # "gares"
@@ -63,7 +63,7 @@ class ListView(FastObjectListView):
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
-        """ RÈcupÈration des donnÈes """
+        """ R√©cup√©ration des donn√©es """
         listeID = None
         db = GestionDB.DB()
         req = """SELECT IDlieu, nom, cp, ville
@@ -115,7 +115,7 @@ class ListView(FastObjectListView):
             self.selectionTrack = None
         self.InitModel()
         self.InitObjectListView()
-        # SÈlection d'un item
+        # S√©lection d'un item
         if self.selectionTrack != None :
             self.SelectObject(self.selectionTrack, deselectOthers=True, ensureVisible=True)
         self.selectionID = None
@@ -132,7 +132,7 @@ class ListView(FastObjectListView):
             noSelection = False
             ID = self.Selection()[0].IDlieu
                 
-        # CrÈation du menu contextuel
+        # Cr√©ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item Modifier
@@ -163,7 +163,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, _(u"AperÁu avant impression"))
+        item = wx.MenuItem(menuPop, 40, _(u"Aper√ßu avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -213,7 +213,7 @@ class ListView(FastObjectListView):
     def Modifier(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_lieux", "modifier") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucun%s %s ‡ modifier dans la liste !") % (self.masculinFeminin, self.categorieSingulier), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucun%s %s √† modifier dans la liste !") % (self.masculinFeminin, self.categorieSingulier), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -241,13 +241,13 @@ class ListView(FastObjectListView):
     def Supprimer(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_lieux", "supprimer") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sÈlectionnÈ aucun%s %s dans la liste !") % (self.masculinFeminin, self.categorieSingulier), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez s√©lectionn√© aucun%s %s dans la liste !") % (self.masculinFeminin, self.categorieSingulier), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         IDlieu = self.Selection()[0].IDlieu
         
-        # VÈrifie que ce lieu n'a pas dÈj‡ ÈtÈ attribuÈe ‡ un transport
+        # V√©rifie que ce lieu n'a pas d√©j√† √©t√© attribu√©e √† un transport
 ##        DB = GestionDB.DB()
 ##        req = """SELECT COUNT(IDunite)
 ##        FROM unites 
@@ -257,7 +257,7 @@ class ListView(FastObjectListView):
 ##        nbreUnites = int(DB.ResultatReq()[0][0])
 ##        DB.Close()
 ##        if nbreUnites > 0 :
-##            dlg = wx.MessageDialog(self, _(u"Cette compagnie a dÈj‡ ÈtÈ attribuÈe ‡ %d unitÈ(s) de consommation.\n\nVous ne pouvez donc pas le supprimer !") % nbreUnites, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
+##            dlg = wx.MessageDialog(self, _(u"Cette compagnie a d√©j√† √©t√© attribu√©e √† %d unit√©(s) de consommation.\n\nVous ne pouvez donc pas le supprimer !") % nbreUnites, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
 ##            dlg.ShowModal()
 ##            dlg.Destroy()
 ##            return
@@ -276,7 +276,7 @@ class ListView(FastObjectListView):
 
 
 class BarreRecherche(wx.SearchCtrl):
-    def __init__(self, parent, categorieSingulier=_(u"aÈroport"), masculinFeminin=""):
+    def __init__(self, parent, categorieSingulier=_(u"a√©roport"), masculinFeminin=""):
         wx.SearchCtrl.__init__(self, parent, size=(-1, -1), style=wx.TE_PROCESS_ENTER)
         self.parent = parent
         self.rechercheEnCours = False
@@ -323,7 +323,7 @@ class MyFrame(wx.Frame):
         sizer_1 = wx.BoxSizer(wx.VERTICAL)
         sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
         self.SetSizer(sizer_1)
-        self.myOlv = ListView(panel, id=-1, categorie="aeroport", categorieSingulier=_(u"aÈroport"), categoriePluriel=_(u"aÈroports"), masculinFeminin="", name="OL_test", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
+        self.myOlv = ListView(panel, id=-1, categorie="aeroport", categorieSingulier=_(u"a√©roport"), categoriePluriel=_(u"a√©roports"), masculinFeminin="", name="OL_test", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.myOlv.MAJ() 
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.myOlv, 1, wx.ALL|wx.EXPAND, 4)

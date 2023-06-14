@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-15 -*-
+# -*- coding: utf8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitÃ©s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-13 Ivan LUCAS
@@ -26,17 +26,17 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, id=-1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
 
         # Bandeau
-        titre = _(u"Transférer des tables")
-        intro = _(u"Cette fonctionnalité permet de transférer le contenu des tables du fichier de données chargé vers un fichier de données local.")
+        titre = _(u"TransfÃ©rer des tables")
+        intro = _(u"Cette fonctionnalitÃ© permet de transfÃ©rer le contenu des tables du fichier de donnÃ©es chargÃ© vers un fichier de donnÃ©es local.")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Configuration.png")
         self.SetTitle(titre)
 
         self.label_destination = wx.StaticText(self, -1, _(u"Fichier de destination :"))
 
         wildcard = _(u"Fichiers Noethys (*.dat)|*.dat|All files (*.*)|*.*")
-        self.ctrl_destination = filebrowse.FileBrowseButton(self, -1, labelText=u"", buttonText=_(u"Sélectionner"), toolTip=_(u"Cliquez ici pour sélectionner un fichier de données"), dialogTitle=_(u"Sélectionner un fichier"), fileMask=wildcard)
+        self.ctrl_destination = filebrowse.FileBrowseButton(self, -1, labelText=u"", buttonText=_(u"SÃ©lectionner"), toolTip=_(u"Cliquez ici pour sÃ©lectionner un fichier de donnÃ©es"), dialogTitle=_(u"SÃ©lectionner un fichier"), fileMask=wildcard)
         
-        self.label_destination_copy = wx.StaticText(self, -1, _(u"Tables à transférer :"))
+        self.label_destination_copy = wx.StaticText(self, -1, _(u"Tables Ã  transfÃ©rer :"))
         
         DB = GestionDB.DB() 
         listeTablesTemp = DB.GetListeTables() 
@@ -58,10 +58,10 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
 
     def __set_properties(self):
-        self.ctrl_destination.SetToolTip(wx.ToolTip(_(u"Sélectionnez un fichier de destination")))
-        self.ctrl_tables.SetToolTip(wx.ToolTip(_(u"Sélectionnez les tables à transférer")))
+        self.ctrl_destination.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez un fichier de destination")))
+        self.ctrl_tables.SetToolTip(wx.ToolTip(_(u"SÃ©lectionnez les tables Ã  transfÃ©rer")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
-        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour lancer la procédure")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour lancer la procÃ©dure")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
         self.SetMinSize((800, 700))
 
@@ -98,10 +98,10 @@ class Dialog(wx.Dialog):
         self.EndModal(wx.ID_CANCEL)
 
     def OnBoutonOk(self, event): 
-        # Récupération du fichier des destination
+        # RÃ©cupÃ©ration du fichier des destination
         nomFichier = self.ctrl_destination.GetValue()
         if len(nomFichier) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner un fichier de données à importer !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sÃ©lectionner un fichier de donnÃ©es Ã  importer !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -111,7 +111,7 @@ class Dialog(wx.Dialog):
             dlg.Destroy()
             return False
         
-        # Récupération des tables cochées
+        # RÃ©cupÃ©ration des tables cochÃ©es
         listeTables = []
         for index in range(0, self.ctrl_tables.GetCount()):
             if self.ctrl_tables.IsChecked(index):
@@ -119,19 +119,19 @@ class Dialog(wx.Dialog):
                 listeTables.append(nomTable)
                 
         if len(listeTables) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement cocher au moins une table à exporter !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement cocher au moins une table Ã  exporter !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
         
         # Demande de confirmation
-        dlg = wx.MessageDialog(None, _(u"Souhaitez-vous vraiment transférer %d tables ?") % len(listeTables), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+        dlg = wx.MessageDialog(None, _(u"Souhaitez-vous vraiment transfÃ©rer %d tables ?") % len(listeTables), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
         reponse = dlg.ShowModal() 
         dlg.Destroy()
         if reponse != wx.ID_YES :
             return
 
-        # Procédure de transfert
+        # ProcÃ©dure de transfert
         DB = GestionDB.DB() 
         for nomTable in listeTables :
             DB.Exportation_vers_base_defaut(nomTable=nomTable, nomFichierdefault=nomFichier)
@@ -139,7 +139,7 @@ class Dialog(wx.Dialog):
         DB.Close() 
         
         # Confirmation
-        dlg = wx.MessageDialog(self, _(u"Procédure de transfert terminée !"), _(u"Fin"), wx.OK | wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"ProcÃ©dure de transfert terminÃ©e !"), _(u"Fin"), wx.OK | wx.ICON_INFORMATION)
         dlg.ShowModal()
         dlg.Destroy()
 
