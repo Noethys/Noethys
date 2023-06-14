@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: iso-8859-15 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitï¿½s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -40,7 +40,7 @@ PADDING_MULTIHORAIRES = {"vertical" : 5, "horizontal" : 10}
 
 
 def TriTransports(dictTransports={}):
-    """ Tri les transports en fonction de l'heure de départ """
+    """ Tri les transports en fonction de l'heure de dï¿½part """
     listeID = []
     listeTemp = []
     for IDtransport, dictTransport in dictTransports.items() :
@@ -117,35 +117,35 @@ class CaseStandard(GridCellRenderer):
             tailleImage = 8
             paddingImage = 3
             bmp = wx.Bitmap(Chemins.GetStaticPath("Images/Special/Cadenas_ferme.png"), wx.BITMAP_TYPE_ANY) 
-            dc.DrawBitmap(bmp, rect[0]+tailleImage-paddingImage, rect[1]+paddingImage)
+            dc.DrawBitmap(bmp, int(rect[0]+tailleImage-paddingImage), int(rect[1]+paddingImage))
         
         # Dessin de l'image PRESENT (Coche verte)
         if self.case.etat == "present" :
             tailleImage = 16
             paddingImage = 3
             bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Ok5.png"), wx.BITMAP_TYPE_ANY) 
-            dc.DrawBitmap(bmp, rect[0]+rect[2]-tailleImage-paddingImage, rect[1]+paddingImage)
+            dc.DrawBitmap(bmp, int(rect[0]+rect[2]-tailleImage-paddingImage), int(rect[1]+paddingImage))
             
         # Dessin de l'image ABSENT JUSTIFIEE (Croix rouge)
         if self.case.etat == "absentj" :
             tailleImage = 16
             paddingImage = 3
             bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/absentj.png"), wx.BITMAP_TYPE_ANY) 
-            dc.DrawBitmap(bmp, rect[0]+rect[2]-tailleImage-paddingImage, rect[1]+paddingImage)
+            dc.DrawBitmap(bmp, int(rect[0]+rect[2]-tailleImage-paddingImage), int(rect[1]+paddingImage))
         
         # Dessin de l'image ABSENT INJUSTIFIEE (Croix rouge)
         if self.case.etat == "absenti" :
             tailleImage = 16
             paddingImage = 3
             bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/absenti.png"), wx.BITMAP_TYPE_ANY) 
-            dc.DrawBitmap(bmp, rect[0]+rect[2]-tailleImage-paddingImage, rect[1]+paddingImage)
+            dc.DrawBitmap(bmp, int(rect[0]+rect[2]-tailleImage-paddingImage), int(rect[1]+paddingImage))
             
         # Dessin de l'image SANS PRESTATION (Alerte)
         if self.case.etat in ("reservation", "present", "absenti", "absentj") and self.case.IDprestation == None and grid.afficheSansPrestation == True :
             tailleImage = 16
             paddingImage = 3
             bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Gratuit.png"), wx.BITMAP_TYPE_ANY) 
-            dc.DrawBitmap(bmp, rect[0]+paddingImage, rect[1]+paddingImage)
+            dc.DrawBitmap(bmp, int(rect[0]+paddingImage), int(rect[1]+paddingImage))
 
         # Dessin de l'image FORFAIT CREDIT
         if self.case.etat in ("reservation", "present", "absenti", "absentj") and self.case.IDprestation in list(self.grid.dictForfaits.keys()) :
@@ -153,8 +153,8 @@ class CaseStandard(GridCellRenderer):
             dc.SetBrush(wx.Brush(couleurForfait, wx.SOLID))
             dc.SetPen(wx.TRANSPARENT_PEN)
             #dc.DrawCircle(rect[0]+10, rect[1]+10, 4)
-            dc.DrawPolygon([(0, 0), (7, 0), (0, 7)], xoffset=rect.x+2, yoffset=rect.y+1) # Version en haut à gauche
-##            dc.DrawPolygon([(0, 0), (-7, 0), (0, 7)], xoffset=rect.x+rect.width-1, yoffset=rect.y+1) # Version en haut à droite
+            dc.DrawPolygon([(0, 0), (7, 0), (0, 7)], xoffset=rect.x+2, yoffset=rect.y+1) # Version en haut ï¿½ gauche
+##            dc.DrawPolygon([(0, 0), (-7, 0), (0, 7)], xoffset=rect.x+rect.width-1, yoffset=rect.y+1) # Version en haut ï¿½ droite
             
             
         # Ecrit les horaires si c'est une conso HORAIRE
@@ -173,7 +173,7 @@ class CaseStandard(GridCellRenderer):
             xTexte = rect[0] + ((rect[2] - largeurFinaleTexte) / 2.0)
             dc.DrawText(heure_fin, xTexte-6, rect[1]+3 + tailleFont + 5)
 
-        # Ecrit la quantité si c'est une conso QUANTITE
+        # Ecrit la quantitï¿½ si c'est une conso QUANTITE
         if self.grid.dictUnites[self.case.IDunite]["type"] == "Quantite" and self.case.etat in ("reservation", "present", "absenti", "absentj", "attente", "refus") :
             dc.SetTextForeground("BLACK")
             tailleFont = 8
@@ -200,7 +200,7 @@ class CaseStandard(GridCellRenderer):
                     dc.DrawText(nomGroupe, xTexte, rect.y + rect.height - 12)
                     dc.SetTextForeground("BLACK")
         
-        # Ecrit les étiquettes
+        # Ecrit les ï¿½tiquettes
         nbreEtiquettes = len(conso.etiquettes)
         if self.case.etat != None and nbreEtiquettes > 0 :
             largeurEtiquette = (rect.width - 3) / nbreEtiquettes * 1.0
@@ -208,11 +208,11 @@ class CaseStandard(GridCellRenderer):
             for IDetiquette in conso.etiquettes :
                 if IDetiquette in self.grid.dictEtiquettes :
                     dictEtiquette = self.grid.dictEtiquettes[IDetiquette]
-                    # Dessine l'étiquette
+                    # Dessine l'ï¿½tiquette
                     dc.SetBrush(wx.Brush(dictEtiquette["couleur"], wx.SOLID))
                     dc.SetPen(wx.TRANSPARENT_PEN)
-##                    dc.DrawRectangle(rect.x+2 + largeurEtiquette * index, rect.y + rect.height - 3, largeurEtiquette, 2) # Barre horizontale inférieure
-                    dc.DrawCircle(rect.x + rect.width - 4 - (5 * index), rect.y + 4, 2) # En haut à droite
+##                    dc.DrawRectangle(rect.x+2 + largeurEtiquette * index, rect.y + rect.height - 3, largeurEtiquette, 2) # Barre horizontale infï¿½rieure
+                    dc.DrawCircle(rect.x + rect.width - 4 - (5 * index), rect.y + 4, 2) # En haut ï¿½ droite
                     index += 1
                 
                 
@@ -234,12 +234,12 @@ class CaseStandard(GridCellRenderer):
         return RendererCase()
     
     def AdapteTailleTexte(self, dc, texte, tailleMaxi):
-        """ Raccourcit le texte de l'intitulé en fonction de la taille donnée """
-        # Pas de retouche nécessaire
+        """ Raccourcit le texte de l'intitulï¿½ en fonction de la taille donnï¿½e """
+        # Pas de retouche nï¿½cessaire
         if dc.GetTextExtent(texte)[0] < tailleMaxi : return texte
         # Renvoie aucun texte si tailleMaxi trop petite
         if tailleMaxi <= dc.GetTextExtent("W...")[0] : return "..."
-        # Retouche nécessaire
+        # Retouche nï¿½cessaire
         tailleTexte = dc.GetTextExtent(texte)[0]
         texteTemp = ""
         texteTemp2 = ""
@@ -251,16 +251,16 @@ class CaseStandard(GridCellRenderer):
                 return texteTemp2 + "..." 
 
     def GetCouleur(self, conso=None):
-        """ Obtient la couleur à appliquer à la case """        
-        # Si fermée
+        """ Obtient la couleur ï¿½ appliquer ï¿½ la case """        
+        # Si fermï¿½e
         if self.case.ouvert == False : return CTRL_Grille.COULEUR_FERME
             
-        # Si la case est sélectionnée
+        # Si la case est sï¿½lectionnï¿½e
         if self.case.etat in ("reservation", "present", "absenti", "absentj") : return CTRL_Grille.COULEUR_RESERVATION
         if self.case.etat == "attente" : return CTRL_Grille.COULEUR_ATTENTE
         if self.case.etat == "refus" : return CTRL_Grille.COULEUR_REFUS
         
-        # Si non sélectionnée
+        # Si non sï¿½lectionnï¿½e
         dictInfosPlaces = self.case.GetInfosPlaces() 
         if dictInfosPlaces != None :
             nbrePlacesRestantes = None
@@ -320,12 +320,12 @@ class CaseMemo(GridCellRenderer):
         return RendererCase()
     
     def AdapteTailleTexte(self, dc, texte, tailleMaxi):
-        """ Raccourcit le texte de l'intitulé en fonction de la taille donnée """
-        # Pas de retouche nécessaire
+        """ Raccourcit le texte de l'intitulï¿½ en fonction de la taille donnï¿½e """
+        # Pas de retouche nï¿½cessaire
         if dc.GetTextExtent(texte)[0] < tailleMaxi : return texte
         # Renvoie aucun texte si tailleMaxi trop petite
         if tailleMaxi <= dc.GetTextExtent("W...")[0] : return "..."
-        # Retouche nécessaire
+        # Retouche nï¿½cessaire
         tailleTexte = dc.GetTextExtent(texte)[0]
         texteTemp = ""
         texteTemp2 = ""
@@ -369,7 +369,7 @@ class CaseTransports(GridCellRenderer):
             dictTemp = self.case.dictTransports[IDtransport]
             categorie = dictTemp["categorie"]
             bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/%s.png" % DICT_CATEGORIES_TRANSPORTS[categorie]["image"]), wx.BITMAP_TYPE_ANY)
-            dc.DrawBitmap(bmp, positionGauche, rect.top+padding)
+            dc.DrawBitmap(bmp, int(positionGauche), int(rect.top+padding))
             positionGauche += 20
                     
     def MAJ(self):
@@ -431,7 +431,7 @@ class CaseMultihoraires(GridCellRenderer):
         self.case = case
 
     def Draw(self, grid, attr, dc, rect, row, col, isSelected):
-        # Préparation du buffer Image
+        # Prï¿½paration du buffer Image
         dcGrid = dc
         if 'phoenix' in wx.PlatformInfo:
             bmp = wx.Bitmap(rect.GetWidth(), rect.GetHeight())
@@ -442,7 +442,7 @@ class CaseMultihoraires(GridCellRenderer):
         gc = wx.GraphicsContext.Create(image)
         gc.PushState() 
         
-        rectCase = wx.Rect(0, 0, rect.GetWidth(), rect.GetHeight())
+        rectCase = wx.Rect(0, 0, int(rect.GetWidth()), int(rect.GetHeight()))
         x, y, largeur, hauteur = rectCase.x, rectCase.y, rectCase.width, rectCase.height
         
         # Dessin du fond
@@ -513,7 +513,7 @@ class CaseMultihoraires(GridCellRenderer):
         for barre in self.case.listeBarres :
             conso = barre.conso
             
-            # Calcul des coordonnées de la barre
+            # Calcul des coordonnï¿½es de la barre
             barre.UpdateRect()
             rectBarre = barre.GetRect("case")
 
@@ -596,17 +596,17 @@ class CaseMultihoraires(GridCellRenderer):
                     if rectBarre.width > largeurNomGroupe and nbreGroupesActivite > 1 :
                         gc.DrawText(nomGroupe, rectBarre.x+4, rectBarre.y + rectBarre.height - 10)
                 
-            # Ecrit les étiquettes
+            # Ecrit les ï¿½tiquettes
             nbreEtiquettes = len(conso.etiquettes)
             if conso.etat != None and nbreEtiquettes > 0 :
                 index = 0
                 for IDetiquette in conso.etiquettes :
                     if IDetiquette in grid.dictEtiquettes :
                         dictEtiquette = grid.dictEtiquettes[IDetiquette]
-                        # Dessine l'étiquette
+                        # Dessine l'ï¿½tiquette
                         gc.SetBrush(wx.Brush(dictEtiquette["couleur"], wx.SOLID))
                         gc.SetPen(wx.TRANSPARENT_PEN)
-                        gc.DrawEllipse(rectBarre.x + rectBarre.width - 7 - (5 * index), rectBarre.y + rectBarre.height - 7, 4, 4) # En haut à droite
+                        gc.DrawEllipse(rectBarre.x + rectBarre.width - 7 - (5 * index), rectBarre.y + rectBarre.height - 7, 4, 4) # En haut ï¿½ droite
                         index += 1
 
         # Dessin du cadenas VERROUILLAGE
@@ -664,8 +664,8 @@ class CaseMultihoraires(GridCellRenderer):
         return RendererCase()
 
     def GetCouleurBarre(self, conso=None):
-        """ Obtient la couleur à appliquer à la case """        
-        # Si la case est sélectionnée
+        """ Obtient la couleur ï¿½ appliquer ï¿½ la case """        
+        # Si la case est sï¿½lectionnï¿½e
         if conso.etat in ("reservation", "present", "absenti", "absentj") :
             return CTRL_Grille.COULEUR_RESERVATION
         if conso.etat == "attente" : 
@@ -691,7 +691,7 @@ class CaseEvenement(GridCellRenderer):
     def Draw(self, grid, attr, dc, rect, row, col, isSelected):
         self.grid = grid
 
-        # Préparation du buffer Image
+        # Prï¿½paration du buffer Image
         dcGrid = dc
         if 'phoenix' in wx.PlatformInfo:
             bmp = wx.Bitmap(rect.GetWidth(), rect.GetHeight())
@@ -706,7 +706,7 @@ class CaseEvenement(GridCellRenderer):
         else :
             gc.SetFont(attr.GetFont())
 
-        rectCase = wx.Rect(0, 0, rect.GetWidth(), rect.GetHeight())
+        rectCase = wx.Rect(0, 0, int(rect.GetWidth()), int(rect.GetHeight()))
         x, y, largeur, hauteur = rectCase.x, rectCase.y, rectCase.width, rectCase.height
 
         if self.case.ouvert == True:
@@ -729,7 +729,7 @@ class CaseEvenement(GridCellRenderer):
         for evenement in self.case.liste_evenements :
 
             # Calcul de la taille du rectangle
-            rectEvenement = wx.Rect(x + marge, rectCase.y + marge, largeur_bouton, rectCase.height - marge*2 -marge)
+            rectEvenement = wx.Rect(int(x + marge), int(rectCase.y + marge), int(largeur_bouton), int(rectCase.height - marge*2 -marge))
 
             # Dessin du rectangle
             couleur = evenement.GetCouleur()
@@ -737,7 +737,7 @@ class CaseEvenement(GridCellRenderer):
             gc.SetPen(wx.Pen(wx.SystemSettings.GetColour(wx.SYS_COLOUR_3DSHADOW)))
             gc.DrawRoundedRectangle(rectEvenement.x, rectEvenement.y, rectEvenement.width, rectEvenement.height, 5)
 
-            # Dessin du nom de l'évènement
+            # Dessin du nom de l'ï¿½vï¿½nement
             couleur_nom = wx.Colour(150, 150, 150)
             rect_texte = self.DrawTexte(gc, rectEvenement, evenement.nom, couleur=couleur_nom, position=(4, 2), font=wx.Font(8, wx.SWISS, wx.NORMAL, wx.NORMAL))
 
@@ -797,21 +797,21 @@ class CaseEvenement(GridCellRenderer):
                         gc.DrawBitmap(imageTemp, xImage - largeurBmp, rectEvenement.y + 1, largeurBmp, hauteurBmp)
                         xImage -= largeurBmp + paddingImage
 
-                # Ecrit les étiquettes
+                # Ecrit les ï¿½tiquettes
                 nbreEtiquettes = len(conso.etiquettes)
                 if conso.etat != None and nbreEtiquettes > 0:
                     index = 0
                     for IDetiquette in conso.etiquettes:
                         if IDetiquette in grid.dictEtiquettes:
                             dictEtiquette = grid.dictEtiquettes[IDetiquette]
-                            # Dessine l'étiquette
+                            # Dessine l'ï¿½tiquette
                             gc.SetBrush(wx.Brush(dictEtiquette["couleur"], wx.SOLID))
                             gc.SetPen(wx.TRANSPARENT_PEN)
                             if rectEvenement.height > 10 and (len(listeImages) == 0 or rectEvenement.height > 25) :
-                                gc.DrawEllipse(rectEvenement.x + rectEvenement.width - 7 - (5 * index), rectEvenement.y + rectEvenement.height - 7, 4, 4)  # En haut à droite
+                                gc.DrawEllipse(rectEvenement.x + rectEvenement.width - 7 - (5 * index), rectEvenement.y + rectEvenement.height - 7, 4, 4)  # En haut ï¿½ droite
                             index += 1
 
-            # Mémorisation des coordonnées du bouton
+            # Mï¿½morisation des coordonnï¿½es du bouton
             self.dict_boutons[evenement] = rectEvenement
 
             # Calcul de la position x suivante
@@ -848,7 +848,7 @@ class CaseEvenement(GridCellRenderer):
             largeurTexte, hauteurTexte = gc.GetTextExtent(texte)
 
         # Calcul le rect du texte
-        rect_texte = wx.Rect(rect.x + position[0], rect.y + position[1], largeurTexte, hauteurTexte)
+        rect_texte = wx.Rect(int(rect.x + position[0]), int(rect.y + position[1]), int(largeurTexte), int(hauteurTexte))
 
         # Dessin du texte
         if 'phoenix' in wx.PlatformInfo:

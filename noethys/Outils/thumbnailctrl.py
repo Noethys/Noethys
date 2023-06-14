@@ -1188,8 +1188,8 @@ class ScrolledThumbnail(wx.ScrolledWindow):
         self._tWidth = width 
         self._tHeight = height
         self._tBorder = border
-        self.SetScrollRate((self._tWidth + self._tBorder)/4,
-                           (self._tHeight + self._tBorder)/4)
+        self.SetScrollRate(int((self._tWidth + self._tBorder)/4),
+                           int((self._tHeight + self._tBorder)/4))
         self.SetSizeHints(self._tWidth + self._tBorder*2 + 16,
                           self._tHeight + self._tBorder*2 + 8)
 
@@ -1723,7 +1723,7 @@ class ScrolledThumbnail(wx.ScrolledWindow):
 
         if not thumb._alpha:
             dc.Blit(imgRect.x+5, imgRect.y+5, imgRect.width, imgRect.height, self.shadow, 500-ww, 500-hh)        
-        dc.DrawBitmap(img, imgRect.x, imgRect.y, True)
+        dc.DrawBitmap(img, int(imgRect.x), int(imgRect.y), True)
 
         colour = self.GetSelectionColour()
         selected = self.IsSelected(index)
@@ -1859,7 +1859,7 @@ class ScrolledThumbnail(wx.ScrolledWindow):
                 thmb = wx.EmptyBitmap(tw, th)
 
             self.DrawThumbnail(thmb, self._items[ii], ii)
-            dc.DrawBitmap(thmb, tx, ty)
+            dc.DrawBitmap(thmb, int(tx), int(ty))
   
         rect = wx.Rect(xwhite, self._tBorder/2,
                        self._cols*(self._tWidth + self._tBorder),

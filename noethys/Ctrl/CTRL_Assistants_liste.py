@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: iso-8859-15 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitï¿½s
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-18 Ivan LUCAS
@@ -28,23 +28,23 @@ from Ctrl import CTRL_Assistant_sorties
 
 
 LISTE_ASSISTANTS = [
-    {"code": "nouveau", "image": "Generation.png", "nom": _(u"Créer une nouvelle activité"),
-     "description": _(u"Personnalisez votre nouvelle activité de A à Z")},
+    {"code": "nouveau", "image": "Generation.png", "nom": _(u"Crï¿½er une nouvelle activitï¿½"),
+     "description": _(u"Personnalisez votre nouvelle activitï¿½ de A ï¿½ Z")},
 
-    {"code": "annuelle", "image": "Basket.png", "nom": _(u"Une activité culturelle ou sportive annuelle"),
-     "description": _(u"Assistant pour créer une activité annuelle : club de gym, danse, couture, etc...")},
+    {"code": "annuelle", "image": "Basket.png", "nom": _(u"Une activitï¿½ culturelle ou sportive annuelle"),
+     "description": _(u"Assistant pour crï¿½er une activitï¿½ annuelle : club de gym, danse, couture, etc...")},
 
-    {"code": "sejour", "image": "Camping.png", "nom": _(u"Un séjour"),
-     "description": _(u"Assistant pour créer un séjour, un camp, un mini-camp...")},
+    {"code": "sejour", "image": "Camping.png", "nom": _(u"Un sï¿½jour"),
+     "description": _(u"Assistant pour crï¿½er un sï¿½jour, un camp, un mini-camp...")},
 
     {"code": "stage", "image": "Guitare.png", "nom": _(u"Un stage"),
-     "description": _(u"Assistant pour créer un stage de théâtre, de danse, de guitare, etc...")},
+     "description": _(u"Assistant pour crï¿½er un stage de thï¿½ï¿½tre, de danse, de guitare, etc...")},
 
     {"code": "cantine", "image": "Repas.png", "nom": _(u"Une cantine"),
-     "description": _(u"Assistant pour créer une cantine avec un ou plusieurs services")},
+     "description": _(u"Assistant pour crï¿½er une cantine avec un ou plusieurs services")},
 
     {"code": "sorties", "image": "Bus.png", "nom": _(u"Des sorties familiales"),
-     "description": _(u"Assistant pour créer une activité de gestion de sorties familiales...")},
+     "description": _(u"Assistant pour crï¿½er une activitï¿½ de gestion de sorties familiales...")},
 
 ]
 
@@ -67,7 +67,7 @@ class FirstColumnRenderer(object):
     def DrawSubItem(self, dc, rect, line, highlighted, enabled):
         # Icone
         bmpWidth, bmpHeight = self.icon.GetWidth(), self.icon.GetHeight()
-        dc.DrawBitmap(self.icon, rect.x+8, rect.y+(rect.height-bmpHeight)/2)
+        dc.DrawBitmap(self.icon, int(rect.x+8), int(rect.y+(rect.height-bmpHeight)/2))
 
         # Titre
         dc.SetFont(self.normalFont)
@@ -119,7 +119,7 @@ class CTRL(ULC.UltimateListCtrl):
         self.Remplissage()
 
     def Remplissage(self):
-        """ Remplissage du contrôle """
+        """ Remplissage du contrï¿½le """
         self.ClearAll()
         self.InsertColumn(0, "Column 1") 
 

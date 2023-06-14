@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: iso-8859-15 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitï¿½s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -20,8 +20,8 @@ ID_UNDO = 99
 ID_PLUS = 100
 ID_MOINS = 101
 
-phrase1 = _(u"Ramener l'image à sa taille d'origine")
-phrase2 = _(u"Opération interdite")
+phrase1 = _(u"Ramener l'image ï¿½ sa taille d'origine")
+phrase2 = _(u"Opï¿½ration interdite")
 
 try :
     if not wx.USE_UNICODE:
@@ -62,7 +62,7 @@ class Visu(wx.ScrolledWindow):
             self.bmp = bmp
         self.SetVirtualSize(wx.Size(bmp.GetWidth(), bmp.GetHeight()))
         self.image = wx.StaticBitmap(self, -1, bmp)
-        self.SetScrollRate((10*ratio)/100, (10*ratio)/100)
+        self.SetScrollRate(int((10*ratio)/100), int((10*ratio)/100))
         self.Scroll(posX, posY)
         self.Refresh()
 
@@ -81,7 +81,7 @@ class MyFrame(wx.Frame):
             _icon = wx.EmptyIcon()
         _icon.CopyFromBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Logo.png"), wx.BITMAP_TYPE_ANY))
         self.SetIcon(_icon)
-        self.SetTitle(_(u"Aperçu d'image"))
+        self.SetTitle(_(u"Aperï¿½u d'image"))
         
         self.imgORIG = None
         self.imgORIX = 0
@@ -114,7 +114,7 @@ class MyFrame(wx.Frame):
         self.SetStatusBar(self.barre)
 
         outils = UTILS_Adaptations.ToolBar(self, -1, style = wx.TB_HORIZONTAL | wx.NO_BORDER)
-        outils.AddLabelTool(ID_EXIT, _(u"Fermer l'aperçu"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Fermer.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Fermer"), "")
+        outils.AddLabelTool(ID_EXIT, _(u"Fermer l'aperï¿½u"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Fermer.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Fermer"), "")
         outils.AddLabelTool(ID_PLUS, _(u"Agrandir"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/zoom_plus.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Agrandir"), "")
         outils.AddLabelTool(ID_UNDO, _(u"Taille originale"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/zoom_init.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Taille originale"), "")
         outils.AddLabelTool(ID_MOINS, _(u"Diminuer"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/zoom_moins.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Diminuer"), "")
@@ -184,7 +184,7 @@ class MyFrame(wx.Frame):
                 self.imgORIY = self.imgORIG.GetHeight()
                 self.bmpRESU = self.imgORIG.ConvertToBitmap()
                 self.panneau.Affiche(self.bmpRESU, self.ratio)
-                self.SetTitle(_(u"Aperçu d'image [%s]")% fichier)
+                self.SetTitle(_(u"Aperï¿½u d'image [%s]")% fichier)
                 self.barre.SetStatusText("(%s, %s) %s %%"%(self.imgORIX, self.imgORIY, self.ratio), 1)
     
     def ChargeImagePIL(self, imgPIL=None):
@@ -212,7 +212,7 @@ class MyFrame(wx.Frame):
             self.imgORIY = 0
             self.bmpRESU = None
             self.ratio = 100
-            self.SetTitle(_(u"Aperçu d'images"))
+            self.SetTitle(_(u"Aperï¿½u d'images"))
             self.barre.SetStatusText("", 1)
 
     def OnExit(self, evt):

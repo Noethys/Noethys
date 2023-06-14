@@ -846,7 +846,7 @@ class PyImageList(object):
             raise Exception("Wrong index in image list")
 
         bmp = self._images[index]    
-        dc.DrawBitmap(bmp, x, y, (flags & wx.IMAGELIST_DRAW_TRANSPARENT) > 0)
+        dc.DrawBitmap(bmp, int(x), int(y), (flags & wx.IMAGELIST_DRAW_TRANSPARENT) > 0)
 
         return True
 
@@ -6994,7 +6994,7 @@ class UltimateListMainWindow(wx.PyScrolledWindow):
             y = 0
 
             while y < sz.height:
-                dc.DrawBitmap(self._backgroundImage, x, y, True)
+                dc.DrawBitmap(self._backgroundImage, int(x), int(y), True)
                 y = y + h
 
             x = x + w
@@ -7020,7 +7020,7 @@ class UltimateListMainWindow(wx.PyScrolledWindow):
         x = width - bitmapW - 5
         y = height - bitmapH - 5
 
-        dc.DrawBitmap(self._waterMark, x, y, True)
+        dc.DrawBitmap(self._waterMark, int(x), int(y), True)
         
         
     def HighlightAll(self, on=True):

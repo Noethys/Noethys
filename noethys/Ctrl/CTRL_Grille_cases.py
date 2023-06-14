@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: iso-8859-15 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitï¿½s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-13 Ivan LUCAS
@@ -44,7 +44,7 @@ class CTRL_Couleur(wx.Choice):
         wx.Choice.__init__(self, parent, -1)
         self.parent = parent
         self.couleurs = [
-            {"code": None, "label": _(u"Noir (par défaut)")},
+            {"code": None, "label": _(u"Noir (par dï¿½faut)")},
             {"code": "red", "label": _(u"Rouge")},
             {"code": "blue", "label": _(u"Bleu")},
             {"code": "green", "label": _(u"Vert")},
@@ -101,18 +101,18 @@ class DLG_Saisie_memo(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
         self.ctrl_texte.Bind(wx.EVT_KEY_DOWN, self.OnKey)
 
-        # Init contrôles
+        # Init contrï¿½les
         if texte:
-            self.SetTitle(_(u"Modification d'un mémo journalier"))
+            self.SetTitle(_(u"Modification d'un mï¿½mo journalier"))
             self.ctrl_texte.SetValue(texte)
             self.ctrl_couleur.SetCode(couleur)
         else:
-            self.SetTitle(_(u"Saisie d'un mémo journalier"))
+            self.SetTitle(_(u"Saisie d'un mï¿½mo journalier"))
         self.ctrl_texte.SetFocus()
 
     def __set_properties(self):
-        self.ctrl_texte.SetToolTip(wx.ToolTip(_(u"Saisissez le texte du mémo")))
-        self.ctrl_couleur.SetToolTip(wx.ToolTip(_(u"Sélectionnez une couleur (Noir par défaut). Cette couleur sera utilisée dans l'édition de la liste des consommations au format PDF).")))
+        self.ctrl_texte.SetToolTip(wx.ToolTip(_(u"Saisissez le texte du mï¿½mo")))
+        self.ctrl_couleur.SetToolTip(wx.ToolTip(_(u"Sï¿½lectionnez une couleur (Noir par dï¿½faut). Cette couleur sera utilisï¿½e dans l'ï¿½dition de la liste des consommations au format PDF).")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
 
@@ -190,9 +190,9 @@ class CaseSeparationActivite():
                 if IDactivite in grid.dictActivites :
                     labelActivite = grid.dictActivites[IDactivite]["nom"]
                 else :
-                    labelActivite = _(u"Activité inconnue")
+                    labelActivite = _(u"Activitï¿½ inconnue")
             else:
-                labelActivite = _(u"Activité ID%d") % IDactivite
+                labelActivite = _(u"Activitï¿½ ID%d") % IDactivite
         if estMemo == True :
             labelActivite = _(u"Informations")
         grid.SetCellValue(numLigne, numColonne, labelActivite)
@@ -248,7 +248,7 @@ class CaseMemo():
     
     def MemoriseValeurs(self):
         texte = self.grid.GetCellValue(self.numLigne, self.numColonne)
-        # Création
+        # Crï¿½ation
         if texte != "" and self.IDmemo == None : self.statut = "ajout"
         # Modification
         if texte != "" and self.IDmemo != None : self.statut = "modification"
@@ -277,19 +277,19 @@ class CaseMemo():
             listeLignes = textwrap.wrap(self.texte, 45)
             texte = '\n'.join(listeLignes) + u"\n\n"
         else :
-            texte = _(u"Aucun mémo\n\n")
+            texte = _(u"Aucun mï¿½mo\n\n")
             
-        dictDonnees["titre"] = _(u"Mémo journalier")
+        dictDonnees["titre"] = _(u"Mï¿½mo journalier")
         dictDonnees["texte"] = texte
         dictDonnees["pied"] = _(u"Double-cliquez sur la case pour modifier")
         dictDonnees["bmp"] = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Modifier.png"), wx.BITMAP_TYPE_ANY) 
         return dictDonnees
     
     def OnDoubleClick(self):
-        # Récupération du mémo
+        # Rï¿½cupï¿½ration du mï¿½mo
         texte = self.grid.GetCellValue(self.numLigne, self.numColonne)
         
-        # Boîte de dialogue pour modification du mémo
+        # Boï¿½te de dialogue pour modification du mï¿½mo
         dlg = DLG_Saisie_memo(None, texte=texte, couleur=self.couleur)
         if dlg.ShowModal() == wx.ID_OK:
             self.texte = dlg.texte
@@ -298,15 +298,15 @@ class CaseMemo():
         else:
             dlg.Destroy()
 
-        # Mémorisation du mémo
+        # Mï¿½morisation du mï¿½mo
         self.grid.SetCellValue(self.numLigne, self.numColonne, self.texte)
         self.MemoriseValeurs()
         
     def GetStatutTexte(self, x, y):
-        return _(u"Double-cliquez sur la case 'Mémo' pour ajouter, modifier ou supprimer un mémo")
+        return _(u"Double-cliquez sur la case 'Mï¿½mo' pour ajouter, modifier ou supprimer un mï¿½mo")
     
     def SetTexte(self, texte=""):
-        """ Modification manuelle du mémo """
+        """ Modification manuelle du mï¿½mo """
         self.grid.SetCellValue(self.numLigne, self.numColonne, texte)
         self.MemoriseValeurs()
         
@@ -342,7 +342,7 @@ class CaseTransports():
         self.grid.Refresh()
     
     def OnClick(self):
-        # Récupère la liste des IDtransport actuels
+        # Rï¿½cupï¿½re la liste des IDtransport actuels
         listeIDinitiale = list(self.dictTransports.keys())
         
         # Label de la ligne
@@ -392,7 +392,7 @@ class CaseTransports():
             categorie = dictTemp["categorie"]
             labelCategorie = DICT_CATEGORIES_TRANSPORTS[categorie]["label"]
                 
-            # Analyse du départ
+            # Analyse du dï¿½part
             depart_nom = u""
             if dictTemp["depart_IDarret"] != None and dictTemp["depart_IDarret"] in CTRL_Grille.DICT_ARRETS :
                 depart_nom = CTRL_Grille.DICT_ARRETS[dictTemp["depart_IDarret"]]
@@ -405,7 +405,7 @@ class CaseTransports():
             if dictTemp["depart_heure"] != None :
                 depart_heure = dictTemp["depart_heure"].replace(":", "h")
 
-            # Analyse de l'arrivée
+            # Analyse de l'arrivï¿½e
             arrivee_nom = u""
             if dictTemp["arrivee_IDarret"] != None and dictTemp["arrivee_IDarret"] in CTRL_Grille.DICT_ARRETS :
                 arrivee_nom = CTRL_Grille.DICT_ARRETS[dictTemp["arrivee_IDarret"]]
@@ -418,7 +418,7 @@ class CaseTransports():
             if dictTemp["arrivee_heure"] != None :
                 arrivee_heure = dictTemp["arrivee_heure"].replace(":", "h")
                 
-            # Création du label du schedule
+            # Crï¿½ation du label du schedule
             label = u"%s %s > %s %s" % (depart_heure, depart_nom, arrivee_heure, arrivee_nom)
             
             if (labelCategorie in dictTransports) == False :
@@ -481,7 +481,7 @@ class Case():
         self.badgeage_debut = None
         self.badgeage_fin = None
 
-        # Récupération du groupe en mode INDIVIDU
+        # Rï¿½cupï¿½ration du groupe en mode INDIVIDU
         if self.IDindividu in grid.dictInfosInscriptions :
             if self.IDactivite in grid.dictInfosInscriptions[self.IDindividu] :
                 if self.grid.mode == "individu" :
@@ -489,10 +489,10 @@ class Case():
                 if self.IDgroupe == None :
                     self.IDgroupe = grid.dictInfosInscriptions[self.IDindividu][self.IDactivite]["IDgroupe"]
 
-        # Recherche si l'activité est ouverte
+        # Recherche si l'activitï¿½ est ouverte
         self.ouvert = self.EstOuvert()
 
-        # Récupération des infos sur l'inscription
+        # Rï¿½cupï¿½ration des infos sur l'inscription
         self.dictInfosInscriptions = self.GetInscription() 
         if self.dictInfosInscriptions != None :
             self.IDcategorie_tarif = self.dictInfosInscriptions["IDcategorie_tarif"] 
@@ -501,7 +501,7 @@ class Case():
         return self.grid.dictUnites[self.IDunite]["type"]
 
     def EstOuvert(self):
-        """ Recherche si l'unité est ouverte à cette date """
+        """ Recherche si l'unitï¿½ est ouverte ï¿½ cette date """
         ouvert = False
         if self.date in self.grid.dictOuvertures:
             if self.IDgroupe in self.grid.dictOuvertures[self.date]:
@@ -518,7 +518,7 @@ class Case():
         return dictInfosInscriptions
 
     def MAJ_facturation(self, modeSilencieux=False, evenement=None, action="saisie"):
-        # Vérifie la période de gestion
+        # Vï¿½rifie la pï¿½riode de gestion
         if self.grid.gestion.Verification("consommations", self.date) == False : return False
 
         listeEtiquettes = []
@@ -541,7 +541,7 @@ class Case():
                             prenom = u"?"
                         nomCase = _(u"%s du %s pour %s %s") % (nomUnite, dateComplete, nom, prenom)
                         if modeSilencieux == False :
-                            dlg = wx.MessageDialog(self.grid, _(u"La prestation correspondant à cette consommation apparaît déjà sur une facture.\n\nIl est donc impossible de la modifier ou de la supprimer."), nomCase, wx.OK | wx.ICON_ERROR)
+                            dlg = wx.MessageDialog(self.grid, _(u"La prestation correspondant ï¿½ cette consommation apparaï¿½t dï¿½jï¿½ sur une facture.\n\nIl est donc impossible de la modifier ou de la supprimer."), nomCase, wx.OK | wx.ICON_ERROR)
                             dlg.ShowModal()
                             dlg.Destroy()
                         return False
@@ -575,9 +575,9 @@ class Case():
             nbreEtiquettes = len(conso.etiquettes)
             if nbreEtiquettes > 0 :
                 if nbreEtiquettes == 1 :
-                    texte += _(u"1 étiquette : \n")
+                    texte += _(u"1 ï¿½tiquette : \n")
                 else :
-                    texte += _(u"%d étiquettes : \n" % nbreEtiquettes)
+                    texte += _(u"%d ï¿½tiquettes : \n" % nbreEtiquettes)
                 for IDetiquette in conso.etiquettes :
                     if IDetiquette in self.grid.dictEtiquettes :
                         dictEtiquette = self.grid.dictEtiquettes[IDetiquette]
@@ -587,25 +587,25 @@ class Case():
             # Heures de la consommation
             if conso.etat in ("reservation", "attente", "present") :
                 if conso.heure_debut == None or conso.heure_fin == None :
-                    texte += _(u"Horaire de la consommation non spécifié\n")
+                    texte += _(u"Horaire de la consommation non spï¿½cifiï¿½\n")
                 else:
-                    texte += _(u"De %s à %s\n") % (conso.heure_debut.replace(":","h"), conso.heure_fin.replace(":","h"))
+                    texte += _(u"De %s ï¿½ %s\n") % (conso.heure_debut.replace(":","h"), conso.heure_fin.replace(":","h"))
                 if conso.IDgroupe in self.grid.dictGroupes :
                     texte += _(u"Sur le groupe %s \n") % self.grid.dictGroupes[conso.IDgroupe]["nom"]
                 else:
-                    texte += _(u"Groupe non spécifié\n")
+                    texte += _(u"Groupe non spï¿½cifiï¿½\n")
             
-            # Quantité
+            # Quantitï¿½
             if conso.quantite != None :
-                texte += _(u"Quantité : %d\n") % conso.quantite
+                texte += _(u"Quantitï¿½ : %d\n") % conso.quantite
         
             texte += u"\n"
         
-        # Si unité fermée
+        # Si unitï¿½ fermï¿½e
         if self.ouvert == False :
             return None
 
-        # Recherche nbre places évènements
+        # Recherche nbre places ï¿½vï¿½nements
         dictPlacesEvenement = None
         if evenement != None :
             dictPlacesEvenement = evenement.GetPlacesEvenement()
@@ -648,7 +648,7 @@ class Case():
 
 
                 if hasHoraires == True :
-                    # Version pour unités de remplissage AVEC horaires :
+                    # Version pour unitï¿½s de remplissage AVEC horaires :
                     nbrePlacesRestantes = None
                     for IDunite_remplissage, nom, heure_min, heure_max in listeUnitesRemplissage :
 
@@ -659,7 +659,7 @@ class Case():
                         seuil_alerte = dictInfosPlaces[IDunite_remplissage]["seuil_alerte"]
 
                         if str(heure_min) not in ("None", "00:00:00") and str(heure_max) not in ("None", "00:00:00") :
-                            texte += _(u"%s (de %s à %s) : \n") % (nom, UTILS_Dates.DatetimeTimeEnStr(heure_min), UTILS_Dates.DatetimeTimeEnStr(heure_max))
+                            texte += _(u"%s (de %s ï¿½ %s) : \n") % (nom, UTILS_Dates.DatetimeTimeEnStr(heure_min), UTILS_Dates.DatetimeTimeEnStr(heure_max))
                         else :
                             texte += u"%s : \n" % nom
                         if nbrePlacesInitial not in (None, 0) :
@@ -673,7 +673,7 @@ class Case():
                         texte += _(u"   - Nbre d'individus sur liste d'attente : %d \n") % nbreAttente
 
                 if hasHoraires == False :
-                    # Version pour unités de remplissage SANS horaires :
+                    # Version pour unitï¿½s de remplissage SANS horaires :
                     nbrePlacesRestantes = None
                     for IDunite_remplissage, nom, heure_min, heure_max in listeUnitesRemplissage :
                         if nbrePlacesRestantes == None or dictInfosPlaces[IDunite_remplissage]["nbrePlacesRestantes"] < nbrePlacesRestantes :
@@ -701,9 +701,9 @@ class Case():
         texte += "\n"
         if conso != None and conso.etat in ("reservation", "attente", "refus", "present") :
             date_saisie_FR = UTILS_Dates.DateComplete(conso.date_saisie)
-            if conso.etat == "reservation" or conso.etat == "present" : texte += _(u"Consommation réservée le %s\n") % date_saisie_FR
+            if conso.etat == "reservation" or conso.etat == "present" : texte += _(u"Consommation rï¿½servï¿½e le %s\n") % date_saisie_FR
             if conso.etat == "attente" : texte += _(u"Consommation mise en attente le %s\n") % date_saisie_FR
-            if conso.etat == "refus" : texte += _(u"Consommation refusée le %s\n") % date_saisie_FR
+            if conso.etat == "refus" : texte += _(u"Consommation refusï¿½e le %s\n") % date_saisie_FR
             if conso.IDutilisateur != None :
                 dictUtilisateur = UTILS_Identification.GetAutreDictUtilisateur(conso.IDutilisateur)
                 if dictUtilisateur != None :
@@ -732,17 +732,17 @@ class Case():
         nom_categorie_tarif = self.dictInfosInscriptions["nom_categorie_tarif"]
         if conso != None and conso.etat in ("reservation", "absenti", "absentj", "present") :
             texte += "\n"
-            texte += _(u"Catégorie de tarif : '%s'\n") % nom_categorie_tarif
-        # Déductions
+            texte += _(u"Catï¿½gorie de tarif : '%s'\n") % nom_categorie_tarif
+        # Dï¿½ductions
         if conso != None :
             if conso.IDprestation in self.grid.dictDeductions :
                 listeDeductions = self.grid.dictDeductions[conso.IDprestation]
                 if len(listeDeductions) == 1 :
-                    texte += _(u"1 déduction sur la prestation :\n")
+                    texte += _(u"1 dï¿½duction sur la prestation :\n")
                 else:
-                    texte += _(u"%d déductions sur la prestation :\n") % len(listeDeductions)
+                    texte += _(u"%d dï¿½ductions sur la prestation :\n") % len(listeDeductions)
                 for dictDeduction in listeDeductions :
-                    texte += u"   > %.2f ¤ (%s)\n" % (dictDeduction["montant"], dictDeduction["label"])
+                    texte += u"   > %.2f ï¿½ (%s)\n" % (dictDeduction["montant"], dictDeduction["label"])
         
         if texte.endswith("\n") : 
             texte = texte[:-1]
@@ -768,7 +768,7 @@ class Case():
         if self.ouvert == False :
             return
         
-        # Création du menu contextuel
+        # Crï¿½ation du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
 
         # Item IDENTIFICATION DE LA CASE
@@ -779,11 +779,11 @@ class Case():
         menuPop.AppendItem(item)
         item.Enable(False)
 
-        # Commandes spécifiques
+        # Commandes spï¿½cifiques
         if self.grid.tarifsForfaitsCreditsPresents == True :
             menuPop.AppendSeparator()
 
-            item = wx.MenuItem(menuPop, 200, _(u"Appliquer un forfait crédit"))
+            item = wx.MenuItem(menuPop, 200, _(u"Appliquer un forfait crï¿½dit"))
             item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Forfait.png"), wx.BITMAP_TYPE_PNG))
             menuPop.AppendItem(item)
             self.grid.Bind(wx.EVT_MENU, self.AppliquerForfaitCredit, id=200)            
@@ -792,7 +792,7 @@ class Case():
         if conso != None and conso.etat != None :
             menuPop.AppendSeparator()
             
-            item = wx.MenuItem(menuPop, 300, _(u"Sélectionner des étiquettes"))
+            item = wx.MenuItem(menuPop, 300, _(u"Sï¿½lectionner des ï¿½tiquettes"))
             item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Etiquette.png"), wx.BITMAP_TYPE_PNG))
             menuPop.AppendItem(item)
             self.grid.Bind(wx.EVT_MENU, self.SelectionnerEtiquettes, id=300)            
@@ -828,24 +828,24 @@ class Case():
             if conso.etat == "reservation" : item.Check(True)
             self.grid.Bind(wx.EVT_MENU, self.SetEtat, id=60)
             
-            item = wx.MenuItem(menuPop, 70, _(u"Présent"), kind=wx.ITEM_RADIO)
+            item = wx.MenuItem(menuPop, 70, _(u"Prï¿½sent"), kind=wx.ITEM_RADIO)
             menuPop.AppendItem(item)
             if conso.etat == "present" : item.Check(True)
             self.grid.Bind(wx.EVT_MENU, self.SetEtat, id=70)
             
-            item = wx.MenuItem(menuPop, 80, _(u"Absence justifiée"), kind=wx.ITEM_RADIO)
+            item = wx.MenuItem(menuPop, 80, _(u"Absence justifiï¿½e"), kind=wx.ITEM_RADIO)
             menuPop.AppendItem(item)
             if conso.etat == "absentj" : item.Check(True)
             self.grid.Bind(wx.EVT_MENU, self.SetEtat, id=80)
             
-            item = wx.MenuItem(menuPop, 90, _(u"Absence injustifée"), kind=wx.ITEM_RADIO)
+            item = wx.MenuItem(menuPop, 90, _(u"Absence injustifï¿½e"), kind=wx.ITEM_RADIO)
             menuPop.AppendItem(item)
             if conso.etat == "absenti" : item.Check(True)
             self.grid.Bind(wx.EVT_MENU, self.SetEtat, id=90)
         
         if conso != None and conso.etat in ("reservation", "attente", "refus") and conso.forfait == None :
             menuPop.AppendSeparator()
-            item = wx.MenuItem(menuPop, 30, _(u"Réservation"), kind=wx.ITEM_RADIO)
+            item = wx.MenuItem(menuPop, 30, _(u"Rï¿½servation"), kind=wx.ITEM_RADIO)
             menuPop.AppendItem(item)
             if conso.etat == "reservation" : item.Check(True)
             self.grid.Bind(wx.EVT_MENU, self.SetEtat, id=30)
@@ -873,7 +873,7 @@ class Case():
                 if conso.IDgroupe == IDgroupe : item.Check(True)
                 self.grid.Bind(wx.EVT_MENU, self.SetGroupe, id=IDitem)
                 
-        # Détail de la consommation
+        # Dï¿½tail de la consommation
         if conso != None and conso.etat in ("reservation", "present", "absenti", "absentj", "attente", "refus") :
             menuPop.AppendSeparator()
             
@@ -883,7 +883,7 @@ class Case():
             menuPop.AppendItem(item)
             self.grid.Bind(wx.EVT_MENU, self.MAJ_facturation_menu, id=100)            
             
-            item = wx.MenuItem(menuPop, 20, _(u"Détail de la consommation"))
+            item = wx.MenuItem(menuPop, 20, _(u"Dï¿½tail de la consommation"))
             bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Calendrier_zoom.png"), wx.BITMAP_TYPE_PNG)
             item.SetBitmap(bmp)
             menuPop.AppendItem(item)
@@ -916,14 +916,14 @@ class Case():
             
             etiquettesRemplissage = self.grid.dictRemplissage[IDunite_remplissage]["etiquettes"]
             
-            # Récupère le nombre de places restantes pour le groupe
+            # Rï¿½cupï¿½re le nombre de places restantes pour le groupe
             nbrePlacesInitial = 0
             try :
                 nbrePlacesInitial = self.grid.dictRemplissage[IDunite_remplissage][self.date][self.IDgroupe]
             except :
                 nbrePlacesInitial = 0
             
-            # Filtre étiquettes
+            # Filtre ï¿½tiquettes
             if len(etiquettesRemplissage) > 0 :
                 etiquettesCommunes = set(etiquettesRemplissage) & set(etiquettesCoches)
                 if len(etiquettesCommunes) == 0 :
@@ -944,7 +944,7 @@ class Case():
             if nbrePlacesPrises == None : nbrePlacesPrises = 0
             nbrePlacesRestantes = nbrePlacesInitial - nbrePlacesPrises
             
-            # Récupère le nombre de places restantes pour l'ensemble des groupes
+            # Rï¿½cupï¿½re le nombre de places restantes pour l'ensemble des groupes
             nbrePlacesInitialTousGroupes = 0
             try :
                 nbrePlacesInitialTousGroupes = self.grid.dictRemplissage[IDunite_remplissage][self.date][None]
@@ -966,12 +966,12 @@ class Case():
                     nbrePlacesPrises = nbrePlacesPrisesTousGroupes
                     nbrePlacesRestantes = nbrePlacesRestantesTousGroupes
                     
-            # Récupère le seuil_alerte
+            # Rï¿½cupï¿½re le seuil_alerte
             seuil_alerte = self.grid.dictRemplissage[IDunite_remplissage]["seuil_alerte"]
             if seuil_alerte == None :
                 seuil_alerte = 0
                         
-            # Création d'un dictionnaire de réponses
+            # Crï¿½ation d'un dictionnaire de rï¿½ponses
             dictInfosPlaces[IDunite_remplissage] = {
                 "nbrePlacesInitial" : nbrePlacesInitial, 
                 "nbrePlacesPrises" : nbrePlacesPrises, 
@@ -988,7 +988,7 @@ class Case():
     def Refresh(self):
         rect = self.GetRect()
         x, y = self.grid.CalcScrolledPosition(rect.GetX(), rect.GetY())
-        rect = wx.Rect(x, y, rect.GetWidth(), rect.GetHeight())
+        rect = wx.Rect(int(x), int(y), int(rect.GetWidth()), int(rect.GetHeight()))
         self.grid.GetGridWindow().Refresh(False, rect)
 
     def MAJremplissage(self):
@@ -999,9 +999,9 @@ class Case():
             self.grid.MAJcouleurCases(saufLigne=None)
             self.grid.GetGrandParent().MAJ_totaux_contenu()
         else:
-            #self.ligne.MAJcouleurCases(saufCase=self) # Cette ligne ne mettait pas à jour si fraterie affichée
+            #self.ligne.MAJcouleurCases(saufCase=self) # Cette ligne ne mettait pas ï¿½ jour si fraterie affichï¿½e
 
-            # Met à jour l'affichage de toutes les lignes de la même date (pour prendre en charge les frateries)
+            # Met ï¿½ jour l'affichage de toutes les lignes de la mï¿½me date (pour prendre en charge les frateries)
             for numLigne, ligne in self.grid.dictLignes.items() :
                 if ligne.estSeparation == False and ligne.date == self.date :
                     ligne.MAJcouleurCases()
@@ -1021,55 +1021,55 @@ class Case():
         """ Protections anti modif et suppression de conso """
         # Si la conso est dans une facture, on annule la suppression
         if conso.IDfacture != None :
-            dlg = wx.MessageDialog(self.grid, _(u"Cette consommation apparaît sur une facture déjà éditée.\nIl est donc impossible de la supprimer !\n\n(Pour la supprimer, il faut d'abord annuler la facture)"), _(u"Consommation verrouillée"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self.grid, _(u"Cette consommation apparaï¿½t sur une facture dï¿½jï¿½ ï¿½ditï¿½e.\nIl est donc impossible de la supprimer !\n\n(Pour la supprimer, il faut d'abord annuler la facture)"), _(u"Consommation verrouillï¿½e"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
         
         # Si la conso est dans un forfait non supprimable
         if conso.forfait == 2 :
-            dlg = wx.MessageDialog(self.grid, _(u"Cette consommation fait partie d'un forfait qui ne peut être supprimé !\n\n(Pour le supprimer, il faut désinscrire l'individu de cette activité)"), _(u"Consommation verrouillée"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self.grid, _(u"Cette consommation fait partie d'un forfait qui ne peut ï¿½tre supprimï¿½ !\n\n(Pour le supprimer, il faut dï¿½sinscrire l'individu de cette activitï¿½)"), _(u"Consommation verrouillï¿½e"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
 
-        # Si la conso est verrouillée, on annule l'action
+        # Si la conso est verrouillï¿½e, on annule l'action
         if conso.verrouillage == 1 :
             if modeSilencieux == False :
-                dlg = wx.MessageDialog(self.grid, _(u"Vous ne pouvez pas modifier une consommation verrouillée !"), _(u"Consommation verrouillée"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self.grid, _(u"Vous ne pouvez pas modifier une consommation verrouillï¿½e !"), _(u"Consommation verrouillï¿½e"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
             return False
 
         # Si la conso est "present", on annule l'action
         if conso.etat == "present" and modeSilencieux == False :
-            dlg = wx.MessageDialog(self.grid, _(u"Vous ne pouvez pas modifier une consommation pointée 'présent' !"), _(u"Consommation verrouillée"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self.grid, _(u"Vous ne pouvez pas modifier une consommation pointï¿½e 'prï¿½sent' !"), _(u"Consommation verrouillï¿½e"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
         
         # Si la conso est "absent", on annule l'action
         if (conso.etat == "absenti" or conso.etat == "absentj") and modeSilencieux == False :
-            dlg = wx.MessageDialog(self.grid, _(u"Vous ne pouvez pas supprimer une consommation pointée 'absent' !"), _(u"Consommation verrouillée"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self.grid, _(u"Vous ne pouvez pas supprimer une consommation pointï¿½e 'absent' !"), _(u"Consommation verrouillï¿½e"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
 
-        # Regarde si la prestation apparaît déjà sur une facture
+        # Regarde si la prestation apparaï¿½t dï¿½jï¿½ sur une facture
         if conso.IDprestation in self.grid.dictPrestations :
             prestation = self.grid.dictPrestations[conso.IDprestation]
             if prestation["IDfacture"] and not prestation["forfait_date_debut"]:
-                dlg = wx.MessageDialog(self.grid, _(u"La prestation correspondant à cette consommation apparaît déjà sur une facture.\n\nIl est donc impossible de la modifier ou de la supprimer."), _(u"Consommation verrouillée"), wx.OK | wx.ICON_ERROR)
+                dlg = wx.MessageDialog(self.grid, _(u"La prestation correspondant ï¿½ cette consommation apparaï¿½t dï¿½jï¿½ sur une facture.\n\nIl est donc impossible de la modifier ou de la supprimer."), _(u"Consommation verrouillï¿½e"), wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
 
-        # Regarde si la prestation correspondante est déja payée
+        # Regarde si la prestation correspondante est dï¿½ja payï¿½e
         if conso.IDprestation in self.grid.dictPrestations and modeSilencieux == False :
             montantPrestation = self.grid.dictPrestations[conso.IDprestation]["montant"]
             montantVentilation = self.grid.dictPrestations[conso.IDprestation]["montantVentilation"]
             if montantVentilation > 0.0 :
-                message = _(u"La prestation correspondant à cette consommation a déjà été ventilée sur un règlement.\n\nSouhaitez-vous quand-même modifier ou supprimer cette consommation ? \n\n(Dans ce cas, la ventilation sera supprimée)")
+                message = _(u"La prestation correspondant ï¿½ cette consommation a dï¿½jï¿½ ï¿½tï¿½ ventilï¿½e sur un rï¿½glement.\n\nSouhaitez-vous quand-mï¿½me modifier ou supprimer cette consommation ? \n\n(Dans ce cas, la ventilation sera supprimï¿½e)")
                 dlg = wx.MessageDialog(self.grid, message, _(u"Suppression"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
                 reponse = dlg.ShowModal() 
                 dlg.Destroy()
@@ -1082,7 +1082,7 @@ class Case():
         for code, IDunite in self.grid.listeTouchesRaccourcis :
             if IDunite != self.IDunite :
                 if wx.GetKeyState(Touches.DICT_TOUCHES[code][1]) == True :
-                    # Création d'une conso supp
+                    # Crï¿½ation d'une conso supp
                     for numColonne, case in self.ligne.dictCases.items() :
                         if case.typeCase == "consommation" :
                             if case.IDunite == IDunite :
@@ -1164,7 +1164,7 @@ class CaseStandard(Case):
         # Recherche s'il y a des conso pour cette case
         self.conso = self.GetConso() 
 
-        # Importation des données de la conso
+        # Importation des donnï¿½es de la conso
         if self.conso != None :
             self.IDconso = self.conso.IDconso
             self.heure_debut = self.conso.heure_debut
@@ -1216,23 +1216,23 @@ class CaseStandard(Case):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("consommations_conso", "modifier", IDactivite=self.IDactivite) == False : return
         action = None
 
-        # Vérifie la période de gestion
+        # Vï¿½rifie la pï¿½riode de gestion
         if self.grid.gestion.Verification("consommations", self.date) == False : return False
 
-        # Récupération du mode de saisie
+        # Rï¿½cupï¿½ration du mode de saisie
         mode = self.grid.GetGrandParent().panel_grille.GetMode()
         
-        # Récupération des étiquettes
+        # Rï¿½cupï¿½ration des ï¿½tiquettes
         if etiquettes != None :
             self.etiquettes = etiquettes
         else :
             self.etiquettes = self.grid.GetGrandParent().panel_etiquettes.GetCoches(self.IDactivite)
         
-        # Si l'unité est fermée
+        # Si l'unitï¿½ est fermï¿½e
         if self.ouvert == False : 
             return
         
-        # Quantité actuelle
+        # Quantitï¿½ actuelle
         if self.quantite != None :
             quantiteTemp = self.quantite
         else:
@@ -1244,17 +1244,17 @@ class CaseStandard(Case):
             if self.etat in ("present", "absenti", "absentj") :
                 self.ModifieEtat(etat="reservation")
             return
-        if wx.GetKeyState(112) == True : # Touche "p" pour Présent
+        if wx.GetKeyState(112) == True : # Touche "p" pour Prï¿½sent
             if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("consommations_conso", "modifier", IDactivite=self.IDactivite) == False : return
             if self.etat in ("reservation", "absenti", "absentj") :
                 self.ModifieEtat(etat="present")
             return
-        if wx.GetKeyState(105) == True : # Touche "i" pour Absence injustifée
+        if wx.GetKeyState(105) == True : # Touche "i" pour Absence injustifï¿½e
             if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("consommations_conso", "modifier", IDactivite=self.IDactivite) == False : return
             if self.etat in ("reservation", "present", "absentj") :
                 self.ModifieEtat(etat="absenti")
             return
-        if wx.GetKeyState(106) == True : # Touche "j" pour Absence justifiée
+        if wx.GetKeyState(106) == True : # Touche "j" pour Absence justifiï¿½e
             if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("consommations_conso", "modifier", IDactivite=self.IDactivite) == False : return
             if self.etat in ("reservation", "present", "absenti") :
                 self.ModifieEtat(etat="absentj")
@@ -1277,7 +1277,7 @@ class CaseStandard(Case):
             # Demande la confirmation de la suppression du forfait
             if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("consommations_conso", "supprimer", IDactivite=self.IDactivite) == False : return
             
-            dlg = wx.MessageDialog(self.grid, _(u"Cette consommation fait partie d'un forfait supprimable.\n\nSouhaitez-vous supprimer le forfait et toutes les consommations rattachées ?"), _(u"Suppression"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self.grid, _(u"Cette consommation fait partie d'un forfait supprimable.\n\nSouhaitez-vous supprimer le forfait et toutes les consommations rattachï¿½es ?"), _(u"Suppression"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
             reponse = dlg.ShowModal()
             dlg.Destroy()
             if reponse == wx.ID_YES :
@@ -1293,11 +1293,11 @@ class CaseStandard(Case):
             heure_debut_fixe = self.grid.dictUnites[self.IDunite]["heure_debut_fixe"]
             heure_fin_fixe = self.grid.dictUnites[self.IDunite]["heure_fin_fixe"]
                         
-            # Si c'est une unité HORAIRE -> Propose une modification ou une suppression
+            # Si c'est une unitï¿½ HORAIRE -> Propose une modification ou une suppression
             if typeUnite == "Horaire" :
                 
                 if saisieHeureDebut != None or saisieHeureFin!= None :
-                    # Envoi direct des heures à saisir
+                    # Envoi direct des heures ï¿½ saisir
                     if saisieHeureDebut != None :
                         heure_debut = saisieHeureDebut
                     else :
@@ -1340,7 +1340,7 @@ class CaseStandard(Case):
                     if self.IDconso != None : self.statut = "modification"
                     self.grid.listeHistorique.append((self.IDindividu, self.date, self.IDunite, _(u"Modification d'une consommation horaire")))
                     
-                    # Mémorisation des horaires pour le raccourci
+                    # Mï¿½morisation des horaires pour le raccourci
                     self.grid.memoireHoraires[self.IDunite] = {"heure_debut":heure_debut, "heure_fin":heure_fin}
                     action = "modification"
                     
@@ -1358,11 +1358,11 @@ class CaseStandard(Case):
                     return
 
 
-            # Si c'est une unité QUANTITE -> Propose une modification ou une suppression
+            # Si c'est une unitï¿½ QUANTITE -> Propose une modification ou une suppression
             if typeUnite == "Quantite" :
                 
                 if saisieQuantite != None :
-                    # Envoi direct de la quantité à saisir
+                    # Envoi direct de la quantitï¿½ ï¿½ saisir
                     quantite = saisieQuantite
                     reponse = wx.ID_OK
 
@@ -1379,7 +1379,7 @@ class CaseStandard(Case):
                     reponse = 3
                     
                 else :
-                    # Demande la quantité
+                    # Demande la quantitï¿½
                     from Dlg import DLG_Saisie_conso_quantite
                     dlg = DLG_Saisie_conso_quantite.Dialog(None, nouveau=False)
                     dlg.SetQuantite(self.quantite)
@@ -1388,23 +1388,23 @@ class CaseStandard(Case):
                     dlg.Destroy()
                 
                 if reponse == wx.ID_OK:
-                    # Modification de la quantité
+                    # Modification de la quantitï¿½
                     if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("consommations_conso", "modifier", IDactivite=self.IDactivite) == False : return
                     self.quantite = quantite
                     if self.IDconso != None : self.statut = "modification"
-                    self.grid.listeHistorique.append((self.IDindividu, self.date, self.IDunite, _(u"Modification d'une consommation quantité")))
+                    self.grid.listeHistorique.append((self.IDindividu, self.date, self.IDunite, _(u"Modification d'une consommation quantitï¿½")))
                     action = "modification"
 
-                    # Mémorisation des horaires pour le raccourci
+                    # Mï¿½morisation des horaires pour le raccourci
                     self.grid.memoireHoraires[self.IDunite] = {"quantite":quantite}
                     
                 elif reponse == 3 :
-                    # Suppression de la conso quantité
+                    # Suppression de la conso quantitï¿½
                     if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("consommations_conso", "supprimer", IDactivite=self.IDactivite) == False : return
                     self.etat = None
                     if self.IDconso != None : self.statut = "suppression"
                     if self.IDconso == None : self.statut = None
-                    self.grid.listeHistorique.append((self.IDindividu, self.date, self.IDunite, _(u"Suppression d'une consommation quantité")))
+                    self.grid.listeHistorique.append((self.IDindividu, self.date, self.IDunite, _(u"Suppression d'une consommation quantitï¿½")))
                     action = "suppression"
 
                 else:
@@ -1413,7 +1413,7 @@ class CaseStandard(Case):
 
 
             if typeUnite == "Unitaire" :
-                # Si c'est une unité STANDARD :   Suppression
+                # Si c'est une unitï¿½ STANDARD :   Suppression
                 if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("consommations_conso", "supprimer", IDactivite=self.IDactivite) == False : return
                 self.etat = None
                 if self.IDconso != None : self.statut = "suppression"
@@ -1423,25 +1423,25 @@ class CaseStandard(Case):
 
         else:
 
-            # Réservation
+            # Rï¿½servation
             if self.etat == None and mode in ("reservation", "attente", "refus"):
                 self.etat = mode
                 action = "saisie"
 
                 if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("consommations_conso", "creer", IDactivite=self.IDactivite) == False : return
                 
-                # Vérifie d'abord qu'il n'y a aucune incompatibilités entre unités
+                # Vï¿½rifie d'abord qu'il n'y a aucune incompatibilitï¿½s entre unitï¿½s
                 if mode == "reservation" :
                     incompatibilite = self.VerifieCompatibilitesUnites()
                     if incompatibilite != None :
                         nomUniteCase = self.grid.dictUnites[self.IDunite]["nom"]
                         nomUniteIncompatible = self.grid.dictUnites[incompatibilite]["nom"]
-                        dlg = wx.MessageDialog(self.grid, _(u"L'unité %s est incompatible avec l'unité %s déjà sélectionnée !") % (nomUniteCase, nomUniteIncompatible), _(u"Incompatibilités d'unités"), wx.OK | wx.ICON_EXCLAMATION)
+                        dlg = wx.MessageDialog(self.grid, _(u"L'unitï¿½ %s est incompatible avec l'unitï¿½ %s dï¿½jï¿½ sï¿½lectionnï¿½e !") % (nomUniteCase, nomUniteIncompatible), _(u"Incompatibilitï¿½s d'unitï¿½s"), wx.OK | wx.ICON_EXCLAMATION)
                         dlg.ShowModal()
                         dlg.Destroy()
                         return
                 
-                # Demande les heures de début et de fin si c'est une unité horaire
+                # Demande les heures de dï¿½but et de fin si c'est une unitï¿½ horaire
                 self.heure_debut = self.grid.dictUnites[self.IDunite]["heure_debut"]
                 self.heure_fin = self.grid.dictUnites[self.IDunite]["heure_fin"]
                 typeUnite = self.grid.dictUnites[self.IDunite]["type"]
@@ -1449,7 +1449,7 @@ class CaseStandard(Case):
                 heure_fin_fixe = self.grid.dictUnites[self.IDunite]["heure_fin_fixe"]
                 
                 if saisieHeureDebut != None or saisieHeureFin != None :
-                    # Envoi direct des heures à saisir
+                    # Envoi direct des heures ï¿½ saisir
                     if saisieHeureDebut != None :
                         heure_debut = saisieHeureDebut
                     else :
@@ -1463,7 +1463,7 @@ class CaseStandard(Case):
                     self.heure_fin = heure_fin
                     
                 if saisieQuantite != None :
-                    # Envoi direct de la quantité à saisir
+                    # Envoi direct de la quantitï¿½ ï¿½ saisir
                     quantite = saisieQuantite
                     reponse = wx.ID_OK
                     self.quantite = quantite
@@ -1496,7 +1496,7 @@ class CaseStandard(Case):
                         self.heure_debut = heure_debut
                         self.heure_fin = heure_fin
 
-                        # Mémorisation des horaires pour le raccourci
+                        # Mï¿½morisation des horaires pour le raccourci
                         self.grid.memoireHoraires[self.IDunite] = {"heure_debut":heure_debut, "heure_fin":heure_fin}
                     
                     else:
@@ -1505,7 +1505,7 @@ class CaseStandard(Case):
                 if typeUnite == "Quantite" :
 
                     if wx.GetKeyState(99) == True :
-                        # Raccourci touche C pour copier la quantité
+                        # Raccourci touche C pour copier la quantitï¿½
                         if self.IDunite in self.grid.memoireHoraires :
                             quantite = self.grid.memoireHoraires[self.IDunite]["quantite"]
                             reponse = wx.ID_OK
@@ -1515,7 +1515,7 @@ class CaseStandard(Case):
                     else :
                         
                         if saisieQuantite == None :
-                            # Demande la saisie de la quantité
+                            # Demande la saisie de la quantitï¿½
                             from Dlg import DLG_Saisie_conso_quantite
                             dlg = DLG_Saisie_conso_quantite.Dialog(None, nouveau=True)
                             dlg.SetQuantite(self.quantite)
@@ -1526,24 +1526,24 @@ class CaseStandard(Case):
                     if reponse == wx.ID_OK:
                         self.quantite = quantite
 
-                        # Mémorisation de la quantité pour le raccourci
+                        # Mï¿½morisation de la quantitï¿½ pour le raccourci
                         self.grid.memoireHoraires[self.IDunite] = {"quantite":quantite}
                     
                     else :
                         return
                 
-                # Vérifie qu'il y a de la place
+                # Vï¿½rifie qu'il y a de la place
                 if mode == "reservation":
                     if self.grid.blocageSiComplet == True and self.HasPlaceDisponible() == False :
                         if modeSilencieux == True :
                             return False
-                        dlg = wx.MessageDialog(None, _(u"Il n'y a plus de places disponibles.\n\nSouhaitez-vous quand même saisir une consommation ?"), _(u"Complet !"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+                        dlg = wx.MessageDialog(None, _(u"Il n'y a plus de places disponibles.\n\nSouhaitez-vous quand mï¿½me saisir une consommation ?"), _(u"Complet !"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
                         reponse = dlg.ShowModal()
                         dlg.Destroy()
                         if reponse != wx.ID_YES :
                             return
                     
-                # Modifie l'état de la case
+                # Modifie l'ï¿½tat de la case
                 #self.etat = "reservation"
                 self.date_saisie = datetime.date.today()
                 self.IDcategorie_tarif = self.dictInfosInscriptions["IDcategorie_tarif"] 
@@ -1559,11 +1559,11 @@ class CaseStandard(Case):
                     self.IDgroupe = None
 
                 if mode == "reservation" :
-                    texte = _(u"Saisie d'une réservation de consommation")
+                    texte = _(u"Saisie d'une rï¿½servation de consommation")
                 elif mode == "attente" :
                     texte = _(u"Saisie d'une consommation en attente")
                 else :
-                    texte = _(u"Saisie d'une consommation refusée")
+                    texte = _(u"Saisie d'une consommation refusï¿½e")
                 self.grid.listeHistorique.append((self.IDindividu, self.date, self.IDunite, texte))
 
             # Modifie le statut de la case
@@ -1572,13 +1572,13 @@ class CaseStandard(Case):
             if self.IDconso != None :
                 self.statut = "modification"
 
-        # Mémoire badgeage
+        # Mï¿½moire badgeage
         if badgeage_debut != None :
             self.badgeage_debut = badgeage_debut
         if badgeage_fin != None :
             self.badgeage_fin = badgeage_fin
 
-        # Sauvegarde des données dans le dictConsoIndividus
+        # Sauvegarde des donnï¿½es dans le dictConsoIndividus
         self.MemoriseValeurs()
                 
         # Facturation
@@ -1587,10 +1587,10 @@ class CaseStandard(Case):
         # Change l'apparence de la case
         self.Refresh()
 
-        # MAJ Données remplissage
+        # MAJ Donnï¿½es remplissage
         self.MAJremplissage()
 
-        # Autogénération
+        # Autogï¿½nï¿½ration
         self.grid.Autogeneration(ligne=self.ligne, IDactivite=self.IDactivite, IDunite=self.IDunite)
         
         
@@ -1663,7 +1663,7 @@ class CaseStandard(Case):
         return self.ContextMenu(self.conso)
         
     def SetGroupe(self, event):
-        # Vérifie la période de gestion
+        # Vï¿½rifie la pï¿½riode de gestion
         if self.grid.gestion.Verification("consommations", self.date) == False : return False
 
         IDgroupe = event.GetId() - 10000
@@ -1690,10 +1690,10 @@ class CaseStandard(Case):
     def ModifieEtat(self, conso=None, etat="reservation"):
         ancienEtat = self.etat
 
-        # Vérifie la période de gestion
+        # Vï¿½rifie la pï¿½riode de gestion
         if self.grid.gestion.Verification("consommations", self.date) == False : return False
 
-        # Vérifie si prestation correspondante déjà facturée
+        # Vï¿½rifie si prestation correspondante dï¿½jï¿½ facturï¿½e
         if self.IDprestation in self.grid.dictPrestations :
             prestation = self.grid.dictPrestations[self.IDprestation]
             if prestation["IDfacture"] and not prestation["forfait_date_debut"]:
@@ -1703,12 +1703,12 @@ class CaseStandard(Case):
                 if etat in (None, "attente", "refus", "absentj") and ancienEtat in ("reservation", "present", "absenti") : 
                     changementPossible = False
                 if changementPossible == False :
-                    dlg = wx.MessageDialog(self.grid, _(u"La prestation correspondant à cette consommation apparaît déjà sur une facture.\n\nIl est donc impossible de la modifier ou de la supprimer."), _(u"Consommation verrouillée"), wx.OK | wx.ICON_ERROR)
+                    dlg = wx.MessageDialog(self.grid, _(u"La prestation correspondant ï¿½ cette consommation apparaï¿½t dï¿½jï¿½ sur une facture.\n\nIl est donc impossible de la modifier ou de la supprimer."), _(u"Consommation verrouillï¿½e"), wx.OK | wx.ICON_ERROR)
                     dlg.ShowModal()
                     dlg.Destroy()
                     return False
         
-        # Modifier état
+        # Modifier ï¿½tat
         self.etat = etat
         self.MemoriseValeurs()
 
@@ -1717,7 +1717,7 @@ class CaseStandard(Case):
         
         self.Refresh()
         self.MAJremplissage() 
-        self.grid.listeHistorique.append((self.IDindividu, self.date, self.IDunite, _(u"Modification de l'état d'une consommation")))
+        self.grid.listeHistorique.append((self.IDindividu, self.date, self.IDunite, _(u"Modification de l'ï¿½tat d'une consommation")))
         self.grid.Autogeneration(ligne=self.ligne, IDactivite=self.IDactivite, IDunite=self.IDunite)
 
     def Verrouillage(self, event):
@@ -1758,17 +1758,17 @@ class CaseStandard(Case):
         self.OnClick()
         
     def Modifier(self, event=None):
-        """ Modifier la consommation sélectionnée """
+        """ Modifier la consommation sï¿½lectionnï¿½e """
         self.OnClick()
     
     def Supprimer(self, event=None):
-        """ Supprimer la consommation sélectionnée """
+        """ Supprimer la consommation sï¿½lectionnï¿½e """
         for conso in self.GetListeConso() :
             if conso.etat != None :
                 self.OnClick()
 
     def IsCaseDisponible(self, heure_debut=None, heure_fin=None):
-        """ Regarde si conso existe déjà sur ce créneau """
+        """ Regarde si conso existe dï¿½jï¿½ sur ce crï¿½neau """
         for conso in self.GetListeConso() :
             if conso.etat == None :
                 return True
@@ -1795,7 +1795,7 @@ class CaseStandard(Case):
         return texte
 
     def SelectionnerEtiquettes(self, event):
-        # Vérifie la période de gestion
+        # Vï¿½rifie la pï¿½riode de gestion
         if self.grid.gestion.Verification("consommations", self.date) == False : return False
 
         listeCoches = self.conso.etiquettes
@@ -1837,30 +1837,30 @@ class Barre():
 
     def UpdateRect(self):
         rectCase = self.case.GetRect()
-        # vérifie que les heures sont ok
+        # vï¿½rifie que les heures sont ok
         self.heure_debut = UTILS_Dates.HeureStrEnTime(self.conso.heure_debut)
         self.heure_fin = UTILS_Dates.HeureStrEnTime(self.conso.heure_fin)
         # Recherche des positions
         posG = self.case.HeureEnPos(self.heure_debut)
         posD = self.case.HeureEnPos(self.heure_fin)
-        # Création du wx.rect
+        # Crï¿½ation du wx.rect
         x = CTRL_Grille_renderers.PADDING_MULTIHORAIRES["horizontal"] + posG
         largeur = posD - posG
         y = CTRL_Grille_renderers.PADDING_MULTIHORAIRES["vertical"]
         hauteur = rectCase.GetHeight() -  CTRL_Grille_renderers.PADDING_MULTIHORAIRES["vertical"] * 2
-        self.rectBarre = wx.Rect(x, y, largeur, hauteur)
+        self.rectBarre = wx.Rect(int(x), int(y), int(largeur), int(hauteur))
 
     def GetRect(self, mode="case"):
         """ Modes : 
-        case = les coordonnées dans la case
-        grid = les coordonnées dans la grid
+        case = les coordonnï¿½es dans la case
+        grid = les coordonnï¿½es dans la grid
         """
         if self.rectBarre == None :
             return None
         if mode == "case" :
             return self.rectBarre
         if mode == "grid" :
-            return wx.Rect(self.rectBarre.x + self.case.GetRect().x, self.rectBarre.y + self.case.GetRect().y, self.rectBarre.GetWidth(), self.rectBarre.GetHeight())
+            return wx.Rect(int(self.rectBarre.x + self.case.GetRect().x), int(self.rectBarre.y + self.case.GetRect().y), int(self.rectBarre.GetWidth()), int(self.rectBarre.GetHeight()))
     
     def Refresh(self):
         self.case.Refresh()
@@ -1914,7 +1914,7 @@ class CaseMultihoraires(Case):
         self.grid.SetCellRenderer(self.numLigne, self.numColonne, self.renderer)
         self.grid.SetReadOnly(self.numLigne, self.numColonne, True)
         
-        # Création des barres
+        # Crï¿½ation des barres
         self.listeBarres = self.GetListeBarres()
         
     def GetListeConso(self):
@@ -1944,7 +1944,7 @@ class CaseMultihoraires(Case):
         return self.GetRect().GetWidth() - CTRL_Grille_renderers.PADDING_MULTIHORAIRES["horizontal"] * 2
         
     def ContraintesCalque(self, barreCible, heure_debut, heure_fin):
-        """ Vérifie si un calque ne se superpose sur un autre du même calque """
+        """ Vï¿½rifie si un calque ne se superpose sur un autre du mï¿½me calque """
         numCalque = barreCible.calque 
         for barre in self.listeBarres :
             if barre.calque == numCalque and barre != barreCible :
@@ -1999,7 +1999,7 @@ class CaseMultihoraires(Case):
                     else:
                         contains = rectBarre.ContainsXY(x, y)
                     if contains == True :
-                        # Région
+                        # Rï¿½gion
                         if x < rectBarre.width / 4.0 + rectBarre.x :
                             region = "gauche"
                             ecart = x - rectBarre.x
@@ -2013,7 +2013,7 @@ class CaseMultihoraires(Case):
         return None
 
     def SetGroupe(self, event):
-        # Vérifie la période de gestion
+        # Vï¿½rifie la pï¿½riode de gestion
         if self.grid.gestion.Verification("consommations", self.date) == False : return False
 
         barre = self.barreContextMenu
@@ -2043,10 +2043,10 @@ class CaseMultihoraires(Case):
     def ModifieEtat(self, conso=None, etat="reservation"):
         ancienEtat = conso.etat
 
-        # Vérifie la période de gestion
+        # Vï¿½rifie la pï¿½riode de gestion
         if self.grid.gestion.Verification("consommations", self.date) == False : return False
 
-        # Vérifie si prestation correspondante déjà facturée
+        # Vï¿½rifie si prestation correspondante dï¿½jï¿½ facturï¿½e
         if conso.IDprestation in self.grid.dictPrestations :
             prestation = self.grid.dictPrestations[conso.IDprestation]
             if prestation["IDfacture"] and not prestation["forfait_date_debut"]:
@@ -2056,7 +2056,7 @@ class CaseMultihoraires(Case):
                 if etat in (None, "attente", "refus", "absentj") and ancienEtat in ("reservation", "present", "absenti") : 
                     changementPossible = False
                 if changementPossible == False :
-                    dlg = wx.MessageDialog(self.grid, _(u"La prestation correspondant à cette consommation apparaît déjà sur une facture.\n\nIl est donc impossible de la modifier ou de la supprimer."), _(u"Consommation verrouillée"), wx.OK | wx.ICON_ERROR)
+                    dlg = wx.MessageDialog(self.grid, _(u"La prestation correspondant ï¿½ cette consommation apparaï¿½t dï¿½jï¿½ sur une facture.\n\nIl est donc impossible de la modifier ou de la supprimer."), _(u"Consommation verrouillï¿½e"), wx.OK | wx.ICON_ERROR)
                     dlg.ShowModal()
                     dlg.Destroy()
                     return False
@@ -2073,7 +2073,7 @@ class CaseMultihoraires(Case):
             
         barre.Refresh()
         self.MAJremplissage() 
-        self.grid.listeHistorique.append((self.IDindividu, self.date, self.IDunite, _(u"Modification de l'état d'une consommation multihoraires")))
+        self.grid.listeHistorique.append((self.IDindividu, self.date, self.IDunite, _(u"Modification de l'ï¿½tat d'une consommation multihoraires")))
         
     def Verrouillage(self, event):
         pass
@@ -2107,31 +2107,31 @@ class CaseMultihoraires(Case):
         dlg.Destroy()
     
     def SaisieBarre(self, heure_debut=None, heure_fin=None, modeSilencieux=False, TouchesRaccourciActives=True, etiquettes=None, badgeage_debut=None, badgeage_fin=None):
-        """ Création d'une barre + conso """        
-        # Vérifie d'abord qu'il n'y a aucune incompatibilités entre unités
+        """ Crï¿½ation d'une barre + conso """        
+        # Vï¿½rifie d'abord qu'il n'y a aucune incompatibilitï¿½s entre unitï¿½s
         incompatibilite = self.VerifieCompatibilitesUnites()
         if incompatibilite != None :
             nomUniteCase = self.grid.dictUnites[self.IDunite]["nom"]
             nomUniteIncompatible = self.grid.dictUnites[incompatibilite]["nom"]
-            dlg = wx.MessageDialog(self.grid, _(u"L'unité %s est incompatible avec l'unité %s déjà sélectionnée !") % (nomUniteCase, nomUniteIncompatible), _(u"Incompatibilités d'unités"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self.grid, _(u"L'unitï¿½ %s est incompatible avec l'unitï¿½ %s dï¿½jï¿½ sï¿½lectionnï¿½e !") % (nomUniteCase, nomUniteIncompatible), _(u"Incompatibilitï¿½s d'unitï¿½s"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
-        # Vérifie que la case n'est pas déjà occupée
+        # Vï¿½rifie que la case n'est pas dï¿½jï¿½ occupï¿½e
         if self.IsCaseDisponible(heure_debut, heure_fin) == False :
             if modeSilencieux == True : 
                 return False
-            dlg = wx.MessageDialog(None, _(u"Une consommation existe déjà sur ce créneau horaire !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(None, _(u"Une consommation existe dï¿½jï¿½ sur ce crï¿½neau horaire !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         
-        # Vérifie qu'il y a de la place
+        # Vï¿½rifie qu'il y a de la place
         if self.grid.blocageSiComplet == True and self.HasPlaceDisponible(heure_debut, heure_fin) == False :
             if modeSilencieux == True : 
                 return False
-            dlg = wx.MessageDialog(None, _(u"Il n'y a plus de places disponibles sur cette tranche horaire.\n\nSouhaitez-vous quand même saisir une consommation ?"), _(u"Complet !"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(None, _(u"Il n'y a plus de places disponibles sur cette tranche horaire.\n\nSouhaitez-vous quand mï¿½me saisir une consommation ?"), _(u"Complet !"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
             reponse = dlg.ShowModal() 
             dlg.Destroy()
             if reponse != wx.ID_YES : 
@@ -2141,7 +2141,7 @@ class CaseMultihoraires(Case):
         if TouchesRaccourciActives == True :
             self.OnTouchesRaccourcisPerso() 
 
-        # Création d'une conso
+        # Crï¿½ation d'une conso
         conso = CTRL_Grille.Conso() 
         conso.IDconso = None
         conso.IDactivite = self.IDactivite
@@ -2155,13 +2155,13 @@ class CaseMultihoraires(Case):
         # Mode de saisie
         conso.etat = self.grid.GetGrandParent().panel_grille.GetMode()
 
-        # Récupération des étiquettes
+        # Rï¿½cupï¿½ration des ï¿½tiquettes
         if etiquettes != None :
             conso.etiquettes = etiquettes
         else :
             conso.etiquettes = self.grid.GetGrandParent().panel_etiquettes.GetCoches(self.IDactivite)
         
-        # Autres paramètres
+        # Autres paramï¿½tres
         conso.verrouillage = 0
         conso.IDfamille = self.IDfamille
         conso.IDcompte_payeur = self.dictInfosInscriptions["IDcompte_payeur"]
@@ -2196,11 +2196,11 @@ class CaseMultihoraires(Case):
         
         self.grid.listeHistorique.append((self.IDindividu, self.date, self.IDunite, _(u"Ajout d'une consommation multihoraires")))        
         
-        # Si les heures saisies dépassent les heures min et max, on élargit la colonne Multihoraires
+        # Si les heures saisies dï¿½passent les heures min et max, on ï¿½largit la colonne Multihoraires
         if (heure_debut < self.heure_min) or (heure_fin > self.heure_max) : 
             self.grid.MAJ_affichage()
 
-        # Autogénération
+        # Autogï¿½nï¿½ration
         self.grid.Autogeneration(ligne=self.ligne, IDactivite=self.IDactivite, IDunite=self.IDunite)
 
         return barre
@@ -2210,7 +2210,7 @@ class CaseMultihoraires(Case):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("consommations_conso", "creer", IDactivite=self.IDactivite) == False : return
         if self.grid.gestion.Verification("consommations", self.date) == False: return False
 
-        # Recherche des horaires à appliquer
+        # Recherche des horaires ï¿½ appliquer
         heure_cliquee = self.PosEnHeure(position[0], arrondir=True)
         
         # Recherche d'un emplacement disponible dans la case
@@ -2223,7 +2223,7 @@ class CaseMultihoraires(Case):
             if heure_cliquee < barre.heure_debut and heure_cliquee < barre.heure_fin :
                 heure_fin = barre.heure_debut
 
-        # Copie de la conso précédemment saisie
+        # Copie de la conso prï¿½cï¿½demment saisie
         if wx.GetKeyState(99) == True : 
             if self.IDunite in self.grid.memoireHoraires :
                 heure_debut = UTILS_Dates.HeureStrEnTime(self.grid.memoireHoraires[self.IDunite]["heure_debut"])
@@ -2255,13 +2255,13 @@ class CaseMultihoraires(Case):
             self.SaisieBarre(heure_debut, heure_fin)
 
     def Modifier(self, event=None):
-        """ Modifier la consommation sélectionnée """
+        """ Modifier la consommation sï¿½lectionnï¿½e """
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("consommations_conso", "modifier", IDactivite=self.IDactivite) == False : return
         if self.grid.gestion.Verification("consommations", self.date) == False: return False
         self.ModifierBarre(self.barreContextMenu)     
     
     def Supprimer(self, event=None):
-        """ Supprimer la consommation sélectionnée """
+        """ Supprimer la consommation sï¿½lectionnï¿½e """
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("consommations_conso", "supprimer", IDactivite=self.IDactivite) == False : return
         if self.grid.gestion.Verification("consommations", self.date) == False: return False
         self.SupprimerBarre(self.barreContextMenu)
@@ -2305,11 +2305,11 @@ class CaseMultihoraires(Case):
             barre.Refresh()
             self.grid.listeHistorique.append((self.IDindividu, self.date, self.IDunite, _(u"Modification d'une consommation multihoraires")))        
 
-            # Si les heures saisies dépassent les heures min et max, on élargit la colonne Multihoraires
+            # Si les heures saisies dï¿½passent les heures min et max, on ï¿½largit la colonne Multihoraires
             if (heure_debut < str(self.heure_min)) or (heure_fin > str(self.heure_max)) : 
                 self.grid.MAJ_affichage()
 
-            # Autogénération
+            # Autogï¿½nï¿½ration
             self.grid.Autogeneration(ligne=self.ligne, IDactivite=self.IDactivite, IDunite=self.IDunite)
 
         elif reponse == 3 :
@@ -2329,7 +2329,7 @@ class CaseMultihoraires(Case):
         # -Suppression d'un forfait supprimable
         if barre.conso.etat != None and barre.conso.forfait == 1 :
             # Demande la confirmation de la suppression du forfait
-            dlg = wx.MessageDialog(self.grid, _(u"Cette consommation fait partie d'un forfait supprimable.\n\nSouhaitez-vous supprimer le forfait et toutes les consommations rattachées ?"), _(u"Suppression"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self.grid, _(u"Cette consommation fait partie d'un forfait supprimable.\n\nSouhaitez-vous supprimer le forfait et toutes les consommations rattachï¿½es ?"), _(u"Suppression"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
             reponse = dlg.ShowModal()
             dlg.Destroy()
             if reponse == wx.ID_YES :
@@ -2354,30 +2354,30 @@ class CaseMultihoraires(Case):
         self.Refresh() 
         self.grid.listeHistorique.append((self.IDindividu, self.date, self.IDunite, _(u"Suppression d'une consommation multihoraires")))   
 
-        # Autogénération
+        # Autogï¿½nï¿½ration
         self.grid.Autogeneration(ligne=self.ligne, IDactivite=self.IDactivite, IDunite=self.IDunite)
 
     def ToucheRaccourci(self, barre):
-        """ Applique une touche raccourci à une barre """
+        """ Applique une touche raccourci ï¿½ une barre """
         if wx.GetKeyState(97) == True : # Touche "a" pour Pointage en attente...
             if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("consommations_conso", "modifier", IDactivite=self.IDactivite) == False : return
             if self.grid.gestion.Verification("consommations", self.date) == False: return False
             if barre.conso.etat in ("present", "absenti", "absentj") :
                 self.ModifieEtat(barre.conso, "reservation")
                 
-        if wx.GetKeyState(112) == True : # Touche "p" pour Présent
+        if wx.GetKeyState(112) == True : # Touche "p" pour Prï¿½sent
             if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("consommations_conso", "modifier", IDactivite=self.IDactivite) == False : return
             if self.grid.gestion.Verification("consommations", self.date) == False: return False
             if barre.conso.etat in ("reservation", "absenti", "absentj") :
                 self.ModifieEtat(barre.conso, "present")
                 
-        if wx.GetKeyState(105) == True : # Touche "i" pour Absence injustifée
+        if wx.GetKeyState(105) == True : # Touche "i" pour Absence injustifï¿½e
             if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("consommations_conso", "modifier", IDactivite=self.IDactivite) == False : return
             if self.grid.gestion.Verification("consommations", self.date) == False: return False
             if barre.conso.etat in ("reservation", "present", "absentj") :
                 self.ModifieEtat(barre.conso, "absenti")
                 
-        if wx.GetKeyState(106) == True : # Touche "j" pour Absence justifiée
+        if wx.GetKeyState(106) == True : # Touche "j" pour Absence justifiï¿½e
             if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("consommations_conso", "modifier", IDactivite=self.IDactivite) == False : return
             if self.grid.gestion.Verification("consommations", self.date) == False: return False
             if barre.conso.etat in ("reservation", "present", "absenti") :
@@ -2390,7 +2390,7 @@ class CaseMultihoraires(Case):
             
 
     def IsCaseDisponible(self, heure_debut=None, heure_fin=None):
-        """ Regarde si conso existe déjà sur ce créneau """
+        """ Regarde si conso existe dï¿½jï¿½ sur ce crï¿½neau """
         self.listeBarres.sort(key=operator.attrgetter("conso.heure_debut"))
         if type(heure_debut) == datetime.time : heure_debut = UTILS_Dates.DatetimeTimeEnStr(heure_debut, ":")
         if type(heure_fin) == datetime.time : heure_fin = UTILS_Dates.DatetimeTimeEnStr(heure_fin, ":")
@@ -2428,7 +2428,7 @@ class CaseMultihoraires(Case):
         return texte
 
     def SelectionnerEtiquettes(self, event):
-        # Vérifie la période de gestion
+        # Vï¿½rifie la pï¿½riode de gestion
         if self.grid.gestion.Verification("consommations", self.date) == False : return False
 
         barre = self.barreContextMenu
@@ -2454,7 +2454,7 @@ class Evenement():
     def __init__(self, case=None, dict_evenement=None):
         self.case = case
 
-        # Caractéristiques de l'évènement
+        # Caractï¿½ristiques de l'ï¿½vï¿½nement
         self.IDevenement = dict_evenement["IDevenement"]
         self.IDactivite = dict_evenement["IDactivite"]
         self.IDunite = dict_evenement["IDunite"]
@@ -2528,7 +2528,7 @@ class Evenement():
             if self.conso.etat == "refus":
                 return CTRL_Grille.COULEUR_REFUS
 
-        # Recherche nbre places évènements
+        # Recherche nbre places ï¿½vï¿½nements
         dictPlacesEvenement = self.GetPlacesEvenement()
         if dictPlacesEvenement != None :
             if dictPlacesEvenement["nbrePlacesInitial"] != None:
@@ -2580,7 +2580,7 @@ class CaseEvenement(Case):
         self.CategorieCase = "evenement"
         self.verrouillage = verrouillage
 
-        # Création des évènements
+        # Crï¿½ation des ï¿½vï¿½nements
         self.liste_evenements = self.CreationEvenements()
 
         # Dessin de la case
@@ -2591,16 +2591,16 @@ class CaseEvenement(Case):
         self.grid.SetReadOnly(self.numLigne, self.numColonne, True)
 
     def CreationEvenements(self):
-        """ Génère les évènements """
+        """ Gï¿½nï¿½re les ï¿½vï¿½nements """
         try :
             liste_donnees = self.grid.dictOuvertures[self.date][self.IDgroupe][self.IDunite]["liste_evenements"]
         except :
             liste_donnees = []
         liste_evenements = []
         for dict_evenement in liste_donnees :
-            # Création de l'évènement
+            # Crï¿½ation de l'ï¿½vï¿½nement
             evenement = Evenement(case=self, dict_evenement=dict_evenement)
-            # Recherche si une conso associée est déjà mémorisée
+            # Recherche si une conso associï¿½e est dï¿½jï¿½ mï¿½morisï¿½e
             conso = self.RechercheConsoMemorisee(evenement)
             evenement.SetConso(conso)
             liste_evenements.append(evenement)
@@ -2623,9 +2623,9 @@ class CaseEvenement(Case):
         return listeConso
 
     def RechercheEvenement(self, x, y):
-        """ Recherche un évènement à la position x, y """
+        """ Recherche un ï¿½vï¿½nement ï¿½ la position x, y """
         for evenement, rect in self.renderer.dict_boutons.items():
-            rect = wx.Rect(rect.x + self.GetRect().x, rect.y + self.GetRect().y, rect.GetWidth(), rect.GetHeight())
+            rect = wx.Rect(int(rect.x + self.GetRect().x), int(rect.y + self.GetRect().y), int(rect.GetWidth()), int(rect.GetHeight()))
             if 'phoenix' in wx.PlatformInfo:
                 contains = rect.Contains(x, y)
             else :
@@ -2635,7 +2635,7 @@ class CaseEvenement(Case):
         return None
 
     def RechercheEvenementPositionSouris(self):
-        """ Recherche un évènement à la position de la souris """
+        """ Recherche un ï¿½vï¿½nement ï¿½ la position de la souris """
         x, y = self.grid.CalcUnscrolledPosition(self.grid.ScreenToClient(wx.GetMousePosition()))
         x = x - self.grid.GetRowLabelSize()
         y = y - self.grid.GetColLabelSize()
@@ -2644,12 +2644,12 @@ class CaseEvenement(Case):
     def OnClick(self):
         evenement = self.RechercheEvenementPositionSouris()
 
-        # Vérifie la période de gestion
+        # Vï¿½rifie la pï¿½riode de gestion
         if self.grid.gestion.Verification("consommations", self.date) == False : return False
 
         if evenement != None :
 
-            # Recherche si des touches raccourcis sont enfoncées
+            # Recherche si des touches raccourcis sont enfoncï¿½es
             if evenement.conso != None :
                 if wx.GetKeyState(97) or wx.GetKeyState(112) or wx.GetKeyState(105) or wx.GetKeyState(106) or wx.GetKeyState(99) or wx.GetKeyState(115):
                     self.ToucheRaccourci(evenement)
@@ -2664,27 +2664,27 @@ class CaseEvenement(Case):
                 self.Supprimer_evenement(evenement)
 
     def Ajouter_evenement(self, evenement=None, modeSilencieux=False, TouchesRaccourciActives=True, etiquettes=None):
-        """ Création d'une conso """
+        """ Crï¿½ation d'une conso """
         mode = self.grid.GetGrandParent().panel_grille.GetMode()
 
         if self.grid.gestion.Verification("consommations", self.date) == False: return False
 
-        # Vérifie d'abord qu'il n'y a aucune incompatibilités entre unités
+        # Vï¿½rifie d'abord qu'il n'y a aucune incompatibilitï¿½s entre unitï¿½s
         incompatibilite = self.VerifieCompatibilitesUnites()
         if incompatibilite != None:
             nomUniteCase = self.grid.dictUnites[self.IDunite]["nom"]
             nomUniteIncompatible = self.grid.dictUnites[incompatibilite]["nom"]
-            dlg = wx.MessageDialog(self.grid, _(u"L'unité %s est incompatible avec l'unité %s déjà sélectionnée !") % (nomUniteCase, nomUniteIncompatible), _(u"Incompatibilités d'unités"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self.grid, _(u"L'unitï¿½ %s est incompatible avec l'unitï¿½ %s dï¿½jï¿½ sï¿½lectionnï¿½e !") % (nomUniteCase, nomUniteIncompatible), _(u"Incompatibilitï¿½s d'unitï¿½s"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
-        # Vérifie qu'il y a de la place
+        # Vï¿½rifie qu'il y a de la place
         if mode == "reservation":
             if self.grid.blocageSiComplet == True and self.HasPlaceDisponible(evenement) == False:
                 if modeSilencieux == True:
                     return False
-                dlg = wx.MessageDialog(None, _(u"Il n'y a plus de places disponibles sur cet évènement.\n\nSouhaitez-vous quand même saisir une consommation ?"), _(u"Complet !"), wx.YES_NO | wx.NO_DEFAULT | wx.CANCEL | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(None, _(u"Il n'y a plus de places disponibles sur cet ï¿½vï¿½nement.\n\nSouhaitez-vous quand mï¿½me saisir une consommation ?"), _(u"Complet !"), wx.YES_NO | wx.NO_DEFAULT | wx.CANCEL | wx.ICON_EXCLAMATION)
                 reponse = dlg.ShowModal()
                 dlg.Destroy()
                 if reponse != wx.ID_YES:
@@ -2694,7 +2694,7 @@ class CaseEvenement(Case):
         if TouchesRaccourciActives == True:
             self.OnTouchesRaccourcisPerso()
 
-        # Création d'une conso
+        # Crï¿½ation d'une conso
         conso = CTRL_Grille.Conso()
         conso.IDconso = None
         conso.IDactivite = self.IDactivite
@@ -2706,13 +2706,13 @@ class CaseEvenement(Case):
         # Mode de saisie
         conso.etat = mode
 
-        # Récupération des étiquettes
+        # Rï¿½cupï¿½ration des ï¿½tiquettes
         if etiquettes != None:
             conso.etiquettes = etiquettes
         else:
             conso.etiquettes = self.grid.GetGrandParent().panel_etiquettes.GetCoches(self.IDactivite)
 
-        # Autres paramètres
+        # Autres paramï¿½tres
         conso.verrouillage = 0
         conso.IDfamille = self.IDfamille
         conso.IDcompte_payeur = self.dictInfosInscriptions["IDcompte_payeur"]
@@ -2737,7 +2737,7 @@ class CaseEvenement(Case):
 
         self.grid.memoireHoraires[self.IDunite] = {"heure_debut": conso.heure_debut, "heure_fin": conso.heure_fin}
 
-        # Associe la conso à l'évènement
+        # Associe la conso ï¿½ l'ï¿½vï¿½nement
         evenement.SetConso(conso)
         evenement.MemoriseValeurs()
         self.Refresh()
@@ -2748,9 +2748,9 @@ class CaseEvenement(Case):
         # Facturation
         self.MAJ_facturation(evenement=evenement, action="saisie")
 
-        self.grid.listeHistorique.append((self.IDindividu, self.date, self.IDunite, _(u"Ajout d'une consommation évènement")))
+        self.grid.listeHistorique.append((self.IDindividu, self.date, self.IDunite, _(u"Ajout d'une consommation ï¿½vï¿½nement")))
 
-        # Autogénération
+        # Autogï¿½nï¿½ration
         self.grid.Autogeneration(ligne=self.ligne, IDactivite=self.IDactivite, IDunite=self.IDunite)
 
     def Supprimer_evenement(self, evenement=None, TouchesRaccourciActives=True):
@@ -2764,7 +2764,7 @@ class CaseEvenement(Case):
         # Suppression d'un forfait supprimable
         if evenement.conso.etat != None and evenement.conso.forfait == 1:
             # Demande la confirmation de la suppression du forfait
-            dlg = wx.MessageDialog(self.grid, _(u"Cette consommation fait partie d'un forfait supprimable.\n\nSouhaitez-vous supprimer le forfait et toutes les consommations rattachées ?"), _(u"Suppression"), wx.YES_NO | wx.YES_DEFAULT | wx.CANCEL | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self.grid, _(u"Cette consommation fait partie d'un forfait supprimable.\n\nSouhaitez-vous supprimer le forfait et toutes les consommations rattachï¿½es ?"), _(u"Suppression"), wx.YES_NO | wx.YES_DEFAULT | wx.CANCEL | wx.ICON_EXCLAMATION)
             reponse = dlg.ShowModal()
             dlg.Destroy()
             if reponse == wx.ID_YES:
@@ -2792,9 +2792,9 @@ class CaseEvenement(Case):
         evenement.conso = None
         self.MAJremplissage()
         self.Refresh()
-        self.grid.listeHistorique.append((self.IDindividu, self.date, self.IDunite, _(u"Suppression d'une consommation évènement")))
+        self.grid.listeHistorique.append((self.IDindividu, self.date, self.IDunite, _(u"Suppression d'une consommation ï¿½vï¿½nement")))
 
-        # Autogénération
+        # Autogï¿½nï¿½ration
         self.grid.Autogeneration(ligne=self.ligne, IDactivite=self.IDactivite, IDunite=self.IDunite)
 
     def IsCaseDisponible(self, evenement=None):
@@ -2810,46 +2810,46 @@ class CaseEvenement(Case):
         return True
 
     def Ajouter(self, event=None):
-        """ Modifier la consommation sélectionnée """
+        """ Modifier la consommation sï¿½lectionnï¿½e """
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("consommations_conso", "creer", IDactivite=self.IDactivite) == False: return
         if self.grid.gestion.Verification("consommations", self.date) == False: return False
         self.Ajouter_evenement(self.evenementContextMenu)
 
     def Modifier(self, event=None):
-        """ Modifier la consommation sélectionnée """
+        """ Modifier la consommation sï¿½lectionnï¿½e """
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("consommations_conso", "modifier", IDactivite=self.IDactivite) == False : return
         if self.grid.gestion.Verification("consommations", self.date) == False: return False
         # Todo : Modifier evenement
         # self.ModifierBarre(self.barreContextMenu)
 
     def Supprimer(self, event=None):
-        """ Supprimer la consommation sélectionnée """
+        """ Supprimer la consommation sï¿½lectionnï¿½e """
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("consommations_conso", "supprimer", IDactivite=self.IDactivite) == False: return
         if self.grid.gestion.Verification("consommations", self.date) == False: return False
         self.Supprimer_evenement(self.evenementContextMenu)
 
 
     def ToucheRaccourci(self, evenement):
-        """ Applique une touche raccourci à un évènement """
+        """ Applique une touche raccourci ï¿½ un ï¿½vï¿½nement """
         if wx.GetKeyState(97) == True:  # Touche "a" pour Pointage en attente...
             if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("consommations_conso", "modifier", IDactivite=self.IDactivite) == False: return
             if self.grid.gestion.Verification("consommations", self.date) == False: return False
             if evenement.conso.etat in ("present", "absenti", "absentj"):
                 self.ModifieEtat(evenement.conso, "reservation")
 
-        if wx.GetKeyState(112) == True:  # Touche "p" pour Présent
+        if wx.GetKeyState(112) == True:  # Touche "p" pour Prï¿½sent
             if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("consommations_conso", "modifier", IDactivite=self.IDactivite) == False: return
             if self.grid.gestion.Verification("consommations", self.date) == False: return False
             if evenement.conso.etat in ("reservation", "absenti", "absentj"):
                 self.ModifieEtat(evenement.conso, "present")
 
-        if wx.GetKeyState(105) == True:  # Touche "i" pour Absence injustifée
+        if wx.GetKeyState(105) == True:  # Touche "i" pour Absence injustifï¿½e
             if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("consommations_conso", "modifier", IDactivite=self.IDactivite) == False: return
             if self.grid.gestion.Verification("consommations", self.date) == False: return False
             if evenement.conso.etat in ("reservation", "present", "absentj"):
                 self.ModifieEtat(evenement.conso, "absenti")
 
-        if wx.GetKeyState(106) == True:  # Touche "j" pour Absence justifiée
+        if wx.GetKeyState(106) == True:  # Touche "j" pour Absence justifiï¿½e
             if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("consommations_conso", "modifier", IDactivite=self.IDactivite) == False: return
             if self.grid.gestion.Verification("consommations", self.date) == False: return False
             if evenement.conso.etat in ("reservation", "present", "absenti"):
@@ -2863,10 +2863,10 @@ class CaseEvenement(Case):
     def ModifieEtat(self, conso=None, etat="reservation"):
         ancienEtat = conso.etat
 
-        # Vérifie la période de gestion
+        # Vï¿½rifie la pï¿½riode de gestion
         if self.grid.gestion.Verification("consommations", self.date) == False : return False
 
-        # Vérifie si prestation correspondante déjà facturée
+        # Vï¿½rifie si prestation correspondante dï¿½jï¿½ facturï¿½e
         if conso.IDprestation in self.grid.dictPrestations:
             prestation = self.grid.dictPrestations[conso.IDprestation]
             if prestation["IDfacture"] and not prestation["forfait_date_debut"]:
@@ -2876,7 +2876,7 @@ class CaseEvenement(Case):
                 if etat in (None, "attente", "refus", "absentj") and ancienEtat in ("reservation", "present", "absenti"):
                     changementPossible = False
                 if changementPossible == False:
-                    dlg = wx.MessageDialog(self.grid, _(u"La prestation correspondant à cette consommation apparaît déjà sur une facture.\n\nIl est donc impossible de la modifier ou de la supprimer."), _(u"Consommation verrouillée"), wx.OK | wx.ICON_ERROR)
+                    dlg = wx.MessageDialog(self.grid, _(u"La prestation correspondant ï¿½ cette consommation apparaï¿½t dï¿½jï¿½ sur une facture.\n\nIl est donc impossible de la modifier ou de la supprimer."), _(u"Consommation verrouillï¿½e"), wx.OK | wx.ICON_ERROR)
                     dlg.ShowModal()
                     dlg.Destroy()
                     return False
@@ -2892,7 +2892,7 @@ class CaseEvenement(Case):
 
         conso.evenement.Refresh()
         self.MAJremplissage()
-        self.grid.listeHistorique.append((self.IDindividu, self.date, self.IDunite, _(u"Modification de l'état d'une consommation évènement")))
+        self.grid.listeHistorique.append((self.IDindividu, self.date, self.IDunite, _(u"Modification de l'ï¿½tat d'une consommation ï¿½vï¿½nement")))
 
     def OnContextMenu(self):
         evenement = self.RechercheEvenementPositionSouris()
@@ -2903,7 +2903,7 @@ class CaseEvenement(Case):
             return False
 
     def SelectionnerEtiquettes(self, event):
-        # Vérifie la période de gestion
+        # Vï¿½rifie la pï¿½riode de gestion
         if self.grid.gestion.Verification("consommations", self.date) == False : return False
 
         evenement = self.evenementContextMenu

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: iso-8859-15 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitï¿½s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -37,12 +37,12 @@ class Calendrier(wx.ScrolledWindow):
         
         self.SetMinSize((100, 140))
         
-        # Variables à ne surtout pas changer
+        # Variables ï¿½ ne surtout pas changer
         self.caseSurvol = None
         self.multiSelect = None
         self.onLeave = True
         
-        # Variables qui peuvent être changées
+        # Variables qui peuvent ï¿½tre changï¿½es
         self.listeSelections = []
         
         self.ecartCases = 2                      # Ecart en pixels entre les cases jours d'un mois
@@ -51,12 +51,12 @@ class Calendrier(wx.ScrolledWindow):
         self.couleurFond = (255, 255, 255) #(255, 255, 255)       # Couleur du fond du calendrier
         self.couleurNormal = (255, 255, 255) #(214, 223, 247) #(175, 225, 251)     # Couleur d'un jour normal du lundi au vendredi
         self.couleurWE = (231, 245, 252)  #(171, 249, 150)         # Couleur des samedis et dimanche
-        self.couleurSelect = (55, 228, 9)        # Couleur du fond de la case si celle-ci est sélectionnée
-        self.couleurSurvol = (0, 0, 0)       # Couleur du bord de la case si celle-ci est survolée
+        self.couleurSelect = (55, 228, 9)        # Couleur du fond de la case si celle-ci est sï¿½lectionnï¿½e
+        self.couleurSurvol = (0, 0, 0)       # Couleur du bord de la case si celle-ci est survolï¿½e
         self.couleurFontJours = (0, 0, 0)
         self.couleurVacances = (255, 255, 255)    # Couleur des cases dates d'ouverture de la structure
         self.couleurFontJoursAvecPresents = (255, 0, 0)
-        self.couleurFerie = (180, 180, 180) # couleur des jours fériés
+        self.couleurFerie = (180, 180, 180) # couleur des jours fï¿½riï¿½s
 
         self.headerMois = True
         self.headerJours = True
@@ -65,7 +65,7 @@ class Calendrier(wx.ScrolledWindow):
         self.moisCalendrier = 2
         self.anneeCalendrier = 2008
 
-        self.selectExclureWE = True # Inclure les WE quand une période de vacs est sélectionnée dans le menu contextuel
+        self.selectExclureWE = True # Inclure les WE quand une pï¿½riode de vacs est sï¿½lectionnï¿½e dans le menu contextuel
 
 
         # Pour statusBar :
@@ -170,12 +170,12 @@ class Calendrier(wx.ScrolledWindow):
         annee = self.anneeCalendrier
 
         if self.typeCalendrier == "mensuel" :
-            # Création d'un calendrier mensuel
+            # Crï¿½ation d'un calendrier mensuel
             mois = self.moisCalendrier
             self.listeJoursAvecPresents = self.Importation_JoursAvecPresents(annee=annee, mois=mois)
             self.DrawMonth(dc,mois, annee, 0, 0, largeur, hauteur)
         else:
-            # Création d'un calendrier annuel
+            # Crï¿½ation d'un calendrier annuel
             largeurMois = largeur / 4.0
             hauteurMois = hauteur / 3.0
             numMois = 1
@@ -206,7 +206,7 @@ class Calendrier(wx.ScrolledWindow):
         event.Skip()
         
     def VerifKeyStates(self):
-        """ est utilisé pour être sûr que le programme a bien remarqué les touches pressées """
+        """ est utilisï¿½ pour ï¿½tre sï¿½r que le programme a bien remarquï¿½ les touches pressï¿½es """
         etat_Control = wx.GetKeyState(wx.WXK_CONTROL)
         etat_Shift = wx.GetKeyState(wx.WXK_SHIFT) 
         etat_Alt = wx.GetKeyState(wx.WXK_ALT) 
@@ -221,7 +221,7 @@ class Calendrier(wx.ScrolledWindow):
             self.multiSelectWE = False
 
     def OnLeftDown(self, event):
-        """ Sélection de la case cliquée """  
+        """ Sï¿½lection de la case cliquï¿½e """  
         self.VerifKeyStates()   
         if self.multiSelections == False :
             self.multiSelect = None
@@ -241,7 +241,7 @@ class Calendrier(wx.ScrolledWindow):
             
                 # CASES DATES -----------------------------------------------------------------------        
                 
-                # Si la case est déjà sélectionnée, on la supprime de la liste des sélections
+                # Si la case est dï¿½jï¿½ sï¿½lectionnï¿½e, on la supprime de la liste des sï¿½lections
                 if len(self.listeSelections) != 0 :
                     if date in self.listeSelections :
                         self.listeSelections.remove(date)
@@ -249,7 +249,7 @@ class Calendrier(wx.ScrolledWindow):
                         self.SendDates() 
                         return
                                         
-                # Ajout de la case à la liste des sélections
+                # Ajout de la case ï¿½ la liste des sï¿½lections
                 if self.multiSelect == "CONTROL" :
                     # MultiSelections avec la touche CTRL
                     self.listeSelections.append(date)
@@ -266,7 +266,7 @@ class Calendrier(wx.ScrolledWindow):
                     jourDebut = previousDate
                     jourFin = date
 
-                    # Si sélection inverse
+                    # Si sï¿½lection inverse
                     if jourDebut > jourFin:
                         jourDebut = date
                         jourFin = previousDate
@@ -282,7 +282,7 @@ class Calendrier(wx.ScrolledWindow):
                             if dateEnCours.isoweekday() == 6 or dateEnCours.isoweekday() == 7:
                                 continue
 
-                        # Mémorisation de la date
+                        # Mï¿½morisation de la date
                         if not dateEnCours in self.listeSelections :
                             self.listeSelections.append(dateEnCours)
 
@@ -297,7 +297,7 @@ class Calendrier(wx.ScrolledWindow):
                     self.SendDates() 
                     
                 else:
-                    # Sélection Unique
+                    # Sï¿½lection Unique
                     self.listeSelections = []
                     self.listeSelections.append(date)
                     self.MAJAffichage()
@@ -313,7 +313,7 @@ class Calendrier(wx.ScrolledWindow):
             for caseJour in self.listeCasesJours :
                 if (caseJour[0] <= x <= (caseJour[0]+caseJour[2])) and (caseJour[1] <= y <= (caseJour[1]+caseJour[3])) :
                     
-                    # Sélection par colonne
+                    # Sï¿½lection par colonne
                     if self.multiSelect == "CONTROL" or self.multiSelect == "SHIFT":
                         deselect = []
                         nbreSemaines = 0
@@ -330,13 +330,13 @@ class Calendrier(wx.ScrolledWindow):
                                 else:
                                     deselect.append(dateTemp)
 
-                        # Si tous les jours ont déjà été sélectionnés, c'est que l'on doit désélectionner tout le mois :
+                        # Si tous les jours ont dï¿½jï¿½ ï¿½tï¿½ sï¿½lectionnï¿½s, c'est que l'on doit dï¿½sï¿½lectionner tout le mois :
                         if len(deselect) == nbreSemaines:
                             for date in deselect:
                                 self.listeSelections.remove(date)                            
                         
                     else:
-                        # Sélection Unique
+                        # Sï¿½lection Unique
                         tempSelections = []
                         deselect = []
                         nbreSemaines = 0
@@ -352,11 +352,11 @@ class Calendrier(wx.ScrolledWindow):
                                 else:
                                     deselect.append(dateTemp)
 
-                        # Si tous les jours ont déjà été sélectionnés, c'est que l'on doit désélectionner tout le mois :
+                        # Si tous les jours ont dï¿½jï¿½ ï¿½tï¿½ sï¿½lectionnï¿½s, c'est que l'on doit dï¿½sï¿½lectionner tout le mois :
                         if len(deselect) == nbreSemaines:
                             self.listeSelections = []
                         else:
-                            # Sélection de tout le mois
+                            # Sï¿½lection de tout le mois
                             self.listeSelections = []
                             for date in tempSelections:
                                 self.listeSelections.append(date)
@@ -369,7 +369,7 @@ class Calendrier(wx.ScrolledWindow):
         event.Skip()
     
     def SendDates(self):
-        """ Envoie la liste des dates sélectionnées """
+        """ Envoie la liste des dates sï¿½lectionnï¿½es """
         event = SelectDatesEvent(selections=self.listeSelections)
         wx.PostEvent(self.GetParent(), event)
 
@@ -385,7 +385,7 @@ class Calendrier(wx.ScrolledWindow):
         event.Skip()
         
     def OnEnter(self, event):
-        txt = _(u"Restez appuyer sur les touches CONTROL, SHIFT ou ALT pour sélectionner plusieurs jours à la fois.")
+        txt = _(u"Restez appuyer sur les touches CONTROL, SHIFT ou ALT pour sï¿½lectionner plusieurs jours ï¿½ la fois.")
         try : wx.GetApp().GetTopWindow().SetStatusText(txt, 1)
         except : pass
         event.Skip()
@@ -399,7 +399,7 @@ class Calendrier(wx.ScrolledWindow):
         # Redessine la case
         caractCase = self.dictCases[IDobjet]
         self.DrawCase(dc, caractCase[4], caractCase[0], caractCase[1], caractCase[2], caractCase[3], survol=survol)
-        # Redessine uniquement la zone modifiée
+        # Redessine uniquement la zone modifiï¿½e
         r = dc.GetIdBounds(IDobjet)
         self.OffsetRect(r)
         self.RefreshRect(r, False)
@@ -411,11 +411,11 @@ class Calendrier(wx.ScrolledWindow):
         IDobjet = 0
         if len(listeObjets) != 0 :
             IDobjet = listeObjets[0]
-            # Si cette case est déjà actuellement survolée, on passe...
+            # Si cette case est dï¿½jï¿½ actuellement survolï¿½e, on passe...
             if self.caseSurvol != None:
                 if self.caseSurvol == IDobjet : return
-            # Activation de la case sélectionnée        
-            # Si une case a déjà été survolée avant, on l'annule
+            # Activation de la case sï¿½lectionnï¿½e        
+            # Si une case a dï¿½jï¿½ ï¿½tï¿½ survolï¿½e avant, on l'annule
             if self.caseSurvol != None :
                 self.RedrawCase(self.caseSurvol, survol=False)
             # Redessine la nouvelle case
@@ -425,7 +425,7 @@ class Calendrier(wx.ScrolledWindow):
             # Ecriture d'un texte dans la statutBar
             date = self.IDobjetEnDate(IDobjet)
             listeJours = ("Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche")
-            listeMois = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
+            listeMois = (_(u"janvier"), _(u"fï¿½vrier"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"aoï¿½t"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"dï¿½cembre"))
             dateStr = listeJours[date.weekday()] + " " + str(date.day) + " " + listeMois[date.month-1] + " " + str(date.year)
             texteStatusBar = dateStr
             
@@ -433,12 +433,12 @@ class Calendrier(wx.ScrolledWindow):
             if date in self.joursVacances:
                 texteStatusBar += _(u" | Jour de vacances")
                 
-            # Si c'est un jour férié
+            # Si c'est un jour fï¿½riï¿½
             if (date.day, date.month) in self.listeFeriesFixes :
-                texteStatusBar += _(u" | Jour férié")
+                texteStatusBar += _(u" | Jour fï¿½riï¿½")
             else:
                 if date in self.listeFeriesVariables :
-                    texteStatusBar += _(u" | Jour férié")
+                    texteStatusBar += _(u" | Jour fï¿½riï¿½")
             
             # Actualisation la statusBar
             try : wx.GetApp().GetTopWindow().SetStatusText(texteStatusBar,0)
@@ -447,7 +447,7 @@ class Calendrier(wx.ScrolledWindow):
             
             return
         
-        # Si on ne survole aucune case : Désactivation de la case précédemment sélectionnée
+        # Si on ne survole aucune case : Dï¿½sactivation de la case prï¿½cï¿½demment sï¿½lectionnï¿½e
         if self.caseSurvol != None :
             self.RedrawCase(self.caseSurvol, survol=False)
             self.caseSurvol = None
@@ -461,11 +461,11 @@ class Calendrier(wx.ScrolledWindow):
         datesMois = calendar.monthcalendar(annee, mois)
         nbreSemaines = len(datesMois)
 
-        # Création de l'entete avec le nom du mois
+        # Crï¿½ation de l'entete avec le nom du mois
         if self.headerMois == True :
             hautMois, yMois = self.DrawHeaderMois(dc, nbreSemaines, mois, annee, xMois, yMois, largMois, hautMois)
         
-        # Création de l'entete avec les noms des jours
+        # Crï¿½ation de l'entete avec les noms des jours
         if self.headerJours == True :
             hautMois, yMois = self.DrawHeaderJours(dc, nbreSemaines, mois, annee, xMois, yMois, largMois, hautMois)
 
@@ -473,21 +473,21 @@ class Calendrier(wx.ScrolledWindow):
         largCase = (largMois / 7.0)
         hautCase = (hautMois / float(nbreSemaines))
 
-        # Créée les cases jours
+        # Crï¿½ï¿½e les cases jours
         for numSemaine in range(nbreSemaines):
             for numJour in range(7):
 
                 jour = datesMois[numSemaine][numJour]
                 
                 if jour != 0:
-                    # Crée les données de la case
+                    # Crï¿½e les donnï¿½es de la case
                     x = xMois+(largCase*numJour) 
                     y = yMois+(hautCase*numSemaine)
                     l = largCase - self.ecartCases
                     h = hautCase - self.ecartCases
                     texteDate = datetime.date(annee, mois, jour)
 
-                    # Enregistrement des données dans une liste     
+                    # Enregistrement des donnï¿½es dans une liste     
                     caractCase = (x, y, l, h, texteDate)
                     IDcase = self.DateEnIDobjet(texteDate)
                     self.dictCases[IDcase] = caractCase
@@ -519,7 +519,7 @@ class Calendrier(wx.ScrolledWindow):
         listeJours = ("Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche")
         largCase = (largMois / 7.0)
         hautCase = (hautMois / float(nbreSemaines))
-        # Réglage de la police
+        # Rï¿½glage de la police
         dc.SetTextForeground(self.couleurFontJours)
         taille = self.tailleFont(largCase, hautCase)
         font = wx.Font(taille, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL)
@@ -529,7 +529,7 @@ class Calendrier(wx.ScrolledWindow):
         for jour in range(7):
             texte = listeJours[jour]
             texteComplet = (jour, mois, annee)
-            # Réglage du format du texte en fonction de la taille de la case
+            # Rï¿½glage du format du texte en fonction de la taille de la case
             if largCase < 50 :
                 texte = texte[:3]
             if largCase < 25 :
@@ -538,7 +538,7 @@ class Calendrier(wx.ScrolledWindow):
             coordX = xMois+x+(largCase/2)-(largTexte/2)
             coordY = yMois+(hautHeader/2)-(hautTexte/2)
             dc.DrawText(texte, coordX, coordY)
-            # Mémorisation des jours et de leurs coordonnées
+            # Mï¿½morisation des jours et de leurs coordonnï¿½es
             self.listeCasesJours.append((coordX, coordY, largTexte, hautTexte, texteComplet))
             x += largCase
             
@@ -546,10 +546,10 @@ class Calendrier(wx.ScrolledWindow):
 
     def DrawHeaderMois(self, dc, nbreSemaines, mois, annee, xMois, yMois, largMois, hautMois):
         """ Dessine un header comportant le nom du mois """
-        listeMois = (_(u"Janvier"), _(u"Février"),_(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"Août"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"Décembre"))
+        listeMois = (_(u"Janvier"), _(u"Fï¿½vrier"),_(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"Aoï¿½t"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"Dï¿½cembre"))
         largCase = (largMois / 7.0)
         hautCase = (hautMois / float(nbreSemaines))
-        # Réglage de la police
+        # Rï¿½glage de la police
         dc.SetTextForeground(self.couleurFontJours)
         taille = self.tailleFont(largCase, hautCase)        
         font = wx.Font(taille, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD)
@@ -584,19 +584,19 @@ class Calendrier(wx.ScrolledWindow):
         if jourSemaine == 6 or jourSemaine == 7:
             dc.SetBrush(wx.Brush(self.couleurWE))
             
-        # Si c'est un jour férié
+        # Si c'est un jour fï¿½riï¿½
         if (texteDate.day, texteDate.month) in self.listeFeriesFixes :
             dc.SetBrush(wx.Brush(self.couleurFerie))
         else:
             if texteDate in self.listeFeriesVariables :
                 dc.SetBrush(wx.Brush(self.couleurFerie))
           
-        # Si c'est une case survolée
+        # Si c'est une case survolï¿½e
         if survol == True :
             #dc.SetBrush(wx.Brush('black', wx.TRANSPARENT))
             dc.SetPen(wx.Pen(self.couleurSurvol, 1))
             
-        # Dessine d'une case sélectionnée
+        # Dessine d'une case sï¿½lectionnï¿½e
         if len(self.listeSelections) != 0 :
             if texteDate in self.listeSelections:
                 dc.SetBrush(wx.Brush(self.couleurSelect))
@@ -626,18 +626,18 @@ class Calendrier(wx.ScrolledWindow):
         dc.DrawText(str(texteDate.day), x + 3, y + 2)
 
         # Traitement pour le PseudoDC
-        r = wx.Rect(x, y, l, h)
+        r = wx.Rect(int(x), int(y), int(l), int(h))
         dc.SetIdBounds(IDobjet,r)
         
         
     def tailleFont(self, l, h):
 
-        # On prend le côté le plus petit
+        # On prend le cï¿½tï¿½ le plus petit
         if l > h :
             cote = h
         else:
             cote = l
-        # On définit des ordres de grandeur
+        # On dï¿½finit des ordres de grandeur
         if cote <= 14: return 6
         if cote <= 20: return 7
         if cote <= 40: return 7
@@ -684,11 +684,11 @@ class Calendrier(wx.ScrolledWindow):
             listeVacances2.append(datedebut)
             listeTemp = []
             for x in range((datefin-datedebut).days) :
-                # Ajout à la liste des jours de vacances (qui sert au coloriage de la case)
+                # Ajout ï¿½ la liste des jours de vacances (qui sert au coloriage de la case)
                 datedebut = datedebut + datetime.timedelta(days=1)        
                 listeVacances2.append(datedebut)
                 listeTemp.append(datedebut)
-            # Ajout au dictionnaire des vacances (qui sert à sélectionner une période de vacs dans le calendrier)
+            # Ajout au dictionnaire des vacances (qui sert ï¿½ sï¿½lectionner une pï¿½riode de vacs dans le calendrier)
             listePeriodesVacs.append( (annee, nom, tuple(listeTemp)) )
 
         return listeVacances2, listePeriodesVacs
@@ -726,7 +726,7 @@ class Calendrier(wx.ScrolledWindow):
             dateDebut = str(annee) + "-" + strMois + "-01"
             dateFin = str(annee) + "-" + strMois + "-31"
         
-        """ Importation des dates ou il y a des présents """
+        """ Importation des dates ou il y a des prï¿½sents """
         DB = GestionDB.DB()
         req = """
         SELECT date
@@ -755,24 +755,24 @@ class Calendrier(wx.ScrolledWindow):
         if self.selectionInterdite == True :
             return
         
-        # Création du menu
+        # Crï¿½ation du menu
         menu = UTILS_Adaptations.Menu()
         
         if self.multiSelections == True :
             
-            # Si une date a bien été cliquée :
+            # Si une date a bien ï¿½tï¿½ cliquï¿½e :
             if texteDate != None :
-                # Vérifie si date déjà sélectionnée
+                # Vï¿½rifie si date dï¿½jï¿½ sï¿½lectionnï¿½e
                 if texteDate in self.listeSelections:
                     select = True
                 else :
                     select = False
-                # Sélection/déselection du jour cliqué
+                # Sï¿½lection/dï¿½selection du jour cliquï¿½
                 self.popupID1 = wx.Window.NewControlId()
                 if select == False :
-                    texte = _(u"Sélectionner le %02d/%02d/%04d") % (texteDate.day, texteDate.month, texteDate.year)
+                    texte = _(u"Sï¿½lectionner le %02d/%02d/%04d") % (texteDate.day, texteDate.month, texteDate.year)
                 else:
-                    texte = _(u"Désélectionner le %02d/%02d/%04d") % (texteDate.day, texteDate.month, texteDate.year)
+                    texte = _(u"Dï¿½sï¿½lectionner le %02d/%02d/%04d") % (texteDate.day, texteDate.month, texteDate.year)
                 menu.Append(self.popupID1, texte)
                 self.Bind(wx.EVT_MENU, self.OnPopup1, id=self.popupID1)
                 
@@ -780,39 +780,39 @@ class Calendrier(wx.ScrolledWindow):
         
         # Choisir la date d'aujourd'hui
         self.popupID4 = wx.Window.NewControlId()
-        menu.Append(self.popupID4, _(u"Sélectionner aujourd'hui"))
+        menu.Append(self.popupID4, _(u"Sï¿½lectionner aujourd'hui"))
         self.Bind(wx.EVT_MENU, self.OnPopup4, id=self.popupID4)
         
         if self.multiSelections == True :
             
             # Choisir tout le mois
             self.popupID5 = wx.Window.NewControlId()
-            menu.Append(self.popupID5, _(u"Sélectionner tout le mois"))
+            menu.Append(self.popupID5, _(u"Sï¿½lectionner tout le mois"))
             self.Bind(wx.EVT_MENU, self.OnPopup5, id=self.popupID5)
             
-            # Choisir une période de vacances
+            # Choisir une pï¿½riode de vacances
             self.popupID3 = wx.Window.NewControlId()
             if len(self.listePeriodesVacs) != 0 :
                 sm = UTILS_Adaptations.Menu()
                 index = 0
                 self.listePeriodesVacs.reverse()
-                # Seules les 20 dernières périodes sont retenues
+                # Seules les 20 derniï¿½res pï¿½riodes sont retenues
                 for annee, nomPeriode, listeJours in self.listePeriodesVacs[:20] :
                     id = 1000 + index
                     sm.Append(id, nomPeriode + " " + str(annee))
                     self.Bind(wx.EVT_MENU, self.OnPopup3, id=id)
                     index += 1
                 # Inclus le sous-menu dans le menu
-                menu.AppendMenu(self.popupID3, _(u"Sélectionner une période de vacances"), sm)
+                menu.AppendMenu(self.popupID3, _(u"Sï¿½lectionner une pï¿½riode de vacances"), sm)
         
-            # Tout désélectionner
+            # Tout dï¿½sï¿½lectionner
             self.popupID7 = wx.Window.NewControlId()
-            menu.Append(self.popupID7, _(u"Tout désélectionner"))
+            menu.Append(self.popupID7, _(u"Tout dï¿½sï¿½lectionner"))
             self.Bind(wx.EVT_MENU, self.OnPopup7, id=self.popupID7)
             
-            # Exclure les jours de week-end dans les sélections
+            # Exclure les jours de week-end dans les sï¿½lections
             self.popupID6 = wx.Window.NewControlId()
-            menu.Append(self.popupID6, _(u"Exclure les week-ends des sélections"), _(u"Exclure les week-ends de la sélection"), wx.ITEM_CHECK)
+            menu.Append(self.popupID6, _(u"Exclure les week-ends des sï¿½lections"), _(u"Exclure les week-ends de la sï¿½lection"), wx.ITEM_CHECK)
             if self.selectExclureWE == True :
                 menu.Check(self.popupID6, True)
             self.Bind(wx.EVT_MENU, self.OnPopup6, id=self.popupID6)
@@ -837,23 +837,23 @@ class Calendrier(wx.ScrolledWindow):
 
 
     def OnPopup1(self, event):
-        """ Sélection ou désélection """       
+        """ Sï¿½lection ou dï¿½sï¿½lection """       
         texteDate = self.IDobjetEnDate(self.caseSurvol)
 
-        # Vérifie si date déjà sélectionnée
+        # Vï¿½rifie si date dï¿½jï¿½ sï¿½lectionnï¿½e
         if texteDate in self.listeSelections:
             select = True
         else :
             select = False
 
-        # Désélection de la date
+        # Dï¿½sï¿½lection de la date
         if select == True :
             self.listeSelections.remove(texteDate)
             self.SelectJours(self.listeSelections)
 ##            self.RedrawCase(self.caseSurvol, survol=True)
             return
 
-        # Sélection de la date
+        # Sï¿½lection de la date
         else:
             self.listeSelections.append(texteDate)
             self.SelectJours(self.listeSelections)
@@ -868,12 +868,12 @@ class Calendrier(wx.ScrolledWindow):
 
 
     def OnPopup3(self, event):
-        """ Sélection d'une période de vacances """
+        """ Sï¿½lection d'une pï¿½riode de vacances """
         index = event.GetId()-1000
         nomPeriode, annee, listeJours = self.listePeriodesVacs[index]
-        # Mets les jours de vacances dans la liste de sélections
+        # Mets les jours de vacances dans la liste de sï¿½lections
 
-        # Enleve les week-ends si nécessaires :
+        # Enleve les week-ends si nï¿½cessaires :
         if self.selectExclureWE == True :
             listeJoursTmp = []
             for jour in listeJours :
@@ -886,7 +886,7 @@ class Calendrier(wx.ScrolledWindow):
         
 
     def OnPopup6(self, event):
-        """ Inclure ou non les week-ends dans la sélection """
+        """ Inclure ou non les week-ends dans la sï¿½lection """
         self.selectExclureWE = event.IsChecked()
 
     def OnPopup4(self, event):
@@ -910,21 +910,21 @@ class Calendrier(wx.ScrolledWindow):
         self.SelectJours(listeJours)
       
     def OnPopup7(self, event):
-        """ Tout désélectionner """
+        """ Tout dï¿½sï¿½lectionner """
         self.SelectJours( listeJours=[] )
       
     def SelectJours(self, listeJours=[]):
-        """ Met à jour l'affichage du calendrier et le planning en fonction des sélections """
+        """ Met ï¿½ jour l'affichage du calendrier et le planning en fonction des sï¿½lections """
         self.listeSelections = listeJours
         if len(listeJours) != 0 :
-            # Se place sur le mois ou l'année du premier jour de la période de vacances sélectionnée
+            # Se place sur le mois ou l'annï¿½e du premier jour de la pï¿½riode de vacances sï¿½lectionnï¿½e
             moisDebut, anneeDebut = listeJours[0].month, listeJours[0].year
             self.moisCalendrier = moisDebut
             self.anneeCalendrier = anneeDebut
         # Actualisation de l'affichage
         self.SendDates()
         self.MAJAffichage()
-        # Met à jour l'affichage des contrôles de navigation du calendrier
+        # Met ï¿½ jour l'affichage des contrï¿½les de navigation du calendrier
         try : self.GetParent().MAJcontrolesNavigation(self.moisCalendrier, self.anneeCalendrier)
         except : pass
 
@@ -953,7 +953,7 @@ class CTRL(wx.Panel):
         self.selectionInterdite = selectionInterdite
         self.typeCalendrier = typeCalendrier
         
-        # Création du contrôle calendrier
+        # Crï¿½ation du contrï¿½le calendrier
         self.calendrier = Calendrier(self, -1, multiSelections=multiSelections, selectionInterdite=selectionInterdite, typeCalendrier=typeCalendrier)
         
         # Attribution des couleurs au calendrier
@@ -965,10 +965,10 @@ class CTRL(wx.Panel):
         self.calendrier.couleurSelect = (255, 162, 0)
         self.calendrier.couleurVacances = (255, 255, 187)
         
-        # Création des autres widgets
-        self.listeMois = [_(u"Janvier"), _(u"Février"), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"Août"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"Décembre")]
+        # Crï¿½ation des autres widgets
+        self.listeMois = [_(u"Janvier"), _(u"Fï¿½vrier"), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"Aoï¿½t"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"Dï¿½cembre")]
         if "linux" in sys.platform :
-            self.listeMois = [_(u"Janv."), _(u"Fév."), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juil."), _(u"Août"), _(u"Sept."), _(u"Oct."), _(u"Nov."), _(u"Déc.")]
+            self.listeMois = [_(u"Janv."), _(u"Fï¿½v."), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juil."), _(u"Aoï¿½t"), _(u"Sept."), _(u"Oct."), _(u"Nov."), _(u"Dï¿½c.")]
         self.combo_mois = wx.ComboBox(self, -1, "" , (-1, -1) , (70, -1), self.listeMois , wx.CB_READONLY)
         
         self.spin = wx.SpinButton(self, -1, size=(17, 20),  style=wx.SP_VERTICAL)
@@ -990,7 +990,7 @@ class CTRL(wx.Panel):
         
         self.MAJPeriodeCalendrier()
         
-        # Sélection de Aujourdh'ui
+        # Sï¿½lection de Aujourdh'ui
         if afficheAujourdhui == True and self.selectionInterdite == False :
             self.calendrier.SelectJours( [datetime.date.today(),] )
             
@@ -1058,7 +1058,7 @@ class CTRL(wx.Panel):
         self.calendrier.SelectJours(listeDates) 
         
     def MAJselectionDates(self, listeDates) :
-        """ Envoie les dates sélectionnée au module Presences """
+        """ Envoie les dates sï¿½lectionnï¿½e au module Presences """
         self.SetSelectionDates(listeDates)
         self.GetGrandParent().GetParent().MAJpanelPlanning()
         self.GetGrandParent().GetParent().panelPersonnes.listCtrlPersonnes.CreateCouleurs()
@@ -1079,7 +1079,7 @@ class CTRL(wx.Panel):
             self.combo_mois.SetSelection(mois-1)
             self.combo_annee.SetValue(annee)
         else:
-            # Changement de l'année uniquement
+            # Changement de l'annï¿½e uniquement
             annee = int(self.combo_annee.GetValue()) + x
             self.combo_annee.SetValue(annee)
         self.spin.SetValue(0)

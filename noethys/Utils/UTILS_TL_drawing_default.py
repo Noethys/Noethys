@@ -54,8 +54,8 @@ DATA_INDICATOR_SIZE = 10
 
 LISTE_JOURS = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
 LISTE_JOURS_ABREGE = (_(u"Lun"), _(u"Mar"), _(u"Mer"), _(u"Jeu"), _(u"Ven"), _(u"Sam"), _(u"Dim"))
-LISTE_MOIS = (_(u"Janvier"), _(u"Février"), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"Août"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"Décembre"))
-LISTE_MOIS_ABREGE = (_(u"Jan."), _(u"Fév."), _(u"Mars"), _(u"Avr."), _(u"Mai"), _(u"Juin"), _(u"Juil."), _(u"Août"), _(u"Sept."), _(u"Oct."), _(u"Nov."), _(u"Déc."))
+LISTE_MOIS = (_(u"Janvier"), _(u"Fï¿½vrier"), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"Aoï¿½t"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"Dï¿½cembre"))
+LISTE_MOIS_ABREGE = (_(u"Jan."), _(u"Fï¿½v."), _(u"Mars"), _(u"Avr."), _(u"Mai"), _(u"Juin"), _(u"Juil."), _(u"Aoï¿½t"), _(u"Sept."), _(u"Oct."), _(u"Nov."), _(u"Dï¿½c."))
 
 
 class Strip(object):
@@ -740,7 +740,7 @@ class DefaultDrawingAlgorithm(DrawingAlgorithm):
                                  (x_balloon, event_rect.Y),
                                 True)
         if icon != None:
-            self.dc.DrawBitmap(icon, x, y, False)
+            self.dc.DrawBitmap(icon, int(x), int(y), False)
             x += iw + BALLOON_RADIUS
         if lines != None:
             ty = y

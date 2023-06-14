@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: iso-8859-15 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitï¿½s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -140,9 +140,9 @@ class ImgBox(wx.Window):
         
         # Dessin de la photo
         largeurImg, hauteurImg = self.bmp.GetSize()
-        dc.DrawBitmap(self.bmp, self.posxPhoto - (largeurImg / 2.0), self.posyPhoto - (hauteurImg / 2.0), 0)
+        dc.DrawBitmap(self.bmp, int(self.posxPhoto - (largeurImg / 2.0)), int(self.posyPhoto - (hauteurImg / 2.0)), 0)
         
-        # Définit la position et la taille du cadre de sélection
+        # Dï¿½finit la position et la taille du cadre de sï¿½lection
         coeffReduction = 2.0
         if 'phoenix' in wx.PlatformInfo:
             largeurDC, hauteurDC = self.GetClientSize()
@@ -151,30 +151,30 @@ class ImgBox(wx.Window):
         self.posxCadre = (largeurDC / 2.0) - (self.tailleCadre[0] / 2.0)
         self.posyCadre = (hauteurDC / 2.0) - (self.tailleCadre[1] / 2.0)
         
-        # Mémorise la sélection de la photo avant de dessiner le cadre
+        # Mï¿½morise la sï¿½lection de la photo avant de dessiner le cadre
         self.selection = dc.GetAsBitmap((self.posxCadre, self.posyCadre, self.tailleCadre[0], self.tailleCadre[1]))
                 
-        # Dessine le cadre de sélection
+        # Dessine le cadre de sï¿½lection
         dc.SetPen(wx.CYAN_PEN)
         dc.SetBrush(wx.TRANSPARENT_BRUSH)
         dc.DrawRectangle(self.posxCadre, self.posyCadre, self.tailleCadre[0], self.tailleCadre[1])
         dc.SetFont(wx.Font(8, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, 'Arial'))
         dc.SetTextForeground("CYAN")
-        dc.DrawText(_(u"Cadre de sélection"), self.posxCadre+3, self.posyCadre+1) 
+        dc.DrawText(_(u"Cadre de sï¿½lection"), self.posxCadre+3, self.posyCadre+1) 
         
-        # Dessine l'aperçu
+        # Dessine l'aperï¿½u
         largeurApercu = 100.0
         tailleApercu = (largeurApercu, largeurApercu * self.tailleCadre[1] / self.tailleCadre[0])
         posxApercu, posyApercu = (10, 10)
         self.apercu = self.selection.ConvertToImage()
         self.apercu = self.apercu.Rescale(width=tailleApercu[0], height=tailleApercu[1], quality=wx.IMAGE_QUALITY_HIGH) 
         self.apercu = self.apercu.ConvertToBitmap()
-        dc.DrawBitmap(self.apercu, posxApercu, posyApercu, 0)
+        dc.DrawBitmap(self.apercu, int(posxApercu), int(posyApercu), 0)
         dc.SetTextForeground("RED")
-        texteApercu = _(u"Aperçu")
+        texteApercu = _(u"Aperï¿½u")
         dc.DrawText(texteApercu, posxApercu+3, posyApercu+1) 
         
-        # Dessine le cadre de l'aperçu
+        # Dessine le cadre de l'aperï¿½u
         dc.SetPen(wx.RED_PEN)
         dc.SetBrush(wx.TRANSPARENT_BRUSH)
         dc.DrawRectangle(posxApercu, posyApercu, tailleApercu[0], tailleApercu[1])
@@ -196,7 +196,7 @@ class ImgBox(wx.Window):
         else :
         # Redimensionne la photo 
             self.ResizePhoto()
-            # Détermine le nouveau point central de la photo
+            # Dï¿½termine le nouveau point central de la photo
             self.posxPhoto = self.posxPhoto + (self.largeurDC-ancLargeurDC)/2
             self.posyPhoto = self.posyPhoto + (self.hauteurDC-ancHauteurDC)/2
         # Redessine toute l'image
@@ -210,7 +210,7 @@ class ImgBox(wx.Window):
     def ResizePhoto(self):
         """ Redimensionne la photo"""
         largeurImg, hauteurImg = self.source.GetSize()
-        # Réduction de l'image
+        # Rï¿½duction de l'image
         newLargeur = largeurImg * self.zoom
         newHauteur = hauteurImg * self.zoom
         # Redimensionne l'image
@@ -240,7 +240,7 @@ class ImgBox(wx.Window):
         """ Rotation de la photo """
         # Rotation
         self.source = self.source.Rotate90(VersDroite)
-        # Réduction de l'image
+        # Rï¿½duction de l'image
         largeurImg, hauteurImg = self.source.GetSize()
         newLargeur = largeurImg * self.zoom
         newHauteur = hauteurImg * self.zoom
@@ -253,7 +253,7 @@ class ImgBox(wx.Window):
         self.UpdateDrawing()
 
     def evt_mouse(self,event):
-        """ Gestion du déplacement de la photo """
+        """ Gestion du dï¿½placement de la photo """
         if 'phoenix' in wx.PlatformInfo:
             cursor = wx.Cursor
         else :
@@ -286,7 +286,7 @@ class ImgBox(wx.Window):
         print(keyCode)
 
     def GetBuffer(self):
-        # Récupération de l'image dans le cadre de sélection
+        # Rï¿½cupï¿½ration de l'image dans le cadre de sï¿½lection
         tailleImg = self.selection.GetSize()
         imgTemp = self.selection.GetSubBitmap( (0, 0, tailleImg[0], tailleImg[1]) ) 
         imgFinale = wxtopil(imgTemp.ConvertToImage())
@@ -333,7 +333,7 @@ class Dialog(wx.Dialog):
         self.img_loupe_plus = wx.StaticBitmap(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/22x22/ZoomPlus.png"), wx.BITMAP_TYPE_ANY))
         self.img_loupe_moins = wx.StaticBitmap(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/22x22/ZoomMoins.png"), wx.BITMAP_TYPE_ANY))
                 
-        self.staticBox_reinit = wx.StaticBox(self, -1, _(u"Réinitialisation"))
+        self.staticBox_reinit = wx.StaticBox(self, -1, _(u"Rï¿½initialisation"))
         self.bouton_reinit = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/22x22/Photo.png"), wx.BITMAP_TYPE_ANY), size=(70, -1))
         
         # Boutons
@@ -362,10 +362,10 @@ class Dialog(wx.Dialog):
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider l'image")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
         
-        self.bouton_rotation_gauche.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour effectuer une rotation de 90°\n dans le sens inverse des aiguilles d'une montre")))
-        self.bouton_rotation_droite.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour effectuer une rotation de 90°\n dans le sens des aiguilles d'une montre")))
+        self.bouton_rotation_gauche.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour effectuer une rotation de 90ï¿½\n dans le sens inverse des aiguilles d'une montre")))
+        self.bouton_rotation_droite.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour effectuer une rotation de 90ï¿½\n dans le sens des aiguilles d'une montre")))
         self.slider_zoom.SetToolTip(wx.ToolTip(_(u"Ajustez avec cette fonction zoom\nla taille de la photo")))
-        self.bouton_reinit.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour réinitialiser la position\net la taille de la photo initiale")))
+        self.bouton_reinit.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour rï¿½initialiser la position\net la taille de la photo initiale")))
         
         self.SetMinSize((700, 600))
 
@@ -376,7 +376,7 @@ class Dialog(wx.Dialog):
         # DC
         grid_sizer_base.Add(self.imgbox, 1, wx.LEFT|wx.TOP|wx.RIGHT|wx.EXPAND, 10)
         
-        # Panneau de contrôle
+        # Panneau de contrï¿½le
         sizer_commandes = wx.FlexGridSizer(rows=1, cols=5, vgap=5, hgap=5)
         
         # Rotation
@@ -431,11 +431,11 @@ class Dialog(wx.Dialog):
         return bmp
     
     def GetBuffer(self):
-        # Récupération de l'image dans le cadre de sélection
+        # Rï¿½cupï¿½ration de l'image dans le cadre de sï¿½lection
         return self.imgbox.GetBuffer()
     
     def OnBoutonOk(self, event):        
-        # Ferme la boîte de dialogue
+        # Ferme la boï¿½te de dialogue
         self.EndModal(wx.ID_OK) 
         
     def OnBoutonRotationGauche(self, event):

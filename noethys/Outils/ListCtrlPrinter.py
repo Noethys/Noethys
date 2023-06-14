@@ -1409,7 +1409,7 @@ class Block(object):
             imageIndex = 0
         if image:
             y = _CalcBitmapPosition(bounds, image.Height)
-            dc.DrawBitmap(image, RectUtils.Left(bounds), y)
+            dc.DrawBitmap(image, int(RectUtils.Left(bounds)), int(y))
             RectUtils.MoveLeftBy(bounds, image.GetWidth()+GAP_BETWEEN_IMAGE_AND_TEXT)
         elif listCtrl and imageIndex >=0:
             imageList = listCtrl.GetImageList(wx.IMAGE_LIST_SMALL)
@@ -2666,7 +2666,7 @@ class ImageDecoration(Decoration):
                     mdc, xsrc=0, ysrc=0, useMask=True)
             mdc.SelectObject(wx.NullBitmap)
         else:
-            dc.DrawBitmap(self.bitmap, x, y, True)
+            dc.DrawBitmap(self.bitmap, int(x), int(y), True)
 
 
 #----------------------------------------------------------------------------

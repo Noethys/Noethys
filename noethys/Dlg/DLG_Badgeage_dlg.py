@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: iso-8859-15 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activités
+# Application :    Noethys, gestion multi-activitï¿½s
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-12 Ivan LUCAS
@@ -39,7 +39,7 @@ class CTRL_Bouton_toggle_archive(Control):
         self.marge = 10
         self.bestSize = (-1, -1)
         
-        # Ajustement de la hauteur du contrôle
+        # Ajustement de la hauteur du contrï¿½le
         dc = wx.ClientDC(self)
         dc.SetFont(wx.Font(24, wx.DEFAULT, wx.NORMAL, wx.NORMAL, 0, "MS Shell Dlg 2"))
         largeur, hauteur = self.DrawTexte(dc)           
@@ -86,7 +86,7 @@ class CTRL_Bouton_toggle_archive(Control):
             dc.SetTextForeground(self.couleurClaire)
         tailleImage = bmp.GetSize()
         x = self.marge
-        dc.DrawBitmap(bmp, x, x)
+        dc.DrawBitmap(bmp, int(x), int(x))
 
         # Dessine le texte
         font = wx.Font(24, wx.DEFAULT, wx.NORMAL, wx.NORMAL, 0, "MS Shell Dlg 2")
@@ -151,7 +151,7 @@ class CTRL_Bouton_toggle(wx.Panel):
         self.survol = False
         self.marge = 10
 
-        # Ajustement de la hauteur du contrôle
+        # Ajustement de la hauteur du contrï¿½le
         dc = wx.ClientDC(self)
         dc.SetFont(wx.Font(24, wx.DEFAULT, wx.NORMAL, wx.NORMAL, 0, "MS Shell Dlg 2"))
         largeur, hauteur = self.DrawTexte(dc)   
@@ -198,7 +198,7 @@ class CTRL_Bouton_toggle(wx.Panel):
             dc.SetTextForeground(self.couleurClaire)
         tailleImage = bmp.GetSize()
         x = self.marge
-        dc.DrawBitmap(bmp, x, x)
+        dc.DrawBitmap(bmp, int(x), int(x))
 
         # Dessine le texte
         font = wx.Font(24, wx.DEFAULT, wx.NORMAL, wx.NORMAL, 0, "MS Shell Dlg 2")
@@ -249,7 +249,7 @@ class CTRL_Choix(wx.Panel):
         self.listeItems = listeItems
         self.multiSelection = multiSelection
         
-        # Création des boutons
+        # Crï¿½ation des boutons
         sizer = wx.BoxSizer(wx.VERTICAL)
         ID = 1
         listeRaccourcis = []
@@ -275,14 +275,14 @@ class CTRL_Choix(wx.Panel):
         for commande in listeCommandes :
             listeRaccourcis.append(commande) 
         
-        # Si sélection unique, on sélectionne par défautr le premier
+        # Si sï¿½lection unique, on sï¿½lectionne par dï¿½fautr le premier
         if self.multiSelection == False and len(self.dictBoutons) > 0 :
             self.dictBoutons[1].Selection() 
         
         self.SetSizer(sizer)
         self.Layout()
         
-        # Création des touches raccourcis
+        # Crï¿½ation des touches raccourcis
         self.SetAcceleratorTable(wx.AcceleratorTable(listeRaccourcis))
     
         
@@ -326,14 +326,14 @@ class DLG_Question(wx.Dialog):
         self.icone = icone
         self.multiSelection = multiSelection
         
-        # Regarde si un thème existe dans l'interface
+        # Regarde si un thï¿½me existe dans l'interface
         if interface != None :
             dictTheme = interface.GetTheme() 
             if "dlg" in dictTheme :
                 couleurClaire = dictTheme["dlg"]["couleurClaire"]
                 couleurFoncee = dictTheme["dlg"]["couleurFoncee"]
         
-        # Propriétés
+        # Propriï¿½tï¿½s
         self.SetBackgroundColour(couleurClaire)
         self.SetFont(wx.Font(28, wx.DEFAULT, wx.NORMAL, wx.NORMAL, 0, "MS Shell Dlg 2"))
         
@@ -381,7 +381,7 @@ class DLG_Question(wx.Dialog):
         self.ctrl_oui.SetPressedBottomColour(wx.Colour(60, 160, 84))
         self.ctrl_oui.Show(bouton_oui)
         
-        # Désactive la touche OUI si multiSelection activée
+        # Dï¿½sactive la touche OUI si multiSelection activï¿½e
         if len(listeItems) > 0 and self.multiSelection == True :
             self.ctrl_oui.Enable(False)
 
@@ -447,7 +447,7 @@ class DLG_Question(wx.Dialog):
         self.Layout()
         self.CenterOnScreen() 
         
-        # Création de la forme de la fenêtre
+        # Crï¿½ation de la forme de la fenï¿½tre
         size = self.GetSize()
         if 'phoenix' in wx.PlatformInfo:
             bmp = wx.Bitmap(size.x, size.y)
@@ -468,7 +468,7 @@ class DLG_Question(wx.Dialog):
         else:
             self.SetBusyShape()
         
-        # Synthèse vocale
+        # Synthï¿½se vocale
         wx.CallAfter(self.Vocal)
 
     def SetBusyShape(self, event=None):
@@ -484,7 +484,7 @@ class DLG_Question(wx.Dialog):
         self.EndModal(wx.ID_YES)
     
     def Vocal(self):
-        """ Synthèse vocale """
+        """ Synthï¿½se vocale """
         try :
             if self.interface != None :
                 if self.interface.dictProcedure["parametres"]["vocal"] == 1 :
@@ -495,7 +495,7 @@ class DLG_Question(wx.Dialog):
 # --------------------------------------------------------------------------------------------------------------------------------------
 
 class DLG_Choix(DLG_Question):
-    """ DLG qui propose différents choix """
+    """ DLG qui propose diffï¿½rents choix """
     def __init__(self, interface=None, message="", listeItems=[], multiSelection=True):
         DLG_Question.__init__(self, interface, message, icone="question", texte_non=_(u"Annuler"), texte_oui=_(u"Ok"), 
                                             listeItems=listeItems, multiSelection=multiSelection)
@@ -511,7 +511,7 @@ class DLG_Choix(DLG_Question):
 # --------------------------------------------------------------------------------------------------------------------------------------
 
 class DLG_Message(object):
-    """ DLG pour afficher un message sur un temps donné (en secondes) """
+    """ DLG pour afficher un message sur un temps donnï¿½ (en secondes) """
     def __init__(self, interface=None, message="", icone=None, secondes=2):
         
         if interface.importationManuelle != False :
@@ -537,10 +537,10 @@ if __name__ == "__main__":
     #wx.InitAllImageHandlers()
     
     # Version MESSAGE
-##    dlg1 = DLG_Message(None, message="Bonjour Kévin", icone="commentaire", secondes=2)
+##    dlg1 = DLG_Message(None, message="Bonjour Kï¿½vin", icone="commentaire", secondes=2)
     
     # Version QUESTION
-##    dlg = DLG_Question(None, message=_(u"Restes-tu manger à la cantine ce midi ?"), icone="question")
+##    dlg = DLG_Question(None, message=_(u"Restes-tu manger ï¿½ la cantine ce midi ?"), icone="question")
 ##    if dlg.ShowModal() == wx.ID_YES :
 ##        print "oui"
 ##    else :
