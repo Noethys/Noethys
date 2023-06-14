@@ -1717,7 +1717,7 @@ class Dialog(wx.Dialog):
         try :
             texte += u"[%s] %s" % (horodatage, message)
         except :
-            texte += u"[%s] %s" % (horodatage, str(message).decode('iso-8859-1'))
+            texte += u"[%s] %s" % (horodatage, str(message).decode('UTF-8'))
         self.log.AppendText(texte)
 
     def SetGauge(self, valeur=0):

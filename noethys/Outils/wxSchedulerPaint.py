@@ -222,12 +222,12 @@ class wxSchedulerPaint( object ):
 			else :
 				theDay.AddDS(wx.DateSpan(days=dayN))
 
-			# Recherche la couleur par dÃ©faut pour le jour
+			# Recherche la couleur par défaut pour le jour
 			highlight = False
 			if self._viewType != wxSCHEDULER_DAILY :
 				highlight = theDay.IsSameDate( wx.DateTime.Now() )
 
-			# Recherche si c'est un jour fÃ©riÃ© ou un jour de vacances
+			# Recherche si c'est un jour férié ou un jour de vacances
 			if self.joursSpeciaux != None and self._viewType != wxSCHEDULER_DAILY and highlight == False :
 				couleur = self.joursSpeciaux.GetCouleur(theDay)
 				if couleur != None :
@@ -423,7 +423,7 @@ class wxSchedulerPaint( object ):
 		for weekday in xrange(7):
 			theDay = utils.setToWeekDayInSameWeek(utils.copyDateTime(firstDay), weekday, self._weekstart)
 
-			# Recherche la couleur par dÃ©faut pour le jour
+			# Recherche la couleur par défaut pour le jour
 			highlight = theDay.IsSameDate( wx.DateTime.Now() )
 			if self.joursSpeciaux != None and highlight == False :
 				couleur = self.joursSpeciaux.GetCouleur(theDay)
@@ -515,7 +515,7 @@ class wxSchedulerPaint( object ):
 				else :
 					theDay.AddDS(wx.DateSpan(days=idx))
 
-				# Recherche la couleur par dÃ©faut pour le jour
+				# Recherche la couleur par défaut pour le jour
 				highlight = theDay.IsSameDate( wx.DateTime.Now() )
 				if self.joursSpeciaux != None and highlight == False :
 					couleur = self.joursSpeciaux.GetCouleur(theDay)
@@ -569,7 +569,7 @@ class wxSchedulerPaint( object ):
 						schedules = self._getSchedInPeriod(self._schedules, theDay, end)
 
 
-						# Recherche la couleur par dÃ©faut pour le jour
+						# Recherche la couleur par défaut pour le jour
 						highlight = theDay.IsSameDate( wx.DateTime.Now() )
 						if self.joursSpeciaux != None and highlight == False :
 							couleur = self.joursSpeciaux.GetCouleur(theDay)

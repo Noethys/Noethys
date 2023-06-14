@@ -65,13 +65,13 @@ class UnicodeWriter(object):
     >>> from cStringIO import StringIO
     >>> f = StringIO()
     >>> w = unicodecsv.writer(f, encoding='utf-8')
-    >>> w.writerow((u'Ã©', u'Ã±'))
+    >>> w.writerow((u'é', u'É±'))
     >>> f.seek(0)
     >>> r = unicodecsv.reader(f, encoding='utf-8')
     >>> row = r.next()
-    >>> row[0] == u'Ã©'
+    >>> row[0] == u'é'
     True
-    >>> row[1] == u'Ã±'
+    >>> row[1] == u'É±'
     True
     """
     def __init__(self, f, dialect=csv.excel, encoding='utf-8', errors='strict',
@@ -128,17 +128,17 @@ class DictWriter(csv.DictWriter):
     """
     >>> from cStringIO import StringIO
     >>> f = StringIO()
-    >>> w = DictWriter(f, ['a', u'Ã±', 'b'], restval=u'Ã®')
-    >>> w.writerow({'a':'1', u'Ã±':'2'})
-    >>> w.writerow({'a':'1', u'Ã±':'2', 'b':u'Ãž'})
-    >>> w.writerow({'a':u'Ã©', u'Ã±':'2'})
+    >>> w = DictWriter(f, ['a', u'É±', 'b'], restval=u'î')
+    >>> w.writerow({'a':'1', u'É±':'2'})
+    >>> w.writerow({'a':'1', u'É±':'2', 'b':u'ô'})
+    >>> w.writerow({'a':u'é', u'É±':'2'})
     >>> f.seek(0)
-    >>> r = DictReader(f, fieldnames=['a', u'Ã±'], restkey='r')
-    >>> r.next() == {'a': u'1', u'Ã±':'2', 'r': [u'Ã®']}
+    >>> r = DictReader(f, fieldnames=['a', u'É±'], restkey='r')
+    >>> r.next() == {'a': u'1', u'É±':'2', 'r': [u'î']}
     True
-    >>> r.next() == {'a': u'1', u'Ã±':'2', 'r': [u'\xc3\xb8']}
+    >>> r.next() == {'a': u'1', u'É±':'2', 'r': [u'\xc3\xb8']}
     True
-    >>> r.next() == {'a': u'\xc3\xa9', u'Ã±':'2', 'r': [u'\xc3\xae']}
+    >>> r.next() == {'a': u'\xc3\xa9', u'É±':'2', 'r': [u'\xc3\xae']}
     True
     """
     def __init__(self, csvfile, fieldnames, restval='', extrasaction='raise', dialect='excel', encoding='utf-8', errors='strict', *args, **kwds):
@@ -158,15 +158,15 @@ class DictReader(csv.DictReader):
     >>> f = StringIO()
     >>> w = DictWriter(f, fieldnames=['name', 'place'])
     >>> w.writerow({'name': 'Cary Grant', 'place': 'hollywood'})
-    >>> w.writerow({'name': 'Nathan Brillstone', 'place': u'ÃžLand'})
-    >>> w.writerow({'name': u'Willam Ãž. Unicoder', 'place': u'Ã©Spandland'})
+    >>> w.writerow({'name': 'Nathan Brillstone', 'place': u'ôLand'})
+    >>> w.writerow({'name': u'Willam ô. Unicoder', 'place': u'éSpandland'})
     >>> f.seek(0)
     >>> r = DictReader(f, fieldnames=['name', 'place'])
     >>> print r.next() == {'name': 'Cary Grant', 'place': 'hollywood'}
     True
-    >>> print r.next() == {'name': 'Nathan Brillstone', 'place': u'ÃžLand'}
+    >>> print r.next() == {'name': 'Nathan Brillstone', 'place': u'ôLand'}
     True
-    >>> print r.next() == {'name': u'Willam Ãž. Unicoder', 'place': u'Ã©Spandland'}
+    >>> print r.next() == {'name': u'Willam ô. Unicoder', 'place': u'éSpandland'}
     True
     """
     def __init__(self, csvfile, fieldnames=None, restkey=None, restval=None,

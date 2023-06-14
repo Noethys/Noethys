@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activitï¿œs
+# Application :    Noethys, gestion multi-activités
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -84,7 +84,7 @@ class GetValeurs() :
         listeIDindividus = []
         listeLiens = []
         
-        # Recherche des individus rattachï¿œs
+        # Recherche des individus rattachés
         DB = GestionDB.DB()
         req = """SELECT IDrattachement, IDindividu, IDcategorie, titulaire
         FROM rattachements WHERE IDfamille=%d;""" % self.IDfamille
@@ -94,7 +94,7 @@ class GetValeurs() :
             DB.Close()
             return listeIDindividus, dictInfos, listeLiens
         
-        # Intï¿œgration de ces premiï¿œres valeurs dans le dictValeurs
+        # Intégration de ces premiéres valeurs dans le dictValeurs
         for IDrattachement, IDindividu, IDcategorie, titulaire in listeRattachements :
             listeIDindividus.append(IDindividu)
             dictInfos[IDindividu] = {"categorie" : IDcategorie, "titulaire" : titulaire, "IDrattachement" : IDrattachement}
@@ -130,7 +130,7 @@ class GetValeurs() :
                 } 
             dictInscriptions[IDindividu].append(dictTemp) 
             
-        # Recherche des infos dï¿œtaillï¿œes sur chaque individu
+        # Recherche des infos détaillées sur chaque individu
         dictCivilites = Civilites.GetDictCivilites()
         listeChamps = (
             "IDindividu", "IDcivilite", "nom", "prenom", "num_secu","IDnationalite",
@@ -157,7 +157,7 @@ class GetValeurs() :
                 nomChamp = listeChamps[index]
                 dictInfos[IDindividu][nomChamp] = temp[index]
 
-            # Infos sur la civilitï¿œ
+            # Infos sur la civilité
             if dictInfos[IDindividu]["IDcivilite"] != None and dictInfos[IDindividu]["IDcivilite"] != "" :
                 dictInfos[IDindividu]["genre"] = dictCivilites[dictInfos[IDindividu]["IDcivilite"]]["sexe"]
                 dictInfos[IDindividu]["categorieCivilite"] = dictCivilites[dictInfos[IDindividu]["IDcivilite"]]["categorie"]
@@ -181,7 +181,7 @@ class GetValeurs() :
         dictPhotos = CTRL_Photo.GetPhotos(listeIndividus=listeIndividusTemp, taillePhoto=(128, 128), qualite=wx.IMAGE_QUALITY_HIGH)
 
         #----------------------------------------------
-        # 2ï¿œme tournï¿œe : Infos dï¿œtaillï¿œes
+        # 2éme tournée : Infos détaillées
         #----------------------------------------------
         
         for IDindividu in listeIDindividus :
@@ -214,15 +214,15 @@ class GetValeurs() :
             dictInfos[IDindividu]["adresse_ligne1"] = rue_resid
             dictInfos[IDindividu]["adresse_ligne2"] = u"%s %s" % (cp_resid, ville_resid)
             
-            # Coordonnï¿œes
+            # Coordonnées
             tel_domicile = dictInfos[IDindividu]["tel_domicile"] 
             if tel_domicile != None :
-                dictInfos[IDindividu]["tel_domicile_complet"] = _(u"Tï¿œl. domicile : %s") % tel_domicile
+                dictInfos[IDindividu]["tel_domicile_complet"] = _(u"Tél. domicile : %s") % tel_domicile
             else:
                 dictInfos[IDindividu]["tel_domicile_complet"] = None
             tel_mobile = dictInfos[IDindividu]["tel_mobile"] 
             if tel_mobile != None :
-                dictInfos[IDindividu]["tel_mobile_complet"] = _(u"Tï¿œl. mobile : %s") % tel_mobile
+                dictInfos[IDindividu]["tel_mobile_complet"] = _(u"Tél. mobile : %s") % tel_mobile
             else:
                 dictInfos[IDindividu]["tel_mobile_complet"] = None
             mail = dictInfos[IDindividu]["mail"] 
@@ -232,11 +232,11 @@ class GetValeurs() :
                 dictInfos[IDindividu]["mail_complet"] = None
             travail_tel = dictInfos[IDindividu]["travail_tel"] 
             if travail_tel != None :
-                dictInfos[IDindividu]["travail_tel_complet"] = _(u"Tï¿œl. travail : %s") % travail_tel
+                dictInfos[IDindividu]["travail_tel_complet"] = _(u"Tél. travail : %s") % travail_tel
             else:
                 dictInfos[IDindividu]["travail_tel_complet"] = None            
             
-            # Infos sur les activitï¿œs inscrites
+            # Infos sur les activités inscrites
             if (IDindividu in dictInscriptions) == True :
                 dictInfos[IDindividu]["inscriptions"] = True
                 liste_temp = []
@@ -261,7 +261,7 @@ class GetValeurs() :
     
     
     def GetDictCadres(self):
-        """ Crï¿œe le dictionnaire spï¿œcial pour l'affichage des cadres individus """
+        """ Crée le dictionnaire spécial pour l'affichage des cadres individus """
         dictCadres = {}
         for IDindividu in self.listeIDindividus :
             listeLignes = []
@@ -274,14 +274,14 @@ class GetValeurs() :
                 listeLignes.append((txtDatenaiss, 7, "normal"))
             # Spacer
             listeLignes.append((u"#SPACER#", 1, "normal"))
-            # Adresse de rï¿œsidence
+            # Adresse de résidence
             adresse_ligne1 = self.dictInfosIndividus[IDindividu]["adresse_ligne1"]
             adresse_ligne2 = self.dictInfosIndividus[IDindividu]["adresse_ligne2"]
             if adresse_ligne1 != None and adresse_ligne1 != "" : listeLignes.append((adresse_ligne1, 7, "light"))
             if adresse_ligne2 != None and adresse_ligne2 != ""  : listeLignes.append((adresse_ligne2, 7, "light"))
             # Spacer
             listeLignes.append((u"#SPACER#", 1, "normal"))
-            # Tï¿œlï¿œphones
+            # Téléphones
             tel_domicile_complet = self.dictInfosIndividus[IDindividu]["tel_domicile_complet"]
             tel_mobile_complet = self.dictInfosIndividus[IDindividu]["tel_mobile_complet"]
             travail_tel_complet = self.dictInfosIndividus[IDindividu]["travail_tel_complet"]
@@ -295,7 +295,7 @@ class GetValeurs() :
             else:
                 pass
             
-            # Crï¿œation du dictionnaire spï¿œcial
+            # Création du dictionnaire spécial
             dictCadres[IDindividu] = {}
             dictCadres[IDindividu]["textes"] = listeLignes
             dictCadres[IDindividu]["nomImage"] = self.dictInfosIndividus[IDindividu]["nomImage"]
@@ -322,14 +322,14 @@ class GetValeurs() :
             if self.dictInfosIndividus[IDindividu]["date_naiss"] != None :
                 txtDatenaiss = self.dictInfosIndividus[IDindividu]["datenaissComplet"]
                 txtInfoBulle += txtDatenaiss + "\n\n"
-            # Adresse de rï¿œsidence
+            # Adresse de résidence
             adresse_ligne1 = self.dictInfosIndividus[IDindividu]["adresse_ligne1"]
             adresse_ligne2 = self.dictInfosIndividus[IDindividu]["adresse_ligne2"]
             if adresse_ligne1 != None and adresse_ligne1 != "" : txtInfoBulle += adresse_ligne1 + "\n"
             if adresse_ligne2 != None and adresse_ligne2 != ""  : txtInfoBulle += adresse_ligne2 + "\n"
             # Spacer
             txtInfoBulle += "\n"
-            # Tï¿œlï¿œphones
+            # Téléphones
             tel_domicile_complet = self.dictInfosIndividus[IDindividu]["tel_domicile_complet"]
             tel_mobile_complet = self.dictInfosIndividus[IDindividu]["tel_mobile_complet"]
             travail_tel_complet = self.dictInfosIndividus[IDindividu]["travail_tel_complet"]
@@ -343,7 +343,7 @@ class GetValeurs() :
             if mail_complet != None :
                 txtInfoBulle += mail_complet + "\n"
             
-            # Crï¿œation du dictionnaire spï¿œcial
+            # Création du dictionnaire spécial
             dictInfoBulles[IDindividu] = txtInfoBulle
         
         return dictInfoBulles
@@ -358,9 +358,9 @@ class GetValeurs() :
                 datedujour = datetime.date.today()
                 age = (datedujour.year - datenaissDD.year) - int((datedujour.month, datedujour.day) < (datenaissDD.month, datenaissDD.day))
                 if dictInfos[IDindividu]["genre"] == "M" :
-                    txtDatenaiss = _(u"Nï¿œ le %s (%d ans)") % (datenaissFR, age)
+                    txtDatenaiss = _(u"Né le %s (%d ans)") % (datenaissFR, age)
                 else:
-                    txtDatenaiss = _(u"Nï¿œe le %s (%d ans)") % (datenaissFR, age)
+                    txtDatenaiss = _(u"Née le %s (%d ans)") % (datenaissFR, age)
             except :
                 pass
         return txtDatenaiss
@@ -401,7 +401,7 @@ class CadreIndividu():
         largeur = self.largeur
         hauteur = self.hauteur
         
-        # Crï¿œation de l'ID pour le dictionnaire d'objets
+        # Création de l'ID pour le dictionnaire d'objets
         if self.IDobjet in self.parent.dictIDs : 
             self.dc.RemoveId(self.IDobjet)
         self.dc.SetId(self.IDobjet)
@@ -416,7 +416,7 @@ class CadreIndividu():
         else:
             self.zoomContenuRatio = 1
             
-        # Paramï¿œtres du cadre
+        # Paramétres du cadre
         x, y = self.xCentre-(largeur/2.0), self.yCentre-(hauteur/2.0)
         self.x, self.y = x, y
         if self.genre == "M" :
@@ -440,7 +440,7 @@ class CadreIndividu():
         paddingCadre = 8*self.zoomContenuRatio
         taillePhoto = (self.hauteur-(paddingCadre*2))*self.zoomContenuRatio
         
-        # Dessin du cadre de sï¿œlection
+        # Dessin du cadre de sélection
         if self.selectionCadre == True :
             ecart = 5
             self.dc.SetBrush(wx.Brush((0, 0, 0), style=wx.TRANSPARENT))
@@ -471,7 +471,7 @@ class CadreIndividu():
             self.dc.SetPen(wx.Pen(couleurFondBasCadre, 1))
             self.dc.DrawSpline(coordsSpline)
         
-        # Intï¿œgration de la photo
+        # Intégration de la photo
         if self.photo != None :
             try:
                 img = self.photo.ConvertToImage()
@@ -504,7 +504,7 @@ class CadreIndividu():
                 self.dc.DrawText(texte, int(posXtexte), int(posYtexte))
                 posYtexte += hauteurTexte + 1
         
-        # Dessin du cadre Accï¿œs aux consommations
+        # Dessin du cadre Accés aux consommations
         if self.calendrierActif == True and self.zoom > 1 :
             # Image de calendrier
             if self.survolCalendrier == True :
@@ -533,7 +533,7 @@ class CadreIndividu():
             self.dc.DrawBitmap(bmp, int(xSymbole), int(ySymbole))
             xSymbole += 16
 
-        # Mï¿œmorisation dans le dictionnaire d'objets
+        # Mémorisation dans le dictionnaire d'objets
         self.dc.SetIdBounds(self.IDobjet, wx.Rect(int(x), int(y), int(largeur), int(hauteur)))
         self.parent.dictIDs[self.IDobjet] = ("individu", self.IDindividu)
     
@@ -546,7 +546,7 @@ class CadreIndividu():
             return False
         
     def AdapteLargeurTexte(self, dc, texte, tailleMaxi):
-        """ Raccourcit le texte en fonction de la taille donnï¿œe """
+        """ Raccourcit le texte en fonction de la taille donnée """
         tailleTexte = self.parent.GetTextExtent(texte)[0]
         texteTemp, texteTemp2 = "", ""
         for lettre in texte :
@@ -609,16 +609,16 @@ class CTRL_Graphique(wx.ScrolledWindow):
         # Initialisation du tooltip
 ##        self.SetToolTip(wx.ToolTip(""))
         self.tip = STT.SuperToolTip(u"")
-        self.tip.SetEndDelay(10000) # Fermeture auto du tooltip aprï¿œs 10 secs
+        self.tip.SetEndDelay(10000) # Fermeture auto du tooltip aprés 10 secs
         self.tip.IDindividu = None
         
-        # Paramï¿œtres
+        # Paramétres
         self.zoomActif = True # Active ou non le zoom sur une case
         self.espaceVerticalDefaut = 22 # Hauteur entre 2 cases
-        self.espaceHorizontalDefautCol1 = 40 # Espace aprï¿œs col 1
-        self.espaceHorizontalDefautCol2 = 80 # Espace aprï¿œs col 2
-        self.hauteurCaseDefaut = 75 #70 # Hauteur par dï¿œfaut d'une case
-        self.largeurCaseDefaut = 210 # Largeur par dï¿œfaut d'une case
+        self.espaceHorizontalDefautCol1 = 40 # Espace aprés col 1
+        self.espaceHorizontalDefautCol2 = 80 # Espace aprés col 2
+        self.hauteurCaseDefaut = 75 #70 # Hauteur par défaut d'une case
+        self.largeurCaseDefaut = 210 # Largeur par défaut d'une case
         
         self.couleurFondCol1 = UTILS_Interface.GetValeur("couleur_tres_claire", wx.Colour(238, 253, 252))
         self.couleurFondCol2 = UTILS_Interface.GetValeur("couleur_tres_claire", wx.Colour(238, 253, 252))
@@ -652,7 +652,7 @@ class CTRL_Graphique(wx.ScrolledWindow):
         event.Skip()
 
     def MAJ(self):
-        # Rï¿œcupï¿œration des valeurs
+        # Récupération des valeurs
         valeurs = GetValeurs(self.IDfamille)
         self.dictValeurs = valeurs
         self.dictCadres = valeurs.GetDictCadres()
@@ -711,7 +711,7 @@ class CTRL_Graphique(wx.ScrolledWindow):
         self.posSeparationCol1 = posSeparationCol1
         self.posSeparationCol2 = posSeparationCol2
         
-        # Crï¿œation des colonnes
+        # Création des colonnes
         dictColonnes = { 1 : [], 2 : [], 3 : [] }
         for IDindividu, valeurs in self.dictCadres.items() :
             if valeurs["categorie"] == 1 : dictColonnes[1].append(IDindividu)
@@ -725,7 +725,7 @@ class CTRL_Graphique(wx.ScrolledWindow):
             espaceVertical = self.espaceVerticalDefaut
             dc.SetId(numCol)
             
-            # Diminue la hauteur des cases si la fenï¿œtre est trop petite
+            # Diminue la hauteur des cases si la fenétre est trop petite
             hauteurBloc = (nbreCases*self.hauteurCaseDefaut)+(nbreCases-1)*espaceVertical
             coef = (tailleDC[1]-60) * 1.0 / hauteurBloc
             if coef < 1 :
@@ -755,7 +755,7 @@ class CTRL_Graphique(wx.ScrolledWindow):
                 bmp = paramFond[numCol]["bmp"]
                 dc.DrawBitmap(bmp, int(xCentre-(bmp.GetSize()[0]/2.0)), 10)
             
-            # Crï¿œation des cases
+            # Création des cases
             yCentre = yBloc1
             for IDindividu in dictColonnes[numCol] :
                 listeTextes = self.dictCadres[IDindividu]["textes"]
@@ -785,7 +785,7 @@ class CTRL_Graphique(wx.ScrolledWindow):
         for IDindividu1, IDindividu2 in listeLiensCouple :
             if IDindividu1 in self.dictCadres and IDindividu2 in self.dictCadres :
                 dc.SetId(wx.Window.NewControlId())
-                decalage = 20 # Dï¿œcalage de la ligne de lien par rapport au bord du cadre
+                decalage = 20 # Décalage de la ligne de lien par rapport au bord du cadre
                 listePoints = []
                 for IDindividu in (IDindividu1, IDindividu2) :
                     xCentre = int(self.dictCadres[IDindividu]["ctrl"].xCentre)
@@ -882,7 +882,7 @@ class CTRL_Graphique(wx.ScrolledWindow):
                     dc.DrawLine(int(posXLigneParents), int(min(listeYparents)), int(posXLigneParents), int(max(listeYparents)))
                 centreYparents = sum(listeYparents)/len(listeYparents)
                 
-                # Relie la barre ENFANTS ï¿œ la barre PARENTS
+                # Relie la barre ENFANTS é la barre PARENTS
                 hauteurBarreHorizontale = centreYenfants
                 dc.DrawLine(int(posXLigneParents), int(hauteurBarreHorizontale), int(posXLigneEnfants), int(hauteurBarreHorizontale))
 
@@ -893,7 +893,7 @@ class CTRL_Graphique(wx.ScrolledWindow):
                 index += 1
         
     def RechercheCadre(self, x, y):
-        """ Recherche le cadre prï¿œsent sur x, y """
+        """ Recherche le cadre présent sur x, y """
         listeObjets = self.pdc.FindObjectsByBBox(x, y)
         if len(listeObjets) != 0 :
             IDobjet = listeObjets[0]
@@ -904,7 +904,7 @@ class CTRL_Graphique(wx.ScrolledWindow):
         return None
     
     def DeselectionneTout(self, ExcepteIDindividu=None):
-        """ Dï¿œsï¿œlectionne tous les cadres du dc """
+        """ Désélectionne tous les cadres du dc """
         for IDindividuTmp, valeurs in self.dictCadres.items() :
             if ExcepteIDindividu != IDindividuTmp :
                 cadre = self.dictCadres[IDindividuTmp]["ctrl"]
@@ -912,7 +912,7 @@ class CTRL_Graphique(wx.ScrolledWindow):
                     cadre.Selectionne(False)
 
     def DezoomTout(self, ExcepteIDindividu=None):
-        """ Dï¿œsï¿œlectionne tous les cadres du dc """
+        """ Désélectionne tous les cadres du dc """
         for IDindividuTmp, valeurs in self.dictCadres.items() :
             if ExcepteIDindividu != IDindividuTmp :
                 cadre = self.dictCadres[IDindividuTmp]["ctrl"]
@@ -920,17 +920,17 @@ class CTRL_Graphique(wx.ScrolledWindow):
                     cadre.ZoomArriere(vitesse=0.1)
     
     def OnLeftDown(self, event):
-        """ Sï¿œlection d'un cadre """
+        """ Sélection d'un cadre """
         x, y = event.GetPosition()
         IDindividu = self.RechercheCadre(x, y)
         self.ActiveTooltip(False) 
         if IDindividu != None :
             cadre = self.dictCadres[IDindividu]["ctrl"]
-            # Si le calendrier est pointï¿œ, on l'ouvre
+            # Si le calendrier est pointé, on l'ouvre
             if cadre.survolCalendrier == True :
                 self.OuvrirCalendrier(IDindividu)
             else:
-                # Sï¿œlectionne le cadre pointï¿œ
+                # Sélectionne le cadre pointé
                 self.DeselectionneTout(ExcepteIDindividu=IDindividu)
                 if cadre.selectionCadre == False :
                     cadre.Selectionne(True)
@@ -939,12 +939,12 @@ class CTRL_Graphique(wx.ScrolledWindow):
                     cadre.Selectionne(False)
                     self.selectionCadre = None
         else:
-            # On dï¿œsï¿œlectionne tout si on clique ï¿œ cï¿œtï¿œ
+            # On désélectionne tout si on clique é cété
             self.selectionCadre = None
             self.DeselectionneTout()
         
     def OnDLeftDown(self, event):
-        """ Un double-clic ouvre la fiche pointï¿œe """
+        """ Un double-clic ouvre la fiche pointée """
         x, y = event.GetPosition()
         IDindividu = self.RechercheCadre(x, y)
         self.ActiveTooltip(False) 
@@ -963,7 +963,7 @@ class CTRL_Graphique(wx.ScrolledWindow):
             if self.zoomActif == True :
                 self.DezoomTout(ExcepteIDindividu=IDindividu)
                 cadre.ZoomAvant(coef=1.1, vitesse=0.5)
-                # Recherche si l'image calendrier est survolï¿œe
+                # Recherche si l'image calendrier est survolée
                 if cadre.calendrierActif == True :
                     survolCalendrier = cadre.SurvolCalendrier(x, y)
                     if survolCalendrier == True :
@@ -977,17 +977,17 @@ class CTRL_Graphique(wx.ScrolledWindow):
                     # Change le curseur de la souris
                     self.SetCursor(CURSOR(wx.CURSOR_HAND))
         else:
-            # Dï¿œsactivation du toolTip
+            # Désactivation du toolTip
             self.ActiveTooltip(actif=False)
 
             # Change le curseur de la souris
             self.SetCursor(CURSOR(wx.CURSOR_DEFAULT))
-            # Dï¿œzoom tous les cadres
+            # Dézoom tous les cadres
             self.DezoomTout()
     
             
     def OnLeaveWindow(self, event):
-        """ Rï¿œtablit le zoom normal pour tous les cadres si le focus quitte la fenï¿œtre """
+        """ Rétablit le zoom normal pour tous les cadres si le focus quitte la fenétre """
         self.SetCursor(CURSOR(wx.CURSOR_DEFAULT))
         self.DezoomTout()
         self.ActiveTooltip(False) 
@@ -997,12 +997,12 @@ class CTRL_Graphique(wx.ScrolledWindow):
         taillePhoto = 30
         font = self.GetFont()
         
-        # Rï¿œcupï¿œration des infos sur l'individu
+        # Récupération des infos sur l'individu
         IDindividu = self.tip.IDindividu
         cadreIndividu = self.dictCadres[IDindividu]["ctrl"]
         dictInfoIndividu = self.dictValeurs.dictInfosIndividus[IDindividu]
         
-        # Paramï¿œtrage du tooltip
+        # Paramétrage du tooltip
         self.tip.SetHyperlinkFont(wx.Font(8, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, 'Arial'))
         
         if dictInfoIndividu["genre"] == "F" :
@@ -1038,15 +1038,15 @@ class CTRL_Graphique(wx.ScrolledWindow):
         # Corps du tooltip
         message = u""
 
-        # Dï¿œcï¿œs
+        # Décés
         if dictInfoIndividu["deces"] in (True, 1):
-            message += _(u"</b>######### Individu dï¿œcï¿œdï¿œ #########\n\n")
+            message += _(u"</b>######### Individu décédé #########\n\n")
         # Archive
         if dictInfoIndividu["etat"] == "archive":
-            message += _(u"</b>######### Individu archivï¿œ #########\n\n")
-        # Effacï¿œ
+            message += _(u"</b>######### Individu archivé #########\n\n")
+        # Effacé
         if dictInfoIndividu["etat"] == "efface":
-            message += _(u"</b>######### Individu effacï¿œ #########\n\n")
+            message += _(u"</b>######### Individu effacé #########\n\n")
 
         if dictInfoIndividu["datenaissComplet"] != None : message += u"%s\n" % dictInfoIndividu["datenaissComplet"]
         
@@ -1077,9 +1077,9 @@ class CTRL_Graphique(wx.ScrolledWindow):
             nbreInscriptions = len(dictInfoIndividu["listeInscriptions"])
             message += "\n"
             if nbreInscriptions == 1 :
-                message += _(u"%s est inscrit%s ï¿œ 1 activitï¿œ \n") % (prenom, lettreGenre)
+                message += _(u"%s est inscrit%s é 1 activité \n") % (prenom, lettreGenre)
             else:
-                message += _(u"%s est inscrit%s ï¿œ %d activitï¿œs \n") % (prenom, lettreGenre, nbreInscriptions)
+                message += _(u"%s est inscrit%s é %d activités \n") % (prenom, lettreGenre, nbreInscriptions)
             for dictInscription in dictInfoIndividu["listeInscriptions"] :
                 message += "> %s (%s - %s) \n" % (dictInscription["nomActivite"], dictInscription["nomGroupe"], dictInscription["nomCategorie"])
 
@@ -1098,9 +1098,9 @@ class CTRL_Graphique(wx.ScrolledWindow):
         self.tipFrame.SetPosition((x+15, y+17))
         self.tipFrame.DropShadow(True)
         self.tipFrame.Show()
-        #self.tipFrame.StartAlpha(True) # ou .Show() pour un affichage immï¿œdiat
+        #self.tipFrame.StartAlpha(True) # ou .Show() pour un affichage immédiat
         
-        # Arrï¿œt du timer
+        # Arrét du timer
         self.timerTip.Stop()
         del self.timerTip
                     
@@ -1115,7 +1115,7 @@ class CTRL_Graphique(wx.ScrolledWindow):
             self.tip.IDindividu = None
         
     def ActiveTooltip(self, actif=True, IDindividu=None):
-        # Pour ï¿œviter que l'utilisateur bouge la souris trop vite
+        # Pour éviter que l'utilisateur bouge la souris trop vite
         if self.tip.IDindividu != None and self.tip.IDindividu != IDindividu :
             actif = False
             
@@ -1126,7 +1126,7 @@ class CTRL_Graphique(wx.ScrolledWindow):
                 self.timerTip.Start(1500)
                 self.tip.IDindividu = IDindividu
         else:
-            # Dï¿œsactive le tooltip
+            # Désactive le tooltip
             if hasattr(self, "timerTip"):
                 if self.timerTip.IsRunning():
                     self.timerTip.Stop()
@@ -1151,13 +1151,13 @@ class CTRL_Graphique(wx.ScrolledWindow):
         IDindividu = self.selectionCadre
 
         if IDindividu == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez d'abord sï¿œlectionner un individu dans le cadre Composition !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez d'abord sélectionner un individu dans le cadre Composition !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return   
 
         if self.dictValeurs.dictInfosIndividus[IDindividu]["inscriptions"] == False :
-            dlg = wx.MessageDialog(self, _(u"L'individu sï¿œlectionnï¿œ n'est inscrit ï¿œ aucune activitï¿œ !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"L'individu sélectionné n'est inscrit é aucune activité !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return   
@@ -1168,14 +1168,14 @@ class CTRL_Graphique(wx.ScrolledWindow):
         x, y = event.GetPosition()
         self.ActiveTooltip(False) 
         
-        # Recherche si un cadre est survolï¿œ
+        # Recherche si un cadre est survolé
         IDindividu = self.RechercheCadre(x, y)
         self.IDindividu_menu = IDindividu
         
-        # Dï¿œsï¿œlectionne tous les cadres dï¿œjï¿œ sï¿œlectionnï¿œs
+        # Désélectionne tous les cadres déjé sélectionnés
         self.DeselectionneTout() 
         
-        # Crï¿œation du menu
+        # Création du menu
         menu = UTILS_Adaptations.Menu()
                         
         # Ajouter
@@ -1196,19 +1196,19 @@ class CTRL_Graphique(wx.ScrolledWindow):
             menu.AppendItem(item)
             self.Bind(wx.EVT_MENU, self.Modifier_menu, id=id)
             
-            # Dï¿œtacher ou supprimer
+            # Détacher ou supprimer
             id = wx.Window.NewControlId()
-            item = wx.MenuItem(menu, id, _(u"Dï¿œtacher ou supprimer"))
+            item = wx.MenuItem(menu, id, _(u"Détacher ou supprimer"))
             item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Supprimer.png"), wx.BITMAP_TYPE_PNG))
             menu.AppendItem(item)
             self.Bind(wx.EVT_MENU, self.Supprimer_menu, id=id)
             
             menu.AppendSeparator()
             
-            # Changer de catï¿œgorie
+            # Changer de catégorie
             sousMenuCategorie = UTILS_Adaptations.Menu()
             
-            item = wx.MenuItem(sousMenuCategorie, 601, _(u"Reprï¿œsentant"), kind=wx.ITEM_RADIO)
+            item = wx.MenuItem(sousMenuCategorie, 601, _(u"Représentant"), kind=wx.ITEM_RADIO)
             sousMenuCategorie.AppendItem(item)
             self.Bind(wx.EVT_MENU, self.Changer_categorie, id=601)
             if self.dictCadres[self.IDindividu_menu]["categorie"] == 1 : item.Check(True)
@@ -1223,12 +1223,12 @@ class CTRL_Graphique(wx.ScrolledWindow):
             self.Bind(wx.EVT_MENU, self.Changer_categorie, id=603)
             if self.dictCadres[self.IDindividu_menu]["categorie"] == 3 : item.Check(True)
             
-            menu.AppendMenu(wx.Window.NewControlId(), _(u"Changer de catï¿œgorie"), sousMenuCategorie)
+            menu.AppendMenu(wx.Window.NewControlId(), _(u"Changer de catégorie"), sousMenuCategorie)
             
-            # Dï¿œfinir comme titulaire
+            # Définir comme titulaire
             if self.dictCadres[self.IDindividu_menu]["categorie"] == 1 :
                 id = wx.Window.NewControlId()
-                item = wx.MenuItem(menu, id, _(u"Dï¿œfinir comme titulaire"), kind=wx.ITEM_CHECK)
+                item = wx.MenuItem(menu, id, _(u"Définir comme titulaire"), kind=wx.ITEM_CHECK)
                 menu.AppendItem(item)
                 self.Bind(wx.EVT_MENU, self.On_SetTitulaire, id=id)
                 if self.dictCadres[self.IDindividu_menu]["titulaire"] == 1 :
@@ -1244,7 +1244,7 @@ class CTRL_Graphique(wx.ScrolledWindow):
         IDcategorie = event.GetId() - 600
         IDrattachement = self.dictCadres[self.IDindividu_menu]["IDrattachement"]
         if IDcategorie != self.dictCadres[self.IDindividu_menu]["categorie"] :
-            dlg = wx.MessageDialog(None, _(u"Souhaitez-vous vraiment modifier la catï¿œgorie de rattachement de cet individu ?"), _(u"Changement de catï¿œgorie"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+            dlg = wx.MessageDialog(None, _(u"Souhaitez-vous vraiment modifier la catégorie de rattachement de cet individu ?"), _(u"Changement de catégorie"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
             if dlg.ShowModal() == wx.ID_YES :
                 DB = GestionDB.DB()
                 DB.ReqMAJ("rattachements", [("IDcategorie", IDcategorie),], "IDrattachement", IDrattachement)
@@ -1287,7 +1287,7 @@ class CTRL_Graphique(wx.ScrolledWindow):
             mode, IDcategorie, titulaire, IDindividu, nom, prenom = dlg.GetData()
             dlg.Destroy()
             if mode == "creation" :
-                # Crï¿œation d'un nouvel individu rattachï¿œ
+                # Création d'un nouvel individu rattaché
                 dictInfosNouveau = {
                     "IDfamille" : self.IDfamille,
                     "IDcategorie" : IDcategorie,
@@ -1338,17 +1338,17 @@ class CTRL_Graphique(wx.ScrolledWindow):
         return True
     
     def Modifier_menu(self, event):
-        """ Modifier une fiche ï¿œ partir du menu contextuel """
+        """ Modifier une fiche é partir du menu contextuel """
         IDindividu = self.IDindividu_menu
         self.Modifier(IDindividu)
         self.IDindividu_menu = None
     
     def Modifier_selection(self, event=None):
-        """ Modifier une fiche ï¿œ partir du bouton Modifier """
+        """ Modifier une fiche é partir du bouton Modifier """
         IDindividu = self.selectionCadre
         self.selectionCadre = None
         if IDindividu == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez d'abord sï¿œlectionner un individu dans le cadre Composition !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez d'abord sélectionner un individu dans le cadre Composition !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return   
@@ -1366,7 +1366,7 @@ class CTRL_Graphique(wx.ScrolledWindow):
         IDindividu = self.selectionCadre
         self.selectionCadre = None
         if IDindividu == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez d'abord sï¿œlectionner un individu dans le cadre Composition !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez d'abord sélectionner un individu dans le cadre Composition !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return   
@@ -1404,7 +1404,7 @@ class CTRL_Graphique(wx.ScrolledWindow):
             
     
     def MAJnotebook(self):
-        """ MAJ la page active du notebook de la fenï¿œtre famille """
+        """ MAJ la page active du notebook de la fenétre famille """
         self.parent.MAJpageActive()
         self.parent.MAJpage("caisse")
         self.parent.MAJpage("divers")
@@ -1425,10 +1425,10 @@ class CTRL_Liste(HTL.HyperTreeList):
         
         # Initialisation du tooltip
         self.tip = STT.SuperToolTip(u"")
-        self.tip.SetEndDelay(10000) # Fermeture auto du tooltip aprï¿œs 10 secs
+        self.tip.SetEndDelay(10000) # Fermeture auto du tooltip aprés 10 secs
         self.tip.IDindividu = None
 
-        # Crï¿œation de l'ImageList (Rï¿œcupï¿œre les images attribuï¿œes aux civilitï¿œs)
+        # Création de l'ImageList (Récupére les images attribuées aux civilités)
         il = wx.ImageList(16, 16)
         index = 0
         self.dictImages = {}
@@ -1453,10 +1453,10 @@ class CTRL_Liste(HTL.HyperTreeList):
         self.AddColumn(_(u"Adresse"))
         self.SetColumnWidth(3, 200)
 
-        self.AddColumn(_(u"Tï¿œlï¿œphones"))
+        self.AddColumn(_(u"Téléphones"))
         self.SetColumnWidth(4, 180)
 
-        # Crï¿œation des branches
+        # Création des branches
         self.SetMainColumn(0)
         self.root = self.AddRoot(_(u"Composition"))
         
@@ -1480,7 +1480,7 @@ class CTRL_Liste(HTL.HyperTreeList):
         self.donnees = donnees
         
     def MAJ(self):
-        """ Met ï¿œ jour (redessine) tout le contrï¿œle """
+        """ Met é jour (redessine) tout le contréle """
         self.donnees = GetValeurs(self.IDfamille) 
         nbreBranches = self.GetChildrenCount(self.root)
         if nbreBranches > 1 :
@@ -1488,14 +1488,14 @@ class CTRL_Liste(HTL.HyperTreeList):
         self.CreationBranches()
         
     def CreationBranches(self):
-        """ Crï¿œation des branches """
+        """ Création des branches """
         dictCategories = {1 : [], 2 : [], 3:[] }
         for IDindividu, dictIndividu in self.donnees.dictInfosIndividus.items() :
             dictCategories[dictIndividu["categorie"]].append((IDindividu, dictIndividu))
             
-        # Crï¿œation des branche CATEGORIES
+        # Création des branche CATEGORIES
         for IDcategorie in (1, 2, 3) :
-            if IDcategorie == 1 : label = _(u"Reprï¿œsentants")
+            if IDcategorie == 1 : label = _(u"Représentants")
             if IDcategorie == 2 : label = _(u"Enfants")
             if IDcategorie == 3 : label = _(u"Contacts")
             brancheCategorie = self.AppendItem(self.root, label)
@@ -1503,7 +1503,7 @@ class CTRL_Liste(HTL.HyperTreeList):
             self.SetItemBold(brancheCategorie, True)
             self.SetItemBackgroundColour(brancheCategorie, wx.Colour(227, 227, 227))
 
-            # Crï¿œation des branche INDIVIDUS
+            # Création des branche INDIVIDUS
             for IDindividu, dictIndividu in dictCategories[IDcategorie] :
 
                 nom = dictIndividu["nom"]
@@ -1541,7 +1541,7 @@ class CTRL_Liste(HTL.HyperTreeList):
                 ligne2 = dictIndividu["adresse_ligne2"]
                 self.SetItemText(brancheIndividu, u"%s\n%s" % (ligne1, ligne2), 3)
                 
-                # Tï¿œlï¿œphones
+                # Téléphones
                 listeTelephones = []
                 if dictIndividu["tel_domicile_complet"] != None : listeTelephones.append(dictIndividu["tel_domicile_complet"])
                 if dictIndividu["tel_mobile_complet"] != None : listeTelephones.append(dictIndividu["tel_mobile_complet"])
@@ -1565,7 +1565,7 @@ class CTRL_Liste(HTL.HyperTreeList):
         """Ouverture du menu contextuel """
         IDindividu = self.GetSelectionIndividu(event) 
         
-        # Crï¿œation du menu contextuel
+        # Création du menu contextuel
         menu = UTILS_Adaptations.Menu()
 
         # Ajouter
@@ -1586,19 +1586,19 @@ class CTRL_Liste(HTL.HyperTreeList):
             menu.AppendItem(item)
             self.Bind(wx.EVT_MENU, self.Modifier, id=id)
             
-            # Dï¿œtacher ou supprimer
+            # Détacher ou supprimer
             id = wx.Window.NewControlId()
-            item = wx.MenuItem(menu, id, _(u"Dï¿œtacher ou supprimer"))
+            item = wx.MenuItem(menu, id, _(u"Détacher ou supprimer"))
             item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Supprimer.png"), wx.BITMAP_TYPE_PNG))
             menu.AppendItem(item)
             self.Bind(wx.EVT_MENU, self.Supprimer, id=id)
 
             menu.AppendSeparator()
             
-            # Changer de catï¿œgorie
+            # Changer de catégorie
             sousMenuCategorie = UTILS_Adaptations.Menu()
             
-            item = wx.MenuItem(sousMenuCategorie, 601, _(u"Reprï¿œsentant"), kind=wx.ITEM_RADIO)
+            item = wx.MenuItem(sousMenuCategorie, 601, _(u"Représentant"), kind=wx.ITEM_RADIO)
             sousMenuCategorie.AppendItem(item)
             self.Bind(wx.EVT_MENU, self.Changer_categorie, id=601)
             if self.donnees.dictInfosIndividus[IDindividu]["categorie"] == 1 : item.Check(True)
@@ -1613,12 +1613,12 @@ class CTRL_Liste(HTL.HyperTreeList):
             self.Bind(wx.EVT_MENU, self.Changer_categorie, id=603)
             if self.donnees.dictInfosIndividus[IDindividu]["categorie"] == 3 : item.Check(True)
             
-            menu.AppendMenu(wx.Window.NewControlId(), _(u"Changer de catï¿œgorie"), sousMenuCategorie)
+            menu.AppendMenu(wx.Window.NewControlId(), _(u"Changer de catégorie"), sousMenuCategorie)
 
-            # Dï¿œfinir comme titulaire
+            # Définir comme titulaire
             if self.donnees.dictInfosIndividus[IDindividu]["categorie"] == 1 :
                 id = wx.Window.NewControlId()
-                item = wx.MenuItem(menu, id, _(u"Dï¿œfinir comme titulaire"), kind=wx.ITEM_CHECK)
+                item = wx.MenuItem(menu, id, _(u"Définir comme titulaire"), kind=wx.ITEM_CHECK)
                 menu.AppendItem(item)
                 self.Bind(wx.EVT_MENU, self.OnSetTitulaire, id=id)
                 if self.donnees.dictInfosIndividus[IDindividu]["titulaire"] == 1 :
@@ -1646,7 +1646,7 @@ class CTRL_Liste(HTL.HyperTreeList):
         item = self.GetSelection()
         dictItem = self.GetMainWindow().GetItemPyData(item)
         if dictItem == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez d'abord sï¿œlectionner un individu dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez d'abord sélectionner un individu dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return   
@@ -1670,7 +1670,7 @@ class CTRL_Liste(HTL.HyperTreeList):
             mode, IDcategorie, titulaire, IDindividu, nom, prenom = dlg.GetData()
             dlg.Destroy()
             if mode == "creation" :
-                # Crï¿œation d'un nouvel individu rattachï¿œ
+                # Création d'un nouvel individu rattaché
                 dictInfosNouveau = {
                     "IDfamille" : self.IDfamille,
                     "IDcategorie" : IDcategorie,
@@ -1726,7 +1726,7 @@ class CTRL_Liste(HTL.HyperTreeList):
         item = self.GetSelection()
         dictItem = self.GetMainWindow().GetItemPyData(item)
         if dictItem == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez d'abord sï¿œlectionner un individu dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez d'abord sélectionner un individu dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return   
@@ -1735,7 +1735,7 @@ class CTRL_Liste(HTL.HyperTreeList):
             return
         IDindividu = dictItem["IDindividu"]
         if IDindividu == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez d'abord sï¿œlectionner un individu dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez d'abord sélectionner un individu dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return   
@@ -1756,7 +1756,7 @@ class CTRL_Liste(HTL.HyperTreeList):
         item = self.GetSelection()
         dictItem = self.GetMainWindow().GetItemPyData(item)
         if dictItem == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez d'abord sï¿œlectionner un individu dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez d'abord sélectionner un individu dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return   
@@ -1790,7 +1790,7 @@ class CTRL_Liste(HTL.HyperTreeList):
         IDcategorie = event.GetId() - 600
         IDrattachement = self.donnees.dictInfosIndividus[IDindividu]["IDrattachement"]
         if IDcategorie != self.donnees.dictInfosIndividus[IDindividu]["categorie"] :
-            dlg = wx.MessageDialog(None, _(u"Souhaitez-vous vraiment modifier la catï¿œgorie de rattachement de cet individu ?"), _(u"Changement de catï¿œgorie"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+            dlg = wx.MessageDialog(None, _(u"Souhaitez-vous vraiment modifier la catégorie de rattachement de cet individu ?"), _(u"Changement de catégorie"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
             if dlg.ShowModal() == wx.ID_YES :
                 DB = GestionDB.DB()
                 DB.ReqMAJ("rattachements", [("IDcategorie", IDcategorie),], "IDrattachement", IDrattachement)
@@ -1829,7 +1829,7 @@ class CTRL_Liste(HTL.HyperTreeList):
         self.MAJ() 
 
     def MAJnotebook(self):
-        """ MAJ la page active du notebook de la fenï¿œtre """
+        """ MAJ la page active du notebook de la fenétre """
         self.parent.MAJpageActive()
         self.parent.MAJpage("caisse")
         self.parent.MAJpage("divers")
@@ -1845,7 +1845,7 @@ class CTRL_Liste(HTL.HyperTreeList):
             # On met le tooltip
             self.ActiveTooltip(actif=True, IDindividu=IDindividu)
         else:
-            # Dï¿œsactivation du toolTip
+            # Désactivation du toolTip
             self.ActiveTooltip(actif=False)
         event.Skip()
         
@@ -1857,11 +1857,11 @@ class CTRL_Liste(HTL.HyperTreeList):
         taillePhoto = 30
         font = self.GetFont()
         
-        # Rï¿œcupï¿œration des infos sur l'individu
+        # Récupération des infos sur l'individu
         IDindividu = self.tip.IDindividu
         dictInfoIndividu = self.donnees.dictInfosIndividus[IDindividu]
         
-        # Paramï¿œtrage du tooltip
+        # Paramétrage du tooltip
         self.tip.SetHyperlinkFont(wx.Font(8, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, 'Arial'))
         
         if dictInfoIndividu["genre"] == "F" :
@@ -1927,9 +1927,9 @@ class CTRL_Liste(HTL.HyperTreeList):
             nbreInscriptions = len(dictInfoIndividu["listeInscriptions"])
             message += "\n"
             if nbreInscriptions == 1 :
-                message += _(u"%s est inscrit%s ï¿œ 1 activitï¿œ \n") % (prenom, lettreGenre)
+                message += _(u"%s est inscrit%s é 1 activité \n") % (prenom, lettreGenre)
             else:
-                message += _(u"%s est inscrit%s ï¿œ %d activitï¿œs \n") % (prenom, lettreGenre, nbreInscriptions)
+                message += _(u"%s est inscrit%s é %d activités \n") % (prenom, lettreGenre, nbreInscriptions)
             for dictInscription in dictInfoIndividu["listeInscriptions"] :
                 message += "> %s (%s - %s) \n" % (dictInscription["nomActivite"], dictInscription["nomGroupe"], dictInscription["nomCategorie"])
 
@@ -1948,9 +1948,9 @@ class CTRL_Liste(HTL.HyperTreeList):
         self.tipFrame.SetPosition((x+15, y+17))
         self.tipFrame.DropShadow(True)
         self.tipFrame.Show()
-        #self.tipFrame.StartAlpha(True) # ou .Show() pour un affichage immï¿œdiat
+        #self.tipFrame.StartAlpha(True) # ou .Show() pour un affichage immédiat
         
-        # Arrï¿œt du timer
+        # Arrét du timer
         self.timerTip.Stop()
         del self.timerTip
                     
@@ -1965,7 +1965,7 @@ class CTRL_Liste(HTL.HyperTreeList):
             self.tip.IDindividu = None
         
     def ActiveTooltip(self, actif=True, IDindividu=None):
-        # Pour ï¿œviter que l'utilisateur bouge la souris trop vite
+        # Pour éviter que l'utilisateur bouge la souris trop vite
         if self.tip.IDindividu != None and self.tip.IDindividu != IDindividu :
             actif = False
             
@@ -1976,7 +1976,7 @@ class CTRL_Liste(HTL.HyperTreeList):
                 self.timerTip.Start(1500)
                 self.tip.IDindividu = IDindividu
         else:
-            # Dï¿œsactive le tooltip
+            # Désactive le tooltip
             if hasattr(self, "timerTip"):
                 if self.timerTip.IsRunning():
                     self.timerTip.Stop()
@@ -2013,7 +2013,7 @@ class Notebook(wx.Notebook):
                 index += 1
         self.AssignImageList(il)
 
-        # Crï¿œation des pages
+        # Création des pages
         index = 0
         for codePage, labelPage, ctrlPage, imgPage in self.listePages :
             setattr(self, "page%s" % index, eval(ctrlPage))
@@ -2037,7 +2037,7 @@ class Notebook(wx.Notebook):
         self.SetSelection(indexPage)
 
     def OnPageChanged(self, event):
-        """ Quand une page du notebook est sï¿œlectionnï¿œe """
+        """ Quand une page du notebook est sélectionnée """
         indexPage = event.GetSelection()
         page = self.GetPage(indexPage)
         page.MAJ() 

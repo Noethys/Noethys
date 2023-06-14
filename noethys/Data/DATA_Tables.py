@@ -1566,7 +1566,7 @@ DB_DATA = {
                                     ("numclitipi", "VARCHAR(50)", u"Numéro de client TIPI"),
                                     ("email_regisseur", "VARCHAR(100)", u"email du régisseur"),
                                     ("IDcompte_bancaire", "INTEGER", u"ID du compte bancaire associé"),
-                                    ], # RÃ©gies de facturation
+                                    ], # Régies de facturation
 
     "portail_periodes":             [("IDperiode", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID période"),
                                     ("IDactivite", "INTEGER", u"ID de l'activité"),

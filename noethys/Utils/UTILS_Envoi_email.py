@@ -553,7 +553,7 @@ class SmtpV1(Base_messagerie):
         email = MIMEMultipart('mixed')
         email.attach(tmpmsg)
 
-        # Ajout des headers Ã  ce Multipart
+        # Ajout des headers à ce Multipart
         if self.nom_exp in ("", None):
             email['From'] = self.email_exp
         else:

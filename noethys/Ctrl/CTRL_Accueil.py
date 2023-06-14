@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activitï¿œs
+# Application :    Noethys, gestion multi-activités
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-16 Ivan LUCAS
@@ -19,14 +19,14 @@ import six
 
 
 def ConvertVersionTuple(texteVersion=""):
-    """ Convertit un numï¿œro de version texte en tuple """
+    """ Convertit un numéro de version texte en tuple """
     tupleTemp = []
     for num in texteVersion.split(".") :
         tupleTemp.append(int(num))
     return tuple(tupleTemp)
 
 def GetAnnonce():
-    """ Fonction de rï¿œcupï¿œration de l'annonce ï¿œ afficher """
+    """ Fonction de récupération de l'annonce é afficher """
     dateJour = datetime.date.today() 
     dictAnnonce = None
     found = False
@@ -51,12 +51,12 @@ def GetAnnonce():
     # except :
     #     pass
         
-    # Recherche Annonces stockï¿œes dans la base de donnï¿œes
+    # Recherche Annonces stockées dans la base de données
     if found == False :
         
         try :
             
-            # Init base de donnï¿œes
+            # Init base de données
             con = sqlite3.connect(Chemins.GetStaticPath("Databases/Annonces.dat"))
             cur = con.cursor()
             
@@ -113,7 +113,7 @@ class Panel(wx.Panel):
     def __init__(self, parent, size=(-1, -1)):
         wx.Panel.__init__(self, parent, name="panel_accueil", id=-1, size=size, style=wx.TAB_TRAVERSAL)
 
-        # Rï¿œcupï¿œration des donnï¿œes de l'interface
+        # Récupération des données de l'interface
         theme = UTILS_Interface.GetTheme()
         nom_fichier = "Fond.jpg"
         if six.PY3 and theme == "Vert":
@@ -129,7 +129,7 @@ class Panel(wx.Panel):
         self.Refresh()
 
     def OnPaint(self, event):
-        """ Prï¿œparation du DC """
+        """ Préparation du DC """
         dc = wx.BufferedPaintDC(self)
         if wx.VERSION < (2, 9, 0, 0) :
             self.PrepareDC(dc)
@@ -140,7 +140,7 @@ class Panel(wx.Panel):
         # Dessine le fond
         dc.DrawBitmap(self.image_fond, 0, 0)
 
-        # Rï¿œcupï¿œre l'annonce
+        # Récupére l'annonce
         dictAnnonce = GetAnnonce()
         if dictAnnonce != None :
 
@@ -149,7 +149,7 @@ class Panel(wx.Panel):
             titre = dictAnnonce["titre"]
             texte_html = dictAnnonce["texte_html"]
 
-            # Prï¿œparation du dessin
+            # Préparation du dessin
             x, y = 20, 20
             taille_police = 8
             largeurTexte = 300

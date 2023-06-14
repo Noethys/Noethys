@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activitÃ©s
+# Application :    Noethys, gestion multi-activités
 # Site internet :  www.noethys.com
 # Auteurs:         Ivan LUCAS, Cliss XXI
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -44,9 +44,9 @@ class CTRL(HTL.HyperTreeList):
         )
         self.EnableSelectionVista(True)
 
-        self.SetToolTip(wx.ToolTip(_(u"Cochez les Ã©coles et classes Ã  afficher")))
+        self.SetToolTip(wx.ToolTip(_(u"Cochez les écoles et classes à afficher")))
 
-        # CrÃ©ation des colonnes
+        # Création des colonnes
         self.AddColumn(_(u"Ecole/classe"))
         self.SetColumnWidth(0, 420)
 
@@ -81,7 +81,7 @@ class CTRL(HTL.HyperTreeList):
                     cochesGroupes.discard(data["ID"])
             else:
                 self.cocheInconnue = self.IsItemChecked(item)
-            # Envoie les donnÃ©es aux contrÃŽle parent
+            # Envoie les données aux contrôle parent
             if hasattr(self.parent, "MAJecoles"):
                 self.parent.MAJecoles()
 
@@ -91,10 +91,10 @@ class CTRL(HTL.HyperTreeList):
         self.ID_COCHER_TOUTES = wx.Window.NewControlId()
         self.ID_COCHER_AUCUNE = wx.Window.NewControlId()
 
-        # Ajouter les Ã©lÃ©ments au menu
+        # Ajouter les éléments au menu
         item = wx.MenuItem(
             menu, self.ID_COCHER_TOUTES, u"Tout cocher",
-            u"Cocher toutes les Ã©coles et classes",
+            u"Cocher toutes les écoles et classes",
         )
         item.SetBitmap(wx.Bitmap(
             Chemins.GetStaticPath("Images/16x16/Cocher.png"),
@@ -102,8 +102,8 @@ class CTRL(HTL.HyperTreeList):
         ))
         menu.AppendItem(item)
         item = wx.MenuItem(
-            menu, self.ID_COCHER_AUCUNE, u"Tout dÃ©cocher",
-            u"DÃ©cocher toutes les Ã©coles et classes",
+            menu, self.ID_COCHER_AUCUNE, u"Tout décocher",
+            u"Décocher toutes les écoles et classes",
         )
         item.SetBitmap(wx.Bitmap(
             Chemins.GetStaticPath("Images/16x16/Decocher.png"),
@@ -111,7 +111,7 @@ class CTRL(HTL.HyperTreeList):
         ))
         menu.AppendItem(item)
 
-        # Attache les Ã©vÃ©nements
+        # Attache les événements
         wx.EVT_MENU(menu, self.ID_COCHER_TOUTES, self.OnCocher)
         wx.EVT_MENU(menu, self.ID_COCHER_AUCUNE, self.OnCocher)
 
@@ -144,7 +144,7 @@ class CTRL(HTL.HyperTreeList):
     def CocheListeTout(self):
         self.Cocher(True)
 
-        # Mets Ã  jour l'Ã©tat des coches
+        # Mets à jour l'état des coches
         self.cocheInconnue = True
         self.cochesEcolesActives = set(self.dictEcoles.keys())
         self.cochesActives = {
@@ -156,7 +156,7 @@ class CTRL(HTL.HyperTreeList):
     def CocheListeRien(self):
         self.Cocher(False)
 
-        # Mets Ã  jour l'Ã©tat des coches
+        # Mets à jour l'état des coches
         self.cocheInconnue = False
         self.cochesEcolesActives.clear()
         self.cochesActives = {
@@ -164,7 +164,7 @@ class CTRL(HTL.HyperTreeList):
         }
 
     def MAJ(self):
-        """ Met Ã  jour (redessine) tout le contrÃŽle """
+        """ Met à jour (redessine) tout le contrôle """
         self.dictEcoles = self.Importation()
         self.MAJenCours = True
         self.DeleteAllItems()
@@ -177,7 +177,7 @@ class CTRL(HTL.HyperTreeList):
         if not self.date:
             return dictEcoles
 
-        # RÃ©cupÃ©ration des Ã©coles disponibles le jour sÃ©lectionnÃ©
+        # Récupération des écoles disponibles le jour sélectionné
         DB = GestionDB.DB()
         req = """SELECT ecoles.IDecole, ecoles.nom,
         classes.IDclasse, classes.nom, classes.niveaux,
@@ -198,11 +198,11 @@ class CTRL(HTL.HyperTreeList):
             if date_fin is not None:
                 date_fin = UTILS_Dates.DateEngEnDateDD(date_fin)
 
-            # MÃ©morisation de l'Ã©cole
+            # Mémorisation de l'école
             if IDecole not in dictEcoles:
                 dictEcoles[IDecole] = {"nom": nomEcole, "classes": []}
 
-            # MÃ©morisation de la classe
+            # Mémorisation de la classe
             dictEcoles[IDecole]["classes"].append({
                 "IDclasse": IDclasse,
                 "nom": nomClasse,
@@ -213,7 +213,7 @@ class CTRL(HTL.HyperTreeList):
         return dictEcoles
 
     def Remplissage(self):
-        # Tri des Ã©coles par nom
+        # Tri des écoles par nom
         listeEcoles = []
         for IDecole, dictEcole in self.dictEcoles.items():
             listeEcoles.append((dictEcole["nom"], IDecole))
@@ -223,7 +223,7 @@ class CTRL(HTL.HyperTreeList):
         for nomEcole, IDecole in listeEcoles:
             dictEcole = self.dictEcoles[IDecole]
 
-            # Initialise l'Ã©tat des coches pour l'Ã©cole
+            # Initialise l'état des coches pour l'école
             if IDecole not in self.cochesActives:
                 if self.cocherParDefaut is True:
                     self.cochesEcolesActives.add(IDecole)
@@ -262,15 +262,15 @@ class CTRL(HTL.HyperTreeList):
                 if IDclasse in self.cochesActives[IDecole]:
                     self.CheckItem(niveauClasse)
 
-            # Coche l'Ã©cole et active ses classes
+            # Coche l'école et active ses classes
             if IDecole in self.cochesEcolesActives:
                 self.CheckItem(niveauEcole)
                 self.EnableChildren(niveauEcole, True)
             else:
                 self.EnableChildren(niveauEcole, False)
 
-        # Ajoute une entrÃ©e pour les enfants dont la scolaritÃ© est inconnue
-        item = self.AppendItem(self.root, u"ScolaritÃ© inconnue", ct_type=1)
+        # Ajoute une entrée pour les enfants dont la scolarité est inconnue
+        item = self.AppendItem(self.root, u"Scolarité inconnue", ct_type=1)
         self.SetPyData(item, {"type": "inconnu"})
         if self.cocheInconnue:
             self.CheckItem(item)

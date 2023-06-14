@@ -521,7 +521,7 @@ def EnregistrerXML(doc=None, nomFichier=""):
     """ Enregistre le fichier XML """
     f = open(nomFichier, "w")
     try:
-        f.write(doc.toprettyxml(indent="  ", encoding="ISO-8859-1"))
+        f.write(doc.toprettyxml(indent="  ", encoding="UTF-8"))
     finally:
         f.close()
     
@@ -579,5 +579,5 @@ if __name__ == "__main__":
         }
 
     doc = GetXML(dictDonnees) 
-    xml = doc.toprettyxml(indent="  ", encoding="ISO-8859-1")
+    xml = doc.toprettyxml(indent="  ", encoding="UTF-8")
     print(xml)

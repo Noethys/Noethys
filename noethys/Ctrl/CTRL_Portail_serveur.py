@@ -400,7 +400,7 @@ class Panel(wx.Panel):
                 try :
                     texte += u"[%s] %s" % (horodatage, message)
                 except :
-                    texte += u"[%s] %s" % (horodatage, str(message).decode('iso-8859-1'))
+                    texte += u"[%s] %s" % (horodatage, str(message).decode('UTF-8'))
                 wx.CallAfter(self.log.AppendText, texte)
                 self.lock.release()
                 return True
@@ -414,7 +414,7 @@ class Panel(wx.Panel):
                     texte += u"[%s] %s" % (horodatage, message)
                     file_log.write(six.text_type(texte).encode('UTF-8'))
                 except :
-                    texte += u"[%s] %s" % (horodatage, str(message).decode('iso-8859-1'))
+                    texte += u"[%s] %s" % (horodatage, str(message).decode('UTF-8'))
                     file_log.write(six.text_type(texte).encode('UTF-8'))
 
                 file_log.close()
