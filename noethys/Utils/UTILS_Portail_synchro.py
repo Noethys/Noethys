@@ -47,7 +47,7 @@ from Utils.UTILS_Decimal import FloatToDecimal as FloatToDecimal
 from Dlg.DLG_Portail_config import VALEURS_DEFAUT as VALEURS_DEFAUT_CONFIG
 from Dlg.DLG_Portail_config import LISTE_THEMES
 
-from Crypto.Hash import SHA256
+from Cryptodome.Hash import SHA256
 
 
 def patch_crypto_be_discovery():
@@ -55,7 +55,7 @@ def patch_crypto_be_discovery():
     from cryptography.hazmat import backends
 
     try:
-        from cryptography.hazmat.backends.commoncrypto.backend import backend as be_cc
+        from cryptography.hazmat.backends.commonCryptodome.backend import backend as be_cc
     except ImportError:
         be_cc = None
 

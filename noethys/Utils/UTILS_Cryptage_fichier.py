@@ -9,7 +9,7 @@
 #------------------------------------------------------------------------
 
 try :
-    from Crypto.Cipher import AES
+    from Cryptodome.Cipher import AES
     from Crypto import Random
     CRYPTO_IMPORT = True
 except :

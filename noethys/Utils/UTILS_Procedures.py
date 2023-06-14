@@ -924,7 +924,7 @@ def A9061():
 
 def A9073():
     """ Cryptage des mots de passe utilisateurs """
-    from Crypto.Hash import SHA256
+    from Cryptodome.Hash import SHA256
 
     DB = GestionDB.DB()
     req = """SELECT IDutilisateur, mdp FROM utilisateurs;"""
@@ -941,7 +941,7 @@ def A9073():
 
 def A9074():
     """ Cryptage des mots de passe utilisateurs dans nouveau champ mdpcrypt """
-    from Crypto.Hash import SHA256
+    from Cryptodome.Hash import SHA256
 
     DB = GestionDB.DB()
     req = """SELECT IDutilisateur, mdp FROM utilisateurs;"""
