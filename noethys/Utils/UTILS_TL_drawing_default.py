@@ -54,8 +54,8 @@ DATA_INDICATOR_SIZE = 10
 
 LISTE_JOURS = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
 LISTE_JOURS_ABREGE = (_(u"Lun"), _(u"Mar"), _(u"Mer"), _(u"Jeu"), _(u"Ven"), _(u"Sam"), _(u"Dim"))
-LISTE_MOIS = (_(u"Janvier"), _(u"Fï¿œvrier"), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"Aoï¿œt"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"Dï¿œcembre"))
-LISTE_MOIS_ABREGE = (_(u"Jan."), _(u"Fï¿œv."), _(u"Mars"), _(u"Avr."), _(u"Mai"), _(u"Juin"), _(u"Juil."), _(u"Aoï¿œt"), _(u"Sept."), _(u"Oct."), _(u"Nov."), _(u"Dï¿œc."))
+LISTE_MOIS = (_(u"Janvier"), _(u"février"), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"août"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"Décembre"))
+LISTE_MOIS_ABREGE = (_(u"Jan."), _(u"fév."), _(u"Mars"), _(u"Avr."), _(u"Mai"), _(u"Juin"), _(u"Juil."), _(u"août"), _(u"Sept."), _(u"Oct."), _(u"Nov."), _(u"Déc."))
 
 
 class Strip(object):

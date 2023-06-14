@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activitï¿œs
+# Application :    Noethys, gestion multi-activités
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-12 Ivan LUCAS
@@ -53,7 +53,7 @@ class Objet():
             self.dc.SetId(self.id)
             # Dessine l'objet
             self.Draw() 
-            # Mï¿œmorise l'objet
+            # Mémorise l'objet
             self.dc.SetIdBounds(self.id, wx.Rect(int(self.position[0]), int(self.position[1]), int(self.taille[0]), int(self.taille[1])))
             self.interface.dictObjets[self.id] = self
             if 'phoenix' not in wx.PlatformInfo:
@@ -68,7 +68,7 @@ class Objet():
             self.dc.RemoveId(self.id)
             del self.interface.dictObjets[self.id]
             self.id = None
-            # Supprime ï¿œgalement les images de survole ou enfonce
+            # Supprime également les images de survole ou enfonce
             if self.objetImageSurvol != None : 
                 self.dc.RemoveId(self.objetImageSurvol)
                 self.objetImageSurvol = None
@@ -85,7 +85,7 @@ class Objet():
             return True
     
     def Centrer(self, orientation=wx.HORIZONTAL):
-        """ Centre l'objet au milieu de la fenï¿œtre parente """
+        """ Centre l'objet au milieu de la fenêtre parente """
         if self.id == None : return
         tailleDC = self.interface.GetSize() 
         x, y = self.position
@@ -101,7 +101,7 @@ class Objet():
         pass    
         
     def OnLeftUp(self):
-        """ Efface l'image enfoncï¿œe """
+        """ Efface l'image enfoncée """
         pass
         
     def OnMotion(self):
@@ -164,7 +164,7 @@ class Bouton(Objet):
                 self.Action() 
 
     def OnLeftUp(self):
-        """ Efface l'image enfoncï¿œe """
+        """ Efface l'image enfoncée """
         if self.onLeftUp == True :
             self.EffaceEnfonce() 
 
@@ -195,14 +195,14 @@ class Groupe():
         self.position = position
         self.donnees = donnees
         self.listeObjets = []
-        self.listeControles = [] # Contrï¿œles rï¿œels rattachï¿œs
+        self.listeControles = [] # Contrôles réels rattachés
         
     def Ajouter(self, objetDC=None):
         """ Ajoute un objet dans le groupe """
         self.listeObjets.append(objetDC)
         
     def RattacherControle(self, ctrl=None):
-        # Pour rattacher une contrï¿œles rï¿œel
+        # Pour rattacher une contrôles réel
         self.listeControles.append(ctrl)
         
     def Afficher(self):
@@ -273,12 +273,12 @@ class Barre_numerique(Objet):
         self.taille = self.bmp.GetSize() 
         x, y = self.position
         
-        # Dessin du fond de la barre numï¿œrique
+        # Dessin du fond de la barre numérique
         self.dc.DrawBitmap(self.bmp, int(x), int(y))
         
 
 class Groupe_barre_numerique(Groupe):
-    """ Tout le clavier numï¿œrique """
+    """ Tout le clavier numérique """
     def __init__(self, parent, *args, **kwds):
         Groupe.__init__(self, parent, *args, **kwds)
         x, y, = self.position
@@ -301,7 +301,7 @@ class Fond_clavier_numerique(Objet):
     def __init__(self, parent, *args, **kwds):
         Objet.__init__(self, parent, *args, **kwds)
     def Draw(self):
-        # Dessin du fond du clavier numï¿œrique
+        # Dessin du fond du clavier numérique
         self.bmp = wx.Bitmap(Chemins.GetStaticPath("Images/Badgeage/%s_claviernum.png" % self.interface.GetStyle()))
         self.taille = self.bmp.GetSize()
         self.dc.DrawBitmap(self.bmp, int(self.position[0]), int(self.position[1]))
@@ -318,7 +318,7 @@ class Touche_clavier_numerique(Bouton):
 
 
 class Groupe_clavier_numerique(Groupe):
-    """ Tout le clavier numï¿œrique """
+    """ Tout le clavier numérique """
     def __init__(self, parent, *args, **kwds):
         Groupe.__init__(self, parent, *args, **kwds)
         
@@ -340,7 +340,7 @@ class Groupe_clavier_numerique(Groupe):
         self.dictTouches = {}
         for nomTouche in self.listeTouches :
             
-            # Crï¿œation image normale
+            # création image normale
             bmp = wx.Bitmap(Chemins.GetStaticPath("Images/Badgeage/%s.png" % nomTouche), wx.BITMAP_TYPE_PNG)
             image = bmp.ConvertToImage()
     
@@ -352,7 +352,7 @@ class Groupe_clavier_numerique(Groupe):
             image = image.AdjustChannels(0.7, 0.7, 0.7, 1.0)
             bmp_enfonce = image.ConvertToBitmap() 
             
-            # Crï¿œation Touche du clavier
+            # création Touche du clavier
             toucheNum = Touche_clavier_numerique(self.interface, nom=nomTouche, categorie="clavier_numerique", position=(x, y), taille=(tailleTouche, tailleTouche), bmp=bmp, bmp_survol=bmp_survol, bmp_enfonce=bmp_enfonce)
             self.Ajouter(toucheNum)
             self.dictTouches[nomTouche] = toucheNum
@@ -375,7 +375,7 @@ class Fond_liste_individus(Objet):
     def __init__(self, parent, *args, **kwds):
         Objet.__init__(self, parent, *args, **kwds)
     def Draw(self):
-        # Dessin du fond du clavier numï¿œrique
+        # Dessin du fond du clavier numérique
         self.bmp = wx.Bitmap(Chemins.GetStaticPath("Images/Badgeage/%s_listeindividus.png" % self.interface.GetStyle()))
         self.taille = self.bmp.GetSize() 
         self.dc.DrawBitmap(self.bmp, int(self.position[0]), int(self.position[1]))
@@ -410,7 +410,7 @@ class Groupe_liste_individus(Groupe):
         xFond, yFond = fond.position
         largeurFond, hauteurFond = fond.taille
 
-        # Crï¿œation des boutons
+        # création des boutons
         posxTouche = xFond+largeurFond-marge-tailleTouche
         listeTouches = [
             ("Haut", (posxTouche, yFond+marge) ),
@@ -422,7 +422,7 @@ class Groupe_liste_individus(Groupe):
         self.dictTouches = {}
         for nomTouche, posTouche in listeTouches :
             
-            # Crï¿œation image normale
+            # création image normale
             bmp = wx.Bitmap(Chemins.GetStaticPath("Images/Badgeage/%s.png" % nomTouche), wx.BITMAP_TYPE_PNG)
             image = bmp.ConvertToImage()
     
@@ -434,7 +434,7 @@ class Groupe_liste_individus(Groupe):
             image = image.AdjustChannels(0.7, 0.7, 0.7, 1.0)
             bmp_enfonce = image.ConvertToBitmap() 
             
-            # Crï¿œation Touche du clavier
+            # création Touche du clavier
             toucheNum = Touche_liste_individus(self.interface, nom=nomTouche, categorie="liste_individus", position=posTouche, taille=(tailleTouche, tailleTouche), bmp=bmp, bmp_survol=bmp_survol, bmp_enfonce=bmp_enfonce)
             self.Ajouter(toucheNum)
             self.dictTouches[nomTouche] = toucheNum

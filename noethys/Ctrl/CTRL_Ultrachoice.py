@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activitï¿œs
+# Application :    Noethys, gestion multi-activités
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-12 Ivan LUCAS
@@ -32,7 +32,7 @@ class CTRL(OwnerDrawnComboBox):
         self.wrap = wrap
         self.selection = None
             
-        # Init du contrï¿œle
+        # Init du contrôle
         listeLabels = []
         for donnee in self.donnees :
             listeLabels.append(donnee["label"])
@@ -80,7 +80,7 @@ class CTRL(OwnerDrawnComboBox):
                 self.DessineItem(dc, r, dictItem)
            
     def DessineItemActif(self, dc, r, dictItem):
-        """ Dessine le contrï¿œle """        
+        """ Dessine le contrôle """        
         self.DessineItem(dc, r, dictItem)
         
     def DessineItem(self, dc, r, dictItem):
@@ -157,7 +157,7 @@ class MyFrame(wx.Frame):
         self.SetSizer(sizer_1)
 
         donnees = [
-            {"image" : wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Loupe.png"), wx.BITMAP_TYPE_ANY), "label" : _(u"Item 1"), "description" : _(u"Ceci est la description de l'item 1 qui est vraiment un texte trï¿œs long qui devrait normalement dï¿œpasser.")} ,
+            {"image" : wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Loupe.png"), wx.BITMAP_TYPE_ANY), "label" : _(u"Item 1"), "description" : _(u"Ceci est la description de l'item 1 qui est vraiment un texte très long qui devrait normalement dnépasser.")} ,
             {"image" : wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Loupe.png"), wx.BITMAP_TYPE_ANY), "label" : _(u"Item 2"), "description" : _(u"Ceci est la description de l'item 2")} ,
             {"image" : None, "label" : _(u"Item 3"), "description" : _(u"Ceci est la description de l'item 3")} ,
             {"label" : _(u"Item 4"), "description" : _(u"Ceci est la description de l'item 4")} ,

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activitï¿œs
+# Application :    Noethys, gestion multi-activités
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-18 Ivan LUCAS
@@ -54,11 +54,11 @@ class Barre(object):
             else :
                 setattr(self, champ, None)
 
-        # Quantitï¿œ
+        # quantité
         if self.quantite == None :
             self.quantite = 1
 
-        # Pï¿œriode
+        # période
         if isinstance(self.date_debut, str) or isinstance(self.date_debut, six.text_type) :
             self.date_debut = datetime.datetime.strptime(self.date_debut, "%Y-%m-%d %H:%M:%S")
 
@@ -68,7 +68,7 @@ class Barre(object):
         if isinstance(self.date_fin, str) or isinstance(self.date_fin, six.text_type) :
             self.date_fin = datetime.datetime.strptime(self.date_fin, "%Y-%m-%d %H:%M:%S")
 
-        # Rï¿œcupï¿œration des rï¿œponses des questionnaires
+        # Récupération des réponses des questionnaires
         # for dictQuestion in grid.liste_questions :
         #     setattr(self, "question_%d" % dictQuestion["IDquestion"], grid.GetReponse(dictQuestion["IDquestion"], self.IDproduit))
 
@@ -129,10 +129,10 @@ class Barre(object):
     def GetTexteStatusBar(self):
         debut = UTILS_Dates.DatetimeEnFr(self.date_debut)
         if self.date_fin.year == 2999:
-            fin = u"\nFin non dï¿œfinie"
+            fin = u"\nFin non définie"
         else:
             fin = UTILS_Dates.DatetimeEnFr(self.date_fin)
-        texte = _(u"%s -> %s (de %s ï¿œ %s)") % (self.nomTitulaires, self.parent.dict_produits[self.IDproduit]["nom"], debut, fin)
+        texte = _(u"%s -> %s (de %s à %s)") % (self.nomTitulaires, self.parent.dict_produits[self.IDproduit]["nom"], debut, fin)
         return texte
 
     def Draw(self, dc=None, num_sousligne=1, rect_fenetre=None):
@@ -169,10 +169,10 @@ class Barre(object):
                 rect = wx.Rect(int(left + self.parent.delta[0]), int(y), int(largeur), int(hauteur))
                 rect.Deflate(0, 6)
 
-                # Recherche si l'event doit apparaï¿œtre dans le cadre
+                # Recherche si l'event doit apparaêtre dans le cadre
                 if rect.Intersects(rect_fenetre) == True :
 
-                    # Sï¿œlection de la couleur de barre
+                    # sélection de la couleur de barre
                     if self.IDfamille in self.parent.dict_couleurs:
                         self.couleur_barre = self.parent.dict_couleurs[self.IDfamille]
                     else:
@@ -223,7 +223,7 @@ class Barre(object):
                     #texte_debut, texte_debut_largeur, texte_hauteur = GetTailleTexte(dc, texte_debut, texte_largeur_max)
                     texte_fin = self.date_fin.strftime("%Hh%M")
                     if self.date_fin.year == 2999:
-                        texte_fin = _(u"Illimitï¿œe")
+                        texte_fin = _(u"Illimitée")
                     else :
                         if self.parent.dict_options["date_debut"] <= self.date_fin.date() <= self.parent.dict_options["date_fin"]:
                             texte_fin = self.date_fin.strftime("%Hh%M")
@@ -242,7 +242,7 @@ class Barre(object):
                         dc.DrawText(texte_fin, rect.right - texte_fin_largeur - padding_h, rect.bottom - texte_hauteur)
 
 
-                    # Poignï¿œes
+                    # Poignées
                     if self.parent.barre_selectionnee == self :
                         dc.SetPen(wx.Pen(wx.BLACK))
                         dc.SetBrush(wx.Brush(wx.BLACK))
@@ -307,7 +307,7 @@ class CTRL(wx.Panel):
             "autoriser_changement_ligne" : True,
         }
 
-        # Contrï¿œles
+        # Contrôles
         self.ctrl_tableau = CTRL_Tableau(self)
         self.ctrl_infos_1 = CTRL_Infos(self, titre=_(u"POSITION"), min_size=(-1, 20), style=wx.BORDER_THEME)
         self.ctrl_infos_2 = CTRL_Infos(self, titre=_(u"SELECTION"), min_size=(-1, 20), style=wx.BORDER_THEME)
@@ -494,7 +494,7 @@ class Colonne(object):
         if self.date == datetime.date.today() :
             dc.SetTextForeground("red")
 
-        # Dï¿œfinit le texte du label
+        # définit le texte du label
         if self.dict_options["case_largeur"] < 80 :
             texte = str(self.date.day)
         elif self.dict_options["case_largeur"] < 120 :
@@ -574,7 +574,7 @@ class CTRL_Tableau(wx.Panel):
 
         # Init Tooltip
         self.tip = STT.SuperToolTip(u"")
-        self.tip.SetEndDelay(10000) # Fermeture auto du tooltip aprï¿œs 10 secs
+        self.tip.SetEndDelay(10000) # Fermeture auto du tooltip après 10 secs
         self.SetToolTip(wx.ToolTip(""))
 
         # Variables
@@ -602,7 +602,7 @@ class CTRL_Tableau(wx.Panel):
         return u""
 
     def Importation(self):
-        """ Importation des donnï¿œes """
+        """ Importation des données """
         # Importation des titulaires
         self.dict_titulaires = UTILS_Titulaires.GetTitulaires()
 
@@ -663,11 +663,11 @@ class CTRL_Tableau(wx.Panel):
         # Importation
         self.Importation()
 
-        # Mï¿œmorise la position du scroll
+        # mémorise la position du scroll
         # posScrollH = self.parent.scrollbar_h.GetScrollPos(wx.HORIZONTAL)
         # posScrollV = self.parent.scrollbar_v.GetScrollPos(wx.VERTICAL)
 
-        # Crï¿œation des colonnes
+        # création des colonnes
         date_debut = self.dict_options["date_debut"]
         date_fin = self.dict_options["date_fin"]
         if date_debut == None or date_fin == None :
@@ -686,7 +686,7 @@ class CTRL_Tableau(wx.Panel):
 
         self.parent.ctrl_infos_2.SetTexte("")
 
-        # Sï¿œlection selon IDlocation
+        # sélection selon IDlocation
         if select_location != None:
             for barre in self.liste_barres:
                 if barre.IDlocation == select_location:
@@ -743,7 +743,7 @@ class CTRL_Tableau(wx.Panel):
         x, y = self.ScreenToClient(wx.GetMousePosition())
         self.ActiveTooltip(actif=False)
 
-        # Recherche la barre survolï¿œe
+        # Recherche la barre survolée
         barre = self.FindBarre(x, y)
 
         texte_infos = ""
@@ -760,7 +760,7 @@ class CTRL_Tableau(wx.Panel):
         if self.barre_selectionnee != None:
             date_debut = self.barre_selectionnee.date_debut.strftime("%d/%m/%Y %Hh%M")
             if self.barre_selectionnee.date_fin.year == 2999 :
-                date_fin = _(u"Illimitï¿œe")
+                date_fin = _(u"Illimitée")
                 duree = ""
             else :
                 date_fin = self.barre_selectionnee.date_fin.strftime("%d/%m/%Y %Hh%M")
@@ -882,7 +882,7 @@ class CTRL_Tableau(wx.Panel):
         if self.dragging != None and self.dragging["region"] in ("gauche", "droite"):
             x += self.dragging["ecart"]
 
-        # Recherche la case survolï¿œe
+        # Recherche la case survolée
         heure = None
         IDproduit = None
         texte_infos = ""
@@ -895,7 +895,7 @@ class CTRL_Tableau(wx.Panel):
             texte_infos = u"%s : %s" % (heure.strftime("%d/%m/%Y %Hh%M"), nomProduit)
         self.parent.ctrl_infos_1.SetTexte(texte_infos)
 
-        # Recherche la barre survolï¿œe
+        # Recherche la barre survolée
         barre = self.FindBarre(x, y)
 
         # Tooltip
@@ -906,7 +906,7 @@ class CTRL_Tableau(wx.Panel):
         else:
             self.ActiveTooltip(actif=False)
 
-        # Mï¿œmorise la barre survolï¿œe
+        # mémorise la barre survolée
         region = None
         if barre != None :
             self.barre_survolee = barre
@@ -914,7 +914,7 @@ class CTRL_Tableau(wx.Panel):
         else :
             self.barre_survolee = None
 
-        # Crï¿œation d'une nouvelle barre
+        # création d'une nouvelle barre
         nouvelle_barre = False
         if self.barre_selectionnee == None and heure != None and wx.GetKeyState(wx.WXK_CONTROL) and wx.GetMouseState().LeftIsDown():
             barre = Barre(self, donnees={"IDproduit": IDproduit, "date_debut": heure, "date_fin": heure + datetime.timedelta(minutes=10)})
@@ -923,7 +923,7 @@ class CTRL_Tableau(wx.Panel):
             self.barre_selectionnee = barre
             nouvelle_barre = True
             self.Redraw()
-            # Dï¿œplace la souris vers la poignï¿œe droite
+            # Déplace la souris vers la poignée droite
             x_poignee_droite = barre.poignees["droite"].left + barre.poignees["droite"].width / 2
             y_poignee_droite = barre.poignees["droite"].bottom + barre.poignees["droite"].height / 2
             self.WarpPointer(x_poignee_droite, y_poignee_droite)
@@ -945,11 +945,11 @@ class CTRL_Tableau(wx.Panel):
                     self.dragging["barre"].date_fin = heure
 
                 if region == "centre" :
-                    # Dï¿œplacement latï¿œral
+                    # Déplacement latéral
                     self.dragging["barre"].date_debut = heure - self.dragging["delta_heure"]
                     self.dragging["barre"].date_fin = self.dragging["barre"].date_debut + self.dragging["duree"]
 
-                    # Dï¿œplacement vertical : Changement de ligne (de produit)
+                    # Déplacement vertical : Changement de ligne (de produit)
                     if self.dict_options["autoriser_changement_ligne"] == True :
                         self.dragging["barre"].IDproduit = IDproduit
 
@@ -1077,7 +1077,7 @@ class CTRL_Tableau(wx.Panel):
         self.Draw_entetes_colonnes(dc)
         self.Draw_entetes_lignes(dc)
 
-        # Calcule la taille de la fenetre affichï¿œe
+        # Calcule la taille de la fenetre affichée
         if 'phoenix' not in wx.PlatformInfo:
             taille_fenetre = self.GetClientSizeTuple()
         else :
@@ -1121,7 +1121,7 @@ class CTRL_Tableau(wx.Panel):
 
 
     def MAJ_colonnes(self):
-        # Crï¿œation des colonnes
+        # création des colonnes
         self.liste_colonnes = []
         self.dict_colonnes = {}
         liste_dates = list(rrule.rrule(rrule.DAILY, dtstart=self.dict_options["date_debut"], until=self.dict_options["date_fin"]))
@@ -1167,7 +1167,7 @@ class CTRL_Tableau(wx.Panel):
 
 
     def MAJ_lignes(self):
-        # Crï¿œation des lignes
+        # création des lignes
         self.liste_lignes = []
         self.dict_lignes = {}
         num_ligne = 0
@@ -1213,7 +1213,7 @@ class CTRL_Tableau(wx.Panel):
                 ligne.Draw(dc, rect)
                 self.liste_lignes_affichees.append(ligne)
 
-            # Prï¿œpare prochaine ligne
+            # Prépare prochaine ligne
             y += hauteur
 
         dc.DestroyClippingRegion()
@@ -1236,7 +1236,7 @@ class CTRL_Tableau(wx.Panel):
                 self.timerTip.Start(800)
                 self.tip.barre = barre
         else:
-            # Dï¿œsactive le tooltip
+            # Désactive le tooltip
             if hasattr(self, "timerTip"):
                 if self.timerTip.IsRunning():
                     self.timerTip.Stop()
@@ -1246,10 +1246,10 @@ class CTRL_Tableau(wx.Panel):
             self.barre_survolee = None
 
     def AfficheTooltip(self):
-        """ Crï¿œation du supertooltip """
+        """ création du supertooltip """
         barre = self.tip.barre
 
-        # Paramï¿œtrage du tooltip
+        # Paramétrage du tooltip
         font = self.GetFont()
         self.tip.SetHyperlinkFont(wx.Font(8, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, 'Arial'))
 
@@ -1281,21 +1281,21 @@ class CTRL_Tableau(wx.Panel):
             texte = u""
             texte += u"Description : %s" % (barre.description or "")
             texte += u"\nProduit : %s" % self.dict_produits[barre.IDproduit]["nom"]
-            texte += u"\nCatï¿œgorie : %s" % self.dict_produits[barre.IDproduit]["nom_categorie"]
+            texte += u"\nCatégorie : %s" % self.dict_produits[barre.IDproduit]["nom_categorie"]
             texte += u"\n"
-            texte += u"\nDï¿œbut : %s" % UTILS_Dates.DatetimeEnFr(barre.date_debut)
+            texte += u"\ndébut : %s" % UTILS_Dates.DatetimeEnFr(barre.date_debut)
             if barre.date_fin.year == 2999 :
-                texte += u"\nFin : Non dï¿œfinie"
+                texte += u"\nFin : Non définie"
             else :
                 texte += u"\nFin : %s" % UTILS_Dates.DatetimeEnFr(barre.date_fin)
             texte += u"\n"
-            texte += u"\nQuantitï¿œ : %s" % barre.quantite
+            texte += u"\nquantité : %s" % barre.quantite
             if len(self.liste_questions) > 0 :
                 texte += u"\n"
                 for dictQuestion in self.liste_questions :
                     texte += u"\n%s : %s" % (dictQuestion["label"], self.GetReponse(dictQuestion["IDquestion"], barre.IDlocation))
         else :
-            texte = _(u"Aucune location n'est enregistrï¿œe ï¿œ cette date.\n\n")
+            texte = _(u"Aucune location n'est enregistrée à cette date.\n\n")
         self.tip.SetMessage(texte)
 
         # Pied du tooltip
@@ -1315,9 +1315,9 @@ class CTRL_Tableau(wx.Panel):
         self.tipFrame.SetPosition((x + 15, y + 17))
         self.tipFrame.DropShadow(True)
         self.tipFrame.Show()
-        #self.tipFrame.StartAlpha(True)  # ou .Show() pour un affichage immï¿œdiat
+        #self.tipFrame.StartAlpha(True)  # ou .Show() pour un affichage immédiat
 
-        # Arrï¿œt du timer
+        # Arrêt du timer
         self.timerTip.Stop()
         del self.timerTip
 
@@ -1330,7 +1330,7 @@ class CTRL_Tableau(wx.Panel):
             ]
         DB.ReqMAJ("locations", listeDonnees, "IDlocation", barre.IDlocation)
         label_produit = u"%s (%s)" % (self.dict_produits[barre.IDproduit]["nom"], self.dict_produits[barre.IDproduit]["nom_categorie"])
-        periode = _(u"%s - %s") % (barre.date_debut.strftime("%d/%m/%Y %H:%M:%S"), barre.date_fin.strftime("%d/%m/%Y %H:%M:%S") if (barre.date_fin and barre.date_fin.year != 2999) else _(u"Illimitï¿œe"))
+        periode = _(u"%s - %s") % (barre.date_debut.strftime("%d/%m/%Y %H:%M:%S"), barre.date_fin.strftime("%d/%m/%Y %H:%M:%S") if (barre.date_fin and barre.date_fin.year != 2999) else _(u"Illimitée"))
         texte_historique = _(u"Modification de la location ID%d : %s %s") % (barre.IDlocation, label_produit, periode)
         UTILS_Historique.InsertActions([{"IDfamille": barre.IDfamille, "IDcategorie": 38, "action": texte_historique, "IDdonnee": barre.IDlocation}], DB=DB)
         DB.Close()
@@ -1343,7 +1343,7 @@ class CTRL_Tableau(wx.Panel):
         frame = wx.GetApp().GetTopWindow()
         if not printer.Print(frame, printout, True):
             if printer.GetLastError() == wx.PRINTER_ERROR:
-                wx.MessageBox(_(u"Problï¿œme d'impression. Peut-ï¿œtre votre imprimante n'est-elle pas configurï¿œe correctement ?"), "Impression", wx.OK)
+                wx.MessageBox(_(u"problème d'impression. Peut-être votre imprimante n'est-elle pas configurée correctement ?"), "Impression", wx.OK)
         else:
             self.printData = wx.PrintData( printer.GetPrintDialogData().GetPrintData() )
         printout.Destroy()
@@ -1354,10 +1354,10 @@ class CTRL_Tableau(wx.Panel):
         printout = TableauPrintout(self, False)
         self.preview = wx.PrintPreview(printout_preview, printout, data)
         if not self.preview.IsOk():
-            logging.debug(_(u"Impossible d'afficher l'aperï¿œu avant impression...\n"))
+            logging.debug(_(u"Impossible d'afficher l'aperçu avant impression...\n"))
             return
         frame = wx.GetApp().GetTopWindow()
-        pfrm = wx.PreviewFrame(self.preview, frame, _(u"Aperï¿œu avant impression"))
+        pfrm = wx.PreviewFrame(self.preview, frame, _(u"aperçu avant impression"))
         pfrm.Initialize()
         pfrm.SetPosition(frame.GetPosition())
         pfrm.SetSize(frame.GetSize())
@@ -1371,7 +1371,7 @@ class CTRL_Infos(wx.Panel):
         self.titre = titre
         self.texte = ""
 
-        # Propriï¿œtï¿œs
+        # Propriétés
         self.SetMinSize(min_size)
         self.SetBackgroundColour(wx.WHITE)
         self.SetBackgroundStyle(wx.BG_STYLE_CUSTOM)
@@ -1547,7 +1547,7 @@ class MyFrame(wx.Frame):
         sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
         self.SetSizer(sizer_1)
 
-        # Contrï¿œles
+        # Contrôles
         self.ctrl_tableau = CTRL(panel)
 
         # Tests

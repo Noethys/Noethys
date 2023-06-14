@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #------------------------------------------------------------------------
-# Application :    Noethys, gestion multi-activitï¿œs
+# Application :    Noethys, gestion multi-activités
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
 # Copyright:       (c) 2010-11 Ivan LUCAS
@@ -32,10 +32,10 @@ LISTE_IMAGES = [
         (_(u"Pilote"), "Hommepilote"),
         (_(u"Barbare"), "Barbare"),
         (_(u"Cowboy"), "Cowboy"),
-        (_(u"Mariï¿œ"), "Marie"),
-        (_(u"Pï¿œre Noï¿œl"), "Perenoel"),
+        (_(u"Marié"), "Marie"),
+        (_(u"Père Noël"), "Perenoel"),
         (_(u"Ouvrier"), "Ouvrier"),
-        (_(u"Garï¿œon"), "Garcon"),
+        (_(u"Garçon"), "Garcon"),
         ]],
         
     [_(u"Femmes"), [
@@ -44,11 +44,11 @@ LISTE_IMAGES = [
         (_(u"Femme 3"), "Femme3"),
         (_(u"Cowgirl"), "Cowgirl"),
         (_(u"Viking"), "Viking"),
-        (_(u"Mariï¿œe"), "Mariee"),
+        (_(u"Mariée"), "Mariee"),
         (_(u"Pilote"), "Femmepilote"),
-        (_(u"Secrï¿œtaire"), "Femmesecretaire"),
-        (_(u"Mï¿œre Noï¿œl"), "Merenoel"),
-        (_(u"Ouvriï¿œre"), "Ouvriere"),
+        (_(u"Secrétaire"), "Femmesecretaire"),
+        (_(u"Mère Noël"), "Merenoel"),
+        (_(u"Ouvrière"), "Ouvriere"),
         (_(u"Fille"), "Fille"),
         ]],
         
@@ -118,7 +118,7 @@ class CTRL_Image(wx.StaticBitmap):
         self.SetMinSize(self.tailleImage) 
         self.SetSize(self.tailleImage) 
         self.SetBackgroundColour(wx.Colour(0, 0, 0))
-        self.SetToolTip(wx.ToolTip(_(u"Cliquez sur le bouton droit de votre souris\npour sï¿œlectionner un avatar")))
+        self.SetToolTip(wx.ToolTip(_(u"Cliquez sur le bouton droit de votre souris\npour sélectionner un avatar")))
         
         self.Bind(wx.EVT_LEFT_DOWN, self.ContextMenu)
         self.Bind(wx.EVT_RIGHT_DOWN, self.ContextMenu)
@@ -126,11 +126,11 @@ class CTRL_Image(wx.StaticBitmap):
         self.MAJ() 
 
     def ContextMenu(self, event=None):
-        # Crï¿œation du menu contextuel
+        # création du menu contextuel
         menuPop = UTILS_Adaptations.Menu()
         
         # Automatique
-        item = wx.MenuItem(menuPop, 999, _(u"Automatique (Dï¿œfaut)"))
+        item = wx.MenuItem(menuPop, 999, _(u"Automatique (défaut)"))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.OnItemMenu, id=999)
         
@@ -174,7 +174,7 @@ class CTRL_Image(wx.StaticBitmap):
         
     def ConvertTailleImage(self, bitmap=None, taille=None):
         """ Convertit la taille d'une image """
-        # Rï¿œduction de l'image
+        # Réduction de l'image
         bitmap = bitmap.ConvertToImage()
         bitmap = bitmap.Rescale(width=taille[0], height=taille[1], quality=wx.IMAGE_QUALITY_HIGH) 
         bitmap = bitmap.ConvertToBitmap()
@@ -261,13 +261,13 @@ class Dialog(wx.Dialog):
             IDutilisateur = DB.GetProchainID("utilisateurs")
             DB.Close()
 
-        # Identitï¿œ
-        self.staticbox_identite_staticbox = wx.StaticBox(self, -1, _(u"Identitï¿œ"))
+        # Identité
+        self.staticbox_identite_staticbox = wx.StaticBox(self, -1, _(u"Identité"))
         self.label_sexe = wx.StaticText(self, -1, _(u"Sexe :"))
         self.ctrl_sexe = wx.Choice(self, -1, choices=[_(u"Homme"), _(u"Femme")])
         self.label_nom = wx.StaticText(self, -1, _(u"Nom :"))
         self.ctrl_nom = wx.TextCtrl(self, -1, u"")
-        self.label_prenom = wx.StaticText(self, -1, _(u"Prï¿œnom :"))
+        self.label_prenom = wx.StaticText(self, -1, _(u"Prénom :"))
         self.ctrl_prenom = wx.TextCtrl(self, -1, u"")
         
         # Image
@@ -275,8 +275,8 @@ class Dialog(wx.Dialog):
         self.ctrl_image = CTRL_Image(self)
         self.hyper_image = Hyperlien(self, label=_(u"Choisir un avatar"), infobulle=_(u"Cliquez ici pour modifier l'avatar de l'utilisateur"), URL="")
         
-        # Accï¿œs
-        self.staticbox_acces_staticbox = wx.StaticBox(self, -1, _(u"Accï¿œs"))
+        # accès
+        self.staticbox_acces_staticbox = wx.StaticBox(self, -1, _(u"accès"))
         self.ctrl_actif = wx.CheckBox(self, -1, u"Utilisateur actif")
         self.ctrl_actif.SetValue(True)
         self.bouton_modif_mdp = CTRL_Bouton_image.CTRL(self, texte="", cheminImage="Images/32x32/Cle.png")
@@ -292,9 +292,9 @@ class Dialog(wx.Dialog):
         # Droits
         self.staticbox_droits_staticbox = wx.StaticBox(self, -1, _(u"Droits"))
         self.radio_droits_admin = wx.RadioButton(self, -1, _(u"Administrateur"), style=wx.RB_GROUP)
-        self.radio_droits_modele = wx.RadioButton(self, -1, _(u"Le modï¿œle de droits suivant :"))
+        self.radio_droits_modele = wx.RadioButton(self, -1, _(u"Le modèle de droits suivant :"))
         self.ctrl_modele_droits = CTRL_Modeles_droits(self)
-        self.radio_droits_perso = wx.RadioButton(self, -1, _(u"Les droits personnalisï¿œs suivants :"))
+        self.radio_droits_perso = wx.RadioButton(self, -1, _(u"Les droits personnalisés suivants :"))
         self.ctrl_droits = CTRL_Droits.CTRL(self, IDutilisateur=self.IDutilisateur)
         self.ctrl_droits.MAJ()
         
@@ -320,7 +320,7 @@ class Dialog(wx.Dialog):
         if self.IDutilisateur == None :
             self.SetTitle(_(u"Saisie d'un utilisateur"))
 
-            # Crï¿œation des codes internet
+            # création des codes internet
             internet_identifiant = UTILS_Internet.CreationIdentifiant(IDutilisateur=IDutilisateur)
             internet_mdp = UTILS_Internet.CreationMDP(nbreCaract=8)
             self.ctrl_compte_internet.SetDonnees({"internet_actif": 0, "internet_identifiant": internet_identifiant, "internet_mdp": internet_mdp})
@@ -333,18 +333,18 @@ class Dialog(wx.Dialog):
         self.MAJboutonMdp()
 
     def __set_properties(self):
-        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Modifier les paramï¿œtres du compte internet")))
-        #self.bouton_envoi_mail.SetToolTip(wx.ToolTip(_(u"Envoyer un couriel ï¿œ la famille avec les codes d'accï¿œs au portail Internet")))
-        self.bouton_envoi_pressepapiers.SetToolTip(wx.ToolTip(_(u"Copier les codes d'accï¿œs dans le presse-papiers afin de les coller ensuite dans un document ou un email par exemple")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Modifier les paramêtres du compte internet")))
+        #self.bouton_envoi_mail.SetToolTip(wx.ToolTip(_(u"Envoyer un couriel à la famille avec les codes d'accès au portail Internet")))
+        self.bouton_envoi_pressepapiers.SetToolTip(wx.ToolTip(_(u"Copier les codes d'accès dans le presse-papiers afin de les coller ensuite dans un document ou un email par exemple")))
         #self.bouton_historique.SetToolTip(wx.ToolTip(_(u"Consulter et traiter les demandes de l'utilisateur")))
-        self.ctrl_sexe.SetToolTip(wx.ToolTip(_(u"Sï¿œlectionnez le sexe de l'utilisateur")))
+        self.ctrl_sexe.SetToolTip(wx.ToolTip(_(u"sélectionnez le sexe de l'utilisateur")))
         self.ctrl_sexe.SetSelection(0)
         self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez ici le nom de famille de l'utilisateur")))
-        self.ctrl_prenom.SetToolTip(wx.ToolTip(_(u"Saisissez ici le prï¿œnom de l'utilisateur")))
-        self.radio_droits_admin.SetToolTip(wx.ToolTip(_(u"Sï¿œlectionnez l'option 'Administrateur' pour donner tous les droits ï¿œ cet utilisateur")))
-        self.radio_droits_modele.SetToolTip(wx.ToolTip(_(u"Sï¿œlectionnez cette option pour attribuer un modï¿œle de droits ï¿œ cet utilisateur")))
-        self.radio_droits_perso.SetToolTip(wx.ToolTip(_(u"Sï¿œlectionnez cette option pour attribuer des droits personnalisï¿œs ï¿œ cet utilisateur")))
-        self.ctrl_actif.SetToolTip(wx.ToolTip(_(u"Dï¿œcochez cette case pour dï¿œsactiver l'utilisateur. L'utilisateur n'aura plus accï¿œs ï¿œ ce fichier de donnï¿œes.")))
+        self.ctrl_prenom.SetToolTip(wx.ToolTip(_(u"Saisissez ici le prénom de l'utilisateur")))
+        self.radio_droits_admin.SetToolTip(wx.ToolTip(_(u"sélectionnez l'option 'Administrateur' pour donner tous les droits à cet utilisateur")))
+        self.radio_droits_modele.SetToolTip(wx.ToolTip(_(u"sélectionnez cette option pour attribuer un modèle de droits à cet utilisateur")))
+        self.radio_droits_perso.SetToolTip(wx.ToolTip(_(u"sélectionnez cette option pour attribuer des droits personnalisés à cet utilisateur")))
+        self.ctrl_actif.SetToolTip(wx.ToolTip(_(u"Décochez cette case pour Désactiver l'utilisateur. L'utilisateur n'aura plus accès à ce fichier de données.")))
         self.bouton_modif_mdp.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour saisir un nouveau mot de passe pour cet utilisateur")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
@@ -356,7 +356,7 @@ class Dialog(wx.Dialog):
         grid_sizer_haut = wx.FlexGridSizer(rows=1, cols=3, vgap=10, hgap=10)
         grid_sizer_haut_gauche = wx.FlexGridSizer(rows=2, cols=1, vgap=10, hgap=10)
         
-        # Identitï¿œ
+        # Identité
         staticbox_identite = wx.StaticBoxSizer(self.staticbox_identite_staticbox, wx.VERTICAL)
         grid_sizer_identite = wx.FlexGridSizer(rows=3, cols=2, vgap=5, hgap=10)
         grid_sizer_identite.Add(self.label_sexe, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
@@ -370,7 +370,7 @@ class Dialog(wx.Dialog):
         staticbox_identite.Add(grid_sizer_identite, 1, wx.ALL|wx.EXPAND, 10)
         grid_sizer_haut_gauche.Add(staticbox_identite, 1, wx.EXPAND, 0)
         
-        # Accï¿œs
+        # accès
         staticbox_acces = wx.StaticBoxSizer(self.staticbox_acces_staticbox, wx.VERTICAL)
         self.grid_sizer_acces = wx.FlexGridSizer(rows=1, cols=5, vgap=10, hgap=10)
         self.grid_sizer_acces.Add(self.ctrl_actif, 0, wx.ALIGN_CENTER_VERTICAL, 0)
@@ -478,7 +478,7 @@ class Dialog(wx.Dialog):
         self.grid_sizer_acces.Layout()
 
     def OnBoutonOk(self, event): 
-        # Vï¿œrification des donnï¿œes
+        # Vérification des données
         if len(self.ctrl_nom.GetValue()) == 0 :
             dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un nom !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
@@ -492,7 +492,7 @@ class Dialog(wx.Dialog):
             dlg.Destroy()
             return
 
-        # Vï¿œrifie que le code d'accï¿œs n'est pas dï¿œjï¿œ utilisï¿œ
+        # Vérifie que le code d'accès n'est pas déjà utilisé
         if self.IDutilisateur == None :
             IDutilisateurTmp = 0
         else:
@@ -506,12 +506,12 @@ class Dialog(wx.Dialog):
         listeDonnees = DB.ResultatReq()
         DB.Close()
         if len(listeDonnees) > 0 :
-            dlg = wx.MessageDialog(self, _(u"Le code d'accï¿œs que vous avez saisi est dï¿œjï¿œ attribuï¿œ !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Le code d'accès que vous avez saisi est déjà attribué !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         
-        # Vï¿œrifie qu'il reste au moins un administrateur dans la base de donnï¿œes
+        # Vérifie qu'il reste au moins un administrateur dans la base de données
         if self.radio_droits_admin.GetValue() == False :
             DB = GestionDB.DB()
             req = """SELECT IDutilisateur, profil
@@ -526,7 +526,7 @@ class Dialog(wx.Dialog):
                 dlg.Destroy()
                 return
 
-        # Vï¿œrifie qu'il reste au moins un administrateur ACTIF dans la base de donnï¿œes
+        # Vérifie qu'il reste au moins un administrateur ACTIF dans la base de données
         if self.ctrl_actif.GetValue() == False :
             DB = GestionDB.DB()
             req = """SELECT IDutilisateur, profil, actif
@@ -544,15 +544,15 @@ class Dialog(wx.Dialog):
         # Droits
         if self.radio_droits_modele.GetValue() == True :
             if self.ctrl_modele_droits.GetID() == None :
-                dlg = wx.MessageDialog(self, _(u"Vous n'avez sï¿œlectionnï¿œ aucun modï¿œle de droits !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun modèle de droits !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return
 
-        # Vï¿œrifie que le compte n'est pas inactif alors que le compte internet est actif
+        # Vérifie que le compte n'est pas inactif alors que le compte internet est actif
         dictCompteInternet = self.ctrl_compte_internet.GetDonnees()
         if dictCompteInternet["internet_actif"] == 1 and self.ctrl_actif.GetValue() == False :
-            dlg = wx.MessageDialog(self, _(u"Vous devez dï¿œsactiver le compte internet si vous souhaitez dï¿œsactiver cet utilisateur !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez Désactiver le compte internet si vous souhaitez Désactiver cet utilisateur !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -560,7 +560,7 @@ class Dialog(wx.Dialog):
         # Sauvegarde
         self.Sauvegarde()
         
-        # Fermeture de la fenï¿œtre
+        # Fermeture de la fenêtre
         self.EndModal(wx.ID_OK)
 
     def GetIDutilisateur(self):
@@ -577,14 +577,14 @@ class Dialog(wx.Dialog):
         DB.Close()
         if len(listeDonnees) == 0 : return
         sexe, nom, prenom, mdp, mdpcrypt, profil, actif, image, internet_actif, internet_identifiant, internet_mdp = listeDonnees[0]
-        # Identitï¿œ
+        # Identité
         if sexe == "M" :
             self.ctrl_sexe.Select(0)
         else:
             self.ctrl_sexe.Select(1)
         self.ctrl_nom.SetValue(nom)
         self.ctrl_prenom.SetValue(prenom)
-        # Accï¿œs
+        # accès
         self.mdp = mdp
         self.mdpcrypt = mdpcrypt
         if actif == 1 :
@@ -608,7 +608,7 @@ class Dialog(wx.Dialog):
 
     def Sauvegarde(self):
         """ Sauvegarde """
-        # Identitï¿œ
+        # Identité
         if self.ctrl_sexe.GetSelection() == 0 :
             sexe = "M"
         else:
@@ -616,7 +616,7 @@ class Dialog(wx.Dialog):
         nom = self.ctrl_nom.GetValue() 
         prenom = self.ctrl_prenom.GetValue() 
         
-        # Accï¿œs
+        # accès
         if self.ctrl_actif.GetValue() == True :
             actif = 1
         else:
@@ -731,7 +731,7 @@ class DLG_Saisie_mdp(wx.Dialog):
         return self.ctrl_mdp.GetValue()
 
     def OnBoutonOk(self, event):
-        """ Validation des donnï¿œes saisies """
+        """ Validation des données saisies """
         if len(self.ctrl_mdp.GetValue()) == 0:
             dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un mot de passe valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()

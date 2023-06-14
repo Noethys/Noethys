@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activitï¿œs
+# Application :    Noethys, gestion multi-activités
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-18 Ivan LUCAS
@@ -160,7 +160,7 @@ class Case():
         texte = texte.replace("</b>", "")
         # Ajoute la suggestion au texte
         if self.suggestion != None :
-            texte += u"\n\nValeur suggï¿œrï¿œe : %s" % self.suggestion
+            texte += u"\n\nValeur suggérée : %s" % self.suggestion
         if self.ouvert == True :
             texte += u"\n\n------- COMMANDES -------"
             texte += u"\n- Double-cliquez pour modifier une case"
@@ -394,7 +394,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 
             # RAZ
             id = wx.Window.NewControlId()
-            item = wx.MenuItem(menuPop, id, _(u"Vider la donnï¿œe"))
+            item = wx.MenuItem(menuPop, id, _(u"Vider la donnée"))
             item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Gomme.png"), wx.BITMAP_TYPE_PNG))
             menuPop.AppendItem(item)
             self.Bind(wx.EVT_MENU, case.RAZ, id=id)
@@ -409,14 +409,14 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 
 
     def Importation(self):
-        """ Importation des donnï¿œes """
+        """ Importation des données """
         dictDonnees = {}
         if self.IDmodele == None or self.date_debut == None or self.date_fin == None :
             return dictDonnees
 
         DB = GestionDB.DB()
 
-        # Modï¿œle
+        # Modèle
         req = """SELECT modeles_commandes.nom, modeles_commandes.IDrestaurateur, parametres,
         restaurateurs.nom, restaurateurs.tel, restaurateurs.mail
         FROM modeles_commandes 
@@ -456,7 +456,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 dictDonnees["dict_colonnes"][index] = dictColonne
                 index += 1
 
-        # Recherche les activitï¿œs concernï¿œes
+        # Recherche les activités concernées
         listeUnites = []
         for dictColonne in dictDonnees["liste_colonnes"] :
             if "unites" in dictColonne["parametres"]:
@@ -482,10 +482,10 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             dictOuverture = {"IDouverture" : IDouverture, "IDactivite" : IDactivite, "IDunite" : IDunite, "IDgroupe" : IDgroupe, "date" : date}
             dictDonnees["liste_ouvertures"].append(dictOuverture)
 
-            # Mï¿œmorisation dans un dict
+            # mémorisation dans un dict
             dictDonnees["dict_ouvertures"] = UTILS_Divers.DictionnaireImbrique(dictionnaire=dictDonnees["dict_ouvertures"], cles=[date, IDgroupe, IDunite], valeur=True)
 
-            # Mï¿œmorisation des dates
+            # mémorisation des dates
             if date not in dictDonnees["liste_dates"] :
                 dictDonnees["liste_dates"].append(date)
         dictDonnees["liste_dates"].sort()
@@ -529,7 +529,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         else : conditionIndividus = str(tuple(dictDonnees["liste_individus"]))
 
 
-        # Informations mï¿œdicales
+        # Informations médicales
         req = """SELECT IDprobleme, problemes_sante.IDindividu, IDtype, intitule, date_debut, date_fin, description, traitement_medical,
         description_traitement, date_debut_traitement, date_fin_traitement,
         individus.nom, individus.prenom
@@ -619,7 +619,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         self.date_debut = date_debut
         self.date_fin = date_fin
 
-        # Mï¿œmorisation des donnï¿œes existantes
+        # mémorisation des données existantes
         try :
             for case in list(self.dictCases.values()):
                 if case.ouvert == True :
@@ -640,7 +640,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         if len(self.dictDonnees) == 0 :
             return
 
-        # Crï¿œation des colonnes
+        # création des colonnes
         nbreColonnes = len(self.dictDonnees["liste_colonnes"])
         self.AppendCols(nbreColonnes)
 
@@ -653,7 +653,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             self.SetColSize(numColonne, dictColonne["largeur"])
             numColonne += 1
 
-        # Crï¿œation des lignes
+        # création des lignes
         nbreLignes = len(self.dictDonnees["liste_dates"])
         self.AppendRows(nbreLignes)
 
@@ -667,7 +667,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             self.SetRowSize(numLigne, 40)
             numLigne += 1
 
-        # Crï¿œation des cases
+        # création des cases
         self.dictCases = {}
 
         numLigne = 0
@@ -690,7 +690,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                     except :
                         pass
 
-                    # Rï¿œcupï¿œration de la valeur avant MAJ
+                    # Récupération de la valeur avant MAJ
                     if (date, dictColonne["IDcolonne"]) in self.dictValeursAnterieures:
                         valeur = self.dictValeursAnterieures[(date, dictColonne["IDcolonne"])]
 
@@ -698,7 +698,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                     if dictColonne["categorie"] ==  "numerique_avec_suggestion" :
                         suggestion = 0
                         for (IDgroupe, IDunite) in dictColonne["parametres"]["unites"]:
-                            # Recherche si unitï¿œs ouvertes
+                            # Recherche si unités ouvertes
                             if self.RechercheOuverture(date, IDgroupe, IDunite) == False :
                                 ouvert = False
                             # Recherche le nombre de conso
@@ -724,7 +724,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 
                                 if valide == True :
 
-                                    # Recherche infos mï¿œdicales
+                                    # Recherche infos médicales
                                     if "infos_medicales" in dictColonne["parametres"]:
                                         if IDindividu in self.dictDonnees["infos_medicales"] :
                                             for dictInfos in self.dictDonnees["infos_medicales"][IDindividu]:
@@ -745,14 +745,14 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                     if dictColonne["categorie"] == "numerique_total":
                         ouvert = False
 
-                    # Crï¿œation de la case
+                    # création de la case
                     case = Case(self, numLigne=numLigne, numColonne=numColonne, IDcolonne=dictColonne["IDcolonne"], date=date, categorieColonne=dictColonne["categorie"], ouvert=ouvert, suggestion=suggestion, valeur=valeur, IDvaleur=IDvaleur)
                     self.dictCases[(numLigne, numColonne)] = case
 
                 # Ligne de total
                 if type(date) in (str, six.text_type):
 
-                    # Crï¿œation de la case
+                    # création de la case
                     case = Case(self, numLigne=numLigne, numColonne=numColonne, IDcolonne=dictColonne["IDcolonne"], date=date, categorieColonne=dictColonne["categorie"], ouvert=False, valeur=None)
                     self.dictCases[(numLigne, numColonne)] = case
 
@@ -783,7 +783,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         listeAjouts = []
         listeSuppressions = []
 
-        # Rï¿œcupï¿œration des valeurs
+        # Récupération des valeurs
         if "liste_dates" in self.dictDonnees:
             for numLigne in range(0, len(self.dictDonnees["liste_dates"]) - 1):
                 for numColonne in range(0, len(self.dictDonnees["liste_colonnes"])):
@@ -822,7 +822,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         if len(listeModifications) > 0 or len(listeAjouts) > 0 or len(listeSuppressions) > 0 :
             DB.Commit()
 
-        # Clï¿œture de la base
+        # Clôture de la base
         DB.Close()
 
     def OnChangeColSize(self, event):
@@ -877,7 +877,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                             if (listeIDcolonne == None or case.IDcolonne in listeIDcolonne) and "numerique" in case.categorieColonne and "total" not in case.categorieColonne:
                                 valeur += case.GetValeur()
 
-                    # On envoie le total ï¿œ la case de la colonne TOTAL
+                    # On envoie le total à la case de la colonne TOTAL
                     self.dictCases[(numLigne, numColonneTotal)].SetValeur(valeur)
 
                 numColonneTotal += 1
@@ -947,7 +947,7 @@ class DLG_Saisie_valeur(wx.Dialog):
             self.ctrl_valeur.SetMinSize((320, 90))
 
         if self.suggestion != None :
-            self.label_suggestion = wx.StaticText(self, -1, _(u"Valeur suggï¿œrï¿œe : %s") % suggestion)
+            self.label_suggestion = wx.StaticText(self, -1, _(u"Valeur suggérée : %s") % suggestion)
             self.label_suggestion.SetFont(wx.Font(8, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, 'Arial'))
             self.label_suggestion.SetForegroundColour(wx.Colour(120, 120, 120))
 
@@ -968,7 +968,7 @@ class DLG_Saisie_valeur(wx.Dialog):
 
     def __set_properties(self):
         self.SetTitle(_(u"Modification d'une valeur"))
-        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider ou tapez sur la touche Entrï¿œe du clavier")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider ou tapez sur la touche Entrée du clavier")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
 
     def __do_layout(self):
@@ -1002,7 +1002,7 @@ class DLG_Saisie_valeur(wx.Dialog):
         self.EndModal(wx.ID_OK)
 
     def OnBoutonOk(self, event=None):
-        # Fermeture de la fenï¿œtre
+        # Fermeture de la fenêtre
         self.EndModal(wx.ID_OK)
 
     def GetValeur(self):
@@ -1025,7 +1025,7 @@ class MyFrame(wx.Frame):
         sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
         self.SetSizer(sizer_1)
 
-        # Contrï¿œles
+        # Contrôles
         self.ctrl = CTRL(panel, IDmodele=5)
         self.ctrl.MAJ(date_debut = datetime.date(2016, 1, 1), date_fin=datetime.date(2017, 1, 31))
 

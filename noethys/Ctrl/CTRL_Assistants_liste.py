@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #-----------------------------------------------------------
-# Application :    Noethys, gestion multi-activitï¿œs
+# Application :    Noethys, gestion multi-activités
 # Site internet :  www.noethys.com
 # Auteur:          Ivan LUCAS
 # Copyright:       (c) 2010-18 Ivan LUCAS
@@ -28,23 +28,23 @@ from Ctrl import CTRL_Assistant_sorties
 
 
 LISTE_ASSISTANTS = [
-    {"code": "nouveau", "image": "Generation.png", "nom": _(u"Crï¿œer une nouvelle activitï¿œ"),
-     "description": _(u"Personnalisez votre nouvelle activitï¿œ de A ï¿œ Z")},
+    {"code": "nouveau", "image": "Generation.png", "nom": _(u"Créer une nouvelle activité"),
+     "description": _(u"Personnalisez votre nouvelle activité de A à Z")},
 
-    {"code": "annuelle", "image": "Basket.png", "nom": _(u"Une activitï¿œ culturelle ou sportive annuelle"),
-     "description": _(u"Assistant pour crï¿œer une activitï¿œ annuelle : club de gym, danse, couture, etc...")},
+    {"code": "annuelle", "image": "Basket.png", "nom": _(u"Une activité culturelle ou sportive annuelle"),
+     "description": _(u"Assistant pour créer une activité annuelle : club de gym, danse, couture, etc...")},
 
-    {"code": "sejour", "image": "Camping.png", "nom": _(u"Un sï¿œjour"),
-     "description": _(u"Assistant pour crï¿œer un sï¿œjour, un camp, un mini-camp...")},
+    {"code": "sejour", "image": "Camping.png", "nom": _(u"Un séjour"),
+     "description": _(u"Assistant pour créer un séjour, un camp, un mini-camp...")},
 
     {"code": "stage", "image": "Guitare.png", "nom": _(u"Un stage"),
-     "description": _(u"Assistant pour crï¿œer un stage de thï¿œï¿œtre, de danse, de guitare, etc...")},
+     "description": _(u"Assistant pour créer un stage de théâtre, de danse, de guitare, etc...")},
 
     {"code": "cantine", "image": "Repas.png", "nom": _(u"Une cantine"),
-     "description": _(u"Assistant pour crï¿œer une cantine avec un ou plusieurs services")},
+     "description": _(u"Assistant pour créer une cantine avec un ou plusieurs services")},
 
     {"code": "sorties", "image": "Bus.png", "nom": _(u"Des sorties familiales"),
-     "description": _(u"Assistant pour crï¿œer une activitï¿œ de gestion de sorties familiales...")},
+     "description": _(u"Assistant pour créer une activité de gestion de sorties familiales...")},
 
 ]
 
@@ -119,7 +119,7 @@ class CTRL(ULC.UltimateListCtrl):
         self.Remplissage()
 
     def Remplissage(self):
-        """ Remplissage du contrï¿œle """
+        """ Remplissage du contrôle """
         self.ClearAll()
         self.InsertColumn(0, "Column 1") 
 
