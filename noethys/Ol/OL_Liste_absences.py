@@ -199,7 +199,7 @@ class ListView(FastObjectListView):
             dlg.Destroy()
             return
         intro = self.labelParametres
-        total = _(u"> %d individus") % len(self.donnees)
+        total = _(u"> %d individus") % len(self.GetFilteredObjects())
         from Utils import UTILS_Printer
         prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des absences"), intro=intro, total=total, format="A", orientation=wx.PORTRAIT)
         if mode == "preview" :

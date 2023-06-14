@@ -151,6 +151,7 @@ VALEURS_DEFAUT = {
     "factures_prefacturation" : True,
     "factures_afficher_solde_total" : True,
     "factures_afficher_solde_detail" : True,
+    "factures_afficher_solde_famille" : False,
     "reglements_afficher" : True,
     "reglements_intro" : _(u"Vous pouvez consulter ici la liste des règlements et demander des reçus."),
     "reglements_selection" : 0,
@@ -989,6 +990,12 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
+        # Afficher le solde de la famille
+        nom = "factures_afficher_solde_famille"
+        propriete = wxpg.BoolProperty(label=_(u"Afficher le solde de la famille"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Cochez cette case pour afficher le solde total de la famille"))
+        propriete.SetAttribute("UseCheckbox", True)
+        self.Append(propriete)
 
         # Catégorie
         self.Append( wxpg.PropertyCategory(_(u"Page 'Règlements'")) )

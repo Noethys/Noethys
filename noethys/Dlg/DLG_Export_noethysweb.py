@@ -35,6 +35,7 @@ class CTRL_Options(wx.CheckListBox):
             ("inscriptions", _(u"Inscriptions")),
             ("consommations", _(u"Consommations et prestations")),
             ("facturation", _(u"Facturation : factures, attestations, devis...")),
+            ("transports", _(u"Transports")),
         ]
         self.MAJ()
 
@@ -90,7 +91,7 @@ class Dialog(wx.Dialog):
         # Options
         self.box_options_staticbox = wx.StaticBox(self, -1, _(u"Données à transférer"))
         self.ctrl_options = CTRL_Options(self)
-        self.ctrl_options.SetMinSize((-1, 140))
+        self.ctrl_options.SetMinSize((-1, 160))
 
         # CTRL Editeur d'Emails pour récupérer la version HTML d'un texte XML
         self.ctrl_editeur = CTRL_Editeur_email.CTRL(self)
@@ -209,18 +210,19 @@ class Dialog(wx.Dialog):
         # Mot de passe
         motdepasse = self.ctrl_mdp.GetValue()
         confirmation = self.ctrl_confirmation.GetValue()
-        if not motdepasse:
-            dlg = wx.MessageDialog(self, _(u"Vous devez saisir un mot de passe !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
-            dlg.ShowModal()
-            dlg.Destroy()
-            self.ctrl_mdp.SetFocus()
-            return False
+        # if not motdepasse:
+        #     dlg = wx.MessageDialog(self, _(u"Vous devez saisir un mot de passe !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+        #     dlg.ShowModal()
+        #     dlg.Destroy()
+        #     self.ctrl_mdp.SetFocus()
+        #     return False
         if motdepasse != confirmation:
             dlg = wx.MessageDialog(self, _(u"Le mot de passe n'a pas été confirmé à l'identique !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_confirmation.SetFocus()
             return False
+
         # if six.PY3:
         #     motdepasse = six.binary_type(motdepasse, "utf-8")
         # motdepasse = base64.b64encode(motdepasse)

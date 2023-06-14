@@ -10,18 +10,15 @@
 
 
 import Chemins
+import datetime
+import GestionDB
 from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
 from Ctrl import CTRL_Bouton_image
-import datetime
-
-import GestionDB
 from Ctrl import CTRL_Bandeau
-from Ctrl import CTRL_CheckListBox
-from Ol import OL_Liste_inscriptions
-from Dlg import DLG_Selection_activite
-
+from Ol import OL_Liste_detaillee_inscriptions
+from Ctrl import CTRL_Selection_activites
 
 
 class CTRL_Regroupement(wx.Choice):
@@ -36,11 +33,6 @@ class CTRL_Regroupement(wx.Choice):
         for colonne in self.listview.columns :
             if colonne.visible == True :
                 self.listeLabels.append(colonne.title)
-
-        # listeChamps = self.listview.GetListeChamps()
-        # for dictTemp in listeChamps :
-        #     if dictTemp["afficher"] == True :
-        #         self.listeLabels.append(dictTemp["label"])
 
         self.SetItems(self.listeLabels)
         self.Select(0)
@@ -59,22 +51,15 @@ class Parametres(wx.Panel):
         wx.Panel.__init__(self, parent, id=-1, name="panel_parametres", style=wx.TAB_TRAVERSAL)
         self.parent = parent
         self.listview = listview
-        
-        # Activité
-        self.box_activite_staticbox = wx.StaticBox(self, -1, _(u"Activité"))
-        self.ctrl_activite = DLG_Selection_activite.Panel_Activite(self, callback=self.OnSelectionActivite)
+
+        # Activités
+        self.staticbox_activites_staticbox = wx.StaticBox(self, -1, _(u"Activités"))
+        self.ctrl_activites = CTRL_Selection_activites.CTRL(self)
+        self.ctrl_activites.SetMinSize((-1, 90))
 
         self.check_partis = wx.CheckBox(self, -1, _(u"Afficher les individus partis"))
         self.check_partis.SetFont(wx.Font(8, wx.SWISS, wx.NORMAL, wx.NORMAL))
 
-        # Groupes
-        self.box_groupes_staticbox = wx.StaticBox(self, -1, _(u"Groupes"))
-        self.ctrl_groupes = CTRL_CheckListBox.Panel(self)
-        
-        # Catégories
-        self.box_categories_staticbox = wx.StaticBox(self, -1, _(u"Catégories"))
-        self.ctrl_categories = CTRL_CheckListBox.Panel(self)
-        
         # Regroupement
         self.box_regroupement_staticbox = wx.StaticBox(self, -1, _(u"Regroupement"))
         self.ctrl_regroupement = CTRL_Regroupement(self, listview=listview)
@@ -91,8 +76,6 @@ class Parametres(wx.Panel):
 
     def __set_properties(self):
         self.check_partis.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour inclure dans la liste des individus partis")))
-        self.ctrl_groupes.SetToolTip(wx.ToolTip(_(u"Cochez les groupes à afficher")))
-        self.ctrl_categories.SetToolTip(wx.ToolTip(_(u"Cochez les catégories à afficher")))
         self.ctrl_regroupement.SetToolTip(wx.ToolTip(_(u"Sélectionnez un regroupement")))
         self.bouton_actualiser.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour actualiser la liste")))
 
@@ -100,21 +83,11 @@ class Parametres(wx.Panel):
         grid_sizer_base = wx.FlexGridSizer(rows=6, cols=1, vgap=5, hgap=5)
         
         # Activité
-        box_activite = wx.StaticBoxSizer(self.box_activite_staticbox, wx.VERTICAL)
-        box_activite.Add(self.ctrl_activite, 1, wx.ALL|wx.EXPAND, 5)
+        box_activite = wx.StaticBoxSizer(self.staticbox_activites_staticbox, wx.VERTICAL)
+        box_activite.Add(self.ctrl_activites, 1, wx.ALL|wx.EXPAND, 5)
         box_activite.Add(self.check_partis, 0, wx.LEFT|wx.RIGHT|wx.BOTTOM|wx.EXPAND, 5)
         grid_sizer_base.Add(box_activite, 1, wx.EXPAND, 0)
-        
-        # Groupes
-        box_groupes = wx.StaticBoxSizer(self.box_groupes_staticbox, wx.VERTICAL)
-        box_groupes.Add(self.ctrl_groupes, 1, wx.ALL|wx.EXPAND, 5)
-        grid_sizer_base.Add(box_groupes, 1, wx.EXPAND, 0)
-        
-        # Catégories
-        box_categories = wx.StaticBoxSizer(self.box_categories_staticbox, wx.VERTICAL)
-        box_categories.Add(self.ctrl_categories, 1, wx.ALL|wx.EXPAND, 5)
-        grid_sizer_base.Add(box_categories, 1, wx.EXPAND, 0)
-        
+
         # Regroupement
         box_regroupement = wx.StaticBoxSizer(self.box_regroupement_staticbox, wx.VERTICAL)
         box_regroupement.Add(self.ctrl_regroupement, 0, wx.ALL|wx.EXPAND, 5)
@@ -124,102 +97,29 @@ class Parametres(wx.Panel):
         
         self.SetSizer(grid_sizer_base)
         grid_sizer_base.Fit(self)
-        grid_sizer_base.AddGrowableRow(1)
-        grid_sizer_base.AddGrowableRow(2)
+        grid_sizer_base.AddGrowableRow(0)
         grid_sizer_base.AddGrowableCol(0)
 
     def OnSelectionActivite(self):
         self.MAJ_Groupes()
         self.MAJ_Categories()
 
-    def MAJ_Groupes(self):
-        DB = GestionDB.DB()
-        req = """SELECT IDgroupe, IDactivite, nom
-        FROM groupes
-        WHERE IDactivite=%d
-        ORDER BY ordre;""" % self.ctrl_activite.GetID()
-        DB.ExecuterReq(req)
-        listeGroupes = DB.ResultatReq()
-        DB.Close()
-
-        # Formatage des données
-        listeDonnees = []
-        for IDgroupe, IDactivite, nom in listeGroupes:
-            dictTemp = {"ID": IDgroupe, "label": nom, "IDactivite": IDactivite}
-            listeDonnees.append(dictTemp)
-
-        # Envoi des données à la liste
-        self.ctrl_groupes.SetDonnees(listeDonnees, cocher=True)
-
-    def MAJ_Categories(self):
-        DB = GestionDB.DB()
-        req = """SELECT IDcategorie_tarif, IDactivite, nom
-        FROM categories_tarifs
-        WHERE IDactivite=%d
-        ORDER BY nom;""" % self.ctrl_activite.GetID()
-        DB.ExecuterReq(req)
-        listeCategories = DB.ResultatReq()
-        DB.Close()
-
-        # Formatage des données
-        listeDonnees = []
-        for IDcategorie_tarif, IDactivite, nom in listeCategories:
-            dictTemp = {"ID": IDcategorie_tarif, "label": nom, "IDactivite": IDactivite}
-            listeDonnees.append(dictTemp)
-
-        # Envoi des données à la liste
-        self.ctrl_categories.SetDonnees(listeDonnees, cocher=True)
-
-    def OnChoixRegroupement(self, event): 
+    def OnChoixRegroupement(self, event):
         pass
 
     def OnBoutonActualiser(self, event): 
         # Récupération des paramètres
-        IDactivite = self.ctrl_activite.GetID()
-        partis = self.check_partis.GetValue() 
-        listeGroupes = self.ctrl_groupes.GetIDcoches()
-        listeCategories = self.ctrl_categories.GetIDcoches()
+        partis = self.check_partis.GetValue()
         regroupement = self.ctrl_regroupement.GetRegroupement()
-
-        # Vérifications
-        if IDactivite == None :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune activité !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+        listeActivites = self.ctrl_activites.GetActivites()
+        if len(listeActivites) == 0 :
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune activité !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
 
-        if len(listeGroupes) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous devez sélectionner au moins un groupe !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
-            dlg.ShowModal()
-            dlg.Destroy()
-            return False
-
-        if len(listeCategories) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous devez sélectionner au moins une catégorie !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
-            dlg.ShowModal()
-            dlg.Destroy()
-            return False
-
-        labelParametres = self.GetLabelParametres() 
-        
         # MAJ du listview
-        self.parent.ctrl_listview.MAJ(IDactivite=IDactivite, partis=partis, listeGroupes=listeGroupes, listeCategories=listeCategories, 
-                                                    regroupement=regroupement, labelParametres=labelParametres)
-
-    def GetLabelParametres(self):
-        listeParametres = []
-        
-        activite = self.ctrl_activite.GetNomActivite()
-        listeParametres.append(_(u"Activité : %s") % activite)
-
-        groupes = self.ctrl_groupes.GetLabelsCoches()
-        listeParametres.append(_(u"Groupes : %s") % groupes)
-
-        categories = self.ctrl_categories.GetLabelsCoches()
-        listeParametres.append(_(u"Catégories : %s") % categories)
-
-        labelParametres = " | ".join(listeParametres)
-        return labelParametres
+        self.parent.ctrl_listview.MAJ(listeActivites=listeActivites, partis=partis, regroupement=regroupement)
 
 
 # --------------------------------------------------------------------------------------------------------------------------------------------------
@@ -229,14 +129,14 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         
-        intro = _(u"Vous pouvez ici consulter et imprimer la liste des inscriptions. Commencez par sélectionner une activité avant de cliquer sur le bouton 'Rafraîchir la liste' pour afficher les résultats. Vous pouvez également regrouper les données par type d'informations et sélectionner les colonnes à afficher. Les données peuvent être ensuite imprimées ou exportées au format Texte ou Excel.")
-        titre = _(u"Liste des inscriptions à une activité")
+        intro = _(u"Vous pouvez ici consulter et imprimer la liste des inscriptions. Commencez par sélectionner une ou plusieurs activités avant de cliquer sur le bouton 'Rafraîchir la liste' pour afficher les résultats. Vous pouvez également regrouper les données par type d'informations et sélectionner les colonnes à afficher. Les données peuvent être ensuite imprimées ou exportées au format Texte ou Excel.")
+        titre = _(u"Liste des inscriptions")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Activite.png")
 
-        self.listviewAvecFooter = OL_Liste_inscriptions.ListviewAvecFooter(self, kwargs={})
+        self.listviewAvecFooter = OL_Liste_detaillee_inscriptions.ListviewAvecFooter(self, kwargs={})
         self.ctrl_listview = self.listviewAvecFooter.GetListview()
-        self.ctrl_recherche = OL_Liste_inscriptions.CTRL_Outils(self, listview=self.ctrl_listview)
+        self.ctrl_recherche = OL_Liste_detaillee_inscriptions.CTRL_Outils(self, listview=self.ctrl_listview)
         self.ctrl_parametres = Parametres(self, listview=self.ctrl_listview)
         self.ctrl_listview.ctrl_regroupement = self.ctrl_parametres.ctrl_regroupement
 

@@ -1,3 +1,28 @@
+Version 1.3.2.4 (11/06/2023) :
+
+- Corrections de petits bugs
+
+Version 1.3.2.3 (03/06/2023) :
+
+- Ajout des questionnaires à la liste détaillée des consommations
+- Ajout de la liste détaillée des inscriptions
+- Ajout de la désinscription par lot
+- Correction GetFilteredObjects dans total impression
+- Correction du tri dans le ctrl de sélection des activités
+
+Version 1.3.2.2 (29/05/2023) :
+
+- Ajout du solde du compte famille dans Connecthys
+
+Version 1.3.2.1 (19/04/2023) :
+
+- Ajout des transports dans l'export Noethysweb
+
+Version 1.3.2.0 (06/04/2023) :
+
+- Ajout du téléchargement d'une pièce au format image
+- Correction du prélèvement dans l'export Corail
+
 Version 1.3.1.9 (05/03/2023) :
 
 - Ajout du filtre de liste spécial Cotisations

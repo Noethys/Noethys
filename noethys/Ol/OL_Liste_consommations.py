@@ -20,10 +20,9 @@ from Utils import UTILS_Gestion
 from Utils import UTILS_Config
 from Utils import UTILS_Titulaires
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
-from Utils import UTILS_Interface, UTILS_Dates
+from Utils import UTILS_Interface, UTILS_Dates, UTILS_Questionnaires
 from Ctrl.CTRL_ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils, PanelAvecFooter
 from Utils.UTILS_Decimal import FloatToDecimal as FloatToDecimal
-
 
         
 class Track(object):
@@ -47,6 +46,7 @@ class Track(object):
         self.IDprestation = donnees[15]
         self.label_prestation = donnees[16]
         self.montant_prestation = donnees[17]
+        self.IDindividu = donnees[18]
 
         # Récupération du nom des titulaires
         try :
@@ -54,6 +54,9 @@ class Track(object):
         except :
             self.nomTitulaires = _(" ")
 
+        # Récupération des réponses des questionnaires
+        for dictQuestion in self.parent.LISTE_QUESTIONS :
+            setattr(self, "question_%d" % dictQuestion["IDquestion"], self.parent.GetReponse(dictQuestion["IDquestion"], self.IDindividu))
 
     
 class ListView(FastObjectListView):
@@ -69,6 +72,9 @@ class ListView(FastObjectListView):
         # Importation des titulaires
         self.dict_titulaires = UTILS_Titulaires.GetTitulaires()
 
+        # Importation des questionnaires
+        self.UtilsQuestionnaires = UTILS_Questionnaires.Questionnaires()
+
         # Initialisation du listCtrl
         self.nom_fichier_liste = __file__
         FastObjectListView.__init__(self, *args, **kwds)
@@ -76,6 +82,10 @@ class ListView(FastObjectListView):
         self.Bind(wx.EVT_CONTEXT_MENU, self.OnContextMenu)
 
     def InitModel(self):
+        # Récupération des questionnaires
+        self.LISTE_QUESTIONS = self.UtilsQuestionnaires.GetQuestions(type="individu")
+        self.DICT_QUESTIONNAIRES = self.UtilsQuestionnaires.GetReponses(type="individu")
+
         self.donnees = self.GetTracks()
 
     def GetTracks(self):
@@ -98,7 +108,7 @@ class ListView(FastObjectListView):
         inscriptions.IDfamille,
         consommations.heure_debut, consommations.heure_fin, consommations.forfait,
         evenements.nom,
-        consommations.IDprestation, prestations.label, prestations.montant
+        consommations.IDprestation, prestations.label, prestations.montant, individus.IDindividu
         FROM consommations
         LEFT JOIN individus ON individus.IDindividu = consommations.IDindividu
         LEFT JOIN unites ON unites.IDunite = consommations.IDunite
@@ -170,6 +180,9 @@ class ListView(FastObjectListView):
             ColumnDefn(_(u"Montant prestation"), 'left', 120, "montant_prestation", typeDonnee="montant", stringConverter=FormateMontant),
         ]
 
+        # Ajout des questions des questionnaires
+        liste_Colonnes.extend(UTILS_Questionnaires.GetColonnesForOL(self.LISTE_QUESTIONS))
+
         self.SetColumns(liste_Colonnes)
         self.SetEmptyListMsg(_(u"Aucune consommation"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
@@ -192,6 +205,12 @@ class ListView(FastObjectListView):
         self.selectionTrack = None
         if ID == None :
             self.DefileDernier() 
+
+    def GetReponse(self, IDquestion=None, ID=None):
+        if IDquestion in self.DICT_QUESTIONNAIRES :
+            if ID in self.DICT_QUESTIONNAIRES[IDquestion] :
+                return self.DICT_QUESTIONNAIRES[IDquestion][ID]
+        return u""
 
     def Selection(self):
         return self.GetSelectedObjects()

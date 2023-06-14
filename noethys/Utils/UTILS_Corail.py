@@ -12,6 +12,7 @@
 import Chemins
 from Utils.UTILS_Traduction import _
 from xml.dom.minidom import Document
+from Data import DATA_Bic
 
 
 def GetXML(dictDonnees={}):
@@ -173,10 +174,42 @@ def GetXML(dictDonnees={}):
 
         if dictPiece["prelevement"] == 1:
 
+            # Banque
+            infos_banque = DATA_Bic.RechercherBIC(dictPiece["prelevement_bic"])
+            nom_banque = infos_banque[0] if infos_banque else ""
+            Banque = doc.createElement("Banque")
+            Banque.setAttribute("V", nom_banque[:24])
+            RefBancaire.appendChild(Banque)
+
+            # BanqueEtrangere
+            BanqueEtrangere = doc.createElement("BanqueEtrangere")
+            BanqueEtrangere.setAttribute("V", "N")
+            RefBancaire.appendChild(BanqueEtrangere)
+
             # Titulaire
             Titulaire = doc.createElement("Titulaire")
             Titulaire.setAttribute("V", dictPiece["prelevement_titulaire"][:32])
             RefBancaire.appendChild(Titulaire)
+
+            # CodeBanque
+            CodeBanque = doc.createElement("CodeBanque")
+            CodeBanque.setAttribute("V", dictPiece["prelevement_iban"][4:9])
+            RefBancaire.appendChild(CodeBanque)
+
+            # CodeGuichet
+            CodeGuichet = doc.createElement("CodeGuichet")
+            CodeGuichet.setAttribute("V", dictPiece["prelevement_iban"][9:14])
+            RefBancaire.appendChild(CodeGuichet)
+
+            # NumeroCompte
+            NumeroCompte = doc.createElement("NumeroCompte")
+            NumeroCompte.setAttribute("V", dictPiece["prelevement_iban"][14:25])
+            RefBancaire.appendChild(NumeroCompte)
+
+            # CleRib
+            CleRib = doc.createElement("CleRib")
+            CleRib.setAttribute("V", dictPiece["prelevement_iban"][25:27])
+            RefBancaire.appendChild(CleRib)
 
             # IBAN
             IBAN = doc.createElement("IBAN")
@@ -372,7 +405,7 @@ def GetXML(dictDonnees={}):
             elif dictPiece["sequence"] == "RCUR": sequence = "03"
             elif dictPiece["sequence"] == "FNAL": sequence = "04"
             else: sequence = "01"
-            SequencePrelevement = doc.createElement("SequencePres")
+            SequencePrelevement = doc.createElement("SequencePrelevement")
             SequencePrelevement.setAttribute("V", sequence)
             Prelevement.appendChild(SequencePrelevement)
 
@@ -381,7 +414,7 @@ def GetXML(dictDonnees={}):
             RUM.setAttribute("V", dictPiece["prelevement_rum"])
             Prelevement.appendChild(RUM)
 
-            # RUM
+            # DateRUM
             DateRUM = doc.createElement("DateRUM")
             DateRUM.setAttribute("V", dictPiece["prelevement_date_mandat"])
             Prelevement.appendChild(DateRUM)
@@ -390,6 +423,36 @@ def GetXML(dictDonnees={}):
             LibPrelevement = doc.createElement("LibPrelevement")
             LibPrelevement.setAttribute("V", dictPiece["prelevement_libelle"][:140])
             Prelevement.appendChild(LibPrelevement)
+
+            # AncienRUM
+            AncienRUM = doc.createElement("AncienRUM")
+            AncienRUM.setAttribute("V", "")
+            Prelevement.appendChild(AncienRUM)
+
+            # AncienICS
+            AncienICS = doc.createElement("AncienICS")
+            AncienICS.setAttribute("V", "")
+            Prelevement.appendChild(AncienICS)
+
+            # AncienCreancier
+            AncienCreancier = doc.createElement("AncienCreancier")
+            AncienCreancier.setAttribute("V", "")
+            Prelevement.appendChild(AncienCreancier)
+
+            # ChangementBanque
+            ChangementBanque = doc.createElement("ChangementBanque")
+            ChangementBanque.setAttribute("V", "N")
+            Prelevement.appendChild(ChangementBanque)
+
+            # AncienIBAN
+            AncienIBAN = doc.createElement("AncienIBAN")
+            AncienIBAN.setAttribute("V", "")
+            Prelevement.appendChild(AncienIBAN)
+
+            # TitulaireDifferent
+            TitulaireDifferent = doc.createElement("TitulaireDifferent")
+            TitulaireDifferent.setAttribute("V", "N")
+            Prelevement.appendChild(TitulaireDifferent)
 
         # LignePiece
         LignePiece = doc.createElement("LignePiece")

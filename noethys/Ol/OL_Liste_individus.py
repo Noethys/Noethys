@@ -330,7 +330,7 @@ class ListView(FastObjectListView):
         dictParametres = {
             "titre" : _(u"Liste des individus"),
             "intro" : self.labelParametres,
-            "total" : _(u"> %s individus") % len(self.donnees),
+            "total" : _(u"> %s individus") % len(self.GetFilteredObjects()),
             "orientation" : wx.PORTRAIT,
             }
         return dictParametres

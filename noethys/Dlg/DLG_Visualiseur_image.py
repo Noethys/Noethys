@@ -13,12 +13,13 @@ import Chemins
 from Utils import UTILS_Adaptations
 from Utils.UTILS_Traduction import _
 import wx
-from Ctrl import CTRL_Bouton_image
+from PIL import Image
 
 ID_EXIT = 98
 ID_UNDO = 99
 ID_PLUS = 100
 ID_MOINS = 101
+ID_SAVE = 102
 
 phrase1 = _(u"Ramener l'image � sa taille d'origine")
 phrase2 = _(u"Op�ration interdite")
@@ -36,14 +37,14 @@ def pil2wx(image):
     imagewx.SetData(image.tobytes('raw', 'RGB'))
     return imagewx
 
-##def pil2wx(image):
-##    """Convert a PIL image to wx image format"""
-##    largeur, hauteur = image.size
-##    imagewx = wx.EmptyImage(largeur, hauteur)
-##    imagewx.SetData(image.tobytes('raw', 'RGB'))
-##    imagewx.SetAlphaData(image.convert("RGBA").tobytes()[3::4])
-##    return imagewx        
-
+def wxtopil(image):
+    """Convert wx.Image to PIL Image."""
+    data = image.GetData()
+    if 'phoenix' in wx.PlatformInfo:
+        data = bytes(data)
+    pil = Image.new('RGB', (image.GetWidth(), image.GetHeight()))
+    pil.frombytes(data)
+    return pil
 
 
 class Visu(wx.ScrolledWindow):
@@ -74,7 +75,9 @@ class Visu(wx.ScrolledWindow):
 class MyFrame(wx.Frame):
     def __init__(self, parent, imgPIL=None, imgWX=None):
         wx.Frame.__init__(self, parent, -1, size = (800, 600))
-        
+        self.image_pil_originale = imgPIL
+        self.image_wx_originale = imgWX
+
         if 'phoenix' in wx.PlatformInfo:
             _icon = wx.Icon()
         else :
@@ -90,24 +93,6 @@ class MyFrame(wx.Frame):
         self.ratio = 100
         self.inc = 5
 
-##        menuFichier = UTILS_Adaptations.Menu()
-##        menuFichier.Append(wx.ID_OPEN, "&Ouvrir\tCTRL+o", "Ouvrir un fichier image")
-##        menuFichier.Append(wx.ID_CLOSE, "&Fermer\tCTRL+f", "Fermer le fichier ouvert")
-##        menuFichier.AppendSeparator()
-##        menuFichier.Append(wx.ID_EXIT, "&Quitter\tCTRL+q", "Quitter l'application")
-##
-##        menuAfficher = wx.Menu(style = wx.MENU_TEAROFF)
-##        menuAfficher.Append(wx.ID_UNDO,
-##                    "&Taille d'origine\tCTRL+t",
-##                    phrase1)
-##        menuAfficher.Append(ID_PLUS, "&Agrandir\tCTRL+a", "Agrandir l'image")
-##        menuAfficher.Append(ID_MOINS, "&Diminuer\tCTRL+a", "Diminuer l'image")
-##
-##        menuBarre = wx.MenuBar()
-##        menuBarre.Append(menuFichier, "&Fichier")
-##        menuBarre.Append(menuAfficher, "&Afficher")
-##        self.SetMenuBar(menuBarre)
-
         self.barre = wx.StatusBar(self, -1)
         self.barre.SetFieldsCount(2)
         self.barre.SetStatusWidths([-1, -1])
@@ -118,6 +103,7 @@ class MyFrame(wx.Frame):
         outils.AddLabelTool(ID_PLUS, _(u"Agrandir"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/zoom_plus.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Agrandir"), "")
         outils.AddLabelTool(ID_UNDO, _(u"Taille originale"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/zoom_init.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Taille originale"), "")
         outils.AddLabelTool(ID_MOINS, _(u"Diminuer"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/zoom_moins.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Diminuer"), "")
+        outils.AddLabelTool(ID_SAVE, _(u"T�l�charger"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Telecharger.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"T�l�charger"), "")
         outils.Realize()
         self.SetToolBar(outils)
 
@@ -130,6 +116,7 @@ class MyFrame(wx.Frame):
         self.Bind(wx.EVT_MENU, self.Retour, id=ID_UNDO)
         self.Bind(wx.EVT_MENU, self.Plus, id=ID_PLUS)
         self.Bind(wx.EVT_MENU, self.Moins, id=ID_MOINS)
+        self.Bind(wx.EVT_MENU, self.Save, id=ID_SAVE)
         
         self.CenterOnScreen() 
         
@@ -164,6 +151,21 @@ class MyFrame(wx.Frame):
             self.panneau.Affiche(self.bmpRESU, self.ratio)
             self.barre.SetStatusText("(%s, %s) %s %%"%(self.imgORIX, self.imgORIY, self.ratio), 1)
 
+    def Save(self, evt):
+        standardPath = wx.StandardPaths.Get()
+        save_destination = standardPath.GetDocumentsDir()
+        dlg = wx.FileDialog(self, message=_(u"T�l�charger l'image sous..."), defaultDir=save_destination, defaultFile="image.jpg", wildcard=_(u"Image JPG (*.jpg)|*.jpg"), style=wx.FD_SAVE)
+        if dlg.ShowModal() == wx.ID_OK:
+            path = dlg.GetPath()
+            if self.image_pil_originale:
+                self.image_pil_originale.convert('RGB').save(path, format="JPEG", quality=95)
+            if self.image_wx_originale:
+                wxtopil(self.image_wx_originale.convert('RGB')).save(path, format="JPEG", quality=95)
+            message = _(u"L'image a �t� t�l�charg�e avec succ�s")
+            dlg = wx.MessageDialog(self, message, _(u"T�l�chargement"), wx.OK | wx.ICON_INFORMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+
     def OnOpen(self, evt):
         if self.imgORIG != None :
             dlg = wx.MessageDialog(self, _(u"Vous devez d'abord fermer l'image en cours d'utilisation"),
@@ -185,7 +187,7 @@ class MyFrame(wx.Frame):
                 self.bmpRESU = self.imgORIG.ConvertToBitmap()
                 self.panneau.Affiche(self.bmpRESU, self.ratio)
                 self.SetTitle(_(u"Aper�u d'image [%s]")% fichier)
-                self.barre.SetStatusText("(%s, %s) %s %%"%(self.imgORIX, self.imgORIY, self.ratio), 1)
+                self.barre.SetStatusText("(%s, %s) %s %%" %(self.imgORIX, self.imgORIY, self.ratio), 1)
     
     def ChargeImagePIL(self, imgPIL=None):
         img = pil2wx(imgPIL)
@@ -194,7 +196,7 @@ class MyFrame(wx.Frame):
         self.imgORIY = self.imgORIG.GetHeight()
         self.bmpRESU = self.imgORIG.ConvertToBitmap()
         self.panneau.Affiche(self.bmpRESU, self.ratio)
-        self.barre.SetStatusText("(%s, %s) %s %%"%(self.imgORIX, self.imgORIY, self.ratio), 1)
+        self.barre.SetStatusText("(%s, %s) %s %%" %(self.imgORIX, self.imgORIY, self.ratio), 1)
 
     def ChargeImageWX(self, imgWX=None):
         self.imgORIG = imgWX
@@ -202,7 +204,7 @@ class MyFrame(wx.Frame):
         self.imgORIY = self.imgORIG.GetHeight()
         self.bmpRESU = self.imgORIG.ConvertToBitmap()
         self.panneau.Affiche(self.bmpRESU, self.ratio)
-        self.barre.SetStatusText("(%s, %s) %s %%"%(self.imgORIX, self.imgORIY, self.ratio), 1)
+        self.barre.SetStatusText("(%s, %s) %s %%" %(self.imgORIX, self.imgORIY, self.ratio), 1)
 
     def OnClose(self, evt):
         if self.imgORIG != None :

@@ -135,7 +135,7 @@ class ListView(FastObjectListView):
             dlg.ShowModal()
             dlg.Destroy()
             return
-        total = _(u"> %d lignes") % len(self.donnees)
+        total = _(u"> %d lignes") % len(self.GetFilteredObjects())
         from Utils import UTILS_Printer
         prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste personnalisée"), intro=total, total=total, format="A", orientation=wx.PORTRAIT)
         if mode == "preview" :

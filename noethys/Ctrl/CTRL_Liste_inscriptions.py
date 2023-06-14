@@ -22,12 +22,12 @@ from Utils import UTILS_Utilisateurs
 
 
 class CTRL(wx.Panel):
-    def __init__(self, parent, filtres=[]):
+    def __init__(self, parent, filtres=[], nomListe="OL_Liste_inscriptions"):
         wx.Panel.__init__(self, parent, id=-1, name="CTRL_Liste_inscriptions", style=wx.TAB_TRAVERSAL)
         self.parent = parent
         
         # Liste des locations
-        self.listviewAvecFooter = OL_Liste_inscriptions.ListviewAvecFooter(self, kwargs={"checkColonne" : True})
+        self.listviewAvecFooter = OL_Liste_inscriptions.ListviewAvecFooter(self, kwargs={"checkColonne" : True, "nomListe": nomListe})
         self.ctrl_inscriptions = self.listviewAvecFooter.GetListview()
 
         # Commandes de liste

@@ -551,6 +551,7 @@ class Synchro():
         session.add(models.Parametre(nom="FACTURES_DEMANDE_FACTURE", parametre=str(self.dict_parametres["factures_demande_facture"])))
         session.add(models.Parametre(nom="FACTURES_PREFACTURATION", parametre=str(self.dict_parametres["factures_prefacturation"])))
         session.add(models.Parametre(nom="FACTURES_AFFICHER_SOLDE_TOTAL", parametre=str(self.dict_parametres["factures_afficher_solde_total"])))
+        session.add(models.Parametre(nom="FACTURES_AFFICHER_SOLDE_FAMILLE", parametre=str(self.dict_parametres["factures_afficher_solde_famille"])))
         session.add(models.Parametre(nom="FACTURES_AFFICHER_SOLDE_DETAIL", parametre=str(self.dict_parametres["factures_afficher_solde_detail"])))
         session.add(models.Parametre(nom="REGLEMENTS_AFFICHER", parametre=str(self.dict_parametres["reglements_afficher"])))
         session.add(models.Parametre(nom="REGLEMENTS_INTRO", parametre=self.dict_parametres["reglements_intro"]))
@@ -577,6 +578,21 @@ class Synchro():
         session.add(models.Parametre(nom="MENTIONS_AFFICHER", parametre=str(self.dict_parametres["mentions_afficher"])))
         session.add(models.Parametre(nom="AIDE_AFFICHER", parametre=str(self.dict_parametres["aide_afficher"])))
 
+        # Calcule des soldes des familles
+        dictPrestations = {}
+        dictReglements = {}
+        if self.dict_parametres["factures_afficher_solde_famille"]:
+            req = """SELECT IDfamille, SUM(montant) AS total_prestations FROM prestations GROUP BY IDfamille;"""
+            DB.ExecuterReq(req)
+            for IDfamille, total_prestations in DB.ResultatReq():
+                dictPrestations[IDfamille] = total_prestations
+
+            req = """SELECT IDfamille, SUM(montant) AS total_reglements FROM reglements 
+            LEFT JOIN comptes_payeurs ON comptes_payeurs.IDcompte_payeur = reglements.IDcompte_payeur
+            GROUP BY IDfamille;"""
+            DB.ExecuterReq(req)
+            for IDfamille, total_reglements in DB.ResultatReq():
+                dictReglements[IDfamille] = total_reglements
 
         # Recherche des adresses emails des familles
         req = """SELECT rattachements.IDindividu, rattachements.IDfamille, mail
@@ -652,10 +668,13 @@ class Synchro():
                     # Autre paramètres
                     liste_parametres = []
                     if profil == "famille":
+                        # Prélèvement auto
                         prelevement_auto = dictDonnee.get("prelevement_activation", 0)
                         if not prelevement_auto:
                             prelevement_auto = 0
                         liste_parametres.append("prelevement_auto==%d" % prelevement_auto)
+                        # Solde de la famille
+                        liste_parametres.append("solde==%s" % (dictReglements.get(IDfamille, 0.0) - dictPrestations.get(IDfamille, 0.0)))
                     parametres = "##".join(liste_parametres)
 
                     # Si famille archivée ou effacée

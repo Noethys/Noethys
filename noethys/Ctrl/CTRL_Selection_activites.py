@@ -314,7 +314,7 @@ class CTRL_Activites(wx.CheckListBox):
         DB = GestionDB.DB()
         req = """SELECT IDactivite, nom
         FROM activites
-        ORDER BY date_fin DESC
+        ORDER BY date_fin DESC, nom ASC
         ;"""
         DB.ExecuterReq(req)
         listeActivites = DB.ResultatReq()      

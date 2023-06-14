@@ -17,7 +17,7 @@ from Ctrl import CTRL_Bouton_image
 import os
 
 import GestionDB
-
+from Dlg import DLG_Messagebox
 from Ctrl import CTRL_Bandeau
 from Ctrl import CTRL_Liste_rappels
 from Ctrl import CTRL_Rappels_options
@@ -181,14 +181,14 @@ class Dialog(wx.Dialog):
         
         # Annonce les anomalies trouvées
         if len(listeAnomalies) > 0 :
-            texte = _(u"%d des familles sélectionnées n'ont pas d'adresse Email :\n\n") % len(listeAnomalies)
-            texte += _(u"Souhaitez-vous quand même continuer avec les %d autres familles ?") % len(listeDonnees)
-            dlg = wx.MessageDialog(self, texte, _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
-            reponse = dlg.ShowModal() 
+            dlg = DLG_Messagebox.Dialog(self, titre=_(u"Avertissement"), introduction=u"%d des familles sélectionnées n'ont pas d'adresse Email :" % len(listeAnomalies),
+                                        detail=u"".join([u"- %s\n" % nom for nom in listeAnomalies]), conclusion=u"Souhaitez-vous quand même continuer avec les %d autres familles ?" % len(listeDonnees),
+                                        icone=wx.ICON_WARNING, boutons=[_(u"Oui"), _(u"Non"), _(u"Annuler")])
+            reponse = dlg.ShowModal()
             dlg.Destroy()
-            if reponse != wx.ID_YES :
+            if reponse != 0:
                 SupprimerFichiersTemp()
-                return        
+                return False
 
         # Annonce les envois non demandés
         if len(listeEnvoiNonDemande) > 0 :

@@ -912,8 +912,10 @@ class MainFrame(wx.Frame):
             {"code" : "menu_individus", "label" : _(u"Individus"), "items" : [
                     {"code" : "scolarite", "label" : _(u"Inscriptions scolaires"), "infobulle" : _(u"Inscriptions scolaires"), "image" : "Images/16x16/Classe.png", "action" : self.On_individus_scolarite},
                     "-",
-                    {"code" : "liste_inscriptions", "label" : _(u"Liste des inscriptions"), "infobulle" : _(u"Editer une liste des inscriptions"), "image" : "Images/16x16/Activite.png", "action" : self.On_individus_inscriptions},
+                    {"code" : "liste_inscriptions_detaillees", "label" : _(u"Liste des inscriptions"), "infobulle" : _(u"Editer une liste des inscriptions"), "image" : "Images/16x16/Activite.png", "action" : self.On_individus_inscriptions_detaillees},
+                    {"code" : "liste_inscriptions", "label" : _(u"Liste des inscriptions à une activité"), "infobulle" : _(u"Editer la liste des inscriptions à une activité"), "image" : "Images/16x16/Activite.png", "action" : self.On_individus_inscriptions},
                     {"code" : "saisir_lot_inscriptions", "label" : _(u"Saisir un lot d'inscriptions"), "infobulle" : _(u"Saisir un lot d'inscriptions"), "image" : "Images/16x16/Activite.png", "action" : self.On_individus_saisir_lot_inscriptions},
+                    {"code" : "desinscrire_individus", "label" : _(u"Désinscrire des individus"), "infobulle" : _(u"Désinscrire des individus par lot"), "image" : "Images/16x16/Activite.png", "action" : self.On_individus_desinscrire},
                     {"code": "inscription_attente", "label": _(u"Liste des inscriptions en attente"), "infobulle": _(u"Inscriptions en attente"), "image": "Images/16x16/Liste_attente.png", "action": self.On_inscriptions_attente},
                     {"code": "inscription_refus", "label": _(u"Liste des inscriptions refusées"), "infobulle": _(u"Inscriptions refusées"), "image": "Images/16x16/Places_refus.png", "action": self.On_inscriptions_refus},
                     {"code" : "inscriptions_email", "label": _(u"Transmettre des inscriptions par Email"), "infobulle": _(u"Transmettre des inscriptions par Email"), "image": "Images/16x16/Emails_exp.png", "action": self.On_inscriptions_email},
@@ -3374,10 +3376,22 @@ class MainFrame(wx.Frame):
         dlg.ShowModal() 
         dlg.Destroy()
 
+    def On_individus_inscriptions_detaillees(self, event):
+        from Dlg import DLG_Liste_detaillee_inscriptions
+        dlg = DLG_Liste_detaillee_inscriptions.Dialog(self)
+        dlg.ShowModal()
+        dlg.Destroy()
+
     def On_individus_saisir_lot_inscriptions(self, event):
         from Dlg import DLG_Saisie_lot_inscriptions
         dlg = DLG_Saisie_lot_inscriptions.Dialog(self)
         dlg.ShowModal() 
+        dlg.Destroy()
+
+    def On_individus_desinscrire(self, event):
+        from Dlg import DLG_Desinscriptions
+        dlg = DLG_Desinscriptions.Dialog(self)
+        dlg.ShowModal()
         dlg.Destroy()
 
     def On_inscriptions_imprimer(self, event):
